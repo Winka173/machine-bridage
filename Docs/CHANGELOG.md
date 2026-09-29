@@ -1,5 +1,53 @@
 # Changelog
 
+## Prompt 14: the Base screen on the real camp, menus sized for a phone
+
+- Menus are sized in the phone's own points, so they look the same size on every phone and a tablet shows
+  more: a slimmer top bar and rail, smaller tabs and buttons (44 pt to tap), smaller type (13 pt text,
+  18 pt titles; Large text 1.2 times) and cards in lists about a fifth smaller. The page's content now takes
+  70-89 % of the screen. The battle HUD is unchanged.
+- The Base screen is a picture of your camp on the chosen map from above, with red arrows where the enemy
+  comes from and every slot where it really is: small, medium and large slots sized 1 / 1.4 / 2, utility
+  slots as hexagons, empty ones saying what they take, closed ones the HQ level they open at. Pinch to zoom,
+  drag to pan. "Show ranges" paints the whole base's cover, ground in amber and air in light blue; tap a
+  tower for its range ring.
+- Towers come from a tray with a tab for each size: drag one onto a slot, or tap it then a slot; only the
+  slots it fits light up. Towers you do not have yet are dimmed with where they unlock.
+- Tapping a tower shows its render, size and rank, its health, damage and range against the other towers
+  of its size, its branch and gear, and Replace, Remove and Details. With nothing chosen, an overview.
+- Along the bottom: what the base covers (light vehicles, tanks, air, rockets and missiles, stealth,
+  repair and resupply; a gap in red), its strength (the same number the Defend and Endless waves grow
+  with) and how many slots of each size are used.
+- The HQ shows its level and what the next one adds; the map list has pictures; every change saves at
+  once ("Saved").
+- One base for every map: towers are placed by where they stand (gate, outer ring, inner ring, beside the
+  HQ, rear), so the same base fits all 20 maps; a tower with no matching slot goes to the nearest one of
+  its size, and a map where something did not fit gets a dot. A map can be set up on its own. Three base
+  sets, switched on the Base screen or on the home screen. "Auto-arrange" lays the base out the way the
+  enemy's AI does, with your towers. Your old base carries over: every map where it would have stood
+  differently is kept exactly as it was.
+- The outpost has its own tab.
+- Every tower and module has its own icon.
+
+## Prompt 11: a compact battle HUD, cards in line, short names, new shields
+
+- A compact battle HUD, on by default (Settings > Compact battle HUD; off gives the full one): a smaller
+  minimap with select-all and box-select on its corner (pinch to zoom), the objective and the clock in one
+  strip at the top, Attack / Defend as one icon switch and Auto buy and Support as icon toggles (also in
+  the pause menu), a card tray a third lower with the render, the CP and a short name (hold a card for
+  its full name), the supply penalty as a small chip, a boss bar half as wide that opens on a tap (tap a
+  part there to focus fire on it), small notices at the top that go after about 3 s one after another, the
+  selected vehicles as one strip above the tray with Advance / Stop / Back, and the "your army fights on
+  its own" hint only in the first three matches. In a fight the HUD covers about a quarter of the screen
+  (the full HUD more than half). Every control is still a 44 pt target.
+- Every vehicle, tower, structure, support and item has a short name for tight places; every card's name
+  area is two lines high, so pictures, CP and levels line up in every row; cards in a row are one height.
+- A tower branch's name no longer shows as a raw "support." key.
+- Every shield redrawn with one shader: a hex-tile energy dome, bright at the rim and clear in the middle,
+  red-orange for the enemy and blue for us, rippling where rounds hit, flickering as its generators are
+  damaged and shattering when it falls; a lighter version on Low graphics. Its size and rules are
+  unchanged.
+
 ## Prompt 10: Field Command 2.0 (the interface)
 
 - New look everywhere, on one theme of tokens (colours, Barlow fonts, type sizes, spacing, touch

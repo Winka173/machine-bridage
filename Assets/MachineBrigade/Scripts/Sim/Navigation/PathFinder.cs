@@ -74,7 +74,10 @@ namespace MachineBrigade.Sim.Navigation
 
         /// <summary>
         /// Fills <paramref name="result"/> with waypoints from <paramref name="from"/> towards
-        /// <paramref name="to"/>. An unwalkable goal resolves to the nearest walkable point.
+        /// <paramref name="to"/>. A goal on blocked ground, or on open ground that cannot be reached
+        /// from the start (a pocket sealed by walls, a yard behind a shut gate), resolves to the
+        /// nearest open ground the start can reach (within 16 cells), so a route never fails for a
+        /// goal just out of reach and never floods the whole battlefield looking for one.
         /// </summary>
         public bool TryFindPath(Vector2 from, Vector2 to, List<Vector2> result) => TryFindPath(from, to, result, null);
 
@@ -87,7 +90,13 @@ namespace MachineBrigade.Sim.Navigation
         {
             result.Clear();
             if (costs != null) costs.Expansions = 0;
-            if (!_grid.TryNearestWalkable(to, 16, out var goal)) return false;
+            var (sx, sy) = _grid.CellOf(from);
+            if (!_grid.IsWalkable(sx, sy))
+            {
+                if (!_grid.TryNearestWalkable(from, 4, out var start)) return false;
+                (sx, sy) = _grid.CellOf(start);
+            }
+            if (!_grid.TryNearestInRegion(to, _grid.RegionOf(sx, sy), 16, out var goal)) return false;
 
             if (_grid.LineOfSight(from, goal) && (costs == null || MaxExtraAlong(from, goal, costs) <= costs.SmoothLimit))
             {
@@ -95,12 +104,6 @@ namespace MachineBrigade.Sim.Navigation
                 return true;
             }
 
-            var (sx, sy) = _grid.CellOf(from);
-            if (!_grid.IsWalkable(sx, sy))
-            {
-                if (!_grid.TryNearestWalkable(from, 4, out var start)) return false;
-                (sx, sy) = _grid.CellOf(start);
-            }
             var (gx, gy) = _grid.CellOf(goal);
             var startIndex = _grid.Index(sx, sy);
             var goalIndex = _grid.Index(gx, gy);

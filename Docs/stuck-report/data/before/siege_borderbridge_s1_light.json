@@ -1,0 +1,11 @@
+{
+  "map": "borderbridge",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map ec4fb484 app 0.1.0",
+  "ticks": 4625,
+  "journal": [],
+  "records": [],
+  "rescues": []
+}

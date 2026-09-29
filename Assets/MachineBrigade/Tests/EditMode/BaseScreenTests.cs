@@ -10,10 +10,11 @@ using UnityEngine.UIElements;
 namespace MachineBrigade.Tests
 {
     /// <summary>
-    /// The base screen, built without a panel: a frame for every hardpoint of the map's camp
-    /// (sized by class, utility and closed ones marked), only the slots a tower fits light up
-    /// while it is carried, a tap places it, and Save writes a valid layout to the profile. The
-    /// diagram's layout keeps frames apart and inside the panel.
+    /// The Base screen (prompt 14), built without a panel: a slot for every hardpoint of the map's camp at its place
+    /// (sized by class, utility ones as hexagons, closed ones by the HQ level), only the slots a tower fits light up
+    /// while it is carried, a tap places it and the change is saved at once, faces keep their ratio (medium 1.4,
+    /// large 2) and never touch, the range cover is the towers' own reach, and the strength shown is the one the
+    /// Defend and Endless waves scale with (<see cref="BaseStrength.Score(Catalog, BaseLoadout, System.Func{VehicleDef, VehicleBoost})"/>).
     /// </summary>
     public class BaseScreenTests
     {
@@ -26,122 +27,140 @@ namespace MachineBrigade.Tests
         private static int Count(VisualElement root, string className) => root.Query(className: className).ToList().Count;
 
         [Test]
-        public void EveryHardpointOfTheCampHasAFrame()
+        public void EveryHardpointOfTheCampHasASlotAndTheClosedOnesFollowTheHqLevel()
         {
             var catalog = GameContent.LoadCatalog();
             var screen = new BaseScreen(catalog, null, null);
             foreach (var map in MatchSettings.AllMaps)
             {
                 screen.ShowMap(map.Id);
-                var site = GameContent.LoadMap(map.Id + "_conquest").BaseOf(0);
+                var site = BaseSites.CampOf(map.Id);
                 Assert.AreEqual(map.Id, screen.MapId);
-                Assert.AreEqual(site.Slots.Count, Count(screen.Root, "base-camp-slot"), map.Id + ": a frame a hardpoint");
-                Assert.AreEqual(site.Slots.Count, screen.CampSlots.Count);
-                Assert.AreEqual(1, Count(screen.Root, "base-hq"), "the HQ");
+                Assert.AreEqual(site.Slots.Count, Count(screen.Root, "fc-base-slot"), map.Id + ": a slot a hardpoint");
+                Assert.AreEqual(1, Count(screen.Root, "fc-base-hq"), "the HQ");
                 foreach (SlotSize size in System.Enum.GetValues(typeof(SlotSize)))
-                    Assert.AreEqual(site.Slots.Count(s => s.Class == size), screen.CampSlots.Count(v => v.Element.ClassListContains("size-" + size.ToString().ToLowerInvariant())),
-                        $"{map.Id}: {size} frames");
-                Assert.AreEqual(site.Slots.Count(s => s.Kind == HardpointKind.Utility), screen.CampSlots.Count(v => v.Element.ClassListContains("utility")), "utility slots marked");
+                    Assert.AreEqual(site.Slots.Count(s => s.Class == size && s.Kind == HardpointKind.Tower),
+                        screen.CampSlots.Count(v => v.Element.ClassListContains("fc-base-slot--" + size.ToString().ToLowerInvariant())), $"{map.Id}: {size} slots");
+                Assert.AreEqual(site.Slots.Count(s => s.Kind == HardpointKind.Utility), screen.CampSlots.Count(v => v.Element.ClassListContains("fc-base-slot--utility")), "utility slots");
+                var open = BaseLayout.Camp(site, catalog.Base, Campaign.HqLevelCap);
+                Assert.AreEqual(open.Count(s => !s.Open), screen.CampSlots.Count(v => v.Element.ClassListContains("fc-base-slot--closed")), map.Id + ": closed = beyond the HQ level");
             }
-            Assert.AreEqual(2, screen.OutpostSlots.Count, "the outpost's small and medium slot");
-            Assert.IsTrue(screen.OutpostSlots[0].Element.ClassListContains("size-small") && screen.OutpostSlots[1].Element.ClassListContains("size-medium"));
         }
 
         [Test]
-        public void SlotsBeyondTheHqLevelAreClosed()
-        {
-            var catalog = GameContent.LoadCatalog();
-            var screen = new BaseScreen(catalog, null, null);
-            screen.ShowMap("ashfield");
-            screen.SetLevel(1);
-            var rules = catalog.Base;
-            var open = rules.Slots(1, SlotSize.Small) + rules.Slots(1, SlotSize.Medium) + rules.Slots(1, SlotSize.Large) + rules.UtilitySlots(1);
-            Assert.AreEqual(screen.CampSlots.Count - open, screen.CampSlots.Count(v => v.Element.ClassListContains("closed")), "closed = beyond level 1");
-            Assert.IsTrue(screen.Dirty, "a level change waits for Save");
-        }
-
-        [Test]
-        public void OnlyTheSlotsATowerFitsLightUpAndATapPlacesIt()
+        public void OnlyTheSlotsATowerFitsLightUpAndATapPlacesAndSavesIt()
         {
             var catalog = GameContent.LoadCatalog();
             string note = null;
             var screen = new BaseScreen(catalog, (text, _) => note = text, null);
             screen.ShowMap("ashfield");
-            screen.SetLevel(5);
+            var slots = screen.CampSlots;
             screen.TapTower("heavy_turret");
-            var lit = screen.CampSlots.Where(v => v.Element.ClassListContains("lit")).ToList();
-            Assert.AreEqual(catalog.Base.Slots(5, SlotSize.Large), lit.Count, "a large tower: only the large slots");
-            Assert.IsTrue(lit.All(v => v.Slot.Kind == LoadoutSlotKind.Tower && v.Slot.Size == SlotSize.Large));
-            Assert.IsFalse(screen.OutpostSlots.Any(v => v.Element.ClassListContains("lit")), "nor the outpost's");
+            var lit = slots.Where(v => v.Element.ClassListContains("fc-base-slot--lit")).ToList();
+            Assert.AreEqual(slots.Count(v => v.Open && !v.Utility && v.Size == SlotSize.Large), lit.Count, "a large tower: only the large slots");
+            Assert.IsTrue(slots.Where(v => !lit.Contains(v)).All(v => v.Element.ClassListContains("fc-base-slot--dim")), "the others dimmed");
             screen.TapTower("heavy_turret");
             screen.TapTower("guard_tower");
-            Assert.AreEqual(screen.CampSlots.Count(v => v.Open && !v.Utility) + 2, screen.CampSlots.Concat(screen.OutpostSlots).Count(v => v.Element.ClassListContains("lit")),
-                "a small tower fits every open tower slot and the outpost's two");
+            Assert.AreEqual(slots.Count(v => v.Open && !v.Utility), slots.Count(v => v.Element.ClassListContains("fc-base-slot--lit")), "a small tower fits every open tower slot");
 
-            screen.TapSlot(LoadoutSlot.Tower(SlotSize.Large, 1));
-            Assert.AreEqual("guard_tower", BaseLayout.At(screen.Layout, LoadoutSlot.Tower(SlotSize.Large, 1)), "the tap placed it");
+            var large = slots.First(v => v.Open && !v.Utility && v.Size == SlotSize.Large);
+            screen.TapSlot(large);
+            Assert.AreEqual("guard_tower", PlayerProfile.ActivePlan.At("ashfield", BaseSites.CampOf("ashfield"), large.Hardpoint), "the tap placed it");
             Assert.IsNotNull(note);
-            Assert.IsFalse(screen.CampSlots.Any(v => v.Element.ClassListContains("lit")), "nothing is carried any more");
+            Assert.IsFalse(slots.Any(v => v.Element.ClassListContains("fc-base-slot--lit")), "nothing is carried any more");
+            PlayerProfile.LoadForTests(PlayerProfile.JsonForTests());
+            Assert.AreEqual("guard_tower", PlayerProfile.ActivePlan.At("ashfield", BaseSites.CampOf("ashfield"), large.Hardpoint), "saved at once");
 
             // Slot first, then the tower: a medium tower does not go into a small slot.
-            screen.TapSlot(LoadoutSlot.Tower(SlotSize.Small, 0));
+            screen = new BaseScreen(catalog, (text, _) => note = text, null);
+            screen.ShowMap("ashfield");
+            var small = screen.CampSlots.First(v => v.Open && !v.Utility && v.Size == SlotSize.Small);
+            screen.TapSlot(small);
             screen.TapTower("gun_turret");
-            Assert.AreNotEqual("gun_turret", BaseLayout.At(screen.Layout, LoadoutSlot.Tower(SlotSize.Small, 0)));
+            Assert.AreNotEqual("gun_turret", PlayerProfile.ActivePlan.At("ashfield", BaseSites.CampOf("ashfield"), small.Hardpoint));
             screen.TapTower("mg_bunker");
-            Assert.AreEqual("mg_bunker", BaseLayout.At(screen.Layout, LoadoutSlot.Tower(SlotSize.Small, 0)));
+            Assert.AreEqual("mg_bunker", PlayerProfile.ActivePlan.At("ashfield", BaseSites.CampOf("ashfield"), small.Hardpoint));
 
-            Assert.IsTrue(screen.Dirty);
-            screen.Save();
-            Assert.IsFalse(screen.Dirty);
-            var saved = PlayerProfile.BaseLoadout;
-            Assert.AreEqual("guard_tower", saved.Large[1], "Save wrote the layout");
-            Assert.AreEqual("mg_bunker", saved.Small[0]);
-            Assert.AreEqual(5, saved.HqLevel);
+            // The range cover: every tower in an open slot with its own reach from the data.
+            screen.ToggleRanges();
+            var layout = screen.Layout;
+            var towers = BasePlan.ToAssignment(BaseSites.CampOf("ashfield"), layout);
+            Assert.AreEqual(towers.Count(t => t != null && catalog.Vehicles[t].Fort.Kind == FortKind.Tower) + towers.Count(t => t != null && catalog.Vehicles[t].Fort.Kind == FortKind.Utility),
+                screen.Map.Cover.Count, "a circle for everything placed");
+            foreach (var id in towers.Where(t => t != null))
+            {
+                var (ground, air, _) = BaseRoles.Reach(catalog.Vehicles[layout.DefFor(id)]);
+                Assert.IsTrue(screen.Map.Cover.Any(c => Mathf.Approximately(c.ground, ground) && Mathf.Approximately(c.air, air)), id + ": its reach");
+            }
         }
 
         [Test]
         public void UtilitySlotsTakeModulesOnly()
         {
-            // The utility modules are in the catalog: the utility slots are live, and only modules light them up.
             var catalog = GameContent.LoadCatalog();
             var screen = new BaseScreen(catalog, null, null);
             screen.ShowMap("ashfield");
-            Assert.IsFalse(screen.CampSlots.Any(v => v.Element.ClassListContains("soon")));
             screen.TapTower("guard_tower");
-            Assert.IsFalse(screen.CampSlots.Any(v => v.Utility && v.Element.ClassListContains("lit")), "a tower does not go into a utility slot");
+            Assert.IsFalse(screen.CampSlots.Any(v => v.Utility && v.Element.ClassListContains("fc-base-slot--lit")), "a tower does not go into a utility slot");
+            screen.TapTower("guard_tower");
             screen.TapTower("repair_bay");
-            var lit = screen.CampSlots.Where(v => v.Element.ClassListContains("lit")).ToList();
-            Assert.AreEqual(catalog.Base.UtilitySlots(5), lit.Count, "a module: the open utility slots only");
+            var lit = screen.CampSlots.Where(v => v.Element.ClassListContains("fc-base-slot--lit")).ToList();
+            Assert.AreEqual(screen.CampSlots.Count(v => v.Utility && v.Open), lit.Count, "a module: the open utility slots only");
             Assert.IsTrue(lit.All(v => v.Utility));
-            screen.TapSlot(LoadoutSlot.Utility(0));
-            Assert.AreEqual("repair_bay", BaseLayout.At(screen.Layout, LoadoutSlot.Utility(0)));
-            CollectionAssert.Contains(BaseLayout.ForSaving(screen.Layout, catalog).Utilities, "repair_bay", "and the module is saved");
+            screen.TapSlot(lit[0]);
+            Assert.AreEqual("repair_bay", PlayerProfile.ActivePlan.At("ashfield", BaseSites.CampOf("ashfield"), lit[0].Hardpoint));
         }
 
+        /// <summary>Prompt 14 B3: a medium slot's face is 1.4 times a small one's, a large one's twice, and on no map do two faces (or the HQ) touch at any zoom.</summary>
         [Test]
-        public void TheDiagramKeepsFramesApartAndInside()
+        public void SlotFacesKeepTheirRatioAndNeverTouch()
         {
             var catalog = GameContent.LoadCatalog();
+            var screen = new BaseScreen(catalog, null, null);
             foreach (var map in MatchSettings.AllMaps)
             {
-                var site = GameContent.LoadMap(map.Id + "_conquest").BaseOf(0);
-                var world = new[] { site.Hq }.Concat(site.Slots.Select(s => s.Position)).Select(CampLayout.ToUnity).ToList();
-                var sizes = new[] { 86f }.Concat(site.Slots.Select(s => s.Class switch { SlotSize.Small => 72f, SlotSize.Medium => 84f, _ => 96f })).ToList();
-                foreach (var panel in new[] { new Vector2(544f, 440f), new Vector2(864f, 440f) })
+                var site = BaseSites.CampOf(map.Id);
+                screen.ShowMap(map.Id);
+                var unit = BaseScreen.FaceMetres(site);
+                Assert.Greater(unit, 8f, map.Id + ": faces big enough to read");
+                var views = screen.CampSlots;
+                foreach (var v in views)
+                    Assert.AreEqual(v.Utility ? BaseScreen.UtilityRatio : v.Size switch { SlotSize.Small => 1f, SlotSize.Medium => BaseScreen.MediumRatio, _ => BaseScreen.LargeRatio },
+                        BaseScreen.RatioOf(v), 1e-4f);
+                for (var i = 0; i < views.Count; i++)
                 {
-                    var fit = CampLayout.Arrange(CampLayout.ToUnity(site.Hq), site.Heading, world, sizes, panel, 6f, 10f);
-                    Assert.IsFalse(CampLayout.Overlaps(fit.Centres, sizes), $"{map.Id} at {panel}: frames overlap");
-                    for (var i = 0; i < sizes.Count; i++)
+                    var a = site.Slots[views[i].Hardpoint].Position;
+                    Assert.GreaterOrEqual(System.Numerics.Vector2.Distance(a, site.Hq), 0.5f * unit * (BaseScreen.RatioOf(views[i]) + BaseScreen.HqRatio), map.Id + ": clear of the HQ");
+                    for (var j = i + 1; j < views.Count; j++)
                     {
-                        var c = fit.Centres[i];
-                        Assert.IsTrue(c.x - sizes[i] / 2 >= -0.5f && c.x + sizes[i] / 2 <= panel.x + 0.5f && c.y - sizes[i] / 2 >= -0.5f && c.y + sizes[i] / 2 <= panel.y + 0.5f,
-                            $"{map.Id} at {panel}: frame {i} inside");
+                        var b = site.Slots[views[j].Hardpoint].Position;
+                        Assert.GreaterOrEqual(System.Numerics.Vector2.Distance(a, b), 0.5f * unit * (BaseScreen.RatioOf(views[i]) + BaseScreen.RatioOf(views[j])),
+                            $"{map.Id}: slots {views[i].Hardpoint} and {views[j].Hardpoint} apart");
                     }
-                    // The front is up: the slots lie ahead of the HQ.
-                    var ahead = fit.Centres.Skip(1).Count(c => c.y < fit.Centres[0].y);
-                    Assert.Greater(ahead, site.Slots.Count / 2, $"{map.Id}: the camp faces up");
                 }
             }
+        }
+
+        /// <summary>Prompt 14 E2: the strength shown is BaseStrength's score of the base the player takes onto that map, rank and equipment in.</summary>
+        [Test]
+        public void TheStrengthShownIsTheOneTheWavesScaleWith()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var screen = new BaseScreen(catalog, null, null);
+            foreach (var map in new[] { "ashfield", "capital", "whiteout" })
+            {
+                screen.ShowMap(map);
+                var expected = BaseStrength.Score(catalog, PlayerProfile.BaseLoadoutFor(map), PlayerProfile.BoostFor);
+                Assert.AreEqual(Mathf.RoundToInt(expected).ToString(), screen.StrengthLabel.text, map);
+                Assert.AreEqual(expected, screen.Strength, 1e-3f);
+            }
+            // A stronger base shows a bigger number.
+            screen.ShowMap("ashfield");
+            var before = screen.Strength;
+            var empty = screen.CampSlots.FirstOrDefault(v => v.Open && !v.Utility && v.Size == SlotSize.Large);
+            screen.TapTower("heavy_turret");
+            screen.TapSlot(empty);
+            Assert.GreaterOrEqual(screen.Strength, before);
         }
     }
 }

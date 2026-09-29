@@ -1,0 +1,15 @@
+{
+  "map": "whiteout",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map e74d6100 app 0.1.0",
+  "ticks": 5031,
+  "journal": [],
+  "records": [
+    {"vehicle": 709, "def": "siege_tank", "team": 0, "startTick": 1980, "start": 99, "end": 109, "seconds": 10, "x": 1.317, "y": 53.953, "goalX": 53.836, "goalY": 58.05, "order": "Move", "cause": "OffRoute", "detail": "to (-0.8,59.0) past snow_rock", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@5.0 armored_bulldozer(moving)@5.4 titan_tank(moving)@6.5 snow_rock@6"},
+    {"vehicle": 707, "def": "siege_tank", "team": 0, "startTick": 2770, "start": 138.5, "end": 148, "seconds": 9.5, "x": -0.119, "y": 73.624, "goalX": 59.689, "goalY": 67.112, "order": "Move", "cause": "BlockedByFriend", "detail": "titan_tank#726 moving", "area": "fortress+gate", "lanes": "road+route+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@7.3 main_battle_tank(moving)@6.5 aa_vehicle(moving)@9.3 ifv(moving)@6.8 snow_rock@5"},
+    {"vehicle": 755, "def": "command_vehicle", "team": 1, "startTick": 3250, "start": 162.5, "end": 172, "seconds": 9.5, "x": 99.807, "y": 115.757, "goalX": 98.041, "goalY": 104.293, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#750", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""}
+  ],
+  "rescues": []
+}

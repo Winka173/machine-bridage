@@ -346,6 +346,11 @@ namespace MachineBrigade.Sim
         {
             var def = Catalog.Vehicle(defId);
             var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
+            // A landing in a pocket sealed off from the battlefield (between buildings, behind a wall
+            // corner) would never get out: it comes down on the open ground nearest instead (prompt 12).
+            if (!def.Flying && !def.Static && Grid.RegionOf(at) is var region && region != Grid.MainRegion &&
+                Grid.RegionSize(region) * 8 < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, 12, out var open))
+                at = open;
             if (!def.Flying && !def.Static) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             // A side's own loadout towers carry their card's rank and equipment; other fixed defences
@@ -853,6 +858,9 @@ namespace MachineBrigade.Sim
                 return true;
             }
             vehicle.ClearPath();
+            // (The stuck report tells a vehicle with no way to its goal from one held up on the way.)
+            vehicle.Traffic.PathFailedAt = Time;
+            vehicle.Traffic.PathFailedGoal = goal;
             return false;
         }
 
@@ -930,7 +938,8 @@ namespace MachineBrigade.Sim
         {
             var spacing = 1.5f;
             foreach (var v in _unitBuffer) spacing = MathF.Max(spacing, v.Radius * 2f + 1.5f);
-            var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid, _unitBuffer[0].Flying ? null : Lanes);
+            var ground = !_unitBuffer[0].Flying;
+            var slots = Formation.Slots(point, _unitBuffer.Count, spacing, Grid, ground ? Lanes : null, ground ? GroupRegion() : 0);
             Formation.Assign(_unitBuffer, slots, point, _slotBuffer);
             foreach (var v in _unitBuffer)
             {
@@ -938,6 +947,25 @@ namespace MachineBrigade.Sim
                 v.SetOrder(new Order(kind, goal, EntityId.None));
                 PathTo(v, goal);
             }
+        }
+
+        /// <summary>The open ground most of the ordered ground vehicles stand on (their slots go there; prompt 12).</summary>
+        private int GroupRegion()
+        {
+            int best = 0, bestCount = 0;
+            foreach (var v in _unitBuffer)
+            {
+                if (v.Flying) continue;
+                var region = Grid.RegionOf(v.Position);
+                if (region == 0) continue;
+                var count = 0;
+                foreach (var o in _unitBuffer)
+                    if (!o.Flying && Grid.RegionOf(o.Position) == region) count++;
+                if (count <= bestCount) continue;
+                best = region;
+                bestCount = count;
+            }
+            return best;
         }
 
         private void SpawnProp(string defId, Vector2 position, int rotation)
@@ -1052,6 +1080,9 @@ namespace MachineBrigade.Sim
             if (!v.Def.Static || v.BlocksRoutes || v.Def.Passable) return;
             v.BlocksRoutes = true;
             Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+            // A tower flown into a hardpoint where vehicles stand: they are put off its ground (they
+            // could never have driven off it: prompt 12).
+            _movement.ClearGround(v);
         }
 
         /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>

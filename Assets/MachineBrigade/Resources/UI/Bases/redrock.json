@@ -1,0 +1,96 @@
+{
+    "version": 1,
+    "map": "redrock",
+    "source": "Data/maps/redrock_conquest",
+    "sha1": "a8cb72f244b04805d5ae7b9dc3bba4ac5e814af8",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -101.513,
+        "z": -82.169
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 230.446,
+    "metresHigh": 144.028,
+    "hq": {
+        "x": -120.5,
+        "z": -115.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -149.386,
+            "z": -123.216
+        },
+        {
+            "x": -96.153,
+            "z": -129.131
+        },
+        {
+            "x": -54.75,
+            "z": -112.346
+        },
+        {
+            "x": -50.074,
+            "z": -88.962
+        },
+        {
+            "x": -47.7,
+            "z": -69.973
+        },
+        {
+            "x": -75.957,
+            "z": -39.455
+        },
+        {
+            "x": -127.539,
+            "z": -30.076
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -119.0,
+                "z": -31.629
+            },
+            "dir": {
+                "x": 0.0,
+                "z": -1.0
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -57.983,
+                "z": -58.867
+            },
+            "dir": {
+                "x": -0.754,
+                "z": -0.657
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -67.372,
+                "z": -117.463
+            },
+            "dir": {
+                "x": -0.982,
+                "z": 0.19
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.629,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

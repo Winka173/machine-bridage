@@ -1585,7 +1585,7 @@ library with its preview screen, the card renders and the UI checks. The screens
   frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
   switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
   hidden developer entry is five quick taps on the rank badge of the menu's top bar.
-- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
+- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `HUD`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình), `TN` (tinh nhuệ, in the short names of elites); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `Sprut`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
 - **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
   `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
   The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
@@ -3055,6 +3055,345 @@ What read wrong was how the flashes were drawn:
 - The frozen-moment missile sheets show a gap between fast rockets and their flames; it comes from the sheet
   jumping straight to each moment (one long frame). In the game the frame is short and the flame sits on the tail.
 
+## 13A. Prompt 11: compact HUD, alignment, short names, shields (2026-09-29)
+
+The owner found the battle HUD covering too much of the battlefield, cards and rows out of line,
+raw keys on screen, and the shields ugly. No game logic or balance data changed.
+
+### A. The compact battle HUD
+
+- **Two layouts, one code path.** Settings > Display > "HUD gọn trong trận" (`MatchSettings.CompactHud`,
+  saved as `mb.compactHud`, on by default); off gives the full HUD of 10b G unchanged. `BattleHud` builds
+  the compact controls where the structure differs (the stance switch, the icon toggles, the tower
+  button, the selection strip, the collapsible boss bar, the tray's names) and puts `fc-hud--compact` on
+  its kit root; the rest is Screens.uss rules under that class (the "prompt 11 A" block). `HudSpec.Compact`
+  (null: the setting) lets the screenshots and checks show either.
+- **Measured, not guessed.** `UiLayoutTests.TheCompactHudLeavesTheBattlefieldClear` rasterises (4 px cells)
+  the union of every shown HUD element with a fill, an image, a border, a text or an icon (invisible
+  touch targets do not count) and fails above 30 %. With the demo battles (a selection open in Conquest
+  and Siege, a boss and a notice, the Defend wave preview): Conquest 27.5 %, boss 26.5 %, Siege 27.5 %,
+  Defend 25.8 % at 16:9; 22.0, 21.2, 22.0 and 20.6 % at 20:9. The full HUD: 64.0, 59.6, 62.0, 50.7 % at
+  16:9 and 52.6, 50.0, 50.7, 40.6 % at 20:9.
+- **Faces smaller than 44 pt, targets not.** Every control is still a full 82 panel px target (44 pt, the
+  kit's rule); where the drawn face is smaller (44 px faces on the minimap tools, pause, the rail, the
+  objective rings), a transparent target surrounds it. The objectives' targets reach above and below the
+  top strip through negative margins, so the strip stays 52 px high. The layout check now skips an
+  element whose picking is off (the closed boss bar's part icons only show state; the bar itself is the
+  target), since it cannot be tapped.
+- **A1 minimap** 216 -> 132 px (40 % less a side, 63 % less area); the zoom buttons are gone (pinch
+  zooms; the event stays for the full HUD); select-all and box-select are 44 px faces on its right-hand
+  corners. The item strip moves up under them.
+- **A2 commander.** Attack / Defend is one two-icon switch (a tap flips it; the side on is the text
+  colour with a dark icon); Auto buy (a new cart icon) and Support are icon toggles: on is the text
+  colour with a dark icon, off the field panel with a dimmed icon struck through, so the state reads
+  without colour; tooltips say it in words. Pause now has both as the kit's switches (both layouts).
+- **A3 tray** 160 -> 104 px (35 %). A card is its render (68 px), the CP and the short name on one line;
+  holding a card (0.45 s, `Tap`'s new hold callback, which then fires no tap) shows its full name over
+  the tray. The CP box is the points, the bar and the income; the supply penalty or the underdog's
+  boost is a chip over the box, only while it applies. Cards are 108 px so ten of them and the box fit
+  across 1280 px. Large text: no card width fits every short name on one line across 1280 px (the
+  widest deployable, "Pháo bánh lốp", is 110 px at 22 px against at most 102), so in Large text the name
+  may take two lines and the tray is 134 px (the full HUD's Large tray is 196).
+- **A4 boss bar** half as wide (340 px closed): name, phase and the bar, and the parts as 20 px icons that
+  show state only. A tap opens it at full size (640 px, the health in numbers, parts as full targets that
+  order focus fire as before) for 6 s; tapping a part keeps it open, another tap closes it. Its calls are
+  unchanged (`SetBoss` both overloads, `SetBossParts`, `BossPartTapped`, `SetBossHp`).
+- **A5** the objective (or the score, or the waves) and the clock are one strip at the top centre: the
+  goal and its count on one line over a thin bar, the clock at its end; the score strip is the two
+  numbers in the sides' colours over their bars, the rings and the clock (the captions went to a
+  tooltip).
+- **A6 notices** (toasts, radio, alerts) sit in the column right under the strip (under the boss bar
+  when there is one), in the small text size, at most 600 px wide, 2.5-3.5 s each whatever the caller
+  asked (the full HUD's default went from 2.2 to 3 s too), queued (three at most, the next after 1.2 s
+  if one waits; errors go straight up). The banner at the start is a smaller strip in the same place.
+- **A7** the standing hint ("Quân ta tự chiến đấu · Chạm A B C...") shows in the player's first three
+  matches only (`MatchSettings.StartHintMatches`, counted in `mb.hintMatches` when a real match starts;
+  `HudSpec.StartHint`); the attack-move and box-select hints still show while those modes are on.
+- **A8 selection** is one strip right above the tray on the right: the render with the count on it, the
+  short name, the health bar and numbers, Advance / Stop / Back. The weapons line and "strong against /
+  weak to" are only in the full HUD and on the detail page.
+- **A10 safe area**: unchanged code (`ApplySafeArea`, `KitSafeArea`); the shots at 19.5:9 with a notch
+  and 20:9 with a punch hole and the gesture bar show it.
+- **For the balance agent (prompt 13)**: the selection strip has `BattleHud.SelectionExtras`, an empty,
+  hidden row under the health bar for the ammo icons (C.9); every tray card has an empty
+  `fc-hcard__badges` row in the picture's top-left corner. Both are documented in the class comments.
+
+### B. Alignment, short names, raw keys
+
+- **B1 short names**, at most 15 letters in both languages (`Strings.Short`, keys `short.<id>`, checked
+  by `LocalisationScanTests.EveryCardHasAShortName` over vehicles, supports, items, elites, bosses,
+  towers, their branches and the utility modules). A branch without its own short name reads as the
+  branch's name alone. Used in the tray, the deck strips (home, army), the selection strip, compact
+  cards (chapter unlocks, Boss Rush), and on any card whose full name needs more than two lines. Elites
+  are the base's short name with "TN" (tinh nhuệ), like the listed PK and TT; `TN` and `HUD` joined the
+  allow-list of names kept in Vietnamese. The table (full Vietnamese name and id, then the short names):
+
+  | Vehicles | English | Vietnamese |
+  | --- | --- | --- |
+  | Xe trinh sát (`scout_jeep`) | Scout | Trinh sát |
+  | Tăng hạng nhẹ (`light_tank`) | Light tank | Tăng nhẹ |
+  | Tăng chủ lực (`main_battle_tank`) | Battle tank | Tăng chủ lực |
+  | Tăng phun lửa (`flame_tank`) | Flame tank | Phun lửa |
+  | Pháo tự hành (`artillery`) | SP gun | Pháo tự hành |
+  | Pháo phản lực (`mlrs`) | Rockets | Phản lực |
+  | Xe phòng không (`aa_vehicle`) | Anti-air | Phòng không |
+  | Trực thăng tấn công (`attack_helicopter`) | Attack heli | Trực thăng |
+  | Xe bọc thép (`armored_car`) | Armoured car | Bọc thép |
+  | Pháo chống tăng (`tank_destroyer`) | Tank killer | Chống tăng |
+  | Tăng hạng nặng (`heavy_tank`) | Heavy tank | Tăng nặng |
+  | Tên lửa phòng không (`sam_launcher`) | SAM | Tên lửa PK |
+  | Xe súng cối (`mortar_carrier`) | Mortar | Súng cối |
+  | Bán tải rốc-két (`rocket_technical`) | Technical | Bán tải |
+  | Trực thăng hạng nặng (`gunship_heli`) | Gunship | TT hỏa lực |
+  | Trực thăng trinh sát (`scout_heli`) | Scout heli | TT trinh sát |
+  | Máy bay cường kích (`attack_jet`) | Attack jet | Cường kích |
+  | UAV tấn công (`strike_drone`) | Strike UAV | UAV tấn công |
+  | Pháo phản lực nhiệt áp (`thermobaric_launcher`) | Thermobaric | Nhiệt áp |
+  | Xe chiến đấu bộ binh (`ifv`) | IFV | Xe bộ binh |
+  | Pháo tên lửa phòng không (`heavy_aa`) | Gun-SAM | PK hỗn hợp |
+  | Siêu tăng Titan (`titan_tank`) | Titan | Siêu tăng |
+  | Oanh tạc cơ hạng nặng (`heavy_bomber`) | Bomber | Oanh tạc cơ |
+  | Máy bay ném bom tàng hình (`stealth_bomber`) | Stealth | Tàng hình |
+  | Pháo đài bay (`sky_gunship`) | Sky gunship | Pháo đài bay |
+  | Tăng hai nòng (`twin_tank`) | Twin tank | Hai nòng |
+  | Tăng công thành (`siege_tank`) | Siege tank | Công thành |
+  | Xe tên lửa chống tăng (`atgm_carrier`) | ATGM | Diệt tăng TL |
+  | Pháo phản lực hạng nặng (`heavy_rocket_artillery`) | Heavy MLRS | Phản lực 300 |
+  | Xe phóng tên lửa đạn đạo (`ballistic_launcher`) | Ballistic | Đạn đạo |
+  | Xe công binh (`engineer_vehicle`) | Engineer | Công binh |
+  | Xe tác chiến điện tử (`ew_jammer`) | Jammer | Gây nhiễu |
+  | Xe phóng drone FPV (`fpv_carrier`) | FPV drones | Drone FPV |
+  | Xe rải mìn (`mine_layer`) | Mine layer | Rải mìn |
+  | Tiêm kích (`fighter_jet`) | Fighter | Tiêm kích |
+  | Cường kích diệt tăng (`tank_buster`) | Tank buster | Diệt tăng |
+  | UAV trinh sát (`recon_drone`) | Recon UAV | UAV do thám |
+  | Ka-52 Cá sấu (`heavy_attack_heli`) | Ka-52 | Ka-52 |
+  | Xe bom tự sát bọc thép (`vbied`) | Car bomb | Xe bom |
+  | Bán tải ZU-23 (`zu23_technical`) | ZU-23 | ZU-23 |
+  | Xe tạo khói (`smoke_carrier`) | Smoke car | Xe khói |
+  | Xe phóng Lancet (`lancet_truck`) | Lancet | Lancet |
+  | Xe phóng Shahed (`shahed_truck`) | Shahed | Shahed |
+  | La-de phòng không (`iron_beam`) | Laser AA | La-de PK |
+  | Xe súng điện từ (`railgun_truck`) | Railgun | Pháo điện từ |
+  | Xe tăng rùa (`turtle_tank`) | Turtle | Xe rùa |
+  | BMPT Terminator (`bmpt`) | BMPT | BMPT |
+  | Xe công binh công trình (`sapper`) | Sapper | Công binh CT |
+  | Xe ủi bọc thép (`armored_bulldozer`) | Bulldozer | Xe ủi |
+  | Xe chỉ huy (`command_vehicle`) | Command | Xe chỉ huy |
+  | Pháo bánh lốp diệt tăng (`wheeled_gun`) | Wheeled gun | Pháo bánh lốp |
+  | Radar phản pháo (`counter_battery_radar`) | CB radar | Phản pháo |
+  | Tên lửa phòng không tầm xa (`long_sam`) | Long SAM | SAM tầm xa |
+
+  | Elites | English | Vietnamese |
+  | --- | --- | --- |
+  | Tăng chủ lực tinh nhuệ (`elite_mbt`) | Elite MBT | Tăng tinh nhuệ |
+  | Tăng hạng nặng tinh nhuệ (`elite_heavy_tank`) | Elite heavy | Tăng nặng TN |
+  | Pháo chống tăng tinh nhuệ (`elite_tank_destroyer`) | Elite TD | Chống tăng TN |
+  | Trực thăng tinh nhuệ (`elite_attack_helicopter`) | Elite heli | Trực thăng TN |
+  | Pháo phản lực tinh nhuệ (`elite_mlrs`) | Elite MLRS | Phản lực TN |
+  | Phòng không tinh nhuệ (`elite_aa`) | Elite AA | Phòng không TN |
+  | Xe bọc thép tinh nhuệ (`elite_apc`) | Elite EW | Bọc thép TN |
+  | Grad tinh nhuệ (`elite_grad`) | Elite Grad | Grad TN |
+  | Xe phóng drone FPV tinh nhuệ (`elite_fpv_carrier`) | Elite FPV | Drone FPV TN |
+  | Cường kích tinh nhuệ (`elite_attack_jet`) | Elite jet | Cường kích TN |
+  | Tên lửa phòng không tầm xa tinh nhuệ (`elite_long_sam`) | Elite SAM | SAM tầm xa TN |
+  | Pháo tự hành tinh nhuệ (`elite_artillery`) | Elite SPG | Lựu pháo TN |
+
+  | Bosses | English | Vietnamese |
+  | --- | --- | --- |
+  | Quái vật thép Behemoth (`behemoth`) | Behemoth | Behemoth |
+  | Pháo đài băng (`mobile_fortress`) | Ice Fortress | Pháo đài băng |
+  | Đoàn tàu thép (`armored_train`) | Iron Train | Đoàn tàu thép |
+  | Chim sắt (`mega_gunship`) | Iron Bird | Chim sắt |
+  | Tàu mẹ Tổ Ong (`drone_mothership`) | Hive Carrier | Tàu mẹ Tổ Ong |
+  | Đoàn tàu Tận thế (`nuke_train`) | Doomsday | Tàu Tận thế |
+  | Đĩa bay Bọ Bạc (`silver_bug`) | Silver Bug | Bọ Bạc |
+  | Hỏa ngục Inferno (`behemoth_inferno`) | Inferno | Inferno |
+  | Bão điện Tempest (`behemoth_tempest`) | Tempest | Tempest |
+  | Tổ ong Hive (`fortress_hive`) | Hive | Tổ ong Hive |
+  | Thành lũy Bastion (`fortress_bastion`) | Bastion | Bastion |
+  | Pháo đường ray siêu nặng (`rail_supergun`) | Supergun | Pháo ray |
+  | Máy khoan Sâu Đất (`earth_borer`) | Earth Worm | Sâu Đất |
+  | Khí cầu chỉ huy (`command_airship`) | Airship | Khí cầu |
+  | Tàu đệm khí đổ bộ (`landing_hovercraft`) | Hovercraft | Tàu đệm khí |
+  | Tổng Tư Lệnh (`supreme_command`) | Supreme Cmdr | Tổng Tư Lệnh |
+  | Bóng ma Spectre (`sky_fortress`) | Spectre | Spectre |
+
+  | Towers and structures | English | Vietnamese |
+  | --- | --- | --- |
+  | Sở chỉ huy (`headquarters`) | HQ | Sở chỉ huy |
+  | Siêu pháo (`super_gun`) | Super-gun | Siêu pháo |
+  | Tháp căn cứ (`spawn_bastion`) | Bastion | Tháp căn cứ |
+  | Pháo đài hạng nặng (`heavy_turret`) | Fortress | Pháo đài |
+  | Tên lửa Patriot tầm xa (`missile_battery`) | Patriot | Patriot |
+  | Tháp tên lửa chống tăng (`atgm_tower`) | ATGM tower | Tháp ATGM |
+  | Tháp pháo (`gun_turret`) | Gun turret | Tháp pháo |
+  | Tháp phòng không (`aa_turret`) | AA turret | Tháp PK |
+  | Tháp gây nhiễu EW (`ew_tower`) | EW tower | Tháp EW |
+  | Răng rồng (`dragons_teeth`) | Dragon's teeth | Răng rồng |
+  | Bãi mìn (`minefield`) | Minefield | Bãi mìn |
+  | Trạm C-RAM (`c_ram`) | C-RAM | C-RAM |
+  | Ụ pháo ẩn (`gun_pit`) | Gun pit | Ụ pháo ẩn |
+  | Nhà chứa drone (`drone_hangar`) | Drone hangar | Nhà chứa drone |
+  | Dàn rốc-két (`rocket_turret`) | Rockets | Dàn rốc-két |
+  | Lô cốt súng máy (`mg_bunker`) | MG bunker | Lô cốt |
+  | Trận địa pháo (`artillery_emplacement`) | Artillery | Trận địa pháo |
+  | Ụ súng tạm (`bulwark_post`) | Fallback post | Ụ súng tạm |
+  | Tháp canh (`guard_tower`) | Guard tower | Tháp canh |
+  | Xe tiếp tế (`supply_truck`) | Supply truck | Xe tiếp tế |
+  | Trạm chỉ thị mục tiêu (`targeting_station`) | Fire control | Trạm chỉ thị |
+
+  | Tower branches | English | Vietnamese |
+  | --- | --- | --- |
+  | Tháp quan sát (`guard_tower.watch`) | Watchtower | Tháp quan sát |
+  | Ổ súng (`guard_tower.nest`) | Gun nest | Ổ súng |
+  | Súng máy đôi (`mg_bunker.twin`) | Twin HMG | Súng máy đôi |
+  | Lô cốt phun lửa (`mg_bunker.flame`) | Flame bunker | Lô cốt lửa |
+  | Máy gây nhiễu drone (`ew_tower.drone`) | Drone jammer | Chống drone |
+  | Máy đánh lừa radar (`ew_tower.spoof`) | Radar spoofer | Đánh lừa radar |
+  | Chông sắt (`dragons_teeth.hedgehog`) | Hedgehogs | Chông sắt |
+  | Rào thép gai (`dragons_teeth.wire`) | Wire and ditch | Rào thép gai |
+  | Bãi mìn chống tăng (`minefield.at`) | AT field | Mìn chống tăng |
+  | Bãi mìn rải (`minefield.scatter`) | Scatter field | Bãi mìn rải |
+  | Nòng dài (`gun_turret.long`) | Long barrel | Nòng dài |
+  | Nạp đạn tự động (`gun_turret.auto`) | Autoloader | Nạp tự động |
+  | Tấn công từ trên (`atgm_tower.top`) | Top attack | Đánh từ trên |
+  | Đa năng (`atgm_tower.multi`) | Multi-role | Đa năng |
+  | Rốc-két chùm (`rocket_turret.cluster`) | Cluster | Rốc-két chùm |
+  | Nhiệt áp (`rocket_turret.thermo`) | Thermobaric | Nhiệt áp |
+  | Centurion (`c_ram.centurion`) | Centurion | Centurion |
+  | Săn máy bay (`c_ram.hunter`) | Hunter | Săn máy bay |
+  | Phục kích (`gun_pit.ambush`) | Ambush | Phục kích |
+  | Hầm sâu (`gun_pit.deep`) | Deep pit | Hầm sâu |
+  | Phản pháo (`artillery_emplacement.cb`) | Counter-fire | Phản pháo |
+  | Tầm xa (`artillery_emplacement.ext`) | Long range | Tầm xa |
+  | PAC-3 (`missile_battery.pac3`) | PAC-3 | PAC-3 |
+  | Radar tầm xa (`missile_battery.lrr`) | Long radar | Radar tầm xa |
+  | Nhà chứa Lancet (`drone_hangar.lancet`) | Lancet hangar | Lancet |
+  | Bầy đàn (`drone_hangar.swarm`) | Swarm | Bầy đàn |
+  | Pháo bờ biển (`heavy_turret.coastal`) | Coastal gun | Pháo bờ biển |
+  | Pháo đài thép (`heavy_turret.bastion`) | Bastion | Pháo đài thép |
+  | Tháp cao xạ (`aa_turret.flak`) | Flak tower | Tháp cao xạ |
+  | Trạm tên lửa (`aa_turret.sam`) | SAM post | Trạm tên lửa |
+
+  | Utility modules | English | Vietnamese |
+  | --- | --- | --- |
+  | Xưởng sửa chữa (`repair_bay`) | Repair bay | Xưởng sửa chữa |
+  | Kho đạn (`ammo_depot`) | Ammo depot | Kho đạn |
+  | Sân bay dã chiến (`airfield`) | Airfield | Sân bay |
+  | Trạm hậu cần (`logistics_station`) | Logistics | Trạm hậu cần |
+  | Trạm radar (`radar_station`) | Radar | Trạm radar |
+
+  | Fire support | English | Vietnamese |
+  | --- | --- | --- |
+  | Pháo kích (`artillery_barrage`) | Barrage | Pháo kích |
+  | Không kích (`airstrike`) | Airstrike | Không kích |
+  | Tên lửa hành trình (`cruise_missile`) | Cruise | Hành trình |
+  | Màn khói (`smoke_screen`) | Smoke | Màn khói |
+  | Sửa chữa (`repair_drop`) | Repair | Sửa chữa |
+  | Bom napalm (`napalm_strike`) | Napalm | Napalm |
+  | UAV quét (`uav_scan`) | UAV scan | UAV quét |
+  | Mìn rải từ xa (`remote_mines`) | Mines | Rải mìn |
+  | Tháp dã chiến (`field_tower`) | Tower | Tháp dã chiến |
+  | Đòn SEAD (`sead_strike`) | SEAD | SEAD |
+
+  | Items | English | Vietnamese |
+  | --- | --- | --- |
+  | Bom MOAB (`moab`) | MOAB | MOAB |
+  | Bom chùm (`cluster_strike`) | Cluster | Bom chùm |
+  | Tiếp viện thả dù (`reinforcements`) | Airdrop | Thả dù |
+  | Sửa chữa toàn quân (`field_repair`) | Field repair | Sửa toàn quân |
+  | Bom EMP (`emp_blast`) | EMP | EMP |
+  | Khiên vòm (`shield_dome`) | Shield | Khiên vòm |
+  | Pháo đài bay yểm trợ (`gunship_support`) | Gunship | Pháo đài bay |
+
+- **B2 two-line name areas.** `Kit.FixedLines(label, lines, fallback)` holds a label at exactly that many
+  lines of its own type (measured from the font, so it follows the text size), and swaps in the short
+  name when the full one needs more; vehicle, tower, support and gear cards use two lines, the compact
+  tray one (two in Large text). Grids and deck strips stretch their cards to the row's height, and a
+  gear slot's card fills its cell, so an empty or locked card is as tall as its neighbours.
+- **B3 scan.** Every rebuilt screen was looked at in the screenshots (16:9 and the other shapes); the
+  misalignments found were all card name heights (the level line moving with one- to three-line names,
+  locked tower cards taller than the rest, an empty gear slot shorter than a worn one). What is left for
+  prompt 14: the towers' class icons (they use vehicle icons).
+- **B4 raw keys and placeholders.** `Strings.Card` of a tower branch id ("aa_turret.flak") fell through
+  to `support.<id>` and showed the raw key; it now reads "tower · branch". Boss Rush's "{0} trùm liên
+  tiếp" is formatted everywhere in this build (home's mode list and Operations). The new
+  `LocalisationScanTests.EveryScreenShowsWordsNotKeys` builds every menu and battle screen with the demo
+  profile in both languages and fails on any text or tooltip with a `{0}` placeholder or a table key
+  ("support.x", "unit.x", "branch.x" and the other key prefixes).
+- **B5** `UiLayoutTests.CardsInARowLineUp`: on home, the deck, towers, equipment, a chapter, Operations
+  and the battle tray (compact and full), at the four shapes in Normal and Large text, the cards of one
+  row share their top and height, and the picture, the cost box (by its top right), the name area (with
+  its height) and the level sit at the same place on each.
+
+### C. Shields
+
+- **One shader** (`Resources/Shaders/Shield.shader`, `MachineBrigade/Shield`) and one view helper
+  (`Game/Effects/ShieldVisual.cs`: `SetSide`, `Hit`, `Flicker`, `Raise`, `Lower`, `Collapse`, `Tick`) for every
+  shield: the fortress dome of Siege and Defend (exactly the sim's `DomeRadius`, 0.5 of it high, as before),
+  the Shield Dome item (a dome of its radius at its point for its duration), vehicle shields (a hex bubble
+  round the hull for the boss and elite shield skills: the Tempest, the Hive Carrier, the Silver Bug,
+  `elite_shield`, and the item's per-vehicle shield), siege objectives that cannot be hurt yet (a small dome
+  sized to the model), and the gear barriers (Aegis Barrier, Shared Shield: a faint bubble for 0.8 s when
+  it takes a hit, a shatter when it breaks). The boss's "hull shielded" part lock has no shield: a bubble
+  would say the parts inside cannot be hit, which is wrong.
+- **The look.** A skin of hexagonal tiles, bright only towards the rim (fresnel), the middle almost clear so
+  what is inside reads; a seam where a dome meets the ground. The tiles are real geometry, a geodesic sphere
+  with a small fan of triangles per tile (hexagons and 12 pentagons, no stretching at the poles), so the
+  per-tile effects (ripple, flicker, shatter) are worked per vertex and the pixel shader stays cheap. About
+  4-5 m tiles on domes: the fortress dome (R about 60 m) is level 4 (10.7k vertices, 9.2k triangles), 3 on
+  Low; the item dome level 2 (631 / 540), a bubble level 2 (1122 / 960); built once and cached.
+- **Premultiplied blending, not additive**: additive red over green ground turned yellow and peach after
+  the ACES tonemapper; premultiplied, only the bright rim hides a little of what is behind (at most 30 %).
+- **Ripples**: up to four a shield at once, a flash where the round lands and a ring of lit tiles running
+  out from it, from `ProjectileImpact`, `StrikeImpact` and `Damaged` events; kept in the shield's own space
+  (they move with a moving vehicle); on a dome the hit is projected straight up onto the skin, on a bubble
+  onto the side facing the camera; a burst on one spot is one ripple.
+- **Flicker**: the fortress dome more as its generators lose health, a burst when one is hit, a 1.1 s surge
+  when one falls while others stand; a boss bubble with its shield part's damage; the item dome in its last
+  1.2 s, a vehicle shield in its last second.
+- **Collapse** (0.9 s): a flare, then the tiles break away one by one, shrink and fly off. The dome's fall no
+  longer uses the Ultimate fireball blast (a field giving way is not fire): the shatter, two shockwave rings
+  (one in the side's colour, one white), a milder shake and flash (`EffectsDirector.Jolt`). The generators'
+  own explosions still come from the sim.
+- **Colours** by owner against the player: ours blue (0.24, 0.66, 1), the enemy's red-orange (1, 0.2, 0.05);
+  colour-blind mode (0.22, 0.56, 1) against orange (1, 0.56, 0.08). The owner is the fortress's defender
+  (dome, objectives), the team that used the item, the vehicle's own team. The item's ground ring takes its
+  side's colour too. Under its own side's item dome a vehicle draws no bubble of its own (the dome is its
+  shield); driving out, the bubble shows (the sim's shield goes with the vehicle).
+- **Few particles**: only the existing shockwave rings (two when the fortress dome falls, one when the item
+  dome goes up). **Low graphics** (`MatchSettings.Tier`, a `multi_compile_local` keyword, `_SHIELD_LITE`,
+  because the materials are made at run time): no lattice, ripples or shimmer; the rim, the seam, the
+  flicker, a whole-skin flash on a hit and the shatter stay, one tile level fewer. Two shared materials
+  (full and Low) and a property block per shield; the shield's clock is a script property (the shots are
+  deterministic); the hash avoids `sin()` for precision on phone GPUs. `Prewarm` draws a tiny shield for
+  0.3 s behind the loading screen, so Vulkan does not stall the first time one appears.
+- **View only**: no sim rule, size or balance changed (the dome's size is the sim's).
+- Pictures: `Docs/art/shields/shields.png` (twelve panels: the enemy's dome, ours, ours at battle zoom,
+  ripples of three ages, flicker, the collapse at three moments, bubbles, the item dome hit, objective
+  shields, Low) and `Docs/art/shields/in-game-*.png` from real Siege and Defend matches with the dome coming
+  down (`MachineBrigade.Editor.ShieldShots.Shields`, `ShieldPlayShots.Run`). `ShieldVisualTests` (four fast
+  tests). Front and back faces are told apart with `SV_IsFrontFace`, checked in the editor on D3D11 only
+  (a phone getting it wrong would draw both faces alike, which is harmless). Smoke behind the dome's rim is
+  darkened a little (the shield draws after the particles, premultiplied).
+- **To measure**: the frame rate of the heaviest battle on Low graphics on a real phone, before and after
+  (the old dome was 637 vertices and 1152 triangles on the particle shader; the new shader does a little
+  more a pixel, the same screen area; the lattice is off on Low).
+
+### D. Checks and pictures
+
+- Tests run (targeted, as the owner asked): `UiLayoutTests` (all strict checks green, with the new HUD
+  and card checks), `LocalisationScanTests`, `UiThemeTests`, `UiLanguageTests`, `ShieldVisualTests`;
+  PlaySmoke (menu 15 s, Conquest, Siege and Boss Rush 30 s each): 0 errors.
+- New screenshots in `Docs/ui-screens/`: `battle-hud-score` (Conquest), `battle-hud-mission` (a boss),
+  `battle-hud-boss-open` (its bar opened), `battle-hud-siege`, `battle-hud-defend`, `battle-hud-waves` at
+  the four shapes, Large text and English for the main ones, and `battle-hud-score-full` /
+  `battle-hud-mission-full` (the full HUD) at 16:9 and 20:9. Every other screen was shot again (cards
+  changed across the menus).
+- **To measure** (testing phase, a real phone): the frame rate of the heaviest battle on Low graphics
+  before and after the shield change, and the compact HUD's cost against the full one.
+
 ## 13C. Prompt 13: combat-value balance, ammo, modes, AI difficulty (2026-09-29)
 
 One balance pass in the owner's order A → I. The owner's rule on test time wins over the brief's "5 seeds
@@ -3408,3 +3747,158 @@ attack helicopter's). Its model is the supply truck's for now (**asset debt**, `
 render, In-action scene and short name come with the UI part (C.9, G).
 
 No other vehicle or building was added for the stores.
+
+## 13D. Prompt 14: Base screen, out-of-battle sizes (2026-09-29)
+
+The owner found the menus oversized on a phone and the Base screen a diagram that did not look like the
+camp. No game logic or balance data changed: the Base screen reads the sim's camps, ranges and base
+strength, and the one sim change is an optional filter on the enemy AI's base picker (G5).
+
+### A. Out-of-battle sizes in device points
+
+- **One point, one size on every phone.** `Kit.PanelPxPerPoint` = `Kit.TouchTarget / 44` (1.823 panel px a
+  point; the 80.2 px target is 44 pt). The menu panel is `ConstantPixelSize` at
+  `BattleHud.MenuScale(width, height, dpi, mobile)` = dpi / (160 x 1.823) screen px a panel px, so a point is
+  a 160th of an inch (Android's dp; iOS's point is a 163rd, 2 % off). Where the density is unknown or not a
+  phone's (under 100 dpi, the editor, a desktop, the screenshots) the screen is taken for a phone
+  `Kit.ReferencePhonePoints` (395 pt) high, the height scaling the menus had before, so the screenshots
+  and layout checks measure what a phone shows. Settings > UI size multiplies it as before. A tablet now
+  shows more around the same sized controls instead of everything bigger.
+- **The battle HUD keeps its scaling** (ScaleWithScreenSize with the height, prompt 11's layout and its
+  30 % cover check): `.fc-hud` in Tokens.uss sets its own type and 82 px target, its Large block keeps the
+  old Large sizes, and `.fc-hud .fc-overlay` gives the result, pause, choice, ad and dialog overlays (they
+  are menus shown over the battle: classed `fc-overlay`) the menu sizes again.
+- **The scale, Normal text** (panel px, points in brackets; the brief's range): main button text 35 (19;
+  18-20), screen title 33 (18; 17-20), panel title and buttons 26 (14.3; 14-15), body 24 (13.2; 13-14),
+  secondary 20 (11), a card's name 22 (12; a new `--fc-fs-card`, between secondary and panel title, since
+  cards are narrow), big numbers 36, numbers in text 25; nothing under 10 pt. Large multiplies the type by
+  1.2 (UiThemeTests keeps it to type only, and the top bar: see J). Top bar 81 (44.4 pt), rail 132 (72 pt)
+  with 42 px icons (23 pt) and 11 pt labels, tabs 73 (40 pt; their targets reach 44 pt through negative
+  margins), buttons 81 (44 pt), the main button 96 (52.7 pt). Spacing stays 4 / 8 / 12 / 16 / 20 / 24 / 32
+  panel px (the brief's 4 / 8 / 12 / 16 / 24 in points would be 7 / 15 / 22 / 29 / 44 px: too loose on a
+  phone next to the smaller type; the steps are kept, 2.2 / 4.4 / 6.6 / 8.8 / 13 pt).
+- **Cards in lists 22 % smaller**: vehicle cards 184 -> 144 px wide (79 pt), compact 136 -> 112, gear
+  164 -> 128 (gear names may take three lines in Large text, their fixed name area is three lines there).
+  `Kit.FixedLines` also falls back to the short name when one word is wider than the card (a Large-text
+  case the line count alone missed).
+- **Main content >= 70 %** (`UiLayoutTests.TheContentKeepsSeventyPercentOfTheScreen`: the shown page
+  less its row of tabs, over the screen, every menu screen, 16:9 and 20:9): 70.5-88.8 % at 16:9 and
+  72.1-88.8 % at 20:9 (the Army and Shop pages with tabs are the 70.5 / 72.1; home, campaign and setup 79.6 /
+  81.4; details 78.6; settings 88.8). The 1280 x 720 reference phone is 702 x 395 pt.
+- The top bar's coin and settings buttons are plain icon buttons with 44 pt targets.
+
+### B-F. The Base screen
+
+- **Layout**: a bar (the HQ badge, the map picker, the three base sets, Auto-arrange, "Saved"), then the
+  tray (left), the camp map (centre), the panel (right), and the cover strip along the bottom.
+- **The map is the camp's real picture** (`BaseMapArt`, below): the player's camp on the chosen map from
+  above, the enemy's approach as red arrows, the slots at their real positions. It opens framed on the camp
+  (the HQ, every slot and the arrows' heads with a 12 px margin: `CampMap.Focus`), not the whole picture
+  with its margins, so the slots are as large as they can be at the default zoom; pinch or the wheel zooms
+  (up to 3x), a drag on the ground pans, and the view keeps where the player left it until the map changes.
+- **Slot faces sized 1 / 1.4 / 2** (small / medium / large; utility 1.4 as a hexagon; the HQ mark 1.6),
+  in metres on the picture so they zoom with it. The small face is 0.9 x the closest pair's centre
+  distance shared by their ratios, at most 12 m, per map (`BaseScreen.FaceMetres`), so no two faces touch
+  on any of the 20 camps (`BaseScreenTests.SlotFacesKeepTheirRatioAndNeverTouch`); most camps get 11-12 m.
+  Every face has a transparent 44 pt target round it.
+- **A slot shows** its tower's render, rank ticks and a branch mark; empty, its size in words ("Nhỏ",
+  "Vừa", "Lớn", "Tiện ích") under it; closed (the HQ level is too low), a lock and the level it opens at
+  inside the face, and no tower even if the plan has one there (it does not fight at this level).
+- **Tray** (C): tabs by size (Small / Medium / Large / Utility), compact cards with the render, the short
+  name and "Used n" or where it unlocks ("Mở ở nhiệm vụ 62", "Mở ở cửa hàng"), locked cards dimmed. Drag a
+  card onto a slot, or tap the card then a slot; while one is carried only the slots it fits light up. A
+  tap on a filled slot selects it; dragging a tower off the map takes it out.
+- **Ranges** (B7): the "Show ranges" switch paints every open tower's cover as one union (no darker
+  overlaps): ground amber (`--fc-range-ground`, 30 %), air light blue (`--fc-range-air`, 36 %), told apart by
+  lightness as well as hue; a tapped tower draws its reach as a ring (the longer of ground and air; the
+  panel's reach line gives both) and a minimum range as a thinner inner ring. Ranges are `BaseRoles.Reach(def)` from the weapon data (the largest ground and air
+  range of the weapons that do damage, the smallest minimum range), after the branch is applied; the test
+  checks the drawn circle against it.
+- **Panel** (D): the render, name, size, rank and branch; Health / DPS / Range bars against the best of
+  the same size (the stats are `UnitStats`, so they follow prompt 13's corrected DPS); the reach line;
+  Branch and Gear tabs (a module has no gear; one with rank-7 branches, the landing pad since 13 F.1,
+  shows them); Replace (opens the tray on that size), Remove and Details (the detail page). With nothing
+  chosen: an overview, the how-to and the strength with what it means.
+- **Cover strip** (E1): the base's roles (`BaseRoles.Of` from the data: anti-light, anti-tank, anti-air,
+  rocket/missile intercept, stealth detection, repair/resupply), a missing one in the danger colour with
+  an info mark; "Sức mạnh căn cứ" and the counts in words ("Nhỏ 3/3 · Vừa 1/1 · Lớn 0/0 · Tiện ích 0/1").
+- **Strength** (E2) is `BaseStrength.Score(catalog, PlayerProfile.BaseLoadoutFor(map), PlayerProfile.BoostFor)`,
+  the same number Defend and Endless scale their waves with (100 = the Normal enemy base at HQ 3 with no
+  upgrades; `BaseScreenTests.TheStrengthShownIsTheOneTheWavesScaleWith`).
+- **HQ** (F1): a badge with the level and the next level's gain ("Lên cấp 2: thêm 1 ô nhỏ, 1 ô vừa")
+  instead of the HQ tabs; the level is `Campaign.HqLevelCap` (the campaign opens levels; the chooser went
+  with F.1).
+- **Map picker** (F2): a dropdown whose list has each map's picture, a dot and a note on maps set up on
+  their own or with towers that did not fit; closed, it is the name only (the bar stays one row).
+- **Autosave** (F3): every change saves at once and "Đã lưu" shows for 1.6 s at the bar's end.
+
+### G. One loadout for every map
+
+- **By place, not by slot index.** `SlotPlaces.Keys(site)` labels a camp's slots: distance from the HQ over
+  the furthest slot and bearing against the way the HQ faces the enemy. Under 0.4: beside the HQ; more than
+  110 degrees round: rear; at 0.7 or more and within 40 degrees of the front: gate; at 0.7 or more
+  otherwise: outer ring; the rest inner ring; utilities apart. Each gets an ordinal by bearing within its
+  place and size (`PlaceKey` = place, size, ordinal).
+- **A `BasePlan`** maps place keys to towers and is resolved on each map (`Resolve(mapId, site, level)`): a
+  key the map has takes its tower; one it lacks goes to the nearest free key of the same size (place
+  distance first, then ordinal); what finds no slot is a misfit, and the map picker marks that map with a
+  warning dot. A map can be set up on its own (`Custom`: the slot list as it is, "Chỉnh riêng cho map
+  này", marked in the picker); switching it off returns the map to the plan.
+- **Three sets** (`PlayerProfile.BasePlanCount`), switched on the Base screen's bar and on the home
+  screen's deck panel (chips "Bộ 1 / 2 / 3": a fifth dropdown squashed the home column in Large text); the
+  set in use is what `PlayerProfile.BaseLoadoutOn(map, team)` gives the match (`ModeSessions`: four call
+  sites).
+- **Auto-arrange** (G5) fills the plan's towers with `BaseLoadout.ForAi("Normal", "default", seed,
+  allowed: PlayerProfile.IsUnlocked)`: the enemy AI's own picker, limited to the player's towers (the new
+  optional `Predicate<string> allowed` in the sim; the AI's calls are unchanged). Utilities are kept.
+- **Migration** (version 2 -> 3, `PlayerProfile.MigrateToPlans`): the old sized lists become set 1's places
+  on the reference camp; every map whose old slot-by-index result differs from the plan's is kept as its
+  own (Custom) so no battle changes: for the test's version 2 profile 11 places and 19 of 20 maps kept on their own
+  (`BasePlanTests.TheOldLoadoutBecomesThePlanAndNoMapChanges`). An unedited profile takes the defaults with
+  no custom maps. `PlayerProfile.BaseLoadout` (get/set) stays for old callers, now on set 1's plan; it
+  moved to PlayerProfile.BasePlans.cs (13 F.1's module-branch line ported there).
+
+### H. Outpost
+
+A separate Army tab: the outpost's two slots (small and medium) as faces round the point, a tray with the
+Small and Medium tabs, and how the outpost works in words; it edits `BasePlan.Outpost` (on every map) with
+autosave.
+
+### I. Tower icons (helper)
+
+Every tower, branch and module has an icon of its own in `Icons.cs` (`t_` prefix) through `TowerIcons.For(id)`, which `CardIcons.For` asks first. A branch uses its tower's icon; the
+rail supergun shares `t_supergun` (the supergun timer too); the Army > Towers cards' corner shows the
+structure icon; renders are unchanged. `TowerIconTests.EveryStructureHasALineIconOfItsOwn` checks every tower and module has one;
+`Docs/ui-screens/kit-tower-icons.png` is the sheet.
+
+### B1-B2. The camp pictures and arrows (helper)
+
+`Machine Brigade > Render Base Map Pictures (stale / all)` (`BaseMapShots`) renders each map's player camp from above to
+`Resources/UI/Bases/<map>.png` (1024 x 640, 16:10) with a JSON frame (the picture's rectangle in metres,
+the approach arrows, the drop zone). The frame is the camp's slots and HQ with an 18 m margin and 30 m more
+in front; the look is the game's camera lighting at -0.35 EV and -8 saturation with the ground outside the
+map dimmed 50 %, so the slots read over it. Arrows are where the enemy's lanes (`LaneFlags.Route`) cross
+into the frame, merged within 22 m. A SHA-1 of the map and camp data marks a picture stale
+(`BaseMapArtTests`). Normal-quality compression. Conquest camps have no walls or gates in their data, so
+none are drawn; the drop zone is drawn by the UI.
+
+### J. Screenshots, Large text
+
+- `Docs/ui-screens/`: every menu and battle screen at the four shapes, a set in Large text and in English
+  (241 files), with the new `screen-army-base`, `-base-picked`, `-base-ranges`, `screen-army-outpost`,
+  `screen-army-towers`, `screen-detail-tower`, `screen-detail-module` (and their In action tabs),
+  `kit-tower-icons.png` and `basemaps-sheet.png`.
+- Large text fixes found there: the top bar is 87 px (47.7 pt, inside the 44-48 range) at Large so the rank
+  and XP keep two lines; the home column is 520 px at Large (440 Normal) so two dropdowns share a row and
+  the campaign card keeps its room; the deck panel's base-set chips drop their caption at Large; the Base
+  map's two switches stack in its corner in short words ("Chỉnh riêng", "Tầm bắn"; the full names as tooltips) and show icons only at Large; "Saved"
+  floats at the bar's end instead of wrapping to a row of its own.
+
+### Not done, and why
+
+- **Moving the utility slots apart**: their places are map data (the camps); the Base screen shows them
+  where they are.
+- **Walls and gates on Conquest camps**: not in the camp data; nothing to draw.
+- **FPS and touch on a real phone**: to measure (the owner's override: no device run in this pass).
+- **Short names**: the landing pad's hangar branch (13 F.1) gets "Nhà chứa" (the full "Nhà chứa máy bay" is
+  16 characters).

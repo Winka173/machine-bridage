@@ -1,0 +1,16 @@
+{
+  "map": "frostpeak",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map 20977604 app 0.1.0",
+  "ticks": 4436,
+  "journal": [],
+  "records": [
+    {"vehicle": 575, "def": "armored_bulldozer", "team": 0, "startTick": 1390, "start": 69.5, "end": 79, "seconds": 9.5, "x": -97.858, "y": -93.228, "goalX": -9.751, "goalY": 67.709, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#580 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@5.7 armored_bulldozer(parked)@6.3 titan_tank(moving)@5.5 armored_bulldozer(parked)@7.0"},
+    {"vehicle": 573, "def": "siege_tank", "team": 0, "startTick": 3910, "start": 195.5, "end": 204, "seconds": 8.5, "x": 77.269, "y": 80.45, "goalX": 77.456, "goalY": 68.834, "order": "Move", "cause": "Unknown", "detail": "speed 2.1 strikes 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@7.3 base_wall@10 floodlight_mast@7"},
+    {"vehicle": 589, "def": "siege_tank", "team": 0, "startTick": 4180, "start": 209, "end": 219.5, "seconds": 10.5, "x": 79.197, "y": 78.528, "goalX": 91.943, "goalY": 86.823, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#573 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@6.0 floodlight_mast@6"},
+    {"vehicle": 573, "def": "siege_tank", "team": 0, "startTick": 4190, "start": 209.5, "end": 218, "seconds": 8.5, "x": 79.426, "y": 84.257, "goalX": 77.456, "goalY": 68.834, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#589 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@5.8 base_wall@9 base_wall@5 floodlight_mast@4"}
+  ],
+  "rescues": []
+}

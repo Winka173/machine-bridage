@@ -1,0 +1,14 @@
+{
+  "map": "capital",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map 7149bd77 app 0.1.0",
+  "ticks": 6880,
+  "journal": [],
+  "records": [
+    {"vehicle": 902, "def": "siege_tank", "team": 0, "startTick": 5360, "start": 268, "end": 276.5, "seconds": 8.5, "x": 10.338, "y": -101.901, "goalX": 74.918, "goalY": -9.934, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#904 moving", "area": "field", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@5.2 titan_tank(moving)@9.7 artillery(moving)@7.9 bus@10"},
+    {"vehicle": 901, "def": "siege_tank", "team": 0, "startTick": 6330, "start": 316.5, "end": 325, "seconds": 8.5, "x": 74.568, "y": -57.7, "goalX": 47.33, "goalY": -61.009, "order": "Move", "cause": "Unknown", "detail": "speed 0.5 strikes 1", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "river_water@9 wreck_tank@8"}
+  ],
+  "rescues": []
+}

@@ -272,8 +272,9 @@ namespace MachineBrigade.Tests
             new SiegeMode(new SiegeRules()).Setup(world);
             foreach (var doors in world.Props.Where(p => p.IsAlive && p.Def.Id == "fortress_gate").ToList()) world.DebugDestroyProp(doors);
             var gates = world.Props.Where(p => p.Def.Id == "base_gate").ToList();
+            // The open gateways (the two sally ports and the keep's west gate) are double since prompt 12: two frames each.
             if (!ContentTests.ClassicSiege.Contains(map))
-                Assert.AreEqual(6, gates.Count, "the walls' two gates and two sally ports, the keep's two gates");
+                Assert.AreEqual(9, gates.Count, "the walls' two gates and two double sally ports, the keep's gate and its double open gate");
             else Assert.Greater(gates.Count, 0, "the classic fortress's gates");
             foreach (var gate in gates)
             {

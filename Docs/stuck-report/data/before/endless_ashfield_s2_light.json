@@ -1,0 +1,17 @@
+{
+  "map": "ashfield",
+  "mode": "Endless",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map f83e9b9b app 0.1.0",
+  "ticks": 7714,
+  "journal": [],
+  "records": [
+    {"vehicle": 488, "def": "siege_tank", "team": 0, "startTick": 2480, "start": 124, "end": 134.5, "seconds": 10.5, "x": 98.724, "y": 61.95, "goalX": 112.379, "goalY": 64.36, "order": "Move", "cause": "BlockedByFriend", "detail": "scout_jeep#506 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(moving)@3.2"},
+    {"vehicle": 525, "def": "aa_vehicle", "team": 0, "startTick": 3380, "start": 169, "end": 177.5, "seconds": 8, "x": 59.267, "y": 118.628, "goalX": 48.405, "goalY": 123.342, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "fortress", "lanes": "", "outcome": "died", "rescues": 0, "rescueKinds": "", "nearby": "light_tank(moving)@4.3 scout_jeep(parked)@4.8 main_battle_tank(moving)@8.2 aa_vehicle(moving)@8.3"},
+    {"vehicle": 529, "def": "armored_car", "team": 0, "startTick": 4210, "start": 210.5, "end": 221.5, "seconds": 11, "x": 114.921, "y": 115.995, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#535", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "light_tank(moving)@2.9"},
+    {"vehicle": 479, "def": "aa_vehicle", "team": 0, "startTick": 4760, "start": 238, "end": 249, "seconds": 11, "x": 114.652, "y": 138.046, "goalX": 129.678, "goalY": 115.936, "order": "AttackMove", "cause": "StalePath", "detail": "leg 5/5 to (129.7,115.9) crosses command_hq (corner)", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@8.1 aa_vehicle(moving)@4.6 elite_heavy_tank(moving)@4.6 base_wall@5"},
+    {"vehicle": 572, "def": "elite_heavy_tank", "team": 0, "startTick": 6390, "start": 319.5, "end": 330.5, "seconds": 11, "x": 136.455, "y": 131.955, "goalX": 112.715, "goalY": 132.888, "order": "AttackMove", "cause": "StalePath", "detail": "leg 2/6 to (137.0,133.0) crosses command_hq (corner)", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(parked)@5.7"}
+  ],
+  "rescues": []
+}

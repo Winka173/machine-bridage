@@ -1,0 +1,92 @@
+{
+    "version": 1,
+    "map": "coralisles",
+    "source": "Data/maps/coralisles_conquest",
+    "sha1": "46a65908a340e1d5883bc1d9e94b037866165015",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -103.257,
+        "z": -100.257
+    },
+    "up": {
+        "x": 0.707,
+        "z": 0.707
+    },
+    "metresWide": 203.514,
+    "metresHigh": 127.196,
+    "hq": {
+        "x": -120.0,
+        "z": -116.5
+    },
+    "heading": 45.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -140.402,
+            "z": -140.0
+        },
+        {
+            "x": -63.554,
+            "z": -140.0
+        },
+        {
+            "x": -54.9,
+            "z": -111.565
+        },
+        {
+            "x": -57.313,
+            "z": -89.853
+        },
+        {
+            "x": -89.061,
+            "z": -64.673
+        },
+        {
+            "x": -134.475,
+            "z": -48.717
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -109.237,
+                "z": -57.584
+            },
+            "dir": {
+                "x": -0.025,
+                "z": -1.0
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -85.541,
+                "z": -67.465
+            },
+            "dir": {
+                "x": -0.516,
+                "z": -0.856
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -55.408,
+                "z": -107.0
+            },
+            "dir": {
+                "x": -1.0,
+                "z": 0.0
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.647,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

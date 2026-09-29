@@ -33,6 +33,21 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The smallest tap target in panel pixels: 72 px at the 1400 px reference (44 pt).</summary>
         public const float TouchTarget = 72f * PanelPxPerReferencePx;
 
+        /// <summary>
+        /// Prompt 14: one device point in panel pixels, so the theme's sizes are points: the touch target (80.2 px)
+        /// is 44 pt, and a panel 720 px high (the authored height) is a phone <see cref="ReferencePhonePoints"/> pt high.
+        /// </summary>
+        public const float PanelPxPerPoint = TouchTarget / 44f;
+
+        /// <summary>The height in points of the phone a 720 px panel stands for (720 / <see cref="PanelPxPerPoint"/>).</summary>
+        public const float ReferencePhonePoints = 720f / PanelPxPerPoint;
+
+        /// <summary>Device points in an inch: Android's dp (a 160th of an inch; an iOS point is a 163rd).</summary>
+        public const float PointsPerInch = 160f;
+
+        /// <summary>Points as panel pixels.</summary>
+        public static float Pt(float points) => points * PanelPxPerPoint;
+
         /// <summary>A kit screen's root: the fonts, text colour and text size.</summary>
         public static VisualElement Root(string classes = null)
         {
@@ -105,6 +120,41 @@ namespace MachineBrigade.Game.Hud
             UiKit.AddClasses(scroll, classes);
             MouseDragScroll.Attach(scroll);
             return scroll;
+        }
+
+        /// <summary>
+        /// Holds a label at exactly <paramref name="lines"/> lines of its own type, top-aligned (prompt 11 B2: a
+        /// card's name area is two lines high on every card, so the picture, the cost and the level sit in the same
+        /// place whatever the name). The height follows the text size. When the text needs more lines at the label's
+        /// width, or one of its words is wider than the label, it is replaced by <paramref name="fallback"/> (the
+        /// short name), never cut.
+        /// </summary>
+        public static void FixedLines(Label label, int lines, string fallback = null)
+        {
+            void Fit()
+            {
+                if (label.panel == null) return;
+                var line = label.MeasureTextSize("Ág", 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined).y;
+                if (line <= 0.5f) return;
+                var text = UnityEngine.Mathf.Ceil(line * lines);
+                var height = text + label.resolvedStyle.paddingTop + label.resolvedStyle.paddingBottom;
+                if (UnityEngine.Mathf.Abs(label.resolvedStyle.height - height) > 0.5f)
+                {
+                    label.style.height = height;
+                    label.style.minHeight = height;
+                    label.style.maxHeight = height;
+                }
+                var width = label.contentRect.width;
+                if (fallback == null || label.text == fallback || width < 1f) return;
+                var need = label.MeasureTextSize(label.text, width, VisualElement.MeasureMode.Exactly, 0, VisualElement.MeasureMode.Undefined).y;
+                var wide = false;
+                foreach (var word in label.text.Split(' '))
+                    if (word.Length > 1 && label.MeasureTextSize(word, 0, VisualElement.MeasureMode.Undefined, 0, VisualElement.MeasureMode.Undefined).x > width + 1f)
+                        wide = true;
+                if (need > text + 1f || wide) label.text = fallback;
+            }
+            label.AddToClassList("fc-lines-" + lines);
+            label.RegisterCallback<GeometryChangedEvent>(_ => Fit());
         }
 
         /// <summary>Uppercase for the condensed display labels (USS has no text-transform); Vietnamese capitals keep their marks.</summary>

@@ -40,6 +40,13 @@ CELL = 2.0
 CLEARANCE = 1.5
 SEGMENT = 8.0                  # a base_wall piece
 GATE = 10.0                    # a gateway's clear opening
+# The open gateways (the walls' two sally ports and the keep's west gate) are double: two gateway
+# frames side by side, 18 m, seven walkable cells across (prompt 12). A 10 m one left three cells,
+# one way at a time, and in Defend and Endless the defender's whole army and every wave came
+# through them; the stuck report's worst spots were in their mouths.
+SALLY = 18.0
+YARD_WALLS, YARD_KEEP = 14.0, 14.0   # how deep the yard behind an open gateway stays clear: the walls', the keep's
+KEEP_OPEN = (100.0, 118.0)     # the keep's open west gate: from, to (the wall pieces either side come out even)
 
 HQ = (125.0, 125.0)            # the command HQ, in the keep's back corner (where the outline was carved round it)
 RALLY = (108.0, 108.0)         # the defenders' camp: the keep's yard
@@ -245,21 +252,28 @@ class Fortress:
                 break
         return u
 
-    def gateway(self, axis, line, centre, closed):
-        """A gateway frame in a GATE-wide opening; with `closed` its steel doors too."""
+    def gateway(self, axis, line, centre, closed, width=GATE):
+        """A gateway frame in a GATE-wide opening; with `closed` its steel doors too. A wider
+        opening (an open double gateway, SALLY) gets two frames side by side."""
         L = self.L
         x, z = (centre, line) if axis == 'x' else (line, centre)
         rot = 0 if axis == 'x' else 90
-        L.force('base_gate', x, z, rot)
-        rect = square(x, z, GATE) if False else ((x - GATE / 2, z - 1, x + GATE / 2, z + 1) if axis == 'x' else (x - 1, z - GATE / 2, x + 1, z + GATE / 2))
+        frames = [0.0] if width <= GATE else [-width / 4, width / 4]
+        for f in frames:
+            L.force('base_gate', x + (f if axis == 'x' else 0.0), z + (f if axis == 'z' else 0.0), rot)
+        h = width / 2
+        rect = (x - h, z - 1, x + h, z + 1) if axis == 'x' else (x - 1, z - h, x + 1, z + h)
         if closed:
             L.force('fortress_gate', x, z, rot)
             self.gates.append(rect)
         else:
             self.sally.append(rect)
-        # Nothing stands in the gate's mouth on either side.
+        # Nothing stands in the gate's mouth on either side; behind an open gateway the yard stays
+        # clear deeper in (towards the keep), so the traffic through it has room to spread out
+        # (prompt 12: a column queued in a lane between hardpoints and stores behind the sally port).
         m = 9.0
-        self.keepout.append((x - GATE / 2 - 1, z - m, x + GATE / 2 + 1, z + m) if axis == 'x' else (x - m, z - GATE / 2 - 1, x + m, z + GATE / 2 + 1))
+        inner = m if closed else (YARD_KEEP if line > RING + 1 else YARD_WALLS)
+        self.keepout.append((x - h - 1, z - m, x + h + 1, z + inner) if axis == 'x' else (x - m, z - h - 1, x + inner, z + h + 1))
 
     def ring_wall(self, axis):
         """One arm of the wall ring: corner, three pieces, the main gate, pieces to the sally port
@@ -271,21 +285,24 @@ class Fortress:
         edge = MAIN_GATE
         while outline_tools.inside(self.poly, *((edge, line) if axis == 'x' else (line, edge))) and edge < 200:
             edge += 1.0
-        pieces = max(2, int((edge - SEGMENT - GATE - 3.0 - (MAIN_GATE + GATE / 2)) // SEGMENT))
-        sally = MAIN_GATE + GATE / 2 + pieces * SEGMENT + GATE / 2
-        self.wall_run(axis, line, MAIN_GATE + GATE / 2, sally - GATE / 2)
-        self.gateway(axis, line, sally, closed=False)
-        self.wall_run(axis, line, sally + GATE / 2, 1000.0, out=True)
+        pieces = max(2, int((edge - SEGMENT - SALLY - 3.0 - (MAIN_GATE + GATE / 2)) // SEGMENT))
+        sally = MAIN_GATE + GATE / 2 + pieces * SEGMENT + SALLY / 2
+        self.wall_run(axis, line, MAIN_GATE + GATE / 2, sally - SALLY / 2)
+        self.gateway(axis, line, sally, closed=False, width=SALLY)
+        self.wall_run(axis, line, sally + SALLY / 2, 1000.0, out=True)
         return sally
 
     def keep_walls(self):
         x0, z0, x1 = KEEP
         lo = x0 + 0.6
-        # South wall: the closed gate; west wall: the open one (the keep's sally port).
-        for axis, closed in (('x', True), ('z', False)):
-            self.wall_run(axis, z0, lo, KEEP_GATE - GATE / 2)
-            self.gateway(axis, z0, KEEP_GATE, closed=closed)
-            self.wall_run(axis, z0, KEEP_GATE + GATE / 2, x1)
+        # South wall: the closed gate; west wall: the open one (the keep's sally port, double).
+        self.wall_run('x', z0, lo, KEEP_GATE - GATE / 2)
+        self.gateway('x', z0, KEEP_GATE, closed=True)
+        self.wall_run('x', z0, KEEP_GATE + GATE / 2, x1)
+        a, b = KEEP_OPEN
+        self.wall_run('z', z0, lo, a)
+        self.gateway('z', z0, (a + b) / 2, closed=False, width=b - a)
+        self.wall_run('z', z0, b, x1)
         # North and east walls behind the HQ, their odd metres a slit hidden behind it.
         for axis in ('x', 'z'):
             u = lo
@@ -438,12 +455,24 @@ def fortify(L, name, theme, poly):
     sally_z = F.ring_wall('z')
     F.keep_walls()
     L.put('command_hq', *HQ, 0, pad=0.3)
+    # Every gateway's mouth clear of whatever the battlefield had there (a rock on the road before a
+    # main gate on Whiteout, a pylon and a container on Hydro Dam): the approach is the gate's (prompt 12).
+    keep = [(p, r) for p, r in zip(L.props, L.rects)
+            if p['def'] in OBJECTIVES or not any(r[0] < k[2] and r[2] > k[0] and r[1] < k[3] and r[3] > k[1] for k in F.keepout)]
+    L.props, L.rects = [p for p, _ in keep], [r for _, r in keep]
 
     # Roads: from the outer line through each main gate to the keep's gates.
     kx, ky = KEEP[0], KEEP[1]
     L.road(ROAD, c - 150.0 + 40.0, MAIN_GATE, KEEP_GATE, MAIN_GATE, KEEP_GATE, ky + 12.0)
     L.road(ROAD, MAIN_GATE, c - 150.0 + 40.0, MAIN_GATE, KEEP_GATE, kx + 12.0, KEEP_GATE)
     L._samples = None
+    # The roads to the main gates stay open from the outer line in (containers and a pylon closed
+    # Hydro Dam's west one to the big hulls; prompt 12): nothing solid on them but the objectives.
+    lanes = [(c - 150.0 + 40.0, MAIN_GATE - ROAD / 2 - 2.0, RING, MAIN_GATE + ROAD / 2 + 2.0),
+             (MAIN_GATE - ROAD / 2 - 2.0, c - 150.0 + 40.0, MAIN_GATE + ROAD / 2 + 2.0, RING)]
+    keep = [(p, r) for p, r in zip(L.props, L.rects)
+            if p['def'] in OBJECTIVES or not any(r[0] < k[2] and r[2] > k[0] and r[1] < k[3] and r[3] > k[1] for k in lanes)]
+    L.props, L.rects = [p for p, _ in keep], [r for _, r in keep]
 
     # The line in (a runway or a rail line) in the outer works by the west sally port.
     kind = ARRIVAL.get(name) or ARRIVAL_BY_THEME.get(theme, 'runway')
@@ -523,6 +552,8 @@ def fortify(L, name, theme, poly):
     missing = F.missing(F.grid(gates=False, walls=False))
     if missing:
         raise SystemExit(f'{name} siege: with the walls down, unreachable: {missing}')
+    # Room for the biggest hull (prompt 12 C.2): the same places, over routes three cells wide.
+    open_wide(F, c)
     sealed = F.grid(gates=True, sally=True)
     held = reach_targets(L, sealed, attacker, [('hq', HQ[0] - 8, HQ[1] - 7, HQ[0] + 8, HQ[1] + 7)])
     if not held:
@@ -546,6 +577,228 @@ def fortify(L, name, theme, poly):
           f'({count(F, 1)}/{count(F, 2)}/{count(F, 3)} by ring), {len(F.relays)} relays, {len(F.generators)} generators, '
           f'{"super-gun, " if F.gun else ""}{F.arrival["kind"] if F.arrival else "no line in"}, sally ports at {sally_x:.0f}/{sally_z:.0f}')
     return block, rings
+
+
+# ---------------------------------------------------------------------------------- the biggest hull
+# What may go to open a way for the biggest hull, in the order it goes on a tie: the battlefield's
+# clutter in the fortress's ground (trees, craters, wrecks) and a searchlight mast, then the outer
+# line's obstacle belts, a store or a building of the yard, then a tower hardpoint of the walls or the
+# keep. Walls, gates, objectives, terrain and the super-gun always stay.
+WIDE_CLUTTER = {'floodlight_mast': 0, 'sandbags': 1, 'sandbag_wall': 1, 'tank_trap': 1, 'razor_wire': 1,
+                'container': 1, 'container_stack': 1, 'garage': 1, 'warehouse': 1, 'office_block': 1,
+                'radar_dome': 1, 'fuel_depot': 1, 'ammo_dump': 1, 'vehicle_hangar': 1}
+WIDE_REACH = 6.0
+FIRE_REACH = 15.0
+# Never taken out: the stages' objectives (a relay is a radar station, also in the battlefield's buildings).
+OBJECTIVES = {'radar_station', 'shield_generator', 'command_hq', 'base_wall', 'base_gate', 'fortress_gate'}
+
+
+def open_wide(F, c):
+    """With every gate shut and every hardpoint filled, every place the attack needs (the defenders'
+    drop zone, the relays, the generators, the HQ, the super-gun, the line's stop and both mouths of
+    every gateway) must be reached from the attacker's camp over cells with open ground all round
+    (a route three cells wide: room for the keep's guardian, and for two hulls to pass). Where one is
+    not, the piece of the fortress's clutter whose going opens the most goes, one at a time, until
+    every place is reached or nothing more helps (a warning: check_access.py will then fail the map).
+    Before this, the walls' yard was open to a car everywhere but to the big hulls only through gaps
+    of one or two cells, and the stuck report's jams were there."""
+    from build_maps import PROPS, STATIC_FOOTPRINT, BUILDINGS as FIELD_BUILDINGS
+    L = F.L
+    lo = L.grid_lo()
+    n = L.grid_n()
+    counts = [0] * (n * n)
+
+    def cells(rect):
+        x0, z0, x1, z1 = rect
+        a0 = max(0, int(math.floor((x0 - CLEARANCE - lo) / CELL)))
+        a1 = min(n - 1, int(math.floor((x1 + CLEARANCE - 1e-4 - lo) / CELL)))
+        b0 = max(0, int(math.floor((z0 - CLEARANCE - lo) / CELL)))
+        b1 = min(n - 1, int(math.floor((z1 + CLEARANCE - 1e-4 - lo) / CELL)))
+        return [gz * n + gx for gz in range(b0, b1 + 1) for gx in range(a0, a1 + 1)]
+
+    pieces = []   # (kind order, what, cells, remove)
+    outer = c
+    for i, (prop, rect) in enumerate(zip(L.props, L.rects)):
+        if not PROPS[prop['def']].get('blocks', False):
+            continue
+        cells_ = cells(rect)
+        for k in cells_:
+            counts[k] += 1
+        cx, cz = (rect[0] + rect[2]) / 2, (rect[1] + rect[3]) / 2
+        # (Only in the fortress's ground: the battlefield outside stays as the other versions have it.)
+        order = WIDE_CLUTTER.get(prop['def'], 0 if prop['def'] in CLUTTER else 1 if prop['def'] in FIELD_BUILDINGS else None)
+        if prop['def'] in OBJECTIVES:
+            order = None
+        if order is not None and cx + cz > outer - 4.0:
+            pieces.append((order, ('prop', id(prop)), prop['def'], cells_, (prop, rect)))
+    for u in L.units:
+        side = STATIC_FOOTPRINT.get(u['def'])
+        if side:
+            cells_ = cells(square(u['x'], u['z'], side))
+            for k in cells_:
+                counts[k] += 1
+            # The classic fortress's defences are map units: one on a causeway may go, last of all.
+            if u.get('team') == 1 and u['x'] + u['z'] > outer - 4.0:
+                pieces.append((3, ('unit', id(u)), u['def'], cells_, u))
+    for x, z, side in F.blocks:
+        cells_ = cells(square(x, z, side))
+        for k in cells_:
+            counts[k] += 1
+        slot = next((sl for sl in F.slots if (sl[2], sl[3]) == (x, z)), None)
+        if slot:
+            pieces.append((2, ('slot', (x, z)), f'{slot[0]} {slot[1]} hardpoint', cells_, (slot, (x, z, side))))
+    if L.boundary:
+        for gz in range(n):
+            for gx in range(n):
+                if not outline_tools.inside(L.boundary, gx * CELL + lo + CELL / 2, gz * CELL + lo + CELL / 2):
+                    counts[gz * n + gx] += 1
+
+    def wide(gx, gz):
+        if gx < 1 or gz < 1 or gx >= n - 1 or gz >= n - 1:
+            return False
+        for dz in (-n, 0, n):
+            base = gz * n + gx + dz
+            if counts[base - 1] or counts[base] or counts[base + 1]:
+                return False
+        return True
+
+    def cell_of(x, z):
+        return int((x - lo) / CELL), int((z - lo) / CELL)
+
+    targets = []
+    for t in F.targets():
+        if len(t) == 5:
+            # (An objective is shot, not driven onto: a firing position 15 m off will do, as check_access.py has it.)
+            r = WIDE_REACH if t[0] in ('camp', 'rally') else FIRE_REACH
+            targets.append((t[0], t[1] - r, t[2] - r, t[3] + r, t[4] + r))
+        else:
+            targets.append((t[0], t[1] - WIDE_REACH, t[2] - WIDE_REACH, t[1] + WIDE_REACH, t[2] + WIDE_REACH))
+    for prop in L.props:
+        if prop['def'] == 'base_gate':
+            ax, az = (0.0, 6.0) if prop.get('rot', 0) % 180 == 0 else (6.0, 0.0)
+            for sgn in (1, -1):
+                x, z = prop['x'] + sgn * ax, prop['z'] + sgn * az
+                targets.append(('gateway mouth', x - WIDE_REACH, z - WIDE_REACH, x + WIDE_REACH, z + WIDE_REACH))
+    boxes = []
+    for name, x0, z0, x1, z1 in targets:
+        a0, b0 = cell_of(x0, z0)
+        a1, b1 = cell_of(x1, z1)
+        boxes.append((name, a0, b0, a1, b1))
+
+    sx, sz = cell_of(*F.rally)
+
+    def missing():
+        start = None
+        best = float('inf')
+        for gz in range(sz - 6, sz + 7):
+            for gx in range(sx - 6, sx + 7):
+                if 0 <= gx < n and 0 <= gz < n and wide(gx, gz):
+                    d = (gx - sx) ** 2 + (gz - sz) ** 2
+                    if d < best:
+                        best, start = d, (gx, gz)
+        if start is None:
+            return [b[0] for b in boxes], bytearray(n * n)
+        seen = bytearray(n * n)
+        todo = [start[1] * n + start[0]]
+        seen[todo[0]] = 1
+        while todo:
+            k = todo.pop()
+            gx, gz = k % n, k // n
+            for nx, nz in ((gx + 1, gz), (gx - 1, gz), (gx, gz + 1), (gx, gz - 1)):
+                j = nz * n + nx
+                if 0 <= nx < n and 0 <= nz < n and not seen[j] and wide(nx, nz):
+                    seen[j] = 1
+                    todo.append(j)
+        out = []
+        for name, a0, b0, a1, b1 in boxes:
+            if not any(seen[gz * n + gx] for gz in range(max(0, b0), min(n - 1, b1) + 1) for gx in range(max(0, a0), min(n - 1, a1) + 1)):
+                out.append(name)
+        return out, seen
+
+    def touches(cells_, seen):
+        """A piece whose ground lies within two cells of the reached ground (only such a piece can extend it)."""
+        for k in cells_:
+            gx, gz = k % n, k // n
+            for dz in range(-2, 3):
+                for dx in range(-2, 3):
+                    x, z = gx + dx, gz + dz
+                    if 0 <= x < n and 0 <= z < n and seen[z * n + x]:
+                        return True
+        return False
+
+    now, seen = missing()
+    removed = []
+    digging, dug = 0, []
+    # One piece at a time: the one that leaves the fewest places out of reach, else (a way out that
+    # takes two pieces) the one that opens the most new wide ground; at most 14 pieces a fortress.
+    while now and len(removed) < 14:
+        best = None
+        area = sum(seen)
+        for piece in pieces:
+            order, key, what, cells_, _ = piece
+            if not touches(cells_, seen):
+                continue
+            for k in cells_:
+                counts[k] -= 1
+            out, reached = missing()
+            left, grown = len(out), sum(reached) - area
+            for k in cells_:
+                counts[k] += 1
+            score = (left, -grown, order, len(cells_))
+            if (left < len(now) or (grown >= 12 and digging < 6)) and (best is None or score < best[0]):
+                best = (score, piece)
+        if best is None:
+            print(f'warning: {F.name} siege: the biggest hull cannot reach {sorted(set(now))} and no clutter in the way can go')
+            break
+        order, key, what, cells_, keep = best[1]
+        for k in cells_:
+            counts[k] -= 1
+        pieces.remove(best[1])
+        if key[0] == 'prop':
+            i = next(j for j, prop in enumerate(L.props) if id(prop) == key[1])
+            del L.props[i]
+            del L.rects[i]
+        elif key[0] == 'unit':
+            L.units = [u for u in L.units if id(u) != key[1]]
+        else:
+            F.slots = [sl for sl in F.slots if (sl[2], sl[3]) != key[1]]
+            F.blocks = [b for b in F.blocks if (b[0], b[1]) != key[1]]
+        removed.append(what)
+        before = len(now)
+        now, seen = missing()
+        if len(now) < before:
+            digging, dug = 0, []
+        else:
+            # Digging towards a place that takes two pieces: kept only if it gets there.
+            digging += 1
+            dug.append(best[1])
+    # Pieces taken out while digging towards a place never reached go back where they were.
+    for order, key, what, cells_, keep in dug:
+        for k in cells_:
+            counts[k] += 1
+        if key[0] == 'prop':
+            L.props.append(keep[0])
+            L.rects.append(keep[1])
+        elif key[0] == 'unit':
+            L.units.append(keep)
+        else:
+            F.slots.append(keep[0])
+            F.blocks.append(keep[1])
+        removed.remove(what)
+    # A hardpoint whose centre is not open ground (without its own tower) would have its tower moved
+    # off it by the game: it goes (the game checks this too, MapConnectivityTests).
+    for slot in list(F.slots):
+        size_, kind_, x, z, ring = slot
+        own = [b for b in F.blocks if (b[0], b[1]) == (x, z)]
+        mine = set(k for b in own for k in cells(square(b[0], b[1], b[2])))
+        gx, gz = cell_of(x, z)
+        k = gz * n + gx
+        if counts[k] - (1 if k in mine else 0) > 0:
+            F.slots.remove(slot)
+            F.blocks = [b for b in F.blocks if (b[0], b[1]) != (x, z)]
+            print(f'warning: {F.name} siege: {size_} {kind_} hardpoint at ({x}, {z}) dropped: its centre is not open ground')
+    if removed:
+        print(f'{F.name} siege: for the biggest hull, took out {", ".join(removed)}')
 
 
 def line_in(F, kind, c, half, sally):

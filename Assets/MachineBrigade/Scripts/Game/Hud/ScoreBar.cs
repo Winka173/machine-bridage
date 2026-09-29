@@ -31,6 +31,9 @@ namespace MachineBrigade.Game.Hud
     /// The score across the top on the kit (Field Command 2.0, G): our side and theirs, each a number
     /// over what it counts and a draining bar, round the objective chips (each ringed by its capture
     /// progress in the capturing side's colour; a tap points the army at it), the clock under them.
+    /// Compact (prompt 11 A5): one low strip, the numbers in the sides' colours over their bars without
+    /// captions, the objective chips' faces smaller inside their full touch targets, and the clock at
+    /// the end of the strip.
     /// </summary>
     internal sealed class ScoreBar
     {
@@ -42,20 +45,25 @@ namespace MachineBrigade.Game.Hud
         private readonly string _label;
         private string _shownTimer;
 
-        public ScoreBar(string labelKey = "stat.tickets")
+        public ScoreBar(string labelKey = "stat.tickets", bool compact = false)
         {
             _label = labelKey;
-            Root = Kit.Box("fc-score");
+            _compact = compact;
+            Root = Kit.Box(compact ? KitPanel.SurfaceClass + " fc-surface--field fc-score fc-score--compact" : "fc-score");
+            Root.tooltip = Strings.Get(labelKey);
             _ours = Side(Root, true, out _oursFill);
             var centre = Kit.Box("fc-score__centre");
             _chips = Kit.Box("fc-score__chips");
             centre.Add(_chips);
             _timer = Kit.Text("", "fc-number-small fc-hud__clock");
             _timer.style.display = DisplayStyle.None;
-            centre.Add(_timer);
+            if (!compact) centre.Add(_timer);
             Root.Add(centre);
             _theirs = Side(Root, false, out _theirsFill);
+            if (compact) Root.Add(_timer);
         }
+
+        private readonly bool _compact;
 
         public void SetTimer(float secondsLeft)
         {
@@ -95,10 +103,10 @@ namespace MachineBrigade.Game.Hud
 
         private Label Side(VisualElement parent, bool ours, out VisualElement fill)
         {
-            var box = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-score__side " + (ours ? "fc-score__side--ours" : "fc-score__side--theirs"));
-            var number = Kit.Text("0", "fc-number fc-score__number");
+            var box = Kit.Box((_compact ? "" : KitPanel.SurfaceClass + " fc-surface--field ") + "fc-score__side " + (ours ? "fc-score__side--ours" : "fc-score__side--theirs"));
+            var number = Kit.Text("0", (_compact ? "fc-number-small" : "fc-number") + " fc-score__number");
             var column = Kit.Box("fc-score__column");
-            column.Add(Kit.Caption(Strings.Get(ours ? "hud.us" : "hud.enemy") + " · " + Strings.Get(_label)));
+            if (!_compact) column.Add(Kit.Caption(Strings.Get(ours ? "hud.us" : "hud.enemy") + " · " + Strings.Get(_label)));
             var track = Kit.Box("fc-score__track");
             fill = Kit.Box("fc-score__fill");
             track.Add(fill);

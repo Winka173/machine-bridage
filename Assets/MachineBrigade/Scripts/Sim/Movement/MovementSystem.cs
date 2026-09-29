@@ -81,6 +81,7 @@ namespace MachineBrigade.Sim.Movement
             ServeHeadOns();
             ServeYieldRequests();
             PrepareGates();
+            ReplanClosedRoutes();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive) continue;
@@ -105,6 +106,8 @@ namespace MachineBrigade.Sim.Movement
                     v.ManualUntil = _world.Time + ManualHoldSeconds;
                 }
                 Drive(v, dt);
+                // The safety net for what the traffic rules leave stuck (MovementSystem.Rescue).
+                WatchRescue(v);
             }
             ResolveGates();
             RunPathQueue();
@@ -228,7 +231,7 @@ namespace MachineBrigade.Sim.Movement
             {
                 var o = _ground[i];
                 if (o.Position.X > v.Position.X + span) break;
-                if (o == v || !o.IsAlive) continue;
+                if (o == v || !o.IsAlive || PassThrough(v, o)) continue;
                 var offset = o.Position - v.Position;
                 var ahead = Vector2.Dot(offset, forward);
                 if (ahead <= 0f || ahead > nearestAhead) continue;
@@ -736,7 +739,7 @@ namespace MachineBrigade.Sim.Movement
             // the instant the blocker leaves the look-ahead turned the hull straight back at it,
             // then away again: a wag every few steps.
             if (!def.Flying && _world.Time < v.AvoidUntil)
-                desired += v.AvoidSide * AvoidAngle * (float)Math.Min(1.0, (v.AvoidUntil - _world.Time) / (AvoidSeconds * 0.5));
+                desired += AvoidTurn(v, desired, v.AvoidSide * AvoidAngle * (float)Math.Min(1.0, (v.AvoidUntil - _world.Time) / (AvoidSeconds * 0.5)));
             var misalignment = MathF.Abs(SimMath.WrapAngle(desired - v.Heading));
             if (isFinal && distance < SettleDistance && MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(toWaypoint) - v.Heading)) > 1.2f)
             {
@@ -1241,6 +1244,8 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>The last rung of the stuck ladder: drop the route, and at least move out of a knot so the others can pass.</summary>
         private void GiveUp(Vehicle v)
         {
+            v.Traffic.GaveUpAt = _world.Time;
+            v.Traffic.GaveUpGoal = v.PathGoal;
             v.ClearPath();
             var clear = v.Position;
             var unjammed = Crowded(v) && TryUnjam(v, out clear);
@@ -1304,7 +1309,7 @@ namespace MachineBrigade.Sim.Movement
                     var b = _ground[j];
                     if (b.Position.X - a.Position.X > reach) break;
                     var bound = a.Def.HullBound + b.Def.HullBound;
-                    if (Vector2.DistanceSquared(a.Position, b.Position) >= bound * bound) continue;
+                    if (Vector2.DistanceSquared(a.Position, b.Position) >= bound * bound || PassThrough(a, b)) continue;
                     Spine(b, out var b0, out var b1);
                     ClosestPoints(a0, a1, b0, b1, out var ca, out var cb);
                     Push(a, b, cb - ca, a.Def.HullRadius + b.Def.HullRadius);

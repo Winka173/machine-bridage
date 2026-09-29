@@ -1,0 +1,16 @@
+{
+  "map": "launchsite",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 667412d4 map 1413bf5e app 0.1.0",
+  "ticks": 7316,
+  "journal": [],
+  "records": [
+    {"vehicle": 504, "def": "titan_tank", "team": 0, "startTick": 4000, "start": 200, "end": 212, "seconds": 12, "x": 84.949, "y": 59.9, "goalX": 54, "goalY": 112.5, "order": "Attack", "cause": "BlockedByFriend", "detail": "siege_tank#491 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@7.9 siege_tank(moving)@7.0 siege_tank(moving)@7.0"},
+    {"vehicle": 523, "def": "heavy_tank", "team": 1, "startTick": 4760, "start": 238, "end": 248, "seconds": 10, "x": 78.894, "y": 103.571, "goalX": 92.442, "goalY": 115.965, "order": "Move", "cause": "BlockedByFriend", "detail": "mobile_fortress#550 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 505, "def": "heavy_tank", "team": 0, "startTick": 5070, "start": 253.5, "end": 262.5, "seconds": 9, "x": 4.105, "y": 1.697, "goalX": -9.813, "goalY": -5.905, "order": "Move", "cause": "BlockedByFriend", "detail": "artillery#551 moving", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@4.5 armored_bulldozer(moving)@9.1 titan_tank(moving)@5.3 artillery(moving)@4.6"},
+    {"vehicle": 578, "def": "armored_bulldozer", "team": 0, "startTick": 6700, "start": 335, "end": 344.5, "seconds": 9.5, "x": -93.086, "y": -91.462, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_tank#541 moving", "area": "camp0", "lanes": "road+route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@5.2 titan_tank(moving)@5.8 armored_bulldozer(moving)@4.6 armored_bulldozer(moving)@7.8"}
+  ],
+  "rescues": []
+}

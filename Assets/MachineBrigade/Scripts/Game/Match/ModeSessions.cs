@@ -222,7 +222,7 @@ namespace MachineBrigade.Game.Match
             var role = rules.RoleFor(kind.ToString());
             var setup = new BaseSetup();
             var enemyLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed);
-            var playerLoadout = menu ? BaseLoadout.ForAi(world.Catalog, "Normal", "default", seed + 5) : PlayerProfile.BaseLoadout;
+            var playerLoadout = menu ? BaseLoadout.ForAi(world.Catalog, "Normal", "default", seed + 5) : PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam);
             if (role == BaseRole.Target)
             {
                 // The side attacking holds its camp; the side attacked has the base to lose.
@@ -742,7 +742,7 @@ namespace MachineBrigade.Game.Match
                 // An easier fortress leaves some of its outer hardpoints empty.
                 Manning = Difficulty switch { >= AiDifficulty.Hard => 1f, AiDifficulty.Easy => 0.6f, _ => 0.9f },
                 Attacker = attacker, Defender = defender,
-                AttackerBase = PlayerProfile.BaseLoadout,
+                AttackerBase = PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam),
                 // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.
                 FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed),
             });
@@ -1051,7 +1051,7 @@ namespace MachineBrigade.Game.Match
             var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null);
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
-                    .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadout), _def.PlayerBase)
+                    .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam)), _def.PlayerBase)
                     .Set(EnemyTeam, enemyBase, _def.EnemyBase), PlayerTeam, EnemyTeam);
             // A duel's HQ is as tough as the mission says (its towers are the general's full base).
             if (_def.Goal == MissionGoal.Duel && System.Math.Abs(_def.TargetHealth - 1f) > 1e-3f)
@@ -1066,7 +1066,7 @@ namespace MachineBrigade.Game.Match
             foreach (var s in _def.Stages) AddSite(s.Mission);
             if (outposts.Count > 0)
             {
-                world.Bases.Ensure(PlayerTeam, PlayerProfile.BaseLoadout);
+                world.Bases.Ensure(PlayerTeam, PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam));
                 world.Bases.Ensure(EnemyTeam, enemyBase);
                 foreach (var id in outposts) world.Bases.OutpostPoints.Add(id);
                 world.Bases.PointOwner = id =>

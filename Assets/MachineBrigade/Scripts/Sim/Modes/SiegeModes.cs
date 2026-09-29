@@ -832,7 +832,40 @@ namespace MachineBrigade.Sim.Modes
         {
             if (_rules.Guardian == null || Fortress is not { } hq || !world.Catalog.Vehicles.ContainsKey(_rules.Guardian)) return;
             var toward = world.TryGetRally(Attacker, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
-            world.SpawnVehicle(_rules.Guardian, Defender, hq + toward * 12f, SimMath.HeadingOf(toward));
+            world.SpawnVehicle(_rules.Guardian, Defender, RoomFor(world, hq + toward * 12f, world.Catalog.Vehicle(_rules.Guardian)), SimMath.HeadingOf(toward));
+        }
+
+        /// <summary>
+        /// The open ground nearest <paramref name="at"/> with room all round for a hull this big (the
+        /// guardian is 9 m across): it came out in a gap between the HQ, the keep's wall and a tower,
+        /// where it could hardly move (prompt 12). Within 24 m; else the point itself.
+        /// </summary>
+        private static Vector2 RoomFor(SimWorld world, Vector2 at, VehicleDef def)
+        {
+            var grid = world.Grid;
+            var lanes = world.Lanes;
+            var room = Math.Max(2, (int)MathF.Ceiling((def.HullRadius - SimWorld.ObstacleClearance) / grid.CellSize) + 1);
+            var (cx, cy) = grid.CellOf(at);
+            var main = grid.MainRegion;
+            for (var ring = 0; ring <= 12; ring++)
+            {
+                var best = float.MaxValue;
+                var spot = at;
+                for (var y = cy - ring; y <= cy + ring; y++)
+                for (var x = cx - ring; x <= cx + ring; x++)
+                {
+                    if (Math.Abs(x - cx) != ring && Math.Abs(y - cy) != ring) continue;
+                    if (!grid.IsWalkable(x, y) || grid.RegionOf(x, y) != main) continue;
+                    var c = grid.CellCenter(x, y);
+                    if (lanes.ClearanceAt(c) < room) continue;
+                    var d = Vector2.DistanceSquared(c, at);
+                    if (d >= best) continue;
+                    best = d;
+                    spot = c;
+                }
+                if (best < float.MaxValue) return spot;
+            }
+            return at;
         }
 
         /// <summary>
