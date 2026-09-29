@@ -183,7 +183,7 @@
             "kind": "vehicle",
             "model": "siege_tank",
             "source": "Models/siege_tank",
-            "hash": "v2:549fe02b838a67770b93a13b9f8cb00fcd563d27"
+            "hash": "v2:b6516fad572806c753917bae311eaf54244ff631"
         },
         {
             "id": "heavy_rocket_artillery",
@@ -561,7 +561,7 @@
             "kind": "boss",
             "model": "caspian",
             "source": "Models/caspian",
-            "hash": "v2:cb6cda087097d2ce4d6c5410eb1c21e224696b34"
+            "hash": "v2:6876fbf56ecb2fa7b7fab5ed5e5314111cc87b3c"
         },
         {
             "id": "coastal_battery",
@@ -603,7 +603,7 @@
             "kind": "boss",
             "model": "daedalus",
             "source": "Models/daedalus",
-            "hash": "v2:7b81d2946063be1ea26e49db07eadfedd3737126"
+            "hash": "v2:30c5c9faba44627b0e4032cc7ea24bdd9a7c83cf"
         },
         {
             "id": "dragons_teeth",
@@ -862,14 +862,14 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:a96d78f6605147c2d1d1f80f8affee10e719935f"
+            "hash": "v2:5a40589ac8b758c4f8bc2860861bfacf4b19f702"
         },
         {
             "id": "ixion",
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:3544b31097ac851db84f19d194d88a667a2f2deb"
+            "hash": "v2:b26dffead3e6675df6f0e634d64636602408ecde"
         },
         {
             "id": "kronos",
@@ -890,7 +890,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:c12eed1d5eea233def9af45af468be3f28176012"
+            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
         },
         {
             "id": "locust",
@@ -1044,7 +1044,7 @@
             "kind": "boss",
             "model": "leviathan",
             "source": "Models/leviathan",
-            "hash": "v2:c12eed1d5eea233def9af45af468be3f28176012"
+            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
         },
         {
             "id": "shield_tower",
@@ -1072,7 +1072,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:a96d78f6605147c2d1d1f80f8affee10e719935f"
+            "hash": "v2:5a40589ac8b758c4f8bc2860861bfacf4b19f702"
         },
         {
             "id": "sky_fortress",
@@ -1114,17 +1114,17 @@
             "kind": "boss",
             "model": "typhon",
             "source": "Models/typhon",
-            "hash": "v2:bb63dc0d2cb3ae5fc03790f4ada1a61d674d08bf"
+            "hash": "v2:ccf57cf97f9ddfe5ac17a193dca855d80cb7c4db"
         },
         {
-            "id": "gunship_support",
+            "id": "gunship_strike",
             "kind": "support",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
             "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
         },
         {
-            "id": "gunship_strike",
+            "id": "gunship_support",
             "kind": "support",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
