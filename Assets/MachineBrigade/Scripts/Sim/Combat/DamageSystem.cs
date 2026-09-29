@@ -72,7 +72,8 @@ namespace MachineBrigade.Sim.Combat
                 if (lured) at = lure;
                 else
                 {
-                    if (weapon.Guided && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
+                    // Play-test 8 A: a steered bomb (the SDB, the JDAM) glides onto its target too.
+                    if ((weapon.Guided || weapon.GuidedBomb) && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
                     if (decoyed) at = target.Position + p.Miss;
                 }
                 // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.

@@ -536,6 +536,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Enemy an attack-moving vehicle broke off its route to fight.</summary>
         internal EntityId Engaged;
 
+        /// <summary>Play-test 8 A (DECISIONS 22Q): when the main weapon next weighs its target against everything else in reach.</summary>
+        internal double RetargetAt;
+
         /// <summary>Distance to what the main weapon is aimed at (0 with no target); drives the barrel's elevation.</summary>
         public float AimDistance { get; internal set; }
 

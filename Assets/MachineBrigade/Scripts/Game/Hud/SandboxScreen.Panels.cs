@@ -34,8 +34,9 @@ namespace MachineBrigade.Game.Hud
             var e = _c.Editor;
             var s = e.Scenario;
             // B.1: every battlefield (its 300 m, long and coastal versions) and the flat test range.
-            var maps = new List<string> { SandboxMaps.FlatId };
-            var names = new List<string> { Strings.Get("sandbox.map.flat") };
+            // Play-test 8 A: and the test range with a sea, for ships and the naval bosses.
+            var maps = new List<string> { SandboxMaps.FlatId, SandboxMaps.CoastId };
+            var names = new List<string> { Strings.Get("sandbox.map.flat"), Strings.Get("sandbox.map.coast") };
             foreach (var info in MatchSettings.AllMaps)
             {
                 if (!MatchSettings.MapAvailable(info.Id)) continue;

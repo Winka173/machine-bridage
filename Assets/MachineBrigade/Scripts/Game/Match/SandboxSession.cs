@@ -49,7 +49,7 @@ namespace MachineBrigade.Game.Match
         /// <summary>The map a scenario plays on: the flat test range or a battlefield's file.</summary>
         public static MapDefinition LoadMap(SandboxScenario s)
         {
-            if (SandboxMaps.IsFlat(s.Map)) return SandboxMaps.Flat();
+            if (SandboxMaps.IsFlat(s.Map)) return SandboxMaps.For(s.Map);
             try
             {
                 return GameContent.LoadMap(s.Map);

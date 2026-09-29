@@ -9512,3 +9512,186 @@ loot's moves are `Tools/campaign/act9.py`'s (the campaign build). The Game layer
   (the comic page has one main action). New screens for the checks: `dossier-intel`, `comic`.
 - Runs: the new tests, 11 of 12 (the Coral Keys' site off its island, fixed); then with Prompt22Story, CampaignStart,
   L10n, UiLayout, UiLanguage and CampaignTests' chapter test: 137 of 138 (the comic page's primary, fixed), then 138 of 138.
+
+## 22Q. Play-test 8 A: target choice, the SAM's In action clip, blasts, the gunship's exit, big bosses on the detail page, armour outlines, the Sandbox's sea and taps, base ranges, falling bombs (2026-09-30)
+
+The owner's play-test 8 list (`Docs/prompts/requests_vi.md`, "Play-test 8"), items 1-9, and the coordinator's item 10
+(bombs). Branch `feature/pt8-fixes` from lead f74c975. The Bastion's summoned tower is another agent's.
+
+### 1. Target choice: every weapon re-weighs its target
+
+**Why an AA gun stayed on a tank.** `CombatSystem.SelectTarget` kept last step's target for as long as it stayed valid
+(Idle: `v.Target`; attack-move: the `Engaged` enemy; free secondary mounts: their own), and picked again only when it
+died or left reach. The score that would have preferred the helicopter (an anti-air weapon's ground target counts
+0.02) was never consulted while the tank lived. An AI-issued Attack order (the commander's `FocusOn` a ground boss, a
+breach, escorts answering a threat) also held a flak gun on the ground.
+
+**Decided (`Retarget`):** the held target stays between looks. Every `RetargetSeconds` (0.5 s) it is weighed against
+the best in reach (`BestInRange`), and another takes over only when it scores `SwitchMargin` (1.3) times as much. With
+the existing x1.3 for a target the side is already firing on, that is the hysteresis: two targets of about the same
+worth never swap back and forth. With nothing held (or the held one lost), the best in reach is taken at once, as
+before. This applies to the main weapon on Idle, attack-move (the enemy it broke off for is held and favoured), Move
+and Retreat (targets of opportunity), and while an ordered boss is shielded. It also applies to every free and side
+mount (the roof SAM, the pintle gun), favouring the main weapon's target. Coaxial and hull mounts still take the main
+weapon's target. Towers are vehicles on Idle, so they behave the same way. The choice stays deterministic: the look
+times come from the sim's clock (`Vehicle.RetargetAt`, `WeaponState.RetargetAt`), with no randomness.
+
+**The score (`Score`, now in one place)** multiplies:
+
+- the damage estimate: the weapon's damage type against the target's armour, and its penetration against the face it
+  would strike;
+- new: the weapon's own bonuses on the target (`DamageSystem.BonusFor`, such as a light tower's gun on helicopters or
+  a tank gun's penalty on light armour);
+- how nearly finished the target is;
+- whether the weapon is made for the target's layer (x0.02 across layers);
+- focus fire, a boss part the player ordered, and taunts;
+- the target's worth;
+- its threat: aiming at this vehicle x1.2, unarmed x0.3, and new, able to shoot back at this vehicle's layer
+  (`ThreatWeight`, x1.15).
+
+Overkill, bomb sticks, domes, relays and SEAD work as before.
+
+**AI orders (`BetterThanOrder`):** an Attack order from the commander AI gives way while something in reach scores
+`OrderMargin` (5) times the ordered target. A player's order (`ManualOrder`) never gives way. The check runs every
+0.5 s, and the new target is held until the next check. In practice only the across-layer case triggers it: an
+anti-air gun sent at a tank or a ground boss turns on the aircraft overhead. An ordered structure, or a target out of
+reach, gives way only to an aircraft and only for an anti-air weapon, so artillery keeps shelling the building it was
+sent at.
+
+**Not rerun:** `CounterTests` and `ConquestBattleTests` (the balance measures) wait for the testing phase. The change
+matters mostly when a better target appears mid-fight.
+
+### 2. The SAM launcher fires nothing in its In action clip
+
+**The regression.** Play-test 7 (22P) gave the SAM launcher an 18 m self-defence machine gun. `FiringRange.TargetDistance`
+set the targets' distance by the shortest-ranged weapon, so they moved in from 20 m to 12.6 m, and the helicopter (15 m
+up) sat right over the launcher at the top edge of the picture. `HoldUntilFramed` stops anyone firing at what is not in
+the picture, so the Buk never launched. The sim itself fires at either distance (checked headless).
+
+**Decided:** the distance is set by the main weapon and by the other weapons that reach at least `ShortReach` (0.6) of
+it, so a short self-defence gun no longer pulls the targets in. The SAM launcher's targets are at 38.5 m again, well
+framed. Other vehicles whose clips play-test 7 pulled in get their old distances back.
+
+### 3. The siege tank's siege blast
+
+`siege_mortar_240` (the deployed 240 mm; the siege tank is its only user) splash 9 -> 7.2 m (the owner asked for -20 %).
+
+### 4. The long-range SAM's blast
+
+`sam_48n6` (S-400) splash 3.6 -> 7.2 m and `impactScale` 2. Air bursts did not read the round's impact scale. Now an
+air-only weapon's burst (the anti-aircraft missiles) is drawn at `max(1, impactScale)` (EffectsDirector), so the 48N6's
+burst is twice the size, as big as the missile. Every other round's burst is unchanged (never smaller).
+
+### 5. The fire support's gunship flies off
+
+A loaned aircraft whose time was up was retired and its view destroyed on the spot. **Decided (view only):** a flying
+vehicle's `VehicleRetired` event hands its view to `VehicleView.Depart`. The aircraft rolls out of its orbit's bank and
+flies straight on the way it was going (its last velocity). It opens the throttle over 3 s (x1.7) and climbs at
+2.5 m/s, propellers and rotors still turning, for `DepartSeconds` (10 s, far past any map edge); then the view is
+removed. The sim lets it go as before (no wreck, no kill, nothing shoots at it). Ground retirees (landing craft hoisted
+aboard) still simply disappear.
+
+### 6. Big bosses on the detail page
+
+The turntable backed the camera off by the model's bounding sphere against the nominal 28 degrees. But the view is cut
+to the box (`Project`: up to 20 % less top to bottom in a wide box), and the far clip stayed at 200 m, so the
+Leviathan's 86 m hull ran past both.
+
+**Decided (`UnitPreview.FitDistance`):** the camera also works out the distance at which everything the turntable can
+turn into view fits the real, cut field of view (the footprint swept round at the foot and top of the bounds, 24
+points each), and uses whichever distance is further. The far clip is pushed past the model. Ordinary vehicles are
+framed as before, because the sphere distance was already further for them. The In action range also stands back from
+a long hull by its length (`Length / 2 - 10`, which only applies past 20 m).
+
+### 7. Armour by face: each unit's own outline
+
+`ArmourDiagram` drew a tank for every unit. **Decided:** `ArmourDiagram.ShapeOf` picks the outline:
+
+- a ship (naval units and bosses): a pointed bow, long sides and a bevelled transom, with the superstructure and a gun
+  on the roof;
+- an aeroplane: its nose, swept wings, tailplane and cockpit;
+- a helicopter: a rounded nose, a cabin narrowing to the tail boom, the stabiliser and the rotor head (the blades are a
+  hairline, not armour);
+- a vehicle without a turret: its hull and cab;
+- a structure: its square and mount;
+- a turreted vehicle: the old hull, turret and gun.
+
+Each face's part of the outline is as thick as its armour, dashed for none, and the roof shape is as thick as the
+roof's armour. Units whose faces are all alike still get the single icon ("the same on every face").
+
+### 8. The Sandbox: a sea, and buttons that always answer
+
+**Sea.** A second test range, `SandboxMaps.Coast` (`sandbox_coast`, "Test range with sea"), comes after the flat one in
+the map list. It is the same 300 m grid with 60 m of water east of x = 90: river-water tiles, drawn and blocking ground
+vehicles as on any map. It has a straight coast (`SeaDef.Straight`), three sea lanes (x 106, 120 and 134; the far one
+takes the Leviathan), two beaches, three piers, and the fleet's air entry over the water. Ships and naval bosses snap
+onto its lanes (`SandboxRules.Place`); the flat range still says "This map has no sea". The coastal range is a separate
+map so that the flat range, the lab's duels and the samples stay unchanged. `IsFlat` covers both (grid, towers anywhere).
+
+**Lost taps.** `Tap` fires on release only if its element is still on the panel. While the battle ran, the card and its
+buttons were rebuilt every 0.5 s, together with the sheets and the tray, so a tap that spanned a rebuild did nothing
+(about one tap in three). **Decided:** `Tap.Pressing` reports that a finger is down on a tap target. The Sandbox never
+rebuilds its card, sheets or tray while it is true, and a card rebuild requested in the meantime runs on release.
+
+### 9. Base ranges as borders, the picked one pulsing
+
+The cover was two filled unions (ground orange, air blue, at 30-36 %) that merged into one blob. **Decided:** each
+tower's ground and air reach is its own coloured circle (`--base-range-ground-line` orange, `--base-range-air-line`
+blue) over a nearly clear tint of the ground covered (6-7 %). The tint is still one union, so ground covered twice is
+no darker. The picked tower's circles, and its own reach and shortest-range rings, pulse 1.1 times a second, between
+thin and dim and 3.5 px at full strength. The map repaints while something pulses. The legend's swatches follow the
+tokens.
+
+### 10. Bombs fall (the coordinator's item)
+
+**What was wrong.** Every bomb was aimed at its target's position at release (each bomb of a stick re-aimed at the
+target), flew there in a straight line at the aircraft's speed, and the bomber let go only with the target inside the
+weapon's 26-30 m and its nose on it. A stick came down as one heap on the target, and a bomb drawn as a straight line
+seemed to fly at the enemy.
+
+**Decided (`CombatSystem.Bombs`):** an unguided bomb from an aircraft (`FreeFall`) lands where its drop point and its
+fall put it: ahead of the aircraft by its speed times the fall time, `sqrt(2 h / BombGravity)`, scattered by half the
+weapon's spread round that point. The target plays no part: a tank that drives on is missed, and one that stays under
+the stick is hit. `BombGravity` is 40 m/s2 because the maps are drawn small (a bomber flies at 42 m). At the true
+9.8 m/s2 a bomb would carry 60-90 m, past any fight; with 40 the fall takes 1.1-1.5 s from 30-46 m.
+
+A stick's bombs are released one after another at the weapon's burst interval, so they come down spaced along the
+track. The bomber lets go when the stick will straddle the target (`StickStraddles`): the target is no further off
+the track than a blast, and along it between just short of where the first bomb falls and the middle of the stick. The
+bomber's reach for picking targets extends that far ahead (`BombReach`), and it drops no stick where friends would be
+under it. The heavy bomber's FAB-500 interval goes from 0.12 to 0.2 s, so its 9 bombs cover about 30 m instead of
+landing in one 20 m heap. Damage per bomb and splash are unchanged.
+
+**Steered bombs** (`WeaponDef.GuidedBomb`: data `"guided": true`, as on the JDAM of `stealth_payload`, or the
+GuidedBomb form, as on the SDB `guided_bomb`) keep their old release, and now also follow their target to the end
+(like a missile, but not decoyed by flares).
+
+**Views.** A bomb's flight is a curve through a point level with the release point, halfway along the ground
+(`WeaponEffects.BombPath`). That curve is the fall itself: level at first and ever steeper. A steered bomb's point is
+lower, which draws a glide. The fire supports' airstrikes already laid their bombs along their line (StrikeSystem);
+their bombs now fall on the same curve (StrikeEffects). Bosses with bomb mounts use the same code.
+
+### Tests (targeted)
+
+- `PlayTest8ATests` (new, 7 tests): the AA switch, the hold between equal targets, the SAM's range and its missiles,
+  the blast data, the coastal range with the Leviathan, the outlines, and the stick along the path landing where
+  dropped.
+- Also run: `AirAndTowerTests` (including `BombsLandUnderTheBomber`), `RangeSceneTests`,
+  `AiTests.AutoTargetingFinishesADamagedTargetBeforeANearerHealthyOne`, `StoresTests.ABomberGoesInOnlyWithTwoThirdsOfItsBombs`,
+  `AirRealismTests.TheStealthBomberIsSeenOnlyCloseUpUntilItFires`, `Prompt22ContentTests.Morrigan...` and
+  `EconomyTests.AirstrikeDropsEveryBombAlongItsLine`.
+- Result: 17 of 18 pass. The one failure is the known `RangeSceneTests.JammerScramblesTheMissilesAtItsFriends` (22E:
+  the ATGM post never fires).
+- With graphics: UiShots `screen-detail-armour-leviathan-en` (new debug screen: the ship outline) and
+  `screen-army-base-ranges-picked-en` (new: ranges as borders, with the picked tower's).
+- The balance measures wait for the testing phase.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (four weapon rows: `siege_mortar_240`, `sam_48n6`, `bomber_payload`, `stealth_payload`),
+`CombatSystem.cs` (SelectTarget, SelectSecondaryTarget, BestInRange/Score, InReach, CanFire, Launch), `DamageSystem.cs`
+(one line), `Definitions.cs`/`Catalog.cs` (`GuidedBomb`, `Steered`), `SeaDef.cs`, `SandboxMaps.cs`, `EffectsDirector.cs`,
+`WeaponEffects.cs`, `StrikeEffects.cs`, `UnitPreview.cs`, `FiringRange.cs`, `KitCombat.cs` (ArmourDiagram),
+`BaseParts.cs`, `BaseScreen.cs`, `Tokens.uss`, `Screens.uss`, `SandboxScreen*.cs`, `SandboxText.cs`, `Tap.cs`,
+`MenuScreen.cs` (two debug screens), `UiShots.cs`. New files: `CombatSystem.Bombs.cs`, `VehicleView.Departure.cs`,
+`PlayTest8ATests.cs`.

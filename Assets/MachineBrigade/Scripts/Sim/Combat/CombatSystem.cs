@@ -184,29 +184,91 @@ namespace MachineBrigade.Sim.Combat
                     // Shooting at an ordered target needs sight of it (smoke and fog stop assigned shelling).
                     if (!_world.TryGetTarget(v.Order.Target, out var ordered) || !ordered.IsAlive) return null;
                     // Shielded for now (a boss behind its glyph): shoot at something else meanwhile.
-                    if (ordered is Vehicle { Invulnerable: true }) return BestInRange(v, weapon, EntityId.None);
-                    return ordered is Vehicle hidden && !hidden.IsVisibleTo(v.Team) ? null : ordered;
+                    if (ordered is Vehicle { Invulnerable: true }) return Retarget(v, weapon, Held(v, ordered.Id), EntityId.None, ref v.RetargetAt);
+                    if (ordered is Vehicle hidden && !hidden.IsVisibleTo(v.Team)) return null;
+                    // Play-test 8 A: an order from the commander AI (never the player's) gives way while something the
+                    // weapon is far better at is in reach: an anti-air gun sent at a tank turns on the helicopter overhead.
+                    return !v.ManualOrder && BetterThanOrder(v, weapon, ordered) is { } better ? better : ordered;
 
                 case OrderKind.AttackMove:
                     if (RunTargetInReach(v, weapon, out var run)) return run;
-                    if (_world.TryGetVehicle(v.Engaged, out var engaged) && IsValidAutoTarget(v, engaged, weapon)) return engaged;
-                    return BestInRange(v, weapon, EntityId.None);
+                    // The enemy it broke off its route for is held, and favoured, but weighed against the rest in reach.
+                    var held = Held(v, EntityId.None);
+                    if ((held == null || !IsValidAutoTarget(v, held, weapon)) && _world.TryGetVehicle(v.Engaged, out var engaged)) held = engaged;
+                    return Retarget(v, weapon, held, v.Engaged, ref v.RetargetAt);
 
                 case OrderKind.Idle:
                     if (RunTargetInReach(v, weapon, out var runIdle)) return runIdle;
                     // A counter-battery gun leaves what it was shelling for the enemy gun that just fired (DECISIONS 19T).
                     if (CounterBatteryTarget(v, weapon) is { } gun) return gun;
-                    if (_world.TryGetVehicle(v.Target, out var current) && IsValidAutoTarget(v, current, weapon)) return current;
-                    return BestInRange(v, weapon, EntityId.None);
+                    return Retarget(v, weapon, Held(v, EntityId.None), EntityId.None, ref v.RetargetAt);
 
                 case OrderKind.Move:
                 case OrderKind.Retreat:
                     // Targets of opportunity only: firing never changes the route (V2 R04).
-                    return v.Def.FiresWhileMoving || tankGun != null ? BestInRange(v, weapon, EntityId.None) : null;
+                    return v.Def.FiresWhileMoving || tankGun != null ? Retarget(v, weapon, Held(v, EntityId.None), EntityId.None, ref v.RetargetAt) : null;
 
                 default:
                     return null;
             }
+        }
+
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): seconds between a weapon's looks round for a better target than the one it is on
+        /// (not only when that one dies or leaves its reach), and how much better another must score to take over, so a
+        /// unit never flickers between two targets of about the same worth.
+        /// </summary>
+        internal const float RetargetSeconds = 0.5f;
+
+        internal const float SwitchMargin = 1.3f;
+
+        /// <summary>Play-test 8 A: an order from the commander AI gives way only to a target this many times better for the weapon.</summary>
+        internal const float OrderMargin = 5f;
+
+        /// <summary>Play-test 8 A: a target that can shoot back at this vehicle counts this much more than one that cannot.</summary>
+        internal const float ThreatWeight = 1.15f;
+
+        /// <summary>The vehicle the main weapon was on last step (other than <paramref name="not"/>), or null.</summary>
+        private Vehicle? Held(Vehicle v, EntityId not) =>
+            v.Target != not && _world.TryGetVehicle(v.Target, out var held) ? held : null;
+
+        /// <summary>
+        /// Play-test 8 A: the target a weapon is best at. The one it holds stays while it is valid, and every
+        /// <see cref="RetargetSeconds"/> it is weighed against the best in reach, which takes over only when it scores
+        /// <see cref="SwitchMargin"/> times as much. With nothing held (or the held one lost) the best in reach at once.
+        /// Deterministic: it reads the sim's clock and state only.
+        /// </summary>
+        private Vehicle? Retarget(Vehicle v, WeaponDef weapon, Vehicle? held, EntityId favoured, ref double nextAt, int arcMount = -1)
+        {
+            var holds = held != null && IsValidAutoTarget(v, held, weapon) && (arcMount < 0 || InArc(v, arcMount, held.Position));
+            var now = _world.Time;
+            if (holds && now < nextAt) return held;
+            nextAt = now + RetargetSeconds;
+            var best = BestInRange(v, weapon, favoured, arcMount, out var bestScore);
+            if (!holds) return best;
+            if (best == null || best == held) return held;
+            return bestScore > SwitchMargin * Score(v, weapon, held!, favoured) ? best : held;
+        }
+
+        /// <summary>
+        /// Play-test 8 A: what the commander AI's order should give way to: a target in reach that the weapon scores
+        /// <see cref="OrderMargin"/> times as high as the ordered one, looked for every <see cref="RetargetSeconds"/> and held
+        /// until the next look. An ordered structure or a target out of reach gives way only to an aircraft, and only for an
+        /// anti-air weapon (the gun keeps shelling its building otherwise).
+        /// </summary>
+        private Vehicle? BetterThanOrder(Vehicle v, WeaponDef weapon, IDamageable ordered)
+        {
+            var now = _world.Time;
+            if (now < v.RetargetAt)
+                return Held(v, ordered.Id) is { } kept && IsValidAutoTarget(v, kept, weapon) ? kept : null;
+            v.RetargetAt = now + RetargetSeconds;
+            var best = BestInRange(v, weapon, ordered.Id, -1, out var bestScore);
+            if (best == null || best.Id == ordered.Id) return null;
+            float orderScore;
+            if (ordered is Vehicle target && IsValidAutoTarget(v, target, weapon)) orderScore = Score(v, weapon, target, ordered.Id);
+            else if (IsAntiAir(weapon) && best.Flying && !IsFlying(ordered)) orderScore = 0f;
+            else return null;
+            return bestScore > OrderMargin * orderScore ? best : null;
         }
 
         /// <summary>
@@ -223,12 +285,15 @@ namespace MachineBrigade.Sim.Combat
                 IsValidAutoTarget(v, chased, weapon))
                 return chased;
             if (mount.Aim != MountAim.Free && !side) return primary != null && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
-            if (_world.TryGetVehicle(v.Weapons[index].Target, out var current) && IsValidAutoTarget(v, current, weapon) &&
-                (!side || InArc(v, index, current.Position)))
-                return current;
-            // A side gun takes the main weapon's target when it bears, else the best one on its side.
-            if (side && primary is Vehicle p && IsValidAutoTarget(v, p, weapon) && InArc(v, index, p.Position)) return p;
-            var best = BestInRange(v, weapon, primary?.Id ?? EntityId.None, side ? index : -1);
+            var state = v.Weapons[index];
+            var held = _world.TryGetVehicle(state.Target, out var current) ? current : null;
+            // A side gun with nothing on its side takes the main weapon's target when it bears.
+            if (side && (held == null || !IsValidAutoTarget(v, held, weapon) || !InArc(v, index, held.Position)) &&
+                primary is Vehicle p && IsValidAutoTarget(v, p, weapon) && InArc(v, index, p.Position))
+                held = p;
+            // Play-test 8 A: a free mount keeps its target but weighs it every half second against the best in its reach
+            // (a roof SAM on a tank turns on the helicopter that comes in), favouring the main weapon's.
+            var best = Retarget(v, weapon, held, primary?.Id ?? EntityId.None, ref state.RetargetAt, side ? index : -1);
             if (best != null) return best;
             // An ordered attack on a building or barrel: the roof gun joins in.
             return primary != null && primary is not Vehicle && InReach(v, primary, weapon) && HasLineOfFire(v, primary, weapon) ? primary : null;
@@ -239,47 +304,64 @@ namespace MachineBrigade.Sim.Combat
         /// or can be finished with this shot, and one teammates (or this vehicle's main gun) are
         /// already firing on. Distance only tips the balance between otherwise equal targets.
         /// </summary>
-        private Vehicle? BestInRange(Vehicle v, WeaponDef weapon, EntityId favoured, int arcMount = -1)
+        private Vehicle? BestInRange(Vehicle v, WeaponDef weapon, EntityId favoured, int arcMount = -1) => BestInRange(v, weapon, favoured, arcMount, out _);
+
+        private Vehicle? BestInRange(Vehicle v, WeaponDef weapon, EntityId favoured, int arcMount, out float bestScore)
         {
             Vehicle? best = null;
-            var bestScore = 0f;
+            bestScore = 0f;
             foreach (var other in _world.VehicleList)
             {
                 if (!IsValidAutoTarget(v, other, weapon)) continue;
                 if (arcMount >= 0 && !InArc(v, arcMount, other.Position)) continue;
-                var effect = _world.Damage.Estimate(weapon, v, other);
-                if (effect <= 0f) continue;
-                var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
-                // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
-                // anti-aircraft weapons go for aircraft first.
-                // Prompt 19: a target on altitude tiers is fair game for any weapon that reaches its tier.
-                if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
-                if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
-                // An obstacle only when there is nothing else (the commander orders a breach itself).
-                if (other.Def.Obstacle) score *= 0.05f;
-                if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
-                // The player has ordered the side at one of this boss's parts (prompt 9): units in reach turn on it.
-                if (other.HasParts && _world.Bosses.IsFocused(v.Team, other.Id)) score *= 4f;
-                // Ironclad's Bulwark: a dug-in tank draws the fire of enemies round it.
-                if (other.Gear != null && _world.Gear.Taunts(other, v)) score *= 1.4f;
-                // Worth more the more it costs (a titan before a jeep); one aiming at us first;
-                // an unarmed truck last.
-                score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);
-                if (other.Target == v.Id) score *= 1.2f;
-                if (other.Def.Weapon.Damage <= 0f) score *= 0.3f;
-                // Slow, heavy weapons do not waste a shot on a target already as good as dead
-                // from the rounds on their way to it (overkill).
-                if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;
-                // A stick of bombs (prompt 13 D.2): the group or the structure, not the lone light car beside it.
-                if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
-                // Prompt 17 C: shield domes (the generator first), enemy CP relays, a stealth fighter's air-defence hunt.
-                score *= NewContentWorth(v, other, weapon);
-                score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
+                var score = Score(v, weapon, other, favoured);
                 if (score <= bestScore) continue;
                 best = other;
                 bestScore = score;
             }
             return best;
+        }
+
+        /// <summary>
+        /// What a valid target is worth to this weapon (0: it does nothing to it): how hard the weapon hits it (its damage
+        /// type against the target's armour and the weapon's penetration against the face it would strike, and play-test 8 A:
+        /// the weapon's own bonuses on it), how nearly finished it is, whether the weapon is made for its layer, whether
+        /// teammates are on it, what it costs, and the threat it is (aiming at this vehicle, able to shoot back, armed).
+        /// </summary>
+        private float Score(Vehicle v, WeaponDef weapon, Vehicle other, EntityId favoured)
+        {
+            var effect = _world.Damage.Estimate(weapon, v, other);
+            if (effect <= 0f) return 0f;
+            effect *= DamageSystem.BonusFor(weapon, v, other, _world.Time);
+            var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
+            // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
+            // anti-aircraft weapons go for aircraft first.
+            // Prompt 19: a target on altitude tiers is fair game for any weapon that reaches its tier.
+            if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
+            if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
+            // An obstacle only when there is nothing else (the commander orders a breach itself).
+            if (other.Def.Obstacle) score *= 0.05f;
+            if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
+            // The player has ordered the side at one of this boss's parts (prompt 9): units in reach turn on it.
+            if (other.HasParts && _world.Bosses.IsFocused(v.Team, other.Id)) score *= 4f;
+            // Ironclad's Bulwark: a dug-in tank draws the fire of enemies round it.
+            if (other.Gear != null && _world.Gear.Taunts(other, v)) score *= 1.4f;
+            // Worth more the more it costs (a titan before a jeep); one aiming at us first;
+            // an unarmed truck last.
+            score *= MathF.Sqrt(Math.Clamp(Worth(other), 2f, 25f) / 10f);
+            if (other.Target == v.Id) score *= 1.2f;
+            if (other.Def.Weapon.Damage <= 0f) score *= 0.3f;
+            // Play-test 8 A: one that can hit this vehicle back before one that cannot.
+            else if (other.Def.Weapon.CanTarget(v.Flying)) score *= ThreatWeight;
+            // Slow, heavy weapons do not waste a shot on a target already as good as dead
+            // from the rounds on their way to it (overkill).
+            if (weapon.Cooldown >= 2f && _incoming.TryGetValue(other.Id, out var incoming) && incoming >= other.Hp * 1.1f) score *= 0.05f;
+            // A stick of bombs (prompt 13 D.2): the group or the structure, not the lone light car beside it.
+            if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
+            // Prompt 17 C: shield domes (the generator first), enemy CP relays, a stealth fighter's air-defence hunt.
+            score *= NewContentWorth(v, other, weapon);
+            score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
+            return score;
         }
 
         /// <summary>
@@ -398,6 +480,8 @@ namespace MachineBrigade.Sim.Combat
                 return false;
             var distance = Vector2.Distance(v.Position, target.Position);
             var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
+            // Play-test 8 A: a free-falling bomb reaches as far ahead as the middle of its stick falls.
+            if (FreeFall(v, weapon)) reach = MathF.Max(reach, BombReach(v, weapon));
             // Radar-absorbent coating: a missile must come closer to lock on.
             if (weapon.Projectile == ProjectileKind.Missile && target is Vehicle { Gear: { } coated }) reach *= 1f - Math.Clamp(coated.Stat(StatId.LockRange), 0f, 0.5f);
             return distance >= weapon.MinRange && distance - target.Radius <= reach;
@@ -608,12 +692,16 @@ namespace MachineBrigade.Sim.Combat
             var mount = v.Def.Mounts[index];
             if (v.Weapons[index].Cooldown > 0f) return false;
             // Prompt 13 D.2: no bombs where friends are too close to where they would fall.
-            if (v.Arms[index].Projectile == ProjectileKind.Bomb && OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f)) return false;
+            // Play-test 8 A: a free-falling stick is judged where it will come down, not at the target.
+            var freeFall = FreeFall(v, v.Arms[index]);
+            if (v.Arms[index].Projectile == ProjectileKind.Bomb &&
+                (freeFall ? StickNearOwn(v, index) : OwnNear(v.Team, target.Position, v.Arms[index].SplashRadius + 3f))) return false;
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;
             var desired = SimMath.HeadingOf(target.Position - v.Position);
             if (IsSide(mount) && !InArc(v, index, target.Position)) return false;
+            if (freeFall) return StickStraddles(v, index, target);
             var tolerance = mount.Aim switch
             {
                 MountAim.Turret => TurretTolerance,
@@ -690,13 +778,17 @@ namespace MachineBrigade.Sim.Combat
             }
             if (weapon.Ramp != null) damageScale *= RampScale(shooter, index, target);
             // A boss with parts: the round goes at one of them (or at the body).
-            var part = aimTarget is Vehicle { HasParts: true } boss && target == boss.Id ? _world.Bosses.ChoosePart(shooter, boss, weapon) : -1;
+            // Play-test 8 A: a free-falling bomb lands where its drop point and its fall put it (the aircraft's speed carries
+            // it on ahead as it drops), not on the target: a stick's bombs come down one after another along the track.
+            var freeFall = FreeFall(shooter, weapon);
+            if (freeFall) aimAt = BombImpact(shooter);
+            var part = !freeFall && aimTarget is Vehicle { HasParts: true } boss && target == boss.Id ? _world.Bosses.ChoosePart(shooter, boss, weapon) : -1;
             if (part >= 0 && aimTarget is Vehicle partOf) aimAt = partOf.PartPosition(part);
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.
             var reach = Math.Clamp(distance / weapon.Range, 0f, 1.2f);
-            var spread = weapon.Guided ? 0f : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
+            var spread = weapon.Guided ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
             // An escort spotter's mark (prompt 16 F): the boss's guns fall tighter on the marked target.
@@ -737,7 +829,8 @@ namespace MachineBrigade.Sim.Combat
             var travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
             // A bomb keeps the aircraft's forward speed as it falls, so it lands under the aircraft
             // as it passes over, not ahead of it.
-            if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
+            if (freeFall) travel = BombFall(shooter);
+            else if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;

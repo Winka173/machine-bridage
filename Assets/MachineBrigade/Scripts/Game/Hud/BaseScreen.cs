@@ -809,15 +809,22 @@ namespace MachineBrigade.Game.Hud
             if (_ranges)
             {
                 var cover = new List<(UnityEngine.Vector2, float, float)>();
+                _map.PickedCover = -1;
                 for (var i = 0; i < towers.Length; i++)
                 {
                     if (towers[i] == null || !camp[i].Open || !_catalog.Vehicles.TryGetValue(layout.DefFor(towers[i]), out var def)) continue;
                     var (ground, air, _) = BaseRoles.Reach(def);
+                    // Play-test 8 A: the picked tower's cover pulses.
+                    if (i == _picked) _map.PickedCover = cover.Count;
                     cover.Add((_frame.ToPicture(_site.Slots[i].Position), ground, air));
                 }
                 _map.Cover = cover;
             }
-            else _map.Cover = null;
+            else
+            {
+                _map.Cover = null;
+                _map.PickedCover = -1;
+            }
             // The picked slot's tower: its reach and its shortest range as rings.
             _map.Rings = null;
             if (_picked >= 0 && towers[_picked] is { } picked && _catalog.Vehicles.TryGetValue(layout.DefFor(picked), out var pd))

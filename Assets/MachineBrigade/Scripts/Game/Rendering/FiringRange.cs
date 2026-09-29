@@ -140,21 +140,31 @@ namespace MachineBrigade.Game.Rendering
             SetLayer(_root);
         }
 
-        /// <summary>Far enough for artillery's minimum range, near enough to see the vehicle and its targets in one frame.</summary>
-        private static float TargetDistance(VehicleDef def)
+        /// <summary>
+        /// Far enough for artillery's minimum range, near enough to see the vehicle and its targets in one frame. Play-test 8
+        /// A (DECISIONS 22Q): set by the main weapon and the others that reach about as far. Play-test 7's short self-defence
+        /// machine guns (18-21 m) had pulled every target in to 12 m, which put the SAM launcher's helicopter right overhead
+        /// at the top edge of the picture, where nobody may fire at it (<see cref="HoldUntilFramed"/>): its missiles never flew.
+        /// </summary>
+        internal static float TargetDistance(VehicleDef def)
         {
+            var main = def.Mounts.Count > 0 && def.Mounts[0].Weapon.Damage > 0f ? def.Mounts[0].Weapon.Range : 0f;
             var reach = float.MaxValue;
             var minimum = 0f;
             foreach (var m in def.Mounts)
             {
                 if (m.Weapon.Damage <= 0f) continue;
-                reach = Mathf.Min(reach, m.Weapon.Range);
                 minimum = Mathf.Max(minimum, m.Weapon.MinRange);
+                if (m.Weapon.Range < main * ShortReach) continue;
+                reach = Mathf.Min(reach, m.Weapon.Range);
             }
             if (reach == float.MaxValue) reach = 20f;
             var d = Mathf.Clamp(reach * 0.7f, 10f, 42f);
             return Mathf.Max(d, minimum + 6f);
         }
+
+        /// <summary>A secondary weapon reaching less than this share of the main one's range does not set the targets' distance.</summary>
+        internal const float ShortReach = 0.6f;
 
         private static bool HitsGround(VehicleDef def)
         {
@@ -447,6 +457,8 @@ namespace MachineBrigade.Game.Rendering
                 centre = (from + to) * 0.5f + Vector3.up * 1.5f;
                 // A big boss (the drone mothership) is stood back from, so it does not fill the picture.
                 var bulk = _shooter != null ? Mathf.Max(0f, _shooter.Def.Radius - 3f) * 1.6f : 0f;
+                // Play-test 8 A (DECISIONS 22Q): a long hull (the Leviathan's 86 m) by its length as well, so it all fits.
+                if (_shooter != null) bulk = Mathf.Max(bulk, Mathf.Max(0f, _shooter.Def.Length * 0.5f - 10f) * 1.2f);
                 span = Mathf.Max(Vector3.Distance(from, to) * 0.5f + (8f + bulk) / Zoom, 14f / Zoom);
                 // Play-test 5 (DECISIONS 20V): a fire support is framed with the sky it comes out of, so the jets, the
                 // bomber, the transport or the incoming rounds are in the picture as well as the impacts.

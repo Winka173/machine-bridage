@@ -113,7 +113,7 @@ namespace MachineBrigade.Game.Hud
                 box.Add(one);
                 return box;
             }
-            box.Add(new ArmourDiagram(armour, armour.Kind == ArmourKind.Structure));
+            box.Add(new ArmourDiagram(armour, ArmourDiagram.ShapeOf(def, armour.Kind)));
             var legend = Kit.Box("fc-armour__legend");
             for (var face = 0; face < 4; face++)
             {
@@ -296,24 +296,40 @@ namespace MachineBrigade.Game.Hud
     }
 
     /// <summary>
-    /// The unit seen from above, front up (prompt 15 D.2): a hull (or a structure's square) whose four borders are as
-    /// thick as each face's armour, dashed for none, with the gun pointing at the front. Colour from --icon-color.
+    /// The unit seen from above, front up (prompt 15 D.2): its outline, each face's part of it as thick as that face's
+    /// armour, dashed for none, and its roof (a turret, a ship's superstructure, a cockpit) as thick as the roof's armour.
+    /// Play-test 8 A (DECISIONS 22Q): each unit's own outline (a ship's pointed bow, sides and transom; an aircraft's nose,
+    /// wings and tail; a helicopter's cabin and boom; a vehicle without a turret its hull and cab; a structure's square),
+    /// no longer a tank for every unit. Colour from --icon-color.
     /// </summary>
     public sealed class ArmourDiagram : VisualElement
     {
+        /// <summary>The outline drawn: whose shape the faces are marked on.</summary>
+        public enum Shape
+        {
+            Tank,
+            Hull,
+            Structure,
+            Ship,
+            Aircraft,
+            Helicopter,
+        }
+
         private static readonly CustomStyleProperty<Color> IconColor = new("--icon-color");
 
         /// <summary>Border width in panel px by level: 0 dashed hairline, then 2, 4, 7, 10.</summary>
         public static readonly float[] Widths = { 1.5f, 2f, 4f, 7f, 10f, 13f };
 
         private readonly ArmourFaces _armour;
-        private readonly bool _structure;
+        private readonly Shape _shape;
         private Color _colour;
 
-        public ArmourDiagram(ArmourFaces armour, bool structure)
+        public ArmourDiagram(ArmourFaces armour, bool structure) : this(armour, structure ? Shape.Structure : Shape.Tank) { }
+
+        public ArmourDiagram(ArmourFaces armour, Shape shape)
         {
             _armour = armour;
-            _structure = structure;
+            _shape = shape;
             AddToClassList("fc-armour__diagram");
             pickingMode = PickingMode.Ignore;
             generateVisualContent += Draw;
@@ -325,6 +341,29 @@ namespace MachineBrigade.Game.Hud
             tooltip = string.Join("\n", Enumerable.Range(0, 4).Select(f => CombatIcons.ArmourTip(armour[f], armour.Kind, f)));
         }
 
+        /// <summary>The outline drawn for a unit.</summary>
+        public Shape Outline => _shape;
+
+        /// <summary>The unit's own outline: a ship, an aeroplane, a helicopter, a structure, a turreted vehicle or a turretless one.</summary>
+        public static Shape ShapeOf(VehicleDef def, ArmourKind kind)
+        {
+            if (def == null) return kind == ArmourKind.Structure ? Shape.Structure : Shape.Tank;
+            if (def.Naval != null) return Shape.Ship;
+            if (def.Flying) return def.FixedWing ? Shape.Aircraft : Shape.Helicopter;
+            if (kind == ArmourKind.Structure || def.Static) return Shape.Structure;
+            return def.Mounts.Count > 0 && def.Mounts[0].Aim == MountAim.Turret ? Shape.Tank : Shape.Hull;
+        }
+
+        /// <summary>The outline's width against its height (front to rear).</summary>
+        private static float Aspect(Shape shape) => shape switch
+        {
+            Shape.Structure => 1f,
+            Shape.Ship => 0.34f,
+            Shape.Aircraft => 0.95f,
+            Shape.Helicopter => 0.5f,
+            _ => 0.62f,
+        };
+
         private void Draw(MeshGenerationContext context)
         {
             var r = contentRect;
@@ -334,29 +373,147 @@ namespace MachineBrigade.Game.Hud
             p.fillColor = _colour;
             p.lineCap = LineCap.Butt;
             var pad = Widths[ArmourLevels.Max] * 0.5f + 2f;
-            var w = _structure ? Mathf.Min(r.width, r.height) - pad * 2f : Mathf.Min(r.width - pad * 2f, (r.height - pad * 2f) * 0.62f);
-            var h = _structure ? w : w / 0.62f;
+            var aspect = Aspect(_shape);
+            var w = Mathf.Min(r.width - pad * 2f, (r.height - pad * 2f) * aspect);
+            var h = w / aspect;
             var x0 = r.center.x - w / 2f;
             var y0 = r.center.y - h / 2f;
-            var x1 = x0 + w;
-            var y1 = y0 + h;
-            Edge(p, new Vector2(x0, y0), new Vector2(x1, y0), _armour.Front);
-            Edge(p, new Vector2(x1, y0), new Vector2(x1, y1), _armour.Side);
-            Edge(p, new Vector2(x0, y0), new Vector2(x0, y1), _armour.Side);
-            Edge(p, new Vector2(x0, y1), new Vector2(x1, y1), _armour.Rear);
-            // The roof: the turret (or the structure's gun mount) drawn as thick as the roof's armour.
-            var c = new Vector2(r.center.x, r.center.y + (_structure ? 0f : h * 0.08f));
-            var radius = w * (_structure ? 0.24f : 0.3f);
-            p.lineWidth = ArmourDiagram.Widths[Mathf.Clamp(_armour.Top, 0, ArmourLevels.Max)] * 0.6f + 1.2f;
+            // A point in the outline's own frame: u across (0 left, 1 right), v front to rear (0 front, 1 rear).
+            Vector2 At(float u, float v) => new(x0 + u * w, y0 + v * h);
+            switch (_shape)
+            {
+                case Shape.Ship:
+                    // The bow comes to a point; long sides; a transom stern with bevelled corners; the superstructure
+                    // amidships and a gun forward, pointing over the bow.
+                    Line(p, _armour.Front, At(0f, 0.26f), At(0.5f, 0f), At(1f, 0.26f));
+                    Line(p, _armour.Side, At(0f, 0.26f), At(0f, 0.92f));
+                    Line(p, _armour.Side, At(1f, 0.26f), At(1f, 0.92f));
+                    Line(p, _armour.Rear, At(0f, 0.92f), At(0.18f, 1f), At(0.82f, 1f), At(1f, 0.92f));
+                    Roof(p, Rect(At(0.24f, 0.46f), At(0.76f, 0.72f)));
+                    Gun(p, At(0.5f, 0.34f), w * 0.16f, At(0.5f, 0.12f));
+                    break;
+
+                case Shape.Aircraft:
+                    // The nose; the fuselage's sides with the swept wings and the tailplane; the tail; the cockpit on the roof.
+                    Line(p, _armour.Front, At(0.44f, 0.16f), At(0.5f, 0f), At(0.56f, 0.16f));
+                    Line(p, _armour.Side, At(0.44f, 0.16f), At(0.44f, 0.36f), At(0f, 0.6f), At(0f, 0.68f), At(0.44f, 0.6f), At(0.44f, 0.84f),
+                        At(0.24f, 0.96f));
+                    Line(p, _armour.Side, At(0.56f, 0.16f), At(0.56f, 0.36f), At(1f, 0.6f), At(1f, 0.68f), At(0.56f, 0.6f), At(0.56f, 0.84f),
+                        At(0.76f, 0.96f));
+                    Line(p, _armour.Rear, At(0.24f, 0.96f), At(0.24f, 1f), At(0.76f, 1f), At(0.76f, 0.96f));
+                    Roof(p, Ellipse(At(0.5f, 0.27f), w * 0.045f, h * 0.07f));
+                    break;
+
+                case Shape.Helicopter:
+                    // The rounded nose; the cabin's sides narrowing to the tail boom; the tail's stabiliser; the rotor head on the roof.
+                    Line(p, _armour.Front, Arc(At(0.5f, 0.2f), w * 0.3f, h * 0.17f));
+                    Line(p, _armour.Side, At(0.2f, 0.2f), At(0.2f, 0.52f), At(0.44f, 0.64f), At(0.44f, 0.96f), At(0.2f, 0.96f));
+                    Line(p, _armour.Side, At(0.8f, 0.2f), At(0.8f, 0.52f), At(0.56f, 0.64f), At(0.56f, 0.96f), At(0.8f, 0.96f));
+                    Line(p, _armour.Rear, At(0.2f, 0.96f), At(0.2f, 1f), At(0.8f, 1f), At(0.8f, 0.96f));
+                    Roof(p, Ellipse(At(0.5f, 0.36f), w * 0.16f, w * 0.16f));
+                    Rotor(p, At(0.5f, 0.36f), w * 0.5f);
+                    break;
+
+                case Shape.Structure:
+                    Line(p, _armour.Front, At(0f, 0f), At(1f, 0f));
+                    Line(p, _armour.Side, At(1f, 0f), At(1f, 1f));
+                    Line(p, _armour.Side, At(0f, 0f), At(0f, 1f));
+                    Line(p, _armour.Rear, At(0f, 1f), At(1f, 1f));
+                    Gun(p, At(0.5f, 0.5f), w * 0.24f, At(0.5f, 0f));
+                    break;
+
+                case Shape.Hull:
+                    // A vehicle without a turret: its hull, and the cab (or the fighting compartment) forward on the roof.
+                    Line(p, _armour.Front, At(0f, 0f), At(1f, 0f));
+                    Line(p, _armour.Side, At(1f, 0f), At(1f, 1f));
+                    Line(p, _armour.Side, At(0f, 0f), At(0f, 1f));
+                    Line(p, _armour.Rear, At(0f, 1f), At(1f, 1f));
+                    Roof(p, Rect(At(0.18f, 0.12f), At(0.82f, 0.42f)));
+                    break;
+
+                default:
+                    // A turreted vehicle: the hull, the turret on the roof, the gun pointing at the front.
+                    Line(p, _armour.Front, At(0f, 0f), At(1f, 0f));
+                    Line(p, _armour.Side, At(1f, 0f), At(1f, 1f));
+                    Line(p, _armour.Side, At(0f, 0f), At(0f, 1f));
+                    Line(p, _armour.Rear, At(0f, 1f), At(1f, 1f));
+                    Gun(p, At(0.5f, 0.58f), w * 0.3f, At(0.5f, -0.12f));
+                    break;
+            }
+        }
+
+        /// <summary>The roof's outline (a closed path), as thick as the roof's armour.</summary>
+        private void Roof(Painter2D p, Vector2[] outline)
+        {
+            p.lineWidth = Widths[Mathf.Clamp(_armour.Top, 0, ArmourLevels.Max)] * 0.6f + 1.2f;
+            p.lineCap = LineCap.Butt;
             p.BeginPath();
-            p.Arc(c, radius, Angle.Degrees(0f), Angle.Degrees(360f));
+            p.MoveTo(outline[0]);
+            for (var i = 1; i < outline.Length; i++) p.LineTo(outline[i]);
+            p.ClosePath();
+            p.Stroke();
+        }
+
+        /// <summary>A turret (the roof, as thick as its armour) and its gun out to <paramref name="muzzle"/>.</summary>
+        private void Gun(Painter2D p, Vector2 centre, float radius, Vector2 muzzle)
+        {
+            p.lineWidth = Widths[Mathf.Clamp(_armour.Top, 0, ArmourLevels.Max)] * 0.6f + 1.2f;
+            p.BeginPath();
+            p.Arc(centre, radius, Angle.Degrees(0f), Angle.Degrees(360f));
             p.Stroke();
             p.lineWidth = 3f;
             p.lineCap = LineCap.Round;
             p.BeginPath();
-            p.MoveTo(new Vector2(c.x, c.y - radius));
-            p.LineTo(new Vector2(c.x, y0 - (_structure ? 0f : h * 0.12f)));
+            p.MoveTo(new Vector2(centre.x, centre.y - radius));
+            p.LineTo(muzzle);
             p.Stroke();
+            p.lineCap = LineCap.Butt;
+        }
+
+        /// <summary>A helicopter's two rotor blades, a hairline across the roof (not armour).</summary>
+        private static void Rotor(Painter2D p, Vector2 centre, float reach)
+        {
+            p.lineWidth = 1.5f;
+            p.lineCap = LineCap.Round;
+            var d = new Vector2(0.72f, 0.69f) * reach;
+            p.BeginPath();
+            p.MoveTo(centre - d);
+            p.LineTo(centre + d);
+            p.MoveTo(centre + new Vector2(-d.x, d.y));
+            p.LineTo(centre + new Vector2(d.x, -d.y));
+            p.Stroke();
+            p.lineCap = LineCap.Butt;
+        }
+
+        private static Vector2[] Rect(Vector2 a, Vector2 b) => new[] { a, new Vector2(b.x, a.y), b, new Vector2(a.x, b.y) };
+
+        private static Vector2[] Ellipse(Vector2 centre, float rx, float ry)
+        {
+            var points = new Vector2[20];
+            for (var i = 0; i < points.Length; i++)
+            {
+                var a = i * Mathf.PI * 2f / points.Length;
+                points[i] = centre + new Vector2(Mathf.Cos(a) * rx, Mathf.Sin(a) * ry);
+            }
+            return points;
+        }
+
+        /// <summary>The front half of an ellipse, left to right over the top (a helicopter's nose).</summary>
+        private static Vector2[] Arc(Vector2 centre, float rx, float ry)
+        {
+            var points = new Vector2[11];
+            for (var i = 0; i < points.Length; i++)
+            {
+                var a = Mathf.PI + i * Mathf.PI / (points.Length - 1);
+                points[i] = centre + new Vector2(Mathf.Cos(a) * rx, Mathf.Sin(a) * ry);
+            }
+            return points;
+        }
+
+        /// <summary>One face's part of the outline, as thick as its armour (dashed for none).</summary>
+        private static void Line(Painter2D p, int level, params Vector2[] points)
+        {
+            for (var i = 1; i < points.Length; i++) Edge(p, points[i - 1], points[i], level);
         }
 
         private static void Edge(Painter2D p, Vector2 a, Vector2 b, int level)

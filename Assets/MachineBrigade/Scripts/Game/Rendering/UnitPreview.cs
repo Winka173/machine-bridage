@@ -223,8 +223,41 @@ namespace MachineBrigade.Game.Rendering
             var radius = Mathf.Max(bounds.extents.magnitude, 1f);
             var distance = radius / Mathf.Sin(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 1.05f;
             var look = _turntable.position + Vector3.up * bounds.extents.y * 0.8f;
-            _camera.transform.position = look + new Vector3(0.62f, 0.52f, -1f).normalized * distance;
+            var back = new Vector3(0.62f, 0.52f, -1f).normalized;
+            // Play-test 8 A (DECISIONS 22Q): framed by the model's bounds as the camera really sees them (its view cut to
+            // the box, see Project), at every turn of the turntable, and the far clip pushed out past the model: the
+            // Leviathan's 86 m hull ran out of the picture and past the old 200 m far plane.
+            distance = Mathf.Max(distance, FitDistance(bounds.extents, look - _turntable.position, back) * 1.05f);
+            _camera.farClipPlane = Mathf.Max(200f, distance + radius * 2f + 10f);
+            Project();
+            _camera.transform.position = look + back * distance;
             _camera.transform.LookAt(look);
+        }
+
+        /// <summary>
+        /// How far back along <paramref name="back"/> the camera must stand for everything the turntable can turn into view
+        /// to fit its real field of view: the model's footprint swept round (a circle of its half-diagonal) at the foot and
+        /// the top of its bounds, <paramref name="lift"/> being where the camera looks above the turntable.
+        /// </summary>
+        private float FitDistance(Vector3 extents, Vector3 lift, Vector3 back)
+        {
+            var aspect = (float)Texture.width / Texture.height;
+            var tanV = Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * Mathf.Max(0.8f, 4f / 3f / aspect);
+            var tanH = tanV * aspect;
+            var forward = -back;
+            var right = Vector3.Cross(Vector3.up, forward).normalized;
+            var up = Vector3.Cross(forward, right);
+            var sweep = new Vector2(extents.x, extents.z).magnitude;
+            var need = 0f;
+            for (var level = 0; level < 2; level++)
+                for (var k = 0; k < 24; k++)
+                {
+                    var a = k * Mathf.PI * 2f / 24f;
+                    var q = new Vector3(Mathf.Cos(a) * sweep, level * extents.y * 2f, Mathf.Sin(a) * sweep) - lift;
+                    var along = Vector3.Dot(q, back);
+                    need = Mathf.Max(need, along + Mathf.Max(Mathf.Abs(Vector3.Dot(q, right)) / tanH, Mathf.Abs(Vector3.Dot(q, up)) / tanV));
+                }
+            return need;
         }
 
         private static void SetLayer(Transform t)
