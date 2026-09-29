@@ -22,7 +22,7 @@ namespace MachineBrigade.Game.Hud
             ["unit.kronos"] = ("Kronos · Mining Excavator", "Kronos · Máy xúc mỏ"),
             ["unit.typhon"] = ("Typhon · Missile Submarine", "Typhon · Tàu ngầm tên lửa"),
             ["unit.ixion"] = ("Ixion · Giant Wheel", "Ixion · Xe bánh khổng lồ"),
-            ["unit.caspian"] = ("Caspian · Ekranoplan", "Caspian · Ekranoplan"),
+            ["unit.caspian"] = ("Caspian · Ekranoplan", "Caspian · Tàu bay sát mặt nước"),
             ["unit.bastion_mk0"] = ("Bastion Mk.0 · Prototype Fortress", "Bastion Mk.0 · Pháo đài nguyên mẫu"),
             ["unit.fenrir"] = ("Fenrir · Vanguard", "Fenrir · Xe tiên phong"),
             ["unit.scylla"] = ("Scylla · Destroyer", "Scylla · Tàu khu trục"),
@@ -49,8 +49,8 @@ namespace MachineBrigade.Game.Hud
             ["note.daedalus"] = ("Aurel's troop lander: drops pods without pause, two 30 mm guns, point-defence lasers. Upper hull 3, belly 2.", "Tàu đổ bộ của Aurel: thả khoang đổ bộ liên tục, hai pháo 30 mm, tháp la-de phòng thủ. Thân trên cấp 3, bụng 2."),
             ["note.kronos"] = ("A giant bucket-wheel excavator on a fixed route to your base, crushing walls and towers. Reaching your HQ loses the mission.", "Máy xúc bánh gầu khổng lồ chạy theo đường cố định về căn cứ ta, nghiền cả tường và tháp. Tới HQ là thua nhiệm vụ."),
             ["note.typhon"] = ("A missile submarine: out of reach while submerged, surfaces on a schedule; launches missiles at your base from under water.", "Tàu ngầm tên lửa: lặn thì không bắn tới được, nổi lên theo lịch; phóng tên lửa vào căn cứ ta từ dưới nước."),
-            ["note.ixion"] = ("A Tsar Tank of a wheel: rolls fast and straight, crushes light vehicles, turns very slowly.", "Xe bánh khổng lồ kiểu Tsar Tank: lăn nhanh theo đường thẳng, nghiền xe nhẹ, xoay rất chậm."),
-            ["note.caspian"] = ("A sea monster of an ekranoplan: fast passes along the coast, then away; anti-ship missiles at your base.", "Ekranoplan \"quái vật biển\": lao dọc bờ từng lượt rồi vòng ra xa; tên lửa chống hạm đánh vào căn cứ."),
+            ["note.ixion"] = ("A Tsar Tank of a wheel: rolls fast and straight, crushes light vehicles, turns very slowly.", "Xe bánh khổng lồ kiểu xe tăng Sa hoàng: lăn nhanh theo đường thẳng, nghiền xe nhẹ, xoay rất chậm."),
+            ["note.caspian"] = ("A sea monster of an ekranoplan: fast passes along the coast, then away; anti-ship missiles at your base.", "Tàu bay sát mặt nước \"quái vật biển\": lao dọc bờ từng lượt rồi vòng ra xa; tên lửa chống hạm đánh vào căn cứ."),
             ["note.bastion_mk0"] = ("The first Bastion: a mortar and two 40 mm guns on tracks, crawling towards your base.", "Bastion đầu tiên: một khẩu cối và hai pháo 40 mm trên xích, bò dần về căn cứ ta."),
             ["note.fenrir"] = ("Orlov's fast raider: two rocket boxes and flak; it dashes in, fires and pulls back.", "Xe đột kích nhanh của Orlov: hai hộp rốc-két và cao xạ; lao vào bắn rồi rút."),
             ["note.scylla"] = ("Kessler's destroyer on the near-shore lane: one main turret, missile cells, a CIWS. Tank guns reach it from the piers.", "Tàu khu trục của Kessler trên tuyến gần bờ: một tháp pháo chính, ống phóng tên lửa, CIWS. Pháo xe tăng bắn tới từ đầu cầu tàu."),
@@ -65,7 +65,7 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: crawls down the mission's road; its two [[workshop doors]] send out 1-2 vehicles every 20 s (light tanks and IFVs, battle tanks from phase 2), one more each minute, never more than six alive. Four 120 mm turrets and flak cover it.\n" +
                 "Strong / weak: front armour [[4]], sides 3, rear [[2]]: the doors are at the back, and so is its weak armour. Broken tracks slow it.\n" +
                 "Tip: flank it and break both doors first: it stops building, and its big attack is only the shells.",
-                "[[Trùm]] · nhà máy di động · vừa đi vừa sinh quân\n" +
+                "[[Boss]] · nhà máy di động · vừa đi vừa sinh quân\n" +
                 "Cách đánh: bò chậm theo đường của nhiệm vụ; hai [[cửa xưởng]] cứ 20 giây thả 1–2 xe (xe tăng nhẹ và xe bộ binh, từ pha 2 thêm tăng chủ lực), mỗi phút thêm một xe mỗi lượt, tối đa sáu xe còn sống. Bốn tháp pháo 120 mm và cao xạ che chắn.\n" +
                 "Mạnh / yếu: giáp trước cấp [[4]], hông 3, sau [[2]]: cửa xưởng ở phía sau, giáp mỏng cũng ở đó. Phá cụm xích thì nó chậm lại.\n" +
                 "Mẹo: vòng ra sau, phá cả hai cửa trước: nó ngừng sinh xe, đòn lớn chỉ còn loạt pháo."),
@@ -74,7 +74,7 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: about 10 s in orbit (out of reach), then high and low on a fixed schedule, never back to orbit. Its three [[pod bays]] drop pods of 1-2 vehicles without pause (at most eight alive), each pod a target as it falls. In phase 3 it stops low with every bay open.\n" +
                 "Strong / weak: its own guns are weaker than Icarus's; upper hull [[3]], belly [[2]]. Point-defence lasers take missiles aimed at it.\n" +
                 "Tip: shoot the pods down and break the bays: each one lost slows the drops, and the mass drop falls short.",
-                "[[Trùm]] · tàu đổ bộ quỹ đạo · mưa khoang đổ bộ\n" +
+                "[[Boss]] · tàu đổ bộ quỹ đạo · mưa khoang đổ bộ\n" +
                 "Cách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang.\n" +
                 "Mạnh / yếu: tự nó bắn yếu hơn Icarus; thân trên cấp [[3]], bụng [[2]]. Tháp la-de phòng thủ chặn tên lửa bắn vào nó.\n" +
                 "Mẹo: bắn hạ khoang đang rơi và phá cửa thả: mỗi cửa mất là thả chậm hơn, đòn đổ bộ lớn cũng hụt đi."),
@@ -83,7 +83,7 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: very slowly down a fixed route to your base; its [[bucket wheel]] crushes everything in front of it, walls and towers too. If it reaches your HQ the mission is lost. Phase 2 it goes faster; phase 3 the wheel spins up and throws rock round it.\n" +
                 "Strong / weak: wheel armour [[4]], body 3, track units [[2]]. Each track unit broken slows it.\n" +
                 "Tip: break the tracks to buy time, and the [[boom]] to stop its sweep; do not build walls in its way.",
-                "[[Trùm]] · máy xúc mỏ · nghiền đường tới HQ\n" +
+                "[[Boss]] · máy xúc mỏ · nghiền đường tới HQ\n" +
                 "Cách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước, cả tường lẫn tháp. Tới được HQ là thua nhiệm vụ. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\n" +
                 "Mạnh / yếu: bánh gầu giáp cấp [[4]], thân 3, cụm xích [[2]]. Mỗi cụm xích bị phá là nó chậm lại.\n" +
                 "Mẹo: phá cụm xích để câu giờ, phá [[cần gầu]] để chặn đòn quét; đừng xây tường chắn đường nó."),
@@ -92,7 +92,7 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: submerged (out of reach) and surfaced (a target on the water) on each phase's schedule, coming up somewhere else each time; bubbles mark the spot first. Surfaced, it fires cruise missiles and guards itself with a SAM. Phase 3 it stays up and adds a 100 mm deck gun.\n" +
                 "Strong / weak: hull armour [[4]], sail and deck [[2]]: artillery, bombs and top attacks hit the deck.\n" +
                 "Tip: park artillery and aircraft for the bubbles; break the [[launch doors]] during a warning (they open above the water) or shoot the missiles down.",
-                "[[Trùm]] · tàu ngầm tên lửa · đánh từ dưới biển\n" +
+                "[[Boss]] · tàu ngầm tên lửa · đánh từ dưới biển\n" +
                 "Cách đánh: lặn (không bắn tới được) và nổi (mục tiêu trên mặt nước) theo lịch từng pha, mỗi lần nổi ở một chỗ khác; bong bóng báo trước chỗ nổi. Khi nổi nó phóng tên lửa hành trình và tự vệ bằng tên lửa phòng không. Pha 3 nổi hẳn, thêm pháo boong 100 mm.\n" +
                 "Mạnh / yếu: thân giáp cấp [[4]], tháp chỉ huy và boong [[2]]: pháo binh, bom và đòn đánh nóc đánh vào boong.\n" +
                 "Mẹo: chờ sẵn pháo binh và máy bay chỗ bong bóng; phá [[cửa ống phóng]] lúc cảnh báo (cửa mở trên mặt nước) hoặc bắn hạ tên lửa."),
@@ -110,7 +110,7 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: skims in along the coast for about 6 s at a time, then swings out to sea for about 20 s; a target on the water. Its big attack is four anti-ship missiles at the shore and your base.\n" +
                 "Strong / weak: thin armour; the nose [[engines]] broken slow it down.\n" +
                 "Tip: keep fast-firing guns on the shore for its passes, and anti-air or C-RAM for the missiles.",
-                "[[Mini boss]] · ekranoplan · lao dọc bờ từng lượt\n" +
+                "[[Mini boss]] · tàu bay sát mặt nước · lao dọc bờ từng lượt\n" +
                 "Cách đánh: lao dọc bờ khoảng 6 giây mỗi lượt rồi vòng ra xa khoảng 20 giây; là mục tiêu trên mặt nước. Đòn lớn là bốn tên lửa chống hạm vào bờ và căn cứ ta.\n" +
                 "Mạnh / yếu: giáp mỏng; phá [[cụm động cơ]] ở mũi thì nó chậm lại.\n" +
                 "Mẹo: để sẵn pháo bắn nhanh trên bờ đón lượt lao, và phòng không hoặc C-RAM cho tên lửa."),
@@ -165,9 +165,9 @@ namespace MachineBrigade.Game.Hud
                 "Strong / weak: at high altitude only long-range anti-air and fighters reach it; low, every anti-air weapon does.\n" +
                 "Tip: wait for its low windows; break the uplink to stop the rods.",
                 "[[Mini boss]] · phi thuyền nguyên mẫu · lần đầu thấy Dự án Icarus\n" +
-                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]] và một [[khoang đổ bộ]]; liên kết vệ tinh gọi ba thanh tungsten.\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]] và một [[khoang đổ bộ]]; liên kết vệ tinh gọi ba thanh vonfram.\n" +
                 "Mạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới.\n" +
-                "Mẹo: chờ lúc nó xuống thấp; phá ăng-ten liên kết để chặn thanh tungsten."),
+                "Mẹo: chờ lúc nó xuống thấp; phá ăng-ten liên kết để chặn thanh vonfram."),
             ["guide.argus"] = (
                 "[[Mini boss]] · scout airship · directs the enemy's guns\n" +
                 "How it fights: while it lives, the enemy's artillery falls about half as wide; its big attack calls a barrage on a marked area. Flak guns and a [[radar]].\n" +
@@ -182,7 +182,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.parts.tip.moloch"] = ("Tip: flank it for the [[workshop doors]] at the back (armour 2): each one broken halves what it builds, both stop it; the [[tracks]] slow it.", "Mẹo: vòng ra sau đánh [[cửa xưởng]] (giáp cấp 2): phá một cửa là sinh xe giảm một nửa, phá cả hai là ngừng hẳn; phá [[cụm xích]] để làm chậm."),
             ["guide.parts.tip.daedalus"] = ("Tip: break the [[drop-pod bays]] (each one slows the drops; the mass drop falls as three pods with one gone) and the [[point-defence lasers]] before sending missiles.", "Mẹo: phá [[cửa thả khoang]] (mỗi cửa mất là thả chậm hơn; mất một cửa thì đòn đổ bộ lớn chỉ còn ba khoang) và [[tháp la-de phòng thủ]] trước khi dùng tên lửa."),
             ["guide.parts.tip.kronos"] = ("Tip: the four [[track units]] (armour 2) each slow it; the [[boom]] carries its sweep; the [[bucket wheel]] (armour 4) is what crushes.", "Mẹo: mỗi [[cụm xích]] (giáp cấp 2) bị phá là nó chậm lại; [[cần gầu]] mang đòn quét; [[bánh gầu]] (giáp cấp 4) là thứ nghiền."),
-            ["guide.parts.tip.typhon"] = ("Tip: the [[launch doors]] carry its missiles (they show above the water during a warning); the [[sail]] aims its SAM; the [[sonar]] its fire control.", "Mẹo: [[cửa ống phóng]] mang tên lửa (lộ trên mặt nước lúc cảnh báo); [[tháp chỉ huy]] ngắm tên lửa phòng không; [[sonar]] là hệ điều khiển hỏa lực."),
+            ["guide.parts.tip.typhon"] = ("Tip: the [[launch doors]] carry its missiles (they show above the water during a warning); the [[sail]] aims its SAM; the [[sonar]] its fire control.", "Mẹo: [[cửa ống phóng]] mang tên lửa (lộ trên mặt nước lúc cảnh báo); [[tháp chỉ huy]] ngắm tên lửa phòng không; [[sô-na]] là hệ điều khiển hỏa lực."),
             ["guide.parts.tip.ixion"] = ("Tip: the rear [[steering wheel]] is armour 1; a [[big wheel]] broken during its charge warning throws it off its line.", "Mẹo: [[bánh lái sau]] giáp cấp 1; phá một [[bánh lớn]] lúc nó cảnh báo cú lao là cú lao bị chệch và dừng."),
             ["guide.parts.tip.caspian"] = ("Tip: break the [[missile launcher]] on its back to stop the volley; the nose [[engines]] slow its passes.", "Mẹo: phá [[bệ tên lửa]] trên lưng để chặn loạt tên lửa; phá [[cụm động cơ]] ở mũi để các lượt lao chậm lại."),
             ["guide.parts.tip.bastion_mk0"] = ("Tip: break the [[mortar]] first; the two turrets only reach close.", "Mẹo: phá [[khẩu cối]] trước; hai tháp pháo chỉ bắn gần."),
@@ -190,7 +190,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.parts.tip.scylla"] = ("Tip: break the [[missile cells]] for its cruise missiles and the [[CIWS]] before sending missiles.", "Mẹo: phá [[ống phóng tên lửa]] để chặn tên lửa hành trình, phá [[CIWS]] trước khi dùng tên lửa."),
             ["guide.parts.tip.locust"] = ("Tip: its [[drone bay]] is everything it has.", "Mẹo: [[khoang drone]] là tất cả những gì nó có."),
             ["guide.parts.tip.behemoth_mk2"] = ("Tip: the [[main gun]] is its punch; the [[protection system]] shoots down two missiles a volley.", "Mẹo: [[pháo chính]] là đòn mạnh nhất; [[hệ thống bảo vệ]] bắn hạ hai tên lửa mỗi loạt."),
-            ["guide.parts.tip.icarus_mk0"] = ("Tip: the [[satellite uplink]] carries the rods, the [[pod bay]] the drops.", "Mẹo: [[ăng-ten liên kết]] mang thanh tungsten, [[khoang đổ bộ]] mang các đợt thả."),
+            ["guide.parts.tip.icarus_mk0"] = ("Tip: the [[satellite uplink]] carries the rods, the [[pod bay]] the drops.", "Mẹo: [[ăng-ten liên kết]] mang thanh vonfram, [[khoang đổ bộ]] mang các đợt thả."),
             ["guide.parts.tip.argus"] = ("Tip: the [[radar]] directs the enemy's guns and carries its barrage call.", "Mẹo: [[radar]] chỉ điểm cho pháo địch và mang đòn gọi pháo."),
 
             // ---------------------------------------------------------------- new part kinds
@@ -202,7 +202,7 @@ namespace MachineBrigade.Game.Hud
             ["part.sail"] = ("sail", "tháp chỉ huy"),
             ["part.launchdoors"] = ("launch doors", "cửa ống phóng"),
             ["part.rudder"] = ("rudder", "bánh lái"),
-            ["part.sonar"] = ("sonar", "sonar"),
+            ["part.sonar"] = ("sonar", "sô-na"),
             ["part.wheel"] = ("big wheel", "bánh lớn"),
             ["part.steerwheel"] = ("steering wheel", "bánh lái sau"),
             ["part.wing"] = ("wing", "cánh"),
@@ -210,15 +210,15 @@ namespace MachineBrigade.Game.Hud
             ["part.fx.stop.factory"] = ("its workshop builds less (nothing once both doors are broken)", "xưởng sinh ít xe hơn (ngừng hẳn khi cả hai cửa bị phá)"),
             ["part.fx.stop.crush"] = ("it crushes nothing in its way", "nó không còn nghiền được gì trên đường"),
             ["part.fx.stop.spotaura"] = ("the enemy's artillery scatters as usual again", "pháo binh địch lại bắn tản mát như thường"),
-            ["radio.part.door"] = ("Command: one of {0}'s workshop doors is down. It is building half as much!", "Chỉ huy: một cửa xưởng của {0} đã bị phá. Nó chỉ sinh được một nửa số xe!"),
-            ["radio.part.bucketwheel"] = ("Command: {0}'s bucket wheel has stopped. It cannot crush anything now!", "Chỉ huy: bánh gầu của {0} đã ngừng quay. Nó không nghiền được gì nữa!"),
-            ["radio.part.boom"] = ("Command: {0}'s boom is down: no more sweeps!", "Chỉ huy: cần gầu của {0} đã gãy: hết đòn quét!"),
-            ["radio.part.cab"] = ("Command: {0}'s control cab is burning. It steers badly now.", "Chỉ huy: buồng điều khiển của {0} đang cháy. Nó lái rất vụng."),
-            ["radio.part.sail"] = ("Command: {0}'s sail is wrecked: its SAM is firing blind.", "Chỉ huy: tháp chỉ huy của {0} tan nát: tên lửa phòng không của nó bắn mù."),
-            ["radio.part.launchdoors"] = ("Command: {0}'s launch doors are jammed shut on one side!", "Chỉ huy: một cụm cửa ống phóng của {0} đã kẹt cứng!"),
-            ["radio.part.wheel"] = ("Command: {0} has lost a wheel. It is going round in circles!", "Chỉ huy: {0} đã mất một bánh. Nó đang quay vòng!"),
-            ["radio.part.engines"] = ("Command: {0}'s engines are burning. It is slowing down!", "Chỉ huy: cụm động cơ của {0} đang cháy. Nó chậm lại rồi!"),
-            ["radio.part.antiship"] = ("Command: {0}'s missile launcher is gone. No more volleys!", "Chỉ huy: bệ tên lửa của {0} đã bị phá. Hết loạt tên lửa!"),
+            ["radio.part.door"] = ("Command: one of {boss}'s workshop doors is down. It is building half as much!", "Chỉ huy: một cửa xưởng của {boss} đã bị phá. Nó chỉ sinh được một nửa số xe!"),
+            ["radio.part.bucketwheel"] = ("Command: {boss}'s bucket wheel has stopped. It cannot crush anything now!", "Chỉ huy: bánh gầu của {boss} đã ngừng quay. Nó không nghiền được gì nữa!"),
+            ["radio.part.boom"] = ("Command: {boss}'s boom is down: no more sweeps!", "Chỉ huy: cần gầu của {boss} đã gãy: hết đòn quét!"),
+            ["radio.part.cab"] = ("Command: {boss}'s control cab is burning. It steers badly now.", "Chỉ huy: buồng điều khiển của {boss} đang cháy. Nó lái rất vụng."),
+            ["radio.part.sail"] = ("Command: {boss}'s sail is wrecked: its SAM is firing blind.", "Chỉ huy: tháp chỉ huy của {boss} tan nát: tên lửa phòng không của nó bắn mù."),
+            ["radio.part.launchdoors"] = ("Command: {boss}'s launch doors are jammed shut on one side!", "Chỉ huy: một cụm cửa ống phóng của {boss} đã kẹt cứng!"),
+            ["radio.part.wheel"] = ("Command: {boss} has lost a wheel. It is going round in circles!", "Chỉ huy: {boss} đã mất một bánh. Nó đang quay vòng!"),
+            ["radio.part.engines"] = ("Command: {boss}'s engines are burning. It is slowing down!", "Chỉ huy: cụm động cơ của {boss} đang cháy. Nó chậm lại rồi!"),
+            ["radio.part.antiship"] = ("Command: {boss}'s missile launcher is gone. No more volleys!", "Chỉ huy: bệ tên lửa của {boss} đã bị phá. Hết loạt tên lửa!"),
 
             // ---------------------------------------------------------------- arrival lines (prompt 20 K: each boss speaks for its general)
             ["radio.brandt.bastion"] = ("Brandt: \"Bastion is rolling. Nothing has ever taken a fortress that walks.\"", "Brandt: \"Bastion lăn bánh. Chưa ai hạ nổi một pháo đài biết đi.\""),
@@ -238,17 +238,17 @@ namespace MachineBrigade.Game.Hud
             ["radio.sen.matriarch"] = ("Dr Sen: \"Matriarch, open the hives. Let the children play.\"", "Tiến sĩ Sen: \"Matriarch, mở tổ. Cho lũ con đi chơi.\""),
             ["radio.sen.hive"] = ("Dr Sen: \"The Hive is awake. Keep your aircraft home.\"", "Tiến sĩ Sen: \"Tổ ong đã thức. Giữ máy bay của các người ở nhà đi.\""),
             ["radio.sen.locust"] = ("Dr Sen: \"Locust, swarm. Numbers are my armour.\"", "Tiến sĩ Sen: \"Locust, xuất bầy. Số đông là lớp giáp của ta.\""),
-            ["radio.hung.nemesis"] = ("Lý Hàn: \"Nemesis is on the rails. When it stops, the sky opens.\"", "Lý Hàn: \"Nemesis đã lên đường ray. Khi nó dừng, bầu trời sẽ mở.\""),
-            ["radio.hung.kronos"] = ("Lý Hàn: \"Kronos eats mountains. Your base is a smaller meal.\"", "Lý Hàn: \"Kronos ăn cả núi. Căn cứ của các người chỉ là bữa nhẹ.\""),
-            ["radio.hung.kronos.phase2"] = ("Lý Hàn: \"Full power to the tracks.\"", "Lý Hàn: \"Dồn hết công suất cho xích.\""),
-            ["radio.hung.kronos.phase3"] = ("Lý Hàn: \"Spin the wheel up. Let the rock fly.\"", "Lý Hàn: \"Quay bánh gầu hết cỡ. Cho đá bay.\""),
-            ["radio.hung.typhon"] = ("Lý Hàn: \"Typhon is under you, Colonel. You will not see it until it is too late.\"", "Lý Hàn: \"Typhon ở ngay dưới chân các người, đại tá. Thấy được nó thì đã muộn.\""),
-            ["radio.hung.typhon.sunk"] = ("Lý Hàn: \"Typhon... flood the tubes. Let it take its secrets down.\"", "Lý Hàn: \"Typhon... cho nước tràn ống phóng. Để nó mang bí mật xuống đáy.\""),
-            ["radio.hung.ixion"] = ("Lý Hàn: \"Ixion does not turn. Neither will I.\"", "Lý Hàn: \"Ixion không quay đầu. Ta cũng vậy.\""),
-            ["radio.hung.caspian"] = ("Lý Hàn: \"Caspian, skim the coast. Low and fast.\"", "Lý Hàn: \"Caspian, lướt dọc bờ. Thấp và nhanh.\""),
-            ["radio.hung.caspian.sunk"] = ("Lý Hàn: \"The sea monster is down. Recall the boats.\"", "Lý Hàn: \"Quái vật biển gục rồi. Gọi xuồng về.\""),
-            ["radio.hung.borer"] = ("Lý Hàn: \"Tartarus is under the ridge. Listen to the ground.\"", "Lý Hàn: \"Tartarus đang dưới sườn núi. Hãy nghe mặt đất.\""),
-            ["radio.hung.borer.half"] = ("Lý Hàn: \"Deeper, faster. Break them from below.\"", "Lý Hàn: \"Sâu hơn, nhanh hơn. Đập chúng từ bên dưới.\""),
+            ["radio.hung.nemesis"] = ("{@lyhan}: \"Nemesis is on the rails. When it stops, the sky opens.\"", "{@lyhan}: \"Nemesis đã lên đường ray. Khi nó dừng, bầu trời sẽ mở.\""),
+            ["radio.hung.kronos"] = ("{@lyhan}: \"Kronos eats mountains. Your base is a smaller meal.\"", "{@lyhan}: \"Kronos ăn cả núi. Căn cứ của các người chỉ là bữa nhẹ.\""),
+            ["radio.hung.kronos.phase2"] = ("{@lyhan}: \"Full power to the tracks.\"", "{@lyhan}: \"Dồn hết công suất cho xích.\""),
+            ["radio.hung.kronos.phase3"] = ("{@lyhan}: \"Spin the wheel up. Let the rock fly.\"", "{@lyhan}: \"Quay bánh gầu hết cỡ. Cho đá bay.\""),
+            ["radio.hung.typhon"] = ("{@lyhan}: \"Typhon is under you, Colonel. You will not see it until it is too late.\"", "{@lyhan}: \"Typhon ở ngay dưới chân các người, đại tá. Thấy được nó thì đã muộn.\""),
+            ["radio.hung.typhon.sunk"] = ("{@lyhan}: \"Typhon... flood the tubes. Let it take its secrets down.\"", "{@lyhan}: \"Typhon... cho nước tràn ống phóng. Để nó mang bí mật xuống đáy.\""),
+            ["radio.hung.ixion"] = ("{@lyhan}: \"Ixion does not turn. Neither will I.\"", "{@lyhan}: \"Ixion không quay đầu. Ta cũng vậy.\""),
+            ["radio.hung.caspian"] = ("{@lyhan}: \"Caspian, skim the coast. Low and fast.\"", "{@lyhan}: \"Caspian, lướt dọc bờ. Thấp và nhanh.\""),
+            ["radio.hung.caspian.sunk"] = ("{@lyhan}: \"The sea monster is down. Recall the boats.\"", "{@lyhan}: \"Quái vật biển gục rồi. Gọi xuồng về.\""),
+            ["radio.hung.borer"] = ("{@lyhan}: \"Tartarus is under the ridge. Listen to the ground.\"", "{@lyhan}: \"Tartarus đang dưới sườn núi. Hãy nghe mặt đất.\""),
+            ["radio.hung.borer.half"] = ("{@lyhan}: \"Deeper, faster. Break them from below.\"", "{@lyhan}: \"Sâu hơn, nhanh hơn. Đập chúng từ bên dưới.\""),
             ["radio.quaden.harpy"] = ("Raven: \"Harpy, over the ridge. Hunt.\"", "Raven: \"Harpy, vượt qua sườn đồi. Săn đi.\""),
             ["radio.quaden.spectre"] = ("Raven: \"Spectre is circling. Nothing moves down there without my say.\"", "Raven: \"Spectre đang lượn vòng. Dưới đó không gì nhúc nhích nếu ta chưa cho.\""),
             ["radio.quaden.argus"] = ("Raven: \"Argus sees for the guns. Every shell will find you.\"", "Raven: \"Argus nhìn thay cho pháo. Viên đạn nào cũng sẽ tìm ra các người.\""),
@@ -281,7 +281,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.kronos_bucket_sweep.stop"] = ("Break the boom (during the warning or before).", "Phá cần gầu (lúc cảnh báo hoặc trước đó)."),
             ["bigattack.typhon_underwater_launch"] = ("Underwater Launch", "Phóng tên lửa từ dưới nước"),
             ["bigattack.typhon_underwater_launch.cancelled"] = ("Launch aborted", "Đã chặn đợt phóng"),
-            ["radio.bigattack.typhon_underwater_launch"] = ("Lý Hàn: \"Launch depth. Three for their headquarters.\"", "Lý Hàn: \"Lên độ sâu phóng. Ba quả cho sở chỉ huy của chúng.\""),
+            ["radio.bigattack.typhon_underwater_launch"] = ("{@lyhan}: \"Launch depth. Three for their headquarters.\"", "{@lyhan}: \"Lên độ sâu phóng. Ba quả cho sở chỉ huy của chúng.\""),
             ["guide.bigattack.typhon_underwater_launch.how"] = ("Three missiles at your base: about 500 high explosive each (8 m), double on buildings; a clock shows their flight after the warning.", "Ba tên lửa vào căn cứ ta: mỗi quả khoảng 500 nổ mạnh (bán kính 8 m), gấp đôi lên công trình; sau cảnh báo có đồng hồ bay."),
             ["guide.bigattack.typhon_underwater_launch.dodge"] = ("Move units off the marked points; towers cannot move, so cover them.", "Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn."),
             ["guide.bigattack.typhon_underwater_launch.stop"] = ("Break the launch doors during the warning (they show above the water), or shoot the missiles down (250 health each).", "Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu)."),
@@ -293,7 +293,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.ixion_crush_charge.stop"] = ("Break a big wheel during the warning: the charge slews off and stops.", "Phá một bánh lớn lúc cảnh báo: cú lao bị chệch và dừng."),
             ["bigattack.caspian_antiship_volley"] = ("Anti-Ship Volley", "Loạt tên lửa chống hạm"),
             ["bigattack.caspian_antiship_volley.cancelled"] = ("Volley cancelled", "Đã chặn loạt tên lửa"),
-            ["radio.bigattack.caspian_antiship_volley"] = ("Lý Hàn: \"Four for the shore. Fire.\"", "Lý Hàn: \"Bốn quả vào bờ. Bắn.\""),
+            ["radio.bigattack.caspian_antiship_volley"] = ("{@lyhan}: \"Four for the shore. Fire.\"", "{@lyhan}: \"Bốn quả vào bờ. Bắn.\""),
             ["guide.bigattack.caspian_antiship_volley.how"] = ("Four anti-ship missiles at the shore and your base: about 500 high explosive each (high penetration).", "Bốn tên lửa chống hạm vào bờ và căn cứ ta: mỗi quả khoảng 500 nổ mạnh (xuyên cao)."),
             ["guide.bigattack.caspian_antiship_volley.dodge"] = ("Move units off the marked points.", "Đưa quân ra khỏi các điểm đánh dấu."),
             ["guide.bigattack.caspian_antiship_volley.stop"] = ("Break the missile launcher, or shoot the missiles down (220 health each).", "Phá bệ tên lửa, hoặc bắn hạ tên lửa (mỗi quả 220 máu)."),
@@ -327,10 +327,10 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.behemoth_mk2_barrage.how"] = ("Four heavy rounds from the main gun over your group.", "Bốn phát pháo nặng từ pháo chính vào cụm quân."),
             ["guide.bigattack.behemoth_mk2_barrage.dodge"] = ("Leave the marked circle.", "Ra khỏi vùng tròn đánh dấu."),
             ["guide.bigattack.behemoth_mk2_barrage.stop"] = ("Break the main gun during the warning.", "Phá pháo chính lúc cảnh báo."),
-            ["bigattack.icarus_mk0_rods"] = ("Tungsten Rods", "Mưa thanh tungsten"),
-            ["bigattack.icarus_mk0_rods.cancelled"] = ("Rods called off", "Đã chặn thanh tungsten"),
+            ["bigattack.icarus_mk0_rods"] = ("Tungsten Rods", "Mưa thanh vonfram"),
+            ["bigattack.icarus_mk0_rods.cancelled"] = ("Rods called off", "Đã chặn thanh vonfram"),
             ["radio.bigattack.icarus_mk0_rods"] = ("Aurel: \"Three rods. A demonstration.\"", "Aurel: \"Ba thanh. Coi như trình diễn.\""),
-            ["guide.bigattack.icarus_mk0_rods.how"] = ("Three tungsten rods, one on each of your densest groups (the heaviest armour first), from the roof.", "Ba thanh tungsten, mỗi thanh vào một cụm quân đông nhất (giáp dày nhất trước), đánh từ nóc."),
+            ["guide.bigattack.icarus_mk0_rods.how"] = ("Three tungsten rods, one on each of your densest groups (the heaviest armour first), from the roof.", "Ba thanh vonfram, mỗi thanh vào một cụm quân đông nhất (giáp dày nhất trước), đánh từ nóc."),
             ["guide.bigattack.icarus_mk0_rods.dodge"] = ("Get out of the rings.", "Ra khỏi các vòng đánh dấu."),
             ["guide.bigattack.icarus_mk0_rods.stop"] = ("Break the satellite uplink during the warning.", "Phá ăng-ten liên kết vệ tinh lúc cảnh báo."),
             ["bigattack.argus_fire_call"] = ("Fire Call", "Gọi pháo"),
@@ -343,25 +343,25 @@ namespace MachineBrigade.Game.Hud
             // ---------------------------------------------------------------- prompt 20 pass 3: Boss Hunt (N)
             ["hunt.full"] = ("Full Boss Hunt", "Săn trùm toàn tập"),
             ["hunt.full.kicker"] = ("FULL BOSS HUNT", "SĂN TRÙM TOÀN TẬP"),
-            ["hunt.full.sub"] = ("Every boss of the story, in order", "Mọi trùm của cốt truyện, theo thứ tự"),
-            ["hunt.fullSub"] = ("{0} bosses in story order", "{0} trùm theo cốt truyện"),
-            ["hunt.full.rules"] = ("All {0} main and mini bosses of the chapters open, in story order. A checkpoint after every boss: play it over as many sittings as you like. After each main boss, pick a combat support. Ranked by total time.",
-                "Toàn bộ {0} trùm chủ lực và mini boss của các chương đang mở, theo đúng thứ tự cốt truyện. Có điểm hồi sinh sau mỗi trùm: chơi dần qua bao nhiêu lần cũng được. Sau mỗi trùm chủ lực, chọn một hỗ trợ tác chiến. Xếp hạng theo tổng thời gian."),
-            ["hunt.full.locked"] = ("Opens once chapter {0}'s operation is won.", "Mở khi thắng chiến dịch lớn của chương {0}."),
-            ["hunt.full.reward"] = ("First clear: {0} coins and a legendary crate", "Lần đầu hoàn thành: {0} xu và một hòm huyền thoại"),
-            ["hunt.weekly.rules"] = ("{0} bosses this week: {1} mini bosses leading to {2} main bosses, each stronger than the last. A 20 s rest between bosses repairs part of your army; after each main boss, pick one of three combat supports and keep a checkpoint. {3} minutes on the clock.",
-                "{0} trùm tuần này: {1} mini boss dẫn tới {2} trùm chủ lực, trùm sau mạnh hơn trùm trước. Nghỉ 20 giây giữa các trùm, quân được sửa một phần; sau mỗi trùm chủ lực, chọn một trong ba hỗ trợ tác chiến và lưu điểm hồi sinh. Đồng hồ {3} phút."),
-            ["hunt.weekly.reward"] = ("First clear this week: {0} coins", "Lần đầu hoàn thành trong tuần: {0} xu"),
-            ["hunt.roster"] = ("This week's bosses", "Trùm tuần này"),
+            ["hunt.full.sub"] = ("Every boss of the story, in order", "Mọi boss của cốt truyện, theo thứ tự"),
+            ["hunt.fullSub"] = ("{count|# boss|# bosses} in story order", "{count} boss theo cốt truyện"),
+            ["hunt.full.rules"] = ("All {count} main and mini bosses of the chapters open, in story order. A checkpoint after every boss: play it over as many sittings as you like. After each main boss, pick a combat support. Ranked by total time.",
+                "Toàn bộ {count} boss chủ lực và mini boss của các chương đang mở, theo đúng thứ tự cốt truyện. Có điểm hồi sinh sau mỗi boss: chơi dần qua bao nhiêu lần cũng được. Sau mỗi boss chủ lực, chọn một hỗ trợ tác chiến. Xếp hạng theo tổng thời gian."),
+            ["hunt.full.locked"] = ("Opens once chapter {chapter}'s operation is won.", "Mở khi thắng chiến dịch lớn của chương {chapter}."),
+            ["hunt.full.reward"] = ("First clear: {coins|# coin|# coins} and a legendary crate", "Lần đầu hoàn thành: {coins} xu và một hòm huyền thoại"),
+            ["hunt.weekly.rules"] = ("{count|# boss|# bosses} this week: {minis|# mini boss|# mini bosses} leading to {mains|# main boss|# main bosses}, each stronger than the last. A 20 s rest between bosses repairs part of your army; after each main boss, pick one of three combat supports and keep a checkpoint. {minutes|# minute|# minutes} on the clock.",
+                "{count} boss tuần này: {minis} mini boss dẫn tới {mains} boss chủ lực, boss sau mạnh hơn boss trước. Nghỉ 20 giây giữa các boss, quân được sửa một phần; sau mỗi boss chủ lực, chọn một trong ba hỗ trợ tác chiến và lưu điểm hồi sinh. Đồng hồ {minutes} phút."),
+            ["hunt.weekly.reward"] = ("First clear this week: {coins|# coin|# coins}", "Lần đầu hoàn thành trong tuần: {coins} xu"),
+            ["hunt.roster"] = ("This week's bosses", "Boss tuần này"),
             ["hunt.fullRoster"] = ("In story order", "Theo thứ tự cốt truyện"),
-            ["hunt.restTitle"] = ("Rest · army repaired {0} %", "Nghỉ · quân được sửa {0} %"),
-            ["hunt.next"] = ("Next: {0}", "Tiếp theo: {0}"),
-            ["hunt.held"] = ("Supports: {0}", "Hỗ trợ: {0}"),
+            ["hunt.restTitle"] = ("Rest · army repaired {percent}%", "Nghỉ · quân được sửa {percent}%"),
+            ["hunt.next"] = ("Next: {card}", "Tiếp theo: {card}"),
+            ["hunt.held"] = ("Supports: {supports}", "Hỗ trợ: {supports}"),
             ["hunt.pickTitle"] = ("Choose a combat support", "Chọn hỗ trợ tác chiến"),
             ["hunt.pick"] = ("Take it", "Chọn"),
-            ["hunt.pickAuto"] = ("The first is taken in {0} s. It lasts for the rest of the run.", "Sau {0} giây sẽ tự chọn cái đầu tiên. Hỗ trợ giữ tới hết lượt."),
+            ["hunt.pickAuto"] = ("The first is taken in {seconds} s. It lasts for the rest of the run.", "Sau {seconds} giây sẽ tự chọn cái đầu tiên. Hỗ trợ giữ tới hết lượt."),
             ["hunt.checkpointToast"] = ("Checkpoint kept", "Đã lưu điểm hồi sinh"),
-            ["hunt.checkpoint"] = ("Checkpoint: {0} of {1} bosses down", "Điểm hồi sinh: đã hạ {0}/{1} trùm"),
+            ["hunt.checkpoint"] = ("Checkpoint: {defeated} of {count|# boss|# bosses} down", "Điểm hồi sinh: đã hạ {defeated}/{count} boss"),
             ["hunt.continue"] = ("Continue", "Tiếp tục"),
             ["hunt.restart"] = ("Start over", "Chơi lại từ đầu"),
             ["hunt.best"] = ("Best total times", "Tổng thời gian tốt nhất"),
@@ -371,19 +371,19 @@ namespace MachineBrigade.Game.Hud
             ["hunt.firstClear"] = ("First clear", "Lần đầu hoàn thành"),
             ["hunt.supportsTitle"] = ("Combat supports", "Hỗ trợ tác chiến"),
             ["hunt.support.hull"] = ("Reinforced Hulls", "Gia cố thân xe"),
-            ["hunt.support.hull.info"] = ("Your army's health +15 %, vehicles landed later too.", "Máu toàn quân +15 %, cả xe tới sau."),
+            ["hunt.support.hull.info"] = ("Your army's health +15%, vehicles landed later too.", "Máu toàn quân +15%, cả xe tới sau."),
             ["hunt.support.gunnery"] = ("Gunnery Drills", "Huấn luyện pháo thủ"),
-            ["hunt.support.gunnery.info"] = ("Your army's damage +10 %.", "Sát thương toàn quân +10 %."),
+            ["hunt.support.gunnery.info"] = ("Your army's damage +10%.", "Sát thương toàn quân +10%."),
             ["hunt.support.loaders"] = ("Fast Loaders", "Nạp đạn nhanh"),
-            ["hunt.support.loaders.info"] = ("Your army fires 12 % faster.", "Toàn quân bắn nhanh hơn 12 %."),
+            ["hunt.support.loaders.info"] = ("Your army fires 12% faster.", "Toàn quân bắn nhanh hơn 12%."),
             ["hunt.support.engines"] = ("Tuned Engines", "Tinh chỉnh động cơ"),
-            ["hunt.support.engines.info"] = ("Your army drives 12 % faster.", "Toàn quân chạy nhanh hơn 12 %."),
+            ["hunt.support.engines.info"] = ("Your army drives 12% faster.", "Toàn quân chạy nhanh hơn 12%."),
             ["hunt.support.regen"] = ("Field Repairs", "Sửa chữa dã chiến"),
-            ["hunt.support.regen.info"] = ("Out of fire, every vehicle mends 1 % of its health a second.", "Khi không trúng đạn, mỗi xe tự hồi 1 % máu mỗi giây."),
+            ["hunt.support.regen.info"] = ("Out of fire, every vehicle mends 1% of its health a second.", "Khi không trúng đạn, mỗi xe tự hồi 1% máu mỗi giây."),
             ["hunt.support.rapid"] = ("Rapid Tasking", "Điều phối nhanh"),
-            ["hunt.support.rapid.info"] = ("Support card cooldowns 25 % shorter.", "Hồi chiêu thẻ hỗ trợ ngắn hơn 25 %."),
+            ["hunt.support.rapid.info"] = ("Support card cooldowns 25% shorter.", "Hồi chiêu thẻ hỗ trợ ngắn hơn 25%."),
             ["hunt.support.logistics"] = ("Supply Convoy", "Đoàn tiếp tế"),
-            ["hunt.support.logistics.info"] = ("CP income +20 %.", "Thu nhập CP +20 %."),
+            ["hunt.support.logistics.info"] = ("CP income +20%.", "Thu nhập CP +20%."),
             ["hunt.support.warchest"] = ("War Chest", "Quỹ chiến tranh"),
             ["hunt.support.warchest.info"] = ("35 CP now.", "Nhận ngay 35 CP."),
             ["hunt.support.supply"] = ("Extra Crews", "Thêm kíp lái"),
@@ -391,21 +391,21 @@ namespace MachineBrigade.Game.Hud
             ["hunt.support.workshop"] = ("Mobile Workshop", "Xưởng lưu động"),
             ["hunt.support.workshop.info"] = ("Rests repair twice as much.", "Giờ nghỉ sửa quân gấp đôi."),
             ["hunt.support.bounty"] = ("Bounty Contracts", "Hợp đồng săn thưởng"),
-            ["hunt.support.bounty.info"] = ("CP bounties for bosses +50 %.", "Tiền thưởng CP khi hạ trùm +50 %."),
+            ["hunt.support.bounty.info"] = ("CP bounties for bosses +50%.", "Tiền thưởng CP khi hạ boss +50%."),
             ["hunt.support.airdrop"] = ("Free Reinforcements", "Tiếp viện miễn phí"),
             ["hunt.support.airdrop.info"] = ("Three of your deck's dearest vehicles land now, free.", "Ba xe đắt nhất trong bộ bài được thả xuống ngay, miễn phí."),
 
             // ---------------------------------------------------------------- prompt 20 pass 3: dossier and Guide (O.3, O.5)
-            ["guide.boss.general"] = ("General {0}", "Tướng {0}"),
-            ["guide.boss.variantOf"] = ("Variant of {0}", "Biến thể của {0}"),
+            ["guide.boss.general"] = ("General {general}", "Tướng {general}"),
+            ["guide.boss.variantOf"] = ("Variant of {unit}", "Biến thể của {unit}"),
             ["guide.boss.variants"] = ("Its variants", "Các biến thể"),
             ["guide.boss.open"] = ("Guide", "Hướng dẫn"),
-            ["guide.boss.chapters"] = ("Fought in chapter {0}", "Gặp ở chương {0}"),
+            ["guide.boss.chapters"] = ("Fought in chapter {chapter}", "Gặp ở chương {chapter}"),
             ["dossier.maps"] = ("Battlefields", "Chiến trường"),
             ["guide.maps.open"] = ("Battlefields", "Chiến trường"),
-            ["guide.map.chapters"] = ("Campaign: chapter {0}", "Chiến dịch: chương {0}"),
+            ["guide.map.chapters"] = ("Campaign: chapter {chapter}", "Chiến dịch: chương {chapter}"),
             ["guide.map.skirmish"] = ("Skirmish only", "Chỉ ở giao tranh"),
-            ["campaign.minis"] = ("{0} mini bosses", "{0} mini boss"),
+            ["campaign.minis"] = ("{count|# mini boss|# mini bosses}", "{count} mini boss"),
         };
     }
 }

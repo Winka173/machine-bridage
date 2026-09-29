@@ -46,7 +46,7 @@ namespace MachineBrigade.Game.Hud
                 ProjectileKind.Rocket => "hud.stores.rockets",
                 _ => "hud.stores.rounds",
             };
-            _text.text = Strings.Format(noun, left, full);
+            _text.text = Strings.Format(noun, ("left", left), ("full", full));
             var share = (float)left / full;
             _fill.style.width = Length.Percent(share * 100f);
             _fill.EnableInClassList("fc-hud__hp-fill--hurt", share < 0.2f && left > 0);

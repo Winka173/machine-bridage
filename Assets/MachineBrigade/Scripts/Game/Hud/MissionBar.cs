@@ -245,7 +245,7 @@ namespace MachineBrigade.Game.Hud
             if (shown == _shownPhase) return;
             _shownPhase = shown;
             _phase.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
-            _phase.text = Kit.Caps(transforming ? Strings.Get("boss.transforming") : Strings.Format("boss.phase", phase + 1, count + 1));
+            _phase.text = Kit.Caps(transforming ? Strings.Get("boss.transforming") : Strings.Format("boss.phase", ("phase", phase + 1), ("total", count + 1)));
             Root.EnableInClassList("fc-boss--transforming", transforming);
         }
 

@@ -16,7 +16,7 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     public static class BranchLines
     {
-        private static string N(float v) => v.ToString(v >= 10f || Math.Abs(v - MathF.Round(v)) < 0.05f ? "0" : "0.#", Strings.Vietnamese ? CultureInfo.GetCultureInfo("vi-VN") : CultureInfo.InvariantCulture);
+        private static string N(float v) => v.ToString(v >= 10f || Math.Abs(v - MathF.Round(v)) < 0.05f ? "0" : "0.#", Strings.Culture);
 
         /// <summary>A branch's facts, from its data.</summary>
         public static List<string> Facts(VehicleDef def)
@@ -35,13 +35,13 @@ namespace MachineBrigade.Game.Hud
             if (def.Aps is { } aps)
                 facts.Add(Strings.Format("branch.mech.intercepts", Strings.Get(aps.Heavy ? "branch.mech.heavy" : !aps.Direct ? "branch.mech.lobbed" : "branch.mech.direct")) +
                           $" · {aps.Charges} · {N(aps.Radius)} m");
-            if (def.Dome is { } dome) facts.Add(Strings.Format("branch.mech.dome", N(dome.Radius), N(dome.Hp)));
-            if (def.Wards is { } wards) facts.Add(Strings.Format("branch.mech.wards", N(wards.Radius), N(wards.Hp), N(wards.Recharge)));
-            if (def.Loot is { } loot) facts.Add(Strings.Format("branch.mech.loot", N(loot.Share * 100f), N(loot.Radius)));
+            if (def.Dome is { } dome) facts.Add(Strings.Format("branch.mech.dome", ("metres", N(dome.Radius)), ("count", N(dome.Hp))));
+            if (def.Wards is { } wards) facts.Add(Strings.Format("branch.mech.wards", ("metres", N(wards.Radius)), ("health", N(wards.Hp)), ("seconds", N(wards.Recharge))));
+            if (def.Loot is { } loot) facts.Add(Strings.Format("branch.mech.loot", ("percent", N(loot.Share * 100f)), ("metres", N(loot.Radius))));
             if (def.Relay is { } relay) facts.Add(Strings.Format("branch.mech.relay", N(relay.Income)));
             if (def.RevealAir > 0f) facts.Add(Strings.Format("branch.mech.revealAir", N(def.RevealAir)));
             if (def.CounterBattery is { } cb) facts.Add(Strings.Format("branch.mech.counterBattery", N(cb.Range)));
-            if (def.Mines is { } mines) facts.Add(Strings.Format("branch.mech.mines", mines.Max, N(mines.Blast.Damage)));
+            if (def.Mines is { } mines) facts.Add(Strings.Format("branch.mech.mines", ("count", mines.Max), ("damage", N(mines.Blast.Damage))));
             if (def.Jammer > 0f) facts.Add(Strings.Format("branch.mech.jammer", N(def.Jammer)));
             facts.Add(Strings.Format("branch.mech.hp", N(def.MaxHp)));
             return facts;
@@ -65,7 +65,8 @@ namespace MachineBrigade.Game.Hud
         public static VisualElement Picker(Catalog catalog, string towerId, string chosen, bool locked, Action<string> choose)
         {
             var branches = Sim.Modes.TowerCards.Branches(catalog, towerId);
-            var row = Kit.Box("fc-row");
+            // Side by side; stacked in Large text (Screens.uss), where a long English word no longer fits half the panel.
+            var row = Kit.Box("fc-row fc-base__branch-pair");
             row.style.alignItems = Align.Stretch;
             for (var i = 0; i < branches.Count; i++)
             {
@@ -73,10 +74,8 @@ namespace MachineBrigade.Game.Hud
                 var def = catalog.Vehicles[id];
                 var other = catalog.Vehicles[branches[(i + 1) % branches.Count]];
                 var card = Kit.Tappable(KitPanel.SurfaceClass + " fc-base__branch", () => choose(id));
-                card.style.flexGrow = 1f;
-                card.style.flexBasis = 0f;
-                card.style.minWidth = 0f;
-                if (i > 0) card.style.marginLeft = 6f;
+                // Equal halves side by side, stacked in Large text: the sizes are in Screens.uss (.fc-base__branch-pair).
+                if (i > 0) card.AddToClassList("fc-base__branch--next");
                 card.EnableInClassList("fc-base__branch--locked", locked);
                 card.EnableInClassList("fc-base__branch--chosen", id == chosen);
                 // Its render (the branch's own once the card renders exist, the tower's until then).
@@ -91,10 +90,11 @@ namespace MachineBrigade.Game.Hud
                 }
                 var head = Kit.Box("fc-row");
                 if (TowerIcons.For(id) is { } icon) head.Add(Kit.Icon(icon));
-                head.Add(Kit.Text(Kit.Caps(Strings.Branch(id)), "fc-panel-title fc-row-text"));
+                // The short name in the narrow card (prompt 21 K2: English names run longer); "In use" on its own line.
+                head.Add(Kit.Text(Kit.Caps(Strings.Short(id)), "fc-panel-title fc-row-text"));
                 if (locked) head.Add(Kit.Icon("lock", "fc-base__branch-lock"));
-                else if (id == chosen) head.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag"));
                 card.Add(head);
+                if (!locked && id == chosen) card.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag fc-base__branch-tag--line"));
                 card.Add(Kit.Text(Strings.Get("branch." + id + ".info"), "fc-small"));
                 if (When(id) is { Length: > 0 } when) card.Add(Kit.Text(when, "fc-small fc-base__note"));
                 foreach (var fact in Differences(def, other)) card.Add(Kit.Text("· " + fact, "fc-small"));

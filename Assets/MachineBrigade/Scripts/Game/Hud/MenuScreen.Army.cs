@@ -274,8 +274,8 @@ namespace MachineBrigade.Game.Hud
             var summary = Kit.Box("fc-army__overview-part");
             summary.Add(Kit.Text(Kit.Caps(Strings.Get("army.overview")), "fc-panel-title fc-mb-2"));
             var costs = MatchSettings.DeckVehicles.Select(CostOf).ToList();
-            summary.Add(Kit.Body(Strings.Format("army.summary", MatchSettings.DeckVehicles.Count, MatchSettings.DeckVehicleSlots,
-                MatchSettings.DeckSupports.Count, MatchSettings.DeckSupportSlots, costs.Count > 0 ? costs.Average().ToString("0.0") : "-")));
+            summary.Add(Kit.Body(Strings.Format("army.summary", ("vehicles", MatchSettings.DeckVehicles.Count), ("vehicleSlots", MatchSettings.DeckVehicleSlots),
+                ("supports", MatchSettings.DeckSupports.Count), ("supportSlots", MatchSettings.DeckSupportSlots), ("average", costs.Count > 0 ? costs.Average().ToString("0.0", Strings.Culture) : "-"))));
             // Prompt 15 E7: the five shields, lit where the deck has a weapon that pierces that armour well.
             var deckDefs = MatchSettings.DeckVehicles.Select(v => _catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null).ToList();
             summary.Add(Kit.Text(Kit.Caps(Strings.Get("combat.armourCover")), "fc-caption fc-mt-3 fc-mb-1"));
@@ -296,14 +296,14 @@ namespace MachineBrigade.Game.Hud
                 if (id == MatchSettings.Doctrine) chosen = i;
                 doctrines.Add(new KitOption(Strings.Get("doctrine." + id), Progression.DoctrineOwned(id)
                     ? Strings.Get("doctrine." + id + ".info")
-                    : Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Kit.Count(Progression.DoctrinePrice))));
+                    : Strings.Format("doctrine.locked", ("doctrine", Strings.Get("doctrine." + id)), ("coins", Kit.Count(Progression.DoctrinePrice)))));
             }
             var doctrine = new KitDropdown(Strings.Get("doctrine.title"), doctrines, chosen, i =>
             {
                 var id = Doctrine.All[i].Id;
                 if (!Progression.DoctrineOwned(id))
                 {
-                    Note(Strings.Format("doctrine.locked", Strings.Get("doctrine." + id), Kit.Count(Progression.DoctrinePrice)), true);
+                    Note(Strings.Format("doctrine.locked", ("doctrine", Strings.Get("doctrine." + id)), ("coins", Kit.Count(Progression.DoctrinePrice))), true);
                     Refresh();
                     return;
                 }
@@ -516,8 +516,8 @@ namespace MachineBrigade.Game.Hud
             head.Add(new KitGearCard(data));
             var names = Kit.Box("fc-row-text fc-grow");
             names.Add(Kit.Text(Kit.Caps(GearText.Name(item)), "fc-panel-title fc-rarity-text-" + item.rarity));
-            names.Add(Kit.Small(Strings.Format("gear.detail", Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant()), item.level,
-                Gear.LevelCap[item.rarity], StatText(item))));
+            names.Add(Kit.Small(Strings.Format("gear.detail", ("rarity", Strings.Get("rarity." + item.Rarity.ToString().ToLowerInvariant())), ("level", item.level),
+                ("total", Gear.LevelCap[item.rarity]), ("item", StatText(item)))));
             var brand = GearCatalog.Brand(item.brand);
             names.Add(Kit.Small(GearText.SlotName(item.Slot) + (brand != null ? "  ·  " + GearText.BrandName(brand) : "")));
             var partners = PlayerProfile.GearOwned.Count(g => g != item && Gear.CanMerge(g, item));

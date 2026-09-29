@@ -81,7 +81,7 @@ namespace MachineBrigade.Game.Hud
 
         private static bool Numbers => MatchSettings.ShowCombatNumbers;
 
-        private static string Num(float v) => v.ToString(v >= 10f ? "0" : "0.##", Strings.Vietnamese ? CultureInfo.GetCultureInfo("vi-VN") : CultureInfo.InvariantCulture);
+        private static string Num(float v) => v.ToString(v >= 10f ? "0" : "0.##", Strings.Culture);
 
         public static string ArmourName(int level, ArmourKind kind)
         {

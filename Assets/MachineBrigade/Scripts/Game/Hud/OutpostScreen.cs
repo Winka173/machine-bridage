@@ -101,7 +101,7 @@ namespace MachineBrigade.Game.Hud
         {
             if (!BaseLayout.Fits(_catalog, id, SlotOf(index)))
             {
-                _note(Strings.Format("camp.tooBig", Strings.Card(id), Strings.Get(index == 0 ? "camp.size.small" : "camp.size.medium").ToLowerInvariant()), true);
+                _note(Strings.Format("camp.tooBig", ("card", Strings.Card(id)), ("size", Strings.Get(index == 0 ? "camp.size.small" : "camp.size.medium").ToLowerInvariant())), true);
                 return;
             }
             while (Plan.Outpost.Count < 2) Plan.Outpost.Add(BaseLayout.DefaultOutpost[Plan.Outpost.Count]);
@@ -155,7 +155,7 @@ namespace MachineBrigade.Game.Hud
             if (picked >= 0 && TowerAt(picked) is { } id && _catalog.Vehicles.ContainsKey(id))
             {
                 _info.Add(Kit.Text(Kit.Caps(Strings.Card(id)), "fc-panel-title fc-mt-4"));
-                _info.Add(Kit.Text(Strings.Format("camp.cardLine", Strings.Get(picked == 0 ? "camp.size.small" : "camp.size.medium"), PlayerProfile.Rank(id)), "fc-small"));
+                _info.Add(Kit.Text(Strings.Format("camp.cardLine", ("size", Strings.Get(picked == 0 ? "camp.size.small" : "camp.size.medium")), ("rank", PlayerProfile.Rank(id))), "fc-small"));
                 _info.Add(Kit.Text(Strings.Get("camp.outpostKeep"), "fc-small fc-mt-2"));
                 if (OpenDetail != null) _info.Add(new KitButton(ButtonTier.Text, Strings.Get("army.info"), () => OpenDetail(id), "info"));
             }

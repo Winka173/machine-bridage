@@ -46,7 +46,7 @@ namespace MachineBrigade.Game.Match
             if (tally.Air >= 4 && tally.Air >= 0.2f * enemies) Add(Strings.Get(cover.AntiAir ? "result.hint.airMore" : "result.hint.air"));
             if (tally.Armour >= 6 && tally.Armour >= 0.3f * enemies && !cover.AntiTank) Add(Strings.Get("result.hint.armour"));
             if (attacking && !cover.Artillery) Add(Strings.Get("result.hint.artillery"));
-            if (vehicles.Count < vehicleSlots) Add(Strings.Format("result.hint.deckShort", vehicles.Count, vehicleSlots));
+            if (vehicles.Count < vehicleSlots) Add(Strings.Format("result.hint.deckShort", ("count", vehicles.Count), ("total", vehicleSlots)));
             if (!cover.Repair && losses >= 12) Add(Strings.Get("result.hint.repair"));
             if (hints.Count == 0) Add(Strings.Get(losses > kills ? "result.hint.trade" : "result.hint.upgrade"));
             return hints;

@@ -16,16 +16,17 @@ namespace MachineBrigade.Tests
     /// </summary>
     public class LocalisationScanTests
     {
-        private static readonly Regex Placeholder = new(@"\{\d+(:[^}]*)?\}");
+        // Positional ({0}), named ({count}, {count|# tank|# tanks}) and name-token ({@linh}) placeholders: none may reach a screen.
+        private static readonly Regex Placeholder = new(@"\{\d+(:[^}]*)?\}|\{@?[A-Za-z][A-Za-z0-9_.]*(?::[^{}|]*)?(?:\|[^{}]*)?\}");
         private static readonly Regex RawKey = new(@"(^|\s)[a-z][a-z0-9_]*(\.[a-z0-9_]+){1,4}(\s|$)");
 
-        private static IEnumerable<string> Placeholders(string text) => Placeholder.Matches(text).Select(m => m.Value.Split(':')[0].TrimEnd('}') + "}").Distinct().OrderBy(x => x);
+        private static IEnumerable<string> Placeholders(string text) => Strings.PlaceholderNames(text).Distinct().OrderBy(x => x);
 
         [Test]
         public void EveryTextHasBothLanguagesWithTheSamePlaceholders()
         {
             var bad = new List<string>();
-            foreach (var (key, (en, vi)) in Strings.Texts.Concat(GuideText.Table).Concat(CampaignText.Table).Concat(UnitText.Table).Concat(BigAttackText.Table).Concat(OrbitalText.Table))
+            foreach (var (key, en, vi, _) in Strings.Entries)
             {
                 if (string.IsNullOrWhiteSpace(en) || string.IsNullOrWhiteSpace(vi)) bad.Add(key + ": empty");
                 else if (!Placeholders(en).SequenceEqual(Placeholders(vi))) bad.Add(key + ": placeholders differ");
