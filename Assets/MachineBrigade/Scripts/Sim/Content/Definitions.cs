@@ -465,6 +465,12 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public bool Orbit { get; internal set; }
 
+        /// <summary>
+        /// The pylon turn's radius in metres (data "orbitRadius"); 0: from its main gun's reach. A tight turn keeps a
+        /// gunship over what it shoots at, where the battle camera sees it (test feedback 19P).
+        /// </summary>
+        public float OrbitRadius { get; internal set; }
+
         /// <summary>Seen only close up (at <see cref="StealthSight"/> of a spotter's sight) unless it has just fired.</summary>
         public bool Stealth { get; internal set; }
 

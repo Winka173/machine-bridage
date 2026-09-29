@@ -22,7 +22,8 @@ namespace MachineBrigade.Editor
     /// the detail page's In action range on chosen vehicles and logs their range's events, to check
     /// what each clip shows and that it is heard without the menu battle.
     /// -executeMethod MachineBrigade.Editor.StartupProbe.Run -mbProbeOut &lt;txt&gt; [-mbProbeSeconds 20]
-    /// [-mbProbeRange "ew_jammer+iron_beam"] [-mbProbeRangeSeconds 10]. Editor numbers are not phone numbers.
+    /// [-mbProbeRange "ew_jammer+iron_beam"] [-mbProbeRangeSeconds 10] [-mbProbeShots &lt;dir&gt; [-mbProbeHd] [-mbProbeZoom 2]
+    /// [-mbProbeEvery 0.25]]. Editor numbers are not phone numbers.
     /// </summary>
     public static class StartupProbe
     {
@@ -39,6 +40,8 @@ namespace MachineBrigade.Editor
 
         /// <summary>-mbProbeShots &lt;dir&gt; (a run with graphics): a frame of each range every half second of its time, as JPEGs.</summary>
         private static string _shots;
+        private static bool _hd;
+        private static float _every = 0.5f;
         private static RenderTexture _shotTexture;
         private static float _rangeTime, _shotAt;
         private static int _shot;
@@ -62,6 +65,12 @@ namespace MachineBrigade.Editor
             if (float.TryParse(Arg("-mbProbeSeconds"), out var s)) _seconds = s;
             if (float.TryParse(Arg("-mbProbeRangeSeconds"), out var r)) _rangeSeconds = r;
             _shots = Arg("-mbProbeShots");
+            // -mbProbeZoom 2: the range's camera nearer its unit; -mbProbeHd: 1280 x 960 frames.
+            if (float.TryParse(Arg("-mbProbeZoom"), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var zoom))
+                FiringRange.Zoom = Mathf.Max(1f, zoom);
+            _hd = Array.IndexOf(Environment.GetCommandLineArgs(), "-mbProbeHd") >= 0;
+            if (float.TryParse(Arg("-mbProbeEvery"), System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var every))
+                _every = Mathf.Max(0.05f, every);
             var range = Arg("-mbProbeRange");
             if (!string.IsNullOrEmpty(range)) Range.AddRange(range.Split('+'));
             Application.logMessageReceivedThreaded += OnLog;
@@ -124,7 +133,7 @@ namespace MachineBrigade.Editor
                 _rangeTime += dt;
                 if (_shots != null && _rangeTime >= _shotAt)
                 {
-                    _shotAt += 0.5f;
+                    _shotAt += _every;
                     _rangeCamera.Render();
                     var frame = new Texture2D(_shotTexture.width, _shotTexture.height, TextureFormat.RGB24, false);
                     RenderTexture.active = _shotTexture;
@@ -176,7 +185,7 @@ namespace MachineBrigade.Editor
                 if (_shots != null)
                 {
                     Directory.CreateDirectory(_shots);
-                    _shotTexture = new RenderTexture(640, 480, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+                    _shotTexture = new RenderTexture(_hd ? 1280 : 640, _hd ? 960 : 480, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
                     _rangeCamera.targetTexture = _shotTexture;
                     _rangeCamera.cullingMask = 1 << 31;
                     _rangeCamera.clearFlags = CameraClearFlags.SolidColor;
@@ -184,7 +193,7 @@ namespace MachineBrigade.Editor
                 }
             }
             _rangeTime = 0f;
-            _shotAt = 0.5f;
+            _shotAt = _every;
             _shot = 0;
             _range?.Dispose();
             _range = new FiringRange(world.Catalog, Field(runner, "_materials") as MaterialLibrary, Field(runner, "_meshes") as MeshLibrary,

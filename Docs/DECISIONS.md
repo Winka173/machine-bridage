@@ -6553,3 +6553,104 @@ TrafficTests, MapRouteTests, whose count is now 23 with Lighthouse Bay) were not
 `Strings`, `GuideText`, `Icons`, `TowerIcons`, `BaseScreen` and `MenuScreen.Detail` (branch icon), `MatchSettings`,
 the card manifest, `FireRhythmMeasure`, `CombatValueMeasure`, the three test lists, `Tools/maps/build_maps.py` and
 `boundary.py`. No boss, campaign or rename code touched.
+
+## 19P. In-action clips, effects and sound: the owner's play-test list (2026-09-29)
+
+The owner's list for the detail page's In action clip (Xem bắn), plus effects and sound. Branch `feature/inaction-fixes`
+from `lead/integration` 6be4269.
+
+### The clip (FiringRange, now in three files: the range, its ability scenes, the tower scenes)
+
+- **Unlimited ammunition (1)**: the unit shown is topped up every step (`SimWorld.Refill`: magazines, an aircraft's
+  stores, a fixed minefield laid again once half its mines are gone). Friends a scene empties on purpose (the ammunition
+  carrier's and the depot's launchers) still run dry and reload, which is what those scenes show.
+- **A mortal enemy (2)**: range targets and sparring partners of the enemy side are now `Vehicle.Mortal` (they neither heal
+  nor stop at a sliver). 2.5 s after one is knocked out a new one comes in: an aircraft flies onto the spot, a ground
+  vehicle drives up to it from 16 m beyond (holding its fire) and stands as a target once there; attackers come back on
+  their mark with the same orders. Our side (the scene's friends, a tower on show) stays unkillable.
+- **A gentle opening (3)**: every view in the range arrives with `VehicleView.GentleArrival` (a 3.2 s ease-out: fastest
+  as it comes in, slowing all the way onto its station, over a shorter run), and nothing fires at a target until the
+  target is drawn, flown in and inside the picture (`HoldUntilFramed`, 3 % margin, through `SimWorld.HoldFire`). The
+  shooter itself need not be in the picture (a jammer scene's missiles come in from beyond the edge). Chosen over a
+  slowed clock at the start: the battle keeps its real pace.
+- **Jammed rounds (4)**: the sim decides at launch that a guided round is jammed (or has lost its lock) and where it
+  lands (`Projectile.Miss`); the WeaponFired event now carries that miss (`SimEvent.Offset`, `Jammed`). The view flies
+  the round true for the first 35 % (60 % for a lost lock), then a crackle of sparks and light, and it corkscrews
+  (2.2 m, widest halfway), rolls and bends off onto the target plus the miss, where the sim's impact bursts: on the
+  ground wide of a ground target, in the air beside an aircraft. Nothing vanishes any more.
+- **The mine layer (5)**: once one of its mines is armed, enemy vehicles (an IFV, then an armoured car, a light tank)
+  drive across, over an armed mine away from the layer, and back over another, holding their fire, one at a time, a new
+  one 3 s after one is lost. Captured: two mines went off in 16 s.
+- **Every clip reviewed (6)**: a headless probe of all 96 cards and the two gunship bosses (StartupProbe, 8 s each)
+  before the change, and the new scenes with graphics after. Towers with nothing to shoot now have scenes:
+  - CP relay: its pay counted over the picture ("CP relay: +0.10 CP/s · 1.3 CP paid", from the text tables), a gold
+    pulse while it pays; an armoured car raids it for 2.5 s every 14 s, and for the quiet time the line turns red
+    ("Under fire: no CP for 5 s") and the pulse red.
+  - Dragon's teeth: a row of five across the enemy's road, a friendly tank behind; enemy vehicles on their way through
+    go round the ends under its gun (the wire branch is passable and slows them instead; not captured).
+  - Minefield: enemy vehicles drive across over its armed mines (four went off in 16 s).
+  - Ammunition depot: the range's home is at the depot (`SetRally`) and emptied launchers beside it reload there faster,
+    with a line over the picture; logistics station: the army supply it adds, as a line.
+  - Shield generator: its attackers stood inside its 25 m dome (fire from inside is not stopped); they now stand
+    outside it (103 dome hits in 16 s). EW tower and radar station keep the jammer and counter-battery scenes.
+  - A big boss (the drone mothership) is framed from further back so it no longer fills the picture; a gunship is
+    framed on its whole turn.
+  - Left as they were: the repair bay and airfield (they work on a base, which the range has not), and mission-only
+    pieces without a card or a weapon (super gun, targeting station, drop pod, landing craft, hover gunboat).
+
+### Effects and sound
+
+- **Laser beam sound (7)**: every beam weapon (the laser tank's focused laser, the Iron Beam, the orbital laser) is now
+  one continuous hum while it burns: a synthesised seamless 2 s loop (a 110 Hz sawtooth with its octave and sub, a
+  fluttering 1.76 kHz shimmer, a faint crackle), swelling in fast and dying away 0.2 s after the last shot, panned to the
+  nearest beam, with a rising whine when a beam ignites after a pause; the per-shot machine-gun (or flak) clatter and the
+  impact pings of beams are gone. No recorded clip exists for these (the synth stands in, like the other categories).
+- **Hits on a shield (8)**: a dome hit now says where the round came from and whether it came down from above
+  (`DomeHit`: Target, Airborne; Mount 1 when the dome took all of it). The view finds where the round's line crosses the
+  dome's skin (above the unit for shells and bombs), ripples the hex shield there and flares it (a white-blue glow and a
+  spray of sparks off the skin); a round the dome took whole bursts on the skin, as big as before, instead of on the
+  unit under it. The Shield Dome item's dome flares the same way over where a round lands.
+- **FPV drones (9)**: a quadcopter round (the `fpv_drone` model: the swarms, the carrier's, the hangar's and the drone
+  mothership's) flies as one: no motor flame or smoke trail, level with the nose a little down and banking, a blur disc
+  on each rotor, a buzz of weaving and bobbing corrections about its own line out to 6 m from the swarm's, then it tips
+  over into its dive. It lifts off in a puff of dust with a synthesised prop buzz (not a rocket launch), is drawn a third
+  bigger than other drones, and strikes with its own impact: a white-hot star, the charge's jet stabbing down, the drone
+  flying apart in bright bits, a small black puff (the blast as big as before). Winged drones (Lancet, Shahed) keep
+  their missile-like flight.
+- **The sky gunship (10)**: three faults. In play it did not stay where it was called: it took on whatever its guns
+  or its guard found and its turn glided after it, 60 m off within 12 s (PlayShots `gunship`, a new scene that calls
+  the item over the fight: the plane was out of the picture even zoomed out). A called escort now has a post
+  (`Vehicle.PostRadius`, the support's radius, at least 12 m, round the spot): it takes on only what is on its post
+  unless ordered, and the side's AI leaves it alone; the rerun has it 23 m from the spot, in the picture at the usual
+  zoom (`Docs/art/inaction/gunship-play.jpg`). It flew 40 m up in a 36 m turn, off the top of the battle camera for most
+  of the turn: now 26 m up in a 22 m turn (data `orbitRadius`, new). And its 25 mm never fired: the fire-rhythm rules
+  made each gun wait for the others' salvos and magazines; a gunship's broadside guns now fire together as a real
+  AC-130's do (its 105, 40 and 25 mm each have their own crew). In a 16 s clip: 105 mm x4, 40 mm x46, 25 mm x97 (was x1,
+  x24, x0). The data had every weapon; nothing was missing. In the clip it is framed on its whole turn.
+
+### Tests (run once or twice; no suites)
+
+`InActionTests` (7): a jammed round's miss in its event, mortal and unkillable targets, refill and held fire, dome hits'
+origin, the gunship's turn and all three guns firing, a called gunship staying over its spot, the readouts in both
+languages. First run 3 of 6 (the tests: spawn grace, a moving gun, heavy targets the 25 mm cannot hurt; and the real
+25 mm fault above), then 6 of 6, then 7 of 7 with the post test. With graphics:
+StartupProbe on 13 clips (gunship, gunship item, drone mothership, FPV carrier, EW jammer, shield generator, CP relay,
+mine layer, minefield, dragon's teeth, AA vehicle, laser tank, ammunition depot; no errors) and again in HD for the jammer,
+the FPV carrier, the shield generator and the mothership; PlayShots `gunship`. Crops in `Docs/art/inaction/`.
+
+### For the testing phase
+
+- Balance: the gunship item now fires its 25 mm, stays over its spot and flies lower (26 m: every weapon that hits
+  aircraft still reaches it); `CounterTests` and a `ConquestBattleTests` sweep with the item; the AI's own use of it.
+- Listen on the device: the beam hum and the drone buzz levels against the guns; the readout over the picture on a phone.
+- The other scenes' opening with the in-frame rule (a long-range launcher may wait a moment longer before its first shot).
+
+### Shared edits (merge by hand if they conflict)
+
+`SimEvent` (Offset, Jammed, DomeStruck), `CombatSystem` (the miss in WeaponFired, the gunship's rhythm), `DomeSystem`,
+`DamageSystem` and `AbilitySystem` (Unkillable), `Vehicle` (Mortal, LastHitAt), `SimWorld` (MakeMortal, Refill, HoldFire),
+`Definitions`/`Catalog`/`MovementSystem` (orbitRadius, the escort's post), `StrikeSystem` and `TacticalAi` (the post),
+`balance.json` (sky_gunship), `VehicleView` (GentleArrival),
+`ProjectilePool`, `WeaponEffects`, `EffectsDirector` (+ Domes, Shields), `AudioDirector`, `SoundSynth`, `UnitPreview`,
+`MenuScreen.Detail`, `Screens.uss`, `Strings` (range.*), `FiringRange*`, `StartupProbe` (-mbProbeHd, -mbProbeZoom,
+-mbProbeEvery), `PlayShots` (the gunship scene).

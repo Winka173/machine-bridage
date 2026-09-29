@@ -66,6 +66,12 @@ namespace MachineBrigade.Game.Rendering
 
         public RenderTexture Texture { get; private set; }
 
+        /// <summary>The In action clip's line of text over the picture (a CP relay's pay), or null (see <see cref="FiringRange.Readout"/>).</summary>
+        public string RangeReadout => _range?.Readout;
+
+        /// <summary>The readout is a warning (the relay under fire).</summary>
+        public bool RangeAlert => _range?.ReadoutAlert ?? false;
+
         /// <summary>The game's sound: the In action range is heard through it while it plays.</summary>
         public Audio.AudioDirector Audio { get; set; }
 

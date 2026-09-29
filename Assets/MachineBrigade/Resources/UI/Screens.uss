@@ -227,6 +227,14 @@
 .fc-detail__stage { height: var(--fc-detail-stage); margin-bottom: var(--fc-space-2); background-color: var(--fc-bg-2); }
 .fc-detail__art { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
 .fc-detail__preview { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop; }
+/* 19P: a tower's effect on the In action range (a CP relay's pay), over the top left of the picture. */
+.fc-detail__readout {
+    position: absolute; left: var(--fc-space-3); top: var(--fc-space-3);
+    padding: var(--fc-space-1) var(--fc-space-3); background-color: var(--fc-scrim-home);
+    border-left-width: 3px; border-left-color: var(--fc-accent); color: var(--fc-text); white-space: nowrap;
+    -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-body);
+}
+.fc-detail__readout--alert { border-left-color: var(--fc-danger); }
 /* The name with the arrows beside it (small faces in full touch targets), off the picture. */
 .fc-detail__head { align-items: center; }
 .fc-detail__head > .fc-icon-btn { flex-shrink: 0; }

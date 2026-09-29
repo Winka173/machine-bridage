@@ -269,6 +269,11 @@ namespace MachineBrigade.Game.Hud
             ["detail.module.rearm"] = ("Vehicles in the base reload {0}× as fast", "Xe trong căn cứ nạp đạn nhanh gấp {0} lần"),
             ["detail.module.air"] = ("Aircraft come back to repair {0} % a second and rearm (within {1} m)", "Máy bay về sửa {0} % mỗi giây và nạp đạn (trong {1} m)"),
             ["detail.module.supply"] = ("+{0} army supply", "+{0} tiếp tế cho quân"),
+            // Test feedback 19P: readouts over the In action clip of a tower that works on its side.
+            ["range.relay"] = ("CP relay: +{0:0.00} CP/s · {1:0.0} CP paid", "Trạm CP: +{0:0.00} CP/giây · đã trả {1:0.0} CP"),
+            ["range.relay.quiet"] = ("Under fire: no CP for {0:0} s · {1:0.0} CP paid", "Bị bắn: ngừng trả CP {0:0} giây · đã trả {1:0.0} CP"),
+            ["range.depot"] = ("Launchers here reload {0:0.#}× as fast", "Bệ phóng ở đây nạp đạn nhanh gấp {0:0.#} lần"),
+            ["range.supply"] = ("Army supply {0} (+{1} from this station)", "Tiếp tế cho quân {0} (+{1} từ trạm này)"),
             ["detail.module.radar"] = ("Stealthy vehicles show in the base; guns firing at it show on the map", "Lộ xe tàng hình trong căn cứ; pháo bắn vào nó hiện trên bản đồ"),
             ["detail.moduleNoWeapons"] = ("A utility module has no weapons: it helps the base instead (Stats tab).", "Mô-đun tiện ích không có vũ khí: nó hỗ trợ căn cứ (xem mục Chỉ số)."),
             ["detail.moduleNoFiring"] = ("A utility module does not fire.", "Mô-đun tiện ích không bắn."),

@@ -131,7 +131,11 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Prompt 16: a patch of a boss's fire trail lit at Position (Entity the boss): Value its lit seconds, Target.X its radius.</summary>
         FireTrail,
-        /// <summary>Prompt 17 C: a shield dome (Entity: its emitter) took Value damage off a hit on a unit at Position.</summary>
+        /// <summary>
+        /// Prompt 17 C: a shield dome (Entity: its emitter) took Value damage off a hit on a unit at Position. Target is
+        /// where the round came from, Airborne set when it came down from above (artillery, a strike, a bomb), Mount 1
+        /// when the dome took all of it (nothing reached the unit).
+        /// </summary>
         DomeHit,
 
         /// <summary>Prompt 17 C: a shield dome (Entity: its emitter) broke (Value 0) or came back up (Value 1) at Position.</summary>
@@ -160,8 +164,9 @@ namespace MachineBrigade.Sim.Events
     public readonly struct SimEvent
     {
         private SimEvent(SimEventKind kind, EntityId entity, Vector2 position, Vector2 target, float value,
-            ExplosionTier tier, string? defId, int team, int mount = 0, EntityId other = default, bool airborne = false)
+            ExplosionTier tier, string? defId, int team, int mount = 0, EntityId other = default, bool airborne = false, Vector2 offset = default)
         {
+            Offset = offset;
             Airborne = airborne;
             Mount = mount;
             Other = other;
@@ -201,17 +206,28 @@ namespace MachineBrigade.Sim.Events
         /// <summary>Weapon mount index for WeaponFired (0 = main weapon), matching VehicleDef.Mounts.</summary>
         public int Mount { get; }
 
+        /// <summary>
+        /// A guided round that will not reach its target (WeaponFired): it lands this far off it (the sim's miss),
+        /// zero for one that flies true. With <see cref="Airborne"/> set, an enemy jammer scrambled it (see
+        /// <see cref="Jammed"/>); else it lost its lock.
+        /// </summary>
+        public Vector2 Offset { get; }
+
+        /// <summary>A WeaponFired round an enemy jammer scrambled: it veers off, tumbles and lands <see cref="Offset"/> wide.</summary>
+        public bool Jammed => Kind == SimEventKind.WeaponFired && Airborne;
+
         /// <summary>Second entity involved: the target of a shot (guided missiles home in on it).</summary>
         public EntityId Other { get; }
 
         internal static SimEvent Spawned(Vehicle v) =>
             new(SimEventKind.VehicleSpawned, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team);
 
-        internal static SimEvent Fired(Vehicle shooter, int mount, Vector2 origin, Vector2 aim, float travelTime, EntityId target)
+        internal static SimEvent Fired(Vehicle shooter, int mount, Vector2 origin, Vector2 aim, float travelTime, EntityId target,
+            Vector2 wide = default, bool jammed = false)
         {
             var weapon = shooter.Def.Mounts[mount].Weapon;
             return new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id,
-                shooter.Team, mount, target);
+                shooter.Team, mount, target, jammed, wide);
         }
 
         /// <summary>A shot from equipment rather than a mount (a Drone Escort drone): drawn from the main muzzle with its own weapon's look.</summary>
@@ -289,8 +305,8 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent CrateIncoming(Crate c, float seconds) =>
             new(SimEventKind.CrateIncoming, c.Id, c.Position, default, seconds, default, null, Teams.Neutral);
 
-        internal static SimEvent DomeStruck(Vehicle emitter, Vector2 at, float taken) =>
-            new(SimEventKind.DomeHit, emitter.Id, at, emitter.Position, taken, default, emitter.Def.Id, emitter.Team);
+        internal static SimEvent DomeStruck(Vehicle emitter, Vector2 at, float taken, Vector2 from, bool above, bool whole) =>
+            new(SimEventKind.DomeHit, emitter.Id, at, from, taken, default, emitter.Def.Id, emitter.Team, whole ? 1 : 0, airborne: above);
 
         internal static SimEvent DomeSwitched(Vehicle emitter, bool up) =>
             new(SimEventKind.DomeChanged, emitter.Id, emitter.Position, default, up ? 1f : 0f, default, emitter.Def.Id, emitter.Team);

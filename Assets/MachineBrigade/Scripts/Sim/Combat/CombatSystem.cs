@@ -585,6 +585,9 @@ namespace MachineBrigade.Sim.Combat
                 return false;
             }
             if (v.Def.Boss) return BossTurn(v, index, now);
+            // Test feedback 19P: a gunship's broadside guns each have their own crew, and the 105, the 40 and the
+            // 25 mm fire together as a real AC-130's do, none waiting on another's salvo or magazine.
+            if (v.Def.Orbit && IsSide(v.Def.Mounts[index])) return true;
             if (SalvoUnderWay(v, index) || StreamUnderWay(v, index)) return false;
             // A leading magazine gun in the middle of its magazine keeps going (test feedback 11C: an
             // armoured car's or an IFV's cannon fires on for seconds); the others wait for its magazine change.
@@ -921,7 +924,8 @@ namespace MachineBrigade.Sim.Combat
                 projectile.Miss = new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (5f + (float)_world.Random.NextDouble() * 6f);
             }
             _projectiles.Add(projectile);
-            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target));
+            var wide = projectile.Jammed || projectile.Failed ? projectile.Miss : default;
+            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target, wide, projectile.Jammed));
         }
 
         /// <summary>

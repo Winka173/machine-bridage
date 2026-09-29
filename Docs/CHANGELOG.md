@@ -7,6 +7,24 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### In-action and effects fixes (DECISIONS 19P)
+
+- **In action clip:** the unit shown never runs out of ammunition; the enemy can be knocked out and a new one comes in
+  (aircraft fly onto the spot, vehicles drive up); aircraft glide in and slow onto their station, and nothing fires at a
+  target before it is in the picture.
+- **Towers with a scene of their own:** the CP relay counts its pay over the picture and stops paying while it is raided;
+  dragon's teeth turn an enemy column round their ends; the minefield and the mine layer's mines go off under enemy
+  vehicles driving across; the ammunition depot's launchers reload faster at home; the logistics station shows the
+  supply it adds; the shield generator's attackers stand outside its dome.
+- **Jammed missiles** no longer vanish: they fly true, crackle as they lose their lock, then corkscrew and roll off to
+  land (or burst) wide where the simulation scores the miss.
+- **Laser beams** hum continuously while they burn, with a whine as they ignite, instead of a machine gun's clatter.
+- **Shield domes** flare and ripple where a round crosses their skin; a round a dome stops bursts on the dome.
+- **FPV drones** (the swarms and the drone mothership's) look and fly like quadcopters: rotors, no motor flame or smoke
+  trail, weaving corrections and a spread-out swarm, a buzz as they launch and a charge-and-debris impact of their own.
+- **Sky gunship:** it stays over the spot it was called to, circles lower and tighter in the battle camera's picture, and
+  fires its 105, 40 and 25 mm together.
+
 ### Design document: armour, penetration and weapon forms
 
 - Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).

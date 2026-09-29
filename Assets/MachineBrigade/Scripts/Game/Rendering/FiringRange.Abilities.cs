@@ -40,6 +40,12 @@ namespace MachineBrigade.Game.Rendering
             Resupply,
             Dome,
             Wingman,
+            // Test feedback 19P: towers with nothing to shoot show what they do.
+            Relay,
+            Teeth,
+            Minefield,
+            Depot,
+            Supply,
         }
 
         private Scene _scene;
@@ -63,6 +69,11 @@ namespace MachineBrigade.Game.Rendering
 
         private static Scene SceneFor(VehicleDef def)
         {
+            if (def.Relay != null) return Scene.Relay;
+            if (def.Obstacle) return Scene.Teeth;
+            if (def.Mines is { Spread: > 0f }) return Scene.Minefield;
+            if (def.Utility is { Rearm: > 1f }) return Scene.Depot;
+            if (def.Utility is { Supply: > 0 }) return Scene.Supply;
             // Prompt 17 C: a shield dome (carrier or generator) takes the enemy's fire on its friends; a wingman pulls SAMs off its leader.
             if (def.Dome != null) return Scene.Dome;
             if (def.Wingman != null) return Scene.Wingman;
@@ -101,6 +112,8 @@ namespace MachineBrigade.Game.Rendering
                 _staged = true;
                 SetUp();
             }
+            ReplaceAttackers();
+            Towers();
             // Sparring partners keep at their marks (an order can lapse when a target is stunned or hidden).
             if (_world.Tick % 20 == 7)
                 foreach (var (who, at) in _attackers)
@@ -139,6 +152,11 @@ namespace MachineBrigade.Game.Rendering
                     Wounded(Friend("main_battle_tank", s + new Vector2(-5f, 3f)), 0.55f);
                     Wounded(Friend("ifv", s + new Vector2(5f, 2f)), 0.55f);
                     break;
+                case Scene.Depot:
+                    // Test feedback 19P: the ammunition depot works at home: the range's home is here, and the
+                    // launchers beside it (emptied) reload faster than they would anywhere else.
+                    _world.SetRally(0, s);
+                    goto case Scene.Resupply;
                 case Scene.Resupply:
                     // Two rocket launchers beside it, empty to start with, shooting at the targets: they reload
                     // on the spot three times as fast as on their own, and fire again.
@@ -200,9 +218,11 @@ namespace MachineBrigade.Game.Rendering
                     _world.MakeSparring(left);
                     _world.MakeSparring(right);
                     _world.MakeSparring(_shooter);
-                    Attacker("main_battle_tank", new Vector2(-9f, _far.Y + 4f), left);
-                    Attacker("main_battle_tank", new Vector2(9f, _far.Y + 6f), right);
-                    Widen(_far.Y + 10f);
+                    // Beyond the dome's edge: fire from inside it is not stopped (a generator's dome is 25 m).
+                    var outside = Mathf.Max(_far.Y + 4f, s.Y + (_shooter.Def.Dome?.Radius ?? 0f) + 6f);
+                    Attacker("main_battle_tank", new Vector2(-9f, outside), left);
+                    Attacker("main_battle_tank", new Vector2(9f, outside + 2f), right);
+                    Widen(outside + 6f);
                     break;
                 case Scene.Wingman:
                     // A friendly fighter it flies with, and an enemy SAM vehicle firing at the fighter: some missiles turn onto the drone.
@@ -220,6 +240,9 @@ namespace MachineBrigade.Game.Rendering
                         Attacker("main_battle_tank", new Vector2(9f, 26f), _friends[_friends.Count - 1]);
                     }
                     Widen(20f);
+                    break;
+                default:
+                    SetUpTower();
                     break;
             }
         }
@@ -279,6 +302,7 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Sim events the scene reacts to: a radar's find turns the friendly mortar on the gun it found.</summary>
         private void Watch(in SimEvent e)
         {
+            if (e.Kind == SimEventKind.MineLaid && e.Team == 0) _laid.Add((e.Entity, e.Position, _world.Time));
             if (_scene == Scene.CounterBattery && e.Kind == SimEventKind.GunRevealed && _counterGun != null && _counterGun.IsAlive &&
                 _counterGun.Order.Target != e.Other)
                 _world.Submit(new Command(CommandType.Attack, 0, new[] { _counterGun.Id }, default, e.Other));
@@ -290,6 +314,7 @@ namespace MachineBrigade.Game.Rendering
             if (_shooter == null || !_shooter.IsAlive || Time.unscaledTime < _pulseAt) return;
             Color colour;
             float size;
+            if (TowerPulse(_views.TryGet(_shooter.Id, out var tower) ? tower.Position : new Vector3(_shooter.Position.X, 0f, _shooter.Position.Y))) return;
             switch (_scene)
             {
                 case Scene.Jammer:
@@ -324,12 +349,43 @@ namespace MachineBrigade.Game.Rendering
             return friend;
         }
 
-        private void Attacker(string id, Vector2 at, Vehicle target)
+        /// <summary>An enemy sparring partner: it moves and fires, and it can be knocked out (a new one comes in its place).</summary>
+        private Vehicle Attacker(string id, Vector2 at, Vehicle target)
         {
             var enemy = _world.SpawnVehicle(id, 1, at, MathF.PI);
             _world.MakeSparring(enemy);
+            _world.MakeMortal(enemy);
             _attackers.Add((enemy, target));
+            _posts.Add((id, at, double.NaN));
             if (target != null) _world.Submit(new Command(CommandType.Attack, 1, new[] { enemy.Id }, default, target.Id));
+            return enemy;
+        }
+
+        /// <summary>Where each attacker came in and when its replacement is due (NaN: none due).</summary>
+        private readonly List<(string id, Vector2 at, double due)> _posts = new();
+
+        /// <summary>Test feedback 19P: a knocked-out attacker is replaced a moment later, on the same mark.</summary>
+        private void ReplaceAttackers()
+        {
+            for (var i = 0; i < _attackers.Count; i++)
+            {
+                var (who, at) = _attackers[i];
+                if (who.IsAlive) continue;
+                var (id, post, due) = _posts[i];
+                if (double.IsNaN(due))
+                {
+                    _posts[i] = (id, post, _world.Time + ReplaceAfter + 0.5);
+                    continue;
+                }
+                if (_world.Time < due) continue;
+                var enemy = _world.SpawnVehicle(id, 1, post, MathF.PI);
+                _world.MakeSparring(enemy);
+                _world.MakeMortal(enemy);
+                if (_silenced.Remove(who.Id)) _silenced.Add(enemy.Id);
+                _attackers[i] = (enemy, at);
+                _posts[i] = (id, post, double.NaN);
+                if (at != null) _world.Submit(new Command(CommandType.Attack, 1, new[] { enemy.Id }, default, at.Id));
+            }
         }
 
         private void Wounded(Vehicle who, float share)

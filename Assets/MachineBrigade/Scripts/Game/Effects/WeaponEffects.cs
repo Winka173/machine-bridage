@@ -47,6 +47,28 @@ namespace MachineBrigade.Game.Effects
             _hasMissile = models.Has("missile");
             _hasRocket = models.Has("rocket");
             _hasBomb = models.Has("bomb");
+            // Test feedback 19P: a jammed round losing its lock: a crackle of sparks and a flicker of light on it.
+            projectiles.Jammed = (at, forward) =>
+            {
+                _muzzle.SparkBurst(at, Vector3.up - forward * 0.5f, 14, 3f, 9f, 0.8f);
+                _emitters.Charge(at, 1.3f);
+                _emitters.Charge(at + Vector3.up * 0.2f, 0.9f);
+            };
+        }
+
+        /// <summary>
+        /// Test feedback 19P: where a guided round that will miss comes down, off its target (the sim's miss), and
+        /// when along its flight it bends away: a jammed one early (its lock goes as it reaches the jammer's field),
+        /// one that lost its lock late.
+        /// </summary>
+        /// <summary>An FPV quadcopter is drawn a third bigger than other drones: its X of arms and rotors must read at a glance.</summary>
+        private const float QuadScale = 1.3f;
+
+        private void Veer(in SimEvent e, ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId)
+        {
+            if (e.Offset == default) return;
+            var flies = views.TryGet(targetId, out var aimed) && aimed.Flying;
+            _projectiles.Veer(new Vector3(e.Offset.X, flies ? 0f : -0.7f, e.Offset.Y), e.Jammed ? 0.35f : 0.6f, e.Jammed);
         }
 
         /// <summary>Tests and tools: every round's start point as it is launched (shooter, mount, point).</summary>
@@ -163,22 +185,43 @@ namespace MachineBrigade.Game.Effects
                     var missile = Model("missile");
                     var airborne = shooter != null && shooter.Flying;
                     // It leaves along its tube or rail (a raised SAM box, a tilted rack), then turns onto its target.
-                    if (_hasMissile) _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
-                        boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
-                        plume: Plume.For(weapon, kind, missile, airborne));
+                    if (_hasMissile)
+                    {
+                        _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
+                            boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
+                            plume: Plume.For(weapon, kind, missile, airborne));
+                        Veer(e, views, targetId);
+                    }
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     Flash(MuzzleFx.Kind.Missile, from, Tube(aim), now, 1f, groundY);
                     _shake(from, 0.05f);
                     break;
 
                 case ProjectileKind.Drone:
-                    // A kamikaze drone climbs off the rack, then dives onto whatever it was sent at.
+                {
+                    // A kamikaze drone climbs off the rack, then dives onto whatever it was sent at. Test feedback 19P:
+                    // an FPV quadcopter (the swarms, the mothership's) flies as one, with no motor flame or smoke trail:
+                    // level and nose-down under its rotors, weaving about a line of its own across the swarm.
                     var drone = Model(_models.Has("fpv_drone") ? "fpv_drone" : _hasMissile ? "missile" : null);
-                    if (drone != null) _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * 0.12f, 0.35f, now, Homing(views, targetId), wobble: 0.6f,
-                        scale: scale * SizeOf(weapon, kind, drone, false));
+                    var quad = drone == "fpv_drone";
+                    if (drone != null)
+                    {
+                        _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * (quad ? 0.1f : 0.12f), quad ? 0f : 0.35f, now,
+                            Homing(views, targetId), wobble: quad ? 0f : 0.6f, scale: scale * SizeOf(weapon, kind, drone, false) * (quad ? QuadScale : 1f));
+                        if (quad)
+                        {
+                            var across = Vector3.Cross(Vector3.up, forward);
+                            var width = Mathf.Min(6f, distance * 0.14f);
+                            _projectiles.FlyAsDrone(across * UnityEngine.Random.Range(-width, width) + Vector3.up * UnityEngine.Random.Range(-0.5f, 2.5f));
+                        }
+                        Veer(e, views, targetId);
+                    }
                     else _tracers.Launch(from, to, e.Value, distance * 0.12f, 0.15f, 0.8f, now, 0f, 0.4f);
-                    Flash(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
+                    // A quadcopter lifts off its rack in a puff of dust; a winged drone's booster flares.
+                    if (quad) _emitters.Dust(from, 0.35f);
+                    else Flash(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
                     break;
+                }
 
                 case ProjectileKind.Rocket:
                     var artillery = weapon != null && weapon.MinRange > 0f;

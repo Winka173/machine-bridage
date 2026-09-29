@@ -454,6 +454,15 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public bool Sparring { get; internal set; }
 
+        /// <summary>
+        /// A firing-range target or sparring partner that can be destroyed after all (the In action clip's
+        /// enemies: a new one comes in for each one knocked out). It neither heals itself nor stops at a sliver.
+        /// </summary>
+        public bool Mortal { get; internal set; }
+
+        /// <summary>A range dummy or sparring partner that cannot be destroyed.</summary>
+        internal bool Unkillable => (Dummy || Sparring) && !Mortal;
+
         /// <summary>A car bomb that set itself off: its own blast was the explosion (no second one as it dies).</summary>
         internal bool Detonated { get; set; }
 
@@ -532,6 +541,13 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>
         internal Vector2 GuardPoint;
 
+        /// <summary>
+        /// Test feedback 19P: a called escort (the sky gunship item) keeps to where it was called: it takes on only
+        /// what is within this many metres of its post (<see cref="GuardPoint"/>) unless ordered at something, and the
+        /// side's AI leaves it alone. 0: no post.
+        /// </summary>
+        internal float PostRadius;
+
         /// <summary>Team of whoever last damaged this vehicle (-1: nobody, or a blast from the environment).</summary>
         internal int LastAttackerTeam = -1;
 
@@ -569,6 +585,9 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Simulation time of the last hit from <see cref="LastAttacker"/>.</summary>
         internal double LastHitTime = double.NegativeInfinity;
+
+        /// <summary>When it was last hit (sim seconds; negative infinity: never), for the presentation (the CP relay's clip).</summary>
+        public double LastHitAt => LastHitTime;
 
         /// <summary>A defence a mode put down, whose ground routes go round (see SimWorld.AnchorDefence).</summary>
         internal bool BlocksRoutes;

@@ -284,6 +284,7 @@ namespace MachineBrigade.Sim.Content
                     def.Jammer = v.Float("jammer", 0f);
                     if (v.Has("mainAim")) def.AimMain(v.Enum<MountAim>("mainAim"));
                     def.Orbit = v.Bool("orbit", false);
+                    def.OrbitRadius = v.Float("orbitRadius", 0f);
                     def.Stealth = v.Bool("stealth", false);
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
