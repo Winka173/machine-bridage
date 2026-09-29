@@ -590,7 +590,7 @@ namespace MachineBrigade.Game.Hud
         {
             "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
-            "legend",
+            "legend", "detail-weapons", "detail-armour",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -640,9 +640,13 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case "detail":
                 case "detail-action":
+                case "detail-weapons":
+                case "detail-armour":
                     ShowTab(Tab.Army);
-                    // The In action tab: the theatre (DECISIONS 12E).
+                    // The In action tab: the theatre (DECISIONS 12E); the Weapons tab with its chips and effectiveness table (prompt 15 E2).
                     if (screen == "detail-action") _detailTab = DetailTab.Firing;
+                    if (screen == "detail-weapons") _detailTab = DetailTab.Weapons;
+                    if (screen is "detail-weapons" or "detail-armour") DebugScrollDetail(screen == "detail-armour");
                     OpenDetail("main_battle_tank");
                     break;
                 case "detail-tower":

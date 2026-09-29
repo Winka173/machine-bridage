@@ -774,8 +774,8 @@
 .fc-verdict--poor { --icon-color: var(--fc-text-2); }
 .fc-verdict--none { --icon-color: var(--fc-danger); }
 
-.fc-enemytip { padding: var(--fc-space-2) var(--fc-space-3); width: 440px; }
+.fc-enemytip { padding: var(--fc-space-2) var(--fc-space-3); width: 300px; }
 .fc-enemytip__head { align-items: center; margin-bottom: var(--fc-space-1); }
 .fc-enemytip__head > .fc-cicon { margin-right: var(--fc-space-2); }
 .fc-enemytip__grid { flex-direction: row; flex-wrap: wrap; }
-.fc-enemytip__cell { width: 50%; align-items: center; min-height: 28px; }
+.fc-enemytip__cell { width: 100%; align-items: center; min-height: 28px; }

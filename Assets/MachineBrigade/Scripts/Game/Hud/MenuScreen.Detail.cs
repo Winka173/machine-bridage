@@ -48,7 +48,7 @@ namespace MachineBrigade.Game.Hud
         {
             _detail = FullPage("fc-detail");
             _detailLeft = Kit.Box("fc-detail__left");
-            var leftScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-detail__left-scroll");
+            var leftScroll = _detailLeftScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-detail__left-scroll");
             _detailLeftBody = Kit.Box("fc-detail__left-body");
             leftScroll.Add(_detailLeftBody);
             _detailLeft.Add(leftScroll);
@@ -419,6 +419,20 @@ namespace MachineBrigade.Game.Hud
             lines.AddToClassList("fc-detail__strongweak");
             KitCombat.TapTip(lines, () => Strings.Get("combat.strong") + " / " + Strings.Get("combat.weak"), () => KitCombat.StrongWeakTip(def));
             _detailCounters.Add(lines);
+        }
+
+        private ScrollView _detailLeftScroll;
+
+        /// <summary>The screenshots and checks: scroll the left column (the armour) or the tab's body (the effectiveness table) to its end once laid out.</summary>
+        private void DebugScrollDetail(bool left)
+        {
+            var scroll = left ? _detailLeftScroll : (ScrollView)_detailScroll;
+            void End(GeometryChangedEvent e)
+            {
+                var room = scroll.contentContainer.layout.height - scroll.contentViewport.layout.height;
+                if (room > 0f) scroll.scrollOffset = new Vector2(0f, room);
+            }
+            scroll.contentContainer.RegisterCallback<GeometryChangedEvent>(End);
         }
 
         private void CounterRow(string key, IReadOnlyList<UnitClass> classes)
