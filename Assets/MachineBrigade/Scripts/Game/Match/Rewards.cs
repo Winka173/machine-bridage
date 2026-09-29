@@ -126,7 +126,7 @@ namespace MachineBrigade.Game.Match
             var paid = Mathf.Min(baseCards.Count, rules.BountyCap);
             var coins = paid * rules.Coins;
             reward.Coins += coins;
-            rows?.Add((Hud.Strings.Get("result.elites"), Hud.Strings.Format("result.elitesValue", baseCards.Count, coins)));
+            rows?.Add((Hud.Strings.Get("result.elites"), Hud.Strings.Format("result.elitesValue", ("baseCards", baseCards.Count), ("coins", coins))));
             var random = new System.Random(seed);
             foreach (var card in baseCards)
             {

@@ -31,18 +31,38 @@ namespace MachineBrigade.Game.Hud
 
         private static string Number(char kind, float v) => kind switch
         {
-            'q' => (v * 100f).ToString("0.0"),
-            's' => v.ToString("0.#"),
-            'm' or 'n' => Mathf.RoundToInt(v).ToString(),
-            'x' => v.ToString("0.0#"),
-            _ => Mathf.RoundToInt(v * 100f).ToString(),
+            'q' => Strings.Num(v * 100f, "0.0"),
+            's' => Strings.Num(v, "0.#"),
+            'm' or 'n' => Strings.Num(Mathf.RoundToInt(v)),
+            'x' => Strings.Num(v, "0.0#"),
+            _ => Strings.Num(Mathf.RoundToInt(v * 100f)),
         };
 
-        private static object[] Args(string key, float a, float b, float c)
+        /// <summary>A number's placeholder name by its kind (prompt 21 I.3): {percent}, {seconds}, {metres}, {count}, {times}.</summary>
+        private static string KindName(char kind) => kind switch
+        {
+            's' => "seconds",
+            'm' => "metres",
+            'n' => "count",
+            'x' => "times",
+            _ => "percent",
+        };
+
+        /// <summary>A trait's or module's three numbers, named by their kinds; a second one of a kind is "{percent2}".</summary>
+        private static (string name, object value)[] Args(string key, float a, float b, float c)
         {
             var f = Formats.TryGetValue(key, out var kinds) ? kinds : "p";
             char K(int i) => i < f.Length ? f[i] : 'p';
-            return new object[] { Number(K(0), a), Number(K(1), b), Number(K(2), c) };
+            var values = new[] { a, b, c };
+            var args = new (string name, object value)[3];
+            var seen = new Dictionary<string, int>();
+            for (var i = 0; i < 3; i++)
+            {
+                var name = KindName(K(i));
+                seen[name] = seen.TryGetValue(name, out var n) ? n + 1 : 1;
+                args[i] = (seen[name] == 1 ? name : name + seen[name], Number(K(i), values[i]));
+            }
+            return args;
         }
 
         /// <summary>A piece's name: its base type ("Long Barrel") or module ("Trophy APS").</summary>
@@ -77,7 +97,7 @@ namespace MachineBrigade.Game.Hud
         {
             var names = new List<string>();
             foreach (var (cls, _) in VehicleFit.ClassesOf(branch)) names.Add(Strings.Get("class." + cls));
-            return Strings.Format("gear.branchClasses", Strings.Get("gear.branch." + branch.ToString().ToLowerInvariant()), string.Join(", ", names));
+            return Strings.Format("gear.branchClasses", ("gear", Strings.Get("gear.branch." + branch.ToString().ToLowerInvariant())), ("names", string.Join(", ", names)));
         }
 
         /// <summary>"Works for: Armour, Light" or "Works for no branch" (a vehicle piece's fit).</summary>
@@ -100,10 +120,10 @@ namespace MachineBrigade.Game.Hud
             var key = GearKeys.Snake(stat.ToString());
             var amount = stat switch
             {
-                StatId.Regen => (Mathf.Abs(value) * 100f).ToString("0.00"),
-                StatId.RegenDelay or StatId.LaserWarning => Mathf.Abs(value).ToString("0.#"),
-                _ when Stats.InLevels(stat) => Mathf.Abs(value).ToString("0.0#"),
-                _ => (Mathf.Abs(value) * 100f).ToString(Mathf.Abs(value) < 0.1f ? "0.#" : "0"),
+                StatId.Regen => Strings.Num(Mathf.Abs(value) * 100f, "0.00"),
+                StatId.RegenDelay or StatId.LaserWarning => Strings.Num(Mathf.Abs(value), "0.#"),
+                _ when Stats.InLevels(stat) => Strings.Num(Mathf.Abs(value), "0.0#"),
+                _ => Strings.Num(Mathf.Abs(value) * 100f, Mathf.Abs(value) < 0.1f ? "0.#" : "0"),
             };
             return Strings.Format(penalty ? "stat.pen." + key : "stat.line." + key, amount);
         }
@@ -141,7 +161,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>What a base type does besides its main stat, for a codex (the Monolith Plate: a bigger main stat, no sub-stats).</summary>
         public static string BaseNote(BaseTypeDef b)
         {
-            if (b.MainScale != 1f && b.NoSubs) return Strings.Format("gear.base.bigMain", ((b.MainScale - 1f) * 100f).ToString("0"));
+            if (b.MainScale != 1f && b.NoSubs) return Strings.Format("gear.base.bigMain", Strings.Num((b.MainScale - 1f) * 100f, "0"));
             return "";
         }
 
@@ -163,7 +183,7 @@ namespace MachineBrigade.Game.Hud
         public static string BrandName(BrandDef brand) => brand == null ? "" : Strings.Get("set." + brand.Id);
 
         /// <summary>A set chip: "Ironclad 2/4".</summary>
-        public static string Chip(Gear.SetChip chip) => Strings.Format("gear.setChip", BrandName(chip.Brand), chip.Count);
+        public static string Chip(Gear.SetChip chip) => Strings.Format("gear.setChip", ("brand", BrandName(chip.Brand)), ("count", chip.Count));
 
         /// <summary>A brand's two bonuses: "2: +6% health · 4: Bulwark: ...".</summary>
         public static string BrandBonuses(BrandDef brand)
@@ -171,7 +191,7 @@ namespace MachineBrigade.Game.Hud
             var four = brand.FourPiece;
             var two = brand.TwoPiece.Id != TraitId.None ? TraitName(GearKeys.Trait(brand.TwoPiece.Id)) + ": " + TraitEffect(brand.TwoPiece) : Line(brand.Stat, brand.Value);
             // A tower brand's pieces count across the whole base.
-            var text = Strings.Format("gear.brandBonuses", two, TraitName(GearKeys.Trait(four.Id)) + ": " + TraitEffect(four));
+            var text = Strings.Format("gear.brandBonuses", ("two", two), ("four", TraitName(GearKeys.Trait(four.Id)) + ": " + TraitEffect(four)));
             return brand.TowerOnly ? text + " " + Strings.Get("gear.brandBase") : text;
         }
 

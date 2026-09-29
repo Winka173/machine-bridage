@@ -163,9 +163,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A count with the language's digit grouping (12,450 / 12.450).</summary>
         public static string Count(int value) => value.ToString("N0", Culture);
 
-        internal static CultureInfo Culture => Strings.Vietnamese ? Vietnamese : CultureInfo.InvariantCulture;
-
-        private static readonly CultureInfo Vietnamese = new("vi-VN");
+        internal static CultureInfo Culture => Strings.Culture;
 
         /// <summary>The kit root an element belongs to (dialogs, pickers and toasts open there), else its panel's root.</summary>
         public static VisualElement HostOf(VisualElement element)

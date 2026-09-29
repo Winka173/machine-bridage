@@ -164,8 +164,8 @@ namespace MachineBrigade.Game.Hud
             var left = PlayerProfile.AdCratesLeft;
             var wait = PlayerProfile.AdCrateWait;
             var line = left <= 0 ? Strings.Get("crate.adDone")
-                : wait > TimeSpan.Zero ? Strings.Format("crate.adWait", left, $"{(int)wait.TotalMinutes}:{wait.Seconds:00}")
-                : Strings.Format("crate.adLeft", left, Strings.Get("crate." + DailyCrates.AdCrate(DailyCrates.AdCrates - left).ToString().ToLowerInvariant()));
+                : wait > TimeSpan.Zero ? Strings.Format("crate.adWait", ("left", left), ("time", $"{(int)wait.TotalMinutes}:{wait.Seconds:00}"))
+                : Strings.Format("crate.adLeft", ("left", left), ("crate", Strings.Get("crate." + DailyCrates.AdCrate(DailyCrates.AdCrates - left).ToString().ToLowerInvariant())));
             var tile = ShopTile("", ShopArt.Crate(CrateKind.Silver), "ad", Strings.Get("crate.ad"), line);
             var watch = new KitButton(ButtonTier.Claim, Strings.Get("crate.watch"), WatchAdCrate, "ad");
             if (left <= 0) watch.Disable(Strings.Get("crate.adDoneShort"));
@@ -177,7 +177,7 @@ namespace MachineBrigade.Game.Hud
         {
             var tile = ShopTile("", ShopArt.Crate(CrateKind.Gold), "crate", Strings.Get("deal.gold"),
                 PlayerProfile.GoldDealReady
-                    ? Strings.Format("deal.goldPrice", Kit.Count(PlayerProfile.GoldDealPrice), Kit.Count(Crates.CoinPrice[(int)CrateKind.Gold]))
+                    ? Strings.Format("deal.goldPrice", ("coins", Kit.Count(PlayerProfile.GoldDealPrice)), ("was", Kit.Count(Crates.CoinPrice[(int)CrateKind.Gold])))
                     : Strings.Get("deal.tomorrow"));
             var buy = new KitButton(ButtonTier.Secondary, Kit.Count(PlayerProfile.GoldDealPrice), BuyGoldDeal, "coin");
             if (!PlayerProfile.GoldDealReady) buy.Disable(Strings.Get("deal.tomorrow"));
@@ -216,13 +216,13 @@ namespace MachineBrigade.Game.Hud
         {
             var k = (int)kind;
             var owned = PlayerProfile.CrateCount(kind);
-            var contents = Strings.Format("odds.contents", Crates.CoinsLow[k], Crates.CoinsHigh[k], Crates.PrintCount[k], Crates.PrintCards[k], Crates.Rolls[k]);
+            var contents = Strings.Format("odds.contents", ("coinsMin", Crates.CoinsLow[k]), ("coinsMax", Crates.CoinsHigh[k]), ("prints", Crates.PrintCount[k]), ("cards", Crates.PrintCards[k]), ("rolls", Crates.Rolls[k]));
             var tile = ShopTile("fc-rarity-frame-" + Mathf.Min(4, k + 1), ShopArt.Crate(kind), "crate",
                 Strings.Get("crate." + kind.ToString().ToLowerInvariant()), contents);
             var best = Rarity.Legendary;
             while (best > Rarity.Common && Crates.AtLeastOne(kind, best) < 0.001f) best--;
-            tile.Q(className: "fc-shop__body").Add(Kit.Small(Strings.Format("shop.bestOdds", Strings.Get("rarity." + best.ToString().ToLowerInvariant()),
-                (Crates.AtLeastOne(kind, best) * 100f).ToString("0.#"))));
+            tile.Q(className: "fc-shop__body").Add(Kit.Small(Strings.Format("shop.bestOdds", ("rarity", Strings.Get("rarity." + best.ToString().ToLowerInvariant())),
+                ("percent", (Crates.AtLeastOne(kind, best) * 100f).ToString("0.#", Strings.Culture)))));
             tile.Q(className: "fc-shop__body").Add(Kit.Text(Strings.Format("crate.owned", owned), "fc-body fc-mt-1"));
             var buttons = new List<VisualElement>();
             var open = new KitButton(ButtonTier.Claim, Strings.Get("crate.open"), () => OpenCrate(kind), "crate");
@@ -293,22 +293,22 @@ namespace MachineBrigade.Game.Hud
         {
             var k = (int)kind;
             var body = Kit.Box("");
-            body.Add(Kit.Body(Strings.Format("odds.contents", Crates.CoinsLow[k], Crates.CoinsHigh[k], Crates.PrintCount[k], Crates.PrintCards[k], Crates.Rolls[k])));
+            body.Add(Kit.Body(Strings.Format("odds.contents", ("coinsMin", Crates.CoinsLow[k]), ("coinsMax", Crates.CoinsHigh[k]), ("prints", Crates.PrintCount[k]), ("cards", Crates.PrintCards[k]), ("rolls", Crates.Rolls[k]))));
             for (var r = 0; r < 5; r++)
             {
                 var rarity = (Rarity)r;
-                body.Add(Kit.Text(Strings.Format("odds.roll", Strings.Get("rarity." + rarity.ToString().ToLowerInvariant()), (Crates.Odds[k][r] * 100f).ToString("0.#"),
-                    (Crates.AtLeastOne(kind, rarity) * 100f).ToString("0.#")), "fc-body fc-mt-2 fc-rarity-text-" + r));
+                body.Add(Kit.Text(Strings.Format("odds.roll", ("rarity", Strings.Get("rarity." + rarity.ToString().ToLowerInvariant())), ("percent", (Crates.Odds[k][r] * 100f).ToString("0.#", Strings.Culture)),
+                    ("atLeastOne", (Crates.AtLeastOne(kind, rarity) * 100f).ToString("0.#", Strings.Culture))), "fc-body fc-mt-2 fc-rarity-text-" + r));
             }
             var tower = Crates.TowerShare[k];
-            body.Add(Kit.Body2(Strings.Format("odds.towerShare", ((1f - tower) * 100f).ToString("0.#"), (tower * 100f).ToString("0.#"),
-                (Crates.AtLeastOneTower(kind) * 100f).ToString("0.#"))));
+            body.Add(Kit.Body2(Strings.Format("odds.towerShare", ("percent", ((1f - tower) * 100f).ToString("0.#", Strings.Culture)), ("percent2", (tower * 100f).ToString("0.#", Strings.Culture)),
+                ("percent3", (Crates.AtLeastOneTower(kind) * 100f).ToString("0.#", Strings.Culture)))));
             if (kind == CrateKind.Gold) body.Add(Kit.Body2(Strings.Get("odds.goldGuaranteed")));
             if (kind == CrateKind.Legendary) body.Add(Kit.Body2(Strings.Get("odds.legendaryGuaranteed")));
             if (Crates.EpicPity[k] > 0)
-                body.Add(Kit.Body2(Strings.Format("odds.pityEpic", Crates.EpicPity[k], Math.Max(1, Crates.EpicPity[k] - PlayerProfile.SinceEpic(kind)))));
+                body.Add(Kit.Body2(Strings.Format("odds.pityEpic", ("count", Crates.EpicPity[k]), ("yours", Math.Max(1, Crates.EpicPity[k] - PlayerProfile.SinceEpic(kind))))));
             if (Crates.LegendaryPity[k] > 0)
-                body.Add(Kit.Body2(Strings.Format("odds.pityLegendary", Crates.LegendaryPity[k], Math.Max(1, Crates.LegendaryPity[k] - PlayerProfile.SinceLegendary(kind)))));
+                body.Add(Kit.Body2(Strings.Format("odds.pityLegendary", ("count", Crates.LegendaryPity[k]), ("yours", Math.Max(1, Crates.LegendaryPity[k] - PlayerProfile.SinceLegendary(kind))))));
             body.Add(Kit.Small(Strings.Get("odds.special")));
             body.Add(Kit.Small(Strings.Get("odds.updated")));
             ShowSheet(Strings.Format("odds.title", Strings.Get("crate." + kind.ToString().ToLowerInvariant())), body);
@@ -348,7 +348,7 @@ namespace MachineBrigade.Game.Hud
                 return row;
             }
             Line("coin", Strings.Format("loot.coins", Kit.Count(loot.Coins)));
-            foreach (var (card, count) in loot.Blueprints) Line("blueprint", Strings.Format("loot.prints", count, Strings.Card(card)));
+            foreach (var (card, count) in loot.Blueprints) Line("blueprint", Strings.Format("loot.prints", ("prints", count), ("card", Strings.Card(card))));
             if (loot.Universal > 0) Line("blueprint", Strings.Format("loot.universal", loot.Universal));
             var gear = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-2");
             foreach (var item in loot.Gear.OrderBy(g => g.rarity))
@@ -449,7 +449,7 @@ namespace MachineBrigade.Game.Hud
                     else if (equipped) action.Disable(Strings.Get("shop.equipped"));
                 }
                 else if (PlayerProfile.Coins < price) action.Disable(Strings.Format("kit.sample.coinsShort", Kit.Count(price - PlayerProfile.Coins)));
-                else action.Label = IsItemTab ? Strings.Format("shop.buyItems", Progression.ItemPack, Kit.Count(price)) : Strings.Format("shop.buy", Kit.Count(price));
+                else action.Label = IsItemTab ? Strings.Format("shop.buyItems", ("count", Progression.ItemPack), ("price", Kit.Count(price))) : Strings.Format("shop.buy", Kit.Count(price));
             }
             _shopDock.Add(action);
         }

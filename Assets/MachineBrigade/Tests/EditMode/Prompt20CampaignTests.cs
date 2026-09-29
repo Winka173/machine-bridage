@@ -51,7 +51,7 @@ namespace MachineBrigade.Tests
                         bad.Add($"{key}: {name}");
             Assert.IsEmpty(bad, string.Join("\n", bad.Take(40)));
             // "Proper name · subtitle", the proper name untranslated, the project renamed.
-            Assert.AreEqual(("Icarus · Orbital spacecraft", "Icarus · Phi thuyền quỹ đạo"), Strings.Texts["unit.silver_bug"]);
+            Assert.AreEqual(("Icarus · Orbital Spacecraft", "Icarus · Phi thuyền quỹ đạo"), Strings.Texts["unit.silver_bug"]);
             StringAssert.Contains("Dự án Icarus", CampaignText.Table["char.aurel.role"].vi);
             foreach (var c in Campaign.Chapters)
                 foreach (var slot in c.Minis.Prepend(c.Main))
@@ -80,7 +80,8 @@ namespace MachineBrigade.Tests
                     Assert.IsTrue(catalog.Vehicles.ContainsKey(b.Resolve(catalog).def), $"chapter {c.Number}: {b.Def}");
             }
             Assert.AreEqual("Kasimir Wolff", CampaignText.Table["char.quaden.name"].en);
-            Assert.AreEqual("Tướng Lý Hàn", CampaignText.Table["char.hung.name"].vi);
+            // The story's Vietnamese names are tokens of the name table (prompt 21 J5).
+            Assert.AreEqual("Tướng Lý Hàn", NameText.Expand(CampaignText.Table["char.hung.name"].vi));
         }
 
         [Test]

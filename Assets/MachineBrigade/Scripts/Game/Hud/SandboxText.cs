@@ -64,8 +64,8 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.gear.Suggested"] = ("Suggested", "Bộ gợi ý"),
             ["sandbox.gear.Player"] = ("Yours", "Bộ của bạn"),
             ["sandbox.elite"] = ("Elite version", "Bản tinh nhuệ"),
-            ["sandbox.hp"] = ("Health {percent} %", "Máu {percent} %"),
-            ["sandbox.ammo"] = ("Ammunition {percent} %", "Đạn {percent} %"),
+            ["sandbox.hp"] = ("Health {percent}%", "Máu {percent}%"),
+            ["sandbox.ammo"] = ("Ammunition {percent}%", "Đạn {percent}%"),
             ["sandbox.tier"] = ("Starting altitude", "Tầng độ cao ban đầu"),
             ["sandbox.tier.none"] = ("Its own opening", "Theo màn mở đầu"),
             ["sandbox.tier.low"] = ("Low", "Tầng thấp"),
@@ -114,12 +114,12 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.edit"] = ("Edit", "Chỉnh sửa"),
             ["sandbox.pause"] = ("Pause", "Tạm dừng"),
             ["sandbox.resume"] = ("Resume", "Tiếp tục"),
-            ["sandbox.step"] = ("One tick", "Từng tick"),
+            ["sandbox.step"] = ("One tick", "Từng nhịp"),
             ["sandbox.reset"] = ("Reset", "Đặt lại"),
             ["sandbox.speed"] = ("Speed", "Tốc độ"),
-            ["sandbox.seed"] = ("Seed", "Seed"),
-            ["sandbox.seed.hint"] = ("The same seed and controls give the same battle.", "Cùng seed và cùng chuỗi lệnh cho cùng một trận."),
-            ["sandbox.clock"] = ("{seconds} s · tick {tick}", "{seconds} giây · tick {tick}"),
+            ["sandbox.seed"] = ("Seed", "Mã trận"),
+            ["sandbox.seed.hint"] = ("The same seed and controls give the same battle.", "Cùng mã trận và cùng chuỗi lệnh cho cùng một trận."),
+            ["sandbox.clock"] = ("{seconds} s · tick {tick}", "{seconds} giây · nhịp {tick}"),
             ["sandbox.editing"] = ("Setting up", "Đang dựng trận"),
             ["sandbox.running"] = ("Running", "Đang chạy"),
             ["sandbox.paused"] = ("Paused", "Đang tạm dừng"),
@@ -181,21 +181,21 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.name.default"] = ("Scenario {number}", "Kịch bản {number}"),
             ["sandbox.samples"] = ("Samples", "Kịch bản mẫu"),
             ["sandbox.mine"] = ("Your scenarios ({count}/{max})", "Kịch bản của bạn ({count}/{max})"),
-            ["sandbox.full"] = ("You have {max} scenarios: delete one first.", "Đã đủ {max} kịch bản: hãy xóa bớt một."),
+            ["sandbox.full"] = ("You have {max|# scenario|# scenarios}: delete one first.", "Đã đủ {max} kịch bản: hãy xóa bớt một."),
             ["sandbox.saved"] = ("Scenario saved", "Đã lưu kịch bản"),
             ["sandbox.code.copy"] = ("Copy share code", "Sao chép mã chia sẻ"),
             ["sandbox.code.paste"] = ("Open a share code", "Mở mã chia sẻ"),
             ["sandbox.code.field"] = ("Paste the code here", "Dán mã vào đây"),
             ["sandbox.code.copied"] = ("Code copied", "Đã sao chép mã"),
             ["sandbox.code.bad"] = ("That is not a scenario code.", "Đây không phải mã kịch bản."),
-            ["sandbox.code.newer"] = ("That scenario is from a newer version of the game.", "Kịch bản này từ phiên bản game mới hơn."),
+            ["sandbox.code.newer"] = ("That scenario is from a newer version of the game.", "Kịch bản này từ phiên bản trò chơi mới hơn."),
             ["sandbox.opened"] = ("Scenario opened", "Đã mở kịch bản"),
             ["sandbox.replaced"] = ("{from} → {to} (not unlocked)", "{from} → {to} (chưa mở khóa)"),
             ["sandbox.removed"] = ("{from} left out (nothing like it unlocked)", "Bỏ {from} (chưa mở đơn vị tương tự)"),
-            ["sandbox.replay"] = ("Export replay and seed", "Xuất replay và seed"),
-            ["sandbox.replay.saved"] = ("Replay saved: {path}", "Đã lưu replay: {path}"),
-            ["sandbox.test"] = ("Save as test", "Lưu thành test"),
-            ["sandbox.test.saved"] = ("Test saved: {path}", "Đã lưu test: {path}"),
+            ["sandbox.replay"] = ("Export replay and seed", "Xuất bản ghi trận và mã trận"),
+            ["sandbox.replay.saved"] = ("Replay saved: {path}", "Đã lưu bản ghi trận: {path}"),
+            ["sandbox.test"] = ("Save as test", "Lưu thành bài kiểm tra"),
+            ["sandbox.test.saved"] = ("Test saved: {path}", "Đã lưu bài kiểm tra: {path}"),
             ["sandbox.check.win"] = ("Blue wins within {seconds} s", "Phe Xanh thắng trong {seconds} giây"),
             ["sandbox.check.noStuck"] = ("No vehicle stuck", "Không xe nào kẹt"),
             ["sandbox.sample.flank"] = ("Tanks on the flank", "Xe tăng đấu hông"),
@@ -221,7 +221,7 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.result.1"] = ("Red wins", "Phe Đỏ thắng"),
             ["sandbox.result.draw"] = ("Draw", "Hòa"),
             ["sandbox.result.open"] = ("Undecided", "Chưa phân thắng bại"),
-            ["sandbox.result.line"] = ("{result} after {seconds} s · health left Blue {blue} % · Red {red} %", "{result} sau {seconds} giây · máu còn lại Xanh {blue} % · Đỏ {red} %"),
+            ["sandbox.result.line"] = ("{result} after {seconds} s · health left Blue {blue}% · Red {red}%", "{result} sau {seconds} giây · máu còn lại Xanh {blue}% · Đỏ {red}%"),
             ["sandbox.duel"] = ("Quick duel", "Đấu tay đôi nhanh"),
             ["sandbox.duel.a"] = ("Blue: {units}", "Xanh: {units}"),
             ["sandbox.duel.b"] = ("Red: {units}", "Đỏ: {units}"),
@@ -231,7 +231,7 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.duel.facing.Side"] = ("Into the flank", "Bắn vào hông"),
             ["sandbox.duel.facing.Rear"] = ("From behind", "Bắn từ phía sau"),
             ["sandbox.duel.run"] = ("Run the duel", "Chạy trận đấu"),
-            ["sandbox.duel.many"] = ("Run {seeds} seeds", "Chạy {seeds} seed"),
+            ["sandbox.duel.many"] = ("Run {seeds|# seed|# seeds}", "Chạy {seeds} mã trận"),
             ["sandbox.duel.rate"] = ("Blue {blue} · Red {red} · draws {draws} of {seeds}", "Xanh {blue} · Đỏ {red} · hòa {draws} trên {seeds}"),
             ["sandbox.duel.need"] = ("Select at least one Blue and one Red unit first.", "Hãy chọn ít nhất một đơn vị Xanh và một đơn vị Đỏ."),
             ["sandbox.ab"] = ("A/B comparison", "So sánh A/B"),
@@ -240,20 +240,20 @@ namespace MachineBrigade.Game.Hud
             ["sandbox.ab.row"] = ("{label}: {line}", "{label}: {line}"),
 
             // ---------------------------------------------------------------- the ceiling (B.10) and refusals (B.4)
-            ["sandbox.cap.warn"] = ("Over {vehicles} vehicles or {aircraft} aircraft a side: low-end phones may slow down.", "Vượt {vehicles} xe hoặc {aircraft} máy bay mỗi phe: máy yếu có thể bị chậm."),
-            ["sandbox.refuse.CapReached"] = ("A side can have {vehicles} vehicles and {aircraft} aircraft.", "Mỗi phe tối đa {vehicles} xe và {aircraft} máy bay."),
+            ["sandbox.cap.warn"] = ("Over {vehicles|# vehicle|# vehicles} or {aircraft} aircraft a side: low-end phones may slow down.", "Vượt {vehicles} xe hoặc {aircraft} máy bay mỗi phe: máy yếu có thể bị chậm."),
+            ["sandbox.refuse.CapReached"] = ("A side can have {vehicles|# vehicle|# vehicles} and {aircraft} aircraft.", "Mỗi phe tối đa {vehicles} xe và {aircraft} máy bay."),
             ["sandbox.refuse.OffMap"] = ("That is outside the map.", "Chỗ đó nằm ngoài bản đồ."),
             ["sandbox.refuse.NotOnSea"] = ("Ships go on a sea lane.", "Tàu chỉ đặt được trên tuyến biển."),
             ["sandbox.refuse.NoSea"] = ("This map has no sea.", "Bản đồ này không có biển."),
-            ["sandbox.refuse.NotOnHardpoint"] = ("Towers go on a hardpoint here (anywhere on the test range).", "Ở đây tháp chỉ đặt được ở ô hardpoint (trên bãi thử thì đặt đâu cũng được)."),
-            ["sandbox.refuse.HardpointTaken"] = ("That hardpoint already has a tower.", "Ô hardpoint này đã có tháp."),
+            ["sandbox.refuse.NotOnHardpoint"] = ("Towers go on a hardpoint here (anywhere on the test range).", "Ở đây tháp chỉ đặt được ở ô đặt tháp (trên bãi thử thì đặt đâu cũng được)."),
+            ["sandbox.refuse.HardpointTaken"] = ("That hardpoint already has a tower.", "Ô đặt tháp này đã có tháp."),
             ["sandbox.refuse.Locked"] = ("Not unlocked yet.", "Chưa mở khóa."),
             ["sandbox.refuse.Unknown"] = ("Unknown unit.", "Đơn vị không xác định."),
 
             // ---------------------------------------------------------------- first-time guide (G.3)
             ["sandbox.hint.1"] = ("Pick a unit on the left, choose Blue or Red, and tap the map to place it. Drag from it to turn it.", "Chọn đơn vị ở bảng trái, chọn phe Xanh hoặc Đỏ rồi chạm bản đồ để đặt. Kéo từ đơn vị ra để xoay hướng."),
             ["sandbox.hint.2"] = ("Tap units to change them on the right: rank, equipment, health, ammunition. Undo is always there.", "Chạm đơn vị để chỉnh ở bảng phải: hạng, trang bị, máu, đạn. Luôn có nút hoàn tác."),
-            ["sandbox.hint.3"] = ("Run, pause, step and change the speed along the bottom. Overlays show ranges, hits and DPS.", "Chạy, tạm dừng, chạy từng tick và đổi tốc độ ở thanh dưới. Lớp kiểm tra hiện tầm bắn, sát thương và DPS."),
+            ["sandbox.hint.3"] = ("Run, pause, step and change the speed along the bottom. Overlays show ranges, hits and DPS.", "Chạy, tạm dừng, chạy từng nhịp và đổi tốc độ ở thanh dưới. Lớp kiểm tra hiện tầm bắn, sát thương và DPS."),
             ["sandbox.hint.ok"] = ("Got it", "Đã hiểu"),
             ["sandbox.guide.title"] = ("Sandbox", "Sa bàn"),
             ["sandbox.guide.body"] = (
@@ -261,28 +261,23 @@ namespace MachineBrigade.Game.Hud
                 "Run it, pause it, go a tick at a time or up to four times as fast; give orders, make a side immortal, and try the boss tools. The same seed and controls always give the same battle. " +
                 "Save your scenarios (up to 20) and share them as a text code. Nothing in the Sandbox pays out: no coins, rewards, records or achievements.",
                 "Tự dựng mọi trận đánh: chọn quân cho phe Xanh và phe Đỏ, đặt từng chiếc hoặc cả đội hình, xoay về hướng mong muốn. Chỉnh hạng, trang bị, máu và đạn của từng đơn vị; chọn nhánh hạng 7 cho tháp. " +
-                "Chạy, tạm dừng, chạy từng tick hoặc tăng tốc tới ×4; ra lệnh, cho một phe bất tử và thử các công cụ boss. Cùng seed và cùng chuỗi lệnh luôn cho cùng một trận. " +
+                "Chạy, tạm dừng, chạy từng nhịp hoặc tăng tốc tới ×4; ra lệnh, cho một phe bất tử và thử các công cụ boss. Cùng mã trận và cùng chuỗi lệnh luôn cho cùng một trận. " +
                 "Lưu tối đa 20 kịch bản và chia sẻ bằng mã chữ. Sa bàn không trả gì: không xu, phần thưởng, kỷ lục hay thành tích."),
         };
 
         /// <summary>The text of <paramref name="key"/> in the current language (the key itself when it is missing).</summary>
         public static string Get(string key) => Strings.Get(key);
 
-        /// <summary>The text with its named parameters filled in: Format("sandbox.count", ("count", 4)).</summary>
-        public static string Format(string key, params (string name, object value)[] args)
-        {
-            var text = Get(key);
-            foreach (var (name, value) in args)
-                text = text.Replace("{" + name + "}", value is IFormattable f ? f.ToString(null, Numbers) : value?.ToString() ?? "");
-            return text;
-        }
+        /// <summary>
+        /// The text with its named parameters filled in: Format("sandbox.count", ("count", 4)). The game's formatter
+        /// (prompt 21 I): numbers in the language's format, English plurals ({count|# unit|# units}), names ({@id}).
+        /// </summary>
+        public static string Format(string key, params (string name, object value)[] args) => Strings.Format(key, args);
 
         /// <summary>Numbers as the language writes them (Vietnamese 0,75; English 0.75).</summary>
-        public static IFormatProvider Numbers => Strings.Vietnamese ? ViNumbers : CultureInfo.InvariantCulture;
+        public static IFormatProvider Numbers => Strings.Culture;
 
-        private static readonly NumberFormatInfo ViNumbers = new() { NumberDecimalSeparator = ",", NumberGroupSeparator = ".", PercentDecimalSeparator = ",", PercentGroupSeparator = "." };
-
-        /// <summary>A number with <paramref name="decimals"/> decimals as the language writes it.</summary>
-        public static string Number(double value, int decimals = 0) => value.ToString("N" + decimals, Numbers);
+        /// <summary>A number with <paramref name="decimals"/> decimals as the language writes it (184.172 / 184,172).</summary>
+        public static string Number(double value, int decimals = 0) => value.ToString("N" + decimals, Strings.Culture);
     }
 }

@@ -174,7 +174,7 @@ namespace MachineBrigade.Game.Match
                 if (!boss.IsPartBroken(i)) alive[kind]++;
             }
             var bits = new List<string>();
-            foreach (var kind in kinds) bits.Add(Strings.Format("boss.parts", Strings.Get("part." + kind), alive[kind], total[kind]));
+            foreach (var kind in kinds) bits.Add(Strings.Format("boss.parts", ("part", Strings.Get("part." + kind)), ("count", alive[kind]), ("total", total[kind])));
             if (boss.BodyLocked) bits.Add(Strings.Get("boss.locked"));
             return "  ·  " + string.Join(" · ", bits);
         }
@@ -201,7 +201,7 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>A score that says whose is whose: "Us 0 · Enemy 331".</summary>
-        protected static string Sides(int us, int enemy) => Strings.Format("result.sides", us, enemy);
+        protected static string Sides(int us, int enemy) => Strings.Format("result.sides", ("us", us), ("enemy", enemy));
 
         protected static int OutcomeOf(MatchResult result) => result.IsDraw ? 0 : result.WinningTeam == PlayerTeam ? 1 : -1;
 
@@ -531,7 +531,7 @@ namespace MachineBrigade.Game.Match
             if (_mode.Result is not { } result) return null;
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.assault") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
+            outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", ("sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount)), ("total", _mode.SectorCount))));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -632,8 +632,8 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var integrity = 1f - _mode.Progress(world);
-            var goal = Strings.Format("base.line", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.Stage switch { 1 => "base.goal1", 2 => "base.goal2", _ => "base.goal3" }));
+            var goal = Strings.Format("base.line", ("stage", UnityEngine.Mathf.Min(3, _mode.Stage)),
+                ("name", Strings.Get(_mode.Stage switch { 1 => "base.goal1", 2 => "base.goal2", _ => "base.goal3" })));
             var detail = Strings.Format("base.waveOf", _mode.Wave) + "  ·  " + $"{UnityEngine.Mathf.RoundToInt(integrity * 100f)}%";
             hud.SetMission(goal, detail, integrity, _endless ? -1f : _mode.SecondsLeft(world), scratch);
             hud.SetWavePreview(_mode.NextWave, _mode.SecondsToWave(world), _mode.Wave + 1, _mode.Held);
@@ -681,8 +681,8 @@ namespace MachineBrigade.Game.Match
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
         public override string Kicker => Strings.Get("mode.weekly.kicker");
-        public override string Subtitle => Strings.Format("mode.weekly.sub", _week % 100, Strings.Get("map." + WeeklyFortress.MapId));
-        public override string StartToast => Strings.Format("mode.weekly.toast", _startStage, WeeklyFortress.Reward);
+        public override string Subtitle => Strings.Format("mode.weekly.sub", ("week", _week % 100), ("map", Strings.Get("map." + WeeklyFortress.MapId)));
+        public override string StartToast => Strings.Format("mode.weekly.toast", ("stage", _startStage), ("coins", WeeklyFortress.Reward));
 
         protected override void Build(SimWorld world, int seed)
         {
@@ -714,8 +714,8 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var progress = _mode.Progress(world);
-            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+            var goal = Strings.Format("mode.siege.stage", ("stage", UnityEngine.Mathf.Min(3, _mode.Stage)),
+                ("name", Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" })));
             hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
             hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: false);
         }
@@ -805,9 +805,9 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var progress = _mode.Progress(world);
-            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.GateToBreak(world).IsValid ? "siege.goalGate"
-                    : _mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+            var goal = Strings.Format("mode.siege.stage", ("stage", UnityEngine.Mathf.Min(3, _mode.Stage)),
+                ("name", Strings.Get(_mode.GateToBreak(world).IsValid ? "siege.goalGate"
+                    : _mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" })));
             hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
             hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: false);
         }
@@ -1373,7 +1373,7 @@ namespace MachineBrigade.Game.Match
                 _ => $"{done} / {needed}",
             };
             var goalText = Strings.Get("goal." + goal.ToString().ToLowerInvariant());
-            if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
+            if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", ("stage", _op.Path.Count), ("goalText", goalText));
             hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive && !_mode.BossFled)
                 ShowBoss(hud, boss, BossName(_mode.Def, boss.Def.Id), world);
@@ -1393,9 +1393,9 @@ namespace MachineBrigade.Game.Match
             var score = Operations.Data.Scoring.Score(won, world.Time, Losses, hq, Operations.Tier(_tier), _run.Mutators);
             var best = PlayerProfile.BestScore(_def.Id, _tier);
             var record = PlayerProfile.RecordOperation(_def.Id, _tier, score, (float)world.Time);
-            outcome.Subtitle = Strings.Format("ops.resultTitle", Title, Strings.Get("tier." + _tier));
-            outcome.Rows.Insert(0, (Strings.Get("ops.score"), score.ToString("N0")));
-            outcome.Rows.Insert(1, (Strings.Get("ops.best"), record ? Strings.Get("ops.newRecord") : best.ToString("N0")));
+            outcome.Subtitle = Strings.Format("ops.resultTitle", ("title", Title), ("tier", Strings.Get("tier." + _tier)));
+            outcome.Rows.Insert(0, (Strings.Get("ops.score"), score.ToString("N0", Strings.Culture)));
+            outcome.Rows.Insert(1, (Strings.Get("ops.best"), record ? Strings.Get("ops.newRecord") : best.ToString("N0", Strings.Culture)));
             if (_run.Mutators.Count > 0)
             {
                 var names = new List<string>();

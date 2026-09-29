@@ -423,7 +423,7 @@ namespace MachineBrigade.Game.Hud
             if (!target.Open) return false;
             if (!Fits(id, target))
             {
-                _note(Strings.Format("camp.tooBig", Strings.Card(id), (target.Utility ? Strings.Get("camp.utility") : SizeName(target.Size)).ToLowerInvariant()), true);
+                _note(Strings.Format("camp.tooBig", ("card", Strings.Card(id)), ("size", (target.Utility ? Strings.Get("camp.utility") : SizeName(target.Size)).ToLowerInvariant())), true);
                 Refresh();
                 return false;
             }
@@ -729,7 +729,7 @@ namespace MachineBrigade.Game.Hud
                 }
                 var u = rules.UtilitySlots(level + 1, layered) - rules.UtilitySlots(level, layered);
                 if (u > 0) more.Add(Strings.Format("camp.more.utility", u));
-                _hqNext.text = Strings.Format("camp.hqNext", level, level + 1, more.Count > 0 ? string.Join(", ", more) : Strings.Get("camp.moreNothing"));
+                _hqNext.text = Strings.Format("camp.hqNext", ("current", level), ("level", level + 1), ("more", more.Count > 0 ? string.Join(", ", more) : Strings.Get("camp.moreNothing")));
             }
             foreach (var (chip, plan) in _planChips) chip.Selected = plan == PlayerProfile.ActiveBasePlan;
             // The map picker: every map's picture, and a word on maps set up on their own or where the plan moved a tower.
@@ -855,7 +855,7 @@ namespace MachineBrigade.Game.Hud
             text.Add(Kit.Text(Kit.Caps(Strings.Card(id)), "fc-panel-title fc-row-text"));
             var branch = PlayerProfile.TowerBranch(id);
             var sizeWord = module ? Strings.Get("camp.utility") : SizeName(def.Fort.Size);
-            text.Add(Kit.Text(Strings.Format("camp.cardLine", sizeWord, PlayerProfile.Rank(id)) + (branch != null ? " · " + Strings.Branch(branch) : ""),
+            text.Add(Kit.Text(Strings.Format("camp.cardLine", ("size", sizeWord), ("rank", PlayerProfile.Rank(id))) + (branch != null ? " · " + Strings.Branch(branch) : ""),
                 "fc-small fc-row-text"));
             head.Add(text);
             _panelBody.Add(head);
@@ -872,7 +872,7 @@ namespace MachineBrigade.Game.Hud
                 StatRow("camp.statHp", shown.MaxHp * boost.Hp, best.hp, "N0");
                 StatRow("camp.statDps", UnitStats.Dps(shown.Weapon) * boost.Damage * boost.FireRate, best.dps, "N0");
                 StatRow("camp.statRange", reach, best.range, "0");
-                var reachLine = ground > 0f && air > 0f ? Strings.Format("camp.reachBoth", Mathf.RoundToInt(ground), Mathf.RoundToInt(air))
+                var reachLine = ground > 0f && air > 0f ? Strings.Format("camp.reachBoth", ("metres", Mathf.RoundToInt(ground)), ("metres2", Mathf.RoundToInt(air)))
                     : air > 0f ? Strings.Format("camp.reachAir", Mathf.RoundToInt(air))
                     : ground > 0f ? Strings.Format("camp.reachGround", Mathf.RoundToInt(ground)) : Strings.Get("camp.reachNone");
                 if (min > 0f) reachLine += " · " + Strings.Format("camp.minRange", Mathf.RoundToInt(min));
@@ -952,7 +952,7 @@ namespace MachineBrigade.Game.Hud
         private string CountsLine(BaseLoadout layout)
         {
             var c = BaseRoles.Counts(_site, _catalog.Base, layout);
-            return Strings.Format("camp.counts", c[0].filled, c[0].open, c[1].filled, c[1].open, c[2].filled, c[2].open, c[3].filled, c[3].open);
+            return Strings.Format("camp.counts", ("small", c[0].filled), ("smallSlots", c[0].open), ("medium", c[1].filled), ("mediumSlots", c[1].open), ("large", c[2].filled), ("largeSlots", c[2].open), ("utility", c[3].filled), ("utilitySlots", c[3].open));
         }
 
         private void BranchPanel(string id)
@@ -966,7 +966,7 @@ namespace MachineBrigade.Game.Hud
             var rank = PlayerProfile.Rank(id);
             var chosen = PlayerProfile.TowerBranch(id);
             var locked = rank < TowerCards.BranchRank;
-            _panelBody.Add(Kit.Text(locked ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
+            _panelBody.Add(Kit.Text(locked ? Strings.Format("camp.branchLocked", ("rank", TowerCards.BranchRank), ("rank2", rank))
                 : chosen == null ? Strings.Get("camp.branchFree")
                 : PlayerProfile.FreeBranchSwap(id) ? Strings.Get("camp.branchFreeSwap")
                 : Strings.Format("camp.branchSwap", Kit.Count(PlayerProfile.BranchSwapCoins)), "fc-small fc-base__note"));
@@ -989,7 +989,7 @@ namespace MachineBrigade.Game.Hud
                 return;
             }
             KitDialog.Confirm(Root, Strings.Get("camp.branch"),
-                Strings.Format("camp.branchConfirm", Strings.Card(towerId), Strings.Branch(branchId), Kit.Count(PlayerProfile.BranchSwapCoins)),
+                Strings.Format("camp.branchConfirm", ("card", Strings.Card(towerId)), ("branch", Strings.Branch(branchId)), ("coins", Kit.Count(PlayerProfile.BranchSwapCoins))),
                 Strings.Get("camp.change"), () => ApplyBranch(towerId, branchId));
         }
 
@@ -1000,7 +1000,7 @@ namespace MachineBrigade.Game.Hud
                 _note(Strings.Get("arsenal.needCoins"), true);
                 return;
             }
-            _note(Strings.Format("camp.branchChosen", Strings.Card(towerId), Strings.Branch(branchId)), false);
+            _note(Strings.Format("camp.branchChosen", ("card", Strings.Card(towerId)), ("branch", Strings.Branch(branchId))), false);
             _changed();
             Refresh();
         }
@@ -1045,7 +1045,7 @@ namespace MachineBrigade.Game.Hud
                 var off = Kit.Tappable("fc-base__gear-choice", () =>
                 {
                     PlayerProfile.UnequipTower(id, slot);
-                    _note(Strings.Format("camp.gearRemoved", GearText.TowerSlotName(slot), Strings.Card(id)), false);
+                    _note(Strings.Format("camp.gearRemoved", ("slot", GearText.TowerSlotName(slot)), ("card", Strings.Card(id))), false);
                     Refresh();
                 });
                 off.Add(Kit.Text(Strings.Get("camp.gearOff"), "fc-small"));

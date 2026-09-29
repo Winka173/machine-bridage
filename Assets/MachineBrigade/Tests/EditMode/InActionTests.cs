@@ -181,9 +181,11 @@ namespace MachineBrigade.Tests
                 try
                 {
                     Strings.Vietnamese = false;
-                    var en = Strings.Format(key, 1, 2);
+                    // Named placeholders (prompt 21 I.3): each name of the text gets 1, 2, ...
+                    var args = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(System.Linq.Enumerable.Distinct(Strings.PlaceholderNames(Strings.Get(key))), (n, i) => (n, (object)(i + 1))));
+                    var en = Strings.Format(key, args);
                     Strings.Vietnamese = true;
-                    var vi = Strings.Format(key, 1, 2);
+                    var vi = Strings.Format(key, args);
                     Assert.AreNotEqual(en, vi, key);
                     Assert.IsFalse(en.Contains(key), key);
                 }

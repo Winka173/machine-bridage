@@ -1585,7 +1585,7 @@ library with its preview screen, the card renders and the UI checks. The screens
   frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
   switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
   hidden developer entry is five quick taps on the rank badge of the menu's top bar.
-- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `HUD`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình), `TN` (tinh nhuệ, in the short names of elites); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `Sprut`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
+- **Proper names kept in Vietnamese** (superseded by `NameText.Kept` in code, DECISIONS 20L; checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `HUD`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình), `TN` (tinh nhuệ, in the short names of elites); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `Sprut`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
 - **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
   `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
   The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
@@ -7352,3 +7352,67 @@ weather, boosts, discounts, items, the controller, steps, camera, boss pan, beat
 `Sim/AI/ConquestAi.Sandbox.cs`, `Game/Match/SandboxSession.cs`, `Game/Match/SandboxController.cs`,
 `Game/Hud/SandboxScreen*.cs`, `Game/Hud/SandboxText.cs`, `Game/Hud/MenuScreen.Sandbox.cs`,
 `Game/Views/SandboxOverlays.cs`, `Resources/UI/Sandbox.uss`, `Tests/EditMode/SandboxTests.cs`, `Tests/EditMode/Scenarios`.
+## 20L. Prompt 21 part 2: Vietnamese and English for the whole game (2026-09-29)
+
+Sections H to L of `Docs/prompts/prompt21_vi.txt`. The audit is `Docs/localization-report.md`, the terms
+`Docs/glossary.md`.
+
+- **The tables stay in C#.** No Unity Localization package: the 4,300 entries are `key → (en, vi)` in seven tables
+  (`NameText` makes eight), the checks read them directly, and a language is one static flag. `Strings.Entries` and
+  `Strings.Keys` list every table in the order `Strings.Get` reads them.
+- **Named placeholders, named at the call site.** Every `{0}` became a name (`{count}`, `{seconds:0.#}`, `{card}`),
+  chosen from the text around it and the argument passed, by hand where that was vague. A text with one placeholder
+  takes one value (`Strings.Format(key, value)`); several are passed as pairs (`Strings.Format(key, ("card", a),
+  ("size", b))`). Binding by order was rejected: in 19 texts the English order was not the argument order, and names at
+  the call site make every binding visible. Without the positional overload, the compiler finds every call with two or
+  more values. `{{` and `}}` are braces; an unknown name stays in the text so the screen scans show it.
+- **Plurals.** `{count|# coin|# coins}` picks by the value (1 or "1" is singular), `#` is the number. English only;
+  Vietnamese writes `{count} xu`. `EnglishCountsUseThePluralForm` stops a new "{count} coins".
+- **Numbers.** `Strings.Culture` is the invariant culture for English and a copy of it with "." grouping and ","
+  decimals for Vietnamese, built by hand rather than `CultureInfo("vi-VN")`: every platform (IL2CPP, invariant
+  globalisation) formats the same way. `Strings.Num` writes whole numbers grouped (`#,0`) and fractions as `0.##`; filled
+  whole numbers are grouped too. `Kit.Culture`, `UnitLines`, `BranchLines`, `SupportLines` and `CombatIcons` use it.
+- **Units.** Seconds are "s" in English and "giây" in Vietnamese texts, "/s" in the HUD's rates in both; metres, mm and
+  CP are the same in both; a percentage is "25%" in both (the texts had both spellings).
+- **Names (prompt 22).** The story's Vietnamese names are written `{@id}` and filled from `NameText.Table` when a text is
+  read (`{@map.id}` would take any key), so prompt 22 renames each one in one entry. The other proper names stay
+  inline; `NameText.Kept` lists them and replaces the allow-list line of section 10, which the checks no longer read. The
+  generals' call signs (Anvil, Winter, Maelstrom, Queen, Raven, Sol, Titan, Iron, Hawk) are names too.
+- **One word for a boss in Vietnamese: "boss".** The owner writes "boss", "boss chủ lực" and "mini boss" in the brief (the Sandbox
+  agent works from it), so "trùm" became "boss" except in the mode's name, Săn trùm.
+- **One name per map.** The map table of prompt 10 wins: the story's Red Rock, Whiteout (pass), Skyhold, Launch Site and
+  Orbital Gate became Redrock Canyon, Whiteout Pass, Skyhold Airbase, Icarus Launch Site and Orbital Gateway; Tầng Mây,
+  Skyhold, Đá Đỏ, Ashfield, Ironport, Dunebreak, Frostpeak and "Thành Phố Metro" in Vietnamese became the table's names.
+  Where a full name read badly ("Skyhold Airbase, the air base he flies from"), the sentence was reworded.
+- **Boss subtitles.** Translated, and in title case in English as the brief writes them ("Icarus · Orbital
+  Spacecraft"). A boss's card (`unit.`) and boss bar (`boss.`) show the same subtitle; where they differed, the card's
+  won (Argus · Scout Airship, Locust · Drone Tender, Ixion · Giant Wheel). In title case two subtitles became old
+  boss names that prompt 20 retired, so they are Roc · Flying Headquarters and Charybdis · Assault Hovercraft. Caspian is
+  "Tàu bay sát mặt nước".
+- **Switching in a battle relabels; the menu still reloads.** Reloading a battle restarts it, so the pause menu's
+  switch (English / Tiếng Việt, as in the settings) saves the setting and `Relabel` rewrites the HUD in place. A text
+  that is a table text in the old language (as it is, in capitals or highlighted) becomes the new one. A filled text is
+  matched against its old template and filled again, its numbers written the new way. A text joined from table texts
+  ("A · B") is translated part by part. Texts the HUD refreshes itself follow on their next update. The menu keeps its
+  reload, which rebuilds every screen at once.
+- **Tight spots (K).** The layout checks also run in English at 16:9 and 4:3 and in English Large. Four gear pieces got
+  shorter English names (Tungsten Core, Carousel Loader, Halon System, Camo Net), because one long word broke in the
+  gear card in Large text; the thermobaric launcher's short name is TOS-1A, the system it is modelled on. The branch
+  picker shows short names and stacks its cards in Large text; the legend's cells widen in Large text.
+- **Screenshots wait.** `UiShots -mbShotsSet l10n` shoots the main screens in both languages at the four shapes. It
+  needs a run with graphics, and the emulator was running (the OpenGL crash in CLAUDE.md), so it is left for the testing
+  phase; the report lists the screens.
+- **The owner's all-English Base screen** is not in the current code (every `camp.*` text has both languages; the scan
+  found only "map"). The likely cause is Auto on an English device; the screen scans now fail on any mixed screen.
+- **Merge notes (the Sandbox branch, p20b).** Its `Strings.Format` calls with two or more values need names (they no
+  longer compile); its `{0}` texts, English "{n} units" plurals and English words in Vietnamese fail `L10nTests` and
+  `UiLanguageTests`, which list them. `Strings.Vietnamese` is still a plain flag; a screen built once and kept must
+  be relabelled like the HUD (`Relabel.Apply`).
+- **The join with the Sandbox (feature/p21-join).** Its texts already used named placeholders through its own
+  `SandboxText.Format`, which now calls `Strings.Format` (language number format, plurals, names); `SandboxText.Number`
+  uses `Strings.Culture`; `Strings.Entries` lists `SandboxText`, so every scan covers it. Its English counts take the
+  plural form, its percentages read "25%", and its Vietnamese has no English left: tick is "nhịp", seed "mã trận",
+  replay "bản ghi trận", test "bài kiểm tra", hardpoint "ô đặt tháp" (the glossary's Sandbox table).
+- **Tests (run once, then after fixes):** `L10nTests`, `L10nSwitchTests`, `LocalisationScanTests`, `UiLanguageTests`,
+  `StringsTests`, `SupportTextTests`, `UiLayoutTests`, `BaseScreenTests`, `BaseLayoutTests`, `KitInteractionTests`,
+  `Prompt20CampaignTests`, `InActionTests.RangeReadoutsAreInBothLanguages`.

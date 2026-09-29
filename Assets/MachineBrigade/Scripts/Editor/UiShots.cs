@@ -21,7 +21,7 @@ namespace MachineBrigade.Editor
     /// notch, 20:9 with a punch-hole camera and the gesture bar, a 4:3 tablet), rendered through a
     /// runtime panel with the game's panel settings (1280 x 720 reference, scaled like
     /// BattleHud.MatchFor) into Docs/ui-screens/. Batch mode with graphics:
-    /// -executeMethod MachineBrigade.Editor.UiShots.KitScreens [-mbShotsDir &lt;folder&gt;].
+    /// -executeMethod MachineBrigade.Editor.UiShots.KitScreens [-mbShotsDir &lt;folder&gt;] [-mbShotsSet all|kit|menu|battle|l10n].
     /// The screen rebuild adds its screens to <see cref="Screens"/>.
     /// </summary>
     public static class UiShots
@@ -161,6 +161,49 @@ namespace MachineBrigade.Editor
             }
         }
 
+        /// <summary>The main screens a language check reads (prompt 21 L).</summary>
+        public static readonly string[] LanguageMenuScreens =
+        {
+            "home", "setup-mode", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear",
+            "army-base", "army-outpost", "detail", "detail-weapons", "detail-armour", "detail-tower", "shop-crates", "settings", "legend",
+        };
+
+        /// <summary>The battle screens a language check reads (prompt 21 L).</summary>
+        public static readonly string[] LanguageBattleScreens = { "hud-score", "hud-mission", "hud-boss-open", "hud-defend", "result-win", "result-loss", "pause" };
+
+        /// <summary>
+        /// Prompt 21 L (-mbShotsSet l10n): the main menu and battle screens in both languages at the four shapes, in
+        /// Normal text, into files named l10n-&lt;screen&gt;-&lt;en|vi&gt;-&lt;shape&gt;.png.
+        /// </summary>
+        public static IEnumerable<(string file, Builder build, Shape[] shapes, int tallHeight)> LanguageScreens()
+        {
+            var catalog = GameContent.LoadCatalog();
+            Builder Menu(string screen, bool vi) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildMenu(catalog, screen, out var safe);
+                insets = v => KitSafeArea.Apply(safe, v);
+                return host;
+            };
+            Builder Battle(string screen, bool vi) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildBattle(catalog, screen, out var safe);
+                insets = v => KitSafeArea.Apply(safe, v);
+                return host;
+            };
+            foreach (var vi in new[] { false, true })
+            {
+                var language = vi ? "vi" : "en";
+                foreach (var screen in LanguageMenuScreens) yield return ("l10n-" + screen + "-" + language, Menu(screen, vi), Shapes, 0);
+                foreach (var screen in LanguageBattleScreens) yield return ("l10n-battle-" + screen + "-" + language, Battle(screen, vi), Shapes, 0);
+            }
+        }
+
         /// <summary>A battle screen over the battlefield's picture, as BattleHud lays it out (the sheets on the root, the panels in the safe area).</summary>
         public static VisualElement BuildBattle(Catalog catalog, string screen, out VisualElement safe)
         {
@@ -219,7 +262,7 @@ namespace MachineBrigade.Editor
         /// with three objectives (hud-score, a selection open), a boss with its phases and parts and an elite
         /// notice (hud-mission), the waves with the strike prompt and a tower to fly back in (hud-waves).
         /// </summary>
-        private static BattleHud BuildHud(Catalog catalog, string screen, VisualElement host)
+        public static BattleHud BuildHud(Catalog catalog, string screen, VisualElement host)
         {
             var cards = new List<CardInfo>();
             foreach (var id in MatchSettings.DeckVehicles)
@@ -255,14 +298,14 @@ namespace MachineBrigade.Editor
             switch (screen)
             {
                 case "hud-siege":
-                    hud.SetMission(Strings.Format("mode.siege.stage", 2, Strings.Get("siege.goal2")), "46%", 0.46f, 522f, new List<PointInfo>());
+                    hud.SetMission(Strings.Format("mode.siege.stage", ("stage", 2), ("name", Strings.Get("siege.goal2"))), "46%", 0.46f, 522f, new List<PointInfo>());
                     hud.SetSuperGun(38f, false, false);
                     hud.SetSelection(new MachineBrigade.Game.Input.SelectionSummary(4, "siege_tank", 3100f, 3600f));
                     hud.Toast(Strings.Get("toast.raid"), error: true, seconds: 5f);
                     break;
                 case "hud-defend":
                 {
-                    hud.SetMission(Strings.Format("base.line", 1, Strings.Get("base.goal1")), Strings.Format("base.waveOf", 4) + "  ·  82%", 0.82f, 431f,
+                    hud.SetMission(Strings.Format("base.line", ("stage", 1), ("name", Strings.Get("base.goal1"))), Strings.Format("base.waveOf", 4) + "  ·  82%", 0.82f, 431f,
                         new List<PointInfo>());
                     var wave = new List<(string, int)> { ("armored_car", 4), ("rocket_technical", 3), ("light_tank", 2), ("fpv_carrier", 1) };
                     var elite = catalog.Vehicles.Values.Where(v => v.Elite && !v.Boss).OrderBy(v => v.Id).First();
@@ -275,7 +318,7 @@ namespace MachineBrigade.Editor
                 case "hud-mission":
                 case "hud-boss-open":
                 {
-                    hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", 2, 1), 0.45f, 312f, new List<PointInfo>());
+                    hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", ("us", 2), ("enemy", 1)), 0.45f, 312f, new List<PointInfo>());
                     var boss = catalog.Vehicles.Values.Where(v => v.Boss && v.Parts.Count >= 5).OrderBy(v => v.Id).First();
                     hud.SetBoss(Strings.Card(boss.Id), 0.62f, 1, new List<float> { 0.66f, 0.33f }, false);
                     hud.SetBossHp(37200f, 60000f);
@@ -348,7 +391,7 @@ namespace MachineBrigade.Editor
                     var reward = new RewardView { Coins = 180, Xp = 60, CanDouble = true, CanResume = checkpoint, Stars = checkpoint ? 0 : -1 };
                     var title = checkpoint ? Strings.Get("mission." + Campaign.All[Campaign.Next].Id + ".name") : Strings.Get("mode.conquest");
                     var rows = new List<(string, string)>();
-                    if (!checkpoint) rows.Add((Strings.Get("stat.score"), Strings.Format("result.sides", 0, 331)));
+                    if (!checkpoint) rows.Add((Strings.Get("stat.score"), Strings.Format("result.sides", ("us", 0), ("enemy", 331))));
                     rows.Add((Strings.Get("result.kills"), "18"));
                     rows.Add((Strings.Get("result.losses"), "31"));
                     rows.Add((Strings.Get("result.time"), Clock(760)));
@@ -410,6 +453,7 @@ namespace MachineBrigade.Editor
             if (set is "all" or "kit") list.AddRange(Screens());
             if (set is "all" or "menu") list.AddRange(MenuScreens());
             if (set is "all" or "battle") list.AddRange(BattleScreens());
+            if (set is "l10n") list.AddRange(LanguageScreens());
             var only = Argument("-mbShotsOnly");
             // One name part, or several separated by commas.
             if (only != null) list = list.FindAll(s => only.Split(',').Any(o => s.file.Contains(o)));
