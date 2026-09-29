@@ -121,22 +121,29 @@ namespace MachineBrigade.Editor
 
             IconElement Small(string name, float stroke = 1.8f) => Kit.Icon(name, "fc-cicon", stroke);
 
+            // Short captions: a cell is one icon wide.
+            var captions = new Dictionary<string, string>
+            {
+                ["Ground"] = "Giáp xe", ["Air"] = "Máy bay", ["Structure"] = "Công trình", ["legend.kinetic"] = "Động năng",
+                ["legend.shells"] = "Đạn pháo", ["legend.rockets"] = "Tên lửa", ["legend.bombs"] = "Bom", ["legend.drones"] = "Drone",
+                ["legend.other"] = "Loại khác",
+            };
             foreach (var kind in new[] { ArmourKind.Ground, ArmourKind.Air, ArmourKind.Structure })
             {
-                Group(Strings.Get("legend.kind." + kind.ToString().ToLowerInvariant()));
+                Group(captions[kind.ToString()]);
                 for (var level = 0; level < CombatFacts.Levels; level++) Item(Small(CombatIcons.Armour(level, kind)), Strings.Get("armour.level." + level));
             }
             foreach (var (key, forms) in MenuScreen.LegendGroups)
             {
-                Group(Strings.Get(key));
+                Group(captions[key]);
                 foreach (var form in forms) Item(Small(CombatIcons.Form(form)), CombatIcons.FormName(form));
             }
-            Group(Strings.Get("legend.marks"));
+            Group("Sát thương");
             foreach (var type in MenuScreen.DamageOrder)
                 if (CombatIcons.Types[type] is { } mark)
                     Item(Small(mark, 2f), CombatIcons.TypeName(type));
             Item(Small(CombatIcons.Thermobaric, 2f), Strings.Get("tag.thermo"));
-            Group(Strings.Get("legend.extras").Split('(')[0].Trim());
+            Group("Dấu phụ");
             Item(Small(CombatIcons.TopAttack, 2f), Strings.Get("tag.top"));
             Item(Small(CombatIcons.Guided, 2f), Strings.Get("tag.guided"));
             Item(Small(CombatIcons.Splash, 2f), Strings.Get("tag.splash"));
@@ -164,8 +171,8 @@ namespace MachineBrigade.Editor
             var cell = Kit.Box("");
             cell.style.flexDirection = FlexDirection.Row;
             cell.style.alignItems = Align.Center;
-            cell.style.width = 154;
-            cell.style.height = 54;
+            cell.style.width = 176;
+            cell.style.height = 56;
             cell.style.paddingRight = 4;
             return cell;
         }

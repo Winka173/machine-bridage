@@ -116,8 +116,6 @@ namespace MachineBrigade.Editor
             foreach (var screen in MenuScreen.ScreenNames) yield return ("screen-" + screen + "-vi", Menu(screen, true, false), Shapes, 0);
             // Prompt 15 E8: the icon legend is a long page; read at once.
             yield return ("screen-legend-vi-full", Menu("legend", true, false), new[] { Shapes[0] }, 1);
-            yield return ("screen-detail-vi-full", Menu("detail", true, false), new[] { Shapes[0] }, 1);
-            yield return ("screen-detail-weapons-vi-full", Menu("detail-weapons", true, false), new[] { Shapes[0] }, 1);
             foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-towers", "army-base", "army-outpost", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "settings", "shop-crates" })
             {
                 yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);
