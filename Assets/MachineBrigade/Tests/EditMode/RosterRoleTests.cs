@@ -68,7 +68,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1f, DamageSystem.BonusFor(gun, hunter, facing, world.Time), 1e-4f);
             Assert.AreEqual(1.25f, DamageSystem.BonusFor(gun, hunter, side, world.Time), 1e-4f);
             var dps = gun.Damage / gun.Cooldown * Matchup.ClassEffect(world.Catalog.Damage, gun, ArmorClass.Heavy);
-            Assert.That(dps, Is.InRange(65f, 80f), "about 70 damage a second on heavy armour");
+            // The balance pass after prompt 18 (B.1): +20 % (2.75 s a round, was 3.3).
+            Assert.That(dps, Is.InRange(80f, 95f), "about 87 damage a second on heavy armour");
         }
 
         [Test]
@@ -104,7 +105,7 @@ namespace MachineBrigade.Tests
             }, spotter);
             Assert.Greater(intercepted.Count, 0, "it takes artillery rockets");
             for (var i = 1; i < intercepted.Count; i++)
-                Assert.GreaterOrEqual(intercepted[i] - intercepted[i - 1], 1.15, "one round a beat (1.2 s)");
+                Assert.GreaterOrEqual(intercepted[i] - intercepted[i - 1], beam.Def.Aps.Recharge - 0.05, $"one round a beat ({beam.Def.Aps.Recharge} s)");
             Assert.Less(tank.Hp, tank.MaxHp, "a six-rocket salvo is more than it can stop");
         }
 

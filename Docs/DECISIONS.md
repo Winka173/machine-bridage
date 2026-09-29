@@ -6137,6 +6137,290 @@ now asks for 12 chapters (not run).
 (`BossRushRules.Roster/KindsWhere`), `ModeSessions.cs` (one line), `MatchRunner.cs` (one line), `MenuScreen.Campaign/Story/
 Home/Operations.cs`, `PlaySmoke.cs`, `CampaignTests.cs`. `balance.json` is untouched.
 
+## 19B. Balance pass after prompt 18: towers, vehicles, supports, modes (2026-09-29)
+
+The owner's pass (Docs/prompts/balance-after-p18_vi.txt, A-E), on lead 319a285. Damage a round stays on prompt 13's calibre
+scale and prompt 15's penetration (14A): strength was moved with rhythm, magazines, loads, health, reach and price, plus two
+damage-table cells. Every number below is from `Docs/balance/*p18_before*` / `*p18_after*`; the before/after tables for every
+vehicle and tower are `Docs/balance/tables_p18.md` (`python Tools/balance/p18_tables.py`). The owner asked for the long runs,
+so they ran in full (four extra worktrees with copied Libraries, several Unity instances at once).
+
+**Not merged: lead's prompt 20 L-M towers.** The coordinator asked for lead/integration (with the C-RAM's Iron Dome branch, the
+rocket battery in AI yards and the 60 m SAM post) to be merged into this branch; the merge was refused by the permission
+system, so this branch stays on 319a285. The C-RAM, the rocket battery and the AA tower's branches keep their behaviour and
+are measured and listed below with what they need; their numbers were not tuned (the AA tower's own flak and the Patriot
+were: they are not the other agent's work).
+
+### 1. Baselines (the section-17 measurements)
+
+- **Campaign, 5 seeds, all 109 missions** (`CampaignTests.WinRateOverFiveSeeds`): 518/545 battles won (95 %), 97 missions won on
+  every seed. Short of it: c8m08 0/5, c8m06 1/5, c7m08 2/5, c4m09, c4s2, c5m06, c5m08, c5m09 3/5, c8m10 3/5 (two seeds end
+  at the 34-minute cap), c2m09, c4m11, c9m09 4/5 (`campaign_5seeds_p18_before.tsv`).
+- **Stuck detector** (`StuckBatch.Modes`, 21 battlefields x Siege, Defend, Endless, Weekly x seeds 1-5, the three loadouts,
+  safety net on; 420 battles, 52 min): 2,396 episodes over 10 s, 43 over 20 s, worst 277 s (`stuck_p18_before.txt`). The causes
+  are prompt 12's: queues behind friends (1,176) and yielding (340); nothing new is stuck for good in Siege (worst 54 s) or
+  Defend (20 s). The long ones are Endless and Weekly with the "obstacles" loadout: `StuckBatch.Loadout` also fills the
+  *attacker's* camp hardpoints with dragon's teeth, and vehicles at the camp spawn (the same spot, 109,125, on every siege map)
+  find no path (NoPath 37). That is the test's configuration, not play (a Weekly attacker has no base loadout); left, and noted
+  for the StuckBatch owner.
+- **Tick budget** (`TickBudgetTests`, 24-80 enemies): mean 0.57-1.33 ms desktop (x6 phone: 3.4-8.0 ms, inside 8 ms up to 80),
+  p99 3.4-4.7 ms at every size (x6: 21-28 ms, over 16 ms). The p99 does not grow with the enemy count; it is the machine: four
+  to five Unity instances ran the sweeps at the same time. Re-measure on a quiet machine (13B had p99 1.9-3.2).
+- **Modes, 5 seeds x 2-3 battlefields, Normal** (`ModeBalanceMeasure`, sample deck, the player's auto commander):
+  Siege 13/15; Defend won 15/15 with the outer line lost in all 15 (3.2-5.3 min); Weekly 6/15 (2/5 from each of stages 1, 2
+  and 3); Deathmatch 4/15; Endless median 15.8 min; Survival 13.9; Boss Rush 0/10, every run at the 30-minute cap.
+  **Ladder** (Conquest, Deathmatch, Hill, Assault, 60 battles a level): Easy 92 %, Normal 33 %, Hard 22 %, Very Hard 15 %.
+- **Towers**: DPS as in the spec (A.2). Tower pick rate (`TowerPickRates`): aa 17 %, guard 15 %, mg 10 %, heavy fortress 5 %,
+  Patriot 4 %, rocket 4 %, C-RAM 5 %, ATGM 1 %, gun 1 %, artillery 0 %, drone hangar 0 %.
+
+### 2. New measurements (tests, `MB_BALANCE=1`)
+
+- `TowerValueMeasure.MeasureTheTowers`: a tower (or one vehicle) alone holding a point against a ladder of attackers of rising CP
+  (light vehicles, tanks, aircraft), three seeds a rung; its worth is the CP it holds against evenly, and the vehicles' median
+  worth per CP turns that into "the CP of a vehicle doing the same" (A.1's bands). The combat-value measure's own scenarios are
+  attacks, where a tower cannot take part. `PrintCRamInterception`: rockets stopped of two launchers' salvos.
+- `BalancePassMeasure`: the wheeled gun's flank share (B.1), the HQ alone against aircraft (A.3), fire supports' damage per CP
+  on a row of light vehicles, a column, tanks and a fort (C.1).
+- `CombatValueMeasure`: an `arty` scenario (a howitzer, an MLRS and a rocket technical standing: the artillery hunters' fight,
+  not in the ground mean), an `OnHit` hook, and per-mount theoretical DPS (`theoretical_mounts_*.tsv`).
+- `TowerPickRates` also reports each slot size's shares (a medium tower competes in medium and large slots only).
+
+### 3. Towers (A)
+
+Tower weapons of their own where a vehicle shares the weapon (the rounds stay the calibre's): `tower_hmg`, `tower_agl`,
+`tower_ac25`, `tower_flak_30`, `tower_kornet`, `howitzer_fixed`, `gun_155_twin_fort`, `patriot`. Theoretical DPS light /
+heavy / air, before -> after (target):
+
+| Tower | Before | After | Target | How |
+|---|---|---|---|---|
+| Guard tower | 44 / 10 / 14 | 78 / 19 / 25 | 80 / 15 / 25 | HMG 0.133 -> 0.085 s, magazine 40; grenades 10 -> 4.3 s |
+| MG bunker | 73 / 19 / 26 | 98 / 28 / 33 | 100 / 25 / 30 | NSV 0.08 -> 0.062 s; Konkurs 24 -> 12 s |
+| · twin | 87 / 22 / 32 | 115 / 32 / 40 | 120 / 28 / 35 | 0.064 -> 0.05 s |
+| · flame | 117 / 23 / 0 | 150 / 30 / 0 | 150 / 30 / 0 | 0.25 -> 0.195 s |
+| AA tower | 117 / 47 / 403 | 46 / 15 / 296 | 45 / 15 / 280 | own 30 mm flak, fuzed for aircraft: x0.48 / x0.40 on the ground, 0.09 s |
+| Gun turret | 50 / 35 | 71 / 85 | 70 / 85 | 120 mm 7.2 -> 2.88 s (a fixed gun with its crew), x0.65 on light (APFSDS through a thin hull) |
+| · long / auto | 46 / 31, 55 / 40 | 64 / 75, 79 / 97 | range for DPS, 80 / 95 | 3.31 s, 2.53 s |
+| ATGM tower | 44 / 44 | 37 / 93 | 40 / 100 | Kornet pairs 9.9 -> 4.35 s, x0.4 on light |
+| · top attack | 44 / 44 | 40 / 100 | best on thick armour | 4.0 s, roof hits |
+| Artillery emplacement | 42 / 27 | 87 / 72 | 90 / 60 | the 155 mm at 3.9 s, 13 s reload (the field piece: 11 s, 36 s); reach and minimum range kept |
+| Heavy fortress | 89 / 56 | 132 / 89 | 130 / 140 | twin 155 mm 8.8 -> 5.5 s |
+| Patriot | 111 air | 203 air | 260 | 10.1 -> 4.24 s; PAC-3 7.5 -> 3.52 s (245, target 320); long-range radar inherits it (203 with 100 m) |
+| Drone hangar | 13 / 13 | 59 / 59 | 60 / 70 | 4 drones every 6.5 s (was 2 every 20); Lancet 3.6 s (67), swarm 5.5 s (77) |
+
+Worth in vehicle CP after (main role; `tower_value_p18_after.tsv`; before in brackets): guard 5.5 light (4.1), MG bunker 13.5
+light (13.7), AA tower 5.4 air (4.9) and 7.2 / 5.4 on the ground (13.2 / 11.8), gun turret 15.3 tanks (11.8), ATGM tower 7.9
+tanks (7.6), artillery emplacement 10.5 / 11.3 (5.2 / 6.1), heavy fortress 13.5 / 23.0 (14 / 25), Patriot 19.2 air (14.3),
+drone hangar 6.9 tanks (6.0; Lancet branch 10.9). Read with care: a tower the attackers cannot hurt holds the whole ladder
+(the MG bunker's front armour 3 against 25 mm cars, the fortress against the ladder's tanks), so those are "at least".
+Choices where the spec's DPS and its CP bands disagree: the DPS targets were met (they are the owner's starting numbers);
+the heavy fortress's heavy DPS stays under 140 because its gun is high explosive (HE on armour 3-4 does a third), and it
+already holds more than its band. Large beats small in the same role: Patriot 19.2 air against the AA tower's 5.4; the
+fortress and the MG bunker both hold the whole light ladder.
+
+- **A.3 HQ:** its twin flak 0.054 -> 0.11 s (and the fragmentation cell, B.3): 880 -> 416 air DPS. Alone at level 5 it held
+  5 minutes against four aircraft (53 CP, 27 % left; before 30 %) and fell to eight in every seed, before and after: it holds by
+  its 9,000 health, not its guns. No base is safe from aircraft by its HQ alone.
+- **Not tuned (the other agent's towers):** the C-RAM stops 20 % of an MLRS's rockets (Centurion 30 %, Hunter 10 %; 14-18 % of
+  heavy rockets), far from "most of a medium salvo": the Iron Dome branch on lead is the answer to measure after the merge.
+  The rocket battery is 58 / 43 against 110 / 45: its salvo about twice as often, and its structure factor, once merged. The
+  AA tower's branches: flak 56 / 11 / 164 air (the lead's flak does 22 a round, more), SAM post 36 / 7 / 127 air (lead: 60 m).
+- **A.4 pick rates** (after): in their own slot size (`tower_picks_p18_after.txt`): small AA tower 20 %, MG bunker 19 %, guard tower 21 %; medium gun turret 18 %, C-RAM 9 %, ATGM tower 8 %, rocket battery 4 %; large heavy fortress 32 %, Patriot 22 %, drone hangar 11 %, artillery emplacement 1 % (16 % in the mid-pass run on pass-3 data: the greedy pick scores each candidate over 2 seeds and is noisy). Under 10 %: the artillery emplacement, the ATGM tower, the C-RAM and the rocket battery (the last two wait for the merge). The mixed-base check (`AMixedBaseIsBest...`) was not re-run.
+- Non-firing towers (EW, dragon's teeth, minefield, CP relay, shield generator, modules): measured in the pick run (EW
+  EW 13 % of the small slots, dragon's teeth 11 %, minefield 6 % small, 28 % medium, 21 % large, CP relay 11 %, shield 0-2 %: a candidate for a look); none useless or forced; unchanged.
+
+### 4. Vehicles (B)
+
+| Vehicle | Change | Ground value per CP (air for anti-air), before -> after |
+|---|---|---|
+| Iron Beam | 9 -> 7 CP; beam 0.1 -> 0.0525 s (air 105 -> 200 DPS); APS beat 1.2 -> 0.8 s | air 20 -> 87; point defence 15.7 -> 17.0 interceptions (6,315 -> 4,332 HP saved: the attacking group's Lancets are stronger now; 619 a CP at 7 CP) |
+| SAM launcher | own Buk rhythm 5.73 -> 2.9 s (air 169 -> 259), 460 -> 800 HP, 5 CP kept | air 337 -> 423 |
+| Wheeled gun | 3.3 -> 2.75 s (+20 %), 620 -> 870 HP | 296 -> 466 (tank hunters' median 439) |
+| IFV | its own 2A42 at +40 % rhythm (0.2 -> 0.143 s), 6 CP | 113 -> 138 (1.38 times the armoured car per CP) |
+| Twin tank | 7 -> 5.5 s a pair | heavy DPS 77 -> 96 (target 95), real DPS on tanks 61 -> 73 (heavy tank 59) |
+| Lancet | reach 85 -> 100 m (outranges the howitzer it hunts), 6 -> 8 drones a load, 12 -> 9 s | 282 -> 331; artillery fight 100 -> 126 |
+| Thermobaric launcher | reach 38 -> 48 m; 7 -> 8 CP | fort 141 -> 745 (siege tank 820, heavy bomber 971) |
+| Strike drone | 4 -> 3 Hellfires a load, 7 -> 8 CP, 260 -> 480 HP | 336 -> 340 |
+| Attack jet | 4 -> 3 FAB-250 a load, 15 -> 16 CP, 700 -> 850 HP | 443 -> 418; fort 526 per CP against the siege tank's 820 |
+| Rocket technical | x0.6 on structures | fort 458 -> 322 |
+| Flame tank | 4 -> 5 CP | 282 -> 236 |
+| Car bomb | 2 -> 3 CP | 82 -> 68 |
+| Titan | 14 -> 16 CP (+35 % over the heavy class) | 524 -> 472 |
+| Scout helicopter, gunship, recon drone | 300 -> 420, 1100 -> 1400, 220 -> 320 HP (B.3) | 255 -> 315, 304 -> 360, 55 -> 62 |
+
+- **Found (B.1):** the wheeled gun's flank bonus does fire: 49 % of its hits on the light group land on a side or the rear,
+  9-26 % on tanks (`flank_share_p18_*.txt`). The thermobaric launcher's low fort value was its 38 m reach: artillery keeps
+  4 m outside a defence's reach, and against the 32-36 m fort guns it found no spot (4 % of its time on target).
+- **B.3 aircraft against anti-air:** fragmentation on aircraft 1.5 -> 1.3 (the damage table), tougher aircraft (above).
+  With AA / without, per CP: gunship 0.13 -> 0.33, heavy bomber 0.34 -> 0.36, stealth bomber 0.47 -> 0.56, swarm carrier 0.48
+  -> 0.56 (in 30-40 % or over); scout helicopter 0.14 -> 0.23, attack jet 0.07 -> 0.13, strike drone 0.05 -> 0.09 (under).
+  Tried and dropped: 1.1 on aircraft with a 1,250-HP attack jet (its ratio 0.22-0.3), which broke `CounterTests` "SAM beats
+  jets" at every setting of the launcher; the counter test wins. `CounterTests` all pass, "Attack jets beat heavy tanks" too
+  (it failed on lead).
+- **B.4, class spread of ground value per CP (median, range):** light 119 (±16 %), tank hunters 439 (-25 / +6 %), heavy 388
+  (-39 / +24 %), artillery 385 (-57 / +16 %), helicopters 322 (-2 / +12 %), aircraft 343. Outside ±15 % on purpose: the light
+  tank (3 CP, a scout's tank), the flame tank (an anti-light specialist, 700+ against the light group), the rocket technical
+  (cut on structures by B.2), the Titan (+24 % at 16 CP), the siege tank (a fort breaker), the Lancet (-25 %: an artillery
+  hunter), the anti-air class (judged in the air; the Iron Beam by what it saves).
+
+### 5. Supports (C)
+
+- **C.1 Airstrike:** 6 x 350 -> 6 x 400 (the 500 kg class), radius 4 -> 6 m; its damage per CP rose 391 -> 412, the best
+  support, so 8 -> 9 CP: 366 per CP, between the remote mines (350) and the barrage (368); napalm 283, cruise missile 181.
+- **C.3 Texts from data:** `SupportLines` fills named placeholders (`{{count}}`, `{{length}}`, `{{rankCount}}`, `{{radius}}`,
+  `{{width}}`, `{{blast}}`, `{{duration}}`, `{{delay}}`, `{{cp}}`, `{{damage}}`, `{{percent}}`, `{{units}}`, `{{unitRank}}`...)
+  from the support's data in `Strings.Get`. Every support guide and info line with a number uses them (the air raid said
+  fourteen bombs for 10, the cluster strike forty bomblets for 30, the barrage twelve shells for 8, the airstrike eight for 6).
+  `SupportTextTests`: placeholders filled in both languages and the same in each; every number still written by hand, in
+  digits or words ("fourteen", "bốn mươi"), before a count, a distance, a time, CP or a share, must be one of the support's
+  own (a drop's count of each vehicle too); the scanner test reads the old wrong texts.
+- **C.4 Raw keys:** `Strings.Support` names an escort drop "Escort drop: <unit>" / "Thả hộ tống: <unit>"; names and infos for
+  `supergun_shell`, `leviathan_shell`, `leviathan_cruise_mark` and `air_raid`. `SupportTextTests.NoSupportShowsARawKey`.
+
+### 6. Modes and difficulty (D)
+
+- **Found (D.4):** at Normal the result followed the seed across every mode and battlefield (seed 1 won 11 of 12 battles,
+  seed 3 none): the enemy's deck, drawn with the seed, took "any card that fits the role". Normal's deck now prefers the
+  role's typical cards (noise 1 -> 0.5, minus |value - 1| x 1.2); the swing moved rather than went (seed 1 then lost 11 of
+  12), so the deck is one cause and the chaotic sim the other. Deathmatch at Normal: 4/15 before, 0/15 after (Easy 15/15, Hard 7/15, Very Hard 7/15): Normal's enemy holds its ground by its towers, now twice as strong, and the CP score counts what the attacker loses; not fixed (it needs the mode's scoring or Normal's stance looked at).
+- **D.5:** Hard's win rate (48 %) sat above Normal's (28-33 %): Normal's enemy income 1 -> 0.7 (0.85 gave 37 %). Hard and Very Hard buy by the
+  `value` data, which is still prompt 13's F3 measurement (long-range SAM, fighter and car bomb at 1.5); a follow-up should
+  refresh it from `combat_value_p18_after_summary.tsv` and measure the ladder again.
+- **D.1 Siege:** garrison 16 -> 20 CP (Hard 22 -> 24), towers 1.75 -> 2.1 as tough, rings 1.05 / 1.15 / 1.25 as hard-hitting,
+  Normal mans every hardpoint. **D.2 Defend:** the outer line 1.45 -> 2.0 as tough and 1.15 -> 1.3 as hard-hitting, the first
+  wave 4 -> 3 (Easy 2, Hard 4) and growth 1.7 -> 1.8 (Hard 2.0); the inner lines as they were. **D.3 Weekly:** no bug: it was
+  won from stages 1, 2 and 3 (2 of 5 each) at Normal before any change.
+- **After (5 seeds):** | | Before | After | Target |
+|---|---|---|---|
+| Ladder Easy / Normal / Hard / Very Hard | 92 / 33 / 22 / 15 % | 93 / 53 / 48 / 25 % | 90 / 70 / 50 / 30 % |
+| Normal: Conquest, Deathmatch, Hill, Assault | 3, 4, 7, 6 of 15 | 8, 0, 9, 15 of 15 | |
+| Siege (Normal) | 13/15, median 8.1 min | 10/15 (67 %), 8.6 min | 60-75 % |
+| Defend: outer line lost / HQ held | 15/15 / 15/15 | 15/15 / 15/15 | 50-70 % / ~4 in 5 |
+| Weekly from stages 1-3 | 6/15 | 6/15 (8/15 at x0.85) | winnable at Normal |
+| Endless / Survival median | 15.8 / 13.9 min | 15.6 / 9.2 min | |
+| Boss Rush | 0/10, 30-min cap | 0/10, 30-min cap | 15-25 min |
+
+The files: `modes_p18_before_*.txt`, `modes_p18_after_*.txt` (Normal re-measured at x0.7; `_x085` the full run at x0.85).
+Defend's outer line still falls in every battle (2.2-6.7 min): its towers' health is not what breaks it (the line's objective
+goes first); left for a look at the line's objective.
+
+### 7. Campaign after (5 seeds)
+
+513 of 545 battles won (94 %; 518, 95 % before), 92 missions won on every seed (97). Worse: c8m10, the last operation,
+0/5, every seed at the 34-minute cap with the last stage (Hunt) at 100 % progress but not ended (3/5 before, where the other
+two already stalled the same way): not diagnosed; the stronger enemy towers are the likely cause. c8m08 0/5 as before,
+c8m06 1/5, c5m08 2/5, c2m09 and c4m06 3/5 (`campaign_5seeds_p18_after.tsv`).
+
+### Tests
+
+Run: `CounterTests` (all 13 pass), `RosterRoleTests`, `Prompt17RosterTests`, `TowerRosterTests`, `CalibreTests`,
+`BlastSizeTests`, `UnitLinesTests`, `LocalisationScanTests`, `SupportTextTests`, `Prompt13MigrationTests`, `DeckTests`,
+`BaseTests`, `BaseDefenceTests`, `ArmourTests`, `AirAndTowerTests`, `AircraftTests`, `ApsTests`, `WeaponTests`,
+`WeaponRhythmTests`, `TowerCardTests`, `StringsTests`, `ItemTests`, `ContentTests`, `Prompt15MigrationTests`,
+`Prompt17ContentTests`, `NewVehicleTests`, `StoresTests`, `EconomyTests`, `BaseStrengthTests`, `QuickModeTests`,
+`DefendModeTests`, `DefendLinesTests`, `SiegeModeTests`, `AiTests`, `ModeEndingTests`, `CounterBuyTests`. Pinned numbers updated to the data: the twin tank's reload, the
+wheeled gun's DPS band, the Iron Beam's beat (read from the data), the drone hangar's flights (read from the data).
+`Prompt8ContentTests.BossRushBringsTheFiveNewBosses` (11 kinds for 10) and `TheAirshipsHullIsShutUntilTwoEnginesAreDown`
+(8 parts for 7) fail on bosses this pass does not touch (prompt 18's parts and Boss Rush list); left for their owner, like
+the known BossParts and ModelTests failures.
+
+### Left
+
+- The Lancet is not the best artillery hunter yet (126 in the artillery fight against the strike drone's 465 and the wheeled
+  gun's 653); B.3's attack jet, strike drone and scout helicopter under 30 %; the heavy fortress's heavy DPS (89 of 140);
+  the Patriot 203 / PAC-3 245 (260 / 320 wanted: its worth in CP is already over its band).
+- After the lead merge: the C-RAM's dome, the rocket battery, the AA tower's branches; the pick run again.
+- Boss Rush reaches its 30-minute cap in every measured run (prompt 18's big attacks and parts); the owner's 15-25 minutes.
+- Refresh the vehicles' `value` data; the ladder again; the tick budget on a quiet machine.
+
+## 19E. Prompt 20 pass 2 (E-K): the boss template system, main and mini bosses, the new bosses (2026-09-29)
+
+Prompt 20 E-K on feature/p20-pass2 from lead/integration 8ac15b8 (L-M merged). The owner's token rule: compile, one
+targeted run, no sweeps, no screenshots. Pass 1 (renames, chapters) was running beside it: no existing boss is renamed and
+no boss is placed in a chapter here (see "Campaign" below for the merge that follows).
+
+### E. The templates (`Sim/Content/BossTemplates.cs`, `Catalog.P20.cs`; docs/ADDING_A_BOSS.md)
+
+- A JSON pre-pass before the vehicles are parsed, so everything downstream is the old vehicle data: **frames**
+  (`bossFrames`: tracked, wheeled, hovercraft, train, ship, submarine, aircraft, spacecraft; "defaults" merged under the
+  boss one level deep; the catalog checks the frame's rules: a spacecraft has tiers, a ship or submarine `naval`, a
+  submarine a sea `burrow`, only aircraft and spacecraft fly), the **part and weapon library** (`bossParts`, `use`; a
+  library part with a weapon adds and carries its own mount), `dropParts`, `size`, **variants** (`variantOf` +
+  `variant`: size, keep, drop, tune, tint, mark, name; the parent's built data and model, mounts renumbered, dropped
+  weapons' nodes hidden, phases / radio / big attack never inherited), and **ranks** (`bossRanks`). Big attacks may
+  build on another (`from`, strikes merged by index). Escort templates by general (`escortTemplates`): a table with
+  `template`, or a boss with no table gets its general's; a ship never (its `fleet`); a mini's waves cut to 3.
+- The hovercraft needed an eighth frame ("hovercraft", moving as wheeled): the spec's seven have no hover.
+- Existing bosses keep their hand-tuned parts and escort tables (the library and templates are there for new ones and for
+  F.3's weapons); moving them onto frames, ranks, generals and sizes is data only.
+- Every rank rule is data: main 3 phases (0.7, 0.3; damage x1.1 then x1.2 and speed x1.1) for a boss with no phases of its
+  own, a 6 s camera pan, the "boss" track, reward 1; mini hp x0.55 (its parts' shares follow), weapons x0.8
+  (`damageScale`), big attack x0.7 damage and x1.3 cooldown with the same warning (`bigAttackScale`), 2 phases (0.5), 3
+  escorts, the compact bar, a 2.5 s look, `boss_mini` (the shared track, asset debt: it plays `boss` until it exists),
+  reward 0.45 (exposed on the rank; Boss Rush's bounties are pass 3's). A tiered boss's tier marks are its phases.
+- New mechanisms (`BossSystem.P20.cs`): `factory` (Moloch), `crush` (Kronos, Ixion: dps to what is in front of the hull,
+  towers and walls x`structure`, an HQ flattened, armour cut per level, debris from a phase), `route` (a map route the
+  boss follows unless a mission gives its own: `MissionMode` drops it), `spotAura` (Argus: its side's artillery spread
+  x0.5 while its radar stands), `wake` (mounts woken by a phase: Typhon's deck gun), sea dives in `burrow` (`sea`,
+  per-phase surface / under times, `stopPhase`; the naval system leaves a diving boss alone and it fires nothing under
+  water), skimmer passes in `naval` (`passIn` / `passOut`: Caspian), per-phase pod intervals and a halt phase (Daedalus),
+  count-based part stops for pods, doors, crushers and fire direction. Big-attack library: `arc` (a swing measured from the
+  hull front), `charge` (the boss itself down a warned line), `seats` (a circle's rounds land troops), `cut` (the share
+  left once a carrying part breaks; 0 stops it), `surface` (a diving boss comes up to launch with only its parts
+  hittable: `BodyShut`). The arc's warning is three rings (the view draws rings and strips only).
+- A ship boss's sinking line is its own (`<radioSpawn>.sunk`); Leviathan keeps Kessler's.
+
+### F, G. Main and mini rules on the existing bosses
+
+- Sizes: main x1.35 (Bastion, Behemoth, Jötunn), x1.3 (Matriarch, Roc, Nemesis), Leviathan x1.12, Icarus x1; minis x0.85.
+  The hit radius and part positions scale with the model (prompt 19 kept the radius; a boss's must follow its hull).
+- F.3 weapons, each a part: Bastion a 155 mm casemate and two ZU-23; Behemoth two 120 mm flank guns and a rocket pod;
+  Jötunn a second 203 mm and a Buk SAM; Leviathan two 127 mm; Matriarch two 30 mm belly guns and a second drone bay; Roc
+  two 105 mm pods; Nemesis a 152 mm gun car and an AA car (41.6 m now); Icarus two turrets that wake at the crash. New
+  weapons on the calibre scale: `casemate_155`, `naval_127`, `naval_100`. With more than ten parts a part is 5-6 % of the
+  body (the 70 % total holds; the parts test allows it).
+- G.3 drops: Inferno the flak, Harpy a minigun and the missile rack, Tempest both coilguns, Juggernaut the mortar car, Hive
+  the SAM, Spectre one 40 mm (its big attack loses that gun's strike), Charybdis one CIWS.
+- Roc gets a second phase mark (0.7 and 0.35); the rest take their rank's phases or keep theirs (the minis had one each).
+- HUD: "Boss" / "Mini boss" on the bar (a mini's bar at 86 %), the arrival pan by rank, the rank's or boss's own track.
+
+### H-J. The new bosses
+
+Moloch (workshop, 4 x 120 mm, flak, doors, tracks; "Workshop Dump" drop 3 a door + 8 x 152 mm), Daedalus (the Silver Bug's
+airframe, 10 s orbit then high/low, three pod bays, max 8 pod vehicles, halts low in phase 3; "Orbital Mass Drop" 6 pods,
+3 with a bay gone), Kronos (four tracks, cab, boom, bucket wheel, 2 x 30 mm, rockets; the open-pit "kronos" route, crushes
+towers and the HQ; "Bucket Sweep" 120 deg x 25 m, 1 200), Typhon (dives on a schedule, surfaces elsewhere, stays up in
+phase 3 with its deck gun; cruise missiles surfaced; "Underwater Launch" 3 x 500 at the base, rising to launch; corvette
+and missile boats), Ixion (two wheels, steering wheel armour 1, 76 mm; crushes by armour; "Crushing Charge" 80 m, 900 and
+2 s stun, a wheel broken throws it off), Caspian (passes 6 s in, 20 s out; "Anti-Ship Volley" 4 x 500); the variants
+Bastion Mk.0, Fenrir (hit and run: shoot-and-scoot), Scylla (near lane, no escape, no landing craft), Locust (armour 1),
+Behemoth Mk.II (front 4), Icarus Mk.0 (no orbit, 2 phases), Argus (fire direction). Starting numbers, unrun.
+Names follow pass 1's rule; each has a Guide card, a parts tip, a radio line, its big attack's words (`BossText`).
+Models: first passes in `Tools/blender/mb_p20_bosses.py` (Daedalus on the Silver Bug's hull builders); the variants use
+their main boss's model with a tint.
+
+### K. Generals
+
+Data `general` on every boss per the table (Brandt's id is `brandt`, new; Gungnir moves to Orlov and Tartarus to Lý Hàn,
+their radio keys with them). Each boss's arrival line speaks for its general.
+
+### Modes and the Sandbox
+
+Boss Rush gains seven kinds (the four new main bosses; the minis in three groups) and 88 minutes; pass 3 reworks it.
+Operations' "two bosses" brings the mission boss's mini version. Sandbox calls (plain `BossSystem`): `JumpPhase` (tiers or
+ordinary phases, one a call), `TriggerBig`, `SetBigOff`, `Break`, `Restore`, `ForceTier`, `SetEscorts`, `SwapRank`.
+
+### Tests
+
+New `Prompt20BossTests` (10: templates and ranks, a variant from data alone, Moloch, Kronos, Ixion, Typhon, Daedalus,
+Argus, the Sandbox calls, the words); `BossPartsTests.Expected` and its share rule, `BigAttackTests` (the part order).
+One run of that filter after a compile fix: 11/12, the old "last part" assertion fixed after (not rerun).
+
+### For the testing phase
+
+5-seed kill times and win rates of every boss at each difficulty (main 5-8 min, mini 1.5-3 min on Normal); the stuck
+detector round the enlarged ground bosses, Kronos on the open-pit route and Ixion's charge; FPS with Moloch's and
+Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).
+
 ## 19L. Prompt 20 L-M: towers, two new battlefields (2026-09-29)
 
 Parts L and M only. The boss code, the campaign's structure and chapters, and the boss and general renames are
@@ -6269,92 +6553,3 @@ TrafficTests, MapRouteTests, whose count is now 23 with Lighthouse Bay) were not
 `Strings`, `GuideText`, `Icons`, `TowerIcons`, `BaseScreen` and `MenuScreen.Detail` (branch icon), `MatchSettings`,
 the card manifest, `FireRhythmMeasure`, `CombatValueMeasure`, the three test lists, `Tools/maps/build_maps.py` and
 `boundary.py`. No boss, campaign or rename code touched.
-
-## 19E. Prompt 20 pass 2 (E-K): the boss template system, main and mini bosses, the new bosses (2026-09-29)
-
-Prompt 20 E-K on feature/p20-pass2 from lead/integration 8ac15b8 (L-M merged). The owner's token rule: compile, one
-targeted run, no sweeps, no screenshots. Pass 1 (renames, chapters) was running beside it: no existing boss is renamed and
-no boss is placed in a chapter here (see "Campaign" below for the merge that follows).
-
-### E. The templates (`Sim/Content/BossTemplates.cs`, `Catalog.P20.cs`; docs/ADDING_A_BOSS.md)
-
-- A JSON pre-pass before the vehicles are parsed, so everything downstream is the old vehicle data: **frames**
-  (`bossFrames`: tracked, wheeled, hovercraft, train, ship, submarine, aircraft, spacecraft; "defaults" merged under the
-  boss one level deep; the catalog checks the frame's rules: a spacecraft has tiers, a ship or submarine `naval`, a
-  submarine a sea `burrow`, only aircraft and spacecraft fly), the **part and weapon library** (`bossParts`, `use`; a
-  library part with a weapon adds and carries its own mount), `dropParts`, `size`, **variants** (`variantOf` +
-  `variant`: size, keep, drop, tune, tint, mark, name; the parent's built data and model, mounts renumbered, dropped
-  weapons' nodes hidden, phases / radio / big attack never inherited), and **ranks** (`bossRanks`). Big attacks may
-  build on another (`from`, strikes merged by index). Escort templates by general (`escortTemplates`): a table with
-  `template`, or a boss with no table gets its general's; a ship never (its `fleet`); a mini's waves cut to 3.
-- The hovercraft needed an eighth frame ("hovercraft", moving as wheeled): the spec's seven have no hover.
-- Existing bosses keep their hand-tuned parts and escort tables (the library and templates are there for new ones and for
-  F.3's weapons); moving them onto frames, ranks, generals and sizes is data only.
-- Every rank rule is data: main 3 phases (0.7, 0.3; damage x1.1 then x1.2 and speed x1.1) for a boss with no phases of its
-  own, a 6 s camera pan, the "boss" track, reward 1; mini hp x0.55 (its parts' shares follow), weapons x0.8
-  (`damageScale`), big attack x0.7 damage and x1.3 cooldown with the same warning (`bigAttackScale`), 2 phases (0.5), 3
-  escorts, the compact bar, a 2.5 s look, `boss_mini` (the shared track, asset debt: it plays `boss` until it exists),
-  reward 0.45 (exposed on the rank; Boss Rush's bounties are pass 3's). A tiered boss's tier marks are its phases.
-- New mechanisms (`BossSystem.P20.cs`): `factory` (Moloch), `crush` (Kronos, Ixion: dps to what is in front of the hull,
-  towers and walls x`structure`, an HQ flattened, armour cut per level, debris from a phase), `route` (a map route the
-  boss follows unless a mission gives its own: `MissionMode` drops it), `spotAura` (Argus: its side's artillery spread
-  x0.5 while its radar stands), `wake` (mounts woken by a phase: Typhon's deck gun), sea dives in `burrow` (`sea`,
-  per-phase surface / under times, `stopPhase`; the naval system leaves a diving boss alone and it fires nothing under
-  water), skimmer passes in `naval` (`passIn` / `passOut`: Caspian), per-phase pod intervals and a halt phase (Daedalus),
-  count-based part stops for pods, doors, crushers and fire direction. Big-attack library: `arc` (a swing measured from the
-  hull front), `charge` (the boss itself down a warned line), `seats` (a circle's rounds land troops), `cut` (the share
-  left once a carrying part breaks; 0 stops it), `surface` (a diving boss comes up to launch with only its parts
-  hittable: `BodyShut`). The arc's warning is three rings (the view draws rings and strips only).
-- A ship boss's sinking line is its own (`<radioSpawn>.sunk`); Leviathan keeps Kessler's.
-
-### F, G. Main and mini rules on the existing bosses
-
-- Sizes: main x1.35 (Bastion, Behemoth, Jötunn), x1.3 (Matriarch, Roc, Nemesis), Leviathan x1.12, Icarus x1; minis x0.85.
-  The hit radius and part positions scale with the model (prompt 19 kept the radius; a boss's must follow its hull).
-- F.3 weapons, each a part: Bastion a 155 mm casemate and two ZU-23; Behemoth two 120 mm flank guns and a rocket pod;
-  Jötunn a second 203 mm and a Buk SAM; Leviathan two 127 mm; Matriarch two 30 mm belly guns and a second drone bay; Roc
-  two 105 mm pods; Nemesis a 152 mm gun car and an AA car (41.6 m now); Icarus two turrets that wake at the crash. New
-  weapons on the calibre scale: `casemate_155`, `naval_127`, `naval_100`. With more than ten parts a part is 5-6 % of the
-  body (the 70 % total holds; the parts test allows it).
-- G.3 drops: Inferno the flak, Harpy a minigun and the missile rack, Tempest both coilguns, Juggernaut the mortar car, Hive
-  the SAM, Spectre one 40 mm (its big attack loses that gun's strike), Charybdis one CIWS.
-- Roc gets a second phase mark (0.7 and 0.35); the rest take their rank's phases or keep theirs (the minis had one each).
-- HUD: "Boss" / "Mini boss" on the bar (a mini's bar at 86 %), the arrival pan by rank, the rank's or boss's own track.
-
-### H-J. The new bosses
-
-Moloch (workshop, 4 x 120 mm, flak, doors, tracks; "Workshop Dump" drop 3 a door + 8 x 152 mm), Daedalus (the Silver Bug's
-airframe, 10 s orbit then high/low, three pod bays, max 8 pod vehicles, halts low in phase 3; "Orbital Mass Drop" 6 pods,
-3 with a bay gone), Kronos (four tracks, cab, boom, bucket wheel, 2 x 30 mm, rockets; the open-pit "kronos" route, crushes
-towers and the HQ; "Bucket Sweep" 120 deg x 25 m, 1 200), Typhon (dives on a schedule, surfaces elsewhere, stays up in
-phase 3 with its deck gun; cruise missiles surfaced; "Underwater Launch" 3 x 500 at the base, rising to launch; corvette
-and missile boats), Ixion (two wheels, steering wheel armour 1, 76 mm; crushes by armour; "Crushing Charge" 80 m, 900 and
-2 s stun, a wheel broken throws it off), Caspian (passes 6 s in, 20 s out; "Anti-Ship Volley" 4 x 500); the variants
-Bastion Mk.0, Fenrir (hit and run: shoot-and-scoot), Scylla (near lane, no escape, no landing craft), Locust (armour 1),
-Behemoth Mk.II (front 4), Icarus Mk.0 (no orbit, 2 phases), Argus (fire direction). Starting numbers, unrun.
-Names follow pass 1's rule; each has a Guide card, a parts tip, a radio line, its big attack's words (`BossText`).
-Models: first passes in `Tools/blender/mb_p20_bosses.py` (Daedalus on the Silver Bug's hull builders); the variants use
-their main boss's model with a tint.
-
-### K. Generals
-
-Data `general` on every boss per the table (Brandt's id is `brandt`, new; Gungnir moves to Orlov and Tartarus to Lý Hàn,
-their radio keys with them). Each boss's arrival line speaks for its general.
-
-### Modes and the Sandbox
-
-Boss Rush gains seven kinds (the four new main bosses; the minis in three groups) and 88 minutes; pass 3 reworks it.
-Operations' "two bosses" brings the mission boss's mini version. Sandbox calls (plain `BossSystem`): `JumpPhase` (tiers or
-ordinary phases, one a call), `TriggerBig`, `SetBigOff`, `Break`, `Restore`, `ForceTier`, `SetEscorts`, `SwapRank`.
-
-### Tests
-
-New `Prompt20BossTests` (10: templates and ranks, a variant from data alone, Moloch, Kronos, Ixion, Typhon, Daedalus,
-Argus, the Sandbox calls, the words); `BossPartsTests.Expected` and its share rule, `BigAttackTests` (the part order).
-One run of that filter after a compile fix: 11/12, the old "last part" assertion fixed after (not rerun).
-
-### For the testing phase
-
-5-seed kill times and win rates of every boss at each difficulty (main 5-8 min, mini 1.5-3 min on Normal); the stuck
-detector round the enlarged ground bosses, Kronos on the open-pit route and Ixion's charge; FPS with Moloch's and
-Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).

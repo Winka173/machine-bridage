@@ -184,7 +184,9 @@ namespace MachineBrigade.Tests
             {
                 if (e.Kind == SimEventKind.WeaponFired && e.DefId == "fpv_hangar") drones++;
             });
-            Assert.That(drones, Is.InRange(4, 6), "two drones every 20 s");
+            // The balance pass after prompt 18 (A.2): a bigger flight more often (the data's burst and cooldown).
+            var launch = world.Catalog.Weapons["fpv_hangar"];
+            Assert.That(drones, Is.InRange(launch.Burst * 2, (int)(launch.Burst * 42f / launch.Cooldown) + launch.Burst), $"{launch.Burst} drones every {launch.Cooldown} s");
         }
 
         [Test]

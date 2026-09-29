@@ -1,0 +1,9 @@
+StuckBatch.Modes, every battlefield (21) x Siege, Defend, Endless, Weekly x seeds 1-5, loadouts light / full / obstacles in rotation, safety net on (lead 319a285).
+mode      battles  episodes>=8s  >10s  >20s  worst_s  rescues
+Siege         105           618   266     3       54      189
+Defend        105          1096   543     0       20      429
+Endless       105           860   391     5      277      346
+Weekly        105          2328  1196    35      214     1128
+all           420          4902  2396    43      277     2092
+causes of episodes over 10 s: BlockedByFriend 1176, YieldWait 340, OffRoute 164, BlockedByDefence 77, Unknown 37, NoPath 37, BlockedByObstacle 22, GateWait 20, StalePath 16, BlockedByEnemy 11
+longest: Endless emberridge s4 obstacles ammo_carrier 277 s NoPath at (-27.0,73.0); Weekly borderbridge s3 obstacles heavy_tank 214 s NoPath at (109.5,125.4); Weekly whiteout s3 obstacles engineer_vehicle 170 s NoPath at (109.7,124.7); Weekly junglepass s5 obstacles engineer_vehicle 157 s NoPath at (109.7,125.0); Weekly metrocity s3 obstacles engineer_vehicle 144 s NoPath at (109.2,125.7)

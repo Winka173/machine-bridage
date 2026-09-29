@@ -1,0 +1,4 @@
+none           tanks lost   13401 HP in 45 s, saved       0, 0.0 interceptions
+iron_beam      tanks lost    9069 HP in 45 s, saved    4332 (481 a CP), 17.0 interceptions
+2 aa_vehicle   tanks lost   13118 HP in 45 s, saved     283 (35 a CP), 0.0 interceptions
+c_ram          tanks lost    4192 HP in 45 s, saved    9209, 23.3 interceptions

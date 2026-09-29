@@ -137,6 +137,7 @@ namespace MachineBrigade.Tests
                 foreach (var s in Standards)
                     results.Add(Mean(Seeds.Select(seed => Run(catalog, id, s, seed)).ToList()));
                 if (Limited(def)) results.Add(Mean(Seeds.Select(seed => Run(catalog, id, LongRun, seed)).ToList()));
+                results.Add(Mean(Seeds.Select(seed => Run(catalog, id, Artillery, seed)).ToList()));
             }
             var outDir = Environment.GetEnvironmentVariable("MB_CV_OUT");
             if (string.IsNullOrEmpty(outDir)) outDir = Path.GetTempPath();
@@ -163,16 +164,19 @@ namespace MachineBrigade.Tests
             var catalog = LoadCatalog();
             var sb = new StringBuilder();
             sb.AppendLine("id\tclass\tcp\told_light\told_heavy\told_air\told_structure\tlight\theavy\tair\tstructure\theavy_per_cp");
+            // The balance pass after prompt 18: each mount's share too (what a change of one weapon's rhythm does).
+            var mounts = new StringBuilder("id\tmount\tweapon\tlight\theavy\tair\tstructure\n");
             foreach (var def in catalog.Vehicles.Values.Where(v => !v.Boss && !v.Elite).OrderBy(v => v.Static).ThenBy(v => v.Class).ThenBy(v => v.CpCost).ThenBy(v => v.Id))
             {
                 var old = new float[4];
                 var now = new float[4];
-                foreach (var m in def.Mounts)
+                for (var mi = 0; mi < def.Mounts.Count; mi++)
                 {
-                    var w = m.Weapon;
+                    var w = def.Mounts[mi].Weapon;
                     if (w.Damage <= 0f) continue;
                     var before = FirePower.Volley(w) / MathF.Max(0.1f, w.CycleSeconds);
                     var after = FirePower.Sustained(w, def);
+                    var mine = new float[4];
                     foreach (ArmorClass a in Enum.GetValues(typeof(ArmorClass)))
                     {
                         if (!w.CanTarget(a == ArmorClass.Air)) continue;
@@ -182,7 +186,9 @@ namespace MachineBrigade.Tests
                         var k = Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
                         old[(int)a] += before * k;
                         now[(int)a] += after * k;
+                        mine[(int)a] = after * k;
                     }
+                    mounts.AppendLine(string.Join("\t", def.Id, mi, w.Id, F(mine[0]), F(mine[1]), F(mine[2]), F(mine[3])));
                 }
                 sb.AppendLine(string.Join("\t", def.Id, def.Class, def.CpCost, F(old[0]), F(old[1]), F(old[2]), F(old[3]), F(now[0]), F(now[1]), F(now[2]), F(now[3]),
                     def.CpCost > 0 ? F(now[1] / def.CpCost) : ""));
@@ -192,6 +198,7 @@ namespace MachineBrigade.Tests
             Directory.CreateDirectory(outDir);
             var tag = Environment.GetEnvironmentVariable("MB_CV_TAG") ?? "now";
             File.WriteAllText(Path.Combine(outDir, $"theoretical_dps_{tag}.tsv"), sb.ToString(), new UTF8Encoding(false));
+            File.WriteAllText(Path.Combine(outDir, $"theoretical_mounts_{tag}.tsv"), mounts.ToString(), new UTF8Encoding(false));
             TestContext.Out.WriteLine(sb.ToString());
             Assert.Pass();
         }
@@ -437,6 +444,15 @@ namespace MachineBrigade.Tests
 
         private static readonly Vector2 GroupAt = new(0f, 40f);
 
+        /// <summary>A look at every hit the measured side lands (the balance pass after prompt 18: the wheeled gun's flank shots).</summary>
+        internal static Action<Vehicle, Vehicle, float, WeaponDef> OnHit;
+
+        /// <summary>
+        /// The balance pass after prompt 18 (B.1 Lancet): artillery and parked launchers, the artillery hunters' fight (an
+        /// extra scenario, not in the ground value): a howitzer, an MLRS and a rocket technical standing at the group's spot.
+        /// </summary>
+        internal static readonly Scenario Artillery = new() { Name = "arty", Group = new[] { "artillery", "mlrs", "rocket_technical" } };
+
         internal static Result Run(Catalog catalog, string id, Scenario scenario, int seed)
         {
             var def = catalog.Vehicle(id);
@@ -469,6 +485,7 @@ namespace MachineBrigade.Tests
                 // Credited to the shooters: their own rounds, the blasts and fires they set off (a car
                 // bomb's charge and the cook-offs it causes come with no shooter).
                 if (by != null && by.Team != 0) return;
+                OnHit?.Invoke(by, victim, amount, weapon);
                 if (!left.TryGetValue(victim, out var hp)) hp = victim.MaxHp;
                 var real = MathF.Min(amount, hp);
                 left[victim] = MathF.Max(0f, hp - amount);
@@ -571,13 +588,13 @@ namespace MachineBrigade.Tests
         internal static string Summary(Catalog catalog, List<Result> results)
         {
             var sb = new StringBuilder();
-            var names = Standards.Select(s => s.Name).Concat(new[] { LongRun.Name }).ToList();
+            var names = Standards.Select(s => s.Name).Concat(new[] { LongRun.Name, Artillery.Name }).ToList();
             sb.AppendLine("id\tclass\tcp\t" + string.Join("\t", names) + "\tground\tnoAA\tonTarget\tsurvival\tready\tdpsLight\tdpsHeavy\tdpsFort\tdpsAir");
             foreach (var g in results.GroupBy(r => r.Id))
             {
                 var def = catalog.Vehicle(g.Key);
                 var cells = names.Select(n => g.FirstOrDefault(r => r.Scenario == n) is { } r ? F(r.Value) : "").ToList();
-                var standard = g.Where(r => r.Scenario != LongRun.Name).ToList();
+                var standard = g.Where(r => r.Scenario != LongRun.Name && r.Scenario != Artillery.Name).ToList();
                 // Ground value: the mean over the six ground groups, with and without anti-air (the
                 // like-for-like comparison for anything that fights the ground); noAA: the three without.
                 var ground = standard.Where(r => r.Scenario != "air").ToList();

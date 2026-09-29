@@ -1,0 +1,13 @@
+TICK budget: phone = desktop x 6, phone budget mean 8 ms, p99 16 ms
+enemies  alive  mean ms  p99 ms  phone mean  phone p99  fits
+     24     74     0.57    3.44         3.4       20.6  no
+     32     82     0.64    3.62         3.9       21.7  no
+     40     90     0.75    3.55         4.5       21.3  no
+     48     98     0.84    3.80         5.0       22.8  no
+     56    106     0.93    4.00         5.6       24.0  no
+     64    114     1.06    4.73         6.4       28.4  no
+     80    130     1.33    3.76         8.0       22.6  no
+largest fitting: 0
+  24 enemies, systems (mean/p99 ms): visibility 0.09/0.25 economy 0.00/0.00 bases 0.00/0.00 movement 0.22/1.25 crush 0.01/0.01 abilities 0.01/0.08 status 0.00/0.00 gear 0.01/0.10 combat 0.18/0.39 strikes 0.00/0.00 damage 0.00/0.05 remove 0.00/0.00
+  24 enemies: commanders mean 0.06 p99 1.42 max 10.01; world step mean 0.54 p99 1.94 max 15.14; total p95 1.06 p99 3.56 max 23.25; most routes waiting 6
+  24 enemies, systems (mean/p99 ms): visibility 0.08/0.11 economy 0.00/0.00 bases 0.00/0.00 movement 0.22/1.44 crush 0.01/0.01 abilities 0.01/0.02 status 0.00/0.00 gear 0.01/0.01 combat 0.17/0.40 strikes 0.00/0.00 damage 0.00/0.05 remove 0.00/0.00
