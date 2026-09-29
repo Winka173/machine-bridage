@@ -581,6 +581,24 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Prompt 16 F: the boss's escorts still alive, on its bar.</summary>
         public void SetBossEscorts(int alive) => _boss?.SetEscorts(alive);
 
+        /// <summary>Prompt 18: the boss's big attack on its bar (the icon, the cooldown, lit while it charges) and its charging parts flashing.</summary>
+        public void SetBossBigAttack(MachineBrigade.Sim.Entities.Vehicle boss)
+        {
+            if (_boss == null) return;
+            var big = boss?.BigAttack;
+            if (big == null)
+            {
+                _boss.SetBigAttack(null, 0f, false, 0f);
+                _boss.Parts.SetCharging(null, false);
+                return;
+            }
+            var charging = big.Stage == MachineBrigade.Sim.Entities.BigStage.Charging;
+            var left = charging && !double.IsInfinity(big.FireAt) ? big.WarnLeft : -1f;
+            _boss.SetBigAttack(big.Def.Icon, big.Ready, charging, left);
+            // The parts to break: flashing about three times a second while it charges.
+            _boss.Parts.SetCharging(charging ? big.Parts : null, Mathf.Repeat(Time.unscaledTime, 0.36f) < 0.18f);
+        }
+
         /// <summary>The boss's health in numbers beside its name (after <see cref="SetBoss(string, float)"/>).</summary>
         public void SetBossHp(float hp, float maxHp) => _boss?.SetHp(hp, maxHp);
 

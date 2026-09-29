@@ -20,7 +20,7 @@ namespace MachineBrigade.Game.Hud
         {
             public VisualElement Root, Fill;
             public int ShownFill = -1;
-            public bool ShownBroken, ShownFocus;
+            public bool ShownBroken, ShownFocus, ShownCharging;
         }
 
         private readonly List<Cell> _cells = new();
@@ -86,8 +86,31 @@ namespace MachineBrigade.Game.Hud
             "aps" => "shield",
             "fuel" => "flame",
             "ew" => "jammer",
+            // Prompt 18 C.
+            "erector" => "ballistic",
+            "bombbay" => "bomb",
             _ => "gear",
         };
+
+        /// <summary>Prompt 18 D.1: the parts that carry the charging big attack flash (null: none), lit on <paramref name="on"/>.</summary>
+        public void SetCharging(IReadOnlyList<int> parts, bool on)
+        {
+            for (var i = 0; i < _cells.Count; i++)
+            {
+                var lit = on && parts != null && Contains(parts, i);
+                var cell = _cells[i];
+                if (lit == cell.ShownCharging) continue;
+                cell.ShownCharging = lit;
+                cell.Root.EnableInClassList("fc-boss-part--charging", lit);
+            }
+        }
+
+        private static bool Contains(IReadOnlyList<int> list, int x)
+        {
+            foreach (var y in list)
+                if (y == x) return true;
+            return false;
+        }
 
         /// <summary>Shows the boss's parts (null hides the row); <paramref name="focused"/> is the ordered part, or -1.</summary>
         public void Set(Vehicle boss, int focused)

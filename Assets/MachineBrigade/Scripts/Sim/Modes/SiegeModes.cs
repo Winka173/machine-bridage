@@ -1405,6 +1405,7 @@ namespace MachineBrigade.Sim.Modes
             _ledger.Ignore = v => v.Def.Boss || v.Def.Naval != null;
             _nextBossAt = 10.0;
             world.EscortSettings ??= _rules.EscortSettings ?? EscortSettings.For(world.Catalog.EscortRules, "Normal", bossRush: true);
+            world.BigAttackSettings ??= BigAttackSettings.For(world.Catalog.BigAttackRules, "Normal");
             if (_rules.Resume is { } resume)
             {
                 // Carried over from the last battlefield: the army lands at the drop zone, the bosses and the clock go on.

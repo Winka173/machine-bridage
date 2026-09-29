@@ -204,6 +204,8 @@ namespace MachineBrigade.Sim.Modes
         {
             // Prompt 16 F: bosses bring their escorts (Normal's cap unless the session sets its difficulty's).
             world.EscortSettings ??= Content.EscortSettings.For(world.Catalog.EscortRules, "Normal");
+            // Prompt 18: the bosses' big attacks (the session sets them by difficulty first).
+            world.BigAttackSettings ??= Content.BigAttackSettings.For(world.Catalog.BigAttackRules, "Normal");
             SetupStage(world, true, null);
         }
 

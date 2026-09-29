@@ -84,6 +84,23 @@ its commits.
 - Lighthouse Bay has a long Siege map; the hovercraft's escorts ride fast missile boats; the campaign opens 5-7 cards
   a chapter.
 
+### Prompt 18: a big attack for every boss
+
+- Every boss has one big attack, telegraphed: its zone lights up in its exact shape (a circle, a strip, a line, a sweep,
+  the points of a walking barrage, a missile's landing) with a countdown, the part that fires it glows on the boss and
+  flashes on the boss bar, and its general or your command says it on the radio. About 30 s after the boss appears,
+  then on its own cooldown.
+- Break that part during the warning and the attack is cancelled ("Broadside cancelled"); each gun car, rocket box,
+  drone rack or flamer takes its own share; with the part gone for good the boss has lost its big attack until it
+  patches it. An EMP delays the Tempest's and the Silver Bug's charge.
+- The Doomsday Train's tactical missile, the Leviathan's cruise missile volley and the Hive's drone swarm fly and can be
+  shot down by anti-air, C-RAM, point-defence lasers and APS. Smoke cuts the Silver Bug's laser to a fifth (not the
+  Tempest's railgun); shield domes take the Ice Fortress's rocket rain.
+- Your ground units inside a warning get out on their own if they can make it, and go back after.
+- New boss parts: the Doomsday Train's missile erector and bomb bays on the Hive Carrier and the Command Airship.
+- The boss's Guide tab explains its big attack: what it does, how to get out of it, how to stop it, whom it is for.
+- By difficulty: Easy hits softer, less often, with a second more warning; Hard and Very Hard come round sooner.
+
 <details><summary>28 commits</summary>
 
 - `5f808c8` 2026-09-29 Design document: section 20, a picture library (every vehicle, elite, boss, tower and module rendered large, in-battle shots, effect sheets, model and terrain sheets, stuck heatmaps)

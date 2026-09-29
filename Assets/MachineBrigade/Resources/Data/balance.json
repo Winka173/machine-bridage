@@ -761,7 +761,7 @@
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "armed_truck",
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.4, "tier": "Huge" } },
     { "id": "behemoth", "scale": 1.2, "armour": 4, "hp": 4950, "speed": 2.4, "turnRate": 25, "turretTurnRate": 30, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 50,
-      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true, "skills": ["boss_rage", "boss_bulwark"],
+      "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "boss": true, "bigAttack": "behemoth_barrage", "skills": ["boss_rage", "boss_bulwark"],
       "aps": { "radius": 11, "charges": 2, "recharge": 4 },
       "secondary": [ { "weapon": "gun_120mm", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" },
@@ -776,7 +776,7 @@
         {"id": "aps", "kind": "aps", "hp": 0.07, "armour": 1, "wreck": "wreck_stump", "at": [0, 0.6, 5.2], "radius": 1.6, "stops": ["aps"]} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "mobile_fortress", "scale": 1.2, "armour": 4, "hp": 7000, "speed": 1.8, "turnRate": 20, "turretTurnRate": 25, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 60,
-      "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true, "skills": ["fortress_barrage", "boss_emp"],
+      "firesWhileMoving": true, "weapon": "boss_howitzer", "captureRate": 0, "boss": true, "bigAttack": "fortress_rocket_rain", "skills": ["fortress_barrage", "boss_emp"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" } ],
@@ -790,7 +790,7 @@
         {"id": "emp", "kind": "emp", "hp": 0.1, "armour": 1, "node": "Radar", "wreck": "wreck_stump", "at": [0, -4.2, 7.7], "radius": 2.0, "skills": ["boss_emp"]} ],
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "armored_train", "scale": 1.15, "armour": [4, 3, 3, 2], "hp": 4150, "speed": 0.32, "turnRate": 30, "turretTurnRate": 45, "radius": 3.6, "length": 25.06, "width": 3.4, "cp": 0, "vision": 50,
-      "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true, "skills": ["train_smoke", "train_patch"],
+      "firesWhileMoving": true, "weapon": "train_gun", "captureRate": 0, "boss": true, "bigAttack": "train_broadside", "skills": ["train_smoke", "train_patch"],
       "secondary": [ { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "train_gun", "slot": "main", "aim": "Free" },
                      { "weapon": "train_mortar", "slot": "mortar", "aim": "Free" } ],
@@ -803,7 +803,7 @@
         {"id": "mortar_car", "kind": "mortar", "hp": 0.1, "armour": 2, "node": "Part_mortar", "wreck": "wreck_launcher", "at": [0, -12.5, 2.6], "radius": 2.4, "mounts": [5]} ],
       "deathExplosion": { "damage": 380, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
     { "id": "mega_gunship", "scale": 1.35,     "armour": 2,   "hp": 11500, "speed": 6, "turnRate": 50, "turretTurnRate": 360, "radius": 7, "cp": 0, "vision": 55,
-      "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "mainModel": "hydra", "flying": true, "altitude": 20, "captureRate": 0, "boss": true, "skills": ["boss_flares", "boss_rage"],
+      "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "mainModel": "hydra", "flying": true, "altitude": 20, "captureRate": 0, "boss": true, "bigAttack": "ironbird_rocket_run", "skills": ["boss_flares", "boss_rage"],
       "secondary": [ { "weapon": "boss_heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_heli_gun", "slot": "gun", "aim": "Free" },
                      { "weapon": "boss_missiles", "slot": "missile", "aim": "Hull" }, { "weapon": "boss_minigun", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_minigun", "slot": "mg", "aim": "Free" }, { "weapon": "gunship_rockets", "slot": "rocket", "model": "hydra", "aim": "Hull" } ],
@@ -817,35 +817,39 @@
         {"id": "missiles", "kind": "missiles", "hp": 0.08, "armour": 2, "wreck": "wreck_launcher", "at": [0, 1.25, 1.5], "radius": 1.4, "mounts": [3]},
         {"id": "rotor_rear", "kind": "rotor", "hp": 0.1, "armour": 1, "node": "Rotor_rear", "wreck": "wreck_stump", "at": [0, -6.7, 5.7], "radius": 3.0, "turn": 0.5} ],
       "deathExplosion": { "damage": 350, "radius": 15, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "drone_mothership", "scale": 1.15, "boss": true, "armour": 2, "hp": 12300, "speed": 3.5, "turnRate": 20, "turretTurnRate": 90, "radius": 9, "cp": 0, "vision": 70,
+    { "id": "drone_mothership", "scale": 1.15, "boss": true, "bigAttack": "carrier_heavy_bomb", "armour": 2, "hp": 12300, "speed": 3.5, "turnRate": 20, "turretTurnRate": 90, "radius": 9, "cp": 0, "vision": 70,
       "firesWhileMoving": true, "weapon": "mothership_cannon", "flying": true, "altitude": 26, "captureRate": 0,
       "skills": ["mothership_launch", "boss_flares", "mothership_shield"],
       "secondary": [ { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "mothership_cannon", "slot": "main", "aim": "Free" } ],
       "parts": [
         {"id": "cannon_bow", "kind": "maingun", "hp": 0.1, "armour": 2, "node": "Turret", "wreck": "wreck_turret", "at": [0, 10.8, -3.6], "radius": 2.0, "mounts": [0], "radio": "radio.part.maingun"},
-        {"id": "cannon_gondola", "kind": "gun", "hp": 0.1, "armour": 2, "node": "Mount_main.001", "wreck": "wreck_turret", "at": [0, 2.2, -5.4], "radius": 2.0, "mounts": [4]},
+        {"id": "cannon_gondola", "kind": "gun", "hp": 0.08, "armour": 2, "node": "Mount_main.001", "wreck": "wreck_turret", "at": [0, 2.2, -5.4], "radius": 2.0, "mounts": [4]},
         {"id": "drone_bay", "kind": "bay", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, -2.3, -4.6], "radius": 3.0, "mounts": [1], "radio": "radio.part.bay"},
-        {"id": "uav_bay", "kind": "uav", "hp": 0.1, "armour": 1, "wreck": "wreck_stump", "at": [0, -8.5, -3.5], "radius": 2.5, "skills": ["mothership_launch"]},
+        {"id": "uav_bay", "kind": "uav", "hp": 0.08, "armour": 1, "wreck": "wreck_stump", "at": [0, -8.5, -3.5], "radius": 2.5, "skills": ["mothership_launch"]},
         {"id": "flak_top", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [0, 4.8, 4.1], "radius": 1.8, "mounts": [2]},
         {"id": "flak_rear", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0, -3.4, 3.9], "radius": 1.8, "mounts": [3]},
-        {"id": "shield", "kind": "shield", "hp": 0.1, "armour": 2, "wreck": "wreck_stump", "at": [0, -2.35, 5.2], "radius": 2.5, "skills": ["mothership_shield"], "radio": "radio.part.shield"} ],
+        {"id": "shield", "kind": "shield", "hp": 0.09, "armour": 2, "wreck": "wreck_stump", "at": [0, -2.35, 5.2], "radius": 2.5, "skills": ["mothership_shield"], "radio": "radio.part.shield"},
+        // Prompt 18 C: the bomb bay under the keel (its big attack, the penetrating bomb).
+        {"id": "bomb_bay", "kind": "bombbay", "hp": 0.09, "armour": 2, "wreck": "wreck_stump", "at": [0, 5.5, -4.8], "radius": 2.8, "radio": "radio.part.bombbay"} ],
       "deathExplosion": { "damage": 300, "radius": 14, "delay": 2.6, "tier": "Ultimate" } },
-    { "id": "nuke_train", "scale": 1.15, "boss": true, "armour": [4, 3, 3, 2], "hp": 6000, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 31.61, "width": 3.44, "cp": 0, "vision": 55,
+    { "id": "nuke_train", "scale": 1.15, "boss": true, "bigAttack": "doomsday_missile", "armour": [4, 3, 3, 2], "hp": 6000, "speed": 0.35, "turnRate": 30, "turretTurnRate": 90, "radius": 3.8, "length": 31.61, "width": 3.44, "cp": 0, "vision": 55,
       "firesWhileMoving": true, "weapon": "gun_behemoth", "captureRate": 0, "skills": ["train_smoke"],
       "secondary": [ { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_rockets", "slot": "rocket", "aim": "Free" }, { "weapon": "sam_battery", "slot": "missile", "aim": "Free" } ],
       "parts": [
         {"id": "locomotive", "kind": "locomotive", "hp": 0.12, "armour": 4, "wreck": "wreck_stump", "at": [0, -8.5, 2.5], "radius": 3.5, "speed": 0.5, "radio": "radio.part.locomotive"},
         {"id": "twin_gun", "kind": "maingun", "hp": 0.14, "armour": 3, "node": "Main_cannon|Main_cannon_2|Muzzle_brake|Muzzle_brake_2", "wreck": "wreck_barrel", "at": [0, 5.5, 3.9], "radius": 3.0, "mounts": [0], "radio": "radio.part.maingun"},
-        {"id": "flak_front", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-0.45, 8.3, 3.5], "radius": 2.0, "mounts": [1]},
-        {"id": "flak_rear", "kind": "flak", "hp": 0.1, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0.45, 0.28, 3.5], "radius": 2.0, "mounts": [2]},
-        {"id": "rocket_car", "kind": "rockets", "hp": 0.1, "armour": 2, "node": "Part_rocket", "wreck": "wreck_launcher", "at": [0, -13.4, 2.6], "radius": 2.4, "mounts": [3]},
-        {"id": "sam_car", "kind": "sam", "hp": 0.1, "armour": 2, "node": "Part_missile", "wreck": "wreck_launcher", "at": [0, -18.2, 2.8], "radius": 2.4, "mounts": [4]} ],
+        {"id": "flak_front", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg", "wreck": "wreck_turret", "at": [-0.45, 8.3, 3.5], "radius": 2.0, "mounts": [1]},
+        {"id": "flak_rear", "kind": "flak", "hp": 0.08, "armour": 2, "node": "Mount_mg.001", "wreck": "wreck_turret", "at": [0.45, 0.28, 3.5], "radius": 2.0, "mounts": [2]},
+        {"id": "rocket_car", "kind": "rockets", "hp": 0.09, "armour": 2, "node": "Part_rocket", "wreck": "wreck_launcher", "at": [0, -13.4, 2.6], "radius": 2.4, "mounts": [3]},
+        {"id": "sam_car", "kind": "sam", "hp": 0.1, "armour": 2, "node": "Part_missile", "wreck": "wreck_launcher", "at": [0, -18.2, 2.8], "radius": 2.4, "mounts": [4]},
+        // Prompt 18 C: the erector that raises its tactical missile (its big attack), mid-train on the missile car.
+        {"id": "erector", "kind": "erector", "hp": 0.09, "armour": 2, "wreck": "wreck_launcher", "at": [0, -4.5, 3.6], "radius": 2.6, "radio": "radio.part.erector"} ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // "Silver Bug": what if the USAF had built Project 1794 (Avro VZ-9 Avrocar's big brother). A laser
     // that burns a line across the ground, rim coilguns, point-defence flak, drones from its bay, EMP.
-    { "id": "silver_bug", "boss": true, "armour": 2, "hp": 7150, "speed": 5, "turnRate": 30, "turretTurnRate": 120, "radius": 10, "cp": 0, "vision": 72,
+    { "id": "silver_bug", "boss": true, "bigAttack": "bug_laser_sweep", "armour": 2, "hp": 7150, "speed": 5, "turnRate": 30, "turretTurnRate": 120, "radius": 10, "cp": 0, "vision": 72,
       "firesWhileMoving": true, "weapon": "saucer_laser", "flying": true, "altitude": 24, "captureRate": 0,
       "skills": ["saucer_emp", "mothership_shield", "saucer_drones", "boss_rage"],
       "secondary": [ { "weapon": "coilgun", "slot": "gun", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
@@ -861,7 +865,7 @@
     // Round 6 bosses: variants of the super-heavy tank, the mobile fortress and the gunship.
     // "Inferno": burns everything near it and lays the ground on fire; weak against aircraft.
     { "id": "behemoth_inferno", "scale": 1.2, "armour": 4, "hp": 6300, "speed": 2.9, "turnRate": 28, "turretTurnRate": 40, "radius": 6.4, "length": 12.59, "width": 6.5, "cp": 0, "vision": 46,
-      "firesWhileMoving": true, "weapon": "boss_flamer", "captureRate": 0, "boss": true, "skills": ["boss_rage", "train_smoke"],
+      "firesWhileMoving": true, "weapon": "boss_flamer", "captureRate": 0, "boss": true, "bigAttack": "inferno_firestorm", "skills": ["boss_rage", "train_smoke"],
       "fireTrail": { "every": 4, "seconds": 10, "radius": 3.5, "dps": 18 },
       "secondary": [ { "weapon": "boss_thermo", "slot": "rocket", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" },
                      { "weapon": "boss_flamer", "slot": "main", "aim": "Turret" } ],
@@ -874,7 +878,7 @@
       "deathExplosion": { "damage": 420, "radius": 19, "delay": 2.6, "tier": "Ultimate" } },
     // "Tempest": a railgun that charges and pierces a whole line from far off, coilguns, a shield.
     { "id": "behemoth_tempest", "scale": 1.2, "armour": 4, "hp": 4150, "speed": 2.6, "turnRate": 25, "turretTurnRate": 28, "radius": 6.4, "length": 15.84, "width": 6.5, "cp": 0, "vision": 70,
-      "firesWhileMoving": true, "weapon": "boss_railgun", "captureRate": 0, "boss": true, "skills": ["mothership_shield", "boss_bulwark", "boss_emp"],
+      "firesWhileMoving": true, "weapon": "boss_railgun", "captureRate": 0, "boss": true, "bigAttack": "tempest_rail", "skills": ["mothership_shield", "boss_bulwark", "boss_emp"],
       "aps": { "radius": 26, "charges": 2, "recharge": 1.6, "rockets": true, "laser": true },
       "secondary": [ { "weapon": "coilgun", "slot": "gun", "aim": "Free" }, { "weapon": "coilgun", "slot": "gun", "aim": "Free" } ],
       "parts": [
@@ -886,7 +890,7 @@
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // "Hive": no big gun at all; drone swarms from two racks, a SAM battery, flak: deadly to aircraft.
     { "id": "fortress_hive", "scale": 1.2, "armour": 4, "hp": 5800, "speed": 1.8, "turnRate": 20, "turretTurnRate": 60, "radius": 7.5, "length": 16.09, "width": 9.1, "cp": 0, "vision": 75,
-      "firesWhileMoving": true, "weapon": "mothership_drones", "mainSlot": "missile", "captureRate": 0, "boss": true, "skills": ["mothership_launch", "boss_emp"],
+      "firesWhileMoving": true, "weapon": "mothership_drones", "mainSlot": "missile", "captureRate": 0, "boss": true, "bigAttack": "hive_swarm", "skills": ["mothership_launch", "boss_emp"],
       "jammer": 30,
       "secondary": [ { "weapon": "mothership_drones", "slot": "missile", "aim": "Free" }, { "weapon": "sam_battery", "slot": "rocket", "aim": "Free" },
                      { "weapon": "boss_flak", "slot": "mg", "aim": "Free" }, { "weapon": "boss_flak", "slot": "mg", "aim": "Free" } ],
@@ -901,7 +905,7 @@
       "deathExplosion": { "damage": 450, "radius": 20, "delay": 2.6, "tier": "Ultimate" } },
     // "Bastion": the toughest thing on the field; four autocannon turrets, a heavy mortar, it patches itself up.
     { "id": "fortress_bastion", "scale": 1.2, "armour": 4, "hp": 9600, "speed": 1.5, "turnRate": 18, "turretTurnRate": 22, "radius": 7.5, "length": 16.57, "width": 9.1, "cp": 0, "vision": 64,
-      "firesWhileMoving": true, "weapon": "boss_mortar", "captureRate": 0, "boss": true, "skills": ["train_patch", "boss_bulwark", "fortress_barrage"],
+      "firesWhileMoving": true, "weapon": "boss_mortar", "captureRate": 0, "boss": true, "bigAttack": "bastion_mortar_walk", "skills": ["train_patch", "boss_bulwark", "fortress_barrage"],
       "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-45, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [45, 80] },
                      { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [-135, 80] }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free", "arc": [135, 80] },
                      { "weapon": "kornet_twin", "slot": "missile", "aim": "Free" } ],
@@ -922,7 +926,7 @@
     // Kessler's rail supergun: it stands on its rails at the edge of the field; every 20 s one 80 cm shell at
     // the biggest group of enemy ground vehicles anywhere on the map, its landing marked 3 s ahead. Guns,
     // walls and its fire-control post round the bed (break the post and the shells fall wide).
-    { "id": "rail_supergun", "boss": true, "static": true, "general": "kessler", "radioSpawn": "radio.kessler.supergun", "armour": 3, "structure": false, "hp": 5300, "speed": 0,
+    { "id": "rail_supergun", "boss": true, "bigAttack": "supergun_heavy", "static": true, "general": "kessler", "radioSpawn": "radio.kessler.supergun", "armour": 3, "structure": false, "hp": 5300, "speed": 0,
       "turnRate": 1, "turretTurnRate": 12, "radius": 14, "length": 27, "width": 8, "scale": 1.0, "cp": 0, "vision": 90, "captureRate": 0,
       "weapon": "none",
       "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" },
@@ -951,7 +955,7 @@
     // Varga's Earth Worm: dives, bores untouchable to under the biggest group of enemy ground vehicles, cracks
     // the ground for 2 s and breaks out in a quake that stuns everything on the ground within 15 m; for 6 s
     // after it is out it takes half as much again.
-    { "id": "earth_borer", "boss": true, "general": "varga", "radioSpawn": "radio.varga.borer", "armour": 4, "hp": 8150, "speed": 3.2, "turnRate": 22, "turretTurnRate": 40,
+    { "id": "earth_borer", "boss": true, "bigAttack": "borer_quake", "general": "varga", "radioSpawn": "radio.varga.borer", "armour": 4, "hp": 8150, "speed": 3.2, "turnRate": 22, "turretTurnRate": 40,
       "radius": 6, "length": 23.5, "width": 5.8, "scale": 1.0, "cp": 0, "vision": 55, "captureRate": 0,
       "firesWhileMoving": true, "weapon": "borer_drill", "mainAim": "Hull",
       "secondary": [ { "weapon": "borer_cannon", "slot": "gun", "aim": "Free" }, { "weapon": "borer_cannon", "slot": "gun", "aim": "Free" } ],
@@ -967,7 +971,7 @@
     // Quạ Đen's command airship: four engines, two drone bays and a fire-control radar, each with its own
     // health. The hull takes no damage until two engines are down; a bay broken, its drones stop; the radar
     // broken, its flak scatters wide. Only anti-air and fighters reach it.
-    { "id": "command_airship", "boss": true, "general": "quaden", "radioSpawn": "radio.quaden.airship", "armour": 2, "hp": 13000, "speed": 4.5, "turnRate": 16,
+    { "id": "command_airship", "boss": true, "bigAttack": "airship_carpet", "general": "quaden", "radioSpawn": "radio.quaden.airship", "armour": 2, "hp": 13000, "speed": 4.5, "turnRate": 16,
       "turretTurnRate": 90, "radius": 18, "scale": 1.0, "cp": 0, "vision": 80, "flying": true, "altitude": 30, "captureRate": 0,
       "firesWhileMoving": true, "weapon": "airship_flak", "mainSlot": "gun", "mainAim": "Free",
       "secondary": [ { "weapon": "airship_flak", "slot": "gun", "aim": "Free" }, { "weapon": "airship_drones", "slot": "door_l", "aim": "Free" },
@@ -982,14 +986,16 @@
           "mounts": [2], "skills": ["airship_launch_l"] },
         { "id": "hangar_r", "breakDamage": 0, "radio": "radio.part.bay", "kind": "hangar", "hp": 0.1, "armour": 2, "node": "Part_hangar.001", "wreck": "wreck_launcher", "at": [1.3, -3, -2.2], "radius": 3.2,
           "mounts": [3], "skills": ["airship_launch_r"] },
-        { "id": "radar", "breakDamage": 0, "kind": "radar", "hp": 0.08, "armour": 1, "node": "Part_radar", "wreck": "wreck_stump", "at": [0, 3.2, 6.7], "radius": 2.6,
-          "spread": 3, "fail": 0.5, "affects": [0, 1] } ],
+        { "id": "radar", "breakDamage": 0, "kind": "radar", "hp": 0.07, "armour": 1, "node": "Part_radar", "wreck": "wreck_stump", "at": [0, 3.2, 6.7], "radius": 2.6,
+          "spread": 3, "fail": 0.5, "affects": [0, 1] },
+        // Prompt 18 C: the bomb bay in the gondola's belly (its big attack, the carpet of bombs).
+        { "id": "bomb_bay", "breakDamage": 0, "kind": "bombbay", "hp": 0.07, "armour": 2, "wreck": "wreck_stump", "at": [0, 8.5, -3.0], "radius": 3.2, "radio": "radio.part.bombbay" } ],
       "partLock": { "kind": "engine", "count": 2 },
       "phases": [ { "at": 0.4, "transform": 3, "damage": 1.25, "radio": "radio.quaden.airship.half" } ],
       "deathExplosion": { "damage": 400, "radius": 18, "delay": 2.6, "tier": "Ultimate" } },
     // The landing hovercraft: it runs its route (a mission's; in Boss Rush, at the army) and every 35 s stops,
     // drops its bow ramp and lands 3 or 4 vehicles, five times at most. Stop it before it has landed them all.
-    { "id": "landing_hovercraft", "boss": true, "general": "kessler", "radioSpawn": "radio.kessler.hovercraft", "armour": 3, "hp": 5200, "speed": 5.5,
+    { "id": "landing_hovercraft", "boss": true, "bigAttack": "hover_assault", "general": "kessler", "radioSpawn": "radio.kessler.hovercraft", "armour": 3, "hp": 5200, "speed": 5.5,
       "turnRate": 26, "turretTurnRate": 200, "radius": 9, "length": 29.3, "width": 15.9, "scale": 1.0, "cp": 0, "vision": 60, "captureRate": 0,
       "firesWhileMoving": true, "weapon": "hover_ciws", "mainSlot": "gun", "mainAim": "Free",
       "secondary": [ { "weapon": "hover_ciws", "slot": "gun", "aim": "Free" }, { "weapon": "ciws_aa", "slot": "mg", "aim": "Free" },
@@ -1013,7 +1019,7 @@
     // General Hùng's Supreme Commander (after his betrayal): a super-heavy armoured headquarters with two light
     // machine guns and nothing else, but every enemy unit within 40 m of it hits 20 % harder and fires 20 %
     // faster; an elite guard rides with it and more come at 60 %.
-    { "id": "supreme_command", "boss": true, "general": "hung", "radioSpawn": "radio.hung.supreme", "armour": 4, "hp": 5850, "speed": 4, "turnRate": 30,
+    { "id": "supreme_command", "boss": true, "bigAttack": "supreme_offensive", "general": "hung", "radioSpawn": "radio.hung.supreme", "armour": 4, "hp": 5850, "speed": 4, "turnRate": 30,
       "turretTurnRate": 200, "radius": 4.5, "length": 14.6, "width": 4.2, "scale": 1.0, "cp": 0, "vision": 60, "captureRate": 0,
       "firesWhileMoving": true, "weapon": "boss_hmg", "mainSlot": "mg", "mainAim": "Free",
       "secondary": [ { "weapon": "boss_hmg", "slot": "mg", "aim": "Free" } ],
@@ -1027,7 +1033,7 @@
       "deathExplosion": { "damage": 380, "radius": 16, "delay": 2.6, "tier": "Ultimate" } },
     // "Spectre": a boss AC-130; circles its prey high up, 105 mm, two 40 mm and a 25 mm down its left side, Griffins from the ramp.
     { "id": "sky_fortress", "scale": 1.3, "armour": 2, "hp": 9100, "speed": 13, "turnRate": 55, "turretTurnRate": 360, "radius": 9, "cp": 0, "vision": 80,
-      "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "boss": true,
+      "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "boss": true, "bigAttack": "spectre_orbit",
       "skills": ["boss_flares", "boss_rage"],
       "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" },
                      { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" }, { "weapon": "griffin", "slot": "ramp", "aim": "Free" } ],
@@ -1051,7 +1057,7 @@
     // from its flight deck and calls two attack jets in off the sea. Its sides are level 4, its deck 2: bombs,
     // shells, artillery rockets and top attacks strike the deck. Its CIWS (the APS) takes missiles, rockets and
     // drones, never shells, bullets or beams; strongest in phase 2, gone with both CIWS parts.
-    { "id": "leviathan", "boss": true, "general": "kessler", "radioSpawn": "radio.kessler.leviathan", "armour": [4, 4, 3, 2], "hp": 11000, "speed": 2.6,
+    { "id": "leviathan", "boss": true, "bigAttack": "leviathan_volley", "general": "kessler", "radioSpawn": "radio.kessler.leviathan", "armour": [4, 4, 3, 2], "hp": 11000, "speed": 2.6,
       "turnRate": 8, "turretTurnRate": 30, "radius": 12, "length": 64, "width": 11, "scale": 1.0, "cp": 0, "vision": 120, "captureRate": 0,
       "firesWhileMoving": true, "weapon": "leviathan_203", "mainSlot": "gun", "mainAim": "Free",
       "secondary": [ { "weapon": "leviathan_203", "slot": "gun", "aim": "Free" }, { "weapon": "hover_ciws", "slot": "mg", "aim": "Free" },
@@ -1210,6 +1216,113 @@
     // Kept as it was (the brief): no guard at first, two elite battle tanks at 60 %; its command aura is the help.
     { "boss": "supreme_command", "marks": [0.6],
       "phase": [ { "unit": "main_battle_tank", "elite": true }, { "unit": "main_battle_tank", "elite": true } ] }
+  ],
+
+  // ----------------------------------------------------------------------------------------------------
+  // Prompt 18 (DECISIONS 17A): every boss's one big attack, telegraphed and interruptible. A boss names its entry
+  // ("bigAttack"); an entry is a list of strikes, each a shape from the shared library with its numbers:
+  //   circle (rounds within "area" of the aim, or one round with "scatter"; "every" s for "duration" s: continuous
+  //   fire; round the boss with "aim": "self", "sectors": each part covers its half), strip ("length" x "width" along
+  //   "axis": heading, toward or across; "interval": a walking barrage in order), line (a piercing slug, "chainCut"
+  //   less for each unit after the first), sweep (a beam run down its line over "duration"), swarm (drones of "hp" at
+  //   "speed" m/s, at most "targets" units), missile ("hp", "flight" s; shot down by anti-air, C-RAM, lasers, APS),
+  //   drop (a landing party, at most "max" alive), buff (its side within "reach" hits harder by "damage" and fires
+  //   faster by "fireRate" for "seconds"), quake (the Earth Worm's dive).
+  // "parts" carry a strike: broken during the warning it is cancelled ("perPart": each part its own rounds), broken
+  // for good the boss has lost it until a self-repair. Damage is before armour, on the calibre scale, scaled with the
+  // boss; "type", "pen" (a blast's fragments pierce as level 1 at most on vehicles), "radius", "falloff" (the share
+  // left at the rim), "structure" (x on buildings and towers), "thermo", "top", "fire" (burning ground). Per attack:
+  // "warn", "cooldown" (start to start), "first" (else the rules'), "aim" (group, still, hq, base, self), "reach" (0:
+  // the map), "target" (who it is for, the guide's words), "empDelay", "exposed" (x damage taken meanwhile),
+  // "abortDamage" (a share of its health taken while it fires makes it break off), "spotter"/"blindScatter", "hold"
+  // (mechanisms paused while it charges), "halt". Names and lines are text keys from the id (bigattack.<id> ...).
+  "bigAttackRules": {
+    "first": 30, "intercept": 150, "aaHit": 0.5, "dodge": 3,
+    "difficulty": {
+      "Easy":     { "damage": 0.8, "cooldown": 1.2, "warn": 1 },
+      "Normal":   { "damage": 1,   "cooldown": 1,   "warn": 0 },
+      "Hard":     { "damage": 1,   "cooldown": 0.9, "warn": 0 },
+      "VeryHard": { "damage": 1.1, "cooldown": 0.8, "warn": 0 },
+      "Heroic":   { "damage": 1.1, "cooldown": 0.8, "warn": 0 },
+      "Iron":     { "damage": 1.1, "cooldown": 0.8, "warn": 0 }
+    }
+  },
+  "bigAttacks": [
+    // 1 Iron Train: both gun cars' 152 mm HE, a strip along the rails.
+    { "id": "train_broadside", "icon": "barrage", "warn": 3.5, "cooldown": 65, "aim": "group", "reach": 80, "target": "light",
+      "strikes": [ { "shape": "strip", "parts": ["gun_car_front", "gun_car_rear"], "perPart": 3, "damage": 330, "type": "HighExplosive", "pen": 1,
+                     "radius": 6, "length": 60, "width": 12, "axis": "heading", "duration": 1.5 } ] },
+    // 2 Tempest: the railgun at full charge through a whole line.
+    { "id": "tempest_rail", "icon": "railgun", "warn": 4, "cooldown": 60, "aim": "group", "reach": 90, "target": "heavy", "empDelay": 2,
+      "strikes": [ { "shape": "line", "parts": ["railgun"], "damage": 1300, "type": "Kinetic", "pen": 4, "length": 90, "width": 3, "chainCut": 0.15 } ] },
+    // 3 Behemoth: three pairs of 203 mm HE from the main gun.
+    { "id": "behemoth_barrage", "icon": "artillery", "warn": 3.5, "cooldown": 65, "aim": "group", "reach": 70, "target": "mixed",
+      "strikes": [ { "shape": "circle", "parts": ["main_gun"], "count": 6, "salvo": 2, "damage": 340, "type": "HighExplosive", "pen": 2,
+                     "radius": 8, "area": 14, "duration": 2.4 } ] },
+    // 4 Doomsday Train: a thermobaric tactical missile from its erector, slow enough to shoot down.
+    { "id": "doomsday_missile", "icon": "ballistic", "warn": 5, "cooldown": 90, "aim": "hq", "target": "base",
+      "strikes": [ { "shape": "missile", "parts": ["erector"], "count": 1, "damage": 2500, "type": "HighExplosive", "pen": 2, "thermo": true,
+                     "radius": 18, "falloff": 0.3, "hp": 600, "flight": 12, "weapon": "ballistic_missile" } ] },
+    // 5 Rail Supergun: one super-heavy shell anywhere, the ground left burning; its fire control down, it falls wide.
+    { "id": "supergun_heavy", "icon": "t_supergun", "warn": 4, "cooldown": 60, "aim": "still", "target": "still",
+      "spotter": "fire_control", "blindScatter": 15, "hold": ["bombard"],
+      "strikes": [ { "shape": "circle", "parts": ["main_gun"], "count": 1, "damage": 1800, "type": "HighExplosive", "pen": 3, "radius": 20, "scatter": 3,
+                     "fire": { "seconds": 8, "dps": 25, "radius": 10 }, "weapon": "supergun_800" } ] },
+    // 6 Inferno: a sea of fire round it, each flamer its half.
+    { "id": "inferno_firestorm", "icon": "flame", "warn": 3, "cooldown": 60, "aim": "self", "target": "thin",
+      "strikes": [ { "shape": "circle", "parts": ["flamer_r", "flamer_l"], "sectors": true, "count": 1, "damage": 200, "type": "Fire", "pen": 1,
+                     "radius": 18, "falloff": 1, "fire": { "seconds": 10, "dps": 45, "radius": 18 } } ] },
+    // 7 Supreme Commander: its side hits harder and faster, and a bomber lays a strip on the biggest group.
+    { "id": "supreme_offensive", "icon": "command", "warn": 4, "cooldown": 75, "aim": "group", "reach": 110, "target": "army",
+      "strikes": [ { "shape": "buff", "parts": ["antenna"], "reach": 60, "damage": 0.35, "fireRate": 0.25, "seconds": 12 },
+                   { "shape": "strip", "parts": ["antenna"], "count": 8, "damage": 340, "type": "HighExplosive", "pen": 1, "radius": 7,
+                     "length": 50, "width": 10, "axis": "toward", "duration": 1.6, "pass": "air_raid" } ] },
+    // 8 Hive: a full swarm from both racks, top attack on the armour of the biggest group.
+    { "id": "hive_swarm", "icon": "drone", "warn": 4, "cooldown": 70, "aim": "group", "reach": 90, "target": "armour",
+      "strikes": [ { "shape": "swarm", "parts": ["rack_l", "rack_r"], "perPart": 10, "damage": 180, "type": "ShapedCharge", "pen": 4, "top": true,
+                     "radius": 2, "area": 20, "hp": 60, "speed": 26, "targets": 4 } ] },
+    // 9 Landing Hovercraft: a rocket sweep of the beach, then a landing party off the ramp.
+    { "id": "hover_assault", "icon": "reinforce", "warn": 4, "cooldown": 80, "aim": "group", "reach": 70, "target": "beach",
+      "strikes": [ { "shape": "strip", "parts": ["rockets_l", "rockets_r"], "perPart": 12, "damage": 58, "type": "HighExplosive", "pen": 2, "radius": 4,
+                     "length": 40, "width": 20, "axis": "across", "duration": 3 },
+                   { "shape": "drop", "parts": ["ramp"], "units": ["main_battle_tank", "ifv", "armored_car", "main_battle_tank", "ifv", "armored_car"],
+                     "max": 6, "at": [0, 16] } ] },
+    // 10 Ice Fortress: both rocket boxes emptied over a wide circle.
+    { "id": "fortress_rocket_rain", "icon": "mlrs", "warn": 3.5, "cooldown": 65, "aim": "group", "reach": 70, "target": "light",
+      "strikes": [ { "shape": "circle", "parts": ["rockets_l", "rockets_r"], "perPart": 16, "damage": 58, "type": "HighExplosive", "pen": 2, "radius": 4,
+                     "area": 25, "duration": 4 } ] },
+    // 11 Silver Bug: its laser swept down a line (prompt 19 F swaps this entry for its rod rain).
+    { "id": "bug_laser_sweep", "icon": "laser", "warn": 4, "cooldown": 60, "aim": "group", "reach": 80, "target": "tanks", "empDelay": 2.5,
+      "strikes": [ { "shape": "sweep", "parts": ["laser"], "damage": 900, "type": "Energy", "pen": 4, "length": 120, "width": 4, "axis": "across", "duration": 3 } ] },
+    // 12 Earth Worm: a big dive under the biggest group and a quake that stuns.
+    { "id": "borer_quake", "icon": "dune", "warn": 3, "cooldown": 60, "aim": "group", "target": "packed",
+      "strikes": [ { "shape": "quake", "parts": ["drill"], "damage": 700, "type": "HighExplosive", "pen": 2, "radius": 16, "falloff": 0.3, "stun": 3 } ] },
+    // 13 Bastion: the 240 mm mortar walking six bombs down a line towards the gate, the base or the group.
+    { "id": "bastion_mortar_walk", "icon": "mortar", "warn": 3.5, "cooldown": 65, "aim": "group", "reach": 85, "target": "defences",
+      "strikes": [ { "shape": "strip", "parts": ["mortar"], "count": 6, "damage": 460, "type": "HighExplosive", "pen": 2, "structure": 2, "radius": 9,
+                     "length": 60, "axis": "toward", "interval": 0.7 } ] },
+    // 14 Spectre: every gun on one circle for 8 s, flying low and slow (anti-air hits it harder; hurt enough, it breaks off).
+    { "id": "spectre_orbit", "icon": "gunship", "warn": 3, "cooldown": 70, "aim": "group", "reach": 90, "target": "light", "exposed": 1.5, "abortDamage": 0.08,
+      "strikes": [ { "shape": "circle", "parts": ["gun_105"], "every": 1.5, "duration": 8, "damage": 300, "type": "HighExplosive", "pen": 2, "radius": 6, "area": 15 },
+                   { "shape": "circle", "parts": ["gun_40a"], "every": 0.8, "salvo": 3, "duration": 8, "damage": 30, "type": "HighExplosive", "pen": 1, "radius": 2.5, "area": 15 },
+                   { "shape": "circle", "parts": ["gun_40b"], "every": 0.8, "salvo": 3, "duration": 8, "damage": 30, "type": "HighExplosive", "pen": 1, "radius": 2.5, "area": 15 },
+                   { "shape": "circle", "parts": ["gun_25"], "every": 0.2, "duration": 8, "damage": 15, "type": "Kinetic", "pen": 2, "radius": 1.5, "area": 15 } ] },
+    // 15 Iron Bird: both rocket pods down a line.
+    { "id": "ironbird_rocket_run", "icon": "airstrike", "warn": 3, "cooldown": 60, "aim": "group", "reach": 70, "target": "light",
+      "strikes": [ { "shape": "strip", "parts": ["pod_l", "pod_r"], "perPart": 24, "damage": 32, "type": "HighExplosive", "pen": 2, "radius": 3,
+                     "length": 70, "width": 8, "axis": "toward", "duration": 2.5 } ] },
+    // 16 Hive Carrier: one heavy penetrating bomb from its bay, stopped over the target (bay open: anti-air hits it harder).
+    { "id": "carrier_heavy_bomb", "icon": "bomb", "warn": 3.5, "cooldown": 70, "aim": "group", "reach": 40, "target": "defences", "exposed": 1.3, "halt": true,
+      "strikes": [ { "shape": "circle", "parts": ["bomb_bay"], "count": 1, "damage": 850, "type": "HighExplosive", "pen": 3, "structure": 2, "radius": 14,
+                     "weapon": "bomber_payload" } ] },
+    // 17 Command Airship: a carpet of bombs along its course.
+    { "id": "airship_carpet", "icon": "bomb", "warn": 3.5, "cooldown": 70, "aim": "group", "reach": 60, "target": "light",
+      "strikes": [ { "shape": "strip", "parts": ["bomb_bay"], "count": 12, "damage": 300, "type": "HighExplosive", "pen": 1, "radius": 7,
+                     "length": 70, "width": 12, "axis": "heading", "duration": 3 } ] },
+    // 18 Leviathan: a volley of six cruise missiles from its launch cells at the base (each can be shot down).
+    { "id": "leviathan_volley", "icon": "missile", "warn": 4, "cooldown": 75, "aim": "base", "target": "base", "hold": ["cruise"],
+      "strikes": [ { "shape": "missile", "parts": ["vls"], "count": 6, "damage": 450, "type": "HighExplosive", "pen": 2, "structure": 2, "radius": 8,
+                     "hp": 250, "flight": 8, "targets": 3, "weapon": "leviathan_cruise" } ] }
   ],
 
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a

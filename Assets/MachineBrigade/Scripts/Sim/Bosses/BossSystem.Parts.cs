@@ -102,6 +102,8 @@ namespace MachineBrigade.Sim.Bosses
             }
             var score = (antiAir ? toAir : toShooter) + all * 0.15f;
             if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 8f;
+            // Prompt 18: a part that carries the big attack counts too, far more while it charges (break it in time).
+            if (boss.BigAttack is { } big && big.Def.UsesPart(part.Id)) score += big.Stage == BigStage.Charging ? 60f : 8f;
             return score;
         }
 
@@ -166,6 +168,8 @@ namespace MachineBrigade.Sim.Bosses
             // Prompt 16: the escorts and the fire trails.
             MixEscorts(mix);
             mix(_trails.Count);
+            // Prompt 18: big attacks.
+            MixBig(mix);
         }
 
         // ================================================================== damage, breaking, patching

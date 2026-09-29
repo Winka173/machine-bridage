@@ -39,6 +39,8 @@ namespace MachineBrigade.Sim.Bosses
         public void Joined(Vehicle v)
         {
             v.InitParts();
+            // Prompt 18: its big attack's clock.
+            JoinBig(v);
             var now = _world.Time;
             var def = v.Def;
             if (def.Burrow is { } burrow) v.BurrowNext = now + burrow.First;
@@ -71,6 +73,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             StepTrails(now);
             StepEscorts(now);
+            StepBig(now, dt);
             foreach (var (id, team, at, heading) in _spawns) _world.SpawnVehicle(id, team, at, heading);
             _spawns.Clear();
         }
@@ -116,8 +119,10 @@ namespace MachineBrigade.Sim.Bosses
                     }
                     v.Position = _world.ClampToMap(v.BurrowGoal);
                     v.Burrow = Vehicle.BurrowState.Cracking;
-                    v.BurrowNext = now + b.Warn;
-                    _world.Emit(SimEvent.Burrow(v, 1, v.Position, b.Warn));
+                    // Prompt 18: a big dive cracks the ground for its big attack's warning.
+                    var warn = v.BigQuake ? QuakeWarned(v, v.Position, b.Warn) : b.Warn;
+                    v.BurrowNext = now + warn;
+                    _world.Emit(SimEvent.Burrow(v, 1, v.Position, warn));
                     return;
                 }
                 case Vehicle.BurrowState.Cracking:
@@ -163,6 +168,8 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>It breaks out: a quake that hurts and stuns every enemy ground vehicle round it (not bosses).</summary>
         private void Quake(Vehicle v, BurrowDef b, double now)
         {
+            // Prompt 18: the big dive's quake is its big attack's (harder, wider, the same stun).
+            if (BigQuakeHits(v)) return;
             var info = new HitInfo(v, v.Team, null, v.Position, HitKind.Strike, true);
             foreach (var e in _world.VehicleList)
             {

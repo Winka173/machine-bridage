@@ -136,6 +136,13 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Prompt 17 C: a shield dome (Entity: its emitter) broke (Value 0) or came back up (Value 1) at Position.</summary>
         DomeChanged,
+
+        /// <summary>
+        /// Prompt 18: a boss's (Entity) big attack (DefId): Mount 0 its warning began (it lands in Value seconds round
+        /// Position), 1 it fired, 2 the player cancelled it (a part broken in time), 3 it broke off (hurt too much while
+        /// firing), 4 an EMP delayed it by Value seconds, 5 a missile or drone of it was shot down at Position.
+        /// </summary>
+        BigAttack,
     }
 
     /// <summary>
@@ -320,6 +327,9 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent AreaChanged(Content.PlayArea? area) =>
             new(SimEventKind.AreaChanged, EntityId.None, area?.Min ?? default, area?.Max ?? default, area.HasValue ? 1f : 0f, default, null, 0);
+
+        internal static SimEvent Big(Vehicle boss, string attack, int stage, Vector2 at, float value) =>
+            new(SimEventKind.BigAttack, boss.Id, at, boss.Position, value, ExplosionTier.Huge, attack, boss.Team, stage);
 
         internal static SimEvent RadioMessage(string key, int team = 0) =>
             new(SimEventKind.Radio, EntityId.None, default, default, 0f, default, key, team);

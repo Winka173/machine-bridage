@@ -135,6 +135,7 @@ namespace MachineBrigade.Game.Match
             if (boss.Escaping && boss.EscapeSeconds >= 0f)
                 name += "  ·  " + Strings.Format("boss.escaping", $"{(int)boss.EscapeSeconds / 60}:{(int)boss.EscapeSeconds % 60:00}");
             hud.SetBossEscorts(world != null ? world.EscortsAlive(boss.Id) : 0);
+            hud.SetBossBigAttack(boss);
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);
@@ -286,6 +287,8 @@ namespace MachineBrigade.Game.Match
             // Boss escorts (prompt 16 F): how many alive at once by difficulty, fewer in Boss Rush.
             if (!menu) world.EscortSettings = MachineBrigade.Sim.Content.EscortSettings.For(world.Catalog.EscortRules, session.EliteDifficulty,
                 bossRush: kind == GameModeKind.BossRush);
+            // Prompt 18: every boss's big attack, wherever it appears, scaled by difficulty.
+            if (!menu) world.BigAttackSettings = MachineBrigade.Sim.Content.BigAttackSettings.For(world.Catalog.BigAttackRules, session.EliteDifficulty);
             // Doctrines: the player's choice; a hard enemy picks one of its own.
             if (!menu && Progression.DoctrineOwned(MatchSettings.Doctrine))
                 world.SetDoctrine(PlayerTeam, MachineBrigade.Sim.Content.Doctrine.Get(MatchSettings.Doctrine));
