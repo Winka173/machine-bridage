@@ -50,6 +50,7 @@ import mb_support  # noqa: E402
 import mb_terrain  # noqa: E402
 import mb_themes  # noqa: E402
 import mb_themes2  # noqa: E402
+import mb_tower_branches  # noqa: E402
 import mb_towers3  # noqa: E402
 import mb_town  # noqa: E402
 import mb_vehicles  # noqa: E402
@@ -81,7 +82,9 @@ def all_builders():
                 # Prompt 17's temporary stand-ins for the new units (asset debt).
                 **mb_p17_temp.BUILDERS,
                 # Prompt 20 pass 2: the new bosses and the old bosses' new weapons (they wrap the builders above).
-                **mb_p20_bosses.BUILDERS}
+                **mb_p20_bosses.BUILDERS,
+                # Tower branches (C.1): <tower>_a and <tower>_b, each built on its tower's builder.
+                **mb_tower_branches.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

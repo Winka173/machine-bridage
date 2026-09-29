@@ -51,6 +51,9 @@ namespace MachineBrigade.Editor
             ("structure", d => d.Static && d.Fort == null && !d.Boss),
         };
 
+        /// <summary>A model ships under Resources/Models (a tower branch's own model, TowerArt).</summary>
+        private static bool Ships(string id) => Resources.Load<GameObject>("Models/" + id) != null;
+
         /// <summary>Every card that needs a picture: (card id, kind, model id).</summary>
         public static List<(string id, string kind, string model)> Cards(Catalog catalog)
         {
@@ -58,11 +61,11 @@ namespace MachineBrigade.Editor
             var seen = new HashSet<string>();
             foreach (var id in MatchSettings.AllVehicles)
                 if (catalog.Vehicles.TryGetValue(id, out var def) && seen.Add(id))
-                    cards.Add((id, "vehicle", def.Model));
+                    cards.Add((id, "vehicle", TowerArt.ModelFor(def, Ships)));
             foreach (var def in catalog.Vehicles.Values.OrderBy(d => d.Id, StringComparer.Ordinal))
                 foreach (var (kind, test) in Kinds)
                     if (test(def) && seen.Add(def.Id))
-                        cards.Add((def.Id, kind, def.Model));
+                        cards.Add((def.Id, kind, TowerArt.ModelFor(def, Ships)));
             return cards;
         }
 

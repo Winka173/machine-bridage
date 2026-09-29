@@ -184,7 +184,7 @@ namespace MachineBrigade.Game.Hud
             {
                 // The In action tab shows it firing on a range; the others turn it on its stand.
                 if (_detailTab == DetailTab.Firing) Preview.ShowRange(vehicle.Id);
-                else Preview.Show(vehicle.Model, vehicle.Scale);
+                else Preview.Show(Rendering.TowerArt.ModelFor(vehicle, id => Resources.Load<GameObject>("Models/" + id) != null), vehicle.Scale);
                 _detailPreview.style.backgroundImage = Background.FromRenderTexture(Preview.Texture);
                 _detailPreview.style.display = DisplayStyle.Flex;
                 _detailArt.style.display = DisplayStyle.None;

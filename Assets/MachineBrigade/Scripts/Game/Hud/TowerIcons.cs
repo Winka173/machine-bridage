@@ -4,7 +4,8 @@ namespace MachineBrigade.Game.Hud
     /// The line icon of every tower, utility module, the HQ and every fixed defence (prompt 14 I): a set
     /// of their own in the vehicle icons' style (Icons, "t_" names), never a vehicle's or a support's icon.
     /// They are for small places (counters, chips, tags, a card's corner); cards, slots and the detail
-    /// panel keep the 3D renders (<see cref="CardArt"/>). A branch ("aa_turret.flak") shows its tower's icon.
+    /// panel keep the 3D renders (<see cref="CardArt"/>). A rank-7 branch ("aa_turret.flak") shows its own icon
+    /// by its letter (t_aa_a; <see cref="Rendering.TowerArt"/>), or its tower's when none is drawn.
     /// </summary>
     public static class TowerIcons
     {
@@ -12,10 +13,15 @@ namespace MachineBrigade.Game.Hud
         public static string For(string id)
         {
             if (string.IsNullOrEmpty(id)) return null;
-            // A branch with an icon of its own (prompt 20 L.1); the others show their tower's.
-            if (id == "c_ram.dome") return "t_irondome";
             var dot = id.IndexOf('.');
-            return (dot > 0 ? id.Substring(0, dot) : id) switch
+            var icon = Tower(dot > 0 ? id.Substring(0, dot) : id);
+            // A rank-7 branch: its own icon by its letter (t_gun_a, t_gun_b; tower-branch prompt C.4), else its tower's.
+            return dot > 0 ? Rendering.TowerArt.BranchIcon(id, icon, Icons.Exists) ?? icon : icon;
+        }
+
+        private static string Tower(string id)
+        {
+            return id switch
             {
                 "headquarters" => "hq",
                 // Towers.
@@ -34,6 +40,8 @@ namespace MachineBrigade.Game.Hud
                 "missile_battery" => "t_patriot",
                 "drone_hangar" => "t_hangar",
                 "heavy_turret" => "t_fortress",
+                // Prompt 16: Lighthouse Bay's capturable coastal batteries wear the heavy fortress's line.
+                "coastal_battery" => "t_coastal",
                 // Prompt 17 C.
                 "shield_tower" => "t_shieldgen",
                 "cp_relay" => "t_relay",

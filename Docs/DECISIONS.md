@@ -6553,3 +6553,116 @@ TrafficTests, MapRouteTests, whose count is now 23 with Lighthouse Bay) were not
 `Strings`, `GuideText`, `Icons`, `TowerIcons`, `BaseScreen` and `MenuScreen.Detail` (branch icon), `MatchSettings`,
 the card manifest, `FireRhythmMeasure`, `CombatValueMeasure`, the three test lists, `Tools/maps/build_maps.py` and
 `boundary.py`. No boss, campaign or rename code touched.
+
+## 19U. Tower-branch prompt C: branch models, rank details, branch icons (2026-09-29)
+
+Art side only (C.1, C.2, C.4, C.6, C.7 of `Docs/prompts/tower-branches_vi.txt`). No sim data or behaviour changed:
+`balance.json` is untouched, so the balance pass (section B, in MachineBrigade-bal) can rename and rework the branches.
+
+### How a branch picks its model and icon (the hook for the balance pass)
+
+- **Letter = data order.** A tower's branch defs are lettered by their order in `balance.json` (`TowerCards.Branches`):
+  the first is A, the second B. That is the spec's A/B order, so keep it when the branches are rewritten.
+- **Model.** A branch entry that names no `"model"` of its own wears `<tower model>_<letter>` when that model ships
+  (`TowerArt.ModelFor`, used by `VehicleView`, the detail preview, `CardRenders` and the LOD tests). A branch entry that
+  names its own `"model"` keeps it: that is the data override (the existing `inherits` hook), so no new field was needed.
+- **Icon.** `TowerIcons.For(<branch id>)` returns `<tower icon>_<letter>` when that icon is drawn, else the tower's
+  icon. The Iron Dome's `t_irondome` is now `t_cram_b` (`Prompt20TowersMapsTests` follows).
+- `TowerArt.Learn(catalog)` runs in `GameContent.LoadCatalog`, so every loaded catalog sets the letters.
+- A third branch (letter c) finds no model or icon and shows the tower's until one is made or named.
+
+### Id table
+
+| Tower | Letter | Branch now (spec) | Model id | Icon id |
+|---|---|---|---|---|
+| guard_tower | A | guard_tower.watch (Observation) | guard_tower_a | t_guard_a |
+| guard_tower | B | guard_tower.nest (25 mm gun nest) | guard_tower_b | t_guard_b |
+| mg_bunker | A | mg_bunker.twin (twin MG) | mg_bunker_a | t_mg_a |
+| mg_bunker | B | mg_bunker.flame (flame bunker) | mg_bunker_b | t_mg_b |
+| aa_turret | A | aa_turret.flak (quad flak) | aa_turret_a | t_aa_a |
+| aa_turret | B | aa_turret.sam (SAM post) | aa_turret_b | t_aa_b |
+| ew_tower | A | ew_tower.drone (drone jammer) | ew_tower_a | t_ew_a |
+| ew_tower | B | ew_tower.spoof (radar spoofer) | ew_tower_b | t_ew_b |
+| dragons_teeth | A | dragons_teeth.hedgehog (steel hedgehogs) | dragons_teeth_a | t_teeth_a |
+| dragons_teeth | B | dragons_teeth.wire (wire) | dragons_teeth_b | t_teeth_b |
+| minefield | A | minefield.at (anti-tank) | minefield_a | t_mines_a |
+| minefield | B | minefield.scatter (scatter) | minefield_b | t_mines_b |
+| atgm_tower | A | atgm_tower.top (top attack) | atgm_tower_a | t_atgm_a |
+| atgm_tower | B | atgm_tower.multi (multi-role) | atgm_tower_b | t_atgm_b |
+| c_ram | A | c_ram.centurion (close-in C-RAM) | c_ram_a | t_cram_a |
+| c_ram | B | c_ram.dome (Iron Dome) | c_ram_b | t_cram_b |
+| gun_turret | A | gun_turret.long (-> 120 mm sniper) | gun_turret_a | t_gun_a |
+| gun_turret | B | gun_turret.auto (-> 57 mm autocannon) | gun_turret_b | t_gun_b |
+| rocket_turret | A | rocket_turret.cluster (cluster rockets) | rocket_turret_a | t_rockets_a |
+| rocket_turret | B | rocket_turret.thermo (-> guided long-range rockets) | rocket_turret_b | t_rockets_b |
+| artillery_emplacement | A | artillery_emplacement.cb (counter-battery howitzer) | artillery_emplacement_a | t_artillery_a |
+| artillery_emplacement | B | artillery_emplacement.ext (-> 240 mm mortar) | artillery_emplacement_b | t_artillery_b |
+| heavy_turret | A | heavy_turret.coastal (long-range coastal gun) | heavy_turret_a | t_fortress_a |
+| heavy_turret | B | heavy_turret.bastion (-> steel fortress) | heavy_turret_b | t_fortress_b |
+| missile_battery | A | missile_battery.pac3 (PAC-3) | missile_battery_a | t_patriot_a |
+| missile_battery | B | missile_battery.lrr (long-range radar) | missile_battery_b | t_patriot_b |
+| drone_hangar | A | drone_hangar.lancet (Lancet) | drone_hangar_a | t_hangar_a |
+| drone_hangar | B | drone_hangar.swarm (swarm) | drone_hangar_b | t_hangar_b |
+| shield_tower | A | shield_tower.bulwark (-> shield dome) | shield_tower_a | t_shieldgen_a |
+| shield_tower | B | shield_tower.pulse (-> tower shields) | shield_tower_b | t_shieldgen_b |
+| cp_relay | A | cp_relay.hardened (-> supply relay) | cp_relay_a | t_relay_a |
+| cp_relay | B | cp_relay.express (-> spoils depot) | cp_relay_b | t_relay_b |
+
+The landing pad's branches (`airfield.*`) are not in the spec and keep the pad's model and icon.
+
+### What each model gives the mechanics
+
+Every branch model keeps its tower's pivots and muzzles (`Turret`, `Radar`, `Mount_*`, `Muzzle_*`), so the current
+weapons fire from the right place; `TowerBranchArtTests` checks each branch def's weapon slots against its model.
+Points for the balance pass:
+- `heavy_turret_b` (steel fortress): two small turrets at the roof's front corners on `Mount_gun` and `Mount_gun.001`
+  with `Muzzle_gun` / `Muzzle_gun.001`, free to turn all the way round. Give the two MG mounts slot `gun`.
+- `gun_turret_b`: two barrels (`Main_cannon`, `Main_cannon_2`), fired in turn by the view; `gun_turret_a` one long gun.
+- `artillery_emplacement_b`: the tube is `Mortar_tube*`, so the runtime raises it as a mortar (high lob).
+- `aa_turret_b`: `Muzzle_missile` and `.001` to `.003` on two two-tube boxes, a light MG on `Muzzle_main` (the SAM
+  post's secondary). `aa_turret_a` has no missile box any more (the flak branch has no missile).
+- `atgm_tower_b`: four tubes, `Muzzle_missile` to `.003`, and a small `Radar` on the launcher.
+- `mg_bunker_b` has no ATGM on the roof (the flame branch has `secondary: []`); `mg_bunker_a` keeps it.
+- `c_ram_b`: `Muzzle_main` and `Muzzle_gun` at the middle of the tilted launcher's face; the launcher is `Launcher_*`,
+  so it elevates as a launcher.
+- `shield_tower_b`: `Emitter` is now the low central orb (3.85 m); the eight small node orbs carry no pivots. The
+  beams to each tower are an effect (C.3).
+- `drone_hangar_a` / `_b`: `Muzzle_door_l` / `Muzzle_main` at the Lancet on its catapult / above the swarm rack.
+
+### Rank details (C.2)
+
+- Made at run time (`TowerRankDetails`), not in Blender: rays from four sides find the tower's static walls (never the
+  turret or anything that turns), and a wall only counts when two side rays hit it too (not a railing or a leg). Rank
+  bars (one a rank, up to six) stack on the side walls in Hazard yellow; from rank 3 an Armor plate stands in each
+  quadrant (on the diagonal on round or chamfered bodies, beside the bars on square ones), thicker from rank 5 with a
+  second layer and bolts. A low or open model (minefield, wire) wears the bars on a marker post at its corner.
+- One renderer, two materials, no shadow casting; hidden at the impostor level and on the wreck. Meshes are cached per
+  model, rank and leanness; the measure runs once per model.
+- Rank source: the player's side from the profile (`PlayerProfile.Rank`), the other side from its HQ level
+  (2 x level - 1: 1, 3, 5), the menu's backdrop battle none. A branch shows rank 7 at least (six bars, heavy plates).
+
+### Low graphics and LOD (C.6)
+
+- The shared runtime LOD (`ModelLibrary.EnsureLod`) and the impostor atlas cover the branch models like every other
+  model; `VehicleLodTests` now includes them (every branch model within 75 % of its triangles far away). Three models
+  were changed to get there: the SAM post has a concrete revetment instead of sandbags, the hedgehogs are bevelled
+  girders, the wire is loops on round posts.
+- The reduced version for Low graphics is that far level, not a second file: each branch's signature part is 0.4 m or
+  more, so it stays in the simplified level (the test checks that the two branches of a tower differ there too).
+  On the Low preset (`TowerArt.Lean`: low shadows and half scenery) the rank details drop their bolts and second plates.
+- Draw calls: a branch model has about as many parts as its tower (they merge the same way); rank details add one.
+
+### Tests (run once each)
+
+`TowerBranchArtTests` (3, new), `ModelTests`, `VehicleLodTests`, `TowerIconTests`,
+`Prompt20TowersMapsTests.TheCRamBranchesAreTheIronDomeAndTheCloseInCenturion`: 42 of 46 pass. The four failures were
+already on lead: `ModelTests.RoundsLeave` (heavy_aa, gunship_heli, fighter_jet), and `TowerIconTests` on
+`coastal_battery` (no tower icon mapped; unrelated to this branch). `CardRenderTests.EveryCardHasAFreshPicture` was not
+run: it will list the 32 branch cards until the card pictures are rendered again.
+
+### Shared edits (merge by hand if they conflict)
+
+`Tools/blender/build_assets.py`, `Docs/art/models.json`, `Icons` (31 new icons, `t_irondome` renamed `t_cram_b`),
+`TowerIcons`, `GameContent.LoadCatalog`, `MatchRunner` (rank provider, Lean), `VehicleView` (model id, rank details),
+`MenuScreen.Detail` (preview), `CardRenders.Cards`, `VehicleLodTests.FieldableModels`, `TowerIconTests`,
+`Prompt20TowersMapsTests`. New: `Tools/blender/mb_tower_branches.py`, `Game/Rendering/TowerArt.cs`, 32 GLBs.
