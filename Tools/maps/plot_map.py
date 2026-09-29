@@ -127,7 +127,7 @@ def draw_fortress(ax, m, half):
     if not f:
         return
     c = f.get('outerLine')
-    if c is not None:
+    if c is not None and f.get('layout') != 'layered':
         ax.plot([c - half, half], [half, c - half], color='#ff3020', linestyle='--', linewidth=1.6, zorder=10)
     for s in f.get('slots', []):
         size = slot_metres(s)
@@ -177,7 +177,8 @@ def main(src, out, bases=False):
         fig.savefig(out, dpi=80, bbox_inches='tight')
         plt.close(fig)
         return
-    fig, ax = plt.subplots(figsize=(10, 10))
+    b = m.get('bounds')
+    fig, ax = plt.subplots(figsize=(10, 10 * (b[3] - b[1]) / (b[2] - b[0])) if b else (10, 10))
     draw_map(ax, m, half)
     draw_bases(ax, m, labels=False)
     draw_fortress(ax, m, half)
@@ -235,7 +236,8 @@ def draw_map(ax, m, half):
         # Outside the outline is terrain: shade it and draw the edge.
         flat = m['boundary']
         poly = list(zip(flat[0::2], flat[1::2]))
-        outer = [(-half, -half), (half, -half), (half, half), (-half, half)]
+        b = m.get('bounds') or [-half, -half, half, half]
+        outer = [(b[0], b[1]), (b[2], b[1]), (b[2], b[3]), (b[0], b[3])]
         from matplotlib.path import Path as MPath
         codes = [MPath.MOVETO] + [MPath.LINETO] * 3 + [MPath.CLOSEPOLY] + [MPath.MOVETO] + [MPath.LINETO] * (len(poly) - 1) + [MPath.CLOSEPOLY]
         verts = outer + [outer[0]] + poly[::-1] + [poly[-1]]
@@ -245,8 +247,9 @@ def draw_map(ax, m, half):
         ax.add_patch(patches.Circle((t['x'], t['z']), 22, fill=False, color='#2060ff' if t['team'] == 0 else '#ff4020'))
     for pt in m.get('points', []):
         ax.add_patch(patches.Circle((pt['x'], pt['z']), pt['radius'], fill=False, color='#ffe060', linewidth=2))
-    ax.set_xlim(-half, half)
-    ax.set_ylim(-half, half)
+    b = m.get('bounds') or [-half, -half, half, half]
+    ax.set_xlim(b[0], b[2])
+    ax.set_ylim(b[1], b[3])
     ax.set_aspect('equal')
 
 

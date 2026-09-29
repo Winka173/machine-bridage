@@ -248,7 +248,7 @@ class Fortress:
             u = b
             if out and not outline_tools.inside(self.poly, *((b, line) if axis == 'x' else (line, b))):
                 break
-            if abs(u) > 200:
+            if abs(u) > 400:
                 break
         return u
 
@@ -387,17 +387,18 @@ def blocked_with_blocks(L, extra=()):
 
 def fill(blocked, lo, n, rect):
     x0, z0, x1, z1 = rect
+    nx, nz = len(blocked[0]), len(blocked)
     a0 = int(math.floor((x0 - CLEARANCE - lo) / CELL))
     a1 = int(math.floor((x1 + CLEARANCE - 1e-4 - lo) / CELL))
     b0 = int(math.floor((z0 - CLEARANCE - lo) / CELL))
     b1 = int(math.floor((z1 + CLEARANCE - 1e-4 - lo) / CELL))
-    for gx in range(max(0, a0), min(n, a1 + 1)):
-        for gz in range(max(0, b0), min(n, b1 + 1)):
+    for gx in range(max(0, a0), min(nx, a1 + 1)):
+        for gz in range(max(0, b0), min(nz, b1 + 1)):
             blocked[gz][gx] = True
 
 
 def flood(blocked, lo, start):
-    n = len(blocked)
+    nx, nz = len(blocked[0]), len(blocked)
     sx, sz = int((start[0] - lo) / CELL), int((start[1] - lo) / CELL)
     seen = {(sx, sz)}
     todo = [(sx, sz)]
@@ -405,7 +406,7 @@ def flood(blocked, lo, start):
         gx, gz = todo.pop()
         for dx, dz in ((1, 0), (-1, 0), (0, 1), (0, -1)):
             c = (gx + dx, gz + dz)
-            if 0 <= c[0] < n and 0 <= c[1] < n and c not in seen and not blocked[c[1]][c[0]]:
+            if 0 <= c[0] < nx and 0 <= c[1] < nz and c not in seen and not blocked[c[1]][c[0]]:
                 seen.add(c)
                 todo.append(c)
     return seen
@@ -593,7 +594,7 @@ FIRE_REACH = 15.0
 OBJECTIVES = {'radar_station', 'shield_generator', 'command_hq', 'base_wall', 'base_gate', 'fortress_gate'}
 
 
-def open_wide(F, c):
+def open_wide(F, c, in_fort=None):
     """With every gate shut and every hardpoint filled, every place the attack needs (the defenders'
     drop zone, the relays, the generators, the HQ, the super-gun, the line's stop and both mouths of
     every gateway) must be reached from the attacker's camp over cells with open ground all round
@@ -606,14 +607,19 @@ def open_wide(F, c):
     L = F.L
     lo = L.grid_lo()
     n = L.grid_n()
-    counts = [0] * (n * n)
+    nz = L.grid_nz()
+    counts = [0] * (n * nz)
+    # (In the fortress's ground: behind the diagonal outer line, or a long battlefield's own test.)
+    if in_fort is None:
+        def in_fort(x, z):
+            return x + z > c - 4.0
 
     def cells(rect):
         x0, z0, x1, z1 = rect
         a0 = max(0, int(math.floor((x0 - CLEARANCE - lo) / CELL)))
         a1 = min(n - 1, int(math.floor((x1 + CLEARANCE - 1e-4 - lo) / CELL)))
         b0 = max(0, int(math.floor((z0 - CLEARANCE - lo) / CELL)))
-        b1 = min(n - 1, int(math.floor((z1 + CLEARANCE - 1e-4 - lo) / CELL)))
+        b1 = min(nz - 1, int(math.floor((z1 + CLEARANCE - 1e-4 - lo) / CELL)))
         return [gz * n + gx for gz in range(b0, b1 + 1) for gx in range(a0, a1 + 1)]
 
     pieces = []   # (kind order, what, cells, remove)
@@ -629,7 +635,7 @@ def open_wide(F, c):
         order = WIDE_CLUTTER.get(prop['def'], 0 if prop['def'] in CLUTTER else 1 if prop['def'] in FIELD_BUILDINGS else None)
         if prop['def'] in OBJECTIVES:
             order = None
-        if order is not None and cx + cz > outer - 4.0:
+        if order is not None and in_fort(cx, cz):
             pieces.append((order, ('prop', id(prop)), prop['def'], cells_, (prop, rect)))
     for u in L.units:
         side = STATIC_FOOTPRINT.get(u['def'])
@@ -638,7 +644,7 @@ def open_wide(F, c):
             for k in cells_:
                 counts[k] += 1
             # The classic fortress's defences are map units: one on a causeway may go, last of all.
-            if u.get('team') == 1 and u['x'] + u['z'] > outer - 4.0:
+            if u.get('team') == 1 and in_fort(u['x'], u['z']):
                 pieces.append((3, ('unit', id(u)), u['def'], cells_, u))
     for x, z, side in F.blocks:
         cells_ = cells(square(x, z, side))
@@ -648,13 +654,13 @@ def open_wide(F, c):
         if slot:
             pieces.append((2, ('slot', (x, z)), f'{slot[0]} {slot[1]} hardpoint', cells_, (slot, (x, z, side))))
     if L.boundary:
-        for gz in range(n):
+        for gz in range(nz):
             for gx in range(n):
                 if not outline_tools.inside(L.boundary, gx * CELL + lo + CELL / 2, gz * CELL + lo + CELL / 2):
                     counts[gz * n + gx] += 1
 
     def wide(gx, gz):
-        if gx < 1 or gz < 1 or gx >= n - 1 or gz >= n - 1:
+        if gx < 1 or gz < 1 or gx >= n - 1 or gz >= nz - 1:
             return False
         for dz in (-n, 0, n):
             base = gz * n + gx + dz
@@ -692,26 +698,26 @@ def open_wide(F, c):
         best = float('inf')
         for gz in range(sz - 6, sz + 7):
             for gx in range(sx - 6, sx + 7):
-                if 0 <= gx < n and 0 <= gz < n and wide(gx, gz):
+                if 0 <= gx < n and 0 <= gz < nz and wide(gx, gz):
                     d = (gx - sx) ** 2 + (gz - sz) ** 2
                     if d < best:
                         best, start = d, (gx, gz)
         if start is None:
-            return [b[0] for b in boxes], bytearray(n * n)
-        seen = bytearray(n * n)
+            return [b[0] for b in boxes], bytearray(n * nz)
+        seen = bytearray(n * nz)
         todo = [start[1] * n + start[0]]
         seen[todo[0]] = 1
         while todo:
             k = todo.pop()
             gx, gz = k % n, k // n
-            for nx, nz in ((gx + 1, gz), (gx - 1, gz), (gx, gz + 1), (gx, gz - 1)):
-                j = nz * n + nx
-                if 0 <= nx < n and 0 <= nz < n and not seen[j] and wide(nx, nz):
+            for nx, nz_ in ((gx + 1, gz), (gx - 1, gz), (gx, gz + 1), (gx, gz - 1)):
+                j = nz_ * n + nx
+                if 0 <= nx < n and 0 <= nz_ < nz and not seen[j] and wide(nx, nz_):
                     seen[j] = 1
                     todo.append(j)
         out = []
         for name, a0, b0, a1, b1 in boxes:
-            if not any(seen[gz * n + gx] for gz in range(max(0, b0), min(n - 1, b1) + 1) for gx in range(max(0, a0), min(n - 1, a1) + 1)):
+            if not any(seen[gz * n + gx] for gz in range(max(0, b0), min(nz - 1, b1) + 1) for gx in range(max(0, a0), min(n - 1, a1) + 1)):
                 out.append(name)
         return out, seen
 
@@ -722,7 +728,7 @@ def open_wide(F, c):
             for dz in range(-2, 3):
                 for dx in range(-2, 3):
                     x, z = gx + dx, gz + dz
-                    if 0 <= x < n and 0 <= z < n and seen[z * n + x]:
+                    if 0 <= x < n and 0 <= z < nz and seen[z * n + x]:
                         return True
         return False
 
