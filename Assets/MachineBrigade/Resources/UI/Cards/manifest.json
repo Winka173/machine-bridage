@@ -29,7 +29,7 @@
             "kind": "vehicle",
             "model": "light_tank",
             "source": "Models/light_tank_hd",
-            "hash": "v2:9286d0ec8849f50afb9cb50442973e2a13f86be8"
+            "hash": "v2:0c1c931edd416d7c58a1c576e134826096e445b6"
         },
         {
             "id": "main_battle_tank",
@@ -155,7 +155,7 @@
             "kind": "vehicle",
             "model": "titan_tank",
             "source": "Models/titan_tank",
-            "hash": "v2:2e8875a40e2b8b48cf3f1bfb02c2198efcc3f8b8"
+            "hash": "v2:5e3d7fa9432cbe0664a293a4af9db3560316e32f"
         },
         {
             "id": "heavy_bomber",
@@ -365,21 +365,21 @@
             "kind": "vehicle",
             "model": "laser_tank",
             "source": "Models/laser_tank",
-            "hash": "v2:97451860d5222e8644a53b42fcd219f3e6840898"
+            "hash": "v2:c7a892ef4aa22056cc0baa70359c6697fd27ad79"
         },
         {
             "id": "shield_carrier",
             "kind": "vehicle",
             "model": "shield_carrier",
             "source": "Models/shield_carrier",
-            "hash": "v2:60010a4d9224bb151c8ca14eeed5a37ea8e63d54"
+            "hash": "v2:16a60ff8168de17cceb4f1a4c9ae0fcceda0ff64"
         },
         {
             "id": "bunker_vehicle",
             "kind": "vehicle",
             "model": "bunker_vehicle",
             "source": "Models/bunker_vehicle",
-            "hash": "v2:0185f71a54104a39e65d44e90b0dd9e34345935c"
+            "hash": "v2:d9e68b1409554a7c770e6014e7415e4d57af92ed"
         },
         {
             "id": "swarm_carrier",
@@ -466,7 +466,7 @@
             "hash": "v2:a00f05cd6c7d0d0fd19f02a7436647c6af4fdefe"
         },
         {
-            "id": "artillery_emplacement.ext",
+            "id": "artillery_emplacement.mortar",
             "kind": "tower",
             "model": "artillery_emplacement_b",
             "source": "Models/artillery_emplacement_b",
@@ -585,18 +585,18 @@
             "hash": "v2:d6bc51c9b6e1eb8cbce42838558e98096dc15b09"
         },
         {
-            "id": "cp_relay.express",
-            "kind": "tower",
-            "model": "cp_relay_b",
-            "source": "Models/cp_relay_b",
-            "hash": "v2:a67760d8973ca5f044387813a51f26e3def7ee97"
-        },
-        {
             "id": "cp_relay.hardened",
             "kind": "tower",
             "model": "cp_relay_a",
             "source": "Models/cp_relay_a",
             "hash": "v2:20e5e01b3fcf37972174cf85e30a6be304ffc40b"
+        },
+        {
+            "id": "cp_relay.loot",
+            "kind": "tower",
+            "model": "cp_relay_b",
+            "source": "Models/cp_relay_b",
+            "hash": "v2:a67760d8973ca5f044387813a51f26e3def7ee97"
         },
         {
             "id": "daedalus",
@@ -1033,7 +1033,7 @@
             "hash": "v2:9a87de85a49d1395a265d9b78951317ae2dd2598"
         },
         {
-            "id": "rocket_turret.thermo",
+            "id": "rocket_turret.guided",
             "kind": "tower",
             "model": "rocket_turret_b",
             "source": "Models/rocket_turret_b",
@@ -1061,7 +1061,7 @@
             "hash": "v2:07748c7e81fa96d3789593ff7e624edbfb60ecb6"
         },
         {
-            "id": "shield_tower.pulse",
+            "id": "shield_tower.ward",
             "kind": "tower",
             "model": "shield_tower_b",
             "source": "Models/shield_tower_b",
