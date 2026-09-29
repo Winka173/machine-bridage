@@ -1,0 +1,242 @@
+Prompt 0: Bối cảnh chung
+Bối cảnh dự án: Machine Brigade là game RTS / auto-battler trên mobile (màn ngang), chỉ có phương tiện quân sự. Mô phỏng cố định 20 tick/giây, deterministic, tách khỏi phần hình ảnh. Dữ liệu cân bằng nằm trong balance.json và campaign.json. Hiện có 377 test tự động (352 chạy mỗi lần, 25 bài cân bằng chạy tay), mỗi nhiệm vụ chiến dịch được cân bằng qua 5 seed.
+
+Vòng lặp trận: CP tăng theo thời gian và theo số cứ điểm giữ được → mua xe từ bộ bài (8 xe + 2 hỗ trợ) → xe thả dù xuống bãi thả → đánh tự động theo hệ khắc chế giáp/đạn. Chỉ huy AI chạy cho cả hai phe (người chơi có Tự mua và Yểm trợ). Hiện có 11 chế độ, 12 bản đồ 300×300 m, chiến dịch 23 nhiệm vụ, căn cứ chỉ có bastion bất tử, trần quân 32 xe + 6 máy bay mỗi phe. Ngoài trận chỉ có một loại tiền là xu, cộng bản thiết kế.
+
+Cách làm việc: bạn làm việc tự chủ, KHÔNG dừng lại chờ tôi duyệt.
+1. Đọc code và dữ liệu liên quan trước khi sửa.
+2. Khi gặp điểm cần quyết định, chọn phương án hợp lý nhất theo định hướng trong prompt, làm luôn, và ghi quyết định cùng lý do ngắn gọn vào docs/DECISIONS.md.
+3. Chia việc thành các bước nhỏ. Sau mỗi bước chạy toàn bộ test và commit với message rõ ràng.
+4. Giữ tính deterministic: chỉ dùng RNG theo seed của sim, logic không phụ thuộc frame render.
+5. Mọi số cân bằng để trong file dữ liệu, không hardcode. Các con số trong prompt là điểm khởi đầu: chạy mô phỏng 5 seed và tự điều chỉnh theo kết quả.
+6. Mỗi tính năng mới có test. Không làm vỡ test cũ; nếu một test cũ không còn đúng vì thiết kế đã đổi, sửa test và ghi lý do vào DECISIONS.md.
+7. Mọi chuỗi hiển thị qua localization tiếng Việt, không để lộ key thô hoặc placeholder chưa thay.
+8. Save của người chơi phải được migrate an toàn khi dữ liệu đổi (thẻ bị bỏ, id đổi tên). Viết test migration.
+9. Khi xong mỗi prompt, cập nhật docs/CHANGELOG.md: đã làm gì, số liệu trước/sau, việc còn dở.
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Giai đoạn đầu, trước prompt 1 (26–28/09; đã làm trong v0.1–v0.24, xem CHANGELOG):
+- (26/09 03:15) tôi đang muốn làm 1 game, trên cả ios, android, xem 2 file hiện tại trong folder, xem ý tưởng thôi, còn về tech, cách code ... thì tham khảo qua C:\Users\Winka\OneDrive\Documents\Sticky-Wall do project đó làm khá tốt
+- (26/09 03:21) - game sẽ là 3d, hình ảnh bạn tự tạo từ AI / tự tạo pixel, tóm tắt lại ý tưởng game cho tôi
+- (26/09 03:35) tôi muốn nó không cần phải xây nhà, chỉ là điều các khí tài ra đánh nhau, càng nhiều cháy nổ càng tốt (do yếu tố xây nhà chiến thuật sẽ kén người chơi) có suggest gì cho tôi không
+- (26/09 03:38) 1. nên có nhiều mode, tương lai tôi sẽ thử và sửa dần
+  2. chỉ cơ giới cho đơn giản
+  và xem các game hiện tại xem android ios nổi tiếng dùng tech gì
+- (26/09 04:38) tôi tính đặt tên là machine bridage, xem có đổi tên được không
+- (26/09 05:35) có, cứ push và commit liên tục
+- (26/09 05:36) đồ họa nhìn cứng và rất thô, phông chữ nhìn không hợp, UI trong khá tệ, update lại toàn bộ, xem có thể tạo mọi thứ từ pixel không, unity tôi nhớ có hỗ trợ các engine có thể tạo
+- (26/09 05:40) ngưng lại, xem toàn bộ https://github.com/buicongnguyen/3d_astra xem source này, copy nếu cần, game chúng ta phải từ repo này chất lượng trở lên
+- (26/09 05:43) chủ repo là bạn của tôi, đã xin phép nên cứ thoải mái dùng và copy nếu cần
+- (26/09 06:22) - nhớ làm thật chỉnh chu, cháy nổ nhiều, đường đạn nhiều, âm thanh, ngoài ra tôi thấy còn bug như map nhìn xa bị trống, thiếu môi trường xung quanh, xe tank còn bị giựt giựt sáng, cải thiện AI của xe chưa có ...
+- (26/09 07:21) làm hết (trừ nhạc nền) làm luôn phase sau, sau khi xong, rà lại fix bug, thấy bug các phương tiện chớp chớp vẫn còn, ngoài ra tôi muốn 1 xe tank có nhiều loại vũ khí như thêm súng máy, thêm máy bay, trực thăng, tên lửa, nhiều loại khí tài nữa, nâng cấp UI, hiệu ứng mọi thứ, thêm hiệu ứng môi trường mưa đất đá núi ... và làm cho các hiệu ứng nổ xịn hơn
+- (26/09 09:31) hiệu ứng nổ nhìn rất kì, như có các đường kẻ gần nhau, hoặc miêu tả khác là như có hiệu ứng móng vuốt, làm cho nó khá là giựt không mượt
+- (26/09 09:51) - vẫn còn những xẹt xẹt như móng vuốt
+  - và nhìn hiệu ứng nổ / cháy bị giảm đi, tôi không muốn chuyện đó, mục đích chính là cháy nổ thoải mái cho game thủ
+  - tôi muốn hầu hết game phải chơi tự động, không phải thủ công từng unit
+- (26/09 10:10) - hiệu ứng móng vuốt có vẻ đã hết, nhưng hiệu ứng cháy nổ như bị reset sau 1 khoảng thời gian
+  - các hiệu ứng mục tiêu vòng tròng nhìn hơi thô, nên làm lại
+  - vẫn còn bị giựt giựt khong rõ lý do
+  - các nhà cửa xếp xếp không hợp lý, và không đa dạng nữa
+  - các môi trường nên làm đa dạng hơn, nhiều cây có nghĩ là cả 1 rừng chứ không phải lưa đưa vài cây, núi thì cả 1 dãy núi chứ không phải lưa thưa vài cục đá
+  - các xác xe cũ sau bị phá hủy nên để yên lâu hơn
+  - thiếu các phương tiện bay như trực thăng, bắn và thả tên lửa, có thể bị các xe bắn rụng, tính như 1 phương tiện bình thường như xe tank chứ không phải là không kích
+  - nên thêm đa dạng phương tiện
+  - vùng ngoài map vẫn có nền đất đầy đủ
+- (26/09 10:16) sau đó và tôi muốn scan lại từ đầu toàn app luôn, có vẻ nhiều vấn đề, muốn bạn scan để tự tìm ra và tự sửa luôn
+- (26/09 10:31) xác các phương tiện sau 1 khoảng thời gian cho nó tự biến mất, và các phương tiện bay phải có animation rơi và nổ
+- (26/09 12:36) - xem các cách tối ưu của các game khác làm, apply hết, để mượt mà nhất có thể
+  - cải thiện UI UX, đừng làm style background transparent với viền, dùng background có màu đàng hoàng, dùng agent/skill và bắt buộc redesign lại toàn bộ
+  - thêm các map khác nhau, thời tiết
+- (26/09 13:08) nên có thêm hiệu ứng khói lửa nòng súng của các xe, và các máy bay
+- (26/09 13:32) nên có thêm đổ bóng, nhớ chạy lại research tối ưu các app nổi tiếng để đảm bảo hiệu năng, thêm các setting cấu hình
+- (26/09 14:30) - làm 2, 3 (bỏ cái xe sống sót qua nhiều màn)
+  - game sẽ miễn phí, tuy nhiên sẽ có skin mua bằng coin, sau khi xong màn có thể có coin, lúc này có thể đưa quảng cáo vào để được x2 coin
+- (26/09 14:31) và 1 số thiết bị cao cấp sẽ mua bằng coin luôn, thêm vào cho tôi, sẵn thêm nhiều loại xe / máy bay / pháo nữa, các model máy bay thả bom tôi thấy chưa chi tiết lắm, scan lại các model và cải thiện nó
+- (26/09 14:35) - làm thêm chiến dịch / mở khóa xe từ từ
+  - các chế độ chơi khác, đánh AI, có độ khó, có chọn death match, các chế độ khác
+  - thêm nhiều map nữa, sắp xếp các thứ trong map lại hợp lý, như sa mạc thì nên nhiều đá hơn, bụi, tuyết thì có thêm cây, ... bạn tự quyết định cho hợp lý
+- (26/09 19:07) thêm hết toàn bộ (phương tiện thì đa dạng thêm như xe tăng 2 nòng, to hơn dài hơn, pháo binh, tên lửa từ xa (những phương tiện bắn quá xa nên có biện pháp như giới hạn đạn, hết đạn thì dùng súng máy bình thường để tránh spam), ... bạn cứ tự quyết định thêm các phương tiện khác, không quân thì cho vài loại không quân nữa, không cần tàu đệm khí do môi trường nước để sau), ngoài ra
+  - hiệu ứng cháy nổ nhìn chung đã cải thiện nhưng vẫn cần cải thiện nữa, khi nổ tăng mảnh vỡ, lửa chưa thật lắm, và colider các unit chưa ổn do thấy đi xuyên lẫn nhau, cải thiện AI luôn (tôi thấy các AI cứ đâm đầu vào lẫn nhau dù biết yếu hơn nhiều không giữ vị trí)
+  - ngoài thêm các boss unit thì thêm các elite unit cho kẻ địch, có thể to hơn, có skill mới, hoặc dùng 1 model cũ nhưng được tân trang xịn hơn, vũ khí khác, bạn cứ quyết định không cần tôi, làm đa dạng là được
+  - thêm hệ thống khắc chế lẫn nhau, cân bằng lại game luôn
+  - thêm các đồ consume, như không kích, mua được bằng coin, thêm các loại khác
+  - thêm mode công thành, sẽ có 1 căn cứ địch, nhiều súng tự hành, súng bảo vệ, tháp canh ... có đèn đóm, buổi tối / sáng
+  - sau khi làm thì chạy lại tối ưu
+- (27/09 02:48) - hiệu ứng nổ đã đẹp hơn, nhưng tôi thấy hiệu ứng có vẻ bị khựng khựng (ưu tiên sửa cái này, bắt buộc phải mượt), và nên thêm gì đó như sóng xung kích nhỏ thôi nhìn cho impact, nên có 1 hiệu ứng nổ bự và những nổ nhỏ
+  - giới hạn quân tôi không thích, có thể bỏ hay adjust nó như thế nào không
+  - minimap nhìn quá trống trải, không nên chỉ là hình vuông, nên tùy map có những hình dạng khác, và nên hiện môi trường lên
+  - do là mobile nên hãy tối ưu mobile dễ nhìn 1 xíu, UI đang hơi nhiều chữ, làm lại các menu, button, dùng skill design, align còn nhiều chỗ sai
+  - nhiều UI chữ bị lệch ra ngoài khung, không nằm trong chính giữa, font chữ chưa hợp
+  - cứ thoải mái thêm assest, các thiết bị, map không cần lo dung lượng
+  - AI nhiều xe tăng bắn thẳng vào chướng ngại vật như nhà núi mà đạn bay xuyên không hợp lý, và làm lại map luôn, nhìn khá đơn giản, xem có skill nào chuyên tạo địa hình / map không
+- (27/09 02:54) - nhiều phương tiện khi gần nhau có vẻ bị conflict nên bị giựt giựt rung rung khi va chạm
+  - các phương tiện bắn xe như pháo binh, khi bắn đạn bay cao nhưng nòng súng lại ở dưới, scan lại các toàn bộ thiết bị luôn
+  - phần mô tả / chi tiết thiết bị nên ghi rõ có các loại vũ khí gì, thường 1 phương tiện nên có ít nhất 2 vũ khí
+  - giảm thời gian 1 phương tiện nổ => cháy => biến mất do xác phương tiện ở lại trên chiến trường hơi lâu
+  - về bug hiệu ứng nổ bị trùng: khi nó nổ, có 1 sóng xung kích bắn ra và vụ nổ, cảm giác như nó bị reset lại vụ nổ nên nó bị duplicate, mà hiệu ứng trước chưa kịp kết thúc, đây chỉ là mô tả, tự điều tra xem, và không phải lúc nào cũng xảy ra
+- (27/09 04:18) và tôi muốn chạy trên unity luôn, nên hãy làm cho nó sẵn sàng, tôi sẽ vào đó test tiếp, làm nó responsive đầy đủ trên các loại thiết bị
+- (27/09 04:29) check xem kích cỡ chung các phương tiện có hợp lý không, như máy bay quá nhỏ, xe tank quá to, nhà quá nhỏ, scan lại toàn bộ phương tiện
+- (27/09 06:34) - làm các unit trâu hơn, hiện tại đang quá mỏng, có thể trâu hơn x2-x3 tùy bạn quyết, sau đó cân bằng lại kinh tế của game, thấy số lượng ra hơi nhiều
+  - các pháo binh nhìn khá lạ, nhìn khá giống xe tank bình thường, xem lại các model, xem cả ngoài đời thật, có xe phóng tên lửa chưa, thêm các khí tài khác vào cho đa dạng
+  - đôi khi hiệu ứng vẫn còn bị giựt, giựt kiểu như cảm giác nó cứ bị tưa lại 1 xíu, cần research kỹ, nhờ unity làm dùm nếu cần không cần phải tự làm
+  - hiệu ứng bão khi mưa cũng vậy, nó cứ giựt giựt
+  - xem unity có hỗ trợ engine như cháy nổ, đạn đạo hay tạo sprite thì cứ dùng thoải mái để giảm lag, tăng performance, tăng hiệu ứng, ánh sáng ... cứ dùng thoải mái không cần báo tôi, nghiên cứu này kỹ
+  - AI nhiều xe tăng đang khá lạ, bị kẹt ở góc map
+  - hiệu ứng nổ các nhà đang khá tệ, không thật
+  - máy bay khi đang bay mà bắn xuống thì nó bị giựt giựt, hiệu ứng
+  - toàn bộ thẻ mở hết để test, note lại trước khi làm bản released thì khóa lại và unlock sau, trong menu thẻ đang chưa kéo xuống được, scan xem có bị bug chỗ nào khác không
+- (27/09 06:41) tạm thời bỏ hiệu ứng rung camera luôn
+- (27/09 06:58) các thứ như AI cho từng phương tiện, không cần phải tự viết, có thể tham khảo nguồn bên ngoài và copy về, kể cả các thứ khác như thiết kế map, cân bằng, mọi thứ luôn ... tham khảo bên ngoài thoải mái
+- (27/09 08:08) làm Xe hư hại hiện rõ trên thân, Đạn chùm cho MLRS/Grad (bản elite, và các vũ khí khác cho elite luôn) sau đó:
+  hiện tại nhìn khá tốt tuy nhiên cần update vài chỗ:
+  - mỗi xe nên có ít nhất 2 vũ khí, như xe tăng có súng chính và súng máy, 2 súng sẽ thay phiên bắn với độ trễ khác nhau cho chân thật, attack helicopter thì có tên lửa và súng máy thay nhau bắn, làm với tất cả loại phương tiện luôn, nhớ tham khảo ngoài đời để xem
+  - các máy bay phản lực ném bom cảm giác hơi chậm, tăng tốc cho nó,  trừ trực thăng, và cũng bay hơi thấp, nên tăng độ cao
+  - size máy bay nhìn chưa hợp lý, có cái quá to, xem các size ngoài đời thật và quyết định, và cánh quạt trực thăng nhìn xoay không đẹp
+  - các máy bay nên khó đối phó hơn, chỉ những xe anti air mới diệt dễ dàng, còn súng máy từ xe tăng, xe khác thì gây ít dame hơn, và chỉ nhắm máy bay khi không còn mục tiêu nào
+  - xem có máy bay jet chưa, để chuyên diệt các máy bay địch
+  - nên thêm yếu tố ngẫu nhiên vào đường đạn 1 chút, cả các vụ nổ luôn, các vũ khí bắn xa có thể hụt
+  - map nhìn tốt nhưng cần làm bự hơn, hiện tại hơi nhỏ, làm dày đặc các yếu tố môi trường hơn
+  - đôi khi có bug giữa các vụ nổ và bom khói bị đè lên nhau
+  - âm thanh cháy nổ có thể lấy free về, và nhớ sắp xếp, run nó sao cho hợp lý, nhớ tham khảo bên ngoài
+  - tôi muốn chế độ công thành vào pháo đài của địch hoàn tráng hơn, tạo thêm nhiều các sentry, boss, độ to của căn cứ, nhiều giai đoạn ... tham khảo bên ngoài
+  - nhớ tham khảo các code khác trên mạng, xem góp ý của chúng xem chúng ta thiếu gì, cần gì để cải thiện trải nghiệm chơi, làm người chơi thỏa mãn cháy nổ, toàn bộ luôn từ hoạt ảnh, UI UX, nhiệm vụ, hiệu ứng, map, và đem về game chúng ta, đặc biệt là cách chơi "tấn công" và "phòng thủ", tôi có cảm giác chưa ổn lắm có thể thay đổi, rework hoàn toàn nếu cần, như map cướp cờ thì 2 căn cứ 2 bên có thể có tháp canh quân mình, hoặc ngay chỗ spawn nên có tháp canh bảo vệ với máu cực trâu tránh áp đảo, tham khảo mọi thứ và làm không cần hỏi tôi
+  - sau khi xong báo cáo lại các thứ đã sửa
+- (27/09 08:11) nếu unity hỗ trợ bất cứ gì, cứ dùng thoải mái
+- (27/09 10:09) - đừng cho nó chớp trắng nhiều quá, do ăn nhiều đạn từ nhiều nguồn nhìn khá lạ
+  - có làm cho máy bay khó mua hơn chưa (giá cao hơn) tôi thấy spam hơi nhiều
+  - các AI các xe thì ngoài xe anti air thì các xe khác không nên bị máy bay quây lòng vòng
+  - máy bay ném bom chưa bay qua mà bom đã nổ 
+  - các công trình cố định như tháp canh, bổ xung thêm như bonker, tháp súng, ... có hiệu ứng cháy nổ khi thấp máu, khi phá hủy hết
+  - các map cướp cờ thì các tháp canh nên là trung lập bắn cả 2 phe, xem tài liệu bên ngoài xem đặt như thế nào và để phe như thế nào là hợp lý cho các chế độ khác luôn
+- (27/09 10:15) nguyên nhân xe bị máy bay kéo chạy lòng vòng có lẽ do logic súng máy, hiệu ứng tháp canh tại căn cứ đang không ổn, rất xấu, cả hiệu ứng bắn và toàn bộ hiệu ứng khác, các tháp canh khác hiệu ứng cũng chưa ổn, sau khi hết máu cháy đen xác đột nhiên biến mất, nên giữa nguyên xác do là tháp canh
+- (27/09 10:16) - xem lại cách cân bằng sát thương, do máy bay giờ hiếm hơn khó mua hơn nên sát thương từ máy bay ném bom rải thảm phải cao
+- (27/09 10:54) tháp canh 2 nòng súng tại căn cứ, đạn từ nòng nhìn hướng khá kỳ, nên là đạn đạn bác mà nó lại đi cong, và trên nóc lại bắng súng trường không cần thiết
+- (27/09 10:56) list ra cho tôi các loại tháp phòng thủ và các loại súng của nó, như tháp súng 2 nòng kia không cần phải có súng trường trên nóc
+- (27/09 11:03) scan lại vị trí tên lửa và đạn ra, tôi thấy chưa chính xác, như attack helicopter tên lửa phải ra tự 2 cụm tên lửa 2 bên, không phải giữa cánh, tháp canh 2 nòng thì đạn phải ra đều từ 2 nòng 1 lúc, rà lại toàn bộ các thiết bị / phương tiện luôn
+- (27/09 12:05) - xem lại các AI các phương tiện luôn, dùng source bên ngoài nếu cần, tôi thấy pháo binh hay bị stuck ngoài rìa map có vẻ do kẻ địch tới gần và không còn đường lui, nếu nhiều phương tiện đứng gần nhau quá vẫn bị kẹt với nhau không ai di chuyển được, nên cho di chuyển random, tách ra xa nhau xíu
+  - ngoài ra tháp canh bất tử nhưng các phương tiện vẫn có bắn
+  - tìm các hành vi khác luôn xem có đúng chưa
+  - phạm vi nổ các skill đánh bom nên làm to lên 1 xíu nhìn cho uy lực
+- (27/09 12:12) tôi nghĩ nên có cơ chế gì đó tránh 1 bên áp đảo quá, AI vẫn nên cho đuổi địch vào vùng có tháp bất tử, chỉ là không target các tháp bất tử, xem xét các game khác và tự đưa ra quyết định, sau khi làm xong báo cáo với tôi các thứ thay đổi
+- (27/09 12:55) sau khi chơi thử chế độ công thành phá shield generator có vai vấn đề:
+  - attack heli size quá to, check lại size chung các máy bay, và quá mỏng, đi được gần 1 xíu bắn là chết hoặc là do dame anti air quá mạnh và bắn quá xa
+  - siege tank AI không hề bắn khi có mục tiêu trong tầm, hoặc do hết đạn phải tự đi về thay đạn, hoặc nếu hết phải có biểu tượng hết đạn ở trên đầu, và đôi khi tự đi vào thẳng tầm turret địch, nên bắn ngoài tầm
+  - cơ chế tự động mua AI chưa tốt lắm, có vẻ cần thêm logic chiến thuật tấn công theo đợt
+  - các xe bên địch bị stuck 1 chỗ
+  - kinh tế có ổn chưa, phía công phải có kinh tế nhỉnh hơn kêu được nhiều xe hơn
+  - khi mua xe thay vì xuất hiện bất thình lình nên cho nó chạy từ ngoài map vào hoặc thả dù xuống
+  - các skill barrage hay smoke thì phải có đường đạn bắn xuống trên cao, chứ không phải tự nhiên nó xuất hiện
+  - máy bay phản lực cũng nên có các hiệu ứng bay
+  - hệ thống AI nhìn chung chưa ổn lắm, research kỹ bên ngoài, copy code nếu cần
+  - mọi thứ tôi nói hãy scan lại các chỗ khác luôn chứ không phải chỉ sửa những cái trên
+  - làm thêm hệ thống nâng cấp cho các thẻ vũ khí của mình gọi là rank hay gì bạn muốn cũng được, dùng gold, và hệ thống trang bị có độ hiếm từ trắng xanh lá xanh dương tím vàng, này nhớ tham khảo bên ngoài trước, như đánh xong 1 màn được hòm đồ, có thể dùng vàng mua hòm hoặc nạp tiền (tương lai sẽ kiếm tiền từ này) và cả quảng cáo mỗi ngày vài hòm
+- (27/09 12:58) - ngoài ra chế độ fortress siege đó nên thêm nhiều nhà nữa bên trong fortress, nếu ta phá được nhà thì sẽ có thêm thưởng, và sửa AI là sẽ bắn nhà luôn, vẫn ưu tiên các công trình quân sự bên kia
+  - menu thì rất khó bấm, nhiều lúc bấm không ăn, không kéo xuống được, như tôi không bấm được nút deploy nhiều lần, và vào chọn deck thì không xóa chọn cái khác được
+  - bấm deploy thì nó bị khựng 1 khoảng mới vào, nên sửa lại toàn bộ cho nó smooth, màn loading cũng được, animation tối dần cũng được
+- (27/09 13:02) xem lại âm thanh luôn, đang cháy nổ có các âm thanh từ "enemy barrage coming" không hợp lý, đổi âm thanh hoặc kiếm cách khác, xem các âm thanh khác luôn
+- (27/09 13:04) các xe bắn xa như pháo binh, xe bắn tên lửa, sau khi bắn hết đạn thì có thể tự đứng yên để reload, nên có icon trên đầu khi hết đạn và reload, nghiên cứu các game khác cho phần này
+- (27/09 13:05) các turret tháp súng khi bắn đại bác vụ nổ quá nhỏ, cần to lên đáng kể cho uy lực
+- (27/09 13:12) Equipment 3 slot tôi thấy hơi ít, tăng lên 6 và có thể thêm 1 slot đặc biệt được không
+- (27/09 14:21) nên làm màn hình chi tiết từng phương tiện của mình, ghi rõ máu, dame, đồ luôn, cách phân chia menu chưa hợp lý như các game mobile, research bên ngoài và rework
+- (27/09 14:22) và design hình các món đồ luôn, thể hiện rarity, và chỉ số thì do bạn tự quyết
+- (27/09 15:49) - đồ có vẻ chưa được đa dạng, vẽ thêm cực nhiều các trang bị, ngoài chỉ số ra nên có các dòng unique, như có khả năng bắn nhiều đạn, nạp đạn nhanh, ... tham khảo bên ngoài và thêm hết, đa dạng nhiều lên 
+  - tôi không muốn duy trì 2 loại tài nguyên, xóa kim cương đi
+  - các button trong menu vẫn còn thô, icon có thể lên cấp bị lệch nhiều
+  - gunship nghiên cứu lại, nó có súng máy và cả đại bác bắn từ thân, xem lại các phương tiện khác luôn cho hợp lý
+  - update lại các icon cho mỗi phương tiện luôn, có vài cái đang giống nhau
+  - suy nghĩ xem có thêm các phương tiện gì mới lạ, như xe phát nổ, drone tự tử, ... thêm nữa cho tôi, update lại sprite các phương tiện thêm chi tiết cho các đồ họa mức cao
+  - gunship, máy bay tàng hình khi đổi hướng thì cánh bị che mất, không rõ cái gì che, check lại các phương tiện khác
+  - vẫn còn kẹt do các phương tiện bắn xa đứng giữa đường thì các phương tiện bắn gần khác không tự kiếm đường khác, hoặc phương tiện bắn xe phải né ra chỗ khác
+  - thêm 1 phương tiện có thể sửa chữa các tháp canh bên mình, thời gian sẽ lâu để tránh quá mạnh, nên có icon sửa chữa
+  - các phương tiện đặc biệt như engineer có khả năng sửa chữa thì cũng phải ghi trong detail, jammer thì làm gì gì, nên có phần ghi chú cho toàn bộ phương tiện
+  - khi thời tiết chuyển từ này qua khác, nên chuyển từ từ có transition qua không đột ngột
+  - toàn bộ map làm bự hơn 50% nữa, ngoài ra làm cho map đẹp hơn, thấy hơi thưa thớt
+  - trong phần detail từng phương tiện, thêm 1 tab để xem chúng bắn như thế nào nữa
+  - có bug khi remove support slot, bấm remove cái này nhưng cái khác bị remove, bấm cái đó remove thì nó lại thêm vào
+  - máy bay khi rơi dính sẽ có fall damage
+  - quan trọng: xem lại các phương tiện này ngoài đời thật xem vũ khí có đúng chưa, thêm sửa nếu cần, như máy bay tàng hình phải thả bom bắn tên lửa ...
+  - khi chơi siege, tôi gọi máy bay tàng hình, gunship nhưng chết rất nhanh
+  - trong siege các phương tiện kẻ địch vẫn bị kẹt bên trong do quá hẹp, nên mở rộng căn cứ
+  - trong phần chiến dịch do ta có hệ thống đồ, lên rank nhớ scale quân địch luôn, và thêm hệ thống chi viện cho quân địch, đa dạng các loại nhiệm vụ
+  - khi đánh boss, đôi khi khói lửa từ bom nhiều quá che luôn boss
+  - size nhà có vẻ chưa hợp lý, thấy nó nhỏ hơn nhiều so với các phương tiện chúng ta, tôi chơi map sa mạc
+  - vùng ngoài map cứ thiết kế như map bình thường và đặt bondary
+  - các hiệu ứng bay của máy bay nhìn vẫn thiếu
+  - boss làm to lên 1 xíu, thêm vũ khí, thêm các boss như phi thuyền
+  - AI dùng thả bom khá lạ, thả cả quân mình
+  - mode defend thì mình nên có 1 căn cứ, không phải chỉ để random các tháp phòng thủ, nên cho endless mode thêm vào, survival nên tách ra với defend do thấy hơi giống nhau
+  - cho đạn súng trường nhỏ lại 1 xíu
+  - khi dùng các vật phẩm như triệu hồi gunship, nó trồi từ đất lên rất lạ, nên để bay từ cao xuống
+  - vài size máy bay vẫn không hợp lý, như jet đang hơi to, heli cũng hơi to, đang so sánh với gunship, jet nên vừa bắn tên lửa vừa súng trường, jet có thể tăng giảm tốc độ đứng yên để bắn luôn, jet đáng lẽ khắc chế máy bay địch mà tôi thấy chưa làm đủ, scan lại toàn bộ phương tiện luôn
+  - cải thiện hiệu năng, nâng cấp đồ họa cho mức cao nhất
+  - UI đồ / nâng cấp vẫn chưa đẹp, dùng vàng nhìn từ xa không hiểu, tham khảo thêm
+- (27/09 15:52) - cân bằng lại kinh tế, tôi thấy tốc độ tài nguyên khá chậm, như trong boss rush làm rất khó để win, check các mode khác luôn
+  - nâng cấp AI khi auto buy, bên kia nhiều air thì mua anti air và ngược lại
+- (27/09 17:32) UI menu mới này xấu không đẹp, nên dùng cái gì khác, nhìn khá là "cổ"
+- (27/09 18:52) - bổ sung cái này: Rủi ro pháp lý hòm đồ => giữ nguyên, sau khi xong cho tôi 1 file pdf chi tiết về game, cả hình ảnh, từ các mode chơi, các thiết bị, chỉ số dame dps luôn, cả hình ảnh, vũ khí như thế nào, kinh tế đầy đủ, các map, tháp canh ... mọi thứ để tôi review với các dev khác
+  - sau đó, do quota còn ít, 95/100 save các thứ đã làm (cái nào sắp xong thì cứ tiếp) và ngưng lại sẽ tiếp tục sau
+- (28/09 01:51) 1 vài thử cần sửa
+  - ví dụ như APC: có 2 khẩu súng, khi tôi vào detail inaction xem, 2 khẩu súng này luôn bắn cùng nhau, tôi muốn 2 khẩu luôn có thời gian bắn khác nhau, check lại cho toàn bộ phương tiện
+  - và ví dụ như APC, có 2 khẩu súng, nhưng đạn từ 2 khẩu súng đó không khớp với model, check toàn bộ phương tiện, rất nhiều phương tiện còn lỗi này
+  - giảm thời gian bắn của các súng khác ngoài machine gun, và tăng dame cho chúng bù lại, giảm khoảng 30%, tôi thấy đang bắn hơi nhanh
+  - đạn súng trường thu nhỏ lại tiếp
+  - xem in action detail không có tiếng súng, thêm vào luôn
+  - hiệu ứng flame tank quá xấu, hiệu ứng lửa, làm lại
+  - mortar carrier đạn đi không có khớp với khói đằng sau, artillery cũng vậy
+  - check lại tốc đánh anti air, tôi nhớ bắn nhanh hơn, nhớ research trước
+  - giảm tốc độ đạn bay của tên lửa nói chung (tôi đang coi sam launcher), research trước
+  - heavy gunship khác gì attack heli
+  - attack jet nên ưu tiên air chưa, trong in action mota nó thả bom, nên description ưu tiên air
+  - sky gunship khi đang bắn và xoay vòng bị giựt giựt xoay, size gunship nên to hơn, check lại size toàn bộ các thiết bị bay (quan trọng) tôi thấy size không đúng khi so sánh gunship với fighter
+  - artillery và siege tank đang khá giống nhau, scan lại các model toàn bộ, mỗi thiết bị phải là độc nhất, nếu thấy cả tác dụng và model quá giống thì xóa cũng được
+  - railgun truck chưa kịp thấy đạn bán, và nên làm lại hiệu ứng bắn gồng lên
+  - mine layer nhưng trong detail inaction lại không đặt bom
+  - các fire support như barrage nên có clip inaction luôn
+  - phần mô tả tất cả thiết bị không ghi rõ mô tả, bắt buộc phải ghi rõ, thêm 1 tab cũng được, highlight các từ cần chú ý luôn
+  - cần thêm model cho các loại đạn, tên lửa, và bom, tôi thấy đang quá ít nên dùng lại khác nhiều, research dựa trên các phương tiện trước rồi thêm, và thêm các loại vụ nổ khác nhau nữa, từ bom tới đạn của xe tăng
+- (28/09 01:55) - về vụ 2 khẩu súng do bắn cùng lúc, có vẻ chỉ là APC thôi nhưng cứ recheck các thiết bị khác luôn
+  - khi các xe tank không còn mục tiêu mặt đất, thì có thể dùng súng trường để dí và tấn công mục tiêu trên không
+  - khi chơi boss rush, kinh tế lên quá ít, gọi fighter ra thì chết quá nhanh, nên rà soát và sửa lại kinh tế toàn bộ mode, tôi muốn đánh nhiều, trên map nên hiển thị kẻ địch luôn, đặc biệt là boss
+  - hiệu ứng nổ các boss nên làm to hơn nhiều, lóe sáng
+- (28/09 02:00) - hiệu ứng triệu hồi gunship từ item không nên làm vòng tròn to như vậy
+  - thêm cho tôi vài loại boss nữa, không cần phải mỗi loại 1 thứ, ví dụ như pháo đài boss có thể có nhiều loại, 3 là maximum, mỗi loại phải có các đặc điểm riêng biệt, cả về vũ khí
+  - hiệu ứng loading không chạy
+  - nãy tôi có nói gia tăng kinh tế triệu hồi, nhớ đừng tăng nhiều quá, phải research bên ngoài đảm bảo game cân bằng, điều chỉnh giá nếu cần, khi up rank tới 1 mức nào đó có thể giảm giá để gọi phương tiện
+  - sau khi update xong toàn bộ, update vào file pdf
+- (28/09 02:02) - research xem có thể tự tạo nhạc nền, nhạc menu, nhạc boss, ... tất cả nhạc không, nếu có thể thì tạo và thêm luôn
+
+Cách làm việc (28–29/09):
+- (28/09 06:04) nếu bị stuck cái gì cứ tự đưa ra hướng giải quyết và làm luôn không cần tôi approve, như chật quá thì tăng size map / căn cứ
+- (28/09 09:50) có thể thêm 1-2 agent để làm nếu cần (khong quá 5 agent)
+- (28/09 14:12) từ giờ giảm time chạy các bài kiểm tra lại, sau này ta sẽ có 1 phase chạy các thứ này, các agent kia nếu chạy sắp xong cứ nói cho xong luôn
+- (28/09 14:34) có thể làm trước cái gì của phase 9 10 thì cứ làm trước
+- (28/09 15:58) pdf để sau phase 10
+- (28/09 15:58) phase kiểm tra sẽ để sau, khi tôi nói mới làm, đưa pdf lên trước
+- (28/09 16:20) và sửa lỗi để unity có thể run được, tôi muốn trong lúc bạn làm pdf với phase cuối thì ngồi test trên unity, ưu tiên này
+- (28/09 16:26) đã mở được trên unity, nhưng tôi sợ đang test sẽ bị code commit làm ngưng lại
+- (28/09 16:47) sửa này luôn xong commit để tôi test tiếp, chia agent nếu cần để nhanh
+- (28/09 19:03) thay vì phóng to ảnh ta có thể lấy các file model để xem cho chuẩn không
+- (29/09 01:22) giảm agent tối đa còn 2, và kiếm cách giảm token tiêu thụ
+- (29/09 04:16) không cần phải update pdf liên tục, xong hết hãy update
+- (29/09 04:18) nhớ phải giảm các test lại tối thiểu, để giảm token và thời gian làm
+- (29/09 05:51) tiếp tục, giảm giới hạn agent còn 3, agent nào đang chạy chưa xong cứ để chạy xong rồi tắt, và cố giảm token đốt tiếp, giảm các test lại nữa
+- (29/09 06:00) - nhớ lưu lại các prompt cũ tôi gửi trước đây. 2 prompt này sau đây là không làm bây giờ, khi nào tôi kêu mới làm, cứ lưu lại trước:, hoặc có thể đọc sơ qua và code các prompt trước tránh conflict
+  
+  [prompt đính kèm]
+  
+  [prompt đính kèm]
+- (29/09 06:00) sau khi agent xong, giảm còn 1 agent cho lượng quota dùng quá lớn
+- (29/09 06:02) giảm lượng test xuống tối thiểu luôn
+- (29/09 06:47) file change log nhớ ghi rõ từng version từ version đầu tiên, có thể dùng commit để ghi file change log nhớ ghi rõ từng version từ version đầu tiên, có thể dùng commit để ghi
+
+Tài liệu thiết kế (PDF):
+- (27/09 18:52) bổ sung cái này: Rủi ro pháp lý hòm đồ => giữ nguyên, sau khi xong cho tôi 1 file pdf chi tiết về game, cả hình ảnh, từ các mode chơi, các thiết bị, chỉ số dame dps luôn, cả hình ảnh, vũ khí như thế nào, kinh tế đầy đủ, các map, tháp canh ... mọi thứ để tôi review với các dev khác
+- (28/09 02:00) sau khi update xong toàn bộ, update vào file pdf
+- (28/09 06:25) sau khi xong hết update lại pdf cho tôi đầy đủ
+- (28/09 17:58) ưu tiên sửa hết xong mới update pdf
+- (28/09 18:52) => quan trọng: không cần test quá nhiều như prompt ghi để tiết kiệm, xong hết hãy update pdf, và pdf hãy chi chi tiết 1 chút, như thêm hành vi của các phương tiện, ưu tiên bắn ai làm gì, nhớ chụp hình đầy đủ cả tháp canh luôn và dps
+- (29/09 03:04) xong update pdf luôn, tôi vẫn chưa thấy có hình ảnh các tháp canh, phải có càng nhiều hình ảnh càng tốt, các icon mới có luôn, pdf nên là 1 bản toàn diện của game nên cần có mọi thứ

@@ -76,3 +76,11 @@ E. KIỂM TRA
 - Checkpoint khôi phục đúng trạng thái bộ phận, replay deterministic khớp.
 - Khói hiệu ứng không ảnh hưởng tầm nhìn trong mô phỏng; số điểm cháy không vượt trần.
 - Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model bản vỡ của từng bộ phận nếu còn dùng tạm) và tài liệu thiết kế (mục boss).
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Kèm theo prompt 9 (28/09):
+- (28/09 06:25) sau khi xong hết update lại pdf cho tôi đầy đủ

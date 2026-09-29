@@ -161,3 +161,18 @@ I. KIỂM TRA
 - Đo FPS HUD trong trận không giảm so với trước ở mức đồ họa Thấp.
 - Cập nhật docs/CHANGELOG.md và mục Giao diện trong tài liệu thiết kế (token, thành phần, ảnh các màn).
 </pasted_content id="428f">
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Play-test 1, 28/09 (đã làm: DECISIONS 11A–11D):
+- (28/09 16:47) khi mới mở, để loading vào màn hình chính còn giựt
+- (28/09 16:47) kiểm tra nhạc, đôi khi tôi thấy có nhiều nhạc được chơi cùng lúc làm loạn (có vẻ là do đang trong màn hình detail có nhạc riêng, bị conflict với nhạc ngoài main menu và tiếng cháy nổ, khi ngoài main menu không nên có tiếng cháy nổ)
+- (28/09 16:47) những xe có tác dụng đặc biệt như jamer khi trong mô tả in action phải làm được tác dụng đặc biệt đó luôn, không chỉ bắn không, check những xe khác
+- (28/09 16:47) tôi chưa thấy view được detail các tháp canh / các công trình trong base như các phương tiện
+
+Play-test 2, 28/09 (đã làm: DECISIONS 12A–12H):
+- (28/09 17:50) màn hình preview trong inaction, cần làm to hơn để xem cho dễ, thu nhỏ icon next previous nó che quá nhiều màn hình preview
+- (28/09 17:58) tôi vẫn chưa thấy có chỗ xem được thông tin tháp canh tương tự như các phương tiện, sắp xếp lại hệ thống menu nếu cần (do cả phương tiện và tháp canh khá giống nhau có thể nâng cấp, gắn đồ )

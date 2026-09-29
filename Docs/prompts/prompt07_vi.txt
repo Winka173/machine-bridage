@@ -1,0 +1,73 @@
+Prompt 7: Ô công sự có cỡ và tổng kiểm tra
+
+Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả. Làm Phần 1 trước, rồi mới làm Phần 2 (tổng kiểm tra chạy sau cùng để kiểm cả Phần 1).
+
+==================================================
+PHẦN 1: THAY ĐIỂM CÔNG SỰ BẰNG Ô CÓ CỠ
+==================================================
+
+Nhiệm vụ: sửa cách giới hạn tháp trong căn cứ. Nếu prompt 1 và 3 đã được làm, thay hệ điểm công sự hiện có; nếu chưa, làm theo phần này thay cho phần điểm công sự trong prompt 1 và 3.
+
+Lý do: hiện có hai giới hạn cùng lúc (số ô hardpoint và điểm công sự). Khi ô là thứ khan hiếm, người chơi lấp mỗi ô bằng tháp mạnh nhất, nên tháp nhẹ như Tháp canh không bao giờ được chọn, dù tính theo điểm nó hiệu quả hơn khi đánh xe nhẹ.
+
+1. Bỏ điểm công sự. Thay bằng ô hardpoint có cỡ:
+   - Ô nhỏ: chỉ đặt tháp nhẹ.
+   - Ô vừa: đặt tháp nhẹ hoặc vừa.
+   - Ô lớn: đặt mọi tháp.
+   Cấp HQ mở ô theo bảng khởi điểm:
+   - Cấp 1: 3 nhỏ, 1 vừa, 0 lớn.
+   - Cấp 2: 4 nhỏ, 2 vừa, 0 lớn.
+   - Cấp 3: 4 nhỏ, 2 vừa, 1 lớn.
+   - Cấp 4: 5 nhỏ, 3 vừa, 1 lớn.
+   - Cấp 5: 6 nhỏ, 3 vừa, 2 lớn.
+   Đặt lại ô trên mọi map (cũ và mới) theo cỡ. Ô lớn đặt ở vị trí phòng thủ quan trọng gần HQ, ô nhỏ rải ở vòng ngoài và các hướng tiếp cận. Tiền đồn có 1 ô nhỏ và 1 ô vừa. Giữ test đường đi đã có: mọi cấu hình ô vẫn phải để đường đi thông.
+
+2. Chia tháp theo cỡ:
+   - Nhỏ: Tháp canh, Lô cốt súng máy, Tháp phòng không, Tháp gây nhiễu EW, Răng rồng, Bãi mìn.
+   - Vừa: Tháp pháo, Tháp ATGM, Dàn rocket, Trạm C-RAM, Ụ pháo ẩn.
+   - Lớn: Trận địa pháo, Patriot tầm xa, Hangar drone, Pháo đài hạng nặng.
+   Nhánh hạng 7 của tháp không đổi cỡ tháp.
+
+3. Cho tháp nhẹ vai trò riêng mà tháp đại bác không thay được:
+   - Tháp canh: lộ xe tàng hình trong tầm bắn; các tháp phe ta trong 25 m quanh nó được +10% tầm bắn (không cộng dồn giữa nhiều Tháp canh).
+   - Mọi tháp nhẹ có vũ khí bắn được trên không: +25% sát thương lên drone và trực thăng.
+   - Tháp nhẹ bị phá thì thả dù lại nhanh hơn và rẻ hơn tháp lớn (chỉnh hồi chiêu và giá CP của tháp thả dù theo cỡ).
+
+4. Cho tháp đại bác điểm yếu rõ:
+   - Tốc độ xoay tháp chậm, để xe nhanh chạy vòng được.
+   - Thời gian nạp dài; không bắn được mục tiêu trên không.
+   - Kiểm tra trong mô phỏng: một bầy xe nhẹ nhanh cộng drone phải áp đảo được căn cứ chỉ toàn tháp vừa và lớn với cùng cấp HQ.
+
+5. AI địch đọc căn cứ của người chơi và mua khắc chế, mở rộng logic khắc chế hiện có:
+   - Căn cứ nhiều tháp đại bác: mua xe nhẹ nhanh, drone và pháo tầm xa bắn từ ngoài tầm tháp.
+   - Căn cứ nhiều tháp súng máy: mua xe tăng nặng và xe ủi.
+   - Căn cứ nhiều phòng không: ít máy bay, nhiều pháo binh.
+   AI phe ta (Tự mua) khi tấn công căn cứ địch cũng dùng logic này.
+
+6. Trang bị tháp giữ nguyên thiết kế: mỗi loại tháp có 3 ô đồ; mọi tháp cùng loại trong căn cứ dùng chung 3 món đó. Một căn cứ được đặt nhiều tháp cùng loại.
+
+7. UI màn loadout căn cứ: hiện cỡ của từng ô bằng khung to nhỏ khác nhau và icon cỡ; khi kéo tháp, chỉ sáng các ô hợp lệ. Bỏ thanh điểm công sự.
+
+8. Migration: loadout căn cứ người chơi đã lưu theo điểm công sự được xếp lại theo ô có cỡ. Tháp nào không còn chỗ thì trả về kho, không mất hạng hay đồ. Viết test migration.
+
+9. AI địch chọn loadout căn cứ theo cỡ ô và theo cá tính tướng (Varga ưu tiên tháp chống tăng, Orlov ưu tiên trận địa pháo, Tiến sĩ Sen ưu tiên hangar drone, Quạ Đen ưu tiên phòng không).
+
+Test Phần 1:
+- Căn cứ phối hợp đủ ba cỡ phải là lựa chọn tốt nhất trước tổ hợp địch hỗn hợp, qua 5 seed.
+- Không có căn cứ một loại tháp nào là lựa chọn tốt nhất trước mọi loại địch.
+- Tỷ lệ chọn: chạy AI tự chọn loadout tối ưu trên nhiều tổ hợp địch và báo cáo tỷ lệ mỗi tháp được chọn. Tháp nhẹ nào dưới 10% thì tăng vai trò hoặc chỉ số và ghi lại.
+- Đường đi thông với mọi cấu hình ô mới; migration loadout cũ hoạt động đúng.
+
+==================================================
+PHẦN 2: TỔNG KIỂM TRA SAU PROMPT 1–6 VÀ PHẦN 1
+==================================================
+
+1. Kinh tế tổng thể: tính tổng nguồn xu (chiến dịch 108 nhiệm vụ, sự kiện, thử thách hằng ngày, hòm) và tổng nguồn tiêu (hạng thẻ, hạng tháp, đồ tháp, hòm). Vẽ đường cong tiến độ cho người chơi không nạp tiền. Chỉnh để bộ bài chính (8 thẻ + 6 tháp) đạt khoảng hạng 7 khi tới hồi III. Rà lại tỷ lệ hòm và giá trị gói xu cho khớp.
+2. Vật phẩm dùng một lần trong Tác chiến: trận có dùng vật phẩm mua bằng xu thì gắn nhãn riêng trên kỷ lục; ở cấp Huyền thoại thì tắt vật phẩm.
+3. Hướng dẫn: 3 nhiệm vụ đầu chương 1 dạy lần lượt đặt tháp vào ô (theo cỡ ô của Phần 1), thả dù lại tháp bị phá, lập tiền đồn. Trong trận, chạm vào tháp thì hiện tầm bắn của nó.
+4. Màn "có gì mới" hiện một lần sau khi cập nhật: liệt kê thẻ đã gộp vào đâu, hạng và bản thiết kế đã chuyển sang thẻ nào, xu được hoàn, và loadout căn cứ đã được xếp lại theo ô có cỡ.
+5. Backup save trước khi migrate, và có đường khôi phục nếu migration lỗi. Test với save giả lập ở nhiều trạng thái (mới chơi, giữa chiến dịch, đã max thẻ bị gộp, có loadout căn cứ theo điểm công sự cũ).
+6. Telemetry opt-in, lưu cục bộ và xuất được: tỷ lệ thua, thời gian chơi, thẻ và tháp được dùng cho mỗi nhiệm vụ. Có màn bật/tắt trong Cài đặt.
+7. Danh sách nợ asset: tạo docs/ASSET_DEBT.md liệt kê mọi model, clip, chân dung, map và nhạc đang dùng tạm, kèm mức ưu tiên. Nếu hệ nhạc bằng script cho phép, tạo theme riêng cho 3 hồi và trận cuối.
+8. Hiệu năng: chạy kịch bản nặng nhất (chiến dịch lớn chương 9, tối đa quân, đêm, bão) và báo cáo thời gian tick trung bình, p99 và FPS ở mức đồ họa Thấp.
+9. Rà cuối: toàn bộ test pass, quét localization không còn key thô hoặc placeholder, cập nhật tài liệu thiết kế (bảng DPS, roster, chế độ, hệ ô công sự) theo trạng thái mới.

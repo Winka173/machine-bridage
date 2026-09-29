@@ -1,0 +1,87 @@
+Prompt 4: Cốt truyện và chiến dịch 9 chương
+Nhiệm vụ: làm lại chiến dịch thành 9 chương chia 3 hồi, khoảng 108 nhiệm vụ (90 nhiệm vụ chính + 18 nhiệm vụ phụ), thêm 4 bản đồ mới và hệ kể chuyện phù hợp mobile. Tự viết toàn bộ tên nhiệm vụ, briefing, thoại và dữ liệu theo định hướng dưới đây; ghi các quyết định lớn vào DECISIONS.md.
+
+A. BỐI CẢNH
+Tương lai gần, một vùng duyên hải hư cấu. Tập đoàn quân sự tư nhân Hegemon đã chiếm vùng này và chạy các chương trình vũ khí thử nghiệm: Behemoth, Tổ Ong, và dự án Silver Bug. Người chơi chỉ huy Lữ đoàn Cơ giới 7 ("Machine Brigade") của Liên minh Duyên hải.
+
+B. NHÂN VẬT
+Phe ta:
+- Đại tá Trần Khải: chỉ huy trực tiếp, giọng chính trên radio; bình tĩnh, thực dụng.
+- Kỹ sư Mai: phụ trách căn cứ, người mở các nâng cấp HQ. Từng làm trong chương trình Behemoth.
+- Phi công "Diều Hâu": phụ trách không quân và chi viện trên không.
+- Sĩ quan tình báo Linh: người giao nhiệm vụ phụ và giải mã các dự án của địch.
+- Tướng Hùng: chỉ huy đồng minh có căn cứ riêng trong các chiến dịch lớn; phản bội ở hồi 3.
+
+Tướng địch. Mỗi tướng là một cấu hình AI (bộ bài, thói quen gọi hỏa lực, loadout căn cứ) kèm chân dung, câu thoại khiêu khích và câu thoại khi thua:
+- Tướng Varga, thiết giáp: cha đẻ Behemoth.
+- Đại tá Orlov, pháo binh: thích đánh từ xa.
+- Đô đốc Kessler, hậu cần: dùng tàu bọc thép và phòng thủ cảng.
+- Tiến sĩ Sen, drone: tạo ra Tổ Ong; đào ngũ cuối chương 5.
+- "Quạ Đen", không quân.
+- Giám đốc Aurel: đứng sau dự án Silver Bug, trùm cuối.
+
+C. CẤU TRÚC
+Mỗi chương gồm 10 nhiệm vụ chính và 2 nhiệm vụ phụ. Nhiệm vụ 5 là boss giữa chương, nhiệm vụ 10 là chiến dịch lớn cuối chương (khung chiến dịch lớn làm ở prompt 5; trong prompt này tạo slot dữ liệu và kịch bản).
+
+HỒI I: ĐỔ BỘ
+- Ch1 "Bờ biển lửa" (map mới Bãi Đổ Bộ, Greenvale, Ashfield): hướng dẫn, đổ bộ, lập tiền đồn đầu tiên.
+  Chiến dịch lớn: công chiếm pháo đài Ashfield, Bastion (bản yếu) canh giữ.
+- Ch2 "Vàng đen" (Dunebreak, Red Rock): mỏ dầu. Varga ra mặt.
+  Boss giữa chương: Behemoth. Chiến dịch lớn: tập kích nhà máy lọc dầu, gặp Inferno.
+- Ch3 "Mùa đông dài" (Frostpeak, Whiteout): tuyến radar của Orlov.
+  Boss giữa chương: Chim sắt (đến lúc này người chơi đã có đủ phòng không). Chiến dịch lớn: chọc thủng phòng tuyến Frostpeak, gặp Pháo đài băng.
+
+HỒI II: PHẢN CÔNG
+- Ch4 "Cảng thép" (Ironport, Rust Yard): hậu cần của Kessler.
+  Boss giữa chương: Đoàn tàu thép. Chiến dịch lớn: đánh chiếm cảng, gặp Tempest trên bến.
+- Ch5 "Lửa rừng" (Emberridge, Jungle Pass): nơi sản xuất drone của Tiến sĩ Sen.
+  Boss giữa chương: Tổ ong Hive. Chiến dịch lớn: hạ Tàu mẹ Tổ Ong.
+  Kết chương: Sen đào ngũ, mang theo dữ liệu về Silver Bug.
+- Ch6 "Tổng phản công" (map mới Đập Thủy Điện, Whiteout đảo chiều, Ashfield đảo chiều): Hegemon phản công chính các căn cứ người chơi đã chiếm ở hồi I.
+  Nhiệm vụ đáng chú ý:
+  - Hộ tống một Behemoth bị ta chiếm được: Kỹ sư Mai cho nó chạy lại.
+  - Di tản khỏi Whiteout.
+  Boss giữa chương: Spectre. Chiến dịch lớn: phòng thủ Đập Thủy Điện trước Quái vật băng giá (Behemoth của Varga, bản nâng cấp) cho tới khi chi viện tới.
+
+HỒI III: BẦU TRỜI BẠC
+- Ch7 "Chiến tranh trên không" (Skyhold, Frostpeak đảo chiều): cuộc đối đầu với Quạ Đen.
+  Boss giữa chương: Silver Bug lần đầu xuất hiện, bỏ chạy khi còn 50% máu. Chiến dịch lớn: tấn công căn cứ không quân Skyhold.
+- Ch8 "Thủ đô" (Metro City, map mới Thủ Đô):
+  Boss giữa chương: Đoàn tàu Tận thế.
+  Chiến dịch lớn: giải phóng thủ đô. Giữa trận, Tướng Hùng phản bội: căn cứ đồng minh chuyển thành căn cứ địch ngay trong trận. Người chơi phải giữ vững rồi đánh ngược lại.
+- Ch9 "Bãi phóng" (map mới Bãi Phóng Silver Bug, Dunebreak đảo chiều): trận cuối cùng của từng tướng còn lại, lần lượt từng người.
+  Chiến dịch lớn cuối game: nhiều giai đoạn, kết bằng Silver Bug ở dạng hoàn chỉnh (thêm pha máu mới).
+  Có phần kết (epilogue) và mở chế độ Tác chiến ở mức cao nhất.
+
+D. BẢN ĐỒ MỚI (4 map, 300×300 m như map cũ, đầy đủ phiên bản cứ điểm / sinh tồn / công thành)
+- Bãi Đổ Bộ: bờ biển ôn đới.
+- Đập Thủy Điện: núi, có đập lớn làm điểm nghẽn.
+- Thủ Đô: đô thị dày đặc, nhiều lối hẹp.
+- Bãi Phóng: tổ hợp phóng trong sa mạc.
+Dùng lại asset của các biome có sẵn. Đặt hardpoint cho HQ và tiền đồn như prompt 1.
+
+E. TÁI DÙNG MAP
+Không để hai nhiệm vụ trên cùng một map có cùng cấu hình. Mỗi lần quay lại một map phải đổi ít nhất 2 trong các yếu tố sau: hướng spawn, vị trí căn cứ, thời tiết/đêm, vùng chơi, loại mục tiêu, phe giữ căn cứ (nhiệm vụ đảo chiều).
+
+F. LOẠI NHIỆM VỤ
+Giữ các loại cũ và thêm: lập tiền đồn, phá vòng vây căn cứ đồng minh, di tản, giữ/phá cầu hoặc đập, hộ tống siêu vũ khí của ta, đấu tay đôi với tướng (địch có căn cứ đầy đủ và bộ bài đặc trưng của tướng đó).
+
+G. KỂ CHUYỆN
+- Briefing dạng thẻ có chân dung.
+- Radio chatter trong trận: chân dung nhỏ + 1 dòng, kích hoạt theo sự kiện (chiếm điểm, boss xuất hiện, HQ dưới 50% máu...), bỏ qua được.
+- Camera pan in-engine khi boss, chi viện hoặc tướng địch xuất hiện.
+- Màn chuyển chương có tóm tắt 3–4 câu.
+- Không làm cutscene. Toàn bộ văn bản qua localization.
+- Có mục "Hồ sơ" trong menu để đọc lại tiểu sử nhân vật, hồ sơ boss và dòng thời gian.
+
+H. PHẦN THƯỞNG
+- Mỗi chương mở 5–7 thẻ (bao gồm xe, tháp và thẻ hỗ trợ mới từ prompt 2 và 3), 1 cấp HQ ở các chương 1/3/5/7/9, và 1 module tiện ích.
+- Mỗi nhiệm vụ cho bản thiết kế, xu và một mẩu truyện.
+- Nhiệm vụ phụ cho bản thiết kế hiếm hoặc đồ tháp.
+- Thứ tự mở khóa bảo đảm mọi boss bay chỉ xuất hiện sau khi người chơi đã có đủ phòng không để đánh nó.
+- Tính lại tổng xu toàn chiến dịch so với chi phí lên hạng. Mục tiêu: người chơi chuyên chơi chiến dịch đưa được bộ bài chính (8 thẻ + 6 tháp) lên khoảng hạng 7 khi tới hồi III. Báo cáo đường cong này.
+
+I. NHIỆM VỤ CŨ
+Đưa 23 nhiệm vụ cũ vào đúng chương theo map và boss. Viết lại briefing cho khớp cốt truyện. Người chơi đã hoàn thành nhiệm vụ cũ được giữ sao và phần mở khóa.
+
+Test: mọi nhiệm vụ thắng được ở độ khó Thường qua 5 seed, chỉ với bộ bài người chơi đã mở tới thời điểm đó; không nhiệm vụ nào đòi thẻ chưa mở; toàn bộ chuỗi thoại có trong localization; migration tiến độ chiến dịch cũ hoạt động đúng.

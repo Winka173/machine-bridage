@@ -1,0 +1,59 @@
+Prompt 3: Roster tháp, hạng tháp, trang bị tháp, module tiện ích
+Nhiệm vụ: làm lại roster tháp cho hệ căn cứ, thêm hạng tháp, trang bị tháp và module tiện ích.
+
+A. GỘP THÁP TRÙNG
+1. Tháp canh điểm → gộp vào Tháp canh. Hai tháp cùng vũ khí, chỉ khác máu. Tháp trung lập ở cứ điểm dùng Tháp canh với hệ số máu riêng.
+2. Tháp phòng không lớn → gộp vào Tháp phòng không. Tháp lớn có nhiều máu hơn nhưng DPS lại thấp hơn (279 so với 382), không hợp lý. Biến nó thành một nhánh ở hạng 7 (xem phần C).
+3. Dàn tên lửa → đổi thành Patriot tầm xa (xem phần B).
+4. Tháp căn cứ → đã thành HQ ở prompt 1.
+5. Tháp pháo bờ biển → đổi tên thành Pháo đài hạng nặng, dùng được trong loadout (5 điểm).
+Migrate save và dữ liệu map/chiến dịch theo các thay đổi này.
+
+B. ROSTER THÁP TRONG LOADOUT (điểm công sự; số liệu khởi điểm tự cân qua mô phỏng)
+- Tháp canh (1): súng máy + phóng lựu, chống xe nhẹ.
+- Lô cốt súng máy (2): chống xe nhẹ, có ATGM phụ.
+- Tháp phòng không (2): cao xạ + tên lửa.
+- Tháp gây nhiễu EW (2), MỚI: bản tháp của xe tác chiến điện tử; vũ khí dẫn đường, drone và hỏa lực yểm trợ nhắm vào vùng 32 m bị lệch. Không tự đánh.
+- Tháp pháo (3): chống xe nặng tầm trung.
+- Tháp ATGM (3), MỚI: diệt tăng tầm 50 m, bắn chậm, yếu trước bầy xe nhẹ.
+- Dàn rocket (3): phủ vùng.
+- Trạm đánh chặn C-RAM (3), MỚI: bắn hạ rocket, tên lửa, drone và khoảng 30% đạn pháo bay vào vùng 35 m. Không gây sát thương lên xe.
+- Ụ pháo ẩn (3), MỚI: khi hạ xuống thì ẩn và nhận ít hơn 60% sát thương; trồi lên khi địch vào trong 35 m; bị trinh sát, radar và UAV quét làm lộ.
+- Trận địa pháo (4): pháo tầm xa, có tầm tối thiểu.
+- Patriot tầm xa (4), đổi từ Dàn tên lửa: phòng không 90 m, phát nặng, tầm tối thiểu 20 m.
+- Hangar drone (4), MỚI: mỗi 20 giây phóng 2 drone FPV; bị EW, APS, C-RAM và Laser PK khắc chế.
+- Pháo đài hạng nặng (5): đổi tên từ Tháp pháo bờ biển.
+- Răng rồng (1), MỚI: chướng ngại chặn xe mặt đất, bẻ hướng đường đi; xe công binh phá được.
+- Bãi mìn cố định (1), MỚI: 6 quả mìn tái tạo mỗi 60 giây; công binh gỡ được.
+Các tháp và chướng ngại chặn đường phải qua test đường đi của prompt 1. AI phải biết tránh, phá hoặc gỡ chướng ngại. Xe công binh công trình (Công binh CT) nhận thêm vai trò: sửa tháp phe ta, gỡ mìn và phá chướng ngại nhanh gấp 3 lần xe thường.
+
+C. HẠNG VÀ NHÁNH
+- Hạng tháp 1–10 dùng chung hệ lên hạng với thẻ xe (bản thiết kế + xu, +5% máu và sát thương mỗi hạng). Không tạo loại tiền mới.
+- Ở hạng 7, mỗi tháp chọn 1 trong 2 nhánh (kiểu Kingdom Rush / BTD6), đổi lại được bằng xu. Tự thiết kế nhánh cho mọi tháp theo nguyên tắc: hai nhánh phục vụ hai tình huống khác nhau, không phải "mạnh hơn" và "mạnh hơn nữa". Ví dụ:
+  - Tháp phòng không: "chùm cao xạ chống drone" hoặc "pháo đài phòng không" (máu ×2, tên lửa nặng; thay cho Tháp phòng không lớn cũ).
+  - Tháp ATGM: "tên lửa bay cao đánh nóc" hoặc "loạt đôi".
+  - Ụ pháo ẩn: "phục kích" (+80% phát đầu tiên) hoặc "ụ bê tông" (chịu đòn).
+Ghi toàn bộ nhánh vào DECISIONS.md.
+
+D. TRANG BỊ THÁP
+- 3 ô (Vũ khí, Kết cấu, Hệ thống), gắn theo loại tháp, giống cách trang bị hiện áp cho cả nhánh xe.
+- Dùng lại tối đa các loại đồ có sẵn. Ô Hệ thống có các dòng riêng cho tháp:
+  - Liên kết hỏa lực: các tháp cùng bắn một mục tiêu được +15%.
+  - Phản pháo: pháo địch bắn vào tháp bị lộ 6 giây.
+  - Kết cấu mô-đun: tháp bị phá tự thả dù lại miễn phí 1 lần mỗi trận.
+  - Ống phóng khói.
+  - Máy phát điện dự phòng: miễn nhiễm EMP.
+- Áp trần chỉ số cho cả bộ như hệ trang bị hiện tại.
+- Đồ tháp rơi ra từ hòm như đồ xe, có thêm tỷ lệ riêng. Cập nhật bảng tỷ lệ hòm công khai trong game.
+
+E. MODULE TIỆN ÍCH
+- Trạm sửa chữa: xe mặt đất trong vùng căn cứ hồi khoảng 1,5% máu/giây; chỉ tác dụng trong căn cứ.
+- Kho đạn: nạp lại bệ phóng nhanh gấp đôi.
+- Bãi đáp: máy bay và trực thăng tự quay về tiếp đạn, sửa 3%/giây. AI biết điều máy bay về khi hết đạn hoặc thấp máu.
+- Trạm hậu cần: tăng trần tiếp tế qua hook ở prompt 2.
+- Radar: lộ tàng hình trong vùng căn cứ; pháo địch bắn vào căn cứ bị lộ.
+
+F. UI
+Màn loadout căn cứ gồm: sơ đồ ô hardpoint theo từng map, kéo tháp vào ô, thanh điểm công sự, chọn nhánh, tab trang bị tháp. Giữ phong cách Field Command hiện có.
+
+Test: mỗi tháp mới có test hành vi riêng (C-RAM chặn được tên lửa, ụ pháo ẩn trồi đúng tầm, chướng ngại bẻ đường đi, công binh gỡ được mìn...); cân bằng tháp so với xe cùng giá trị qua 5 seed; bãi đáp không làm máy bay bất tử (đo thời gian máy bay có mặt ở tiền tuyến).

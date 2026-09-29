@@ -1,9 +1,11 @@
 # Owner's spec prompts
 
-The owner's original Vietnamese specs, saved as sent. Prompts 1 to 7 were given in earlier sessions and are not kept here.
+The owner's original Vietnamese specs, saved as sent, prompt 0 (the shared context) to prompt 23. At the end of each prompt file, "YÊU CẦU LẺ GẮN VÀO PROMPT NÀY" lists the owner's standalone requests that fit it, verbatim and dated; prompt 0 holds the early requests from before prompt 1, the working rules and the PDF requests. Requests no prompt covers (effects, muzzle flashes, missiles, sizes from the play tests) are in requests_vi.md. The version history is in Docs/CHANGELOG.md.
 
 | Prompt | Subject | State |
 |---|---|---|
+| 0 | shared context and working rules | standing |
+| 1 to 7 | bases, roster, towers, campaign, multi-stage missions, Operations, sized slots | done |
 | 8 to 15 | content, boss parts, UI 2.0, compact HUD, stuck vehicles, balance, Base screen, armour and penetration | done |
 | 16 | Lighthouse Bay, Leviathan and fleet, old-boss weapons, escorts | in progress |
 | 17 | long maps, layered bases, roster merges, new units | in progress |
