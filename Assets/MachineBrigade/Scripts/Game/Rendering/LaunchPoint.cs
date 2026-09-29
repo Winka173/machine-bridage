@@ -15,5 +15,8 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>Turned along its tubes or rail from the model's geometry (else it faces the model's front).</summary>
         public bool Measured;
+
+        /// <summary>One barrel of a twin or quad gun built as one part (ModelLibrary.AddBarrelPoints): any weapon fires from these in turn.</summary>
+        public bool Barrel;
     }
 }

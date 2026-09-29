@@ -255,6 +255,7 @@ namespace MachineBrigade.Editor
             foreach (var (at, node) in points)
             {
                 var tris = Candidates(parts, Group(node, modelRoot), at, direction);
+                if (Verbose) f.Note += $"<pt {modelRoot.InverseTransformPoint(at):F2} dir {modelRoot.InverseTransformDirection(direction):F2} group {Group(node, modelRoot).name}> ";
                 var probe = Probe(tris, at, direction);
                 if (probe == null)
                 {

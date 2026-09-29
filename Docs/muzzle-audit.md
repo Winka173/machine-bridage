@@ -10,7 +10,7 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 - **Points:** how many different points the mount fires from (pods, rails, twin barrels, spots on a face).
 - **Part:** the model part the barrel's walls belong to at its open end.
 
-**284 firing mounts on 122 vehicles: 230 right, 54 wrong.** High-detail variants: 36 mounts, 6 wrong.
+**284 firing mounts on 122 vehicles: 250 right, 34 wrong.** High-detail variants: 36 mounts, 1 wrong.
 
 | Vehicle | Mount | Weapon | Muzzle node | Points | Ahead of tip (m) | Off axis (m) | Axis (deg) | Verdict | Part, notes |
 |---|---|---|---|---|---|---|---|---|---|
@@ -31,13 +31,13 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | armored_train | 2 mg | boss_hmg (Bullet) | Muzzle_mg | 1 | +0.01 | 0.00 | 0.0 | OK | MG_gun |
 | armored_train | 3 mg | boss_flak (Bullet) | Muzzle_mg | 1 | +0.01 | 0.00 | 0.0 | OK | MG_gun |
 | armored_train | 4 main | train_gun (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.0 | OK | Muzzle_brake |
-| artillery | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.4 | OK | Muzzle_brake |
+| artillery | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.7 | OK | Muzzle_brake |
 | artillery | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
-| artillery_emplacement | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.01 | 0.8 | OK | Muzzle_brake |
+| artillery_emplacement | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.0 | OK | Muzzle_brake |
 | artillery_emplacement | 1 mg | mg_coax (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
-| artillery_emplacement.cb (artillery_emplacement) | 0 main | howitzer_cb (Shell) | Muzzle_main | 1 | 0.00 | 0.01 | 0.8 | OK | Muzzle_brake |
+| artillery_emplacement.cb (artillery_emplacement) | 0 main | howitzer_cb (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.0 | OK | Muzzle_brake |
 | artillery_emplacement.cb (artillery_emplacement) | 1 mg | mg_coax (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
-| artillery_emplacement.ext (artillery_emplacement) | 0 main | howitzer_ext (Shell) | Muzzle_main | 1 | 0.00 | 0.01 | 0.8 | OK | Muzzle_brake |
+| artillery_emplacement.ext (artillery_emplacement) | 0 main | howitzer_ext (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.0 | OK | Muzzle_brake |
 | artillery_emplacement.ext (artillery_emplacement) | 1 mg | mg_coax (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
 | atgm_carrier | 0 main | atgm_heavy (Missile) | Launch_main_0 | 6 | +0.02 | face | 0.0 | OK | Launcher Launcher_tubes |
 | atgm_carrier | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.4 | OK | RWS_gun |
@@ -48,7 +48,7 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | attack_helicopter | 1 gun | heli_gun (Bullet) | Muzzle_gun | 1 | 0.00 | 0.00 | 0.0 | OK | Gun |
 | attack_helicopter | 2 rocket | heli_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | -0.01 | 0.00 | 0.7 | OK | Pods |
 | attack_helicopter | 3 aam | stinger_atas (Missile) | Body | 2 | +0.04 | 0.00 | 0.9 | OK | Armor; no muzzle of its own (Muzzle_aam unused) |
-| attack_jet | 0 gun | jet_cannon (Bullet) | Muzzle_gun | 1 | +0.40 | 0.01 | 0.0 | WRONG | Armor; 0.40 m ahead of the open end |
+| attack_jet | 0 gun | jet_cannon (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.01 | 0.00 | 0.6 | OK | Steel |
 | attack_jet | 1 rocket | s8_pods (Rocket) | Launch_rocket_0 Launch_rocket_1 Launch_rocket_2 Launch_rocket_3 | 4 | -0.01 | 0.00 | 0.0 | OK | Pods |
 | attack_jet | 2 missile | jet_bombs (Bomb) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | dropped |
 | attack_jet | 3 aam | r60 (Missile) | Muzzle_aam | 1 | +0.01 | 0.00 | 0.0 | OK | Aam_seekers |
@@ -56,13 +56,13 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | ballistic_launcher | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | +0.01 | 0.00 | 0.0 | OK | MG |
 | behemoth | 0 main | gun_behemoth (Shell) | Muzzle_main | 2 | 0.00 | 0.01 | 0.9 | OK | Muzzle_brake Muzzle_brake_2 |
 | behemoth | 1 gun | gun_120mm (Shell) | Muzzle_gun | 1 | +0.02 | 0.00 | 0.0 | OK | Gun_brake |
-| behemoth | 2 mg | boss_flak (Bullet) | Muzzle_mg | 1 | +1.48 | 0.04 | 19.1 | WRONG | AA_mount; 1.48 m ahead of the open end; flash 19 deg off the barrel |
-| behemoth | 3 mg | boss_flak (Bullet) | Muzzle_mg.001 | 1 | +1.48 | 0.04 | 19.1 | WRONG | AA_mount.001; 1.48 m ahead of the open end; flash 19 deg off the barrel |
+| behemoth | 2 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.06 | 0.00 | 0.0 | OK | AA_guns |
+| behemoth | 3 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.06 | 0.00 | 0.0 | OK | AA_guns.001 |
 | behemoth | 4 missile | boss_missiles (Missile) | Launch_missile_0 Launch_missile_1 Launch_missile_2 Launch_missile_3 | 4 | -0.04 | 0.20 | 47.2 | WRONG | Hull Missile_racks; 0.20 m off the barrel's middle; flash 21 deg off the barrel; flash 47 deg off the barrel |
 | behemoth | 5 missile | boss_missiles (Missile) | Launch_missile_0 Launch_missile_1 Launch_missile_2 Launch_missile_3 | 4 | -0.04 | 0.20 | 47.2 | WRONG | Hull Missile_racks; 0.20 m off the barrel's middle; flash 21 deg off the barrel; flash 47 deg off the barrel |
 | behemoth_inferno | 0 main | boss_flamer (Flame) | Muzzle_main | 1 | +0.04 | 0.01 | 0.2 | OK | Muzzle_brake |
-| behemoth_inferno | 1 rocket | boss_thermo (Rocket) | Launch_rocket_0 | 8 | +0.04 | face | 0.0 | OK | Rocket_box Tubes Tubes_bore |
-| behemoth_inferno | 2 mg | boss_flak (Bullet) | Muzzle_mg | 1 | +1.48 | 0.04 | 19.1 | WRONG | AA_mount; 1.48 m ahead of the open end; flash 19 deg off the barrel |
+| behemoth_inferno | 1 rocket | boss_thermo (Rocket) | Launch_rocket_0 | 12 | +0.04 | face | 0.0 | OK | Rocket_box Tubes Tubes_bore |
+| behemoth_inferno | 2 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.06 | 0.00 | 0.0 | OK | AA_guns |
 | behemoth_inferno | 3 main | boss_flamer (Flame) | Muzzle_main | 1 | +0.04 | 0.00 | 2.2 | OK | Muzzle_brake_2 |
 | behemoth_tempest | 0 main | boss_railgun (Rail) | Muzzle_main | 1 | +0.38 | 0.00 | 1.6 | WRONG | Muzzle_brake_bore; 0.38 m ahead of the open end |
 | behemoth_tempest | 1 gun | coilgun (Rail) | Muzzle_gun | 1 | +0.02 | 0.00 | 0.0 | OK | Coil_muzzle |
@@ -70,8 +70,8 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | bmpt | 0 main | twin_30_bmpt (Bullet) | Muzzle_main | 2 | 0.00 | 0.00 | 0.8 | OK | Muzzle_brake Muzzle_brake_2 |
 | bmpt | 1 coax | mg_coax (Bullet) | Muzzle_coax | 1 | 0.00 | 0.00 | 0.7 | OK | Coax |
 | bmpt | 2 missile | ataka (Missile) | Launch_missile_0 Launch_missile_1 | 2 | 0.00 | 0.00 | 0.0 | OK | Launch_tubes |
-| bmpt | 3 agl_l | agl_40 (Bullet) | Muzzle_agl_l | 1 | 0.00 | 0.02 | 0.0 | OK | AGL_steel |
-| bmpt | 4 agl_r | agl_40 (Bullet) | Muzzle_agl_r | 1 | 0.00 | 0.02 | 0.0 | OK | AGL_steel |
+| bmpt | 3 agl_l | agl_40 (Bullet) | Muzzle_agl_l | 1 | 0.00 | 0.02 | 0.0 | OK | AGL_muzzle |
+| bmpt | 4 agl_r | agl_40 (Bullet) | Muzzle_agl_r | 1 | 0.00 | 0.02 | 0.0 | OK | AGL_muzzle |
 | bulwark_post (mg_bunker) | 0 main | bunker_hmg (Bullet) | Muzzle_main | 1 | +0.01 | 0.00 | 0.9 | OK | Main_cannon |
 | c_ram | 0 main | c_ram_gatling (Bullet) | Muzzle_main | 1 | +0.05 | 0.00 | 4.2 | OK | Main_cannon |
 | c_ram.centurion (c_ram) | 0 main | c_ram_gatling (Bullet) | Muzzle_main | 1 | +0.05 | 0.00 | 4.2 | OK | Main_cannon |
@@ -88,7 +88,7 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | drone_mothership | 0 main | mothership_cannon (Shell) | Muzzle_main | 1 | 0.00 | 0.02 | 1.2 | OK | Muzzle_brake |
 | drone_mothership | 1 missile | mothership_drones (Drone) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | released |
 | drone_mothership | 2 mg | boss_flak (Bullet) | Muzzle_mg | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
-| drone_mothership | 3 mg | boss_flak (Bullet) | Muzzle_mg.001 | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
+| drone_mothership | 3 mg | boss_flak (Bullet) | Launch_mg_barrel3 Launch_mg_barrel2 Launch_mg_barrel1 Launch_mg_barrel0 | 4 | -0.09 | 0.00 | 0.0 | WRONG | Flak_guns.001; 0.09 m inside |
 | drone_mothership | 4 main | mothership_cannon (Shell) | Muzzle_main | 1 | 0.00 | 0.02 | 1.2 | OK | Muzzle_brake_2 |
 | earth_borer | 0 main | borer_drill (Bullet) |  |  |  |  |  | n/a | does not fire |
 | earth_borer | 1 gun | borer_cannon (Shell) | Muzzle_gun | 1 | 0.00 | 0.00 | 0.0 | OK | Gun_brake_gun |
@@ -98,13 +98,13 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | elite_apc | 0 main | autocannon_30 (Bullet) | Muzzle_main | 1 | 0.00 | 0.00 | 0.1 | OK | Muzzle_brake |
 | elite_apc | 1 coax | mg_coax (Bullet) | Muzzle_coax | 1 | 0.00 | 0.00 | 0.3 | OK | Coax |
 | elite_apc | 2 missile | atgm (Missile) | Launch_missile_0 | 6 | -0.01 | face | 0.0 | OK | Tubes_bore |
-| elite_artillery (artillery) | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.4 | OK | Muzzle_brake |
+| elite_artillery (artillery) | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.7 | OK | Muzzle_brake |
 | elite_artillery (artillery) | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
 | elite_attack_helicopter | 0 missile | hellfire_volley (Missile) | Launch_missile_0 Launch_missile_1 | 2 | +0.05 | 0.00 | 1.0 | OK | Armor |
 | elite_attack_helicopter | 1 gun | heli_gun (Bullet) | Muzzle_gun | 1 | 0.00 | 0.00 | 0.0 | OK | Gun |
 | elite_attack_helicopter | 2 rocket | heli_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | -0.02 | 0.00 | 0.0 | OK | Pods |
 | elite_attack_helicopter | 3 aam | stinger_atas (Missile) | Body | 2 | +0.05 | 0.00 | 1.0 | OK | Armor; no muzzle of its own (Muzzle_aam unused) |
-| elite_attack_jet (attack_jet) | 0 gun | jet_cannon (Bullet) | Muzzle_gun | 1 | +0.40 | 0.01 | 0.0 | WRONG | Armor; 0.40 m ahead of the open end |
+| elite_attack_jet (attack_jet) | 0 gun | jet_cannon (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.01 | 0.00 | 0.6 | OK | Steel |
 | elite_attack_jet (attack_jet) | 1 rocket | s8_pods (Rocket) | Launch_rocket_0 Launch_rocket_1 Launch_rocket_2 Launch_rocket_3 | 4 | -0.01 | 0.00 | 0.0 | OK | Pods |
 | elite_attack_jet (attack_jet) | 2 missile | jet_bombs (Bomb) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | dropped |
 | elite_attack_jet (attack_jet) | 3 aam | r60 (Missile) | Muzzle_aam | 1 | +0.01 | 0.00 | 0.0 | OK | Aam_seekers |
@@ -131,15 +131,15 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | flame_tank | 0 main | flamethrower (Flame) | Muzzle_main | 1 | 0.00 | 0.00 | 0.8 | OK | Muzzle_brake |
 | flame_tank | 1 coax | mg_coax (Bullet) | Muzzle_coax | 1 | 0.00 | 0.00 | 0.0 | OK | Coax |
 | fortress_bastion | 0 main | boss_mortar (Shell) | Muzzle_main | 1 | +0.03 | 0.00 | 0.2 | OK | Main_cannon |
-| fortress_bastion | 1 gun | autocannon_40 (Bullet) | Muzzle_gun | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
-| fortress_bastion | 2 gun | autocannon_40 (Bullet) | Muzzle_gun.001 | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
-| fortress_bastion | 3 gun | autocannon_40 (Bullet) | Muzzle_gun.002 | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
-| fortress_bastion | 4 gun | autocannon_40 (Bullet) | Muzzle_gun.003 | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
+| fortress_bastion | 1 gun | autocannon_40 (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.07 | 0.00 | 0.0 | OK | Gun_barrels |
+| fortress_bastion | 2 gun | autocannon_40 (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.07 | 0.00 | 0.0 | OK | Gun_barrels.001 |
+| fortress_bastion | 3 gun | autocannon_40 (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.07 | 0.00 | 0.0 | OK | Gun_barrels.002 |
+| fortress_bastion | 4 gun | autocannon_40 (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.07 | 0.00 | 0.0 | OK | Gun_barrels.003 |
 | fortress_hive | 0 missile | mothership_drones (Drone) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | released |
 | fortress_hive | 1 missile | mothership_drones (Drone) | Muzzle_missile.001 | 1 | - | 0.00 | 0.0 | OK | released |
-| fortress_hive | 2 rocket | sam_battery (Missile) | Launch_rocket_0 | 6 | +0.04 | face | 0.0 | OK | Launcher_tubes Launcher_tubes_bore Sam_box |
-| fortress_hive | 3 mg | boss_flak (Bullet) | Muzzle_mg | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
-| fortress_hive | 4 mg | boss_flak (Bullet) | Muzzle_mg.001 | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
+| fortress_hive | 2 rocket | sam_battery (Missile) | Launch_rocket_0 | 14 | +0.04 | face | 0.0 | OK | Launcher_tubes Launcher_tubes_bore Sam_box |
+| fortress_hive | 3 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.06 | 0.00 | 0.0 | OK | MG_guns |
+| fortress_hive | 4 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.06 | 0.00 | 0.0 | OK | MG_guns.001 |
 | fpv_carrier | 0 main | fpv_swarm (Drone) | Muzzle_main | 1 | - | 0.00 | 0.0 | OK | released |
 | fpv_carrier | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.4 | OK | RWS_gun |
 | guard_tower | 0 main | hmg_roof (Bullet) | Muzzle_main | 1 | +0.01 | 0.00 | 1.4 | OK | Muzzle_brake |
@@ -161,7 +161,7 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | gun_turret.long (gun_turret) | 0 main | turret_gun_120_long (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.0 | OK | Muzzle_brake |
 | gun_turret.long (gun_turret) | 1 coax | mg_coax_ground (Bullet) | Muzzle_coax | 1 | 0.00 | 0.00 | 0.0 | OK | Coax_hider |
 | gunship_heli | 0 rocket | gunship_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
-| gunship_heli | 1 gun | gsh30k (Bullet) | Muzzle_gun | 1 | +0.05 | 0.00 | 0.0 | OK | Gun |
+| gunship_heli | 1 gun | gsh30k (Bullet) | Launch_gun_barrel3 Launch_gun_barrel2 Launch_gun_barrel1 Launch_gun_barrel0 | 4 | 0.00 | 0.00 | 0.0 | OK | Gun |
 | gunship_heli | 2 missile | heli_atgm (Missile) | Launch_missile_0 Launch_missile_1 | 2 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
 | gunship_heli | 3 door_l | door_gun (Bullet) | Muzzle_door_l | 1 | +0.03 | 0.06 | 3.1 | OK | Fuselage |
 | gunship_heli | 4 door_r | door_gun (Bullet) | Muzzle_door_r | 1 | +0.03 | 0.06 | 4.1 | OK | Fuselage |
@@ -176,7 +176,7 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | heavy_attack_heli | 2 rocket | s8_pods (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | -0.01 | 0.00 | 0.0 | OK | Pods |
 | heavy_attack_heli | 3 aam | igla_v (Missile) | Muzzle_aam | 1 | +0.01 | 0.00 | 0.0 | OK | Igla_tubes |
 | heavy_bomber | 0 missile | bomber_payload (Bomb) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | dropped |
-| heavy_bomber | 1 gun | bomber_tail_guns (Bullet) | Muzzle_gun | 1 | +0.77 | 0.00 | 0.1 | WRONG | Tail_guns; 0.77 m ahead of the open end |
+| heavy_bomber | 1 gun | bomber_tail_guns (Bullet) | Launch_gun_barrel3 Launch_gun_barrel2 Launch_gun_barrel1 Launch_gun_barrel0 | 4 | -0.02 | 0.00 | 0.0 | OK | Tail_guns |
 | heavy_bomber | 2 rocket | air_cruise_missile (Missile) | Muzzle_rocket | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
 | heavy_rocket_artillery | 0 main | rockets_300mm (Rocket) | Launch_main_0 | 6 | 0.00 | face | 0.0 | OK | Tubes |
 | heavy_rocket_artillery | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | +0.01 | 0.00 | 0.0 | OK | MG |
@@ -204,8 +204,8 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | main_battle_tank | 1 coax | mg_coax (Bullet) | Muzzle_coax | 1 | 0.00 | 0.00 | 0.0 | OK | Coax |
 | main_battle_tank | 2 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | +0.01 | 0.00 | 0.0 | OK | MG |
 | mega_gunship | 0 rocket | gunship_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | +0.62 | 0.14 | 0.0 | WRONG | Pods; 0.62 m ahead of the open end; 0.14 m off the barrel's middle |
-| mega_gunship | 1 gun | boss_heli_gun (Bullet) | Muzzle_gun | 1 | +0.18 | 0.01 | 0.0 | WRONG | Gun; 0.18 m ahead of the open end |
-| mega_gunship | 2 gun | boss_heli_gun (Bullet) | Muzzle_gun.001 | 1 | +0.18 | 0.01 | 0.0 | WRONG | Gun.001; 0.18 m ahead of the open end |
+| mega_gunship | 1 gun | boss_heli_gun (Bullet) | Launch_gun_barrel2 Launch_gun_barrel1 Launch_gun_barrel0 | 3 | 0.00 | 0.00 | 0.0 | OK | Gun |
+| mega_gunship | 2 gun | boss_heli_gun (Bullet) | Launch_gun_barrel2 Launch_gun_barrel1 Launch_gun_barrel0 | 3 | 0.00 | 0.00 | 0.0 | OK | Gun.001 |
 | mega_gunship | 3 missile | boss_missiles (Missile) | Launch_missile_0 Launch_missile_1 | 2 | +0.14 | 0.00 | 0.0 | OK | Armor |
 | mega_gunship | 4 mg | boss_minigun (Bullet) | Muzzle_mg | 1 | +0.03 | 0.00 | 0.0 | OK | Door_gun_barrels |
 | mega_gunship | 5 mg | boss_minigun (Bullet) | Muzzle_mg.001 | 1 | +0.03 | 0.00 | 0.0 | OK | Door_gun_barrels.001 |
@@ -227,9 +227,9 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | mobile_fortress | 0 main | boss_howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 1.2 | OK | Muzzle_brake |
 | mobile_fortress | 1 rocket | boss_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 Launch_rocket_2 Launch_rocket_3 | 4 | - | 0.42 | 15.0 | WRONG | Rocket_pod.001; no barrel, tube or pod round its line; 0.42 m off the barrel's middle; flash 15 deg off the barrel |
 | mobile_fortress | 2 rocket | boss_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 Launch_rocket_2 Launch_rocket_3 | 4 | - | 0.42 | 15.0 | WRONG | Rocket_pod.001; no barrel, tube or pod round its line; 0.42 m off the barrel's middle; flash 15 deg off the barrel |
-| mobile_fortress | 3 mg | boss_flak (Bullet) | Muzzle_mg | 1 | +1.18 | 0.00 | 8.0 | WRONG | MG_armor; 1.18 m ahead of the open end; flash 8 deg off the barrel |
-| mobile_fortress | 4 mg | boss_flak (Bullet) | Muzzle_mg.001 | 1 | +1.18 | 0.00 | 8.0 | WRONG | MG_armor.001; 1.18 m ahead of the open end; flash 8 deg off the barrel |
-| mobile_fortress | 5 missile | boss_missiles (Missile) | Launch_missile_0 | 14 | - | face | 55.6 | WRONG | Armor Rocket_pod.001 Tubes.001; no barrel, tube or pod round its line; 1.56 m inside; flash 56 deg off the barrel; 1.52 m inside |
+| mobile_fortress | 3 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.05 | 0.00 | 0.0 | OK | MG_guns |
+| mobile_fortress | 4 mg | boss_flak (Bullet) | Launch_mg_barrel1 Launch_mg_barrel0 | 2 | -0.05 | 0.00 | 0.0 | OK | MG_guns.001 |
+| mobile_fortress | 5 missile | boss_missiles (Missile) | Launch_missile_0 | 22 | - | face | 55.6 | WRONG | Armor Pod_bands.001 Rocket_pod.001; no barrel, tube or pod round its line; 1.56 m inside; flash 56 deg off the barrel; 1.52 m inside; flash 45 deg off the barrel; flash 22 deg off the barrel |
 | mortar_carrier | 0 main | mortar_120 (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.0 | OK | Mortar_tube |
 | mortar_carrier | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | MG |
 | nuke_train | 0 main | gun_behemoth (Shell) | Muzzle_main | 2 | 0.00 | 0.01 | 4.0 | OK | Muzzle_brake Muzzle_brake_2 |
@@ -260,17 +260,17 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | siege_tank | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
 | silver_bug | 0 main | saucer_laser (Beam) | Muzzle_main | 1 | +0.09 | 0.05 | 0.0 | WRONG | Main_cannon_lens; 0.05 m off the barrel's middle |
 | silver_bug | 1 gun | coilgun (Rail) | Launch_gun_0 Launch_gun_1 Launch_gun_2 Launch_gun_3 | 4 | +0.61 | 0.13 | 37.2 | WRONG | Coilgun_coils Coilgun_housings Miniguns; 0.52 m ahead of the open end; 0.06 m off the barrel's middle; flash 37 deg off the barrel; 0.61 m ahead of the open end; 0.07 m off the barrel's middle; flash 19 deg off the barrel; 0.20 m inside; 0.13 m off the barrel's middle; flash 9 deg off the barrel; 0.42 m ahead of the open end |
-| silver_bug | 2 mg | boss_flak (Bullet) | Muzzle_mg | 1 | - | 0.00 | 0.0 | WRONG | no barrel, tube or pod round its line |
+| silver_bug | 2 mg | boss_flak (Bullet) | Launch_mg_barrel3 Launch_mg_barrel2 Launch_mg_barrel1 Launch_mg_barrel0 | 4 | -0.07 | 0.00 | 0.0 | OK | Flak_guns |
 | silver_bug | 3 missile | mothership_drones (Drone) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | released |
-| sky_fortress | 0 main | gunship_105 (Shell) | Muzzle_main | 1 | +0.07 | 0.04 | 4.2 | OK | Howitzer_brake |
+| sky_fortress | 0 main | gunship_105 (Shell) | Muzzle_main | 1 | +0.07 | 0.00 | 0.0 | OK | Howitzer_brake |
 | sky_fortress | 1 gun | gunship_40mm (Shell) | Muzzle_gun | 1 | +0.03 | 0.01 | 7.4 | WRONG | Cannon; flash 7 deg off the barrel |
 | sky_fortress | 2 gun | gunship_40mm (Shell) | Muzzle_gun.001 | 1 | +0.03 | 0.01 | 7.4 | WRONG | Cannon.001; flash 7 deg off the barrel |
 | sky_fortress | 3 mg | gunship_25mm (Bullet) | Muzzle_mg | 1 | +0.09 | 0.03 | 5.6 | OK | Gatling |
-| sky_fortress | 4 ramp | griffin (Missile) | Muzzle_ramp | 1 | +0.18 | 0.03 | 7.6 | WRONG | Steel; 0.18 m ahead of the open end; flash 8 deg off the barrel |
-| sky_gunship | 0 main | gunship_105 (Shell) | Muzzle_main | 1 | +0.04 | 0.02 | 6.5 | WRONG | Howitzer_brake; flash 7 deg off the barrel |
-| sky_gunship | 1 gun | gunship_40mm (Shell) | Muzzle_gun | 1 | +0.02 | 0.01 | 7.3 | WRONG | Guns; flash 7 deg off the barrel |
-| sky_gunship | 2 mg | gunship_25mm (Bullet) | Muzzle_mg | 1 | +0.06 | 0.02 | 5.5 | OK | Guns |
-| sky_gunship | 3 ramp | griffin (Missile) | Muzzle_ramp | 1 | +0.12 | 0.02 | 7.0 | WRONG | Steel; flash 7 deg off the barrel |
+| sky_fortress | 4 ramp | griffin (Missile) | Muzzle_ramp | 1 | +0.19 | 0.00 | 5.6 | WRONG | Steel; 0.19 m ahead of the open end |
+| sky_gunship | 0 main | gunship_105 (Shell) | Muzzle_main | 1 | +0.04 | 0.00 | 0.0 | OK | Howitzer_brake |
+| sky_gunship | 1 gun | gunship_40mm (Shell) | Muzzle_gun | 1 | +0.02 | 0.00 | 0.0 | OK | Guns |
+| sky_gunship | 2 mg | gunship_25mm (Bullet) | Launch_mg_barrel4 Launch_mg_barrel3 Launch_mg_barrel2 Launch_mg_barrel1 (+1) | 5 | 0.00 | 0.00 | 0.0 | OK | Guns |
+| sky_gunship | 3 ramp | griffin (Missile) | Muzzle_ramp | 1 | +0.12 | 0.00 | 0.0 | OK | Steel |
 | smoke_carrier | 0 main | hmg_roof (Bullet) | Muzzle_main | 1 | 0.00 | 0.00 | 0.8 | OK | Muzzle_brake |
 | spawn_bastion (heavy_turret) | 0 main | bastion_gun (Shell) | Muzzle_main | 2 | 0.00 | 0.00 | 1.1 | OK | Muzzle_brake Muzzle_brake_2 |
 | spawn_bastion (heavy_turret) | 1 coax | mg_coax (Bullet) | Muzzle_coax | 1 | +0.01 | 0.00 | 0.0 | OK | Coax_hider |
@@ -281,7 +281,7 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | supply_truck (truck) | 0 main | mg_jeep (Bullet) | Body | 1 | - | 0.00 | 0.0 | WRONG | no muzzle of its own (no Muzzle_main); no barrel, tube or pod round its line |
 | supreme_command | 0 mg | boss_hmg (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | RWS_dark_mg |
 | supreme_command | 1 mg | boss_hmg (Bullet) | Muzzle_mg.001 | 1 | 0.00 | 0.00 | 0.0 | OK | RWS_dark_mg_001 |
-| tank_buster | 0 gun | gau_gatling (Bullet) | Muzzle_gun | 1 | +0.01 | 0.01 | 1.6 | OK | Steel |
+| tank_buster | 0 gun | gau_gatling (Bullet) | Launch_gun_barrel6 Launch_gun_barrel5 Launch_gun_barrel4 Launch_gun_barrel3 (+3) | 7 | 0.00 | 0.01 | 0.9 | OK | Steel |
 | tank_buster | 1 rocket | jet_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | -0.01 | 0.00 | 1.3 | OK | Pods |
 | tank_buster | 2 missile | maverick (Missile) | Launch_missile_0 Launch_missile_1 | 2 | 0.00 | 0.01 | 0.3 | OK | Pylons |
 | tank_buster | 3 aam | aim9 (Missile) | Body | 2 | -0.01 | 0.00 | 1.3 | OK | Pods; no muzzle of its own (Muzzle_aam unused) |
@@ -308,19 +308,19 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 |---|---|---|---|---|---|---|---|---|---|
 | aa_vehicle (aa_vehicle_hd) | 0 main | flak_35 (Bullet) | Muzzle_main | 2 | 0.00 | 0.00 | 3.0 | OK | Muzzle_brake_L Muzzle_brake_R |
 | aa_vehicle (aa_vehicle_hd) | 1 missile | sam (Missile) | Launch_missile_0 | 6 | -0.01 | face | 0.0 | OK | Tubes Tubes_bore |
-| artillery (artillery_hd) | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.4 | OK | Muzzle_brake |
+| artillery (artillery_hd) | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.7 | OK | Muzzle_brake |
 | artillery (artillery_hd) | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
 | attack_helicopter (attack_helicopter_hd) | 0 missile | heli_atgm (Missile) | Launch_missile_0 Launch_missile_1 | 2 | +0.04 | 0.00 | 0.9 | OK | Armor |
 | attack_helicopter (attack_helicopter_hd) | 1 gun | heli_gun (Bullet) | Muzzle_gun | 1 | 0.00 | 0.00 | 0.0 | OK | Gun |
 | attack_helicopter (attack_helicopter_hd) | 2 rocket | heli_rockets (Rocket) | Launch_rocket_0 Launch_rocket_1 | 2 | -0.01 | 0.00 | 0.7 | OK | Pods |
 | attack_helicopter (attack_helicopter_hd) | 3 aam | stinger_atas (Missile) | Body | 2 | +0.04 | 0.00 | 0.9 | OK | Armor; no muzzle of its own (Muzzle_aam unused) |
-| attack_jet (attack_jet_hd) | 0 gun | jet_cannon (Bullet) | Muzzle_gun | 1 | +0.40 | 0.01 | 0.0 | WRONG | Armor; 0.40 m ahead of the open end |
+| attack_jet (attack_jet_hd) | 0 gun | jet_cannon (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.01 | 0.00 | 0.6 | OK | Steel |
 | attack_jet (attack_jet_hd) | 1 rocket | s8_pods (Rocket) | Launch_rocket_0 Launch_rocket_1 Launch_rocket_2 Launch_rocket_3 | 4 | -0.01 | 0.00 | 0.0 | OK | Pods |
 | attack_jet (attack_jet_hd) | 2 missile | jet_bombs (Bomb) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | dropped |
 | attack_jet (attack_jet_hd) | 3 aam | r60 (Missile) | Muzzle_aam | 1 | +0.01 | 0.00 | 0.0 | OK | Aam_seekers |
-| elite_artillery (artillery_hd) | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.4 | OK | Muzzle_brake |
+| elite_artillery (artillery_hd) | 0 main | howitzer (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.7 | OK | Muzzle_brake |
 | elite_artillery (artillery_hd) | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | HMG_hider |
-| elite_attack_jet (attack_jet_hd) | 0 gun | jet_cannon (Bullet) | Muzzle_gun | 1 | +0.40 | 0.01 | 0.0 | WRONG | Armor; 0.40 m ahead of the open end |
+| elite_attack_jet (attack_jet_hd) | 0 gun | jet_cannon (Bullet) | Launch_gun_barrel1 Launch_gun_barrel0 | 2 | -0.01 | 0.00 | 0.6 | OK | Steel |
 | elite_attack_jet (attack_jet_hd) | 1 rocket | s8_pods (Rocket) | Launch_rocket_0 Launch_rocket_1 Launch_rocket_2 Launch_rocket_3 | 4 | -0.01 | 0.00 | 0.0 | OK | Pods |
 | elite_attack_jet (attack_jet_hd) | 2 missile | jet_bombs (Bomb) | Muzzle_missile | 1 | - | 0.00 | 0.0 | OK | dropped |
 | elite_attack_jet (attack_jet_hd) | 3 aam | r60 (Missile) | Muzzle_aam | 1 | +0.01 | 0.00 | 0.0 | OK | Aam_seekers |
@@ -336,9 +336,9 @@ Every weapon mount of every armed vehicle, elite, boss and tower, spawned throug
 | main_battle_tank (main_battle_tank_hd) | 1 coax | mg_coax (Bullet) | Muzzle_coax | 1 | 0.00 | 0.00 | 0.0 | OK | Coax |
 | main_battle_tank (main_battle_tank_hd) | 2 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | +0.01 | 0.00 | 0.0 | OK | MG |
 | scout_jeep (scout_jeep_hd) | 0 main | mg_jeep (Bullet) | Muzzle_main | 1 | -0.01 | 0.00 | 1.2 | OK | Main_cannon |
-| sky_gunship (sky_gunship_hd) | 0 main | gunship_105 (Shell) | Muzzle_main | 1 | +0.04 | 0.02 | 6.5 | WRONG | Howitzer_brake; flash 7 deg off the barrel |
-| sky_gunship (sky_gunship_hd) | 1 gun | gunship_40mm (Shell) | Muzzle_gun | 1 | +0.02 | 0.01 | 7.3 | WRONG | Guns; flash 7 deg off the barrel |
-| sky_gunship (sky_gunship_hd) | 2 mg | gunship_25mm (Bullet) | Muzzle_mg | 1 | +0.06 | 0.02 | 5.5 | OK | Guns |
-| sky_gunship (sky_gunship_hd) | 3 ramp | griffin (Missile) | Muzzle_ramp | 1 | +0.12 | 0.02 | 7.0 | WRONG | Steel; flash 7 deg off the barrel |
+| sky_gunship (sky_gunship_hd) | 0 main | gunship_105 (Shell) | Muzzle_main | 1 | +0.04 | 0.00 | 0.0 | OK | Howitzer_brake |
+| sky_gunship (sky_gunship_hd) | 1 gun | gunship_40mm (Shell) | Muzzle_gun | 1 | +0.02 | 0.00 | 0.0 | OK | Guns |
+| sky_gunship (sky_gunship_hd) | 2 mg | gunship_25mm (Bullet) | Launch_mg_barrel4 Launch_mg_barrel3 Launch_mg_barrel2 Launch_mg_barrel1 (+1) | 5 | 0.00 | 0.00 | 0.0 | OK | Guns |
+| sky_gunship (sky_gunship_hd) | 3 ramp | griffin (Missile) | Muzzle_ramp | 1 | +0.12 | 0.00 | 0.0 | OK | Steel |
 | tank_destroyer (tank_destroyer_hd) | 0 main | gun_105_long (Shell) | Muzzle_main | 1 | 0.00 | 0.00 | 0.6 | OK | Muzzle_brake |
 | tank_destroyer (tank_destroyer_hd) | 1 mg | hmg_roof (Bullet) | Muzzle_mg | 1 | 0.00 | 0.00 | 0.0 | OK | MG |

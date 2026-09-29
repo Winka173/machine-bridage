@@ -439,6 +439,7 @@ namespace MachineBrigade.Game.Rendering
             var raise = AddElevation(template.transform);
             if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;
             AddLaunchPoints(template.transform);
+            AddBarrelPoints(template.transform);
             MergeRigidParts(template.transform);
             _templates[modelId] = template;
             return template;
@@ -742,22 +743,28 @@ namespace MachineBrigade.Game.Rendering
                     if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
                     var all = new List<Vector3>();
                     foreach (var v in filter.sharedMesh.vertices) all.Add(filter.transform.TransformPoint(v));
-                    var points = Piece(all, at);
-                    if (!Principal(points, out var mean, out var major, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
-                    if (Vector3.Dot(major, at - mean) < 0f) major = -major;
-                    // Its front end, and how far the muzzle is off its axis and from that end.
-                    var far = float.MinValue;
-                    foreach (var p in points) far = Mathf.Max(far, Vector3.Dot(p - mean, major));
-                    var d = at - mean;
-                    var along = Vector3.Dot(d, major);
-                    var off = (d - major * along).magnitude;
-                    var radius = Mathf.Sqrt(2f * l2);
-                    var length = far;
-                    if (off > Mathf.Max(0.06f, radius * 1.2f) || along < length * 0.75f || along > length + Mathf.Max(0.15f, length * 0.25f)) continue;
-                    var score = off + Mathf.Abs(along - length) * 0.5f;
-                    if (score >= best) continue;
-                    best = score;
-                    axis = major;
+                    // The piece of the part round the muzzle, or one of its connected pieces (a gun
+                    // among several built as one part, an AC-130's side guns).
+                    var candidates = Pieces(filter);
+                    candidates.Add(Piece(all, at));
+                    foreach (var points in candidates)
+                    {
+                        if (!Principal(points, out var mean, out var major, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
+                        if (Vector3.Dot(major, at - mean) < 0f) major = -major;
+                        // Its front end, and how far the muzzle is off its axis and from that end.
+                        var far = float.MinValue;
+                        foreach (var p in points) far = Mathf.Max(far, Vector3.Dot(p - mean, major));
+                        var d = at - mean;
+                        var along = Vector3.Dot(d, major);
+                        var off = (d - major * along).magnitude;
+                        var radius = Mathf.Sqrt(2f * l2);
+                        var length = far;
+                        if (off > Mathf.Max(0.06f, radius * 1.2f) || along < length * 0.75f || along > length + Mathf.Max(0.15f, length * 0.25f)) continue;
+                        var score = off + Mathf.Abs(along - length) * 0.5f;
+                        if (score >= best) continue;
+                        best = score;
+                        axis = major;
+                    }
                 }
                 // Barrels built along the model's front keep it exactly: a whole gun's principal axis
                 // (its body, feed and barrel) wanders a few degrees off its bore.
@@ -792,6 +799,133 @@ namespace MachineBrigade.Game.Rendering
                 start = i;
             }
             return best;
+        }
+
+        /// <summary>
+        /// A twin or quad gun built as one part with one `Muzzle_` between its barrels (a boss's twin flak,
+        /// a fortress's autocannons, a bomber's tail guns, a jet's twin cannon): one launch point on each
+        /// barrel's tip, so rounds and flashes leave from the barrels in turn, not from the air between
+        /// them. The barrels are the part's separate long, thin pieces (its connected pieces, welded by
+        /// position) running along the muzzle beside it, a barrel and its brake counting as one; parts
+        /// that recoil (a main gun's Main_cannon, Main_cannon_2) are left to VehicleView's twin barrels.
+        /// Slots that already have launch points keep them (DECISIONS 13E).
+        /// </summary>
+        private static void AddBarrelPoints(Transform root)
+        {
+            var taken = new HashSet<(Transform, string)>();
+            foreach (var point in root.GetComponentsInChildren<LaunchPoint>(true)) taken.Add((point.transform.parent, point.Slot));
+            foreach (var muzzle in root.GetComponentsInChildren<Transform>(true))
+            {
+                var match = MuzzlePattern.Match(muzzle.name);
+                if (!match.Success || muzzle.parent == null) continue;
+                var slot = match.Groups[1].Value.ToLowerInvariant();
+                if (slot is "missile" or "rocket" || taken.Contains((muzzle.parent, slot))) continue;
+                var at = muzzle.position;
+                var forward = muzzle.forward;
+                var lines = new List<(Vector3 point, Vector3 axis, float front, float radius)>();
+                foreach (Transform sibling in muzzle.parent)
+                {
+                    if (RecoilPattern.IsMatch(sibling.name)) continue;
+                    var filter = sibling.GetComponent<MeshFilter>();
+                    if (filter == null || filter.sharedMesh == null || !filter.sharedMesh.isReadable) continue;
+                    foreach (var piece in Pieces(filter))
+                    {
+                        if (!Principal(piece, out var mean, out var axis, out _, out var l1, out var l2, out _) || l1 < 6f * l2) continue;
+                        if (Vector3.Dot(axis, forward) < 0f) axis = -axis;
+                        if (Vector3.Angle(axis, forward) > 12f) continue;
+                        var front = float.MinValue;
+                        foreach (var p in piece) front = Mathf.Max(front, Vector3.Dot(p - mean, axis));
+                        var d = at - mean;
+                        var along = Vector3.Dot(d, axis);
+                        var across = (d - axis * along).magnitude;
+                        // A barrel beside the muzzle whose tip is level with it.
+                        if (across > 0.6f || along < front - 0.25f || along > front + 0.1f) continue;
+                        var radius = Mathf.Sqrt(2f * l2);
+                        var merged = false;
+                        for (var i = 0; i < lines.Count; i++)
+                        {
+                            var (lp, la, lf, lr) = lines[i];
+                            var off = mean - lp;
+                            if ((off - la * Vector3.Dot(off, la)).magnitude > Mathf.Max(0.02f, 0.5f * Mathf.Min(radius, lr))) continue;
+                            // The same barrel (its brake, a sleeve): the front-most tip, the widest radius.
+                            var tip = Vector3.Dot(mean + axis * front - lp, la);
+                            lines[i] = (lp, la, Mathf.Max(lf, tip), Mathf.Max(lr, radius));
+                            merged = true;
+                            break;
+                        }
+                        if (!merged) lines.Add((mean, axis, front, radius));
+                    }
+                }
+                if (lines.Count < 2) continue;
+                // Only when the muzzle is between them, on none of them.
+                var centre = Vector3.zero;
+                var onOne = false;
+                foreach (var (lp, la, _, lr) in lines)
+                {
+                    var d = at - lp;
+                    var across = (d - la * Vector3.Dot(d, la)).magnitude;
+                    if (across < Mathf.Max(0.02f, lr)) onOne = true;
+                    centre += lp + la * Vector3.Dot(d, la);
+                }
+                centre /= lines.Count;
+                if (onOne || Vector3.Distance(centre, at) > 0.15f) continue;
+                lines.Sort((a, b) => a.point.x.CompareTo(b.point.x) != 0 ? a.point.x.CompareTo(b.point.x) : a.point.y.CompareTo(b.point.y));
+                for (var i = 0; i < lines.Count; i++)
+                {
+                    var (lp, la, lf, _) = lines[i];
+                    var point = new GameObject($"Launch_{slot}_barrel{i}").transform;
+                    point.SetParent(muzzle.parent, false);
+                    point.position = lp + la * lf;
+                    point.rotation = Quaternion.LookRotation(la, Mathf.Abs(la.y) > 0.95f ? muzzle.forward : Vector3.up);
+                    var launch = point.gameObject.AddComponent<LaunchPoint>();
+                    launch.Slot = slot;
+                    launch.Measured = true;
+                    launch.Barrel = true;
+                    // Keep the muzzle's own name next to its barrels, for the k-th mount of a slot.
+                    point.SetSiblingIndex(muzzle.GetSiblingIndex() + 1);
+                }
+            }
+        }
+
+        /// <summary>A mesh's connected pieces (welded by position), as world-space vertex lists.</summary>
+        private static List<List<Vector3>> Pieces(MeshFilter filter)
+        {
+            var mesh = filter.sharedMesh;
+            var vertices = mesh.vertices;
+            var triangles = mesh.triangles;
+            var parent = new int[vertices.Length];
+            for (var i = 0; i < parent.Length; i++) parent[i] = i;
+            int Find(int i)
+            {
+                while (parent[i] != i) i = parent[i] = parent[parent[i]];
+                return i;
+            }
+            void Join(int a, int b)
+            {
+                a = Find(a);
+                b = Find(b);
+                if (a != b) parent[a] = b;
+            }
+            var weld = new Dictionary<Vector3Int, int>();
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var key = Vector3Int.RoundToInt(vertices[i] * 10000f);
+                if (weld.TryGetValue(key, out var first)) Join(i, first);
+                else weld[key] = i;
+            }
+            for (var t = 0; t + 2 < triangles.Length; t += 3)
+            {
+                Join(triangles[t], triangles[t + 1]);
+                Join(triangles[t], triangles[t + 2]);
+            }
+            var pieces = new Dictionary<int, List<Vector3>>();
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var r = Find(i);
+                if (!pieces.TryGetValue(r, out var list)) pieces[r] = list = new List<Vector3>();
+                list.Add(filter.transform.TransformPoint(vertices[i]));
+            }
+            return new List<List<Vector3>>(pieces.Values);
         }
 
         /// <summary>Whether a muzzle was turned along its barrel by <see cref="AlignMuzzles"/>.</summary>

@@ -157,15 +157,19 @@ namespace MachineBrigade.Game.Views
                 // Rockets, missiles and drones leave from the pods and rails on both sides in turn;
                 // twin miniguns from both guns. With two mounts of a slot, each has the pods on it.
                 var kind = mounts[i].Weapon.Projectile;
+                // A twin gun built as one part fires from its barrels in turn, whatever it fires (13E).
                 if (_model.Launchers.TryGetValue(slot, out var launchers) &&
-                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun" || launchers.Exists(p => p.Barrel)))
                 {
                     var own = launchers;
                     if (sameSlot[slot] > 0 && mountList != null && mountList.Count > 1 && _mounts[i] != null)
                     {
                         own = launchers.FindAll(p => p.transform.IsChildOf(_mounts[i]));
-                        if (own.Count == 0) own = launchers;
+                        // Another mount's barrels are not this one's: it keeps its own muzzle.
+                        if (own.Count == 0) own = launchers.Exists(p => p.Barrel) ? null : launchers;
                     }
+                    if (own != null && !(kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                        own = own.FindAll(p => p.Barrel) is { Count: > 0 } barrels ? barrels : null;
                     _launchers[i] = own;
                 }
             }
@@ -613,6 +617,7 @@ namespace MachineBrigade.Game.Views
                 foreach (var list in _model.Launchers.Values)
                     foreach (var point in list)
                     {
+                        if (point.Barrel) continue;
                         var local = _body.InverseTransformPoint(point.transform.position);
                         if (!found || Mathf.Abs(local.x) > Mathf.Abs(outer.x)) outer = local;
                         found = true;
