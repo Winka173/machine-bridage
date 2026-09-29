@@ -9512,3 +9512,109 @@ loot's moves are `Tools/campaign/act9.py`'s (the campaign build). The Game layer
   (the comic page has one main action). New screens for the checks: `dossier-intel`, `comic`.
 - Runs: the new tests, 11 of 12 (the Coral Keys' site off its island, fixed); then with Prompt22Story, CampaignStart,
   L10n, UiLayout, UiLanguage and CampaignTests' chapter test: 137 of 138 (the comic page's primary, fixed), then 138 of 138.
+
+## 22R. Play-test 8 B: the burning-vehicle fire, faster-clearing blast smoke, the AC-130's guns, Icarus redrawn (2026-09-30)
+
+The owner's play-test 8 art items (`Docs/prompts/requests_vi.md`, "Play-test 8", agent B). Branch `feature/pt8-art`
+from lead 1ed1732.
+
+### A. The fire on damaged vehicles, drawn a third time
+
+**References.** War Thunder's and World of Tanks' burning tanks (flames out of the engine deck, a warm light thrown on
+the hull and the ground, sparks, a black column), Company of Heroes 2/3 (damage stages: smoke, then flames, then a hull
+ablaze), and footage of real armoured vehicles burning (diesel and hydraulic oil): a low bed of flame over the grilles,
+white-yellow at the grille, orange in the body, dark red ragged tips that tear straight into thick black smoke; the
+flames flicker about ten times a second and shed licks off their tops; the smoke is lit brown-orange just above the
+fire. **What was wrong** with play-test 6's fire (21H), seen in `EffectShots.HullFires`: a few narrow tongues stood
+apart like candle flames (the fire flipbook is a broad campfire shape; squeezed to 0.6-0.9 of its height it became a
+stick), nothing lit the hull, and a moving tank's smoke broke into a row of dots.
+
+**Decided (`HullFire`, `HeatLights`, `Lit.shader`):**
+- *Flame shape.* Each source now burns as wide **bodies** (the flipbook at its own aspect, 1.5-1.9 flame sizes wide,
+  every other beat) with taller, narrower **tongues** rising out of their middle (tallest in the centre), spread over the
+  opening both across and along the hull, so they merge into one ragged mass that reads from any side; a flat
+  white-hot **root** pinned low in the opening; flame-shaped **licks** (the particle shader's flame shape) breaking off
+  the tips; a faint **glow** in the air over it.
+- *Colour ramp from the base up.* The hull flames' material cools with age (`_HeatCool` 0.5; hot white-yellow, orange
+  body, deep red edge), so a tongue is yellow-white at the root and red at its tip, with less of the sheet's sooty
+  fringe (`_Density` 0.75; the smoke is its own layer).
+- *Flicker.* Tongues live 0.36-0.55 s (were 0.55-0.85), the looping sheet plays faster over them; the root's and the
+  light's brightness jump every beat.
+- *Embers and sparks* as before, scaled by stage.
+- *Heat glow on the hull.* `HeatLights`: up to four fires (two on Low) are handed to the Lit shader as global arrays;
+  each adds a warm light (linear 1, 0.36, 0.07) with a soft quadratic fall-off and a wrapped facing term, no shadows,
+  times the surface's albedo, plus a small glow of hot metal right at it. It lights the burning hull and the ground
+  round it; it flickers (two Perlin noises, 0.62-1.1). No Unity lights: each would cost the phone a light-list slot or
+  a pass. EffectsDirector gathers them every frame in `ShowDamage` (worst fires win); the count is 0 when nothing burns
+  and the shader's loop then does nothing.
+- *Dark smoke above.* Out of the flame tips, fire-lit brown for its first sixth, then soot black, greying as it climbs;
+  each puff is placed along the path the source covered in the beat, so a moving vehicle trails one plume; the sheet
+  stops at 85 % (its last frames are small wisps).
+- *By damage stage* (`HullFire.Stage`): **catching** (30-20 % health: the engine deck, one body and one tongue a beat,
+  grey-black smoke, a 4.5 m light), **burning** (20-11 %: deck and hatch, two tongues, black smoke, more embers, a 6 m
+  light) and **ablaze** (below 11 %: the flank too, two bodies and two tongues each, a heavy black column, frequent
+  flare-ups, a 7.5 m light); flames 1, 1.2 and 1.45 times the base, growing within each stage. Never smaller than
+  21H's at any health (`PlayTest8VisualTests` checks it).
+- *Cheap.* Same systems plus two (root, licks), no new materials, no lights; tongue count is about 21H's at stage 1 and
+  about 30 % more fill at stage 3; the heat light is four iterations of a few ALU in the Lit shader's fragment, zero
+  when nothing burns. Low: two sources, a slower beat, fewer tongues, half the sparks and embers, two lights.
+- The effect shot now shows the stages and the lights (no fog, a darker field, a lower sun).
+
+### B. Blast smoke clears 30-50 % sooner
+
+The heavy fortress's 155 mm blasts and a boss's death blast (the Ultimate recipe: 12 smoke puffs of 5-8 s and a
+9-puff crater column of 9-12 s) hung for ten seconds. **Decided:** every burst of the two shared smoke layers (`Smoke`
+and the crater `Column`) lives `BlastLayers.SmokeLife` = 0.65 of its recipe's life and starts fading at 42 % (was 55 %)
+and 48 % of it (was 62 %): on screen about 40 % sooner. They are shared by every blast recipe, so every weapon, kill,
+pop, airburst, napalm canister and collapse that uses this smoke clears the same way, as the owner asked. The flash,
+fireballs, fire bursts, dust, embers, the burning ground and the boss's blaze are untouched.
+
+### C. The AC-130's battery and missiles
+
+Play-test 5 (20V) drew the battery big to read at battle zoom; its barrels stood 1.5, 2.5 and 3.4 m out of the skin (8 m
+at full scale for the 105 mm). **Decided:** the muzzles now stand 0.6 m (25 mm GAU-12), 0.8 m (40 mm Bofors) and 1.2 m
+(105 mm, with its muzzle brake) past the skin, about an AC-130U's, a little over for the zoom; barrels, recuperator,
+flash hider and brake shortened, the breech parts as they were; `Muzzle_mg`, `Muzzle_gun` and `Muzzle_main` moved to
+the new muzzles (1.55, 1.8 and 2.2 m off the centreline). **The Griffins are gone:** the ramp launcher is off the model
+(`mb_air2.sky_gunship(ramp=False)`, no `Muzzle_ramp`; the transport twin keeps its fairing) and `griffin` off the
+gunship's weapons in balance.json (its row only; the Spectre boss keeps its Griffins). Its note and guide lost the
+missiles. Card re-rendered.
+
+### D. Icarus, redesigned
+
+The owner: 20Y's Icarus (a Star Destroyer wedge with a Venator's doors and red stripes) copied Star Wars too closely;
+keep only the idea. **Decided: an armed orbital platform, not a warship** (`Tools/blender/mb_pt8_icarus.py`, after 20Y
+in the build):
+- **References:** the Soviet Polyus / Skif-DM orbital weapons platform (1987: a long round module on a thrust axis) and
+  Almaz; the ISS (the main truss across the middle, the solar-array wings, the white heat radiators, handrails);
+  Hubble and KH-11 (a telescope's sunshade tube with its aperture door swung open, gold multi-layer insulation);
+  Ace Combat 5's SOLG (an orbital superweapon that is a satellite with solar wings); The Expanse's MCRN ships (a
+  thrust-axis layout with one big drive cone and vernier nozzles, point-defence turrets). The name fits: Icarus flies
+  on the sun's power.
+- **Silhouette:** from above a cross, not a dagger: a 36 m white-and-gold spine (a telescope nose, a forward module
+  with equipment racks on its shoulders, a truss across the middle, a larger service module aft) with two broad deep
+  blue solar wings out to 24 m, white radiators aft and the drive bell behind.
+- **Colours:** satin white hull (`Fuel`), gold foil (`Gilded`) on the telescope, the racks' boxes and the service
+  module's flanks, deep blue cells (`ContainerBlue`) on steel frames with their grid, white radiators (`Medical`),
+  yellow handrails, the side's colour only in bands round the modules, the barbettes' bands and the drive's glow.
+- **Kept:** every node and muzzle in place (mb_orbital.NODES): the ventral laser ball, the coilguns now on barbettes
+  on the truss, the flak on the two modules, the point-defence lasers on the racks, the RCS pods on booms (fore) and at
+  the radiator tips (aft), the drive as `Thruster_main`, the pod bay under the service module (its axis raised 0.35 m
+  so the bay stands proud of the belly), the uplink dish on a mast, the crash turrets on sponsons. Balance, parts,
+  big attacks and the variant (Icarus Mk.0) are unchanged. The wreck is the same platform crashed: one wing torn off
+  and lying beside it, the other bent down, a radiator snapped, the door gone, scorched, dark, in its crater.
+  18,962 / 20,334 triangles (were 14,282 / 15,630).
+- `Tools/docs/unit_refs.json` (silver_bug, icarus_mk0) names the new references; card re-rendered.
+
+### Tests
+
+New `PlayTest8VisualTests` (the stages and "never smaller", the heat lights' cap, Low and flicker, the smoke's life
+with the fireballs as before, the gunship without Griffins and with muzzles 1.4-2.3 m out, Icarus's part nodes in
+place and its muzzles on both models). Run with the fire, gunship, blast-size, boss-part and high-detail tests they
+touch: 32 of 32.
+
+### Shared edits (merge by hand if they conflict)
+
+balance.json (the sky_gunship row), Strings.cs (`note.sky_gunship`), GuideText.cs (`guide.sky_gunship`),
+EffectsDirector.cs (`ShowDamage`, `Dispose`), Lit.shader, build_assets.py and Docs/art/models.json (as always:
+`Tools/art/resolve_merge.py`), the card manifest.

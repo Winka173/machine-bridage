@@ -43,6 +43,7 @@ import mb_p16_arms  # noqa: E402
 import mb_p20_bosses  # noqa: E402
 import mb_p21_models  # noqa: E402
 import mb_pt5_models  # noqa: E402
+import mb_pt8_icarus  # noqa: E402
 import mb_p22_siege  # noqa: E402
 import mb_p22_content  # noqa: E402
 import mb_redesign_20y  # noqa: E402
@@ -98,7 +99,9 @@ def all_builders():
                 # Prompt 22 E (DECISIONS 22E): Morrigan, Wolff's stealth fighter.
                 **mb_p22_content.BUILDERS,
                 # DECISIONS 20Y: Ixion and Icarus redesigned from outside references (they win over the builders above).
-                **mb_redesign_20y.BUILDERS}
+                **mb_redesign_20y.BUILDERS,
+                # Play-test 8 (DECISIONS 22R): Icarus redrawn as an orbital weapons platform (wins over 20Y's warship).
+                **mb_pt8_icarus.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

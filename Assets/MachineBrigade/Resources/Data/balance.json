@@ -603,8 +603,9 @@
     // Play-test 7 (DECISIONS 22P): an aircraft card again, "AC-130 Gunship" (premium, 4,500 coins); the Gunship support card is gone.
     { "id": "sky_gunship", "rearmTime": 18, "strongVs": ["Light", "Tank", "Artillery"], "scale": 1.06,      "armour": 0,  "hp": 2000, "speed": 16, "turnRate": 65, "turretTurnRate": 360, "radius": 7.5, "cp": 22, "vision": 64,
       "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "orbitRadius": 22, "flying": true, "fixedWing": true, "altitude": 26, "captureRate": 0,
-      "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" },
-                     { "weapon": "griffin", "slot": "ramp", "aim": "Free" } ], "skills": ["bomber_flares"],
+      // Play-test 8 (DECISIONS 22R): its guns only; the ramp's Griffin missiles are gone (model and weapons).
+      "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" } ],
+      "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 220, "radius": 11, "delay": 0.6, "tier": "Ultimate" } },
     // Third wave. Long-range launchers carry limited ammunition and a machine gun for when it runs out.
     // Prompt 17 D.6: the tank hunter among the heavies: two 120 mm guns fired as one volley of two, a long 7 s reload

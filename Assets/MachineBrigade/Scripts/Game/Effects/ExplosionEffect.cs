@@ -29,6 +29,17 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Where a rolling fireball starts in the blast sheet: past the initial burst of flame.</summary>
         public const float RollFrom = 0.26f;
 
+        /// <summary>
+        /// Play-test 8 (DECISIONS 22R), the owner's ask: blast smoke hung too long (the heavy fortress's shells, a boss's
+        /// death blast). Every burst of the shared smoke layers (<see cref="Smoke"/> and the crater <see cref="Column"/>),
+        /// so every weapon, kill, pop and collapse that uses them, lives this share of its recipe's life ...
+        /// </summary>
+        public const float SmokeLife = 0.65f;
+
+        /// <summary>... and starts fading out this far through it (was 0.55 for the blast smoke and 0.62 for the column):
+        /// on screen the smoke clears about 40 % sooner. The fire, the flash and the dust are untouched.</summary>
+        public const float SmokeFadeFrom = 0.42f, ColumnFadeFrom = 0.48f;
+
         public BlastLayers(MaterialLibrary m, Transform parent)
         {
             var fx = FxMaterials.Shared;
@@ -75,7 +86,7 @@ namespace MachineBrigade.Game.Effects
             // Black smoke billowing up out of the blast and drifting off with the wind.
             Smoke = Shared(root, "Smoke", fx.Smoke, 1500);
             PB.Flipbook(Smoke, loop: false, tilt: 25f);
-            PB.Colors(Smoke, PB.Hold(new Color(0.13f, 0.12f, 0.115f), new Color(0.42f, 0.41f, 0.4f), 0.1f, 0.55f, 0.95f));
+            PB.Colors(Smoke, PB.Hold(new Color(0.13f, 0.12f, 0.115f), new Color(0.42f, 0.41f, 0.4f), 0.1f, SmokeFadeFrom, 0.95f));
             PB.Grow(Smoke, 0.7f, 1.9f);
             PB.Rise(Smoke, 1.1f, 2.6f);
             Drag(Smoke, 0.1f);
@@ -170,7 +181,7 @@ namespace MachineBrigade.Game.Effects
             // seconds, leaning off with the wind.
             Column = Shared(root, "Smoke Column", fx.Smoke, 1400);
             PB.Flipbook(Column, loop: false, tilt: 18f, from: 0.08f);
-            PB.Colors(Column, PB.Hold(new Color(0.15f, 0.14f, 0.135f), new Color(0.5f, 0.49f, 0.48f), 0.14f, 0.62f, 0.92f));
+            PB.Colors(Column, PB.Hold(new Color(0.15f, 0.14f, 0.135f), new Color(0.5f, 0.49f, 0.48f), 0.14f, ColumnFadeFrom, 0.92f));
             PB.Grow(Column, 0.55f, 2.3f);
             PB.Rise(Column, 0.9f, 1.9f);
             Drag(Column, 0.06f);
@@ -700,8 +711,10 @@ namespace MachineBrigade.Game.Effects
             ? hot ? _layers.HotRollingFireball : _layers.RollingFireball
             : hot ? _layers.HotFireball : _layers.Fireball;
 
+        /// <summary>Blast smoke; its life is cut to <see cref="BlastLayers.SmokeLife"/> of the recipe's (play-test 8).</summary>
         private void Smoke(int count, Vector2 size, Vector2 lifetime, float time = 0.12f) =>
-            _bursts.Add(new Burst(_layers.Smoke, time, count, size, new Vector2(0.8f, 2.8f), lifetime, size.x * 0.25f, size.x * 0.15f));
+            _bursts.Add(new Burst(_layers.Smoke, time, count, size, new Vector2(0.8f, 2.8f), lifetime * BlastLayers.SmokeLife, size.x * 0.25f,
+                size.x * 0.15f));
 
         private void Sparks(int count, Vector2 speed, float size) =>
             _bursts.Add(new Burst(_layers.Sparks, 0f, count, new Vector2(size * 1.1f, size * 2f), speed * 0.7f, new Vector2(0.4f, 1.2f), 0.2f));
@@ -737,13 +750,13 @@ namespace MachineBrigade.Game.Effects
         /// <summary>
         /// Play-test 5 (DECISIONS 20V): the smoke column a big blast leaves: <paramref name="puffs"/> billows
         /// climbing out of the crater a third of a second apart, each <paramref name="step"/> metres above the last
-        /// and a little bigger, slow to rise and long to hang.
+        /// and a little bigger, slow to rise; since play-test 8 living <see cref="BlastLayers.SmokeLife"/> of the recipe's life.
         /// </summary>
         private void Column(int puffs, Vector2 size, Vector2 lifetime, float start, float step)
         {
             for (var k = 0; k < puffs; k++)
                 _bursts.Add(new Burst(_layers.Column, start + k * 0.32f, k == 0 ? 2 : 1, size * (1f + 0.08f * k), new Vector2(0.15f, 0.5f),
-                    lifetime, size.x * 0.1f, 0.5f + k * step));
+                    lifetime * BlastLayers.SmokeLife, size.x * 0.1f, 0.5f + k * step));
         }
 
         /// <summary>A second, wider dust skirt rolling out behind the first (big blasts).</summary>

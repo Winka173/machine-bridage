@@ -1053,11 +1053,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 14282
+    "triangles": 18962
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
-    "triangles": 15630
+    "triangles": 20334
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",
@@ -1065,11 +1065,11 @@
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",
-    "triangles": 10880
+    "triangles": 10736
   },
   "sky_gunship_hd": {
     "file": "sky_gunship_hd.glb",
-    "triangles": 19818
+    "triangles": 19674
   },
   "skyscraper": {
     "file": "skyscraper.glb",

@@ -7,6 +7,18 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 8 B (DECISIONS 22R)
+
+- Burning vehicles burn in three stages (catching, burning, ablaze): broad flames over the engine deck with taller
+  tongues out of them, yellow-white at the base and red at the tips, a white-hot root, licks breaking off, embers and
+  sparks, dark smoke lit brown just above the fire, and a flickering orange light on the hull and the ground round it.
+  A vehicle on the move trails one plume of smoke instead of a row of puffs.
+- Blast smoke clears about 40 % sooner (the heavy fortress's shells, a boss's death blast and every weapon that uses
+  the same smoke); the fire and the blast itself are as before.
+- AC-130: its guns stick out about as far as a real AC-130U's, and it no longer carries Griffin missiles.
+- Icarus is redrawn as an orbital weapons platform: a white-and-gold station with a telescope nose, two blue solar
+  wings on a truss, white radiators and a big drive bell. Its parts, weapons and attacks are unchanged.
+
 ### Prompt 22 D: narrative mechanics (DECISIONS 22D)
 
 - The chapter screen opens on a map of the Meridian Coast: the brigade's ground, Hegemon's and (from Veyra) Thorne's,

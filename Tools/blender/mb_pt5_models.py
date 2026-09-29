@@ -22,7 +22,8 @@ parts are recoloured per army at runtime. Touching parts overlap or stand at lea
     the 25 mm GAU-12 gatling in a blister behind the crew door, the 40 mm Bofors behind its mantlet just aft of the
     wing, the 105 mm howitzer in a long bulged fairing further aft with its recoil sleeve and muzzle brake (the
     AC-130U's layout); a big sensor ball under the nose and a second one behind the crew door, and gun-deck windows. Muzzle_mg, Muzzle_gun and
-    Muzzle_main sit at the three muzzles on the left side, Muzzle_ramp at the ramp launcher.
+    Muzzle_main sit at the three muzzles on the left side. Play-test 8 (DECISIONS 22R): the barrels shortened to an
+    AC-130U's (a little over, for the zoom) and the ramp's Griffin launcher removed.
   * transport_plane: the same airframe without the battery, the sensors or the ramp launcher: the airlifter that
     flies airdrops and the MOAB (AirDrops, StrikeEffects), so it no longer carries a gunship's guns.
   * stealth_fighter: the faceted fighter with the middle of its body filled in: caret intakes with lips, a bump on
@@ -267,46 +268,49 @@ def bunker_vehicle(a):
 
 # ----------------------------------------------------------------------------- AC-130 gunship
 def _battery(a):
-    """The left-side battery, drawn big enough to read from the battle camera: a barrel out of the left side (+X),
-    tilted down. Returns nothing; sets Muzzle_mg, Muzzle_gun and Muzzle_main."""
+    """The left-side battery, drawn to read from the battle camera: a barrel out of the left side (+X), tilted down.
+    Returns nothing; sets Muzzle_mg, Muzzle_gun and Muzzle_main. Play-test 8 (DECISIONS 22R): the barrels were drawn
+    two to three metres out of the skin (the 105 mm 3.4 m, eight metres at full scale); they now stand out about as
+    far as an AC-130U's do, a little over for the zoom: the 25 mm GAU-12's muzzle 0.6 m past the skin, the 40 mm
+    Bofors' 0.8 m and the 105 mm howitzer's muzzle brake 1.2 m, each muzzle point moved to its new muzzle."""
     guns = a.part('Guns', 'Steel')
     ports = a.part('Gun_ports', 'Armor')
     dark = a.part('Gun_bores', 'Undercarriage')
-    # 25 mm GAU-12 in a blister behind the crew door: five barrels in a clamp, a muzzle clamp.
+    # 25 mm GAU-12 in a blister behind the crew door: five short barrels in a clamp, a muzzle clamp.
     at, rot = mb_air2._side_gun((.9, -3.3, -.05), tilt=.16)
     ports.sphere((.36, .62, .42), loc=(.84, -3.3, -.05), seg=14, rings=8)
-    guns.cyl(.13, .22, loc=at(.3), rot=rot, seg=12, bevel=.01, bseg=1)
+    guns.cyl(.13, .22, loc=at(.22), rot=rot, seg=12, bevel=.01, bseg=1)
     for k in range(5):
         ang = k * TAU / 5
         off = Vector((0, math.cos(ang) * .07, math.sin(ang) * .07))
-        guns.cyl(.026, 1.25, loc=tuple(Vector(at(.95)) + off), rot=rot, seg=6, bevel=0)
-    guns.cyl(.11, .08, loc=at(.9), rot=rot, seg=12, bevel=0)
-    guns.cyl(.105, .07, loc=at(1.52), rot=rot, seg=12, bevel=0)
-    dark.cyl(.05, .02, loc=at(1.565), rot=rot, seg=8, bevel=0)
-    a.pivot('Muzzle_mg', at(1.6))
+        guns.cyl(.026, .44, loc=tuple(Vector(at(.42)) + off), rot=rot, seg=6, bevel=0)
+    guns.cyl(.11, .06, loc=at(.42), rot=rot, seg=12, bevel=0)
+    guns.cyl(.105, .06, loc=at(.61), rot=rot, seg=12, bevel=0)
+    dark.cyl(.05, .02, loc=at(.645), rot=rot, seg=8, bevel=0)
+    a.pivot('Muzzle_mg', at(.66))
     # 40 mm Bofors behind a mantlet just aft of the wing: breech housing, recuperator over the barrel, flash hider.
     at, rot = mb_air2._side_gun((.9, 1.75, .02), tilt=.14)
     ports.box((.36, 1.0, .8), loc=(.9, 1.75, .04), bevel=.06, seg=1)
     ports.box((.12, .7, .6), loc=(1.1, 1.75, .03), bevel=.03, seg=1)                                 # mantlet
-    guns.cyl(.14, .42, loc=at(.35), rot=rot, seg=12, bevel=.02, bseg=1)
-    guns.cyl(.075, 1.95, loc=at(1.3), rot=rot, seg=12, bevel=0)
+    guns.cyl(.14, .3, loc=at(.2), rot=rot, seg=12, bevel=.02, bseg=1)
+    guns.cyl(.075, .62, loc=at(.48), rot=rot, seg=12, bevel=0)
     top = Vector((0, 0, .15))
-    guns.cyl(.05, 1.0, loc=tuple(Vector(at(.85)) + top), rot=rot, seg=8, bevel=0)                   # recuperator
-    guns.cyl(.12, .42, r2=.085, loc=at(2.42), rot=rot, seg=12, bevel=0)                             # flash hider
-    dark.cyl(.05, .02, loc=at(2.64), rot=rot, seg=8, bevel=0)
-    a.pivot('Muzzle_gun', at(2.66))
-    # 105 mm howitzer in a long bulged fairing aft: recoil sleeve, long barrel, double-baffle muzzle brake.
+    guns.cyl(.05, .34, loc=tuple(Vector(at(.36)) + top), rot=rot, seg=8, bevel=0)                   # recuperator
+    guns.cyl(.11, .18, r2=.08, loc=at(.8), rot=rot, seg=12, bevel=0)                                # flash hider
+    dark.cyl(.05, .02, loc=at(.895), rot=rot, seg=8, bevel=0)
+    a.pivot('Muzzle_gun', at(.91))
+    # 105 mm howitzer in a long bulged fairing aft: recoil sleeve, barrel, double-baffle muzzle brake.
     at, rot = mb_air2._side_gun((.9, 3.45, .0), tilt=.12)
     ports.sphere((.42, 1.1, .62), loc=(.8, 3.45, .02), seg=16, rings=9)
     ports.box((.14, .9, .82), loc=(1.18, 3.45, .0), bevel=.04, seg=1)                                # gun shield
-    guns.cyl(.2, .7, loc=at(.55), rot=rot, seg=14, bevel=.02, bseg=1)                               # recoil sleeve
-    guns.cyl(.115, 2.6, loc=at(1.9), rot=rot, seg=14, bevel=0)
+    guns.cyl(.2, .5, loc=at(.42), rot=rot, seg=14, bevel=.02, bseg=1)                               # recoil sleeve
+    guns.cyl(.115, .62, loc=at(.84), rot=rot, seg=14, bevel=0)
     brake = a.part('Howitzer_brake', 'Armor')
-    brake.box((.34, .4, .36), loc=at(3.3), rot=(0, .12, 0), bevel=.04, seg=1)
-    for dy in (-.21, .21):
-        dark.box((.2, .02, .2), loc=tuple(Vector(at(3.3)) + Vector((0, dy, 0))), rot=(0, .12, 0), bevel=0)
-    dark.cyl(.07, .02, loc=at(3.48), rot=rot, seg=10, bevel=0)
-    a.pivot('Muzzle_main', at(3.5))
+    brake.box((.3, .36, .32), loc=at(1.13), rot=(0, .12, 0), bevel=.04, seg=1)
+    for dy in (-.19, .19):
+        dark.box((.18, .02, .18), loc=tuple(Vector(at(1.13)) + Vector((0, dy, 0))), rot=(0, .12, 0), bevel=0)
+    dark.cyl(.07, .02, loc=at(1.29), rot=rot, seg=10, bevel=0)
+    a.pivot('Muzzle_main', at(1.31))
     # Gun-deck window strip along the left side over the battery.
     glass = a.part('Gun_deck_windows', 'Glass')
     for y in (-2.6, -2.0, 2.45, 2.85):
@@ -358,17 +362,15 @@ def sky_gunship(a, detail=False, armed=True):
     a.part, a.pivot = part, pivot
     mb_air2.hd.bolt = no_port_bolts
     try:
-        mb_air2.sky_gunship(a, detail=detail)
+        mb_air2.sky_gunship(a, detail=detail, ramp=not armed)
     finally:
         a.part, a.pivot = original[1], original[2]
         mb_air2.hd.bolt = bolt
     if armed:
+        # Play-test 8 (DECISIONS 22R): no Griffin launcher on the ramp any more (no Muzzle_ramp).
         _battery(a)
         _sensors(a)
-        a.pivot('Muzzle_ramp', (0, 4.95, -.42))
-    else:
-        # The ramp launcher is Armor and Steel on the shared parts; the transport keeps it as a cargo-door fairing.
-        pass
+    # The transport keeps the ramp launcher's housing (Armor and Steel on the shared parts) as a cargo-door fairing.
 
 
 class _Sink:

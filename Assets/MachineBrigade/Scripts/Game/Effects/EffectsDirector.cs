@@ -639,6 +639,7 @@ namespace MachineBrigade.Game.Effects
         public void Dispose()
         {
             Shader.SetGlobalVector(ClearId, Vector4.zero);
+            HeatLights.Clear();
             _wrecks.Clear();
             if (_root != null) Object.Destroy(_root.gameObject);
         }
@@ -647,18 +648,23 @@ namespace MachineBrigade.Game.Effects
         /// Damage shows on the hull: below 60 % health a vehicle smokes, pale at first and blacker
         /// as it weakens; below 30 % it burns (play-test 5, DECISIONS 20V: <see cref="HullFire"/>, a
         /// flame core, tongues of flame, embers and a dark smoke column on one to three fire points,
-        /// growing with the damage); the hull itself darkens with soot. Aircraft trail their smoke.
+        /// growing with the damage); the hull itself darkens with soot. Aircraft trail their smoke. Play-test 8
+        /// (DECISIONS 22R): a burning vehicle's fire lights its hull and the ground round it, every frame (HeatLights).
         /// </summary>
         private void ShowDamage(ViewRegistry views, float now)
         {
             var all = views.All;
+            HeatLights.Begin();
             for (var i = 0; i < all.Count; i++)
             {
                 var view = all[i];
                 var sim = view.Sim;
                 var health = sim.MaxHp > 0f ? sim.Hp / sim.MaxHp : 1f;
                 view.Scorch(health);
-                if (health >= 0.6f || now < view.DamageFxAt || !_cull.Visible(view.Position, 0.15f)) continue;
+                if (health >= 0.6f) continue;
+                var seen = _cull.Visible(view.Position, 0.15f);
+                if (seen && health < HullFire.Burning && !view.IsWreck) HullFire.Light(view, health, now);
+                if (now < view.DamageFxAt || !seen) continue;
                 var burning = health < HullFire.Burning;
                 view.DamageFxAt = now + (burning ? HullFire.Next : Mathf.Lerp(0.18f, 0.4f, (health - 0.3f) / 0.3f));
                 var radius = sim.Radius;
@@ -678,6 +684,7 @@ namespace MachineBrigade.Game.Effects
                 var top = view.Position + Vector3.up * (view.Flying ? 0.4f : 1.4f) - root.forward * radius * 0.3f;
                 _emitters.DamageSmoke(top, radius * 0.8f, Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
             }
+            HeatLights.Commit();
         }
 
         private int _fireBeat;

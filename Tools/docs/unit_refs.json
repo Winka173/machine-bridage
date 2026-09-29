@@ -135,7 +135,7 @@
   "mega_gunship": { "real": ["CH-47 Chinook (cỡ khung)", "ACH-47A 'Guns-A-Go-Go'"], "media": [], "note": "ước đoán (ACH-47A): trực thăng hai rô-to vũ trang hạng nặng" },
   "drone_mothership": { "real": ["USS Akron / Macon (khí cầu mẹ)", "drone FPV"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: khí cầu bọc thép phóng drone" },
   "nuke_train": { "real": ["RT-23 Molodets (tàu tên lửa BZhRK)", "MIM-104 Patriot"], "media": [], "note": "ước đoán: đoàn tàu bọc thép mang tên lửa đạn đạo" },
-  "silver_bug": { "real": ["Buran", "X-37B", "Space Shuttle (bản đầu)"], "media": ["Imperial-class Star Destroyer (Star Wars)", "Venator-class (Star Wars: Revenge of the Sith)"], "note": "Icarus: chiến hạm quỹ đạo hình nêm kiểu Star Destroyer" },
+  "silver_bug": { "real": ["Polyus / Skif-DM (trạm vũ khí quỹ đạo Liên Xô, 1987)", "ISS (giàn chính, cánh pin mặt trời, tấm tản nhiệt)", "Hubble / KH-11 (ống kính, cửa khẩu độ, lá vàng cách nhiệt)", "Almaz"], "media": ["SOLG (Ace Combat 5)", "MCRN Donnager (The Expanse): bố cục theo trục đẩy, loa động cơ lớn"], "note": "Icarus: trạm vũ khí quỹ đạo chạy năng lượng mặt trời: thân tròn trắng và vàng, hai cánh pin xanh trên giàn, tản nhiệt trắng, loa động cơ phía sau (play-test 8, DECISIONS 22R)" },
   "drop_pod": { "real": ["khoang hồi quyển Soyuz (tên lửa hãm)"], "media": ["ODST drop pod (Halo)", "Drop Pod (Warhammer 40,000)"], "note": "ước đoán: khoang thả xe từ quỹ đạo" },
   "behemoth_inferno": { "real": ["TOS-1A", "Landkreuzer P. 1000 Ratte"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth phun lửa, thùng nhiên liệu đỏ" },
   "behemoth_tempest": { "real": ["US Navy EMRG (pháo điện từ)", "Landkreuzer P. 1000 Ratte"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth hai tháp pháo điện từ" },
@@ -165,6 +165,6 @@
   "scylla": { "real": ["IJN Yamato", "Kirov-class"], "media": [], "note": "Bản nhỏ của Leviathan" },
   "locust": { "real": ["USS Akron / Macon", "drone FPV"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể nhỏ của khí cầu mẹ" },
   "behemoth_mk2": { "real": ["Landkreuzer P. 1000 Ratte", "Object 279"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth đời hai" },
-  "icarus_mk0": { "real": ["Buran", "X-37B"], "media": ["Imperial-class Star Destroyer (Star Wars)", "Venator-class (Star Wars)"], "note": "Bản đầu của Icarus" },
+  "icarus_mk0": { "real": ["Polyus / Skif-DM", "ISS", "Hubble"], "media": ["SOLG (Ace Combat 5)", "The Expanse"], "note": "Bản đầu của Icarus (trạm vũ khí quỹ đạo, nhỏ hơn)" },
   "argus": { "real": ["USS Akron / Macon", "khí cầu Zeppelin"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể của khí cầu chỉ huy" }
 }

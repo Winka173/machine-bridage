@@ -618,7 +618,8 @@ namespace MachineBrigade.Editor
         /// <summary>
         /// Play-test 6 (DECISIONS 21H): the burning-vehicle fire on battle tanks at 28 %, 15 % and 4 % health (High), the
         /// same 4 % on Low, and a fifth at 10 % driving left at 6 m/s (its fire on the hull, its smoke streaming behind);
-        /// 2.5 s into the fire. Batch mode (with graphics):
+        /// 2.5 s into the fire. Play-test 8 (DECISIONS 22R): the three stages, the fires' light on the hulls and the
+        /// ground (HeatLights; not on the Low twin, which would be the fifth), no fog. Batch mode (with graphics):
         /// -executeMethod MachineBrigade.Editor.EffectShots.HullFires -mbShotsOut &lt;png&gt;.
         /// </summary>
         [MenuItem("Machine Brigade/Render Hull Fire Shots")]
@@ -632,6 +633,12 @@ namespace MachineBrigade.Editor
             var models = new ModelLibrary(materials);
             var root = new GameObject("Shots").transform;
             Stage(materials, root, 200f);
+            var fog = RenderSettings.fog;
+            RenderSettings.fog = false;
+            // A darker field and a lower sun, as on the battlefields, so the fires' light on hulls and ground shows.
+            foreach (var r in root.GetComponentsInChildren<MeshRenderer>())
+                if (r.name == "Plane") r.sharedMaterial.SetColor("_BaseColor", new Color(0.34f, 0.31f, 0.26f));
+            foreach (var l in root.GetComponentsInChildren<Light>()) l.intensity = 1.05f;
             var camera = Camera(root);
             camera.orthographicSize = 7.5f;
             var fire = new HullFire(materials, root);
@@ -673,6 +680,9 @@ namespace MachineBrigade.Editor
                     Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
                 }
                 tanks[4].position += drive * step;
+                HeatLights.Begin();
+                foreach (var i in new[] { 0, 1, 2, 4 }) HullFire.Light(tanks[i], 2.2f, 2.4f, false, i, healths[i], time);
+                HeatLights.Commit();
                 foreach (var ps in systems) ps.Simulate(step, false, false, false);
             }
             Game.Match.MatchSettings.Graphics = graphics;
@@ -690,6 +700,8 @@ namespace MachineBrigade.Editor
             Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)) ?? ".");
             File.WriteAllBytes(output, frame.EncodeToPNG());
             Debug.Log($"[EffectShots] wrote {Path.GetFullPath(output)}; hull fire particles alive {fire.Alive}");
+            HeatLights.Clear();
+            RenderSettings.fog = fog;
             camera.targetTexture = null;
             rt.Release();
             Object.DestroyImmediate(frame);
