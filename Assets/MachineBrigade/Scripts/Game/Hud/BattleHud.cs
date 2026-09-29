@@ -319,6 +319,11 @@ namespace MachineBrigade.Game.Hud
             SelectionExtras.style.display = DisplayStyle.None;
             detailsText.Add(SelectionExtras);
             details.Add(detailsText);
+            // Prompt 15 E4: the armour and the weapons' chips beside the health bar; a tap says them in words.
+            _combat = Kit.Box("fc-hud__combat");
+            KitCombat.TapTip(_combat, () => _combatFor != null ? Strings.Unit(_combatFor) : "",
+                () => _combatFor != null && Catalog != null && Catalog.Vehicles.TryGetValue(_combatFor, out var shown) ? KitCombat.RowTip(shown) : "");
+            details.Add(_combat);
             command.Add(details);
             if (!Compact)
             {
@@ -339,6 +344,7 @@ namespace MachineBrigade.Game.Hud
             if (cards != null && cards.Count > 0)
             {
                 _deck = new DeckBar(cards, Compact);
+                _deck.TipRow = id => Catalog != null && Catalog.Vehicles.TryGetValue(id, out var held) ? KitCombat.Row(held, 4) : null;
                 _deck.CardPressed += i => CardPressed?.Invoke(i);
                 _deck.CpTapped += () => Toast(Strings.Get("hud.cpInfo"), seconds: 5f);
                 _safe.Add(_deck.Root);
@@ -764,6 +770,14 @@ namespace MachineBrigade.Game.Hud
             _hpFill.EnableInClassList("fc-hud__hp-fill--hurt", health < 0.6f && health >= 0.3f);
             _hpFill.EnableInClassList("fc-hud__hp-fill--critical", health < 0.3f);
             _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
+            if (_combatFor != summary.DefId)
+            {
+                _combatFor = summary.DefId;
+                _combat.Clear();
+                if (summary.DefId != null && Catalog != null && Catalog.Vehicles.TryGetValue(summary.DefId, out var shown))
+                    _combat.Add(KitCombat.Row(shown, 2));
+                _combat.style.display = _combat.childCount > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+            }
             if (_weapons == null) return;
             // The full HUD: what this unit is for (who it beats and who beats it), and what it fights with.
             VehicleDef def = null;
@@ -785,6 +799,24 @@ namespace MachineBrigade.Game.Hud
 
         private Label _counterText;
         private ItemBar _items;
+        private VisualElement _combat, _enemyTip;
+        private string _combatFor;
+
+        /// <summary>
+        /// Prompt 15 E5: a tapped enemy's front armour and each vehicle of our deck marked ✓ ~ ✕ by its main weapon
+        /// against it. It stays 5 s (a tap on it closes it); a new tap replaces it.
+        /// </summary>
+        public void ShowEnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck)
+        {
+            if (enemy == null || _safe == null) return;
+            _enemyTip?.RemoveFromHierarchy();
+            var tip = _enemyTip = KitCombat.EnemyTip(enemy, deck);
+            tip.AddToClassList("fc-hud__enemy-tip");
+            tip.pickingMode = PickingMode.Position;
+            tip.AddManipulator(new Tap(() => tip.RemoveFromHierarchy()));
+            _safe.Add(tip);
+            tip.schedule.Execute(() => tip.RemoveFromHierarchy()).StartingIn(5000);
+        }
 
         /// <summary>An item button was tapped (index into the list given to <see cref="SetupItems"/>).</summary>
         public event Action<int> ItemPressed;

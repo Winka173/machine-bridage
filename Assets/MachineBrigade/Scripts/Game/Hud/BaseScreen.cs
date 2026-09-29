@@ -1101,6 +1101,13 @@ namespace MachineBrigade.Game.Hud
                 tags.Add(tag);
             }
             cover.Add(tags);
+            // Prompt 15 E7: the five shields, lit where a tower pierces that armour well.
+            var fitted = layout.Fitted(_catalog);
+            var towers = fitted.Towers.Select(id => _catalog.Vehicles.TryGetValue(fitted.DefFor(id), out var d) ? d : null).Where(d => d != null).ToList();
+            var shields = Kit.Box("fc-row fc-base__shields");
+            shields.Add(Kit.Text(Kit.Caps(Strings.Get("combat.armourCover")), "fc-caption fc-base__cover-title"));
+            shields.Add(KitCombat.CoverShields(level => KitCombat.Covers(towers, level), "cover.base"));
+            cover.Add(shields);
             _strip.Add(cover);
             var numbers = Kit.Box("fc-base__numbers");
             var strength = Kit.Box("fc-row");

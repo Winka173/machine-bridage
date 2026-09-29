@@ -106,6 +106,13 @@ namespace MachineBrigade.Game.Hud
             return new ArmourFaces(front, Math.Max(0, front - 1), Math.Max(0, front - 2), Math.Max(0, front - 2), kind);
         }
 
+        /// <summary>A boss part's armour (prompt 15 A.5).</summary>
+        public static (int level, ArmourKind kind) PartArmour(VehicleDef boss, int part)
+        {
+            var armour = Armour(boss);
+            return (armour.Front, armour.Kind);
+        }
+
         /// <summary>Every weapon that does damage, main first (a mount that fires nothing has no chip).</summary>
         public static List<WeaponFacts> Weapons(VehicleDef def)
         {

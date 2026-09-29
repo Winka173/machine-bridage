@@ -861,3 +861,33 @@
 
 /* pause: the commander's switches under the buttons (both layouts) */
 .fc-pause__commander { margin-top: var(--fc-space-4); padding-top: var(--fc-space-2); border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
+
+/* ---- prompt 15: the detail page's armour and weapon icons */
+.fc-weapon__chip { margin-right: var(--fc-space-3); }
+.fc-detail__strongweak { margin-top: var(--fc-space-3); }
+
+/* ---- prompt 15 E8: the icon legend */
+.fc-legend { width: 100%; }
+.fc-legend__grid { flex-direction: row; flex-wrap: wrap; }
+.fc-legend__item { width: 150px; align-items: center; margin: var(--fc-space-2) var(--fc-space-2) var(--fc-space-2) 0; }
+.fc-legend__words { -unity-text-align: upper-center; margin-top: var(--fc-space-1); }
+.fc-legend__table { flex-shrink: 0; }
+.fc-legend__trow { align-items: center; min-height: 48px; border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border); }
+.fc-legend__tdef { width: 220px; flex-shrink: 0; padding-right: var(--fc-space-2); }
+.fc-legend__tcell { flex-grow: 1; flex-basis: 0; align-items: center; padding: var(--fc-space-1); }
+.fc-legend__tname { -unity-text-align: upper-center; }
+.fc-legend__tvalue { -unity-text-align: middle-center; color: var(--fc-text); }
+.fc-legend__tvalue--part { color: var(--fc-text-2); }
+
+/* ---- prompt 15 E7: the five-shield cover rows */
+.fc-army__shields, .fc-base__shields { align-items: center; flex-wrap: wrap; }
+.fc-army__shields-title { margin-right: var(--fc-space-3); }
+.fc-base__shields { margin-top: var(--fc-space-1); }
+
+/* ---- prompt 15 E3-E6: the battle HUD's armour and weapon icons */
+.fc-hud__combat { flex-direction: row; align-items: center; min-height: var(--fc-touch); padding: 0 var(--fc-space-1); --fc-chip-bg: var(--fc-panel-field); }
+.fc-hud__combat > .fc-crow { margin-top: 0; }
+.fc-deck__tip-row { --fc-chip-bg: var(--fc-panel-field); }
+.fc-hud__enemy-tip { position: absolute; left: var(--fc-space-3); top: 200px; --fc-chip-bg: var(--fc-panel-field); }
+.fc-boss-part__armour { position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; --icon-color: var(--fc-text-2); }
+.fc-boss-parts--mini .fc-boss-part__armour { display: none; }

@@ -283,6 +283,12 @@ namespace MachineBrigade.Game.Hud
             foreach (var (key, icon, has) in DeckRoles.Of(_catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports).Rows)
                 roles.Add(Tag(has ? icon : "info", Strings.Get(key), has ? "fc-tag--ok" : "fc-tag--missing"));
             cover.Add(roles);
+            // Prompt 15 E7: the five shields, lit where the deck has a weapon that pierces that armour well.
+            var deckDefs = MatchSettings.DeckVehicles.Select(v => _catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null).ToList();
+            var shields = Kit.Box("fc-row fc-mt-2 fc-army__shields");
+            shields.Add(Kit.Text(Kit.Caps(Strings.Get("combat.armourCover")), "fc-caption fc-army__shields-title"));
+            shields.Add(KitCombat.CoverShields(level => KitCombat.Covers(deckDefs, level), "cover.deck"));
+            cover.Add(shields);
             _deckOverview.Add(cover);
             var doctrines = new List<KitOption>();
             var chosen = 0;

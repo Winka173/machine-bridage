@@ -218,7 +218,7 @@ namespace MachineBrigade.Game.Hud
                 _detailTags.Add(Tag(module ? "module" : BaseScreen.SizeIcon(vehicle.Fort.Size), module
                     ? Strings.Get("camp.utility")
                     : Strings.Format("detail.towerSize", SizeWord(vehicle.Fort.Size))));
-                _detailTags.Add(Tag("shield", Strings.Format("detail.armour", Strings.Get("armor." + vehicle.Armor.ToString().ToLowerInvariant()))));
+                _detailTags.Add(ArmourTag(vehicle));
                 if (!module && PlayerProfile.TowerBranch(vehicle.CardId) is { } chosen) _detailTags.Add(Tag("upgrade", Strings.Branch(chosen)));
             }
             else if (vehicle != null)
@@ -229,17 +229,13 @@ namespace MachineBrigade.Game.Hud
                 branchTag.Add(Kit.Icon(KitBranches.ClassIcon(vehicle.Class)));
                 branchTag.Add(Kit.Text(KitBranches.Name(branch) + " · " + Strings.Get("class." + vehicle.Class), "fc-small"));
                 _detailTags.Add(branchTag);
-                _detailTags.Add(Tag("shield", Strings.Format("detail.armour", Strings.Get("armor." + vehicle.Armor.ToString().ToLowerInvariant()))));
+                _detailTags.Add(ArmourTag(vehicle));
             }
             else _detailTags.Add(Tag(CardIcons.For(id), Strings.Get("detail.strikeTag")));
             if (!structure) _detailTags.Add(Tag("cp", Strings.Format("detail.cpTag", CostOf(id))));
             _detailTags.Add(Tag("upgrade", Strings.Format("kit.level", rank)));
             _detailCounters.Clear();
-            if (vehicle != null && !module)
-            {
-                CounterRow("detail.strongVs", Counters.StrongVs(vehicle));
-                CounterRow("detail.weakVs", Counters.WeakVs(vehicle.Class));
-            }
+            if (vehicle != null) CombatBlock(vehicle, module);
 
             // Right: the chosen tab.
             _detailBody.Clear();
@@ -255,7 +251,7 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case DetailTab.Weapons:
                     if (module) _detailBody.Add(Kit.Body2(Strings.Get("detail.moduleNoWeapons")));
-                    else if (vehicle != null) VehicleWeapons(vehicle);
+                    else if (vehicle != null) VehicleWeapons(vehicle, true);
                     else _detailBody.Add(Kit.Body(Strings.Get("support." + id + ".info")));
                     break;
                 case DetailTab.Firing:
@@ -310,6 +306,8 @@ namespace MachineBrigade.Game.Hud
         /// </summary>
         private void Guide(string id)
         {
+            // Prompt 15 E8: the legend of the armour and weapon icons, from every guide.
+            _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("combat.legend.open"), OpenLegend, "info"));
             if (Strings.Has("note." + id))
             {
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.notes")), "fc-caption fc-mb-2"));
@@ -391,6 +389,36 @@ namespace MachineBrigade.Game.Hud
             if (PlayerProfile.TryRankUp(id)) Note(Strings.Format("arsenal.ranked", Strings.Card(id), PlayerProfile.Rank(id)));
             else Note(Strings.Get("arsenal.needCoins"), true);
             Refresh();
+        }
+
+        /// <summary>The armour tag under the name (prompt 15): the front's shield and its words.</summary>
+        private static VisualElement ArmourTag(VehicleDef def)
+        {
+            var armour = CombatFacts.Armour(def);
+            var tag = Kit.Box("fc-tag");
+            tag.Add(Kit.Icon(CombatIcons.Armour(armour.Front, armour.Kind)));
+            tag.Add(Kit.Text(CombatIcons.ArmourTip(armour.Front, armour.Kind, armour.Uniform ? -1 : 0), "fc-small"));
+            return tag;
+        }
+
+        /// <summary>
+        /// Prompt 15 E2 on the left: the armour by face, then "Strong against / Weak to" made from the armour and
+        /// penetration levels and the damage types (a module has the armour only). A tap on either explains it in words.
+        /// </summary>
+        private void CombatBlock(VehicleDef def, bool module)
+        {
+            _detailCounters.Add(Kit.Caption(Strings.Get("armour.faces")));
+            var diagram = Kit.Box("fc-detail__armour fc-mt-1");
+            diagram.Add(KitCombat.Diagram(def));
+            var armour = CombatFacts.Armour(def);
+            KitCombat.TapTip(diagram, () => Strings.Get("armour.faces"),
+                () => string.Join("\n", Enumerable.Range(0, 4).Select(f => CombatIcons.ArmourTip(armour[f], armour.Kind, f))));
+            _detailCounters.Add(diagram);
+            if (module) return;
+            var lines = KitCombat.StrongWeak(def, _catalog);
+            lines.AddToClassList("fc-detail__strongweak");
+            KitCombat.TapTip(lines, () => Strings.Get("combat.strong") + " / " + Strings.Get("combat.weak"), () => Strings.Get("combat.strongweak.tip"));
+            _detailCounters.Add(lines);
         }
 
         private void CounterRow(string key, IReadOnlyList<UnitClass> classes)
@@ -551,7 +579,7 @@ namespace MachineBrigade.Game.Hud
             _detailBody.Add(facts);
         }
 
-        private void VehicleWeapons(VehicleDef def)
+        private void VehicleWeapons(VehicleDef def, bool table = false)
         {
             var mounts = def.Mounts;
             var lines = WeaponInfo.Of(def);
@@ -559,7 +587,17 @@ namespace MachineBrigade.Game.Hud
             {
                 var w = mounts[i].Weapon;
                 var row = Kit.Box(KitPanel.SurfaceClass + " fc-weapon");
-                row.Add(Kit.Icon(lines[i].Icon, "fc-weapon__icon"));
+                // Prompt 15 E2: the weapon's chip (its form, the damage-type mark, the extra marks) beside its name; a tap says it in words.
+                var facts = CombatFacts.Of(w);
+                if (facts != null)
+                {
+                    var chip = KitCombat.Chip(facts, large: true, extras: true);
+                    chip.AddToClassList("fc-weapon__chip");
+                    var weaponName = lines[i].Name;
+                    KitCombat.TapTip(row, () => weaponName, () => CombatIcons.WeaponTip(facts));
+                    row.Add(chip);
+                }
+                else row.Add(Kit.Icon(lines[i].Icon, "fc-weapon__icon"));
                 var text = Kit.Box("fc-row-text fc-grow");
                 text.Add(Kit.Text(Kit.Caps(lines[i].Name + (i == 0 ? "  ·  " + Strings.Get("detail.main") : "")), "fc-panel-title"));
                 var burst = w.RoundsPerCycle > 1 ? $" × {w.RoundsPerCycle}" : "";
@@ -574,6 +612,16 @@ namespace MachineBrigade.Game.Hud
                     foreach (var line in UnitLines.Weapon(def, w)) text.Add(Kit.Small(line));
                 row.Add(text);
                 _detailBody.Add(row);
+            }
+            var weapons = CombatFacts.Weapons(def);
+            if (table && weapons.Count > 0)
+            {
+                // Prompt 15 E2: the effectiveness table, made from the data.
+                var panel = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-mt-2 fc-detail__effect");
+                panel.Add(Kit.Text(Kit.Caps(Strings.Get("combat.effect")), "fc-panel-title"));
+                panel.Add(KitCombat.EffectTable(weapons));
+                KitCombat.TapTip(panel, () => Strings.Get("combat.effect"), () => Strings.Get("combat.effect.tip"));
+                _detailBody.Add(panel);
             }
             _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get(_weaponsMore ? "detail.less" : "detail.more"), () =>
             {

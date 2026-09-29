@@ -140,6 +140,11 @@ namespace MachineBrigade.Game.Hud
                 var part = def.Parts[i];
                 var cell = Kit.Box("fc-boss-part", _mini ? PickingMode.Ignore : PickingMode.Position);
                 cell.Add(Kit.Icon(IconFor(part.Kind), "fc-boss-part__icon"));
+                // Prompt 15 E6: the part's armour, small in the corner (not on the closed bar's 20 px cells).
+                var (level, kind) = CombatFacts.PartArmour(def, i);
+                var armour = Kit.Icon(CombatIcons.Armour(level, kind), "fc-boss-part__armour");
+                armour.tooltip = CombatIcons.ArmourTip(level, kind);
+                cell.Add(armour);
                 var track = Kit.Box("fc-boss-part__track");
                 var fill = Kit.Box("fc-boss-part__fill");
                 track.Add(fill);
@@ -147,7 +152,7 @@ namespace MachineBrigade.Game.Hud
                 // The cross over a broken part (two thin bars, shown by the "broken" class).
                 cell.Add(Kit.Box("fc-boss-part__cross"));
                 cell.Add(Kit.Box("fc-boss-part__cross fc-boss-part__cross--flip"));
-                cell.tooltip = Strings.Get("part." + part.Kind);
+                cell.tooltip = Strings.Get("part." + part.Kind) + " · " + CombatIcons.ArmourTip(level, kind);
                 cell.AddManipulator(new Tap(() => Tapped?.Invoke(_boss, index)));
                 Root.Add(cell);
                 _cells.Add(new Cell { Root = cell, Fill = fill });
