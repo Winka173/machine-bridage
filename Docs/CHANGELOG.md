@@ -7,6 +7,19 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Leviathan as a battleship
+
+- Kessler's Leviathan is a battleship on the Yamato's lines (DECISIONS 20Y): 96 x 16 m, a flush deck with a strong bow
+  sheer and flare, three triple 460 mm turrets (two forward, one superfiring, one aft), a pagoda tower with a long
+  rangefinder, one raked funnel with launch cells beside it, triple 155 mm secondaries, 25 mm tubs and 127 mm mounts
+  along the sides, catapults, a floatplane and a crane aft, anchors and chains forward, in Hegemon's marks.
+- New breakable guns: the three main turrets (one gun each a salvo, all nine in the big attack, now the Nine-Gun
+  Broadside at the base), two 155 mm secondaries, two 25 mm batteries of four mounts, two CIWS; 14 parts at 5 %,
+  health unchanged. Laid turrets stay inside their arcs.
+- The old model is the fleet's missile cruiser (two twin 203 mm, two CIWS) with its own name, note, dossier file and
+  Guide line; the cruiser and a corvette keep station abeam on the shore side instead of inside the hull. Scylla is
+  scaled to stay a 48 m destroyer and keeps its salvo and cruise missiles.
+
 ### Missile speeds, fire rates, models
 
 - No missile flies faster than the attack helicopter's Hellfire (24 m/s): the SAMs, air-to-air and MANPADS missiles,

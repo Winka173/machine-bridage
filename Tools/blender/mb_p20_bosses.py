@@ -21,7 +21,7 @@ New bosses:
     and a CIWS in the tail (`Mount_gun`).
 Existing bosses (prompt 20 F.3's new weapons, each builder wrapping the current one, no node renamed or moved):
 fortress_bastion (a 155 mm casemate `Mount_gun.004`, ZU-23 mounts `Mount_mg` / `.001`), behemoth (120 mm flank guns
-`Mount_gun.001` / `.002`, a rocket pod `Mount_rocket`), leviathan (127 mm secondaries `Mount_gun.002` / `.003`), drone_mothership (belly 30 mm guns
+`Mount_gun.001` / `.002`, a rocket pod `Mount_rocket`), drone_mothership (belly 30 mm guns
 `Mount_gun` / `.001`, a second drone bay `Mount_missile.001`), command_airship (105 mm gun pods `Mount_gun.002` /
 `.003`), nuke_train (a 152 mm gun car `Part_gun152` > `Mount_gun`, an AA car `Part_aa` > `Mount_mg.002`), silver_bug
 (two phase-3 turrets `Mount_gun.002` / `.003`).
@@ -44,7 +44,6 @@ if str(HERE) not in sys.path:
 
 import mb_bosses  # noqa: E402
 import mb_bosses2  # noqa: E402
-import mb_naval  # noqa: E402
 import mb_orbital  # noqa: E402
 import mb_p16_arms  # noqa: E402
 import mb_phase8  # noqa: E402
@@ -358,13 +357,6 @@ def behemoth(a):
     rocket_box(a, 'Mount_rocket', 'Muzzle_rocket', (0, 3.8, 4.4))
 
 
-def leviathan(a):
-    """mb_naval.leviathan with two 127 mm secondaries on the beam."""
-    mb_naval.leviathan(a)
-    for s, mount in ((1, 'Mount_gun.002'), (-1, 'Mount_gun.003')):
-        autocannon(a, mount, (s * 5.2, -4.0, 6.0), length=4.2, r=.1, size=(2.0, 2.6, 1.1))
-
-
 def drone_mothership(a):
     """mb_bosses.drone_mothership with two hanging 30 mm guns and a second drone bay."""
     _suffixed(a)
@@ -414,7 +406,6 @@ BUILDERS = {
     'caspian': (caspian, dict(ao_distance=1.0, grime_height=.3)),
     'fortress_bastion': (fortress_bastion, dict(ao_distance=1.1, grime_height=1.0)),
     'behemoth': (behemoth, dict(ao_distance=.9, grime_height=.8)),
-    'leviathan': (leviathan, dict(ao_distance=1.5, grime_height=1.0)),
     'drone_mothership': (drone_mothership, dict(ao_distance=1.2, ground=False)),
     'command_airship': (command_airship, dict(ao_distance=1.3, ground=False)),
     'nuke_train': (nuke_train, dict(ao_distance=.8, grime_height=.7)),

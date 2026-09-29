@@ -93,11 +93,22 @@ namespace MachineBrigade.Tests
             var ms = clock.Elapsed.TotalMilliseconds / (20f / Step);
             Debug.Log($"PROMPT16 fleet step {ms:0.00} ms");
             var ships = world.Vehicles.Where(v => v.IsAlive && v.Def.Naval != null).ToList();
-            Assert.AreEqual(2, ships.Count(v => v.Def.Id == "sea_corvette"));
+            Assert.AreEqual(1, ships.Count(v => v.Def.Id == "sea_cruiser"), "DECISIONS 20Y: the missile cruiser");
+            Assert.AreEqual(1, ships.Count(v => v.Def.Id == "sea_corvette"));
             Assert.AreEqual(3, ships.Count(v => v.Def.Id == "missile_boat"));
             foreach (var v in ships) Assert.IsTrue(sea.IsSea(v.Position), v.Def.Id + " stays on the water");
             Assert.AreEqual(sea.Lane("far")!.W, sea.Frame(boss.Position).Y, 3f, "phase 1: the far lane");
-            Assert.AreEqual(9, boss.Def.Parts.Count);
+            // DECISIONS 20Y: no ship of the fleet sails inside another's hull (the escorts abeam on the shore side).
+            for (var i = 0; i < ships.Count; i++)
+            for (var k = i + 1; k < ships.Count; k++)
+            {
+                var a = sea.Frame(ships[i].Position);
+                var b = sea.Frame(ships[k].Position);
+                var apart = MathF.Abs(a.X - b.X) >= (ships[i].Def.Length + ships[k].Def.Length) * 0.5f ||
+                            MathF.Abs(a.Y - b.Y) >= (ships[i].Def.Width + ships[k].Def.Width) * 0.5f;
+                Assert.IsTrue(apart, $"{ships[i].Def.Id} and {ships[k].Def.Id} clear of each other");
+            }
+            Assert.AreEqual(14, boss.Def.Parts.Count);
             Assert.AreEqual(4, boss.ArmourOn(ArmorFace.Side), "its sides");
             Assert.AreEqual(2, boss.ArmourOn(ArmorFace.Top), "its deck");
             Assert.IsNotNull(boss.Aps, "its CIWS");

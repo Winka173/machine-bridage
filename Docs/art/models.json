@@ -693,7 +693,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 6904
+    "triangles": 25992
   },
   "light_tank": {
     "file": "light_tank.glb",
@@ -1002,6 +1002,10 @@
   "sea_corvette": {
     "file": "sea_corvette.glb",
     "triangles": 1346
+  },
+  "sea_cruiser": {
+    "file": "sea_cruiser.glb",
+    "triangles": 5416
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",

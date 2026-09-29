@@ -136,6 +136,16 @@ namespace MachineBrigade.Sim.Content
         public string Unit { get; internal set; } = "";
         public int Count { get; internal set; } = 1;
         public float Station { get; internal set; }
+
+        /// <summary>
+        /// DECISIONS 20Y: an escort's station abeam of its flagship (data "abeam", metres, negative towards the shore),
+        /// <see cref="Station"/> then being its place along the flagship's line from its middle; the k-th ship of the
+        /// entry keeps a row further in (NaN: the old station along the lane, ahead or astern).
+        /// </summary>
+        public float Abeam { get; internal set; } = float.NaN;
+
+        /// <summary>Whether its ships keep station abeam (<see cref="Abeam"/>).</summary>
+        public bool Beside => !float.IsNaN(Abeam);
     }
 
     /// <summary>Aircraft that fly in from over the sea when a phase begins (data "air": the phase and the units).</summary>

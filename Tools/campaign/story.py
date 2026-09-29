@@ -372,13 +372,16 @@ BOSS_FILES = [
      ('A missile train crossing Metro City to its launch site. When it gets there, the countdown starts. Do not let it get there.',
       'Một đoàn tàu tên lửa đang băng qua Thành Phố Metro tới bãi phóng. Tới nơi là đếm ngược bắt đầu. Đừng để nó tới nơi.')),
     ('leviathan', ('Leviathan', 'Leviathan'),
-     ('Kessler\'s flagship: a battleship hull with a missile cruiser\'s cells, two 203 mm turrets, a flight deck and a well deck for landing craft. '
-      'Its sides stop tank shells; its deck does not. It never fights where it cannot leave.',
-      'Soái hạm của Kessler: thân thiết giáp hạm mang ống phóng của tuần dương hạm tên lửa, hai tháp pháo 203 mm, sàn đáp trực thăng và khoang chở tàu đổ bộ. '
-      'Hông tàu chặn được đạn xe tăng; boong thì không. Nó không bao giờ đánh ở nơi nó không rút được.')),
+     ('Kessler\'s flagship: the biggest battleship ever laid down, three triple 460 mm turrets, a pagoda tower over a forest of guns, launch cells by the funnel '
+      'and a well deck for landing craft. Its sides stop tank shells; its deck does not. It never fights where it cannot leave.',
+      'Soái hạm của Kessler: thiết giáp hạm lớn nhất từng được đóng, ba tháp pháo ba nòng 460 mm, tháp chỉ huy kiểu chùa trên cả một rừng súng, ống phóng cạnh ống khói '
+      'và khoang chở tàu đổ bộ. Hông tàu chặn được đạn xe tăng; boong thì không. Nó không bao giờ đánh ở nơi nó không rút được.')),
     ('sea_corvette', ('Escort Corvette', 'Tàu hộ vệ'),
      ('Leviathan\'s escorts: a 76 mm gun and a CIWS that covers the flagship too. Sink them first and the flagship\'s sky opens.',
       'Tàu hộ vệ của Leviathan: pháo 76 mm và CIWS che chắn luôn cả tàu chính. Đánh chìm chúng trước thì bầu trời trên tàu chính mở ra.')),
+    ('sea_cruiser', ('Missile Cruiser', 'Tuần dương hạm tên lửa'),
+     ('Kessler\'s old flagship, the first Leviathan, now a missile cruiser in its fleet: two twin 203 mm turrets and two CIWS, keeping station between the battleship and the shore.',
+      'Soái hạm cũ của Kessler, chiếc Leviathan đầu tiên, nay là tuần dương hạm tên lửa trong hạm đội: hai tháp pháo nòng đôi 203 mm và hai CIWS, giữ vị trí giữa thiết giáp hạm và bờ biển.')),
     ('missile_boat', ('Missile Boat', 'Xuồng tên lửa cao tốc'),
      ('Fast, thin boats that dash in to the pier heads with a salvo of rockets and are gone before the smoke clears.',
       'Những chiếc xuồng nhanh, vỏ mỏng, lao vào đầu cầu tàu bắn một loạt rốc-két rồi biến mất trước khi khói tan.')),

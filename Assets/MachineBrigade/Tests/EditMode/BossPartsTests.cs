@@ -45,7 +45,7 @@ namespace MachineBrigade.Tests
             ["armored_train"] = 5, ["nuke_train"] = 9, ["behemoth"] = 10, ["behemoth_tempest"] = 3, ["behemoth_inferno"] = 4,
             ["fortress_hive"] = 6, ["mobile_fortress"] = 9, ["fortress_bastion"] = 9, ["silver_bug"] = 12, ["sky_fortress"] = 8,
             ["mega_gunship"] = 6, ["drone_mothership"] = 11, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 10,
-            ["landing_hovercraft"] = 8, ["supreme_command"] = 3, ["leviathan"] = 11,
+            ["landing_hovercraft"] = 8, ["supreme_command"] = 3, ["leviathan"] = 14,
             ["moloch"] = 9, ["daedalus"] = 8, ["kronos"] = 10, ["typhon"] = 7, ["ixion"] = 4, ["caspian"] = 4,
             ["bastion_mk0"] = 3, ["fenrir"] = 3, ["scylla"] = 3, ["locust"] = 2, ["behemoth_mk2"] = 4, ["icarus_mk0"] = 3, ["argus"] = 3,
         };
