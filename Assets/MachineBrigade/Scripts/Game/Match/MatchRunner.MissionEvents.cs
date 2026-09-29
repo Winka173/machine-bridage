@@ -40,14 +40,14 @@ namespace MachineBrigade.Game.Match
             var group = key.StartsWith("event.") ? key.Substring(6).Split('.')[0] : "";
             return group switch
             {
-                "enemy" or "ally" => NoticeKind.Reinforce,
-                "air" => NoticeKind.AirRaid,
-                "barrage" or "counter" => NoticeKind.Strike,
-                "general" or "mini" => NoticeKind.Boss,
-                "side" or "plan" => NoticeKind.Objective,
-                "loot" or "supply" or "neutral" => NoticeKind.Crate,
-                "weather" => NoticeKind.Weather,
-                "blackout" or "intel" => NoticeKind.Area,
+                "enemyWave" or "allyWave" => NoticeKind.Reinforce,
+                "airRaid" or "allyAirStrike" => NoticeKind.AirRaid,
+                "barrage" or "counterBattery" or "allyArtillery" or "orbitalStrike" => NoticeKind.Strike,
+                "generalField" or "miniBoss" => NoticeKind.Boss,
+                "sideObjective" or "planChange" or "ceasefire" => NoticeKind.Objective,
+                "lootDrop" or "supplyDrop" or "neutralConvoy" or "supplyRaid" => NoticeKind.Crate,
+                "weatherShift" => NoticeKind.Weather,
+                "blackout" or "intelReveal" => NoticeKind.Area,
                 _ => NoticeKind.Info,
             };
         }
