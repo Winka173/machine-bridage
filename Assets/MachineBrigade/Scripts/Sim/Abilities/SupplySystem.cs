@@ -25,22 +25,38 @@ namespace MachineBrigade.Sim.Abilities
     /// rearm take less time, or when it needs mending and the time is not much longer.
     /// </para>
     /// </summary>
+    /// <summary>The stores' rates, for the unit details (prompt 13 G): <see cref="SupplySystem"/> goes by them.</summary>
+    public static class SupplyRules
+    {
+        /// <summary>The slow rate (attacking, or in danger), against the full one.</summary>
+        public const float SlowShare = 0.5f;
+
+        /// <summary>Share of its stores an aircraft goes back to fighting with; a bomber's share of its bombs.</summary>
+        public const float ReturnShare = 0.5f, BomberShare = 2f / 3f;
+
+        /// <summary>How much faster than the holding pattern a landing pad, the HQ and an ammunition carrier (helicopters) rearm.</summary>
+        public const float PadRate = 2f, HqRate = 1.5f, CarrierRate = 2f;
+
+        /// <summary>Seconds out of danger (and not attacking) before the full rate starts.</summary>
+        public const float SafeSeconds = 3f;
+    }
+
     internal sealed class SupplySystem
     {
         /// <summary>The slow rate (attacking, or in danger), against the full one.</summary>
-        internal const float SlowShare = 0.5f;
+        internal const float SlowShare = SupplyRules.SlowShare;
 
         /// <summary>Seconds out of danger (and not attacking) before the full rate starts.</summary>
         internal const double SafeSeconds = 3.0;
 
         /// <summary>Share of its stores an aircraft goes back to fighting with; a bomber's share of its bombs.</summary>
-        internal const float ReturnShare = 0.5f, BomberShare = 2f / 3f;
+        internal const float ReturnShare = SupplyRules.ReturnShare, BomberShare = SupplyRules.BomberShare;
 
         /// <summary>Below this share of its stores the commander may send it to rearm early in a lull.</summary>
         internal const float LowShare = 0.2f;
 
         /// <summary>How much faster than the holding pattern the other sites rearm.</summary>
-        internal const float PadRate = 2f, HqRate = 1.5f, CarrierRate = 2f;
+        internal const float PadRate = SupplyRules.PadRate, HqRate = SupplyRules.HqRate, CarrierRate = SupplyRules.CarrierRate;
 
         /// <summary>The HQ's basic mending for aircraft over it (a share of health a second; a landing pad's is its module's).</summary>
         internal const float HqHeal = 0.01f;

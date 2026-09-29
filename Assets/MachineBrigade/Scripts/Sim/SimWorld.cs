@@ -242,6 +242,13 @@ namespace MachineBrigade.Sim
         /// <summary>Device check: takes a share of a vehicle's health (a defence burning down on camera).</summary>
         public void DebugDamage(Vehicle v, float fraction) => Damage.Apply(v, v.MaxHp * fraction, DamageType.HighExplosive);
 
+        /// <summary>Previews: empties every weapon that runs out (its shots or its stores), to show a reload.</summary>
+        public void DebugEmpty(Vehicle v)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+                if (v.Weapons[i].Ammo > 0) v.Weapons[i].Ammo = 0;
+        }
+
         private readonly bool[] _entrench = new bool[2];
 
         /// <summary>

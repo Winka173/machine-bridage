@@ -56,7 +56,8 @@ namespace MachineBrigade.Tests
 
         private static IEnumerable<(string key, string en, string vi)> AllTexts() =>
             Strings.Texts.Select(t => (t.Key, t.Value.en, t.Value.vi)).Concat(GuideText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)))
-                .Concat(CampaignText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)));
+                .Concat(CampaignText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)))
+                .Concat(UnitText.Table.Select(t => (t.Key, t.Value.en, t.Value.vi)));
 
         [Test]
         public void TheKitsVietnameseHasNoEnglish()

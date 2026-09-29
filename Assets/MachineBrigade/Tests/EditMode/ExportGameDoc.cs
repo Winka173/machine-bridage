@@ -106,7 +106,7 @@ namespace MachineBrigade.Tests
                 var raw = MachineBrigade.Sim.Combat.FirePower.Sustained(w, v);
                 weapons.Add(new Dictionary<string, object>
                 {
-                    ["id"] = w.Id, ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,
+                    ["id"] = w.Id, ["name"] = UnitLines.WeaponName(w), ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,
                     ["cooldown"] = w.Cooldown, ["range"] = w.Range, ["minRange"] = w.MinRange, ["splash"] = w.SplashRadius,
                     ["targets"] = w.Targets.ToString(), ["dps"] = raw, ["projectile"] = w.Projectile.ToString(),
                     ["clip"] = w.Clip, ["clipReload"] = w.ClipReload, ["speed"] = w.ProjectileSpeed,
@@ -134,6 +134,8 @@ namespace MachineBrigade.Tests
                 ["class"] = v.Class.ToString(), ["armor"] = v.Armor.ToString(), ["hp"] = v.MaxHp, ["speed"] = v.Speed, ["cost"] = v.CpCost,
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
+                // Prompt 13 G: the generated lines, as the detail screen shows them.
+                ["behavior"] = UnitLines.Behaviour(catalog, v), ["ammo"] = UnitLines.Ammo(catalog, v),
                 ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",
                 ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object>
                 {

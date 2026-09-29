@@ -316,6 +316,16 @@ namespace MachineBrigade.Game.Hud
                 _detailBody.Add(Kit.Body(Strings.Get("note." + id)));
             }
             if (Strings.Has("guide." + id)) GuideLines(Strings.Get("guide." + id));
+            // Prompt 13 G.2: how it behaves, worked out from its data.
+            if (_catalog.Vehicles.TryGetValue(id, out var unit))
+            {
+                var behaviour = UnitLines.Behaviour(_catalog, unit);
+                if (behaviour.Count > 0)
+                {
+                    _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.behaviour")), "fc-caption fc-mt-4 fc-mb-2"));
+                    foreach (var line in behaviour) _detailBody.Add(Kit.Body("· " + line));
+                }
+            }
             // The enemy's elite versions of this card (prompt 8 H.6): each with its own entry and skills.
             foreach (var elite in _catalog.Vehicles.Values)
             {
@@ -532,10 +542,22 @@ namespace MachineBrigade.Game.Hud
                 text.Add(Kit.Body2(Strings.Format("detail.weaponLine", w.Damage.ToString("N0") + burst, pause.ToString("0.#"), Mathf.RoundToInt(w.Range),
                     lines[i].Targets)));
                 if (lines[i].Ammo > 0) text.Add(Kit.Small(Strings.Format("detail.ammo", lines[i].Ammo)));
+                // Prompt 13 G.1: every figure (real name and calibre, rounds, magazine or stores and how they
+                // come back, faster sites, range), behind "More".
+                if (_weaponsMore && w.Damage > 0f)
+                    foreach (var line in UnitLines.Weapon(def, w)) text.Add(Kit.Small(line));
                 row.Add(text);
                 _detailBody.Add(row);
             }
+            _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get(_weaponsMore ? "detail.less" : "detail.more"), () =>
+            {
+                _weaponsMore = !_weaponsMore;
+                RefreshDetail();
+            }));
         }
+
+        /// <summary>The weapons tab shows every figure (prompt 13 G.5: "More").</summary>
+        private bool _weaponsMore;
 
         /// <summary>What a utility module does for the base, from its data (repairs, reloads, aircraft, supply, radar).</summary>
         private void ModuleFacts(VehicleDef def)
@@ -546,6 +568,8 @@ namespace MachineBrigade.Game.Hud
             if (u.Repair > 0f) facts.Add(Rule("repair", Strings.Format("detail.module.repair", (u.Repair * 100f).ToString("0.#", Kit.Culture))));
             if (u.Rearm > 1f) facts.Add(Rule("ammo", Strings.Format("detail.module.rearm", u.Rearm.ToString("0.#", Kit.Culture))));
             if (u.AirRepair > 0f) facts.Add(Rule("helicopter", Strings.Format("detail.module.air", (u.AirRepair * 100f).ToString("0.#", Kit.Culture), Mathf.RoundToInt(u.AirReach))));
+            // Prompt 13 G.4: the landing pad's stores rate, a hangar's aircraft.
+            foreach (var line in UnitLines.Module(u, false)) facts.Add(Rule("ammo", line));
             if (u.Supply > 0) facts.Add(Rule("people", Strings.Format("detail.module.supply", u.Supply)));
             if (u.RevealBase) facts.Add(Rule("eye", Strings.Get("detail.module.radar")));
             _detailBody.Add(facts);

@@ -1178,12 +1178,12 @@ namespace MachineBrigade.Game.Hud
             ["note.mlrs"] = ("GMLRS: six guided rockets that land where they are aimed, from farther than any tube gun.", "GMLRS: sáu rốc-két dẫn đường rơi đúng điểm ngắm, xa hơn mọi khẩu pháo nòng."),
             ["note.aa_vehicle"] = ("Twin 35 mm guns and a short-range missile: shreds helicopters and drones.", "Pháo đôi 35 mm và tên lửa tầm ngắn: xé nát trực thăng và drone."),
             ["note.sam_launcher"] = ("Long-range anti-aircraft missiles fired in pairs; it must stop to fire and cannot fight tanks.", "Tên lửa phòng không tầm xa bắn theo cặp; phải dừng để bắn và không đánh được xe tăng."),
-            ["note.scout_heli"] = ("A Little Bird: miniguns and a seven-rocket pod, very fast, fragile.", "Little Bird: súng máy nhiều nòng và giàn 7 rốc-két, rất nhanh, mong manh."),
+            ["note.scout_heli"] = ("A Little Bird: miniguns and 24 rockets in salvos of 12, very fast, fragile.", "Little Bird: súng máy nhiều nòng và 24 rốc-két bắn loạt 12 quả, rất nhanh, mong manh."),
             ["note.attack_helicopter"] = ("An Apache: Hellfire missiles, a 30 mm chain gun, rockets and a Stinger pair for other aircraft. Drops flares.", "Apache: tên lửa Hellfire, pháo 30 mm, rốc-két và cặp Stinger để bắn máy bay. Thả mồi nhiệt."),
             ["note.gunship_heli"] = ("A Mi-24P, a flying IFV: rocket pods first, a fixed 30 mm cannon, ATGMs and door gunners firing out of both sides. The heaviest helicopter, and the only one whose troops can take an objective.", "Mi-24P, xe chiến đấu bộ binh biết bay: giàn rốc-két là chính, pháo 30 mm cố định, tên lửa chống tăng và xạ thủ bắn từ hai cửa hông. Trực thăng lì nhất, và là chiếc duy nhất có lính chiếm được cứ điểm."),
             ["note.strike_drone"] = ("A Reaper: Hellfires and guided bombs from high up, long sight, slow and unarmed against aircraft.", "Reaper: Hellfire và bom dẫn đường từ trên cao, nhìn xa, chậm và không chống được máy bay."),
             ["note.attack_jet"] = ("A Su-25: cannon, 80 rockets and bombs in shallow dives, R-60s to defend itself, flares.", "Su-25: pháo, 80 rốc-két và bom khi bổ nhào, tên lửa R-60 tự vệ, mồi nhiệt."),
-            ["note.ifv"] = ("A Bradley: 25 mm cannon, coaxial gun and a TOW launcher that kills tanks; the fastest at taking points, with smoke when shot at.", "Bradley: pháo 25 mm, súng đồng trục và bệ TOW diệt tăng; chiếm điểm nhanh nhất, bị bắn thì thả khói."),
+            ["note.ifv"] = ("A Bradley-class IFV: 30 mm cannon, coaxial gun and a TOW launcher that kills tanks; the fastest at taking points, with smoke when shot at.", "Xe chiến đấu bộ binh kiểu Bradley: pháo 30 mm, súng đồng trục và bệ TOW diệt tăng; chiếm điểm nhanh nhất, bị bắn thì thả khói."),
             ["note.command_vehicle"] = ("An 8x8 command post: friendly vehicles within 25 m fire 10 % faster, and once it has stood still 5 s new vehicles land beside it. One per side.", "Sở chỉ huy 8x8: quân ta trong 25 m bắn nhanh hơn 10 %, đứng yên 5 giây thì quân mới đáp xuống cạnh nó. Mỗi phe một chiếc."),
             ["note.wheeled_gun"] = ("A Centauro-style 8x8 with a 120 mm gun (the Centauro II's): fast, thin-skinned, 25 % harder on a tank's flank or rear.", "Xe 8x8 kiểu Centauro với pháo 120 mm (như Centauro II): nhanh, giáp mỏng, mạnh hơn 25 % khi bắn hông hoặc đuôi xe tăng."),
             ["note.armored_bulldozer"] = ("A D9-style armoured bulldozer: 3,250 health, only a roof machine gun; its blade rams structures down at three times the damage, ploughs dragon's teeth flat and takes half a mine's blast.", "Xe ủi bọc thép kiểu D9: 3.250 máu, chỉ có súng máy trên nóc; lưỡi ủi húc đổ công trình với sát thương gấp ba, ủi phẳng răng rồng và chỉ nhận một nửa sức nổ của mìn."),
@@ -1191,7 +1191,7 @@ namespace MachineBrigade.Game.Hud
             ["note.long_sam"] = ("An S-300-style launcher: one big missile every 8 s at aircraft out to 95 m. Nothing against the ground, nothing inside 20 m.", "Bệ phóng kiểu S-300: một tên lửa lớn mỗi 8 giây vào máy bay xa tới 95 m. Không đánh mặt đất, không bắn trong 20 m."),
             ["note.atgm_tower"] = ("A twin Kornet launcher on a tower: anti-tank missiles in pairs out to 50 m.", "Bệ Kornet đôi trên tháp: tên lửa chống tăng bắn cặp xa tới 50 m."),
             ["note.howitzer"] = ("A PzH 2000: 155 mm, the longest-range tube gun, fires three rounds fast then reloads.", "PzH 2000: 155 mm, pháo nòng tầm xa nhất, bắn nhanh ba phát rồi nạp đạn."),
-            ["note.thermobaric_launcher"] = ("A TOS-1A: 24 thermobaric rockets that level an area, but only from close in (38 m).", "TOS-1A: 24 rốc-két nhiệt áp san phẳng cả vùng, nhưng chỉ bắn gần (38 m)."),
+            ["note.thermobaric_launcher"] = ("A TOS-1A: thermobaric rockets in salvos of 9 that level an area, but only from close in (38 m).", "TOS-1A: các loạt 9 rốc-két nhiệt áp san phẳng cả vùng, nhưng chỉ bắn gần (38 m)."),
             ["note.heavy_aa"] = ("A Tunguska: four 30 mm barrels and eight missiles; fires on the move.", "Tunguska: bốn nòng 30 mm và tám tên lửa; bắn được khi đang chạy."),
             ["note.titan_tank"] = ("A super-heavy tank: twin 140 mm guns, missiles and machine guns. Slow and very expensive.", "Siêu tăng: pháo đôi 140 mm, tên lửa và súng máy. Chậm và rất đắt."),
             ["note.heavy_bomber"] = ("A B-52: a stick of bombs along its flight line and a long-range cruise missile. Flares.", "B-52: thả một hàng bom dọc đường bay và một tên lửa hành trình tầm xa. Mồi nhiệt."),
@@ -1213,7 +1213,7 @@ namespace MachineBrigade.Game.Hud
             ["note.fighter_jet"] = ("The air-superiority fighter: long- and short-range air-to-air missiles, hunts enemy aircraft far from its post, can hover to shoot.", "Tiêm kích chiếm ưu thế trên không: tên lửa không đối không tầm xa và gần, săn máy bay địch từ xa, có thể lơ lửng để bắn."),
             ["note.tank_buster"] = ("An A-10: the 30 mm GAU-8 shreds tanks in gun runs, Mavericks, rockets and AIM-9s for self-defence.", "A-10: pháo GAU-8 30 mm xé nát xe tăng khi bổ nhào, Maverick, rốc-két và AIM-9 tự vệ."),
             ["note.recon_drone"] = ("An unarmed spotter with the longest sight in the game, and one guided missile: eyes for your artillery.", "Drone trinh sát nhìn xa nhất trò chơi, kèm một tên lửa dẫn đường: đôi mắt cho pháo binh."),
-            ["note.heavy_attack_heli"] = ("A Ka-52 Alligator: a stand-off sniper. Vikhr missiles in pairs from long range that also bring down helicopters, a 30 mm on its side and rocket pods for close work, Igla against aircraft. Coaxial rotors, flares.", "Ka-52 Alligator: bắn tỉa từ xa. Tên lửa Vikhr bắn từng cặp từ tầm xa, hạ được cả trực thăng; pháo 30 mm bên hông và giàn rốc-két khi cận chiến, Igla chống máy bay. Cánh quạt đồng trục, mồi nhiệt."),
+            ["note.heavy_attack_heli"] = ("A Ka-52 Alligator: a stand-off sniper. Vikhr missiles in pairs from long range that also bring down helicopters, a 23 mm cannon and rocket pods for close work, Igla against aircraft. Coaxial rotors, flares.", "Ka-52 Alligator: bắn tỉa từ xa. Tên lửa Vikhr bắn từng cặp từ tầm xa, hạ được cả trực thăng; pháo 23 mm bên hông và giàn rốc-két khi cận chiến, Igla chống máy bay. Cánh quạt đồng trục, mồi nhiệt."),
             ["note.vbied"] = ("A car bomb in welded armour: it drives into the enemy and blows up (700 damage over 7.5 m). Shot before it arrives, it explodes where it is.", "Xe bom bọc giáp hàn: lao vào địch rồi tự nổ (700 sát thương trong bán kính 7,5 m). Bị bắn hạ trước khi tới nơi thì nổ ngay tại chỗ."),
             ["note.zu23_technical"] = ("A twin 23 mm anti-aircraft gun on a pickup: cheap, fast, tears up helicopters, drones and light vehicles.", "Pháo phòng không đôi 23 mm trên bán tải: rẻ, nhanh, xé nát trực thăng, drone và xe nhẹ."),
             ["note.smoke_carrier"] = ("An M58 Wolf: lays a wall of smoke around itself whenever the enemy is near, hiding the army from their guns.", "M58 Wolf: tạo màn khói quanh mình mỗi khi địch đến gần, che quân ta khỏi hỏa lực địch."),
@@ -2138,7 +2138,7 @@ namespace MachineBrigade.Game.Hud
         public static bool Vietnamese { get; set; } = Application.systemLanguage == SystemLanguage.Vietnamese;
 
         public static string Get(string key) =>
-            Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text)
+            Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text)
                 ? (Vietnamese ? text.vi : text.en) : key;
 
         public static string Format(string key, params object[] args) => string.Format(Get(key), args);
@@ -2159,7 +2159,7 @@ namespace MachineBrigade.Game.Hud
         public static string Support(string defId) => Get("support." + defId);
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
-        public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key);
+        public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>
