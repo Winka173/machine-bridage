@@ -121,10 +121,22 @@ namespace MachineBrigade.Sim.Entities
 
         public BigAttackDef Def { get; }
 
+        /// <summary>Prompt 20: the damage scale a charge under way hits with.</summary>
+        internal float ChargeScale;
+
+        /// <summary>Prompt 20: vehicles its pods have set down so far (they take turns from the strike's list).</summary>
+        internal int Seated;
+
         /// <summary>The indices of the boss's parts that carry it (they flash on the bar while it charges).</summary>
         public IReadOnlyList<int> Parts { get; }
 
         public BigStage Stage { get; internal set; }
+
+        /// <summary>Prompt 21's Sandbox (and tests): the big attack is switched off (it waits while it is).</summary>
+        public bool Off { get; internal set; }
+
+        /// <summary>Prompt 19 F: this one comes from the boss's satellite (the Silver Bug's rods after its first).</summary>
+        public bool FromSatellite { get; internal set; }
 
         /// <summary>When the next one may begin, and when the last began (the cooldown ring).</summary>
         public double Next { get; internal set; }

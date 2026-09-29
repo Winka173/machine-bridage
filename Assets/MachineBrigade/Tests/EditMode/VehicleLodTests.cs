@@ -51,7 +51,8 @@ namespace MachineBrigade.Tests
         private List<string> FieldableModels()
         {
             var catalog = GameContent.LoadCatalog();
-            return catalog.Vehicles.Values.Select(d => d.Model).Distinct().Where(_models.Has).OrderBy(s => s).ToList();
+            // Tower branches wear their own models (TowerArt): <tower>_a and _b.
+            return catalog.Vehicles.Values.Select(d => TowerArt.ModelFor(d, _models.Has)).Distinct().Where(_models.Has).OrderBy(s => s).ToList();
         }
 
         [Test]

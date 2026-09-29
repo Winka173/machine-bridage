@@ -249,7 +249,11 @@ namespace MachineBrigade.Sim.Content
                 EscortRules = rules;
             }
             var escorts = new Dictionary<string, EscortDef>();
-            foreach (var e in root.Array("escorts"))
+            // Prompt 20 E.4: the tables built on the generals' templates, and a boss with none given its general's.
+            var bosses = new List<VehicleDef>();
+            foreach (var v in _vehicles.Values)
+                if (v.Boss) bosses.Add(v);
+            foreach (var e in BossTemplates.Escorts(root, bosses))
             {
                 var boss = e.String("boss");
                 if (!_vehicles.TryGetValue(boss, out var bossDef) || !bossDef.Boss) throw new FormatException($"balance.escorts: '{boss}' is not a boss.");
@@ -263,9 +267,32 @@ namespace MachineBrigade.Sim.Content
                 if (e.Has("phase")) phases.Add(Wave(e, "phase", boss));
                 foreach (var p in e.Array("phases")) phases.Add(Wave(p, null, boss));
                 def.Phases = phases;
+                // Prompt 20 G.4: a mini boss brings two or three (its rank's cap, each wave cut to it).
+                if (bossDef.RankDef is { EscortCap: > 0 } rank)
+                {
+                    if (def.Cap == 0 || def.Cap > rank.EscortCap) def.Cap = rank.EscortCap;
+                    if (def.Arrive != null) Cut(def.Arrive, rank.EscortCap);
+                    foreach (var w in def.Phases) Cut(w, Math.Max(1, rank.EscortCap - 1));
+                }
                 escorts[boss] = def;
             }
             Escorts = escorts;
+        }
+
+        /// <summary>A wave cut to its first <paramref name="n"/> vehicles, a helper kept when there is one.</summary>
+        private static void Cut(EscortWaveDef wave, int n)
+        {
+            if (wave.Units.Count <= n) return;
+            var list = new List<EscortUnitDef>();
+            for (var i = 0; i < n; i++) list.Add(wave.Units[i]);
+            if (!list.Exists(u => u.Helper))
+                foreach (var u in wave.Units)
+                    if (u.Helper)
+                    {
+                        list[n - 1] = u;
+                        break;
+                    }
+            wave.Units = list;
         }
 
         private static IReadOnlyList<float> Sorted(IReadOnlyList<float> marks)

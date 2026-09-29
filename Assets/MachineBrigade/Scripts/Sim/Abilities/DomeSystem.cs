@@ -24,6 +24,10 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>Emitters whose dome is up this step.</summary>
         private readonly List<Vehicle> _up = new();
 
+        /// <summary>Tower-shield emitters alive this step, and the towers carrying one of their shields (DECISIONS 19T).</summary>
+        private readonly List<Vehicle> _wardens = new();
+        private readonly List<Vehicle> _warded = new();
+
         public DomeSystem(SimWorld world) => _world = world;
 
         /// <summary>A dome's full hit points on this emitter (its rank and boosts, as its own health).</summary>
@@ -50,6 +54,61 @@ namespace MachineBrigade.Sim.Abilities
                 }
                 if (v.DomeUp) _up.Add(v);
             }
+            StepWards(now);
+        }
+
+        /// <summary>
+        /// Tower shields: every tower of an emitter's side within its reach carries a shield of its own (the nearest
+        /// emitter's), full again its recharge time after its last hit; a tower out of every reach loses it.
+        /// </summary>
+        private void StepWards(double now)
+        {
+            _wardens.Clear();
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && !v.Stunned && v.Def.Wards != null) _wardens.Add(v);
+            if (_wardens.Count == 0 && _warded.Count == 0) return;
+            _warded.Clear();
+            foreach (var t in _world.VehicleList)
+            {
+                if (!t.IsAlive || !t.Def.Static || t.Def.Fort == null || t.Def.Wards != null)
+                {
+                    if (t.WardFrom.IsValid) Drop(t);
+                    continue;
+                }
+                Vehicle? from = null;
+                var best = float.MaxValue;
+                foreach (var e in _wardens)
+                {
+                    if (e.Team != t.Team) continue;
+                    var d2 = Vector2.DistanceSquared(e.Position, t.Position);
+                    var r = e.Def.Wards!.Radius;
+                    if (d2 > r * r || d2 >= best) continue;
+                    from = e;
+                    best = d2;
+                }
+                if (from == null)
+                {
+                    if (t.WardFrom.IsValid) Drop(t);
+                    continue;
+                }
+                var ward = from.Def.Wards!;
+                var full = ward.Hp * (from.MaxHp / MathF.Max(1f, from.Def.MaxHp));
+                if (t.WardFrom != from.Id)
+                {
+                    t.WardFrom = from.Id;
+                    t.WardHp = full;
+                }
+                else if (t.WardHp < full && now - t.WardHitAt >= ward.Recharge) t.WardHp = full;
+                t.WardFull = full;
+                _warded.Add(t);
+            }
+        }
+
+        private static void Drop(Vehicle t)
+        {
+            t.WardFrom = default;
+            t.WardHp = 0f;
+            t.WardFull = 0f;
         }
 
         /// <summary>Any dome up this step (a quick way out for the damage path).</summary>
@@ -75,18 +134,31 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>What is left of a hit on <paramref name="victim"/> after the dome over it (if any) has taken its share.</summary>
         internal float Absorb(Vehicle victim, float damage, DamageType type, in HitInfo hit)
         {
-            if (_up.Count == 0 || !(damage > 0f) || type == DamageType.Energy || hit.Kind is HitKind.Burn or HitKind.Redirect or HitKind.Mine) return damage;
-            var dome = Covering(victim, hit.Attacker);
-            if (dome == null) return damage;
+            if ((_up.Count == 0 && _warded.Count == 0) || !(damage > 0f) || type == DamageType.Energy || hit.Kind is HitKind.Burn or HitKind.Redirect or HitKind.Mine) return damage;
+            var dome = _up.Count > 0 ? Covering(victim, hit.Attacker) : null;
+            // A tower shield only where no dome covers the tower: the two never add up. It stops the rounds aimed at the
+            // tower (direct hits and piercing rounds), not the blasts of shells, rockets and bombs round it.
+            if (dome == null) return hit.Kind is HitKind.Direct or HitKind.Pierce ? AbsorbWard(victim, damage) : damage;
             var taken = MathF.Min(damage, dome.DomeHp);
             dome.DomeHp -= taken;
             dome.DomeHitAt = _world.Time;
-            _world.Emit(SimEvent.DomeStruck(dome, victim.Position, taken));
+            _world.Emit(SimEvent.DomeStruck(dome, victim.Position, taken, hit.Origin, hit.Indirect || hit.Top, taken >= damage - 0.01f));
             if (dome.DomeHp <= 0.01f)
             {
                 dome.DomeHp = 0f;
                 _world.Emit(SimEvent.DomeSwitched(dome, false));
             }
+            return damage - taken;
+        }
+
+        /// <summary>A tower's own shield takes what it can of a hit (its generator's), and waits out its recharge again.</summary>
+        private float AbsorbWard(Vehicle victim, float damage)
+        {
+            if (!(victim.WardHp > 0f) || !victim.WardFrom.IsValid) return damage;
+            var taken = MathF.Min(damage, victim.WardHp);
+            victim.WardHp -= taken;
+            victim.WardHitAt = _world.Time;
+            if (victim.WardHp <= 0.01f) victim.WardHp = 0f;
             return damage - taken;
         }
 

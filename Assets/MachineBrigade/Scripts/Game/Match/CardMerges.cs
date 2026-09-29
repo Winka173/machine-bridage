@@ -28,10 +28,35 @@ namespace MachineBrigade.Game.Match
             ["atgm_carrier"] = "fpv_carrier",
             ["sapper"] = "engineer_vehicle",
             [GunPit] = GunTurret,
+            // Play-test 7 (roster version 5, DECISIONS 22P): the Gunship support card became the AC-130 aircraft card again.
+            ["gunship_strike"] = "sky_gunship",
         };
 
-        /// <summary>Cards gone with nothing in their place (the sky gunship is only the Gunship item's aircraft now).</summary>
-        public static readonly string[] Retired = { "sky_gunship" };
+        /// <summary>
+        /// Cards gone with nothing in their place. None now: the sky gunship, retired in prompt 2, is the AC-130 aircraft card
+        /// again (play-test 7); a save migrated before kept the refund, one not yet migrated keeps the card.
+        /// </summary>
+        public static readonly string[] Retired = System.Array.Empty<string>();
+
+        /// <summary>Tower branches gone (prompt 20 L.1: the C-RAM's Hunter made way for the Iron Dome): a choice of one is dropped.</summary>
+        public static readonly string[] RetiredBranches = { "c_ram.hunter" };
+
+        /// <summary>
+        /// The tower-branch rework (DECISIONS 19T): remade branches and the nearest new one a choice moves to (the same
+        /// slot, A or B; the ids that still describe their branch were kept: the gun turret's, the Patriot's, the heavy
+        /// fortress's, the counter-battery howitzer's).
+        /// </summary>
+        public static readonly IReadOnlyDictionary<string, string> RenamedBranches = new Dictionary<string, string>
+        {
+            ["rocket_turret.thermo"] = "rocket_turret.guided",
+            ["artillery_emplacement.ext"] = "artillery_emplacement.mortar",
+            ["shield_tower.pulse"] = "shield_tower.ward",
+            ["cp_relay.express"] = "cp_relay.loot",
+        };
+
+        /// <summary>The towers whose branches changed in the rework: a player's choice on one earns a free change and a news line.</summary>
+        public static readonly string[] ReworkedBranchTowers =
+            { "gun_turret", "rocket_turret", "artillery_emplacement", "missile_battery", "heavy_turret", "shield_tower", "cp_relay" };
 
         /// <summary>What the retired and merged premium cards cost: a player who bought one gets it back.</summary>
         public static readonly IReadOnlyDictionary<string, int> PremiumPrices = new Dictionary<string, int>

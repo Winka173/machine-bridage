@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Effects
                     if (sim.IsPartBroken(i)) continue;
                     var part = sim.Def.Parts[i];
                     var at = sim.PartPosition(i);
-                    var point = new Vector3(at.X, part.Height * sim.Def.Scale + (sim.Flying ? sim.Def.Altitude : 0f), at.Y);
+                    var point = new Vector3(at.X, part.Height * sim.Def.Scale + (sim.Flying ? sim.Height : 0f), at.Y);
                     Ring(point, Mathf.Max(3f, part.Radius * 2.2f) * (1f + near), new Color(2.8f, 0.9f + near, 0.3f, 0.9f));
                 }
             }

@@ -41,6 +41,10 @@ namespace MachineBrigade.Sim.Bosses
             v.InitParts();
             // Prompt 18: its big attack's clock.
             JoinBig(v);
+            // Prompt 19: altitude tiers (the opening in orbit, its schedule) and its pods' clock.
+            JoinTiers(v);
+            // Prompt 20: its workshop's clock and its own route.
+            JoinP20(v);
             var now = _world.Time;
             var def = v.Def;
             if (def.Burrow is { } burrow) v.BurrowNext = now + burrow.First;
@@ -48,7 +52,7 @@ namespace MachineBrigade.Sim.Bosses
             if (def.Bombard is { } bombard) v.BombardNext = now + bombard.First;
             if (def.RadioSpawn != null) _world.Emit(SimEvent.RadioMessage(def.RadioSpawn, v.Team));
             // Prompt 16: its escorts (they come in on the next step) and where its fire trail starts.
-            JoinEscorts(v);
+            if (!EscortsLater(v)) JoinEscorts(v);
             v.TrailFrom = v.Position;
             foreach (var guard in def.Guards)
             {
@@ -74,6 +78,9 @@ namespace MachineBrigade.Sim.Bosses
             StepTrails(now);
             StepEscorts(now);
             StepBig(now, dt);
+            StepTiers(now);
+            StepP20(now, dt);
+            StepDuels(now);
             foreach (var (id, team, at, heading) in _spawns) _world.SpawnVehicle(id, team, at, heading);
             _spawns.Clear();
         }
@@ -87,8 +94,10 @@ namespace MachineBrigade.Sim.Bosses
                 case Vehicle.BurrowState.Surface:
                     // Its drill broken (prompt 9): it can no longer go under.
                     if (now < v.BurrowNext || v.Stunned || v.Transforming || v.BurrowOff) return;
+                    // Prompt 20 J.4: a submarine's last phase: it stays up for good; nor does it dive while it launches.
+                    if (b.Sea && ((b.StopPhase >= 0 && v.Phase >= b.StopPhase) || v.BodyShut || v.BigAttack is { Stage: not BigStage.Ready })) return;
                     // Nothing on the ground to go under: look again in a moment.
-                    if (BiggestGroup(v, out _) < 1)
+                    if (!b.Sea && BiggestGroup(v, out _) < 1)
                     {
                         v.BurrowNext = now + 3.0;
                         return;
@@ -102,12 +111,17 @@ namespace MachineBrigade.Sim.Bosses
                     if (now < v.BurrowNext) return;
                     v.Burrow = Vehicle.BurrowState.Under;
                     v.Invulnerable = true;
-                    BiggestGroup(v, out v.BurrowGoal);
+                    if (b.Sea)
+                    {
+                        v.BurrowGoal = SeaGoal(v);
+                        v.BurrowUntil = now + b.UnderIn(v.Phase);
+                    }
+                    else BiggestGroup(v, out v.BurrowGoal);
                     return;
                 case Vehicle.BurrowState.Under:
                 {
                     // Follows the group as it moves (checked every step: the group is cheap to find).
-                    if (_world.Tick % 10 == 0 && BiggestGroup(v, out var goal) > 0) v.BurrowGoal = goal;
+                    if (!b.Sea && _world.Tick % 10 == 0 && BiggestGroup(v, out var goal) > 0) v.BurrowGoal = goal;
                     var to = v.BurrowGoal - v.Position;
                     var distance = to.Length();
                     var stepLength = b.Speed * dt;
@@ -118,6 +132,8 @@ namespace MachineBrigade.Sim.Bosses
                         return;
                     }
                     v.Position = _world.ClampToMap(v.BurrowGoal);
+                    // A submarine waits out its time under before the water boils.
+                    if (b.Sea && now < v.BurrowUntil) return;
                     v.Burrow = Vehicle.BurrowState.Cracking;
                     // Prompt 18: a big dive cracks the ground for its big attack's warning.
                     var warn = v.BigQuake ? QuakeWarned(v, v.Position, b.Warn) : b.Warn;
@@ -130,11 +146,21 @@ namespace MachineBrigade.Sim.Bosses
                     v.Burrow = Vehicle.BurrowState.Surface;
                     v.Invulnerable = false;
                     v.ExposedUntil = now + b.Exposed;
-                    v.BurrowNext = now + b.Surface;
-                    Quake(v, b, now);
+                    v.BurrowNext = now + (b.Sea ? b.SurfaceIn(v.Phase) : b.Surface);
+                    if (!b.Sea || b.Damage > 0f) Quake(v, b, now);
                     _world.Emit(SimEvent.Burrow(v, 2, v.Position));
                     return;
             }
+        }
+
+        /// <summary>Prompt 20 J.4: where a submarine comes up next: another stretch of its lane, well away from where it went down.</summary>
+        private Vector2 SeaGoal(Vehicle v)
+        {
+            if (_world.Map.Sea is not { } sea || v.Def.Naval is not { } naval || sea.Lane(naval.LaneFor(v.Phase)) is not { } lane) return v.Position;
+            var f = sea.Frame(v.Position);
+            var u = f.X;
+            for (var k = 0; k < 6 && MathF.Abs(u - f.X) < lane.Patrol * 0.5f; k++) u = ((float)_world.Random.NextDouble() * 2f - 1f) * lane.Patrol;
+            return sea.At(u, lane.W);
         }
 
         /// <summary>The ground vehicles of the other side round its densest spot: how many, and where.</summary>

@@ -31,6 +31,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>The player's fortress against waves that never stop, until the HQ falls.</summary>
         Endless,
+
+        /// <summary>Prompt 21: the Sandbox (a battle set up by hand; no rewards).</summary>
+        Sandbox,
     }
 
     public enum WeatherKind
@@ -114,6 +117,8 @@ namespace MachineBrigade.Game.Match
             "scout_heli", "attack_helicopter", "gunship_heli", "strike_drone", "attack_jet",
             "ifv", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber",
+            // Play-test 7 (DECISIONS 22P): the AC-130 is an aircraft card again (its support card is gone).
+            "sky_gunship",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
             // Prompt 17 D: the ATGM carrier, A-10, Ka-52 and sapper were folded into other cards (CardMerges).
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
@@ -215,6 +220,18 @@ namespace MachineBrigade.Game.Match
             // Prompt 16: a rocky coast on the sea (Leviathan's battlefield), in the skirmish rotation too.
             new("lighthousebay", "temperate", "anchor",
                 new[] { WeatherKind.Overcast, WeatherKind.Clear, WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Night }),
+            // Prompt 20 M: a terraced open-pit mine (the excavator's battlefield); dust storms blow off the spoil heaps.
+            new("openpit", "desert", "gear",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Sandstorm, WeatherKind.Overcast, WeatherKind.Night }),
+            // A snowbound spaceport: snow and night launches under the floodlights.
+            new("orbitalgate", "snow", "globe",
+                new[] { WeatherKind.Snow, WeatherKind.Clear, WeatherKind.Night, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Night }),
+            // Prompt 22 E: Hegemon's old tank works (indoor lanes: rain on the roofs, smoke and night shifts) and the
+            // capital's old town.
+            new("foundry", "urban", "gear",
+                new[] { WeatherKind.Overcast, WeatherKind.Clear, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Night, WeatherKind.Night }),
+            new("veyra_old_quarter", "urban", "tower",
+                new[] { WeatherKind.Clear, WeatherKind.Night, WeatherKind.Overcast, WeatherKind.Rain, WeatherKind.Fog, WeatherKind.Storm }),
         };
 
         public static string Map { get; set; } = "ashfield";
@@ -471,8 +488,12 @@ namespace MachineBrigade.Game.Match
             ApplyLanguage();
         }
 
+        /// <summary>Checks that tap through the screens turn saving off, so they never write the player's saved settings.</summary>
+        internal static bool SaveSuspended { get; set; }
+
         public static void Save()
         {
+            if (SaveSuspended) return;
             // An empty deck would mean "anything" to the simulation; refill it instead.
             if (DeckVehicles.Count == 0) DeckVehicles.AddRange(DefaultVehicles);
             if (DeckSupports.Count == 0) DeckSupports.AddRange(DefaultSupports);

@@ -477,9 +477,9 @@ namespace MachineBrigade.Editor
             var lasers = new LaserBeams(materials, emitters, decals, root);
             var catalog = MachineBrigade.Game.Match.GameContent.LoadCatalog();
             var ironBeam = catalog.Weapons["hel_beam"];
-            var saucer = catalog.Weapons["saucer_laser"];
+            var orbital = catalog.Weapons["orbital_laser"];
 
-            // Row 1: the Iron Beam on a helicopter 12 m up. Row 2: the saucer's beam from 20 m up into the ground.
+            // Row 1: the Iron Beam on a helicopter 12 m up. Row 2: the Silver Bug's orbital laser from 20 m up into the ground.
             var focusA = new Vector3(0f, 4f, 0f);
             var launcher = models.Spawn(models.Has("iron_beam") ? "iron_beam" : "sam_launcher", 0, root);
             launcher.Root.transform.SetPositionAndRotation(new Vector3(-8f, 0f, -8f), Quaternion.Euler(0f, 45f, 0f));
@@ -517,7 +517,7 @@ namespace MachineBrigade.Editor
                         heli.Root.transform.position = hit - Vector3.up * 0.4f;
                         lasers.Fire(null, 0, emitterA, hit, MachineBrigade.Sim.Core.EntityId.None, true, ironBeam, time, 0.16f);
                         var sweep = groundAt + new Vector3(Mathf.Sin(time * 2f) * 1.5f, 0f, -Mathf.Sin(time * 2f) * 1.5f);
-                        lasers.Fire(null, 0, emitterB, sweep, MachineBrigade.Sim.Core.EntityId.None, false, saucer, time, 0.16f);
+                        lasers.Fire(null, 0, emitterB, sweep, MachineBrigade.Sim.Core.EntityId.None, false, orbital, time, 0.16f);
                     }
                     lasers.Tick(time, step, null);
                     emitters.Tick(time, step);
@@ -615,8 +615,103 @@ namespace MachineBrigade.Editor
             return camera;
         }
 
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21H): the burning-vehicle fire on battle tanks at 28 %, 15 % and 4 % health (High), the
+        /// same 4 % on Low, and a fifth at 10 % driving left at 6 m/s (its fire on the hull, its smoke streaming behind);
+        /// 2.5 s into the fire. Play-test 8 (DECISIONS 22R): the three stages, the fires' light on the hulls and the
+        /// ground (HeatLights; not on the Low twin, which would be the fifth), no fog. Batch mode (with graphics):
+        /// -executeMethod MachineBrigade.Editor.EffectShots.HullFires -mbShotsOut &lt;png&gt;.
+        /// </summary>
+        [MenuItem("Machine Brigade/Render Hull Fire Shots")]
+        public static void HullFires()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/hullfires.png");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260929);
+            var graphics = Game.Match.MatchSettings.Graphics;
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Shots").transform;
+            Stage(materials, root, 200f);
+            var fog = RenderSettings.fog;
+            RenderSettings.fog = false;
+            // A darker field and a lower sun, as on the battlefields, so the fires' light on hulls and ground shows.
+            foreach (var r in root.GetComponentsInChildren<MeshRenderer>())
+                if (r.name == "Plane") r.sharedMaterial.SetColor("_BaseColor", new Color(0.34f, 0.31f, 0.26f));
+            foreach (var l in root.GetComponentsInChildren<Light>()) l.intensity = 1.05f;
+            var camera = Camera(root);
+            camera.orthographicSize = 7.5f;
+            var fire = new HullFire(materials, root);
+            var right = camera.transform.right;
+            right.y = 0f;
+            right.Normalize();
+            var healths = new[] { 0.28f, 0.15f, 0.04f, 0.04f, 0.1f };
+            var tanks = new Transform[healths.Length];
+            for (var i = 0; i < tanks.Length; i++)
+            {
+                tanks[i] = models.Spawn("main_battle_tank", 1, root).Root.transform;
+                tanks[i].position = right * ((i - 2) * 8f);
+                tanks[i].rotation = Quaternion.Euler(0f, 30f + i * 20f, 0f);
+            }
+            // The fifth drives towards the fourth (the fire rides it; the smoke trails): it ends where it is placed.
+            var drive = -right * 6f;
+            tanks[4].rotation = Quaternion.LookRotation(drive.normalized);
+            tanks[4].position -= drive * 2.5f;
+            const float step = 1f / 60f;
+            float time = 0f, next = 0f, nextLow = 0f;
+            var beat = 0;
+            var systems = root.GetComponentsInChildren<ParticleSystem>(true);
+            while (time < 2.5f)
+            {
+                time += step;
+                if (time >= next)
+                {
+                    next += HullFire.Beat;
+                    Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
+                    for (var i = 0; i < 3; i++) fire.Feed(tanks[i], 2.2f, 2.4f, false, i, healths[i], beat);
+                    fire.Feed(tanks[4], 2.2f, 2.4f, false, 4, healths[4], beat, drive, tanks[4].Find("Turret"));
+                    beat++;
+                }
+                if (time >= nextLow)
+                {
+                    nextLow += HullFire.LowBeat;
+                    Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.Low;
+                    fire.Feed(tanks[3], 2.2f, 2.4f, false, 3, healths[3], beat);
+                    Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
+                }
+                tanks[4].position += drive * step;
+                HeatLights.Begin();
+                foreach (var i in new[] { 0, 1, 2, 4 }) HullFire.Light(tanks[i], 2.2f, 2.4f, false, i, healths[i], time);
+                HeatLights.Commit();
+                foreach (var ps in systems) ps.Simulate(step, false, false, false);
+            }
+            Game.Match.MatchSettings.Graphics = graphics;
+            var size = new Vector2Int(1600, 560);
+            var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.aspect = size.x / (float)size.y;
+            camera.targetTexture = rt;
+            camera.transform.position = Vector3.up * 1.2f - camera.transform.forward * 80f;
+            camera.Render();
+            RenderTexture.active = rt;
+            var frame = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
+            frame.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
+            frame.Apply();
+            RenderTexture.active = null;
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)) ?? ".");
+            File.WriteAllBytes(output, frame.EncodeToPNG());
+            Debug.Log($"[EffectShots] wrote {Path.GetFullPath(output)}; hull fire particles alive {fire.Alive}");
+            HeatLights.Clear();
+            RenderSettings.fog = fog;
+            camera.targetTexture = null;
+            rt.Release();
+            Object.DestroyImmediate(frame);
+            models.Dispose();
+            materials.Dispose();
+        }
+
         private static string Argument(string name)
         {
+
             var args = System.Environment.GetCommandLineArgs();
             for (var i = 0; i < args.Length - 1; i++)
                 if (args[i] == name) return args[i + 1];

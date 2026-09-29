@@ -73,11 +73,17 @@ namespace MachineBrigade.Sim.Bosses
         /// <summary>Drones and missiles are checked against the other side's anti-air this often (ticks).</summary>
         private const int FlyerTicks = 5;
 
+        /// <summary>
+        /// Play-test 4 (DECISIONS 19R): a big attack's missile is never faster than the attack helicopter's Hellfire
+        /// (24 m/s); a long way off it flies longer than its entry's "flight".
+        /// </summary>
+        internal const float MissileTopSpeed = 24f;
+
         // ================================================================== joining
 
-        private void JoinBig(Vehicle v)
+        private void JoinBig(Vehicle v, BigAttackDef? instead = null)
         {
-            if (v.Def.BigAttack is not { } def || !v.HasParts && def.Strikes[0].Parts.Count > 0) return;
+            if ((instead ?? v.Def.BigAttack) is not { } def || !v.HasParts && def.Strikes[0].Parts.Count > 0) return;
             var parts = new List<int>();
             foreach (var s in def.Strikes)
                 foreach (var id in s.Parts)
@@ -140,6 +146,8 @@ namespace MachineBrigade.Sim.Bosses
                 var i = v.Def.PartIndex(id);
                 if (i >= 0 && !v.IsPartBroken(i)) n++;
             }
+            // Prompt 20: a strike that any broken part stops (Ixion's charge on a broken wheel).
+            if (s.Cut == 0f && n < s.Parts.Count) return 0;
             return n;
         }
 
@@ -171,7 +179,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             var def = s.Def;
             var quake = def.Strikes[0].Shape == BigShape.Quake;
-            if (v.Transforming || v.Stunned || v.HoldFire || (v.Burrowed && !quake) || v.Landing)
+            if (s.Off || v.Transforming || v.Stunned || v.HoldFire || (v.Burrowed && !quake && !def.Surface) || v.Landing || v.Charging)
             {
                 s.Next = now + 1.0;
                 return;
@@ -223,6 +231,8 @@ namespace MachineBrigade.Sim.Bosses
             s.Axis = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
             s.Blind = def.Spotter != null && v.IsPartBroken(v.Def.PartIndex(def.Spotter));
             s.WasStunned = false;
+            // Prompt 20 J.4: a diving boss comes up to launch; only the parts carrying it show until it fires.
+            if (def.Surface) Rise(v, warn);
             Plan(v, s, now);
             Hold(v, s, true);
             if (def.Exposed > 1f) v.BigTaken = def.Exposed;
@@ -281,6 +291,19 @@ namespace MachineBrigade.Sim.Bosses
                     aim = list[0];
                     return true;
                 }
+                case BigAim.Prey:
+                {
+                    // Prompt 22 E: the first of its prey (an aircraft, else an anti-air unit) within reach; with none, the biggest group.
+                    foreach (var st in def.Strikes)
+                    {
+                        if (st.Prey == BigPrey.None || Armed(v, st) == 0) continue;
+                        var prey = Prey(v, st, def.Reach, 1);
+                        if (prey.Count == 0) continue;
+                        aim = prey[0].Position;
+                        return true;
+                    }
+                    return Spot(v, def.Reach, false, out aim) > 0;
+                }
                 default:
                     return Spot(v, def.Reach, false, out aim) > 0;
             }
@@ -318,10 +341,92 @@ namespace MachineBrigade.Sim.Bosses
             return count;
         }
 
+        /// <summary>
+        /// Prompt 19 F: up to <paramref name="n"/> spots for rods of <paramref name="radius"/>: the middles of the other side's
+        /// densest groups within reach (0: anywhere), each unit weighing more the thicker its armour (heavy tanks first),
+        /// no two rings overlapping much; with fewer groups than rods the rest go on the heaviest units not yet under a
+        /// ring, then round the first spot. Deterministic (vehicle-list order, ties by id).
+        /// </summary>
+        private List<Vector2> RodSpots(Vehicle v, float reach, int n, float radius, Vector2 fallback)
+        {
+            var spots = new List<Vector2>();
+            var candidates = new List<(Vector2 at, float weight, int id)>();
+            var list = _world.VehicleList;
+            foreach (var e in list)
+            {
+                if (!Target(v, e, false) || (reach > 0f && Vector2.DistanceSquared(e.Position, v.Position) > reach * reach)) continue;
+                var sum = Vector2.Zero;
+                var weight = 0f;
+                var count = 0;
+                foreach (var o in list)
+                {
+                    if (!Target(v, o, false) || Vector2.DistanceSquared(o.Position, e.Position) > radius * radius) continue;
+                    weight += RodWeight(o);
+                    sum += o.Position;
+                    count++;
+                }
+                candidates.Add((sum / count, weight, e.Id.Value));
+            }
+            candidates.Sort((a, b) => a.weight != b.weight ? b.weight.CompareTo(a.weight) : a.id.CompareTo(b.id));
+            var apart = radius * 1.6f;
+            foreach (var c in candidates)
+            {
+                if (spots.Count >= n) break;
+                var clear = true;
+                foreach (var p in spots)
+                    if (Vector2.DistanceSquared(p, c.at) < apart * apart) clear = false;
+                if (clear) spots.Add(_world.ClampToMap(c.at));
+            }
+            // Fewer groups than rods: round the first spot, a ring's width out, evenly.
+            var centre = spots.Count > 0 ? spots[0] : fallback;
+            for (var k = 0; spots.Count < n && k < n * 2; k++)
+            {
+                var a = k * SimMath.Tau / Math.Max(1, n - 1);
+                spots.Add(_world.ClampToMap(centre + new Vector2(MathF.Cos(a), MathF.Sin(a)) * radius * 1.7f));
+            }
+            return spots;
+        }
+
+        /// <summary>How much a rod wants a unit: the thicker its armour the more (a heavy tank before a jeep), a tower a little.</summary>
+        private static float RodWeight(Vehicle o) => o.Def.Static ? 3f : (1f + o.Def.Armour.Front) * (1f + o.Def.Armour.Front) + MathF.Max(1f, o.Def.CpCost) * 0.5f;
+
         /// <summary>What a big attack aims at: the other side's ground units and towers (not walls, not bosses).</summary>
         private static bool Target(Vehicle v, Vehicle e, bool still) =>
             e.IsAlive && e.Team != v.Team && e.Team >= 0 && !e.Flying && !e.Invulnerable && !e.Def.Untargetable && !e.Def.Obstacle && !e.Def.Boss &&
             (!still || e.Def.Static || !e.IsMoving);
+
+        /// <summary>
+        /// Prompt 22 E: a homing strike's prey within <paramref name="reach"/> of the boss (0: anywhere), best first, at most
+        /// <paramref name="max"/>: aircraft the dearest first (then the nearest); anti-air (vehicles and towers whose main
+        /// weapon hits aircraft) the strongest first. A hidden stealth unit counts only once it is seen.
+        /// </summary>
+        internal List<Vehicle> Prey(Vehicle v, BigStrikeDef st, float reach, int max)
+        {
+            var list = new List<Vehicle>();
+            foreach (var e in _world.VehicleList)
+            {
+                if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Invulnerable || e.Def.Untargetable || e.Def.Obstacle || e.Def.Boss) continue;
+                if (reach > 0f && Vector2.DistanceSquared(e.Position, v.Position) > reach * reach) continue;
+                var fits = st.Prey switch
+                {
+                    BigPrey.Air => e.Flying,
+                    BigPrey.AntiAir => !e.Flying && e.Arms.Length > 0 && e.Arms[0].CanTarget(true) && Combat.CombatSystem.IsAntiAir(e.Arms[0]),
+                    _ => false,
+                };
+                if (fits && e.IsVisibleTo(v.Team)) list.Add(e);
+            }
+            list.Sort((a, b) =>
+            {
+                var pa = a.Def.CpCost + (a.Def.Static ? 4f : 0f);
+                var pb = b.Def.CpCost + (b.Def.Static ? 4f : 0f);
+                if (MathF.Abs(pa - pb) > 1e-3f) return pb.CompareTo(pa);
+                var da = Vector2.DistanceSquared(a.Position, v.Position);
+                var db = Vector2.DistanceSquared(b.Position, v.Position);
+                return da != db ? da.CompareTo(db) : a.Id.Value.CompareTo(b.Id.Value);
+            });
+            if (list.Count > max) list.RemoveRange(max, list.Count - max);
+            return list;
+        }
 
         /// <summary>The other side's base for a volley: its HQ, its towers (the toughest first), then its biggest groups.</summary>
         private List<Vector2> BaseSpots(Vehicle v, int count)
@@ -400,7 +505,7 @@ namespace MachineBrigade.Sim.Bosses
                         for (var k = 0; k < n; k++)
                         {
                             var at = spots[k % spots.Count];
-                            var due = fire + 0.35 * k + st.Flight;
+                            var due = fire + 0.35 * k + MathF.Max(st.Flight, Vector2.Distance(v.Position, at) / MissileTopSpeed);
                             s.Points.Add((at, due));
                             // One ring a target (the second missile at the same spot shares it).
                             if (k < spots.Count) s.ZoneList.Add(new BigZone(at, st.Radius, due, true));
@@ -410,9 +515,43 @@ namespace MachineBrigade.Sim.Bosses
                     case BigShape.Drop:
                         s.ZoneList.Add(new BigZone(Offset(v, st.At), 8f, fire, false));
                         break;
+                    case BigShape.Rods:
+                    {
+                        // Prompt 19 F: one rod on each group, each its own ring and moment (a fifth of a second apart).
+                        var spots = RodSpots(v, def.Reach, RoundsOf(v, st), st.Radius, s.Aim);
+                        // From the craft itself while it is still in orbit, else from the satellite it left there (since play-test 6
+                        // it comes down within the first second, so they all fall from the satellite).
+                        s.FromSatellite = v.HasSatellite;
+                        s.Origin = v.HasSatellite ? v.SatelliteAt : v.Position;
+                        for (var k = 0; k < spots.Count; k++)
+                        {
+                            var due = fire + 0.2 * k;
+                            s.Points.Add((spots[k], due));
+                            s.ZoneList.Add(new BigZone(spots[k], st.Radius, due, true));
+                        }
+                        break;
+                    }
                     case BigShape.Buff:
                         s.ZoneList.Add(new BigZone(v.Position, st.Reach, fire, false));
                         break;
+                    case BigShape.Arc:
+                    {
+                        // Three rings across the swing (the view draws rings and strips only).
+                        var half = st.Width * 0.5f * MathF.PI / 180f;
+                        for (var k = -1; k <= 1; k++)
+                        {
+                            var dir = SimMath.Forward(v.Heading + k * half * 0.66f);
+                            s.ZoneList.Add(new BigZone(_world.ClampToMap(SwingCentre(v) + dir * st.Radius * 0.55f), st.Radius * 0.5f, fire, true));
+                        }
+                        break;
+                    }
+                    case BigShape.Charge:
+                    {
+                        var to = ChargeEnd(v, s.Axis, st.Length);
+                        var mid = (v.Position + to) * 0.5f;
+                        s.ZoneList.Add(new BigZone(mid, s.Axis, Vector2.Distance(v.Position, to) * 0.5f, st.Width * 0.5f, fire, true, 1f));
+                        break;
+                    }
                 }
             }
         }
@@ -429,9 +568,13 @@ namespace MachineBrigade.Sim.Bosses
         {
             var armed = Armed(v, st);
             if (armed <= 0) return 0;
-            if (st.PerPart > 0) return st.PerPart * armed;
-            if (st.Every > 0f) return st.FullCount;
-            return st.Count;
+            int n;
+            if (st.PerPart > 0) n = st.PerPart * armed;
+            else if (st.Every > 0f) n = st.FullCount;
+            else n = st.Count;
+            // Prompt 20: a part carrying it broken cuts it to its share (Daedalus: six pods fall as three).
+            if (st.Cut > 0f && st.PerPart <= 0 && armed < st.Parts.Count) n = Math.Max(1, (int)MathF.Round(n * st.Cut));
+            return n;
         }
 
         /// <summary>Its mounts hold their fire while it charges and fires (A.2), and fire again after.</summary>
@@ -479,6 +622,7 @@ namespace MachineBrigade.Sim.Bosses
 
         private void Cancel(Vehicle v, BigAttackState s)
         {
+            v.BodyShut = false;
             _world.Emit(SimEvent.Big(v, s.Def.Id, 2, s.Aim, 0f));
             Finish(v, s);
         }
@@ -502,6 +646,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             var def = s.Def;
             var scale = DamageOf(v, ScaleOf(v, settings));
+            s.ChargeScale = scale;
             s.Stage = BigStage.Firing;
             s.Rounds = 0;
             s.ShotDown = 0;
@@ -575,12 +720,24 @@ namespace MachineBrigade.Sim.Bosses
                     case BigShape.Drop:
                         Drop(v, s, st, n);
                         break;
+                    case BigShape.Rods:
+                        for (var k = 0; k < s.Points.Count; k++) Round(v, s, st, s.Points[k].at, s.Points[k].due, scale, k);
+                        break;
                     case BigShape.Buff:
                         s.BuffUntil = now + st.Seconds;
                         s.EndsAt = Math.Max(s.EndsAt, s.BuffUntil);
                         break;
+                    case BigShape.Arc:
+                        Swing(v, st, scale);
+                        break;
+                    case BigShape.Charge:
+                        BeginCharge(v, st, now);
+                        s.EndsAt = Math.Max(s.EndsAt, v.ChargeEnd);
+                        break;
                 }
             }
+            // Prompt 20 J.4: launched; it may go down again.
+            if (def.Surface) v.BodyShut = false;
             _world.Emit(SimEvent.Big(v, def.Id, 1, s.Aim, 0f));
         }
 
@@ -622,6 +779,8 @@ namespace MachineBrigade.Sim.Bosses
                 if (now < b.Due) continue;
                 _bigBlasts.RemoveAt(i--);
                 BlastAt(b.Boss, b.Strike, b.At, b.Scale, b.Side);
+                // Prompt 20 E.3: a pod lands its vehicles where it came down.
+                if (b.Strike.Seats > 0 && b.Boss.IsAlive) Seat(b.Boss, b.State, b.Strike, b.At);
                 if (b.Strike.Fire is { } fire) Burn(b.Boss, b.At, fire, b.Side, now);
             }
         }
@@ -641,7 +800,10 @@ namespace MachineBrigade.Sim.Bosses
         {
             var damage = s.Damage * scale;
             var now = _world.Time;
-            var info = new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
+            // Prompt 19 F: a rod is a kinetic penetrator, not a blast's fragments: its own penetration on the roof.
+            var info = s.Shape == BigShape.Rods
+                ? new HitInfo(boss, boss.Team, null, at, HitKind.Direct, true).WithPen(s.Pen, true)
+                : new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
             var half = side.LengthSquared() > 0.01f;
             foreach (var e in _world.VehicleList)
             {
@@ -735,6 +897,7 @@ namespace MachineBrigade.Sim.Bosses
             foreach (var st in def.Strikes)
             {
                 if (st.Shape == BigShape.Sweep && s.SweepDone >= 0f && s.SweepDone < 1f) Sweep(v, s, st, now);
+                if (st.Shape == BigShape.Charge && v.Charging) StepCharge(v, st, s.ChargeScale, now);
                 if (st.Shape == BigShape.Buff && now < s.BuffUntil)
                 {
                     // The antenna broken: the boost goes with it.
@@ -742,7 +905,7 @@ namespace MachineBrigade.Sim.Bosses
                     else Boost(v, st);
                 }
             }
-            if (now < s.EndsAt || (s.SweepDone >= 0f && s.SweepDone < 1f)) return;
+            if (now < s.EndsAt || (s.SweepDone >= 0f && s.SweepDone < 1f) || v.Charging) return;
             foreach (var b in _bigBlasts)
                 if (b.State == s) return;
             foreach (var f in _bigFlyers)
@@ -826,17 +989,22 @@ namespace MachineBrigade.Sim.Bosses
 
         private void Swarm(Vehicle v, BigAttackState s, BigStrikeDef st, int n, float scale, double now)
         {
-            // Its targets: the heaviest armour in the group first (it strikes the roof), at most so many.
+            // Its targets: the heaviest armour in the group first (it strikes the roof), at most so many; a strike with
+            // prey (prompt 22 E) takes its prey within the attack's reach, and the group round the aim only with none.
             _picked.Clear();
             var area = MathF.Max(8f, st.Area);
-            foreach (var e in _world.VehicleList)
-                if (Target(v, e, false) && Vector2.DistanceSquared(e.Position, s.Aim) <= area * area) _picked.Add(e);
-            _picked.Sort((a, b) =>
+            if (st.Prey != BigPrey.None) _picked.AddRange(Prey(v, st, s.Def.Reach, st.Targets));
+            if (_picked.Count == 0)
             {
-                var pa = a.Def.Armour.Front * 100 + a.Def.CpCost;
-                var pb = b.Def.Armour.Front * 100 + b.Def.CpCost;
-                return pa != pb ? pb.CompareTo(pa) : a.Id.Value.CompareTo(b.Id.Value);
-            });
+                foreach (var e in _world.VehicleList)
+                    if (Target(v, e, false) && Vector2.DistanceSquared(e.Position, s.Aim) <= area * area) _picked.Add(e);
+                _picked.Sort((a, b) =>
+                {
+                    var pa = a.Def.Armour.Front * 100 + a.Def.CpCost;
+                    var pb = b.Def.Armour.Front * 100 + b.Def.CpCost;
+                    return pa != pb ? pb.CompareTo(pa) : a.Id.Value.CompareTo(b.Id.Value);
+                });
+            }
             var targets = Math.Min(_picked.Count, st.Targets);
             for (var k = 0; k < n; k++)
             {

@@ -340,14 +340,14 @@ namespace MachineBrigade.Tests
         /// <summary>The screens with one main action (the rest, lists and settings, have none).</summary>
         private static readonly HashSet<string> WithPrimary = new()
         {
-            "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
+            "home", "campaign-chapter", "briefing", "comic", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
             "detail-weapons", "detail-armour",
             "shop-skins", "shop-units", "shop-items",
         };
 
         /// <summary>
-        /// Every rebuilt menu screen, with the demo profile: in Vietnamese at the four shapes, and in
-        /// Large text and in English at 16:9, passes every check.
+        /// Every rebuilt menu screen, with the demo profile: in Vietnamese at the four shapes and in Large text at 16:9, and in
+        /// English at 16:9 and 4:3 and in Large text at 16:9 (prompt 21 K), passes every check.
         /// </summary>
         [Test]
         public void EveryRebuiltScreenPassesEveryCheck([ValueSource(nameof(MenuScreenNames))] string screen)
@@ -357,7 +357,7 @@ namespace MachineBrigade.Tests
             DemoProfile.Use();
             try
             {
-                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0] }) })
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0], Shapes[3] }), (false, true, new[] { Shapes[0] }) })
                     foreach (var (name, size) in shapes)
                     {
                         Strings.Vietnamese = vietnamese;
@@ -387,7 +387,7 @@ namespace MachineBrigade.Tests
             DemoProfile.Use();
             try
             {
-                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0] }) })
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (true, true, new[] { Shapes[0] }), (false, false, new[] { Shapes[0], Shapes[3] }), (false, true, new[] { Shapes[0] }) })
                     foreach (var (name, size) in shapes)
                     {
                         Strings.Vietnamese = vietnamese;
@@ -644,6 +644,54 @@ namespace MachineBrigade.Tests
                 DemoProfile.Restore();
             }
             Assert.IsEmpty(failures, string.Join("\n", failures.Distinct().Take(60)));
+        }
+
+        // ------------------------------------------------------------------ prompt 21 G, lean (DECISIONS 21S): the Sandbox
+
+        /// <summary>The Sandbox's frames (not the battle HUD under them): what they cover of the screen.</summary>
+        private static float SandboxCover(VisualElement host, Vector2 size) => Cover(host.Q(className: "sb"), size);
+
+        /// <summary>
+        /// The Sandbox's screens (set-up at rest, the picker open, a unit's card, a sheet, a running battle with a boss and
+        /// the overlays' tray) pass every check at the four shapes (Vietnamese; English and Large text at 16:9), with the
+        /// run button the one main action; and they leave the battlefield clear: at rest (the rail and the bar) they cover
+        /// at most 12 % of the screen, with a unit's card open at most 30 % (prompt 11's compact HUD's bound).
+        /// </summary>
+        [Test]
+        public void TheSandboxIsLeanAndPassesEveryCheck()
+        {
+            var failures = new List<string>();
+            var report = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
+            try
+            {
+                foreach (var (vietnamese, large, shapes) in new[] { (true, false, Shapes), (false, false, new[] { Shapes[0] }), (true, true, new[] { Shapes[0] }) })
+                    foreach (var (name, size) in shapes)
+                        foreach (var screen in MachineBrigade.Editor.UiShots.SandboxScreenNames)
+                        {
+                            Strings.Vietnamese = vietnamese;
+                            MatchSettings.TextSize = large ? TextSize.Large : TextSize.Normal;
+                            var host = MachineBrigade.Editor.UiShots.BuildSandbox(_catalog, screen, out _);
+                            Lay(host, size);
+                            var label = $"{screen} {name}{(vietnamese ? "" : " en")}{(large ? " large" : "")}";
+                            failures.AddRange(Check(host.Q(className: "sb"), label, size, large, 1));
+                            if (vietnamese && !large && screen is "sandbox-setup" or "sandbox-card")
+                            {
+                                var cover = SandboxCover(host, size);
+                                report.Add($"{screen} {name} {cover * 100f:0.0}%");
+                                var most = screen == "sandbox-setup" ? 0.12f : 0.30f;
+                                if (cover > most) failures.Add($"{label}: the Sandbox covers {cover * 100f:0.0}% of the screen (at most {most * 100f:0}%)");
+                            }
+                        }
+            }
+            finally
+            {
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
+            }
+            Debug.Log("[SandboxCover] " + string.Join(" | ", report));
+            Assert.IsEmpty(failures, string.Join(Environment.NewLine, failures.Distinct().Take(60)) + Environment.NewLine + string.Join(Environment.NewLine, report));
         }
     }
 }

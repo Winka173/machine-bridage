@@ -55,6 +55,19 @@ design grid, so causeways, bridges and walls are drawn to the metre:
   * Coral Isles (desert): islands with sand beaches in a lagoon, joined by causeways, bridges
     and footbridges, a lighthouse on the centre island, fishing villages.
 
+Prompt 16 added Lighthouse Bay (temperate, a rocky coast on the sea); prompt 20 M two more, laid
+out the same way:
+  * Open-Pit Mine (desert): a terraced pit at the centre, three broken rings of rock stepping
+    down to its floor with ramps through each, haul roads down the benches and out to a crusher
+    plant and an ore loadout on the rim (factories, silos, tanks, gantries, conveyors), spoil
+    heaps on the flanks, truck depots by the camps. Its 14 m haul road through the pit is the
+    fixed route of a slow, very large boss (FIXED_ROUTES, written as the map's "routes"): the
+    ground 7 m either side of it stays open all the way, checked on the finished battlefield.
+  * Orbital Gateway (snow): a spaceport with a launch pad on either flank (the rocket between
+    its gantries, flame trenches, propellant tanks, blockhouses, sandbag walls), radar posts on
+    both camps' approaches, and a 60 x 60 m drop-pod field at the centre kept clear of anything
+    solid (floodlights and runway lights round its edge).
+
 Lava pools, river water and fords are 4 m surface tiles (lava and deep water block, fords do
 not); the map view merges them into smooth surfaces.
 
@@ -657,6 +670,9 @@ def keep_of(layouts, map_id):
     """What the outline must not cut: the core (camps, objectives, campaign routes and units, the
     fortress) never; the extras (roads, buildings) except in a map's forced bites."""
     circles, lines = campaign_keep(map_id)
+    # A fixed route (prompt 20 M) is kept like a campaign route, as wide as the ground it keeps open.
+    for pts in FIXED_ROUTES.get(map_id, {}).values():
+        lines.append((pts, ROUTE_HALF + 3.0))
     core_rects, extra_rects, roads = [], [], []
     for L in layouts:
         for t in L.teams:
@@ -3576,6 +3592,616 @@ DENSIFY_P16 = {
 }
 
 
+# ------------------------------------------------------------------------ prompt 20 M: Open-Pit Mine, Orbital Gateway
+# A fixed route (map data "routes": {name: [x0, z0, x1, z1, ...]}) is the road a very slow, very large
+# boss drives every time (the open-pit mine's bucket-wheel excavator, "kronos"). It is laid as a
+# ROUTE_ROAD haul road, and the ground ROUTE_HALF either side of it stays open all along: the nav
+# cells under it (sampled every ROUTE_STEP metres along, every half metre across) are kept free of
+# anything solid by the builder (clear_route), the map kit and the fill (warzone, densify), and main
+# checks them on the finished Conquest and Survival battlefield (check_route). The camps' hardpoints
+# may stand on it: the boss crushes towers and walls.
+ROUTE_HALF = 7.0
+ROUTE_STEP = 2.0
+ROUTE_ROAD = 14.0
+FIXED_ROUTES = {}     # map id -> {route name: [(x, z), ...]}
+
+
+def route_meta(map_id):
+    """A map's fixed routes (prompt 20 M), for every version of it: flat x, z pairs in metres."""
+    routes = FIXED_ROUTES.get(map_id)
+    if not routes:
+        return {}
+    return {'routes': {name: [round(v, 2) for p in pts for v in p] for name, pts in routes.items()}}
+
+
+@functools.lru_cache(maxsize=None)
+def route_cells(map_id):
+    """The nav cells (the square's 2 m grid) a map's fixed routes keep open: every cell under a
+    point up to ROUTE_HALF either side of the route, sampled every ROUTE_STEP metres along it."""
+    cells = set()
+    for pts in FIXED_ROUTES.get(map_id, {}).values():
+        for (ax, az), (bx, bz) in zip(pts, pts[1:]):
+            length = math.hypot(bx - ax, bz - az)
+            ux, uz = (bx - ax) / length, (bz - az) / length
+            steps = max(1, int(math.ceil(length / ROUTE_STEP)))
+            for k in range(steps + 1):
+                x, z = ax + ux * length * k / steps, az + uz * length * k / steps
+                for j in range(-int(ROUTE_HALF * 2), int(ROUTE_HALF * 2) + 1):
+                    off = j * 0.5
+                    cells.add((int(math.floor((x - uz * off + HALF) / CELL)), int(math.floor((z + ux * off + HALF) / CELL))))
+    return frozenset(cells)
+
+
+def on_route(map_id, x0, z0, x1, z1):
+    """Whether a blocking footprint, grown by the obstacle clearance as NavGrid fills it, would close
+    a cell of one of the map's fixed routes."""
+    cells = route_cells(map_id)
+    if not cells:
+        return False
+    a0 = int(math.floor((x0 - CLEARANCE + HALF) / CELL))
+    a1 = int(math.floor((x1 + CLEARANCE - 1e-4 + HALF) / CELL))
+    b0 = int(math.floor((z0 - CLEARANCE + HALF) / CELL))
+    b1 = int(math.floor((z1 + CLEARANCE - 1e-4 + HALF) / CELL))
+    return any((gx, gz) in cells for gx in range(a0, a1 + 1) for gz in range(b0, b1 + 1))
+
+
+def clear_route(L, map_id):
+    """Takes every blocking prop off a map's fixed routes (the ramps through the pit's rock rings
+    open to the route's full width). Returns how many went."""
+    keep = [(p, r) for p, r in zip(L.props, L.rects) if not (PROPS[p['def']].get('blocks', False) and on_route(map_id, *r))]
+    removed = len(L.props) - len(keep)
+    L.props, L.rects = [p for p, _ in keep], [r for _, r in keep]
+    return removed
+
+
+def check_route(L, map_id, what):
+    """Stops the build unless every cell of the map's fixed routes is open ground (props, the
+    outline) on a finished battlefield."""
+    if not FIXED_ROUTES.get(map_id):
+        return
+    blocked = L.blocked_grid(units=False)
+    n, nz = L.grid_n(), L.grid_nz()
+    cells = route_cells(map_id)
+    shut = sorted(c for c in cells if not (0 <= c[0] < n and 0 <= c[1] < nz) or blocked[c[1]][c[0]])
+    if shut:
+        spots = [(gx * CELL - HALF + 1, gz * CELL - HALF + 1) for gx, gz in shut[:4]]
+        raise SystemExit(f'{what}: a fixed route is closed within {ROUTE_HALF:g} m of it at {len(shut)} cells, e.g. {spots}')
+    for name, pts in FIXED_ROUTES[map_id].items():
+        length = sum(math.hypot(bx - ax, bz - az) for (ax, az), (bx, bz) in zip(pts, pts[1:]))
+        print(f'{what}: route {name} ({len(pts)} points, {length:.0f} m) open {ROUTE_HALF:g} m either side '
+              f'({len(cells)} cells checked every {ROUTE_STEP:g} m)')
+
+
+def polar(r, degrees):
+    """World x, z of a point `r` metres from the centre at `degrees` anticlockwise from east."""
+    a = math.radians(degrees)
+    return r * math.cos(a), r * math.sin(a)
+
+
+PIT_RINGS = (25.0, 48.0, 88.0)     # the pit's rock rings (radius of each): the floor's edge, the middle bench's, the rim
+PIT_BENCH = 68.0                   # the haul road's radius round the upper bench
+# The ramps through each ring besides the roads' (degrees, and each has its image at +180; the
+# opening in metres): the main cut down the camps' axis from the upper bench to the floor, and a
+# narrower ramp through the middle bench and the rim further round.
+PIT_RAMPS = {PIT_RINGS[0]: ((45.0, 24.0),), PIT_RINGS[1]: ((45.0, 24.0), (100.0, 14.0)), PIT_RINGS[2]: ((70.0, 14.0),)}
+# The excavator's road, from the north-east camp's road end down round the upper bench, straight
+# over the pit floor and up the far side (the same road mirrored) to the south-west camp's road end,
+# then on to just outside the player's HQ (12 m behind the rally).
+_KRONOS_NE = [(96.0, 96.0), polar(104.0, 30.0), polar(PIT_BENCH, 5.0), polar(PIT_BENCH, -15.0), polar(PIT_BENCH, -35.0)]
+KRONOS = [(round(x, 2), round(z, 2)) for x, z in
+          _KRONOS_NE + [(0.0, 0.0)] + [mirror(*p) for p in reversed(_KRONOS_NE)] + [(-104.0, -104.0)]]
+FIXED_ROUTES['openpit'] = {'kronos': KRONOS}
+
+# Play-test 6 (DECISIONS 21G): the trains' lines, for the Boss Hunt (the campaign missions' own routes: c4m05's along
+# Ironport's quayside, c7m05's along Metro City's northern avenue and down its west side). Nothing solid stands on them.
+FIXED_ROUTES['ironport'] = {'rail': [(128.0, 106.8), (75.0, 106.8), (0.0, 106.8), (-75.0, 106.8), (-138.75, 106.8)]}
+FIXED_ROUTES['metrocity'] = {'rail': [(128.0, 101.25), (75.0, 101.25), (0.0, 101.25), (-67.5, 101.25), (-101.25, 101.25), (-101.25, 33.75)]}
+# Gungnir's spot on the Rust Yard's siding (c11m05's boss spawn, kept clear as a campaign placement), facing west.
+FIXED_ROUTES['rustyard'] = {'rail': [(140.0, 11.25), (132.0, 11.25)]}
+
+
+def mirrored(L, kind, x, z, rot=0, radius=0.0, pad=1.0, road_gap=0.8, ignore_points=False, must=False):
+    """A prop and its image through the centre, both or neither, so either camp's half is the same
+    ground: at (x, z), or with `radius` at the nearest spot within it (a 1 m lattice, nearest first)
+    where both fit. Returns whether they went in."""
+    spots = [(0, 0)]
+    if radius:
+        n = int(radius)
+        spots += sorted(((dx, dz) for dx in range(-n, n + 1) for dz in range(-n, n + 1) if 0 < math.hypot(dx, dz) <= radius),
+                        key=lambda d: (math.hypot(*d), d))
+    for dx, dz in spots:
+        ax, az = round((x + dx) * 2) / 2, round((z + dz) * 2) / 2
+        if not (L.free(kind, ax, az, rot, pad, road_gap, ignore_points) and L.free(kind, -ax, -az, rot, pad, road_gap, ignore_points)):
+            continue
+        L.add(kind, ax, az, rot, pad=pad, road_gap=road_gap, ignore_points=ignore_points)
+        if L.add(kind, -ax, -az, rot, pad=pad, road_gap=road_gap, ignore_points=ignore_points):
+            return True
+        L.props.pop()   # the two copies overlap each other (only by the centre): try the next spot
+        L.rects.pop()
+    if must:
+        L.failed.append((kind, x, z))
+    return False
+
+
+def mirror_new(L, since, pad=0.1, road_gap=1.0):
+    """Gives every prop placed since index `since` its image through the centre; one whose image does
+    not fit goes too, so the two halves stay the same ground. Returns pairs kept."""
+    new = list(zip(L.props[since:], L.rects[since:]))
+    L.props, L.rects = L.props[:since], L.rects[:since]
+    kept = 0
+    for prop, _ in new:
+        rot = prop.get('rot', 0)
+        if L.free(prop['def'], -prop['x'], -prop['z'], rot, pad, road_gap):
+            L.force(prop['def'], prop['x'], prop['z'], rot)
+            L.force(prop['def'], -prop['x'], -prop['z'], rot)
+            kept += 1
+    return kept
+
+
+def pit_ring(L, radius, ramps):
+    """One of the pit's benches: a broken ring of cliff round the centre, opened for `ramps`
+    ((degrees, opening in metres), each with its image through the centre), with scree tumbled down
+    its inner foot. Each arc is laid on one half and mirrored onto the other; a road through it opens
+    its own gap."""
+    gaps = sorted([(a % 360.0, math.degrees(w / 2 / radius)) for a, w in ramps] +
+                  [((a + 180.0) % 360.0, math.degrees(w / 2 / radius)) for a, w in ramps])
+    arcs = [(gaps[i][0] + gaps[i][1], gaps[(i + 1) % len(gaps)][0] - gaps[(i + 1) % len(gaps)][1] + (360.0 if i == len(gaps) - 1 else 0.0))
+            for i in range(len(gaps))]
+    for a0, a1 in arcs[:len(arcs) // 2]:
+        steps = max(2, int(math.ceil((a1 - a0) / 5.0)))
+        since = len(L.props)
+        rock_chain(L, [polar(radius, a0 + (a1 - a0) * k / steps) for k in range(steps + 1)], kinds=('cliff_a', 'cliff_b'),
+                   gap=0.5, jitter=1.0, pad=0.3, road_gap=1.0)
+        mirror_new(L, since)
+    for k in range(0, 180, 9):
+        if L.rng.random() < 0.4:
+            mirrored(L, 'boulders', *polar(radius - 8.0 - L.rng.uniform(0.0, 1.5), float(k)), L.rng.choice((0, 90)), pad=0.3,
+                     road_gap=1.0)
+
+
+def openpit(seed=211):
+    """Open-Pit Mine (desert, prompt 20 M): the terraced pit at the centre, three broken rings of rock
+    stepping down to its floor (the town objective), with ramps through each ring. The excavator's
+    14 m haul road winds down round the upper bench from the north-east, crosses the floor and climbs
+    out the same way to the south-west (the fixed route "kronos"); a haul road runs from each bench
+    turn out to the crusher plant on the north-west rim (the west objective) or the ore loadout on
+    the south-east one (the east objective): factories, silos, storage tanks, a gantry over the
+    conveyors, ore heaps. Spoil roads lead off the rim to the spoil heaps on the flanks, where the
+    flank roads run from each camp to the far plant; the service roads pass the truck depots (garages
+    and parked haul trucks) to the near one. The same ground on either half, mirrored."""
+    west, east = (-80.0, 80.0), (80.0, -80.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points, clear=((-6, -6, 6, 6),))
+
+    def at(sign, x, z):
+        return sign * x, sign * z
+
+    # Roads: the excavator's haul road first (everything else keeps off it), each camp's road onto it,
+    # then per half (drawn for the north-east camp and the east plant, mirrored): the plant's haul
+    # road off the bench, the spoil road, the flank road and the service road.
+    L.road(ROUTE_ROAD, *[v for p in KRONOS[:-1] for v in p])
+    bench_turn = polar(PIT_BENCH, -35.0)
+    rim_turn = polar(104.0, 30.0)
+    for sign in (1, -1):
+        L.road(8, *at(sign, *CAMP_1), *at(sign, 96.0, 96.0))
+        L.road(12, *at(sign, *bench_turn), *at(sign, 70.0, -58.0), *at(sign, *east))
+        L.road(10, *at(sign, *rim_turn), *at(sign, 108.0, 38.0), *at(sign, 124.0, 24.0))
+        L.road(8, *at(sign, 112.0, 72.0), *at(sign, 124.0, 24.0), *at(sign, 122.0, -24.0), *at(sign, 110.0, -50.0),
+               *at(sign, *east))
+        L.road(8, *at(sign, 72.0, 112.0), *at(sign, 20.0, 108.0), *at(sign, -40.0, 104.0), *at(sign, *west))
+
+    # The pit: the rim, the middle bench and the floor's edge, each a broken ring of cliff.
+    for radius in PIT_RINGS:
+        pit_ring(L, radius, PIT_RAMPS[radius])
+
+    # On the benches: ore heaps and parked haul trucks, away from the haul road.
+    for r, a in ((PIT_BENCH, 45.0), (PIT_BENCH, 60.0), (PIT_BENCH, 78.0), (PIT_BENCH, -62.0), (36.5, 10.0), (36.5, 78.0),
+                 (36.5, -85.0)):
+        mirrored(L, 'dirt_mound', *polar(r, a), 0 if abs(math.cos(math.radians(a))) < 0.7 else 90, radius=3.0, pad=0.5,
+                 road_gap=1.0)
+    for r, a, rot in ((PIT_BENCH, 52.0, 90), (PIT_BENCH, 86.0, 0), (PIT_BENCH, -70.0, 0), (12.0, 70.0, 90)):
+        mirrored(L, 'truck', *polar(r, a), rot, radius=3.0, pad=0.6, road_gap=0.8, ignore_points=True)
+
+    # The plants on the rim: the crusher house (a factory) beyond the objective, the gantry over the
+    # conveyors, the silos, storage tanks and the ore stockpile; the same buildings at either plant.
+    px, pz = east
+    mirrored(L, 'factory', 102.0, -102.0, 0, radius=5.0, pad=0.8, must=True)
+    mirrored(L, 'gantry_crane', 80.0, -106.0, 0, radius=4.0, pad=0.8, must=True)
+    for x, z in ((58.0, -112.0), (64.0, -112.0), (58.0, -118.0), (64.0, -118.0)):
+        mirrored(L, 'silo', x, z, 0, pad=0.4, road_gap=0.8)
+    for x, z in ((110.0, -84.0), (110.0, -72.0)):
+        mirrored(L, 'storage_tank', x, z, 0, radius=4.0, pad=0.8)
+    for x0, z0, x1, z1 in ((70.0, -116.0, 100.0, -116.0), (120.0, -100.0, 120.0, -66.0)):
+        since = len(L.props)
+        lines_of(L, 'pipeline', x0, z0, x1, z1, 2.0, pad=0.3)
+        mirror_new(L, since, pad=0.3, road_gap=0.5)
+    for dx, dz in ((16.0, 12.0), (20.0, 4.0), (8.0, -16.0), (26.0, -26.0), (-4.0, -20.0)):
+        mirrored(L, 'dirt_mound', px + dx, pz + dz, 90 if dx > 10 else 0, radius=2.0, pad=0.4, road_gap=0.6, ignore_points=True)
+    mirrored(L, 'sandbags', px - 12.0, pz + 6.0, 90, radius=3.0, pad=0.4, road_gap=0.5, ignore_points=True)
+    for sign in (1, -1):
+        L.scatter('barrel', *at(sign, px, pz), 3, 10, 5, pad=0.3)
+
+    # The spoil heaps on the flanks, between the rim and the flank road; a few boulders among them.
+    for x, z in ((100.0, -30.0), (108.0, -22.0), (100.0, -12.0), (110.0, -6.0), (102.0, 4.0), (112.0, -38.0), (98.0, 16.0)):
+        mirrored(L, 'dirt_mound', x, z, L.rng.choice((0, 90)), radius=2.0, pad=0.5, road_gap=1.0)
+    for x, z in ((104.0, -46.0), (96.0, 26.0)):
+        mirrored(L, 'boulders', x, z, 0, radius=3.0, pad=0.6, road_gap=1.0)
+
+    # The truck depots by the service roads: garages, parked haul trucks and a fuel tank.
+    for x in (10.0, 22.0, 34.0):
+        mirrored(L, 'garage', x, 120.0, 0, radius=2.0, pad=0.6, road_gap=0.8)
+    for x in (46.0, 50.0, 54.0):
+        mirrored(L, 'truck', x, 121.0, 90, radius=2.0, pad=0.4, road_gap=0.8)
+    mirrored(L, 'fuel_tank', -2.0, 120.0, 0, radius=2.0, pad=0.6, road_gap=0.8)
+
+    # The desert round the mine: a few rock formations and cactus scrub.
+    for sign in (1, -1):
+        for kind, x, z in (('mesa', 128.0, -128.0), ('cliff_b', 60.0, 132.0), ('cliff_b', 134.0, 50.0)):
+            formation(L, *at(sign, x, z), kind, 8, 3)
+        for x, z in ((-20.0, 128.0), (130.0, -8.0)):
+            L.forest(*at(sign, x, z), 7.0, 0.1, kind='cactus')
+
+    # The excavator's road is open to its full width: the ramps through the rings with it.
+    clear_route(L, 'openpit')
+    return finish(L)
+
+
+ORBIT_FIELD = 30.0    # the drop-pod field: 60 x 60 m at the centre, clear of everything solid
+
+
+def orbitalgate(seed=223):
+    """Orbital Gateway (snow, prompt 20 M): a spaceport on a snowy plateau. At the centre the drop-pod
+    field (the town objective), 60 x 60 m of open ground with floodlight masts and runway lights round
+    its edge and an apron road round it; a launch pad on either flank (the west and east objectives,
+    mirrored): the rocket (a tall stack) between two gantries, flame trenches, propellant tanks,
+    blockhouses and sandbag walls round the apron. A radar post astride each camp's road to the field:
+    a radar dome, radar stations, radio masts and the tracking office. Flank roads run from each camp
+    to the far pad, the outer roads to the near one; pine woods and snow rock between."""
+    points = [(-80.0, 80.0, 13.0), (0.0, 0.0, 16.0), (80.0, -80.0, 13.0)]
+    f = ORBIT_FIELD
+    L = world_layout(seed, points, clear=((-f, -f, f, f),))
+
+    def at(sign, x, z):
+        return sign * x, sign * z
+
+    # Roads: the apron road round the field, then per half (drawn for the north-east camp and the
+    # south-east pad, mirrored): the camp's road to the field, the pad's road off the apron, the flank
+    # road down the east edge to the pad and the outer road along the north edge to the far one.
+    e = f + 8.0
+    L.road(6, -e, -e, e, -e, e, e, -e, e, -e, -e)
+    for sign in (1, -1):
+        L.road(8, *at(sign, *CAMP_1), *at(sign, 70.0, 70.0), *at(sign, e, e))
+        L.road(8, *at(sign, e, -e), *at(sign, 62.0, -62.0), *at(sign, 80.0, -80.0))
+        L.road(8, *at(sign, 112.0, 72.0), *at(sign, 126.0, 10.0), *at(sign, 118.0, -44.0), *at(sign, 80.0, -80.0))
+        L.road(8, *at(sign, 72.0, 112.0), *at(sign, 10.0, 126.0), *at(sign, -44.0, 118.0), *at(sign, -80.0, 80.0))
+
+    # The field's edge: runway lights all round, floodlight masts off the corners' roads.
+    edge = f + 1.5
+    for u in range(-27, 28, 6):
+        for x, z in ((u, -edge), (u, edge), (-edge, u), (edge, u)):
+            L.add('runway_light', float(x), float(z), 0, pad=0.2, road_gap=0.3, ignore_points=True)
+    for u in (-15.0, 15.0):
+        for x, z in ((u, -f - 3.0), (u, f + 3.0), (-f - 3.0, u), (f + 3.0, u)):
+            L.add('floodlight_mast', x, z, 0, pad=0.3, road_gap=0.5, ignore_points=True, must=True)
+
+    # The launch pads: the rocket on its stand beyond the objective, a gantry either side, a flame
+    # trench before and behind it, the propellant tanks, blockhouses and sandbag walls round the apron.
+    mirrored(L, 'refinery_tower', 100.0, -100.0, 0, pad=0.3, road_gap=None, ignore_points=True, must=True)
+    for x in (91.0, 109.0):
+        mirrored(L, 'gantry_crane', x, -100.0, 90, pad=0.3, road_gap=None, ignore_points=True, must=True)
+    for z in (-91.5, -108.5):
+        mirrored(L, 'tank_ditch', 100.0, z, 0, pad=0.2, road_gap=None, ignore_points=True)
+    for x, z in ((124.0, -94.0), (124.0, -106.0)):
+        mirrored(L, 'storage_tank', x, z, 0, radius=4.0, pad=0.8)
+    for x in (98.0, 104.0, 110.0):
+        mirrored(L, 'fuel_tank', x, -122.0, 0, radius=2.0, pad=0.6, road_gap=0.5)
+    mirrored(L, 'garage', 70.0, -106.0, 0, radius=4.0, pad=0.8)
+    mirrored(L, 'garage', 106.0, -70.0, 90, radius=4.0, pad=0.8)
+    for x, z, rot in ((64.0, -96.0, 0), (96.0, -64.0, 90), (86.0, -118.0, 0), (118.0, -84.0, 90)):
+        mirrored(L, 'sandbag_wall', x, z, rot, radius=2.0, pad=0.4, road_gap=0.5, ignore_points=True)
+    for x, z in ((114.0, -114.0), (86.0, -86.0)):
+        mirrored(L, 'floodlight_mast', x, z, 0, radius=2.0, pad=0.3, road_gap=0.5, ignore_points=True)
+    for sign in (1, -1):
+        L.scatter('barrel', *at(sign, 80.0, -80.0), 4, 11, 5, pad=0.3)
+
+    # The radar posts astride each camp's road to the field (diagonal frame: s along the road).
+    for kind, s, t in (('radar_dome', 84.0, 20.0), ('radar_station', 72.0, -20.0), ('radar_station', 96.0, -19.0),
+                       ('office_block', 102.0, 24.0), ('log_cabin', 64.0, 26.0)):
+        mirrored(L, kind, *diag(s, t), 0, radius=5.0, pad=0.8, must=True)
+    for s, t in ((80.0, -31.0), (92.0, 31.0), (66.0, -12.0)):
+        mirrored(L, 'radio_mast', *diag(s, t), 0, radius=2.0, pad=0.4, road_gap=0.8)
+    mirrored(L, 'sandbags', *diag(60.0, 12.0), 0, radius=2.0, pad=0.4, road_gap=0.5)
+
+    # Pine woods and snow rock between the lanes.
+    for sign in (1, -1):
+        for x, z, r in ((100.0, 20.0, 13.0), (20.0, 100.0, 13.0), (64.0, -12.0, 8.0), (-12.0, 64.0, 8.0), (136.0, -30.0, 8.0),
+                        (-30.0, 136.0, 8.0)):
+            L.forest(*at(sign, x, z), r, 0.12)
+        for x, z in ((52.0, 100.0), (100.0, 50.0), (140.0, 60.0)):
+            outcrop(L, *at(sign, x, z), 5, 3, kinds=('snow_rock',), pad=0.6)
+    return finish(L)
+
+
+MAPS_P20 = [
+    ('openpit', openpit, 'desert', ('crusher_plant', 'pit_floor', 'ore_loadout'),
+     'Open-Pit Mine for Conquest: a terraced pit of broken rock rings, haul roads down to its floor, a crusher plant and an ore loadout on the rim.',
+     'Open-Pit Mine for Survival: the same mine, holding out against waves from the north-east.'),
+    ('orbitalgate', orbitalgate, 'snow', ('west_pad', 'landing_field', 'east_pad'),
+     'Orbital Gateway for Conquest: a snowbound spaceport, a launch pad on either flank, radar posts on the approaches, a drop-pod field at the centre.',
+     'Orbital Gateway for Survival: the same spaceport, holding out against waves from the north-east.'),
+]
+WAR_P20 = {
+    # No pylon line across the pit's benches.
+    'openpit': dict(pylons=False),
+    'orbitalgate': dict(pylons=False),
+}
+DENSIFY_P20 = {
+    # Scrub and rock round the mine, nothing on the benches; no hamlets (the depots are the mine's buildings).
+    'openpit': dict(clumps=8, outcrops=6, hamlets=0, where=lambda x, z: math.hypot(x, z) > PIT_RINGS[2] + 8.0),
+    # Woods and crew cabins, never on the field.
+    'orbitalgate': dict(hamlets=2, where=lambda x, z: max(abs(x), abs(z)) > ORBIT_FIELD + 12.0),
+}
+
+
+# ------------------------------------------------------------------------ prompt 22 E: two new battlefields
+# Foundry and Veyra Old Quarter (DECISIONS 22E): both on the battlefield itself (world_layout), point-symmetric
+# through the centre like every square map, their names only in the game's tables (NameText, Strings).
+P22_LANES = (-112.0, -48.0, -16.0, 16.0, 48.0, 112.0)   # the Foundry's lanes, each way
+P22_LANE = 10.0                                        # a lane's width: 8.6 m of drivable floor between the buildings
+FOUNDRY_HALL = (-40.0, -32.0, 40.0, 32.0)              # the casting hall's walls (centrelines)
+FOUNDRY_SHOP = (-105.5, 54.5, -54.5, 105.5)              # the press shop's walls; the rolling mill is its image
+
+
+def p22_walls(L, x0, z0, x1, z1, doors=(), kind='wall', skip_roads=True):
+    """Walls round a rectangle (centrelines x0..x1, z0..z1), segment by segment. A segment is left out where
+    a lane runs through the wall (skip_roads: the lanes are the hall's doorways) or where it overlaps a door:
+    ('n'|'s'|'w'|'e', centre along the wall, opening in metres). Returns segments placed."""
+    w = PROPS[kind]['width']
+    placed = 0
+    for side, line, a, b, axis in (('s', z0, x0, x1, 'x'), ('n', z1, x0, x1, 'x'), ('w', x0, z0, z1, 'z'), ('e', x1, z0, z1, 'z')):
+        n = int((b - a + 1e-6) // w)
+        u = a + (b - a - n * w) / 2      # the odd metres split between the two corners (sealed by the clearance)
+        for _ in range(n):
+            c = u + w / 2
+            u += w
+            if any(s == side and abs(c - m) < (o + w) / 2 for s, m, o in doors):
+                continue
+            x, z, rot = (c, line, 0) if axis == 'x' else (line, c, 90)
+            ww, dd = Layout.size(kind, rot)
+            rect = (x - ww / 2, z - dd / 2, x + ww / 2, z + dd / 2)
+            if skip_roads and L.near_road(*rect, 1.0):
+                continue
+            L.force(kind, x, z, rot)
+            placed += 1
+    return placed
+
+
+def p22_minus(rect, holes, margin=1.5, least=8.0):
+    """What is left of a rectangle once `holes` (grown by `margin`) are cut out: rectangles at least `least` m
+    each way (a block partly inside a hall is built only outside it)."""
+    pieces = [rect]
+    for hx0, hz0, hx1, hz1 in holes:
+        hx0, hz0, hx1, hz1 = hx0 - margin, hz0 - margin, hx1 + margin, hz1 + margin
+        out = []
+        for x0, z0, x1, z1 in pieces:
+            if hx1 <= x0 or hx0 >= x1 or hz1 <= z0 or hz0 >= z1:
+                out.append((x0, z0, x1, z1))
+                continue
+            out += [(x0, z0, hx0, z1), (hx1, z0, x1, z1), (max(x0, hx0), z0, min(x1, hx1), hz0), (max(x0, hx0), hz1, min(x1, hx1), z1)]
+        pieces = [p for p in out if p[2] - p[0] >= least and p[3] - p[1] >= least]
+    return pieces
+
+
+def p22_blocks(lanes, half=HALF - 4.0, lane=P22_LANE):
+    """The blocks between a lane grid's lanes (and the edge), inside the lanes' edges."""
+    edges = [-half] + [v for c in lanes for v in (c - lane / 2, c + lane / 2)] + [half]
+    spans = [(edges[i], edges[i + 1]) for i in range(0, len(edges), 2)]
+    return [(x0, z0, x1, z1) for x0, x1 in spans for z0, z1 in spans]
+
+
+def foundry(seed=233, siege=False):
+    """Foundry (urban, prompt 22 E.1): Hegemon's old tank works, a walled complex of workshops and sheds
+    under one roofline, cut by 10 m factory lanes into solid blocks: every way across is a narrow passage
+    between walls. The casting hall at the centre (the town objective): its walls opened only where the
+    lanes run in, two furnaces, the ladles, a conveyor and a gantry over the casting floor. The press shop
+    in the north-west block (the west objective) and the rolling mill in the south-east one (the east
+    objective, its image): walled yards with one doorway a side, a gantry crane, presses and coil stacks.
+    Each camp has an open loading yard round it (the works' goods yard); the blocks are factories,
+    warehouses, sheds, container stacks, tanks and silos, pipe runs over the yards. The same ground on
+    either half, mirrored. The Siege version (siege=True) leaves the fortress's ground open: no hall walls,
+    nothing built in the blocks beyond the first lanes in the north-east (the fortress builds its own)."""
+    west, east = (-80.0, 80.0), (80.0, -80.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points, clear=((-15.0, -15.0, 15.0, 15.0),))
+    p22_lanes(L, P22_LANES)
+
+    # The casting hall's walls, open where the four lanes run in; the press shop's and the rolling
+    # mill's, one doorway a side (not on a lane: the lanes pass round the yards).
+    if not siege:
+        p22_walls(L, *FOUNDRY_HALL)
+    # The doorways sit off the middle of each wall (the yard's machines stand clear of them).
+    shop_doors = (('n', -66.0, 12.0), ('s', -94.0, 12.0), ('w', 94.0, 12.0), ('e', 66.0, 12.0))
+    image = {'n': 's', 's': 'n', 'w': 'e', 'e': 'w'}
+    mill_doors = tuple((image[s], -m, o) for s, m, o in shop_doors)
+    x0, z0, x1, z1 = FOUNDRY_SHOP
+    p22_walls(L, x0, z0, x1, z1, shop_doors, skip_roads=False)
+    p22_walls(L, -x1, -z1, -x0, -z0, mill_doors, skip_roads=False)
+    mill = (-x1, -z1, -x0, -z0)
+
+    # Inside the casting hall: the two furnaces (tall stacks) and their ladles, a conveyor run (a pipe
+    # line) and the gantry over the far floor; the objective's ring stays clear.
+    # (The lanes cross the hall: the machines stand in the floor between them.)
+    for x, z in ((-30.0, 0.0), (-30.0, 26.5)):
+        mirrored(L, 'refinery_tower', x, z, 0, pad=0.4, road_gap=0.5, ignore_points=True, must=True)
+    for x, z in ((-36.0, 6.0), (-36.0, -6.0), (-24.0, 26.5)):
+        mirrored(L, 'silo', x, z, 0, pad=0.4, road_gap=0.5, ignore_points=True)
+    for x, z in ((-5.0, 27.0), (5.0, 27.0)):
+        mirrored(L, 'container_stack', x, z, 0, pad=0.4, road_gap=0.5, ignore_points=True)
+    for sign in (1, -1):
+        L.scatter('ammo_crate', sign * -30.0, sign * 12.0, 1, 4, 3, pad=0.2)
+
+    # The press shop (and its image, the rolling mill): the gantry crane across the yard, the presses
+    # (storage tanks) and coil stacks along the walls, crates by the doors; the objective's ring clear.
+    px, pz = west
+    mirrored(L, 'gantry_crane', px - 6.0, pz + 18.0, 0, pad=0.4, road_gap=0.5, ignore_points=True, must=True)
+    for dx, dz in ((-18.0, -10.0), (18.0, 10.0)):
+        mirrored(L, 'storage_tank', px + dx, pz + dz, 0, pad=0.4, road_gap=0.5, ignore_points=True, must=True)
+    for sign in (1, -1):
+        L.scatter('ammo_crate', sign * (px + 16.0), sign * (pz - 16.0), 1, 5, 4, pad=0.2)
+        L.scatter('barrel', sign * (px - 16.0), sign * (pz - 18.0), 1, 4, 3, pad=0.2)
+
+    # The blocks: factories and warehouses in solid rows, sheds and stacks where a big one does not fit,
+    # tanks and silos in the tank farm blocks by the loading yards. Nothing in the halls.
+    works = ('factory', 'warehouse', 'garage', 'container_stack')
+    farms = ('storage_tank', 'silo', 'container_stack', 'garage')
+    for b in p22_blocks(P22_LANES):
+        cx, cz = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+        if cx < 0 or (cx == 0 and cz < 0):
+            continue     # the south-west half is the image of this one
+        kinds = farms if abs(cx) > 100 or abs(cz) > 100 else works
+        p22_fill(L, b, (FOUNDRY_HALL, FOUNDRY_SHOP, mill), kinds, siege)
+
+    # Pipe runs along the loading yards' edges and wrecked trucks in the lanes by the camps.
+    for x, z, rot in ((96.0, 74.0, 0), (74.0, 96.0, 90), (122.0, 70.0, 90)):
+        mirrored(L, 'truck', x, z, rot, radius=3.0, pad=0.5, road_gap=None)
+    for x, z in ((70.0, 120.0), (120.0, 40.0)):
+        since = len(L.props)
+        lines_of(L, 'pipeline', x, z, x + 16.0, z, 0.5, pad=0.2, road_gap=0.8)
+        mirror_new(L, since, pad=0.2, road_gap=0.8)
+    return finish(L)
+
+
+VEYRA_STREETS = (-108.0, -60.0, -18.0, 18.0, 60.0, 108.0)   # the old quarter's streets, each way (with their jogs)
+VEYRA_SQUARES = ((-94.0, 66.0, -66.0, 94.0), (-22.0, -18.0, 22.0, 18.0), (66.0, -94.0, 94.0, -66.0))
+VEYRA_PIAZZAS = ((34.0, 30.0, 46.0, 44.0), (-46.0, -44.0, -34.0, -30.0), (26.0, -122.0, 40.0, -110.0), (-40.0, 110.0, -26.0, 122.0))
+
+
+def p22_lanes(L, lanes, width=P22_LANE):
+    """A grid of straight lanes across the battlefield; the outer ones stop short of the camps' yards (the
+    camp's HQ stands behind its rally, where they would cross)."""
+    edge = HALF - 4.0
+    for c in lanes:
+        a, b = (-edge, 90.0) if c > 100 else (-90.0, edge) if c < -100 else (-edge, edge)
+        L.road(width, c, a, c, b)
+        L.road(width, a, c, b, c)
+
+
+def p22_fill(L, block, holes, kinds, siege, margin=1.5):
+    """Builds a block of the north-east half (what the halls or squares leave of it) and its image; in a
+    Siege version a block in the fortress's ground (beyond the first lanes in the north-east) stays open and
+    only its image is built."""
+    fortress = siege and block[0] >= 20.0 and block[1] >= 20.0
+    for piece in p22_minus(block, holes, margin=margin):
+        if fortress:
+            x0, z0, x1, z1 = piece
+            image = (-x1, -z1, -x0, -z0)
+            if not any(image[0] < h[2] and image[2] > h[0] and image[1] < h[3] and image[3] > h[1] for h in holes):
+                city_block(L, *image, kinds, gap=1.0, pad=0.3, road_gap=0.8)
+            continue
+        since = len(L.props)
+        city_block(L, *piece, kinds, gap=1.0, pad=0.3, road_gap=0.8)
+        mirror_new(L, since, pad=0.3, road_gap=0.8)
+
+
+def veyra_street(c, vertical, jog=3.0, step=36.0):
+    """One old-town street: straight on the grid line `c` with a jog of `jog` m every `step` m (the old
+    plots it bends round), laid for c >= 0 and mirrored through the centre for c < 0. Flat x, z points."""
+    edge = HALF - 4.0
+    sign = 1.0 if c >= 0 else -1.0
+    base = abs(c)
+    # The outer streets stop short of the camps' yards (see p22_lanes).
+    end = 86.0 if base > 100 else edge
+    pts = []
+    t = -edge
+    k = 0
+    while t < end:
+        off = (jog if (k % 2) else -jog) * (1.0 if base > 30 else 0.0)
+        pts.append((base + off, t) if vertical else (t, base + off))
+        t = min(end, t + step)
+        k += 1
+    pts.append((base, end) if vertical else (end, base))
+    if sign < 0:
+        pts = [(-x, -z) for x, z in pts]
+    return [v for p in pts for v in p]
+
+
+def veyra_old_quarter(seed=241, siege=False):
+    """Veyra Old Quarter (urban, prompt 22 E.2): the capital's old town, narrow streets between tall old
+    houses that bend round the old plots, opening on squares. The cathedral square at the centre (the town
+    objective): the cathedral on its north side, the old town hall facing it, market stalls and lamps. The
+    market square in the north-west (the west objective) and the clock square in the south-east (the east
+    objective, its image): stalls, trees, a well of cobbles. Four small piazzas along the way; a ring of
+    old wall pieces and gatehouses on the edge; barricades and burnt cars where the streets meet. The same
+    ground on either half, mirrored. The Siege version (siege=True) leaves the fortress's ground open (see
+    p22_fill)."""
+    west, east = (-80.0, 80.0), (80.0, -80.0)
+    points = [(*west, 13.0), (0.0, 0.0, 16.0), (*east, 13.0)]
+    L = world_layout(seed, points, clear=VEYRA_SQUARES + VEYRA_PIAZZAS)
+    for c in VEYRA_STREETS:
+        L.road(P22_LANE, *veyra_street(c, True))
+        L.road(P22_LANE, *veyra_street(c, False))
+    # Each camp's way into the town: a wider street from the camp's plaza.
+    for sign in (1, -1):
+        L.road(12, sign * CAMP_1[0], sign * CAMP_1[1], sign * 108.0, sign * 60.0)
+        L.road(12, sign * CAMP_1[0], sign * CAMP_1[1], sign * 60.0, sign * 108.0)
+
+    # The cathedral on the square's north side; the old town hall (offices round a tower) faces it.
+    L.add('church', 0.0, 30.0, 90, pad=0.3, road_gap=0.5, must=True)
+    L.add('office_block', 0.0, -30.0, 0, pad=0.3, road_gap=0.5, must=True)
+    # Market stalls, lamps and planted trees round every square, clear of the objective rings.
+    for x0, z0, x1, z1 in VEYRA_SQUARES:
+        for u in (0.18, 0.5, 0.82):
+            for x, z in ((x0 + (x1 - x0) * u, z0 + 1.2), (x0 + (x1 - x0) * u, z1 - 1.2)):
+                L.force('lamp_post', x, z)
+    for sx, sz in ((-80.0, 80.0), (80.0, -80.0)):
+        for dx, dz, rot in ((-11.0, -8.0, 0), (11.0, -8.0, 0), (-11.0, 8.0, 0), (11.0, 8.0, 0)):
+            L.force('market_stall', sx + dx, sz + dz, rot)
+    for x0, z0, x1, z1 in VEYRA_PIAZZAS:
+        cx, cz = (x0 + x1) / 2, (z0 + z1) / 2
+        L.force('tree', cx - 3.0, cz)
+        L.force('tree', cx + 3.0, cz)
+
+    # The houses: tall townhouses, stone houses of offices, shops on the ground floor, cottages and sheds where
+    # the plot is tight; a block is built only where the streets and squares leave room.
+    kinds = ('townhouse', 'cottage', 'office_block', 'shop', 'garage')
+    for b in p22_blocks(VEYRA_STREETS):
+        cx, cz = (b[0] + b[2]) / 2, (b[1] + b[3]) / 2
+        if cx < 0 or (cx == 0 and cz < 0):
+            continue
+        p22_fill(L, b, VEYRA_SQUARES + VEYRA_PIAZZAS, kinds, siege, margin=1.0)
+
+    # The old town wall's broken pieces on the edge, and a gatehouse (a ruined tower) by each camp road.
+    for sign in (1, -1):
+        for x in (-120.0, -80.0, -40.0, 0.0, 40.0):
+            L.add('stone_wall', sign * x, sign * -141.0, 0, pad=0.3, road_gap=0.8)
+            L.add('stone_wall', sign * 141.0, sign * -x, 90, pad=0.3, road_gap=0.8)
+        L.add('ruin_tower', sign * 120.0, sign * 72.0, 0, pad=0.4, road_gap=0.8)
+    # Cars parked along the side streets (nothing solid in a street: they are the only ways through).
+    for x, z, rot in ((104.0, 30.0, 90), (30.0, 104.0, 0), (56.0, -30.0, 90), (-30.0, 56.0, 0), (18.0, 84.0, 90)):
+        mirrored(L, 'car', x, z, rot, radius=2.0, pad=0.3, road_gap=None)
+    return finish(L)
+
+
+MAPS_P22 = [
+    ('foundry', foundry, 'urban', ('press_shop', 'casting_hall', 'rolling_mill'),
+     'Foundry for Conquest: an old Hegemon tank works, walled halls and solid blocks of sheds cut by narrow factory lanes.',
+     'Foundry for Survival: the same works, holding out against waves from the north-east.'),
+    ('veyra_old_quarter', veyra_old_quarter, 'urban', ('market_square', 'cathedral_square', 'clock_square'),
+     "Veyra Old Quarter for Conquest: the capital's old town, narrow bending streets between tall houses, three squares.",
+     'Veyra Old Quarter for Survival: the same old town, holding out against waves from the north-east.'),
+]
+WAR_P22 = {
+    # Indoor works and a packed old town: no pylons, poles or trench lines through the blocks.
+    'foundry': dict(pylons=False, poles=False, ditch=False),
+    'veyra_old_quarter': dict(pylons=False, poles=False, ditch=False),
+}
+DENSIFY_P22 = {
+    # Every block is built by hand: no hamlets or tree clumps (the fill only reaches the outer edge).
+    'foundry': dict(clumps=0, outcrops=0, hamlets=0, where=lambda x, z: max(abs(x), abs(z)) > HALF - 12.0),
+    'veyra_old_quarter': dict(clumps=2, outcrops=0, hamlets=0, where=lambda x, z: max(abs(x), abs(z)) > HALF - 12.0),
+}
+
+
 # ---------------------------------------------------------------------------------- siege
 # The enemy fortress fills the north-east quadrant round (42, 42): a 56 m ring of wall with a
 # gate in the west and south walls (the sides facing the player), guard towers in the corners,
@@ -4012,6 +4638,10 @@ def warzone(L, map_id, theme, poly):
     def clear(kind, x, z, rot):
         if not PROPS[kind].get('blocks', False):
             return True
+        # A fixed route (prompt 20 M) keeps its whole width open.
+        w, d = L.size(kind, rot)
+        if on_route(map_id, x - w / 2, z - d / 2, x + w / 2, z + d / 2):
+            return False
         # Spawns and routes keep 6 m and 5 m of open ground round them (units path round the rest).
         reach = max(L.size(kind, rot)) / 2 + 1.0
         for cx, cz, _ in circles:
@@ -4314,6 +4944,9 @@ def densify(L, map_id, theme, poly):
         blocks = PROPS[kind].get('blocks', False)
         if not inside(kind, x, z, rot) or (blocks and not clear(x, z, max(L.size(kind, rot)) / 2 + 1)):
             return False
+        w, d = L.size(kind, rot)
+        if blocks and on_route(map_id, x - w / 2, z - d / 2, x + w / 2, z + d / 2):
+            return False
         if where is not None and not where(x, z):
             return False
         return L.add(kind, x, z, rot, pad=pad, road_gap=road_gap)
@@ -4505,6 +5138,14 @@ MAP_DENSIFY.update(DENSIFY_4M)
 MAPS += MAPS_P16
 MAP_WAR.update(WAR_P16)
 MAP_DENSIFY.update(DENSIFY_P16)
+# Prompt 20 M: Open-Pit Mine and Orbital Gateway.
+MAPS += MAPS_P20
+MAP_WAR.update(WAR_P20)
+MAP_DENSIFY.update(DENSIFY_P20)
+# Prompt 22 E: Foundry and Veyra Old Quarter.
+MAPS += MAPS_P22
+MAP_WAR.update(WAR_P22)
+MAP_DENSIFY.update(DENSIFY_P22)
 
 def plan_bases(map_id, layout, siege):
     """The bases (see hardpoints.py): both camps and the outposts on the Conquest battlefield (which
@@ -4573,6 +5214,9 @@ def plan_bases(map_id, layout, siege):
 # version keeps the classic walled square in the north-east corner (fortify_corner).
 # Lighthouse Bay (prompt 16): the sea fills the south-east, where the big fortress would stand in the water.
 CLASSIC_SIEGE = {'swamp', 'coralisles'}
+# Battlefields whose builder lays a Siege version of its own (siege=True): Lighthouse Bay (its coast), the two
+# dense maps of prompt 22 E (the fortress's ground left open).
+SIEGE_OWN = {'lighthousebay', 'foundry', 'veyra_old_quarter'}
 
 
 def sea_meta(map_id):
@@ -4598,7 +5242,7 @@ def main(only=()):
         # finished siege battlefield, inside that outline: see fortress.py.)
         classic = map_id in CLASSIC_SIEGE
         # Lighthouse Bay's Siege version leaves the fortress's corner of the coast bare.
-        siege_build = functools.partial(build, siege=True) if map_id == 'lighthousebay' else build
+        siege_build = functools.partial(build, siege=True) if map_id in SIEGE_OWN else build
         siege = densify(warzone(scale_layout(siege_build()), map_id, theme, poly), map_id, theme, poly)
         # The classic fortress is built before the outline is applied, as it always was.
         if classic:
@@ -4625,6 +5269,8 @@ def main(only=()):
                 lb_refill_sea(siege)
                 fortress_block['slots'] = [sl for sl in fortress_block['slots'] if not lb_sea_tile(sl['x'], sl['z'])]
         bases, outposts, siege_bases = plan_bases(map_id, layout, siege)
+        # A fixed route (prompt 20 M) is open all along on the Conquest battlefield (Survival's too: the same layout).
+        check_route(layout, map_id, map_id)
         print(f'{map_id}: outline of {len(poly)} points, {dropped} props left outside dropped')
         counts = {}
         for p in layout.props:
@@ -4634,9 +5280,9 @@ def main(only=()):
                   for i, (pid, name, (x, z, r)) in enumerate(zip(('west', 'town', 'east'), names, layout.points))]
         dump(DATA / 'maps' / f'{map_id}_conquest.json', conquest,
              {'id': f'{map_id}_conquest', 'theme': theme, 'size': SIZE, 'teams': TEAMS, 'points': points,
-              'units': grown(CONQUEST_UNITS), 'bases': bases, **sea_meta(map_id)}, layout)
+              'units': grown(CONQUEST_UNITS), 'bases': bases, **sea_meta(map_id), **route_meta(map_id)}, layout)
         dump(DATA / 'maps' / f'{map_id}_sandbox.json', survival,
-             {'id': f'{map_id}_sandbox', 'theme': theme, 'size': SIZE, 'teams': TEAMS, 'units': grown(SURVIVAL_UNITS), **sea_meta(map_id)}, layout)
+             {'id': f'{map_id}_sandbox', 'theme': theme, 'size': SIZE, 'teams': TEAMS, 'units': grown(SURVIVAL_UNITS), **sea_meta(map_id), **route_meta(map_id)}, layout)
         # Siege: the same battlefield (built afresh, so it is identical) with the enemy fortress.
         name = conquest.split(' for ')[0]
         if classic:
@@ -4644,7 +5290,8 @@ def main(only=()):
                  f'{name} for Siege: the enemy fortress holds the north-east quadrant; destroy its command HQ.',
                  {'id': f'{map_id}_siege', 'theme': theme, 'size': SIZE,
                   'teams': [TEAMS[0], {'team': 1, 'x': siege.teams[1][0], 'z': siege.teams[1][1]}], 'points': [], 'siegeRings': siege_rings,
-                  'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0] + siege.units, 'bases': siege_bases, **sea_meta(map_id)}, siege)
+                  'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0] + siege.units, 'bases': siege_bases, **sea_meta(map_id),
+                  **route_meta(map_id)}, siege)
             print(f'{map_id}_siege: {len(siege.props)} props, {len(siege.units)} defences (classic fortress)')
             continue
         dump(DATA / 'maps' / f'{map_id}_siege.json',
@@ -4653,7 +5300,7 @@ def main(only=()):
              {'id': f'{map_id}_siege', 'theme': theme, 'size': SIZE,
               'teams': [TEAMS[0], {'team': 1, 'x': siege.teams[1][0], 'z': siege.teams[1][1]}], 'points': [], 'siegeRings': siege_rings,
               'units': [u for u in grown(CONQUEST_UNITS) if u['team'] == 0], 'bases': siege_bases, 'fortress': fortress_block,
-              **sea_meta(map_id)}, siege)
+              **sea_meta(map_id), **route_meta(map_id)}, siege)
         print(f'{map_id}_siege: {len(siege.props)} props, {len(fortress_block["slots"])} fortress hardpoints')
 
 

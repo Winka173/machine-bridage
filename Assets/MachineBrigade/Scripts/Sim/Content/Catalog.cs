@@ -54,6 +54,20 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The share of the player's arsenal edge a campaign enemy matches (balance.json economy.enemyScaling).</summary>
         public float EnemyScaling { get; internal set; } = 0.55f;
 
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): the share of the player's arsenal edge a quick mode's enemy (and its bosses and
+        /// towers) matches, by difficulty (balance.json economy.enemyScalingQuick; none there: 0, the old quick modes).
+        /// </summary>
+        internal Dictionary<string, float> QuickScaling { get; set; } = new();
+
+        /// <summary>A mode's own factor on that share (economy.enemyScalingModes: the weekly fortress's half).</summary>
+        internal Dictionary<string, float> QuickScalingModes { get; set; } = new();
+
+        /// <summary>The quick modes' share for a difficulty key (Easy .. VeryHard) in a mode, 0 when the data has none.</summary>
+        public float QuickScalingFor(string difficulty, string? mode = null) =>
+            (QuickScaling.TryGetValue(difficulty, out var share) ? share : 0f) *
+            (mode != null && QuickScalingModes.TryGetValue(mode, out var factor) ? factor : 1f);
+
         internal Dictionary<string, int> ArmyCaps { get; set; } = new();
 
         internal Dictionary<string, int> VehicleCaps { get; set; } = new();
@@ -74,6 +88,9 @@ namespace MachineBrigade.Sim.Content
         public IReadOnlyDictionary<string, SupportDef> Supports => _supports;
 
         public bool TryGetSupport(string id, out SupportDef support) => _supports.TryGetValue(id, out support!);
+
+        /// <summary>Prompt 19: a prop by id, if there is one.</summary>
+        public bool TryGetProp(string id, out PropDef prop) => _props.TryGetValue(id, out prop!);
 
         public VehicleDef Vehicle(string id) =>
             _vehicles.TryGetValue(id, out var def) ? def : throw new KeyNotFoundException($"Unknown vehicle '{id}'.");
@@ -137,6 +154,7 @@ namespace MachineBrigade.Sim.Content
                 {
                     Ammo = w.Int("ammo", 0), Reload = w.Float("reload", 0f), ImpactScale = w.Float("impactScale", 1f), Load = w.Int("load", 0),
                     Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
+                    InterceptOnly = w.Bool("interceptOnly", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f),
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
@@ -145,7 +163,7 @@ namespace MachineBrigade.Sim.Content
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                     // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
                     TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
-                    Laid = w.Bool("laid", false),
+                    Laid = w.Bool("laid", false), Steered = w.Bool("guided", false),
                 });
                 if (w.Has("pen"))
                 {
@@ -155,6 +173,7 @@ namespace MachineBrigade.Sim.Content
                 }
                 if (w.Has("form")) def.Form = w.Enum<WeaponForm>("form");
                 ParseWeaponP17(w, def);
+                ParseWeaponP19(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))
@@ -183,6 +202,7 @@ namespace MachineBrigade.Sim.Content
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
             ResolveHeRounds(Inherited(root.Array("weapons"), model: false), weapons);
+            ResolveAirRounds(Inherited(root.Array("weapons"), model: false), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))
@@ -197,7 +217,8 @@ namespace MachineBrigade.Sim.Content
 
             var vehicles = new List<VehicleDef>();
             var ownBranches = new Dictionary<string, ArmyBranch?>();
-            foreach (var v in Inherited(root.Array("vehicles"), model: true))
+            // Prompt 20 E: bosses built from their frames, the part library, their variants and ranks.
+            foreach (var v in BossTemplates.Expand(root, Inherited(root.Array("vehicles"), model: true)))
             {
                 var weapon = Weapon(weapons, v, "weapon");
                 var secondary = new List<WeaponMount>();
@@ -231,6 +252,10 @@ namespace MachineBrigade.Sim.Content
                     var structure = v.Bool("structure", def.Static && !def.Boss ? true : v.Has("armor") && v.Enum<ArmorClass>("armor") == ArmorClass.Structure);
                     if (v.Has("armour")) def.SetArmour(Levels(v, "armour", def.Flying || structure), structure);
                     else def.SetArmour(structure ? ArmourLevels.Uniform(2) : def.Armour, structure);
+                    // Play-test 6 (DECISIONS 21G): level 5 is a boss's plate only.
+                    var plate = def.Armour;
+                    if (!def.Boss && Math.Max(Math.Max(plate.Front, plate.Side), Math.Max(plate.Rear, plate.Top)) > ArmourLevels.MaxUnit)
+                        throw new FormatException($"{v.Path}.armour: level 5 is for bosses (a vehicle or tower 0 to {ArmourLevels.MaxUnit}).");
                     def.Card = v.Bool("card", true);
                     def.Elite = v.Bool("elite", false);
                     def.EliteOf = v.Has("eliteOf") ? v.String("eliteOf") : null;
@@ -279,6 +304,7 @@ namespace MachineBrigade.Sim.Content
                     def.Jammer = v.Float("jammer", 0f);
                     if (v.Has("mainAim")) def.AimMain(v.Enum<MountAim>("mainAim"));
                     def.Orbit = v.Bool("orbit", false);
+                    def.OrbitRadius = v.Float("orbitRadius", 0f);
                     def.Stealth = v.Bool("stealth", false);
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
@@ -308,9 +334,13 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("aps"))
                     {
                         var a = v.Object("aps");
-                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"))
+                        // Prompt 20 L.1: a launcher reloaded whole ("reload") needs no one-at-a-time "recharge".
+                        var reload = a.Float("reload", 0f);
+                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), reload > 0f ? a.Float("recharge", reload) : a.Float("recharge"))
                         {
                             Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f), Laser = a.Bool("laser", false),
+                            Reload = reload, Direct = a.Bool("direct", true), Missiles = a.Bool("missiles", false), Heavy = a.Bool("heavy", false),
+                            Burst = Math.Max(0f, a.Float("burst", 0f)),
                         };
                     }
                     if (v.Has("commandAura"))
@@ -411,6 +441,8 @@ namespace MachineBrigade.Sim.Content
                 IncomeScale = Tune("economy", "income"),
                 SupplyScale = Tune("economy", "supply"),
                 EnemyScaling = Tune("economy", "enemyScaling"),
+                QuickScaling = ReadShares(root, "enemyScalingQuick"),
+                QuickScalingModes = ReadShares(root, "enemyScalingModes"),
                 ArmyCaps = ReadArmyCaps(root),
                 VehicleCaps = ReadCaps(root, "vehicleCap", 32),
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
@@ -451,6 +483,15 @@ namespace MachineBrigade.Sim.Content
             var o = root.Object("economy").Object(key);
             foreach (var k in o.Keys) caps[k] = o.Int(k, fallback);
             return caps;
+        }
+
+        private static Dictionary<string, float> ReadShares(JsonObject root, string key)
+        {
+            var shares = new Dictionary<string, float>();
+            if (!root.Has("economy") || !root.Object("economy").Has(key)) return shares;
+            var o = root.Object("economy").Object(key);
+            foreach (var k in o.Keys) shares[k] = Math.Clamp(o.Float(k, 0f), 0f, 2f);
+            return shares;
         }
 
         private static Dictionary<string, int> ReadArmyCaps(JsonObject root)

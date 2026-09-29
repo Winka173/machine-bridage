@@ -1,6 +1,6 @@
 """Draws the campaign's portraits: flat vector busts in one style, readable at 48 px.
 
-    python Tools/campaign/portraits.py [--sheet <png>]
+    python Tools/campaign/portraits.py [--sheet <png>] [--only brandt,orlov]
 
 Writes Assets/MachineBrigade/Resources/UI/Portraits/<speaker>.png (256 px, drawn at 4x and scaled
 down). Allied officers stand on a teal ground, Hegemon's on a dark red one; each has its own
@@ -173,8 +173,9 @@ def linh(d):
     f.eyes(brow_tilt=1)
     f.nose()
     f.mouth(smile=0, w=18)
-    # Lieutenant: one bar.
-    d.rectangle(box(184, 216, 22, 7), fill=AMBER)
+    # Captain: two bars.
+    d.rectangle(box(184, 212, 22, 6), fill=AMBER)
+    d.rectangle(box(184, 222, 22, 6), fill=AMBER)
 
 
 def hung(d):
@@ -237,6 +238,25 @@ def orlov(d):
     # Crossed gun barrels.
     d.line([(s(172), s(210)), (s(204), s(234))], fill=BONE, width=s(5))
     d.line([(s(204), s(210)), (s(172), s(234))], fill=BONE, width=s(5))
+
+
+def brandt(d):
+    # Prompt 20: Major Brandt, the coastal garrison: a grey peaked cap, a moustache, a fortress badge.
+    f = Face(d, SKIN['mid'])
+    f.base((70, 74, 66), collar=(52, 56, 50))
+    d.rectangle(box(128, 84, 104, 24), fill=(84, 88, 80))
+    d.chord(box(128, 76, 114, 32), 180, 360, fill=(84, 88, 80))
+    d.rectangle(box(128, 98, 106, 8), fill=INK)
+    d.chord(box(128, 103, 92, 18), 0, 180, fill=INK)
+    d.rectangle(box(128, 86, 14, 12), fill=(200, 60, 50))
+    f.eyes(brow_tilt=2)
+    f.nose()
+    d.rectangle(box(128, 146, 40, 7), fill=(70, 50, 40))
+    f.mouth(y=156, w=18)
+    # A tower with battlements.
+    d.rectangle(box(190, 224, 26, 22), fill=BONE)
+    for x in (180, 190, 200):
+        d.rectangle(box(x, 210, 6, 8), fill=BONE)
 
 
 def kessler(d):
@@ -319,6 +339,129 @@ def aurel(d):
     d.polygon(poly([(176, 206), (186, 200), (196, 206), (196, 218), (186, 224), (176, 218)]), fill=AMBER)
 
 
+# Prompt 22 C.4: the officers who join the brigade on the way (the commanders of part F), on the allied ground.
+
+def brenn(d):
+    # Major Otto Brenn "Ledger", the quartermaster: reading glasses, a pencil behind the ear, a ledger badge.
+    f = Face(d, SKIN['light'])
+    f.base((78, 84, 70), collar=(60, 66, 54))
+    d.chord(box(128, 100, 86, 50), 180, 360, fill=(120, 110, 100))
+    f.eyes(brow_tilt=1)
+    for x in (109, 147):
+        d.rectangle(box(x, 128, 24, 12), outline=INK, width=s(3))
+    d.line([(s(121), s(128)), (s(135), s(128))], fill=INK, width=s(3))
+    d.line([(s(170), s(96)), (s(186), s(126))], fill=AMBER, width=s(4))
+    f.nose()
+    f.mouth(w=18)
+    d.rectangle(box(186, 222, 26, 20), fill=BONE)
+    for y in (216, 222, 228):
+        d.line([(s(176), s(y)), (s(196), s(y))], fill=INK, width=s(2))
+
+
+def adler(d):
+    # Captain Tomas Adler "Flag": a tanker's cap pushed back, a grin, a small flag on the chest.
+    f = Face(d, SKIN['warm'])
+    f.base((74, 88, 62), collar=(56, 68, 48))
+    d.chord(box(128, 100, 94, 64), 180, 360, fill=(60, 44, 30))
+    d.chord(box(128, 86, 100, 40), 180, 360, fill=(52, 64, 44))
+    f.eyes(brow_tilt=-1)
+    f.nose()
+    f.mouth(smile=2, w=24)
+    d.line([(s(178), s(236)), (s(178), s(204))], fill=BONE, width=s(3))
+    d.polygon(poly([(179, 204), (204, 211), (179, 218)]), fill=AMBER)
+
+
+def mendez(d):
+    # Captain Kaia Mendez "Rush": a short crop, driving goggles round the neck, a speed chevron.
+    f = Face(d, SKIN['deep'])
+    f.base((86, 92, 68), collar=(66, 72, 52))
+    d.chord(box(128, 104, 94, 70), 180, 360, fill=(24, 20, 18))
+    f.eyes(brow_tilt=2)
+    f.nose()
+    f.mouth(w=20)
+    d.rectangle(box(128, 186, 70, 8), fill=(60, 60, 60))
+    for x in (110, 146):
+        d.ellipse(box(x, 186, 24, 18), fill=(90, 90, 90))
+        d.ellipse(box(x, 186, 14, 11), fill=AMBER)
+    for i in range(2):
+        d.polygon(poly([(168 + i * 14, 212), (180 + i * 14, 222), (168 + i * 14, 232), (174 + i * 14, 222)]), fill=BONE)
+
+
+def dahl(d):
+    # Major Piet Dahl "Longshot", the brigade's guns: a beret, a range-finder slung, crossed barrels.
+    f = Face(d, SKIN['pale'])
+    f.base((70, 76, 64), collar=(54, 58, 48))
+    d.chord([s(78), s(60), s(184), s(112)], 160, 360, fill=(110, 40, 40))
+    d.ellipse(box(148, 80, 56, 24), fill=(110, 40, 40))
+    f.eyes(brow_tilt=0)
+    f.nose()
+    d.rectangle(box(128, 146, 36, 6), fill=(180, 150, 110))
+    f.mouth(y=156, w=16)
+    d.line([(s(84), s(186)), (s(170), s(250))], fill=INK, width=s(4))
+    d.line([(s(172), s(210)), (s(204), s(234))], fill=AMBER, width=s(5))
+    d.line([(s(204), s(210)), (s(172), s(234))], fill=AMBER, width=s(5))
+
+
+def varro(d):
+    # Captain Ines Varro "Tide", the miners' militia: a hard hat with a lamp, a scarf.
+    f = Face(d, SKIN['mid'])
+    f.base((96, 82, 64), collar=(170, 60, 50))
+    d.chord(box(128, 96, 108, 70), 180, 360, fill=(220, 180, 60))
+    d.rectangle(box(128, 98, 116, 8), fill=(200, 160, 50))
+    d.ellipse(box(128, 74, 18, 14), fill=BONE)
+    f.eyes(brow_tilt=1)
+    f.nose()
+    f.mouth(smile=1, w=20)
+    d.polygon(poly([(96, 184), (160, 184), (150, 200), (106, 200)]), fill=(170, 60, 50))
+    d.ellipse(box(186, 224, 22, 22), outline=BONE, width=s(3))
+
+
+def quist(d):
+    # Sergeant Major Lena Quist "Magpie", salvage: a bandana, a spanner and a bright bead.
+    f = Face(d, SKIN['light'])
+    f.base((80, 86, 72), collar=(62, 66, 54))
+    d.chord(box(128, 104, 96, 80), 175, 365, fill=(150, 90, 40))
+    d.chord(box(128, 94, 102, 44), 180, 360, fill=(40, 70, 110))
+    d.polygon(poly([(172, 92), (190, 104), (178, 112)]), fill=(40, 70, 110))
+    f.eyes(brow_tilt=-1)
+    f.nose()
+    f.mouth(smile=1, w=18)
+    d.rectangle(box(176, 222, 30, 8), fill=BONE)
+    d.ellipse(box(192, 222, 14, 14), fill=BONE)
+    d.ellipse(box(76, 216, 12, 12), fill=AMBER)
+
+
+def reyn(d):
+    # Colonel August Reyn "Crown", the elite column: a peaked cap with a crown badge, a stiff collar.
+    f = Face(d, SKIN['pale'])
+    f.base((50, 58, 50), collar=(36, 42, 36))
+    d.rectangle(box(128, 82, 104, 28), fill=(44, 54, 44))
+    d.chord(box(128, 72, 112, 36), 180, 360, fill=(44, 54, 44))
+    d.rectangle(box(128, 97, 108, 8), fill=AMBER)
+    d.chord(box(128, 102, 96, 20), 0, 180, fill=INK)
+    d.polygon(poly([(116, 90), (116, 76), (122, 82), (128, 72), (134, 82), (140, 76), (140, 90)]), fill=AMBER)
+    f.eyes(brow_tilt=1)
+    f.nose()
+    f.mouth(w=16)
+    for x in (70, 82, 94):
+        star(d, x, 214, 5, AMBER)
+
+
+def okoye(d):
+    # Captain Selma Okoye "Vault", logistics: braids tied back, a headset, a crate badge.
+    f = Face(d, SKIN['deep'])
+    f.base((66, 80, 76), collar=(50, 62, 58))
+    d.chord(box(128, 106, 98, 88), 175, 365, fill=(20, 16, 14))
+    d.ellipse(box(172, 148, 20, 50), fill=(20, 16, 14))
+    d.arc(box(128, 110, 104, 100), 190, 350, fill=(60, 64, 70), width=s(7))
+    d.ellipse(box(80, 128, 18, 26), fill=(60, 64, 70))
+    f.eyes(brow_tilt=0)
+    f.nose()
+    f.mouth(smile=1, w=18)
+    d.rectangle(box(188, 224, 26, 20), fill=AMBER)
+    d.line([(s(175), s(224)), (s(201), s(224))], fill=INK, width=s(2))
+
+
 def hq(d):
     # Brigade HQ: a radio set and its antenna, no face.
     d.rounded_rectangle(box(128, 150, 120, 80), radius=s(8), fill=(74, 88, 62))
@@ -333,15 +476,20 @@ def hq(d):
 
 PORTRAITS = [
     ('khai', OURS, khai), ('mai', OURS, mai), ('dieuhau', OURS, dieuhau), ('linh', OURS, linh), ('hung', OURS, hung),
-    ('varga', THEIRS, varga), ('orlov', THEIRS, orlov), ('kessler', THEIRS, kessler), ('sen', THEIRS, sen),
+    ('brandt', THEIRS, brandt), ('varga', THEIRS, varga), ('orlov', THEIRS, orlov), ('kessler', THEIRS, kessler), ('sen', THEIRS, sen),
     ('quaden', THEIRS, quaden), ('aurel', THEIRS, aurel), ('hq', NEUTRAL, hq),
+    ('brenn', OURS, brenn), ('adler', OURS, adler), ('mendez', OURS, mendez), ('dahl', OURS, dahl), ('varro', OURS, varro),
+    ('quist', OURS, quist), ('reyn', OURS, reyn), ('okoye', OURS, okoye),
 ]
 
 
 def main():
     os.makedirs(OUT, exist_ok=True)
     tiles = []
+    only = sys.argv[sys.argv.index('--only') + 1].split(',') if '--only' in sys.argv else None
     for name, ground, draw in PORTRAITS:
+        if only and name not in only:
+            continue
         img, d = canvas(ground)
         draw(d)
         img = img.resize((256, 256), Image.LANCZOS)
@@ -349,11 +497,11 @@ def main():
         tiles.append(img)
     if '--sheet' in sys.argv:
         path = sys.argv[sys.argv.index('--sheet') + 1]
-        sheet = Image.new('RGB', (6 * 264, 2 * 264 + 2 * 60), (17, 20, 24))
+        sheet = Image.new('RGB', (6 * 264, 4 * 264 + 4 * 60), (17, 20, 24))
         for i, t in enumerate(tiles):
             sheet.paste(t, ((i % 6) * 264 + 4, (i // 6) * 264 + 4))
             small = t.resize((48, 48), Image.LANCZOS)
-            sheet.paste(small, ((i % 6) * 264 + 4, 2 * 264 + 6 + (i // 6) * 60))
+            sheet.paste(small, ((i % 6) * 264 + 4, 4 * 264 + 6 + (i // 6) * 60))
         sheet.save(path)
     print('portraits:', ', '.join(p[0] for p in PORTRAITS))
 

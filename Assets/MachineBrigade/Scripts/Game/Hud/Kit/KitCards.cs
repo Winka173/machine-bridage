@@ -110,6 +110,11 @@ namespace MachineBrigade.Game.Hud
                 upgrade.Add(Kit.Icon("upgrade", null, 2.2f));
                 art.Add(upgrade);
             }
+            // Play-test 6: a card in the deck carries a check in the accent, a card in the deck strip a remove mark.
+            _badge = Kit.Box("fc-vcard__badge");
+            _badgeIcon = Kit.Icon("check", "fc-vcard__badge-icon", 2.6f);
+            _badge.Add(_badgeIcon);
+            art.Add(_badge);
             content.Add(art);
             var body = Kit.Box("fc-vcard__body");
             var shortName = Kit.Caps(data.ShortName ?? (data.Id != null ? Strings.Short(data.Id) : data.Name));
@@ -125,6 +130,8 @@ namespace MachineBrigade.Game.Hud
             lockRow.Add(Kit.Icon("lock"));
             lockRow.Add(Kit.Text(data.UnlockWhere ?? "", "fc-vcard__lock-text"));
             Add(lockRow);
+            // Play-test 6: the in-deck outline, drawn over the whole card.
+            Add(Kit.Box("fc-vcard__outline", PickingMode.Ignore));
             if (onClick == null) return;
             pickingMode = PickingMode.Position;
             this.AddManipulator(new Tap(() =>
@@ -136,10 +143,25 @@ namespace MachineBrigade.Game.Hud
 
         public VehicleCardData Data { get; }
 
+        private readonly VisualElement _badge;
+        private readonly IconElement _badgeIcon;
+
+        /// <summary>In the deck: an outline and a check in the kit's accent (play-test 6: readable on a phone).</summary>
         public bool Chosen
         {
             get => ClassListContains("fc-vcard--chosen");
             set => EnableInClassList("fc-vcard--chosen", value);
+        }
+
+        /// <summary>A card in the deck strip: a tap takes it out, so it shows a remove mark (play-test 6).</summary>
+        public bool Removable
+        {
+            get => ClassListContains("fc-vcard--removable");
+            set
+            {
+                EnableInClassList("fc-vcard--removable", value);
+                _badgeIcon.Name = value ? "close" : "check";
+            }
         }
     }
 
@@ -201,9 +223,9 @@ namespace MachineBrigade.Game.Hud
                 GearSlot.Armor => Strings.Format("stat.gear.hp", Pct()),
                 GearSlot.Optics => Strings.Format("stat.gear.vision", Pct()),
                 GearSlot.Engine => Strings.Format("stat.gear.speed", Pct()),
-                GearSlot.Repair => Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0")),
+                GearSlot.Repair => Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0", Strings.Culture)),
                 _ => item.Module == SpecialModule.SmokeDischarger ? Strings.Format("stat.gear.smoke", Mathf.RoundToInt(v))
-                    : item.Module == SpecialModule.AutoRepair ? Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0"))
+                    : item.Module == SpecialModule.AutoRepair ? Strings.Format("stat.gear.repair", (v * 100f).ToString("0.0", Strings.Culture))
                     : item.Module == SpecialModule.ReactiveArmor ? Strings.Format("stat.gear.taken", Pct())
                     : item.Module == SpecialModule.VeteranCrew ? Strings.Format("stat.gear.crew", Pct())
                     : MainLine(item),

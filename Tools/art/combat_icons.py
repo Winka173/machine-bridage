@@ -216,7 +216,7 @@ def rivets(points, r):
     return ''.join(circle_d(x, y, r) for x, y in points)
 
 
-def armour_family(prefix, body, inner, holes4, extra='', extra_thin='', half_y=12.0, half_holes=''):
+def armour_family(prefix, body, inner, holes4, extra='', extra_thin='', half_y=12.0, half_holes='', seam_y=10.1):
     # 0 none: dashed and hollow.
     icon(prefix + '0', P(body, dash='2.1 1.9'), extra_thin)
     # 1 thin: a hairline outline.
@@ -227,11 +227,15 @@ def armour_family(prefix, body, inner, holes4, extra='', extra_thin='', half_y=1
     icon(prefix + '3', P(body), P(clip_below(body, half_y) + half_holes, fill='eo', stroke='0'), extra)
     # 4 very thick: filled, with rivets (or brick joints) as holes.
     icon(prefix + '4', P(body), P(emit(parse(body)) + holes4, fill='eo', stroke='0'), extra)
+    # 5 super-heavy (a boss's plate, DECISIONS 21G): level 4 under a heavier rim, with a seam across the plate.
+    l, r = span_at(body, seam_y)
+    seam = rect_d(l + 1.4, seam_y - 0.45, r - 1.4, seam_y + 0.45)
+    icon(prefix + '5', P(body, sw='3.2'), P(emit(parse(body)) + holes4 + seam, fill='eo', stroke='0'), extra)
 
 
 armour_family('a_g', SHIELD, SHIELD_IN, rivets([(8.2, 7.6), (15.8, 7.6), (8.4, 12.6), (15.6, 12.6), (12, 17)], 1.25))
 armour_family('a_a', NARROW, NARROW_IN, rivets([(9.9, 8.6), (14.1, 8.6), (12, 14.2)], 1.05),
-              extra=P(WINGS), extra_thin=P(WINGS, sw='1.3'), half_y=11.5)
+              extra=P(WINGS), extra_thin=P(WINGS, sw='1.3'), half_y=11.5, seam_y=11.4)
 
 
 def bricks_lines():
@@ -266,6 +270,7 @@ icon('a_s2', P(SHIELD, sw='1.5'), P(SHIELD_IN, sw='1.5'), P('M7.4 12.2H16.6M12 7
 icon('a_s3', P(SHIELD), P('M' + fmt(span_at(SHIELD, 9.0)[0]) + ' 9H' + fmt(span_at(SHIELD, 9.0)[1]) + 'M8.2 4.4V9M15.8 4.4V9M12 9V12', sw='1.05'),
      P(clip_below(SHIELD, 12.0) + bricks_holes(12.0), fill='eo', stroke='0'))
 icon('a_s4', P(SHIELD), P(emit(parse(SHIELD)) + bricks_holes(0.0), fill='eo', stroke='0'))
+icon('a_s5', P(SHIELD, sw='3.2'), P(emit(parse(SHIELD)) + bricks_holes(0.0), fill='eo', stroke='0'))
 
 # ---- weapon forms: kinetic, penetration growing with the shape
 icon('w_mg_light', dot(16.4, 7.6, 2.7), P('M13.8 10.2L5.4 18.6M11.3 8.9L7.4 12.8M15.1 12.7L11.2 16.6'))

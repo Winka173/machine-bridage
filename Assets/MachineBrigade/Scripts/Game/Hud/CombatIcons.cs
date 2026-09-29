@@ -65,7 +65,7 @@ namespace MachineBrigade.Game.Hud
         public const string Splash = "x_splash";
 
         public static string Armour(int level, ArmourKind kind) =>
-            (kind switch { ArmourKind.Air => "a_a", ArmourKind.Structure => "a_s", _ => "a_g" }) + Clamp(level);
+            (kind switch { ArmourKind.Air => "a_a", ArmourKind.Structure => "a_s", _ => "a_g" }) + ClampArmour(level);
 
         public static string Form(string form) => form != null && Forms.TryGetValue(form, out var icon) ? icon : null;
 
@@ -79,15 +79,18 @@ namespace MachineBrigade.Game.Hud
 
         private static int Clamp(int level) => level < 0 ? 0 : level > 4 ? 4 : level;
 
+        /// <summary>Armour goes to 5 (a boss's plate, DECISIONS 21G); penetration stays 0-4.</summary>
+        private static int ClampArmour(int level) => level < 0 ? 0 : level > MachineBrigade.Sim.Content.ArmourLevels.Max ? MachineBrigade.Sim.Content.ArmourLevels.Max : level;
+
         private static bool Numbers => MatchSettings.ShowCombatNumbers;
 
-        private static string Num(float v) => v.ToString(v >= 10f ? "0" : "0.##", Strings.Vietnamese ? CultureInfo.GetCultureInfo("vi-VN") : CultureInfo.InvariantCulture);
+        private static string Num(float v) => v.ToString(v >= 10f ? "0" : "0.##", Strings.Culture);
 
         public static string ArmourName(int level, ArmourKind kind)
         {
-            var name = Strings.Get("armour.level." + Clamp(level));
+            var name = Strings.Get("armour.level." + ClampArmour(level));
             if (kind != ArmourKind.Ground) name += " · " + Strings.Get(kind == ArmourKind.Air ? "armour.kind.air" : "armour.kind.structure");
-            return Numbers ? name + " (" + Clamp(level) + ")" : name;
+            return Numbers ? name + " (" + ClampArmour(level) + ")" : name;
         }
 
         /// <summary>"Giáp dày · mặt trước" (face 0 front, 1 side, 2 rear, 3 top; -1 for no face).</summary>

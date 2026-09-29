@@ -52,6 +52,17 @@ namespace MachineBrigade.Game.Match
         /// <summary>Id of the support (or item) waiting for a target, or null.</summary>
         public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : _armedItem >= 0 ? _items[_armedItem] : null;
 
+        /// <summary>
+        /// What calling a card costs now, to the fraction of a CP (prompt 22 F: a commander's price change; the card shows it
+        /// to the whole CP), so a card lights up exactly when the economy would take it.
+        /// </summary>
+        private float Price(MachineBrigade.Sim.Economy.TeamEconomy economy, CardInfo card)
+        {
+            if (economy.Commander == null) return card.Cost;
+            if (card.Support) return _world.Catalog.TryGetSupport(card.Id, out var s) ? economy.PriceOf(card.Id, s.CpCost) : card.Cost;
+            return _world.Catalog.Vehicles.TryGetValue(card.Id, out var v) ? economy.PriceOf(card.Id, v.CpCost) : card.Cost;
+        }
+
         /// <summary>Builds the card list for a deck, reading costs from the catalog.</summary>
         public static List<CardInfo> Cards(SimWorld world, IEnumerable<string> vehicles, IEnumerable<string> supports)
         {
@@ -93,7 +104,7 @@ namespace MachineBrigade.Game.Match
         {
             if (!_world.TryGetEconomy(_team, out var economy)) return;
             // Auto support can spend the CP or start the cooldown of the card being aimed.
-            if (_armed >= 0 && (economy.CooldownLeft(_cards[_armed].Id, _world.Time) > 0f || economy.Cp < _cards[_armed].Cost)) Disarm();
+            if (_armed >= 0 && (economy.CooldownLeft(_cards[_armed].Id, _world.Time) > 0f || economy.Cp < Price(economy, _cards[_armed]))) Disarm();
             for (var i = 0; i < _cards.Count; i++)
             {
                 var card = _cards[i];
@@ -102,11 +113,11 @@ namespace MachineBrigade.Game.Match
                     var cooldown = 0f;
                     if (_world.Catalog.TryGetSupport(card.Id, out var s) && s.Cooldown > 0f)
                         cooldown = economy.CooldownLeft(card.Id, _world.Time) / s.Cooldown;
-                    _states[i] = new CardState(economy.Cp >= card.Cost, false, cooldown, i == _armed, economy.CooldownLeft(card.Id, _world.Time));
+                    _states[i] = new CardState(economy.Cp >= Price(economy, card), false, cooldown, i == _armed, economy.CooldownLeft(card.Id, _world.Time));
                 }
                 else
                 {
-                    _states[i] = new CardState(economy.Cp >= card.Cost, economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, false);
+                    _states[i] = new CardState(economy.Cp >= Price(economy, card), economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, false);
                 }
             }
             _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp, _states);
@@ -164,7 +175,7 @@ namespace MachineBrigade.Game.Match
                 _hud.ShowError(CommandError.OnCooldown);
                 return;
             }
-            if (economy.Cp < card.Cost)
+            if (economy.Cp < Price(economy, card))
             {
                 _hud.ShowError(CommandError.NotEnoughCp);
                 return;

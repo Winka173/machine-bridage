@@ -125,6 +125,8 @@ namespace MachineBrigade.Game.Match
         protected static void ShowBoss(BattleHud hud, MachineBrigade.Sim.Entities.Vehicle boss, string name = null, SimWorld world = null)
         {
             name ??= Strings.Card(boss.Def.Id);
+            // Play-test 6: the compact bar sits in the top row: the call sign only.
+            if (hud.Compact) name = BossBar.CallSign(name);
             var phases = boss.Def.Phases;
             // Prompt 9: the parts are icons under the bar now; the name only says when the hull is shut.
             if (boss.BodyLocked) name += "  ·  " + Strings.Get("boss.locked");
@@ -135,7 +137,15 @@ namespace MachineBrigade.Game.Match
             if (boss.Escaping && boss.EscapeSeconds >= 0f)
                 name += "  ·  " + Strings.Format("boss.escaping", $"{(int)boss.EscapeSeconds / 60}:{(int)boss.EscapeSeconds % 60:00}");
             hud.SetBossEscorts(world != null ? world.EscortsAlive(boss.Id) : 0);
+            hud.SetBossRank(boss.Def.RankDef);
             hud.SetBossBigAttack(boss);
+            // Prompt 19 B.5: a tiered boss's altitude and countdown, and its phase marks on the bar.
+            hud.SetBossTier(boss, world?.Time ?? 0.0);
+            if (phases.Count == 0 && boss.Def.Tiers is { Marks: { Count: > 0 } tierMarks })
+            {
+                hud.SetBoss(name, boss.Hp / boss.MaxHp, boss.TierPhase, new List<float>(tierMarks), false);
+                return;
+            }
             if (phases.Count == 0)
             {
                 hud.SetBoss(name, boss.Hp / boss.MaxHp);
@@ -166,7 +176,7 @@ namespace MachineBrigade.Game.Match
                 if (!boss.IsPartBroken(i)) alive[kind]++;
             }
             var bits = new List<string>();
-            foreach (var kind in kinds) bits.Add(Strings.Format("boss.parts", Strings.Get("part." + kind), alive[kind], total[kind]));
+            foreach (var kind in kinds) bits.Add(Strings.Format("boss.parts", ("part", Strings.Get("part." + kind)), ("count", alive[kind]), ("total", total[kind])));
             if (boss.BodyLocked) bits.Add(Strings.Get("boss.locked"));
             return "  ·  " + string.Join(" · ", bits);
         }
@@ -193,7 +203,7 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>A score that says whose is whose: "Us 0 · Enemy 331".</summary>
-        protected static string Sides(int us, int enemy) => Strings.Format("result.sides", us, enemy);
+        protected static string Sides(int us, int enemy) => Strings.Format("result.sides", ("us", us), ("enemy", enemy));
 
         protected static int OutcomeOf(MatchResult result) => result.IsDraw ? 0 : result.WinningTeam == PlayerTeam ? 1 : -1;
 
@@ -226,7 +236,7 @@ namespace MachineBrigade.Game.Match
             var rules = world.Catalog.Base;
             var role = rules.RoleFor(kind.ToString());
             var setup = new BaseSetup();
-            var enemyLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed);
+            var enemyLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, against: MatchSettings.DeckVehicles);
             var playerLoadout = menu ? BaseLoadout.ForAi(world.Catalog, "Normal", "default", seed + 5) : PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam);
             if (role == BaseRole.Target)
             {
@@ -269,12 +279,15 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Weekly => new WeeklySession(),
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
+                GameModeKind.Sandbox => new SandboxSession(),
                 GameModeKind.Campaign => new MissionSession(mission ?? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
                 _ => new ConquestSession(),
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             world.ModeTag = menu ? "Menu" : kind.ToString();
             session.Build(world, seed);
+            // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events, elites or doctrines.
+            if (!menu && kind == GameModeKind.Sandbox) return session;
             // Prompt 13 I.1: the enemy's income by difficulty (Easy x0.8, Normal x1, Hard x1.2, Very Hard x1.4).
             if (!menu && kind != GameModeKind.Campaign && world.TryGetEconomy(EnemyTeam, out var enemyEconomy))
                 enemyEconomy.ScaleIncome(BuyProfile.For(session.Difficulty).Income);
@@ -301,6 +314,25 @@ namespace MachineBrigade.Game.Match
         }
 
         protected abstract void Build(SimWorld world, int seed);
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): a quick mode's enemy keeps pace with the player's arsenal as the campaign's does
+        /// (EnemyScaling), with its difficulty's share (economy.enemyScalingQuick): its vehicles, bosses and towers get
+        /// that share of the deck's edge in toughness and firepower, so card ranks and equipment still tell but a geared
+        /// army no longer walks over every difficulty. Set before the forces are placed; no deck edge, no change.
+        /// </summary>
+        internal static void KeepPace(SimWorld world, IEnumerable<VehicleBoost> deck, AiDifficulty difficulty, GameModeKind kind)
+        {
+            // Boss Rush runs on a clock: its bosses keep Normal's pace at every difficulty and the difficulty is their
+            // own strength (BossRushSession.BossStrength), more in damage than in health, so a hard run is lost to the
+            // bosses rather than to the clock.
+            if (kind == GameModeKind.BossRush) difficulty = AiDifficulty.Normal;
+            var share = world.Catalog.QuickScalingFor(difficulty.ToString(), kind.ToString());
+            if (share <= 0f) return;
+            var edge = EnemyScaling.Match(deck, share);
+            if (edge.Hp <= 1f && edge.Damage <= 1f) return;
+            world.SetBoosts(EnemyTeam, _ => edge, _ => edge.Damage, everything: true);
+        }
 
         /// <summary>Which map file the mode plays on (objectives or the open sandbox version).</summary>
         public static string MapFile(GameModeKind kind, string mapId) => kind switch
@@ -520,7 +552,7 @@ namespace MachineBrigade.Game.Match
             if (_mode.Result is not { } result) return null;
             var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.assault") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount), _mode.SectorCount)));
+            outcome.Rows.Add((Strings.Get("stat.taken"), Strings.Format("mode.assault.sector", ("sector", UnityEngine.Mathf.Min(_mode.Sector + 1, _mode.SectorCount)), ("total", _mode.SectorCount))));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
             return outcome;
         }
@@ -586,11 +618,13 @@ namespace MachineBrigade.Game.Match
                 // The player's inner lines are the strong ones.
                 // Prompt 13 H.7: Defend's outer line 1 -> 1.45 and the inner ones 1.4 / 1.8 -> 1.25 / 1.4 (the outer line
                 // always fell and the HQ never did); Endless 1.2 / 1.3 / 1.5.
-                LineHealth = _endless ? new[] { 1.2f, 1.3f, 1.5f } : new[] { 1.45f, 1.25f, 1.4f },
-                LineDamage = _endless ? new[] { 1.05f, 1.15f, 1.25f } : new[] { 1.15f, 1.1f, 1.2f },
+                // The balance pass after prompt 18 (D.2): the outer line fell in every battle (15 of 15 at 3-5 minutes, the HQ
+                // always held): outer 1.45 -> 2.0 as tough and 1.15 -> 1.3 as hard-hitting, the first waves smaller; the inner as they were.
+                LineHealth = _endless ? new[] { 1.2f, 1.3f, 1.5f } : new[] { 2.0f, 1.25f, 1.4f },
+                LineDamage = _endless ? new[] { 1.05f, 1.15f, 1.25f } : new[] { 1.3f, 1.1f, 1.2f },
                 // Swarms that grow in numbers, not heavier (up to the ceiling of attackers alive).
                 WaveRoster = Available(world, Swarm), WaveHeavy = Available(world, Heavy),
-                WaveStart = _endless ? (hard ? 6 : easy ? 4 : 5) : hard ? 5 : easy ? 3 : 4, WaveGrowth = _endless ? 1.2f : hard ? 1.9f : 1.7f, WaveCompound = _endless ? 0.06f : 0f, WaveMax = 36, HeavyEvery = 3,
+                WaveStart = _endless ? (hard ? 6 : easy ? 4 : 5) : hard ? 4 : easy ? 2 : 3, WaveGrowth = _endless ? 1.2f : hard ? 2.0f : 1.8f, WaveCompound = _endless ? 0.06f : 0f, WaveMax = 36, HeavyEvery = 3,
                 EliteFrom = _endless ? 6 : 99, WaveSeed = seed,
                 // Prompt 13 H.7-H.8: the waves by the base they face, drawn against it, with siege breakers.
                 ScaleToBase = true, CounterBase = true, BreachWave = true, WaveBreachers = Available(world, Breachers), BreachFrom = 2, BreachEvery = 3,
@@ -619,8 +653,8 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var integrity = 1f - _mode.Progress(world);
-            var goal = Strings.Format("base.line", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.Stage switch { 1 => "base.goal1", 2 => "base.goal2", _ => "base.goal3" }));
+            var goal = Strings.Format("base.line", ("stage", UnityEngine.Mathf.Min(3, _mode.Stage)),
+                ("name", Strings.Get(_mode.Stage switch { 1 => "base.goal1", 2 => "base.goal2", _ => "base.goal3" })));
             var detail = Strings.Format("base.waveOf", _mode.Wave) + "  ·  " + $"{UnityEngine.Mathf.RoundToInt(integrity * 100f)}%";
             hud.SetMission(goal, detail, integrity, _endless ? -1f : _mode.SecondsLeft(world), scratch);
             hud.SetWavePreview(_mode.NextWave, _mode.SecondsToWave(world), _mode.Wave + 1, _mode.Held);
@@ -668,8 +702,8 @@ namespace MachineBrigade.Game.Match
 
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
         public override string Kicker => Strings.Get("mode.weekly.kicker");
-        public override string Subtitle => Strings.Format("mode.weekly.sub", _week % 100, Strings.Get("map." + WeeklyFortress.MapId));
-        public override string StartToast => Strings.Format("mode.weekly.toast", _startStage, WeeklyFortress.Reward);
+        public override string Subtitle => Strings.Format("mode.weekly.sub", ("week", _week % 100), ("map", Strings.Get("map." + WeeklyFortress.MapId)));
+        public override string StartToast => Strings.Format("mode.weekly.toast", ("stage", _startStage), ("coins", WeeklyFortress.Reward));
 
         protected override void Build(SimWorld world, int seed)
         {
@@ -682,7 +716,8 @@ namespace MachineBrigade.Game.Match
                 StartSeconds = 300f, StartStage = _startStage,
                 Attacker = attacker, Defender = EnemySide(22f, 1.15f, Difficulty, world.Catalog, seed),
                 // Prompt 17 B.7: on a long battlefield the same layered plan (the long table's towers).
-                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week, layered: world.Map.Fortress is { Layered: true }),
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week, layered: world.Map.Fortress is { Layered: true },
+                    against: MatchSettings.DeckVehicles),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -700,8 +735,8 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var progress = _mode.Progress(world);
-            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+            var goal = Strings.Format("mode.siege.stage", ("stage", UnityEngine.Mathf.Min(3, _mode.Stage)),
+                ("name", Strings.Get(_mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" })));
             hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
             hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: false);
         }
@@ -750,7 +785,8 @@ namespace MachineBrigade.Game.Match
             // Its income is one base (0.6) times the difficulty's multiplier (ModeSession.Create; prompt 13 I.1).
             var hard = Difficulty >= AiDifficulty.Hard;
             // Prompt 13 H.5: the garrison 12 -> 16 CP (Hard 18 -> 22) and 0.6 -> 0.8 income.
-            var defender = EnemySide(hard ? 22f : 16f, 0.8f, Difficulty, world.Catalog, seed);
+            // The balance pass after prompt 18 (D.1): 16 -> 20 CP on Normal and Easy (the measured side won 13 sieges of 15).
+            var defender = EnemySide(hard ? 24f : 20f, 0.8f, Difficulty, world.Catalog, seed);
             defender.ArmyCap = hard ? 34 : 26;
             // The time bank: harder sieges start with less on the clock.
             var start = Difficulty switch { AiDifficulty.VeryHard => 400f, AiDifficulty.Hard => 420f, AiDifficulty.Easy => 540f, _ => 480f };
@@ -759,14 +795,16 @@ namespace MachineBrigade.Game.Match
                 // Prompt 13 H.5: 300 s more a ring broken (360 before), towers 1.2 -> 1.75 as tough, the inner rings
                 // more so, and Normal mans 90 % of the hardpoints.
                 StartSeconds = start, StageBonus = new[] { 300f, 300f }, MaxBank = 900f, SuperGunFirst = 150f, SuperGunSeconds = 90f,
-                Hardening = 1.75f, LineHealth = new[] { 1.1f, 1.25f, 1.4f }, LineDamage = new[] { 1f, 1.05f, 1.1f },
+                // The balance pass after prompt 18 (D.1): towers 1.75 -> 2.1 as tough, the inner rings hit harder.
+                Hardening = 2.1f, LineHealth = new[] { 1.1f, 1.25f, 1.4f }, LineDamage = new[] { 1.05f, 1.15f, 1.25f },
                 // An easier fortress leaves some of its outer hardpoints empty.
-                Manning = Difficulty switch { >= AiDifficulty.Hard => 1f, AiDifficulty.Easy => 0.6f, _ => 0.9f },
+                Manning = Difficulty switch { >= AiDifficulty.Normal => 1f, _ => 0.6f },
                 Attacker = attacker, Defender = defender,
                 AttackerBase = PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam),
                 // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.
                 // (Prompt 17 B.7: a long battlefield's layered base takes the long table's towers.)
-                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, layered: world.Map.Fortress is { Layered: true }),
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, layered: world.Map.Fortress is { Layered: true },
+                    against: MatchSettings.DeckVehicles),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -788,9 +826,9 @@ namespace MachineBrigade.Game.Match
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
             var progress = _mode.Progress(world);
-            var goal = Strings.Format("mode.siege.stage", UnityEngine.Mathf.Min(3, _mode.Stage),
-                Strings.Get(_mode.GateToBreak(world).IsValid ? "siege.goalGate"
-                    : _mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" }));
+            var goal = Strings.Format("mode.siege.stage", ("stage", UnityEngine.Mathf.Min(3, _mode.Stage)),
+                ("name", Strings.Get(_mode.GateToBreak(world).IsValid ? "siege.goalGate"
+                    : _mode.Stage switch { 1 => "siege.goal1", 2 => "siege.goal2", _ => "siege.goal3" })));
             hud.SetMission(goal, $"{UnityEngine.Mathf.RoundToInt(progress * 100f)}%", progress, _mode.SecondsLeft(world), scratch);
             hud.SetSuperGun(_mode.SuperGunCountdown(world), _mode.SuperGunDown, ours: false);
         }
@@ -819,30 +857,54 @@ namespace MachineBrigade.Game.Match
         /// <summary>Prompt 16: the battlefield the rush fights its sea boss on.</summary>
         public const string SeaMap = "lighthousebay";
 
-        /// <summary>The rush carried over from the last battlefield (set before the scene is rebuilt, taken up by the next session).</summary>
+        /// <summary>The rush carried over from the last battlefield or a checkpoint (set before the scene is rebuilt, taken up by the next session).</summary>
         internal static BossRushCarry Pending;
+
+        /// <summary>Prompt 20 N: the next Boss Hunt is the full one (every boss in story order), else the week's.</summary>
+        internal static bool Full;
+
+        private readonly bool _full = Full;
+        private int _week;
+        private IReadOnlyList<string> _roster;
+        private int _checkpointsSaved;
+        private MatchOutcome _outcome;
 
         /// <summary>Where the rush must go before its next boss, or null.</summary>
         public BossRushCarry SwitchTo => _mode?.SwitchTo;
 
+        /// <summary>This run is the full hunt.</summary>
+        public bool IsFull => _full;
+
+        private string Key => _full ? BossHunts.FullKey : BossHunts.WeeklyKey;
+
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
-        public override string Kicker => Strings.Get("mode.bossrush.kicker");
-        public override string Subtitle => Strings.Get("mode.bossrush.sub");
+        public override string Kicker => Strings.Get(_full ? "hunt.full.kicker" : "mode.bossrush.kicker");
+        public override string Subtitle => Strings.Get(_full ? "hunt.full.sub" : "mode.bossrush.sub");
         public override string StartToast => Strings.Get("mode.bossrush.toast");
 
         protected override void Build(SimWorld world, int seed)
         {
             // A bigger opening purse and income than the old 30 CP and 1.6: playtests found the rush too hard to win.
             // Round 6: 1.8 -> 2.0 (Hard 1.55 -> 1.75), a 45 CP bank so the start and bounties are not clipped.
-            var player = PlayerSide(40f, Difficulty switch { AiDifficulty.VeryHard => 1.6f, AiDifficulty.Hard => 1.75f, _ => 2f });
+            // Play-test 6 (DECISIONS 21G): the economy a little leaner (2 -> 1.8, Hard 1.75 -> 1.6, Very Hard 1.6 -> 1.45).
+            var player = PlayerSide(40f, Difficulty switch { AiDifficulty.VeryHard => 1.45f, AiDifficulty.Hard => 1.6f, _ => 1.8f });
             player.ArmyCap = 36;
             player.Bank = 45f;
-            // One boss of each kind, which variant drawn by the battle's seed.
-            // The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
+            // Prompt 20 N: the week's hunt (3 main and 7 mini bosses drawn by the week, stronger down the run, 45 minutes)
+            // or the full hunt (every boss in story order, no clock); a 20 s rest that repairs 30 % of the army, a support
+            // after each main boss, checkpoints. The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
+            _week = WeeklyFortress.Week;
+            _roster = _full ? BossHunts.Full : BossHunts.Weekly(_week);
             _mode = new BossRushMode(new BossRushRules
             {
-                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed),
+                Player = player, Bounty = 12f, StepBounty = 6f, Bosses = _roster,
                 SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
+                Checkpoints = _full ? HuntCheckpoints.EveryBoss : HuntCheckpoints.MainBosses, Supports = true,
+                Seed = _full ? BossHunts.FullSeed : _week, Ramp = !_full, RestRepair = 0.3f, Breather = 20f,
+                TimeLimit = _full ? float.MaxValue : BossHunts.WeeklyMinutes * 60f,
+                // Play-test 6 (DECISIONS 21G): the endless run after the last boss, and the bosses' strength by difficulty.
+                EndlessOffer = true,
+                BossHp = BossStrength(Difficulty).hp, BossDamage = BossStrength(Difficulty).damage,
             });
             Pending = null;
             Mode = _mode;
@@ -852,6 +914,15 @@ namespace MachineBrigade.Game.Match
             Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => PlayerCentre(w) ?? home };
             AddPlayerCommander(_mode, seed).Goal = w => w.TryGetVehicle(_mode.Boss, out var b) && b.IsAlive ? b.Position : null;
         }
+
+        /// <summary>Play-test 6 (DECISIONS 21G): the bosses' health and damage by difficulty (the escorts' by the elite and cap tables).</summary>
+        internal static (float hp, float damage) BossStrength(AiDifficulty difficulty) => difficulty switch
+        {
+            AiDifficulty.Easy => (0.75f, 0.85f),
+            AiDifficulty.Hard => (0.9f, 1.05f),
+            AiDifficulty.VeryHard => (0.95f, 1.12f),
+            _ => (0.85f, 1f),
+        };
 
         private static Vector2? PlayerCentre(SimWorld world)
         {
@@ -870,22 +941,135 @@ namespace MachineBrigade.Game.Match
         {
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
-            hud.SetMission(Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}", _mode.Defeated / (float)_mode.Total,
-                _mode.SecondsLeft(world), scratch);
+            var detail = _mode.Endless ? Strings.Format("hunt.endless.detail", _mode.EndlessDefeated) : $"{_mode.Defeated} / {_mode.Total}";
+            // The full hunt has no clock: its total time (the leaderboard's) instead.
+            if (_full) detail += "  ·  " + Clock(_mode.TotalSeconds(world));
+            hud.SetMission(Strings.Get("mode.bossrush.goal"), detail, UnityEngine.Mathf.Min(1f, _mode.Defeated / (float)_mode.Total),
+                _full || _mode.Endless ? -1f : _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss, world: world);
             else hud.SetBoss(null, 0f);
+            // Prompt 20 N/O.4: the rest between bosses, the support pick after a main boss, the checkpoint kept.
+            var rest = _mode.RestLeft(world);
+            hud.SetHuntRest(rest >= 0f ? Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)) : null, rest,
+                _mode.Next is { } next ? Strings.Format("hunt.next", Strings.Card(next)) : null, HeldLine());
+            if (_mode.EndlessOpen || _endlessShown) ShowEndlessPick(hud, world);
+            else ShowSupportPick(hud, world, rest);
+            if (KeepCheckpoint()) hud.Toast(Strings.Get("hunt.checkpointToast"));
         }
+
+        private bool _endlessShown;
+
+        /// <summary>Play-test 6 (DECISIONS 21G): after the last boss, end the hunt (the first card, taken when the time runs out) or go on endless.</summary>
+        private void ShowEndlessPick(BattleHud hud, SimWorld world)
+        {
+            if (!_mode.EndlessOpen)
+            {
+                if (hud.SupportPickShown) hud.HideSupportPick();
+                _endlessShown = false;
+                return;
+            }
+            if (!_endlessShown)
+            {
+                _endlessShown = true;
+                var options = new List<(string, string, string)>
+                {
+                    ("trophy", Strings.Get("hunt.endless.stop"), Strings.Get("hunt.endless.stop.info")),
+                    ("crosshair", Strings.Get("hunt.endless.go"), Strings.Get("hunt.endless.go.info")),
+                };
+                hud.ShowSupportPick(Strings.Get("hunt.endless.title"), options, index =>
+                {
+                    MatchJournal.Record(world, "endless", index == 1 ? "1" : "0");
+                    _mode.ChooseEndless(world, index == 1);
+                    hud.HideSupportPick();
+                });
+            }
+            hud.SetSupportPickTime(_mode.EndlessChoiceLeft(world), "hunt.endless.auto");
+        }
+
+        /// <summary>Saves the run's newest checkpoint once (each frame, and before a switch of battlefield); true when one was saved.</summary>
+        public bool KeepCheckpoint()
+        {
+            if (_mode == null || _mode.CheckpointsTaken == _checkpointsSaved || _mode.Checkpoint is not { } checkpoint) return false;
+            _checkpointsSaved = _mode.CheckpointsTaken;
+            PlayerProfile.SaveHuntCheckpoint(Key, _week, _roster, checkpoint);
+            return true;
+        }
+
+        private string HeldLine()
+        {
+            if (_mode.Held.Count == 0) return null;
+            var names = new List<string>();
+            foreach (var id in _mode.Held) names.Add(Strings.Get("hunt.support." + id));
+            return Strings.Format("hunt.held", string.Join(", ", names));
+        }
+
+        /// <summary>The pick of one of three supports while an offer is open; the first is taken when the rest ends.</summary>
+        private void ShowSupportPick(BattleHud hud, SimWorld world, float rest)
+        {
+            if (_mode.Offer is not { } offer)
+            {
+                if (hud.SupportPickShown) hud.HideSupportPick();
+                return;
+            }
+            if (!hud.SupportPickShown)
+            {
+                var options = new List<(string, string, string)>();
+                foreach (var id in offer)
+                    options.Add((HuntSupports.Get(id)?.Icon ?? "star", Strings.Get("hunt.support." + id), Strings.Get("hunt.support." + id + ".info")));
+                hud.ShowSupportPick(Strings.Get("hunt.pickTitle"), options, index =>
+                {
+                    if (index < offer.Count) Choose(world, offer[index]);
+                    hud.HideSupportPick();
+                });
+            }
+            hud.SetSupportPickTime(UnityEngine.Mathf.Max(0f, rest));
+        }
+
+        /// <summary>A support picked (recorded with the player's other inputs).</summary>
+        public void Choose(SimWorld world, string id)
+        {
+            if (_mode.Offer == null) return;
+            MatchJournal.Record(world, "support", id);
+            _mode.Choose(world, id);
+        }
+
+        /// <summary>A lost run's way back: its last checkpoint, as saved (with what this sitting paid), or null.</summary>
+        public BossRushCarry ResumeFrom() => _roster == null ? null : PlayerProfile.HuntCheckpoint(Key, _week, _roster);
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
+            if (_outcome != null) return _outcome;
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.bossrush") };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get(_full ? "hunt.full" : "mode.bossrush") };
             AddRows(outcome, world, kills, losses);
-            outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}"));
+            outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{System.Math.Min(_mode.Defeated, _mode.Total)} / {_mode.Total}"));
+            if (_mode.Endless) outcome.Rows.Add((Strings.Get("hunt.endless.row"), Kit.Count(_mode.EndlessDefeated)));
+            var total = _mode.TotalSeconds(world);
+            outcome.Rows.Add((Strings.Get("hunt.time"), Clock(total)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
-            // Every boss brought down pays, win or lose.
-            outcome.Reward.Coins += 120 * _mode.Defeated;
-            return outcome;
+            // Every boss brought down pays, win or lose; those paid in an earlier sitting of the run are not paid again.
+            outcome.Reward.Coins += 120 * System.Math.Max(0, _mode.Defeated - _mode.PaidBefore);
+            if (outcome.Result > 0)
+            {
+                PlayerProfile.ClearHuntCheckpoint(Key);
+                if (_full)
+                {
+                    if (PlayerProfile.RecordFullHunt((float)total)) outcome.Rows.Add((Strings.Get("hunt.newBest"), Clock(total)));
+                    if (PlayerProfile.ClaimFullHunt())
+                    {
+                        outcome.Reward.Coins += BossHunts.FullReward;
+                        PlayerProfile.AddCrate(CrateKind.Legendary);
+                        outcome.Rows.Add((Strings.Get("hunt.firstClear"), Strings.Format("hunt.full.reward", Kit.Count(BossHunts.FullReward))));
+                    }
+                }
+                else if (PlayerProfile.ClaimWeekly(_week, "hunt"))
+                {
+                    outcome.Reward.Coins += BossHunts.WeeklyReward;
+                    outcome.Rows.Add((Strings.Get("hunt.firstClear"), $"+{Kit.Count(BossHunts.WeeklyReward)}"));
+                }
+            }
+            else PlayerProfile.HuntPaidUpTo(Key, _mode.Defeated);
+            return _outcome = outcome;
         }
     }
 
@@ -1043,10 +1227,12 @@ namespace MachineBrigade.Game.Match
                     Vehicles = deck.Count > 0 ? deck.ToArray() : EnemyDeck(Difficulty, world.Catalog).vehicles, Supports = supports.ToArray(),
                 };
             }
-            var playerSide = PlayerSide(_def.PlayerCp, _def.PlayerIncome);
-            playerSide.ArmyCap = _def.PlayerCap;
             // An Operations battle: its tier (Legend too) and its mutators (null: a campaign mission).
             _run = MatchSettings.Run != null && MatchSettings.Run.Mission == _def.Id ? MatchSettings.Run : null;
+            // Prompt 22 D.5: what the story's choices so far change here (the campaign's battles only).
+            var playerSide = PlayerSide(_def.PlayerCp + (_run == null ? Narrative.PlayerCpBonus(_def) : 0f), _def.PlayerIncome);
+            playerSide.ArmyCap = _def.PlayerCap;
+            world.SetVision(EnemyTeam, _run == null ? Narrative.EnemyVision(_def) : 1f);
             // Heroic and Iron (and Legend): the enemy comes stronger; Iron and Legend also leave the
             // player poorer and without fire support (operations.json "tiers").
             _tier = System.Math.Clamp(MatchSettings.MissionTier, 0, _run != null && Operations.LegendOpen ? Operations.Legend : 2);
@@ -1085,7 +1271,7 @@ namespace MachineBrigade.Game.Match
             }
             Mode.Setup(world);
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
-            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null);
+            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null, against: MatchSettings.DeckVehicles);
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
                     .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam)), _def.PlayerBase)
@@ -1137,17 +1323,41 @@ namespace MachineBrigade.Game.Match
                     Objective = w => _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null),
                 };
             Configure(world);
-            // Two bosses: a second one from the enemy's camp (the mission's own kind, else a Behemoth).
-            if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair))
-            {
-                var bossId = def.Boss?.Def ?? "behemoth";
-                if (world.Catalog.Vehicles.ContainsKey(bossId)) world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
-            }
+            // Extra mini boss (prompt 20 N.3): one more from the enemy's camp, of the mission's boss rank and chapter.
+            if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair) &&
+                ExtraBossFor(def, world.Catalog) is { } bossId)
+                world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
             // Each stage sets the commanders for its own goal, in the step it begins.
             if (_op != null) _op.StageChanged += _ => Configure(world);
         }
 
         private OperationRun _run;
+
+        /// <summary>
+        /// Prompt 20 N.3: the Operations mutator's extra boss: a mini boss of the mission's boss (a second one when it is a
+        /// mini, its mini version when it is a main boss with one), else the chapter's first mini boss (its general's), else
+        /// the mission's boss itself; null when none exists.
+        /// </summary>
+        internal static string ExtraBossFor(MissionDef def, Catalog catalog)
+        {
+            var id = def.Boss?.Def;
+            if (id == null)
+                foreach (var s in def.Stages)
+                    if (s.Mission.Boss != null)
+                    {
+                        id = s.Mission.Boss.Def;
+                        break;
+                    }
+            if (id != null && catalog.Vehicles.TryGetValue(id, out var boss))
+            {
+                if (boss.MiniBoss) return id;
+                if (boss.MiniVariant != null && catalog.Vehicles.ContainsKey(boss.MiniVariant)) return boss.MiniVariant;
+            }
+            if (Campaign.Chapter(def.Chapter) is { } chapter)
+                foreach (var mini in chapter.Minis)
+                    if (catalog.Vehicles.ContainsKey(mini)) return mini;
+            return id != null && catalog.Vehicles.ContainsKey(id) ? id : null;
+        }
 
         /// <summary>The player's base under the run's mutators: no towers (empty base), no repair bay (no repair).</summary>
         private BaseLoadout MutatedBase(BaseLoadout loadout)
@@ -1231,7 +1441,7 @@ namespace MachineBrigade.Game.Match
                 _ => $"{done} / {needed}",
             };
             var goalText = Strings.Get("goal." + goal.ToString().ToLowerInvariant());
-            if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", _op.Path.Count, goalText);
+            if (_op != null && _op.StageCount > 1) goalText = Strings.Format("stage.goal", ("stage", _op.Path.Count), ("goalText", goalText));
             hud.SetMission(goalText, detail, _mode.Progress(world), _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive && !_mode.BossFled)
                 ShowBoss(hud, boss, BossName(_mode.Def, boss.Def.Id), world);
@@ -1251,9 +1461,9 @@ namespace MachineBrigade.Game.Match
             var score = Operations.Data.Scoring.Score(won, world.Time, Losses, hq, Operations.Tier(_tier), _run.Mutators);
             var best = PlayerProfile.BestScore(_def.Id, _tier);
             var record = PlayerProfile.RecordOperation(_def.Id, _tier, score, (float)world.Time);
-            outcome.Subtitle = Strings.Format("ops.resultTitle", Title, Strings.Get("tier." + _tier));
-            outcome.Rows.Insert(0, (Strings.Get("ops.score"), score.ToString("N0")));
-            outcome.Rows.Insert(1, (Strings.Get("ops.best"), record ? Strings.Get("ops.newRecord") : best.ToString("N0")));
+            outcome.Subtitle = Strings.Format("ops.resultTitle", ("title", Title), ("tier", Strings.Get("tier." + _tier)));
+            outcome.Rows.Insert(0, (Strings.Get("ops.score"), score.ToString("N0", Strings.Culture)));
+            outcome.Rows.Insert(1, (Strings.Get("ops.best"), record ? Strings.Get("ops.newRecord") : best.ToString("N0", Strings.Culture)));
             if (_run.Mutators.Count > 0)
             {
                 var names = new List<string>();

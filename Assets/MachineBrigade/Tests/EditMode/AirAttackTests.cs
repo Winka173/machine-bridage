@@ -71,7 +71,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheFighterHoversOnAHelicopterStreamsItsCannonThenLoopsAndComesBack()
+        public void TheFighterHoversOnAHelicopterAndStreamsItsCannonUntilItDies()
         {
             var world = Field();
             var fighter = world.SpawnVehicle("fighter_jet", 0, new Vector2(0f, -35f), 0f);
@@ -79,7 +79,9 @@ namespace MachineBrigade.Tests
             var log = Attack(world, fighter, heli, 30f);
             Assert.Less(log.SlowestInHold, fighter.Def.Speed * 0.05f, "it hovers");
             Assert.GreaterOrEqual(log.StreamOf("fighter_cannon"), 3.0, "its cannon streams most of a magazine at a time");
-            Assert.GreaterOrEqual(log.Holds, 3, "it breaks away, comes round and holds again");
+            // Play-test 6 (DECISIONS 21F): out of flak it no longer breaks away every hold, it hangs on the helicopter until it dies.
+            Assert.GreaterOrEqual(log.Holds, 1, "it holds on the helicopter");
+            Assert.Greater(log.Of("fighter_cannon"), 150, "and keeps streaming on it instead of looping away");
             Assert.Greater(log.Of("wvr_aam") + log.Of("air_to_air"), 3, "its missiles are fired too");
         }
 
@@ -120,7 +122,7 @@ namespace MachineBrigade.Tests
             var ifv = world.SpawnVehicle("ifv", 1, new Vector2(0f, 25f), 3.14f);
             var log = Attack(world, heli, ifv, 20f);
             Assert.Greater(log.Of("heli_gun"), 20, "its gun fires (it no longer holds at its missile's reach)");
-            Assert.Greater(log.Of("heli_atgm"), 1, "and its missiles");
+            Assert.Greater(log.Of(heli.Def.Weapon.Id), 1, "and its missiles");
             Assert.Less(Vector2.Distance(heli.Position, ifv.Position) - ifv.Radius, heli.Def.Mounts[1].Weapon.Range, "it hovers within its gun's reach");
         }
     }

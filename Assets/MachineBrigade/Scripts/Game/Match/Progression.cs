@@ -42,9 +42,10 @@ namespace MachineBrigade.Game.Match
             ["titan_tank"] = 3000,
             ["heavy_bomber"] = 4000,
             ["stealth_bomber"] = 5000,
-            ["siege_tank"] = 4500,
             ["ballistic_launcher"] = 5000,
             ["napalm_strike"] = 1500,
+            // Play-test 7 (DECISIONS 22P): the AC-130 aircraft card, at the price the old sky gunship card and the Gunship support had.
+            ["sky_gunship"] = 4500,
         };
 
         /// <summary>Single-use items for sale: price for a pack of <see cref="ItemPack"/>.</summary>
@@ -103,24 +104,223 @@ namespace MachineBrigade.Game.Match
     }
 
     /// <summary>
-    /// The story campaign (prompt 4): nine chapters in three acts, each ten main missions (the fifth
-    /// a boss, the tenth the chapter's big operation) and two side missions, in order; which ones
-    /// the player may start, and what the progress so far opens (HQ levels, the Operations tiers).
+    /// The story campaign (prompts 4, 20 and 22): twelve chapters in four acts and three interludes, each
+    /// chapter 9 to 18 main missions (the last its big operation, with the chapter's main boss) and up to
+    /// two side missions, each interlude four, in order; which ones the player may start, and what the
+    /// progress so far opens (HQ levels, the Operations tiers). Prompt 20 C: the acts a build ships
+    /// (<see cref="Release"/>; an interlude goes with the act before it); <see cref="All"/> is what is switched on.
     /// </summary>
     public static class Campaign
     {
         private static IReadOnlyList<MissionDef> _all;
+        private static IReadOnlyList<MissionDef> _everything;
         private static IReadOnlyList<ChapterDef> _chapters;
         private static IReadOnlyList<GeneralDef> _generals;
+        private static CampaignMeta _meta;
+        private static CampaignRelease _release;
 
-        public static IReadOnlyList<MissionDef> All => _all ??= GameContent.LoadCampaign();
+        /// <summary>
+        /// The missions of the chapters switched on, in order. When a release switches chapters off, the
+        /// last operation switched on before each also pays what that chapter would have unlocked (its
+        /// cards, towers, modules and HQ level), so the roster is whole, and every mission pays the
+        /// release's scale (campaign.json "economy"). A save keeps the stars of missions switched off.
+        /// </summary>
+        public static IReadOnlyList<MissionDef> All => _all ??= Switched();
 
+        /// <summary>Every mission of the story, switched on or not (save migration, records).</summary>
+        public static IReadOnlyList<MissionDef> Everything => _everything ??= GameContent.LoadCampaign();
+
+        /// <summary>Every chapter, switched on or not (the chapter screen shows those off as "Coming soon").</summary>
         public static IReadOnlyList<ChapterDef> Chapters => _chapters ??= ChapterDef.ListFromJson(GameContent.CampaignJson);
 
         public static IReadOnlyList<GeneralDef> Generals => _generals ??= GeneralDef.ListFromJson(GameContent.CampaignJson);
 
-        /// <summary>The last chapter.</summary>
-        public static int ChapterCount => Chapters.Count;
+        public static CampaignMeta Meta => _meta ??= CampaignMeta.FromJson(GameContent.CampaignJson);
+
+        /// <summary>
+        /// The acts and chapters this build ships: Resources/Data/release.json, -mb-acts=1,2 for a play
+        /// test, or set here (tests; a remote config once the game has one).
+        /// </summary>
+        public static CampaignRelease Release
+        {
+            get
+            {
+                if (_release != null) return _release;
+                var file = UnityEngine.Resources.Load<UnityEngine.TextAsset>("Data/release");
+                _release = file != null ? CampaignRelease.FromJson(file.text) : CampaignRelease.Everything();
+                if (DebugFlags.Value("-mb-acts=") is { Length: > 0 } acts)
+                {
+                    _release.Acts.Clear();
+                    foreach (var a in acts.Split(','))
+                        if (int.TryParse(a, out var n)) _release.Acts.Add(n);
+                }
+                return _release;
+            }
+            set
+            {
+                _release = value;
+                _all = null;
+            }
+        }
+
+        /// <summary>Whether a chapter is switched on in this build.</summary>
+        public static bool ChapterEnabled(int number) => Chapter(number) is { } c && Release.On(c);
+
+        /// <summary>The chapters the chapter screen shows: those switched on, and those off when they show as "Coming soon".</summary>
+        public static IEnumerable<ChapterDef> ShownChapters
+        {
+            get
+            {
+                foreach (var c in Chapters)
+                    if (Release.On(c) || Release.ComingSoon) yield return c;
+            }
+        }
+
+        /// <summary>The last of the twelve chapters switched on (the story's end when it is <see cref="ChapterCount"/>).</summary>
+        public static int LastChapter
+        {
+            get
+            {
+                var last = 0;
+                foreach (var c in Chapters)
+                    if (!c.IsInterlude && Release.On(c)) last = System.Math.Max(last, c.Number);
+                return last;
+            }
+        }
+
+        /// <summary>
+        /// Prompt 22: the last chapter or interlude switched on, in campaign order (an interlude after the
+        /// last chapter of its act ends a release of that act); its end brings the epilogue or "To be continued".
+        /// </summary>
+        public static int FinalChapter
+        {
+            get
+            {
+                var last = 0;
+                foreach (var c in Chapters)
+                    if (Release.On(c)) last = c.Number;
+                return last;
+            }
+        }
+
+        /// <summary>Whether the last chapter switched on is the story's last (its end is the game's epilogue, else "To be continued").</summary>
+        public static bool StoryComplete => LastChapter == ChapterCount;
+
+        /// <summary>Prompt 22: the chapter or interlude played before this one (0 before the first).</summary>
+        public static int PreviousChapter(int number)
+        {
+            var before = 0;
+            foreach (var c in Chapters)
+            {
+                if (c.Number == number) return before;
+                before = c.Number;
+            }
+            return 0;
+        }
+
+        /// <summary>"Chapter 4" or "Interlude II" in the current language.</summary>
+        public static string ChapterName(int number) => Chapter(number) is { IsInterlude: true } c
+            ? MachineBrigade.Game.Hud.Strings.Format("campaign.interludeName", ("interlude", c.Short))
+            : MachineBrigade.Game.Hud.Strings.Format("campaign.chapterName", ("chapter", number));
+
+        /// <summary>Its number as the screens show it ("4", "II").</summary>
+        public static string ChapterShort(int number) => Chapter(number)?.Short ?? number.ToString();
+
+        /// <summary>
+        /// Prompt 20 C.3: a boss the modes may bring (Boss Rush, Operations' rotation): one fought in a
+        /// chapter switched on, or in no chapter at all.
+        /// </summary>
+        public static bool BossEnabled(string bossId)
+        {
+            var anywhere = false;
+            foreach (var m in Everything)
+                foreach (var b in BossesOf(m))
+                {
+                    if (b.Def != bossId) continue;
+                    if (ChapterEnabled(m.Chapter)) return true;
+                    anywhere = true;
+                }
+            return !anywhere;
+        }
+
+        /// <summary>Boss Rush's kinds of boss in this build (prompt 20 C.3: none fought only in chapters switched off).</summary>
+        public static IReadOnlyList<string[]> BossRushKinds => MachineBrigade.Sim.Modes.BossRushRules.KindsWhere(BossEnabled);
+
+        /// <summary>A mission's bosses: its own and its stages'.</summary>
+        public static IEnumerable<ScriptedUnitDef> BossesOf(MissionDef mission)
+        {
+            if (mission.Boss != null) yield return mission.Boss;
+            foreach (var s in mission.Stages)
+                if (s.Mission.Boss != null) yield return s.Mission.Boss;
+        }
+
+        private static IReadOnlyList<MissionDef> Switched()
+        {
+            var release = Release;
+            var everyChapterOn = true;
+            foreach (var c in Chapters) everyChapterOn &= release.On(c);
+            if (everyChapterOn) return Everything;
+            // A fresh copy: what moves onto the operations and the pay scale must not touch Everything.
+            var list = new List<MissionDef>();
+            foreach (var m in GameContent.LoadCampaign())
+                if (Chapter(m.Chapter) is not { } c || release.On(c)) list.Add(m);
+            foreach (var c in Chapters)
+            {
+                if (release.On(c)) continue;
+                if (ReceiverOf(c.Number, list) is not { } op) continue;
+                var unlocks = new List<string>(op.Unlocks);
+                foreach (var m in Everything)
+                {
+                    if (m.Chapter != c.Number) continue;
+                    foreach (var u in m.Unlocks)
+                        if (!unlocks.Contains(u)) unlocks.Add(u);
+                    op.HqLevel = System.Math.Max(op.HqLevel, m.HqLevel);
+                }
+                op.Unlocks = unlocks;
+            }
+            var lastAct = 0;
+            foreach (var c in Chapters)
+                if (release.On(c)) lastAct = System.Math.Max(lastAct, c.Act);
+            if (Meta.PayScale.TryGetValue(lastAct, out var scale) && System.Math.Abs(scale - 1f) > 1e-3f)
+                foreach (var m in list)
+                {
+                    m.RewardCoins = (int)System.Math.Round(m.RewardCoins * scale / 5f) * 5;
+                    m.RewardXp = (int)System.Math.Round(m.RewardXp * scale / 5f) * 5;
+                    m.Prints = (int)System.Math.Round(m.Prints * scale);
+                }
+            return list;
+        }
+
+        /// <summary>The operation that pays for a chapter switched off: the nearest chapter switched on before it (else after it).</summary>
+        private static MissionDef ReceiverOf(int chapter, List<MissionDef> on)
+        {
+            int best = 0;
+            foreach (var c in Chapters)
+                if (Release.On(c) && c.Number < chapter) best = System.Math.Max(best, c.Number);
+            if (best == 0)
+                foreach (var c in Chapters)
+                    if (Release.On(c) && c.Number > chapter && (best == 0 || c.Number < best)) best = c.Number;
+            MissionDef last = null;
+            foreach (var m in on)
+            {
+                if (m.Chapter != best || m.Side) continue;
+                if (m.Operation) return m;
+                last = m;
+            }
+            return last;
+        }
+
+        /// <summary>The story's last chapter (switched on or not): the twelve, the interludes aside.</summary>
+        public static int ChapterCount
+        {
+            get
+            {
+                var n = 0;
+                foreach (var c in Chapters)
+                    if (!c.IsInterlude) n++;
+                return n;
+            }
+        }
 
         public static ChapterDef Chapter(int number)
         {
@@ -137,16 +337,58 @@ namespace MachineBrigade.Game.Match
             return null;
         }
 
-        /// <summary>A chapter's missions in campaign order (its ten main missions, then its side missions).</summary>
+        /// <summary>
+        /// A chapter's missions in campaign order (its main missions, then its side missions). Prompt 22 D.5: the main
+        /// missions are the ones on the player's path (of a story choice's two options, the one chosen, or the first while
+        /// it is still to be made); every mission, both options among them, when <paramref name="side"/> is null.
+        /// </summary>
         public static List<MissionDef> MissionsOf(int chapter, bool? side = null)
         {
             var list = new List<MissionDef>();
             foreach (var m in All)
-                if (m.Chapter == chapter && (side == null || m.Side == side.Value)) list.Add(m);
+                if (m.Chapter == chapter && (side == null || (m.Side == side.Value && (side.Value || OnPath(m))))) list.Add(m);
             return list;
         }
 
-        /// <summary>A chapter's big operation (its tenth main mission).</summary>
+        /// <summary>Prompt 22 D.5: the option of a story choice the player took (null: not made yet).</summary>
+        public static string Chosen(string choice) => PlayerProfile.StoryChoice(choice);
+
+        /// <summary>
+        /// Prompt 22 D.5: a mission on the player's path: every mission but an option of a story choice not taken (while
+        /// the choice is still to be made, its first option holds the place of the one to come).
+        /// </summary>
+        public static bool OnPath(MissionDef m)
+        {
+            if (m?.Branch == null) return true;
+            var chosen = Chosen(m.Branch);
+            if (chosen != null) return chosen == m.Option;
+            foreach (var other in All)
+                if (other.Branch == m.Branch) return other == m;
+            return true;
+        }
+
+        /// <summary>Prompt 22 D.5: an option of a story choice the player did not take (it can never be played).</summary>
+        public static bool NotTaken(MissionDef m) => m?.Branch != null && Chosen(m.Branch) is { } chosen && chosen != m.Option;
+
+        /// <summary>Prompt 22 D.5: the choice this mission leads to that is still to be made (its offering mission won), or null.</summary>
+        public static string ChoicePending(MissionDef m)
+        {
+            if (m?.Branch == null || Chosen(m.Branch) != null) return null;
+            foreach (var offer in All)
+                if (offer.StoryChoice == m.Branch) return PlayerProfile.Completed(offer.Id) ? m.Branch : null;
+            return null;
+        }
+
+        /// <summary>Prompt 22 D.5: the options of a story choice (its missions, in order).</summary>
+        public static List<MissionDef> OptionsOf(string choice)
+        {
+            var list = new List<MissionDef>();
+            foreach (var m in All)
+                if (m.Branch == choice) list.Add(m);
+            return list;
+        }
+
+        /// <summary>A chapter's big operation (its last main mission; an interlude's last main mission).</summary>
         public static MissionDef OperationOf(int chapter)
         {
             // The chapter's operation (prompt 16: an epilogue boss may follow it); else its last main mission.
@@ -160,19 +402,33 @@ namespace MachineBrigade.Game.Match
             return last;
         }
 
-        /// <summary>A mission's number within its chapter: "3-5", a side mission "3-S1".</summary>
+        /// <summary>A mission's number within its chapter: "3-5", a side mission "3-S1", an interlude's "II-2".</summary>
         public static string Label(MissionDef mission)
         {
             if (mission == null) return "";
             if (mission.Chapter <= 0) return (IndexOf(mission.Id) + 1).ToString();
             var n = 0;
+            string letter = null;
             foreach (var m in All)
             {
                 if (m.Chapter != mission.Chapter || m.Side != mission.Side) continue;
+                // Prompt 22 D.5: a story choice's two options share one number, "4-14A" and "4-14B".
+                if (m.Branch != null)
+                {
+                    var options = OptionsOf(m.Branch);
+                    if (options.IndexOf(m) == 0) n++;
+                    if (m.Id == mission.Id)
+                    {
+                        letter = ((char)('A' + options.IndexOf(m))).ToString();
+                        break;
+                    }
+                    continue;
+                }
                 n++;
                 if (m.Id == mission.Id) break;
             }
-            return mission.Side ? $"{mission.Chapter}-S{n}" : $"{mission.Chapter}-{n}";
+            var chapter = ChapterShort(mission.Chapter);
+            return mission.Side ? $"{chapter}-S{n}" : $"{chapter}-{n}{letter}";
         }
 
         /// <summary>
@@ -184,7 +440,8 @@ namespace MachineBrigade.Game.Match
             get
             {
                 if (Progression.TestUnlockAll) return MaxHqLevel;
-                var level = 1;
+                // Prompt 20: a save from the nine-chapter campaign keeps the HQ level it had.
+                var level = System.Math.Max(1, PlayerProfile.HqLevelKept);
                 foreach (var m in All)
                     if (m.HqLevel > level && PlayerProfile.Completed(m.Id)) level = m.HqLevel;
                 return level;
@@ -205,24 +462,24 @@ namespace MachineBrigade.Game.Match
             return level;
         }
 
-        /// <summary>The mission that opens an HQ level, or null.</summary>
+        /// <summary>The mission that opens an HQ level (a release that moved levels together: the one that opens it and more), or null.</summary>
         public static MissionDef HqLevelMission(int level)
         {
             foreach (var m in All)
-                if (m.HqLevel == level) return m;
+                if (m.HqLevel >= level) return m;
             return null;
         }
 
         /// <summary>
         /// The Operations mode's tiers (prompt 6): Normal from the first chapter's operation, Heroic
-        /// after chapter 3's, Iron after chapter 6's, Legend once the campaign's last operation is won.
+        /// after chapter 3's, Iron after chapter 6's, Legend once the last operation switched on is won.
         /// </summary>
         public static int OperationsTierOpen
         {
             get
             {
                 var tier = -1;
-                foreach (var (chapter, t) in new[] { (1, 0), (3, 1), (6, 2), (9, 3) })
+                foreach (var (chapter, t) in new[] { (1, 0), (3, 1), (6, 2), (LastChapter, 3) })
                     if (OperationOf(chapter) is { } op && PlayerProfile.Completed(op.Id)) tier = t;
                 return tier;
             }
@@ -241,21 +498,22 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>
         /// The card rank a player who plays only the campaign reaches by a mission (Docs/DECISIONS.md,
-        /// section 4: the economy curve): 1 at the start, 7 by the start of act III, 8 at the end.
+        /// section 4 and 19A: the economy curve): 1 at the start, 7 by the start of act IV, 8 at the end;
+        /// a release without act IV climbs to 7 by its end.
         /// </summary>
         public static float ExpectedRank(MissionDef mission)
         {
             var index = IndexOf(mission.Id);
-            var actThree = 0;
+            var actFour = 0;
             for (var i = 0; i < All.Count; i++)
-                if (All[i].Chapter >= 7)
+                if (Chapter(All[i].Chapter) is { Act: >= 4 })
                 {
-                    actThree = i;
+                    actFour = i;
                     break;
                 }
-            if (actThree <= 0) return 1f + 6f * index / System.Math.Max(1, All.Count - 1);
-            if (index <= actThree) return 1f + 6f * index / actThree;
-            return 7f + (float)(index - actThree) / System.Math.Max(1, All.Count - 1 - actThree);
+            if (actFour <= 0) return 1f + 6f * index / System.Math.Max(1, All.Count - 1);
+            if (index <= actFour) return 1f + 6f * index / actFour;
+            return 7f + (float)(index - actFour) / System.Math.Max(1, All.Count - 1 - actFour);
         }
 
         /// <summary>
@@ -273,13 +531,18 @@ namespace MachineBrigade.Game.Match
             return (int)System.Math.Round(100f * edge * hard * tierFactor / 5f) * 5;
         }
 
-        /// <summary>A mission by its id, or by the id it had in the old campaign (a saved choice, a debug flag).</summary>
+        /// <summary>
+        /// A mission by its id, or by the id it had in the old campaign (a saved choice, a debug flag); a
+        /// mission of a chapter switched off still answers (records, saves).
+        /// </summary>
         public static MissionDef Get(string id)
         {
             foreach (var m in All)
                 if (m.Id == id) return m;
             foreach (var m in All)
                 if (m.Legacy != null && m.Legacy == id) return m;
+            foreach (var m in Everything)
+                if (m.Id == id) return m;
             return null;
         }
 
@@ -302,9 +565,11 @@ namespace MachineBrigade.Game.Match
             var mission = All[index];
             if (PlayerProfile.Completed(mission.Id)) return true;
             if (mission.Side) return mission.After == null || PlayerProfile.Completed(mission.After) || !MapExists(Get(mission.After));
-            // A mission whose battlefield is not in this build does not hold the ones after it back.
+            // Prompt 22 D.5: an option of a story choice once it is the one chosen (never the other).
+            if (mission.Branch != null && Chosen(mission.Branch) != mission.Option) return false;
+            // A mission whose battlefield is not in this build does not hold the ones after it back; an option not taken is not on the way.
             for (var i = index - 1; i >= 0; i--)
-                if (!All[i].Side && !All[i].Optional && MapExists(All[i])) return PlayerProfile.Completed(All[i].Id);
+                if (!All[i].Side && !All[i].Optional && MapExists(All[i]) && OnPath(All[i])) return PlayerProfile.Completed(All[i].Id);
             return true;
         }
 
@@ -325,8 +590,9 @@ namespace MachineBrigade.Game.Match
             {
                 for (var i = 0; i < All.Count; i++)
                     if (!All[i].Side && !PlayerProfile.Completed(All[i].Id) && IsOpen(i) && MapExists(All[i])) return i;
+                // Prompt 22 D.5: a story choice to make comes before what lies past it.
                 for (var i = 0; i < All.Count; i++)
-                    if (!PlayerProfile.Completed(All[i].Id)) return i;
+                    if (!PlayerProfile.Completed(All[i].Id) && OnPath(All[i])) return i;
                 return All.Count - 1;
             }
         }
@@ -339,10 +605,12 @@ namespace MachineBrigade.Game.Match
         {
             var index = IndexOf(id);
             if (index < 0) return -1;
+            // Prompt 22 D: the end of a chapter shows its comic panels, and a story choice is made, on the campaign page.
+            if (All[index] == OperationOf(All[index].Chapter) && !PlayerProfile.ChapterSeen(PlayerProfile.ComicSeen(All[index].Chapter))) return -1;
             for (var i = index + 1; i < All.Count; i++)
-                if (!All[i].Side && !PlayerProfile.Completed(All[i].Id)) return i;
+                if (!All[i].Side && !NotTaken(All[i]) && !PlayerProfile.Completed(All[i].Id)) return ChoicePending(All[i]) != null || (All[i].Branch != null && Chosen(All[i].Branch) == null) ? -1 : i;
             for (var i = index + 1; i < All.Count; i++)
-                if (!All[i].Side) return i;
+                if (!All[i].Side && OnPath(All[i])) return i;
             return -1;
         }
 

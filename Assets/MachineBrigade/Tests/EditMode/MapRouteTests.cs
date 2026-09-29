@@ -22,14 +22,15 @@ namespace MachineBrigade.Tests
     {
         private static IEnumerable<string> Maps() => MatchSettings.AllMaps.Select(m => m.Id);
 
-        /// <summary>The twelve battlefields of the first rounds and the eight of round 4M, each once.</summary>
+        /// <summary>The twelve battlefields of the first rounds, the eight of round 4M, Lighthouse Bay (prompt 16) and the two of prompt 20 M, each once.</summary>
         [Test]
         public void TwentyBattlefieldsAreOnTheMenu()
         {
             var ids = Maps().ToList();
-            Assert.AreEqual(20, ids.Count, string.Join(", ", ids));
+            Assert.AreEqual(23, ids.Count, string.Join(", ", ids));
             CollectionAssert.AllItemsAreUnique(ids);
-            foreach (var id in new[] { "landingbeach", "hydrodam", "capital", "launchsite", "saltflat", "borderbridge", "swamp", "coralisles" })
+            foreach (var id in new[] { "landingbeach", "hydrodam", "capital", "launchsite", "saltflat", "borderbridge", "swamp", "coralisles",
+                         "lighthousebay", "openpit", "orbitalgate" })
             {
                 CollectionAssert.Contains(ids, id);
                 Assert.IsTrue(MatchSettings.MapAvailable(id), $"{id}: its battlefield ships");

@@ -168,6 +168,12 @@ namespace MachineBrigade.Game.Input
             var picked = _views.Pick(screen, _camera.Camera, _pickMargin);
             if (picked != null && Mine(picked))
             {
+                // Play-test 6: a tap on a unit already selected lets the selection go (a tap on the ground is a move order).
+                if (_selected.Contains(picked.Id))
+                {
+                    Deselect();
+                    return;
+                }
                 _selected.Clear();
                 _selected.Add(picked.Id);
                 return;
@@ -220,10 +226,20 @@ namespace MachineBrigade.Game.Input
                 if (Mine(view) && view.DefId == picked.DefId && OnScreen(view, viewport)) _selected.Add(view.Id);
         }
 
-        public void OnPan(Vector2 fromScreen, Vector2 toScreen) =>
+        public void OnPan(Vector2 fromScreen, Vector2 toScreen)
+        {
             _camera.Pan(fromScreen, fromScreen + (toScreen - fromScreen) * Match.MatchSettings.PanScale);
+            ViewMoved?.Invoke();
+        }
 
-        public void OnPinch(float scale, Vector2 centreScreen) => _camera.ZoomBy(scale, centreScreen);
+        public void OnPinch(float scale, Vector2 centreScreen)
+        {
+            _camera.ZoomBy(scale, centreScreen);
+            ViewMoved?.Invoke();
+        }
+
+        /// <summary>The player panned or zoomed the view by hand (a story shot then leaves the view to them).</summary>
+        public event Action ViewMoved;
 
         public void OnBoxUpdate(Vector2 startScreen, Vector2 currentScreen) => BoxChanged?.Invoke(startScreen, currentScreen);
 
@@ -248,6 +264,13 @@ namespace MachineBrigade.Game.Input
         }
 
         public void OnBoxCancel() => BoxHidden?.Invoke();
+
+        /// <summary>Lets the selection go (the selection panel's Deselect, play-test 6).</summary>
+        public void Deselect()
+        {
+            _selected.Clear();
+            AttackMoveArmed = false;
+        }
 
         public void SelectAll()
         {

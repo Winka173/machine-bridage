@@ -22,6 +22,15 @@ namespace MachineBrigade.Sim.Content
         Drop,
         Buff,
         Quake,
+
+        /// <summary>Prompt 19 F: rods from orbit, one on each of the other side's densest groups (the heaviest armour first), each its own ring.</summary>
+        Rods,
+
+        /// <summary>Prompt 20 J.1: a swing round the boss's front (Kronos's bucket wheel): everything within "radius" m and "width" degrees of its heading.</summary>
+        Arc,
+
+        /// <summary>Prompt 20 J.2: the boss itself charges down a warned line (Ixion): "length" m in "duration" s, everything within "width" hit once and stunned.</summary>
+        Charge,
     }
 
     /// <summary>Where a big attack is laid: the enemy's biggest group (towers count), the biggest group standing still, the HQ (else the biggest group), the base's HQ and towers, or round the boss.</summary>
@@ -32,6 +41,21 @@ namespace MachineBrigade.Sim.Content
         Hq,
         Base,
         Self,
+
+        /// <summary>Prompt 22 E (Morrigan): the other side's aircraft and anti-air within reach (else its biggest group on the ground).</summary>
+        Prey,
+    }
+
+    /// <summary>Prompt 22 E: what a homing strike (a swarm) picks for its targets instead of the ground group round its aim.</summary>
+    public enum BigPrey
+    {
+        None,
+
+        /// <summary>The other side's aircraft (air-to-air missiles), the dearest first.</summary>
+        Air,
+
+        /// <summary>The other side's anti-air: vehicles and towers whose main weapon hits aircraft (guided bombs), the strongest first.</summary>
+        AntiAir,
     }
 
     /// <summary>How a strip or a line lies: along the boss's heading (a train's rails, an airship's course), from the boss towards the aim, or across that.</summary>
@@ -124,6 +148,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A swarm's or a volley's distinct targets at most.</summary>
         public int Targets { get; internal set; } = 4;
 
+        /// <summary>Prompt 22 E: a swarm's targets are these within the attack's reach (none: the ground units round its aim).</summary>
+        public BigPrey Prey { get; internal set; }
+
         /// <summary>The weapon whose look it takes (its round, its flash); null: the part's own first mount.</summary>
         public string? Weapon { get; internal set; }
 
@@ -144,6 +171,15 @@ namespace MachineBrigade.Sim.Content
         public int Max { get; internal set; } = 6;
         public Vector2 At { get; internal set; }
 
+        /// <summary>
+        /// Prompt 20 E.3: rounds lost once any part carrying it is broken: the share left (Daedalus's six pods fall as three
+        /// with a bay gone; 0: a broken part stops it outright, Ixion's wheel); negative: the ordinary rule (every part).
+        /// </summary>
+        public float Cut { get; internal set; } = -1f;
+
+        /// <summary>Prompt 20 E.3 (spawning troops): each round of a circle sets down this many of <see cref="Units"/> where it lands (Daedalus's pods).</summary>
+        public int Seats { get; internal set; }
+
         /// <summary>A boost to the boss's side within <see cref="Reach"/>: damage and fire rate shares, for <see cref="Seconds"/>.</summary>
         public float Reach { get; internal set; }
 
@@ -154,7 +190,7 @@ namespace MachineBrigade.Sim.Content
         public int FullCount => PerPart > 0 ? PerPart * Math.Max(1, Parts.Count) : Every > 0f ? (int)MathF.Floor(Duration / Every + 1e-3f) * Math.Max(1, Salvo) : Count;
 
         /// <summary>Its damage before armour at full strength (every round landing on one target), for the guide and the combat value.</summary>
-        public float FullDamage => Shape is BigShape.Drop or BigShape.Buff ? 0f : Damage * FullCount;
+        public float FullDamage => Shape is BigShape.Drop or BigShape.Buff ? 0f : Damage * (Shape is BigShape.Arc or BigShape.Charge ? 1 : FullCount);
 
         /// <summary>It hurts where it lands (not a landing party, not a boost): units dodge it.</summary>
         public bool Harmful => Shape is not (BigShape.Drop or BigShape.Buff or BigShape.Swarm);
@@ -211,6 +247,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The boss stops for the warning (a bomber over its target).</summary>
         public bool Halt { get; internal set; }
+
+        /// <summary>Prompt 20 J.4: a diving boss comes up to launch (Typhon): only the parts carrying it show above the water until it fires.</summary>
+        public bool Surface { get; internal set; }
 
         public IReadOnlyList<BigStrikeDef> Strikes { get; internal set; } = Array.Empty<BigStrikeDef>();
 
@@ -295,7 +334,10 @@ namespace MachineBrigade.Sim.Content
     {
         public BigAttackScale Scale { get; set; } = BigAttackScale.One;
 
-        public static BigAttackSettings For(BigAttackRules rules, string? difficulty) => new() { Scale = rules.For(difficulty) };
+        /// <summary>Prompt 19 E.6: the battle's difficulty key (the drone seizure is only at the hardest).</summary>
+        public string? Difficulty { get; set; }
+
+        public static BigAttackSettings For(BigAttackRules rules, string? difficulty) => new() { Scale = rules.For(difficulty), Difficulty = difficulty };
     }
 
     public sealed partial class Catalog
@@ -328,7 +370,7 @@ namespace MachineBrigade.Sim.Content
             }
             BigAttackRules = rules;
             var attacks = new Dictionary<string, BigAttackDef>();
-            foreach (var a in root.Array("bigAttacks"))
+            foreach (var a in BossTemplates.BigAttacks(root))
             {
                 var def = Wrap(a, () => new BigAttackDef(a.String("id")));
                 if (attacks.ContainsKey(def.Id)) throw new FormatException($"balance.bigAttacks: '{def.Id}' twice.");
@@ -346,6 +388,7 @@ namespace MachineBrigade.Sim.Content
                 def.BlindScatter = MathF.Max(0f, a.Float("blindScatter", 0f));
                 if (a.Has("hold")) def.Hold = a.StringArray("hold");
                 def.Halt = a.Bool("halt", false);
+                def.Surface = a.Bool("surface", false);
                 var strikes = new List<BigStrikeDef>();
                 foreach (var s in a.Array("strikes")) strikes.Add(Wrap(s, () => ParseStrike(s)));
                 if (strikes.Count == 0) throw new FormatException($"balance.bigAttacks.{def.Id}: no strikes.");
@@ -402,6 +445,7 @@ namespace MachineBrigade.Sim.Content
                 Speed = MathF.Max(1f, s.Float("speed", 26f)),
                 Flight = MathF.Max(0.5f, s.Float("flight", 8f)),
                 Targets = Math.Max(1, s.Int("targets", 4)),
+                Prey = s.Enum("prey", BigPrey.None),
                 Weapon = s.Has("weapon") ? s.String("weapon") : null,
                 Pass = s.Has("pass") ? s.String("pass") : null,
                 Stun = MathF.Max(0f, s.Float("stun", 0f)),
@@ -411,6 +455,8 @@ namespace MachineBrigade.Sim.Content
                 Reach = MathF.Max(0f, s.Float("reach", 0f)),
                 FireRate = MathF.Max(0f, s.Float("fireRate", 0f)),
                 Seconds = MathF.Max(0f, s.Float("seconds", 0f)),
+                Cut = s.Has("cut") ? Math.Clamp(s.Float("cut", 0.5f), 0f, 1f) : -1f,
+                Seats = Math.Max(0, s.Int("seats", 0)),
             };
             if (s.Has("at"))
             {
@@ -427,6 +473,10 @@ namespace MachineBrigade.Sim.Content
             }
             if (strike.Shape == BigShape.Drop && strike.Units.Count == 0) throw new FormatException($"{s.Path}: a landing party needs units.");
             if (strike.Shape is BigShape.Line or BigShape.Sweep or BigShape.Strip && strike.Length <= 0f) throw new FormatException($"{s.Path}: a {strike.Shape} needs a length.");
+            if (strike.Shape == BigShape.Charge && (strike.Length <= 0f || strike.Duration <= 0f)) throw new FormatException($"{s.Path}: a charge needs a length and a duration.");
+            if (strike.Shape == BigShape.Arc && strike.Width <= 0f) throw new FormatException($"{s.Path}: an arc needs its width in degrees.");
+            if (strike.Seats > 0 && strike.Units.Count == 0) throw new FormatException($"{s.Path}: seats need units.");
+            if (strike.Prey != BigPrey.None && strike.Shape != BigShape.Swarm) throw new FormatException($"{s.Path}: only a swarm picks its prey.");
             return strike;
         }
     }

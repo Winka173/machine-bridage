@@ -65,9 +65,9 @@ namespace MachineBrigade.Tests
             var layers = new BlastLayers(_materials, _root.transform);
             foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
                 ExplosionEffect.Create(tier, layers).Play(Vector3.zero, 0f);
-            // 17 layers (the rolling fireballs among them) plus the burning debris's smoke-trail
-            // sub-emitter, and 7 twins drawn in front of smoke screens.
-            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 25, "one system per layer kind, not per blast");
+            // 18 layers (the rolling fireballs and play-test 5's smoke column among them) plus the burning
+            // debris's smoke-trail sub-emitter, and 8 twins drawn in front of smoke screens.
+            Assert.LessOrEqual(_root.GetComponentsInChildren<ParticleSystem>(true).Length, 27, "one system per layer kind, not per blast");
         }
 
         [Test]
@@ -171,13 +171,19 @@ namespace MachineBrigade.Tests
         public void BlastsStayWithinTheirParticleBudgets()
         {
             var layers = new BlastLayers(_materials, _root.transform);
-            var caps = new System.Collections.Generic.Dictionary<ExplosionTier, int>
+            // Play-test 5 (DECISIONS 20V) made every blast richer on High; on Low (half the added layers) each tier
+            // stays about within the old High caps.
+            var caps = new System.Collections.Generic.Dictionary<ExplosionTier, (int high, int low)>
             {
-                [ExplosionTier.Small] = 20, [ExplosionTier.Medium] = 90, [ExplosionTier.Large] = 240, [ExplosionTier.Huge] = 400,
-                [ExplosionTier.Ultimate] = 480,
+                [ExplosionTier.Small] = (20, 20), [ExplosionTier.Medium] = (120, 95), [ExplosionTier.Large] = (270, 240),
+                [ExplosionTier.Huge] = (440, 400), [ExplosionTier.Ultimate] = (600, 480),
             };
             foreach (var pair in caps)
-                Assert.LessOrEqual(ExplosionEffect.Create(pair.Key, layers).ParticleCount, pair.Value, pair.Key.ToString());
+            {
+                var blast = ExplosionEffect.Create(pair.Key, layers);
+                Assert.LessOrEqual(blast.ParticleCount, pair.Value.high, pair.Key + " on High");
+                Assert.LessOrEqual(blast.ParticleCountAt(1f, 0.4f), pair.Value.low, pair.Key + " on Low");
+            }
         }
 
         [Test]

@@ -122,7 +122,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Layers this weapon can engage: ground vehicles, aircraft or both.</summary>
         public TargetLayers Targets { get; }
 
-        public bool CanTarget(bool flying) => (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
+        public bool CanTarget(bool flying) => !InterceptOnly && (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21F): a point-defence gun (the C-RAM's) that fires only at incoming rounds (its
+        /// <see cref="ApsDef"/> bursts): it never takes a vehicle or an aircraft as a target.
+        /// </summary>
+        public bool InterceptOnly { get; internal set; }
 
         /// <summary>A railgun slug: it goes through everything on its line and hurts all of it.</summary>
         public bool Pierce { get; internal set; }
@@ -193,6 +199,15 @@ namespace MachineBrigade.Sim.Content
 
         private WeaponForm? _form;
 
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): a bomb steered onto its target (data "guided": the SDB, the JDAM; or the GuidedBomb
+        /// form): it glides down onto the target. Every other bomb falls where its drop point and its fall put it.
+        /// </summary>
+        public bool GuidedBomb => Projectile == ProjectileKind.Bomb && (Steered || _form == WeaponForm.GuidedBomb);
+
+        /// <summary>Data "guided" (see <see cref="GuidedBomb"/>).</summary>
+        internal bool Steered { get; set; }
+
         /// <summary>Its rounds burst over an area (a splash radius).</summary>
         public bool Splashes => SplashRadius > 0f || Cluster != null;
 
@@ -250,6 +265,7 @@ namespace MachineBrigade.Sim.Content
                 Reload = reload,
                 Load = Load,
                 ImpactScale = ImpactScale,
+                InterceptOnly = InterceptOnly,
                 Cluster = cluster,
                 Pierce = Pierce,
                 Beam = Beam,
@@ -275,8 +291,14 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 17 C.
                 Ramp = Ramp,
                 SwarmReach = SwarmReach,
+                // Prompt 19: the tier it reaches goes with it.
+                Ceiling = Ceiling,
                 // Prompt 17 D.
                 HeRound = HeRound,
+                // Tower branches: the air-burst round.
+                AirRound = AirRound,
+                // Play-test 8 A: a steered bomb stays steered.
+                Steered = Steered,
             };
             return copy;
         }
@@ -462,6 +484,12 @@ namespace MachineBrigade.Sim.Content
         /// which keeps its side-firing guns on the target for as long as it likes.
         /// </summary>
         public bool Orbit { get; internal set; }
+
+        /// <summary>
+        /// The pylon turn's radius in metres (data "orbitRadius"); 0: from its main gun's reach. A tight turn keeps a
+        /// gunship over what it shoots at, where the battle camera sees it (test feedback 19P).
+        /// </summary>
+        public float OrbitRadius { get; internal set; }
 
         /// <summary>Seen only close up (at <see cref="StealthSight"/> of a spotter's sight) unless it has just fired.</summary>
         public bool Stealth { get; internal set; }

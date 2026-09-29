@@ -171,6 +171,48 @@ namespace MachineBrigade.Game.CameraControl
 
         private Vector3 _followVelocity;
 
+        // Play-test 6: a story shot (a boss's entrance, change or fall) borrows the player's view and gives it back.
+        private bool _held;
+        private Vector3 _heldFocus;
+        private float _heldZoom, _returning;
+
+        /// <summary>A story shot holds the player's view, to give it back when the shot ends.</summary>
+        public bool Held => _held;
+
+        /// <summary>Remembers the player's view before a story shot; while one is held a later shot keeps the first view.</summary>
+        public void Hold()
+        {
+            if (_held) return;
+            _held = true;
+            _heldFocus = Focus;
+            _heldZoom = Zoom;
+            _returning = 0f;
+        }
+
+        /// <summary>The player moved the view during the shot: the view is theirs, nothing is given back.</summary>
+        public void Release() => _held = false;
+
+        /// <summary>
+        /// Eases back to the held view (about a second; exactly there after two at most); true once it is back and
+        /// the hold is over.
+        /// </summary>
+        public bool ReturnHeld(float dt)
+        {
+            if (!_held) return true;
+            _returning += Mathf.Max(0f, dt);
+            var k = 1f - Mathf.Exp(-Mathf.Max(0f, dt) * 4f);
+            Focus = Vector3.Lerp(Focus, _heldFocus, k);
+            Zoom = Mathf.Clamp(Mathf.Lerp(Zoom, _heldZoom, k), MinZoom, MaxZoom);
+            if (_returning >= 2f || ((Focus - _heldFocus).sqrMagnitude < 0.04f && Mathf.Abs(Zoom - _heldZoom) < 0.05f))
+            {
+                Focus = _heldFocus;
+                Zoom = Mathf.Clamp(_heldZoom, MinZoom, MaxZoom);
+                _held = false;
+            }
+            Clamp();
+            return !_held;
+        }
+
         /// <summary>
         /// Follows <paramref name="point"/> like a critically damped spring: when the point moves
         /// on, the camera's speed changes smoothly instead of lurching as an exponential chase does.

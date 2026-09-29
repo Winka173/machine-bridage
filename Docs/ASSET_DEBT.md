@@ -17,7 +17,7 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | What | Uses now | Needs |
 |---|---|---|
 | Broken boss parts | The part's nodes hidden and a shared stand-in put in: `wreck_barrel` (guns), `wreck_turret` (mounts), `wreck_launcher` (pods, racks), `wreck_engine` (engines, fans, propellers), `wreck_stump` (the rest) | Per-part broken models: bent barrels, turrets with their hatch blown, twisted racks, burnt-out engine pods |
-| Parts with no node of their own | A place on the hull: the Iron Train's locomotive and second gun car, the Behemoth's and Iron Bird's missile and rocket racks, the Silver Bug's coilgun, bay, shield and EMP emitters, the Hive's EMP emitter, the Hive Mothership's bay, UAV bay and shield | Their own nodes (`Part_*`) in the models, so they can be hidden and replaced like the others |
+| Parts with no node of their own | A place on the hull: the Iron Train's locomotive and second gun car, the Behemoth's and Iron Bird's missile and rocket racks, the Hive's EMP emitter, the Hive Mothership's bay, UAV bay and shield | Their own nodes (`Part_*`) in the models, so they can be hidden and replaced like the others |
 | Heat haze round the fires (High) | Not drawn: the pipeline has no distortion pass | A screen-space distortion pass, or a refraction particle material |
 | Electric arcs on broken energy parts | Glow points along a jagged line (`Emitters.Charge`) and blue sparks | A proper arc (line renderer with a noise texture) |
 | Fire crackle | The shared fire loop, louder near a burning boss | Its own crackle for a boss's fires |
@@ -71,3 +71,109 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Enemy units boosted by the Supreme Commander's offensive | No mark on them | A small icon over each boosted unit |
 | The Spectre's tight, low orbit during its attack | The sim's own orbit (only the damage it takes changes) | A lower, tighter circle in its flight |
 | The "In action" clip of a boss (Guide) | Its ordinary weapons only | A clip of its big attack |
+
+## Prompt 19 (the Silver Bug as an orbital spacecraft)
+
+Built in `Tools/blender/mb_orbital.py` (replaces `mb_boss_saucer.py`): `silver_bug` (the shuttle, 25.7k triangles, every part
+node), `silver_bug_wreck` (its crashed form for phase 3, 27.8k, with the six debris piles where the sim puts its cover),
+`bug_satellite` (1.7k), `drop_pod` (3.0k). LODs are the runtime's (`ModelLibrary.EnsureLod`). Not seen in Unity yet.
+
+| What | Uses now | Needs |
+|---|---|---|
+| Card renders of the Silver Bug, the drop pod (and the wreck for the Guide) | The old saucer's card | The lead's graphics run after the merge (`CardRenders`) |
+| The "In action" clip (Guide) | The saucer's clip | A clip of the shuttle: its laser, a rod rain from the satellite, pods falling, the crash |
+| The opening in low orbit: the huge shadow sweeping the map, the craft a bright dot | The model drawn 150 m up (its shadow is the sun's) | A bright point sprite on the sky and a shadow decal the size of the ship |
+| Leaving orbit: re-entry glow, engine flame; the satellite left up there | Nothing but the model coming down (`TierChanged` "descend" event is emitted) | A glowing hull shader pass, a flame at `Thruster_main`, the `bug_satellite` model as a small bright dot in the sky |
+| Changing altitude (3-4 s) | The model eases between the tiers' heights (`VehicleView`) | Engine flame and a smoke trail on each `TierChanged` "shift" |
+| The crash (phase 3): a long smoke trail, the impact crater | A slope down to the crash site, the warning ring (`bug_crash`), an Ultimate blast, the wreck model | A smoke trail on the fall, a crater decal; the prompt 9 fires and smoke at the breaks come from the parts |
+| The tungsten rods: light columns as the warning, the streak from the sky | The shared red warning rings and an Ultimate blast per rod | A light column per ring (about 4 s) and a fast bright streak from above, a sonic crack |
+| Drop pods: the fall and the landing | The pod model falling straight down, the warning ring (`pod_drop`), a dust blast | Retro-rocket flame before touchdown, doors opening, a scorch mark |
+| The point-defence lasers taking SAMs | The APS intercept flash | A short beam from `Pd_laser_l/r` to the missile |
+| The drone seizure (Very Hard) | The drones change colour (the ordinary side change) | A hacked-glitch shader and a sound while they are seized |
+| Boss bar: altitude chip icons | `cbradar`, `sam`, `aa` from the HUD set | Icons of their own for orbit, high and low |
+
+## Prompt 20 pass 2 (boss templates, new bosses)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Card renders: leviathan, sea_cruiser, silver_bug (pose `Mount_gun.002` / `.004` aft on Leviathan), moloch, daedalus, kronos, typhon, ixion, caspian, bastion_mk0, fenrir, scylla, locust, behemoth_mk2, icarus_mk0, argus; the resized and re-armed old bosses | None (new) / the old cards | The lead's graphics run after the merge (`CardRenders`) |
+| "In action" clips (Guide) of the thirteen new bosses | None | Clips: Moloch's doors, Daedalus's mass drop, Kronos's sweep, Typhon surfacing and launching, Ixion's charge, Caspian's pass, each variant's attack |
+| Models of the six new bosses | Ixion, Typhon, Caspian and Daedalus redrawn from references (DECISIONS 20Y, `mb_redesign_20y.py`); Moloch and Kronos first passes (`mb_p20_bosses.py`) | A detail pass to the 3d_astra bar: Moloch's workshop, Kronos's girders and buckets |
+| The variants' marks (Mk.0, Mk.II, frost, ice) | A hull tint only | A decal or emblem per `mark` |
+| The old bosses' new weapons | Kit turrets and pods bolted on (the models rebuilt) | Fitting them into each hull's design |
+| Music: each main boss's own track, the mini bosses' shared `boss_mini` | `boss` for all | Tracks named by `music` / `bossRanks` |
+| Typhon's bubbles and wake before it surfaces, its dive | The Earth Worm's ground cracks on the water | A bubble and foam effect on `Burrow` stage 1 at sea, a dive wash |
+| Kronos's bucket wheel turning, debris thrown; Ixion's wheels rolling and the charge's dust | Static wheels; blasts only | Spinning `Part_wheel` / `Part_wheel_l/r` by speed, a dust trail on the charge |
+| Moloch's doors opening as vehicles drive out | The `Landed` event only | A door animation on `Part_door_l/r` |
+| Daedalus's mass-drop pods falling | Landing blasts only | The pod model falling on each ring |
+| Kronos's 120-degree swing warning | Three rings | A sector decal |
+## Tower branches (tower-branch prompt C, DECISIONS 19U)
+
+Built in `Tools/blender/mb_tower_branches.py`: 32 branch models `<tower>_a` / `_b` (1.3k to 11.7k triangles), each on
+its tower's builder with the branch's module swapped or added; 31 new branch icons (`t_<tower>_a` / `_b`, the Iron
+Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). LODs are the runtime's.
+
+| What | Uses now | Needs | Priority |
+|---|---|---|---|
+| Card pictures of the 32 branches and of the rank milestones (C.5) | The tower's card picture (`CardRenderTests` lists the 32 until they are rendered) | The lead's graphics run after the merge (`CardRenders.RenderBatch`) | High |
+| "In action" clips of every branch | The tower's clip | A clip a branch (the lead) | High |
+| Screenshots of every tower at every branch and at ranks 1, 3, 5, 7 (F), the image comparison at the default zoom and on Low | None | A graphics run into `Docs/ui-screens/`; the tower icon sheet shot again (`IconSheet.Towers` shows the branch icons) | High |
+| Branches that are the tower's model plus one module (C.7): `aa_turret_a` (two more barrels), `c_ram_a` (ball radome), `atgm_tower_a` (raised launcher), `mg_bunker_a` (twin barrels and mantlet), `rocket_turret_b` (covered box), `missile_battery_b` (bigger radar), `shield_tower_a` (glowing dome cage), `cp_relay_a` (comms container) | The tower's model with that module; readable at the default zoom | A fuller rebuild of each where a closer look is wanted | High |
+| Rank details (C.2) | Plain boxes laid on the tower's walls at run time (Hazard bars, Armor plates) | Per-tower rank kits modelled in Blender (stencilled bars, bolted appliqué fitted to each body) | Medium |
+| Branch firing effects and sounds (C.3): the mortar's arc, the tower shields' beams to each tower, the autocannon's bursts, the flame arc | The branch's weapon effect as the sim gives it | Effects and sounds of their own (not part of this art pass) | Medium |
+| Steel fortress's two small turrets | Stand on `Mount_gun` / `Mount_gun.001` but turn and fire only once the balance pass gives them MG mounts | The mounts (section B) | Medium |
+
+## Tower branches (DECISIONS 19T), high priority
+
+| Missing | Stand-in | Needed |
+|---|---|---|
+| Models and icons of all 32 branches (`<tower>_a` / `<tower>_b`) | The tower's own model and icon (`BranchArt` falls back) | The art branch (feature/tower-art, DECISIONS 19U) |
+| Card renders of the branches, four of them new ids (`rocket_turret.guided`, `artillery_emplacement.mortar`, `shield_tower.ward`, `cp_relay.loot`) | The tower's render in the picker | `CardRenders.RenderBatch` with graphics, after the art merge (the lead) |
+| The steel fortress's two machine-gun turrets | Both fire from the heavy turret's one `mg` muzzle | `Mount_mg` / `Mount_mg2` on `heavy_turret_b` |
+| Tower shields' beams to each tower, the loot depot's pay-out, the radar's air picture | None (the rules work) | Effects on `Vehicle.WardHp` / `WardFrom`, `EconomySystem.LootPaid`, `VehicleDef.RevealAir` |
+| Screenshots of every branch and rank in Docs/ui-screens | None | The lead, after the art merge |
+## Play-test 4 (DECISIONS 19R)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Card pictures of bunker_vehicle, light_tank (from light_tank_hd), titan_tank, laser_tank, shield_carrier (and the elites that wear them) | The old pictures (`CardRenderTests` lists the five) | The lead's graphics run (`CardRenders.RenderBatch`) |
+| "In action" clips of the five | The old models' clips | New clips; the bunker vehicle's should show it digging in |
+| The bunker vehicle digging in | Parts swing, sink and grow (VehicleView.Deploy); no dust | Earth spray from the blade and spades, dust as the hull sinks, a dig sound |
+| The bunker's spoil bank | One shared shape round the hull | A few shapes for variety, snow and sand tints on those battlefields |
+| Laser tank, shield carrier | Redrawn silhouettes on the prompt-17 hulls (still simple parts) | The full 3d_astra detail pass (panel lines, bolts) |
+
+### Play-test 5 sim half (DECISIONS 20W)
+
+| What | Uses now | Needs |
+|---|---|---|
+| The siege tank's card picture and "in action" clip | The old M110-style pictures | The lead's graphics run (`CardRenders.RenderBatch`); the clip should show it sieging |
+| The siege tank sieging | Braces, spades, gun, column and mortar move (VehicleView.Deploy); no dust or sound | Dust as the braces and spades bite, a hydraulic whine, a heavier mortar report |
+| The C-RAM's stream at a round | Tracers and a muzzle flash each step at the round's estimated place | Tracers that meet the drawn round exactly (the view has no link from a sim round to its drawn rocket) |
+
+## Prompt 22 E (new maps and bosses, DECISIONS 22E)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Morrigan's model | A first pass from references (YF-23 planform and tails, Su-57 bays, feathered trailing edge; `mb_p22_content.py`, 1 312 triangles) | A detail pass to the 3d_astra bar: panel lines, the bay doors' saw-tooth edges, a raven emblem |
+| Card renders and "in action" clips: behemoth_mk0, morrigan (the salvo, the duel's dark spell) | None | The lead's graphics run (`CardRenders`) |
+| Mara's Behemoth's Accord mark, Behemoth Mk.0's primer look | A hull tint (`mark` "accord", "mk0" in the data) | A decal or emblem per `mark` |
+| Foundry's roofs and hall walls | Walls of the plain `wall` prop (low, fire passes over) round open floors | A factory-hall wall and a roof-truss prop (tall, blocks fire), glass skylights, furnaces with glow |
+| Veyra Old Quarter's old town | The kit's townhouses, cottages, offices and shops; a church as the cathedral | Old-town facades, a cathedral, a clock tower, cobbles, fountains and awnings |
+| Base map pictures of both maps (`BaseMapShots`) | None | A run with graphics |
+## Prompt 22 F: commanders (DECISIONS 22F)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Portraits of the eight new commanders: Kaia Mendez (Rush), Piet Dahl (Longshot), Otto Brenn (Ledger), Tomas Adler (Flag), Ines Varro (Tide), August Reyn (Crown), Lena Quist (Magpie), Selma Okoye (Vault) | The HQ's placeholder portrait (`UI/Portraits/hq`: `Portraits.Get` falls back to it for `UI/Portraits/<id>`) | A portrait each, `Resources/UI/Portraits/<id>.png` (mendez, dahl, brenn, adler, varro, reyn, quist, okoye), in the story portraits' style |
+| Portraits of the six story commanders (Kade, Lind, Reyes, Kerr, Venn, Brandt) and the eight generals | The story's portraits (`khai`, `mai`, `dieuhau`, `linh`, `sen`, `brandt`, the generals' own) | New ones only if the story's renames (prompt 22 A) change a character's look |
+| The commander's face in the HUD | The portrait, cropped into the 44 px face | A small, high-contrast icon version of each portrait if the face reads poorly at 44 px |
+| The commanders' radio lines | Text only (the radio panel, the result card's note) | Voice lines, if the game gets voice |
+| Screenshots of the picker, the briefing with its general and the dossier's commander pages in `Docs/ui-screens/` | None (`UiShots` has the screens: `commanders`, `dossier-commanders`, `briefing`, `hud-commander`) | The lead's graphics run (`-mbShotsOnly commanders,dossier-commanders,briefing,hud-commander`), both languages |
+### Prompt 22 D (DECISIONS 22D)
+
+| What | Uses now | Needs |
+|---|---|---|
+| The front map of the Meridian Coast | Drawn in code (FrontMapView): a coast polygon, grid cells coloured by side, a front line, dots, flag icons, round pins | An illustrated map (terrain, towns, roads, the sea) with the regions as shapes, and a softer front line |
+| The comic panels after each chapter (48) | A battlefield's shot and a card render, the speaker's portrait and a speech box in a black frame (ComicPage) | Drawn panels (the moment itself: the landing, the ceasefire, the turn in Veyra, Icarus falling), speech balloons |
+| Interlude I's panels | The Rust Yard's shot (the Foundry has no picture yet) | The Foundry's map shot once P22-content's map lands, then the drawn panels |
+

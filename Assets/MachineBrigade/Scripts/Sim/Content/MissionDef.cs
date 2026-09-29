@@ -319,11 +319,33 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Where the player's side may go at the start (null: the whole map).</summary>
         public PlayArea? PlayArea { get; set; }
 
+        /// <summary>
+        /// Prompt 22 E: a duel (chapter 10's Hawk and Raven): the mission's boss flies in its duel mode (BossSystem.Duel), and
+        /// the player's deck is its aircraft only (<see cref="PlayerDeck"/> "air").
+        /// </summary>
+        public bool Duel { get; set; }
+
+        /// <summary>Prompt 22 E: what the player's deck is cut to for this mission: "air" (its aircraft only), or null (the deck as it is).</summary>
+        public string? PlayerDeck { get; set; }
+
         /// <summary>A chapter's big operation: the Operations mode offers it again once won.</summary>
         public bool Operation { get; set; }
 
         /// <summary>A notable story battle (a siege, a defence, a duel with a general) the Operations mode offers again once won.</summary>
         public bool Replay { get; set; }
+
+        /// <summary>
+        /// Prompt 22 D.5: the story choice offered once this mission is won (its id, "c4.pursuit"), or null. The
+        /// choice's options are the missions that name it as their <see cref="Branch"/>.
+        /// </summary>
+        public string? StoryChoice { get; set; }
+
+        /// <summary>Prompt 22 D.5: a mission of one option of a story choice (the choice's id; null: on every path).</summary>
+        public string? Branch { get; set; }
+
+        /// <summary>Prompt 22 D.5: which option of <see cref="Branch"/> this mission is ("sea", "harbour").</summary>
+        public string? Option { get; set; }
+
         public string Map { get; set; } = "ashfield";
 
         /// <summary>Which version of the map: "conquest" (objectives) or "sandbox".</summary>
@@ -455,6 +477,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The enemy general in command (balance of the enemy's deck, fire support and base; their portrait and lines).</summary>
         public string? General { get; set; }
 
+        /// <summary>
+        /// Prompt 22 F: the commander the story sets for this mission (chapter 10's duel is Hawk's); null: the player
+        /// picks one. campaign.json "commander".
+        /// </summary>
+        public string? Commander { get; set; }
+
         /// <summary>Who gives the briefing (a portrait id): the colonel, unless the mission says otherwise.</summary>
         public string Speaker { get; set; } = "khai";
 
@@ -583,6 +611,7 @@ namespace MachineBrigade.Sim.Content
                 After = m.Has("after") ? m.String("after") : null,
                 Reversed = m.Bool("reversed", false),
                 General = m.Has("general") ? m.String("general") : null,
+                Commander = m.Has("commander") ? m.String("commander") : null,
                 Speaker = m.Has("speaker") ? m.String("speaker") : "khai",
                 EnemySupports = Strings(m, "enemySupports"),
                 EnemyStyle = m.Has("enemyStyle") ? m.String("enemyStyle") : null,
@@ -595,7 +624,12 @@ namespace MachineBrigade.Sim.Content
                 Radio = ParseRadio(m),
                 Legacy = m.Has("legacy") ? m.String("legacy") : null,
                 Operation = m.Bool("operation", false),
+                Duel = m.Bool("duel", false),
+                PlayerDeck = m.Has("playerDeck") ? m.String("playerDeck") : m.Bool("duel", false) ? "air" : null,
                 Replay = m.Bool("replay", false),
+                StoryChoice = m.Has("storyChoice") ? m.String("storyChoice") : null,
+                Branch = m.Has("branch") ? m.String("branch") : null,
+                Option = m.Has("option") ? m.String("option") : null,
                 TargetNear = m.Has("targetX") ? new Vector2(m.Float("targetX"), m.Float("targetZ")) : null,
                 TargetRadius = m.Float("targetRadius", 40f),
             };

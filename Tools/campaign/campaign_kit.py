@@ -16,13 +16,32 @@ TEXTS = {}
 MISSIONS = []
 ORDER_NOTES = []
 
+# Keys whose words the sources own (prompt 20): CampaignText.cs keeps its hand-localised words for
+# every other key it already has (see build_campaign.write_texts).
+FRESH = set()
 
-def T(key, en, vi):
-    """A player-facing text, both languages. The same key twice must say the same thing."""
-    if key in TEXTS and TEXTS[key] != (en, vi):
+
+def T(key, en, vi, fresh=False):
+    """A player-facing text, both languages. The same key twice must say the same thing (unless the second is fresh)."""
+    if key in TEXTS and TEXTS[key] != (en, vi) and not fresh:
         raise SystemExit(f'text {key} written twice with different words')
     TEXTS[key] = (en, vi)
+    if fresh:
+        FRESH.add(key)
     return key
+
+
+def retext(key, en, vi):
+    """Prompt 20: new words for a text the campaign already has (the sources' words win over CampaignText.cs)."""
+    return T(key, en, vi, fresh=True)
+
+
+def mission(mid):
+    """A mission already written, by id (to change its data after the act that wrote it)."""
+    for m in MISSIONS:
+        if m['id'] == mid:
+            return m
+    raise SystemExit(f'no mission {mid}')
 
 
 # ---------------------------------------------------------------------------------------------- the ground
@@ -49,6 +68,9 @@ POINTS = {
     'hydrodam': {'west': (-40.0, 64.0), 'town': (0, 0), 'east': (36.0, -98.0)},
     'capital': {'west': (-84.0, 100.0), 'town': (0, 0), 'east': (84.0, -100.0)},
     'launchsite': {'west': (-50.0, 80.0), 'town': (0, 0), 'east': (50.0, -80.0)},
+    # Prompt 20 M (DECISIONS 19L): the crusher plant / pit floor / ore loadout, and the west pad / landing field / east pad.
+    'openpit': {'west': (-80.0, 80.0), 'town': (0, 0), 'east': (80.0, -80.0)},
+    'orbitalgate': {'west': (-80.0, 80.0), 'town': (0, 0), 'east': (80.0, -80.0)},
 }
 
 NEW_MAPS = {'landingbeach', 'hydrodam', 'capital', 'launchsite'}
@@ -72,6 +94,8 @@ WEATHER = {
     'capital': {'Night', 'Clear', 'Rain', 'Overcast', 'Fog', 'Storm'},
     'launchsite': {'Clear', 'Sandstorm', 'Overcast', 'Night'},
     'lighthousebay': {'Overcast', 'Clear', 'Fog', 'Rain', 'Storm', 'Night'},
+    'openpit': {'Clear', 'Sandstorm', 'Overcast', 'Night'},
+    'orbitalgate': {'Snow', 'Clear', 'Night', 'Overcast', 'Fog'},
 }
 
 
@@ -163,28 +187,28 @@ def say(speaker, on, en, vi, arg=None, at=None):
     return Line(speaker, on, en, vi, arg, at)
 
 
-def add_mission(m, name, brief, fragment, lines=(), stages_text=None, choices_text=None):
+def add_mission(m, name, brief, fragment, lines=(), stages_text=None, choices_text=None, fresh=False):
     """
     Registers a mission: its data (a dict in campaign.json's shape), its name and briefing, the
     dossier fragment it adds (title, text) and its radio lines; an operation's stage titles and
     choice texts.
     """
     mid = m['id']
-    T(f'mission.{mid}.name', *name)
-    T(f'mission.{mid}.brief', *brief)
-    T(f'mission.{mid}.fragment.title', *fragment[0])
-    T(f'mission.{mid}.fragment', *fragment[1])
+    T(f'mission.{mid}.name', *name, fresh=fresh)
+    T(f'mission.{mid}.brief', *brief, fresh=fresh)
+    T(f'mission.{mid}.fragment.title', *fragment[0], fresh=fresh)
+    T(f'mission.{mid}.fragment', *fragment[1], fresh=fresh)
     rad = list(m.get('radio', []))
     for i, line in enumerate(lines):
         key = f'radio.{line.speaker}.{mid}.{i + 1}'
-        T(key, line.en, line.vi)
+        T(key, line.en, line.vi, fresh=fresh)
         rad.append(radio(line.on, key, line.arg, line.at))
     if rad:
         m['radio'] = rad
     for stage, text in (stages_text or {}).items():
-        T(f'stage.{mid}.{stage}', *text)
+        T(f'stage.{mid}.{stage}', *text, fresh=fresh)
     for key, (title, info) in (choices_text or {}).items():
-        T(f'choice.{mid}.{key}', *title)
-        T(f'choice.{mid}.{key}.info', *info)
+        T(f'choice.{mid}.{key}', *title, fresh=fresh)
+        T(f'choice.{mid}.{key}.info', *info, fresh=fresh)
     MISSIONS.append(m)
     return m

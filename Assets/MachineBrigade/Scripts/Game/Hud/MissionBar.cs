@@ -19,6 +19,13 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Shows the standing hint at the start; null: only in the player's first matches (<see cref="Match.MatchSettings.ShowStartHint"/>).</summary>
         public bool? StartHint { get; set; }
+
+        /// <summary>
+        /// Prompt 21's Sandbox (DECISIONS 21S): the HUD keeps the minimap with zoom, both sides' counts and pause, and
+        /// leaves out what the Sandbox has its own controls for (waves, the commander's switches, select-all, box select,
+        /// the standing hint).
+        /// </summary>
+        public bool Sandbox { get; set; }
     }
 
     /// <summary>
@@ -99,7 +106,8 @@ namespace MachineBrigade.Game.Hud
         /// <summary>How long the compact bar stays open after a tap.</summary>
         private const float OpenSeconds = 6f;
 
-        private readonly Label _name, _phase, _hp, _escorts;
+        private readonly Label _name, _phase, _hp, _escorts, _rank;
+        private string _shownRank;
         private readonly VisualElement _escortChip;
         private int _shownEscorts = -1;
 
@@ -131,6 +139,11 @@ namespace MachineBrigade.Game.Hud
             }
             var head = Kit.Box("fc-boss__head");
             head.Add(Kit.Icon("skull", "fc-boss__icon"));
+            // Prompt 20 F.4, G.4: "Boss" or "Mini boss" before its name.
+            _rank = Kit.Text("", "fc-caption fc-boss__rank");
+            _rank.style.marginRight = 6;
+            _rank.style.display = DisplayStyle.None;
+            head.Add(_rank);
             _name = Kit.Text("", "fc-panel-title fc-row-text fc-boss__name");
             head.Add(_name);
             _phase = Kit.Text("", "fc-caption fc-boss__phase");
@@ -160,6 +173,15 @@ namespace MachineBrigade.Game.Hud
             _bigChip.Add(_bigLabel);
             _bigChip.style.display = DisplayStyle.None;
             head.Add(_bigChip);
+            // Prompt 19 B.5: a tiered boss's altitude now and the seconds to its next change (hidden for other bosses).
+            _tierChip = Kit.Box("fc-boss__tier");
+            _tierChip.style.flexDirection = FlexDirection.Row;
+            _tierChip.style.alignItems = Align.Center;
+            _tierChip.style.marginLeft = 6;
+            _tierLabel = Kit.Text("", "fc-number-small fc-boss__tier-label");
+            _tierChip.Add(_tierLabel);
+            _tierChip.style.display = DisplayStyle.None;
+            head.Add(_tierChip);
             Root.Add(head);
             _track = Kit.Box("fc-boss__track");
             _fill = Kit.Box("fc-boss__fill");
@@ -170,6 +192,17 @@ namespace MachineBrigade.Game.Hud
         }
 
         public VisualElement Root { get; }
+
+        /// <summary>
+        /// A boss's call sign, the part of its name before " · " ("Juggernaut" of "Juggernaut · Armoured Train"): the
+        /// compact bar's name, on one line in the top row (play-test 6).
+        /// </summary>
+        public static string CallSign(string name)
+        {
+            if (string.IsNullOrEmpty(name)) return name;
+            var cut = name.IndexOf(" · ", System.StringComparison.Ordinal);
+            return cut > 0 ? name.Substring(0, cut) : name;
+        }
 
         /// <summary>The boss's parts under the bar (prompt 9).</summary>
         public BossPartsRow Parts { get; } = new();
@@ -230,7 +263,7 @@ namespace MachineBrigade.Game.Hud
             if (shown == _shownPhase) return;
             _shownPhase = shown;
             _phase.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
-            _phase.text = Kit.Caps(transforming ? Strings.Get("boss.transforming") : Strings.Format("boss.phase", phase + 1, count + 1));
+            _phase.text = Kit.Caps(transforming ? Strings.Get("boss.transforming") : Strings.Format("boss.phase", ("phase", phase + 1), ("total", count + 1)));
             Root.EnableInClassList("fc-boss--transforming", transforming);
         }
 
@@ -250,6 +283,20 @@ namespace MachineBrigade.Game.Hud
             }
             var fill = Mathf.RoundToInt(Mathf.Clamp01(health) * 1000f);
             if (fill != _shownFill) _fill.style.width = Length.Percent((_shownFill = fill) / 10f);
+        }
+
+        /// <summary>Prompt 20: its rank's label ("Boss", "Mini boss") and a mini boss's smaller bar.</summary>
+        public void SetRank(MachineBrigade.Sim.Content.BossRankDef rank)
+        {
+            var key = rank?.Label;
+            if (key == _shownRank) return;
+            _shownRank = key;
+            _rank.style.display = key != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _rank.text = key != null ? Kit.Caps(Strings.Get(key)) : "";
+            Root.EnableInClassList("fc-boss--mini", rank is { Compact: true });
+            // Prompt 20 O.2: the big bar for a main boss (the small one is the mini's, above).
+            Root.EnableInClassList("fc-boss--main", rank is { Compact: false });
+            Root.style.scale = rank is { Compact: true } ? new StyleScale(new Scale(new UnityEngine.Vector3(0.86f, 0.86f, 1f))) : StyleKeyword.Null;
         }
 
         /// <summary>Prompt 16 F: its escorts still alive, beside its health (none: hidden).</summary>
@@ -292,6 +339,33 @@ namespace MachineBrigade.Game.Hud
             if (whole == _shownBigSeconds) return;
             _shownBigSeconds = whole;
             _bigLabel.text = whole >= 0 ? whole.ToString() : whole == -1 ? "!" : "";
+        }
+
+        // Prompt 19 B.5: the altitude chip.
+        private readonly VisualElement _tierChip;
+        private readonly Label _tierLabel;
+        private VisualElement _tierIcon;
+        private string _tierIconName, _shownTier;
+
+        /// <summary>Prompt 19: the boss's altitude tier beside its name (null icon: none), with the seconds to its next change in the text.</summary>
+        public void SetTier(string icon, string text, string tooltip)
+        {
+            if (icon == null)
+            {
+                if (_tierIconName != null) _tierChip.style.display = DisplayStyle.None;
+                _tierIconName = null;
+                return;
+            }
+            if (icon != _tierIconName)
+            {
+                _tierIcon?.RemoveFromHierarchy();
+                _tierIcon = Kit.Icon(icon, "fc-boss__tier-icon");
+                _tierChip.Insert(0, _tierIcon);
+                _tierIconName = icon;
+                _tierChip.style.display = DisplayStyle.Flex;
+                _tierChip.tooltip = tooltip;
+            }
+            if (text != _shownTier) _tierLabel.text = _shownTier = text;
         }
 
         /// <summary>The boss's health in numbers beside its name ("41 250 / 60 000").</summary>

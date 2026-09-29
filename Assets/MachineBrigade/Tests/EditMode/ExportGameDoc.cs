@@ -41,10 +41,19 @@ namespace MachineBrigade.Tests
                     ["elites"] = catalog.Vehicles.Values.Where(v => v.Elite).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
                     ["bosses"] = catalog.Vehicles.Values.Where(v => v.Boss).OrderBy(v => v.MaxHp).Select(v => Vehicle(catalog, v)).ToList(),
                     ["towers"] = catalog.Vehicles.Values.Where(v => v.Static).OrderBy(v => v.Id).Select(v => Vehicle(catalog, v)).ToList(),
-                    ["supports"] = catalog.Supports.Values.OrderBy(s => s.CpCost).Select(Support).ToList(),
+                    ["supports"] = catalog.Supports.Values.OrderBy(s => s.CpCost).Select(s => Support(catalog, s)).ToList(),
                     ["gear"] = Gear(),
                     ["economy"] = Economy(),
                     ["modes"] = Modes(),
+                    // Map props (buildings, walls, gates, obstacles) with their plain fields.
+                    ["props"] = catalog.Props.Values.OrderBy(p => p.Id).Select(p => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = p.Id, ["name"] = Text("prop." + p.Id), ["raw"] = Raw(p),
+                    }).ToList(),
+                    // Every model's measured size in metres (x across, y up, z along), before a def's own scale.
+                    ["modelSizes"] = ModelSizes(catalog),
+                    // Boss Rush's kinds in order (each draws one variant), for the modes table.
+                    ["bossRushKinds"] = MachineBrigade.Sim.Modes.BossRushRules.Kinds.Select(k => (object)k.ToList()).ToList(),
                     ["campaign"] = Campaign.All.Select(Mission).ToList(),
                     ["maps"] = MatchSettings.AllMaps.Select(m => (object)new Dictionary<string, object>
                     {
@@ -62,6 +71,16 @@ namespace MachineBrigade.Tests
                             ["id"] = id, ["name"] = Text("char." + id + ".name"), ["role"] = Text("char." + id + ".role"), ["bio"] = Text("char." + id + ".bio"),
                         }).ToList(),
                     ["timeline"] = Enumerable.Range(0, 20).Select(i => Text("timeline." + i)).Where(s => s.Length > 0).Cast<object>().ToList(),
+                    // Prompt 22 F: the player's commanders and the generals' passives, as the game words them.
+                    ["commanders"] = Commanders.All.Concat(Commanders.Generals).Select(c => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = c.Id, ["name"] = CommanderText.Name(c), ["call"] = Text("cmdr." + c.Id + ".call"), ["role"] = CommanderText.Role(c),
+                        ["style"] = CommanderText.Style(c), ["strength"] = CommanderText.Strength(c), ["weakness"] = CommanderText.Weakness(c),
+                        ["unlock"] = c.IsGeneral ? "" : CommanderText.Unlock(c), ["family"] = c.Family.ToString(), ["general"] = c.General ?? "",
+                    }).ToList(),
+                    // Every boss's general by id, with the name the story gives them.
+                    ["bossGenerals"] = catalog.Vehicles.Values.Where(v => v.Boss && !string.IsNullOrEmpty(v.General)).Select(v => v.General!).Distinct()
+                        .ToDictionary(g => g, g => (object)(Text("char." + g + ".name") is { Length: > 0 } n ? n : Text("name." + g))),
                     ["generals"] = Campaign.Generals.Select(g => (object)new Dictionary<string, object>
                     {
                         ["id"] = g.Id, ["name"] = Text("char." + g.Id + ".name"), ["style"] = g.Style, ["stance"] = g.Stance,
@@ -95,9 +114,114 @@ namespace MachineBrigade.Tests
                 row["name"] = Text("ul.type." + d);
                 table[d.ToString()] = row;
             }
-            table["penetration"] = Enumerable.Range(0, 5).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
+            table["penetration"] = Enumerable.Range(0, MachineBrigade.Sim.Content.DamageTable.PenetrationSteps).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
             table["thermobaric"] = catalog.Damage.ThermobaricStructure;
             return table;
+        }
+
+        /// <summary>A mode's subtitle as the menus show it: Boss Rush's has the number of bosses filled in.</summary>
+        private static string ModeSub(GameModeKind kind, string key) =>
+            kind == GameModeKind.BossRush ? Strings.Format(key + "Sub", BossHunts.ThisWeek.Count) : Text(key + "Sub");
+
+        [Test]
+        public void EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm()
+        {
+            var catalog = GameContent.LoadCatalog();
+            foreach (var v in catalog.Vehicles.Values)
+            {
+                foreach (var level in new[] { v.Armour.Front, v.Armour.Side, v.Armour.Rear, v.Armour.Top })
+                    Assert.That(level, Is.InRange(0, v.Boss ? ArmourLevels.Max : ArmourLevels.MaxUnit), v.Id + ": an armour level 0-4 on every face (a boss's to 5)");
+                foreach (var p in v.Parts)
+                    Assert.That(p.ArmourOn(v), Is.InRange(0, ArmourLevels.Max), v.Id + " " + p.Id + ": the part's armour level");
+                foreach (var m in v.Mounts)
+                {
+                    if (m.Weapon.Damage <= 0f) continue;
+                    Assert.That(m.Weapon.Penetration, Is.InRange(0, 4), m.Weapon.Id + ": a penetration 0-4");
+                    Assert.AreNotEqual(WeaponForm.None, m.Weapon.Form, m.Weapon.Id + " on " + v.Id + ": a weapon form");
+                }
+            }
+        }
+
+        [Test]
+        public void NoModeLineKeepsAPlaceholder()
+        {
+            foreach (var vietnamese in new[] { true, false })
+            {
+                var was = Strings.Vietnamese;
+                Strings.Vietnamese = vietnamese;
+                try
+                {
+                    foreach (Dictionary<string, object> m in (IEnumerable)Modes())
+                        foreach (var field in new[] { "name", "sub" })
+                            StringAssert.DoesNotContain("{", (string)m[field], m["id"] + " " + field + (vietnamese ? " (vi)" : " (en)"));
+                }
+                finally
+                {
+                    Strings.Vietnamese = was;
+                }
+            }
+        }
+
+        /// <summary>The bounds of every model a vehicle, tower, boss, prop or round uses, measured from its prefab.</summary>
+        private static Dictionary<string, object> ModelSizes(Catalog catalog)
+        {
+            var ids = new HashSet<string>();
+            foreach (var v in catalog.Vehicles.Values)
+            {
+                if (!string.IsNullOrEmpty(v.Model)) ids.Add(v.Model);
+                foreach (var m in v.Mounts)
+                {
+                    if (!string.IsNullOrEmpty(m.ProjectileModel)) ids.Add(m.ProjectileModel);
+                    if (!string.IsNullOrEmpty(m.Weapon.ProjectileModel)) ids.Add(m.Weapon.ProjectileModel);
+                }
+            }
+            foreach (var p in catalog.Props.Values) ids.Add(p.Id);
+            foreach (var p in catalog.Props.Values)
+                foreach (var prop in p.GetType().GetProperties())
+                    if (prop.Name == "Model" && prop.GetValue(p) is string model && model.Length > 0) ids.Add(model);
+            var sizes = new Dictionary<string, object>();
+            foreach (var id in ids.OrderBy(i => i))
+            {
+                var prefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("Models/" + id);
+                if (prefab == null) continue;
+                var go = UnityEngine.Object.Instantiate(prefab);
+                try
+                {
+                    var renderers = go.GetComponentsInChildren<UnityEngine.Renderer>(true);
+                    if (renderers.Length == 0) continue;
+                    var b = renderers[0].bounds;
+                    foreach (var r in renderers) b.Encapsulate(r.bounds);
+                    sizes[id] = new List<object> { b.size.x, b.size.y, b.size.z };
+                }
+                finally
+                {
+                    UnityEngine.Object.DestroyImmediate(go);
+                }
+            }
+            return sizes;
+        }
+
+        /// <summary>A definition's public numbers, flags, enums and strings, by property name, for the document.</summary>
+        private static Dictionary<string, object> Raw(object o)
+        {
+            var d = new Dictionary<string, object>();
+            foreach (var p in o.GetType().GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+            {
+                if (p.GetIndexParameters().Length > 0) continue;
+                var t = Nullable.GetUnderlyingType(p.PropertyType) ?? p.PropertyType;
+                if (!(t.IsPrimitive || t.IsEnum || t == typeof(string))) continue;
+                try
+                {
+                    var value = p.GetValue(o);
+                    if (value == null) continue;
+                    d[p.Name] = t.IsEnum ? value.ToString() : value;
+                }
+                catch (Exception)
+                {
+                    // A property that throws for this def (not set) is left out.
+                }
+            }
+            return d;
         }
 
         /// <summary>A unit's armour by face (prompt 15 A).</summary>
@@ -127,6 +251,8 @@ namespace MachineBrigade.Tests
                     ["pen"] = w.Penetration, ["form"] = w.Form.ToString(), ["topAttack"] = Armour_StrikesTop(w), ["guided"] = w.Guided,
                     ["splashes"] = w.Splashes, ["thermobaric"] = w.Thermobaric, ["real"] = w.RealName ?? "",
                     ["effect"] = Matchup.EffectRow(catalog.Damage, w).Select(x => (object)x).ToList(),
+                    // Every plain number, flag and name the weapon carries (rates, magazines, reloads, ceilings...).
+                    ["raw"] = Raw(w),
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
                     {
                         ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,
@@ -149,12 +275,16 @@ namespace MachineBrigade.Tests
                 ["id"] = v.Id, ["name"] = Strings.Card(v.Id), ["short"] = Strings.Short(v.Id), ["note"] = Text("note." + v.Id), ["guide"] = Text("guide." + v.Id),
                 ["rounds"] = v.Mounts.Select(m => m.ProjectileModel ?? m.Weapon.ProjectileModel ?? "").ToList(),
                 ["class"] = v.Class.ToString(), ["armor"] = v.Armor.ToString(), ["hp"] = v.MaxHp, ["speed"] = v.Speed, ["cost"] = v.CpCost,
+                // Play-test 8: how a card is had (starter, premium, campaign) and its price in coins.
+                ["route"] = Progression.Route(v.Id).ToString(), ["coins"] = v.Boss || v.Elite ? 0 : Progression.Price(v.Id, catalog),
                 // Prompt 15: armour by face, the kind of target, and the strong / weak summary.
                 ["armour"] = Armour(v.Armour), ["kind"] = v.Kind.ToString(),
                 ["strongVs"] = Matchup.Summary(catalog.Damage, v).StrongVs.Select(c => (object)c.ToString()).ToList(),
                 ["weakTo"] = Matchup.Summary(catalog.Damage, v).WeakTo.Select(t => (object)t.ToString()).ToList(),
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
+                ["raw"] = Raw(v),
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
+                ["deathRadius"] = v.DeathExplosion?.Radius ?? 0f,
                 // Prompt 13 G: the generated lines, as the detail screen shows them.
                 ["behavior"] = UnitLines.Behaviour(catalog, v), ["ammo"] = UnitLines.Ammo(catalog, v),
                 ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",
@@ -170,10 +300,12 @@ namespace MachineBrigade.Tests
             };
         }
 
-        private static object Support(SupportDef s) => new Dictionary<string, object>
+        private static object Support(Catalog catalog, SupportDef s) => new Dictionary<string, object>
         {
             ["id"] = s.Id, ["name"] = Strings.Support(s.Id), ["info"] = Text("support." + s.Id + ".info"), ["kind"] = s.Kind.ToString(), ["guide"] = Text("guide." + s.Id),
-            ["cost"] = s.CpCost, ["cooldown"] = s.Cooldown, ["damage"] = s.Damage, ["radius"] = s.Radius, ["count"] = s.Count,
+            ["cost"] = s.CpCost, ["consumable"] = s.Consumable, ["eventOnly"] = s.EventOnly, ["route"] = Progression.Route(s.Id).ToString(),
+            ["coins"] = Progression.IsItem(s.Id) ? Progression.ItemPrice(s.Id) : Progression.Price(s.Id, catalog),
+            ["cooldown"] = s.Cooldown, ["damage"] = s.Damage, ["radius"] = s.Radius, ["count"] = s.Count,
             ["duration"] = s.Duration, ["type"] = s.DamageType.ToString(), ["pen"] = s.Penetration, ["thermobaric"] = s.Thermobaric,
         };
 
@@ -227,6 +359,7 @@ namespace MachineBrigade.Tests
                 ["cost"] = c, ["rank7"] = CardRanks.CallCost(c, 7), ["rank9"] = CardRanks.CallCost(c, 9),
             }).ToList(),
             ["bossKinds"] = MachineBrigade.Sim.Modes.BossRushRules.Kinds.Select(k => (object)k.ToList()).ToList(),
+            ["itemPack"] = Progression.ItemPack, ["doctrinePrice"] = Progression.DoctrinePrice,
             ["crateCoinPrice"] = Crates.CoinPrice, ["crateRolls"] = Crates.Rolls, ["crateOdds"] = Crates.Odds,
             ["crateCoinsLow"] = Crates.CoinsLow, ["crateCoinsHigh"] = Crates.CoinsHigh,
             ["coinPacks"] = CoinStore.Packs.Select(p => (object)new Dictionary<string, object> { ["id"] = p.id, ["coins"] = p.coins, ["price"] = p.price }).ToList(),
@@ -243,7 +376,7 @@ namespace MachineBrigade.Tests
                 };
                 list.Add(new Dictionary<string, object>
                 {
-                    ["id"] = kind.ToString(), ["name"] = Text(key), ["sub"] = Text(key + "Sub"), ["toast"] = Text(key + ".toast"),
+                    ["id"] = kind.ToString(), ["name"] = Text(key), ["sub"] = ModeSub(kind, key), ["toast"] = Text(key + ".toast"),
                 });
             }
             return list;

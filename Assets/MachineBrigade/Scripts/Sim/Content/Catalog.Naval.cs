@@ -25,6 +25,8 @@ namespace MachineBrigade.Sim.Content
                     DashEvery = n.Float("dashEvery", 26f),
                     DashHold = n.Float("dashHold", 7f),
                     Slack = n.Float("slack", 2f),
+                    PassIn = MathF.Max(0f, n.Float("passIn", 0f)),
+                    PassOut = MathF.Max(0f, n.Float("passOut", 0f)),
                 };
             }
             if (v.Has("salvo"))
@@ -62,7 +64,11 @@ namespace MachineBrigade.Sim.Content
             {
                 var fleet = new List<FleetShipDef>();
                 foreach (var f in v.Array("fleet"))
-                    fleet.Add(new FleetShipDef { Unit = f.String("unit"), Count = Math.Max(1, f.Int("count", 1)), Station = f.Float("at", 0f) });
+                    fleet.Add(new FleetShipDef
+                    {
+                        Unit = f.String("unit"), Count = Math.Max(1, f.Int("count", 1)), Station = f.Float("at", 0f),
+                        Abeam = f.Has("abeam") ? f.Float("abeam") : float.NaN,
+                    });
                 def.Fleet = fleet;
             }
             if (v.Has("air"))

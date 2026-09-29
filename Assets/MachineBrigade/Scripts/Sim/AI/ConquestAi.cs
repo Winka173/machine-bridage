@@ -63,7 +63,8 @@ namespace MachineBrigade.Sim.AI
         public static BuyProfile For(AiDifficulty difficulty) => difficulty switch
         {
             AiDifficulty.Easy => new BuyProfile(3f, 0f, 0f, 0f, 0f, false, 0.8f),
-            AiDifficulty.Normal => new BuyProfile(0.8f, 1f, 0.5f, 0.6f, 0.04f, false, 1f),
+            // The balance pass after prompt 18 (D.5): Normal's income 1 -> 0.7 (the ladder's Normal won 28-37 %, below Hard's 48 %).
+            AiDifficulty.Normal => new BuyProfile(0.8f, 1f, 0.5f, 0.6f, 0.04f, false, 0.7f),
             AiDifficulty.Hard => new BuyProfile(0.6f, 1.25f, 1f, 1f, 0.1f, false, 1.2f),
             _ => new BuyProfile(0.4f, 1.4f, 1f, 1.2f, 0.12f, true, 1.4f),
         };
@@ -292,7 +293,11 @@ namespace MachineBrigade.Sim.AI
                     _ => c.Class == UnitClass.Support,
                 };
                 if (!fits) return float.MinValue;
-                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? 1f : 0.4f);
+                var score = (float)random.NextDouble() * (difficulty == AiDifficulty.Normal ? 0.5f : 0.4f);
+                // Normal (the balance pass after prompt 18, D.4): the role's typical cards, not any that fits, so one
+                // seed's deck is not far stronger or weaker than the next (Deathmatch swung from 2/6 to 8/12 on the
+                // eight cards a seed happened to draw).
+                if (difficulty == AiDifficulty.Normal) score -= MathF.Abs(c.CombatValue - 1f) * 1.2f;
                 // The value per CP (part A): Hard and Very Hard weigh it (Normal draws any card that fits the role).
                 if (difficulty >= AiDifficulty.Hard) score += c.CombatValue * 1.5f * BuyProfile.For(difficulty).Value;
                 // The support card a battle uses: repairs or ammunition.
@@ -562,7 +567,8 @@ namespace MachineBrigade.Sim.AI
                     !Ready(world, economy, s)) continue;
                 // Save the big one for big targets.
                 if (s.Kind == SupportKind.CruiseMissile && size < ClusterSize + 1) continue;
-                if (pick == null || s.CpCost > pick.CpCost) pick = s;
+                // The dearest strike, the commander's arm first (prompt 22 F.5: Hawk's airstrikes, Longshot's barrages).
+                if (pick == null || StrikeValue(s, economy) > StrikeValue(pick, economy)) pick = s;
             }
             if (pick == null) return false;
             world.TryGetRally(_team, out var home);
@@ -609,7 +615,8 @@ namespace MachineBrigade.Sim.AI
                             var threat = 0;
                             foreach (var e in _tactics.KnownEnemies)
                                 if (e.IsAlive && !e.Flying && !e.Def.Static && Vector2.Distance(e.Position, p.Def.Position) < 45f) threat++;
-                            if (threat < 2) continue;
+                            // Prompt 22 F.5: a tower commander (Bulwark) drops its towers at the first sign of a threat.
+                            if (threat < (CommanderRules.SupportFit(economy.Commander, s) > 0f ? 1 : 2)) continue;
                             world.TryGetRally(_team, out var home);
                             var back = home - p.Def.Position;
                             var at = world.ClampToMap(p.Def.Position + (back.LengthSquared() > 1f ? Vector2.Normalize(back) : Vector2.Zero) * 5f);
@@ -890,19 +897,22 @@ namespace MachineBrigade.Sim.AI
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
                 // Bigger vehicles are worth saving for (except on Easy, which spends as it earns).
                 score += def.CpCost * profile.Save;
+                // Prompt 22 F.5: the cards that suit the side's commander (the player's Auto-buy, an enemy general's army).
+                if (economy.Commander is { } commander) score += CommanderRules.Fit(commander, def) * CommanderFitWeight;
+                if (BuyScores != null) BuyScores[id] = score;
                 if (score > bestScore)
                 {
                     best = id;
                     bestScore = score;
                 }
-                if (economy.CostOf(id, def.CpCost) <= economy.Cp && score > bestAffordableScore)
+                if (economy.PriceOf(id, def.CpCost) <= economy.Cp && score > bestAffordableScore)
                 {
                     bestAffordable = id;
                     bestAffordableScore = score;
                 }
             }
             if (best == null) return;
-            var bestCost = economy.CostOf(best, world.Catalog.Vehicles[best].CpCost);
+            var bestCost = economy.PriceOf(best, world.Catalog.Vehicles[best].CpCost);
             if (bestCost <= economy.Cp)
             {
                 world.Submit(Command.Deploy(_team, best));
@@ -932,7 +942,17 @@ namespace MachineBrigade.Sim.AI
         }
 
         private static bool Ready(SimWorld world, TeamEconomy economy, SupportDef s) =>
-            economy.Cp >= s.CpCost && economy.CooldownLeft(s.Id, world.Time) <= 0f;
+            economy.Cp >= economy.PriceOf(s.Id, s.CpCost) && economy.CooldownLeft(s.Id, world.Time) <= 0f;
+
+        /// <summary>
+        /// How much a card that suits the commander is worth to the buying score (a fit of 0.25: one point). The first
+        /// sweep's 10 made the AI buy nothing else and lose with the commanders in their own styles (DECISIONS 22F).
+        /// </summary>
+        internal const float CommanderFitWeight = 4f;
+
+        /// <summary>A strike's worth when choosing one: its CP, a third more for one that suits the commander's arm.</summary>
+        private static float StrikeValue(SupportDef s, TeamEconomy economy) =>
+            s.CpCost * (1f + MathF.Min(0.35f, CommanderRules.SupportFit(economy.Commander, s) * 2.5f));
 
         private static IEnumerable<string> Cards(SimWorld world, IReadOnlyList<string> deck, IEnumerable<string> all)
         {
@@ -1001,7 +1021,7 @@ namespace MachineBrigade.Sim.AI
             /// Prompt 15 C.10: the ground enemies' value by the armour they show, front x 5 + roof (a weapon that
             /// strikes the roof meets the roof), and in all.
             /// </summary>
-            public readonly float[] Armour = new float[25];
+            public readonly float[] Armour = new float[Levels * Levels];
 
             public float Ground;
 
@@ -1015,12 +1035,15 @@ namespace MachineBrigade.Sim.AI
             public float Pierce;
         }
 
+        /// <summary>Armour levels 0-5 (5: a boss's plate, DECISIONS 21G): the mix counts armour by front and roof.</summary>
+        private const int Levels = ArmourLevels.Max + 1;
+
         /// <summary>Counts a seen (or known) enemy's armour and defences into the mix.</summary>
         private static void AddArmour(Mix mix, VehicleDef def, Vehicle? seen, float value)
         {
             if (!def.Flying)
             {
-                mix.Armour[def.Armour.Front * 5 + def.Armour.Top] += value;
+                mix.Armour[def.Armour.Front * Levels + def.Armour.Top] += value;
                 mix.Ground += value;
             }
             var aps = seen != null ? seen.Aps != null : def.Aps != null;
@@ -1042,7 +1065,7 @@ namespace MachineBrigade.Sim.AI
         }
 
         /// <summary>
-        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0-1: its main weapon's penetration against
+        /// Prompt 15 C.10: how well a card pierces the ground enemies seen, 0-1.2 (1.2: it overmatches them all, DECISIONS 20X): its main weapon's penetration against
         /// the armour each shows (its roof to a weapon that strikes the roof) times the damage type, weighted by their
         /// value; a secondary counts at half.
         /// </summary>
@@ -1059,7 +1082,8 @@ namespace MachineBrigade.Sim.AI
                 {
                     var w = def.Mounts[k].Weapon;
                     if (w.Damage <= 0f || !w.CanTarget(false)) continue;
-                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % 5 : i / 5, TargetKind.Ground);
+                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % Levels : i / Levels, TargetKind.Ground,
+                        def.Flying && def.FixedWing);
                     best = MathF.Max(best, k == 0 ? effect : effect * 0.5f);
                 }
                 sum += value * best;

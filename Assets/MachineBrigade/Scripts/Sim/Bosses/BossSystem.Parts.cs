@@ -60,7 +60,7 @@ namespace MachineBrigade.Sim.Bosses
                 if (boss.PartBroken[i] || !Reaches(shooter, boss, i, weapon)) continue;
                 var distance = Vector2.Distance(boss.PartPosition(i), shooter.Position);
                 float score;
-                if (locked) score = parts[i].Kind == boss.Def.PartLock!.Kind ? 1000f - distance : -500f - distance;
+                if (locked) score = (boss.BodyShut ? boss.BigAttack?.Def.UsesPart(parts[i].Id) ?? false : parts[i].Kind == boss.Def.PartLock?.Kind) ? 1000f - distance : -500f - distance;
                 else score = Danger(shooter, boss, i) - distance * 0.01f;
                 if (score <= bestScore) continue;
                 bestScore = score;
@@ -170,6 +170,8 @@ namespace MachineBrigade.Sim.Bosses
             mix(_trails.Count);
             // Prompt 18: big attacks.
             MixBig(mix);
+            // Prompt 19: tiers, pods, seized drones.
+            MixTiers(mix);
         }
 
         // ================================================================== damage, breaking, patching
@@ -279,20 +281,37 @@ namespace MachineBrigade.Sim.Bosses
             // Prompt 16: mechanisms that several parts may carry (the hovercraft's two CIWS) stop with the
             // last of them; a protection system holds fewer interceptors with each one broken.
             int apsParts = 0, apsStanding = 0, jamParts = 0, jamStanding = 0, trailParts = 0, trailStanding = 0;
+            // Prompt 20: pod bays (Daedalus's three), workshop doors, crushers and fire direction the same way.
+            int podParts = 0, podStanding = 0, doorParts = 0, doorStanding = 0, crushParts = 0, crushStanding = 0, spotParts = 0, spotStanding = 0;
             for (var i = 0; i < parts.Count; i++)
                 foreach (var stop in parts[i].Stops)
+                {
+                    var up = !boss.PartBroken[i];
                     switch (stop)
                     {
-                        case "aps": apsParts++; if (!boss.PartBroken[i]) apsStanding++; break;
-                        case "jammer": jamParts++; if (!boss.PartBroken[i]) jamStanding++; break;
-                        case "trail": trailParts++; if (!boss.PartBroken[i]) trailStanding++; break;
+                        case "aps": apsParts++; if (up) apsStanding++; break;
+                        case "jammer": jamParts++; if (up) jamStanding++; break;
+                        case "trail": trailParts++; if (up) trailStanding++; break;
+                        case "pods": podParts++; if (up) podStanding++; break;
+                        case "factory": doorParts++; if (up) doorStanding++; break;
+                        case "crush": crushParts++; if (up) crushStanding++; break;
+                        case "spotaura": spotParts++; if (up) spotStanding++; break;
                     }
+                }
+            boss.PodShare = podParts == 0 ? 1f : podStanding / (float)podParts;
+            boss.FactoryShare = doorParts == 0 ? 1f : doorStanding / (float)doorParts;
+            boss.FactoryOff = doorParts > 0 && doorStanding == 0;
+            boss.CrushOff = crushParts > 0 && crushStanding == 0;
+            boss.SpotOff = spotParts > 0 && spotStanding == 0;
             boss.ApsOff = apsParts > 0 && apsStanding == 0;
             boss.JammerOff = jamParts > 0 && jamStanding == 0;
             boss.TrailOff = trailParts > 0 && trailStanding == 0;
             boss.ApsMax = boss.Aps == null || apsParts == 0 ? int.MaxValue : (int)MathF.Ceiling(boss.Aps.Charges * apsStanding / (float)apsParts);
             if (boss.ApsCharges > boss.ApsMax) boss.ApsCharges = boss.ApsMax;
             boss.CruiseOff = boss.CraftOff = boss.RadarOff = false;
+            // Prompt 19: a tiered boss's main engine (it cannot climb) and pod bay.
+            boss.ThrustOff = false;
+            boss.PodsOff = podParts > 0 && podStanding == 0;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (!boss.PartBroken[i]) continue;
@@ -318,6 +337,7 @@ namespace MachineBrigade.Sim.Bosses
                         case "cruise": boss.CruiseOff = true; break;
                         case "craft": boss.CraftOff = true; break;
                         case "radar": boss.RadarOff = true; break;
+                        case "thrust": boss.ThrustOff = true; break;
                     }
             }
 

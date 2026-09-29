@@ -125,6 +125,8 @@ namespace MachineBrigade.Game.Hud
             ["titan"] = "<rect x=\"1\" y=\"13\" width=\"20\" height=\"7\" rx=\"3.5\"/><path d=\"M5 13V8h11v5M16 9h7M16 11.5h7M8 8V5.5h5V8\"/>",
             ["twintank"] = "<rect x=\"3\" y=\"14\" width=\"17\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-4h8v4M15 10.5h7M15 13h6\"/>",
             ["siegegun"] = "<rect x=\"2\" y=\"14\" width=\"16\" height=\"6\" rx=\"3\"/><path d=\"M6 14v-3h7v3M12 11l9-7M13 13l2-1.5M2 17l-1.5 3\"/>",
+            // Play-test 5: the siege tank sieged (braces down, the mortar raised over the short gun).
+            ["siegetank"] = "<rect x=\"3\" y=\"12\" width=\"17\" height=\"6\" rx=\"3\"/><path d=\"M7 12V9h8v3M13 9.5l5-6.5M15 10.5h5M4 17l-2.5 4M19 17l2.5 4\"/>",
             ["apstank"] = "<rect x=\"3\" y=\"14\" width=\"18\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-4h8v4M15 11h7\"/><path d=\"M11 2.5l3 1.3v2.1c0 1.6-3 3.1-3 3.1S8 7.5 8 5.9V3.8Z\"/>",
             ["command"] = "<rect x=\"2\" y=\"13\" width=\"19\" height=\"6\" rx=\"2\"/><path d=\"M5 13V9h9v4M7 9V3M7 3l4 2-4 2M17 13V6\"/><circle cx=\"6\" cy=\"20\" r=\"1.5\"/><circle cx=\"11.5\" cy=\"20\" r=\"1.5\"/><circle cx=\"17\" cy=\"20\" r=\"1.5\"/>",
             ["wheeledgun"] = "<rect x=\"2\" y=\"13\" width=\"17\" height=\"5\" rx=\"2\"/><path d=\"M6 13l2-3h6l1 3M12 11h10\"/><circle cx=\"5\" cy=\"19\" r=\"1.5\"/><circle cx=\"10\" cy=\"19\" r=\"1.5\"/><circle cx=\"15\" cy=\"19\" r=\"1.5\"/>",
@@ -190,6 +192,8 @@ namespace MachineBrigade.Game.Hud
             // Rocket turret: a rocket pod, face on, on its pedestal.
             ["t_rockets"] = "<path d=\"M4 21h16M8 21l2-4h4l2 4M12 17v-3\"/><rect x=\"4\" y=\"4\" width=\"16\" height=\"10\" rx=\"1.5\"/><circle cx=\"8\" cy=\"7.2\" r=\".5\"/><circle cx=\"12\" cy=\"7.2\" r=\".5\"/><circle cx=\"16\" cy=\"7.2\" r=\".5\"/><circle cx=\"8\" cy=\"10.8\" r=\".5\"/><circle cx=\"12\" cy=\"10.8\" r=\".5\"/><circle cx=\"16\" cy=\"10.8\" r=\".5\"/>",
             // C-RAM: the radome over a gatling mount.
+            // Prompt 20 L.1: the Iron Dome branch (t_cram_b): a tilted canister launcher, two interceptor arcs over it.
+            ["t_cram_b"] = "<path d=\"M3 21h18M6 21l1-3h10l1 3M8 18l5-6 3.5 2.5-3.5 3.5M10.5 15.5l4-4.5\"/><path d=\"M3 10a9 9 0 0 1 18 0M6.5 10a5.5 5.5 0 0 1 11 0\"/>",
             ["t_cram"] = "<path d=\"M4 21h16M6 21l1-3h10l1 3M8 18v-6M16 18v-6\"/><circle cx=\"12\" cy=\"8.5\" r=\"4.5\"/><path d=\"M16 14h6M16 16.5h5\"/>",
             // Gun pit: a turret sunk in its pit under a camouflage net (dashed).
             ["t_pit"] = "<path d=\"M2 15h4.5v5h11v-5H22M8.5 20v-2a2.5 2.5 0 0 1 2.5-2.5h2a2.5 2.5 0 0 1 2.5 2.5v2M15 17l7-3.5M5 12.5l1.5-1.5M9 9.6l2-.5M13 9.1l2 .5M17.5 11l1.5 1.5\"/>",
@@ -220,17 +224,52 @@ namespace MachineBrigade.Game.Hud
             ["t_post"] = "<path d=\"M2 21h20M3 21v-5h18v5M9 16v5M15 16v5M8 16l3-4 3 4M11 12v4M7 11h14\"/>",
             // Super gun: a huge barrel raised from its block.
             ["t_supergun"] = "<path d=\"M2 21h20M3 21v-4h11v4M5 17v-2.5a3 3 0 0 1 3-3h2M8 13 20 3.5l1.6 2.2L10.3 15.6M18 5l1.6 2.2\"/>",
+            // Tower branches (tower-branch prompt C.4): <tower icon>_a and _b in the same style, each showing its
+            // branch's module (TowerIcons picks them by the branch's letter).
+            ["t_guard_a"] = "<path d=\"M4 21h16M8 21l1.5-9M16 21l-1.5-9M9.2 16.5h5.6M7 12h10V8.5H7ZM12 8.5V4.5M8 3.5h8M17 10l5-2.5M17 11l5 1.5\"/>",
+            ["t_guard_b"] = "<path d=\"M2 21h20M3 21v-2.5a2 2 0 0 1 4 0M17 18.5a2 2 0 0 1 4 0V21M8 21v-4.5h6V21M11 16.5V14M9 14h6.5l6.5-1\"/>",
+            ["t_mg_a"] = "<path d=\"M2 20h20M4 20v-3.5c0-3.6 3.6-6.5 8-6.5s8 2.9 8 6.5V20\"/><rect x=\"7\" y=\"13\" width=\"7\" height=\"4\" rx=\"1.5\"/><path d=\"M14 14.2h8M14 15.9h8\"/>",
+            ["t_mg_b"] = "<path d=\"M2 20h20M4 20v-3.5c0-3.6 3.6-6.5 8-6.5s8 2.9 8 6.5V20M14 15h3M17 15c1.8-2.2 3.2-1.6 5-3.6M17 15c1.8 1.2 3.2.8 5 2.6\"/><rect x=\"7\" y=\"13.6\" width=\"7\" height=\"2.6\" rx=\"1.3\"/><rect x=\"8.5\" y=\"4.5\" width=\"7\" height=\"3.2\" rx=\"1.6\"/>",
+            ["t_aa_a"] = "<path d=\"M2 21h20M2 21v-2.5a2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0V21M8.5 16.5V13h7v3.5M9 13l4.5-8.5M11 13l4.5-8.5M13 13l4.5-8.5M15 13l4.5-8.5\"/>",
+            ["t_aa_b"] = "<path d=\"M2 21h20M2 21v-2.5a2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0V21M9 16.5V14h5v2.5M7 14l5.5-8 4.5 3-5.5 8M9.5 11.5l4.5 3M15 5l2-3M18.5 7.5l2.5-2.5\"/>",
+            ["t_ew_a"] = "<path d=\"M5 21h14M8.5 21 11 10.5h2l2.5 10.5M9.6 16.5h4.8M9 10.5a3 3 0 0 1 6 0ZM5.5 8.5a7 7 0 0 1 13 0M2.5 7.5a10.5 10.5 0 0 1 19 0\"/>",
+            ["t_ew_b"] = "<path d=\"M5 21h14M9 21l2-9h2l2 9M9.8 17h4.4\"/><rect x=\"4.5\" y=\"2.5\" width=\"15\" height=\"9\" rx=\"1\"/><path d=\"M4.5 7h15M9.5 2.5v9M14.5 2.5v9\"/>",
+            ["t_teeth_a"] = "<path d=\"M1 20h22M3 20l6.5-9M3 11l6.5 9M6.2 9.5V20M14.5 20l6.5-9M14.5 11l6.5 9M17.8 9.5V20\"/>",
+            ["t_teeth_b"] = "<path d=\"M1 20h22M3 20V9M12 20V9M21 20V9M3 11h18\"/><circle cx=\"7.5\" cy=\"15\" r=\"3.5\"/><circle cx=\"16.5\" cy=\"15\" r=\"3.5\"/>",
+            ["t_mines_a"] = "<path d=\"M2 21h20M5 21V11M5 3l4.5 8h-9ZM9 21c0-2.5 2.7-4 6-4s6 1.5 6 4M13 17v-1.5h4V17\"/>",
+            ["t_mines_b"] = "<path d=\"M2 21h20M3 21a1.8 1.8 0 0 1 3.6 0M8.2 21a1.8 1.8 0 0 1 3.6 0M5.6 17a1.6 1.6 0 0 1 3.2 0ZM14 21l2-6.5 5 1.5-2 5M16.5 12l1-3M19.5 13l2-2.5\"/>",
+            ["t_atgm_a"] = "<path d=\"M4 21h14M11 21V9.5M7.5 21l3.5-3 3.5 3M4 10l9-3.5 1 2.5-9 3.5Z\"/><path d=\"M15 5.5C17 2 21 2.5 22 7\" dash=\"1.6 1.4\"/><path d=\"m20.5 6.5 1.5 1.5 1-2\"/>",
+            ["t_atgm_b"] = "<path d=\"M4 21h16M11 15v6M7 21l4-4 4 4M17.5 3.5a3.5 3.5 0 0 1 3 3M17.5 6h1.5\"/><rect x=\"3\" y=\"8\" width=\"12\" height=\"7\" rx=\"1\"/><path d=\"M3 11.5h12M9 8v7\"/>",
+            ["t_cram_a"] = "<path d=\"M3 21h13M5 21l1-3h8l1 3M7 18v-6M13 18v-6M13 14h5M13 16.5h4M20 7.5V21M18 21h4\"/><circle cx=\"10\" cy=\"8.5\" r=\"4\"/><circle cx=\"20\" cy=\"5\" r=\"2.5\"/>",
+            ["t_gun_a"] = "<path d=\"M2 21l1.5-5h11l1.5 5ZM4.5 16v-3l2-3h4l2 3v3M12.5 12.5H23M6 8h6v-2H6Z\"/>",
+            ["t_gun_b"] = "<path d=\"M3 21l1.5-5h15l1.5 5ZM6 16v-3l2-3h5l2 3v3M15 11.8h4.5M15 14.3h4.5M9.5 10V6.5M6.5 5a4.5 4.5 0 0 1 6-1.5L9.5 6.5Z\"/>",
+            ["t_rockets_a"] = "<path d=\"M4 21h16M8 21l2-4h4l2 4M12 17v-3M4 4v10M20 4v10M4 4h16M4 14h16M12 4v10\"/><circle cx=\"7.8\" cy=\"7\" r=\"1.4\"/><circle cx=\"16.2\" cy=\"7\" r=\"1.4\"/><circle cx=\"7.8\" cy=\"11\" r=\"1.4\"/><circle cx=\"16.2\" cy=\"11\" r=\"1.4\"/>",
+            ["t_rockets_b"] = "<path d=\"M4 21h16M8 21l2-4h4l2 4M12 17v-3M12 4v10M6.5 6.5h3v5h-3ZM14.5 6.5h3v5h-3Z\"/><rect x=\"4\" y=\"4\" width=\"16\" height=\"10\" rx=\"1.5\"/>",
+            ["t_artillery_a"] = "<path d=\"M2 21c1-3 3-4 6-4h8c3 0 5 1 6 4M9 17v-4.5l3-2 2 1.5V17M13 11.5l8.5-10M5 17V9.5M2.5 9a3.5 3.5 0 0 1 5.5-3.2L5 9.5Z\"/>",
+            ["t_artillery_b"] = "<path d=\"M2 21c1-3 3-4 6-4h8c3 0 5 1 6 4M7 17h10M9.5 17 12.5 6l4.5 1.4L14 17M11.8 5.2l6 1.8\"/>",
+            ["t_fortress_a"] = "<path d=\"M1 21h15M2 21V10h3v2.5h2.5V10h3v2.5H13V10h2v11M15 13.5h8M15 17h8M18 12v2.8M18 15.7v2.6\"/>",
+            ["t_fortress_b"] = "<path d=\"M2 21h20M3 21V11h14v10M5 21v-8h10v8M17 14h5M17 17.5h5M4.5 11a2 2 0 0 1 4 0M11.5 11a2 2 0 0 1 4 0M8.5 9.5h2M15.5 9.5h2\"/>",
+            // Prompt 16: Lighthouse Bay's capturable coastal battery: a gun casemate over the waves.
+            ["t_coastal"] = "<path d=\"M2 21c2-1.5 4-1.5 6 0s4 1.5 6 0 4-1.5 6 0M4 17v-6h10v6M14 13l8-3M7 11V8h4v3M2 17h20\"/>",
+            ["t_patriot_a"] = "<path d=\"M2 21h20M4 21v-3h13v3M8 18l2-4M13 18l-2-4\"/><rect x=\"4\" y=\"3\" width=\"13\" height=\"11\" rx=\"1\"/><circle cx=\"7.5\" cy=\"6.5\" r=\"1\"/><circle cx=\"10.5\" cy=\"6.5\" r=\"1\"/><circle cx=\"13.5\" cy=\"6.5\" r=\"1\"/><circle cx=\"7.5\" cy=\"10.5\" r=\"1\"/><circle cx=\"10.5\" cy=\"10.5\" r=\"1\"/><circle cx=\"13.5\" cy=\"10.5\" r=\"1\"/>",
+            ["t_patriot_b"] = "<path d=\"M2 21h20M3 21v-3h9v3M4.5 18l5-7 3 2-4 5M17 21V10M15 21h4M12 8a6.5 6.5 0 0 1 10.5-4.8L17 9Z\"/>",
+            ["t_hangar_a"] = "<path d=\"M2 21h20M3 21v-5c0-3.9 4-7 9-7s9 3.1 9 7v5M8 21v-6h8v6M6 8.5l10-4M14 3.3l3 3M17 3.3l-3 3M16.5 4.8h5\"/>",
+            ["t_hangar_b"] = "<path d=\"M2 21h20M3 21v-5c0-3.9 4-7 9-7s9 3.1 9 7v5M8 21v-6h8v6M3.5 3h3M5 3v1.3M10.5 2h3M12 2v1.3M17.5 3h3M19 3v1.3M7 6h3M8.5 6v1.2M14 6h3M15.5 6v1.2\"/>",
+            ["t_shieldgen_a"] = "<path d=\"M3 21h18M2.5 17.5a9.5 9.5 0 0 1 19 0M6 17.5a6 6 0 0 1 12 0M12 8v13M9 21v-3h6v3M5.3 11.5 12 8l6.7 3.5\"/><circle cx=\"12\" cy=\"6.2\" r=\"1.8\"/>",
+            ["t_shieldgen_b"] = "<path d=\"M3 21h18M9 21v-5h6v5M12 16v-3.5M5 21v-7M19 21v-7M5 12l-2.5-3M19 12l2.5-3M12 10.5V7\"/><circle cx=\"5\" cy=\"12.8\" r=\"1.2\"/><circle cx=\"19\" cy=\"12.8\" r=\"1.2\"/><circle cx=\"12\" cy=\"11.6\" r=\"1.3\"/>",
+            ["t_relay_a"] = "<path d=\"M3 21h8M7 21V6M4.5 21 7 11l2.5 10M4 6.5a4 4 0 0 1 6 0M12 21v-6h9v6M14.5 15v-2M13 10.5a3.5 3.5 0 0 1 4-3L14.5 12Z\"/>",
+            ["t_relay_b"] = "<path d=\"M2 21h20M4 21V4M4 4h14M18 4v5M16.5 9h3v2.5h-3ZM3 21h3M9 21v-4h5v4M14 21v-4h6v4M10.5 17v-3.5h7V17\"/>",
             // Targeting station: a reticle over the post, its mast.
             ["t_targeting"] = "<path d=\"M2 21h20M4 21v-6h10v6M9 15v-2.5M9 5.5v5M6.5 8h5M18 21V10M16 10h4\"/><circle cx=\"9\" cy=\"8\" r=\"4.5\"/>",
         };
 
         private static readonly Dictionary<string, List<Shape>> Parsed = new();
 
-        public static bool Exists(string name) => name != null && (Svg.ContainsKey(name) || CombatSvg.ContainsKey(name));
+        public static bool Exists(string name) => name != null && (Svg.ContainsKey(name) || CombatSvg.ContainsKey(name) || SandboxSvg.ContainsKey(name));
 
         /// <summary>The icon's SVG source (the path data the uniqueness test compares), or null.</summary>
         public static string Source(string name) =>
-            name == null ? null : Svg.TryGetValue(name, out var s) ? s : CombatSvg.TryGetValue(name, out var c) ? c : null;
+            name == null ? null : Svg.TryGetValue(name, out var s) ? s : CombatSvg.TryGetValue(name, out var c) ? c : SandboxSvg.TryGetValue(name, out var b) ? b : null;
 
         /// <summary>Every icon name, the kit's and the combat set's.</summary>
         public static IEnumerable<string> Names
@@ -239,6 +278,7 @@ namespace MachineBrigade.Game.Hud
             {
                 foreach (var k in Svg.Keys) yield return k;
                 foreach (var k in CombatSvg.Keys) yield return k;
+                foreach (var k in SandboxSvg.Keys) yield return k;
             }
         }
 

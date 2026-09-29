@@ -6,13 +6,17 @@ using MachineBrigade.Sim.Core;
 namespace MachineBrigade.Sim.Content
 {
     /// <summary>
-    /// Prompt 15 A: a unit's armour level on each face, 0 (none) to 4 (very thick). Data "armour": one number
+    /// Prompt 15 A: a unit's armour level on each face, 0 (none) to 4 (very thick), 5 for a boss's super-heavy plate
+    /// (play-test 6, DECISIONS 21G: no vehicle or tower has it). Data "armour": one number
     /// (the front; the side one less, the rear and the roof two less, never under 0; a tower, a building or an
     /// aircraft the same all round) or four [front, side, rear, top].
     /// </summary>
     public readonly struct ArmourLevels : IEquatable<ArmourLevels>
     {
-        public const int Max = 4;
+        public const int Max = 5;
+
+        /// <summary>The thickest plate a vehicle or tower may have; <see cref="Max"/> is for bosses only.</summary>
+        public const int MaxUnit = 4;
 
         public ArmourLevels(int front, int side, int rear, int top)
         {
@@ -76,14 +80,17 @@ namespace MachineBrigade.Sim.Content
     /// </summary>
     public static class Armour
     {
-        /// <summary>The front arc (either side of the nose) and the rear arc (either side of the tail).</summary>
-        public static readonly float FrontArc = SimMath.DegToRad(50f);
+        /// <summary>
+        /// The front arc (either side of the nose) and the rear arc (either side of the tail). DECISIONS 20X: the front
+        /// 40 degrees (prompt 15's 50), so a round from off the nose strikes the thinner side more often.
+        /// </summary>
+        public static readonly float FrontArc = SimMath.DegToRad(40f);
 
         public static readonly float RearArc = SimMath.DegToRad(50f);
 
         /// <summary>
         /// The face a direct-fire round from <paramref name="from"/> strikes on a unit at <paramref name="at"/>
-        /// facing <paramref name="heading"/>: within 50 degrees of the nose the front, of the tail the rear,
+        /// facing <paramref name="heading"/>: within 40 degrees of the nose the front, within 50 of the tail the rear,
         /// else the side. A round from right on top of it (or a unit the same all round) strikes the front.
         /// </summary>
         public static ArmorFace FaceFrom(Vector2 at, float heading, Vector2 from)

@@ -33,7 +33,7 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>A mode's one line under its name in the picker (Boss Rush says how many bosses).</summary>
         private static string ModeLine(GameModeKind kind, string key) =>
-            kind == GameModeKind.BossRush ? Strings.Format(key, MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count) : Strings.Get(key);
+            kind == GameModeKind.BossRush ? Strings.Format(key, BossHunts.ThisWeek.Count) : Strings.Get(key);
 
         /// <summary>The modes the home screen's mode dropdown offers (skirmishes and challenges), for the menu's coverage test.</summary>
         internal static IEnumerable<GameModeKind> BattleModes
@@ -164,7 +164,7 @@ namespace MachineBrigade.Game.Hud
         private static string DailyResetText()
         {
             var left = DateTime.Today.AddDays(1) - DateTime.Now;
-            return Strings.Format("home.dailyReset", (int)left.TotalHours, left.Minutes);
+            return Strings.Format("home.dailyReset", ("hours", (int)left.TotalHours), ("minutes", left.Minutes));
         }
 
         private void Deploy()
@@ -172,6 +172,9 @@ namespace MachineBrigade.Game.Hud
             // What the picker shows is what starts (a campaign run or the weekly fortress left behind reads as Conquest there).
             MatchSettings.Mode = QuickModes[_modeDrop.Selected].kind;
             MatchSettings.Save();
+            // The picker's Boss Hunt is the week's (the full hunt starts from Operations).
+            BossRushSession.Full = false;
+            BossRushSession.Pending = null;
             _play();
         }
 
@@ -179,7 +182,8 @@ namespace MachineBrigade.Game.Hud
         private void StartNextMission()
         {
             var next = Campaign.Next;
-            if (!Campaign.IsOpen(next)) return;
+            // Prompt 22 D.5: a story choice to make is made on the campaign page first.
+            if (!Campaign.IsOpen(next) && Campaign.ChoicePending(Campaign.All[next]) == null) return;
             _selectedMission = next;
             _tier = 0;
             ShowTab(Tab.Campaign);
@@ -193,9 +197,9 @@ namespace MachineBrigade.Game.Hud
             var next = Campaign.All[Campaign.Next];
             var chapter = Campaign.Chapter(next.Chapter);
             _homeChapter.text = Kit.Caps(next.Chapter > 0
-                ? Strings.Format("campaign.chapterTitle", next.Chapter, Strings.Get($"chapter.{next.Chapter}.title"))
+                ? Strings.Format("campaign.chapterTitle", ("chapter", Campaign.ChapterName(next.Chapter)), ("title", Strings.Get($"chapter.{next.Chapter}.title")))
                 : Strings.Get("campaign.story.title"));
-            _homeMission.text = Kit.Caps(Strings.Format("home.nextMission", Campaign.Label(next), Strings.Get("mission." + next.Id + ".name")));
+            _homeMission.text = Kit.Caps(Strings.Format("home.nextMission", ("mission", Campaign.Label(next)), ("name", Strings.Get("mission." + next.Id + ".name"))));
             _homeMissionSub.text = Strings.Get("map." + next.Map) + "  ·  " + Strings.Get("goal." + next.Goal.ToString().ToLowerInvariant());
             _homeUnlocks.Clear();
             foreach (var id in next.Unlocks)
@@ -208,7 +212,7 @@ namespace MachineBrigade.Game.Hud
             foreach (var m in main)
                 if (PlayerProfile.Completed(m.Id)) won++;
             _homeChapterBar.Value = main.Count > 0 ? won / (float)main.Count : 0f;
-            _homeChapterCount.text = Strings.Format("home.chapterProgress", won, main.Count);
+            _homeChapterCount.text = Strings.Format("home.chapterProgress", ("count", won), ("total", main.Count));
             _ = chapter;
 
             // Today's challenges: text and progress, the claim button once one is done.
@@ -238,7 +242,7 @@ namespace MachineBrigade.Game.Hud
             _homeDeckStrip.Add(Kit.Box("fc-deck-divider"));
             foreach (var id in MatchSettings.DeckLayout(true)) _homeDeckStrip.Add(DeckCard(id, true, compact: true));
             var count = MatchSettings.DeckVehicles.Count;
-            _homeDeckNote.text = count < MatchSettings.DeckVehicleSlots ? Strings.Format("home.deckShort", count, MatchSettings.DeckVehicleSlots) : "";
+            _homeDeckNote.text = count < MatchSettings.DeckVehicleSlots ? Strings.Format("home.deckShort", ("count", count), ("total", MatchSettings.DeckVehicleSlots)) : "";
             _homeDeckNote.style.display = count < MatchSettings.DeckVehicleSlots ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
@@ -287,8 +291,11 @@ namespace MachineBrigade.Game.Hud
             return tag;
         }
 
-        /// <summary>A deck card: the render, name, cost and level; an empty slot is a plus that opens the deck.</summary>
-        private VisualElement DeckCard(string id, bool support, bool compact, bool showLevel = false, bool combat = false)
+        /// <summary>
+        /// A deck card: the render, name, cost and level; an empty slot is a plus that opens the deck. On the deck
+        /// screen (<paramref name="removable"/>) a tap takes the card out of the deck (play-test 6); elsewhere it opens its page.
+        /// </summary>
+        private VisualElement DeckCard(string id, bool support, bool compact, bool showLevel = false, bool combat = false, bool removable = false)
         {
             if (id == null)
             {
@@ -302,6 +309,7 @@ namespace MachineBrigade.Game.Hud
             }
             var data = CardData(id);
             data.Combat = combat;
+            if (removable) return new KitVehicleCard(data, () => ToggleInDeck(id), compact, showLevel) { Removable = true, name = "deck-card-" + id };
             return new KitVehicleCard(data, () => OpenDetail(id), compact, showLevel);
         }
 
@@ -309,7 +317,7 @@ namespace MachineBrigade.Game.Hud
         private static string BasePlanLine(int index)
         {
             var plan = PlayerProfile.BasePlanAt(index);
-            return Strings.Format("camp.planLine", plan.Places.Count, plan.Custom.Count);
+            return Strings.Format("camp.planLine", ("count", plan.Places.Count), ("maps", plan.Custom.Count));
         }
 
         /// <summary>A card's picture and numbers for the kit's vehicle card: vehicles from the catalog, supports by hand.</summary>

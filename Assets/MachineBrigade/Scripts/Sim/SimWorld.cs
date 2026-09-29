@@ -20,7 +20,7 @@ namespace MachineBrigade.Sim
     /// <see cref="Submit"/> and reports what happened through <see cref="Events"/>.
     /// Contains no engine types, so it runs identically in tests and in the game.
     /// </summary>
-    public sealed class SimWorld
+    public sealed partial class SimWorld
     {
         /// <summary>Extra margin around blocking props so hulls stay out of walls.</summary>
         public const float ObstacleClearance = 1.5f;
@@ -340,6 +340,8 @@ namespace MachineBrigade.Sim
             // The enemy of the big modes may field more (the player keeps the ordinary ceiling).
             if (economy.Team == 1) economy.VehicleCap = Catalog.VehicleCapFor(ModeTag);
             Economy.Enable(economy);
+            // Prompt 22 F: a commander set before the economy was enabled.
+            ApplyCommander(economy);
         }
 
         public bool TryGetEconomy(int team, out TeamEconomy economy) => Economy.TryGet(team, out economy);
@@ -395,9 +397,13 @@ namespace MachineBrigade.Sim
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             // A side's own loadout towers carry their card's rank and equipment; other fixed defences
             // (a fortress, a point's watchtower) only when the side boosts everything.
+            VehicleBoost? boost = null;
             if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts &&
                 (_boostAll[team] || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
-                Upgrade(vehicle, boosts(def));
+                boost = boosts(def);
+            // Prompt 22 F: the side's commander on top, through the loadout's caps.
+            boost = CommanderBoost(team, def, boost);
+            if (boost is { } upgrade) Upgrade(vehicle, upgrade);
             if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
             {
                 vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
@@ -432,6 +438,16 @@ namespace MachineBrigade.Sim
         {
             if (team >= 0 && team < _mutators.Length) _mutators[team] = strength;
         }
+        /// <summary>
+        /// Prompt 22 D.5: how far a side sees (1: as its units do; the story's choices can blind the enemy a little). Set before
+        /// the battle starts; the same for every replay of it.
+        /// </summary>
+        public void SetVision(int team, float factor)
+        {
+            if (team >= 0 && team < _teamVision.Length) _teamVision[team] = factor;
+        }
+
+        private readonly float[] _teamVision = { 1f, 1f, 1f };
         private readonly Func<string, float>?[] _strikeBoosts = new Func<string, float>?[3];
         private readonly bool[] _boostAll = new bool[3];
 
@@ -508,6 +524,51 @@ namespace MachineBrigade.Sim
                 v.DoctrineSpeed = (doctrine?.Speed ?? 1f) * v.BoostSpeed;
                 v.Hp = v.MaxHp * share;
             }
+        }
+
+        /// <summary>
+        /// Play-test 6: where a structure dropped by parachute (the field tower) lands: the nearest spot to the mark,
+        /// in rings 2 m apart out to 16 m, whose whole footprint is open ground (walkable at its centre and all round its
+        /// hull), clear of every vehicle and structure on the ground by both hulls, out of the gates and lane gaps, and
+        /// never in the enemy's camp; the mark itself when none is near. It used to land on the mark whatever stood there
+        /// and sat half inside a house or another tower.
+        /// </summary>
+        internal Vector2 ClearSpot(VehicleDef def, Vector2 at, int team)
+        {
+            var reach = def.HullBound + 0.5f;
+            for (var ring = 0; ring <= 8; ring++)
+            {
+                var steps = ring == 0 ? 1 : ring * 8;
+                for (var k = 0; k < steps; k++)
+                {
+                    var angle = k * SimMath.Tau / steps;
+                    var p = at + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * 2f);
+                    if (!Map.Contains(p) || !FootprintOpen(p, reach) || Lanes.NoParkAt(p)) continue;
+                    if (InEnemyCamp(p, team) || InEnemyHome(p, team)) continue;
+                    var clear = true;
+                    foreach (var other in _vehicleList)
+                    {
+                        if (!other.IsAlive || other.Flying) continue;
+                        var gap = def.HullBound + other.Def.HullBound + 0.5f;
+                        if (Vector2.DistanceSquared(other.Position, p) < gap * gap) { clear = false; break; }
+                    }
+                    if (clear) return p;
+                }
+            }
+            return at;
+        }
+
+        /// <summary>Open ground at <paramref name="p"/> and at eight points round it <paramref name="reach"/> out.</summary>
+        private bool FootprintOpen(Vector2 p, float reach)
+        {
+            if (!Grid.IsWalkable(p)) return false;
+            for (var k = 0; k < 8; k++)
+            {
+                var angle = k * SimMath.Tau / 8f;
+                var q = p + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach;
+                if (!Map.Contains(q) || !Grid.IsWalkable(q)) return false;
+            }
+            return true;
         }
 
         /// <summary>
@@ -797,6 +858,32 @@ namespace MachineBrigade.Sim
         /// <summary>Turns a vehicle into a firing-range sparring partner (see <see cref="Vehicle.Sparring"/>).</summary>
         public void MakeSparring(Vehicle v) => v.Sparring = true;
 
+        /// <summary>A firing-range target or sparring partner that can be knocked out after all (see <see cref="Vehicle.Mortal"/>).</summary>
+        public void MakeMortal(Vehicle v) => v.Mortal = true;
+
+        /// <summary>Previews: tops every magazine and store back up (the In action clip's unit never runs dry).</summary>
+        public void Refill(Vehicle v)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                var full = v.Weapons[i].Load > 0 ? v.Weapons[i].Load : v.Arms[i].Ammo > 0 ? v.Arms[i].Ammo : -1;
+                if (v.Weapons[i].Ammo == full) continue;
+                v.Weapons[i].Ammo = full;
+                v.Weapons[i].ReloadLeft = 0f;
+            }
+            // A fixed minefield's mines are its rounds: once half are gone the field is laid again in a moment.
+            if (v.MineLayer is { Spread: > 0f } field && v.NextMineAt > Time + 2.0)
+            {
+                var alive = 0;
+                foreach (var m in _abilities.Mines)
+                    if (m.IsAlive && m.Layer == v.Id) alive++;
+                if (alive * 2 < field.Max) v.NextMineAt = Time + 2.0;
+            }
+        }
+
+        /// <summary>Previews: holds a vehicle's fire (or frees it), whatever its orders.</summary>
+        public void HoldFire(Vehicle v, bool hold) => v.HoldFire = hold;
+
         private const float CrushCell = 6f;
         private Dictionary<(int, int), List<Prop>>? _crushable;
 
@@ -1045,6 +1132,7 @@ namespace MachineBrigade.Sim
             foreach (var spotter in _vehicleList)
             {
                 var reach = spotter.Def.VisionRange * spotter.VisionFactor;
+                if (spotter.Team >= 0 && spotter.Team < _teamVision.Length) reach *= _teamVision[spotter.Team];
                 var thermal = 0f;
                 if (spotter.Gear is { } g)
                 {
@@ -1094,8 +1182,12 @@ namespace MachineBrigade.Sim
                     if (hidden) range = MathF.Min(range, GhillieReveal);
                     // A gun pit down in its hole: only a scout or a radar sees it from afar.
                     if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
+                    // Prompt 22 F: Captain Kerr's side sees the stealthy, camouflaged and hidden farther off.
+                    if ((sight < 1f || hidden || target.Lowered) && spotter.Team < _stealthSight.Length) range *= _stealthSight[spotter.Team];
                     // A guard tower sees stealth and hidden units within its guns' reach.
                     if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
+                    // The Patriot's long-range radar (DECISIONS 19T): the air picture over a wide circle, stealth aircraft too.
+                    if (spotter.Def.RevealAir > 0f && target.Flying && spotter.Team != target.Team && !spotter.Stunned) range = MathF.Max(range, spotter.Def.RevealAir);
                     // Prompt 16: a ship's tall silhouette shows from further off (its hull's size), less in a sea storm.
                     if (naval) range = (range + target.Radius) * Naval.Rules.SeaSight;
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
@@ -1143,6 +1235,26 @@ namespace MachineBrigade.Sim
             // A tower flown into a hardpoint where vehicles stand: they are put off its ground (they
             // could never have driven off it: prompt 12).
             _movement.ClearGround(v);
+        }
+
+        /// <summary>
+        /// Prompt 19 E.5: a tiered boss down on the ground: its ground is closed to routes like a fixed defence's (the
+        /// same square, opened again when it dies) and whatever stood there is put off it (prompt 12).
+        /// </summary>
+        internal void AnchorCrash(Vehicle v)
+        {
+            if (v.BlocksRoutes) return;
+            v.BlocksRoutes = true;
+            Grid.AddBlocker(v.Position, StaticFootprint(v.Def), StaticFootprint(v.Def), ObstacleClearance);
+            _movement.ClearGround(v);
+        }
+
+        /// <summary>Prompt 19 E.5: cover dropped on the field (a crash's debris): a prop like the map's, spawned now.</summary>
+        internal Prop? AddCover(string defId, Vector2 at)
+        {
+            if (!Catalog.TryGetProp(defId, out _) || !Map.Contains(at)) return null;
+            SpawnProp(defId, at, 0);
+            return _propList[_propList.Count - 1];
         }
 
         /// <summary>The square a fixed defence blocks, whichever way it faces.</summary>

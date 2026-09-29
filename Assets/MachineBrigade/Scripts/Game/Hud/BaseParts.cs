@@ -206,6 +206,8 @@ namespace MachineBrigade.Game.Hud
         private static readonly CustomStyleProperty<Color> ArrowColour = new("--base-arrow");
         private static readonly CustomStyleProperty<Color> GroundColour = new("--base-range-ground");
         private static readonly CustomStyleProperty<Color> AirColour = new("--base-range-air");
+        private static readonly CustomStyleProperty<Color> GroundLine = new("--base-range-ground-line");
+        private static readonly CustomStyleProperty<Color> AirLine = new("--base-range-air-line");
         private static readonly CustomStyleProperty<Color> RingColour = new("--base-ring");
         private static readonly CustomStyleProperty<Color> DropColour = new("--base-drop");
 
@@ -213,6 +215,7 @@ namespace MachineBrigade.Game.Hud
 
         private readonly VisualElement _world, _paint, _scrim;
         private Color _arrow = Color.red, _ground = Color.clear, _air = Color.clear, _ring = Color.white, _drop = Color.clear;
+        private Color _groundLine = new(0.89f, 0.52f, 0.19f), _airLine = new(0.67f, 0.84f, 1f);
         private CampFrame _frame;
         private float _zoom = 1f;
         private UnityEngine.Vector2 _pan;
@@ -242,6 +245,11 @@ namespace MachineBrigade.Game.Hud
             _paint.style.left = _paint.style.top = _paint.style.right = _paint.style.bottom = 0;
             _paint.generateVisualContent += Draw;
             _world.Add(_paint);
+            // Play-test 8 A: the picked tower's range pulses, so it is repainted while one is picked.
+            _paint.schedule.Execute(() =>
+            {
+                if (Pulsing) _paint.MarkDirtyRepaint();
+            }).Every(33);
             Slots = Kit.Box("fc-base-map__slots");
             Slots.style.position = Position.Absolute;
             Slots.style.left = Slots.style.top = Slots.style.right = Slots.style.bottom = 0;
@@ -252,6 +260,8 @@ namespace MachineBrigade.Game.Hud
                 if (e.customStyle.TryGetValue(ArrowColour, out var a)) _arrow = a;
                 if (e.customStyle.TryGetValue(GroundColour, out var g)) _ground = g;
                 if (e.customStyle.TryGetValue(AirColour, out var air)) _air = air;
+                if (e.customStyle.TryGetValue(GroundLine, out var gl)) _groundLine = gl;
+                if (e.customStyle.TryGetValue(AirLine, out var al)) _airLine = al;
                 if (e.customStyle.TryGetValue(RingColour, out var r)) _ring = r;
                 if (e.customStyle.TryGetValue(DropColour, out var d)) _drop = d;
                 _paint.MarkDirtyRepaint();
@@ -299,6 +309,21 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>One tower's rings (the picked one): its position, reach and shortest range (metres); null: none.</summary>
         public (UnityEngine.Vector2 at, float reach, float min)? Rings { get; set; }
+
+        /// <summary>Play-test 8 A: which of <see cref="Cover"/> is the picked tower's (its rings pulse), or -1.</summary>
+        public int PickedCover { get; set; } = -1;
+
+        /// <summary>Something on the map pulses (a picked tower's range): the map repaints every frame or so.</summary>
+        public bool Pulsing => Rings != null || (Cover != null && PickedCover >= 0 && PickedCover < Cover.Count);
+
+        /// <summary>The pulse, 0 to 1 and back about once a second (unscaled time, so a paused game still shows it).</summary>
+        internal static float Pulse(float time) => 0.5f + 0.5f * Mathf.Sin(time * Mathf.PI * 2f * PulseHz);
+
+        /// <summary>How fast a picked tower's range pulses, per second.</summary>
+        internal const float PulseHz = 1.1f;
+
+        /// <summary>A range's border width in panel pixels, and a picked tower's (pulsing between the two).</summary>
+        internal const float RingWidth = 1.5f, PickedWidth = 3.5f;
 
         public void Repaint() => _paint.MarkDirtyRepaint();
 
@@ -471,8 +496,11 @@ namespace MachineBrigade.Game.Hud
             var ppm = size.x / _frame.Width;
             UnityEngine.Vector2 Px(UnityEngine.Vector2 picture) => new(picture.x * size.x, picture.y * size.y);
 
-            // The cover: every tower's ground reach, then its air reach, each filled as one union (a place covered twice is
-            // no darker than once), so the lit areas are what is defended and the bare ground is not.
+            // Play-test 8 A (DECISIONS 22Q): the cover as borders. Every tower's ground and air reach is its own coloured
+            // circle (ground orange, air blue) over a faint, nearly clear tint of the ground covered (one union, so a place
+            // covered twice is no darker): overlapping ranges stay readable, no longer one orange and blue blob. The picked
+            // tower's circles pulse, thicker and brighter, so its range stands out among the rest.
+            var pulse = Pulse(Time.unscaledTime);
             if (Cover != null)
             {
                 void Union(Color colour, Func<(UnityEngine.Vector2 at, float ground, float air), float> reach)
@@ -495,12 +523,22 @@ namespace MachineBrigade.Game.Hud
                 }
                 Union(_ground, c => c.ground);
                 Union(_air, c => c.air);
+                for (var i = 0; i < Cover.Count; i++)
+                {
+                    var c = Cover[i];
+                    var picked = i == PickedCover;
+                    Border(p, Px(c.at), c.ground * ppm, _groundLine, picked, pulse);
+                    Border(p, Px(c.at), c.air * ppm, _airLine, picked, pulse);
+                }
             }
             if (Rings is { } rings)
             {
+                // The picked tower's own rings (its reach and its shortest range), pulsing with its cover.
                 var centre = Px(rings.at);
-                p.strokeColor = _ring;
-                p.lineWidth = 2f;
+                var ring = _ring;
+                ring.a *= 0.55f + 0.45f * pulse;
+                p.strokeColor = ring;
+                p.lineWidth = Mathf.Lerp(RingWidth, PickedWidth, pulse);
                 if (rings.reach > 0f)
                 {
                     p.BeginPath();
@@ -545,6 +583,26 @@ namespace MachineBrigade.Game.Hud
                 p.ClosePath();
                 p.Fill();
             }
+        }
+
+        /// <summary>One range's coloured border (none for no reach); a picked tower's pulses between thin and thick, dim and full.</summary>
+        private static void Border(Painter2D p, UnityEngine.Vector2 centre, float radius, Color colour, bool picked, float pulse)
+        {
+            if (radius <= 0.5f) return;
+            if (picked)
+            {
+                colour.a *= 0.6f + 0.4f * pulse;
+                p.lineWidth = Mathf.Lerp(RingWidth + 0.5f, PickedWidth, pulse);
+            }
+            else
+            {
+                colour.a *= 0.85f;
+                p.lineWidth = RingWidth;
+            }
+            p.strokeColor = colour;
+            p.BeginPath();
+            p.Arc(centre, radius, 0f, 360f);
+            p.Stroke();
         }
     }
 

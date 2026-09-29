@@ -12,7 +12,8 @@ namespace MachineBrigade.Tests
     /// The play-test fix of 2026-09-28 (DECISIONS 11A): bigger tank-round, bomb and cruise-missile
     /// blasts that never lose particles of their own, a flame stream with rolling fireballs, and
     /// held laser beams. The second play test's (12C): every blast a tenth bigger, drones by the
-    /// drone, tank rounds lingering by the tank's class.
+    /// drone, tank rounds lingering by the tank's class. Play-test 5's (20V) on top: tank rounds +20 % wide
+    /// and long, artillery, mortars, missiles, rockets and drones +20 %, the gun turret +30 %.
     /// </summary>
     public class BlastSizeTests
     {
@@ -41,16 +42,25 @@ namespace MachineBrigade.Tests
         public void TankRoundsAndBombsGrowByWhatFiredThem()
         {
             var catalog = GameContent.LoadCatalog();
-            Assert.AreEqual(1.3f, BlastSizes.TankShell(catalog.Weapons["gun_57mm"]), 1e-4f, "light tank");
-            Assert.AreEqual(1.4f, BlastSizes.TankShell(catalog.Weapons["gun_120mm"]), 1e-4f, "main battle tank");
-            Assert.AreEqual(1.5f, BlastSizes.TankShell(catalog.Weapons["gun_152"]), 1e-4f, "heavy tank");
-            Assert.AreEqual(1.5f, BlastSizes.TankShell(catalog.Weapons["gun_140_twin"]), 1e-4f, "super-heavy tank");
-            Assert.AreEqual(1.5f, BlastSizes.Ground(catalog.Weapons["gun_203_siege"]), 1e-4f, "siege tank");
-            Assert.AreEqual(1f, BlastSizes.Ground(catalog.Weapons["howitzer"]), 1e-4f, "other artillery as it was");
+            Assert.AreEqual(1.3f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_57mm"]), 1e-4f, "light tank");
+            Assert.AreEqual(1.4f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_120mm"]), 1e-4f, "main battle tank");
+            Assert.AreEqual(1.5f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_152"]), 1e-4f, "heavy tank");
+            Assert.AreEqual(1.5f * 1.2f, BlastSizes.TankShell(catalog.Weapons["gun_140_twin"]), 1e-4f, "super-heavy tank");
+            Assert.AreEqual(1.4f * 1.3f * 1.2f, BlastSizes.TankShell(catalog.Weapons["turret_gun_120"]), 1e-4f, "the gun turret +30 %, then +20 % (play-test 6)");
+            Assert.AreEqual(0.8f, BlastSizes.Round(catalog.Weapons["gun_155_twin_fort"]) / (catalog.Weapons["gun_155_twin_fort"].Indirect ? 1.2f : 1f), 1e-4f,
+                "the heavy fortress's blasts 20 % smaller (play-test 6)");
+            Assert.AreEqual(1.3f * 1.2f, BlastSizes.Round(catalog.Weapons["gun_57_auto"]), 1e-4f, "the gun turret's autocannon branch +30 %, then +20 % (play-test 6)");
+            Assert.AreEqual(1.5f * 1.2f, BlastSizes.Ground(catalog.Weapons["gun_203_siege"]), 1e-4f, "siege tank");
+            Assert.AreEqual(1f, BlastSizes.Ground(catalog.Weapons["howitzer"]), 1e-4f, "other artillery: not a bomb");
+            Assert.AreEqual(1.2f, BlastSizes.Artillery(catalog.Weapons["howitzer"]), 1e-4f, "artillery +20 %");
+            Assert.AreEqual(1.2f, BlastSizes.Round(catalog.Weapons["mortar_120"]), 1e-4f, "mortar +20 %");
+            Assert.AreEqual(1.2f, BlastSizes.Round(catalog.Weapons["atgm"]), 1e-4f, "missile +20 %");
+            Assert.AreEqual(1.2f, BlastSizes.Round(catalog.Weapons["grad_rockets"]), 1e-4f, "rocket +20 %");
+            Assert.AreEqual(1f, BlastSizes.Round(catalog.Weapons["hmg_roof"]), 1e-4f, "bullets as they were");
             Assert.Less(BlastSizes.Bomb("guided_bomb"), BlastSizes.Bomb("jet_bombs"), "a small guided bomb grows less than a FAB");
             foreach (var id in new[] { "guided_bomb", "jet_bombs", "bomber_payload", "stealth_payload", "airstrike", "cluster_strike" })
                 Assert.That(BlastSizes.Bomb(id), Is.InRange(1.3f, 1.5f), id);
-            Assert.AreEqual(1f, BlastSizes.Strike(catalog.Supports["artillery_barrage"]), 1e-4f, "a barrage is shells, not bombs");
+            Assert.AreEqual(1.2f, BlastSizes.Strike(catalog.Supports["artillery_barrage"]), 1e-4f, "a barrage is shells, not bombs: +20 %");
         }
 
         [Test]
@@ -58,20 +68,23 @@ namespace MachineBrigade.Tests
         {
             var w = GameContent.LoadCatalog().Weapons;
             foreach (var id in new[] { "gun_57mm", "gun_105_wheeled" })
-                Assert.AreEqual(1.2f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": light tank and wheeled gun +20 %");
-            foreach (var id in new[] { "gun_120mm", "gun_105_long", "gun_105_apfsds", "gun_105_twin", "turret_gun_120", "gun_125_elite" })
-                Assert.AreEqual(1.25f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": main battle tank, tank destroyers, twin, 120 mm turret +25 %");
+                Assert.AreEqual(1.2f * 1.2f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": light tank and wheeled gun +20 %, +20 % again");
+            foreach (var id in new[] { "gun_120mm", "gun_105_long", "gun_105_apfsds", "gun_105_twin", "gun_125_elite" })
+                Assert.AreEqual(1.25f * 1.2f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": main battle tank, tank destroyers, twin +25 %, +20 % again");
+            Assert.AreEqual(1.25f, BlastSizes.ShellLife(w["turret_gun_120"]), 1e-4f, "the 120 mm turret +25 % (not a tank)");
             foreach (var id in new[] { "gun_152", "gun_152_heat", "gun_140_twin", "gun_203_siege" })
-                Assert.AreEqual(1.3f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": heavy, elite heavy, titan, siege +30 %");
-            Assert.AreEqual(1.3f, BlastSizes.GroundLife(w["gun_203_siege"]), 1e-4f, "the siege tank's shell lands lingering");
+                Assert.AreEqual(1.3f * 1.2f, BlastSizes.ShellLife(w[id]), 1e-4f, id + ": heavy, elite heavy, titan, siege +30 %, +20 % again");
+            Assert.AreEqual(1.3f * 1.2f, BlastSizes.GroundLife(w["gun_203_siege"]), 1e-4f, "the siege tank's shell lands lingering");
             Assert.AreEqual(1f, BlastSizes.GroundLife(w["howitzer"]), 1e-4f, "other artillery as it was");
 
-            Assert.AreEqual(1.2f, BlastSizes.Drone(w["fpv_swarm"]), 1e-4f, "FPV");
-            Assert.AreEqual(1.2f, BlastSizes.Drone(w["fpv_hangar"]), 1e-4f, "the hangar's FPVs");
-            Assert.AreEqual(1.25f, BlastSizes.Drone(w["lancet"]), 1e-4f, "Lancet");
-            Assert.AreEqual(1.25f, BlastSizes.Drone(w["mothership_drones"]), 1e-4f, "the mothership's drones");
-            Assert.AreEqual(1.3f, BlastSizes.Drone(w["shahed"]), 1e-4f, "Shahed");
-            Assert.AreEqual(1.3f, BlastSizes.Drone(w["drone_missile"]), 1e-4f, "the strike drone's missiles");
+            Assert.AreEqual(1.2f * 1.2f, BlastSizes.Drone(w["fpv_swarm"]), 1e-4f, "FPV");
+            Assert.AreEqual(1.2f * 1.2f, BlastSizes.Drone(w["fpv_hangar"]), 1e-4f, "the hangar's FPVs");
+            Assert.AreEqual(1.25f * 1.2f, BlastSizes.Drone(w["lancet"]), 1e-4f, "Lancet");
+            Assert.AreEqual(1.25f * 1.2f, BlastSizes.Drone(w["mothership_drones"]), 1e-4f, "the mothership's drones");
+            Assert.AreEqual(1.3f * 1.2f, BlastSizes.Drone(w["shahed"]), 1e-4f, "Shahed");
+            Assert.AreEqual(1.3f * 1.2f, BlastSizes.Drone(w["drone_missile"]), 1e-4f, "the strike drone's missiles");
+            Assert.IsTrue(BlastSizes.Fpv(w["fpv_swarm"]) && !BlastSizes.Fpv(w["lancet"]) && !BlastSizes.Fpv(w["shahed"]), "FPVs told apart");
+
             Assert.AreEqual(1f, BlastSizes.Drone(w["atgm"]), 1e-4f, "a plain missile only gets the general tenth");
             Assert.AreEqual(1.1f, BlastSizes.Bigger, 1e-4f);
         }
@@ -122,7 +135,7 @@ namespace MachineBrigade.Tests
             foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier)))
             {
                 var e = ExplosionEffect.Create(tier, layers);
-                Assert.GreaterOrEqual(e.ParticleCountAt(BlastSizes.Bigger, 0.4f), e.ParticleCount, tier + ": a tenth bigger never loses any");
+                Assert.GreaterOrEqual(e.ParticleCountAt(BlastSizes.Bigger, 0.4f), e.CoreParticleCount, tier + ": a tenth bigger never loses any of its old recipe");
             }
         }
 
@@ -145,7 +158,7 @@ namespace MachineBrigade.Tests
             {
                 var blast = ExplosionEffect.Create(tier, layers);
                 Assert.AreEqual(blast.ParticleCount, blast.ParticleCountAt(1f), tier + ": grow 1 is the old blast");
-                Assert.GreaterOrEqual(blast.ParticleCountAt(1.5f, 0.4f), blast.ParticleCount, tier + ": Low never loses any");
+                Assert.GreaterOrEqual(blast.ParticleCountAt(1.5f, 0.4f), blast.CoreParticleCount, tier + ": Low never loses any of the old recipe");
                 Assert.Greater(blast.ParticleCountAt(1.5f), blast.ParticleCountAt(1.5f, 0.4f), tier + ": High adds the most");
             }
         }

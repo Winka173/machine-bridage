@@ -143,6 +143,9 @@ namespace MachineBrigade.Game.Hud
             }
             counters.Add(table);
             counters.Add(Kit.Text(Strings.Get("legend.counters.note"), "fc-small fc-mt-2"));
+
+            // Prompt 21 G.3: the Sandbox has its own section.
+            SandboxGuide(body);
         }
 
         private static VisualElement LegendItem(VisualElement icon, string words)

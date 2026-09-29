@@ -43,10 +43,11 @@ BASE_TONE = 0.8
 # Must match the aim/recoil rig pattern in src/view.js.
 RIG = re.compile(r'^(main_cannon|muzzle_brake|barrel|cannon|muzzle|turret_head)(?![a-z])', re.I)
 # Pivots whose children move independently of the body (rotors, radar, secondary weapon mounts, the nuke
-# train's missile erector) or are hidden on their own (an aircraft's Bombs once they drop, a crate's parachute).
-MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs|parachute|erector)', re.I)
+# train's missile erector, a bunker vehicle's Deploy_* parts) or are hidden on their own (an aircraft's Bombs once
+# they drop, a crate's parachute).
+MOVING = re.compile(r'^(rotor|tail_rotor|propeller|radar|mount_|pump_beam|bombs|parachute|erector|deploy_)', re.I)
 # Names Machine Brigade's runtime looks up (pivots are always checked as well).
-RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|parachute|rotor|tail_rotor|propeller|radar|mount_|erector|icbm_payload)',
+RUNTIME = re.compile(r'^(turret|main_cannon|muzzle|bombs|parachute|rotor|tail_rotor|propeller|radar|mount_|erector|icbm_payload|deploy_)',
                      re.I)
 
 

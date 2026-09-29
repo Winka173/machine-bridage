@@ -223,7 +223,7 @@ namespace MachineBrigade.Game.Hud
             {
                 _shownEarning = tenths;
                 _shownUpkeep = upkeepStep;
-                _income.text = Strings.Format("hud.income", (tenths / 10f).ToString("0.0"));
+                _income.text = Strings.Format("hud.income", (tenths / 10f).ToString("0.0", Strings.Culture));
                 var percent = Mathf.RoundToInt(Mathf.Abs(1f - upkeep) * 100f);
                 _supply.text = upkeepStep > 0 ? Strings.Format("hud.upkeep", percent) : upkeepStep < 0 ? Strings.Format("hud.boost", percent) : "";
                 _supply.style.display = upkeepStep != 0 ? DisplayStyle.Flex : DisplayStyle.None;

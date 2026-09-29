@@ -14,11 +14,13 @@ namespace MachineBrigade.Game.Hud
     /// </summary>
     public static class UnitLines
     {
-        private static CultureInfo Culture => Strings.Vietnamese ? CultureInfo.GetCultureInfo("vi-VN") : CultureInfo.InvariantCulture;
+        private static CultureInfo Culture => Strings.Culture;
 
         private static string N(float value) => value.ToString(value >= 10f || Math.Abs(value - MathF.Round(value)) < 0.05f ? "0" : "0.#", Culture);
 
-        private static string F(string key, params object[] args) => Strings.Format(key, args);
+        private static string F(string key, object value) => Strings.Format(key, value);
+
+        private static string F(string key, params (string name, object value)[] args) => Strings.Format(key, args);
 
         /// <summary>The weapon's real name and calibre (from the data), else its kind ("Main gun 120 mm").</summary>
         public static string WeaponName(WeaponDef w)
@@ -50,16 +52,16 @@ namespace MachineBrigade.Game.Hud
                 TargetLayers.All => Strings.Get("wpn.all"),
                 _ => Strings.Get("wpn.ground"),
             };
-            lines.Add(F("ul.weapon", WeaponName(w), Strings.Get("ul.type." + w.DamageType), targets.ToLower(Culture)));
-            lines.Add(w.Burst > 1 ? F("ul.damageBurst", N(w.Damage), w.Burst) : F("ul.damage", N(w.Damage)));
+            lines.Add(F("ul.weapon", ("weapon", WeaponName(w)), ("type", Strings.Get("ul.type." + w.DamageType)), ("targets", targets.ToLower(Culture))));
+            lines.Add(w.Burst > 1 ? F("ul.damageBurst", ("damage", N(w.Damage)), ("count", w.Burst)) : F("ul.damage", N(w.Damage)));
             lines.AddRange(Reload(def, w));
             // Prompt 17 C: the focused laser's ramp, the swarm's own targets.
-            if (w.Ramp is { } ramp) lines.Add(F("ul.ramp", N(ramp.From), N(ramp.To), N(ramp.Seconds)));
+            if (w.Ramp is { } ramp) lines.Add(F("ul.ramp", ("from", N(ramp.From)), ("to", N(ramp.To)), ("seconds", N(ramp.Seconds))));
             if (w.SwarmReach > 0f) lines.Add(F("ul.swarm", N(w.SwarmReach)));
             // Prompt 17 D.6: the heavy tank's gun changes rounds on its own.
-            if (w.HeRound is { } he) lines.Add(F("ul.heRound", N(he.Damage), N(he.SplashRadius)));
-            var range = w.MinRange > 0f ? F("ul.rangeMin", N(w.Range), N(w.MinRange)) : F("ul.range", N(w.Range));
-            lines.Add(w.SplashRadius > 0.5f ? F("ul.splash", range, N(w.SplashRadius)) : range);
+            if (w.HeRound is { } he) lines.Add(F("ul.heRound", ("damage", N(he.Damage)), ("metres", N(he.SplashRadius))));
+            var range = w.MinRange > 0f ? F("ul.rangeMin", ("metres", N(w.Range)), ("minimum", N(w.MinRange))) : F("ul.range", N(w.Range));
+            lines.Add(w.SplashRadius > 0.5f ? F("ul.splash", ("range", range), ("metres", N(w.SplashRadius))) : range);
             return lines;
         }
 
@@ -78,21 +80,21 @@ namespace MachineBrigade.Game.Hud
                     ProjectileKind.Drone => "ul.noun.Drone",
                     _ => "ul.noun.other",
                 });
-                lines.Add(F("ul.stores", load, noun));
+                lines.Add(F("ul.stores", ("count", load), ("noun", noun)));
                 lines.Add(F("ul.storesRefill", N(def.RearmTime)));
                 lines.Add(def.FixedWing
-                    ? F("ul.storesFaster", N(SupplyRules.PadRate), N(SupplyRules.HqRate))
-                    : F("ul.storesCarrier", N(SupplyRules.PadRate), N(SupplyRules.HqRate), N(SupplyRules.CarrierRate)));
+                    ? F("ul.storesFaster", ("pad", N(SupplyRules.PadRate)), ("hq", N(SupplyRules.HqRate)))
+                    : F("ul.storesCarrier", ("pad", N(SupplyRules.PadRate)), ("hq", N(SupplyRules.HqRate)), ("times", N(SupplyRules.CarrierRate))));
                 return lines;
             }
             if (w.Clip > 0)
             {
-                lines.Add(F("ul.clip", w.Clip, N(w.ClipReload)));
+                lines.Add(F("ul.clip", ("count", w.Clip), ("seconds", N(w.ClipReload))));
                 return lines;
             }
             if (w.Ammo > 0)
             {
-                lines.Add(F(w.Burst > 1 ? "ul.salvos" : "ul.shots", w.Ammo, N(w.MagazineReload)));
+                lines.Add(F(w.Burst > 1 ? "ul.salvos" : "ul.shots", ("count", w.Ammo), ("seconds", N(w.MagazineReload))));
                 return lines;
             }
             lines.Add(Strings.Get("ul.endless"));
@@ -142,14 +144,14 @@ namespace MachineBrigade.Game.Hud
             else if (def.Flying && def.FixedWing) lines.Add(Strings.Get("ul.move.strike"));
             else if (def.Flying) lines.Add(Strings.Get("ul.move.hover"));
             else if (!armed || def.Class == UnitClass.Support) lines.Add(Strings.Get("ul.move.support"));
-            else if (w.MinRange > 0f) lines.Add(F("ul.move.artillery", N(w.MinRange), N(w.Range)));
+            else if (w.MinRange > 0f) lines.Add(F("ul.move.artillery", ("minimum", N(w.MinRange)), ("maximum", N(w.Range))));
             else
             {
                 if (def.Standoff) lines.Add(Strings.Get("ul.move.standoff"));
                 lines.Add(Strings.Get(def.FiresWhileMoving ? "ul.move.onTheMove" : "ul.move.stops"));
             }
             // After firing.
-            if (def.Scoot is { } scoot) lines.Add(F("ul.after.scoot", scoot.Shots, N(scoot.Min), N(scoot.Max)));
+            if (def.Scoot is { } scoot) lines.Add(F("ul.after.scoot", ("count", scoot.Shots), ("minimum", N(scoot.Min)), ("maximum", N(scoot.Max))));
             if (def.Flying && def.FixedWing && !def.Kamikaze && !def.Orbit) lines.Add(Strings.Get("ul.after.pass"));
             if (armed && w.Clip > 1 && !def.Static) lines.Add(F("ul.after.clip", w.Clip));
             // Target priority.
@@ -168,38 +170,47 @@ namespace MachineBrigade.Game.Hud
             // Skills, auras and what it does for its side.
             foreach (var s in def.Skills)
             {
-                var when = Strings.Format("ul.when." + s.Trigger, N(s.Cooldown), N(s.Threshold * 100f));
-                lines.Add(F("ul.skill", Strings.Get("ul.skill." + s.Kind), when));
+                var when = Strings.Format("ul.when." + s.Trigger, ("seconds", N(s.Cooldown)), ("percent", N(s.Threshold * 100f)));
+                lines.Add(F("ul.skill", ("skill", Strings.Get("ul.skill." + s.Kind)), ("when", when)));
             }
             if (def.Aps is { } aps)
             {
-                lines.Add(F("ul.aps", N(aps.Radius), aps.Charges, N(aps.Recharge)));
-                if (aps.Rockets) lines.Add(Strings.Get("ul.apsRockets"));
+                // Prompt 20 L.1: interceptor missiles reloaded whole, and only rounds lobbed from afar (the Iron Dome).
+                if (aps.Reload > 0f) lines.Add(F("ul.apsMagazine", ("metres", N(aps.Radius)), ("charges", aps.Charges), ("seconds", N(aps.Reload))));
+                else lines.Add(F("ul.aps", ("metres", N(aps.Radius)), ("charges", aps.Charges), ("seconds", N(aps.Recharge))));
+                if (!aps.Direct) lines.Add(Strings.Get("ul.apsLobbed"));
+                else if (aps.Rockets) lines.Add(Strings.Get("ul.apsRockets"));
                 if (aps.Shells > 0f) lines.Add(F("ul.apsShells", N(aps.Shells * 100f)));
             }
             if (def.Jammer > 0f) lines.Add(F("ul.jammer", N(def.Jammer)));
-            if (def.RepairAura is { } repair) lines.Add(F("ul.repairAura", N(repair.Radius), N(repair.Rate * 100f)));
-            if (def.RearmAura is { } rearm) lines.Add(F("ul.rearmAura", N(rearm.Radius), N(rearm.Rate)));
-            if (def.AirRearm is { } air) lines.Add(F("ul.airRearm", N(air.Radius), N(air.Rate)));
-            if (def.Mines is { } mines) lines.Add(F("ul.mines", N(mines.Interval), mines.Max));
+            if (def.RepairAura is { } repair) lines.Add(F("ul.repairAura", ("metres", N(repair.Radius)), ("percent", N(repair.Rate * 100f))));
+            if (def.RearmAura is { } rearm) lines.Add(F("ul.rearmAura", ("metres", N(rearm.Radius)), ("seconds", N(rearm.Rate))));
+            if (def.AirRearm is { } air) lines.Add(F("ul.airRearm", ("metres", N(air.Radius)), ("count", N(air.Rate))));
+            if (def.Mines is { } mines) lines.Add(F("ul.mines", ("seconds", N(mines.Interval)), ("count", mines.Max)));
             if (def.CounterBattery is { } radar) lines.Add(F("ul.counterBattery", N(radar.Range)));
             if (def.Stealth) lines.Add(F("ul.stealth", N(VehicleDef.StealthSight * 100f)));
             if (def.Hidden != null) lines.Add(Strings.Get("ul.hidden"));
             // Prompt 17 C.
-            if (def.Dome is { } dome) lines.Add(F("ul.dome", N(dome.Radius), N(dome.Hp), N(dome.Recharge)));
-            if (def.Deploy is { } dep)
+            if (def.Dome is { } dome) lines.Add(F("ul.dome", ("metres", N(dome.Radius)), ("health", N(dome.Hp)), ("seconds", N(dome.Recharge))));
+            // Play-test 5 (DECISIONS 20W): the siege tank's two modes.
+            if (def.Deploy is { Siege: true } siege)
             {
-                lines.Add(F("ul.deploy", N(dep.Seconds), dep.FrontUp, N(dep.Range)));
+                lines.Add(F("ul.siege", ("seconds", N(siege.Seconds))));
+                lines.Add(Strings.Get("ul.siege.tank"));
+            }
+            else if (def.Deploy is { } dep)
+            {
+                lines.Add(F("ul.deploy", ("seconds", N(dep.Seconds)), ("amount", dep.FrontUp), ("times", N(dep.Range))));
                 lines.Add(F("ul.deploy.arc", N(dep.Arc * 180f / MathF.PI)));
             }
             if (def.Wingman is { } wing)
             {
                 lines.Add(F("ul.wingman", N(wing.Follow)));
-                lines.Add(F("ul.wingman.decoy", N(wing.Pull * 100f), N(wing.Decoy)));
+                lines.Add(F("ul.wingman.decoy", ("percent", N(wing.Pull * 100f)), ("metres", N(wing.Decoy))));
             }
             if (def.AirCapFree) lines.Add(F("ul.airCapFree", def.MaxPerSide));
             if (def.Sead) lines.Add(Strings.Get("ul.sead"));
-            if (def.Relay is { } relay) lines.Add(F("ul.relay", N(relay.Income), N(relay.Second), N(relay.Quiet)));
+            if (def.Relay is { } relay) lines.Add(F("ul.relay", ("cp", N(relay.Income)), ("cpSecond", N(relay.Second)), ("seconds", N(relay.Quiet))));
             return lines;
         }
 
@@ -207,7 +218,7 @@ namespace MachineBrigade.Game.Hud
         /// <param name="all">False: only the aircraft lines (the detail screen lists the rest its own way).</param>
         public static IEnumerable<string> Module(UtilityDef u, bool all = true)
         {
-            if (u.AirRepair > 0f) yield return F("ul.pad", N(u.AirReach), N(SupplyRules.PadRate * MathF.Max(1f, u.AirRearm)), N(u.AirRepair * 100f));
+            if (u.AirRepair > 0f) yield return F("ul.pad", ("metres", N(u.AirReach)), ("count", N(SupplyRules.PadRate * MathF.Max(1f, u.AirRearm))), ("percent", N(u.AirRepair * 100f)));
             if (u.AirCap > 0) yield return F("ul.airCap", u.AirCap);
             if (!all) yield break;
             if (u.Rearm > 1f) yield return F("ul.moduleRearm", N(u.Rearm));

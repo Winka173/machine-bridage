@@ -165,6 +165,56 @@
 .fc-briefing { flex-direction: row; align-items: flex-start; margin-top: var(--fc-space-4); padding: var(--fc-space-3); background-color: var(--fc-bg-2); }
 .fc-briefing__text { flex-grow: 1; flex-shrink: 1; }
 
+/* Prompt 22 D.1: the front map at the head of the chapters. */
+.fc-front { margin-bottom: var(--fc-space-3); }
+.fc-front__map {
+    height: 380px; margin-top: var(--fc-space-2);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+    --front-sea: #0e161d; --front-land: #20262d; --front-ours: #6cc0ff; --front-enemy: #e0513a; --front-thorne: #a877e8; --front-line: #f2a33a; --front-coast: #3a424b;
+}
+.fc-front__layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-front__pin {
+    position: absolute; align-items: center; justify-content: center;
+    border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+    background-color: var(--fc-panel-raised);
+    border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-front__pin-number { -unity-text-align: middle-center; }
+.fc-front__pin--done { border-top-color: var(--fc-ally); border-right-color: var(--fc-ally); border-bottom-color: var(--fc-ally); border-left-color: var(--fc-ally); }
+.fc-front__pin--current { background-color: var(--fc-accent); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-front__pin--current > .fc-front__pin-number { color: var(--fc-ink); }
+.fc-front__pin--locked, .fc-front__pin--soon { opacity: 0.7; }
+.fc-front__pin--soon > .fc-front__pin-number { color: var(--fc-text-2); }
+.fc-root .fc-front__pin.pressed { background-color: var(--fc-panel-selected); }
+.fc-front__flag { position: absolute; width: 28px; height: 28px; --icon-color: var(--fc-ally); }
+.fc-front__legend { margin-top: var(--fc-space-2); }
+.fc-front__legend-item { align-items: center; margin-right: var(--fc-space-4); }
+.fc-front__swatch { width: 20px; height: 20px; margin-right: var(--fc-space-2); }
+.fc-front__swatch--ours { background-color: var(--fc-ally); }
+.fc-front__swatch--enemy { background-color: var(--fc-enemy); }
+.fc-front__swatch--thorne { background-color: var(--fc-rarity-epic); }
+.fc-front__swatch--line { height: 4px; background-color: var(--fc-accent); }
+.fc-front__legend-flag { width: 24px; height: 24px; margin-right: var(--fc-space-2); --icon-color: var(--fc-ally); }
+
+/* Prompt 22 D.8: the comic panels after a chapter. */
+.fc-comic { width: 96%; max-height: 94%; padding: var(--fc-space-4) var(--fc-space-5); }
+.fc-comic__head { flex-shrink: 0; margin-bottom: var(--fc-space-3); }
+.fc-comic__panels { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.fc-comic__panel {
+    flex-grow: 1; flex-shrink: 1; flex-basis: 0; margin-right: var(--fc-space-2); background-color: #f0ebe0;
+    border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px;
+    border-top-color: #0b0d10; border-right-color: #0b0d10; border-bottom-color: #0b0d10; border-left-color: #0b0d10;
+}
+.fc-comic__panel--waiting { opacity: 0.18; }
+.fc-comic__panel--waiting > .fc-comic__bubble { visibility: hidden; }
+.fc-comic__art { height: 190px; flex-shrink: 0; -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }
+.fc-comic__render { position: absolute; left: 12%; right: 0; top: 8%; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
+.fc-comic__portrait { position: absolute; left: var(--fc-space-2); top: var(--fc-space-2); }
+.fc-comic__bubble { flex-grow: 1; padding: var(--fc-space-2) var(--fc-space-3); background-color: var(--fc-panel-raised); }
+.fc-comic__buttons { flex-shrink: 0; margin-top: var(--fc-space-3); }
+
 /* The story card: chapter openings, briefings, the epilogue. */
 .fc-story { width: 760px; max-width: 94%; max-height: 94%; flex-direction: row; }
 .fc-story__art { width: 260px; flex-shrink: 0; -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }
@@ -227,6 +277,14 @@
 .fc-detail__stage { height: var(--fc-detail-stage); margin-bottom: var(--fc-space-2); background-color: var(--fc-bg-2); }
 .fc-detail__art { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
 .fc-detail__preview { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop; }
+/* 19P: a tower's effect on the In action range (a CP relay's pay), over the top left of the picture. */
+.fc-detail__readout {
+    position: absolute; left: var(--fc-space-3); top: var(--fc-space-3);
+    padding: var(--fc-space-1) var(--fc-space-3); background-color: var(--fc-scrim-home);
+    border-left-width: 3px; border-left-color: var(--fc-accent); color: var(--fc-text); white-space: nowrap;
+    -unity-font: var(--fc-font-text-semi); font-size: var(--fc-fs-body);
+}
+.fc-detail__readout--alert { border-left-color: var(--fc-danger); }
 /* The name with the arrows beside it (small faces in full touch targets), off the picture. */
 .fc-detail__head { align-items: center; }
 .fc-detail__head > .fc-icon-btn { flex-shrink: 0; }
@@ -343,6 +401,12 @@
 .fc-base__branch--locked { opacity: 0.6; }
 .fc-base__branch-lock { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-left: var(--fc-space-2); --icon-color: var(--fc-text-2); }
 .fc-base__branch-tag { margin-left: var(--fc-space-2); color: var(--fc-positive); }
+.fc-base__branch-tag--line { margin-left: 0; margin-top: var(--fc-space-1); }
+.fc-base__branch-pair > .fc-base__branch { flex-grow: 1; flex-basis: 0; min-width: 0; }
+.fc-base__branch-pair > .fc-base__branch--next { margin-left: 6px; }
+.fc-text-large .fc-base__branch-pair { flex-direction: column; flex-shrink: 0; }
+.fc-text-large .fc-base__branch-pair > .fc-base__branch { flex-grow: 0; flex-shrink: 0; flex-basis: auto; }
+.fc-text-large .fc-base__branch-pair > .fc-base__branch--next { margin-left: 0; margin-top: 6px; }
 .fc-base__gear { flex-direction: row; justify-content: space-between; }
 .fc-base__gear-slot { width: var(--fc-touch); min-height: var(--fc-touch); align-items: center; }
 .fc-base__gear-slot--open { background-color: var(--fc-panel-selected); }
@@ -368,6 +432,7 @@
 .fc-base-map {
     --base-arrow: var(--fc-danger); --base-range-ground: var(--fc-range-ground); --base-range-air: var(--fc-range-air);
     --base-ring: var(--fc-text); --base-drop: var(--fc-coin);
+    --base-range-ground-line: var(--fc-accent); --base-range-air-line: var(--fc-ally);
     flex-grow: 1; background-color: var(--fc-bg-2); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
 .fc-base-map__world { -unity-background-scale-mode: stretch-to-fill; }
 .fc-base-map__scrim { background-color: var(--fc-bg); }
@@ -638,6 +703,8 @@
 .fc-hud__weapons { margin-top: var(--fc-space-2); }
 .fc-hud__counter { margin-top: var(--fc-space-1); }
 .fc-hud__orders { flex-direction: row; margin-top: var(--fc-space-2); }
+/* Play-test 6: Deselect, a close mark just over the selection panel's right-hand corner (it does not widen the panel). */
+.fc-hud__deselect { position: absolute; right: 0; top: -81px; }
 .fc-hud__order {
     flex-grow: 1; flex-basis: 0; min-height: var(--fc-touch); margin-right: var(--fc-space-1);
     align-items: center; justify-content: center; background-color: var(--fc-panel-raised);
@@ -773,7 +840,8 @@
 /* left: the minimap, and select-all and box-select as small faces on its right-hand corners */
 .fc-hud--compact .fc-hud__left { left: var(--fc-space-3); top: var(--fc-space-3); width: auto; flex-direction: row; align-items: flex-start; }
 .fc-hud--compact .minimap { width: var(--hud-minimap); height: var(--hud-minimap); }
-.fc-hud--compact .fc-hud__tools { flex-direction: column; margin: 0; }
+/* Two touch targets high, so select-all and box-select stand in the first column and zoom in and out in the second (play-test 6). */
+.fc-hud--compact .fc-hud__tools { flex-direction: column; flex-wrap: wrap; height: 164px; margin: 0; }
 .fc-hud--compact .fc-hud__tools > .fc-icon-btn { margin: 0; background-color: var(--fc-clear); align-items: flex-start; justify-content: flex-start; padding-left: var(--fc-space-1); }
 .fc-hud--compact .item-strip { top: 184px; width: 180px; }
 
@@ -848,6 +916,8 @@
 
 /* under the top strip: the boss, the fortress pieces, notices and radio, small */
 .fc-hud--compact .fc-hud__under { top: 64px; left: var(--hud-edge); right: var(--hud-edge); }
+/* Play-test 6: while the boss bar shows in the top row, the column under the row starts below it. */
+.fc-hud--compact .fc-hud--boss-top > .fc-hud__under { top: 96px; }
 .fc-boss--compact { width: 640px; margin-bottom: var(--fc-space-1); min-height: var(--fc-touch); }
 .fc-boss--collapsed { width: 340px; padding: var(--fc-space-1) var(--fc-space-2); }
 .fc-boss--collapsed .fc-boss__name, .fc-boss--collapsed .fc-boss__phase { font-size: var(--fc-fs-small); }
@@ -860,6 +930,18 @@
 .fc-boss-parts--mini .fc-boss-part__icon { width: 20px; height: 20px; }
 .fc-boss-parts--mini .fc-boss-part__cross { top: 3px; bottom: 3px; }
 .fc-root .fc-boss--compact.pressed { background-color: var(--fc-panel-selected); }
+/* Play-test 6: the compact boss bar shares the top row with the goal or the bosses destroyed count (it sat under them and
+   took too much room): one line of call sign, phase and chips over the bar, and smaller part icons. Opened by a tap it takes
+   a line of its own under the row. */
+.fc-hud--compact .fc-hud__top { flex-wrap: wrap; }
+.fc-hud__top > .fc-boss--compact { margin: 0 0 0 var(--fc-space-2); }
+.fc-hud__top > .fc-boss--collapsed { width: 300px; justify-content: center; }
+.fc-boss--collapsed .fc-boss__name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 1; }
+.fc-boss--collapsed .fc-boss__icon { width: 16px; height: 16px; margin-right: var(--fc-space-1); }
+.fc-boss--collapsed .fc-boss__big-icon { width: 16px; height: 16px; }
+.fc-boss--collapsed .fc-boss-parts--mini .fc-boss-part { width: 26px; height: 22px; padding: 1px 3px; }
+.fc-boss--collapsed .fc-boss-parts--mini .fc-boss-part__icon { width: 14px; height: 14px; }
+.fc-boss--collapsed .fc-boss-parts--mini .fc-boss-part__cross { top: 2px; bottom: 2px; }
 .fc-hud--compact .gun-timer { height: auto; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
 .fc-hud--compact .fc-hud__toast { margin-top: var(--fc-space-1); }
 .fc-hud--compact .fc-hud__toast-face { max-width: 600px; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
@@ -871,6 +953,8 @@
 
 /* pause: the commander's switches under the buttons (both layouts) */
 .fc-pause__commander { margin-top: var(--fc-space-4); padding-top: var(--fc-space-2); border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
+.fc-pause__language { margin-top: var(--fc-space-2); padding-top: var(--fc-space-1); border-top-width: var(--fc-line); border-top-color: var(--fc-border); align-items: center; }
+.fc-pause__language > .fc-caption { margin-right: var(--fc-space-2); }
 
 /* ---- prompt 15: the detail page's armour and weapon icons */
 .fc-weapon__chip { margin-right: var(--fc-space-3); }
@@ -880,10 +964,12 @@
 .fc-legend { width: 100%; }
 .fc-legend__grid { flex-direction: row; flex-wrap: wrap; }
 .fc-legend__item { width: 150px; align-items: center; margin: var(--fc-space-2) var(--fc-space-2) var(--fc-space-2) 0; }
+.fc-text-large .fc-legend__item { width: 184px; }
 .fc-legend__words { -unity-text-align: upper-center; margin-top: var(--fc-space-1); }
 .fc-legend__table { flex-shrink: 0; }
 .fc-legend__trow { align-items: center; min-height: 48px; border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border); }
 .fc-legend__tdef { width: 220px; flex-shrink: 0; padding-right: var(--fc-space-2); }
+.fc-text-large .fc-legend__tdef { width: 150px; }
 .fc-legend__tcell { flex-grow: 1; flex-basis: 0; align-items: center; padding: var(--fc-space-1); }
 .fc-legend__tname { -unity-text-align: upper-center; }
 .fc-legend__tvalue { -unity-text-align: middle-center; color: var(--fc-text); }
@@ -901,3 +987,28 @@
 .fc-hud__enemy-tip { position: absolute; left: var(--fc-space-3); top: 200px; --fc-chip-bg: var(--fc-panel-field); }
 .fc-boss-part__armour { position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; --icon-color: var(--fc-text-2); }
 .fc-boss-parts--mini .fc-boss-part__armour { display: none; }
+
+/* Prompt 20 O.2: the big bar for a main boss, the small one for a mini boss (prompt 11's compact HUD). */
+.fc-boss--main .fc-boss__track { height: 14px; }
+.fc-boss--main.fc-boss--collapsed .fc-boss__track { height: 8px; }
+.fc-boss--mini .fc-boss__track { height: 6px; }
+.fc-boss--mini .fc-boss__name { font-size: var(--fc-fs-small); }
+
+/* Prompt 20 N/O.4: the Boss Hunt's rest strip under the top bar, and the support pick (three cards side by side). */
+.fc-hunt-rest { width: 420px; padding: var(--fc-space-2) var(--fc-space-3); margin-bottom: var(--fc-space-2); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-hunt-rest__icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); --icon-color: var(--fc-accent); }
+.fc-hunt-rest__title { flex-grow: 1; }
+.fc-hunt-rest__time { margin-left: var(--fc-space-2); color: var(--fc-accent); }
+.fc-hunt-rest__line { margin-top: var(--fc-space-1); }
+.fc-hud--compact .fc-hunt-rest { width: 360px; padding: var(--fc-space-1) var(--fc-space-2); }
+.fc-support-pick__card { width: 760px; }
+.fc-support-pick__cards { flex-direction: row; justify-content: space-between; margin-top: var(--fc-space-2); }
+.fc-support { width: 236px; flex-shrink: 1; padding: var(--fc-space-3); align-items: stretch; }
+.fc-support__icon { width: 40px; height: 40px; margin-bottom: var(--fc-space-2); align-self: center; --icon-color: var(--fc-accent); }
+.fc-support__name { -unity-text-align: middle-center; white-space: normal; }
+.fc-support__info { flex-grow: 1; margin: var(--fc-space-2) 0 var(--fc-space-3) 0; white-space: normal; }
+
+/* Prompt 20 O.3, O.5: a boss's Guide header, and the dossier's battlefields. */
+.fc-boss-facts { padding: var(--fc-space-3); }
+.fc-dossier__map { flex-direction: row; align-items: flex-start; }
+.fc-dossier__map-art { width: 160px; height: 90px; flex-shrink: 0; margin-right: var(--fc-space-3); -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }

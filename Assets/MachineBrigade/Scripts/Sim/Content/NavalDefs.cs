@@ -51,6 +51,14 @@ namespace MachineBrigade.Sim.Content
         /// <summary>How far to the side of its line it may drift before it steers back (metres).</summary>
         public float Slack { get; internal set; } = 2f;
 
+        /// <summary>
+        /// Prompt 20 J.5: a skimmer's passes (Caspian): <see cref="PassIn"/> s fast along the near lane (in reach of the
+        /// shore), then <see cref="PassOut"/> s out on the far one, over and over (0: an ordinary patrol).
+        /// </summary>
+        public float PassIn { get; internal set; }
+
+        public float PassOut { get; internal set; }
+
         /// <summary>The lane for boss phase <paramref name="phase"/>.</summary>
         public string LaneFor(int phase) => Lanes.Count == 0 ? "far" : Lanes[Math.Clamp(phase, 0, Lanes.Count - 1)];
     }
@@ -128,6 +136,16 @@ namespace MachineBrigade.Sim.Content
         public string Unit { get; internal set; } = "";
         public int Count { get; internal set; } = 1;
         public float Station { get; internal set; }
+
+        /// <summary>
+        /// DECISIONS 20Y: an escort's station abeam of its flagship (data "abeam", metres, negative towards the shore),
+        /// <see cref="Station"/> then being its place along the flagship's line from its middle; the k-th ship of the
+        /// entry keeps a row further in (NaN: the old station along the lane, ahead or astern).
+        /// </summary>
+        public float Abeam { get; internal set; } = float.NaN;
+
+        /// <summary>Whether its ships keep station abeam (<see cref="Abeam"/>).</summary>
+        public bool Beside => !float.IsNaN(Abeam);
     }
 
     /// <summary>Aircraft that fly in from over the sea when a phase begins (data "air": the phase and the units).</summary>

@@ -66,6 +66,9 @@ namespace MachineBrigade.Game.Match
         private Vector3 _storyFocus;
         private float _storyUntil;
         private float _cinematicZoom;
+
+        /// <summary>The player moved the view during the slow-motion shot: it stops steering the camera.</summary>
+        private bool _viewTaken;
         private SimClock _clock;
         private MaterialLibrary _materials;
         private MeshLibrary _meshes;
@@ -105,6 +108,9 @@ namespace MachineBrigade.Game.Match
         private BattleHud _hud;
         private StoresStrip _storesStrip;
         private PlayerCommander _commander;
+
+        /// <summary>Prompt 21: the Sandbox's editor, screen and overlays (null in every other battle).</summary>
+        private SandboxController _sandbox;
         private readonly List<(Vector2 at, float radius, float until)> _warnings = new();
         private readonly List<PointInfo> _pointInfo = new();
         private bool _menu, _paused, _resultShown;
@@ -186,6 +192,8 @@ namespace MachineBrigade.Game.Match
             var options = MatchSettings.Options;
             // High graphics draws the most-seen vehicles with their high-detail models.
             ModelLibrary.HighDetail = options.Shadows == ShadowLevel.High && options.RichScenery;
+            // Low graphics: the towers' rank details come without bolts or a second plate layer (tower-branch C.6).
+            TowerArt.Lean = options.Shadows <= ShadowLevel.Low && !options.RichScenery;
             _builtGraphics = GraphicsSignature();
             _atmosphere = new Atmosphere(options);
             _cinematics.Enabled = MatchSettings.CinematicMoments && !DebugFlags.Has("-mb-no-cinematics");
@@ -193,34 +201,62 @@ namespace MachineBrigade.Game.Match
 
             _menu = !MatchSettings.InMatch;
             var kind = _menu ? GameModeKind.Conquest : MatchSettings.Mode;
-            var seed = _menu ? System.Environment.TickCount : 1234 + (int)MatchSettings.Difficulty * 7;
+            // Prompt 21 C.6: a Sandbox battle runs on its scenario's own seed.
+            var seed = _menu ? System.Environment.TickCount : kind == GameModeKind.Sandbox ? (SandboxSession.Scenario ??= SandboxSession.NewScenario()).Seed
+                : 1234 + (int)MatchSettings.Difficulty * 7;
             var catalog = GameContent.LoadCatalog();
             Curtain.Progress(0.05f);
             yield return null;
             // A campaign mission names its own battlefield and version of it.
             var mission = !_menu && kind == GameModeKind.Campaign ? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0] : null;
-            var mapFile = mission != null ? mission.Map + "_" + mission.Variant : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
+            var mapFile = mission != null ? mission.Map + "_" + mission.Variant : kind == GameModeKind.Sandbox ? SandboxSession.Scenario.Map
+                : ModeSession.MapFile(kind, MatchSettings.CurrentMap.Id);
             // A mission that returns to a map from the other side plays it reversed.
-            var map = mission != null ? Campaign.LoadMap(mission) : GameContent.LoadMap(mapFile);
+            var map = mission != null ? Campaign.LoadMap(mission) : kind == GameModeKind.Sandbox ? SandboxSession.LoadMap(SandboxSession.Scenario) : GameContent.LoadMap(mapFile);
             _world = new SimWorld(catalog, map, seed);
+            // Tower-branch C.2: towers show their card's rank, the player's from the profile and the other
+            // side's from its HQ level (1, 3, 5 ...); the menu's backdrop battle shows none.
+            var ranked = _world;
+            TowerArt.Ranks = _menu ? null : (team, card) => team == PlayerTeam ? PlayerProfile.Rank(card)
+                : Mathf.Clamp(2 * (ranked.Bases.Of(team)?.Loadout.HqLevel ?? 1) - 1, 1, TowerArt.MaxBars);
             Curtain.Progress(0.1f);
             yield return null;
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
-            if (!_menu) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
+            if (!_menu && kind != GameModeKind.Sandbox) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
+            // Prompt 22 F: the player's commander (a story mission's own, else the one picked; every mode) and the passive of
+            // the general a mission is tied to, through the loadout's caps. The Sandbox sets each side's from its scenario.
+            _world.SetStatCaps(GearCatalog.StatCap, GearCatalog.TowerStatCap);
+            _playerCommander = _menu || kind == GameModeKind.Sandbox ? null : CommanderPick.ForBattle(mission);
+            if (!_menu && kind != GameModeKind.Sandbox)
+            {
+                _world.SetCommander(PlayerTeam, _playerCommander);
+                _world.SetCommander(EnemyTeam, CommanderPick.EnemyFor(mission));
+            }
             // A campaign enemy keeps pace with the arsenal as it grows (its boss and towers too).
             if (mission != null)
             {
                 var deck = new List<VehicleBoost>();
+                // The commander's lines count towards the army's strength like its equipment (prompt 22 F.1).
                 foreach (var id in MatchSettings.DeckVehicles)
-                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(CommanderRules.Merge(PlayerProfile.BoostFor(def), _playerCommander, def, GearCatalog.StatCap));
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
                 // The elite budget is part of that pace, not on top of it (prompt 8 H).
                 edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
+            // Play-test 6 (DECISIONS 21G): a quick mode's enemy keeps pace too, by its difficulty's share.
+            else if (!_menu && kind != GameModeKind.Sandbox)
+            {
+                var deck = new List<VehicleBoost>();
+                foreach (var id in MatchSettings.DeckVehicles)
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
+                ModeSession.KeepPace(_world, deck, MatchSettings.Difficulty, kind);
+            }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
-            if (!_menu) ApplyRankDiscounts(catalog, mission != null);
+            if (!_menu && kind != GameModeKind.Sandbox) ApplyRankDiscounts(catalog, mission != null);
+            // Prompt 21 A.2: nothing in the Sandbox counts towards today's challenges.
+            DailyMissions.Suspended = kind == GameModeKind.Sandbox && !_menu;
             if (!_menu && _session is MissionSession storySession)
             {
                 _radio = new RadioDirector(storySession.Def, seed);
@@ -334,6 +370,7 @@ namespace MachineBrigade.Game.Match
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
             // The transport that flies reinforcements in (see AirDrops).
             if (_models.Has("sky_gunship")) _models.Prewarm("sky_gunship");
+            if (_models.Has(Effects.AirDrops.TransportModel)) _models.Prewarm(Effects.AirDrops.TransportModel);
             _effects.Prewarm();
             Curtain.Progress(0.85f);
             yield return null;
@@ -348,6 +385,7 @@ namespace MachineBrigade.Game.Match
                 // An Operations mutator's weather over the mission's own.
                 : mission != null && MatchSettings.Run?.Mission == mission.Id && System.Enum.TryParse<WeatherKind>(MatchSettings.Run.Weather, out var mutated) ? mutated
                 : mission != null && System.Enum.TryParse<WeatherKind>(mission.Weather, out var missionWeather) ? missionWeather
+                : kind == GameModeKind.Sandbox && !_menu ? SandboxSession.WeatherOf(SandboxSession.Scenario)
                 : MatchSettings.ResolveWeather(seed);
             // A clear day still has the map's own air: warm desert haze, cold snow light, sea mist.
             _weather = new Weather(weather, _atmosphere, _materials, _camera, _audio, worldRoot, options.MaxEffects, theme.Cast, theme.Haze);
@@ -367,11 +405,14 @@ namespace MachineBrigade.Game.Match
             _crates = new CrateViews(_models, worldRoot);
             _mineViews = new MineViews(_models, worldRoot, _menu ? -1 : PlayerTeam);
             // Quick battles sometimes turn: a storm rolls in, the fog comes down, night falls.
-            if (!_menu && mission == null) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
+            if (!_menu && mission == null && kind != GameModeKind.Sandbox) _nextWeatherShift = 150 + new System.Random(seed).NextDouble() * 120;
             ApplyPost(options.Bloom, MatchSettings.Brightness);
             _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
-            var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
+            // The Sandbox has no deck along the bottom: its own screen places and calls everything.
+            var cards = _menu ? null : kind == GameModeKind.Sandbox ? PlayerCommander.Cards(_world, new List<string>(), new List<string>())
+                : PlayerCommander.Cards(_world, MissionDecks.Vehicles(catalog, mission, MatchSettings.DeckVehicles, PlayerProfile.IsUnlocked),
+                    MissionDecks.Supports(mission, MatchSettings.DeckSupports));
             var hudSpec = _session.Hud;
             if (!_menu)
             {
@@ -401,18 +442,33 @@ namespace MachineBrigade.Game.Match
             if (!_menu)
             {
                 // Items bought with coins come along into every real match.
-                if (_world.TryGetEconomy(PlayerTeam, out var economy))
+                if (_session is not SandboxSession && _world.TryGetEconomy(PlayerTeam, out var economy))
                     foreach (var item in Progression.Items)
                     {
                         var owned = PlayerProfile.ItemCount(item);
                         if (owned > 0) economy.Items[item] = owned;
                     }
                 _commander = new PlayerCommander(_world, _hud, _camera, PlayerTeam, cards);
-                _selection.TapInterceptor = _commander.TryTap;
-                _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
+                if (_session is SandboxSession sandboxSession)
+                {
+                    // Prompt 21: taps place and select, a drag from a unit turns it, the camera pans and zooms as ever.
+                    _sandbox = new SandboxController(_world, sandboxSession, _views, _camera, _selection, _materials, _meshes, worldRoot);
+                    _gestures = new TouchGestures(_sandbox, p => _hud.IsOverUi(p) || _sandbox.IsOverUi(p)) { BoxMode = _sandbox.DragTurns };
+                }
+                else
+                {
+                    _selection.TapInterceptor = _commander.TryTap;
+                    _gestures = new TouchGestures(_selection, _hud.IsOverUi) { BoxMode = () => _selection.BoxMode };
+                }
                 if (isActiveAndEnabled) _gestures.Enable();
             }
             Wire();
+            // Prompt 22 F.4: the commander's face beside pause, and its first words on the radio.
+            if (!_menu && _playerCommander != null && _hud != null)
+            {
+                _hud.ShowCommanderBadge(_playerCommander);
+                if (!_resumed) _hud.Radio(new RadioLine(_playerCommander.Portrait, "cmdr." + _playerCommander.Id + ".radio.start"));
+            }
 
             DispatchEvents();
             // Built: lift the curtain once this scene has drawn a few frames.
@@ -420,6 +476,9 @@ namespace MachineBrigade.Game.Match
             Curtain.Progress(1f);
             Curtain.Open();
         }
+
+        /// <summary>Prompt 22 F: the player's commander in this battle (null in the menu and the Sandbox).</summary>
+        private CommanderDef _playerCommander;
 
         /// <summary>-mb-killboss: when each boss was first seen.</summary>
         private readonly Dictionary<MachineBrigade.Sim.Core.EntityId, float> _bossSeen = new();
@@ -429,6 +488,20 @@ namespace MachineBrigade.Game.Match
             foreach (var v in _world.Vehicles)
                 if (v.IsAlive && v.Def.Boss && v.Team == EnemyTeam) return true;
             return false;
+        }
+
+        /// <summary>Prompt 20: a main boss on the field plays its own track (else its rank's); mini bosses alone, theirs.</summary>
+        private string BossTrack()
+        {
+            string track = null;
+            foreach (var v in _world.Vehicles)
+            {
+                if (!v.IsAlive || !v.Def.Boss || v.Team != EnemyTeam) continue;
+                var own = v.Def.Music ?? v.Def.RankDef?.Music ?? "boss";
+                if (!v.Def.MiniBoss) return own;
+                track ??= own;
+            }
+            return track ?? "boss";
         }
 
         /// <summary>The weather turns mid-battle, to another of this map's weathers.</summary>
@@ -494,13 +567,19 @@ namespace MachineBrigade.Game.Match
             if (mission != null)
             {
                 Add(mission.Boss?.Def);
+                // Prompt 20: a boss slot pass 2 has not built is fought as its stand-in.
+                Add(mission.Boss?.Fallback);
                 Add(mission.Convoy?.Def);
                 if (mission.Waves != null) foreach (var id in mission.Waves.Roster) Add(id);
                 foreach (var u in mission.Units) Add(u.DefId);
             }
             // Boss Rush brings its bosses and their escorts later.
             if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
+            {
                 foreach (var boss in BossRushRules.Everyone()) Add(boss);
+                // Prompt 20 N: the hunts bring every chapter's bosses.
+                foreach (var boss in BossHunts.Story) Add(boss.Id);
+            }
             return ids;
         }
 
@@ -614,7 +693,7 @@ namespace MachineBrigade.Game.Match
             // A cinematic moment slows the whole battle (sim, particles) for a second.
             if (!_paused && !_resultShown) Time.timeScale = _cinematics.TimeScale(Time.unscaledTime);
             _hud.SetLetterbox(_cinematics.Letterbox(Time.unscaledTime));
-            var steps = _paused || _lobbyCovered ? 0 : _clock.Advance(Time.deltaTime);
+            var steps = _paused || _lobbyCovered ? 0 : _sandbox != null ? _sandbox.Steps(Time.deltaTime, _clock) : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
             _perf?.CountSteps(steps);
             for (var i = 0; i < steps; i++)
@@ -647,12 +726,18 @@ namespace MachineBrigade.Game.Match
                 _smokeAt = Time.time + 9f;
                 _effects.DebugSmokeScreen(_camera.Focus + new Vector3(UnityEngine.Random.Range(-6f, 6f), 0f, UnityEngine.Random.Range(-6f, 6f)));
             }
-            if (_cinematics.Active(Time.unscaledTime)) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
+            if (_cinematics.Active(Time.unscaledTime))
+            {
+                if (!_viewTaken) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
+            }
             else if (_menu) Attract();
             else if (Time.unscaledTime < _storyUntil) _camera.Follow(_storyFocus, Time.unscaledDeltaTime, 0.7f);
-            else FollowTheFight();
+            // Play-test 6: after a boss's shot the view goes back to where the player had it, at their zoom.
+            else if (_camera.Held) _camera.ReturnHeld(Time.unscaledDeltaTime);
+            else if (_sandbox == null) FollowTheFight();
             if (_radio != null && _session is MissionSession radioSession && !_paused) _radio.Tick(_world, radioSession);
             _selection.Tick();
+            _sandbox?.Tick(Time.unscaledDeltaTime);
             _perf?.Begin();
             if (!_paused)
             {
@@ -664,7 +749,11 @@ namespace MachineBrigade.Game.Match
                     _leavingWeather = null;
                 }
                 // A boss on the field: the boss track (the old war-drum loop stays silent).
-                if (!_menu && Time.frameCount % 15 == 0) _music.Boss = BossOnField();
+                if (!_menu && Time.frameCount % 15 == 0)
+                {
+                    _music.BossTrack = BossTrack();
+                    _music.Boss = BossOnField();
+                }
                 // Device check of a boss's death: it goes down after twelve seconds on the field.
                 if (!_menu && DebugFlags.Has("-mb-killboss") && Time.frameCount % 15 == 0)
                     foreach (var v in _world.Vehicles)
@@ -872,11 +961,25 @@ namespace MachineBrigade.Game.Match
         /// the camera pans there for a few seconds under the letterbox, unless the player is busy
         /// with the view; a touch hands it straight back.
         /// </summary>
-        private void StoryPan(System.Numerics.Vector2 at)
+        private void StoryPan(System.Numerics.Vector2 at, float seconds = 3.5f)
         {
             if (_menu || !_cinematics.Enabled || Time.unscaledTime - _lastInput < 2f) return;
             _storyFocus = new Vector3(at.X, 0f, at.Y);
-            _storyUntil = Time.unscaledTime + 3.5f;
+            _storyUntil = Time.unscaledTime + seconds;
+            _camera.StopFollowing();
+            _camera.Hold();
+        }
+
+        /// <summary>
+        /// The player panned or zoomed (or used the zoom buttons or the minimap): a story shot under way gives them the
+        /// view at once and does not pull it back afterwards (play-test 6).
+        /// </summary>
+        private void TakeTheView()
+        {
+            _lastInput = Time.unscaledTime;
+            _storyUntil = 0f;
+            _viewTaken = true;
+            _camera.Release();
             _camera.StopFollowing();
         }
 
@@ -888,7 +991,10 @@ namespace MachineBrigade.Game.Match
             if (viewport.x < 0.05f || viewport.x > 0.95f || viewport.y < 0.05f || viewport.y > 0.95f) return;
             if (!_cinematics.Trigger(point, Time.unscaledTime, force)) return;
             Haptics.Pulse(70, 190);
-            _cinematicZoom = Mathf.Max(12f, _camera.Zoom * 0.82f);
+            // Play-test 6: the shot keeps the player's zoom (it used to close in to 82 %) and gives the view back after.
+            _camera.Hold();
+            _viewTaken = false;
+            _cinematicZoom = _camera.Zoom;
             _camera.AddTrauma(0.6f);
         }
 
@@ -934,6 +1040,8 @@ namespace MachineBrigade.Game.Match
 
         private void OnDestroy()
         {
+            _sandbox?.Screen.Dispose();
+            DailyMissions.Suspended = false;
             _stuck?.Finish(_world);
             PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
@@ -980,7 +1088,7 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleSpawned when _world.TryGetVehicle(e.Entity, out var vehicle):
                         _views.Add(vehicle);
                         // A boss comes onto the field: the camera goes to meet it.
-                        if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position);
+                        if (!_menu && _sandbox == null && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position, vehicle.Def.RankDef?.Intro ?? 3.5f);
                         EliteArrived(vehicle);
                         if (vehicle.Team == EnemyTeam) _tally.Saw(vehicle.Def);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
@@ -998,6 +1106,8 @@ namespace MachineBrigade.Game.Match
                             if (slain.Elite) DailyMissions.Record("elites");
                             if (slain.Elite && !slain.Boss) _elitesSlain.Add(slain.EliteOf ?? slain.Id);
                             if (slain.Boss) DailyMissions.Record("bosses");
+                            // Prompt 21 A.2: the player version of the Sandbox offers the bosses beaten in the campaign or the Boss Hunt.
+                            if (slain.Boss && _session is MissionSession or BossRushSession) SandboxProfile.MarkBeaten(slain.Id);
                         }
                         if (!_menu && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var dead) && dead.Boss)
                         {
@@ -1011,7 +1121,7 @@ namespace MachineBrigade.Game.Match
                             // The boss transforms: the camera goes to it, its general speaks.
                             StartCinematic(e.Position, force: true);
                             Haptics.Pulse(160, 255);
-                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", Strings.Card(phased.Def.Id), (int)e.Value),
+                            _hud.Toast(e.DefId != null ? Strings.Get(e.DefId) : Strings.Format("toast.bossPhase", ("card", Strings.Card(phased.Def.Id)), ("phase", (int)e.Value)),
                                 error: true, seconds: 5f);
                         }
                         // Its new form: drawn again with the phase's model.
@@ -1083,6 +1193,12 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.BigAttack when !_menu && e.Team == EnemyTeam && e.Mount is 2 or 3 && e.DefId != null:
                         _hud.Toast(Strings.Get("bigattack." + e.DefId + ".cancelled"));
                         break;
+                    // Prompt 19: a tiered boss leaves orbit, sends pods down, warns of its drone seizure.
+                    case SimEventKind.TierChanged when !_menu && e.Team == EnemyTeam && e.DefId is "descend" or "pods" || e.DefId == "hijack" && e.Mount == 0:
+                        if (_menu || e.Team != EnemyTeam) break;
+                        _hud.Toast(Strings.Get(e.DefId == "descend" ? "toast.tier.descend" : e.DefId == "pods" ? "toast.pods" : "toast.hijack"),
+                            error: e.DefId != "pods", seconds: 3f);
+                        break;
                     case SimEventKind.CrateIncoming when !_menu:
                         _hud.Toast(Strings.Get("toast.crate"));
                         break;
@@ -1103,7 +1219,7 @@ namespace MachineBrigade.Game.Match
                         if (!_menu && e.Team == EnemyTeam && e.DefId.StartsWith("escort_drop", System.StringComparison.Ordinal)) _hud.Toast(Strings.Get("toast.escortDrop"), error: true);
                         else if (!_menu && e.Team == EnemyTeam) _hud.Toast(Strings.Format("toast.enemyStrike", Strings.Support(e.DefId)), error: true);
                         // An item was used: it is gone from the profile too.
-                        if (!_menu && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
+                        if (!_menu && _sandbox == null && e.Team == PlayerTeam && support != null && support.Consumable) PlayerProfile.UseItem(e.DefId);
                         if (!_menu && e.Team == PlayerTeam && support != null) DailyMissions.Record(support.Consumable ? "items" : "strikes");
                         break;
                 }
@@ -1151,7 +1267,13 @@ namespace MachineBrigade.Game.Match
             _hud.RetreatPressed += _selection.Retreat;
             _hud.AttackMovePressed += _selection.ToggleAttackMove;
             _hud.BoxModeToggled += () => _selection.BoxMode = !_selection.BoxMode;
-            _hud.ZoomPressed += factor => _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+            _hud.ZoomPressed += factor =>
+            {
+                _camera.ZoomBy(factor, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
+                TakeTheView();
+            };
+            _hud.DeselectPressed += _selection.Deselect;
+            _selection.ViewMoved += TakeTheView;
             _hud.RestartPressed += () =>
             {
                 if (Curtain.Busy) return;
@@ -1175,7 +1297,18 @@ namespace MachineBrigade.Game.Match
             };
             _hud.CheckpointPressed += () =>
             {
-                if (Curtain.Busy || _session is not MissionSession staged) return;
+                if (Curtain.Busy) return;
+                // Prompt 20 N: a Boss Hunt starts again from its last checkpoint (the carry saved as the rest after a boss ended).
+                if (_session is BossRushSession hunt)
+                {
+                    if (hunt.ResumeFrom() is not { } from) return;
+                    ClaimReward();
+                    BossRushSession.Pending = from;
+                    BossRushSession.Full = hunt.IsFull;
+                    Reload("loading.checkpoint", DeployDetail());
+                    return;
+                }
+                if (_session is not MissionSession staged) return;
                 var point = MatchJournal.Checkpoint(_world, MatchSettings.Mission, MatchSettings.MissionTier, staged.Operation);
                 if (point == null) return;
                 ClaimReward();
@@ -1203,7 +1336,11 @@ namespace MachineBrigade.Game.Match
             };
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
-            _hud.MinimapClicked += p => _camera.FocusOn(new Vector3(p.x, 0f, p.y));
+            _hud.MinimapClicked += p =>
+            {
+                _camera.FocusOn(new Vector3(p.x, 0f, p.y));
+                TakeTheView();
+            };
             var playerAi = _session.PlayerAi;
             _hud.StancePressed += defend =>
             {
@@ -1240,7 +1377,7 @@ namespace MachineBrigade.Game.Match
             };
             _selection.Rejected += _hud.ShowError;
             _selection.EnemyTapped += def => _hud.ShowEnemyTip(def,
-                MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null));
+                MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null), TierOf(def));
             WireBossParts();
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
@@ -1420,6 +1557,14 @@ namespace MachineBrigade.Game.Match
             minimap.Flush();
         }
 
+        /// <summary>Prompt 19 B.5: the tier a tapped tiered boss (or pod) of that def is at now (None: the ordinary matchup).</summary>
+        private MachineBrigade.Sim.Content.AltitudeTier TierOf(VehicleDef def)
+        {
+            foreach (var v in _world.Vehicles)
+                if (v.IsAlive && v.Def == def && v.Tier != MachineBrigade.Sim.Content.AltitudeTier.None) return v.Tier;
+            return MachineBrigade.Sim.Content.AltitudeTier.None;
+        }
+
         private bool _switching;
         private WakeView _wakes;
 
@@ -1431,8 +1576,12 @@ namespace MachineBrigade.Game.Match
         {
             if (_menu || _switching || _session is not BossRushSession rush || rush.SwitchTo is not { } carry) return;
             _switching = true;
+            // Prompt 20 N: the checkpoint the rest just kept, saved before the scene goes.
+            rush.KeepCheckpoint();
             BossRushSession.Pending = carry;
-            Reload(carry.Map == BossRushSession.SeaMap ? "loading.toSea" : "loading.backAshore", Strings.Get("map." + carry.Map));
+            // Prompt 19 G.2: a boss's own battlefield (the Silver Bug's Launch Site) reads as a redeployment, not "back to the front".
+            var home = MatchSettings.CurrentMap.Id;
+            Reload(carry.Map == BossRushSession.SeaMap ? "loading.toSea" : carry.Map == home ? "loading.backAshore" : "loading.toArena", Strings.Get("map." + carry.Map));
         }
 
         private void CheckResult()
@@ -1464,6 +1613,12 @@ namespace MachineBrigade.Game.Match
                 if (_reward.TowerGear != null) view.Extras.Add(("shield", $"{Strings.Get("result.towerPiece")} · {Strings.Get("rarity." + _reward.TowerGear.ToLowerInvariant())}"));
                 if (_reward.HqLevel > 0) view.Extras.Add(("home", Strings.Format("result.hqLevel", _reward.HqLevel)));
                 if (_reward.Fragment != null) view.Extras.Add(("eye", Strings.Format("result.fragment", Strings.Get("mission." + _reward.Fragment + ".fragment.title"))));
+                // Prompt 22 D.6-D.7: why the story hands a card out, and the intel files a side objective recovered.
+                foreach (var id in _reward.Unlocks)
+                    if (Narrative.LootReason(id) is { } reason) view.Extras.Add(("star", Strings.Get(reason)));
+                if (outcome.Result > 0 && _reward.MissionId != null)
+                    foreach (var file in Narrative.FoundBy(_reward.MissionId, _reward.Stars))
+                        view.Extras.Add(("eye", Strings.Format("result.intel", ("title", Strings.Get($"intel.{file.Id}.title")))));
                 // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
                 if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));
                 if (outcome.Result > 0 && _reward.MissionId != null && !PlayerProfile.Completed(_reward.MissionId))
@@ -1472,12 +1627,18 @@ namespace MachineBrigade.Game.Match
                     view.Crates.Add(Strings.Get("crate.silver"));
                 }
                 view.HasNext = outcome.Result > 0 && _session is MissionSession && Campaign.NextAfter(MatchSettings.Mission) >= 0;
-                view.CanResume = outcome.Result < 0 && _session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0;
+                view.CanResume = outcome.Result < 0 && ((_session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0) ||
+                                                        (_session is BossRushSession hunt && hunt.ResumeFrom() != null));
             }
             if (outcome.Result <= 0)
                 outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports,
                     MatchSettings.DeckVehicleSlots, _kills, _losses, _session is SiegeSession or AssaultSession or WeeklySession));
-            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, outcome.Note, outcome.Hints);
+            // Prompt 22 F.4: the commander's word as the battle is decided, on the result card (a checkpoint's note comes first).
+            var note = outcome.Note;
+            if (note == null && _playerCommander != null && outcome.Result != 0 && !(outcome.Result < 0 && view is { CanResume: true }))
+                note = Strings.Format("cmdr.quote", ("name", CommanderText.Call(_playerCommander)),
+                    ("line", Strings.Get("cmdr." + _playerCommander.Id + (outcome.Result > 0 ? ".radio.win" : ".radio.loss"))));
+            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, note, outcome.Hints);
             _music?.Result(outcome.Result > 0);
         }
 

@@ -94,10 +94,15 @@ namespace MachineBrigade.Tests
             if (Verbose)
                 Debug.Log($"BATTLE seed {seed}: HQ {(hq.IsAlive ? hq.Hp / hq.MaxHp : 0f):P0}, towers left {b.Slots.Count(s => s.Tower != null && !s.Down)}/{b.Slots.Count(s => s.Tower != null)}, " +
                           $"attackers lost {killed:P0}, closest to HQ {attackers.Where(v => v.IsAlive).Select(v => Vector2.Distance(v.Position, b.HqPosition)).DefaultIfEmpty(-1f).Min():0} m, time {world.Time / 60f:0.0} min");
+            LastHq = hq.IsAlive ? hq.Hp / hq.MaxHp : 0f;
+            LastKilled = killed;
             return (hq.IsAlive ? hq.Hp / hq.MaxHp : 0f) + killed;
         }
 
         internal static bool Verbose;
+
+        /// <summary>The last battle's two halves of the score: the HQ's health share left and the share of the attackers destroyed.</summary>
+        internal static float LastHq, LastKilled;
 
         private static float Mean(Catalog catalog, BaseLoadout defence, string[] army, int seeds) =>
             Enumerable.Range(1, seeds).Average(s => Score(catalog, defence, army, s));
@@ -168,6 +173,9 @@ namespace MachineBrigade.Tests
             var towers = TowerCards.All(catalog);
             var picks = new Dictionary<string, float>();
             var smallPicks = new Dictionary<string, float>();
+            // The balance pass after prompt 18 (A.4): each size's own share too (a tower competes in the slots it fits).
+            var bySize = new Dictionary<SlotSize, Dictionary<string, float>>();
+            var sizeSlots = new Dictionary<SlotSize, float>();
             float slots = 0f, smallSlots = 0f;
             var log = new StringBuilder("PICKS greedy from empty, armies doubled\n");
             foreach (var (enemy, single) in Enemies)
@@ -187,11 +195,14 @@ namespace MachineBrigade.Tests
                         }
                         var top = scores.Values.Max();
                         var tied = scores.Where(p => p.Value >= top - 0.02f).Select(p => p.Key).ToList();
+                        if (!bySize.ContainsKey(size)) bySize[size] = new Dictionary<string, float>();
                         foreach (var t in tied)
                         {
                             picks[t] = picks.GetValueOrDefault(t) + 1f / tied.Count;
                             if (size == SlotSize.Small) smallPicks[t] = smallPicks.GetValueOrDefault(t) + 1f / tied.Count;
+                            bySize[size][t] = bySize[size].GetValueOrDefault(t) + 1f / tied.Count;
                         }
+                        sizeSlots[size] = sizeSlots.GetValueOrDefault(size) + 1f;
                         slots++;
                         if (size == SlotSize.Small) smallSlots++;
                         var chosen = scores.First(p => p.Value == top).Key;
@@ -203,7 +214,14 @@ namespace MachineBrigade.Tests
             log.Append("all slots: ").Append(string.Join(", ", towers.Select(t => $"{t} {picks.GetValueOrDefault(t) * 100f / slots:0}%"))).Append('\n');
             log.Append("small slots: ").Append(string.Join(", ", towers.Where(t => catalog.Vehicles[t].Fort.Size == SlotSize.Small)
                 .Select(t => $"{t} {smallPicks.GetValueOrDefault(t) * 100f / smallSlots:0}%")));
+            foreach (var size in new[] { SlotSize.Medium, SlotSize.Large })
+                if (sizeSlots.TryGetValue(size, out var count))
+                    log.Append('\n').Append($"{size.ToString().ToLowerInvariant()} slots: ").Append(string.Join(", ", towers.Where(t => catalog.Vehicles[t].Fort.Fits(size))
+                        .Select(t => $"{t} {bySize[size].GetValueOrDefault(t) * 100f / count:0}%")));
             Debug.Log(log.ToString());
+            var outDir = Environment.GetEnvironmentVariable("MB_CV_OUT");
+            if (!string.IsNullOrEmpty(outDir))
+                System.IO.File.WriteAllText(System.IO.Path.Combine(outDir, "tower_picks_" + (Environment.GetEnvironmentVariable("MB_CV_TAG") ?? "now") + ".txt"), log.ToString());
             Assert.Greater(slots, 0f);
         }
 

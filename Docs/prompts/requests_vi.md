@@ -33,3 +33,132 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 
 - (28/09 19:00) các vũ khí như sam tên lửa cũng giảm tốc 1 xíu luôn, lửa từ các tên lửa nên bự hơn và dài hơn, nhiều tên lửa như thermobaric launcher lửa đuôi không khớp với tên lửa rà soát toàn bộ tên lửa
 - (28/09 19:00) vị trí tia lửa vẫn chưa khóp nòng súng, tôi đang coi armored car, roket technical cũng vậy, nó không nằm ngay bệ phóng, xe tank thì có vẻ phải dời ra ngoài nòng súng 1 xíu, nó có vẻ đang ở giữa cái súng, có xe tank đúng có xe phải dời 1 xíu, tank phun lửa, mortar đều bị hết, rà soát lại toàn bộ,
+
+## Play-test 4, 29/09 (agent A: DECISIONS 19P; agent B: tốc độ tên lửa, tốc độ bắn, model)
+
+- (29/09 19:40) trong inaction mô tả thì nên vô hạn đạn
+- (29/09 19:40) và bên địch đừng cho bất tử, nếu bên kia chết thì cho 1 chiếc thay thế vào
+- (29/09 19:40) tôi thấy tốc độ tên lửa bay của attack heli rất tốt, các tên lửa bay khác hơi nhanh, giảm xuống nữa, cái nào tốc độ bằng hay thấp hơn với attack heli rồi không cần sửa  [prompt 13; agent B]
+- (29/09 19:40) khúc mới vào inaction có vẻ hơi sượng, máy bay bỗng nhiên tốc độ cao bay tới, và cả bắn những máy bay chưa kịp vào khung hình, đợi 1 chút cũng được không sao
+- (29/09 19:40) ew jamer tôi thấy tên lửa tới bị biến mất luôn không hợp lý
+- (29/09 19:40) mine layer thì thả bom xong xe địch phải tự đi vào
+- (29/09 19:40) xem lại tốc độ ra đạn tất cả mọi thứ cho hợp lý luôn, như cram tốc độ thật sự ngoài đời rất cao, research kỹ  [prompt 13; agent B]
+- (29/09 19:40) => nên xem lại toàn bộ phương tiện trong in action cho hợp lý, cả tháp canh luôn, có các tháp canh khi xem nhìn không hiểu như cp relay
+- (29/09 19:40) laser tank âm thanh sai
+- (29/09 19:40) nên có hiệu ứng khi bắn vào shield
+- (29/09 19:40) bunker vehicle sau khi deploy phải có chế độ khác, nên vẽ mới  [prompt 17 C; agent B]
+- (29/09 19:40) drone mothership thả drone không khác gì tên lửa, kiếm cách khác
+- (29/09 19:40) tôi không thấy máy bay gunship của tôi, nó phải có đại bác và súng trường như ngoài đời
+- (29/09 19:40) 1 số phương tiện trong khá giống nhau, vẽ lại cho khác  [agent B]
+
+## Play-test 5, 29/09 (agent C: hình ảnh và model, DECISIONS 20V; agent D: nhịp bắn, hành vi, tốc độ, siege tank, 20W)
+
+- (29/09 21:50) trong inaction preview thì đừng cho địch là các xe tạo khói, nên chọn các xe đủ loại giáp  [C]
+- (29/09 21:50) hiệu ứng cháy các phương tiện khi máu thấp khá xấu, hãy tạo mới  [C]
+- (29/09 21:50) các hiệu ứng nổ từ đạn xe tank bắn tăng tầm nổ lên 20%, và thời gian tồn tại lên 20%  [C]
+- (29/09 21:50) hiệu ứng nổ từ các artillery / motart đạn bắn xa tăng tầm nổ thêm 20%  [C]
+- (29/09 21:50) hiệu ứng nổ từ các tên lửa tăng thêm 20%  [C]
+- (29/09 21:50) hiệu ứng nổ từ các drone thêm 20%  [C]
+- (29/09 21:50) anti air, tăng thời gian bắn và giảm thời gian nạp đạn, bắn 5s liên tục chỉ nạp khoảng 1s, cân bằng lại damage, nên áp dụng chung cho các xe có autocanon  [D]
+- (29/09 21:50) sam launcher, thermobaric launcher, heavy rocket artillery, ballistic missle laucher, long range sam: tên lửa bay giảm bớt độ dài lửa sau đuôi, thermobaric launcher và heavy rocket artillery giảm tốc tên lửa bằng với sam  [C: lửa đuôi; D: tốc độ]
+- (29/09 21:50) attack jet: tên lửa bay đang quá nhanh. giảm 25%  [D]
+- (29/09 21:50) fpv drone carrier giảm size drone 20%, và nhìn drone có vẻ hơi low quality, nâng lên  [C]
+- (29/09 21:50) jet và steath jet có auto canon update tương tự như trên, và nên có hành vi mới là bay theo đuôi xả auto canon liên tục, steath jet nên update lại model, nhìn ở giữa quá ít chi tiết  [D: nhịp bắn, hành vi; C: model]
+- (29/09 21:50) railgun truck nên có hiệu ứng cháy khi bắn bên kia như focused laser tank  [C]
+- (29/09 21:50) bunker vehicle: model sau khi biến hình còn quá xấu  [C]
+- (29/09 21:50) thêm 1 xe tank như thành siege tank như starcraft 2, khi vào siege mode sẽ thành mortar  [D]
+- (29/09 21:50) tôi không thấy gunship, nó không phải là heavy bomber, nếu thiếu thì làm mới gunship lại, xem các design ngoài đời, có gắn auto canon và đại bác  [C]
+- (29/09 21:50) drone mothership, giảm tốc độ drone bay 40%  [D]
+- (29/09 21:50) airstrike: zoom bự ra ngoài do tôi ko thấy máy bay, tất cả fire support cũng nên zoom ra ngoài  [C]
+- (29/09 21:50) cram phải luôn bắn nhiều chứ không phải bắn 1 cái là rụng tên lửa  [D]
+- (29/09 21:50) gun turret tăng tầm nổ 30%  [C]
+- (29/09 21:50) rocket battery giảm tốc độ bay tên lửa bằng như sam  [D]
+- (29/09 21:50) patriot battery giảm lửa đuôi tên lửa như trên  [C]
+- (29/09 22:00) và 1 agent nữa cân bằng game, có vẻ do giáp nên tôi thấy dame mọi thứ hơi thiếu, và toàn bộ các vụ nổ nên làm lại thêm particle cho hoành tráng  [cân bằng giáp: DECISIONS 20X; vụ nổ: agent C, 20V]
+- (29/09 21:10) tiện thể làm cho model boss tàu chiến leviathan luôn, làm nó như 1 battle ship, lấy ý tưởng yamato  [agent Leviathan, DECISIONS 20Y]
+- (29/09 21:12) có thể thêm súng cho nó, tăng size tùy thích, model cũ có thể thu nhỏ làm 1 thuyền hộ tống  [agent Leviathan, 20Y]
+
+## Play-test 6, 29/09 (E: giao diện, camera, âm thanh, gunship; F: hành vi, nhịp bắn, sát thương; H: hiệu ứng, model, kích thước; L: agent Leviathan làm tiếp boss; G: cân bằng boss, kinh tế, Săn trùm)
+
+- (29/09 22:50) trong deck của tôi không click thẳng vào thẻ trên deck để remove được  [E]
+- (29/09 22:50) hiệu ứng các thẻ đang chọn khó nhìn  [E]
+- (29/09 22:50) có bug nhiều khi các tên lửa như của attack heli không bay thẳng mà cứ giựt giựt  [F]
+- (29/09 22:50) gunship của tôi đâu, vẫn không thấy, ưu tiên cái này quan trọng, phải dô được màn hình deck, chụp là có máy bay tên là gunship (khác với heavy bomber), nó theo model gunship ac-130  [E]
+- (29/09 22:50) siege tank biến hình quá xấu, xem lại design trong starcraft  [H]
+- (29/09 22:50) jet và stealth jet vẫn không theo đuôi kẻ thù xả auto machine mà cứ bay lòng vòng, cứ làm cho nó đứng sau kẻ thù và xả dạn tới khi chết, hoặc thấp máu thì bay ra chỗ khác  [F]
+- (29/09 22:50) update logic lại các phương tiện có auto canonn, nó là vũ khí chính thì đừng có bay lòng vòng không bắn  [F]
+- (29/09 22:50) attack jet, rocket technical, scout helicopter, heavy gunship giảm tốc độ bay tên lửa  [F]
+- (29/09 22:50) light tank nên bắn 1 phát 1 lúc thôi  [F]
+- (29/09 22:50) mọi nguồn dame từ các phương tiện tăng lên 5-10% tùy phương tiện  [F]
+- (29/09 22:50) các luancher nên có animation đưa bệ phóng lên cao mới bắn  [H]
+- (29/09 22:50) các phương tiện bắn drone nên bắn drone đều đều chứ không phải bắn 1 đợt xong rồi hồi  [F]
+- (29/09 22:50) loitering mnition truck drone tăng tầm nổ 20%  [F]
+- (29/09 22:50) long range sam tầm nổ quá bé, tăng như sam bình thường  [F]
+- (29/09 22:50) drone mothership nên có thêm vũ khí như bom  [F]
+- (29/09 22:50) field tower fire support: vị trí dù bị sai bị clip vào giữa  [E]
+- (29/09 22:50) sead strike là gì sao vòng tròn khá bự nhưng chỉ có 1 tên lửa nhỏ, nên có hiệu ứng gì khác  [H]
+- (29/09 22:50) toàn bộ machine gun nên tăng thời gian bắn và giảm thời gian nạp đạn 1 xíu  [F]
+- (29/09 22:50) súng cram chỉ bắn thủ tên lửa, không bắn máy bay được  [F]
+- (29/09 22:50) gun turret hiệu ứng nổ to thêm 20%  [H]
+- (29/09 22:50) heavy fortress giảm hiệu ứng nổ 20%  [H]
+- (29/09 22:50) giảm size các máy bay nói chung 10-20%  [H]
+- (29/09 22:50) rocket battery không nên có súng máy, artillery emplacement luôn,  [F]
+- (29/09 22:50) trong battle, nút zoom tôi đâu, và khi chọn group làm sao để không chọn nữa  [E]
+- (29/09 22:50) quân viện trợ boss không được là tháp canh, boss nên tăng máu 50%-200%, dame của boss nên tăng 20%-50% mọi nguồn, và tăng thêm viện trợ của boss lên 30-50%  [G]
+- (29/09 22:50) thanh máu boss vẫn chiếm hơi nhiều, icon làm nhỏ lại, và nên để hàng trên cùng, trên cùng bị hàng ghi boss destroyed count chiếm, hoặc để chung hàng  [E]
+- (29/09 22:50) khi boss nổ khói hơi lâu che hết mọi thứ, có thể giảm màu hoặc giảm thời gian  [L]
+- (29/09 22:50) nhìn chung boss đang hơi yếu, chỉ cần 1 đoàn xe tank 4 chiếc có thể dễ dàng giết mà không mất ai, cân bằng lại, nếu là boss thì có thể có giáp tier cao hơn bình thường (tier 5) tôi thấy 1 đòn thả bom của bomber tiêu diệt luôn 1 boss chế độ hard trong boss rush, 1 barrage cũng thổi đi gần như cả thanh máu boss, các boss anti air đều hơi yếu  [G]
+- (29/09 22:50) kinh tế cũng có vẻ hơi mạnh  [G]
+- (29/09 22:50) boss rush thì ra nhiều boss yếu với air quá nên air nắm trùm, AI quân mình lâu lâu đứng yên không tham chiến, nhớ check các mode khác luôn  [G]
+- (29/09 22:50) boss ixion nhìn quá xấu, re design vẽ lại toàn bộ, nhìn không hề đáng sợ, xem lại các boss luôn, icarus cũng khá xấu nó không giống phi thuyền mà giống tàu con thoi, nên lấy ý tưởng từ các phim như star war  [L]
+- (29/09 22:50) hiệu ứng cháy trên boss và các phương tiện đang quá xấu, vẽ lại, nhìn nó như cháy dưới mặt đất được đem lên  [H]
+- (29/09 22:50) cutscreen boss không được thay đổi zoom hiện tại người chơi  [E]
+- (29/09 22:50) ví dụ boss rush sau khi hết boss cho option endless, với sau mỗi boss được tăng dần chỉ số, viện trợ từ từ  [G]
+- (29/09 22:50) trên unity zoom bằng con lăn chuột phải lăn cực nhiều mới zoom được 1 xíu  [E]
+- (29/09 22:50) xem lại âm thanh, tiếng mưa đang át tiếng nhạc  [E]
+- (29/09 22:55) đây là tôi đánh chưa có đồ và chưa lên cấp, nếu có đồ vô boss  sẽ dễ nữa, hãy cân bằng lại toàn bộ mode  [G]
+- (29/09 22:55) các redesign các model phải ref từ các phim / game bên ngoài khác  [L, H]
+- (29/09 23:00) các tháp canh không cần rule phải có 1 cây súng máy, nhìn khá lạ  [F]
+- (29/09 23:30) khi bấm start mission 1 1 không ăn  [agent sửa lỗi, 21B]
+- (29/09 23:30) sandbox cách vào như thế nào  [trả lời: tab Tác chiến → thẻ Sa bàn]
+- (29/09 23:35) giảm thời gian nạp đạn chung của các boss luôn, đang khá là lâu  [G]
+- (29/09 23:45) tôi thấy từ UI boss tuần trong operation, có thê coi được thông tin boss, và cả stats, có cả next level gì luôn và cả equipment, ẩn đi các thứ như next level và equipment, và đưa các info boss về 1 nơi khác như wiki hay collection gì đó  [agent sửa lỗi, 21B]
+- (29/09 23:50) Ui sandbox quá rồi, và chiếm tùm lum diện tích, tối ưu nó  [agent Sa bàn, chờ chỗ trống]
+- (29/09 23:55) check lại các colider của boss, cảm giác tên lửa khi bắn vào boss ví dụ như matriarch nó bay vào tâm của boss mới nổ trong khi đúng là đụng là nổ  [F]
+- (30/09 00:45) nhớ ghi các thông tin như số đạn bắn mỗi giây, thời gian reload vào file pdf luôn, càng chi tiết càng tốt, kể cả các thông tin khác, để tôi đem đi review  [lead: PDF phần 10b]
+- (30/09 00:50) giáp boss lên cấp cao thì nhớ tạo icon tương ứng  [G]
+- (30/09 00:50) mọi boss đều có thể vào boss rush  [G]
+- (30/09 00:50) có bug boss phi tuyền mới vào do ở quỹ đạo thấp nên nó bị tràn, mới vào cho nó xuống luôn  [G]
+- (30/09 01:00) về pdf thêm kích thước khá hay, nhớ thêm cho toàn bộ từ phương tiện, công trình, và đạn luôn, và nhụp bắn nạp đạn đường đạn khá hay  [lead: PDF 10b]
+
+## Play-test 7, 30/09 (ưu tiên; agent sửa ưu tiên, DECISIONS 22P)
+
+- (30/09 01:20) phương tiện có nhiều súng thì không thể bắn cùng lúc, scan lại toàn bộ phương tiện, nên cho bắn cùng lúc
+- (30/09 01:20) heavy gunship và attack jet tên lửa vẫn quá nhanh, giảm 30% tốc
+- (30/09 01:20) siege tank sau khi vào siege, vị trí súng máy không hiển thị đúng, và súng cũ trước khi vào siege nên thu lại
+- (30/09 01:20) các phương tiện bắn xa mà có súng trường, giảm range có thể bắn 30-50 tùy xe, hoặc các xe không chuyên chiến đấu
+- (30/09 01:20) drone mothership, giảm tốc drone bay 30%
+- (30/09 01:20) tôi vẫn không thấy thẻ gunship, nó nằm ở đâu, như hình nó đáng lẽ trong list các phương tiện bay, đề nghị check kỹ, cái heavy gunship trong hình là không phải, tôi cần ac-130
+- (30/09 01:20) và các tháp canh vẫn chưa bỏ vũ khí phụ cho hợp lý, như gun turret và heavy fortress
+- (30/09 01:20) ưu tiên sửa các cái này để test tiếp
+- (30/09 01:30) file pdf từng phương tiện nhớ ghi thêm là lấy ref từ cái gì ngoài đời thật / game luôn, toàn bộ từ phương tiện tới tháp canh tới boss  [agent tham khảo, chờ chỗ trống]
+
+## Play-test 8, 30/09 (agent A: hành vi, dữ liệu, giao diện; agent B: hình ảnh, model; G: Bastion gọi tháp)
+
+- (30/09 02:13) lửa do hư hại trên các phương tiện vẫn chưa đẹp, tham khảo bên ngoài và vẽ lại
+- (30/09 02:13) anti air đang bắn xe tank thì sẽ không thay đổi mục tiêu qua máy bay nếu có máy bay vào range, rà lại toàn bộ phương tiện AI để bắn đúng mục tiêu nào tốt nhất
+- (30/09 02:13) sam launcer trong in action preview không bắn gì, lúc trước bắn bình thường
+- (30/09 02:13) siege tank sau chuyển dạng giảm tầm vụ nổ 20%
+- (30/09 02:13) các vụ nổ như của heavy fortress xuất hiện khói hơi lâu, vụ nổ của boss khi chết cũng vậy, cho khói tan nhanh hơn 30-50%, tương tự cho các vũ khí khác nếu xài chung loại khói này
+- (30/09 02:13) chỉnh lại model vũ khí cho gunship ac 130, súng lòi ra hơi dài quá, và xóa tên lửa khỏi gunship
+- (30/09 02:13) boss bastion vẫn gọi triệu hồi chi viện ra 1 tháp súng, không được chi viện tháp canh
+- (30/09 02:13) fire support gọi gunship sao tới 1 lúc nó biến mất , nếu có thời gian thì cho tự bay ra khỏi map
+- (30/09 02:13) phần vehicle details của boss battleship không hiện đủ trong khung hình
+- (30/09 02:13) phần armour by face, khi xem battleship nó lại hiện của tank
+- (30/09 02:13) sandbox nên có cả biển để gọi boss biển, đôi khi các button như xóa đi 1 xe không ăn
+- (30/09 02:13) long range sam, vụ nổ do tên lửa quá nhỏ so với hình dáng tên lửa, nên x2 radius và vụ nổ lên
+- (30/09 02:13) trong base, chọn range, nó bị collapse rất nhiều không nhìn được, nên để border có màu, background thì transparent và chớp chớp khi ta select cụ thể để xem range
+- (30/09 02:13) icarus đừng dùng copy theo 100% design của starwar, chỉ lấy ý tưởng sửa lại toàn bộ từ màu tới model ...
+- (30/09 02:29) file pdf nhiều cái còn thiếu giá tiền  [lead, khi làm lại pdf]
+- (30/09 02:29) logic bom bị ném còn sai,như bomber không thể thả 1 phát toàn bộ mà phải thả như bom rải thảm, bom không tự động bay thẳng vào kẻ thù mà phải có logic rơi bom  [agent A]
+- (30/09 02:29) xong hết hãy update pdf

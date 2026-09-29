@@ -198,6 +198,26 @@ namespace MachineBrigade.Game.Rendering
 
         private static float Ease(float t) => t * t * (3f - 2f * t);
 
+        /// <summary>The rain loop's level for a weather (play-test 6: under the music; 0.5, 0.35 and 0.22 before).</summary>
+        internal static float RainLevel(WeatherKind kind) => kind switch
+        {
+            WeatherKind.Storm => 0.18f,
+            WeatherKind.Rain => 0.15f,
+            WeatherKind.Sandstorm => 0.1f,
+            _ => 0f,
+        };
+
+        /// <summary>The wind loop's level for a weather (play-test 6: under the music; 0.4, 0.24, 0.5, 0.18, 0.1 and 0.16 before).</summary>
+        internal static float AirLevel(WeatherKind kind) => kind switch
+        {
+            WeatherKind.Storm => 0.14f,
+            WeatherKind.Rain => 0.12f,
+            WeatherKind.Sandstorm => 0.2f,
+            WeatherKind.Snow => 0.1f,
+            WeatherKind.Night => 0.07f,
+            _ => 0.1f,
+        };
+
         private ParticleSystem Keep(ParticleSystem system, float rate)
         {
             _systems.Add((system, rate));
@@ -255,23 +275,10 @@ namespace MachineBrigade.Game.Rendering
                 Saturation = _base.Saturation + mood.Saturation,
                 Exposure = _base.Exposure + mood.Exposure,
                 Vignette = clear ? _base.Vignette : mood.Vignette,
-                // The rain loop is also the hiss of blowing sand.
-                RainSound = kind switch
-                {
-                    WeatherKind.Storm => 0.5f,
-                    WeatherKind.Rain => 0.35f,
-                    WeatherKind.Sandstorm => 0.22f,
-                    _ => 0f,
-                },
-                AirSound = kind switch
-                {
-                    WeatherKind.Storm => 0.4f,
-                    WeatherKind.Rain => 0.24f,
-                    WeatherKind.Sandstorm => 0.5f,
-                    WeatherKind.Snow => 0.18f,
-                    WeatherKind.Night => 0.1f,
-                    _ => 0.16f,
-                },
+                // The rain loop is also the hiss of blowing sand. Play-test 6: the rain drowned the music (the music plays
+                // at about 0.34), so the weather now sits under it: rain and wind together below the music.
+                RainSound = RainLevel(kind),
+                AirSound = AirLevel(kind),
             };
         }
 

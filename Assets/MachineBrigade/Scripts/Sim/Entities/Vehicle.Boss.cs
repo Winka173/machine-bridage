@@ -13,6 +13,19 @@ namespace MachineBrigade.Sim.Entities
     /// </summary>
     public sealed partial class Vehicle
     {
+        /// <summary>Play-test 6 (DECISIONS 21G): a boss's rank cycles its weapons faster (1 for anything else).</summary>
+        internal float RankFire => Def.RankDef?.FireRate ?? 1f;
+
+        /// <summary>Play-test 6: when the boss's strike window began and what strikes and bombs took from it since (its rank's cap).</summary>
+        internal double StrikeWindowAt = double.NegativeInfinity;
+
+        internal float StrikeWindowTaken;
+
+        /// <summary>Play-test 6: a standoff helicopter's target and when it began firing on it from its ring (infinity: not yet).</summary>
+        internal EntityId StandoffTarget;
+
+        internal double StandoffSince = double.PositiveInfinity;
+
         /// <summary>
         /// Each part's health as a share of its full health (empty: no parts). Its full health is a
         /// share of the body's full health, so a boss made tougher after it spawned (a campaign's
@@ -76,7 +89,20 @@ namespace MachineBrigade.Sim.Entities
         }
 
         /// <summary>Whether mount <paramref name="index"/> still fires (its part, if any, stands).</summary>
-        public bool MountWorks(int index) => index < 0 || index >= MountOff.Length || (!MountOff[index] && !(index < MountHeld.Length && MountHeld[index]));
+        public bool MountWorks(int index) => SiegeModeFires(index) && (index < 0 || index >= MountOff.Length || (!MountOff[index] && !(index < MountHeld.Length && MountHeld[index]) &&
+            // Prompt 19 E.5: guns that wake only once it has crashed.
+            !(index < MountDormant.Length && MountDormant[index])));
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20W): a siege tank's main weapon fires only sieged and its tank-mode gun only on its
+        /// tracks (neither while it sieges or packs up); every other mount, and every other vehicle, as before.
+        /// </summary>
+        private bool SiegeModeFires(int index)
+        {
+            if (Def.Deploy is not { Siege: true } dep) return true;
+            if (index == 0) return Deploy == DeployState.Deployed;
+            return index != dep.TankMount || Deploy == DeployState.Mobile;
+        }
 
         /// <summary>Prompt 18: mounts holding their fire while the big attack they carry charges and fires.</summary>
         internal bool[] MountHeld = Array.Empty<bool>();
@@ -106,6 +132,8 @@ namespace MachineBrigade.Sim.Entities
         {
             get
             {
+                // Prompt 20: a submarine up for a launch shows only its doors.
+                if (BodyShut && PartFrac.Length > 0) return true;
                 var lockDef = Def.PartLock;
                 if (lockDef == null || PartFrac.Length == 0) return false;
                 var broken = 0;
@@ -123,6 +151,13 @@ namespace MachineBrigade.Sim.Entities
             MountSpread = new float[Def.Mounts.Count];
             MountFail = new float[Def.Mounts.Count];
             MountHeld = new bool[Def.Mounts.Count];
+            MountDormant = new bool[Def.Mounts.Count];
+            if (Def.Tiers?.Crash is { } crash)
+                foreach (var m in crash.Guns)
+                    if (m > 0 && m < MountDormant.Length) MountDormant[m] = true;
+            // Prompt 20 J.4: mounts that wake with a later phase.
+            foreach (var m in Def.WakeMounts)
+                if (m > 0 && m < MountDormant.Length) MountDormant[m] = true;
             for (var i = 0; i < MountSpread.Length; i++) MountSpread[i] = 1f;
             SkillOff = new bool[Def.Skills.Count];
             if (parts.Count == 0) return;

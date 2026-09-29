@@ -81,14 +81,18 @@ namespace MachineBrigade.Game.Effects
                 wreck.PopsLeft = Random.Range(4, 7);
                 wreck.NextPop = now + Random.Range(4f, 6f);
                 var blaze = Mathf.Clamp(view.Sim.Radius / 1.4f, 1f, 2f);
-                wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * view.Top * 0.7f, blaze, StaticBurnSeconds, now);
-                _fires.Ignite(view.Root.position + Vector3.up * 0.5f + Random.insideUnitSphere * 0.8f, blaze * 0.7f, StaticBurnSeconds * 1.6f, now);
+                // DECISIONS 20Y: a boss's ruin burns as hard but shorter, under its thinner death smoke.
+                var boss = view.Def.Boss;
+                var burn = boss ? StaticBurnSeconds * 0.45f : StaticBurnSeconds;
+                var smoke = boss ? FireSpots.BossSmoke : 1f;
+                wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * view.Top * 0.7f, blaze, burn, now, smoke: smoke);
+                _fires.Ignite(view.Root.position + Vector3.up * 0.5f + Random.insideUnitSphere * 0.8f, blaze * 0.7f, burn * 1.6f, now, smoke: smoke);
                 return;
             }
             // A shot-down aircraft burns all the way down; a ground hulk burns where it stopped.
             var size = Mathf.Clamp(view.Sim.Radius / 1.6f, 0.75f, 1.6f);
             wreck.Fire = _fires.Ignite(view.Root.position + Vector3.up * 0.9f, size, BurnSeconds * Random.Range(0.85f, 1.15f), now,
-                view.Flying ? view.Root : null);
+                view.Flying ? view.Root : null, smoke: view.Def.Boss ? FireSpots.BossSmoke : 1f);
 
             // Ruins of fixed defences stay; only vehicle hulks make room for new ones.
             var living = 0;

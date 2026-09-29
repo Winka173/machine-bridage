@@ -126,10 +126,10 @@ namespace MachineBrigade.Sim.Strikes
                 if (economy != null && economy.Supports.Count > 0 && !Contains(economy.Supports, support.Id))
                     return CommandResult.Rejected(CommandError.UnknownCard);
                 if (economy != null && economy.CooldownLeft(support.Id, _world.Time) > 0f) return CommandResult.Rejected(CommandError.OnCooldown);
-                if (!_world.Economy.TrySpend(command.Team, economy?.CostOf(support.Id, support.CpCost) ?? support.CpCost))
+                if (!_world.Economy.TrySpend(command.Team, economy?.PriceOf(support.Id, support.CpCost) ?? support.CpCost))
                     return CommandResult.Rejected(CommandError.NotEnoughCp);
             }
-            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f);
+            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f) * economy.StrikeScale;
 
             Launch(support, command.Team, command.Point, command.Point2);
             _world.CountStrike(command.Team);
@@ -141,6 +141,9 @@ namespace MachineBrigade.Sim.Strikes
         {
             var direction = towards - point;
             direction = direction.LengthSquared() > 0.01f ? Vector2.Normalize(direction) : Vector2.UnitX;
+            // Play-test 6: a dropped tower comes down on open ground near the mark, clear of what stands there.
+            if (support.Kind == SupportKind.Tower && TowerOf(support, team) is { } dropped && _world.Catalog.Vehicles.TryGetValue(dropped, out var droppedDef))
+                point = _world.ClearSpot(droppedDef, point, team);
             var line = support.LineRank > 0 && _world.StrikeRank(team, support.Id) >= support.LineRank ? support.LineScale : 1f;
             var strike = new Strike
             {
@@ -267,6 +270,8 @@ namespace MachineBrigade.Sim.Strikes
                         s.Announced = true;
                     }
                     if (now < s.Start) return false;
+                    // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile down (items are bombs, not missiles).
+                    if (!support.Consumable && ShotDown(s)) return true;
                     Blast(s, s.Point);
                     return true;
                 }
@@ -339,7 +344,13 @@ namespace MachineBrigade.Sim.Strikes
                         var angle = k * SimMath.Tau / Math.Max(1, units.Count);
                         var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? 6f : 0f);
                         var unit = _world.SpawnVehicle(units[k], s.Team, _world.ClampToMap(at), SimMath.HeadingOf(s.Direction));
-                        if (support.Kind == SupportKind.Escort) unit.ExpiresAt = now + support.Duration;
+                        if (support.Kind == SupportKind.Escort)
+                        {
+                            unit.ExpiresAt = now + support.Duration;
+                            // It works over the spot it was called to (it used to wander off after targets 60 m away).
+                            unit.GuardPoint = _world.ClampToMap(s.Point);
+                            unit.PostRadius = MathF.Max(support.Radius, 12f);
+                        }
                     }
                     return true;
                 }
@@ -479,6 +490,22 @@ namespace MachineBrigade.Sim.Strikes
         }
 
         private void Blast(Strike s, Vector2 at) => Land(s, Scattered(s, at));
+
+        /// <summary>A cruise-missile strike met over its mark by an enemy heavy-missile interceptor (the PAC-3) with one left.</summary>
+        private bool ShotDown(Strike s)
+        {
+            foreach (var v in _world.VehicleList)
+            {
+                var aps = v.Aps;
+                if (aps == null || !aps.Heavy || !v.IsAlive || v.Team == s.Team || v.Team < 0 || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
+                if (Vector2.DistanceSquared(v.Position, s.Point) > aps.Radius * aps.Radius) continue;
+                v.ApsCharges--;
+                if (aps.Reload > 0f) v.ApsReload = 0f;
+                _world.Emit(SimEvent.Intercept(v, v.Def.Weapon, s.Point, v.ApsLeft = !v.ApsLeft));
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>Fire support called into an enemy jammer's bubble lands wide.</summary>
         private Vector2 Scattered(Strike s, Vector2 at)

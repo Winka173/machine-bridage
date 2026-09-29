@@ -120,6 +120,27 @@ namespace MachineBrigade.Sim.Content
             return best;
         }
 
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): a straight coast (the Sandbox's coastal test range): the waterline at
+        /// <paramref name="shore"/> out along the whole stretch from <paramref name="from"/> to <paramref name="to"/>.
+        /// </summary>
+        internal static SeaDef Straight(Vector2 along, float shore, float from, float to, IReadOnlyList<SeaLaneDef> lanes,
+            IReadOnlyList<SeaLandingDef> landings, IReadOnlyList<Vector2> piers, Vector2 airEntry)
+        {
+            var sorted = new List<SeaLaneDef>(lanes);
+            sorted.Sort((a, b) => a.W.CompareTo(b.W));
+            return new SeaDef
+            {
+                Along = along.LengthSquared() > 1e-6f ? Vector2.Normalize(along) : new Vector2(0f, 1f),
+                _shoreU = new[] { from, to },
+                _shoreW = new[] { shore, shore },
+                Lanes = sorted,
+                Landings = landings,
+                Piers = piers,
+                AirEntry = airEntry,
+            };
+        }
+
         internal static SeaDef Parse(JsonObject o)
         {
             var sea = new SeaDef();

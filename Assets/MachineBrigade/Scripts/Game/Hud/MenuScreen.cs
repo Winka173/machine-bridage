@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim.Content;
@@ -117,6 +118,7 @@ namespace MachineBrigade.Game.Hud
             }
             Root.Add(_nav);
             Root.Add(_note);
+            ShowBranchNews();
 
             // A language change rebuilds the menu; come back to the page the player was on.
             if (_reopenDeck) _armyView = ArmyView.Deck;
@@ -259,15 +261,15 @@ namespace MachineBrigade.Game.Hud
         /// </summary>
         public bool Back()
         {
-            var dialog = Root.Q(className: KitDialog.ScrimClass);
+            // The topmost dialog closes. The story card is a scrim too and stays in the menu while hidden:
+            // it hides, never leaves (a Back that took it out left Start with nothing to show, DECISIONS 21B).
+            VisualElement dialog = null;
+            foreach (var scrim in Root.Query(className: KitDialog.ScrimClass).ToList())
+                if (_story == null || scrim != _story.Root || _story.Visible) dialog = scrim;
             if (dialog != null)
             {
-                dialog.RemoveFromHierarchy();
-                return true;
-            }
-            if (_story != null && _story.Visible)
-            {
-                _story.Hide();
+                if (_story != null && dialog == _story.Root) _story.Hide();
+                else dialog.RemoveFromHierarchy();
                 return true;
             }
             if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Base && _base.Back()) return true;
@@ -301,7 +303,7 @@ namespace MachineBrigade.Game.Hud
         }
 
         private string TabTitle() => _tab == Tab.Campaign && _campaignChapter > 0
-            ? Strings.Format("campaign.chapterTitle", _campaignChapter, Strings.Get($"chapter.{_campaignChapter}.title"))
+            ? Strings.Format("campaign.chapterTitle", ("chapter", Campaign.ChapterName(_campaignChapter)), ("title", Strings.Get($"chapter.{_campaignChapter}.title")))
             : Strings.Get(NavKey(_tab));
 
         private static string NavKey(Tab tab)
@@ -339,7 +341,7 @@ namespace MachineBrigade.Game.Hud
             _coins.Coins = PlayerProfile.Coins;
             _rankLabel.text = Kit.Caps(Strings.Format("profile.rank", PlayerProfile.Level));
             _xpBar.Value = PlayerProfile.Xp / (float)Mathf.Max(1, PlayerProfile.XpForNext);
-            _xpLabel.text = Strings.Format("profile.xp", Kit.Count(PlayerProfile.Xp), Kit.Count(PlayerProfile.XpForNext));
+            _xpLabel.text = Strings.Format("profile.xp", ("xp", Kit.Count(PlayerProfile.Xp)), ("next", Kit.Count(PlayerProfile.XpForNext)));
             RefreshHome();
             RefreshArmy();
             RefreshShop();
@@ -559,11 +561,11 @@ namespace MachineBrigade.Game.Hud
         private string LockReason(string id)
         {
             var name = Strings.Card(id);
-            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", name, Kit.Count(Progression.Price(id, _catalog)));
+            if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
             var mission = Progression.UnlockMission(id);
             return mission != null
-                ? Strings.Format("deck.lockedMission", name, Campaign.Label(mission), Kit.Count(Progression.Price(id, _catalog)))
-                : Strings.Format("deck.lockedShop", name, Kit.Count(Progression.Price(id, _catalog)));
+                ? Strings.Format("deck.lockedMission", ("name", name), ("mission", Campaign.Label(mission)), ("coins", Kit.Count(Progression.Price(id, _catalog))))
+                : Strings.Format("deck.lockedShop", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
         }
 
         /// <summary>Where a locked card is won, in a few words ("Mở ở Chương 3").</summary>
@@ -579,6 +581,20 @@ namespace MachineBrigade.Game.Hud
         private static string Level(GraphicsQuality tier) => Strings.Get("settings." + tier.ToString().ToLowerInvariant());
 
         /// <summary>A short message along the bottom of the menu (what just happened, or why not).</summary>
+        /// <summary>
+        /// The tower-branch rework (DECISIONS 19T, E.3): once, the towers whose remade branches moved the player's choice, and
+        /// that their next change is free.
+        /// </summary>
+        private void ShowBranchNews()
+        {
+            var news = PlayerProfile.TakeBranchNews();
+            if (news.Count == 0) return;
+            var names = string.Join(", ", news.Select(t => Strings.Card(t) + (PlayerProfile.TowerBranch(t) is { } b ? " (" + Strings.Branch(b) + ")" : "")));
+            VisualElement scrim = null;
+            var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.branches.title"), Strings.Format("news.branches", names), ok));
+        }
+
         private void Note(string text, bool warn = false) => KitToast.Show(_note, text, warn ? ToastKind.Alert : ToastKind.Info, 3f);
 
         private readonly VisualElement _note;
@@ -588,9 +604,11 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "dossier-intel", "comic", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
-            "legend", "detail-weapons", "detail-armour",
+            "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
+            // Prompt 22 F.4: the commander picker and the dossier's commander pages.
+            "commanders", "dossier-commanders",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -615,6 +633,27 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Campaign);
                     OpenDossier();
                     break;
+                case "commanders":
+                    ShowTab(Tab.Army);
+                    OpenCommanders();
+                    break;
+                case "dossier-commanders":
+                    ShowTab(Tab.Campaign);
+                    _dossierTab = DossierTab.Commanders;
+                    OpenDossier();
+                    break;
+                case "dossier-intel":
+                    // Prompt 22 D.7: the intel files.
+                    ShowTab(Tab.Campaign);
+                    _dossierTab = DossierTab.Intel;
+                    OpenDossier();
+                    break;
+                case "comic":
+                    // Prompt 22 D.8: a chapter's comic panels, all of them showing.
+                    ShowTab(Tab.Campaign);
+                    _comic.Show(1, null);
+                    while (_comic.Shown < Narrative.ComicOf(1).Count) _comic.Next();
+                    break;
                 case "operations":
                     ShowTab(Tab.Operations);
                     break;
@@ -630,13 +669,28 @@ namespace MachineBrigade.Game.Hud
                     };
                     ShowTab(Tab.Army);
                     break;
+                case "army-deck-supports":
+                case "army-deck-air":
+                    // Play-test 6: the collection filtered to the supports; play-test 7: to the aircraft (the AC-130 among them).
+                    _armyView = ArmyView.Deck;
+                    _filter = screen == "army-deck-air" ? CardFilter.Air : CardFilter.Support;
+                    ShowTab(Tab.Army);
+                    break;
                 case "army-base-picked":
                 case "army-base-ranges":
-                    // The base with a filled slot picked (its panel and range rings), or with the whole base's cover shown.
+                case "army-base-ranges-picked":
+                    // The base with a filled slot picked (its panel and range rings), or with the whole base's cover shown
+                    // (play-test 8 A: both, the picked tower's range pulsing among the others).
                     _armyView = ArmyView.Base;
                     ShowTab(Tab.Army);
-                    if (screen == "army-base-ranges") _base.ToggleRanges();
-                    else _base.DebugPickFilled();
+                    if (screen != "army-base-picked") _base.ToggleRanges();
+                    if (screen != "army-base-ranges") _base.DebugPickFilled();
+                    break;
+                case "detail-armour-leviathan":
+                    // Play-test 8 A: a big boss's page (the Leviathan framed by its bounds, its armour on a ship's outline).
+                    ShowTab(Tab.Army);
+                    DebugScrollDetail(true);
+                    OpenDetail("leviathan");
                     break;
                 case "detail":
                 case "detail-action":
@@ -658,6 +712,17 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Army);
                     _detailTab = screen.EndsWith("-action") ? DetailTab.Firing : screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
                     OpenDetail(screen.StartsWith("detail-tower") ? "aa_turret" : "repair_bay");
+                    break;
+                case "detail-boss":
+                case "detail-boss-stats":
+                    // Play-test 6 (DECISIONS 21B): a boss's page as the Boss Hunt's list opens it: its file, or its numbers.
+                    ShowTab(Tab.Operations);
+                    OpenBossGuide("behemoth");
+                    if (screen == "detail-boss-stats")
+                    {
+                        _detailTab = DetailTab.Stats;
+                        Refresh();
+                    }
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));
@@ -741,7 +806,7 @@ namespace MachineBrigade.Game.Hud
             "heavy_aa" => "heavyaa",
             "titan_tank" => "titan",
             "twin_tank" => "twintank",
-            "siege_tank" => "siegegun",
+            "siege_tank" => "siegetank",
             "atgm_carrier" => "atgm",
             "heavy_rocket_artillery" => "smerch",
             "ballistic_launcher" => "ballistic",

@@ -70,6 +70,7 @@ namespace MachineBrigade.Game.Audio
             music._base = mood;
             music._boss = false;
             music._duckTarget = 1f;
+            music._alertLeft = 0f;
             music.Switch(mood);
             return music;
         }
@@ -100,6 +101,9 @@ namespace MachineBrigade.Game.Audio
             _stinger.priority = 0;
         }
 
+        /// <summary>Prompt 20 F.4, G.4: the boss track (a main boss's own, the mini bosses' shared one); a missing clip plays "boss".</summary>
+        public string BossTrack { get; set; } = "boss";
+
         /// <summary>A boss is on the field: its track until it falls, then back to the battle.</summary>
         public bool Boss
         {
@@ -119,6 +123,20 @@ namespace MachineBrigade.Game.Audio
         /// such as the detail page's In action range; eased in and out.
         /// </summary>
         public void Duck(float level) => _duckTarget = Mathf.Clamp01(level);
+
+        /// <summary>How far an alert takes the music down, and for how long (play-test 6).</summary>
+        internal const float AlertLevel = 0.6f, AlertSeconds = 2.5f;
+
+        private float _alertLeft;
+
+        /// <summary>
+        /// Play-test 6: an alert (a boss's big attack, a fortress's alarm) takes the music down for a moment so it is
+        /// heard; nothing else ducks the music in battle (ambience and weather sit under it instead).
+        /// </summary>
+        public void Alert() => _alertLeft = AlertSeconds;
+
+        /// <summary>The share of its level the music plays at now (the held duck, under an alert lower still).</summary>
+        internal float DuckNow => _duck;
 
         /// <summary>The battle is over: the music fades and the victory or defeat stinger plays.</summary>
         public void Result(bool won)
@@ -140,7 +158,7 @@ namespace MachineBrigade.Game.Audio
                 Mood.Menu => "menu",
                 Mood.Battle => _battle,
                 Mood.Siege => "siege",
-                Mood.Boss => "boss",
+                Mood.Boss => Resources.Load<AudioClip>("Audio/Music/" + BossTrack) != null ? BossTrack : "boss",
                 _ => null,
             };
             _mood = mood;
@@ -176,7 +194,9 @@ namespace MachineBrigade.Game.Audio
             // After a scene load the first delta is the whole load: step as one frame.
             dt = Mathf.Min(dt, 0.1f);
             var step = dt / FadeSeconds;
-            _duck = Mathf.MoveTowards(_duck, _duckTarget, dt * DuckSpeed);
+            _alertLeft = Mathf.Max(0f, _alertLeft - dt);
+            var target = _alertLeft > 0f ? Mathf.Min(_duckTarget, AlertLevel) : _duckTarget;
+            _duck = Mathf.MoveTowards(_duck, target, dt * DuckSpeed);
             var volume = Bus * MatchSettings.MusicVolume * Trim * _duck;
             for (var i = 0; i < _decks.Length; i++)
             {

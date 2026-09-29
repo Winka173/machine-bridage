@@ -223,9 +223,11 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(SlotSize.Large, catalog.Vehicles["shield_tower"].Fort.Size, "a large-slot tower");
             var branches = TowerCards.Branches(catalog, "shield_tower");
             Assert.AreEqual(2, branches.Count, "two rank-7 branches");
-            Assert.Less(catalog.Vehicles["shield_tower.bulwark"].Dome.Radius, catalog.Vehicles["shield_tower"].Dome.Radius, "the bulwark dome is smaller...");
-            Assert.Greater(catalog.Vehicles["shield_tower.bulwark"].Dome.Hp, catalog.Vehicles["shield_tower"].Dome.Hp, "...and tougher");
-            Assert.Less(catalog.Vehicles["shield_tower.pulse"].Dome.Recharge, catalog.Vehicles["shield_tower"].Dome.Recharge, "the pulse dome is back sooner");
+            // The tower-branch rework (DECISIONS 19T): A a stronger dome over the same area, B no dome but tower shields.
+            Assert.AreEqual(catalog.Vehicles["shield_tower"].Dome.Radius, catalog.Vehicles["shield_tower.bulwark"].Dome.Radius, 0.01f, "the shield dome covers the area...");
+            Assert.Greater(catalog.Vehicles["shield_tower.bulwark"].Dome.Hp, catalog.Vehicles["shield_tower"].Dome.Hp, "...and is tougher");
+            Assert.IsNull(catalog.Vehicles["shield_tower.ward"].Dome, "the tower shields branch has no dome");
+            Assert.IsNotNull(catalog.Vehicles["shield_tower.ward"].Wards, "but a shield on every tower near it");
 
             var world = Field();
             var generator = world.SpawnVehicle("shield_tower", 0, Vector2.Zero, 0f);
@@ -310,19 +312,23 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(6, world.Economy.AircraftCount(0), "the side has its six aircraft up");
             world.Submit(new Command(CommandType.Attack, 0, new[] { carrier.Id }, default, group[1].Id));
             var drones = new List<EntityId>();
+            var at = new List<double>();
             var most = 0;
-            Run(world, 12f, e =>
+            // Play-test 6 (DECISIONS 21F): the drones go one after another, all through its passes (it was all eight at once).
+            Run(world, 45f, e =>
             {
-                if (e.Kind == SimEventKind.WeaponFired && e.Entity == carrier.Id && e.DefId == "swarm_drones") drones.Add(e.Other);
+                if (e.Kind != SimEventKind.WeaponFired || e.Entity != carrier.Id || e.DefId != "swarm_drones") return;
+                drones.Add(e.Other);
+                at.Add(world.Time);
             }, () =>
             {
                 carrier.Hp = carrier.MaxHp;
                 most = System.Math.Max(most, world.Economy.AircraftCount(0));
             });
-            Assert.AreEqual(8, drones.Count, "one full load: eight FPV drones");
+            Assert.GreaterOrEqual(drones.Count, 8, "a full load's eight FPV drones and more");
             Assert.GreaterOrEqual(drones.Distinct().Count(), 3, "they spread over the group, each to its own target");
             Assert.AreEqual(6, most, "the drones never count as aircraft");
-            Assert.AreNotEqual(SupplyState.Fighting, carrier.Supply, "its bay empty, it goes back to rearm");
+            Assert.IsTrue(at.Zip(at.Skip(1), (x, y) => y - x).All(gap => gap > 0.5), "one at a time, never a wave");
         }
 
         [Test]

@@ -63,6 +63,19 @@ namespace MachineBrigade.Sim.AI
         private Vector2 _lastObjective;
         private readonly HashSet<EntityId> _flanked = new();
         private readonly List<EntityId> _ids = new();
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): since when each of our vehicles has stood with no order and nothing to shoot.
+        /// The line gathers before it moves on, and a friend stuck on its way (or busy with something out of reach)
+        /// used to hold the rest where they stood for minutes; past <see cref="StaleIdle"/> seconds a vehicle goes on.
+        /// </summary>
+        private readonly Dictionary<EntityId, double> _idleSince = new();
+
+        private readonly List<EntityId> _stale = new();
+
+        private readonly List<EntityId> _idleGone = new();
+
+        private const double StaleIdle = 12.0;
         private readonly List<EntityId> _otherIds = new();
         private float _timer;
 
@@ -267,6 +280,7 @@ namespace MachineBrigade.Sim.AI
             DirectArtillery(world, front, objective, forward, contact);
             DirectFlankers(world, objective, forward, contact);
             DirectMainBody(world, objective, contact);
+            if (!holding) PushStale(world, objective);
         }
 
         /// <summary>
@@ -671,6 +685,10 @@ namespace MachineBrigade.Sim.AI
                     _released.Add(id);
             foreach (var id in _released) _fallingBack.Remove(id);
             _flanked.RemoveWhere(id => !world.TryGetVehicle(id, out _));
+            _idleGone.Clear();
+            foreach (var id in _idleSince.Keys)
+                if (!world.TryGetVehicle(id, out var idle) || !idle.IsAlive) _idleGone.Add(id);
+            foreach (var id in _idleGone) _idleSince.Remove(id);
             // Once a flanking group is spent, the next one swings round the other side.
             if (_hadFlankers && _flanked.Count == 0) _flankSide = -_flankSide;
             _hadFlankers = _flanked.Count > 0;
@@ -691,7 +709,9 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Vehicles the player is steering by hand are left alone, and each commander keeps to its own (the ally's or the player's).
                 // Escorts keep to their boss (prompt 16 F).
-                if (v.Team != _team || v.Scripted || v.IsEscort || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // A called gunship keeps to where it was called (test feedback 19P).
+                if (v.Team != _team || v.Scripted || v.IsEscort || v.PostRadius > 0f || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) ||
+                    v.UnderPlayerControl(world.Time)) continue;
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
                 // Prompt 17 C: a loyal wingman flies on its own (on a leader's wing, or over the front).
@@ -706,6 +726,11 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Engineers, jammers, command vehicles (their aura, and a forward drop zone when they
                 // stand) and counter-battery radars keep a little behind the middle of the army.
+                if (v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && !v.Engaged.IsValid)
+                {
+                    if (!_idleSince.ContainsKey(v.Id)) _idleSince[v.Id] = world.Time;
+                }
+                else _idleSince.Remove(v.Id);
                 if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null ||
                     (v.Def.Dome != null && !v.Def.Static)) _support.Add(v);
                 else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
@@ -868,7 +893,8 @@ namespace MachineBrigade.Sim.AI
                 var v = vehicles[i];
                 if (!Ready(v) || Busy(world, v)) continue;
                 var weapon = v.Def.Weapon;
-                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.25f) continue;
+                // Autocannons and up plunder; a heavy machine gun (0.3 on a level-2 structure since DECISIONS 20X) does not.
+                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.35f) continue;
                 if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;
                 Prop? best = null;
                 var bestDistance = weapon.Range + 2f;
@@ -913,6 +939,14 @@ namespace MachineBrigade.Sim.AI
                 // hovering overhead only herded it into the map's edge (its machine gun and the
                 // anti-air answer aircraft).
                 var closest = NearestGround(a.Position, out var threat);
+                // Play-test 5 (DECISIONS 20W): a siege tank does not run from what gets inside its mortar's reach: it
+                // fights it with its tank gun (it packs up for that by itself).
+                if (threat != null && closest < weapon.MinRange + 6f && a.Def.Deploy is { Siege: true } siege && siege.TankMount < a.Arms.Length &&
+                    closest <= a.Arms[siege.TankMount].Range + 4f)
+                {
+                    if (a.Order.Kind != OrderKind.Attack || a.Order.Target != threat.Id) Issue(world, CommandType.Attack, a.Id, threat.Position, threat.Id);
+                    continue;
+                }
                 if (threat != null && closest < weapon.MinRange + 6f)
                 {
                     // Too close to shoot back: open the distance, by the best way out (never into the
@@ -1163,9 +1197,20 @@ namespace MachineBrigade.Sim.AI
 
             if (contact)
             {
-                // Those already standing on the objective stay put rather than being re-sent every decision.
+                // Those already standing on the objective stay put rather than being re-sent every decision; one that has
+                // stood there with nothing to shoot for a while goes for the nearest enemy it knows of (play-test 6).
+                _stale.Clear();
                 for (var i = _ids.Count - 1; i >= 0; i--)
-                    if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < 8f) _ids.RemoveAt(i);
+                    if (world.TryGetVehicle(_ids[i], out var there) && Vector2.Distance(there.Position, objective) < 8f)
+                    {
+                        if (Stale(world, there)) _stale.Add(there.Id);
+                        _ids.RemoveAt(i);
+                    }
+                if (_stale.Count > 0 && NearestGround(objective, out var near) < float.MaxValue && near != null)
+                {
+                    Issue(world, CommandType.AttackMove, _stale, Clamp(world, near.Position));
+                    foreach (var id in _stale) _idleSince.Remove(id);
+                }
                 // An enemy fighting under its towers: go in only with the strength for both, else
                 // hold at the edge of their guns and let the enemy (and the artillery) come.
                 var into = Clamp(world, objective);
@@ -1174,7 +1219,19 @@ namespace MachineBrigade.Sim.AI
                 if (_ids.Count > 0) Issue(world, CommandType.AttackMove, _ids, into);
                 return;
             }
-            if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f)) return;
+            if (_ids.Count < MathF.Ceiling(_line.Count * 0.75f))
+            {
+                // Play-test 6: the line waits to gather, but not for ever: a vehicle idle past StaleIdle goes on.
+                _stale.Clear();
+                foreach (var id in _ids)
+                    if (world.TryGetVehicle(id, out var waiting) && Stale(world, waiting) && Vector2.Distance(waiting.Position, objective) > SameRendezvous) _stale.Add(id);
+                if (_stale.Count > 0)
+                {
+                    Issue(world, CommandType.AttackMove, _stale, Clamp(world, objective));
+                    foreach (var id in _stale) _idleSince.Remove(id);
+                }
+                return;
+            }
             var goal = Clamp(world, leadDistance > BoundLength * 1.5f ? lead.Position + Direction(lead.Position, objective) * BoundLength : objective);
             // Into the reach of known defences only together: the next bound stops at the edge of
             // their guns until most of the line has gathered there, then everyone goes in at once.
@@ -1277,9 +1334,12 @@ namespace MachineBrigade.Sim.AI
         private const float ReinforcementGap = 50f;
         private const float HomeReach = 45f;
 
-        /// <summary>Reinforcements go forward in groups of this many (or once the first has waited this long).</summary>
-        private const int WaveSize = 3;
-        private const double WaveWait = 25.0;
+        /// <summary>
+        /// Reinforcements go forward in groups of this many (or once the first has waited this long). Play-test 6
+        /// (DECISIONS 21G): 3 and 25 s left a player's single new vehicle standing at home for most of half a minute.
+        /// </summary>
+        private const int WaveSize = 2;
+        private const double WaveWait = 12.0;
 
         /// <summary>Reinforcements waiting at the staging point, and since when.</summary>
         private readonly Dictionary<EntityId, double> _staged = new();
@@ -1366,6 +1426,27 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>Two rendezvous closer than this are the same one (group moves spread their slots).</summary>
         private const float SameRendezvous = 12f;
+
+        /// <summary>Play-test 6: it has stood idle, nothing to shoot, for <see cref="StaleIdle"/> seconds.</summary>
+        private bool Stale(SimWorld world, Vehicle v) => _idleSince.TryGetValue(v.Id, out var since) && world.Time - since >= StaleIdle;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): the last word of each decision: a line or fast vehicle that has stood idle past
+        /// <see cref="StaleIdle"/> (whatever held it: a flank run over, a rendezvous reached with the fight elsewhere)
+        /// goes for the nearest enemy on the ground it knows of, else the objective.
+        /// </summary>
+        private void PushStale(SimWorld world, Vector2 objective)
+        {
+            foreach (var list in new[] { _line, _fast })
+                foreach (var v in list)
+                {
+                    if (!Stale(world, v)) continue;
+                    var to = NearestGround(v.Position, out var near) < float.MaxValue && near != null ? near.Position : objective;
+                    if (Vector2.Distance(v.Position, to) < SameRendezvous * 0.5f) continue;
+                    Issue(world, CommandType.AttackMove, v.Id, Clamp(world, to));
+                    _idleSince.Remove(v.Id);
+                }
+        }
 
         /// <summary>
         /// Free for the next bound: idle, or as good as arrived. Vehicles jostling for their slot

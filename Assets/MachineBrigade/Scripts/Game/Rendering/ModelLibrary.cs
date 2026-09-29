@@ -162,6 +162,12 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         internal static readonly Regex PartPattern = new(@"^Part_[a-z]+(\.\d+)?$", RegexOptions.IgnoreCase);
 
+        /// <summary>
+        /// Play-test 4 (DECISIONS 19R): the bunker vehicle's digging-in parts (Deploy_blade, Deploy_plate_l, Deploy_berm
+        /// ...), each its own rigid group so VehicleView.Deploy can swing, raise or grow it at every detail level.
+        /// </summary>
+        internal static readonly Regex DeployPattern = new(@"^Deploy_[a-z]+(_[lr])?(\.\d+)?$", RegexOptions.IgnoreCase);
+
         /// <summary>Models whose radar turns slower than the usual 120 degrees a second (an EW tower's jammer head).</summary>
         private static readonly Dictionary<string, float> SlowRadars = new() { ["ew_tower"] = 30f };
 
@@ -177,6 +183,91 @@ namespace MachineBrigade.Game.Rendering
             RegexOptions.IgnoreCase);
 
         private const string ElevationName = "Elevation";
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21H): launchers whose erector is drawn under other names than the barrel parts: they
+        /// join the elevating group, so the view can raise them to fire (the Iskander's erector and missiles, the Shahed
+        /// truck's launch rack and drone, the Lancet truck's cell box).
+        /// </summary>
+        private static readonly Dictionary<string, Regex> ErectorParts = new()
+        {
+            ["ballistic_launcher"] = new Regex("^(erector|missile_)", RegexOptions.IgnoreCase),
+            ["shahed_truck"] = new Regex("^(drone_|rack|ram_rods|rams)", RegexOptions.IgnoreCase),
+            ["lancet_truck"] = new Regex("^(box_|cell|munition|ram_rods|rams|stripes)", RegexOptions.IgnoreCase),
+        };
+
+        /// <summary>
+        /// Play-test 6: IFVs whose ATGM box sits on the turret's side. It gets a pivot of its own (`Deploy_atgm`, at the
+        /// box's rear foot) instead of riding the gun, so the view raises it only to fire its missile, as a Bradley's TOW.
+        /// </summary>
+        internal static readonly HashSet<string> SideLaunchers = new() { "ifv", "elite_apc" };
+
+        /// <summary>The ATGM box's own pivot in <see cref="SideLaunchers"/>: its launcher, tubes and missile muzzles move on to it.</summary>
+        internal const string SideErectorName = "Deploy_atgm";
+
+        private static void AddSideErector(Transform turret)
+        {
+            var box = new List<Transform>();
+            foreach (Transform child in turret)
+                if (Regex.IsMatch(child.name, "^(launcher|tubes|muzzle_missile)", RegexOptions.IgnoreCase)) box.Add(child);
+            Bounds? bounds = null;
+            foreach (var part in box)
+            foreach (var filter in part.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null) continue;
+                foreach (var corner in Corners(filter.sharedMesh.bounds))
+                {
+                    var p = turret.InverseTransformPoint(filter.transform.TransformPoint(corner));
+                    if (bounds == null) bounds = new Bounds(p, Vector3.zero);
+                    else
+                    {
+                        var b = bounds.Value;
+                        b.Encapsulate(p);
+                        bounds = b;
+                    }
+                }
+            }
+            if (bounds == null) return;
+            var go = new GameObject(SideErectorName);
+            go.transform.SetParent(turret, false);
+            go.transform.localPosition = new Vector3(bounds.Value.center.x, bounds.Value.min.y, bounds.Value.min.z);
+            foreach (var part in box) part.SetParent(go.transform, true);
+        }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21H): models drawn with the turret in another heading than the one they spawn in. The
+        /// siege tank is drawn sieged (siege cannon forward, so its elevating barrel is laid like every other); its
+        /// turret is turned round on the template, so every copy (the menu's preview, the level-of-detail bake, the
+        /// battle) starts in tank mode with the twin 105 mm forward. VehicleView.Deploy swings it back as it sieges.
+        /// </summary>
+        internal static readonly Dictionary<string, float> RestTurretYaw = new() { ["siege_tank"] = 180f };
+
+        /// <summary>A coaxial gun's parts (Coax, Coax_mount, Coax_hider, Coax_housing) and its muzzle.</summary>
+        private static readonly Regex CoaxPart = new(@"^(Coax(_[a-z]+)?|Muzzle_coax)(\.\d+)?$", RegexOptions.IgnoreCase);
+
+        /// <summary>
+        /// Play-test 7 (DECISIONS 22P): a tower model's weapons that none of its towers fire (<see cref="TowerArt.Unarmed"/>)
+        /// come off the template before it is merged: a `Mount_&lt;slot&gt;` with everything on it, and the coaxial gun.
+        /// </summary>
+        private static void StripUnarmed(Transform root, string modelId)
+        {
+            var gone = new List<Transform>();
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+            {
+                var mount = MountPattern.Match(t.name);
+                if (mount.Success ? TowerArt.Unarmed(modelId, mount.Groups[1].Value) : CoaxPart.IsMatch(t.name) && TowerArt.Unarmed(modelId, "coax"))
+                    gone.Add(t);
+            }
+            foreach (var t in gone)
+                if (t != null) Object.DestroyImmediate(t.gameObject);
+        }
+
+        private static void TurnToRest(string modelId, Transform root)
+        {
+            if (!RestTurretYaw.TryGetValue(modelId, out var yaw)) return;
+            var turret = Find(root, TurretPattern);
+            if (turret != null) turret.localRotation = Quaternion.Euler(0f, yaw, 0f) * turret.localRotation;
+        }
 
         private readonly Dictionary<string, (float pitch, BarrelKind kind)> _elevations = new();
 
@@ -435,12 +526,14 @@ namespace MachineBrigade.Game.Rendering
             }
             var template = Object.Instantiate(Prefab(modelId), _templateRoot, false);
             template.name = modelId;
+            StripUnarmed(template.transform, modelId);
             AlignMuzzles(template.transform);
-            var raise = AddElevation(template.transform);
+            var raise = AddElevation(template.transform, modelId);
             if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;
             AddLaunchPoints(template.transform);
             AddBarrelPoints(template.transform);
             MergeRigidParts(template.transform);
+            TurnToRest(modelId, template.transform);
             _templates[modelId] = template;
             return template;
         }
@@ -1045,15 +1138,17 @@ namespace MachineBrigade.Game.Rendering
         /// how far the barrel already points up and what kind it is; no pivot without a turret or
         /// a Muzzle_main to aim along.
         /// </summary>
-        private static (float pitch, BarrelKind kind) AddElevation(Transform root)
+        private static (float pitch, BarrelKind kind) AddElevation(Transform root, string modelId = null)
         {
             var turret = Find(root, TurretPattern);
             if (turret == null || turret.Find(ElevationName) != null) return (0f, BarrelKind.None);
+            if (modelId != null && SideLaunchers.Contains(modelId)) AddSideErector(turret);
             var parts = new List<Transform>();
             Transform muzzle = null;
+            var erector = modelId != null && ErectorParts.TryGetValue(modelId, out var extra) ? extra : null;
             foreach (Transform child in turret)
             {
-                if (!BarrelPattern.IsMatch(child.name)) continue;
+                if (!BarrelPattern.IsMatch(child.name) && (erector == null || !erector.IsMatch(child.name))) continue;
                 parts.Add(child);
                 if (child.name.StartsWith("Muzzle_main", StringComparison.OrdinalIgnoreCase)) muzzle = child;
             }
@@ -1152,7 +1247,8 @@ namespace MachineBrigade.Game.Rendering
         private static bool IsMovingPart(Transform t)
         {
             var name = t.name;
-            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name) || PartPattern.IsMatch(name)) return true;
+            if (TurretPattern.IsMatch(name) || MountPattern.IsMatch(name) || LoosePattern.IsMatch(name) || PartPattern.IsMatch(name) ||
+                DeployPattern.IsMatch(name)) return true;
             if (name == ElevationName && t.parent != null && TurretPattern.IsMatch(t.parent.name)) return true;
             if (RecoilPattern.IsMatch(name) && t.parent != null &&
                 (TurretPattern.IsMatch(t.parent.name) || t.parent.name == ElevationName)) return true;

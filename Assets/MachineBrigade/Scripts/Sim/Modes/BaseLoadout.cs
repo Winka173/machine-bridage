@@ -220,8 +220,9 @@ namespace MachineBrigade.Sim.Modes
         /// </summary>
         /// <param name="allowed">Only towers it lets through (prompt 14's Auto-arrange: the player's own towers); null: any.</param>
         /// <param name="layered">For a long battlefield's layered base (prompt 17 B.4): the long table's slots.</param>
+        /// <param name="against">The deck it will face (prompt 20 L.1): the AI chooses its point defence's rank-7 branch by it (see <see cref="ChooseAiBranches"/>); null: no branches.</param>
         public static BaseLoadout ForAi(Catalog catalog, string difficulty, string style = "default", int seed = 1, int? level = null,
-            Predicate<string>? allowed = null, bool layered = false)
+            Predicate<string>? allowed = null, bool layered = false, IReadOnlyCollection<string>? against = null)
         {
             var rules = catalog.Base;
             var loadout = new BaseLoadout { HqLevel = Math.Clamp(level ?? rules.AiLevel(difficulty), 1, rules.MaxLevel), Layered = layered };
@@ -259,7 +260,26 @@ namespace MachineBrigade.Sim.Modes
                 var aa = Draw(pool, random, p => p.size == SlotSize.Small && IsAntiAir(catalog, p.id)) ?? (catalog.Vehicles.ContainsKey("aa_turret") ? "aa_turret" : null);
                 if (aa != null) loadout.Small[loadout.Small.Count - 1] = aa;
             }
+            if (against != null && difficulty != "Easy") ChooseAiBranches(catalog, loadout, against, weights);
             return loadout;
+        }
+
+        /// <summary>
+        /// The AI's rank-7 branches (prompt 20 L.1 for the C-RAM; the tower-branch rework, DECISIONS 19T A.5, for every
+        /// tower): each tower in the loadout takes the branch <see cref="BranchChoice"/> scores best against the deck it
+        /// will face, its general's style weighing the branches it likes.
+        /// </summary>
+        public static void ChooseAiBranches(Catalog catalog, BaseLoadout loadout, IReadOnlyCollection<string> against, IReadOnlyDictionary<string, float>? style = null)
+        {
+            var threat = BranchChoice.Of(catalog, against);
+            var towers = System.Linq.Enumerable.Count(loadout.Towers);
+            var seen = new HashSet<string>();
+            foreach (var tower in loadout.Towers)
+            {
+                if (!seen.Add(tower)) continue;
+                var pick = BranchChoice.Pick(catalog, tower, threat, towers, style);
+                if (pick != null) loadout.Branches[tower] = pick;
+            }
         }
 
         private static string? Draw(List<(string id, SlotSize size, float weight)> pool, Random random, Predicate<(string id, SlotSize size, float weight)> fits)

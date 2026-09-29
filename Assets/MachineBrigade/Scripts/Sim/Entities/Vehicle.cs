@@ -212,7 +212,6 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Shoot-and-scoot: rounds fired from the current spot.</summary>
         internal int ScootShots;
 
-
         /// <summary>The share of every stun or EMP knock-out it shrugs off (a tower's Backup Generator; 1: immune).</summary>
         internal float StunResist;
 
@@ -313,6 +312,13 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Holds its fire (a fortress keep's gun under its shield dome: nothing gets in or out).</summary>
         public bool HoldFire { get; internal set; }
 
+        /// <summary>Prompt 22 E: a boss in its duel mode (BossSystem.Duel), and its dark spells (no fire, hidden by its stealth).</summary>
+        public bool InDuel { get; internal set; }
+
+        public bool DuelDark { get; internal set; }
+        internal int DuelMark;
+        internal double DuelNextDark, DuelDarkUntil;
+
         /// <summary>A barrage skill is running: the guns fire much faster.</summary>
         public bool Barraging { get; private set; }
 
@@ -332,7 +338,7 @@ namespace MachineBrigade.Sim.Entities
         public string? Form { get; internal set; }
 
         /// <summary>Fire-rate multiplier from skills.</summary>
-        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear * CommandFire;
+        internal float FireFactor => (Barraging ? BarrageRate : 1f) * (Overdriven ? 1.3f : 1f) * FireBoost * FireGear * CommandFire * RankFire;
 
         /// <summary>A friendly command vehicle's aura (1: none in reach).</summary>
         internal float CommandFire = 1f;
@@ -408,7 +414,7 @@ namespace MachineBrigade.Sim.Entities
         internal float DoctrineSpeed = 1f;
         public float Radius => Def.Radius;
         public ArmorClass Armor => Def.Armor;
-        public TargetKind Kind => Def.Kind;
+        public TargetKind Kind => Crashed ? TargetKind.Ground : Def.Kind;
         public ArmourLevels Armour => Def.Armour;
 
         /// <summary>
@@ -417,18 +423,21 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         internal float PenetrationUp, ArmourSideUp, ArmourAllUp;
 
-        /// <summary>Its armour level on a face with its equipment (never over 4).</summary>
+        /// <summary>Its armour level on a face with its equipment (never over 4; a boss's plate to 5, DECISIONS 21G).</summary>
         public float ArmourOn(ArmorFace face)
         {
+            // Prompt 19 C.2: a boss on altitude tiers has its armour by altitude (the belly faces the ground when low).
+            if (Def.Tiers != null && TierArmour() is var tiered && tiered >= 0f) return tiered;
             var up = ArmourAllUp + (face is ArmorFace.Side or ArmorFace.Rear ? ArmourSideUp : 0f);
             // Prompt 17 C: a bunker vehicle dug in has its front two levels thicker.
             if (face == ArmorFace.Front && Deploy == DeployState.Deployed && Def.Deploy is { } dug) up += dug.FrontUp;
-            return MathF.Min(ArmourLevels.Max, Def.Armour[face] + up);
+            return MathF.Min(Def.Boss ? ArmourLevels.Max : ArmourLevels.MaxUnit, Def.Armour[face] + up);
         }
 
         public bool IsAlive => Hp > 0f;
         public bool IsMoving => Speed > 0.1f;
-        public bool Flying => Def.Flying;
+        /// <summary>It flies (prompt 19: a tiered boss that has crashed is on the ground now).</summary>
+        public bool Flying => Def.Flying && !Crashed;
 
         /// <summary>Current world heading of weapon mount <paramref name="index"/> (the turret for turret mounts).</summary>
         public float MountHeading(int index) => Def.Mounts[index].Aim switch
@@ -451,6 +460,15 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public bool Sparring { get; internal set; }
 
+        /// <summary>
+        /// A firing-range target or sparring partner that can be destroyed after all (the In action clip's
+        /// enemies: a new one comes in for each one knocked out). It neither heals itself nor stops at a sliver.
+        /// </summary>
+        public bool Mortal { get; internal set; }
+
+        /// <summary>A range dummy or sparring partner that cannot be destroyed.</summary>
+        internal bool Unkillable => (Dummy || Sparring) && !Mortal;
+
         /// <summary>A car bomb that set itself off: its own blast was the explosion (no second one as it dies).</summary>
         internal bool Detonated { get; set; }
 
@@ -471,6 +489,9 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
         public EntityId MountTarget(int index) => Weapons[index].Target;
+
+        /// <summary>Seconds until mount <paramref name="index"/> may fire again (read by the view: a launcher raised to fire).</summary>
+        public float MountCooldown(int index) => Weapons[index].Cooldown;
 
         public Order Order { get; internal set; }
 
@@ -515,6 +536,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Enemy an attack-moving vehicle broke off its route to fight.</summary>
         internal EntityId Engaged;
 
+        /// <summary>Play-test 8 A (DECISIONS 22Q): when the main weapon next weighs its target against everything else in reach.</summary>
+        internal double RetargetAt;
+
         /// <summary>Distance to what the main weapon is aimed at (0 with no target); drives the barrel's elevation.</summary>
         public float AimDistance { get; internal set; }
 
@@ -528,6 +552,13 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>Where an idle vehicle stands guard; it drives back here after a skirmish.</summary>
         internal Vector2 GuardPoint;
+
+        /// <summary>
+        /// Test feedback 19P: a called escort (the sky gunship item) keeps to where it was called: it takes on only
+        /// what is within this many metres of its post (<see cref="GuardPoint"/>) unless ordered at something, and the
+        /// side's AI leaves it alone. 0: no post.
+        /// </summary>
+        internal float PostRadius;
 
         /// <summary>Team of whoever last damaged this vehicle (-1: nobody, or a blast from the environment).</summary>
         internal int LastAttackerTeam = -1;
@@ -567,6 +598,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Simulation time of the last hit from <see cref="LastAttacker"/>.</summary>
         internal double LastHitTime = double.NegativeInfinity;
 
+        /// <summary>When it was last hit (sim seconds; negative infinity: never), for the presentation (the CP relay's clip).</summary>
+        public double LastHitAt => LastHitTime;
+
         /// <summary>A defence a mode put down, whose ground routes go round (see SimWorld.AnchorDefence).</summary>
         internal bool BlocksRoutes;
 
@@ -594,21 +628,10 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Which launcher fires next (the systems alternate sides).</summary>
         internal bool ApsLeft;
 
-        /// <summary>
-        /// Its weapons take turns: when the last round of a main gun, missile or rocket (a salvo's
-        /// rounds included) and of a machine gun left, from which mount, and when a heavy weapon
-        /// last stood ready but held off for a machine gun's run.
-        /// </summary>
-        internal double HeavyRoundAt = double.NegativeInfinity;
-        internal int HeavyMount = -1;
-        internal double GunRoundAt = double.NegativeInfinity;
-        internal int GunMount = -1;
-        internal double HeavyWaitingAt = double.NegativeInfinity;
-
-        /// <summary>When the main gun's stream last stood ready but was held off by a secondary gun's magazine (test feedback 2).</summary>
-        internal double LeadWaitingAt = double.NegativeInfinity;
-        internal double AnyRoundAt = double.NegativeInfinity;
-        internal int AnyMount = -1;
+        /// <summary>Play-test 5 (DECISIONS 20W): the round a gun point defence is streaming at, since when, and for how long.</summary>
+        internal Projectile? PdRound;
+        internal double PdSince;
+        internal float PdBurst;
 
         /// <summary>The centre of a gunship's pylon turn: it glides after the target instead of jumping (a new target, one on the move).</summary>
         internal System.Numerics.Vector2 OrbitCentre;

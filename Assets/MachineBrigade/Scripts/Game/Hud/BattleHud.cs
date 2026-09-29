@@ -185,11 +185,17 @@ namespace MachineBrigade.Game.Hud
                 _enemies = Stat(stats, "crosshair", Strings.Get("stat.enemies"), "fc-hud__stat--theirs", Compact);
                 _wave = Stat(stats, "flag", Strings.Get("stat.wave"), null, Compact);
                 _next = Stat(stats, "bolt", Strings.Get("stat.next"), null, Compact);
+                if (spec.Sandbox)
+                {
+                    HideStat(_wave);
+                    HideStat(_next);
+                }
                 top.Add(stats);
             }
             _safe.Add(top);
 
             var corner = Kit.Box("fc-hud__corner");
+            _corner = corner;
             _fps = Kit.Text("", "fc-small fc-hud__fps");
             corner.Add(_fps);
             corner.Add(new KitIconButton("pause", Strings.Get("pause.title"), () => PausePressed?.Invoke(), plain: Compact));
@@ -201,32 +207,36 @@ namespace MachineBrigade.Game.Hud
             {
                 _boss = new BossBar(Compact);
                 _boss.Parts.Tapped += (boss, part) => BossPartTapped?.Invoke(boss, part);
-                under.Add(_boss.Root);
+                // Play-test 6: the compact bar shares the top row with the goal (or the bosses destroyed count), smaller.
+                (Compact ? top : under).Add(_boss.Root);
                 var fortress = UiKit.Box("fortress-panel");
                 _superGun = new SuperGunTimer();
                 fortress.Add(_superGun.Root);
                 _wavePreview = new WavePreview(DescribeVehicle);
                 fortress.Add(_wavePreview.Root);
                 under.Add(fortress);
+                // Prompt 20 N: the Boss Hunt's rest between bosses.
+                _huntRest = new HuntRestPanel();
+                under.Add(_huntRest.Root);
             }
             _safe.Add(under);
 
             // Left column: the minimap and the map tools ---------------------------------------------
-            // Compact: a smaller minimap, no zoom buttons (pinch zooms), select-all and box-select as small
-            // icons on its right-hand corners (prompt 11 A1).
+            // Compact: a smaller minimap, select-all and box-select as small icons on its right-hand corners (prompt 11 A1),
+            // and beside them zoom in and out (play-test 6: the owner looked for them; pinch and the wheel zoom too).
             var left = Kit.Box("fc-hud__left");
             Minimap = new Minimap();
             Minimap.Clicked += p => MinimapClicked?.Invoke(p);
             left.Add(Minimap);
             var tools = Kit.Box("fc-hud__tools");
-            tools.Add(new KitIconButton("people", Strings.Get("hud.selectAll"), () => SelectAllPressed?.Invoke(), plain: Compact));
             _boxTool = new KitIconButton("expand", Strings.Get("hud.boxSelect"), () => BoxModeToggled?.Invoke(), plain: Compact);
-            tools.Add(_boxTool);
-            if (!Compact)
+            if (!spec.Sandbox)
             {
-                tools.Add(new KitIconButton("plus", Strings.Get("hud.zoomIn"), () => ZoomPressed?.Invoke(1.25f)));
-                tools.Add(new KitIconButton("minus", Strings.Get("hud.zoomOut"), () => ZoomPressed?.Invoke(0.8f)));
+                tools.Add(new KitIconButton("people", Strings.Get("hud.selectAll"), () => SelectAllPressed?.Invoke(), plain: Compact));
+                tools.Add(_boxTool);
             }
+            tools.Add(new KitIconButton("plus", Strings.Get("hud.zoomIn"), () => ZoomPressed?.Invoke(1.25f), plain: Compact) { name = "zoom-in" });
+            tools.Add(new KitIconButton("minus", Strings.Get("hud.zoomOut"), () => ZoomPressed?.Invoke(0.8f), plain: Compact) { name = "zoom-out" });
             left.Add(tools);
             _safe.Add(left);
 
@@ -260,7 +270,7 @@ namespace MachineBrigade.Game.Hud
                 _towerMini.Add(towerFace);
                 _towerMini.style.display = DisplayStyle.None;
                 rail.Add(_towerMini);
-                _safe.Add(rail);
+                if (!spec.Sandbox) _safe.Add(rail);
             }
             else
             {
@@ -282,7 +292,7 @@ namespace MachineBrigade.Game.Hud
                 _towerButton.AddToClassList("fc-hud__tower");
                 _towerButton.style.display = DisplayStyle.None;
                 commander.Add(_towerButton);
-                _safe.Add(commander);
+                if (!spec.Sandbox) _safe.Add(commander);
             }
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
 
@@ -338,6 +348,11 @@ namespace MachineBrigade.Game.Hud
             Order(buttons, "stop", Strings.Get("cmd.stopShort"), () => StopPressed?.Invoke());
             Order(buttons, "retreat", Strings.Get("cmd.retreatShort"), () => RetreatPressed?.Invoke());
             (Compact ? details : command).Add(buttons);
+            // Play-test 6: a close mark over the panel's corner lets the group go (a tap on a selected unit does the same;
+            // a tap on the ground stays a move order). Over the corner, so the panel does not grow over the battlefield.
+            var deselect = new KitIconButton("close", Strings.Get("cmd.deselectShort"), () => DeselectPressed?.Invoke(), plain: true) { name = "deselect" };
+            deselect.AddToClassList("fc-hud__deselect");
+            command.Add(deselect);
             _safe.Add(command);
 
             // Deck -------------------------------------------------------------------------------------------
@@ -355,7 +370,7 @@ namespace MachineBrigade.Game.Hud
             _hint = Kit.Text(Strings.Get(_autoHint), "fc-small fc-row-text");
             // The standing hint is for the first moments of a player's first few matches only (prompt 11 A7);
             // mode hints (attack-move, box select) bring it back while they are active.
-            var startHint = spec.StartHint ?? Match.MatchSettings.ShowStartHint;
+            var startHint = !spec.Sandbox && (spec.StartHint ?? Match.MatchSettings.ShowStartHint);
             _hintUntil = startHint ? Time.unscaledTime + 9f : -1f;
             _hintBar = Kit.Box("fc-hud__hint");
             var hintFace = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__hint-face");
@@ -377,8 +392,9 @@ namespace MachineBrigade.Game.Hud
             _banner = Kit.Box("fc-hud__banner");
             _safe.Add(_banner);
 
-            // Campaign radio chatter: a portrait and one line (a tap skips it), in the toasts' style.
-            if (mode == HudMode.Mission)
+            // Radio chatter: a portrait and one line (a tap skips it), in the toasts' style. The campaign's, and in every
+            // battle the commander's words at the start and the end (prompt 22 F.4).
+            if (mode != HudMode.Menu && !spec.Sandbox)
             {
                 _radio = new RadioPanel();
                 under.Add(_radio.Root);
@@ -396,13 +412,15 @@ namespace MachineBrigade.Game.Hud
 
             // Pause holds Auto buy and Support too (prompt 11 A2), whatever the layout.
             _pause = new PausePanel(() => ResumePressed?.Invoke(), () => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(),
-                () => AutoDeployToggled?.Invoke(), () => AutoStrikeToggled?.Invoke());
+                () => AutoDeployToggled?.Invoke(), () => AutoStrikeToggled?.Invoke(), Relocalise);
             _safe.Add(_pause.Root);
             _result = new ResultPanel(() => RestartPressed?.Invoke(), () => MenuPressed?.Invoke(), () => DoubleRewardPressed?.Invoke(),
                 () => NextMissionPressed?.Invoke(), () => CheckpointPressed?.Invoke(), () => DeckPressed?.Invoke());
             _safe.Add(_result.Root);
             _choice = new ChoicePanel();
             _safe.Add(_choice.Root);
+            _supportPick = new SupportPickPanel();
+            _safe.Add(_supportPick.Root);
 
             _selectionBox = UiKit.Box("selection-box");
             _root.Add(_selectionBox);
@@ -423,20 +441,58 @@ namespace MachineBrigade.Game.Hud
 
         private readonly RadioPanel _radio;
 
-        /// <summary>A line of radio chatter (campaign missions; ignored elsewhere).</summary>
+        /// <summary>A line of radio chatter (every battle but the menu's and the Sandbox's).</summary>
         internal void Radio(Match.RadioLine line) => _radio?.Say(line);
+
+        private readonly VisualElement _corner;
+        private CommanderBadge _commanderBadge;
+
+        /// <summary>Prompt 22 F.4: the side's commander as a small face beside pause; a tap shows its strength and weakness.</summary>
+        internal CommanderBadge ShowCommanderBadge(CommanderDef commander)
+        {
+            if (_corner == null || commander == null) return null;
+            if (_commanderBadge != null)
+            {
+                _commanderBadge.Face.RemoveFromHierarchy();
+                _commanderBadge.Card.RemoveFromHierarchy();
+            }
+            _commanderBadge = new CommanderBadge(commander);
+            // Before pause, after the frame counter.
+            _corner.Insert(Math.Max(0, _corner.childCount - 1), _commanderBadge.Face);
+            _safe.Add(_commanderBadge.Card);
+            return _commanderBadge;
+        }
 
         /// <summary>Null in the menu.</summary>
         public Minimap Minimap { get; }
 
+        /// <summary>
+        /// The language changed in the pause menu (prompt 21 L): every text of the HUD is read again in the new
+        /// language, in place; the battle under the pause is not reloaded.
+        /// </summary>
+        public void Relocalise(bool wasVietnamese)
+        {
+            Relabel.Apply(_root, wasVietnamese);
+            LanguageSwitched?.Invoke();
+        }
+
+        /// <summary>The HUD was relabelled in the new language.</summary>
+        public event Action LanguageSwitched;
+
+        /// <summary>The pause menu, for the checks (the language switch).</summary>
+        internal PausePanel Pause => _pause;
+
         public event Action SelectAllPressed;
+
+        /// <summary>The selection panel's Deselect order (play-test 6).</summary>
+        public event Action DeselectPressed;
         public event Action StopPressed;
         public event Action RetreatPressed;
         public event Action AttackMovePressed;
         public event Action RestartPressed;
         public event Action BoxModeToggled;
 
-        /// <summary>The full HUD's zoom buttons (the compact HUD has none: pinch zooms).</summary>
+        /// <summary>The zoom buttons beside the minimap (both HUDs since play-test 6): the factor to zoom by.</summary>
         public event Action<float> ZoomPressed;
         public event Action<int> CardPressed;
         public event Action TargetCancelled;
@@ -464,12 +520,12 @@ namespace MachineBrigade.Game.Hud
                 _towerMini.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
                 if (count <= 0) return;
                 _towerMiniText.text = count > 1 ? $"×{count} · {cost}" : cost.ToString();
-                _towerMini.tooltip = Strings.Format("rail.towerCost", count, cost);
+                _towerMini.tooltip = Strings.Format("rail.towerCost", ("count", count), ("cp", cost));
                 return;
             }
             if (_towerButton == null) return;
             _towerButton.style.display = count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
-            if (count > 0) _towerButton.Label = Strings.Format("rail.towerCost", count, cost);
+            if (count > 0) _towerButton.Label = Strings.Format("rail.towerCost", ("count", count), ("cp", cost));
         }
         public event Action AutoStrikeToggled;
         public event Action<string> PointPressed;
@@ -490,6 +546,21 @@ namespace MachineBrigade.Game.Hud
         public event Action DeckPressed;
 
         private ChoicePanel _choice;
+        private HuntRestPanel _huntRest;
+        private SupportPickPanel _supportPick;
+
+        /// <summary>Prompt 20 N: the Boss Hunt's rest strip (a null title hides it).</summary>
+        public void SetHuntRest(string title, float seconds, string next, string held) => _huntRest?.Set(title, seconds, next, held);
+
+        /// <summary>Prompt 20 N: the pick of one of three combat supports after a main boss.</summary>
+        public void ShowSupportPick(string title, IReadOnlyList<(string icon, string name, string info)> options, Action<int> chosen) =>
+            _supportPick?.Show(title, options, chosen);
+
+        public void SetSupportPickTime(float seconds, string key = null) => _supportPick?.SetTime(seconds, key);
+
+        public void HideSupportPick() => _supportPick?.Hide();
+
+        public bool SupportPickShown => _supportPick != null && _supportPick.Visible;
 
         /// <summary>A multi-stage mission's branching point: the ways on (a name and a line each).</summary>
         public void ShowChoice(string title, IReadOnlyList<(string, string)> options, Action<int> chosen) => _choice?.Show(title, options, chosen);
@@ -530,6 +601,17 @@ namespace MachineBrigade.Game.Hud
 
         public bool ShowFps { get; set; }
 
+        /// <summary>Takes a stat of the top strip off (the Sandbox has no waves).</summary>
+        private static void HideStat(VisualElement value)
+        {
+            for (var e = value; e != null; e = e.parent)
+                if (e.ClassListContains("fc-hud__stat"))
+                {
+                    e.style.display = DisplayStyle.None;
+                    return;
+                }
+        }
+
         public void SetStats(int allies, int enemies, int wave, float secondsToNextWave, float fps)
         {
             if (_allies != null)
@@ -563,11 +645,21 @@ namespace MachineBrigade.Game.Hud
         public void SetBossParts(MachineBrigade.Sim.Entities.Vehicle boss, int focused) => _boss?.Parts.Set(boss, focused);
 
         /// <summary>The boss's health bar, hidden when <paramref name="name"/> is null.</summary>
-        public void SetBoss(string name, float health) => _boss?.Set(name, health);
+        public void SetBoss(string name, float health)
+        {
+            _boss?.Set(name, health);
+            BossOnTop(name);
+        }
+
+        /// <summary>The compact HUD's boss bar is in the top row: the column under the row makes room while it shows.</summary>
+        private void BossOnTop(string name) => _safe?.EnableInClassList("fc-hud--boss-top", Compact && _boss != null && name != null);
 
         /// <summary>A multi-phase boss: its bar marked at each phase, the phase it is in, and whether it is transforming.</summary>
-        public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming) =>
+        public void SetBoss(string name, float health, int phase, IReadOnlyList<float> marks, bool transforming)
+        {
             _boss?.Set(name, health, phase, marks, transforming);
+            BossOnTop(name);
+        }
         /// <summary>The safe area the controls sit in (the screenshot tool sets its insets).</summary>
         internal VisualElement SafeArea => _safe;
 
@@ -580,6 +672,9 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Prompt 16 F: the boss's escorts still alive, on its bar.</summary>
         public void SetBossEscorts(int alive) => _boss?.SetEscorts(alive);
+
+        /// <summary>Prompt 20: the boss bar's rank label (null: none).</summary>
+        public void SetBossRank(MachineBrigade.Sim.Content.BossRankDef rank) => _boss?.SetRank(rank);
 
         /// <summary>Prompt 18: the boss's big attack on its bar (the icon, the cooldown, lit while it charges) and its charging parts flashing.</summary>
         public void SetBossBigAttack(MachineBrigade.Sim.Entities.Vehicle boss)
@@ -597,6 +692,30 @@ namespace MachineBrigade.Game.Hud
             _boss.SetBigAttack(big.Def.Icon, big.Ready, charging, left);
             // The parts to break: flashing about three times a second while it charges.
             _boss.Parts.SetCharging(charging ? big.Parts : null, Mathf.Repeat(Time.unscaledTime, 0.36f) < 0.18f);
+        }
+
+        /// <summary>
+        /// Prompt 19 B.5: a tiered boss's altitude on its bar (its icon, the tier's name and the seconds to the next change;
+        /// none once it holds low with its main engine broken, or has crashed).
+        /// </summary>
+        public void SetBossTier(MachineBrigade.Sim.Entities.Vehicle boss, double now)
+        {
+            if (_boss == null) return;
+            if (boss?.Def.Tiers == null || boss.Crashed)
+            {
+                _boss.SetTier(null, null, null);
+                return;
+            }
+            var key = boss.Crashing ? "tier.ground" : boss.Shifting ? "tier.shift" : "tier." + boss.TierFrom.ToString().ToLowerInvariant();
+            var icon = boss.TierFrom switch
+            {
+                AltitudeTier.Orbit => "cbradar",
+                AltitudeTier.High => "sam",
+                _ => "aa",
+            };
+            var left = Mathf.CeilToInt((float)(boss.TierNext - now));
+            var text = Kit.Caps(Strings.Get(key)) + (boss.StuckLow || boss.Crashing || left <= 0 ? "" : "  " + left + "s");
+            _boss.SetTier(icon, text, Strings.Get("hud.tier"));
         }
 
         /// <summary>The boss's health in numbers beside its name (after <see cref="SetBoss(string, float)"/>).</summary>
@@ -790,7 +909,7 @@ namespace MachineBrigade.Game.Hud
             _hpFill.style.width = Length.Percent(health * 100f);
             _hpFill.EnableInClassList("fc-hud__hp-fill--hurt", health < 0.6f && health >= 0.3f);
             _hpFill.EnableInClassList("fc-hud__hp-fill--critical", health < 0.3f);
-            _hpText.text = Strings.Format("panel.hp", Mathf.CeilToInt(summary.Hp), Mathf.CeilToInt(summary.MaxHp));
+            _hpText.text = Strings.Format("panel.hp", ("health", Mathf.CeilToInt(summary.Hp)), ("max", Mathf.CeilToInt(summary.MaxHp)));
             if (_combatFor != summary.DefId)
             {
                 _combatFor = summary.DefId;
@@ -830,11 +949,12 @@ namespace MachineBrigade.Game.Hud
         /// Prompt 15 E5: a tapped enemy's front armour and each vehicle of our deck marked ✓ ~ ✕ by its main weapon
         /// against it. It stays 5 s (a tap on it closes it); a new tap replaces it.
         /// </summary>
-        public void ShowEnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck)
+        public void ShowEnemyTip(VehicleDef enemy, IEnumerable<VehicleDef> deck, AltitudeTier tier = AltitudeTier.None)
         {
             if (enemy == null || _safe == null) return;
             _enemyTip?.RemoveFromHierarchy();
-            var tip = _enemyTip = KitCombat.EnemyTip(enemy, deck);
+            // Prompt 19 B.5: a boss on altitude tiers is judged by what reaches its tier now.
+            var tip = _enemyTip = KitCombat.EnemyTip(enemy, deck, tier);
             tip.AddToClassList("fc-hud__enemy-tip");
             tip.pickingMode = PickingMode.Position;
             tip.AddManipulator(new Tap(() => tip.RemoveFromHierarchy()));
@@ -937,6 +1057,7 @@ namespace MachineBrigade.Game.Hud
         public void Tick()
         {
             _radio?.Tick();
+            _commanderBadge?.Tick();
             _words?.Tick();
             _boss?.Tick();
             if (_flashLevel > 0f)

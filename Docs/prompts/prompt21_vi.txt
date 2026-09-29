@@ -109,3 +109,11 @@ PHẦN 3: KIỂM TRA SA BÀN
 - Bản người chơi: chỉ có đơn vị đã mở và boss đã hạ; không có lớp chỉ dành cho nội bộ; không nhận bất kỳ phần thưởng, kỷ lục hay thành tích nào; mã kịch bản xuất và nhập đúng, đơn vị chưa mở được thay đúng.
 - Hiệu năng: đo FPS và tick ở trần đơn vị của Sa bàn trên máy tầm thấp.
 - Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (chế độ Sa bàn, đa ngôn ngữ).
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Khi bắt đầu prompt 21 (29/09):
+- (29/09 19:25) tiến hành prompt 21 luôn, nhớ là có thể đặt cả các tháp canh để test luôn

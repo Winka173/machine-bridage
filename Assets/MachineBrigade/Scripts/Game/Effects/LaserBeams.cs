@@ -10,7 +10,7 @@ using PB = MachineBrigade.Game.Effects.ParticleBuilder;
 namespace MachineBrigade.Game.Effects
 {
     /// <summary>
-    /// Laser weapons (the Iron Beam, point-defence lasers, the silver bug's saucer laser) as one
+    /// Laser weapons (the Iron Beam, point-defence lasers, the Silver Bug's orbital laser) as one
     /// held beam per emitter, not a bar flashed for each 0.1 s shot (DECISIONS 11A):
     /// <list type="bullet">
     /// <item>Three camera-facing lines (MachineBrigade/Beam): a white-hot core, a coloured glow and
@@ -48,8 +48,8 @@ namespace MachineBrigade.Game.Effects
             public float Width { get; }
         }
 
-        /// <summary>The Iron Beam and point defence: white core in a red glow. The saucer's laser: green, and heavier.</summary>
-        private static Palette PaletteOf(WeaponDef weapon) => weapon != null && weapon.Id == "saucer_laser"
+        /// <summary>The Iron Beam and point defence: white core in a red glow. The Silver Bug's orbital laser: green, and heavier.</summary>
+        private static Palette PaletteOf(WeaponDef weapon) => weapon != null && weapon.Id == "orbital_laser"
             ? new Palette(new Color(0.85f, 1f, 0.9f), new Color(0.25f, 1f, 0.42f), 1.5f)
             : new Palette(new Color(1f, 0.93f, 0.86f), new Color(1f, 0.3f, 0.09f), 1f);
 
@@ -142,10 +142,78 @@ namespace MachineBrigade.Game.Effects
             beam.Until = Mathf.Max(beam.Until, now + hold);
         }
 
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20V): a burn left where a slug struck (the railgun truck's, the coilgun's), like the
+        /// focused laser's: a white-hot spot on the target cooling through orange over <paramref name="seconds"/>, a
+        /// spray of sparks and molten drops dying down with it, smoke curling off, and a scorch on the ground under a
+        /// ground target. It rides the target while it lives.
+        /// </summary>
+        public void Sear(Vector3 at, EntityId target, VehicleView struck, float width, float seconds, float now)
+        {
+            var burn = new Burn
+            {
+                Target = target, At = at, Offset = struck != null && struck.Root != null ? at - struck.Position : Vector3.zero,
+                Flies = struck != null && struck.Flying, Start = now, Until = now + seconds, Width = width, SmokeAt = now,
+            };
+            if (_burns.Count >= Capacity) _burns.RemoveAt(0);
+            _burns.Add(burn);
+            if (!burn.Flies && _decals != null) _decals.Place(new Vector3(at.x, 0.15f, at.z), 1.6f * width);
+        }
+
+        private sealed class Burn
+        {
+            public EntityId Target;
+            public Vector3 At, Offset;
+            public bool Flies;
+            public float Start, Until, Width, SparkDebt, SmokeAt;
+        }
+
+        private readonly List<Burn> _burns = new();
+
+        /// <summary>Burns glowing now (for tests).</summary>
+        internal int Burns => _burns.Count;
+
+        private void TickBurns(float now, float dt, ViewRegistry views, float sparkRate)
+        {
+            for (var i = _burns.Count - 1; i >= 0; i--)
+            {
+                var b = _burns[i];
+                if (now >= b.Until)
+                {
+                    _burns.RemoveAt(i);
+                    continue;
+                }
+                if (views != null && b.Target != EntityId.None && views.TryGet(b.Target, out var target) && target.Root != null)
+                    b.At = target.Position + b.Offset;
+                var heat = 1f - Mathf.Clamp01((now - b.Start) / (b.Until - b.Start));
+                var hot = heat * heat;
+                // White-hot at first, then orange, then a dull red as it cools.
+                var core = Color.Lerp(new Color(1f, 0.35f, 0.08f), new Color(1f, 0.95f, 0.85f), hot);
+                Glow(b.At, 1.5f * b.Width * (0.5f + 0.5f * heat), core, 0.4f + 0.6f * heat, dt);
+                Glow(b.At, 3.6f * b.Width * (0.4f + 0.6f * heat), new Color(1f, 0.5f, 0.16f), 0.65f * heat, dt);
+                for (b.SparkDebt += sparkRate * 0.6f * b.Width * hot * dt; b.SparkDebt >= 1f; b.SparkDebt -= 1f)
+                {
+                    var dir = (Vector3.up + Random.insideUnitSphere * 1.2f).normalized;
+                    var drop = Random.value < 0.3f;
+                    Spark(b.At, dir * Random.Range(drop ? 2f : 4f, drop ? 6f : 11f) + Vector3.up,
+                        drop ? Random.Range(0.14f, 0.24f) : Random.Range(0.08f, 0.15f), drop ? Random.Range(0.5f, 0.9f) : Random.Range(0.2f, 0.45f),
+                        new Color(1f, Random.Range(0.55f, 0.8f), 0.3f));
+                }
+                if (now >= b.SmokeAt)
+                {
+                    b.SmokeAt = now + 0.14f;
+                    _emitters.DamageSmoke(b.At + Vector3.up * 0.3f, 0.7f * b.Width, 0.2f);
+                }
+                if (!b.Flies) Light(new Vector3(b.At.x, 0.08f, b.At.z), 3.8f * b.Width * heat, new Color(1f, 0.5f, 0.16f), 0.5f * heat, dt);
+            }
+        }
+
         public void Tick(float now, float dt, ViewRegistry views)
         {
             if (dt <= 0f) return;
             var sparkRate = 50f + 70f * ExplosionEffect.Density;
+            TickBurns(now, dt, views, sparkRate);
+
             foreach (var b in _beams)
             {
                 if (!b.Active) continue;

@@ -23,9 +23,11 @@ namespace MachineBrigade.Sim.Bosses
     /// the last phase begins); its well deck sends landing craft to the beaches in phase 2; aircraft fly
     /// in off the sea when a phase begins. Its point defence (APS) is its CIWS parts', strongest in phase 2,
     /// off once both are broken and missing now and then once its radar is.</item>
-    /// <item>Escorts (corvettes) keep station on it along its lane and screen it from the shore when it
-    /// runs; their own CIWS covers it while they are close. Attack boats wait on the mid lane, dash in to a
-    /// pier head, fire and run back out. Landing craft run up on a beach, land their vehicles and go back.</item>
+    /// <item>Escorts keep station on it (abeam on the shore side, inside its length, or along its lane) and
+    /// screen it from the shore when it runs; their own CIWS covers it while they are close. Attack boats wait
+    /// on the mid lane (the near one while escorts abeam of a flagship on the far lane hold the mid one), dash
+    /// in to a pier head, fire and run back out. Landing craft run up on a beach, land their vehicles and go
+    /// back.</item>
     /// <item>The coast: its abandoned coastal batteries are taken by a side's ground vehicles holding them
     /// alone; then their guns fire on ships (only). The lighthouse's holder sees the sea.</item>
     /// </list>
@@ -41,7 +43,7 @@ namespace MachineBrigade.Sim.Bosses
         private const float LighthouseRadius = 14f;
 
         private readonly SimWorld _world;
-        private readonly List<(string def, int team, Vector2 at, float heading, EntityId flagship, int landing, string[] cargo)> _spawns = new();
+        private readonly List<(string def, int team, Vector2 at, float heading, EntityId flagship, int landing, string[] cargo, Vector2? station)> _spawns = new();
         private readonly List<(int team, float progress, int progressTeam, EntityId gun, double rebuildAt)> _batteries = new();
         private (int team, float progress, int progressTeam) _lighthouse = (-1, 0f, -1);
 
@@ -76,23 +78,88 @@ namespace MachineBrigade.Sim.Bosses
             if (v.Def.Cruise is { } cruise) v.CruiseNext = now + cruise.First;
             v.CraftNext = double.PositiveInfinity;
             v.NavalLane = naval.LaneFor(0);
-            // Its fleet: escorts ahead and astern, attack boats out on the mid lane (the modes' extras on top,
-            // Boss Rush a share of it).
+            // DECISIONS 20Y: its main turrets start trained out to the beam, towards the shore.
+            for (var i = 0; i < v.Def.Parts.Count; i++)
+                if (v.Def.Parts[i].Kind == "maingun")
+                    for (var k = 0; k < v.Def.Parts[i].Mounts.Count; k++) Lay(v, v.Def.Parts[i].Mounts[k], SimMath.HeadingOf(-sea.Out));
+            // Its fleet: escorts abeam (or ahead and astern), attack boats out on their lane (the modes' extras on
+            // top, on the last escort entry; Boss Rush a share of it).
             var escorts = 0;
-            foreach (var ship in v.Def.Fleet)
+            var lastEscort = -1;
+            var escortCount = 0;
+            for (var e = 0; e < v.Def.Fleet.Count; e++)
+                if ((_world.Catalog.Vehicle(v.Def.Fleet[e].Unit).Naval?.Role ?? NavalRole.Escort) == NavalRole.Escort)
+                {
+                    lastEscort = e;
+                    escortCount += v.Def.Fleet[e].Count;
+                }
+            // A share of the fleet (Boss Rush's half) is taken over all its escorts, the first entries first.
+            var escortsLeft = Math.Max(0, (int)MathF.Round(escortCount * Rules.FleetShare));
+            for (var e = 0; e < v.Def.Fleet.Count; e++)
             {
+                var ship = v.Def.Fleet[e];
                 var def = _world.Catalog.Vehicle(ship.Unit);
                 var role = def.Naval?.Role ?? NavalRole.Escort;
-                var extra = role == NavalRole.Escort ? Rules.ExtraEscorts : role == NavalRole.Raider ? Rules.ExtraRaiders : 0;
-                var count = Math.Max(0, (int)MathF.Round(ship.Count * Rules.FleetShare)) + extra;
+                var extra = role == NavalRole.Escort ? (e == lastEscort ? Rules.ExtraEscorts : 0) : role == NavalRole.Raider ? Rules.ExtraRaiders : 0;
+                var share = role == NavalRole.Escort ? Math.Min(ship.Count, escortsLeft) : Math.Max(0, (int)MathF.Round(ship.Count * Rules.FleetShare));
+                if (role == NavalRole.Escort) escortsLeft -= share;
+                var count = share + extra;
                 for (var k = 0; k < count; k++)
                 {
-                    var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
-                    var lane = role == NavalRole.Raider ? sea.Lane("mid") : sea.Lane(v.NavalLane);
-                    var at = sea.At(f.X + along * v.NavalDir, lane?.W ?? f.Y);
-                    _spawns.Add((ship.Unit, v.Team, at, v.Heading, v.Id, -1, Array.Empty<string>()));
+                    Vector2? station = null;
+                    Vector2 at;
+                    if (role == NavalRole.Escort && ship.Beside)
+                    {
+                        var s = StationOf(ship, k);
+                        station = s;
+                        at = sea.At(f.X + s.X, (sea.Lane(v.NavalLane)?.W ?? f.Y) + s.Y);
+                    }
+                    else
+                    {
+                        var along = role == NavalRole.Escort ? (escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)) : (k - (count - 1) * 0.5f) * 22f;
+                        var lane = role == NavalRole.Raider ? sea.Lane(RaiderLane(v)) : sea.Lane(v.NavalLane);
+                        at = sea.At(f.X + along * v.NavalDir, lane?.W ?? f.Y);
+                    }
+                    _spawns.Add((ship.Unit, v.Team, at, v.Heading, v.Id, -1, Array.Empty<string>(), station));
                 }
             }
+        }
+
+        /// <summary>
+        /// DECISIONS 20Y: the k-th escort of a fleet entry kept abeam: its place along the flagship's line (the entry's
+        /// "at", mirrored for every other ship) and beside it (the entry's "abeam", a row further out for each one after).
+        /// </summary>
+        private static Vector2 StationOf(FleetShipDef ship, int k) =>
+            new(ship.Station * (k % 2 == 0 ? 1f : -1f), ship.Abeam + 11f * k * (ship.Abeam < 0f ? -1f : 1f));
+
+        /// <summary>Whether a flagship's escorts keep station abeam (they hold the lane inshore of it).</summary>
+        private static bool EscortsBeside(VehicleDef def)
+        {
+            for (var i = 0; i < def.Fleet.Count; i++)
+                if (def.Fleet[i].Beside) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Where a flagship's attack boats wait: the mid lane, or the near one while it sails the far lane with its
+        /// escorts abeam inshore of it (they are on the mid lane then).
+        /// </summary>
+        private string RaiderLane(Vehicle flag) =>
+            flag.NavalLane == "far" && EscortsBeside(flag.Def) && Sea?.Lane("near") != null ? "near" : "mid";
+
+        /// <summary>
+        /// Trains a gun the naval system lays (a main turret) on a heading, inside its own firing arc (DECISIONS 20Y:
+        /// an aft turret never swings forward across the superstructure).
+        /// </summary>
+        private static void Lay(Vehicle v, int m, float heading)
+        {
+            var mount = v.Def.Mounts[m];
+            if (mount.ArcHalf > 0f)
+            {
+                var centre = v.Heading + mount.ArcCentre;
+                heading = centre + Math.Clamp(SimMath.WrapAngle(heading - centre), -mount.ArcHalf, mount.ArcHalf);
+            }
+            v.Weapons[m].Heading = heading;
         }
 
         // ================================================================== the step
@@ -127,18 +194,24 @@ namespace MachineBrigade.Sim.Bosses
                         Lander(v, sea, now);
                         break;
                 }
-                Sail(v, naval, sea, dt);
+                // Prompt 20 J.4: a submarine under water is the boss system's to move.
+                if (v.Burrow == Vehicle.BurrowState.Surface) Sail(v, naval, sea, dt);
             }
             // The flagship went down this step: its magazines go up along the hull, its general signs off.
             if (!flagshipAlive && Rules.Flagship.IsValid && _world.TryGetVehicle(Rules.Flagship, out var sunk) && !sunk.IsAlive)
                 Sunk(sunk);
             if (!flagshipAlive && Rules.Flagship.IsValid && !_world.TryGetVehicle(Rules.Flagship, out _)) Rules.Flagship = EntityId.None;
-            foreach (var (def, team, at, heading, flagship, landing, cargo) in _spawns)
+            foreach (var (def, team, at, heading, flagship, landing, cargo, station) in _spawns)
             {
                 var ship = _world.SpawnVehicle(def, team, at, heading);
                 ship.Flagship = flagship;
                 ship.LandingIndex = landing;
                 ship.Cargo = cargo;
+                if (station is { } s)
+                {
+                    ship.StationAt = s;
+                    ship.OnStation = true;
+                }
             }
             _spawns.Clear();
             Refresh();
@@ -200,6 +273,14 @@ namespace MachineBrigade.Sim.Bosses
             var phase = v.Phase;
             if (phase != v.NavalPhaseSeen) PhaseBegins(v, naval, sea, phase, now);
             var f = sea.Frame(v.Position);
+            // DECISIONS 20Y: its laid guns with arcs stay inside them as it turns about.
+            for (var i = 0; i < v.Def.Parts.Count; i++)
+            {
+                if (v.Def.Parts[i].Kind != "maingun") continue;
+                var laid = v.Def.Parts[i].Mounts;
+                for (var k = 0; k < laid.Count; k++)
+                    if (v.Def.Mounts[laid[k]].ArcHalf > 0f) Lay(v, laid[k], v.Weapons[laid[k]].Heading);
+            }
             if (v.Escaping)
             {
                 // Out along the far lane to the edge of the battlefield at its end: it gets away there once its
@@ -227,13 +308,25 @@ namespace MachineBrigade.Sim.Bosses
             }
             else
             {
+                // Prompt 20 J.5: a skimmer's passes, in along the near lane, then out on the far one.
+                if (naval.PassIn > 0f)
+                {
+                    if (now >= v.PassUntil)
+                    {
+                        v.PassIn = !v.PassIn;
+                        v.PassUntil = now + (v.PassIn ? naval.PassIn : naval.PassOut);
+                    }
+                    v.NavalLane = v.PassIn ? "near" : "far";
+                    if (sea.Lane(v.NavalLane) == null) v.NavalLane = naval.LaneFor(phase);
+                }
                 // Patrol: along its lane to the end of its stretch, then about.
                 var lane = sea.Lane(v.NavalLane)!;
                 var turnU = v.NavalDir * lane.Patrol;
                 if ((f.X - turnU) * v.NavalDir > -4f) v.NavalDir = -v.NavalDir;
                 v.NavalGoal = new Vector2(v.NavalDir * lane.Patrol, lane.W);
             }
-            if (v.Transforming || v.HoldFire) return;
+            // Prompt 20 J.4: a submarine fires nothing under water.
+            if (v.Transforming || v.HoldFire || v.Burrow != Vehicle.BurrowState.Surface) return;
             if (v.Def.Salvo is { } salvo && now >= v.SalvoNext) Salvo(v, salvo, sea, now);
             if (v.Def.Cruise is { } cruise && phase >= cruise.Phase && now >= v.CruiseNext && !v.CruiseOff)
             {
@@ -268,7 +361,7 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     var side = (k - (wave.Units.Count - 1) * 0.5f) * 18f;
                     var at = sea.AirEntry + sea.Along * side;
-                    _spawns.Add((wave.Units[k], v.Team, at, SimMath.HeadingOf(-sea.Out), EntityId.None, -1, Array.Empty<string>()));
+                    _spawns.Add((wave.Units[k], v.Team, at, SimMath.HeadingOf(-sea.Out), EntityId.None, -1, Array.Empty<string>(), null));
                 }
             }
             if (naval.EscapePhase < 0 || phase < naval.EscapePhase || v.Escaping) return;
@@ -313,25 +406,32 @@ namespace MachineBrigade.Sim.Bosses
             var spread = salvo.Spread * (blind ? salvo.BlindScatter : 1f);
             var warning = salvo.Warning != null && _world.Catalog.TryGetSupport(salvo.Warning, out var w) ? w : null;
             var gun = salvo.Weapon != null && _world.Catalog.Weapons.TryGetValue(salvo.Weapon, out var g) ? g : null;
+            // DECISIONS 20Y: the salvo's shells lie in one line along the shore across every standing turret's
+            // (Leviathan's: one gun a turret, a ripple), each turret flashing once a shell.
+            var total = 0;
+            for (var i = 0; i < parts.Count; i++)
+                if (parts[i].Kind == "maingun" && !v.IsPartBroken(i)) total += salvo.Shells;
+            var j = 0;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (parts[i].Kind != "maingun" || v.IsPartBroken(i)) continue;
-                for (var s = 0; s < salvo.Shells; s++)
+                for (var s = 0; s < salvo.Shells; s++, j++)
                 {
-                    var along = (s - (salvo.Shells - 1) * 0.5f) * spread / MathF.Max(1, salvo.Shells - 1);
+                    var along = total > 1 ? (j - (total - 1) * 0.5f) * spread / (total - 1) : 0f;
                     var angle = (float)_world.Random.NextDouble() * SimMath.Tau;
                     var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + sea.Along * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, new ExplosionDef(salvo.Damage, salvo.Radius, 0f, ExplosionTier.Huge), salvo.Warn + 0.15 * s, v.Team, v,
+                    _world.Damage.Queue(at, new ExplosionDef(salvo.Damage, salvo.Radius, 0f, ExplosionTier.Huge), salvo.Warn + 0.15 * j, v.Team, v,
                         HitKind.Strike, v.Id);
                 }
-                // The turret swings to its aim and fires (its muzzle flash and the shells' flight).
+                // The turret swings to its aim (inside its arc) and fires (its muzzle flash and the shells' flight).
                 var mounts = parts[i].Mounts;
                 if (mounts.Count == 0) continue;
                 var m = mounts[0];
-                v.Weapons[m].Heading = SimMath.HeadingOf(aim - v.Position);
-                if (gun != null) _world.Emit(SimEvent.Fired(v, m, v.PartPosition(i), aim, salvo.Warn, EntityId.None));
+                Lay(v, m, SimMath.HeadingOf(aim - v.Position));
+                if (gun != null)
+                    for (var s = 0; s < salvo.Shells; s++) _world.Emit(SimEvent.Fired(v, m, v.PartPosition(i), aim, salvo.Warn, EntityId.None));
             }
             v.LastFiredAt = now;
         }
@@ -379,7 +479,7 @@ namespace MachineBrigade.Sim.Bosses
             var at = v.Position - SimMath.Forward(v.Heading) * v.Def.HullRadius;
             for (var i = 0; i < v.Def.Parts.Count; i++)
                 if (v.Def.Parts[i].Kind == "welldeck") at = v.PartPosition(i) - SimMath.Forward(v.Heading) * 4f;
-            _spawns.Add((craft.Unit, v.Team, at, v.Heading, v.Id, landing, cargo));
+            _spawns.Add((craft.Unit, v.Team, at, v.Heading, v.Id, landing, cargo, null));
             v.CraftLaunched++;
         }
 
@@ -390,9 +490,17 @@ namespace MachineBrigade.Sim.Bosses
             if (_world.TryGetVehicle(v.Flagship, out var flag) && flag.IsAlive && !flag.Escaped)
             {
                 var ff = sea.Frame(flag.Position);
+                v.NavalDir = flag.NavalDir;
+                if (v.OnStation)
+                {
+                    // DECISIONS 20Y: abeam of it on its station (inside its length, on the shore side), a little
+                    // further in while it runs.
+                    var w = flag.Escaping ? ff.Y : sea.Lane(flag.NavalLane)?.W ?? ff.Y;
+                    v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + v.StationAt.Y * (flag.Escaping ? 1.25f : 1f));
+                    return;
+                }
                 var station = naval.Station == 0f ? 24f : naval.Station;
                 var side = (v.Id.Value & 1) == 0 ? 1f : -1f;
-                v.NavalDir = flag.NavalDir;
                 // Screening the run: between it and the shore, a little ahead or astern.
                 if (flag.Escaping) v.NavalGoal = new Vector2(ff.X + side * station * 0.45f + flag.NavalDir * 6f, ff.Y - 15f);
                 else
@@ -428,9 +536,10 @@ namespace MachineBrigade.Sim.Bosses
             {
                 case 0:
                 {
-                    // Out on the mid lane, near its flagship (or on its own patrol).
-                    var lane = sea.Lane("mid")!;
-                    var u = _world.TryGetVehicle(v.Flagship, out var flag) && flag.IsAlive && !flag.Escaped
+                    // Out on its lane, near its flagship (or on its own patrol on the mid lane).
+                    var withFlag = _world.TryGetVehicle(v.Flagship, out var flag) && flag.IsAlive && !flag.Escaped;
+                    var lane = sea.Lane(withFlag ? RaiderLane(flag) : "mid")!;
+                    var u = withFlag
                         ? sea.Frame(flag.Position).X + ((v.Id.Value % 3) - 1) * 20f
                         : Math.Clamp(f.X + v.NavalDir * 20f, -lane.Patrol, lane.Patrol);
                     v.NavalGoal = new Vector2(u, lane.W);
@@ -474,7 +583,7 @@ namespace MachineBrigade.Sim.Bosses
                 var across = Vector2.Normalize(new Vector2(-(inland - beach.At).Y, (inland - beach.At).X));
                 for (var k = 0; k < v.Cargo.Length; k++)
                     _spawns.Add((v.Cargo[k], v.Team, inland + across * ((k - (v.Cargo.Length - 1) * 0.5f) * 6f), SimMath.HeadingOf(inland - beach.At),
-                        EntityId.None, -1, Array.Empty<string>()));
+                        EntityId.None, -1, Array.Empty<string>(), null));
                 _world.Emit(SimEvent.Landed(v, inland, v.Cargo.Length));
                 return;
             }
@@ -500,7 +609,9 @@ namespace MachineBrigade.Sim.Bosses
                 var at = v.Position + forward * ((k - 2) * v.Def.HullRadius * 0.55f);
                 _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);
             }
-            _world.Emit(SimEvent.RadioMessage("radio.kessler.leviathan.sunk", v.Team));
+            // Prompt 20: each ship boss's own sign-off (Leviathan's is Kessler's line).
+            var line = v.Def.Id != "leviathan" && v.Def.RadioSpawn != null ? v.Def.RadioSpawn + ".sunk" : "radio.kessler.leviathan.sunk";
+            _world.Emit(SimEvent.RadioMessage(line, v.Team));
         }
 
         // ================================================================== the coast

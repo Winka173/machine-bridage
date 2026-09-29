@@ -1,0 +1,10 @@
+PICKS greedy from empty, armies doubled
+mixed: 1.80 L[missile_battery,heavy_turret] M[gun_turret,gun_turret,minefield] S[dragons_teeth,ew_tower,aa_turret,mg_bunker,guard_tower,aa_turret]
+armour: 1.89 L[heavy_turret,minefield] M[c_ram,cp_relay,gun_turret] S[mg_bunker,mg_bunker,cp_relay,aa_turret,guard_tower,guard_tower]
+light+drones: 1.58 L[drone_hangar,heavy_turret] M[minefield,minefield,minefield] S[aa_turret,dragons_teeth,guard_tower,minefield,ew_tower,mg_bunker]
+artillery: 0.29 L[heavy_turret,heavy_turret] M[atgm_tower,atgm_tower,atgm_tower] S[aa_turret,ew_tower,aa_turret,aa_turret,aa_turret,aa_turret]
+air: 2.00 L[missile_battery,minefield] M[aa_turret,rocket_turret,gun_turret] S[aa_turret,aa_turret,aa_turret,aa_turret,aa_turret,aa_turret]
+all slots: heavy_turret 6%, missile_battery 4%, atgm_tower 3%, gun_turret 5%, aa_turret 12%, ew_tower 8%, dragons_teeth 6%, minefield 15%, c_ram 3%, drone_hangar 2%, rocket_turret 1%, mg_bunker 12%, artillery_emplacement 0%, guard_tower 13%, shield_tower 0%, cp_relay 9%
+small slots: aa_turret 20%, ew_tower 13%, dragons_teeth 11%, minefield 6%, mg_bunker 19%, guard_tower 21%, cp_relay 11%
+medium slots: atgm_tower 8%, gun_turret 18%, aa_turret 4%, ew_tower 4%, dragons_teeth 2%, minefield 28%, c_ram 9%, rocket_turret 4%, mg_bunker 6%, guard_tower 4%, cp_relay 11%
+large slots: heavy_turret 32%, missile_battery 22%, atgm_tower 2%, gun_turret 2%, aa_turret 2%, ew_tower 2%, dragons_teeth 1%, minefield 21%, c_ram 1%, drone_hangar 11%, rocket_turret 1%, mg_bunker 2%, artillery_emplacement 1%, guard_tower 1%, shield_tower 2%, cp_relay 2%

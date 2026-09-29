@@ -21,7 +21,7 @@ def campaign(game, h):
     goal_vi = dict(h['GOAL_VI'], **GOAL_VI_EXTRA)
     out = ["<div class='section'><h2>3. Chiến dịch</h2>"
            "<p><b>Bối cảnh:</b> tương lai gần, một vùng duyên hải hư cấu. Tập đoàn quân sự tư nhân <b>Hegemon</b> chiếm vùng này và chạy các chương trình "
-           "vũ khí thử nghiệm: Behemoth, Tổ Ong và dự án Bọ Bạc. Người chơi chỉ huy <b>Lữ đoàn Cơ giới 7</b> (Machine Brigade) của Liên minh Duyên hải.</p>"
+           "vũ khí thử nghiệm: Behemoth, bầy drone và Dự án Icarus. Người chơi chỉ huy <b>Lữ đoàn Cơ giới 7</b> (Machine Brigade) của Liên minh Duyên hải.</p>"
            f"<p><b>Cấu trúc:</b> {len(game['chapters'])} chương trong 3 hồi, {len(game['campaign'])} nhiệm vụ "
            f"({sum(1 for m in game['campaign'] if not m['side'])} chính, {sum(1 for m in game['campaign'] if m['side'])} phụ). Mỗi chương có 10 nhiệm vụ chính "
            "và 2 nhiệm vụ phụ; nhiệm vụ 5 là boss giữa chương, nhiệm vụ 10 là chiến dịch lớn nhiều giai đoạn (15–25 phút, riêng trận cuối game tới 30 phút). "
@@ -203,7 +203,9 @@ def boss_parts(v, h):
     for p in parts:
         key = (p.get('name') or p['kind'], p.get('effects', ''), round(p['hp'], 3))
         groups[key] = groups.get(key, 0) + 1
-    rows = [[h['esc'](name) + (f" ×{n}" if n > 1 else ''), f"{share * 100:g}%" + (f" (×{n}: {share * n * 100:g}%)" if n > 1 else ''), h['esc'](effects)]
+    armour = {(p.get('name') or p['kind'], p.get('effects', ''), round(p['hp'], 3)): p.get('armour', '') for p in parts}
+    rows = [[h['esc'](name) + (f" ×{n}" if n > 1 else ''), f"{share * 100:g}%" + (f" (×{n}: {share * n * 100:g}%)" if n > 1 else ''),
+             str(armour.get((name, effects, share), '')), h['esc'](effects)]
             for (name, effects, share), n in groups.items()]
     total = sum(p['hp'] for p in parts)
     notes = [f"Tổng {total * 100:.0f}% máu thân trong {len(parts)} bộ phận"]
@@ -217,7 +219,9 @@ def boss_parts(v, h):
     if v.get('partTip'):
         text = re.sub(r'^\s*(Mẹo|Tip)\s*:\s*', '', v['partTip'])
         tip = "<p class='muted'><b>Mẹo:</b> " + re.sub(r'\[\[(.*?)\]\]', r'<b>\1</b>', h['esc'](text)) + "</p>"
-    return (h['table'](['Bộ phận', 'Máu (phần thân)', 'Khi vỡ'], rows)
+    a = v.get('armour') or {}
+    notes.insert(0, 'giáp thân ' + ' / '.join(f"{k} {a.get(key, 0)}" for key, k in (('front', 'trước'), ('side', 'hông'), ('rear', 'sau'), ('top', 'nóc'))))
+    return (h['table'](['Bộ phận', 'Máu (phần thân)', 'Giáp', 'Khi vỡ'], rows)
             + f"<p class='muted'>{'; '.join(notes)}.</p>" + tip)
 
 
@@ -280,12 +284,16 @@ def feedback(game, h):
 def combat_value(game, h):
     """Combat value measured in the sim (prompt 13 A): damage dealt with the time not firing counted."""
     e = h['esc']
-    path = ROOT / 'Docs' / 'balance' / 'combat_value_F3_summary.tsv'
-    if not path.exists():
+    runs = sorted((ROOT / 'Docs' / 'balance').glob('combat_value_*_summary.tsv'), key=lambda p: p.stat().st_mtime)
+    if not runs:
         return ''
+    # The balance pass after prompt 18 names its final measure (a fresh checkout gives every file the same time).
+    latest = ROOT / 'Docs' / 'balance' / 'combat_value_p18_after_summary.tsv'
+    path = latest if latest.exists() else runs[-1]
     lines = path.read_text(encoding='utf-8').splitlines()
     head = lines[0].split('\t')
-    names = {v['id']: v['name'] for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
+    units = {v['id']: v for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
+    names = {i: v['name'] for i, v in units.items()}
     def num(x):
         try:
             return f"{float(x):.0f}"
@@ -299,7 +307,11 @@ def combat_value(game, h):
     rows = []
     for line in lines[1:]:
         c = dict(zip(head, line.split('\t')))
-        rows.append([f"<b>{e(names.get(c['id'], c['id']))}</b>", e(c.get('class', '')), c.get('cp', ''),
+        v = units.get(c['id'])
+        if v is None:
+            continue   # a card merged or dropped since the measure
+        front = (v.get('armour') or {}).get('front', 0)
+        rows.append([f"<b>{e(names[c['id']])}</b>", e(c.get('class', '')), str(v['cost']), str(front),
                      num(c.get('light')), num(c.get('tanks')), num(c.get('fort')), num(c.get('air')),
                      num(c.get('tanks+AA')), pct(c.get('onTarget')), num(c.get('survival')),
                      num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir'))])
@@ -308,7 +320,8 @@ def combat_value(game, h):
             "Giá trị thực chiến đo trong mô phỏng: mỗi xe hạng 1, không trang bị, đánh các nhóm mục tiêu chuẩn (cụm xe nhẹ, cụm xe tăng, công sự có tháp, máy bay) "
             "trong khoảng 90 giây từ lúc tiếp đất, có và không có phòng không đối phương; tính cả thời gian không bắn (di chuyển, xoay tháp, nạp đạn, bay vòng, bị pháo sáng "
             "và APS chặn). Giá trị = sát thương thực × hệ số sống sót / CP. Mọi quyết định cân bằng của prompt 13 dựa trên bảng này.</p>"
-            + h['table'](['Xe', 'Lớp', 'CP', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
+            + f"<p class='muted'>Số đo: <code>{e(path.name)}</code>; chỉ các thẻ còn trong roster, CP theo dữ liệu hiện tại.</p>"
+            + h['table'](['Xe', 'Lớp', 'CP', 'Giáp trước', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
                           'DPS thật: nhẹ', 'nặng', 'bay'], rows, 'dps') + "</div>")
 
 
@@ -478,9 +491,301 @@ def late_programme(game, h, imgdir):
                      e(', '.join(sorted(parts)) or '—')])
     out.append(table(['Boss', 'Đòn', 'Gồm', 'Cảnh báo', 'Hồi', 'Bộ phận ngắt'], rows))
     out.append("<p>Bộ phận mới: bệ dựng tên lửa của Doomsday Train, khoang bom của Hive Carrier và của Khí cầu chỉ huy. "
-               "Đòn của Bọ Bạc (tia laser quét) là một mục dữ liệu riêng để prompt 19 thay bằng mưa thanh tungsten.</p>")
+               "Prompt 19: đòn của Icarus là mưa thanh tungsten từ vệ tinh (thay cho tia laser quét); từ prompt 20 mini boss dùng đòn lớn thu nhỏ (sát thương ×0,7, hồi chiêu ×1,3).</p>")
     out.append('</div>')
     return ''.join(out)
+
+
+def props_and_rounds(game, h, sizes, weapons, owners):
+    """Map props and every round model, with their sizes."""
+    e, table = h['esc'], h['table']
+
+    def box(model, scale=1.0):
+        s = sizes.get(model or '')
+        return f"{s[2] * scale:.2f} × {s[0] * scale:.2f} × {s[1] * scale:.2f}" if s else '—'
+
+    prop_rows = []
+    for p in game.get('props', []):
+        raw = p.get('raw', {})
+        sc = raw.get('Scale', 1) or 1
+        prop_rows.append([e(p.get('name') or p['id']), f"<code>{e(p['id'])}</code>", e(str(raw.get('Kind', '') or '')), str(raw.get('MaxHp', '') or '—'),
+                          f"{raw.get('Width', 0) or 0:.1f} × {raw.get('Depth', 0) or 0:.1f}", 'có' if raw.get('BlocksMovement') else '—',
+                          'có' if raw.get('BlocksFire') else '—', 'có' if raw.get('Crushable') else '—', 'bất tử' if raw.get('Indestructible') else '—',
+                          box(p['id'], sc)])
+    round_rows = []
+    seen = set()
+    for wid in sorted(weapons):
+        w = weapons[wid]
+        raw = w.get('raw', {})
+        model = raw.get('ProjectileModel') or ''
+        scale = raw.get('ProjectileScale', 1) or 1
+        if not model or (model, scale) in seen:
+            continue
+        seen.add((model, scale))
+        round_rows.append([f"<code>{e(model)}</code>", f"{scale:g}", box(model, scale), f"<code>{e(wid)}</code>", e(w.get('real') or ''),
+                           f"{(raw.get('Size', 0) or 0):g}"])
+    out = ""
+    if prop_rows:
+        out += f"<h3>Công trình và vật thể trên bản đồ ({len(prop_rows)})</h3>" + table(
+            ['Tên', 'Id', 'Loại', 'Máu', 'Rộng × sâu (m)', 'Chặn xe', 'Chặn đạn', 'Bị nghiền', 'Bất tử', 'Model: dài × rộng × cao (m)'], prop_rows, 'dps')
+    if round_rows:
+        out += f"<h3>Kích thước đạn ({len(round_rows)} model)</h3><p class='muted'>Kích thước model đạn nhân tỷ lệ của vũ khí (projectileScale).</p>" + table(
+            ['Model đạn', 'Tỷ lệ', 'Dài × rộng × cao (m)', 'Vũ khí', 'Tên thật', 'Cỡ (mm)'], round_rows, 'dps')
+    return out
+
+
+def boss_summary(game, h):
+    """Section 10d: the bosses side by side."""
+    import json as _json
+    e, table = h['esc'], h['table']
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'balance.json').read_text(encoding='utf-8')
+    data = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    big = {v['id']: v.get('bigAttack') for v in data['vehicles'] if v.get('bigAttack')}
+    attacks = {a['id']: a for a in data.get('bigAttacks', [])}
+    escorts = {x['boss']: x for x in data.get('escorts', [])}
+
+    def escort_count(x):
+        n = 0
+        for part in (x.get('arrive'), x.get('phase'), x.get('phases')):
+            if not part:
+                continue
+            groups = part if isinstance(part, list) and part and isinstance(part[0], dict) and 'units' in part[0] else [part]
+            for g in groups:
+                units = g.get('units', []) if isinstance(g, dict) else g
+                n += sum(u.get('count', 1) for u in units if isinstance(u, dict))
+        return n
+
+    gen_names = {x['id']: x.get('name', x['id']) for x in game.get('generals', []) + game.get('characters', [])}
+    gen_names = {**{k: v for k, v in game.get('bossGenerals', {}).items() if v}, **gen_names}
+    rows = []
+    for v in sorted(game.get('bosses', []), key=lambda v: (str(v.get('raw', {}).get('Rank', '')), -float(v.get('hp', 0) or 0))):
+        raw = v.get('raw', {})
+        a = v.get('armour') or {}
+        parts = v.get('parts') or []
+        d = v.get('dpsVs', {})
+        att = attacks.get(big.get(v['id'], '') or '', {})
+        strike = (att.get('strikes') or [{}])[0]
+        big_txt = (f"{att.get('id', '')}: {strike.get('count', 1)} × {strike.get('damage', 0):g}, hồi {att.get('cooldown', '')} s" if att else '—')
+        rows.append([e(v['name']), 'mini' if raw.get('MiniBoss') else 'chủ lực', e(gen_names.get(str(raw.get('General', '') or ''), str(raw.get('General', '') or '—'))),
+                     f"{float(v.get('hp', 0) or 0):,.0f}".replace(',', '.'),
+                     f"{a.get('front', 0)}/{a.get('side', 0)}/{a.get('rear', 0)}/{a.get('top', 0)}",
+                     f"{len(parts)} ({sum(p.get('hp', 0) for p in parts) * 100:.0f}%)",
+                     f"{float(d.get('Light', 0)):.0f}", f"{float(d.get('Heavy', 0)):.0f}", f"{float(d.get('Air', 0)):.0f}", f"{float(d.get('Structure', 0)):.0f}",
+                     *unit_reach(v)[:3], e(big_txt), str(escort_count(escorts[v['id']])) if v['id'] in escorts else '—'])
+    return ("<div class='section'><h2>10d. Tổng hợp boss</h2>"
+            "<p>Mọi boss và mini boss cạnh nhau, đọc từ dữ liệu hiện tại: máu thân (trước hệ số độ khó), giáp trước/hông/sau/nóc, số bộ phận và phần máu của chúng, "
+            "DPS duy trì lên xe nhẹ, xe nặng, máy bay và công trình (trước giáp), đòn lớn đầu tiên và số hộ tống trong mọi đợt.</p>"
+            + table(['Boss', 'Cấp', 'Tướng', 'Máu', 'Giáp T/H/S/N', 'Bộ phận', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'Tầm xa nhất', 'Tầm mặt đất', 'Tầm máy bay', 'Đòn lớn', 'Hộ tống'], rows, 'dps')
+            + "</div>")
+
+
+def commanders(game, h):
+    """Section 12c (prompt 22 F): the player's commanders and the enemy generals' passives, as the game words them."""
+    e, table = h['esc'], h['table']
+    fam = {'Combat': 'chiến đấu', 'Economy': 'kinh tế', 'General': 'tướng địch'}
+    cs = game.get('commanders', [])
+    mine = [[f"<b>{e(c['name'])}</b><br><span class='muted'>{e(c.get('call', ''))}</span>", fam.get(c['family'], c['family']), e(c.get('role', '')),
+             e(c.get('style', '')), e(c.get('strength', '')), e(c.get('weakness', '')), e(c.get('unlock', ''))]
+            for c in cs if c['family'] != 'General']
+    gens = [[f"<b>{e(c['name'])}</b>", e(c.get('strength', '')), e(c.get('weakness', ''))] for c in cs if c['family'] == 'General']
+    return ("<div class='section'><h2>12c. Commander</h2>"
+            "<p>Người chơi chọn một commander trước trận; nội tại của nó áp cho cả phe, trong mọi chế độ. Mỗi màn gắn với một tướng địch "
+            "thì địch mang nội tại của tướng đó. Commander mở dần theo chương; đạo quân vẫn dùng được cùng lúc (phần 12b).</p>"
+            f"<h3>Commander của người chơi ({len(mine)})</h3>"
+            + table(['Commander', 'Nhóm', 'Vai trò', 'Hợp lối chơi', 'Điểm mạnh', 'Điểm yếu', 'Mở khóa'], mine)
+            + f"<h3>Nội tại của tướng địch ({len(gens)})</h3>" + table(['Tướng', 'Điểm mạnh', 'Điểm yếu'], gens)
+            + "</div>")
+
+
+def price_list(game, h, unlock_text):
+    """Section 12b (play-test 8): every price in one place: cards, base towers, supports, items and doctrines."""
+    e, table = h['esc'], h['table']
+    eco = game.get('economy', {})
+    money = lambda n: f"{n:,}".replace(',', '.')
+    route_vi = {'Starter': 'có sẵn', 'Premium': 'cao cấp', 'Campaign': 'chiến dịch'}
+    cards = [[e(v['name']), e(v.get('class', '')), f"{v['cost']}", route_vi.get(v.get('route'), v.get('route', '')), money(v.get('coins', 0))]
+             for v in sorted(game.get('vehicles', []), key=lambda v: (v['cost'], v['name']))]
+    names = {t['id']: t['name'] for t in game.get('towers', [])}
+    size_vi = {'Small': 'nhỏ', 'Medium': 'vừa', 'Large': 'lớn', 'Utility': 'tiện ích'}
+    towers = []
+    for t in game.get('base', {}).get('towers', []):
+        v = next((x for x in game.get('towers', []) if x['id'] == t['id']), {})
+        towers.append([e(t.get('name') or names.get(t['id'], t['id'])), size_vi.get(t.get('size'), t.get('size', '')), f"{t.get('rebuildCp', 0)}",
+                       f"{t.get('rebuildSeconds', 0):g}", route_vi.get(v.get('route'), v.get('route', '') or '—'), money(v.get('coins', 0)) if v else '—',
+                       e(', '.join(b['name'] for b in t.get('branches', [])) or '—')])
+    sups = [[e(s['name']), e(s['kind']), f"{s['cost']}", route_vi.get(s.get('route'), s.get('route', '')), money(s.get('coins', 0))]
+            for s in game.get('supports', []) if s['cost'] and not s.get('consumable') and not s.get('eventOnly')]
+    items = [[e(s['name']), e(s['kind']), money(s.get('coins', 0)), f"{eco.get('itemPack', 2)}", money(round(s.get('coins', 0) / max(1, eco.get('itemPack', 2))))]
+             for s in game.get('supports', []) if s.get('consumable')]
+    return ("<div class='section'><h2>12b. Bảng giá</h2>"
+            "<p>Mọi giá trong game ở một chỗ. <b>CP</b> là điểm chỉ huy trả mỗi lần gọi trong trận. <b>Xu</b> là tiền duy nhất ngoài trận: mua thẻ cao cấp, "
+            "mua sớm thẻ chiến dịch trước khi thắng màn mở khóa, mua vật phẩm và đạo quân. Thẻ có sẵn không cần mua. Giá lên hạng thẻ, hòm và gói xu ở phần kinh tế.</p>"
+            f"<h3>Thẻ xe ({len(cards)})</h3>" + table(['Thẻ', 'Lớp', 'CP mỗi lần gọi', 'Cách có', 'Giá mua (xu)'], cards, 'dps')
+            + f"<h3>Tháp căn cứ ({len(towers)})</h3><p class='muted'>Tháp không tốn CP khi đặt vào căn cứ: nó chiếm một ô theo cỡ. Bị phá trong trận thì xây lại bằng CP sau một thời gian chờ.</p>"
+            + table(['Tháp', 'Ô', 'Xây lại (CP)', 'Chờ xây lại (s)', 'Cách có', 'Giá mua (xu)', 'Nhánh'], towers, 'dps')
+            + f"<h3>Thẻ hỗ trợ ({len(sups)})</h3>" + table(['Hỗ trợ', 'Loại', 'CP mỗi lần gọi', 'Cách có', 'Giá mua (xu)'], sups, 'dps')
+            + f"<h3>Vật phẩm dùng một lần ({len(items)})</h3>" + table(['Vật phẩm', 'Loại', 'Giá một gói (xu)', 'Số cái mỗi gói', 'Xu mỗi cái'], items, 'dps')
+            + f"<h3>Đạo quân</h3><p>Đạo quân đầu tiên miễn phí; mỗi đạo quân khác {money(eco.get('doctrinePrice', 0))} xu.</p>"
+            + "</div>")
+
+
+def blast_radii(game, h):
+    """Section 10c: every blast radius in the game."""
+    import json as _json
+    e, table = h['esc'], h['table']
+    ordnance = {'Bomb', 'GuidedBomb', 'Cluster', 'HeavyBomb', 'CarBomb', 'Napalm', 'Atgm', 'Sam', 'Cruise', 'Ballistic', 'RocketSmall', 'RocketBig',
+                'HeShell', 'MortarBomb', 'SuperShell', 'Airburst', 'Grenade', 'Fpv', 'Shahed', 'Lancet', 'Rail', 'Dart', 'DoubleDart'}
+    dtype = {'Kinetic': 'Động năng', 'ShapedCharge': 'Nổ lõm', 'HighExplosive': 'Nổ mạnh', 'Fire': 'Lửa', 'Fragmentation': 'Mảnh', 'Energy': 'Năng lượng'}
+    weapons, owners = {}, {}
+    for group in ('vehicles', 'elites', 'bosses', 'towers', 'itemVehicles'):
+        for v in game.get(group, []):
+            for w in v.get('weapons', []):
+                weapons.setdefault(w['id'], w)
+                owners.setdefault(w['id'], []).append(v.get('short') or v['name'])
+    rows = []
+    for wid, w in weapons.items():
+        raw = w.get('raw', {})
+        form = str(raw.get('Form', w.get('form', '')))
+        splash = float(w.get('splash', 0) or raw.get('SplashRadius', 0) or 0)
+        if form not in ordnance and splash <= 0:
+            continue
+        rows.append((splash, [f"<code>{e(wid)}</code>", e(w.get('real') or ''), e(form), e(', '.join(sorted(set(owners[wid])))[:50]),
+                              f"{round(splash, 1):g}" if splash > 0 else 'trúng trực tiếp', f"{float(w.get('damage', 0) or 0):g}", e(dtype.get(w.get('type'), w.get('type', ''))),
+                              str(w.get('pen', '')), 'có' if raw.get('Thermobaric') else '—', 'có' if raw.get('Splashes') else '—', 'có' if raw.get('Cluster') else '—']))
+    rows.sort(key=lambda r: -r[0])
+    sup_rows = []
+    for s in sorted(game.get('supports', []), key=lambda s: -(s.get('radius') or 0)):
+        if not s.get('radius') and not s.get('damage'):
+            continue
+        sup_rows.append([e(s.get('name') or s['id']), f"<code>{e(s['id'])}</code>", f"{s.get('count', 1) or 1}", f"{float(s.get('damage', 0) or 0):g}",
+                         f"{round(float(s.get('radius', 0) or 0), 1):g}", e(dtype.get(s.get('type'), s.get('type', '') or '')), f"{s.get('cost', '')}", f"{s.get('cooldown', '')}"])
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'balance.json').read_text(encoding='utf-8')
+    data = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    owner = {v.get('bigAttack'): v['id'] for v in data['vehicles'] if v.get('bigAttack')}
+    names = {v['id']: v.get('name', v['id']) for v in game.get('bosses', []) + game.get('vehicles', [])}
+    big_rows = []
+    for a in data.get('bigAttacks', []):
+        for st in a.get('strikes', []):
+            r = st.get('radius') or st.get('area') or 0
+            big_rows.append([e(names.get(owner.get(a['id'], ''), owner.get(a['id'], ''))), f"<code>{e(a['id'])}</code>", e(st.get('shape', '')), f"{st.get('count', 1)}",
+                             f"{st.get('damage', 0):g}" if st.get('damage') else '—', f"{r:g}" if r else '—',
+                             f"{st.get('length'):g} × {st.get('width', 0):g}" if st.get('length') else '—', e(dtype.get(st.get('type'), st.get('type', '') or ''))])
+    death_rows = []
+    for group, label in (('vehicles', 'xe'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
+        for v in game.get(group, []):
+            if v.get('death'):
+                death_rows.append((float(v.get('deathRadius', 0) or 0), [e(v['name']), label, f"{float(v['death']):g}", f"{round(float(v.get('deathRadius', 0) or 0), 1):g}"]))
+    death_rows.sort(key=lambda r: -r[0])
+    return ("<div class='section'><h2>10c. Tầm nổ</h2>"
+            "<p>Bán kính nổ lan (m) của mọi bom, tên lửa, rốc-két, đạn pháo và drone; của các thẻ hỗ trợ hỏa lực; của đòn lớn của boss; và của vụ nổ khi xe, tháp, boss bị phá. "
+            "\"Trúng trực tiếp\" là quả chỉ gây sát thương cho mục tiêu nó trúng. Sát thương là mỗi phát, trước giáp.</p>"
+            f"<h3>Bom, tên lửa, rốc-két, đạn pháo, drone ({len(rows)})</h3>"
+            + table(['Vũ khí', 'Tên thật', 'Dạng', 'Trên', 'Bán kính nổ (m)', 'Sát thương', 'Loại', 'Xuyên', 'Nhiệt áp', 'Nổ lan', 'Chùm'], [r for _, r in rows], 'dps')
+            + f"<h3>Hỗ trợ hỏa lực ({len(sup_rows)})</h3>"
+            + table(['Thẻ', 'Id', 'Số quả', 'Sát thương mỗi quả', 'Bán kính (m)', 'Loại', 'CP', 'Hồi (s)'], sup_rows, 'dps')
+            + f"<h3>Đòn lớn của boss ({len(big_rows)} đợt)</h3>"
+            + table(['Boss', 'Đòn', 'Dạng', 'Số phát', 'Sát thương', 'Bán kính (m)', 'Dải dài × rộng (m)', 'Loại'], big_rows, 'dps')
+            + f"<h3>Vụ nổ khi bị phá ({len(death_rows)})</h3>"
+            + table(['Đơn vị', 'Loại', 'Sát thương', 'Bán kính (m)'], [r for _, r in death_rows], 'dps')
+            + "</div>")
+
+
+def unit_reach(v):
+    """A unit's reach: its longest weapon, its longest against ground and against air, and its shortest minimum range."""
+    ws = [w for w in v.get('weapons', []) if (w.get('damage') or 0) > 0]
+    far = max((float(w.get('range', 0) or 0) for w in ws), default=0)
+    ground = max((float(w.get('range', 0) or 0) for w in ws if w.get('targets') in ('Ground', 'All')), default=0)
+    air = max((float(w.get('range', 0) or 0) for w in ws if w.get('targets') in ('Air', 'All')), default=0)
+    mins = [float(w.get('minRange', 0) or 0) for w in ws if (w.get('minRange') or 0) > 0]
+    fmt = lambda x: f"{x:g}" if x else '—'
+    return fmt(round(far, 1)), fmt(round(ground, 1)), fmt(round(air, 1)), fmt(round(min(mins), 1)) if mins else '—'
+
+
+def rates_and_ballistics(game, h):
+    """Section 10b: every weapon's rate of fire, magazine and reload, and its ballistics; every unit's movement and size."""
+    e, table = h['esc'], h['table']
+    tgt = {'Ground': 'mặt đất', 'Air': 'trên không', 'All': 'tất cả'}
+
+    def f(x, n=2):
+        if x in (None, '', 0, 0.0):
+            return '—'
+        if not isinstance(x, float):
+            return str(x)
+        t = f"{x:.{n}f}"
+        return t.rstrip('0').rstrip('.') if '.' in t else t
+
+    weapons, owners = {}, {}
+    for group in ('vehicles', 'elites', 'bosses', 'towers', 'itemVehicles'):
+        for v in game.get(group, []):
+            for w in v.get('weapons', []):
+                weapons.setdefault(w['id'], w)
+                owners.setdefault(w['id'], []).append(v.get('short') or v['name'])
+    rate_rows, ball_rows = [], []
+    for wid in sorted(weapons):
+        w = weapons[wid]
+        raw = w.get('raw', {})
+        cd = raw.get('Cooldown', w.get('cooldown') or 0) or 0
+        burst = raw.get('Burst', w.get('burst', 1)) or 1
+        gap = raw.get('BurstInterval', 0) or 0
+        clip = raw.get('Clip', w.get('clip', 0)) or 0
+        clip_reload = raw.get('ClipReload', w.get('clipReload', 0)) or 0
+        ammo = raw.get('Ammo', 0) or 0
+        reload = raw.get('Reload', 0) or 0
+        dmg = w.get('damage', 0) or 0
+        # Rounds a second while it fires: inside a burst its gap, else its cooldown.
+        rate = (1 / gap) if burst > 1 and gap > 0 else ((1 / cd) if cd > 0 else 0)
+        stream = (clip / rate) if clip and rate else ((burst * gap) if burst > 1 and gap > 0 else 0)
+        rest = clip_reload if clip else (cd if burst > 1 else 0)
+        burst_dps = dmg * rate
+        cycle = f"băng {clip}" if clip else (f"loạt {burst}" if burst > 1 else "từng phát")
+        launcher = f"{ammo} lượt, nạp {f(reload, 1)} s" if ammo else '—'
+        per_cycle, cycle_s = raw.get('RoundsPerCycle', 0) or 0, raw.get('CycleSeconds', 0) or 0
+        avg = (per_cycle / cycle_s) if per_cycle and cycle_s else 0
+        rate_rows.append([f"<code>{e(wid)}</code>", e(w.get('real') or ''), e(', '.join(sorted(set(owners[wid])))[:60]),
+                          f(rate, 2), f(rate * 60, 0) if rate else '—', f(avg, 2), e(cycle), f(stream, 2), f(rest, 2), e(launcher),
+                          f(float(dmg), 1), f(burst_dps, 0), f(float(w.get('dps', 0)), 0)])
+        speed = w.get('speed') or raw.get('ProjectileSpeed', 0) or 0
+        rng = w.get('range', 0) or 0
+        flight = (rng / speed) if speed else 0
+        tags = [t for t, on in (('dẫn đường', raw.get('Guided')), ('bắn cầu vồng', raw.get('Indirect')), ('tia', raw.get('Beam')),
+                                ('cận chiến', raw.get('Melee')), ('xuyên qua', raw.get('Pierce')), ('chùm', raw.get('Cluster')),
+                                ('chỉ đánh chặn', raw.get('InterceptOnly')), ('đánh nóc', raw.get('TopAttack'))) if on]
+        ball_rows.append([f"<code>{e(wid)}</code>", f(raw.get('Size', 0), 1), e(str(raw.get('Family', ''))), e(str(raw.get('Form', w.get('form', '')))),
+                          f(float(speed), 0), f(flight, 2), f(float(rng), 0), f(float(w.get('minRange', 0) or 0), 0),
+                          f(float(w.get('splash', 0) or 0), 1), e(tgt.get(w.get('targets'), w.get('targets', ''))), e(str(raw.get('Ceiling', '') or '—')),
+                          str(w.get('pen', '')), f(raw.get('FlareResist', 0), 2), e(', '.join(tags) or '—')])
+    sizes = game.get('modelSizes', {})
+
+    def drawn(model, scale):
+        s = sizes.get(model or '')
+        if not s:
+            return '—'
+        k = scale or 1
+        return f"{s[2] * k:.1f} × {s[0] * k:.1f} × {s[1] * k:.1f}"
+
+    move_rows = []
+    for group, label in (('vehicles', 'xe'), ('itemVehicles', 'vật phẩm'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
+        for v in game.get(group, []):
+            raw = v.get('raw', {})
+            scale = raw.get('Scale', 1) or 1
+            if v.get('flying') and not raw.get('Boss'):
+                scale *= 0.85   # aircraft are drawn 15 % smaller (DECISIONS 21H)
+            move_rows.append([e(v['name']), label, f(float(v.get('speed', 0) or 0), 1), f(raw.get('TurnRate', 0), 0), f(raw.get('TurretTurnRate', 0), 0),
+                              f(raw.get('Length', 0), 1), f(raw.get('Width', 0), 1), f(raw.get('HullRadius', 0), 1), f(float(v.get('vision', 0) or 0), 0),
+                              f(raw.get('Standoff', 0), 0), f(raw.get('RearmTime', 0), 1), 'có' if raw.get('Stealth') else '—',
+                              f(raw.get('MaxPerSide', 0), 0), *unit_reach(v), drawn(v.get('model'), scale)])
+    return ("<div class='section'><h2>10b. Nhịp bắn, nạp đạn, đường đạn và di chuyển</h2>"
+            "<p>Đọc thẳng từ dữ liệu game. <b>Viên/s</b> là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). <b>Xả</b> là thời gian hết một băng hay một loạt. "
+            "<b>Nghỉ/nạp</b> là thời gian thay băng hay nghỉ giữa hai loạt. <b>Bệ phóng</b> là số lượt bắn trước khi phải nạp lại cả bệ. "
+            "<b>TB viên/s</b> tính cả thời gian nghỉ và nạp. <b>DPS khi xả</b> là sát thương mỗi giây trong lúc bắn, trước giáp; <b>DPS duy trì</b> tính cả thời gian nạp (prompt 13).</p>"
+            f"<h3>Nhịp bắn và nạp đạn ({len(rate_rows)} vũ khí)</h3>"
+            + table(['Vũ khí', 'Tên thật', 'Trên', 'Viên/s', 'Viên/phút', 'TB viên/s cả chu kỳ', 'Loạt / băng', 'Xả (s)', 'Nghỉ/nạp (s)', 'Bệ phóng', 'Sát thương/phát', 'DPS khi xả', 'DPS duy trì'], rate_rows, 'dps')
+            + f"<h3>Đường đạn</h3>"
+            + table(['Vũ khí', 'Cỡ (mm)', 'Họ', 'Dạng', 'Tốc độ đạn (m/s)', 'Bay hết tầm (s)', 'Tầm (m)', 'Tối thiểu', 'Nổ lan (m)', 'Mục tiêu', 'Trần bắn', 'Xuyên', 'Kháng pháo sáng', 'Dấu'], ball_rows, 'dps')
+            + f"<h3>Di chuyển, tầm bắn và kích thước ({len(move_rows)} đơn vị)</h3>"
+            + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe', 'Tầm xa nhất (m)', 'Tầm mặt đất', 'Tầm bắn máy bay', 'Tầm tối thiểu', 'Model vẽ: dài × rộng × cao (m)'], move_rows, 'dps')
+            + props_and_rounds(game, h, sizes, weapons, owners)
+            + "</div>")
 
 
 def gallery(game, h, imgdir):
@@ -537,7 +842,7 @@ def gallery(game, h, imgdir):
     fx = imgdir / 'fx'
     sheets = [('impacts_12c.png', 'Nổ đạn tăng, bom, tên lửa hành trình và MOAB (trước / sau 12C, 0,04–3,2 s).'),
               ('impacts_11a.png', 'Nổ trước và sau đợt 11A.'), ('supports.png', 'Hỗ trợ hỏa lực: đạn rơi và lúc chạm đất của từng thẻ.'),
-              ('flames.png', 'Xe phun lửa: trước (trên) và sau (dưới).'), ('lasers.png', 'La-de Iron Beam và tia của Bọ Bạc.'),
+              ('flames.png', 'Xe phun lửa: trước (trên) và sau (dưới).'), ('lasers.png', 'La-de Iron Beam và tia laser của Icarus (trước prompt 19).'),
               ('missiles_1.png', 'Tên lửa phòng không: lửa đuôi và vệt khói.'), ('missiles_2.png', 'Tên lửa chống tăng.'),
               ('missiles_3.png', 'Tên lửa trực thăng và drone.'), ('missiles_4.png', 'Tên lửa máy bay.'), ('missiles_5.png', 'Rốc-két và tên lửa đạn đạo.'),
               ('flashes_1.png', 'Chớp lửa đầu nòng ở 4 hướng (quả cầu xanh: đầu nòng thật).'), ('flashes_2.png', 'Chớp lửa: boss, máy bay, tháp.'),
@@ -581,7 +886,9 @@ def testing(game, h):
         'Công thành, Phòng thủ (mục tiêu ≥ 4/5), Vô tận, Pháo đài tuần ở các độ khó và 7 bản đồ còn lại.',
         'Xe tinh nhuệ theo ngân sách: tỷ lệ sức mạnh 1,8–2,2 lần; chiến dịch và Săn trùm sau khi đổi sang ngân sách.',
         'Trang bị: độ chênh giữa các nhóm vũ khí (mục tiêu ≤ 1,5 lần), Nạp kép trên pháo tự động và giàn rocket, đầu đạn chùm lên công trình, cầu tuyết sau trần hoàn CP.',
-        'Boss: thời gian hạ trong +15% sau khi có bộ phận; mọi trận boss và Săn trùm thắng được.',
+        'Đã chạy trong đợt cân bằng sau prompt 18 (DECISIONS 19B, số liệu trong Docs/balance, tables_p18.md): quét 5 seed toàn chiến dịch trước/sau, '
+        'bộ phát hiện xe kẹt trên 21 bản đồ × 4 chế độ × 5 seed (420 trận), ngân sách tick, mọi chế độ ở 4 độ khó × 5 seed; còn lại ở đây là phần chưa đạt.',
+        'Boss: thời gian hạ trong +15% sau khi có bộ phận; mọi trận boss và Săn trùm thắng được (Săn trùm chạm trần 30 phút ở cả 10 trận đo, sau prompt 18).',
         'Hiệu năng: ngân sách tick đo lại trên máy yên tĩnh và điện thoại yếu thật; FPS trận boss nặng nhất ở mức đồ họa Thấp; đảo và đầm lầy (2.500 vật thể).',
         'Sau buổi chơi thử: khả năng thắng chiến dịch và trận boss khi súng chính xe thường không còn bắn máy bay; thời gian hạ tăng của máy bay cường kích và A-10 với nhịp bắn mới; '
         'tỷ lệ trúng của tên lửa chậm hơn khi có pháo sáng và APS; FPS khi nhiều tên lửa hành trình hoặc ném bom rải thảm cùng lúc ở đồ họa Thấp; khung hình những giây đầu trên điện thoại thật.',

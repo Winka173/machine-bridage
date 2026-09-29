@@ -26,6 +26,8 @@ namespace MachineBrigade.Tests
             "ashfield", "dunebreak", "frostpeak", "ironport", "redrock", "whiteout", "greenvale", "rustyard", "emberridge",
             "junglepass", "skyhold", "metrocity",
             "landingbeach", "hydrodam", "capital", "launchsite", "saltflat", "borderbridge", "swamp", "coralisles",
+            // Prompt 20 M.
+            "openpit", "orbitalgate",
         };
 
         private static IEnumerable<string> Versions() => Maps.SelectMany(m => new[] { m + "_conquest", m + "_siege" });

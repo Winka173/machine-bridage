@@ -51,14 +51,14 @@ namespace MachineBrigade.Game.Match
             var part = broken.Def.Parts[e.Mount];
             var name = Strings.Card(broken.Def.Id);
             if (part.Radio != null && Strings.Has(part.Radio)) _hud.Toast(Strings.Format(part.Radio, name), seconds: 4.5f);
-            else _hud.Toast(Strings.Format("toast.partBroken", Strings.Get("part." + part.Kind), name), seconds: 3f);
+            else _hud.Toast(Strings.Format("toast.partBroken", ("kills", Strings.Get("part." + part.Kind)), ("name", name)), seconds: 3f);
             Haptics.Pulse(90, 220);
         }
 
         private void PartRepairedToast(in SimEvent e)
         {
             if (!_world.TryGetVehicle(e.Entity, out var mended) || e.Mount < 0 || e.Mount >= mended.Def.Parts.Count) return;
-            _hud.Toast(Strings.Format("toast.partRepaired", Strings.Get("part." + mended.Def.Parts[e.Mount].Kind), Strings.Card(mended.Def.Id)),
+            _hud.Toast(Strings.Format("toast.partRepaired", ("part", Strings.Get("part." + mended.Def.Parts[e.Mount].Kind)), ("card", Strings.Card(mended.Def.Id))),
                 error: true, seconds: 3f);
         }
     }

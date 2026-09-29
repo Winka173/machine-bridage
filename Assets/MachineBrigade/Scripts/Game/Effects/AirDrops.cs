@@ -52,7 +52,11 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The vehicle leaves the transport this long before it lands (the rest of the delivery the plane is on its way).</summary>
         private const float Descent = 2.3f;
 
-        private const string TransportModel = "sky_gunship";
+        /// <summary>
+        /// The airlifter: the gunship's airframe without its guns (play-test 5, DECISIONS 20V: a transport with a
+        /// gunship's battery out of its side read as the gunship), drawn at the gunship's scale.
+        /// </summary>
+        internal const string TransportModel = "transport_plane", TransportScale = "sky_gunship";
 
         private readonly Catalog _catalog;
         private readonly ModelLibrary _models;
@@ -110,7 +114,7 @@ namespace MachineBrigade.Game.Effects
             // One transport serves every drop of its side released within a second of each other.
             var flight = FlightFor(e.Team, landing, release, now);
 
-            var model = _models.Spawn(def.Model, e.Team, _root, castShadows: false);
+            var model = _models.Spawn(Match.BranchArt.Model(def, _models), e.Team, _root, castShadows: false);
             var drop = new Drop
             {
                 Vehicle = model.Root, Landing = landing, Heading = Mathf.Atan2(inward.x, inward.z) * Mathf.Rad2Deg, Scale = def.Scale,
@@ -132,7 +136,7 @@ namespace MachineBrigade.Game.Effects
             plane.Over += Centre;
             plane.Team = team;
             plane.Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root;
-            if (_catalog.Vehicles.TryGetValue(TransportModel, out var transport)) plane.Root.transform.localScale = Vector3.one * transport.Scale;
+            if (_catalog.Vehicles.TryGetValue(TransportScale, out var transport)) plane.Root.transform.localScale = Vector3.one * MachineBrigade.Game.Views.VehicleView.DrawScaleOf(transport);
             plane.Root.transform.SetPositionAndRotation(plane.Entry, Quaternion.LookRotation(plane.Inward));
             _planes.Add(plane);
             return plane;
@@ -267,9 +271,12 @@ namespace MachineBrigade.Game.Effects
             chute.SetParent(vehicle, false);
             // About 1.3 vehicle lengths across: big enough to read as a cargo chute, not a tent over the battle.
             var size = Mathf.Max(def.Length, def.Width) * 0.65f + 0.8f;
+            // Play-test 6: the canopy rides over the model's own top and the cords meet it there (a field tower is
+            // taller than the 5 m the canopy hung at, so the canopy sat through the middle of it).
+            var modelTop = ModelTop(vehicle);
             var canopy = new GameObject("Canopy", typeof(MeshFilter), typeof(MeshRenderer));
             canopy.transform.SetParent(chute, false);
-            canopy.transform.localPosition = new Vector3(0f, 5f + size * 0.4f, 0f);
+            canopy.transform.localPosition = new Vector3(0f, Mathf.Max(5f, modelTop + 2f) + size * 0.4f, 0f);
             canopy.transform.localScale = new Vector3(size, size * 0.5f, size);
             canopy.GetComponent<MeshFilter>().sharedMesh = _canopy;
             var renderer = canopy.GetComponent<MeshRenderer>();
@@ -278,7 +285,7 @@ namespace MachineBrigade.Game.Effects
             for (var k = 0; k < 4; k++)
             {
                 var corner = new Vector3(k % 2 == 0 ? -1f : 1f, 0f, k < 2 ? -1f : 1f);
-                var bottom = new Vector3(corner.x * def.Width * 0.35f, 1.6f, corner.z * def.Length * 0.35f);
+                var bottom = new Vector3(corner.x * def.Width * 0.35f, Mathf.Max(1.6f, modelTop - 0.2f), corner.z * def.Length * 0.35f);
                 var top = canopy.transform.localPosition + new Vector3(corner.x * size * 0.42f, 0f, corner.z * size * 0.42f);
                 var cord = new GameObject("Cord", typeof(MeshFilter), typeof(MeshRenderer));
                 cord.transform.SetParent(chute, false);
@@ -291,6 +298,25 @@ namespace MachineBrigade.Game.Effects
                 cordRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             return chute;
+        }
+
+        /// <summary>The highest point of a model's meshes in its root's own (unscaled) space; 0 when it has none.</summary>
+        internal static float ModelTop(Transform root)
+        {
+            var top = 0f;
+            var toRoot = root.worldToLocalMatrix;
+            foreach (var filter in root.GetComponentsInChildren<MeshFilter>(true))
+            {
+                if (filter.sharedMesh == null) continue;
+                var b = filter.sharedMesh.bounds;
+                var m = toRoot * filter.transform.localToWorldMatrix;
+                for (var c = 0; c < 8; c++)
+                {
+                    var corner = b.center + Vector3.Scale(b.extents, new Vector3((c & 1) == 0 ? -1f : 1f, (c & 2) == 0 ? -1f : 1f, (c & 4) == 0 ? -1f : 1f));
+                    top = Mathf.Max(top, m.MultiplyPoint3x4(corner).y);
+                }
+            }
+            return top;
         }
 
         /// <summary>A unit dome (radius 1, height 1) open at the bottom, its outside facing out (seen from above).</summary>

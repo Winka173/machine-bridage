@@ -16,6 +16,13 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>The flagship an escort or a raider keeps with (its fleet's), or none.</summary>
         internal EntityId Flagship;
 
+        /// <summary>
+        /// DECISIONS 20Y: an escort's station beside its flagship in the coast's frame (u along its line from its
+        /// middle, w from its lane, negative towards the shore), when <see cref="OnStation"/>.
+        /// </summary>
+        internal Vector2 StationAt;
+        internal bool OnStation;
+
         /// <summary>A raider: in (dashing to the shore), holding there, or out on its lane; when that ends.</summary>
         internal int DashStage;
         internal double DashUntil;

@@ -1,0 +1,8 @@
+support	cp	light	column	tanks	fort	mean	mean_per_cp
+artillery_barrage	5	1924	1748	1672	2023	1842	368
+airstrike	8	2533	4400	1987	3594	3129	391
+napalm_strike	9	2550	4500	2190	947	2547	283
+cruise_missile	14	2411	2592	1963	3164	2532	181
+remote_mines	5	2199	1987	2811	0	1749	350
+cluster_strike	0	2541	4459	1837	2508	2836	-
+moab	0	2550	4500	6750	10000	5950	-

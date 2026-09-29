@@ -88,7 +88,9 @@ namespace MachineBrigade.Sim.Movement
                 // Fixed defences only turn their guns (the combat system does that); ships are the naval system's.
                 if (v.Def.Static || v.Def.Naval != null) continue;
                 // A boss boring underground or landing troops: the boss system moves it (or holds it still).
-                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing)
+                // Prompt 19: a tiered boss falling to its crash site (the boss system moves it) or down on the ground,
+                // and a drop pod on its way down.
+                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing || v.Crashing || v.Crashed || v.IsPod || v.Charging)
                 {
                     v.Speed = 0f;
                     continue;
@@ -346,7 +348,7 @@ namespace MachineBrigade.Sim.Movement
             var reach = GuardLeash + weapon.Range * (v.Def.Interceptor ? 2.4f : 0.9f);
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
                 attacker.IsAlive && !attacker.Invulnerable && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
-                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
+                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach && !OffPost(v, attacker))
                 return attacker;
 
             Vehicle? best = null;
@@ -356,6 +358,7 @@ namespace MachineBrigade.Sim.Movement
                 if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team) || !weapon.CanTarget(other.Flying)) continue;
                 if ((other.Flying && !HuntsAircraft(v)) || other.Invulnerable) continue;
                 if (v.Def.Interceptor && !other.Flying) continue;
+                if (OffPost(v, other)) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
                 if (distance > MathF.Max(v.Def.VisionRange, v.Def.Interceptor ? reach : 0f) || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
@@ -484,25 +487,54 @@ namespace MachineBrigade.Sim.Movement
         /// moves round the target to the spot on that ring furthest out of such guns' reach
         /// (smallest turn first). Anti-air that reaches as far as its missiles is not avoided:
         /// there is no standing outside it.
+        /// Play-test 6 (DECISIONS 21G, the owner's call): it opens from that ring (its first missiles away,
+        /// <see cref="StandoffOpening"/> s in the band), then, while no such anti-air covers the ground at its
+        /// gun's reach from the target, it comes in and fights with the cannon and rockets as well (false:
+        /// the ordinary approach, to its gun's reach). Anti-air turning up sends it back out to the ring.
         /// </summary>
         private bool Standoff(Vehicle v, IDamageable target)
         {
             var reach = v.Def.Weapon.Range;
             var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
             _shortAa.Clear();
+            _airDefence.Clear();
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || !e.IsVisibleTo(v.Team)) continue;
                 var aa = 0f;
+                var made = 0f;
                 foreach (var m in e.Def.Mounts)
+                {
                     if (m.Weapon.CanTarget(true)) aa = MathF.Max(aa, m.Weapon.Range);
+                    if (m.Weapon.CanTarget(true) && (Combat.CombatSystem.IsAntiAir(m.Weapon) || m.Weapon.Penetration >= 2))
+                        made = MathF.Max(made, m.Weapon.Range);
+                }
                 if (aa > 0f && aa < reach - 2f) _shortAa.Add((e.Position, aa));
+                // Play-test 6: guns and missiles that hurt a helicopter (flak, SAMs, autocannons), not a tank's machine gun.
+                if (made > 0f) _airDefence.Add((e.Position, made));
             }
             float Exposure(Vector2 at)
             {
                 var worst = 0f;
                 foreach (var (p, r) in _shortAa) worst += MathF.Max(0f, r + StandoffMargin - Vector2.Distance(at, p));
                 return worst;
+            }
+            // A new target: the missile phase again, from the ring.
+            var targetId = target.Id;
+            if (v.StandoffTarget != targetId)
+            {
+                v.StandoffTarget = targetId;
+                v.StandoffSince = double.PositiveInfinity;
+            }
+            var gun = GunReach(v, target);
+            if (gun < reach && _world.Time - v.StandoffSince >= StandoffOpening)
+            {
+                var toward = v.Position - target.Position;
+                var close = target.Position + (toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : Vector2.UnitX) * (gun * 0.85f + target.Radius);
+                var covered = false;
+                foreach (var (p, r) in _airDefence)
+                    if (Vector2.Distance(close, p) < r + StandoffMargin || Vector2.Distance(v.Position, p) < r + StandoffMargin) covered = true;
+                if (!covered) return false;
             }
             // The best spot on two rings round the target (82 % and 95 % of reach), smallest turn first.
             var bearing = SimMath.HeadingOf(v.Position - target.Position);
@@ -527,6 +559,7 @@ namespace MachineBrigade.Sim.Movement
             if (distance <= reach * 0.97f && distance >= reach * 0.6f && Exposure(v.Position) <= bestExposure + 0.5f &&
                 _world.HasLineOfFire(v, target, v.Def.Weapon))
             {
+                if (double.IsPositiveInfinity(v.StandoffSince)) v.StandoffSince = _world.Time;
                 v.ClearPath();
                 return true;
             }
@@ -537,6 +570,25 @@ namespace MachineBrigade.Sim.Movement
         }
 
         private static readonly float[] Rings = { 0.82f, 0.95f };
+
+        /// <summary>Play-test 6: seconds a standoff helicopter fires from its ring before it comes in to its gun.</summary>
+        private const double StandoffOpening = 6.0;
+
+        /// <summary>Play-test 6: the shortest reach of the forward weapons a standoff helicopter brings in with it (its cannon's).</summary>
+        private static float GunReach(Vehicle v, IDamageable target)
+        {
+            var flying = target is Vehicle { Flying: true };
+            var reach = v.Arms[0].Range;
+            var mounts = v.Def.Mounts;
+            for (var i = 1; i < mounts.Count; i++)
+            {
+                var w = v.Arms[i];
+                if (mounts[i].Aim is MountAim.Left or MountAim.Right || mounts[i].ArcHalf > 0f) continue;
+                if (w.Damage <= 0f || !w.CanTarget(flying) || v.Weapons[i].Ammo == 0) continue;
+                reach = MathF.Min(reach, w.Range);
+            }
+            return reach;
+        }
 
         /// <summary>
         /// Test feedback 2 (DECISIONS 12F): the reach a helicopter hovers at to fight. Holding at its
@@ -558,13 +610,17 @@ namespace MachineBrigade.Sim.Movement
                 if (w.Damage <= 0f || !w.CanTarget(flying) || v.Weapons[i].Ammo == 0) continue;
                 reach = MathF.Min(reach, w.Range);
             }
-            return MathF.Max(reach, main * 0.6f);
+            // Play-test 6: a standoff helicopter that has come in goes all the way to its cannon's reach.
+            return v.Def.Standoff ? reach : MathF.Max(reach, main * 0.6f);
         }
 
         /// <summary>Metres a standoff helicopter keeps beyond the reach of anti-air it outranges.</summary>
         private const float StandoffMargin = 5f;
 
         private readonly List<(Vector2 at, float reach)> _shortAa = new();
+
+        /// <summary>Play-test 6: the enemy's air defence proper round a standoff helicopter's target (where it will not come in).</summary>
+        private readonly List<(Vector2 at, float reach)> _airDefence = new();
 
         /// <summary>Holds position once in range; otherwise (re)paths towards the target.</summary>
         private void CloseIn(Vehicle v, IDamageable target)
@@ -574,6 +630,13 @@ namespace MachineBrigade.Sim.Movement
             var distance = Vector2.Distance(v.Position, target.Position) - target.Radius;
             if (weapon.MinRange > 0f && distance < weapon.MinRange + 1f)
             {
+                // Play-test 5 (DECISIONS 20W): a siege tank does not back off: its tank-mode gun fights it (sieged, it
+                // packs up for that once nothing else is left to shell).
+                if (v.Def.Deploy is { Siege: true } siege && siege.TankMount < v.Arms.Length && distance <= v.Arms[siege.TankMount].Range)
+                {
+                    v.ClearPath();
+                    return;
+                }
                 if (v.RepathTimer > 0f && v.HasPath) return;
                 v.RepathTimer = RepathInterval;
                 // Back off by the best way out; cornered, hold and let the machine gun fight.
@@ -794,8 +857,10 @@ namespace MachineBrigade.Sim.Movement
             // Prompt 17 C: a loyal wingman flies on its leader's wing when it has nothing of its own to attack.
             if (target == null && def.Wingman != null && FlyWing(v, dt)) return;
             v.InAttackHold = false;
+            v.OnTail = false;
             if (target != null && def.AttackHold > 0f && !def.Orbit && AttackHold(v, target, dt)) return;
             if (target == null && v.HoldUntil > _world.Time) v.HoldUntil = _world.Time;
+            if (target == null) v.Defending = v.BreakingOff = false;
             Vector2 goal;
             var throttle = 1f;
             // The map's middle and half extents (a long battlefield's are its own, prompt 17).
@@ -803,6 +868,8 @@ namespace MachineBrigade.Sim.Movement
             float halfX = _world.Map.Width * 0.5f, halfZ = _world.Map.Length * 0.5f;
             var margin = turnRadius * 1.3f + 4f;
             var circling = false;
+            var turnBoost = 1f;
+            var chasingJet = false;
             if (target != null && def.Orbit)
             {
                 // A gunship's pylon turn: round and round the target, anticlockwise so it stays on
@@ -810,7 +877,7 @@ namespace MachineBrigade.Sim.Movement
                 // short-range anti-aircraft round it. The circle is kept inside the map (a target
                 // near the edge is circled from the inside), and its centre glides to a new target
                 // at a few metres a second, so the turn never jerks.
-                var radius = MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f);
+                var radius = MathF.Max(turnRadius * 1.15f, def.OrbitRadius > 0f ? def.OrbitRadius : def.Weapon.Range * 0.62f);
                 var limitX = MathF.Max(0f, halfX - radius - 4f);
                 var limitZ = MathF.Max(0f, halfZ - radius - 4f);
                 var want = new Vector2(Math.Clamp(target.Position.X, centre.X - limitX, centre.X + limitX),
@@ -834,35 +901,59 @@ namespace MachineBrigade.Sim.Movement
                 var distance = toTarget.Length();
                 var ahead = Vector2.Dot(SimMath.Forward(v.Heading), toTarget);
                 var mover = FastMover(v, target);
-                if (!v.RunExtending)
+                // Play-test 5 (DECISIONS 20W): a jet whose cannon reaches aircraft gets on an enemy jet's tail: in its rear
+                // cone it keeps the nose on it (the cannon streams), else it flies for a point behind it (lag pursuit).
+                var tail = mover != null && TailGun(v, flying: true) >= 0 ? mover : null;
+                // Play-test 6 (DECISIONS 21F): two jets hunting each other no longer turn round one circle for ever: the
+                // worse placed out of the merge runs out, jinking (Defending), and the other gets on its tail; low on
+                // health, either breaks off and flies away from the enemy jet.
+                if (tail == null) v.Defending = v.BreakingOff = false;
+                if (tail != null && Dogfight(v, tail, range, distance, dt, out var away, out var run))
                 {
-                    // Pull through once too close to keep the nose on it, or once it slips behind.
-                    if (distance < MathF.Max(6f, range * 0.3f) || (ahead < 0f && distance < range * 0.6f)) v.RunExtending = true;
-                }
-                else if (distance > MathF.Max(range * 0.85f, turnRadius * 2.2f))
-                {
+                    goal = v.Position + away * 10f;
+                    throttle = run;
                     v.RunExtending = false;
-                    v.BreakAway = false;
                 }
-                // Out of a hover it turns away first rather than fly on through its target.
-                goal = v.RunExtending ? v.Position + SimMath.Forward(v.BreakAway ? v.BreakHeading : v.Heading) * 10f : target.Position;
-                var gap = distance - target.Radius;
-                if (!v.RunExtending && mover != null && gap < range * 1.3f && ahead > distance * 0.6f)
+                else
                 {
-                    // Behind a fast jet: match its speed to keep it on the nose at a little over half
-                    // the guns' reach (the cannon streams for as long as it stays there).
-                    var want = (mover.Speed + (gap - range * ChaseShare) * 1.5f) / MathF.Max(1f, def.Speed * v.SpeedFactor);
-                    throttle = Math.Clamp(want, def.Vtol ? 0.3f : 0.45f, 1f);
+                    var behind = tail != null && Vector2.Dot(SimMath.Forward(tail.Heading), v.Position - tail.Position) < -TailCone * distance;
+                    if (!v.RunExtending)
+                    {
+                        // Pull through once too close to keep the nose on it, or once it slips behind (not a jet on its tail).
+                        if (distance < MathF.Max(6f, range * 0.3f) || (tail == null && ahead < 0f && distance < range * 0.6f)) v.RunExtending = true;
+                    }
+                    else if (distance > MathF.Max(range * 0.85f, turnRadius * 2.2f))
+                    {
+                        v.RunExtending = false;
+                        v.BreakAway = false;
+                    }
+                    // Out of a hover it turns away first rather than fly on through its target.
+                    goal = v.RunExtending ? v.Position + SimMath.Forward(v.BreakAway ? v.BreakHeading : v.Heading) * 10f : target.Position;
+                    if (tail != null && !v.RunExtending && !(behind && distance < range * TailClose))
+                        goal = tail.Position - SimMath.Forward(tail.Heading) * (range * ChaseShare);
+                    var gap = distance - target.Radius;
+                    v.OnTail = tail != null && behind && !v.RunExtending && gap <= range && ahead > distance * 0.9f;
+                    // Play-test 6 (DECISIONS 21F): in the jet's rear cone and close, it follows the jet's turns (it no longer
+                    // drops off the tail when the jet turns back from the map's edge).
+                    if (tail != null && behind && !v.RunExtending && distance < range * TailClose) turnBoost = TailTurn;
+                    chasingJet = tail != null && !v.RunExtending;
+                    if (!v.RunExtending && mover != null && gap < range * 1.3f && ahead > distance * 0.6f)
+                    {
+                        // Behind a fast jet: match its speed to keep it on the nose at a little over half
+                        // the guns' reach (the cannon streams for as long as it stays there).
+                        var want = (mover.Speed + (gap - range * ChaseShare) * 1.5f) / MathF.Max(1f, def.Speed * v.SpeedFactor);
+                        throttle = Math.Clamp(want, def.Vtol ? 0.3f : 0.45f, 1f);
+                    }
+                    else if (!v.RunExtending && def.AttackHold > 0f && mover == null)
+                    {
+                        // Coming in for a hold: easing off from half as far again as its reach, so it
+                        // is at half speed when the hold begins.
+                        throttle = Math.Clamp((gap - range) / range + 0.5f, 0.5f, 1f);
+                    }
+                    // Throttle back through the attack run for more time on the target; full power to
+                    // extend and come round.
+                    else if (!v.RunExtending && distance < range * 1.1f) throttle = 0.8f;
                 }
-                else if (!v.RunExtending && def.AttackHold > 0f && mover == null)
-                {
-                    // Coming in for a hold: easing off from half as far again as its reach, so it
-                    // is at half speed when the hold begins.
-                    throttle = Math.Clamp((gap - range) / range + 0.5f, 0.5f, 1f);
-                }
-                // Throttle back through the attack run for more time on the target; full power to
-                // extend and come round.
-                else if (!v.RunExtending && distance < range * 1.1f) throttle = 0.8f;
             }
             else if (v.HasPath)
             {
@@ -883,9 +974,10 @@ namespace MachineBrigade.Sim.Movement
             // kept inside it; turning it back as well made it jerk between the two).
             var fromCentre = v.Position - centre;
             var nearEdge = MathF.Abs(fromCentre.X) > halfX - margin || MathF.Abs(fromCentre.Y) > halfZ - margin;
-            if (!circling && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), fromCentre) > 0f) goal = centre;
+            // Play-test 6 (DECISIONS 21F): not a jet chasing another (it lost the tail there); the jet it chases turns back itself.
+            if (!circling && !chasingJet && nearEdge && Vector2.Dot(SimMath.Forward(v.Heading), fromCentre) > 0f) goal = centre;
 
-            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * dt);
+            v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(goal - v.Position), def.TurnRate * v.TurnFactor * turnBoost * dt);
             v.Speed = SimMath.MoveTowards(v.Speed, def.Speed * v.SpeedFactor * throttle, def.Speed * 0.8f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
         }
@@ -904,6 +996,87 @@ namespace MachineBrigade.Sim.Movement
 
         /// <summary>Share of its guns' reach a hovering jet glides in to, and a chasing one keeps behind a fast jet.</summary>
         private const float HoverShare = 0.6f, ChaseShare = 0.55f;
+
+        /// <summary>
+        /// Play-test 5: on a jet's tail within this cosine of dead astern (about 60 degrees), and closer than this share of
+        /// its guns' reach it stops flying for the point behind and keeps its nose on the jet itself.
+        /// </summary>
+        private const float TailCone = 0.5f, TailClose = 1.4f;
+
+        /// <summary>
+        /// The mount of an aeroplane's hull-fixed cannon firing from a magazine that can hit a target in the air
+        /// (<paramref name="flying"/>) or on the ground; -1 when it has none (a fighter's GAU-22, an attack jet's cannon on the ground).
+        /// </summary>
+        internal static int TailGun(Vehicle v, bool flying)
+        {
+            var mounts = v.Def.Mounts;
+            for (var i = 0; i < mounts.Count; i++)
+            {
+                var w = v.Arms[i];
+                if (mounts[i].Aim == MountAim.Hull && w.Projectile == ProjectileKind.Bullet && w.Clip > 0 && w.Damage > 0f && w.CanTarget(flying)) return i;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21F): a jet chasing an enemy jet. Below <see cref="BreakOffHealth"/> of its health it
+        /// breaks off: it flies away from the enemy jet at full power and chases it no more. When the enemy jet is hunting
+        /// it too (its cannon reaches aircraft) and it came out of the merge the worse placed (the enemy further astern of
+        /// it than it is of the enemy; level, the later-spawned one), it defends: it runs out at part power, jinking, so the
+        /// other gets on its tail and streams its cannon at it, until it is out past <see cref="DefendOut"/> of the guns'
+        /// reach or the enemy slips in front (an overshoot), and then turns in again. Never head-on, where both fire.
+        /// True when it does not chase: <paramref name="away"/> is the way it flies, <paramref name="throttle"/> its power.
+        /// </summary>
+        private bool Dogfight(Vehicle v, Vehicle enemy, float range, float distance, float dt, out Vector2 away, out float throttle)
+        {
+            away = SimMath.Forward(v.Heading);
+            throttle = 1f;
+            var from = distance > 0.1f ? (v.Position - enemy.Position) / distance : -away;
+            if (v.Hp < v.MaxHp * BreakOffHealth)
+            {
+                v.BreakingOff = true;
+                v.Defending = false;
+                away = Vector2.Normalize(from * 2f + away);
+                return true;
+            }
+            v.BreakingOff = false;
+            var hunted = (enemy.RunTarget == v.Id || enemy.Target == v.Id) && !enemy.BreakingOff && TailGun(enemy, flying: true) >= 0;
+            if (!hunted)
+            {
+                v.Defending = false;
+                return false;
+            }
+            // How far astern (-1: dead astern): this jet of the enemy, and the enemy of this jet.
+            var mine = Vector2.Dot(SimMath.Forward(enemy.Heading), from);
+            var theirs = Vector2.Dot(away, -from);
+            if (v.Defending)
+            {
+                if (distance > range * DefendOut || theirs > 0.6f) v.Defending = false;
+            }
+            else if (distance < range * DefendIn && !(mine > 0.5f && theirs > 0.5f) && !enemy.Defending &&
+                     (theirs < mine - AspectMargin || (MathF.Abs(theirs - mine) <= AspectMargin && v.Id.Value > enemy.Id.Value)))
+                v.Defending = true;
+            if (!v.Defending) return false;
+            // Straight out, bending away from the enemy, weaving a little either side.
+            var weave = MathF.Sin((float)_world.Time * 1.6f + v.Id.Value) * 0.6f;
+            var side = new Vector2(-away.Y, away.X);
+            away = Vector2.Normalize(away * 2f + from + side * weave);
+            throttle = DefendPower;
+            return true;
+        }
+
+        /// <summary>Play-test 6: below this share of its health a jet breaks off a dogfight.</summary>
+        internal const float BreakOffHealth = 0.3f;
+
+        /// <summary>
+        /// Play-test 6: within this share of its guns' reach a dogfight's roles are decided, and a defending jet turns in
+        /// again past <see cref="DefendOut"/>; the astern measures must differ by <see cref="AspectMargin"/> for a clear
+        /// winner; a defending jet runs at <see cref="DefendPower"/> (its jinking costs speed, so the chaser closes).
+        /// </summary>
+        private const float DefendIn = 2.2f, DefendOut = 2.6f, AspectMargin = 0.25f, DefendPower = 0.82f;
+
+        /// <summary>Play-test 6: how much quicker a jet on another's tail turns with it.</summary>
+        private const float TailTurn = 1.3f;
 
         /// <summary>How far (radians) a jet leaving its hover turns away before it extends.</summary>
         private const float BreakTurn = 1.1f;
@@ -935,7 +1108,7 @@ namespace MachineBrigade.Sim.Movement
                 if (v.RunExtending || now < v.HoldReadyAt || gap > reach * 0.95f || distance < pullThrough + 3f ||
                     (!def.Vtol && off > HoldCone) || FastMover(v, target) != null)
                     return false;
-                v.HoldUntil = now + def.AttackHold;
+                v.HoldUntil = now + HoldSeconds(v, target);
             }
             // It got away (a jet flying on, a helicopter moving off): the chase goes on.
             if (gap > reach * 1.25f)
@@ -965,8 +1138,28 @@ namespace MachineBrigade.Sim.Movement
             v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(toTarget), def.TurnRate * v.TurnFactor * 1.4f * dt);
             v.Position = _world.ClampToMap(v.Position + SimMath.Forward(v.Heading) * v.Speed * dt);
             v.InAttackHold = true;
-            if (now + dt >= v.HoldUntil) EndHold(v, now + dt, hover);
+            if (now + dt >= v.HoldUntil)
+            {
+                // Play-test 6 (DECISIONS 21F): on an aircraft (a helicopter it hangs on) with its cannon, out of flak, it holds
+                // on for another spell while it keeps the target in reach, firing until it dies or gets away.
+                if (target is Vehicle { Flying: true } && TailGun(v, flying: true) >= 0 && !flak && (hover || distance > pullThrough * 2f))
+                    v.HoldUntil = now + dt + HoldSeconds(v, target);
+                else EndHold(v, now + dt, hover);
+            }
             return true;
+        }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21F): how long an attack hold lasts: the data's, or for a jet whose main weapon is its
+        /// hull cannon firing from a magazine (the attack jet's), long enough for a whole magazine's stream.
+        /// </summary>
+        private static float HoldSeconds(Vehicle v, IDamageable target)
+        {
+            var hold = v.Def.AttackHold;
+            var gun = v.Arms[0];
+            if (TailGun(v, target is Vehicle { Flying: true }) == 0)
+                hold = MathF.Max(hold, (gun.Clip - 1) * gun.Cooldown + 0.6f);
+            return hold;
         }
 
         /// <summary>The hold is over: fly on (a hovering jet turns away first, to alternate sides) and come round.</summary>
@@ -1072,15 +1265,15 @@ namespace MachineBrigade.Sim.Movement
                 return ordered;
             var weapon = v.Def.Weapon;
             if (_world.TryGetVehicle(v.RunTarget, out var run) && run.IsAlive && !run.Invulnerable && run.IsVisibleTo(v.Team) &&
-                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f)
+                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f && !OffPost(v, run))
                 return run;
             v.RunExtending = false;
-            if (_world.TryGetVehicle(v.Target, out var current) && current.IsAlive)
+            if (_world.TryGetVehicle(v.Target, out var current) && current.IsAlive && !OffPost(v, current))
             {
                 v.RunTarget = current.Id;
                 return current;
             }
-            if (_world.TryGetVehicle(v.Engaged, out var engaged) && engaged.IsAlive && engaged.IsVisibleTo(v.Team))
+            if (_world.TryGetVehicle(v.Engaged, out var engaged) && engaged.IsAlive && engaged.IsVisibleTo(v.Team) && !OffPost(v, engaged))
             {
                 v.RunTarget = engaged.Id;
                 return engaged;
@@ -1088,6 +1281,10 @@ namespace MachineBrigade.Sim.Movement
             v.RunTarget = EntityId.None;
             return null;
         }
+
+        /// <summary>A called escort's target beyond its post (see <see cref="Vehicle.PostRadius"/>).</summary>
+        private static bool OffPost(Vehicle v, Vehicle target) =>
+            v.PostRadius > 0f && Vector2.Distance(target.Position, v.GuardPoint) > v.PostRadius + target.Radius;
 
         /// <summary>A point ahead on a circle of <paramref name="radius"/> around the post.</summary>
         private static Vector2 OrbitPoint(Vehicle v, float radius)
@@ -1395,7 +1592,7 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>
         private static float Yield(Vehicle v)
         {
-            if (v.Def.Static) return 0f;
+            if (v.Def.Static || v.Crashed) return 0f;
             var weight = v.HasPath ? 0.3f : 0.7f;
             return v.Def.Boss || v.Scripted ? weight * 0.1f : weight;
         }

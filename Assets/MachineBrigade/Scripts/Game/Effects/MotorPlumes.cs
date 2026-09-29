@@ -41,6 +41,30 @@ namespace MachineBrigade.Game.Effects
         public bool Burns => Length > 0f;
 
         /// <summary>
+        /// Play-test 5 (DECISIONS 20V): how much of its flame a heavy launcher's munition keeps: the SAM launcher's Buk,
+        /// the thermobaric launcher's and the heavy rocket artillery's rockets, the ballistic missile, the long-range
+        /// SAM and the Patriot batteries (and the towers that share their missiles). The flame is still measured in the
+        /// munition's own drawn lengths at its cruise speed, so it stays tied to the munition's size whatever its speed.
+        /// </summary>
+        public const float ShortFlame = 0.6f;
+
+        /// <summary>The munitions drawn with a <see cref="ShortFlame"/>.</summary>
+        public static bool Short(WeaponDef weapon) => weapon != null && weapon.Id is "buk_launcher" or "sam_long" or "sam_post"
+            or "thermobaric_rockets" or "rockets_300mm" or "ballistic_missile" or "sam_48n6" or "patriot" or "sam_battery" or "sam_pac3"
+            or "sam_battery_lrr";
+
+        private Plume Shortened() => new(this, ShortFlame);
+
+        private Plume(Plume p, float keep)
+        {
+            Length = p.Length * keep;
+            Width = p.Width;
+            Smoke = p.Smoke;
+            Burn = p.Burn;
+            Puffs = p.Puffs;
+        }
+
+        /// <summary>
         /// The motor of what <paramref name="weapon"/> fires: surface-to-air missiles and the
         /// ballistic missile a long plume, anti-tank missiles a short sharp one; rockets burn
         /// most of their flight, a cruise missile's jet is short and hot; drones fly on
@@ -48,7 +72,14 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public static Plume For(WeaponDef weapon, ProjectileKind kind, string model, bool airLaunched)
         {
+            var plume = Drawn(weapon, kind, model, airLaunched);
+            return plume.Burns && Short(weapon) ? plume.Shortened() : plume;
+        }
+
+        private static Plume Drawn(WeaponDef weapon, ProjectileKind kind, string model, bool airLaunched)
+        {
             switch (kind)
+
             {
                 case ProjectileKind.Drone:
                     return default;

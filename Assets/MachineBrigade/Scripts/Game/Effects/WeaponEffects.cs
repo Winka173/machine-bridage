@@ -47,6 +47,31 @@ namespace MachineBrigade.Game.Effects
             _hasMissile = models.Has("missile");
             _hasRocket = models.Has("rocket");
             _hasBomb = models.Has("bomb");
+            // Test feedback 19P: a jammed round losing its lock: a crackle of sparks and a flicker of light on it.
+            projectiles.Jammed = (at, forward) =>
+            {
+                _muzzle.SparkBurst(at, Vector3.up - forward * 0.5f, 14, 3f, 9f, 0.8f);
+                _emitters.Charge(at, 1.3f);
+                _emitters.Charge(at + Vector3.up * 0.2f, 0.9f);
+            };
+        }
+
+        /// <summary>
+        /// Test feedback 19P: where a guided round that will miss comes down, off its target (the sim's miss), and
+        /// when along its flight it bends away: a jammed one early (its lock goes as it reaches the jammer's field),
+        /// one that lost its lock late.
+        /// </summary>
+        /// <summary>
+        /// An FPV quadcopter was drawn a third bigger than other drones so its X of arms and rotors read at a glance;
+        /// play-test 5 (DECISIONS 20V) made it a fifth smaller again (1.3 x 0.8), on a finer model that still reads.
+        /// </summary>
+        internal const float QuadScale = 1.3f * 0.8f;
+
+        private void Veer(in SimEvent e, ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId)
+        {
+            if (e.Offset == default) return;
+            var flies = views.TryGet(targetId, out var aimed) && aimed.Flying;
+            _projectiles.Veer(new Vector3(e.Offset.X, flies ? 0f : -0.7f, e.Offset.Y), e.Jammed ? 0.35f : 0.6f, e.Jammed);
         }
 
         /// <summary>Tests and tools: every round's start point as it is launched (shooter, mount, point).</summary>
@@ -93,6 +118,7 @@ namespace MachineBrigade.Game.Effects
                     pitch = shooter.LayForShot();
                     barrel = shooter.BarrelDirectionOf(0);
                 }
+                if (e.Mount != 0) shooter.LaySideLauncher(e.Mount);
                 from = shooter.MuzzleOf(e.Mount);
                 _shotNode = shooter.LastMuzzleNode;
                 _shotBarrel = shooter.DrawnBarrelOf(e.Mount);
@@ -163,22 +189,43 @@ namespace MachineBrigade.Game.Effects
                     var missile = Model("missile");
                     var airborne = shooter != null && shooter.Flying;
                     // It leaves along its tube or rail (a raised SAM box, a tilted rack), then turns onto its target.
-                    if (_hasMissile) _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
-                        boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
-                        plume: Plume.For(weapon, kind, missile, airborne));
+                    if (_hasMissile)
+                    {
+                        _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),
+                            boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
+                            plume: Plume.For(weapon, kind, missile, airborne));
+                        Veer(e, views, targetId);
+                    }
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     Flash(MuzzleFx.Kind.Missile, from, Tube(aim), now, 1f, groundY);
                     _shake(from, 0.05f);
                     break;
 
                 case ProjectileKind.Drone:
-                    // A kamikaze drone climbs off the rack, then dives onto whatever it was sent at.
+                {
+                    // A kamikaze drone climbs off the rack, then dives onto whatever it was sent at. Test feedback 19P:
+                    // an FPV quadcopter (the swarms, the mothership's) flies as one, with no motor flame or smoke trail:
+                    // level and nose-down under its rotors, weaving about a line of its own across the swarm.
                     var drone = Model(_models.Has("fpv_drone") ? "fpv_drone" : _hasMissile ? "missile" : null);
-                    if (drone != null) _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * 0.12f, 0.35f, now, Homing(views, targetId), wobble: 0.6f,
-                        scale: scale * SizeOf(weapon, kind, drone, false));
+                    var quad = drone == "fpv_drone";
+                    if (drone != null)
+                    {
+                        _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * (quad ? 0.1f : 0.12f), quad ? 0f : 0.35f, now,
+                            Homing(views, targetId), wobble: quad ? 0f : 0.6f, scale: scale * SizeOf(weapon, kind, drone, false) * (quad ? QuadScale : 1f));
+                        if (quad)
+                        {
+                            var across = Vector3.Cross(Vector3.up, forward);
+                            var width = Mathf.Min(6f, distance * 0.14f);
+                            _projectiles.FlyAsDrone(across * UnityEngine.Random.Range(-width, width) + Vector3.up * UnityEngine.Random.Range(-0.5f, 2.5f));
+                        }
+                        Veer(e, views, targetId);
+                    }
                     else _tracers.Launch(from, to, e.Value, distance * 0.12f, 0.15f, 0.8f, now, 0f, 0.4f);
-                    Flash(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
+                    // A quadcopter lifts off its rack in a puff of dust; a winged drone's booster flares.
+                    if (quad) _emitters.Dust(from, 0.35f);
+                    else Flash(MuzzleFx.Kind.Missile, from, aim, now, 0.5f, groundY);
                     break;
+                }
 
                 case ProjectileKind.Rocket:
                     var artillery = weapon != null && weapon.MinRange > 0f;
@@ -204,8 +251,11 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 case ProjectileKind.Bomb:
-                    // Released from the wing: it keeps some forward speed and falls onto the target.
-                    if (_hasBomb) _projectiles.Launch(_models.Merged(Model("bomb")), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: scale);
+                    // Released from the wing: play-test 8 A (DECISIONS 22Q), it keeps the aircraft's forward speed and falls,
+                    // level at first and ever steeper (a steered bomb glides down onto its target on a flatter curve).
+                    if (_hasBomb)
+                        _projectiles.Launch(_models.Merged(Model("bomb")), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: scale,
+                            control: BombPath(from, to, weapon != null && weapon.GuidedBomb));
                     else _tracers.Launch(from, to, e.Value, 0f, 0.3f, 1f, now);
                     break;
 
@@ -223,7 +273,7 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>
-        /// A railgun (or the saucer's coilgun) lets go: a white core beam that hangs for a moment
+        /// A railgun (or a boss's coilgun) lets go: a white core beam that hangs for a moment
         /// and thins away, a wider glow round it, a plasma blast and a cone of sparks at the
         /// muzzle, the slug riding the head of the beam; the barrel's charge glow is over.
         /// </summary>
@@ -319,8 +369,23 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>The live aim point of a guided missile (built only for missiles, so other shots allocate nothing).</summary>
-        private static Func<Vector3?> Homing(ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId) =>
-            () => views.TryGet(targetId, out var target) ? target.Position + Vector3.up * (target.Flying ? 0.5f : 1f) : (Vector3?)null;
+        private static Func<Vector3?> Homing(ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId, Vector3? from = null) =>
+            () => views.TryGet(targetId, out var target) ? HomeOn(target, from) : (Vector3?)null;
+
+        /// <summary>
+        /// Where a guided round flies on its target: its middle, or (Play-test 6, DECISIONS 21F) for one fired straight at a
+        /// big hull (a boss, a big ship, a large aircraft or structure) the point on the hull's edge towards where it was
+        /// launched from, where the simulation bursts it.
+        /// </summary>
+        internal static Vector3 HomeOn(VehicleView target, Vector3? from)
+        {
+            var p = target.Position;
+            var up = target.Flying ? 0.5f : 1f;
+            if (from is not { } f || target.Def == null || target.Root == null) return p + Vector3.up * up;
+            var c = MachineBrigade.Sim.Combat.HullContact.On(target.Def, new System.Numerics.Vector2(p.x, p.z), target.Root.eulerAngles.y * Mathf.Deg2Rad,
+                new System.Numerics.Vector2(f.x, f.z));
+            return new Vector3(c.X, p.y + up, c.Y);
+        }
 
         /// <summary>Where the shot visibly goes: aircraft are hit at their flight height.</summary>
         public static Vector3 AimPoint(in SimEvent e, ViewRegistry views)
@@ -361,6 +426,17 @@ namespace MachineBrigade.Game.Effects
         {
             if (float.IsNaN(pitch)) return distance * fallback;
             return distance * Mathf.Tan(Mathf.Clamp(pitch, 12f, 80f) * Mathf.Deg2Rad) * 0.25f;
+        }
+
+        /// <summary>
+        /// Play-test 8 A (DECISIONS 22Q): the middle point of a falling bomb's curve. Level with the release point halfway
+        /// along the ground, the quadratic curve is the fall itself: the forward speed kept all the way down, no speed
+        /// downwards at first, ever steeper as it drops. A steered bomb's point is set lower, a longer glide onto its target.
+        /// </summary>
+        internal static Vector3 BombPath(Vector3 from, Vector3 to, bool steered)
+        {
+            var level = new Vector3((from.x + to.x) * 0.5f, from.y, (from.z + to.z) * 0.5f);
+            return steered ? Vector3.Lerp(level, (from + to) * 0.5f, 0.35f) : level;
         }
 
         /// <summary>

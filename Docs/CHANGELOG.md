@@ -7,7 +7,464 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
-Nothing yet.
+## v0.30.0: Prompts 19-22 (the Silver Bug as an orbital spacecraft; twelve chapters in four acts, boss templates, Boss Hunt; the Sandbox and bilingual text; the story rewrite, Commanders, narrative mechanics, new maps and bosses), play-tests 4-8, the boss and mode balance, and the 261-page design review
+
+2026-09-30 · merged into main
+
+Main merges on feature/visual-overhaul since v0.29.0 (newest first): 21c00bf design review PDF (261 pages: rates, reloads and
+ballistics, sizes, blast radii, reach, boss health and DPS, prices, commanders, a reference for every unit); 393cb34 play-test 8 B;
+be456db play-test 8 A; 4f10422 prompt 22 D; 7904d73 prompt 22 F; 2f45a5d boss and mode balance; e5ad3c7 prompt 22 E; prompt 22
+pass 1, play-tests 4-7, prompts 19-21 and the balance passes below.
+
+
+### Play-test 8 B (DECISIONS 22R)
+
+- Burning vehicles burn in three stages (catching, burning, ablaze): broad flames over the engine deck with taller
+  tongues out of them, yellow-white at the base and red at the tips, a white-hot root, licks breaking off, embers and
+  sparks, dark smoke lit brown just above the fire, and a flickering orange light on the hull and the ground round it.
+  A vehicle on the move trails one plume of smoke instead of a row of puffs.
+- Blast smoke clears about 40 % sooner (the heavy fortress's shells, a boss's death blast and every weapon that uses
+  the same smoke); the fire and the blast itself are as before.
+- AC-130: its guns stick out about as far as a real AC-130U's, and it no longer carries Griffin missiles.
+- Icarus is redrawn as an orbital weapons platform: a white-and-gold station with a telescope nose, two blue solar
+  wings on a truss, white radiators and a big drive bell. Its parts, weapons and attacks are unchanged.
+
+### Prompt 22 D: narrative mechanics (DECISIONS 22D)
+
+- The chapter screen opens on a map of the Meridian Coast: the brigade's ground, Hegemon's and (from Veyra) Thorne's,
+  the front line moving with every win, flags on the bases taken, a pin per chapter that opens it. Varga's
+  counterstrike takes ground back in chapter 6; Thorne's betrayal turns Red Rock, Hollow Dam, Iron Harbor and Beacon Bay
+  until chapters 8-9 win them back.
+- Three story choices (after 4-13, 8-11 and 11-10): chase Kessler or save the ferries, free the miners (+6 CP in
+  chapter 9) or strike Kronos (double coins), blind the Skygate radar (the enemy sees 25% less in chapter 12) or take the
+  short road (coins and rare blueprints). Each leads to its own mission, then the story goes on; kept in the save and
+  listed in the dossier.
+- Story loot: the railgun truck after Tempest (chapter 4), the drone mothership with Venn (5), the bunker vehicle from
+  Moloch (6), the loyal wingman from Roc (10), Kessler's cruise missiles (12), each with a line saying why.
+- 33 intel files from side missions and three-star wins (letters, Aurel's reports, Mara's diary, Venn's notes, the
+  clues about Thorne in chapters 4-6) in the dossier's new Intel tab; comic panels after every chapter and interlude,
+  skippable and replayable; the characters' arcs in the dossier; every enemy general answers on the radio to a fast win,
+  heavy losses, lots of aircraft, drones or artillery, and a big attack broken.
+### Play-test 8 A (DECISIONS 22Q)
+
+- Units and towers look for a better target every half second: an anti-air gun firing at a tank turns on a helicopter
+  that comes in. Each weapon goes for what it hurts most and what threatens it, without flicking between two equal
+  targets. The AI's own attack orders give way to an aircraft overhead; the player's orders never do.
+- The SAM launcher fires again in its In action clip.
+- The siege tank's sieged mortar blast is 20 % smaller. The long-range SAM's blast is twice as wide and drawn twice as big.
+- The fire support's gunship flies off the map when its time is up instead of vanishing.
+- The vehicle details page frames every model by its size, so the Leviathan fits.
+- Armour by face draws each unit's own outline: ships, aircraft, helicopters, turretless vehicles, structures and tanks.
+- Sandbox: a test range with sea for ships and naval bosses. Buttons on the unit card no longer miss taps.
+- Base screen: each tower's range is a coloured border over a clear fill, and the picked tower's range pulses.
+- Bombs fall: a bomber drops its stick bomb after bomb along its path and lets go so the stick straddles the target.
+  Unguided bombs land where their drop and fall put them, not on a target that drives away. Guided bombs glide onto
+  their target.
+
+### Play-test 7 (DECISIONS 22P)
+
+- The AC-130 is an aircraft card again, "AC-130 Gunship" ("Pháo hạm AC-130"), listed with the aircraft (premium,
+  4,500 coins, 22 CP). It circles what it is sent at with its 105, 40 and 25 mm firing from the left. The Gunship
+  support card is gone: a bought one becomes the AC-130 card. The one-use Gunship item stays.
+- Every weapon of a vehicle, tower or boss fires on its own timing; twin barrels open fire a tenth of a second apart.
+- The heavy gunship's and attack jet's missiles and rockets fly 30 % slower, and so do the drone mothership's drones.
+- Siege tank: the twin 105 mm pulls right into the turret when it sieges and comes back out when it packs up. The roof
+  machine gun sits clear of the siege cannon.
+- Artillery, launchers, SAM and support vehicles carry a short self-defence machine gun (15-21 m instead of 30).
+- Towers have no extra weapons in the data or on their models. The steel fortress keeps its two MG turrets, the MG
+  bunker its machine gun, the guard tower its own gun.
+### Prompt 22 pass 1: names, structure, story
+
+- Every proper name is the spec's, the same in both languages (A): the Meridian Coast, the Meridian Accord and its
+  7th Mechanized Brigade ("Machine Brigade"), Veyra; Colonel Marcus Kade "Iron", Engineer Mara Lind, Lieutenant Jonah
+  Reyes "Hawk", Captain Nadia Kerr, General Roland Thorne "Titan", Dr Elara Venn "Queen", Kasimir Wolff "Raven" (no more
+  "Quạ Đen"); the maps (Stormbeach, Hollow Dam, Beacon Bay, Deepcut Mine, Skygate Array, Helion Launch Complex...), the
+  chapters and acts. The ids stay; the tokens of prompt 21 read the new names. A scan test covers every table.
+- Twelve chapters of 9 to 18 main missions and three interludes (B): 168 main and 19 side missions (was 121 and 24),
+  44 new ones (and four that moved) made from the battlefields' existing missions with their set-up changed (prompt 4's rule, no two in a row
+  alike). Each chapter ends on its operation with its main boss: Red Rock's Behemoth (new), Leviathan (now an operation),
+  Nemesis at the end of Veyra's liberation. An interlude goes with the act before it for the act switches; on the
+  screens "Interlude II", its missions "II-3". Saves of the twelve chapters of ten move on (campaign version 4).
+- The story (C): the setting, the people and their motives, the flash-forward to Helion before the first mission, every
+  beat of C.4 in its mission (Brandt's surrender, Thorne's first battle with us and three clues before he turns in
+  Veyra, Mara's past and the Foundry, the ceasefire at the Hollow Dam, Venn's escort, Hawk's rescue and duel, Aurel's
+  first words in chapter 11, Varga's end, "They still don't understand."), the ending, and the hooks for later content
+  in `Docs/STORY.md`. Short radio lines (100 characters at most) in both languages, each character in his or her own
+  voice; eight new officers speak with portraits of their own.
+- Waiting on P22-content: the Foundry and the Veyra Old Quarter (their missions say "Battlefield in the next update"
+  until the maps come), Behemoth Mk.0 and Morrigan (fought as the Behemoth and Spectre until then), Mara's Behemoth in
+  the last battle.
+
+### Prompt 22 E: new maps and bosses
+
+- Two battlefields: Foundry (Hegemon's old tank works: solid blocks of sheds cut by narrow 10 m factory lanes, a walled
+  casting hall and two walled yards) and Veyra Old Quarter (the capital's old town: bending narrow streets, the
+  cathedral, market and clock squares). Conquest, Survival, Siege and long versions, labelled hardpoints, map
+  pictures, Guide entries, the skirmish list; both pass the access check and the stuck probe.
+- Behemoth Mk.0 · Prototype Behemoth (Varga): a mini boss made from the Behemoth's data alone (main gun, flank guns,
+  rocket pod; no flak, no protection system).
+- Morrigan · Raven's Fighter (Wolff): a new stealth-fighter model and mini boss; its salvo sends homing missiles at your
+  aircraft and guided bombs at your anti-air (break its bays in the warning to stop it). A duel mode for a mission
+  where you fly aircraft only: no escorts, and it goes dark now and then.
+- Mara's Behemoth: an allied Behemoth for the campaign's last battle, never a card.
+- Both new mini bosses are in the Boss Hunt and the full Boss Hunt.
+### Prompt 22 F: Commanders
+
+- Pick one of 14 commanders before a battle, beside the deck: one passive strength and one small weakness, on for the whole battle; no active skill, gauge or levels. They open with the story; a locked one says where.
+- The eight enemy generals play by the same rules: a mission tied to a general carries their passive, and its briefing shows their strength and weakness.
+- A commander's unit bonuses count towards the loadout's stat caps like equipment, and towards the army strength the campaign's enemies keep pace with.
+- Every mode takes the player's commander; a story mission may set its own (chapter 10's duel is Hawk's); in the Sandbox each side picks one.
+- Screens: the picker, a commander row on the deck screen and the briefing, a small face beside pause (tap for the strength and weakness), a radio line at the start and on the result, a Commanders tab in the dossier. New portraits are placeholders.
+- Auto-buy and Support favour the cards and strikes that suit the commander; an enemy general's army favours what suits its passive.
+- Balance: every commander against every deck style (DECISIONS 22F).
+
+### Play-test 6 bugs (DECISIONS 21B)
+
+- Start on a campaign mission works again after a Back: Back no longer takes the hidden story card out of the menu
+  (it closes the topmost open dialog, and hides the story card). This was why mission 1-1's Start did nothing.
+- A boss's page is its boss file: no Equipment tab, no level, gear or next-level numbers, no deck or upgrade buttons;
+  its numbers, armour, parts with their armour and health, big attack, escorts and general. The campaign's mission
+  page links to each boss it fights, and the Sandbox shows the same file in a dialog.
+- The gunship realism test samples the orbit from its arrival (the AC-130 now kills its heavy tank in 12 s).
+- `MenuWalk`: a Play-mode walk through the real menu to a campaign battle.
+### Sandbox screen, lean (DECISIONS 21S)
+
+- The Sandbox keeps the battlefield: at rest only a slim icon rail under the minimap and one thin bar along the bottom (run, pause, one tick, speed, seed, reset, overlays). At 16:9 they cover about 6% of the screen, against three standing panels before.
+- The unit picker opens from the rail as an icon grid with a category, a search chip and filters; a selected unit's settings are a small card on the right; overlays are a tray of small toggles; settings, scenarios, duel, A/B, statistics and both sides open one sheet at a time.
+- The battle HUD in the Sandbox drops the wave counts, the commander's switches, select-all, box select and the hint.
+- Before and after shots in `Docs/art/sandbox/`.
+### Boss and mode balance
+
+- Bosses are much tougher: health x1.5-2.6 for main bosses and x1.8-3 for mini bosses, the heaviest with the new
+  armour level 5 on their front (a battle tank's round is one level under it: flank them or strike the roof). They hit
+  40-50 % harder from every source (their big attacks 20 %), reload a quarter faster and their air defence hits aircraft
+  60 % harder. Four tanks in a column no longer beat a boss without losses (DECISIONS 21G).
+- One bomber's load or one barrage no longer wipes a boss: bosses take half of strikes and bombs, and at most 10 % of
+  their health (mini bosses 15 %) to them in any 10 s.
+- Escorts are vehicles, never towers; every arrival wave has one more, with air cover where it had none, and more are
+  alive at once (Normal 5 to 7). Tempest keeps its coilguns, Atlas has a guard when it arrives.
+- Armour level 5 ("Super-heavy armour") has its icons, name and a column in every effect table and the Guide legend.
+- Economy a little leaner: income -5 % everywhere; Boss Rush income 2 to 1.8 CP/s and health-step bounties 8 to 6 CP.
+- The quick modes' enemies keep pace with your card ranks and equipment by difficulty, as the campaign's do, so a
+  geared army no longer wins every difficulty.
+- Boss Rush and the Boss Hunts: every boss can come, the trains (Nemesis, Juggernaut) and Gungnir too, on their own
+  battlefields' lines; each week's hunt has bosses with air defence; after the last boss, "Endless" brings the bosses
+  again, each stronger with more escorts, until your army falls (the win is kept, every boss pays).
+- Your army's vehicles no longer stand idle for long while the fight goes on: an idle vehicle goes for the enemy after
+  12 s, and reinforcements go forward in twos.
+- The attack helicopter opens with missiles from its standoff, then comes in to use its cannon and rockets where no
+  air defence covers.
+- Icarus comes down from orbit at once (it spent 15 s off the top of the screen).
+
+### Play-test 6: UI, camera, audio
+
+- The Gunship is a deck card: the AC-130 on call for 12 CP, circling its mark for 20 s with its 105, 40 and 25 mm
+  guns (120 s cooldown), with the AC-130's picture on its card. Sold in the shop for 4,500 coins like the heavy
+  bomber (unlocked in test builds); the one-use Gunship item stays. The Mi-24 now reads "Heavy gunship" on its
+  cards, so only the AC-130 reads Gunship (DECISIONS 21E).
+- Deck: a tap on a card in the deck strip takes it out (the strip's cards carry a remove mark); cards in the deck
+  have a thick accent outline, an accent name and a check on their picture.
+- Battle camera: zoom buttons in the compact HUD beside select-all and box-select; a close mark over the
+  selection panel's corner, and a tap on a selected unit, let the selection go; one mouse-wheel notch now zooms 15 % (it
+  zoomed 0.1 %); a boss's entrance, phase change and fall keep the player's zoom and ease back to where the view
+  was, and a pan or zoom during the shot hands the view back at once.
+- Boss HUD (compact): the boss bar shares the top row with the goal or the bosses destroyed count, one line of call
+  sign and phase over the bar, with smaller part icons; a tap still opens it at full size.
+- Field tower: it lands on open ground near the mark, clear of houses, vehicles and towers, and its parachute
+  canopy rides over the tower's top instead of through its middle.
+- Sound: rain and wind well under the music (rain 0.15-0.18, from 0.35-0.5), softer thunder; the music ducks only
+  under alerts (a boss's big attack, a fortress's alarm) for a moment.
+### Play-test 6: effects and models
+
+- The siege tank is redrawn after StarCraft 2's: a low, wide hull between four armoured track pods and a broad
+  turret with twin 105 mm guns; sieging, four hydraulic legs swing out and brace, the rams lift the hull, the turret
+  swings round, and the big 240 mm siege cannon runs out, locks and is laid (the 2.5 s timing is kept).
+- Launchers raise their launcher to fire and lower it after, like the real systems: MLRS, Grad, Smerch and TOS lay
+  their tubes, the Buk its rails, the S-300 stands its canisters upright, the Iskander erects its missiles, the
+  Patriot raises its box, the Shahed and Lancet trucks their launchers, and the IFVs lift their ATGM box.
+- The SEAD strike's anti-radiation missile is big and bright and dives on to the air defence it locked; its hit is
+  an electronic kill (a blue-white flash, shock rings, arcing, sparks), and the air defence is visibly knocked out
+  for its 8 s (arcs, sparks, smoke, its radar dead and slumped). EMP-stunned vehicles show it too.
+- The gun turret's blasts are 20 % bigger; the heavy fortress's 20 % smaller.
+- Aircraft are drawn 15 % smaller, every type alike.
+- Burning vehicles and bosses burn like vehicles: flames licking out of the engine deck, the hatch and a breach,
+  fixed to the hull and moving with it, a glow on the metal, sparks and flare-ups, and dark smoke that trails behind
+  a vehicle on the move. Low graphics burn on fewer sources.
+### Play-test 6: combat
+
+- Dogfights end with one jet on the other's tail: the one worse placed out of the merge runs out, jinking, and the
+  other sits behind it streaming its cannon; a jet under 30 % health breaks off and flies away (DECISIONS 21F).
+- A fighter hangs on a helicopter with its cannon until it dies instead of breaking away every 4 s.
+- The attack jet streams a whole magazine through each attack hold instead of circling with its cannon quiet.
+- Missiles and rockets no longer jump in busy fights (the view's pool grows instead of reusing a round in flight);
+  the attack jet's, rocket technical's, scout helicopter's and heavy gunship's rockets and missiles fly 20 % slower.
+- The light tank fires one round at a time; every machine gun streams longer and changes faster; FPV carriers,
+  Shahed launchers and the drone mothership launch drones one after another instead of in waves.
+- Every unit's damage a second +5-10 % by its cost (cheap units most), on the calibre scale: rounds raised within
+  their band, the rest by a quicker rhythm.
+- Missiles fired at a boss, a big ship or a large aircraft or tower burst where they meet its hull (or the part they
+  struck), not in its middle.
+- The Lancet's blast is drawn a fifth bigger, the long-range SAM's burst is bigger (3.6 m, Huge), the drone
+  mothership drops two guided bombs, the C-RAM's gun fires only at incoming rounds, never at aircraft, and the
+  rocket battery, artillery emplacement, Patriot battery, SAM post and coastal turret have no machine gun.
+
+### Play-test 5: visuals
+
+- Every explosion is layered and grander, by calibre and tier: a white-hot core in the fireball, secondary fire
+  bursts, more sparks, fragments and embers, a second dust skirt and air ring on big blasts, rising smoke, and a
+  smoke column over the crater of big ones (bombs, heavy rockets, boss attacks, falling buildings and towers,
+  napalm). Low keeps every layer with half the added particles and never less than before (DECISIONS 20V).
+- Blasts bigger: tank rounds +20 % wide and +20 % longer, artillery and mortar shells, missiles and rockets, and
+  drones +20 %, the gun turret's rounds +30 %.
+- A new fire on badly damaged vehicles: one to three fire points on the hull by the damage, each a bright flame
+  core, tongues of flame, embers and a dark smoke column; lighter on Low.
+- Shorter flames behind the SAM launcher's, thermobaric launcher's, heavy rocket artillery's, ballistic missile's,
+  long-range SAM's and Patriot batteries' missiles, still sized by the munition.
+- A railgun hit leaves a burn on the target like the focused laser's: a glowing spot cooling, sparks, smoke, a
+  scorch.
+- In action: the targets are a jeep, an armoured car, a light tank, a battle tank and a heavy tank (armour 0 to 4)
+  and none lays smoke; every fire support is framed with the sky its aircraft or rounds come from.
+- Models: a finer, 20 % smaller FPV drone; the bunker vehicle dug in as an emplacement (hull-down behind a bank of
+  earth, sandbags, plates as revetments, a camouflage net); the AC-130 gunship with its 25, 40 and 105 mm guns
+  drawn big out of the left side and a sensor ball, now on the gunship's card and item; a gunless transport for
+  airdrops; the stealth fighter's middle detailed (intakes, canopy frames, spine, panel lines, bay seams). Card
+  pictures to render.
+### Armour and damage balance
+
+- Fights are 10-35 % shorter and armour costs less (DECISIONS 20X): the penetration row is 1.2 (two or more levels
+  above: the round overmatches the face), 1, 0.85 (level), 0.5, 0.25, 0.1 (was 1, 0.75, 0.4, 0.15, 0.05); overmatch
+  counts on a front, side or rear, never on a roof or an aircraft; the front arc is 40 degrees (was 50); vehicles'
+  toughness 2.2 (was 2.5; bosses unchanged); the turtle tank's front 3 (its shed stops drones, not darts).
+- A flank shot beats a front shot for every gun (battle tank on battle tank: 26 s side on, 35 s front on; were 35 and
+  46); the right counter still wins (the tank destroyer 25 s on a battle tank, two armoured cars 39 s). `CounterTests`
+  hold; campaign, Conquest, Siege and Defend win rates hold on a 3-seed sweep. New measure `ArmourBalanceMeasure`
+  (time to kill, hits by penetration step and face); tables in `Docs/balance/*_20x_*`.
+### Play-test 5: rhythm, behaviour, siege tank
+
+- Every vehicle, helicopter and aircraft autocannon fires about 5 s at a time and changes its magazine in about 1 s
+  (the Gepard, the Tunguska mount, the ZU-23, the IFV, BMPT and armoured car, the Apache's M230, the Mi-24P's
+  GSh-30K, the Su-25's GSh-30-2, the F-35's GAU-22, the gunship's 25 mm and 40 mm). The damage a round stays on the
+  calibre scale and the damage a second is unchanged, so the cadence over the stream is the old average; the anti-air
+  vehicles' missiles fire beside their gun's stream and their rounds hit aeroplanes harder (DECISIONS 20W).
+- Fighters and the stealth fighter get on an enemy jet's tail: they fly for a point behind it, then keep their nose on
+  it at a little over half the cannon's reach and stream the cannon, their air-to-air missiles firing beside it.
+- The TOS-1A's, the Smerch's and the rocket battery tower's rockets (both its branches) fly at the SAM's 24 m/s; the
+  attack jet's rockets and missiles are 25 % slower; the drone mothership's drones 40 % slower.
+- The C-RAM streams a burst at every round it takes down (0.5 s, the Centurion 0.3 s, tracers on the round as it
+  flies) instead of one shot; interception rates stay near their old values.
+- The siege tank is reworked into StarCraft 2's: a 105 mm tank on the move; standing with an enemy in reach, or on guard,
+  it sieges in 2.5 s (braces down, turret up, 105 mm back, the 240 mm mortar raised) and shells from 16 to 70 m; it
+  packs up to move or when enemies get inside 16 m with nothing further to shell. New model with the animated
+  deploy, armour by face, Guide card, behaviour lines, icon; now won in the campaign (chapter 4) instead of bought.
+### Boss redesigns and death smoke
+
+- Ixion is a Tsar Tank war machine now: 10 m spiked wheels with scythe hubs, slab armour, chains, a spiked roller across
+  the front, exhausts and rust (DECISIONS 20Y). Icarus is a wedge warship in the Star Destroyer and Venator mould, with a
+  stepped superstructure, a command tower, an engine bank and a ventral hangar; its wreck follows; every node, the
+  altitude tiers and the crash work as before.
+- The boss review redrew Typhon (Typhoon-class lines), Caspian (the Lun ekranoplan) and Daedalus (an Acclamator-style
+  assault ship); the others were kept.
+- A boss's death fires keep their flames but smoke a third as much, lighter, and clear within seconds.
+
+### Leviathan as a battleship
+
+- Kessler's Leviathan is a battleship on the Yamato's lines (DECISIONS 20Y): 96 x 16 m, a flush deck with a strong bow
+  sheer and flare, three triple 460 mm turrets (two forward, one superfiring, one aft), a pagoda tower with a long
+  rangefinder, one raked funnel with launch cells beside it, triple 155 mm secondaries, 25 mm tubs and 127 mm mounts
+  along the sides, catapults, a floatplane and a crane aft, anchors and chains forward, in Hegemon's marks.
+- New breakable guns: the three main turrets (one gun each a salvo, all nine in the big attack, now the Nine-Gun
+  Broadside at the base), two 155 mm secondaries, two 25 mm batteries of four mounts, two CIWS; 14 parts at 5 %,
+  health unchanged. Laid turrets stay inside their arcs.
+- The old model is the fleet's missile cruiser (two twin 203 mm, two CIWS) with its own name, note, dossier file and
+  Guide line; the cruiser and a corvette keep station abeam on the shore side instead of inside the hull. Scylla is
+  scaled to stay a 48 m destroyer and keeps its salvo and cruise missiles.
+
+### Missile speeds, fire rates, models
+
+- No missile flies faster than the attack helicopter's Hellfire (24 m/s): the SAMs, air-to-air and MANPADS missiles,
+  the Iskander, the towers' SAMs and Iron Dome, and the bosses' big-attack missiles. Rockets keep their speed; plumes
+  follow the new speeds. `CounterTests` hold (DECISIONS 19R).
+- Guns fire at their real rate (up to 60 rounds a second): the Gepard 1,100 rpm, the Tunguska mount at the cap, the
+  ZU-23 1,800, the minigun and the Su-25's GSh-30-2 3,000, the F-35's GAU-22 3,300, the Mi-24P's GSh-30K 2,400, the
+  M2 550, the PKT 750, the AK-630 at the cap, and so on, in real bursts; the pause after a burst keeps each weapon's
+  damage a second. Grad and TOS ripples at their real interval. The towers' real rates are listed for the tower pass.
+- The bunker vehicle is redrawn: on the move a walled engineer hull with a dozer blade; digging in, the spades and
+  blade bite, the hull sinks into a spoil bank with sandbags, the side plates fold down over it and the turret rises
+  on its telescopic mount. (The old spades and plate had never moved: the spawn merged them into the hull.)
+- Look-alikes redrawn: the light tank (amphibious, a 57 mm module forward, trim vane), the Titan (a second,
+  superfiring turret), the laser tank (a beam director on a yoke, a power module) and the shield carrier (a tall
+  emitter mast with a halo). Card pictures to render.
+### Prompt 21: Sandbox
+
+- A Sandbox with the challenges on the Operations tab (DECISIONS 20S): set up any battle on any battlefield (the 300 m, long and coastal ones) or a flat test range with a metre grid, pick Blue or Red, place units one at a time or in a line, column, cluster or arc, and turn them by 15° (or freely) with a drag.
+- Seven tabs (vehicles, aircraft, towers and structures, bosses, mini bosses, elites, ships and escorts) with search and branch, armour and weapon filters. Towers go on hardpoints, anywhere on the test range and anywhere in the internal build, with their rank and their rank-7 branch.
+- Each unit (or a whole selection): side, rank, equipment (none, a suggested set, yours), elite, health, ammunition, immortal, and for a boss its starting phase, parts, big attack, escorts and altitude tier; copy, move, delete, undo and redo.
+- The battle: run, pause, one tick, ×0.25 to ×4, reset; full AI, fighting AI or standing still for each side; unlimited or set CP, support cooldowns on or off, a whole side immortal; orders (go to, hold, hold fire, fire at); fire support called anywhere; the seed. The same scenario, seed and controls always give the same battle.
+- Boss tools on a running boss: jump to a phase, big attack now or off, break or restore each part, change altitude tier, escorts on or off, swap between main and mini boss, and the bosses' difficulty.
+- Overlays, each on its own: range rings, hit numbers with ✓ ~ ✕ and the face struck, real DPS and combat value, magazines and reloads, big-attack zones and shields; internal only: hit boxes, routes, stuck vehicles, the AI's buying scores.
+- Scenarios save with a format version (older files still open), share as a text code (locked units swapped for unlocked ones of the same role, with a notice), export a replay with its seed, and in the internal build save as automatic tests with pass conditions; five samples; up to 20 of your own.
+- Quick duels (two units or groups, distance and facing, one seed or twenty with the win rate), A/B runs of a scenario with two equipment sets, and an after-battle table (damage dealt and taken by type, time to kill, lifetime, rounds through and bounced).
+- The player version opens once the last chapter switched on is finished, offers only unlocked units and beaten bosses, and pays nothing: no coins, rewards, records, daily progress or achievements, and no items are used.
+### Prompt 21: Vietnamese and English
+
+- The language follows the device on Auto and switches at once: the menu reloads in the new language, and the pause
+  menu has the switch too; the battle HUD relabels itself in place without restarting the battle.
+- Every placeholder is named (`{count}`, `{seconds}`); numbers follow the language (184.172 and 0,75 in Vietnamese,
+  184,172 and 0.75 in English); English counts are singular or plural ("1 coin", "2 coins").
+- Every text has both languages. The map table's names are used everywhere; the English left in Vietnamese texts
+  (map, laser, tungsten, rocket, sonar, English map names) and the Vietnamese left in English texts (Landing Beach, "xu")
+  are gone; a boss is "boss" in Vietnamese; percentages read "25%".
+- Boss subtitles are translated and match on the card and the boss bar ("Icarus · Orbital Spacecraft" / "Icarus · Phi
+  thuyền quỹ đạo"). The story's Vietnamese names are tokens of one name table, ready for prompt 22.
+- Tight spots in English and Large text: the tower-branch picker stacks its cards in Large text and shows short names,
+  the icon legend widens, four gear pieces have shorter English names, the thermobaric launcher's short name is TOS-1A.
+- New checks: `L10nTests` and `L10nSwitchTests` (both languages in every key, named placeholders, nothing left
+  unfilled, one language per screen, number formats, plurals, switching on the menu and in a paused battle);
+  `UiLanguageTests` covers every table and every font; the layout checks run in English and English Large as well.
+- `Docs/localization-report.md` (the audit) and `Docs/glossary.md` (the terms in both languages). Screenshots of
+  both languages wait for the testing phase (`UiShots -mbShotsSet l10n`). DECISIONS 20L.
+
+### Tower art
+
+- Every tower's two rank-7 branches have models of their own (32, named `<tower>_a` / `_b` in the spec's order): the
+  gun turret's very long 120 mm with a scope or twin short 57 mm barrels with a radar, the rocket battery's open rack
+  or closed pod, a counter-battery radar beside the long howitzer or a squat 240 mm mortar, the fortress's long twin
+  guns or armour plates and two small turrets, a radar mast on the watchtower or a low sandbagged gun nest, and so on
+  for all sixteen towers. The data picks the model by the branch's order, or by a `"model"` on the branch entry.
+- Ranks 1-6 show on the tower: a bar a rank on its walls, add-on plates from rank 3, thicker ones from rank 5 (the
+  player's towers by card rank, the enemy's by HQ level; lighter on Low graphics).
+- A line icon for every branch in the tower icons' style, shown wherever a branch's icon is (the branch choice first).
+- The branch models use the shared far level and impostors; card pictures and clips are rendered after the merge.
+### Tower branches
+
+- Every tower's two rank-7 branches now differ in what they hit, their reach or a mechanism (DECISIONS 19T): a sniper 120 mm or a 57 mm autocannon with air-burst rounds; cluster or guided long-range rockets; a counter-battery howitzer or a heavy mortar that fires over walls; the coastal battery or a steel fortress with two all-round machine guns; a PAC-3 that shoots down cruise, ballistic and boss missiles or a long-range radar that shows every aircraft; one shield dome or a shield on every tower; a steady CP relay or a loot depot paid by kills.
+- The C-RAM, rocket battery and AA tower branches tuned to the balance targets (the Centurion stops 90 % of an MLRS's rockets; the flak back on the calibre scale).
+- The AI picks branches by the deck it faces, and each general has favourites; every branch is picked 23 % or more.
+- The branch choice shows both branches side by side from their data, with when to pick each; the Guide has a block per branch.
+- Saves: remade branches move to the nearest new one, one free change per reworked tower, a one-time notice.
+- The branch models and icons come from the art branch by id (`<tower>_a` / `_b`); card renders later.
+### In-action and effects fixes (DECISIONS 19P)
+
+- **In action clip:** the unit shown never runs out of ammunition; the enemy can be knocked out and a new one comes in
+  (aircraft fly onto the spot, vehicles drive up); aircraft glide in and slow onto their station, and nothing fires at a
+  target before it is in the picture.
+- **Towers with a scene of their own:** the CP relay counts its pay over the picture and stops paying while it is raided;
+  dragon's teeth turn an enemy column round their ends; the minefield and the mine layer's mines go off under enemy
+  vehicles driving across; the ammunition depot's launchers reload faster at home; the logistics station shows the
+  supply it adds; the shield generator's attackers stand outside its dome.
+- **Jammed missiles** no longer vanish: they fly true, crackle as they lose their lock, then corkscrew and roll off to
+  land (or burst) wide where the simulation scores the miss.
+- **Laser beams** hum continuously while they burn, with a whine as they ignite, instead of a machine gun's clatter.
+- **Shield domes** flare and ripple where a round crosses their skin; a round a dome stops bursts on the dome.
+- **FPV drones** (the swarms and the drone mothership's) look and fly like quadcopters: rotors, no motor flame or smoke
+  trail, weaving corrections and a spread-out swarm, a buzz as they launch and a charge-and-debris impact of their own.
+- **Sky gunship:** it stays over the spot it was called to, circles lower and tighter in the battle camera's picture, and
+  fires its 105, 40 and 25 mm together.
+
+### Design document: armour, penetration and weapon forms
+
+- Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).
+- Every weapon table has penetration, form and tags. Section 10 adds a counters table and the icon legend.
+- Fixed: the combat-value table uses the current roster, Boss Rush's "{0} bosses", the HQ instead of the bastion, the map, mission and difficulty counts.
+
+### Prompt 20 pass 1: twelve chapters in four acts, new boss and general names, act switches (DECISIONS 19A)
+
+- **Names (A):** bosses read "Proper name · Vietnamese subtitle" (the Silver Bug is "Icarus · Phi thuyền quỹ đạo", its
+  project "Dự án Icarus"); generals are Brandt, Viktor Varga "Anvil", Ilya Orlov "Winter", Magnus Kessler "Maelstrom",
+  Elara Sen "Queen", Kasimir Wolff "Raven" (still "Quạ Đen" on our side's radio), Lucien Aurel "Sol", Lý Hàn "Titan";
+  Diều Hâu is "Hawk" on the radio, Khải "Iron". Every id is unchanged. Brandt has a portrait and a dossier entry.
+- **Structure (B):** 12 chapters of 10 main and 2 side missions in 4 acts (Landing, Counterattack, Betrayal, Silver Sky);
+  each chapter has its main boss and mini bosses in data (`campaign.json` "main"/"minis"); bosses pass 2 builds are
+  fought as stand-ins (`"fallback"`). New chapters 8 (Underground), 9 (Rough Seas) and 11 (The Orbital Gate): 36 new
+  missions written from existing ones on the same battlefields. The old chapters 7, 8, 9 are now 10, 7, 12.
+- **Save migration:** campaign version 3 moves a nine-chapter save's stars, tiers and chapter cards to the new ids and
+  keeps the HQ level it had; the 23-mission save still moves in one step.
+- **Act switches (C):** `Resources/Data/release.json` (or `-mb-acts=1,2`): acts and chapters on, "Coming soon" or hidden;
+  "To be continued" after the last chapter on; Operations, the weekly rotation and Boss Rush drop what is off; the
+  unlocks and HQ levels of chapters off come with the last operation on; a shorter release pays more (x1.42 for acts I-II).
+- **Economy (D):** a new unlock route (4-6 cards a chapter), HQ levels in chapters 1, 3, 6, 9 and 11, the deck at rank 7.1
+  as act IV begins and 8.1 at the end.
+- **Tools:** `Tools/campaign/act4.py` (the layout), `build_campaign.py` merges into `CampaignText.cs` (hand-localised words
+  kept) instead of rewriting it. Tests: `Prompt20CampaignTests` (7).
+
+### Prompt 19: the Silver Bug rebuilt as Aurel's orbital spacecraft (DECISIONS 18A)
+
+- The final boss keeps its id `silver_bug` (records, progress and achievements stay) and is now a big military shuttle:
+  new model, its crashed form, a satellite and a drop pod (`Tools/blender/mb_orbital.py`; the saucer builder is gone).
+- Altitude tiers, data any boss can opt into (`"tiers"`): 15 s in low orbit at the start (out of reach, guns held),
+  then a fixed cycle per phase, never back to orbit: phase 1 high 25 s / low 10 s, phase 2 high 15 s / low 20 s,
+  3.5 s per change (hit as the lower tier meanwhile). High altitude: only long-range SAMs, Patriot batteries, fighters
+  and stealth fighters (`"ceiling": "high"`); low: every anti-air weapon, helicopters, and railguns (`"ceiling": "low"`).
+- Parts (70 % of the body, 7 % each): the main engine (broken: it stays low), four manoeuvring thrusters (slower,
+  longer changes), two point-defence lasers (its APS against SAMs and fighters' missiles), the drop-pod bay, the
+  satellite uplink (its big attack) and the ventral laser turret. Armour by altitude: hull 4, belly 2 (low), 3 crashed.
+- Drop pods (`"pods"`): two at a time in orbit and at high altitude, 1-2 vehicles each, low-altitude targets while they
+  fall 6 s (shot down, nothing lands), at most six of their vehicles alive. Escorts come as it leaves orbit, with two
+  fighters; phase marks 70 % and 30 %.
+- Big attack `bug_rod_rain` replaces `bug_laser_sweep` (a new `rods` shape): five tungsten rods on the densest groups,
+  heavy armour first, 1 600 kinetic, penetration 4 on the roof, 6 m, 4 s of warning, every 60 s; the first from the craft
+  in orbit, the rest from its satellite; the uplink broken cancels or ends it; smoke and APS do nothing, domes absorb
+  part. No boss big attack is stopped by smoke now.
+- Phase 3: it falls to a set point mid-map and fights on as a ground fortress (a ground target, the wreck model, four
+  guns all round awake, passable debris that blocks fire, its ground closed to routes and cleared of units). Very Hard:
+  it seizes the player's drones and drone launchers for 6 s now and then; jammer and EW-tower cover keeps them.
+- HUD: an altitude chip with the seconds to the next change and the phase marks on the boss bar; tapping it lists the
+  deck ✓ ~ ✕ by what reaches its tier. The Guide has an altitude section; every text is new or rewritten in both
+  languages (`OrbitalText`, the campaign's chapter 9, the boss files, briefings and radio lines): no saucer is left.
+- Boss Rush fights it on the Launch Site (`"arena"`), as the sea boss at sea. Sandbox calls for prompt 21:
+  `JumpPhase`, `ForceTier`, `TriggerBig`, `SetBigOff`, `Break`.
+- Tests: `OrbitalBossTests` (10) and the boss tests it touched; the 5-seed runs, the stuck check round the crash site
+  and the FPS checks wait for the testing phase.
+### Prompt 20 pass 2: boss templates, main and mini bosses, four new main bosses and nine new mini bosses (DECISIONS 19E)
+
+- Bosses are built from data templates: body frames, a shared part and weapon library, big attacks built on others,
+  escort templates by general, ranks and variants (a mini boss made from a main boss by data). How to add one:
+  docs/ADDING_A_BOSS.md.
+- Main bosses are larger, have three phases and new weapons (Bastion's casemate and ZU-23s, Behemoth's flank guns, Jötunn's
+  second howitzer and SAM, Leviathan's 127 mm guns, Matriarch's belly guns and second bay, Roc's gun pods, Nemesis's two
+  new cars, Icarus's crash turrets). Mini bosses are smaller, have half the health, lighter weapons and big attacks, two
+  phases and two or three escorts. The bar reads "Boss" or "Mini boss"; the camera pan follows the rank.
+- New: Moloch (a factory that builds tanks), Daedalus (an orbital lander raining drop pods), Kronos (a bucket-wheel
+  excavator that crushes its way to the HQ on the open-pit mine), Typhon (a missile submarine that dives), Ixion (a giant
+  wheel), Caspian (an ekranoplan) and the variants Bastion Mk.0, Fenrir, Scylla, Locust, Behemoth Mk.II, Icarus Mk.0,
+  Argus, each with parts, a big attack, escorts, a Guide card and radio lines. Every boss is tied to its general.
+- Boss Rush takes the new bosses; Operations' "two bosses" brings a mini boss.
+
+### Prompt 20 pass 3: Boss Hunt, the full Boss Hunt, boss and battlefield pages (DECISIONS 19N)
+
+- Boss Hunt (was Boss Rush): each week 10 bosses from the chapters that are on, 7 mini bosses leading to 3 main bosses,
+  the same draw on every device, stronger down the run, 45 minutes. A 20 s rest repairs 30 % of the army; after each
+  main boss pick one of 12 combat supports and keep a checkpoint (take the run up again later, from the result screen
+  or Operations). The first clear of the week pays 1 500 coins.
+- Full Boss Hunt, open after the last chapter that is on: every boss in story order, a checkpoint after every boss, a
+  board of the best total times, 10 000 coins and a legendary crate for the first clear. The trains stay out (no rails).
+- Operations' "two bosses" is "Extra mini boss": the chapter's or the boss's mini boss.
+- Boss bars: big for main bosses, small for minis. Boss Guide pages: rank, chapters, general (call sign, naming theme),
+  "Variant of ..." links; the dossier's boss files link to them. New dossier tab: Battlefields (with the open-pit mine's
+  and the orbital gate's guides). Chapter cards count their mini bosses.
+- Six missions moved onto the new maps: c8m02, c8m07, c8m10 (Kronos walks its haul-road route) to the open-pit mine,
+  c11m04, c11m07, c11m10 to the orbital gate.
+
+### Prompt 20 L-M: towers (Iron Dome, rocket battery, SAM post) and two new battlefields
+
+- The C-RAM's rank-7 Iron Dome branch (it replaces the Hunter; a saved Hunter choice is dropped): interceptor missiles
+  for rounds lobbed at anything within 60 m (artillery rockets, half the shells, drones, long-range missiles), never
+  direct fire or energy; six in the launcher, reloaded whole 12 s after the last launch; its own icon, behaviour lines
+  and notes. The enemy AI picks Iron Dome or Centurion by the player's deck.
+- The rocket battery's rockets arc over walls and cover (checked; a test); an AI's layered base keeps rocket batteries
+  in its yard against attackers at the wall. The AA tower's SAM post reaches 60 m, between the flak and the Patriot;
+  the flak branch's quad 23 mm hits harder (22 a round), so it is the drone and swarm killer.
+- Open-Pit Mine (terraced pit, haul roads, a fixed route for a slow boss in the map data) and Orbital Gateway (radar
+  station, side launch pads, an open drop-pod field): Conquest, Survival, Siege and long versions, camps and outposts,
+  menu pictures, names, guide text; in the skirmish list.
+### Balance pass after prompt 18
+
+- The section-17 measurements ran in full: the campaign over 5 seeds, the stuck detector on 21 battlefields in 4 modes over 5 seeds (420 battles), the tick budget, every mode at every difficulty over 5 seeds (DECISIONS 19B, `Docs/balance/*p18*`, `tables_p18.md`).
+- Towers on the owner's DPS targets with weapons of their own (rhythm, magazines, the AA tower's flak fuzed for aircraft); the HQ's flak halved. The C-RAM, rocket battery and AA branches wait for the lead's merge.
+- Vehicles: Iron Beam 7 CP and faster, SAM launcher faster and tougher, wheeled gun +20 % and +250 HP, IFV +40 % rhythm, twin tank 96 on heavy, Lancet 100 m, thermobaric launcher 48 m (it could not reach forts), cheaper-to-tougher aircraft (fragmentation on aircraft 1.5 to 1.3, more health), attack jet and strike drone one store less and 1 CP more, flame tank 5, car bomb 3, Titan 16 CP.
+- Airstrike 6 x 400 at 6 m for 9 CP. Support texts take their numbers from the data (the air raid's "fourteen" bombs were 10, the cluster strike's "forty" bomblets 30), with a test; the boss supports have names.
+- Siege harder, Defend's outer line tougher and its first waves lighter, Normal's enemy income x0.7 and its deck of typical cards.
+- New measures: `TowerValueMeasure`, `BalancePassMeasure`, the combat value's artillery fight.
 
 ## v0.29.0: Prompts 15-18 (armour and penetration, the sea and escorts for every boss, long maps and new units, the roster review, big attacks) and the 187-page design review
 

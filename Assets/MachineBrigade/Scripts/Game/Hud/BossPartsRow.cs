@@ -89,6 +89,11 @@ namespace MachineBrigade.Game.Hud
             // Prompt 18 C.
             "erector" => "ballistic",
             "bombbay" => "bomb",
+            // Prompt 19: the orbital craft's.
+            "mainengine" or "thruster" => "wind",
+            "pdlaser" => "laser",
+            "podbay" => "reinforce",
+            "uplink" => "command",
             _ => "gear",
         };
 

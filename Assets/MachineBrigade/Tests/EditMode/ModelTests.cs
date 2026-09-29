@@ -21,7 +21,7 @@ namespace MachineBrigade.Tests
             "attack_helicopter", "strike_jet", "missile", "rocket", "bomb", "cruise_missile", "mountain_a", "mountain_b",
             "mountain_c", "cliff_a", "cliff_b", "boulders", "sandbags", "tank_trap", "dirt_mound",
             "gunship_heli", "scout_heli", "attack_jet", "strike_drone", "heavy_bomber", "stealth_bomber", "sky_gunship",
-            "behemoth", "mobile_fortress", "armored_train", "mega_gunship",
+            "behemoth", "mobile_fortress", "armored_train", "mega_gunship", "morrigan",
             "elite_mbt", "elite_heavy_tank", "elite_tank_destroyer", "elite_attack_helicopter", "elite_mlrs", "elite_aa", "elite_apc",
             "ballistic_missile", "heavy_rocket", "mine", "fpv_drone", "supply_crate", "repair_crate",
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
@@ -280,6 +280,68 @@ namespace MachineBrigade.Tests
                 Assert.AreEqual(2, heli.Spinners.Count, "both rotors still spin");
                 foreach (var spinner in heli.Spinners)
                     Assert.IsNotNull(spinner.Transform.GetComponentInChildren<MeshRenderer>(), $"{spinner.Transform.name} has its blades");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Play-test 4 (DECISIONS 19R): the bunker vehicle's digging-in parts survive the spawn's merge as their own
+        /// groups with their meshes (the old spades and plate were merged into the hull and never moved), the turret
+        /// rides its telescopic mount, and the spoil bank is stored at 1 % so it never shows on the move.
+        /// </summary>
+        [Test]
+        public void BunkerVehicleKeepsItsDeployPartsApart()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Deploy Test").transform;
+            try
+            {
+                var bunker = models.Spawn("bunker_vehicle", 0, parent);
+                foreach (var name in new[] { "Deploy_blade", "Deploy_plate_l", "Deploy_plate_r", "Deploy_spade_l", "Deploy_spade_r", "Deploy_riser", "Deploy_berm" })
+                {
+                    var part = Find(bunker.Root.transform, name);
+                    Assert.IsNotNull(part, name);
+                    Assert.IsNotNull(part.GetComponentInChildren<MeshRenderer>(true), $"{name} keeps its own mesh");
+                }
+                Assert.IsTrue(bunker.Turret.IsChildOf(Find(bunker.Root.transform, "Deploy_riser")), "the turret rides its mount");
+                Assert.Less(Find(bunker.Root.transform, "Deploy_berm").localScale.y, 0.05f, "the bank is hidden on the move");
+            }
+            finally
+            {
+                Object.DestroyImmediate(parent.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
+        /// <summary>Play-test 5 (DECISIONS 20W): the siege tank's sieging parts move on their own; the mortar elevates, the 105 mm slides.</summary>
+        [Test]
+        public void SiegeTankKeepsItsSiegePartsApart()
+        {
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var parent = new GameObject("Siege Test").transform;
+            try
+            {
+                var tank = models.Spawn("siege_tank", 0, parent);
+                var root = tank.Root.transform;
+                foreach (var name in new[] { "Deploy_brace_l", "Deploy_brace_r", "Deploy_spade_l", "Deploy_spade_r", "Deploy_gun", "Deploy_riser" })
+                {
+                    var part = Find(root, name);
+                    Assert.IsNotNull(part, name);
+                    Assert.IsNotNull(part.GetComponentInChildren<MeshRenderer>(true), $"{name} keeps its own mesh");
+                }
+                Assert.IsTrue(tank.Turret.IsChildOf(Find(root, "Deploy_riser")), "the turret rides its column");
+                Assert.IsNotNull(tank.Elevation, "the mortar elevates");
+                Assert.IsTrue(tank.Muzzles["main"].IsChildOf(tank.Elevation), "the mortar's muzzle rides on it");
+                Assert.IsTrue(tank.Muzzles["gun"].IsChildOf(Find(root, "Deploy_gun")), "the 105 mm's muzzle slides with it");
+                Assert.IsFalse(tank.Muzzles["gun"].IsChildOf(tank.Elevation), "the 105 mm does not rise with the mortar");
             }
             finally
             {

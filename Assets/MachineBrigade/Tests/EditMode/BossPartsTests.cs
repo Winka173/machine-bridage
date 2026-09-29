@@ -36,13 +36,20 @@ namespace MachineBrigade.Tests
             return events;
         }
 
-        /// <summary>Every boss and how many parts it has (prompt 9 B, fitted to each model's guns; prompt 16 E's new weapons are parts too).</summary>
+        /// <summary>
+        /// Every boss and how many parts it has (prompt 9 B, fitted to each model's guns; prompt 16 E's new weapons are parts
+        /// too; prompt 20 F.3 adds the main bosses' new weapons, G.3 drops some of the mini bosses', H-J the new bosses).
+        /// </summary>
         internal static readonly Dictionary<string, int> Expected = new()
         {
-            ["armored_train"] = 6, ["nuke_train"] = 7, ["behemoth"] = 7, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 5,
-            ["fortress_hive"] = 7, ["mobile_fortress"] = 7, ["fortress_bastion"] = 6, ["silver_bug"] = 6, ["sky_fortress"] = 9,
-            ["mega_gunship"] = 8, ["drone_mothership"] = 8, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 8,
-            ["landing_hovercraft"] = 9, ["supreme_command"] = 3, ["leviathan"] = 9,
+            ["armored_train"] = 5, ["nuke_train"] = 9, ["behemoth"] = 10, ["behemoth_tempest"] = 5, ["behemoth_inferno"] = 4,
+            ["fortress_hive"] = 6, ["mobile_fortress"] = 9, ["fortress_bastion"] = 9, ["silver_bug"] = 12, ["sky_fortress"] = 8,
+            ["mega_gunship"] = 6, ["drone_mothership"] = 11, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 10,
+            ["landing_hovercraft"] = 8, ["supreme_command"] = 3, ["leviathan"] = 14,
+            ["moloch"] = 9, ["daedalus"] = 8, ["kronos"] = 10, ["typhon"] = 7, ["ixion"] = 4, ["caspian"] = 4,
+            ["bastion_mk0"] = 3, ["fenrir"] = 3, ["scylla"] = 3, ["locust"] = 2, ["behemoth_mk2"] = 4, ["icarus_mk0"] = 3, ["argus"] = 3,
+            // Prompt 22 E: Behemoth Mk.0 (a variant) and Morrigan (two missile bays, the bomb bay, the engines).
+            ["behemoth_mk0"] = 4, ["morrigan"] = 4,
         };
 
         private static Catalog C => GameContent.LoadCatalog();
@@ -61,7 +68,8 @@ namespace MachineBrigade.Tests
                 Assert.That(total, Is.InRange(0.3f, 0.71f), id + ": 50-70 % of the body in all (fewer for bosses with few guns)");
                 foreach (var p in def.Parts)
                 {
-                    Assert.That(p.Hp, Is.InRange(0.07f, 0.15f), $"{id}.{p.Id}: 8-15 % of the body each");
+                    // Prompt 20 F.3: a main boss with more than ten parts keeps 5-6 % each (the 70 % in all).
+                    Assert.That(p.Hp, Is.InRange(def.Parts.Count > 10 ? 0.049f : 0.069f, 0.151f), $"{id}.{p.Id}: 7-15 % of the body each (5 % with more than ten)");
                     Assert.IsTrue(p.Mounts.Count > 0 || p.Skills.Count > 0 || p.Stops.Count > 0 || p.Speed < 1f || p.Turn < 1f || p.Cadence > 1f || p.Spread > 1f ||
                                   (def.BigAttack?.UsesPart(p.Id) ?? false),
                         $"{id}.{p.Id} does something when it breaks");
@@ -123,6 +131,15 @@ namespace MachineBrigade.Tests
             {
                 var world = Lab.Field(2);
                 var boss = world.SpawnVehicle(id, 1, Vector2.Zero, 0f);
+                // Prompt 19: a boss in its opening in orbit is out of reach; down from there its body takes damage as any.
+                if (boss.Tier == Sim.Content.AltitudeTier.Orbit)
+                {
+                    var high = boss.Hp;
+                    world.Damage.Apply(boss, 500f, DamageType.ShapedCharge, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
+                    Assert.AreEqual(high, boss.Hp, 1e-3f, id + ": untouchable in orbit");
+                    world.Bosses.JumpPhase(boss, 0);
+                    world.Step(0.05f);
+                }
                 var before = boss.Hp;
                 world.Damage.Apply(boss, 500f, DamageType.ShapedCharge, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
                 if (id == "command_airship") Assert.AreEqual(before, boss.Hp, 1e-3f, "the airship's hull is shut until two engines are down");
@@ -363,8 +380,8 @@ namespace MachineBrigade.Tests
             {
                 var world = Lab.Field(7);
                 boss = world.SpawnVehicle("behemoth", 1, new Vector2(0f, 20f), MathF.PI);
-                // Tough enough to live through the half minute.
-                boss.HpScale = 4f;
+                // Tough enough to live through the half minute (play-test 6 made bosses about 2.4 times as tough: 4 -> 1.7).
+                boss.HpScale = 1.7f;
                 boss.Hp = boss.MaxHp;
                 for (var i = 0; i < 5; i++) world.SpawnVehicle(i % 2 == 0 ? "main_battle_tank" : "tank_destroyer", 0, new Vector2(-16f + i * 8f, -20f), 0f);
                 return world;

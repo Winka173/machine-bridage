@@ -26,7 +26,7 @@ import mb_air  # noqa: E402
 import mb_artillery  # noqa: E402
 import mb_air2  # noqa: E402
 import mb_air3  # noqa: E402
-import mb_boss_saucer  # noqa: E402
+import mb_orbital  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_bosses2  # noqa: E402
 import mb_munitions  # noqa: E402
@@ -40,6 +40,13 @@ import mb_new_tracked  # noqa: E402
 import mb_new_trucks  # noqa: E402
 import mb_new_wheeled  # noqa: E402
 import mb_p16_arms  # noqa: E402
+import mb_p20_bosses  # noqa: E402
+import mb_p21_models  # noqa: E402
+import mb_pt5_models  # noqa: E402
+import mb_pt8_icarus  # noqa: E402
+import mb_p22_siege  # noqa: E402
+import mb_p22_content  # noqa: E402
+import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
 import mb_phase8  # noqa: E402
@@ -49,6 +56,7 @@ import mb_support  # noqa: E402
 import mb_terrain  # noqa: E402
 import mb_themes  # noqa: E402
 import mb_themes2  # noqa: E402
+import mb_tower_branches  # noqa: E402
 import mb_towers3  # noqa: E402
 import mb_town  # noqa: E402
 import mb_vehicles  # noqa: E402
@@ -70,7 +78,7 @@ def all_builders():
                 **mb_support.BUILDERS, **mb_air3.BUILDERS, **mb_siege.BUILDERS, **mb_themes2.BUILDERS,
                 **mb_mapkit.BUILDERS, **mb_artillery.BUILDERS, **mb_fortress.BUILDERS,
                 **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
-                **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
+                **mb_orbital.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
                 # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
                 **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS, **mb_phase8.BUILDERS,
                 # Prompt 16: Leviathan, its fleet and Lighthouse Bay's props.
@@ -78,7 +86,22 @@ def all_builders():
                 # Prompt 16: new weapon parts on five bosses; they wrap the builders above.
                 **mb_p16_arms.BUILDERS,
                 # Prompt 17's temporary stand-ins for the new units (asset debt).
-                **mb_p17_temp.BUILDERS}
+                **mb_p17_temp.BUILDERS,
+                # Prompt 20 pass 2: the new bosses and the old bosses' new weapons (they wrap the builders above).
+                **mb_p20_bosses.BUILDERS,
+                # Tower branches (C.1): <tower>_a and <tower>_b, each built on its tower's builder.
+                **mb_tower_branches.BUILDERS,
+                # Play-test 4 (DECISIONS 19R): the bunker vehicle's dug-in mode and the look-alike redraws.
+                **mb_p21_models.BUILDERS,
+                # Play-test 5 (DECISIONS 20V): the FPV drone, the dug-in bunker, the AC-130, its transport twin, the stealth fighter.
+                **mb_pt5_models.BUILDERS,
+                **mb_p22_siege.BUILDERS,
+                # Prompt 22 E (DECISIONS 22E): Morrigan, Wolff's stealth fighter.
+                **mb_p22_content.BUILDERS,
+                # DECISIONS 20Y: Ixion and Icarus redesigned from outside references (they win over the builders above).
+                **mb_redesign_20y.BUILDERS,
+                # Play-test 8 (DECISIONS 22R): Icarus redrawn as an orbital weapons platform (wins over 20Y's warship).
+                **mb_pt8_icarus.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

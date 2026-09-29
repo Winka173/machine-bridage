@@ -1,0 +1,63 @@
+Prompt cân bằng (sau prompt 18): tháp, phương tiện, thẻ hỗ trợ
+
+Nhiệm vụ: cân bằng lại theo số liệu của tài liệu thiết kế mới nhất. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Mọi con số dưới đây là điểm khởi đầu: chạy bộ đo giá trị thực chiến (prompt 13) và mô phỏng 5 seed, rồi tự chỉnh để đạt mục tiêu ở từng phần. Giữ đúng thang sát thương theo cỡ nòng (prompt 13) và luật cấp xuyên (prompt 15): khi cần tăng hoặc giảm sức mạnh, ưu tiên chỉnh nhịp bắn, băng đạn, số đạn, máu hoặc giá, không đẩy sát thương mỗi phát ra ngoài thang.
+
+Trước khi làm: chạy xong các phép đo còn treo ở phần 17 của tài liệu (quét 5 seed toàn chiến dịch, bộ phát hiện xe kẹt trên mọi map và chế độ, ngân sách tick), để có số liệu gốc chính xác.
+
+A. THÁP
+1. Nguyên tắc: tháp đứng yên nhưng miễn phí và thả dù lại rẻ, nên mỗi tháp có giá trị thực chiến trong vai trò chính của nó tương đương một xe khoảng 4–5 CP (ô nhỏ), 7–8 CP (ô vừa), 11–12 CP (ô lớn). Tháp ô lớn phải mạnh hơn rõ rệt so với tháp ô nhỏ cùng vai trò. Tháp chuyên một vai trò yếu rõ ở vai trò khác.
+2. Mục tiêu khởi điểm (DPS lên xe nhẹ / xe nặng / máy bay):
+   - Tháp canh (nhỏ): 44 / 10 / 14 → khoảng 80 / 15 / 25.
+   - Lô cốt súng máy (nhỏ): 73 / 19 / 26 → khoảng 100 / 25 / 30; nhánh súng đôi khoảng 120 / 28 / 35; nhánh phun lửa khoảng 150 / 30 / 0.
+   - Tháp phòng không (nhỏ): 117 / 47 / 403 → mặt đất khoảng 45 / 15; lên máy bay khoảng 280. Nhánh cao xạ mạnh hơn với drone; nhánh tên lửa khoảng 220 lên máy bay nhưng tầm khoảng 60 m.
+   - Tháp pháo (vừa): 50 / 35 → khoảng 70 / 85; nhánh nòng dài đổi một phần DPS lấy tầm; nhánh nạp tự động khoảng 80 / 95.
+   - Tháp ATGM (vừa): 44 / 44 → khoảng 40 / 100; nhánh đánh nóc mạnh nhất với xe tăng giáp dày.
+   - Dàn rốc-két (vừa): 58 / 43 → khoảng 110 / 45, cộng sát thương lên công trình và cụm xe.
+   - Trận địa pháo (lớn): 42 / 27 → khoảng 90 / 60, giữ tầm xa và tầm tối thiểu.
+   - Pháo đài hạng nặng (lớn): 89 / 56 → khoảng 130 / 140.
+   - Patriot (lớn): 111 → khoảng 260 lên máy bay; nhánh PAC-3 khoảng 320; nhánh radar tầm xa khoảng 260 với tầm lớn hơn.
+   - Nhà chứa drone (lớn): 13 / 13 → khoảng 60 / 70 (chỉnh số drone mỗi lượt, nhịp phóng, máu drone).
+   - Trạm C-RAM: đo lại tỷ lệ đánh chặn thực tế; chỉnh để chặn được phần lớn một loạt rốc-két cỡ vừa.
+   - Tháp không bắn (Tháp gây nhiễu EW, Răng rồng, Bãi mìn, Trạm tiếp tế CP, Máy phát khiên, các module): đo tác dụng thực tế, không đổi trừ khi thấy vô dụng hoặc bắt buộc phải chọn.
+3. Sở chỉ huy: giữ vai trò trận chốt, nhưng kiểm tra lại mức phòng không 880; không để căn cứ nào cũng an toàn tuyệt đối trước máy bay chỉ nhờ HQ.
+4. Sau khi chỉnh: chạy lại bài đo tỷ lệ chọn tháp (prompt bổ sung ô có cỡ): mỗi tháp chiến đấu được chọn ít nhất khoảng 10% trong các loadout tối ưu; căn cứ phối hợp nhiều loại vẫn tốt nhất trước địch hỗn hợp.
+
+B. PHƯƠNG TIỆN
+1. Tăng (khởi điểm):
+   - La-de PK: giá 9 → 7 CP; khoảng 200 DPS lên máy bay; tăng tỷ lệ đánh chặn drone và tên lửa.
+   - Tên lửa PK: khoảng 210 DPS lên máy bay, hoặc giảm giá 5 → 4 CP.
+   - Pháo bánh lốp: +20% sát thương, +250 máu; kiểm tra thưởng sát thương khi bắn hông và sau có thật sự kích hoạt không.
+   - Xe bộ binh: +25% sát thương, hoặc giảm giá 6 → 5 CP; mục tiêu giá trị khoảng 1,5 lần Xe bọc thép.
+   - Tăng hai nòng: tăng sát thương mỗi loạt để DPS lên xe nặng khoảng 95, và thời gian hạ một xe giáp dày ngắn nhất nhóm xe tăng hạng nặng (theo prompt 17).
+   - Lancet: tăng giá trị lên pháo binh và mục tiêu đứng yên để là lựa chọn tốt nhất trong vai trò săn pháo.
+   - Pháo phản lực nhiệt áp: kiểm tra hệ số nhãn Nhiệt áp lên công trình (giá trị lên công sự hiện chỉ 98, có thể là lỗi); sửa để nó thuộc nhóm phá công sự tốt nhất.
+2. Giảm (khởi điểm):
+   - UAV tấn công: giá 7 → 9 CP, hoặc giảm số tên lửa khi đầy đạn 4 → 3.
+   - Cường kích: bớt 1 quả FAB-250 mỗi lần đầy đạn, hoặc tăng 1 CP; mục tiêu giá trị lên công sự không vượt Tăng công thành tính theo CP.
+   - Bán tải rốc-két: giảm hệ số lên công trình (khoảng ×0,6 so với hiện tại), hoặc tăng giá 3 → 4 CP.
+   - Tăng phun lửa: giá 4 → 5 CP.
+   - Xe bom tự sát: giá 2 → 3 CP.
+3. Máy bay: kéo hai đầu lại gần nhau. Mục tiêu: giá trị của máy bay khi đối phương có phòng không bằng khoảng 30–40% giá trị khi không có (hiện chỉ khoảng 5–10%). Làm bằng cách giảm nhẹ sức mạnh khi không có phòng không (như mục B.2), và giảm nhẹ hiệu quả của Mảnh lên máy bay (hoặc tăng khả năng tự vệ như pháo sáng), rồi đo lại.
+4. Mục tiêu chung: trong cùng vai trò, giá trị thực chiến trên mỗi CP chênh nhau không quá khoảng ±15%, trừ ngoại lệ có chủ ý (ghi lý do).
+
+C. THẺ HỖ TRỢ VÀ BOM
+1. Không kích (thẻ hỗ trợ): 6 quả × 700 → khoảng 6 quả × 400 (bom khoảng 500 kg theo thang), bán kính 4 → 6 m. So lại với Pháo kích và Bom napalm theo giá trị trên mỗi CP.
+2. Giữ sát thương bom trên máy bay như hiện tại (đã đúng thang).
+3. Sửa chữ mô tả cho khớp dữ liệu: Không kích bất ngờ (hiện ghi mười bốn quả, dữ liệu là 10); Bom chùm (hiện ghi bốn mươi bom con, dữ liệu là 30). Chuyển các mô tả này sang dạng tạo tự động từ dữ liệu (theo prompt 13), và thêm vào test bắt mô tả viết tay mâu thuẫn với dữ liệu.
+4. Sửa các key thô đang hiện trong bảng hỗ trợ: support.escort_drop.*, support.supergun_shell, support.leviathan_shell, support.leviathan_cruise_mark.
+
+D. CHẾ ĐỘ VÀ ĐỘ KHÓ (theo phần 2b của tài liệu)
+1. Công thành: người chơi đang thắng 6/6; tăng độ khó để về mục tiêu 60–75%.
+2. Phòng thủ: người chơi mất tuyến ngoài ở mọi trận (mục tiêu 50–70%); giảm áp lực ở giai đoạn đầu, giữ độ khó ở tuyến trong.
+3. Pháo đài tuần: người chơi chưa thắng được từ giai đoạn 1–3; kiểm tra có lỗi không, rồi chỉnh để thắng được ở độ khó Thường.
+4. Tử chiến: kết quả dao động mạnh giữa các seed (2/6 và 8/12); tìm nguyên nhân và làm ổn định.
+5. Độ khó: hiện Dễ 98%, Thường 73%, Khó 60%, Cực khó 29%. Chỉnh cho đều hơn, khởi điểm khoảng Dễ 90%, Thường 70%, Khó 50%, Cực khó 30%.
+
+E. KIỂM TRA
+- Bảng giá trị thực chiến và bảng DPS trước/sau cho mọi xe và tháp; lưu vào docs/.
+- Tháp: tháp ô lớn mạnh hơn tháp ô nhỏ cùng vai trò; mục tiêu ở A.1 và A.2 đạt; tỷ lệ chọn ở A.4 đạt.
+- Phương tiện: mục tiêu ở B.3 và B.4 đạt.
+- Không kích nằm trong khoảng giá trị trên mỗi CP của các thẻ hỗ trợ khác.
+- Mô phỏng 5 seed: toàn bộ chiến dịch, mọi chế độ ở mục D, mọi độ khó; báo cáo so với mục tiêu.
+- Test chữ mô tả khớp dữ liệu; test quét key thô.
+- Cập nhật docs/CHANGELOG.md và tài liệu thiết kế.

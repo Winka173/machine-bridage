@@ -215,9 +215,13 @@ namespace MachineBrigade.Tests
             var events = Run(world, 0.5f);
             // Half the damage of the hits that earned it (one and a half hits' worth: 1 / (2/3)), striking the
             // second from where the first stood (armour facing).
-            var bounced = TestWorlds.Gun.Damage * 0.5f * 1.5f * 1f /* the 120 mm pierces every face of a level-3 hull */;
+            // From behind the first: the second's rear, which the 120 mm overmatches (DECISIONS 20X).
+            var rear = world.Catalog.Damage.Penetration(TestWorlds.Gun.Penetration, second.Armour[ArmorFace.Rear]);
+            var bounced = TestWorlds.Gun.Damage * 0.5f * 1.5f * rear;
             Assert.AreEqual(bounced, second.MaxHp - second.Hp, 1e-2f, "half the earning hits' damage bounces on to the nearest enemy");
-            Assert.AreEqual(TestWorlds.Gun.Damage * 1f, dealt, 1e-2f);
+            // The first takes it in the side, which the 120 mm overmatches too.
+            var side = world.Catalog.Damage.Penetration(TestWorlds.Gun.Penetration, first.Armour[DamageSystem.FaceFrom(first, shooter.Position)]);
+            Assert.AreEqual(TestWorlds.Gun.Damage * side, dealt, 1e-2f);
             Assert.AreEqual(far.MaxHp, far.Hp, "only one bounce, to the nearest");
             Assert.AreEqual(first.MaxHp - dealt, first.Hp, 1e-3f);
             Assert.IsTrue(events.Any(e => e.Kind == SimEventKind.TraitProc && e.DefId == "ricochet_shells"), "the RICOCHET word");

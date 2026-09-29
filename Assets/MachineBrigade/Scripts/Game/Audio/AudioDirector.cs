@@ -35,6 +35,7 @@ namespace MachineBrigade.Game.Audio
         {
             MachineGun, Autocannon, Cannon, HeavyCannon, Howitzer, Rocket, Missile, Flak, Flame,
             ExplosionSmall, ExplosionMedium, ExplosionLarge, ExplosionHuge, Collapse, Debris, Impact, Jet, Whistle,
+            Drone, BeamStart,
         }
 
         /// <summary>One category: its clips and how it is mixed.</summary>
@@ -84,7 +85,13 @@ namespace MachineBrigade.Game.Audio
         private readonly Catalog _catalog;
         private readonly int _playerTeam;
         private readonly Voice[] _voices = new Voice[Voices];
-        private readonly AudioSource _ambient, _rotor, _jetLoop, _ui, _rain, _fire, _drums;
+        private readonly AudioSource _ambient, _rotor, _jetLoop, _ui, _rain, _fire, _drums, _beam;
+
+        /// <summary>
+        /// Test feedback 19P: a laser's held beam is one continuous hum while it burns (a loop), not a machine gun's
+        /// clatter for each of its 0.1 s shots: until when the nearest beam burns, how loud, and where from.
+        /// </summary>
+        private float _beamUntil, _beamLevel, _beamPan;
         private readonly AudioClip[] _thunder, _clicks;
         private readonly List<float> _thunderAt = new();
         private readonly AudioClip _captured, _lost, _siren;
@@ -105,6 +112,9 @@ namespace MachineBrigade.Game.Audio
 
         /// <summary>The lobby's wind against a battle's.</summary>
         private const float LobbyAmbience = 0.45f;
+
+        /// <summary>A thunderclap's level (0.85 before play-test 6, when the storm drowned the music).</summary>
+        internal const float ThunderLevel = 0.55f;
 
         /// <summary>The In action range's shots and blasts against a battle's (the menu music is ducked under them).</summary>
         public const float RangeGain = 0.6f;
@@ -153,6 +163,10 @@ namespace MachineBrigade.Game.Audio
             // Incoming shells whistle down onto where they land: the warning is in the world, where
             // the danger is, not a beep from the interface (Company of Heroes and Men of War do the same).
             Add(Sound.Whistle, "whistle", i => SoundSynth.Whistle(950 + i), 0.5f, 3, 0.22f, 3);
+            // Test feedback 19P: an FPV drone leaves its rack with a buzz of props, not a rocket's roar; a beam
+            // ignites with a rising whine before its hum takes over.
+            Add(Sound.Drone, "drone_buzz", i => SoundSynth.DroneBuzz(970 + i), 0.5f, 4, 0.12f, 2, light: true);
+            Add(Sound.BeamStart, "beam_start", i => SoundSynth.BeamStart(980 + i), 0.6f, 2, 0.3f, 3);
             // Points taken and lost come over the radio: a squelch and two soft notes.
             _captured = Own(SoundSynth.Radio(true));
             _lost = Own(SoundSynth.Radio(false));
@@ -166,7 +180,8 @@ namespace MachineBrigade.Game.Audio
                 _voices[i] = new Voice { Source = source, Filter = filter };
             }
             _ambient = Loop("Wind", "wind_loop", () => SoundSynth.Wind(9));
-            _ambient.volume = _lobby ? 0.16f * LobbyAmbience : 0.16f;
+            // Play-test 6: the wind sits under the music (0.16 before).
+            _ambient.volume = _lobby ? 0.1f * LobbyAmbience : 0.1f;
             _ambient.Play();
             _rotor = Loop("Rotors", "rotor_loop", () => SoundSynth.Rotor(3));
             _rotor.volume = 0f;
@@ -182,6 +197,8 @@ namespace MachineBrigade.Game.Audio
             _thunder = Recorded("thunder") ?? Make(i => SoundSynth.Thunder(40 + i), 2);
             _drums = Loop("War Drums", "drums_loop", () => SoundSynth.WarDrums(21));
             _drums.volume = 0f;
+            _beam = Loop("Laser Beams", "beam_loop", () => SoundSynth.BeamLoop(31));
+            _beam.volume = 0f;
             _ui = NewSource("UI");
             _clicks = Recorded("click") ?? new[] { Own(SoundSynth.Click()) };
             _ui.clip = _clicks[0];
@@ -203,7 +220,7 @@ namespace MachineBrigade.Game.Audio
             foreach (var clip in _thunder) Load(clip);
             foreach (var clip in _clicks) Load(clip);
             Load(_siren);
-            foreach (var source in new[] { _ambient, _rotor, _jetLoop, _rain, _fire, _drums })
+            foreach (var source in new[] { _ambient, _rotor, _jetLoop, _rain, _fire, _drums, _beam })
                 Load(source.clip);
         }
 
@@ -270,12 +287,19 @@ namespace MachineBrigade.Game.Audio
                         var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
                         // Bombs are released silently; the blast is the sound.
                         if (weapon != null && weapon.Projectile == ProjectileKind.Bomb) break;
+                        if (weapon != null && weapon.Beam)
+                        {
+                            Beam(weapon, e.Position);
+                            break;
+                        }
                         Play(WeaponSound(weapon), e.Position, 1f);
                         // Heavy shells on a long flight whistle down onto where they are aimed.
                         if (weapon != null && weapon.MinRange > 0f && weapon.Projectile == ProjectileKind.Shell && e.Value > WhistleLead + 0.2f)
                             Schedule(Sound.Whistle, e.Target, 0.7f, e.Value - WhistleLead);
                         break;
                     case SimEventKind.ProjectileImpact:
+                        // A beam's burn is in its hum: no ping for each of its shots.
+                        if (e.Tier < ExplosionTier.Medium && e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var burnt) && burnt.Beam) break;
                         if (e.Tier >= ExplosionTier.Medium) Play(Blast(e.Tier), e.Position, e.Tier >= ExplosionTier.Huge ? 1f : 0.85f);
                         else Play(Sound.Impact, e.Position, 1f);
                         break;
@@ -306,12 +330,17 @@ namespace MachineBrigade.Game.Audio
                     // Prompt 18 A.3: a boss's big attack begins: the alarm (heard wherever the view is) and the whistle as it lands.
                     case SimEventKind.BigAttack when e.Mount == 0 && _playerTeam >= 0:
                         if (_siren != null) _ui.PlayOneShot(_siren, 0.32f);
+                        MusicDirector.Current?.Alert();
                         Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
                         break;
                     case SimEventKind.FortressAlert when _playerTeam >= 0 && _siren != null:
                         // The fortress's own alarm: heard as far as the fortress is near the view.
                         var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), Focus);
-                        if (alarm < 120f) _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
+                        if (alarm < 120f)
+                        {
+                            _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
+                            MusicDirector.Current?.Alert();
+                        }
                         break;
                     case SimEventKind.StageCleared when _playerTeam >= 0:
                         _ui.PlayOneShot(_captured, 0.6f);
@@ -369,6 +398,13 @@ namespace MachineBrigade.Game.Audio
             if (_jetLoop.volume > 0f && !_jetLoop.isPlaying) _jetLoop.Play();
             else if (_jetLoop.volume <= 0f && _jetLoop.isPlaying) _jetLoop.Stop();
 
+            // A laser's beam hums while it burns, swelling in fast and dying away in a moment after its last shot.
+            var beamTarget = now < _beamUntil ? _beamLevel : 0f;
+            _beam.volume = Mathf.MoveTowards(_beam.volume, beamTarget, Time.unscaledDeltaTime * (beamTarget > _beam.volume ? 6f : 2.5f));
+            _beam.panStereo = _beamPan;
+            if (_beam.volume > 0f && !_beam.isPlaying) _beam.Play();
+            else if (_beam.volume <= 0f && _beam.isPlaying) _beam.Stop();
+
             // Fires burning near the view crackle; each dies down over its last few seconds.
             var fire = 0f;
             for (var i = _fires.Count - 1; i >= 0; i--)
@@ -399,7 +435,7 @@ namespace MachineBrigade.Game.Audio
             {
                 if (now < _thunderAt[i]) continue;
                 _thunderAt.RemoveAt(i);
-                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], 0.85f);
+                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], ThunderLevel);
             }
             for (var i = _delayed.Count - 1; i >= 0; i--)
             {
@@ -431,6 +467,27 @@ namespace MachineBrigade.Game.Audio
                 if (clip != null) Object.Destroy(clip);
         }
 
+        /// <summary>
+        /// A laser's shot: it keeps the beam's hum going for a little over the gap to its next shot, as loud as the
+        /// nearest beam burning; a beam that starts after a pause ignites with a whine first.
+        /// </summary>
+        private void Beam(WeaponDef weapon, System.Numerics.Vector2 at)
+        {
+            var now = Time.unscaledTime;
+            var world = new Vector3(at.X, 0f, at.Y);
+            var attenuation = Mathf.Clamp01(1f - Vector3.Distance(world, Focus) / Reach(10f));
+            if (attenuation <= 0.02f) return;
+            // Point-defence lasers are thinner beams than the tank's focused one.
+            var level = (weapon.Targets == TargetLayers.Air ? 0.4f : 0.55f) * attenuation * attenuation * (_ranging ? RangeGain : 1f);
+            if (now >= _beamUntil + 0.2f) Play(Sound.BeamStart, at, weapon.Targets == TargetLayers.Air ? 0.7f : 1f);
+            if (now >= _beamUntil || level >= _beamLevel)
+            {
+                _beamLevel = level;
+                _beamPan = Mathf.Clamp((View.WorldToViewportPoint(world).x - 0.5f) * 1.4f, -0.9f, 0.9f);
+            }
+            _beamUntil = Mathf.Max(_beamUntil, now + Mathf.Max(0.12f, weapon.Cooldown) * 1.8f + 0.08f);
+        }
+
         private static Sound Blast(ExplosionTier tier) =>
             tier >= ExplosionTier.Huge ? Sound.ExplosionHuge : tier >= ExplosionTier.Large ? Sound.ExplosionLarge : Sound.ExplosionMedium;
 
@@ -442,8 +499,10 @@ namespace MachineBrigade.Game.Audio
                 case ProjectileKind.Missile:
                     return Sound.Missile;
                 case ProjectileKind.Rocket:
-                case ProjectileKind.Drone:
                     return Sound.Rocket;
+                case ProjectileKind.Drone:
+                    // A quadcopter buzzes off; a winged drone (a Lancet, a Shahed) is thrown off its rail by a booster.
+                    return weapon.ProjectileModel is null or "fpv_drone" ? Sound.Drone : Sound.Rocket;
                 case ProjectileKind.Flame:
                     return Sound.Flame;
                 case ProjectileKind.Bullet:

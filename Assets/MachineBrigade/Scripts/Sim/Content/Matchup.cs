@@ -12,7 +12,10 @@ namespace MachineBrigade.Sim.Content
         None,
     }
 
-    /// <summary>Prompt 15 E.2: the columns of a weapon's effect table: the five armour levels on the ground, then aircraft, then structures.</summary>
+    /// <summary>
+    /// Prompt 15 E.2: the columns of a weapon's effect table: the armour levels on the ground (0-4, and 5, a boss's plate
+    /// since play-test 6, DECISIONS 21G), then aircraft, then structures.
+    /// </summary>
     public enum EffectColumn
     {
         Armour0,
@@ -20,6 +23,7 @@ namespace MachineBrigade.Sim.Content
         Armour2,
         Armour3,
         Armour4,
+        Armour5,
         Air,
         Structure,
     }
@@ -94,7 +98,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>From this multiplier (up to <see cref="GoodAt"/>) poorly (~); under it, not at all (✕).</summary>
         public const float PoorAt = 0.12f;
 
-        public static int ColumnCount => 7;
+        public static int ColumnCount => 8;
 
         /// <summary>A unit's armour on each face.</summary>
         public static ArmourLevels ArmourOf(VehicleDef def) => def.Armour;
@@ -143,7 +147,7 @@ namespace MachineBrigade.Sim.Content
         {
             if (weapon.Damage <= 0f || !weapon.CanTarget(target.Flying)) return 0f;
             var face = fromAbove && !target.Flying ? ArmorFace.Top : FaceStruck(weapon);
-            return table.Effective(weapon, target.Armour[face], target.Kind);
+            return table.Effective(weapon, target.Armour[face], target.Kind, face == ArmorFace.Top);
         }
 
         /// <summary>
@@ -154,6 +158,8 @@ namespace MachineBrigade.Sim.Content
         public static float ClassEffect(DamageTable table, WeaponDef weapon, ArmorClass armor)
         {
             if (weapon.Damage <= 0f || !weapon.CanTarget(armor == ArmorClass.Air)) return 0f;
+            // A dual-purpose gun's air-burst round against aircraft (the tower-branch rework).
+            if (armor == ArmorClass.Air && weapon.AirRound is { } air) weapon = air;
             var levels = armor == ArmorClass.Structure ? ArmourLevels.Uniform(StructureLevel) : ArmourLevels.OfClass(armor);
             var kind = armor switch { ArmorClass.Air => TargetKind.Air, ArmorClass.Structure => TargetKind.Structure, _ => TargetKind.Ground };
             var face = armor is ArmorClass.Air or ArmorClass.Structure ? ArmorFace.Front : FaceStruck(weapon);
@@ -188,7 +194,7 @@ namespace MachineBrigade.Sim.Content
             // Aircraft are hit by what can shoot upwards: guns, flak, anti-air missiles, beams; roof hits do not apply.
             if (target.Flying && (top || type is DamageType.HighExplosive or DamageType.Fire or DamageType.ShapedCharge)) return 0f;
             var armour = target.Armour[top ? ArmorFace.Top : ArmorFace.Front];
-            return table.Effective(type, pen, armour, target.Kind);
+            return table.Effective(type, pen, armour, target.Kind, top);
         }
 
         /// <summary>Prompt 15 E.2: a unit's strong / weak summary, from its armour and its weapons (main first).</summary>

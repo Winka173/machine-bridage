@@ -102,6 +102,10 @@ namespace MachineBrigade.Sim.Modes
     /// </summary>
     public sealed class BaseSystem
     {
+        /// <summary>Prompt 20 L.2: a layered base's yard (the hardpoints' place) and the tower an AI keeps in it.</summary>
+        internal const string YardPlace = "yard";
+        internal const string YardTower = "rocket_turret";
+
         private readonly SimWorld _world;
         private readonly Dictionary<int, TeamBase> _bases = new();
         private readonly List<HardpointState> _scratch = new();
@@ -239,6 +243,7 @@ namespace MachineBrigade.Sim.Modes
             var seen = new int[3];
             var forward = new int[3];
             var utility = 0;
+            var yard = 0;
             for (var i = 0; i < slots.Count; i++)
             {
                 var def = slots[i].Hardpoint;
@@ -263,7 +268,13 @@ namespace MachineBrigade.Sim.Modes
                 else if (exact)
                     id = fitted.TowerForFortress(def.Class, forward[(int)def.Class]++);
                 else
+                {
                     id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
+                    // Prompt 20 L.2: an AI's layered base keeps rocket batteries in its yard (every other medium hardpoint there):
+                    // their rockets arc over the outer wall onto the attackers at its foot, where the wall's own guns cannot look.
+                    if (layered && def.Place == YardPlace && def.Kind == HardpointKind.Tower && def.Class == SlotSize.Medium && yard++ % 2 == 0 &&
+                        catalog.Vehicles.ContainsKey(YardTower)) id = YardTower;
+                }
                 var state = new HardpointState(def, i)
                 {
                     Ring = ring, HealthScale = ByRing(health, ring), DamageScale = ByRing(damage, ring),

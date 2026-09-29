@@ -39,6 +39,10 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         internal static Action<Vehicle?, Vehicle, float, HitKind, WeaponDef?>? DamageLog;
 
+        /// <summary>The last hit's penetration multiplier and the face it struck (prompt 21: the Sandbox's hit report).</summary>
+        private float _lastPen = 1f;
+        private ArmorFace _lastFace;
+
         public void ResolveImpact(Projectile p)
         {
             var weapon = p.Weapon;
@@ -68,7 +72,8 @@ namespace MachineBrigade.Sim.Combat
                 if (lured) at = lure;
                 else
                 {
-                    if (weapon.Guided && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
+                    // Play-test 8 A: a steered bomb (the SDB, the JDAM) glides onto its target too.
+                    if ((weapon.Guided || weapon.GuidedBomb) && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
                     if (decoyed) at = target.Position + p.Miss;
                 }
                 // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.
@@ -88,6 +93,15 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
 
+            // Play-test 6 (DECISIONS 21F): a round fired straight at a big target (a boss, a big ship, a large aircraft or
+            // structure) bursts where it meets its hull or the struck part's edge, not in its middle; one that comes down
+            // from above (lobbed, dropped, a diving drone or a top attack) still bursts on the roof. The damage and the face
+            // struck are as before: the face is the one turned to the shooter, on whose line the contact point lies.
+            if (hit.IsValid && !weapon.Indirect && !weapon.TopAttack && _world.TryGetVehicle(hit, out var struck))
+                at = p.Part >= 0 && p.Part < struck.Def.Parts.Count
+                    ? HullContact.On(struck.PartPosition(p.Part), 0f, 0f, struck.Def.Parts[p.Part].Radius, p.Origin)
+                    : HullContact.On(struck.Def, struck.Position, struck.Heading, p.Origin);
+
             if (weapon.Pierce && !p.TargetFlying && !p.Bounce) PierceLine(p, at, hit);
 
             // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
@@ -104,9 +118,9 @@ namespace MachineBrigade.Sim.Combat
         }
 
         /// <summary>
-        /// Prompt 15 A.2: the face a direct-fire round from <paramref name="from"/> strikes (within 50 degrees of
-        /// the nose the front, of the tail the rear, else the side). Aircraft are the same all round and count as
-        /// the front; a fixed defence's faces follow its heading (a bunker's embrasured front).
+        /// Prompt 15 A.2: the face a direct-fire round from <paramref name="from"/> strikes (within 40 degrees of
+        /// the nose the front, DECISIONS 20X; within 50 of the tail the rear; else the side). Aircraft are the same
+        /// all round and count as the front; a fixed defence's faces follow its heading (a bunker's embrasured front).
         /// </summary>
         internal static ArmorFace FaceFrom(Vehicle target, Vector2 from) =>
             target.Flying ? ArmorFace.Front : Armour.FaceFrom(target.Position, target.Heading, from);
@@ -154,16 +168,20 @@ namespace MachineBrigade.Sim.Combat
             // A blast's fragments (a round's splash, a called strike, a cook-off) pierce as a heavy machine gun against vehicles.
             if (hit.Kind is HitKind.Splash or HitKind.Strike || (hit.HasBlast && weapon == null)) pen = Armour.SplashPenetration(pen, kind);
             float armour;
+            var face = ArmorFace.Front;
             if (target is Vehicle v)
             {
                 var part = v.HasParts && hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !v.IsPartBroken(shot.Part) ? shot.Part : -1;
-                armour = part >= 0 ? v.Def.Parts[part].ArmourOn(v.Def) : v.ArmourOn(FaceOf(v, hit));
+                _lastFace = face = part >= 0 ? ArmorFace.Front : FaceOf(v, hit);
+                armour = part >= 0 ? v.Def.Parts[part].ArmourOn(v.Def) : v.ArmourOn(_lastFace);
             }
             else armour = target.Armour[ArmorFace.Front];
             var typeMult = weapon != null ? table.TypeOf(weapon, kind)
                 : hit.Thermo && kind == TargetKind.Structure && type == DamageType.HighExplosive ? MathF.Max(table.ThermobaricStructure, table.Type(type, kind))
                 : table.Type(type, kind);
-            return (known ? table.Penetration(pen, armour) : 1f) * typeMult;
+            // DECISIONS 20X: a round overmatches a face it meets side on, not the roof and not an aircraft.
+            _lastPen = known ? table.Penetration(pen, armour, DamageTable.Overmatches(kind, face == ArmorFace.Top)) : 1f;
+            return _lastPen * typeMult;
         }
 
         /// <summary>
@@ -173,10 +191,12 @@ namespace MachineBrigade.Sim.Combat
         internal float Estimate(WeaponDef weapon, Vehicle shooter, IDamageable target)
         {
             var table = _world.Catalog.Damage;
-            var armour = target is Vehicle v
-                ? v.ArmourOn(v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) || FromAbove(shooter) ? ArmorFace.Top : FaceFrom(v, shooter.Position))
-                : target.Armour[ArmorFace.Front];
-            return table.Penetration(weapon.Penetration + shooter.PenetrationUp, armour) * table.TypeOf(weapon, target.Kind);
+            var face = target is Vehicle v
+                ? v.Flying ? ArmorFace.Front : Armour.StrikesTop(weapon) || FromAbove(shooter) ? ArmorFace.Top : FaceFrom(v, shooter.Position)
+                : ArmorFace.Front;
+            var armour = target is Vehicle tv ? tv.ArmourOn(face) : target.Armour[ArmorFace.Front];
+            return table.Penetration(weapon.Penetration + shooter.PenetrationUp, armour, DamageTable.Overmatches(target.Kind, face == ArmorFace.Top)) *
+                   table.TypeOf(weapon, target.Kind);
         }
 
         /// <summary>Whether a hit is thermobaric (its weapon, or a thermobaric strike).</summary>
@@ -250,12 +270,51 @@ namespace MachineBrigade.Sim.Combat
         /// An active protection system of the target's side shoots the round down short of its
         /// mark: missiles, drones and direct-fire rockets only (not shells, bullets, bombs or
         /// artillery rockets), aimed within the system's reach, while it has an interceptor.
+        /// Prompt 20 L.1: interceptor missiles that take no direct fire (the Iron Dome) take only
+        /// rounds lobbed from afar: drones, artillery rockets, long-range missiles and shells.
         /// </summary>
+        /// <summary>A cruise or ballistic missile (its family, or a missile fired from a minimum range).</summary>
+        internal static bool IsHeavyMissile(WeaponDef weapon) =>
+            weapon.Family is "cruise" or "ballistic" || (weapon.Projectile == ProjectileKind.Missile && weapon.MinRange > 0f);
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20W): the rounds a gun point defence (<see cref="ApsDef.Burst"/>) may take, by the same
+        /// rules as <see cref="TryIntercept"/>; <paramref name="shell"/>: only its share of them (the caller rolls).
+        /// </summary>
+        internal static bool GunTakes(ApsDef aps, WeaponDef weapon, out bool shell)
+        {
+            var kind = weapon.Projectile;
+            shell = false;
+            if (weapon.Beam || weapon.DamageType == DamageType.Energy) return false;
+            var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
+            var rocket = kind == ProjectileKind.Rocket;
+            var lobbedShell = kind == ProjectileKind.Shell && weapon.Indirect;
+            var heavy = IsHeavyMissile(weapon);
+            if (!direct && !rocket && !lobbedShell && !heavy) return false;
+            var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            if (aps.Heavy) return heavy;
+            if (!direct && rocket && !aps.Rockets) return false;
+            if (!aps.Direct && direct && !lobbed) return false;
+            if (!direct && lobbedShell)
+            {
+                if (aps.Shells <= 0f) return false;
+                shell = true;
+            }
+            return true;
+        }
+
         private bool TryIntercept(Projectile p)
         {
             var weapon = p.Weapon;
             var kind = weapon.Projectile;
-            if (p.TargetFlying) return false;
+            // Prompt 19 C.1: in the air only a tiered craft's own point defence guards it (its lasers take the SAMs and
+            // fighters' missiles flying at it); nothing else intercepts a round aimed at an aircraft.
+            var guarded = EntityId.None;
+            if (p.TargetFlying)
+            {
+                if (!_world.TryGetVehicle(p.Target, out var craft) || craft.Def.Tiers == null || craft.Aps == null) return false;
+                guarded = craft.Id;
+            }
             // Every system takes missiles, drones and direct-fire rockets; a point-defence laser
             // artillery rockets too, a C-RAM a share of the shells.
             // Prompt 15 C: never a beam (energy hits at once) nor a bullet.
@@ -263,28 +322,48 @@ namespace MachineBrigade.Sim.Combat
             var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
             var rocket = kind == ProjectileKind.Rocket;
             var shell = kind == ProjectileKind.Shell && weapon.Indirect;
-            if (!direct && !rocket && !shell) return false;
+            if (!direct && !rocket && !shell && !IsHeavyMissile(weapon)) return false;
+            // Lobbed from afar: a drone, or a rocket or missile with a minimum range (artillery, a ballistic missile).
+            var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            // A heavy missile (cruise or ballistic): the only thing a PAC-3's interceptors take (DECISIONS 19T).
+            var heavy = IsHeavyMissile(weapon);
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
             foreach (var v in _world.VehicleList)
             {
                 var aps = v.Aps;
                 // A boss's protection system stops with its parts (prompt 16: the Behemoth's, the Tempest's laser, the hovercraft's CIWS).
                 if (aps == null || !v.IsAlive || v.Team == p.OwnerTeam || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
+                // Play-test 5: a gun point defence (the C-RAM) takes rounds in flight with a burst, never as they land.
+                if (aps.Burst > 0f) continue;
+                if (guarded.IsValid && v.Id != guarded) continue;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
-                if (!direct && rocket && !aps.Rockets) continue;
-                if (!direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
+                if (aps.Heavy && !heavy) continue;
+                if (!aps.Heavy && !direct && rocket && !aps.Rockets) continue;
+                if (!aps.Heavy && !aps.Direct && direct && !lobbed) continue;
+                if (!aps.Heavy && !direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
                 // Prompt 16: a ship's CIWS with its fire-control radar broken misses now and then.
                 if (v.ApsMiss > 0f && _world.Random.NextDouble() < v.ApsMiss)
                 {
                     v.ApsCharges--;
+                    if (aps.Reload > 0f) v.ApsReload = 0f;
                     continue;
                 }
                 v.ApsCharges--;
+                // A launcher reloaded whole starts its reload again at every launch.
+                if (aps.Reload > 0f) v.ApsReload = 0f;
                 v.ApsLeft = !v.ApsLeft;
-                // The interceptor meets the round a few metres out, on the side it came from.
+                // The interceptor meets the round a few metres out, on the side it came from; an
+                // interceptor missile flies out and meets it short of its mark.
                 var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;
+                if (aps.Missiles)
+                {
+                    var back = from - mark;
+                    var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;
+                    _world.Emit(SimEvent.Intercept(v, weapon, meet, v.ApsLeft));
+                    return true;
+                }
                 var toward = from - v.Position;
                 toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
                 _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));
@@ -341,12 +420,24 @@ namespace MachineBrigade.Sim.Combat
             if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return 0f;
             var raw = hit.Kind is HitKind.Burn or HitKind.Redirect;
             var damage = raw ? amount : amount * HitMultiplier(target, type, hit);
-            if (!(damage > 0f)) return 0f;
+            // Prompt 21 E.2 / F.4: the Sandbox's hit report (null in play: nothing is worked out for it).
+            var report = _world.HitLog != null && target is Vehicle;
+            var penShare = raw ? 1f : _lastPen;
+            var face = _lastFace;
+            if (!(damage > 0f))
+            {
+                if (report) _world.ReportHit((Vehicle)target, 0f, type, face, penShare, hit);
+                return 0f;
+            }
             // Prompt 15 C.6: a beam through smoke (round the target or the shooter) is mostly scattered.
             if (!raw && type == DamageType.Energy && (_world.Strikes.InSmoke(target.Position) ||
                 (hit.Attacker != null && _world.Strikes.InSmoke(hit.Attacker.Position)))) damage *= 1f - SmokeEnergyCut;
             if (hit.Attacker != null && !raw) damage *= _world.Gear.Outgoing(hit.Attacker, target, hit);
+            // Prompt 22 F: the attacking side's commander (Titan's wounded, Captain Kerr's exposed targets).
+            if (!raw) damage *= _world.CommanderOutgoing(hit.Attacker, hit.Team, target);
             if (hit.Attacker != null && hit.Weapon != null && !raw) damage *= BonusFor(hit.Weapon, hit.Attacker, target, _world.Time);
+            // Play-test 6 (DECISIONS 21G): a boss's air defence hits aircraft harder (its rank's airDamage).
+            if (!raw && hit.Attacker is { Def: { RankDef: { } firing } } && target is Vehicle { Flying: true }) damage *= firing.AirDamage;
             // A gun pit down in its hole takes much less (a thermobaric blast reaches half into it).
             if (target is Vehicle { Lowered: true } pit && pit.Def.Hidden is { } hide) damage *= 1f - hide.Cut * (Thermobaric(hit) ? 0.5f : 1f);
 
@@ -355,6 +446,7 @@ namespace MachineBrigade.Sim.Combat
                 case Vehicle vehicle:
                 {
                     var dealt = HitVehicle(vehicle, damage, type, hit);
+                    if (report) _world.ReportHit(vehicle, dealt, type, face, penShare, hit);
                     // Prompt 15 C.4: fire burns on: a share of what got through, over a few seconds (fires add up).
                     if (type == DamageType.Fire && dealt > 0f && vehicle.IsAlive && hit.Kind is HitKind.Direct or HitKind.Splash or HitKind.Strike)
                         _world.Status.Burn(vehicle, dealt * FireAfterburn / FireBurnSeconds, FireBurnSeconds, hit.Team, hit.Attacker?.Id ?? default, stack: true);
@@ -403,6 +495,8 @@ namespace MachineBrigade.Sim.Combat
             if (vehicle.ExposedUntil > now) damage *= vehicle.Def.Burrow?.ExposedTaken ?? 1f;
             // Prompt 18: a big attack that exposes it (the Spectre low and slow, the carrier's bomb doors open).
             damage *= vehicle.BigTaken;
+            // Play-test 6 (DECISIONS 21G): a boss takes a share of strikes and bombs, and only so much of them in a window.
+            if (vehicle.Def.RankDef is { } rank && StrikeLike(hit)) damage = CapStrike(vehicle, damage, rank, now);
             if (vehicle.HasParts)
             {
                 var part = hit.Kind == HitKind.Direct && hit.Projectile is { Part: >= 0 } shot && !vehicle.IsPartBroken(shot.Part) ? shot.Part : -1;
@@ -431,10 +525,33 @@ namespace MachineBrigade.Sim.Combat
             DamageLog?.Invoke(hit.Attacker, vehicle, damage, hit.Kind, hit.Weapon);
             if (phaseReached) _world.Abilities.BeginPhase(vehicle);
             // A firing-range target takes the hit (its bar shows it) but never goes down.
-            if (vehicle.Dummy || vehicle.Sparring) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
+            if (vehicle.Unkillable) vehicle.Hp = MathF.Max(vehicle.Hp, vehicle.MaxHp * 0.25f);
             _world.Emit(SimEvent.Damage(vehicle, damage));
             if (vehicle.Gear != null) _world.Gear.AfterDamaged(vehicle, type, hit);
             if (!vehicle.IsAlive) OnVehicleDestroyed(vehicle, hit);
+            return damage;
+        }
+
+        /// <summary>Play-test 6: a called strike, or a bomb (its blast too), or a strike's bomblet.</summary>
+        internal static bool StrikeLike(in HitInfo hit) =>
+            hit.Kind == HitKind.Strike || hit.Weapon is { Projectile: ProjectileKind.Bomb } || (hit.Kind == HitKind.Splash && hit.Weapon == null && hit.Attacker == null);
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): a boss's rank takes its share of a strike or a bomb; within its window at most its
+        /// cap of its health goes that way, and past the cap only a fifth (by default) gets through.
+        /// </summary>
+        internal static float CapStrike(Vehicle boss, float damage, BossRankDef rank, double now)
+        {
+            damage *= rank.StrikeTaken;
+            if (rank.StrikeCap <= 0f || !(damage > 0f)) return damage;
+            if (now - boss.StrikeWindowAt > rank.StrikeWindow)
+            {
+                boss.StrikeWindowAt = now;
+                boss.StrikeWindowTaken = 0f;
+            }
+            var room = MathF.Max(0f, rank.StrikeCap * boss.MaxHp - boss.StrikeWindowTaken);
+            if (damage > room) damage = room + (damage - room) * rank.StrikeOver;
+            boss.StrikeWindowTaken += damage;
             return damage;
         }
 
@@ -556,9 +673,11 @@ namespace MachineBrigade.Sim.Combat
                 _world.TryGetVehicle(vehicle.LastAttacker, out var last)) killer = last;
             if (killer != null && killer.Team == vehicle.Team) killer = null;
             _world.Emit(SimEvent.VehicleLost(vehicle));
+            // Prompt 19 E.7: a tiered boss's last radio line.
+            if (vehicle.Def.Tiers?.RadioFor("down") is { } down) _world.Emit(SimEvent.RadioMessage(down, vehicle.Team));
             _world.Economy.OnVehicleDestroyed(vehicle, killer);
             if (vehicle.Def.DeathExplosion != null && !vehicle.Detonated) Schedule(vehicle.Position, vehicle.Def.DeathExplosion, vehicle.Id);
-            if (vehicle.Def.Flying) ScheduleCrash(vehicle, speed);
+            if (vehicle.Flying) ScheduleCrash(vehicle, speed);
             _world.Gear.OnDeath(vehicle, killer);
         }
 
@@ -571,7 +690,7 @@ namespace MachineBrigade.Sim.Combat
         private void ScheduleCrash(Vehicle vehicle, float speed)
         {
             var def = vehicle.Def;
-            var fall = MathF.Sqrt(2f * def.Altitude / (def.FixedWing ? 11f : 7f));
+            var fall = MathF.Sqrt(2f * MathF.Max(1f, vehicle.Height) / (def.FixedWing ? 11f : 7f));
             var fade = def.FixedWing ? 0.35f : 0.5f;
             var glide = MathF.Min(fall, 1f / fade);
             var carry = 0.8f * speed * (glide - 0.5f * fade * glide * glide);

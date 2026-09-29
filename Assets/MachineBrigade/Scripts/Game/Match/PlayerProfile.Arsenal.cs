@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 2;
+        internal const int RosterVersion = 5;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -91,6 +91,30 @@ namespace MachineBrigade.Game.Match
             }
             // Version 2 (prompt 17 D.4): the hidden gun pit's slots and equipment go to the gun turret.
             MergeTower(d, CardMerges.GunPit, CardMerges.GunTurret);
+            // Version 3 (prompt 20 L.1): a retired branch's choice is dropped; the tower fights as itself and its next choice is free.
+            foreach (var gone in CardMerges.RetiredBranches)
+            {
+                var k = d.branchChoices.IndexOf(gone);
+                if (k < 0 || k >= d.branchTowers.Count) continue;
+                d.branchChoices.RemoveAt(k);
+                d.branchTowers.RemoveAt(k);
+            }
+            // Version 4 (the tower-branch rework, DECISIONS 19T): a remade branch's choice moves to the nearest new one, and
+            // every reworked tower with a choice gets one free change and a line in the "what's new" notice.
+            if (d.rosterVersion < 4)
+            {
+                for (var k = 0; k < d.branchChoices.Count; k++)
+                    if (d.branchChoices[k] != null && CardMerges.RenamedBranches.TryGetValue(d.branchChoices[k], out var to)) d.branchChoices[k] = to;
+                d.freeBranchSwaps ??= new List<string>();
+                d.branchNews ??= new List<string>();
+                for (var k = 0; k < d.branchTowers.Count && k < d.branchChoices.Count; k++)
+                {
+                    var tower = d.branchTowers[k];
+                    if (string.IsNullOrEmpty(d.branchChoices[k]) || Array.IndexOf(CardMerges.ReworkedBranchTowers, tower) < 0) continue;
+                    if (!d.freeBranchSwaps.Contains(tower)) d.freeBranchSwaps.Add(tower);
+                    if (!d.branchNews.Contains(tower)) d.branchNews.Add(tower);
+                }
+            }
             d.rosterVersion = RosterVersion;
         }
 
@@ -530,7 +554,21 @@ namespace MachineBrigade.Game.Match
         /// <summary>Coins to change a tower's branch once one was chosen (the first choice is free).</summary>
         public const int BranchSwapCoins = 800;
 
-        /// <summary>Chooses a tower's branch (rank 7 and up): free the first time, <see cref="BranchSwapCoins"/> to change it.</summary>
+        /// <summary>The tower's next branch change is free (the tower-branch rework's one free change, DECISIONS 19T).</summary>
+        public static bool FreeBranchSwap(string towerId) => A.freeBranchSwaps != null && A.freeBranchSwaps.Contains(towerId);
+
+        /// <summary>The reworked towers the player has not been told about yet, and marks them told.</summary>
+        public static List<string> TakeBranchNews()
+        {
+            var d = A;
+            if (d.branchNews == null || d.branchNews.Count == 0) return new List<string>();
+            var news = new List<string>(d.branchNews);
+            d.branchNews.Clear();
+            Save();
+            return news;
+        }
+
+        /// <summary>Chooses a tower's branch (rank 7 and up): free the first time (and once after the rework), <see cref="BranchSwapCoins"/> to change it.</summary>
         public static bool TryChooseBranch(string towerId, string branchId)
         {
             if (Rank(towerId) < Sim.Modes.TowerCards.BranchRank) return false;
@@ -539,7 +577,9 @@ namespace MachineBrigade.Game.Match
             var d = A;
             var i = d.branchTowers.IndexOf(towerId);
             if (i >= 0 && d.branchChoices[i] == branchId) return true;
-            if (i >= 0 && !TrySpend(BranchSwapCoins)) return false;
+            var free = i >= 0 && FreeBranchSwap(towerId);
+            if (i >= 0 && !free && !TrySpend(BranchSwapCoins)) return false;
+            if (free) d.freeBranchSwaps.Remove(towerId);
             // One reference for both lists: A re-checks them between reads.
             if (i < 0)
             {

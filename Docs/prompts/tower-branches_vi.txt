@@ -1,0 +1,94 @@
+Prompt: Làm lại nhánh hạng 7 của tháp và thiết kế lại đồ họa tháp
+
+Nhiệm vụ: làm lại các nhánh hạng 7 của tháp để hai nhánh của mỗi tháp khác nhau thật sự về vai trò hoặc cơ chế (không chỉ đổi con số), và thiết kế lại đồ họa (vẽ lại model khi cần) để mỗi nhánh và mỗi mốc hạng nhìn khác biệt rõ trên điện thoại. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy bộ đo giá trị thực chiến (prompt 13) và mô phỏng 5 seed, rồi tự chỉnh.
+
+Phụ thuộc: chạy sau prompt cân bằng tháp và phương tiện (sau prompt 18). Giữ thang sát thương theo cỡ nòng (prompt 13), cấp giáp, cấp xuyên và loại sát thương (prompt 15), hệ đạn và nạp đạn (prompt 13), ô có cỡ (prompt bổ sung), màn Căn cứ (prompt 14). Nếu prompt 20 đã chạy, dùng tên và nội dung của prompt 20 cho Trạm C-RAM (nhánh Vòm Sắt); nếu chưa, làm theo mục B.9 của prompt này.
+
+A. LUẬT CHUNG CHO NHÁNH
+1. Hai nhánh của mỗi tháp phải khác nhau ở ít nhất một trong các điểm: loại mục tiêu (mặt đất, trên không, tên lửa và đạn bay, công trình), dải tầm bắn (gần, trung, xa), hoặc một cơ chế riêng. Đổi con số (tầm, nhịp bắn, máu) chỉ được là phần phụ đi kèm.
+2. Mỗi nhánh có một tình huống rõ ràng mà nó là lựa chọn tốt hơn nhánh kia; ghi tình huống đó trong mục Hành vi và tab Hướng dẫn của tháp.
+3. Không nhánh nào tốt hơn nhánh kia trong mọi tình huống. Đo bằng bộ đo giá trị thực chiến: mỗi nhánh thắng nhánh kia ở ít nhất một nhóm mục tiêu hoặc kịch bản.
+4. Sát thương, cấp xuyên, loại sát thương, số đạn và cách nạp của mọi vũ khí mới theo thang và luật đã có.
+5. AI (phe ta khi Tự xếp căn cứ, và phe địch) chọn nhánh theo loadout và theo quân của đối phương; tướng địch có ưu tiên nhánh theo cá tính.
+
+B. NHÁNH TỪNG THÁP
+Giữ nhánh đang ổn (chỉ làm lại đồ họa theo phần C); làm lại nhánh chỉ đổi con số.
+
+Giữ cơ chế, làm lại đồ họa:
+1. Tháp canh: A Quan sát (nhìn xa hơn, tăng tầm cho tháp gần) · B Ổ súng (pháo 25 mm thay súng máy).
+2. Lô cốt súng máy: A Súng máy đôi · B Lô cốt phun lửa.
+3. Tháp phòng không: A Cao xạ 4 nòng · B Trạm tên lửa (tầm khoảng 60 m theo prompt cân bằng).
+4. Tháp gây nhiễu EW: A Gây nhiễu drone · B Đánh lừa radar tìm pháo.
+5. Răng rồng: A Chông sắt · B Rào thép gai.
+6. Bãi mìn: A Chống tăng · B Rải diện rộng.
+7. Tháp ATGM: A Đánh nóc · B Đa năng (bắn cả trực thăng và máy bay).
+8. Nhà chứa drone: A Lancet · B Bầy đàn.
+
+Làm lại cơ chế:
+9. Trạm C-RAM (nếu prompt 20 chưa làm): A C-RAM tầm gần (súng đánh chặn bắn nhanh, như hiện tại, số quả đánh chặn cùng lúc theo nhánh Centurion cũ) · B Vòm Sắt (tên lửa đánh chặn tầm khoảng 60 m, ít phát hơn, có băng và thời gian nạp; chặn rốc-két, tên lửa, đạn pháo, drone; không chặn đạn bắn thẳng và Năng lượng). Bỏ nhánh "Săn máy bay".
+10. Tháp pháo:
+    - A Pháo bắn tỉa 120 mm: nòng dài, tầm xa hơn, mỗi phát rất mạnh, bắn chậm; cấp xuyên cao; chuyên hạ xe tăng. Không bắn máy bay.
+    - B Pháo tự động 57 mm: bắn loạt nhanh, mạnh với xe nhẹ, bắn được trực thăng, máy bay và drone; cấp xuyên thấp hơn; loại sát thương Mảnh cho đạn nổ trên không khi bắn mục tiêu bay.
+11. Dàn rốc-két:
+    - A Rốc-két chùm: như hiện tại, phủ vùng, mạnh với cụm quân.
+    - B Rốc-két dẫn đường tầm xa (kiểu GMLRS), thay cho nhánh Nhiệt áp: ít quả, tầm khoảng 90 m, chính xác, mạnh với pháo binh và công trình, yếu với bầy xe nhỏ.
+12. Trận địa pháo:
+    - A Lựu pháo phản pháo: tự ưu tiên bắn pháo binh địch vừa khai hỏa trong tầm, làm lộ chúng vài giây; tầm và tầm tối thiểu như hiện tại.
+    - B Cối hạng nặng 240 mm: đường đạn cầu vồng, tầm ngắn hơn, tầm tối thiểu nhỏ, nổ lan rất lớn, mạnh với công trình; bắn được qua tường vào sân trong và vào sau vật che.
+13. Pháo đài hạng nặng:
+    - A Pháo bờ biển tầm xa: giữ như hiện tại (pháo 155 mm tầm khoảng 72 m, mở khi đánh chìm Leviathan).
+    - B Pháo đài thép: thêm máu như hiện tại, và thêm 2 tháp súng máy nhỏ xoay 360° gắn quanh thân, tự đánh xe nhẹ và drone áp sát từ mọi hướng.
+14. Patriot:
+    - A PAC-3, đánh chặn tên lửa: chuyên bắn hạ tên lửa hành trình, tên lửa đạn đạo và tên lửa từ đòn lớn của boss (Leviathan, Nemesis, Typhon, Caspian và các boss tương tự); bắn máy bay yếu hơn nhánh B.
+    - B Radar tầm xa, chống máy bay: bắn máy bay từ rất xa (tầm khoảng 100 m) và làm lộ máy bay địch trong vùng rộng; không đánh chặn tên lửa.
+15. Máy phát khiên:
+    - A Vòm khiên: giữ như hiện tại (một vòm lớn che khu vực).
+    - B Lá chắn tháp: không có vòm chung; mỗi tháp phe ta trong bán kính có một khiên nhỏ riêng, tự hồi sau vài giây không bị trúng. Mạnh khi địch dồn hỏa lực vào từng tháp, yếu hơn trước đòn đánh vùng. Không cộng dồn với vòm khiên của máy phát khác hay xe phát khiên. Đạn Năng lượng vẫn xuyên qua.
+16. Trạm tiếp tế CP:
+    - A Trạm tiếp tế: giữ như hiện tại (thêm CP đều đặn; bị bắn thì ngừng trả vài giây).
+    - B Kho chiến lợi phẩm: không thêm CP đều; mỗi xe địch bị hạ trong khoảng 40 m quanh nó cho thêm CP theo giá xe (tính riêng, không vượt trần hoàn CP 45% của prompt 8 khi cộng với hoàn CP thường). Mạnh khi căn cứ bị tấn công liên tục, vô dụng khi căn cứ yên ổn.
+
+C. ĐỒ HỌA
+1. Mỗi nhánh đổi hình dạng tháp đủ rõ để nhận ra ở mức zoom mặc định trên điện thoại, kể cả ở đồ họa Thấp. Đổi mô-đun vũ khí (số nòng, độ dài nòng, loại bệ phóng) và thêm chi tiết đặc trưng. Vẽ lại model hoặc mô-đun khi model hiện tại không đủ khác biệt. Khởi điểm:
+   - Tháp canh: A có cột radar và đèn pha xoay; B là ổ súng thấp có bao cát, nòng 25 mm.
+   - Lô cốt: A lộ hai nòng súng máy qua lỗ châu mai; B có vòi phun và bình nhiên liệu phía sau, lửa phun theo hình vòng cung.
+   - Tháp phòng không: A tháp pháo 4 nòng có đĩa radar nhỏ; B hộp phóng 4 ống tên lửa thay cho nòng pháo.
+   - Tháp gây nhiễu EW: A vòm ăng-ten với vòng sóng lan ra; B tấm radar mảng pha phẳng.
+   - Răng rồng: A khối chông sắt hình chữ thập; B cuộn dây thép gai trên cọc.
+   - Bãi mìn: A ít mìn lớn nổi trên mặt đất (hiện rõ với phe ta); B nhiều mìn nhỏ và thùng rải mìn.
+   - Tháp ATGM: A bệ phóng cao, tên lửa bay vòng lên rồi lao xuống; B bệ phóng xoay 4 ống có cảm biến phòng không.
+   - Trạm C-RAM: A súng nhiều nòng có radar cầu; B giàn phóng tên lửa đánh chặn nghiêng.
+   - Tháp pháo: A một nòng rất dài có ống ngắm; B tháp nhỏ hai nòng ngắn có radar.
+   - Dàn rốc-két: A giàn ray mở nhiều ống; B hộp phóng kín.
+   - Trận địa pháo: A lựu pháo nòng dài cạnh đĩa radar; B khẩu cối thấp nòng rất to.
+   - Pháo đài hạng nặng: A tháp pháo đôi nòng dài quay ra phía xa; B ốp giáp dày, có hai tháp súng phụ nhỏ.
+   - Patriot: A hộp phóng nhiều ống nhỏ; B đĩa radar lớn xoay kèm hộp phóng lớn.
+   - Nhà chứa drone: A đường ray phóng Lancet; B giá nhiều khoang drone nhỏ.
+   - Máy phát khiên: A tháp phát trung tâm và vòm; B nhiều cột phát nhỏ với tia sáng nối tới từng tháp.
+   - Trạm tiếp tế CP: A trạm ăng-ten với container; B cần cẩu và đống container chiến lợi phẩm.
+2. Mốc hạng 1–6: tháp có thêm chi tiết nhỏ theo hạng (vạch hạng trên thân, giáp ốp dày dần ở hạng 3 và hạng 5), để việc lên hạng nhìn thấy được. Hạng 7 đổi sang model của nhánh đã chọn.
+3. Mỗi nhánh có hiệu ứng bắn và âm thanh riêng (theo hệ âm thanh đã có hoặc sắp có); hiệu ứng của vũ khí mới (đạn cầu vồng của cối, tia nối của lá chắn tháp, đạn chụm của pháo tự động) phải đọc được trên màn hình nhỏ.
+4. Icon riêng cho mỗi nhánh (cùng phong cách icon tháp của prompt 14), dùng ở màn chọn nhánh, khay tháp và bản đồ căn cứ.
+5. Ảnh thẻ render lại cho mọi nhánh và mọi mốc hạng có thay đổi hình dạng (công cụ render của prompt 10).
+6. Giữ nhận diện phe (dấu phe trên tháp) và ngân sách hiệu năng: model nhánh dùng chung LOD, không làm tăng số draw call của căn cứ quá ngân sách; có bản rút gọn cho đồ họa Thấp.
+7. Khi chưa kịp làm model mới, dùng tạm model hiện có kèm mô-đun thay thế tối thiểu, và ghi vào docs/ASSET_DEBT.md với mức ưu tiên cao.
+
+D. GIAO DIỆN
+1. Màn chọn nhánh (hạng 7): hiện hai nhánh cạnh nhau với ảnh render, icon, một câu mô tả vai trò, tình huống nên chọn, và các thông số khác nhau (tầm, loại mục tiêu, cơ chế). Không chỉ liệt kê phần trăm.
+2. Mục Hành vi và "Mạnh với / Yếu trước" của mỗi nhánh tạo tự động từ dữ liệu (prompt 13 và 15).
+3. Tab Hướng dẫn có trang cho từng nhánh.
+
+E. MIGRATION
+1. Người chơi đã chọn nhánh bị làm lại: chuyển sang nhánh mới tương ứng gần nhất (ghi bảng đối chiếu trong DECISIONS.md), và được đổi nhánh miễn phí một lần cho mỗi tháp bị ảnh hưởng.
+2. Đồ tháp và hạng giữ nguyên.
+3. Hiện thông báo một lần trong màn "có gì mới" liệt kê các nhánh đã đổi.
+
+F. KIỂM TRA
+- Mỗi nhánh có test hành vi riêng, nhất là: pháo tự động bắn được mục tiêu bay; cối bắn qua tường vào sân trong; lựu pháo phản pháo ưu tiên pháo vừa khai hỏa; PAC-3 bắn hạ tên lửa của đòn lớn boss; lá chắn tháp tạo khiên riêng và không cộng dồn; kho chiến lợi phẩm cho CP đúng và không vượt trần; Vòm Sắt chặn đúng loại đạn.
+- Bảng giá trị thực chiến cho mọi nhánh; mỗi nhánh thắng nhánh kia ở ít nhất một kịch bản; không nhánh nào tốt hơn ở mọi kịch bản.
+- Tỷ lệ chọn nhánh trong các loadout tối ưu của AI: mỗi nhánh được chọn ít nhất khoảng 25% ở tháp của nó; báo cáo.
+- Đồ họa: test so ảnh tự động ở zoom mặc định và đồ họa Thấp, hai nhánh của mỗi tháp khác nhau rõ về hình dạng; các mốc hạng 1, 3, 5, 7 nhìn khác nhau; dấu phe nhìn rõ.
+- Hiệu năng: đo FPS căn cứ đầy tháp ở mọi nhánh trên máy tầm thấp.
+- Migration đúng; đổi nhánh miễn phí một lần hoạt động đúng.
+- Chụp ảnh tự động mọi tháp ở mọi nhánh và các mốc hạng; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md và tài liệu thiết kế (bảng nhánh tháp, ảnh nhánh).

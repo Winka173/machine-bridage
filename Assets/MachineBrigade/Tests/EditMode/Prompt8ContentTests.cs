@@ -48,7 +48,9 @@ namespace MachineBrigade.Tests
             var d = catalog.Vehicle("armored_bulldozer");
             Assert.AreEqual(7, d.CpCost);
             // The brief asked for 3,500; 3,250 (the turtle tank's) keeps the turtle the better sponge (see DECISIONS).
-            Assert.AreEqual(3250f, d.MaxHp, 1f, "3,250 health in game");
+            // DECISIONS 20X: toughness 2.2 (was 2.5), so 1,300 in the data is 2,860 in game; the turtle's the same.
+            Assert.AreEqual(2860f, d.MaxHp, 1f, "2,860 health in game");
+            Assert.AreEqual(catalog.Vehicle("turtle_tank").MaxHp, d.MaxHp, 1f, "the turtle tank's health");
             Assert.AreEqual(ArmorClass.Heavy, d.Armor);
             Assert.AreEqual(5f, d.Speed, 1e-3f);
             Assert.AreEqual(UnitClass.Heavy, d.Class);
@@ -193,7 +195,7 @@ namespace MachineBrigade.Tests
         {
             var world = Field();
             var ship = world.SpawnVehicle("command_airship", 1, Vector2.Zero, 0f);
-            Assert.AreEqual(7, ship.PartCount, "four engines, two bays and a radar");
+            Assert.AreEqual(10, ship.PartCount, "four engines, two bays and a radar, the bomb bay (prompt 18) and two gun pods (prompt 20 F.3)");
             Assert.IsTrue(ship.BodyLocked);
             var hp = ship.Hp;
             world.Damage.Apply(ship, 5000f, DamageType.Fragmentation, new HitInfo(null, 0, null, ship.Position, HitKind.Direct, false));
@@ -241,7 +243,8 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(ship.SkillOff.All(x => x), "both bays' launches stop");
             world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, -30f), 0f);
             var events = Run(world, 20f);
-            Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.WeaponFired && e.Entity == ship.Id && e.Mount >= 2), "no drones from broken bays");
+            var bays = ship.Def.Parts[left].Mounts.Concat(ship.Def.Parts[right].Mounts).ToHashSet();
+            Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.WeaponFired && e.Entity == ship.Id && bays.Contains(e.Mount)), "no drones from broken bays");
             Assert.IsFalse(world.Vehicles.Any(v => v.Def.Id == "strike_drone"), "and no strike drones launched");
             world.Bosses.Break(ship, ship.Def.PartIndex("radar"));
             Assert.AreEqual(3f, ship.MountSpread[0], 1e-3f, "the flak scatters three times as wide");
@@ -387,7 +390,7 @@ namespace MachineBrigade.Tests
                 Assert.IsTrue(Game.Hud.Strings.Has(def.RadioSpawn), id + "'s general speaks");
                 Assert.Greater(def.Phases.Count, 0, id + " has a multi-phase bar");
             }
-            Assert.AreEqual(10, BossRushRules.Roster(3).Count, "one of each of the ten kinds");
+            Assert.AreEqual(BossRushRules.Kinds.Count, BossRushRules.Roster(3).Count, "one of each kind");
         }
     }
 }

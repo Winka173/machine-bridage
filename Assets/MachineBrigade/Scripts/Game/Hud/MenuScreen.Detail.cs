@@ -41,6 +41,18 @@ namespace MachineBrigade.Game.Hud
         private Label _detailName;
         private KitTabs _detailTabs;
         private DetailTab _detailTab = DetailTab.Stats;
+
+        private Label _detailReadout;
+
+        /// <summary>The range's readout, while the In action tab shows one.</summary>
+        private void ShowReadout()
+        {
+            var text = _detailTab == DetailTab.Firing && _detailPreview.style.display != DisplayStyle.None ? Preview?.RangeReadout : null;
+            _detailReadout.style.display = string.IsNullOrEmpty(text) ? DisplayStyle.None : DisplayStyle.Flex;
+            if (string.IsNullOrEmpty(text)) return;
+            _detailReadout.text = text;
+            _detailReadout.EnableInClassList("fc-detail__readout--alert", Preview.RangeAlert);
+        }
         private string _detailId;
         private List<string> _detailList = new();
 
@@ -57,6 +69,12 @@ namespace MachineBrigade.Game.Hud
             _detailStage.Add(_detailArt);
             _detailPreview = Kit.Box("fc-detail__preview");
             _detailStage.Add(_detailPreview);
+            // Test feedback 19P: what a tower on the In action range is doing, as a line over the picture.
+            _detailReadout = Kit.Text("", "fc-detail__readout");
+            _detailReadout.pickingMode = PickingMode.Ignore;
+            _detailReadout.style.display = DisplayStyle.None;
+            _detailStage.Add(_detailReadout);
+            _detailReadout.schedule.Execute(ShowReadout).Every(200);
             // The texture follows the stage's shape and size (the theatre is much bigger than the turntable's box).
             _detailStage.RegisterCallback<GeometryChangedEvent>(_ => FitPreview());
             _detailLeftBody.Add(_detailStage);
@@ -150,10 +168,30 @@ namespace MachineBrigade.Game.Hud
         private void OpenDetail(string id)
         {
             _detailId = id;
-            _detailList = IsStructure(id) ? Structures() : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
+            _detailList = IsStructure(id) ? Structures() : IsBoss(id) ? Bosses() : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
             if (!_detailList.Contains(id)) _detailList.Add(id);
             Open(_detail, Strings.Get(IsStructure(id) ? "detail.structureTitle" : "detail.title"));
             ShowPreview();
+        }
+
+        /// <summary>A boss (its detail page is a Guide page: no deck, level or blueprints).</summary>
+        private bool IsBoss(string id) => id != null && _catalog.Vehicles.TryGetValue(id, out var def) && def.Boss;
+
+        /// <summary>Prompt 20 O.3: the bosses in story order (the chapters switched on), then the rest by id: a boss page's arrows.</summary>
+        private List<string> Bosses()
+        {
+            var list = BossHunts.Story.Select(b => b.Id).ToList();
+            foreach (var def in _catalog.Vehicles.Values.Where(d => d.Boss && !d.Elite && Strings.Has("unit." + d.Id)).OrderBy(d => d.Id, System.StringComparer.Ordinal))
+                if (!list.Contains(def.Id)) list.Add(def.Id);
+            return list;
+        }
+
+        /// <summary>Prompt 20 O.3: a boss's Guide page (from the dossier, the Boss Hunt's list, a variant's link).</summary>
+        private void OpenBossGuide(string id)
+        {
+            _detailTab = DetailTab.Guide;
+            OpenDetail(id);
+            Refresh();
         }
 
         private void StepDetail(int step)
@@ -184,7 +222,7 @@ namespace MachineBrigade.Game.Hud
             {
                 // The In action tab shows it firing on a range; the others turn it on its stand.
                 if (_detailTab == DetailTab.Firing) Preview.ShowRange(vehicle.Id);
-                else Preview.Show(vehicle.Model, vehicle.Scale);
+                else Preview.Show(Rendering.TowerArt.ModelFor(vehicle, id => Resources.Load<GameObject>("Models/" + id) != null), vehicle.Scale);
                 _detailPreview.style.backgroundImage = Background.FromRenderTexture(Preview.Texture);
                 _detailPreview.style.display = DisplayStyle.Flex;
                 _detailArt.style.display = DisplayStyle.None;
@@ -207,6 +245,10 @@ namespace MachineBrigade.Game.Hud
             // Every tower and module stands in the base from the start: nothing to unlock.
             var unlocked = structure || PlayerProfile.IsUnlocked(id);
             var rank = PlayerProfile.Rank(structure ? vehicle.CardId : id);
+            // A boss is no card (play-test 6, DECISIONS 21B): its page has no Equipment tab.
+            var bossPage = IsBoss(id);
+            _detailTabs.Tabs[(int)DetailTab.Equipment].style.display = bossPage ? DisplayStyle.None : DisplayStyle.Flex;
+            if (bossPage && _detailTab == DetailTab.Equipment) _detailTab = DetailTab.Guide;
             _detailTabs.Select((int)_detailTab, false);
             ArrangeDetail();
 
@@ -232,8 +274,10 @@ namespace MachineBrigade.Game.Hud
                 _detailTags.Add(ArmourTag(vehicle));
             }
             else _detailTags.Add(Tag(CardIcons.For(id), Strings.Get("detail.strikeTag")));
-            if (!structure) _detailTags.Add(Tag("cp", Strings.Format("detail.cpTag", CostOf(id))));
-            _detailTags.Add(Tag("upgrade", Strings.Format("kit.level", rank)));
+            var boss = vehicle is { Boss: true };
+            if (!structure && !boss) _detailTags.Add(Tag("cp", Strings.Format("detail.cpTag", CostOf(id))));
+            if (boss) _detailTags.Add(Tag(vehicle.MiniBoss ? "elite" : "skull", Strings.Get(vehicle.RankDef?.Label ?? (vehicle.MiniBoss ? "boss.rank.mini" : "boss.rank.main"))));
+            else _detailTags.Add(Tag("upgrade", Strings.Format("kit.level", rank)));
             _detailCounters.Clear();
             if (vehicle != null) CombatBlock(vehicle, module);
 
@@ -242,7 +286,8 @@ namespace MachineBrigade.Game.Hud
             switch (_detailTab)
             {
                 case DetailTab.Stats:
-                    if (vehicle != null) VehicleStats(vehicle, rank);
+                    if (bossPage) BossStats(vehicle);
+                    else if (vehicle != null) VehicleStats(vehicle, rank);
                     else StrikeStats(id, rank);
                     if (module) ModuleFacts(vehicle);
                     break;
@@ -271,18 +316,24 @@ namespace MachineBrigade.Game.Hud
         private void FillDetailDock(string id, bool unlocked, int rank)
         {
             _detailDock.Clear();
+            // A boss is no card: nothing to level up or put in the deck.
+            if (IsBoss(id))
+            {
+                _detailDeck.Clear();
+                return;
+            }
             var prints = Kit.Box("fc-detail__prints");
             var need = CardRanks.BlueprintsToNext(rank);
             var have = PlayerProfile.Blueprints(id) + PlayerProfile.UniversalBlueprints;
             var enough = need > 0 && have >= need;
             var head = Kit.Box("fc-row fc-row--wrap");
             head.Add(Kit.Icon("blueprint", "fc-rule-icon"));
-            head.Add(Kit.Text(need <= 0 ? Strings.Get("arsenal.maxRank") : Strings.Format("detail.prints", have, need), "fc-body fc-row-text fc-ml-2"));
+            head.Add(Kit.Text(need <= 0 ? Strings.Get("arsenal.maxRank") : Strings.Format("detail.prints", ("have", have), ("need", need)), "fc-body fc-row-text fc-ml-2"));
             if (enough) head.Add(Kit.Text(Strings.Get("detail.enoughPrints"), "fc-small fc-positive-text fc-ml-2"));
             prints.Add(head);
             prints.Add(new KitProgress(need <= 0 ? 1f : Mathf.Clamp01((float)have / need), enough));
             if (unlocked && rank < CardRanks.Max)
-                prints.Add(Kit.Small(Strings.Format("detail.nextLevel", rank + 1, Kit.Count(CardRanks.CoinsToNext(rank)))));
+                prints.Add(Kit.Small(Strings.Format("detail.nextLevel", ("level", rank + 1), ("coins", Kit.Count(CardRanks.CoinsToNext(rank))))));
             _detailDock.Add(prints);
 
             _detailDeck.Clear();
@@ -308,6 +359,13 @@ namespace MachineBrigade.Game.Hud
         {
             // Prompt 15 E8: the legend of the armour and weapon icons, from every guide.
             _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("combat.legend.open"), OpenLegend, "info"));
+            // Prompt 20 O.5: the battlefields' guide (the dossier's tab).
+            _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("guide.maps.open"), OpenBattlefields, "globe"));
+            if (_catalog.Vehicles.TryGetValue(id, out var bossDef) && bossDef.Boss)
+            {
+                BossFacts(bossDef);
+                BossFile.Escorts(_detailBody, _catalog, bossDef);
+            }
             if (Strings.Has("note." + id))
             {
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.notes")), "fc-caption fc-mb-2"));
@@ -325,6 +383,22 @@ namespace MachineBrigade.Game.Hud
                 }
                 if (unit.Flying || unit.Weapon.Ammo > 0 && !unit.Static) AmmoIconTable();
             }
+            // The tower-branch rework (D.3): each rank-7 branch's page: its role, when to pick it, what sets it apart, its behaviour.
+            var towerBranches = TowerCards.Branches(_catalog, id);
+            if (towerBranches.Count > 0)
+            {
+                _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.branches")), "fc-caption fc-mt-4 fc-mb-2"));
+                for (var i = 0; i < towerBranches.Count; i++)
+                {
+                    var b = _catalog.Vehicles[towerBranches[i]];
+                    var other = _catalog.Vehicles[towerBranches[(i + 1) % towerBranches.Count]];
+                    _detailBody.Add(Kit.Text(Kit.Caps(Strings.Branch(b.Id)), "fc-panel-title fc-mt-2"));
+                    _detailBody.Add(Kit.Body(Strings.Get("branch." + b.Id + ".info")));
+                    if (BranchLines.When(b.Id) is { Length: > 0 } when) _detailBody.Add(Kit.Body(when));
+                    foreach (var fact in BranchLines.Differences(b, other)) _detailBody.Add(Kit.Body("· " + fact));
+                    foreach (var line in UnitLines.Behaviour(_catalog, b)) _detailBody.Add(Kit.Body2("· " + line));
+                }
+            }
             // The enemy's elite versions of this card (prompt 8 H.6): each with its own entry and skills.
             foreach (var elite in _catalog.Vehicles.Values)
             {
@@ -332,8 +406,36 @@ namespace MachineBrigade.Game.Hud
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.eliteVersion")), "fc-caption fc-mt-4"));
                 GuideLines(Strings.Get("guide." + elite.Id));
             }
-            // A boss's parts and what breaking each does (prompt 9).
-            if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Parts.Count > 0) BossPartsGuide(boss);
+            // A boss's parts and what breaking each does (prompt 9), its altitude tiers and its big attack.
+            if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Boss)
+            {
+                BossPartsGuide(boss);
+                TiersGuide(boss);
+                BigAttackGuide(boss);
+            }
+        }
+
+        /// <summary>
+        /// Prompt 20 O.3: a boss's Guide header: its rank, the chapters it is fought in, its general (portrait, name, call
+        /// sign and naming theme), the main boss it is a variant of and its own variants, each a link to that boss's page.
+        /// </summary>
+        private void BossFacts(VehicleDef boss)
+        {
+            var box = Kit.Box(KitPanel.SurfaceClass + " fc-boss-facts fc-mt-2");
+            BossFile.Head(box, boss);
+            if (boss.VariantOf is { } parent && _catalog.Vehicles.ContainsKey(parent))
+                box.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.variantOf", Strings.Unit(parent)), () => OpenBossGuide(parent), "arrow"));
+            var variants = _catalog.Vehicles.Values.Where(v => v.VariantOf == boss.Id).OrderBy(v => v.Id, System.StringComparer.Ordinal).ToList();
+            if (variants.Count > 0)
+            {
+                box.Add(Kit.Text(Kit.Caps(Strings.Get("guide.boss.variants")), "fc-caption fc-mt-2"));
+                foreach (var v in variants)
+                {
+                    var vid = v.Id;
+                    box.Add(new KitButton(ButtonTier.Text, Strings.Unit(vid), () => OpenBossGuide(vid), "arrow"));
+                }
+            }
+            _detailBody.Add(box);
         }
 
         /// <summary>Prompt 13 C.9: what the ammunition icons over units mean, with their colours.</summary>
@@ -386,7 +488,7 @@ namespace MachineBrigade.Game.Hud
             if (id == null) return;
             // A tower's branch shares its card's rank.
             if (_catalog.Vehicles.TryGetValue(id, out var structure) && structure.Fort != null) id = structure.CardId;
-            if (PlayerProfile.TryRankUp(id)) Note(Strings.Format("arsenal.ranked", Strings.Card(id), PlayerProfile.Rank(id)));
+            if (PlayerProfile.TryRankUp(id)) Note(Strings.Format("arsenal.ranked", ("card", Strings.Card(id)), ("rank", PlayerProfile.Rank(id))));
             else Note(Strings.Get("arsenal.needCoins"), true);
             Refresh();
         }
@@ -488,11 +590,26 @@ namespace MachineBrigade.Game.Hud
             var facts = Kit.Box("fc-mt-3");
             var price = CardRanks.CallCost(def.CpCost, rank);
             if (def.Fort == null) facts.Add(Rule("cp", price < def.CpCost
-                ? Strings.Format("detail.costCut", price, def.CpCost, CardRanks.CutBasisPoints(rank) / 100)
+                ? Strings.Format("detail.costCut", ("cp", price), ("was", def.CpCost), ("percent", CardRanks.CutBasisPoints(rank) / 100))
                 : Strings.Format("detail.cost", def.CpCost)));
-            if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", def.Weapon.Ammo, Mathf.RoundToInt(def.Weapon.MagazineReload))));
+            if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", ("count", def.Weapon.Ammo), ("seconds", Mathf.RoundToInt(def.Weapon.MagazineReload)))));
             if (def.Weapon.MinRange > 0f) facts.Add(Rule("crosshair", Strings.Format("detail.minRange", Mathf.RoundToInt(def.Weapon.MinRange))));
             if (now.Special != SpecialModule.None) facts.Add(Rule("star", Strings.Get("special." + GearKeys.Module(now.Special))));
+            _detailBody.Add(facts);
+        }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21B): a boss's numbers at campaign strength, without the card's equipment, next level
+        /// and cost (a boss is no card), and its armour on each face.
+        /// </summary>
+        private void BossStats(VehicleDef def)
+        {
+            _detailBody.Add(Kit.Body2(Strings.Get("guide.boss.noCard")));
+            foreach (var stat in UnitStats.For(_catalog, def, VehicleBoost.None)) StatRow(stat, stat.Boosted, stat.Boosted, -1f);
+            var facts = Kit.Box("fc-mt-3");
+            facts.Add(Rule("shield", BossFile.Armour(def.Armour)));
+            if (def.Parts.Count > 0) facts.Add(Rule("crosshair", Strings.Format("guide.boss.partCount", def.Parts.Count)));
+            if (def.Weapon.Ammo > 0) facts.Add(Rule("ammo", Strings.Format("detail.magazine", ("count", def.Weapon.Ammo), ("seconds", Mathf.RoundToInt(def.Weapon.MagazineReload)))));
             _detailBody.Add(facts);
         }
 
@@ -617,8 +734,8 @@ namespace MachineBrigade.Game.Hud
                 var burst = w.RoundsPerCycle > 1 ? $" × {w.RoundsPerCycle}" : "";
                 // A magazine gun: its rounds, then the magazine change.
                 var pause = w.Clip > 0 ? w.ClipReload : w.Cooldown;
-                text.Add(Kit.Body2(Strings.Format("detail.weaponLine", w.Damage.ToString("N0") + burst, pause.ToString("0.#"), Mathf.RoundToInt(w.Range),
-                    lines[i].Targets)));
+                text.Add(Kit.Body2(Strings.Format("detail.weaponLine", ("damage", w.Damage.ToString("N0", Strings.Culture) + burst), ("seconds", pause.ToString("0.#", Strings.Culture)), ("metres", Mathf.RoundToInt(w.Range)),
+                    ("targets", lines[i].Targets))));
                 if (lines[i].Ammo > 0) text.Add(Kit.Small(Strings.Format("detail.ammo", lines[i].Ammo)));
                 // Prompt 13 G.1: every figure (real name and calibre, rounds, magazine or stores and how they
                 // come back, faster sites, range), behind "More".
@@ -655,7 +772,7 @@ namespace MachineBrigade.Game.Hud
             facts.Add(Kit.Text(Kit.Caps(Strings.Get("detail.moduleDoes")), "fc-caption fc-mb-2"));
             if (u.Repair > 0f) facts.Add(Rule("repair", Strings.Format("detail.module.repair", (u.Repair * 100f).ToString("0.#", Kit.Culture))));
             if (u.Rearm > 1f) facts.Add(Rule("ammo", Strings.Format("detail.module.rearm", u.Rearm.ToString("0.#", Kit.Culture))));
-            if (u.AirRepair > 0f) facts.Add(Rule("helicopter", Strings.Format("detail.module.air", (u.AirRepair * 100f).ToString("0.#", Kit.Culture), Mathf.RoundToInt(u.AirReach))));
+            if (u.AirRepair > 0f) facts.Add(Rule("helicopter", Strings.Format("detail.module.air", ("percent", (u.AirRepair * 100f).ToString("0.#", Kit.Culture)), ("metres", Mathf.RoundToInt(u.AirReach)))));
             // Prompt 13 G.4: the landing pad's stores rate, a hangar's aircraft.
             foreach (var line in UnitLines.Module(u, false)) facts.Add(Rule("ammo", line));
             if (u.Supply > 0) facts.Add(Rule("people", Strings.Format("detail.module.supply", u.Supply)));
@@ -682,20 +799,12 @@ namespace MachineBrigade.Game.Hud
                 if (branches.Count == 0) _detailBody.Add(Kit.Body2(Strings.Get("camp.branchNone")));
                 else
                 {
-                    _detailBody.Add(Kit.Body2(rank < TowerCards.BranchRank ? Strings.Format("camp.branchLocked", TowerCards.BranchRank, rank)
-                        : (chosen == null ? Strings.Get("camp.branchFree") : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0")))
+                    _detailBody.Add(Kit.Body2(rank < TowerCards.BranchRank ? Strings.Format("camp.branchLocked", ("rank", TowerCards.BranchRank), ("rank2", rank))
+                        : (chosen == null ? Strings.Get("camp.branchFree") : PlayerProfile.FreeBranchSwap(card) ? Strings.Get("camp.branchFreeSwap")
+                            : Strings.Format("camp.branchSwap", PlayerProfile.BranchSwapCoins.ToString("N0", Strings.Culture)))
                           + " " + Strings.Get("detail.branchTap")));
-                    foreach (var b in branches)
-                    {
-                        var branchId = b;
-                        var row = Kit.Tappable(KitPanel.SurfaceClass + " fc-weapon" + (b == chosen ? " fc-weapon--chosen" : ""), () => ChooseTowerBranch(card, branchId));
-                        row.Add(Kit.Icon(b == chosen ? "check" : rank < TowerCards.BranchRank ? "lock" : "upgrade", "fc-weapon__icon"));
-                        var text = Kit.Box("fc-row-text fc-grow");
-                        text.Add(Kit.Text(Kit.Caps(Strings.Branch(b)), "fc-panel-title"));
-                        text.Add(Kit.Body2(Strings.Get("branch." + b + ".info")));
-                        row.Add(text);
-                        _detailBody.Add(row);
-                    }
+                    // The tower-branch rework (D.1): both branches side by side, from their data.
+                    _detailBody.Add(BranchLines.Picker(_catalog, card, chosen, rank < TowerCards.BranchRank, b => ChooseTowerBranch(card, b)));
                 }
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("camp.gear")), "fc-caption fc-mt-4 fc-mb-2"));
                 _detailBody.Add(Kit.Body2(Strings.Get("detail.gearTap")));
@@ -732,7 +841,7 @@ namespace MachineBrigade.Game.Hud
             }
             var chosen = PlayerProfile.TowerBranch(card);
             if (chosen == branchId) return;
-            if (chosen == null)
+            if (chosen == null || PlayerProfile.FreeBranchSwap(card))
             {
                 ApplyTowerBranch(card, branchId);
                 return;
@@ -745,7 +854,7 @@ namespace MachineBrigade.Game.Hud
             }, "upgrade");
             var cancel = new KitButton(ButtonTier.Secondary, Strings.Get("camp.cancel"), () => scrim?.RemoveFromHierarchy());
             scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Branch(branchId),
-                Strings.Format("camp.branchConfirm", Strings.Card(card), Strings.Branch(branchId), PlayerProfile.BranchSwapCoins.ToString("N0")), cancel, change));
+                Strings.Format("camp.branchConfirm", ("card", Strings.Card(card)), ("branch", Strings.Branch(branchId)), ("coins", PlayerProfile.BranchSwapCoins.ToString("N0", Strings.Culture))), cancel, change));
         }
 
         private void ApplyTowerBranch(string card, string branchId)
@@ -755,7 +864,7 @@ namespace MachineBrigade.Game.Hud
                 Note(Strings.Get("arsenal.needCoins"), true);
                 return;
             }
-            Note(Strings.Format("camp.branchChosen", Strings.Card(card), Strings.Branch(branchId)));
+            Note(Strings.Format("camp.branchChosen", ("card", Strings.Card(card)), ("branch", Strings.Branch(branchId))));
             Refresh();
         }
 
@@ -775,8 +884,8 @@ namespace MachineBrigade.Game.Hud
             foreach (var piece in pieces)
             {
                 if (piece == worn) chosen = options.Count;
-                options.Add(new KitOption(GearText.Name(piece), Strings.Format("gear.detail", Strings.Get("rarity." + piece.Rarity.ToString().ToLowerInvariant()),
-                    piece.level, Gear.LevelCap[piece.rarity], GearCardData.ShortStat(piece))));
+                options.Add(new KitOption(GearText.Name(piece), Strings.Format("gear.detail", ("rarity", Strings.Get("rarity." + piece.Rarity.ToString().ToLowerInvariant())),
+                    ("level", piece.level), ("total", Gear.LevelCap[piece.rarity]), ("item", GearCardData.ShortStat(piece)))));
             }
             new KitDropdown(GearText.TowerSlotName(slot), options, chosen, i =>
             {
@@ -784,7 +893,7 @@ namespace MachineBrigade.Game.Hud
                 {
                     if (worn == null) return;
                     PlayerProfile.UnequipTower(card, slot);
-                    Note(Strings.Format("camp.gearRemoved", GearText.TowerSlotName(slot), Strings.Card(card)));
+                    Note(Strings.Format("camp.gearRemoved", ("slot", GearText.TowerSlotName(slot)), ("card", Strings.Card(card))));
                 }
                 else if (PlayerProfile.EquipTower(card, pieces[i - 1])) Note(Strings.Format("camp.gearWorn", Strings.Card(card)));
                 Refresh();

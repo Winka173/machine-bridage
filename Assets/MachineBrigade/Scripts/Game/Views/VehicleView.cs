@@ -22,6 +22,18 @@ namespace MachineBrigade.Game.Views
         /// <summary>Aircraft fly in over this long: from behind along their heading, a little above their height.</summary>
         private const float ArriveSeconds = 2.6f;
 
+        /// <summary>
+        /// Test feedback 19P, the In action clip: an aircraft glides in and eases off onto its station (it comes in
+        /// fastest and slows all the way), over a shorter run, instead of the battle's fly-in that races in and then
+        /// brakes. Set by the range when it adds the view.
+        /// </summary>
+        public bool GentleArrival { get; set; }
+
+        /// <summary>The drawn fly-in is over: the aircraft is where the simulation has it.</summary>
+        public bool Arrived => !Flying || Time.time - _spawnTime >= (GentleArrival ? GentleSeconds : ArriveSeconds);
+
+        private const float GentleSeconds = 3.2f;
+
         private static readonly int TintId = Shader.PropertyToID("_Tint");
 
         private readonly ModelInstance _model;
@@ -71,6 +83,9 @@ namespace MachineBrigade.Game.Views
         private readonly Transform _erector, _searchlight;
         private readonly Quaternion _erectorRest, _searchlightRest;
 
+        /// <summary>A tower's rank details (TowerRankDetails); null on everything else.</summary>
+        private readonly MeshRenderer _rankDetails;
+
         /// <summary>Its side is the player's (its shield is drawn blue, else red-orange).</summary>
         private readonly bool _ours;
 
@@ -84,9 +99,15 @@ namespace MachineBrigade.Game.Views
             _body = new GameObject("Body").transform;
             _body.SetParent(Root, false);
             // A boss in a later form wears that form's model.
-            _model = models.Spawn(vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : vehicle.Def.Model, vehicle.Team, _body, lod: VehicleLod.Enabled);
+            // A tower's rank-7 branch wears its own model (TowerArt).
+            var modelId = vehicle.Form != null && models.Has(vehicle.Form) ? vehicle.Form : TowerArt.ModelFor(vehicle.Def, models.Has);
+            _model = models.Spawn(modelId, vehicle.Team, _body, lod: VehicleLod.Enabled);
+            // Tower-branch C.2: its card's rank on its body (bars, plates from rank 3, thicker from 5).
+            if (TowerArt.WearsRank(vehicle.Def))
+                _rankDetails = TowerRankDetails.Attach(_model.Root.transform, modelId, TowerArt.RankOf(vehicle.Team, vehicle.Def), vehicle.Team, materials);
             // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
-            _body.localScale = Vector3.one * vehicle.Def.Scale;
+            DrawScale = DrawScaleOf(vehicle.Def);
+            _body.localScale = Vector3.one * DrawScale;
             ModelBounds = Measure(_model.Root.transform, _body);
             if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
@@ -191,7 +212,7 @@ namespace MachineBrigade.Game.Views
 
             _bar = new GameObject("HealthBar").transform;
             _bar.SetParent(Root, false);
-            _bar.localPosition = new Vector3(0f, _model.Muzzle.y * vehicle.Def.Scale + 1.9f, 0f);
+            _bar.localPosition = new Vector3(0f, _model.Muzzle.y * DrawScale + 1.9f, 0f);
             var back = CreateMesh("Back", _bar, meshes.Quad, materials.BarBack, false);
             back.localScale = new Vector3(BarWidth + 0.14f, BarHeight + 0.14f, 1f);
             _barTrail = CreateMesh("Trail", _bar, meshes.Quad, materials.BarTrail, false);
@@ -205,6 +226,7 @@ namespace MachineBrigade.Game.Views
             BuildEscortMark(meshes, materials);
             // Prompt 17 C: the bunker vehicle's digging-in and dug-in mark.
             BuildDeployMark(meshes, materials);
+            FindSideLauncher();
             _bar.gameObject.SetActive(false);
 
             foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
@@ -232,6 +254,19 @@ namespace MachineBrigade.Game.Views
         public EntityId Id => Sim.Id;
         public int Team => Sim.Team;
         public string DefId => Def.Id;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21H): aircraft are drawn 15 % smaller (the owner asked for 10-20 %), every type alike,
+        /// so their sizes against each other stay; their muzzles and mounts are on the model and shrink with it.
+        /// Bosses keep their size. Nothing in the simulation changes (its radii, altitudes and reach stay).
+        /// </summary>
+        internal const float AirShrink = 0.85f;
+
+        /// <summary>How big a vehicle of <paramref name="def"/> is drawn: its data's scale, an aircraft's 15 % smaller.</summary>
+        public static float DrawScaleOf(VehicleDef def) => def.Scale * (def.Flying && !def.Boss ? AirShrink : 1f);
+
+        /// <summary>The drawn model's scale (<see cref="DrawScaleOf"/>).</summary>
+        public float DrawScale { get; }
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
@@ -249,10 +284,10 @@ namespace MachineBrigade.Game.Views
         public ImpostorPage Impostor { get; internal set; }
 
         /// <summary>How big it is in metres (length, span or height, whichever is most): what the level is chosen by.</summary>
-        public float LodSize => Mathf.Max(ModelBounds.size.x, Mathf.Max(ModelBounds.size.y, ModelBounds.size.z)) * Def.Scale;
+        public float LodSize => Mathf.Max(ModelBounds.size.x, Mathf.Max(ModelBounds.size.y, ModelBounds.size.z)) * DrawScale;
 
         /// <summary>Where its impostor card is centred (on its upright axis, at its middle height).</summary>
-        public Vector3 ImpostorCentre => Root.position + Vector3.up * ((Impostor != null ? Impostor.Centre.y : Top * 0.5f) * Def.Scale);
+        public Vector3 ImpostorCentre => Root.position + Vector3.up * ((Impostor != null ? Impostor.Centre.y : Top * 0.5f) * DrawScale);
 
         /// <summary>The impostor's tint: the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
         public Color ImpostorTint
@@ -292,6 +327,7 @@ namespace MachineBrigade.Game.Views
             var simple = level == VehicleLod.Simple;
             foreach (var r in _model.Renderers) r.enabled = full;
             foreach (var r in _model.Lod1Renderers) r.gameObject.SetActive(simple);
+            if (_rankDetails != null) _rankDetails.enabled = level != VehicleLod.Impostor && !_wreck;
             _level = level;
             if (VehicleLod.Colours) ApplyTint();
         }
@@ -341,7 +377,7 @@ namespace MachineBrigade.Game.Views
             {
                 var light = CreateMesh(name, _body, meshes.Box, material, false);
                 light.localPosition = at;
-                light.localScale = Vector3.one * (size / Mathf.Max(0.01f, Def.Scale));
+                light.localScale = Vector3.one * (size / Mathf.Max(0.01f, DrawScale));
                 return light;
             }
             if (frame.size.x > 0.5f)
@@ -432,7 +468,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>World-space main muzzle, for tracers and flashes.</summary>
         public Vector3 MuzzleWorld => _body.TransformPoint(_model.Muzzle);
 
-        public float MuzzleHeight => _model.Muzzle.y * Def.Scale;
+        public float MuzzleHeight => _model.Muzzle.y * DrawScale;
 
         /// <summary>Roughly how tall the model stands (where a fixed defence smokes and burns from).</summary>
         public float Top => Mathf.Max(1.5f, MuzzleHeight + 0.4f);
@@ -452,6 +488,9 @@ namespace MachineBrigade.Game.Views
 
         /// <summary>When the next wisp of damage smoke or lick of flame is due (see EffectsDirector).</summary>
         public float DamageFxAt { get; set; }
+
+        /// <summary>When a knocked-out vehicle next crackles (EffectsDirector.ShowStunned).</summary>
+        public float StunFxAt { get; set; }
 
         private float _shownScorch = 1f;
         private float _scorch = 1f;
@@ -476,7 +515,9 @@ namespace MachineBrigade.Game.Views
         private void ApplyTint()
         {
             _tintBlock ??= new MaterialPropertyBlock();
-            var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+            // Prompt 20 G.2: a variant's own colour over its parent's model.
+            var own = Def.Tint ?? System.Numerics.Vector3.One;
+            var tint = new Color(_scorch * own.X, _scorch * 0.97f * own.Y, _scorch * 0.95f * own.Z, 1f - _shownFlash);
             _tintBlock.SetColor(TintId, tint);
             foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
             if (_model.Lod1Renderers.Length == 0) return;
@@ -741,8 +782,15 @@ namespace MachineBrigade.Game.Views
             else if (aiming) want = Mathf.Lerp(0.5f, 4f, Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range)));
             else if (_model.Barrel == BarrelKind.Mortar) want = Mathf.Max(_model.RestPitch, 40f);
             else want = indirect ? 10f : weapon.Targets == TargetLayers.Air ? 18f : 0f;
+            // Play-test 5 (DECISIONS 20W): the siege tank's mortar lies level on its tracks and swings up as it sieges.
+            if (Def.Deploy is { Siege: true })
+                want = SiegeElevation(_model.RestPitch,
+                    aiming ? Mathf.Lerp(55f, 72f, Mathf.Clamp01(Sim.AimDistance / Mathf.Max(1f, weapon.Range))) : float.NaN);
             if (float.IsNaN(_elevation)) _elevation = _model.RestPitch;
             var rate = weapon.Targets == TargetLayers.Air || Sim.AimHeight > 0f ? 150f : indirect ? 32f : 60f;
+            // Play-test 6 (DECISIONS 21H): the siege cannon swings up and down with the work; launchers erect to fire.
+            if (Def.Deploy is { Siege: true } && Sim.Deploy != DeployState.Deployed) rate = 150f;
+            if (Erectors.TryGetValue(Def.Id, out var erector)) want = ErectAngle(erector, want, snap, out rate);
             _elevation = snap ? want : Mathf.MoveTowards(_elevation, want, rate * Time.deltaTime);
             pivot.localRotation = Quaternion.Euler(-(_elevation - _model.RestPitch), 0f, 0f);
         }
@@ -837,7 +885,7 @@ namespace MachineBrigade.Game.Views
                 for (var j = i + 1; j < _barrelTips.Length; j++)
                 {
                     var d = _body.InverseTransformPoint(BarrelTip(i)) - _body.InverseTransformPoint(BarrelTip(j));
-                    spread = Mathf.Max(spread, new Vector2(d.x, d.y).magnitude * Def.Scale);
+                    spread = Mathf.Max(spread, new Vector2(d.x, d.y).magnitude * DrawScale);
                 }
             return spread > 0.25f;
         }
@@ -863,6 +911,9 @@ namespace MachineBrigade.Game.Views
             _climbRate = dt > 0f ? (_climb - climbed) / dt : 0f;
         }
 
+        /// <summary>Prompt 19: the drawn height of a tiered boss or pod, eased toward the sim's (-1 before the first frame).</summary>
+        private float _tierHeight = -1f;
+
         public void Render(float alpha, Quaternion cameraRotation)
         {
             if (_wreck)
@@ -881,17 +932,27 @@ namespace MachineBrigade.Game.Views
             {
                 // Fly in from behind (never out of the ground), then hover with a slow bob, nose
                 // down when speeding up and bank into turns.
-                var arrive = ShotStep >= 0f ? 1f : Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                // Prompt 19: a boss on altitude tiers and a falling drop pod are drawn at the sim's height (no fly-in).
+                var tiered = Sim.Def.Tiers != null || Sim.IsPod;
+                var sinceSpawn = (Time.time - _spawnTime) / (GentleArrival ? GentleSeconds : ArriveSeconds);
+                var arrive = tiered || ShotStep >= 0f ? 1f
+                    : GentleArrival ? 1f - Mathf.Pow(1f - Mathf.Clamp01(sinceSpawn), 3f) : Mathf.SmoothStep(0f, 1f, sinceSpawn);
                 var above = 1f - arrive;
                 if (Def.FixedWing) HoldPose();
                 // A jet hanging on its target bobs a little more than one flying level.
                 var bob = Mathf.Sin(FrameTime * 1.3f + Id.Value) * 0.25f + Mathf.Sin(FrameTime * 2.3f + Id.Value * 0.7f) * 0.2f * _hold;
-                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
+                if (tiered)
+                {
+                    _tierHeight = _tierHeight < 0f ? Sim.Height : Mathf.Lerp(_tierHeight, Sim.Height, 1f - Mathf.Exp(-FrameStep * 10f));
+                    Altitude = _tierHeight + (Sim.Crashed || Sim.IsPod ? 0f : bob);
+                }
+                else Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
                 if (above > 0f)
                 {
                     // It flies in along its heading from behind, dropping to its height as it comes.
                     var heading = hull * Mathf.Deg2Rad;
-                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * (above * above * (Def.FixedWing ? 80f : 35f));
+                    var run = GentleArrival ? above * (Def.FixedWing ? 42f : 24f) : above * above * (Def.FixedWing ? 80f : 35f);
+                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * run;
                 }
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)
@@ -933,11 +994,11 @@ namespace MachineBrigade.Game.Views
             if (_model.Turret != null && !Match.DebugFlags.Has("-mb-no-turret"))
             {
                 var turret = Mathf.LerpAngle(_previousTurret, _currentTurret, alpha);
-                _model.Turret.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(hull, turret), 0f);
+                _model.Turret.localRotation = Quaternion.Euler(0f, Mathf.DeltaAngle(hull, turret) + _turretSwing, 0f);
                 var t = (Time.time - _recoilTime) / RecoilSeconds;
                 var kick = t is >= 0f and < 1f ? (1f - t) * (1f - t) * _recoilDistance : 0f;
                 for (var i = 0; i < _recoilRest.Length; i++)
-                    _model.RecoilParts[i].localPosition = _recoilRest[i] + Vector3.back * (_barrelTips == null || _barrelOf[i] == _barrel ? kick : 0f);
+                    _model.RecoilParts[i].localPosition = _recoilRest[i] + Vector3.back * ((_barrelTips == null || _barrelOf[i] == _barrel ? kick : 0f) - BarrelRunOf(i));
             }
 
             // Free weapon mounts turn on their own; their parent may be the turret or the hull (the
@@ -952,6 +1013,7 @@ namespace MachineBrigade.Game.Views
             }
 
             Elevate();
+            RaiseSideLauncher();
             Spin(1f);
             AnimateParts(cameraRotation);
             AnimateDeploy();
@@ -1093,6 +1155,7 @@ namespace MachineBrigade.Game.Views
             Selected = false;
             HideShield();
             _wreck = true;
+            if (_rankDetails != null) _rankDetails.enabled = false;
             if (Flying)
             {
                 // Keep some of the momentum it had when it was hit.
@@ -1168,18 +1231,29 @@ namespace MachineBrigade.Game.Views
 
         private float[] _spinAngles;
 
+        /// <summary>Play-test 6 (DECISIONS 21H): how far a knocked-out vehicle's radar slumps on its mount (degrees).</summary>
+        internal const float RadarSlump = 50f;
+
+        private float _radarDown;
+
         private void Spin(float speed)
         {
             var spinners = _model.Spinners;
             if (spinners.Count == 0) return;
             _spinAngles ??= new float[spinners.Count];
             var dt = Time.deltaTime * speed;
+            // A knocked-out vehicle's radar (an EMP's or a SEAD strike's stun) stops dead and slumps on its mount.
+            var dead = Sim.Stunned && Sim.IsAlive;
+            _radarDown = Mathf.MoveTowards(_radarDown, dead ? 1f : 0f, Time.deltaTime * (dead ? 2.2f : 0.7f));
             for (var i = 0; i < spinners.Count; i++)
             {
-                var step = spinners[i].DegreesPerSecond * dt;
+                var radar = spinners[i].Transform.name.StartsWith("Radar");
+                var step = radar && dead ? 0f : spinners[i].DegreesPerSecond * dt;
                 if (spinners[i].DegreesPerSecond > 600f) step = Mathf.Min(step, MaxSpinPerFrame);
                 _spinAngles[i] = (_spinAngles[i] + step) % 360f;
-                spinners[i].Transform.localRotation = spinners[i].Rest * Quaternion.AngleAxis(_spinAngles[i], spinners[i].Axis);
+                var turn = spinners[i].Rest * Quaternion.AngleAxis(_spinAngles[i], spinners[i].Axis);
+                if (radar && _radarDown > 0f) turn *= Quaternion.Euler(RadarSlump * _radarDown * _radarDown, 0f, 12f * _radarDown);
+                spinners[i].Transform.localRotation = turn;
             }
         }
 
