@@ -1,0 +1,14 @@
+{
+  "map": "launchsite",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 3d78c9d7 app 0.1.0",
+  "ticks": 7688,
+  "journal": [],
+  "records": [
+    {"vehicle": 488, "def": "armored_bulldozer", "team": 0, "startTick": 2950, "start": 147.5, "end": 158.5, "seconds": 11, "x": 56.259, "y": 34, "goalX": 57, "goalY": 57, "order": "Attack", "cause": "OffRoute", "detail": "to (51.0,41.0) past base_wall", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(parked)@5.6 base_wall@7 floodlight_mast@4"},
+    {"vehicle": 480, "def": "heavy_tank", "team": 0, "startTick": 4850, "start": 242.5, "end": 251, "seconds": 8.5, "x": 62.109, "y": 48.194, "goalX": -16.828, "goalY": -20.302, "order": "Move", "cause": "BlockedByFriend", "detail": "main_battle_tank#519 moving", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@6.1 main_battle_tank(moving)@5.6 base_wall@8"}
+  ],
+  "rescues": []
+}

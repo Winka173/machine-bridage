@@ -1,0 +1,530 @@
+  t62.0 #992 siege_tank (26.8,-20.9) h5 v3.6 Move->(28,-10) path 2/3 next (27.5,-10.1) goal (28,-10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 0 engaged 0
+  t62.0 #1005 ifv (-18.3,-22.0) h57 v5.0 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Road, Route target 971 engaged 0
+  t62.5 #992 siege_tank (27.0,-19.1) h5 v3.6 Move->(28,-10) path 2/3 next (27.5,-10.1) goal (28,-10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t62.5 #1005 ifv (-15.5,-20.0) h52 v8.7 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Road, Route target 971 engaged 0
+  t63.0 #992 siege_tank (27.2,-17.3) h5 v3.6 Move->(28,-10) path 2/3 next (27.5,-10.1) goal (28,-10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t63.0 #1005 ifv (-12.1,-17.5) h68 v7.6 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Road, Route target 971 engaged 0
+t63.00 #992 (27.2,-17.3) SetOrder Move <30.27188, -26.11792> | SetOrder < IssueGroupMove < Apply < Submit
+t63.00 #992 (27.2,-17.3) SetPath 1 to <30.27188, -26.11792> | SetPath < FindPath < PathTo < IssueGroupMove
+  t63.5 #992 siege_tank (27.3,-16.5) h24 v0.5 Move->(30,-26) path 0/1 next (30.3,-26.1) goal (30,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t63.5 #1005 ifv (-9.2,-17.4) h93 v2.9 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Road target 971 engaged 0
+t63.75 #992 (27.4,-16.4) SetOrder Move <30.39098, -26.04188> | SetOrder < IssueGroupMove < Apply < Submit
+t63.75 #992 (27.4,-16.4) SetPath 1 to <30.39098, -26.04188> | SetPath < FindPath < PathTo < IssueGroupMove
+  t64.0 #992 siege_tank (27.5,-16.3) h43 v0.5 Move->(30,-26) path 0/1 next (30.4,-26.0) goal (30,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t64.0 #1005 ifv (-7.6,-17.0) h86 v3.6 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 971 engaged 0
+  t64.5 #992 siege_tank (27.7,-16.1) h62 v0.5 Move->(30,-26) path 0/1 next (30.4,-26.0) goal (30,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t64.5 #1005 ifv (-6.0,-16.8) h70 v3.1 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 971 engaged 0
+t64.50 #992 (27.7,-16.1) SetOrder Move <30.78925, -26.1664> | SetOrder < IssueGroupMove < Apply < Submit
+t64.50 #992 (27.7,-16.1) SetPath 1 to <30.78925, -26.1664> | SetPath < FindPath < PathTo < IssueGroupMove
+  t65.0 #992 siege_tank (28.0,-16.0) h81 v0.5 Move->(31,-26) path 0/1 next (30.8,-26.2) goal (31,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t65.0 #1005 ifv (-4.7,-16.3) h84 v2.6 Attack->(19,10) path 1/3 next (7.0,-1.0) goal (19,10) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 971 engaged 0
+t65.25 #1005 (-4.0,-16.1) SetOrder Attack <60, -11> | SetOrder < Apply < Submit < Issue
+t65.25 #992 (28.1,-16.0) SetOrder Move <31.46884, -26.40379> | SetOrder < IssueGroupMove < Apply < Submit
+t65.25 #992 (28.1,-16.0) SetPath 1 to <31.46884, -26.40379> | SetPath < FindPath < PathTo < IssueGroupMove
+t65.30 #1005 (-4.0,-16.1) SetPath 4 to <60, -11> | SetPath < FindPath < PathTo < CloseIn
+  t65.5 #992 siege_tank (28.5,-16.1) h100 v1.5 Move->(31,-26) path 0/1 next (31.5,-26.4) goal (31,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t65.5 #1005 ifv (-3.7,-15.9) h95 v1.1 Attack->(60,-11) path 0/4 next (7.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+  t66.0 #992 siege_tank (29.4,-16.4) h119 v2.3 Move->(31,-26) path 0/1 next (31.5,-26.4) goal (31,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t66.0 #1005 ifv (-3.3,-16.2) h150 v2.3 Attack->(60,-11) path 0/4 next (7.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t66.00 #992 (29.4,-16.4) SetOrder Move <24.73381, -19.52438> | SetOrder < IssueGroupMove < Apply < Submit
+t66.00 #992 (29.4,-16.4) SetPath 1 to <24.73381, -19.52438> | SetPath < FindPath < PathTo < IssueGroupMove
+  t66.5 #992 siege_tank (29.7,-16.7) h138 v0.5 Move->(25,-20) path 0/1 next (24.7,-19.5) goal (25,-20) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t66.5 #1005 ifv (-3.0,-18.3) h172 v6.0 Attack->(60,-11) path 0/4 next (7.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t66.75 #992 (29.8,-16.8) SetOrder Move <28.34453, -25.29935> | SetOrder < IssueGroupMove < Apply < Submit
+t66.75 #992 (29.8,-16.8) SetPath 1 to <28.34453, -25.29935> | SetPath < FindPath < PathTo < IssueGroupMove
+  t67.0 #992 siege_tank (29.9,-17.0) h157 v1.3 Move->(28,-25) path 0/1 next (28.3,-25.3) goal (28,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t67.0 #1005 ifv (-0.8,-21.5) h122 v8.8 Attack->(60,-11) path 0/4 next (7.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+  t67.5 #992 siege_tank (30.1,-18.1) h176 v2.8 Move->(28,-25) path 0/1 next (28.3,-25.3) goal (28,-25) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t67.5 #1005 ifv (3.3,-23.3) h114 v9.0 Attack->(60,-11) path 0/4 next (7.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t67.50 #992 (30.1,-18.1) SetOrder Move <29.444, -25.93181> | SetOrder < IssueGroupMove < Apply < Submit
+t67.50 #992 (30.1,-18.1) SetPath 1 to <29.444, -25.93181> | SetPath < FindPath < PathTo < IssueGroupMove
+t67.85 #1005 (5.8,-24.4) Arrive 0/4 d1.4 | Drive < Step < Step < Play
+  t68.0 #992 siege_tank (30.0,-19.8) h-176 v3.6 Move->(29,-26) path 0/1 next (29.4,-25.9) goal (29,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t68.0 #1005 ifv (7.0,-24.7) h98 v8.8 Attack->(60,-11) path 1/4 next (25.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t68.25 #992 (30.0,-20.7) SetOrder Move <30.07617, -26.39495> | SetOrder < IssueGroupMove < Apply < Submit
+t68.25 #992 (30.0,-20.7) SetPath 1 to <30.07617, -26.39495> | SetPath < FindPath < PathTo < IssueGroupMove
+  t68.5 #992 siege_tank (30.0,-21.6) h180 v3.6 Move->(30,-26) path 0/1 next (30.1,-26.4) goal (30,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t68.5 #1005 ifv (11.5,-24.9) h92 v9.0 Attack->(60,-11) path 1/4 next (25.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t69.0 #992 siege_tank (30.0,-23.4) h180 v3.6 Move->(30,-26) path 0/1 next (30.1,-26.4) goal (30,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t69.0 #1005 ifv (16.0,-25.0) h90 v9.0 Attack->(60,-11) path 1/4 next (25.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 924 engaged 0
+  t69.5 #992 siege_tank (30.0,-24.9) h180 v2.4 Move->(30,-26) path 0/1 next (30.1,-26.4) goal (30,-26) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t69.5 #1005 ifv (20.2,-25.4) h112 v7.9 Attack->(60,-11) path 1/4 next (25.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 924 engaged 0
+t69.75 #992 (30.0,-25.4) SetOrder Move <46.35631, -15.03408> | SetOrder < IssueGroupMove < Apply < Submit
+t69.75 #992 (30.0,-25.4) SetPath 2 to <46.35631, -15.03408> | SetPath < FindPath < PathTo < IssueGroupMove
+  t70.0 #992 siege_tank (30.0,-25.6) h170 v0.5 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t70.0 #1005 ifv (23.2,-26.7) h95 v4.5 Attack->(60,-11) path 1/4 next (25.0,-25.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes Narrow, NoPark target 924 engaged 0
+t70.35 #1005 (24.5,-26.5) Arrive 1/4 d1.6 | Drive < Step < Step < Play
+  t70.5 #992 siege_tank (30.1,-25.9) h151 v0.5 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t70.5 #1005 ifv (25.2,-26.4) h85 v4.5 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t71.0 #992 siege_tank (30.3,-26.0) h132 v0.5 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t71.0 #1005 ifv (25.7,-26.5) h94 v0.4 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t71.5 #992 siege_tank (31.0,-25.4) h113 v0.5 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t71.5 #1005 ifv (25.4,-27.1) h51 v0.4 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t72.0 #992 siege_tank (31.7,-25.2) h94 v0.5 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t72.0 #1005 ifv (25.3,-27.3) h51 v0.4 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t72.5 #992 siege_tank (32.0,-25.1) h75 v0.0 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t72.5 #1005 ifv (25.4,-27.1) h34 v1.5 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t73.0 #992 siege_tank (32.0,-25.1) h56 v0.0 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t73.0 #1005 ifv (25.8,-25.4) h9 v5.2 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes NoPark target 924 engaged 0
+  t73.5 #992 siege_tank (32.0,-25.1) h37 v0.0 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t73.5 #1005 ifv (28.5,-23.0) h64 v8.9 Attack->(60,-11) path 2/4 next (33.0,-21.0) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t73.90 #1005 (30.4,-21.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t73.95 #1005 (30.7,-20.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.00 #1005 (30.9,-20.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t74.0 #992 siege_tank (32.0,-25.0) h17 v1.2 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t74.0 #1005 ifv (31.1,-20.1) h37 v6.3 Attack->(60,-11) path 0/0 next (31.1,-20.1) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t74.05 #1005 (31.1,-20.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.10 #1005 (31.2,-19.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.15 #1005 (31.2,-19.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.20 #1005 (31.3,-19.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.25 #1005 (31.3,-19.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.30 #1005 (31.2,-19.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.35 #1005 (31.1,-19.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.40 #1005 (31.0,-18.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.45 #1005 (31.0,-18.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.50 #1005 (31.0,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t74.5 #992 siege_tank (32.0,-24.6) h1 v1.1 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t74.5 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(60,-11) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t74.55 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.60 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.65 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.70 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.75 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.80 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.85 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.90 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t74.95 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.00 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t75.0 #992 siege_tank (32.0,-23.9) h13 v1.8 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t75.0 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(60,-11) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 924 engaged 0
+t75.00 #1005 (30.9,-18.8) SetOrder Attack <38.5, -8> | SetOrder < Apply < Submit < Issue
+t75.05 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.10 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.15 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.20 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.25 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.30 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.35 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.40 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.45 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.50 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t75.5 #992 siege_tank (32.0,-24.1) h28 v0.0 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t75.5 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t75.55 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.60 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.65 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.70 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.75 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.80 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.85 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.90 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t75.95 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.00 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t76.0 #992 siege_tank (32.0,-24.2) h15 v1.1 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t76.0 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t76.05 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.10 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.15 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.20 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.25 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.30 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.35 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.40 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.45 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.50 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t76.5 #992 siege_tank (32.0,-24.6) h30 v0.0 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t76.5 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t76.55 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.60 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.65 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.70 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.75 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.80 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.85 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.90 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t76.95 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.00 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t77.0 #992 siege_tank (32.0,-24.5) h15 v1.5 Move->(46,-15) path 0/2 next (31.0,-21.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t77.0 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t77.05 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.10 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.15 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.20 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.25 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.30 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.35 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.40 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.45 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.50 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.50 #992 (32.0,-24.9) Costed route round #1005: 6 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+t77.50 #992 (32.0,-24.9) SetPath 6 to <46.35631, -15.03408> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t77.5 #992 siege_tank (32.0,-25.0) h31 v0.0 Move->(46,-15) path 0/6 next (29.0,-25.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t77.5 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t77.55 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.60 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.65 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.70 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.75 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.80 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.85 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.90 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t77.95 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.00 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t78.0 #992 siege_tank (32.0,-25.1) h12 v0.0 Move->(46,-15) path 0/6 next (29.0,-25.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t78.0 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t78.05 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.10 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.15 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.20 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.25 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.30 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.35 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.40 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.45 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.50 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t78.5 #992 siege_tank (32.0,-25.0) h-7 v0.5 Move->(46,-15) path 0/6 next (29.0,-25.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t78.5 #1005 ifv (30.9,-18.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.9,-18.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t78.55 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.60 #1005 (30.9,-18.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.65 #1005 (30.8,-18.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.70 #1005 (30.8,-18.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.75 #1005 (30.8,-18.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.80 #1005 (30.7,-18.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.85 #1005 (30.7,-18.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.90 #1005 (30.7,-18.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t78.95 #1005 (30.7,-18.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.00 #1005 (30.7,-18.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t79.0 #992 siege_tank (31.9,-24.8) h-26 v0.8 Move->(46,-15) path 0/6 next (29.0,-25.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t79.0 #1005 ifv (30.6,-18.4) h37 v0.0 Attack->(39,-8) path 0/0 next (30.6,-18.4) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t79.05 #1005 (30.6,-18.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.05 #992 (31.9,-24.8) Costed route round #1005: 6 points, 35 m | ApplyCostedPath < RunPathQueue < Step < Step
+t79.05 #992 (31.9,-24.8) SetPath 6 to <46.35631, -15.03408> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t79.10 #1005 (30.6,-18.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.15 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.20 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.25 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.30 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.35 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.40 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.45 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.50 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t79.5 #992 siege_tank (31.9,-24.6) h-10 v0.5 Move->(46,-15) path 0/7 next (36.4,-22.0) goal (46,-15) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t79.5 #1005 ifv (30.6,-18.3) h37 v0.0 Attack->(39,-8) path 0/0 next (30.6,-18.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t79.55 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.60 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.65 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.70 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.75 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.80 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.85 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.90 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t79.95 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.00 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t80.0 #992 siege_tank (31.9,-24.3) h9 v0.5 Move->(46,-15) path 0/7 next (36.4,-22.0) goal (46,-15) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t80.0 #1005 ifv (30.6,-18.3) h37 v0.0 Attack->(39,-8) path 0/0 next (30.6,-18.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t80.05 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.10 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.15 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.20 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.25 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.30 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.35 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.40 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.45 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.50 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t80.5 #992 siege_tank (32.0,-24.3) h26 v1.1 Move->(46,-15) path 0/7 next (36.4,-22.0) goal (46,-15) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t80.5 #1005 ifv (30.6,-18.3) h37 v0.0 Attack->(39,-8) path 0/0 next (30.6,-18.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t80.55 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.60 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.65 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.70 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.75 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.80 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.85 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.90 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t80.95 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.00 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t81.0 #992 siege_tank (32.0,-24.6) h50 v2.0 Move->(46,-15) path 0/7 next (36.4,-22.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t81.0 #1005 ifv (30.6,-18.3) h37 v0.0 Attack->(39,-8) path 0/0 next (30.6,-18.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t81.05 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.10 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.15 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.20 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.25 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.30 #1005 (30.6,-18.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.35 #1005 (30.6,-18.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.40 #1005 (30.6,-18.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.45 #1005 (30.6,-18.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.50 #1005 (30.6,-17.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t81.5 #992 siege_tank (32.0,-24.8) h58 v0.0 Move->(46,-15) path 0/7 next (36.4,-22.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t81.5 #1005 ifv (30.6,-17.8) h37 v0.0 Attack->(39,-8) path 0/0 next (30.6,-17.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t81.55 #1005 (30.6,-17.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.60 #1005 (30.5,-17.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.65 #1005 (30.5,-17.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.70 #1005 (30.5,-17.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.75 #1005 (30.5,-17.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.80 #1005 (30.4,-17.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.85 #1005 (30.4,-17.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.90 #1005 (30.4,-17.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t81.95 #1005 (30.3,-17.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.00 #1005 (30.3,-17.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t82.0 #992 siege_tank (32.0,-24.8) h58 v0.0 Move->(46,-15) path 0/7 next (36.4,-22.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t82.0 #1005 ifv (30.2,-16.9) h37 v0.0 Attack->(39,-8) path 0/0 next (30.2,-16.9) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t82.05 #1005 (30.2,-16.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.10 #1005 (30.2,-16.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.15 #1005 (30.2,-16.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.15 #992 (32.0,-24.8) Costed route round #1005: 3 points, 20 m | ApplyCostedPath < RunPathQueue < Step < Step
+t82.15 #992 (32.0,-24.8) SetPath 3 to <46.35631, -15.03408> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t82.20 #1005 (30.1,-16.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.25 #1005 (30.1,-16.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.30 #1005 (30.0,-16.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.35 #1005 (29.9,-16.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.40 #1005 (29.9,-16.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.45 #1005 (29.8,-16.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.50 #1005 (29.7,-16.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t82.5 #992 siege_tank (32.0,-24.8) h45 v0.0 Move->(46,-15) path 0/3 next (31.0,-23.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t82.5 #1005 ifv (29.7,-16.4) h37 v0.0 Attack->(39,-8) path 0/0 next (29.7,-16.4) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t82.55 #1005 (29.7,-16.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.60 #1005 (29.6,-16.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.65 #1005 (29.5,-16.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.70 #1005 (29.5,-16.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.75 #1005 (29.4,-16.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.80 #1005 (29.3,-16.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.85 #1005 (29.2,-16.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.90 #1005 (29.2,-16.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t82.95 #1005 (29.1,-15.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.00 #1005 (29.0,-15.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t83.0 #992 siege_tank (32.0,-24.8) h26 v0.0 Move->(46,-15) path 0/3 next (31.0,-23.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t83.0 #1005 ifv (28.9,-15.8) h37 v0.0 Attack->(39,-8) path 0/0 next (28.9,-15.8) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t83.05 #1005 (28.9,-15.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.10 #1005 (28.8,-15.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.15 #1005 (28.7,-15.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.20 #1005 (28.6,-15.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.25 #1005 (28.6,-15.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.30 #1005 (28.5,-15.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.35 #1005 (28.4,-15.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.40 #1005 (28.3,-15.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.45 #1005 (28.2,-15.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.50 #1005 (28.1,-15.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t83.5 #992 siege_tank (32.0,-24.8) h7 v0.0 Move->(46,-15) path 0/3 next (31.0,-23.0) goal (46,-15) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t83.5 #1005 ifv (28.1,-15.1) h37 v0.0 Attack->(39,-8) path 0/0 next (28.1,-15.1) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t83.55 #1005 (28.1,-15.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.60 #1005 (28.0,-15.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.65 #1005 (27.9,-15.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.70 #1005 (27.8,-15.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.70 #992 (32.0,-24.6) Costed route round #1017: 4 points, 21 m | ApplyCostedPath < RunPathQueue < Step < Step
+t83.70 #992 (32.0,-24.6) SetPath 4 to <46.35631, -15.03408> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t83.75 #1005 (27.7,-14.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.80 #1005 (27.7,-14.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.85 #1005 (27.6,-14.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.90 #1005 (27.5,-14.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t83.95 #1005 (27.4,-14.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.00 #1005 (27.4,-14.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t84.0 #992 siege_tank (31.9,-24.4) h-14 v0.6 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t84.0 #1005 ifv (27.3,-14.6) h37 v0.0 Attack->(39,-8) path 0/0 next (27.3,-14.6) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t84.05 #1005 (27.3,-14.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.10 #1005 (27.2,-14.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.15 #1005 (27.1,-14.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.20 #1005 (27.1,-14.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.25 #1005 (27.0,-14.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.30 #1005 (27.0,-14.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t84.5 #992 siege_tank (31.8,-23.9) h-33 v0.9 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t84.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t84.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t84.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t85.0 #992 siege_tank (31.8,-23.8) h-52 v0.5 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t85.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t85.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t85.5 #992 siege_tank (31.6,-23.7) h-71 v0.6 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t85.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t85.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t85.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t86.0 #992 siege_tank (31.1,-23.6) h-90 v1.5 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t86.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t86.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t86.5 #992 siege_tank (30.2,-23.5) h-109 v1.7 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t86.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t86.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t86.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t87.0 #992 siege_tank (29.4,-23.5) h-128 v1.6 Move->(46,-15) path 0/5 next (28.1,-24.6) goal (46,-15) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t87.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t87.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.20 #992 (29.2,-23.5) Arrive 0/5 d1.6 | Drive < Step < Step < Play
+t87.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t87.5 #992 siege_tank (29.0,-23.5) h-123 v0.5 Move->(46,-15) path 1/5 next (31.0,-23.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t87.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t87.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.65 #992 (29.0,-23.6) Reverse 4.1 for #1007 | StartReverse < ServeHeadOns < Step < Step
+t87.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t87.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t88.0 #992 siege_tank (29.5,-23.2) h-119 v-1.8 Move->(46,-15) path 1/5 next (31.0,-23.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 3.4 lanes None target 0 engaged 0
+  t88.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t88.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t88.5 #992 siege_tank (30.3,-22.7) h-119 v-1.8 Move->(46,-15) path 1/5 next (31.0,-23.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 2.9 lanes None target 0 engaged 0
+  t88.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t88.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t88.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t89.0 #992 siege_tank (31.1,-22.3) h-119 v-1.8 Move->(46,-15) path 1/5 next (31.0,-23.0) goal (46,-15) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 2.4 lanes None target 0 engaged 0
+  t89.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t89.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.25 #992 (31.5,-22.1) SetOrder Move <29.16452, -26.81087> | SetOrder < IssueGroupMove < Apply < Submit
+t89.25 #992 (31.5,-22.1) SetPath 1 to <29.16452, -26.81087> | SetPath < FindPath < PathTo < IssueGroupMove
+t89.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t89.5 #992 siege_tank (31.5,-22.0) h-124 v-1.1 Move->(29,-27) path 0/1 next (29.2,-26.8) goal (29,-27) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t89.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t89.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t89.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t90.0 #992 siege_tank (32.1,-21.8) h-105 v0.3 Move->(29,-27) path 0/1 next (29.2,-26.8) goal (29,-27) q0 strikes 0 gate 1/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t90.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t90.00 #992 (32.1,-21.8) SetOrder Move <29.69332, -27.06417> | SetOrder < IssueGroupMove < Apply < Submit
+t90.00 #992 (32.1,-21.8) SetPath 2 to <29.69332, -27.06417> | SetPath < FindPath < PathTo < IssueGroupMove
+t90.05 #992 (32.1,-21.8) Arrive 0/2 d1.4 | Drive < Step < Step < Play
+t90.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.10 #992 (32.1,-21.8) Reverse 4.1 for #1022 | StartReverse < ServeHeadOns < Step < Step
+t90.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t90.5 #992 siege_tank (32.7,-21.6) h-105 v-1.8 Move->(30,-27) path 1/2 next (29.7,-27.1) goal (30,-27) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 3.4 lanes None target 0 engaged 0
+  t90.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t90.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.75 #992 (33.2,-21.5) SetOrder Move <30.7837, -27.53097> | SetOrder < IssueGroupMove < Apply < Submit
+t90.75 #992 (33.2,-21.5) SetPath 2 to <30.7837, -27.53097> | SetPath < FindPath < PathTo < IssueGroupMove
+t90.80 #992 (33.2,-21.5) Wait for doorway 27 | StartGateWait < GateCheck < Drive < Step
+t90.80 #992 (33.2,-21.5) SetPath 1 to <37.2402, -17.35078> | SetPath < StartGateWait < GateCheck < Drive
+t90.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t90.95 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.00 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t91.0 #992 siege_tank (33.2,-21.5) h-96 v-1.1 Move->(31,-28) path 0/1 next (37.2,-17.4) goal (37,-17) q0 strikes 0 gate 0/27 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t91.0 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t91.05 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.10 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.15 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.20 #992 (33.2,-21.5) Reverse 4.1 for #1022 | StartReverse < ServeHeadOns < Step < Step
+t91.20 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.25 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.30 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.35 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.40 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.45 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.50 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t91.5 #992 siege_tank (33.9,-21.3) h-94 v-1.8 Move->(31,-28) path 0/1 next (37.2,-17.4) goal (37,-17) q0 strikes 0 gate 0/27 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 3.5 lanes None target 0 engaged 0
+  t91.5 #1005 ifv (27.0,-14.3) h37 v0.0 Attack->(39,-8) path 0/0 next (27.0,-14.3) goal (60,-11) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 973 engaged 0
+t91.50 #992 (33.9,-21.3) SetOrder Move <31.69729, -27.86764> | SetOrder < IssueGroupMove < Apply < Submit
+t91.50 #992 (33.9,-21.3) SetPath 3 to <31.69729, -27.86764> | SetPath < FindPath < PathTo < IssueGroupMove
+t91.55 #992 (33.9,-21.3) Wait for doorway 27 | StartGateWait < GateCheck < Drive < Step
+t91.55 #992 (33.9,-21.3) SetPath 1 to <37.42914, -16.6158> | SetPath < StartGateWait < GateCheck < Drive
+t91.55 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.60 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.65 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.70 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.75 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.80 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.85 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.90 #1005 (27.0,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t91.95 #1005 (26.9,-14.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step

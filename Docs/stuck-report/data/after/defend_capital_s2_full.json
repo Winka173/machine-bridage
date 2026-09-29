@@ -1,0 +1,24 @@
+{
+  "map": "capital",
+  "mode": "Defend",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 4dcd280f app 0.1.0",
+  "ticks": 10801,
+  "journal": [],
+  "records": [
+    {"vehicle": 866, "def": "armored_car", "team": 0, "startTick": 2740, "start": 137, "end": 147.5, "seconds": 10.5, "x": 96.397, "y": 98.014, "goalX": 99.165, "goalY": 87.852, "order": "Move", "cause": "OffRoute", "detail": "to (99.2,87.9) past missile_battery(defence)", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "missile_battery(fixed)@8.8 airfield(fixed)@8.6 main_battle_tank(parked)@9.8 scout_jeep(moving)@10.0 aa_vehicle(parked)@4.7 scout_jeep(moving)@7.9 armored_car(parked)@8.5 scout_jeep(parked)@4.0 scout_jeep(parked)@4.9 light_tank(parked)@6.4 main_battle_tank(parked)@8.4 aa_vehicle(parked)@9.7"},
+    {"vehicle": 832, "def": "main_battle_tank", "team": 0, "startTick": 2910, "start": 145.5, "end": 156, "seconds": 10.5, "x": 101.1, "y": 89.083, "goalX": 108.107, "goalY": 92.001, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#853 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "airfield(fixed)@3.9 aa_vehicle(parked)@4.8 light_tank(parked)@4.8 scout_jeep(moving)@8.3 armored_car(parked)@4.0 aa_vehicle(moving)@3.2 mlrs(moving)@7.7 base_wall@8 base_wall@6"},
+    {"vehicle": 879, "def": "aa_vehicle", "team": 0, "startTick": 2910, "start": 145.5, "end": 156, "seconds": 10.5, "x": 99.985, "y": 86.053, "goalX": 86.595, "goalY": 7.658, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "airfield(fixed)@7.1 main_battle_tank(moving)@3.2 aa_vehicle(parked)@5.1 light_tank(parked)@6.6 armored_car(parked)@2.0 base_wall@5 base_wall@5"},
+    {"vehicle": 866, "def": "armored_car", "team": 0, "startTick": 3160, "start": 158, "end": 168, "seconds": 10, "x": 98.985, "y": 86.039, "goalX": 76.654, "goalY": 50.49, "order": "Move", "cause": "YieldWait", "detail": "behind aa_vehicle#853", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "missile_battery(fixed)@9.4 airfield(fixed)@7.6 main_battle_tank(moving)@3.7 aa_vehicle(moving)@6.3 base_wall@4 base_wall@6"},
+    {"vehicle": 865, "def": "armored_car", "team": 0, "startTick": 3290, "start": 164.5, "end": 173, "seconds": 8.5, "x": 105.254, "y": 96.921, "goalX": 103.748, "goalY": 8.777, "order": "Move", "cause": "BlockedByDefence", "detail": "airfield#805 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "airfield(fixed)@5.0 main_battle_tank(moving)@8.9 aa_vehicle(moving)@9.2 armored_car(moving)@9.8"},
+    {"vehicle": 837, "def": "siege_tank", "team": 0, "startTick": 5310, "start": 265.5, "end": 274, "seconds": 8.5, "x": 24.656, "y": 22.067, "goalX": -9, "goalY": 77, "order": "Move", "cause": "BlockedByDefence", "detail": "minefield#826 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "minefield(fixed)@6.1"},
+    {"vehicle": 874, "def": "siege_tank", "team": 0, "startTick": 6500, "start": 325, "end": 333.5, "seconds": 8.5, "x": -16.239, "y": 74.729, "goalX": 21.491, "goalY": 123.35, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#837 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 895, "def": "ifv", "team": 0, "startTick": 6690, "start": 334.5, "end": 345.5, "seconds": 11, "x": 35.666, "y": 114.801, "goalX": 59, "goalY": 51, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#887 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@8.9 main_battle_tank(parked)@4.9 scout_jeep(moving)@10.0 armored_car(moving)@6.4 aa_vehicle(moving)@8.5 aa_vehicle(moving)@4.4 armored_car(moving)@3.5 ifv(moving)@8.3 aa_vehicle(moving)@4.7 armored_car(moving)@9.3 scout_jeep(moving)@2.8 armored_car(moving)@6.3 base_wall@5"},
+    {"vehicle": 891, "def": "armored_car", "team": 0, "startTick": 7260, "start": 363, "end": 372.5, "seconds": 9.5, "x": 35.03, "y": 121.679, "goalX": 60.454, "goalY": 24.306, "order": "Move", "cause": "YieldWait", "detail": "behind aa_vehicle#887", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@2.9 ifv(parked)@9.3 siege_tank(moving)@8.9 mlrs(moving)@4.9 siege_tank(moving)@3.8 scout_jeep(moving)@5.3 armored_car(moving)@7.1 armored_car(moving)@5.6"}
+  ],
+  "rescues": [
+    "2924,866,armored_car,0,ghost,96.1,98.1,96.1,98.1",
+    "3101,879,aa_vehicle,0,ghost,100.4,86.0,100.4,86.0"
+  ]
+}

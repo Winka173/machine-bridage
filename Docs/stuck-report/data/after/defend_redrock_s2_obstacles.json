@@ -1,0 +1,16 @@
+{
+  "map": "redrock",
+  "mode": "Defend",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 10801,
+  "journal": [],
+  "records": [
+    {"vehicle": 670, "def": "siege_tank", "team": 0, "startTick": 6740, "start": 337, "end": 345.5, "seconds": 8.5, "x": 104.798, "y": 44.73, "goalX": 113.823, "goalY": 44.906, "order": "Move", "cause": "GateWait", "detail": "doorway 0", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@8.7 siege_tank(moving)@9.3 base_wall@10 base_wall@5"},
+    {"vehicle": 810, "def": "light_tank", "team": 0, "startTick": 9950, "start": 497.5, "end": 507.5, "seconds": 10, "x": 41.122, "y": 98.406, "goalX": 51, "goalY": 117, "order": "AttackMove", "cause": "YieldWait", "detail": "behind main_battle_tank#746", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@4.5 siege_tank(moving)@7.4 mlrs(parked)@7.0 armored_car(moving)@9.0 armored_car(moving)@7.6"},
+    {"vehicle": 806, "def": "ifv", "team": 0, "startTick": 10050, "start": 502.5, "end": 511.5, "seconds": 9, "x": 49.392, "y": 120.235, "goalX": 44.408, "goalY": 99.734, "order": "AttackMove", "cause": "YieldWait", "detail": "behind aa_vehicle#842", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mlrs(moving)@6.0 main_battle_tank(moving)@6.7 armored_car(moving)@5.5 ifv(moving)@3.1 scout_jeep(parked)@8.7 aa_vehicle(moving)@6.9 armored_car(moving)@7.5"},
+    {"vehicle": 842, "def": "aa_vehicle", "team": 0, "startTick": 10080, "start": 504, "end": 513.5, "seconds": 9.5, "x": 44.288, "y": 116.635, "goalX": 20.273, "goalY": 77.087, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mlrs#748", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@9.3 mlrs(moving)@5.2 ifv(moving)@8.4 main_battle_tank(parked)@9.2 ifv(moving)@4.6 armored_car(moving)@4.5 base_wall@6 shield_generator@9"}
+  ],
+  "rescues": []
+}

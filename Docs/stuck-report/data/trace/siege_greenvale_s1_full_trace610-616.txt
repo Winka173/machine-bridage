@@ -1,0 +1,712 @@
+t172.00 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t172.0 #610 titan_tank (91.0,32.2) h176 v0.7 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t172.0 #616 titan_tank (115.4,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.4,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t172.05 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.10 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.15 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.20 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.25 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.30 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.35 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.40 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.45 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.50 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t172.5 #610 titan_tank (91.2,31.7) h153 v1.6 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t172.5 #616 titan_tank (115.4,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.4,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t172.55 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.60 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.65 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.70 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.75 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.80 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.85 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.90 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t172.95 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.00 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t173.0 #610 titan_tank (91.9,30.8) h131 v2.9 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t173.0 #616 titan_tank (115.4,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.4,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t173.05 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.10 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.15 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.20 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.25 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.30 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.35 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.40 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.45 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.50 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t173.5 #610 titan_tank (93.4,30.0) h108 v3.9 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t173.5 #616 titan_tank (115.4,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.4,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t173.55 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.60 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.65 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.70 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.75 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.80 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.85 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.90 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t173.95 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.00 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t174.0 #610 titan_tank (95.5,29.8) h86 v4.5 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t174.0 #616 titan_tank (115.4,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.4,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t174.05 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.10 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.15 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.20 #616 (115.4,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.25 #616 (115.5,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.30 #616 (115.5,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.35 #616 (115.5,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.40 #616 (115.5,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.50 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t174.5 #610 titan_tank (97.8,30.3) h75 v4.6 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t174.5 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t174.55 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.60 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.65 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.70 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.75 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.80 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.85 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.90 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t174.95 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.00 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t175.0 #610 titan_tank (100.0,30.9) h75 v4.6 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t175.0 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t175.05 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.10 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.15 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.20 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.25 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.30 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.35 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.40 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.50 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t175.5 #610 titan_tank (101.3,31.0) h97 v2.3 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t175.5 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t175.55 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.60 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.65 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.70 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.75 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.80 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.85 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.90 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t175.95 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.00 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t176.0 #610 titan_tank (102.2,30.8) h111 v0.9 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t176.0 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t176.05 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.10 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.15 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.20 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.25 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.30 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.35 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.40 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.50 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t176.5 #610 titan_tank (102.5,30.6) h108 v1.0 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t176.5 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t176.55 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.60 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.65 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.70 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.75 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.80 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.85 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.90 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t176.95 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.00 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t177.0 #610 titan_tank (103.4,30.4) h103 v2.3 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t177.0 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t177.05 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.10 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.15 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.20 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.25 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.30 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.35 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.40 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.50 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t177.5 #610 titan_tank (104.9,30.3) h87 v4.0 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t177.5 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t177.55 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.60 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.65 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.70 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.75 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.80 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.85 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.90 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t177.95 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.00 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t178.0 #610 titan_tank (106.7,30.7) h65 v2.5 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t178.0 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t178.05 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.10 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.15 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.20 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.25 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.30 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.35 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.40 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.50 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t178.5 #610 titan_tank (107.5,31.3) h42 v0.9 Idle->(0,0) path 2/7 next (107.0,33.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t178.5 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t178.55 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.60 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.65 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.70 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.75 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.80 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.85 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.90 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t178.95 #610 (107.7,31.5) Arrive 2/7 d1.6 | Drive < Step < Step < Play
+t178.95 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.00 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t179.0 #610 titan_tank (107.7,31.6) h22 v0.9 Idle->(0,0) path 3/7 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t179.0 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t179.05 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.10 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.15 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.20 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.25 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.30 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.35 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.40 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.50 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t179.5 #610 titan_tank (108.1,32.4) h27 v2.5 Idle->(0,0) path 3/7 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t179.5 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t179.55 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.60 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.65 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.70 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.75 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.80 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.85 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.90 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t179.95 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.00 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t180.0 #610 titan_tank (108.6,34.1) h18 v4.4 Idle->(0,0) path 3/7 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t180.0 #616 titan_tank (115.6,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.6,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t180.05 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.10 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.15 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.20 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.25 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.30 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.35 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.40 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.45 #616 (115.6,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.50 #616 (115.7,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t180.5 #610 titan_tank (109.3,35.4) h40 v2.1 Idle->(0,0) path 3/7 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t180.5 #616 titan_tank (115.7,36.0) h91 v0.0 Idle->(0,0) path 0/0 next (115.7,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t180.55 #616 (115.7,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.60 #616 (115.8,36.0) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.65 #616 (115.9,35.9) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.70 #616 (116.0,35.9) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.75 #616 (116.0,35.9) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.75 #610 (109.6,35.9) SetOrder AttackMove <57.58216, 92.16657> | SetOrder < IssueGroupMove < Apply < Submit
+t180.75 #610 (109.6,35.9) SetPath 5 to <57.58216, 92.16657> | SetPath < FindPath < PathTo < IssueGroupMove
+t180.80 #616 (116.1,35.9) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.85 #616 (116.2,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.90 #616 (116.3,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t180.95 #616 (116.3,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.00 #616 (116.4,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t181.0 #610 titan_tank (109.5,36.0) h63 v0.2 AttackMove->(58,92) path 0/5 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t181.0 #616 titan_tank (116.4,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.4,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t181.05 #616 (116.4,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.10 #616 (116.5,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.15 #616 (116.5,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.20 #616 (116.6,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.25 #610 (109.5,36.0) SetPath 4 to <95, 52> | SetPath < FindPath < PathTo < CloseIn
+t181.25 #616 (116.6,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.30 #616 (116.6,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t181.5 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t181.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t181.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.65 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.70 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.75 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.80 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.85 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.90 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t181.95 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.00 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t182.0 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t182.0 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t182.05 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.10 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.15 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.20 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.25 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.30 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t182.5 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t182.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t182.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.65 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.70 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.75 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.80 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.85 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.90 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t182.95 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.00 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t183.0 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t183.0 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t183.05 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.10 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.15 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.20 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.25 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.30 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t183.5 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t183.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t183.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.65 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.70 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.75 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.80 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.85 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.90 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t183.95 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.00 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t184.0 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t184.0 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t184.05 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.10 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.15 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.20 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.25 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.30 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t184.5 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t184.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t184.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.65 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.70 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.75 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.80 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.85 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.90 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t184.95 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.00 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t185.0 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t185.0 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t185.05 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.10 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.15 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.20 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.25 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.30 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t185.5 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t185.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t185.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.65 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.70 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.75 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.80 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.85 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.85 #610 (109.4,36.0) Costed route round #616: 5 points, 39 m | ApplyCostedPath < RunPathQueue < Step < Step
+t185.85 #610 (109.4,36.0) SetPath 5 to <95, 52> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t185.90 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t185.95 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.00 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t186.0 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/5 next (111.0,35.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t186.0 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t186.05 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.10 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.15 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.20 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.25 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.30 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t186.5 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/5 next (111.0,35.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t186.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t186.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.65 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.70 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.75 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.80 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.85 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.90 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t186.95 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.00 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t187.0 #610 titan_tank (109.4,36.0) h77 v0.0 AttackMove->(58,92) path 0/5 next (111.0,35.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t187.0 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t187.05 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.10 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.15 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.20 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.25 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.30 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.35 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.40 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.40 #610 (109.4,36.0) Costed route round #616: 5 points, 39 m | ApplyCostedPath < RunPathQueue < Step < Step
+t187.40 #610 (109.4,36.0) SetPath 5 to <95, 52> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t187.45 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.50 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t187.5 #610 titan_tank (109.4,36.0) h81 v0.0 AttackMove->(58,92) path 0/6 next (103.7,35.5) goal (95,52) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t187.5 #616 titan_tank (116.7,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.7,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t187.55 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.60 #616 (116.7,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.65 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.70 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.75 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.80 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.85 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.90 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t187.95 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.00 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t188.0 #610 titan_tank (109.5,36.0) h104 v0.6 AttackMove->(58,92) path 0/6 next (103.7,35.5) goal (95,52) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t188.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t188.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t188.5 #610 titan_tank (109.8,35.8) h126 v0.7 AttackMove->(58,92) path 0/6 next (103.7,35.5) goal (95,52) q0 strikes 2 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t188.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t188.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t188.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t189.0 #610 titan_tank (110.1,35.5) h149 v1.0 AttackMove->(58,92) path 0/6 next (103.7,35.5) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t189.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t189.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t189.5 #610 titan_tank (110.2,35.2) h171 v0.7 AttackMove->(58,92) path 0/6 next (103.7,35.5) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t189.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t189.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t189.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t190.0 #610 titan_tank (110.2,34.8) h-167 v0.7 AttackMove->(58,92) path 0/6 next (103.7,35.5) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t190.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t190.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.50 #610 (109.9,34.3) Costed route round #616: 4 points, 38 m | ApplyCostedPath < RunPathQueue < Step < Step
+t190.50 #610 (109.9,34.3) SetPath 4 to <95, 52> | SetPath < ApplyCostedPath < RunPathQueue < Step
+  t190.5 #610 titan_tank (109.9,34.3) h-144 v1.8 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t190.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t190.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t190.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t191.0 #610 titan_tank (109.6,34.0) h-122 v0.7 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t191.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t191.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t191.5 #610 titan_tank (109.3,33.9) h-99 v0.7 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t191.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t191.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t191.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t192.0 #610 titan_tank (108.9,33.9) h-76 v0.7 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t192.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t192.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t192.5 #610 titan_tank (108.6,34.1) h-54 v0.7 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t192.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t192.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t192.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t193.0 #610 titan_tank (108.4,34.4) h-31 v1.0 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t193.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t193.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t193.5 #610 titan_tank (108.2,35.1) h-9 v1.9 AttackMove->(58,92) path 0/4 next (111.0,37.0) goal (95,52) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t193.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t193.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.60 #610 (108.1,35.3) Costed route round #0: 4 points, 40 m | ApplyCostedPath < RunPathQueue < Step < Step
+t193.60 #610 (108.1,35.3) SetPath 4 to <95, 52> | SetPath < ApplyCostedPath < RunPathQueue < Step
+t193.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t193.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t194.0 #610 titan_tank (108.2,35.6) h14 v0.7 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t194.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t194.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.45 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.50 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t194.5 #610 titan_tank (108.4,36.0) h36 v1.2 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t194.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t194.55 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.60 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.65 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.70 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.75 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t194.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+  t195.0 #610 titan_tank (108.4,36.0) h59 v0.0 AttackMove->(58,92) path 0/4 next (111.0,35.0) goal (95,52) q0 strikes 1 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 583
+  t195.0 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 583 engaged 583
+t195.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.25 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.30 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.35 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.40 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateGuard < UpdateOrder
+t195.45 #610 (108.4,36.0) SetPath 3 to <57.58216, 92.16657> | SetPath < FindPath < PathTo < UpdateAttackMove
+  t195.5 #610 titan_tank (108.5,36.0) h74 v0.0 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t195.5 #616 titan_tank (116.9,35.8) h91 v0.0 Idle->(0,0) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t195.75 #616 (116.9,35.8) SetOrder Attack <125, 66.5> | SetOrder < Apply < Submit < Issue
+t195.80 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t195.85 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t195.90 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t195.95 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.00 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t196.0 #610 titan_tank (108.5,36.0) h68 v0.2 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t196.0 #616 titan_tank (116.9,35.8) h91 v0.0 Attack->(125,67) path 0/0 next (116.9,35.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 543 engaged 0
+t196.05 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.10 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.15 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.20 #616 (116.9,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.25 #616 (116.8,35.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.30 #616 (116.8,35.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.35 #616 (116.8,35.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.40 #616 (116.8,35.9) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.45 #616 (116.8,36.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.50 #616 (116.8,36.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t196.5 #610 titan_tank (108.7,36.0) h71 v0.0 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t196.5 #616 titan_tank (116.8,36.0) h91 v0.0 Attack->(125,67) path 0/0 next (116.8,36.0) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 543 engaged 0
+t196.55 #616 (116.8,36.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.60 #616 (116.7,36.0) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.65 #616 (116.7,36.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.70 #616 (116.7,36.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.75 #616 (116.7,36.1) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.80 #616 (116.7,36.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t196.85 #616 (116.6,36.2) SetOrder Idle <0, 0> | SetOrder < UpdateOrder < Step < Step
+t196.85 #616 (116.6,36.2) ClearPath | ClearPath < UpdateOrder < Step < Step
+  t197.0 #610 titan_tank (108.7,36.0) h68 v0.0 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t197.0 #616 titan_tank (116.6,36.2) h91 v0.0 Idle->(0,0) path 0/0 next (116.6,36.2) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t197.25 #616 (116.6,36.2) SetOrder Attack <130, 66.5> | SetOrder < Apply < Submit < Issue
+t197.30 #616 (116.6,36.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.35 #616 (116.6,36.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.40 #616 (116.6,36.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.45 #616 (116.6,36.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.50 #616 (116.6,36.2) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t197.5 #610 titan_tank (108.7,36.0) h68 v0.2 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t197.5 #616 titan_tank (116.5,36.3) h91 v0.0 Attack->(130,67) path 0/0 next (116.5,36.3) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 544 engaged 0
+t197.55 #616 (116.5,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.60 #616 (116.5,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.65 #616 (116.5,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.70 #616 (116.5,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.75 #616 (116.4,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.80 #616 (116.4,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.85 #616 (116.3,36.3) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.90 #616 (116.3,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t197.95 #616 (116.3,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.00 #616 (116.4,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t198.0 #610 titan_tank (109.2,36.2) h75 v1.4 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t198.0 #616 titan_tank (116.4,36.4) h91 v0.0 Attack->(130,67) path 0/0 next (116.4,36.4) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 544 engaged 0
+t198.05 #616 (116.4,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.10 #616 (116.4,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.15 #616 (116.5,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.20 #616 (116.5,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.25 #616 (116.6,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.30 #616 (116.6,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.35 #616 (116.7,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.40 #616 (116.7,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.45 #616 (116.8,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.50 #616 (116.8,36.4) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t198.5 #610 titan_tank (109.6,36.3) h86 v1.2 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t198.5 #616 titan_tank (116.9,36.5) h91 v0.0 Attack->(130,67) path 0/0 next (116.9,36.5) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 544 engaged 0
+t198.55 #616 (116.9,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.60 #616 (116.9,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.65 #616 (116.9,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.70 #616 (117.0,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.75 #616 (117.0,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.80 #616 (117.0,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.85 #616 (117.1,36.5) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.90 #616 (117.1,36.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t198.95 #616 (117.2,36.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.00 #616 (117.2,36.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t199.0 #610 titan_tank (109.9,36.3) h94 v1.1 AttackMove->(58,92) path 0/3 next (111.0,35.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t199.0 #616 titan_tank (117.2,36.6) h91 v0.0 Attack->(130,67) path 0/0 next (117.2,36.6) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 544 engaged 0
+t199.05 #616 (117.2,36.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.10 #616 (117.3,36.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.15 #610 (110.0,36.3) Arrive 0/3 d1.6 | Drive < Step < Step < Play
+t199.15 #616 (117.3,36.6) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.20 #616 (117.3,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.25 #616 (117.3,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.30 #616 (117.3,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.35 #616 (117.4,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.40 #616 (117.4,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.45 #616 (117.4,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.50 #616 (117.4,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t199.5 #610 titan_tank (110.1,36.3) h80 v0.6 AttackMove->(58,92) path 1/3 next (111.0,45.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t199.5 #616 titan_tank (117.5,36.7) h91 v0.0 Attack->(130,67) path 0/0 next (117.5,36.7) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 544 engaged 0
+t199.55 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.60 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.65 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.70 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.75 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.80 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.85 #616 (117.5,36.7) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.90 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t199.95 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.00 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t200.0 #610 titan_tank (110.4,36.4) h58 v0.7 AttackMove->(58,92) path 1/3 next (111.0,45.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t200.0 #616 titan_tank (117.5,36.8) h91 v0.0 Attack->(130,67) path 0/0 next (117.5,36.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 544 engaged 0
+t200.05 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.10 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.15 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.20 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.25 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.30 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.35 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t200.40 #616 (117.5,36.8) SetOrder Idle <0, 0> | SetOrder < UpdateOrder < Step < Step
+t200.40 #616 (117.5,36.8) ClearPath | ClearPath < UpdateOrder < Step < Step
+  t200.5 #610 titan_tank (110.7,36.6) h35 v0.7 AttackMove->(58,92) path 1/3 next (111.0,45.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t200.5 #616 titan_tank (117.5,36.8) h91 v0.0 Idle->(0,0) path 0/0 next (117.5,36.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t201.0 #610 titan_tank (111.0,37.4) h13 v2.5 AttackMove->(58,92) path 1/3 next (111.0,45.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t201.0 #616 titan_tank (117.5,36.8) h91 v0.0 Idle->(0,0) path 0/0 next (117.5,36.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+t201.00 #616 (117.5,36.8) SetOrder Attack <129, 74> | SetOrder < Apply < Submit < Issue
+t201.05 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.10 #616 (117.5,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.15 #616 (117.4,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.20 #616 (117.4,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.25 #616 (117.4,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.30 #616 (117.4,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.35 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.40 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.45 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.50 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+  t201.5 #610 titan_tank (111.1,39.2) h1 v4.5 AttackMove->(58,92) path 1/3 next (111.0,45.0) goal (58,92) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 0 engaged 0
+  t201.5 #616 titan_tank (117.3,36.8) h91 v0.0 Attack->(129,74) path 0/0 next (117.3,36.8) goal (113,54) q0 strikes 0 gate 0/0 yieldTo 0 waitYield 0 queue 0 hold 0.0 rev 0.0 lanes None target 539 engaged 0
+t201.55 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.60 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.65 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.70 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.75 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.80 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.85 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.90 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step
+t201.95 #616 (117.3,36.8) ClearPath | ClearPath < CloseIn < UpdateOrder < Step

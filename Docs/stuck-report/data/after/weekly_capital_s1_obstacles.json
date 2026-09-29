@@ -1,0 +1,27 @@
+{
+  "map": "capital",
+  "mode": "Weekly",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 4dcd280f app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 885, "def": "titan_tank", "team": 0, "startTick": 4050, "start": 202.5, "end": 211.5, "seconds": 9, "x": -89.773, "y": -82.15, "goalX": -93.841, "goalY": -92.572, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#888 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "minefield(fixed)@9.4 aa_vehicle(moving)@3.7 ifv(moving)@5.4"},
+    {"vehicle": 877, "def": "armored_bulldozer", "team": 0, "startTick": 4770, "start": 238.5, "end": 247, "seconds": 8.5, "x": -41.971, "y": 24.111, "goalX": 11, "goalY": 73, "order": "AttackMove", "cause": "Unknown", "detail": "speed 3.4 strikes 0", "area": "field+gate", "lanes": "road+narrow+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@5.3 heavy_tank(moving)@7.4 office_block@9 wreck_truck@8"},
+    {"vehicle": 881, "def": "twin_tank", "team": 1, "startTick": 5150, "start": 257.5, "end": 267.5, "seconds": 10, "x": 102.522, "y": 122.233, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "OffRoute", "detail": "to (119.0,115.0) past ammo_depot(defence)", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@6.3 ammo_depot(fixed)@8.8 scout_jeep(moving)@3.4 flame_tank(parked)@3.9"},
+    {"vehicle": 884, "def": "fpv_carrier", "team": 1, "startTick": 6290, "start": 314.5, "end": 323.5, "seconds": 9, "x": 89.954, "y": 99.943, "goalX": 90.858, "goalY": 106.731, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#908", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@9.0 counter_battery_radar(moving)@7.1 counter_battery_radar(moving)@3.7 armored_car(moving)@7.5 base_wall@8"},
+    {"vehicle": 878, "def": "ammo_carrier", "team": 1, "startTick": 6330, "start": 316.5, "end": 325.5, "seconds": 9, "x": 69.675, "y": 95.314, "goalX": 79, "goalY": 85, "order": "Move", "cause": "BlockedByFriend", "detail": "sapper#871 parked", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@8.1 sapper(parked)@6.0 twin_tank(moving)@4.3 mobile_fortress(moving)@8.6"},
+    {"vehicle": 869, "def": "flame_tank", "team": 1, "startTick": 7820, "start": 391, "end": 399.5, "seconds": 8.5, "x": 90.274, "y": 60.199, "goalX": 75.167, "goalY": 33.278, "order": "AttackMove", "cause": "Unknown", "detail": "speed 4.1 strikes 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "super_gun(fixed)@9.5 mobile_fortress(parked)@9.9"},
+    {"vehicle": 908, "def": "mobile_fortress", "team": 1, "startTick": 8560, "start": 428, "end": 440, "seconds": 12, "x": 81.671, "y": 82.453, "goalX": 95.675, "goalY": 109.867, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "wheeled_gun#892 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": ""},
+    {"vehicle": 925, "def": "elite_heavy_tank", "team": 1, "startTick": 9650, "start": 482.5, "end": 491, "seconds": 8.5, "x": 96.632, "y": 85.92, "goalX": 116.073, "goalY": 105.002, "order": "AttackMove", "cause": "YieldWait", "detail": "behind heavy_rocket_artillery#867", "area": "fortress+gate", "lanes": "route+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@7.6 repair_bay(fixed)@9.2 heavy_rocket_artillery(moving)@7.0 rocket_technical(moving)@8.9 fpv_carrier(moving)@4.1 counter_battery_radar(moving)@9.5 counter_battery_radar(moving)@7.5 base_wall@8"},
+    {"vehicle": 923, "def": "siege_tank", "team": 0, "startTick": 10300, "start": 515, "end": 524, "seconds": 9, "x": 38.802, "y": -30.026, "goalX": 27, "goalY": -57, "order": "Move", "cause": "Unknown", "detail": "speed 2.0 strikes 0", "area": "field", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(parked)@5.2 river_water@9 river_water@7 river_water@6 river_water@8"},
+    {"vehicle": 947, "def": "titan_tank", "team": 0, "startTick": 10990, "start": 549.5, "end": 562, "seconds": 12.5, "x": -92.006, "y": -95.538, "goalX": 104.429, "goalY": 64.396, "order": "AttackMove", "cause": "OffRoute", "detail": "to (-49.0,-97.0) past gun_pit(defence)", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "gun_pit(fixed)@5.3 aa_vehicle(parked)@5.1 aa_vehicle(parked)@8.3 aa_vehicle(parked)@8.0 ifv(parked)@9.4"},
+    {"vehicle": 858, "def": "command_vehicle", "team": 1, "startTick": 11610, "start": 580.5, "end": 591.5, "seconds": 11, "x": 99.853, "y": 86.422, "goalX": 104.463, "goalY": 101.356, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#878 moving", "area": "fortress+gate", "lanes": "route+nopark", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "heavy_turret(fixed)@10.0 repair_bay(fixed)@6.8 ammo_carrier(moving)@4.8 fpv_carrier(parked)@10.0 elite_heavy_tank(moving)@4.9 base_wall@5"}
+  ],
+  "rescues": [
+    "8762,908,mobile_fortress,1,ghost,81.7,82.6,81.7,82.6",
+    "11183,947,titan_tank,0,ghost,-92.0,-95.5,-92.0,-95.5",
+    "11812,858,command_vehicle,1,ghost,98.3,87.5,98.3,87.5"
+  ]
+}

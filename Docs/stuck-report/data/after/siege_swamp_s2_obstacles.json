@@ -1,0 +1,19 @@
+{
+  "map": "swamp",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map befd816b app 0.1.0",
+  "ticks": 16803,
+  "journal": [],
+  "records": [
+    {"vehicle": 2516, "def": "siege_tank", "team": 0, "startTick": 850, "start": 42.5, "end": 52.5, "seconds": 10, "x": -72.075, "y": -53.144, "goalX": -80.376, "goalY": -58.613, "order": "Move", "cause": "YieldWait", "detail": "behind armored_car#2527", "area": "field", "lanes": "route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@6.3 armored_car(moving)@7.1 armored_car(moving)@5.6 armored_car(moving)@9.2 ifv(moving)@5.3 artillery_wreck@9 wreck_tank@7"},
+    {"vehicle": 2562, "def": "heavy_tank", "team": 1, "startTick": 3000, "start": 150, "end": 161.5, "seconds": 11.5, "x": 76.063, "y": 110.439, "goalX": 41.692, "goalY": 65.164, "order": "AttackMove", "cause": "OffRoute", "detail": "to (59.0,101.0) past sandbag_wall", "area": "camp1", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "engineer_vehicle(moving)@8.6 long_sam(moving)@7.3 command_vehicle(moving)@8.3 rocket_technical(moving)@4.1 rocket_technical(moving)@4.0 sandbag_wall@6"},
+    {"vehicle": 2519, "def": "engineer_vehicle", "team": 1, "startTick": 7220, "start": 361, "end": 370.5, "seconds": 9.5, "x": 121.9, "y": 112.445, "goalX": 103.378, "goalY": 122.01, "order": "Move", "cause": "BlockedByFriend", "detail": "heavy_tank#2562 moving", "area": "camp1+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_turret(fixed)@7.5 ammo_carrier(moving)@6.9 heavy_tank(moving)@4.4 rocket_technical(moving)@8.1"},
+    {"vehicle": 2578, "def": "counter_battery_radar", "team": 1, "startTick": 8660, "start": 433, "end": 441.5, "seconds": 8.5, "x": 110.9, "y": 90.661, "goalX": 94.34, "goalY": 86.853, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#2532 moving", "area": "camp1", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@8.7 ammo_carrier(moving)@4.2 flame_tank(moving)@5.9 counter_battery_radar(moving)@8.4 rocket_technical(moving)@6.5 fpv_carrier(moving)@4.9"},
+    {"vehicle": 2660, "def": "fpv_carrier", "team": 1, "startTick": 8690, "start": 434.5, "end": 444.5, "seconds": 10, "x": 106.424, "y": 91.068, "goalX": 100.6, "goalY": 81.337, "order": "Move", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp1", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@5.3 ammo_carrier(moving)@5.1 flame_tank(moving)@7.1 counter_battery_radar(moving)@4.3 counter_battery_radar(moving)@6.8 rocket_technical(moving)@6.3 rocket_technical(moving)@9.1"}
+  ],
+  "rescues": [
+    "3208,2562,heavy_tank,1,ghost,76.0,109.6,76.0,109.6"
+  ]
+}

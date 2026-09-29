@@ -1,0 +1,13 @@
+{
+  "map": "metrocity",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 1ad0f1f4 app 0.1.0",
+  "ticks": 3944,
+  "journal": [],
+  "records": [
+    {"vehicle": 404, "def": "armored_bulldozer", "team": 0, "startTick": 2680, "start": 134, "end": 143.5, "seconds": 9.5, "x": -92.333, "y": -91.348, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#389 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@5.2 titan_tank(moving)@5.5"}
+  ],
+  "rescues": []
+}

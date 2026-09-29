@@ -548,7 +548,7 @@ namespace MachineBrigade.Sim.Movement
                     ((_world.Lanes.At(v.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0 ||
                      (_world.Lanes.At(blocker.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0 ||
                      // In the open too once keeping right has failed: both pressed nose to nose.
-                     (MathF.Abs(v.Speed) < v.Def.Speed * 0.25f && MathF.Abs(blocker.Speed) < blocker.Def.Speed * 0.25f)))
+                     (now - t.ParkedSince > HeadOnOpenWait && now - bt.ParkedSince > HeadOnOpenWait)))
                     t.HeadOn = blocker.Id;
                 return false;
             }
@@ -850,6 +850,9 @@ namespace MachineBrigade.Sim.Movement
                 StartReverse(loser, winner, room);
             }
         }
+
+        /// <summary>Two hulls nose to nose in the open both standing this long: one steps aside (keeping right failed).</summary>
+        private const double HeadOnOpenWait = 1.0;
 
         private bool InDoorway(Vehicle v) => (_world.Lanes.At(v.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0;
 

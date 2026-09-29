@@ -1,0 +1,13 @@
+{
+  "map": "landingbeach",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map b90df8da app 0.1.0",
+  "ticks": 6697,
+  "journal": [],
+  "records": [
+    {"vehicle": 907, "def": "armored_bulldozer", "team": 0, "startTick": 3960, "start": 198, "end": 207.5, "seconds": 9.5, "x": -86.222, "y": -92.416, "goalX": -95, "goalY": -93, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#912 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@5.3 aa_vehicle(moving)@5.4 ifv(moving)@5.5"}
+  ],
+  "rescues": []
+}

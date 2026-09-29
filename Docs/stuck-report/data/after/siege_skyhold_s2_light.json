@@ -1,0 +1,11 @@
+{
+  "map": "skyhold",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 10feadf3 app 0.1.0",
+  "ticks": 8525,
+  "journal": [],
+  "records": [],
+  "rescues": []
+}

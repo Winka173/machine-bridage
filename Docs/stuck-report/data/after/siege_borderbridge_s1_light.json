@@ -1,0 +1,14 @@
+{
+  "map": "borderbridge",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 93b40eda app 0.1.0",
+  "ticks": 3954,
+  "journal": [],
+  "records": [
+    {"vehicle": 1179, "def": "ammo_carrier", "team": 1, "startTick": 3300, "start": 165, "end": 175, "seconds": 10, "x": 20.337, "y": 130.969, "goalX": -11, "goalY": 133, "order": "Move", "cause": "BlockedByFriend", "detail": "heavy_rocket_artillery#1174 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_rocket_artillery(parked)@4.4 ammo_carrier(moving)@2.6"},
+    {"vehicle": 1178, "def": "ammo_carrier", "team": 1, "startTick": 3350, "start": 167.5, "end": 185, "seconds": 17.5, "x": 18.546, "y": 127.979, "goalX": -11, "goalY": 133, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#1179 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_rocket_artillery(parked)@4.8 ammo_carrier(moving)@4.3"}
+  ],
+  "rescues": []
+}

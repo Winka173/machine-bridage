@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.Linq;
 using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Match;
+using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim.Content;
 using NUnit.Framework;
 using UnityEngine;
@@ -88,6 +90,137 @@ namespace MachineBrigade.Tests
                 }
             }
             Debug.Log($"MISSILE FLIGHT longest against its cooldown: {longest}, {share:P0}");
+        }
+
+        /// <summary>
+        /// The motor's flame stays on the drawn tail frame after frame, in the game's order at 30 and
+        /// 60 fps (the effects' update, then Unity's particle update, then the draw): a fast direct
+        /// rocket, the thermobaric launcher's and the MLRS's rockets on their lobbed paths, a SAM and an ATGM. The
+        /// visible front of the newest flame quad (its particle, less the end the fire shader leaves
+        /// unfilled) is measured against the model's tail on every frame of the flight. A frame
+        /// that jumps (the frozen-moment tools' old way, or a hitch) puts the flame a frame's travel
+        /// behind: that is the gap sheets showed, measured here too (DECISIONS 13E).
+        /// </summary>
+        [Test]
+        public void PlumesStayOnTheirTailsFrameByFrame()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Plume Frame Test").transform;
+            try
+            {
+                var cases = new[]
+                {
+                    ("heli_rockets", "hydra", ProjectileKind.Rocket, 36f),
+                    ("thermobaric_rockets", "tos_rocket", ProjectileKind.Rocket, 60f),
+                    ("mlrs_rockets", "gmlrs", ProjectileKind.Rocket, 70f),
+                    ("sam_long", "buk", ProjectileKind.Missile, 55f),
+                    ("atgm", "atgm_tow", ProjectileKind.Missile, 34f),
+                };
+                var report = new System.Text.StringBuilder();
+                var worst = 0f;
+                var worstAt = "";
+                foreach (var fps in new[] { 30f, 60f })
+                    foreach (var (id, model, kind, distance) in cases)
+                    {
+                        var (gap, side, frames) = Fly(catalog, models, materials, root, id, model, kind, distance, 1f / fps, jump: false);
+                        report.Append($"{id} {fps} fps: flame front {gap:+0.000;-0.000} m from the tail (worst), {side:0.000} m off its line, {frames} frames; ");
+                        if (Mathf.Abs(gap) > worst)
+                        {
+                            worst = Mathf.Abs(gap);
+                            worstAt = $"{id} at {fps} fps";
+                        }
+                        Assert.Less(side, 0.05f, $"{id} at {fps} fps: the flame beside its missile");
+                    }
+                foreach (var (id, model, kind, distance) in cases)
+                {
+                    var (gap, _, _) = Fly(catalog, models, materials, root, id, model, kind, distance, 1f / 30f, jump: true);
+                    report.Append($"{id} after a jump to mid-flight: {gap:+0.00;-0.00} m; ");
+                }
+                Debug.Log("PLUME ON THE TAIL " + report);
+                Assert.Less(worst, 0.06f, $"the flame's front off the drawn tail: {worstAt}");
+            }
+            finally
+            {
+                Object.DestroyImmediate(root.gameObject);
+                models.Dispose();
+                materials.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// One flight drawn frame by frame: the worst distance along the missile from its drawn tail to
+        /// the visible front of the flame born that frame (+ ahead onto the body, - a gap behind it) and
+        /// the worst distance of that front off the missile's line.
+        /// </summary>
+        private static (float gap, float side, int frames) Fly(Catalog catalog, ModelLibrary models, MaterialLibrary materials, Transform root,
+            string id, string model, ProjectileKind kind, float distance, float dt, bool jump)
+        {
+            var holder = new GameObject(id).transform;
+            holder.SetParent(root, false);
+            try
+            {
+                var emitters = new Emitters(materials, holder);
+                var pool = new ProjectilePool(holder, 4);
+                var systems = holder.GetComponentsInChildren<ParticleSystem>();
+                var flame = systems.First(ps => ps.name == "Motor Core");
+                var weapon = catalog.Weapons[id];
+                var chunk = models.Merged(model);
+                var from = new Vector3(0f, 2.5f, 0f);
+                var to = new Vector3(distance * 0.8f, 0.4f, distance * 0.6f);
+                var duration = distance / weapon.ProjectileSpeed;
+                var artillery = weapon.MinRange > 0f;
+                var scale = weapon.ProjectileScale * WeaponEffects.SizeOf(weapon, kind, model, false);
+                var barrel = (to - from).normalized + Vector3.up * (artillery ? 0.8f : 0.1f);
+                pool.Launch(chunk, from, to, duration, kind == ProjectileKind.Missile ? distance * 0.06f : distance * 0.02f, 0.55f, 0f,
+                    boost: kind == ProjectileKind.Missile ? 0.55f : artillery ? 0.2f : 0.3f, scale: scale,
+                    control: artillery ? WeaponEffects.Bend(from, to, barrel.normalized) : WeaponEffects.Leave(from, to, barrel.normalized, distance * 0.02f),
+                    plume: Plume.For(weapon, kind, model, false));
+                var shot = holder.GetComponentsInChildren<MeshFilter>(true).First(f => f.sharedMesh == chunk.Mesh).transform;
+                var tail = chunk.Mesh.bounds.min.z;
+                var particles = new ParticleSystem.Particle[4096];
+                float worstGap = 0f, worstSide = 0f;
+                var frames = 0;
+                var now = 0f;
+                // The frozen-moment way: nothing drawn until half way, then one long frame.
+                if (jump) now = duration * 0.5f - dt;
+                pool.Tick(jump ? 0f : now, emitters);
+                while (now + dt < duration * (jump ? 0.5f : 0.95f) + 1e-4f)
+                {
+                    now += dt;
+                    // The frame's update (the missile placed, its flame emitted), then the particles' own step, then the draw.
+                    pool.Tick(now, emitters);
+                    foreach (var ps in systems) ps.Simulate(jump ? 1f / 30f : dt, false, false, false);
+                    if (!shot.gameObject.activeSelf) break;
+                    var forward = shot.forward;
+                    var nozzle = shot.TransformPoint(new Vector3(0f, 0f, tail));
+                    var count = flame.GetParticles(particles);
+                    // The white-hot core born this frame: set a tenth of the flame's width behind the nozzle.
+                    var front = float.MinValue;
+                    var side = 0f;
+                    for (var i = 0; i < count; i++)
+                    {
+                        var p = particles[i];
+                        if (p.startLifetime - p.remainingLifetime > dt * 1.01f) continue;
+                        var d = p.position - nozzle;
+                        // (Its size is 0.8 of that width, give or take a tenth.)
+                        var along = Vector3.Dot(d, forward) + p.startSize * 0.125f;
+                        if (along <= front) continue;
+                        front = along;
+                        side = (d - forward * Vector3.Dot(d, forward)).magnitude;
+                    }
+                    if (front == float.MinValue) continue;
+                    frames++;
+                    if (Mathf.Abs(front) > Mathf.Abs(worstGap)) worstGap = front;
+                    worstSide = Mathf.Max(worstSide, side);
+                }
+                return (worstGap, worstSide, frames);
+            }
+            finally
+            {
+                Object.DestroyImmediate(holder.gameObject);
+            }
         }
 
         /// <summary>Drawn size of each flying munition as a share of its model (type table x the weapon's scale), fitted to its launcher.</summary>

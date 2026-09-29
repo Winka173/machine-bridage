@@ -1,0 +1,19 @@
+{
+  "map": "launchsite",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 3d78c9d7 app 0.1.0",
+  "ticks": 16568,
+  "journal": [],
+  "records": [
+    {"vehicle": 532, "def": "counter_battery_radar", "team": 1, "startTick": 4490, "start": 224.5, "end": 236, "seconds": 11.5, "x": 104.428, "y": 115.623, "goalX": 90.95, "goalY": 106.258, "order": "Move", "cause": "BlockedByFriend", "detail": "counter_battery_radar#531 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "ammo_depot(fixed)@7.9 counter_battery_radar(moving)@5.2 mobile_fortress(moving)@8.3"},
+    {"vehicle": 539, "def": "mobile_fortress", "team": 1, "startTick": 4540, "start": 227, "end": 236, "seconds": 9, "x": 97.308, "y": 112.245, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "counter_battery_radar#532 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "counter_battery_radar(moving)@9.9 counter_battery_radar(moving)@8.4"},
+    {"vehicle": 542, "def": "aa_vehicle", "team": 0, "startTick": 5220, "start": 261, "end": 270, "seconds": 9, "x": 74.657, "y": 35.463, "goalX": 95, "goalY": 52, "order": "AttackMove", "cause": "Unknown", "detail": "speed 1.2 strikes 2", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(parked)@6.3 base_wall@7"},
+    {"vehicle": 508, "def": "ammo_carrier", "team": 1, "startTick": 5500, "start": 275, "end": 284, "seconds": 9, "x": 100.884, "y": 114.035, "goalX": 111, "goalY": 115, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#507 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_carrier(moving)@7.9 ammo_carrier(moving)@3.7 mobile_fortress(parked)@7.7"},
+    {"vehicle": 506, "def": "ammo_carrier", "team": 1, "startTick": 5520, "start": 276, "end": 284.5, "seconds": 8.5, "x": 95.747, "y": 110.603, "goalX": 105, "goalY": 123, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#508 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@4.7 ammo_carrier(moving)@6.7"}
+  ],
+  "rescues": [
+    "4688,532,counter_battery_radar,1,ghost,106.4,114.7,106.4,114.7"
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "map": "redrock",
+  "mode": "Endless",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 5291,
+  "journal": [],
+  "records": [
+    {"vehicle": 695, "def": "scout_jeep", "team": 0, "startTick": 3000, "start": 150, "end": 158.5, "seconds": 8.5, "x": 124.788, "y": 105.275, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "armored_car#697 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(moving)@3.4 armored_car(moving)@3.0 armored_car(moving)@3.6 base_wall@9"},
+    {"vehicle": 700, "def": "armored_car", "team": 0, "startTick": 3730, "start": 186.5, "end": 197, "seconds": 10.5, "x": 111.807, "y": 114.722, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#694", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@6.1 armored_car(moving)@8.1 armored_car(moving)@3.5 ifv(moving)@4.7"},
+    {"vehicle": 691, "def": "main_battle_tank", "team": 0, "startTick": 3850, "start": 192.5, "end": 203, "seconds": 10.5, "x": 113.174, "y": 109.469, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#694", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@8.7 light_tank(moving)@8.9 armored_car(moving)@6.0 armored_car(moving)@6.8 armored_car(moving)@8.6 armored_car(moving)@3.9 ifv(parked)@9.4 ifv(moving)@3.6"},
+    {"vehicle": 705, "def": "armored_car", "team": 0, "startTick": 3870, "start": 193.5, "end": 204.5, "seconds": 10.5, "x": 112.978, "y": 117.557, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "OffRoute", "detail": "to (117.0,115.0) past command_hq", "area": "fortress", "lanes": "", "outcome": "died", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@8.1 light_tank(moving)@8.8 armored_car(moving)@3.4 armored_car(moving)@3.7 armored_car(moving)@6.7 ifv(parked)@3.9 ifv(moving)@5.3"}
+  ],
+  "rescues": []
+}

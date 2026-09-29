@@ -3394,6 +3394,62 @@ raw keys on screen, and the shields ugly. No game logic or balance data changed.
 - **To measure** (testing phase, a real phone): the frame rate of the heaviest battle on Low graphics
   before and after the shield change, and the compact HUD's cost against the full one.
 
+## 13B. Prompt 12: stuck vehicles in bases (2026-09-29)
+
+Diagnosed first, then fixed at the causes; each cause has a test written to fail before its fix
+(`StuckCauseTests`, checked against d916258).
+
+**Tools.** `StuckWatch` (sim): a ground vehicle with somewhere to go that moves less than 2.5 m in 8 s is
+recorded with map, mode, seed, tick, side, place, goal, lane flags, what is within 10 m and why
+(embedded, no path, goal unreachable, stale route, off route, gate wait, yield wait, blocked by a friend,
+defence, enemy or wall). Its JSON carries seed, data hashes and the player's journal for a replay;
+`StuckBatch.One` replays and traces a case. `StuckReporter` keeps it in the editor and development
+builds (or `-mb-stuck`), writing to `persistentDataPath/stuck/`. Batches (`StuckBatch.Siege`, `.Modes`,
+Explicit): by the owner's rule a small set (Siege on all 20 maps, Defend, Endless and Weekly on six,
+two seeds, loadouts light, full and obstacles through `BaseSystem.LoadoutFor`), 76 battles, 6 min.
+`Tools/maps/stuck_report.py` writes heatmaps, the ten worst spots and tables to `Docs/stuck-report/`.
+
+**Causes found** (the spec's list): the 10 m sally ports took all two-way traffic of Defend, Endless
+and Weekly (the worst spots); every siege fortress had no route three cells wide for the big hulls with
+the gates shut and hardpoints full (0 of 20 passed), and the keep's drop zone led out through one- and
+two-cell gaps; a tower landing on vehicles left them on blocked ground; routes planned across ground
+closed since (a tower raised) were driven into it; goals behind a wall or in a sealed pocket failed the
+search and were re-sent for ever, and group slots spread over both sides of a wall; two hulls given each
+other's slot queued behind each other; a detour steered a titan into the wall; the keep's guardian and
+elites spawned in a pocket. Not causes: lane map or grid not updated after a fall (they are), the lane
+map disagreeing with the grid.
+
+**Fixes.** NavGrid regions: goals resolve to the start's region, slots stay on the group's side of a
+wall; slots untangled (groups up to 12); no queueing behind a hull queued behind us or oncoming;
+head-on in the open settled after 1 s by a step aside; detours keep off walls; routes across newly
+closed ground re-planned; a landing tower puts vehicles off its ground; spawns avoid sealed pockets;
+the guardian and elites spawn with room. Map data: double 18 m sally ports and keep gate, a clear yard,
+clear gateway mouths and main-gate roads, and `open_wide` (the builder removes clutter until, with every
+gate shut and every hardpoint holding the biggest tower, every drop zone and gateway mouth is reached
+three cells wide and every objective from within 15 m; it took 9 fuel depots, 1 ammunition dump, 8 of
+554 tower hardpoints and some wrecks, on the classic fortresses 4 towers). Swamp's causeways and main
+bridges 20 m, its centre opened. `Tools/maps/check_access.py` and `MapConnectivityTests` check all 40
+files: all pass. Maps were rebuilt with the campaign file of 394c762 so every Conquest and Sandbox file
+but Swamp's is unchanged (Rustyard's committed data was stale against today's c4m06).
+
+**Safety net** (`MovementSystem.Rescue`): after 10 s without headway, off blocked ground ("place"),
+else through its own side's hulls for 4 s and re-planned ("ghost"), then moved on along its route
+("hop"); every activation logged and in the report.
+
+**Numbers** (76 battles each; episodes of 8 s or more / over 10 s / over 20 s / worst):
+before 2076 / 1285 / 174 / 214 s; after, net off 705 / 378 / 9 / 34 s; after, net on 578 / 265 / 4 /
+28 s with 168 activations (162 ghost, 6 hop). Siege over 10 s: 329 -> 117 (net off) -> 87. On the
+branch before merging prompts 13-14 the net-off run was 574 / 286. A five-map Siege sample on the final
+code: 6 over 10 s, 5 activations (Swamp). Episodes over 10 s remain (queues in heavy traffic), so the
+spec's "none over 10 s" is not reached; nothing is stuck for good. Replay tests pass. Tick (quick run,
+48 enemies, desktop ms, mean / p99): lead 0.74-0.75 / 1.9-2.2, this branch 0.72-0.77 / 1.9-3.2 (the
+untangling unbounded had doubled the p99; limited to groups of 12).
+
+**Full sweep for the testing phase:** `StuckBatch` on all 20 maps for every mode (`MB_STUCK_MAPS`,
+`MB_STUCK_MODES=Siege,Defend,Endless,Weekly`), `MB_STUCK_SEEDS=1,2,3,4,5`, every loadout on every map,
+net on and off; `TickBudgetTests` in full; `SiegeBalanceTests`, `ModeEndingTests` and the Swamp and
+Coral Isles battles (the fortress changes touch balance).
+
 ## 13C. Prompt 13: combat-value balance, ammo, modes, AI difficulty (2026-09-29)
 
 One balance pass in the owner's order A → I. The owner's rule on test time wins over the brief's "5 seeds
@@ -4139,3 +4195,159 @@ none are drawn; the drop zone is drawn by the UI.
 - **FPS and touch on a real phone**: to measure (the owner's override: no device run in this pass).
 - **Short names**: the landing pad's hangar branch (13 F.1) gets "Nhà chứa" (the full "Nhà chứa máy bay" is
   16 characters).
+
+## 13E. Muzzle, launcher and missile-tail audit from the model files (2026-09-29)
+
+The owner (on an older build): the armoured car's flash off its barrel, the rocket technical's not at its launcher,
+tanks' "in the middle of the gun", the flame tank and the mortar wrong, missiles' tail fire not on the missile
+(the thermobaric launcher). The ask: review everything, measured from the model files, not from pictures.
+
+- **The audit (`MuzzleGeometryAudit`, Editor).** It covers every armed vehicle, elite, boss and tower: 126
+  vehicles and 284 firing mounts, plus 36 on the high-detail `_hd` variants. Each is spawned through the
+  game's own path: `ViewRegistry`, `ModelLibrary`'s merged template and launch points, and `VehicleView.MuzzleOf`'s
+  slot mapping (the k-th mount of a slot, twin barrels in turn, pods and rails in turn, spots on a face). Every
+  point a mount fires from is measured against the model's own triangles: the imported glTF meshes per part,
+  before the per-material merge, placed on the spawned model's posed transforms.
+  - *Which geometry:* only the muzzle's moving group, from the node hierarchy (its `Turret`, `Mount_` or
+    `Part_`; the whole model for a hull or aircraft gun). The coax's line next to the main barrel and
+    aircraft pylons no longer confuse it.
+  - *Where the barrel ends:* along the line the flash is drawn on (`DrawnBarrelOf`), eight rays out sideways
+    tell whether the line runs inside a barrel, tube or pod. The open end is where that stops, bisected to 1 mm.
+  - *Off axis and angle:* from the same rays, the line's offset from the barrel's middle, and the barrel's own
+    axis (its middle at the tip and 0.12-0.45 m back).
+  - *Faces of tubes:* judged on the face itself (the front-most hit of rays from ahead, so a ray down a bore
+    does not count) and on its normal.
+  - *Bombs and drones:* must only be released on the model.
+  - *Limits (drawn metres):* -0.08 to +0.15 along, 0.05 m or half the radius across, 6 degrees.
+  - *Output:* `-executeMethod MachineBrigade.Editor.MuzzleGeometryAudit.Report` writes `Docs/muzzle-audit.md`,
+    one row per mount (muzzle node, points, ahead of tip, off axis, axis angle, verdict, part, notes).
+- **Counts.** The first run found 95 of 284 mounts wrong (11 of 36 on `_hd`). Now 34 (1 on `_hd`).
+  - 61 fixed and none broken; every mount was compared against the first run after each change.
+  - Of the 61, 45 are real fixes. 16 are bombs and drones the first run judged as if fired down a barrel.
+  - The owner's list is right on every mount: armoured car, rocket technical, every tank (main gun on its
+    tip, coax on its MG), flame tank, mortar, thermobaric launcher, MLRS, artillery, IFV, heavy rocket
+    artillery, ATGM carrier, attack and scout helicopters.
+  - On the older build the owner saw, the tanks' main-gun and armoured car's muzzles were already on their
+    tips (12I). What read wrong there was how the flash was drawn, fixed in 12A and 12I.
+- **Fixes.** They are general, in `ModelLibrary`, `VehicleView` and `WeaponEffects`, with no per-vehicle code
+  and no balance data.
+  1. *Launch faces on the real face.*
+     - The fault: a face of tubes' launch point was the front of its bounding box, and the spots were spread
+       in the turret's level plane. On a raised box (MLRS, missile batteries, rocket turrets, the rocket
+       technical, the heavy rocket artillery), the point and most spots sat in the air ahead of the lower
+       tubes. Their line ran 5-51 degrees off the tubes.
+     - The fix: `ModelLibrary.Front` takes the face part's principal axes (a flat face gives its normal, a
+       long pod its axis). It puts the point on the face plane through its front-most vertex and turns it
+       square to the tubes. `MuzzleOf` then spreads the spots across that plane.
+     - Pods and rails keep their bounds' front, since they sit level on pylons.
+     - Before and after (ahead of the tip, angle):
+
+       | Launcher | Before | After |
+       |---|---|---|
+       | MLRS | +0.23 m, 51° | -0.02 m, 0° |
+       | Rocket technical | +0.21 m, 5° | 0.00 m, 0° |
+       | Heavy rocket artillery | +1.61 m, 13° | 0.00 m, 0° |
+       | Missile battery (3 variants) | +0.66 m, 33° | +0.03 m, 0° |
+       | Rocket turret (3 variants) | +0.26 m, 15° | +0.06 m, 0° |
+       | IFV's ATGM | 12° | 0° |
+       | Hive's SAM | +0.35 m | +0.04 m |
+       | Inferno's thermobaric box | 14° | 0° |
+  2. *Twin and quad guns built as one part* fire from each barrel.
+     - The fault: the Blender tools put one `Muzzle_` between the barrels, so every flash was lit in the air
+       between them. The audit read this as the muzzle floating 1.2-1.5 m ahead: walking back from the gap,
+       it met the mount's box. `ModelLibrary.AddBarrelPoints` fixes it.
+     - How barrels are found: from the part's connected pieces, welded by position, that are long, thin, and
+       run along the muzzle beside it. A barrel and its brake count as one.
+     - What it does: one launch point on each barrel's tip. `VehicleView` fires any weapon from them in turn,
+       and another mount of the slot keeps its own muzzle.
+     - Left alone: recoiling parts (`Main_cannon`, `Main_cannon_2`), which VehicleView's twin barrels already
+       handle.
+     - Before and after (ahead of the tip):
+
+       | Gun | Before | After |
+       |---|---|---|
+       | Behemoth and Inferno twin flak | +1.48 m | -0.06 m |
+       | Mobile fortress flak | +1.18 m | -0.05 m |
+       | Bastion's four twin autocannons, Hive and silver bug flak | no barrel on the line | -0.06 to -0.07 m |
+       | Heavy bomber's 2×2 tail guns | 0.77 m ahead (between the barrels) | -0.02 m |
+       | Attack jet's twin cannon (and elite, `_hd`) | +0.40 m | -0.01 m |
+       | Mega gunship's guns | +0.18 m | 0.00 m |
+
+     - One visible change in play: a boss flak stream now alternates between its barrels.
+  3. *Muzzles turned along their barrels.*
+     - The fault: the Blender tools place `Muzzle_` empties by position only, all facing the model's front.
+     - The fix: `ModelLibrary.AlignMuzzles` turns a muzzle along the long, thin piece of a sibling part it
+       sits on, when that barrel is built 10 degrees or more off the front. The piece can be the part itself,
+       the part's side round the muzzle, or one of its connected pieces.
+     - Covered: the mortar tube, the BMPT's grenade launchers, raised flak, and the AC-130s' side guns
+       (depressed, inside one `Guns` part). Missile and rocket racks are left to the launch points.
+     - The mortar's rest pitch now comes from the tube itself; the line from the trunnion to the muzzle ran
+       6 degrees off it.
+     - `VehicleView.DrawnBarrelOf` and `BarrelDirectionOf` use an aligned muzzle's or a measured launch
+       point's forward. Flashes, the lobbed arc and a launch then face the way the barrel is drawn, raised,
+       turned and banked.
+     - Before and after (angle): mortar 6.2 → 0.0 degrees; BMPT grenade launchers 9.1 → 0.0; AC-130 guns
+       and ramp 7 → 0.
+  4. *Side guns.*
+     - The fault: a door gunner or AC-130 gun (`aim` Left or Right) with no barrel direction of its own was
+       drawn firing out of the nose.
+     - The fix: it now faces its side. Gunship helicopter door guns: +0.22 m ahead and 0.12 m off → +0.03 m
+       and 0.06 m. A second main mount firing from one of the main gun's twin barrels is raised with that
+       gun's elevation.
+  5. *Air-to-air missiles without their own rail* (Apache, elite Apache, fighter, A-10, Ka-52).
+     - The fault: they left from a point 12 % beyond the outermost store, in thin air beside the wing.
+     - The fix: they leave from the outermost store. Ka-52's Igla: 0.31 m off → 0.00 m.
+  6. *Missiles and direct-fire rockets leave along their tube.*
+     - The fault: a raised SAM box's missile left sideways out of the box.
+     - The fix: the missile leaves along the tube and bends onto the target (`WeaponEffects.Leave`, the
+       curve's middle control point). Pointing at the target, it flies the old path, arc included.
+     - Their ignition and backblast face along the tube, and a second launcher's artillery rockets lob along
+       their own tubes.
+- **Missile tails.**
+  - *The models:* every munition the game launches (39 models) has its nose on +Z, its axis through
+    x = y = 0, and its nozzle at the bounds' tail, within 3 cm (the S-8's fins reach 3 cm past its nozzle).
+    So `shot.Tail = bounds.min.z` is the drawn nozzle at every `projectileScale`.
+  - *Real frames* (`PlumePlayCheck`, Play mode): Unity's own player loop at a fixed 30 and then 60 fps
+    (`Time.captureFramerate`). The effects run in `Update` as in the game, Unity's particle update follows,
+    and a camera follows the round so the looping plume systems are never culled.
+    - Measured: each frame at the end of `PostLateUpdate`, just before the draw, the core born that frame
+      sits within 1.4 cm of the drawn tail and on its line.
+    - Rounds measured: the thermobaric rocket and the MLRS rocket on their lobbed paths, a Hydra, a Buk and
+      a TOW.
+  - *EditMode test:* `MissileFlightTests.PlumesStayOnTheirTailsFrameByFrame` repeats this in EditMode
+    (within 1.2 cm).
+  - *Where a gap can come from:* one long frame puts the flame a frame's travel behind, 1.4-3.4 m. That is
+    only a hitch in the game. `ProjectilePool` caps its step at 0.1 s and Unity's particles do not.
+  - *The old sheets:* `MissileShots` has always stepped at 60 fps, so the gap was not the tool jumping to
+    each moment. Cropped at the same zoom, the old thermobaric sheet and the new one both show the core on
+    the tail.
+  - *Result:* no in-game gap was found, and the plume was not changed.
+- **Tests.**
+  - `MuzzleAuditTests` (new): the owner's list must be right on every mount. Any other wrong mount must be on
+    its known list with the reason, so a model re-export, a slot mapping or a launcher change that moves a
+    muzzle off its barrel fails. A known one that becomes right must be taken off the list. The file also
+    holds `TiltedLauncherFacesLaunchAlongTheirTubes`.
+  - `PlumesStayOnTheirTailsFrameByFrame` (new, in `MissileFlightTests`).
+  - Targeted run: FlashTests, MuzzleTests, MissileFlightTests, EffectsTests, BlastSizeTests and the new ones
+    pass, 38 of 38. FlashTests: every flash rides its drawn muzzle (0.000 m) with the barrel points, and
+    tongues stay within 4.6 degrees.
+  - PlaySmoke (menu 10 s, Conquest 30 s): 0 errors.
+- **Left (34 mounts, 1 `_hd`; in `MuzzleAuditTests.Known` and `Docs/muzzle-audit.md`).** These need the models'
+  empties moved or guns added in `Tools/blender` and a re-export (the Blender lane):
+  - *No gun on the model:* the trucks' roof MG (ammo carrier, supply truck). They fire from `RoofFront`.
+  - *No tube on the muzzle's line:* boss racks and pods (mobile fortress rockets and missiles, gunship
+    helicopter's pods and missile tubes, heavy bomber's cruise missile, ballistic launcher's missile,
+    aa_turret.sam).
+  - *Stored missiles and aircraft stores:* sunk in their racks or ahead of them (behemoth racks, heavy AA's
+    pack, stealth bomber's JASSM, fighter's AIM-120 and the strike drone's missiles, launched from the store's
+    nose; mega gunship's pods).
+  - *Single cases:*
+    - the Tempest's railgun, whose muzzle sits between its open brake jaws, 0.38 m past the core;
+    - silver bug's coilguns and laser lens;
+    - elite Grad's face, 0.09 m inside;
+    - drone mothership's flak (one mount has no barrel on its line);
+    - armored train's pods, 0.42 m off.
+  - *Angles over the limit:* aa_turret's twin flak (6.1 degrees, its rest pitch from the trunnion line);
+    sky fortress's cannons (7 degrees); elite MLRS (22); the SAM launcher (17). In the render the SAM
+    launcher's launch line runs along its raised box, so the audit is probably reading the tube rims'
+    bevels. Left for a look.

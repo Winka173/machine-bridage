@@ -1,0 +1,21 @@
+{
+  "map": "metrocity",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 1ad0f1f4 app 0.1.0",
+  "ticks": 16803,
+  "journal": [],
+  "records": [
+    {"vehicle": 408, "def": "main_battle_tank", "team": 0, "startTick": 780, "start": 39, "end": 47.5, "seconds": 8.5, "x": -70.553, "y": -63.201, "goalX": -18.568, "goalY": -19.813, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#420 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@6.6 main_battle_tank(moving)@4.8 aa_vehicle(moving)@4.5"},
+    {"vehicle": 485, "def": "mobile_fortress", "team": 1, "startTick": 8030, "start": 401.5, "end": 413, "seconds": 11.5, "x": 114.574, "y": 90.562, "goalX": 78.219, "goalY": 55.941, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_rocket_artillery#449 parked", "area": "fortress", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "fortress_gate@7"},
+    {"vehicle": 485, "def": "mobile_fortress", "team": 1, "startTick": 8290, "start": 414.5, "end": 423, "seconds": 8.5, "x": 112.86, "y": 88.215, "goalX": 69.391, "goalY": 58.481, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "command_vehicle#492 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "command_vehicle(moving)@9.3 fortress_gate@5"},
+    {"vehicle": 485, "def": "mobile_fortress", "team": 1, "startTick": 8460, "start": 423, "end": 438.5, "seconds": 15.5, "x": 112.95, "y": 86.002, "goalX": 77.915, "goalY": 68.995, "order": "AttackMove", "cause": "BlockedByDefence", "detail": "airfield#373 parked", "area": "fortress", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "base_wall@9 fortress_gate@3 base_wall@9"},
+    {"vehicle": 449, "def": "heavy_rocket_artillery", "team": 1, "startTick": 9170, "start": 458.5, "end": 467, "seconds": 8.5, "x": 119.467, "y": 104.007, "goalX": 139.018, "goalY": 125.641, "order": "Move", "cause": "BlockedByFriend", "detail": "vbied#542 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@9.1 mobile_fortress(moving)@9.8 railgun_truck(parked)@9.1 vbied(parked)@6.0"},
+    {"vehicle": 485, "def": "mobile_fortress", "team": 1, "startTick": 11470, "start": 573.5, "end": 582, "seconds": 8.5, "x": 127.243, "y": 115.6, "goalX": 84.065, "goalY": 73.648, "order": "Idle", "cause": "BlockedByFriend", "detail": "wheeled_gun#586 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "base_wall@8 base_wall@8 command_hq@10"},
+    {"vehicle": 498, "def": "siege_tank", "team": 0, "startTick": 11740, "start": 587, "end": 599, "seconds": 12, "x": 20.578, "y": 11.464, "goalX": 7.352, "goalY": -3.443, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#500 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@6.5 siege_tank(moving)@5.9 siege_tank(moving)@6.9 main_battle_tank(moving)@8.3"},
+    {"vehicle": 485, "def": "mobile_fortress", "team": 1, "startTick": 14530, "start": 726.5, "end": 736.5, "seconds": 10, "x": 113.962, "y": 93.891, "goalX": 95.046, "goalY": 79.343, "order": "AttackMove", "cause": "BlockedByDefence", "detail": "airfield#373 parked", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 485, "def": "mobile_fortress", "team": 1, "startTick": 14960, "start": 748, "end": 757, "seconds": 9, "x": 112.828, "y": 87.4, "goalX": 51.997, "goalY": 84.639, "order": "AttackMove", "cause": "BlockedByDefence", "detail": "airfield#373 parked", "area": "fortress", "lanes": "road", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "fortress_gate@4"}
+  ],
+  "rescues": []
+}

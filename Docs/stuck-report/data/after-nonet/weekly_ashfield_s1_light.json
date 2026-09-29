@@ -1,0 +1,14 @@
+{
+  "map": "ashfield",
+  "mode": "Weekly",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 91c11044 app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 462, "def": "elite_heavy_tank", "team": 1, "startTick": 5010, "start": 250.5, "end": 262.5, "seconds": 12, "x": 87.33, "y": 101.265, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_tank#446 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "command_vehicle(moving)@4.7 heavy_tank(moving)@5.6"},
+    {"vehicle": 457, "def": "twin_tank", "team": 1, "startTick": 8590, "start": 429.5, "end": 440, "seconds": 10.5, "x": 118.26, "y": 112.339, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind sapper#485", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@5.2 elite_heavy_tank(moving)@9.4 sapper(moving)@3.8 ew_jammer(moving)@8.8 main_battle_tank(moving)@6.9"}
+  ],
+  "rescues": []
+}

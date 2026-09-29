@@ -34,9 +34,11 @@ namespace MachineBrigade.Sim.Navigation
                 slots.Add(first);
             }
             else near = false;
-            // How far over the ground each cell is from the first slot (out to where the rings may go).
+            // How far over the ground each cell is from the first slot (out to where the rings may go):
+            // walked only once a slot is not in plain line of the first one (in the open it never is).
             var rings = (int)MathF.Ceiling(MathF.Sqrt(count / 3f)) + 3;
-            if (near) grid.WalkFrom(first, MathF.Min(80f, rings * spacing + 8f));
+            var walkReach = MathF.Min(80f, rings * spacing + 8f);
+            var walked = false;
             var origin = near ? first : center;
 
             for (var ring = 1; slots.Count < count && ring <= 24; ring++)
@@ -48,21 +50,34 @@ namespace MachineBrigade.Sim.Navigation
                     var candidate = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (ring * spacing);
                     if (!grid.IsWalkable(candidate) || !IsFree(slots, candidate, spacing * 0.8f)) continue;
                     if (lanes != null && lanes.NoParkAt(candidate)) continue;
-                    if (near && !Near(grid, origin, candidate)) continue;
+                    if (near && !grid.LineOfSight(origin, candidate))
+                    {
+                        if (!walked)
+                        {
+                            grid.WalkFrom(origin, walkReach);
+                            walked = true;
+                        }
+                        if (!Near(grid, origin, candidate, ring)) continue;
+                    }
                     slots.Add(candidate);
                 }
             }
             return slots;
         }
 
-        /// <summary>Reached by the last walk from the first slot, over the ground no more than half as far again as straight (plus two cells).</summary>
-        private static bool Near(NavGrid grid, Vector2 origin, Vector2 candidate)
+        /// <summary>
+        /// Reached by the last walk from the first slot, over the ground no more than half as far
+        /// again as straight (plus two cells) on the first three rings; further out (a big group in
+        /// a small yard, a garrison round the keep's HQ) up to two and a half times, so it spreads out
+        /// through a gate instead of packing the yard.
+        /// </summary>
+        private static bool Near(NavGrid grid, Vector2 origin, Vector2 candidate, int ring)
         {
             var steps = grid.StepsTo(candidate);
             if (steps < 0) return false;
             // (Four-neighbour steps: a diagonal line takes up to 1.41 times its cells.)
             var straight = Vector2.Distance(origin, candidate) / grid.CellSize;
-            return steps <= straight * 1.5f * 1.42f + 2f;
+            return steps <= straight * (ring <= 3 ? 1.5f : 2.5f) * 1.42f + 2f;
         }
 
         /// <summary>
@@ -101,11 +116,14 @@ namespace MachineBrigade.Sim.Navigation
         /// <summary>
         /// Swaps two vehicles' slots wherever that shortens their two drives together: the greedy
         /// pick crosses paths, and two hulls sent to each other's slots met head-on and each queued
-        /// behind the other (prompt 12). A few passes in a fixed order, so it stays deterministic.
+        /// behind the other (prompt 12). Two passes in a fixed order, so it stays deterministic; only
+        /// for groups of up to 12 (the commanders re-send the whole army every decision, and pair by
+        /// pair it doubled the tick's 99th percentile).
         /// </summary>
         private static void Untangle(List<Vehicle> order, Dictionary<EntityId, Vector2> result)
         {
-            for (var pass = 0; pass < 4; pass++)
+            if (order.Count > UntangleMost) return;
+            for (var pass = 0; pass < 2; pass++)
             {
                 var swapped = false;
                 for (var i = 0; i < order.Count; i++)
@@ -128,6 +146,9 @@ namespace MachineBrigade.Sim.Navigation
                 if (!swapped) break;
             }
         }
+
+        /// <summary>The biggest group whose slots are untangled.</summary>
+        private const int UntangleMost = 12;
 
         private static bool IsFree(List<Vector2> slots, Vector2 candidate, float minDistance)
         {

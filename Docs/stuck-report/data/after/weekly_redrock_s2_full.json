@@ -1,0 +1,26 @@
+{
+  "map": "redrock",
+  "mode": "Weekly",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 694, "def": "heavy_rocket_artillery", "team": 1, "startTick": 2100, "start": 105, "end": 117.5, "seconds": 12.5, "x": 60.748, "y": 88.778, "goalX": 47, "goalY": 77, "order": "Move", "cause": "BlockedByDefence", "detail": "guard_tower#645 parked", "area": "fortress+gate", "lanes": "nopark", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "c_ram(fixed)@7.3 guard_tower(fixed)@7.1"},
+    {"vehicle": 702, "def": "rocket_technical", "team": 1, "startTick": 3040, "start": 152, "end": 160.5, "seconds": 8.5, "x": 56.011, "y": 111.787, "goalX": 22.975, "goalY": 111.898, "order": "Move", "cause": "OffRoute", "detail": "to (55.0,117.0) past shield_generator", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "command_vehicle(moving)@8.4 counter_battery_radar(moving)@8.1 ammo_carrier(moving)@8.1 heavy_tank(moving)@4.7 bmpt(moving)@7.7 shield_generator@5"},
+    {"vehicle": 812, "def": "elite_heavy_tank", "team": 1, "startTick": 8320, "start": 416, "end": 429, "seconds": 13, "x": 85.015, "y": 86.95, "goalX": 105.307, "goalY": 115.419, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "fpv_carrier#792 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(moving)@9.4 fpv_carrier(parked)@7.1 floodlight_mast@4"},
+    {"vehicle": 812, "def": "elite_heavy_tank", "team": 1, "startTick": 8720, "start": 436, "end": 444.5, "seconds": 8.5, "x": 97.92, "y": 102.659, "goalX": 105.307, "goalY": 115.419, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "rocket_technical#799 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "command_vehicle(parked)@8.4 heavy_rocket_artillery(parked)@7.8 ammo_carrier(parked)@4.9 ammo_carrier(moving)@8.5 ammo_carrier(moving)@7.1 ammo_carrier(parked)@4.6 rocket_technical(moving)@8.5 counter_battery_radar(parked)@5.1 rocket_technical(parked)@4.1"},
+    {"vehicle": 714, "def": "ammo_carrier", "team": 1, "startTick": 9150, "start": 457.5, "end": 468.5, "seconds": 11, "x": 91.619, "y": 103.014, "goalX": 101.214, "goalY": 104.44, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#716 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "heavy_rocket_artillery(moving)@6.3 ammo_carrier(parked)@4.4 ammo_carrier(moving)@9.4 ammo_carrier(moving)@3.9 ammo_carrier(moving)@8.8 rocket_technical(parked)@9.7 fpv_carrier(moving)@9.7"},
+    {"vehicle": 749, "def": "mlrs", "team": 1, "startTick": 10880, "start": 544, "end": 554, "seconds": 10, "x": 87.479, "y": 110.963, "goalX": 104.143, "goalY": 97.963, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#776", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "vbied(moving)@2.5"},
+    {"vehicle": 715, "def": "ammo_carrier", "team": 1, "startTick": 11090, "start": 554.5, "end": 567.5, "seconds": 13, "x": 97.121, "y": 108.211, "goalX": 107.091, "goalY": 101.371, "order": "Move", "cause": "BlockedByFriend", "detail": "ammo_carrier#714 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_carrier(moving)@5.7 ammo_carrier(moving)@8.3 ammo_carrier(moving)@8.7 vbied(moving)@6.7 mobile_fortress(parked)@8.9"},
+    {"vehicle": 708, "def": "twin_tank", "team": 1, "startTick": 11410, "start": 570.5, "end": 582, "seconds": 11.5, "x": 114.246, "y": 106.974, "goalX": 103.218, "goalY": 122.732, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "sapper#780 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "command_vehicle(moving)@7.0 scout_jeep(moving)@7.6 ammo_carrier(moving)@8.6 ammo_carrier(moving)@9.6 ammo_carrier(parked)@5.8 ammo_carrier(moving)@4.8 heavy_tank(moving)@8.3 sapper(moving)@4.0 counter_battery_radar(moving)@5.6 fpv_carrier(moving)@5.4 rocket_technical(moving)@9.8"}
+  ],
+  "rescues": [
+    "2326,694,heavy_rocket_artillery,1,ghost,60.9,88.9,60.9,88.9",
+    "3225,715,ammo_carrier,1,ghost,55.3,94.6,55.3,94.6",
+    "8608,812,elite_heavy_tank,1,ghost,86.3,88.1,86.3,88.1",
+    "9356,714,ammo_carrier,1,ghost,92.9,103.3,92.9,103.3",
+    "11632,708,twin_tank,1,ghost,111.9,108.2,111.9,108.2"
+  ]
+}

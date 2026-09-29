@@ -24,6 +24,17 @@
   x1.8); decks of 8 to 12 chosen by roles and value; it buys ammunition carriers, hunts rearming aircraft and goes for
   landing pads. The campaign's Heroic and Iron tiers are now called Hard and Very hard.
 
+## Prompt 12: stuck vehicles in bases
+
+- A stuck detector in the internal build (`StuckWatch`, `-mb-stuck`), batch runs and a report with
+  heatmaps and the ten worst spots in `Docs/stuck-report/`.
+- Fixed at their causes: reachable goals and formation slots, no mutual queueing, head-on in the open,
+  detours off walls, re-planning over newly closed ground, towers clearing their pad, room for the keep's
+  guardian and elites.
+- Fortresses: double sally ports and keep gate, clear yards and approaches, a three-cell route for the
+  biggest hull everywhere (`check_access.py` checks every map); Swamp's causeways widened.
+- A logged safety net for what is left. Episodes over 10 s in 76 battles: 1285 before, 265 after.
+
 ## Prompt 14: the Base screen on the real camp, menus sized for a phone
 
 - Menus are sized in the phone's own points, so they look the same size on every phone and a tablet shows

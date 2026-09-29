@@ -1,0 +1,17 @@
+{
+  "map": "whiteout",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 6a9f1427 app 0.1.0",
+  "ticks": 15531,
+  "journal": [],
+  "records": [
+    {"vehicle": 715, "def": "ew_jammer", "team": 1, "startTick": 4940, "start": 247, "end": 261, "seconds": 14, "x": 91.311, "y": 112.615, "goalX": 95, "goalY": 99, "order": "Move", "cause": "BlockedByFriend", "detail": "command_vehicle#739 moving", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ammo_carrier(moving)@5.0 command_vehicle(moving)@5.0 counter_battery_radar(moving)@8.2"},
+    {"vehicle": 739, "def": "command_vehicle", "team": 1, "startTick": 5090, "start": 254.5, "end": 268, "seconds": 13.5, "x": 89.531, "y": 108.056, "goalX": 93, "goalY": 99, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#788", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "ew_jammer(moving)@3.8 ammo_carrier(moving)@4.7 counter_battery_radar(moving)@6.2"},
+    {"vehicle": 739, "def": "command_vehicle", "team": 1, "startTick": 6530, "start": 326.5, "end": 338, "seconds": 11.5, "x": 98.002, "y": 95.075, "goalX": 84.587, "goalY": 82.036, "order": "Move", "cause": "BlockedByFriend", "detail": "fpv_carrier#721 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "missile_battery(fixed)@8.1 airfield(fixed)@5.6 fpv_carrier(parked)@3.7 counter_battery_radar(moving)@5.6 rocket_technical(moving)@4.8 rocket_technical(moving)@7.7"},
+    {"vehicle": 706, "def": "engineer_vehicle", "team": 1, "startTick": 6720, "start": 336, "end": 348, "seconds": 12, "x": 100.605, "y": 85.091, "goalX": 80.636, "goalY": 58.351, "order": "Move", "cause": "BlockedByFriend", "detail": "mobile_fortress#788 moving", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "airfield(fixed)@7.8 fpv_carrier(moving)@4.8 mobile_fortress(moving)@8.1 counter_battery_radar(moving)@3.8 rocket_technical(moving)@6.4"},
+    {"vehicle": 798, "def": "counter_battery_radar", "team": 1, "startTick": 6800, "start": 340, "end": 350, "seconds": 10, "x": 103.737, "y": 82.044, "goalX": 76.72, "goalY": 58.349, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#788", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@3.4 fpv_carrier(moving)@7.1 mobile_fortress(moving)@9.5 rocket_technical(moving)@4.8 fortress_gate@9"}
+  ],
+  "rescues": []
+}

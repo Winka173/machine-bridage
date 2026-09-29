@@ -1,0 +1,26 @@
+{
+  "map": "swamp",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map befd816b app 0.1.0",
+  "ticks": 9953,
+  "journal": [],
+  "records": [
+    {"vehicle": 2528, "def": "titan_tank", "team": 0, "startTick": 930, "start": 46.5, "end": 56, "seconds": 9.5, "x": -87.179, "y": -89.183, "goalX": 21.759, "goalY": 50.456, "order": "AttackMove", "cause": "Unknown", "detail": "speed 0.7 strikes 1", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "guard_tower(fixed)@7.3 titan_tank(parked)@8.7 artillery(moving)@7.2"},
+    {"vehicle": 2521, "def": "armored_bulldozer", "team": 0, "startTick": 1870, "start": 93.5, "end": 102, "seconds": 8.5, "x": 15.187, "y": 44.603, "goalX": 21.955, "goalY": 58.754, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_tank#2530 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(parked)@8.1 armored_bulldozer(parked)@4.7 heavy_tank(moving)@7.6 river_water@9 river_water@7 river_water@8 river_water@8"},
+    {"vehicle": 2538, "def": "main_battle_tank", "team": 0, "startTick": 2030, "start": 101.5, "end": 112, "seconds": 10.5, "x": -89.857, "y": -84.908, "goalX": -96.722, "goalY": -77.43, "order": "Move", "cause": "YieldWait", "detail": "behind titan_tank#2524", "area": "camp0", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "guard_tower(fixed)@7.9 titan_tank(moving)@5.1 armored_bulldozer(moving)@7.7 titan_tank(moving)@6.6"},
+    {"vehicle": 2520, "def": "armored_bulldozer", "team": 0, "startTick": 2200, "start": 110, "end": 118.5, "seconds": 8.5, "x": 26.525, "y": 44.119, "goalX": 30.829, "goalY": 72.02, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "siege_tank#2516 parked", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "ifv(moving)@4.7 siege_tank(parked)@4.1 siege_tank(moving)@8.4 river_water@8 river_water@10 river_water@7 river_water@5 river_water@7 river_water@10 river_water@9"},
+    {"vehicle": 2524, "def": "titan_tank", "team": 0, "startTick": 2370, "start": 118.5, "end": 127, "seconds": 8.5, "x": -86.035, "y": -87.594, "goalX": 14.772, "goalY": 62.37, "order": "AttackMove", "cause": "OffRoute", "detail": "to (-85.4,-90.0) past guard_tower(defence)", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "guard_tower(fixed)@5.4 armored_bulldozer(moving)@6.3 aa_vehicle(moving)@4.1"},
+    {"vehicle": 2514, "def": "siege_tank", "team": 0, "startTick": 3920, "start": 196, "end": 207.5, "seconds": 11.5, "x": 54.945, "y": 20.989, "goalX": 57.83, "goalY": 12.162, "order": "Move", "cause": "BlockedByFriend", "detail": "artillery#2545 parked", "area": "field+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "artillery(parked)@5.4 siege_tank(moving)@9.9 titan_tank(moving)@6.9 artillery(parked)@3.0 river_water@9"},
+    {"vehicle": 2514, "def": "siege_tank", "team": 0, "startTick": 4230, "start": 211.5, "end": 235, "seconds": 23.5, "x": 59.974, "y": 12.982, "goalX": 31, "goalY": -1, "order": "Move", "cause": "YieldWait", "detail": "behind artillery#2545", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "artillery(moving)@5.5 titan_tank(moving)@9.5 artillery(moving)@6.1 river_water@9 river_water@8 river_water@10 river_water@6 river_water@9 river_water@5 river_water@10"},
+    {"vehicle": 2552, "def": "siege_tank", "team": 0, "startTick": 4550, "start": 227.5, "end": 236.5, "seconds": 9, "x": 25.063, "y": 4.614, "goalX": 3, "goalY": -11, "order": "Move", "cause": "YieldWait", "detail": "behind siege_tank#2518", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "wreck_car@7"},
+    {"vehicle": 2518, "def": "siege_tank", "team": 0, "startTick": 5810, "start": 290.5, "end": 301, "seconds": 10.5, "x": 20.048, "y": 5.669, "goalX": 3.589, "goalY": -2.348, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#2552 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@9.3 siege_tank(moving)@8.3 aa_vehicle(moving)@3.5 wreck_car@6"},
+    {"vehicle": 2589, "def": "ifv", "team": 0, "startTick": 7020, "start": 351, "end": 359.5, "seconds": 8.5, "x": 48.533, "y": 25.231, "goalX": 63.645, "goalY": 53.272, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#2528 moving", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@4.9 main_battle_tank(moving)@5.9 aa_vehicle(moving)@7.7 aa_vehicle(moving)@8.0 river_water@8 river_water@7 river_water@8"}
+  ],
+  "rescues": [
+    "4156,2514,siege_tank,0,ghost,53.7,21.2,53.7,21.2",
+    "4353,2527,armored_bulldozer,0,ghost,-84.3,-93.5,-84.3,-93.5",
+    "4618,2532,siege_tank,0,ghost,48.6,22.6,48.6,22.6"
+  ]
+}

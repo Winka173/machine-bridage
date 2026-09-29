@@ -1,0 +1,21 @@
+{
+  "map": "redrock",
+  "mode": "Weekly",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 674, "def": "ammo_carrier", "team": 1, "startTick": 3600, "start": 180, "end": 189.5, "seconds": 9.5, "x": 110.215, "y": 102.157, "goalX": 100.561, "goalY": 112.071, "order": "Move", "cause": "BlockedByFriend", "detail": "counter_battery_radar#696 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_rocket_artillery(moving)@7.8 counter_battery_radar(moving)@5.3"},
+    {"vehicle": 683, "def": "mobile_fortress", "team": 1, "startTick": 5570, "start": 278.5, "end": 287, "seconds": 8.5, "x": 112.951, "y": 112.391, "goalX": 78.278, "goalY": 76.084, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "heavy_tank#707 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@9.8"},
+    {"vehicle": 714, "def": "elite_heavy_tank", "team": 1, "startTick": 5700, "start": 285, "end": 295.5, "seconds": 10.5, "x": 100.912, "y": 115.093, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#683", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(moving)@9.2 command_vehicle(moving)@3.8"},
+    {"vehicle": 726, "def": "command_vehicle", "team": 1, "startTick": 5830, "start": 291.5, "end": 300.5, "seconds": 9, "x": 98.547, "y": 113.122, "goalX": 106.777, "goalY": 101.147, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#683", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(moving)@9.2"},
+    {"vehicle": 704, "def": "ew_jammer", "team": 1, "startTick": 6290, "start": 314.5, "end": 325, "seconds": 10.5, "x": 107.259, "y": 101.296, "goalX": 102.076, "goalY": 113.629, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#683", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "rocket_technical(parked)@5.4"},
+    {"vehicle": 704, "def": "ew_jammer", "team": 1, "startTick": 6840, "start": 342, "end": 351, "seconds": 9, "x": 96.488, "y": 98.401, "goalX": 92.06, "goalY": 106.755, "order": "Move", "cause": "BlockedByFriend", "detail": "heavy_rocket_artillery#741 moving", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "counter_battery_radar(moving)@4.1 elite_heavy_tank(parked)@8.1 command_vehicle(moving)@5.2 rocket_technical(parked)@2.7 heavy_rocket_artillery(moving)@5.6 rocket_technical(parked)@7.7 rocket_technical(parked)@6.7 armored_car(moving)@8.7"},
+    {"vehicle": 751, "def": "flame_tank", "team": 1, "startTick": 10700, "start": 535, "end": 547, "seconds": 12, "x": 106.201, "y": 79.976, "goalX": 110.479, "goalY": 89.839, "order": "Move", "cause": "OffRoute", "detail": "to (105.0,87.0) past fortress_gate", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@4.5 shahed_truck(moving)@5.7 turtle_tank(parked)@6.7 command_vehicle(moving)@7.7 fortress_gate@8"},
+    {"vehicle": 707, "def": "heavy_tank", "team": 1, "startTick": 10710, "start": 535.5, "end": 544.5, "seconds": 9, "x": 101.878, "y": 78.959, "goalX": 113.549, "goalY": 112.296, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "elite_heavy_tank(moving)@8.7 flame_tank(moving)@4.7 shahed_truck(moving)@6.5 command_vehicle(moving)@5.6"},
+    {"vehicle": 777, "def": "armored_bulldozer", "team": 0, "startTick": 11050, "start": 552.5, "end": 564.5, "seconds": 12, "x": -86.657, "y": -87.075, "goalX": -92.931, "goalY": -93.461, "order": "Move", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@5.5 titan_tank(moving)@5.6 armored_bulldozer(moving)@7.4"}
+  ],
+  "rescues": []
+}
