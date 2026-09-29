@@ -53,8 +53,6 @@ Giai đoạn đầu, trước prompt 1 (26–28/09; đã làm trong v0.1–v0.24
   - thêm các map khác nhau, thời tiết
 - (26/09 13:08) nên có thêm hiệu ứng khói lửa nòng súng của các xe, và các máy bay
 - (26/09 13:32) nên có thêm đổ bóng, nhớ chạy lại research tối ưu các app nổi tiếng để đảm bảo hiệu năng, thêm các setting cấu hình
-- (26/09 14:30) - làm 2, 3 (bỏ cái xe sống sót qua nhiều màn)
-  - game sẽ miễn phí, tuy nhiên sẽ có skin mua bằng coin, sau khi xong màn có thể có coin, lúc này có thể đưa quảng cáo vào để được x2 coin
 - (26/09 14:31) và 1 số thiết bị cao cấp sẽ mua bằng coin luôn, thêm vào cho tôi, sẵn thêm nhiều loại xe / máy bay / pháo nữa, các model máy bay thả bom tôi thấy chưa chi tiết lắm, scan lại các model và cải thiện nó
 - (26/09 14:35) - làm thêm chiến dịch / mở khóa xe từ từ
   - các chế độ chơi khác, đánh AI, có độ khó, có chọn death match, các chế độ khác
@@ -137,7 +135,6 @@ Giai đoạn đầu, trước prompt 1 (26–28/09; đã làm trong v0.1–v0.24
 - (27/09 12:58) - ngoài ra chế độ fortress siege đó nên thêm nhiều nhà nữa bên trong fortress, nếu ta phá được nhà thì sẽ có thêm thưởng, và sửa AI là sẽ bắn nhà luôn, vẫn ưu tiên các công trình quân sự bên kia
   - menu thì rất khó bấm, nhiều lúc bấm không ăn, không kéo xuống được, như tôi không bấm được nút deploy nhiều lần, và vào chọn deck thì không xóa chọn cái khác được
   - bấm deploy thì nó bị khựng 1 khoảng mới vào, nên sửa lại toàn bộ cho nó smooth, màn loading cũng được, animation tối dần cũng được
-- (27/09 13:02) xem lại âm thanh luôn, đang cháy nổ có các âm thanh từ "enemy barrage coming" không hợp lý, đổi âm thanh hoặc kiếm cách khác, xem các âm thanh khác luôn
 - (27/09 13:04) các xe bắn xa như pháo binh, xe bắn tên lửa, sau khi bắn hết đạn thì có thể tự đứng yên để reload, nên có icon trên đầu khi hết đạn và reload, nghiên cứu các game khác cho phần này
 - (27/09 13:05) các turret tháp súng khi bắn đại bác vụ nổ quá nhỏ, cần to lên đáng kể cho uy lực
 - (27/09 13:12) Equipment 3 slot tôi thấy hơi ít, tăng lên 6 và có thể thêm 1 slot đặc biệt được không
@@ -207,7 +204,6 @@ Giai đoạn đầu, trước prompt 1 (26–28/09; đã làm trong v0.1–v0.24
   - hiệu ứng loading không chạy
   - nãy tôi có nói gia tăng kinh tế triệu hồi, nhớ đừng tăng nhiều quá, phải research bên ngoài đảm bảo game cân bằng, điều chỉnh giá nếu cần, khi up rank tới 1 mức nào đó có thể giảm giá để gọi phương tiện
   - sau khi update xong toàn bộ, update vào file pdf
-- (28/09 02:02) - research xem có thể tự tạo nhạc nền, nhạc menu, nhạc boss, ... tất cả nhạc không, nếu có thể thì tạo và thêm luôn
 
 Cách làm việc (28–29/09):
 - (28/09 06:04) nếu bị stuck cái gì cứ tự đưa ra hướng giải quyết và làm luôn không cần tôi approve, như chật quá thì tăng size map / căn cứ

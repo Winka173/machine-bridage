@@ -1,0 +1,188 @@
+Prompt 24: Hệ ngụy trang cho khí tài, làm lại âm thanh và âm nhạc, trải nghiệm người mới
+
+Nhiệm vụ: (1) làm hệ ngụy trang (skin) cho mọi phương tiện, tháp và công trình của người chơi, và bộ ngụy trang riêng cho từng tướng địch; (2) làm lại toàn bộ âm thanh và âm nhạc cho đầy đủ, với hệ nhạc thích ứng theo diễn biến trận; (3) làm lại trải nghiệm người mới: mở tính năng theo tiến độ, hướng dẫn đúng lúc, gợi ý tự động. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
+
+Phụ thuộc: chạy sau prompt 23. Dùng tên theo prompt 20 và 22 (không tên riêng tiếng Việt), đa ngôn ngữ của prompt 21, công cụ render ảnh thẻ của prompt 10, loại sát thương và cấp giáp của prompt 15, hệ boss, mini boss và đòn lớn của prompt 18–20, cấu trúc chiến dịch và hệ Chỉ huy của prompt 22, hệ sự kiện và thoại của prompt 23.
+
+Làm theo 3 lượt, chạy đủ test và commit sau mỗi lượt: Lượt 1 là Phần 1 (ngụy trang); Lượt 2 là Phần 2 (âm thanh và âm nhạc); Lượt 3 là Phần 3 (trải nghiệm người mới), vì phần này cần âm thanh và giao diện đã hoàn chỉnh.
+
+==================================================
+PHẦN 1: HỆ NGỤY TRANG
+==================================================
+
+A. LUẬT CHỌN MẪU XE THẬT (để không "tiêu" mất phương tiện có thể thêm sau này)
+1. Chỉ dùng một mẫu xe thật làm ngụy trang khi nó cùng vai trò và cùng cơ chế với thẻ gốc. Mẫu nào ngoài đời có cơ chế riêng (ví dụ pháo bánh lốp bắn rồi chạy, tháp pháo không người lái có APS và radar tích hợp, xe lội nước, xe thả dù đổ bộ) thì không dùng làm ngụy trang, dù trông giống.
+2. Danh sách giữ lại cho phương tiện tương lai, không bao giờ dùng làm ngụy trang:
+   - CAESAR, Archer (pháo bánh lốp).
+   - T-14 Armata (tăng thế hệ mới).
+   - BMD-4, Sprut-SD (xe đổ bộ đường không).
+   - AAV-7, BMP-3F (xe lội nước).
+   - RAH-66 Comanche (trực thăng tàng hình).
+   - EA-18G Growler (máy bay tác chiến điện tử).
+   - V-22 Osprey (máy bay cánh quạt nghiêng).
+   - Leonidas (xe vi sóng chống drone).
+3. Lưu danh sách giữ lại trong dữ liệu (một danh sách mẫu bị cấm dùng làm ngụy trang), để sau này thêm được mẫu mới vào danh sách mà không sửa code. Viết test: không bộ ngụy trang nào dùng mẫu trong danh sách này.
+4. Khi tự lập danh sách mẫu xe thật cho các thẻ còn lại (A2.1 bên dưới), áp đúng luật ở mục 1 và 2. Mẫu nào nghi ngờ thì không dùng làm ngụy trang, ghi vào DECISIONS.md như một ứng viên phương tiện tương lai.
+
+A2. PHẠM VI VÀ LOẠI NGỤY TRANG
+1. Mỗi phương tiện của người chơi có 3–5 bộ ngụy trang (kể cả bộ mặc định), chia 3 loại:
+   - Mẫu xe thật: đổi model, cho các xe có biến thể nổi tiếng ngoài đời cùng vai trò và cùng cơ chế. Khởi điểm:
+     - Tăng chủ lực: Abrams, Leopard 2, T-90, Merkava, K2.
+     - Trực thăng tấn công: Apache, Ka-52, Mi-28, Tiger (model Ka-52 và Apache đã được giữ lại từ prompt 17).
+     - Cường kích: Su-25, A-10 (model đã được giữ lại từ prompt 17).
+     - Tiêm kích: F-16, Su-27, Rafale.
+     - Tiêm kích tàng hình: F-35, Su-57, J-20.
+     - UAV tấn công: Bayraktar TB2, MQ-9 Reaper.
+     - Pháo tự hành: M109, 2S19.
+     Tự lập danh sách cho các xe còn lại theo luật ở phần A; xe không có biến thể thật hợp lý thì chỉ dùng hai loại còn lại. Ghi bảng đầy đủ vào DECISIONS.md.
+   - Họa tiết ngụy trang: chỉ đổi texture, áp được cho mọi xe: sa mạc, tuyết, rừng, đô thị, kỹ thuật số.
+   - Bộ đặc biệt: thưởng khi hạ từng tướng địch ở độ khó cao nhất; thưởng hoàn thành Săn trùm toàn tập; thưởng sự kiện. Có huy hiệu, và vạch diệt địch trên nòng pháo tăng theo số xe mà thẻ đó đã hạ (đếm trong chiến dịch và các chế độ có thưởng).
+2. Tháp và công trình: 3–4 bộ họa tiết ngụy trang cơ bản cho mỗi loại (sa mạc, tuyết, rừng, bê tông đô thị); không đổi model.
+3. Phe địch: mỗi tướng địch có một bộ ngụy trang riêng theo cá tính và chủ đề tên boss của mình, áp cho xe, tháp và hộ tống của tướng đó, để người chơi nhận ra đang đánh ai. Boss và mini boss giữ màu và ký hiệu theo luật của prompt 20.
+4. Đơn vị đồng minh theo kịch bản (tiếp viện Accord, Behemoth của Mara) dùng ký hiệu Accord riêng.
+
+B. QUY TẮC
+1. Không đổi chỉ số, kích thước va chạm, tầm nhìn, điểm gắn vũ khí hay hành vi. Model mẫu xe thật phải khớp vùng va chạm và điểm gắn bộ phận của model gốc.
+2. Giữ nhận diện phe: mọi bộ ngụy trang có dấu phe rõ ràng (vạch màu phe trên nóc và hông, theo token của prompt 10), nhìn rõ ở zoom xa và đồ họa Thấp. Viết test so ảnh tự động để kiểm tra.
+3. Hiệu năng: dùng chung LOD và ngân sách hiệu năng với model gốc; texture họa tiết dùng chung atlas; không làm tăng thời gian tải trận quá ngân sách.
+4. Tên ngụy trang: tên mẫu xe thật giữ nguyên ở cả hai ngôn ngữ; tên họa tiết và bộ đặc biệt được dịch theo ngôn ngữ; không tên riêng tiếng Việt.
+
+C. NGUỒN NHẬN VÀ CỬA HÀNG
+1. Một phần miễn phí qua chiến dịch, Tác chiến và Săn trùm; một phần bán bằng xu ở tab Ngụy trang trong Cửa hàng; chừa sẵn cấu trúc để sau này đưa vào thẻ mùa.
+2. Không bộ nào cho lợi thế chiến đấu; ghi rõ điều này trong mô tả của tab Ngụy trang.
+3. Giá bán bằng xu tính theo đường cong kinh tế của prompt 7 và 20, để ngụy trang là nơi tiêu xu phụ chứ không cạnh tranh với việc lên hạng thẻ.
+4. Cửa hàng có xem trước model 3D xoay được trước khi mua.
+
+D. GIAO DIỆN
+1. Chọn ngụy trang trong màn chi tiết phương tiện, tháp và công trình; xem trước trên model 3D xoay được.
+2. Ảnh thẻ render lại theo ngụy trang đang dùng (công cụ render của prompt 10); cập nhật ở mọi nơi dùng ảnh thẻ.
+3. Tên thẻ có dòng phụ là tên mẫu xe thật (ví dụ "Tăng chủ lực · T-90"); dòng phụ đổi theo mẫu xe thật đang chọn; xe dùng họa tiết thì dòng phụ là mẫu mặc định.
+4. Có tùy chọn "áp một họa tiết cho cả bộ bài" để người chơi đổi nhanh.
+5. Sa bàn (prompt 21) dùng được ngụy trang người chơi đã có.
+6. Migration: người chơi cũ dùng ngụy trang mặc định; không mất gì.
+
+==================================================
+PHẦN 2: ÂM THANH VÀ ÂM NHẠC
+==================================================
+
+E. RÀ SOÁT HIỆN TRẠNG
+1. Liệt kê mọi âm thanh và bản nhạc hiện có, chỗ nào đang thiếu hoặc dùng tạm, chỗ nào lặp lại quá nhiều; ghi vào docs/audio-report.md.
+2. Mọi âm thanh và nhạc phải là bản tự làm hoặc có giấy phép rõ ràng cho dùng thương mại. Ghi nguồn và giấy phép vào docs/audio-credits.md. Nếu hệ sáng tác nhạc bằng script có sẵn trong dự án thì ưu tiên dùng nó.
+
+F. HIỆU ỨNG ÂM THANH
+1. Vũ khí, theo họ vũ khí và cỡ nòng (prompt 13): súng máy nhỏ, súng máy lớn, pháo tự động, pháo xe tăng, lựu pháo và cối, rốc-két, tên lửa (chống tăng, phòng không, hành trình, đạn đạo), bom, drone, pháo điện từ, laser, súng phun lửa. Cỡ nòng lớn nghe nặng và trầm hơn. Luồng bắn dài (sau các thay đổi nhịp bắn) có âm thanh liền mạch, không lặp lại cụt.
+2. Trúng đích, theo loại sát thương và kết quả xuyên (prompt 15):
+   - Xuyên tốt, xuyên kém và không xuyên nghe khác nhau (không xuyên có tiếng nảy đạn).
+   - Trúng giáp dày, giáp mỏng, công trình, máy bay nghe khác nhau.
+   - Năng lượng, lửa, mảnh và nổ lõm có âm thanh riêng.
+3. Vụ nổ theo cỡ (nhỏ, vừa, lớn, rất lớn), và âm thanh riêng cho đạn tăng nổ kho đạn, bộ phận boss vỡ, boss chìm hoặc rơi.
+4. Động cơ theo loại khung: xe xích, xe bánh, trực thăng, máy bay phản lực, máy bay cánh quạt, tàu nổi, tàu ngầm, phi thuyền; boss chủ lực có âm thanh động cơ riêng.
+5. Tháp và căn cứ: tháp xoay, tháp bắn, tháp thả dù tiếp đất, khiên được kích hoạt và vỡ, xe công sự triển khai và thu lại.
+6. Cảnh báo (phải phân biệt được bằng tai, không cần nhìn):
+   - Đòn lớn của boss: mỗi boss chủ lực một âm cảnh báo riêng; mini boss dùng chung một âm.
+   - Viện quân địch, không kích, pháo kích, bão nhiễu điện tử, thời tiết đổi.
+   - Hết đạn, đang hồi đạn, đầy đạn (prompt 13).
+   - HQ bị tấn công.
+7. Giao diện: chạm nút, nhận thưởng, lên hạng, mở hòm, mở khóa thẻ, chọn chỉ huy, hiện thoại (một âm rất nhẹ khi dòng thoại xuất hiện).
+8. Môi trường: âm nền theo biome (sa mạc, tuyết, rừng, đô thị, biển, công nghiệp, bãi phóng), theo thời tiết (mưa, bão cát, bão tuyết, sương mù) và theo ngày đêm; chuyển mượt khi thời tiết và ngày đêm đổi giữa trận (prompt 23).
+9. Không lồng tiếng (thoại chỉ là chữ theo prompt 23).
+
+G. ÂM NHẠC
+1. Nhạc thích ứng trong trận: mỗi bản nhạc trận có ít nhất 3 lớp (yên, căng thẳng, giao tranh), chuyển mượt theo mức độ giao tranh trên màn hình (số đơn vị đang bắn, sát thương gần đây, máu HQ), không chuyển qua lại liên tục (có độ trễ).
+2. Danh sách bản nhạc:
+   - Menu chính.
+   - Một chủ đề cho mỗi hồi (4 hồi) và cho mỗi chương xen kẽ (3), dùng trong nhiệm vụ thường của hồi đó.
+   - Một chủ đề riêng cho mỗi boss chủ lực (12); một chủ đề chung cho mini boss (có thể có 2–3 biến thể).
+   - Một motif ngắn cho mỗi tướng địch (Brandt, Varga, Orlov, Kessler, Venn, Wolff, Thorne, Aurel), lồng vào nhạc trận khi tướng đó ra trận và vào chủ đề boss của tướng đó.
+   - Một motif cho phe ta (Machine Brigade), dùng trong nhạc thắng, cảnh kết chương và đợt "Tổng tấn công" ở chương 12.
+   - Nhạc ngắn khi thắng, khi thua, khi mở khóa thẻ và chỉ huy.
+   - Nhạc cho tranh truyện cuối chương, cảnh mở đầu và phần kết.
+   - Nhạc cho Săn trùm, Tác chiến, Giao tranh, Sa bàn.
+3. Các khoảnh khắc cốt truyện (prompt 23, H.8) có nhạc riêng hoặc biến thể chậm của chủ đề đang chơi.
+4. Nhạc không lặp lại cụt: bản nhạc trận có đoạn lặp mượt; chuyển bản nhạc bằng crossfade.
+
+H. TRỘN ÂM VÀ HIỆU NĂNG
+1. Mức ưu tiên: cảnh báo > đòn lớn và vụ nổ lớn > vũ khí gần camera > vũ khí xa > môi trường. Khi nhiều âm thanh cùng lúc, âm ưu tiên thấp bị giảm hoặc bỏ.
+2. Giảm âm lượng nhạc và âm nền tạm thời khi có cảnh báo quan trọng.
+3. Giới hạn số âm thanh phát cùng lúc theo ngân sách của máy tầm thấp; giới hạn riêng cho từng loại (ví dụ số tiếng súng máy cùng lúc), để trận đông quân không bị ồn và rè.
+4. Âm lượng theo khoảng cách tới camera; âm thanh ngoài màn hình nhỏ hơn.
+5. Chuẩn hóa độ lớn cho điện thoại (đặt một mức mục tiêu thống nhất cho nhạc và hiệu ứng); nén định dạng hợp lý; nhạc phát dạng stream để tiết kiệm bộ nhớ; đo bộ nhớ âm thanh và kích thước bản cài trước và sau.
+6. Tắt âm khi game chạy nền; tôn trọng chế độ im lặng của máy.
+
+I. CÀI ĐẶT ÂM THANH
+1. Thanh trượt riêng: tổng, nhạc, hiệu ứng, giao diện, môi trường.
+2. Tùy chọn giảm âm thanh chiến đấu dồn dập (cho người chơi nhạy cảm với tiếng ồn).
+3. Rung nhẹ tùy chọn khi trúng đòn lớn, khi boss dùng đòn lớn và khi mở hòm (bật/tắt riêng).
+
+==================================================
+PHẦN 3: TRẢI NGHIỆM NGƯỜI MỚI
+==================================================
+
+K. PHIÊN CHƠI ĐẦU TIÊN
+1. Lần đầu mở game: chọn ngôn ngữ tự động theo máy (prompt 21), không bắt đăng nhập, không xin quyền gì. Vào thẳng cảnh mở đầu nhảy tới tương lai (prompt 22), rồi vào nhiệm vụ đầu tiên trong khoảng 30 giây kể từ lúc mở game.
+2. Quyền thông báo chỉ xin sau một hành động có lý do (ví dụ sau khi người chơi nhận quà miễn phí lần đầu), không xin khi vừa mở game.
+3. Mục tiêu: người chơi mới thắng trận đầu tiên trong khoảng 3 phút; nhận phần thưởng đầu tiên (thẻ mới hoặc lên hạng) trong khoảng 10 phút đầu.
+4. Nhiệm vụ đầu tiên chỉ dùng 3–4 loại xe đơn giản, không có boss, không có sự kiện phức tạp.
+
+L. MỞ TÍNH NĂNG THEO TIẾN ĐỘ
+1. Mỗi hệ thống chỉ hiện khi người chơi tới mốc của nó. Trước đó, nút và màn liên quan ẩn đi (không hiện dạng khóa khó hiểu), trừ khi cần báo trước (khi đó hiện nhãn ngắn "Mở ở chương X").
+2. Thứ tự khởi điểm (tự chỉnh cho khớp nhịp chiến dịch của prompt 22; ghi bảng cuối vào DECISIONS.md):
+   - Nhiệm vụ 1: thả quân, CP, lệnh Tấn công và Phòng thủ, Tự mua.
+   - Nhiệm vụ 2: thẻ hỗ trợ.
+   - Nhiệm vụ 3: căn cứ, đặt tháp vào ô theo cỡ.
+   - Nhiệm vụ 4: tháp thả dù, tiền đồn.
+   - Cuối chương 1: chỉnh bộ bài, lên hạng thẻ, bộ sưu tập.
+   - Chương 2: trang bị; màn chọn chỉ huy (khi Mara mở); mini boss và đòn lớn đầu tiên.
+   - Chương 3: icon giáp và ký hiệu ✓ ~ ✕; hệ đạn và hồi đạn của máy bay (khi Hawk mở và khi gặp Harpy).
+   - Xen kẽ I: loại sát thương và phòng vệ (APS, giáp phản ứng nổ, lồng chắn, khói, khiên); Hồ sơ tình báo.
+   - Chương 4: hạng tháp, nhánh hạng 7, trang bị tháp; lựa chọn có hệ quả đầu tiên; Tác chiến.
+   - Sau 3 boss đầu tiên: Săn trùm.
+   - Chương 5 trở đi: các sự kiện nâng cao (bão nhiễu điện tử, tướng địch ra trận bằng mini boss).
+   - Sau khi phá đảo chương cuối đang bật: Săn trùm toàn tập, Sa bàn.
+   Chế độ Giao tranh mở sau chương 1; Thử thách (Sinh tồn, Vô tận) mở sau chương 2; tab Ngụy trang mở sau chương 1.
+3. Hệ bật/tắt theo hồi (prompt 20): nếu một mốc nằm ở hồi đang tắt, chuyển mốc sang chương đang bật gần nhất.
+4. Người chơi cũ khi cập nhật: mọi hệ thống ứng với tiến độ đã đạt được mở sẵn; không bắt chơi lại hướng dẫn.
+
+M. HƯỚNG DẪN ĐÚNG LÚC
+1. Mỗi hệ thống có một hướng dẫn ngắn (1–2 màn chữ và mũi tên chỉ vào đúng chỗ) khi người chơi gặp nó lần đầu, không dạy trước.
+2. Hướng dẫn trong trận không dừng trận quá lâu: dùng làm chậm thời gian ngắn hoặc tạm dừng chỉ ở lần đầu gặp đòn lớn của boss, lần đầu có viện quân từ nhiều hướng, và lần đầu dùng lệnh cho đơn vị đang chọn.
+3. Có nút bỏ qua cho mọi hướng dẫn; tùy chọn "Tắt hướng dẫn" trong Cài đặt cho người đã quen.
+4. Mọi hướng dẫn xem lại được trong tab Hướng dẫn.
+5. Ẩn thông tin nâng cao lúc đầu: màn chi tiết xe chỉ hiện chỉ số chính cho tới khi người chơi mở hệ tương ứng; "Xem thêm" (prompt 13) chỉ hiện sau Xen kẽ I.
+6. Hướng dẫn dùng giao diện của prompt 10 và 11, không che các nút cần bấm; đủ hai ngôn ngữ; qua test chữ bị cắt và căn chỉnh.
+
+N. GỢI Ý TỰ ĐỘNG
+1. Bộ bài gợi ý: màn Bộ bài có nút "Bộ bài gợi ý" theo các thẻ người chơi đang có và nhiệm vụ sắp tới (ví dụ thêm phòng không khi nhiệm vụ có boss bay).
+2. "Tự xếp" căn cứ (prompt 14) được giới thiệu ngay khi mở màn Căn cứ.
+3. Khi Độ phủ vai trò hoặc Độ phủ căn cứ báo thiếu, hiện luôn 1–2 thẻ gợi ý để thêm vào.
+4. Màn chuẩn bị nhiệm vụ: gợi ý chỉ huy hợp với tướng địch của nhiệm vụ (dựa trên điểm mạnh và điểm yếu ở prompt 22), kèm một dòng giải thích.
+5. Khi thua: 1–2 gợi ý cụ thể dựa trên trận vừa đánh (đã có từ prompt 10), kèm nút đi thẳng tới màn Bộ bài, Căn cứ hoặc chọn chỉ huy tùy gợi ý.
+6. Người chơi thua cùng một nhiệm vụ nhiều lần liên tiếp (khởi điểm 3 lần): gợi ý giảm độ khó cho nhiệm vụ đó, không bắt buộc.
+
+O. ĐO VÀ CHỈNH
+1. Ghi phễu người mới vào telemetry opt-in đã có (prompt 7): từng bước của phiên chơi đầu, từng hướng dẫn (xem, bỏ qua, hoàn thành), tỷ lệ thua ở 10 nhiệm vụ đầu. Khi có hạ tầng phân tích từ xa sau này, dùng cùng các sự kiện này.
+2. Chạy mô phỏng 5 seed và kiểm tra 10 nhiệm vụ đầu: mọi nhiệm vụ thắng được với bộ bài gợi ý ở độ khó Thường, và độ khó tăng dần đều.
+
+==================================================
+P. KIỂM TRA
+==================================================
+- Ngụy trang: mọi phương tiện có 3–5 bộ, mọi tháp và công trình có bộ họa tiết; không bộ nào đổi chỉ số, va chạm hay điểm gắn; không bộ nào dùng mẫu trong danh sách giữ lại (A.2); mọi mẫu xe thật được dùng đều cùng vai trò và cơ chế với thẻ gốc (A.1); dấu phe nhìn rõ ở zoom xa và đồ họa Thấp (test so ảnh); ảnh thẻ và dòng phụ đổi đúng; mua, nhận và áp ngụy trang đúng; tướng địch dùng đúng bộ riêng; migration đúng.
+- Âm thanh: mọi vũ khí, loại trúng đích, vụ nổ, động cơ, cảnh báo và giao diện đều có âm thanh (test quét không có sự kiện nào thiếu âm); cảnh báo đòn lớn của mỗi boss chủ lực là duy nhất.
+- Âm nhạc: có đủ các bản ở G.2; nhạc thích ứng chuyển lớp đúng và có độ trễ; motif tướng địch lồng đúng khi tướng ra trận; crossfade không bị cụt.
+- Trộn âm: trận nặng nhất (chiến dịch lớn chương 12) không vượt giới hạn số âm cùng lúc, không rè; cảnh báo luôn nghe được.
+- Trải nghiệm người mới: chạy tự động một lượt chơi mới từ lúc mở game tới hết chương 2, kiểm tra thời gian tới trận đầu tiên, thời gian thắng trận đầu, thời gian tới phần thưởng đầu tiên theo mục tiêu ở K.3; mọi hệ thống mở đúng mốc; không nút nào dẫn tới màn chưa mở; bỏ qua hướng dẫn không làm kẹt tiến độ; người chơi cũ không bị bắt chơi lại hướng dẫn; hệ bật/tắt theo hồi dời mốc đúng.
+- Gợi ý tự động: bộ bài gợi ý hợp lệ và thắng được nhiệm vụ sắp tới; gợi ý chỉ huy đúng theo tướng địch; gợi ý khi thua dẫn đúng màn.
+- Hiệu năng: đo FPS, bộ nhớ âm thanh và kích thước bản cài trên máy tầm thấp; nằm trong ngân sách.
+- Chụp ảnh tự động các màn chọn ngụy trang, tab Ngụy trang trong Cửa hàng, và mọi màn hướng dẫn, ở cả hai ngôn ngữ; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model mẫu xe thật còn dùng tạm, bản nhạc và âm thanh còn tạm), docs/audio-credits.md và tài liệu thiết kế (ngụy trang, danh sách mẫu giữ lại, âm thanh, âm nhạc, trải nghiệm người mới và bảng mốc mở tính năng).
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Giai đoạn đầu (26–28/09):
+- (26/09 14:30) làm 2, 3 (bỏ cái xe sống sót qua nhiều màn) game sẽ miễn phí, tuy nhiên sẽ có skin mua bằng coin, sau khi xong màn có thể có coin, lúc này có thể đưa quảng cáo vào để được x2 coin
+- (27/09 08:08) âm thanh cháy nổ có thể lấy free về, và nhớ sắp xếp, run nó sao cho hợp lý, nhớ tham khảo bên ngoài
+- (27/09 13:02) xem lại âm thanh luôn, đang cháy nổ có các âm thanh từ "enemy barrage coming" không hợp lý, đổi âm thanh hoặc kiếm cách khác, xem các âm thanh khác luôn
+- (28/09 02:02) research xem có thể tự tạo nhạc nền, nhạc menu, nhạc boss, ... tất cả nhạc không, nếu có thể thì tạo và thêm luôn
