@@ -269,6 +269,7 @@ namespace MachineBrigade.Sim.Bosses
             var turn = 1f;
             var cadence = 1f;
             boss.BombardOff = boss.SpotterOff = boss.BurrowOff = boss.LandingOff = boss.AuraOff = false;
+            boss.CruiseOff = boss.CraftOff = boss.RadarOff = false;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (!boss.PartBroken[i]) continue;
@@ -291,8 +292,21 @@ namespace MachineBrigade.Sim.Bosses
                         case "burrow": boss.BurrowOff = true; break;
                         case "landing": boss.LandingOff = true; break;
                         case "aura": boss.AuraOff = true; break;
+                        case "cruise": boss.CruiseOff = true; break;
+                        case "craft": boss.CraftOff = true; break;
+                        case "radar": boss.RadarOff = true; break;
                     }
             }
+            // Prompt 16: point defence stops only once every part that carries it is broken.
+            var ciwsCarried = 0;
+            var ciwsBroken = 0;
+            for (var i = 0; i < parts.Count; i++)
+                if (Contains(parts[i].Stops, "ciws"))
+                {
+                    ciwsCarried++;
+                    if (boss.PartBroken[i]) ciwsBroken++;
+                }
+            boss.CiwsOff = ciwsCarried > 0 && ciwsBroken == ciwsCarried;
             boss.PartSpeed = speed;
             boss.TurnFactor = boss.TurnFactor / boss.PartTurn * turn;
             boss.TurretFactor = boss.TurretFactor / boss.PartTurn * turn;

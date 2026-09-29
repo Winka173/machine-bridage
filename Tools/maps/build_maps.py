@@ -3288,7 +3288,7 @@ LB_PIER_U, LB_PIER_HEAD = 48.0, 52.0                    # the piers: |u|, and w 
 LB_JETTY_HEAD = 55.0           # the headland's tip beside the lighthouse (the third place guns reach the near lane from)
 # The sea lanes the ships run on (id, w, half the stretch they patrol): the near lane in reach of
 # guns on the pier heads, the far lane only of artillery, aircraft and the coastal batteries.
-LB_LANES = (('near', 82.0, 90.0), ('mid', 98.0, 84.0), ('far', 114.0, 78.0))
+LB_LANES = (('near', 92.0, 88.0), ('mid', 106.0, 82.0), ('far', 120.0, 76.0))
 LB_LANDINGS = (72.0, 86.0)     # |u| of the beach points landing craft run up on
 LB_BATTERY = (104.0, 16.0)     # the coastal batteries (|u|, w), on the cliff tops
 LB_POINTS = (('west', 0.0, -104.0, 13.0), ('town', 0.0, -20.0, 15.0), ('east', 0.0, 38.0, 12.0))
@@ -3339,7 +3339,7 @@ def lb_road(L, width, *uw):
 def lb_sea_block():
     """The sea as the game needs it (map data "sea"): the coast's frame, its waterline, the lanes the
     ships run on, where landing craft beach, the pier heads, the coastal batteries, the lighthouse."""
-    shore = [[float(u), round(lb_shore(u), 2)] for u in range(-212, 213, 4)]
+    shore = [v for u in range(-212, 213, 4) for v in (float(u), round(lb_shore(u), 2))]   # u, w pairs
     lanes = [{'id': i, 'w': w, 'patrol': p, 'end': round(212.1 - w - 4.0, 1)} for i, w, p in LB_LANES]
     landings = []
     for s in (-1, 1):
@@ -3348,7 +3348,8 @@ def lb_sea_block():
             beach = lb_shore(uu)
             landings.append({'x': lb_xz(uu, beach + 1.5)[0], 'z': lb_xz(uu, beach + 1.5)[1],
                              'inland': list(lb_xz(uu, beach - 9.0))})
-    piers = [list(lb_xz(s * LB_PIER_U, LB_PIER_HEAD)) for s in (-1, 1)] + [list(lb_xz(0.0, LB_JETTY_HEAD))]  # the last: the headland's tip
+    # x, z pairs; the last is the headland's tip.
+    piers = [v for p in [lb_xz(s * LB_PIER_U, LB_PIER_HEAD) for s in (-1, 1)] + [lb_xz(0.0, LB_JETTY_HEAD)] for v in p]
     bu, bw = LB_BATTERY
     batteries = [{'id': 'battery_' + tag, 'x': lb_xz(s * bu, bw)[0], 'z': lb_xz(s * bu, bw)[1], 'heading': 135}
                  for tag, s in (('w', -1), ('e', 1))]
@@ -3448,7 +3449,7 @@ def lighthousebay(seed=199, siege=False):
     headland with the lighthouse and its jetty (the east objective: whoever holds it watches the sea);
     high cliffs by the camps with an abandoned coastal battery on each; a fishing village round the
     market at the centre; the old fort on the pine hill in the north-west (the west objective). Three
-    sea lanes run along the coast at 60, 76 and 92 m off the cove beaches: guns on the pier heads and
+    sea lanes run along the coast at 70, 84 and 98 m off the cove beaches: guns on the pier heads and
     the jetty reach the near lane, artillery, aircraft and the batteries the far one. For the Siege
     version (`siege`) the north-east camp's coast is left bare: the classic fortress stands there."""
     points = [(*lb_xz(u, w), r) for _, u, w, r in LB_POINTS]

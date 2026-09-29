@@ -255,6 +255,12 @@ namespace MachineBrigade.Sim.Combat
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
                 if (!direct && rocket && !aps.Rockets) continue;
                 if (!direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
+                // Prompt 16: a ship's CIWS with its fire-control radar broken misses now and then.
+                if (v.ApsMiss > 0f && _world.Random.NextDouble() < v.ApsMiss)
+                {
+                    v.ApsCharges--;
+                    continue;
+                }
                 v.ApsCharges--;
                 v.ApsLeft = !v.ApsLeft;
                 // The interceptor meets the round a few metres out, on the side it came from.

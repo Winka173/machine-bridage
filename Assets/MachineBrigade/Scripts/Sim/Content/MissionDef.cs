@@ -413,6 +413,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>An optional mission (the tutorial): the next one does not wait for it.</summary>
         public bool Optional { get; set; }
 
+        /// <summary>A chapter's epilogue (prompt 16: Leviathan after chapter 4's operation): a main mission after the operation.</summary>
+        public bool Epilogue { get; set; }
+
         /// <summary>Second star: won within this many seconds (0: always).</summary>
         public float StarTime { get; set; }
 
@@ -569,6 +572,7 @@ namespace MachineBrigade.Sim.Content
                 Unlocks = Strings(m, "unlocks"),
                 Tips = ParseTips(m),
                 Optional = m.Bool("optional", false),
+                Epilogue = m.Bool("epilogue", false),
                 StarTime = m.Float("starTime", 0f),
                 StarLosses = m.Int("starLosses", -1),
                 Outposts = Strings(m, "outposts"),

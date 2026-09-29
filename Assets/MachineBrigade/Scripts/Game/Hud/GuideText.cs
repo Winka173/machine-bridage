@@ -1043,6 +1043,36 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: chạy theo lộ trình dọc bờ biển; cứ 35 giây dừng lại, hạ [[cửa đổ bộ]] và thả 3–4 xe lên bờ, tối đa năm lần. Hai pháo CIWS sáu nòng che chắn cả đất lẫn trời.\n" +
                 "Mạnh / yếu: mỗi lần đổ bộ là địch thêm quân; nó to và xoay chậm, đánh trúng nó trên đường tới là cắt bớt số lần đổ bộ.\n" +
                 "Mẹo: đón đầu nó trước lần đổ bộ đầu tiên bằng xe diệt tăng và pháo binh, và giữ lực lượng dự bị cho số quân đã lên bờ."),
+            ["guide.leviathan"] = (
+                "[[Boss]] · battleship at sea · shells the coast, runs when beaten\n" +
+                "How it fights: two 203 mm turrets lay [[salvos]] on the shore, marked ahead, sweeping along it; cruise missiles at your groups and your base; [[CIWS]] shoots down missiles, rockets and drones (never shells, bullets or beams). Phase 2 it comes in close, lands tanks and launches helicopters; phase 3 it runs for open sea: sink it before the clock runs out.\n" +
+                "Strong / weak: its sides are armour [[4]], its deck only [[2]]: artillery, bombs, rocket artillery and top attacks hit the deck; tank guns reach it only from the pier heads, when it comes in close.\n" +
+                "Tip: hold the lighthouse and the coastal batteries; bring artillery and aircraft; break the CIWS (or its corvettes) before sending missiles, and the engine room before it runs.",
+                "[[Trùm]] · chiến hạm trên biển · nã pháo vào bờ, bỏ chạy khi thua\n" +
+                "Cách đánh: hai tháp pháo 203 mm bắn [[loạt]] vào bờ, có cảnh báo trước và quét dần dọc bờ; tên lửa hành trình đánh vào cụm quân và căn cứ; [[CIWS]] bắn hạ tên lửa, rốc-két và drone (không chặn đạn pháo, đạn súng hay Năng lượng). Pha 2 nó áp sát, đổ bộ xe tăng và thả trực thăng; pha 3 nó chạy ra khơi: đánh chìm nó trước khi hết giờ.\n" +
+                "Mạnh / yếu: hông tàu giáp cấp [[4]], boong chỉ cấp [[2]]: pháo binh, bom, pháo phản lực và đòn đánh nóc đánh vào boong; pháo xe tăng chỉ với tới khi nó áp sát, đứng ở đầu cầu tàu.\n" +
+                "Mẹo: giữ ngọn hải đăng và trận địa pháo bờ biển; mang pháo binh và máy bay; phá CIWS (hoặc tàu hộ vệ) trước khi dùng tên lửa, và phá buồng máy trước khi nó bỏ chạy."),
+            ["guide.sea_corvette"] = (
+                "[[Leviathan's fleet]] · escort corvette · guards the flagship\n" +
+                "How it fights: a 76 mm gun on the shore; a CIWS that shoots down missiles and drones aimed at it or at Leviathan within 32 m. In the last phase it steams between Leviathan and the shore.\n" +
+                "Strong / weak: sides armour 3, deck 1; sink it first and your aircraft and missiles reach the flagship.",
+                "[[Hạm đội Leviathan]] · tàu hộ vệ · bảo vệ tàu chính\n" +
+                "Cách đánh: pháo 76 mm bắn vào bờ; CIWS bắn hạ tên lửa và drone nhắm vào nó hoặc vào Leviathan trong vòng 32 m. Ở pha cuối nó chạy chắn giữa Leviathan và bờ.\n" +
+                "Mạnh / yếu: hông giáp cấp 3, boong cấp 1; đánh chìm nó trước thì máy bay và tên lửa của bạn đánh được tàu chính."),
+            ["guide.missile_boat"] = (
+                "[[Leviathan's fleet]] · fast attack boat · raids the pier heads\n" +
+                "How it fights: it waits out on the sea, dashes in to a pier head, fires a salvo of 80 mm rockets and runs back out.\n" +
+                "Strong / weak: fast but thin-skinned (armour 1): anything on the pier heads hits it while it is close in.",
+                "[[Hạm đội Leviathan]] · xuồng tên lửa cao tốc · đánh vào đầu cầu tàu\n" +
+                "Cách đánh: chờ ngoài khơi, lao vào sát đầu cầu tàu, bắn một loạt rốc-két 80 mm rồi quay ra.\n" +
+                "Mạnh / yếu: nhanh nhưng giáp mỏng (cấp 1): mọi xe đứng ở đầu cầu tàu đều bắn trúng nó khi nó áp sát."),
+            ["guide.landing_craft"] = (
+                "[[Leviathan's fleet]] · landing craft · puts tanks on the beach\n" +
+                "How it fights: from Leviathan's well deck to a beach, two tanks off, and back for more; three trips at most.\n" +
+                "Strong / weak: slow and lightly armed; sink it on the way in and its tanks go down with it.",
+                "[[Hạm đội Leviathan]] · tàu đổ bộ · đưa xe tăng lên bãi\n" +
+                "Cách đánh: từ khoang đổ bộ của Leviathan tới bãi cát, thả hai xe tăng rồi quay về lấy thêm; tối đa ba chuyến.\n" +
+                "Mạnh / yếu: chậm và ít vũ khí; đánh chìm nó trên đường vào thì xe tăng chìm theo."),
             ["guide.supreme_command"] = (
                 "[[Boss]] · super-heavy headquarters · makes its army stronger\n" +
                 "How it fights: only two light machine guns; every enemy unit within [[40 m]] of it hits [[20 % harder]] and fires 20 % faster. An elite guard rides with it, and more come at 60 %.\n" +

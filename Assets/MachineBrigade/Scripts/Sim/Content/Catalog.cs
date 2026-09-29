@@ -145,6 +145,7 @@ namespace MachineBrigade.Sim.Content
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                     // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
                     TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
+                    Laid = w.Bool("laid", false),
                 });
                 if (w.Has("pen"))
                 {
@@ -362,6 +363,7 @@ namespace MachineBrigade.Sim.Content
                             m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
                     }
                     ParseExtras(v, def);
+                    ParseNaval(v, def);
                     if (v.Has("branch")) ownBranches[def.Id] = v.Enum<ArmyBranch>("branch");
                     return def;
                 }));
@@ -412,6 +414,7 @@ namespace MachineBrigade.Sim.Content
                 Base = root.Has("base") ? BaseRules.Parse(root.Object("base")) : new BaseRules(),
             };
             catalog.FinishExtras(root, ownBranches);
+            catalog.CheckNaval();
             return catalog;
         }
 

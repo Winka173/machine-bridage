@@ -150,9 +150,14 @@ namespace MachineBrigade.Game.Match
         /// <summary>A chapter's big operation (its tenth main mission).</summary>
         public static MissionDef OperationOf(int chapter)
         {
+            // The chapter's operation (prompt 16: an epilogue boss may follow it); else its last main mission.
             MissionDef last = null;
             foreach (var m in All)
-                if (m.Chapter == chapter && !m.Side) last = m;
+            {
+                if (m.Chapter != chapter || m.Side) continue;
+                if (m.Operation) return m;
+                last = m;
+            }
             return last;
         }
 

@@ -375,6 +375,10 @@
     "file": "fighter_jet_hd.glb",
     "triangles": 16028
   },
+  "fishing_boat": {
+    "file": "fishing_boat.glb",
+    "triangles": 156
+  },
   "flak_tower": {
     "file": "flak_tower.glb",
     "triangles": 9748
@@ -547,6 +551,10 @@
     "file": "lancet_truck.glb",
     "triangles": 10234
   },
+  "landing_craft": {
+    "file": "landing_craft.glb",
+    "triangles": 320
+  },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
     "triangles": 9216
@@ -555,6 +563,10 @@
     "file": "lava_vent.glb",
     "triangles": 818
   },
+  "leviathan": {
+    "file": "leviathan.glb",
+    "triangles": 5416
+  },
   "light_tank": {
     "file": "light_tank.glb",
     "triangles": 7080
@@ -562,6 +574,10 @@
   "light_tank_hd": {
     "file": "light_tank_hd.glb",
     "triangles": 16606
+  },
+  "lighthouse": {
+    "file": "lighthouse.glb",
+    "triangles": 784
   },
   "log_cabin": {
     "file": "log_cabin.glb",
@@ -615,6 +631,10 @@
     "file": "missile_battery.glb",
     "triangles": 6926
   },
+  "missile_boat": {
+    "file": "missile_boat.glb",
+    "triangles": 432
+  },
   "mlrs": {
     "file": "mlrs.glb",
     "triangles": 7328
@@ -666,6 +686,10 @@
   "parking_garage": {
     "file": "parking_garage.glb",
     "triangles": 3804
+  },
+  "pier": {
+    "file": "pier.glb",
+    "triangles": 592
   },
   "pine": {
     "file": "pine.glb",
@@ -810,6 +834,10 @@
   "scout_jeep_hd": {
     "file": "scout_jeep_hd.glb",
     "triangles": 8644
+  },
+  "sea_corvette": {
+    "file": "sea_corvette.glb",
+    "triangles": 1346
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",

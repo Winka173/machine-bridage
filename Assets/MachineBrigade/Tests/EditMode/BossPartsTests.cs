@@ -42,7 +42,7 @@ namespace MachineBrigade.Tests
             ["armored_train"] = 5, ["nuke_train"] = 4, ["behemoth"] = 6, ["behemoth_tempest"] = 4, ["behemoth_inferno"] = 4,
             ["fortress_hive"] = 6, ["mobile_fortress"] = 7, ["fortress_bastion"] = 5, ["silver_bug"] = 6, ["sky_fortress"] = 9,
             ["mega_gunship"] = 8, ["drone_mothership"] = 7, ["rail_supergun"] = 6, ["earth_borer"] = 4, ["command_airship"] = 7,
-            ["landing_hovercraft"] = 5, ["supreme_command"] = 3,
+            ["landing_hovercraft"] = 5, ["supreme_command"] = 3, ["leviathan"] = 9,
         };
 
         private static Catalog C => GameContent.LoadCatalog();

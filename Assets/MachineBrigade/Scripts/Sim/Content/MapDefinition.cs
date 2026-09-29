@@ -178,6 +178,9 @@ namespace MachineBrigade.Sim.Content
             return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases);
         }
 
+        /// <summary>Prompt 16: the sea beside the battlefield (its lanes, beaches, piers, batteries), or null.</summary>
+        public SeaDef? Sea { get; internal set; }
+
         public static MapDefinition FromJson(string json)
         {
             var root = new JsonObject(MiniJson.Parse(json), "map");
@@ -252,7 +255,11 @@ namespace MachineBrigade.Sim.Content
                     bases.Add(BaseSiteDef.Parse(b));
             var fortress = root.Has("fortress") ? FortressDef.Parse(root.Object("fortress")) : null;
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
-                boundary, rings, decor, bases, fortress);
+                boundary, rings, decor, bases, fortress)
+            {
+                // Prompt 16: a battlefield on the sea (Lighthouse Bay): its lanes, beaches and batteries.
+                Sea = root.Has("sea") ? SeaDef.Parse(root.Object("sea")) : null,
+            };
         }
     }
 }

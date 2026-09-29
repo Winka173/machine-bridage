@@ -170,6 +170,9 @@ namespace MachineBrigade.Game.Rendering
             // Track marks: soft-edged dark oblongs on the ground, under every effect.
             Tread = Particle(particle, "Tread", additive: false, intensity: 1f, shape: 2f, softness: 0.55f);
             Tread.renderQueue = 2951;
+            // Prompt 16: ships' wakes, soft white foam on the water.
+            Foam = Particle(particle, "Foam", additive: false, intensity: 1f, shape: 0f, softness: 1.5f);
+            Foam.renderQueue = 2952;
             // Scorch marks lie on the ground: under strike warnings, rings, smoke and dust.
             Scorch.renderQueue = 2950;
             Scorch.enableInstancing = true;
@@ -188,6 +191,9 @@ namespace MachineBrigade.Game.Rendering
         public Material Pebble { get; }
         public Material GrassTuft { get; }
         public Material Water { get; }
+
+        /// <summary>Prompt 16: a ship's wake (foam patches laid on the water).</summary>
+        public Material Foam { get; }
         public Material OuterGround { get; }
 
         /// <summary>The mountain range; its colours come from a palette texture indexed by UV.</summary>

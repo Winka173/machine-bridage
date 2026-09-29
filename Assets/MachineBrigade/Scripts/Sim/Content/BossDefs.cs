@@ -76,7 +76,9 @@ namespace MachineBrigade.Sim.Content
         /// Boss mechanisms it drives, stopped once it breaks (see <see cref="Mechanisms"/>): "bombard"
         /// (the supergun's shot), "spotter" (the shot's fire control: it falls wide), "burrow" (the
         /// Earth Worm's dives), "landing" (the hovercraft's troops), "aura" (the Supreme Commander's
-        /// command aura).
+        /// command aura); prompt 16's ships: "cruise" (the launch cells), "craft" (the well deck's landing
+        /// craft), "ciws" (point defence, off once every part carrying it is broken), "radar" (fire
+        /// control: salvos and cruise missiles fall wide, the CIWS misses now and then).
         /// </summary>
         public IReadOnlyList<string> Stops { get; internal set; } = Array.Empty<string>();
 
@@ -96,7 +98,7 @@ namespace MachineBrigade.Sim.Content
         public int Attachment { get; internal set; } = -1;
 
         /// <summary>The mechanism names <see cref="Stops"/> may hold.</summary>
-        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura" };
+        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "cruise", "craft", "ciws", "radar" };
 
         /// <summary>The view's default <see cref="Fx"/> for a kind of part.</summary>
         public static string FxFor(string kind) => kind switch

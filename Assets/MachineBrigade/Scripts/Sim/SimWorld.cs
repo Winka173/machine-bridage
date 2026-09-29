@@ -70,6 +70,7 @@ namespace MachineBrigade.Sim
 
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
+            Naval = new MachineBrigade.Sim.Bosses.NavalSystem(this);
         }
 
         public Catalog Catalog { get; }
@@ -152,6 +153,12 @@ namespace MachineBrigade.Sim
         public Economy.EliteBudget Elites(int team) => Economy.EliteBudgetOf(team);
 
         internal MachineBrigade.Sim.Bosses.BossSystem Bosses { get; }
+
+        /// <summary>Prompt 16: ships at sea, the coastal batteries and the lighthouse (made after the props: see the constructor).</summary>
+        internal MachineBrigade.Sim.Bosses.NavalSystem Naval { get; }
+
+        /// <summary>Prompt 16: the sea's rules for this battle (what the modes set, what they read).</summary>
+        public MachineBrigade.Sim.Bosses.NavalRules SeaRules => Naval.Rules;
 
         internal CombatSystem Combat => _combat;
 
@@ -352,13 +359,15 @@ namespace MachineBrigade.Sim
         public Vehicle SpawnVehicle(string defId, int team, Vector2 position, float heading)
         {
             var def = Catalog.Vehicle(defId);
-            var at = def.Flying ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
+            // A ship goes on the water where it is put (the naval system keeps it off the land).
+            var afloat = def.Naval != null && Map.Sea != null;
+            var at = def.Flying || afloat ? ClampToMap(position) : Grid.TryNearestWalkable(position, 8, out var walkable) ? walkable : position;
             // A landing in a pocket sealed off from the battlefield (between buildings, behind a wall
             // corner) would never get out: it comes down on the open ground nearest instead (prompt 12).
-            if (!def.Flying && !def.Static && Grid.RegionOf(at) is var region && region != Grid.MainRegion &&
+            if (!def.Flying && !def.Static && !afloat && Grid.RegionOf(at) is var region && region != Grid.MainRegion &&
                 Grid.RegionSize(region) * 8 < Grid.RegionSize(Grid.MainRegion) && Grid.TryNearestInRegion(at, Grid.MainRegion, 12, out var open))
                 at = open;
-            if (!def.Flying && !def.Static) at = FreeSpot(def, at);
+            if (!def.Flying && !def.Static && !afloat) at = FreeSpot(def, at);
             var vehicle = new Vehicle(NextId(), def, team, at, heading);
             // A side's own loadout towers carry their card's rank and equipment; other fixed defences
             // (a fortress, a point's watchtower) only when the side boosts everything.
@@ -382,6 +391,7 @@ namespace MachineBrigade.Sim
             _vehicleList.Add(vehicle);
             // Its parts, a boss's timers, radio line and guards (prompt 8).
             Bosses.Joined(vehicle);
+            Naval.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
@@ -550,6 +560,7 @@ namespace MachineBrigade.Sim
                         Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
                 }
                 Bosses.Mix(Mix);
+                Naval.Mix(Mix);
                 for (var team = 0; team <= 1; team++)
                     if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
                 return h;
@@ -687,6 +698,7 @@ namespace MachineBrigade.Sim
             _abilities.Step(dt);
             Supply.Step(dt);
             Bosses.Step(dt);
+            Naval.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
             _combat.Step(dt);
@@ -728,6 +740,7 @@ namespace MachineBrigade.Sim
             _abilities.Step(dt);
             Supply.Step(dt);
             Bosses.Step(dt);
+            Naval.Step(dt);
             Lap(5);
             Status.Step(dt);
             Lap(6);
@@ -1038,6 +1051,11 @@ namespace MachineBrigade.Sim
                     if (!target.IsMoving && Time - target.StillSince >= 1.0) sight *= 1f - Math.Clamp(tg.Stat(StatId.Camouflage), 0f, 0.5f);
                     hidden = tg.Hidden;
                 }
+                var naval = target.Def.Naval != null && Map.Sea != null;
+                // Prompt 16: whoever holds the lighthouse watches the sea from its lamp.
+                if (naval && Naval.Rules.LighthouseOwner is >= 0 and < 31 && target.Team != Naval.Rules.LighthouseOwner &&
+                    Vector2.Distance(Map.Sea!.Lamp, target.Position) <= LighthouseSight * Naval.Rules.SeaSight + target.Radius)
+                    mask |= 1 << Naval.Rules.LighthouseOwner;
                 for (var i = 0; i < _vehicleList.Count; i++)
                 {
                     var spotter = _vehicleList[i];
@@ -1048,6 +1066,8 @@ namespace MachineBrigade.Sim
                     if (target.Lowered && spotter.Def.Class != UnitClass.Scout && spotter.Def.CounterBattery == null) range = MathF.Min(range, GhillieReveal);
                     // A guard tower sees stealth and hidden units within its guns' reach.
                     if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
+                    // Prompt 16: a ship's tall silhouette shows from further off (its hull's size), less in a sea storm.
+                    if (naval) range = (range + target.Radius) * Naval.Rules.SeaSight;
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
                     else
                     {
@@ -1069,6 +1089,9 @@ namespace MachineBrigade.Sim
                 target.VisibleToMask = mask | known;
             }
         }
+
+        /// <summary>Prompt 16: how far out to sea the lighthouse's holder sees ships from its lamp.</summary>
+        public const float LighthouseSight = 170f;
 
         /// <summary>Ghillie Mode: a hidden vehicle shows only to enemies this close.</summary>
         public const float GhillieReveal = 8f;

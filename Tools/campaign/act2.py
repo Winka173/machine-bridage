@@ -205,6 +205,34 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
 T('radio.khai.c4m10.s1', 'The rail yard first: it is the key to the rest.', 'Bãi đường sắt trước: nó là chìa khóa cho phần còn lại.')
 T('radio.kessler.c4m10.s4', 'Tempest, clear the docks. On schedule.', 'Tempest, dọn sạch bến tàu. Đúng lịch.')
 
+# Prompt 16: the chapter's epilogue. The port lost, Kessler puts to sea on Leviathan and shells the coast from the
+# bay; sink it before it gets away. After the operation (its tenth mission), so the chapter's shape holds: an
+# epilogue mission is a main mission the chapter's count and "the tenth is the operation" rule leave out.
+LEVIATHAN_START = (42.4, -127.3)   # the far lane (w 120) at u -60, in the coast's frame
+add_mission(m('c4m11', 4, 'lighthousebay', 'Boss', 'Overcast', epilogue=True, replay=True, timeLimit=1500, general='kessler', reinforcements=3,
+              boss=scripted('leviathan', LEVIATHAN_START, heading=45, name='leviathan'),
+              units=units(0, ['artillery', 'mlrs', 'main_battle_tank', 'aa_vehicle', 'tank_destroyer', 'ifv'], (-86, -86), 7),
+              enemyAi='commander', enemyStance='Defend', difficulty='Normal', enemyCp=10, enemyIncome=0.7, enemyDeck=KESSLER,
+              playerCp=30, playerIncome=1.6, playerCap=38, playerBase='Anchor', unlocks=['heavy_turret.coastal'],
+              starTime=960, starLosses=12, challenge={'kind': 'Kills', 'value': 20}),
+            ('Leviathan', 'Leviathan'),
+            ('Ironport is ours, but Kessler got out by sea. He is aboard Leviathan, his battleship, off Lighthouse Bay, and he means to shell the '
+             'coast until we give the port back. Take the lighthouse to see his fleet, man the old coastal batteries, and sink it before it runs for open sea.',
+             'Ironport đã về tay ta, nhưng Kessler thoát được bằng đường biển. Hắn đang ở trên Leviathan, chiến hạm của hắn, ngoài khơi Vịnh Hải Đăng, '
+             'và định nã pháo vào bờ cho tới khi ta trả lại bến cảng. Chiếm ngọn hải đăng để thấy hạm đội của hắn, dùng các trận địa pháo bờ biển cũ, '
+             'và đánh chìm nó trước khi nó chạy ra khơi.'),
+            (('The timetable', 'Thời gian biểu'),
+             ('Divers brought up Leviathan\'s bridge clock a month later. It had stopped at 16:42, the minute the second magazine went. '
+              'Kessler\'s last order in the log, in his own hand: "Record the time."',
+              'Một tháng sau, thợ lặn vớt được chiếc đồng hồ trên cầu chỉ huy của Leviathan. Nó dừng ở 16 giờ 42, đúng phút kho đạn thứ hai phát nổ. '
+              'Mệnh lệnh cuối cùng trong sổ, chữ của chính Kessler: "Ghi lại thời gian."')),
+            [say('linh', 'Start', 'Leviathan is on the far lane. We cannot see its fleet from the beach: the lighthouse can.',
+                 'Leviathan đang ở tuyến xa. Từ bãi biển ta không thấy hạm đội của nó: ngọn hải đăng thì thấy.'),
+             say('mai', 'Start', 'Its sides will stop anything we have. Its deck will not: artillery and bombs.',
+                 'Hông tàu chặn được mọi thứ ta có. Boong thì không: pháo binh và bom.', at=20),
+             say('khai', 'BossHalf', 'It is coming in close. Tanks on the pier heads, now.', 'Nó đang áp sát. Đưa xe tăng ra đầu cầu tàu, ngay.'),
+             say('khai', 'Win', 'Kessler\'s timetable ends here.', 'Thời gian biểu của Kessler kết thúc ở đây.')])
+
 add_mission(m('c4s1', 4, 'rustyard', 'Escort', 'Rain', side=True, after='c4m03', speaker='linh', convoyCount=4, convoyNeeded=3, timeLimit=1000, reinforcements=1,
               convoy=scripted('supply_truck', (-100, -100), route=[(-82.5, -82.5), (-82.5, -60), (-40, -33.75), (20, -33.75), (63.75, -60), (63.75, -86.25)], heading=45),
               units=units(0, ['main_battle_tank', 'heavy_aa', 'wheeled_gun'], (-90, -88), 6),

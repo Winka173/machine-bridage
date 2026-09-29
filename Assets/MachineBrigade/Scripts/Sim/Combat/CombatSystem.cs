@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Combat
                 v.AimDistance = laid != null ? Vector2.Distance(v.Position, laid.Position) : 0f;
                 v.AimHeight = laid is Vehicle aimed && aimed.Flying ? aimed.Def.Altitude : 0f;
                 // A supergun's barrel stays laid where its last shell went (its shots are the boss system's).
-                if (mounts[0].Aim == MountAim.Turret && v.Def.Bombard == null)
+                if (mounts[0].Aim == MountAim.Turret && !v.Def.LaysOwnTurret)
                 {
                     var desired = laid != null ? SimMath.HeadingOf(laid.Position - v.Position) : v.Heading;
                     v.TurretHeading = SimMath.RotateTowards(v.TurretHeading, desired, v.Def.TurretTurnRate * v.TurretFactor * dt);
@@ -99,11 +99,13 @@ namespace MachineBrigade.Sim.Combat
                     v.TurretHeading = v.Heading;
                     if (IsSide(mounts[0])) AimSide(v, 0, target, dt);
                 }
-                if (v.MountWorks(0)) Operate(v, 0, target, dt);
+                if (v.MountWorks(0) && !v.Arms[0].Laid) Operate(v, 0, target, dt);
 
                 for (var i = 1; i < mounts.Count; i++)
                 {
-                    // A boss's mount on a broken part fires no more.
+                    // A boss's mount on a broken part fires no more; a mount the boss system lays (a ship's
+                    // main turret, prompt 16: "laid") keeps the heading it was given.
+                    if (v.Arms[i].Laid) continue;
                     if (!v.MountWorks(i))
                     {
                         v.Weapons[i].Target = EntityId.None;
@@ -359,8 +361,9 @@ namespace MachineBrigade.Sim.Combat
         }
 
         private bool IsValidAutoTarget(Vehicle v, Vehicle target, WeaponDef weapon) =>
-            target.IsAlive && !target.Invulnerable && !target.Def.Untargetable && target.Team != v.Team && target.IsVisibleTo(v.Team) && InReach(v, target, weapon) &&
-            HasLineOfFire(v, target, weapon);
+            target.IsAlive && !target.Invulnerable && !target.Def.Untargetable && target.Team != v.Team && target.IsVisibleTo(v.Team) &&
+            // Prompt 16: a coastal battery's guns fire on ships only.
+            (!v.Def.NavalOnly || target.Def.Naval != null) && InReach(v, target, weapon) && HasLineOfFire(v, target, weapon);
 
         /// <summary>
         /// Direct fire needs a clear line: buildings, rock and fortress walls stop it. Aircraft

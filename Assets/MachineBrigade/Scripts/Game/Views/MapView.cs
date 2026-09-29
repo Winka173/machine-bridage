@@ -87,6 +87,7 @@ namespace MachineBrigade.Game.Views
         private readonly MaterialLibrary _materials;
         private readonly List<Mesh> _meshes = new();
         private readonly MapTheme _theme;
+        private readonly bool _lowWater;
         private readonly List<(Transform part, Quaternion rest, Vector3 axis, float speed, float phase, bool rocks)> _moving = new();
         private readonly List<Material> _ownedMaterials = new();
         private Texture2D _groundTexture;
@@ -111,6 +112,8 @@ namespace MachineBrigade.Game.Views
             _models = models;
             _materials = materials;
             _theme = theme;
+            // Prompt 16 G: Low graphics draws the water unlit (no highlights), the cheapest surface there is.
+            _lowWater = shadows <= Match.ShadowLevel.Low;
             _root = new GameObject("Map");
             _root.transform.SetParent(parent, false);
             BuildGround(world, materials);
@@ -726,9 +729,18 @@ namespace MachineBrigade.Game.Views
                     colours[i] = Primitives.Linear(Color.Lerp(Color.white, ratio, depth));
                 }
                 mesh.colors32 = colours;
-                var material = new Material(_materials.Water) { name = "River" };
-                material.SetColor("_BaseColor", shallow);
-                material.SetFloat("_Roughness", _theme.WaterRoughness);
+                Material material;
+                if (_lowWater)
+                {
+                    material = new Material(Shader.Find("MachineBrigade/Unlit")) { name = "River (low)" };
+                    material.SetColor("_Color", shallow * 0.9f);
+                }
+                else
+                {
+                    material = new Material(_materials.Water) { name = "River" };
+                    material.SetColor("_BaseColor", shallow);
+                    material.SetFloat("_Roughness", _theme.WaterRoughness);
+                }
                 _ownedMaterials.Add(material);
                 Place("River", mesh, material, castShadows: false).transform.position = new Vector3(0f, 0.04f, 0f);
             }

@@ -30,6 +30,7 @@ import mb_boss_saucer  # noqa: E402
 import mb_bosses  # noqa: E402
 import mb_bosses2  # noqa: E402
 import mb_munitions  # noqa: E402
+import mb_naval  # noqa: E402
 import mb_round6  # noqa: E402
 import mb_elites  # noqa: E402
 import mb_fortress  # noqa: E402
@@ -69,7 +70,9 @@ def all_builders():
                 **mb_new_wheeled.BUILDERS, **mb_new_trucks.BUILDERS, **mb_new_tracked.BUILDERS,
                 **mb_boss_saucer.BUILDERS, **mb_munitions.BUILDERS, **mb_towers3.BUILDERS,
                 # Round 6 rebuilt some models (Ka-52, Su-25, siege tank, bosses with every mount): theirs win.
-                **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS, **mb_phase8.BUILDERS}
+                **mb_round6.BUILDERS, **mb_bosses2.BUILDERS, **mb_phase2.BUILDERS, **mb_phase8.BUILDERS,
+                # Prompt 16: Leviathan, its fleet and Lighthouse Bay's props.
+                **mb_naval.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
