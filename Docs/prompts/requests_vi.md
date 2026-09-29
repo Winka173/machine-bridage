@@ -76,3 +76,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (29/09 21:50) patriot battery giảm lửa đuôi tên lửa như trên  [C]
 - (29/09 22:00) và 1 agent nữa cân bằng game, có vẻ do giáp nên tôi thấy dame mọi thứ hơi thiếu, và toàn bộ các vụ nổ nên làm lại thêm particle cho hoành tráng  [cân bằng giáp: DECISIONS 20X; vụ nổ: agent C, 20V]
 - (29/09 21:10) tiện thể làm cho model boss tàu chiến leviathan luôn, làm nó như 1 battle ship, lấy ý tưởng yamato  [agent Leviathan, DECISIONS 20Y]
+- (29/09 21:12) có thể thêm súng cho nó, tăng size tùy thích, model cũ có thể thu nhỏ làm 1 thuyền hộ tống  [agent Leviathan, 20Y]
