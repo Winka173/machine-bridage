@@ -123,3 +123,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (29/09 23:30) sandbox cách vào như thế nào  [trả lời: tab Tác chiến → thẻ Sa bàn]
 - (29/09 23:35) giảm thời gian nạp đạn chung của các boss luôn, đang khá là lâu  [G]
 - (29/09 23:45) tôi thấy từ UI boss tuần trong operation, có thê coi được thông tin boss, và cả stats, có cả next level gì luôn và cả equipment, ẩn đi các thứ như next level và equipment, và đưa các info boss về 1 nơi khác như wiki hay collection gì đó  [agent sửa lỗi, 21B]
+- (29/09 23:50) Ui sandbox quá rồi, và chiếm tùm lum diện tích, tối ưu nó  [agent Sa bàn, chờ chỗ trống]
