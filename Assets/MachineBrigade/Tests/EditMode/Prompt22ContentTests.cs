@@ -322,8 +322,10 @@ namespace MachineBrigade.Tests
             // In story order: Mk.0 after chapter 3's bosses (interlude I), Morrigan after chapter 9's (interlude III).
             var list = story.ToList();
             int IndexOf(string id) => list.FindIndex(b => b.Id == id);
-            Assert.Less(IndexOf("behemoth_mk0"), list.FindIndex(b => b.Chapter >= 4));
-            Assert.Greater(IndexOf("morrigan"), list.FindLastIndex(b => b.Chapter < 9));
+            // Interludes are numbered 13-15 but played between chapters, so compare play order, not numbers.
+            var order = Campaign.Chapters.Select(c => c.Number).ToList();
+            Assert.Less(IndexOf("behemoth_mk0"), list.FindIndex(b => b.Chapter == 4));
+            Assert.Greater(order.IndexOf(list[IndexOf("morrigan")].Chapter), order.IndexOf(9));
             // The week's hunt draws them too (minis drawn from the story's): within a year of weeks each comes up.
             var drawn = new HashSet<string>();
             for (var week = 202601; week <= 202652; week++)
