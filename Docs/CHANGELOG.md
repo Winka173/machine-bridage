@@ -7,6 +7,13 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Sandbox screen, lean (DECISIONS 21S)
+
+- The Sandbox keeps the battlefield: at rest only a slim icon rail under the minimap and one thin bar along the bottom (run, pause, one tick, speed, seed, reset, overlays). At 16:9 they cover about 6% of the screen, against three standing panels before.
+- The unit picker opens from the rail as an icon grid with a category, a search chip and filters; a selected unit's settings are a small card on the right; overlays are a tray of small toggles; settings, scenarios, duel, A/B, statistics and both sides open one sheet at a time.
+- The battle HUD in the Sandbox drops the wave counts, the commander's switches, select-all, box select and the hint.
+- Before and after shots in `Docs/art/sandbox/`.
+
 ### Play-test 6: UI, camera, audio
 
 - The Gunship is a deck card: the AC-130 on call for 12 CP, circling its mark for 20 s with its 105, 40 and 25 mm

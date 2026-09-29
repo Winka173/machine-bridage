@@ -185,6 +185,11 @@ namespace MachineBrigade.Game.Hud
                 _enemies = Stat(stats, "crosshair", Strings.Get("stat.enemies"), "fc-hud__stat--theirs", Compact);
                 _wave = Stat(stats, "flag", Strings.Get("stat.wave"), null, Compact);
                 _next = Stat(stats, "bolt", Strings.Get("stat.next"), null, Compact);
+                if (spec.Sandbox)
+                {
+                    HideStat(_wave);
+                    HideStat(_next);
+                }
                 top.Add(stats);
             }
             _safe.Add(top);
@@ -223,9 +228,12 @@ namespace MachineBrigade.Game.Hud
             Minimap.Clicked += p => MinimapClicked?.Invoke(p);
             left.Add(Minimap);
             var tools = Kit.Box("fc-hud__tools");
-            tools.Add(new KitIconButton("people", Strings.Get("hud.selectAll"), () => SelectAllPressed?.Invoke(), plain: Compact));
             _boxTool = new KitIconButton("expand", Strings.Get("hud.boxSelect"), () => BoxModeToggled?.Invoke(), plain: Compact);
-            tools.Add(_boxTool);
+            if (!spec.Sandbox)
+            {
+                tools.Add(new KitIconButton("people", Strings.Get("hud.selectAll"), () => SelectAllPressed?.Invoke(), plain: Compact));
+                tools.Add(_boxTool);
+            }
             tools.Add(new KitIconButton("plus", Strings.Get("hud.zoomIn"), () => ZoomPressed?.Invoke(1.25f), plain: Compact) { name = "zoom-in" });
             tools.Add(new KitIconButton("minus", Strings.Get("hud.zoomOut"), () => ZoomPressed?.Invoke(0.8f), plain: Compact) { name = "zoom-out" });
             left.Add(tools);
@@ -261,7 +269,7 @@ namespace MachineBrigade.Game.Hud
                 _towerMini.Add(towerFace);
                 _towerMini.style.display = DisplayStyle.None;
                 rail.Add(_towerMini);
-                _safe.Add(rail);
+                if (!spec.Sandbox) _safe.Add(rail);
             }
             else
             {
@@ -283,7 +291,7 @@ namespace MachineBrigade.Game.Hud
                 _towerButton.AddToClassList("fc-hud__tower");
                 _towerButton.style.display = DisplayStyle.None;
                 commander.Add(_towerButton);
-                _safe.Add(commander);
+                if (!spec.Sandbox) _safe.Add(commander);
             }
             if (_score != null) _score.PointPressed += id => PointPressed?.Invoke(id);
 
@@ -361,7 +369,7 @@ namespace MachineBrigade.Game.Hud
             _hint = Kit.Text(Strings.Get(_autoHint), "fc-small fc-row-text");
             // The standing hint is for the first moments of a player's first few matches only (prompt 11 A7);
             // mode hints (attack-move, box select) bring it back while they are active.
-            var startHint = spec.StartHint ?? Match.MatchSettings.ShowStartHint;
+            var startHint = !spec.Sandbox && (spec.StartHint ?? Match.MatchSettings.ShowStartHint);
             _hintUntil = startHint ? Time.unscaledTime + 9f : -1f;
             _hintBar = Kit.Box("fc-hud__hint");
             var hintFace = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-hud__hint-face");
@@ -571,6 +579,17 @@ namespace MachineBrigade.Game.Hud
         private bool _stanceShown;
 
         public bool ShowFps { get; set; }
+
+        /// <summary>Takes a stat of the top strip off (the Sandbox has no waves).</summary>
+        private static void HideStat(VisualElement value)
+        {
+            for (var e = value; e != null; e = e.parent)
+                if (e.ClassListContains("fc-hud__stat"))
+                {
+                    e.style.display = DisplayStyle.None;
+                    return;
+                }
+        }
 
         public void SetStats(int allies, int enemies, int wave, float secondsToNextWave, float fps)
         {

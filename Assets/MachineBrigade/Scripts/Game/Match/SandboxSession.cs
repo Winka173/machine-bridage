@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
 
         public SandboxAccess Access { get; private set; }
 
-        public override HudSpec Hud => new() { Mode = HudMode.Waves, HintKey = "sandbox.place.hint", StartHint = false, Compact = true };
+        public override HudSpec Hud => new() { Mode = HudMode.Waves, HintKey = "sandbox.place.hint", StartHint = false, Compact = true, Sandbox = true };
         public override string Kicker => Strings.Get("sandbox.title");
         public override string Subtitle => Strings.Get("sandbox.sub");
         public override string StartToast => Strings.Get("sandbox.noRewards");

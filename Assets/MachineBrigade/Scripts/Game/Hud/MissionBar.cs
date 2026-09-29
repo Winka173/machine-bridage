@@ -19,6 +19,13 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Shows the standing hint at the start; null: only in the player's first matches (<see cref="Match.MatchSettings.ShowStartHint"/>).</summary>
         public bool? StartHint { get; set; }
+
+        /// <summary>
+        /// Prompt 21's Sandbox (DECISIONS 21S): the HUD keeps the minimap with zoom, both sides' counts and pause, and
+        /// leaves out what the Sandbox has its own controls for (waves, the commander's switches, select-all, box select,
+        /// the standing hint).
+        /// </summary>
+        public bool Sandbox { get; set; }
     }
 
     /// <summary>
