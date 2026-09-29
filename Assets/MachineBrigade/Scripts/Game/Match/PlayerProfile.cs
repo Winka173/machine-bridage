@@ -128,6 +128,9 @@ namespace MachineBrigade.Game.Match
             /// <summary>Prompt 22 D.5: the story's choices made, "choice=option" ("c4.pursuit=sea"); see PlayerProfile.Story.cs.</summary>
             public List<string> storyChoices = new();
 
+            /// <summary>Prompt 23 E: intel files an interception recovered (prompt 22 D.7's ids), besides their own way of being found.</summary>
+            public List<string> intelFiles = new();
+
             /// <summary>Prompt 20 N: the Boss Hunts' checkpoints (one a kind), the full hunt's best times and its first-clear pay.</summary>
             public List<HuntSave> hunts = new();
             public List<float> fullHuntTimes = new();

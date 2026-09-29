@@ -41,6 +41,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>Blueprints the elites destroyed dropped (a card id each), paid with the rest.</summary>
         public List<string> Blueprints { get; } = new();
 
+        /// <summary>Prompt 23 E: the intel files the battle's interceptions recovered (prompt 22 D.7's ids), won or lost.</summary>
+        public List<string> Intel { get; } = new();
+
         public bool Claimed { get; private set; }
 
         /// <summary>Ranks reached while claiming (each already paid its coin bonus).</summary>
@@ -65,6 +68,7 @@ namespace MachineBrigade.Game.Match
                 PlayerProfile.AddGear(GearPaid);
             }
             foreach (var id in Blueprints) PlayerProfile.AddBlueprints(id, 1);
+            foreach (var id in Intel) PlayerProfile.RecoverIntel(id);
             if (MissionId != null) PlayerProfile.RecordMission(MissionId, Stars, Tier);
         }
     }

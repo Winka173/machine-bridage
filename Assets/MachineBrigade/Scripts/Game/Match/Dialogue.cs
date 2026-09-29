@@ -284,11 +284,24 @@ namespace MachineBrigade.Game.Match
         /// <summary>The generals who are always the enemy's; the others (Brandt, Venn, Thorne) are when they lead the mission's enemy or speak for the enemy's side.</summary>
         private static readonly HashSet<string> Enemies = new() { "varga", "orlov", "kessler", "aurel", "quaden" };
 
-        /// <summary>H.8's data hook by line: the story beats that slow the battle (the event system flags its own in the event).</summary>
-        public static readonly HashSet<string> MomentKeys = new() { "radio.betrayal" };
+        /// <summary>
+        /// H.8's data hook by line: the story beats that slow the battle, six in the campaign (prompt 23 E): Varga's word at the
+        /// Hollow Dam (c6m14), Venn losing her swarm (c5m10), Thorne's betrayal (c7m10), Thorne on Typhon's bridge (c9m10),
+        /// Varga's fall (c12m10) and Icarus falling (c12m10). The lines queued right after each (StoryKeys) play in the moment.
+        /// </summary>
+        public static readonly HashSet<string> MomentKeys = new()
+        {
+            "radio.varga.c6m14.1", "radio.sen.c5m10.s3", "radio.linh.c7m10.s6", "radio.betrayal", "radio.hung.c9m10.s4",
+            "radio.varga.c12m10.s4e", "radio.aurel.bug.crash",
+        };
 
-        /// <summary>The story beats among today's lines (the event system gives its own a priority).</summary>
-        public static readonly HashSet<string> StoryKeys = new() { "radio.betrayal" };
+        /// <summary>The story beats among today's lines (the event system gives its own a priority): the moments and the lines that answer them.</summary>
+        public static readonly HashSet<string> StoryKeys = new()
+        {
+            "radio.betrayal", "radio.sen.c5m10.s3", "radio.khai.c5m10.s3b", "radio.linh.c7m10.s6", "radio.hung.c7m10.s4", "radio.khai.c7m10.s4",
+            "radio.hung.c9m10.s4", "radio.linh.c9m10.s4b", "radio.varga.c12m10.s4e", "radio.linh.c12m10.s5", "radio.aurel.bug.crash",
+            "radio.aurel.bug.down",
+        };
 
         /// <summary>A line's priority by its key: a story beat, a warning (a boss's big attack, a key with ".warn"), else an event line.</summary>
         public static DialoguePriority PriorityOf(string key)

@@ -1650,8 +1650,9 @@ namespace MachineBrigade.Game.Match
                 // Prompt 22 D.6-D.7: why the story hands a card out, and the intel files a side objective recovered.
                 foreach (var id in _reward.Unlocks)
                     if (Narrative.LootReason(id) is { } reason) view.Extras.Add(("star", Strings.Get(reason)));
-                if (outcome.Result > 0 && _reward.MissionId != null)
-                    foreach (var file in Narrative.FoundBy(_reward.MissionId, _reward.Stars))
+                // Prompt 23 E: and the files an intercepted convoy carried, won or lost.
+                if (_reward.MissionId != null)
+                    foreach (var file in Narrative.FoundBy(_reward, outcome.Result > 0))
                         view.Extras.Add(("eye", Strings.Format("result.intel", ("title", Strings.Get($"intel.{file.Id}.title")))));
                 // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
                 if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));

@@ -29,6 +29,23 @@ namespace MachineBrigade.Game.Match
         /// <summary>Every choice made, in the order it was made.</summary>
         public static System.Collections.Generic.IReadOnlyList<string> StoryChoices => D.storyChoices;
 
+        /// <summary>
+        /// Prompt 23 E: an intel file (prompt 22 D.7's id) recovered by a mission event, an intercepted convoy's files: it goes into
+        /// the dossier's Intel files whatever its own way of being found (true when it was new).
+        /// </summary>
+        public static bool RecoverIntel(string id)
+        {
+            if (string.IsNullOrEmpty(id)) return false;
+            D.intelFiles ??= new System.Collections.Generic.List<string>();
+            if (D.intelFiles.Contains(id)) return false;
+            D.intelFiles.Add(id);
+            Save();
+            return true;
+        }
+
+        /// <summary>Whether a mission event has recovered the intel file.</summary>
+        public static bool IntelRecovered(string id) => !string.IsNullOrEmpty(id) && D.intelFiles != null && D.intelFiles.Contains(id);
+
         /// <summary>The mark of a chapter's (or interlude's) comic panels in the chapter cards seen.</summary>
         public static int ComicSeen(int chapter) => 200 + chapter;
     }
