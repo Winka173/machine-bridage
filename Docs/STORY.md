@@ -136,9 +136,11 @@ Icarus was never only one ship (`campaign.epilogue`).
 
 ## What pass 2 and the other agents fill in
 
-- **Choices (D.5)**: the mission after which each comes carries `storyChoice` (the flag's id): `c4.pursuit` (c4m14),
-  `c8.miners` (c8m09), `c11.radar` (c11m09). **Comics (D.8)**: every chapter and interlude has `comic.<n>`. The front map,
-  the clues' intel files, the reactive radio and the story loot come with pass 2.
+- **Pass 2 (D, DECISIONS 22D)**: the choices `c4.pursuit` (c4m14: c4m17 *Last Boats* or c4m18 *Harbour Lights*),
+  `c8.miners` (c8m09: c8m13 *The Miners of Deepcut*, +6 CP in chapter 9, or c8m14 *Straight at Kronos*) and `c11.radar`
+  (c11m09: c11m12 *Blind the Array*, a blinder enemy in chapter 12, or c11m13 *The Short Road*); the front map; the
+  intel files, the comic panels, the arcs and the generals' reactive radio (`Tools/campaign/narrative.py`); the story
+  loot (`act9.py`).
 - **P22-content**: the Foundry (`foundry`, interlude I) and the Veyra Old Quarter (`veyra_old_quarter`, c7m12-c7m15);
   Behemoth Mk.0 (`behemoth_mk0`, i1m03) and Morrigan (`morrigan`, i3m02, c10m12), fought as the Behemoth and Spectre
   until their defs exist. The missions say so in `awaits`. Mara's Behemoth fights in c12m10 (`ally:mara_behemoth`).

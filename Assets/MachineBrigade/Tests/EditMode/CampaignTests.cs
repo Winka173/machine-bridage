@@ -182,8 +182,9 @@ namespace MachineBrigade.Tests
         [Test]
         public void TwelveChaptersOfNineToEighteenMissionsAndThreeInterludes()
         {
-            // Prompt 22 B: 168 main missions (the interludes' twelve among them) and 19 side missions.
-            Assert.AreEqual(187, Campaign.All.Count);
+            // Prompt 22 B: 168 main missions (the interludes' twelve among them) and 19 side missions; D.5: six missions of the
+            // story's choices (one of each two is played).
+            Assert.AreEqual(193, Campaign.All.Count);
             Assert.AreEqual(12, Campaign.ChapterCount);
             var catalog = GameContent.LoadCatalog();
             for (var c = 1; c <= 12; c++)

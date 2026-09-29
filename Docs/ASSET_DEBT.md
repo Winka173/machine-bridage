@@ -149,3 +149,12 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The siege tank's card picture and "in action" clip | The old M110-style pictures | The lead's graphics run (`CardRenders.RenderBatch`); the clip should show it sieging |
 | The siege tank sieging | Braces, spades, gun, column and mortar move (VehicleView.Deploy); no dust or sound | Dust as the braces and spades bite, a hydraulic whine, a heavier mortar report |
 | The C-RAM's stream at a round | Tracers and a muzzle flash each step at the round's estimated place | Tracers that meet the drawn round exactly (the view has no link from a sim round to its drawn rocket) |
+
+### Prompt 22 D (DECISIONS 22D)
+
+| What | Uses now | Needs |
+|---|---|---|
+| The front map of the Meridian Coast | Drawn in code (FrontMapView): a coast polygon, grid cells coloured by side, a front line, dots, flag icons, round pins | An illustrated map (terrain, towns, roads, the sea) with the regions as shapes, and a softer front line |
+| The comic panels after each chapter (48) | A battlefield's shot and a card render, the speaker's portrait and a speech box in a black frame (ComicPage) | Drawn panels (the moment itself: the landing, the ceasefire, the turn in Veyra, Icarus falling), speech balloons |
+| Interlude I's panels | The Rust Yard's shot (the Foundry has no picture yet) | The Foundry's map shot once P22-content's map lands, then the drawn panels |
+

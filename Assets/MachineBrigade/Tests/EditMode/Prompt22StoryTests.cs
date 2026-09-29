@@ -82,7 +82,8 @@ namespace MachineBrigade.Tests
             CollectionAssert.AreEqual(new[] { 1, 2, 3, 13, 4, 5, 6, 14, 7, 8, 9, 15, 10, 11, 12 }, Campaign.Chapters.Select(c => c.Number).ToArray(), "the order of play");
             foreach (var c in Campaign.Chapters)
             {
-                var main = Campaign.MissionsOf(c.Number, side: false);
+                // Prompt 22 D.5: a story choice's two missions are counted apart (one of them is played).
+                var main = Campaign.MissionsOf(c.Number, side: false).Where(m => m.Branch == null).ToList();
                 var side = Campaign.MissionsOf(c.Number, side: true);
                 Assert.AreEqual(Counts[c.Number], (main.Count, side.Count), $"chapter {c.Number}");
                 if (c.IsInterlude)
@@ -97,7 +98,8 @@ namespace MachineBrigade.Tests
                 Assert.AreEqual(1, main.Count(m => m.Operation), $"chapter {c.Number}: one operation");
                 Assert.IsTrue(last.Stages.Any(s => s.Mission.Boss?.Def == c.Main), $"chapter {c.Number}: the operation fights {c.Main}");
             }
-            Assert.AreEqual(168, Campaign.All.Count(m => !m.Side), "main missions");
+            Assert.AreEqual(168, Campaign.All.Count(m => !m.Side && m.Branch == null), "main missions");
+            Assert.AreEqual(6, Campaign.All.Count(m => m.Branch != null), "the story choices' missions, two a choice");
             Assert.AreEqual(19, Campaign.All.Count(m => m.Side), "side missions");
         }
 

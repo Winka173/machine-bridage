@@ -165,6 +165,56 @@
 .fc-briefing { flex-direction: row; align-items: flex-start; margin-top: var(--fc-space-4); padding: var(--fc-space-3); background-color: var(--fc-bg-2); }
 .fc-briefing__text { flex-grow: 1; flex-shrink: 1; }
 
+/* Prompt 22 D.1: the front map at the head of the chapters. */
+.fc-front { margin-bottom: var(--fc-space-3); }
+.fc-front__map {
+    height: 380px; margin-top: var(--fc-space-2);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+    --front-sea: #0e161d; --front-land: #20262d; --front-ours: #6cc0ff; --front-enemy: #e0513a; --front-thorne: #a877e8; --front-line: #f2a33a; --front-coast: #3a424b;
+}
+.fc-front__layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-front__pin {
+    position: absolute; align-items: center; justify-content: center;
+    border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+    background-color: var(--fc-panel-raised);
+    border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-front__pin-number { -unity-text-align: middle-center; }
+.fc-front__pin--done { border-top-color: var(--fc-ally); border-right-color: var(--fc-ally); border-bottom-color: var(--fc-ally); border-left-color: var(--fc-ally); }
+.fc-front__pin--current { background-color: var(--fc-accent); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-front__pin--current > .fc-front__pin-number { color: var(--fc-ink); }
+.fc-front__pin--locked, .fc-front__pin--soon { opacity: 0.7; }
+.fc-front__pin--soon > .fc-front__pin-number { color: var(--fc-text-2); }
+.fc-root .fc-front__pin.pressed { background-color: var(--fc-panel-selected); }
+.fc-front__flag { position: absolute; width: 28px; height: 28px; --icon-color: var(--fc-ally); }
+.fc-front__legend { margin-top: var(--fc-space-2); }
+.fc-front__legend-item { align-items: center; margin-right: var(--fc-space-4); }
+.fc-front__swatch { width: 20px; height: 20px; margin-right: var(--fc-space-2); }
+.fc-front__swatch--ours { background-color: var(--fc-ally); }
+.fc-front__swatch--enemy { background-color: var(--fc-enemy); }
+.fc-front__swatch--thorne { background-color: var(--fc-rarity-epic); }
+.fc-front__swatch--line { height: 4px; background-color: var(--fc-accent); }
+.fc-front__legend-flag { width: 24px; height: 24px; margin-right: var(--fc-space-2); --icon-color: var(--fc-ally); }
+
+/* Prompt 22 D.8: the comic panels after a chapter. */
+.fc-comic { width: 96%; max-height: 94%; padding: var(--fc-space-4) var(--fc-space-5); }
+.fc-comic__head { flex-shrink: 0; margin-bottom: var(--fc-space-3); }
+.fc-comic__panels { flex-direction: row; flex-grow: 1; flex-shrink: 1; min-height: 0; }
+.fc-comic__panel {
+    flex-grow: 1; flex-shrink: 1; flex-basis: 0; margin-right: var(--fc-space-2); background-color: #f0ebe0;
+    border-top-width: 4px; border-right-width: 4px; border-bottom-width: 4px; border-left-width: 4px;
+    border-top-color: #0b0d10; border-right-color: #0b0d10; border-bottom-color: #0b0d10; border-left-color: #0b0d10;
+}
+.fc-comic__panel--waiting { opacity: 0.18; }
+.fc-comic__panel--waiting > .fc-comic__bubble { visibility: hidden; }
+.fc-comic__art { height: 190px; flex-shrink: 0; -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }
+.fc-comic__render { position: absolute; left: 12%; right: 0; top: 8%; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
+.fc-comic__portrait { position: absolute; left: var(--fc-space-2); top: var(--fc-space-2); }
+.fc-comic__bubble { flex-grow: 1; padding: var(--fc-space-2) var(--fc-space-3); background-color: var(--fc-panel-raised); }
+.fc-comic__buttons { flex-shrink: 0; margin-top: var(--fc-space-3); }
+
 /* The story card: chapter openings, briefings, the epilogue. */
 .fc-story { width: 760px; max-width: 94%; max-height: 94%; flex-direction: row; }
 .fc-story__art { width: 260px; flex-shrink: 0; -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }

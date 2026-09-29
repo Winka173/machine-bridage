@@ -7,6 +7,23 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 22 D: narrative mechanics (DECISIONS 22D)
+
+- The chapter screen opens on a map of the Meridian Coast: the brigade's ground, Hegemon's and (from Veyra) Thorne's,
+  the front line moving with every win, flags on the bases taken, a pin per chapter that opens it. Varga's
+  counterstrike takes ground back in chapter 6; Thorne's betrayal turns Red Rock, Hollow Dam, Iron Harbor and Beacon Bay
+  until chapters 8-9 win them back.
+- Three story choices (after 4-13, 8-11 and 11-10): chase Kessler or save the ferries, free the miners (+6 CP in
+  chapter 9) or strike Kronos (double coins), blind the Skygate radar (the enemy sees 25% less in chapter 12) or take the
+  short road (coins and rare blueprints). Each leads to its own mission, then the story goes on; kept in the save and
+  listed in the dossier.
+- Story loot: the railgun truck after Tempest (chapter 4), the drone mothership with Venn (5), the bunker vehicle from
+  Moloch (6), the loyal wingman from Roc (10), Kessler's cruise missiles (12), each with a line saying why.
+- 33 intel files from side missions and three-star wins (letters, Aurel's reports, Mara's diary, Venn's notes, the
+  clues about Thorne in chapters 4-6) in the dossier's new Intel tab; comic panels after every chapter and interlude,
+  skippable and replayable; the characters' arcs in the dossier; every enemy general answers on the radio to a fast win,
+  heavy losses, lots of aircraft, drones or artillery, and a big attack broken.
+
 ### Play-test 7 (DECISIONS 22P)
 
 - The AC-130 is an aircraft card again, "AC-130 Gunship" ("Pháo hạm AC-130"), listed with the aircraft (premium,

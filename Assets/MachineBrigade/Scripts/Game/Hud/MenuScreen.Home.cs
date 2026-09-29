@@ -182,7 +182,8 @@ namespace MachineBrigade.Game.Hud
         private void StartNextMission()
         {
             var next = Campaign.Next;
-            if (!Campaign.IsOpen(next)) return;
+            // Prompt 22 D.5: a story choice to make is made on the campaign page first.
+            if (!Campaign.IsOpen(next) && Campaign.ChoicePending(Campaign.All[next]) == null) return;
             _selectedMission = next;
             _tier = 0;
             ShowTab(Tab.Campaign);

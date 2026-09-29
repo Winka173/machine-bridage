@@ -1585,6 +1585,12 @@ namespace MachineBrigade.Game.Match
                 if (_reward.TowerGear != null) view.Extras.Add(("shield", $"{Strings.Get("result.towerPiece")} · {Strings.Get("rarity." + _reward.TowerGear.ToLowerInvariant())}"));
                 if (_reward.HqLevel > 0) view.Extras.Add(("home", Strings.Format("result.hqLevel", _reward.HqLevel)));
                 if (_reward.Fragment != null) view.Extras.Add(("eye", Strings.Format("result.fragment", Strings.Get("mission." + _reward.Fragment + ".fragment.title"))));
+                // Prompt 22 D.6-D.7: why the story hands a card out, and the intel files a side objective recovered.
+                foreach (var id in _reward.Unlocks)
+                    if (Narrative.LootReason(id) is { } reason) view.Extras.Add(("star", Strings.Get(reason)));
+                if (outcome.Result > 0 && _reward.MissionId != null)
+                    foreach (var file in Narrative.FoundBy(_reward.MissionId, _reward.Stars))
+                        view.Extras.Add(("eye", Strings.Format("result.intel", ("title", Strings.Get($"intel.{file.Id}.title")))));
                 // Crates: one for each of the first five wins of the day, a silver one for a mission's first clear.
                 if (outcome.Result > 0 && PlayerProfile.GrantWinCrate()) view.Crates.Add(Strings.Get("crate.battle"));
                 if (outcome.Result > 0 && _reward.MissionId != null && !PlayerProfile.Completed(_reward.MissionId))

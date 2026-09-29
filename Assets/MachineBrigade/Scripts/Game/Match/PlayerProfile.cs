@@ -125,6 +125,9 @@ namespace MachineBrigade.Game.Match
             /// <summary>Chapters whose opening card (the chapter transition) has been shown.</summary>
             public List<int> chaptersSeen = new();
 
+            /// <summary>Prompt 22 D.5: the story's choices made, "choice=option" ("c4.pursuit=sea"); see PlayerProfile.Story.cs.</summary>
+            public List<string> storyChoices = new();
+
             /// <summary>Prompt 20 N: the Boss Hunts' checkpoints (one a kind), the full hunt's best times and its first-clear pay.</summary>
             public List<HuntSave> hunts = new();
             public List<float> fullHuntTimes = new();

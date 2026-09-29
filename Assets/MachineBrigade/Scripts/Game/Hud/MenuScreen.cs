@@ -604,7 +604,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "dossier-intel", "comic", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
             "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
         };
@@ -630,6 +630,18 @@ namespace MachineBrigade.Game.Hud
                 case "dossier":
                     ShowTab(Tab.Campaign);
                     OpenDossier();
+                    break;
+                case "dossier-intel":
+                    // Prompt 22 D.7: the intel files.
+                    ShowTab(Tab.Campaign);
+                    _dossierTab = DossierTab.Intel;
+                    OpenDossier();
+                    break;
+                case "comic":
+                    // Prompt 22 D.8: a chapter's comic panels, all of them showing.
+                    ShowTab(Tab.Campaign);
+                    _comic.Show(1, null);
+                    while (_comic.Shown < Narrative.ComicOf(1).Count) _comic.Next();
                     break;
                 case "operations":
                     ShowTab(Tab.Operations);

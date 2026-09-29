@@ -31,6 +31,8 @@ namespace MachineBrigade.Game.Match
                 PlayerProfile.RecordMission(m.Id, won % 4 == 0 ? 2 : 3, won % 5 == 0 ? 1 : 0);
                 foreach (var id in m.Unlocks) PlayerProfile.Unlock(id);
                 if (m.Chapter > 0) PlayerProfile.MarkChapterSeen(m.Chapter);
+                // Prompt 22 D.8: the comic panels of the chapters it finished, seen.
+                if (m.Chapter > 0 && m.Operation) PlayerProfile.MarkChapterSeen(PlayerProfile.ComicSeen(m.Chapter));
                 won++;
             }
             foreach (var (id, prints) in new[] { ("main_battle_tank", 60), ("attack_helicopter", 30), ("mlrs", 45), ("aa_vehicle", 12) })
