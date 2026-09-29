@@ -351,7 +351,7 @@
             "kind": "vehicle",
             "model": "stealth_fighter",
             "source": "Models/stealth_fighter",
-            "hash": "v2:09b27c286925c1d6bdbde96ef905c6c05c6afb13"
+            "hash": "v2:75534fd8d29d7fa0f7b2e1aae6f394b00468fc41"
         },
         {
             "id": "wingman_drone",
@@ -379,7 +379,7 @@
             "kind": "vehicle",
             "model": "bunker_vehicle",
             "source": "Models/bunker_vehicle",
-            "hash": "v2:d9e68b1409554a7c770e6014e7415e4d57af92ed"
+            "hash": "v2:682466defe9292e0fde9f4dea87d79d7d574fe18"
         },
         {
             "id": "swarm_carrier",
@@ -1115,6 +1115,13 @@
             "model": "typhon",
             "source": "Models/typhon",
             "hash": "v2:bb63dc0d2cb3ae5fc03790f4ada1a61d674d08bf"
+        },
+        {
+            "id": "gunship_support",
+            "kind": "support",
+            "model": "sky_gunship",
+            "source": "Models/sky_gunship_hd",
+            "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
         }
     ]
 }
