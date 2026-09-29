@@ -1,6 +1,6 @@
 """Machine Brigade prompt 20 pass 2 bosses (DECISIONS 19E): first-pass models on the shared kit.
 
-New bosses:
+New bosses (DECISIONS 20Y moved Daedalus, Typhon, Ixion and Caspian to mb_redesign_20y, redrawn from references):
   * moloch: Varga's mobile factory, 24 x 13 m: a long tracked hull with a raised workshop block, four 120 mm turrets on
     the corners (`Turret` front left with `Muzzle_main`; `Mount_gun` / `.001` / `.002`), a flak mount on the roof
     (`Mount_mg`), two workshop doors at the back (`Part_door_l` / `Part_door_r`), two track units (`Part_track_l/r`),
@@ -21,10 +21,10 @@ New bosses:
     and a CIWS in the tail (`Mount_gun`).
 Existing bosses (prompt 20 F.3's new weapons, each builder wrapping the current one, no node renamed or moved):
 fortress_bastion (a 155 mm casemate `Mount_gun.004`, ZU-23 mounts `Mount_mg` / `.001`), behemoth (120 mm flank guns
-`Mount_gun.001` / `.002`, a rocket pod `Mount_rocket`), leviathan (127 mm secondaries `Mount_gun.002` / `.003`), drone_mothership (belly 30 mm guns
+`Mount_gun.001` / `.002`, a rocket pod `Mount_rocket`), drone_mothership (belly 30 mm guns
 `Mount_gun` / `.001`, a second drone bay `Mount_missile.001`), command_airship (105 mm gun pods `Mount_gun.002` /
-`.003`), nuke_train (a 152 mm gun car `Part_gun152` > `Mount_gun`, an AA car `Part_aa` > `Mount_mg.002`), silver_bug
-(two phase-3 turrets `Mount_gun.002` / `.003`).
+`.003`), nuke_train (a 152 mm gun car `Part_gun152` > `Mount_gun`, an AA car `Part_aa` > `Mount_mg.002`)
+(silver_bug's phase-3 turrets `Mount_gun.002` / `.003` are mb_redesign_20y's now).
 
 Conventions are mb_vehicles'/mb_phase8's: metres, +Z up, Blender -Y is the front, +X the vehicle's left; data
 positions (x right, y forward) are Blender (-x, -y). Suffixed pivots are authored `Mount_gun__001` (mb_phase2._suffixed).
@@ -44,7 +44,6 @@ if str(HERE) not in sys.path:
 
 import mb_bosses  # noqa: E402
 import mb_bosses2  # noqa: E402
-import mb_naval  # noqa: E402
 import mb_orbital  # noqa: E402
 import mb_p16_arms  # noqa: E402
 import mb_phase8  # noqa: E402
@@ -167,31 +166,6 @@ def moloch(a):
     stripe_door(a, 'Part_door_r', (-3.0, 11.3, 1.9))
 
 
-# ============================================================================== Daedalus
-
-def daedalus(a):
-    """Aurel's orbital lander on the Silver Bug's airframe: see the module docstring."""
-    _suffixed(a)
-    rng = random.Random(1977)
-    mb_orbital._build_hull(a, 0.0, False, rng)
-    mb_orbital._build_wing(a, 1, 0.0, torn=False)
-    mb_orbital._build_wing(a, -1, 0.0, torn=False)
-    mb_orbital._build_tail_fin(a, 0.0)
-    mb_orbital._build_engines(a, mb_orbital._node('Thruster_main', 0.0), torn=False)
-    mb_orbital._build_pd_laser(a, 'Pd_laser_l', mb_orbital._node('Pd_laser_l', 0.0))
-    mb_orbital._build_pd_laser(a, 'Pd_laser_r', mb_orbital._node('Pd_laser_r', 0.0))
-    # The cargo hump over the troop deck and its hatches.
-    hump = a.part('Cargo_hump', 'Team')
-    hump.box((7.0, 16.0, 2.6), loc=(0, 1.0, 3.2), bevel=.8, seg=3, taper=(.8, .9))
-    a.part('Cargo_ribs', 'Alloy').box((7.4, .4, .5), loc=(0, -4.0, 3.9), bevel=.1, seg=1)
-    a.part('Cargo_lamps', 'TeamGlow').box((5.6, .2, .12), loc=(0, -7.0, 3.6), bevel=0)
-    for i, (x, y) in enumerate(((4.0, 2.0), (0.0, 5.0), (-4.0, 2.0))):
-        p = pv(a, f'Pod_bay_{i + 1}', (x, y, -2.0))
-        a.part(f'Bay_frame_{i + 1}', 'Armor', p).box((3.0, 3.6, .5), loc=(0, 0, 0), bevel=.1, seg=1)
-        a.part(f'Bay_pod_{i + 1}', 'Team', p).cyl(1.0, 1.6, loc=(0, 0, -.8), seg=14, r2=.7, bevel=.05, bseg=1)
-        a.part(f'Bay_glow_{i + 1}', 'Energy', p).cyl(.5, .05, loc=(0, 0, -1.62), seg=12, bevel=0)
-    hanging_gun(a, 'Mount_gun', 'Muzzle_gun', (2.4, -6.0, -1.4))
-    hanging_gun(a, 'Mount_gun.001', 'Muzzle_gun.001', (-2.4, -6.0, -1.4))
 
 
 # ============================================================================== Kronos
@@ -241,100 +215,10 @@ def kronos(a):
     rocket_box(a, 'Mount_rocket', 'Muzzle_rocket', (0, 9.0, 9.6))
 
 
-# ============================================================================== Typhon
-
-def typhon(a):
-    """A missile submarine: see the module docstring."""
-    _suffixed(a)
-    hull = a.part('Hull', 'Team')
-    hull.sphere((6.0, 29.0, 3.6), loc=(0, 0, .2), seg=28, rings=12)
-    a.part('Casing', 'Armor').box((7.6, 30.0, 1.0), loc=(0, 1.0, 3.3), bevel=.45, seg=2)                 # deck casing
-    ps = pv(a, 'Part_sail', (0, -6.0, 3.6))
-    a.part('Sail_body', 'Team', ps).box((3.2, 9.0, 5.2), loc=(0, 0, 2.6), bevel=.8, seg=3, taper=(.8, .7))
-    a.part('Sail_planes', 'Armor', ps).box((8.6, 1.6, .3), loc=(0, -1.0, 3.2), bevel=.12, seg=1)
-    a.part('Sail_masts', 'Steel', ps).cyl(.15, 2.2, loc=(0, 1.8, 6.3), seg=8, bevel=0)
-    rocket_box(a, 'Mount_missile', 'Muzzle_missile', (0, -3.0, 9.0), size=(1.4, 1.8, .9))
-    for s, name in ((1, 'Part_doors_l'), (-1, 'Part_doors_r')):
-        pd = pv(a, name, (s * 2.2, 6.0, 3.8))
-        lids = a.part(f'Doors_{_tag(name)}', 'Armor', pd)
-        rims = a.part(f'Doors_rim_{_tag(name)}', 'Hazard', pd)
-        for k in range(5):
-            lids.cyl(.8, .16, loc=(0, -4.0 + k * 2.0, 0), seg=16, bevel=.03, bseg=1)
-            rims.torus(.82, .06, loc=(0, -4.0 + k * 2.0, .08), seg=16, ring=6)
-    pr = pv(a, 'Part_rudder', (0, 27.0, 1.0))
-    fins = a.part('Rudder_fins', 'Armor', pr)
-    fins.box((.4, 3.2, 5.0), loc=(0, 0, 1.6), bevel=.1, seg=1)
-    fins.box((7.0, 2.6, .35), loc=(0, .2, 0), bevel=.1, seg=1)
-    a.part('Screws', 'Steel', pr).cyl(1.2, .5, loc=(0, 2.2, -.4), rot=FORWARD, seg=12, bevel=.05, bseg=1)
-    pn = pv(a, 'Part_sonar', (0, -26.0, 1.2))
-    a.part('Sonar_dome', 'Alloy', pn).sphere((2.4, 2.8, 1.8), loc=(0, 0, 0), seg=18, rings=8)
-    autocannon(a, 'Mount_gun', (0, -16.0, 3.8), length=4.0, r=.1, size=(1.9, 2.4, 1.0))
 
 
-# ============================================================================== Ixion
-
-def ixion(a):
-    """A giant wheel: see the module docstring."""
-    _suffixed(a)
-    for s, name in ((1, 'Part_wheel_l'), (-1, 'Part_wheel_r')):
-        p = pv(a, name, (s * 5.2, -3.0, 4.6))
-        rim = a.part(f'Rim_{_tag(name)}', 'Steel', p)
-        rim.torus(4.3, .32, loc=(0, 0, 0), rot=AXIS_X, seg=40, ring=8)
-        tread = a.part(f'Tread_{_tag(name)}', 'Undercarriage', p)
-        tread.cyl(4.55, .9, loc=(0, 0, 0), rot=AXIS_X, seg=40, bevel=.08, bseg=1)
-        spokes = a.part(f'Spokes_{_tag(name)}', 'Team', p)
-        for k in range(10):
-            ang = k * math.tau / 10
-            spokes.limb((0, 0, 0), (0, 4.1 * math.sin(ang), 4.1 * math.cos(ang)), .18, .28)
-        a.part(f'Hub_{_tag(name)}', 'Armor', p).cyl(.8, 1.4, loc=(0, 0, 0), rot=AXIS_X, seg=16, bevel=.05, bseg=1)
-    axle = a.part('Axle', 'Undercarriage')
-    axle.cyl(.45, 10.0, loc=(0, -3.0, 4.6), rot=AXIS_X, seg=14, bevel=0)
-    body = a.part('Gondola', 'Team')
-    body.box((3.4, 4.6, 2.4), loc=(0, -2.6, 6.2), bevel=.25, seg=2)
-    a.part('Gondola_armor', 'Armor').box((3.0, 1.0, 1.2), loc=(0, -5.0, 5.6), bevel=.15, seg=1)
-    tail = a.part('Tail', 'Undercarriage')
-    tail.limb((0, -1.0, 5.2), (0, 7.2, 1.8), 1.0, .9)
-    tail.limb((.6, -1.0, 4.2), (.6, 7.0, 1.5), .3, .3)
-    tail.limb((-.6, -1.0, 4.2), (-.6, 7.0, 1.5), .3, .3)
-    ps = pv(a, 'Part_steer', (0, 7.6, 1.3))
-    a.part('Steer_wheel', 'Rubber', ps).cyl(1.2, .8, loc=(0, 0, 0), rot=AXIS_X, seg=18, bevel=.1, bseg=1)
-    a.part('Steer_fork', 'Steel', ps).box((1.4, .3, 1.6), loc=(0, 0, .8), bevel=.05, seg=1)
-    gun_turret(a, 'Turret', 'Muzzle_main', (0, -1.0, 7.4), w=1.9, d=2.2, h=1.0, barrel=3.2, r=.09)
 
 
-# ============================================================================== Caspian
-
-def caspian(a):
-    """An ekranoplan: see the module docstring."""
-    _suffixed(a)
-    hull = a.part('Hull', 'Team')
-    hull.box((5.4, 44.0, 5.6), loc=(0, 2.0, 3.6), bevel=1.2, seg=3, taper=(.9, .95))                   # z .8 .. 6.4
-    hull.sphere((2.7, 6.0, 2.8), loc=(0, -20.0, 3.6), seg=18, rings=8)                                  # nose
-    a.part('Hull_bottom', 'Undercarriage').box((5.0, 40.0, .6), loc=(0, 2.0, .9), bevel=.2, seg=1)
-    a.part('Cockpit', 'Glass').box((2.6, 2.4, .8), loc=(0, -17.0, 6.1), rot=(-.3, 0, 0), bevel=.1, seg=1)
-    for s, name in ((1, 'Part_wing_l'), (-1, 'Part_wing_r')):
-        p = pv(a, name, (s * 11.0, 0, 2.6))
-        a.part(f'Wing_{_tag(name)}', 'Team', p).box((16.0, 9.0, .7), loc=(0, 0, 0), bevel=.25, seg=2, taper=(1, .7))
-        a.part(f'Float_{_tag(name)}', 'Armor', p).box((1.2, 7.0, 1.4), loc=(s * 7.8, 0, -.7), bevel=.3, seg=1)
-    fin = a.part('Tail_fin', 'Team')
-    fin.box((.8, 8.0, 10.0), loc=(0, 21.0, 10.0), bevel=.2, seg=1, taper=(.6, .6))
-    fin.box((18.0, 5.0, .6), loc=(0, 22.0, 15.0), bevel=.2, seg=1)
-    pe = pv(a, 'Part_engines', (0, -18.0, 5.4))
-    canard = a.part('Canards', 'Armor', pe)
-    canard.box((14.0, 3.0, .5), loc=(0, 0, 0), bevel=.15, seg=1)
-    jets = a.part('Jets', 'Steel', pe)
-    glow = a.part('Jet_glow', 'Energy', pe)
-    for i in range(4):
-        for s in (-1, 1):
-            x = s * (1.6 + i * 1.5)
-            jets.cyl(.62, 3.4, loc=(x, 0, 1.0), rot=FORWARD, seg=12, bevel=.05, bseg=1)
-            glow.cyl(.4, .05, loc=(x, 1.73, 1.0), rot=FORWARD, seg=10, bevel=0)
-    pl = pv(a, 'Part_launcher', (0, 2.0, 6.4))
-    tubes = a.part('Launch_canisters', 'Team', pl)
-    for k in range(3):
-        for s in (-1, 1):
-            tubes.cyl(.75, 7.0, loc=(s * .95, -3.0 + k * 3.0, .9 + k * .5), rot=(R90 - .15, 0, 0), seg=14, bevel=.05, bseg=1)
-    ciws(a, 'Mount_gun', (0, 17.0, 6.4))
 
 
 # ============================================================================== the existing bosses' new weapons (F.3)
@@ -356,13 +240,6 @@ def behemoth(a):
         a.part(f'Sponson_{_tag(mount)}', 'Armor').box((1.4, 2.6, 1.2), loc=(s * 3.4, -1.0, 2.2), bevel=.12, seg=1)
         gun_turret(a, mount, mount.replace('Mount_', 'Muzzle_'), (s * 3.4, -1.0, 2.6), w=1.4, d=1.8, h=.8, barrel=3.8, r=.1)
     rocket_box(a, 'Mount_rocket', 'Muzzle_rocket', (0, 3.8, 4.4))
-
-
-def leviathan(a):
-    """mb_naval.leviathan with two 127 mm secondaries on the beam."""
-    mb_naval.leviathan(a)
-    for s, mount in ((1, 'Mount_gun.002'), (-1, 'Mount_gun.003')):
-        autocannon(a, mount, (s * 5.2, -4.0, 6.0), length=4.2, r=.1, size=(2.0, 2.6, 1.1))
 
 
 def drone_mothership(a):
@@ -398,25 +275,14 @@ def nuke_train(a):
     del pg, pa
 
 
-def silver_bug(a):
-    """mb_orbital.silver_bug with two more turrets round the hull (they wake in phase 3)."""
-    mb_orbital.silver_bug(a)
-    for s, mount in ((1, 'Mount_gun.002'), (-1, 'Mount_gun.003')):
-        autocannon(a, mount, (s * 6.5, 6.0, 2.2), length=2.4, size=(1.3, 1.5, .62))
 
 
 BUILDERS = {
     'moloch': (moloch, dict(ao_distance=1.2, grime_height=1.0)),
-    'daedalus': (daedalus, dict(ao_distance=.4, ground=False)),
     'kronos': (kronos, dict(ao_distance=1.4, grime_height=1.2)),
-    'typhon': (typhon, dict(ao_distance=1.0, grime_height=.3)),
-    'ixion': (ixion, dict(ao_distance=1.0, grime_height=.8)),
-    'caspian': (caspian, dict(ao_distance=1.0, grime_height=.3)),
     'fortress_bastion': (fortress_bastion, dict(ao_distance=1.1, grime_height=1.0)),
     'behemoth': (behemoth, dict(ao_distance=.9, grime_height=.8)),
-    'leviathan': (leviathan, dict(ao_distance=1.5, grime_height=1.0)),
     'drone_mothership': (drone_mothership, dict(ao_distance=1.2, ground=False)),
     'command_airship': (command_airship, dict(ao_distance=1.3, ground=False)),
     'nuke_train': (nuke_train, dict(ao_distance=.8, grime_height=.7)),
-    'silver_bug': (silver_bug, dict(ao_distance=.4, ground=False)),
 }

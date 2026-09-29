@@ -1011,20 +1011,27 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đón đầu nó trước lần đổ bộ đầu tiên bằng xe diệt tăng và pháo binh, và giữ lực lượng dự bị cho số quân đã lên bờ."),
             ["guide.leviathan"] = (
                 "[[Boss]] · battleship at sea · shells the coast, runs when beaten\n" +
-                "How it fights: two 203 mm turrets lay [[salvos]] on the shore, marked ahead, sweeping along it; cruise missiles at your groups and your base; [[CIWS]] shoots down missiles, rockets and drones (never shells, bullets or beams). Phase 2 it comes in close, lands tanks and launches helicopters; phase 3 it runs for open sea: sink it before the clock runs out.\n" +
+                "How it fights: three triple 460 mm turrets lay [[salvos]] on the shore, one gun a turret, marked ahead, sweeping along it, and fire all nine at your base as its big attack; two triple 155 mm fire on their own, eight 25 mm mounts at aircraft; cruise missiles at your groups and your base; [[CIWS]] shoots down missiles, rockets and drones (never shells, bullets or beams). Phase 2 it comes in close, lands tanks and launches helicopters; phase 3 it runs for open sea: sink it before the clock runs out.\n" +
                 "Strong / weak: its sides are armour [[4]], its deck only [[2]]: artillery, bombs, rocket artillery and top attacks hit the deck; tank guns reach it only from the pier heads, when it comes in close.\n" +
-                "Tip: hold the lighthouse and the coastal batteries; bring artillery and aircraft; break the CIWS (or its corvettes) before sending missiles, and the engine room before it runs.",
+                "Tip: hold the lighthouse and the coastal batteries; bring artillery and aircraft; break the CIWS (or its cruiser and corvette) before sending missiles, a main turret when the broadside is marked, and the engine room before it runs.",
                 "[[Boss]] · chiến hạm trên biển · nã pháo vào bờ, bỏ chạy khi thua\n" +
-                "Cách đánh: hai tháp pháo 203 mm bắn [[loạt]] vào bờ, có cảnh báo trước và quét dần dọc bờ; tên lửa hành trình đánh vào cụm quân và căn cứ; [[CIWS]] bắn hạ tên lửa, rốc-két và drone (không chặn đạn pháo, đạn súng hay Năng lượng). Pha 2 nó áp sát, đổ bộ xe tăng và thả trực thăng; pha 3 nó chạy ra khơi: đánh chìm nó trước khi hết giờ.\n" +
+                "Cách đánh: ba tháp pháo ba nòng 460 mm bắn [[loạt]] vào bờ, mỗi tháp một nòng, có cảnh báo trước và quét dần dọc bờ, và bắn cả chín nòng vào căn cứ khi tung đòn lớn; hai tháp ba nòng 155 mm tự bắn, tám bệ 25 mm bắn máy bay; tên lửa hành trình đánh vào cụm quân và căn cứ; [[CIWS]] bắn hạ tên lửa, rốc-két và drone (không chặn đạn pháo, đạn súng hay Năng lượng). Pha 2 nó áp sát, đổ bộ xe tăng và thả trực thăng; pha 3 nó chạy ra khơi: đánh chìm nó trước khi hết giờ.\n" +
                 "Mạnh / yếu: hông tàu giáp cấp [[4]], boong chỉ cấp [[2]]: pháo binh, bom, pháo phản lực và đòn đánh nóc đánh vào boong; pháo xe tăng chỉ với tới khi nó áp sát, đứng ở đầu cầu tàu.\n" +
-                "Mẹo: giữ ngọn hải đăng và trận địa pháo bờ biển; mang pháo binh và máy bay; phá CIWS (hoặc tàu hộ vệ) trước khi dùng tên lửa, và phá buồng máy trước khi nó bỏ chạy."),
+                "Mẹo: giữ ngọn hải đăng và trận địa pháo bờ biển; mang pháo binh và máy bay; phá CIWS (hoặc tuần dương hạm và tàu hộ vệ) trước khi dùng tên lửa, phá một tháp pháo chính khi loạt bắn mạn được đánh dấu, và phá buồng máy trước khi nó bỏ chạy."),
             ["guide.sea_corvette"] = (
                 "[[Leviathan's fleet]] · escort corvette · guards the flagship\n" +
-                "How it fights: a 76 mm gun on the shore; a CIWS that shoots down missiles and drones aimed at it or at Leviathan within 32 m. In the last phase it steams between Leviathan and the shore.\n" +
+                "How it fights: a 76 mm gun on the shore; a CIWS that shoots down missiles and drones aimed at it or at Leviathan within 32 m. It keeps station between Leviathan and the shore.\n" +
                 "Strong / weak: sides armour 3, deck 1; sink it first and your aircraft and missiles reach the flagship.",
                 "[[Hạm đội Leviathan]] · tàu hộ vệ · bảo vệ tàu chính\n" +
-                "Cách đánh: pháo 76 mm bắn vào bờ; CIWS bắn hạ tên lửa và drone nhắm vào nó hoặc vào Leviathan trong vòng 32 m. Ở pha cuối nó chạy chắn giữa Leviathan và bờ.\n" +
+                "Cách đánh: pháo 76 mm bắn vào bờ; CIWS bắn hạ tên lửa và drone nhắm vào nó hoặc vào Leviathan trong vòng 32 m. Nó giữ vị trí chắn giữa Leviathan và bờ.\n" +
                 "Mạnh / yếu: hông giáp cấp 3, boong cấp 1; đánh chìm nó trước thì máy bay và tên lửa của bạn đánh được tàu chính."),
+            ["guide.sea_cruiser"] = (
+                "[[Leviathan's fleet]] · missile cruiser · screens the flagship\n" +
+                "How it fights: two twin 203 mm turrets on the shore; two CIWS that shoot down missiles and drones aimed at it or at Leviathan within 30 m. It keeps station between Leviathan and the shore, and closer in when it runs.\n" +
+                "Strong / weak: sides armour 3, deck 2; it is the first ship in reach, and sunk it opens the flagship to your missiles.",
+                "[[Hạm đội Leviathan]] · tuần dương hạm tên lửa · che chắn tàu chính\n" +
+                "Cách đánh: hai tháp pháo nòng đôi 203 mm bắn vào bờ; hai CIWS bắn hạ tên lửa và drone nhắm vào nó hoặc vào Leviathan trong vòng 30 m. Nó giữ vị trí giữa Leviathan và bờ, áp sát hơn khi tàu chính bỏ chạy.\n" +
+                "Mạnh / yếu: hông giáp cấp 3, boong cấp 2; nó là tàu đầu tiên trong tầm bắn, đánh chìm nó thì tên lửa của bạn đánh được tàu chính."),
             ["guide.missile_boat"] = (
                 "[[Leviathan's fleet]] · fast attack boat · raids the pier heads\n" +
                 "How it fights: it waits out on the sea, dashes in to a pier head, fires a salvo of 80 mm rockets and runs back out.\n" +

@@ -7869,3 +7869,164 @@ flight on its 19T 3.6 s cooldown), `ModelTests.RoundsLeave` (3), `EveryWeaponMou
 `campaign.json` (`c4m01` unlocks), `CombatSystem.cs`, `MovementSystem.cs`, `DamageSystem.cs`, `TacticalAi.cs`,
 `VehicleView.cs` / `.Deploy.cs`, `EffectsDirector.cs` (two event cases), `Strings.cs`, `GuideText.cs`, `UnitText.cs`,
 `Icons.cs`, `MenuScreen*.cs`, `Progression.cs`, `build_assets.py` and `Docs/art/models.json` (`resolve_merge.py`).
+
+## 20Y. Boss redesigns: Leviathan as a battleship, Ixion, Icarus, the boss review, death smoke (2026-09-29)
+
+The owner's requests (29/09): make Kessler's Leviathan a real battleship on the Yamato's lines, bigger if needed and with
+more guns, and shrink the old model into an escort; then redesign Ixion (ugly, not scary) and Icarus (a shuttle, not a
+warship), review the other bosses at the default zoom, and thin the boss death smoke. On feature/leviathan-yamato from lead/integration 5ba05ab. Every
+redesign starts from outside references, listed per boss.
+
+### A. Leviathan (`leviathan`, `Tools/blender/mb_naval.py`)
+
+**References.** The IJN Yamato (1941) and its 1945 fit: the flush deck with its sheer and bow flare, the wide beam,
+three triple 46 cm turrets (A and B forward, B superfiring, C aft), the pagoda tower with the 15 m rangefinder on the
+director and the Type 21 radar above it, the single funnel raked aft, triple 15.5 cm secondaries superfiring over B and
+C, the Type 96 25 mm triples in open tubs and the Type 89 twin 12.7 cm high-angle mounts along the sides, the stern's two
+catapults, floatplane and crane, the anchors and their chains on the forecastle. The missile cells beside the funnel and
+the stern gate keep prompt 16's hybrid (a battleship with a missile cruiser's cells; the Kirov and the 1980s Iowa
+missile refits are the precedent). Hegemon's marks, not Japanese insignia: chevrons in the side's colour on the bow, a
+hexagonal crest on the stem (no chrysanthemum), the side's colour on the turret roofs, the funnel band and the boot-top.
+Wood-planked deck, gunmetal hull, the side's colour on the superstructure (Machine Brigade's palette).
+
+**Size.** 86 x 14.4 m as built, drawn at the data's `size` 1.12 (96 x 16 m; the old ship was 72 x 12). Checked:
+- **The lanes** (near, mid, far 14 m apart at w 92, 106, 120): its half beam is 8 m, so it clears the next lane's
+  ships; the shore margin follows its hull (`HullRadius`). Its length only matters along the lane; at the far lane's
+  ends the bow reaches past the square on the open sea's side, as the old ship's did (the sea runs on out there).
+- **The camera**: the widest game zoom (42) shows about 150 m across, the whole ship with room; the arrival pan keeps its
+  zoom.
+- **The hit radius** is 11.2 before the size (12.5 m): `TheSeaLanesAreInReachAsDesigned` was 0.7 m short on lead (the
+  headland's rocky flank 46.7 m off the near lane, direct fire's 34 m reach, the old 13.4 m radius). Parts keep their
+  own reach, so long ships are hit at the bow and stern by what is there.
+- **Its escorts** used to keep station 26 m ahead and astern on its own lane, inside its 72 m hull (naval ships skip the
+  movement system's separation). A fleet entry now takes `abeam`: an escort keeps station beside the flagship on the
+  shore side, inside its length ("at" along its line from its middle, "abeam" towards the shore; the k-th ship of an
+  entry mirrored along and a row further in). `NavalSystem.StationOf`, `Vehicle.StationAt`. Entries without `abeam`
+  (Typhon's corvette) keep the old station. With escorts abeam on the mid lane, the attack boats wait on the near lane
+  while their flagship sails the far one (`RaiderLane`); an operation's extra escorts join the last escort entry only
+  (two escort entries would have doubled them). `LeviathanSailsWithItsFleetOnTheLanes...` checks no two ships overlap.
+
+**Guns (each a breakable part, on the calibre scale and prompt 15's penetration).**
+| part | weapon | notes |
+|---|---|---|
+| `turret_fore`, `turret_super`, `turret_aft` (`maingun`, armour 4) | `leviathan_460`: 460 mm, pen 4, HE, 950 (the howitzer row's 2.07 a millimetre), laid | the salvo and the big attack; C's arc is [180, 150] |
+| `sec_fore`, `sec_aft` (`gun`, armour 2: Yamato's thin-skinned secondaries) | `naval_155_triple`: 155 mm triple, pen 3, 320 x 3 every 10 s, 110 m | arcs [0, 135] and [180, 135], clear of the tower |
+| `aa_port`, `aa_starboard` (`flak`, armour 1) | four `aa_25_triple` each: 25 mm, pen 1, 17 a round, aircraft only, 42 m | eight trainable tubs; more tubs and six twin 127 mm mounts are drawn only |
+| `ciws_fore`, `ciws_aft` (`ciws`) | `hover_ciws` | part 2's APS (radius 30 now) |
+
+The old `leviathan_203` and the two 127 mm mounts (prompt 20 F.3) are gone; `cruiser_203` is the cruiser's.
+
+**The salvo** (`NavalSystem.Salvo`): one gun a turret, three shells of 950 every 14 s (was two turrets x two shells of
+420 every 12 s), in one line along the shore across all standing turrets, marked 3 s ahead; each turret flashes once a
+shell. Laid turrets are trained out to the beam on joining, turned inside their arcs as the ship comes about (`Lay`),
+and aimed inside them when they fire, so C never swings across the superstructure.
+
+**The big attack** `leviathan_volley` is the nine-gun broadside now: a circle at the base (the HQ), three ripples of one
+gun a turret (`perPart` 3, `salvo` 3 over 2.4 s), 950 each, pen 4, x1.5 on buildings, radius 8, falloff 0.35, spread over
+24 m, warned 5 s; each broken main turret takes its three rounds away; the cruise missiles wait while it charges. The
+cruise missiles stay the launch cells' own mechanism (every 50 s from phase 2, four at the base as phase 3 begins), so
+phases 1-3, the landing craft, the helicopters, the jets and the run are unchanged. Its words are new (Nine-Gun
+Broadside / Loạt bắn mạn chín nòng).
+
+**Parts and health.** 14 parts at 5 % each (70 %, prompt 20 F.3's rule for more than ten). Health stays 11 000, the main
+rank's own (no share), so the fight's length stays where prompt 16 set it; the testing phase's 5-seed kill time is the
+measure. Nodes: `Part_gun` / `.001` / `.002` (on `Mount_gun` / `.001` / `.002`), `Part_sec_f` / `Part_sec_a` (`Mount_gun.003`
+/ `.004`), `Part_vls`, `Part_aa_l` (`Mount_mg.002`-`.005`), `Part_aa_r` (`.006`-`.009`), `Part_mg` / `.001`, `Part_radar`
+(the rangefinder and the spinning `Radar`), `Part_deck`, `Part_welldeck`, `Part_engine` (the funnel). Every muzzle sits on
+its middle barrel's tip (`MuzzleAuditTests`: none of its 15 mounts off). 26 k triangles (the LOD is automatic).
+
+**At rest** the model's bores point forward (the kit's rule), so C and the aft secondary face the superstructure in a
+card render: pose `Mount_gun.002` and `Mount_gun.004` aft (180 degrees) for the card. In the game they are laid.
+
+### B. The missile cruiser (`sea_cruiser`)
+
+Prompt 16's Leviathan model, kept as it was built and drawn at 0.72 (46 x 8 m): two twin 203 mm (`cruiser_203`, pen 4,
+2 x 420 every 11 s, 105 m; the aft turret rests facing aft, arc [180, 150]), two CIWS (APS 30 m, covering the
+flagship), HP 2600, armour [3, 3, 3, 2], 3.2 m/s; the cells, radar, hangar and helicopter deck are drawn only. Its
+barrels are 1.1 m apart now, so each gets its own launch point (the twin rule) and the audit passes. Name, note, Guide
+line and dossier file in both languages (Missile Cruiser / Tuần dương hạm tên lửa; "Kessler's old flagship, the first
+Leviathan"). **The fleet**: the cruiser abeam forward (at 22, abeam -17), one corvette abeam aft (-27, -16), three attack
+boats. Boss Rush's half share is now taken over all the escorts, first entries first (one each would round both
+away): the cruiser sails there, as one of the two corvettes did before; Typhon's single corvette still stays home.
+
+### C. Scylla, Boss Hunt, 4-11
+
+Scylla is still Leviathan's variant: `variant.size` 0.62 -> 0.5 keeps it a 48 m destroyer on the bigger model (its
+turret A, launch cells and forward CIWS; the dropped guns' nodes hidden), its own salvo (two 420 shells every 12 s, as
+before) and its own big attack (`scylla_cruise` no longer builds on `leviathan_volley`: three cruise missiles as before).
+Boss Hunt's trip to sea (`BossRushGoesToSeaForLeviathanAndBack`), the run and the clock, and `MissionPlaysToAnEnd` for
+4-6 (Scylla) and 4-11 (Leviathan) pass.
+
+### Tests (run once, then after fixes)
+
+`Prompt16NavalTests` (the fleet: one cruiser, one corvette, three boats, nobody inside another's hull; 14 parts),
+`BossPartsTests` (Leviathan 14), `BigAttackTests`, `ModelTests`, `VehicleLodTests`, `MuzzleAuditTests`, `ExportGameDoc`,
+`Prompt20BossTests`, `Prompt20HuntTests`, `CampaignTests.MissionPlaysToAnEnd` (c4m06, c4m11). Failing and not touched here
+(lead's): `BossPartsTests.ABrokenPartHurtsTheBodyByAThirdOfIt` and `ShootersGoForThePartMostDangerousToThem` (Behemoth),
+`GearModelTests.AnOldSaveMigratesWithNothingLost`, `ModelTests.EveryWeaponMountHasAMuzzleOnItsModel` (the mobile
+fortress's `boss_howitzer`), `ModelTests.RoundsLeave...` (3), `MuzzleAuditTests` (33 tower and boss mounts, none of them
+the ships'). Captures: `Docs/art/leviathan/` (Blender's preview with the turrets trained, the fleet side by side).
+
+### D. Ixion (`ixion`, `Tools/blender/mb_redesign_20y.py`)
+
+The owner found it ugly and not scary. **References**: the Lebedenko "Tsar Tank" (1915: two 9 m spoked wheels on one axle,
+the cabin slung between them, a trailing roller), the Ork "deff rolla" and battlewagon plating (Warhammer 40,000), the
+Locust war machines' riveted slab armour and exhausts (Gears of War), the Shagohod's brute scale (Metal Gear Solid 3),
+and scythed-chariot hub spikes. The model: two 10 m wheels with hollow studded treads, two rows of spikes, rusted rims,
+eight I-beam spokes, an armoured disc and a 2.4 m scythe spike out of each hub; a war cabin in slab armour with rivet
+rows, rust streaks, chains slung across the glacis, raked roof plates and red vision slits on the cupola; a spiked
+roller drum on two arms across the front (the Crushing Charge's look); exhaust stacks with glowing mouths and soot; a
+tail boom with a counterweight and the spiked steering roller. 21 x 12.7 m (17.5 m across the hub spikes), 22 k
+triangles. Nodes and parts kept (`Part_wheel_l` / `_r`, `Part_steer`, `Turret` / `Muzzle_main`); data: length 21, width
+12.7, radius 8.5, the parts' positions and radii moved with the model (wheels 5.0, the roller aft at 10.4 m).
+
+### E. Icarus (`silver_bug`, `silver_bug_wreck`)
+
+It looked like a space shuttle; the owner wants a film warship. **References**: the Imperial-class Star Destroyer (the
+dagger plan, the side trench with its lit windows, the stepped superstructure, the command tower with its two shield
+domes; Star Wars, 1977-83) and the Republic Venator (the dorsal flight-deck doors and its red stripes, drawn in the side's
+colour; Revenge of the Sith). The model: a wedge hull (33.5 x 22 m) with greebles on its upper hull, three stepped tiers
+with window bands, the tower, a seven-nozzle engine bank across the stern (`Thruster_main`), manoeuvring pods on struts,
+a lit ventral hangar round the pod bay. **Kept**: every node's name and place (`mb_orbital.NODES`: the ventral laser
+`Turret`, the coilguns `Mount_gun` / `.001`, the flak `Mount_mg` / `.001`, `Pd_laser_l` / `_r`, the five thrusters,
+`Pod_bay`, `Uplink`) and the prompt 20 crash turrets `Mount_gun.002` / `.003` (now on the wreck too, which lacked them),
+so the data, the altitude tiers, the crash (the `silver_bug_wreck` form, raised by `LIFT` onto its crater and debris) and
+the parts are unchanged. The wreck: the same ship in dark plate, its back cracked, scorched, the tower broken off and
+lying beside it. 14-16 k triangles. The Silver Bug's muzzle findings (m0-m2) are the same turrets' as on lead.
+
+### F. The other bosses at the default zoom
+
+Rendered one by one and judged side by side. Redrawn, each from its references, keeping every node's name and place:
+- **Typhon**: the Project 941 Akula ("Typhoon"; The Hunt for Red October, 1990): a broad flattened hull in a dark
+  anechoic coat with a waterline band in the side's colour, the missile hump, a long streamlined sail with its planes
+  and masts, bow planes, a cruciform tail with twin shrouded screws, a dark sonar dome (was a glowing orange ball).
+- **Caspian**: the Lun-class ekranoplan MD-160 ("the Caspian Sea Monster"): a flying-boat hull with chines and a planing
+  step, a radome nose and glazing, the canard pylon with eight turbofans on it, the canister fairing, stub wings with
+  flaps and endplate floats, the tall fin under its T-tail.
+- **Daedalus**: it was the shuttle Icarus no longer is. Now Aurel's assault ship on the Republic Acclamator's lines
+  (Attack of the Clones): a blunter wedge of the Icarus family with a spine, a bridge tower aft, six turbolaser turrets
+  drawn along it, a five-nozzle engine bank, the three pod bays and the two hanging 30 mm guns as before.
+Looked at and kept: Behemoth (and Tempest), Bastion, the mobile fortress, Hive, the mothership, Roc, the Earth Worm,
+Charybdis, the supergun, both trains, the sky fortress, the gunship and Atlas are round 6 / prompt 16-19 builds with their
+detail; Moloch and Kronos are plain first passes but read as what they are (a workshop, a bucket-wheel excavator) and are
+left to the asset-debt list. The variants take their main boss's new model (Icarus Mk.0 the new Icarus).
+
+### G. Boss death smoke
+
+The owner: the smoke of a boss's death lasts too long and covers everything. It came from the fires, not the blasts: the
+great blast lit a size-2 ground fire for 40 s, every part's fire relit for 25-35 s riding the wreck (14 of them on
+Leviathan), and a boss's ruin burned like a tower's (45 s and 72 s), each then smouldering up to 45 s more under the
+full black column. Now (`FireSpots.Ignite(..., smoke)`, `BossSmoke` = 0.35) those fires keep their size and flames but
+smoke at a third of the rate, from a lighter, more transparent system (`Light Smoke`), and smoulder a tenth as long; they
+burn shorter too (the great blast's 24 s, the parts' 14-20 s, a boss ruin's 20 s and 32 s). The finale's lingering puffs
+are three lighter ones. The explosions themselves are unchanged (their own smoke lasts 5-8 s).
+
+### Tests (the redesigns)
+
+`OrbitalBossTests`, `Prompt20BossTests` (Ixion, Typhon, Daedalus), `BossPartsTests`, `BigAttackTests`, `ModelTests`,
+`VehicleLodTests`, `MuzzleAuditTests`, `EffectsTests`, `FlashTests`, `Prompt16NavalTests`, `ExportGameDoc`: nothing new
+fails (the lead's failures listed in C). Captures: `Docs/art/bosses_20y/redesigns.jpg` (Blender's preview). Card renders
+are the lead's.
+
+**Lead note (2026-09-29, the armour balance, 20X).** `BigAttackTests.SmokeDoesNothingToTheRailgun` fails since the armour balance (5b11cc5, checked on that branch alone). Against two MBTs, the one behind took 1.02 times the front one's damage, not 0.85, although the MBT's armour is the same on every face and both are hit head-on. The 1.2 overmatch or the narrower front arc probably touch the piercing slug's second hit. Listed for the testing phase.
+

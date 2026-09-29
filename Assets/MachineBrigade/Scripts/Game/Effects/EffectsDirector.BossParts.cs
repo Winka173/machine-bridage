@@ -246,7 +246,8 @@ namespace MachineBrigade.Game.Effects
                 if (point == null) continue;
                 var at = point.position;
                 Explode(ExplosionTier.Medium, at, now, 0.8f + size * 0.3f, flash: false);
-                _fires.Ignite(at, size * 1.5f, Random.Range(25f, 35f), now, view.Root);
+                // DECISIONS 20Y: as big a blaze, burning shorter under thinner, lighter smoke.
+                _fires.Ignite(at, size * 1.5f, Random.Range(14f, 20f), now, view.Root, smoke: FireSpots.BossSmoke);
             }
         }
 

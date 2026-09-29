@@ -241,7 +241,7 @@
   },
   "caspian": {
     "file": "caspian.glb",
-    "triangles": 3318
+    "triangles": 5054
   },
   "charred_tree": {
     "file": "charred_tree.glb",
@@ -321,7 +321,7 @@
   },
   "daedalus": {
     "file": "daedalus.glb",
-    "triangles": 20636
+    "triangles": 5376
   },
   "dead_tree": {
     "file": "dead_tree.glb",
@@ -645,7 +645,7 @@
   },
   "ixion": {
     "file": "ixion.glb",
-    "triangles": 5476
+    "triangles": 21628
   },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
@@ -693,7 +693,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 6904
+    "triangles": 25992
   },
   "light_tank": {
     "file": "light_tank.glb",
@@ -1003,6 +1003,10 @@
     "file": "sea_corvette.glb",
     "triangles": 1346
   },
+  "sea_cruiser": {
+    "file": "sea_cruiser.glb",
+    "triangles": 5416
+  },
   "shahed_truck": {
     "file": "shahed_truck.glb",
     "triangles": 10252
@@ -1045,11 +1049,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 27142
+    "triangles": 14282
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
-    "triangles": 27794
+    "triangles": 15630
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",
@@ -1213,7 +1217,7 @@
   },
   "typhon": {
     "file": "typhon.glb",
-    "triangles": 5576
+    "triangles": 6348
   },
   "vbied": {
     "file": "vbied.glb",

@@ -182,12 +182,12 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.airship_carpet.stop"] = ("Break the bomb bay.", "Phá khoang bom."),
 
             // ---------------------------------------------------------------- 18 Leviathan
-            ["bigattack.leviathan_volley"] = ("Cruise Missile Volley", "Loạt tên lửa hành trình"),
-            ["bigattack.leviathan_volley.cancelled"] = ("Missile volley cancelled", "Đã hủy loạt tên lửa"),
-            ["radio.bigattack.leviathan_volley"] = ("Kessler: \"Launch cells open. Six for their base.\"", "Kessler: \"Mở ống phóng. Sáu quả cho căn cứ của chúng.\""),
-            ["guide.bigattack.leviathan_volley.how"] = ("Six cruise missiles at your HQ, towers and groups in the base, about 8 s in flight, twice as hard on buildings.", "Sáu tên lửa hành trình vào HQ, tháp và quân trong căn cứ, bay khoảng 8 giây, gấp đôi lên công trình."),
-            ["guide.bigattack.leviathan_volley.dodge"] = ("Move units off the marked landing points; towers cannot move, so cover them.", "Đưa quân ra khỏi các điểm rơi được đánh dấu; tháp không chạy được nên hãy bảo vệ chúng."),
-            ["guide.bigattack.leviathan_volley.stop"] = ("Break the launch cells during the warning, or shoot the missiles down (250 health each): anti-air, C-RAM, point-defence lasers.", "Phá ống phóng trong lúc cảnh báo, hoặc bắn hạ từng tên lửa (máu 250): phòng không, C-RAM, La-de PK."),
+            ["bigattack.leviathan_volley"] = ("Nine-Gun Broadside", "Loạt bắn mạn chín nòng"),
+            ["bigattack.leviathan_volley.cancelled"] = ("Broadside cancelled", "Đã hủy loạt bắn mạn"),
+            ["radio.bigattack.leviathan_volley"] = ("Kessler: \"All turrets, train on their headquarters. Full broadside.\"", "Kessler: \"Mọi tháp pháo, quay về sở chỉ huy của chúng. Bắn cả mạn.\""),
+            ["guide.bigattack.leviathan_volley.how"] = ("Nine 460 mm shells from its three main turrets on your HQ and round it, in three ripples, a third harder on buildings.", "Chín quả đạn 460 mm từ ba tháp pháo chính vào HQ và quanh đó, thành ba đợt, mạnh hơn một phần ba lên công trình."),
+            ["guide.bigattack.leviathan_volley.dodge"] = ("Move units out of the marked circle; shells cannot be shot down, so spread out.", "Đưa quân ra khỏi vòng tròn đánh dấu; đạn pháo không bắn hạ được, nên hãy dàn quân ra."),
+            ["guide.bigattack.leviathan_volley.stop"] = ("Break a main turret during the warning (armour 4: tank hunters, artillery, bombs): each one broken takes its three shells away.", "Phá một tháp pháo chính trong lúc cảnh báo (giáp cấp 4: xe diệt tăng, pháo binh, bom): mỗi tháp bị phá bớt ba quả đạn."),
         };
     }
 }

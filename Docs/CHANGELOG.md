@@ -55,6 +55,28 @@ its commits.
   it sieges in 2.5 s (braces down, turret up, 105 mm back, the 240 mm mortar raised) and shells from 16 to 70 m; it
   packs up to move or when enemies get inside 16 m with nothing further to shell. New model with the animated
   deploy, armour by face, Guide card, behaviour lines, icon; now won in the campaign (chapter 4) instead of bought.
+### Boss redesigns and death smoke
+
+- Ixion is a Tsar Tank war machine now: 10 m spiked wheels with scythe hubs, slab armour, chains, a spiked roller across
+  the front, exhausts and rust (DECISIONS 20Y). Icarus is a wedge warship in the Star Destroyer and Venator mould, with a
+  stepped superstructure, a command tower, an engine bank and a ventral hangar; its wreck follows; every node, the
+  altitude tiers and the crash work as before.
+- The boss review redrew Typhon (Typhoon-class lines), Caspian (the Lun ekranoplan) and Daedalus (an Acclamator-style
+  assault ship); the others were kept.
+- A boss's death fires keep their flames but smoke a third as much, lighter, and clear within seconds.
+
+### Leviathan as a battleship
+
+- Kessler's Leviathan is a battleship on the Yamato's lines (DECISIONS 20Y): 96 x 16 m, a flush deck with a strong bow
+  sheer and flare, three triple 460 mm turrets (two forward, one superfiring, one aft), a pagoda tower with a long
+  rangefinder, one raked funnel with launch cells beside it, triple 155 mm secondaries, 25 mm tubs and 127 mm mounts
+  along the sides, catapults, a floatplane and a crane aft, anchors and chains forward, in Hegemon's marks.
+- New breakable guns: the three main turrets (one gun each a salvo, all nine in the big attack, now the Nine-Gun
+  Broadside at the base), two 155 mm secondaries, two 25 mm batteries of four mounts, two CIWS; 14 parts at 5 %,
+  health unchanged. Laid turrets stay inside their arcs.
+- The old model is the fleet's missile cruiser (two twin 203 mm, two CIWS) with its own name, note, dossier file and
+  Guide line; the cruiser and a corvette keep station abeam on the shore side instead of inside the hull. Scylla is
+  scaled to stay a 48 m destroyer and keeps its salvo and cruise missiles.
 
 ### Missile speeds, fire rates, models
 

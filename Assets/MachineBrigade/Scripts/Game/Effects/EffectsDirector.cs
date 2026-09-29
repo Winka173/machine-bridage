@@ -915,9 +915,10 @@ namespace MachineBrigade.Game.Effects
                 Later(at, () => Explode(ExplosionTier.Huge, blast + offset + Vector3.up, at, 1.2f, flash: false));
             }
             _decals.Place(blast, radius * 1.4f);
-            _fires.Ignite(blast, 2f, 40f, now);
-            for (var i = 0; i < 5; i++)
-                _emitters.DamageSmoke(blast + UnityEngine.Random.insideUnitSphere * radius * 0.4f + Vector3.up * 2f, radius * 0.5f, 0.05f);
+            // DECISIONS 20Y: the blaze as big, burning 24 s (was 40) under thinner, lighter smoke that clears soon after.
+            _fires.Ignite(blast, 2f, 24f, now, smoke: FireSpots.BossSmoke);
+            for (var i = 0; i < 3; i++)
+                _emitters.DamageSmoke(blast + UnityEngine.Random.insideUnitSphere * radius * 0.4f + Vector3.up * 2f, radius * 0.45f, 0.35f);
         }
 
         /// <summary>
