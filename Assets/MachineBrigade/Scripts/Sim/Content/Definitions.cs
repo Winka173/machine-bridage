@@ -275,6 +275,8 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 17 C.
                 Ramp = Ramp,
                 SwarmReach = SwarmReach,
+                // Prompt 17 D.
+                HeRound = HeRound,
             };
             return copy;
         }

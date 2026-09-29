@@ -37,9 +37,9 @@ namespace MachineBrigade.Editor
         private static readonly (string id, bool air)[] Launchers =
         {
             ("sam_launcher", true), ("aa_vehicle", true), ("heavy_aa", true), ("missile_battery", true), ("long_sam", true), ("aa_turret.sam", true),
-            ("ifv", false), ("atgm_carrier", false), ("bmpt", false), ("atgm_tower", false), ("titan_tank", false), ("mg_bunker", false),
-            ("attack_helicopter", false), ("elite_attack_helicopter", false), ("heavy_attack_heli", false), ("gunship_heli", false), ("scout_heli", false), ("strike_drone", false),
-            ("tank_buster", false), ("attack_jet", false), ("fighter_jet", true), ("recon_drone", false), ("stealth_bomber", false), ("heavy_bomber", false),
+            ("ifv", false), ("bmpt", false), ("atgm_tower", false), ("titan_tank", false), ("mg_bunker", false),
+            ("attack_helicopter", false), ("elite_attack_helicopter", false), ("gunship_heli", false), ("scout_heli", false), ("strike_drone", false),
+            ("attack_jet", false), ("fighter_jet", true), ("recon_drone", false), ("stealth_bomber", false), ("heavy_bomber", false),
             ("mlrs", false), ("thermobaric_launcher", false), ("heavy_rocket_artillery", false), ("ballistic_launcher", false), ("rocket_turret", false), ("rocket_technical", false),
         };
 

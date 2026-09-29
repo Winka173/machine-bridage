@@ -49,20 +49,20 @@ namespace MachineBrigade.Tests
         {
             var (jammed, jammedFired) = MissileHits(withJammer: true);
             var (clear, clearFired) = MissileHits(withJammer: false);
-            Assert.GreaterOrEqual(jammedFired, 2, "the ATGM carrier fired");
-            Assert.GreaterOrEqual(clearFired, 2, "the ATGM carrier fired");
+            Assert.GreaterOrEqual(jammedFired, 2, "the ATGM post fired");
+            Assert.GreaterOrEqual(clearFired, 2, "the ATGM post fired");
             Assert.AreEqual(0, jammed, "inside the jammer's field no missile hits");
             Assert.Greater(clear, 0, "without the jammer the missiles hit");
         }
 
-        /// <summary>The jammer's clip: an enemy ATGM carrier beyond machine-gun reach shoots at a friend beside the jammer.</summary>
+        /// <summary>The jammer's clip: an enemy ATGM post shoots at a friend beside the jammer.</summary>
         private static (int hits, int fired) MissileHits(bool withJammer)
         {
             var world = Range(GameContent.LoadCatalog());
             if (withJammer) world.MakeDummy(world.SpawnVehicle("ew_jammer", 0, new Vector2(0f, -10.5f), 0f));
             var friend = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-6f, -6.5f), 0f);
             world.MakeDummy(friend);
-            var enemy = world.SpawnVehicle("atgm_carrier", 1, new Vector2(-7f, 28.5f), System.MathF.PI);
+            var enemy = world.SpawnVehicle("atgm_tower", 1, new Vector2(-7f, 28.5f), System.MathF.PI);
             world.MakeSparring(enemy);
             world.Submit(new Command(CommandType.Attack, 1, new[] { enemy.Id }, default, friend.Id));
             int hits = 0, fired = 0;
@@ -71,7 +71,7 @@ namespace MachineBrigade.Tests
                 world.Step(TestWorlds.Step);
                 foreach (var e in world.Events)
                 {
-                    if (e.Kind == SimEventKind.WeaponFired && e.Entity == enemy.Id && e.DefId == "atgm_heavy") fired++;
+                    if (e.Kind == SimEventKind.WeaponFired && e.Entity == enemy.Id && e.DefId == "kornet_twin") fired++;
                     if (e.Kind == SimEventKind.Damaged && e.Entity == friend.Id) hits++;
                 }
                 world.ClearEvents();

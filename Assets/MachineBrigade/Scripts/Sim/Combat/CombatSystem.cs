@@ -799,7 +799,8 @@ namespace MachineBrigade.Sim.Combat
         private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying, float damageScale = 1f, bool pull = true,
             IDamageable? aimTarget = null)
         {
-            var weapon = shooter.Arms[index];
+            // Prompt 17 D.6: a dual-purpose gun loads its high explosive for a structure or light armour.
+            var weapon = RoundFor(shooter.Arms[index], target, aimTarget);
             shooter.LastFiredAt = _world.Time;
             shooter.AnyRoundAt = _world.Time;
             shooter.AnyMount = index;

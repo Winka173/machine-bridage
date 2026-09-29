@@ -5507,3 +5507,138 @@ lines), `FiringRange.Abilities` (two scenes), `UnitLines`, `Strings`/`GuideText`
 - The whole EditMode suite, `ModelTests`/`MuzzleAuditTests` on the new models, PlaySmoke, and the performance check of many
   drone swarms (brief E): testing phase.
 - Long maps (A-B) will need the relay and the generator in their slot labels only through the existing size rules.
+
+## 16D. Prompt 17: roster review, merges, save migration (2026-09-29)
+
+Part D of prompt 17 on lead/integration (b2528d2, parts A-C merged), then C.9 for the new units and three follow-ups.
+The owner's token rule: one measure run (the whole roster takes 11 s, so C.9 was measured, not guessed), one targeted
+test run, no sweeps.
+
+### D.1-D.5 The merges (`CardMerges.Into`, roster version 2)
+
+Ids stay as they were (the surviving card keeps its id, display names live in the text tables), and the model of the
+card that went is kept in the model library, named on the survivor as `"altModels"` (`VehicleDef.AltModels`, never
+drawn now) for the camouflage prompt. The gone cards' defs are out of `balance.json` (as prompt 13's merges did); their
+`unit.`/`short.`/`note.` strings stay for that prompt, their Guide cards are gone.
+
+| Gone | Became | The merged card |
+|---|---|---|
+| `tank_buster` (A-10) | `attack_jet` "Cường kích" | The Su-25's model (it was already the "Cường kích" card, and its bombs are a loose part of that model); the A-10's kept. Weapons of both on the calibre scale: GSh-30-2 30 mm, S-8 80 mm pods, FAB-250 bombs, **two Kh-29L** (pen 4; the unused `kh29` is now a store of 2), two R-60s for self-defence. 460 → 700 HP and armour 1 → 2 (the A-10's toughness), 34 → 32 m/s. 13/16 → **15 CP**. |
+| `heavy_attack_heli` (Ka-52) | `attack_helicopter` "Trực thăng tấn công" | The Apache's model; the Ka-52's kept. The Ka-52's stand-off (`"standoff"`: it holds at 60-92 % of its missiles' reach, away from short-range AA) with a new `hellfire_standoff` (AGM-114L Longbow: the Vikhr's numbers, pairs from 55 m), the M230, Hydras and two Stingers (the self-defence AAM). 500 → 800 HP. 9/13 → **11 CP**. The Mi-24 (`gunship_heli`) stays its own card. A bought Ka-52 (3,500) is refunded. |
+| `atgm_carrier` | `fpv_carrier` | Unchanged. The ground anti-tank missile role is the IFV's, the BMPT's and the ATGM tower's. |
+| `sapper` | `engineer_vehicle` "Công binh" | The engineer already repaired vehicles (2.5 %/s within 14 m) and towers at half that (1.25 %/s, twice the sapper's fortify), cleared the mines it sees and broke obstacles x3 with its MG, and does not rearm (prompt 13). That is the brief: obstacles are the bulldozer's (its blade flattens teeth as it drives; the engineer's 12.7 mm against armour 3 is slow even at x3). 700 → 800 HP (the sapper's), 3 CP. The `fortify` aura stays in code, unused. |
+| `gun_pit` (tower) | `gun_turret` | The pit and its two branches are gone; the hidden-pit rule (`hidden`, `HideGunPits`) stays in code, unused. |
+
+**Migration** (`PlayerProfile.MigrateRoster`, `RosterVersion` 1 → 2). The prompt 13 loop is idempotent, so a version-1
+save runs it again with the new pairs: the unlock goes to the card it became (unless that is a starter), the higher rank
+stays, the coins and blueprints spent on the lower rank come back, a bought premium card is refunded. New,
+`MergeTower` (the gun pit): every slot holding it becomes the gun turret (the old sized lists, the three plans' slots,
+outposts and per-map set-ups); its pieces move into the turret's empty slot of the same kind when they fit it
+(`TowerFit.Fits`), otherwise they stay in the bag, owned and worn by nothing; its rank-7 branch choice is dropped (the
+turret keeps its own). Vehicle equipment is worn per branch, not per card: nothing to move. Saved decks already read
+merged ids through `CardMerges.Resolve`.
+
+**Everything that named them:** `MatchSettings.AllVehicles`, the shop's premium list and `Progression`'s prices, the
+enemy base style weights, the hovercraft's landing party (ATGM → FPV carrier), the campaign's enemy decks, generals,
+waves and reinforcements (the card each became; a deck naming a card twice keeps it once), unlocks (below), the range's
+jammer and interceptor scenes (an ATGM tower: missiles and no gun), the editor shot lists, and the tests (below).
+Elites and boss escorts named none of them.
+
+### D.6 Twin tank and heavy tank, told apart
+
+- **Twin tank = tank hunter:** `gun_120_twin` (two Rh-120 rounds of 240, one volley 0.05 s apart, 7 s reload, 34 m),
+  armour 3/2/1/1, 5.6 → 6 m/s, turret 55 → 65 degrees/s (the heavy tank: 4.2 m/s, 45).
+- **Heavy tank = breakthrough:** its 152 mm loads `gun_152_he` (HE-FRAG 320, 5 m blast, pen 3) for a structure, a
+  tower, a vehicle of front armour 1 or less, or a wall, and armour-piercing otherwise (`"he"` on the weapon,
+  `WeaponDef.HeRound`, `CombatSystem.RoundFor` at launch; the mount's cooldown is shared). Armour 4/3/2/2 (explicit now).
+  Its Behaviour line `ul.heRound`.
+- **The check** (the measure, one seed): time to destroy the two battle tanks: twin **37.9 s**, heavy 42.3, titan 42.7
+  (with AA: 44.6 / 48.3 / 52.7). Survival (share of the 90 s): heavy **82.8**, titan 82.6, twin 69.0. Structure value per
+  CP (fort): heavy **541** at 10 CP (451 at 12), titan 393, twin 274. The group is the turreted heavy tanks (twin,
+  heavy, titan); the siege tank (fort 808) is the 203 mm siege gun and the bunker vehicle a dug-in gun, neither a tank
+  of this group. Met; nothing to retune.
+- The HE round raised the heavy tank's ground value per CP from 497 (prompt 15) to 572, far over its class (median
+  404), so it went **10 → 12 CP** (477 projected: the group of two is the same at 12).
+- The Behaviour and Guide texts of both say what they are now.
+
+### C.9 Costs from the measure
+
+`CombatValueMeasure.MeasureTheRoster`, `MB_BALANCE=1`, the whole roster, seed 13 (408 runs, 11 s). Raw files:
+`Docs/balance/combat_value_p17d*.tsv` (`_final` after the costs). The rule is prompt 13's: within ±15 % of the role's
+median value per CP ("ground" for what fights the ground; the fighter and anti-air on "air"). Class medians this run:
+heavy 404, tank hunter 427, helicopter 302, strike aircraft 402, fighter (air) 353. `"value"` (the commander's weight) is
+per CP over the class median, as prompt 15 recomputed it.
+
+| Unit | CP | Measured per CP | Why |
+|---|---|---|---|
+| stealth fighter | 20 → **14** | air 148 + SEAD ground 69 at 20; 212 + 99 at 14 | The fighter does 353 in the air for 12 CP; the stealth fighter does both jobs, together 311 at 14 (-12 %). Weight 0.88. |
+| loyal wingman | **6** (kept) | 0 alone | A group of wingmen with no manned leader patrols and never engages; not measurable without a leader (testing phase). |
+| focused laser tank | **10** (kept) | 432 | In the tank hunters' band (427). Fort 667: strong on hard targets, as asked. |
+| shield carrier | **7** (kept) | support (0) | Judged by what it does for others, like the other support vehicles (testing phase: a dome measure). |
+| bunker vehicle | 8 → **6** | 277 at 8; 361 at 6 (count unchanged) | The attack scenarios see it packing and unpacking; at 6 it is the battle tank's value. Weight 0.89. Its dug-in defence is for the testing phase. |
+| swarm carrier | 14 → **8** | 205 at 14; 291 at 9 (final run); 327 at 8 | Next to the strike drone (325), the other drone platform, both under the strike band. Weight 0.81. |
+| attack jet (merged) | **15** | 478 at 14; 446 at 15 | Top of the strike band (+11 %). Weight 1.11. |
+| attack helicopter (merged) | **11** | 316 | In the helicopters' band (gunship 302). Weight 1.05. |
+| twin tank | 9 (kept) | 442 | +9 %. Weight 1.09. |
+| heavy tank | 10 → **12** | 572 at 10; 477 at 12 | See D.6. Weight 1.18. |
+
+The two new towers (shield generator, CP relay) take slots, not CP; nothing to set. The "air" reference group is the
+attack helicopter and the attack jet, both changed, so every anti-air value moved a little; no anti-air card was touched.
+
+### Follow-ups
+
+- **Campaign unlocks** (`build_campaign.py` failed its own "5 to 7 cards a chapter" rule since 16C: chapter 5 opened 10):
+  the recon drone c6m05 → c3m05 (the ATGM carrier's reward), the focused laser tank and the CP relay → c4m10 (the gun
+  pit's), the EW jammer c5m03 → c7m04, the smoke carrier c6m07 → c8m04, the counter-battery radar c4m03 → c8m06 (the
+  sapper's); the A-10's c9m04 unlock is gone (the attack jet opens at c4m02). Chapters open 6/6/7/7/7/7/6/6/7 cards;
+  coins and blueprints unchanged. `campaign.json` regenerated. **`CampaignText.cs` was left as committed:** the generator
+  would have undone hand-made Vietnamese fixes in it (Bọ Bạc, rốc-két); nothing in D changed its texts.
+- **Lighthouse Bay's long map:** `python Tools/maps/longmap.py lighthousebay` (28 hardpoints: base 8/5/3 and 4
+  utilities, 8 forward; 3 relays, 3 generators, 4 firing positions). The long-map modes pick
+  it up by name (`ModeSessions`).
+- **The hovercraft's escort** (`hover_gunboat`) wears the fast missile boat's model (`missile_boat`, its 14 x 3.8 m
+  hull, the CIWS on the boat's `mg` mount); it keeps its id, name and air cushion (it still crosses land). ASSET_DEBT says so.
+
+### Tests
+
+`Prompt17RosterTests` (5): the vehicle merges' migration (rank, blueprints, refunds, unlocks, once only), the gun pit's
+(rank, equipment into the empty slot and back to the bag, slots, outposts, map set-ups, branch), the merged cards' weapons
+and kept models, the heavy tank's round choice, Lighthouse Bay's long map and the escort's boat. Existing tests that named
+the old cards: missile shooters are the ATGM tower (a Kornet on mount 0, no gun: APS, radar-absorbent coating, laser
+warner, the jammer's range scene, Leviathan's CIWS) or the BMPT (Ataka beyond its cannons: boss protection parts, the
+Iron Beam value); the A-10 and Ka-52 cases are the attack jet's and the attack helicopter's (the stand-off test, the stores
+test, `CounterTests` "Attack jets beat heavy tanks", the measures); the sapper's tower repair is the engineer's; the gun
+pit's hiding test is gone. **The stores test** (a jet out of stores mid-attack finishes its hold before it leaves) now holds
+the in-flight refill off: out of danger the attack jet's 16-round S-8 pods refill about a round a second, so the jet is
+never dry at once (prompt 13's rule, not D's; the A-10 passed on timing). Run: `Prompt17RosterTests`, `RosterMergeTests`,
+the changed cases above, `UnitLinesTests`, `LocalisationScanTests`: 36 cases, 33 passed at first; the APS, jammer and
+stores cases were fixed and passed on a rerun.
+
+### Left for the testing phase
+
+- The whole EditMode suite (among the changed tests not run: `CounterTests`' new case, `CombatIconTests`,
+  `EquipmentLab`/`EquipmentRiskLab`, `BaseBalanceTests`, `CampaignTests`, `StuckBatch`), `ModelTests`/`MuzzleAuditTests`
+  (the attack jet's second missile mount, the twin tank's new gun), PlaySmoke.
+- `CampaignTests`' seeded sweeps: FPV carriers replace ATGM carriers in Kessler's and Varga's decks and early waves, the
+  heavy tank costs 12 from chapter 2, the moved unlocks.
+- A measure of the loyal wingman with a leader, of the shield carrier's dome, and of the bunker vehicle holding a line;
+  a multi-seed look at the swarm carrier and the stealth fighter (the biggest cost changes).
+- Card renders: unchanged ids, nothing new to render for D.
+- The first-shot reading of "opening shot" (the twin tank's burst on a fresh target) could use a duel measure if the owner
+  wants it sharper than the group numbers.
+
+### For the prompts on hold
+
+Stable ids apart from display names (the surviving card's id is unchanged, the merged ones resolve through
+`CardMerges`), `altModels` for the camouflage prompt, every new name and line in the text tables (`Strings`,
+`GuideText`, `UnitText`); no radio lines were added.
+
+### Shared edits (other agents: merge by hand if they conflict)
+
+`balance.json` (the five defs out; attack jet, attack helicopter, twin tank, heavy tank, engineer rewritten; three
+weapons after `gun_105_bunker`; `kh29`, `gun_152`; the new units' costs; the hover gunboat; a style weight; the landing
+party), `CombatSystem.Launch` (one line) and `CombatSystem.P17` (`RoundFor`), `Catalog`/`Catalog.P17` (`he`,
+`altModels`), `WeaponDef.P17`/`VehicleDef.P17`/`Definitions` (copy), `CardMerges`, `PlayerProfile.Arsenal`
+(`MergeTower`), `MatchSettings.AllVehicles`, `Progression`, `MenuScreen.Shop`, `FiringRange.Abilities`, `UnitLines`/
+`UnitText`, `Strings` (five notes), `GuideText` (five cards rewritten, five dropped), Tools/campaign (act1-3, story) and
+`campaign.json`, the tests listed above.

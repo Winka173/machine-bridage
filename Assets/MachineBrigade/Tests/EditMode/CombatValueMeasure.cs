@@ -237,7 +237,7 @@ namespace MachineBrigade.Tests
                         var g = world.SpawnVehicle(guards[i], 0, new Vector2(-3f + i * 6f, -6f), 0f);
                         world.MakeSparring(g);
                     }
-                    var attackers = new[] { "atgm_carrier", "atgm_carrier", "mlrs", "lancet_truck", "fpv_carrier", "attack_helicopter" };
+                    var attackers = new[] { "bmpt", "bmpt", "mlrs", "lancet_truck", "fpv_carrier", "attack_helicopter" };
                     for (var i = 0; i < attackers.Length; i++)
                     {
                         var a = world.SpawnVehicle(attackers[i], 1, new Vector2(-20f + i * 8f, attackers[i] == "mlrs" ? 70f : 38f), MathF.PI);

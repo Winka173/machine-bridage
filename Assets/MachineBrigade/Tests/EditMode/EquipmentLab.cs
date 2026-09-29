@@ -364,7 +364,7 @@ namespace MachineBrigade.Tests
             ("autocannon", "ifv", new[] { "ifv", "armored_car", "light_tank" }),
             ("machine gun", "scout_jeep", new[] { "armored_car", "scout_jeep", "rocket_technical" }),
             ("flame", "flame_tank", new[] { "ifv", "armored_car", "light_tank" }),
-            ("ATGM", "atgm_carrier", new[] { "main_battle_tank", "heavy_tank", "ifv" }),
+            ("FPV", "fpv_carrier", new[] { "main_battle_tank", "heavy_tank", "ifv" }),
             ("flak", "aa_vehicle", new[] { "attack_helicopter", "scout_heli", "attack_helicopter" }),
             ("heavy flak", "heavy_aa", new[] { "attack_helicopter", "gunship_heli", "scout_heli" }),
             ("howitzer", "artillery", new[] { "main_battle_tank", "ifv", "armored_car" }),

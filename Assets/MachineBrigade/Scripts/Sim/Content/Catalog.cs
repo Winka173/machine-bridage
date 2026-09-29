@@ -182,6 +182,7 @@ namespace MachineBrigade.Sim.Content
                 }
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
+            ResolveHeRounds(Inherited(root.Array("weapons"), model: false), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))

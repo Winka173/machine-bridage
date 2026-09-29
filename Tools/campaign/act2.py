@@ -5,9 +5,9 @@ build_campaign.py turns it round onto the battlefield."""
 
 from campaign_kit import T, add_mission, ring, say, scripted, units, waves
 
-KESSLER = ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'atgm_carrier', 'mine_layer', 'mlrs']
+KESSLER = ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'fpv_carrier', 'mine_layer', 'mlrs']
 SEN = ['strike_drone', 'fpv_carrier', 'lancet_truck', 'recon_drone', 'ew_jammer', 'ifv', 'main_battle_tank', 'aa_vehicle']
-VARGA_LATE = ['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'atgm_carrier', 'flame_tank', 'ifv', 'mlrs']
+VARGA_LATE = ['main_battle_tank', 'heavy_tank', 'twin_tank', 'tank_destroyer', 'fpv_carrier', 'flame_tank', 'ifv', 'mlrs']
 
 
 def m(mid, chapter, map_, goal, weather, **kw):
@@ -64,7 +64,7 @@ add_mission(m('c4m03', 4, 'ironport', 'Escort', 'Fog', legacy='m11', convoyCount
               enemyAi='waves', difficulty='Normal',
               waves=waves(['armored_car', 'rocket_technical', 'light_tank', 'attack_helicopter', 'flame_tank'], first=20, interval=26, size=3, grow=0.6, max_size=7, max_alive=18,
                           spawns=[(60, 93), (93, 15), (-96, 60)]),
-              unlocks=['wheeled_gun', 'counter_battery_radar'], starTime=300, starLosses=8, challenge={'kind': 'Kills', 'value': 25}),
+              unlocks=['wheeled_gun'], starTime=300, starLosses=8, challenge={'kind': 'Kills', 'value': 25}),
             ('Dockside Convoy', 'Đoàn xe bến cảng'),
             ('Engineers and explosives for the docks, five trucks through the fogbound port. Three must reach the quay.',
              'Công binh và thuốc nổ cho bến tàu, năm xe tải xuyên qua bến cảng chìm trong sương. Phải tới được cầu tàu ba xe.'),
@@ -168,7 +168,7 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=16, enemyIncome=0.95, enemyDeck=KESSLER,
               playerCp=30, playerIncome=1.7, playerCap=42, playerBase='Anchor',
               waves=waves(['ifv', 'main_battle_tank', 'wheeled_gun', 'attack_helicopter', 'heavy_tank'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
-              unlocks=['gun_pit'],
+              unlocks=['laser_tank', 'cp_relay'],
               stages=[
                   {'stage': 'yard', 'goal': 'Capture', 'points': ['east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c4m10.s1'}],
@@ -183,7 +183,7 @@ add_mission(m('c4m10', 4, 'ironport', 'Capture', 'Clear', operation=True, genera
                   {'stage': 'tempest', 'goal': 'Boss', 'boss': scripted('behemoth_tempest', (-56, 100), heading=180, health=1.8), 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.kessler.c4m10.s4'}]},
                   {'stage': 'quay', 'goal': 'Survive', 'points': ['west'], 'surviveSeconds': 540,
-                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'atgm_carrier', 'mlrs']},
+                   'events': [{'at': '20', 'kind': 'Reinforce', 'team': 1, 'units': ['main_battle_tank', 'ifv', 'fpv_carrier', 'mlrs']},
                               {'at': '200', 'kind': 'Reinforce', 'team': 1, 'units': ['heavy_tank', 'wheeled_gun', 'sam_launcher']}]},
               ],
               starTime=1380, starLosses=18),
@@ -300,7 +300,7 @@ add_mission(m('c5m03', 5, 'junglepass', 'Escort', 'Fog', convoyCount=5, convoyNe
               enemyAi='waves', difficulty='Normal',
               waves=waves(['ifv', 'light_tank', 'strike_drone', 'armored_car', 'fpv_carrier'], first=35, interval=32, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(60, 80), (95, 20), (20, 110)]),
-              unlocks=['ew_jammer'], starTime=360, starLosses=8, challenge={'kind': 'Kills', 'value': 22}),
+              starTime=360, starLosses=8, challenge={'kind': 'Kills', 'value': 22}),
             ('River Road', 'Đường ven sông'),
             ('Bridging gear for the engineers, up the river road through the jungle fog to the west village. Three of five trucks must arrive; Sen\'s drones will be looking for them.',
              'Thiết bị bắc cầu cho công binh, ngược đường ven sông qua sương rừng tới làng phía tây. Năm xe phải tới được ba; drone của Sen sẽ săn lùng chúng.'),
@@ -313,7 +313,7 @@ add_mission(m('c5m04', 5, 'emberridge', 'Outpost', 'Clear', points=['town'], hol
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.85, enemyDeck=SEN,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['strike_drone', 'ifv', 'main_battle_tank', 'fpv_carrier'], first=70, interval=55, size=2, grow=0.3, max_size=4, max_alive=12),
-              unlocks=['twin_tank', 'airfield', 'laser_tank'], starTime=600, starLosses=10),
+              unlocks=['twin_tank', 'airfield'], starTime=600, starLosses=10),
             ('The Geothermal Plant', 'Nhà máy địa nhiệt'),
             ('Mai wants the geothermal plant in the middle of Ember Ridge: free power for a forward base. Take it, set up an outpost, keep it three minutes.',
              'Mai muốn lấy nhà máy địa nhiệt giữa Sườn Dung Nham: điện miễn phí cho một căn cứ tiền phương. Chiếm nó, lập tiền đồn, giữ ba phút.'),
@@ -394,7 +394,7 @@ add_mission(m('c5m10', 5, 'emberridge', 'Capture', 'Storm', legacy='m15', operat
               enemyAi='both', enemyStance='Defend', difficulty='Normal', enemyCp=15, enemyIncome=0.95, enemyDeck=SEN,
               playerCp=30, playerIncome=1.7, playerCap=42, playerBase='Anchor',
               waves=waves(['strike_drone', 'fpv_carrier', 'ifv', 'main_battle_tank', 'attack_helicopter'], first=90, interval=65, size=2, grow=0.3, max_size=5, max_alive=12),
-              unlocks=['drone_hangar', 'cp_relay'],
+              unlocks=['drone_hangar'],
               stages=[
                   {'stage': 'causeways', 'goal': 'Capture', 'points': ['west', 'east'], 'enemyOwns': ['west', 'town', 'east'], 'cp': 8,
                    'events': [{'at': 'start', 'kind': 'Radio', 'key': 'radio.khai.c5m10.s1'}],
@@ -501,7 +501,7 @@ add_mission(m('c6m03', 6, 'ashfield', 'Escort', 'Clear', reversed=True, convoyCo
               units=units(0, ['main_battle_tank', 'tank_destroyer', 'heavy_aa', 'ifv'], (-88, -80), 7),
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
-              waves=waves(['tank_destroyer', 'atgm_carrier', 'main_battle_tank', 'attack_helicopter'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12,
+              waves=waves(['tank_destroyer', 'fpv_carrier', 'main_battle_tank', 'attack_helicopter'], first=40, interval=45, size=2, grow=0.35, max_size=5, max_alive=12,
                           spawns=[(60, 90), (90, 60), (100, 100)]),
               unlocks=['ew_tower', 'shield_carrier'], starTime=660, starLosses=10, challenge={'kind': 'Kills', 'value': 25}),
             ('Our Behemoth', 'Behemoth của ta'),
@@ -531,7 +531,7 @@ add_mission(m('c6m05', 6, 'whiteout', 'Boss', 'Night', reversed=True, general='v
               boss=scripted('sky_fortress', (84, 84), heading=225, route=[(50, 50), (-30, 40), (-40, -30), (30, -40)], health=3.5),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9,
               enemyDeck=['main_battle_tank', 'heavy_tank', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer'],
-              playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', unlocks=['recon_drone'], starTime=780, starLosses=12),
+              playerCp=30, playerIncome=1.55, playerCap=40, playerBase='Anchor', starTime=780, starLosses=12),
             ('Spectre', 'Bóng ma Spectre'),
             ('Something is circling high over the pass at night, and every time it passes, a tank burns. Spectre: a gunship that never comes low. '
              'Only anti-air and fighters can reach it. Bring it down.',
@@ -564,7 +564,7 @@ add_mission(m('c6m07', 6, 'ashfield', 'Relieve', 'Overcast', targetHealth=3.0, r
               enemyAi='both', enemyStance='Attack', difficulty='Normal', enemyCp=11, enemyIncome=0.85, enemyDeck=VARGA_LATE,
               playerCp=28, playerIncome=1.5, playerCap=38, playerBase='Anchor',
               waves=waves(['main_battle_tank', 'ifv', 'mortar_carrier', 'tank_destroyer'], first=70, interval=60, size=2, grow=0.3, max_size=4, max_alive=12, spawns=[(60, 80), (80, 30)]),
-              unlocks=['smoke_carrier'], starTime=540, starLosses=10),
+              starTime=540, starLosses=10),
             ('The Town Garrison', 'Đồn thị trấn'),
             ('Varga has ringed Ashfield town, where the Alliance militia keep their HQ. Break the ring before it falls; the besiegers are marked.',
              'Varga đã vây kín thị trấn Ashfield, nơi dân quân Liên minh đặt sở chỉ huy. Phá vòng vây trước khi nó thất thủ; quân vây được đánh dấu.'),
@@ -575,7 +575,7 @@ add_mission(m('c6m07', 6, 'ashfield', 'Relieve', 'Overcast', targetHealth=3.0, r
 
 add_mission(m('c6m08', 6, 'hydrodam', 'Intercept', 'Night', timeLimit=1200, general='varga', reinforcements=3,
               boss=scripted('earth_borer', (100, 60), heading=270, route=[(60, 40), (20, 50), (-20, 60), (-40, 64)], fallback='behemoth', fallbackHealth=1.4, name='earth_borer'),
-              units=units(0, ['heavy_tank', 'tank_destroyer', 'atgm_carrier', 'main_battle_tank'], (-50, 20), 8),
+              units=units(0, ['heavy_tank', 'tank_destroyer', 'fpv_carrier', 'main_battle_tank'], (-50, 20), 8),
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=13, enemyIncome=0.9, enemyDeck=VARGA_LATE,
               playerCp=30, playerIncome=1.5, playerCap=40, playerBase='Anchor', starTime=600, starLosses=10, challenge={'kind': 'NoStrikes'}),
             ('Sâu Đất', 'Sâu Đất'),

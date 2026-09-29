@@ -277,7 +277,7 @@ namespace MachineBrigade.Sim.AI
                     }
             float Pick(VehicleDef c, string role)
             {
-                // Siege breakers (bulldozer, sapper) are the siege's tools, not a battle's; the fighting roles
+                // Siege breakers (the bulldozer) are the siege's tools, not a battle's; the fighting roles
                 // take only what fights (a recon drone is no air support, a bulldozer no front line).
                 if (c.Breacher) return float.MinValue;
                 var fights = Fights(c);

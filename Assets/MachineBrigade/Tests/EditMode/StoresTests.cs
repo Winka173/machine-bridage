@@ -141,11 +141,11 @@ namespace MachineBrigade.Tests
         {
             var world = Field();
             world.RevealAll = true;
-            var jet = world.SpawnVehicle("tank_buster", 0, new Vector2(0f, -40f), 0f);
+            var jet = world.SpawnVehicle("attack_jet", 0, new Vector2(0f, -40f), 0f);
             var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 40f), System.MathF.PI);
             world.MakeDummy(tank);
             world.Submit(new Command(CommandType.AttackMove, 0, new[] { jet.Id }, tank.Position));
-            // One round of each store left: the first hold spends them.
+            // One round of each store left: its holds spend them (the attack jet since prompt 17 D, the A-10 merged into it).
             for (var i = 0; i < jet.Def.Mounts.Count; i++)
                 if (jet.Stores(i).full > 0) jet.Weapons[i].Ammo = 1;
             var wasHolding = false;
@@ -154,6 +154,9 @@ namespace MachineBrigade.Tests
             {
                 var before = jet.Supply;
                 var holding = jet.InAttackHold;
+                // Out of danger stores refill as the jet flies (the attack jet's 16-round S-8 pods about a round a
+                // second): held off here, so the spent stores stay spent (the refill has its own tests).
+                foreach (var w in jet.Weapons) w.LoadProgress = 0f;
                 world.Step(TestWorlds.Step);
                 world.ClearEvents();
                 wasHolding |= holding;

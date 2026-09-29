@@ -11,7 +11,7 @@ namespace MachineBrigade.Tests
 {
     /// <summary>
     /// The round 5 vehicles do what their cards say: the car bomb blows up on the enemy and
-    /// spares its own side, the turtle tank's shed stops drones, the sapper mends towers, the
+    /// spares its own side, the turtle tank's shed stops drones, the engineer mends towers, the
     /// railgun's slug goes through a line of vehicles.
     /// </summary>
     public class NewVehicleTests
@@ -76,11 +76,11 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheSapperMendsATowerSlowly()
+        public void TheEngineerMendsATowerSlowly()
         {
             var world = Field();
             var tower = world.SpawnVehicle("guard_tower", 0, new Vector2(0f, 0f), 0f);
-            world.SpawnVehicle("sapper", 0, new Vector2(6f, 0f), 0f);
+            world.SpawnVehicle("engineer_vehicle", 0, new Vector2(6f, 0f), 0f);
             world.Damage.Apply(tower, tower.MaxHp * 0.5f, DamageType.HighExplosive);
             var hurt = tower.Hp;
             Run(world, 10f);

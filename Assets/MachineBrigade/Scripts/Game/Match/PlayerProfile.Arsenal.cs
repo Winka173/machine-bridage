@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 1;
+        internal const int RosterVersion = 2;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -89,7 +89,69 @@ namespace MachineBrigade.Game.Match
                 d.ranks.RemoveAt(i);
                 d.prints.RemoveAt(i);
             }
+            // Version 2 (prompt 17 D.4): the hidden gun pit's slots and equipment go to the gun turret.
+            MergeTower(d, CardMerges.GunPit, CardMerges.GunTurret);
             d.rosterVersion = RosterVersion;
+        }
+
+        /// <summary>
+        /// A tower card folded into another (its rank went with <see cref="MergeRank"/>): every base slot, outpost and
+        /// map set-up that holds it holds the other now; its equipment moves into the other's empty slots (a piece that
+        /// finds its slot taken, or does not fit, goes back to the bag); its rank-7 branch choice is dropped.
+        /// </summary>
+        private static void MergeTower(Data d, string from, string to)
+        {
+            string Swap(string id) => id == from || (id != null && id.StartsWith(from + ".")) ? to : id;
+            void SwapAll(List<string> list)
+            {
+                if (list == null) return;
+                for (var k = 0; k < list.Count; k++) list[k] = Swap(list[k]);
+            }
+            SwapAll(d.baseSmall);
+            SwapAll(d.baseMedium);
+            SwapAll(d.baseLarge);
+            SwapAll(d.baseTowers);
+            SwapAll(d.baseOutpost);
+            if (d.basePlans != null)
+                foreach (var plan in d.basePlans)
+                {
+                    if (plan == null) continue;
+                    foreach (var place in plan.places) place.tower = Swap(place.tower);
+                    SwapAll(plan.outpost);
+                    foreach (var map in plan.custom)
+                    {
+                        SwapAll(map.small);
+                        SwapAll(map.medium);
+                        SwapAll(map.large);
+                    }
+                }
+            var branch = d.branchTowers.IndexOf(from);
+            if (branch >= 0)
+            {
+                d.branchTowers.RemoveAt(branch);
+                if (branch < d.branchChoices.Count) d.branchChoices.RemoveAt(branch);
+            }
+            FixTowerGear(d);
+            var i = d.towerGearIds.IndexOf(from);
+            if (i < 0) return;
+            var n = Gear.TowerSlotCount;
+            var j = d.towerGearIds.IndexOf(to);
+            if (j < 0)
+            {
+                d.towerGearIds.Add(to);
+                for (var k = 0; k < n; k++) d.towerGear.Add(0);
+                j = d.towerGearIds.Count - 1;
+            }
+            TowerFit.GameCatalog.Vehicles.TryGetValue(to, out var toDef);
+            for (var k = 0; k < n; k++)
+            {
+                var piece = d.towerGear[i * n + k];
+                if (piece == 0 || d.towerGear[j * n + k] != 0) continue;
+                var item = d.gear.Find(g => g != null && g.id == piece);
+                if (item != null && (toDef == null || TowerFit.Fits(item, toDef))) d.towerGear[j * n + k] = piece;
+            }
+            d.towerGearIds.RemoveAt(i);
+            d.towerGear.RemoveRange(i * n, n);
         }
 
         /// <summary>Folds one card's rank and blueprints into another's; false when the old card had none.</summary>

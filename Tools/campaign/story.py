@@ -196,7 +196,7 @@ T('char.hq.role', 'Radio', 'Bộ đàm')
 
 # The generals as the AI plays them: signature deck, fire support habits, base style, and their lines.
 GENERALS = [
-    ('varga', ['light_tank', 'main_battle_tank', 'heavy_tank', 'tank_destroyer', 'ifv', 'flame_tank', 'twin_tank', 'atgm_carrier'],
+    ('varga', ['light_tank', 'main_battle_tank', 'heavy_tank', 'tank_destroyer', 'ifv', 'flame_tank', 'twin_tank', 'fpv_carrier'],
      ['artillery_barrage', 'airstrike', 'smoke_screen'], 'varga', 'Attack',
      [('Steel does not negotiate, Colonel.', 'Thép không biết thương lượng, đại tá ạ.'),
       ('Every tank you burn, I build two.', 'Ngươi đốt một chiếc, ta đóng hai chiếc.'),
@@ -208,7 +208,7 @@ GENERALS = [
       ('Fire mission. Grid one-seven. All batteries.', 'Nhiệm vụ bắn. Ô lưới một-bảy. Toàn bộ khẩu đội.'),
       ('Patience, Colonel. The snow is on my side.', 'Kiên nhẫn đi, đại tá. Tuyết đứng về phía ta.')],
      ('Recalculating. Withdraw the batteries to the next line.', 'Tính lại. Rút các khẩu đội về tuyến sau.')),
-    ('kessler', ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'atgm_carrier', 'mine_layer', 'mlrs'],
+    ('kessler', ['wheeled_gun', 'ifv', 'main_battle_tank', 'heavy_tank', 'sam_launcher', 'fpv_carrier', 'mine_layer', 'mlrs'],
      ['remote_mines', 'artillery_barrage', 'smoke_screen'], 'kessler', 'Defend',
      [('You are four minutes behind schedule, Colonel.', 'Ngươi đang trễ bốn phút so với lịch, đại tá.'),
       ('Every road here is mined. I checked.', 'Mọi con đường ở đây đều có mìn. Ta đã kiểm tra rồi.'),
@@ -226,7 +226,7 @@ GENERALS = [
       ('Look up, Colonel. That is where you lose.', 'Nhìn lên đi, đại tá. Ông sẽ thua ở trên đó.'),
       ('The sky is mine. You can keep the mud.', 'Bầu trời là của ta. Bùn đất thì cứ giữ lấy.')],
      ('Eject, eject! ...Not like this.', 'Nhảy dù, nhảy dù! ...Không phải thế này chứ.')),
-    ('aurel', ['heavy_tank', 'bmpt', 'railgun_truck', 'heavy_attack_heli', 'long_sam', 'heavy_rocket_artillery', 'titan_tank', 'fighter_jet'],
+    ('aurel', ['heavy_tank', 'bmpt', 'railgun_truck', 'attack_helicopter', 'long_sam', 'heavy_rocket_artillery', 'titan_tank', 'fighter_jet'],
      ['cruise_missile', 'airstrike', 'napalm_strike', 'sead_strike'], 'aurel', 'Attack',
      [('Your brigade is a rounding error on my balance sheet.', 'Lữ đoàn của ông chỉ là sai số làm tròn trên bảng cân đối của tôi.'),
       ('Everyone has a price, Colonel. General Hùng had his.', 'Ai cũng có giá, đại tá. Tướng Hùng cũng có giá của ông ta.'),

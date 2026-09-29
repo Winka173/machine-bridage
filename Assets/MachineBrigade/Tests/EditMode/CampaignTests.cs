@@ -116,7 +116,7 @@ namespace MachineBrigade.Tests
             var level = Campaign.HqLevelAt(mission);
             var loadout = new BaseLoadout { HqLevel = level };
             string[] large = { "artillery_emplacement", "missile_battery", "heavy_turret", "drone_hangar" };
-            string[] medium = { "gun_turret", "rocket_turret", "atgm_tower", "c_ram", "gun_pit" };
+            string[] medium = { "gun_turret", "rocket_turret", "atgm_tower", "c_ram" };
             string[] small = { "guard_tower", "aa_turret", "mg_bunker", "ew_tower", "dragons_teeth", "minefield" };
             void Fill(List<string> into, string[] order, SlotSize size)
             {

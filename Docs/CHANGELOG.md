@@ -70,6 +70,20 @@ its commits.
 - Drone mothership (14 CP): flies a swarm of eight FPV drones anywhere; the drones are not aircraft.
 - CP relay (small tower): more CP for its side, two to a base, not on outposts, silent for a while after a hit.
 
+### Prompt 17 D: roster review
+
+- Merged cards: the A-10 is now part of the attack jet (30 mm cannon, rockets, bombs, two Kh-29 anti-tank missiles,
+  R-60s; armoured; 15 CP); the Ka-52 is part of the attack helicopter (Hellfires in pairs from 55 m, out of short-range
+  flak, and Stingers; 11 CP); the ATGM carrier is gone (FPV carriers, IFVs and ATGM towers do its job); the fortification
+  sapper is part of the engineer (repairs vehicles and towers, clears mines); the hidden gun pit is gone from the towers.
+- Your progress moves across: the higher rank and the blueprints, the coins of the lower rank back, a bought Ka-52
+  refunded; gun pits in your bases become gun turrets and their equipment moves over (or back to the bag).
+- Twin-barrel tank: two 120 mm guns fired as one volley, a long reload, quicker than the heavy tank: the tank hunter.
+  Heavy tank: its 152 mm loads high explosive for buildings and light vehicles on its own; 12 CP.
+- The new units' costs from the combat-value measure: stealth fighter 14 CP, swarm carrier 8, bunker vehicle 6.
+- Lighthouse Bay has a long Siege map; the hovercraft's escorts ride fast missile boats; the campaign opens 5-7 cards
+  a chapter.
+
 <details><summary>28 commits</summary>
 
 - `5f808c8` 2026-09-29 Design document: section 20, a picture library (every vehicle, elite, boss, tower and module rendered large, in-battle shots, effect sheets, model and terrain sheets, stuck heatmaps)

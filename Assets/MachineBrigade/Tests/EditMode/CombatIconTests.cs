@@ -72,7 +72,7 @@ namespace MachineBrigade.Tests
         public void TheEnemyTooltipsMarksFollowTheRealMultipliers()
         {
             var catalog = GameContent.LoadCatalog();
-            var deck = new[] { "scout_jeep", "light_tank", "main_battle_tank", "tank_destroyer", "aa_vehicle", "artillery", "atgm_carrier", "flame_tank", "attack_jet" }
+            var deck = new[] { "scout_jeep", "light_tank", "main_battle_tank", "tank_destroyer", "aa_vehicle", "artillery", "fpv_carrier", "flame_tank", "attack_jet" }
                 .Select(id => catalog.Vehicles[id]).ToList();
             var enemies = new[] { "scout_jeep", "light_tank", "main_battle_tank", "heavy_tank", "attack_helicopter", "attack_jet", "gun_turret", "headquarters" }
                 .Where(catalog.Vehicles.ContainsKey).Select(id => catalog.Vehicles[id]).ToList();

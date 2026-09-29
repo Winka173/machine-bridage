@@ -91,7 +91,7 @@ namespace MachineBrigade.Tests
         [TestCase("sam_launcher", 3, "attack_jet", 2, TestName = "SAM beats jets")]
         [TestCase("ifv", 3, "scout_jeep", 7, TestName = "IFVs beat scouts")]
         [TestCase("fpv_carrier", 4, "heavy_tank", 2, TestName = "FPV drones beat heavy tanks")]
-        [TestCase("tank_buster", 2, "heavy_tank", 2, TestName = "Tank busters beat heavy tanks")]
+        [TestCase("attack_jet", 2, "heavy_tank", 2, TestName = "Attack jets beat heavy tanks")]
         public void CounterWins(string counter, int count, string victim, int victims, string spotter = null)
         {
             var winner = Skirmish(counter, count, victim, victims, out var summary, spotter: spotter);

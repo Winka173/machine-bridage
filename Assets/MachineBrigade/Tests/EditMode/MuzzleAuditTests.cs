@@ -24,7 +24,7 @@ namespace MachineBrigade.Tests
         {
             "armored_car", "rocket_technical", "main_battle_tank", "light_tank", "heavy_tank", "twin_tank", "elite_mbt", "elite_heavy_tank",
             "turtle_tank", "wheeled_gun", "tank_destroyer", "flame_tank", "mortar_carrier", "thermobaric_launcher", "mlrs", "artillery",
-            "ifv", "heavy_rocket_artillery", "atgm_carrier", "attack_helicopter", "scout_heli",
+            "ifv", "heavy_rocket_artillery", "attack_helicopter", "scout_heli",
         };
 
         /// <summary>

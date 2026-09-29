@@ -115,11 +115,11 @@ namespace MachineBrigade.Game.Match
             "ifv", "thermobaric_launcher", "heavy_aa", "titan_tank",
             "heavy_bomber", "stealth_bomber",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
-            "atgm_carrier",
+            // Prompt 17 D: the ATGM carrier, A-10, Ka-52 and sapper were folded into other cards (CardMerges).
             "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
-            "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
+            "fighter_jet", "recon_drone",
             "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
-            "turtle_tank", "bmpt", "sapper",
+            "turtle_tank", "bmpt",
             "command_vehicle", "wheeled_gun", "counter_battery_radar", "long_sam",
             "armored_bulldozer",
             // Prompt 17 C.

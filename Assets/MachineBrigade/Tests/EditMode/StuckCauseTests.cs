@@ -64,10 +64,10 @@ namespace MachineBrigade.Tests
             var world = World(120f, new List<PropPlacement>());
             var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
             Run(world, 0.5f);
-            world.SpawnVehicle("gun_pit", 0, new Vector2(0.5f, 0.5f), 0f);
+            world.SpawnVehicle("gun_turret", 0, new Vector2(0.5f, 0.5f), 0f);
             Move(world, tank, new Vector2(30f, 0f));
             Run(world, 12f);
-            Assert.IsTrue(world.Grid.IsWalkable(tank.Position), "the tank is off the gun pit's ground");
+            Assert.IsTrue(world.Grid.IsWalkable(tank.Position), "the tank is off the turret's ground");
             Assert.Less(Vector2.Distance(tank.Position, new Vector2(30f, 0f)), 6f, $"and drove away (at {tank.Position})");
         }
 

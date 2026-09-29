@@ -81,8 +81,8 @@ namespace MachineBrigade.Tests
                 if (!beam) world.SpawnVehicle("aa_vehicle", 1, new Vector2(6f, 6f), 3.14f);
                 var attackers = new List<Vehicle>
                 {
-                    world.SpawnVehicle("atgm_carrier", 0, new Vector2(-10f, -36f), 0f),
-                    world.SpawnVehicle("atgm_carrier", 0, new Vector2(10f, -36f), 0f),
+                    world.SpawnVehicle("bmpt", 0, new Vector2(-10f, -36f), 0f),
+                    world.SpawnVehicle("bmpt", 0, new Vector2(10f, -36f), 0f),
                     world.SpawnVehicle("lancet_truck", 0, new Vector2(0f, -70f), 0f),
                     world.SpawnVehicle("mlrs", 0, new Vector2(-20f, -90f), 0f),
                     world.SpawnVehicle("attack_helicopter", 0, new Vector2(20f, -60f), 0f),
