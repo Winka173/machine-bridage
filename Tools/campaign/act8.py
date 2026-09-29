@@ -37,7 +37,7 @@ texts(d, ('Vault\'s Airstrip', 'Sân bay dã chiến của Vault'),
 
 # c10m12: the duel over Skyhold. Prompt 22 E.3 gives Morrigan a mode of its own for it (the player flies only aircraft)
 # and F.1 fixes Hawk as its commander; both come later, the mission awaits them.
-d = clone('c10m05', 'c10m12', 10, flip=True, playerBase='None', general='quaden', enemyDeck=QUADEN, speaker='dieuhau', commander='dieuhau')
+d = clone('c10m05', 'c10m12', 10, flip=True, playerBase='None', general='quaden', enemyDeck=QUADEN, speaker='dieuhau', commander='reyes')
 boss(d, 'morrigan', fallback='sky_fortress', health=0.6, name='morrigan')
 mark(d, set_piece=True, awaits=('boss:morrigan', 'mode:air_duel'))
 texts(d, ('Hawk and Raven', 'Hawk và Raven'),
