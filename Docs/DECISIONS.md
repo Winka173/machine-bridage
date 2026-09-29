@@ -7408,6 +7408,11 @@ Sections H to L of `Docs/prompts/prompt21_vi.txt`. The audit is `Docs/localizati
   longer compile); its `{0}` texts, English "{n} units" plurals and English words in Vietnamese fail `L10nTests` and
   `UiLanguageTests`, which list them. `Strings.Vietnamese` is still a plain flag; a screen built once and kept must
   be relabelled like the HUD (`Relabel.Apply`).
+- **The join with the Sandbox (feature/p21-join).** Its texts already used named placeholders through its own
+  `SandboxText.Format`, which now calls `Strings.Format` (language number format, plurals, names); `SandboxText.Number`
+  uses `Strings.Culture`; `Strings.Entries` lists `SandboxText`, so every scan covers it. Its English counts take the
+  plural form, its percentages read "25%", and its Vietnamese has no English left: tick is "nhịp", seed "mã trận",
+  replay "bản ghi trận", test "bài kiểm tra", hardpoint "ô đặt tháp" (the glossary's Sandbox table).
 - **Tests (run once, then after fixes):** `L10nTests`, `L10nSwitchTests`, `LocalisationScanTests`, `UiLanguageTests`,
   `StringsTests`, `SupportTextTests`, `UiLayoutTests`, `BaseScreenTests`, `BaseLayoutTests`, `KitInteractionTests`,
   `Prompt20CampaignTests`, `InActionTests.RangeReadoutsAreInBothLanguages`.

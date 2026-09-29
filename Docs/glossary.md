@@ -78,6 +78,15 @@ Prompt 21 J2. Every translation uses these terms. The text tables live in `Asset
 | Siege · Survival · Endless · Weekly fortress · Boss Hunt | Công thành · Sinh tồn · Vô tận · Pháo đài tuần · Săn trùm |
 | Sandbox (prompt 21 part 1) | Sa bàn |
 | Easy · Normal · Hard · Very hard | Dễ · Thường · Khó · Cực khó |
+
+## Sandbox
+
+| English | Vietnamese |
+|---|---|
+| Blue side · Red side | Phe Xanh · Phe Đỏ |
+| Scenario · Seed · Tick | Kịch bản · Mã trận · Nhịp |
+| Replay · Test · Duel · A/B comparison | Bản ghi trận · Bài kiểm tra · Đấu tay đôi · So sánh A/B |
+| Overlay · Hardpoint · Test range | Lớp kiểm tra · Ô đặt tháp · Bãi thử |
 | Common · Uncommon · Rare · Epic · Legendary | Thường · Khá · Hiếm · Sử thi · Huyền thoại |
 
 ## States

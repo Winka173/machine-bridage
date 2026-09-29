@@ -479,13 +479,13 @@ namespace MachineBrigade.Tests
         [Test]
         public void EveryWordIsInBothLanguagesWithTheSameNamedParameters()
         {
-            var named = new Regex(@"\{([a-zA-Z]+)\}");
             foreach (var (key, (en, vi)) in SandboxText.Table)
             {
                 Assert.IsFalse(string.IsNullOrWhiteSpace(en), key + " en");
                 Assert.IsFalse(string.IsNullOrWhiteSpace(vi), key + " vi");
                 Assert.IsFalse(Regex.IsMatch(en + vi, @"\{\d+\}"), key + ": named parameters only");
-                CollectionAssert.AreEquivalent(named.Matches(en).Select(m => m.Value).Distinct(), named.Matches(vi).Select(m => m.Value).Distinct(), key);
+                // The game's placeholder names, plurals ({count|# unit|# units}) included (prompt 21 I).
+                CollectionAssert.AreEquivalent(Strings.PlaceholderNames(en).Distinct(), Strings.PlaceholderNames(vi).Distinct(), key);
             }
             foreach (SandboxTab tab in Enum.GetValues(typeof(SandboxTab))) Assert.IsTrue(Strings.Has("sandbox.tab." + tab), tab.ToString());
             foreach (SandboxRefusal r in Enum.GetValues(typeof(SandboxRefusal)))

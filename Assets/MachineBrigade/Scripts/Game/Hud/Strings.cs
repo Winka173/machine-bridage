@@ -2600,7 +2600,8 @@ namespace MachineBrigade.Game.Hud
                 var tables = new (string name, IReadOnlyDictionary<string, (string en, string vi)> table)[]
                 {
                     ("Strings", Table), ("GuideText", GuideText.Table), ("CampaignText", CampaignText.Table), ("UnitText", UnitText.Table),
-                    ("BigAttackText", BigAttackText.Table), ("OrbitalText", OrbitalText.Table), ("BossText", BossText.Table), ("NameText", NameText.Table),
+                    ("BigAttackText", BigAttackText.Table), ("OrbitalText", OrbitalText.Table), ("BossText", BossText.Table), ("SandboxText", SandboxText.Table),
+                    ("NameText", NameText.Table),
                 };
                 foreach (var (name, table) in tables)
                     foreach (var kv in table)
