@@ -46,7 +46,7 @@ namespace MachineBrigade.Game.Hud
     /// something is added); a card's extra badge goes in DeckBar's <c>fc-hcard__badges</c> row.
     /// </para>
     /// </summary>
-    public sealed class BattleHud : IDisposable
+    public sealed partial class BattleHud : IDisposable
     {
         /// <summary>The class on the HUD's kit root while the compact layout is in use.</summary>
         public const string CompactClass = "fc-hud--compact";
@@ -433,6 +433,8 @@ namespace MachineBrigade.Game.Hud
             _selectionBox = UiKit.Box("selection-box");
             _root.Add(_selectionBox);
 
+            // Prompt 23 F.2, F.3, F.5 (BattleHud.Events.cs).
+            BuildEventMarkers();
             SetSelection(default);
         }
 
@@ -1038,6 +1040,7 @@ namespace MachineBrigade.Game.Hud
         public void Notice(in HudNotice notice)
         {
             if (string.IsNullOrEmpty(notice.Text)) return;
+            NoticeArrow(notice);
             var busy = _toast.ClassListContains("fc-hud__toast--visible") && Time.unscaledTime - _toastShownAt < 1.2f;
             if (busy && !notice.Alert)
             {
@@ -1117,6 +1120,7 @@ namespace MachineBrigade.Game.Hud
             if (_banner != null && _banner.ClassListContains("fc-hud__banner--visible") && Time.unscaledTime > _bannerUntil)
                 _banner.RemoveFromClassList("fc-hud__banner--visible");
             _hintBar?.EnableInClassList("fc-hud__hint--gone", Time.unscaledTime > _hintUntil);
+            TickEvents();
             TickAd();
             if (_settings != null && (Screen.width != _screenWidth || Screen.height != _screenHeight))
             {

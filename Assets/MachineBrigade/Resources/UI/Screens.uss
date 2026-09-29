@@ -794,6 +794,39 @@
 .fc-dialogue-log__card { width: 760px; max-height: 88%; }
 .fc-dialogue-log__scroll { flex-shrink: 1; margin: var(--fc-space-2) 0; }
 .fc-dialogue-log__row { margin-bottom: var(--fc-space-2); }
+/* Prompt 23 F.2: where reinforcements come from: a small round indicator at the screen's edge, its arrow pointing out
+   towards them (red: the enemy's; sky blue: the Meridian Accord's), placed by code clear of the HUD, never touched. */
+.fc-edge-layer { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-edge-arrow {
+    position: absolute; left: 0; top: 0; width: 40px; height: 40px; align-items: center; justify-content: center;
+    background-color: var(--fc-panel-field);
+    border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+    border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger);
+}
+.fc-edge-arrow__icon { width: 24px; height: 24px; --icon-color: var(--fc-danger); }
+.fc-edge-arrow--ours { border-top-color: var(--fc-accord); border-right-color: var(--fc-accord); border-bottom-color: var(--fc-accord); border-left-color: var(--fc-accord); }
+.fc-edge-arrow--ours > .fc-edge-arrow__icon { --icon-color: var(--fc-accord); }
+.cb { --fc-accord: var(--fc-accord-cb); }
+/* F.5 and H.9: an enemy general's name over their vehicle, on the dialogue's dim strip; sound bars before it while they speak. */
+.fc-general-tags { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.fc-general-tag {
+    position: absolute; flex-direction: row; align-items: center; translate: -50% -100%;
+    padding: 0 var(--fc-space-2); background-color: var(--fc-dialogue-strip);
+    border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px;
+}
+.fc-general-tag__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-dialogue-enemy); letter-spacing: 1px; white-space: nowrap; }
+.fc-general-tag__mark { width: 18px; height: 18px; margin-right: var(--fc-space-1); --icon-color: var(--fc-text); display: none; }
+.fc-general-tag--speaking > .fc-general-tag__mark { display: flex; }
+/* F.3: a side objective under the mission's goal: a flag, what to do, its clock. */
+.fc-mission-bar__side { flex-direction: row; align-items: center; margin-top: var(--fc-space-1); }
+.fc-mission-bar__side-icon { width: 18px; height: 18px; margin-right: var(--fc-space-1); flex-shrink: 0; --icon-color: var(--fc-text-2); }
+.fc-mission-bar__side > .fc-text { margin: 0; padding-top: 0; padding-bottom: 0; }
+.fc-mission-bar__side-text { flex-shrink: 0; white-space: nowrap; color: var(--fc-text); }
+.fc-mission-bar__side-count, .fc-mission-bar__side-clock { margin-left: var(--fc-space-2); flex-shrink: 0; white-space: nowrap; -unity-font: var(--fc-font-display-semi); }
+.fc-mission-bar__side-count { color: var(--fc-text); }
+.fc-mission-bar__side-clock { color: var(--fc-accent); }
+.fc-mission-bar__side-clock.fc-hud__clock--urgent { color: var(--fc-danger-text); }
 .fc-ad__count { margin-bottom: var(--fc-space-4); }
 /* Large text: the deck grows to hold its bigger type, and what sits above it moves up with it. */
 .fc-hud.fc-text-large .fc-deck { height: 196px; }
@@ -965,6 +998,13 @@
 .fc-hud.fc-hud--compact .fc-dialogue { left: 25%; right: 25%; bottom: var(--hud-dialogue); }
 .fc-hud.fc-hud--compact .fc-dialogue--raised { bottom: var(--hud-above-orders); }
 .fc-hud.fc-hud--compact .fc-dialogue--high { bottom: var(--hud-above-prompt); }
+/* Prompt 23 F.3: while a side objective's row is on the mission bar, the notices under the strip start below it. */
+.fc-hud .fc-hud--side-goal > .fc-hud__under { top: 164px; }
+.fc-hud.fc-text-large .fc-hud--side-goal > .fc-hud__under { top: 184px; }
+.fc-hud.fc-hud--compact .fc-hud--side-goal > .fc-hud__under, .fc-hud.fc-hud--compact .fc-hud--side-goal > .fc-hud__banner { top: 88px; }
+.fc-hud.fc-hud--compact .fc-hud--side-goal.fc-hud--boss-top > .fc-hud__under { top: 96px; }
+.fc-hud.fc-hud--compact.fc-text-large .fc-hud--side-goal > .fc-hud__under, .fc-hud.fc-hud--compact.fc-text-large .fc-hud--side-goal > .fc-hud__banner,
+.fc-hud.fc-hud--compact.fc-text-large .fc-hud--side-goal.fc-hud--boss-top > .fc-hud__under { top: 108px; }
 .fc-hud--compact .fc-hud__banner { top: 64px; left: var(--hud-edge); right: var(--hud-edge); }
 .fc-hud--compact .fc-hud__banner-face { padding: var(--fc-space-2) var(--fc-space-5); }
 
