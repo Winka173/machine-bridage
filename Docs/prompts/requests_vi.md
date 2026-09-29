@@ -162,3 +162,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 02:29) file pdf nhiều cái còn thiếu giá tiền  [lead, khi làm lại pdf]
 - (30/09 02:29) logic bom bị ném còn sai,như bomber không thể thả 1 phát toàn bộ mà phải thả như bom rải thảm, bom không tự động bay thẳng vào kẻ thù mà phải có logic rơi bom  [agent A]
 - (30/09 02:29) xong hết hãy update pdf
+- (30/09 03:34) nếu xong mọi thứ mà không có gì làm thì start prompt tiếp theo  [bắt đầu prompt 23 sau v0.30.0]
