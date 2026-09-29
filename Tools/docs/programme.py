@@ -556,6 +556,7 @@ def boss_summary(game, h):
         return n
 
     gen_names = {x['id']: x.get('name', x['id']) for x in game.get('generals', []) + game.get('characters', [])}
+    gen_names = {**{k: v for k, v in game.get('bossGenerals', {}).items() if v}, **gen_names}
     rows = []
     for v in sorted(game.get('bosses', []), key=lambda v: (str(v.get('raw', {}).get('Rank', '')), -float(v.get('hp', 0) or 0))):
         raw = v.get('raw', {})
@@ -575,6 +576,24 @@ def boss_summary(game, h):
             "<p>Mọi boss và mini boss cạnh nhau, đọc từ dữ liệu hiện tại: máu thân (trước hệ số độ khó), giáp trước/hông/sau/nóc, số bộ phận và phần máu của chúng, "
             "DPS duy trì lên xe nhẹ, xe nặng, máy bay và công trình (trước giáp), đòn lớn đầu tiên và số hộ tống trong mọi đợt.</p>"
             + table(['Boss', 'Cấp', 'Tướng', 'Máu', 'Giáp T/H/S/N', 'Bộ phận', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'Tầm xa nhất', 'Tầm mặt đất', 'Tầm máy bay', 'Đòn lớn', 'Hộ tống'], rows, 'dps')
+            + "</div>")
+
+
+def commanders(game, h):
+    """Section 12c (prompt 22 F): the player's commanders and the enemy generals' passives, as the game words them."""
+    e, table = h['esc'], h['table']
+    fam = {'Combat': 'chiến đấu', 'Economy': 'kinh tế', 'General': 'tướng địch'}
+    cs = game.get('commanders', [])
+    mine = [[f"<b>{e(c['name'])}</b><br><span class='muted'>{e(c.get('call', ''))}</span>", fam.get(c['family'], c['family']), e(c.get('role', '')),
+             e(c.get('style', '')), e(c.get('strength', '')), e(c.get('weakness', '')), e(c.get('unlock', ''))]
+            for c in cs if c['family'] != 'General']
+    gens = [[f"<b>{e(c['name'])}</b>", e(c.get('strength', '')), e(c.get('weakness', ''))] for c in cs if c['family'] == 'General']
+    return ("<div class='section'><h2>12c. Commander</h2>"
+            "<p>Người chơi chọn một commander trước trận; nội tại của nó áp cho cả phe, trong mọi chế độ. Mỗi màn gắn với một tướng địch "
+            "thì địch mang nội tại của tướng đó. Commander mở dần theo chương; đạo quân vẫn dùng được cùng lúc (phần 12b).</p>"
+            f"<h3>Commander của người chơi ({len(mine)})</h3>"
+            + table(['Commander', 'Nhóm', 'Vai trò', 'Hợp lối chơi', 'Điểm mạnh', 'Điểm yếu', 'Mở khóa'], mine)
+            + f"<h3>Nội tại của tướng địch ({len(gens)})</h3>" + table(['Tướng', 'Điểm mạnh', 'Điểm yếu'], gens)
             + "</div>")
 
 

@@ -554,6 +554,7 @@ def build(game, imgdir):
                + f"{img(imgdir / 'r6' / 'supports.png', 'shot')}<div class='caption'>Clip Xem bắn của các thẻ hỗ trợ (pháo kích, không kích, tên lửa hành trình, napalm, "
                "ném bom rải thảm, MOAB, bom chùm, máy bay pháo, EMP, khói, tiếp tế, chi viện).</div></div>")
     out.append(programme.price_list(game, h, unlock_text))
+    out.append(programme.commanders(game, h))
 
     out.append(programme.ammo_system(game, h))
 

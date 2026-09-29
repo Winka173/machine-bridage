@@ -71,6 +71,16 @@ namespace MachineBrigade.Tests
                             ["id"] = id, ["name"] = Text("char." + id + ".name"), ["role"] = Text("char." + id + ".role"), ["bio"] = Text("char." + id + ".bio"),
                         }).ToList(),
                     ["timeline"] = Enumerable.Range(0, 20).Select(i => Text("timeline." + i)).Where(s => s.Length > 0).Cast<object>().ToList(),
+                    // Prompt 22 F: the player's commanders and the generals' passives, as the game words them.
+                    ["commanders"] = Commanders.All.Concat(Commanders.Generals).Select(c => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = c.Id, ["name"] = CommanderText.Name(c), ["call"] = Text("cmdr." + c.Id + ".call"), ["role"] = CommanderText.Role(c),
+                        ["style"] = CommanderText.Style(c), ["strength"] = CommanderText.Strength(c), ["weakness"] = CommanderText.Weakness(c),
+                        ["unlock"] = c.IsGeneral ? "" : CommanderText.Unlock(c), ["family"] = c.Family.ToString(), ["general"] = c.General ?? "",
+                    }).ToList(),
+                    // Every boss's general by id, with the name the story gives them.
+                    ["bossGenerals"] = catalog.Vehicles.Values.Where(v => v.Boss && !string.IsNullOrEmpty(v.General)).Select(v => v.General!).Distinct()
+                        .ToDictionary(g => g, g => (object)(Text("char." + g + ".name") is { Length: > 0 } n ? n : Text("name." + g))),
                     ["generals"] = Campaign.Generals.Select(g => (object)new Dictionary<string, object>
                     {
                         ["id"] = g.Id, ["name"] = Text("char." + g.Id + ".name"), ["style"] = g.Style, ["stance"] = g.Stance,
