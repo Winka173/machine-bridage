@@ -223,7 +223,7 @@ namespace MachineBrigade.Tests
             world.TryGetEconomy(0, out var economy);
             var supply = economy.ArmyCap;
             var tank = world.SpawnVehicle("main_battle_tank", 0, b.HqPosition + new Vector2(8f, 0f), 0f);
-            world.Damage.Apply(tank, tank.MaxHp * 0.5f / world.Catalog.Damage.Multiplier(DamageType.ArmorPiercing, ArmorClass.Heavy), DamageType.ArmorPiercing);
+            world.Damage.Apply(tank, tank.MaxHp * 0.5f / world.Catalog.Damage.Type(DamageType.ShapedCharge, TargetKind.Ground), DamageType.ShapedCharge);
             var hurt = tank.Hp;
             Run(world, 2f);
             Assert.Greater(economy.ArmyCap, supply, "the logistics station adds supply");

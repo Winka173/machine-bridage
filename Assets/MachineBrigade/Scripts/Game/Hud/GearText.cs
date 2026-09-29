@@ -102,6 +102,7 @@ namespace MachineBrigade.Game.Hud
             {
                 StatId.Regen => (Mathf.Abs(value) * 100f).ToString("0.00"),
                 StatId.RegenDelay or StatId.LaserWarning => Mathf.Abs(value).ToString("0.#"),
+                _ when Stats.InLevels(stat) => Mathf.Abs(value).ToString("0.0#"),
                 _ => (Mathf.Abs(value) * 100f).ToString(Mathf.Abs(value) < 0.1f ? "0.#" : "0"),
             };
             return Strings.Format(penalty ? "stat.pen." + key : "stat.line." + key, amount);

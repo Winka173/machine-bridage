@@ -22,6 +22,9 @@ namespace MachineBrigade.Sim.Content
 
         public bool Has(string key) => _values.TryGetValue(key, out var v) && v != null;
 
+        /// <summary>The value at <paramref name="key"/> is an array (data that takes one number or several).</summary>
+        public bool IsArray(string key) => _values.TryGetValue(key, out var v) && v is List<object?>;
+
         /// <summary>The value at <paramref name="key"/> is a string (data that takes a word or a number).</summary>
         public bool IsString(string key) => _values.TryGetValue(key, out var v) && v is string;
 

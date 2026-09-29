@@ -142,6 +142,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Share of incoming shells and mortar bombs it can also take (0: none; a C-RAM).</summary>
         public float Shells { get; internal set; }
+
+        /// <summary>Prompt 15 C.6: a point-defence laser (the Iron Beam): smoke round it or its mark blinds it.</summary>
+        public bool Laser { get; internal set; }
     }
 
     /// <summary>

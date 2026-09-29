@@ -19,14 +19,15 @@ namespace MachineBrigade.Game.Match
         {
             // Weapon: main stat +damage (the ammunition hoist: +rate of fire).
             new("fortress_barrel", GearSlot.TowerWeapon, NoBranch, StatId.Range, V(0.02f, 0.03f, 0.04f, 0.06f, 0.08f)),
-            new("sabot_rounds", GearSlot.TowerWeapon, NoBranch, StatId.DamageVsHeavy, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
+            // Prompt 15 C.9: a level of penetration at the top.
+            new("sabot_rounds", GearSlot.TowerWeapon, NoBranch, StatId.Penetration, V(0.4f, 0.55f, 0.7f, 0.85f, 1f)),
             new("flak_proximity_fuze", GearSlot.TowerWeapon, NoBranch, StatId.DamageVsAir, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("airburst_shells", GearSlot.TowerWeapon, NoBranch, StatId.Splash, V(0.05f, 0.08f, 0.12f, 0.16f, 0.2f)),
             new("ammo_hoist", GearSlot.TowerWeapon, NoBranch, StatId.ProjectileSpeed, V(0.08f, 0.12f, 0.16f, 0.2f, 0.25f)) { Main = StatId.FireRate },
 
             // Structure: main stat +health (screens: less damage taken; the engineer bay: repairs out of combat).
             new("reinforced_concrete", GearSlot.TowerStructure, NoBranch, StatId.ResistHighExplosive, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
-            new("composite_casemate", GearSlot.TowerStructure, NoBranch, StatId.ResistArmorPiercing, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
+            new("composite_casemate", GearSlot.TowerStructure, NoBranch, StatId.ResistShapedCharge, V(0.04f, 0.06f, 0.09f, 0.12f, 0.15f)),
             new("blast_walls", GearSlot.TowerStructure, NoBranch, StatId.ResistIndirect, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
             new("slat_screens", GearSlot.TowerStructure, NoBranch, StatId.ResistRocket, V(0.06f, 0.09f, 0.13f, 0.17f, 0.22f)) { Plating = true },
             new("engineer_bay", GearSlot.TowerStructure, NoBranch, StatId.RegenDelay, V(1f, 1.5f, 2f, 2.5f, 3f)) { Main = StatId.Regen },
@@ -76,10 +77,10 @@ namespace MachineBrigade.Game.Match
             [StatId.MagazineReload] = new[] { GearSlot.TowerWeapon, GearSlot.TowerSystems },
             [StatId.Health] = new[] { GearSlot.TowerStructure, GearSlot.TowerSystems },
             [StatId.ResistKinetic] = new[] { GearSlot.TowerStructure },
-            [StatId.ResistArmorPiercing] = new[] { GearSlot.TowerStructure },
+            [StatId.ResistShapedCharge] = new[] { GearSlot.TowerStructure },
             [StatId.ResistHighExplosive] = new[] { GearSlot.TowerStructure },
             [StatId.ResistFire] = new[] { GearSlot.TowerStructure },
-            [StatId.ResistFlak] = new[] { GearSlot.TowerStructure },
+            [StatId.ResistFragmentation] = new[] { GearSlot.TowerStructure },
             [StatId.TurretRate] = new[] { GearSlot.TowerSystems },
             [StatId.Regen] = new[] { GearSlot.TowerStructure },
         };

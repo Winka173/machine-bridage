@@ -103,7 +103,7 @@ namespace MachineBrigade.Game.Rendering
                     for (var i = 0; i < 3; i++)
                     {
                         var friend = _world.SpawnVehicle(i == 1 ? "main_battle_tank" : "ifv", 0, new Vector2(-6f + i * 6f, -2f), 0f);
-                        _world.DebugDamage(friend, 0.65f / Mathf.Max(0.01f, friend.Def.Armor == ArmorClass.Heavy ? 0.6f : 1f));
+                        _world.DebugDamage(friend, 0.65f);
                         _friends.Add(friend);
                     }
                 _scene = SceneFor(_support);

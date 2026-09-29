@@ -94,6 +94,21 @@ namespace MachineBrigade.Sim.Content
         public float Damage { get; }
 
         public DamageType DamageType { get; }
+
+        /// <summary>
+        /// Prompt 15 B: its rounds' penetration level (data "pen"; -1: its damage type's usual,
+        /// <see cref="Armour.DefaultPenetration(DamageType)"/>). Its bombs and shells fall on the roof.
+        /// </summary>
+        public int Penetration
+        {
+            get => _penetration >= 0 ? _penetration : Armour.DefaultPenetration(DamageType);
+            internal set => _penetration = Math.Min(value, ArmourLevels.Max);
+        }
+
+        private int _penetration = -1;
+
+        /// <summary>Prompt 15 C.3: a thermobaric strike (more against structures, cages do not stop it).</summary>
+        public bool Thermobaric { get; internal set; }
         public ExplosionTier Tier { get; }
 
         /// <summary>Length of an airstrike's bomb line.</summary>

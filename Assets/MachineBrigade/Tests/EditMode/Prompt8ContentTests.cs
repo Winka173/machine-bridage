@@ -108,7 +108,7 @@ namespace MachineBrigade.Tests
                 var world = Field();
                 var v = world.SpawnVehicle(id, 0, Vector2.Zero, 0f);
                 var before = v.Hp;
-                world.Damage.Splash(v.Position, 5f, 1000f, DamageType.ArmorPiercing, 1, default, default, false,
+                world.Damage.Splash(v.Position, 5f, 1000f, DamageType.ShapedCharge, 1, default, default, false,
                     new HitInfo(null, 1, null, v.Position, HitKind.Mine, false));
                 return before - v.Hp;
             }
@@ -196,13 +196,13 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(7, ship.PartCount, "four engines, two bays and a radar");
             Assert.IsTrue(ship.BodyLocked);
             var hp = ship.Hp;
-            world.Damage.Apply(ship, 5000f, DamageType.Flak, new HitInfo(null, 0, null, ship.Position, HitKind.Direct, false));
+            world.Damage.Apply(ship, 5000f, DamageType.Fragmentation, new HitInfo(null, 0, null, ship.Position, HitKind.Direct, false));
             Assert.AreEqual(hp, ship.Hp, 1e-3f, "the hull shrugs it off");
             world.Bosses.Break(ship, 0);
             Assert.IsTrue(ship.BodyLocked, "one engine is not enough");
             world.Bosses.Break(ship, 1);
             Assert.IsFalse(ship.BodyLocked, "two engines down: the hull is open");
-            world.Damage.Apply(ship, 1000f, DamageType.Flak, new HitInfo(null, 0, null, ship.Position, HitKind.Direct, false));
+            world.Damage.Apply(ship, 1000f, DamageType.Fragmentation, new HitInfo(null, 0, null, ship.Position, HitKind.Direct, false));
             Assert.Less(ship.Hp, hp);
             Assert.Less(ship.PartSpeed, 0.75f, "each engine lost slows it");
         }
@@ -223,7 +223,7 @@ namespace MachineBrigade.Tests
             Assert.Less(ship.PartHealth(radar), partBefore, "the direct hit struck the radar");
             Assert.AreEqual(bodyBefore, ship.Hp, 1e-2f, "its blast does not also hurt the part");
             var splashBefore = ship.PartHealth(radar);
-            world.Damage.Splash(ship.PartPosition(radar), 6f, 500f, DamageType.Flak, 0, default, aa.Id, true, new HitInfo(aa, 0, aa.Weapon, aa.Position, HitKind.Splash, false));
+            world.Damage.Splash(ship.PartPosition(radar), 6f, 500f, DamageType.Fragmentation, 0, default, aa.Id, true, new HitInfo(aa, 0, aa.Weapon, aa.Position, HitKind.Splash, false));
             Assert.AreEqual(splashBefore, ship.PartHealth(radar), 1e-3f, "a blast never hurts a part");
             Assert.Less(ship.Hp, bodyBefore, "it lands on the body");
         }
@@ -297,7 +297,7 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(worm.Burrowed);
             Assert.IsFalse(worm.IsVisibleTo(0), "unseen");
             var hp = worm.Hp;
-            world.Damage.Apply(worm, 1000f, DamageType.ArmorPiercing);
+            world.Damage.Apply(worm, 1000f, DamageType.ShapedCharge);
             Assert.AreEqual(hp, worm.Hp, "untouchable");
         }
 
@@ -307,11 +307,11 @@ namespace MachineBrigade.Tests
             var world = Field();
             var worm = world.SpawnVehicle("earth_borer", 1, new Vector2(0f, 40f), 0f);
             var hp = worm.Hp;
-            world.Damage.Apply(worm, 100f, DamageType.ArmorPiercing);
+            world.Damage.Apply(worm, 100f, DamageType.ShapedCharge);
             var plain = hp - worm.Hp;
             worm.ExposedUntil = world.Time + 5.0;
             hp = worm.Hp;
-            world.Damage.Apply(worm, 100f, DamageType.ArmorPiercing);
+            world.Damage.Apply(worm, 100f, DamageType.ShapedCharge);
             Assert.AreEqual(plain * 1.5f, hp - worm.Hp, 1e-2f);
         }
 

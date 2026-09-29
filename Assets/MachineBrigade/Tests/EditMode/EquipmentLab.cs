@@ -316,7 +316,7 @@ namespace MachineBrigade.Tests
                     var bonus = 1f;
                     foreach (var b in w.Bonuses)
                         if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                    dps[(int)a] += raw * v.DamageScale * Catalog.Damage.Multiplier(w.DamageType, a) * bonus;
+                    dps[(int)a] += raw * v.DamageScale * Matchup.ClassEffect(Catalog.Damage, w, a) * bonus;
                 }
             }
             return dps;

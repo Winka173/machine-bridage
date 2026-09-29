@@ -834,8 +834,8 @@ namespace MachineBrigade.Game.Effects
             var from = new Vector3(e.Position.X, 0f, e.Position.Y);
             switch (round.Projectile)
             {
-                case ProjectileKind.Shell when round.DamageType == DamageType.ArmorPiercing:
-                case ProjectileKind.Bullet when round.DamageType == DamageType.ArmorPiercing && round.Damage >= 20f:
+                case ProjectileKind.Shell when round.PiercingLook:
+                case ProjectileKind.Bullet when round.PiercingLook && round.Damage >= 20f:
                 {
                     var heavy = round.Damage >= 150f;
                     if (round.Projectile == ProjectileKind.Shell)
@@ -859,8 +859,8 @@ namespace MachineBrigade.Game.Effects
                     _muzzle.SparkBurst(impact + Vector3.up * 1f, Vector3.up + UnityEngine.Random.insideUnitSphere * 0.5f, heavy ? 36 : 16, 8f, heavy ? 24f : 16f);
                     return true;
                 }
-                case ProjectileKind.Missile when round.DamageType == DamageType.ArmorPiercing:
-                case ProjectileKind.Drone when round.DamageType == DamageType.ArmorPiercing:
+                case ProjectileKind.Missile when round.PiercingLook:
+                case ProjectileKind.Drone when round.PiercingLook:
                     // HEAT: a sharp star flash and a jet of sparks, a small black puff. Drones by the drone (DECISIONS 12C).
                     Explode(ExplosionTier.Medium, impact + Vector3.up * 0.8f, now, 0.8f * size, flash: false, grow: BlastSizes.Drone(round));
                     _muzzle.SparkBurst(impact + Vector3.up, Vector3.up, 18, 10f, 22f);

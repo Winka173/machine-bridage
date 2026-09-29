@@ -466,7 +466,8 @@ namespace MachineBrigade.Sim.Abilities
                 _world.Emit(SimEvent.Exploded(m.Position, m.Def.Blast, m.Id));
                 // A mine roller sets it off out in front of the tracks: the roller takes the blast.
                 // The blast is a mine's (mine resistances and the mine sweep see it as one).
-                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ArmorPiercing, m.Team, rolled,
+                // Prompt 15: an anti-tank mine is a shaped charge under the belly (penetration 4, the roof's armour).
+                _world.Damage.Splash(m.Position, m.Def.Blast.Radius, m.Def.Blast.Damage, DamageType.ShapedCharge, m.Team, rolled,
                     info: new Combat.HitInfo(null, m.Team, null, m.Position, Combat.HitKind.Mine, false));
                 _mines.RemoveAt(i);
             }

@@ -58,11 +58,11 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(world.IsEntrenched(b), "only while its side is dug in");
             world.Entrench(0, true);
             var before = a.Hp;
-            world.Damage.Apply(a, 100f, DamageType.ArmorPiercing);
+            world.Damage.Apply(a, 100f, DamageType.ShapedCharge);
             var entrenched = before - a.Hp;
             world.Entrench(0, false);
             before = b.Hp;
-            world.Damage.Apply(b, 100f, DamageType.ArmorPiercing);
+            world.Damage.Apply(b, 100f, DamageType.ShapedCharge);
             var open = before - b.Hp;
             Assert.AreEqual(open * (1f - SimWorld.EntrenchReduction), entrenched, 0.01f, "a fifth less damage");
         }

@@ -98,7 +98,7 @@ namespace MachineBrigade.Sim.Bosses
                 all += dps;
                 if (w.CanTarget(true)) toAir += dps;
                 if (w.CanTarget(shooter.Flying) && reach <= w.Range + boss.Radius)
-                    toShooter += dps * _world.Catalog.Damage.Multiplier(w, shooter.Armor);
+                    toShooter += dps * _world.Damage.Estimate(w, boss.Position, shooter);
             }
             var score = (antiAir ? toAir : toShooter) + all * 0.15f;
             if (part.Skills.Count > 0 || part.Stops.Count > 0) score += 8f;
@@ -111,8 +111,8 @@ namespace MachineBrigade.Sim.Bosses
         /// flak burst's, whatever their rate).
         /// </summary>
         private float GroundFirepower(WeaponDef w) =>
-            w.CanTarget(false) ? w.Damage * MathF.Max(_world.Catalog.Damage.Multiplier(w, ArmorClass.Light),
-                _world.Catalog.Damage.Multiplier(w, ArmorClass.Heavy)) : 0f;
+            w.CanTarget(false) ? w.Damage * MathF.Max(_world.Catalog.Damage.Effective(w, 1, TargetKind.Ground),
+                _world.Catalog.Damage.Effective(w, 3, TargetKind.Ground)) : 0f;
 
         /// <summary>A weapon's damage a second on paper (its volley or magazine over its cycle).</summary>
         internal static float Firepower(WeaponDef w) =>

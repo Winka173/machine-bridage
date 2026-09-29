@@ -32,7 +32,7 @@ namespace MachineBrigade.Tests
             // A damaged vehicle at home repairs once it is left alone; a new one shrugs off most damage.
             world.TryGetRally(0, out var home);
             var tank = world.SpawnVehicle("main_battle_tank", 0, home + new Vector2(6f, 0f), 0f);
-            world.Damage.Apply(tank, 1000f, MachineBrigade.Sim.Content.DamageType.ArmorPiercing);
+            world.Damage.Apply(tank, 1000f, MachineBrigade.Sim.Content.DamageType.ShapedCharge);
             Assert.Greater(tank.Hp, tank.MaxHp - 1000f * 0.21f, "a vehicle just arrived takes a fifth of the damage");
             var hurt = tank.Hp;
             for (var t = 0f; t < 8f; t += TestWorlds.Step)

@@ -28,6 +28,15 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Its health as a share of the body's full health (so campaign scaling and difficulty scale it with the boss).</summary>
         public float Hp { get; }
 
+        /// <summary>
+        /// Prompt 15 A.5: its own armour level, the same all round (data "armour"; -1 until set: the boss's
+        /// front). A gun mantlet is thick, a radar or an antenna thin.
+        /// </summary>
+        public int Armour { get; internal set; } = -1;
+
+        /// <summary>Its armour level on <paramref name="boss"/>: its own, else the boss's front.</summary>
+        public int ArmourOn(VehicleDef boss) => Armour >= 0 ? Armour : boss.Armour.Front;
+
         /// <summary>The model node it is (Part_engine.001): the view hides it and puts a wreck piece in at its origin.</summary>
         public string? Node { get; internal set; }
 

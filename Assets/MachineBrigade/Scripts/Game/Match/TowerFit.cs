@@ -63,7 +63,7 @@ namespace MachineBrigade.Game.Match
                 has |= TowerNeed.Armed;
                 var main = i == 0;
                 if (w.CanTarget(false) && (main || !w.CanTarget(true))) has |= TowerNeed.HitsGround;
-                if (w.CanTarget(true) && (main || w.DamageType == DamageType.Flak || w.Targets == TargetLayers.Air)) has |= TowerNeed.HitsAir;
+                if (w.CanTarget(true) && (main || w.DamageType == DamageType.Fragmentation || w.Targets == TargetLayers.Air)) has |= TowerNeed.HitsAir;
                 if (w.Ammo > 0) has |= TowerNeed.Magazine;
             }
             return has;
@@ -76,6 +76,7 @@ namespace MachineBrigade.Game.Match
                 or StatId.Splash or StatId.SecondaryFireRate or StatId.SalvoInterval or StatId.BurnDamage => TowerNeed.Armed,
             StatId.DamageVsLight or StatId.DamageVsHeavy or StatId.DamageVsStructure => TowerNeed.HitsGround,
             StatId.DamageVsAir => TowerNeed.HitsAir,
+            StatId.Penetration => TowerNeed.Armed,
             StatId.Magazine or StatId.MagazineReload => TowerNeed.Magazine,
             StatId.Speed or StatId.TurnRate or StatId.CaptureRate or StatId.TransitSpeed or StatId.SpreadMoving or StatId.SummonPower => TowerNeed.Mobile,
             _ => TowerNeed.None,

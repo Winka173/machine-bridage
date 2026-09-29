@@ -157,10 +157,51 @@ namespace MachineBrigade.Sim.Content
         public string? RealName { get; internal set; }
 
         /// <summary>
-        /// A 20-57 mm cannon firing kinetic rounds (prompt 13 B.6): it hits armour harder than a machine gun
-        /// of the same damage type, by the damage table's "Autocannon" row, and less than a tank gun.
+        /// Prompt 15 B.1: how deep its rounds pierce, 0 (a 7.62 mm machine gun) to 4 (120 mm darts, heavy
+        /// anti-tank missiles, railguns). Data "pen"; without it, by family and size
+        /// (<see cref="Armour.DefaultPenetration(WeaponDef)"/>). Shaped charges pierce by their warhead, not their size.
         /// </summary>
-        public bool Autocannon => Family == "autocannon" && DamageType == DamageType.Kinetic;
+        public int Penetration
+        {
+            get => _penetration >= 0 ? _penetration : Armour.DefaultPenetration(this);
+            internal set => _penetration = Math.Clamp(value, 0, ArmourLevels.Max);
+        }
+
+        private int _penetration = -1;
+
+        /// <summary>Prompt 15 B.3: a top-attack weapon (a top-attack missile, a diving drone, bomblets): it strikes the roof.</summary>
+        public bool TopAttack { get; internal set; }
+
+        /// <summary>
+        /// Prompt 15 C.3: high explosive with the thermobaric tag (the TOS, thermobaric rockets): more against
+        /// structures and dug-in targets, its blast falls off less, and cages do not stop it.
+        /// </summary>
+        public bool Thermobaric { get; internal set; }
+
+        /// <summary>Prompt 15 D.3: the shape of its round, for the icon. Data "form"; without it, by family (<see cref="Armour.DefaultForm"/>).</summary>
+        public WeaponForm Form
+        {
+            get => _form ?? Armour.DefaultForm(this);
+            internal set => _form = value;
+        }
+
+        private WeaponForm? _form;
+
+        /// <summary>Its rounds burst over an area (a splash radius).</summary>
+        public bool Splashes => SplashRadius > 0f || Cluster != null;
+
+        /// <summary>
+        /// Made to kill armour: a kinetic dart or slug, a shaped charge or a beam that pierces level 3 or more
+        /// (what the roles, the commander and the base cover count as anti-tank).
+        /// </summary>
+        public bool AntiArmour => Penetration >= 3 && DamageType is DamageType.Kinetic or DamageType.ShapedCharge or DamageType.Energy;
+
+        /// <summary>
+        /// A round that strikes sparks off armour when it lands (a tank gun's round, an armour-piercing cannon
+        /// burst, a railgun slug, a shaped charge): the view draws its impact so. Data "piercing" (the rounds
+        /// that were "armour-piercing" before prompt 15); the view only, never the damage.
+        /// </summary>
+        public bool PiercingLook { get; internal set; }
 
         /// <summary>Extra damage against some targets (see <see cref="DamageBonus"/>).</summary>
         public IReadOnlyList<DamageBonus> Bonuses { get; internal set; } = System.Array.Empty<DamageBonus>();
@@ -211,6 +252,11 @@ namespace MachineBrigade.Sim.Content
                 // the bonuses and the round's model were once lost on a tuned weapon).
                 Charge = Charge,
                 FlareResist = FlareResist,
+                _penetration = _penetration,
+                TopAttack = TopAttack,
+                Thermobaric = Thermobaric,
+                _form = _form,
+                PiercingLook = PiercingLook,
                 Family = Family,
                 Size = Size,
                 RealName = RealName,
@@ -242,6 +288,14 @@ namespace MachineBrigade.Sim.Content
         public int Count { get; }
         public float Radius { get; }
         public ExplosionDef Bomblet { get; }
+
+        /// <summary>
+        /// Prompt 15 B.3: the bomblets' penetration (dual-purpose bomblets carry a small shaped charge); they come
+        /// down on the roof. Data "pen" in "cluster".
+        /// </summary>
+        public int Penetration { get; internal set; } = DefaultPenetration;
+
+        public const int DefaultPenetration = 2;
     }
 
     public sealed class ExplosionDef
@@ -331,7 +385,8 @@ namespace MachineBrigade.Sim.Content
             bool isStatic = false)
         {
             Id = Guard.Id(id);
-            Armor = armor;
+            Armor = flying ? ArmorClass.Air : armor;
+            Armour = ArmourLevels.OfClass(Armor);
             MaxHp = Guard.Positive(maxHp, id, "hp");
             Static = isStatic && !flying;
             Speed = Static ? 0f : Guard.Positive(speed, id, nameof(speed));
@@ -620,7 +675,26 @@ namespace MachineBrigade.Sim.Content
         public float CaptureRate { get; }
 
         public string Id { get; }
-        public ArmorClass Armor { get; }
+
+        /// <summary>
+        /// The broad class (Air, Structure, or on the ground Heavy from front armour 3, else Light): what roles,
+        /// the commander and the cards read. Damage reads <see cref="Armour"/> and <see cref="Kind"/>.
+        /// </summary>
+        public ArmorClass Armor { get; private set; }
+
+        /// <summary>Prompt 15 A: its armour level on each face (0-4).</summary>
+        public ArmourLevels Armour { get; private set; }
+
+        /// <summary>What the damage-type table reads it as: in the air, a structure (towers, buildings: high explosive's extra), else the ground.</summary>
+        public TargetKind Kind => Flying ? TargetKind.Air : Armor == ArmorClass.Structure ? TargetKind.Structure : TargetKind.Ground;
+
+        /// <summary>Sets its armour levels (the catalog, from the data) and with them its broad class; a structure stays one.</summary>
+        internal void SetArmour(ArmourLevels levels, bool structure)
+        {
+            Armour = levels;
+            Armor = Flying ? ArmorClass.Air : structure ? ArmorClass.Structure : levels.GroundClass;
+        }
+
         public float MaxHp { get; }
         public float Speed { get; }
 
@@ -649,6 +723,7 @@ namespace MachineBrigade.Sim.Content
             BlocksFire = blocksFire ?? blocksMovement;
             Id = Guard.Id(id);
             Armor = armor;
+            Armour = armor == ArmorClass.Structure ? ArmourLevels.Uniform(1) : ArmourLevels.OfClass(armor);
             MaxHp = Guard.Positive(maxHp, id, "hp");
             Width = Guard.Positive(width, id, nameof(width));
             Depth = Guard.Positive(depth, id, nameof(depth));
@@ -658,6 +733,16 @@ namespace MachineBrigade.Sim.Content
 
         public string Id { get; }
         public ArmorClass Armor { get; }
+
+        /// <summary>
+        /// Prompt 15 A.3: its armour level (the same all round): a house, a wall or sandbags 1 by default, a
+        /// wreck by its class; data "armour" (a concrete base wall 3, a fortress gate or HQ 4).
+        /// </summary>
+        public ArmourLevels Armour { get; internal set; }
+
+        /// <summary>What the damage-type table reads it as: a building is a structure, a wreck the ground.</summary>
+        public TargetKind Kind => Armor == ArmorClass.Structure ? TargetKind.Structure : TargetKind.Ground;
+
         public float MaxHp { get; }
 
         /// <summary>Footprint along X before rotation, in metres.</summary>

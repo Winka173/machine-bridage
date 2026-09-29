@@ -67,7 +67,7 @@ namespace MachineBrigade.Tests
             var side = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 0f), 1.5708f);
             Assert.AreEqual(1f, DamageSystem.BonusFor(gun, hunter, facing, world.Time), 1e-4f);
             Assert.AreEqual(1.25f, DamageSystem.BonusFor(gun, hunter, side, world.Time), 1e-4f);
-            var dps = gun.Damage / gun.Cooldown * world.Catalog.Damage.Multiplier(DamageType.ArmorPiercing, ArmorClass.Heavy);
+            var dps = gun.Damage / gun.Cooldown * Matchup.ClassEffect(world.Catalog.Damage, gun, ArmorClass.Heavy);
             Assert.That(dps, Is.InRange(65f, 80f), "about 70 damage a second on heavy armour");
         }
 
@@ -82,7 +82,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(0.5f, DamageSystem.BonusFor(world.Catalog.Weapons["detonator"], bomb, tower, world.Time), 1e-4f);
             Assert.AreEqual(1f, DamageSystem.BonusFor(world.Catalog.Weapons["detonator"], bomb, tank, world.Time), 1e-4f);
             var shell = world.Catalog.Weapons["gun_203_siege"];
-            var onStructures = shell.Damage / shell.Cooldown * world.Catalog.Damage.Multiplier(shell.DamageType, ArmorClass.Structure) *
+            var onStructures = shell.Damage / shell.Cooldown * Matchup.ClassEffect(world.Catalog.Damage, shell, ArmorClass.Structure) *
                                DamageSystem.BonusFor(shell, siege, tower, world.Time);
             Assert.Greater(onStructures, 150f, "the siege gun does 150+ a second to structures");
             Assert.AreEqual(12, world.Catalog.Vehicles["siege_tank"].CpCost);
