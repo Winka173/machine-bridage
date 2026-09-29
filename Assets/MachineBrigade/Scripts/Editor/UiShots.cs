@@ -113,35 +113,36 @@ namespace MachineBrigade.Editor
                 insets = v => KitSafeArea.Apply(safe, v);
                 return host;
             };
+            // Play-test 7 (DECISIONS 22P): the AC-130 among the aircraft cards: bought, first in the deck strip, and in the
+            // collection filtered to the aircraft.
             Builder Gunship() => (out Action<Vector4> insets) =>
             {
                 Strings.Vietnamese = false;
                 MatchSettings.TextSize = TextSize.Normal;
                 DemoProfile.Use();
-                PlayerProfile.Unlock("gunship_strike");
-                var kept = new List<string>(MatchSettings.DeckSupports);
-                // The Gunship in the first support slot (in view on the strip), the barrage beside it.
-                MatchSettings.DeckSupports.Clear();
-                MatchSettings.DeckSupports.Add("gunship_strike");
-                MatchSettings.DeckLayout(true);
-                MatchSettings.DeckSupports.Add("artillery_barrage");
+                PlayerProfile.Unlock("sky_gunship");
+                var kept = new List<string>(MatchSettings.DeckVehicles);
+                MatchSettings.DeckVehicles.Clear();
+                MatchSettings.DeckVehicles.Add("sky_gunship");
+                MatchSettings.DeckLayout(false);
+                MatchSettings.DeckVehicles.AddRange(kept.Where(id => id != "sky_gunship").Take(MatchSettings.DeckVehicleSlots - 1));
                 try
                 {
-                    var host = BuildMenu(catalog, "army-deck-supports", out var safe);
+                    var host = BuildMenu(catalog, "army-deck-air", out var safe);
                     insets = v => KitSafeArea.Apply(safe, v);
                     return host;
                 }
                 finally
                 {
-                    MatchSettings.DeckSupports.Clear();
-                    MatchSettings.DeckSupports.AddRange(kept);
+                    MatchSettings.DeckVehicles.Clear();
+                    MatchSettings.DeckVehicles.AddRange(kept);
                 }
             };
             foreach (var screen in MenuScreen.ScreenNames) yield return ("screen-" + screen + "-vi", Menu(screen, true, false), Shapes, 0);
             // Prompt 15 E8: the icon legend is a long page; read at once.
             yield return ("screen-legend-vi-full", Menu("legend", true, false), new[] { Shapes[0] }, 1);
-            // Play-test 6: the deck screen's whole page with the supports shown, the Gunship card bought and in the deck.
-            yield return ("screen-army-deck-gunship-en-full", Gunship(), new[] { Shapes[0] }, 1);
+            // Play-test 7: the deck screen's whole page with the aircraft shown, the AC-130 card bought and in the deck.
+            yield return ("screen-army-deck-ac130-en-full", Gunship(), new[] { Shapes[0] }, 1);
             foreach (var screen in new[] { "home", "campaign-chapter", "army-deck", "army-towers", "army-base", "army-outpost", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "settings", "shop-crates" })
             {
                 yield return ("screen-" + screen + "-vi-large", Menu(screen, true, true), new[] { Shapes[0] }, 0);

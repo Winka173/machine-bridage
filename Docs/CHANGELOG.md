@@ -7,6 +7,19 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 7 (DECISIONS 22P)
+
+- The AC-130 is an aircraft card again, "AC-130 Gunship" ("Pháo hạm AC-130"), listed with the aircraft (premium,
+  4,500 coins, 22 CP). It circles what it is sent at with its 105, 40 and 25 mm firing from the left. The Gunship
+  support card is gone: a bought one becomes the AC-130 card. The one-use Gunship item stays.
+- Every weapon of a vehicle, tower or boss fires on its own timing; twin barrels open fire a tenth of a second apart.
+- The heavy gunship's and attack jet's missiles and rockets fly 30 % slower, and so do the drone mothership's drones.
+- Siege tank: the twin 105 mm pulls right into the turret when it sieges and comes back out when it packs up. The roof
+  machine gun sits clear of the siege cannon.
+- Artillery, launchers, SAM and support vehicles carry a short self-defence machine gun (15-21 m instead of 30).
+- Towers have no extra weapons in the data or on their models. The steel fortress keeps its two MG turrets, the MG
+  bunker its machine gun, the guard tower its own gun.
+
 ### Play-test 6 bugs (DECISIONS 21B)
 
 - Start on a campaign mission works again after a Back: Back no longer takes the hidden story card out of the menu

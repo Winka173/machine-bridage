@@ -15,7 +15,7 @@ runtime. Touching parts overlap or stand at least 1 cm apart (no coplanar faces)
       - `Deploy_braceram_*` / `Deploy_legram_*`: the ram and its foot pad, driven down on to the ground and on to lift
         the hull 0.25 m;
       - `Deploy_spade_l` / `_r`: rear stabiliser spades, swung down;
-      - `Deploy_gun`: the twin 105 mm, slid 0.9 m back into the turret;
+      - `Deploy_gun`: the twin 105 mm, slid 3 m back into the turret, out of sight (play-test 7);
       - `Deploy_riser`: the turret ring; `Turret` rides on it, unlocking 0.15 m up before the turret swings round.
     Last the siege cannon runs out 1.9 m (`Main_cannon_tube`, `Muzzle_brake*`, `Muzzle_main` slide along it), its
     lock collar seats against the sleeve's mouth, and it is laid (the view's Elevate).
@@ -28,7 +28,7 @@ from mb_vehicles import (_antenna, _hatch, _headlight, _periscopes, _pintle, _sp
 
 # The sieged pose, shared with VehicleView.Deploy (model units).
 LEG_HINGE_Z, LEG_LENGTH, PAD_UNDER = 1.2, 1.45, .07
-GUN_RETRACT, BARREL_RUN = .9, 1.9
+GUN_RETRACT, BARREL_RUN = 3.0, 1.9
 
 
 def _leg(a, root, sx, sy):
@@ -196,8 +196,9 @@ def siege_tank(a):
     _siege_cannon(a, t)
     _twin_guns(a, t)
 
-    # Roof M2 on a free mount.
-    m = a.pivot('Mount_mg', (.95, -.35, .72), t)
+    # Roof M2 on a free mount, at the twin guns' end of the roof opposite the sight (play-test 7: beside the siege
+    # cannon's cradle it sank into the cradle when the cannon was laid up sieged).
+    m = a.pivot('Mount_mg', (.95, .95, .72), t)
     mg = a.part('MG_mount', 'Steel', m)
     mg.cyl(.1, .16, loc=(0, 0, .08), seg=10, bevel=.01)
     mg.box((.14, .5, .14), loc=(0, -.2, .25), bevel=.02, seg=1)

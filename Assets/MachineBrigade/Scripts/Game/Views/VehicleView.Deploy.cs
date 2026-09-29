@@ -38,12 +38,12 @@ namespace MachineBrigade.Game.Views
         /// <summary>
         /// Play-test 6 (DECISIONS 21H): the siege tank's sieged pose (mb_p22_siege.py), after StarCraft 2's siege tank:
         /// how far each leg swings out and tilts down (degrees), the leg's hinge height, length and the pad's depth under
-        /// its ram housing, how far the hull lifts, how far the twin 105 mm slides back, how high the turret's ring
+        /// its ram housing, how far the hull lifts, how far the twin 105 mm slides back (all the way into the turret: play-test 7), how high the turret's ring
         /// unlocks, how far the siege cannon runs out, the rear spades' swing, and the cannon's angle when it has
         /// nothing to aim at (Elevate lays it on a target).
         /// </summary>
         internal const float LegSwing = 120f, LegTilt = 25f, LegHinge = 1.2f, LegLength = 1.45f, PadUnder = 0.07f,
-            SiegeHullLift = 0.25f, GunRetract = 0.9f, SiegeLift = 0.15f, BarrelRun = 1.9f, SiegeSpadeSwing = -140f,
+            SiegeHullLift = 0.25f, GunRetract = 3.0f, SiegeLift = 0.15f, BarrelRun = 1.9f, SiegeSpadeSwing = -140f,
             SiegeRestPitch = 45f;
 
         /// <summary>How far each ram drives its pad down to the ground once its leg has tilted (before the hull lifts).</summary>
@@ -210,14 +210,14 @@ namespace MachineBrigade.Game.Views
         /// <summary>
         /// Play-test 6 (DECISIONS 21H): the siege tank's parts at sieging pose <paramref name="p"/> (0 on its tracks, 1
         /// sieged), in StarCraft 2's order, over the data's 2.5 s (packing up runs it backwards): the twin 105 mm slides
-        /// into the turret while the four legs swing out from the pods and tilt down; the rams drive the pads on to the
+        /// right into the turret, out of sight, while the four legs swing out from the pods and tilt down; the rams drive the pads on to the
         /// ground and the rear spades bite; the rams push on and lift the hull; the turret's ring unlocks and the turret
         /// swings round, bringing the siege cannon forward; the cannon runs out and its collar locks with a knock
         /// against the sleeve; last it is laid (<see cref="SiegeElevation"/>).
         /// </summary>
         private void AnimateSiege(float p)
         {
-            var gun = Stage(p, 0.04f, 0.3f);
+            var gun = Stage(p, 0.02f, 0.34f);
             var swing = Stage(p, 0f, 0.26f);
             var tilt = Stage(p, 0.14f, 0.36f);
             var plant = Stage(p, 0.28f, 0.46f);

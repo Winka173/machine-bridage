@@ -266,8 +266,8 @@ namespace MachineBrigade.Tests
             // Slower rockets and missiles for the attack jet, the rocket technical, the scout and the heavy gunship.
             Assert.AreEqual(38.4f, w["technical_rockets"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(38.4f, w["scout_rockets"].ProjectileSpeed, 1e-3f);
-            Assert.AreEqual(38.4f, w["gunship_rockets"].ProjectileSpeed, 1e-3f);
-            Assert.AreEqual(16.8f, w["heli_atgm"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(26.9f, w["gunship_rockets"].ProjectileSpeed, 1e-3f, "play-test 7: 30 % slower again");
+            Assert.AreEqual(11.8f, w["heli_atgm"].ProjectileSpeed, 1e-3f);
             // Blasts.
             Assert.AreEqual(1.2f, w["lancet"].ImpactScale, 1e-4f, "the Lancet's blast a fifth bigger");
             Assert.GreaterOrEqual(w["sam_48n6"].SplashRadius, w["sam_long"].SplashRadius, "the long-range SAM's blast at least the SAM launcher's");
@@ -277,8 +277,10 @@ namespace MachineBrigade.Tests
             // Towers keep a machine gun only where the real one has it.
             foreach (var id in new[] { "rocket_turret", "artillery_emplacement", "missile_battery", "aa_turret.sam", "heavy_turret", "heavy_turret.coastal" })
                 Assert.IsFalse(v[id].Mounts.Skip(1).Any(m => m.Weapon.Family == "mg"), id + " has no machine gun");
-            foreach (var id in new[] { "mg_bunker", "guard_tower", "heavy_turret.bastion", "gun_turret" })
-                Assert.Greater(v[id].Mounts.Count, 1, id + " keeps its second gun");
+            // Play-test 7 (DECISIONS 22P): only the steel fortress keeps a second weapon (its two machine-gun turrets).
+            foreach (var id in new[] { "mg_bunker", "guard_tower", "gun_turret" })
+                Assert.AreEqual(1, v[id].Mounts.Count, id + " has its own gun only");
+            Assert.AreEqual(3, v["heavy_turret.bastion"].Mounts.Count, "the steel fortress: its guns and two machine-gun turrets");
         }
     }
 }

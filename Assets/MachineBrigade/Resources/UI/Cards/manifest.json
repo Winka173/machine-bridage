@@ -1117,8 +1117,8 @@
             "hash": "v2:ccf57cf97f9ddfe5ac17a193dca855d80cb7c4db"
         },
         {
-            "id": "gunship_strike",
-            "kind": "support",
+            "id": "sky_gunship",
+            "kind": "vehicle",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
             "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"

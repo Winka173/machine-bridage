@@ -59,12 +59,13 @@ namespace MachineBrigade.Tests
         [Test]
         public void RetiredAndBoughtCardsAreRefunded()
         {
-            // A bought sky gunship at rank 4 with 3 blueprints, and bought carpet bombing: both prices
-            // back, the gunship's ranks too (its blueprints turn universal), and the airstrike for the carpet.
+            // Bought carpet bombing: its price back and the airstrike for it. Play-test 7 (DECISIONS 22P): a sky gunship
+            // bought on an old save is kept (it is the AC-130 card again) with its rank and blueprints; the Gunship support
+            // card bought on a newer one becomes it.
             PlayerProfile.LoadForTests("{\"coins\":0,\"owned\":[\"sky_gunship\",\"carpet_bombing\"],\"rankIds\":[\"sky_gunship\"],\"ranks\":[4],\"prints\":[3]}");
-            Assert.AreEqual(4500 + 3000 + CardRanks.CoinsSpent(4), PlayerProfile.Coins);
-            Assert.AreEqual(3 + CardRanks.BlueprintsSpent(4), PlayerProfile.UniversalBlueprints);
-            Assert.IsFalse(PlayerProfile.Owns("sky_gunship"));
+            Assert.AreEqual(3000, PlayerProfile.Coins);
+            Assert.IsTrue(PlayerProfile.Owns("sky_gunship"));
+            Assert.AreEqual(4, PlayerProfile.Rank("sky_gunship"));
             Progression.TestUnlockAll = false;
             try
             {
@@ -74,6 +75,10 @@ namespace MachineBrigade.Tests
             {
                 Progression.TestUnlockAll = true;
             }
+            PlayerProfile.LoadForTests("{\"coins\":0,\"rosterVersion\":4,\"owned\":[\"gunship_strike\"]}");
+            Assert.AreEqual(0, PlayerProfile.Coins, "no refund: the card carries over");
+            Assert.IsTrue(PlayerProfile.Owns("sky_gunship"), "the Gunship support became the AC-130 card");
+            Assert.IsFalse(PlayerProfile.Owns("gunship_strike"));
         }
 
         [Test]
@@ -102,7 +107,7 @@ namespace MachineBrigade.Tests
         public void NothingAsksForACardThatIsGone()
         {
             var catalog = GameContent.LoadCatalog();
-            foreach (var id in CardMerges.Into.Keys.Concat(CardMerges.Retired.Where(r => r != "sky_gunship")))
+            foreach (var id in CardMerges.Into.Keys.Concat(CardMerges.Retired))
                 Assert.IsFalse(catalog.Vehicles.ContainsKey(id) || catalog.TryGetSupport(id, out _), $"{id} is out of the catalog");
             var cards = new List<string>();
             cards.AddRange(MatchSettings.AllVehicles);
@@ -119,8 +124,7 @@ namespace MachineBrigade.Tests
                 Assert.IsFalse(CardMerges.IsGone(id), $"{id} was merged or retired but is still listed");
                 Assert.IsTrue(catalog.Vehicles.ContainsKey(id) || catalog.TryGetSupport(id, out _), $"{id} is in the catalog");
             }
-            Assert.IsFalse(MatchSettings.AllVehicles.Contains("sky_gunship"), "the sky gunship is no longer a card");
-            Assert.IsTrue(catalog.Vehicles.ContainsKey("sky_gunship"), "but the Gunship item still flies it");
+            Assert.IsTrue(MatchSettings.AllVehicles.Contains("sky_gunship"), "play-test 7: the AC-130 is a card again");
         }
 
         [Test]
@@ -129,7 +133,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("ifv", CardMerges.Resolve("apc"));
             Assert.AreEqual("main_battle_tank", CardMerges.Resolve("aps_tank"));
             Assert.AreEqual("airstrike", CardMerges.Resolve("carpet_bombing"));
-            Assert.IsNull(CardMerges.Resolve("sky_gunship"));
+            Assert.AreEqual("sky_gunship", CardMerges.Resolve("gunship_strike"));
             Assert.AreEqual("light_tank", CardMerges.Resolve("light_tank"));
         }
     }

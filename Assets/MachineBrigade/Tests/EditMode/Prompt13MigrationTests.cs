@@ -19,18 +19,15 @@ namespace MachineBrigade.Tests
     public class Prompt13MigrationTests
     {
         [Test]
-        public void TheSkyGunshipIsNoCardAndNoDeckOrAiPicksIt()
+        public void TheSkyGunshipIsAnAircraftCardAgain()
         {
+            // Play-test 7 (DECISIONS 22P): the AC-130 is a card again, kept in saved decks, and the AI may field it.
             var catalog = GameContent.LoadCatalog();
-            Assert.IsTrue(catalog.Vehicles.TryGetValue("sky_gunship", out var gunship), "the Gunship item still flies it");
-            Assert.IsFalse(gunship.Card, "no card");
-            CollectionAssert.DoesNotContain(MatchSettings.AllVehicles, "sky_gunship");
-            Assert.IsNull(CardMerges.Resolve("sky_gunship"), "a saved deck drops it");
-            var pool = catalog.Vehicles.Keys.ToList();
-            foreach (AiDifficulty difficulty in System.Enum.GetValues(typeof(AiDifficulty)))
-                for (var seed = 1; seed <= 4; seed++)
-                    CollectionAssert.DoesNotContain(ConquestAi.PickDeck(catalog, pool, difficulty, seed, MatchSettings.AllVehicles), "sky_gunship",
-                        $"{difficulty} seed {seed}");
+            Assert.IsTrue(catalog.Vehicles.TryGetValue("sky_gunship", out var gunship), "the AC-130");
+            Assert.IsTrue(gunship.Card, "a card");
+            CollectionAssert.Contains(MatchSettings.AllVehicles, "sky_gunship");
+            Assert.AreEqual("sky_gunship", CardMerges.Resolve("sky_gunship"), "a saved deck keeps it");
+            Assert.AreEqual("sky_gunship", CardMerges.Resolve("gunship_strike"), "and the old Gunship support becomes it");
         }
 
         [Test]

@@ -8624,3 +8624,134 @@ the bar, the picker over the minimap's corner), Large text in play, and the colo
 
 `BattleHud` and `HudSpec` (`Sandbox`), `Icons` (the Sandbox set's lookup), `UiShots` (`BuildSandbox`, the sandbox
 set), `UiLayoutTests`, `SandboxTests`. New: `Game/Hud/Icons.Sandbox.cs`, `Docs/art/sandbox`.
+
+## 22P. Play-test 7, priority fixes: the AC-130 card, mounts firing together, slower missiles and drones, the siege tank, short self-defence guns, tower weapons (2026-09-30)
+
+The owner's play-test 7 list (`Docs/prompts/requests_vi.md`, "Play-test 7"). Branch `feature/pt7-priority` from
+lead/integration 55aa1a6.
+
+### A. The AC-130 as an aircraft card (the owner's top item)
+
+**Why it could not be found.** 21E made the AC-130 a support card (`gunship_strike`), listed with the supports; the
+aircraft list (Scout Helicopter ... Heavy Bomber) held no AC-130, and its "Heavy Gunship" is the Mi-24. **Decided:
+`sky_gunship` is a vehicle card again**, "AC-130 Gunship" / "Pháo hạm AC-130" (full and short name), in
+`MatchSettings.AllVehicles` after the bombers, class Plane (inferred: a fixed-wing aircraft), Air branch (so the
+Aircraft filter lists it), 22 CP, premium at 4,500 coins (the old card's and the support's price) in the shop's cards,
+unlocked in the test builds. It flies as it did for the item: sent somewhere, it flies there and circles its post;
+with an enemy in reach it flies its 22 m anticlockwise pylon turn round it, the 105, 40 and 25 mm all firing out of the
+left side at once (B), Griffins from the ramp; it rearms like a bomber. Its card picture is the AC-130's render
+(the support's manifest entry, now kind `vehicle`); guide rewritten (the old one said 50-58 m).
+
+**The support card is removed**, not kept: two AC-130 cards (one in the supports) was the confusion. Saves: roster
+version 5, `CardMerges.Into["gunship_strike"] = "sky_gunship"` (a bought Gunship support becomes the owned AC-130
+card with its rank and blueprints, no refund); `CardMerges.Retired` is empty (a save not yet migrated keeps its old
+sky gunship card; saves migrated before kept their refund). A support deck that held it drops it. The one-use
+**Gunship item** (`gunship_support`, shop Items tab) stays: it is an item, not a card; its Vietnamese names now read
+"Pháo hạm". The AI may field the AC-130 like any card (G's balance pass may want to price it).
+
+**Proof capture:** UiShots `screen-army-deck-ac130-en-full` (debug screen `army-deck-air`: the collection filtered to
+the aircraft, the AC-130 bought and first in the deck strip; the screen is in `MenuScreen.ScreenNames`, so
+`UiLayoutTests` check it). **Not taken here:** the Android emulator was running, and graphics-mode Unity crashes it
+(CLAUDE.md); the lead takes it after the merge (`-executeMethod MachineBrigade.Editor.UiShots.KitScreens -mbShotsSet
+menu -mbShotsOnly army-deck-ac130`, into `Docs/art/pt7/`).
+
+### B. Every mount fires on its own timing
+
+The fire rhythm (`CombatSystem.InRhythm`) made a vehicle's mounts take turns: machine guns quiet round every heavy
+round and salvo and before a heavy weapon was due, heavy weapons waiting after guns and each other, a main-gun stream
+holding every other mount off, secondary magazine guns sharing gaps, bosses firing one mount a step (11B-12D, with
+19P's gunship, 20W's SHORAD and tail-chase and 21F's hold exceptions). **All of it is gone**, for every vehicle, tower
+and boss: each mount fires as soon as it is loaded, laid and in reach. Kept: a gun's first opening after a random
+0.2-1 s (identical vehicles out of step), machine-gun runs of 6-10 rounds and a pause, each round's 10 % jitter, and
+**twin barrels** (two mounts of one weapon: the Mi-24's door guns, the steel fortress's MG turrets, the HQ's flak, a
+boss's pairs) never open fire in the same instant: the second waits `CombatSystem.TwinOffset` (0.1 s) after the
+first, then keeps its own cadence (`WeaponState.FiredAt`, `OpenedAt`). The old bookkeeping (`Vehicle.HeavyRoundAt`,
+`GunRoundAt`, `LeadWaitingAt`, `WeaponState.HeldAt` ...) is removed. The AC-130's 25 mm (20V: it never fired) now
+streams beside the 105 and 40 mm by the general rule.
+
+**Balance note for G:** multi-mount vehicles gain the fire their guns lost waiting (roughly: coaxial and roof guns
+beside a main gun, AA vehicles' SAMs beside their flak, which 12D had compensated with heavier flak rounds; attack
+jets' bombs and cannon on one pass; bosses' guns). Not re-measured here (`FireRhythmMeasure` is explicit).
+
+### C. Slower missiles and drones (30 %)
+
+Heavy gunship (Mi-24): `gunship_rockets` 38.4 -> 26.9 m/s (the mega gunship boss fires the same row), `heli_atgm`
+16.8 -> 11.8. Attack jet: `s8_pods` 28.8 -> 20.2, `kh29` 13.8 -> 9.7, `r60` 14.4 -> 10.1 (its air-to-air missile
+too: the owner named the jet's missiles). Drone mothership: `swarm_drones` 26 -> 18.2. Every flight at full reach
+stays under its cooldown (the Kh-29's 4.1 s of 7.9, the drone's 3.3 s of 3.3).
+
+### D. The siege tank
+
+- **The twin 105 mm retracts right into the turret** sieged (3.0 m instead of 0.9: its brakes end flush with the
+  turret's face; before, two long barrels still lay over the engine deck), over 2-34 % of the 2.5 s, and runs back out
+  when it packs up (the same sequence backwards). `mb_p22_siege.py` `GUN_RETRACT`, `VehicleView.GunRetract`.
+- **The roof machine gun** stood on the turret roof right beside the siege cannon's cradle and trunnions: sieged, with
+  the cannon laid at 55-72 degrees, it sank into the cradle's side. It now stands at the twin guns' end of the roof,
+  opposite the sight (Blender (0.95, 0.95) on the turret; 1.4 m from the trunnion instead of 0.8), clear of both
+  guns in both modes, still on its free mount. Model rebuilt (`siege_tank.glb`, same 15,472 triangles); **its card
+  picture needs a re-render** (the lead's, with graphics: `CardRenderTests.EveryCardHasAFreshPicture` fails on it
+  until then). A close-up of both modes is for the lead's captures too.
+
+### E. Short self-defence machine guns
+
+The owner's "giảm range có thể bắn 30-50 tùy xe": their M2 reaches 30 m, so the cut is read as 30-50 % by vehicle (a
+30-50 m cut would leave nothing). New rows inheriting `hmg_roof` / `mg_jeep`: `hmg_selfdef_21` (-30 %: the siege tank,
+which also has its 105 mm), `hmg_selfdef_18` (-40 %: SAM launcher, mortar carrier, thermobaric launcher, FPV carrier),
+`hmg_selfdef_15` (-50 %: SP artillery and its elite, MLRS, heavy rocket artillery, ballistic launcher, Lancet and
+Shahed trucks, elite MLRS and Grad; and the non-combat vehicles whose only weapon is the M2: counter-battery radar,
+command vehicle, ammunition carrier, EW jammer, mine layer, smoke carrier, shield carrier, engineer vehicle),
+`mg_jeep_selfdef` (13 m, -40 %: the rocket technical). Tanks, IFVs and the bulldozer keep 30 m.
+
+### F. Towers without the extra weapons
+
+21F took the machine guns out of the data of the rocket battery, artillery emplacement, Patriot, SAM post and coastal
+turret, but their models still drew them (roof HMGs on `Mount_mg`, coaxial guns): what the owner saw. Now:
+- **Data:** the gun turret (and its branches) loses its coaxial gun; the heavy fortress had none; its steel-fortress
+  branch keeps its **two MG turrets** (its mechanic), now on slot `gun` so they fire from the two turrets its model
+  draws (`Mount_gun`, `Mount_gun.001`; they fired from the base's roof HMG before), and loses its coaxial gun; the MG
+  bunker loses its ATGM post (keeps its machine gun; the twin branch inherits); the guard tower loses its grenade
+  launcher (keeps its own gun; its branches inherit); the camp bastion loses its coaxial gun. Kept: the AA turret's
+  SAM (both of its weapons are its anti-air; its branches already choose one), the HQ's flak and coaxial gun.
+- **Models:** `TowerArt` learns, for every model worn only by static non-boss defs (their own and their branch
+  letter's), the slots they fire from; `ModelLibrary.StripUnarmed` takes a `Mount_<slot>` (with everything on it)
+  and the coaxial parts (`Coax*`, `Muzzle_coax`) off the template when no tower wearing the model fires that slot,
+  before the merge: no tower draws a gun it does not have (the heavy fortress's roof HMG and coaxial gun, the gun
+  turret's coaxial gun, the missile battery's, rocket turret's and artillery emplacement's roof HMGs, the MG bunker's
+  ATGM, the guard tower's grenade launcher). Models shared with a vehicle or a boss are never stripped. Card pictures
+  of these towers still show the old guns until re-rendered (the lead's).
+- Guides updated in both languages (the gun turret, MG bunker, guard tower, camp bastion).
+
+### G. Tests
+
+New `PlayTest7Tests` (6): the AC-130 card's data, list, class, price, picture, left-side guns and names; **several
+mounts fire together** (`SeveralMountsFireTogether`, five cases: the battle tank, the Mi-24, the AC-130, the steel
+fortress, the mega gunship boss: at least two mounts fire, two different mounts fire within 0.1 s, twin mounts never
+open fire under `TwinOffset` apart); the speeds of C; the machine-gun reaches of E; the towers' mounts and stripped
+models of F (the steel fortress's two turrets drawn, the HQ's roof guns kept); the siege tank's 105 mm in and out and
+its machine gun clear of the trunnion. Changed: `WeaponTurnTests` (round 6's "no two weapons fire together" removed),
+`WeaponRhythmTests.MainGunAndMachineGunFireOnTheirOwnTimings`, `PlayTest5Tests` and `MissileFlightTests` (speeds),
+`PlayTest6Tests` (speeds; the towers' second guns), `PlayTest6UiTests` (the support card's two tests removed), `Prompt13MigrationTests`,
+`RosterMergeTests` (the AC-130 kept, the support migrated).
+
+Run once (compile, then `PlayTest7Tests`, `CounterTests`, `InActionTests`, `AirRealismTests`, `TowerGearTests`,
+`UiLayoutTests`, `L10nTests`, `L10nSwitchTests`, `LocalisationScanTests`, `StringsTests`, `WeaponTurnTests`,
+`WeaponRhythmTests`, `PlayTest5Tests` (the siege tank's sim), `PlayTest6Tests`, `PlayTest6UiTests`,
+`PlayTest6VisualTests` (the siege tank's model), `MissileFlightTests`, `Prompt13MigrationTests`, `RosterMergeTests`,
+`Prompt17ContentTests` (the bunker vehicle's deploy), `CardRenderTests`): 210 of 217; after fixes the three classes
+with my failures pass (27/27). **Left failing:** `CardRenderTests.EveryCardHasAFreshPicture` (the siege tank's picture,
+above) and `TowerGearTests` x3 (the sabot-round fit on the missile battery and the SAM branch: the same three 21F found
+on lead).
+
+### For the testing phase
+
+The AC-130 bought, fielded and sent about; mixed fire from tanks, IFVs, AA vehicles and bosses (and how much harder
+they hit, B); the Mi-24's and attack jet's slower missiles against moving targets; the siege tank's sequence at the
+default zoom.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (six weapon speeds, four new MG rows, about 25 vehicle and tower lines, the `gunship_strike` row
+removed), `CombatSystem.cs` (`InRhythm` and the turn helpers), `Vehicle.cs`, `WeaponState.cs`, `CardMerges.cs`,
+`PlayerProfile.Arsenal.cs` (`RosterVersion` 5), `Progression.cs`, `MatchSettings.cs`, `Strings.cs`, `GuideText.cs`,
+`MenuScreen.cs` / `.Shop.cs`, `UI/Cards/manifest.json`, `ModelLibrary.cs`, `TowerArt.cs`, `VehicleView.Deploy.cs`,
+`UiShots.cs`, `siege_tank.glb`, `Tools/blender/mb_p22_siege.py`, the tests above.
