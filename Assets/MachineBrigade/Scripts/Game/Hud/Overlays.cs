@@ -303,8 +303,9 @@ namespace MachineBrigade.Game.Hud
         /// After the language changes here (prompt 21 L), with the old language (true: Vietnamese): the HUD relabels
         /// itself in place, the battle is not reloaded. Without it the panel relabels itself.
         /// </param>
+        /// <param name="openLog">Prompt 23 H.6: opens the dialogue log (the only way to it); null: no log button.</param>
         public PausePanel(Action resume, Action restart, Action menu, Action autoDeployToggled = null, Action autoStrikeToggled = null,
-            Action<bool> languageChanged = null)
+            Action<bool> languageChanged = null, Action openLog = null)
         {
             _languageChanged = languageChanged;
             Root = Kit.Root(KitDialog.ScrimClass + " fc-overlay fc-pause");
@@ -318,6 +319,7 @@ namespace MachineBrigade.Game.Hud
             buttons.Add(new KitButton(ButtonTier.Primary, Strings.Get("pause.resume"), resume, "play"));
             buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.again"), restart, "restart"));
             buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("result.menu"), menu, "home"));
+            if (openLog != null) buttons.Add(new KitButton(ButtonTier.Secondary, Strings.Get("dialogue.log"), openLog, "info"));
             card.Add(buttons);
             var commander = Kit.Box("fc-pause__commander");
             commander.Add(Kit.Caption(Strings.Get("pause.commander")));

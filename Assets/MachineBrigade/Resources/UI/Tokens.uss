@@ -48,6 +48,10 @@
     --fc-ally: #6cc0ff;                       /* our side (minimap, HUD): brighter than the enemy */
     --fc-enemy: #e0513a;                      /* their side */
     --fc-enemy-cb: #f29a3a;                   /* their side for colour-blind players (Settings: orange against our blue) */
+    --fc-dialogue-ally: #9ad4ff;              /* prompt 23 H.2: our speakers' names, a light blue, brighter than the enemy's */
+    --fc-dialogue-enemy: #ea6a55;             /* the enemy's speakers' names, a darker red */
+    --fc-dialogue-enemy-cb: #d9802a;          /* ...for colour-blind players: a darker orange against our light blue */
+    --fc-dialogue-strip: rgba(8, 10, 12, 0.62);   /* the dim strip under a dialogue line (not a panel) */
     --fc-flash: #ffe6b8;                      /* the flash of a huge blast over the battlefield */
     --fc-range-ground: rgba(226, 132, 48, 0.06);  /* the Base screen's ground cover: a nearly clear orange tint (play-test 8 A: ranges are borders) */
     --fc-range-air: rgba(170, 214, 255, 0.07);    /* its air cover: a nearly clear light blue tint */
@@ -83,6 +87,7 @@
     --fc-fs-number: 36px;                     /* big numbers: 19.7 pt */
     --fc-fs-number-small: 25px;               /* numbers in a row of text: 13.7 pt */
     --fc-fs-card: 22px;                       /* a card's name: 12 pt (cards are narrow; between the secondary and panel title sizes) */
+    --fc-fs-dialogue: 24px;                   /* prompt 23 H.2: the battle's dialogue line, the body size: 13.2 pt */
 
     /* ---- B. touch targets, corners, borders */
     --fc-touch: 81px;                         /* 44 pt: every tap target, a larger invisible one round a smaller face */
@@ -153,6 +158,7 @@
     --fc-fs-number: 43px;
     --fc-fs-number-small: 30px;
     --fc-fs-card: 26px;
+    --fc-fs-dialogue: 29px;
     --fc-topbar: 87px;                        /* 47.7 pt: the rank's two lines at Large text */
 }
 
@@ -167,6 +173,7 @@
     --fc-fs-number: 36px;
     --fc-fs-number-small: 23px;
     --fc-touch: 82px;
+    --fc-fs-dialogue: 24px;                   /* the dialogue line keeps the menus' body size (prompt 23 H.2), not the HUD's */
 }
 .fc-hud.fc-text-large {
     --fc-fs-primary: 48px;
@@ -177,6 +184,7 @@
     --fc-fs-small: 22px;
     --fc-fs-number: 41px;
     --fc-fs-number-small: 26px;
+    --fc-fs-dialogue: 29px;
 }
 /* ...and the battle's overlays (result, pause, the choice, the ad) are the menus' sizes again. */
 .fc-hud .fc-overlay {

@@ -1630,22 +1630,22 @@ namespace MachineBrigade.Game.Hud
             ["stage.goal"] = ("Stage {stage} · {goalText}", "Giai đoạn {stage} · {goalText}"),
             ["choice.title"] = ("Choose the way on", "Chọn hướng tiến công"),
             ["choice.auto"] = ("The first is taken in {seconds} s", "Tự chọn phương án đầu sau {seconds} giây"),
-            ["radio.elite"] = ("Recon: enemy {card} on the field, gold ring on the map. Tougher and harder-hitting: focus it.", "Trinh sát: {card} của địch đã ra trận, vòng vàng trên bản đồ. Lì hơn, đánh đau hơn: dồn hỏa lực vào nó."),
+            ["radio.elite"] = ("Recon: enemy {card} on the field, ringed in gold: focus it.", "Trinh sát: {card} của địch ra trận, có vòng vàng: dồn hỏa lực."),
             ["result.elites"] = ("Elites destroyed", "Tinh nhuệ bị hạ"),
             ["result.elitesValue"] = ("{baseCards} (+{coins|# coin|# coins})", "{baseCards} (+{coins} xu)"),
             ["result.blueprint"] = ("Blueprint found", "Nhặt được bản thiết kế"),
             ["detail.eliteVersion"] = ("The enemy's elite version", "Bản tinh nhuệ của địch"),
             ["radio.betrayal"] = ("The allied commander has turned on us: their units are firing on ours!", "Chỉ huy đồng minh đã trở mặt: quân của họ đang bắn vào ta!"),
-            ["radio.kessler.supergun"] = ("Kessler: \"My gun reaches every corner of this field. Scatter, and it still finds you.\"", "Kessler: \"Khẩu pháo của ta với tới mọi góc chiến trường. Tản ra thì nó vẫn tìm được các ngươi.\""),
+            ["radio.kessler.supergun"] = ("Kessler: \"My gun reaches every corner of this field. Scatter, and it still finds you.\"", "Kessler: \"Pháo của ta với tới mọi góc chiến trường. Tản ra thì nó vẫn tìm được các ngươi.\""),
             ["radio.kessler.supergun.half"] = ("Kessler: \"Reload faster! Bring the heavy charges!\"", "Kessler: \"Nạp nhanh lên! Đem liều phóng nặng ra!\""),
             ["radio.varga.borer"] = ("Varga: \"You watch the horizon. My Worm comes from below.\"", "Varga: \"Các ngươi canh chân trời. Tartarus của ta đến từ dưới chân.\""),
             ["radio.varga.borer.half"] = ("Varga: \"Dig deeper. Break them from underneath!\"", "Varga: \"Khoan sâu hơn. Phá chúng từ bên dưới!\""),
             ["radio.quaden.airship"] = ("Wolff: \"Look up. The sky over this field is mine.\"", "Wolff: \"Nhìn lên đi. Bầu trời trên chiến trường này là của ta.\""),
             ["radio.quaden.airship.half"] = ("Wolff: \"All bays open. Drown them in drones!\"", "Wolff: \"Mở hết cửa nhà chứa. Nhấn chìm chúng bằng drone!\""),
             ["radio.kessler.hovercraft"] = ("Kessler: \"The landing force is under way. Hold the beach and they cannot stop us.\"", "Kessler: \"Lực lượng đổ bộ đã lên đường. Giữ được bãi biển là chúng không cản nổi.\""),
-            ["radio.kessler.leviathan"] = ("Kessler: \"Leviathan is on station. From out here the whole coast is in reach, and none of it can reach me.\"", "Kessler: \"Leviathan đã vào vị trí. Từ ngoài này cả dải bờ biển nằm trong tầm, còn không thứ gì trên đó với tới ta.\""),
-            ["radio.kessler.leviathan.phase2"] = ("Kessler: \"Close the range. Open the well deck, launch the helicopters. Put them back on the beach.\"", "Kessler: \"Áp sát vào. Mở khoang đổ bộ, cho trực thăng cất cánh. Dồn chúng xuống bãi biển.\""),
-            ["radio.kessler.leviathan.phase3"] = ("Kessler: \"Empty the cells on their headquarters. Smoke, full ahead: we are leaving.\"", "Kessler: \"Phóng hết tên lửa vào sở chỉ huy của chúng. Thả khói, hết tốc lực: ta rút.\""),
+            ["radio.kessler.leviathan"] = ("Kessler: \"Leviathan is on station. The whole coast is in reach, and none of it can reach me.\"", "Kessler: \"Leviathan đã vào vị trí. Cả dải bờ biển nằm trong tầm, còn không thứ gì với tới ta.\""),
+            ["radio.kessler.leviathan.phase2"] = ("Kessler: \"Close in. Open the well deck, launch the helicopters. Pin them to the beach.\"", "Kessler: \"Áp sát vào. Mở khoang đổ bộ, cho trực thăng cất cánh. Dồn chúng xuống bãi biển.\""),
+            ["radio.kessler.leviathan.phase3"] = ("Kessler: \"Empty the cells on their HQ. Smoke, full ahead: we are leaving.\"", "Kessler: \"Phóng hết tên lửa vào sở chỉ huy của chúng. Thả khói, hết tốc lực: ta rút.\""),
             ["radio.kessler.leviathan.run"] = ("Command: Leviathan is running for open sea behind its smoke. Sink it before it gets away!", "Chỉ huy: Leviathan đang chạy ra khơi sau màn khói. Đánh chìm nó trước khi nó thoát!"),
             ["radio.kessler.leviathan.escaped"] = ("Kessler: \"Out of range, Colonel. The sea was always mine.\"", "Kessler: \"Ra khỏi tầm rồi, đại tá. Biển xưa nay vẫn là của ta.\""),
             ["radio.kessler.leviathan.sunk"] = ("Kessler: \"Abandon ship... Log the time. Somebody log the time.\"", "Kessler: \"Bỏ tàu... Ghi lại giờ. Ai đó ghi lại giờ đi.\""),
@@ -1654,11 +1654,11 @@ namespace MachineBrigade.Game.Hud
             ["radio.naval.lighthouse.ours"] = ("Command: we hold the lighthouse. Every ship out there is on our plot now.", "Chỉ huy: ta đã giữ ngọn hải đăng. Mọi con tàu ngoài kia giờ đều hiện trên bản đồ của ta."),
             ["radio.naval.lighthouse.theirs"] = ("Command: the enemy holds the lighthouse.", "Chỉ huy: địch đang giữ ngọn hải đăng."),
             ["radio.part.vls"] = ("Command: {boss}'s missile cells are wrecked. No more cruise missiles!", "Chỉ huy: ống phóng tên lửa của {boss} đã bị phá. Hết tên lửa hành trình!"),
-            ["radio.part.ciws"] = ("Command: {boss}'s last CIWS is down. Missiles and drones get through now!", "Chỉ huy: cụm CIWS cuối cùng của {boss} đã tắt. Tên lửa và drone giờ đánh trúng được rồi!"),
+            ["radio.part.ciws"] = ("Command: {boss}'s last CIWS is down. Missiles and drones get through now!", "Chỉ huy: cụm CIWS cuối của {boss} đã tắt. Tên lửa và drone giờ đánh trúng được rồi!"),
             ["radio.part.radar"] = ("Command: {boss}'s radar mast is down. Its shells go wide, its CIWS misses.", "Chỉ huy: cột radar của {boss} đã đổ. Đạn pháo rơi lệch, CIWS bắn trượt."),
             ["radio.part.flightdeck"] = ("Command: {boss}'s flight deck is burning. No more helicopters off it.", "Chỉ huy: sàn đáp của {boss} đang cháy. Hết trực thăng cất cánh từ đó."),
             ["radio.part.welldeck"] = ("Command: {boss}'s well deck is wrecked. No more landing craft.", "Chỉ huy: khoang đổ bộ của {boss} đã hỏng. Hết tàu đổ bộ."),
-            ["radio.part.machinery"] = ("Command: {boss}'s engine room is hit! It is losing way: it cannot outrun us now.", "Chỉ huy: buồng máy của {boss} trúng đòn! Nó đang chậm lại: giờ nó không chạy thoát được nữa."),
+            ["radio.part.machinery"] = ("Command: {boss}'s engine room is hit! It is losing way: it cannot outrun us now.", "Chỉ huy: buồng máy của {boss} trúng đòn! Nó đang chậm lại: hết đường chạy thoát."),
             ["radio.kessler.hovercraft.half"] = ("Kessler: \"Full throttle, land everything we have!\"", "Kessler: \"Hết tốc lực, đổ bộ toàn bộ lực lượng!\""),
             ["radio.hung.supreme"] = ("{@lyhan}: \"You trusted me once. Now my whole army fights harder for it.\"", "{@lyhan}: \"Các người từng tin ta. Giờ cả đạo quân của ta đánh mạnh hơn nhờ điều đó.\""),
             ["radio.hung.supreme.half"] = ("{@lyhan}: \"Guard, to me! Protect the command!\"", "{@lyhan}: \"Cận vệ, lại đây! Bảo vệ sở chỉ huy!\""),
@@ -1719,8 +1719,8 @@ namespace MachineBrigade.Game.Hud
             ["radio.part.drill"] = ("Command: {boss}'s drill head is shattered. It cannot dig under any more!", "Chỉ huy: mũi khoan của {boss} đã vỡ. Nó không chui xuống đất được nữa!"),
             ["radio.part.ramp"] = ("Command: {boss}'s landing ramp is wrecked. No more troops come ashore from it.", "Chỉ huy: cửa đổ bộ của {boss} đã hỏng. Không còn quân nào đổ bộ từ nó nữa."),
             ["radio.part.antenna"] = ("Command: {boss}'s command antenna is down. Its army has lost its edge!", "Chỉ huy: ăng-ten chỉ huy của {boss} đã đổ. Quân của nó mất lợi thế rồi!"),
-            ["radio.part.mainengine"] = ("Command: {boss}'s main engine is wrecked. It cannot climb back to high altitude: it stays low until it comes down!", "Chỉ huy: động cơ đẩy chính của {boss} đã bị phá. Nó không lên lại tầng cao được nữa: giữ ở tầng thấp cho tới khi rơi!"),
-            ["radio.part.uplink"] = ("Command: {boss}'s satellite uplink is down. No more rods falling from orbit!", "Chỉ huy: ăng-ten liên kết vệ tinh của {boss} đã bị phá. Hết thanh vonfram rơi từ quỹ đạo!"),
+            ["radio.part.mainengine"] = ("Command: {boss}'s main engine is wrecked: it stays low until it falls!", "Chỉ huy: động cơ chính của {boss} đã bị phá: nó ở tầng thấp tới khi rơi!"),
+            ["radio.part.uplink"] = ("Command: {boss}'s satellite uplink is down. No more rods falling from orbit!", "Chỉ huy: ăng-ten vệ tinh của {boss} đã bị phá. Hết thanh vonfram rơi từ quỹ đạo!"),
             ["radio.part.podbay"] = ("Command: {boss}'s drop-pod bay is wrecked. No more pods coming down!", "Chỉ huy: cửa thả khoang đổ bộ của {boss} đã bị phá. Hết khoang đổ bộ rơi xuống!"),
             ["toast.partRepaired"] = ("{card} patched its {part} back together", "{card} đã tự vá lại {part}"),
             ["toast.partFocus"] = ("Every unit in range: target the {part}", "Toàn quân trong tầm: ưu tiên bắn {part}"),
@@ -2506,7 +2506,8 @@ namespace MachineBrigade.Game.Hud
         public static string Get(string key) =>
             Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
             BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text) || BossText.Table.TryGetValue(key, out text) ||
-            SandboxText.Table.TryGetValue(key, out text) || CommanderText.Table.TryGetValue(key, out text) || NameText.Table.TryGetValue(key, out text) || StoryText.Table.TryGetValue(key, out text)
+            SandboxText.Table.TryGetValue(key, out text) || CommanderText.Table.TryGetValue(key, out text) || NameText.Table.TryGetValue(key, out text) || StoryText.Table.TryGetValue(key, out text) ||
+            DialogueText.Table.TryGetValue(key, out text)
                 // A support card's numbers come from its data (the balance pass after prompt 18, C.3); proper names come from NameText.
                 ? NameText.Expand(SupportLines.Fill(key, Vietnamese ? text.vi : text.en)) : key;
 
@@ -2607,7 +2608,7 @@ namespace MachineBrigade.Game.Hud
                 {
                     ("Strings", Table), ("GuideText", GuideText.Table), ("CampaignText", CampaignText.Table), ("UnitText", UnitText.Table),
                     ("BigAttackText", BigAttackText.Table), ("OrbitalText", OrbitalText.Table), ("BossText", BossText.Table), ("SandboxText", SandboxText.Table),
-                    ("CommanderText", CommanderText.Table), ("NameText", NameText.Table), ("StoryText", StoryText.Table),
+                    ("CommanderText", CommanderText.Table), ("NameText", NameText.Table), ("StoryText", StoryText.Table), ("DialogueText", DialogueText.Table),
                 };
                 foreach (var (name, table) in tables)
                     foreach (var kv in table)
@@ -2628,7 +2629,7 @@ namespace MachineBrigade.Game.Hud
         public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||
             BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key) || BossText.Table.ContainsKey(key) || SandboxText.Table.ContainsKey(key) ||
             CommanderText.Table.ContainsKey(key) || NameText.Table.ContainsKey(key) ||
-            StoryText.Table.ContainsKey(key);
+            StoryText.Table.ContainsKey(key) || DialogueText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>

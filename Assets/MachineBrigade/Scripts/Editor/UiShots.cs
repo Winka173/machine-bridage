@@ -162,7 +162,7 @@ namespace MachineBrigade.Editor
         public static readonly string[] BattleScreenNames =
         {
             "hud-score", "hud-mission", "hud-boss-open", "hud-siege", "hud-defend", "hud-waves", "hud-score-full", "hud-mission-full",
-            "hud-enemy", "hud-commander",
+            "hud-enemy", "hud-commander", "hud-dialogue",
             "result-win", "result-loss", "result-checkpoint", "result-endless", "pause", "choice",
         };
 
@@ -391,7 +391,7 @@ namespace MachineBrigade.Editor
             if (full) screen = screen.Substring(0, screen.Length - "-full".Length);
             var spec = screen switch
             {
-                "hud-mission" or "hud-boss-open" or "hud-siege" or "hud-defend" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
+                "hud-mission" or "hud-boss-open" or "hud-siege" or "hud-defend" or "hud-dialogue" => new HudSpec { Mode = HudMode.Mission, HintKey = "hint.auto" },
                 "hud-waves" => new HudSpec { Mode = HudMode.Waves },
                 _ => new HudSpec { Mode = HudMode.Score, ScoreLabel = "stat.tickets" },
             };
@@ -450,7 +450,16 @@ namespace MachineBrigade.Editor
                     hud.PreviewBossParts(boss, shares, broken, 2);
                     if (screen == "hud-boss-open") hud.PreviewBossExpanded();
                     var elite = catalog.Vehicles.Values.Where(v => v.Elite && !v.Boss).OrderBy(v => v.Id).First();
-                    hud.Toast(Strings.Format("radio.elite", Strings.Card(elite.Id)), error: true, seconds: 5f);
+                    hud.Toast(Strings.Format("toast.elite", Strings.Card(elite.Id)), error: true, seconds: 5f, kind: NoticeKind.Elite);
+                    break;
+                }
+                case "hud-dialogue":
+                {
+                    // Prompt 23 H: an enemy general's line (one of the longest, two lines) over the tray, a warning notice at the top.
+                    hud.SetMission(Strings.Get("goal.boss"), Strings.Format("result.sides", ("us", 2), ("enemy", 1)), 0.45f, 312f, new List<PointInfo>());
+                    hud.SetBoss(BossBar.CallSign(Strings.Card("leviathan")), 0.58f, 1, new List<float> { 0.66f, 0.33f }, false);
+                    hud.Toast(Strings.Get("toast.raid"), error: true, seconds: 5f, kind: NoticeKind.AirRaid);
+                    hud.ShowLine(DialogueRules.Line("radio.kessler.leviathan", DialoguePriority.Event, "kessler", 1));
                     break;
                 }
                 case "hud-waves":
