@@ -5,27 +5,28 @@ using System.Text;
 namespace MachineBrigade.Game.Hud
 {
     /// <summary>
-    /// Proper names (prompt 21 J1 and J5). Names stay the same in both languages. The story's Vietnamese names are
-    /// written <c>{@id}</c> in every text and filled from <see cref="Table"/> when a text is read, so prompt 22 can
-    /// swap each one here, in one place. The other names (bosses, generals, brands, the real weapons the units
-    /// are modelled on, abbreviations) are written in the texts as they are; <see cref="Kept"/> lists them for the
-    /// language scans, which allow them in both languages.
+    /// Proper names (prompt 21 J1 and J5, prompt 22 A). Names stay the same in both languages, and none is Vietnamese.
+    /// The story's names of prompt 21 are written <c>{@id}</c> in its texts and filled from <see cref="Table"/> when a
+    /// text is read; prompt 22 swapped them here (the ids stay: <c>{@lyhan}</c> is Thorne now). The other names
+    /// (bosses, generals, places, chapters, brands, the real weapons the units are modelled on, abbreviations) are
+    /// written in the texts as they are; <see cref="Kept"/> lists them for the language scans, which allow them in
+    /// both languages.
     /// </summary>
     public static class NameText
     {
-        /// <summary>The story's Vietnamese names; a text writes <c>{@dieuhau}</c> for <c>name.dieuhau</c>.</summary>
+        /// <summary>The story's names written as tokens; a text writes <c>{@dieuhau}</c> for <c>name.dieuhau</c>.</summary>
         public static readonly Dictionary<string, (string en, string vi)> Table = new()
         {
-            ["name.dieuhau"] = ("Diều Hâu", "Diều Hâu"),
-            ["name.lephong"] = ("Lê Phong", "Lê Phong"),
-            ["name.lyhan"] = ("Lý Hàn", "Lý Hàn"),
-            ["name.trankhai"] = ("Trần Khải", "Trần Khải"),
-            ["name.khai"] = ("Khải", "Khải"),
-            ["name.linh"] = ("Linh", "Linh"),
-            ["name.mai"] = ("Mai", "Mai"),
-            ["name.quaden"] = ("Quạ Đen", "Quạ Đen"),
-            ["name.lamthanh"] = ("Lam Thành", "Lam Thành"),
-            ["name.bagia"] = ("Bà Già", "Bà Già"),
+            ["name.dieuhau"] = ("Hawk", "Hawk"),
+            ["name.lephong"] = ("Jonah Reyes", "Jonah Reyes"),
+            ["name.lyhan"] = ("Thorne", "Thorne"),
+            ["name.trankhai"] = ("Marcus Kade", "Marcus Kade"),
+            ["name.khai"] = ("Kade", "Kade"),
+            ["name.linh"] = ("Nadia", "Nadia"),
+            ["name.mai"] = ("Mara", "Mara"),
+            ["name.quaden"] = ("Raven", "Raven"),
+            ["name.lamthanh"] = ("Veyra", "Veyra"),
+            ["name.bagia"] = ("Matilda", "Matilda"),
         };
 
         /// <summary>
@@ -48,13 +49,23 @@ namespace MachineBrigade.Game.Hud
             // Bosses' and branches' code names.
             "Argus", "Atlas", "Bastion", "Behemoth", "Caspian", "Charybdis", "Daedalus", "Fenrir", "Gungnir", "Harpy", "Hive", "Icarus", "Inferno", "Ixion",
             "Juggernaut", "Jötunn", "Kronos", "Leviathan", "Locust", "Matriarch", "Moloch", "Nemesis", "Roc", "Scylla", "Spectre", "Tartarus", "Tempest",
-            "Typhon", "Titan", "Napalm",
+            "Typhon", "Titan", "Napalm", "Morrigan",
             // Equipment brands.
             "Ironclad", "Works", "Kestrel Dynamics", "Vulcan Arms", "Longbow Ordnance", "Aegis Systems", "Stormfront Aviation", "Hivemind Robotics",
             "Quartermaster", "Logistics", "Spectre Electronics", "Hammerfall Munitions", "Phoenix Recovery", "Wolfpack Tactics", "Bulwark Engineering",
-            // The story's people, call signs and factions (the Vietnamese ones are in the table above).
-            "Anvil", "Winter", "Maelstrom", "Sol", "Queen", "Varga", "Viktor", "Kessler", "Magnus", "Orlov", "Ilya", "Aurel", "Lucien", "Brandt", "Wolff", "Kasimir", "Elara", "Sen", "Hawk", "Raven",
+            // The story's people, call signs and factions.
+            "Anvil", "Winter", "Maelstrom", "Sol", "Queen", "Varga", "Viktor", "Kessler", "Magnus", "Orlov", "Ilya", "Aurel", "Lucien", "Brandt", "Wolff", "Kasimir", "Elara", "Hawk", "Raven",
             "Hegemon",
+            // Prompt 22 A: the story's people and call signs, its factions and places, its chapters and acts, the new maps.
+            "Marcus Kade", "Mara Lind", "Jonah Reyes", "Nadia Kerr", "Roland Thorne", "Venn", "Bulwark",
+            "Otto Brenn", "Ledger", "Tomas Adler", "Flag", "Kaia Mendez", "Rush", "Piet Dahl", "Longshot", "Ines Varro", "Tide",
+            "Lena Quist", "Magpie", "August Reyn", "Crown", "Selma Okoye", "Vault", "Matilda",
+            "Meridian Coast", "Meridian Accord", "Meridian", "Accord", "7th Mechanized Brigade", "Project Icarus", "Veyra", "Veyra Old Quarter", "Foundry",
+            "Ashfield", "Dunebreak", "Frostpeak", "Ironport", "Red Rock", "Whiteout Pass", "Greenvale", "Rust Yard", "Emberridge", "Jungle Pass",
+            "Skyhold", "Metro City", "Stormbeach", "Hollow Dam", "Helion Launch Complex", "Helion", "Salt Flats", "Border Crossing", "Mirewood",
+            "Coral Keys", "Beacon Bay", "Deepcut Mine", "Skygate Array", "Skygate",
+            "Landfall", "Counteroffensive", "Betrayal", "Silver Sky", "Coast of Fire", "Black Gold", "The Long Winter", "Blueprints", "Iron Harbor",
+            "Burning Canopy", "Counterstrike", "The Queen's Choice", "Underworld", "Rough Water", "Hawk and Raven", "War in the Sky",
             // The game.
             "Machine Brigade",
             // Words Vietnamese took in whole.

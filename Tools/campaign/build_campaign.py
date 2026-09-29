@@ -3,9 +3,10 @@
     python Tools/campaign/build_campaign.py [--report <dir>]
 
 The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
-(prompt 20), the people and chapters in story.py. This script turns reversed missions round, gives
-every mission its pay (the economy curve of Docs/DECISIONS.md section 4, 19A for twelve chapters),
-checks the campaign's rules and writes both files. --report also writes the economy table there.
+(prompt 20), in chapters of 9-18 missions and three interludes by act5.py-act8.py (prompt 22), the
+people and chapters in story.py. This script turns reversed missions round, gives every mission its
+pay (the economy curve of Docs/DECISIONS.md section 4, 19A for twelve chapters), checks the campaign's
+rules and writes both files. --report also writes the economy table there.
 
 CampaignText.cs holds hand-localised words: a key it already has keeps its words, unless the sources
 mark the key fresh (campaign_kit.retext); new keys come from the sources.
@@ -28,6 +29,10 @@ import act1  # noqa: E402,F401
 import act2  # noqa: E402,F401
 import act3  # noqa: E402,F401
 import act4  # noqa: E402,F401
+import act5  # noqa: E402,F401
+import act6  # noqa: E402,F401
+import act7  # noqa: E402,F401
+import act8  # noqa: E402,F401
 
 DATA = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Resources', 'Data')
 TEXT_CS = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Scripts', 'Game', 'Hud', 'CampaignText.cs')
@@ -42,9 +47,12 @@ MODULES = {'repair_bay', 'ammo_depot', 'airfield', 'logistics_station', 'radar_s
 # Cards that shoot at aircraft from the ground (and the fighter), for the anti-air rule.
 ANTI_AIR = {'aa_vehicle', 'sam_launcher', 'heavy_aa', 'zu23_technical', 'long_sam', 'fighter_jet', 'aa_turret', 'missile_battery', 'iron_beam'}
 FLYING_BOSSES = {'mega_gunship', 'drone_mothership', 'sky_fortress', 'silver_bug', 'command_airship',
-                 'locust', 'argus', 'icarus_mk0', 'daedalus'}
+                 'locust', 'argus', 'icarus_mk0', 'daedalus', 'morrigan'}
 CHAPTERS = 12
 ACT_IV = 10  # the first chapter of act IV
+# Prompt 22 E: the bosses and battlefields P22-content builds (a mission on one says so: "awaits").
+PENDING_BOSSES = {'behemoth_mk0', 'morrigan'}
+PENDING_MAPS = {'foundry', 'veyra_old_quarter'}
 VEHICLES = set()
 
 
@@ -134,7 +142,8 @@ def pay_base(missions):
             base = last_main
             m['_coins'], m['_prints'] = base[0] * 1.15, base[1] * 0.6
             continue
-        kind = 2.4 if m.get('operation') else 1.5 if m['goal'] in ('Boss', 'Intercept') or m['id'].endswith('m05') else 1.0
+        # Prompt 22: a set piece of stages (not the chapter's operation) pays between a boss and an operation.
+        kind = 2.4 if m.get('operation') else 1.8 if m.get('stages') else 1.5 if m['goal'] in ('Boss', 'Intercept') else 1.0
         coins = (1.0 + index / 30.0) * kind
         prints = (1.0 + index / 22.0) * kind
         m['_coins'], m['_prints'] = coins, prints
@@ -197,8 +206,10 @@ def tune(missions):
     """Scales coins and blueprints so the main deck is about rank 7 as act IV begins, and a little over 8 by the end."""
     pay_base(missions)
     best = None
+    # The ranks follow the blueprints (the coins of stars and crates are enough), so the coin scale stays at its
+    # floor, the old campaign's pay; prompt 22: 187 missions pay fewer blueprints each than 144 did, so that search starts lower.
     for cs in [x / 10 for x in range(10, 60)]:
-        for ps in [x / 4 for x in range(4, 60)]:
+        for ps in [x / 4 for x in range(2, 60)]:
             r = simulate(missions, cs * 100, ps)
             at4 = rank_at(r, missions, ACT_IV)
             end = r[-1][1]
@@ -215,15 +226,15 @@ def tune(missions):
 
 def cut(missions, last_act):
     """
-    The campaign a build with acts I to <last_act> switched on plays (prompt 20 C): the later chapters'
-    missions gone, their cards, modules and HQ levels paid by the last chapter's operation (the Game
-    layer does the same, Campaign.All).
+    The campaign a build with acts I to <last_act> switched on plays (prompt 20 C; an interlude goes
+    with the act before it, prompt 22): the later acts' missions gone, their cards, modules and HQ
+    levels paid by the last chapter's operation (the Game layer does the same, Campaign.All).
     """
     last = last_act * 3
-    kept = [copy.deepcopy(m) for m in missions if m['chapter'] <= last]
+    kept = [copy.deepcopy(m) for m in missions if story.ACT_OF[m['chapter']] <= last_act]
     op = next(m for m in kept if m['chapter'] == last and m.get('operation'))
     for m in missions:
-        if m['chapter'] > last:
+        if story.ACT_OF[m['chapter']] > last_act:
             op['unlocks'] = op.get('unlocks', []) + m.get('unlocks', [])
     return kept
 
@@ -265,18 +276,33 @@ def check(missions):
         fail('duplicate ids')
     main = [m for m in missions if not m.get('side')]
     side = [m for m in missions if m.get('side')]
-    # A chapter's epilogue (prompt 16: Leviathan after chapter 4's operation) is a main mission outside the count.
-    core = [m for m in main if not m.get('epilogue')]
-    if len(core) != 10 * CHAPTERS or len(side) != 2 * CHAPTERS:
-        fail(f'{len(core)} main and {len(side)} side missions (want {10 * CHAPTERS} and {2 * CHAPTERS})')
-    for e in main:
-        if e.get('epilogue') and e['goal'] != 'Boss':
-            fail(f"{e['id']}: an epilogue is a boss fight")
+    # Prompt 22 B: every chapter's counts (story.COUNTS), 9-18 main missions a chapter, four an interlude.
+    for c, (n_main, n_side) in story.COUNTS.items():
+        ms = [m for m in main if m['chapter'] == c]
+        ss = [m for m in side if m['chapter'] == c]
+        if len(ms) != n_main or len(ss) != n_side:
+            fail(f'chapter {c}: {len(ms)} main and {len(ss)} side missions (want {n_main} and {n_side})')
+        if c in story.INTERLUDES:
+            if n_main != 4 or any(m.get('operation') for m in ms):
+                fail(f'interlude {c}: four missions and no operation')
+        elif not 9 <= n_main <= 18:
+            fail(f'chapter {c}: {n_main} main missions (9-18)')
+        if any(m.get('epilogue') for m in ms):
+            fail(f'chapter {c}: no epilogue after the operation any more (prompt 22)')
+    # Campaign order is chapter order (story.ORDER), and no two missions in a row on one map with one set-up.
+    seq = [story.ORDER.index(m['chapter']) for m in missions]
+    if seq != sorted(seq):
+        fail('missions out of chapter order')
+    for a, b in zip(missions, missions[1:]):
+        if a['map'] == b['map'] and signature(a) == signature(b):
+            fail(f"{a['id']} and {b['id']} in a row on {a['map']} with one set-up")
     owned = set(STARTERS)
     per_chapter = {}
     for m in missions:
         if m['goal'] not in GOALS:
             fail(f"{m['id']}: goal {m['goal']}")
+        if (m['map'] in PENDING_MAPS) != any(a == 'map:' + m['map'] for a in m.get('awaits', [])):
+            fail(f"{m['id']}: a mission on {m['map']} awaits it, and only then")
         if m['weather'] not in kit.WEATHER[m['map']]:
             fail(f"{m['id']}: {m['weather']} is not weather {m['map']} has")
         if m.get('side') and m.get('unlocks'):
@@ -297,6 +323,8 @@ def check(missions):
             # A boss slot pass 2 has not built is fought as its fallback (prompt 20).
             if b['def'] not in VEHICLES and b.get('fallback') not in VEHICLES:
                 fail(f"{m['id']}: boss {b['def']} has no def and no fallback that exists")
+            if b['def'] in PENDING_BOSSES and 'boss:' + b['def'] not in m.get('awaits', []):
+                fail(f"{m['id']}: {b['def']} comes from part E; the mission awaits it")
             if b['def'] in FLYING_BOSSES or b.get('fallback') in FLYING_BOSSES:
                 aa = len(owned & ANTI_AIR)
                 if aa < 4:
@@ -311,17 +339,25 @@ def check(missions):
         n = per_chapter.get(c, 0)
         if not 4 <= n <= 7:
             fail(f'chapter {c} unlocks {n} cards')
+    for c in story.INTERLUDES:
+        if per_chapter.get(c, 0):
+            fail(f'interlude {c} unlocks cards (the route stays in the chapters)')
     modules = [u for m in missions for u in m.get('unlocks', []) if u in MODULES]
     if sorted(modules) != sorted(MODULES):
         fail(f'modules {modules}')
+    # Prompt 22 B.1: a chapter's last main mission is its operation (prompt 5's frame) and fights its main boss;
+    # the only operation of the chapter. B.5: a set piece besides it in every chapter.
     for c in range(1, CHAPTERS + 1):
-        ms = [m for m in missions if m['chapter'] == c and not m.get('side') and not m.get('epilogue')]
-        if len(ms) != 10:
-            fail(f'chapter {c} has {len(ms)} main missions')
-        if not ms[9].get('operation') or not ms[9].get('stages'):
-            fail(f'chapter {c}: the tenth mission is its operation')
-        if ms[4]['goal'] not in ('Boss', 'Intercept'):
-            fail(f'chapter {c}: the fifth mission is a boss')
+        ms = [m for m in missions if m['chapter'] == c and not m.get('side')]
+        last = ms[-1]
+        if not last.get('operation') or not last.get('stages'):
+            fail(f'chapter {c}: the last mission is its operation')
+        if [m['id'] for m in ms if m.get('operation')] != [last['id']]:
+            fail(f'chapter {c}: one operation, the last mission')
+        if story.CHAPTER_BOSSES[c][0] not in {s.get('boss', {}).get('def') for s in last['stages']}:
+            fail(f'chapter {c}: the operation fights {story.CHAPTER_BOSSES[c][0]}')
+        if not any(m.get('setPiece') for m in ms if m is not last):
+            fail(f'chapter {c}: a set piece besides the operation')
     levels = sorted((m['hqLevel'], m['chapter']) for m in missions if m.get('hqLevel'))
     if levels != [(1, 1), (2, 3), (3, 6), (4, 9), (5, 11)]:
         fail(f'HQ levels {levels} (want levels 1-5 in chapters 1, 3, 6, 9 and 11)')
@@ -329,7 +365,7 @@ def check(missions):
     for c, (main, minis) in story.CHAPTER_BOSSES.items():
         fought = {b.get('def') for m in missions if m['chapter'] == c
                   for b in [m.get('boss', {})] + [s.get('boss', {}) for s in m.get('stages', [])] if b}
-        for slot in [main] + minis:
+        for slot in ([main] if main else []) + minis:
             if slot not in fought:
                 fail(f'chapter {c}: boss {slot} is fought in none of its missions')
     legacy = sorted(m['legacy'] for m in missions if m.get('legacy'))
@@ -347,6 +383,10 @@ def check(missions):
     for s in side:
         if s.get('after') not in ids or next(m for m in missions if m['id'] == s['after']).get('side'):
             fail(f"{s['id']}: after {s.get('after')}")
+    # Prompt 22 B: a moved mission lands on one that exists, and no id is moved twice.
+    for old, new in story.MOVES22.items():
+        if new not in ids or old in ids:
+            fail(f'move {old} -> {new}')
     return owned
 
 
@@ -370,8 +410,26 @@ def table_in_file():
     return table
 
 
-def write_texts():
+# A key of one mission's words (its name, briefing, fragment, radio lines, stages and choices).
+MISSION_KEY = re.compile(r'^(?:mission|stage|choice)\.((?:c\d+[ms]|i\d+m)\d+)\.|^radio\.[a-z]+\.((?:c\d+[ms]|i\d+m)\d+)\.')
+
+
+def write_texts(missions):
     kept = table_in_file()
+    # Prompt 22: the words of a mission no longer in the campaign go (their keys are not the sources' any more), and so
+    # does a mission's radio line no mission or stage plays any more (a line rewritten under a new key).
+    live = {m['id'] for m in missions}
+    played = {r['key'] for m in missions for r in m.get('radio', [])}
+    played |= {e['key'] for m in missions for s in m.get('stages', []) for e in s.get('events', []) if e.get('kind') == 'Radio'}
+    for key in sorted(set(kept) | set(kit.TEXTS)):
+        mk = MISSION_KEY.match(key)
+        if not mk:
+            continue
+        gone = (mk.group(1) or mk.group(2)) not in live and key not in kit.TEXTS
+        silent = key.startswith('radio.') and key not in played
+        if gone or silent:
+            kept.pop(key, None)
+            kit.TEXTS.pop(key, None)
     lines = ['// Generated by Tools/campaign/build_campaign.py: edit the sources, not this file (a key already here keeps',
              "// its hand-localised words unless the sources mark it fresh; see the script's notes).",
              'using System.Collections.Generic;', '',
@@ -399,14 +457,19 @@ def compact(value, indent=6):
 
 
 def write_json(missions, scales):
-    chapters = [{'number': n, 'act': act, 'maps': maps, **({'general': g} if g else {}),
-                 'main': story.CHAPTER_BOSSES[n][0], 'minis': story.CHAPTER_BOSSES[n][1]} for n, act, _, maps, g, _, _ in story.CHAPTERS]
+    chapters = [{'number': n, 'act': act, **({'interlude': il} if il else {}), 'maps': maps, **({'general': g} if g else {}),
+                 **({'main': story.CHAPTER_BOSSES[n][0]} if story.CHAPTER_BOSSES[n][0] else {}), 'minis': story.CHAPTER_BOSSES[n][1], 'comic': f'comic.{n}'}
+                for n, act, il, _, maps, g, _, _ in story.CHAPTERS]
     generals = [{'id': gid, 'deck': deck, 'supports': sup, 'style': style, 'stance': stance} for gid, deck, sup, style, stance, _, _ in story.GENERALS]
-    out = ['// The story campaign (prompts 4 and 20): twelve chapters in four acts, 120 main missions and 24 side missions.',
-           '// Generated by Tools/campaign/build_campaign.py from act1.py-act4.py and story.py: edit those, not this file.',
+    n_main = sum(1 for m in missions if not m.get('side'))
+    out = [f'// The story campaign (prompts 4, 20 and 22): twelve chapters in four acts and three interludes, {n_main} main missions and '
+           f'{len(missions) - n_main} side missions.',
+           '// Generated by Tools/campaign/build_campaign.py from act1.py-act8.py and story.py: edit those, not this file.',
            '{',
            "  // Prompt 20 B.3: where the nine-chapter campaign's missions went, for a save made before (PlayerProfile.MigrateCampaign).",
            '  "migration": ' + compact({'moves': story.MOVES, 'chaptersSeen': {str(k): v for k, v in story.CHAPTERS_SEEN.items()}, 'hq': story.OLD_HQ}) + ',',
+           "  // Prompt 22 B: where a mission of the twelve chapters of ten went (a save of campaign version 3).",
+           '  "migration22": ' + compact({'moves': story.MOVES22}) + ',',
            '  // Prompt 20 D.3: a release with only acts I-II (or I-III) switched on pays every mission this much more.',
            '  "economy": ' + compact({'payScale': {str(a): round(k, 2) for a, (k, _) in scales.items()}}) + ',',
            '  "chapters": [']
@@ -428,7 +491,7 @@ def report(missions, cs, ps, result, folder):
     os.makedirs(folder, exist_ok=True)
     rows = []
     cum_c = cum_p = 0
-    for c in range(1, CHAPTERS + 1):
+    for c in story.ORDER:
         ms = [m for m in missions if m['chapter'] == c]
         coins = sum(m['coins'] for m in ms)
         prints = sum(m['prints'] for m in ms)
@@ -451,8 +514,10 @@ def report(missions, cs, ps, result, folder):
 
 def main():
     missions = copy.deepcopy(kit.MISSIONS)
-    # Chapter order: each chapter's main missions, then its side missions.
-    missions.sort(key=lambda m: (m['chapter'], 1 if m.get('side') else 0, m['id']))
+    # Chapter order (story.ORDER, the interludes after the chapter before them): each chapter's main missions in the
+    # order act8.ORDER plays them, then its side missions.
+    place = {mid: i for ids in act8.ORDER.values() for i, mid in enumerate(ids)}
+    missions.sort(key=lambda m: (story.ORDER.index(m['chapter']), 1 if m.get('side') else 0, place.get(m['id'], 99), m['id']))
     for m in missions:
         if m.get('reversed'):
             reverse(m)
@@ -460,12 +525,14 @@ def main():
     cs, ps, result = tune(missions)
     scales = release_scales(missions, cs, ps)
     write_json(missions, scales)
-    write_texts()
+    write_texts(missions)
     folder = sys.argv[sys.argv.index('--report') + 1] if '--report' in sys.argv else None
     rows = report(missions, cs, ps, result, folder) if folder else None
     at4 = rank_at(result, missions, ACT_IV)
     print(f'{len(missions)} missions, {len(kit.TEXTS)} texts; coin scale {cs:.0f}, blueprint scale {ps:.2f}; '
           f'deck rank {at4:.2f} as act IV begins, {result[-1][1]:.2f} at the end')
+    print('  main/side by chapter: ' + ', '.join(f"{c}: {sum(1 for m in missions if m['chapter'] == c and not m.get('side'))}/"
+                                                f"{sum(1 for m in missions if m['chapter'] == c and m.get('side'))}" for c in story.ORDER))
     for a, (k, end) in scales.items():
         print(f'  acts I-{"II" if a == 2 else "III"} only: pay x{k:.2f}, deck rank {end:.2f} at the end')
     if rows:

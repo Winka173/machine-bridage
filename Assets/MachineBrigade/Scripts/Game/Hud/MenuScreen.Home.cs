@@ -196,7 +196,7 @@ namespace MachineBrigade.Game.Hud
             var next = Campaign.All[Campaign.Next];
             var chapter = Campaign.Chapter(next.Chapter);
             _homeChapter.text = Kit.Caps(next.Chapter > 0
-                ? Strings.Format("campaign.chapterTitle", ("chapter", next.Chapter), ("title", Strings.Get($"chapter.{next.Chapter}.title")))
+                ? Strings.Format("campaign.chapterTitle", ("chapter", Campaign.ChapterName(next.Chapter)), ("title", Strings.Get($"chapter.{next.Chapter}.title")))
                 : Strings.Get("campaign.story.title"));
             _homeMission.text = Kit.Caps(Strings.Format("home.nextMission", ("mission", Campaign.Label(next)), ("name", Strings.Get("mission." + next.Id + ".name"))));
             _homeMissionSub.text = Strings.Get("map." + next.Map) + "  ·  " + Strings.Get("goal." + next.Goal.ToString().ToLowerInvariant());

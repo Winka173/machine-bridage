@@ -35,10 +35,8 @@ namespace MachineBrigade.Tests
             "Command Airship", "Khinh Hạm", "Black Crow", "Hùng", "Quạ Đen",
         };
 
-        /// <summary>Where an old name stays on purpose: our side still calls Wolff "Quạ Đen" on the radio and in its own files.</summary>
-        private static bool Allowed(string key, string name) =>
-            name == "Quạ Đen" && (key.StartsWith("radio.khai.") || key.StartsWith("radio.linh.") || key.StartsWith("radio.dieuhau.") ||
-                                  key.StartsWith("radio.mai.") || key.StartsWith("radio.hq.") || key == "char.quaden.bio" || key == "char.dieuhau.bio");
+        /// <summary>Prompt 22 A: no exception any more (Kasimir Wolff is Raven on every side, "Quạ Đen" is gone).</summary>
+        private static bool Allowed(string key, string name) => false;
 
         [Test]
         public void NoTextUsesAnOldBossOrGeneralName()
@@ -54,7 +52,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(("Icarus · Orbital Spacecraft", "Icarus · Phi thuyền quỹ đạo"), Strings.Texts["unit.silver_bug"]);
             StringAssert.Contains("Dự án Icarus", CampaignText.Table["char.aurel.role"].vi);
             foreach (var c in Campaign.Chapters)
-                foreach (var slot in c.Minis.Prepend(c.Main))
+                foreach (var slot in c.Minis.Prepend(c.Main).Where(s => s != null))
                 {
                     Assert.IsTrue(Strings.Has("boss." + slot), $"boss.{slot}");
                     StringAssert.Contains(" · ", Strings.Get("boss." + slot), $"boss.{slot} as name · subtitle");
@@ -69,19 +67,20 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             Assert.AreEqual(12, Campaign.ChapterCount);
-            CollectionAssert.AreEqual(new[] { 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 }, Campaign.Chapters.Select(c => c.Act).ToArray());
+            // Prompt 22: the interludes aside, twelve chapters in four acts.
+            CollectionAssert.AreEqual(new[] { 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4 }, Campaign.Chapters.Where(c => !c.IsInterlude).Select(c => c.Act).ToArray());
             foreach (var c in Campaign.Chapters)
             {
                 var fought = Campaign.MissionsOf(c.Number).SelectMany(Campaign.BossesOf).ToList();
-                foreach (var slot in c.Minis.Prepend(c.Main))
+                foreach (var slot in c.Minis.Prepend(c.Main).Where(s => s != null))
                     Assert.IsTrue(fought.Any(b => b.Def == slot), $"chapter {c.Number}: {slot} is fought");
                 // A boss pass 2 has not built is fought as a stand-in that exists.
                 foreach (var b in fought)
                     Assert.IsTrue(catalog.Vehicles.ContainsKey(b.Resolve(catalog).def), $"chapter {c.Number}: {b.Def}");
             }
             Assert.AreEqual("Kasimir Wolff", CampaignText.Table["char.quaden.name"].en);
-            // The story's Vietnamese names are tokens of the name table (prompt 21 J5).
-            Assert.AreEqual("Tướng Lý Hàn", NameText.Expand(CampaignText.Table["char.hung.name"].vi));
+            // Prompt 22 A: the story's names are the spec's, the same in both languages.
+            Assert.AreEqual("Tướng Roland Thorne", NameText.Expand(CampaignText.Table["char.hung.name"].vi));
         }
 
         [Test]
@@ -144,8 +143,9 @@ namespace MachineBrigade.Tests
             var last = lastAct * 3;
             Assert.AreEqual(last, Campaign.LastChapter);
             Assert.AreEqual(lastAct == 4, Campaign.StoryComplete, "the game's epilogue only at the story's end, else To be continued");
-            Assert.IsTrue(Campaign.All.All(m => m.Chapter <= last), "only chapters switched on");
-            Assert.AreEqual(12, Campaign.ShownChapters.Count(), "the rest show as Coming soon");
+            // Prompt 22 B.3: an interlude goes with the act before it.
+            Assert.IsTrue(Campaign.All.All(m => Campaign.Chapter(m.Chapter).Act <= lastAct), "only chapters switched on");
+            Assert.AreEqual(15, Campaign.ShownChapters.Count(), "the rest show as Coming soon");
             // Every card, tower, module and HQ level has a source.
             var opened = Campaign.All.SelectMany(m => m.Unlocks).ToHashSet();
             foreach (var u in every.SelectMany(m => m.Unlocks)) Assert.IsTrue(opened.Contains(u), $"{u} still unlocks");
@@ -163,7 +163,7 @@ namespace MachineBrigade.Tests
             var first = every.First(m => m.Id == "c1m01");
             Assert.AreEqual((int)System.Math.Round(first.RewardCoins * scale / 5f) * 5, Campaign.Get("c1m01").RewardCoins);
             Campaign.Release = CampaignRelease.UpTo(lastAct, comingSoon: false);
-            Assert.AreEqual(last, Campaign.ShownChapters.Count(), "hidden instead of Coming soon");
+            Assert.AreEqual(Campaign.Chapters.Count(c => c.Act <= lastAct), Campaign.ShownChapters.Count(), "hidden instead of Coming soon");
         }
 
         [Test]
@@ -171,14 +171,14 @@ namespace MachineBrigade.Tests
         {
             PlayerProfile.ResetForTests();
             Progression.TestUnlockAll = false;
-            // Won with every act on: chapters 1 to 6 and the first mission of chapter 7.
-            foreach (var m in Campaign.All.Where(m => m.Chapter <= 6 || m.Id == "c7m01")) PlayerProfile.RecordMission(m.Id, 2);
+            // Won with every act on: acts I and II (their interludes too) and the first mission of chapter 7.
+            foreach (var m in Campaign.All.Where(m => Campaign.Chapter(m.Chapter).Act <= 2 || m.Id == "c7m01")) PlayerProfile.RecordMission(m.Id, 2);
             Campaign.Release = CampaignRelease.UpTo(2);
             Assert.IsNull(Campaign.All.FirstOrDefault(m => m.Id == "c7m01"));
             Assert.AreEqual(2, PlayerProfile.Stars("c7m01"), "a mission switched off keeps its stars");
             Assert.IsTrue(Campaign.ChapterDone(6));
             Campaign.Release = CampaignRelease.UpTo(4);
-            Assert.AreEqual("c7m02", Campaign.All[Campaign.Next].Id, "the campaign goes on from where it stopped");
+            Assert.AreEqual(Campaign.MissionsOf(7, side: false)[1].Id, Campaign.All[Campaign.Next].Id, "the campaign goes on from where it stopped");
         }
     }
 }

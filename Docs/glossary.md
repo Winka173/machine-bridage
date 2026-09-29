@@ -8,23 +8,34 @@ Prompt 21 J2. Every translation uses these terms. The text tables live in `Asset
 
 - Tight military voice in both languages: short sentences, verbs first, no filler, numbers with their units.
 - English: British spelling (armour, harbour, metres), sentence case for buttons and labels, title case for boss
-  subtitles ("Icarus · Orbital Spacecraft").
+  subtitles ("Icarus · Orbital Spacecraft"). A proper name keeps the spelling it was given ("7th Mechanized Brigade",
+  "Iron Harbor", prompt 22).
 - Vietnamese: sentence case; loanwords written the Vietnamese way (rốc-két, la-de, vonfram, sô-na, mô-đun); no English
   word except the kept names below.
 - Each general keeps the voice of his or her lines in both languages: translate the meaning and the tone of a line,
   not its words. The radio's lines name their speaker first ("Raven: ...", "Chỉ huy: ...").
 
-## Names (J1, J5)
+## Names (J1, J5, prompt 22 A)
 
-- Proper names are the same in both languages: bosses (Behemoth, Icarus, Leviathan...), people and their call signs
-  (Viktor Varga "Anvil", Ilya Orlov "Winter", Magnus Kessler "Maelstrom", Elara Sen "Queen", Kasimir Wolff "Raven",
-  Lucien Aurel "Sol", Lý Hàn "Titan", Trần Khải "Iron", Diều Hâu "Hawk"), the faction (Hegemon), the equipment brands
-  (Kestrel Dynamics...), and the real weapons and vehicles the units are modelled on (T-90, Ka-52, Grad, Patriot, TOS-1A,
-  Lancet, GBU...).
+- No proper name is Vietnamese, in either language: people, call signs, factions, places, maps, chapters and acts
+  (prompt 22 A). The descriptions, the bosses' subtitles, the radio and the briefings are translated.
+- Proper names are the same in both languages: bosses (Behemoth, Icarus, Leviathan, Morrigan...), people and their
+  call signs, the factions (Hegemon, the Meridian Accord and its 7th Mechanized Brigade, "Machine Brigade"), the region
+  (the Meridian Coast) and its capital (Veyra), the equipment brands (Kestrel Dynamics...), and the real weapons and
+  vehicles the units are modelled on (T-90, Ka-52, Grad, Patriot, TOS-1A, Lancet, GBU...).
   `NameText.Kept` lists them; the language scans allow them in both languages.
-- The story's Vietnamese names are written `{@id}` in every text and filled from `NameText.Table`, so prompt 22 can
-  swap them in one place: `{@dieuhau}` Diều Hâu, `{@lephong}` Lê Phong, `{@lyhan}` Lý Hàn, `{@trankhai}` Trần Khải,
-  `{@khai}` Khải, `{@linh}` Linh, `{@mai}` Mai, `{@quaden}` Quạ Đen, `{@lamthanh}` Lam Thành, `{@bagia}` Bà Già.
+- Our side: Colonel Marcus Kade "Iron" / Đại tá Marcus Kade; Engineer Mara Lind / Kỹ sư Mara Lind; Lieutenant Jonah
+  Reyes "Hawk" / Trung úy Jonah Reyes; Captain Nadia Kerr / Đại úy Nadia Kerr; General Roland Thorne "Titan" / Tướng
+  Roland Thorne; Major Brandt "Bulwark"; and the officers who join on the way: Major Otto Brenn "Ledger", Captain Tomas
+  Adler "Flag", Captain Kaia Mendez "Rush", Major Piet Dahl "Longshot", Captain Ines Varro "Tide", Sergeant Major Lena
+  Quist "Magpie" (Thượng sĩ), Colonel August Reyn "Crown", Captain Selma Okoye "Vault".
+- Hegemon: General Viktor Varga "Anvil", Colonel Ilya Orlov "Winter", Admiral Magnus Kessler "Maelstrom", Dr Elara
+  Venn "Queen" (Tiến sĩ Elara Venn), Kasimir Wolff "Raven" (never "Quạ Đen"), Director Lucien Aurel "Sol".
+- The tokens of prompt 21 stay in the texts and read the new names from `NameText.Table`: `{@khai}` Kade,
+  `{@trankhai}` Marcus Kade, `{@mai}` Mara, `{@dieuhau}` Hawk, `{@lephong}` Jonah Reyes, `{@linh}` Nadia, `{@lyhan}`
+  Thorne, `{@quaden}` Raven, `{@lamthanh}` Veyra, `{@bagia}` Matilda (the Behemoth Mara restarts). New texts write the
+  names as they are.
+- A call sign is "biệt danh" in Vietnamese ("biệt danh Iron"). "The Accord" is "Accord" ("quân Accord").
 - A boss's subtitle is translated: `Icarus · Orbital Spacecraft` / `Icarus · Phi thuyền quỹ đạo`.
 
 ## Armour and penetration
@@ -114,53 +125,62 @@ English counts use the plural form of the tables, `{count|# tank|# tanks}`; Viet
 
 ## Acts and chapters
 
-| | English | Vietnamese |
-|---|---|---|
-| Act I | The Landing | Đổ bộ |
-| Act II | The Counterattack | Phản công |
-| Act III | Betrayal | Phản bội |
-| Act IV | Silver Sky | Bầu trời bạc |
-| Chapter 1 | Coast of Fire | Bờ biển lửa |
-| Chapter 2 | Black Gold | Vàng đen |
-| Chapter 3 | The Long Winter | Mùa đông dài |
-| Chapter 4 | Steel Harbour | Cảng thép |
-| Chapter 5 | Jungle Fire | Lửa rừng |
-| Chapter 6 | Counterstrike | Tổng phản công |
-| Chapter 7 | The Capital | Thủ đô |
-| Chapter 8 | Underground | Lòng đất |
-| Chapter 9 | Rough Seas | Biển động |
-| Chapter 10 | War in the Air | Chiến tranh trên không |
-| Chapter 11 | The Orbital Gateway | Cửa ngõ quỹ đạo |
-| Chapter 12 | The Icarus Launch Site | Bãi phóng Icarus |
+Prompt 22: English in both languages, the act's word translated ("Hồi I · Landfall"); an interlude is "Interlude II" /
+"Chương xen kẽ II"; a mission of one "II-3".
 
-## Maps (J4)
+| | English and Vietnamese |
+|---|---|
+| Act I | Landfall |
+| Act II | Counteroffensive |
+| Act III | Betrayal |
+| Act IV | Silver Sky |
+| Chapter 1 | Coast of Fire |
+| Chapter 2 | Black Gold |
+| Chapter 3 | The Long Winter |
+| Interlude I | Blueprints |
+| Chapter 4 | Iron Harbor |
+| Chapter 5 | Burning Canopy |
+| Chapter 6 | Counterstrike |
+| Interlude II | The Queen's Choice |
+| Chapter 7 | Veyra |
+| Chapter 8 | Underworld |
+| Chapter 9 | Rough Water |
+| Interlude III | Hawk and Raven |
+| Chapter 10 | War in the Sky |
+| Chapter 11 | Skygate |
+| Chapter 12 | Helion |
 
-One name per map and language, on every screen and in the story (`map.<id>` in `Strings.cs`):
+## Maps (J4, prompt 22 A)
 
-| Map | English | Vietnamese |
-|---|---|---|
-| ashfield | Ashfield | Đồng Tro |
-| dunebreak | Dunebreak | Đồi Cát |
-| frostpeak | Frostpeak | Đỉnh Sương Giá |
-| ironport | Ironport | Cảng Thép |
-| redrock | Redrock Canyon | Hẻm Đá Đỏ |
-| whiteout | Whiteout Pass | Đèo Bão Tuyết |
-| greenvale | Greenvale | Lũng Xanh |
-| rustyard | Rust Yard | Bãi Sắt Gỉ |
-| emberridge | Ember Ridge | Sườn Dung Nham |
-| junglepass | Jungle Pass | Đèo Rừng Rậm |
-| skyhold | Skyhold Airbase | Căn Cứ Tầng Mây |
-| metrocity | Metro City | Đô Thành |
-| landingbeach | Landing Beach | Bãi Đổ Bộ |
-| hydrodam | Hydro Dam | Đập Thủy Điện |
-| capital | Capital | Thủ Đô |
-| launchsite | Icarus Launch Site | Bãi Phóng Icarus |
-| saltflat | Salt Flats | Sa Mạc Muối |
-| borderbridge | Border Bridge | Cầu Biên Giới |
-| swamp | Swamp | Đầm Lầy |
-| coralisles | Coral Isles | Quần Đảo San Hô |
-| lighthousebay | Lighthouse Bay | Vịnh Hải Đăng |
-| openpit | Open-Pit Mine | Mỏ Lộ Thiên |
-| orbitalgate | Orbital Gateway | Cửa Ngõ Quỹ Đạo |
+One name per map, the same in both languages, on every screen and in the story (`map.<id>` in `Strings.cs`; the ids
+stay):
 
-The story names the capital city itself Lam Thành (`{@lamthanh}`), a proper name.
+| Map | Name |
+|---|---|
+| ashfield | Ashfield |
+| dunebreak | Dunebreak |
+| frostpeak | Frostpeak |
+| ironport | Ironport |
+| redrock | Red Rock |
+| whiteout | Whiteout Pass |
+| greenvale | Greenvale |
+| rustyard | Rust Yard |
+| emberridge | Emberridge |
+| junglepass | Jungle Pass |
+| skyhold | Skyhold |
+| metrocity | Metro City |
+| landingbeach | Stormbeach |
+| hydrodam | Hollow Dam |
+| capital | Veyra |
+| launchsite | Helion Launch Complex |
+| saltflat | Salt Flats |
+| borderbridge | Border Crossing |
+| swamp | Mirewood |
+| coralisles | Coral Keys |
+| lighthousebay | Beacon Bay |
+| openpit | Deepcut Mine |
+| orbitalgate | Skygate Array |
+| foundry | Foundry (prompt 22 E) |
+| veyra_old_quarter | Veyra Old Quarter (prompt 22 E) |
+
+The capital city is Veyra, like its battlefield; "thủ đô" / "the capital" stay the common words.

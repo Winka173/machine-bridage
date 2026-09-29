@@ -303,7 +303,7 @@ namespace MachineBrigade.Game.Hud
         }
 
         private string TabTitle() => _tab == Tab.Campaign && _campaignChapter > 0
-            ? Strings.Format("campaign.chapterTitle", ("chapter", _campaignChapter), ("title", Strings.Get($"chapter.{_campaignChapter}.title")))
+            ? Strings.Format("campaign.chapterTitle", ("chapter", Campaign.ChapterName(_campaignChapter)), ("title", Strings.Get($"chapter.{_campaignChapter}.title")))
             : Strings.Get(NavKey(_tab));
 
         private static string NavKey(Tab tab)

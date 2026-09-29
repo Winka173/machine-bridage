@@ -104,10 +104,11 @@ namespace MachineBrigade.Game.Match
     }
 
     /// <summary>
-    /// The story campaign (prompts 4 and 20): twelve chapters in four acts, each ten main missions (the
-    /// fifth a boss, the tenth the chapter's big operation) and two side missions, in order; which ones
-    /// the player may start, and what the progress so far opens (HQ levels, the Operations tiers).
-    /// Prompt 20 C: the acts a build ships (<see cref="Release"/>); <see cref="All"/> is what is switched on.
+    /// The story campaign (prompts 4, 20 and 22): twelve chapters in four acts and three interludes, each
+    /// chapter 9 to 18 main missions (the last its big operation, with the chapter's main boss) and up to
+    /// two side missions, each interlude four, in order; which ones the player may start, and what the
+    /// progress so far opens (HQ levels, the Operations tiers). Prompt 20 C: the acts a build ships
+    /// (<see cref="Release"/>; an interlude goes with the act before it); <see cref="All"/> is what is switched on.
     /// </summary>
     public static class Campaign
     {
@@ -175,20 +176,55 @@ namespace MachineBrigade.Game.Match
             }
         }
 
-        /// <summary>The last chapter switched on (the story's end when it is <see cref="ChapterCount"/>).</summary>
+        /// <summary>The last of the twelve chapters switched on (the story's end when it is <see cref="ChapterCount"/>).</summary>
         public static int LastChapter
         {
             get
             {
                 var last = 0;
                 foreach (var c in Chapters)
-                    if (Release.On(c)) last = System.Math.Max(last, c.Number);
+                    if (!c.IsInterlude && Release.On(c)) last = System.Math.Max(last, c.Number);
+                return last;
+            }
+        }
+
+        /// <summary>
+        /// Prompt 22: the last chapter or interlude switched on, in campaign order (an interlude after the
+        /// last chapter of its act ends a release of that act); its end brings the epilogue or "To be continued".
+        /// </summary>
+        public static int FinalChapter
+        {
+            get
+            {
+                var last = 0;
+                foreach (var c in Chapters)
+                    if (Release.On(c)) last = c.Number;
                 return last;
             }
         }
 
         /// <summary>Whether the last chapter switched on is the story's last (its end is the game's epilogue, else "To be continued").</summary>
         public static bool StoryComplete => LastChapter == ChapterCount;
+
+        /// <summary>Prompt 22: the chapter or interlude played before this one (0 before the first).</summary>
+        public static int PreviousChapter(int number)
+        {
+            var before = 0;
+            foreach (var c in Chapters)
+            {
+                if (c.Number == number) return before;
+                before = c.Number;
+            }
+            return 0;
+        }
+
+        /// <summary>"Chapter 4" or "Interlude II" in the current language.</summary>
+        public static string ChapterName(int number) => Chapter(number) is { IsInterlude: true } c
+            ? MachineBrigade.Game.Hud.Strings.Format("campaign.interludeName", ("interlude", c.Short))
+            : MachineBrigade.Game.Hud.Strings.Format("campaign.chapterName", ("chapter", number));
+
+        /// <summary>Its number as the screens show it ("4", "II").</summary>
+        public static string ChapterShort(int number) => Chapter(number)?.Short ?? number.ToString();
 
         /// <summary>
         /// Prompt 20 C.3: a boss the modes may bring (Boss Rush, Operations' rotation): one fought in a
@@ -274,8 +310,17 @@ namespace MachineBrigade.Game.Match
             return last;
         }
 
-        /// <summary>The story's last chapter (switched on or not).</summary>
-        public static int ChapterCount => Chapters.Count;
+        /// <summary>The story's last chapter (switched on or not): the twelve, the interludes aside.</summary>
+        public static int ChapterCount
+        {
+            get
+            {
+                var n = 0;
+                foreach (var c in Chapters)
+                    if (!c.IsInterlude) n++;
+                return n;
+            }
+        }
 
         public static ChapterDef Chapter(int number)
         {
@@ -292,7 +337,7 @@ namespace MachineBrigade.Game.Match
             return null;
         }
 
-        /// <summary>A chapter's missions in campaign order (its ten main missions, then its side missions).</summary>
+        /// <summary>A chapter's missions in campaign order (its main missions, then its side missions).</summary>
         public static List<MissionDef> MissionsOf(int chapter, bool? side = null)
         {
             var list = new List<MissionDef>();
@@ -301,7 +346,7 @@ namespace MachineBrigade.Game.Match
             return list;
         }
 
-        /// <summary>A chapter's big operation (its tenth main mission).</summary>
+        /// <summary>A chapter's big operation (its last main mission; an interlude's last main mission).</summary>
         public static MissionDef OperationOf(int chapter)
         {
             // The chapter's operation (prompt 16: an epilogue boss may follow it); else its last main mission.
@@ -315,7 +360,7 @@ namespace MachineBrigade.Game.Match
             return last;
         }
 
-        /// <summary>A mission's number within its chapter: "3-5", a side mission "3-S1".</summary>
+        /// <summary>A mission's number within its chapter: "3-5", a side mission "3-S1", an interlude's "II-2".</summary>
         public static string Label(MissionDef mission)
         {
             if (mission == null) return "";
@@ -327,7 +372,8 @@ namespace MachineBrigade.Game.Match
                 n++;
                 if (m.Id == mission.Id) break;
             }
-            return mission.Side ? $"{mission.Chapter}-S{n}" : $"{mission.Chapter}-{n}";
+            var chapter = ChapterShort(mission.Chapter);
+            return mission.Side ? $"{chapter}-S{n}" : $"{chapter}-{n}";
         }
 
         /// <summary>

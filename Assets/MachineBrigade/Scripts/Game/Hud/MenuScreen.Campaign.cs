@@ -144,11 +144,11 @@ namespace MachineBrigade.Game.Hud
             {
                 if (Campaign.ChapterEnabled(number) && Campaign.ChapterOpen(number)) OpenChapter(number);
                 else if (!Campaign.ChapterEnabled(number)) Note(Strings.Get("campaign.comingSoonNote"), true);
-                else Note(Strings.Format("campaign.chapterLocked", number - 1), true);
+                else Note(Strings.Format("campaign.chapterLocked", ("chapter", Campaign.ChapterName(Campaign.PreviousChapter(number)))), true);
             });
             var art = Kit.Box("fc-chapter__art");
             if (chapter.Maps.Count > 0 && MapArt.For(chapter.Maps[0]) is { } picture) art.style.backgroundImage = Background.FromTexture2D(picture);
-            art.Add(Kit.Text(number.ToString(), "fc-number fc-chapter__number"));
+            art.Add(Kit.Text(chapter.Short, "fc-number fc-chapter__number"));
             if (!open)
             {
                 var lockBox = Kit.Box("fc-chapter__lock");
@@ -183,7 +183,7 @@ namespace MachineBrigade.Game.Hud
             // Prompt 20 O.1: its mini bosses (campaign.json "minis").
             if (chapter.Minis.Count > 0) facts.Add(Tag("elite", Strings.Format("campaign.minis", chapter.Minis.Count)));
             text.Add(facts);
-            if (!open) text.Add(Kit.Text(Strings.Format("campaign.chapterLocked", number - 1), "fc-small"));
+            if (!open) text.Add(Kit.Text(Strings.Format("campaign.chapterLocked", ("chapter", Campaign.ChapterName(Campaign.PreviousChapter(number)))), "fc-small"));
             card.Add(text);
             return card;
         }
@@ -289,7 +289,7 @@ namespace MachineBrigade.Game.Hud
             var art = Kit.Box("fc-campaign__art");
             if (MapArt.For(m.Map) is { } picture) art.style.backgroundImage = Background.FromTexture2D(picture);
             body.Add(art);
-            body.Add(Kit.Caption(Strings.Format("campaign.missionKicker", ("chapter", m.Chapter), ("mission", Campaign.Label(m)), ("map", Strings.Get("map." + m.Map)))));
+            body.Add(Kit.Caption(Strings.Format("campaign.missionKicker", ("chapter", Campaign.ChapterName(m.Chapter)), ("mission", Campaign.Label(m)), ("map", Strings.Get("map." + m.Map)))));
             body.Add(Kit.Text(Kit.Caps(Strings.Get("mission." + m.Id + ".name")), "fc-title"));
             var tags = Kit.Box("fc-row fc-row--wrap fc-mt-2");
             tags.Add(Tag(GoalIcon(m.Goal), Strings.Get("goal." + m.Goal.ToString().ToLowerInvariant())));
@@ -413,11 +413,26 @@ namespace MachineBrigade.Game.Hud
             if (!Campaign.MapExists(mission)) return;
             if (mission.Chapter > 0 && !PlayerProfile.ChapterSeen(mission.Chapter))
             {
+                // Prompt 22 C.3: the flash-forward to Helion before the story's first chapter card, once.
+                var first = Campaign.All.Count > 0 && Campaign.All[0].Chapter == mission.Chapter;
                 PlayerProfile.MarkChapterSeen(mission.Chapter);
+                if (first && !PlayerProfile.ChapterSeen(PlayerProfile.PrologueSeen))
+                {
+                    PlayerProfile.MarkChapterSeen(PlayerProfile.PrologueSeen);
+                    ShowFlashForward(() => ShowChapterCard(mission.Chapter, () => ShowBriefing(mission)));
+                    return;
+                }
                 ShowChapterCard(mission.Chapter, () => ShowBriefing(mission));
                 return;
             }
             ShowBriefing(mission);
+        }
+
+        /// <summary>Prompt 22 C.3: a few seconds of the end (the sky over Helion, a tungsten rod falling, Aurel's voice), then back three years.</summary>
+        private void ShowFlashForward(System.Action then)
+        {
+            _story.Show(Strings.Get("campaign.flash.kicker"), Strings.Get("campaign.flash.title"), "aurel", Strings.Get("campaign.flash"),
+                null, null, (Strings.Get("campaign.continue"), then), null, "launchsite");
         }
 
         /// <summary>A chapter's opening: its act, its title, three or four sentences, its battlefields.</summary>
@@ -427,7 +442,7 @@ namespace MachineBrigade.Game.Hud
             var maps = new List<string>();
             if (info != null)
                 foreach (var map in info.Maps) maps.Add(Strings.Get("map." + map));
-            _story.Show(Strings.Format("campaign.chapterKicker", ("act", Strings.Get("act." + (info?.Act ?? 1))), ("chapter", chapter)), Strings.Get($"chapter.{chapter}.title"),
+            _story.Show(Strings.Format("campaign.chapterKicker", ("act", Strings.Get("act." + (info?.Act ?? 1))), ("chapter", Campaign.ChapterName(chapter))), Strings.Get($"chapter.{chapter}.title"),
                 info?.General, Strings.Get($"chapter.{chapter}.summary"), maps, null,
                 (Strings.Get("campaign.continue"), then), null, info != null && info.Maps.Count > 0 ? info.Maps[0] : null);
         }
@@ -449,7 +464,7 @@ namespace MachineBrigade.Game.Hud
                 foreach (var c in mission.Id) n = (n * 31 + c) % 997;
                 aside = (mission.General, Strings.Get($"radio.{mission.General}.taunt.{n % 3 + 1}"));
             }
-            _story.Show(Strings.Format("campaign.missionKicker", ("chapter", mission.Chapter), ("mission", Campaign.Label(mission)), ("map", Strings.Get("map." + mission.Map))),
+            _story.Show(Strings.Format("campaign.missionKicker", ("chapter", Campaign.ChapterName(mission.Chapter)), ("mission", Campaign.Label(mission)), ("map", Strings.Get("map." + mission.Map))),
                 Strings.Get("mission." + mission.Id + ".name"), mission.Speaker, Strings.Get("mission." + mission.Id + ".brief"), chips, aside,
                 (Strings.Get("campaign.deploy"), () => Deploy(mission)), (Strings.Get("campaign.back"), null), mission.Map);
         }
@@ -465,11 +480,11 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>
         /// Once the last operation switched on is won: the game's epilogue, once, or "To be continued"
-        /// when the build ends before the story does (prompt 20 C.3).
+        /// when the build ends before the story does (prompt 20 C.3; after the act's interlude, prompt 22).
         /// </summary>
         private void ShowEpilogueOnce()
         {
-            var last = Campaign.LastChapter;
+            var last = Campaign.FinalChapter;
             var complete = Campaign.StoryComplete;
             var mark = complete ? PlayerProfile.EpilogueSeen : PlayerProfile.ContinuedSeen(last);
             if (_story == null || _story.Visible || _tab != Tab.Campaign || last <= 0 || !Campaign.ChapterDone(last) || PlayerProfile.ChapterSeen(mark)) return;

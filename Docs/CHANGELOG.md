@@ -7,6 +7,29 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 22 pass 1: names, structure, story
+
+- Every proper name is the spec's, the same in both languages (A): the Meridian Coast, the Meridian Accord and its
+  7th Mechanized Brigade ("Machine Brigade"), Veyra; Colonel Marcus Kade "Iron", Engineer Mara Lind, Lieutenant Jonah
+  Reyes "Hawk", Captain Nadia Kerr, General Roland Thorne "Titan", Dr Elara Venn "Queen", Kasimir Wolff "Raven" (no more
+  "Quạ Đen"); the maps (Stormbeach, Hollow Dam, Beacon Bay, Deepcut Mine, Skygate Array, Helion Launch Complex...), the
+  chapters and acts. The ids stay; the tokens of prompt 21 read the new names. A scan test covers every table.
+- Twelve chapters of 9 to 18 main missions and three interludes (B): 168 main and 19 side missions (was 121 and 24),
+  44 new ones (and four that moved) made from the battlefields' existing missions with their set-up changed (prompt 4's rule, no two in a row
+  alike). Each chapter ends on its operation with its main boss: Red Rock's Behemoth (new), Leviathan (now an operation),
+  Nemesis at the end of Veyra's liberation. An interlude goes with the act before it for the act switches; on the
+  screens "Interlude II", its missions "II-3". Saves of the twelve chapters of ten move on (campaign version 4).
+- The story (C): the setting, the people and their motives, the flash-forward to Helion before the first mission, every
+  beat of C.4 in its mission (Brandt's surrender, Thorne's first battle with us and three clues before he turns in
+  Veyra, Mara's past and the Foundry, the ceasefire at the Hollow Dam, Venn's escort, Hawk's rescue and duel, Aurel's
+  first words in chapter 11, Varga's end, "They still don't understand."), the ending, and the hooks for later content
+  in `Docs/STORY.md`. Short radio lines (100 characters at most) in both languages, each character in his or her own
+  voice; eight new officers speak with portraits of their own.
+- Waiting on P22-content: the Foundry and the Veyra Old Quarter (their missions say "Battlefield in the next update"
+  until the maps come), Behemoth Mk.0 and Morrigan (fought as the Behemoth and Spectre until then), Mara's Behemoth in
+  the last battle.
+
+
 ### Play-test 6 bugs (DECISIONS 21B)
 
 - Start on a campaign mission works again after a Back: Back no longer takes the hidden story card out of the menu
