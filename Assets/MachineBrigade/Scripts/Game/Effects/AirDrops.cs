@@ -52,7 +52,11 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The vehicle leaves the transport this long before it lands (the rest of the delivery the plane is on its way).</summary>
         private const float Descent = 2.3f;
 
-        private const string TransportModel = "sky_gunship";
+        /// <summary>
+        /// The airlifter: the gunship's airframe without its guns (play-test 5, DECISIONS 20V: a transport with a
+        /// gunship's battery out of its side read as the gunship), drawn at the gunship's scale.
+        /// </summary>
+        internal const string TransportModel = "transport_plane", TransportScale = "sky_gunship";
 
         private readonly Catalog _catalog;
         private readonly ModelLibrary _models;
@@ -132,7 +136,7 @@ namespace MachineBrigade.Game.Effects
             plane.Over += Centre;
             plane.Team = team;
             plane.Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root;
-            if (_catalog.Vehicles.TryGetValue(TransportModel, out var transport)) plane.Root.transform.localScale = Vector3.one * transport.Scale;
+            if (_catalog.Vehicles.TryGetValue(TransportScale, out var transport)) plane.Root.transform.localScale = Vector3.one * transport.Scale;
             plane.Root.transform.SetPositionAndRotation(plane.Entry, Quaternion.LookRotation(plane.Inward));
             _planes.Add(plane);
             return plane;

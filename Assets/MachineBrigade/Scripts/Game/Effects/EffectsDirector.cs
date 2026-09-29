@@ -74,6 +74,7 @@ namespace MachineBrigade.Game.Effects
             }
         }
         private readonly FireSpots _fires;
+        private readonly HullFire _hullFire;
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
@@ -131,6 +132,8 @@ namespace MachineBrigade.Game.Effects
             _tracks = new TrackMarks(materials, _root);
             _night = new NightLights(materials, _emitters, _root);
             _fires = new FireSpots(materials, _root);
+            _hullFire = new HullFire(materials, _root);
+
             _fires.Visible = p => _cull.Visible(p, 0.3f);
             _decals = new DecalPool(meshes.ScorchQuad, _root, budget.Decals);
             _debris = new DebrisPool(budget.Debris);
@@ -208,10 +211,20 @@ namespace MachineBrigade.Game.Effects
                         var impact = Ground(e.Position, 0.15f);
                         var size = round?.ImpactScale ?? 1f;
                         // A gun's shell never flashes the screen, however big: only strikes and blasts do.
-                        if (!ImpactOfKind(round, e, impact, now, size)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Drone(round));
+                        // Play-test 5 (DECISIONS 20V): drones, missiles, rockets, shells and the gun turret's rounds by BlastSizes.Round.
+                        if (!ImpactOfKind(round, e, impact, now, size)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round));
+                        // Every blast from Medium up scorches the ground under it, as wide as it is drawn.
                         if (e.Tier >= ExplosionTier.Medium)
-                            _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round));
+                            _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round));
+                        // Play-test 5 (DECISIONS 20V): a railgun's slug leaves a burn on what it struck, like the focused laser's.
+                        if (round != null && round.Family == "railgun" && _cull.Visible(impact, 0.3f))
+                        {
+                            views.TryGet(e.Entity, out var seared);
+                            var onHull = seared != null && seared.Root != null ? Mathf.Min(1.3f, seared.Top * 0.55f) : 0.3f;
+                            _lasers.Sear(impact + Vector3.up * onHull, e.Entity, seared, round.Damage >= 300f ? 1.3f : 1f, 2.6f, now);
+                        }
                         if (round != null && round.Projectile == ProjectileKind.Flame && UnityEngine.Random.value < 0.35f)
+
                             _fires.Ignite(impact, round.SplashRadius > 3f ? 0.8f : 0.45f, 7f, now);
                         // Thermobaric rockets leave the impact area burning.
                         if (e.DefId == "thermobaric_rockets" && UnityEngine.Random.value < 0.6f) _fires.Ignite(impact, 1.1f, 14f, now);
@@ -239,8 +252,10 @@ namespace MachineBrigade.Game.Effects
                         var matched = strike != null && strike.Kind == SupportKind.CruiseMissile && e.Tier >= ExplosionTier.Ultimate;
                         var strikeGrow = matched ? BlastSizes.Reach(e.Value) : BlastSizes.Strike(strike);
                         if (matched) strikeScale = 1f;
-                        // Its ground ring stays on the radius while the rest grows a tenth (DECISIONS 12C).
-                        Explode(e.Tier, hit, now, strikeScale, grow: strikeGrow, exact: matched, ring: matched ? strikeGrow : 0f);
+                        // Its ground ring stays on the radius while the rest grows a tenth (DECISIONS 12C), and a cruise
+                        // missile's fire and smoke a fifth more (play-test 5, DECISIONS 20V).
+                        var missileGrow = matched && strike.Id != "moab" ? BlastSizes.MissileGrow : 1f;
+                        Explode(e.Tier, hit, now, strikeScale, grow: strikeGrow * missileGrow, exact: matched, ring: matched ? strikeGrow : 0f);
                         _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)) * (matched ? 1f : strikeGrow));
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")
@@ -604,8 +619,9 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>
         /// Damage shows on the hull: below 60 % health a vehicle smokes, pale at first and blacker
-        /// as it weakens; below 30 % it burns, flames licking out of it under thick black smoke and
-        /// a spark now and then; the hull itself darkens with soot. Aircraft trail their smoke.
+        /// as it weakens; below 30 % it burns (play-test 5, DECISIONS 20V: <see cref="HullFire"/>, a
+        /// flame core, tongues of flame, embers and a dark smoke column on one to three fire points,
+        /// growing with the damage); the hull itself darkens with soot. Aircraft trail their smoke.
         /// </summary>
         private void ShowDamage(ViewRegistry views, float now)
         {
@@ -617,8 +633,8 @@ namespace MachineBrigade.Game.Effects
                 var health = sim.MaxHp > 0f ? sim.Hp / sim.MaxHp : 1f;
                 view.Scorch(health);
                 if (health >= 0.6f || now < view.DamageFxAt || !_cull.Visible(view.Position, 0.15f)) continue;
-                var burning = health < 0.3f;
-                view.DamageFxAt = now + (burning ? 0.12f : Mathf.Lerp(0.18f, 0.4f, (health - 0.3f) / 0.3f));
+                var burning = health < HullFire.Burning;
+                view.DamageFxAt = now + (burning ? HullFire.Next : Mathf.Lerp(0.18f, 0.4f, (health - 0.3f) / 0.3f));
                 var radius = sim.Radius;
                 var root = view.Root;
                 if (view.Def.Static)
@@ -626,22 +642,19 @@ namespace MachineBrigade.Game.Effects
                     DefenceDamage(view, health, burning, now);
                     continue;
                 }
-                var top = view.Position + Vector3.up * (view.Flying ? 0.4f : 1.4f) - root.forward * radius * 0.3f;
-                _emitters.DamageSmoke(top, radius * (burning ? 1.1f : 0.8f), burning ? 0f : Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
-                if (!burning) continue;
-                var spot = view.Position + Vector3.up * (view.Flying ? 0.2f : 1f) +
-                           root.right * UnityEngine.Random.Range(-0.5f, 0.5f) * radius + root.forward * UnityEngine.Random.Range(-0.6f, 0.4f) * radius;
-                _emitters.DamageFire(spot, radius * 0.7f);
-                if (UnityEngine.Random.value < 0.08f)
+                if (burning)
                 {
-                    _layers.Sparks.Emit(new ParticleSystem.EmitParams
-                    {
-                        position = spot, velocity = Vector3.up * 5f + UnityEngine.Random.insideUnitSphere * 3f, startSize = 0.15f,
-                        startLifetime = 0.8f, applyShapeToPosition = false,
-                    }, 6);
+                    // The fire brings its own black smoke column; a spark or a small pop now and then near death.
+                    _hullFire.Feed(view, health, _fireBeat++);
+                    if (health < 0.12f && UnityEngine.Random.value < 0.01f) Pop(_pop, view.Position + Vector3.up * view.Top * 0.6f, now);
+                    continue;
                 }
+                var top = view.Position + Vector3.up * (view.Flying ? 0.4f : 1.4f) - root.forward * radius * 0.3f;
+                _emitters.DamageSmoke(top, radius * 0.8f, Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
             }
         }
+
+        private int _fireBeat;
 
         /// <summary>Dust clouds behind the tracks of moving vehicles.</summary>
         private void KickUpDust(ViewRegistry views, float now)
@@ -739,8 +752,8 @@ namespace MachineBrigade.Game.Effects
             _emitters.DamageSmoke(top + UnityEngine.Random.insideUnitSphere * radius * 0.3f, radius * (burning ? 1.3f : 0.95f),
                 burning ? 0f : Mathf.Clamp01((health - 0.3f) / 0.3f) * 0.8f + 0.2f);
             if (!burning) return;
-            _emitters.DamageFire(top - Vector3.up * 0.4f + UnityEngine.Random.insideUnitSphere * radius * 0.35f, radius * 0.8f);
-            _emitters.DamageFire(view.Position + Vector3.up * view.Top * 0.4f + UnityEngine.Random.insideUnitSphere * radius * 0.5f, radius * 0.6f);
+            // A burning defence burns like a vehicle (play-test 5): its fire points on the roof, round its top.
+            _hullFire.Feed(view, health, _fireBeat++);
             if (UnityEngine.Random.value < 0.12f)
                 _layers.Sparks.Emit(new ParticleSystem.EmitParams
                 {
@@ -757,6 +770,8 @@ namespace MachineBrigade.Game.Effects
             var radius = view.Sim.Radius;
             Explode(ExplosionTier.Huge, at + Vector3.up * view.Top * 0.6f, now, Mathf.Clamp(radius / 2.5f, 0.9f, 1.5f));
             if (_cull.Visible(at, 0.4f)) _collapse.Play(at, now, Mathf.Clamp(radius / 3f, 0.7f, 1.4f));
+            // Play-test 5 (DECISIONS 20V): the ground scorched round the ruin.
+            _decals.Place(new Vector3(at.x, 0.15f, at.z), Mathf.Max(4f, radius * 2.2f));
             var throws = 6 + (int)(radius * 3f);
             for (var k = 0; k < throws; k++)
             {
@@ -919,7 +934,7 @@ namespace MachineBrigade.Game.Effects
                     _muzzle.SparkBurst(impact + Vector3.up * 1f, Vector3.up + UnityEngine.Random.insideUnitSphere * 0.5f, heavy ? 36 : 16, 8f, heavy ? 24f : 16f);
                     return true;
                 }
-                case ProjectileKind.Drone when round.PiercingLook && BlastSizes.Drone(round) == BlastSizes.FpvDrone:
+                case ProjectileKind.Drone when round.PiercingLook && BlastSizes.Fpv(round):
                 case ProjectileKind.Drone when round.PiercingLook && round.Id == "mothership_drones":
                 {
                     // Test feedback 19P: an FPV quadcopter's charge, not a missile's: a white-hot star where it
@@ -940,8 +955,9 @@ namespace MachineBrigade.Game.Effects
                 }
                 case ProjectileKind.Missile when round.PiercingLook:
                 case ProjectileKind.Drone when round.PiercingLook:
-                    // HEAT: a sharp star flash and a jet of sparks, a small black puff. Drones by the drone (DECISIONS 12C).
-                    Explode(ExplosionTier.Medium, impact + Vector3.up * 0.8f, now, 0.8f * size, flash: false, grow: BlastSizes.Drone(round));
+                    // HEAT: a sharp star flash and a jet of sparks, a small black puff. Drones by the drone (DECISIONS 12C),
+                    // missiles a fifth bigger (play-test 5, DECISIONS 20V).
+                    Explode(ExplosionTier.Medium, impact + Vector3.up * 0.8f, now, 0.8f * size, flash: false, grow: BlastSizes.Round(round));
                     _muzzle.SparkBurst(impact + Vector3.up, Vector3.up, 18, 10f, 22f);
                     _emitters.DamageSmoke(impact + Vector3.up * 1.2f, 1.6f, 0.08f);
                     return true;
@@ -950,7 +966,8 @@ namespace MachineBrigade.Game.Effects
                     // An HE shell or mortar bomb: the blast, then earth and black smoke hanging over it.
                     // (The siege tank's 203 mm is drawn half as big again; DECISIONS 11A. It lingers like a
                     // heavy tank's round, and the ring and smoke are a tenth bigger again; 12C.)
-                    var siege = BlastSizes.Ground(round);
+                    // Artillery and mortar shells a fifth bigger again (play-test 5, DECISIONS 20V).
+                    var siege = BlastSizes.Artillery(round);
                     Explode(e.Tier, impact, now, size, flash: false, grow: siege, life: BlastSizes.GroundLife(round));
                     siege *= BlastSizes.Bigger;
                     Ring(impact, Mathf.Max(4f, e.Value) * 2.2f * siege, new Color(0.75f, 0.66f, 0.5f, 0.55f));
@@ -961,14 +978,15 @@ namespace MachineBrigade.Game.Effects
                     return true;
                 }
                 case ProjectileKind.Rocket when round.Id.StartsWith("thermobaric"):
-                    // Thermobaric: the pop that spreads the fuel, then the ignition, much bigger.
-                    Explode(ExplosionTier.Medium, impact, now, size, flash: false);
+                    // Thermobaric: the pop that spreads the fuel, then the ignition, much bigger (a rocket's: +20 %, 20V).
+                    Explode(ExplosionTier.Medium, impact, now, size, flash: false, grow: BlastSizes.MissileGrow);
                     var cloud = Mathf.Max(6f, e.Value);
                     Later(now + 0.15f, () =>
                     {
-                        _napalm.Play(impact + Vector3.up * 0.5f, now + 0.15f, 1.4f * size, BlastSizes.Bigger);
-                        Ring(impact, cloud * 2.5f * BlastSizes.Bigger, new Color(2.2f, 1.2f, 0.4f, 0.8f));
+                        _napalm.Play(impact + Vector3.up * 0.5f, now + 0.15f, 1.4f * size, BlastSizes.Bigger * BlastSizes.MissileGrow);
+                        Ring(impact, cloud * 2.5f * BlastSizes.Bigger * BlastSizes.MissileGrow, new Color(2.2f, 1.2f, 0.4f, 0.8f));
                     });
+
                     return true;
                 case ProjectileKind.Bomb:
                 {
@@ -1076,7 +1094,7 @@ namespace MachineBrigade.Game.Effects
             "stealth_fighter" => (Engine.Afterburner, new[] { -0.09f, 0.09f }, -1f, 0f),
             "wingman_drone" => (Engine.Hot, new[] { 0f }, -1f, 0.1f),
             "swarm_carrier" => (Engine.Prop, new[] { -0.55f, -0.28f, 0.28f, 0.55f }, 0.05f, 0.35f),
-            "sky_gunship" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
+            "sky_gunship" or "transport_plane" => (Engine.Prop, new[] { -0.5f, -0.25f, 0.25f, 0.5f }, 0.05f, 0.35f),
             "strike_drone" or "recon_drone" => (Engine.Prop, new[] { 0f }, -1f, 0f),
             "strike_jet" => (Engine.Hot, new[] { 0f }, -1f, 0f),
             _ => (Engine.Rotor, new[] { -0.14f, 0.14f }, -0.15f, 0.55f),

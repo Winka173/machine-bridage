@@ -57,8 +57,13 @@ namespace MachineBrigade.Tests
             float Length(string id, bool air = false) =>
                 Plume.For(catalog.Weapons[id], catalog.Weapons[id].Projectile, catalog.Weapons[id].ProjectileModel, air).Length;
             // In the munition's own lengths (a SAM is twice an ATGM's length, so its flame is four times as long).
-            Assert.GreaterOrEqual(Length("sam_long"), Length("atgm") * 2f, "a SAM's plume is long, an ATGM's short");
-            Assert.Greater(Length("sam_long"), Length("heli_atgm", true), "air-to-ground missiles in between");
+            Assert.GreaterOrEqual(Length("sam"), Length("atgm") * 2f, "a SAM's plume is long, an ATGM's short");
+            Assert.Greater(Length("sam"), Length("heli_atgm", true), "air-to-ground missiles in between");
+            // Play-test 5 (DECISIONS 20V): the heavy launchers' flames cut to 60 % of their type's, still in munition lengths.
+            Assert.AreEqual(Length("sam") * Plume.ShortFlame, Length("sam_long"), 1e-4f, "the SAM launcher's Buk");
+            foreach (var id in new[] { "buk_launcher", "thermobaric_rockets", "rockets_300mm", "ballistic_missile", "sam_48n6", "patriot", "sam_pac3" })
+                Assert.IsTrue(Plume.Short(catalog.Weapons[id]), id + " has the short flame");
+            Assert.IsFalse(Plume.Short(catalog.Weapons["grad_rockets"]), "other rockets keep theirs");
             Assert.IsFalse(Plume.For(catalog.Weapons["fpv_swarm"], ProjectileKind.Drone, "fpv_drone", false).Burns, "drones fly on propellers");
         }
 

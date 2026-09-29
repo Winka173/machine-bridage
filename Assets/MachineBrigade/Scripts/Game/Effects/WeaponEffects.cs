@@ -61,8 +61,11 @@ namespace MachineBrigade.Game.Effects
         /// when along its flight it bends away: a jammed one early (its lock goes as it reaches the jammer's field),
         /// one that lost its lock late.
         /// </summary>
-        /// <summary>An FPV quadcopter is drawn a third bigger than other drones: its X of arms and rotors must read at a glance.</summary>
-        private const float QuadScale = 1.3f;
+        /// <summary>
+        /// An FPV quadcopter was drawn a third bigger than other drones so its X of arms and rotors read at a glance;
+        /// play-test 5 (DECISIONS 20V) made it a fifth smaller again (1.3 x 0.8), on a finer model that still reads.
+        /// </summary>
+        internal const float QuadScale = 1.3f * 0.8f;
 
         private void Veer(in SimEvent e, ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId)
         {

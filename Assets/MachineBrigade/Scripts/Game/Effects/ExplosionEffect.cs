@@ -165,6 +165,16 @@ namespace MachineBrigade.Game.Effects
             PB.Colors(GroundLight, PB.Fade(new Color(1f, 0.62f, 0.3f), new Color(1f, 0.5f, 0.2f), new Color(0.7f, 0.25f, 0.08f), 1f));
             PB.Grow(GroundLight, 0.85f, 1.1f);
 
+            // Play-test 5 (DECISIONS 20V): the column a big blast leaves standing over its crater: slow billows
+            // climbing out one above another, darkest low down, spreading and paling as they rise and hanging for
+            // seconds, leaning off with the wind.
+            Column = Shared(root, "Smoke Column", fx.Smoke, 1400);
+            PB.Flipbook(Column, loop: false, tilt: 18f, from: 0.08f);
+            PB.Colors(Column, PB.Hold(new Color(0.15f, 0.14f, 0.135f), new Color(0.5f, 0.49f, 0.48f), 0.14f, 0.62f, 0.92f));
+            PB.Grow(Column, 0.55f, 2.3f);
+            PB.Rise(Column, 0.9f, 1.9f);
+            Drag(Column, 0.06f);
+
             // The crater floor glowing hot for a few seconds, cooling and shrinking.
             CraterGlow = Shared(root, "Crater Glow", m.Fire, 300, 0f, ParticleSystemRenderMode.HorizontalBillboard);
             var glow = CraterGlow.shape;
@@ -175,11 +185,11 @@ namespace MachineBrigade.Game.Effects
             All = new[]
             {
                 Flash, Fireball, HotFireball, RollingFireball, HotRollingFireball, Smoke, Sparks, Dust, Dirt, DustRing, Debris, BurningDebris, Embers, Shockwave, AirShock,
-                GroundLight, CraterGlow,
+                GroundLight, CraterGlow, Column,
             };
 
             // Twins of the blended layers, drawn over the smoke screens, for blasts in front of them.
-            foreach (var layer in new[] { Fireball, HotFireball, RollingFireball, HotRollingFireball, Smoke, Dust, DustRing })
+            foreach (var layer in new[] { Fireball, HotFireball, RollingFireball, HotRollingFireball, Smoke, Dust, DustRing, Column })
             {
                 var twin = Object.Instantiate(layer.gameObject, root).GetComponent<ParticleSystem>();
                 twin.name = layer.name + " (front)";
@@ -228,6 +238,9 @@ namespace MachineBrigade.Game.Effects
         public ParticleSystem AirShock { get; }
         public ParticleSystem GroundLight { get; }
         public ParticleSystem CraterGlow { get; }
+
+        /// <summary>Play-test 5: the smoke column over a big blast's crater (DECISIONS 20V).</summary>
+        public ParticleSystem Column { get; }
         public IReadOnlyList<ParticleSystem> All { get; }
 
         /// <summary>Throws solid chunks (earth, rubble, wreckage); null leaves blasts particle-only.</summary>
@@ -448,23 +461,54 @@ namespace MachineBrigade.Game.Effects
             _ => 1f,
         };
 
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20V): the share of the layers the rework added to every recipe (a hot core, more
+        /// fire bursts, sparks, debris and embers, the outer dust skirt, the smoke column) that a tier emits: all on
+        /// High, 80 % on Medium, half on Low (never fewer than one of each, so Low has the same shapes). The recipe's
+        /// older particles are always emitted in full: no tier ever shows less fire or smoke than before.
+        /// </summary>
+        public static float RichShare => RichShareAt(Density);
+
+        /// <summary>The rework's share at an extra-particle <paramref name="density"/> (1 High, 0.75 Medium, 0.4 Low).</summary>
+        public static float RichShareAt(float density) => density >= 1f ? 1f : density >= 0.75f ? 0.8f : 0.5f;
+
         private readonly List<Burst> _bursts = new();
         private readonly List<Pending> _pending = new();
         private readonly BlastLayers _layers;
         private ChunkThrower.Recipe _chunks;
+
+        /// <summary>Bursts from this index on are play-test 5's additions (<see cref="RichShare"/>).</summary>
+        private int _richFrom = int.MaxValue;
+
+        /// <summary>The additions to a recipe start here.</summary>
+        private void Richer() => _richFrom = _bursts.Count;
+
+        private int Emitted(int index, int count, float share) =>
+            index >= _richFrom ? Mathf.Max(1, Mathf.RoundToInt(count * share)) : count;
 
         private ExplosionEffect(BlastLayers layers)
         {
             _layers = layers;
         }
 
-        /// <summary>Particles this blast emits in all (its budget; smoke trails of burning chunks come on top).</summary>
+        /// <summary>Particles this blast emits in all on High (its budget; smoke trails of burning chunks come on top).</summary>
         public int ParticleCount
         {
             get
             {
                 var total = 0;
                 foreach (var b in _bursts) total += b.Count;
+                return total;
+            }
+        }
+
+        /// <summary>Particles of the recipe as it was before play-test 5's rework: every tier emits at least these.</summary>
+        public int CoreParticleCount
+        {
+            get
+            {
+                var total = 0;
+                for (var i = 0; i < _bursts.Count && i < _richFrom; i++) total += _bursts[i].Count;
                 return total;
             }
         }
@@ -529,7 +573,7 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The layers a lingering blast (<see cref="Play"/>'s life) keeps longer: fire, smoke, dust and embers.</summary>
         private bool Lingers(ParticleSystem s) => s == _layers.Embers || LookOf(s) == Look.Volume;
 
-        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density, float life, float ring)
+        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density, float life, float ring, float share)
         {
             // At grow 1 and life 1 every factor below is exactly the old one.
             var look = LookOf(b.System);
@@ -579,6 +623,7 @@ namespace MachineBrigade.Game.Effects
                 position += new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach);
             }
             var count = b.Count + Mathf.RoundToInt(extra);
+            if (share < 1f) count = Mathf.Max(1, Mathf.RoundToInt(count * share));
             ps.Emit(new ParticleSystem.EmitParams
             {
                 position = position + Vector3.up * (b.Lift * (look == Look.Volume ? size : spread)), applyShapeToPosition = true,
@@ -593,20 +638,21 @@ namespace MachineBrigade.Game.Effects
                 var main = b.System.main;
                 main.startColor = new Color(1f, 1f, 1f, Mathf.Clamp01(_glow));
             }
-            Emit(b, position, scale, grow, density, life, ring);
+            Emit(b, position, scale, grow, density, life, ring, index >= _richFrom ? RichShare : 1f);
         }
 
         /// <summary>Particles this blast emits enlarged by <paramref name="grow"/> at a tier's <paramref name="density"/> (for the budget log and tests).</summary>
         public int ParticleCountAt(float grow, float density = 1f)
         {
             var total = 0;
-            foreach (var b in _bursts)
+            for (var i = 0; i < _bursts.Count; i++)
             {
+                var b = _bursts[i];
                 var look = LookOf(b.System);
                 var extra = grow <= 1f || look == Look.Ring ? 0f
                     : look == Look.Point ? b.Count * (Mathf.Pow(grow, 1.5f) - 1f)
                     : b.Count * (Mathf.Min(2.6f, Mathf.Pow(grow, 1.4f)) - 1f);
-                total += b.Count + Mathf.RoundToInt(extra * density);
+                total += Emitted(i, b.Count + Mathf.RoundToInt(extra * density), RichShareAt(density));
             }
             return total;
         }
@@ -621,13 +667,14 @@ namespace MachineBrigade.Game.Effects
         {
             float lingering = 0f, quick = 0f;
             var stretch = Linger(life, density);
-            foreach (var b in _bursts)
+            for (var i = 0; i < _bursts.Count; i++)
             {
+                var b = _bursts[i];
                 var look = LookOf(b.System);
                 var extra = grow <= 1f || look == Look.Ring ? 0f
                     : look == Look.Point ? b.Count * (Mathf.Pow(grow, 1.5f) - 1f)
                     : b.Count * (Mathf.Min(2.6f, Mathf.Pow(grow, 1.4f)) - 1f);
-                var count = b.Count + Mathf.RoundToInt(extra * density);
+                var count = Emitted(i, b.Count + Mathf.RoundToInt(extra * density), RichShareAt(density));
                 var seconds = count * (b.Lifetime.x + b.Lifetime.y) * 0.5f;
                 if (Lingers(b.System)) lingering += seconds * stretch;
                 else quick += seconds;
@@ -675,14 +722,34 @@ namespace MachineBrigade.Game.Effects
         /// (fireball and a spray of sparks) out on a ring beyond the main fireball, never on top of
         /// it, so the big one reads as one explosion and the pops as others going off round it.
         /// </summary>
-        private void Secondaries(float ring, float size)
+        private void Secondaries(float ring, float size) => Secondaries(ring, size, 0.3f, 0.55f, 0.85f, 1.2f);
+
+        /// <summary>Secondary fire bursts at the given <paramref name="times"/>, each with a spray of sparks of its own.</summary>
+        private void Secondaries(float ring, float size, params float[] times)
         {
-            foreach (var time in new[] { 0.3f, 0.55f, 0.85f, 1.2f })
+            foreach (var time in times)
             {
                 _bursts.Add(new Burst(_layers.Fireball, time, 1, new Vector2(size * 0.75f, size), new Vector2(0.4f, 1.6f),
                     new Vector2(0.7f, 0.95f), 0.3f, 0f, ring));
             }
         }
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20V): the smoke column a big blast leaves: <paramref name="puffs"/> billows
+        /// climbing out of the crater a third of a second apart, each <paramref name="step"/> metres above the last
+        /// and a little bigger, slow to rise and long to hang.
+        /// </summary>
+        private void Column(int puffs, Vector2 size, Vector2 lifetime, float start, float step)
+        {
+            for (var k = 0; k < puffs; k++)
+                _bursts.Add(new Burst(_layers.Column, start + k * 0.32f, k == 0 ? 2 : 1, size * (1f + 0.08f * k), new Vector2(0.15f, 0.5f),
+                    lifetime, size.x * 0.1f, 0.5f + k * step));
+        }
+
+        /// <summary>A second, wider dust skirt rolling out behind the first (big blasts).</summary>
+        private void OuterDust(float size, int count) =>
+            _bursts.Add(new Burst(_layers.DustRing, 0.14f, count, new Vector2(size * 0.2f, size * 0.3f),
+                new Vector2(size * 0.35f, size * 0.62f), new Vector2(2.2f, 3.4f), size * 0.1f, 0.35f));
 
         private void Debris(int count, Vector2 speed) =>
             _bursts.Add(new Burst(_layers.Debris, 0f, count, new Vector2(0.15f, 0.4f), speed, new Vector2(1.2f, 2.2f), 0.2f));
@@ -743,6 +810,16 @@ namespace MachineBrigade.Game.Effects
                     e.Embers(8, 0.8f);
                     e.DustRing(8f, 7);
                     e._chunks = new ChunkThrower.Recipe(earth: 6, wreckage: 0, burning: 0, new Vector2(5f, 10f), 0.7f);
+                    // Play-test 5 (DECISIONS 20V): a white-hot core, two fire bursts round it, more sparks,
+                    // fragments and embers, and smoke rising on after the fireball.
+                    e.Richer();
+                    e.Fireball(1, new Vector2(3f, 3.8f), new Vector2(0.55f, 0.75f), 0.2f, hot: true);
+                    e.Secondaries(3.2f, 1.9f, 0.18f, 0.4f);
+                    e.Sparks(18, new Vector2(8f, 18f), 0.15f);
+                    e.Debris(6, new Vector2(4f, 10f));
+                    e.BurningDebris(3, new Vector2(5f, 10f));
+                    e.Embers(8, 0.8f);
+                    e.Smoke(2, new Vector2(3.6f, 5f), new Vector2(3.4f, 4.6f), 0.42f);
                     break;
 
                 case ExplosionTier.Large:
@@ -761,6 +838,17 @@ namespace MachineBrigade.Game.Effects
                     e.DustRing(16f, 14);
                     e.CraterGlow(5.5f, 4.5f);
                     e._chunks = new ChunkThrower.Recipe(earth: 12, wreckage: 4, burning: 3, new Vector2(7f, 14f), 1f);
+                    // Play-test 5: a white-hot core, an inner ring of fire bursts, more sparks, fragments and
+                    // embers, a second dust skirt and a smoke column over the crater.
+                    e.Richer();
+                    e.Fireball(1, new Vector2(6f, 7.5f), new Vector2(0.75f, 0.95f), 0.3f, hot: true);
+                    e.Secondaries(4.2f, 2.4f, 0.18f, 0.42f, 0.7f);
+                    e.Sparks(40, new Vector2(10f, 24f), 0.2f);
+                    e.Debris(10, new Vector2(7f, 15f));
+                    e.BurningDebris(4, new Vector2(8f, 15f));
+                    e.Embers(16, 1.1f);
+                    e.OuterDust(16f, 10);
+                    e.Column(5, new Vector2(5f, 6.5f), new Vector2(6.5f, 8.5f), 0.55f, 1.6f);
                     break;
 
                 default: // Huge and above
@@ -787,6 +875,19 @@ namespace MachineBrigade.Game.Effects
                     e._chunks = ultimate
                         ? new ChunkThrower.Recipe(earth: 30, wreckage: 12, burning: 9, new Vector2(10f, 22f), 1.4f)
                         : new ChunkThrower.Recipe(earth: 20, wreckage: 8, burning: 6, new Vector2(9f, 18f), 1.2f);
+                    // Play-test 5: a second white-hot core, a long ring of fire bursts, far more sparks,
+                    // fragments and embers, a second air ring, a wide second dust skirt and a tall column.
+                    e.Richer();
+                    e.Fireball(2, new Vector2(8f, 10f) * s, new Vector2(0.8f, 1f), 0.6f * s, hot: true);
+                    e.Secondaries(7f * s, 3f * s, 0.2f, 0.45f, 0.75f, 1.05f, 1.5f);
+                    e.Sparks(ultimate ? 90 : 60, new Vector2(12f, 32f), 0.24f);
+                    e.Debris(ultimate ? 24 : 16, new Vector2(9f, 21f));
+                    e.BurningDebris(ultimate ? 8 : 6, new Vector2(10f, 19f) * s);
+                    e.Embers(ultimate ? 40 : 30, 1.6f);
+                    e._bursts.Add(new Burst(l.AirShock, 0.05f, 1, new Vector2(16f * s, 17.5f * s) * 0.9f, Vector2.zero, new Vector2(0.24f, 0.3f),
+                        0f, 16f * s * 0.08f));
+                    e.OuterDust(26f * s, ultimate ? 20 : 14);
+                    e.Column(ultimate ? 9 : 7, new Vector2(7f, 9f) * s, new Vector2(9f, 12f), 0.6f, 2.2f * s);
                     break;
             }
             return e;
@@ -806,6 +907,17 @@ namespace MachineBrigade.Game.Effects
             e.Embers(12, 0.8f);
             e._chunks = new ChunkThrower.Recipe(earth: 0, wreckage: 4, burning: 2, new Vector2(4f, 9f), 0.8f);
             e._bursts.Add(new Burst(l.AirShock, 0f, 1, new Vector2(6f, 6.6f), Vector2.zero, new Vector2(0.16f, 0.2f), 0f));
+            // Play-test 5 (DECISIONS 20V): a white-hot core, two fire bursts round it, more sparks, fragments and embers.
+            e.Richer();
+            e.Fireball(1, new Vector2(2.8f, 3.6f), new Vector2(0.5f, 0.7f), 0.2f, hot: true, lift: -1.8f);
+            e._bursts.Add(new Burst(l.Fireball, 0.16f, 1, new Vector2(1.6f, 2.2f), new Vector2(0.4f, 1.4f), new Vector2(0.65f, 0.85f), 0.3f,
+                -1.1f, 2.4f));
+            e._bursts.Add(new Burst(l.Fireball, 0.34f, 1, new Vector2(1.4f, 1.9f), new Vector2(0.4f, 1.4f), new Vector2(0.6f, 0.8f), 0.3f,
+                -1f, 2.8f));
+            e.Sparks(16, new Vector2(8f, 18f), 0.15f);
+            e.BurningDebris(3, new Vector2(5f, 10f));
+            e.Embers(6, 0.8f);
+            e.Smoke(1, new Vector2(3f, 4f), new Vector2(2.6f, 3.4f), 0.3f);
             return e;
         }
 
@@ -848,6 +960,15 @@ namespace MachineBrigade.Game.Effects
             e.Embers(6, 0.6f);
             e._bursts.Add(new Burst(l.AirShock, 0f, 1, new Vector2(2.8f, 3.2f), Vector2.zero, new Vector2(0.12f, 0.16f), 0f));
             e.GroundLight(4.5f, 0.35f, 0.18f);
+            // Play-test 5 (DECISIONS 20V): a second lick of fire bursting off the plate beside the first, more sparks,
+            // two burning flakes, smoke rising on after it and a few more embers.
+            e.Richer();
+            e._bursts.Add(new Burst(l.Fireball, 0.1f, 1, new Vector2(1.2f, 1.6f), new Vector2(0.4f, 1.3f), new Vector2(0.6f, 0.8f), 0.15f,
+                -0.35f, 0.8f));
+            e.Sparks(12, new Vector2(6f, 14f), 0.13f);
+            e.BurningDebris(2, new Vector2(4f, 8f));
+            e.Smoke(1, new Vector2(2.2f, 3f), new Vector2(2.4f, 3.2f), 0.38f);
+            e.Embers(4, 0.6f);
             return e;
         }
 
@@ -891,6 +1012,12 @@ namespace MachineBrigade.Game.Effects
             e.Smoke(4, new Vector2(5f, 7f), new Vector2(5f, 7.5f), 0.6f);
             e.Embers(14, 1f);
             e._chunks = new ChunkThrower.Recipe(earth: 10, wreckage: 4, burning: 3, new Vector2(5f, 11f), 1f);
+            // Play-test 5 (DECISIONS 20V): fires breaking out in the ruin, more sparks, and a column of smoke and dust
+            // standing over the heap.
+            e.Richer();
+            e.Secondaries(2.6f, 2.2f, 0.35f, 0.8f);
+            e.Sparks(14, new Vector2(6f, 14f), 0.16f);
+            e.Column(4, new Vector2(6f, 8f), new Vector2(7f, 9f), 0.9f, 2f);
             return e;
         }
 
@@ -908,7 +1035,12 @@ namespace MachineBrigade.Game.Effects
             e.Embers(40, 1.4f);
             e.CraterGlow(12f, 8f);
             e._chunks = new ChunkThrower.Recipe(earth: 0, wreckage: 0, burning: 8, new Vector2(5f, 11f), 0.6f, fuel: true);
+            // Play-test 5 (DECISIONS 20V): a column of oily black smoke over the fire, and more embers.
+            e.Richer();
+            e.Embers(16, 1.4f);
+            e.Column(4, new Vector2(7f, 9f), new Vector2(8f, 10f), 0.8f, 2.2f);
             return e;
+
         }
     }
 }

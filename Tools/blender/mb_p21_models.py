@@ -46,8 +46,9 @@ from mb_vehicles import (_access_panel, _antenna, _barrel, _cable, _coax, _eyes,
                          _pintle, _shackle, _shovel, _skirt, _smoke, _sponson_section, _stowage_bin, _taillight,
                          _vent, tracks)
 
-# Deployed pose, shared with VehicleView.Deploy (model units; the vehicle is drawn at its def's scale).
-SINK, LIFT, BERM_REST = .8, .75, .01
+# Deployed pose, shared with VehicleView.Deploy (model units; the vehicle is drawn at its def's scale). Play-test 5
+# (DECISIONS 20V, mb_pt5_models.py) dug it in deeper: hull-down, the turret lifted less, the side plates leaning out 20 degrees.
+SINK, LIFT, BERM_REST = 1.25, .55, .01
 
 
 def _bunker_berm(a):

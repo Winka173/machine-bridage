@@ -400,7 +400,8 @@ namespace MachineBrigade.Game.Hud
 
         private VisualElement ItemTile(string id)
         {
-            var tile = ShopTile("", null, CardIcons.For(id), Strings.Support(id), Strings.Get("item." + id + ".info"), () => SelectShop(id), id == _shopSelected);
+            // Play-test 5: an item with a picture of its own (the gunship on call) shows it; the others their icon.
+            var tile = ShopTile("", CardArt.For(id), CardIcons.For(id), Strings.Support(id), Strings.Get("item." + id + ".info"), () => SelectShop(id), id == _shopSelected);
             tile.Q(className: "fc-shop__body").Add(PriceLine(Progression.ItemPrice(id), Strings.Format("shop.ownedCount", PlayerProfile.ItemCount(id))));
             return tile;
         }

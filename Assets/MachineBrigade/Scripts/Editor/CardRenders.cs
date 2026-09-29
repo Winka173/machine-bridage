@@ -66,6 +66,12 @@ namespace MachineBrigade.Editor
                 foreach (var (kind, test) in Kinds)
                     if (test(def) && seen.Add(def.Id))
                         cards.Add((def.Id, kind, TowerArt.ModelFor(def, Ships)));
+            // Play-test 5 (DECISIONS 20V): a fire support flown by an aircraft of its own (the gunship on call) shows
+            // that aircraft on its card and item.
+            foreach (var id in MatchSettings.AllSupports.Concat(Progression.Items))
+                if (catalog.TryGetSupport(id, out var support) && support.Kind == SupportKind.Escort && support.Units.Count > 0 &&
+                    catalog.Vehicles.TryGetValue(support.Units[0], out var flier) && Ships(flier.Id) && seen.Add(id))
+                    cards.Add((id, "support", flier.Id));
             return cards;
         }
 

@@ -7,6 +7,28 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 5: visuals
+
+- Every explosion is layered and grander, by calibre and tier: a white-hot core in the fireball, secondary fire
+  bursts, more sparks, fragments and embers, a second dust skirt and air ring on big blasts, rising smoke, and a
+  smoke column over the crater of big ones (bombs, heavy rockets, boss attacks, falling buildings and towers,
+  napalm). Low keeps every layer with half the added particles and never less than before (DECISIONS 20V).
+- Blasts bigger: tank rounds +20 % wide and +20 % longer, artillery and mortar shells, missiles and rockets, and
+  drones +20 %, the gun turret's rounds +30 %.
+- A new fire on badly damaged vehicles: one to three fire points on the hull by the damage, each a bright flame
+  core, tongues of flame, embers and a dark smoke column; lighter on Low.
+- Shorter flames behind the SAM launcher's, thermobaric launcher's, heavy rocket artillery's, ballistic missile's,
+  long-range SAM's and Patriot batteries' missiles, still sized by the munition.
+- A railgun hit leaves a burn on the target like the focused laser's: a glowing spot cooling, sparks, smoke, a
+  scorch.
+- In action: the targets are a jeep, an armoured car, a light tank, a battle tank and a heavy tank (armour 0 to 4)
+  and none lays smoke; every fire support is framed with the sky its aircraft or rounds come from.
+- Models: a finer, 20 % smaller FPV drone; the bunker vehicle dug in as an emplacement (hull-down behind a bank of
+  earth, sandbags, plates as revetments, a camouflage net); the AC-130 gunship with its 25, 40 and 105 mm guns
+  drawn big out of the left side and a sensor ball, now on the gunship's card and item; a gunless transport for
+  airdrops; the stealth fighter's middle detailed (intakes, canopy frames, spine, panel lines, bay seams). Card
+  pictures to render.
+
 ### Missile speeds, fire rates, models
 
 - No missile flies faster than the attack helicopter's Hellfire (24 m/s): the SAMs, air-to-air and MANPADS missiles,

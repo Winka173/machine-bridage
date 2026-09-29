@@ -615,8 +615,93 @@ namespace MachineBrigade.Editor
             return camera;
         }
 
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20V): the new hull fire on battle tanks at 28 %, 15 % and 4 % health (High), the
+        /// same 4 % on Low, and a railgun's burn on a fifth, 0.6 s after the hit; 2.5 s into the fire. Batch mode
+        /// (with graphics): -executeMethod MachineBrigade.Editor.EffectShots.HullFires -mbShotsOut &lt;png&gt;.
+        /// </summary>
+        [MenuItem("Machine Brigade/Render Hull Fire Shots")]
+        public static void HullFires()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/hullfires.png");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260929);
+            var graphics = Game.Match.MatchSettings.Graphics;
+            var materials = new MaterialLibrary();
+            var models = new ModelLibrary(materials);
+            var root = new GameObject("Shots").transform;
+            Stage(materials, root, 200f);
+            var camera = Camera(root);
+            camera.orthographicSize = 7.5f;
+            var fire = new HullFire(materials, root);
+            var emitters = new Emitters(materials, root);
+            var lasers = new LaserBeams(materials, emitters, null, root);
+            var right = camera.transform.right;
+            right.y = 0f;
+            right.Normalize();
+            var healths = new[] { 0.28f, 0.15f, 0.04f, 0.04f, 1f };
+            var tanks = new Transform[healths.Length];
+            for (var i = 0; i < tanks.Length; i++)
+            {
+                tanks[i] = models.Spawn("main_battle_tank", 1, root).Root.transform;
+                tanks[i].position = right * ((i - 2) * 8f);
+                tanks[i].rotation = Quaternion.Euler(0f, 30f + i * 20f, 0f);
+            }
+            const float step = 1f / 60f;
+            float time = 0f, next = 0f, nextLow = 0f;
+            var beat = 0;
+            var seared = false;
+            var systems = root.GetComponentsInChildren<ParticleSystem>(true);
+            while (time < 2.5f)
+            {
+                time += step;
+                if (time >= next)
+                {
+                    next += HullFire.Beat;
+                    Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
+                    for (var i = 0; i < 3; i++) fire.Feed(tanks[i], 2.2f, 2.4f, false, i, healths[i], beat);
+                    beat++;
+                }
+                if (time >= nextLow)
+                {
+                    nextLow += HullFire.LowBeat;
+                    Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.Low;
+                    fire.Feed(tanks[3], 2.2f, 2.4f, false, 3, healths[3], beat);
+                    Game.Match.MatchSettings.Graphics = Game.Match.GraphicsQuality.High;
+                }
+                if (!seared && time >= 1.9f)
+                {
+                    seared = true;
+                    lasers.Sear(tanks[4].position + Vector3.up * 1.3f + tanks[4].forward * 1.2f, Sim.Core.EntityId.None, null, 1.3f, 2.6f, time);
+                }
+                lasers.Tick(time, step, null);
+                foreach (var ps in systems) ps.Simulate(step, false, false, false);
+            }
+            Game.Match.MatchSettings.Graphics = graphics;
+            var size = new Vector2Int(1600, 560);
+            var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.aspect = size.x / (float)size.y;
+            camera.targetTexture = rt;
+            camera.transform.position = Vector3.up * 1.2f - camera.transform.forward * 80f;
+            camera.Render();
+            RenderTexture.active = rt;
+            var frame = new Texture2D(size.x, size.y, TextureFormat.RGB24, false);
+            frame.ReadPixels(new Rect(0, 0, size.x, size.y), 0, 0);
+            frame.Apply();
+            RenderTexture.active = null;
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)) ?? ".");
+            File.WriteAllBytes(output, frame.EncodeToPNG());
+            Debug.Log($"[EffectShots] wrote {Path.GetFullPath(output)}; hull fire particles alive {fire.Alive}");
+            camera.targetTexture = null;
+            rt.Release();
+            Object.DestroyImmediate(frame);
+            models.Dispose();
+            materials.Dispose();
+        }
+
         private static string Argument(string name)
         {
+
             var args = System.Environment.GetCommandLineArgs();
             for (var i = 0; i < args.Length - 1; i++)
                 if (args[i] == name) return args[i + 1];

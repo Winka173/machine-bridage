@@ -349,6 +349,7 @@ namespace MachineBrigade.Game.Match
             if (_models.Has("strike_jet")) _models.Prewarm("strike_jet");
             // The transport that flies reinforcements in (see AirDrops).
             if (_models.Has("sky_gunship")) _models.Prewarm("sky_gunship");
+            if (_models.Has(Effects.AirDrops.TransportModel)) _models.Prewarm(Effects.AirDrops.TransportModel);
             _effects.Prewarm();
             Curtain.Progress(0.85f);
             yield return null;
