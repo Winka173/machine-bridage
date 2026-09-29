@@ -89,7 +89,7 @@ namespace MachineBrigade.Game.Views
                 view.UpdateLod(ppm);
                 view.Render(alpha, cameraRotation);
                 if (_impostors == null || view.Level != VehicleLod.Impostor || !OnScreen(view)) continue;
-                _impostors.Add(view.Impostor, view.ImpostorCentre, view.Def.Scale, view.Root.eulerAngles.y, view.ImpostorTint);
+                _impostors.Add(view.Impostor, view.ImpostorCentre, view.DrawScale, view.Root.eulerAngles.y, view.ImpostorTint);
                 _cards++;
             }
             // Only in the battle camera (not a menu turntable's).

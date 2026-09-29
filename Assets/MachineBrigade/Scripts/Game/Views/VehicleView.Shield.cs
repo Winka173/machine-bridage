@@ -146,8 +146,8 @@ namespace MachineBrigade.Game.Views
 
         private ShieldVisual MakeShield()
         {
-            var radii = ShieldRadii(ModelBounds, Def.Scale);
-            var shield = new ShieldVisual("Shield", _body, ShieldVisual.Shape.Bubble, Mathf.Max(radii.x, radii.z) * Def.Scale);
+            var radii = ShieldRadii(ModelBounds, DrawScale);
+            var shield = new ShieldVisual("Shield", _body, ShieldVisual.Shape.Bubble, Mathf.Max(radii.x, radii.z) * DrawScale);
             shield.Transform.localPosition = ModelBounds.center;
             shield.Transform.localScale = radii;
             shield.SetSide(_ours);

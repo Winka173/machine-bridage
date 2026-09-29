@@ -17,6 +17,9 @@ namespace MachineBrigade.Game.Effects
     internal sealed class StrikeEffects
     {
         private const float JetAltitude = 24f;
+
+        /// <summary>Play-test 6: the SEAD strike's anti-radiation missile drawn this much bigger than a Maverick.</summary>
+        internal const float SeadScale = 1.8f;
         private const float BombFall = 0.8f;
 
         /// <summary>The heavy bomber of a bombing raid flies higher than the strike jet.</summary>
@@ -171,6 +174,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now)
         {
+            TickLocks(now);
             foreach (var t in _telegraphs)
             {
                 if (!t.Active) continue;
@@ -370,7 +374,7 @@ namespace MachineBrigade.Game.Effects
             {
                 jet = new Jet { Root = _models.Spawn(model, team, _root).Root, Model = model };
                 var twin = model == "strike_jet" ? "attack_jet" : model == TransportModel ? AirDrops.TransportScale : model;
-                if (_catalog.Vehicles.TryGetValue(twin, out var sized)) jet.Root.transform.localScale = Vector3.one * sized.Scale;
+                if (_catalog.Vehicles.TryGetValue(twin, out var sized)) jet.Root.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(sized);
                 foreach (var t in jet.Root.GetComponentsInChildren<Transform>(true))
                     if (t.name.StartsWith("Bombs")) jet.Bombs = t;
                 _jets.Add(jet);
@@ -394,7 +398,7 @@ namespace MachineBrigade.Game.Effects
             if (d == null)
             {
                 d = new ScanDrone { Root = _models.Spawn("recon_drone", team, _root).Root };
-                if (_catalog.Vehicles.TryGetValue("recon_drone", out var sized)) d.Root.transform.localScale = Vector3.one * sized.Scale;
+                if (_catalog.Vehicles.TryGetValue("recon_drone", out var sized)) d.Root.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(sized);
                 _drones.Add(d);
             }
             d.Root.SetActive(true);
@@ -531,6 +535,36 @@ namespace MachineBrigade.Game.Effects
             PB.Colors(_sparks, PB.Fade(Color.white, Color.white, Color.white));
         }
 
+        private static readonly Color LockRed = new(1f, 0.22f, 0.14f, 0.9f);
+
+        /// <summary>Play-test 6 (DECISIONS 21H): the SEAD missile's lock on its radar, (where, from, to), drawn while it flies.</summary>
+        private readonly List<(Vector3 at, float start, float end)> _locks = new();
+
+        private float _lockPulse;
+
+        /// <summary>A lock on the radar at <paramref name="at"/> until the missile strikes in <paramref name="seconds"/>.</summary>
+        private void LockOn(Vector3 at, float seconds, float now) => _locks.Add((at, now, now + Mathf.Max(0.2f, seconds)));
+
+        /// <summary>Six red points turning round the locked radar and closing in on it, a red pulse over it, as the missile nears.</summary>
+        private void TickLocks(float now)
+        {
+            for (var i = _locks.Count - 1; i >= 0; i--)
+                if (now >= _locks[i].end) _locks.RemoveAt(i);
+            if (_locks.Count == 0 || now < _lockPulse) return;
+            _lockPulse = now + 0.1f;
+            foreach (var (at, start, end) in _locks)
+            {
+                var t = Mathf.InverseLerp(start, end, now);
+                var r = Mathf.Lerp(4.5f, 0.9f, t);
+                for (var k = 0; k < 6; k++)
+                {
+                    var angle = k * Mathf.PI / 3f + now * 1.6f;
+                    Emit(_glow, at + new Vector3(Mathf.Cos(angle) * r, 0.35f, Mathf.Sin(angle) * r), Vector3.zero, 0.7f, 0.16f, LockRed);
+                }
+                Emit(_glow, at + Vector3.up * 0.5f, Vector3.zero, 1f + 1.4f * t, 0.12f, LockRed);
+            }
+        }
+
         private ParticleSystem Layer(string name, Material material, int max, float gravity)
         {
             var ps = PB.Create(_root, name, material);
@@ -577,11 +611,19 @@ namespace MachineBrigade.Game.Effects
                         scale: 1.3f);
                     return true;
                 case SupportKind.Sead:
-                    // The SEAD jet's anti-radiation missile: a missile, not a shell, burning and trailing smoke.
+                {
+                    // Play-test 6 (DECISIONS 21H): the SEAD jet's anti-radiation missile (an AGM-88 HARM), drawn big with a
+                    // long bright motor flame and a thick smoke trail: it leaves the jet, pulls up and dives steeply on to
+                    // the air defence's radar (its lock marked by a red ring closing on it); the kill is EffectsDirector's.
                     var missile = _models.Has("maverick") ? "maverick" : "missile";
                     if (!_models.Has(missile)) return false;
-                    _projectiles.Launch(_models.Merged(missile), land + back * 45f + Vector3.up * JetAltitude, land, seconds, 3f, 0.8f, now, boost: 0.4f);
+                    var launch = land + back * 45f + Vector3.up * JetAltitude;
+                    var crest = land + back * 10f + Vector3.up * (JetAltitude + 8f);
+                    _projectiles.Launch(_models.Merged(missile), launch, land, seconds, 0f, 1.2f, now, boost: 0.25f, scale: SeadScale,
+                        control: crest, plume: new Plume(2.4f, 0.3f, 1.9f, 1f, 0.3f));
+                    LockOn(land, seconds, now);
                     return true;
+                }
                 case SupportKind.Barrage:
                     // The HE shell itself inside its glow, nose-first down its steep path (a super-gun's three times the size).
                     if (_models.Has("shell_155"))

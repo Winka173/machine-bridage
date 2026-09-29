@@ -8139,3 +8139,142 @@ a864c3f with this work stashed): `RosterRoleTests.TheRadarRevealsGunsThatFireAnd
 `MatchRunner.cs` (the camera's update and the HUD's wiring), `SelectionController.cs`, `TouchGestures.cs`,
 `RtsCamera.cs`, `StrikeSystem.cs` (`Launch`), `SimWorld.cs` (`ClearSpot`), `AirDrops.cs`, `Weather.cs`,
 `AudioDirector.cs`, `MusicDirector.cs`, `UiShots.cs`.
+
+
+## 21H. Play-test 6: effects, models and sizes (2026-09-29)
+
+The owner's play-test 6 items marked [H] (`Docs/prompts/requests_vi.md`). Branch `feature/pt6-vfx` from lead/integration
+a864c3f. Nothing here changes the simulation's behaviour: one read-only accessor (`Vehicle.MountCooldown`) for the
+view. Every redesign follows outside references, listed per item (the owner's rule). No fire or blast is smaller,
+except the heavy fortress's blasts, which the owner asked to shrink.
+
+### A. The siege tank, after StarCraft 2's siege tank
+
+**References:** StarCraft 2's Siege Tank (Crucio), tank mode and siege mode: the low wide body between four armoured
+tread pods with a turreted twin cannon, and the transformation (legs out, the hull braced and raised, the turret
+turning round, the shock cannon running out and locking); the M110 and 2S4 Tyulpan for the recoil spades.
+
+**Model** (`Tools/blender/mb_p22_siege.py`, rewritten): an 8 m hull, low (roof 1.38 m instead of 1.72) and wide
+(4.2 m over the legs), between **four armoured track pods** (team-coloured wedges over each end of the tracks, trim
+and vents), a glacis plate, two big exhaust stacks and an engine grille. A **broad turret with two ends**: the twin
+105 mm (`Deploy_gun`, `Muzzle_gun` on the right barrel's brake) at one end, the **240 mm siege cannon** at the other:
+a heavy cradle on trunnions, an outer sleeve with a team band, the inner tube with a **lock collar**, and a big muzzle
+brake, drawn run in (`Main_cannon_cradle`, `_sleeve`, `_tube`, `Muzzle_brake`, `Muzzle_brake_ports`, `Muzzle_main`).
+**Four hydraulic legs** fold along the pods' tops (`Deploy_brace_l/_r` front, `Deploy_leg_l/_r` rear), each with a ram
+housing at its tip (`Deploy_*knee_*`) and a ram with a clawed foot pad (`Deploy_*ram_*`); two rear stabiliser spades
+(`Deploy_spade_l/_r`); the turret on its ring (`Deploy_riser`); a roof M2. 15,472 triangles (was 10,704).
+
+**Drawn sieged, spawned in tank mode.** The turret is drawn with the siege cannon forward, so its barrel group gets
+the usual elevating pivot (ModelLibrary lays barrels whose muzzle points forward); `ModelLibrary.RestTurretYaw` turns
+the turret round on the template, so every copy (the menu's preview, the level-of-detail bake, the battle) starts in
+tank mode: twin guns forward, the stubby cannon over the engine deck. `VehicleView` adds the turn (`_turretSwing`, 180
+in tank mode) to the sim's turret heading, so the twin guns face what the 105 mm shoots.
+
+**The sequence** (`VehicleView.AnimateSiege`, the data's 2.5 s kept, packing up runs it backwards): the twin guns
+slide 0.9 m into the turret (4-30 %); the four legs swing out from the pods (yaw 120 degrees, 0-26 %) and tilt 25
+degrees down (14-36 %); the rams drive the pads on to the ground (28-46 %, the ram housings kept upright) and the
+spades bite (30-50 %, 140 degrees); the rams push on and **lift the hull 0.25 m** (44-62 %); the turret's ring unlocks
+0.15 m (40-48 %) and **the turret swings round** (46-74 %), bringing the siege cannon forward; **the cannon runs out**
+1.9 m (70-86 %) and knocks 7 cm past and back as its collar **locks** against the sleeve (86-92 %); last it swings up
+(from 88 %) and is laid by range at 55-72 degrees (45 idle), now at 150 degrees a second during the work so it keeps
+pace. The tube and brake run out as recoil parts (`BarrelRunOf`), so the recoil still kicks the whole barrel.
+
+### B. Launchers raise their launcher to fire
+
+**References:** HIMARS and M270 (the pod raised and traversed to fire), BM-21 Grad and TOS-1A (the tube pack laid
+by range), BM-30 Smerch, Buk (the rails laid on the target), S-300 (the canisters stood upright), 9K720 Iskander
+(the missile erected upright), Patriot (the box raised to 38 degrees, flat for travel), the Shahed truck's rail,
+the Lancet box launcher, and the Bradley's TOW launcher (raised from its stowed pose beside the turret).
+
+`VehicleView.Launchers.cs`, view only. Each launcher has an erector profile (`Erectors`): laid at its target
+(`Aimed`: mlrs, elite_mlrs, elite_grad, heavy_rocket_artillery, thermobaric_launcher, rocket_technical, sam_launcher)
+or raised a set way from the pose it is drawn in (`Raised`: long_sam and elite_long_sam +84, stood upright;
+ballistic_launcher +66, from its drawn 20 degrees to 86; lancet_truck +34; missile_battery and shahed_truck are drawn
+at their firing angle and travel lowered, 34 and 12 degrees), with the erector's seconds (0.7-2.0). The launcher
+comes up when its next round is within its erector's time and a second and it has a target or an enemy near; it
+stays up while rounds follow and goes down to its travel pose while it reloads (a long cooldown or an empty
+magazine) or once nothing is about. **No sim delay:** the sim has none for launchers (the railgun's charge is a
+weapon of its own, and adding one would change fire rates, which is agent F's), and a ready launcher fires the moment
+it has a target, so the director marks launchers with an enemy of their layer inside 1.25 times their reach
+(`EffectsDirector.WarnLaunchers`, five times a second, `ThreatAt`): they are up before the enemy is in reach. A round
+fired before the launcher is up (an enemy appearing inside the reach) still lays it at once (`LayForShot`) and holds
+it up 1.2 s before it lowers. Models whose erector is drawn under other names join the elevating group
+(`ModelLibrary.ErectorParts`: the Iskander's erector and missiles, the Shahed truck's rack and drone, the Lancet
+truck's cell box). **ATGM carriers:** the IFV's and the elite APC's ATGM box gets its own pivot (`Deploy_atgm`, at the
+box's rear foot; `ModelLibrary.SideLaunchers`) instead of riding the gun, and comes up 16 degrees to fire its missile
+(`RaiseSideLauncher`, by the missile mount's target and cooldown, `Vehicle.MountCooldown`).
+
+### C. The SEAD strike
+
+**References:** the AGM-88 HARM's dive on to a radar, the SEAD and HARM hits of Battlefield and Wargame (an
+electronic kill: a blue-white flash, arcing and a dead radar).
+
+The anti-radiation missile is drawn 1.8 times a Maverick (`StrikeEffects.SeadScale`) with a long bright motor flame
+and a thick smoke trail (`Plume(2.4, 0.3, 1.9, 1)`); it leaves the jet, pulls up over a crest 8 m above the jet's
+height and dives steeply on to its air defence; six red points turn round the locked radar and close in on it, with a
+red pulse over it, as the missile nears (`LockOn`). On the hit, on top of the warhead's blast (kept): an **electronic
+kill** (`EffectsDirector.SeadKill`): a white-blue flash, two electric shock rings (10 and 6 m), 7 arcs crawling over
+the vehicle, 48 hot and blue sparks, the smoke of burnt-out electronics, a light flash. **Disabled for its 8 s:** any
+knocked-out vehicle (the SEAD strike's stun, and the EMP's, which showed nothing before) now shows it while it lasts
+(`ShowStunned`): arcs crackle over the hull, blue sparks spit off it, burnt electronics smoke, and its radar stops
+dead and slumps 50 degrees on its mount (`VehicleView.Spin`), coming back up when it recovers. Low: glow points
+instead of arcs, fewer sparks. The big circle stays: it is where the strike looks for an air defence (20 m).
+
+### D. Blasts
+
+`BlastSizes.TurretBigger` 1.2: the gun turret's rounds (its 120 mm, the long branch's and the autocannon branch's
+57 mm) 20 % bigger again (1.56 over 11A; 2.18 on the 120 mm's shell hit). `BlastSizes.FortressSmaller` 0.8: the heavy
+fortress's twin 155 mm (and the coastal branch's) 20 % smaller, the owner's ask (its ground ring, smoke and scorch
+follow the drawn size).
+
+### E. Aircraft 15 % smaller
+
+`VehicleView.AirShrink` 0.85 (the owner asked for 10-20 %) on every flying unit alike (planes, helicopters, drones,
+the escorts), so their sizes against each other stay (`DrawScaleOf`); bosses keep their size (the boss agent's). The
+support aircraft drawn by the strikes (the strike jets, the recon drone) and the transport take the same scale. The
+muzzles and mounts are on the model and shrink with it; the view's other uses of the scale (the health bar's height,
+the level-of-detail size, the impostor, the shield, the nav lights, the engine trails, the mission markers) follow the
+drawn scale. The simulation's radii, altitudes and reach are unchanged.
+
+### F. Fire on vehicles and bosses
+
+**References:** burning tanks in World of Tanks (flames out of the engine deck, the black column), Battlefield 4 and
+1 (a disabled vehicle's fire, sparks and smoke, the flare-ups), Company of Heroes 2 (fire licking from hatches, smoke
+streaming behind a moving vehicle).
+
+`HullFire` rewritten (it replaces 20V's look and prompt 9's boss part fires). Sources where a hit vehicle catches:
+the **engine deck** (a wide grille, flames across it), the **turret's hatch** (a tall tongue out of the hatch, turning
+with the turret) and a **breach in a flank** (flames licking out sideways and up); one, two or three as the damage
+grows. Each source each beat: a hot glow on the metal, tall narrow tongues pinned at their base (the flame sheet at
+its natural speed, 0.55-0.85 s), small flickers in the opening, sparks spat out as streaks falling back, embers, and
+dark smoke pouring out and rising. **Attached:** every source is placed on the hull each beat and every flame carries
+the hull's velocity, so the fire moves with the vehicle; embers keep 60 % of it and the smoke 25 %, so the smoke
+streams out behind a vehicle on the move. **Flare-ups:** now and then (every few seconds, more often as it worsens) a
+burst of taller flames, a pop of light, a shower of sparks and a gout of black smoke. **Bosses:** their fire points
+(broken parts, parts under a quarter, the body's stages; `FireBudget` caps kept) burn the same way (`FeedPoint`, 2.2
+times a point's size) instead of the ground fire riding the boss; the death flare-up bursts them; the wreck still
+burns on the ground. **No heat shimmer:** a refraction pass needs the camera's opaque texture, which the phone
+renderer (`Mobile_RPAsset`) leaves off. **Low:** at most two sources, a 0.12 s beat, one tongue a beat, no flickers,
+half the sparks and embers, smoke every other beat, smaller and rarer flare-ups.
+
+### Tests and captures
+
+`PlayTest6VisualTests` (5): the siege tank spawns in tank mode with its legs, housings, rams and telescoping cannon
+apart and the pads reaching the ground; every launcher has an elevating erector, the Iskander's, Shahed's and Lancet's
+parts ride it, and the IFVs' ATGM box has its own pivot with the missile muzzle on it; aircraft drawn 15 % smaller all
+alike, bosses and ground vehicles not; the fire moves with the hull and its smoke trails, Low flares up less, a boss's
+part fire burns the same way; the SEAD missile drawn big. `BlastSizeTests` takes the turret's and fortress's factors.
+Run once each (compile, then the filters): `PlayTest6VisualTests` 5/5, `PlayTest5VisualTests`, `EffectsTests`,
+`FlashTests`, `VehicleLodTests`, `BlastSizeTests` pass; `MissileFlightTests`, `ModelTests`, `MuzzleAuditTests` with
+the known failures only (`sam_battery_lrr`'s flight; `mobile_fortress`'s `boss_howitzer`; `RoundsLeave` x3; 36 tower
+and boss muzzle rows; the siege tank's twin gun passes). Captures in `Docs/art/pt6/`: `siege_tank.png` (the In action
+clip: tank mode firing, the legs out, the turret swinging round, the cannon up and firing), `launchers_mlrs_iskander.png`
+and `launchers_s300_tos.png` (raised to fire, lowered after), `sead_strike.png` (the HARM's dive and the kill),
+`hull_fire.png` (`EffectShots.HullFires`: 28, 15 and 4 % on High, 4 % on Low, and a tank at 10 % driving, its smoke
+trailing). Card renders are the lead's (the siege tank's changed).
+
+### For the testing phase
+
+The siege tank's sequence at the default zoom on a phone; whether launchers warned by a far enemy bob up and down
+at the edge of their reach; the fire's cost with many burning vehicles on Low; the SEAD kill's read at the battle
+zoom.

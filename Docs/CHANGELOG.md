@@ -25,6 +25,22 @@ its commits.
   canopy rides over the tower's top instead of through its middle.
 - Sound: rain and wind well under the music (rain 0.15-0.18, from 0.35-0.5), softer thunder; the music ducks only
   under alerts (a boss's big attack, a fortress's alarm) for a moment.
+### Play-test 6: effects and models
+
+- The siege tank is redrawn after StarCraft 2's: a low, wide hull between four armoured track pods and a broad
+  turret with twin 105 mm guns; sieging, four hydraulic legs swing out and brace, the rams lift the hull, the turret
+  swings round, and the big 240 mm siege cannon runs out, locks and is laid (the 2.5 s timing is kept).
+- Launchers raise their launcher to fire and lower it after, like the real systems: MLRS, Grad, Smerch and TOS lay
+  their tubes, the Buk its rails, the S-300 stands its canisters upright, the Iskander erects its missiles, the
+  Patriot raises its box, the Shahed and Lancet trucks their launchers, and the IFVs lift their ATGM box.
+- The SEAD strike's anti-radiation missile is big and bright and dives on to the air defence it locked; its hit is
+  an electronic kill (a blue-white flash, shock rings, arcing, sparks), and the air defence is visibly knocked out
+  for its 8 s (arcs, sparks, smoke, its radar dead and slumped). EMP-stunned vehicles show it too.
+- The gun turret's blasts are 20 % bigger; the heavy fortress's 20 % smaller.
+- Aircraft are drawn 15 % smaller, every type alike.
+- Burning vehicles and bosses burn like vehicles: flames licking out of the engine deck, the hatch and a breach,
+  fixed to the hull and moving with it, a glow on the metal, sparks and flare-ups, and dark smoke that trails behind
+  a vehicle on the move. Low graphics burn on fewer sources.
 
 ### Play-test 5: visuals
 

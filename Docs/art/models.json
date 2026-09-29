@@ -1041,7 +1041,7 @@
   },
   "siege_tank": {
     "file": "siege_tank.glb",
-    "triangles": 10704
+    "triangles": 15472
   },
   "silo": {
     "file": "silo.glb",

@@ -136,7 +136,7 @@ namespace MachineBrigade.Game.Effects
             plane.Over += Centre;
             plane.Team = team;
             plane.Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root;
-            if (_catalog.Vehicles.TryGetValue(TransportScale, out var transport)) plane.Root.transform.localScale = Vector3.one * transport.Scale;
+            if (_catalog.Vehicles.TryGetValue(TransportScale, out var transport)) plane.Root.transform.localScale = Vector3.one * MachineBrigade.Game.Views.VehicleView.DrawScaleOf(transport);
             plane.Root.transform.SetPositionAndRotation(plane.Entry, Quaternion.LookRotation(plane.Inward));
             _planes.Add(plane);
             return plane;
