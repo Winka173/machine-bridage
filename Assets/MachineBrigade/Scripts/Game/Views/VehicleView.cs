@@ -22,6 +22,18 @@ namespace MachineBrigade.Game.Views
         /// <summary>Aircraft fly in over this long: from behind along their heading, a little above their height.</summary>
         private const float ArriveSeconds = 2.6f;
 
+        /// <summary>
+        /// Test feedback 19P, the In action clip: an aircraft glides in and eases off onto its station (it comes in
+        /// fastest and slows all the way), over a shorter run, instead of the battle's fly-in that races in and then
+        /// brakes. Set by the range when it adds the view.
+        /// </summary>
+        public bool GentleArrival { get; set; }
+
+        /// <summary>The drawn fly-in is over: the aircraft is where the simulation has it.</summary>
+        public bool Arrived => !Flying || Time.time - _spawnTime >= (GentleArrival ? GentleSeconds : ArriveSeconds);
+
+        private const float GentleSeconds = 3.2f;
+
         private static readonly int TintId = Shader.PropertyToID("_Tint");
 
         private readonly ModelInstance _model;
@@ -897,7 +909,9 @@ namespace MachineBrigade.Game.Views
                 // down when speeding up and bank into turns.
                 // Prompt 19: a boss on altitude tiers and a falling drop pod are drawn at the sim's height (no fly-in).
                 var tiered = Sim.Def.Tiers != null || Sim.IsPod;
-                var arrive = tiered || ShotStep >= 0f ? 1f : Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                var sinceSpawn = (Time.time - _spawnTime) / (GentleArrival ? GentleSeconds : ArriveSeconds);
+                var arrive = tiered || ShotStep >= 0f ? 1f
+                    : GentleArrival ? 1f - Mathf.Pow(1f - Mathf.Clamp01(sinceSpawn), 3f) : Mathf.SmoothStep(0f, 1f, sinceSpawn);
                 var above = 1f - arrive;
                 if (Def.FixedWing) HoldPose();
                 // A jet hanging on its target bobs a little more than one flying level.
@@ -912,7 +926,8 @@ namespace MachineBrigade.Game.Views
                 {
                     // It flies in along its heading from behind, dropping to its height as it comes.
                     var heading = hull * Mathf.Deg2Rad;
-                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * (above * above * (Def.FixedWing ? 80f : 35f));
+                    var run = GentleArrival ? above * (Def.FixedWing ? 42f : 24f) : above * above * (Def.FixedWing ? 80f : 35f);
+                    position -= new Vector3(Mathf.Sin(heading), 0f, Mathf.Cos(heading)) * run;
                 }
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)

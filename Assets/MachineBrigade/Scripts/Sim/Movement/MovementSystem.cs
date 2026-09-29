@@ -348,7 +348,7 @@ namespace MachineBrigade.Sim.Movement
             var reach = GuardLeash + weapon.Range * (v.Def.Interceptor ? 2.4f : 0.9f);
             if (_world.Time - v.LastHitTime < AnswerFireSeconds && _world.TryGetVehicle(v.LastAttacker, out var attacker) &&
                 attacker.IsAlive && !attacker.Invulnerable && attacker.IsVisibleTo(v.Team) && weapon.CanTarget(attacker.Flying) && (!attacker.Flying || HuntsAircraft(v)) &&
-                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach)
+                Vector2.Distance(attacker.Position, v.GuardPoint) - attacker.Radius <= reach && !OffPost(v, attacker))
                 return attacker;
 
             Vehicle? best = null;
@@ -358,6 +358,7 @@ namespace MachineBrigade.Sim.Movement
                 if (!other.IsAlive || other.Team == v.Team || !other.IsVisibleTo(v.Team) || !weapon.CanTarget(other.Flying)) continue;
                 if ((other.Flying && !HuntsAircraft(v)) || other.Invulnerable) continue;
                 if (v.Def.Interceptor && !other.Flying) continue;
+                if (OffPost(v, other)) continue;
                 var distance = Vector2.Distance(v.Position, other.Position);
                 if (distance > MathF.Max(v.Def.VisionRange, v.Def.Interceptor ? reach : 0f) || distance >= bestDistance) continue;
                 if (Vector2.Distance(other.Position, v.GuardPoint) - other.Radius > reach) continue;
@@ -812,7 +813,7 @@ namespace MachineBrigade.Sim.Movement
                 // short-range anti-aircraft round it. The circle is kept inside the map (a target
                 // near the edge is circled from the inside), and its centre glides to a new target
                 // at a few metres a second, so the turn never jerks.
-                var radius = MathF.Max(turnRadius * 1.15f, def.Weapon.Range * 0.62f);
+                var radius = MathF.Max(turnRadius * 1.15f, def.OrbitRadius > 0f ? def.OrbitRadius : def.Weapon.Range * 0.62f);
                 var limitX = MathF.Max(0f, halfX - radius - 4f);
                 var limitZ = MathF.Max(0f, halfZ - radius - 4f);
                 var want = new Vector2(Math.Clamp(target.Position.X, centre.X - limitX, centre.X + limitX),
@@ -1074,15 +1075,15 @@ namespace MachineBrigade.Sim.Movement
                 return ordered;
             var weapon = v.Def.Weapon;
             if (_world.TryGetVehicle(v.RunTarget, out var run) && run.IsAlive && !run.Invulnerable && run.IsVisibleTo(v.Team) &&
-                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f)
+                weapon.CanTarget(run.Flying) && Vector2.Distance(run.Position, v.Position) < weapon.Range * 2.5f && !OffPost(v, run))
                 return run;
             v.RunExtending = false;
-            if (_world.TryGetVehicle(v.Target, out var current) && current.IsAlive)
+            if (_world.TryGetVehicle(v.Target, out var current) && current.IsAlive && !OffPost(v, current))
             {
                 v.RunTarget = current.Id;
                 return current;
             }
-            if (_world.TryGetVehicle(v.Engaged, out var engaged) && engaged.IsAlive && engaged.IsVisibleTo(v.Team))
+            if (_world.TryGetVehicle(v.Engaged, out var engaged) && engaged.IsAlive && engaged.IsVisibleTo(v.Team) && !OffPost(v, engaged))
             {
                 v.RunTarget = engaged.Id;
                 return engaged;
@@ -1090,6 +1091,10 @@ namespace MachineBrigade.Sim.Movement
             v.RunTarget = EntityId.None;
             return null;
         }
+
+        /// <summary>A called escort's target beyond its post (see <see cref="Vehicle.PostRadius"/>).</summary>
+        private static bool OffPost(Vehicle v, Vehicle target) =>
+            v.PostRadius > 0f && Vector2.Distance(target.Position, v.GuardPoint) > v.PostRadius + target.Radius;
 
         /// <summary>A point ahead on a circle of <paramref name="radius"/> around the post.</summary>
         private static Vector2 OrbitPoint(Vehicle v, float radius)

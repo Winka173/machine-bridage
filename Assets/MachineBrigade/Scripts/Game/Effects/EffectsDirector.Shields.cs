@@ -109,7 +109,11 @@ namespace MachineBrigade.Game.Effects
                 var dome = _itemDomes[i];
                 if (dome.Falling) continue;
                 var flat = new Vector2(at.X - dome.Centre.x, at.Y - dome.Centre.z);
-                if (flat.magnitude <= dome.Radius * 1.05f) dome.Shield.Hit(new Vector3(at.X, 1f, at.Y), now, default, strength);
+                if (flat.magnitude > dome.Radius * 1.05f) continue;
+                // Test feedback 19P: the ripple and a flash on the skin over where it landed.
+                var skin = DomeSkin(dome.Centre, dome.Radius, dome.Radius * ItemDomeHeight, new Vector3(at.X, 1f, at.Y), default, true, out var normal);
+                dome.Shield.Hit(skin, now, default, strength);
+                DomeFlash(skin, normal, strength);
             }
         }
 

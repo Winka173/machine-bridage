@@ -43,7 +43,14 @@ namespace MachineBrigade.Editor
             public string[] Deck;
             public int Tick;
             public Func<SimWorld, List<(string suffix, Vector3 focus, float zoom)>> Views;
+
+            /// <summary>Something done to the match once, at <see cref="ActTick"/> (a support called), before the shot.</summary>
+            public int ActTick;
+            public Action<SimWorld> Act;
         }
+
+        /// <summary>Where the gunship scene called its gunship (test feedback 19P: is it in the picture there?).</summary>
+        private static Vector3 _calledAt;
 
         /// <summary>The deck of the scenes that do not set their own (the saved one differs from editor to editor).</summary>
         private static readonly string[] StandardDeck =
@@ -97,7 +104,36 @@ namespace MachineBrigade.Editor
                     return One(target is { } t ? Vector3.Lerp(guns, t, 0.75f) : guns, 30f);
                 },
             },
+            new Scene
+            {
+                // Test feedback 19P: the sky gunship item over the fight, seen as the player sees it (and zoomed out).
+                Name = "gunship", Mode = GameModeKind.Conquest, Tick = 1250, ActTick = 1000,
+                Act = w =>
+                {
+                    _calledAt = Fight(w);
+                    if (!w.TryGetEconomy(0, out var economy)) return;
+                    economy.Items["gunship_support"] = 1;
+                    var result = w.Submit(MachineBrigade.Sim.Commands.Command.Strike(0, "gunship_support",
+                        new System.Numerics.Vector2(_calledAt.x, _calledAt.z), default));
+                    Line($"  gunship called at {_calledAt}: {result.Accepted}");
+                },
+                Views = w =>
+                {
+                    // Where the gunship is, as simulated and as drawn (it must be in the picture).
+                    var views = Field<MachineBrigade.Game.Views.ViewRegistry>("_views");
+                    foreach (var v in w.Vehicles.Where(v => v.IsAlive && v.Def.Id == "sky_gunship"))
+                    {
+                        var drawn = views != null && views.TryGet(v.Id, out var view) ? view : null;
+                        var shown = drawn?.Root != null ? drawn.Root.GetComponentsInChildren<Renderer>().Count(r => r.enabled && r.gameObject.activeInHierarchy) : -1;
+                        var post = Vector2.Distance(new Vector2(v.Position.X, v.Position.Y), new Vector2(_calledAt.x, _calledAt.z));
+                        Line($"  sky_gunship at {v.Position} ({post:0} m from where it was called), drawn {(drawn != null ? drawn.Position.ToString() : "none")}, " +
+                             $"level {drawn?.Level}, renderers on {shown}, active {drawn?.Root?.gameObject.activeInHierarchy}");
+                    }
+                    return new List<(string, Vector3, float)> { ("", _calledAt, 24f), ("-wide", _calledAt, 34f) };
+                },
+            },
         };
+        private static bool _acted;
 
         private static readonly List<string> Errors = new();
         private static readonly StringBuilder Report = new();
@@ -147,7 +183,13 @@ namespace MachineBrigade.Editor
             {
                 case 0:
                     // Just after the scene loads, the last match's world is still found for a frame.
-                    if (world == _previous || world.Tick < scene.Tick) return;
+                    if (world == _previous) return;
+                    if (scene.Act != null && !_acted && world.Tick >= scene.ActTick)
+                    {
+                        _acted = true;
+                        scene.Act(world);
+                    }
+                    if (world.Tick < scene.Tick) return;
                     _views = scene.Views(world);
                     _view = 0;
                     _state = 1;
@@ -175,6 +217,7 @@ namespace MachineBrigade.Editor
         {
             _scene++;
             _state = 0;
+            _acted = false;
             if (_scene >= _scenes.Count)
             {
                 Finish();

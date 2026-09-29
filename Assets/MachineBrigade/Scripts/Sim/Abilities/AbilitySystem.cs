@@ -106,7 +106,7 @@ namespace MachineBrigade.Sim.Abilities
                     if (v.Def.RepairAura != null || v.Def.RearmAura != null) Support(v);
                     if (v.Def.FortifyAura != null) Fortify(v);
                     // A firing-range target mends itself between volleys.
-                    if (v.Dummy || v.Sparring) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.08f * AuraInterval);
+                    if (v.Unkillable) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.08f * AuraInterval);
                 }
                 // Upgrades: self-repair out of combat (sooner with a toolbox, part of it under fire with a
                 // combat welder, half while burning), and smoke dischargers at half health.

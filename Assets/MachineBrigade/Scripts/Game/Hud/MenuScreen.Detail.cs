@@ -41,6 +41,18 @@ namespace MachineBrigade.Game.Hud
         private Label _detailName;
         private KitTabs _detailTabs;
         private DetailTab _detailTab = DetailTab.Stats;
+
+        private Label _detailReadout;
+
+        /// <summary>The range's readout, while the In action tab shows one.</summary>
+        private void ShowReadout()
+        {
+            var text = _detailTab == DetailTab.Firing && _detailPreview.style.display != DisplayStyle.None ? Preview?.RangeReadout : null;
+            _detailReadout.style.display = string.IsNullOrEmpty(text) ? DisplayStyle.None : DisplayStyle.Flex;
+            if (string.IsNullOrEmpty(text)) return;
+            _detailReadout.text = text;
+            _detailReadout.EnableInClassList("fc-detail__readout--alert", Preview.RangeAlert);
+        }
         private string _detailId;
         private List<string> _detailList = new();
 
@@ -57,6 +69,12 @@ namespace MachineBrigade.Game.Hud
             _detailStage.Add(_detailArt);
             _detailPreview = Kit.Box("fc-detail__preview");
             _detailStage.Add(_detailPreview);
+            // Test feedback 19P: what a tower on the In action range is doing, as a line over the picture.
+            _detailReadout = Kit.Text("", "fc-detail__readout");
+            _detailReadout.pickingMode = PickingMode.Ignore;
+            _detailReadout.style.display = DisplayStyle.None;
+            _detailStage.Add(_detailReadout);
+            _detailReadout.schedule.Execute(ShowReadout).Every(200);
             // The texture follows the stage's shape and size (the theatre is much bigger than the turntable's box).
             _detailStage.RegisterCallback<GeometryChangedEvent>(_ => FitPreview());
             _detailLeftBody.Add(_detailStage);

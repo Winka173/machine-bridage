@@ -137,7 +137,7 @@ namespace MachineBrigade.Game.Effects
             _layers.Chunks = new ChunkThrower(_debris, materials, models, _fires, _root);
             _layers.Chunks.Trails.Visible = p => _cull.Visible(p, 0.3f);
             _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
-            _projectiles = new ProjectilePool(_root, 96);
+            _projectiles = new ProjectilePool(_root, 96) { RotorMaterial = materials.SoftSmoke };
             _lasers = new LaserBeams(materials, _emitters, _decals, _root);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
@@ -152,6 +152,7 @@ namespace MachineBrigade.Game.Effects
         public void Consume(IReadOnlyList<SimEvent> events, ViewRegistry views, MapView map)
         {
             var now = Time.time;
+            _domeStruck.Clear();
             for (var index = 0; index < events.Count; index++)
             {
                 var e = events[index];
@@ -197,8 +198,14 @@ namespace MachineBrigade.Game.Effects
                             _emitters.Flak(burst);
                             break;
                         }
-                        var impact = Ground(e.Position, 0.15f);
                         var round = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var landed) ? landed : null;
+                        // A round a unit's dome took whole bursts on the dome's skin (as big as ever), not on the unit.
+                        if (DomeTook(e.Position, out var onDome))
+                        {
+                            Explode(e.Tier < ExplosionTier.Medium ? ExplosionTier.Small : e.Tier, onDome, now, round?.ImpactScale ?? 1f, flash: false);
+                            break;
+                        }
+                        var impact = Ground(e.Position, 0.15f);
                         var size = round?.ImpactScale ?? 1f;
                         // A gun's shell never flashes the screen, however big: only strikes and blasts do.
                         if (!ImpactOfKind(round, e, impact, now, size)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Drone(round));
@@ -910,6 +917,25 @@ namespace MachineBrigade.Game.Effects
                     // Kinetic: a white-hot spray of sparks off the armour, a puff of metal dust.
                     Explode(ExplosionTier.Small, impact + Vector3.up * 0.8f, now, heavy ? 0.9f : 0.6f, flash: false);
                     _muzzle.SparkBurst(impact + Vector3.up * 1f, Vector3.up + UnityEngine.Random.insideUnitSphere * 0.5f, heavy ? 36 : 16, 8f, heavy ? 24f : 16f);
+                    return true;
+                }
+                case ProjectileKind.Drone when round.PiercingLook && BlastSizes.Drone(round) == BlastSizes.FpvDrone:
+                case ProjectileKind.Drone when round.PiercingLook && round.Id == "mothership_drones":
+                {
+                    // Test feedback 19P: an FPV quadcopter's charge, not a missile's: a white-hot star where it
+                    // struck, the shaped charge's jet stabbing down into the roof, the drone flying apart in bright
+                    // bits all round, and a small black puff; the blast as big as before.
+                    var at = impact + Vector3.up * 0.9f;
+                    Explode(ExplosionTier.Medium, at, now, 0.8f * size, flash: false, grow: BlastSizes.Drone(round));
+                    _emitters.Charge(at + Vector3.up * 0.5f, 2.4f);
+                    _emitters.Charge(at + Vector3.up * 0.4f, 1.6f);
+                    _muzzle.SparkBurst(at + Vector3.up * 1.4f, Vector3.down, 22, 14f, 30f);
+                    for (var k = 0; k < 6; k++)
+                    {
+                        var angle = k * Mathf.PI / 3f + UnityEngine.Random.value;
+                        _muzzle.SparkBurst(at + Vector3.up * 0.7f, new Vector3(Mathf.Cos(angle), 0.6f, Mathf.Sin(angle)), 4, 4f, 10f, 1.3f);
+                    }
+                    _emitters.DamageSmoke(impact + Vector3.up * 1.2f, 1.3f, 0.06f);
                     return true;
                 }
                 case ProjectileKind.Missile when round.PiercingLook:

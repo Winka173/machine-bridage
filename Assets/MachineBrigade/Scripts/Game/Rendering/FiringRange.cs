@@ -9,19 +9,26 @@ using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Economy;
 using MachineBrigade.Sim.Entities;
 using UnityEngine;
+using EntityId = MachineBrigade.Sim.Core.EntityId;
 using Vector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Game.Rendering
 {
     /// <summary>
     /// The detail page's "In action" tab: a small battle of its own in which the vehicle shoots
-    /// at targets that cannot fire back or die: the real simulation, the real models and effects,
-    /// seen by the preview camera. It runs only while the tab is open, when the lobby battle is
-    /// resting, and everything in it lives on the preview camera's layer, so the two never mix.
+    /// at targets that stand still and cannot fire back: the real simulation, the real models and
+    /// effects, seen by the preview camera. It runs only while the tab is open, when the lobby
+    /// battle is resting, and everything in it lives on the preview camera's layer, so the two
+    /// never mix. Test feedback 19P: the unit shown never runs out of ammunition; the enemy can be
+    /// knocked out, and a new one comes in for each one lost; aircraft glide in and nobody fires at
+    /// anything before it is in the picture.
     /// </summary>
     public sealed partial class FiringRange : IDisposable
     {
         private const float Step = 0.05f;
+
+        /// <summary>How long a knocked-out target burns before its replacement comes in.</summary>
+        private const double ReplaceAfter = 2.5;
 
         private readonly SimWorld _world;
         private readonly ViewRegistry _views;
@@ -39,6 +46,16 @@ namespace MachineBrigade.Game.Rendering
         private readonly Vector2 _start;
         private float _goneFor;
         private readonly List<Vehicle> _targets = new();
+
+        /// <summary>Each target's card and spot, and when its replacement is due (NaN: none due).</summary>
+        private readonly List<(string id, Vector2 at, double due)> _slots = new();
+
+        /// <summary>Replacements driving up to their spots (they hold their fire and become targets on arrival).</summary>
+        private readonly List<(Vehicle who, Vector2 at)> _arriving = new();
+
+        /// <summary>Vehicles a scene keeps quiet for now, whatever is in the picture.</summary>
+        private readonly HashSet<EntityId> _silenced = new();
+
         private float _accumulator;
         private float _layerAt;
         private Vector3 _look;
@@ -110,14 +127,16 @@ namespace MachineBrigade.Game.Rendering
                 SetLayer(_root);
                 return;
             }
-            var distance = TargetDistance(def);
+            _scene = SceneFor(def);
+            var distance = TowerScene ? TowerDistance : TargetDistance(def);
             _start = new Vector2(0f, -distance * 0.5f);
             _shooter = _world.SpawnVehicle(vehicleId, 0, _start, 0f);
+            // A tower on show never falls (a relay under fire, a shield generator shelled).
+            if (def.Static) _world.MakeSparring(_shooter);
             _ground = HitsGround(def);
             _air = HitsAir(def);
             _far = new Vector2(0f, distance * 0.5f);
             _reach = distance;
-            _scene = SceneFor(def);
             SetLayer(_root);
         }
 
@@ -175,8 +194,10 @@ namespace MachineBrigade.Game.Rendering
             };
             var towards = _support.IsLine ? at + new Vector2(1f, 0f) : _support.Kind == SupportKind.Tower ? at + new Vector2(0f, 1f) : default;
             _world.Submit(Command.Strike(0, _support.Id, at, towards));
-            var gap = _support.Kind is SupportKind.Escort or SupportKind.Reinforce ? 14.0 : _support.Kind == SupportKind.Smoke ? 10.0 : 7.0;
-            _nextStrike = _world.Time + gap + _support.Delay + _support.Duration * 0.5;
+            // An escort (the sky gunship) stays its whole time: the next one is called as it leaves.
+            var gap = _support.Kind == SupportKind.Escort ? _support.Duration + 2.0
+                : _support.Kind == SupportKind.Reinforce ? 14.0 : _support.Kind == SupportKind.Smoke ? 10.0 : 7.0;
+            _nextStrike = _world.Time + gap + _support.Delay + (_support.Kind == SupportKind.Escort ? 0.0 : _support.Duration * 0.5);
         }
         private bool _targetsUp;
 
@@ -188,7 +209,9 @@ namespace MachineBrigade.Game.Rendering
         {
             if (_targetsUp || _world.Time < 0.8) return;
             _targetsUp = true;
-            if (_ground)
+            // A tower's own scene brings its own enemies; the depot's launchers want the usual targets.
+            if (TowerScene && _scene != Scene.Depot) return;
+            if (_ground || _scene == Scene.Depot)
             {
                 Target("main_battle_tank", _far + new Vector2(-4f, 0f));
                 Target("ifv", _far + new Vector2(5f, 3f));
@@ -207,6 +230,7 @@ namespace MachineBrigade.Game.Rendering
             {
                 if (_world.Time < _runnerAt) return;
                 _runner = _world.SpawnVehicle("armored_car", 1, new Vector2(-24f, -8f), MathF.PI * 0.5f);
+                _silenced.Add(_runner.Id);
                 _runnerLeg = 1;
             }
             if (_runner.IsMoving || _runner.Order.Kind == Sim.Entities.OrderKind.Move) return;
@@ -219,11 +243,100 @@ namespace MachineBrigade.Game.Rendering
         private int _runnerLeg = 1;
         private double _runnerAt;
 
+        /// <summary>A range target: it stands still and never fires, but it can be knocked out (a new one comes in).</summary>
         private void Target(string id, Vector2 at)
         {
             var target = _world.SpawnVehicle(id, 1, at, MathF.PI);
             _world.MakeDummy(target);
+            _world.MakeMortal(target);
             _targets.Add(target);
+            _slots.Add((id, at, double.NaN));
+        }
+
+        /// <summary>
+        /// Test feedback 19P: a knocked-out target burns for a moment, then a new one comes in: an
+        /// aircraft flies onto the spot, a ground vehicle drives up to it from beyond (holding its
+        /// fire) and stands as a target once there.
+        /// </summary>
+        private void KeepTargets()
+        {
+            for (var i = 0; i < _targets.Count; i++)
+            {
+                var (id, at, due) = _slots[i];
+                if (_targets[i].IsAlive) continue;
+                if (double.IsNaN(due))
+                {
+                    _slots[i] = (id, at, _world.Time + ReplaceAfter);
+                    continue;
+                }
+                if (_world.Time < due) continue;
+                _slots[i] = (id, at, double.NaN);
+                var flies = _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying;
+                if (flies)
+                {
+                    var target = _world.SpawnVehicle(id, 1, at, MathF.PI);
+                    _world.MakeDummy(target);
+                    _world.MakeMortal(target);
+                    _targets[i] = target;
+                    continue;
+                }
+                // From beyond the spot, a little off the wreck's line.
+                var from = at + new Vector2(i % 2 == 0 ? -3f : 3f, 16f);
+                var coming = _world.SpawnVehicle(id, 1, Inside(from), MathF.PI);
+                _silenced.Add(coming.Id);
+                _world.Submit(new Command(CommandType.Move, 1, new[] { coming.Id }, at));
+                _arriving.Add((coming, at));
+                _targets[i] = coming;
+            }
+            for (var i = _arriving.Count - 1; i >= 0; i--)
+            {
+                var (who, at) = _arriving[i];
+                if (!who.IsAlive)
+                {
+                    _arriving.RemoveAt(i);
+                    continue;
+                }
+                if (Vector2.Distance(who.Position, at) > 1.5f && (who.IsMoving || who.Order.Kind == OrderKind.Move)) continue;
+                _world.MakeDummy(who);
+                _world.MakeMortal(who);
+                _silenced.Remove(who.Id);
+                _arriving.RemoveAt(i);
+            }
+        }
+
+        /// <summary>
+        /// Test feedback 19P: nobody fires at what is not yet in the picture (an aircraft still flying
+        /// in, a target beyond the edge); the shown unit never runs out of rounds.
+        /// </summary>
+        private void HoldUntilFramed()
+        {
+            if (_shooter != null && _shooter.IsAlive) _world.Refill(_shooter);
+            var all = _world.Vehicles;
+            for (var i = 0; i < all.Count; i++)
+            {
+                var v = all[i];
+                if (!v.IsAlive || v.Dummy || v.Def.Mounts.Count == 0) continue;
+                var aimed = v.Order.Kind == OrderKind.Attack ? v.Order.Target : v.Target;
+                var hold = _silenced.Contains(v.Id) || (aimed.IsValid && !Framed(aimed));
+                if (v.HoldFire != hold) _world.HoldFire(v, hold);
+            }
+        }
+
+        /// <summary>A point kept a few metres inside the range's edges.</summary>
+        private Vector2 Inside(Vector2 p)
+        {
+            var map = _world.Map;
+            var c = map.Centre;
+            float x = map.Width * 0.5f - 4f, y = map.Length * 0.5f - 4f;
+            return new Vector2(Math.Clamp(p.X, c.X - x, c.X + x), Math.Clamp(p.Y, c.Y - y, c.Y + y));
+        }
+
+        /// <summary>Whether a vehicle is drawn in the picture, flown in (a small margin inside the edges).</summary>
+        private bool Framed(EntityId id)
+        {
+            if (!_views.TryGet(id, out var view) || view.Root == null || !view.Arrived) return false;
+            var p = _camera.WorldToViewportPoint(view.Position + Vector3.up);
+            return p.z > 0f && p.x > 0.03f && p.x < 0.97f && p.y > 0.03f && p.y < 0.97f;
         }
 
         /// <summary>Per frame: steps the little battle, keeps the vehicle on its targets and the camera on the scene.</summary>
@@ -236,13 +349,15 @@ namespace MachineBrigade.Game.Rendering
                 PlaceTargets();
                 CallSupport();
                 RunTheMines();
+                KeepTargets();
                 Stage();
                 if (_shooter != null && !Directs()) Order();
+                HoldUntilFramed();
                 _world.Step(Step);
                 _views.SnapshotAll();
                 foreach (var e in _world.Events)
                     if (e.Kind == Sim.Events.SimEventKind.VehicleSpawned && _world.TryGetVehicle(e.Entity, out var spawned))
-                        _views.Add(spawned);
+                        _views.Add(spawned).GentleArrival = true;
                 foreach (var e in _world.Events) Watch(e);
                 if (Log != null)
                     foreach (var e in _world.Events)
@@ -273,33 +388,6 @@ namespace MachineBrigade.Game.Rendering
             }
         }
 
-        /// <summary>
-        /// A mine layer shows what it is for: it drives to and fro across the range sowing its
-        /// mines, and a while later an enemy vehicle drives into the field.
-        /// </summary>
-        private bool LayMines()
-        {
-            if (_shooter.Def.Mines == null) return false;
-            if (!_shooter.IsAlive || _world.Tick % 20 != 1) return true;
-            var y = _start.Y + 6f;
-            var left = new Vector2(-10f, y);
-            var right = new Vector2(10f, y);
-            var going = _shooter.Order.Kind == OrderKind.Move ? _shooter.Order.Point : right;
-            if (Vector2.Distance(_shooter.Position, going) < 2.5f || _shooter.Order.Kind != OrderKind.Move)
-                _world.Submit(new Command(CommandType.Move, 0, new[] { _shooter.Id }, going == right ? left : right));
-            if (_world.Time > 8 && !_intruder)
-            {
-                // An enemy vehicle (a real one, not a range target: those stand still) drives
-                // across the field and the mines go off under it.
-                _intruder = true;
-                var apc = _world.SpawnVehicle("ifv", 1, new Vector2(2f, _far.Y), MathF.PI);
-                _world.Submit(new Command(CommandType.Move, 1, new[] { apc.Id }, new Vector2(0f, _start.Y - 6f)));
-            }
-            return true;
-        }
-
-        private bool _intruder;
-
         /// <summary>Keeps the vehicle attacking the nearest target it can hit (a car bomb goes round again: it is rebuilt).</summary>
         private void Order()
         {
@@ -325,15 +413,31 @@ namespace MachineBrigade.Game.Rendering
                 _world.Submit(new Command(CommandType.Attack, 0, new[] { _shooter.Id }, default, best.Id));
         }
 
-        /// <summary>From beside and a little behind the vehicle, high enough to see the rounds land.</summary>
+        /// <summary>
+        /// From beside and a little behind the vehicle, high enough to see the rounds land. A gunship
+        /// circling its target is framed on the whole turn instead, so it flies round inside the picture.
+        /// </summary>
         private void Frame(float dt)
         {
-            var from = _shooter != null && _views.TryGet(_shooter.Id, out var view) ? view.Position : new Vector3(0f, 0f, -_reach * 0.5f);
-            var to = new Vector3(0f, 0f, _reach * 0.5f);
-            if (Zoom > 1f) to = Vector3.Lerp(from, to, 1f / Zoom);
-            var centre = (from + to) * 0.5f + Vector3.up * 1.5f;
+            Vector3 centre;
+            float span;
+            if (_shooter != null && _shooter.Def.Orbit)
+            {
+                var radius = Mathf.Max(_shooter.Def.OrbitRadius, 14f);
+                centre = new Vector3(_far.X, _shooter.Def.Altitude * 0.45f, _far.Y);
+                span = (radius + 10f + _shooter.Def.Altitude * 0.25f) / Zoom;
+            }
+            else
+            {
+                var from = _shooter != null && _views.TryGet(_shooter.Id, out var view) ? view.Position : new Vector3(0f, 0f, -_reach * 0.5f);
+                var to = new Vector3(0f, 0f, _reach * 0.5f);
+                if (Zoom > 1f) to = Vector3.Lerp(from, to, 1f / Zoom);
+                centre = (from + to) * 0.5f + Vector3.up * 1.5f;
+                // A big boss (the drone mothership) is stood back from, so it does not fill the picture.
+                var bulk = _shooter != null ? Mathf.Max(0f, _shooter.Def.Radius - 3f) * 1.6f : 0f;
+                span = Mathf.Max(Vector3.Distance(from, to) * 0.5f + (8f + bulk) / Zoom, 14f / Zoom);
+            }
             _look = _look == Vector3.zero ? centre : Vector3.Lerp(_look, centre, 1f - Mathf.Exp(-dt * 3f));
-            var span = Mathf.Max(Vector3.Distance(from, to) * 0.5f + 8f / Zoom, 14f / Zoom);
             var distance = span / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 0.95f;
             _camera.transform.position = _look + new Vector3(0.95f, 0.75f, -0.45f).normalized * distance;
             _camera.transform.LookAt(_look);

@@ -556,8 +556,10 @@
       "firesWhileMoving": true, "weapon": "stealth_payload", "secondary": [{"weapon": "jassm", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 46, "captureRate": 0,
       "stealth": true, "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
+    // 19P: 26 m up and a 22 m pylon turn (was 40 m and 36 m, off the top of the battle camera most of the turn), all
+    // three guns (105, 40 and 25 mm) still in reach of the target all the way round.
     { "id": "sky_gunship", "card": false, "rearmTime": 18, "strongVs": ["Light", "Tank", "Artillery"], "scale": 1.06,      "armour": 0,  "hp": 2000, "speed": 16, "turnRate": 65, "turretTurnRate": 360, "radius": 7.5, "cp": 22, "vision": 64,
-      "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0,
+      "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "orbitRadius": 22, "flying": true, "fixedWing": true, "altitude": 26, "captureRate": 0,
       "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" },
                      { "weapon": "griffin", "slot": "ramp", "aim": "Free" } ], "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 220, "radius": 11, "delay": 0.6, "tier": "Ultimate" } },

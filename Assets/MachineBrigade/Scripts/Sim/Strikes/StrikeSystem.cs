@@ -341,7 +341,13 @@ namespace MachineBrigade.Sim.Strikes
                         var angle = k * SimMath.Tau / Math.Max(1, units.Count);
                         var at = s.Point + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (units.Count > 1 ? 6f : 0f);
                         var unit = _world.SpawnVehicle(units[k], s.Team, _world.ClampToMap(at), SimMath.HeadingOf(s.Direction));
-                        if (support.Kind == SupportKind.Escort) unit.ExpiresAt = now + support.Duration;
+                        if (support.Kind == SupportKind.Escort)
+                        {
+                            unit.ExpiresAt = now + support.Duration;
+                            // It works over the spot it was called to (it used to wander off after targets 60 m away).
+                            unit.GuardPoint = _world.ClampToMap(s.Point);
+                            unit.PostRadius = MathF.Max(support.Radius, 12f);
+                        }
                     }
                     return true;
                 }

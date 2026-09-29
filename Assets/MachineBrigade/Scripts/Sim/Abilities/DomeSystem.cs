@@ -142,7 +142,7 @@ namespace MachineBrigade.Sim.Abilities
             var taken = MathF.Min(damage, dome.DomeHp);
             dome.DomeHp -= taken;
             dome.DomeHitAt = _world.Time;
-            _world.Emit(SimEvent.DomeStruck(dome, victim.Position, taken));
+            _world.Emit(SimEvent.DomeStruck(dome, victim.Position, taken, hit.Origin, hit.Indirect || hit.Top, taken >= damage - 0.01f));
             if (dome.DomeHp <= 0.01f)
             {
                 dome.DomeHp = 0f;

@@ -797,6 +797,32 @@ namespace MachineBrigade.Sim
         /// <summary>Turns a vehicle into a firing-range sparring partner (see <see cref="Vehicle.Sparring"/>).</summary>
         public void MakeSparring(Vehicle v) => v.Sparring = true;
 
+        /// <summary>A firing-range target or sparring partner that can be knocked out after all (see <see cref="Vehicle.Mortal"/>).</summary>
+        public void MakeMortal(Vehicle v) => v.Mortal = true;
+
+        /// <summary>Previews: tops every magazine and store back up (the In action clip's unit never runs dry).</summary>
+        public void Refill(Vehicle v)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                var full = v.Weapons[i].Load > 0 ? v.Weapons[i].Load : v.Arms[i].Ammo > 0 ? v.Arms[i].Ammo : -1;
+                if (v.Weapons[i].Ammo == full) continue;
+                v.Weapons[i].Ammo = full;
+                v.Weapons[i].ReloadLeft = 0f;
+            }
+            // A fixed minefield's mines are its rounds: once half are gone the field is laid again in a moment.
+            if (v.MineLayer is { Spread: > 0f } field && v.NextMineAt > Time + 2.0)
+            {
+                var alive = 0;
+                foreach (var m in _abilities.Mines)
+                    if (m.IsAlive && m.Layer == v.Id) alive++;
+                if (alive * 2 < field.Max) v.NextMineAt = Time + 2.0;
+            }
+        }
+
+        /// <summary>Previews: holds a vehicle's fire (or frees it), whatever its orders.</summary>
+        public void HoldFire(Vehicle v, bool hold) => v.HoldFire = hold;
+
         private const float CrushCell = 6f;
         private Dictionary<(int, int), List<Prop>>? _crushable;
 

@@ -691,7 +691,9 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Vehicles the player is steering by hand are left alone, and each commander keeps to its own (the ally's or the player's).
                 // Escorts keep to their boss (prompt 16 F).
-                if (v.Team != _team || v.Scripted || v.IsEscort || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) || v.UnderPlayerControl(world.Time)) continue;
+                // A called gunship keeps to where it was called (test feedback 19P).
+                if (v.Team != _team || v.Scripted || v.IsEscort || v.PostRadius > 0f || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) ||
+                    v.UnderPlayerControl(world.Time)) continue;
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
                 // Prompt 17 C: a loyal wingman flies on its own (on a leader's wing, or over the front).

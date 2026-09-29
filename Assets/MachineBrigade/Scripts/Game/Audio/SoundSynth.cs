@@ -209,6 +209,79 @@ namespace MachineBrigade.Game.Audio
             return Finish($"rotor_{seed}", data, 0.55f);
         }
 
+        /// <summary>
+        /// Test feedback 19P: a seamless 2 s laser-beam hum: a low sawtooth drone with its octave, a bright
+        /// shimmer fluttering over it and a faint crackle of burning, every partial a whole number of cycles
+        /// over the loop so it joins without a click.
+        /// </summary>
+        public static AudioClip BeamLoop(int seed)
+        {
+            var rng = new Random(seed);
+            const float length = 2f;
+            var data = new float[(int)(Rate * length)];
+            var hiss = new OnePole(0.5f);
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var hum = Saw(110f * t) * 0.32f + Saw(220f * t + 0.3f) * 0.16f + Mathf.Sin(2f * Mathf.PI * 55f * t) * 0.22f;
+                // The shimmer's pitch wanders (4 Hz and 7 Hz), the way a power supply sings under load.
+                var shimmer = Mathf.Sin(2f * Mathf.PI * (1760f * t + 3f * Mathf.Sin(2f * Mathf.PI * 4f * t))) *
+                              (0.07f + 0.05f * Mathf.Sin(2f * Mathf.PI * 7f * t));
+                var noise = Noise(rng);
+                var crackle = (noise - hiss.Next(noise)) * (rng.NextDouble() < 0.004 ? 0.9f : 0.05f);
+                data[i] = hum * (0.85f + 0.15f * Mathf.Sin(2f * Mathf.PI * 3f * t)) + shimmer + crackle;
+            }
+            return Finish($"beam_loop_{seed}", data, 0.55f);
+        }
+
+        /// <summary>A beam igniting: a rising whine from 300 Hz to 2.4 kHz over a quarter second, a zap, the hum swelling under it.</summary>
+        public static AudioClip BeamStart(int seed)
+        {
+            var rng = new Random(seed);
+            var data = new float[(int)(Rate * 0.45f)];
+            var phase = 0f;
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var rise = Mathf.Clamp01(t / 0.25f);
+                phase += (300f + 2100f * rise * rise) / Rate;
+                var whine = Mathf.Sin(2f * Mathf.PI * phase) * 0.35f * Env(t, 0.02f, 0.3f);
+                var zap = Noise(rng) * Mathf.Exp(-Mathf.Abs(t - 0.24f) * 90f) * 0.6f;
+                var hum = Saw(110f * t) * 0.25f * Mathf.Clamp01((t - 0.2f) * 8f);
+                data[i] = whine + zap + hum * Mathf.Clamp01((0.45f - t) * 8f);
+            }
+            return Finish($"beam_start_{seed}", data, 0.6f);
+        }
+
+        /// <summary>
+        /// An FPV drone lifting off its rack: the high buzz of four small props (a detuned sawtooth pair near
+        /// 190 Hz with a fast warble), climbing in pitch as it throttles up, fading as it flies off.
+        /// </summary>
+        public static AudioClip DroneBuzz(int seed)
+        {
+            var rng = new Random(seed);
+            var data = new float[(int)(Rate * 1.3f)];
+            var p1 = (float)rng.NextDouble();
+            var p2 = (float)rng.NextDouble();
+            var baseFreq = 170f + 40f * (float)rng.NextDouble();
+            var hiss = new OnePole(0.3f);
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var throttle = 1f + 0.45f * Mathf.Clamp01(t / 0.35f) + 0.05f * Mathf.Sin(2f * Mathf.PI * 11f * t);
+                p1 += baseFreq * throttle / Rate;
+                p2 += baseFreq * 1.013f * throttle / Rate;
+                var props = (Saw(p1) + Saw(p2)) * 0.28f * (0.8f + 0.2f * Mathf.Sin(2f * Mathf.PI * 37f * t));
+                var noise = Noise(rng);
+                var air = (noise - hiss.Next(noise)) * 0.12f;
+                data[i] = (props + air) * Env(t, 0.06f, 0.75f);
+            }
+            return Finish($"drone_buzz_{seed}", data, 0.55f);
+        }
+
+        /// <summary>A sawtooth in -1..1 at <paramref name="cycles"/> (the phase in whole cycles).</summary>
+        private static float Saw(float cycles) => 2f * (cycles - Mathf.Floor(cycles)) - 1f;
+
         /// <summary>Incoming-strike alarm: two short falling tones.</summary>
         /// <summary>
         /// A seamless 9.6 s war-drum loop at 100 bpm for boss fights: a deep kick on every beat,
