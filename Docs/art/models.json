@@ -147,6 +147,10 @@
     "file": "behemoth.glb",
     "triangles": 18716
   },
+  "behemoth_tempest": {
+    "file": "behemoth_tempest.glb",
+    "triangles": 16536
+  },
   "billboard": {
     "file": "billboard.glb",
     "triangles": 1284
@@ -305,7 +309,7 @@
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
-    "triangles": 18242
+    "triangles": 19436
   },
   "earth_borer": {
     "file": "earth_borer.glb",
@@ -581,7 +585,7 @@
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
-    "triangles": 10740
+    "triangles": 11304
   },
   "mesa": {
     "file": "mesa.glb",
@@ -834,6 +838,10 @@
   "silver_bug": {
     "file": "silver_bug.glb",
     "triangles": 24035
+  },
+  "sky_fortress": {
+    "file": "sky_fortress.glb",
+    "triangles": 10044
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",

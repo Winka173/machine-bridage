@@ -455,7 +455,7 @@ def _mlrs(a):
     turn = Euler(rot, 'XYZ').to_matrix()
     mid = _frame(hinge - turn @ Vector((0, L / 2, -H / 2)), rot)
     tsteel.cyl(.12, 2.3, loc=hinge, rot=ACROSS, seg=10, bevel=.02, bseg=1)             # elevation hinge
-    frame = a.part('Pod_frame', 'EliteBlack', t)
+    frame = a.part('Pod_bands', 'EliteBlack', t)   # elevates with the pods (Pod_frame would not; DECISIONS 13F)
     for s in (-1, 1):
         tarm.box((.14, .5, .5), loc=(s * .8, .95, .4), bevel=.02, seg=1)                  # hinge cheeks
         tsteel.limb((s * .5, -.35, .42), tuple(mid @ Vector((s * .5, -.55, -H / 2 + .02))), .12, .12, bevel=.02)
@@ -464,7 +464,7 @@ def _mlrs(a):
         for y in (-L / 2 + .12, L / 2 - .12):                                             # end bands
             frame.box((W + .06, .16, H + .06), loc=pod @ Vector((0, y, 0)), rot=rot, bevel=.02, seg=1)
             for x in (-.44, .44):
-                tsteel.box((.1, .1, .08), loc=pod @ Vector((x, y, H / 2 + .06)), rot=rot, bevel=0)   # lugs
+                a.part('Pod_lugs', 'Steel', t).box((.1, .1, .08), loc=pod @ Vector((x, y, H / 2 + .06)), rot=rot, bevel=0)
         for x in (-.36, .36):                                                             # top rails
             frame.box((.12, L - .5, .05), loc=pod @ Vector((x, 0, H / 2 + .015)), rot=rot, bevel=0)
         for y in (-.7, 0, .7):                                                            # outer ribs

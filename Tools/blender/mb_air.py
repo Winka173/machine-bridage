@@ -1471,8 +1471,8 @@ def strike_drone(a):
         x = s * 2.45
         zt = wing.bottom(2.45)
         _pylon(pylons, x, -.45, .15, zt + .04, -.105, w=.06)
-        pylons.box((.26, .7, .04), loc=(x, -.35, -.115), bevel=.01, seg=1)                    # launcher rail
-        for dx in (-.085, .085):
+        pylons.box((.6, .7, .04), loc=(x, -.35, -.115), bevel=.01, seg=1)                     # launcher rail
+        for dx in (-.24, .24):
             _aam(mis, (x + dx, -.86 + .475, -.19), length=.95, r=.055, seg=8, canards=False, fin=1.4)
     a.pivot('Muzzle_missile', (0, -.86, -.19))
     # Muzzle_rocket: centred between the two bomb noses (like Muzzle_missile between the rails).
