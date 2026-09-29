@@ -11,7 +11,8 @@ namespace MachineBrigade.Game.Hud
     /// everything lies a picture of the map itself (<see cref="SetPicture"/>): the painted ground
     /// with roads, buildings, rock, trees, water and lava, in the map's real shape. On top it shows
     /// objectives, friendly and spotted enemy vehicles, incoming strikes and the camera's view;
-    /// tapping it moves the camera there.
+    /// tapping it moves the camera there. Prompt 23 F.2: an arrow at the map's edge for each direction reinforcements come
+    /// from (<see cref="Arrows"/>); F.4: the Meridian Accord's units as sky-blue blips in a thin ring (<see cref="AccordTeam"/>).
     /// </summary>
     public sealed class Minimap : VisualElement
     {
@@ -103,7 +104,45 @@ namespace MachineBrigade.Game.Hud
             _hasView = false;
         }
 
+        /// <summary>Prompt 23 F.4: the blip's team for a Meridian Accord unit on our side (the allied AI's, not the player's).</summary>
+        public const int AccordTeam = 3;
+
+        /// <summary>Sky blue: the Accord's colour on the minimap, apart from our mint and the enemy's red.</summary>
+        internal static readonly Color AccordColour = new(0.42f, 0.78f, 1f);
+
+        /// <summary>A vehicle: team 0 ours, 1 the enemy's, 2 neutral, <see cref="AccordTeam"/> the Accord's.</summary>
         public void Blip(Vector2 world, int team, bool air, bool dim = false) => _blips.Add((world, team, air, dim));
+
+        /// <summary>The Accord's blips in the last picture (the checks).</summary>
+        internal int AccordBlips
+        {
+            get
+            {
+                var n = 0;
+                foreach (var b in _blips)
+                    if (b.team == AccordTeam) n++;
+                return n;
+            }
+        }
+
+        /// <summary>
+        /// Prompt 23 F.2: the directions reinforcements come from, drawn as arrows at the map's edge pointing in (kept by the
+        /// HUD's <see cref="DirectionArrows"/>, which fades them; <see cref="Begin"/> leaves them alone).
+        /// </summary>
+        internal IReadOnlyList<DirectionMark> Arrows { get; set; }
+
+        /// <summary>The arrows changed: drawn again now rather than at the next refresh.</summary>
+        internal void ArrowsChanged() => _overlay.MarkDirtyRepaint();
+
+        /// <summary>The middle of the camera's view on the ground, once the runner has drawn it.</summary>
+        internal bool TryViewCentre(out Vector2 centre)
+        {
+            centre = (_view[0] + _view[1] + _view[2] + _view[3]) * 0.25f;
+            return _hasView;
+        }
+
+        /// <summary>A direction on the ground (x east, y north) as the minimap and the battle's view show it: x right, y up.</summary>
+        internal Vector2 ViewDirection(Vector2 world) => new(Vector2.Dot(world, _right), Vector2.Dot(world, _forward));
 
         /// <summary>A boss: a big pulsing red marker, wherever it is.</summary>
         public void Boss(Vector2 world) => _bosses.Add(world);
@@ -246,7 +285,7 @@ namespace MachineBrigade.Game.Hud
                 p.BeginPath();
                 p.Arc(c, air ? 4.6f : 3.6f, 0f, 360f);
                 p.Fill();
-                var tint = team == 0 ? UiKit.Mint : team == 2 ? new Color(0.92f, 0.9f, 0.8f) : UiKit.Danger;
+                var tint = team == 0 ? UiKit.Mint : team == 2 ? new Color(0.92f, 0.9f, 0.8f) : team == AccordTeam ? AccordColour : UiKit.Danger;
                 // Out of sight: dimmer, as the radar has it.
                 p.fillColor = dim ? new Color(tint.r, tint.g, tint.b, 0.45f) : tint;
                 p.BeginPath();
@@ -263,6 +302,15 @@ namespace MachineBrigade.Game.Hud
                     p.Arc(c, 2.5f, 0f, 360f);
                 }
                 p.Fill();
+                if (team == AccordTeam)
+                {
+                    // The Accord's sign in small: a thin ring round the blip.
+                    p.strokeColor = new Color(AccordColour.r, AccordColour.g, AccordColour.b, dim ? 0.45f : 0.9f);
+                    p.lineWidth = 1.1f;
+                    p.BeginPath();
+                    p.Arc(c, air ? 6f : 5f, 0f, 360f);
+                    p.Stroke();
+                }
             }
 
             // Elites: a gold ring with a dark edge round the blip, dimmer out of sight.
@@ -323,6 +371,8 @@ namespace MachineBrigade.Game.Hud
                 p.Fill();
             }
 
+            DrawArrows(p);
+
             if (_hasView)
             {
                 p.strokeColor = new Color(1f, 1f, 1f, 0.85f);
@@ -331,6 +381,55 @@ namespace MachineBrigade.Game.Hud
                 p.MoveTo(ToLocal(_view[0]));
                 for (var i = 1; i < 4; i++) p.LineTo(ToLocal(_view[i]));
                 p.ClosePath();
+                p.Stroke();
+            }
+        }
+
+        /// <summary>
+        /// F.2: each direction as an arrowhead just inside the map's edge on that side (or where they come in, when known),
+        /// pointing in (the way they come), with a short tail behind it: the enemy's red, the Accord's sky blue, on a dark edge; faded by the HUD as its warning runs out.
+        /// </summary>
+        private void DrawArrows(Painter2D p)
+        {
+            var arrows = Arrows;
+            if (arrows == null || arrows.Count == 0) return;
+            var centre = MapCentre;
+            var half = (_mapMax - _mapMin) * 0.5f;
+            foreach (var arrow in arrows)
+            {
+                var d = arrow.Direction;
+                if (arrow.Alpha <= 0.01f || d.sqrMagnitude < 1e-6f) continue;
+                d.Normalize();
+                // Where they come in when known, else where the direction leaves the map's rectangle.
+                var tx = Mathf.Abs(d.x) > 1e-4f ? half.x / Mathf.Abs(d.x) : float.MaxValue;
+                var ty = Mathf.Abs(d.y) > 1e-4f ? half.y / Mathf.Abs(d.y) : float.MaxValue;
+                var from = arrow.HasAt ? arrow.At : centre + d * Mathf.Min(tx, ty);
+                var edge = ToLocal(from);
+                var inward = ToLocal(from - d * 10f) - edge;
+                if (inward.sqrMagnitude < 1f) continue;
+                inward.Normalize();
+                var side = new Vector2(-inward.y, inward.x);
+                var tip = edge + inward * 13f;
+                var colour = arrow.Enemy ? new Color(1f, 0.3f, 0.22f) : AccordColour;
+                void Head(float size)
+                {
+                    p.BeginPath();
+                    p.MoveTo(tip + inward * size * 0.35f);
+                    p.LineTo(tip - inward * size + side * size * 0.85f);
+                    p.LineTo(tip - inward * size * 0.55f);
+                    p.LineTo(tip - inward * size - side * size * 0.85f);
+                    p.ClosePath();
+                    p.Fill();
+                }
+                p.fillColor = new Color(0.05f, 0.06f, 0.06f, 0.85f * arrow.Alpha);
+                Head(9.5f);
+                p.fillColor = new Color(colour.r, colour.g, colour.b, arrow.Alpha);
+                Head(7f);
+                p.strokeColor = new Color(colour.r, colour.g, colour.b, 0.8f * arrow.Alpha);
+                p.lineWidth = 2f;
+                p.BeginPath();
+                p.MoveTo(tip - inward * 5f);
+                p.LineTo(tip - inward * 13f);
                 p.Stroke();
             }
         }

@@ -10125,3 +10125,97 @@ New `Prompt23EventTests`, 22 tests:
 - Game: Strings.cs (the new table in Get, Has and Entries), MatchRunner.cs (two event cases, the weather shift, the
   minimap), ModeSessions.cs (MissionSession), Weather.cs.
 - Data and tools: build_campaign.py, campaign.json.
+
+## 23F. Event HUD markers: direction arrows, the Accord's sign, generals' name labels, the side objective (2026-09-30)
+
+Prompt 23 F.2-F.5 (`Docs/prompts/prompt23_vi.txt`; F.1 is in 23H). Branch `feature/p23-hud` from lead c19fbc0, built
+beside the event system (23A-D, merged on the lead as 6511dc2 while this ran). Nothing here touches the simulation:
+every input is a HUD call, a view-side flag, or the game-side adapter below, which the lead fills from 23A's names.
+
+### The inputs (for the lead and the event system)
+
+- **`IEventHudSource`** (`Game/Match/EventHudSource.cs`), set on `MatchRunner.EventHudSource`, read four times a second:
+  `Accord(unit)` is 23A's `unit.Accord`; `General(unit)` is `unit.General`; `Arrows(list)` is `EventState.Arrows` (the
+  direction `-inward`, `At` the point, the warning's seconds left, the side); `SideObjectives(list)` is the running side
+  objectives from `EventState` (`SecondsLeft`, `Count`, `Needed`, the outcome, kept a moment after it ends so its
+  outcome is seen). With it set, the arrows come from it (their full warning time) and no longer from the notices.
+- Without it: `_hud.Toast(..., direction: d)` (23A's event notices already pass `e.NoticeDirection`) or
+  `BattleHud.Arrow(direction, seconds, enemy, at)`; `BattleHud.SideObjective(id, text, secondsLeft, count, needed,
+  announce)` and `SideObjectiveDone(id, success, announce)`; `MatchRunner.MarkAccord(unit)` and `MarkGeneral(unit, id)`.
+- **The Accord tag.** The simulation's allied-unit tag `Vehicle.Ally` already separates the allied AI's units from the
+  player's own, and 23A's `Vehicle.Accord` is `Reinforcement && Team == 0 && Ally`, so the Accord's reinforcements wear
+  the mark with no wiring. The view-side flag (`VehicleView.AccordMarked`, set through `MarkAccord` or the adapter) is
+  for reinforcements that stay ordinary units of ours.
+
+### F.2: where reinforcements come from
+
+**Decided (`DirectionArrows` in `Game/Hud/EventMarkers.cs`, `Minimap.DrawArrows`).** Each direction is two marks for as
+long as its warning runs: an arrowhead on the minimap at the map's edge on that side (at the point they come in when
+the event system knows it), pointing in, the way they come; and a small round indicator (40 px, the field surface, a
+2 px ring) at the screen's edge in that direction, its arrow pointing out towards them, the way to look. Red for the
+enemy's, sky blue for the Accord's. Up to four at once (C.3's hardest level warns from four sides); a second warning
+from within 20 degrees on the same side keeps the first one up longer instead of adding a fifth mark. They fade in
+over 0.2 s and out over the last 0.6 s, and beat gently for the first 2 s. The clock is the battle's (Unity's scaled
+time: it stops under the pause and slows in a story moment as the simulation does).
+
+- **The side.** From a notice: an alert (23A sends bad news with `error: e.Team == EnemyTeam`) is the enemy's; any other,
+  and `NoticeKind.Accord`, is ours. From the adapter: its own flag.
+- **How long.** A notice's arrow stays its seconds (at least 3 s); 23A's notices ask 3-4 s, not the warning time, which
+  is why the adapter reports the arrows with their seconds left (C.3: 15, 10, 8 or 6 s by difficulty).
+- **Where the indicator stands.** On the line from the screen's middle in the direction (the minimap's turn, so it
+  agrees with the minimap; from the view's middle to the point when the point is known), as far out as it can without
+  touching the HUD: the top strip's panels and the notices' place, the minimap and its tools, pause, the rail, the
+  selection strip, the tray and its supply chip, the hint and the strike prompt, the banner, and the dialogue line's
+  place two lines high whether a line shows or not (so nothing jumps when one starts). Blocked, it tries the edge a
+  little either side (up to 90 degrees, nearest first), then further in, then rings further in; its arrow always
+  points true. With nowhere clear it hides and the minimap's arrow says it alone (no layout the checks try does this).
+  The placement is worked out only when the HUD or the arrows change; each frame only moves five elements by
+  translate (no layout).
+
+### F.4: the Meridian Accord's sign
+
+**Decided (`VehicleView.Accord.cs`, `Minimap`, `TeamColors.Accord`).** An Accord unit on our side reads apart from the
+player's own in three places: its health bar fills sky blue (#6BC7FF, `TeamColors.Accord`; teal in the colour-blind
+palette, where ours is blue) instead of our green; the Accord's sign stands left of its bar, shown whether the bar is or
+not: a thick ring with its meridian through it on a dark square (the new `accord` icon's shape, from quads and one ring
+mesh, `MeshLibrary.BadgeRing`, so it batches like the other marks); and its minimap blip is sky blue in a thin ring.
+The player cannot select it (`SelectionController.Mine`): the allied AI commands it (C.2).
+- The prompt names the bar, the name or the ring: the bar and a sign beside it were chosen, since the player cannot
+  select these units (no ring) and a name over every reinforcement would crowd the field.
+- The allied commander's army (Thorne's, before the betrayal) and Mara's Behemoth are the Accord's allied AI too and
+  wear the sign; the betrayal rebuilds the turned units' views, so it comes off them.
+- A notice for the Accord's reinforcements can take `NoticeKind.Accord` (its icon is the sign) and its arrow is ours.
+
+### F.5 and H.9: an enemy general's name label
+
+**Decided (`GeneralTags` in `EventMarkers.cs`, `MatchRunner.EventHud.cs`).** Over an enemy unit a general drives: the
+general's short name (the dialogue's, in capitals: VARGA, KESSLER, WOLFF...) in the enemy speakers' red on the
+dialogue's dim strip, just above its health bar; while that general's line is on show (`DialogueDirector.IsSpeaking`
+of the general, or of the unit the line names) a small speaking mark (sound bars that beat) stands before the name. No
+bubble. Which units: a def with a general (`VehicleDef.General`: the generals' bosses and mini bosses), 23A's
+`Vehicle.General` through the adapter, or `MarkGeneral`. Only a unit the player can see gets a label, so a label never
+gives a hidden general away; four at most; hidden where it would touch the HUD's controls (it lies under them anyway).
+Found four times a second, placed every frame (a few labels).
+
+### F.3: the side objective
+
+**Decided (`BattleHud.SideObjective`, `MissionBar.ShowSide`).** One row under the mission's goal on the mission bar: a
+flag, what to do, how far along (2/5) and a clock in the accent colour, red in its last ten seconds; one line, never
+wrapped (the goals are short). While it shows, the notices under the strip start lower (compact 88 px, 96 with the boss
+bar in the row, 108 at Large text; full HUD 164 and 184 px) so the row never covers them. A notice when it starts
+("Side objective: ..."), and when it ends: complete (`toast.side.done`, the check icon) or failed at its time-out
+(`toast.side.failed`); either can be left out (`announce: false`) where 23A sends its own. One at a time: a new id takes
+the row. The simulation owns the outcome; the HUD's clock runs on the battle's time between the adapter's reports, and
+a clock that ran out with no word goes quietly after 5 s.
+
+### Checks
+
+`EventHudTests`: each marker shows on its input and goes when it ends (the arrows on the minimap and the edge, several
+at once and merged, each fading at its own warning's end; the Accord's sign and bar from the tag and from the flag,
+never on the enemy, and its blips; a general's label, its name and its speaking mark only while speaking; the side
+row, its count and clock, its notices, no second notice on an update). The layout check lays the HUD out at 1280 x 720
+(compact at Normal and Large, with and without the selection strip, with and without the boss bar in the top row; the full HUD at Normal and Large) with a two-line
+line up, a notice and the boss bar: indicators in all eight directions find a place and none overlaps the dialogue
+line, the notices, the mission or boss bar, the tray or its chip; the side row is one line and clear of the notices; a
+label over any of them is hidden. The battle screens gain `hud-events` (the UiShots battle set, vi at the four shapes
+and en at 16:9, and `UiLayoutTests.EveryBattleScreenPassesEveryCheck`).

@@ -52,6 +52,10 @@ namespace MachineBrigade.Game.Hud
             ["restart"] = "<path d=\"M3 12a9 9 0 1 0 3-6.7L3 8\"/><path d=\"M3 3v5h5\"/>",
             ["retreat"] = "<path d=\"M9 14 4 9l5-5\"/><path d=\"M4 9h11a5 5 0 0 1 0 10h-3\"/>",
             ["reinforce"] = "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 8v8M8 12h8\"/>",
+            // Prompt 23 F.4: the Meridian Accord's sign (a ring, its meridian and the meridian's line); F.5: a general speaking
+            // (sound bars, not a bubble).
+            ["accord"] = "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 3a4 9 0 0 1 0 18a4 9 0 0 1 0-18ZM12 3v18\"/>",
+            ["speaking"] = "<path d=\"M4 10v4M8 7v10M12 4v16M16 8v8M20 11v2\"/>",
             ["jeep"] = "<path d=\"M3 15v-3l2-4h7l3 4h5l1 3Z\"/><circle cx=\"7\" cy=\"17\" r=\"2\"/><circle cx=\"17\" cy=\"17\" r=\"2\"/>",
             ["artillery"] = "<rect x=\"3\" y=\"14\" width=\"14\" height=\"6\" rx=\"3\"/><path d=\"M7 14v-4h6v4M13 11l8-5\"/>",
             ["apc"] = "<path d=\"M3 15v-4l3-3h10l4 4v3Z\"/><circle cx=\"6.5\" cy=\"17\" r=\"1.8\"/><circle cx=\"11.5\" cy=\"17\" r=\"1.8\"/><circle cx=\"16.5\" cy=\"17\" r=\"1.8\"/><path d=\"M11 8V6h6\"/>",

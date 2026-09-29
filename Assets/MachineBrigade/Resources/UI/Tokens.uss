@@ -52,6 +52,8 @@
     --fc-dialogue-enemy: #ea6a55;             /* the enemy's speakers' names, a darker red */
     --fc-dialogue-enemy-cb: #d9802a;          /* ...for colour-blind players: a darker orange against our light blue */
     --fc-dialogue-strip: rgba(8, 10, 12, 0.62);   /* the dim strip under a dialogue line (not a panel) */
+    --fc-accord: #6bc7ff;                     /* prompt 23 F: the Meridian Accord's (allied AI) reinforcements and arrows: sky blue */
+    --fc-accord-cb: #3fd6c6;                  /* ...for colour-blind players: teal, apart from our blue and their orange */
     --fc-flash: #ffe6b8;                      /* the flash of a huge blast over the battlefield */
     --fc-range-ground: rgba(226, 132, 48, 0.06);  /* the Base screen's ground cover: a nearly clear orange tint (play-test 8 A: ranges are borders) */
     --fc-range-air: rgba(170, 214, 255, 0.07);    /* its air cover: a nearly clear light blue tint */

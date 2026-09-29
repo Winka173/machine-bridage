@@ -133,6 +133,8 @@ namespace MachineBrigade.Game.Rendering
             BarNeutral = Unlit(unlit, "BarNeutral", new Color(0.92f, 0.9f, 0.82f));
             BarEnemy = Unlit(unlit, "BarEnemy", TeamColors.Ui(1));
             BarElite = Unlit(unlit, "BarElite", new Color(1f, 0.78f, 0.25f));
+            BarAccord = Unlit(unlit, "BarAccord", TeamColors.Accord());
+            AccordMark = Unlit(unlit, "AccordMark", TeamColors.Accord() * 1.6f);
             AmmoReload = Unlit(unlit, "AmmoReload", new Color(1f, 0.7f, 0.22f));
             AmmoEmpty = Unlit(unlit, "AmmoEmpty", new Color(1f, 0.26f, 0.18f));
             AmmoSpent = Unlit(unlit, "AmmoSpent", new Color(0.22f, 0.24f, 0.24f));
@@ -226,6 +228,11 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>Gold health bar of elite enemy units.</summary>
         public Material BarElite { get; }
+
+        /// <summary>Prompt 23 F.4: a Meridian Accord unit's health bar, and its sign beside it (brighter, for the bloom).</summary>
+        public Material BarAccord { get; }
+
+        public Material AccordMark { get; }
 
         /// <summary>The overhead ammunition gauge: rounds coming back (amber), empty and waiting (red), spent (grey).</summary>
         public Material AmmoReload { get; }

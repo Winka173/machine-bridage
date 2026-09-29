@@ -794,6 +794,8 @@ namespace MachineBrigade.Game.Match
             _atmosphere.FitShadows(_camera.Camera);
             _perf?.Begin();
             _views.Render(_clock.Alpha, _camera.Rotation);
+            // Prompt 23 F.4 and F.5: the Accord's marks and the generals' name labels (MatchRunner.EventHud.cs).
+            TickEventHud();
             // Prompt 16: ships' wakes (and a ship that got away, hidden).
             if (_world.Map.Sea != null)
             {
@@ -1568,7 +1570,9 @@ namespace MachineBrigade.Game.Match
                 // Prompt 13 C.9: our aircraft's holding patterns, faint rings.
                 if (v.Team == PlayerTeam && v.HasStores && v.Supply != MachineBrigade.Sim.Entities.SupplyState.Fighting)
                     minimap.Holding(new Vector2(v.HoldPoint.X, v.HoldPoint.Y));
-                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
+                // Prompt 23 F.4: the Meridian Accord's units in their own colour.
+                var blip = v.Team == PlayerTeam ? IsAccord(v) ? Minimap.AccordTeam : 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1;
+                minimap.Blip(new Vector2(v.Position.X, v.Position.Y), blip, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
             foreach (var mark in _marks) minimap.Mark(new Vector2(mark.Position.X, mark.Position.Y), (int)mark.Kind);

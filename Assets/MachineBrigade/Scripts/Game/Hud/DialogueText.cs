@@ -33,6 +33,10 @@ namespace MachineBrigade.Game.Hud
             ["dialogue.log.empty"] = ("Nobody has spoken yet in this battle.", "Trận này chưa ai lên tiếng."),
             // F.1: an elite's arrival as a notice of its own (its report is a dialogue line, which the setting may hide).
             ["toast.elite"] = ("Enemy elite on the field: {card}", "Tinh nhuệ địch ra trận: {card}"),
+            // Prompt 23 F.3: a side objective's notices (its row on the mission bar shows the goal and the clock).
+            ["toast.side.new"] = ("Side objective: {goal}", "Mục tiêu phụ: {goal}"),
+            ["toast.side.done"] = ("Side objective complete: {goal}", "Hoàn thành mục tiêu phụ: {goal}"),
+            ["toast.side.failed"] = ("Side objective failed: {goal}", "Mục tiêu phụ thất bại: {goal}"),
         };
 
         /// <summary>The speaker prefixes the older texts carry, in both languages, and whom they name.</summary>

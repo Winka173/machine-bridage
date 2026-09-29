@@ -56,6 +56,17 @@ namespace MachineBrigade.Game.Hud
             _progress = new KitProgress();
             _progress.AddToClassList("fc-mission-bar__progress");
             text.Add(_progress);
+            // Prompt 23 F.3: a side objective's row under the goal (hidden until one runs).
+            _side = Kit.Box("fc-mission-bar__side");
+            _side.Add(Kit.Icon("flag", "fc-mission-bar__side-icon"));
+            _sideText = Kit.Text("", "fc-small fc-mission-bar__side-text");
+            _side.Add(_sideText);
+            _sideCount = Kit.Text("", "fc-small fc-mission-bar__side-count");
+            _side.Add(_sideCount);
+            _sideClock = Kit.Text("", "fc-small fc-mission-bar__side-clock");
+            _side.Add(_sideClock);
+            _side.style.display = DisplayStyle.None;
+            text.Add(_side);
             Root.Add(text);
             _chips = Kit.Box("fc-score__chips");
             Root.Add(_chips);
@@ -64,6 +75,28 @@ namespace MachineBrigade.Game.Hud
         }
 
         public VisualElement Root { get; }
+
+        private readonly VisualElement _side;
+        private readonly Label _sideText, _sideCount, _sideClock;
+
+        /// <summary>Prompt 23 F.3: the side objective's row (the checks).</summary>
+        internal VisualElement SideRow => _side;
+
+        internal string SideClock => _sideClock.text;
+
+        /// <summary>F.3: the side objective's row: what to do, how far along ("2/5") and its clock ("" for none); red in its last ten seconds.</summary>
+        public void ShowSide(string text, string count, string clock, bool urgent)
+        {
+            if (_sideText.text != text) _sideText.text = text;
+            if (_sideCount.text != count) _sideCount.text = count;
+            _sideCount.style.display = string.IsNullOrEmpty(count) ? DisplayStyle.None : DisplayStyle.Flex;
+            if (_sideClock.text != clock) _sideClock.text = clock;
+            _sideClock.style.display = string.IsNullOrEmpty(clock) ? DisplayStyle.None : DisplayStyle.Flex;
+            _sideClock.EnableInClassList("fc-hud__clock--urgent", urgent);
+            _side.style.display = DisplayStyle.Flex;
+        }
+
+        public void HideSide() => _side.style.display = DisplayStyle.None;
 
         /// <summary>An objective chip was tapped.</summary>
         public event System.Action<string> PointPressed;

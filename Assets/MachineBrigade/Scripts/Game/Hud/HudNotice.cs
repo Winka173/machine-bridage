@@ -10,6 +10,9 @@ namespace MachineBrigade.Game.Hud
         Air,
         Strike,
         Reinforce,
+
+        /// <summary>Prompt 23 F.4: the Meridian Accord's reinforcements (their sign).</summary>
+        Accord,
         Landing,
         Boss,
         Elite,
@@ -57,6 +60,7 @@ namespace MachineBrigade.Game.Hud
             NoticeKind.Air => "jet",
             NoticeKind.Strike => "barrage",
             NoticeKind.Reinforce => "reinforce",
+            NoticeKind.Accord => "accord",
             NoticeKind.Landing => "anchor",
             NoticeKind.Boss => "skull",
             NoticeKind.Elite => "elite",
