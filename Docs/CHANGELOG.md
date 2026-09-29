@@ -6,7 +6,7 @@
   laser and the Behemoth's protection system (they shoot down missiles, drones and rockets), the Inferno's fire trail,
   the Hive's jamming aura, the Bastion's Kornet launcher, the Doomsday Train's rocket and long-range SAM cars, two AA
   mounts on the Rail Supergun, and two more CIWS and two rocket launchers on the landing hovercraft. Their health was
-  retuned so the fights last about as long as before.
+  retuned so the fights last about as long as before (within 10 %).
 - Every boss brings escorts: a group with it and another at each phase change, at most 4-6 alive by difficulty (fewer
   in Boss Rush). Each group has a helper that repairs the boss, jams your missiles, covers it from the air or marks your
   units for its guns, so you choose between the boss and its escorts. Escorts stay near their boss, pay CP when

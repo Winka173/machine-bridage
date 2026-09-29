@@ -278,9 +278,11 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A wave: an array of units, or an object with "units", "drop", "support", "halt", "refill", "radio".</summary>
         private EscortWaveDef Wave(JsonObject owner, string? key, string boss)
         {
-            var o = key == null ? owner : owner.IsArray(key) ? null : owner.Object(key);
+            // A list of units, or an object with them (JsonObject is a struct: a flag says which).
+            var listed = key != null && owner.IsArray(key);
+            var o = key == null ? owner : listed ? owner : owner.Object(key);
             var units = new List<EscortUnitDef>();
-            foreach (var u in o != null ? o.Array("units") : owner.Array(key!))
+            foreach (var u in listed ? owner.Array(key!) : o.Array("units"))
             {
                 var id = u.String("unit");
                 if (!_vehicles.TryGetValue(id, out var vehicle)) throw new FormatException($"balance.escorts.{boss}: unknown vehicle '{id}'.");
@@ -298,7 +300,7 @@ namespace MachineBrigade.Sim.Content
                 for (var k = 0; k < count; k++) units.Add(unit);
             }
             var wave = new EscortWaveDef { Units = units };
-            if (o == null) return wave;
+            if (listed) return wave;
             wave.Drop = o.Enum("drop", EscortDrop.Beside);
             wave.Halt = MathF.Max(0f, o.Float("halt", 0f));
             wave.Refill = o.Bool("refill", false);

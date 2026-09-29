@@ -125,7 +125,7 @@ namespace MachineBrigade.Tests
         [TestCase("fortress_bastion", "kornet_twin", "main_battle_tank", 32f)]
         [TestCase("nuke_train", "boss_rockets", "main_battle_tank", 34f)]
         [TestCase("nuke_train", "sam_battery", "attack_helicopter", 45f)]
-        [TestCase("rail_supergun", "hover_ciws", "attack_helicopter", 26f)]
+        [TestCase("rail_supergun", "ciws_aa", "attack_helicopter", 26f)]
         [TestCase("landing_hovercraft", "hover_rockets", "main_battle_tank", 34f)]
         public void ItsNewMountFiresAtItsKindOfTarget(string id, string weapon, string target, float distance)
         {

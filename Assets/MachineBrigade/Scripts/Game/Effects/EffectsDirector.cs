@@ -302,14 +302,14 @@ namespace MachineBrigade.Game.Effects
                     // Prompt 16: a patch of the Inferno's fire trail (FireSpots burns ground fires a fifth shorter).
                     case SimEventKind.FireTrail:
                     {
-                        var centre = Ground(e.Position, 0.05f);
-                        var r = e.Target.X;
-                        _fires.Ignite(centre, 0.9f, e.Value, now);
-                        for (var k = 0; k < 2; k++)
+                        var trailAt = Ground(e.Position, 0.05f);
+                        var trailRadius = e.Target.X;
+                        _fires.Ignite(trailAt, 0.9f, e.Value, now);
+                        for (var lick = 0; lick < 2; lick++)
                         {
-                            var a = UnityEngine.Random.value * Mathf.PI * 2f;
-                            var d = r * UnityEngine.Random.Range(0.35f, 0.7f);
-                            _fires.Ignite(centre + new Vector3(Mathf.Cos(a) * d, 0f, Mathf.Sin(a) * d), UnityEngine.Random.Range(0.45f, 0.7f),
+                            var bearing = UnityEngine.Random.value * Mathf.PI * 2f;
+                            var reach = trailRadius * UnityEngine.Random.Range(0.35f, 0.7f);
+                            _fires.Ignite(trailAt + new Vector3(Mathf.Cos(bearing) * reach, 0f, Mathf.Sin(bearing) * reach), UnityEngine.Random.Range(0.45f, 0.7f),
                                 e.Value * UnityEngine.Random.Range(0.8f, 1f), now);
                         }
                         break;

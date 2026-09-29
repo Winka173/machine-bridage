@@ -393,7 +393,7 @@ namespace MachineBrigade.Sim.Bosses
                 case EscortRole.Spot:
                 {
                     var marked = 0;
-                    var sight = v.Def.Vision;
+                    var sight = v.Def.VisionRange;
                     foreach (var e in _world.VehicleList)
                     {
                         if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || !e.IsVisibleTo(v.Team)) continue;
