@@ -9891,7 +9891,8 @@ never shrunk.
 
 The last 20 lines shown, oldest first in `DialogueDirector.Log`, newest first in the pause menu's **Dialogue log** (a
 secondary button under Main menu; `DialogueLogPanel` over the pause card, Back returns). Only from pause: nothing on
-the HUD opens it. Entries keep the key and value, so they read in the language on show.
+the HUD opens it. Entries keep the key and value, so they read in the language on show. After a checkpoint resume the
+log starts empty: the replay behind the loading screen rebuilds the battle, not what was said.
 
 ### H.7: the setting
 
