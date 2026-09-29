@@ -26,6 +26,7 @@ namespace MachineBrigade.Game.Hud
             Operations,
             WeeklyFortress,
             BossRush,
+            FullHunt,
             Daily,
         }
 
@@ -72,7 +73,10 @@ namespace MachineBrigade.Game.Hud
             _opsEntries.Add(OpsCard(OpsEntry.WeeklyFortress, MapArt.For(WeeklyFortress.MapId), Strings.Get("mode.weekly"),
                 Strings.Format("events.weeklyStage", PlayerProfile.WeeklyStage(WeeklyFortress.Week)), true));
             _opsEntries.Add(OpsCard(OpsEntry.BossRush, CardArt.For("behemoth"), Strings.Get("mode.bossrush"),
-                Strings.Format("mode.bossrushSub", Campaign.BossRushKinds.Count), false));
+                Strings.Format("mode.bossrushSub", BossHunts.ThisWeek.Count), true));
+            // Prompt 20 N.2: every boss in story order, once the last chapter switched on is done.
+            _opsEntries.Add(OpsCard(OpsEntry.FullHunt, CardArt.For("silver_bug"), Strings.Get("hunt.full"),
+                BossHunts.FullOpen ? Strings.Format("hunt.fullSub", BossHunts.Full.Count) : Strings.Format("hunt.full.locked", Campaign.LastChapter), false));
             var dailyCard = OpsCard(OpsEntry.Daily, null, Strings.Get("daily.titleShort"), DailyResetText(), false);
             KitDot.Attach(dailyCard, DailyClaimable());
             _opsEntries.Add(dailyCard);
@@ -111,7 +115,7 @@ namespace MachineBrigade.Game.Hud
             var body = Kit.Box("fc-ops__detail-body");
             scroll.Add(body);
             _opsDetail.Add(scroll);
-            KitButton start = null;
+            VisualElement start = null;
             switch (_opsEntry)
             {
                 case OpsEntry.WeeklyOperation when Operations.ThisWeek is { } week:
@@ -138,20 +142,10 @@ namespace MachineBrigade.Game.Hud
                     start = PlayButton(GameModeKind.Weekly);
                     break;
                 case OpsEntry.BossRush:
-                    body.Add(Kit.Caption(Strings.Get("mode.bossrush")));
-                    body.Add(Kit.Text(Kit.Caps(Strings.Format("mode.bossrushSub", Campaign.BossRushKinds.Count)), "fc-title"));
-                    body.Add(Kit.Text(Strings.Format("ops.bossRushRules", Campaign.BossRushKinds.Count, Mathf.RoundToInt(new BossRushRules().TimeLimit / 60f)), "fc-body fc-mt-2"));
-                    var bosses = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-3");
-                    foreach (var kind in Campaign.BossRushKinds)
-                    {
-                        var id = kind[0];
-                        bosses.Add(new KitVehicleCard(new VehicleCardData
-                        {
-                            Id = id, Name = Strings.Unit(id), ShortName = Strings.Short(id), Branch = KitBranch.Armor, ClassIcon = "skull", Art = CardArt.For(id), Level = 1,
-                        }, null, compact: true));
-                    }
-                    body.Add(bosses);
-                    start = PlayButton(GameModeKind.BossRush);
+                    start = HuntDetail(body, false);
+                    break;
+                case OpsEntry.FullHunt:
+                    start = HuntDetail(body, true);
                     break;
                 case OpsEntry.Daily:
                     body.Add(Kit.Caption(Strings.Get("daily.titleShort")));
@@ -168,6 +162,80 @@ namespace MachineBrigade.Game.Hud
             if (start == null) return;
             start.AddToClassList("fc-ops__start");
             _opsDetail.Add(start);
+        }
+
+        /// <summary>
+        /// Prompt 20 N: a Boss Hunt's page: its rules and reward, the checkpoint to go on from, the bosses in the order
+        /// they come (each opens its Guide page), the combat supports, and for the full hunt the best total times.
+        /// Returns the button row (continue / start over, or start), or null while the full hunt is locked.
+        /// </summary>
+        private VisualElement HuntDetail(VisualElement body, bool full)
+        {
+            var week = WeeklyFortress.Week;
+            var run = full ? BossHunts.Full : BossHunts.Weekly(week);
+            var mains = BossHunts.MainsIn(run);
+            var key = full ? BossHunts.FullKey : BossHunts.WeeklyKey;
+            body.Add(Kit.Caption(Strings.Get(full ? "hunt.full" : "mode.bossrush")));
+            body.Add(Kit.Text(Kit.Caps(Strings.Format(full ? "hunt.fullSub" : "mode.bossrushSub", run.Count)), "fc-title"));
+            body.Add(Kit.Text(full ? Strings.Format("hunt.full.rules", run.Count)
+                : Strings.Format("hunt.weekly.rules", run.Count, run.Count - mains, mains, Mathf.RoundToInt(BossHunts.WeeklyMinutes)), "fc-body fc-mt-2"));
+            if (!full) body.Add(Rule("restart", WeekResetText()));
+            body.Add(Rule("coin", full ? Strings.Format("hunt.full.reward", Kit.Count(BossHunts.FullReward))
+                : Strings.Format("hunt.weekly.reward", Kit.Count(BossHunts.WeeklyReward))));
+            var open = !full || BossHunts.FullOpen;
+            if (!open) body.Add(Rule("lock", Strings.Format("hunt.full.locked", Campaign.LastChapter)));
+            var checkpoint = open ? PlayerProfile.HuntCheckpoint(key, week, run) : null;
+            if (checkpoint != null) body.Add(Rule("flag", Strings.Format("hunt.checkpoint", checkpoint.Defeated, run.Count)));
+            if (full)
+            {
+                body.Add(Kit.Text(Kit.Caps(Strings.Get("hunt.best")), "fc-panel-title fc-section__title fc-mt-4"));
+                var times = PlayerProfile.FullHuntTimes;
+                if (times.Count == 0) body.Add(Kit.Body2(Strings.Get("hunt.noTimes")));
+                for (var i = 0; i < times.Count; i++) body.Add(Rule(i == 0 ? "trophy" : "star", $"#{i + 1}  {HuntClock(times[i])}"));
+            }
+            body.Add(Kit.Text(Kit.Caps(Strings.Get(full ? "hunt.fullRoster" : "hunt.roster")), "fc-panel-title fc-section__title fc-mt-4"));
+            var bosses = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-2");
+            foreach (var id in run)
+            {
+                var boss = id;
+                var main = _catalog.Vehicles.TryGetValue(id, out var def) && def.Rank == BossRank.Main;
+                bosses.Add(new KitVehicleCard(new VehicleCardData
+                {
+                    Id = id, Name = Strings.Unit(id), ShortName = Strings.Short(id), Branch = KitBranch.Armor, ClassIcon = main ? "skull" : "elite",
+                    Art = CardArt.For(id), Level = 1,
+                }, () => OpenBossGuide(boss), compact: true));
+            }
+            body.Add(bosses);
+            body.Add(Kit.Text(Kit.Caps(Strings.Get("hunt.supportsTitle")), "fc-panel-title fc-section__title fc-mt-4"));
+            var supports = Kit.Box("fc-row fc-row--wrap fc-mt-2");
+            foreach (var s in HuntSupports.All) supports.Add(Tag(s.Icon, Strings.Get("hunt.support." + s.Id)));
+            body.Add(supports);
+            if (!open) return null;
+            var row = Kit.Box("fc-row");
+            if (checkpoint != null)
+            {
+                row.Add(new KitButton(ButtonTier.Primary, Strings.Get("hunt.continue"), () => StartHunt(full, checkpoint), "play"));
+                row.Add(new KitButton(ButtonTier.Secondary, Strings.Get("hunt.restart"), () => StartHunt(full, null), "restart"));
+            }
+            else row.Add(new KitButton(ButtonTier.Primary, Strings.Get("ops.start"), () => StartHunt(full, null), "play"));
+            return row;
+        }
+
+        /// <summary>Starts a Boss Hunt, from its checkpoint when one is given (the battle opens on the checkpoint's battlefield).</summary>
+        private void StartHunt(bool full, MachineBrigade.Sim.Modes.BossRushCarry from)
+        {
+            BossRushSession.Full = full;
+            BossRushSession.Pending = from;
+            MatchSettings.Mode = GameModeKind.BossRush;
+            MatchSettings.Save();
+            _play();
+        }
+
+        /// <summary>A long run's clock: 1:02:03 or 42:10.</summary>
+        private static string HuntClock(float seconds)
+        {
+            var s = Mathf.Max(0, Mathf.RoundToInt(seconds));
+            return s >= 3600 ? $"{s / 3600}:{s / 60 % 60:00}:{s % 60:00}" : $"{s / 60}:{s % 60:00}";
         }
 
         private static VisualElement Rule(string icon, string text)

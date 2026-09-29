@@ -45,6 +45,9 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>The catalog's economy pace: scales the income and objective bonuses (1: as the mode set them).</summary>
         public float IncomeScale { get; internal set; } = 1f;
 
+        /// <summary>Prompt 20 N: support cooldowns are multiplied by this (a Boss Hunt support).</summary>
+        public float StrikeScale { get; internal set; } = 1f;
+
         /// <summary>The catalog's scale for the supply line (1: as the mode set it).</summary>
         public float SupplyScale { get; internal set; } = 1f;
 

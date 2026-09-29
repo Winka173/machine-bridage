@@ -523,7 +523,11 @@ namespace MachineBrigade.Game.Match
             }
             // Boss Rush brings its bosses and their escorts later.
             if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
+            {
                 foreach (var boss in BossRushRules.Everyone()) Add(boss);
+                // Prompt 20 N: the hunts bring every chapter's bosses.
+                foreach (var boss in BossHunts.Story) Add(boss.Id);
+            }
             return ids;
         }
 
@@ -1208,7 +1212,18 @@ namespace MachineBrigade.Game.Match
             };
             _hud.CheckpointPressed += () =>
             {
-                if (Curtain.Busy || _session is not MissionSession staged) return;
+                if (Curtain.Busy) return;
+                // Prompt 20 N: a Boss Hunt starts again from its last checkpoint (the carry saved as the rest after a boss ended).
+                if (_session is BossRushSession hunt)
+                {
+                    if (hunt.ResumeFrom() is not { } from) return;
+                    ClaimReward();
+                    BossRushSession.Pending = from;
+                    BossRushSession.Full = hunt.IsFull;
+                    Reload("loading.checkpoint", DeployDetail());
+                    return;
+                }
+                if (_session is not MissionSession staged) return;
                 var point = MatchJournal.Checkpoint(_world, MatchSettings.Mission, MatchSettings.MissionTier, staged.Operation);
                 if (point == null) return;
                 ClaimReward();
@@ -1472,6 +1487,8 @@ namespace MachineBrigade.Game.Match
         {
             if (_menu || _switching || _session is not BossRushSession rush || rush.SwitchTo is not { } carry) return;
             _switching = true;
+            // Prompt 20 N: the checkpoint the rest just kept, saved before the scene goes.
+            rush.KeepCheckpoint();
             BossRushSession.Pending = carry;
             // Prompt 19 G.2: a boss's own battlefield (the Silver Bug's Launch Site) reads as a redeployment, not "back to the front".
             var home = MatchSettings.CurrentMap.Id;
@@ -1515,7 +1532,8 @@ namespace MachineBrigade.Game.Match
                     view.Crates.Add(Strings.Get("crate.silver"));
                 }
                 view.HasNext = outcome.Result > 0 && _session is MissionSession && Campaign.NextAfter(MatchSettings.Mission) >= 0;
-                view.CanResume = outcome.Result < 0 && _session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0;
+                view.CanResume = outcome.Result < 0 && ((_session is MissionSession staged && staged.Operation != null && staged.Operation.Checkpoints.Count > 0) ||
+                                                        (_session is BossRushSession hunt && hunt.ResumeFrom() != null));
             }
             if (outcome.Result <= 0)
                 outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports,

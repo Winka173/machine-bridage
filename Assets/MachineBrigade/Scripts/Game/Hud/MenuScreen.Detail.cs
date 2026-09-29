@@ -150,10 +150,30 @@ namespace MachineBrigade.Game.Hud
         private void OpenDetail(string id)
         {
             _detailId = id;
-            _detailList = IsStructure(id) ? Structures() : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
+            _detailList = IsStructure(id) ? Structures() : IsBoss(id) ? Bosses() : MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Where(Passes).ToList();
             if (!_detailList.Contains(id)) _detailList.Add(id);
             Open(_detail, Strings.Get(IsStructure(id) ? "detail.structureTitle" : "detail.title"));
             ShowPreview();
+        }
+
+        /// <summary>A boss (its detail page is a Guide page: no deck, level or blueprints).</summary>
+        private bool IsBoss(string id) => id != null && _catalog.Vehicles.TryGetValue(id, out var def) && def.Boss;
+
+        /// <summary>Prompt 20 O.3: the bosses in story order (the chapters switched on), then the rest by id: a boss page's arrows.</summary>
+        private List<string> Bosses()
+        {
+            var list = BossHunts.Story.Select(b => b.Id).ToList();
+            foreach (var def in _catalog.Vehicles.Values.Where(d => d.Boss && !d.Elite && Strings.Has("unit." + d.Id)).OrderBy(d => d.Id, System.StringComparer.Ordinal))
+                if (!list.Contains(def.Id)) list.Add(def.Id);
+            return list;
+        }
+
+        /// <summary>Prompt 20 O.3: a boss's Guide page (from the dossier, the Boss Hunt's list, a variant's link).</summary>
+        private void OpenBossGuide(string id)
+        {
+            _detailTab = DetailTab.Guide;
+            OpenDetail(id);
+            Refresh();
         }
 
         private void StepDetail(int step)
@@ -232,8 +252,10 @@ namespace MachineBrigade.Game.Hud
                 _detailTags.Add(ArmourTag(vehicle));
             }
             else _detailTags.Add(Tag(CardIcons.For(id), Strings.Get("detail.strikeTag")));
-            if (!structure) _detailTags.Add(Tag("cp", Strings.Format("detail.cpTag", CostOf(id))));
-            _detailTags.Add(Tag("upgrade", Strings.Format("kit.level", rank)));
+            var boss = vehicle is { Boss: true };
+            if (!structure && !boss) _detailTags.Add(Tag("cp", Strings.Format("detail.cpTag", CostOf(id))));
+            if (boss) _detailTags.Add(Tag(vehicle.MiniBoss ? "elite" : "skull", Strings.Get(vehicle.RankDef?.Label ?? (vehicle.MiniBoss ? "boss.rank.mini" : "boss.rank.main"))));
+            else _detailTags.Add(Tag("upgrade", Strings.Format("kit.level", rank)));
             _detailCounters.Clear();
             if (vehicle != null) CombatBlock(vehicle, module);
 
@@ -271,6 +293,12 @@ namespace MachineBrigade.Game.Hud
         private void FillDetailDock(string id, bool unlocked, int rank)
         {
             _detailDock.Clear();
+            // A boss is no card: nothing to level up or put in the deck.
+            if (IsBoss(id))
+            {
+                _detailDeck.Clear();
+                return;
+            }
             var prints = Kit.Box("fc-detail__prints");
             var need = CardRanks.BlueprintsToNext(rank);
             var have = PlayerProfile.Blueprints(id) + PlayerProfile.UniversalBlueprints;
@@ -308,6 +336,9 @@ namespace MachineBrigade.Game.Hud
         {
             // Prompt 15 E8: the legend of the armour and weapon icons, from every guide.
             _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("combat.legend.open"), OpenLegend, "info"));
+            // Prompt 20 O.5: the battlefields' guide (the dossier's tab).
+            _detailBody.Add(new KitButton(ButtonTier.Text, Strings.Get("guide.maps.open"), OpenBattlefields, "globe"));
+            if (_catalog.Vehicles.TryGetValue(id, out var bossDef) && bossDef.Boss) BossFacts(bossDef);
             if (Strings.Has("note." + id))
             {
                 _detailBody.Add(Kit.Text(Kit.Caps(Strings.Get("detail.notes")), "fc-caption fc-mb-2"));
@@ -334,6 +365,43 @@ namespace MachineBrigade.Game.Hud
             }
             // A boss's parts and what breaking each does (prompt 9).
             if (_catalog.Vehicles.TryGetValue(id, out var boss) && boss.Parts.Count > 0) BossPartsGuide(boss);
+        }
+
+        /// <summary>
+        /// Prompt 20 O.3: a boss's Guide header: its rank, the chapters it is fought in, its general (portrait, name, call
+        /// sign and naming theme), the main boss it is a variant of and its own variants, each a link to that boss's page.
+        /// </summary>
+        private void BossFacts(VehicleDef boss)
+        {
+            var box = Kit.Box(KitPanel.SurfaceClass + " fc-boss-facts fc-mt-2");
+            var head = Kit.Box("fc-row fc-row--wrap");
+            head.Add(Tag(boss.MiniBoss ? "elite" : "skull", Strings.Get(boss.RankDef?.Label ?? (boss.MiniBoss ? "boss.rank.mini" : "boss.rank.main"))));
+            var chapters = Campaign.Chapters.Where(c => Campaign.ChapterEnabled(c.Number) && (c.Main == boss.Id || c.Minis.Contains(boss.Id))).Select(c => c.Number.ToString()).ToList();
+            if (chapters.Count > 0) head.Add(Tag("campaign", Strings.Format("guide.boss.chapters", string.Join(", ", chapters))));
+            box.Add(head);
+            if (boss.General is { } general && Strings.Has($"char.{general}.name"))
+            {
+                var row = Kit.Box("fc-row fc-mt-2");
+                row.Add(Portraits.Element(general, "fc-portrait"));
+                var text = Kit.Box("fc-dossier__text");
+                text.Add(Kit.Text(Kit.Caps(Strings.Format("guide.boss.general", Strings.Get($"char.{general}.name"))), "fc-panel-title"));
+                if (Strings.Has($"char.{general}.role")) text.Add(Kit.Caption(Strings.Get($"char.{general}.role")));
+                row.Add(text);
+                box.Add(row);
+            }
+            if (boss.VariantOf is { } parent && _catalog.Vehicles.ContainsKey(parent))
+                box.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.variantOf", Strings.Unit(parent)), () => OpenBossGuide(parent), "arrow"));
+            var variants = _catalog.Vehicles.Values.Where(v => v.VariantOf == boss.Id).OrderBy(v => v.Id, System.StringComparer.Ordinal).ToList();
+            if (variants.Count > 0)
+            {
+                box.Add(Kit.Text(Kit.Caps(Strings.Get("guide.boss.variants")), "fc-caption fc-mt-2"));
+                foreach (var v in variants)
+                {
+                    var vid = v.Id;
+                    box.Add(new KitButton(ButtonTier.Text, Strings.Unit(vid), () => OpenBossGuide(vid), "arrow"));
+                }
+            }
+            _detailBody.Add(box);
         }
 
         /// <summary>Prompt 13 C.9: what the ammunition icons over units mean, with their colours.</summary>

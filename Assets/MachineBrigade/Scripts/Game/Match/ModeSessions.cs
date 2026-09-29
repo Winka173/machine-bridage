@@ -833,15 +833,29 @@ namespace MachineBrigade.Game.Match
         /// <summary>Prompt 16: the battlefield the rush fights its sea boss on.</summary>
         public const string SeaMap = "lighthousebay";
 
-        /// <summary>The rush carried over from the last battlefield (set before the scene is rebuilt, taken up by the next session).</summary>
+        /// <summary>The rush carried over from the last battlefield or a checkpoint (set before the scene is rebuilt, taken up by the next session).</summary>
         internal static BossRushCarry Pending;
+
+        /// <summary>Prompt 20 N: the next Boss Hunt is the full one (every boss in story order), else the week's.</summary>
+        internal static bool Full;
+
+        private readonly bool _full = Full;
+        private int _week;
+        private IReadOnlyList<string> _roster;
+        private int _checkpointsSaved;
+        private MatchOutcome _outcome;
 
         /// <summary>Where the rush must go before its next boss, or null.</summary>
         public BossRushCarry SwitchTo => _mode?.SwitchTo;
 
+        /// <summary>This run is the full hunt.</summary>
+        public bool IsFull => _full;
+
+        private string Key => _full ? BossHunts.FullKey : BossHunts.WeeklyKey;
+
         public override HudSpec Hud => new() { Mode = HudMode.Mission };
-        public override string Kicker => Strings.Get("mode.bossrush.kicker");
-        public override string Subtitle => Strings.Get("mode.bossrush.sub");
+        public override string Kicker => Strings.Get(_full ? "hunt.full.kicker" : "mode.bossrush.kicker");
+        public override string Subtitle => Strings.Get(_full ? "hunt.full.sub" : "mode.bossrush.sub");
         public override string StartToast => Strings.Get("mode.bossrush.toast");
 
         protected override void Build(SimWorld world, int seed)
@@ -851,12 +865,18 @@ namespace MachineBrigade.Game.Match
             var player = PlayerSide(40f, Difficulty switch { AiDifficulty.VeryHard => 1.6f, AiDifficulty.Hard => 1.75f, _ => 2f });
             player.ArmyCap = 36;
             player.Bank = 45f;
-            // One boss of each kind, which variant drawn by the battle's seed.
-            // The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
+            // Prompt 20 N: the week's hunt (3 main and 7 mini bosses drawn by the week, stronger down the run, 45 minutes)
+            // or the full hunt (every boss in story order, no clock); a 20 s rest that repairs 30 % of the army, a support
+            // after each main boss, checkpoints. The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
+            _week = WeeklyFortress.Week;
+            _roster = _full ? BossHunts.Full : BossHunts.Weekly(_week);
             _mode = new BossRushMode(new BossRushRules
             {
-                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = BossRushRules.Roster(seed, Campaign.BossEnabled),
+                Player = player, Bounty = 12f, StepBounty = 8f, Bosses = _roster,
                 SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
+                Checkpoints = _full ? HuntCheckpoints.EveryBoss : HuntCheckpoints.MainBosses, Supports = true,
+                Seed = _full ? BossHunts.FullSeed : _week, Ramp = !_full, RestRepair = 0.3f, Breather = 20f,
+                TimeLimit = _full ? float.MaxValue : BossHunts.WeeklyMinutes * 60f,
             });
             Pending = null;
             Mode = _mode;
@@ -884,22 +904,103 @@ namespace MachineBrigade.Game.Match
         {
             hud.SetStats(0, 0, 0, 0f, fps);
             scratch.Clear();
-            hud.SetMission(Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}", _mode.Defeated / (float)_mode.Total,
-                _mode.SecondsLeft(world), scratch);
+            var detail = $"{_mode.Defeated} / {_mode.Total}";
+            // The full hunt has no clock: its total time (the leaderboard's) instead.
+            if (_full) detail += "  ·  " + Clock(_mode.TotalSeconds(world));
+            hud.SetMission(Strings.Get("mode.bossrush.goal"), detail, _mode.Defeated / (float)_mode.Total, _full ? -1f : _mode.SecondsLeft(world), scratch);
             if (world.TryGetVehicle(_mode.Boss, out var boss) && boss.IsAlive) ShowBoss(hud, boss, world: world);
             else hud.SetBoss(null, 0f);
+            // Prompt 20 N/O.4: the rest between bosses, the support pick after a main boss, the checkpoint kept.
+            var rest = _mode.RestLeft(world);
+            hud.SetHuntRest(rest >= 0f ? Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)) : null, rest,
+                _mode.Next is { } next ? Strings.Format("hunt.next", Strings.Card(next)) : null, HeldLine());
+            ShowSupportPick(hud, world, rest);
+            if (KeepCheckpoint()) hud.Toast(Strings.Get("hunt.checkpointToast"));
         }
+
+        /// <summary>Saves the run's newest checkpoint once (each frame, and before a switch of battlefield); true when one was saved.</summary>
+        public bool KeepCheckpoint()
+        {
+            if (_mode == null || _mode.CheckpointsTaken == _checkpointsSaved || _mode.Checkpoint is not { } checkpoint) return false;
+            _checkpointsSaved = _mode.CheckpointsTaken;
+            PlayerProfile.SaveHuntCheckpoint(Key, _week, _roster, checkpoint);
+            return true;
+        }
+
+        private string HeldLine()
+        {
+            if (_mode.Held.Count == 0) return null;
+            var names = new List<string>();
+            foreach (var id in _mode.Held) names.Add(Strings.Get("hunt.support." + id));
+            return Strings.Format("hunt.held", string.Join(", ", names));
+        }
+
+        /// <summary>The pick of one of three supports while an offer is open; the first is taken when the rest ends.</summary>
+        private void ShowSupportPick(BattleHud hud, SimWorld world, float rest)
+        {
+            if (_mode.Offer is not { } offer)
+            {
+                if (hud.SupportPickShown) hud.HideSupportPick();
+                return;
+            }
+            if (!hud.SupportPickShown)
+            {
+                var options = new List<(string, string, string)>();
+                foreach (var id in offer)
+                    options.Add((HuntSupports.Get(id)?.Icon ?? "star", Strings.Get("hunt.support." + id), Strings.Get("hunt.support." + id + ".info")));
+                hud.ShowSupportPick(Strings.Get("hunt.pickTitle"), options, index =>
+                {
+                    if (index < offer.Count) Choose(world, offer[index]);
+                    hud.HideSupportPick();
+                });
+            }
+            hud.SetSupportPickTime(UnityEngine.Mathf.Max(0f, rest));
+        }
+
+        /// <summary>A support picked (recorded with the player's other inputs).</summary>
+        public void Choose(SimWorld world, string id)
+        {
+            if (_mode.Offer == null) return;
+            MatchJournal.Record(world, "support", id);
+            _mode.Choose(world, id);
+        }
+
+        /// <summary>A lost run's way back: its last checkpoint, as saved (with what this sitting paid), or null.</summary>
+        public BossRushCarry ResumeFrom() => _roster == null ? null : PlayerProfile.HuntCheckpoint(Key, _week, _roster);
 
         public override MatchOutcome Outcome(SimWorld world, int kills, int losses)
         {
+            if (_outcome != null) return _outcome;
             if (_mode.Result is not { } result) return null;
-            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get("mode.bossrush") };
+            var outcome = new MatchOutcome { Result = OutcomeOf(result), Subtitle = Strings.Get(_full ? "hunt.full" : "mode.bossrush") };
             AddRows(outcome, world, kills, losses);
             outcome.Rows.Add((Strings.Get("mode.bossrush.goal"), $"{_mode.Defeated} / {_mode.Total}"));
+            var total = _mode.TotalSeconds(world);
+            outcome.Rows.Add((Strings.Get("hunt.time"), Clock(total)));
             outcome.Reward = Rewards.Quick(Difficulty, outcome.Result, kills, (float)world.Time / 60f);
-            // Every boss brought down pays, win or lose.
-            outcome.Reward.Coins += 120 * _mode.Defeated;
-            return outcome;
+            // Every boss brought down pays, win or lose; those paid in an earlier sitting of the run are not paid again.
+            outcome.Reward.Coins += 120 * System.Math.Max(0, _mode.Defeated - _mode.PaidBefore);
+            if (outcome.Result > 0)
+            {
+                PlayerProfile.ClearHuntCheckpoint(Key);
+                if (_full)
+                {
+                    if (PlayerProfile.RecordFullHunt((float)total)) outcome.Rows.Add((Strings.Get("hunt.newBest"), Clock(total)));
+                    if (PlayerProfile.ClaimFullHunt())
+                    {
+                        outcome.Reward.Coins += BossHunts.FullReward;
+                        PlayerProfile.AddCrate(CrateKind.Legendary);
+                        outcome.Rows.Add((Strings.Get("hunt.firstClear"), Strings.Format("hunt.full.reward", Kit.Count(BossHunts.FullReward))));
+                    }
+                }
+                else if (PlayerProfile.ClaimWeekly(_week, "hunt"))
+                {
+                    outcome.Reward.Coins += BossHunts.WeeklyReward;
+                    outcome.Rows.Add((Strings.Get("hunt.firstClear"), $"+{Kit.Count(BossHunts.WeeklyReward)}"));
+                }
+            }
+            else PlayerProfile.HuntPaidUpTo(Key, _mode.Defeated);
+            return _outcome = outcome;
         }
     }
 
@@ -1151,19 +1252,41 @@ namespace MachineBrigade.Game.Match
                     Objective = w => _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null),
                 };
             Configure(world);
-            // Two bosses: a second one from the enemy's camp (the mission's own kind, else a Behemoth).
-            if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair))
-            {
-                var bossId = def.Boss?.Def ?? "behemoth";
-                // Prompt 20 G.6: the second is the mission boss's mini version where it has one.
-                if (world.Catalog.Vehicles.TryGetValue(bossId, out var main) && main.MiniVariant != null) bossId = main.MiniVariant;
-                if (world.Catalog.Vehicles.ContainsKey(bossId)) world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
-            }
+            // Extra mini boss (prompt 20 N.3): one more from the enemy's camp, of the mission's boss rank and chapter.
+            if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair) &&
+                ExtraBossFor(def, world.Catalog) is { } bossId)
+                world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
             // Each stage sets the commanders for its own goal, in the step it begins.
             if (_op != null) _op.StageChanged += _ => Configure(world);
         }
 
         private OperationRun _run;
+
+        /// <summary>
+        /// Prompt 20 N.3: the Operations mutator's extra boss: a mini boss of the mission's boss (a second one when it is a
+        /// mini, its mini version when it is a main boss with one), else the chapter's first mini boss (its general's), else
+        /// the mission's boss itself; null when none exists.
+        /// </summary>
+        internal static string ExtraBossFor(MissionDef def, Catalog catalog)
+        {
+            var id = def.Boss?.Def;
+            if (id == null)
+                foreach (var s in def.Stages)
+                    if (s.Mission.Boss != null)
+                    {
+                        id = s.Mission.Boss.Def;
+                        break;
+                    }
+            if (id != null && catalog.Vehicles.TryGetValue(id, out var boss))
+            {
+                if (boss.MiniBoss) return id;
+                if (boss.MiniVariant != null && catalog.Vehicles.ContainsKey(boss.MiniVariant)) return boss.MiniVariant;
+            }
+            if (Campaign.Chapter(def.Chapter) is { } chapter)
+                foreach (var mini in chapter.Minis)
+                    if (catalog.Vehicles.ContainsKey(mini)) return mini;
+            return id != null && catalog.Vehicles.ContainsKey(id) ? id : null;
+        }
 
         /// <summary>The player's base under the run's mutators: no towers (empty base), no repair bay (no repair).</summary>
         private BaseLoadout MutatedBase(BaseLoadout loadout)

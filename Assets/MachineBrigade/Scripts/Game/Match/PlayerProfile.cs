@@ -118,6 +118,11 @@ namespace MachineBrigade.Game.Match
 
             /// <summary>Chapters whose opening card (the chapter transition) has been shown.</summary>
             public List<int> chaptersSeen = new();
+
+            /// <summary>Prompt 20 N: the Boss Hunts' checkpoints (one a kind), the full hunt's best times and its first-clear pay.</summary>
+            public List<HuntSave> hunts = new();
+            public List<float> fullHuntTimes = new();
+            public bool fullHuntPaid;
         }
 
         /// <summary>A new profile's base at HQ level 5: a mix of all three sizes (anti-air, guns, artillery, watchtowers).</summary>

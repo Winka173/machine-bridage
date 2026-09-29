@@ -104,7 +104,7 @@ namespace MachineBrigade.Tests
 
         /// <summary>A mode's subtitle as the menus show it: Boss Rush's has the number of bosses filled in.</summary>
         private static string ModeSub(GameModeKind kind, string key) =>
-            kind == GameModeKind.BossRush ? Strings.Format(key + "Sub", MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count) : Text(key + "Sub");
+            kind == GameModeKind.BossRush ? Strings.Format(key + "Sub", BossHunts.ThisWeek.Count) : Text(key + "Sub");
 
         [Test]
         public void EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm()

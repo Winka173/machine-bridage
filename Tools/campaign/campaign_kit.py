@@ -68,6 +68,9 @@ POINTS = {
     'hydrodam': {'west': (-40.0, 64.0), 'town': (0, 0), 'east': (36.0, -98.0)},
     'capital': {'west': (-84.0, 100.0), 'town': (0, 0), 'east': (84.0, -100.0)},
     'launchsite': {'west': (-50.0, 80.0), 'town': (0, 0), 'east': (50.0, -80.0)},
+    # Prompt 20 M (DECISIONS 19L): the crusher plant / pit floor / ore loadout, and the west pad / landing field / east pad.
+    'openpit': {'west': (-80.0, 80.0), 'town': (0, 0), 'east': (80.0, -80.0)},
+    'orbitalgate': {'west': (-80.0, 80.0), 'town': (0, 0), 'east': (80.0, -80.0)},
 }
 
 NEW_MAPS = {'landingbeach', 'hydrodam', 'capital', 'launchsite'}
@@ -91,6 +94,8 @@ WEATHER = {
     'capital': {'Night', 'Clear', 'Rain', 'Overcast', 'Fog', 'Storm'},
     'launchsite': {'Clear', 'Sandstorm', 'Overcast', 'Night'},
     'lighthousebay': {'Overcast', 'Clear', 'Fog', 'Rain', 'Storm', 'Night'},
+    'openpit': {'Clear', 'Sandstorm', 'Overcast', 'Night'},
+    'orbitalgate': {'Snow', 'Clear', 'Night', 'Overcast', 'Fog'},
 }
 
 
