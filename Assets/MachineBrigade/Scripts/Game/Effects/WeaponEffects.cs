@@ -190,7 +190,7 @@ namespace MachineBrigade.Game.Effects
                     // It leaves along its tube or rail (a raised SAM box, a tilted rack), then turns onto its target.
                     if (_hasMissile)
                     {
-                        _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
+                        _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),
                             boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
                             plume: Plume.For(weapon, kind, missile, airborne));
                         Veer(e, views, targetId);
@@ -365,8 +365,23 @@ namespace MachineBrigade.Game.Effects
         }
 
         /// <summary>The live aim point of a guided missile (built only for missiles, so other shots allocate nothing).</summary>
-        private static Func<Vector3?> Homing(ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId) =>
-            () => views.TryGet(targetId, out var target) ? target.Position + Vector3.up * (target.Flying ? 0.5f : 1f) : (Vector3?)null;
+        private static Func<Vector3?> Homing(ViewRegistry views, MachineBrigade.Sim.Core.EntityId targetId, Vector3? from = null) =>
+            () => views.TryGet(targetId, out var target) ? HomeOn(target, from) : (Vector3?)null;
+
+        /// <summary>
+        /// Where a guided round flies on its target: its middle, or (Play-test 6, DECISIONS 21F) for one fired straight at a
+        /// big hull (a boss, a big ship, a large aircraft or structure) the point on the hull's edge towards where it was
+        /// launched from, where the simulation bursts it.
+        /// </summary>
+        internal static Vector3 HomeOn(VehicleView target, Vector3? from)
+        {
+            var p = target.Position;
+            var up = target.Flying ? 0.5f : 1f;
+            if (from is not { } f || target.Def == null || target.Root == null) return p + Vector3.up * up;
+            var c = MachineBrigade.Sim.Combat.HullContact.On(target.Def, new System.Numerics.Vector2(p.x, p.z), target.Root.eulerAngles.y * Mathf.Deg2Rad,
+                new System.Numerics.Vector2(f.x, f.z));
+            return new Vector3(c.X, p.y + up, c.Y);
+        }
 
         /// <summary>Where the shot visibly goes: aircraft are hit at their flight height.</summary>
         public static Vector3 AimPoint(in SimEvent e, ViewRegistry views)

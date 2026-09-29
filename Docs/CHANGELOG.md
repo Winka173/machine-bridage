@@ -7,6 +7,24 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 6: combat
+
+- Dogfights end with one jet on the other's tail: the one worse placed out of the merge runs out, jinking, and the
+  other sits behind it streaming its cannon; a jet under 30 % health breaks off and flies away (DECISIONS 21F).
+- A fighter hangs on a helicopter with its cannon until it dies instead of breaking away every 4 s.
+- The attack jet streams a whole magazine through each attack hold instead of circling with its cannon quiet.
+- Missiles and rockets no longer jump in busy fights (the view's pool grows instead of reusing a round in flight);
+  the attack jet's, rocket technical's, scout helicopter's and heavy gunship's rockets and missiles fly 20 % slower.
+- The light tank fires one round at a time; every machine gun streams longer and changes faster; FPV carriers,
+  Shahed launchers and the drone mothership launch drones one after another instead of in waves.
+- Every unit's damage a second +5-10 % by its cost (cheap units most), on the calibre scale: rounds raised within
+  their band, the rest by a quicker rhythm.
+- Missiles fired at a boss, a big ship or a large aircraft or tower burst where they meet its hull (or the part they
+  struck), not in its middle.
+- The Lancet's blast is drawn a fifth bigger, the long-range SAM's burst is bigger (3.6 m, Huge), the drone
+  mothership drops two guided bombs, the C-RAM's gun fires only at incoming rounds, never at aircraft, and the
+  rocket battery, artillery emplacement, Patriot battery, SAM post and coastal turret have no machine gun.
+
 ### Play-test 5: visuals
 
 - Every explosion is layered and grander, by calibre and tier: a white-hot core in the fireball, secondary fire

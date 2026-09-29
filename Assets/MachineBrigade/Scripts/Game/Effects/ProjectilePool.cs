@@ -77,21 +77,36 @@ namespace MachineBrigade.Game.Effects
         {
             var root = new GameObject("Projectiles").transform;
             root.SetParent(parent, false);
-            for (var i = 0; i < capacity; i++)
+            _root = root;
+            for (var i = 0; i < capacity; i++) _shots.Add(NewShot());
+        }
+
+        private readonly Transform _root;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21F): the most shots in flight at once. With every slot busy the pool grows (it
+        /// used to take the next slot anyway, so a missile in mid-flight jumped back to a launcher as another round:
+        /// the jerking missiles of a busy fight, worse since the slower missiles and rockets of 19R and 20W).
+        /// </summary>
+        internal const int MostShots = 512;
+
+        /// <summary>Shots made so far (tests).</summary>
+        internal int Capacity => _shots.Count;
+
+        private Shot NewShot()
+        {
+            var go = new GameObject("Projectile");
+            go.transform.SetParent(_root, false);
+            var shot = new Shot
             {
-                var go = new GameObject("Projectile");
-                go.transform.SetParent(root, false);
-                var shot = new Shot
-                {
-                    Transform = go.transform,
-                    Filter = go.AddComponent<MeshFilter>(),
-                    Renderer = go.AddComponent<MeshRenderer>(),
-                };
-                shot.Renderer.shadowCastingMode = ShadowCastingMode.Off;
-                shot.Renderer.receiveShadows = false;
-                go.SetActive(false);
-                _shots.Add(shot);
-            }
+                Transform = go.transform,
+                Filter = go.AddComponent<MeshFilter>(),
+                Renderer = go.AddComponent<MeshRenderer>(),
+            };
+            shot.Renderer.shadowCastingMode = ShadowCastingMode.Off;
+            shot.Renderer.receiveShadows = false;
+            go.SetActive(false);
+            return shot;
         }
 
         /// <param name="homing">Current aim point of a guided missile, or null once its target is gone.</param>
@@ -123,6 +138,12 @@ namespace MachineBrigade.Game.Effects
             {
                 _next = (_next + 1) % _shots.Count;
                 shot = _shots[_next];
+            }
+            if (shot.Active && _shots.Count < MostShots)
+            {
+                // Every slot is busy: a new one, rather than take a round out of the air.
+                shot = NewShot();
+                _shots.Insert(_next, shot);
             }
             _next = (_next + 1) % _shots.Count;
             shot.Filter.sharedMesh = model.Mesh;
@@ -265,7 +286,8 @@ namespace MachineBrigade.Game.Effects
                 if (shot.Homing != null)
                 {
                     var aim = shot.Homing();
-                    if (aim.HasValue) shot.To = Vector3.Lerp(shot.To, aim.Value + shot.Wide * Veering(shot, t), 0.35f);
+                    // Play-test 6 (DECISIONS 21F): eased by the frame's time, not a fixed share a frame (the same line at 30 or 144 fps).
+                    if (aim.HasValue) shot.To = Vector3.Lerp(shot.To, aim.Value + shot.Wide * Veering(shot, t), 1f - Mathf.Exp(-HomingRate * dt));
                 }
                 if (shot.JamAt > 0f && !shot.JamShown && t >= shot.JamAt)
                 {
@@ -305,6 +327,9 @@ namespace MachineBrigade.Game.Effects
                 emitters.Motor(shot.Transform.position - forward * 0.6f, forward, shot.Trail);
             }
         }
+
+        /// <summary>How fast a guided round's aim point follows its target (1/s; the old 0.35 a frame at 30 fps).</summary>
+        private const float HomingRate = 13f;
 
         /// <summary>Share of the flight the boost takes, at full boost.</summary>
         internal const float BoostShare = 0.35f;

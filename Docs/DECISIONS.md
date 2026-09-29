@@ -7869,3 +7869,199 @@ flight on its 19T 3.6 s cooldown), `ModelTests.RoundsLeave` (3), `EveryWeaponMou
 `campaign.json` (`c4m01` unlocks), `CombatSystem.cs`, `MovementSystem.cs`, `DamageSystem.cs`, `TacticalAi.cs`,
 `VehicleView.cs` / `.Deploy.cs`, `EffectsDirector.cs` (two event cases), `Strings.cs`, `GuideText.cs`, `UnitText.cs`,
 `Icons.cs`, `MenuScreen*.cs`, `Progression.cs`, `build_assets.py` and `Docs/art/models.json` (`resolve_merge.py`).
+
+## 21F. Play-test 6, combat: dogfights, cannons that keep firing, straight missiles, rhythms, damage, blasts, towers (2026-09-29)
+
+The owner's play-test 6 items marked [F] (`Docs/prompts/requests_vi.md`), two additions sent during the work (towers
+without a forced machine gun; missiles bursting inside a boss), branch `feature/pt6-combat` from lead/integration
+a864c3f. The calibre scale (13B, CalibreTests' bands), prompt 15's penetration steps, 19R's missile speeds and 20W/20X
+are kept; where a change reaches one of them it says so.
+
+### A. Jets: a dogfight ends with one on the other's tail
+
+**Measured first.** 20W's tail chase works on a jet that does not hunt back (the fighter on an attack jet: 37-54 s of
+a minute on its tail). Two fighters told to attack each other never got there: both flew lag pursuit for a point
+behind the other and turned round one circle for the whole minute (0 s on a tail of 60, 38 cannon rounds each).
+
+**Now** (`MovementSystem.Dogfight`, `Vehicle.Defending`, `Vehicle.BreakingOff`):
+- **Roles out of the merge.** When the enemy jet hunts it too (its target, cannon reaching aircraft) and it is within
+  2.2 x its guns' reach, the jet worse placed (the enemy further astern of it than it is of the enemy, by 0.25 on the
+  cosine; level, the later spawned) **defends**: it runs out, bending away from the enemy and weaving, at 82 % power
+  (the jinking costs speed, so the chaser closes to its cannon's reach). It turns in again past 2.6 x reach or when the
+  enemy slips in front of it (an overshoot). Never decided head-on, where both fire.
+- **The chaser holds on:** inside the jet's rear cone and 1.4 x reach it turns 1.3 x quicker with it, and it is not
+  sent back to the middle by the map-edge rule while it chases (it lost the tail there; the jet ahead turns back itself).
+- **Breaking off:** under 30 % of its health a jet in a dogfight breaks off: it flies away from the enemy jet at full
+  power and chases it no more (the tactical AI's refit, at 35 %, then takes an AI jet home; this covers the player's).
+- **On a helicopter** (a hold, 12F): with its cannon on an aircraft and no flak about, the hold is renewed while the
+  target stays in reach: a VTOL fighter hovers on it until it dies; the stealth fighter crawls on and passes only when
+  over it. Under flak it still breaks away.
+
+**After:** the two fighters: one on the other's tail 42 s of 60 (22 + 20, runs of 20 s and more), 314 cannon rounds;
+the fighter on a helicopter 277 rounds in 40 s (124).
+
+### B. Aircraft whose weapon is an autocannon keep firing
+
+- **The attack jet** (its main weapon is its cannon): an attack hold lasts a whole magazine's stream (5.6 s; the data's
+  3.8 before), and its cannon leads through the hold (`CombatSystem.Leads`: a jet in a hold streams its hull cannon on,
+  as on a tail): 263 cannon rounds in 40 s on a ground target (210). A fighter in a hold on a helicopter streams too,
+  its air-to-air missiles beside the stream (20W's rule for a jet on a tail). The attack jet's rockets, bombs and
+  missiles still take their turns round the stream (with them fired beside it as well it measured +26 % combat value,
+  without +17 %).
+- **The anti-air vehicles** were measured, not changed: they stream at what comes into reach (the ZU-23 142 rounds,
+  the gun-missile system 197 on an attack jet diving at them in 40 s); nothing of theirs orbits.
+- **The heavy gunship** (`gsh30k`, 145 rounds in 40 s) and the sky gunship (its pylon turn) already fire all the time.
+- **Not changed: the attack helicopter.** Its main weapon is its missile: it holds at its Hellfires' 52 m (the Ka-52
+  standoff) with its 26 m gun silent, which `AirAttackTests.AnAttackHelicopterComesIn...` has failed on since the
+  standoff came in. Letting it come in to its gun when no anti-aircraft gun or missile covers the spot was built and
+  measured: +65 % combat value (light and tank groups doubled, the 4-minute mixed run -64 %). It is left for the owner:
+  it is firing, not circling.
+
+### C. Missiles
+
+**Slower** (20 % again; `MissileFlightTests` and `PlayTest5Tests` pin them): the attack jet's `s8_pods` 36 → 28.8,
+`kh29` 17.25 → 13.8, `r60` 18 → 14.4; the rocket technical's `technical_rockets` 48 → 38.4; the scout helicopter's
+`scout_rockets` 48 → 38.4; the heavy gunship's `gunship_rockets` 48 → 38.4 (the mega gunship boss fires the same row)
+and `heli_atgm` 21 → 16.8. Every flight stays under its cooldown.
+
+**The jerking missiles: the cause was in the view.** The guidance was measured frame by frame (a Hellfire on a
+target crossing at 8 m/s, 30, 60 and 144 fps with the frame time varying ±20 %): a smooth line, the nose never
+wagging. The jerk was `ProjectilePool`: 96 models for every missile, rocket, drone, bomb and modelled shell in the air,
+and with all of them busy a launch took the next slot anyway, so a round in mid-flight vanished and reappeared at a
+launcher as another. Since 19R and 20W slowed the missiles and rockets (a 24 m/s rocket flies 2-6 s; one Smerch salvo
+keeps 11 up for 6 s, a Hind 38 rockets), busy fights run out. **Now** the pool grows (to 512) instead of taking a
+round out of the air. The homing's ease is by time (`1 - e^(-13 dt)`, the old 0.35 a frame at 30 fps) instead of a
+fixed share a frame (four times quicker at 144 fps). Tests: `PlayTest6FlightTests`.
+
+**Missiles burst on a big target's hull** (the owner's addition: they flew into the Matriarch's middle). The simulation
+aimed a guided round at the target's middle and burst it there. **Now** (`HullContact`) a round fired straight at a big
+target (a boss, or a hull 4 m or more from its middle to its edge: big ships, large aircraft, the large towers) bursts
+where the line from its launch point to the middle crosses the hull's footprint (the data's length and width: a
+capsule along the heading), or, aimed at a boss's part, on that part's hitbox towards the shooter; the blast and its
+splash are centred there. Rounds that come down from above (lobbed, dropped, diving drones, top attacks) still burst
+on the roof. The damage and the face struck are as before: the face is the one turned to the shooter, and the contact
+point lies on that line, so it is the contact point's face. The view flies a guided missile onto the same point
+(`WeaponEffects.HomeOn`). Test: a SAM at the Matriarch and an ATGM at Leviathan burst within 1 m of the hull or the
+struck part's edge (before, they burst in the middle: 12 and 6 m inside).
+
+### D. Rhythms
+
+- **The light tank** (`gun_57mm`): one round every 2.53 s (a pair 0.5 s apart every 5.06 s), the damage a second kept,
+  then E's +10 % on the round (70 → 77).
+- **Machine guns** (every `mg` row but the bosses' `boss_minigun` and `boss_hmg`, left to the boss pass): a magazine
+  15 % longer and a change 15 % shorter, less where the change is most of the cycle so that none gains more than about
+  12 % a second: `mg_jeep` 25 → 28 rounds, 2.23 → 1.94 s; `mg_coax` 36 → 41, 1.87 → 1.59; `hmg_roof` 25 → 28, 2.32 →
+  2.02; `minigun` 60 → 64, 5.17 → 4.81; `door_gun` 40 → 46; `tower_hmg`, `bunker_hmg(_twin)`, `mg_coax_ground`,
+  `bomber_tail_guns` alike. +5-12 % a second: the machine guns' share of E.
+- **Drones, steadily:** the FPV carrier, the Shahed launcher and the drone mothership launch one drone at a time.
+  The rate was first the old average (a salvo's cycle over its drones), but single drones waste none on a target
+  already dying and the mothership's stores come back over the field, so it measured the Shahed +48 %, the FPV carrier
+  +23 % and the mothership +73 %; decided: `fpv_swarm` one every 2.8 s, 16 then 9 s (four of four, then 16 s),
+  `shahed` one every 8.5 s, 5 then 8.5 s (five, then 30 s), `swarm_drones` one every 3.3 s (eight at once, 12 s).
+  An aircraft's drone bay lets its drones go whichever way it faces (they fly to their own targets), and each single
+  drone of a swarm still picks its own target round the aim (`SwarmTarget`, which before served a salvo's later
+  drones only), not one of the last two it sent. The Lancet was already one at a time; the drone hangars (towers) and
+  the bosses' drones are unchanged.
+
+### E. Damage +5-10 % by vehicle, on the calibre scale
+
+**The rule** (applied once to `balance.json`): a card's uplift by its cost, **+10 % up to 4 CP, +7.5 %
+at 5-9, +5 % from 10** (the cheap cards gain most; the aircraft gain through A and B as well); a row several cards
+carry takes their mean, an elite its card's. **Where the calibre band has room and every carrier of that real weapon
+is a card**, the round is raised (to the band's top at most, never past a bigger calibre of its family), for every row
+of that real weapon (`TheSameRealWeaponHitsTheSameOnEveryCarrier`); **the rest, or all of it where a tower or a boss
+shares the round**, goes into the rhythm: a shorter cooldown (a salvo's whole cycle), a launcher's explicit reload
+with it, and for the 5 s autocannons (20W) more rounds in the same 5 s stream at a quicker cadence (the 5 s / 1 s
+rule kept). No band, no penetration step and no damage type moved (`CalibreTests` pass).
+
+| Examples | Round | Rhythm |
+|---|---|---|
+| light tank `gun_57mm` (+10 %) | 70 → 77 | (D) |
+| MBT `gun_120mm` (+7.5 %, bosses share it) | 240 kept | 5.48 → 5.10 s |
+| heavy tank's L7 `gun_105_bunker`, siege tank's `siege_gun_105` | 200 → 212 | 4.6 → 4.54 s |
+| 125 mm rows (`gun_105_long`, `gun_125_elite`, `gun_105_apfsds`) | 250 → 260 (band top) | the rest |
+| `ifv_30`, `twin_30_bmpt` (+7.5 %) | 22 kept (a boss's 2A42) | 24 → 26 rounds in 5 s |
+| `flak_35`, `twin_35_ahead` (+10 %) | 25 → 26 (band top) | 21 → 22, 23 → 24 rounds |
+| `zu23` (+10 %) | 14 → 15 | 56 → 57 rounds |
+| `jet_cannon`, `gsh30k` (+5 %) | 22 → 23 | |
+| `fighter_cannon` (+5 %) | 17 → 18 | |
+| Hellfires (`heli_atgm`, `hellfire_*`, `drone_missile`) | 250 → 260 | |
+| air-to-air (`air_to_air`, `wvr_aam`, `r60`, `stinger_atas`, `aim9`) | +5-7.5 % | |
+| rockets 70 / 80 / 107 / 227 (elite) / 300 mm | 28 → 30, 32 kept (a boss's), 45 → 49.5, 100 → 105, 140 → 145 | the rest |
+| bombs 110 / 250 / 500 kg, the stealth bomber's, the car bomb | 200 → 210, 300 → 310, 400 → 420, 850 → 892, 700 → 770 | |
+| howitzers, the MLRS, Grad, TOS, mortars, the Lancet and FPV rows (a tower's round too) | kept | 7.5-10 % quicker |
+| the mine layer's mines | 450 → 484 | |
+
+**Shared rows:** the towers and bosses that fire a card's row take its new rhythm: `autocannon_30` (Daedalus, Kronos),
+`gun_120mm` (Behemoth, Silver Bug, Moloch), `sam` (the AA tower), `gunship_rockets` (the mega gunship),
+`gunship_105/40mm/25mm` and `griffin` (the sky fortress); the machine guns' change is every tower's as well. For the
+boss pass (G): these bosses are already 5-7.5 % up. Not changed: bosses' and towers' own rows, naval units, escorts,
+strikes and blasts.
+
+### F. Blasts, weapons and towers
+
+- **The Lancet** has no blast in the simulation (a shaped charge on what it hits): its blast is drawn a fifth bigger
+  (`impactScale` 1.2).
+- **The long-range SAM**: measured, the S-400's round already had a 3 m blast and a Large burst against the SAM
+  launcher's 2 m and Medium; the owner still found it small (it bursts round aircraft far off, often the ceiling-high
+  jets). Decided: 3 → 3.6 m and Huge (the view's air burst x1.8 against x1.35).
+- **The drone mothership** gets two guided bombs a load (`guided_bomb`, the GBU-39 the strike drone and the stealth
+  fighter carry), dropped from its drone bay (its model has only `Muzzle_drone`, so the mount uses that slot). Guide
+  and card note in both languages.
+- **The C-RAM's gun fires only at incoming rounds**: `c_ram_gatling` is `interceptOnly` (`WeaponDef.InterceptOnly`: it
+  takes no target on either layer), so it never lays on an aircraft or a vehicle; its bursts at rockets, missiles,
+  shells and drones (the APS, 20W) are as before, both branches. The tower fit no longer counts it as anti-air. The
+  Iron Dome branch keeps its Tamirs.
+- **Towers keep a machine gun only where the real one has one** (the owner's addition): removed from the rocket
+  battery, the artillery emplacement, the Patriot battery, the SAM post branch and the coastal turret (and its coastal
+  branch, which inherits it). Kept: the MG bunker, the guard tower, the steel fortress's turrets, the gun turret (a
+  tank-gun turret has its coaxial gun), the HQ and the spawn bastion. No test asks a tower for two weapons (checked);
+  `TowerGearTests`' three failures are the same on the lead's tree (run with this work stashed): sabot rounds need
+  only an armed tower since prompt 15, so they fit the missile battery and the SAM branch. Guides and the SAM branch's
+  line updated in both languages.
+
+### G. Measured
+
+`CombatValueMeasure` (one seed, 13, before on the lead's tree and after; `Docs/balance/combat_value_pt6_*`):
+the median cell **+0.9 %** (322 cells over 20 points), the ground median +1.2 %; 113 cells moved more than 10 % (one
+seed; the aircraft's 4-minute runs are as noisy as 20W found). Up most: the Shahed launcher +22 %, the attack jet +17 %
+(its full-magazine holds), the strike drone +15 %, the Lancet truck, the armoured bulldozer, the scout jeep and the drone
+mothership +14 %, the FPV carrier +12 %. Down most: the flame tank -16 %, the car bomb -12 %, the IFV -11 %, the twin
+tank -10 % (everything round them hits harder and they gained least). On aircraft: the gun-missile system +31 %, the
+anti-air vehicle -33 %, the SAM launcher -10 %, the fighter -6 %, the stealth fighter +78 % (from 70 points: its
+dogfights); `CounterTests` pass (SAMs beat jets, anti-air beats helicopters, fighters beat helicopters). The first run,
+before the fixes of B and D, is in this section's text.
+
+`ArmourBalanceMeasure` (`Docs/balance/armour_ttk_pt6_*`): fights between units 5-15 % shorter (a battle tank on a battle tank 34.9 → 33.0 s front,
+25.6 → 23.4 flank; two armoured cars on two 15.2 → 13.6; an IFV on a battle tank 36.6 → 31.1; the anti-air vehicle on an
+attack helicopter 25.2 → 20.3), a tower's fire unchanged (towers were not raised, but for their machine guns: the MG
+bunker 19.6 → 18.1); longer only for the FPV carrier on a battle tank, 36.0 → 43.2 s (its active protection takes the
+single drones one by one, where a salvo of four got through).
+
+### H. Tests
+
+New `PlayTest6Tests` (the mutual dogfight, the break-off, the fighter on a helicopter, the attack jet's and the heavy
+gunship's cannons, the standoff helicopter out of flak, the C-RAM never on aircraft and still on rockets, the missile
+at the Matriarch and at Leviathan, the new data) and `PlayTest6FlightTests` (the straight line frame by frame, the pool
+growing). Updated for the intended changes: `AirAttackTests` (the fighter on a helicopter holds on instead of looping;
+renamed), `PlayTest5Tests` and `MissileFlightTests` (the new speeds), `Prompt17ContentTests` (the mothership's drones one
+at a time), `AbilityTests.JammerMakesGuidedMissilesMiss` (its target holds fire so the carrier lives to launch singles),
+`WeaponRhythmTests.MainGunAndMachineGunTakeTurns` (30 s for the longer streams). Run: those, `CounterTests`, `CalibreTests`, `TowerGearTests`,
+`TowerRosterTests`, `InActionTests`, `ContentTests`, `LocalisationScanTests`, `RosterRoleTests`, `RosterBalanceTests`,
+`ApsTests`, `AircraftTests`, `AirRealismTests`, `AirMotionTests`, `TowerBranchTests`, `CounterBuyTests`, `BlastSizeTests`,
+`ModelTests`, `MuzzleTests`, `FlashTests`, `BigAttackTests`, `Prompt16NavalTests`, `Prompt20BossTests`, `SiegeModeTests`,
+`AiReviewTests`, `CombatTests`, `ArmourTests`, `BossPartsTests`, and the two measures.
+**Failing, already on lead** (each checked on the lead's tree, this work stashed) and not touched:
+`AirAttackTests.AnAttackHelicopterComesIn...`, `AirRealismTests.TheGunshipCirclesItsTargetWithItOnTheLeft...`,
+`AiReviewTests.FortressBuildingsPayABounty...` and `...TheLosingSideIsReinforcedFaster...`, `BossPartsTests.ABrokenPart
+HurtsTheBodyByAThirdOfIt` and `...ShootersGoForThePartMostDangerousToThem`, `GearModelTests.AnOldSaveMigrates...`,
+`MissileFlightTests` on the tower `sam_battery_lrr`, `ModelTests.EveryWeaponMountHasAMuzzle...` (mobile_fortress) and
+`...RoundsLeaveFromTheLaunchersOnBothSides` (3), `Prompt16NavalTests.LeviathanSailsWithItsFleet...` and
+`...TheSeaLanesAreInReachAsDesigned`, `RosterRoleTests.TheRadarRevealsGunsThatFire...`, `TowerGearTests` (3, above).
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (about 90 weapon rows, `swarm_carrier`, `mine_layer`, five tower rows), `MovementSystem.cs`,
+`CombatSystem.cs` / `.P17.cs`, `DamageSystem.cs`, the new `HullContact.cs`, `Definitions.cs`, `Catalog.cs`,
+`Vehicle.P17.cs`, `WeaponState.cs`, `ProjectilePool.cs`, `WeaponEffects.cs`, `GuideText.cs`, `Strings.cs`, and the tests
+above.

@@ -122,7 +122,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Layers this weapon can engage: ground vehicles, aircraft or both.</summary>
         public TargetLayers Targets { get; }
 
-        public bool CanTarget(bool flying) => (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
+        public bool CanTarget(bool flying) => !InterceptOnly && (Targets & (flying ? TargetLayers.Air : TargetLayers.Ground)) != 0;
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21F): a point-defence gun (the C-RAM's) that fires only at incoming rounds (its
+        /// <see cref="ApsDef"/> bursts): it never takes a vehicle or an aircraft as a target.
+        /// </summary>
+        public bool InterceptOnly { get; internal set; }
 
         /// <summary>A railgun slug: it goes through everything on its line and hurts all of it.</summary>
         public bool Pierce { get; internal set; }
@@ -250,6 +256,7 @@ namespace MachineBrigade.Sim.Content
                 Reload = reload,
                 Load = Load,
                 ImpactScale = ImpactScale,
+                InterceptOnly = InterceptOnly,
                 Cluster = cluster,
                 Pierce = Pierce,
                 Beam = Beam,

@@ -476,7 +476,14 @@ namespace MachineBrigade.Sim.Combat
                 if (machineGun) scale *= _world.Gear.MachineGunRound(v);
                 else extra = _world.Gear.ExtraRounds(v, weapon, out perRound);
             }
-            Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
+            // Play-test 6 (DECISIONS 21F): a swarm's drones go one at a time now; each still picks its own target round the aim.
+            if (weapon.SwarmReach > 0f && weapon.Burst <= 1 && !IsFlying(target) && SwarmTarget(v, weapon, target.Position, state) is { } own)
+            {
+                state.SwarmBefore = state.SwarmLast;
+                state.SwarmLast = own.Id;
+                Launch(v, index, own.Position, own.Id, false, scale * perRound, true, own);
+            }
+            else Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
             if (machineGun)
             {
                 // A run of fire, then a pause while the gunner re-lays (its damage rides on the rounds).
@@ -686,12 +693,20 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         private static bool AirMissileBesideFlak(Vehicle v, int index) =>
             v.Arms[index].Projectile == ProjectileKind.Missile && v.Arms[index].Targets == TargetLayers.Air &&
-            (v.Def.FixedWing ? v.OnTail : index > 0 && Leads(v, 0) && IsAntiAir(v.Arms[0]));
+            (v.Def.FixedWing ? v.OnTail || (v.InAttackHold && HoldGun(v) >= 0) : index > 0 && Leads(v, 0) && IsAntiAir(v.Arms[0]));
 
         private static bool Leads(Vehicle v, int index) => v.Def.FixedWing
             // Play-test 5 (DECISIONS 20W): a jet on an enemy jet's tail streams its cannon on; the missiles fit round it.
-            ? v.OnTail && index == Movement.MovementSystem.TailGun(v, flying: true)
+            // Play-test 6 (DECISIONS 21F): so does one in an attack hold (a whole magazine on what it hangs on).
+            ? (v.OnTail && index == Movement.MovementSystem.TailGun(v, flying: true)) || (v.InAttackHold && index == HoldGun(v))
             : index == 0 && v.Arms[index].Clip > 0;
+
+        /// <summary>The hull cannon an aeroplane streams in an attack hold (its air-to-air one first), or -1.</summary>
+        private static int HoldGun(Vehicle v)
+        {
+            var gun = Movement.MovementSystem.TailGun(v, flying: true);
+            return gun >= 0 ? gun : Movement.MovementSystem.TailGun(v, flying: false);
+        }
 
         /// <summary>A heavy weapon (not a gun) could fire now or is about to: loaded, its target alive and lined up.</summary>
         private bool HeavyReady(Vehicle v, int except)
@@ -789,6 +804,9 @@ namespace MachineBrigade.Sim.Combat
                 MountAim.Free or MountAim.Left or MountAim.Right => FreeTolerance,
                 _ => HullTolerance,
             };
+            // Play-test 6 (DECISIONS 21F): an aircraft's drone bay lets its drones go whichever way it faces (they fly to their
+            // own targets), so the mothership releases them one after another all through its pass, not only nose-on.
+            if (v.Flying && v.Arms[index].Projectile == ProjectileKind.Drone) return true;
             return MathF.Abs(SimMath.WrapAngle(desired - v.MountHeading(index))) <= tolerance;
         }
 

@@ -114,9 +114,10 @@ namespace MachineBrigade.Tests
             var sam = w["sam"].ProjectileSpeed;
             foreach (var id in new[] { "thermobaric_rockets", "rockets_300mm", "turret_rockets", "turret_rockets_cluster", "turret_thermobaric", "turret_gmlrs" })
                 Assert.AreEqual(sam, w[id].ProjectileSpeed, 1e-3f, id + " at the SAM's speed");
-            Assert.AreEqual(36f, w["s8_pods"].ProjectileSpeed, 1e-3f, "the attack jet's rockets 25 % slower");
-            Assert.AreEqual(17.25f, w["kh29"].ProjectileSpeed, 1e-3f);
-            Assert.AreEqual(18f, w["r60"].ProjectileSpeed, 1e-3f);
+            // Play-test 6 (DECISIONS 21F): the attack jet's rockets and missiles another 20 % slower (36, 17.25 and 18 here).
+            Assert.AreEqual(28.8f, w["s8_pods"].ProjectileSpeed, 1e-3f, "the attack jet's rockets slower");
+            Assert.AreEqual(13.8f, w["kh29"].ProjectileSpeed, 1e-3f);
+            Assert.AreEqual(14.4f, w["r60"].ProjectileSpeed, 1e-3f);
             Assert.AreEqual(15.6f, w["mothership_drones"].ProjectileSpeed, 1e-3f, "the mothership's drones 40 % slower");
         }
 
