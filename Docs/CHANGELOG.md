@@ -7,6 +7,12 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+Nothing yet.
+
+## v0.29.0: Prompts 15-18 (armour and penetration, the sea and escorts for every boss, long maps and new units, the roster review, big attacks) and the 187-page design review
+
+2026-09-29 · merged into main
+
 ### Prompt 15 (battle rules): armour levels, penetration, six damage types
 
 - Every unit has armour 0-4 on its front, sides, rear and roof (towers, buildings and aircraft the same all round,
@@ -101,7 +107,7 @@ its commits.
 - The boss's Guide tab explains its big attack: what it does, how to get out of it, how to stop it, whom it is for.
 - By difficulty: Easy hits softer, less often, with a second more warning; Hard and Very Hard come round sooner.
 
-<details><summary>28 commits</summary>
+<details><summary>29 commits</summary>
 
 - `5f808c8` 2026-09-29 Design document: section 20, a picture library (every vehicle, elite, boss, tower and module rendered large, in-battle shots, effect sheets, model and terrain sheets, stuck heatmaps)
 - `cd90e57` 2026-09-29 Prompt 15 D: the armour and weapon icon set drawn from scratch (57 icons: 15 armour, 30 weapon forms, 6 damage and thermobaric marks, 3 extra marks, 3 verdicts), fills, holes and dashes in the icon renderer, CombatFacts and KitCombat, the row on deck, collection and tower cards, the show-numbers setting
@@ -126,13 +132,18 @@ its commits.
 - `d652c02` 2026-09-29 Prompt 16 E+F: old bosses' new weapons as parts, one escort system for every boss, health retuned from the kill-time lab, DECISIONS 15B
 - `f0ca969` 2026-09-29 Drop a stray draft and two Unity-generated music metas from the prompt 16 commit
 - `1551778` 2026-09-29 Prompt 17 C: the eight new units and towers finished: temporary models, texts, Guide cards and Behaviour lines, icons, dome and deploy views, In-action scenes, campaign unlocks, behaviour tests, DECISIONS 16C, CHANGELOG, ASSET_DEBT
-- `6cc22cd` 2026-09-29 Save the owner's spec prompts 8-18, 20 and 21 in Docs/prompts
 - `8d6a1a3` 2026-09-29 Prompt 17 A-B: the sim, views and Base screen on long battlefields; layered-base slots, labels and plans; DECISIONS 16A
-- `a11f490` 2026-09-29 Save the owner's prompt 19 (the Silver Bug as an orbital spacecraft), on hold like 20 and 21
 - `8833077` 2026-09-29 Prompt 16 B-D, G: Leviathan and its fleet at sea, chapter 4's epilogue, Boss Rush's sea switch, two mutators, Low water
-- `9d0fffe` 2026-09-29 Save the owner's prompts 22 (story, names, Commander system) and 23 (mission events, text dialogue), on hold
+- `f974235` 2026-09-29 Prompt 17 D: roster review, merges and save migration; C.9 costs from the measure
+- `15ab08f` 2026-09-29 Prompt 18: a telegraphed, interruptible big attack for every boss, three new boss parts
+- `ba24e8d` 2026-09-29 Card renders for the prompt 17 units and towers, Leviathan, and the five bosses rebuilt in prompt 16
+- `e993f93` 2026-09-29 Design review PDF: section 7b (Lighthouse Bay and the fleet, escorts, long maps and layered bases, the roster review, every boss's big attack), the damage table on prompt 15's six types and penetration; 187 pages
 
 </details>
+
+## v0.28.4: Docs: prompt 24 saved (on hold)
+
+2026-09-29 · `9a112f5`
 
 ## v0.28.3: Save the owner's prompts 22 (story, names, Commander system) and 23 (mission events, text dialogue), on hold
 
