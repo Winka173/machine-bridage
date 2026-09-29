@@ -45,6 +45,7 @@ namespace MachineBrigade.Sim
             Catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
             Map = map ?? throw new ArgumentNullException(nameof(map));
             Generation = generation;
+            Seed = seed;
             Random = new Random(seed);
             // The map's own rectangle (a long battlefield's is 300 x 480 m, prompt 17).
             Grid = new NavGrid(map.Min, map.Width, map.Length, 2f);
@@ -646,6 +647,8 @@ namespace MachineBrigade.Sim
                 }
                 Bosses.Mix(Mix);
                 Naval.Mix(Mix);
+                // Prompt 23 A.3: the mission's events (their moments, the blackout, the weather's sight).
+                MixEvents(Mix);
                 for (var team = 0; team <= 1; team++)
                     if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
                 return h;
@@ -1131,7 +1134,7 @@ namespace MachineBrigade.Sim
             _thermal.Clear();
             foreach (var spotter in _vehicleList)
             {
-                var reach = spotter.Def.VisionRange * spotter.VisionFactor;
+                var reach = spotter.Def.VisionRange * spotter.VisionFactor * WeatherSight;
                 if (spotter.Team >= 0 && spotter.Team < _teamVision.Length) reach *= _teamVision[spotter.Team];
                 var thermal = 0f;
                 if (spotter.Gear is { } g)
@@ -1171,7 +1174,7 @@ namespace MachineBrigade.Sim
                 }
                 var naval = target.Def.Naval != null && Map.Sea != null;
                 // Prompt 16: whoever holds the lighthouse watches the sea from its lamp.
-                if (naval && Naval.Rules.LighthouseOwner is >= 0 and < 31 && target.Team != Naval.Rules.LighthouseOwner &&
+                if (naval && Naval.Rules.LighthouseOwner is >= 0 and < 31 && target.Team != Naval.Rules.LighthouseOwner && !BlackedOut(Naval.Rules.LighthouseOwner) &&
                     Vector2.Distance(Map.Sea!.Lamp, target.Position) <= LighthouseSight * Naval.Rules.SeaSight + target.Radius)
                     mask |= 1 << Naval.Rules.LighthouseOwner;
                 for (var i = 0; i < _vehicleList.Count; i++)
@@ -1187,7 +1190,8 @@ namespace MachineBrigade.Sim
                     // A guard tower sees stealth and hidden units within its guns' reach.
                     if (spotter.Def.RevealStealth && spotter.Team != target.Team) range = MathF.Max(range, spotter.Def.GunReach + target.Radius);
                     // The Patriot's long-range radar (DECISIONS 19T): the air picture over a wide circle, stealth aircraft too.
-                    if (spotter.Def.RevealAir > 0f && target.Flying && spotter.Team != target.Team && !spotter.Stunned) range = MathF.Max(range, spotter.Def.RevealAir);
+                    if (spotter.Def.RevealAir > 0f && target.Flying && spotter.Team != target.Team && !spotter.Stunned && !BlackedOut(spotter.Team))
+                        range = MathF.Max(range, spotter.Def.RevealAir);
                     // Prompt 16: a ship's tall silhouette shows from further off (its hull's size), less in a sea storm.
                     if (naval) range = (range + target.Radius) * Naval.Rules.SeaSight;
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
@@ -1201,12 +1205,17 @@ namespace MachineBrigade.Sim
                 }
                 // Counter-battery radar: an enemy gun that fired is shown to the radar's side for a while.
                 ref var reveal = ref target.Statuses[(int)StatusKind.Reveal];
-                if (reveal.Until > Time) mask |= reveal.Stacks;
+                var radar = 0;
+                if (reveal.Until > Time) radar |= reveal.Stacks;
                 // A UAV scan: everything under it, stealth and hidden too.
-                mask |= Strikes.ScanMask(target.Position, target.Team);
+                radar |= Strikes.ScanMask(target.Position, target.Team);
                 // A base's radar: anything in the base shows.
                 foreach (var (team, at) in _radarBases)
-                    if (team != target.Team && Vector2.DistanceSquared(at, target.Position) < HomeRadius * HomeRadius) mask |= 1 << team;
+                    if (team != target.Team && Vector2.DistanceSquared(at, target.Position) < HomeRadius * HomeRadius) radar |= 1 << team;
+                // Prompt 23 D.6: a side in an EW blackout gets nothing from its radars and scans, only its own eyes.
+                for (var t = 0; t < _blackoutUntil.Length; t++)
+                    if (Time < _blackoutUntil[t]) radar &= ~(1 << t);
+                mask |= radar;
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }

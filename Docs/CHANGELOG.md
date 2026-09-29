@@ -21,6 +21,36 @@ its commits.
 - Notices at the top edge have an icon by kind (a point, an air raid, a strike, a boss, an elite, the weather...) and
   queue one after another; an elite's arrival has a short notice of its own.
 - Twenty lines that ran past two lines at Large text were shortened.
+### Prompt 23 A-D: mission events, spawn points, reinforcements and the event groups (DECISIONS 23A)
+
+- Mission events are data: a library in campaign.json (`eventLibrary`, built from `Tools/campaign/events.py`) with 18
+  kinds. Each event has a trigger (a time, the mission's progress, the boss's health, the units on the field, another
+  event, the player being outnumbered), a warning, lines and a reward. Missions list theirs in `missionEvents`; part E
+  fills the campaign. Events follow the battle's seed and are part of its fingerprint, so a checkpoint's replay brings
+  them back.
+- Every battlefield has spawn points, worked out from the map. The enemy gets its edges in every direction, rail heads,
+  water landings, landing zones and transport drop points; the allies get the area behind the player, the drop zone and
+  the outposts. Nothing spawns within 45 m of the player's units: another point in the same direction is used instead.
+  Prompt 12's stuck probe from every point on all 72 battlefields found nothing stuck.
+- Reinforcements:
+  - Enemy waves come from 1-4 directions by difficulty, warned 15/10/8/6 s ahead. The mission's general decides what
+    comes: Varga's tanks, Orlov's guns, Kessler's landings and trains, Venn's drones, Wolff's aircraft, Thorne's turned
+    columns, Aurel's drop pods.
+  - Meridian Accord waves come under the allied AI, worth 70/50/30/15 % of an enemy wave's combat value by difficulty.
+    They replace the losing side's free drop and never come on top of it.
+  - Reinforcements have their own cap, outside the army cap.
+- The event groups:
+  - fire support: enemy barrages, air raids and counter-battery fire; Hawk's air strikes and Accord artillery;
+  - the enemy general on the field, in an elite or their own mini boss and with their passive, breaking off at 30 %
+    unless it is their last battle;
+  - timed side objectives: intercept, rescue, protect;
+  - economy: a neutral supply convoy, loot crates, raids on the player's supplies;
+  - logistics and intelligence: supply drops, Nadia's reports, and the EW blackout with its countdown (radar and
+    minimap dark);
+  - a mid-battle mini boss, and Kade's change of plan;
+  - the weather or night turning over 20-30 s, with sight following it.
+- Every notice and line has English and Vietnamese text (`EventText`). Lines go to the in-battle dialogue with their
+  priority.
 
 ## v0.30.0: Prompts 19-22 (the Silver Bug as an orbital spacecraft; twelve chapters in four acts, boss templates, Boss Hunt; the Sandbox and bilingual text; the story rewrite, Commanders, narrative mechanics, new maps and bosses), play-tests 4-8, the boss and mode balance, and the 261-page design review
 

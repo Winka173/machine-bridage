@@ -173,6 +173,9 @@ namespace MachineBrigade.Sim.Strikes
             }
         }
 
+        /// <summary>Prompt 23 D.6: a side sees everything round a spot for a while (Nadia's report), as under a UAV scan.</summary>
+        internal void AddScan(int team, Vector2 at, float radius, float seconds) => _scans.Add(new ScanZone(at, radius, _world.Time + seconds, team));
+
         /// <summary>A vehicle's own smoke dischargers (a skill), announced like a smoke strike.</summary>
         public void AddSmoke(int team, Vector2 at, float radius, float seconds)
         {
