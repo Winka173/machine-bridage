@@ -1,0 +1,96 @@
+{
+    "version": 1,
+    "map": "saltflat",
+    "source": "Data/maps/saltflat_conquest",
+    "sha1": "2d100f8e7416c04d51b9416d2984fbfe39344751",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -99.137,
+        "z": -96.772
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 216.002,
+    "metresHigh": 135.002,
+    "hq": {
+        "x": -121.0,
+        "z": -114.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -138.0,
+            "z": -140.0
+        },
+        {
+            "x": -113.341,
+            "z": -140.0
+        },
+        {
+            "x": -58.396,
+            "z": -127.79
+        },
+        {
+            "x": -36.096,
+            "z": -120.356
+        },
+        {
+            "x": -61.094,
+            "z": -77.502
+        },
+        {
+            "x": -95.031,
+            "z": -38.092
+        },
+        {
+            "x": -138.0,
+            "z": -51.596
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -92.257,
+                "z": -41.313
+            },
+            "dir": {
+                "x": -0.22,
+                "z": -0.976
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -68.686,
+                "z": -68.686
+            },
+            "dir": {
+                "x": -0.707,
+                "z": -0.707
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -48.771,
+                "z": -98.628
+            },
+            "dir": {
+                "x": -0.986,
+                "z": -0.164
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.64,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

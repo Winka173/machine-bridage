@@ -64,22 +64,31 @@ namespace MachineBrigade.Tests
             var world = Field();
             var mortar = world.SpawnVehicle("mortar_carrier", 0, new Vector2(-58f, -58f), 0f);
             mortar.Weapons[0].Ammo = 0;
-            Run(world, 12f);
+            // Three times as fast as its reload in the field (plus the half-second aura tick).
+            Run(world, Sim.Combat.CombatSystem.ReloadSeconds(mortar.Def.Mounts[0].Weapon) / 3f + 1f);
             Assert.AreEqual(mortar.Def.Mounts[0].Weapon.Ammo, mortar.Ammo(0), "back at the rally point the empty mortar reloads its whole magazine three times as fast");
         }
 
         [Test]
-        public void EngineerRepairsAndRearmsNearbyVehicles()
+        public void EngineerRepairsAndTheAmmunitionCarrierRearmsNearbyVehicles()
         {
             var world = Field();
-            var engineer = world.SpawnVehicle("engineer_vehicle", 0, new Vector2(0f, 0f), 0f);
+            world.SpawnVehicle("engineer_vehicle", 0, new Vector2(0f, 0f), 0f);
             var tank = world.SpawnVehicle("siege_tank", 0, new Vector2(8f, 0f), 0f);
             tank.Hp = tank.MaxHp * 0.4f;
             tank.Weapons[0].Ammo = 0;
             Run(world, 10f);
             Assert.Greater(tank.Hp, tank.MaxHp * 0.55f, "the engineer patches up the tank beside it");
-            Assert.Less(tank.Weapons[0].ReloadLeft, Sim.Combat.CombatSystem.ReloadSeconds(tank.Def.Mounts[0].Weapon) - 20f,
-                "and its crew reloads three times as fast beside it");
+            // Prompt 13 F.2: the engineer no longer rearms (the reload runs at its own pace)...
+            var full = Sim.Combat.CombatSystem.ReloadSeconds(tank.Def.Mounts[0].Weapon);
+            Assert.Greater(tank.Weapons[0].ReloadLeft, full - 12f, "the engineer does not reload it");
+            // ...the ammunition carrier does, three times as fast.
+            var carried = Field();
+            carried.SpawnVehicle("ammo_carrier", 0, new Vector2(0f, 0f), 0f);
+            var gun = carried.SpawnVehicle("siege_tank", 0, new Vector2(8f, 0f), 0f);
+            gun.Weapons[0].Ammo = 0;
+            Run(carried, 10f);
+            Assert.Less(gun.Weapons[0].ReloadLeft, full - 20f, "its crew reloads three times as fast beside the carrier");
         }
 
         [Test]

@@ -1,0 +1,89 @@
+{
+    "version": 1,
+    "map": "launchsite",
+    "source": "Data/maps/launchsite_conquest",
+    "sha1": "7d8d345ac5a1f5bd38f8c556bf347d10937199f4",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -100.073,
+        "z": -89.967
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 192.301,
+    "metresHigh": 120.188,
+    "hq": {
+        "x": -122.0,
+        "z": -112.0
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -137.832,
+            "z": -41.847
+        },
+        {
+            "x": -134.949,
+            "z": -67.793
+        },
+        {
+            "x": -127.909,
+            "z": -113.05
+        },
+        {
+            "x": -122.787,
+            "z": -138.658
+        },
+        {
+            "x": -56.87,
+            "z": -130.268
+        },
+        {
+            "x": -58.06,
+            "z": -81.454
+        },
+        {
+            "x": -80.574,
+            "z": -58.94
+        },
+        {
+            "x": -110.325,
+            "z": -46.19
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -73.45,
+                "z": -66.065
+            },
+            "dir": {
+                "x": -0.658,
+                "z": -0.753
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -57.546,
+                "z": -102.554
+            },
+            "dir": {
+                "x": -0.984,
+                "z": -0.179
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.64,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

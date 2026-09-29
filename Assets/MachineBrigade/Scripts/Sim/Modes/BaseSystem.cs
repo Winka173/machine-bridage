@@ -185,7 +185,12 @@ namespace MachineBrigade.Sim.Modes
                     {
                         if (utility++ >= catalog.Base.UtilitySlots(fitted.HqLevel)) continue;
                         var state = new HardpointState(def, i);
-                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1])) state.Tower = fitted.Utilities[utility - 1];
+                        // A module past rank 7 works as its chosen branch (the landing pad's hangar or service, prompt 13 F.1).
+                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1]))
+                        {
+                            var module = fitted.Utilities[utility - 1];
+                            state.Tower = catalog.Vehicles.ContainsKey(fitted.DefFor(module)) ? fitted.DefFor(module) : module;
+                        }
                         b.Slots.Add(state);
                         continue;
                     }
@@ -233,7 +238,7 @@ namespace MachineBrigade.Sim.Modes
                 var id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
                 // An undermanned fortress (an easier one) leaves some tower hardpoints of its outer rings empty, spread evenly.
                 if (def.Kind == HardpointKind.Tower && ring < 3 && manning < 1f && Unmanned(i, manning)) id = null;
-                if (id != null && def.Kind == HardpointKind.Tower && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);
+                if (id != null && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);
                 if (id != null && catalog.Vehicles.ContainsKey(id)) state.Tower = id;
                 b.Slots.Add(state);
             }

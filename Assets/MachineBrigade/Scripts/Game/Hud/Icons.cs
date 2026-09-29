@@ -40,6 +40,8 @@ namespace MachineBrigade.Game.Hud
             ["attack"] = "<path d=\"M20 4 9 15M20 4h-5M20 4v5M7 13l4 4M4 20l4-4\"/>",
             // Machine Brigade additions in the same style.
             ["plus"] = "<path d=\"M12 5v14M5 12h14\"/>",
+            // The compact HUD's Auto buy (prompt 11 A2): a cart.
+            ["cart"] = "<path d=\"M2 4h3l2.5 11h11L21 7H6\"/><circle cx=\"9\" cy=\"19\" r=\"1.6\"/><circle cx=\"17\" cy=\"19\" r=\"1.6\"/>",
             // Weapons: a gun on its mantlet, a belt of rounds.
             ["cannon"] = "<path d=\"M3 18h8a3 3 0 0 0 0-6H3Z\"/><path d=\"M12 14h7M19 12.5v3M21 13v2\"/>",
             ["mg"] = "<path d=\"M4 20v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Z\"/><path d=\"M4 15h4m2 0h4m2 0h4\"/>",
@@ -164,6 +166,56 @@ namespace MachineBrigade.Game.Hud
             // The headquarters (a command post with its flag) and a utility module (a chip).
             ["hq"] = "<path d=\"M3 21h18M5 21v-9l7-5 7 5v9M10 21v-5h4v5M12 7V2l5 2-5 2\"/>",
             ["module"] = "<rect x=\"6\" y=\"6\" width=\"12\" height=\"12\" rx=\"1\"/><rect x=\"10\" y=\"10\" width=\"4\" height=\"4\"/><path d=\"M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4\"/>",
+            // Towers and structures (prompt 14 I): their own set, never a vehicle's icon. TowerIcons maps ids to them;
+            // most stand on a ground line, so they read as built, not driven. The 3D renders (CardArt) stay for cards and panels.
+            // Guard tower: cabin on splayed legs, pointed roof, a gun.
+            ["t_guard"] = "<path d=\"M4 21h16M8 21l1.5-10M16 21l-1.5-10M9 16h6M7 11h10V7H7ZM5.5 7 12 3l6.5 4M17 9h4\"/>",
+            // MG bunker: a domed pillbox, its firing slit and barrel.
+            ["t_mg"] = "<path d=\"M2 20h20M4 20v-3.5c0-3.6 3.6-6.5 8-6.5s8 2.9 8 6.5V20\"/><rect x=\"7\" y=\"13.6\" width=\"7\" height=\"2.6\" rx=\"1.3\"/><path d=\"M14 14.9h8\"/>",
+            // AA tower: twin flak barrels over a sandbag wall.
+            ["t_aa"] = "<path d=\"M2 21h20M2 21v-2.5a2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0 2 2 0 0 1 4 0V21M9 16.5V13h6v3.5M10.5 13l5-8.5M14 13l5-8.5\"/>",
+            // EW tower: a lattice mast between two zigzags of noise.
+            ["t_ew"] = "<path d=\"M5 21h14M8.5 21 12 4l3.5 17M9.6 15.5h4.8M10.6 10.5h2.8M8.5 6.5h7M3.5 7 2 9l1.5 2L2 13M20.5 7 22 9l-1.5 2 1.5 2\"/>",
+            // Dragon's teeth: three concrete pyramids.
+            ["t_teeth"] = "<path d=\"M1 20h22M2 20l3-8.5 3 8.5M5 11.5 6 20M9 20l3-12 3 12M12 8l1 12M16 20l3-8.5 3 8.5M19 11.5l1 8.5\"/>",
+            // Minefield: a warning sign on a post, two mines.
+            ["t_mines"] = "<path d=\"M2 21h20M6 21V11M6 3l4.5 8h-9ZM11 21a3.5 3.5 0 0 1 7 0M15.5 15a2.8 2.8 0 0 1 5.6 0Z\"/>",
+            // Gun turret: an armoured turret on a concrete plinth, its muzzle brake.
+            ["t_gun"] = "<path d=\"M3 21l1.5-5h15l1.5 5ZM6 16v-3l2-3h5l2 3v3M15 12.5h6M21 11v3\"/>",
+            // ATGM tower: a launch tube on a tripod, its missile away.
+            ["t_atgm"] = "<path d=\"M4 21h16M11 13v8M7 21l4-4 4 4M3 12.5l11-4.5 1.2 3L4.2 15.5ZM17 7l4.5-1.8\"/>",
+            // Rocket turret: a rocket pod, face on, on its pedestal.
+            ["t_rockets"] = "<path d=\"M4 21h16M8 21l2-4h4l2 4M12 17v-3\"/><rect x=\"4\" y=\"4\" width=\"16\" height=\"10\" rx=\"1.5\"/><circle cx=\"8\" cy=\"7.2\" r=\".5\"/><circle cx=\"12\" cy=\"7.2\" r=\".5\"/><circle cx=\"16\" cy=\"7.2\" r=\".5\"/><circle cx=\"8\" cy=\"10.8\" r=\".5\"/><circle cx=\"12\" cy=\"10.8\" r=\".5\"/><circle cx=\"16\" cy=\"10.8\" r=\".5\"/>",
+            // C-RAM: the radome over a gatling mount.
+            ["t_cram"] = "<path d=\"M4 21h16M6 21l1-3h10l1 3M8 18v-6M16 18v-6\"/><circle cx=\"12\" cy=\"8.5\" r=\"4.5\"/><path d=\"M16 14h6M16 16.5h5\"/>",
+            // Gun pit: a turret sunk in its pit under a camouflage net (dashed).
+            ["t_pit"] = "<path d=\"M2 15h4.5v5h11v-5H22M8.5 20v-2a2.5 2.5 0 0 1 2.5-2.5h2a2.5 2.5 0 0 1 2.5 2.5v2M15 17l7-3.5M5 12.5l1.5-1.5M9 9.6l2-.5M13 9.1l2 .5M17.5 11l1.5 1.5\"/>",
+            // Artillery emplacement: a shielded howitzer raised over an earth berm.
+            ["t_artillery"] = "<path d=\"M2 21c1-3 3-4 6-4h8c3 0 5 1 6 4M8 17v-4.5l3-2 2 1.5V17M12 11.5l6-7.5M16 2.8l3.4 2.6\"/>",
+            // Missile battery: a tilted canister box, a missile leaving it.
+            ["t_patriot"] = "<path d=\"M2 21h20M4 21v-3h13v3M6 18 13 8l4 2.8-6 7.2M9.5 18l5.5-8.6M15 8.2l3-4.2\"/>",
+            // Drone hangar: an arched hangar, a drone over it.
+            ["t_hangar"] = "<path d=\"M2 21h20M3 21v-5c0-3.9 4-7 9-7s9 3.1 9 7v5M8 21v-6h8v6M14.5 3h3M19.5 3h3M16 3v1.5h5V3M17.5 4.5l-.8 1.5M19.5 4.5l.8 1.5\"/>",
+            // Heavy fortress: a crenellated casemate, twin barrels.
+            ["t_fortress"] = "<path d=\"M2 21h20M3 21V10h3v2.5h2.5V10h3v2.5H14V10h3v11M17 14h5M17 17.5h5\"/>",
+            // Repair bay: a bay frame with a wrench.
+            ["t_repair"] = "<path d=\"M2 21h20M4 21V5h16v16M4 8h16M15 10.5a2.8 2.8 0 0 0-3.2 3.6L8.5 17.4l1.6 1.6 3.3-3.3a2.8 2.8 0 0 0 3.6-3.2l-1.5 1.5-1.4-.4-.4-1.4Z\"/>",
+            // Ammo depot: an open crate of shells.
+            ["t_ammo"] = "<path d=\"M2 21h20M3 21v-7h18v7M3 17h18M6 14V9l1.5-3L9 9v5M10.5 14V9L12 6l1.5 3v5M15 14V9l1.5-3L18 9v5\"/>",
+            // Airfield: a landing pad's H.
+            ["t_airfield"] = "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9 8v8M15 8v8M9 12h6\"/>",
+            // Logistics station: a fuel tank on legs, its drop.
+            ["t_logistics"] = "<rect x=\"3\" y=\"6\" width=\"18\" height=\"9\" rx=\"4.5\"/><path d=\"M3 21h18M6.5 15v6M17.5 15v6M12 8c1.5 2 2 3 2 3.8a2 2 0 0 1-4 0c0-.8.5-1.8 2-3.8Z\"/>",
+            // Radar station: a radome on its building, sweeping.
+            ["t_radar"] = "<path d=\"M3 21h16M7 21l1-5h6l1 5M5.5 11h11\"/><circle cx=\"11\" cy=\"11\" r=\"5.5\"/><path d=\"M17.5 4a5 5 0 0 1 2.5 3M19.5 2a8 8 0 0 1 3 4.5\"/>",
+            // Spawn bastion: a crenellated keep with its gate.
+            ["t_bastion"] = "<path d=\"M2 21h20M5 21V8h2.5v2h3V8h3v2h3V8H19v13M10 21v-4a2 2 0 0 1 4 0v4\"/>",
+            // Bulwark post: a machine gun on a tripod over a block wall.
+            ["t_post"] = "<path d=\"M2 21h20M3 21v-5h18v5M9 16v5M15 16v5M8 16l3-4 3 4M11 12v4M7 11h14\"/>",
+            // Super gun: a huge barrel raised from its block.
+            ["t_supergun"] = "<path d=\"M2 21h20M3 21v-4h11v4M5 17v-2.5a3 3 0 0 1 3-3h2M8 13 20 3.5l1.6 2.2L10.3 15.6M18 5l1.6 2.2\"/>",
+            // Targeting station: a reticle over the post, its mast.
+            ["t_targeting"] = "<path d=\"M2 21h20M4 21v-6h10v6M9 15v-2.5M9 5.5v5M6.5 8h5M18 21V10M16 10h4\"/><circle cx=\"9\" cy=\"8\" r=\"4.5\"/>",
         };
 
         private static readonly Dictionary<string, List<Shape>> Parsed = new();

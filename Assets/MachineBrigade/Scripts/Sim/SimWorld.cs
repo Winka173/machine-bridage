@@ -63,6 +63,7 @@ namespace MachineBrigade.Sim
             _movement = new MovementSystem(this);
             _combat = new CombatSystem(this);
             _abilities = new Abilities.AbilitySystem(this);
+            Supply = new Abilities.SupplySystem(this);
             Economy = new EconomySystem(this);
             Strikes = new StrikeSystem(this);
             Bases = new Modes.BaseSystem(this);
@@ -162,6 +163,9 @@ namespace MachineBrigade.Sim
         public Modes.BaseSystem Bases { get; }
         internal StrikeSystem Strikes { get; }
         internal Abilities.AbilitySystem Abilities => _abilities;
+
+        /// <summary>Aircraft stores on the field and the holding pattern (prompt 13 C).</summary>
+        internal Abilities.SupplySystem Supply { get; }
 
         internal readonly List<Crate> CrateList = new();
 
@@ -620,6 +624,16 @@ namespace MachineBrigade.Sim
                     IssueGroupMove(command.Point, command.Type == CommandType.Move ? OrderKind.Move : OrderKind.AttackMove);
                     return CommandResult.Ok;
 
+                case CommandType.Rearm:
+                    var sent = 0;
+                    foreach (var v in _unitBuffer)
+                    {
+                        if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= 0.999f) continue;
+                        v.RearmRequested = true;
+                        sent++;
+                    }
+                    return sent > 0 ? CommandResult.Ok : CommandResult.Rejected(CommandError.NoUnits);
+
                 case CommandType.Retreat:
                     if (!_rally.TryGetValue(command.Team, out var rally)) return CommandResult.Rejected(CommandError.NoRallyPoint);
                     IssueGroupMove(rally, OrderKind.Retreat);
@@ -664,6 +678,7 @@ namespace MachineBrigade.Sim
             _movement.Step(dt);
             CrushVegetation();
             _abilities.Step(dt);
+            Supply.Step(dt);
             Bosses.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
@@ -704,6 +719,7 @@ namespace MachineBrigade.Sim
             CrushVegetation();
             Lap(4);
             _abilities.Step(dt);
+            Supply.Step(dt);
             Bosses.Step(dt);
             Lap(5);
             Status.Step(dt);

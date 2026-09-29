@@ -116,7 +116,7 @@ namespace MachineBrigade.Game.Match
             "heavy_bomber", "stealth_bomber",
             "twin_tank", "siege_tank", "heavy_rocket_artillery", "ballistic_launcher",
             "atgm_carrier",
-            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer",
+            "engineer_vehicle", "ew_jammer", "fpv_carrier", "mine_layer", "ammo_carrier",
             "fighter_jet", "tank_buster", "recon_drone", "heavy_attack_heli",
             "vbied", "zu23_technical", "smoke_carrier", "lancet_truck", "shahed_truck", "iron_beam", "railgun_truck",
             "turtle_tank", "bmpt", "sapper",
@@ -375,6 +375,37 @@ namespace MachineBrigade.Game.Match
         /// <summary>The commander AI calls fire support.</summary>
         public static bool AutoStrike { get; set; } = true;
 
+        /// <summary>
+        /// The compact battle HUD (prompt 11 A: a smaller minimap, icon toggles, a lower card tray, a
+        /// collapsible boss bar); off shows the full HUD. On by default.
+        /// </summary>
+        public static bool CompactHud { get; set; } = true;
+
+        /// <summary>How many matches the standing hint ("your army fights on its own · tap A B C") is shown for.</summary>
+        public const int StartHintMatches = 3;
+
+        /// <summary>Matches played with the standing hint so far (saved as mb.hintMatches).</summary>
+        public static int HintMatchesSeen { get; private set; }
+
+        /// <summary>The standing hint still shows: only in the player's first few matches.</summary>
+        public static bool ShowStartHint => HintMatchesSeen < StartHintMatches;
+
+        /// <summary>A real match began (not the menu's lobby battle): counts towards the standing hint's matches.</summary>
+        public static void CountHintMatch()
+        {
+            if (!ShowStartHint) return;
+            HintMatchesSeen++;
+            try
+            {
+                PlayerPrefs.SetInt("mb.hintMatches", HintMatchesSeen);
+                PlayerPrefs.Save();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[MatchSettings] Could not save the hint count: {e.Message}");
+            }
+        }
+
         public static void Load()
         {
             if (_loaded) return;
@@ -407,6 +438,8 @@ namespace MachineBrigade.Game.Match
                 Mission = PlayerPrefs.GetString("mb.mission", Mission);
                 AutoDeploy = PlayerPrefs.GetInt("mb.autoDeploy", 1) == 1;
                 AutoStrike = PlayerPrefs.GetInt("mb.autoStrike", 1) == 1;
+                CompactHud = PlayerPrefs.GetInt("mb.compactHud", 1) == 1;
+                HintMatchesSeen = Mathf.Max(0, PlayerPrefs.GetInt("mb.hintMatches", 0));
                 ReadDeck("mb.deck.vehicles", DeckVehicles, AllVehicles, DefaultVehicles, DeckVehicleSlots, VehicleLayout);
                 ReadDeck("mb.deck.supports", DeckSupports, AllSupports, DefaultSupports, DeckSupportSlots, SupportLayout);
             }
@@ -449,6 +482,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetString("mb.mission", Mission);
                 PlayerPrefs.SetInt("mb.autoDeploy", AutoDeploy ? 1 : 0);
                 PlayerPrefs.SetInt("mb.autoStrike", AutoStrike ? 1 : 0);
+                PlayerPrefs.SetInt("mb.compactHud", CompactHud ? 1 : 0);
                 // Saved slot by slot, empty slots as blanks, so the layout comes back as it was.
                 PlayerPrefs.SetString("mb.deck.vehicles", string.Join(",", Array.ConvertAll(DeckLayout(false), c => c ?? "")));
                 PlayerPrefs.SetString("mb.deck.supports", string.Join(",", Array.ConvertAll(DeckLayout(true), c => c ?? "")));

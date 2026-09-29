@@ -130,13 +130,16 @@ namespace MachineBrigade.Tests
             return found;
         }
 
-        /// <summary>Tappable elements (they carry Tap's class) smaller than the touch target on either side.</summary>
+        /// <summary>
+        /// Tappable elements (they carry Tap's class) smaller than the touch target on either side. One that takes no
+        /// pointer (picking ignored, like the compact boss bar's closed part icons, which only show state) is not a target.
+        /// </summary>
         internal static List<string> SmallTargets(VisualElement root, float min)
         {
             var found = new List<string>();
             root.Query(className: Tap.TargetClass).ForEach(e =>
             {
-                if (!Shown(e)) return;
+                if (!Shown(e) || e.pickingMode == PickingMode.Ignore) return;
                 var b = e.worldBound;
                 if (b.width < min - 0.5f || b.height < min - 0.5f) found.Add($"{b.width:0}x{b.height:0} {Describe(e)}");
             });
@@ -192,7 +195,7 @@ namespace MachineBrigade.Tests
             Lay(preview.Root, Shapes[0].size);
             var body = preview.Root.Q<Label>(className: "fc-body");
             Assert.IsNotNull(body);
-            Assert.AreEqual(21f, body.resolvedStyle.fontSize, 0.01f, "--fc-fs-body reaches a body label");
+            Assert.AreEqual(24f, body.resolvedStyle.fontSize, 0.01f, "--fc-fs-body reaches a body label");
             Assert.AreEqual("Barlow-Regular", body.resolvedStyle.unityFont?.name ?? body.resolvedStyle.unityFontDefinition.fontAsset?.name, "--fc-font-text");
             var title = preview.Root.Q<Label>(className: "fc-title");
             Assert.AreEqual("BarlowCondensed-Bold", title.resolvedStyle.unityFont?.name, "--fc-font-display");
@@ -200,7 +203,7 @@ namespace MachineBrigade.Tests
             preview.Rebuild(KitPreview.Page.Tokens, false, true);
             for (var i = 0; i < 2; i++) _panel.FrameUpdate();
             body = preview.Root.Q<Label>(className: "fc-body");
-            Assert.AreEqual(24f, body.resolvedStyle.fontSize, 0.01f, "Large text size");
+            Assert.AreEqual(29f, body.resolvedStyle.fontSize, 0.01f, "Large text size");
         }
 
         /// <summary>Every check on a laid-out screen: cut texts, small targets and texts, primaries, clipping, the screen's edges.</summary>
@@ -338,7 +341,7 @@ namespace MachineBrigade.Tests
         private static readonly HashSet<string> WithPrimary = new()
         {
             "home", "campaign-chapter", "briefing", "operations", "detail", "detail-tower", "detail-module", "detail-action", "detail-tower-action", "detail-module-action",
-            "army-base", "shop-skins", "shop-units", "shop-items",
+            "shop-skins", "shop-units", "shop-items",
         };
 
         /// <summary>
@@ -393,6 +396,246 @@ namespace MachineBrigade.Tests
                         var label = $"{name}{(vietnamese ? "" : " en")}{(large ? " large" : "")}";
                         failures.AddRange(Check(host, label, size, large, MachineBrigade.Editor.UiShots.WithoutPrimary(screen) ? 0 : 1));
                     }
+            }
+            finally
+            {
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
+            }
+            Assert.IsEmpty(failures, string.Join("\n", failures.Distinct().Take(60)));
+        }
+
+        // ------------------------------------------------------------------ prompt 11: the compact HUD, cards in line
+
+        /// <summary>
+        /// The share of the screen the HUD's drawn frames cover: the union (on a 4 px grid) of every shown element with
+        /// a fill, an image or a border, every text and icon, and the minimap. Invisible touch targets do not count.
+        /// </summary>
+        internal static float Cover(VisualElement hud, Vector2 size)
+        {
+            const int cell = 4;
+            var w = Mathf.CeilToInt(size.x / cell);
+            var h = Mathf.CeilToInt(size.y / cell);
+            var covered = new bool[w * h];
+            hud.Query<VisualElement>().ForEach(e =>
+            {
+                if (!Shown(e) || !Opaque(e) || !Drawn(e)) return;
+                var b = e.worldBound;
+                int x0 = Mathf.Clamp(Mathf.FloorToInt(b.xMin / cell), 0, w), x1 = Mathf.Clamp(Mathf.CeilToInt(b.xMax / cell), 0, w);
+                int y0 = Mathf.Clamp(Mathf.FloorToInt(b.yMin / cell), 0, h), y1 = Mathf.Clamp(Mathf.CeilToInt(b.yMax / cell), 0, h);
+                for (var y = y0; y < y1; y++)
+                    for (var x = x0; x < x1; x++) covered[y * w + x] = true;
+            });
+            return covered.Count(c => c) / (float)covered.Length;
+        }
+
+        private static bool Opaque(VisualElement e)
+        {
+            for (var v = e; v != null; v = v.hierarchy.parent)
+                if (v.resolvedStyle.opacity < 0.05f) return false;
+            return true;
+        }
+
+        private static bool Drawn(VisualElement e)
+        {
+            var s = e.resolvedStyle;
+            if (s.backgroundColor.a > 0.05f) return true;
+            var bg = s.backgroundImage;
+            if (bg.texture != null || bg.sprite != null || bg.renderTexture != null || bg.vectorImage != null) return true;
+            if ((s.borderTopWidth > 0f && s.borderTopColor.a > 0.05f) || (s.borderLeftWidth > 0f && s.borderLeftColor.a > 0.05f) ||
+                (s.borderRightWidth > 0f && s.borderRightColor.a > 0.05f) || (s.borderBottomWidth > 0f && s.borderBottomColor.a > 0.05f)) return true;
+            if (e is Label label) return !string.IsNullOrEmpty(label.text);
+            return e is IconElement || e is Minimap;
+        }
+
+        /// <summary>
+        /// Prompt 11 A: in a fight the compact HUD's frames cover at most 30 % of the screen at 16:9 and 20:9 (the
+        /// brief's 25-30 %), in Conquest (a selection open), a boss battle (the boss bar, a notice), Siege and Defend.
+        /// The full HUD is measured beside it and reported.
+        /// </summary>
+        [Test]
+        public void TheCompactHudLeavesTheBattlefieldClear()
+        {
+            var report = new List<string>();
+            var failures = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
+            try
+            {
+                Strings.Vietnamese = true;
+                MatchSettings.TextSize = TextSize.Normal;
+                foreach (var screen in new[] { "hud-score", "hud-mission", "hud-siege", "hud-defend" })
+                    foreach (var (name, size) in new[] { Shapes[0], Shapes[2] })
+                        foreach (var full in new[] { false, true })
+                        {
+                            var host = MachineBrigade.Editor.UiShots.BuildBattle(_catalog, screen + (full ? "-full" : ""), out _);
+                            Lay(host, size);
+                            var cover = Cover(host.Q(className: "fc-hud"), size);
+                            report.Add($"{screen}{(full ? " full" : "")} {name} {cover * 100f:0.0}%");
+                            if (!full && cover > 0.30f) failures.Add($"{screen} {name}: the HUD covers {cover * 100f:0.0}% of the screen (at most 30%)");
+                        }
+            }
+            finally
+            {
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
+            }
+            Debug.Log("[HudCover] " + string.Join(" | ", report));
+            Assert.IsEmpty(failures, string.Join("\n", failures) + "\n" + string.Join("\n", report));
+        }
+
+        /// <summary>Each card kind and the parts that must sit in the same place on every card of a row (the cost box by its top right).</summary>
+        private static readonly (string card, string[] parts)[] CardParts =
+        {
+            ("fc-vcard", new[] { "fc-vcard__art", "fc-vcard__cp", "fc-vcard__name", "fc-vcard__level" }),
+            ("fc-gcard", new[] { "fc-gcard__art", "fc-gcard__level", "fc-gcard__name", "fc-gcard__stat" }),
+            ("fc-hcard", new[] { "fc-hcard__art", "fc-hcard__cost", "fc-hcard__name" }),
+        };
+
+        private static bool RightAnchored(string part) => part is "fc-vcard__cp" or "fc-hcard__cost";
+
+        /// <summary>
+        /// Cards out of line (prompt 11 B2, B5): in each row or grid (the cards of one parent), the picture, the cost,
+        /// the name area and the level sit at the same place relative to every card, the name areas are one height, and
+        /// cards side by side share their top and their height.
+        /// </summary>
+        internal static List<string> Misaligned(VisualElement root)
+        {
+            var found = new List<string>();
+            foreach (var (cardClass, parts) in CardParts)
+            {
+                var groups = new Dictionary<VisualElement, List<VisualElement>>();
+                root.Query(className: cardClass).ForEach(c =>
+                {
+                    if (!Shown(c) || c.hierarchy.parent == null) return;
+                    if (!groups.TryGetValue(c.hierarchy.parent, out var list)) groups[c.hierarchy.parent] = list = new List<VisualElement>();
+                    list.Add(c);
+                });
+                foreach (var group in groups.Values)
+                {
+                    if (group.Count < 2) continue;
+                    for (var i = 0; i < group.Count; i++)
+                        for (var j = i + 1; j < group.Count; j++)
+                        {
+                            var a = group[i].worldBound;
+                            var b = group[j].worldBound;
+                            var dy = Mathf.Abs(a.yMin - b.yMin);
+                            var sameRow = dy < Mathf.Min(a.height, b.height) * 0.5f;
+                            if (sameRow && dy > 0.5f) found.Add($"{Describe(group[j])}: top {b.yMin:0} beside {a.yMin:0}");
+                            else if (sameRow && Mathf.Abs(a.height - b.height) > 0.5f) found.Add($"{Describe(group[j])}: height {b.height:0} beside {a.height:0}");
+                        }
+                    foreach (var part in parts)
+                    {
+                        Rect? reference = null;
+                        foreach (var card in group)
+                        {
+                            var q = card.Q(className: part);
+                            if (q == null || !Shown(q)) continue;
+                            var c = card.worldBound;
+                            var p = q.worldBound;
+                            var at = new Rect(RightAnchored(part) ? c.xMax - p.xMax : p.xMin - c.xMin, p.yMin - c.yMin, p.width, p.height);
+                            if (reference is not { } r)
+                            {
+                                reference = at;
+                                continue;
+                            }
+                            var fixedHeight = part.EndsWith("__art") || part.EndsWith("__name");
+                            if (Mathf.Abs(at.x - r.x) > 0.5f || Mathf.Abs(at.y - r.y) > 0.5f || (fixedHeight && Mathf.Abs(at.height - r.height) > 0.5f))
+                                found.Add($"{Describe(card)} {part}: at {at.x:0},{at.y:0} ({at.height:0} high), not {r.x:0},{r.y:0} ({r.height:0})");
+                        }
+                    }
+                }
+            }
+            return found;
+        }
+
+        /// <summary>
+        /// Prompt 14 A5: at 16:9 and 20:9 the main content of every out-of-battle screen (the shown page, less a row of
+        /// tabs across its top) covers at least 70 % of the screen: the top bar, the rail and the tabs take the rest.
+        /// </summary>
+        [Test]
+        public void TheContentKeepsSeventyPercentOfTheScreen()
+        {
+            var failures = new List<string>();
+            var report = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
+            try
+            {
+                Strings.Vietnamese = true;
+                MatchSettings.TextSize = TextSize.Normal;
+                foreach (var screen in MenuScreen.ScreenNames)
+                    foreach (var (name, size) in new[] { Shapes[0], Shapes[2] })
+                    {
+                        var host = MachineBrigade.Editor.UiShots.BuildMenu(_catalog, screen, out _);
+                        Lay(host, size);
+                        var share = ContentShare(host, size);
+                        report.Add($"{screen} {name} {share * 100f:0.0}%");
+                        if (share < 0.695f) failures.Add($"{screen} {name}: content {share * 100f:0.0}% of the screen (70% wanted)");
+                    }
+            }
+            finally
+            {
+                MatchSettings.TextSize = textSize;
+                DemoProfile.Restore();
+            }
+            Debug.Log("[ContentShare] " + string.Join(" | ", report));
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+        }
+
+        /// <summary>The top shown page's area less the row of tabs along its top, over the screen's.</summary>
+        internal static float ContentShare(VisualElement root, Vector2 size)
+        {
+            VisualElement page = null;
+            root.Query(className: "fc-page").ForEach(p =>
+            {
+                if (Shown(p)) page = p;
+            });
+            if (page == null) return 0f;
+            var area = page.worldBound;
+            var top = area.yMin;
+            page.Query(className: "fc-tabs").ForEach(t =>
+            {
+                if (Shown(t) && t.worldBound.yMin <= top + 1f && t.worldBound.width > area.width * 0.5f) top = Mathf.Max(top, t.worldBound.yMax);
+            });
+            var height = Mathf.Max(0f, Mathf.Min(area.yMax, size.y) - top);
+            var width = Mathf.Max(0f, Mathf.Min(area.xMax, size.x) - Mathf.Max(0f, area.xMin));
+            return width * height / (size.x * size.y);
+        }
+
+        /// <summary>The screens with rows of cards: the deck strips, the collection, towers, equipment, a chapter's unlocks, the battle's tray.</summary>
+        private static readonly string[] CardScreens = { "home", "army-deck", "army-towers", "army-gear", "campaign-chapter", "operations" };
+
+        /// <summary>Prompt 11 B5: on every screen with cards, at the four shapes in Normal and Large text, every card of a row lines up.</summary>
+        [Test]
+        public void CardsInARowLineUp()
+        {
+            var failures = new List<string>();
+            var textSize = MatchSettings.TextSize;
+            DemoProfile.Use();
+            try
+            {
+                Strings.Vietnamese = true;
+                foreach (var large in new[] { false, true })
+                {
+                    MatchSettings.TextSize = large ? TextSize.Large : TextSize.Normal;
+                    foreach (var (name, size) in Shapes)
+                    {
+                        var label = $"{name}{(large ? " large" : "")}";
+                        foreach (var screen in CardScreens)
+                        {
+                            var host = MachineBrigade.Editor.UiShots.BuildMenu(_catalog, screen, out _);
+                            Lay(host, size);
+                            failures.AddRange(Misaligned(host).Select(f => $"{screen} {label}: {f}"));
+                        }
+                        foreach (var screen in new[] { "hud-score", "hud-score-full" })
+                        {
+                            var host = MachineBrigade.Editor.UiShots.BuildBattle(_catalog, screen, out _);
+                            Lay(host, size);
+                            failures.AddRange(Misaligned(host).Select(f => $"{screen} {label}: {f}"));
+                        }
+                    }
+                }
             }
             finally
             {

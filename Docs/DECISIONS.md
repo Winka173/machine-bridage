@@ -1585,7 +1585,7 @@ library with its preview screen, the card renders and the UI checks. The screens
   frames and messages, a sample home screen made only of kit parts) with EN/VI and Normal/Large
   switches. `-mb-ui-kit` opens it (`-mb-ui-kit=cards` a page, `-mb-ui-large` in Large text); the
   hidden developer entry is five quick taps on the rank badge of the menu's top bar.
-- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
+- **Proper names kept in Vietnamese** (checked by `UiLanguageTests` over every Vietnamese text of the game, the kit's, the menus', the guides' and the campaign's; every other unmarked Latin word counts as English): abbreviations and units `CP`, `HQ`, `HP`, `HUD`, `UAV`, `FPV`, `SAM`, `EMP`, `SEAD`, `MOAB`, `APS`, `ATGM`, `IFV`, `MLRS`, `GMLRS`, `EW`, `CIWS`, `FPS`, `mm`, `cm`, `MW`, and the Vietnamese abbreviations `PK` (phòng không), `TT` (trực thăng), `ST` (sát thương), `TL` (tên lửa), `SCH` (sở chỉ huy), `CT` (công trình), `TN` (tinh nhuệ, in the short names of elites); real weapons and vehicles the units are modelled on `AC-130`, `Ka-52`, `Grad`, `Smerch`, `TOS`, `Iskander`, `Patriot`, `Tunguska`, `ZU`, `BMPT`, `Terminator`, `Ataka`, `BTR`, `Object`, `Bradley`, `TOW`, `Centauro`, `Sprut`, `PzH`, `Merkava`, `Trophy`, `Kornet`, `Iron`, `Cobra`, `Lancet`, `Shahed`, `Hellfire`, `Stinger`, `Apache`, `Little Bird`, `Reaper`, `Maverick`, `Alligator`, `Vikhr`, `Igla`, `JASSM`, `Wolf`, `Griffin`, `Centurion`; the bosses' and branches' code names `Behemoth`, `Inferno`, `Tempest`, `Hive`, `Bastion`, `Spectre`, `Titan`, `Napalm`; the equipment brands `Ironclad`, `Kestrel Dynamics`, `Vulcan Arms`, `Longbow Ordnance`, `Aegis Systems`, `Stormfront Aviation`, `Hivemind Robotics`, `Quartermaster`, `Spectre Electronics`, `Hammerfall Munitions`, `Phoenix Recovery`, `Wolfpack Tactics`, `Bulwark Engineering`; the story's people and faction `Varga`, `Kessler`, `Orlov`, `Aurel`, `Hegemon`; the game `Machine Brigade`; and three words Vietnamese took in whole: `radar`, `drone`, `boss`, with `vonfram` (tungsten) and `pin` (battery), which the syllable check cannot tell from English.
 - **Card pictures** (`MachineBrigade.Editor.CardRenders`, batch with graphics:
   `-executeMethod MachineBrigade.Editor.CardRenders.RenderBatch [-mbCardsForce] [-mbCardsOnly id,id]`).
   The cards are every fieldable vehicle (`MatchSettings.AllVehicles`), every elite, boss and base
@@ -3031,3 +3031,874 @@ meant to dwarf the rest.
 
 The sim's `radius`, `length` and `width` are unchanged (hits, spacing and blasts behave as before); muzzles and parts are
 model nodes, so they follow the smaller model.
+
+## 12I. Play test 3: flashes that read wrong, longer plumes (2026-09-29)
+
+The owner (on the build before 12A/12B) saw flashes off the barrels and missiles without matching fire. Checked
+from the model files (every Muzzle_ node against the geometry on its firing line): the main guns' and launchers'
+muzzle nodes sit on the tips (armoured car, tanks 0.00 m, mortar 0.08 m in, rocket technical at the pod's face).
+What read wrong was how the flashes were drawn:
+
+- A tank gun's 3.8-4.5 m core was centred on the muzzle, half of it back over the barrel ("in the middle of the
+  gun"). It now sits 1.1 m x scale ahead of the tip, at 3.2-3.8 m.
+- A tank's coax MG flashes at the mantlet, 2-4 m behind the gun's tip, and with 12D's streams it read as the main
+  gun firing mid-barrel. Machine-gun cores are now 0.8-1.05 m (were 1.25-1.6), 0.3 m ahead of the muzzle.
+- A mortar used the artillery flash (5-6 m, over the carrier seen from above): mortars flash at 0.55 of it.
+- A rocket or missile launch was a gun-like 2.2-2.8 m core with a forward tongue: now a 1.0-1.3 m ignition at the
+  tube's mouth and the backblast; the missile's own motor plume carries the fire.
+- Every motor plume (12B) is 40 % longer and 20 % wider.
+- The flash test now measures a flash along its barrel's line (on the line, never behind the tip, at most 2.5 m
+  ahead) instead of on the tip.
+- Ground SAMs were not slowed further: 10 % slower (46 -> 41 m/s) and "SAM beats jets" fails outright (the jets'
+  flares decoy nearly every missile). A slower SAM needs flare resistance to go with it: handed to the balance pass
+  (13C), which owns the missile-versus-flare measurements.
+- The frozen-moment missile sheets show a gap between fast rockets and their flames; it comes from the sheet
+  jumping straight to each moment (one long frame). In the game the frame is short and the flame sits on the tail.
+
+## 13A. Prompt 11: compact HUD, alignment, short names, shields (2026-09-29)
+
+The owner found the battle HUD covering too much of the battlefield, cards and rows out of line,
+raw keys on screen, and the shields ugly. No game logic or balance data changed.
+
+### A. The compact battle HUD
+
+- **Two layouts, one code path.** Settings > Display > "HUD gọn trong trận" (`MatchSettings.CompactHud`,
+  saved as `mb.compactHud`, on by default); off gives the full HUD of 10b G unchanged. `BattleHud` builds
+  the compact controls where the structure differs (the stance switch, the icon toggles, the tower
+  button, the selection strip, the collapsible boss bar, the tray's names) and puts `fc-hud--compact` on
+  its kit root; the rest is Screens.uss rules under that class (the "prompt 11 A" block). `HudSpec.Compact`
+  (null: the setting) lets the screenshots and checks show either.
+- **Measured, not guessed.** `UiLayoutTests.TheCompactHudLeavesTheBattlefieldClear` rasterises (4 px cells)
+  the union of every shown HUD element with a fill, an image, a border, a text or an icon (invisible
+  touch targets do not count) and fails above 30 %. With the demo battles (a selection open in Conquest
+  and Siege, a boss and a notice, the Defend wave preview): Conquest 27.5 %, boss 26.5 %, Siege 27.5 %,
+  Defend 25.8 % at 16:9; 22.0, 21.2, 22.0 and 20.6 % at 20:9. The full HUD: 64.0, 59.6, 62.0, 50.7 % at
+  16:9 and 52.6, 50.0, 50.7, 40.6 % at 20:9.
+- **Faces smaller than 44 pt, targets not.** Every control is still a full 82 panel px target (44 pt, the
+  kit's rule); where the drawn face is smaller (44 px faces on the minimap tools, pause, the rail, the
+  objective rings), a transparent target surrounds it. The objectives' targets reach above and below the
+  top strip through negative margins, so the strip stays 52 px high. The layout check now skips an
+  element whose picking is off (the closed boss bar's part icons only show state; the bar itself is the
+  target), since it cannot be tapped.
+- **A1 minimap** 216 -> 132 px (40 % less a side, 63 % less area); the zoom buttons are gone (pinch
+  zooms; the event stays for the full HUD); select-all and box-select are 44 px faces on its right-hand
+  corners. The item strip moves up under them.
+- **A2 commander.** Attack / Defend is one two-icon switch (a tap flips it; the side on is the text
+  colour with a dark icon); Auto buy (a new cart icon) and Support are icon toggles: on is the text
+  colour with a dark icon, off the field panel with a dimmed icon struck through, so the state reads
+  without colour; tooltips say it in words. Pause now has both as the kit's switches (both layouts).
+- **A3 tray** 160 -> 104 px (35 %). A card is its render (68 px), the CP and the short name on one line;
+  holding a card (0.45 s, `Tap`'s new hold callback, which then fires no tap) shows its full name over
+  the tray. The CP box is the points, the bar and the income; the supply penalty or the underdog's
+  boost is a chip over the box, only while it applies. Cards are 108 px so ten of them and the box fit
+  across 1280 px. Large text: no card width fits every short name on one line across 1280 px (the
+  widest deployable, "Pháo bánh lốp", is 110 px at 22 px against at most 102), so in Large text the name
+  may take two lines and the tray is 134 px (the full HUD's Large tray is 196).
+- **A4 boss bar** half as wide (340 px closed): name, phase and the bar, and the parts as 20 px icons that
+  show state only. A tap opens it at full size (640 px, the health in numbers, parts as full targets that
+  order focus fire as before) for 6 s; tapping a part keeps it open, another tap closes it. Its calls are
+  unchanged (`SetBoss` both overloads, `SetBossParts`, `BossPartTapped`, `SetBossHp`).
+- **A5** the objective (or the score, or the waves) and the clock are one strip at the top centre: the
+  goal and its count on one line over a thin bar, the clock at its end; the score strip is the two
+  numbers in the sides' colours over their bars, the rings and the clock (the captions went to a
+  tooltip).
+- **A6 notices** (toasts, radio, alerts) sit in the column right under the strip (under the boss bar
+  when there is one), in the small text size, at most 600 px wide, 2.5-3.5 s each whatever the caller
+  asked (the full HUD's default went from 2.2 to 3 s too), queued (three at most, the next after 1.2 s
+  if one waits; errors go straight up). The banner at the start is a smaller strip in the same place.
+- **A7** the standing hint ("Quân ta tự chiến đấu · Chạm A B C...") shows in the player's first three
+  matches only (`MatchSettings.StartHintMatches`, counted in `mb.hintMatches` when a real match starts;
+  `HudSpec.StartHint`); the attack-move and box-select hints still show while those modes are on.
+- **A8 selection** is one strip right above the tray on the right: the render with the count on it, the
+  short name, the health bar and numbers, Advance / Stop / Back. The weapons line and "strong against /
+  weak to" are only in the full HUD and on the detail page.
+- **A10 safe area**: unchanged code (`ApplySafeArea`, `KitSafeArea`); the shots at 19.5:9 with a notch
+  and 20:9 with a punch hole and the gesture bar show it.
+- **For the balance agent (prompt 13)**: the selection strip has `BattleHud.SelectionExtras`, an empty,
+  hidden row under the health bar for the ammo icons (C.9); every tray card has an empty
+  `fc-hcard__badges` row in the picture's top-left corner. Both are documented in the class comments.
+
+### B. Alignment, short names, raw keys
+
+- **B1 short names**, at most 15 letters in both languages (`Strings.Short`, keys `short.<id>`, checked
+  by `LocalisationScanTests.EveryCardHasAShortName` over vehicles, supports, items, elites, bosses,
+  towers, their branches and the utility modules). A branch without its own short name reads as the
+  branch's name alone. Used in the tray, the deck strips (home, army), the selection strip, compact
+  cards (chapter unlocks, Boss Rush), and on any card whose full name needs more than two lines. Elites
+  are the base's short name with "TN" (tinh nhuệ), like the listed PK and TT; `TN` and `HUD` joined the
+  allow-list of names kept in Vietnamese. The table (full Vietnamese name and id, then the short names):
+
+  | Vehicles | English | Vietnamese |
+  | --- | --- | --- |
+  | Xe trinh sát (`scout_jeep`) | Scout | Trinh sát |
+  | Tăng hạng nhẹ (`light_tank`) | Light tank | Tăng nhẹ |
+  | Tăng chủ lực (`main_battle_tank`) | Battle tank | Tăng chủ lực |
+  | Tăng phun lửa (`flame_tank`) | Flame tank | Phun lửa |
+  | Pháo tự hành (`artillery`) | SP gun | Pháo tự hành |
+  | Pháo phản lực (`mlrs`) | Rockets | Phản lực |
+  | Xe phòng không (`aa_vehicle`) | Anti-air | Phòng không |
+  | Trực thăng tấn công (`attack_helicopter`) | Attack heli | Trực thăng |
+  | Xe bọc thép (`armored_car`) | Armoured car | Bọc thép |
+  | Pháo chống tăng (`tank_destroyer`) | Tank killer | Chống tăng |
+  | Tăng hạng nặng (`heavy_tank`) | Heavy tank | Tăng nặng |
+  | Tên lửa phòng không (`sam_launcher`) | SAM | Tên lửa PK |
+  | Xe súng cối (`mortar_carrier`) | Mortar | Súng cối |
+  | Bán tải rốc-két (`rocket_technical`) | Technical | Bán tải |
+  | Trực thăng hạng nặng (`gunship_heli`) | Gunship | TT hỏa lực |
+  | Trực thăng trinh sát (`scout_heli`) | Scout heli | TT trinh sát |
+  | Máy bay cường kích (`attack_jet`) | Attack jet | Cường kích |
+  | UAV tấn công (`strike_drone`) | Strike UAV | UAV tấn công |
+  | Pháo phản lực nhiệt áp (`thermobaric_launcher`) | Thermobaric | Nhiệt áp |
+  | Xe chiến đấu bộ binh (`ifv`) | IFV | Xe bộ binh |
+  | Pháo tên lửa phòng không (`heavy_aa`) | Gun-SAM | PK hỗn hợp |
+  | Siêu tăng Titan (`titan_tank`) | Titan | Siêu tăng |
+  | Oanh tạc cơ hạng nặng (`heavy_bomber`) | Bomber | Oanh tạc cơ |
+  | Máy bay ném bom tàng hình (`stealth_bomber`) | Stealth | Tàng hình |
+  | Pháo đài bay (`sky_gunship`) | Sky gunship | Pháo đài bay |
+  | Tăng hai nòng (`twin_tank`) | Twin tank | Hai nòng |
+  | Tăng công thành (`siege_tank`) | Siege tank | Công thành |
+  | Xe tên lửa chống tăng (`atgm_carrier`) | ATGM | Diệt tăng TL |
+  | Pháo phản lực hạng nặng (`heavy_rocket_artillery`) | Heavy MLRS | Phản lực 300 |
+  | Xe phóng tên lửa đạn đạo (`ballistic_launcher`) | Ballistic | Đạn đạo |
+  | Xe công binh (`engineer_vehicle`) | Engineer | Công binh |
+  | Xe tác chiến điện tử (`ew_jammer`) | Jammer | Gây nhiễu |
+  | Xe phóng drone FPV (`fpv_carrier`) | FPV drones | Drone FPV |
+  | Xe rải mìn (`mine_layer`) | Mine layer | Rải mìn |
+  | Tiêm kích (`fighter_jet`) | Fighter | Tiêm kích |
+  | Cường kích diệt tăng (`tank_buster`) | Tank buster | Diệt tăng |
+  | UAV trinh sát (`recon_drone`) | Recon UAV | UAV do thám |
+  | Ka-52 Cá sấu (`heavy_attack_heli`) | Ka-52 | Ka-52 |
+  | Xe bom tự sát bọc thép (`vbied`) | Car bomb | Xe bom |
+  | Bán tải ZU-23 (`zu23_technical`) | ZU-23 | ZU-23 |
+  | Xe tạo khói (`smoke_carrier`) | Smoke car | Xe khói |
+  | Xe phóng Lancet (`lancet_truck`) | Lancet | Lancet |
+  | Xe phóng Shahed (`shahed_truck`) | Shahed | Shahed |
+  | La-de phòng không (`iron_beam`) | Laser AA | La-de PK |
+  | Xe súng điện từ (`railgun_truck`) | Railgun | Pháo điện từ |
+  | Xe tăng rùa (`turtle_tank`) | Turtle | Xe rùa |
+  | BMPT Terminator (`bmpt`) | BMPT | BMPT |
+  | Xe công binh công trình (`sapper`) | Sapper | Công binh CT |
+  | Xe ủi bọc thép (`armored_bulldozer`) | Bulldozer | Xe ủi |
+  | Xe chỉ huy (`command_vehicle`) | Command | Xe chỉ huy |
+  | Pháo bánh lốp diệt tăng (`wheeled_gun`) | Wheeled gun | Pháo bánh lốp |
+  | Radar phản pháo (`counter_battery_radar`) | CB radar | Phản pháo |
+  | Tên lửa phòng không tầm xa (`long_sam`) | Long SAM | SAM tầm xa |
+
+  | Elites | English | Vietnamese |
+  | --- | --- | --- |
+  | Tăng chủ lực tinh nhuệ (`elite_mbt`) | Elite MBT | Tăng tinh nhuệ |
+  | Tăng hạng nặng tinh nhuệ (`elite_heavy_tank`) | Elite heavy | Tăng nặng TN |
+  | Pháo chống tăng tinh nhuệ (`elite_tank_destroyer`) | Elite TD | Chống tăng TN |
+  | Trực thăng tinh nhuệ (`elite_attack_helicopter`) | Elite heli | Trực thăng TN |
+  | Pháo phản lực tinh nhuệ (`elite_mlrs`) | Elite MLRS | Phản lực TN |
+  | Phòng không tinh nhuệ (`elite_aa`) | Elite AA | Phòng không TN |
+  | Xe bọc thép tinh nhuệ (`elite_apc`) | Elite EW | Bọc thép TN |
+  | Grad tinh nhuệ (`elite_grad`) | Elite Grad | Grad TN |
+  | Xe phóng drone FPV tinh nhuệ (`elite_fpv_carrier`) | Elite FPV | Drone FPV TN |
+  | Cường kích tinh nhuệ (`elite_attack_jet`) | Elite jet | Cường kích TN |
+  | Tên lửa phòng không tầm xa tinh nhuệ (`elite_long_sam`) | Elite SAM | SAM tầm xa TN |
+  | Pháo tự hành tinh nhuệ (`elite_artillery`) | Elite SPG | Lựu pháo TN |
+
+  | Bosses | English | Vietnamese |
+  | --- | --- | --- |
+  | Quái vật thép Behemoth (`behemoth`) | Behemoth | Behemoth |
+  | Pháo đài băng (`mobile_fortress`) | Ice Fortress | Pháo đài băng |
+  | Đoàn tàu thép (`armored_train`) | Iron Train | Đoàn tàu thép |
+  | Chim sắt (`mega_gunship`) | Iron Bird | Chim sắt |
+  | Tàu mẹ Tổ Ong (`drone_mothership`) | Hive Carrier | Tàu mẹ Tổ Ong |
+  | Đoàn tàu Tận thế (`nuke_train`) | Doomsday | Tàu Tận thế |
+  | Đĩa bay Bọ Bạc (`silver_bug`) | Silver Bug | Bọ Bạc |
+  | Hỏa ngục Inferno (`behemoth_inferno`) | Inferno | Inferno |
+  | Bão điện Tempest (`behemoth_tempest`) | Tempest | Tempest |
+  | Tổ ong Hive (`fortress_hive`) | Hive | Tổ ong Hive |
+  | Thành lũy Bastion (`fortress_bastion`) | Bastion | Bastion |
+  | Pháo đường ray siêu nặng (`rail_supergun`) | Supergun | Pháo ray |
+  | Máy khoan Sâu Đất (`earth_borer`) | Earth Worm | Sâu Đất |
+  | Khí cầu chỉ huy (`command_airship`) | Airship | Khí cầu |
+  | Tàu đệm khí đổ bộ (`landing_hovercraft`) | Hovercraft | Tàu đệm khí |
+  | Tổng Tư Lệnh (`supreme_command`) | Supreme Cmdr | Tổng Tư Lệnh |
+  | Bóng ma Spectre (`sky_fortress`) | Spectre | Spectre |
+
+  | Towers and structures | English | Vietnamese |
+  | --- | --- | --- |
+  | Sở chỉ huy (`headquarters`) | HQ | Sở chỉ huy |
+  | Siêu pháo (`super_gun`) | Super-gun | Siêu pháo |
+  | Tháp căn cứ (`spawn_bastion`) | Bastion | Tháp căn cứ |
+  | Pháo đài hạng nặng (`heavy_turret`) | Fortress | Pháo đài |
+  | Tên lửa Patriot tầm xa (`missile_battery`) | Patriot | Patriot |
+  | Tháp tên lửa chống tăng (`atgm_tower`) | ATGM tower | Tháp ATGM |
+  | Tháp pháo (`gun_turret`) | Gun turret | Tháp pháo |
+  | Tháp phòng không (`aa_turret`) | AA turret | Tháp PK |
+  | Tháp gây nhiễu EW (`ew_tower`) | EW tower | Tháp EW |
+  | Răng rồng (`dragons_teeth`) | Dragon's teeth | Răng rồng |
+  | Bãi mìn (`minefield`) | Minefield | Bãi mìn |
+  | Trạm C-RAM (`c_ram`) | C-RAM | C-RAM |
+  | Ụ pháo ẩn (`gun_pit`) | Gun pit | Ụ pháo ẩn |
+  | Nhà chứa drone (`drone_hangar`) | Drone hangar | Nhà chứa drone |
+  | Dàn rốc-két (`rocket_turret`) | Rockets | Dàn rốc-két |
+  | Lô cốt súng máy (`mg_bunker`) | MG bunker | Lô cốt |
+  | Trận địa pháo (`artillery_emplacement`) | Artillery | Trận địa pháo |
+  | Ụ súng tạm (`bulwark_post`) | Fallback post | Ụ súng tạm |
+  | Tháp canh (`guard_tower`) | Guard tower | Tháp canh |
+  | Xe tiếp tế (`supply_truck`) | Supply truck | Xe tiếp tế |
+  | Trạm chỉ thị mục tiêu (`targeting_station`) | Fire control | Trạm chỉ thị |
+
+  | Tower branches | English | Vietnamese |
+  | --- | --- | --- |
+  | Tháp quan sát (`guard_tower.watch`) | Watchtower | Tháp quan sát |
+  | Ổ súng (`guard_tower.nest`) | Gun nest | Ổ súng |
+  | Súng máy đôi (`mg_bunker.twin`) | Twin HMG | Súng máy đôi |
+  | Lô cốt phun lửa (`mg_bunker.flame`) | Flame bunker | Lô cốt lửa |
+  | Máy gây nhiễu drone (`ew_tower.drone`) | Drone jammer | Chống drone |
+  | Máy đánh lừa radar (`ew_tower.spoof`) | Radar spoofer | Đánh lừa radar |
+  | Chông sắt (`dragons_teeth.hedgehog`) | Hedgehogs | Chông sắt |
+  | Rào thép gai (`dragons_teeth.wire`) | Wire and ditch | Rào thép gai |
+  | Bãi mìn chống tăng (`minefield.at`) | AT field | Mìn chống tăng |
+  | Bãi mìn rải (`minefield.scatter`) | Scatter field | Bãi mìn rải |
+  | Nòng dài (`gun_turret.long`) | Long barrel | Nòng dài |
+  | Nạp đạn tự động (`gun_turret.auto`) | Autoloader | Nạp tự động |
+  | Tấn công từ trên (`atgm_tower.top`) | Top attack | Đánh từ trên |
+  | Đa năng (`atgm_tower.multi`) | Multi-role | Đa năng |
+  | Rốc-két chùm (`rocket_turret.cluster`) | Cluster | Rốc-két chùm |
+  | Nhiệt áp (`rocket_turret.thermo`) | Thermobaric | Nhiệt áp |
+  | Centurion (`c_ram.centurion`) | Centurion | Centurion |
+  | Săn máy bay (`c_ram.hunter`) | Hunter | Săn máy bay |
+  | Phục kích (`gun_pit.ambush`) | Ambush | Phục kích |
+  | Hầm sâu (`gun_pit.deep`) | Deep pit | Hầm sâu |
+  | Phản pháo (`artillery_emplacement.cb`) | Counter-fire | Phản pháo |
+  | Tầm xa (`artillery_emplacement.ext`) | Long range | Tầm xa |
+  | PAC-3 (`missile_battery.pac3`) | PAC-3 | PAC-3 |
+  | Radar tầm xa (`missile_battery.lrr`) | Long radar | Radar tầm xa |
+  | Nhà chứa Lancet (`drone_hangar.lancet`) | Lancet hangar | Lancet |
+  | Bầy đàn (`drone_hangar.swarm`) | Swarm | Bầy đàn |
+  | Pháo bờ biển (`heavy_turret.coastal`) | Coastal gun | Pháo bờ biển |
+  | Pháo đài thép (`heavy_turret.bastion`) | Bastion | Pháo đài thép |
+  | Tháp cao xạ (`aa_turret.flak`) | Flak tower | Tháp cao xạ |
+  | Trạm tên lửa (`aa_turret.sam`) | SAM post | Trạm tên lửa |
+
+  | Utility modules | English | Vietnamese |
+  | --- | --- | --- |
+  | Xưởng sửa chữa (`repair_bay`) | Repair bay | Xưởng sửa chữa |
+  | Kho đạn (`ammo_depot`) | Ammo depot | Kho đạn |
+  | Sân bay dã chiến (`airfield`) | Airfield | Sân bay |
+  | Trạm hậu cần (`logistics_station`) | Logistics | Trạm hậu cần |
+  | Trạm radar (`radar_station`) | Radar | Trạm radar |
+
+  | Fire support | English | Vietnamese |
+  | --- | --- | --- |
+  | Pháo kích (`artillery_barrage`) | Barrage | Pháo kích |
+  | Không kích (`airstrike`) | Airstrike | Không kích |
+  | Tên lửa hành trình (`cruise_missile`) | Cruise | Hành trình |
+  | Màn khói (`smoke_screen`) | Smoke | Màn khói |
+  | Sửa chữa (`repair_drop`) | Repair | Sửa chữa |
+  | Bom napalm (`napalm_strike`) | Napalm | Napalm |
+  | UAV quét (`uav_scan`) | UAV scan | UAV quét |
+  | Mìn rải từ xa (`remote_mines`) | Mines | Rải mìn |
+  | Tháp dã chiến (`field_tower`) | Tower | Tháp dã chiến |
+  | Đòn SEAD (`sead_strike`) | SEAD | SEAD |
+
+  | Items | English | Vietnamese |
+  | --- | --- | --- |
+  | Bom MOAB (`moab`) | MOAB | MOAB |
+  | Bom chùm (`cluster_strike`) | Cluster | Bom chùm |
+  | Tiếp viện thả dù (`reinforcements`) | Airdrop | Thả dù |
+  | Sửa chữa toàn quân (`field_repair`) | Field repair | Sửa toàn quân |
+  | Bom EMP (`emp_blast`) | EMP | EMP |
+  | Khiên vòm (`shield_dome`) | Shield | Khiên vòm |
+  | Pháo đài bay yểm trợ (`gunship_support`) | Gunship | Pháo đài bay |
+
+- **B2 two-line name areas.** `Kit.FixedLines(label, lines, fallback)` holds a label at exactly that many
+  lines of its own type (measured from the font, so it follows the text size), and swaps in the short
+  name when the full one needs more; vehicle, tower, support and gear cards use two lines, the compact
+  tray one (two in Large text). Grids and deck strips stretch their cards to the row's height, and a
+  gear slot's card fills its cell, so an empty or locked card is as tall as its neighbours.
+- **B3 scan.** Every rebuilt screen was looked at in the screenshots (16:9 and the other shapes); the
+  misalignments found were all card name heights (the level line moving with one- to three-line names,
+  locked tower cards taller than the rest, an empty gear slot shorter than a worn one). What is left for
+  prompt 14: the towers' class icons (they use vehicle icons).
+- **B4 raw keys and placeholders.** `Strings.Card` of a tower branch id ("aa_turret.flak") fell through
+  to `support.<id>` and showed the raw key; it now reads "tower · branch". Boss Rush's "{0} trùm liên
+  tiếp" is formatted everywhere in this build (home's mode list and Operations). The new
+  `LocalisationScanTests.EveryScreenShowsWordsNotKeys` builds every menu and battle screen with the demo
+  profile in both languages and fails on any text or tooltip with a `{0}` placeholder or a table key
+  ("support.x", "unit.x", "branch.x" and the other key prefixes).
+- **B5** `UiLayoutTests.CardsInARowLineUp`: on home, the deck, towers, equipment, a chapter, Operations
+  and the battle tray (compact and full), at the four shapes in Normal and Large text, the cards of one
+  row share their top and height, and the picture, the cost box (by its top right), the name area (with
+  its height) and the level sit at the same place on each.
+
+### C. Shields
+
+- **One shader** (`Resources/Shaders/Shield.shader`, `MachineBrigade/Shield`) and one view helper
+  (`Game/Effects/ShieldVisual.cs`: `SetSide`, `Hit`, `Flicker`, `Raise`, `Lower`, `Collapse`, `Tick`) for every
+  shield: the fortress dome of Siege and Defend (exactly the sim's `DomeRadius`, 0.5 of it high, as before),
+  the Shield Dome item (a dome of its radius at its point for its duration), vehicle shields (a hex bubble
+  round the hull for the boss and elite shield skills: the Tempest, the Hive Carrier, the Silver Bug,
+  `elite_shield`, and the item's per-vehicle shield), siege objectives that cannot be hurt yet (a small dome
+  sized to the model), and the gear barriers (Aegis Barrier, Shared Shield: a faint bubble for 0.8 s when
+  it takes a hit, a shatter when it breaks). The boss's "hull shielded" part lock has no shield: a bubble
+  would say the parts inside cannot be hit, which is wrong.
+- **The look.** A skin of hexagonal tiles, bright only towards the rim (fresnel), the middle almost clear so
+  what is inside reads; a seam where a dome meets the ground. The tiles are real geometry, a geodesic sphere
+  with a small fan of triangles per tile (hexagons and 12 pentagons, no stretching at the poles), so the
+  per-tile effects (ripple, flicker, shatter) are worked per vertex and the pixel shader stays cheap. About
+  4-5 m tiles on domes: the fortress dome (R about 60 m) is level 4 (10.7k vertices, 9.2k triangles), 3 on
+  Low; the item dome level 2 (631 / 540), a bubble level 2 (1122 / 960); built once and cached.
+- **Premultiplied blending, not additive**: additive red over green ground turned yellow and peach after
+  the ACES tonemapper; premultiplied, only the bright rim hides a little of what is behind (at most 30 %).
+- **Ripples**: up to four a shield at once, a flash where the round lands and a ring of lit tiles running
+  out from it, from `ProjectileImpact`, `StrikeImpact` and `Damaged` events; kept in the shield's own space
+  (they move with a moving vehicle); on a dome the hit is projected straight up onto the skin, on a bubble
+  onto the side facing the camera; a burst on one spot is one ripple.
+- **Flicker**: the fortress dome more as its generators lose health, a burst when one is hit, a 1.1 s surge
+  when one falls while others stand; a boss bubble with its shield part's damage; the item dome in its last
+  1.2 s, a vehicle shield in its last second.
+- **Collapse** (0.9 s): a flare, then the tiles break away one by one, shrink and fly off. The dome's fall no
+  longer uses the Ultimate fireball blast (a field giving way is not fire): the shatter, two shockwave rings
+  (one in the side's colour, one white), a milder shake and flash (`EffectsDirector.Jolt`). The generators'
+  own explosions still come from the sim.
+- **Colours** by owner against the player: ours blue (0.24, 0.66, 1), the enemy's red-orange (1, 0.2, 0.05);
+  colour-blind mode (0.22, 0.56, 1) against orange (1, 0.56, 0.08). The owner is the fortress's defender
+  (dome, objectives), the team that used the item, the vehicle's own team. The item's ground ring takes its
+  side's colour too. Under its own side's item dome a vehicle draws no bubble of its own (the dome is its
+  shield); driving out, the bubble shows (the sim's shield goes with the vehicle).
+- **Few particles**: only the existing shockwave rings (two when the fortress dome falls, one when the item
+  dome goes up). **Low graphics** (`MatchSettings.Tier`, a `multi_compile_local` keyword, `_SHIELD_LITE`,
+  because the materials are made at run time): no lattice, ripples or shimmer; the rim, the seam, the
+  flicker, a whole-skin flash on a hit and the shatter stay, one tile level fewer. Two shared materials
+  (full and Low) and a property block per shield; the shield's clock is a script property (the shots are
+  deterministic); the hash avoids `sin()` for precision on phone GPUs. `Prewarm` draws a tiny shield for
+  0.3 s behind the loading screen, so Vulkan does not stall the first time one appears.
+- **View only**: no sim rule, size or balance changed (the dome's size is the sim's).
+- Pictures: `Docs/art/shields/shields.png` (twelve panels: the enemy's dome, ours, ours at battle zoom,
+  ripples of three ages, flicker, the collapse at three moments, bubbles, the item dome hit, objective
+  shields, Low) and `Docs/art/shields/in-game-*.png` from real Siege and Defend matches with the dome coming
+  down (`MachineBrigade.Editor.ShieldShots.Shields`, `ShieldPlayShots.Run`). `ShieldVisualTests` (four fast
+  tests). Front and back faces are told apart with `SV_IsFrontFace`, checked in the editor on D3D11 only
+  (a phone getting it wrong would draw both faces alike, which is harmless). Smoke behind the dome's rim is
+  darkened a little (the shield draws after the particles, premultiplied).
+- **To measure**: the frame rate of the heaviest battle on Low graphics on a real phone, before and after
+  (the old dome was 637 vertices and 1152 triangles on the particle shader; the new shader does a little
+  more a pixel, the same screen area; the lattice is off on Low).
+
+### D. Checks and pictures
+
+- Tests run (targeted, as the owner asked): `UiLayoutTests` (all strict checks green, with the new HUD
+  and card checks), `LocalisationScanTests`, `UiThemeTests`, `UiLanguageTests`, `ShieldVisualTests`;
+  PlaySmoke (menu 15 s, Conquest, Siege and Boss Rush 30 s each): 0 errors.
+- New screenshots in `Docs/ui-screens/`: `battle-hud-score` (Conquest), `battle-hud-mission` (a boss),
+  `battle-hud-boss-open` (its bar opened), `battle-hud-siege`, `battle-hud-defend`, `battle-hud-waves` at
+  the four shapes, Large text and English for the main ones, and `battle-hud-score-full` /
+  `battle-hud-mission-full` (the full HUD) at 16:9 and 20:9. Every other screen was shot again (cards
+  changed across the menus).
+- **To measure** (testing phase, a real phone): the frame rate of the heaviest battle on Low graphics
+  before and after the shield change, and the compact HUD's cost against the full one.
+
+## 13C. Prompt 13: combat-value balance, ammo, modes, AI difficulty (2026-09-29)
+
+One balance pass in the owner's order A → I. The owner's rule on test time wins over the brief's "5 seeds
+for everything": part A runs each standard scenario once on a fixed seed; the few decisions that were close
+were checked on two more seeds, and that is said where it was done. Everything else is listed for the testing
+phase (13C.Z). The tables are in `Docs/COMBAT_VALUE.md` (generated) and the raw files in `Docs/balance/`.
+
+### A. Measuring real combat value
+
+**A.1 The theoretical table.** `FirePower.Sustained` (Sim, new) is what the design document's damage table,
+the detail screen's DPS and the measurement's theoretical table now read: a salvo's rounds over its cooldown, a
+magazine over its change, a launcher's rounds per load over the time to fire them *plus* the reload in place,
+and (after C) an aircraft's stores per full load plus the time to take them on again at the holding pattern's
+full rate. Before, `UnitStats.Dps` was volley / cycle, so every launcher counted as never running dry (the MLRS
+90 → 79 DPS on light, the siege tank's 169 → 138 on structures). The design document's "attack jet 1,074 DPS
+on heavy" came from the cannon at 64 damage (before 12F) streaming without end; the table now says 414 (the
+cannon at 22), but that is still a gun firing whenever it can. The real figure comes from A.2: **131 DPS on
+heavy for the attack jet, 280 for the A-10** in the tanks scenario (the brief's "about 100 and 190" came from
+11C's one-pass measurement). The corrected table and the real DPS are both in `COMBAT_VALUE.md`.
+
+**A.2-A.4 The measurement** (`CombatValueMeasure.MeasureTheRoster`, EditMode, explicit, `MB_BALANCE=1`):
+
+- Each buyable vehicle, rank 1 and no equipment, in a group of about 14 CP of its kind (1 to 5 vehicles:
+  equal-CP groups as `CounterTests` does, so a 3 CP car is not measured alone against two battle tanks), led by
+  the tactical AI (so artillery stands off, empty launchers stop to reload, aircraft attack as they do in play),
+  attacks a reference group placed 85 m (ground) or 135 m (aircraft) away, from arrival, for 90 s.
+- The groups: **light** (3 armoured cars, a jeep), **tanks** (2 battle tanks), **fort** (a gun turret and an MG
+  bunker), **air** (an attack helicopter and an attack jet), and **light+AA, tanks+AA, fort+AA** (an AA vehicle
+  added; an AA tower at the fort). A destroyed group comes back 3 s later as another wave, so a strong unit is not
+  left idle. Aircraft, helicopters and every launcher with limited ammunition also fight **long**: two battle
+  tanks, two armoured cars and an AA vehicle for 4 minutes, so empty-and-reload cycles count.
+- Everyone sees everyone (`RevealAll`: artillery has no spotter of its own there), except when the shooter is
+  stealthy (the point of a stealth bomber is not being seen).
+- Recorded per vehicle and group: the damage it really did (never more than its victim had left: a 700 blast on a
+  300 HP car counts 300) by armour, the share of its time with a target in reach (on target), its survival, the
+  time to destroy the first group, the real damage a second, and the **combat value per CP = damage × (1 + share
+  of the time alive) / 2 / CP**. The survival factor rewards a unit that is still there for the next fight
+  without counting its lifetime twice (the damage already stops when it dies); (1 + share) / 2 runs from 0.5
+  (killed at once) to 1 (alive at the end).
+- "Ground value" (the mean over the six ground groups) is the like-for-like figure for everything that fights
+  the ground; anti-air is judged on the air group; support vehicles (engineer, jammer, radar, command vehicle)
+  do nothing measurable here and are judged by what they do for others (E).
+- The whole roster (52 vehicles, 263 runs + 26 long ones) takes 8 s: the sim is fast when the battlefield is small.
+  `MB_CV_SEEDS=13,14,15` averages seeds, `MB_CV_BALANCE=<file>` measures another balance file (the before
+  column), `MB_CV_ONLY=a,b` a few vehicles.
+
+**A.5 Blast radii.** Checked against the data before 12C (`a455751`): no weapon's `splash`, no support's radius
+and no vehicle's death blast changed; 12C touched only `Game/Effects`, the editor and tests. Nothing to restore.
+
+**A.6 The earlier changes, measured.**
+
+- *Fire burning 20 % shorter (12A):* view only. The simulation has no burning-ground zones; fire damage is the
+  Burn status on vehicles, unchanged. The flame tank's, the flame bunker's and the Inferno's damage did not move.
+- *Slower missiles (11C, 12B):* `MissileHitMeasure.PrintMissileHitRates` fires each launcher at a target that
+  cannot die and drops flares (and, for the tanks, an Iron Beam's protection) for 90 s:
+
+  | Launcher → target | Missile, speed | Hit rate now | At the 11C speed |
+  |---|---|---|---|
+  | AA vehicle → attack jet (flares) | `sam` 40 | 86 % | |
+  | SAM launcher → attack jet | `sam_long` 46 | 77 % | |
+  | missile battery → attack jet | `sam_battery` 46 | 92 % | |
+  | long-range SAM → attack jet | `sam_48n6` 62 | 91 % | |
+  | fighter → attack jet | `air_to_air` 34 | 100 % | 94 % (48) |
+  | fighter → attack helicopter | `wvr_aam` 34 | 71 % | 79 % (48) |
+  | ATGM carrier → battle tank + Iron Beam | `atgm_heavy` 19 | 45 % (11 of 22 shot down) | 45 % (24) |
+  | ATGM carrier → battle tank, no protection | `atgm_heavy` 19 | 91 % | 91 % |
+  | attack helicopter → tank + Iron Beam | `heli_atgm` 21 | 6 % (16 of 18 shot down) | 6 % (30) |
+  | Ka-52 → tank + Iron Beam | `vikhr` 24 | 42 % | 42 % (34) |
+
+  Active protection intercepts at impact, whatever the speed, so it takes the same share. Flares take a few
+  points more of the slower air-to-air missiles (a longer flight overlaps a flare more often). The Iron Beam
+  against the attack helicopter's single Hellfires (6 %) is its one strong counter; salvos of two get through.
+- *Long streams (12D) and the new fighter AI (12F):* measured there at unchanged DPS per weapon; the combat
+  value now includes them (the fighter's on-target share against aircraft is 76 %, its survival 28 s against the
+  air group).
+
+**The owner's slower SAMs (asked for during this pass).** Ground SAMs 10 % slower: `sam` 40 → 36 m/s,
+`sam_long` 46 → 41, `sam_battery` 46 → 41 (its PAC-3 and long-range branches inherit it), `sam_48n6` 62 → 56.
+Alone that breaks "SAM beats jets" (the lead's finding, reproduced: seed 1 lost, the jets untouched). So a guided
+missile now has a seeker: **`flareResist`**, the share of flare decoys it sees through (a flare's pull, 35 %,
+times 1 − resist; one roll per missile, the random draw unchanged so replays stay the same). Radar-guided SAMs
+see through most flares, as they do: Buk 0.8, Patriot and S-400 0.85; the SHORAD/Stinger dart 0.5 (a two-colour
+seeker). Air-to-air missiles and the helicopters' MANPADS keep 0 (the fighter is already the strongest thing in
+the air, E). Measured (`PrintSamAgainstJets`, 4 seeds each):
+
+| | SAM → attack jet hit rate | 3 SAM launchers vs 2 attack jets | 3 AA vehicles vs 2 attack helicopters |
+|---|---|---|---|
+| before (11C speeds) | 77 % | 4/4 won | 4/4 |
+| 10 % slower | 77 % | 3/4 (seed 1 lost, jets untouched) | 4/4 |
+| 10 % slower + seekers (shipped) | 92 % | 4/4 | 4/4 |
+
+Found on the way: one A-10 (18 CP) beats two SAM launchers (10 CP) in 6 s on every seed, before and after; it is
+an E question (SAM value per CP), not a speed one.
+
+### B. Damage a round by the real weapon
+
+**B.1 Data.** Every weapon has `real` (the real weapon: "2A42 30 mm", "9M133 Kornet", "FAB-500 (500 kg)"),
+`family` and `size` (the calibre in mm; for missiles the missile's kg, for bombs, drones and AA missiles the
+warhead's kg). Families: `mg`, `autocannon` (20-57 mm, AA guns included), `grenade`, `tank_gun`, `howitzer`,
+`mortar`, `rocket`, `atgm`, `aa_missile`, `bomb`, `cruise`, `ballistic`, `drone`, and scales of their own for
+`flame`, `laser`, `railgun`, `melee`, `special`. The weapon line reads "id, real name, family, size, ...".
+
+**B.2 The scale** (per round, before armour), as the owner's reference with one number chosen in each band:
+
+| Family | Size → damage |
+|---|---|
+| machine guns | 7.62 mm 5.5 · 12.7 mm 9.5 |
+| autocannons | 20 mm 13 · 23 mm 14 · 25 mm 17 · 30 mm 22 · 35 mm 25 · 40 mm 30 · 57 mm 70 |
+| grenade launcher | 40 mm 26 (low velocity, below the 40 mm cannon) |
+| tank and direct guns | 57 mm 70 · 76 mm 120 · 105 mm 200 · 120 mm 240 · 125 mm 250 · 140 mm 280 · 152 mm 320 |
+| howitzers | 105 mm 200 · 152/155 mm 320 · 203 mm 420 |
+| mortars | 120 mm 150 · 240 mm 450 |
+| rockets | 70 mm 28 · 80 mm 32 · 107 mm 45 · 122 mm 57 · 220 mm (TOS) 97 · 227 mm 100 · 300 mm 140 |
+| ATGM / AGM (missile kg) | Griffin, MAM-L 180 · TOW-2, Konkurs 190 · Kornet, Ataka 230 · Vikhr, Hellfire 250 · Maverick 345 · Kh-29 360 |
+| AA missiles (warhead kg) | Igla 150 · Stinger / SHORAD 170 · R-60 175 · AIM-9 220 · AIM-120 280 · Buk 320 · Patriot PAC-2 340 · PAC-3 360 · S-400 48N6 600 |
+| bombs (kg) | 110 200 · 250 300 · 500 400 · 900 (car bomb) 700 · 907 (JDAM) 850 |
+| cruise / ballistic | Kh-101 360 · JASSM 390 · Iskander 600 |
+| drones (warhead kg) | FPV 140 · Lancet 240 · Shahed 320 |
+
+Choices: the AA missiles' scale is by warhead, so the long-range 48N6 keeps its 600 one-shot (its identity);
+PAC-3 is counted a little above PAC-2 (hit-to-kill) so the branch stays the upgrade; the thermobaric 220 mm sits
+just under the 227 mm. The car bomb is a 900 kg charge in the bomb family, just under the JDAM.
+
+**B.3 Inversions fixed** (all 142 weapons were redone; the brief's list):
+
+| Brief's example | Before | Now |
+|---|---|---|
+| 105 mm of the tank destroyer / wheeled gun / gun pit above the 120 mm | 357 / 300 / 290 vs 200 | re-gunned (B.5): 125 mm 250, 120 mm 240, 120 mm 240; the battle tank's 120 mm 240 |
+| 30 mm: Su-25 / Mi-24 GSh-30K / GAU-8 / BMPT / IFV | 22 (after 12F) / 15.8 / 27 / 21.3 / 22.4 | 22 on all five |
+| Ka-52 23 mm vs 12.7 mm; 35 mm flak below the ZU-23 | 6.2; 6.85 vs 9.7 | 23 mm 14; 35 mm 25, ZU-23 14 |
+| 25 mm: armoured car / gunship | 15.5 / 12.4 | 17 / 17 |
+| 155 mm SP gun vs the gunship's 105 mm | 171 vs 347 | 320 vs 200 |
+| S-8 80 mm vs helicopter rockets; elite Grad, elite MLRS | 22 vs 40; 19, 13 | S-8 32, Hydra 28; Grad 57, GMLRS 100 |
+| elite Apache's Hellfire vs the Apache's | 128 vs 256 | 250 and 250 |
+| the UAV's small bomb vs the Su-25's FAB | 297 vs 351 | GBU-39 200, FAB-250 300 |
+
+Also: boss guns now fire the calibre's rounds (12D had cut them to 1.8-6 a round to keep the bosses' damage a
+second: the hovercraft's AK-630 22, the mega gunship's M230 22, `boss_hmg` 9.5): the same real weapon hits the
+same everywhere, and the boss's damage a second is kept by shorter bursts.
+
+**B.4 Damage a second kept** (`bapply.py` in the session scratchpad, reproducible from `bplan.py`): for each
+weapon the new round's damage, then
+- single shots: the cooldown by the same factor (the battle tank's 120 mm 4.57 → 5.48 s, the SP gun 7.14 →
+  13.4 s with its reload 28 → 52 s, the tank destroyer 5.57 → 3.9 s);
+- salvos: the salvo's size first (the Apache's Hydras 8 × 40 → 11 × 28, the Su-25's S-8s 20 × 22 → 14 × 32,
+  the A-10's 8 × 61 → 17 × 28, the MLRS 6 × 80 → 5 × 100), then the cooldown for the rest;
+- magazines: the stream kept about as long as before (the owner likes long streams, 12D), the change 0.8-4.5 s,
+  the cadence as near the old as that allows (the Gepard's 35 mm: 50 at 18/s → 23 at 10/s, change 1.2 → 4.3 s;
+  the M230: 30 at 10/s → 22 at 9/s, change 4.3 s; C-RAM: 100 at 33/s → 23 at 8/s);
+- launchers: the cycle and the reload in place scaled together.
+Every weapon's `FirePower.Sustained` is within 1 % of before. `roundWeight` keeps a round from looking or
+sounding lighter than before (the owner's rule); it is dropped where the damage now reaches it.
+
+**B.5 Re-gunned rather than weakened:** the tank destroyer fires a 125 mm (2A75, as on the 2S25 Sprut) and its
+elite a 125 mm APFSDS, the wheeled gun a 120 mm (Centauro II), the gun pit a dug-in 120 mm. Their guide lines and
+notes say so; the weapon ids stay (saves, equipment).
+
+**B.6 Autocannon rounds.** A kinetic weapon of the autocannon family (20-57 mm) uses the damage table's new
+**Autocannon row: light 1.0, heavy 0.38, air 0.3, structure 0.4** (a machine gun's kinetic: 0.25 / 0.3 / 0.3; AP:
+1.0 on heavy). A new damage type was rejected: resistance stats are indexed by damage type in saved equipment.
+`DamageTable.Multiplier(weapon, armour)` is used wherever the weapon is known (targeting, the overkill check, a
+hit's damage through `HitInfo.Weapon`, boss parts, the design document). The GAU-8 and the jets' cannons keep
+their armour-piercing rounds (depleted uranium / API: they are tank-busting guns), and the AA guns their flak.
+
+**B.7 Tests** (`CalibreTests`): damage never falls as the size rises within a family; the same real weapon (its
+name without the variant note in brackets) hits the same on every carrier; the reference scale's bands hold;
+every weapon that fires has a family, size and name; autocannon rounds sit between a machine gun's and a tank
+gun's on armour.
+
+**What B did to combat value** (three seeds, 13-15, before and after B, ground value): most vehicles within
+±10 %. The movers, and why: the light tank −24 %, flame tank −18 %, bulldozer −13 %, sapper −13 %: the *reference*
+light group's armoured cars now hit heavy armour 52 % harder with their 25 mm (B.6), so heavy vehicles in that
+fight live shorter (their own damage a second did not move); the wheeled gun −26 % and tank destroyer −12 %:
+the same, plus fewer, bigger shots against light targets; the fighter −34 % against aircraft (air group): its
+AIM-120 at 280 (was 351) needs a fourth hit on a 1,250 HP helicopter whenever one is decoyed, which is the
+direction E wants anyway. Nothing was re-tuned for these in B; E takes the roster as B left it.
+
+### C. Stores and rearming on the field
+
+**C.1 What runs out.** An aircraft's *stores* (bombs, missiles, rockets) have a count per full load: weapon
+`load`, a carrier's own `loads` over it (the Ka-52's S-8s). Guns never run out (they change magazines in the air
+as before); ground launchers and missile vehicles keep their magazine and reload in place (`ammo`, standing
+still); supports and the air-raid event are not stores. The aircraft weapons that had `ammo` (AAMs, MANPADS,
+JASSM, the bomber's cruise missiles, Griffin, the drone's bombs), which reloaded in place in mid-air, are stores
+now. A salvo fires what is left (a half-empty rocket pod fires half a ripple). Bosses carry no stores (a boss
+fight is its own).
+
+| Aircraft | Stores per full load | Rearm, empty to full (full rate) |
+|---|---|---|
+| attack helicopter (and elite) | 4 Hellfire (elite 8 in pairs), 22 Hydra (2 salvos), 2 Stinger | 8.5 s |
+| gunship helicopter | 32 S-8 (2 salvos), 4 Hellfire | 9 s |
+| Ka-52 | 8 Vikhr (4 pairs), 24 S-8 (3 salvos), 2 Igla | 9 s |
+| scout helicopter | 24 Hydra (2 salvos) | 8 s |
+| strike drone / recon drone | 4 Hellfire + 2 GBU-39 / 4 MAM-L | 8.5 s |
+| fighter | 4 AIM-120, 2 AIM-9X | 11 s |
+| attack jet (and elite) | 16 S-8 (2 salvos of 8, D.1), 4 FAB-250 (2 pairs), 2 R-60 | 14 s |
+| A-10 | 14 Hydra (2 pods of 7), 2 Maverick, 2 AIM-9 | 15 s |
+| heavy bomber | 9 FAB-500 (one run, D.1), 2 Kh-101 | 16 s (brief: 20-22, see C.10) |
+| stealth bomber | 2 JDAM (one run, D.1), 4 JASSM (2 pairs) | 16 s (brief: 20-22, see C.10) |
+| AC-130 (the Gunship item) | 10 Griffin | 18 s |
+
+**C.2 Coming back one round at a time** (`SupplySystem`, Sim, stepped after the abilities): every store fills in
+the same time, one round at a time, anywhere on the map. **Full rate** once the aircraft has been out of danger
+and not attacking for 3 s; **half rate** while it attacks (a target in reach, its attack hold, or a shot fired in
+the last 3 s) or is inside enemy anti-air or fighter reach. Danger is the real one (every enemy AA gun, AA missile
+and fighter, whether seen or not; checked every fifth step, spread over the aircraft). Rearming mends nothing.
+
+**C.3 The holding pattern** (`SupplySystem.HoldingPoint`): from where the aircraft broke off, straight back
+towards home from the nearest friendly ground unit within 60 m (or from where it broke off when there is none),
+to the first spot out of every *known* enemy AA and fighter reach plus 6 m, the circle it will fly included;
+turning up to 60 degrees either way when straight back is covered; at least 1.5 s of flight behind a friendly
+line (2 s with none), at most 2.6 s; on the map with room to circle; with every spot covered, the least covered.
+It is worked out again every second as the front moves, always from where the aircraft broke off (a pattern
+worked out from where it circles would run away in front of it: that was the heavy bomber's 63 swings in
+`AirMotionTests` during the work). There an aeroplane circles as it circles a post and a helicopter hovers; it
+stays on the map, can be seen and shot, and its guns still fire at anything in reach. **The old rule of flying
+off the map to rearm:** there was none in the simulation; aircraft reloaded their few magazines in mid-air and
+went to the airfield (only if the base had one) when their main weapon was empty. That trip is gone (C.5).
+
+**C.4 Leaving at the right time.** An aircraft goes to rearm when its stores are spent. Stores that cannot hit
+what it fights do not count: an A-10's AIM-9s or an Apache's Stingers do not keep it on station; a fighter's
+stores are all air-to-air, so they all count. It first finishes what it is doing (`SupplySystem.CanBreakOff`): no
+salvo still firing, no attack hold under way, and an aeroplane not in its pass: it pulls through first. It flies
+out on a straight line, can be hit and keeps shooting and dropping flares; the holding point is chosen out of known
+AA, so the line away from the fight bends away from it. It comes back with half its stores (a bomber two thirds
+of its bombs) and something to attack near its orders; full and with nothing to attack it stays there ready (an
+aircraft on guard goes back to its post). The commander may send an aircraft early (the new `Rearm` command)
+when its stores are under a fifth and nothing it can hit is near it (`TacticalAi.RearmInLulls`). Low health keeps
+its old rule (the commander sends it to be mended below 35 %, released at 90 %), now only once its attack is over,
+and to the HQ when there is no landing pad.
+
+**C.5 Faster sites.** Landing pad (the airfield module): stores twice as fast as the holding pattern, mending
+3 % a second as before. HQ (every base): 1.5 times, mending 1 % a second. Beside an ammunition carrier (a
+helicopter only): twice as fast, no mending. A site is chosen when the flight there and the rearm take less time
+than at the holding pattern (a site under enemy AA counts at the slow rate), or, with the aircraft under 60 %
+health, a site that mends when it is at most 1.5 times (+5 s) as slow.
+
+**C.6 The attack loop** keeps 12F's hold and loop. With stores and targets, an aircraft attacks as before; out of
+stores it goes to its holding pattern; with no targets after rearming it waits there instead of circling the
+battlefield.
+
+**C.7 Ground launchers** reload in place as before. An empty one now drives to an ammunition carrier within
+about 60 m, or home (the camp), when the drive and a reload there (three times as fast) take less time than
+reloading where it stands (`TacticalAi.SendToRearm`; it moves out of an enemy's reach first, as before).
+
+**C.8 Attack jet and A-10 cannon passes.** Already settled by 12F's attack hold: a 2-2.5 s stream on the attack
+jet, up to 3.2 s on the A-10, in the 2-3 s the owner asked for. Nothing more changed; rockets and bombs are stores.
+
+**C.10 Time spent fighting** (`CombatValueMeasure`, 3 seeds, every scenario, 90 s and the 4-minute run): the share
+of an aircraft's time on the field attacking or ready to (on target, in its hold, or not on its way to rearm and
+not rearming below half its stores):
+
+| Aircraft | Ready | Flying out | At the holding pattern | Longest flight out |
+|---|---|---|---|---|
+| helicopters, drones, fighter, attack jet | 100 % | 0 | 0 | - (their stores come back as fast as they fire them) |
+| A-10 | 91 % | 3.5 % | 8.8 % | 2.6 s |
+| stealth bomber | 77 % | 9.5 % | 48 % | 4.5 s |
+| heavy bomber | 70 % | 13 % | 42 % | 4.7 s |
+
+The bombers' rearm is 16 s, not the brief's 20-22: at 21 s the heavy bomber was ready 63-68 % of the time and at
+0.7 of its old value, well under the 70 % target. Their longest flight out (4.5-4.7 s) is where the nearest spot
+out of an AA vehicle's reach is further than 2.6 s and a heavy bomber has to turn round first; it is flagged for
+the testing phase. Helicopters never need the holding pattern at these rates: a Hellfire every 5 s against 4 in
+8.5 s (half rate: one every 4.3 s) keeps pace. If the owner wants helicopters to go out to rearm, smaller loads
+would do it (not done: C.10's target is fighting time, and they meet it).
+
+### D. Bombers
+
+**D.1 Counts** (and the calibre scale's damage, B): heavy bomber 12 → **9** FAB-500 a run (400 each); stealth
+bomber 3 → **2** JDAM (850); attack jet rockets 20 → **16** a full load (two salvos of 8); airstrike 8 → **6** Mk 84
+a run (700 each after the ×2 strike firepower: the scale's 900 kg), 8 from card rank 7 (was 11); air raid event
+14 → **10** FAB-500 (400); cluster strike 40 → **30** bomblets; napalm 10 → **8** canisters; artillery barrage
+12 × 220 → **8 × 320** (155 mm). The cruise missile card and the MOAB are unchanged (a 1,000 kg class strike; the
+MOAB is the scale's 8,000).
+
+**D.2 Behaviour.** A bomber picks its run by what its bombs would hit (`MovementSystem.BombTarget`, and the same
+worth in the bomb mount's target choice, `CombatSystem.BombWorth`): the value of the enemies within its blast plus
+4 m, a structure half as much again, a lone light vehicle a quarter; never releases where a friendly ground vehicle
+is within the blast plus 3 m of the target; ground its side bombed in the last 10 s (16 m) is worth a third, a pause
+between runs on one place. Bombers go in only with two thirds of their bombs (C.4).
+
+**D.3 Aircraft against the ground.** Ground value (the six ground groups), per CP, after C-F: heavy bomber 438,
+stealth bomber 390, attack jet 438, A-10 383, strike drone 343; the best ground unit of the same role: heavy rocket
+artillery 456 and MLRS 441 (area and structures), tank destroyer 492 (armour). Every aircraft is at or under 1.0
+times the best ground unit of its role (the brief's ceiling: 1.3). Without any enemy anti-air they are 1.5-2 times
+as strong (attack jet: light 628, fort 1,156); with one AA vehicle they fall to 25-60.
+
+### E. Roster review
+
+Same role and price band within ±15 % of combat value per CP, from the measurement (3 seeds; before = the data
+before prompt 13 with the same tool, so the numbers compare). Ground value unless marked "air".
+
+| Vehicle | Change | Before → after (per CP) | Why |
+|---|---|---|---|
+| tank destroyer | 6 → 7 CP | 555 → 492 | the best anti-armour value by a third |
+| ATGM carrier | 6 → 5 CP, 420 → 520 HP, salvo every 8.7 → 7.6 s | 165 → 307 | a third of its peers' value: light armour, slow missiles |
+| wheeled gun | 7 → 6 CP, 440 → 620 HP, 105→120 mm gun 3.3 s | 146 → 234 | half its peers'; its flank bonus rarely comes into play; a fast flanker, left under the band on purpose |
+| Lancet truck | 7 → 6 CP | 204 → 238 | its double damage on artillery and parked vehicles is its point; the reference groups have little of either (kept under the band) |
+| MLRS | 5 → 6 CP | 551 → 441 | artillery's best by half |
+| heavy rocket artillery | 9 → 11 CP | 527 → 456 | same |
+| thermobaric launcher | 9 → 7 CP, 16 → 12.8 s | 243 → 267 | its 38 m reach puts it in the fight |
+| rocket technical | 150 → 190 HP, 8 → 7 s | 235 → 245 | fragile against anything that moves |
+| SP artillery | reload 52 → 36 s, 13.4 → 11 s | 284 → 314 | B's 155 mm stretched its cycle |
+| turtle tank | 8 → 7 CP | 262 → 360 | the battle tank's gun on a slower, hull-aimed body |
+| scout helicopter | 6 → 5 CP | 249 → 318 | |
+| Ka-52 | 14 → 13 CP | 229 → 265 | stays under the band on purpose: the best of all helicopters with AA about (+AA: 223-300) |
+| gunship helicopter | 14 → 15 CP | 469 → 384 | the brief's "highest heavy damage per CP of the helicopters" (tanks: 790 against the attack helicopter's 683) |
+| A-10 | 18 → 16 CP | 559 → 383 | stores (C) took a third of it |
+| stealth bomber | 20 → 18 CP | 535 → 390 | stores and 2 JDAM |
+| heavy bomber | 20 → 22 CP | 598 → 438 | still the aircraft's best on structures (fort 1,177) |
+| fighter | 10 → 12 CP | air 376 → 284 | the brief's "fighters dominate the air"; now between the AA vehicle (234) and the long-range SAM (410) |
+| heavy AA | 7 → 6 CP, 480 → 540 HP | air 219 → 194 | dies first of the anti-air in the air group |
+| ZU-23 technical | 170 → 210 HP | air 99 → 85 | |
+| engineer | 4 → 3 CP | - | lost its rearm aura to the ammunition carrier (F) |
+
+After it, per role: light 92-123; heavy 356-494 (the flame tank 356, an anti-light specialist: light group 700+);
+tank hunters 234-492 (the tank destroyer, FPV carrier and railgun 403-492); artillery 245-456; helicopters 265-392;
+aircraft 343-438; mobile anti-air in the air group 183-234 (the long-range SAM 410: it cannot hit the ground).
+The railgun (the brief's "still weak: 68 DPS on heavy for 9 CP") measures 403, at the tank hunters' middle: its
+pierce and reach are what the theoretical table missed; unchanged. **The Iron Beam** (`PrintPointDefenceValue`:
+four tanks under two ATGM carriers, an MLRS, a Lancet, an FPV carrier and an attack helicopter for 45 s): it saves
+4,214 HP (468 a CP, 22.7 interceptions) against two AA vehicles' 1,963 (245 a CP); unchanged at 9 CP. A C-RAM
+saves as much (4,194).
+
+**E.3 The sky gunship** is no card any more (`"card": false`): the AI never buys it, the design document lists it
+with the items (`itemVehicles`). The Gunship item still flies it. The save migration and the 4,500-coin refund
+were already done in prompt 2 (`CardMerges.Retired`); nothing else carried it as a card (it was only the design
+document's list and the AI's list of every catalog vehicle when it has no deck).
+
+**E.4 Behaviour against the guide text:** the tank destroyer, wheeled gun and gun pit (B.5), the wheeled gun's
+damage a second (65 → 70), the AA tower's quad flak (35 → 23 mm), the engineer (repair only) and the airstrike's
+bombs were corrected; G generates the behaviour lines from the data so they cannot drift again.
+
+### F. Content for the stores
+
+**F.1 The landing pad** (the airfield module, not a new building): stores twice as fast as the holding pattern,
+mending 3 % a second (C.5). Two rank-7 branches (`airfield.hangar`: one more aircraft up at once for its side,
+`EconomySystem.AircraftCap`, and a little tougher; `airfield.service`: stores and mending half as fast again, 4.5 %
+a second, 16 m). A module's branch is chosen and fights as a tower's does (`PlayerProfile` and `BaseSystem` now
+apply branches to modules). The enemy's base takes a landing pad in its first utility slot
+(`BaseLoadout.ForAi`); a fortress's landing pad destroyed pays the attacker 12 CP in Siege (`SiegeRules.PadCp`),
+and its aircraft then rearm only at their holding patterns and the HQ.
+
+**F.2 The ammunition carrier** (`ammo_carrier`, Support, 4 CP, 520 HP light armour, 8.5 m/s, roof HMG, a big
+death blast): launchers and missile carriers within 14 m reload three times as fast (the rearm aura the engineer
+had), helicopters within 12 m take their stores on twice as fast. The engineer keeps its repair and mine clearing
+and drops to 3 CP. The commander parks the carrier by its launchers and helicopters, 6 m back towards home and
+out of known defences' reach, buys one once it fields three launchers or helicopters (never a second), and sends
+empty launchers to it when that is quicker (C.7). Unlocked with the UAV scan in c3m03 (the mission after the
+attack helicopter's). Its model is the supply truck's for now (**asset debt**, `Docs/ASSET_DEBT.md`); its card
+render, In-action scene and short name come with the UI part (C.9, G).
+
+No other vehicle or building was added for the stores.
+
+## 13D. Prompt 14: Base screen, out-of-battle sizes (2026-09-29)
+
+The owner found the menus oversized on a phone and the Base screen a diagram that did not look like the
+camp. No game logic or balance data changed: the Base screen reads the sim's camps, ranges and base
+strength, and the one sim change is an optional filter on the enemy AI's base picker (G5).
+
+### A. Out-of-battle sizes in device points
+
+- **One point, one size on every phone.** `Kit.PanelPxPerPoint` = `Kit.TouchTarget / 44` (1.823 panel px a
+  point; the 80.2 px target is 44 pt). The menu panel is `ConstantPixelSize` at
+  `BattleHud.MenuScale(width, height, dpi, mobile)` = dpi / (160 x 1.823) screen px a panel px, so a point is
+  a 160th of an inch (Android's dp; iOS's point is a 163rd, 2 % off). Where the density is unknown or not a
+  phone's (under 100 dpi, the editor, a desktop, the screenshots) the screen is taken for a phone
+  `Kit.ReferencePhonePoints` (395 pt) high, the height scaling the menus had before, so the screenshots
+  and layout checks measure what a phone shows. Settings > UI size multiplies it as before. A tablet now
+  shows more around the same sized controls instead of everything bigger.
+- **The battle HUD keeps its scaling** (ScaleWithScreenSize with the height, prompt 11's layout and its
+  30 % cover check): `.fc-hud` in Tokens.uss sets its own type and 82 px target, its Large block keeps the
+  old Large sizes, and `.fc-hud .fc-overlay` gives the result, pause, choice, ad and dialog overlays (they
+  are menus shown over the battle: classed `fc-overlay`) the menu sizes again.
+- **The scale, Normal text** (panel px, points in brackets; the brief's range): main button text 35 (19;
+  18-20), screen title 33 (18; 17-20), panel title and buttons 26 (14.3; 14-15), body 24 (13.2; 13-14),
+  secondary 20 (11), a card's name 22 (12; a new `--fc-fs-card`, between secondary and panel title, since
+  cards are narrow), big numbers 36, numbers in text 25; nothing under 10 pt. Large multiplies the type by
+  1.2 (UiThemeTests keeps it to type only, and the top bar: see J). Top bar 81 (44.4 pt), rail 132 (72 pt)
+  with 42 px icons (23 pt) and 11 pt labels, tabs 73 (40 pt; their targets reach 44 pt through negative
+  margins), buttons 81 (44 pt), the main button 96 (52.7 pt). Spacing stays 4 / 8 / 12 / 16 / 20 / 24 / 32
+  panel px (the brief's 4 / 8 / 12 / 16 / 24 in points would be 7 / 15 / 22 / 29 / 44 px: too loose on a
+  phone next to the smaller type; the steps are kept, 2.2 / 4.4 / 6.6 / 8.8 / 13 pt).
+- **Cards in lists 22 % smaller**: vehicle cards 184 -> 144 px wide (79 pt), compact 136 -> 112, gear
+  164 -> 128 (gear names may take three lines in Large text, their fixed name area is three lines there).
+  `Kit.FixedLines` also falls back to the short name when one word is wider than the card (a Large-text
+  case the line count alone missed).
+- **Main content >= 70 %** (`UiLayoutTests.TheContentKeepsSeventyPercentOfTheScreen`: the shown page
+  less its row of tabs, over the screen, every menu screen, 16:9 and 20:9): 70.5-88.8 % at 16:9 and
+  72.1-88.8 % at 20:9 (the Army and Shop pages with tabs are the 70.5 / 72.1; home, campaign and setup 79.6 /
+  81.4; details 78.6; settings 88.8). The 1280 x 720 reference phone is 702 x 395 pt.
+- The top bar's coin and settings buttons are plain icon buttons with 44 pt targets.
+
+### B-F. The Base screen
+
+- **Layout**: a bar (the HQ badge, the map picker, the three base sets, Auto-arrange, "Saved"), then the
+  tray (left), the camp map (centre), the panel (right), and the cover strip along the bottom.
+- **The map is the camp's real picture** (`BaseMapArt`, below): the player's camp on the chosen map from
+  above, the enemy's approach as red arrows, the slots at their real positions. It opens framed on the camp
+  (the HQ, every slot and the arrows' heads with a 12 px margin: `CampMap.Focus`), not the whole picture
+  with its margins, so the slots are as large as they can be at the default zoom; pinch or the wheel zooms
+  (up to 3x), a drag on the ground pans, and the view keeps where the player left it until the map changes.
+- **Slot faces sized 1 / 1.4 / 2** (small / medium / large; utility 1.4 as a hexagon; the HQ mark 1.6),
+  in metres on the picture so they zoom with it. The small face is 0.9 x the closest pair's centre
+  distance shared by their ratios, at most 12 m, per map (`BaseScreen.FaceMetres`), so no two faces touch
+  on any of the 20 camps (`BaseScreenTests.SlotFacesKeepTheirRatioAndNeverTouch`); most camps get 11-12 m.
+  Every face has a transparent 44 pt target round it.
+- **A slot shows** its tower's render, rank ticks and a branch mark; empty, its size in words ("Nhỏ",
+  "Vừa", "Lớn", "Tiện ích") under it; closed (the HQ level is too low), a lock and the level it opens at
+  inside the face, and no tower even if the plan has one there (it does not fight at this level).
+- **Tray** (C): tabs by size (Small / Medium / Large / Utility), compact cards with the render, the short
+  name and "Used n" or where it unlocks ("Mở ở nhiệm vụ 62", "Mở ở cửa hàng"), locked cards dimmed. Drag a
+  card onto a slot, or tap the card then a slot; while one is carried only the slots it fits light up. A
+  tap on a filled slot selects it; dragging a tower off the map takes it out.
+- **Ranges** (B7): the "Show ranges" switch paints every open tower's cover as one union (no darker
+  overlaps): ground amber (`--fc-range-ground`, 30 %), air light blue (`--fc-range-air`, 36 %), told apart by
+  lightness as well as hue; a tapped tower draws its reach as a ring (the longer of ground and air; the
+  panel's reach line gives both) and a minimum range as a thinner inner ring. Ranges are `BaseRoles.Reach(def)` from the weapon data (the largest ground and air
+  range of the weapons that do damage, the smallest minimum range), after the branch is applied; the test
+  checks the drawn circle against it.
+- **Panel** (D): the render, name, size, rank and branch; Health / DPS / Range bars against the best of
+  the same size (the stats are `UnitStats`, so they follow prompt 13's corrected DPS); the reach line;
+  Branch and Gear tabs (a module has no gear; one with rank-7 branches, the landing pad since 13 F.1,
+  shows them); Replace (opens the tray on that size), Remove and Details (the detail page). With nothing
+  chosen: an overview, the how-to and the strength with what it means.
+- **Cover strip** (E1): the base's roles (`BaseRoles.Of` from the data: anti-light, anti-tank, anti-air,
+  rocket/missile intercept, stealth detection, repair/resupply), a missing one in the danger colour with
+  an info mark; "Sức mạnh căn cứ" and the counts in words ("Nhỏ 3/3 · Vừa 1/1 · Lớn 0/0 · Tiện ích 0/1").
+- **Strength** (E2) is `BaseStrength.Score(catalog, PlayerProfile.BaseLoadoutFor(map), PlayerProfile.BoostFor)`,
+  the same number Defend and Endless scale their waves with (100 = the Normal enemy base at HQ 3 with no
+  upgrades; `BaseScreenTests.TheStrengthShownIsTheOneTheWavesScaleWith`).
+- **HQ** (F1): a badge with the level and the next level's gain ("Lên cấp 2: thêm 1 ô nhỏ, 1 ô vừa")
+  instead of the HQ tabs; the level is `Campaign.HqLevelCap` (the campaign opens levels; the chooser went
+  with F.1).
+- **Map picker** (F2): a dropdown whose list has each map's picture, a dot and a note on maps set up on
+  their own or with towers that did not fit; closed, it is the name only (the bar stays one row).
+- **Autosave** (F3): every change saves at once and "Đã lưu" shows for 1.6 s at the bar's end.
+
+### G. One loadout for every map
+
+- **By place, not by slot index.** `SlotPlaces.Keys(site)` labels a camp's slots: distance from the HQ over
+  the furthest slot and bearing against the way the HQ faces the enemy. Under 0.4: beside the HQ; more than
+  110 degrees round: rear; at 0.7 or more and within 40 degrees of the front: gate; at 0.7 or more
+  otherwise: outer ring; the rest inner ring; utilities apart. Each gets an ordinal by bearing within its
+  place and size (`PlaceKey` = place, size, ordinal).
+- **A `BasePlan`** maps place keys to towers and is resolved on each map (`Resolve(mapId, site, level)`): a
+  key the map has takes its tower; one it lacks goes to the nearest free key of the same size (place
+  distance first, then ordinal); what finds no slot is a misfit, and the map picker marks that map with a
+  warning dot. A map can be set up on its own (`Custom`: the slot list as it is, "Chỉnh riêng cho map
+  này", marked in the picker); switching it off returns the map to the plan.
+- **Three sets** (`PlayerProfile.BasePlanCount`), switched on the Base screen's bar and on the home
+  screen's deck panel (chips "Bộ 1 / 2 / 3": a fifth dropdown squashed the home column in Large text); the
+  set in use is what `PlayerProfile.BaseLoadoutOn(map, team)` gives the match (`ModeSessions`: four call
+  sites).
+- **Auto-arrange** (G5) fills the plan's towers with `BaseLoadout.ForAi("Normal", "default", seed,
+  allowed: PlayerProfile.IsUnlocked)`: the enemy AI's own picker, limited to the player's towers (the new
+  optional `Predicate<string> allowed` in the sim; the AI's calls are unchanged). Utilities are kept.
+- **Migration** (version 2 -> 3, `PlayerProfile.MigrateToPlans`): the old sized lists become set 1's places
+  on the reference camp; every map whose old slot-by-index result differs from the plan's is kept as its
+  own (Custom) so no battle changes: for the test's version 2 profile 11 places and 19 of 20 maps kept on their own
+  (`BasePlanTests.TheOldLoadoutBecomesThePlanAndNoMapChanges`). An unedited profile takes the defaults with
+  no custom maps. `PlayerProfile.BaseLoadout` (get/set) stays for old callers, now on set 1's plan; it
+  moved to PlayerProfile.BasePlans.cs (13 F.1's module-branch line ported there).
+
+### H. Outpost
+
+A separate Army tab: the outpost's two slots (small and medium) as faces round the point, a tray with the
+Small and Medium tabs, and how the outpost works in words; it edits `BasePlan.Outpost` (on every map) with
+autosave.
+
+### I. Tower icons (helper)
+
+Every tower, branch and module has an icon of its own in `Icons.cs` (`t_` prefix) through `TowerIcons.For(id)`, which `CardIcons.For` asks first. A branch uses its tower's icon; the
+rail supergun shares `t_supergun` (the supergun timer too); the Army > Towers cards' corner shows the
+structure icon; renders are unchanged. `TowerIconTests.EveryStructureHasALineIconOfItsOwn` checks every tower and module has one;
+`Docs/ui-screens/kit-tower-icons.png` is the sheet.
+
+### B1-B2. The camp pictures and arrows (helper)
+
+`Machine Brigade > Render Base Map Pictures (stale / all)` (`BaseMapShots`) renders each map's player camp from above to
+`Resources/UI/Bases/<map>.png` (1024 x 640, 16:10) with a JSON frame (the picture's rectangle in metres,
+the approach arrows, the drop zone). The frame is the camp's slots and HQ with an 18 m margin and 30 m more
+in front; the look is the game's camera lighting at -0.35 EV and -8 saturation with the ground outside the
+map dimmed 50 %, so the slots read over it. Arrows are where the enemy's lanes (`LaneFlags.Route`) cross
+into the frame, merged within 22 m. A SHA-1 of the map and camp data marks a picture stale
+(`BaseMapArtTests`). Normal-quality compression. Conquest camps have no walls or gates in their data, so
+none are drawn; the drop zone is drawn by the UI.
+
+### J. Screenshots, Large text
+
+- `Docs/ui-screens/`: every menu and battle screen at the four shapes, a set in Large text and in English
+  (241 files), with the new `screen-army-base`, `-base-picked`, `-base-ranges`, `screen-army-outpost`,
+  `screen-army-towers`, `screen-detail-tower`, `screen-detail-module` (and their In action tabs),
+  `kit-tower-icons.png` and `basemaps-sheet.png`.
+- Large text fixes found there: the top bar is 87 px (47.7 pt, inside the 44-48 range) at Large so the rank
+  and XP keep two lines; the home column is 520 px at Large (440 Normal) so two dropdowns share a row and
+  the campaign card keeps its room; the deck panel's base-set chips drop their caption at Large; the Base
+  map's two switches stack in its corner in short words ("Chỉnh riêng", "Tầm bắn"; the full names as tooltips) and show icons only at Large; "Saved"
+  floats at the bar's end instead of wrapping to a row of its own.
+
+### Not done, and why
+
+- **Moving the utility slots apart**: their places are map data (the camps); the Base screen shows them
+  where they are.
+- **Walls and gates on Conquest camps**: not in the camp data; nothing to draw.
+- **FPS and touch on a real phone**: to measure (the owner's override: no device run in this pass).
+- **Short names**: the landing pad's hangar branch (13 F.1) gets "Nhà chứa" (the full "Nhà chứa máy bay" is
+  16 characters).

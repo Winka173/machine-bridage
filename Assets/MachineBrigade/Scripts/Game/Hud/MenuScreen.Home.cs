@@ -58,6 +58,7 @@ namespace MachineBrigade.Game.Hud
         private VisualElement _homeUnlocks, _homeDailyRows, _homeDeckStrip;
         private KitProgress _homeChapterBar;
         private KitDropdown _modeDrop, _mapDrop, _difficultyDrop, _weatherDrop;
+        private readonly List<KitChip> _basePlanChips = new();
         private List<MapInfo> _homeMaps;
 
         private void BuildHomePage()
@@ -129,6 +130,17 @@ namespace MachineBrigade.Game.Hud
             var deck = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-home__deck", PickingMode.Position);
             var deckHead = Kit.Box("fc-home__deck-head");
             deckHead.Add(Kit.Text(Kit.Caps(Strings.Get("army.deck")), "fc-panel-title fc-row-text"));
+            // Prompt 14 G4: the base set taken into the battle, switched here as on the Base screen.
+            var plans = Kit.Box("fc-home__plans");
+            plans.Add(Kit.Caption(Strings.Get("setup.base")));
+            for (var i = 0; i < PlayerProfile.BasePlanCount; i++)
+            {
+                var index = i;
+                var chip = new KitChip(Strings.Format("camp.plan", i + 1), i == PlayerProfile.ActiveBasePlan, () => Set(() => PlayerProfile.ActiveBasePlan = index));
+                plans.Add(chip);
+                _basePlanChips.Add(chip);
+            }
+            deckHead.Add(plans);
             deckHead.Add(new KitButton(ButtonTier.Text, Strings.Get("home.editDeck"), () =>
             {
                 _armyView = ArmyView.Deck;
@@ -214,6 +226,11 @@ namespace MachineBrigade.Game.Hud
             _mapDrop.Select(Math.Max(0, map), false);
             _difficultyDrop.Select(Array.FindIndex(Difficulties, d => d.level == MatchSettings.Difficulty), false);
             _weatherDrop.Select(Math.Max(0, Array.FindIndex(Weathers, w => w.kind == MatchSettings.Weather)), false);
+            for (var i = 0; i < _basePlanChips.Count; i++)
+            {
+                _basePlanChips[i].Selected = i == PlayerProfile.ActiveBasePlan;
+                _basePlanChips[i].tooltip = BasePlanLine(i);
+            }
 
             // The deck: eight vehicles, two supports; a short deck still deploys, with a note.
             _homeDeckStrip.Clear();
@@ -286,6 +303,13 @@ namespace MachineBrigade.Game.Hud
             return new KitVehicleCard(CardData(id), () => OpenDetail(id), compact, showLevel);
         }
 
+        /// <summary>A base set in a line: its towers and modules, and how many maps it sets up on their own.</summary>
+        private static string BasePlanLine(int index)
+        {
+            var plan = PlayerProfile.BasePlanAt(index);
+            return Strings.Format("camp.planLine", plan.Places.Count, plan.Custom.Count);
+        }
+
         /// <summary>A card's picture and numbers for the kit's vehicle card: vehicles from the catalog, supports by hand.</summary>
         private VehicleCardData CardData(string id)
         {
@@ -300,6 +324,7 @@ namespace MachineBrigade.Game.Hud
             {
                 Id = id,
                 Name = Strings.Card(id),
+                ShortName = Strings.Short(id),
                 Branch = KitBranch.Support,
                 ClassIcon = CardIcons.For(id),
                 Cp = CostOf(id),

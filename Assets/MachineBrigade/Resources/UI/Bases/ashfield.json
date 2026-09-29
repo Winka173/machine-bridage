@@ -1,0 +1,89 @@
+{
+    "version": 1,
+    "map": "ashfield",
+    "source": "Data/maps/ashfield_conquest",
+    "sha1": "c75f9485a0aa7e0a9314d5e5f9b18d1fa4b5d522",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -95.911,
+        "z": -96.053
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 179.83,
+    "metresHigh": 112.394,
+    "hq": {
+        "x": -120.5,
+        "z": -115.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -136.048,
+            "z": -72.427
+        },
+        {
+            "x": -125.623,
+            "z": -120.163
+        },
+        {
+            "x": -98.538,
+            "z": -128.807
+        },
+        {
+            "x": -64.204,
+            "z": -136.09
+        },
+        {
+            "x": -31.872,
+            "z": -131.471
+        },
+        {
+            "x": -67.29,
+            "z": -86.283
+        },
+        {
+            "x": -99.589,
+            "z": -45.648
+        },
+        {
+            "x": -133.462,
+            "z": -37.519
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -90.975,
+                "z": -56.486
+            },
+            "dir": {
+                "x": -0.339,
+                "z": -0.941
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -70.778,
+                "z": -81.894
+            },
+            "dir": {
+                "x": -0.812,
+                "z": -0.584
+            },
+            "routes": 2
+        }
+    ],
+    "brightness": 0.494,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

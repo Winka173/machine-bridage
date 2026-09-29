@@ -511,7 +511,7 @@ namespace MachineBrigade.Game.Hud
             sideScroll.Add(daily);
             side.Add(sideScroll);
             var launch = Kit.Box("fc-mt-3");
-            var modeRow = Kit.Box("fc-preview__row fc-nowrap");
+            var modeRow = Kit.Box("fc-preview__row fc-nowrap fc-sample__modes");
             var mode = new KitDropdown(Strings.Get("kit.sample.mode"), new[] { new KitOption(Strings.Get("kit.sample.modeConquest")) }, 0, null);
             mode.AddToClassList("fc-grow");
             modeRow.Add(mode);

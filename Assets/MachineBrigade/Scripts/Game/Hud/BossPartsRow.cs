@@ -26,6 +26,22 @@ namespace MachineBrigade.Game.Hud
         private readonly List<Cell> _cells = new();
         private string _shownDef;
         private EntityId _boss;
+        private bool _mini;
+
+        /// <summary>
+        /// The compact boss bar's closed look (prompt 11 A4): small icons that only show each part's state;
+        /// they take no taps (the bar opens on a tap), so they are not touch targets.
+        /// </summary>
+        public bool Mini
+        {
+            get => _mini;
+            set
+            {
+                _mini = value;
+                Root.EnableInClassList("fc-boss-parts--mini", value);
+                foreach (var cell in _cells) cell.Root.pickingMode = value ? PickingMode.Ignore : PickingMode.Position;
+            }
+        }
 
         public BossPartsRow()
         {
@@ -122,7 +138,7 @@ namespace MachineBrigade.Game.Hud
             {
                 var index = i;
                 var part = def.Parts[i];
-                var cell = Kit.Box("fc-boss-part", PickingMode.Position);
+                var cell = Kit.Box("fc-boss-part", _mini ? PickingMode.Ignore : PickingMode.Position);
                 cell.Add(Kit.Icon(IconFor(part.Kind), "fc-boss-part__icon"));
                 var track = Kit.Box("fc-boss-part__track");
                 var fill = Kit.Box("fc-boss-part__fill");

@@ -74,7 +74,8 @@ namespace MachineBrigade.Game.Hud
         public static VisualElement Present(VisualElement anchor, VisualElement content, bool closeOnScrim = true)
         {
             var host = Kit.HostOf(anchor) ?? anchor;
-            var scrim = Kit.Box(ScrimClass, PickingMode.Position);
+            // A dialog is an out-of-battle screen wherever it opens (prompt 14): the menus' sizes over the HUD too.
+            var scrim = Kit.Box(ScrimClass + " fc-overlay", PickingMode.Position);
             if (closeOnScrim)
                 scrim.RegisterCallback<PointerDownEvent>(e =>
                 {

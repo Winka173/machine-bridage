@@ -235,6 +235,8 @@ namespace MachineBrigade.Tests
             var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
             var carrier = world.SpawnVehicle("atgm_carrier", 1, new Vector2(0f, 30f), MathF.PI);
             world.SetBoosts(1, _ => Lab.Harmless);
+            // The tank only has to be locked on to (its own guns would decide whether the carrier lives).
+            tank.HoldFire = true;
             var events = Run(world, 12f);
             var smoke = events.Where(e => e.Kind == SimEventKind.SmokeDeployed && e.Team == 0).ToList();
             Assert.GreaterOrEqual(smoke.Count, 1, "a smoke screen when the missile locked on");
@@ -303,10 +305,11 @@ namespace MachineBrigade.Tests
             world.Damage.ResolveImpact(p);
             Run(world, 0.1f);
             Assert.AreEqual(0.85f, target.FireGear, 1e-4f, "15 % slower fire");
-            // A tank gun reloads in 4.6 s: the effect lasts past its next shot (the proc coefficient).
-            Run(world, 4.5f);
+            // The effect lasts a quarter past the shooter's next shot (a tank gun's reload).
+            var lasts = MathF.Max(3f, GearSystem.HitInterval(tank.Weapon) * 1.25f);
+            Run(world, lasts - 0.6f);
             Assert.AreEqual(0.85f, target.FireGear, 1e-4f, "still on until the next shell");
-            Run(world, 2f);
+            Run(world, 1.2f);
             Assert.AreEqual(1f, target.FireGear, 1e-4f, "and then off");
         }
 
@@ -399,7 +402,8 @@ namespace MachineBrigade.Tests
         public void TheProcCoefficientFollowsTheWeaponsRhythm()
         {
             var w = GameContent.LoadCatalog().Weapons;
-            Assert.AreEqual(0.15f, GearSystem.ProcCoefficient(w["flak_35"]), 1e-4f, "a flak gun: the least");
+            Assert.AreEqual(0.15f, GearSystem.ProcCoefficient(w["gau_gatling"]), 1e-4f, "a gatling: the least");
+            Assert.Less(GearSystem.ProcCoefficient(w["flak_35"]), 0.25f, "a flak gun: next to it");
             Assert.AreEqual(2.5f, GearSystem.ProcCoefficient(w["gun_120mm"]), 1e-4f, "a tank gun: the most");
             Assert.Less(GearSystem.ProcCoefficient(w["minigun"]), 0.2f);
             Assert.Greater(GearSystem.ProcCoefficient(w["mlrs_rockets"]), GearSystem.ProcCoefficient(w["autocannon_30"]));

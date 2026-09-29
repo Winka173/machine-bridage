@@ -132,6 +132,10 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .guide { font-size: 9pt; margin-top: 3pt; border-left: 2px solid #f2a33a; padding-left: 5pt; }
 .guide div { margin: 1pt 0; }
 .guide .hl { color: #b86e0b; font-weight: 700; }
+.behav { font-size: 8.5pt; margin-top: 4pt; border-left: 2px solid #5b7fa6; padding-left: 5pt; }
+.behav ul { margin: 2pt 0 0 0; padding-left: 12pt; }
+.behav li { margin: 1pt 0; }
+.behav .hl { color: #2f5d8a; font-weight: 700; }
 """
 
 
@@ -143,9 +147,26 @@ def guide_html(text):
     return "<div class='guide'>" + ''.join(f"<div>{'<b>' + l + '</b>' if i == 0 else l}</div>" for i, l in enumerate(lines)) + "</div>"
 
 
+def lines_html(title, lines, cls):
+    """A titled list of short lines (Behaviour, Ammo), key words ([[word]]) highlighted."""
+    if not lines:
+        return ''
+    items = ''.join('<li>' + re.sub(r'\[\[(.+?)\]\]', lambda m: f"<span class='hl'>{m.group(1)}</span>", esc(l)) + '</li>' for l in lines)
+    return f"<div class='{cls}'><b>{esc(title)}</b><ul>{items}</ul></div>"
+
+
+def weapon_cycle(w):
+    """A weapon's cycle in words: a magazine and its change, a burst, or a single shot and its cooldown."""
+    if w.get('clip'):
+        return f"băng {w['clip']} viên, {1 / max(0.001, w['cooldown']):.0f} viên/s, thay {w['clipReload']:g} s"
+    if w['burst'] > 1:
+        return f"loạt {w['burst']}, hồi {w['cooldown']:g} s"
+    return f"hồi {w['cooldown']:g} s"
+
+
 def vehicle_card(v, imgdir):
-    weapons = [[esc(w['id']), TYPE_VI.get(w['type'], w['type']), num(w['damage']) + (f" ×{w['burst']}" if w['burst'] > 1 else ''),
-                f"{w['cooldown']:g} s", f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
+    weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), num(w['damage']), weapon_cycle(w),
+                f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
                 TARGET_VI.get(w['targets'], w['targets']), f"{w['dps']:.0f}"] for w in v['weapons']]
     d = v['dpsVs']
     stats = (f"<div class='stats'><div>Máu <b>{num(v['hp'])}</b></div><div>Giáp <b>{ARMOR_VI.get(v['armor'], v['armor'])}</b></div>"
@@ -160,7 +181,9 @@ def vehicle_card(v, imgdir):
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
             f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
-            + (table(['Vũ khí', 'Loại', 'Sát thương', 'Hồi', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '') + "</div>")
+            + (table(['Vũ khí', 'Loại', 'Sát thương / phát', 'Nhịp bắn', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '')
+            + "<div class='two'>" + lines_html('Hành vi', v.get('behavior'), 'behav') + lines_html('Đạn và nạp đạn', v.get('ammo'), 'behav') + "</div>"
+            + "</div>")
 
 
 def build(game, imgdir):
@@ -263,10 +286,12 @@ def build(game, imgdir):
     armors = ['Light', 'Heavy', 'Air', 'Structure']
     rows = [[TYPE_VI.get(t, t)] + [f"×{dt[t][a]:g}" for a in armors] for t in dt]
     weapons = {}
+    branch_names = {b['id']: f"{t['name']} · {b['name']}" for t in game['base']['towers'] for b in t['branches']}
     for group in ('vehicles', 'elites', 'bosses', 'towers'):
         for v in game[group]:
+            owner = branch_names.get(v['id']) or (v['short'] if not str(v['short']).startswith('support.') else v['name'])
             for w in v['weapons']:
-                weapons.setdefault(w['id'], (w, v['short']))
+                weapons.setdefault(w['id'], (w, owner))
     def volley(w):
         return f"băng {w['clip']} · thay {w['clipReload']:g} s" if w.get('clip') else w['burst']
     wrows = [[f"<code>{esc(w['id'])}</code>", TYPE_VI.get(w['type'], w['type']), num(w['damage']), volley(w), f"{w['cooldown']:g}",
@@ -286,9 +311,29 @@ def build(game, imgdir):
                  esc(', '.join(w['id'] for w in v['weapons'])), f"{v['dpsVs']['Light']:.0f} / {v['dpsVs']['Heavy']:.0f} / {v['dpsVs']['Air']:.0f}",
                  esc(', '.join(v['skills']))] for v in vs]
     head = ['Tên', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng']
+
+    def tower_groups(towers):
+        # A tower's branch variants (aa_turret.flak) follow their tower, named after it and the branch.
+        base = {t['id']: t for t in towers}
+        branch = {b['id']: (t['id'], b['name']) for t in game['base']['towers'] for b in t['branches']}
+        ordered = []
+        for t in towers:
+            if t['id'] in branch:
+                continue
+            ordered.append(t)
+            for bid, (owner, bname) in branch.items():
+                if owner == t['id'] and bid in base:
+                    ordered.append(dict(base[bid], name=f"{t['name']} · nhánh {bname}", size=t.get('size', '')))
+        towers = ordered
+        sizes = [('Small', 'Tháp ô nhỏ'), ('Medium', 'Tháp ô vừa'), ('Large', 'Tháp ô lớn')]
+        known = {s for s, _ in sizes}
+        return [(label, [t for t in towers if t.get('size') == s]) for s, label in sizes] + \
+               [('Công sự khác (trung lập, pháo đài, boss)', [t for t in towers if t.get('size') not in known])]
     out.append("<div class='section'><h2>11. Tháp canh, xe tinh nhuệ và boss</h2>"
                "<h3>Tháp và công sự</h3><p>Tháp cố định chặn lưới đường đi khi xuất hiện; trong Chiếm cứ điểm mỗi cứ điểm có tháp trung lập bắn mọi phe và dựng lại "
-               "sau một thời gian; căn cứ có ụ phòng thủ (bastion) bất tử.</p>" + table(head, simple_rows(game['towers']))
+               "sau một thời gian; căn cứ có ụ phòng thủ (bastion) bất tử. Tháp của căn cứ người chơi xếp theo cỡ ô (phần 6), có hạng, nhánh ở hạng 7 và 3 ô đồ.</p>"
+               + ''.join(f"<h4>{esc(label)} ({len(ts)})</h4>" + ''.join(vehicle_card(t, imgdir) for t in ts)
+                         for label, ts in tower_groups(game['towers']) if ts)
                + "<h3>Xe tinh nhuệ</h3><p>Phiên bản tân trang: +60% máu, +25% sát thương, 1–2 kỹ năng tinh nhuệ, thanh máu vàng và vòng vàng trên bản đồ nhỏ; "
                "sức mạnh thực đo được 1,8–2,2 lần bản thường. Địch không còn nhận tinh nhuệ theo xác suất mà theo <b>ngân sách</b>: tinh nhuệ giá 1,6 lần, phần chi tiêu "
                "theo độ khó (Dễ 5%, Thường 10%, Khó 15%, Anh hùng 20%, Thép 25%), trần 1–5 xe cùng lúc; tướng ưu tiên loại xe của mình. Hạ tinh nhuệ hoàn CP theo giá thật "
@@ -451,7 +496,16 @@ def build(game, imgdir):
                "ô chọn, công tắc, thanh chỉ số, hộp thoại, thông báo). Điều hướng 5 mục bên trái: Trang chủ, Chiến dịch, Tác chiến, Quân đội, Cửa hàng; "
                "thanh trên cùng có cấp, kinh nghiệm, xu và cài đặt. Ảnh thẻ render từ mô hình 3D thật. Mỗi màn được kiểm tra tự động ở 4 tỉ lệ màn hình "
                "(16:9, 19,5:9 tai thỏ, 20:9 đục lỗ, 4:3) và cỡ chữ Lớn: không chữ bị cắt, không thành phần chồng nhau, vùng chạm đủ lớn. "
-               "Tên gọi tiếng Việt thống nhất (mỗi bản đồ một tên, xu, ngụy trang, rốc-két, la-de).</p>")
+               "Tên gọi tiếng Việt thống nhất (mỗi bản đồ một tên, xu, ngụy trang, rốc-két, la-de).</p>"
+               "<p><b>Prompt 11:</b> HUD gọn trong trận (mặc định bật, tắt được trong Cài đặt): khi giao tranh HUD chỉ chiếm 26-28 % màn hình 16:9 "
+               "và 21-23 % ở 20:9 (HUD đầy đủ 51-64 %). Mọi xe, tháp, công trình, thẻ hỗ trợ và vật phẩm có tên ngắn (tối đa khoảng 14 ký tự) "
+               "dùng ở chỗ chật; mọi thẻ có vùng tên cao cố định 2 dòng nên ảnh, CP và cấp luôn thẳng hàng. Khiên vẽ lại bằng một shader.</p>"
+               "<p><b>Prompt 14:</b> ngoài trận mọi cỡ tính theo point của máy (thanh trên 44 pt, thanh bên 72 pt với icon 23 pt, tab 40 pt, nút 44 pt, "
+               "nút chính 53 pt, chữ 19 / 18 / 14 / 13 / 11 pt, cỡ Lớn gấp 1,2), thẻ trong danh sách nhỏ hơn 22 %; nội dung chiếm 70-89 % màn hình 16:9 và 20:9. "
+               "Màn Căn cứ là ảnh chụp thật từ trên xuống của trại trên từng bản đồ, mũi tên đỏ là hướng địch tới, ô tháp đúng vị trí thật với cỡ 1 / 1,4 / 2, "
+               "ô tiện ích hình lục giác; phủ tầm bắn (mặt đất cam, trên không xanh nhạt), chụm hai ngón để phóng to. Một bố trí chính áp cho cả 20 bản đồ theo "
+               "vị trí (cổng, vòng ngoài, vòng trong, cạnh SCH, phía sau), bản đồ nào cần thì chỉnh riêng; 3 bộ căn cứ; tự xếp theo cách AI địch xếp. "
+               "Sức mạnh căn cứ là đúng con số dùng để tính độ mạnh các đợt địch. Tiền đồn có tab riêng. Mỗi tháp có icon riêng.</p>")
     out.append("<h3>Trang chủ và thiết lập trận</h3>"
                + one('screen-home-vi-16x9.png', 'Trang chủ: trận AI làm nền, nhiệm vụ chiến dịch tiếp theo, thử thách hôm nay, bộ bài, bốn ô chọn chế độ / chiến trường / độ khó / thời tiết và nút XUẤT KÍCH.')
                + pair('screen-setup-mode-vi-16x9.png', 'Chọn chế độ: tên đầy đủ và mô tả một dòng.',
@@ -463,7 +517,20 @@ def build(game, imgdir):
                                                                                 'mỗi mục có ảnh, luật, đồng hồ đổi mới và phần thưởng; chọn cấp độ ngay trong màn.'))
     out.append("<h3>Quân đội</h3>"
                + one('screen-army-deck-vi-16x9.png', 'Bộ bài: thẻ render 3D, tổng quan bộ bài, độ phủ vai trò (thiếu vai trò thì báo đỏ), học thuyết.')
-               + one('screen-army-base-vi-16x9.png', 'Căn cứ: sơ đồ sở chỉ huy với ô nhỏ / vừa / lớn / tiện ích, chỉ sáng ô hợp lệ; panel tháp có hạng, nhánh, 3 ô đồ và nút xem chi tiết.'))
+               + one('screen-army-towers-vi-16x9.png', 'Tháp và mô-đun: thẻ render 3D xếp theo cỡ, tên cao cố định 2 dòng, cấp và dòng mở khóa thẳng hàng; góc thẻ là icon riêng của tháp.'))
+    out.append("<h3>Căn cứ và tiền đồn (prompt 14)</h3>"
+               + one('screen-army-base-vi-16x9.png', 'Căn cứ: trên cùng là cấp SCH và dòng lên cấp tiếp theo, chọn bản đồ (có ảnh trong danh sách), 3 bộ căn cứ và Tự xếp; tự lưu. '
+                                                   'Bên trái là khay tháp theo cỡ (Nhỏ / Vừa / Lớn / Tiện ích), tháp chưa mở bị mờ kèm nơi mở khóa. Giữa là ảnh thật của trại: '
+                                                   'mũi tên đỏ là hướng địch tới, ô đúng vị trí và cỡ thật, ô trống ghi cỡ bằng chữ, ô khóa ghi cấp SCH cần. Bên phải là tổng quan '
+                                                   'khi chưa chọn gì; dưới cùng là độ phủ căn cứ (thiếu thì báo đỏ), sức mạnh căn cứ và số ô đã dùng.')
+               + pair('screen-army-base-picked-vi-16x9.png', 'Chọn một tháp: chỉ số so với tháp cùng cỡ, tầm bắn đất / không và tầm tối thiểu, vòng tầm bắn trên bản đồ, '
+                                                             'tab Nhánh / Trang bị, nút Thay, Gỡ và Chi tiết.',
+                      'screen-army-base-ranges-vi-16x9.png', 'Hiện tầm bắn: vùng phủ mặt đất (cam) và trên không (xanh nhạt) của cả căn cứ.')
+               + pair('screen-army-outpost-vi-16x9.png', 'Tiền đồn: tab riêng, hai ô (nhỏ và vừa) quanh cứ điểm, khay tháp và mô tả cách tiền đồn hoạt động.',
+                      'screen-army-base-vi-large-16x9.png', 'Căn cứ ở cỡ chữ Lớn: hai công tắc trên bản đồ chỉ còn icon.')
+               + pair('screen-army-base-vi-20x9-punchhole.png', 'Căn cứ ở 20:9.', 'screen-army-base-vi-4x3.png', 'Căn cứ ở 4:3.')
+               + one('kit-tower-icons.png', 'Icon riêng cho mỗi tháp và mô-đun (prompt 14 I), nhánh dùng icon của tháp gốc.')
+               + one('basemaps-sheet.png', 'Ảnh trại trên 20 bản đồ, chụp từ trên xuống, kèm mũi tên hướng địch tới.'))
     out.append("<h3>Chi tiết phương tiện, tháp và công trình</h3>"
                + one('screen-detail-vi-16x9.png', 'Chi tiết phương tiện: mô hình 3D xoay, thanh chỉ số tách gốc / trang bị / cấp sau, vạch trung bình của nhóm; các tab Hướng dẫn, Vũ khí, Xem bắn, Trang bị.')
                + pair('screen-detail-tower-vi-16x9.png', 'Chi tiết tháp (mới): mô hình, chỉ số so với tháp cùng cỡ, vũ khí, Xem bắn, hạng, nhánh và 3 ô đồ.',
@@ -472,11 +539,17 @@ def build(game, imgdir):
                + pair('screen-shop-deals-vi-16x9.png', 'Ưu đãi.', 'screen-shop-skins-vi-16x9.png', 'Ngụy trang (trước đây là Skin).')
                + pair('screen-shop-units-vi-16x9.png', 'Đơn vị.', 'screen-shop-items-vi-16x9.png', 'Vật phẩm dùng một lần.')
                + one('screen-settings-vi-16x9.png', 'Cài đặt: đồ họa, âm thanh, điều khiển, ngôn ngữ và cỡ chữ Thường / Lớn.'))
-    out.append("<h3>Trong trận</h3>"
-               + one('battle-hud-mission-vi-16x9.png', 'HUD nhiệm vụ boss: thanh máu boss có số máu, vạch pha và hàng bộ phận (bộ phận vỡ bị gạch, chạm để bắn tập trung); '
-                                                     'thông báo chung một kiểu; CP to với thu nhập mỗi giây và phạt tiếp tế ghi bằng chữ; thẻ có ảnh 3D, tên đầy đủ, CP, thiếu CP thì mờ và ghi "Thiếu 3".')
-               + pair('battle-hud-score-vi-16x9.png', 'HUD Chiếm cứ điểm: điểm hai phe, cứ điểm, xe đang chọn.',
-                      'battle-hud-waves-vi-16x9.png', 'HUD đợt địch: đang nhắm hỗ trợ hỏa lực, thẻ đang hồi có đồng hồ quét.')
+    out.append("<h3>Trong trận: HUD gọn (prompt 11)</h3>"
+               + one('battle-hud-mission-vi-16x9.png', 'Đánh trùm: thanh máu trùm hẹp một nửa với vạch pha và hàng bộ phận nhỏ; nhiệm vụ và đồng hồ gộp một dải ở mép trên; '
+                                                     'thông báo nhỏ dưới dải, tự tắt sau khoảng 3 giây; khay thẻ thấp hơn 35 %: ảnh, CP và tên ngắn một dòng (giữ thẻ để xem tên đầy đủ); '
+                                                     'phạt tiếp tế là chip nhỏ trên ô CP, chỉ hiện khi bị phạt.')
+               + pair('battle-hud-boss-open-vi-16x9.png', 'Chạm thanh máu trùm để mở rộng tạm thời: số máu và các bộ phận cỡ đầy đủ, chạm bộ phận để bắn tập trung.',
+                      'battle-hud-score-vi-16x9.png', 'Chiếm cứ điểm: dải điểm hai phe, cứ điểm và đồng hồ; bản đồ nhỏ hơn 40 % với hai nút nhỏ ở góc; Tấn công / Phòng thủ là một nút gạt icon, '
+                                                      'Tự mua và Yểm trợ là hai icon bật/tắt; xe đang chọn là một dải ngay trên khay thẻ; gợi ý chỉ ở vài trận đầu.')
+               + pair('battle-hud-siege-vi-16x9.png', 'Công thành: giai đoạn, tiến độ, đồng hồ, đếm ngược siêu pháo.',
+                      'battle-hud-defend-vi-16x9.png', 'Phòng thủ: tuyến, đợt, siêu pháo ta, đợt tới kèm thành phần; nút đưa tháp trở lại.')
+               + pair('battle-hud-waves-vi-16x9.png', 'Sinh tồn: quân ta, địch, đợt và đếm ngược trong một dải; đang nhắm hỗ trợ hỏa lực.',
+                      'battle-hud-score-full-vi-16x9.png', 'HUD đầy đủ (tắt HUD gọn trong Cài đặt) để so sánh.')
                + pair('battle-choice-vi-16x9.png', 'Lựa chọn giữa các giai đoạn (tự chọn sau 15 giây).', 'battle-pause-vi-16x9.png', 'Tạm dừng.')
                + pair('battle-result-win-vi-16x9.png', 'Kết quả thắng: TIẾP TỤC là nút chính, nhận đôi xu cạnh số xu.',
                       'battle-result-loss-vi-16x9.png', 'Kết quả thua: tiêu đề là tên nhiệm vụ, điểm ghi rõ phe, 1-2 gợi ý rút từ trận và nút mở bộ bài; CHƠI LẠI là nút chính.')
@@ -484,7 +557,8 @@ def build(game, imgdir):
     out.append("<h3>Bốn tỉ lệ màn hình và cỡ chữ Lớn</h3>"
                + pair('screen-home-vi-19.5x9-notch.png', '19,5:9 có tai thỏ: nội dung tránh vùng an toàn.', 'screen-home-vi-20x9-punchhole.png', '20:9 có lỗ camera và thanh cử chỉ.')
                + pair('screen-home-vi-4x3.png', '4:3 (máy tính bảng).', 'screen-home-vi-large-16x9.png', 'Cỡ chữ Lớn.')
-               + pair('battle-hud-mission-vi-4x3.png', 'HUD ở 4:3.', 'battle-hud-mission-en-16x9.png', 'HUD tiếng Anh.'))
+               + pair('battle-hud-mission-vi-4x3.png', 'HUD ở 4:3.', 'battle-hud-mission-en-16x9.png', 'HUD tiếng Anh.')
+               + pair('battle-hud-siege-vi-20x9-punchhole.png', 'HUD gọn ở 20:9.', 'battle-hud-mission-vi-large-16x9.png', 'HUD gọn, cỡ chữ Lớn: tên thẻ được xuống 2 dòng.'))
     out.append("<h3>Bộ thành phần</h3>"
                + pair('kit-tokens-vi-16x9.png', 'Token màu và chữ.', 'kit-buttons-vi-16x9.png', 'Nút.')
                + pair('kit-cards-vi-16x9.png', 'Thẻ.', 'kit-controls-vi-16x9.png', 'Điều khiển: tab, ô chọn, công tắc, thanh trượt.'))
@@ -500,6 +574,10 @@ def build(game, imgdir):
             ('flame.png', 'Súng phun lửa làm lại: luồng nhiên liệu cong, cầu lửa cuộn, khói đen.'), ('railgun.png', 'Railgun: nạp năng lượng, tia sáng lưu lại.'),
             ('boss_death.png', 'Boss chết: nổ nhiều đợt, lóe trắng, sóng xung kích.'), ('muzzle_audit.png', 'Kiểm tra đầu nòng: mỗi chấm màu là nơi một vũ khí bắn ra.')]
     out.append("<div class='section'><h2>19. Hình ảnh</h2>")
+    shield = img(Path(__file__).resolve().parents[2] / 'Docs' / 'art' / 'shields' / 'shields.png', 'shot')
+    if shield:
+        out.append(f"{shield}<div class='caption'>Khiên vẽ lại (prompt 11): vòm lưới lục giác sáng ở viền, giữa trong suốt; địch đỏ cam, ta xanh; "
+                   "gợn sóng chỗ trúng đạn, chập chờn khi máy phát khiên hư, sụp vỡ khi tắt; bong bóng quanh xe và trùm; bản rút gọn cho đồ họa Thấp.</div>")
     for name, cap in pics:
         tag = img(r6 / name, 'shot')
         if tag:

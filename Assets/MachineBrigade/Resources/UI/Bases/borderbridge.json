@@ -1,0 +1,104 @@
+{
+    "version": 1,
+    "map": "borderbridge",
+    "source": "Data/maps/borderbridge_conquest",
+    "sha1": "d5599091c5258a7d085c83cb67728ad916c0ce81",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -97.089,
+        "z": -90.986
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 201.508,
+    "metresHigh": 125.943,
+    "hq": {
+        "x": -122.5,
+        "z": -111.0
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -138.253,
+            "z": -47.979
+        },
+        {
+            "x": -133.943,
+            "z": -87.849
+        },
+        {
+            "x": -125.027,
+            "z": -138.0
+        },
+        {
+            "x": -65.253,
+            "z": -138.0
+        },
+        {
+            "x": -38.273,
+            "z": -120.831
+        },
+        {
+            "x": -43.336,
+            "z": -96.777
+        },
+        {
+            "x": -53.235,
+            "z": -80.28
+        },
+        {
+            "x": -75.822,
+            "z": -57.693
+        },
+        {
+            "x": -114.356,
+            "z": -21.426
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -116.811,
+                "z": -24.154
+            },
+            "dir": {
+                "x": 0.026,
+                "z": -1.0
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -65.396,
+                "z": -68.118
+            },
+            "dir": {
+                "x": -0.723,
+                "z": -0.691
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -41.635,
+                "z": -104.857
+            },
+            "dir": {
+                "x": -0.998,
+                "z": -0.06
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.515,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

@@ -1,0 +1,104 @@
+{
+    "version": 1,
+    "map": "landingbeach",
+    "source": "Data/maps/landingbeach_conquest",
+    "sha1": "74afb13fc67fa50e61d2abcd762f637bd50235e5",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -92.225,
+        "z": -88.391
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 199.867,
+    "metresHigh": 124.917,
+    "hq": {
+        "x": -121.5,
+        "z": -112.0
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -134.023,
+            "z": -66.256
+        },
+        {
+            "x": -126.862,
+            "z": -116.936
+        },
+        {
+            "x": -73.986,
+            "z": -128.929
+        },
+        {
+            "x": -39.778,
+            "z": -132.594
+        },
+        {
+            "x": -35.766,
+            "z": -100.501
+        },
+        {
+            "x": -56.506,
+            "z": -69.937
+        },
+        {
+            "x": -100.934,
+            "z": -32.742
+        },
+        {
+            "x": -123.218,
+            "z": -24.385
+        },
+        {
+            "x": -132.931,
+            "z": -46.587
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -103.472,
+                "z": -31.79
+            },
+            "dir": {
+                "x": -0.271,
+                "z": -0.963
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -59.058,
+                "z": -67.801
+            },
+            "dir": {
+                "x": -0.523,
+                "z": -0.853
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -35.801,
+                "z": -100.78
+            },
+            "dir": {
+                "x": -1.0,
+                "z": 0.025
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.496,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

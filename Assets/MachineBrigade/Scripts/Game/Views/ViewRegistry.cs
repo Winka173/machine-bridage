@@ -40,6 +40,9 @@ namespace MachineBrigade.Game.Views
 
         public IReadOnlyList<VehicleView> All => _list;
 
+        /// <summary>The player's side (views colour shields, bars and rings by it).</summary>
+        public int PlayerTeam => _playerTeam;
+
         public VehicleView Add(Vehicle vehicle)
         {
             if (_views.TryGetValue(vehicle.Id, out var existing)) return existing;
