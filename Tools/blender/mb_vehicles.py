@@ -1900,14 +1900,16 @@ def sam_launcher(a):
     for s in (-1, 1):
         centre = mid + Vector((s * .56, 0, 0))
         box = _frame(centre, rot)
-        a.part('Missile_box', 'Team', t).box((width, length, height), loc=centre, rot=rot, bevel=.05)
-        frame = a.part('Box_frame', 'Armor', t)
+        # Launcher_* elevate with the tube mouths (ModelLibrary.BarrelPattern; DECISIONS 13F).
+        a.part('Launcher_box', 'Team', t).box((width, length, height), loc=centre, rot=rot, bevel=.05)
+        frame = a.part('Launcher_frame', 'Armor', t)
         for y in (-length / 2 + .1, length / 2 - .12):
             frame.box((width + .05, .14, height + .05), loc=box @ Vector((0, y, 0)), rot=rot, bevel=.02, seg=1)
         # Raised top rail, lifting lugs and outer side ribs.
         frame.box((.1, length - .5, .05), loc=box @ Vector((s * .2, 0, height / 2 + .015)), rot=rot, bevel=0)
         for y in (-length / 2 + .1, length / 2 - .12):
-            tsteel.box((.08, .08, .07), loc=box @ Vector((s * .34, y, height / 2 + .05)), rot=rot, bevel=0)
+            a.part('Launcher_lugs', 'Steel', t).box((.08, .08, .07), loc=box @ Vector((s * .34, y, height / 2 + .05)), rot=rot,
+                                                   bevel=0)
         for y in (-.55, 0, .55):
             frame.box((.05, .1, height - .1), loc=box @ Vector((s * (width / 2 + .015), y, 0)), rot=rot, bevel=0)
         for cx in (-.2, .2):
@@ -1916,7 +1918,11 @@ def sam_launcher(a):
         tarm.box((.14, .46, .5), loc=(s * 1.07, .95, .68), bevel=.02, seg=1)             # hinge cheeks
         tsteel.limb((s * .56, -.55, .5), tuple(box @ Vector((0, -.25, -height / 2 + .02))), .12, .12, bevel=.02)
     spine = _frame(mid, rot)
-    tsteel.box((.24, length * .9, .24), loc=spine @ Vector((0, 0, -.22)), rot=rot, bevel=.03)  # cradle
+    # A bridge plate across the gap between the two boxes' faces: rounds leave from spots all over the face.
+    a.part('Launcher_frame', 'Armor', t).box((.36, .08, height - .04), loc=spine @ Vector((0, -length / 2 + .04, 0)), rot=rot,
+                                            bevel=.01, seg=1)
+    a.part('Launcher_cradle', 'Steel', t).box((.24, length * .9, .24), loc=spine @ Vector((0, 0, -.22)), rot=rot,
+                                              bevel=.03)                                         # cradle
     tsteel.cyl(.11, 2.2, loc=hinge, rot=ACROSS, seg=10, bevel=.02, bseg=1)             # elevation hinge
     a.pivot('Muzzle_main', tuple(spine @ Vector((0, -length / 2 - .06, 0))), t)
     # Second weapon: a heavy machine gun on the driver's cab roof in front of the hatch (Mount_mg /

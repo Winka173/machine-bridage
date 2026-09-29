@@ -805,7 +805,7 @@ def armored_train(a):
     turn = Euler(lrot, 'XYZ').to_matrix()
     centre = hinge - turn @ Vector((0, L / 2, -H / 2))
     pod = _frame(centre, lrot)
-    a.part('Rocket_pod', 'Team', rk).box((W, L, H), loc=centre, rot=lrot, bevel=.04)
+    a.part('Rocket_box', 'Team', rk).box((W, L, H), loc=centre, rot=lrot, bevel=.04)   # launches from its tube face
     band = a.part('Pod_bands', 'Armor', rk)
     for yy in (-L / 2 + .1, L / 2 - .1):
         band.box((W + .05, .1, H + .05), loc=pod @ Vector((0, yy, 0)), rot=lrot, bevel=.012, seg=1)

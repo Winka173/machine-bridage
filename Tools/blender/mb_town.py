@@ -1084,11 +1084,12 @@ def car(a):
     _turn(a, R90)
 
 
-def truck(a):
+def truck(a, paint_mat='CarRed', turn=True):
     """Civilian box truck (7 x 2.5 m): cab-over cab (CarRed, recoloured at runtime) with door lines,
     wipers and a sun visor, and a cargo box with a cab-coloured stripe, hinged rear doors with lock
-    bars, side underrun guards and marker lights."""
-    paint = a.part('Cab', 'CarRed')
+    bars, side underrun guards and marker lights. The prop lies along X (turn); the army truck
+    (mb_new_trucks.armed_truck) keeps it along -Y, a vehicle's front, painted `paint_mat`."""
+    paint = a.part('Cab', paint_mat)
     a.part('Chassis', 'Undercarriage').box((1.0, 6.6, .28), loc=(0, .05, .72), bevel=.02, seg=1)
     paint.prism([(-3.48, .82), (-1.55, .82), (-1.55, 2.95), (-3.18, 2.95), (-3.45, 2.3), (-3.5, 1.6)], 2.3, axis='X',
                 bevel=.08, seg=2)
@@ -1129,7 +1130,7 @@ def truck(a):
         for y in (-.9, .1, 1.1, 2.1, 3.1):
             steel.box((.04, .08, 2.34), loc=(sx * 1.235, y, 2.25), bevel=0)
         steel.box((.06, 4.95, .08), loc=(sx * 1.22, .98, 3.47), bevel=0)
-        a.part('Stripe', 'CarRed').box((.055, 4.75, .2), loc=(sx * 1.2175, .98, 2.9), bevel=0)
+        a.part('Stripe', paint_mat).box((.055, 4.75, .2), loc=(sx * 1.2175, .98, 2.9), bevel=0)
         for y in (-1.0, 2.6):
             a.part('Marker_lights', 'Alloy').box((.03, .1, .06), loc=(sx * 1.235, y, 1.14), bevel=0)
         for z in (.62, .84):                                                     # underrun guards
@@ -1151,7 +1152,8 @@ def truck(a):
     _wheels(a, [(sx * .98, -2.55) for sx in (-1, 1)], .48, .3, hub=.45)
     _wheels(a, [(sx * x, 2.3) for sx in (-1, 1) for x in (.72, 1.04)], .48, .3, hub=.45)
     _arches(a, 1.15, (-2.55,), .82, .56)
-    _turn(a, R90)
+    if turn:
+        _turn(a, R90)
 
 
 BUILDERS = {

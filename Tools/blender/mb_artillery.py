@@ -833,9 +833,9 @@ def grad_truck(a):
             z = centre.z + (j - (rows - 1) / 2) * pitch_z
             tubes.lathe([(r, 0), (r, L), (r * .76, L), (r * .76, L - .14)], loc=(x, front + L, z), rot=FORWARD,
                         seg=6)
-    # A dark plate across the bundle 10 cm inside the mouths: it closes every bore and the gaps between the
-    # tubes, so the front face reads as 40 black holes.
-    a.part('Rocket_tubes_face', 'Undercarriage', t).box((W - .02, .02, H - .02), loc=(0, front + .1, centre.z),
+    # A dark plate across the bundle 6 cm inside the mouths: it closes every bore and the gaps between the
+    # tubes, so the front face reads as 40 black holes; rounds leave from it (DECISIONS 13F).
+    a.part('Rocket_tubes_face', 'Undercarriage', t).box((W - .02, .02, H - .02), loc=(0, front + .07, centre.z),
                                                        bevel=0)
     frame = a.part('Rocket_tubes_frame', 'Armor', t)
     for y in (front + .22, centre.y + .05, front + L - .2):                                        # frames

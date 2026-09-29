@@ -92,7 +92,7 @@
             "kind": "vehicle",
             "model": "sam_launcher",
             "source": "Models/sam_launcher",
-            "hash": "v2:933b4f3ae4e7782e410b94c273f21957e68f5708"
+            "hash": "v2:6f69da92aeeb76aa10093961ffbc393016a09698"
         },
         {
             "id": "scout_heli",
@@ -113,14 +113,14 @@
             "kind": "vehicle",
             "model": "gunship_heli",
             "source": "Models/gunship_heli",
-            "hash": "v2:f09a2763951e9ab8f88c00d12a3c11d4692ac906"
+            "hash": "v2:419ee45f61c46a887cbb0b628d2648d9fe452b23"
         },
         {
             "id": "strike_drone",
             "kind": "vehicle",
             "model": "strike_drone",
             "source": "Models/strike_drone",
-            "hash": "v2:5b4f52b580cd7a13d4e7943ed21f8a3aa3053057"
+            "hash": "v2:a830a498fd28e601ea8505160b2cbc18536e2190"
         },
         {
             "id": "attack_jet",
@@ -148,7 +148,7 @@
             "kind": "vehicle",
             "model": "heavy_aa",
             "source": "Models/heavy_aa",
-            "hash": "v2:d39d614afa24a9e8533eb7a7bb31ed7042e4e4f6"
+            "hash": "v2:809271fa97fb6eb9a8e65c3b92ca8644edf678a2"
         },
         {
             "id": "titan_tank",
@@ -169,7 +169,7 @@
             "kind": "vehicle",
             "model": "stealth_bomber",
             "source": "Models/stealth_bomber",
-            "hash": "v2:cc080ec302a948de2333e63234a55d4da5210922"
+            "hash": "v2:200f13f836da1e7599ad8a5161444499b4e663fe"
         },
         {
             "id": "twin_tank",
@@ -237,16 +237,16 @@
         {
             "id": "ammo_carrier",
             "kind": "vehicle",
-            "model": "truck",
-            "source": "Models/truck",
-            "hash": "v2:ac012524e5c57ab7fbff8acbce5ff884485451ce"
+            "model": "armed_truck",
+            "source": "Models/armed_truck",
+            "hash": "v2:35a267e423cbbb2707c6648fe4fb22613dcc4589"
         },
         {
             "id": "fighter_jet",
             "kind": "vehicle",
             "model": "fighter_jet",
             "source": "Models/fighter_jet_hd",
-            "hash": "v2:90f1a6eacdb9860615a900ee1c3f3460216278e1"
+            "hash": "v2:1220994407d8a49a1ea93810b23f622aaf204032"
         },
         {
             "id": "tank_buster",
@@ -428,7 +428,7 @@
             "kind": "boss",
             "model": "armored_train",
             "source": "Models/armored_train",
-            "hash": "v2:ab14a787ee598998a8d5dfe870ad9fbe19358ed9"
+            "hash": "v2:459420e32aab178ce7bf5cc015fbfe7291953fa3"
         },
         {
             "id": "artillery_emplacement",
@@ -477,7 +477,7 @@
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:39abdca2ae53ba7078238d4ac12be5edec88b1e4"
+            "hash": "v2:95fc96505bbacb0378b2127e1edc8531ea506c88"
         },
         {
             "id": "behemoth_inferno",
@@ -491,7 +491,7 @@
             "kind": "boss",
             "model": "behemoth_tempest",
             "source": "Models/behemoth_tempest",
-            "hash": "v2:02ad152b31c5f5149cbf7e0f7dfd9a3adaf3586c"
+            "hash": "v2:712e3cb557f78ea03450355cd221860793bc6e52"
         },
         {
             "id": "c_ram",
@@ -568,7 +568,7 @@
             "kind": "boss",
             "model": "drone_mothership",
             "source": "Models/drone_mothership",
-            "hash": "v2:635e894f2b698bedbd344e58544f0e5a00401e24"
+            "hash": "v2:e610aebe31fe660237a9884b8177379b6579b5f0"
         },
         {
             "id": "earth_borer",
@@ -624,7 +624,7 @@
             "kind": "elite",
             "model": "grad_truck",
             "source": "Models/grad_truck",
-            "hash": "v2:7b40afda42ff9b572f51bb994a2da0001d5e7ef3"
+            "hash": "v2:88082bc3fda3b6c7d7d140c6c647e86db2923b15"
         },
         {
             "id": "elite_heavy_tank",
@@ -652,7 +652,7 @@
             "kind": "elite",
             "model": "elite_mlrs",
             "source": "Models/elite_mlrs",
-            "hash": "v2:7c981776ae2fa5e963f5447e7a66dd75a6b3b718"
+            "hash": "v2:145ff6b1d5909149b413e033b90f777859356b40"
         },
         {
             "id": "elite_tank_destroyer",
@@ -806,7 +806,7 @@
             "kind": "boss",
             "model": "mega_gunship",
             "source": "Models/mega_gunship",
-            "hash": "v2:69918eb47debb944b528f43beaa9fb3511795972"
+            "hash": "v2:f36d3f42b7f3eb1e5351f8371b4cf8e95a4b6221"
         },
         {
             "id": "mg_bunker",
@@ -939,7 +939,7 @@
             "kind": "boss",
             "model": "sky_fortress",
             "source": "Models/sky_fortress",
-            "hash": "v2:0403326f84a0a720a86ad3a33b4e624d34b4e41c"
+            "hash": "v2:ae162ea2bf5ae954938d51f6029bd38b26435c16"
         },
         {
             "id": "supreme_command",

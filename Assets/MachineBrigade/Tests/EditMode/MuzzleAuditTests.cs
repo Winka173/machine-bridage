@@ -38,37 +38,14 @@ namespace MachineBrigade.Tests
             ["aa_turret.flak m0"] = "flak_quad: flash 6 deg off the barrel",
             ["aa_turret.sam m0"] = "sam_long: no barrel, tube or pod round its line",
             ["aa_turret.sam m1"] = "hmg_roof: no barrel, tube or pod round its line",
-            ["ammo_carrier m0"] = "hmg_roof: no muzzle of its own (no Muzzle_main)",
-            ["armored_train m1"] = "boss_rockets: 0.42 m off the barrel's middle",
             ["ballistic_launcher m0"] = "ballistic_missile: no barrel, tube or pod round its line",
-            ["behemoth m4"] = "boss_missiles: 0.20 m off the barrel's middle",
-            ["behemoth m5"] = "boss_missiles: 0.20 m off the barrel's middle",
-            ["behemoth_tempest m0"] = "boss_railgun: 0.38 m ahead of the open end",
-            ["drone_mothership m2"] = "boss_flak: no barrel, tube or pod round its line",
-            ["drone_mothership m3"] = "boss_flak: 0.09 m inside",
-            ["elite_grad m0"] = "grad_cluster: 0.09 m inside",
             ["elite_mlrs m0"] = "mlrs_elite: flash 22 deg off the barrel",
-            ["fighter_jet m0"] = "air_to_air: 1.00 m ahead of the open end",
-            ["gunship_heli m0"] = "gunship_rockets: no barrel, tube or pod round its line",
-            ["gunship_heli m2"] = "heli_atgm: no barrel, tube or pod round its line",
-            ["heavy_aa m0"] = "twin_30_flak: no barrel, tube or pod round its line",
-            ["heavy_aa m1"] = "sam: 0.17 m off the barrel's middle",
             ["heavy_bomber m2"] = "air_cruise_missile: no barrel, tube or pod round its line",
-            ["mega_gunship m0"] = "gunship_rockets: 0.62 m ahead of the open end",
-            ["mega_gunship m6"] = "gunship_rockets: 0.62 m ahead of the open end",
             ["mobile_fortress m1"] = "boss_rockets: no barrel, tube or pod round its line",
             ["mobile_fortress m2"] = "boss_rockets: no barrel, tube or pod round its line",
             ["mobile_fortress m5"] = "boss_missiles: no barrel, tube or pod round its line",
-            ["sam_launcher m0"] = "sam_long: flash 17 deg off the barrel",
             ["silver_bug m0"] = "saucer_laser: 0.05 m off the barrel's middle",
             ["silver_bug m1"] = "coilgun: 0.52 m ahead of the open end",
-            ["sky_fortress m1"] = "gunship_40mm: flash 7 deg off the barrel",
-            ["sky_fortress m2"] = "gunship_40mm: flash 7 deg off the barrel",
-            ["sky_fortress m4"] = "griffin: 0.19 m ahead of the open end",
-            ["stealth_bomber m1"] = "jassm: 0.51 m inside",
-            ["strike_drone m0"] = "drone_missile: 0.62 m ahead of the open end",
-            ["supply_truck m0"] = "mg_jeep: no muzzle of its own (no Muzzle_main)",
-            ["fighter_jet_hd m0"] = "air_to_air: 1.00 m ahead of the open end",
         };
 
         [Test]
@@ -112,7 +89,6 @@ namespace MachineBrigade.Tests
             foreach (var r in rows.Where(r => r.Mount == 0))
             {
                 Debug.Log($"TILTED {r.Vehicle} {r.Weapon} [{r.Node}] points {r.Points} ahead {r.AheadOfTip:0.00} axis {r.AxisAngle:0.0}: {r.Note}");
-                if (r.Vehicle == "sam_launcher") continue; // known: its missile box is drawn 14 degrees off its muzzle's line
                 Assert.IsTrue(r.Ok, $"{r.Vehicle}: {r.Note}");
                 Assert.Less(r.AxisAngle, MuzzleGeometryAudit.Angle, r.Vehicle);
             }

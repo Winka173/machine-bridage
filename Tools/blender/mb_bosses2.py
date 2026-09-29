@@ -145,14 +145,17 @@ def _behemoth_chassis(a, racks=True, stacks=True, fore_ring=True):
         _periscopes(glass, s * 1.05, 2.75, 3.4, .36, 3, start=R90 - .8, arc=1.6)
     steel.cyl(1.58, .26, loc=(0, .4, 3.44), seg=28, bevel=.03)
     if racks:
-        rot = (-math.radians(12), 0, 0)
+        rot = (0.0, 0, 0)       # level, so a launch leaves along the tubes (DECISIONS 13F)
         for s in (-1, 1):
             x = s * 2.62
             armor.box((.6, 1.6, .16), loc=(x, 3.0, 1.73), bevel=.03, seg=1)
             armor.box((.1, 1.2, .5), loc=(s * 2.2, 3.1, 1.95), bevel=.02, seg=1)
             centre = Vector((x, 2.9, 2.12))
             rack = _frame(centre, rot)
-            a.part('Missile_racks', 'Team').box((.62, 1.9, .56), loc=centre, rot=rot, bevel=.04)
+            a.part('Rack_box', 'Team').box((.62, 1.9, .56), loc=centre, rot=rot, bevel=.04)
+            # The launcher: a liner in the top middle tube (the box's two sides were two launchers).
+            a.part('Missile_racks', 'Undercarriage').cyl(.06, 1.7, loc=rack @ Vector((0, -.1, .13)), rot=FORWARD, seg=8,
+                                                          bevel=0)
             frame = a.part('Rack_frames', 'Armor')
             for yy in (-.82, .82):
                 frame.box((.67, .12, .61), loc=rack @ Vector((0, yy, 0)), rot=rot, bevel=.015, seg=1)
@@ -450,7 +453,7 @@ def behemoth_tempest(a):
     for side in (-.22, .22):
         mz.box((.18, .4, .66), loc=(side, y0 - L - .1, zr), bevel=.02, seg=1)
     a.part('Muzzle_brake_bore', 'Energy', t).box((.24, .04, .26), loc=(0, y0 - L + .02, zr), bevel=0)
-    a.pivot('Muzzle_main', (0, y0 - L - .32, zr), t)
+    a.pivot('Muzzle_main', (0, y0 - L - .04, zr), t)   # the core's end, between the jaws' roots (13F)
     # Protection-system launchers and flat radar panels on the turret flanks.
     for s in (-1, 1):
         tarm.box((.1, .7, .5), loc=(s * 1.9, -.2, .55), rot=(0, 0, 0), bevel=.02, seg=1)                # radar panel
@@ -1058,7 +1061,7 @@ def mega_gunship(a):
                    bevel=.05)
         armor.box((.12, 1.0, .5), loc=(s * 4.33, -.05, 2.0), bevel=.02, seg=1)
         a.part('Wing_lights', 'TeamGlow').box((.06, .14, .07), loc=(s * 4.41, .2, 2.18), bevel=0)
-        for x in (2.33, 3.02):
+        for x in (2.1, 3.12):
             x *= s
             armor.box((.12, .7, .28), loc=(x, -.1, 1.83), bevel=.02, seg=1)
             pods.lathe([(.23, -1.0), (.32, -.8), (.32, .85), (.28, 1.0)], loc=(x, -.25, 1.4), rot=FORWARD, seg=12)
@@ -1131,7 +1134,7 @@ def _quad_flak(a, name, y):
     flak = a.part('Flak_guns', 'Steel', m)
     for x in (-.3, .3):
         for z in (.5, .76):
-            flak.cyl(.045, 2.0, loc=(x, -1.45, z), rot=FORWARD, seg=6, bevel=0)
+            flak.cyl(.045, 2.08, loc=(x, -1.49, z), rot=FORWARD, seg=6, bevel=0)
             flak.cyl(.065, .2, loc=(x, -2.43, z), rot=FORWARD, seg=6, bevel=0)
     for s in (-1, 1):
         a.part('Flak_ammo', 'Crate', m).box((.3, .6, .4), loc=(s * .8, .25, .55), bevel=.03, seg=1)
@@ -1557,11 +1560,11 @@ def sky_fortress(a):
     pivot(a, 'Muzzle_mg', at(.89), 'Mount_mg')
     # Two 40 mm cannons.
     for name, y in (('Mount_gun', -.95), ('Mount_gun.001', .75)):
-        m, at, rot = _side_mount(a, name, (1.02, y, .05))
+        m, at, rot = _side_mount(a, name, (1.02, y, .05), tilt=.2)
         a.part('Cannon_port', 'Armor', m).box((.2, .7, .5), loc=(0, 0, .02), bevel=.03, seg=1)
         c = a.part('Cannon', 'Steel', m)
         c.cyl(.085, .36, loc=at(.2), rot=rot, seg=10, bevel=.01, bseg=1)
-        c.cyl(.065, 1.0, loc=at(.6), rot=rot, seg=10, bevel=0)
+        c.cyl(.065, 1.1, loc=at(.65), rot=rot, seg=10, bevel=0)      # runs into the muzzle cone (13F)
         c.cyl(.09, .2, r2=.06, loc=at(1.12), rot=rot, seg=10, bevel=0)
         pivot(a, name.replace('Mount_', 'Muzzle_'), at(1.24), name)
     # 105 mm howitzer.
@@ -1576,7 +1579,7 @@ def sky_fortress(a):
     armor.box((.5, .5, .3), loc=(0, 4.55, -.42), bevel=.04, seg=1)
     for k in range(5):
         steel.cyl(.045, .44, loc=(-.16 + k * .08, 4.62, -.42), rot=BACKWARD, seg=6, bevel=0)
-    a.pivot('Muzzle_ramp', (0, 4.95, -.42))
+    a.pivot('Muzzle_ramp', (0, 4.86, -.42))
     a.post = [uniform_scale(1.3)]
 
 

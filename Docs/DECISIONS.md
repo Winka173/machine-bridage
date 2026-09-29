@@ -4351,3 +4351,83 @@ tanks' "in the middle of the gun", the flame tank and the mortar wrong, missiles
     sky fortress's cannons (7 degrees); elite MLRS (22); the SAM launcher (17). In the render the SAM
     launcher's launch line runs along its raised box, so the audit is probably reading the tube rims'
     bevels. Left for a look.
+
+## 13F. The last model muzzles, fixed in Blender (2026-09-29)
+
+13E left 34 mounts (1 on `_hd`) whose barrel, tube or launcher was wrong in the model itself. This pass fixes 23 of
+them in the Blender builders (`Tools/blender`) and re-exports the models; 12 stay on `MuzzleAuditTests.Known`.
+
+- **How the models were rebuilt.** Blender 4.5.14 (`C:/Users/Winka/Tools/blender-4.5.14-windows-x64`), one model at a
+  time through `build_assets.all_builders()` and `mb_round6.finish` (post steps and suffixed pivot names, as the round 6
+  builders export). A rebuild of the untouched sources matched every committed file part for part (names, parents,
+  positions, bounds, triangles). The one exception is the heavy AA's tyres, whose later bevel change had never been
+  exported. Scales, footprints and the sim data are unchanged.
+- **What was wrong, by kind.** None of these were the audit misreading bevels.
+  - *Launchers too close together.* `ModelLibrary.LauncherGroups` splits a launcher part into launchers at gaps of
+    0.35 m across the model. The gunship helicopter's two pods on a wing, the fighter's two AMRAAMs on a shoulder beam,
+    the strike drone's missile pair and the mega gunship's pods stood 0.05-0.33 m apart. Each pair was read as one
+    launcher, and rounds left from the air between them. They now stand 0.35 m or more apart.
+  - *One box read as two launchers.* A box has vertices only at its sides, so the behemoth's racks, the heavy AA's
+    packs and the armoured train's rocket box split into their two side walls. The behemoth and heavy AA boxes are
+    now `Rack_box` / `Pack_box`. A liner inside the top middle tube (`Missile_racks`, `Missile_pack`) is the launcher,
+    and the racks and packs are level so a launch leaves along the tubes. The train's box is `Rocket_box` and
+    launches from its tube face.
+  - *Parts of a launcher that did not elevate with its tubes.* `BarrelPattern` elevates `Tubes`, `Pod`, `Launcher_*`
+    and similar parts, and leaves `Missile_box`, `Box_frame`, `Missile_pack` and `Pod_frame` behind.
+    - The SAM launcher's tube mouths swung 17 degrees out of their boxes at rest (the 17 degrees 13E put down to
+      bevels). The boxes, frames, lugs and cradle are now `Launcher_*`, and a bridge plate closes the gap between the
+      two faces, where spots on the face fell onto the cradle.
+    - The heavy AA's ring mouths no longer elevate apart from their packs.
+    - The elite MLRS's bands and lugs elevate with its pods.
+  - *Stores and barrels in several parts.*
+    - The JASSM's dark nose is now part of `Standoff_missile`, so it launches from the nose tip, not 0.5 m back.
+    - The mothership's flak barrels run through their hiders; a 0.2 m hider is too short to count as barrel.
+    - The sky fortress's 40 mm barrels run into their muzzle cones. At 1.3x the barrel piece ended 2 cm short of
+      `AlignMuzzles`' reach, and the guns are depressed 11.5 degrees, not 8, so the muzzle is turned along them.
+    - The heavy AA's four barrels each have their own hider (`Muzzle_brake` .. `_4`), so they fire in turn from their
+      own openings, not between each gun's pair.
+  - *Muzzles off the end.* The Tempest's railgun muzzle is now at the core's end, at the root of its open jaws; it
+    was 0.32 m out between the jaw tips. The sky fortress's ramp muzzle is on the middle tube's mouth. The Grad's dark
+    face plate sits 6 cm inside the mouths, not 10.
+- **The trucks' roof gun: a new model, `armed_truck`.**
+  - The ammunition carrier and the supply truck used the civilian truck prop. It is built lying along X, as the map
+    places it, so both units drove sideways, and it had no gun, so they fired from a point over the roof.
+  - `armed_truck` is the same box truck built along the vehicle's front, with a team-painted cab and stripe and a
+    small ring-mounted MG over the cab (`Turret`, `Muzzle_main`, from `mb_support._rws_turret`). The ring sits far
+    enough forward that the barrel clears the taller cargo box when it turns round.
+  - `balance.json` changes only the two units' `"model"` field. The civilian `truck` prop is unchanged.
+- **Fixed (23 mounts, before and after).** Ahead of the tip, off axis and angle, as `Docs/muzzle-audit.md` reports them.
+
+  | Mount | Before | After |
+  |---|---|---|
+  | ammo_carrier, supply_truck (main) | no gun on the model | 0.00 m, 0.00 m, 0° (`armed_truck`) |
+  | gunship_heli rockets | no pod round the line | +0.06 m, 0.00 m, 0.4° (4 pods) |
+  | gunship_heli missiles | no tube round the line | -0.02 m, 0.00 m, 2.8° |
+  | fighter_jet AIM-120 (and `_hd`) | +1.00 m | -0.06 m, 0.00 m, 1.4° (6 rails) |
+  | stealth_bomber JASSM | 0.51 m inside | +0.07 m, 0.02 m, 0° |
+  | sam_launcher | +0.11 m, 17° | +0.04 m, face, 0° |
+  | heavy_aa twin 30 mm | no barrel round the line | 0.00 m, 0.00 m, 0.3° (4 barrels) |
+  | heavy_aa SAM | 0.17 m off, 12° | -0.04 m, 0.00 m, 0° |
+  | behemoth racks (2 mounts) | 0.20 m off, 47° | -0.06 m, 0.00 m, 0° |
+  | strike_drone missiles | +0.62 m | -0.04 m, 0.00 m, 0° |
+  | mega_gunship pods (2 mounts) | +0.62 m, 0.14 m off | -0.05 m, 0.00 m, 0° |
+  | armored_train rockets | 0.42 m off, 7° | -0.01 m, face, 0° |
+  | elite_grad | 0.09 m inside | -0.06 m, face, 0° |
+  | behemoth_tempest railgun | +0.38 m | +0.04 m, 0.00 m, 2.3° |
+  | drone_mothership flak (2 mounts) | no barrel; 0.09 m inside | 0.00 m, 0.04 / 0.00 m, 4.7 / 0° |
+  | sky_fortress 40 mm (2 mounts) | 7.4° | +0.03 m, 0.00 m, 0° |
+  | sky_fortress ramp | +0.19 m | +0.03 m, 0.00 m, 0° |
+
+- **Left (12 mounts, on `Known` with their reasons).** Each needs more than a model tweak.
+  - *Mobile fortress (rockets ×2, missiles).* Its two rocket batteries are raised boxes, one per `Mount_rocket`.
+    Paired launchers only launch along the muzzle's level forward. A face of tubes is found once per slot over the
+    whole model, so the two batteries, and the missile slot too, read as one face between them. This needs per-mount
+    faces in `ModelLibrary`.
+  - *aa_turret twin flak (×2 variants), aa_turret.sam (×2), ballistic launcher, heavy bomber's cruise missile.* An
+    elevation rest pitch taken from the trunnion line, and launchers with no tube modelled round their muzzle (an
+    erector, a bay). Each is its own rig question.
+  - *Silver bug (laser, coilguns).* Four coilguns on one part, spread round the saucer, and a lens 5 cm off.
+  - *Elite MLRS (22 degrees).* The bands now elevate with the pods, but the face reading is unchanged. It needs a look
+    at which surfaces the face rays meet.
+- **Tests.** `MuzzleAuditTests.Known` is down to 12, and `TiltedLauncherFacesLaunchAlongTheirTubes` no longer skips
+  the SAM launcher. The cards of every re-exported model were rendered again.
