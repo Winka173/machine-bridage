@@ -145,14 +145,17 @@ def _behemoth_chassis(a, racks=True, stacks=True, fore_ring=True):
         _periscopes(glass, s * 1.05, 2.75, 3.4, .36, 3, start=R90 - .8, arc=1.6)
     steel.cyl(1.58, .26, loc=(0, .4, 3.44), seg=28, bevel=.03)
     if racks:
-        rot = (-math.radians(12), 0, 0)
+        rot = (0.0, 0, 0)       # level, so a launch leaves along the tubes (DECISIONS 13F)
         for s in (-1, 1):
             x = s * 2.62
             armor.box((.6, 1.6, .16), loc=(x, 3.0, 1.73), bevel=.03, seg=1)
             armor.box((.1, 1.2, .5), loc=(s * 2.2, 3.1, 1.95), bevel=.02, seg=1)
             centre = Vector((x, 2.9, 2.12))
             rack = _frame(centre, rot)
-            a.part('Missile_racks', 'Team').box((.62, 1.9, .56), loc=centre, rot=rot, bevel=.04)
+            a.part('Rack_box', 'Team').box((.62, 1.9, .56), loc=centre, rot=rot, bevel=.04)
+            # The launcher: a liner in the top middle tube (the box's two sides were two launchers).
+            a.part('Missile_racks', 'Undercarriage').cyl(.06, 1.7, loc=rack @ Vector((0, -.1, .13)), rot=FORWARD, seg=8,
+                                                          bevel=0)
             frame = a.part('Rack_frames', 'Armor')
             for yy in (-.82, .82):
                 frame.box((.67, .12, .61), loc=rack @ Vector((0, yy, 0)), rot=rot, bevel=.015, seg=1)

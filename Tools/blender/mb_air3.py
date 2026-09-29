@@ -174,8 +174,8 @@ def fighter_jet(a, detail=False):
     for s in (-1, 1):
         x = s * 3.6
         _pylon(pylons, x, .0, 2.2, wing.bottom(3.6) + .05, zp + .06, w=.1)
-        pylons.box((.46, 1.3, .06), loc=(x, .9, zp + .06), bevel=.01, seg=1)                 # shoulder beam
-        for dx in (-.2, .2):
+        pylons.box((.62, 1.3, .06), loc=(x, .9, zp + .06), bevel=.01, seg=1)                 # shoulder beam
+        for dx in (-.27, .27):
             _aam(aams, (x + dx, .6, zp), length=3.0, r=.085, canards=False, fin=1.7)
     a.pivot('Muzzle_missile', (0, .6 - 1.5, zp))
     a.pivot('Muzzle_aam', (0, .6 - 1.6, zp))

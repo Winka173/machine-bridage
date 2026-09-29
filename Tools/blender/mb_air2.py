@@ -325,7 +325,7 @@ def _standoff_missile(a, x, y_nose, zc, length, w=.44, h=.24):
         pts = [(-.34, -.5), (.34, -.5), (.5, -.12), (.25, .5), (-.25, .5), (-.5, -.12)]
         return [(x + px * w * k * grow, y_nose + d, zc + pz * h * k * grow) for px, pz in pts]
     tip = [[(x, y_nose, zc - h * .08)]]
-    a.part('Standoff_nose', 'Armor').loft(tip + [ring(.18, .36), ring(.45, .72)], bevel=0)
+    a.part('Standoff_missile', 'Armor').loft(tip + [ring(.18, .36), ring(.45, .72)], bevel=0)   # dark nose
     body = [ring(.45, .72), ring(.8, .95), ring(1.15, 1.0), ring(length - .35, 1.0), ring(length, .72)]
     a.part('Standoff_missile', 'Fuel').loft(body, bevel=0)
     a.part('Standoff_band', 'Hazard').loft([ring(.95, .99, 1.08), ring(1.03, 1.0, 1.08)], bevel=0)

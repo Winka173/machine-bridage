@@ -458,19 +458,21 @@ def gunship_heli(a):
         return 1.72 - (x - .9) * droop
     for s in (-1, 1):
         body.limb((s * .8, 0, wing_z(.8)), (s * 3.25, 0, wing_z(3.25)), .16, 1.3, bevel=.04, seg=1, taper=(1, .75))
-        for x in (1.6, 2.45):
+        for x in (1.52, 2.5):
             z = wing_z(x)
             _pylon(pylons, s * x, -.45, .45, z + .02, z - .3, w=.12)
             _rocket_pod(a, s * x, -.9, z - .54, .26, 1.6, tubes=7)
         z = wing_z(3.25)
         armor.box((.1, 1.2, .7), loc=(s * 3.3, -.05, z - .2), bevel=.02, seg=1)                        # tip plate
         for zz in (z - .05, z - .38):
-            tubes.cyl(.09, 1.25, loc=(s * 3.435, -.18, zz), rot=FORWARD, seg=10, bevel=.015, bseg=1)
+            # The upper tube launches (Launch_tubes); the lower one is drawn the same (Spare_tubes).
+            (tubes if zz == z - .05 else a.part('Spare_tubes', 'Fuel')).cyl(.09, 1.25, loc=(s * 3.435, -.18, zz), rot=FORWARD,
+                                                                           seg=10, bevel=.015, bseg=1)
             _tube_mouth(a, None, _frame((s * 3.435, -.8, zz), FORWARD), .085, protrude=.04, seg=8, name='Tube_rims')
             a.part('Missile_bands', 'Hazard').cyl(.1, .05, loc=(s * 3.435, .2, zz), rot=FORWARD, seg=10, bevel=0)
         a.part('Wing_lights', 'TeamGlow').box((.06, .14, .06), loc=(s * 3.36, .5, z + .17), bevel=.01, seg=1)
     a.pivot('Muzzle_rocket', (0, -.97, (wing_z(1.6) + wing_z(2.45)) / 2 - .54))
-    a.pivot('Muzzle_missile', (0, -.86, wing_z(3.25) - .215))
+    a.pivot('Muzzle_missile', (0, -.86, wing_z(3.25) - .05))
     # Door gunners at the troop cabin's windows, left (+X) and right (-X).
     a.pivot('Muzzle_door_l', (1.02, -1.0, 1.62))
     a.pivot('Muzzle_door_r', (-1.02, -1.0, 1.62))
