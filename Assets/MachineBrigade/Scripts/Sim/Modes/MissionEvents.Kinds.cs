@@ -270,7 +270,8 @@ namespace MachineBrigade.Sim.Modes
             var e = s.Def;
             var d = Difficulty;
             if (d.AllyWaves >= 0 && AllyWaves >= d.AllyWaves) return false;
-            var target = d.AllyShare * ReferenceStrength(world, e) * e.Number("scale", 1f);
+            // "share" sets its own (chapter 12's Total Offensive: as strong as the enemy's wave).
+            var target = (e.Has("share") ? e.Number("share", 1f) : d.AllyShare) * ReferenceStrength(world, e) * e.Number("scale", 1f);
             var named = e.Words("roster");
             var roster = new List<string>();
             foreach (var id in named.Count > 0 ? named : Rules.AccordRoster)
