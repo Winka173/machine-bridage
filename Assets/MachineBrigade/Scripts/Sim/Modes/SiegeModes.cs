@@ -1286,6 +1286,15 @@ namespace MachineBrigade.Sim.Modes
             // Prompt 16: Kessler's Leviathan, on the sea (Boss Rush switches to Lighthouse Bay for it).
             new[] { "leviathan" },
             new[] { "supreme_command" },
+            // Prompt 20 H-J: the new main bosses (Kronos on the open-pit mine, Typhon at sea) and the new mini bosses
+            // by where they fight (prompt 20 pass 3 reworks the rush round the two ranks).
+            new[] { "moloch" },
+            new[] { "daedalus" },
+            new[] { "kronos" },
+            new[] { "typhon" },
+            new[] { "behemoth_mk2", "bastion_mk0", "fenrir", "ixion" },
+            new[] { "locust", "argus", "icarus_mk0" },
+            new[] { "scylla", "caspian" },
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
@@ -1334,8 +1343,8 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Seconds between one boss falling and the next arriving.</summary>
         public float Breather { get; set; } = 20f;
 
-        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five); eleven with Leviathan (prompt 16).</summary>
-        public float TimeLimit { get; set; } = 57 * 60f;
+        /// <summary>Ten bosses since prompt 8 (was 27 minutes for five); eleven with Leviathan (prompt 16); eighteen with prompt 20's (four main, three mini).</summary>
+        public float TimeLimit { get; set; } = 88 * 60f;
 
         /// <summary>CP handed out when a boss falls.</summary>
         public float Bounty { get; set; } = 15f;

@@ -92,3 +92,18 @@ node), `silver_bug_wreck` (its crashed form for phase 3, 27.8k, with the six deb
 | The drone seizure (Very Hard) | The drones change colour (the ordinary side change) | A hacked-glitch shader and a sound while they are seized |
 | Boss bar: altitude chip icons | `cbradar`, `sam`, `aa` from the HUD set | Icons of their own for orbit, high and low |
 
+## Prompt 20 pass 2 (boss templates, new bosses)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Card renders: moloch, daedalus, kronos, typhon, ixion, caspian, bastion_mk0, fenrir, scylla, locust, behemoth_mk2, icarus_mk0, argus; the resized and re-armed old bosses | None (new) / the old cards | The lead's graphics run after the merge (`CardRenders`) |
+| "In action" clips (Guide) of the thirteen new bosses | None | Clips: Moloch's doors, Daedalus's mass drop, Kronos's sweep, Typhon surfacing and launching, Ixion's charge, Caspian's pass, each variant's attack |
+| Models of the six new bosses | First passes (`mb_p20_bosses.py`: boxes, lofts and kit guns) | A detail pass to the 3d_astra bar: Moloch's workshop, Kronos's girders and buckets, Typhon's hull lines, Caspian's airframe, Ixion's spokes |
+| The variants' marks (Mk.0, Mk.II, frost, ice) | A hull tint only | A decal or emblem per `mark` |
+| The old bosses' new weapons | Kit turrets and pods bolted on (the models rebuilt) | Fitting them into each hull's design |
+| Music: each main boss's own track, the mini bosses' shared `boss_mini` | `boss` for all | Tracks named by `music` / `bossRanks` |
+| Typhon's bubbles and wake before it surfaces, its dive | The Earth Worm's ground cracks on the water | A bubble and foam effect on `Burrow` stage 1 at sea, a dive wash |
+| Kronos's bucket wheel turning, debris thrown; Ixion's wheels rolling and the charge's dust | Static wheels; blasts only | Spinning `Part_wheel` / `Part_wheel_l/r` by speed, a dust trail on the charge |
+| Moloch's doors opening as vehicles drive out | The `Landed` event only | A door animation on `Part_door_l/r` |
+| Daedalus's mass-drop pods falling | Landing blasts only | The pod model falling on each ring |
+| Kronos's 120-degree swing warning | Three rings | A sector decal |

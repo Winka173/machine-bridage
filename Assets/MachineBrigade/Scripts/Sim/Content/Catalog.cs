@@ -201,7 +201,8 @@ namespace MachineBrigade.Sim.Content
 
             var vehicles = new List<VehicleDef>();
             var ownBranches = new Dictionary<string, ArmyBranch?>();
-            foreach (var v in Inherited(root.Array("vehicles"), model: true))
+            // Prompt 20 E: bosses built from their frames, the part library, their variants and ranks.
+            foreach (var v in BossTemplates.Expand(root, Inherited(root.Array("vehicles"), model: true)))
             {
                 var weapon = Weapon(weapons, v, "weapon");
                 var secondary = new List<WeaponMount>();

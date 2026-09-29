@@ -145,7 +145,7 @@
   },
   "behemoth": {
     "file": "behemoth.glb",
-    "triangles": 18716
+    "triangles": 19948
   },
   "behemoth_tempest": {
     "file": "behemoth_tempest.glb",
@@ -207,6 +207,10 @@
     "file": "car.glb",
     "triangles": 1580
   },
+  "caspian": {
+    "file": "caspian.glb",
+    "triangles": 3318
+  },
   "charred_tree": {
     "file": "charred_tree.glb",
     "triangles": 344
@@ -229,7 +233,7 @@
   },
   "command_airship": {
     "file": "command_airship.glb",
-    "triangles": 21340
+    "triangles": 22180
   },
   "command_hq": {
     "file": "command_hq.glb",
@@ -274,6 +278,10 @@
   "cruise_missile": {
     "file": "cruise_missile.glb",
     "triangles": 280
+  },
+  "daedalus": {
+    "file": "daedalus.glb",
+    "triangles": 20636
   },
   "dead_tree": {
     "file": "dead_tree.glb",
@@ -321,7 +329,7 @@
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
-    "triangles": 19436
+    "triangles": 19900
   },
   "drop_pod": {
     "file": "drop_pod.glb",
@@ -409,7 +417,7 @@
   },
   "fortress_bastion": {
     "file": "fortress_bastion.glb",
-    "triangles": 21972
+    "triangles": 23948
   },
   "foxhole": {
     "file": "foxhole.glb",
@@ -547,6 +555,10 @@
     "file": "iron_beam.glb",
     "triangles": 10456
   },
+  "ixion": {
+    "file": "ixion.glb",
+    "triangles": 5476
+  },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
     "triangles": 356
@@ -562,6 +574,10 @@
   "jungle_tree_c": {
     "file": "jungle_tree_c.glb",
     "triangles": 1022
+  },
+  "kronos": {
+    "file": "kronos.glb",
+    "triangles": 8404
   },
   "lamp_post": {
     "file": "lamp_post.glb",
@@ -589,7 +605,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 5416
+    "triangles": 6904
   },
   "light_tank": {
     "file": "light_tank.glb",
@@ -667,6 +683,10 @@
     "file": "mobile_fortress.glb",
     "triangles": 20290
   },
+  "moloch": {
+    "file": "moloch.glb",
+    "triangles": 7180
+  },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",
     "triangles": 6448
@@ -685,7 +705,7 @@
   },
   "nuke_train": {
     "file": "nuke_train.glb",
-    "triangles": 28030
+    "triangles": 35666
   },
   "obsidian_spire": {
     "file": "obsidian_spire.glb",
@@ -897,7 +917,7 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 25654
+    "triangles": 27142
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
@@ -1058,6 +1078,10 @@
   "twin_tank": {
     "file": "twin_tank.glb",
     "triangles": 8832
+  },
+  "typhon": {
+    "file": "typhon.glb",
+    "triangles": 5576
   },
   "vbied": {
     "file": "vbied.glb",

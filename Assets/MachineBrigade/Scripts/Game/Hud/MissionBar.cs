@@ -99,7 +99,8 @@ namespace MachineBrigade.Game.Hud
         /// <summary>How long the compact bar stays open after a tap.</summary>
         private const float OpenSeconds = 6f;
 
-        private readonly Label _name, _phase, _hp, _escorts;
+        private readonly Label _name, _phase, _hp, _escorts, _rank;
+        private string _shownRank;
         private readonly VisualElement _escortChip;
         private int _shownEscorts = -1;
 
@@ -131,6 +132,11 @@ namespace MachineBrigade.Game.Hud
             }
             var head = Kit.Box("fc-boss__head");
             head.Add(Kit.Icon("skull", "fc-boss__icon"));
+            // Prompt 20 F.4, G.4: "Boss" or "Mini boss" before its name.
+            _rank = Kit.Text("", "fc-caption fc-boss__rank");
+            _rank.style.marginRight = 6;
+            _rank.style.display = DisplayStyle.None;
+            head.Add(_rank);
             _name = Kit.Text("", "fc-panel-title fc-row-text fc-boss__name");
             head.Add(_name);
             _phase = Kit.Text("", "fc-caption fc-boss__phase");
@@ -259,6 +265,18 @@ namespace MachineBrigade.Game.Hud
             }
             var fill = Mathf.RoundToInt(Mathf.Clamp01(health) * 1000f);
             if (fill != _shownFill) _fill.style.width = Length.Percent((_shownFill = fill) / 10f);
+        }
+
+        /// <summary>Prompt 20: its rank's label ("Boss", "Mini boss") and a mini boss's smaller bar.</summary>
+        public void SetRank(MachineBrigade.Sim.Content.BossRankDef rank)
+        {
+            var key = rank?.Label;
+            if (key == _shownRank) return;
+            _shownRank = key;
+            _rank.style.display = key != null ? DisplayStyle.Flex : DisplayStyle.None;
+            _rank.text = key != null ? Kit.Caps(Strings.Get(key)) : "";
+            Root.EnableInClassList("fc-boss--mini", rank is { Compact: true });
+            Root.style.scale = rank is { Compact: true } ? new StyleScale(new Scale(new UnityEngine.Vector3(0.86f, 0.86f, 1f))) : StyleKeyword.Null;
         }
 
         /// <summary>Prompt 16 F: its escorts still alive, beside its health (none: hidden).</summary>

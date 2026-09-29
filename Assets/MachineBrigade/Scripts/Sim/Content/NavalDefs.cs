@@ -51,6 +51,14 @@ namespace MachineBrigade.Sim.Content
         /// <summary>How far to the side of its line it may drift before it steers back (metres).</summary>
         public float Slack { get; internal set; } = 2f;
 
+        /// <summary>
+        /// Prompt 20 J.5: a skimmer's passes (Caspian): <see cref="PassIn"/> s fast along the near lane (in reach of the
+        /// shore), then <see cref="PassOut"/> s out on the far one, over and over (0: an ordinary patrol).
+        /// </summary>
+        public float PassIn { get; internal set; }
+
+        public float PassOut { get; internal set; }
+
         /// <summary>The lane for boss phase <paramref name="phase"/>.</summary>
         public string LaneFor(int phase) => Lanes.Count == 0 ? "far" : Lanes[Math.Clamp(phase, 0, Lanes.Count - 1)];
     }

@@ -476,7 +476,9 @@ namespace MachineBrigade.Game.Views
         private void ApplyTint()
         {
             _tintBlock ??= new MaterialPropertyBlock();
-            var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+            // Prompt 20 G.2: a variant's own colour over its parent's model.
+            var own = Def.Tint ?? System.Numerics.Vector3.One;
+            var tint = new Color(_scorch * own.X, _scorch * 0.97f * own.Y, _scorch * 0.95f * own.Z, 1f - _shownFlash);
             _tintBlock.SetColor(TintId, tint);
             foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
             if (_model.Lod1Renderers.Length == 0) return;

@@ -127,7 +127,8 @@ namespace MachineBrigade.Sim.Bosses
                         Lander(v, sea, now);
                         break;
                 }
-                Sail(v, naval, sea, dt);
+                // Prompt 20 J.4: a submarine under water is the boss system's to move.
+                if (v.Burrow == Vehicle.BurrowState.Surface) Sail(v, naval, sea, dt);
             }
             // The flagship went down this step: its magazines go up along the hull, its general signs off.
             if (!flagshipAlive && Rules.Flagship.IsValid && _world.TryGetVehicle(Rules.Flagship, out var sunk) && !sunk.IsAlive)
@@ -227,13 +228,25 @@ namespace MachineBrigade.Sim.Bosses
             }
             else
             {
+                // Prompt 20 J.5: a skimmer's passes, in along the near lane, then out on the far one.
+                if (naval.PassIn > 0f)
+                {
+                    if (now >= v.PassUntil)
+                    {
+                        v.PassIn = !v.PassIn;
+                        v.PassUntil = now + (v.PassIn ? naval.PassIn : naval.PassOut);
+                    }
+                    v.NavalLane = v.PassIn ? "near" : "far";
+                    if (sea.Lane(v.NavalLane) == null) v.NavalLane = naval.LaneFor(phase);
+                }
                 // Patrol: along its lane to the end of its stretch, then about.
                 var lane = sea.Lane(v.NavalLane)!;
                 var turnU = v.NavalDir * lane.Patrol;
                 if ((f.X - turnU) * v.NavalDir > -4f) v.NavalDir = -v.NavalDir;
                 v.NavalGoal = new Vector2(v.NavalDir * lane.Patrol, lane.W);
             }
-            if (v.Transforming || v.HoldFire) return;
+            // Prompt 20 J.4: a submarine fires nothing under water.
+            if (v.Transforming || v.HoldFire || v.Burrow != Vehicle.BurrowState.Surface) return;
             if (v.Def.Salvo is { } salvo && now >= v.SalvoNext) Salvo(v, salvo, sea, now);
             if (v.Def.Cruise is { } cruise && phase >= cruise.Phase && now >= v.CruiseNext && !v.CruiseOff)
             {
@@ -500,7 +513,9 @@ namespace MachineBrigade.Sim.Bosses
                 var at = v.Position + forward * ((k - 2) * v.Def.HullRadius * 0.55f);
                 _world.Damage.Queue(at, new ExplosionDef(0f, 9f + 2f * (k % 2), 0f, ExplosionTier.Ultimate), 0.8 + 0.7 * k, v.Team, null, HitKind.Strike, v.Id);
             }
-            _world.Emit(SimEvent.RadioMessage("radio.kessler.leviathan.sunk", v.Team));
+            // Prompt 20: each ship boss's own sign-off (Leviathan's is Kessler's line).
+            var line = v.Def.Id != "leviathan" && v.Def.RadioSpawn != null ? v.Def.RadioSpawn + ".sunk" : "radio.kessler.leviathan.sunk";
+            _world.Emit(SimEvent.RadioMessage(line, v.Team));
         }
 
         // ================================================================== the coast

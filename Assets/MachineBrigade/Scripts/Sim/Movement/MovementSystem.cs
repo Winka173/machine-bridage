@@ -90,7 +90,7 @@ namespace MachineBrigade.Sim.Movement
                 // A boss boring underground or landing troops: the boss system moves it (or holds it still).
                 // Prompt 19: a tiered boss falling to its crash site (the boss system moves it) or down on the ground,
                 // and a drop pod on its way down.
-                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing || v.Crashing || v.Crashed || v.IsPod)
+                if (v.Burrow != Vehicle.BurrowState.Surface || v.Landing || v.Crashing || v.Crashed || v.IsPod || v.Charging)
                 {
                     v.Speed = 0f;
                     continue;

@@ -2385,7 +2385,7 @@ namespace MachineBrigade.Game.Hud
 
         public static string Get(string key) =>
             Table.TryGetValue(key, out var text) || GuideText.Table.TryGetValue(key, out text) || CampaignText.Table.TryGetValue(key, out text) || UnitText.Table.TryGetValue(key, out text) ||
-            BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text)
+            BigAttackText.Table.TryGetValue(key, out text) || OrbitalText.Table.TryGetValue(key, out text) || BossText.Table.TryGetValue(key, out text)
                 ? (Vietnamese ? text.vi : text.en) : key;
 
         public static string Format(string key, params object[] args) => string.Format(Get(key), args);
@@ -2395,7 +2395,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A vehicle's name; a tower's branch reads "AA tower · Flak tower".</summary>
         public static string Unit(string defId)
         {
-            if (Table.ContainsKey("unit." + defId)) return Get("unit." + defId);
+            if (Has("unit." + defId)) return Get("unit." + defId);
             var dot = defId.IndexOf('.');
             return dot > 0 ? Get("unit." + defId.Substring(0, dot)) + " · " + Get("branch." + defId) : Get("unit." + defId);
         }
@@ -2407,14 +2407,14 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The table has this key (optional texts, such as a vehicle's role note).</summary>
         public static bool Has(string key) => Table.ContainsKey(key) || GuideText.Table.ContainsKey(key) || CampaignText.Table.ContainsKey(key) || UnitText.Table.ContainsKey(key) ||
-            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key);
+            BigAttackText.Table.ContainsKey(key) || OrbitalText.Table.ContainsKey(key) || BossText.Table.ContainsKey(key);
 
         /// <summary>[[word]] marks a key word in a text: drawn bold in the accent colour (UI rich text).</summary>
         public static string Highlight(string text) =>
             System.Text.RegularExpressions.Regex.Replace(text, @"\[\[(.+?)\]\]", "<b><color=#F2A33A>$1</color></b>");
 
         /// <summary>Vehicle or support card name.</summary>
-        public static string Card(string defId) => Table.ContainsKey("unit." + defId) || IsBranch(defId) ? Unit(defId) : Support(defId);
+        public static string Card(string defId) => Has("unit." + defId) || IsBranch(defId) ? Unit(defId) : Support(defId);
 
         /// <summary>A tower branch's id ("aa_turret.flak"): the tower's name with the branch's (never the raw "support." key).</summary>
         private static bool IsBranch(string defId)
@@ -2431,7 +2431,7 @@ namespace MachineBrigade.Game.Hud
         public static string Short(string defId)
         {
             if (defId == null) return "";
-            if (Table.ContainsKey("short." + defId)) return Get("short." + defId);
+            if (Has("short." + defId)) return Get("short." + defId);
             return IsBranch(defId) ? Branch(defId) : Card(defId);
         }
     }

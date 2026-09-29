@@ -82,9 +82,10 @@ namespace MachineBrigade.Tests
                 Assert.IsFalse(stats.Contains("guide.") || stats.Contains("dtype."), $"{id}: no raw key in '{stats}'");
                 Assert.IsTrue(def.Parts.Any(p => big.UsesPart(p.Id)), id + ": a part carries it (break it to stop it)");
             }
-            Assert.AreEqual("erector", C.Vehicle("nuke_train").Parts.Last().Kind);
-            Assert.AreEqual("bombbay", C.Vehicle("drone_mothership").Parts.Last().Kind);
-            Assert.AreEqual("bombbay", C.Vehicle("command_airship").Parts.Last().Kind);
+            // Prompt 20 F.3's new weapons come after them in the list.
+            Assert.IsTrue(C.Vehicle("nuke_train").Parts.Any(p => p.Kind == "erector"));
+            Assert.IsTrue(C.Vehicle("drone_mothership").Parts.Any(p => p.Kind == "bombbay"));
+            Assert.IsTrue(C.Vehicle("command_airship").Parts.Any(p => p.Kind == "bombbay"));
             Assert.AreEqual("bug_rod_rain", C.Vehicle("silver_bug").BigAttack.Id, "prompt 19 F swapped the Silver Bug's entry for its rod rain");
         }
 
@@ -205,6 +206,9 @@ namespace MachineBrigade.Tests
                     case BigShape.Circle:
                         Assert.IsFalse(zone.Rect, id);
                         Assert.AreEqual(s.Area > 0f ? s.Area : s.Radius + s.Scatter, zone.Radius, 1e-3f, id + ": its circle");
+                        break;
+                    case BigShape.Charge:
+                        Assert.IsTrue(zone.Rect, id + ": a charge warns along its path");
                         break;
                     case BigShape.Quake:
                         Assert.AreEqual(s.Radius, zone.Radius, 1e-3f, id + ": the quake's circle");

@@ -100,6 +100,9 @@ namespace MachineBrigade.Game.Audio
             _stinger.priority = 0;
         }
 
+        /// <summary>Prompt 20 F.4, G.4: the boss track (a main boss's own, the mini bosses' shared one); a missing clip plays "boss".</summary>
+        public string BossTrack { get; set; } = "boss";
+
         /// <summary>A boss is on the field: its track until it falls, then back to the battle.</summary>
         public bool Boss
         {
@@ -140,7 +143,7 @@ namespace MachineBrigade.Game.Audio
                 Mood.Menu => "menu",
                 Mood.Battle => _battle,
                 Mood.Siege => "siege",
-                Mood.Boss => "boss",
+                Mood.Boss => Resources.Load<AudioClip>("Audio/Music/" + BossTrack) != null ? BossTrack : "boss",
                 _ => null,
             };
             _mood = mood;

@@ -581,6 +581,9 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Prompt 16 F: the boss's escorts still alive, on its bar.</summary>
         public void SetBossEscorts(int alive) => _boss?.SetEscorts(alive);
 
+        /// <summary>Prompt 20: the boss bar's rank label (null: none).</summary>
+        public void SetBossRank(MachineBrigade.Sim.Content.BossRankDef rank) => _boss?.SetRank(rank);
+
         /// <summary>Prompt 18: the boss's big attack on its bar (the icon, the cooldown, lit while it charges) and its charging parts flashing.</summary>
         public void SetBossBigAttack(MachineBrigade.Sim.Entities.Vehicle boss)
         {

@@ -40,6 +40,7 @@ import mb_new_tracked  # noqa: E402
 import mb_new_trucks  # noqa: E402
 import mb_new_wheeled  # noqa: E402
 import mb_p16_arms  # noqa: E402
+import mb_p20_bosses  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
 import mb_phase8  # noqa: E402
@@ -78,7 +79,9 @@ def all_builders():
                 # Prompt 16: new weapon parts on five bosses; they wrap the builders above.
                 **mb_p16_arms.BUILDERS,
                 # Prompt 17's temporary stand-ins for the new units (asset debt).
-                **mb_p17_temp.BUILDERS}
+                **mb_p17_temp.BUILDERS,
+                # Prompt 20 pass 2: the new bosses and the old bosses' new weapons (they wrap the builders above).
+                **mb_p20_bosses.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

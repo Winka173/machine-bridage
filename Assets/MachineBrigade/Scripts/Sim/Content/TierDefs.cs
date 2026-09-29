@@ -121,6 +121,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Its escorts come as it leaves orbit, not while it is still out of reach.</summary>
         public bool EscortsOnDescend { get; internal set; } = true;
 
+        /// <summary>Prompt 20: the phase (0 up) from which it stops moving (-1: never).</summary>
+        public int HaltPhase { get; internal set; } = -1;
+
         /// <summary>Radio keys by moment: appear, descend, phase2, phase3, crash, down, hijack, hijackWarn.</summary>
         public IReadOnlyDictionary<string, string> Radio { get; internal set; } = new Dictionary<string, string>();
 
@@ -182,6 +185,11 @@ namespace MachineBrigade.Sim.Content
         public string? Warning { get; internal set; }
         public IReadOnlyList<AltitudeTier> Tiers { get; internal set; } = new[] { AltitudeTier.Orbit, AltitudeTier.High };
         public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
+
+        /// <summary>Prompt 20: seconds between drops by phase (the last holds after; empty: <see cref="Every"/>).</summary>
+        public IReadOnlyList<float> EveryByPhase { get; internal set; } = Array.Empty<float>();
+
+        public float EveryIn(int phase) => EveryByPhase.Count == 0 ? Every : MathF.Max(2f, EveryByPhase[Math.Clamp(phase, 0, EveryByPhase.Count - 1)]);
 
         public bool DropsAt(AltitudeTier tier)
         {

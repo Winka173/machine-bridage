@@ -431,6 +431,20 @@ namespace MachineBrigade.Game.Match
             return false;
         }
 
+        /// <summary>Prompt 20: a main boss on the field plays its own track (else its rank's); mini bosses alone, theirs.</summary>
+        private string BossTrack()
+        {
+            string track = null;
+            foreach (var v in _world.Vehicles)
+            {
+                if (!v.IsAlive || !v.Def.Boss || v.Team != EnemyTeam) continue;
+                var own = v.Def.Music ?? v.Def.RankDef?.Music ?? "boss";
+                if (!v.Def.MiniBoss) return own;
+                track ??= own;
+            }
+            return track ?? "boss";
+        }
+
         /// <summary>The weather turns mid-battle, to another of this map's weathers.</summary>
         private void ShiftWeather()
         {
@@ -666,7 +680,11 @@ namespace MachineBrigade.Game.Match
                     _leavingWeather = null;
                 }
                 // A boss on the field: the boss track (the old war-drum loop stays silent).
-                if (!_menu && Time.frameCount % 15 == 0) _music.Boss = BossOnField();
+                if (!_menu && Time.frameCount % 15 == 0)
+                {
+                    _music.BossTrack = BossTrack();
+                    _music.Boss = BossOnField();
+                }
                 // Device check of a boss's death: it goes down after twelve seconds on the field.
                 if (!_menu && DebugFlags.Has("-mb-killboss") && Time.frameCount % 15 == 0)
                     foreach (var v in _world.Vehicles)
@@ -874,11 +892,11 @@ namespace MachineBrigade.Game.Match
         /// the camera pans there for a few seconds under the letterbox, unless the player is busy
         /// with the view; a touch hands it straight back.
         /// </summary>
-        private void StoryPan(System.Numerics.Vector2 at)
+        private void StoryPan(System.Numerics.Vector2 at, float seconds = 3.5f)
         {
             if (_menu || !_cinematics.Enabled || Time.unscaledTime - _lastInput < 2f) return;
             _storyFocus = new Vector3(at.X, 0f, at.Y);
-            _storyUntil = Time.unscaledTime + 3.5f;
+            _storyUntil = Time.unscaledTime + seconds;
             _camera.StopFollowing();
         }
 
@@ -982,7 +1000,7 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleSpawned when _world.TryGetVehicle(e.Entity, out var vehicle):
                         _views.Add(vehicle);
                         // A boss comes onto the field: the camera goes to meet it.
-                        if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position);
+                        if (!_menu && vehicle.Def.Boss && vehicle.Team == EnemyTeam) StoryPan(vehicle.Position, vehicle.Def.RankDef?.Intro ?? 3.5f);
                         EliteArrived(vehicle);
                         if (vehicle.Team == EnemyTeam) _tally.Saw(vehicle.Def);
                         if (!_menu && !_warnedAir && vehicle.Team == EnemyTeam && vehicle.Flying)
