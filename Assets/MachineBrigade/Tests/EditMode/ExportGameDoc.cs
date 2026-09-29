@@ -45,6 +45,13 @@ namespace MachineBrigade.Tests
                     ["gear"] = Gear(),
                     ["economy"] = Economy(),
                     ["modes"] = Modes(),
+                    // Map props (buildings, walls, gates, obstacles) with their plain fields.
+                    ["props"] = catalog.Props.Values.OrderBy(p => p.Id).Select(p => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = p.Id, ["name"] = Text("prop." + p.Id), ["raw"] = Raw(p),
+                    }).ToList(),
+                    // Every model's measured size in metres (x across, y up, z along), before a def's own scale.
+                    ["modelSizes"] = ModelSizes(catalog),
                     // Boss Rush's kinds in order (each draws one variant), for the modes table.
                     ["bossRushKinds"] = MachineBrigade.Sim.Modes.BossRushRules.Kinds.Select(k => (object)k.ToList()).ToList(),
                     ["campaign"] = Campaign.All.Select(Mission).ToList(),
@@ -143,6 +150,45 @@ namespace MachineBrigade.Tests
                     Strings.Vietnamese = was;
                 }
             }
+        }
+
+        /// <summary>The bounds of every model a vehicle, tower, boss, prop or round uses, measured from its prefab.</summary>
+        private static Dictionary<string, object> ModelSizes(Catalog catalog)
+        {
+            var ids = new HashSet<string>();
+            foreach (var v in catalog.Vehicles.Values)
+            {
+                if (!string.IsNullOrEmpty(v.Model)) ids.Add(v.Model);
+                foreach (var m in v.Mounts)
+                {
+                    if (!string.IsNullOrEmpty(m.ProjectileModel)) ids.Add(m.ProjectileModel);
+                    if (!string.IsNullOrEmpty(m.Weapon.ProjectileModel)) ids.Add(m.Weapon.ProjectileModel);
+                }
+            }
+            foreach (var p in catalog.Props.Values) ids.Add(p.Id);
+            foreach (var p in catalog.Props.Values)
+                foreach (var prop in p.GetType().GetProperties())
+                    if (prop.Name == "Model" && prop.GetValue(p) is string model && model.Length > 0) ids.Add(model);
+            var sizes = new Dictionary<string, object>();
+            foreach (var id in ids.OrderBy(i => i))
+            {
+                var prefab = UnityEngine.Resources.Load<UnityEngine.GameObject>("Models/" + id);
+                if (prefab == null) continue;
+                var go = UnityEngine.Object.Instantiate(prefab);
+                try
+                {
+                    var renderers = go.GetComponentsInChildren<UnityEngine.Renderer>(true);
+                    if (renderers.Length == 0) continue;
+                    var b = renderers[0].bounds;
+                    foreach (var r in renderers) b.Encapsulate(r.bounds);
+                    sizes[id] = new List<object> { b.size.x, b.size.y, b.size.z };
+                }
+                finally
+                {
+                    UnityEngine.Object.DestroyImmediate(go);
+                }
+            }
+            return sizes;
         }
 
         /// <summary>A definition's public numbers, flags, enums and strings, by property name, for the document.</summary>

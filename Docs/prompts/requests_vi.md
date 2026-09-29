@@ -129,3 +129,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 00:50) giáp boss lên cấp cao thì nhớ tạo icon tương ứng  [G]
 - (30/09 00:50) mọi boss đều có thể vào boss rush  [G]
 - (30/09 00:50) có bug boss phi tuyền mới vào do ở quỹ đạo thấp nên nó bị tràn, mới vào cho nó xuống luôn  [G]
+- (30/09 01:00) về pdf thêm kích thước khá hay, nhớ thêm cho toàn bộ từ phương tiện, công trình, và đạn luôn, và nhụp bắn nạp đạn đường đạn khá hay  [lead: PDF 10b]

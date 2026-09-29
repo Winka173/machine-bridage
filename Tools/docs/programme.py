@@ -496,6 +496,44 @@ def late_programme(game, h, imgdir):
     return ''.join(out)
 
 
+def props_and_rounds(game, h, sizes, weapons, owners):
+    """Map props and every round model, with their sizes."""
+    e, table = h['esc'], h['table']
+
+    def box(model, scale=1.0):
+        s = sizes.get(model or '')
+        return f"{s[2] * scale:.2f} × {s[0] * scale:.2f} × {s[1] * scale:.2f}" if s else '—'
+
+    prop_rows = []
+    for p in game.get('props', []):
+        raw = p.get('raw', {})
+        sc = raw.get('Scale', 1) or 1
+        prop_rows.append([e(p.get('name') or p['id']), f"<code>{e(p['id'])}</code>", e(str(raw.get('Kind', '') or '')), str(raw.get('MaxHp', '') or '—'),
+                          f"{raw.get('Width', 0) or 0:.1f} × {raw.get('Depth', 0) or 0:.1f}", 'có' if raw.get('BlocksMovement') else '—',
+                          'có' if raw.get('BlocksFire') else '—', 'có' if raw.get('Crushable') else '—', 'bất tử' if raw.get('Indestructible') else '—',
+                          box(p['id'], sc)])
+    round_rows = []
+    seen = set()
+    for wid in sorted(weapons):
+        w = weapons[wid]
+        raw = w.get('raw', {})
+        model = raw.get('ProjectileModel') or ''
+        scale = raw.get('ProjectileScale', 1) or 1
+        if not model or (model, scale) in seen:
+            continue
+        seen.add((model, scale))
+        round_rows.append([f"<code>{e(model)}</code>", f"{scale:g}", box(model, scale), f"<code>{e(wid)}</code>", e(w.get('real') or ''),
+                           f"{(raw.get('Size', 0) or 0):g}"])
+    out = ""
+    if prop_rows:
+        out += f"<h3>Công trình và vật thể trên bản đồ ({len(prop_rows)})</h3>" + table(
+            ['Tên', 'Id', 'Loại', 'Máu', 'Rộng × sâu (m)', 'Chặn xe', 'Chặn đạn', 'Bị nghiền', 'Bất tử', 'Model: dài × rộng × cao (m)'], prop_rows, 'dps')
+    if round_rows:
+        out += f"<h3>Kích thước đạn ({len(round_rows)} model)</h3><p class='muted'>Kích thước model đạn nhân tỷ lệ của vũ khí (projectileScale).</p>" + table(
+            ['Model đạn', 'Tỷ lệ', 'Dài × rộng × cao (m)', 'Vũ khí', 'Tên thật', 'Cỡ (mm)'], round_rows, 'dps')
+    return out
+
+
 def rates_and_ballistics(game, h):
     """Section 10b: every weapon's rate of fire, magazine and reload, and its ballistics; every unit's movement and size."""
     e, table = h['esc'], h['table']
@@ -549,14 +587,26 @@ def rates_and_ballistics(game, h):
                           f(float(speed), 0), f(flight, 2), f(float(rng), 0), f(float(w.get('minRange', 0) or 0), 0),
                           f(float(w.get('splash', 0) or 0), 1), e(tgt.get(w.get('targets'), w.get('targets', ''))), e(str(raw.get('Ceiling', '') or '—')),
                           str(w.get('pen', '')), f(raw.get('FlareResist', 0), 2), e(', '.join(tags) or '—')])
+    sizes = game.get('modelSizes', {})
+
+    def drawn(model, scale):
+        s = sizes.get(model or '')
+        if not s:
+            return '—'
+        k = scale or 1
+        return f"{s[2] * k:.1f} × {s[0] * k:.1f} × {s[1] * k:.1f}"
+
     move_rows = []
-    for group, label in (('vehicles', 'xe'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
+    for group, label in (('vehicles', 'xe'), ('itemVehicles', 'vật phẩm'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
         for v in game.get(group, []):
             raw = v.get('raw', {})
+            scale = raw.get('Scale', 1) or 1
+            if v.get('flying') and not raw.get('Boss'):
+                scale *= 0.85   # aircraft are drawn 15 % smaller (DECISIONS 21H)
             move_rows.append([e(v['name']), label, f(float(v.get('speed', 0) or 0), 1), f(raw.get('TurnRate', 0), 0), f(raw.get('TurretTurnRate', 0), 0),
                               f(raw.get('Length', 0), 1), f(raw.get('Width', 0), 1), f(raw.get('HullRadius', 0), 1), f(float(v.get('vision', 0) or 0), 0),
                               f(raw.get('Standoff', 0), 0), f(raw.get('RearmTime', 0), 1), 'có' if raw.get('Stealth') else '—',
-                              f(raw.get('MaxPerSide', 0), 0)])
+                              f(raw.get('MaxPerSide', 0), 0), drawn(v.get('model'), scale)])
     return ("<div class='section'><h2>10b. Nhịp bắn, nạp đạn, đường đạn và di chuyển</h2>"
             "<p>Đọc thẳng từ dữ liệu game. <b>Viên/s</b> là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). <b>Xả</b> là thời gian hết một băng hay một loạt. "
             "<b>Nghỉ/nạp</b> là thời gian thay băng hay nghỉ giữa hai loạt. <b>Bệ phóng</b> là số lượt bắn trước khi phải nạp lại cả bệ. "
@@ -566,7 +616,8 @@ def rates_and_ballistics(game, h):
             + f"<h3>Đường đạn</h3>"
             + table(['Vũ khí', 'Cỡ (mm)', 'Họ', 'Dạng', 'Tốc độ đạn (m/s)', 'Bay hết tầm (s)', 'Tầm (m)', 'Tối thiểu', 'Nổ lan (m)', 'Mục tiêu', 'Trần bắn', 'Xuyên', 'Kháng pháo sáng', 'Dấu'], ball_rows, 'dps')
             + f"<h3>Di chuyển và kích thước ({len(move_rows)} đơn vị)</h3>"
-            + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe'], move_rows, 'dps')
+            + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe', 'Model vẽ: dài × rộng × cao (m)'], move_rows, 'dps')
+            + props_and_rounds(game, h, sizes, weapons, owners)
             + "</div>")
 
 

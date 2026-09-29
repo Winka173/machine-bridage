@@ -12,8 +12,8 @@ The owner's original Vietnamese specs, saved as sent, prompt 0 (the shared conte
 | 18 | a big attack for every boss | done |
 | 19 | the Silver Bug rebuilt as an orbital spacecraft: altitude tiers, drop pods, the tungsten-rod strike, the phase-3 crash | done |
 | 20 | 12-chapter campaign, main and mini bosses, renames, Boss Hunt, towers | done |
-| 21 | Sandbox mode, full Vietnamese and English | in progress (from 2026-09-29) |
-| 22 | the full story, non-Vietnamese proper names, 12 chapters + 3 interludes, the Commander system, Foundry and Veyra Old Quarter, Behemoth Mk.0 and Morrigan | on hold until the owner asks |
+| 21 | Sandbox mode, full Vietnamese and English | done |
+| 22 | the full story, non-Vietnamese proper names, 12 chapters + 3 interludes, the Commander system, Foundry and Veyra Old Quarter, Behemoth Mk.0 and Morrigan | in progress (from 2026-09-30) |
 | 23 | data-driven mission events (reinforcements by difficulty, fire, generals on the field, side goals, weather changes), one text-only dialogue line | on hold until the owner asks |
 | 24 | camouflage and real-model skins (with a reserved list of real vehicles kept for future cards), all sound and adaptive music, the new-player experience | on hold until the owner asks |
 

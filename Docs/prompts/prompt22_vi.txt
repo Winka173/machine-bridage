@@ -184,3 +184,12 @@ G. KIỂM TRA
 - Mô phỏng 5 seed: toàn bộ chiến dịch ở độ khó Thường với chỉ huy mặc định (Kade) và với ít nhất 3 chỉ huy khác; mọi nhiệm vụ thắng được với bộ bài người chơi đã mở tới thời điểm đó.
 - Chụp ảnh tự động màn chọn chương (bản đồ mặt trận), màn chọn chỉ huy, briefing có tướng địch, và các màn Hồ sơ mới, ở cả hai ngôn ngữ; lưu vào docs/ui-screens/.
 - Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (model Morrigan, 2 map mới, tranh truyện, chân dung 14 chỉ huy) và tài liệu thiết kế (cốt truyện, nhân vật, cấu trúc chiến dịch, hệ Chỉ huy).
+
+============================================================
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+(chủ dự án gửi ngoài prompt; chép nguyên văn, kèm ngày giờ)
+============================================================
+
+Khi bắt đầu prompt 22 (30/09):
+- (30/09 01:05) cho agent start prompt tiếp theo luôn
+- (30/09 01:05) prompt tiếp theo: nhớ là mỗi chapter không cố định 12 màn, mà có thể từ 9-18 màn
