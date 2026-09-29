@@ -21,7 +21,7 @@ namespace MachineBrigade.Editor
     /// notch, 20:9 with a punch-hole camera and the gesture bar, a 4:3 tablet), rendered through a
     /// runtime panel with the game's panel settings (1280 x 720 reference, scaled like
     /// BattleHud.MatchFor) into Docs/ui-screens/. Batch mode with graphics:
-    /// -executeMethod MachineBrigade.Editor.UiShots.KitScreens [-mbShotsDir &lt;folder&gt;].
+    /// -executeMethod MachineBrigade.Editor.UiShots.KitScreens [-mbShotsDir &lt;folder&gt;] [-mbShotsSet all|kit|menu|battle|l10n].
     /// The screen rebuild adds its screens to <see cref="Screens"/>.
     /// </summary>
     public static class UiShots
@@ -158,6 +158,49 @@ namespace MachineBrigade.Editor
             {
                 yield return ("battle-" + screen + "-vi-large", Battle(screen, true, true), new[] { Shapes[0] }, 0);
                 yield return ("battle-" + screen + "-en", Battle(screen, false, false), new[] { Shapes[0] }, 0);
+            }
+        }
+
+        /// <summary>The main screens a language check reads (prompt 21 L).</summary>
+        public static readonly string[] LanguageMenuScreens =
+        {
+            "home", "setup-mode", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear",
+            "army-base", "army-outpost", "detail", "detail-weapons", "detail-armour", "detail-tower", "shop-crates", "settings", "legend",
+        };
+
+        /// <summary>The battle screens a language check reads (prompt 21 L).</summary>
+        public static readonly string[] LanguageBattleScreens = { "hud-score", "hud-mission", "hud-boss-open", "hud-defend", "result-win", "result-loss", "pause" };
+
+        /// <summary>
+        /// Prompt 21 L (-mbShotsSet l10n): the main menu and battle screens in both languages at the four shapes, in
+        /// Normal text, into files named l10n-&lt;screen&gt;-&lt;en|vi&gt;-&lt;shape&gt;.png.
+        /// </summary>
+        public static IEnumerable<(string file, Builder build, Shape[] shapes, int tallHeight)> LanguageScreens()
+        {
+            var catalog = GameContent.LoadCatalog();
+            Builder Menu(string screen, bool vi) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildMenu(catalog, screen, out var safe);
+                insets = v => KitSafeArea.Apply(safe, v);
+                return host;
+            };
+            Builder Battle(string screen, bool vi) => (out Action<Vector4> insets) =>
+            {
+                Strings.Vietnamese = vi;
+                MatchSettings.TextSize = TextSize.Normal;
+                DemoProfile.Use();
+                var host = BuildBattle(catalog, screen, out var safe);
+                insets = v => KitSafeArea.Apply(safe, v);
+                return host;
+            };
+            foreach (var vi in new[] { false, true })
+            {
+                var language = vi ? "vi" : "en";
+                foreach (var screen in LanguageMenuScreens) yield return ("l10n-" + screen + "-" + language, Menu(screen, vi), Shapes, 0);
+                foreach (var screen in LanguageBattleScreens) yield return ("l10n-battle-" + screen + "-" + language, Battle(screen, vi), Shapes, 0);
             }
         }
 
@@ -410,6 +453,7 @@ namespace MachineBrigade.Editor
             if (set is "all" or "kit") list.AddRange(Screens());
             if (set is "all" or "menu") list.AddRange(MenuScreens());
             if (set is "all" or "battle") list.AddRange(BattleScreens());
+            if (set is "l10n") list.AddRange(LanguageScreens());
             var only = Argument("-mbShotsOnly");
             // One name part, or several separated by commas.
             if (only != null) list = list.FindAll(s => only.Split(',').Any(o => s.file.Contains(o)));

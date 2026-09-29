@@ -119,6 +119,31 @@ namespace MachineBrigade.Tests
             Assert.IsEmpty(bad, string.Join("\n", bad.Take(80)));
         }
 
+        /// <summary>
+        /// J1: a boss keeps its name in both languages and has one translated subtitle, the same on its card and its boss
+        /// bar ("Icarus · Orbital Spacecraft" / "Icarus · Phi thuyền quỹ đạo"), the English one in title case.
+        /// </summary>
+        [Test]
+        public void EveryBossHasOneNameAndOneTranslatedSubtitle()
+        {
+            var small = new HashSet<string> { "a", "an", "the", "of", "and", "or", "on", "in", "to", "for" };
+            var bad = new List<string>();
+            var entries = Strings.Entries.GroupBy(e => e.key).ToDictionary(g => g.Key, g => g.First());
+            foreach (var (key, en, vi, _) in entries.Values.Where(e => (e.key.StartsWith("boss.") || e.key.StartsWith("unit.")) && e.en.Contains(" · ")))
+            {
+                var e = en.Split(new[] { " · " }, System.StringSplitOptions.None);
+                var v = vi.Split(new[] { " · " }, System.StringSplitOptions.None);
+                if (e.Length != 2 || v.Length != 2) { bad.Add(key + ": name · subtitle"); continue; }
+                if (e[0] != v[0]) bad.Add($"{key}: the name differs ({e[0]} / {v[0]})");
+                if (e[1] == v[1]) bad.Add($"{key}: the subtitle is not translated ({e[1]})");
+                var words = e[1].Split(' ');
+                if (words.Where((w, i) => i == 0 || !small.Contains(w)).Any(w => char.IsLower(w[0]))) bad.Add($"{key}: \"{e[1]}\" is not in title case");
+                if (key.StartsWith("boss.") && entries.TryGetValue("unit." + key.Substring(5), out var unit) && unit.en.Contains(" · ") && (unit.en != en || unit.vi != vi))
+                    bad.Add($"{key}: differs from its unit name ({unit.en} / {en})");
+            }
+            Assert.IsEmpty(bad, string.Join("\n", bad));
+        }
+
         // ------------------------------------------------------------------ numbers and plurals (I.4, I.5)
 
         [Test]
@@ -283,6 +308,16 @@ namespace MachineBrigade.Tests
                 DemoProfile.Restore();
             }
             Assert.IsEmpty(bad, string.Join("\n", bad.Distinct().Take(120)));
+        }
+
+        /// <summary>The screenshot set of both languages (UiShots -mbShotsSet l10n) names real screens.</summary>
+        [Test]
+        public void TheLanguageShotsNameRealScreens()
+        {
+            CollectionAssert.IsSubsetOf(MachineBrigade.Editor.UiShots.LanguageMenuScreens, MenuScreen.ScreenNames);
+            CollectionAssert.IsSubsetOf(MachineBrigade.Editor.UiShots.LanguageBattleScreens, MachineBrigade.Editor.UiShots.BattleScreenNames);
+            Assert.AreEqual(2 * (MachineBrigade.Editor.UiShots.LanguageMenuScreens.Length + MachineBrigade.Editor.UiShots.LanguageBattleScreens.Length),
+                MachineBrigade.Editor.UiShots.LanguageScreens().Count(), "every screen in both languages");
         }
 
         /// <summary>The words of the other language on a screen (texts and tooltips).</summary>

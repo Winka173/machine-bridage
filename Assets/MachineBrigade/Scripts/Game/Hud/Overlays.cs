@@ -327,7 +327,7 @@ namespace MachineBrigade.Game.Hud
             commander.Add(_autoStrike);
             card.Add(commander);
             // The language, as in the settings (the language names are written in their own language).
-            var language = Kit.Box("fc-pause__language");
+            var language = Kit.Box("fc-row fc-pause__language");
             language.Add(Kit.Caption(Strings.Get("settings.language")));
             var chips = Kit.Box("fc-setting__choices");
             _english = new KitChip("English", !Strings.Vietnamese, () => SetLanguage(false));

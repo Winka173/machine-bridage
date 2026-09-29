@@ -65,7 +65,8 @@ namespace MachineBrigade.Game.Hud
         public static VisualElement Picker(Catalog catalog, string towerId, string chosen, bool locked, Action<string> choose)
         {
             var branches = Sim.Modes.TowerCards.Branches(catalog, towerId);
-            var row = Kit.Box("fc-row");
+            // Side by side; stacked in Large text (Screens.uss), where a long English word no longer fits half the panel.
+            var row = Kit.Box("fc-row fc-base__branch-pair");
             row.style.alignItems = Align.Stretch;
             for (var i = 0; i < branches.Count; i++)
             {
@@ -73,10 +74,8 @@ namespace MachineBrigade.Game.Hud
                 var def = catalog.Vehicles[id];
                 var other = catalog.Vehicles[branches[(i + 1) % branches.Count]];
                 var card = Kit.Tappable(KitPanel.SurfaceClass + " fc-base__branch", () => choose(id));
-                card.style.flexGrow = 1f;
-                card.style.flexBasis = 0f;
-                card.style.minWidth = 0f;
-                if (i > 0) card.style.marginLeft = 6f;
+                // Equal halves side by side, stacked in Large text: the sizes are in Screens.uss (.fc-base__branch-pair).
+                if (i > 0) card.AddToClassList("fc-base__branch--next");
                 card.EnableInClassList("fc-base__branch--locked", locked);
                 card.EnableInClassList("fc-base__branch--chosen", id == chosen);
                 // Its render (the branch's own once the card renders exist, the tower's until then).
@@ -91,10 +90,11 @@ namespace MachineBrigade.Game.Hud
                 }
                 var head = Kit.Box("fc-row");
                 if (TowerIcons.For(id) is { } icon) head.Add(Kit.Icon(icon));
-                head.Add(Kit.Text(Kit.Caps(Strings.Branch(id)), "fc-panel-title fc-row-text"));
+                // The short name in the narrow card (prompt 21 K2: English names run longer); "In use" on its own line.
+                head.Add(Kit.Text(Kit.Caps(Strings.Short(id)), "fc-panel-title fc-row-text"));
                 if (locked) head.Add(Kit.Icon("lock", "fc-base__branch-lock"));
-                else if (id == chosen) head.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag"));
                 card.Add(head);
+                if (!locked && id == chosen) card.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag fc-base__branch-tag--line"));
                 card.Add(Kit.Text(Strings.Get("branch." + id + ".info"), "fc-small"));
                 if (When(id) is { Length: > 0 } when) card.Add(Kit.Text(when, "fc-small fc-base__note"));
                 foreach (var fact in Differences(def, other)) card.Add(Kit.Text("· " + fact, "fc-small"));

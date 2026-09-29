@@ -65,25 +65,37 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: crawls down the mission's road; its two [[workshop doors]] send out 1-2 vehicles every 20 s (light tanks and IFVs, battle tanks from phase 2), one more each minute, never more than six alive. Four 120 mm turrets and flak cover it.\n" +
                 "Strong / weak: front armour [[4]], sides 3, rear [[2]]: the doors are at the back, and so is its weak armour. Broken tracks slow it.\n" +
                 "Tip: flank it and break both doors first: it stops building, and its big attack is only the shells.",
-                "[[Boss]] · nhà máy di động · vừa đi vừa sinh quân\nCách đánh: bò chậm theo đường của nhiệm vụ; hai [[cửa xưởng]] cứ 20 giây thả 1–2 xe (xe tăng nhẹ và xe bộ binh, từ pha 2 thêm tăng chủ lực), mỗi phút thêm một xe mỗi lượt, tối đa sáu xe còn sống. Bốn tháp pháo 120 mm và cao xạ che chắn.\nMạnh / yếu: giáp trước cấp [[4]], hông 3, sau [[2]]: cửa xưởng ở phía sau, giáp mỏng cũng ở đó. Phá cụm xích thì nó chậm lại.\nMẹo: vòng ra sau, phá cả hai cửa trước: nó ngừng sinh xe, đòn lớn chỉ còn loạt pháo."),
+                "[[Boss]] · nhà máy di động · vừa đi vừa sinh quân\n" +
+                "Cách đánh: bò chậm theo đường của nhiệm vụ; hai [[cửa xưởng]] cứ 20 giây thả 1–2 xe (xe tăng nhẹ và xe bộ binh, từ pha 2 thêm tăng chủ lực), mỗi phút thêm một xe mỗi lượt, tối đa sáu xe còn sống. Bốn tháp pháo 120 mm và cao xạ che chắn.\n" +
+                "Mạnh / yếu: giáp trước cấp [[4]], hông 3, sau [[2]]: cửa xưởng ở phía sau, giáp mỏng cũng ở đó. Phá cụm xích thì nó chậm lại.\n" +
+                "Mẹo: vòng ra sau, phá cả hai cửa trước: nó ngừng sinh xe, đòn lớn chỉ còn loạt pháo."),
             ["guide.daedalus"] = (
                 "[[Boss]] · orbital lander · a rain of drop pods\n" +
                 "How it fights: about 10 s in orbit (out of reach), then high and low on a fixed schedule, never back to orbit. Its three [[pod bays]] drop pods of 1-2 vehicles without pause (at most eight alive), each pod a target as it falls. In phase 3 it stops low with every bay open.\n" +
                 "Strong / weak: its own guns are weaker than Icarus's; upper hull [[3]], belly [[2]]. Point-defence lasers take missiles aimed at it.\n" +
                 "Tip: shoot the pods down and break the bays: each one lost slows the drops, and the mass drop falls short.",
-                "[[Boss]] · tàu đổ bộ quỹ đạo · mưa khoang đổ bộ\nCách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang.\nMạnh / yếu: tự nó bắn yếu hơn Icarus; thân trên cấp [[3]], bụng [[2]]. Tháp la-de phòng thủ chặn tên lửa bắn vào nó.\nMẹo: bắn hạ khoang đang rơi và phá cửa thả: mỗi cửa mất là thả chậm hơn, đòn đổ bộ lớn cũng hụt đi."),
+                "[[Boss]] · tàu đổ bộ quỹ đạo · mưa khoang đổ bộ\n" +
+                "Cách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang.\n" +
+                "Mạnh / yếu: tự nó bắn yếu hơn Icarus; thân trên cấp [[3]], bụng [[2]]. Tháp la-de phòng thủ chặn tên lửa bắn vào nó.\n" +
+                "Mẹo: bắn hạ khoang đang rơi và phá cửa thả: mỗi cửa mất là thả chậm hơn, đòn đổ bộ lớn cũng hụt đi."),
             ["guide.kronos"] = (
                 "[[Boss]] · mining excavator · crushes its way to your HQ\n" +
                 "How it fights: very slowly down a fixed route to your base; its [[bucket wheel]] crushes everything in front of it, walls and towers too. If it reaches your HQ the mission is lost. Phase 2 it goes faster; phase 3 the wheel spins up and throws rock round it.\n" +
                 "Strong / weak: wheel armour [[4]], body 3, track units [[2]]. Each track unit broken slows it.\n" +
                 "Tip: break the tracks to buy time, and the [[boom]] to stop its sweep; do not build walls in its way.",
-                "[[Boss]] · máy xúc mỏ · nghiền đường tới HQ\nCách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước, cả tường lẫn tháp. Tới được HQ là thua nhiệm vụ. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\nMạnh / yếu: bánh gầu giáp cấp [[4]], thân 3, cụm xích [[2]]. Mỗi cụm xích bị phá là nó chậm lại.\nMẹo: phá cụm xích để câu giờ, phá [[cần gầu]] để chặn đòn quét; đừng xây tường chắn đường nó."),
+                "[[Boss]] · máy xúc mỏ · nghiền đường tới HQ\n" +
+                "Cách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước, cả tường lẫn tháp. Tới được HQ là thua nhiệm vụ. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\n" +
+                "Mạnh / yếu: bánh gầu giáp cấp [[4]], thân 3, cụm xích [[2]]. Mỗi cụm xích bị phá là nó chậm lại.\n" +
+                "Mẹo: phá cụm xích để câu giờ, phá [[cần gầu]] để chặn đòn quét; đừng xây tường chắn đường nó."),
             ["guide.typhon"] = (
                 "[[Boss]] · missile submarine · strikes from under the sea\n" +
                 "How it fights: submerged (out of reach) and surfaced (a target on the water) on each phase's schedule, coming up somewhere else each time; bubbles mark the spot first. Surfaced, it fires cruise missiles and guards itself with a SAM. Phase 3 it stays up and adds a 100 mm deck gun.\n" +
                 "Strong / weak: hull armour [[4]], sail and deck [[2]]: artillery, bombs and top attacks hit the deck.\n" +
                 "Tip: park artillery and aircraft for the bubbles; break the [[launch doors]] during a warning (they open above the water) or shoot the missiles down.",
-                "[[Boss]] · tàu ngầm tên lửa · đánh từ dưới biển\nCách đánh: lặn (không bắn tới được) và nổi (mục tiêu trên mặt nước) theo lịch từng pha, mỗi lần nổi ở một chỗ khác; bong bóng báo trước chỗ nổi. Khi nổi nó phóng tên lửa hành trình và tự vệ bằng tên lửa phòng không. Pha 3 nổi hẳn, thêm pháo boong 100 mm.\nMạnh / yếu: thân giáp cấp [[4]], tháp chỉ huy và boong [[2]]: pháo binh, bom và đòn đánh nóc đánh vào boong.\nMẹo: chờ sẵn pháo binh và máy bay chỗ bong bóng; phá [[cửa ống phóng]] lúc cảnh báo (cửa mở trên mặt nước) hoặc bắn hạ tên lửa."),
+                "[[Boss]] · tàu ngầm tên lửa · đánh từ dưới biển\n" +
+                "Cách đánh: lặn (không bắn tới được) và nổi (mục tiêu trên mặt nước) theo lịch từng pha, mỗi lần nổi ở một chỗ khác; bong bóng báo trước chỗ nổi. Khi nổi nó phóng tên lửa hành trình và tự vệ bằng tên lửa phòng không. Pha 3 nổi hẳn, thêm pháo boong 100 mm.\n" +
+                "Mạnh / yếu: thân giáp cấp [[4]], tháp chỉ huy và boong [[2]]: pháo binh, bom và đòn đánh nóc đánh vào boong.\n" +
+                "Mẹo: chờ sẵn pháo binh và máy bay chỗ bong bóng; phá [[cửa ống phóng]] lúc cảnh báo (cửa mở trên mặt nước) hoặc bắn hạ tên lửa."),
             ["guide.ixion"] = (
                 "[[Mini boss]] · giant wheel · rolls over your line\n" +
                 "How it fights: rolls fast and straight on two huge [[wheels]], crushing vehicles in its way (light ones worst), and turns very slowly. Its 76 mm gun fires from the hub.\n" +
@@ -98,7 +110,10 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: skims in along the coast for about 6 s at a time, then swings out to sea for about 20 s; a target on the water. Its big attack is four anti-ship missiles at the shore and your base.\n" +
                 "Strong / weak: thin armour; the nose [[engines]] broken slow it down.\n" +
                 "Tip: keep fast-firing guns on the shore for its passes, and anti-air or C-RAM for the missiles.",
-                "[[Mini boss]] · tàu bay sát mặt nước · lao dọc bờ từng lượt\nCách đánh: lao dọc bờ khoảng 6 giây mỗi lượt rồi vòng ra xa khoảng 20 giây; là mục tiêu trên mặt nước. Đòn lớn là bốn tên lửa chống hạm vào bờ và căn cứ ta.\nMạnh / yếu: giáp mỏng; phá [[cụm động cơ]] ở mũi thì nó chậm lại.\nMẹo: để sẵn pháo bắn nhanh trên bờ đón lượt lao, và phòng không hoặc C-RAM cho tên lửa."),
+                "[[Mini boss]] · tàu bay sát mặt nước · lao dọc bờ từng lượt\n" +
+                "Cách đánh: lao dọc bờ khoảng 6 giây mỗi lượt rồi vòng ra xa khoảng 20 giây; là mục tiêu trên mặt nước. Đòn lớn là bốn tên lửa chống hạm vào bờ và căn cứ ta.\n" +
+                "Mạnh / yếu: giáp mỏng; phá [[cụm động cơ]] ở mũi thì nó chậm lại.\n" +
+                "Mẹo: để sẵn pháo bắn nhanh trên bờ đón lượt lao, và phòng không hoặc C-RAM cho tên lửa."),
             ["guide.bastion_mk0"] = (
                 "[[Mini boss]] · prototype fortress · crawls at your base\n" +
                 "How it fights: the first Bastion off Brandt's line: a heavy [[mortar]] and two 40 mm turrets on tracks, crawling slowly towards your base.\n" +
@@ -149,7 +164,10 @@ namespace MachineBrigade.Game.Hud
                 "How it fights: never in orbit: high and low on a fixed schedule. A [[laser turret]] and a [[pod bay]]; its satellite link calls down three tungsten rods.\n" +
                 "Strong / weak: at high altitude only long-range anti-air and fighters reach it; low, every anti-air weapon does.\n" +
                 "Tip: wait for its low windows; break the uplink to stop the rods.",
-                "[[Mini boss]] · phi thuyền nguyên mẫu · lần đầu thấy Dự án Icarus\nCách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]] và một [[khoang đổ bộ]]; liên kết vệ tinh gọi ba thanh vonfram.\nMạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới.\nMẹo: chờ lúc nó xuống thấp; phá ăng-ten liên kết để chặn thanh vonfram."),
+                "[[Mini boss]] · phi thuyền nguyên mẫu · lần đầu thấy Dự án Icarus\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]] và một [[khoang đổ bộ]]; liên kết vệ tinh gọi ba thanh vonfram.\n" +
+                "Mạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới.\n" +
+                "Mẹo: chờ lúc nó xuống thấp; phá ăng-ten liên kết để chặn thanh vonfram."),
             ["guide.argus"] = (
                 "[[Mini boss]] · scout airship · directs the enemy's guns\n" +
                 "How it fights: while it lives, the enemy's artillery falls about half as wide; its big attack calls a barrage on a marked area. Flak guns and a [[radar]].\n" +
@@ -336,7 +354,7 @@ namespace MachineBrigade.Game.Hud
             ["hunt.weekly.reward"] = ("First clear this week: {coins|# coin|# coins}", "Lần đầu hoàn thành trong tuần: {coins} xu"),
             ["hunt.roster"] = ("This week's bosses", "Boss tuần này"),
             ["hunt.fullRoster"] = ("In story order", "Theo thứ tự cốt truyện"),
-            ["hunt.restTitle"] = ("Rest · army repaired {percent} %", "Nghỉ · quân được sửa {percent} %"),
+            ["hunt.restTitle"] = ("Rest · army repaired {percent}%", "Nghỉ · quân được sửa {percent}%"),
             ["hunt.next"] = ("Next: {card}", "Tiếp theo: {card}"),
             ["hunt.held"] = ("Supports: {supports}", "Hỗ trợ: {supports}"),
             ["hunt.pickTitle"] = ("Choose a combat support", "Chọn hỗ trợ tác chiến"),
@@ -353,19 +371,19 @@ namespace MachineBrigade.Game.Hud
             ["hunt.firstClear"] = ("First clear", "Lần đầu hoàn thành"),
             ["hunt.supportsTitle"] = ("Combat supports", "Hỗ trợ tác chiến"),
             ["hunt.support.hull"] = ("Reinforced Hulls", "Gia cố thân xe"),
-            ["hunt.support.hull.info"] = ("Your army's health +15 %, vehicles landed later too.", "Máu toàn quân +15 %, cả xe tới sau."),
+            ["hunt.support.hull.info"] = ("Your army's health +15%, vehicles landed later too.", "Máu toàn quân +15%, cả xe tới sau."),
             ["hunt.support.gunnery"] = ("Gunnery Drills", "Huấn luyện pháo thủ"),
-            ["hunt.support.gunnery.info"] = ("Your army's damage +10 %.", "Sát thương toàn quân +10 %."),
+            ["hunt.support.gunnery.info"] = ("Your army's damage +10%.", "Sát thương toàn quân +10%."),
             ["hunt.support.loaders"] = ("Fast Loaders", "Nạp đạn nhanh"),
-            ["hunt.support.loaders.info"] = ("Your army fires 12 % faster.", "Toàn quân bắn nhanh hơn 12 %."),
+            ["hunt.support.loaders.info"] = ("Your army fires 12% faster.", "Toàn quân bắn nhanh hơn 12%."),
             ["hunt.support.engines"] = ("Tuned Engines", "Tinh chỉnh động cơ"),
-            ["hunt.support.engines.info"] = ("Your army drives 12 % faster.", "Toàn quân chạy nhanh hơn 12 %."),
+            ["hunt.support.engines.info"] = ("Your army drives 12% faster.", "Toàn quân chạy nhanh hơn 12%."),
             ["hunt.support.regen"] = ("Field Repairs", "Sửa chữa dã chiến"),
-            ["hunt.support.regen.info"] = ("Out of fire, every vehicle mends 1 % of its health a second.", "Khi không trúng đạn, mỗi xe tự hồi 1 % máu mỗi giây."),
+            ["hunt.support.regen.info"] = ("Out of fire, every vehicle mends 1% of its health a second.", "Khi không trúng đạn, mỗi xe tự hồi 1% máu mỗi giây."),
             ["hunt.support.rapid"] = ("Rapid Tasking", "Điều phối nhanh"),
-            ["hunt.support.rapid.info"] = ("Support card cooldowns 25 % shorter.", "Hồi chiêu thẻ hỗ trợ ngắn hơn 25 %."),
+            ["hunt.support.rapid.info"] = ("Support card cooldowns 25% shorter.", "Hồi chiêu thẻ hỗ trợ ngắn hơn 25%."),
             ["hunt.support.logistics"] = ("Supply Convoy", "Đoàn tiếp tế"),
-            ["hunt.support.logistics.info"] = ("CP income +20 %.", "Thu nhập CP +20 %."),
+            ["hunt.support.logistics.info"] = ("CP income +20%.", "Thu nhập CP +20%."),
             ["hunt.support.warchest"] = ("War Chest", "Quỹ chiến tranh"),
             ["hunt.support.warchest.info"] = ("35 CP now.", "Nhận ngay 35 CP."),
             ["hunt.support.supply"] = ("Extra Crews", "Thêm kíp lái"),
@@ -373,7 +391,7 @@ namespace MachineBrigade.Game.Hud
             ["hunt.support.workshop"] = ("Mobile Workshop", "Xưởng lưu động"),
             ["hunt.support.workshop.info"] = ("Rests repair twice as much.", "Giờ nghỉ sửa quân gấp đôi."),
             ["hunt.support.bounty"] = ("Bounty Contracts", "Hợp đồng săn thưởng"),
-            ["hunt.support.bounty.info"] = ("CP bounties for bosses +50 %.", "Tiền thưởng CP khi hạ boss +50 %."),
+            ["hunt.support.bounty.info"] = ("CP bounties for bosses +50%.", "Tiền thưởng CP khi hạ boss +50%."),
             ["hunt.support.airdrop"] = ("Free Reinforcements", "Tiếp viện miễn phí"),
             ["hunt.support.airdrop.info"] = ("Three of your deck's dearest vehicles land now, free.", "Ba xe đắt nhất trong bộ bài được thả xuống ngay, miễn phí."),
 

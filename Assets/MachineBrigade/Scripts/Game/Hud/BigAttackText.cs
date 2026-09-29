@@ -19,7 +19,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.stats"] = ("{hits} · warning {warning} s · every {seconds} s", "{hits} · cảnh báo {warning} giây · hồi {seconds} giây"),
             ["guide.bigattack.hits"] = ("{count} × {damage} {type}, penetration {level}", "{count} × {damage} {type}, xuyên cấp {level}"),
             ["guide.bigattack.drop"] = ("{count|# vehicle|# vehicles} landed", "{count} xe đổ bộ"),
-            ["guide.bigattack.buff"] = ("+{percent} % damage and +{percent2} % fire rate for {seconds} s within {metres} m", "+{percent} % sát thương và +{percent2} % tốc độ bắn trong {seconds} giây, bán kính {metres} m"),
+            ["guide.bigattack.buff"] = ("+{percent}% damage and +{percent2}% fire rate for {seconds} s within {metres} m", "+{percent}% sát thương và +{percent2}% tốc độ bắn trong {seconds} giây, bán kính {metres} m"),
             ["guide.bigattack.how"] = ("How it works", "Cách hoạt động"),
             ["guide.bigattack.dodge"] = ("Getting out of it", "Cách né"),
             ["guide.bigattack.stop"] = ("Stopping it", "Cách ngắt"),
@@ -57,7 +57,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.tempest_rail"] = ("Full-Charge Railgun Shot", "Phát pháo điện từ nạp đầy"),
             ["bigattack.tempest_rail.cancelled"] = ("Railgun shot cancelled", "Đã hủy phát pháo điện từ"),
             ["radio.bigattack.tempest_rail"] = ("Command: the Tempest's coils are charging. Get off the red line!", "Chỉ huy: cuộn dây của Tempest đang nạp. Ra khỏi tia ngắm đỏ!"),
-            ["guide.bigattack.tempest_rail.how"] = ("One slug through everything on a 90 m line; each vehicle behind takes 15 % less than the one before. Smoke does not stop it.", "Một viên đạn xuyên qua mọi thứ trên đường thẳng 90 m; mỗi xe phía sau nhận ít hơn 15 % so với xe trước. Khói không chặn được."),
+            ["guide.bigattack.tempest_rail.how"] = ("One slug through everything on a 90 m line; each vehicle behind takes 15% less than the one before. Smoke does not stop it.", "Một viên đạn xuyên qua mọi thứ trên đường thẳng 90 m; mỗi xe phía sau nhận ít hơn 15% so với xe trước. Khói không chặn được."),
             ["guide.bigattack.tempest_rail.dodge"] = ("Move off the red aiming line, it is only 3 m wide; do not line up behind each other.", "Rời khỏi tia ngắm đỏ, nó chỉ rộng 3 m; đừng xếp hàng nối đuôi nhau."),
             ["guide.bigattack.tempest_rail.stop"] = ("Break the railgun during the charge; an EMP delays the shot by 2 s.", "Phá pháo điện từ trong lúc nạp; EMP làm chậm thêm 2 giây."),
 
@@ -73,7 +73,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.doomsday_missile"] = ("Tactical Missile", "Tên lửa chiến thuật"),
             ["bigattack.doomsday_missile.cancelled"] = ("Missile launch cancelled", "Đã hủy phóng tên lửa"),
             ["radio.bigattack.doomsday_missile"] = ("Command: Nemesis is raising a missile! Break the erector or get your air defence ready!", "Chỉ huy: Nemesis đang dựng tên lửa! Phá bệ phóng hoặc sẵn sàng phòng không!"),
-            ["guide.bigattack.doomsday_missile.how"] = ("Five seconds to raise it, then a slow thermobaric missile flies about 12 s at your HQ or your biggest group: 2 500 at the centre, 30 % at 18 m, much more on buildings.", "Năm giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay chậm khoảng 12 giây vào HQ hoặc cụm quân lớn nhất: 2.500 ở tâm, 30 % ở rìa 18 m, mạnh hơn nhiều lên công trình."),
+            ["guide.bigattack.doomsday_missile.how"] = ("Five seconds to raise it, then a slow thermobaric missile flies about 12 s at your HQ or your biggest group: 2 500 at the centre, 30% at 18 m, much more on buildings.", "Năm giây dựng bệ phóng, rồi một tên lửa nhiệt áp bay chậm khoảng 12 giây vào HQ hoặc cụm quân lớn nhất: 2.500 ở tâm, 30% ở rìa 18 m, mạnh hơn nhiều lên công trình."),
             ["guide.bigattack.doomsday_missile.dodge"] = ("Scatter your units away from the marked landing point before the clock runs out.", "Dàn quân ra khỏi điểm rơi được đánh dấu trước khi hết giờ."),
             ["guide.bigattack.doomsday_missile.stop"] = ("Break the erector while it rises, or shoot the missile down in flight (600 health): anti-air, C-RAM, point-defence lasers.", "Phá bệ phóng trong 5 giây dựng bệ, hoặc bắn hạ tên lửa trên đường bay (máu 600): phòng không, C-RAM, La-de PK."),
 
@@ -97,7 +97,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.supreme_offensive"] = ("General Offensive", "Tổng tiến công"),
             ["bigattack.supreme_offensive.cancelled"] = ("Offensive cancelled", "Đã hủy tổng tiến công"),
             ["radio.bigattack.supreme_offensive"] = ("{@lyhan}: \"All units, general offensive! And bring the bombers in!\"", "{@lyhan}: \"Toàn quân, tổng tiến công! Gọi máy bay ném bom vào!\""),
-            ["guide.bigattack.supreme_offensive.how"] = ("For 12 s every enemy within 60 m hits 35 % harder and fires 25 % faster, and a bomber lays eight 250 kg bombs in a 50 × 10 m strip on your biggest group.", "Trong 12 giây mọi quân địch trong 60 m gây thêm 35 % sát thương và bắn nhanh hơn 25 %, kèm máy bay ném tám quả bom 250 kg thành dải 50 × 10 m vào cụm quân lớn nhất."),
+            ["guide.bigattack.supreme_offensive.how"] = ("For 12 s every enemy within 60 m hits 35% harder and fires 25% faster, and a bomber lays eight 250 kg bombs in a 50 × 10 m strip on your biggest group.", "Trong 12 giây mọi quân địch trong 60 m gây thêm 35% sát thương và bắn nhanh hơn 25%, kèm máy bay ném tám quả bom 250 kg thành dải 50 × 10 m vào cụm quân lớn nhất."),
             ["guide.bigattack.supreme_offensive.dodge"] = ("Leave the strip; pull back from the boosted units until it wears off.", "Rời khỏi dải bom; lùi khỏi quân địch được tăng sức cho tới khi hết hiệu lực."),
             ["guide.bigattack.supreme_offensive.stop"] = ("Break the antenna: the offensive and its everyday aura go with it.", "Phá ăng-ten: mất cả tổng tiến công lẫn hào quang thường."),
 
@@ -137,7 +137,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.borer_quake"] = ("Earthquake", "Địa chấn"),
             ["bigattack.borer_quake.cancelled"] = ("Earthquake cancelled", "Đã hủy địa chấn"),
             ["radio.bigattack.borer_quake"] = ("Varga: \"Feel that? That is the ground giving way under you.\"", "Varga: \"Thấy chưa? Đất đang sụt dưới chân các người.\""),
-            ["guide.bigattack.borer_quake.how"] = ("It dives, bores under your biggest group and the ground cracks for 3 s; then a quake: 700 at the centre, 30 % at 16 m, and 3 s stunned. Not aircraft.", "Nó lặn xuống, đào tới dưới cụm quân lớn nhất, mặt đất nứt trong 3 giây; rồi địa chấn: 700 ở tâm, 30 % ở rìa 16 m, choáng 3 giây. Không tác dụng lên máy bay."),
+            ["guide.bigattack.borer_quake.how"] = ("It dives, bores under your biggest group and the ground cracks for 3 s; then a quake: 700 at the centre, 30% at 16 m, and 3 s stunned. Not aircraft.", "Nó lặn xuống, đào tới dưới cụm quân lớn nhất, mặt đất nứt trong 3 giây; rồi địa chấn: 700 ở tâm, 30% ở rìa 16 m, choáng 3 giây. Không tác dụng lên máy bay."),
             ["guide.bigattack.borer_quake.dodge"] = ("When the cracks spread, drive out of the circle; do not bunch up.", "Khi vết nứt lan ra, lái ra khỏi vòng; đừng đứng dồn."),
             ["guide.bigattack.borer_quake.stop"] = ("Break the drill beforehand: it can no longer dive.", "Phá mũi khoan từ trước: nó không lặn được nữa."),
 
@@ -154,8 +154,8 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.spectre_orbit.cancelled"] = ("Spectre broke off", "Spectre đã bỏ dở đòn"),
             ["radio.bigattack.spectre_orbit"] = ("Command: the Spectre is coming down into a tight orbit. All anti-air on it!", "Chỉ huy: Spectre đang hạ thấp bay vòng hẹp. Mọi phòng không nhắm vào nó!"),
             ["guide.bigattack.spectre_orbit.how"] = ("For 8 s every gun on one 15 m circle: the 105 mm, both 40 mm and the 25 mm.", "Trong 8 giây mọi khẩu pháo dồn vào một vòng 15 m: 105 mm, hai khẩu 40 mm và 25 mm."),
-            ["guide.bigattack.spectre_orbit.dodge"] = ("Leave the circle; it flies low and slow meanwhile, and your anti-air hits it 50 % harder.", "Rời khỏi vòng; trong lúc đó nó bay thấp và chậm, phòng không của ta trúng mạnh hơn 50 %."),
-            ["guide.bigattack.spectre_orbit.stop"] = ("Break the 105 mm to take most of the sting out, or do 8 % of its health while it circles and it breaks off.", "Phá pháo 105 mm để giảm mạnh sát thương, hoặc gây đủ 8 % máu trong lúc nó bay vòng thì nó bỏ dở."),
+            ["guide.bigattack.spectre_orbit.dodge"] = ("Leave the circle; it flies low and slow meanwhile, and your anti-air hits it 50% harder.", "Rời khỏi vòng; trong lúc đó nó bay thấp và chậm, phòng không của ta trúng mạnh hơn 50%."),
+            ["guide.bigattack.spectre_orbit.stop"] = ("Break the 105 mm to take most of the sting out, or do 8% of its health while it circles and it breaks off.", "Phá pháo 105 mm để giảm mạnh sát thương, hoặc gây đủ 8% máu trong lúc nó bay vòng thì nó bỏ dở."),
 
             // ---------------------------------------------------------------- 15 Iron Bird
             ["bigattack.ironbird_rocket_run"] = ("Rocket Run", "Loạt rốc-két theo đường thẳng"),
@@ -170,7 +170,7 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.carrier_heavy_bomb.cancelled"] = ("Bomb run cancelled", "Đã hủy thả bom"),
             ["radio.bigattack.carrier_heavy_bomb"] = ("Command: the carrier has stopped overhead with its bomb bay open. Hit it now!", "Chỉ huy: tàu mẹ dừng ngay trên đầu, khoang bom đã mở. Đánh nó ngay!"),
             ["guide.bigattack.carrier_heavy_bomb.how"] = ("One 900 kg penetrating bomb: 850 at the centre, falling off to 14 m, twice as hard on buildings and towers.", "Một quả bom xuyên phá 900 kg: 850 ở tâm, giảm dần tới 14 m, gấp đôi lên công trình và tháp."),
-            ["guide.bigattack.carrier_heavy_bomb.dodge"] = ("Move out from under it; while its bay is open your anti-air hits it 30 % harder.", "Chạy ra khỏi vùng dưới nó; khi khoang bom mở, phòng không trúng mạnh hơn 30 %."),
+            ["guide.bigattack.carrier_heavy_bomb.dodge"] = ("Move out from under it; while its bay is open your anti-air hits it 30% harder.", "Chạy ra khỏi vùng dưới nó; khi khoang bom mở, phòng không trúng mạnh hơn 30%."),
             ["guide.bigattack.carrier_heavy_bomb.stop"] = ("Break the bomb bay.", "Phá khoang bom."),
 
             // ---------------------------------------------------------------- 17 Command Airship

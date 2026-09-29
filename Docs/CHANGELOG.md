@@ -7,6 +7,25 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 21: Vietnamese and English
+
+- The language follows the device on Auto and switches at once: the menu reloads in the new language, and the pause
+  menu has the switch too; the battle HUD relabels itself in place without restarting the battle.
+- Every placeholder is named (`{count}`, `{seconds}`); numbers follow the language (184.172 and 0,75 in Vietnamese,
+  184,172 and 0.75 in English); English counts are singular or plural ("1 coin", "2 coins").
+- Every text has both languages. The map table's names are used everywhere; the English left in Vietnamese texts
+  (map, laser, tungsten, rocket, sonar, English map names) and the Vietnamese left in English texts (Landing Beach, "xu")
+  are gone; a boss is "boss" in Vietnamese; percentages read "25%".
+- Boss subtitles are translated and match on the card and the boss bar ("Icarus · Orbital Spacecraft" / "Icarus · Phi
+  thuyền quỹ đạo"). The story's Vietnamese names are tokens of one name table, ready for prompt 22.
+- Tight spots in English and Large text: the tower-branch picker stacks its cards in Large text and shows short names,
+  the icon legend widens, four gear pieces have shorter English names, the thermobaric launcher's short name is TOS-1A.
+- New checks: `L10nTests` and `L10nSwitchTests` (both languages in every key, named placeholders, nothing left
+  unfilled, one language per screen, number formats, plurals, switching on the menu and in a paused battle);
+  `UiLanguageTests` covers every table and every font; the layout checks run in English and English Large as well.
+- `Docs/localization-report.md` (the audit) and `Docs/glossary.md` (the terms in both languages). Screenshots of
+  both languages wait for the testing phase (`UiShots -mbShotsSet l10n`). DECISIONS 20L.
+
 ### Tower art
 
 - Every tower's two rank-7 branches have models of their own (32, named `<tower>_a` / `_b` in the spec's order): the
