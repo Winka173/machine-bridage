@@ -1,0 +1,54 @@
+player deck: main_battle_tank, ifv, tank_destroyer, light_tank, mlrs, aa_vehicle, attack_helicopter, engineer_vehicle
+Conquest       ashfield   s11: WON    6.8 min  kills 51 losses 50 tickets 178:0
+Conquest       ashfield   s12: WON    8.6 min  kills 84 losses 69 tickets 49:0
+Conquest       ashfield   s13: WON    7.1 min  kills 65 losses 63 tickets 99:0
+Conquest       ashfield   s14: WON    7.7 min  kills 57 losses 59 tickets 133:0
+Conquest       dunebreak  s11: WON    6.0 min  kills 48 losses 48 tickets 170:0
+Conquest       dunebreak  s12: WON    5.8 min  kills 62 losses 43 tickets 234:0
+Conquest       dunebreak  s13: WON    6.3 min  kills 51 losses 47 tickets 225:0
+Conquest       dunebreak  s14: WON    5.6 min  kills 32 losses 46 tickets 223:0
+Conquest       ironport   s11: WON    5.7 min  kills 56 losses 41 tickets 262:0
+Conquest       ironport   s12: LOST   8.9 min  kills 78 losses 76 tickets 0:1
+Conquest       ironport   s13: WON    7.4 min  kills 61 losses 66 tickets 82:0
+Conquest       ironport   s14: WON    7.2 min  kills 43 losses 50 tickets 208:0
+Conquest       SUMMARY (Hard): won 11/12, median 7.0 min, range 5.6-8.9
+Deathmatch     ashfield   s11: LOST   8.0 min  kills 80 losses 80 score 381:481 of 480 (kills 80:80)
+Deathmatch     ashfield   s12: WON    8.5 min  kills 85 losses 82 score 481:436 of 480 (kills 85:82)
+Deathmatch     ashfield   s13: LOST   8.8 min  kills 73 losses 76 score 447:482 of 480 (kills 73:76)
+Deathmatch     ashfield   s14: LOST   8.2 min  kills 65 losses 78 score 381:482 of 480 (kills 65:78)
+Deathmatch     dunebreak  s11: LOST   9.0 min  kills 80 losses 78 score 457:484 of 480 (kills 80:78)
+Deathmatch     dunebreak  s12: WON    7.3 min  kills 74 losses 67 score 488:420 of 480 (kills 74:67)
+Deathmatch     dunebreak  s13: LOST   7.9 min  kills 68 losses 82 score 400:480 of 480 (kills 68:82)
+Deathmatch     dunebreak  s14: LOST   9.0 min  kills 70 losses 84 score 399:484 of 480 (kills 70:84)
+Deathmatch     ironport   s11: WON    8.9 min  kills 81 losses 75 score 482:427 of 480 (kills 81:75)
+Deathmatch     ironport   s12: WON    7.8 min  kills 75 losses 76 score 483:474 of 480 (kills 75:76)
+Deathmatch     ironport   s13: LOST   7.3 min  kills 55 losses 82 score 334:484 of 480 (kills 55:82)
+Deathmatch     ironport   s14: LOST   8.9 min  kills 62 losses 77 score 409:484 of 480 (kills 62:77)
+Deathmatch     SUMMARY (Hard): won 4/12, median 8.3 min, range 7.3-9.0
+KingOfTheHill  ashfield   s11: WON    6.2 min  kills 67 losses 47 score 170:67 of 170
+KingOfTheHill  ashfield   s12: LOST   6.0 min  kills 60 losses 54 score 54:170 of 170
+KingOfTheHill  ashfield   s13: WON    7.2 min  kills 74 losses 66 score 170:121 of 170
+KingOfTheHill  ashfield   s14: LOST   6.4 min  kills 51 losses 54 score 85:170 of 170
+KingOfTheHill  dunebreak  s11: WON    6.1 min  kills 62 losses 57 score 170:61 of 170
+KingOfTheHill  dunebreak  s12: WON    9.3 min  kills 94 losses 90 score 170:165 of 170
+KingOfTheHill  dunebreak  s13: LOST   6.1 min  kills 53 losses 53 score 68:170 of 170
+KingOfTheHill  dunebreak  s14: WON    8.7 min  kills 75 losses 72 score 170:147 of 170
+KingOfTheHill  redrock    s11: LOST   9.4 min  kills 100 losses 82 score 150:170 of 170
+KingOfTheHill  redrock    s12: WON    6.5 min  kills 57 losses 57 score 170:36 of 170
+KingOfTheHill  redrock    s13: LOST   6.6 min  kills 54 losses 60 score 89:170 of 170
+KingOfTheHill  redrock    s14: LOST   8.1 min  kills 73 losses 65 score 160:170 of 170
+KingOfTheHill  SUMMARY (Hard): won 6/12, median 6.6 min, range 6.0-9.4
+Assault        ironport   s11: WON    5.1 min  kills 73 losses 46 sectors 1@1.7 2@5.0 3@5.1 taken 4
+Assault        ironport   s12: WON    4.0 min  kills 50 losses 30 sectors 1@2.0 2@3.5 3@4.0 taken 4
+Assault        ironport   s13: WON    4.2 min  kills 49 losses 48 sectors 1@1.6 2@2.9 3@4.2 taken 4
+Assault        ironport   s14: LOST   4.5 min  kills 36 losses 52 sectors taken 0
+Assault        redrock    s11: WON    3.4 min  kills 53 losses 30 sectors 1@0.3 2@1.6 3@3.4 taken 4
+Assault        redrock    s12: WON    5.0 min  kills 79 losses 44 sectors 1@1.5 2@4.4 3@5.0 taken 4
+Assault        redrock    s13: WON    4.9 min  kills 65 losses 42 sectors 1@1.6 2@2.4 3@4.9 taken 4
+Assault        redrock    s14: LOST  10.3 min  kills 87 losses 119 sectors 1@1.2 2@2.3 taken 3
+Assault        ashfield   s11: LOST  12.1 min  kills 170 losses 164 sectors 1@2.7 2@4.1 taken 3
+Assault        ashfield   s12: LOST  11.3 min  kills 155 losses 171 sectors 1@1.7 2@3.3 taken 3
+Assault        ashfield   s13: WON    9.6 min  kills 123 losses 142 sectors 1@1.1 2@3.8 3@9.6 taken 4
+Assault        ashfield   s14: WON    5.9 min  kills 62 losses 58 sectors 1@2.0 2@4.0 3@5.9 taken 4
+Assault        SUMMARY (Hard): won 8/12, median 5.1 min, range 3.4-12.1
+(186 s)

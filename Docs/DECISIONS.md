@@ -3926,6 +3926,65 @@ every 11 s now (7 before, for the same damage a second), so one gun sent four sh
 C-RAM's 30 % share this seed took none. The C-RAM and the shells are unchanged (it takes the same share of the
 damage); the test now uses two guns and keeps the C-RAM standing (the 155 mm splash beside it destroyed it at 38 s).
 
+### C.9, G, F: the interface parts
+
+**C.9 Ammunition icons** (`VehicleView.Stores.cs`): beside the health bar, on its right so it never covers it, built
+from quads in flat single colours like the repair mark. One set for aircraft, helicopters and launchers (it replaced the
+launchers' three-shell gauge and reload bar): low (a magazine with one bar, coin yellow, under 20 %; a launcher's last
+salvo), empty (the magazine's frame red, blinking gently), flying out (a grey return arrow), rearming (the magazine in
+our green, a ring of 12 segments lit by the share of stores back, turning at 30° a second and dim at the slow rate,
+90° and bright at the full one; a launcher reloading in place counts as the full rate) and full (the ring flashes for
+0.6 s, then the icon goes). Enemy units show only empty and flying out. The health bar shows while the icon does.
+Our holding patterns are faint mint rings on the minimap. The selection panel shows the selection's biggest store
+under its health bar ("Rockets 14/22", launchers their salvos) in the `SelectionExtras` hook, yellow under 20 %, red
+when empty, dim at the slow rate. Settings, Game: "Ammo icons: All units / Aircraft only" (`MatchSettings.AmmoIcons`,
+saved; default all). The icon table is in the Guide tab of every unit that uses the icons, and c3m03 (the first
+mission after the attack helicopter unlocks) shows it as a tip (`tip.ammoIcons`, in the campaign source and the JSON).
+The icons are not in a screenshot test yet (**testing phase**: legibility at the default zoom on the smallest phone).
+
+**G Detail lines** (`UnitLines`, `UnitText`): worked out from the data, in both languages. For each weapon: the real
+name and calibre (`real`, else the kind and calibre), damage type and targets, damage a round and rounds a salvo, the
+magazine (changed in place, seconds) or the stores (N bombs / missiles / rockets when full, full in `rearmTime` at the
+holding pattern, half as fast attacking or in danger, faster at the landing pad x2 and over the HQ x1.5, beside an
+ammunition carrier x2 for helicopters) or the shots or salvos reloaded in place, range, minimum range and splash.
+Behaviour: how it moves and engages (stands and fires, stops to fire, fires on the move, keeps to the edge of its range,
+hovers, dives and comes round, circles its target, bomb runs, hunts aircraft, artillery with its ranges and sight), after
+firing (moves after N salvos, changes its magazine, comes round again), what it goes for first (its data's strong-against
+classes, aircraft for anti-air, groups and buildings for bombers), when it pulls out and where (stores spent, two thirds
+of its bombs, badly hurt to the pad or the HQ, a launcher to a carrier or home), and its skills (with their trigger and
+cooldown), APS, jammer, repair and rearm auras, mines, counter-battery radar, stealth. Modules: the landing pad's
+stores rate and mending, the hangar's extra aircraft. The weapons tab shows the old one-line figures and every line
+behind "More" / "Xem thêm"; the guide tab has the Behaviour section; module facts carry the pad lines. The design
+document export has `behavior`, `ammo` and each weapon's `name` for every vehicle, tower and module (Vietnamese).
+
+**G.3 Hand-written text against the data** (`UnitLinesTests.HandWrittenTextAgreesWithTheData`): every calibre ("N mm")
+and every "N bombs / rockets / missiles" in a unit's note or guide (its first paragraph, where it describes itself) must be
+one of its own weapons' calibres or counts. It found four, corrected to the data: the IFV's 30 mm (the note said a
+Bradley's 25 mm; the data is a 2A42 30 mm), the Ka-52's 23 mm (GSh-23V in the data), the Little Bird's 24 rockets in
+salvos of 12 (the note said a seven-rocket pod), the TOS-1A's salvos of 9 (the note said 24 rockets).
+
+**F The new cards' pictures:** the ammunition carrier's card render (`truck`, `CardRenders.RenderBatch`; the landing
+pad's branches share the pad's picture), and its In-action scene (`FiringRange` `Scene.Resupply`: two rocket launchers
+beside it, empty at the start, reloading and firing again; `SimWorld.DebugEmpty` empties them). `CardRenderTests` pass.
+
+**Shared edits:** `SimWorld.DebugEmpty` (previews only), `SupplyRules` (the stores' rates as public constants, which
+`SupplySystem` goes by), `Strings.Get`/`Has` also look in `UnitText.Table` (and the two language scans include it),
+`SelectionController.Stores()`, `Minimap.Holding`, `MaterialLibrary` (four stores colours). No pathing or traffic code.
+
+### Z. Left for the testing phase
+
+- The five-seed sweep of every mode at every difficulty (this pass: two seeds, two or three battlefields; the ladder
+  four seeds on four modes), with a human rather than the auto commander as the player's side: Siege (6/6 won by the
+  measured side), Defend (the outer line fell every time, the HQ held every time), Weekly from each stage (never won),
+  Deathmatch (2/6), and whether Normal and Hard are far enough apart (73 % against 60 %).
+- Endless and Defend by the base's strength (the waves scale with `BaseStrength`; only the default base was measured).
+- Boss Rush per boss over more seeds and orders; Operations' mutators and the 15-25 minute frame; the whole campaign on
+  more seeds (one seed: 88 of 90 won, c8m08 lost as before, c8m10's last stage unfinished once more).
+- The combat values and the aircraft's readiness over more seeds (A, C.10); the bombers' longest flight out (4.5-4.7 s,
+  C); the ammunition icons' legibility on the smallest phone and the HUD cover with an aircraft selected.
+- `CampaignText.cs` is out of step with `Tools/campaign/build_campaign.py` (hand edits since it was generated, such as
+  "Bọ Bạc"): the generator was not run over it; c3m03's changes went into both the source and `campaign.json`.
+
 ## 13D. Prompt 14: Base screen, out-of-battle sizes (2026-09-29)
 
 The owner found the menus oversized on a phone and the Base screen a diagram that did not look like the

@@ -1,0 +1,15 @@
+player deck: main_battle_tank, ifv, tank_destroyer, light_tank, mlrs, aa_vehicle, attack_helicopter, engineer_vehicle
+Conquest       ashfield   s1: LOST   7.9 min  kills 78 losses 59 tickets 0:128
+Conquest       ashfield   s2: WON    7.4 min  kills 85 losses 46 tickets 208:0
+Conquest       ashfield   s11: LOST   8.1 min  kills 74 losses 61 tickets 0:97
+Conquest       ashfield   s12: LOST   5.7 min  kills 63 losses 39 tickets 0:241
+Conquest       dunebreak  s1: LOST   9.5 min  kills 98 losses 69 tickets 0:67
+Conquest       dunebreak  s2: WON    6.0 min  kills 49 losses 42 tickets 254:0
+Conquest       dunebreak  s11: WON    7.1 min  kills 66 losses 49 tickets 166:0
+Conquest       dunebreak  s12: LOST   6.5 min  kills 83 losses 54 tickets 0:186
+Conquest       ironport   s1: WON    7.5 min  kills 85 losses 60 tickets 37:0
+Conquest       ironport   s2: WON    9.0 min  kills 80 losses 68 tickets 62:0
+Conquest       ironport   s11: WON    6.2 min  kills 57 losses 39 tickets 249:0
+Conquest       ironport   s12: WON    8.0 min  kills 83 losses 55 tickets 137:0
+Conquest       SUMMARY (Normal): won 7/12, median 7.4 min, range 5.7-9.5
+(66 s)

@@ -1,6 +1,6 @@
 # Machine Brigade: combat value and damage tables (prompt 13)
 
-Generated from the measurements (`CombatValueMeasure`, `MB_BALANCE=1`, one fixed seed, 13): "pre13" is the data before prompt 13, "after B" the data now. Decisions are in DECISIONS.md 13C. Raw files: `Docs/balance/*.tsv`.
+Generated from the measurements (`CombatValueMeasure`, `MB_BALANCE=1`, one fixed seed, 13): "pre13x3" is the data before prompt 13, "after F (final)" the data now. Decisions are in DECISIONS.md 13C. Raw files: `Docs/balance/*.tsv`.
 
 ## 1. Theoretical damage a second, corrected (A.1)
 
@@ -13,7 +13,7 @@ All mounts added up, against each armour (damage table and plain armour bonuses 
 | armored_car | Light | 3 | 91 / 23 / 13 / 27 | 91 / 29 / 13 / 32 | 9.7 |
 | ifv | Light | 5 | 115 / 41 / 13 / 40 | 115 / 49 / 13 / 46 | 9.7 |
 | light_tank | Tank | 4 | 63 / 38 / 13 / 29 | 63 / 38 / 13 / 29 | 9.6 |
-| turtle_tank | Tank | 8 | 75 / 54 / 13 / 39 | 75 / 54 / 13 / 39 | 6.8 |
+| turtle_tank | Tank | 7 | 75 / 54 / 13 / 39 | 75 / 54 / 13 / 39 | 7.8 |
 | bmpt | Tank | 9 | 178 / 84 / 13 / 87 | 178 / 95 / 13 / 96 | 10.6 |
 | flame_tank | Heavy | 5 | 152 / 55 / 13 / 101 | 152 / 55 / 13 / 101 | 10.9 |
 | armored_bulldozer | Heavy | 7 | 77 / 40 / 14 / 138 | 76 / 40 / 14 / 138 | 5.7 |
@@ -22,53 +22,56 @@ All mounts added up, against each armour (damage table and plain armour bonuses 
 | heavy_tank | Heavy | 10 | 150 / 81 / 14 / 65 | 150 / 89 / 14 / 71 | 8.9 |
 | siege_tank | Heavy | 12 | 91 / 38 / 14 / 169 | 83 / 33 / 14 / 138 | 2.7 |
 | titan_tank | Heavy | 14 | 193 / 159 / 27 / 109 | 193 / 159 / 27 / 109 | 11.3 |
-| atgm_carrier | TankHunter | 6 | 83 / 58 / 14 / 42 | 83 / 58 / 14 / 42 | 9.7 |
+| atgm_carrier | TankHunter | 5 | 83 / 58 / 14 / 42 | 94 / 73 / 14 / 51 | 14.7 |
 | fpv_carrier | TankHunter | 6 | 86 / 63 / 14 / 60 | 76 / 49 / 14 / 48 | 8.2 |
-| tank_destroyer | TankHunter | 6 | 96 / 76 / 14 / 53 | 96 / 76 / 14 / 53 | 12.7 |
-| lancet_truck | TankHunter | 7 | 63 / 32 / 14 / 32 | 59 / 26 / 14 / 27 | 3.8 |
-| wheeled_gun | TankHunter | 7 | 91 / 76 / 13 / 52 | 91 / 76 / 13 / 52 | 10.8 |
+| lancet_truck | TankHunter | 6 | 63 / 32 / 14 / 32 | 59 / 26 / 14 / 27 | 4.4 |
+| wheeled_gun | TankHunter | 6 | 91 / 76 / 13 / 52 | 97 / 83 / 13 / 56 | 13.9 |
+| tank_destroyer | TankHunter | 7 | 96 / 76 / 14 / 53 | 96 / 76 / 14 / 53 | 10.9 |
 | railgun_truck | TankHunter | 9 | 51 / 68 / 0 / 41 | 51 / 68 / 0 / 41 | 7.5 |
-| rocket_technical | Artillery | 3 | 75 / 28 / 15 / 53 | 68 / 24 / 15 / 43 | 7.9 |
+| rocket_technical | Artillery | 3 | 75 / 28 / 15 / 53 | 70 / 25 / 15 / 46 | 8.2 |
 | mortar_carrier | Artillery | 4 | 72 / 26 / 14 / 50 | 66 / 23 / 14 / 41 | 5.6 |
-| mlrs | Artillery | 5 | 90 / 37 / 14 / 77 | 79 / 31 / 14 / 61 | 6.1 |
-| artillery | Artillery | 6 | 72 / 26 / 14 / 50 | 68 / 24 / 14 / 44 | 4.0 |
+| artillery | Artillery | 6 | 72 / 26 / 14 / 50 | 73 / 27 / 14 / 52 | 4.5 |
+| mlrs | Artillery | 6 | 90 / 37 / 14 / 77 | 79 / 31 / 14 / 61 | 5.1 |
+| thermobaric_launcher | Artillery | 7 | 102 / 44 / 14 / 96 | 92 / 39 / 14 / 81 | 5.5 |
 | shahed_truck | Artillery | 8 | 95 / 40 / 14 / 85 | 83 / 33 / 14 / 67 | 4.1 |
-| heavy_rocket_artillery | Artillery | 9 | 131 / 62 / 14 / 139 | 110 / 49 / 14 / 107 | 5.5 |
-| thermobaric_launcher | Artillery | 9 | 102 / 44 / 14 / 96 | 88 / 36 / 14 / 74 | 4.0 |
 | ballistic_launcher | Artillery | 11 | 101 / 44 / 14 / 94 | 87 / 35 / 14 / 72 | 3.2 |
+| heavy_rocket_artillery | Artillery | 11 | 131 / 62 / 14 / 139 | 110 / 49 / 14 / 107 | 4.5 |
 | zu23_technical | AntiAir | 3 | 52 / 13 / 196 / 13 | 52 / 13 / 196 / 13 | 4.4 |
 | aa_vehicle | AntiAir | 4 | 35 / 9 / 184 / 9 | 35 / 9 / 184 / 9 | 2.2 |
 | sam_launcher | AntiAir | 5 | 48 / 12 / 168 / 14 | 48 / 12 / 169 / 14 | 2.4 |
-| heavy_aa | AntiAir | 7 | 94 / 23 / 403 / 23 | 94 / 23 / 403 / 23 | 3.3 |
+| heavy_aa | AntiAir | 6 | 94 / 23 / 403 / 23 | 94 / 23 / 403 / 23 | 3.9 |
 | iron_beam | AntiAir | 9 | 0 / 0 / 105 / 0 | 0 / 0 / 105 / 0 | 0.0 |
 | long_sam | AntiAir | 11 | 0 / 0 / 112 / 0 | 0 / 0 / 112 / 0 | 0.0 |
 | supply_truck | Support | 0 | 49 / 12 / 15 / 15 | 49 / 12 / 15 / 15 |  |
+| engineer_vehicle | Support | 3 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 4.0 |
 | smoke_carrier | Support | 3 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 4.0 |
-| engineer_vehicle | Support | 4 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 3.0 |
+| ammo_carrier | Support | 4 |  | 48 / 12 / 14 / 14 | 3.0 |
 | counter_battery_radar | Support | 5 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 2.4 |
 | ew_jammer | Support | 5 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 2.4 |
 | mine_layer | Support | 5 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 2.4 |
 | sapper | Support | 5 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 2.4 |
 | command_vehicle | Support | 6 | 48 / 12 / 14 / 14 | 48 / 12 / 14 / 14 | 2.0 |
-| scout_heli | Helicopter | 6 | 90 / 36 / 16 / 73 | 90 / 36 / 16 / 73 | 6.0 |
-| attack_helicopter | Helicopter | 9 | 148 / 91 / 50 / 107 | 148 / 101 / 39 / 114 | 11.2 |
-| gunship_heli | Helicopter | 14 | 305 / 245 / 35 / 221 | 305 / 245 / 35 / 221 | 17.5 |
-| heavy_attack_heli | Helicopter | 14 | 201 / 124 / 56 / 152 | 201 / 136 / 47 / 161 | 9.7 |
-| recon_drone | Plane | 6 | 11 / 15 / 0 / 9 | 11 / 15 / 0 / 9 | 2.5 |
-| strike_drone | Plane | 7 | 80 / 85 / 0 / 105 | 72 / 80 / 0 / 93 | 11.5 |
-| fighter_jet | Plane | 10 | 50 / 13 / 450 / 13 | 50 / 13 / 311 / 13 | 1.3 |
-| attack_jet | Plane | 13 | 372 / 414 / 38 / 377 | 372 / 414 / 23 / 377 | 31.8 |
-| tank_buster | Plane | 18 | 497 / 616 / 41 / 443 | 497 / 616 / 25 / 443 | 34.2 |
-| heavy_bomber | Plane | 20 | 422 / 253 / 21 / 633 | 413 / 248 / 21 / 619 | 12.4 |
-| stealth_bomber | Plane | 20 | 254 / 152 / 0 / 381 | 232 / 139 / 0 / 348 | 7.0 |
+| scout_heli | Helicopter | 5 | 90 / 36 / 16 / 73 | 78 / 29 / 16 / 55 | 5.7 |
+| attack_helicopter | Helicopter | 9 | 148 / 91 / 50 / 107 | 124 / 78 / 41 / 87 | 8.7 |
+| heavy_attack_heli | Helicopter | 13 | 201 / 124 / 56 / 152 | 168 / 108 / 46 / 120 | 8.3 |
+| gunship_heli | Helicopter | 15 | 305 / 245 / 35 / 221 | 278 / 219 / 35 / 189 | 14.6 |
+| recon_drone | Plane | 6 | 11 / 15 / 0 / 9 | 10 / 13 / 0 / 8 | 2.1 |
+| strike_drone | Plane | 7 | 80 / 85 / 0 / 105 | 50 / 54 / 0 / 66 | 7.7 |
+| fighter_jet | Plane | 12 | 50 / 13 / 450 / 13 | 50 / 13 / 294 / 13 | 1.1 |
+| attack_jet | Plane | 13 | 372 / 414 / 38 / 377 | 316 / 380 / 19 / 292 | 29.2 |
+| tank_buster | Plane | 16 | 497 / 616 / 41 / 443 | 435 / 567 / 21 / 361 | 35.4 |
+| stealth_bomber | Plane | 18 | 254 / 152 / 0 / 381 | 100 / 60 / 0 / 150 | 3.3 |
+| heavy_bomber | Plane | 22 | 422 / 253 / 21 / 633 | 148 / 88 / 21 / 221 | 4.0 |
 | sky_gunship | Plane | 22 | 389 / 203 / 0 / 383 | 381 / 211 / 0 / 391 | 9.6 |
 | aa_turret | Defense | 0 | 94 / 23 / 403 / 23 | 94 / 23 / 403 / 23 |  |
 | aa_turret.flak | Defense | 0 | 60 / 15 / 224 / 15 | 60 / 15 / 224 / 15 |  |
 | aa_turret.sam | Defense | 0 | 48 / 12 / 168 / 14 | 48 / 12 / 169 / 14 |  |
 | airfield | Defense | 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |  |
+| airfield.hangar | Defense | 0 |  | 0 / 0 / 0 / 0 |  |
+| airfield.service | Defense | 0 |  | 0 / 0 / 0 / 0 |  |
 | ammo_depot | Defense | 0 | 0 / 0 / 0 / 0 | 0 / 0 / 0 / 0 |  |
-| artillery_emplacement | Defense | 0 | 66 / 25 / 13 / 49 | 62 / 23 / 13 / 43 |  |
-| artillery_emplacement.cb | Defense | 0 | 66 / 25 / 13 / 49 | 62 / 23 / 13 / 43 |  |
+| artillery_emplacement | Defense | 0 | 66 / 25 / 13 / 49 | 67 / 26 / 13 / 50 |  |
+| artillery_emplacement.cb | Defense | 0 | 66 / 25 / 13 / 49 | 67 / 26 / 13 / 50 |  |
 | artillery_emplacement.ext | Defense | 0 | 64 / 24 / 13 / 45 | 60 / 21 / 13 / 40 |  |
 | atgm_tower | Defense | 0 | 33 / 44 / 0 / 26 | 33 / 44 / 0 / 26 |  |
 | atgm_tower.multi | Defense | 0 | 33 / 35 / 13 / 26 | 33 / 35 / 13 / 26 |  |
@@ -122,58 +125,59 @@ All mounts added up, against each armour (damage table and plain armour bonuses 
 
 Each vehicle, rank 1 with no equipment, in a group of about 14 CP of its kind led by the tactical AI, attacks a reference group for 90 s (a destroyed group comes back as another wave): light (3 armoured cars and a jeep), tanks (2 battle tanks), fort (a gun turret and an MG bunker), air (an attack helicopter and an attack jet), and the three ground groups with anti-air (an AA vehicle; an AA tower at the fort). Aircraft and launchers also fight a mixed group with anti-air for 4 minutes (long). Value = real damage (never more than the victim had left) x (1 + share of the time alive) / 2 / CP. "Ground" is the mean over the six ground groups, the like-for-like figure for anything that fights the ground; "real DPS" is what one vehicle delivered a second while it lived (against the tanks, and the fort).
 
-| Vehicle | Class | CP | Ground (pre13) | Ground (after B) | Change | Light | Tanks | Fort | Air | +AA (L/T/F) | Long | On target | Survival s | Real DPS tanks / fort |
+| Vehicle | Class | CP | Ground (pre13x3) | Ground (after F (final)) | Change | Light | Tanks | Fort | Air | +AA (L/T/F) | Long | On target | Survival s | Real DPS tanks / fort |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| scout_jeep | Scout | 2 | 20 | 21 | +1 % | 45 | 14 | 20 | 5 | 16 / 24 / 6 |  | 23 % | 22 | 3 / 6 |
-| vbied | Scout | 3 | 100 | 95 | -6 % | 129 | 83 | 132 | 0 | 113 / 26 / 85 |  | 2 % | 10 | 54 / 67 |
-| armored_car | Light | 3 | 73 | 84 | +15 % | 147 | 61 | 55 | 7 | 129 / 78 / 31 |  | 58 % | 19 | 14 / 13 |
-| ifv | Light | 5 | 81 | 90 | +12 % | 144 | 78 | 43 | 6 | 156 / 109 / 12 |  | 44 % | 32 | 27 / 6 |
-| light_tank | Tank | 4 | 213 | 166 | -22 % | 294 | 98 | 91 | 17 | 383 / 68 / 60 |  | 53 % | 52 | 16 / 13 |
-| turtle_tank | Tank | 8 | 257 | 252 | -2 % | 392 | 290 | 191 | 0 | 358 / 172 / 106 |  | 59 % | 73 | 32 / 22 |
-| bmpt | Tank | 9 | 383 | 416 | +8 % | 784 | 309 | 344 | 8 | 801 / 257 / 0 |  | 63 % | 65 | 58 / 51 |
-| flame_tank | Heavy | 5 | 289 | 223 | -23 % | 598 | 80 | 0 | 15 | 585 / 78 / 0 |  | 35 % | 56 | 14 / 0 |
-| armored_bulldozer | Heavy | 7 | 237 | 203 | -14 % | 507 | 98 | 0 | 18 | 521 / 92 / 0 |  | 52 % | 64 | 20 / 0 |
-| main_battle_tank | Heavy | 7 | 414 | 390 | -6 % | 689 | 295 | 198 | 15 | 695 / 247 / 215 |  | 64 % | 65 | 46 / 16 |
-| twin_tank | Heavy | 9 | 464 | 443 | -4 % | 686 | 342 | 300 | 17 | 782 / 392 / 157 |  | 65 % | 68 | 55 / 46 |
-| heavy_tank | Heavy | 10 | 297 | 293 | -1 % | 728 | 446 | 0 | 12 | 585 / 0 / 0 |  | 42 % | 79 | 65 / 0 |
-| siege_tank | Heavy | 12 | 449 | 454 | +1 % | 257 | 204 | 917 | 13 | 260 / 219 / 865 | 491 | 84 % | 82 | 27 / 122 |
-| titan_tank | Heavy | 14 | 493 | 490 | -1 % | 600 | 728 | 393 | 15 | 611 / 607 / 0 |  | 68 % | 82 | 113 / 61 |
-| atgm_carrier | TankHunter | 6 | 172 | 188 | +9 % | 191 | 188 | 368 | 5 | 226 / 126 / 28 |  | 60 % | 52 | 12 / 25 |
-| fpv_carrier | TankHunter | 6 | 477 | 477 | +0 % | 338 | 562 | 567 | 7 | 330 / 530 / 536 | 1083 | 88 % | 79 | 37 / 38 |
-| tank_destroyer | TankHunter | 6 | 495 | 435 | -12 % | 665 | 308 | 525 | 10 | 723 / 389 / 0 |  | 66 % | 61 | 61 / 35 |
-| lancet_truck | TankHunter | 7 | 212 | 212 | +0 % | 161 | 321 | 170 | 4 | 161 / 292 / 170 | 851 | 91 % | 78 | 25 / 13 |
-| wheeled_gun | TankHunter | 7 | 113 | 86 | -24 % | 122 | 141 | 71 | 1 | 67 / 82 / 30 |  | 68 % | 24 | 34 / 33 |
-| railgun_truck | TankHunter | 9 | 392 | 392 | +0 % | 323 | 553 | 348 | 0 | 299 / 499 / 335 |  | 83 % | 79 | 55 / 35 |
-| rocket_technical | Artillery | 3 | 234 | 236 | +1 % | 81 | 23 | 717 | 1 | 48 / 39 / 509 | 163 | 44 % | 40 | 6 / 24 |
-| mortar_carrier | Artillery | 4 | 350 | 336 | -4 % | 246 | 248 | 525 | 7 | 279 / 142 / 573 | 194 | 81 % | 76 | 11 / 23 |
-| mlrs | Artillery | 5 | 599 | 530 | -12 % | 320 | 360 | 846 | 0 | 417 / 358 / 878 | 995 | 82 % | 90 | 20 / 47 |
-| artillery | Artillery | 6 | 276 | 293 | +6 % | 212 | 220 | 448 | 0 | 260 / 237 / 378 | 563 | 84 % | 90 | 15 / 30 |
-| shahed_truck | Artillery | 8 | 378 | 378 | +0 % | 178 | 267 | 606 | 0 | 215 / 315 / 688 | 531 | 84 % | 90 | 24 / 54 |
-| heavy_rocket_artillery | Artillery | 9 | 522 | 558 | +7 % | 388 | 431 | 814 | 0 | 468 / 411 / 834 | 1238 | 82 % | 90 | 43 / 81 |
-| thermobaric_launcher | Artillery | 9 | 229 | 228 | -1 % | 313 | 107 | 211 | 7 | 310 / 93 / 331 | 119 | 42 % | 69 | 17 / 21 |
-| ballistic_launcher | Artillery | 11 | 540 | 490 | -9 % | 464 | 325 | 619 | 0 | 464 / 341 / 724 | 967 | 84 % | 90 | 40 / 76 |
-| zu23_technical | AntiAir | 3 | 42 | 43 | +2 % | 87 | 30 | 23 | 87 | 60 / 49 / 10 |  | 45 % | 16 | 8 / 8 |
-| aa_vehicle | AntiAir | 4 | 81 | 83 | +3 % | 140 | 46 | 81 | 232 | 144 / 82 / 9 |  | 59 % | 38 | 7 / 8 |
-| sam_launcher | AntiAir | 5 | 8 | 7 | -12 % | 0 | 0 | 0 | 201 | 0 / 42 / 0 |  | 9 % | 74 | 0 / 0 |
-| heavy_aa | AntiAir | 7 | 140 | 135 | -4 % | 177 | 72 | 275 | 150 | 186 / 71 / 29 |  | 68 % | 36 | 17 / 21 |
-| iron_beam | AntiAir | 9 | 0 | 0 |  | 0 | 0 | 0 | 26 | 0 / 0 / 0 |  | 7 % | 68 | 0 / 0 |
-| long_sam | AntiAir | 11 | 0 | 0 |  | 0 | 0 | 0 | 632 | 0 / 0 / 0 |  | 12 % | 90 | 0 / 0 |
-| smoke_carrier | Support | 3 | 83 | 81 | -3 % | 171 | 48 | 11 | 17 | 179 / 68 / 9 |  | 43 % | 34 | 8 / 1 |
-| engineer_vehicle | Support | 4 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0 / 0 / 0 |  | 0 % | 90 | 0 / 0 |
+| scout_jeep | Scout | 2 | 40 | 38 | -6 % | 91 | 14 | 25 | 10 | 50 / 32 / 14 |  | 31 % | 14 | 3 / 7 |
+| vbied | Scout | 3 | 95 | 91 | -5 % | 107 | 84 | 140 | 0 | 96 / 60 / 57 |  | 3 % | 10 | 46 / 60 |
+| armored_car | Light | 3 | 86 | 92 | +7 % | 198 | 50 | 71 | 10 | 141 / 65 / 28 |  | 56 % | 20 | 11 / 14 |
+| ifv | Light | 5 | 111 | 123 | +11 % | 202 | 91 | 105 | 11 | 219 / 101 / 23 |  | 54 % | 31 | 24 / 26 |
+| light_tank | Tank | 4 | 209 | 159 | -24 % | 317 | 96 | 103 | 15 | 338 / 64 / 37 |  | 52 % | 51 | 16 / 13 |
+| turtle_tank | Tank | 7 | 262 | 360 | +38 % | 477 | 404 | 288 | 0 | 453 / 304 / 235 |  | 66 % | 78 | 38 / 22 |
+| bmpt | Tank | 9 | 388 | 411 | +6 % | 764 | 288 | 351 | 8 | 810 / 252 / 0 |  | 63 % | 65 | 55 / 51 |
+| flame_tank | Heavy | 5 | 407 | 356 | -13 % | 677 | 162 | 490 | 17 | 670 / 133 / 0 |  | 52 % | 54 | 26 / 55 |
+| armored_bulldozer | Heavy | 7 | 446 | 422 | -5 % | 567 | 201 | 637 | 23 | 548 / 213 / 364 |  | 75 % | 69 | 24 / 53 |
+| main_battle_tank | Heavy | 7 | 454 | 430 | -5 % | 626 | 305 | 284 | 24 | 703 / 380 / 284 |  | 73 % | 66 | 43 / 32 |
+| twin_tank | Heavy | 9 | 468 | 451 | -4 % | 686 | 363 | 310 | 16 | 771 / 405 / 169 |  | 66 % | 68 | 56 / 47 |
+| heavy_tank | Heavy | 10 | 459 | 475 | +3 % | 644 | 434 | 364 | 16 | 683 / 531 / 193 |  | 69 % | 78 | 60 / 46 |
+| siege_tank | Heavy | 12 | 405 | 405 | +0 % | 215 | 180 | 820 | 20 | 227 / 183 / 806 | 474 | 81 % | 84 | 24 / 109 |
+| titan_tank | Heavy | 14 | 490 | 494 | +1 % | 613 | 737 | 393 | 14 | 612 / 607 / 0 |  | 67 % | 81 | 115 / 61 |
+| atgm_carrier | TankHunter | 5 | 165 | 307 | +86 % | 334 | 289 | 550 | 17 | 328 / 252 / 88 |  | 70 % | 46 | 51 / 32 |
+| fpv_carrier | TankHunter | 6 | 428 | 428 | +0 % | 277 | 500 | 500 | 7 | 292 / 451 / 547 | 1107 | 87 % | 79 | 33 / 33 |
+| lancet_truck | TankHunter | 6 | 204 | 238 | +17 % | 196 | 384 | 180 | 7 | 177 / 308 / 180 | 829 | 91 % | 79 | 26 / 12 |
+| wheeled_gun | TankHunter | 6 | 146 | 234 | +61 % | 254 | 296 | 276 | 6 | 265 / 249 / 63 |  | 72 % | 35 | 55 / 39 |
+| tank_destroyer | TankHunter | 7 | 554 | 492 | -11 % | 679 | 351 | 469 | 11 | 677 / 370 / 407 |  | 74 % | 66 | 49 / 36 |
+| railgun_truck | TankHunter | 9 | 403 | 403 | +0 % | 324 | 570 | 348 | 0 | 325 / 516 / 335 |  | 83 % | 79 | 57 / 35 |
+| rocket_technical | Artillery | 3 | 235 | 244 | +4 % | 105 | 68 | 812 | 3 | 54 / 20 / 407 | 40 | 44 % | 41 | 7 / 27 |
+| mortar_carrier | Artillery | 4 | 345 | 335 | -3 % | 270 | 237 | 523 | 9 | 280 / 123 / 576 | 164 | 76 % | 76 | 11 / 23 |
+| artillery | Artillery | 6 | 284 | 314 | +11 % | 269 | 209 | 445 | 0 | 277 / 235 / 447 | 636 | 84 % | 90 | 14 / 30 |
+| mlrs | Artillery | 6 | 551 | 441 | -20 % | 267 | 299 | 704 | 0 | 347 / 299 / 731 | 830 | 82 % | 90 | 20 / 47 |
+| thermobaric_launcher | Artillery | 7 | 243 | 267 | +10 % | 421 | 175 | 98 | 19 | 467 / 143 / 297 | 161 | 41 % | 75 | 19 / 8 |
+| shahed_truck | Artillery | 8 | 374 | 374 | +0 % | 178 | 259 | 606 | 0 | 215 / 311 / 676 | 533 | 84 % | 90 | 23 / 54 |
+| ballistic_launcher | Artillery | 11 | 412 | 382 | -7 % | 332 | 286 | 545 | 0 | 284 / 343 / 500 | 867 | 82 % | 90 | 35 / 67 |
+| heavy_rocket_artillery | Artillery | 11 | 527 | 456 | -13 % | 315 | 351 | 673 | 0 | 348 / 364 / 683 | 1008 | 82 % | 90 | 43 / 82 |
+| zu23_technical | AntiAir | 3 | 50 | 62 | +25 % | 114 | 39 | 34 | 85 | 115 / 57 / 16 |  | 56 % | 17 | 9 / 9 |
+| aa_vehicle | AntiAir | 4 | 79 | 81 | +3 % | 133 | 44 | 82 | 233 | 141 / 79 / 9 |  | 59 % | 37 | 7 / 8 |
+| sam_launcher | AntiAir | 5 | 9 | 7 | -22 % | 0 | 0 | 42 | 183 | 0 / 0 / 0 |  | 13 % | 66 | 0 / 9 |
+| heavy_aa | AntiAir | 6 | 147 | 180 | +22 % | 253 | 98 | 319 | 193 | 258 / 100 / 52 |  | 64 % | 44 | 14 / 21 |
+| iron_beam | AntiAir | 9 | 0 | 0 |  | 0 | 0 | 0 | 33 | 0 / 0 / 0 |  | 8 % | 69 | 0 / 0 |
+| long_sam | AntiAir | 11 | 0 | 0 |  | 0 | 0 | 0 | 410 | 0 / 0 / 0 |  | 11 % | 88 | 0 / 0 |
+| engineer_vehicle | Support | 3 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0 / 0 / 0 |  | 0 % | 90 | 0 / 0 |
+| smoke_carrier | Support | 3 | 104 | 102 | -2 % | 229 | 47 | 78 | 19 | 168 / 75 / 14 |  | 54 % | 30 | 7 / 10 |
+| ammo_carrier | Support | 4 |  | 0 |  | 0 | 0 | 0 | 0 | 0 / 0 / 0 |  | 0 % | 90 | 0 / 0 |
 | counter_battery_radar | Support | 5 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0 / 0 / 0 |  | 0 % | 90 | 0 / 0 |
 | ew_jammer | Support | 5 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0 / 0 / 0 |  | 0 % | 90 | 0 / 0 |
-| mine_layer | Support | 5 | 40 | 55 | +37 % | 95 | 114 | 7 | 11 | 67 / 44 / 3 |  | 30 % | 35 | 20 / 1 |
-| sapper | Support | 5 | 251 | 208 | -17 % | 499 | 55 | 21 | 17 | 524 / 96 / 50 |  | 49 % | 63 | 7 / 2 |
+| mine_layer | Support | 5 | 62 | 72 | +17 % | 102 | 83 | 35 | 8 | 104 / 103 / 6 |  | 45 % | 28 | 16 / 10 |
+| sapper | Support | 5 | 280 | 266 | -5 % | 581 | 74 | 162 | 31 | 608 / 108 / 61 |  | 65 % | 66 | 9 / 12 |
 | command_vehicle | Support | 6 | 0 | 0 |  | 0 | 0 | 0 | 0 | 0 / 0 / 0 |  | 0 % | 90 | 0 / 0 |
-| scout_heli | Helicopter | 6 | 155 | 149 | -4 % | 358 | 176 | 290 | 18 | 25 / 20 / 24 | 0 | 44 % | 31 | 21 / 56 |
-| attack_helicopter | Helicopter | 9 | 380 | 392 | +3 % | 729 | 685 | 642 | 138 | 54 / 206 / 35 | 38 | 62 % | 51 | 84 / 92 |
-| gunship_heli | Helicopter | 14 | 465 | 395 | -15 % | 679 | 766 | 722 | 26 | 66 / 99 / 39 | 0 | 62 % | 57 | 119 / 112 |
-| heavy_attack_heli | Helicopter | 14 | 215 | 238 | +11 % | 222 | 321 | 193 | 68 | 223 / 277 / 193 | 768 | 89 % | 86 | 50 / 30 |
-| recon_drone | Plane | 6 | 47 | 47 | -1 % | 97 | 91 | 72 | 0 | 6 / 8 / 5 | 12 | 52 % | 35 | 12 / 8 |
-| strike_drone | Plane | 7 | 335 | 339 | +1 % | 546 | 630 | 782 | 0 | 35 / 30 / 9 | 25 | 55 % | 44 | 64 / 65 |
-| fighter_jet | Plane | 10 | 0 | 0 |  | 0 | 0 | 0 | 192 | 0 / 0 / 0 | 0 | 10 % | 43 | 0 / 0 |
-| attack_jet | Plane | 13 | 483 | 521 | +8 % | 975 | 902 | 1143 | 12 | 46 / 7 / 54 | 10 | 53 % | 44 | 130 / 189 |
-| tank_buster | Plane | 18 | 589 | 489 | -17 % | 785 | 1125 | 915 | 39 | 42 / 26 / 39 | 38 | 60 % | 50 | 225 / 183 |
-| heavy_bomber | Plane | 20 | 557 | 542 | -3 % | 435 | 876 | 1474 | 33 | 103 / 184 / 181 | 177 | 40 % | 58 | 195 / 328 |
-| stealth_bomber | Plane | 20 | 504 | 459 | -9 % | 420 | 675 | 1156 | 0 | 156 / 192 / 153 | 246 | 35 % | 69 | 150 / 257 |
+| scout_heli | Helicopter | 5 | 249 | 318 | +27 % | 677 | 373 | 639 | 48 | 50 / 126 / 41 | 24 | 60 % | 44 | 30 / 58 |
+| attack_helicopter | Helicopter | 9 | 383 | 392 | +2 % | 717 | 683 | 645 | 104 | 67 / 206 / 35 | 48 | 63 % | 49 | 83 / 90 |
+| heavy_attack_heli | Helicopter | 13 | 229 | 264 | +15 % | 239 | 353 | 215 | 54 | 240 / 324 / 215 | 548 | 89 % | 84 | 51 / 31 |
+| gunship_heli | Helicopter | 15 | 469 | 384 | -18 % | 659 | 738 | 699 | 27 | 62 / 108 / 36 | 131 | 62 % | 58 | 123 / 117 |
+| recon_drone | Plane | 6 | 76 | 58 | -24 % | 86 | 143 | 82 | 0 | 12 / 14 / 8 | 12 | 54 % | 39 | 12 / 7 |
+| strike_drone | Plane | 7 | 329 | 343 | +4 % | 452 | 730 | 790 | 0 | 29 / 42 / 14 | 23 | 55 % | 46 | 58 / 66 |
+| fighter_jet | Plane | 12 | 1 | 0 | -48 % | 0 | 1 | 0 | 284 | 0 / 1 / 1 | 0 | 10 % | 49 | 0 / 0 |
+| attack_jet | Plane | 13 | 442 | 438 | -1 % | 628 | 729 | 1156 | 21 | 47 / 24 / 47 | 7 | 50 % | 43 | 120 / 173 |
+| tank_buster | Plane | 16 | 559 | 383 | -32 % | 676 | 844 | 631 | 49 | 56 / 59 / 30 | 24 | 55 % | 50 | 150 / 112 |
+| stealth_bomber | Plane | 18 | 535 | 390 | -27 % | 336 | 448 | 855 | 0 | 248 / 163 / 288 | 219 | 20 % | 72 | 90 / 171 |
+| heavy_bomber | Plane | 22 | 598 | 438 | -27 % | 398 | 469 | 1070 | 30 | 235 / 205 / 248 | 198 | 32 % | 71 | 115 / 262 |
 

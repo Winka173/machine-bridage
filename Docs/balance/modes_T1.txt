@@ -1,0 +1,50 @@
+player deck: main_battle_tank, ifv, tank_destroyer, light_tank, mlrs, aa_vehicle, attack_helicopter, engineer_vehicle
+Conquest       ashfield   s1: WON    7.0 min  kills 63 losses 52 tickets 91:0
+Conquest       ashfield   s2: WON    7.8 min  kills 74 losses 56 tickets 85:0
+Conquest       ashfield   s11: WON    7.1 min  kills 65 losses 39 tickets 225:0
+Conquest       ashfield   s12: WON    7.2 min  kills 77 losses 55 tickets 197:0
+Conquest       dunebreak  s1: WON    6.8 min  kills 55 losses 56 tickets 194:0
+Conquest       dunebreak  s2: LOST   8.5 min  kills 80 losses 63 tickets 0:144
+Conquest       dunebreak  s11: WON   10.1 min  kills 79 losses 54 tickets 114:0
+Conquest       dunebreak  s12: LOST   8.9 min  kills 82 losses 64 tickets 0:199
+Conquest       ironport   s1: WON    7.9 min  kills 77 losses 56 tickets 186:0
+Conquest       ironport   s2: WON    7.3 min  kills 68 losses 49 tickets 186:0
+Conquest       ironport   s11: WON    5.6 min  kills 46 losses 41 tickets 270:0
+Conquest       ironport   s12: WON    7.8 min  kills 79 losses 53 tickets 120:0
+Conquest       SUMMARY (Normal): won 10/12, median 7.6 min, range 5.6-10.1
+KingOfTheHill  ashfield   s1: WON    8.2 min  kills 86 losses 77 score 170:133 of 170
+KingOfTheHill  ashfield   s2: WON    7.5 min  kills 70 losses 65 score 170:120 of 170
+KingOfTheHill  ashfield   s11: WON    7.5 min  kills 71 losses 51 score 170:137 of 170
+KingOfTheHill  ashfield   s12: WON    4.9 min  kills 53 losses 33 score 170:30 of 170
+KingOfTheHill  dunebreak  s1: WON    7.4 min  kills 79 losses 71 score 170:123 of 170
+KingOfTheHill  dunebreak  s2: WON    5.1 min  kills 47 losses 42 score 170:16 of 170
+KingOfTheHill  dunebreak  s11: WON    6.2 min  kills 53 losses 37 score 170:50 of 170
+KingOfTheHill  dunebreak  s12: LOST   6.7 min  kills 66 losses 64 score 90:170 of 170
+KingOfTheHill  redrock    s1: LOST   6.2 min  kills 66 losses 62 score 70:170 of 170
+KingOfTheHill  redrock    s2: WON    8.0 min  kills 80 losses 71 score 170:134 of 170
+KingOfTheHill  redrock    s11: LOST   7.3 min  kills 76 losses 50 score 128:170 of 170
+KingOfTheHill  redrock    s12: LOST   7.7 min  kills 71 losses 65 score 111:170 of 170
+KingOfTheHill  SUMMARY (Normal): won 8/12, median 7.4 min, range 4.9-8.2
+Assault        ironport   s1: LOST  10.4 min  kills 104 losses 122 sectors 1@1.2 2@2.4 taken 3
+Assault        ironport   s2: WON    3.7 min  kills 48 losses 34 sectors 1@1.2 2@2.3 3@3.7 taken 4
+Assault        ironport   s11: WON    5.0 min  kills 63 losses 51 sectors 1@1.3 2@2.3 3@5.0 taken 4
+Assault        ironport   s12: LOST  10.9 min  kills 135 losses 133 sectors 1@1.1 2@2.9 taken 3
+Assault        redrock    s1: WON    4.5 min  kills 69 losses 40 sectors 1@1.1 2@2.8 3@4.5 taken 4
+Assault        redrock    s2: WON    2.7 min  kills 41 losses 20 sectors 1@0.3 2@1.7 3@2.7 taken 4
+Assault        redrock    s11: WON    4.3 min  kills 60 losses 39 sectors 1@0.3 2@2.0 3@4.3 taken 4
+Assault        redrock    s12: WON    4.9 min  kills 74 losses 43 sectors 1@1.0 2@2.4 3@4.9 taken 4
+Assault        ashfield   s1: LOST  12.6 min  kills 148 losses 171 sectors 1@1.2 2@4.6 taken 3
+Assault        ashfield   s2: WON    3.9 min  kills 53 losses 33 sectors 1@1.4 2@2.9 3@3.9 taken 4
+Assault        ashfield   s11: LOST  11.0 min  kills 105 losses 127 sectors 1@1.5 2@3.0 taken 3
+Assault        ashfield   s12: WON    3.4 min  kills 56 losses 26 sectors 1@1.3 2@3.1 3@3.4 taken 4
+Assault        SUMMARY (Normal): won 8/12, median 4.7 min, range 2.7-12.6
+Survival       ashfield   s1: LOST   9.8 min  kills 128 losses 89 wave 19
+Survival       ashfield   s2: open  30.0 min  kills 400 losses 235 wave 60
+Survival       ashfield   s11: open  30.0 min  kills 388 losses 241 wave 60
+Survival       ashfield   s12: open  30.0 min  kills 389 losses 262 wave 60
+Survival       greenvale  s1: LOST  10.3 min  kills 121 losses 89 wave 20
+Survival       greenvale  s2: LOST  11.0 min  kills 122 losses 92 wave 22
+Survival       greenvale  s11: LOST  11.2 min  kills 131 losses 86 wave 22
+Survival       greenvale  s12: LOST  12.0 min  kills 125 losses 104 wave 24
+Survival       SUMMARY (Normal): won 0/8, median 11.6 min, range 9.8-30.0
+(207 s)
