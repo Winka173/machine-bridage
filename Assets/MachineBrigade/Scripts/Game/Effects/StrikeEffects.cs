@@ -23,7 +23,7 @@ namespace MachineBrigade.Game.Effects
         private const float BomberAltitude = 32f;
 
         /// <summary>The transport of an airlift or the MOAB (the same aircraft AirDrops flies), its height and speed over the drop.</summary>
-        private const string TransportModel = "sky_gunship";
+        private const string TransportModel = AirDrops.TransportModel;
         private const float TransportAltitude = 44f, TransportSpeed = 70f;
 
         /// <summary>Red target marks on the ground: one for an area strike, one per bomb for an airstrike.</summary>
@@ -369,7 +369,7 @@ namespace MachineBrigade.Game.Effects
             if (jet == null)
             {
                 jet = new Jet { Root = _models.Spawn(model, team, _root).Root, Model = model };
-                var twin = model == "strike_jet" ? "attack_jet" : model;
+                var twin = model == "strike_jet" ? "attack_jet" : model == TransportModel ? AirDrops.TransportScale : model;
                 if (_catalog.Vehicles.TryGetValue(twin, out var sized)) jet.Root.transform.localScale = Vector3.one * sized.Scale;
                 foreach (var t in jet.Root.GetComponentsInChildren<Transform>(true))
                     if (t.name.StartsWith("Bombs")) jet.Bombs = t;

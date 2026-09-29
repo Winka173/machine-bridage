@@ -7352,3 +7352,143 @@ weather, boosts, discounts, items, the controller, steps, camera, boss pan, beat
 `Sim/AI/ConquestAi.Sandbox.cs`, `Game/Match/SandboxSession.cs`, `Game/Match/SandboxController.cs`,
 `Game/Hud/SandboxScreen*.cs`, `Game/Hud/SandboxText.cs`, `Game/Hud/MenuScreen.Sandbox.cs`,
 `Game/Views/SandboxOverlays.cs`, `Resources/UI/Sandbox.uss`, `Tests/EditMode/SandboxTests.cs`, `Tests/EditMode/Scenarios`.
+
+## 20V. Play-test 5: visuals and models (2026-09-29)
+
+The owner's play-test 5 items marked [C] (`Docs/prompts/requests_vi.md`), and the coordinator's added item: every
+explosion reworked, layered and grander. Branch `feature/pt5-visuals` from lead/integration 1801822. Agent D does the
+fire rhythms, behaviours, missile speeds, C-RAM bursts and the siege tank (20W). Nothing here touches the simulation.
+
+### A. In-action targets and the fire supports' camera
+
+- **Targets** (`FiringRange.GroundTargets`): a scout jeep, an armoured car, a light tank, a main battle tank and a
+  heavy tank, armour 0 to 4 at the front, so a weapon's effect on each reads side by side. The IFV is gone from the
+  targets (its `apc_smoke` dischargers hid the clip); the tower scenes' crossing columns and the EMP clip's attacker
+  swap it for a battle tank or a light tank. Friendly IFVs (repair, shields) stay: they do not lay smoke at the enemy.
+- **Fire supports are framed with their sky** (`FiringRange.SupportSky`): the look point rises 42 % of the height
+  the delivery flies at and the frame widens by 36 % of it: the strike jet 24 m, the bomber raid 32 m, the MOAB's
+  transport 44 m, airdrops 30 m, the UAV 22 m, barrages and the EMP 20 m (the rounds' fall), the rest 14 m. The gunship
+  on call is framed on its whole turn like a shown gunship (its orbit and altitude).
+
+### B. Blasts: +20 / +30 %, and the rework
+
+**Sizes** (`BlastSizes`, multiplied onto 11A and 12C): tank rounds `TankGrow` 1.2 wide and `TankLinger` 1.2 longer
+(light 1.56 / 1.44, main 1.68 / 1.5, heavy 1.8 / 1.56); artillery and mortar shells 1.2 (`Artillery`, also the
+barrage support); missiles and rockets 1.2 (`Round`, the HEAT branch, thermobaric's pop, fuel cloud and ring, the
+cruise missile's fire and smoke while its ring stays on the radius); every drone 1.2 on top of its own (FPV 1.44,
+Lancet 1.5, Shahed 1.56); the gun turret's rounds (`turret_gun_120*`, `gun_57_auto`) 1.3 instead of the tanks' 1.2
+(1.82 on the 120 mm), keeping the old linger. The grow factor already spreads more quads rather than blowing sprites
+up (11A), so nothing breaks up at the new sizes. Scorch decals follow the drawn size.
+
+**The rework** (`ExplosionEffect`, each recipe's additions after `Richer()`): every blast keeps its old recipe in
+full and gains layers by calibre and tier:
+
+| Recipe | Added |
+|---|---|
+| Shell hit (tank rounds) | a second fire burst off the plate, 12 sparks, 2 burning flakes, rising smoke, embers |
+| Medium (mortars, missiles, drones, 57 mm) | a white-hot core, 2 secondary fire bursts on a ring, 18 sparks, 6 fragments, 3 burning, 8 embers, rising smoke |
+| Large (artillery, heavy rockets, big shells) | a core, 3 inner fire bursts, 40 sparks, 10 fragments, 4 burning, 16 embers, a second outer dust skirt, a 5-billow smoke column |
+| Huge / Ultimate (bombs, heavy missiles, boss attacks, structure deaths) | 2 cores, 5 fire bursts, 60 / 90 sparks, 16 / 24 fragments, 6 / 8 burning, 30 / 40 embers, a second air ring, a wide outer skirt, a 7 / 9-billow column |
+| Airburst | a core, 2 fire bursts, sparks, burning fragments, embers, smoke |
+| Collapse (buildings, towers falling) | 2 fires in the ruin, sparks, a 4-billow dust and smoke column |
+| Napalm | a 4-billow black column, embers |
+
+The layers read in order: flash and fireball (with the new hot core), secondary fire bursts, debris and sparks, the
+ground dust rings and shockwave, rising smoke, and on the big ones the **smoke column** (`BlastLayers.Column`, one new
+shared system, 1,400 particles: billows climbing out of the crater a third of a second apart, each higher and bigger,
+rising 0.9-1.9 m/s and hanging 6.5-12 s, leaning with the wind; its twin draws in front of smoke screens like the
+other blended layers). Scorch decals: every Medium-up impact already left one; a fallen defence now scorches the
+ground round its ruin too.
+
+**Low budget:** the added layers are emitted at `RichShare`: all on High, 80 % on Medium, half on Low, never fewer
+than one of each (so Low has the same shapes). The old recipe is always emitted in full (`CoreParticleCount`), so no
+tier shows less fire or smoke than before. Per blast on High (the blast sheet's budget log): Medium 72 to 112 particles, Large 168 to 258, Huge
+274 to 418, Ultimate 371 to 571; on Low each stays within the old High caps (Medium 95, Large 240, Huge 400, Ultimate
+480; `EffectsTests` pins both). Frame time: a 60 s Conquest battle in Play mode (batch, with graphics, High) ran
+1,666 frames (36 ms a frame in the editor, faster than the menu's 49 ms with its preview) with no errors; there is no
+before-and-after on a phone yet (testing phase).
+
+### C. The hull fire (low health)
+
+`HullFire` replaces the old licks of flame (one random flipbook quad every 0.12 s) under a burning vehicle's smoke:
+below 30 % health a vehicle burns at fixed fire points on its hull (the engine deck, then the turret ring, then a
+flank: 1, 2 or 3 as `Severity` rises from 0 at 30 % to 1 at 3 %), each in four layers: a bright additive core
+glowing on the hull (what makes a small fire read at a phone's zoom), upright tongues of flame (a brighter copy of
+the Flames material), embers lifted by the heat and wandering, and a column of dark smoke climbing out of the fire,
+blacker and thicker as it grows. Sizes, embers and smoke all grow with the damage; near death a small pop now and
+then. Low: at most two fire points, a 0.12 s beat instead of 0.08 s, half the embers, smoke every other beat. The
+burning vehicle's own smoke is the fire's column (the old grey billow stays for 30-60 %). Burning defences burn the
+same way.
+
+### D. Plumes
+
+`Plume.ShortFlame` 0.6: the SAM launcher's Buk (`buk_launcher`, and `sam_long` / `sam_post`, the same missile), the
+thermobaric launcher's and the heavy rocket artillery's rockets, the ballistic missile, the long-range SAM
+(`sam_48n6`) and the Patriot batteries (`patriot`, `sam_battery`, `sam_pac3`, `sam_battery_lrr`) keep 60 % of their
+flame. The flame is still measured in the munition's drawn lengths at its cruise speed (and drawn shorter off the
+rail by the share of cruise speed it has reached), so agent D's speed changes do not change its length: it stays tied
+to the munition's size. The smoke trails are unchanged.
+
+### E. Railgun burn
+
+`LaserBeams.Sear`: a railgun (or coilgun) slug leaves a burn where it struck, like the focused laser's: a white-hot
+spot riding the target and cooling through orange over 2.6 s, sparks and molten drops dying down with it, smoke
+curling off, the ground lit under it and a scorch decal under a ground target.
+
+### F. Models (`Tools/blender/mb_pt5_models.py`, registered last in `build_assets.py`)
+
+- **FPV drone** (404 to 1,520 triangles): a true-X carbon frame (plates on standoffs, tapered arms), motor bells,
+  tri-blade props where the runtime rotor discs spin, a tilted camera pod with its lens, a strapped battery, a video
+  antenna and whips, and the RPG-7 warhead (fuse, ogive, band, fins). It flies 20 % smaller
+  (`WeaponEffects.QuadScale` 1.3 x 0.8).
+- **Bunker vehicle dug in**, as 19R describes it, done properly: an emplacement. The spoil bank is one lofted
+  horseshoe of earth (steep inner face, a crest 0.85 m at the front and 1 m down the sides, a long outer slope, open
+  at the rear as the ramp), two staggered courses of sandbags across the front and round its corners, one course down
+  the front of each side, grass and clods on the slopes, a camouflage net on four poles over the engine deck with
+  foliage tied in, ammunition boxes and a can by the ramp. The pose goes hull-down: `HullSink` 0.8 to 1.25 (the hull
+  top 0.45 m above the ground), `MountLift` 0.75 to 0.55 (the gun 1.42 m up, clear over the sandbags at 1.1 m), and
+  `PlateFold` 95 to 20 degrees: the side plates lean out as armoured revetments lining the pit under the crest instead
+  of lying flat on a low bank. The bank stays exported at 1 % (cards, impostors, the move). 11,384 triangles.
+- **Gunship** (`sky_gunship`, `_hd`): the AC-130 airframe kept, the battery drawn anew and big (the owner read the
+  old one as a bomber): the 25 mm GAU-12 in a blister behind the crew door, the 40 mm Bofors behind a mantlet just aft
+  of the wing, the 105 mm howitzer in a long bulged fairing further aft with its recoil sleeve and muzzle brake (the
+  AC-130U's layout), all sticking 1.5-3.5 m out of the left side and tilted down; a big sensor ball under the nose,
+  a second behind the crew door, gun-deck windows. `Muzzle_mg`, `Muzzle_gun` and `Muzzle_main` sit at those three
+  muzzles on the left (the sim's `Left` aims), `Muzzle_ramp` at the ramp launcher. 10,880 triangles (`_hd` 19,818).
+- **Transport** (`transport_plane`, new): the same airframe without the battery, the sensors or the ramp launcher.
+  AirDrops and StrikeEffects fly it for airdrops and the MOAB (at the gunship's scale), so a transport no longer
+  carries a gunship's guns. 8,608 triangles.
+- **Gunship card:** `CardRenders.Cards` gives an escort support its aircraft's card ("support" kind): the gunship on
+  call shows `sky_gunship`; the shop's item tiles use a card picture when there is one. The pictures are the lead's
+  to render (`sky_gunship`, `bunker_vehicle`, `stealth_fighter`, `fpv_carrier` unchanged).
+- **Stealth fighter** (1,980 to 4,484 triangles): prompt 17's airframe with the middle filled in: intake lips, the
+  bump ahead of each mouth and dark ducts, canopy sills, bow and aft frames, a HUD and seat, a dorsal spine with a
+  sawtooth access panel, the refuelling door, the APU vent, blade antennas, EODAS windows and air-data probes,
+  sawtooth panel lines across and along the body, the bay doors' seams on the belly, and hinge and spar lines on the
+  wings.
+
+### Tests and captures
+
+`PlayTest5VisualTests` (10): the targets' armour 0-4 and no smoke; every support framed with its sky; the
+airstrike's clip showing the jet's height and the targets; the rework's
+additions, Low's share and the column; the hull fire's scaling and Low; the railgun burn cooling and going; the FPV
+scale; the gunship's three muzzles well out on one side and the transport without guns; the gunship's card; the
+bunker's pose. `BlastSizeTests` and `MissileFlightTests` take the new factors. Run once each: `PlayTest5VisualTests` 10/10 (the airstrike framing test added on a second run: the
+targets and a point 24 m over them inside the picture), `BlastSizeTests`, `EffectsTests` (the budgets above, 27
+systems with the column and its twin), `InActionTests`, `FlashTests`, `VehicleLodTests`, `MuzzleTests` pass;
+`MissileFlightTests`, `ModelTests`, `RangeSceneTests`, `CardRenderTests` with these failures, none from this work:
+`ModelTests.RoundsLeave` (3, known), `ModelTests.EveryWeaponMountHasAMuzzleOnItsModel` (mobile_fortress's
+boss_howitzer, a boss mount), `MissileFlightTests.MissilesFlySlowerAndLandBeforeTheirCooldown` (sam_battery_lrr's
+4.17 s flight against its 3.6 s cooldown: data), `RangeSceneTests.JammerScramblesTheMissilesAtItsFriends` (the ATGM
+post never fires: sim), `GearModelTests.AnOldSaveMigratesWithNothingLost` (save migration); `CardRenderTests` until the
+lead renders the cards (stealth_fighter, bunker_vehicle, and gunship_support from sky_gunship).
+Captures in `Docs/art/pt5/`. `blasts.png` (the blast sheet: medium, large and a tank death at 0.25, 0.7, 1.6 and 4 s),
+`hull_fire.png` (28 %, 15 %, 4 %, 4 % on Low, and a railgun burn), `bunker_dug_in.png`, `gunship.png`,
+`stealth_fighter.png`, `fpv_drone.png` (Blender renders of the exported models, the bunker in its dug-in pose), and
+`inaction_gunship_airstrike.png` (the In action clips: the gunship on call circling its targets, the airstrike). New
+capture: `EffectShots.HullFires`.
+
+### For the testing phase
+
+The blasts' and the hull fire's cost in a long heavy fight on a low-end phone (Low); whether the smoke columns hide
+too much of the field at the default zoom; the In-action framing of each fire support on a phone.

@@ -89,10 +89,10 @@ namespace MachineBrigade.Game.Rendering
                     Relay();
                     break;
                 case Scene.Teeth:
-                    Cross(_far.Y + 6f, 2, new[] { "armored_car", "ifv", "light_tank" }, _start.Y - 14f, false);
+                    Cross(_far.Y + 6f, 2, new[] { "armored_car", "main_battle_tank", "light_tank" }, _start.Y - 14f, false);
                     break;
                 case Scene.Minefield:
-                    Cross(_far.Y + 6f, 1, new[] { "armored_car", "ifv", "scout_jeep" }, _start.Y - 14f, true);
+                    Cross(_far.Y + 6f, 1, new[] { "armored_car", "light_tank", "scout_jeep" }, _start.Y - 14f, true);
                     break;
                 case Scene.Depot:
                     Readout = _shooter.Def.Utility != null ? Strings.Format("range.depot", _shooter.Def.Utility.Rearm) : null;
@@ -207,7 +207,7 @@ namespace MachineBrigade.Game.Rendering
         private bool LayMines()
         {
             if (_shooter.Def.Mines == null || _shooter.Def.Static) return false;
-            Cross(_far.Y + 8f, 1, new[] { "ifv", "armored_car", "light_tank" }, _start.Y - 12f, true);
+            Cross(_far.Y + 8f, 1, new[] { "main_battle_tank", "armored_car", "light_tank" }, _start.Y - 12f, true);
             if (!_shooter.IsAlive || _world.Tick % 20 != 1) return true;
             var y = _start.Y + 6f;
             var left = new Vector2(-10f, y);

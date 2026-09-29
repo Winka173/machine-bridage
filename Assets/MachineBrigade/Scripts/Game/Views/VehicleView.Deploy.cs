@@ -9,9 +9,10 @@ namespace MachineBrigade.Game.Views
     /// icon: digging in or packing up is an amber bar that fills with the work done (a small marker pulsing
     /// beside it), dug in is a green block with a solid base (a bunker), shown while the bar is.
     /// Play-test 4 (DECISIONS 19R): digging in turns the vehicle into a pillbox, in the model's Deploy_* parts
-    /// (mb_p21_models.py) over the data's seconds: the rear spades swing down and the dozer blade bites (first
-    /// third), the hull sinks 0.8 m into its scrape while the spoil bank grows round it, the side plates fold out
-    /// and down over the bank, and last the turret rises on its telescopic mount. Packing up runs it backwards.
+    /// (mb_p21_models.py, the bank from mb_pt5_models.py) over the data's seconds: the rear spades swing down and the
+    /// dozer blade bites (first third), the hull sinks 1.25 m into its scrape while the emplacement's bank, sandbags
+    /// and net grow round it, the side plates lean out against the bank, and last the turret rises on its telescopic
+    /// mount. Packing up runs it backwards.
     /// </summary>
     public sealed partial class VehicleView
     {
@@ -24,9 +25,12 @@ namespace MachineBrigade.Game.Views
 
         /// <summary>
         /// The dug-in pose on the model's hinges (degrees) and in its units: the spades' swing, the blade's bite, the
-        /// side plates' fold, how deep the hull sinks and how high the turret's mount rises.
+        /// side plates' fold, how deep the hull sinks and how high the turret's mount rises. Play-test 5 (DECISIONS
+        /// 20V) dug it in as an emplacement: hull-down (the hull top just above the ground inside the bank), the
+        /// turret lifted just clear of the parapet, and the side plates leaning out only 20 degrees to line the pit's
+        /// sides as revetments under the bank's crest (they folded flat over a low bank before).
         /// </summary>
-        internal const float SpadeSwing = -125f, BladeBite = 6f, PlateFold = 95f, HullSink = 0.8f, MountLift = 0.75f;
+        internal const float SpadeSwing = -125f, BladeBite = 6f, PlateFold = 20f, HullSink = 1.25f, MountLift = 0.55f;
 
         private void BuildDeployMark(MeshLibrary meshes, MaterialLibrary materials)
         {
@@ -115,7 +119,7 @@ namespace MachineBrigade.Game.Views
             if (_spadeL != null) _spadeL.localRotation = _spadeLRest * Quaternion.Euler(SpadeSwing * spades, 0f, 0f);
             if (_spadeR != null) _spadeR.localRotation = _spadeRRest * Quaternion.Euler(SpadeSwing * spades, 0f, 0f);
             if (_dozer != null) _dozer.localRotation = _dozerRest * Quaternion.Euler(BladeBite * dig, 0f, 0f);
-            // The model's left plate is on its +X side (Unity -X): +Z folds it outwards and down.
+            // The model's left plate is on its +X side (Unity -X): +Z leans it outwards.
             if (_plateL != null) _plateL.localRotation = _plateLRest * Quaternion.Euler(0f, 0f, PlateFold * plates);
             if (_plateR != null) _plateR.localRotation = _plateRRest * Quaternion.Euler(0f, 0f, -PlateFold * plates);
             if (_riser != null) _riser.localPosition = _riserRest + Vector3.up * MountLift * lift;

@@ -203,7 +203,7 @@ namespace MachineBrigade.Game.Rendering
                     var a = Friend("main_battle_tank", new Vector2(-6f, -16f), dummy: true);
                     var b = Friend("ifv", new Vector2(6f, -16f), dummy: true);
                     Attacker("main_battle_tank", _far + new Vector2(-9f, -2f), a);
-                    Attacker("ifv", _far + new Vector2(10f, -1f), b);
+                    Attacker("light_tank", _far + new Vector2(10f, -1f), b);
                     break;
                 case Scene.Smoke:
                     // An enemy armoured car comes in close and opens up on it: it lays its smoke screen

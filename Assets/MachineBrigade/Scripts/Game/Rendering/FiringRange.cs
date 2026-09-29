@@ -212,15 +212,26 @@ namespace MachineBrigade.Game.Rendering
             // A tower's own scene brings its own enemies; the depot's launchers want the usual targets.
             if (TowerScene && _scene != Scene.Depot) return;
             if (_ground || _scene == Scene.Depot)
-            {
-                Target("main_battle_tank", _far + new Vector2(-4f, 0f));
-                Target("ifv", _far + new Vector2(5f, 3f));
-                Target("heavy_tank", _far + new Vector2(0f, 9f));
-            }
+                foreach (var (id, at) in GroundTargets)
+                    Target(id, _far + at);
             if (_air) Target("attack_helicopter", _far + new Vector2(_ground ? 10f : 0f, _ground ? -6f : 0f));
             // SEAD wants an air defence to hit.
             if (_support != null && _support.Kind == SupportKind.Sead) Target("aa_vehicle", _far + new Vector2(8f, 4f));
         }
+
+        /// <summary>
+        /// Play-test 5 (DECISIONS 20V): the ground targets, one of each armour level from 0 to 4 (a jeep, an armoured car,
+        /// a light tank, a battle tank, a heavy tank), so a weapon's effect on each reads side by side. None of them lays
+        /// smoke (the IFV's dischargers hid the clip), and none fires back (they are dummies).
+        /// </summary>
+        internal static readonly (string id, Vector2 at)[] GroundTargets =
+        {
+            ("main_battle_tank", new Vector2(-4f, 0f)),
+            ("light_tank", new Vector2(5f, 3f)),
+            ("heavy_tank", new Vector2(0f, 9f)),
+            ("armored_car", new Vector2(-8.5f, 6f)),
+            ("scout_jeep", new Vector2(8.5f, 9f)),
+        };
 
         /// <summary>Remote mines' clip: an armoured car drives to and fro across the minefield (a new one when a mine gets it).</summary>
         private void RunTheMines()
@@ -421,11 +432,12 @@ namespace MachineBrigade.Game.Rendering
         {
             Vector3 centre;
             float span;
-            if (_shooter != null && _shooter.Def.Orbit)
+            var orbiter = _shooter != null && _shooter.Def.Orbit ? _shooter.Def : _support != null ? EscortOrbiter() : null;
+            if (orbiter != null)
             {
-                var radius = Mathf.Max(_shooter.Def.OrbitRadius, 14f);
-                centre = new Vector3(_far.X, _shooter.Def.Altitude * 0.45f, _far.Y);
-                span = (radius + 10f + _shooter.Def.Altitude * 0.25f) / Zoom;
+                var radius = Mathf.Max(orbiter.OrbitRadius, 14f);
+                centre = new Vector3(_far.X, orbiter.Altitude * 0.45f, _far.Y);
+                span = (radius + 10f + orbiter.Altitude * 0.25f) / Zoom;
             }
             else
             {
@@ -436,11 +448,37 @@ namespace MachineBrigade.Game.Rendering
                 // A big boss (the drone mothership) is stood back from, so it does not fill the picture.
                 var bulk = _shooter != null ? Mathf.Max(0f, _shooter.Def.Radius - 3f) * 1.6f : 0f;
                 span = Mathf.Max(Vector3.Distance(from, to) * 0.5f + (8f + bulk) / Zoom, 14f / Zoom);
+                // Play-test 5 (DECISIONS 20V): a fire support is framed with the sky it comes out of, so the jets, the
+                // bomber, the transport or the incoming rounds are in the picture as well as the impacts.
+                var sky = _support != null ? SupportSky(_support) : 0f;
+                centre += Vector3.up * sky * 0.42f;
+                span += sky * 0.36f / Zoom;
             }
             _look = _look == Vector3.zero ? centre : Vector3.Lerp(_look, centre, 1f - Mathf.Exp(-dt * 3f));
             var distance = span / Mathf.Tan(_camera.fieldOfView * 0.5f * Mathf.Deg2Rad) * 0.95f;
             _camera.transform.position = _look + new Vector3(0.95f, 0.75f, -0.45f).normalized * distance;
             _camera.transform.LookAt(_look);
+        }
+
+        /// <summary>How high what delivers a fire support flies over the targets (StrikeEffects' altitudes), in metres.</summary>
+        internal static float SupportSky(SupportDef support) => support.Kind switch
+        {
+            SupportKind.Airstrike => support.Id == "air_raid" ? 32f : 24f,
+            SupportKind.Sead => 24f,
+            SupportKind.CruiseMissile => support.Id == "moab" ? 44f : 24f,
+            SupportKind.Reinforce or SupportKind.Repair or SupportKind.ShieldDome or SupportKind.Tower => 30f,
+            SupportKind.Scan => 22f,
+            SupportKind.Barrage or SupportKind.Emp => 20f,
+            _ => 14f,
+        };
+
+        /// <summary>An escort support's circling aircraft (the sky gunship), framed on its whole turn like a shown gunship.</summary>
+        private VehicleDef EscortOrbiter()
+        {
+            if (_support.Kind != SupportKind.Escort || _support.Units == null) return null;
+            foreach (var id in _support.Units)
+                if (_world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Orbit) return def;
+            return null;
         }
 
         private void SetLayer(Transform t)
