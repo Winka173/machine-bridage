@@ -1,0 +1,229 @@
+Prompt 13: Cân bằng theo thực chiến và vũ khí thật, đạn và hồi đạn, hiển thị đạn và hành vi, cân bằng mọi chế độ, AI theo độ khó
+
+Nhiệm vụ: làm một đợt cân bằng lớn duy nhất, gồm mọi thay đổi dữ liệu vũ khí, máy bay, chế độ chơi và AI mua quân, cùng phần hiển thị đạn và hành vi trong màn chi tiết. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số dưới đây là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Bối cảnh: sau prompt 10 đã có các thay đổi về lửa (thời gian cháy −20%), tên lửa (chậm hơn, nhất là tên lửa bắn từ máy bay), vụ nổ (to hơn về hình ảnh), nhịp bắn (luồng dài, giữ DPS), AI máy bay (tiêm kích dừng xả rồi bay vòng lặp lại) và máy bay chở quân địch. Prompt này đo lại ảnh hưởng của các thay đổi đó rồi mới cân bằng.
+
+Thứ tự bắt buộc: A → B → C → D → E → F → G → H → I. Phần A phải xong trước, vì mọi con số sau đó dựa vào công cụ đo ở phần A.
+
+A. ĐO GIÁ TRỊ THỰC CHIẾN (thay cho DPS lý thuyết)
+1. Bảng DPS hiện tính sai: nó coi mọi vũ khí bắn liên tục. Ví dụ bảng ghi Cường kích 1.074 DPS lên xe nặng và A-10 là 951, trong khi thực tế pháo cường kích khoảng 100 và GAU khoảng 190. Sửa công cụ để tính đủ loạt bắn, băng đạn, thời gian thay băng, thời gian nạp của bệ phóng và số tên lửa/bom mỗi lần đầy đạn.
+2. DPS lý thuyết đúng vẫn chưa đủ. Thêm bộ đo "giá trị thực chiến" chạy trong mô phỏng, tính cả thời gian xe KHÔNG bắn:
+   - Máy bay: bay tới, bổ nhào, bay vòng và lượn lại, bay vòng chờ để hồi đạn.
+   - Trực thăng: treo, né phòng không, hồi đạn.
+   - Pháo binh và bệ phóng: dừng lại mới bắn, dời vị trí, nạp lại, tầm tối thiểu.
+   - Tên lửa và drone: thời gian bay, bị pháo sáng, APS, La-de PK, C-RAM và gây nhiễu chặn.
+   - Xe bắn thẳng: xoay tháp, xoay thân (Pháo chống tăng), đi vòng tới mục tiêu, bắn trượt khi đang chạy, mất tầm nhìn do khói.
+3. Bộ kịch bản chuẩn (cố định seed, chạy cho mọi xe): mỗi xe hạng 1, không trang bị, đối đầu với các nhóm mục tiêu tham chiếu (cụm xe nhẹ, cụm xe tăng, công sự có tháp, máy bay và trực thăng), có và không có phòng không đối phương, trong khoảng 90 giây tính từ lúc tiếp đất. Máy bay, trực thăng và bệ phóng chạy thêm một kịch bản dài (khoảng 4 phút) để tính đủ các chu kỳ hết đạn và hồi đạn.
+4. Mỗi xe ghi lại:
+   - Sát thương thực gây ra lên từng loại mục tiêu.
+   - Tỷ lệ thời gian thật sự bắn trên tổng thời gian có mặt.
+   - Thời gian sống sót trung bình.
+   - Thời gian hạ mục tiêu tham chiếu.
+   - Giá trị thực chiến trên mỗi CP = sát thương thực × hệ số sống sót / CP.
+5. Kiểm tra lại các vụ nổ sau khi đại lý vụ nổ làm "to thêm 10%": bán kính nổ lan trong mô phỏng không được đổi. Nếu đã đổi, trả về như cũ, chỉ giữ phần hình ảnh.
+6. Đo riêng ảnh hưởng của các thay đổi đã làm: thời gian cháy −20% (xe phun lửa, Lô cốt phun lửa, boss Inferno), tên lửa chậm hơn (tỷ lệ trúng khi có pháo sáng và APS), nhịp bắn luồng dài, và AI tiêm kích mới.
+7. Xuất bảng DPS lý thuyết (đã sửa) và bảng giá trị thực chiến, lưu vào docs/, kèm so sánh trước/sau. Từ đây, mọi quyết định cân bằng dùng bảng giá trị thực chiến.
+
+B. CHUẨN HÓA SÁT THƯƠNG THEO VŨ KHÍ NGOÀI ĐỜI THẬT
+Nguyên tắc:
+- Sát thương mỗi phát tăng theo cỡ nòng hoặc khối lượng đầu nổ, trong cùng một họ vũ khí. Không bao giờ có chuyện đại bác mỗi phát yếu hơn súng máy, hay cỡ nòng lớn yếu hơn cỡ nhỏ hơn cùng loại.
+- Sức mạnh thực chiến vẫn cân bằng bằng tốc độ bắn, thời gian nạp, băng đạn, độ chính xác, tầm bắn và hành vi; không cân bằng bằng cách hạ sát thương mỗi phát xuống dưới mức hợp lý của cỡ nòng.
+- Cùng một loại vũ khí ngoài đời thì cùng sát thương mỗi phát, gắn trên xe nào cũng vậy; xe chỉ khác nhau về nhịp bắn và băng đạn.
+
+1. Thêm vào dữ liệu mỗi vũ khí: họ vũ khí và cỡ nòng (hoặc khối lượng đầu nổ với tên lửa, bom).
+2. Thang tham khảo sát thương mỗi phát (trước hệ số giáp). Được chỉnh con số, nhưng phải giữ đúng thứ tự:
+   - Súng máy 7,62 mm: 5–6. Súng máy 12,7 mm: 9–10. 14,5 mm: khoảng 11.
+   - Pháo 20–23 mm: 13–15. 25 mm: 16–18. 30 mm: 20–24. 35 mm: 24–26. 40 mm: 28–32.
+   - Pháo 57 mm: 60–80. 76 mm: khoảng 120.
+   - Pháo xe tăng 100–105 mm: 180–220. 120–125 mm: 220–260. 140 mm: khoảng 280. 152–155 mm: 300–340. 203 mm: từ 400 trở lên.
+   - Tên lửa chống tăng nhẹ (TOW, Konkurs): 180–200. Kornet, Ataka: 220–240. Hellfire, Vikhr: 240–260. Maverick: 330–360.
+   - Rốc-két 57 mm: khoảng 16. 70 mm: khoảng 28. 80 mm: khoảng 32. 122 mm (Grad): 55–60. 227 mm (GMLRS): khoảng 100. 300 mm (Smerch): khoảng 140.
+   - Bom khoảng 110 kg: khoảng 200. Khoảng 250 kg: khoảng 300. Khoảng 500 kg: 380–420. Khoảng 900 kg: 700–850. MOAB: 8.000.
+   Các họ còn lại (tên lửa phòng không, tên lửa hành trình, drone, pháo cối, vũ khí boss) tự lập thang theo cùng nguyên tắc.
+3. Các chỗ đang ngược cần sửa (không giới hạn ở danh sách này; tự quét toàn bộ 132 vũ khí):
+   - Pháo xe tăng: 105 mm của Chống tăng (357), Pháo bánh lốp (300), Ụ pháo ẩn (290) đang mạnh hơn 120 mm của Tăng chủ lực (200), 125 mm tinh nhuệ (205), và gần bằng 152 mm của Tăng nặng (343).
+   - Pháo 30 mm: Su-25 (64), GSh-30K của Mi-24 (16), GAU-8 (44), BMPT (21), IFV (22) cùng cỡ mà chênh tới 4 lần.
+   - Pháo 23 mm của Ka-52 (9) ngang súng máy 12,7 mm; cao xạ 35 mm (11) yếu hơn ZU-23 23 mm (14).
+   - Pháo 25 mm: xe bọc thép 16, máy bay pháo 12.
+   - Lựu pháo 155 mm của Pháo tự hành (171) yếu bằng nửa pháo 105 mm của máy bay pháo (347).
+   - Rốc-két: S-8 80 mm (22) yếu hơn rốc-két trực thăng (40); Grad 122 mm tinh nhuệ (19) và rốc-két pháo phản lực tinh nhuệ (13) yếu hơn cả rốc-két 70–80 mm.
+   - Hellfire của trực thăng tinh nhuệ (128) yếu bằng nửa tên lửa của trực thăng thường (256).
+   - Bom nhỏ của UAV (297) gần bằng bom FAB của Su-25 (351).
+4. Khi đổi sát thương mỗi phát, chỉnh thời gian nạp, tốc độ bắn hoặc băng đạn theo cùng tỷ lệ để giá trị thực chiến gần như không đổi, trừ khi phần D hoặc E yêu cầu đổi.
+5. Khi một xe được thiết kế để mạnh mỗi phát mà cỡ nòng hiện tại không cho phép, được đổi cỡ nòng cho khớp vai trò thay vì hạ sát thương. Ví dụ: Pháo chống tăng dùng pháo 125 mm (như 2S25 Sprut), Pháo bánh lốp dùng pháo 120 mm (như Centauro II). Cập nhật tên vũ khí, mô tả, tab Hướng dẫn và clip Xem bắn cho khớp.
+6. Loại đạn cho pháo tự động 20–40 mm: hiện dùng loại "Động năng" (×0,25 lên giáp nặng), giống hệt súng máy. Thêm hệ số riêng cho pháo tự động, khoảng ×0,35–0,4 lên giáp nặng, để phân biệt với súng máy mà vẫn không đánh ngang pháo xe tăng.
+7. Test tự động: trong mỗi họ vũ khí, sát thương mỗi phát tăng đơn điệu theo cỡ nòng hoặc khối lượng đầu nổ; cùng một vũ khí thật trên các xe khác nhau có cùng sát thương mỗi phát.
+
+C. ĐẠN VÀ HỒI ĐẠN NGAY TRÊN CHIẾN TRƯỜNG
+Mục tiêu thiết kế: máy bay và trực thăng không phải bay đi xa để nạp đạn. Pháo binh nạp bằng cách đứng yên; máy bay nạp bằng cách bay vòng ngay sau tuyến quân ta. Không đơn vị nào mất phần lớn thời gian trận chỉ để đi nạp.
+
+1. Lượng đạn:
+   - Máy bay: bom, tên lửa và rốc-két có số lượng khi đầy đạn. Pháo trên máy bay không giới hạn tổng đạn, chỉ thay băng trên không như hiện tại.
+   - Trực thăng: rốc-két và tên lửa có số lượng khi đầy đạn; súng máy không giới hạn.
+   - Xe mang tên lửa (tên lửa chống tăng, tên lửa phòng không, SAM tầm xa, Patriot, đạn đạo, drone): có số tên lửa trong băng và thời gian nạp lại, như hiện tại.
+   - Thẻ hỗ trợ (Không kích, Bom chùm...) và sự kiện Không kích bất ngờ không dùng hệ này.
+
+2. Hồi đạn dần cho máy bay và trực thăng (cơ chế mặc định):
+   - Bom, tên lửa và rốc-két tự hồi từng quả theo thời gian, ngay trên chiến trường, không cần căn cứ.
+   - Tốc độ hồi có hai mức:
+     - Đang tấn công, hoặc đang ở trong tầm phòng không và tiêm kích địch: hồi chậm, bằng khoảng một nửa tốc độ đầy đủ.
+     - Đang bay ở vòng chờ gần (mục 3): hồi với tốc độ đầy đủ.
+   - Thời gian hồi từ rỗng tới đầy ở tốc độ đầy đủ (khởi điểm):
+     - Trực thăng và UAV: khoảng 8–9 giây.
+     - Tiêm kích: khoảng 10–12 giây.
+     - Cường kích và A-10: khoảng 13–15 giây.
+     - Oanh tạc cơ và máy bay tàng hình: khoảng 20–22 giây.
+   - Hồi đạn không hồi máu.
+
+3. Vòng chờ gần:
+   - Vòng chờ là một đường bay vòng nằm ngay phía sau tuyến quân ta gần nhất, ngoài tầm phòng không và tiêm kích địch đang biết. Vị trí được tính lại liên tục theo chiến tuyến.
+   - Từ chỗ giao tranh bay tới vòng chờ chỉ mất khoảng 2–3 giây. Không đơn vị nào phải bay về căn cứ hay ra ngoài map chỉ để nạp đạn. Bỏ luật bay ra ngoài map để nạp.
+   - Trong vòng chờ, đơn vị vẫn ở trên map, vẫn bị nhìn thấy và bị bắn nếu địch tới gần. Máy bay có pháo vẫn được bắn pháo vào mục tiêu trong tầm trong lúc đang chờ.
+   - Nếu bị tấn công trong vòng chờ thì né tránh, và tốc độ hồi giảm về mức chậm cho tới khi an toàn trở lại.
+
+4. Rút ra phải đúng lúc (không được bỏ trận ngay lập tức):
+   - Hết bom hoặc tên lửa giữa lúc đang tấn công: đơn vị phải hoàn thành lượt tấn công hoặc động tác đang làm (bổ nhào, lượt ném bom, vòng bay), không được quay đầu biến mất ngay.
+   - Khi rút về vòng chờ, đơn vị bay theo đường thật, vẫn có thể bị bắn trúng và bắn rơi; được dùng súng còn lại và pháo sáng để tự vệ; chọn hướng rút tránh phòng không địch nếu có thể.
+   - Tốc độ hồi đầy đủ chỉ bắt đầu khi đơn vị đã ra khỏi vùng nguy hiểm liên tục khoảng 3 giây.
+   - Chỉ huy AI được chủ động cho đơn vị ra vòng chờ sớm khi đạn còn ít (khởi điểm dưới 20%) và đang có quãng lặng trong giao tranh.
+   - Oanh tạc cơ và máy bay tàng hình chỉ vào lượt ném bom tiếp theo khi đã hồi được ít nhất khoảng 2/3 tải bom, để không có lượt ném chỉ 1–2 quả. Các máy bay khác tự quyết theo mục tiêu (ví dụ đủ tên lửa cho một mục tiêu đang thấy thì được vào đánh).
+   - Máu thấp: giữ logic hiện có (chỉ huy AI đưa về khi dưới khoảng 35% máu), theo cùng luật rút đúng lúc ở trên.
+
+5. Bãi đáp, sở chỉ huy và Xe tiếp đạn (lựa chọn thêm, không bắt buộc):
+   - Bãi đáp: hồi đạn nhanh gấp khoảng 2 lần vòng chờ, và hồi máu 3%/giây như hiện tại.
+   - Điểm nạp cơ bản ở sở chỉ huy (căn cứ nào cũng có): hồi đạn nhanh hơn vòng chờ khoảng 1,5 lần, hồi máu chậm (khởi điểm khoảng 1%/giây).
+   - Trực thăng đứng cạnh Xe tiếp đạn (phần F) hồi đạn nhanh gấp khoảng 2 lần vòng chờ, không hồi máu.
+   - Đơn vị chỉ ghé các điểm này khi tổng thời gian (bay tới + hồi đầy) ngắn hơn hồi ở vòng chờ, hoặc khi cần hồi máu. Nếu cần cả đạn lẫn máu, ưu tiên nơi có hồi máu khi chênh lệch thời gian không quá lớn.
+
+6. Nối vào AI máy bay đã làm: vòng "xả rồi bay vòng rồi lặp lại" của tiêm kích và các loại tương tự dùng vòng chờ gần làm điểm quay đầu. Khi còn đạn và còn mục tiêu thì quay lại tấn công nhanh; khi hết mục tiêu thì ở vòng chờ và hồi đạn sẵn, không lượn vô ích trên chiến trường.
+
+7. Xe mang tên lửa trên mặt đất: vẫn nạp lại tại chỗ như hiện tại. Nếu ở gần Kho đạn (trong căn cứ) hoặc Xe tiếp đạn, và đi tới đó cộng thời gian nạp nhanh hơn nạp tại chỗ, thì tới đó nạp. Không bỏ giữa trận đánh để đi nạp, theo cùng luật "đúng lúc" ở mục 4.
+
+8. Cường kích và A-10: quyết định còn chờ trong tài liệu (hiện chỉ xả pháo 1–1,4 giây mỗi lượt bổ nhào) được chốt như sau: cho xả pháo lâu hơn mỗi lượt (khoảng 2–3 giây, bằng cách tăng tầm bắt đầu xả hoặc bổ nhào chậm hơn). Rốc-két và bom giới hạn theo lượng đạn và hồi theo mục 2.
+
+9. Icon trạng thái đạn trong trận (dùng token và thành phần của prompt 10; icon nét đơn sắc, cùng phong cách với icon lớp xe; đặt trong HUD gọn của prompt 11):
+   - Trên đơn vị, ngay cạnh thanh máu:
+     - "Sắp hết đạn": icon băng đạn với một vạch, màu vàng xu, khi bom, tên lửa hoặc rốc-két còn dưới 20%.
+     - "Hết đạn": icon băng đạn rỗng, màu đỏ nguy hiểm, nhấp nháy nhẹ.
+     - "Đang ra vòng chờ": icon mũi tên quay về, màu chữ phụ.
+     - "Đang hồi đạn": icon băng đạn có vòng tiến độ tròn quanh nó, vòng đầy dần theo lượng đạn; vòng quay chậm và mờ hơn khi đang hồi ở mức chậm, sáng hơn khi hồi đầy đủ; màu xanh phe ta.
+     - "Đầy đạn": vòng lóe sáng ngắn rồi tắt icon.
+     Icon đủ lớn để đọc ở mức zoom mặc định trên điện thoại và không che thanh máu. Đơn vị địch chỉ hiện "Hết đạn" và "Đang ra vòng chờ", không hiện tiến độ hồi của địch.
+   - Trên bản đồ nhỏ: vòng chờ của phe ta hiện dạng vòng mờ.
+   - Bảng xe đang chọn: thanh đạn nhỏ dưới thanh máu, hiện số bom, tên lửa hoặc rốc-két còn lại trên tổng số; khi đang hồi thì thanh đầy dần.
+   - Xe mang tên lửa trên mặt đất dùng cùng bộ icon (sắp hết, hết, đang nạp).
+   - Có tùy chọn trong Cài đặt: chỉ hiện icon đạn cho máy bay và trực thăng, hoặc cho mọi đơn vị (mặc định: mọi đơn vị).
+   - Bảng icon và ý nghĩa được thêm vào tab Hướng dẫn và vào hướng dẫn của nhiệm vụ đầu tiên có máy bay trong chiến dịch.
+
+10. Mục tiêu cân bằng của hệ đạn: máy bay và trực thăng dành ít nhất khoảng 70% thời gian có mặt để tấn công hoặc ở tư thế sẵn sàng tấn công. Nếu máy bay vẫn quá mạnh, giảm số bom và tên lửa khi đầy đạn (phần D) hoặc giảm tốc độ hồi khi đang giao tranh; không làm máy bay phải bay xa hơn. Sát thương mỗi quả bom và tên lửa vẫn phải theo thang ở phần B.
+
+D. MÁY BAY NÉM BOM: SỐ LƯỢNG VÀ HÀNH VI
+1. Giảm số bom 20–30% tùy loại, giữ sát thương mỗi quả trong thang ở phần B (dùng mức thấp của thang nếu cần giảm thêm):
+   - Oanh tạc cơ: 12 → 9 quả khi đầy đạn.
+   - Máy bay tàng hình: 3 → 2 quả.
+   - Cường kích: rốc-két 20 → 14–16 quả.
+   - Sự kiện Không kích bất ngờ: 14 → 10 quả.
+   - Bom chùm: 40 → 30 bom con.
+   - Rà lại các thẻ hỗ trợ ném bom còn lại theo cùng tỷ lệ.
+2. Hành vi:
+   - Máy bay ném bom ưu tiên cụm quân và công trình; không dùng cả loạt bom cho một xe nhẹ lẻ.
+   - Không thả bom khi quân ta ở quá gần điểm rơi.
+   - Có khoảng nghỉ giữa các lượt tấn công vào cùng một khu vực.
+3. Mục tiêu: giá trị thực chiến trên mỗi CP của máy bay (đã tính cả thời gian bay lượn, hồi đạn và bị bắn rơi) không vượt quá khoảng 1,3 lần xe mặt đất tốt nhất cùng vai trò.
+
+E. RÀ LẠI TOÀN BỘ PHƯƠNG TIỆN VÀ HÀNH VI
+1. Dùng bảng giá trị thực chiến ở phần A, so mỗi xe với các xe cùng vai trò và cùng khoảng giá. Mục tiêu: trong cùng vai trò, giá trị thực chiến trên mỗi CP chênh nhau không quá khoảng ±15%, trừ các ngoại lệ có chủ ý (ghi lý do). Xe nào bị xe khác lấn át ở mọi kịch bản thì chỉnh.
+2. Các điểm đã thấy cần xem:
+   - Tiêm kích: 780 DPS lên máy bay, gấp đôi PK hỗn hợp; tiêm kích đang áp đảo trên không.
+   - TT hỏa lực: DPS lên xe nặng trên mỗi CP vẫn cao nhất nhóm trực thăng.
+   - Pháo điện từ: vẫn yếu (68 DPS lên xe nặng ở 9 CP).
+   - La-de PK: đo lại giá trị đánh chặn thực tế.
+3. Pháo đài bay vẫn còn là thẻ xe, dù prompt 2 đã bỏ. Bỏ thẻ này (giữ vật phẩm Pháo đài bay yểm trợ), migrate save và hoàn xu như prompt 2.
+4. Hành vi: rà các xe có hành vi đặc biệt (giữ khoảng cách, bổ nhào, bắn loạt rồi dời vị trí, nạp đạn, treo trên không) xem có đúng mô tả trong tab Hướng dẫn không, và có lãng phí thời gian trong giao tranh không (đứng chờ, đi vòng quá xa, bay lượn không bắn). Sửa chỗ lệch.
+
+F. NỘI DUNG PHỤC VỤ HỆ ĐẠN (chỉ thêm đúng hai thay đổi này)
+1. Nâng cấp module Bãi đáp đã có (không tạo công trình sân bay riêng, để không trùng vai trò):
+   - Hồi đạn và hồi máu theo C.5.
+   - Nhánh hạng 7 của Bãi đáp: một nhánh +1 trần máy bay, một nhánh hồi đạn và hồi máu nhanh hơn nữa.
+   - AI địch biết đặt Bãi đáp trong căn cứ; phá Bãi đáp địch là mục tiêu có giá trị trong Công thành.
+2. Xe tiếp đạn (Hỗ trợ, khoảng 4 CP), xe mới:
+   - Điểm nạp tiền phương: trực thăng đứng gần hồi đạn nhanh theo C.5; bệ phóng và xe tên lửa quanh nó nạp nhanh hơn.
+   - Xe công binh bỏ vai trò tiếp đạn, chỉ còn sửa chữa, để hai xe không trùng vai trò; giảm giá xe công binh nếu đo thấy cần.
+   - Cần đủ: dữ liệu, AI biết dùng, thẻ Hướng dẫn, clip Xem bắn, ảnh thẻ render; thêm vào lộ trình mở khóa chiến dịch (hồi I hoặc đầu hồi II).
+Không thêm xe hay công trình nào khác cho hệ đạn. Nếu mô phỏng cho thấy thật sự thiếu, ghi đề xuất vào DECISIONS.md chứ không tự thêm.
+
+G. HIỂN THỊ ĐẠN VÀ HÀNH VI TRONG MÀN CHI TIẾT (phương tiện, tháp, công trình)
+1. Tab Vũ khí: mỗi vũ khí hiện đủ:
+   - Tên vũ khí thật và cỡ nòng (hoặc loại đầu nổ).
+   - Loại đạn và mục tiêu bắn được (mặt đất, trên không, tất cả).
+   - Sát thương mỗi phát; số viên mỗi loạt.
+   - Đạn: số viên mỗi băng và thời gian thay băng (vũ khí dùng băng); hoặc số bom, tên lửa, rốc-két khi đầy đạn (máy bay, trực thăng, xe tên lửa).
+   - Cách nạp: "thay băng tại chỗ", "nạp lại tại chỗ khi đứng yên", "hồi dần trên chiến trường", kèm thời gian (ví dụ "Hồi đầy trong 21 giây ở vòng chờ, chậm gấp đôi khi đang giao tranh").
+   - Nơi nạp nhanh hơn nếu có (Bãi đáp, sở chỉ huy, Kho đạn, Xe tiếp đạn), kèm hệ số nhanh hơn.
+   - Tầm bắn, tầm tối thiểu, nổ lan.
+2. Mục "Hành vi" mới trong tab Hướng dẫn, gồm các dòng ngắn:
+   - Cách di chuyển và vào trận (ví dụ: dừng lại mới bắn; giữ khoảng cách ở rìa tầm; bổ nhào xả pháo; bay vòng quanh mục tiêu; treo trên không).
+   - Sau khi bắn làm gì (ví dụ: bắn loạt 3 phát rồi dời vị trí; bay vòng lại).
+   - Ưu tiên mục tiêu (ví dụ: ưu tiên cụm quân và công trình; ưu tiên phòng không địch).
+   - Khi nào rút ra và rút về đâu (hết đạn, máu thấp; vòng chờ, Bãi đáp).
+   - Kỹ năng đặc biệt kích hoạt khi nào (khói, pháo sáng, APS, gây nhiễu...).
+3. Các dòng Hành vi và thông số đạn phải được tạo tự động từ dữ liệu vũ khí và cấu hình hành vi, không viết tay, để luôn khớp với game sau mỗi lần cân bằng. Phần mô tả viết tay (Cách đánh, Mạnh/yếu, Mẹo) vẫn giữ, nhưng test phải bắt được khi mô tả viết tay mâu thuẫn với dữ liệu (ví dụ ghi "12 quả bom" trong khi dữ liệu là 9).
+4. Áp dụng cho cả màn chi tiết tháp và công trình (ví dụ tháp phòng không có số tên lửa và thời gian nạp; Bãi đáp ghi rõ hồi đạn và hồi máu nhanh bao nhiêu).
+5. Hiển thị gọn: mặc định hiện các thông số chính; chạm "Xem thêm" để mở đủ chi tiết. Dùng tên ngắn và thành phần của prompt 10 và 11, không làm lệch bố cục; chạy lại test căn chỉnh của prompt 11 cho màn chi tiết.
+
+H. CÂN BẰNG MỌI CHẾ ĐỘ
+Mục tiêu dưới đây tính cho người chơi dùng bộ bài tiêu chuẩn ở mức tiến độ tương ứng, độ khó Thường, qua 5 seed trên nhiều map. Được chỉnh mục tiêu nếu có lý do, ghi vào DECISIONS.md.
+
+1. Giữ cứ điểm: người chơi thắng khoảng 55–65%; thời lượng trung vị khoảng 6–10 phút. Đòn bẩy: tốc độ trừ điểm, CP từ cứ điểm.
+2. Tử chiến: hiện đếm số xe hạ được (100 điểm), nên spam xe rẻ để lấy điểm là tối ưu. Đổi sang tính điểm theo giá CP của xe bị hạ, và đặt ngưỡng thắng sao cho thời lượng trung vị khoảng 6–9 phút.
+3. Vua đồi: người chơi thắng khoảng 55–65%; thời lượng trung vị khoảng 6–9 phút. Kiểm tra tốc độ chiếm và tốc độ tích điểm của đồi trung tâm.
+4. Công phá: người chơi thắng khoảng 60–70%; thời gian cộng thêm mỗi khu đủ để đánh khu tiếp theo nhưng không thừa quá nhiều. Kiểm tra từng khu A, B, C không có khu nào quá dễ hay quá khó.
+5. Công thành: hiện thắng 5/5 nhưng dao động 9,7–17,8 phút. Mục tiêu người chơi thắng khoảng 60–75%, thời lượng khoảng 10–15 phút với độ dao động hẹp hơn. Đòn bẩy: tháp pháo đài, siêu pháo, chi viện bằng tàu hỏa và đường băng, máu cổng và tường.
+6. Pháo đài tuần: vì vòng thành đã phá được giữ cả tuần, kiểm tra các giai đoạn cuối không trở nên quá dễ khi phần lớn đã phá; giai đoạn cuối phải còn đủ thử thách.
+7. Phòng thủ: hiện khi người chơi có căn cứ đã lên hạng và có đồ, địch gần như không vào được.
+   - Scale đợt địch theo sức mạnh căn cứ của người chơi (hạng tháp, đồ tháp, cấp HQ), giống cách chiến dịch scale theo kho vũ khí.
+   - Đưa xe công phá vào các đợt: xe ủi, pháo công thành, pháo tầm xa bắn từ ngoài tầm tháp.
+   - Thành phần đợt địch chọn để khắc chế loadout căn cứ đang dùng.
+   - Mục tiêu: người chơi mất tuyến ngoài trong khoảng 50–70% số trận, nhưng vẫn giữ được HQ khoảng 4/5.
+8. Vô tận: hiện HQ luôn rơi trong khoảng 10,3–11,7 phút, gần như không phụ thuộc bộ bài và căn cứ của người chơi. Scale đợt theo sức mạnh căn cứ như Phòng thủ, và làm đường tăng sức mạnh của các đợt mượt hơn, để người chơi mạnh hơn thì trụ lâu hơn rõ rệt (mục tiêu kỷ lục trung vị khoảng 12–15 phút với căn cứ tầm trung, và dao động theo độ mạnh của loadout).
+9. Sinh tồn: không có căn cứ nên không có Bãi đáp hay sở chỉ huy; kiểm tra máy bay hồi đạn ở vòng chờ hoạt động đúng. Scale đợt theo sức mạnh bộ bài; mục tiêu thời gian sống sót trung vị khoảng 8–12 phút.
+10. Săn trùm: kiểm tra tổng thời lượng chuỗi boss (mục tiêu khoảng 15–25 phút); boss nào quá dài hoặc quá ngắn so với các boss khác thì chỉnh máu hoặc bộ phận; CP thưởng theo mốc máu đủ để người chơi hồi quân giữa các boss.
+11. Chiến dịch lớn và Tác chiến: giữ khung 15–25 phút; mọi mutator trong bảng xoay vòng vẫn thắng được sau đợt cân bằng này.
+12. Hỗ trợ bên đang thua sau một thời gian (bật cho Giữ cứ điểm, Tử chiến, Vua đồi, Công phá; cấu hình theo chế độ):
+   - Điều kiện: sau một mốc thời gian (khởi điểm phút 4), nếu giá trị quân trên sân chênh từ 1,6 lần trở lên.
+   - Bên yếu được: +25% thu nhập và một lần thả tiếp viện miễn phí (2–3 xe theo giá trung bình của bộ bài).
+   - Không cộng chỉ số thẳng (máu, sát thương). Mỗi trận tối đa một lần. Hiện thông báo rõ cho cả hai bên.
+   - Riêng Phòng thủ và Vô tận: nếu người chơi áp đảo quá, phe địch được thêm một "đợt công phá" mạnh thay vì người chơi được thêm gì.
+
+I. AI MUA QUÂN THEO ĐỘ KHÓ VÀ ĐỘ KHÓ MỚI
+1. Mức thông minh theo độ khó:
+   - Dễ: chọn gần như ngẫu nhiên trong bộ bài, không khắc chế; thu nhập khởi điểm ×0,8.
+   - Thường: khắc chế cơ bản theo quân địch đang thấy; ×1.
+   - Khó: khắc chế, giữ tỷ lệ đội hình (xe tăng, phòng không, hỗ trợ), để dành CP mua xe lớn, phối hợp thẻ hỗ trợ với đợt tấn công; ×1,2.
+   - Cực khó (độ khó mới, trên Khó): như Khó, cộng thêm: biết trước bộ bài người chơi, dồn CP cho các đợt tấn công phối hợp, đánh vào điểm yếu nhất của người chơi, phản ứng nhanh hơn; thu nhập ×1,4; ngân sách tinh nhuệ khoảng 30%; hệ số thưởng khoảng ×1,8.
+   Cực khó không được nhìn xuyên sương mù hay biết vị trí quân ngoài tầm nhìn.
+2. Logic mua quân phải deterministic. Viết hàm chấm điểm lựa chọn (mức khắc chế quân địch đang thấy, vai trò còn thiếu, giá trị thực chiến theo giá từ phần A) và cho mỗi độ khó dùng hàm đó ở mức khác nhau.
+3. AI cũng phải hiểu hệ đạn mới: biết mua Xe tiếp đạn khi dùng nhiều trực thăng và bệ phóng; biết ưu tiên đánh Bãi đáp và Xe tiếp đạn của đối phương khi đối phương dùng nhiều máy bay; ở độ khó Khó và Cực khó, biết săn máy bay địch đang hết đạn hoặc đang ở vòng chờ.
+4. Thống nhất tên độ khó giữa các chế độ (hiện Giao tranh dùng Dễ/Thường/Khó, còn chiến dịch và Tác chiến dùng Thường/Anh hùng/Thép/Huyền thoại). Tự chọn cách thống nhất hợp lý nhất, ghi bảng đối chiếu vào DECISIONS.md, và migrate kỷ lục cũ.
+
+J. KIỂM TRA
+- Bảng DPS lý thuyết đã sửa, bảng giá trị thực chiến, và so sánh trước/sau cho toàn roster, lưu vào docs/.
+- Test đơn điệu sát thương theo cỡ nòng; test cùng vũ khí cùng chỉ số.
+- Hệ đạn và hồi đạn:
+  - Máy bay và trực thăng dành ít nhất khoảng 70% thời gian có mặt để tấn công hoặc sẵn sàng tấn công, ở mọi loại.
+  - Không đơn vị nào phải bay về căn cứ hay ra ngoài map chỉ để nạp đạn; thời gian bay tới vòng chờ không quá khoảng 3 giây.
+  - Tốc độ hồi đầy đủ không bao giờ chạy khi đơn vị đang trong vùng nguy hiểm.
+  - Đơn vị hết đạn giữa lượt tấn công luôn hoàn thành lượt đó trước khi rút; không đơn vị nào "biến mất" khỏi trận.
+  - Oanh tạc cơ không vào lượt ném bom khi chưa có khoảng 2/3 tải bom.
+  - Đơn vị chỉ ghé Bãi đáp, sở chỉ huy hoặc Xe tiếp đạn khi nhanh hơn hoặc khi cần hồi máu.
+  - Không có đơn vị nào kẹt vòng lặp giữa ra vòng chờ và quay vào mà không hồi được đạn.
+  - Máy bay không lượn vô ích khi còn đạn và còn mục tiêu.
+- Icon đạn: hiện đúng trạng thái (sắp hết, hết, đang ra vòng chờ, đang hồi ở mức chậm và mức đầy đủ, đầy đạn) cho cả máy bay, trực thăng và xe tên lửa; vòng tiến độ khớp lượng đạn thật; icon không che thanh máu; đọc được ở mức zoom mặc định trên màn nhỏ nhất đang hỗ trợ; tùy chọn trong Cài đặt hoạt động.
+- Màn chi tiết: mọi xe, tháp và công trình có đủ thông số đạn và mục Hành vi theo phần G; các dòng tạo tự động khớp dữ liệu; test bắt được mô tả viết tay mâu thuẫn với dữ liệu; không lệch bố cục.
+- Mô phỏng 5 seed cho mọi chế độ ở phần H, ở các độ khó (có Cực khó); báo cáo tỷ lệ thắng và thời lượng so với mục tiêu.
+- Đo tỷ lệ thắng của AI Dễ, Thường, Khó, Cực khó khi đấu với cùng một bộ bài người chơi mẫu; độ khó sau phải khó hơn rõ rệt so với độ khó trước.
+- Toàn bộ chiến dịch và mọi chiến dịch lớn vẫn thắng được ở độ khó Thường.
+- Hiệu năng: nhiều máy bay cùng bay vòng chờ và hồi đạn không vượt ngân sách tick.
+- Migration: thẻ Pháo đài bay bị bỏ, vai trò xe công binh đổi, điểm Tử chiến đổi cách tính, tên độ khó đổi.
+- Cập nhật docs/CHANGELOG.md và tài liệu thiết kế (bảng vũ khí, bảng DPS, giá trị thực chiến, hệ đạn và hồi đạn, màn chi tiết, AI, chế độ chơi, độ khó).

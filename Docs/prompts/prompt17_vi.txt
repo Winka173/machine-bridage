@@ -1,0 +1,109 @@
+Prompt 17: Map dài cho Công thành và Phòng thủ, căn cứ nhiều lớp, nội dung mới, rà soát roster
+
+Nhiệm vụ: thêm map dài cho các chế độ công thủ căn cứ và làm căn cứ to hơn, nhiều lớp hơn; thêm các đơn vị và công trình mới; gộp và phân biệt lại các đơn vị trùng chức năng. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: chạy mô phỏng 5 seed và tự chỉnh theo kết quả.
+
+Phụ thuộc: chạy sau prompt 11–16. Mọi đơn vị mới hoặc được sửa theo thang cỡ nòng và giá trị thực chiến của prompt 13, cấp giáp, cấp xuyên và loại sát thương của prompt 15, hệ đạn và hồi đạn của prompt 13, bộ icon của prompt 15, màn Căn cứ và ô có cỡ của prompt 14 và prompt bổ sung.
+
+Phạm vi: không làm hệ ngụy trang (skin) trong prompt này; sẽ làm ở một prompt sau.
+
+Thứ tự trong prompt này: A → B → D → C → E. Phần D (rà soát roster) làm trước phần C (nội dung mới), để bảng giá trị thực chiến dùng cho C đã phản ánh roster sau khi gộp.
+
+A. CỠ MAP THEO CHẾ ĐỘ
+1. Giữ 300×300 m cho Giữ cứ điểm, Tử chiến, Vua đồi, Công phá, Sinh tồn và Săn trùm. Không đổi các map này.
+2. Map dài cho Công thành, Phòng thủ, Vô tận và Pháo đài tuần:
+   - Hình chữ nhật, khoảng 300 m ngang × 450–500 m dọc. Trục dài chạy từ bên tấn công tới bên phòng thủ.
+   - Làm bản dài cho mọi map hiện đang có phiên bản công thành hoặc phòng thủ, và cho Vịnh Hải Đăng. Mở rộng dọc trục tấn công, ưu tiên dùng phần cảnh ngoài viền đã dựng sẵn.
+   - Phần diện tích tăng thêm dành cho căn cứ nhiều lớp (phần B) và vùng đệm trước căn cứ; không làm hai bên hông rộng thêm.
+3. Chiến dịch lớn: bắt đầu ở 300×300 m như hiện tại; dùng cơ chế mở rộng map giữa trận của prompt 5 để mở tới khoảng 500 m ở các giai đoạn sau, khi kịch bản cần.
+4. Camera, mức zoom mặc định và bản đồ nhỏ tính theo cỡ map, để map dài vẫn đọc được trên điện thoại. Bản đồ nhỏ của map dài giữ đúng tỷ lệ chữ nhật.
+5. Tìm đường: đo bộ nhớ và thời gian tính đường trên lưới của map dài; nếu vượt ngân sách, tăng kích thước ô lưới ở các vùng trống hoặc dùng cách tính đường nhiều tầng. Ghi số đo vào DECISIONS.md.
+6. Trần quân giữ nguyên (32 xe + 6 máy bay mỗi phe, và trần riêng của Công thành, Phòng thủ ở prompt 5). Chỉ tăng nếu mô phỏng cho thấy map dài quá thưa, và phải qua ngân sách hiệu năng.
+
+B. CĂN CỨ NHIỀU LỚP TRÊN MAP DÀI
+1. Bố cục: tường ngoài có 2–3 cổng, sân trong, tường trong, rồi tới HQ. Mỗi lớp có ô hardpoint riêng.
+2. Bãi thả của bên phòng thủ nằm trong căn cứ. Bãi thả của bên tấn công ở đầu kia của map; các bãi thả tiền phương (tiền đồn, Xe chỉ huy) quan trọng hơn trên map dài.
+3. Vùng đệm trước căn cứ: hào, răng rồng và các điểm cao để bên tấn công đặt pháo. Map vẫn là map tĩnh.
+4. Số ô theo cấp HQ trên map dài (nhỏ / vừa / lớn / tiện ích; khởi điểm):
+   - Cấp 1: 4 / 1 / 0 / 1.
+   - Cấp 2: 5 / 2 / 1 / 1.
+   - Cấp 3: 6 / 3 / 1 / 2.
+   - Cấp 4: 7 / 4 / 2 / 3.
+   - Cấp 5: 8 / 5 / 3 / 4.
+   Map 300×300 m giữ số ô như hiện tại.
+5. Nhãn vị trí ô (prompt 14): thêm nhãn cho các lớp mới (ví dụ "tường ngoài", "cổng ngoài", "sân trong", "tường trong"). Loadout chính lưu cả các ô này; map thường bỏ qua các nhãn không có. Màn Căn cứ tự nhận map đang chọn là map thường hay map dài và hiện đúng bố cục.
+6. Scale đợt địch ở Phòng thủ và Vô tận (prompt 13) tính cả số ô tăng thêm trên map dài, qua con số "Sức mạnh căn cứ".
+7. Pháo đài của địch trong Công thành và Pháo đài tuần dùng cùng bố cục nhiều lớp.
+
+D. RÀ SOÁT ROSTER (làm trước phần C)
+Mọi thay đổi dưới đây cần migrate save: thẻ bị gộp hoặc bỏ thì hạng và bản thiết kế chuyển sang thẻ đích (lấy hạng cao hơn nếu người chơi có cả hai; phần đầu tư còn dư hoàn thành xu); ô bộ bài và loadout căn cứ đang dùng thẻ cũ được thay bằng thẻ đích; đồ đang gắn giữ nguyên hoặc trả về kho. Cập nhật bộ bài AI và tướng địch, lộ trình mở khóa chiến dịch, xe tinh nhuệ, hộ tống boss (prompt 16), thẻ Hướng dẫn và mọi test có nhắc tới thẻ cũ. Viết test migration.
+
+1. Gộp Cường kích (Su-25) và Máy bay diệt tăng (A-10) thành một thẻ "Cường kích":
+   - Giữ bộ vũ khí hợp lý nhất của cả hai (pháo, rốc-két, bom, tên lửa chống tăng) theo thang cỡ nòng; cân lại theo giá trị thực chiến.
+   - Tạm dùng một model làm model chính (tự chọn, ghi lại). Giữ model còn lại trong dữ liệu, không xóa, để dùng làm ngụy trang ở prompt sau.
+2. Gộp Trực thăng (Apache) và Ka-52 thành một thẻ "Trực thăng tấn công":
+   - Giữ cơ chế bắn tên lửa chống tăng từ xa (tầm khoảng 55 m) và tên lửa phòng không tự vệ của Ka-52.
+   - Tạm dùng một model làm model chính; giữ model còn lại trong dữ liệu để dùng làm ngụy trang sau.
+   - TT hỏa lực (Mi-24) giữ nguyên là thẻ riêng.
+3. Gộp Diệt tăng TL vào Drone FPV: giữ thẻ Drone FPV, bỏ thẻ Diệt tăng TL. Vai trò tên lửa chống tăng trên mặt đất do Xe bộ binh và tháp ATGM đảm nhận.
+4. Bỏ Ụ pháo ẩn khỏi danh sách tháp. Người chơi đang có Ụ pháo ẩn được chuyển hạng sang Tháp pháo (lấy hạng cao hơn); đồ tháp của Ụ pháo ẩn chuyển vào ô đồ trống của Tháp pháo, không còn ô trống thì trả về kho; ô trên loadout căn cứ đang đặt Ụ pháo ẩn thay bằng Tháp pháo.
+5. Gộp Công binh và Công binh CT thành một thẻ "Công binh": sửa xe và sửa tháp của phe ta, gỡ mìn. Việc phá răng rồng và chướng ngại chủ yếu do Xe ủi đảm nhận (Công binh vẫn phá được nhưng chậm). Theo prompt 13, Công binh không tiếp đạn (việc đó của Xe tiếp đạn).
+6. Không gộp Hai nòng và Tăng nặng; phân biệt rõ vai trò:
+   - Hai nòng = tăng săn tăng. Hai pháo 120 mm bắn gần như cùng lúc (một loạt 2 phát), nạp lâu (khởi điểm khoảng 7 giây). Mạnh nhất ở phát mở màn khi đấu tay đôi với xe giáp dày. Tháp xoay nhanh hơn, tốc độ nhanh hơn Tăng nặng. Giáp mặt trước cấp 3.
+   - Tăng nặng = xe đột phá. Pháo 152 mm tự đổi giữa đạn xuyên (khi bắn xe có giáp) và đạn nổ mạnh (khi bắn công trình hoặc cụm xe nhẹ). Giáp mặt trước cấp 4, hông cấp 3. Chậm. Mạnh trước công trình và giữ tuyến.
+   - Kiểm tra bằng bảng giá trị thực chiến: Hai nòng phải có thời gian hạ một xe giáp dày ngắn nhất trong nhóm xe tăng hạng nặng; Tăng nặng phải có thời gian sống sót và sát thương lên công trình cao nhất nhóm. Nếu không đạt, chỉnh tiếp và ghi lại.
+   - Cập nhật mục Hành vi và tab Hướng dẫn cho cả hai.
+
+C. NỘI DUNG MỚI
+Mỗi thứ dưới đây cần đủ: dữ liệu, cấp giáp các mặt, cấp xuyên và loại sát thương cho mọi vũ khí, icon dạng vũ khí, số đạn và cách nạp, AI biết dùng (phe ta ở Tự mua và phe địch), AI khắc chế biết đối phó, thẻ Hướng dẫn (có mục Hành vi tự động của prompt 13), clip Xem bắn, ảnh thẻ render, tên ngắn, và vị trí trong lộ trình mở khóa chiến dịch. Chưa có model riêng thì dùng tạm và ghi vào docs/ASSET_DEBT.md.
+
+1. Tiêm kích tàng hình (Máy bay, khoảng 20 CP), kiểu F-35 / Su-57:
+   - Tàng hình theo luật tàng hình hiện có của máy bay: ẩn cho tới khi bắn, lộ trong vài giây sau khi bắn, bị radar và UAV quét phát hiện.
+   - Vũ khí: 4 tên lửa không đối không và 2 bom dẫn đường nhỏ (khoảng 110 kg) trong khoang; pháo 25 mm.
+   - Ít đạn hơn tiêm kích thường nhưng khó bị phát hiện; vai trò: săn máy bay địch và phá phòng không.
+   - Hồi đạn theo nhóm tiêm kích ở prompt 13. Mở ở hồi III.
+2. Drone hộ vệ không người lái (Máy bay, khoảng 6 CP), kiểu XQ-58 Valkyrie / S-70 Okhotnik:
+   - Bay theo máy bay có người lái gần nhất của phe ta trong một bán kính; không có máy bay nào thì tuần tra quanh chiến tuyến.
+   - Vũ khí: 2 tên lửa không đối không nhỏ.
+   - Mồi hút tên lửa: tên lửa phòng không địch đang nhắm vào máy bay được hộ tống có cơ hội chuyển sang nhắm drone hộ vệ.
+   - Không tính vào trần 6 máy bay; tối đa 4 chiếc còn hoạt động mỗi phe. Mở ở hồi II.
+3. Xe laser tập trung (Diệt tăng, khoảng 10 CP):
+   - Vũ khí Năng lượng. Sát thương tăng dần khi bắn liên tục vào cùng một mục tiêu (khởi điểm từ khoảng ×0,3 lên khoảng ×2 trong khoảng 6 giây), về lại mức thấp khi đổi mục tiêu.
+   - Tầm khoảng 40 m. APS, giáp phản ứng nổ và lồng chắn không chặn được; màn khói chặn hoặc giảm mạnh.
+   - Mạnh với xe tăng nặng và boss; yếu trước bầy xe nhỏ. Mở ở hồi II.
+4. Xe phát khiên di động (Hỗ trợ, khoảng 7 CP):
+   - Tạo vòm khiên bán kính khoảng 12 m quanh nó, hấp thụ sát thương cho đồng minh bên trong cho tới khi khiên hết máu; khiên hồi lại sau khoảng 20 giây.
+   - Đạn Năng lượng xuyên qua khiên. Nhiều vòm khiên không cộng dồn lên cùng một đơn vị.
+   - Bản thân xe giáp mỏng. Dùng thiết kế hình ảnh khiên của prompt 11. Mở ở hồi II.
+5. Xe công sự triển khai (Hạng nặng, khoảng 8 CP):
+   - Hai trạng thái. Khi di chuyển: giáp mặt trước cấp 2, pháo 105 mm và súng máy, tầm bình thường.
+   - Dừng lại khoảng 3 giây để triển khai thành ụ cố định: giáp mặt trước tăng 2 cấp (tối đa 4), tầm bắn tăng khoảng 30%, tháp pháo xoay được 360°, không di chuyển được. Thu lại cũng mất khoảng 3 giây.
+   - Trong lúc triển khai hoặc thu lại, xe không bắn và dùng giáp ở trạng thái di chuyển.
+   - AI biết triển khai ở điểm nghẽn, cứ điểm và vị trí công thành, và thu lại để đi tiếp khi mục tiêu đã chuyển.
+   - Có icon trạng thái "đang triển khai" và "đã triển khai" trên đơn vị. Mở ở hồi II.
+6. Máy bay mẹ thả bầy drone (Máy bay, khoảng 14 CP):
+   - To, chậm, giáp cấp 1. Bay tới vùng mục tiêu, thả một bầy khoảng 6–8 drone FPV (Nổ lõm) tự tìm mục tiêu, rồi quay về hồi đạn theo hệ của prompt 13 (thời gian hồi theo nhóm oanh tạc cơ).
+   - Drone được thả không tính vào trần máy bay; máy bay mẹ tính vào trần.
+   - Bị khắc chế bởi tiêm kích, SAM, và các thứ chống drone (C-RAM, La-de PK, tháp EW, xe gây nhiễu).
+   - Khác Drone FPV (xe mặt đất phóng từ xa) và Hangar drone (tháp cố định): đưa bầy drone tới được bất kỳ đâu. Mở ở hồi III.
+7. Máy phát khiên (tháp ô lớn):
+   - Vòm khiên bán kính khoảng 25 m phủ lên một phần căn cứ, hấp thụ sát thương (đạn pháo, bom, đạn súng, tên lửa) cho tới khi vỡ; hồi lại sau khoảng 30 giây.
+   - Đạn Năng lượng xuyên qua. Nhiều vòm không cộng dồn lên cùng một mục tiêu.
+   - Có hạng, nhánh hạng 7 (tự thiết kế 2 nhánh theo nguyên tắc của prompt 3) và 3 ô đồ như các tháp khác.
+   - AI địch biết đặt nó trong căn cứ; tháp địch được khiên che là mục tiêu cần Năng lượng hoặc phá máy phát trước.
+8. Trạm tiếp tế CP (tháp ô nhỏ):
+   - Tăng thu nhập CP của phe sở hữu (khởi điểm khoảng +0,1 CP/giây mỗi trạm).
+   - Tối đa 2 trạm mỗi căn cứ; trạm thứ hai cho ít hơn trạm đầu. Không đặt được ở tiền đồn.
+   - Đặt nó đồng nghĩa bỏ một ô phòng thủ nhỏ, nên đây là lựa chọn giữa phòng thủ và kinh tế. AI địch ưu tiên phá trạm của người chơi khi tấn công căn cứ; AI địch cũng có thể đặt trạm trong căn cứ của mình.
+   - Đo trong mô phỏng: trạm không được thành lựa chọn bắt buộc ở mọi loadout tối ưu; nếu có, giảm mức tăng hoặc thêm điều kiện (ví dụ chỉ tăng khi trạm không bị tấn công trong vài giây gần nhất).
+9. Cân bằng: đưa mọi thứ ở phần C và các thẻ đã sửa ở phần D vào bộ đo giá trị thực chiến của prompt 13; mục tiêu cùng vai trò chênh không quá khoảng ±15% theo CP.
+
+E. KIỂM TRA
+- Map dài: không xe kẹt (bộ phát hiện của prompt 12, mọi map dài, 5 seed, cả hai phe); đường đi từ mọi bãi thả tới mọi cứ điểm và cổng; không vượt ngân sách bộ nhớ và thời gian tìm đường.
+- Căn cứ nhiều lớp: số ô đúng theo cấp HQ; loadout chính áp đúng lên cả map thường và map dài; màn Căn cứ hiện đúng bố cục.
+- Thời lượng mục tiêu trên map dài (người chơi bộ bài tiêu chuẩn, độ khó Thường): Công thành khoảng 12–16 phút, người chơi thắng khoảng 60–75%; Phòng thủ giữ mục tiêu của prompt 13; Vô tận vẫn phụ thuộc rõ vào sức mạnh căn cứ; Pháo đài tuần có giai đoạn cuối đủ thử thách.
+- Chiến dịch lớn mở rộng map đúng giai đoạn; mọi nhiệm vụ vẫn thắng được ở độ khó Thường.
+- Rà soát roster: migration đúng cho mọi thẻ bị gộp hoặc bỏ (hạng, bản thiết kế, xu hoàn, ô bộ bài, loadout căn cứ, đồ tháp); không còn chỗ nào trong dữ liệu, chiến dịch, AI, tinh nhuệ, hộ tống boss hay test nhắc tới thẻ cũ; model của thẻ bị gộp vẫn còn trong dữ liệu; Hai nòng và Tăng nặng đạt mục tiêu phân biệt ở D.6.
+- Nội dung mới: test hành vi riêng cho từng thứ (tàng hình và phát hiện của tiêm kích tàng hình; drone hộ vệ hút tên lửa; laser tăng dần và về lại khi đổi mục tiêu; khiên hấp thụ, bị Năng lượng xuyên qua, không cộng dồn; xe công sự đổi trạng thái đúng thời gian và đúng chỉ số; máy bay mẹ thả bầy drone và drone không tính vào trần; trạm tiếp tế CP tăng thu nhập đúng, không vượt 2 trạm, không thành lựa chọn bắt buộc); có trong bảng giá trị thực chiến.
+- Hiệu năng: đo FPS và tick ở trận Công thành nặng nhất trên map dài ở đồ họa Thấp, máy tầm thấp; đo riêng trận có nhiều bầy drone từ máy bay mẹ.
+- Chụp ảnh tự động các map dài và màn Căn cứ ở map dài; lưu vào docs/ui-screens/.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md và tài liệu thiết kế (cỡ map, căn cứ, roster, tháp).

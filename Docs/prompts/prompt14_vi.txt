@@ -1,0 +1,82 @@
+Prompt 14: Làm lại màn Căn cứ, và thu gọn kích thước giao diện ngoài trận
+
+Nhiệm vụ: thiết kế lại màn Quân đội › Căn cứ cho dễ hiểu và dễ xếp, và thu gọn kích thước các thành phần giao diện ngoài trận (hiện đang hơi to). Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Giữ phong cách Field Command 2.0 và thư viện thành phần của prompt 10; chạy sau prompt 11–13.
+
+A. THU GỌN KÍCH THƯỚC GIAO DIỆN NGOÀI TRẬN
+Hiện các thành phần chiếm quá nhiều chỗ. Ví dụ ở màn Căn cứ: thanh trên cao khoảng 13% màn hình, thanh điều hướng trái rộng khoảng 9%, hàng tab và hàng chọn cấp HQ mỗi hàng cao khoảng 11%, nên khu nội dung chính còn rất ít chỗ.
+
+1. Chuyển thang kích thước trong file theme sang đơn vị điểm (pt) trên máy thật, để không còn phụ thuộc chiều rộng tham chiếu. Khởi điểm:
+   - Thanh trên cùng: cao khoảng 44–48 pt.
+   - Thanh điều hướng trái: rộng khoảng 72–80 pt, icon 22–24 pt, nhãn 10–11 pt.
+   - Hàng tab: cao khoảng 40 pt.
+   - Nút thường: cao 40–44 pt. Nút chính: cao 52–56 pt.
+   - Thẻ trong danh sách: nhỏ hơn hiện tại khoảng 20–25%.
+   - Khoảng cách: thang 4 / 8 / 12 / 16 / 24 pt, dùng mức nhỏ hơn cho khoảng đệm trong thẻ và panel.
+2. Thang chữ (pt trên máy thật):
+   - Nút chính: 18–20.
+   - Tiêu đề màn: 17–20.
+   - Tiêu đề panel: 14–15.
+   - Chữ thường: 13–14.
+   - Chữ phụ: 11. Không có chữ nào nhỏ hơn 10 pt.
+   Cỡ chữ Lớn trong Cài đặt vẫn phóng to toàn bộ thang này khoảng 1,2 lần.
+3. Vùng chạm vẫn tối thiểu 44 pt. Phần tử nào nhìn nhỏ hơn 44 pt thì mở rộng vùng chạm vô hình quanh nó, không phóng to phần nhìn thấy.
+4. Áp dụng cho mọi màn ngoài trận: Trang chủ, Chiến dịch, Tác chiến, Quân đội (Bộ bài, Trang bị, Căn cứ), chi tiết xe, tháp và công trình, Cửa hàng, Cài đặt, màn kết quả, hộp thoại. Không đổi HUD trong trận (đã làm ở prompt 11).
+5. Mục tiêu đo được: ở tỷ lệ 16:9 và 20:9, khu nội dung chính của mỗi màn chiếm ít nhất khoảng 70% diện tích màn hình (trừ thanh trên, thanh điều hướng và các hàng tab).
+6. Chạy lại test căn chỉnh, test chữ bị cắt và test vùng chạm của prompt 10 và 11 sau khi thu gọn.
+
+B. MÀN CĂN CỨ: KHU GIỮA LÀ BẢN ĐỒ CĂN CỨ THẬT
+1. Thay nền lưới mờ bằng ảnh chụp từ trên xuống của khu căn cứ trên map đang chọn: tường, cổng, đường đi, bãi thả, sở chỉ huy. Chụp tự động từ cảnh thật của map, cập nhật khi map đổi.
+2. Mũi tên đỏ chỉ các hướng địch tiến vào (lấy từ bản đồ làn đường của map). Bỏ nhãn "FRONT ↑".
+3. Ô đặt đúng vị trí thật trên bản đồ. Kích thước ô tỷ lệ với cỡ: ô vừa to khoảng 1,4 lần ô nhỏ, ô lớn khoảng 2 lần ô nhỏ.
+4. Ô tiện ích có hình dạng khác hẳn ô tháp (ví dụ lục giác) và đặt tách khỏi các ô tháp nếu vị trí cho phép, để không lẫn.
+5. Ô trống hiện rõ cỡ cho phép bằng chữ ngắn ("Nhỏ", "Vừa", "Lớn", "Tiện ích"), không chỉ bằng icon góc.
+6. Ô đã có tháp: ảnh render của tháp, cấp của tháp dạng vạch nhỏ, và icon nhánh nếu đã chọn nhánh.
+7. Nút "Hiện tầm bắn": phủ màu vùng bảo vệ lên bản đồ. Chống mặt đất một màu, phòng không một màu khác (khác cả về độ sáng, không chỉ về màu), chỗ không được bảo vệ để trống. Chạm vào một tháp thì hiện vòng tầm bắn (và tầm tối thiểu nếu có) của riêng tháp đó.
+8. Bản đồ phóng to, thu nhỏ và kéo được bằng hai ngón; mọi ô có vùng chạm tối thiểu 44 pt ở mức zoom mặc định.
+
+C. MÀN CĂN CỨ: KHAY THÁP BÊN TRÁI
+1. Chia tab theo cỡ: Nhỏ, Vừa, Lớn, Tiện ích.
+2. Thẻ tháp gọn: ảnh render, tên ngắn (prompt 11), số lượng đang dùng trong căn cứ. Không xuống dòng lộn xộn; không bị cắt ở cuối danh sách (cuộn được và có khoảng đệm cuối).
+3. Kéo thẻ vào ô, hoặc chạm thẻ rồi chạm ô. Khi đang kéo hoặc đã chọn thẻ, chỉ các ô hợp lệ sáng lên; ô không hợp lệ mờ đi.
+4. Tháp chưa mở hiện mờ, ghi nơi mở khóa.
+
+D. MÀN CĂN CỨ: PANEL CHI TIẾT BÊN PHẢI
+1. Hiện ô hoặc tháp đang chọn: ảnh render, tên, cỡ, hạng; chỉ số chính so với các tháp cùng cỡ; tầm bắn.
+2. Hai tab Nhánh và Đồ (3 ô đồ của loại tháp). Chữ không bị cắt; dòng "Nhánh mở ở hạng 7 (hiện hạng 1)" hiển thị đầy đủ.
+3. Nút Thay và Gỡ; nút mở màn chi tiết tháp đầy đủ.
+4. Khi chưa chọn gì: hiện gợi ý ngắn cách xếp và tổng quan căn cứ (phần E), không để panel trống.
+
+E. ĐỘ PHỦ VÀ SỨC MẠNH CĂN CỨ
+1. Dải dưới cùng "Độ phủ căn cứ", giống "Độ phủ vai trò" ở bộ bài: chống xe nhẹ, chống tăng, phòng không, đánh chặn rốc-két và tên lửa, phát hiện tàng hình, sửa chữa hoặc tiếp đạn. Vai trò nào thiếu thì báo bằng màu cảnh báo.
+2. Hiện con số "Sức mạnh căn cứ". Dùng đúng công thức mà prompt 13 dùng để scale đợt địch ở Phòng thủ và Vô tận, để người chơi thấy căn cứ mạnh lên thì địch cũng mạnh lên.
+3. Bỏ bộ đếm dạng icon khó hiểu ("6/6 · 3/3 · 2/2 · 0/3"). Thay bằng chữ rõ ràng, ví dụ "Nhỏ 6/6 · Vừa 3/3 · Lớn 2/2 · Tiện ích 0/3".
+
+F. THANH TRÊN CỦA MÀN CĂN CỨ
+1. Bỏ dãy tab chọn cấp HQ 1–5. Thay bằng huy hiệu cấp HQ hiện tại và một dòng cho biết cấp tiếp theo mở gì (ví dụ "Cấp 4 → 5: thêm 1 ô lớn, 1 ô tiện ích"). Ô chưa mở hiện trên bản đồ ở dạng khóa kèm cấp HQ cần.
+2. Ô chọn map dạng dropdown có ảnh xem trước, thay cho hai mũi tên.
+3. Bỏ nút "SAVED" lớn. Tự lưu mỗi khi thay đổi, hiện thông báo nhỏ "Đã lưu" rồi tự tắt.
+
+G. MỘT LOADOUT CHO MỌI MAP
+1. Gắn nhãn vị trí cho từng ô trên mọi map: cổng, vòng ngoài, vòng trong, phía sau, cạnh HQ (tự chọn bộ nhãn hợp lý và ghi vào DECISIONS.md).
+2. Người chơi xếp một loadout chính theo nhãn vị trí; game tự áp loadout đó cho cả 20 map bằng cách ghép tháp vào ô cùng nhãn và cùng cỡ. Nếu một map thiếu ô tương ứng, xếp vào ô gần nhất cùng cỡ, và hiện chấm cảnh báo ở map đó.
+3. Vẫn cho chỉnh riêng từng map (công tắc "Chỉnh riêng cho map này"); map nào có chỉnh riêng thì có dấu hiệu trên ô chọn map.
+4. Thêm 3 bộ căn cứ lưu sẵn, đổi nhanh ở màn Căn cứ và ở màn thiết lập trận.
+5. Nút "Tự xếp": xếp loadout gợi ý bằng logic chọn loadout căn cứ của AI địch, theo tháp người chơi đang có.
+6. Migration: loadout hiện có của người chơi trở thành loadout chính (lấy map có nhiều tháp nhất làm gốc) cộng với chỉnh riêng cho các map khác nếu khác loadout chính. Viết test migration.
+
+H. TIỀN ĐỒN
+Tách Tiền đồn thành một tab riêng cạnh Căn cứ trong Quân đội: sơ đồ 2 ô (nhỏ và vừa), khay tháp, và mô tả ngắn cách tiền đồn hoạt động. Bỏ phần Tiền đồn khỏi panel chi tiết tháp.
+
+I. ICON THÁP
+1. Tạo bộ icon riêng cho từng loại tháp và công trình, cùng phong cách nét với icon lớp xe nhưng không dùng lại icon xe. Ví dụ: Tháp phòng không (bệ pháo cao xạ trên nền công sự), Răng rồng (khối bê tông tứ diện), Bãi mìn, Tháp gây nhiễu EW (cột ăng-ten), Trạm C-RAM, Hangar drone, Bãi đáp.
+2. Sửa các chỗ đang dùng sai icon: Răng rồng và Tháp gây nhiễu EW đang dùng icon xe tăng; Tháp phòng không đang dùng icon xe phòng không.
+3. Ảnh render 3D của tháp và công trình (prompt 10) dùng ở thẻ, ô và panel chi tiết; icon nét dùng ở chỗ nhỏ (bộ đếm, chip, bản đồ nhỏ).
+
+J. KIỂM TRA
+- Chụp ảnh tự động màn Căn cứ và màn Tiền đồn ở 4 tỷ lệ màn hình và cỡ chữ Lớn, cùng mọi màn ngoài trận sau khi thu gọn; lưu vào docs/ui-screens/.
+- Test: khu nội dung chính chiếm ít nhất khoảng 70% màn hình; không chữ bị cắt; vùng chạm đủ 44 pt; căn chỉnh thẳng hàng.
+- Test: kích thước ô tỷ lệ đúng với cỡ; chỉ ô hợp lệ sáng khi kéo; lớp phủ tầm bắn khớp tầm bắn thật trong dữ liệu.
+- Test: loadout chính áp đúng lên cả 20 map; chỉnh riêng từng map được giữ; 3 bộ lưu sẵn hoạt động; Tự xếp cho loadout hợp lệ; migration loadout cũ đúng.
+- Test: "Sức mạnh căn cứ" hiển thị khớp giá trị prompt 13 dùng để scale đợt địch.
+- Không tháp hay công trình nào dùng icon của xe.
+- Cập nhật docs/CHANGELOG.md và mục Giao diện trong tài liệu thiết kế.

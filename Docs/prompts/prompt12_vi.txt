@@ -1,0 +1,33 @@
+Prompt 12: Chẩn đoán và sửa triệt để lỗi xe kẹt trong căn cứ
+
+Nhiệm vụ: lỗi xe kẹt trong căn cứ, nhất là ở Công thành, đã tồn tại lâu và chưa sửa được triệt để. Lần này phải chẩn đoán có hệ thống trước khi sửa. Làm tự chủ, không chờ duyệt, ghi mọi quyết định và kết quả chẩn đoán vào docs/DECISIONS.md.
+
+A. CÔNG CỤ CHẨN ĐOÁN
+1. Bộ phát hiện xe kẹt: một xe có lệnh hoặc mục tiêu di chuyển nhưng gần như không đổi vị trí quá khoảng 8 giây thì bị ghi lại. Ghi đủ: map, chế độ, seed, tick, phe, loại xe, vị trí, đích đến, trạng thái đường đi (đang chờ ở cổng, bị chặn, không tìm được đường, bị xe khác chắn, đường đi hỏng sau khi địa hình đổi), và các vật thể xung quanh.
+2. Chạy hàng loạt: mọi map ở các chế độ Công thành, Pháo đài tuần, Phòng thủ và Vô tận; nhiều seed; cả phe người chơi và phe địch; nhiều cấu hình loadout căn cứ (ít tháp, đầy tháp, nhiều chướng ngại).
+3. Vẽ bản đồ nhiệt các điểm kẹt cho từng map, lưu vào docs/stuck-report/. Kèm ảnh chụp 10 điểm kẹt nhiều nhất.
+4. Mỗi lần kẹt lưu đủ dữ liệu để phát lại đúng trận đó (seed, phiên bản dữ liệu, chuỗi lệnh).
+
+B. KIỂM TRA CÁC NGUYÊN NHÂN HAY GẶP (ở cả căn cứ phe ta quanh bãi thả và pháo đài phe địch)
+- Cổng chính đóng mà cửa phụ quá hẹp so với kích thước xe lớn, hoặc quá hẹp cho số xe đi qua cùng lúc.
+- Tháp, răng rồng, bãi mìn hoặc công trình trên ô hardpoint chặn lối, hoặc làm lối quá hẹp.
+- Tường sập thành đống gạch, cổng bị phá, vòm khiên tắt, nhưng navmesh và bản đồ làn không được cập nhật (hoặc cập nhật sai).
+- Bãi thả hoặc tiền đồn nằm trong tường, xe tiếp đất ở chỗ không có đường ra.
+- Xe đứng đỗ chặn cổng hoặc lối hẹp; luật cấm đỗ ở cổng và nhường đường không hoạt động trong một số trường hợp.
+- Bản đồ làn và navmesh không khớp nhau ở khu căn cứ.
+- Xe lớn (siêu tăng, xe ủi, pháo công thành) có bán kính va chạm lớn hơn chiều rộng lối đi.
+- Xe cố đi tới một đích nằm trong vùng không tới được (bên trong tường, trong vòm khiên, trên công trình).
+Mỗi nguyên nhân tìm thấy phải có bài test tái hiện trước khi sửa.
+
+C. SỬA
+1. Sửa từng nguyên nhân gốc tìm thấy ở phần B.
+2. Bổ sung kiểm tra khi dựng dữ liệu map: mọi bãi thả, tiền đồn, cổng và cứ điểm có đường nối tới nhau cho cả xe lớn nhất, với mọi cấu hình ô hardpoint.
+3. Lưới an toàn (chỉ để bắt các trường hợp còn sót, không thay cho việc sửa nguyên nhân): xe kẹt quá khoảng 10 giây thì tạm bỏ va chạm với xe phe mình để thoát ra, hoặc được đặt sang vị trí hợp lệ gần nhất. Mỗi lần lưới an toàn phải kích hoạt thì vẫn ghi vào báo cáo xe kẹt, để còn sửa tiếp.
+
+D. KIỂM TRA
+- Chạy lại toàn bộ phần A sau khi sửa: không map nào có xe kẹt quá 10 giây ở các chế độ trên, qua 5 seed mỗi map và mỗi phe.
+- Số lần lưới an toàn phải kích hoạt gần 0; báo cáo con số này.
+- Replay deterministic vẫn khớp.
+- Không làm giảm hiệu năng tìm đường quá ngân sách tick.
+- Giữ bộ phát hiện xe kẹt trong bản build nội bộ để dùng cho các lần sửa sau.
+- Cập nhật docs/CHANGELOG.md và mục AI/giao thông trong tài liệu thiết kế.
