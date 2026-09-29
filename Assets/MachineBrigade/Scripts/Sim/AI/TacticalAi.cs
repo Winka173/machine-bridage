@@ -870,7 +870,8 @@ namespace MachineBrigade.Sim.AI
                 var v = vehicles[i];
                 if (!Ready(v) || Busy(world, v)) continue;
                 var weapon = v.Def.Weapon;
-                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.25f) continue;
+                // Autocannons and up plunder; a heavy machine gun (0.3 on a level-2 structure since DECISIONS 20X) does not.
+                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.35f) continue;
                 if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;
                 Prop? best = null;
                 var bestDistance = weapon.Range + 2f;

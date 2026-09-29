@@ -76,14 +76,17 @@ namespace MachineBrigade.Sim.Content
     /// </summary>
     public static class Armour
     {
-        /// <summary>The front arc (either side of the nose) and the rear arc (either side of the tail).</summary>
-        public static readonly float FrontArc = SimMath.DegToRad(50f);
+        /// <summary>
+        /// The front arc (either side of the nose) and the rear arc (either side of the tail). DECISIONS 20X: the front
+        /// 40 degrees (prompt 15's 50), so a round from off the nose strikes the thinner side more often.
+        /// </summary>
+        public static readonly float FrontArc = SimMath.DegToRad(40f);
 
         public static readonly float RearArc = SimMath.DegToRad(50f);
 
         /// <summary>
         /// The face a direct-fire round from <paramref name="from"/> strikes on a unit at <paramref name="at"/>
-        /// facing <paramref name="heading"/>: within 50 degrees of the nose the front, of the tail the rear,
+        /// facing <paramref name="heading"/>: within 40 degrees of the nose the front, within 50 of the tail the rear,
         /// else the side. A round from right on top of it (or a unit the same all round) strikes the front.
         /// </summary>
         public static ArmorFace FaceFrom(Vector2 at, float heading, Vector2 from)
