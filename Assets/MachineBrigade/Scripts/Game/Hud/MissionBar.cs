@@ -276,6 +276,8 @@ namespace MachineBrigade.Game.Hud
             _rank.style.display = key != null ? DisplayStyle.Flex : DisplayStyle.None;
             _rank.text = key != null ? Kit.Caps(Strings.Get(key)) : "";
             Root.EnableInClassList("fc-boss--mini", rank is { Compact: true });
+            // Prompt 20 O.2: the big bar for a main boss (the small one is the mini's, above).
+            Root.EnableInClassList("fc-boss--main", rank is { Compact: false });
             Root.style.scale = rank is { Compact: true } ? new StyleScale(new Scale(new UnityEngine.Vector3(0.86f, 0.86f, 1f))) : StyleKeyword.Null;
         }
 

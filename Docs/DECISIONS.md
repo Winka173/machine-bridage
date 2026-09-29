@@ -6358,3 +6358,120 @@ One run of that filter after a compile fix: 11/12, the old "last part" assertion
 5-seed kill times and win rates of every boss at each difficulty (main 5-8 min, mini 1.5-3 min on Normal); the stuck
 detector round the enlarged ground bosses, Kronos on the open-pit route and Ixion's charge; FPS with Moloch's and
 Daedalus's spawns; the suites (muzzle audit and model tests on the new and rebuilt models, card counts, Boss Rush).
+
+## 19N. Prompt 20 pass 3 (N-P): Boss Hunt, the chapter and boss screens, the moves to the new maps, the cheap checks (2026-09-29)
+
+Parts N, O and P on feature/p20-pass3 from lead/integration f33c170 (passes 1 and 2 merged). The owner's token rule:
+compile, one small test filter, no suites, no PlaySmoke, no screenshots; everything heavier is on the list at the end.
+
+### N.1 The week's Boss Hunt (the old Boss Rush, `GameModeKind.BossRush`, same id and save keys)
+
+- **Draw** (`Sim/Modes/BossHunt.cs`, `Game/Match/BossHunts.cs`): the story's bosses are every chapter slot of the
+  chapters switched on (campaign.json `main` / `minis`), in story order (chapter by chapter, where a mission or stage
+  first fights it). A week draws 3 main and 7 mini bosses with SplitMix64 seeded by the ISO week (year x 100 + week,
+  `WeeklyFortress.Week`): System.Random's sequence is not promised across runtimes, so every device gets the same run.
+  Each list is put back in story order and laid out as minis leading to mains, 2 + 2 + 3 (mains at 3rd, 6th and 10th).
+  Fewer bosses on, a shorter run (act I alone: 4 minis and 3 mains).
+- **Stronger down the run**: story order plus a ramp, boss health x0.9 at the first to x1.2 at the tenth and damage
+  half that ramp (x0.95 to x1.1), through the enemy side's mutator hook (`SimWorld.SetMutators`, bosses only, so parts,
+  phases and escorts follow the health). The full hunt keeps campaign strength (no ramp).
+- **Clock** 45 minutes (ten bosses of 1.5-3 / 5-8 minutes and nine rests: the 30-40 minute target with room). CP as
+  before (12 on the kill, 8 at 75/50/25 %, 2 a part); coins 120 a boss; the first clear of the week +1 500 coins
+  (the Operations weekly ledger, key "hunt").
+- **Rest** 20 s (`Breather`, as before): each vehicle of the army gets 30 % of its health back when a boss falls
+  (`RestRepair`); a strip under the top bar shows the rest, its seconds, the next boss and the supports held.
+- **Supports** (`HuntSupports`, 12): after each main boss (not after the last boss) three not held yet, drawn from the
+  run's seed and the boss index (the same after a resume). Reinforced Hulls (health +15 %), Gunnery Drills (damage
+  +10 %), Fast Loaders (fire rate +12 %), Tuned Engines (speed +12 %), Field Repairs (1 %/s out of fire), Rapid Tasking
+  (support cooldowns -25 %, new `TeamEconomy.StrikeScale`), Supply Convoy (income +20 %), War Chest (35 CP now), Extra
+  Crews (army cap +6), Mobile Workshop (rests repair 60 %), Bounty Contracts (boss CP +50 %), Free Reinforcements (the
+  deck's three dearest vehicles airlifted, free). Each is a modest edge of a different kind so none is the pick; per-
+  vehicle ones reach vehicles landed later too. The pick screen does not stop the battle (the rest runs); an offer not
+  answered when the rest ends takes its first card (so a run never waits and a headless sim stays deterministic). The
+  pick is a recorded input (`MatchJournal "support"`).
+- **Checkpoints** after each main boss (the full hunt: after every boss), kept as the rest ends (after the pick).
+  Decision: a checkpoint is the carry prompt 16 made for switching battlefields (bosses down, time used, CP, the army
+  with its health, the supports), not prompt 5's step replay: the replay rebuilds one battle from its seed, and a hunt
+  spans several battlefields and several sittings. It is saved in the profile (`PlayerProfile.Hunt.cs`, `hunts`); the
+  week's is good until the week ends, both only for the same boss list. Taken up from the result screen's checkpoint
+  button (as an operation's) or from the Operations page ("Continue" / "Start over"). Bosses paid in an earlier sitting
+  are not paid again (`BossRushCarry.Paid`). The army lands again at the drop zone (positions are not kept).
+- **Own battlefields**: unchanged mechanism (prompts 16 and 19): a ship to Lighthouse Bay, Icarus to the Launch Site,
+  and Kronos to the open-pit mine (its `arena`, pass 2), back home after.
+- **Left out: the trains** (Nemesis, Juggernaut). They run on their mission's rail line and no hunt battlefield has
+  one; the old Boss Rush left them out too. So the hunts have 11 of the 12 main bosses and 18 of 19 minis. For later:
+  a hunt stage on the capital's metro line.
+
+### N.2 The full Boss Hunt
+
+Every slot of the chapters on, in story order (29 now; it grows by itself when an act is switched on or a chapter
+gains a boss), a checkpoint after every boss, a support after each main boss, no clock. It opens once the last
+chapter on is done (its operation won). Board: the five best total times on this device (the run's time over every
+battlefield and sitting, the time lost to a defeat not counted); no online board exists in the game. First clear:
+10 000 coins and a legendary crate (once). Its supports' seed is fixed (2020), so the run is the same for everyone.
+
+### N.3 Operations
+
+The mutator `two_bosses` ("Extra mini boss" now) brings a mini boss: the mission's own when it is one, a main boss's
+mini version, else its chapter's first mini (its general's); before, a Behemoth when the mission had none
+(`MissionSession.ExtraBossFor`). No other mutator names a boss. The new chapters' operations were already in the
+replay list (pass 1).
+
+### O. Screens
+
+1. Chapter screen: the four acts and twelve chapters and the act switches were pass 1's; each card now also says how
+   many mini bosses it has.
+2. Boss bar: the names were already "Proper name · subtitle" (`unit.*`, pass 1); a main boss's bar gets the big track
+   (`fc-boss--main`, 14 px), a mini's the small one (86 %, 6 px track, smaller name).
+3. Dossier boss files: rank and general under the name; once open, links to the boss's Guide page and to the boss it
+   is a variant of. A boss's Guide page (its detail page, now without deck, level and blueprint parts): rank, chapters,
+   the general's portrait, name, call sign and naming theme (`char.*.role`), "Variant of ..." and its variants, each a
+   link; the page's arrows step through the bosses in story order. The Boss Hunt lists open each boss's page.
+4. Boss Hunt: the rest strip and the support pick (three cards side by side, 760 pt, from prompt 10's kit like the
+   stage choice); the Operations page shows the rules, reward, checkpoint, bosses in order, supports and the board.
+5. Battlefields: a dossier tab ("Chiến trường") with every battlefield's picture, line, the chapters that fight on it
+   and its guide where it has one (openpit and orbitalgate now); the Guide tab has a button to it.
+Every new word is in the tables (`BossText`: `hunt.*`, `guide.boss.*`, `guide.map.*`, `dossier.maps`,
+`campaign.minis`). "Boss Rush" reads "Boss Hunt" in English. Pass 2's Wolff lines said "Quạ Đen:"; they say "Raven:"
+now (the rule of 19A). Timeline 10's doubled "Roc, Roc" is fixed in the sources.
+
+### Pass 2's leftover: onto the two new battlefields (Tools/campaign/act4.py, `move`)
+
+c8m02, c8m07, c8m10 on openpit; c11m04, c11m07, c11m10 on orbitalgate (`POINTS` and `WEATHER` for both in
+campaign_kit). Both maps are in the standard frame, so the goal points stay; what named the old map changed:
+c8m10's stages burn the fuel store (storage tanks by the crusher plant), blow the ore silos and the processing plant;
+Kronos starts at the head of its "kronos" route (96, 96) and walks the whole haul road; Ixion comes down the haul road;
+c11m07 burns the west pad's rocket fuel tanks (its three guards moved there); c11m10 (siege version, in snow) takes
+the radar posts at (-12, 59) and round (42, 6). Chapter 8 and 11's map lists put the new maps first (their cards'
+pictures). Only the changed keys moved in CampaignText.cs (briefs of c8m02, c8m07, c11m04, c11m07; c8m10's stage and
+choice titles; timeline.10).
+
+### Tests (`Prompt20HuntTests`, 9 cases; run twice: 9/9, then 9/9 after the last edits)
+
+The week's draw (determinism, 7 + 3 in 2-2-3 groups, story order, the ramp, no train), the full hunt (every slot in
+story order, opens after the last chapter), chapters switched off left out (acts I-II and I-III, and back), checkpoints
+and resume (no support or checkpoint after a mini, 30 % repair, three offered after a main, the checkpoint's contents,
+saved and taken up in a later sitting, stale for another week or list, the run going on), the twelve supports (fair
+offers, the effects of four of them), every boss's rank and general (prompt 20 K) and its bar name, the extra-boss
+mutator, no old names in any table (BossText too), the six moved missions (targets on the new maps, Kronos on its route).
+`KitInteractionTests` and `ExportGameDoc` read the hunt's count now (not run).
+
+### For the testing phase
+
+- 5 seeds of the week's hunt on Normal (target 30-40 minutes, the ramp, the supports' pick rates and value) and of the
+  full hunt through its checkpoints (several sittings, map switches for the sea bosses, Icarus and Kronos).
+- Stuck checks for the six moved missions (openpit and orbitalgate with their props and routes, Ixion's charge down the
+  haul road, Kronos through the pit), and the bosses' map switches in the hunt.
+- FPS: the hunt with a support that adds vehicles (Free Reinforcements, Extra Crews) and Moloch's or Daedalus's spawns.
+- With graphics: screenshots of the chapter screen, both boss bars, the rest strip and the support pick on a phone,
+  the Operations hunt pages, the dossier's battlefields and a boss Guide page.
+- Suites: KitInteractionTests, CampaignTests (the moved missions), LocalisationScanTests (the new keys),
+  Prompt20CampaignTests, ModeEndingTests and SiegeModeTests (Boss Rush paths), PlaySmoke's BossRush step.
+
+### Shared edits (merge by hand if they conflict)
+
+`SiegeModes.cs` (BossRush classes partial, hooks), `EconomySystem.cs` (`StrikeScale`), `StrikeSystem.cs` (one line),
+`ModeSessions.cs` (`BossRushSession`, `ExtraBossFor`), `MatchRunner.cs` (checkpoint button, switch, preload),
+`PlayerProfile.cs` (three fields), `BattleHud.cs`, `MissionBar.cs`, `Screens.uss`, `MenuScreen.Operations/Home/Detail/
+Story/Campaign.cs`, `Strings.cs` (Boss Hunt, the mutator), `BossText.cs`, `CampaignText.cs` (the keys above),
+`campaign.json`, `Tools/campaign/act4.py`, `campaign_kit.py`, `story.py`, two tests. balance.json untouched.

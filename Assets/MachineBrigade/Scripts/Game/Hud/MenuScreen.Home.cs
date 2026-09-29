@@ -33,7 +33,7 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>A mode's one line under its name in the picker (Boss Rush says how many bosses).</summary>
         private static string ModeLine(GameModeKind kind, string key) =>
-            kind == GameModeKind.BossRush ? Strings.Format(key, Campaign.BossRushKinds.Count) : Strings.Get(key);
+            kind == GameModeKind.BossRush ? Strings.Format(key, BossHunts.ThisWeek.Count) : Strings.Get(key);
 
         /// <summary>The modes the home screen's mode dropdown offers (skirmishes and challenges), for the menu's coverage test.</summary>
         internal static IEnumerable<GameModeKind> BattleModes
@@ -172,6 +172,9 @@ namespace MachineBrigade.Game.Hud
             // What the picker shows is what starts (a campaign run or the weekly fortress left behind reads as Conquest there).
             MatchSettings.Mode = QuickModes[_modeDrop.Selected].kind;
             MatchSettings.Save();
+            // The picker's Boss Hunt is the week's (the full hunt starts from Operations).
+            BossRushSession.Full = false;
+            BossRushSession.Pending = null;
             _play();
         }
 

@@ -611,6 +611,55 @@ retext('choice.c8m10.tanks.info', 'Lý Hàn\'s army earns 30 % less for the rest
 retext('choice.c9m10.crane.info', 'Lý Hàn earns 30 % less for the rest of the battle.', 'Lý Hàn kiếm được ít hơn 30 % trong suốt phần còn lại của trận.')
 retext('choice.c11m10.depots.info', 'Aurel\'s army earns 30 % less for the rest of the battle.', 'Quân Aurel kiếm được ít hơn 30 % trong suốt phần còn lại của trận.')
 
+# ====================================================================== prompt 20 pass 3: onto the two new battlefields
+# Part M built the open-pit mine and the orbital gate (DECISIONS 19L); the three missions of each chapter kept for them
+# move there. Both maps are in the standard frame (camps in the corners, west / town / east at +-80 and 0), so a mission's
+# goal points stay; what named props or places of the old map is set again for the new one (targets from the map files).
+
+def move(mid, map_id, **over):
+    d = mission(mid)
+    d['map'] = map_id
+    d.update(over)
+    return d
+
+
+move('c8m02', 'openpit')
+move('c8m07', 'openpit')
+# Ixion comes down the haul road the excavator uses.
+mission('c8m07')['boss'].update(x=90, z=52, heading=200)
+d = move('c8m10', 'openpit')
+stage(d, 'tanks').update(targets=['storage_tank'], targetX=-110, targetZ=78, targetRadius=20)
+stage(d, 'wells').update(targets=['silo'], targetX=61, targetZ=-115, targetRadius=12)
+stage(d, 'refinery').update(targets=['factory', 'gantry_crane'], targetX=91, targetZ=-104, targetRadius=20)
+# Kronos starts at the head of its route (map "routes.kronos") and walks the whole haul road to the player's base.
+stage(d, 'inferno')['boss'].update(x=96, z=96, heading=225)
+
+move('c11m04', 'orbitalgate')
+d = move('c11m07', 'orbitalgate', targets=['fuel_tank'], targetX=-104, targetZ=122, targetRadius=14)
+d['units'] = [dict(u, x=x, z=z) for u, (x, z) in zip(d['units'], [(-95.0, 108.0), (-108.0, 110.0), (-100.0, 96.0)])]
+# The snowbound gate in snow: c11m07 (Clear, Defend) and this one (None) differ in base and weather.
+d = move('c11m10', 'orbitalgate', weather='Snow')
+stage(d, 'radar').update(targetX=-12, targetZ=59, targetRadius=15)
+stage(d, 'radars').update(targetX=42, targetZ=6, targetRadius=36)
+
+# The words that named the old places.
+retext('mission.c8m02.brief', 'We hold the ore depot on the pit\'s rim. Lý Hàn wants it back tonight. Keep the brigade alive until morning.',
+       'Ta đang giữ kho quặng trên miệng hố mỏ. Lý Hàn muốn lấy lại nó ngay đêm nay. Giữ cho lữ đoàn trụ vững tới sáng.')
+retext('mission.c8m07.brief', 'A haul truck with wheels taller than a tank is coming down the haul road at full speed: Ixion. Stop it before it rams our columns.',
+       'Một xe chở quặng có bánh cao hơn xe tăng đang lao xuống đường vận chuyển hết tốc lực: Ixion. Chặn nó trước khi nó húc vào đội hình của ta.')
+retext('stage.c8m10.fields', 'The Crusher and the Ore Loadout', 'Nhà máy nghiền và bãi xuất quặng')
+retext('stage.c8m10.oasis', 'Hold the Crusher Plant', 'Giữ nhà máy nghiền')
+retext('stage.c8m10.tanks', 'Burn the Fuel Store', 'Đốt kho nhiên liệu')
+retext('stage.c8m10.wells', 'Blow the Ore Silos', 'Phá các si-lô quặng')
+retext('stage.c8m10.refinery', 'Blow the Processing Plant', 'Cho nổ xưởng chế biến')
+retext('stage.c8m10.yard', 'Hold the Pit Floor', 'Giữ đáy hố')
+retext('choice.c8m10.oasis', 'Hold the crusher\'s radio', 'Giữ đài phát ở nhà máy nghiền')
+retext('choice.c8m10.tanks', 'Burn the fuel store', 'Đốt kho nhiên liệu')
+retext('mission.c11m04.brief', 'Aurel has side pads hidden round the gate. Find them before he fuels them.',
+       'Aurel giấu các bệ phóng phụ quanh cửa ngõ. Tìm ra chúng trước khi hắn nạp nhiên liệu.')
+retext('mission.c11m07.brief', 'A Locust drone carrier covers the west pad. Burn the rocket\'s fuel tanks and bring the carrier down.',
+       'Một tàu mang drone Locust che chắn bệ phóng phía tây. Đốt các bồn nhiên liệu của tên lửa và bắn hạ tàu mang drone.')
+
 # ====================================================================== the unlock route and the HQ levels (D.1, D.2)
 # Four to six cards a chapter, towers and buildings among them; the five modules stay in acts I and II.
 # The old route's cards in chapters 7-12 spread onto the new chapters 8, 9 and 11.

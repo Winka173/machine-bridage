@@ -901,3 +901,28 @@
 .fc-hud__enemy-tip { position: absolute; left: var(--fc-space-3); top: 200px; --fc-chip-bg: var(--fc-panel-field); }
 .fc-boss-part__armour { position: absolute; right: 2px; top: 2px; width: 18px; height: 18px; --icon-color: var(--fc-text-2); }
 .fc-boss-parts--mini .fc-boss-part__armour { display: none; }
+
+/* Prompt 20 O.2: the big bar for a main boss, the small one for a mini boss (prompt 11's compact HUD). */
+.fc-boss--main .fc-boss__track { height: 14px; }
+.fc-boss--main.fc-boss--collapsed .fc-boss__track { height: 8px; }
+.fc-boss--mini .fc-boss__track { height: 6px; }
+.fc-boss--mini .fc-boss__name { font-size: var(--fc-fs-small); }
+
+/* Prompt 20 N/O.4: the Boss Hunt's rest strip under the top bar, and the support pick (three cards side by side). */
+.fc-hunt-rest { width: 420px; padding: var(--fc-space-2) var(--fc-space-3); margin-bottom: var(--fc-space-2); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-hunt-rest__icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); --icon-color: var(--fc-accent); }
+.fc-hunt-rest__title { flex-grow: 1; }
+.fc-hunt-rest__time { margin-left: var(--fc-space-2); color: var(--fc-accent); }
+.fc-hunt-rest__line { margin-top: var(--fc-space-1); }
+.fc-hud--compact .fc-hunt-rest { width: 360px; padding: var(--fc-space-1) var(--fc-space-2); }
+.fc-support-pick__card { width: 760px; }
+.fc-support-pick__cards { flex-direction: row; justify-content: space-between; margin-top: var(--fc-space-2); }
+.fc-support { width: 236px; flex-shrink: 1; padding: var(--fc-space-3); align-items: stretch; }
+.fc-support__icon { width: 40px; height: 40px; margin-bottom: var(--fc-space-2); align-self: center; --icon-color: var(--fc-accent); }
+.fc-support__name { -unity-text-align: middle-center; white-space: normal; }
+.fc-support__info { flex-grow: 1; margin: var(--fc-space-2) 0 var(--fc-space-3) 0; white-space: normal; }
+
+/* Prompt 20 O.3, O.5: a boss's Guide header, and the dossier's battlefields. */
+.fc-boss-facts { padding: var(--fc-space-3); }
+.fc-dossier__map { flex-direction: row; align-items: flex-start; }
+.fc-dossier__map-art { width: 160px; height: 90px; flex-shrink: 0; margin-right: var(--fc-space-3); -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }

@@ -76,6 +76,21 @@ its commits.
   Argus, each with parts, a big attack, escorts, a Guide card and radio lines. Every boss is tied to its general.
 - Boss Rush takes the new bosses; Operations' "two bosses" brings a mini boss.
 
+### Prompt 20 pass 3: Boss Hunt, the full Boss Hunt, boss and battlefield pages (DECISIONS 19N)
+
+- Boss Hunt (was Boss Rush): each week 10 bosses from the chapters that are on, 7 mini bosses leading to 3 main bosses,
+  the same draw on every device, stronger down the run, 45 minutes. A 20 s rest repairs 30 % of the army; after each
+  main boss pick one of 12 combat supports and keep a checkpoint (take the run up again later, from the result screen
+  or Operations). The first clear of the week pays 1 500 coins.
+- Full Boss Hunt, open after the last chapter that is on: every boss in story order, a checkpoint after every boss, a
+  board of the best total times, 10 000 coins and a legendary crate for the first clear. The trains stay out (no rails).
+- Operations' "two bosses" is "Extra mini boss": the chapter's or the boss's mini boss.
+- Boss bars: big for main bosses, small for minis. Boss Guide pages: rank, chapters, general (call sign, naming theme),
+  "Variant of ..." links; the dossier's boss files link to them. New dossier tab: Battlefields (with the open-pit mine's
+  and the orbital gate's guides). Chapter cards count their mini bosses.
+- Six missions moved onto the new maps: c8m02, c8m07, c8m10 (Kronos walks its haul-road route) to the open-pit mine,
+  c11m04, c11m07, c11m10 to the orbital gate.
+
 ### Prompt 20 L-M: towers (Iron Dome, rocket battery, SAM post) and two new battlefields
 
 - The C-RAM's rank-7 Iron Dome branch (it replaces the Hunter; a saved Hunter choice is dropped): interceptor missiles

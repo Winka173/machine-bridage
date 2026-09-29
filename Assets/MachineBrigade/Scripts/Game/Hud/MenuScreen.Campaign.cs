@@ -180,6 +180,8 @@ namespace MachineBrigade.Game.Hud
             facts.Add(Tag("flag", Strings.Format("home.chapterProgress", won, main.Count)));
             facts.Add(Tag("star", Strings.Format("campaign.starCount", stars, Campaign.MissionsOf(number).Count * 3)));
             if (ChapterBoss(number) is { } boss) facts.Add(Tag("skull", Strings.Get("boss." + boss)));
+            // Prompt 20 O.1: its mini bosses (campaign.json "minis").
+            if (chapter.Minis.Count > 0) facts.Add(Tag("elite", Strings.Format("campaign.minis", chapter.Minis.Count)));
             text.Add(facts);
             if (!open) text.Add(Kit.Text(Strings.Format("campaign.chapterLocked", number - 1), "fc-small"));
             card.Add(text);

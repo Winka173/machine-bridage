@@ -208,6 +208,9 @@ namespace MachineBrigade.Game.Hud
                 _wavePreview = new WavePreview(DescribeVehicle);
                 fortress.Add(_wavePreview.Root);
                 under.Add(fortress);
+                // Prompt 20 N: the Boss Hunt's rest between bosses.
+                _huntRest = new HuntRestPanel();
+                under.Add(_huntRest.Root);
             }
             _safe.Add(under);
 
@@ -403,6 +406,8 @@ namespace MachineBrigade.Game.Hud
             _safe.Add(_result.Root);
             _choice = new ChoicePanel();
             _safe.Add(_choice.Root);
+            _supportPick = new SupportPickPanel();
+            _safe.Add(_supportPick.Root);
 
             _selectionBox = UiKit.Box("selection-box");
             _root.Add(_selectionBox);
@@ -490,6 +495,21 @@ namespace MachineBrigade.Game.Hud
         public event Action DeckPressed;
 
         private ChoicePanel _choice;
+        private HuntRestPanel _huntRest;
+        private SupportPickPanel _supportPick;
+
+        /// <summary>Prompt 20 N: the Boss Hunt's rest strip (a null title hides it).</summary>
+        public void SetHuntRest(string title, float seconds, string next, string held) => _huntRest?.Set(title, seconds, next, held);
+
+        /// <summary>Prompt 20 N: the pick of one of three combat supports after a main boss.</summary>
+        public void ShowSupportPick(string title, IReadOnlyList<(string icon, string name, string info)> options, Action<int> chosen) =>
+            _supportPick?.Show(title, options, chosen);
+
+        public void SetSupportPickTime(float seconds) => _supportPick?.SetTime(seconds);
+
+        public void HideSupportPick() => _supportPick?.Hide();
+
+        public bool SupportPickShown => _supportPick != null && _supportPick.Visible;
 
         /// <summary>A multi-stage mission's branching point: the ways on (a name and a line each).</summary>
         public void ShowChoice(string title, IReadOnlyList<(string, string)> options, Action<int> chosen) => _choice?.Show(title, options, chosen);

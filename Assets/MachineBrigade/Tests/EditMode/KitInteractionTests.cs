@@ -101,7 +101,7 @@ namespace MachineBrigade.Tests
                 Assert.IsNotEmpty(rows, "the mode list opened");
                 var row = rows.FirstOrDefault(r => r.Query<Label>().ToList().Any(l => l.text == Strings.Get("mode.bossrush")));
                 Assert.IsNotNull(row, "Boss Rush is in the list: " + string.Join(", ", rows.Select(r => r.Q<Label>()?.text)));
-                StringAssert.Contains(Strings.Format("mode.bossrushSub", MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count),
+                StringAssert.Contains(Strings.Format("mode.bossrushSub", BossHunts.ThisWeek.Count),
                     string.Join("|", row.Query<Label>().ToList().Select(l => l.text)), "with its line");
                 row.GetFirstAncestorOfType<ScrollView>()?.ScrollTo(row);
                 for (var i = 0; i < 2; i++) simulate.FrameUpdate();

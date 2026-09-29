@@ -88,7 +88,7 @@ CHAPTERS = [
       'Dưới lòng phố, Nemesis, đoàn tàu tên lửa của Hegemon, đang lăn bánh.'),
      ('The capital is freed, but Lý Hàn turns on the brigade in the middle of the battle. His base falls; he escapes north to the mines.',
       'Thủ đô được giải phóng, nhưng Lý Hàn trở mặt với lữ đoàn ngay giữa trận. Căn cứ của hắn thất thủ; hắn trốn lên các khu mỏ phía bắc.')),
-    (8, 3, ('Underground', 'Lòng đất'), ['redrock', 'dunebreak', 'hydrodam'], 'hung',
+    (8, 3, ('Underground', 'Lòng đất'), ['openpit', 'redrock', 'hydrodam', 'dunebreak'], 'hung',
      ('Lý Hàn has run north to the open-pit mines where Hegemon digs the metal for its machines. He holds the pits with his own army and the diggers Aurel left behind. '
       'Somewhere in the deepest pit, Kronos is waking up.',
       'Lý Hàn đã chạy lên các mỏ lộ thiên phía bắc, nơi Hegemon đào kim loại cho những cỗ máy của nó. Hắn giữ các hố mỏ bằng quân riêng và những cỗ máy đào Aurel để lại. '
@@ -107,9 +107,9 @@ CHAPTERS = [
       'Hegemon\'s best pilot and Hawk\'s old wingman. Take Skyhold, the air base he flies from, and the sky belongs to the Alliance.',
       'Dự án Icarus có thật: phi thuyền quỹ đạo của Aurel, được chế tạo để treo trên bầu trời duyên hải. Giữa lữ đoàn và bầu trời là Kasimir Wolff, biệt danh Raven, '
       'phi công giỏi nhất của Hegemon và là đồng đội bay cũ của Diều Hâu. Chiếm Skyhold, căn cứ nơi hắn cất cánh, là bầu trời thuộc về Liên minh.'),
-     ('Icarus shows itself and runs; Wolff is shot down, and Skyhold falls with Roc, Roc, his command airship.',
+     ('Icarus shows itself and runs; Wolff is shot down, and Skyhold falls with Roc, his command airship.',
       'Icarus lộ diện rồi bỏ chạy; Wolff bị bắn rơi, Skyhold thất thủ cùng Roc, khí cầu chỉ huy của hắn.')),
-    (11, 4, ('The Orbital Gate', 'Cửa ngõ quỹ đạo'), ['rustyard', 'frostpeak', 'skyhold'], 'aurel',
+    (11, 4, ('The Orbital Gate', 'Cửa ngõ quỹ đạo'), ['orbitalgate', 'frostpeak', 'rustyard', 'skyhold'], 'aurel',
      ('Before Icarus can fly, Aurel needs the orbital gate: the radar stations and side pads that guide his ships up and down. '
       'Orlov guards it with Gungnir, his last and biggest gun. Above it all waits Daedalus, the ship that brings Aurel\'s troops down from orbit.',
       'Trước khi Icarus cất cánh, Aurel cần cửa ngõ quỹ đạo: các trạm radar và bệ phóng phụ dẫn đường cho tàu của hắn lên xuống. '

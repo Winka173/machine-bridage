@@ -129,7 +129,7 @@ namespace MachineBrigade.Sim.Strikes
                 if (!_world.Economy.TrySpend(command.Team, economy?.CostOf(support.Id, support.CpCost) ?? support.CpCost))
                     return CommandResult.Rejected(CommandError.NotEnoughCp);
             }
-            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f);
+            if (economy != null) economy.ReadyAt[support.Id] = _world.Time + support.Cooldown * (economy.Doctrine?.StrikeCooldown ?? 1f) * economy.StrikeScale;
 
             Launch(support, command.Team, command.Point, command.Point2);
             _world.CountStrike(command.Team);
