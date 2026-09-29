@@ -162,10 +162,12 @@ namespace MachineBrigade.Game.Effects
                     // flame cone and leaving a smoke trail (Plume).
                     var missile = Model("missile");
                     var airborne = shooter != null && shooter.Flying;
+                    // It leaves along its tube or rail (a raised SAM box, a tilted rack), then turns onto its target.
                     if (_hasMissile) _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId),
-                        boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), plume: Plume.For(weapon, kind, missile, airborne));
+                        boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
+                        plume: Plume.For(weapon, kind, missile, airborne));
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
-                    Flash(MuzzleFx.Kind.Missile, from, aim, now, 1f, groundY);
+                    Flash(MuzzleFx.Kind.Missile, from, Tube(aim), now, 1f, groundY);
                     _shake(from, 0.05f);
                     break;
 
@@ -190,11 +192,14 @@ namespace MachineBrigade.Game.Effects
                     });
                     if (weapon?.Id == "ballistic_missile") arc = distance * 0.45f;
                     var ballistic = weapon?.Id == "ballistic_missile";
+                    // A second launcher (not the main, elevating one) lobs along its own tubes too.
+                    if (barrel.sqrMagnitude < 0.01f) barrel = _shotBarrel;
                     if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery && !ballistic ? 0.7f : 0.3f,
                         boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: scale * SizeOf(weapon, kind, rocket, false),
-                        control: artillery && !ballistic ? Bend(from, to, barrel) : null, plume: Plume.For(weapon, kind, rocket, false));
+                        control: artillery && !ballistic ? Bend(from, to, barrel) : artillery ? null : Leave(from, to, _shotBarrel, arc),
+                        plume: Plume.For(weapon, kind, rocket, false));
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
-                    Flash(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : aim, now, artillery ? 1.2f : 0.9f, groundY);
+                    Flash(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : Tube(aim), now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);
                     break;
 
@@ -374,6 +379,23 @@ namespace MachineBrigade.Game.Effects
             var ground = new Vector2(to.x - from.x, to.z - from.z).magnitude;
             if (flat < 0.1f || ground < 1f) return null;
             return from + barrel * (0.5f * ground / flat);
+        }
+
+        /// <summary>The way a launch's ignition and backblast face: along the drawn tube or rail, else at the aim point.</summary>
+        private Vector3 Tube(Vector3 aim) => _shotBarrel.sqrMagnitude > 0.5f ? _shotBarrel : aim;
+
+        /// <summary>
+        /// The middle control point of a missile's or direct-fire rocket's path that leaves along its
+        /// drawn tube or rail and bends onto the target, with the old arc's hump over the middle
+        /// (<paramref name="arc"/>): pointing at the target it is the old path; a SAM box raised
+        /// 40 degrees sends its missile up first. Null without a tube to go by (DECISIONS 13E).
+        /// </summary>
+        internal static Vector3? Leave(Vector3 from, Vector3 to, Vector3 tube, float arc)
+        {
+            var chord = to - from;
+            var d = chord.magnitude;
+            if (tube.sqrMagnitude < 0.5f || d < 1f) return null;
+            return from + chord * 0.5f + Vector3.up * (2f * arc) + (tube.normalized * d - chord) * 0.3f;
         }
 
         /// <summary>The way a lobbing weapon's blast goes: up its barrel, else the old fixed slant.</summary>

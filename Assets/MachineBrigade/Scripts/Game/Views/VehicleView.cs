@@ -157,15 +157,19 @@ namespace MachineBrigade.Game.Views
                 // Rockets, missiles and drones leave from the pods and rails on both sides in turn;
                 // twin miniguns from both guns. With two mounts of a slot, each has the pods on it.
                 var kind = mounts[i].Weapon.Projectile;
+                // A twin gun built as one part fires from its barrels in turn, whatever it fires (13E).
                 if (_model.Launchers.TryGetValue(slot, out var launchers) &&
-                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun" || launchers.Exists(p => p.Barrel)))
                 {
                     var own = launchers;
                     if (sameSlot[slot] > 0 && mountList != null && mountList.Count > 1 && _mounts[i] != null)
                     {
                         own = launchers.FindAll(p => p.transform.IsChildOf(_mounts[i]));
-                        if (own.Count == 0) own = launchers;
+                        // Another mount's barrels are not this one's: it keeps its own muzzle.
+                        if (own.Count == 0) own = launchers.Exists(p => p.Barrel) ? null : launchers;
                     }
+                    if (own != null && !(kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                        own = own.FindAll(p => p.Barrel) is { Count: > 0 } barrels ? barrels : null;
                     _launchers[i] = own;
                 }
             }
@@ -227,6 +231,9 @@ namespace MachineBrigade.Game.Views
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
+
+        /// <summary>Tests and tools (the muzzle audit): the spawned model and its rig.</summary>
+        internal ModelInstance Model => _model;
 
         /// <summary>The detail level it is drawn at (<see cref="VehicleLod"/>): 0 full, 1 simplified, 2 impostor.</summary>
         public int Level => Mathf.Max(VehicleLod.Full, _level);
@@ -554,7 +561,8 @@ namespace MachineBrigade.Game.Views
                 var spread = point.Spread;
                 if (spread == Vector2.zero) return Anchored(point.transform, point.transform.position);
                 var jitter = new Vector3(Random.Range(-spread.x, spread.x), Random.Range(-spread.y, spread.y), 0f);
-                return Anchored(point.transform, point.transform.position + point.transform.parent.TransformVector(jitter));
+                // Across the face itself: the point is turned square to its tubes (a raised box's face tilts back).
+                return Anchored(point.transform, point.transform.position + point.transform.TransformVector(jitter));
             }
             var own = index < _ownBarrel.Length ? _ownBarrel[index] : -1;
             if ((index == 0 || own >= 0) && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
@@ -609,6 +617,7 @@ namespace MachineBrigade.Game.Views
                 foreach (var list in _model.Launchers.Values)
                     foreach (var point in list)
                     {
+                        if (point.Barrel) continue;
                         var local = _body.InverseTransformPoint(point.transform.position);
                         if (!found || Mathf.Abs(local.x) > Mathf.Abs(outer.x)) outer = local;
                         found = true;
@@ -620,9 +629,11 @@ namespace MachineBrigade.Game.Views
                     found = true;
                 }
                 if (!found || Mathf.Abs(outer.x) < 0.3f) return false;
-                // A little further out than the outermost store: the wingtip rail.
+                // The outermost store, left and right in turn: a rail that is on the model. (It was
+                // pushed 12 % further out for a wingtip rail, which most models do not carry: the
+                // missile then left from thin air beside the wing, DECISIONS 13E.)
                 var side = (_nextLauncher[index]++ & 1) == 0 ? 1f : -1f;
-                at = _body.TransformPoint(new Vector3(Mathf.Abs(outer.x) * 1.12f * side, outer.y, outer.z));
+                at = _body.TransformPoint(new Vector3(Mathf.Abs(outer.x) * side, outer.y, outer.z));
                 return true;
             }
             foreach (var other in new[] { "missile", "rocket", "main", "gun" })
@@ -748,6 +759,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>World-space direction the elevated barrel of mount <paramref name="index"/> points (level for a mount that does not elevate).</summary>
         public Vector3 BarrelDirectionOf(int index)
         {
+            if (ModelledBarrel(index, out var drawn)) return drawn;
             var flat = DirectionOf(index);
             if (index != 0 || _model.Elevation == null || float.IsNaN(_elevation)) return flat;
             var pitch = _elevation * Mathf.Deg2Rad;
@@ -763,13 +775,46 @@ namespace MachineBrigade.Game.Views
         /// </summary>
         public Vector3 DrawnBarrelOf(int index)
         {
+            if (ModelledBarrel(index, out var drawn)) return drawn;
             var aim = index < Def.Mounts.Count ? Def.Mounts[index].Aim : MountAim.Turret;
+            // A side gun with no barrel of its own to go by (a door gunner): out of its side.
+            if (aim is MountAim.Left or MountAim.Right) return DirectionOf(index);
             var node = aim == MountAim.Free && index < _mounts.Length && _mounts[index] != null ? _mounts[index]
                 : aim != MountAim.Hull && _model.Turret != null ? _model.Turret : _body;
+            // Another mount whose muzzle rides the main gun's elevating pivot (a boss's second main
+            // barrel, built along the model's front): the way that muzzle faces as drawn.
+            if (index > 0 && index < _muzzles.Length && _muzzles[index] != null && _model.Elevation != null && _muzzles[index].IsChildOf(_model.Elevation))
+                return _muzzles[index].forward;
             var forward = node.forward;
-            if (index == 0 && _model.Elevation != null && !float.IsNaN(_elevation))
+            // The main gun's elevation, also for a second mount firing from one of its barrels.
+            var own = index < _ownBarrel.Length ? _ownBarrel[index] : -1;
+            if ((index == 0 || own >= 0) && _model.Elevation != null && !float.IsNaN(_elevation))
                 forward = Quaternion.AngleAxis(-_elevation, node.right) * forward;
             return forward;
+        }
+
+        /// <summary>
+        /// The way a mount's barrel points as drawn, where the model says so (DECISIONS 13E): a
+        /// launcher along the tubes or rail its round leaves from (its launch points are turned
+        /// square to them), a muzzle turned along its own barrel (ModelLibrary.AlignMuzzles: a
+        /// mortar tube, a door gun, a flak barrel built pointing up) its forward, raised, turned
+        /// and tilted with whatever it rides.
+        /// </summary>
+        private bool ModelledBarrel(int index, out Vector3 direction)
+        {
+            direction = default;
+            if (index < _launchers.Length && _launchers[index] is { Count: > 0 } list)
+            {
+                var point = LastMuzzleNode != null && LastMuzzleNode.GetComponent<LaunchPoint>() is { } last && list.Contains(last) ? last : list[0];
+                if (point.Measured)
+                {
+                    direction = point.transform.forward;
+                    return true;
+                }
+            }
+            if (index >= _muzzles.Length || !ModelLibrary.Aligned(_muzzles[index])) return false;
+            direction = _muzzles[index].forward;
+            return true;
         }
 
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
