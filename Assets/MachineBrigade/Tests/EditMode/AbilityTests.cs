@@ -121,6 +121,8 @@ namespace MachineBrigade.Tests
             {
                 var world = Field();
                 var target = world.SpawnVehicle("heavy_tank", 0, new Vector2(0f, 0f), 0f);
+                // Play-test 6 (DECISIONS 21F): the carrier launches one drone at a time now; the tank holds its fire so it lives to.
+                target.HoldFire = true;
                 if (jammer) world.SpawnVehicle("ew_jammer", 0, new Vector2(0f, -10f), 0f);
                 world.SpawnVehicle("fpv_carrier", 1, new Vector2(0f, 30f), 3.14f);
                 var hits = 0;

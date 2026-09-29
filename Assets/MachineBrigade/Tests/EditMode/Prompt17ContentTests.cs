@@ -312,19 +312,23 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(6, world.Economy.AircraftCount(0), "the side has its six aircraft up");
             world.Submit(new Command(CommandType.Attack, 0, new[] { carrier.Id }, default, group[1].Id));
             var drones = new List<EntityId>();
+            var at = new List<double>();
             var most = 0;
-            Run(world, 12f, e =>
+            // Play-test 6 (DECISIONS 21F): the drones go one after another, all through its passes (it was all eight at once).
+            Run(world, 45f, e =>
             {
-                if (e.Kind == SimEventKind.WeaponFired && e.Entity == carrier.Id && e.DefId == "swarm_drones") drones.Add(e.Other);
+                if (e.Kind != SimEventKind.WeaponFired || e.Entity != carrier.Id || e.DefId != "swarm_drones") return;
+                drones.Add(e.Other);
+                at.Add(world.Time);
             }, () =>
             {
                 carrier.Hp = carrier.MaxHp;
                 most = System.Math.Max(most, world.Economy.AircraftCount(0));
             });
-            Assert.AreEqual(8, drones.Count, "one full load: eight FPV drones");
+            Assert.GreaterOrEqual(drones.Count, 8, "a full load's eight FPV drones and more");
             Assert.GreaterOrEqual(drones.Distinct().Count(), 3, "they spread over the group, each to its own target");
             Assert.AreEqual(6, most, "the drones never count as aircraft");
-            Assert.AreNotEqual(SupplyState.Fighting, carrier.Supply, "its bay empty, it goes back to rearm");
+            Assert.IsTrue(at.Zip(at.Skip(1), (x, y) => y - x).All(gap => gap > 0.5), "one at a time, never a wave");
         }
 
         [Test]

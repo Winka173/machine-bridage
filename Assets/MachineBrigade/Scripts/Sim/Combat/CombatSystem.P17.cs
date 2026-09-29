@@ -135,7 +135,7 @@ namespace MachineBrigade.Sim.Combat
         /// A swarm salvo's next drone: the enemy on the ground within the swarm's reach of the salvo's aim that has
         /// the least coming at it for its health (so the drones spread over the group), the nearest breaking ties.
         /// </summary>
-        private Vehicle? SwarmTarget(Vehicle v, WeaponDef weapon, Vector2 around)
+        private Vehicle? SwarmTarget(Vehicle v, WeaponDef weapon, Vector2 around, WeaponState? singles = null)
         {
             Vehicle? best = null;
             var bestScore = float.MaxValue;
@@ -149,6 +149,8 @@ namespace MachineBrigade.Sim.Combat
                 var due = _incoming.TryGetValue(other.Id, out var incoming) ? incoming : 0f;
                 var score = due / MathF.Max(1f, other.Hp) + MathF.Sqrt(d2) * 0.01f;
                 if (other.Def.Obstacle) score += 10f;
+                // Play-test 6: single drones take turns round the group (the last two targets count as busy).
+                if (singles != null && (other.Id == singles.SwarmLast || other.Id == singles.SwarmBefore)) score += other.Id == singles.SwarmLast ? 1f : 0.5f;
                 if (score >= bestScore) continue;
                 best = other;
                 bestScore = score;

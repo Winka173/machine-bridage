@@ -1,0 +1,31 @@
+matchup	ttk_s	killed	hits	over2	over1	level	under1	under2	under3	part	lostToArmour	front	side	rear	top
+light: 2 armoured cars vs 2 armoured cars	13.6	3/3	88	0%	86%	0%	14%	0%	0%	0%	2%	100%	0%	0%	0%
+light: IFV vs 2 armoured cars	12.9	3/3	54	2%	91%	0%	7%	0%	0%	0%	-2%	100%	0%	0%	0%
+light: 2 IFVs vs 2 IFVs	12.8	3/3	108	2%	0%	90%	0%	8%	0%	0%	11%	100%	0%	0%	0%
+light: 2 jeeps vs 2 armoured cars	14.7	3/3	164	0%	0%	100%	0%	0%	0%	0%	15%	100%	0%	0%	0%
+tank: MBT vs MBT, front	33.0	3/3	175	0%	4%	0%	0%	96%	0%	0%	37%	100%	0%	0%	0%
+tank: MBT vs MBT, flank	23.4	3/3	119	4%	0%	0%	96%	0%	0%	0%	13%	0%	100%	0%	0%
+tank: MBT vs heavy tank, front	79.0	3/3	436	0%	0%	4%	0%	0%	96%	0%	53%	100%	0%	0%	0%
+tank: MBT vs heavy tank, flank	58.8	3/3	320	0%	4%	0%	0%	96%	0%	0%	38%	0%	100%	0%	0%
+tank: light tank vs IFV, front	34.5	3/3	224	0%	0%	6%	0%	94%	0%	0%	47%	100%	0%	0%	0%
+tank: light tank vs MBT, flank	58.5	3/3	397	0%	0%	6%	0%	94%	0%	0%	47%	0%	100%	0%	0%
+tank: IFV vs MBT, front	31.1	3/3	139	0%	2%	0%	92%	0%	6%	0%	42%	100%	0%	0%	0%
+tank: IFV vs MBT, flank	20.8	3/3	90	2%	0%	89%	0%	8%	0%	0%	10%	0%	100%	0%	0%
+AT: tank destroyer vs MBT, front	24.7	3/3	119	0%	6%	0%	0%	94%	0%	0%	28%	100%	0%	0%	0%
+AT: FPV carrier vs MBT	43.2	3/3	15	0%	100%	0%	0%	0%	0%	0%	0%	0%	0%	0%	100%
+AT: Lancet truck vs heavy tank	70.2	3/3	8	0%	100%	0%	0%	0%	0%	0%	0%	0%	0%	0%	100%
+AT: armoured car vs MBT, front (wrong tool)	38.2	3/3	278	0%	0%	0%	83%	0%	17%	0%	53%	100%	0%	0%	0%
+AA: AA vehicle vs attack helicopter	20.3	3/3	33	0%	100%	0%	0%	0%	0%	0%	0%	100%	0%	0%	0%
+AA: SAM launcher vs attack jet	7.2	3/3	32	0%	15%	0%	85%	0%	0%	0%	2%	100%	0%	0%	0%
+AA: heavy AA vs attack jet	8.7	3/3	55	0%	0%	100%	0%	0%	0%	0%	15%	100%	0%	0%	0%
+arty: 2 SP howitzers vs 4 armoured cars	46.4	3/3	16	0%	100%	0%	0%	0%	0%	0%	0%	0%	0%	0%	100%
+arty: 2 MLRS vs 2 MBTs	36.9	3/3	44	0%	86%	14%	0%	0%	0%	0%	1%	0%	0%	0%	100%
+arty: 2 SP howitzers vs 2 MBTs	69.3	3/3	22	0%	18%	78%	4%	0%	0%	0%	12%	0%	4%	0%	96%
+tower: gun turret vs 2 MBTs	48.7	3/3	18	0%	94%	0%	6%	0%	0%	0%	2%	94%	6%	0%	0%
+tower: MG bunker vs 3 armoured cars	18.1	3/3	201	1%	0%	99%	0%	0%	0%	0%	10%	100%	0%	0%	0%
+tower: ATGM tower vs MBT	23.7	3/3	9	0%	100%	0%	0%	0%	0%	0%	0%	100%	0%	0%	0%
+tower: AA turret vs attack helicopter	17.7	3/3	41	0%	100%	0%	0%	0%	0%	0%	0%	100%	0%	0%	0%
+vs tower: 2 MBTs vs gun turret	53.8	3/3	585	0%	4%	0%	0%	96%	0%	0%	38%	100%	0%	0%	0%
+vs tower: 3 armoured cars vs MG bunker	69.3	3/3	689	0%	0%	0%	94%	0%	6%	0%	51%	100%	0%	0%	0%
+ALL MATCHUPS			13454	0%	8%	15%	26%	39%	12%	0%	25%	77%	21%	0%	2%
+MIXED BATTLE 71 s, half at 13 s (winner 1), 240 s, half at 15 s (winner 1), 80 s, half at 12 s (winner 0)			1145	4%	23%	42%	18%	14%	0%	0%	6%	79%	14%	6%	1%

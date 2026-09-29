@@ -26,7 +26,8 @@ namespace MachineBrigade.Tests
             target.Hp = target.MaxHp;
             double lastMain = double.NegativeInfinity, lastGun = double.NegativeInfinity;
             int main = 0, gun = 0, tooClose = 0, runs = 0;
-            for (var t = 0f; t < 20f; t += TestWorlds.Step)
+            // 30 s (it was 20): play-test 6 (DECISIONS 21F) gave the machine guns longer streams.
+            for (var t = 0f; t < 30f; t += TestWorlds.Step)
             {
                 world.Step(TestWorlds.Step);
                 foreach (var e in world.Events)

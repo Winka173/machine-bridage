@@ -61,6 +61,9 @@ namespace MachineBrigade.Sim.Entities
         public double WaitingSince = double.NegativeInfinity;
 
         /// <summary>Prompt 17 C: a ramping weapon (the focused laser): the target it is on, since when, and its last round on it.</summary>
+        /// <summary>Play-test 6 (DECISIONS 21F): the last two targets of a swarm's single drones (the next goes to another).</summary>
+        public EntityId SwarmLast, SwarmBefore;
+
         public EntityId RampTarget;
         public double RampSince, RampLastAt = double.NegativeInfinity;
     }

@@ -92,6 +92,15 @@ namespace MachineBrigade.Sim.Combat
                 }
             }
 
+            // Play-test 6 (DECISIONS 21F): a round fired straight at a big target (a boss, a big ship, a large aircraft or
+            // structure) bursts where it meets its hull or the struck part's edge, not in its middle; one that comes down
+            // from above (lobbed, dropped, a diving drone or a top attack) still bursts on the roof. The damage and the face
+            // struck are as before: the face is the one turned to the shooter, on whose line the contact point lies.
+            if (hit.IsValid && !weapon.Indirect && !weapon.TopAttack && _world.TryGetVehicle(hit, out var struck))
+                at = p.Part >= 0 && p.Part < struck.Def.Parts.Count
+                    ? HullContact.On(struck.PartPosition(p.Part), 0f, 0f, struck.Def.Parts[p.Part].Radius, p.Origin)
+                    : HullContact.On(struck.Def, struck.Position, struck.Heading, p.Origin);
+
             if (weapon.Pierce && !p.TargetFlying && !p.Bounce) PierceLine(p, at, hit);
 
             // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
