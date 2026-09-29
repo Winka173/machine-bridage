@@ -5806,3 +5806,21 @@ aim's danger, the fingerprint), `Vehicle.Boss` (`MountHeld`, `BigAttack`, `BigTa
 `MissionMode`, `SiegeModes`, `ModeSessions`, `MatchRunner`, `AudioDirector`, `EffectsDirector`, `BattleHud`,
 `MissionBar` (BossBar), `BossPartsRow`, `MenuScreen.BossParts`, `Strings` (the text hook, three stop words),
 `Screens.uss`, `BossPartsTests`, `LocalisationScanTests`.
+
+## 18D. Design document: armour levels, penetration, weapon forms, and fixes (2026-09-29)
+
+The owner's doc update (Docs/prompts/doc-review-update_vi.txt). Everything is generated from the export and the data; nothing is edited in the PDF.
+
+- **Armour:** vehicle, tower and elite cards show the level on each face with its name (0 Không giáp, 1 Mỏng, 2 Vừa, 3 Dày, 4 Rất dày), one level when all faces match, and "công trình" on structures. Boss part tables have a column with each part's level, plus a line with the hull's faces. Sections 9 and 9b have a front-armour column.
+- **Weapons:** every weapon table has columns for penetration and for form with tags (top attack, guided, splash, Thermobaric). The "Đạn và nạp đạn" lines add both. Each card has the main weapon's effect row against armour 0-4, air and structures, with the game's own ✓ ~ ✕ thresholds (`Matchup.GoodAt` 0.6, `PoorAt` 0.12), and the Strong-against / Weak-to lines.
+- **Icons:** the combat icons are drawn in code (`CombatIcons`), with no image per icon. Section 10 therefore shows the game's icon legend sheet (`kit-combat-icons.png`) instead of an icon in every cell. Exporting each icon as a PNG would allow icons in the cells later.
+- **Counters:** section 10 gives the defences table (reactive armour, reactive blocks, cage, APS, flares, smoke, jammer, shields). It is written from DECISIONS 14A C.9, which `ArmourTests.CountersFollowTheTable` holds the code to.
+- **Fixes:**
+  - 9b reads the newest `combat_value_*_summary.tsv`, keeps only cards still in the roster, and takes names and CP from the current data (it listed merged cards and the old car-bomb cost).
+  - Boss Rush's subtitle has its count filled in the export, and the Boss Rush list comes from `BossRushRules.Kinds`.
+  - Section 11 names the HQ instead of the bastion.
+  - Sections 1 and 15 count the long maps.
+  - Section 2's difficulty paragraph now reads the four-level table from DECISIONS 13C.
+  - The campaign line reads its mission and chapter counts from the data.
+- **Tests:** `ExportGameDoc.EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm` and `ExportGameDoc.NoModeLineKeepsAPlaceholder` (both languages).
+

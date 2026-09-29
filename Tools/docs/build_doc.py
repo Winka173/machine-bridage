@@ -30,6 +30,69 @@ ARMOR_VI = {'Light': 'Nhẹ', 'Heavy': 'Nặng', 'Air': 'Máy bay', 'Structure':
 TYPE_VI = {'Kinetic': 'Động năng', 'ArmorPiercing': 'Xuyên giáp', 'HighExplosive': 'Nổ mạnh', 'Fire': 'Lửa', 'Flak': 'Phòng không',
            'ShapedCharge': 'Nổ lõm', 'Fragmentation': 'Mảnh', 'Energy': 'Năng lượng'}
 TARGET_VI = {'Ground': 'Mặt đất', 'Air': 'Trên không', 'All': 'Tất cả'}
+# Prompt 15: armour levels, faces, weapon forms, the effect columns and the threats (Matchup in the game).
+LEVEL_VI = ['Không giáp', 'Mỏng', 'Vừa', 'Dày', 'Rất dày']
+FACE_VI = [('front', 'Trước'), ('side', 'Hông'), ('rear', 'Sau'), ('top', 'Nóc')]
+FORM_VI = {'None': '—', 'BulletSmall': 'đạn súng', 'BulletBig': 'đạn súng (cỡ lớn)', 'BeltedAutocannon': 'đạn pháo động năng (pháo tự động)',
+           'Dart': 'đạn pháo động năng', 'DoubleDart': 'đạn pháo động năng (≥120 mm)', 'Rail': 'đạn pháo động năng (điện từ)',
+           'HeShell': 'đạn pháo nổ mạnh', 'MortarBomb': 'đạn pháo nổ mạnh (cối)', 'Grenade': 'đạn pháo nổ mạnh (lựu đạn 40 mm)',
+           'SuperShell': 'đạn pháo nổ mạnh (800 mm)', 'Airburst': 'đạn nổ trên không', 'RocketSmall': 'rốc-két', 'RocketBig': 'rốc-két (cỡ lớn)',
+           'Atgm': 'tên lửa chống tăng', 'Sam': 'tên lửa phòng không', 'Cruise': 'tên lửa hành trình', 'Ballistic': 'tên lửa đạn đạo',
+           'Bomb': 'bom thường', 'GuidedBomb': 'bom dẫn đường', 'Cluster': 'bom chùm', 'HeavyBomb': 'bom hạng nặng', 'CarBomb': 'bom hạng nặng (xe bom)',
+           'Fpv': 'drone (FPV)', 'Shahed': 'drone (Shahed)', 'Lancet': 'drone (Lancet)', 'Flame': 'lửa', 'Napalm': 'lửa (napalm)',
+           'Energy': 'năng lượng', 'Blade': 'cận chiến (lưỡi ủi)', 'Drill': 'cận chiến (mũi khoan)'}
+COLUMN_VI = {'Armour0': 'giáp 0', 'Armour1': 'giáp 1', 'Armour2': 'giáp 2', 'Armour3': 'giáp 3', 'Armour4': 'giáp 4', 'Air': 'trên không', 'Structure': 'công trình'}
+THREAT_VI = {'SmallArms': 'súng bộ binh', 'HeavyMachineGuns': 'súng máy hạng nặng', 'Fire': 'lửa', 'Fragmentation': 'mảnh', 'Autocannons': 'pháo tự động',
+             'HighExplosive': 'nổ mạnh', 'Energy': 'năng lượng', 'TopAttack': 'đánh nóc', 'ShapedCharges': 'nổ lõm', 'TankGuns': 'pháo xe tăng'}
+GOOD_AT, POOR_AT = 0.6, 0.12   # Matchup.GoodAt / PoorAt
+
+
+def level(n):
+    return f"{n} ({LEVEL_VI[n]})" if isinstance(n, int) and 0 <= n < len(LEVEL_VI) else str(n)
+
+
+def armour_text(v):
+    """A unit's armour: one level when every face is the same, else each face; 'công trình' on structures."""
+    a = v.get('armour') or {}
+    faces = [a.get(k, 0) for k, _ in FACE_VI]
+    text = f"cấp {level(faces[0])}" if len(set(faces)) == 1 else ' · '.join(f"{name} {level(a.get(k, 0))}" for k, name in FACE_VI)
+    return text + (' · công trình' if v.get('armor') == 'Structure' else '')
+
+
+def front_level(v):
+    a = v.get('armour') or {}
+    return level(a.get('front', 0))
+
+
+def weapon_tags(w):
+    tags = []
+    if w.get('topAttack'):
+        tags.append('đánh nóc')
+    if w.get('guided'):
+        tags.append('dẫn đường')
+    if w.get('splash') or w.get('splashes'):
+        tags.append('nổ lan')
+    if w.get('thermobaric'):
+        tags.append('Nhiệt áp')
+    return tags
+
+
+def form_cell(w):
+    return esc(FORM_VI.get(w.get('form', ''), w.get('form', ''))) + ''.join(f"<span class='tag'>{esc(t)}</span>" for t in weapon_tags(w))
+
+
+def verdict(x):
+    return '✓' if x >= GOOD_AT else '~' if x >= POOR_AT else '✕'
+
+
+def effect_table(w):
+    """The main weapon against the five armour levels, aircraft and structures, with the game's ✓ ~ ✕."""
+    row = w.get('effect') or []
+    if len(row) != 7:
+        return ''
+    head = ['Hiệu quả: ' + (w.get('name') or w['id'])] + ['Giáp 0', 'Giáp 1', 'Giáp 2', 'Giáp 3', 'Giáp 4', 'Trên không', 'Công trình']
+    cells = [f"xuyên {w.get('pen', 0)}"] + [f"{verdict(x)} ×{x:.2f}".rstrip('0').rstrip('.') for x in row]
+    return table(head, [cells], 'eff')
 SLOT_VI = {'Weapon': 'Vũ khí', 'Loader': 'Nạp đạn', 'Armor': 'Giáp', 'Optics': 'Quang học', 'Engine': 'Động cơ', 'Repair': 'Sửa chữa',
            'Special': 'Đặc biệt'}
 RARITY_VI = ['Thường', 'Khá', 'Hiếm', 'Sử thi', 'Huyền thoại']
@@ -62,6 +125,7 @@ def fill(text, values):
 
 
 CACHE = None
+LONG_MAPS = len(list((Path(__file__).resolve().parents[2] / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'maps').glob('*_long.json')))
 SIZES = {'thumb': 640, 'gearicon': 128, 'shot': 1500, '': 1300}
 
 
@@ -139,6 +203,9 @@ tbody tr:nth-child(even) td { background: #f5f6f7; }
 .galcell { break-inside: avoid; background: #fff; border: 1px solid #ddd; padding: 3pt; text-align: center; }
 .galcell img.gal { width: 100%; height: 110pt; object-fit: contain; }
 .galcap { font-size: 8pt; margin-top: 2pt; }
+table.eff { font-size: 8pt; margin-top: 3pt; }
+table.eff td, table.eff th { padding: 1.5pt 3pt; text-align: center; }
+.tag { display: inline-block; font-size: 7pt; background: #e8eef5; color: #2f5d8a; border-radius: 3pt; padding: 0 3pt; margin-left: 3pt; }
 .behav { font-size: 8.5pt; margin-top: 4pt; border-left: 2px solid #5b7fa6; padding-left: 5pt; }
 .behav ul { margin: 2pt 0 0 0; padding-left: 12pt; }
 .behav li { margin: 1pt 0; }
@@ -172,11 +239,18 @@ def weapon_cycle(w):
 
 
 def vehicle_card(v, imgdir):
-    weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), num(w['damage']), weapon_cycle(w),
+    weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), str(w.get('pen', 0)), form_cell(w), num(w['damage']), weapon_cycle(w),
                 f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
                 TARGET_VI.get(w['targets'], w['targets']), f"{w['dps']:.0f}"] for w in v['weapons']]
+    main = max(v['weapons'], key=lambda w: w['dps'], default=None)
+    strong = ', '.join(COLUMN_VI.get(c, c) for c in v.get('strongVs', []))
+    weak = ', '.join(THREAT_VI.get(t, t) for t in v.get('weakTo', []))
+    matchup = ((f"<div class='note'><b>Mạnh với:</b> {esc(strong)}</div>" if strong else '')
+               + (f"<div class='note'><b>Yếu trước:</b> {esc(weak)}</div>" if weak else ''))
+    ammo = list(v.get('ammo') or []) + [f"{w.get('name') or w['id']}: xuyên [[{w.get('pen', 0)}]], {FORM_VI.get(w.get('form', ''), w.get('form', ''))}"
+                                        + (' (' + ', '.join(weapon_tags(w)) + ')' if weapon_tags(w) else '') for w in v['weapons']]
     d = v['dpsVs']
-    stats = (f"<div class='stats'><div>Máu <b>{num(v['hp'])}</b></div><div>Giáp <b>{ARMOR_VI.get(v['armor'], v['armor'])}</b></div>"
+    stats = (f"<div class='stats'><div>Máu <b>{num(v['hp'])}</b></div><div>Giáp trước <b>{front_level(v)}</b></div>"
              f"<div>Tốc độ <b>{v['speed']:g} m/s</b></div><div>Giá <b>{v['cost']} CP</b></div>"
              f"<div>Tầm nhìn <b>{v['vision']:g} m</b></div><div>DPS vs nhẹ <b>{d['Light']:.0f}</b></div>"
              f"<div>DPS vs nặng <b>{d['Heavy']:.0f}</b></div><div>DPS vs máy bay <b>{d['Air']:.0f}</b></div></div>")
@@ -187,10 +261,36 @@ def vehicle_card(v, imgdir):
     return (f"<div class='card'><div class='head' style='{'' if thumb else 'grid-template-columns: 1fr'}'>{thumb}"
             f"<div><div class='name'>{esc(v['name'])}</div><div class='meta'>{CLASS_VI.get(v['class'], v['class'])}"
             f"{' · bay' if v['flying'] else ''} · id <code>{esc(v['id'])}</code></div>{stats}"
+            f"<div class='note'><b>Giáp:</b> {esc(armour_text(v))}</div>{matchup}"
             f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
-            + (table(['Vũ khí', 'Loại', 'Sát thương / phát', 'Nhịp bắn', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '')
-            + "<div class='two'>" + lines_html('Hành vi', v.get('behavior'), 'behav') + lines_html('Đạn và nạp đạn', v.get('ammo'), 'behav') + "</div>"
+            + (table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Sát thương / phát', 'Nhịp bắn', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '')
+            + (effect_table(main) if main else '')
+            + "<div class='two'>" + lines_html('Hành vi', v.get('behavior'), 'behav') + lines_html('Đạn và nạp đạn', ammo, 'behav') + "</div>"
             + "</div>")
+
+
+def difficulty_table():
+    """The four difficulty levels, read from DECISIONS 13C's table so it follows the design notes."""
+    text = (ROOT / 'Docs' / 'DECISIONS.md').read_text(encoding='utf-8')
+    m = re.search(r'^\| \| Easy \| Normal \| Hard \| Very Hard \|\n\|[-|]+\|\n((?:\|.*\|\n)+)', text, re.M)
+    if not m:
+        return ''
+    label = {'Noise (randomness of a pick)': 'Độ ngẫu nhiên khi chọn quân', 'Counters what it has seen': 'Mua khắc chế thứ đã thấy',
+             'Keeps its role shares': 'Giữ tỷ lệ vai trò', 'Weighs value per CP (part A)': 'Coi trọng giá trị / CP',
+             'Saves for the big cards (per CP of price)': 'Để dành cho thẻ lớn (theo CP)', 'Deck': 'Bộ bài', 'Income': 'Thu nhập',
+             'Decision every': 'Ra quyết định mỗi', 'Elite share of its spending (cap)': 'Phần chi cho tinh nhuệ (trần)', 'Rewards': 'Thưởng',
+             'Base (HQ level)': 'Căn cứ (cấp HQ)'}
+    words = {'at random': 'ngẫu nhiên', 'by roles and value': 'theo vai trò và giá trị', 'by roles': 'theo vai trò', 'against the player\'s deck': 'nhắm bộ bài người chơi'}
+    rows = []
+    for line in m.group(1).strip().splitlines():
+        cells = [c.strip() for c in line.strip('|').split('|')]
+        vals = []
+        for c in cells[1:]:
+            for en, vi in words.items():
+                c = c.replace(en, vi)
+            vals.append(esc(c.replace('**', '')))
+        rows.append([esc(label.get(cells[0], cells[0]))] + vals)
+    return table(['', 'Dễ', 'Thường', 'Khó', 'Cực khó'], rows)
 
 
 def build(game, imgdir):
@@ -225,7 +325,8 @@ def build(game, imgdir):
                f"<p><b>Ngoài trận:</b> lên hạng thẻ (bản thiết kế + xu), trang bị theo nhánh (Thiết giáp, Xe nhẹ, Pháo binh, Không quân), căn cứ (loadout tháp theo ô cỡ), "
                f"hòm đồ, chiến dịch {len(game['campaign'])} nhiệm vụ trong {len(game['chapters'])} chương, Tác chiến (chơi lại chiến dịch lớn, 4 cấp độ, mutator tuần), "
                "Pháo đài tuần, Săn trùm, Vô tận, Sinh tồn. Một loại tiền duy nhất: xu.</p>"
-               f"<p><b>Bản đồ:</b> {len(game['maps'])} chiến trường 300 × 300 m, mỗi bản có phiên bản chiếm cứ điểm, sinh tồn và công thành. "
+               f"<p><b>Bản đồ:</b> {len(game['maps'])} chiến trường 300 × 300 m, mỗi bản có phiên bản chiếm cứ điểm, sinh tồn và công thành; "
+               f"{LONG_MAPS} bản dài 300 × 480 m (căn cứ nhiều lớp) cho Công thành, Phòng thủ, Vô tận và Pháo đài tuần. "
                f"<b>Mô phỏng:</b> cố định 20 tick/giây, xác định (deterministic), tách khỏi phần hình ảnh.</p>"
                f"{img(shots / 'battle1.png', 'shot')}<div class='caption'>Trong trận (ảnh 3D; HUD ở ảnh này là bản trước phase 10, HUD mới ở phần 18): bản đồ nhỏ, thanh nhiệm vụ, nút lệnh, khay thẻ và CP.</div>"
                f"{img(shots / 'battle2.png', 'shot')}<div class='caption'>Bản đồ sa mạc {mp.get('dunebreak', 'Đồi Cát')} sau khi phóng to 50%; nhà cửa đã chỉnh tỷ lệ so với xe.</div></div>")
@@ -237,13 +338,11 @@ def build(game, imgdir):
         'Deathmatch': 'Tử chiến: hạ đủ số điểm tiêu diệt trước.',
         'KingOfTheHill': 'Vua đồi: giữ cứ điểm trung tâm để tích điểm.',
         'Assault': 'Công phá: người chơi đánh chiếm lần lượt 3 khu phòng thủ (A, B, C) trong quỹ thời gian; mỗi khu chiếm được cộng thêm giờ.',
-        'Campaign': 'Chiến dịch 9 chương, 108 nhiệm vụ (xem phần 3); chơi lại các trận lớn ở Tác chiến (phần 5).',
+        'Campaign': f"Chiến dịch {len(game['chapters'])} chương, {len(game['campaign'])} nhiệm vụ (xem phần 3); chơi lại các trận lớn ở Tác chiến (phần 5).",
         'Siege': 'Công thành: pháo đài chiếm 45% bản đồ, 3 giai đoạn (trạm radar tuyến ngoài → máy phát khiên trong tường → sở chỉ huy), cổng, tường sập, vòm khiên, '
                  'siêu pháo, chi viện bằng tàu hỏa hoặc đường băng (phần 7).',
-        'BossRush': 'Săn trùm: lần lượt 10 loại boss kèm hộ tống, mỗi loại bốc ngẫu nhiên 1 biến thể: '
-                    + '; '.join(' / '.join(bn.get(i, i) for i in kind) for kind in (('behemoth', 'behemoth_inferno', 'behemoth_tempest'), ('mega_gunship', 'sky_fortress'),
-                                ('mobile_fortress', 'fortress_hive', 'fortress_bastion'), ('drone_mothership',), ('silver_bug',), ('rail_supergun',), ('earth_borer',),
-                                ('command_airship',), ('landing_hovercraft',), ('supreme_command',)))
+        'BossRush': f"Săn trùm: lần lượt {len(game.get('bossRushKinds', []))} loại boss kèm hộ tống, mỗi loại bốc ngẫu nhiên 1 biến thể: "
+                    + '; '.join(' / '.join(bn.get(i, i) for i in kind) for kind in game.get('bossRushKinds', []))
                     + '. Thưởng thêm 2 CP mỗi bộ phận boss bị phá. '
                     'Thưởng CP khi boss mất 25/50/75% máu (8 CP mỗi mốc) và 12 CP khi hạ; không có không kích ngẫu nhiên.',
         'Defend': 'Phòng thủ: pháo đài là loadout căn cứ của bạn, ba tuyến lùi (mất tuyến được thưởng CP rút lui) và sở chỉ huy là trận chốt; đợt địch hiện trước bằng icon.',
@@ -252,7 +351,7 @@ def build(game, imgdir):
     }
     rows = [[f"<b>{esc(m['name'] or m['id'])}</b>", esc(m['sub']), esc(desc.get(m['id'], ''))] for m in game['modes']]
     out.append("<div class='section'><h2>2. Chế độ chơi</h2>" + table(['Chế độ', 'Tóm tắt', 'Luật'], rows)
-               + "<p>Độ khó Dễ / Thường / Khó ảnh hưởng thu nhập và bộ bài của AI địch, ngân sách xe tinh nhuệ (5–25% chi tiêu, trần 1–5 xe cùng lúc) và hệ số thưởng (×0.7 / ×1 / ×1.45). "
+               + "<p>Bốn độ khó Dễ / Thường / Khó / Cực khó ảnh hưởng AI địch, thu nhập, xe tinh nhuệ và thưởng:</p>" + difficulty_table() + "<p>"
                "Thời tiết (nắng, âm u, mưa, bão, tuyết, bão cát, sương mù, đêm) đổi dần trong 8 giây và ảnh hưởng tầm nhìn/hình ảnh.</p>"
                f"<div class='two'><div>{img(shots / 'siege.png', 'shot')}<div class='caption'>Công thành.</div></div>"
                f"<div>{img(shots / 'defend.png', 'shot')}<div class='caption'>Phòng thủ căn cứ.</div></div></div>"
@@ -283,12 +382,12 @@ def build(game, imgdir):
     out.append('</div>')
 
     # ------------------------------------------------------------------ DPS table
-    rows = [[f"<b>{esc(v['short'])}</b>", CLASS_VI.get(v['class'], v['class']), ARMOR_VI.get(v['armor'], v['armor']), num(v['hp']), v['cost'],
+    rows = [[f"<b>{esc(v['short'])}</b>", CLASS_VI.get(v['class'], v['class']), front_level(v), num(v['hp']), v['cost'],
              f"{v['speed']:g}", f"{max((w['range'] for w in v['weapons']), default=0):g}",
              f"{v['dpsVs']['Light']:.0f}", f"{v['dpsVs']['Heavy']:.0f}", f"{v['dpsVs']['Air']:.0f}", f"{v['dpsVs']['Structure']:.0f}",
              f"{(v['dpsVs']['Heavy'] / max(1, v['cost'])):.1f}"] for v in game['vehicles']]
     out.append("<div class='section'><h2>9. Bảng DPS tổng hợp</h2>"
-               + table(['Xe', 'Lớp', 'Giáp', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
+               + table(['Xe', 'Lớp', 'Giáp trước', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
 
     out.append(programme.combat_value(game, h))
 
@@ -306,23 +405,39 @@ def build(game, imgdir):
                 weapons.setdefault(w['id'], (w, owner))
     def volley(w):
         return f"băng {w['clip']} · thay {w['clipReload']:g} s" if w.get('clip') else w['burst']
-    wrows = [[f"<code>{esc(w['id'])}</code>", TYPE_VI.get(w['type'], w['type']), num(w['damage']), volley(w), f"{w['cooldown']:g}",
+    wrows = [[f"<code>{esc(w['id'])}</code>", TYPE_VI.get(w['type'], w['type']), str(w.get('pen', 0)), form_cell(w), num(w['damage']), volley(w), f"{w['cooldown']:g}",
               f"{w['speed']:g}" if w.get('speed') else '',
               f"{w['range']:g}", f"{w['minRange']:g}" if w['minRange'] else '', f"{w['splash']:g}" if w['splash'] else '',
-              TARGET_VI.get(w['targets'], w['targets']), w['projectile'], f"{w['dps']:.0f}", esc(owner)] for w, owner in sorted(weapons.values(), key=lambda x: x[0]['id'])]
+              TARGET_VI.get(w['targets'], w['targets']), f"{w['dps']:.0f}", esc(owner)] for w, owner in sorted(weapons.values(), key=lambda x: x[0]['id'])]
+    counters = [
+        ['Giáp phản ứng nổ (mô-đun)', 'Nổ lõm: giảm 40% (Sử thi) / 55% (Huyền thoại) một phát; đầu nổ song song xuyên qua', 'Động năng, nổ mạnh, mọi loại khác; mìn'],
+        ['Khối phản ứng nổ (dòng đặc biệt)', 'Nổ lõm: nửa một phát, mỗi lần một khối', 'Đạn động năng'],
+        ['Lồng chắn (Slat Cage, lưới chắn; mái che của xe rùa trước drone)', 'Phần nổ lõm của rốc-két, tên lửa và drone', 'Đạn động năng, đạn pháo HEAT, nổ nhiệt áp, mìn'],
+        ['APS (Trophy, phòng thủ điểm)', 'Tên lửa, drone, rốc-két bắn thẳng (laser phòng thủ điểm và C-RAM thêm rốc-két pháo binh; C-RAM một phần đạn pháo)',
+         'Đạn pháo xe tăng, đạn súng, tia năng lượng; laser phòng thủ điểm khi ở trong khói hoặc bắn vào khói'],
+        ['Pháo sáng', 'Tên lửa (theo độ kháng pháo sáng của đầu dò)', 'Drone, đạn súng, đạn phòng không, tia năng lượng'],
+        ['Khói', '80% sát thương của tia năng lượng bắn vào hoặc bắn ra', 'Mọi loại khác'],
+        ['Gây nhiễu', 'Đạn dẫn đường (tên lửa, drone) bay lệch', 'Đạn không dẫn đường, tia năng lượng'],
+        ['Khiên (xe mang khiên, tháp khiên)', 'Mọi phát trúng quân ở trong vòm, tới khi khiên vỡ', 'Năng lượng'],
+    ]
+    legend = img(imgdir / 'ui' / 'kit-combat-icons.png', 'shot')
     out.append("<div class='section'><h2>10. Vũ khí và bảng sát thương</h2><h3>Hệ số sát thương theo loại đạn và loại giáp</h3>"
                + table(['Loại đạn'] + [{'Ground': 'Mặt đất', 'Air': 'Trên không', 'Structure': 'Công trình'}[a] for a in armors], rows)
                + "<p>Prompt 15: mỗi mặt giáp (trước, hông, sau, nóc) có cấp 0–4, mỗi vũ khí có cấp xuyên 0–4. Sát thương nhân theo số cấp xuyên còn thiếu: "
                + esc(', '.join(f"thiếu {i} cấp ×{m:g}" for i, m in enumerate(pens)))
                + f"; đầu nổ nhiệt áp ×{dt.get('thermobaric', 1):g} (xem DECISIONS 14A). Bảng hiệu quả và ký hiệu ✓ ~ ✕ của từng xe nằm ở thẻ xe (phần 8).</p>"
                + "<p>Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch theo tầm và chuyển động, pháo có tầm tối thiểu. Máy bay có pháo sáng, "
-               "xe có hệ thống đánh chặn chủ động (APS) chặn tên lửa/drone, tàng hình chỉ lộ ở 40% tầm nhìn khi không bắn.</p>"
-               f"<h3>Toàn bộ vũ khí ({len(wrows)})</h3>"
-               + table(['Vũ khí', 'Loại', 'Sát thương', 'Loạt / băng', 'Hồi (s)', 'Tốc độ đạn', 'Tầm', 'Tối thiểu', 'Nổ lan', 'Mục tiêu', 'Đạn', 'DPS', 'Trên xe'], wrows) + '</div>')
+               "xe có hệ thống đánh chặn chủ động (APS) chặn tên lửa/drone, tàng hình chỉ lộ ở 40% tầm nhìn khi không bắn. "
+               f"Ký hiệu: ✓ hệ số từ {GOOD_AT:g} trở lên, ~ từ {POOR_AT:g}, ✕ thấp hơn (cùng ngưỡng với giao diện trong game).</p>"
+               "<h3>Khắc chế: phòng vệ chặn loại đạn nào</h3>" + table(['Phòng vệ', 'Chặn hoặc giảm', 'Không chặn'], counters)
+               + "<p class='muted'>Luật này được test <code>ArmourTests.CountersFollowTheTable</code> kiểm tra (bảng gốc ở DECISIONS 14A C.9).</p>"
+               + (f"<h3>Icon giáp và dạng vũ khí</h3>{legend}<div class='caption'>Bộ icon trong game (prompt 15): cấp giáp, dạng vũ khí, dấu phụ.</div>" if legend else '')
+               + f"<h3>Toàn bộ vũ khí ({len(wrows)})</h3>"
+               + table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Sát thương', 'Loạt / băng', 'Hồi (s)', 'Tốc độ đạn', 'Tầm', 'Tối thiểu', 'Nổ lan', 'Mục tiêu', 'DPS', 'Trên xe'], wrows, 'dps') + '</div>')
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):
-        return [[f"<b>{esc(v['name'])}</b>", ARMOR_VI.get(v['armor'], v['armor']), num(v['hp']), f"{v['speed']:g}",
+        return [[f"<b>{esc(v['name'])}</b>", esc(armour_text(v)), num(v['hp']), f"{v['speed']:g}",
                  esc(', '.join(w['id'] for w in v['weapons'])), f"{v['dpsVs']['Light']:.0f} / {v['dpsVs']['Heavy']:.0f} / {v['dpsVs']['Air']:.0f}",
                  esc(', '.join(v['skills']))] for v in vs]
     head = ['Tên', 'Giáp', 'Máu', 'Tốc độ', 'Vũ khí', 'DPS nhẹ/nặng/bay', 'Kỹ năng']
@@ -346,7 +461,7 @@ def build(game, imgdir):
                [('Công sự khác (trung lập, pháo đài, boss)', [t for t in towers if t.get('size') not in known])]
     out.append("<div class='section'><h2>11. Tháp canh, xe tinh nhuệ và boss</h2>"
                "<h3>Tháp và công sự</h3><p>Tháp cố định chặn lưới đường đi khi xuất hiện; trong Chiếm cứ điểm mỗi cứ điểm có tháp trung lập bắn mọi phe và dựng lại "
-               "sau một thời gian; căn cứ có ụ phòng thủ (bastion) bất tử. Tháp của căn cứ người chơi xếp theo cỡ ô (phần 6), có hạng, nhánh ở hạng 7 và 3 ô đồ.</p>"
+               "sau một thời gian; mỗi phe có sở chỉ huy (HQ) có máu (phá được hay không tùy chế độ, phần 6). Tháp của căn cứ người chơi xếp theo cỡ ô (phần 6), có hạng, nhánh ở hạng 7 và 3 ô đồ.</p>"
                + ''.join(f"<h4>{esc(label)} ({len(ts)})</h4>" + ''.join(vehicle_card(t, imgdir) for t in ts)
                          for label, ts in tower_groups(game['towers']) if ts)
                + "<h3>Xe tinh nhuệ</h3><p>Phiên bản tân trang: +60% máu, +25% sát thương, 1–2 kỹ năng tinh nhuệ, thanh máu vàng và vòng vàng trên bản đồ nhỏ; "
@@ -451,7 +566,7 @@ def build(game, imgdir):
                + f"{img(ui / 'screen-shop-crates-vi-16x9.png', 'shot')}<div class='caption'>Cửa hàng › Hòm: ảnh hòm, nội dung, tỷ lệ và giá trên từng ô.</div></div>")
 
     # ------------------------------------------------------------------ maps
-    out.append(f"<div class='section'><h2>15. Bản đồ</h2><p>{len(game['maps'])} chiến trường 300 × 300 m (8 bản đồ mới: " + ', '.join(mp.get(i, i) for i in ('landingbeach', 'hydrodam', 'capital', 'launchsite', 'saltflat', 'borderbridge', 'swamp', 'coralisles')) + ")"
+    out.append(f"<div class='section'><h2>15. Bản đồ</h2><p>{len(game['maps'])} chiến trường 300 × 300 m, cộng {LONG_MAPS} bản dài 300 × 480 m (phần 7b) (8 bản đồ mới: " + ', '.join(mp.get(i, i) for i in ('landingbeach', 'hydrodam', 'capital', 'launchsite', 'saltflat', 'borderbridge', 'swamp', 'coralisles')) + ")"
                ", đường viền không đều; phần ngoài viền vẫn được dựng "
                "như bản đồ (nhà, rừng, đá) chỉ để trang trí, ranh giới là đường đứt nét. Mỗi trại có sở chỉ huy và ô tháp nhỏ/vừa/lớn/tiện ích; mỗi cứ điểm có tiền đồn. "
                "Phiên bản công thành đặt pháo đài chiếm 45% bản đồ ở đông bắc (phần 7).</p>")

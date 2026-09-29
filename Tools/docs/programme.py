@@ -203,7 +203,9 @@ def boss_parts(v, h):
     for p in parts:
         key = (p.get('name') or p['kind'], p.get('effects', ''), round(p['hp'], 3))
         groups[key] = groups.get(key, 0) + 1
-    rows = [[h['esc'](name) + (f" ×{n}" if n > 1 else ''), f"{share * 100:g}%" + (f" (×{n}: {share * n * 100:g}%)" if n > 1 else ''), h['esc'](effects)]
+    armour = {(p.get('name') or p['kind'], p.get('effects', ''), round(p['hp'], 3)): p.get('armour', '') for p in parts}
+    rows = [[h['esc'](name) + (f" ×{n}" if n > 1 else ''), f"{share * 100:g}%" + (f" (×{n}: {share * n * 100:g}%)" if n > 1 else ''),
+             str(armour.get((name, effects, share), '')), h['esc'](effects)]
             for (name, effects, share), n in groups.items()]
     total = sum(p['hp'] for p in parts)
     notes = [f"Tổng {total * 100:.0f}% máu thân trong {len(parts)} bộ phận"]
@@ -217,7 +219,9 @@ def boss_parts(v, h):
     if v.get('partTip'):
         text = re.sub(r'^\s*(Mẹo|Tip)\s*:\s*', '', v['partTip'])
         tip = "<p class='muted'><b>Mẹo:</b> " + re.sub(r'\[\[(.*?)\]\]', r'<b>\1</b>', h['esc'](text)) + "</p>"
-    return (h['table'](['Bộ phận', 'Máu (phần thân)', 'Khi vỡ'], rows)
+    a = v.get('armour') or {}
+    notes.insert(0, 'giáp thân ' + ' / '.join(f"{k} {a.get(key, 0)}" for key, k in (('front', 'trước'), ('side', 'hông'), ('rear', 'sau'), ('top', 'nóc'))))
+    return (h['table'](['Bộ phận', 'Máu (phần thân)', 'Giáp', 'Khi vỡ'], rows)
             + f"<p class='muted'>{'; '.join(notes)}.</p>" + tip)
 
 
@@ -280,12 +284,14 @@ def feedback(game, h):
 def combat_value(game, h):
     """Combat value measured in the sim (prompt 13 A): damage dealt with the time not firing counted."""
     e = h['esc']
-    path = ROOT / 'Docs' / 'balance' / 'combat_value_F3_summary.tsv'
-    if not path.exists():
+    runs = sorted((ROOT / 'Docs' / 'balance').glob('combat_value_*_summary.tsv'), key=lambda p: p.stat().st_mtime)
+    if not runs:
         return ''
+    path = runs[-1]
     lines = path.read_text(encoding='utf-8').splitlines()
     head = lines[0].split('\t')
-    names = {v['id']: v['name'] for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
+    units = {v['id']: v for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
+    names = {i: v['name'] for i, v in units.items()}
     def num(x):
         try:
             return f"{float(x):.0f}"
@@ -299,7 +305,11 @@ def combat_value(game, h):
     rows = []
     for line in lines[1:]:
         c = dict(zip(head, line.split('\t')))
-        rows.append([f"<b>{e(names.get(c['id'], c['id']))}</b>", e(c.get('class', '')), c.get('cp', ''),
+        v = units.get(c['id'])
+        if v is None:
+            continue   # a card merged or dropped since the measure
+        front = (v.get('armour') or {}).get('front', 0)
+        rows.append([f"<b>{e(names[c['id']])}</b>", e(c.get('class', '')), str(v['cost']), str(front),
                      num(c.get('light')), num(c.get('tanks')), num(c.get('fort')), num(c.get('air')),
                      num(c.get('tanks+AA')), pct(c.get('onTarget')), num(c.get('survival')),
                      num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir'))])
@@ -308,7 +318,8 @@ def combat_value(game, h):
             "Giá trị thực chiến đo trong mô phỏng: mỗi xe hạng 1, không trang bị, đánh các nhóm mục tiêu chuẩn (cụm xe nhẹ, cụm xe tăng, công sự có tháp, máy bay) "
             "trong khoảng 90 giây từ lúc tiếp đất, có và không có phòng không đối phương; tính cả thời gian không bắn (di chuyển, xoay tháp, nạp đạn, bay vòng, bị pháo sáng "
             "và APS chặn). Giá trị = sát thương thực × hệ số sống sót / CP. Mọi quyết định cân bằng của prompt 13 dựa trên bảng này.</p>"
-            + h['table'](['Xe', 'Lớp', 'CP', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
+            + f"<p class='muted'>Số đo: <code>{e(path.name)}</code>; chỉ các thẻ còn trong roster, CP theo dữ liệu hiện tại.</p>"
+            + h['table'](['Xe', 'Lớp', 'CP', 'Giáp trước', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
                           'DPS thật: nhẹ', 'nặng', 'bay'], rows, 'dps') + "</div>")
 
 

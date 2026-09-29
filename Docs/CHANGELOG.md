@@ -7,7 +7,11 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
-Nothing yet.
+### Design document: armour, penetration and weapon forms
+
+- Every card shows armour levels by face and the main weapon's effect on each armour level, aircraft and structures (✓ ~ ✕).
+- Every weapon table has penetration, form and tags. Section 10 adds a counters table and the icon legend.
+- Fixed: the combat-value table uses the current roster, Boss Rush's "{0} bosses", the HQ instead of the bastion, the map, mission and difficulty counts.
 
 ## v0.29.0: Prompts 15-18 (armour and penetration, the sea and escorts for every boss, long maps and new units, the roster review, big attacks) and the 187-page design review
 

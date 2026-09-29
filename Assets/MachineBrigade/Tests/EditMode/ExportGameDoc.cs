@@ -45,6 +45,8 @@ namespace MachineBrigade.Tests
                     ["gear"] = Gear(),
                     ["economy"] = Economy(),
                     ["modes"] = Modes(),
+                    // Boss Rush's kinds in order (each draws one variant), for the modes table.
+                    ["bossRushKinds"] = MachineBrigade.Sim.Modes.BossRushRules.Kinds.Select(k => (object)k.ToList()).ToList(),
                     ["campaign"] = Campaign.All.Select(Mission).ToList(),
                     ["maps"] = MatchSettings.AllMaps.Select(m => (object)new Dictionary<string, object>
                     {
@@ -98,6 +100,49 @@ namespace MachineBrigade.Tests
             table["penetration"] = Enumerable.Range(0, 5).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
             table["thermobaric"] = catalog.Damage.ThermobaricStructure;
             return table;
+        }
+
+        /// <summary>A mode's subtitle as the menus show it: Boss Rush's has the number of bosses filled in.</summary>
+        private static string ModeSub(GameModeKind kind, string key) =>
+            kind == GameModeKind.BossRush ? Strings.Format(key + "Sub", MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count) : Text(key + "Sub");
+
+        [Test]
+        public void EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm()
+        {
+            var catalog = GameContent.LoadCatalog();
+            foreach (var v in catalog.Vehicles.Values)
+            {
+                foreach (var level in new[] { v.Armour.Front, v.Armour.Side, v.Armour.Rear, v.Armour.Top })
+                    Assert.That(level, Is.InRange(0, 4), v.Id + ": an armour level 0-4 on every face");
+                foreach (var p in v.Parts)
+                    Assert.That(p.ArmourOn(v), Is.InRange(0, 4), v.Id + " " + p.Id + ": the part's armour level");
+                foreach (var m in v.Mounts)
+                {
+                    if (m.Weapon.Damage <= 0f) continue;
+                    Assert.That(m.Weapon.Penetration, Is.InRange(0, 4), m.Weapon.Id + ": a penetration 0-4");
+                    Assert.AreNotEqual(WeaponForm.None, m.Weapon.Form, m.Weapon.Id + " on " + v.Id + ": a weapon form");
+                }
+            }
+        }
+
+        [Test]
+        public void NoModeLineKeepsAPlaceholder()
+        {
+            foreach (var vietnamese in new[] { true, false })
+            {
+                var was = Strings.Vietnamese;
+                Strings.Vietnamese = vietnamese;
+                try
+                {
+                    foreach (Dictionary<string, object> m in (IEnumerable)Modes())
+                        foreach (var field in new[] { "name", "sub" })
+                            StringAssert.DoesNotContain("{", (string)m[field], m["id"] + " " + field + (vietnamese ? " (vi)" : " (en)"));
+                }
+                finally
+                {
+                    Strings.Vietnamese = was;
+                }
+            }
         }
 
         /// <summary>A unit's armour by face (prompt 15 A).</summary>
@@ -243,7 +288,7 @@ namespace MachineBrigade.Tests
                 };
                 list.Add(new Dictionary<string, object>
                 {
-                    ["id"] = kind.ToString(), ["name"] = Text(key), ["sub"] = Text(key + "Sub"), ["toast"] = Text(key + ".toast"),
+                    ["id"] = kind.ToString(), ["name"] = Text(key), ["sub"] = ModeSub(kind, key), ["toast"] = Text(key + ".toast"),
                 });
             }
             return list;

@@ -1,0 +1,35 @@
+Cập nhật tài liệu thiết kế (Machine_Brigade_Design_Review): hiển thị cấp giáp, cấp xuyên và loại đạn, và sửa các chỗ sai
+
+Làm tự chủ, không chờ duyệt, ghi quyết định vào docs/DECISIONS.md. Tài liệu phải được tạo tự động từ dữ liệu game, để các lần thay đổi sau tự cập nhật; không sửa tay bản PDF.
+
+A. GIÁP
+1. Thẻ xe (phần 8): thay "Giáp Nhẹ / Nặng" bằng cấp giáp 0–4 theo từng mặt (trước, hông, sau, nóc), ghi cả số và tên cấp (Không giáp, Mỏng, Vừa, Dày, Rất dày). Xe tinh nhuệ ghi cấp giáp của bản tinh nhuệ.
+2. Thẻ tháp và công trình (phần 11 và phần 6): cấp giáp chung, hoặc mặt trước và các mặt còn lại với tháp có lỗ châu mai; giữ nhãn "công trình".
+3. Máy bay và trực thăng: cấp giáp theo luật prompt 15 (phần lớn 0; Su-25, A-10, Mi-24, Ka-52 và tương tự cấp 1–2).
+4. Boss và mini boss: cấp giáp của thân (theo từng mặt nếu có) và của từng bộ phận, trong bảng bộ phận của mỗi boss.
+5. Bảng DPS tổng hợp (phần 9) và bảng giá trị thực chiến (phần 9b): thay cột "Giáp" cũ bằng cột cấp giáp mặt trước.
+
+B. VŨ KHÍ VÀ ĐẠN
+1. Mọi bảng vũ khí (trong thẻ xe, thẻ tháp, thẻ boss và bảng toàn bộ vũ khí ở phần 10) có thêm các cột: cấp xuyên (0–4); dạng vũ khí (đạn súng, đạn pháo động năng, đạn pháo nổ mạnh, đạn nổ trên không, rốc-két, tên lửa chống tăng, tên lửa phòng không, tên lửa hành trình, tên lửa đạn đạo, bom thường, bom dẫn đường, bom chùm, bom hạng nặng, drone, lửa, năng lượng); dấu phụ (đánh nóc, dẫn đường, nổ lan, nhãn Nhiệt áp).
+2. Giữ cột Loại (loại sát thương) như hiện tại.
+3. Mục "Đạn và nạp đạn" của mỗi vũ khí thêm cấp xuyên và dạng vũ khí.
+4. Nếu game có ảnh icon giáp và icon dạng vũ khí (prompt 15), chèn icon cạnh các cột tương ứng trong tài liệu.
+
+C. BẢNG HIỆU QUẢ
+1. Mỗi thẻ xe và thẻ tháp có bảng hiệu quả nhỏ: vũ khí chính gặp 5 cấp giáp (và trên không, công trình) cho ra hệ số bao nhiêu, cùng ký hiệu ✓ ~ ✕, lấy đúng dữ liệu mà giao diện trong game dùng.
+2. Phần 10 thêm bảng khắc chế: phòng vệ nào (giáp phản ứng nổ, lồng chắn, APS, pháo sáng, khói, khiên) chặn hoặc giảm loại sát thương nào.
+
+D. CÁC CHỖ SAI KHÁC CẦN SỬA
+1. Bảng giá trị thực chiến (phần 9b) chưa được tạo lại sau prompt 17: vẫn còn các thẻ đã gộp hoặc bỏ (atgm_carrier, heavy_attack_heli, tank_buster, sapper), và một số dòng hiện id thô thay vì tên. Tạo lại bảng từ roster hiện tại, dùng tên hiển thị.
+2. Xe bom tự sát: phần 9 ghi 2 CP, phần 9b ghi 3 CP. Kiểm tra dữ liệu và thống nhất.
+3. Săn trùm ở bảng chế độ vẫn hiện "{0} trùm liên tiếp". Sửa trong game và trong tài liệu, và thêm vào test quét localization để bắt placeholder này.
+4. Phần 11 vẫn ghi "căn cứ có ụ phòng thủ (bastion) bất tử"; từ prompt 1 căn cứ đã là sở chỉ huy (HQ). Sửa lại.
+5. Phần 1 ghi "21 chiến trường 300 × 300 m", trong khi phần 6 đã có map dài và căn cứ nhiều lớp (prompt 17). Ghi đúng số map thường, số map dài và kích thước của từng loại.
+6. Phần 2 ghi độ khó "Dễ / Thường / Khó"; thêm Cực khó cùng các hệ số của nó.
+7. Số nhiệm vụ chiến dịch: phần 2 ghi 108, phần 3 ghi 109. Thống nhất theo dữ liệu.
+8. Rà toàn bộ tài liệu tìm các chỗ còn nhắc thẻ, tháp hoặc cơ chế đã bị bỏ (Ụ pháo ẩn, Diệt tăng TL, Công binh CT, điểm công sự...) và sửa theo trạng thái hiện tại.
+
+E. KIỂM TRA
+- Test tự động: mọi xe, tháp, công trình, boss và bộ phận boss trong tài liệu có cấp giáp; mọi vũ khí có cấp xuyên và dạng vũ khí; số liệu trong tài liệu khớp với dữ liệu game.
+- Tạo lại bản PDF và kiểm tra các phần 6, 8, 9, 9b, 10, 11 hiển thị đủ các cột mới, không bị tràn bảng.
+- Cập nhật docs/CHANGELOG.md.
