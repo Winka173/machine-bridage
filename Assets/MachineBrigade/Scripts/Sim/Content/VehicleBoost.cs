@@ -74,7 +74,9 @@ namespace MachineBrigade.Sim.Content
         Regen,
         DamageTaken,
 
+        /// <summary>Prompt 15 C.9: more damage against light armour (a face of level 0-2 on the ground).</summary>
         DamageVsLight,
+        /// <summary>Prompt 15 C.9: more damage against heavy armour (a face of level 3-4 on the ground).</summary>
         DamageVsHeavy,
         DamageVsAir,
         DamageVsStructure,
@@ -85,12 +87,13 @@ namespace MachineBrigade.Sim.Content
         Magazine,
         MagazineReload,
 
-        // One per DamageType, in its order (ResistKinetic + (int)type).
+        // One per DamageType, in its order (ResistKinetic + (int)type) for the first five; energy's is
+        // appended (Stats.Resist). Prompt 15: 17 was armour-piercing (now shaped charges), 20 flak (now fragmentation).
         ResistKinetic,
-        ResistArmorPiercing,
+        ResistShapedCharge,
         ResistHighExplosive,
         ResistFire,
-        ResistFlak,
+        ResistFragmentation,
 
         TurnRate,
         TurretRate,
@@ -99,6 +102,7 @@ namespace MachineBrigade.Sim.Content
         Splash,
         SecondaryFireRate,
         SalvoInterval,
+        /// <summary>Prompt 15 C.9: a cage (slat armour): less from shaped charges on rockets, missiles and drones (thermobaric blasts go through).</summary>
         ResistRocket,
         ResistIndirect,
         ResistMine,
@@ -129,7 +133,26 @@ namespace MachineBrigade.Sim.Content
         ReverseSpeed,
         /// <summary>Less damage from blasts and mines, not direct hits (Underbelly Armour).</summary>
         ResistBlast,
+
+        // Prompt 15 C.9 (appended: saves keep stat ids as numbers).
+        /// <summary>Less energy damage (lasers, beams).</summary>
+        ResistEnergy,
+        /// <summary>Part levels of penetration on its rounds (a whole level at the top: Tungsten Penetrator).</summary>
+        Penetration,
+        /// <summary>Part levels of armour on its sides and rear (Appliqué Steel).</summary>
+        ArmourSide,
+        /// <summary>Part levels of armour all round (the Armoured Tub, an aircraft's cockpit tub).</summary>
+        ArmourAll,
         Count,
+    }
+
+    public static class Stats
+    {
+        /// <summary>The resistance stat line of a damage type.</summary>
+        public static StatId Resist(DamageType type) => type == DamageType.Energy ? StatId.ResistEnergy : StatId.ResistKinetic + (int)type;
+
+        /// <summary>Stat lines counted in armour or penetration levels, not per cent (the view prints "+0.4 levels").</summary>
+        public static bool InLevels(StatId id) => id is StatId.Penetration or StatId.ArmourSide or StatId.ArmourAll;
     }
 
     /// <summary>A unique trait (or a set's four-piece behaviour) with its numbers (see the catalogue in Game/Match/GearCatalog.cs).</summary>

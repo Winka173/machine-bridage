@@ -155,6 +155,11 @@ namespace MachineBrigade.Sim.Content
                         part.Height = at.Count > 2 ? at[2] : 0f;
                     }
                     part.Radius = p.Float("radius", 2f);
+                    if (p.Has("armour"))
+                    {
+                        var level = p.Int("armour", 0);
+                        part.Armour = level >= 0 && level <= ArmourLevels.Max ? level : throw new FormatException($"{p.Path}.armour: a level 0 to {ArmourLevels.Max}.");
+                    }
                     if (p.Has("mounts"))
                     {
                         var mounts = new List<int>();

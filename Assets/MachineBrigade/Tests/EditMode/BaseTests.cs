@@ -215,7 +215,7 @@ namespace MachineBrigade.Tests
                     }
                     Assert.Greater(a.Towers.Count(), 0, $"{difficulty}/{style} builds something");
                     if (a.HqLevel >= 3)
-                        Assert.IsTrue(a.Towers.Any(t => catalog.Vehicles[t].Mounts.Any(m => m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Flak)),
+                        Assert.IsTrue(a.Towers.Any(t => catalog.Vehicles[t].Mounts.Any(m => m.Weapon.CanTarget(true) && m.Weapon.DamageType == DamageType.Fragmentation)),
                             $"{difficulty}/{style} brings anti-air");
                 }
             Assert.Less(catalog.Base.AiLevel("Easy"), catalog.Base.AiLevel("Hard"), "a harder enemy has the bigger HQ");

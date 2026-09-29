@@ -133,7 +133,7 @@ namespace MachineBrigade.Tests
             world.Damage.Apply(plain, 100f, DamageType.HighExplosive);
             Assert.AreEqual((plainBefore - plain.Hp) * 0.9f, taken, 0.5f, "plating takes a share off every hit");
             // Below half health its smoke dischargers fire, once.
-            world.Damage.Apply(tank, tank.Hp * 0.6f / world.Catalog.Damage.Multiplier(DamageType.HighExplosive, tank.Armor) / 0.9f, DamageType.HighExplosive);
+            world.Damage.Apply(tank, tank.Hp * 0.6f / world.Catalog.Damage.Type(DamageType.HighExplosive, tank.Kind) / 0.9f, DamageType.HighExplosive);
             var smoke = world.Strikes.Smoke.Count;
             world.Step(0.05f);
             Assert.AreEqual(smoke + 1, world.Strikes.Smoke.Count, "the smoke screen goes up");

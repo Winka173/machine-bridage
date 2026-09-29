@@ -246,7 +246,7 @@ namespace MachineBrigade.Sim.Modes
         internal static bool IsAntiAir(Catalog catalog, string id)
         {
             foreach (var m in catalog.Vehicles[id].Mounts)
-                if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Flak || m.Weapon.Targets == TargetLayers.Air)) return true;
+                if (m.Weapon.CanTarget(true) && (m.Weapon.DamageType == DamageType.Fragmentation || m.Weapon.Targets == TargetLayers.Air)) return true;
             return false;
         }
 

@@ -408,6 +408,22 @@ namespace MachineBrigade.Sim.Entities
         internal float DoctrineSpeed = 1f;
         public float Radius => Def.Radius;
         public ArmorClass Armor => Def.Armor;
+        public TargetKind Kind => Def.Kind;
+        public ArmourLevels Armour => Def.Armour;
+
+        /// <summary>
+        /// Prompt 15 C.9: equipment's part levels on top of the definition's (Tungsten Penetrator's penetration,
+        /// Appliqué Steel's side and rear, the Armoured Tub's all round). Set when it enters the battle.
+        /// </summary>
+        internal float PenetrationUp, ArmourSideUp, ArmourAllUp;
+
+        /// <summary>Its armour level on a face with its equipment (never over 4).</summary>
+        public float ArmourOn(ArmorFace face)
+        {
+            var up = ArmourAllUp + (face is ArmorFace.Side or ArmorFace.Rear ? ArmourSideUp : 0f);
+            return MathF.Min(ArmourLevels.Max, Def.Armour[face] + up);
+        }
+
         public bool IsAlive => Hp > 0f;
         public bool IsMoving => Speed > 0.1f;
         public bool Flying => Def.Flying;

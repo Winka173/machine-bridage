@@ -54,7 +54,7 @@ namespace MachineBrigade.Tests
         public void AHugeBlowStopsAtTheMarkAndTheBossTransformsUntouchable()
         {
             var (world, boss) = Boss();
-            world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ArmorPiercing);
+            world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ShapedCharge);
             Assert.AreEqual(0.66f, boss.Hp / boss.MaxHp, 1e-3f, "what went past the mark is lost");
             Assert.IsTrue(boss.IsAlive && boss.Transforming);
             var events = world.Events.Where(e => e.Kind == SimEventKind.BossPhase).ToList();
@@ -63,7 +63,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(1, events[0].Mount, "its transformation");
             Assert.AreEqual("radio.test.second", events[0].DefId, "its general's line");
             world.ClearEvents();
-            Assert.AreEqual(0f, world.Damage.Apply(boss, 1000f, DamageType.ArmorPiercing), "untouchable while it changes");
+            Assert.AreEqual(0f, world.Damage.Apply(boss, 1000f, DamageType.ShapedCharge), "untouchable while it changes");
         }
 
         [Test]
@@ -71,7 +71,7 @@ namespace MachineBrigade.Tests
         {
             var (world, boss) = Boss();
             var damage = boss.DamageBoost;
-            world.Damage.Apply(boss, boss.MaxHp, DamageType.ArmorPiercing);
+            world.Damage.Apply(boss, boss.MaxHp, DamageType.ShapedCharge);
             Run(world, 2.2f);
             Assert.IsFalse(boss.Transforming);
             Assert.AreEqual(1, boss.Phase);
@@ -79,7 +79,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(damage * 1.2f, boss.DamageBoost, 1e-4f);
             Assert.AreEqual("behemoth_inferno", boss.Form, "its new form");
             var before = boss.Hp;
-            var lost = world.Damage.Apply(boss, 100f, DamageType.ArmorPiercing);
+            var lost = world.Damage.Apply(boss, 100f, DamageType.ShapedCharge);
             Assert.Greater(lost, 0f, "it can be hurt again");
             Assert.Less(lost, 100f * 0.81f, "and takes a fifth less");
             Assert.AreEqual(before - lost, boss.Hp, 1e-3f);
@@ -91,7 +91,7 @@ namespace MachineBrigade.Tests
             var (world, boss) = Boss();
             for (var i = 0; i < 6 && boss.IsAlive; i++)
             {
-                world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ArmorPiercing);
+                world.Damage.Apply(boss, boss.MaxHp * 5f, DamageType.ShapedCharge);
                 Run(world, 2.2f);
             }
             Assert.IsFalse(boss.IsAlive, "down after its last phase");

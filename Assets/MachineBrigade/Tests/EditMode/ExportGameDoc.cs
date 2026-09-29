@@ -81,17 +81,30 @@ namespace MachineBrigade.Tests
 
         private static string Text(string key) => Strings.Has(key) ? Strings.Get(key) : "";
 
+        /// <summary>
+        /// Prompt 15: the damage-type table (a row per type: ground, air, structure), the penetration row (a level
+        /// or more above the armour, level, one, two and three under) and the thermobaric tag's structure multiplier.
+        /// </summary>
         private static object DamageTable(Catalog catalog)
         {
             var table = new Dictionary<string, object>();
             foreach (DamageType d in Enum.GetValues(typeof(DamageType)))
             {
                 var row = new Dictionary<string, object>();
-                foreach (ArmorClass a in Enum.GetValues(typeof(ArmorClass))) row[a.ToString()] = catalog.Damage.Multiplier(d, a);
+                foreach (TargetKind k in Enum.GetValues(typeof(TargetKind))) row[k.ToString()] = catalog.Damage.Type(d, k);
+                row["name"] = Text("ul.type." + d);
                 table[d.ToString()] = row;
             }
+            table["penetration"] = Enumerable.Range(0, 5).Select(i => (object)catalog.Damage.PenetrationStep(i)).ToList();
+            table["thermobaric"] = catalog.Damage.ThermobaricStructure;
             return table;
         }
+
+        /// <summary>A unit's armour by face (prompt 15 A).</summary>
+        private static object Armour(ArmourLevels a) => new Dictionary<string, object>
+        {
+            ["front"] = a.Front, ["side"] = a.Side, ["rear"] = a.Rear, ["top"] = a.Top,
+        };
 
         private static object Vehicle(Catalog catalog, VehicleDef v)
         {
@@ -110,6 +123,10 @@ namespace MachineBrigade.Tests
                     ["cooldown"] = w.Cooldown, ["range"] = w.Range, ["minRange"] = w.MinRange, ["splash"] = w.SplashRadius,
                     ["targets"] = w.Targets.ToString(), ["dps"] = raw, ["projectile"] = w.Projectile.ToString(),
                     ["clip"] = w.Clip, ["clipReload"] = w.ClipReload, ["speed"] = w.ProjectileSpeed,
+                    // Prompt 15: penetration, the round's form, its tags, and its effect on each armour level, aircraft and structures.
+                    ["pen"] = w.Penetration, ["form"] = w.Form.ToString(), ["topAttack"] = Armour_StrikesTop(w), ["guided"] = w.Guided,
+                    ["splashes"] = w.Splashes, ["thermobaric"] = w.Thermobaric, ["real"] = w.RealName ?? "",
+                    ["effect"] = Matchup.EffectRow(catalog.Damage, w).Select(x => (object)x).ToList(),
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
                     {
                         ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,
@@ -124,7 +141,7 @@ namespace MachineBrigade.Tests
                     var bonus = 1f;
                     foreach (var b in w.Bonuses)
                         if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                    dps[a.ToString()] += raw * catalog.Damage.Multiplier(w, a) * bonus;
+                    dps[a.ToString()] += raw * Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
                 }
             }
             return new Dictionary<string, object>
@@ -132,6 +149,10 @@ namespace MachineBrigade.Tests
                 ["id"] = v.Id, ["name"] = Strings.Card(v.Id), ["short"] = Strings.Short(v.Id), ["note"] = Text("note." + v.Id), ["guide"] = Text("guide." + v.Id),
                 ["rounds"] = v.Mounts.Select(m => m.ProjectileModel ?? m.Weapon.ProjectileModel ?? "").ToList(),
                 ["class"] = v.Class.ToString(), ["armor"] = v.Armor.ToString(), ["hp"] = v.MaxHp, ["speed"] = v.Speed, ["cost"] = v.CpCost,
+                // Prompt 15: armour by face, the kind of target, and the strong / weak summary.
+                ["armour"] = Armour(v.Armour), ["kind"] = v.Kind.ToString(),
+                ["strongVs"] = Matchup.Summary(catalog.Damage, v).StrongVs.Select(c => (object)c.ToString()).ToList(),
+                ["weakTo"] = Matchup.Summary(catalog.Damage, v).WeakTo.Select(t => (object)t.ToString()).ToList(),
                 ["vision"] = v.VisionRange, ["flying"] = v.Flying, ["model"] = v.Model, ["weapons"] = weapons, ["dpsVs"] = dps,
                 ["skills"] = v.Skills.Select(s => s.Id).ToList(), ["death"] = v.DeathExplosion?.Damage ?? 0f,
                 // Prompt 13 G: the generated lines, as the detail screen shows them.
@@ -140,6 +161,7 @@ namespace MachineBrigade.Tests
                 ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object>
                 {
                     ["id"] = p.Id, ["kind"] = p.Kind, ["name"] = Text("part." + p.Kind), ["hp"] = p.Hp, ["breakDamage"] = p.BreakDamage,
+                    ["armour"] = p.ArmourOn(v),
                     ["effects"] = MenuScreen.PartEffects(v, p), ["radio"] = p.Radio != null,
                 }).ToList(),
                 ["partLock"] = v.PartLock != null ? Text("part." + v.PartLock.Kind) + " ×" + v.PartLock.Count : "",
@@ -152,8 +174,11 @@ namespace MachineBrigade.Tests
         {
             ["id"] = s.Id, ["name"] = Strings.Support(s.Id), ["info"] = Text("support." + s.Id + ".info"), ["kind"] = s.Kind.ToString(), ["guide"] = Text("guide." + s.Id),
             ["cost"] = s.CpCost, ["cooldown"] = s.Cooldown, ["damage"] = s.Damage, ["radius"] = s.Radius, ["count"] = s.Count,
-            ["duration"] = s.Duration, ["type"] = s.DamageType.ToString(),
+            ["duration"] = s.Duration, ["type"] = s.DamageType.ToString(), ["pen"] = s.Penetration, ["thermobaric"] = s.Thermobaric,
         };
+
+        /// <summary>Its rounds strike the roof (a top attack, or anything lobbed or dropped).</summary>
+        private static bool Armour_StrikesTop(WeaponDef w) => MachineBrigade.Sim.Content.Armour.StrikesTop(w);
 
         private static object Gear()
         {

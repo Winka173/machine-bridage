@@ -855,7 +855,7 @@ namespace MachineBrigade.Sim.AI
                 var v = vehicles[i];
                 if (!Ready(v) || Busy(world, v)) continue;
                 var weapon = v.Def.Weapon;
-                if (!weapon.CanTarget(false) || world.Catalog.Damage.Multiplier(weapon.DamageType, ArmorClass.Structure) < 0.25f) continue;
+                if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) < 0.25f) continue;
                 if (NearestGround(v.Position, out _) < weapon.Range + 8f) continue;
                 Prop? best = null;
                 var bestDistance = weapon.Range + 2f;
@@ -1051,7 +1051,7 @@ namespace MachineBrigade.Sim.AI
         private bool ShellDefences(SimWorld world, Vehicle a)
         {
             var weapon = a.Def.Weapon;
-            if (!weapon.CanTarget(false) || world.Catalog.Damage.Multiplier(weapon.DamageType, ArmorClass.Structure) <= 0.2f) return false;
+            if (!weapon.CanTarget(false) || world.Catalog.Damage.Effective(weapon, Matchup.StructureLevel, TargetKind.Structure) <= 0.2f) return false;
             Vehicle? pick = null;
             var pickDistance = float.MaxValue;
             foreach (var d in _defences)

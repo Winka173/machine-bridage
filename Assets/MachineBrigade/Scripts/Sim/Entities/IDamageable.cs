@@ -16,6 +16,12 @@ namespace MachineBrigade.Sim.Entities
         Vector2 Position { get; }
         float Radius { get; }
         ArmorClass Armor { get; }
+
+        /// <summary>Prompt 15: what the damage-type table reads it as (ground, air, structure).</summary>
+        TargetKind Kind { get; }
+
+        /// <summary>Prompt 15 A: its armour level on each face, from its definition.</summary>
+        ArmourLevels Armour { get; }
         float Hp { get; }
         float MaxHp { get; }
         bool IsAlive { get; }

@@ -119,7 +119,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void ResistancesCutDamageByTypeProjectileAndIndirectFire()
         {
-            var world = World(Stats((StatId.ResistArmorPiercing, 0.2f), (StatId.ResistRocket, 0.1f), (StatId.ResistIndirect, 0.15f), (StatId.ResistMine, 0.5f)));
+            var world = World(Stats((StatId.ResistShapedCharge, 0.2f), (StatId.ResistRocket, 0.1f), (StatId.ResistIndirect, 0.15f), (StatId.ResistMine, 0.5f)));
             var armoured = world.SpawnVehicle("decoy", 0, new Vector2(0f, 0f), 0f);
             var plain = world.SpawnVehicle("decoy", 1, new Vector2(20f, 0f), 0f);
             float Ratio(WeaponDef w, HitKind kind = HitKind.Direct, bool indirect = false) =>
@@ -212,9 +212,9 @@ namespace MachineBrigade.Tests
             var events = Run(world, 0.5f);
             // Half the damage of the hits that earned it (one and a half hits' worth: 1 / (2/3)), striking the
             // second from where the first stood (armour facing).
-            var bounced = TestWorlds.Gun.Damage * 0.5f * 1.5f * DamageSystem.FacingFactor(second, first.Position);
+            var bounced = TestWorlds.Gun.Damage * 0.5f * 1.5f * 1f /* the 120 mm pierces every face of a level-3 hull */;
             Assert.AreEqual(bounced, second.MaxHp - second.Hp, 1e-2f, "half the earning hits' damage bounces on to the nearest enemy");
-            Assert.AreEqual(TestWorlds.Gun.Damage * DamageSystem.FacingFactor(first, shooter.Position), dealt, 1e-2f);
+            Assert.AreEqual(TestWorlds.Gun.Damage * 1f, dealt, 1e-2f);
             Assert.AreEqual(far.MaxHp, far.Hp, "only one bounce, to the nearest");
             Assert.AreEqual(first.MaxHp - dealt, first.Hp, 1e-3f);
             Assert.IsTrue(events.Any(e => e.Kind == SimEventKind.TraitProc && e.DefId == "ricochet_shells"), "the RICOCHET word");

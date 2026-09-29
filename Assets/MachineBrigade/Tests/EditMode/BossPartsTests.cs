@@ -123,7 +123,7 @@ namespace MachineBrigade.Tests
                 var world = Lab.Field(2);
                 var boss = world.SpawnVehicle(id, 1, Vector2.Zero, 0f);
                 var before = boss.Hp;
-                world.Damage.Apply(boss, 500f, DamageType.ArmorPiercing, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
+                world.Damage.Apply(boss, 500f, DamageType.ShapedCharge, new HitInfo(null, 0, null, boss.Position, HitKind.Direct, false));
                 if (id == "command_airship") Assert.AreEqual(before, boss.Hp, 1e-3f, "the airship's hull is shut until two engines are down");
                 else Assert.Less(boss.Hp, before, id + ": the body always takes damage");
             }

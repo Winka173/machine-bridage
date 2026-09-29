@@ -39,6 +39,8 @@ namespace MachineBrigade.Sim.Entities
 
         public float Radius => MathF.Max(Width, Depth) * 0.5f;
         public ArmorClass Armor => Def.Armor;
+        public TargetKind Kind => Def.Kind;
+        public ArmourLevels Armour => Def.Armour;
         public float Hp { get; internal set; }
         /// <summary>The definition's health, unless a mission hardened this one (a demolition target).</summary>
         public float MaxHp { get; private set; }

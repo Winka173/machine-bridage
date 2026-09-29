@@ -98,17 +98,19 @@ namespace MachineBrigade.Tests
         [Test]
         public void AutocannonRoundsSitBetweenMachineGunsAndTankGunsOnArmour()
         {
+            // Prompt 15 B.4: penetration replaced prompt 13's autocannon row.
             var catalog = GameContent.LoadCatalog();
             var cannon = catalog.Weapons["autocannon_30"];
             var mg = catalog.Weapons["hmg_roof"];
             var tank = catalog.Weapons["gun_120mm"];
-            Assert.IsTrue(cannon.Autocannon, "the 30 mm is an autocannon");
-            Assert.IsFalse(mg.Autocannon, "a machine gun is not");
-            var onArmour = catalog.Damage.Multiplier(cannon, ArmorClass.Heavy);
-            Assert.That(onArmour, Is.InRange(0.35f, 0.4f), "autocannon rounds on heavy armour");
-            Assert.Greater(onArmour, catalog.Damage.Multiplier(mg, ArmorClass.Heavy));
-            Assert.Less(onArmour, catalog.Damage.Multiplier(tank, ArmorClass.Heavy));
-            Assert.AreEqual(1f, catalog.Damage.Multiplier(cannon, ArmorClass.Light), 1e-4f, "on light armour as any kinetic round");
+            Assert.AreEqual(2, cannon.Penetration, "20-40 mm autocannons");
+            Assert.AreEqual(1, mg.Penetration, "12.7 mm");
+            Assert.AreEqual(4, tank.Penetration, "120 mm darts");
+            var onArmour = catalog.Damage.Effective(cannon, 3, TargetKind.Ground);
+            Assert.AreEqual(0.4f, onArmour, 1e-4f, "autocannon rounds on a battle tank's front");
+            Assert.Greater(onArmour, catalog.Damage.Effective(mg, 3, TargetKind.Ground));
+            Assert.Less(onArmour, catalog.Damage.Effective(tank, 3, TargetKind.Ground));
+            Assert.AreEqual(1f, catalog.Damage.Effective(cannon, 1, TargetKind.Ground), 1e-4f, "on light armour all of it");
         }
     }
 }
