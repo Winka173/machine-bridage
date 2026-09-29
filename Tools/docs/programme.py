@@ -534,6 +534,50 @@ def props_and_rounds(game, h, sizes, weapons, owners):
     return out
 
 
+def boss_summary(game, h):
+    """Section 10d: the bosses side by side."""
+    import json as _json
+    e, table = h['esc'], h['table']
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'balance.json').read_text(encoding='utf-8')
+    data = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    big = {v['id']: v.get('bigAttack') for v in data['vehicles'] if v.get('bigAttack')}
+    attacks = {a['id']: a for a in data.get('bigAttacks', [])}
+    escorts = {x['boss']: x for x in data.get('escorts', [])}
+
+    def escort_count(x):
+        n = 0
+        for part in (x.get('arrive'), x.get('phase'), x.get('phases')):
+            if not part:
+                continue
+            groups = part if isinstance(part, list) and part and isinstance(part[0], dict) and 'units' in part[0] else [part]
+            for g in groups:
+                units = g.get('units', []) if isinstance(g, dict) else g
+                n += sum(u.get('count', 1) for u in units if isinstance(u, dict))
+        return n
+
+    gen_names = {x['id']: x.get('name', x['id']) for x in game.get('generals', []) + game.get('characters', [])}
+    rows = []
+    for v in sorted(game.get('bosses', []), key=lambda v: (str(v.get('raw', {}).get('Rank', '')), -float(v.get('hp', 0) or 0))):
+        raw = v.get('raw', {})
+        a = v.get('armour') or {}
+        parts = v.get('parts') or []
+        d = v.get('dpsVs', {})
+        att = attacks.get(big.get(v['id'], '') or '', {})
+        strike = (att.get('strikes') or [{}])[0]
+        big_txt = (f"{att.get('id', '')}: {strike.get('count', 1)} × {strike.get('damage', 0):g}, hồi {att.get('cooldown', '')} s" if att else '—')
+        rows.append([e(v['name']), 'mini' if raw.get('MiniBoss') else 'chủ lực', e(gen_names.get(str(raw.get('General', '') or ''), str(raw.get('General', '') or '—'))),
+                     f"{float(v.get('hp', 0) or 0):,.0f}".replace(',', '.'),
+                     f"{a.get('front', 0)}/{a.get('side', 0)}/{a.get('rear', 0)}/{a.get('top', 0)}",
+                     f"{len(parts)} ({sum(p.get('hp', 0) for p in parts) * 100:.0f}%)",
+                     f"{float(d.get('Light', 0)):.0f}", f"{float(d.get('Heavy', 0)):.0f}", f"{float(d.get('Air', 0)):.0f}", f"{float(d.get('Structure', 0)):.0f}",
+                     e(big_txt), str(escort_count(escorts[v['id']])) if v['id'] in escorts else '—'])
+    return ("<div class='section'><h2>10d. Tổng hợp boss</h2>"
+            "<p>Mọi boss và mini boss cạnh nhau, đọc từ dữ liệu hiện tại: máu thân (trước hệ số độ khó), giáp trước/hông/sau/nóc, số bộ phận và phần máu của chúng, "
+            "DPS duy trì lên xe nhẹ, xe nặng, máy bay và công trình (trước giáp), đòn lớn đầu tiên và số hộ tống trong mọi đợt.</p>"
+            + table(['Boss', 'Cấp', 'Tướng', 'Máu', 'Giáp T/H/S/N', 'Bộ phận', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'Đòn lớn', 'Hộ tống'], rows, 'dps')
+            + "</div>")
+
+
 def blast_radii(game, h):
     """Section 10c: every blast radius in the game."""
     import json as _json
