@@ -546,6 +546,23 @@ def build(game, imgdir):
                + one('screen-detail-vi-16x9.png', 'Chi tiết phương tiện: mô hình 3D xoay, thanh chỉ số tách gốc / trang bị / cấp sau, vạch trung bình của nhóm; các tab Hướng dẫn, Vũ khí, Xem bắn, Trang bị.')
                + pair('screen-detail-tower-vi-16x9.png', 'Chi tiết tháp (mới): mô hình, chỉ số so với tháp cùng cỡ, vũ khí, Xem bắn, hạng, nhánh và 3 ô đồ.',
                       'screen-detail-module-vi-16x9.png', 'Chi tiết công trình tiện ích (mới): tác dụng cho căn cứ.'))
+    out.append("<h3>Biểu tượng giáp và vũ khí (prompt 15)</h3>"
+               "<p>Bộ biểu tượng vẽ mới hoàn toàn theo nét của Field Command 2.0, không dùng số và không dựa vào màu: 57 hình, không hình nào trùng hình khác "
+               "(test so dữ liệu nét). <b>Giáp</b> 5 cấp đầy dần như pin: nét đứt (không giáp), viền mảnh, viền đôi, tô nửa dưới, tô kín có đinh tán; máy bay là "
+               "khiên có cánh, tháp và công trình là khiên vân gạch. <b>Dạng vũ khí</b> 30 hình theo dạng đạn thật, với đạn động năng hình cho biết độ xuyên "
+               "(viên tròn, viên đạn, đạn có đai, mũi tên xuyên, mũi tên đầu kép, mũi tên có vòng điện). <b>Dấu loại sát thương</b> ở góc chip: nón lõm có tia, hình nổ, "
+               "ngọn lửa, chùm chấm, tia sáng; nhiệt áp có dấu riêng; động năng không có dấu. <b>Dấu phụ</b> (chỉ ở màn chi tiết và tooltip): đánh nóc, dẫn đường, nổ lan. "
+               "Cỡ nhỏ nhất 34 px = 18,7 pt. Hiện ở: hàng dưới mọi thẻ xe, tháp và công trình (giáp mặt trước và 2 chip, \"+N\" nếu còn; thẻ gọn 1 chip), khay căn cứ và "
+               "tiền đồn, màn chi tiết (sơ đồ giáp theo hướng, chip ở tab Vũ khí, bảng hiệu quả, dòng Mạnh với / Yếu trước tạo từ dữ liệu), giữ thẻ trong trận, dải xe "
+               "đang chọn, tooltip khi chạm địch (✓ ~ ✕ cho từng xe trong bộ bài), bộ phận trùm, hàng 5 khiên ở độ phủ bộ bài và căn cứ, trang chú thích kèm bảng khắc chế. "
+               "Cài đặt \"Hiện số chi tiết\" (mặc định tắt) thêm cấp và hệ số vào tooltip.</p>"
+               + one('kit-combat-icons.png', 'Toàn bộ biểu tượng ở cỡ nhỏ nhất (18,7 pt), mỗi hình kèm tên, và vài chip mẫu có dấu loại sát thương ở góc.')
+               + one('kit-combat-icons-small.png', 'Cùng bảng trên màn nhỏ nhất (1280 x 720, mỗi điểm ảnh panel là một điểm ảnh thật).')
+               + pair('screen-detail-armour-vi-16x9.png', 'Màn chi tiết: sơ đồ giáp theo hướng (viền mỗi mặt dày theo cấp giáp), Mạnh với / Yếu trước tạo tự động.',
+                      'screen-detail-weapons-vi-16x9.png', 'Tab Vũ khí: chip cạnh tên vũ khí, bảng hiệu quả với tiêu đề là 5 khiên, máy bay và công trình, mỗi ô là hệ số thật.')
+               + pair('screen-army-deck-vi-16x9.png', 'Bộ bài: hàng giáp và chip dưới mỗi thẻ, hàng 5 khiên \"Giáp xuyên được\" cạnh tổng quan.',
+                      'battle-hud-enemy-vi-16x9.png', 'Chạm vào địch: giáp của nó và ✓ ~ ✕ cho từng xe trong bộ bài; giữ một thẻ trong khay hiện giáp và mọi chip.')
+               + one('screen-legend-vi-full.png', 'Trang chú thích (từ tab Hướng dẫn và Cài đặt): mọi biểu tượng, sơ đồ giáp, dấu, ký hiệu và bảng khắc chế.'))
     out.append("<h3>Cửa hàng và cài đặt</h3>"
                + pair('screen-shop-deals-vi-16x9.png', 'Ưu đãi.', 'screen-shop-skins-vi-16x9.png', 'Ngụy trang (trước đây là Skin).')
                + pair('screen-shop-units-vi-16x9.png', 'Đơn vị.', 'screen-shop-items-vi-16x9.png', 'Vật phẩm dùng một lần.')

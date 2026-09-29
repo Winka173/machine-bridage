@@ -652,6 +652,8 @@ namespace MachineBrigade.Game.Hud
                 row.Add(art);
                 var text = Kit.Box("fc-base-row__text");
                 text.Add(Kit.Text(Strings.Short(id), "fc-base-row__name"));
+                // Prompt 15 E1: the tower's armour and its first two weapons.
+                if (_catalog.Vehicles.TryGetValue(id, out var towerDef)) text.Add(KitCombat.Row(towerDef, 2, "fc-base-row__combat"));
                 var count = inUse?.Invoke(id) ?? 0;
                 text.Add(Kit.Text(locked ? VehicleCardData.UnlockText(id) : count > 0 ? Strings.Format("camp.inUse", count) : Strings.Get("camp.notInUse"),
                     "fc-small fc-base-row__line"));

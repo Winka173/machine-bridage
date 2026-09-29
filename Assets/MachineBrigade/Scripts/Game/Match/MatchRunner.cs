@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.CameraControl;
 using MachineBrigade.Game.Effects;
@@ -1208,6 +1209,8 @@ namespace MachineBrigade.Game.Match
                     : Strings.Get("toast.focusClear"));
             };
             _selection.Rejected += _hud.ShowError;
+            _selection.EnemyTapped += def => _hud.ShowEnemyTip(def,
+                MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null));
             WireBossParts();
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;

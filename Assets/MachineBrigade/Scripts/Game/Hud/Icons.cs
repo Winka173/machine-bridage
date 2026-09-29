@@ -11,8 +11,11 @@ namespace MachineBrigade.Game.Hud
     /// <summary>
     /// Stroke icons on a 24-unit grid (the 3d_astra set, Lucide style, plus a few of our own),
     /// drawn as vectors with Painter2D so they stay crisp at any screen density.
+    /// Besides strokes, an element may carry <c>fill="1"</c> (filled, non-zero) or <c>fill="eo"</c> (even-odd, so
+    /// inner sub-paths punch holes), <c>stroke="0"</c> (fill only), <c>sw="w"</c> (its own stroke width in grid
+    /// units) and <c>dash="on off"</c> (a dashed stroke): the prompt 15 armour and weapon icons need them.
     /// </summary>
-    public static class Icons
+    public static partial class Icons
     {
         private static readonly Dictionary<string, string> Svg = new()
         {
@@ -220,13 +223,27 @@ namespace MachineBrigade.Game.Hud
 
         private static readonly Dictionary<string, List<Shape>> Parsed = new();
 
-        public static bool Exists(string name) => Svg.ContainsKey(name);
+        public static bool Exists(string name) => name != null && (Svg.ContainsKey(name) || CombatSvg.ContainsKey(name));
+
+        /// <summary>The icon's SVG source (the path data the uniqueness test compares), or null.</summary>
+        public static string Source(string name) =>
+            name == null ? null : Svg.TryGetValue(name, out var s) ? s : CombatSvg.TryGetValue(name, out var c) ? c : null;
+
+        /// <summary>Every icon name, the kit's and the combat set's.</summary>
+        public static IEnumerable<string> Names
+        {
+            get
+            {
+                foreach (var k in Svg.Keys) yield return k;
+                foreach (var k in CombatSvg.Keys) yield return k;
+            }
+        }
 
         internal static IReadOnlyList<Shape> Get(string name)
         {
-            if (Parsed.TryGetValue(name, out var shapes)) return shapes;
-            shapes = SvgParser.Parse(Svg.TryGetValue(name, out var svg) ? svg : Svg["logo"]);
-            Parsed[name] = shapes;
+            if (name != null && Parsed.TryGetValue(name, out var shapes)) return shapes;
+            shapes = SvgParser.Parse(Source(name) ?? Svg["logo"]);
+            if (name != null) Parsed[name] = shapes;
             return shapes;
         }
 
@@ -258,6 +275,14 @@ namespace MachineBrigade.Game.Hud
         internal sealed class Shape
         {
             public readonly List<Op> Ops = new();
+
+            /// <summary>0 no fill, 1 non-zero fill, 2 even-odd fill (inner sub-paths are holes).</summary>
+            public int Fill;
+
+            public bool Stroke = true;
+
+            /// <summary>Its own stroke width in grid units, or 0 for the element's.</summary>
+            public float Width;
         }
 
         /// <summary>Parses the SVG subset the icons use: path (all commands), circle and rect.</summary>
@@ -291,9 +316,98 @@ namespace MachineBrigade.Game.Hud
                                 attributes.TryGetValue("rx", out var rx) ? F(rx) : 0f, shape);
                             break;
                     }
+                    if (attributes.TryGetValue("fill", out var fill)) shape.Fill = fill == "eo" ? 2 : fill == "0" ? 0 : 1;
+                    if (attributes.TryGetValue("stroke", out var stroke)) shape.Stroke = stroke != "0";
+                    if (attributes.TryGetValue("sw", out var sw)) shape.Width = F(sw);
+                    if (attributes.TryGetValue("dash", out var dash))
+                    {
+                        var parts = dash.Split(' ');
+                        shape = Dashed(shape, F(parts[0]), F(parts.Length > 1 ? parts[1] : parts[0]));
+                    }
                     shapes.Add(shape);
                 }
                 return shapes;
+            }
+
+            /// <summary>The shape's outline flattened and cut into dashes (lines only, stroked, never filled).</summary>
+            private static Shape Dashed(Shape s, float on, float off)
+            {
+                var result = new Shape { Width = s.Width };
+                var lines = new List<List<Vector2>>();
+                List<Vector2> line = null;
+                Vector2 start = default, current = default;
+                foreach (var op in s.Ops)
+                {
+                    switch (op.Kind)
+                    {
+                        case 'M':
+                            line = new List<Vector2> { op.A };
+                            lines.Add(line);
+                            start = current = op.A;
+                            break;
+                        case 'L':
+                            line?.Add(op.A);
+                            current = op.A;
+                            break;
+                        case 'C':
+                            for (var k = 1; k <= 16; k++)
+                            {
+                                var t = k / 16f;
+                                var u = 1f - t;
+                                line?.Add(u * u * u * current + 3f * u * u * t * op.A + 3f * u * t * t * op.B + t * t * t * op.C);
+                            }
+                            current = op.C;
+                            break;
+                        case 'Q':
+                            for (var k = 1; k <= 12; k++)
+                            {
+                                var t = k / 12f;
+                                var u = 1f - t;
+                                line?.Add(u * u * current + 2f * u * t * op.A + t * t * op.B);
+                            }
+                            current = op.B;
+                            break;
+                        case 'A':
+                        {
+                            var steps = Mathf.Max(4, Mathf.CeilToInt(Mathf.Abs(op.End - op.Start) / 0.2f));
+                            for (var k = 1; k <= steps; k++)
+                            {
+                                var a = Mathf.Lerp(op.Start, op.End, k / (float)steps);
+                                line?.Add(op.A + new Vector2(Mathf.Cos(a), Mathf.Sin(a)) * op.Radius);
+                            }
+                            current = line != null && line.Count > 0 ? line[line.Count - 1] : current;
+                            break;
+                        }
+                        case 'Z':
+                            line?.Add(start);
+                            current = start;
+                            break;
+                    }
+                }
+                foreach (var points in lines)
+                {
+                    var drawing = true;
+                    var left = on;
+                    result.Ops.Add(new Op('M', points[0]));
+                    for (var k = 1; k < points.Count; k++)
+                    {
+                        var a = points[k - 1];
+                        var b = points[k];
+                        var length = Vector2.Distance(a, b);
+                        var walked = 0f;
+                        while (length - walked > left)
+                        {
+                            walked += left;
+                            var p = Vector2.Lerp(a, b, walked / length);
+                            result.Ops.Add(new Op(drawing ? 'L' : 'M', p));
+                            drawing = !drawing;
+                            left = drawing ? on : off;
+                        }
+                        left -= length - walked;
+                        if (drawing) result.Ops.Add(new Op('L', b));
+                    }
+                }
+                return result;
             }
 
             private static void Rect(float x, float y, float w, float h, float r, Shape s)
@@ -483,8 +597,11 @@ namespace MachineBrigade.Game.Hud
             p.lineWidth = StrokeWidth * scale;
             p.lineCap = LineCap.Round;
             p.lineJoin = LineJoin.Round;
+            var colour = p.strokeColor;
+            p.fillColor = colour;
             foreach (var shape in Icons.Get(_name))
             {
+                p.lineWidth = (shape.Width > 0f ? shape.Width : StrokeWidth) * scale;
                 p.BeginPath();
                 foreach (var op in shape.Ops)
                 {
@@ -501,7 +618,8 @@ namespace MachineBrigade.Game.Hud
                         case 'Z': p.ClosePath(); break;
                     }
                 }
-                p.Stroke();
+                if (shape.Fill > 0) p.Fill(shape.Fill == 2 ? FillRule.OddEven : FillRule.NonZero);
+                if (shape.Stroke) p.Stroke();
             }
         }
     }

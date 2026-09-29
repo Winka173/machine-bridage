@@ -33,6 +33,15 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The 3D render (Resources/UI/Cards, see <see cref="CardArt"/>); null shows the class icon large instead.</summary>
         public Texture2D Art;
 
+        /// <summary>The unit (null for a support card): what the armour and weapon row reads.</summary>
+        public VehicleDef Def;
+
+        /// <summary>
+        /// Show the armour and weapon row under the name (prompt 15 E1: the deck, the collection, the towers). A card
+        /// with no <see cref="Def"/> gets an empty row of the same height, so a row of cards still lines up.
+        /// </summary>
+        public bool Combat;
+
         /// <summary>A card for a vehicle from the catalog, with the player's level, upgrade and lock state.</summary>
         public static VehicleCardData From(VehicleDef def, string unlockWhere = null)
         {
@@ -51,6 +60,7 @@ namespace MachineBrigade.Game.Hud
                 Locked = locked,
                 UnlockWhere = locked ? unlockWhere ?? UnlockText(def.Id) : null,
                 Art = CardArt.For(def.Id),
+                Def = def,
             };
         }
 
@@ -106,6 +116,8 @@ namespace MachineBrigade.Game.Hud
             var name = Kit.Text(compact ? shortName : Kit.Caps(data.Name), "fc-vcard__name");
             Kit.FixedLines(name, 2, shortName);
             body.Add(name);
+            // Prompt 15 E1: the front armour and the first weapons (two on a full card, one on a compact one), "+N" for the rest.
+            if (data.Combat) body.Add(KitCombat.Row(data.Def, compact ? 1 : 2, "fc-vcard__combat"));
             body.Add(Kit.Text(Strings.Format("kit.level", data.Level), "fc-vcard__level"));
             content.Add(body);
             Add(content);

@@ -494,6 +494,13 @@
             "hash": "v2:712e3cb557f78ea03450355cd221860793bc6e52"
         },
         {
+            "id": "bulwark_post",
+            "kind": "structure",
+            "model": "mg_bunker",
+            "source": "Models/mg_bunker",
+            "hash": "v2:94dc3cce20cfb0c2eeebeb7e74347c58646c6059"
+        },
+        {
             "id": "c_ram",
             "kind": "tower",
             "model": "c_ram",
@@ -942,11 +949,32 @@
             "hash": "v2:ae162ea2bf5ae954938d51f6029bd38b26435c16"
         },
         {
+            "id": "spawn_bastion",
+            "kind": "structure",
+            "model": "heavy_turret",
+            "source": "Models/heavy_turret",
+            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+        },
+        {
+            "id": "super_gun",
+            "kind": "structure",
+            "model": "heavy_turret",
+            "source": "Models/heavy_turret",
+            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+        },
+        {
             "id": "supreme_command",
             "kind": "boss",
             "model": "supreme_command",
             "source": "Models/supreme_command",
             "hash": "v2:37349e5dff243fc8331c21ba09b1cb3e1c9ffd06"
+        },
+        {
+            "id": "targeting_station",
+            "kind": "structure",
+            "model": "targeting_station",
+            "source": "Models/targeting_station",
+            "hash": "v2:2c7ff704a8052f55781e2bf618625963bab99ad9"
         }
     ]
 }
