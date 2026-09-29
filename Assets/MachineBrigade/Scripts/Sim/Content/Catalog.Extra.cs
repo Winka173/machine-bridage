@@ -201,6 +201,10 @@ namespace MachineBrigade.Sim.Content
                     Surface = b.Float("surface", 20f), Dive = b.Float("dive", 2f), Speed = b.Float("speed", 14f), Warn = b.Float("warn", 2f),
                     Radius = b.Float("radius", 15f), Stun = b.Float("stun", 3f), Damage = b.Float("damage", 300f), Exposed = b.Float("exposed", 6f),
                     ExposedTaken = b.Float("exposedTaken", 1.5f), First = b.Float("first", 12f),
+                    // Prompt 20 J.4: a submarine's dives (Typhon): on the sea lanes, a phase's own times, none from its last phase.
+                    Sea = b.Bool("sea", false), Under = MathF.Max(0f, b.Float("under", 0f)), StopPhase = b.Int("stopPhase", -1),
+                    SurfaceByPhase = b.Has("surfaceByPhase") ? b.FloatArray("surfaceByPhase") : Array.Empty<float>(),
+                    UnderByPhase = b.Has("underByPhase") ? b.FloatArray("underByPhase") : Array.Empty<float>(),
                 };
             }
             if (v.Has("landing"))
@@ -267,6 +271,7 @@ namespace MachineBrigade.Sim.Content
             ParseP17(v, def);
             // Prompt 19: altitude tiers, drop pods, weapon ceilings, a Boss Rush arena.
             ParseP19(v, def);
+            ParseP20(v, def);
         }
 
         /// <summary>
@@ -375,6 +380,8 @@ namespace MachineBrigade.Sim.Content
                     if (bombard.Spotter != null && !_vehicles.ContainsKey(bombard.Spotter)) throw new FormatException($"{def.Id}.bombard.spotter: unknown vehicle '{bombard.Spotter}'.");
                 }
             }
+            // Prompt 20: frames, ranks and variants (the escort caps need the ranks).
+            FinishP20(root);
             // Prompt 16 F: every boss's escort table.
             ParseEscorts(root);
             // Prompt 18: the big-attack library and every boss's attack.

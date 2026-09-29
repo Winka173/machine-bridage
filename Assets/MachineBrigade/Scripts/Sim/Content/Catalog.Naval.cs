@@ -25,6 +25,8 @@ namespace MachineBrigade.Sim.Content
                     DashEvery = n.Float("dashEvery", 26f),
                     DashHold = n.Float("dashHold", 7f),
                     Slack = n.Float("slack", 2f),
+                    PassIn = MathF.Max(0f, n.Float("passIn", 0f)),
+                    PassOut = MathF.Max(0f, n.Float("passOut", 0f)),
                 };
             }
             if (v.Has("salvo"))

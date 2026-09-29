@@ -156,6 +156,13 @@ namespace MachineBrigade.Sim.Bosses
         {
             v.TierPhase = phase;
             Radio(v, t, "phase" + (phase + 1));
+            // Prompt 20 H.2: it stops where it is (the next drop comes at once).
+            if (t.HaltPhase >= 0 && phase >= t.HaltPhase)
+            {
+                v.PhaseSpeed = 0f;
+                v.ClearPath();
+                v.PodNext = Math.Min(v.PodNext, now);
+            }
             if (phase == t.CrashPhase)
             {
                 BeginCrash(v, t, now);
@@ -239,7 +246,7 @@ namespace MachineBrigade.Sim.Bosses
             if (v.Def.Pods is not { } p || v.PodsOff || v.Stunned || now < v.PodNext) return;
             var tier = v.Def.Tiers == null ? AltitudeTier.None : v.Shifting ? AltitudeTier.None : v.TierFrom;
             if (v.Def.Tiers != null && !p.DropsAt(tier)) return;
-            v.PodNext = now + p.Every;
+            v.PodNext = now + p.EveryIn(v.TierPhase) * (v.PodShare < 1f ? 1f / MathF.Max(0.34f, v.PodShare) : 1f);
             var room = p.Max - PodLoad(v);
             if (room <= 0) return;
             // Short of the other side's biggest group, towards the boss (never on top of it); else under the boss.
@@ -469,7 +476,11 @@ namespace MachineBrigade.Sim.Bosses
         /// </summary>
         public void JumpPhase(Vehicle v, int phase)
         {
-            if (v.Def.Tiers is not { } t) return;
+            if (v.Def.Tiers is not { } t)
+            {
+                JumpPhaseP20(v, phase);
+                return;
+            }
             if (!v.LeftOrbit) v.TierNext = _world.Time;
             if (phase <= v.TierPhase || t.Marks.Count == 0) return;
             var mark = t.Marks[Math.Clamp(phase, 1, t.Marks.Count) - 1];

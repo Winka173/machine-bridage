@@ -273,6 +273,8 @@ namespace MachineBrigade.Sim.Modes
                 }
                 if (_def.Boss.Route.Count > 0)
                 {
+                    // Prompt 20: the mission's route over the battlefield's own (Kronos's).
+                    MachineBrigade.Sim.Bosses.BossSystem.DropOwnRoute(boss);
                     boss.Scripted = true;
                     Drive(world, boss, _def.Boss.Route[0]);
                 }

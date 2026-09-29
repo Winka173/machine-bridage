@@ -43,6 +43,19 @@ namespace MachineBrigade.Game.Views
             _partModels = models;
             _partMeshes = meshes;
             _partMaterials = materials;
+            // Prompt 20 G.3: the weapons a mini boss was built without are not drawn; a variant wears its colour.
+            if (Def.HiddenNodes.Count > 0)
+            {
+                var nodes = _model.Root.GetComponentsInChildren<Transform>(true);
+                foreach (var names in Def.HiddenNodes)
+                    foreach (var pattern in names.Split('|'))
+                    {
+                        var prefix = pattern.EndsWith("*") ? pattern.Substring(0, pattern.Length - 1) : null;
+                        foreach (var t in nodes)
+                            if (t != _model.Root.transform && (prefix != null ? t.name.StartsWith(prefix) : t.name == pattern)) t.gameObject.SetActive(false);
+                    }
+            }
+            if (Def.Tint != null) ApplyTint();
             var parts = Def.Parts;
             if (parts.Count > 0)
             {

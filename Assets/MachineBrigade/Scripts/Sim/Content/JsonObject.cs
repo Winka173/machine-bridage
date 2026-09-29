@@ -20,6 +20,9 @@ namespace MachineBrigade.Sim.Content
 
         public string Path { get; }
 
+        /// <summary>The parsed fields themselves (prompt 20's boss templates build entries from them).</summary>
+        internal Dictionary<string, object?> Raw => _values;
+
         public bool Has(string key) => _values.TryGetValue(key, out var v) && v != null;
 
         /// <summary>The value at <paramref name="key"/> is an array (data that takes one number or several).</summary>

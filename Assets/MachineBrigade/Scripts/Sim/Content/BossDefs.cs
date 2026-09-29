@@ -100,7 +100,12 @@ namespace MachineBrigade.Sim.Content
         public int Attachment { get; internal set; } = -1;
 
         /// <summary>The mechanism names <see cref="Stops"/> may hold.</summary>
-        public static readonly string[] Mechanisms = { "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail", "cruise", "craft", "radar", "thrust", "pods" };
+        public static readonly string[] Mechanisms =
+        {
+            "bombard", "spotter", "burrow", "landing", "aura", "aps", "jammer", "trail", "cruise", "craft", "radar", "thrust", "pods",
+            // Prompt 20: Moloch's workshop doors (each standing one builds), a crusher (Kronos's bucket wheel), Argus's fire direction.
+            "factory", "crush", "spotaura",
+        };
 
         /// <summary>The view's default <see cref="Fx"/> for a kind of part.</summary>
         public static string FxFor(string kind) => kind switch
@@ -146,6 +151,27 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Its first dive waits this long after it arrives.</summary>
         public float First { get; internal set; } = 12f;
+
+        /// <summary>
+        /// Prompt 20 J.4: a submarine (Typhon) dives on the sea instead: it goes under on its schedule (not for a
+        /// group), stays down at least <see cref="Under"/> s while it runs to another point of its lane, and the
+        /// water boils (the warning) before it surfaces there; no quake unless it has <see cref="Damage"/>.
+        /// </summary>
+        public bool Sea { get; internal set; }
+
+        public float Under { get; internal set; }
+
+        /// <summary>A phase's surface and submerged seconds (the last holds after; empty: <see cref="Surface"/>, <see cref="Under"/>).</summary>
+        public IReadOnlyList<float> SurfaceByPhase { get; internal set; } = Array.Empty<float>();
+
+        public IReadOnlyList<float> UnderByPhase { get; internal set; } = Array.Empty<float>();
+
+        /// <summary>From this phase (0 up) it no longer dives (-1: never).</summary>
+        public int StopPhase { get; internal set; } = -1;
+
+        public float SurfaceIn(int phase) => SurfaceByPhase.Count == 0 ? Surface : SurfaceByPhase[Math.Clamp(phase, 0, SurfaceByPhase.Count - 1)];
+
+        public float UnderIn(int phase) => UnderByPhase.Count == 0 ? Under : UnderByPhase[Math.Clamp(phase, 0, UnderByPhase.Count - 1)];
     }
 
     /// <summary>

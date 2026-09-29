@@ -871,6 +871,8 @@ namespace MachineBrigade.Sim.Combat
                 // A target its side has marked (a designator's laser, a radar's fix, a UAV over it): the
                 // SP gun's rounds fall almost on the mark (prompt 8 A.2).
                 if (index == 0 && shooter.Def.MarkedSpread < 1f && aimTarget is Vehicle marked && Marked(marked, shooter.Team)) spread *= shooter.Def.MarkedSpread;
+                // Prompt 20 I.7: an Argus directing its side's fire (its radar standing).
+                spread *= _world.Bosses.SpotAuraFor(shooter.Team);
             }
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;

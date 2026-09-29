@@ -140,6 +140,8 @@ namespace MachineBrigade.Sim.Bosses
                 var i = v.Def.PartIndex(id);
                 if (i >= 0 && !v.IsPartBroken(i)) n++;
             }
+            // Prompt 20: a strike that any broken part stops (Ixion's charge on a broken wheel).
+            if (s.Cut == 0f && n < s.Parts.Count) return 0;
             return n;
         }
 
@@ -171,7 +173,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             var def = s.Def;
             var quake = def.Strikes[0].Shape == BigShape.Quake;
-            if (s.Off || v.Transforming || v.Stunned || v.HoldFire || (v.Burrowed && !quake) || v.Landing)
+            if (s.Off || v.Transforming || v.Stunned || v.HoldFire || (v.Burrowed && !quake && !def.Surface) || v.Landing || v.Charging)
             {
                 s.Next = now + 1.0;
                 return;
@@ -223,6 +225,8 @@ namespace MachineBrigade.Sim.Bosses
             s.Axis = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
             s.Blind = def.Spotter != null && v.IsPartBroken(v.Def.PartIndex(def.Spotter));
             s.WasStunned = false;
+            // Prompt 20 J.4: a diving boss comes up to launch; only the parts carrying it show until it fires.
+            if (def.Surface) Rise(v, warn);
             Plan(v, s, now);
             Hold(v, s, true);
             if (def.Exposed > 1f) v.BigTaken = def.Exposed;
@@ -477,6 +481,24 @@ namespace MachineBrigade.Sim.Bosses
                     case BigShape.Buff:
                         s.ZoneList.Add(new BigZone(v.Position, st.Reach, fire, false));
                         break;
+                    case BigShape.Arc:
+                    {
+                        // Three rings across the swing (the view draws rings and strips only).
+                        var half = st.Width * 0.5f * MathF.PI / 180f;
+                        for (var k = -1; k <= 1; k++)
+                        {
+                            var dir = SimMath.Forward(v.Heading + k * half * 0.66f);
+                            s.ZoneList.Add(new BigZone(_world.ClampToMap(SwingCentre(v) + dir * st.Radius * 0.55f), st.Radius * 0.5f, fire, true));
+                        }
+                        break;
+                    }
+                    case BigShape.Charge:
+                    {
+                        var to = ChargeEnd(v, s.Axis, st.Length);
+                        var mid = (v.Position + to) * 0.5f;
+                        s.ZoneList.Add(new BigZone(mid, s.Axis, Vector2.Distance(v.Position, to) * 0.5f, st.Width * 0.5f, fire, true, 1f));
+                        break;
+                    }
                 }
             }
         }
@@ -493,9 +515,13 @@ namespace MachineBrigade.Sim.Bosses
         {
             var armed = Armed(v, st);
             if (armed <= 0) return 0;
-            if (st.PerPart > 0) return st.PerPart * armed;
-            if (st.Every > 0f) return st.FullCount;
-            return st.Count;
+            int n;
+            if (st.PerPart > 0) n = st.PerPart * armed;
+            else if (st.Every > 0f) n = st.FullCount;
+            else n = st.Count;
+            // Prompt 20: a part carrying it broken cuts it to its share (Daedalus: six pods fall as three).
+            if (st.Cut > 0f && st.PerPart <= 0 && armed < st.Parts.Count) n = Math.Max(1, (int)MathF.Round(n * st.Cut));
+            return n;
         }
 
         /// <summary>Its mounts hold their fire while it charges and fires (A.2), and fire again after.</summary>
@@ -543,6 +569,7 @@ namespace MachineBrigade.Sim.Bosses
 
         private void Cancel(Vehicle v, BigAttackState s)
         {
+            v.BodyShut = false;
             _world.Emit(SimEvent.Big(v, s.Def.Id, 2, s.Aim, 0f));
             Finish(v, s);
         }
@@ -566,6 +593,7 @@ namespace MachineBrigade.Sim.Bosses
         {
             var def = s.Def;
             var scale = DamageOf(v, ScaleOf(v, settings));
+            s.ChargeScale = scale;
             s.Stage = BigStage.Firing;
             s.Rounds = 0;
             s.ShotDown = 0;
@@ -646,8 +674,17 @@ namespace MachineBrigade.Sim.Bosses
                         s.BuffUntil = now + st.Seconds;
                         s.EndsAt = Math.Max(s.EndsAt, s.BuffUntil);
                         break;
+                    case BigShape.Arc:
+                        Swing(v, st, scale);
+                        break;
+                    case BigShape.Charge:
+                        BeginCharge(v, st, now);
+                        s.EndsAt = Math.Max(s.EndsAt, v.ChargeEnd);
+                        break;
                 }
             }
+            // Prompt 20 J.4: launched; it may go down again.
+            if (def.Surface) v.BodyShut = false;
             _world.Emit(SimEvent.Big(v, def.Id, 1, s.Aim, 0f));
         }
 
@@ -689,6 +726,8 @@ namespace MachineBrigade.Sim.Bosses
                 if (now < b.Due) continue;
                 _bigBlasts.RemoveAt(i--);
                 BlastAt(b.Boss, b.Strike, b.At, b.Scale, b.Side);
+                // Prompt 20 E.3: a pod lands its vehicles where it came down.
+                if (b.Strike.Seats > 0 && b.Boss.IsAlive) Seat(b.Boss, b.State, b.Strike, b.At);
                 if (b.Strike.Fire is { } fire) Burn(b.Boss, b.At, fire, b.Side, now);
             }
         }
@@ -805,6 +844,7 @@ namespace MachineBrigade.Sim.Bosses
             foreach (var st in def.Strikes)
             {
                 if (st.Shape == BigShape.Sweep && s.SweepDone >= 0f && s.SweepDone < 1f) Sweep(v, s, st, now);
+                if (st.Shape == BigShape.Charge && v.Charging) StepCharge(v, st, s.ChargeScale, now);
                 if (st.Shape == BigShape.Buff && now < s.BuffUntil)
                 {
                     // The antenna broken: the boost goes with it.
@@ -812,7 +852,7 @@ namespace MachineBrigade.Sim.Bosses
                     else Boost(v, st);
                 }
             }
-            if (now < s.EndsAt || (s.SweepDone >= 0f && s.SweepDone < 1f)) return;
+            if (now < s.EndsAt || (s.SweepDone >= 0f && s.SweepDone < 1f) || v.Charging) return;
             foreach (var b in _bigBlasts)
                 if (b.State == s) return;
             foreach (var f in _bigFlyers)

@@ -108,6 +108,8 @@ namespace MachineBrigade.Sim.Entities
         {
             get
             {
+                // Prompt 20: a submarine up for a launch shows only its doors.
+                if (BodyShut && PartFrac.Length > 0) return true;
                 var lockDef = Def.PartLock;
                 if (lockDef == null || PartFrac.Length == 0) return false;
                 var broken = 0;
@@ -129,6 +131,9 @@ namespace MachineBrigade.Sim.Entities
             if (Def.Tiers?.Crash is { } crash)
                 foreach (var m in crash.Guns)
                     if (m > 0 && m < MountDormant.Length) MountDormant[m] = true;
+            // Prompt 20 J.4: mounts that wake with a later phase.
+            foreach (var m in Def.WakeMounts)
+                if (m > 0 && m < MountDormant.Length) MountDormant[m] = true;
             for (var i = 0; i < MountSpread.Length; i++) MountSpread[i] = 1f;
             SkillOff = new bool[Def.Skills.Count];
             if (parts.Count == 0) return;

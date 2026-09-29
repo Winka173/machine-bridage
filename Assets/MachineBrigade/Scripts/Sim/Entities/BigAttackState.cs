@@ -121,6 +121,12 @@ namespace MachineBrigade.Sim.Entities
 
         public BigAttackDef Def { get; }
 
+        /// <summary>Prompt 20: the damage scale a charge under way hits with.</summary>
+        internal float ChargeScale;
+
+        /// <summary>Prompt 20: vehicles its pods have set down so far (they take turns from the strike's list).</summary>
+        internal int Seated;
+
         /// <summary>The indices of the boss's parts that carry it (they flash on the bar while it charges).</summary>
         public IReadOnlyList<int> Parts { get; }
 

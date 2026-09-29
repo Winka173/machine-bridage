@@ -135,6 +135,7 @@ namespace MachineBrigade.Game.Match
             if (boss.Escaping && boss.EscapeSeconds >= 0f)
                 name += "  ·  " + Strings.Format("boss.escaping", $"{(int)boss.EscapeSeconds / 60}:{(int)boss.EscapeSeconds % 60:00}");
             hud.SetBossEscorts(world != null ? world.EscortsAlive(boss.Id) : 0);
+            hud.SetBossRank(boss.Def.RankDef);
             hud.SetBossBigAttack(boss);
             // Prompt 19 B.5: a tiered boss's altitude and countdown, and its phase marks on the bar.
             hud.SetBossTier(boss, world?.Time ?? 0.0);
@@ -1150,6 +1151,8 @@ namespace MachineBrigade.Game.Match
             if (_run != null && _run.Mutators.Exists(m => m.ExtraBoss) && world.TryGetRally(EnemyTeam, out var lair))
             {
                 var bossId = def.Boss?.Def ?? "behemoth";
+                // Prompt 20 G.6: the second is the mission boss's mini version where it has one.
+                if (world.Catalog.Vehicles.TryGetValue(bossId, out var main) && main.MiniVariant != null) bossId = main.MiniVariant;
                 if (world.Catalog.Vehicles.ContainsKey(bossId)) world.SpawnVehicle(bossId, EnemyTeam, lair, 0f);
             }
             // Each stage sets the commanders for its own goal, in the step it begins.
