@@ -350,12 +350,15 @@ namespace MachineBrigade.Game.Match
                 PlayerVehicles = MatchSettings.DeckVehicles.ToArray(), PlayerSupports = MatchSettings.DeckSupports.ToArray(),
                 EnemyVehicles = vehicles, EnemySupports = supports,
                 Bases = Bases(world, GameModeKind.Conquest, seed),
-                // Prompt 13 H.1: a slower bleed (0.6 -> 0.5 a second) and less CP a point (0.3 -> 0.22), so the side
+                // Prompt 13 H.1: a slower bleed (0.6 -> 0.5 a second) and less CP a point (0.3 -> 0.15), so the side
                 // ahead snowballs less and a battle runs 6-10 minutes.
-                Bleed = 0.5f, PointIncome = 0.22f,
+                Bleed = 0.5f, PointIncome = 0.15f,
             });
             Mode = _mode;
             _mode.Setup(world);
+            // Prompt 13 H.1: the enemy's commander earns 18 % more here: it takes and holds points worse than a
+            // player does (the measured side won five battles in six without it).
+            if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.ScaleIncome(1.18f);
             AddEnemyCommander(_mode, seed);
             AddPlayerCommander(_mode, seed);
         }
@@ -433,7 +436,8 @@ namespace MachineBrigade.Game.Match
         {
             _mode = new KingOfTheHillMode(new KingOfTheHillRules
             {
-                Player = PlayerSide(16f, 1.2f), Enemy = EnemySide(16f, 1.2f, Difficulty, world.Catalog, seed),
+                // Prompt 13 H.3: the enemy 1.2 -> 1.1 income (it won two battles in three).
+                Player = PlayerSide(16f, 1.2f), Enemy = EnemySide(16f, 1.1f, Difficulty, world.Catalog, seed),
                 Bases = Bases(world, GameModeKind.KingOfTheHill, seed),
                 ScoreTarget = 170f,
             });
@@ -477,8 +481,8 @@ namespace MachineBrigade.Game.Match
             var start = Difficulty switch { AiDifficulty.VeryHard => 255f, AiDifficulty.Hard => 270f, AiDifficulty.Easy => 360f, _ => 300f };
             _mode = new AssaultMode(new AssaultRules
             {
-                // Prompt 13 H.4: the defender 26 -> 30 CP and 1.05 -> 1.2 income, 12 -> 10 CP a sector for the attacker.
-                StartSeconds = start, Attacker = PlayerSide(20f, 1.45f), Defender = EnemySide(30f, 1.2f, Difficulty, world.Catalog, seed), SectorCp = 10f,
+                // Prompt 13 H.4: the defender 26 -> 32 CP and 1.05 -> 1.3 income, 12 -> 8 CP a sector for the attacker.
+                StartSeconds = start, Attacker = PlayerSide(20f, 1.45f), Defender = EnemySide(32f, 1.3f, Difficulty, world.Catalog, seed), SectorCp = 8f,
                 Bases = Bases(world, GameModeKind.Assault, seed),
             });
             Mode = _mode;

@@ -18,8 +18,8 @@ namespace MachineBrigade.Sim.Modes
         private const float FirstWaveDelay = 20f;
         private const float WaveInterval = 30f;
 
-        /// <summary>Enemies alive at once: 14, one and a half more each wave, up to 40 (prompt 13 H.9).</summary>
-        private int MaxEnemies => Math.Min(40, 14 + Wave * 3 / 2);
+        /// <summary>Enemies alive at once: 14, one and a half more each wave, up to 48 (prompt 13 H.9).</summary>
+        private int MaxEnemies => Math.Min(48, 14 + Wave * 3 / 2);
         public const float ReinforceCooldownSeconds = 12f;
 
         private static readonly string[] WaveRoster =
@@ -84,11 +84,12 @@ namespace MachineBrigade.Sim.Modes
             if (!world.TryGetRally(EnemyTeam, out var rally)) return;
             Wave++;
             // Prompt 13 H.9: waves that keep growing (they stopped at six before, and a deck outgrew them for
-            // ever), by the difficulty and the deck; the heavier cards come in as the waves go on, and from
-            // wave 8 more and more of them as their elite versions.
-            var count = Math.Min(room, Math.Max(1, (int)MathF.Round(MathF.Min(3f + 0.8f * (Wave - 1), 24f) * Intensity * DeckScale)));
+            // ever), by the difficulty and the deck, with no ceiling but the enemies alive at once; the heavier
+            // cards come in as the waves go on, and from wave 8 more and more of them (all by wave 24) as their
+            // elite versions, so a line that holds is worn down in the end.
+            var count = Math.Min(room, Math.Max(1, (int)MathF.Round((3f + 0.9f * (Wave - 1)) * Intensity * DeckScale)));
             var reach = Math.Clamp(4 + Wave, 4, WaveRoster.Length);
-            var elite = MathF.Min(0.6f, (Wave - 7) * 0.06f);
+            var elite = MathF.Min(1f, (Wave - 7) * 0.06f);
             for (var i = 0; i < count; i++)
             {
                 var def = WaveRoster[(Wave * 3 + i) % reach];
