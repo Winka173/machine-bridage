@@ -141,6 +141,29 @@ Shader "MachineBrigade/Lit"
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl"
 
             static const half MaxReflected = 1.6h;
+            // Play-test 8 (DECISIONS 22R): burning vehicles light their hull and the ground round them (HeatLights):
+            // up to four warm glows, xyz the fire and w 1 / reach^2, with a soft fall-off and a wrapped facing term, no
+            // shadows. The count is 0 when nothing burns (and unset: menus), so the loop costs nothing then.
+            float4 _MbHeat[4];
+            half4 _MbHeatColour[4];
+            float _MbHeatCount;
+            // The fires' light on a surface (to multiply its albedo) and, close in, the metal's own glow.
+            void HeatLight(float3 positionWS, half3 normalWS, out half3 light, out half3 glow)
+            {
+                light = half3(0.0h, 0.0h, 0.0h);
+                glow = half3(0.0h, 0.0h, 0.0h);
+                for (int i = 0; i < 4; i++)
+                {
+                    if ((float)i >= _MbHeatCount) break;
+                    float3 d = _MbHeat[i].xyz - positionWS;
+                    float d2 = dot(d, d);
+                    half q = (half)saturate(1.0 - d2 * _MbHeat[i].w);
+                    half q2 = q * q;
+                    half facing = saturate(dot(normalWS, (half3)(d * rsqrt(max(d2, 1e-4)))) * 0.6h + 0.4h);
+                    light += _MbHeatColour[i].rgb * (q2 * facing);
+                    glow += _MbHeatColour[i].rgb * (q2 * q2);
+                }
+            }
 
             // Specular anti-aliasing (Kaplanyan and Hoffman 2016): where the normal changes quickly
             // across a pixel, widen the highlight so it cannot alias into single-pixel sparkles.
@@ -243,6 +266,9 @@ Shader "MachineBrigade/Lit"
                 // added afterwards so it still blooms.
                 half4 color = UniversalFragmentPBR(inputData, surface);
                 color.rgb = min(color.rgb, MaxReflected) + emission * _Tint.rgb;
+                half3 heat, heatGlow;
+                HeatLight(input.positionWS, normalWS, heat, heatGlow);
+                color.rgb += heat * surface.albedo + heatGlow * 0.08h;
                 // Hit flash: a brief white-hot wash (1 - _Tint.a; 0 unless a view is flashing).
                 color.rgb = lerp(color.rgb, half3(1.25h, 1.2h, 1.1h), (1.0h - _Tint.a) * 0.3h);
                 color.rgb = MixFog(color.rgb, inputData.fogCoord);

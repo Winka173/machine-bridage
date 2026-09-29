@@ -425,11 +425,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: dùng đánh vào cứ điểm phòng thủ mạnh nhất của địch, nơi máy bay khác sẽ bị bắn rơi."),
             ["guide.sky_gunship"] = (
                 "[[AC-130 Gunship]] · flying · circles its target\n" +
-                "How it fights: flies to where you send it and [[orbits]] the enemy there anticlockwise, about 22 m out, its 105, 40 and 25 mm guns all firing out of its left side at once, plus Griffin missiles.\n" +
+                "How it fights: flies to where you send it and [[orbits]] the enemy there anticlockwise, about 22 m out, its 105, 40 and 25 mm guns all firing out of its left side at once.\n" +
                 "Strong / weak: grinds down [[light vehicles]], tanks, artillery and towers; it cannot hit aircraft, so SAMs and fighters are its bane.\n" +
                 "Tip: send it over a big ground fight after your AA or fighters have dealt with the enemy's.",
                 "[[Pháo hạm AC-130]] · bay · lượn vòng quanh mục tiêu\n" +
-                "Cách đánh: bay tới nơi bạn chỉ định và [[bay vòng]] ngược chiều kim đồng hồ quanh địch ở đó, cách chừng 22 m, pháo 105, 40 và 25 mm cùng bắn một lúc từ bên trái, kèm tên lửa Griffin.\n" +
+                "Cách đánh: bay tới nơi bạn chỉ định và [[bay vòng]] ngược chiều kim đồng hồ quanh địch ở đó, cách chừng 22 m, pháo 105, 40 và 25 mm cùng bắn một lúc từ bên trái.\n" +
                 "Mạnh / yếu: nghiền nát [[xe nhẹ]], xe tăng, pháo binh và tháp; không bắn được máy bay nên sợ tên lửa phòng không và tiêm kích.\n" +
                 "Mẹo: đưa vào trận đánh lớn trên mặt đất sau khi phòng không hoặc tiêm kích ta đã xử lý phòng không địch."),
 

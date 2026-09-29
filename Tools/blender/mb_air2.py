@@ -403,7 +403,7 @@ def _side_gun(loc, tilt=.14):
     return (lambda t: tuple(Vector(loc) + d * t)), (0, R90 + tilt, 0)
 
 
-def sky_gunship(a, detail=False):
+def sky_gunship(a, detail=False, ramp=True):
     """Side-firing gunship (AC-130 lineage): a round transport fuselage with a radome nose, flight
     deck windows and a refuelling probe, gear sponsons, a high wing with flaps, ailerons, flap-track
     fairings and underwing tanks, four turboprops with six-blade `Propeller`..`Propeller_4`, an
@@ -517,11 +517,13 @@ def sky_gunship(a, detail=False):
     guns.cyl(.085, 1.5, loc=at(.85), rot=rot, seg=12, bevel=0)
     a.part('Howitzer_brake', 'Undercarriage').box((.2, .28, .24), loc=at(1.62), rot=(0, .14, 0), bevel=.03, seg=1)
     a.pivot('Muzzle_main', at(1.76))
-    # The rear ramp door's launcher (AC-130J "Gunslinger"): Griffin missiles out of the back.
-    armor.box((.5, .5, .3), loc=(0, 4.55, -.42), bevel=.04, seg=1)
-    for k in range(5):
-        steel.cyl(.045, .44, loc=(-.16 + k * .08, 4.62, -.42), rot=BACKWARD, seg=6, bevel=0)
-    a.pivot('Muzzle_ramp', (0, 4.95, -.42))
+    # The rear ramp door's launcher (AC-130J "Gunslinger"): Griffin missiles out of the back. Play-test 8 (DECISIONS
+    # 22R): the AC-130 card flies without it (ramp=False); the transport twin keeps the fairing.
+    if ramp:
+        armor.box((.5, .5, .3), loc=(0, 4.55, -.42), bevel=.04, seg=1)
+        for k in range(5):
+            steel.cyl(.045, .44, loc=(-.16 + k * .08, 4.62, -.42), rot=BACKWARD, seg=6, bevel=0)
+        a.pivot('Muzzle_ramp', (0, 4.95, -.42))
     # Sensor turrets: a ball under the nose and another behind the left gear sponson, looking out left.
     sensor = a.part('Sensor', 'Glass')
     for (x, y, z), rr in (((.5, -4.7, -.98), .24), ((.66, 2.45, -.82), .18)):

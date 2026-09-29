@@ -176,7 +176,7 @@
             "kind": "vehicle",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
-            "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
+            "hash": "v2:c27add5bddcd0da3defa69dcfdee83ae74744db6"
         },
         {
             "id": "twin_tank",
@@ -520,6 +520,13 @@
             "model": "behemoth_inferno",
             "source": "Models/behemoth_inferno",
             "hash": "v2:0754f5db36eeee24e32aaeab5957da0713bbf624"
+        },
+        {
+            "id": "behemoth_mk0",
+            "kind": "boss",
+            "model": "behemoth",
+            "source": "Models/behemoth",
+            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
         },
         {
             "id": "behemoth_mk2",
@@ -869,7 +876,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:5a40589ac8b758c4f8bc2860861bfacf4b19f702"
+            "hash": "v2:5e1e18200298c46bbfe3c41ef3eacd77477e7ee3"
         },
         {
             "id": "ixion",
@@ -998,6 +1005,13 @@
             "hash": "v2:674fa737fc430c2b92e590144b57579c7550d982"
         },
         {
+            "id": "morrigan",
+            "kind": "boss",
+            "model": "morrigan",
+            "source": "Models/morrigan",
+            "hash": ""
+        },
+        {
             "id": "nuke_train",
             "kind": "boss",
             "model": "nuke_train",
@@ -1079,7 +1093,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:5a40589ac8b758c4f8bc2860861bfacf4b19f702"
+            "hash": "v2:5e1e18200298c46bbfe3c41ef3eacd77477e7ee3"
         },
         {
             "id": "sky_fortress",
@@ -1128,7 +1142,7 @@
             "kind": "support",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
-            "hash": "v2:2d4ef835ead1d9042a73448f490e2bd27aa237fe"
+            "hash": "v2:c27add5bddcd0da3defa69dcfdee83ae74744db6"
         }
     ]
 }
