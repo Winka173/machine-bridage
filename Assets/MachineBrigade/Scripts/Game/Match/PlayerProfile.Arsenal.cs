@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 2;
+        internal const int RosterVersion = 3;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -91,6 +91,14 @@ namespace MachineBrigade.Game.Match
             }
             // Version 2 (prompt 17 D.4): the hidden gun pit's slots and equipment go to the gun turret.
             MergeTower(d, CardMerges.GunPit, CardMerges.GunTurret);
+            // Version 3 (prompt 20 L.1): a retired branch's choice is dropped; the tower fights as itself and its next choice is free.
+            foreach (var gone in CardMerges.RetiredBranches)
+            {
+                var k = d.branchChoices.IndexOf(gone);
+                if (k < 0 || k >= d.branchTowers.Count) continue;
+                d.branchChoices.RemoveAt(k);
+                d.branchTowers.RemoveAt(k);
+            }
             d.rosterVersion = RosterVersion;
         }
 

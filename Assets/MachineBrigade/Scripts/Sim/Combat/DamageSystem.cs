@@ -250,6 +250,8 @@ namespace MachineBrigade.Sim.Combat
         /// An active protection system of the target's side shoots the round down short of its
         /// mark: missiles, drones and direct-fire rockets only (not shells, bullets, bombs or
         /// artillery rockets), aimed within the system's reach, while it has an interceptor.
+        /// Prompt 20 L.1: interceptor missiles that take no direct fire (the Iron Dome) take only
+        /// rounds lobbed from afar: drones, artillery rockets, long-range missiles and shells.
         /// </summary>
         private bool TryIntercept(Projectile p)
         {
@@ -264,6 +266,8 @@ namespace MachineBrigade.Sim.Combat
             var rocket = kind == ProjectileKind.Rocket;
             var shell = kind == ProjectileKind.Shell && weapon.Indirect;
             if (!direct && !rocket && !shell) return false;
+            // Lobbed from afar: a drone, or a rocket or missile with a minimum range (artillery, a ballistic missile).
+            var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
             foreach (var v in _world.VehicleList)
             {
@@ -274,17 +278,29 @@ namespace MachineBrigade.Sim.Combat
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
                 if (!direct && rocket && !aps.Rockets) continue;
+                if (!aps.Direct && direct && !lobbed) continue;
                 if (!direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;
                 // Prompt 16: a ship's CIWS with its fire-control radar broken misses now and then.
                 if (v.ApsMiss > 0f && _world.Random.NextDouble() < v.ApsMiss)
                 {
                     v.ApsCharges--;
+                    if (aps.Reload > 0f) v.ApsReload = 0f;
                     continue;
                 }
                 v.ApsCharges--;
+                // A launcher reloaded whole starts its reload again at every launch.
+                if (aps.Reload > 0f) v.ApsReload = 0f;
                 v.ApsLeft = !v.ApsLeft;
-                // The interceptor meets the round a few metres out, on the side it came from.
+                // The interceptor meets the round a few metres out, on the side it came from; an
+                // interceptor missile flies out and meets it short of its mark.
                 var from = _world.TryGetVehicle(p.Owner, out var shooter) ? shooter.Position : mark + SimMath.Forward(v.Heading) * 10f;
+                if (aps.Missiles)
+                {
+                    var back = from - mark;
+                    var meet = back.LengthSquared() > 0.01f ? mark + Vector2.Normalize(back) * MathF.Min(10f, back.Length() * 0.5f) : mark;
+                    _world.Emit(SimEvent.Intercept(v, weapon, meet, v.ApsLeft));
+                    return true;
+                }
                 var toward = from - v.Position;
                 toward = toward.LengthSquared() > 0.01f ? Vector2.Normalize(toward) : SimMath.Forward(v.Heading);
                 _world.Emit(SimEvent.Intercept(v, weapon, v.Position + toward * (v.Def.HullBound + 3f), v.ApsLeft));

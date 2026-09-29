@@ -190,6 +190,8 @@ namespace MachineBrigade.Game.Hud
             // Rocket turret: a rocket pod, face on, on its pedestal.
             ["t_rockets"] = "<path d=\"M4 21h16M8 21l2-4h4l2 4M12 17v-3\"/><rect x=\"4\" y=\"4\" width=\"16\" height=\"10\" rx=\"1.5\"/><circle cx=\"8\" cy=\"7.2\" r=\".5\"/><circle cx=\"12\" cy=\"7.2\" r=\".5\"/><circle cx=\"16\" cy=\"7.2\" r=\".5\"/><circle cx=\"8\" cy=\"10.8\" r=\".5\"/><circle cx=\"12\" cy=\"10.8\" r=\".5\"/><circle cx=\"16\" cy=\"10.8\" r=\".5\"/>",
             // C-RAM: the radome over a gatling mount.
+            // Prompt 20 L.1: the Iron Dome branch: a tilted canister launcher, two interceptor arcs over it.
+            ["t_irondome"] = "<path d=\"M3 21h18M6 21l1-3h10l1 3M8 18l5-6 3.5 2.5-3.5 3.5M10.5 15.5l4-4.5\"/><path d=\"M3 10a9 9 0 0 1 18 0M6.5 10a5.5 5.5 0 0 1 11 0\"/>",
             ["t_cram"] = "<path d=\"M4 21h16M6 21l1-3h10l1 3M8 18v-6M16 18v-6\"/><circle cx=\"12\" cy=\"8.5\" r=\"4.5\"/><path d=\"M16 14h6M16 16.5h5\"/>",
             // Gun pit: a turret sunk in its pit under a camouflage net (dashed).
             ["t_pit"] = "<path d=\"M2 15h4.5v5h11v-5H22M8.5 20v-2a2.5 2.5 0 0 1 2.5-2.5h2a2.5 2.5 0 0 1 2.5 2.5v2M15 17l7-3.5M5 12.5l1.5-1.5M9 9.6l2-.5M13 9.1l2 .5M17.5 11l1.5 1.5\"/>",

@@ -691,6 +691,7 @@ namespace MachineBrigade.Game.Hud
                         var row = Kit.Tappable(KitPanel.SurfaceClass + " fc-weapon" + (b == chosen ? " fc-weapon--chosen" : ""), () => ChooseTowerBranch(card, branchId));
                         row.Add(Kit.Icon(b == chosen ? "check" : rank < TowerCards.BranchRank ? "lock" : "upgrade", "fc-weapon__icon"));
                         var text = Kit.Box("fc-row-text fc-grow");
+                        if (TowerIcons.For(b) is { } branchIcon && branchIcon != TowerIcons.For(card)) row.Add(Kit.Icon(branchIcon, "fc-weapon__icon"));
                         text.Add(Kit.Text(Kit.Caps(Strings.Branch(b)), "fc-panel-title"));
                         text.Add(Kit.Body2(Strings.Get("branch." + b + ".info")));
                         row.Add(text);

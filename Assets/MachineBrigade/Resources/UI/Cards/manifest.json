@@ -529,7 +529,7 @@
             "hash": "v2:e4663eea4270b828b29ef8296934cccdb6638975"
         },
         {
-            "id": "c_ram.hunter",
+            "id": "c_ram.dome",
             "kind": "tower",
             "model": "c_ram",
             "source": "Models/c_ram",

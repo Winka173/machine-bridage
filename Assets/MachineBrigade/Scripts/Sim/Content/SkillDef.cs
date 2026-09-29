@@ -145,6 +145,21 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 15 C.6: a point-defence laser (the Iron Beam): smoke round it or its mark blinds it.</summary>
         public bool Laser { get; internal set; }
+
+        /// <summary>
+        /// Prompt 20 L.1: seconds to reload the whole launcher (prompt 13's magazine): the clock restarts at every launch
+        /// and, once it runs out, every interceptor is back. 0: one comes back every <see cref="Recharge"/> seconds.
+        /// </summary>
+        public float Reload { get; internal set; }
+
+        /// <summary>
+        /// Takes direct fire too: guided missiles and rockets fired straight at a target (ATGMs, rocket pods). False
+        /// (the Iron Dome): only rounds lobbed from afar, artillery rockets, shells, drones and long-range missiles.
+        /// </summary>
+        public bool Direct { get; internal set; } = true;
+
+        /// <summary>Prompt 20 L.1: interceptor missiles (the Iron Dome), which meet a round out near its mark, not beside the launcher.</summary>
+        public bool Missiles { get; internal set; }
     }
 
     /// <summary>

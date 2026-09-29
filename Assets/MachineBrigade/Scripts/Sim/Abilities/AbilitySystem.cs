@@ -68,11 +68,12 @@ namespace MachineBrigade.Sim.Abilities
                 if (_world.HomeZones && !v.Def.Static && v.Hp < v.MaxHp && now - v.LastHitTime > 3.0 &&
                     _world.TryGetRally(v.Team, out var home) && Vector2.DistanceSquared(v.Position, home) < SimWorld.HomeRadius * SimWorld.HomeRadius)
                     v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * 0.02f * dt);
-                // Active protection reloads one interceptor at a time.
+                // Active protection reloads one interceptor at a time; a launcher reloaded whole (prompt 20 L.1, the
+                // Iron Dome) gets all of them back once it has been quiet for its reload time (it restarts at each launch).
                 var aps = v.Aps;
-                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt) >= aps.Recharge)
+                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt) >= (aps.Reload > 0f ? aps.Reload : aps.Recharge))
                 {
-                    v.ApsCharges++;
+                    v.ApsCharges = aps.Reload > 0f ? Math.Min(aps.Charges, v.ApsMax) : v.ApsCharges + 1;
                     v.ApsReload = 0f;
                 }
             }

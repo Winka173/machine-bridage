@@ -29,6 +29,8 @@ namespace MachineBrigade.Tests
             "ashfield", "dunebreak", "frostpeak", "ironport", "redrock", "whiteout", "greenvale", "rustyard", "emberridge",
             "junglepass", "skyhold", "metrocity",
             "landingbeach", "hydrodam", "capital", "launchsite", "saltflat", "borderbridge", "swamp", "coralisles",
+            // Prompt 20 M.
+            "openpit", "orbitalgate",
         };
 
         /// <summary>Base-wall segments (8 m) end to end along x = line (axis 'y') or y = line (axis 'x'), with an optional opening.</summary>

@@ -173,8 +173,11 @@ namespace MachineBrigade.Game.Hud
             }
             if (def.Aps is { } aps)
             {
-                lines.Add(F("ul.aps", N(aps.Radius), aps.Charges, N(aps.Recharge)));
-                if (aps.Rockets) lines.Add(Strings.Get("ul.apsRockets"));
+                // Prompt 20 L.1: interceptor missiles reloaded whole, and only rounds lobbed from afar (the Iron Dome).
+                if (aps.Reload > 0f) lines.Add(F("ul.apsMagazine", N(aps.Radius), aps.Charges, N(aps.Reload)));
+                else lines.Add(F("ul.aps", N(aps.Radius), aps.Charges, N(aps.Recharge)));
+                if (!aps.Direct) lines.Add(Strings.Get("ul.apsLobbed"));
+                else if (aps.Rockets) lines.Add(Strings.Get("ul.apsRockets"));
                 if (aps.Shells > 0f) lines.Add(F("ul.apsShells", N(aps.Shells * 100f)));
             }
             if (def.Jammer > 0f) lines.Add(F("ul.jammer", N(def.Jammer)));

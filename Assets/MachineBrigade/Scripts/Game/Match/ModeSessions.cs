@@ -226,7 +226,7 @@ namespace MachineBrigade.Game.Match
             var rules = world.Catalog.Base;
             var role = rules.RoleFor(kind.ToString());
             var setup = new BaseSetup();
-            var enemyLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed);
+            var enemyLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, against: MatchSettings.DeckVehicles);
             var playerLoadout = menu ? BaseLoadout.ForAi(world.Catalog, "Normal", "default", seed + 5) : PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam);
             if (role == BaseRole.Target)
             {
@@ -682,7 +682,8 @@ namespace MachineBrigade.Game.Match
                 StartSeconds = 300f, StartStage = _startStage,
                 Attacker = attacker, Defender = EnemySide(22f, 1.15f, Difficulty, world.Catalog, seed),
                 // Prompt 17 B.7: on a long battlefield the same layered plan (the long table's towers).
-                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week, layered: world.Map.Fortress is { Layered: true }),
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, _week, layered: world.Map.Fortress is { Layered: true },
+                    against: MatchSettings.DeckVehicles),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -766,7 +767,8 @@ namespace MachineBrigade.Game.Match
                 AttackerBase = PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam),
                 // The fortress's towers: the enemy's base loadout for this difficulty, over every ring.
                 // (Prompt 17 B.7: a long battlefield's layered base takes the long table's towers.)
-                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, layered: world.Map.Fortress is { Layered: true }),
+                FortressLoadout = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, layered: world.Map.Fortress is { Layered: true },
+                    against: MatchSettings.DeckVehicles),
             });
             Mode = _mode;
             _mode.Setup(world);
@@ -1085,7 +1087,7 @@ namespace MachineBrigade.Game.Match
             }
             Mode.Setup(world);
             // Bases in a mission: a camp for either side if the mission gives one, and outposts on marked points.
-            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null);
+            var enemyBase = BaseLoadout.ForAi(world.Catalog, Difficulty.ToString(), EnemyStyle, seed, _def.EnemyHq > 0 ? _def.EnemyHq : null, against: MatchSettings.DeckVehicles);
             if (_def.PlayerBase != BaseRole.None || _def.EnemyBase != BaseRole.None)
                 BaseDefences.Build(world, new BaseSetup()
                     .Set(PlayerTeam, MutatedBase(PlayerProfile.BaseLoadoutOn(world.Map, PlayerTeam)), _def.PlayerBase)

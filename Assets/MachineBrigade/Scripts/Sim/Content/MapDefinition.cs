@@ -220,9 +220,26 @@ namespace MachineBrigade.Sim.Content
             foreach (var u in Units) units.Add(new UnitPlacement(u.DefId, Swap(u.Team), u.Position, u.Heading));
             var bases = new List<BaseSiteDef>();
             foreach (var b in Bases) bases.Add(new BaseSiteDef(Swap(b.Team), b.Hq, b.Heading, b.Slots));
+            // A fixed route runs toward the other camp now: the same road, walked the other way.
+            var routes = new Dictionary<string, IReadOnlyList<Vector2>>();
+            foreach (var (key, line) in Routes)
+            {
+                var back = new List<Vector2>(line);
+                back.Reverse();
+                routes[key] = back;
+            }
             return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases,
-                bounds: IsSquare ? null : (Min, Max));
+                bounds: IsSquare ? null : (Min, Max)) { Routes = routes };
         }
+
+        /// <summary>
+        /// Prompt 20 M: fixed routes by name (map data "routes": {"kronos": [x, z, ...]}), for a slow boss that
+        /// drives the same road every time toward the player's camp (the open-pit mine's excavator). Empty on most maps.
+        /// </summary>
+        public IReadOnlyDictionary<string, IReadOnlyList<Vector2>> Routes { get; internal set; } = new Dictionary<string, IReadOnlyList<Vector2>>();
+
+        /// <summary>A named fixed route, or null when the map has none by that name.</summary>
+        public IReadOnlyList<Vector2>? Route(string name) => Routes.TryGetValue(name, out var line) ? line : null;
 
         /// <summary>Prompt 16: the sea beside the battlefield (its lanes, beaches, piers, batteries), or null.</summary>
         public SeaDef? Sea { get; internal set; }
@@ -309,11 +326,25 @@ namespace MachineBrigade.Sim.Content
                 foreach (var b in root.Array("bases"))
                     bases.Add(BaseSiteDef.Parse(b));
             var fortress = root.Has("fortress") ? FortressDef.Parse(root.Object("fortress")) : null;
+            var routes = new Dictionary<string, IReadOnlyList<Vector2>>();
+            if (root.Has("routes"))
+            {
+                var r = root.Object("routes");
+                foreach (var key in r.Keys)
+                {
+                    var flat = r.FloatArray(key);
+                    if (flat.Count < 4 || flat.Count % 2 != 0) throw new FormatException($"map.routes.{key}: needs at least two x, z pairs.");
+                    var line = new List<Vector2>();
+                    for (var i = 0; i < flat.Count; i += 2) line.Add(new Vector2(flat[i], flat[i + 1]));
+                    routes[key] = line;
+                }
+            }
             return new MapDefinition(id, size, teams, props, units, points, roads, root.Has("theme") ? root.String("theme") : "temperate",
                 boundary, rings, decor, bases, fortress, bounds)
             {
                 // Prompt 16: a battlefield on the sea (Lighthouse Bay): its lanes, beaches and batteries.
                 Sea = root.Has("sea") ? SeaDef.Parse(root.Object("sea")) : null,
+                Routes = routes,
             };
         }
     }

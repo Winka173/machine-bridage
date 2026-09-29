@@ -276,6 +276,160 @@ namespace MachineBrigade.Tests
             Assert.Pass();
         }
 
+        /// <summary>
+        /// Prompt 20 L.4: the three tower changes, one seed each (the owner's rule: short). Point defence: four undying
+        /// battle tanks (holding fire) under 45 s of direct fire (two BMPTs' ATGMs, an attack helicopter, an FPV carrier)
+        /// or of lobbed fire (an MLRS, a howitzer, a mortar carrier, a Lancet truck), alone, then with the C-RAM, its
+        /// Centurion or its Iron Dome beside them: health lost and interceptions. Anti-air: the AA tower, its flak and SAM
+        /// branches and the Patriot against two attack helicopters, an attack jet or three strike drones for 90 s: damage
+        /// dealt and the longest range it hit from. The rocket battery and its branches 10 m behind a wall against two
+        /// battle tanks and two armoured cars at its foot for 60 s: damage dealt over the wall.
+        /// </summary>
+        [Test, Explicit("a measurement: run it by name with MB_BALANCE=1"), Category("Balance")]
+        public void PrintPrompt20Towers()
+        {
+            if (Environment.GetEnvironmentVariable("MB_BALANCE") != "1") Assert.Ignore("prompt 20 towers: set MB_BALANCE=1");
+            var catalog = LoadCatalog();
+            var sb = new StringBuilder("POINT DEFENCE (4 tanks, 45 s, HP lost / interceptions)\n");
+            foreach (var (fire, attackers) in new[]
+                     {
+                         ("direct", new[] { "bmpt", "bmpt", "attack_helicopter", "fpv_carrier" }),
+                         ("lobbed", new[] { "mlrs", "artillery", "mortar_carrier", "lancet_truck" }),
+                     })
+                foreach (var guard in new[] { "none", "c_ram", "c_ram.centurion", "c_ram.dome" })
+                {
+                    var world = Field(catalog, 13);
+                    world.RevealAll = true;
+                    var tanks = new List<Vehicle>();
+                    for (var i = 0; i < 4; i++)
+                    {
+                        var t = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-18f + i * 12f, 0f), 0f);
+                        world.MakeSparring(t);
+                        t.HoldFire = true;
+                        tanks.Add(t);
+                    }
+                    if (guard != "none")
+                    {
+                        var g = world.SpawnVehicle(guard, 0, new Vector2(0f, -8f), 0f);
+                        world.AnchorDefence(g);
+                        world.MakeSparring(g);
+                    }
+                    for (var i = 0; i < attackers.Length; i++)
+                    {
+                        var lobbed = catalog.Vehicle(attackers[i]).Weapon.MinRange > 0f;
+                        var a = world.SpawnVehicle(attackers[i], 1, new Vector2(-20f + i * 12f, lobbed ? 75f : 38f), MathF.PI);
+                        world.MakeSparring(a);
+                        world.Submit(new Sim.Commands.Command(Sim.Commands.CommandType.Attack, 1, new[] { a.Id }, tanks[i % 4].Position, tanks[i % 4].Id));
+                    }
+                    var taken = 0f;
+                    var intercepts = 0;
+                    DamageSystem.DamageLog = (by, victim, amount, kind, weapon) =>
+                    {
+                        if (tanks.Contains(victim)) taken += amount;
+                    };
+                    try
+                    {
+                        for (var t = 0f; t < 45f; t += TestWorlds.Step)
+                        {
+                            world.Step(TestWorlds.Step);
+                            foreach (var e in world.Events)
+                                if (e.Kind == SimEventKind.Intercepted && e.Team == 0) intercepts++;
+                            world.ClearEvents();
+                        }
+                    }
+                    finally
+                    {
+                        DamageSystem.DamageLog = null;
+                    }
+                    sb.AppendLine($"  {fire,-7} {guard,-16} lost {taken,7:0} HP, {intercepts} interceptions");
+                }
+
+            sb.AppendLine("ANTI-AIR (30 s at an undying helicopter held at each distance, or three drones at 30 m: damage dealt)");
+            foreach (var tower in new[] { "aa_turret", "aa_turret.flak", "aa_turret.sam", "missile_battery" })
+            {
+                var line = new StringBuilder($"  {tower,-16}");
+                foreach (var (distance, kind, count) in new[] { (30f, "attack_helicopter", 1), (45f, "attack_helicopter", 1), (58f, "attack_helicopter", 1),
+                             (70f, "attack_helicopter", 1), (88f, "attack_helicopter", 1), (30f, "strike_drone", 3) })
+                {
+                    var world = Field(catalog, 13);
+                    world.RevealAll = true;
+                    var aa = world.SpawnVehicle(tower, 1, new Vector2(0f, 40f), MathF.PI);
+                    world.AnchorDefence(aa);
+                    var targets = new List<Vehicle>();
+                    for (var i = 0; i < count; i++)
+                    {
+                        var a = world.SpawnVehicle(kind, 0, new Vector2(-6f + i * 6f, 40f - distance), 0f);
+                        world.MakeSparring(a);
+                        a.HoldFire = true;
+                        targets.Add(a);
+                    }
+                    var dealt = 0f;
+                    DamageSystem.DamageLog = (by, victim, amount, k, weapon) =>
+                    {
+                        if (by == aa && targets.Contains(victim)) dealt += amount;
+                    };
+                    try
+                    {
+                        for (var t = 0f; t < 30f; t += TestWorlds.Step)
+                        {
+                            foreach (var a in targets)
+                                if (Vector2.Distance(a.Position, aa.Position) > distance + 4f) a.Hp = a.MaxHp;
+                            world.Step(TestWorlds.Step);
+                            world.ClearEvents();
+                        }
+                    }
+                    finally
+                    {
+                        DamageSystem.DamageLog = null;
+                    }
+                    line.Append($" | {(kind == "strike_drone" ? "3 drones" : "heli")} {distance:0} m {dealt,5:0}");
+                }
+                sb.AppendLine(line.ToString());
+            }
+
+            sb.AppendLine("ROCKET BATTERY behind a wall (60 s: damage dealt over it)");
+            foreach (var tower in new[] { "rocket_turret", "rocket_turret.cluster", "rocket_turret.thermo" })
+            {
+                var props = new List<PropPlacement>();
+                for (var x = -24f; x <= 24f; x += 8f) props.Add(new PropPlacement("base_wall", new Vector2(x, 6f), 0));
+                var world = new SimWorld(catalog, new MapDefinition("range", 300f,
+                    new[] { new TeamStart(0, new Vector2(0f, -130f)), new TeamStart(1, new Vector2(0f, 130f)) }, props, new List<UnitPlacement>()), seed: 13);
+                world.RevealAll = true;
+                var battery = world.SpawnVehicle(tower, 1, new Vector2(0f, 16f), MathF.PI);
+                world.AnchorDefence(battery);
+                world.MakeSparring(battery);
+                foreach (var (id, x) in new[] { ("main_battle_tank", -8f), ("main_battle_tank", 8f), ("armored_car", -16f), ("armored_car", 16f) })
+                {
+                    var v = world.SpawnVehicle(id, 0, new Vector2(x, -2f), 0f);
+                    world.MakeSparring(v);
+                    v.HoldFire = true;
+                }
+                var dealt = 0f;
+                DamageSystem.DamageLog = (by, victim, amount, kind, weapon) =>
+                {
+                    if (by == battery && victim != null && victim.Team == 0) dealt += amount;
+                };
+                try
+                {
+                    for (var t = 0f; t < 60f; t += TestWorlds.Step)
+                    {
+                        world.Step(TestWorlds.Step);
+                        world.ClearEvents();
+                    }
+                }
+                finally
+                {
+                    DamageSystem.DamageLog = null;
+                }
+                sb.AppendLine($"  {tower,-22} dealt {dealt,6:0} over the wall");
+            }
+            TestContext.Out.WriteLine(sb.ToString());
+            UnityEngine.Debug.Log("[CombatValueMeasure.Prompt20]\n" + sb);
+            var dir = Environment.GetEnvironmentVariable("MB_CV_OUT");
+            if (!string.IsNullOrEmpty(dir)) File.WriteAllText(Path.Combine(dir, "prompt20_towers.txt"), sb.ToString());
+            Assert.Pass();
+        }
+
         private static SimWorld Field(Catalog catalog, int seed) =>
             new SimWorld(catalog, new MapDefinition("range", 300f,
                 new[] { new TeamStart(0, new Vector2(0f, -130f)), new TeamStart(1, new Vector2(0f, 130f)) },

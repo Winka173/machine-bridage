@@ -308,9 +308,12 @@ namespace MachineBrigade.Sim.Content
                     if (v.Has("aps"))
                     {
                         var a = v.Object("aps");
-                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), a.Float("recharge"))
+                        // Prompt 20 L.1: a launcher reloaded whole ("reload") needs no one-at-a-time "recharge".
+                        var reload = a.Float("reload", 0f);
+                        def.Aps = new ApsDef(a.Float("radius"), a.Int("charges", 2), reload > 0f ? a.Float("recharge", reload) : a.Float("recharge"))
                         {
                             Rockets = a.Bool("rockets", false), Shells = a.Float("shells", 0f), Laser = a.Bool("laser", false),
+                            Reload = reload, Direct = a.Bool("direct", true), Missiles = a.Bool("missiles", false),
                         };
                     }
                     if (v.Has("commandAura"))
