@@ -7,6 +7,17 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+## v0.31.0: Prompt 23 (mission events and in-battle text dialogue) and the 264-page design review
+
+2026-09-30 · merged into main
+
+Main merges on feature/visual-overhaul since v0.30.0 (newest first): the design review PDF (264 pages, new 7c on events and
+dialogue); f585c2b prompt 23 E (events in all 193 missions); 0117138 the event HUD adapter; df75776 prompt 23 F (arrows, side
+objectives, Accord mark, general labels); 6511dc2 prompt 23 A-D (event library, spawn points, reinforcements, event groups);
+c19fbc0 prompt 23 H (text dialogue, compact notices). Balance of the events (5-seed campaign runs, FPS) waits for the testing
+phase; DECISIONS 23A and 23E list what it must measure.
+
+
 ### Prompt 23 F: event HUD markers (DECISIONS 23F)
 
 - Reinforcements show where they come from for as long as their warning runs: an arrow at that side of the minimap and a
