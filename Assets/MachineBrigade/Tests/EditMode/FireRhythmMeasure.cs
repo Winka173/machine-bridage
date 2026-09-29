@@ -29,7 +29,7 @@ namespace MachineBrigade.Tests
             ("heavy_aa", "attack_helicopter", 25f), ("aa_vehicle", "attack_helicopter", 25f), ("zu23_technical", "attack_helicopter", 20f),
             // Test feedback 2 (12D): the anti-aircraft guns, towers, bunkers and boss guns on streams.
             ("elite_aa", "attack_helicopter", 25f), ("aa_turret", "attack_helicopter", 25f), ("aa_turret.flak", "attack_helicopter", 25f),
-            ("c_ram", "attack_helicopter", 20f), ("c_ram.hunter", "attack_helicopter", 30f), ("headquarters", "attack_helicopter", 22f),
+            ("c_ram", "attack_helicopter", 20f), ("c_ram.dome", "attack_helicopter", 30f), ("headquarters", "attack_helicopter", 22f),
             ("landing_hovercraft", "attack_helicopter", 20f), ("landing_hovercraft", "ifv", 20f), ("mega_gunship", "ifv", 22f),
             ("mg_bunker", "armored_car", 18f), ("mg_bunker.twin", "armored_car", 18f), ("bulwark_post", "armored_car", 18f),
             ("gun_turret", "armored_car", 16f), ("guard_tower", "armored_car", 18f), ("guard_tower.nest", "armored_car", 18f),

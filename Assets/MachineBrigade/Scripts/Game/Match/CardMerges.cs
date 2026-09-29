@@ -33,6 +33,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>Cards gone with nothing in their place (the sky gunship is only the Gunship item's aircraft now).</summary>
         public static readonly string[] Retired = { "sky_gunship" };
 
+        /// <summary>Tower branches gone (prompt 20 L.1: the C-RAM's Hunter made way for the Iron Dome): a choice of one is dropped.</summary>
+        public static readonly string[] RetiredBranches = { "c_ram.hunter" };
+
         /// <summary>What the retired and merged premium cards cost: a player who bought one gets it back.</summary>
         public static readonly IReadOnlyDictionary<string, int> PremiumPrices = new Dictionary<string, int>
         {

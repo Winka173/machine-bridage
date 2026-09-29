@@ -69,6 +69,11 @@ SHAPES = {
     'coralisles': (5.0, 9.0, 18.0, [(135, 26, 26), (90, 12, 12), (0, 12, 12)]),
     # Salt flats: the rim of a dry lake, broad shallow bays.
     'saltflat':   (4.0, 6.0, 34.0, [(135, 24, 34), (90, 14, 20), (0, 14, 20)]),
+    # Prompt 20 M. An open-pit mine: old workings and spoil tips close in on the corners beyond the
+    # plants and on the flanks.
+    'openpit':    (5.0, 8.0, 22.0, [(135, 24, 22), (0, 12, 12), (90, 12, 12)]),
+    # A spaceport on a snowy plateau: the mountains close in beyond the pads and on the flanks.
+    'orbitalgate': (3.0, 5.0, 24.0, [(135, 20, 16), (100, 12, 12), (170, 12, 12)]),
 }
 
 KEEP_CAMP = 20.0

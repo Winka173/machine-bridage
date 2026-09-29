@@ -5988,3 +5988,136 @@ The owner's doc update (Docs/prompts/doc-review-update_vi.txt). Everything is ge
   - Section 2's difficulty paragraph now reads the four-level table from DECISIONS 13C.
   - The campaign line reads its mission and chapter counts from the data.
 - **Tests:** `ExportGameDoc.EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm` and `ExportGameDoc.NoModeLineKeepsAPlaceholder` (both languages).
+
+## 19L. Prompt 20 L-M: towers, two new battlefields (2026-09-29)
+
+Parts L and M only. The boss code, the campaign's structure and chapters, and the boss and general renames are
+other agents' (prompt 19 is rebuilding the Silver Bug); nothing of theirs is touched here.
+
+### L.1 The Iron Dome branch of the C-RAM
+
+- **Which branch goes.** The C-RAM keeps two rank-7 branches (the roster test wants two for every tower): Centurion
+  (three interceptors, one back every 1.5 s) stays the quick close-in C-RAM; the Iron Dome (`c_ram.dome`) takes the
+  Hunter's place (`c_ram.hunter`, a 45 m gatling at aircraft: the SAM post and the Patriot already do that job).
+  Save: `RosterVersion` 3 drops a Hunter choice (`CardMerges.RetiredBranches`); the tower fights as itself and its next
+  choice is free. The card manifest entry is renamed (same model and picture as the C-RAM's; a launcher model of its own
+  is art debt).
+- **What it takes** (`ApsDef.Direct` false): only rounds lobbed from afar: drones, artillery rockets, missiles with a
+  minimum range (ballistic, GMLRS) and half the shells (`shells` 0.5; the C-RAM 0.3). Never direct fire (gun rounds,
+  ATGMs, rocket pods, air-to-ground missiles: those are Centurion's) nor energy (as every APS). Why: the prompt's list
+  (rockets, missiles, shells, drones; not direct fire) read with the real system's job; it gives the two branches
+  different fights instead of one being the other plus reach.
+- **Reach and shots.** Interceptors for rounds aimed within 60 m (C-RAM 35). Six in the launcher; the whole launcher is
+  back 12 s after the last launch (`ApsDef.Reload`: prompt 13's magazine, the clock restarting at every launch, so a
+  part-used launcher also refills in a quiet spell; nothing trickles back). At most 0.5 a second against the close-in
+  C-RAM's 0.67: fewer shots, further out, a whole rocket salvo at once. The first try (four, 16 s) lost to the plain
+  C-RAM even against lobbed fire (measure below), so it was raised once. An interceptor meets the round up to 10 m short of its
+  mark (`ApsDef.Missiles`); the view draws a missile streak off the launcher and the burst 9 m up.
+- **Its launcher's other missiles** (`tamir`): at drones and aircraft within 60 m, 110 fragmentation, six in the
+  launcher, 20 s to reload: a drone killer, weak on aircraft (about a sixth of the SAM post's damage a second).
+- **Shown**: its own line icon (`t_irondome`: a canister launcher under two intercept arcs; `TowerIcons.For` returns
+  it for the branch, the branch rows on the Base screen and the detail page show it), generated Behaviour lines
+  (`ul.apsMagazine`, `ul.apsLobbed` from the data), the branch note, the C-RAM guide's tip. The in-action clip is not
+  made here (graphics; testing phase).
+- **The AI picks by the deck it faces** (`BaseLoadout.ChooseAiBranches`, from `ForAi(..., against:)`): the sessions pass
+  the player's deck for the enemy base, the Siege and weekly fortresses and a mission's enemy camp. A deck whose cards
+  mostly lob their fire (main weapon a drone or with a minimum range) gets the branch that takes no direct fire and
+  reaches furthest (the Iron Dome); otherwise the close-in branch with the most interceptors (Centurion). Easy keeps
+  plain towers; with no deck given nothing changes (the base-strength references are the same). Only point-defence
+  towers get an AI branch: branching every AI tower would move every mode's balance, which this prompt did not ask for.
+
+### L.2 The rocket battery over walls
+
+- **Checked in the sim**: its rockets (minimum range 8 m) are indirect, so `HasLineOfFire` never asks for a clear line and
+  the wall-burst in `CombatSystem` skips them; vision is not blocked by walls; splash is not occluded. A test puts the
+  battery 10 m behind a wall with a tank 8 m beyond it: the rockets hit, its machine gun (direct fire) does not; inside
+  8 m only the machine gun fires. Nothing blocked them; no sim change was needed. The drawn arc is the launcher's
+  elevation or 0.28 of the distance (at 18 m about 5 m high, over a 3 m wall); a look with graphics is for the testing
+  phase.
+- **Its job in the layered bases** (DECISIONS 16A): an AI-held layered fortress puts a rocket battery on every other
+  medium hardpoint of its yard (`BaseSystem.YardTower`), about 30 m behind the outer wall: the attackers at the wall's
+  foot, where the wall's own direct-fire towers cannot look, are in its 8-55 m. The player's own layered base stays
+  exactly as laid out. The guide says so.
+
+### L.3 The AA tower's SAM post
+
+- `aa_turret.sam` fires `sam_post` (the Buk pair, 60 m; was 55) and sees 64 m. The three layers now read: flak branch
+  46 m (quad 23 mm, the small tower's +25 % on helicopters and drones: close in, drones and small swarms), SAM post
+  60 m (aircraft and helicopters), Patriot 72-100 m (the big umbrella). Branch notes updated.
+
+### L.4 Measured (`CombatValueMeasure.PrintPrompt20Towers`, MB_BALANCE=1, one seed, about a second)
+
+- **Point defence** (four undying tanks holding fire, 45 s; HP lost / interceptions). Direct fire (two BMPTs, an attack
+  helicopter, an FPV carrier): none 5240; C-RAM 1400 / 18; Centurion 840 / 22; Iron Dome 840 / 10 (its drone kills
+  and the ATGMs let through). Lobbed fire (MLRS, howitzer, mortar carrier, Lancet truck): none 4867; C-RAM 688 / 11;
+  Centurion 784 / 14; Iron Dome 879 / 17 (four in 16 s: 1744 / 8). The tanks stand inside 35 m of the guard here, so
+  the dome's reach is not counted: in a base its 60 m covers about three times the C-RAM's ground. Within the targets:
+  each branch best at its own fight, none dominant.
+- **Anti-air** (30 s against an undying helicopter held at 30/45/58/70/88 m; three drones at 30 m): AA tower 5606 at
+  30 m, nothing beyond (its reach is 42-44 m), drones 11802; flak 2197 / 1555 / 0 / 0 / 0, drones 7960; SAM post 6011 /
+  4800 / 4800 / 0 / 0, drones 6299; Patriot 3066 / 2040 at every distance to 88 m, drones 3765. The reach layers read
+  as asked (flak 46 m, SAM post to 60 m, Patriot out to 90), but the flak branch was a weaker plain tower (drones 7960
+  against 11802), not the drone killer the prompt keeps it as. Its quad 23 mm now does 22 a round (was 14, the twin
+  30 mm's figure; bigger splash, no missiles): against the undying drones damage scales with it, about 12,500, above
+  the plain tower, while it stays behind it on helicopters (no missiles). Not re-measured (the owner's one-run rule):
+  the testing phase's measure checks it.
+- **Rocket battery** 10 m behind a wall, two tanks and two armoured cars at its foot, 60 s: base 2822, cluster 3587,
+  thermobaric 3590, all over the wall.
+- **Base cover** (prompt 14): `BaseRoles` gives the dome Intercept and AntiAir with a 60 m air reach, the SAM post 60 m,
+  the rocket battery 55 m with its 8 m minimum; the Base screen's circles and cover strip read the same data.
+
+### M. Two new battlefields
+
+- **Ids** `openpit` (Open-Pit Mine / Mỏ Lộ Thiên, desert) and `orbitalgate` (Orbital Gateway / Cửa Ngõ Quỹ Đạo, snow);
+  display names only in `Strings` (`map.<id>`, `.sub`), so prompts 21-23 can rename them freely.
+- **Open-pit mine**: three broken rings of rock stepping down to the pit floor (the centre objective), ramps through
+  each ring, 14 m ore haul roads winding down and out to the processing plant and the spoil heaps (the side
+  objectives), ore heaps, the plant's buildings and conveyors, haul trucks. The **fixed route** is data:
+  `"routes": {"kronos": [x, z, ...]}` in its _conquest, _sandbox and _siege files (`MapDefinition.Routes`,
+  `Route(name)`; `Reversed()` walks it the other way), 12 points and 433 m from the north-east camp road along the haul
+  road through the pit to about 19 m from the player's HQ. It is laid as a 14 m road, so nothing stands on it; the
+  builder checks every 2 m that 7 m either side is open (1694 cells, all open) and the new test checks the path on the
+  sim's grid. Prompt 20 J's Kronos will read `map.Route("kronos")`; nothing drives it yet. The long file has no route
+  (the boss plays the square).
+- **Orbital gateway**: a radar station complex, two launch pads on the flanks (the rocket between its gantries, fuel
+  tanks, flame trenches, blockhouses, sandbags), and a 60 x 60 m field at the centre kept clear of every solid prop
+  (floodlights and runway lights round its edge) for drop pods.
+- **Versions**: Conquest, Survival and Siege from `build_maps.py` (`MAPS_P20`, `WAR_P20`, `DENSIFY_P20`, the two
+  `boundary.SHAPES`), the long battlefield from `longmap.py`; `MatchSettings.AllMaps` (skirmish list, the Base
+  screen's maps, the weekly draw), menu pictures from `map_thumbs.py`. Camps on both maps: 2 large, 3 medium, 6 small
+  tower and 3 utility hardpoints each side, an outpost pair at every objective; the slot labels come from the camp's
+  geometry (`SlotPlaces.Keys`) as on every square map, and from the data on the long ones. `check_access` passes the
+  _conquest, _siege and _long files, the _sandbox files pass its check too; `longmap` ok. Other maps' files unchanged.
+- **Guide**: `guide.map.openpit` and `guide.map.orbitalgate` (terrain, lanes, who it favours, a tip) are in the Guide
+  table; no screen lists battlefields yet (the Guide tab is per unit), so they wait for the battlefield page of
+  prompt 20 O. Their campaign use (chapters 8 and 11) is the campaign agent's.
+- **Open points**: the orbital gateway's centre objective has its two outpost hardpoints about 20 m from the centre,
+  inside the landing field (slots, not props; a tower built there stands on the drop-pod ground; move them if the
+  drop pods need the whole field). The siege fortress logs "could not place fuel_depot / ammo_dump / vehicle_hangar"
+  on both maps (dressing only; every check passes). Base map pictures (`BaseMapShots`) need graphics.
+
+### Tests (run once each; PlaySmoke and suites not run)
+
+`Prompt20TowersMapsTests` (8) and the measure: the first run failed the wall test (the wall's seam sat on the line of
+fire) and the anti-air measure's attackers never came in; both fixed, the rerun and one more run of the wall test (now
+two salvos, the machine gun alone counted) pass 8 of 8. The rest of the lists that name the maps (BaseSiteTests,
+TrafficTests, MapRouteTests, whose count is now 23 with Lighthouse Bay) were not run.
+
+### For the testing phase
+
+- `StuckBatch` (prompt 12) on openpit and orbitalgate: every version (conquest, sandbox, siege, long), both sides, 5 seeds;
+  `BaseSiteTests`, `TrafficTests`, `MapRouteTests`, `MapConnectivity` on the two maps; `ConquestBattleTests` on them.
+- 5 seeds: Siege and Defend on the long maps with the yard's rocket batteries; skirmish against lobbed and direct decks
+  with the AI's C-RAM branch; `CombatValueMeasure.PrintPrompt20Towers` with `MB_CV_SEEDS`; `TowerPickRates`.
+- With graphics: the Iron Dome's streak and burst, the rocket battery's arc over a wall, the in-action clip for the
+  branch, `BaseMapShots` for both maps and their long bases; a launcher model for the Iron Dome (art debt).
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (`tamir`, `sam_post`, `c_ram.dome` for `c_ram.hunter`, `aa_turret.sam`), `SkillDef` (ApsDef), `Catalog`
+(aps), `AbilitySystem` (APS reload), `DamageSystem.TryIntercept`, `MapDefinition` (Routes), `BaseLoadout` (ForAi's
+`against`, `ChooseAiBranches`), `BaseSystem.EstablishFortress` (yard), `ModeSessions` (four `ForAi` calls),
+`PlayerProfile.Arsenal` (RosterVersion 3), `CardMerges`, `EffectsDirector` (intercept), `UnitLines`, `UnitText`,
+`Strings`, `GuideText`, `Icons`, `TowerIcons`, `BaseScreen` and `MenuScreen.Detail` (branch icon), `MatchSettings`,
+the card manifest, `FireRhythmMeasure`, `CombatValueMeasure`, the three test lists, `Tools/maps/build_maps.py` and
+`boundary.py`. No boss, campaign or rename code touched.

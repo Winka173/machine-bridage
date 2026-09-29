@@ -215,6 +215,12 @@ namespace MachineBrigade.Game.Match
             // Prompt 16: a rocky coast on the sea (Leviathan's battlefield), in the skirmish rotation too.
             new("lighthousebay", "temperate", "anchor",
                 new[] { WeatherKind.Overcast, WeatherKind.Clear, WeatherKind.Fog, WeatherKind.Rain, WeatherKind.Storm, WeatherKind.Night }),
+            // Prompt 20 M: a terraced open-pit mine (the excavator's battlefield); dust storms blow off the spoil heaps.
+            new("openpit", "desert", "gear",
+                new[] { WeatherKind.Clear, WeatherKind.Clear, WeatherKind.Sandstorm, WeatherKind.Overcast, WeatherKind.Night }),
+            // A snowbound spaceport: snow and night launches under the floodlights.
+            new("orbitalgate", "snow", "globe",
+                new[] { WeatherKind.Snow, WeatherKind.Clear, WeatherKind.Night, WeatherKind.Overcast, WeatherKind.Fog, WeatherKind.Night }),
         };
 
         public static string Map { get; set; } = "ashfield";

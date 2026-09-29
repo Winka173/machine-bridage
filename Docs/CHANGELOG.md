@@ -40,6 +40,18 @@ its commits.
   `JumpPhase`, `ForceTier`, `TriggerBig`, `SetBigOff`, `Break`.
 - Tests: `OrbitalBossTests` (10) and the boss tests it touched; the 5-seed runs, the stuck check round the crash site
   and the FPS checks wait for the testing phase.
+### Prompt 20 L-M: towers (Iron Dome, rocket battery, SAM post) and two new battlefields
+
+- The C-RAM's rank-7 Iron Dome branch (it replaces the Hunter; a saved Hunter choice is dropped): interceptor missiles
+  for rounds lobbed at anything within 60 m (artillery rockets, half the shells, drones, long-range missiles), never
+  direct fire or energy; six in the launcher, reloaded whole 12 s after the last launch; its own icon, behaviour lines
+  and notes. The enemy AI picks Iron Dome or Centurion by the player's deck.
+- The rocket battery's rockets arc over walls and cover (checked; a test); an AI's layered base keeps rocket batteries
+  in its yard against attackers at the wall. The AA tower's SAM post reaches 60 m, between the flak and the Patriot;
+  the flak branch's quad 23 mm hits harder (22 a round), so it is the drone and swarm killer.
+- Open-Pit Mine (terraced pit, haul roads, a fixed route for a slow boss in the map data) and Orbital Gateway (radar
+  station, side launch pads, an open drop-pod field): Conquest, Survival, Siege and long versions, camps and outposts,
+  menu pictures, names, guide text; in the skirmish list.
 
 ## v0.29.0: Prompts 15-18 (armour and penetration, the sea and escorts for every boss, long maps and new units, the roster review, big attacks) and the 187-page design review
 

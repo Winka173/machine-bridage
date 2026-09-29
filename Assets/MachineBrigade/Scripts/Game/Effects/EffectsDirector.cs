@@ -281,6 +281,14 @@ namespace MachineBrigade.Game.Effects
                             var emitter = guard.Position + Vector3.up * 3.4f + guard.Root.right * (e.Value * 1.6f);
                             _lasers.Fire(guard, -1, emitter, interceptAt, MachineBrigade.Sim.Core.EntityId.None, true, pointBeam, now, 0.16f);
                         }
+                        else if (guard != null && guard.Def.Aps is { Missiles: true })
+                        {
+                            // Prompt 20 L.1: the Iron Dome's interceptor climbs off its launcher and bursts high over the round's mark.
+                            interceptAt = Ground(e.Position, 9f);
+                            var from = guard.Position + Vector3.up * 3f + guard.Root.right * (e.Value * 1.1f);
+                            _tracers.Launch(from, interceptAt, 0.16f, Vector3.Distance(from, interceptAt) * 0.1f, 0.3f, 3.2f, now, 0f, 0.6f);
+                            _muzzle.Fire(MuzzleFx.Kind.Missile, from, interceptAt - from, now, 0.8f, guard.Position.y);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);

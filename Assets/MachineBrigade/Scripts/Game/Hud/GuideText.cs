@@ -657,11 +657,11 @@ namespace MachineBrigade.Game.Hud
                 "[[C-RAM]] · medium tower · shoots rounds down\n" +
                 "How it fights: shoots down rockets, missiles, drones and about a third of the shells aimed within 35 m, two interceptors at a time; a 20 mm gatling at aircraft.\n" +
                 "Strong / weak: shields the base from artillery, rockets and drones; it has nothing for vehicles on the ground.\n" +
-                "Tip: put it where the enemy's artillery would hurt most, among your towers.",
+                "Tip: put it where the enemy's artillery would hurt most, among your towers. At rank 7 [[Iron Dome]] trades the gatling for interceptor missiles (60 m, six at a time, not direct fire); Centurion keeps the quick close-in guard.",
                 "[[Trạm C-RAM]] · tháp vừa · bắn hạ đạn bay tới\n" +
                 "Cách đánh: bắn hạ rốc-két, tên lửa, drone và khoảng một phần ba đạn pháo nhắm vào trong 35 m, hai quả đánh chặn cùng lúc; pháo nhiều nòng 20 mm bắn máy bay.\n" +
                 "Mạnh / yếu: che căn cứ khỏi pháo binh, rốc-két và drone; không có gì đánh xe mặt đất.\n" +
-                "Mẹo: đặt nơi pháo địch sẽ gây hại nhất, giữa các tháp của ta."),
+                "Mẹo: đặt nơi pháo địch sẽ gây hại nhất, giữa các tháp của ta. Ở hạng 7, [[Vòm Sắt]] đổi súng nhiều nòng lấy tên lửa đánh chặn (60 m, sáu quả một lượt, không chặn đạn bắn thẳng); Centurion giữ vai trò che chắn tầm gần bắn nhanh."),
             ["guide.drone_hangar"] = (
                 "[[Drone hangar]] · large tower · FPV drones\n" +
                 "How it fights: sends two FPV kamikaze drones every 20 s at enemies out to 70 m, heavy on armour and structures.\n" +
@@ -817,11 +817,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: dọn nó bằng xe tăng hoặc pháo binh trước khi máy bay ta bay vào."),
             ["guide.rocket_turret"] = (
                 "[[Rocket battery]] · fixed defence · rocket salvos (55 m)\n" +
-                "How it fights: fires eight-rocket [[salvos]] at ground targets 8–55 m away, plus a machine gun for anything that gets too close.\n" +
+                "How it fights: lobs six-rocket [[salvos]] on an arc at ground targets 8–55 m away, over walls and cover (from the yard onto attackers at the wall), plus a machine gun for anything that gets too close.\n" +
                 "Strong / weak: punishes groups of light vehicles and artillery; tanks take its rockets well, and HE shells wreck it.\n" +
                 "Tip: spread out as you come in and rush it with tanks: inside 8 m only its [[machine gun]] can fire.",
                 "[[Dàn rốc-két]] · công sự cố định · phóng loạt (55 m)\n" +
-                "Cách đánh: phóng [[loạt]] tám rốc-két vào mục tiêu mặt đất cách 8–55 m, kèm súng máy cho kẻ áp sát.\n" +
+                "Cách đánh: phóng [[loạt]] sáu rốc-két theo đường cầu vồng vào mục tiêu mặt đất cách 8–55 m, vượt qua tường và vật che (từ sân trong vào quân địch đã áp sát tường), kèm súng máy cho kẻ áp sát.\n" +
                 "Mạnh / yếu: trừng phạt cụm xe nhẹ và pháo binh; xe tăng chịu rốc-két khá tốt, đạn nổ mạnh phá nó nhanh.\n" +
                 "Mẹo: dàn quân khi tiến vào và dùng xe tăng lao tới: trong vòng 8 m nó chỉ còn [[súng máy]]."),
             ["guide.mg_bunker"] = (
@@ -1252,6 +1252,25 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: không có súng; [[+0,1 CP mỗi giây]] cho phe mình, trạm thứ hai +0,06, trạm thứ ba không thêm gì; bị bắn thì ngừng trả 5 giây.\n" +
                 "Mạnh / yếu: thêm CP cho căn cứ yên ổn; chiếm một ô phòng thủ nhỏ, và quân địch tấn công căn cứ sẽ nhắm nó trước.\n" +
                 "Mẹo: tối đa hai trạm mỗi căn cứ, không đặt ở tiền đồn; cân nhắc với tòa tháp mà nó thay chỗ."),
+            // Prompt 20 M: the two new battlefields.
+            ["guide.map.openpit"] = (
+                "[[Open-Pit Mine]] · desert battlefield · a pit in three rings\n" +
+                "How it fights: three broken rings of rock step down to the pit floor (the centre point), with ramps through each; the 14 m [[haul road]] winds round the upper bench and crosses the floor, and flank roads run past the spoil heaps to the crusher plant and the ore loadout on the rim (the side points).\n" +
+                "Strong / weak: favours [[artillery]] and long guns on the rim looking down the benches, and armour that holds the ramps; fast raiders are slowed by the rings and do best on the flank roads.\n" +
+                "Tip: hold the ramps, not the floor: the side that keeps them decides who gets down; the plants' buildings are good cover for anti-tank vehicles.",
+                "[[Mỏ Lộ Thiên]] · chiến trường sa mạc · hố mỏ ba vành\n" +
+                "Cách đánh: ba vành đá đứt quãng hạ dần xuống đáy hố (cứ điểm giữa), vành nào cũng có dốc xuống; [[đường vận quặng]] rộng 14 m vòng quanh bậc trên rồi băng qua đáy hố, còn các đường sườn chạy qua bãi thải tới nhà máy nghiền và bãi xuất quặng trên miệng hố (hai cứ điểm bên).\n" +
+                "Mạnh / yếu: có lợi cho [[pháo binh]] và pháo tầm xa đứng trên miệng hố nhìn xuống các bậc, cùng thiết giáp giữ được các dốc; xe đột kích nhanh bị các vành đá cản bước, nên mạnh nhất trên các đường sườn.\n" +
+                "Mẹo: giữ các dốc chứ đừng giữ đáy hố: bên nào nắm được dốc sẽ quyết định ai được xuống; nhà xưởng của hai nhà máy là chỗ nấp tốt cho xe chống tăng."),
+            ["guide.map.orbitalgate"] = (
+                "[[Orbital Gateway]] · snow battlefield · a spaceport with an open centre\n" +
+                "How it fights: the centre point is a 60 m [[drop-pod field]] with no cover at all, ringed by floodlights and an apron road; a launch pad on either flank (the side points) is packed with gantries, fuel tanks and blockhouses, and a radar post stands astride each camp's road to the field.\n" +
+                "Strong / weak: the open field favours [[long-range]] guns, artillery and aircraft and punishes anything caught crossing it; the pads and the pine woods between the lanes favour short-range armour and ambushes.\n" +
+                "Tip: take the pads first and cross the field only in force, under smoke; drop pods come down in the open, so keep guns on its edge.",
+                "[[Cửa Ngõ Quỹ Đạo]] · chiến trường tuyết · sân bay vũ trụ trống ở giữa\n" +
+                "Cách đánh: cứ điểm giữa là [[bãi đáp khoang đổ bộ]] rộng 60 m, hoàn toàn không có chỗ nấp, viền quanh bằng đèn pha và đường sân đỗ; hai bệ phóng ở hai bên sườn (hai cứ điểm bên) dày đặc giàn phóng, bồn nhiên liệu và lô cốt, còn mỗi trạm ra-đa nằm chắn ngang đường từ căn cứ ra bãi đáp.\n" +
+                "Mạnh / yếu: bãi trống có lợi cho pháo [[tầm xa]], pháo binh và máy bay, và trừng phạt mọi thứ bị bắt gặp giữa bãi; bệ phóng và rừng thông giữa các tuyến có lợi cho thiết giáp tầm gần và phục kích.\n" +
+                "Mẹo: chiếm bệ phóng trước, chỉ băng qua bãi khi đủ đông và có khói che; khoang đổ bộ đáp xuống chỗ trống, nên hãy đặt súng quanh mép bãi."),
         };
     }
 }

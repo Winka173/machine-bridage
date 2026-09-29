@@ -976,6 +976,7 @@ namespace MachineBrigade.Game.Hud
                 card.EnableInClassList("fc-base__branch--locked", locked);
                 card.EnableInClassList("fc-base__branch--chosen", branchId == chosen);
                 var head = Kit.Box("fc-row");
+                if (TowerIcons.For(branchId) is { } branchIcon) head.Add(Kit.Icon(branchIcon));
                 head.Add(Kit.Text(Kit.Caps(Strings.Branch(branchId)), "fc-panel-title fc-row-text"));
                 if (locked) head.Add(Kit.Icon("lock", "fc-base__branch-lock"));
                 else if (branchId == chosen) head.Add(Kit.Text(Kit.Caps(Strings.Get("camp.current")), "fc-caption fc-base__branch-tag"));
