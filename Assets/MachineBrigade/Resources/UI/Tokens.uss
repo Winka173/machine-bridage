@@ -726,7 +726,7 @@
 .fc-crow > .fc-cicon, .fc-crow > .fc-wchip { margin-right: 2px; }
 .fc-vcard__combat { margin-left: -4px; margin-right: -4px; }
 .fc-vcard--compact .fc-vcard__combat { margin-left: -2px; margin-right: -2px; }
-.fc-crow__more { flex-shrink: 0; }
+.fc-crow__more { flex-shrink: 0; white-space: nowrap; padding: 0 2px; }
 .fc-wchip { width: var(--fc-cicon); height: var(--fc-cicon); flex-shrink: 0; }
 .fc-wchip--large { width: var(--fc-cicon-large); height: var(--fc-cicon-large); }
 .fc-wchip__form { position: absolute; left: 0; top: 0; right: 0; bottom: 0; --icon-color: var(--fc-text); }
@@ -774,7 +774,7 @@
 .fc-verdict--poor { --icon-color: var(--fc-text-2); }
 .fc-verdict--none { --icon-color: var(--fc-danger); }
 
-.fc-enemytip { padding: var(--fc-space-2) var(--fc-space-3); max-width: 460px; }
+.fc-enemytip { padding: var(--fc-space-2) var(--fc-space-3); width: 440px; }
 .fc-enemytip__head { align-items: center; margin-bottom: var(--fc-space-1); }
 .fc-enemytip__head > .fc-cicon { margin-right: var(--fc-space-2); }
 .fc-enemytip__grid { flex-direction: row; flex-wrap: wrap; }

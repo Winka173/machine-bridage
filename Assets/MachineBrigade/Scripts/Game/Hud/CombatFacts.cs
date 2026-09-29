@@ -1,10 +1,10 @@
-using System;
 using System.Collections.Generic;
+using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
 
 namespace MachineBrigade.Game.Hud
 {
-    /// <summary>What the damage-type table reads a target as (the sim's TargetKind).</summary>
+    /// <summary>What the damage-type table reads a target as (the sim's <see cref="TargetKind"/>, same order).</summary>
     public enum ArmourKind
     {
         Ground,
@@ -12,16 +12,16 @@ namespace MachineBrigade.Game.Hud
         Structure,
     }
 
-    /// <summary>How well a weapon pierces a target, for the enemy tooltip's marks (prompt 15 E5).</summary>
+    /// <summary>How well a weapon pierces a target, for the enemy tooltip's marks (the sim's <see cref="MatchVerdict"/>, same order).</summary>
     public enum Verdict
     {
-        /// <summary>✓ at least ×0.7: it pierces (a level above, or level with the armour).</summary>
+        /// <summary>✓ from <see cref="Matchup.GoodAt"/> up.</summary>
         Good,
 
-        /// <summary>~ ×0.3 to 0.7: one level short.</summary>
+        /// <summary>~ from <see cref="Matchup.PoorAt"/> up.</summary>
         Poor,
 
-        /// <summary>✕ under ×0.3: two levels short or more, or a type the target shrugs off.</summary>
+        /// <summary>✕ below that, or a target it cannot reach.</summary>
         None,
     }
 
@@ -43,7 +43,7 @@ namespace MachineBrigade.Game.Hud
         public int Top { get; }
         public ArmourKind Kind { get; }
 
-        /// <summary>0 front, 1 side, 2 rear, 3 top.</summary>
+        /// <summary>0 front, 1 side, 2 rear, 3 top (the sim's <see cref="ArmorFace"/> order).</summary>
         public int this[int face] => face switch { 0 => Front, 1 => Side, 2 => Rear, _ => Top };
 
         public bool Uniform => Front == Side && Side == Rear && Rear == Top;
@@ -54,10 +54,10 @@ namespace MachineBrigade.Game.Hud
     {
         public string Id;
 
-        /// <summary>The sim's WeaponForm name ("Atgm", "DoubleDart"...).</summary>
+        /// <summary>The sim's <see cref="WeaponForm"/> name ("Atgm", "DoubleDart"...).</summary>
         public string Form;
 
-        /// <summary>The sim's DamageType name ("Kinetic", "ShapedCharge"...).</summary>
+        /// <summary>The sim's <see cref="DamageType"/> name ("Kinetic", "ShapedCharge"...).</summary>
         public string Damage;
 
         /// <summary>Penetration level 0-4.</summary>
@@ -65,53 +65,46 @@ namespace MachineBrigade.Game.Hud
 
         public bool Thermobaric, TopAttack, Guided, Splash;
 
+        /// <summary>The weapon (null for a threat's typical weapon on the Weak line).</summary>
         public WeaponDef Def;
     }
 
     /// <summary>
-    /// The UI's one door to the combat data of prompt 15 (armour levels by face, penetration, damage types, weapon
-    /// forms and tags, the multiplier). The icons and screens ask only this class, so the sim's model is read in one
-    /// place.
+    /// The UI's one door to the combat data of prompt 15: the sim's armour levels by face (<see cref="VehicleDef.Armour"/>),
+    /// its weapons' penetration, damage types, forms and tags, and its <see cref="Matchup"/> helpers (the multipliers, the
+    /// effect table, ✓ ~ ✕, strong / weak). Nothing is worked out here that the sim does not say.
     /// </summary>
     public static class CombatFacts
     {
-        public const int Levels = 5;
+        public const int Levels = ArmourLevels.Max + 1;
 
-        /// <summary>✓ from this multiplier up.</summary>
-        public const float GoodFrom = 0.7f;
+        public const float GoodFrom = Matchup.GoodAt;
+        public const float PoorFrom = Matchup.PoorAt;
 
-        /// <summary>~ from this multiplier up (✕ below).</summary>
-        public const float PoorFrom = 0.3f;
+        private static DamageTable _table;
 
-        public static Verdict Judge(float multiplier) =>
-            multiplier >= GoodFrom ? Verdict.Good : multiplier >= PoorFrom ? Verdict.Poor : Verdict.None;
-
-        /// <summary>The verdict of <paramref name="weapon"/> against the target's front armour.</summary>
-        public static Verdict Judge(WeaponFacts weapon, ArmourFaces target) =>
-            weapon == null ? Verdict.None : Judge(Multiplier(weapon, target.Front, target.Kind));
-
-        /// <summary>The penetration factor of prompt 15 B.2: pen above armour x1, level x0.75, one short x0.4, two x0.15, three or more x0.05.</summary>
-        public static float PenFactor(int pen, int armour)
+        /// <summary>The balance's damage table (the catalog's; loaded once).</summary>
+        public static DamageTable Table
         {
-            var gap = pen - armour;
-            return gap >= 1 ? 1f : gap == 0 ? 0.75f : gap == -1 ? 0.4f : gap == -2 ? 0.15f : 0.05f;
+            get => _table ??= GameContent.LoadCatalog().Damage;
+            set => _table = value;
         }
+
+        public static Verdict Judge(float multiplier) => (Verdict)(int)Matchup.Verdict(multiplier);
+
+        public static ArmourKind KindOf(TargetKind kind) => (ArmourKind)(int)kind;
+
+        public static TargetKind KindOf(ArmourKind kind) => (TargetKind)(int)kind;
 
         public static ArmourFaces Armour(VehicleDef def)
         {
             if (def == null) return new ArmourFaces(0, 0, 0, 0, ArmourKind.Ground);
-            var kind = def.Flying ? ArmourKind.Air : def.Static || def.Armor == ArmorClass.Structure ? ArmourKind.Structure : ArmourKind.Ground;
-            var front = StubFront(def, kind);
-            if (kind != ArmourKind.Ground) return new ArmourFaces(front, front, front, front, kind);
-            return new ArmourFaces(front, Math.Max(0, front - 1), Math.Max(0, front - 2), Math.Max(0, front - 2), kind);
+            var a = def.Armour;
+            return new ArmourFaces(a.Front, a.Side, a.Rear, a.Top, KindOf(def.Kind));
         }
 
-        /// <summary>A boss part's armour (prompt 15 A.5).</summary>
-        public static (int level, ArmourKind kind) PartArmour(VehicleDef boss, int part)
-        {
-            var armour = Armour(boss);
-            return (armour.Front, armour.Kind);
-        }
+        /// <summary>A boss part's armour (the same all round).</summary>
+        public static (int level, ArmourKind kind) PartArmour(VehicleDef boss, int part) => (Matchup.PartArmour(boss, part), KindOf(boss.Kind));
 
         /// <summary>Every weapon that does damage, main first (a mount that fires nothing has no chip).</summary>
         public static List<WeaponFacts> Weapons(VehicleDef def)
@@ -122,112 +115,65 @@ namespace MachineBrigade.Game.Hud
             foreach (var mount in def.Mounts)
             {
                 var w = Of(mount.Weapon);
-                if (w == null || !seen.Add(w.Id)) continue;
-                list.Add(w);
+                if (w != null && seen.Add(w.Id)) list.Add(w);
             }
             return list;
         }
 
         public static WeaponFacts Of(WeaponDef def)
         {
-            if (def == null || def.Id == "none" || def.Damage <= 0f && def.Cluster == null) return null;
-            var form = StubForm(def);
-            if (form == "None") return null;
-            var damage = StubDamage(def, form);
+            if (def == null || def.Damage <= 0f || def.Form == WeaponForm.None) return null;
             return new WeaponFacts
             {
                 Id = def.Id,
                 Def = def,
-                Form = form,
-                Damage = damage,
-                Pen = StubPen(def, form, damage),
-                Thermobaric = def.Id.Contains("thermo"),
-                TopAttack = def.Projectile is ProjectileKind.Drone or ProjectileKind.Bomb || def.Id.EndsWith("_top", StringComparison.Ordinal),
+                Form = def.Form.ToString(),
+                Damage = def.DamageType.ToString(),
+                Pen = def.Penetration,
+                Thermobaric = def.Thermobaric,
+                TopAttack = def.TopAttack,
                 Guided = def.Guided,
-                Splash = def.SplashRadius > 0.5f,
+                Splash = def.Splashes,
             };
         }
 
-        /// <summary>The damage multiplier of <paramref name="weapon"/> against armour <paramref name="level"/> of that kind.</summary>
+        /// <summary>The weapon's real multiplier in a column of the effect table (0 when it cannot reach that kind of target).</summary>
+        public static float Effect(WeaponFacts weapon, EffectColumn column) =>
+            weapon?.Def == null ? 0f : Matchup.Effect(Table, weapon.Def, column);
+
+        /// <summary>The weapon's real multiplier against armour <paramref name="level"/> of that kind (0 when it cannot reach it).</summary>
         public static float Multiplier(WeaponFacts weapon, int level, ArmourKind kind)
         {
-            if (weapon == null) return 0f;
-            return PenFactor(weapon.Pen, level) * StubTypeFactor(weapon, level, kind);
+            if (weapon?.Def == null || weapon.Def.Damage <= 0f || !weapon.Def.CanTarget(kind == ArmourKind.Air)) return 0f;
+            return Table.Effective(weapon.Def, level, KindOf(kind));
         }
 
-        // ---------------------------------------------------------------- stub (until the sim's prompt 15 model is merged)
+        /// <summary>✓ ~ ✕ of our unit's main weapon against an enemy facing it (its front, or its roof for rounds from above).</summary>
+        public static Verdict Judge(VehicleDef ours, VehicleDef theirs) => (Verdict)(int)Matchup.Verdict(Table, ours, theirs);
 
-        private static int StubFront(VehicleDef def, ArmourKind kind) => kind switch
-        {
-            ArmourKind.Air => 0,
-            ArmourKind.Structure => 2,
-            _ => def.Armor == ArmorClass.Heavy ? (def.MaxHp >= 1400f || def.Boss ? 4 : 3) : def.Speed >= 11f ? 0 : 1,
-        };
+        /// <summary>The multiplier behind <see cref="Judge(VehicleDef, VehicleDef)"/>.</summary>
+        public static float Against(VehicleDef ours, VehicleDef theirs) => Matchup.Against(Table, ours.Weapon, theirs);
 
-        private static string StubForm(WeaponDef w)
+        public static StrengthSummary Summary(VehicleDef def) => Matchup.Summary(Table, def);
+
+        /// <summary>A threat of the Weak line as a chip: the typical weapon's form and damage type.</summary>
+        public static WeaponFacts ThreatChip(Threat threat)
         {
-            var size = w.Size;
-            var id = w.Id;
-            switch (w.Family)
+            var (type, pen, top) = Matchup.ThreatProfile(threat);
+            var form = threat switch
             {
-                case "mg": return size < 10f ? "BulletSmall" : "BulletBig";
-                case "autocannon": return w.DamageType == DamageType.Flak ? "Airburst" : "BeltedAutocannon";
-                case "tank_gun": return size >= 120f ? "DoubleDart" : "Dart";
-                case "atgm": return "Atgm";
-                case "flame": return "Flame";
-                case "howitzer": return "HeShell";
-                case "mortar": return "MortarBomb";
-                case "rocket": return w.Cluster != null ? "Cluster" : size >= 200f ? "RocketBig" : "RocketSmall";
-                case "aa_missile": return "Sam";
-                case "cruise": return "Cruise";
-                case "ballistic": return "Ballistic";
-                case "bomb": return id == "detonator" ? "CarBomb" : id == "guided_bomb" ? "GuidedBomb" : size >= 900f ? "HeavyBomb" : "Bomb";
-                case "drone": return id.Contains("lancet") || id.Contains("mothership") ? "Lancet" : id == "shahed" ? "Shahed" : "Fpv";
-                case "laser": return "Energy";
-                case "railgun": return "Rail";
-                case "melee": return id.Contains("drill") ? "Drill" : "Blade";
-                case "grenade": return "Grenade";
-                case "special": return "SuperShell";
-                default: return w.Beam ? "Energy" : "BulletBig";
-            }
-        }
-
-        private static string StubDamage(WeaponDef w, string form) => form switch
-        {
-            "Energy" => "Energy",
-            "Flame" or "Napalm" => "Fire",
-            "Airburst" or "Sam" => "Fragmentation",
-            "Atgm" or "Fpv" or "Lancet" => "ShapedCharge",
-            _ => w.DamageType switch
-            {
-                DamageType.HighExplosive => "HighExplosive",
-                DamageType.Fire => "Fire",
-                DamageType.Flak => "Fragmentation",
-                _ => "Kinetic",
-            },
-        };
-
-        private static int StubPen(WeaponDef w, string form, string damage) => form switch
-        {
-            "BulletSmall" => 0,
-            "BulletBig" => 1,
-            "BeltedAutocannon" or "Airburst" or "RocketSmall" => 2,
-            "Dart" or "Blade" or "Drill" => 3,
-            "DoubleDart" or "Rail" or "Atgm" or "Lancet" => 4,
-            "Fpv" => 3,
-            _ => damage == "Energy" ? 2 : 1,
-        };
-
-        private static float StubTypeFactor(WeaponFacts w, int level, ArmourKind kind)
-        {
-            switch (w.Damage)
-            {
-                case "HighExplosive": return kind == ArmourKind.Structure ? (w.Thermobaric ? 2f : 1.5f) : kind == ArmourKind.Air ? 0.25f : 1f;
-                case "Fire": return kind == ArmourKind.Air ? 0f : level <= 1 ? 1.2f : 0.5f;
-                case "Fragmentation": return kind == ArmourKind.Air ? 1.5f : level == 0 ? 1.2f : 0.6f;
-                case "ShapedCharge": return kind == ArmourKind.Air ? 0.5f : 1f;
-                default: return kind == ArmourKind.Air && w.Def != null && !w.Def.CanTarget(true) ? 0f : 1f;
-            }
+                Threat.SmallArms => WeaponForm.BulletSmall,
+                Threat.HeavyMachineGuns => WeaponForm.BulletBig,
+                Threat.Fire => WeaponForm.Flame,
+                Threat.Fragmentation => WeaponForm.Airburst,
+                Threat.Autocannons => WeaponForm.BeltedAutocannon,
+                Threat.HighExplosive => WeaponForm.HeShell,
+                Threat.Energy => WeaponForm.Energy,
+                Threat.TopAttack => WeaponForm.Atgm,
+                Threat.ShapedCharges => WeaponForm.Atgm,
+                _ => WeaponForm.DoubleDart,
+            };
+            return new WeaponFacts { Id = "threat." + threat, Form = form.ToString(), Damage = type.ToString(), Pen = pen, TopAttack = top };
         }
     }
 }

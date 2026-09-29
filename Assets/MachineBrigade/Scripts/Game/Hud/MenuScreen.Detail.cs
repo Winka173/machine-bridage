@@ -415,9 +415,9 @@ namespace MachineBrigade.Game.Hud
                 () => string.Join("\n", Enumerable.Range(0, 4).Select(f => CombatIcons.ArmourTip(armour[f], armour.Kind, f))));
             _detailCounters.Add(diagram);
             if (module) return;
-            var lines = KitCombat.StrongWeak(def, _catalog);
+            var lines = KitCombat.StrongWeak(def);
             lines.AddToClassList("fc-detail__strongweak");
-            KitCombat.TapTip(lines, () => Strings.Get("combat.strong") + " / " + Strings.Get("combat.weak"), () => Strings.Get("combat.strongweak.tip"));
+            KitCombat.TapTip(lines, () => Strings.Get("combat.strong") + " / " + Strings.Get("combat.weak"), () => KitCombat.StrongWeakTip(def));
             _detailCounters.Add(lines);
         }
 

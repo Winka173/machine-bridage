@@ -26,7 +26,11 @@ namespace MachineBrigade.Tests
         {
             var catalog = GameContent.LoadCatalog();
             var needed = new Dictionary<string, string>();
-            foreach (var form in CombatIcons.Forms.Keys) needed["form " + form] = CombatIcons.Form(form);
+            // Every form and damage type of the sim's enums (the icons' names follow them).
+            foreach (WeaponForm form in System.Enum.GetValues(typeof(WeaponForm)))
+                if (form != WeaponForm.None) needed["form " + form] = CombatIcons.Form(form.ToString());
+            foreach (DamageType type in System.Enum.GetValues(typeof(DamageType)))
+                Assert.IsTrue(CombatIcons.Types.ContainsKey(type.ToString()), "no mark entry for " + type);
             foreach (ArmourKind kind in System.Enum.GetValues(typeof(ArmourKind)))
                 for (var level = 0; level < CombatFacts.Levels; level++)
                     needed[$"armour {kind} {level}"] = CombatIcons.Armour(level, kind);
@@ -79,12 +83,11 @@ namespace MachineBrigade.Tests
                 var tip = KitCombat.EnemyTip(enemy, deck);
                 var marks = tip.Query<IconElement>(className: "fc-verdict").ToList();
                 Assert.AreEqual(deck.Count, marks.Count, enemy.Id + ": one mark per deck vehicle");
-                var armour = CombatFacts.Armour(enemy);
                 for (var i = 0; i < deck.Count; i++)
                 {
-                    var main = CombatFacts.Weapons(deck[i]).FirstOrDefault();
-                    var m = main == null ? 0f : CombatFacts.Multiplier(main, armour.Front, armour.Kind);
-                    var expected = m >= CombatFacts.GoodFrom ? Verdict.Good : m >= CombatFacts.PoorFrom ? Verdict.Poor : Verdict.None;
+                    // The sim's own multiplier: the main weapon against the enemy's front (or roof for rounds from above).
+                    var m = Matchup.Against(catalog.Damage, deck[i].Weapon, enemy);
+                    var expected = m >= Matchup.GoodAt ? Verdict.Good : m >= Matchup.PoorAt ? Verdict.Poor : Verdict.None;
                     seen.Add(expected);
                     Assert.AreEqual(CombatIcons.Verdict(expected), marks[i].Name, $"{deck[i].Id} against {enemy.Id} (x{m:0.###})");
                 }

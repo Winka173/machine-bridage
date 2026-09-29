@@ -126,12 +126,14 @@ namespace MachineBrigade.Game.Hud
             return box;
         }
 
-        /// <summary>The columns of the effectiveness table: armour 0-4 on the ground, aircraft (unarmoured), structures (medium).</summary>
+        /// <summary>The columns of the effectiveness table (the sim's <see cref="EffectColumn"/>): armour 0-4 on the ground, aircraft, structures.</summary>
         public static readonly (int level, ArmourKind kind)[] Columns =
         {
             (0, ArmourKind.Ground), (1, ArmourKind.Ground), (2, ArmourKind.Ground), (3, ArmourKind.Ground), (4, ArmourKind.Ground),
-            (0, ArmourKind.Air), (2, ArmourKind.Structure),
+            (Matchup.AirLevel, ArmourKind.Air), (Matchup.StructureLevel, ArmourKind.Structure),
         };
+
+        private static IconElement ColumnIcon(int column) => ArmourIcon(Columns[column].level, Columns[column].kind);
 
         /// <summary>
         /// The effectiveness table (E2), made from the data: the shields (and the air and structure icons) head the
@@ -143,26 +145,27 @@ namespace MachineBrigade.Game.Hud
             var table = Kit.Box("fc-effect");
             var head = Kit.Box("fc-row fc-effect__row fc-effect__head");
             head.Add(Kit.Box("fc-effect__weapon"));
-            foreach (var (level, kind) in Columns)
+            for (var c = 0; c < Columns.Length; c++)
             {
                 var cell = Kit.Box("fc-effect__cell");
-                cell.Add(ArmourIcon(level, kind));
+                cell.Add(ColumnIcon(c));
                 head.Add(cell);
             }
             table.Add(head);
             var scale = 1f;
             foreach (var w in weapons)
-            foreach (var (level, kind) in Columns)
-                scale = Mathf.Max(scale, CombatFacts.Multiplier(w, level, kind));
+                for (var c = 0; c < Columns.Length; c++)
+                    scale = Mathf.Max(scale, CombatFacts.Effect(w, (EffectColumn)c));
             foreach (var w in weapons)
             {
                 var row = Kit.Box("fc-row fc-effect__row");
                 var weapon = Kit.Box("fc-effect__weapon");
                 weapon.Add(Chip(w));
                 row.Add(weapon);
-                foreach (var (level, kind) in Columns)
+                for (var c = 0; c < Columns.Length; c++)
                 {
-                    var m = CombatFacts.Multiplier(w, level, kind);
+                    var (level, kind) = Columns[c];
+                    var m = CombatFacts.Effect(w, (EffectColumn)c);
                     var cell = Kit.Box("fc-effect__cell");
                     var track = Kit.Box("fc-effect__track");
                     var bar = Kit.Box("fc-effect__bar");
@@ -184,46 +187,39 @@ namespace MachineBrigade.Game.Hud
         /// and the weapon forms (from the whole roster) that pierce this unit's front well, plus top attack when its roof
         /// is thinner.
         /// </summary>
-        public static VisualElement StrongWeak(VehicleDef def, Catalog catalog)
+        public static VisualElement StrongWeak(VehicleDef def)
         {
             var box = Kit.Box("fc-strongweak");
-            var weapons = CombatFacts.Weapons(def);
+            var summary = CombatFacts.Summary(def);
             var strong = Kit.Box("fc-row fc-strongweak__line");
             strong.Add(Kit.Text(Strings.Get("combat.strong"), "fc-body fc-strongweak__label"));
-            var any = false;
-            foreach (var (level, kind) in Columns)
-            {
-                if (!weapons.Any(w => CombatFacts.Judge(CombatFacts.Multiplier(w, level, kind)) == Verdict.Good && (kind != ArmourKind.Structure || CombatFacts.Multiplier(w, level, kind) > 1.05f)))
-                    continue;
-                strong.Add(ArmourIcon(level, kind));
-                any = true;
-            }
-            if (!any) strong.Add(Kit.Text(Strings.Get("combat.nothing"), "fc-body-2 fc-row-text"));
+            foreach (var column in summary.StrongVs) strong.Add(ColumnIcon((int)column));
+            if (summary.StrongVs.Count == 0) strong.Add(Kit.Text(Strings.Get("combat.nothing"), "fc-body-2 fc-row-text"));
             box.Add(strong);
 
-            var armour = CombatFacts.Armour(def);
             var weak = Kit.Box("fc-row fc-strongweak__line");
             weak.Add(Kit.Text(Strings.Get("combat.weak"), "fc-body fc-strongweak__label"));
-            var forms = Threats(armour, catalog).Take(6).ToList();
-            foreach (var w in forms) weak.Add(Chip(w));
-            if (armour.Top < armour.Front && armour.Kind == ArmourKind.Ground) weak.Add(Kit.Icon(CombatIcons.TopAttack, "fc-xmark"));
-            if (forms.Count == 0) weak.Add(Kit.Text(Strings.Get("combat.nothing"), "fc-body-2 fc-row-text"));
+            foreach (var threat in summary.WeakTo)
+            {
+                var chip = threat == Threat.TopAttack ? Kit.Icon(CombatIcons.TopAttack, "fc-xmark fc-xmark--large") : Chip(CombatFacts.ThreatChip(threat));
+                chip.tooltip = Strings.Get("threat." + threat);
+                weak.Add(chip);
+            }
+            if (summary.WeakTo.Count == 0) weak.Add(Kit.Text(Strings.Get("combat.nothing"), "fc-body-2 fc-row-text"));
             box.Add(weak);
             box.tooltip = Strings.Get("combat.strongweak.tip");
             return box;
         }
 
-        /// <summary>One weapon per form, from the roster, that pierces <paramref name="armour"/>'s front well; the most piercing first.</summary>
-        public static IEnumerable<WeaponFacts> Threats(ArmourFaces armour, Catalog catalog)
+        /// <summary>The strong / weak lines in words, for the tap tooltip.</summary>
+        public static string StrongWeakTip(VehicleDef def)
         {
-            if (catalog == null) yield break;
-            var seen = new HashSet<string>();
-            var all = catalog.Vehicles.Values.Where(v => !v.Boss).SelectMany(CombatFacts.Weapons)
-                .Where(w => CombatFacts.Judge(CombatFacts.Multiplier(w, armour.Front, armour.Kind)) == Verdict.Good)
-                .OrderByDescending(w => CombatFacts.Multiplier(w, armour.Front, armour.Kind)).ThenByDescending(w => w.Pen);
-            foreach (var w in all)
-                if (seen.Add(w.Form))
-                    yield return w;
+            var summary = CombatFacts.Summary(def);
+            var strong = summary.StrongVs.Select(c => CombatIcons.ArmourName(Columns[(int)c].level, Columns[(int)c].kind)).ToList();
+            var weak = summary.WeakTo.Select(t => Strings.Get("threat." + t)).ToList();
+            return Strings.Get("combat.strong") + ": " + (strong.Count > 0 ? string.Join(", ", strong) : Strings.Get("combat.nothing")) + "\n" +
+                   Strings.Get("combat.weak") + ": " + (weak.Count > 0 ? string.Join(", ", weak) : Strings.Get("combat.nothing")) + "\n" +
+                   Strings.Get("combat.strongweak.tip");
         }
 
         // ---------------------------------------------------------------- cover and verdicts
@@ -249,7 +245,7 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>Whether any of <paramref name="defs"/>' weapons pierces ground armour <paramref name="level"/> well.</summary>
         public static bool Covers(IEnumerable<VehicleDef> defs, int level) =>
-            defs.Any(d => CombatFacts.Weapons(d).Any(w => CombatFacts.Judge(CombatFacts.Multiplier(w, level, ArmourKind.Ground)) == Verdict.Good));
+            defs.Any(d => CombatFacts.Weapons(d).Any(w => CombatFacts.Effect(w, (EffectColumn)level) >= CombatFacts.GoodFrom));
 
         public static IconElement VerdictIcon(Verdict v)
         {
@@ -273,13 +269,13 @@ namespace MachineBrigade.Game.Hud
             var grid = Kit.Box("fc-enemytip__grid");
             foreach (var mine in deck)
             {
-                var main = CombatFacts.Weapons(mine).FirstOrDefault();
-                var v = CombatFacts.Judge(main, armour);
+                var v = CombatFacts.Judge(mine, enemy);
                 var cell = Kit.Box("fc-row fc-enemytip__cell");
                 cell.Add(VerdictIcon(v));
-                cell.Add(Kit.Text(Strings.Short(mine.Id), "fc-small fc-row-text"));
-                cell.tooltip = CombatIcons.VerdictName(v) + (MatchSettings.ShowCombatNumbers && main != null
-                    ? " " + CombatIcons.Times(CombatFacts.Multiplier(main, armour.Front, armour.Kind)) : "");
+                var name = Strings.Short(mine.Id);
+                if (MatchSettings.ShowCombatNumbers) name += " " + CombatIcons.Times(CombatFacts.Against(mine, enemy));
+                cell.Add(Kit.Text(name, "fc-small fc-row-text"));
+                cell.tooltip = CombatIcons.VerdictName(v);
                 grid.Add(cell);
             }
             tip.Add(grid);
