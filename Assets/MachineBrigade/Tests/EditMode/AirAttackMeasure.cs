@@ -25,11 +25,11 @@ namespace MachineBrigade.Tests
     {
         private static readonly (string shooter, string target, float distance)[] Ranges =
         {
-            ("attack_jet", "main_battle_tank", 70f), ("tank_buster", "main_battle_tank", 70f), ("fighter_jet", "attack_helicopter", 70f),
+            ("attack_jet", "main_battle_tank", 70f), ("fighter_jet", "attack_helicopter", 70f),
             ("fighter_jet", "attack_jet", 70f), ("fighter_jet", "fighter_jet", 70f), ("strike_drone", "main_battle_tank", 70f),
             ("recon_drone", "main_battle_tank", 70f), ("heavy_bomber", "main_battle_tank", 70f), ("stealth_bomber", "main_battle_tank", 70f),
             ("sky_gunship", "ifv", 60f), ("attack_helicopter", "ifv", 50f), ("elite_attack_helicopter", "ifv", 50f),
-            ("gunship_heli", "ifv", 50f), ("heavy_attack_heli", "ifv", 70f), ("scout_heli", "armored_car", 45f),
+            ("gunship_heli", "ifv", 50f), ("attack_helicopter", "ifv", 70f), ("scout_heli", "armored_car", 45f),
         };
 
         private static SimWorld Field(int seed) =>
@@ -105,7 +105,7 @@ namespace MachineBrigade.Tests
 
         private static readonly (string shooter, string target)[] Timelines =
         {
-            ("attack_jet", "main_battle_tank"), ("tank_buster", "main_battle_tank"), ("fighter_jet", "attack_helicopter"), ("fighter_jet", "attack_jet"),
+            ("attack_jet", "main_battle_tank"), ("fighter_jet", "attack_helicopter"), ("fighter_jet", "attack_jet"),
             ("strike_drone", "main_battle_tank"),
         };
 
@@ -149,9 +149,9 @@ namespace MachineBrigade.Tests
             ("fighters vs fighters", new[] { "fighter_jet", "fighter_jet" }, new[] { "fighter_jet", "fighter_jet" }),
             ("attack jets vs tank column", new[] { "attack_jet", "attack_jet" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "ifv" }),
             ("attack jets vs column + AA", new[] { "attack_jet", "attack_jet" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "aa_vehicle" }),
-            ("A-10 vs tank column", new[] { "tank_buster" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "ifv" }),
-            ("A-10 vs column + AA", new[] { "tank_buster" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "aa_vehicle" }),
-            ("A-10 vs column + 2 AA", new[] { "tank_buster" }, new[] { "main_battle_tank", "main_battle_tank", "aa_vehicle", "aa_vehicle" }),
+            ("Attack jet vs tank column", new[] { "attack_jet" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "ifv" }),
+            ("Attack jet vs column + AA", new[] { "attack_jet" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank", "aa_vehicle" }),
+            ("Attack jet vs column + 2 AA", new[] { "attack_jet" }, new[] { "main_battle_tank", "main_battle_tank", "aa_vehicle", "aa_vehicle" }),
             ("attack helis vs IFV column", new[] { "attack_helicopter", "attack_helicopter" }, new[] { "ifv", "ifv", "ifv" }),
             ("attack helis vs IFVs + AA", new[] { "attack_helicopter", "attack_helicopter" }, new[] { "ifv", "ifv", "aa_vehicle" }),
             ("gunship helis vs tank column", new[] { "gunship_heli", "gunship_heli" }, new[] { "main_battle_tank", "main_battle_tank", "main_battle_tank" }),

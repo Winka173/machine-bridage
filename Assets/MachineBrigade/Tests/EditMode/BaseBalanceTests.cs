@@ -103,7 +103,7 @@ namespace MachineBrigade.Tests
             Enumerable.Range(1, seeds).Average(s => Score(catalog, defence, army, s));
 
         private static readonly string[] Weaponed =
-            { "guard_tower", "mg_bunker", "aa_turret", "gun_turret", "atgm_tower", "rocket_turret", "c_ram", "gun_pit", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" };
+            { "guard_tower", "mg_bunker", "aa_turret", "gun_turret", "atgm_tower", "rocket_turret", "c_ram", "artillery_emplacement", "missile_battery", "drone_hangar", "heavy_turret" };
 
         [Test, Category("Balance"), Timeout(7200000)]
         public void AMixedBaseIsBestAgainstAMixedArmyAndNoOneTowerBaseBeatsEverything()

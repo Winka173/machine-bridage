@@ -51,7 +51,7 @@
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
         "default": { "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
-                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "gun_pit": 0.7, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
+                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
         "armour": { "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
         "air": { "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
@@ -143,7 +143,7 @@
     { "id": "heli_rockets", "load": 22, "real": "Hydra 70 mm", "family": "rocket", "size": 70,  "pen": 2, "projectileModel": "hydra", "damageType": "HighExplosive", "damage": 28,  "cooldown": 7.31,  "range": 30, "projectileSpeed": 48, "splash": 3, "spread": 3, "impactTier": "Medium", "projectile": "Rocket", "burst": 11, "burstInterval": 0.12, "roundWeight": 40 },
     { "id": "autocannon_25", "real": "M242 Bushmaster 25 mm", "family": "autocannon", "size": 25,     "pen": 2, "damageType": "Kinetic",       "damage": 17,  "cooldown": 0.2,  "range": 30, "projectileSpeed": 210, "spread": 0.9, "impactTier": "Small", "projectile": "Bullet", "targets": "Ground", "clip": 10, "clipReload": 1.67, "roundWeight": 22 },
     { "id": "gun_105_long", "real": "2A75 125 mm (2S25 Sprut)", "family": "tank_gun", "size": 125,      "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 250, "cooldown": 3.9,  "range": 40, "projectileSpeed": 220, "spread": 0.4, "impactTier": "Medium", "roundWeight": 357 },
-    { "id": "gun_152", "real": "2A83 152 mm", "family": "tank_gun", "size": 152,           "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 320, "cooldown": 6,  "range": 34, "projectileSpeed": 160, "splash": 2.5, "spread": 0.7, "impactTier": "Large", "roundWeight": 343 },
+    { "id": "gun_152", "real": "2A83 152 mm", "family": "tank_gun", "size": 152,           "pen": 4, "piercing": true, "he": "gun_152_he", "damageType": "Kinetic", "damage": 320, "cooldown": 6,  "range": 34, "projectileSpeed": 160, "splash": 2.5, "spread": 0.7, "impactTier": "Large", "roundWeight": 343 },
     { "id": "sam_long", "real": "9M317 Buk", "family": "aa_missile", "size": 70,          "pen": 3, "projectileModel": "buk", "projectileScale": 0.6, "damageType": "Fragmentation",          "damage": 320, "cooldown": 5.73,  "range": 55, "projectileSpeed": 41, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "burst": 2, "burstInterval": 0.5, "flareResist": 0.8 },
     { "id": "mortar_120", "real": "2B11 120 mm", "family": "mortar", "size": 120,        "pen": 2, "projectileModel": "mortar_bomb", "damageType": "HighExplosive", "damage": 150,  "cooldown": 6.41,  "range": 55, "minRange": 10, "projectileSpeed": 32, "splash": 5, "spread": 4.5, "impactTier": "Large", "ammo": 18, "reload": 39.3 },
     { "id": "technical_rockets", "real": "Type 63 107 mm", "family": "rocket", "size": 107, "pen": 2, "projectileModel": "rocket_107", "damageType": "HighExplosive", "damage": 45,  "cooldown": 7,   "range": 48, "minRange": 12, "projectileSpeed": 48, "splash": 3.5, "spread": 6, "impactTier": "Medium", "projectile": "Rocket", "burst": 5, "burstInterval": 0.2, "ammo": 6, "reload": 18 },
@@ -191,7 +191,7 @@
     { "id": "jassm", "load": 4, "real": "AGM-158 JASSM (450 kg)", "family": "cruise", "size": 450,             "pen": 3, "projectileModel": "jassm", "damageType": "HighExplosive", "damage": 390, "cooldown": 9.24,   "range": 90, "projectileSpeed": 17, "splash": 5, "impactTier": "Huge", "projectile": "Missile", "burst": 2, "burstInterval": 0.6, "roundWeight": 420 },
     { "id": "air_cruise_missile", "load": 2, "real": "Kh-101 (400 kg)", "family": "cruise", "size": 400, "pen": 3, "projectileModel": "cruise_missile", "damageType": "HighExplosive", "damage": 360, "cooldown": 11.2,  "range": 110, "projectileSpeed": 17, "splash": 6, "impactTier": "Huge", "projectile": "Missile", "roundWeight": 450 },
     { "id": "griffin", "load": 10, "real": "AGM-176 Griffin", "family": "atgm", "size": 15,           "pen": 3, "piercing": true, "projectileModel": "griffin", "damageType": "ShapedCharge", "damage": 180, "cooldown": 4.5,    "range": 50, "projectileSpeed": 21, "impactTier": "Medium", "projectile": "Missile" },
-    { "id": "kh29", "real": "Kh-29", "family": "atgm", "size": 680,              "pen": 4, "piercing": true, "projectileModel": "maverick", "projectileScale": 0.58, "damageType": "ShapedCharge", "damage": 360, "cooldown": 19.38,   "range": 38, "projectileSpeed": 23, "impactTier": "Large", "projectile": "Missile", "ammo": 2 },
+    { "id": "kh29", "load": 2, "real": "Kh-29L", "family": "atgm", "size": 680,       "pen": 4, "piercing": true, "projectileModel": "maverick", "projectileScale": 0.58, "damageType": "ShapedCharge", "damage": 360, "cooldown": 7.86,   "range": 40, "projectileSpeed": 23, "impactTier": "Large", "projectile": "Missile", "roundWeight": 690 },
     { "id": "s8_pods", "load": 16, "real": "S-8 80 mm", "family": "rocket", "size": 80,           "pen": 2, "projectileModel": "s8", "projectileScale": 0.9, "damageType": "HighExplosive", "damage": 32,  "cooldown": 4.27,    "range": 34, "projectileSpeed": 48, "splash": 3, "spread": 4.5, "impactTier": "Medium", "projectile": "Rocket", "burst": 8, "burstInterval": 0.05 },
     { "id": "gsh30k", "real": "GSh-30K 30 mm", "family": "autocannon", "size": 30,            "pen": 2, "piercing": true, "damageType": "Kinetic", "damage": 22,  "cooldown": 0.108,  "range": 28, "projectileSpeed": 300, "spread": 1.6, "impactTier": "Small", "projectile": "Bullet", "clip": 20, "clipReload": 1.22, "roundWeight": 41 },
     { "id": "gsh_23v", "real": "GSh-23V 23 mm", "family": "autocannon", "size": 23,           "pen": 2, "damageType": "Kinetic",       "damage": 14,  "cooldown": 0.0497, "range": 26, "projectileSpeed": 240, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 44, "clipReload": 4.25 },
@@ -329,7 +329,13 @@
     // bunker vehicle's 105 mm is the twin tank's L7 (the calibre scale's 105 mm, 200).
     { "id": "focus_laser", "real": "focused laser (300 kW)", "family": "laser", "size": 300, "pen": 4, "damageType": "Energy", "damage": 12, "cooldown": 0.1, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "beam": true, "clip": 80, "clipReload": 1.5, "ramp": { "from": 0.3, "to": 2.0, "seconds": 6, "grace": 2.0 } },
     { "id": "swarm_drones", "load": 8, "real": "FPV drone (1.5 kg)", "family": "drone", "size": 1.5, "pen": 3, "topAttack": true, "piercing": true, "projectileModel": "fpv_drone", "damageType": "ShapedCharge", "damage": 140, "cooldown": 12, "range": 60, "projectileSpeed": 26, "splash": 2.5, "impactTier": "Medium", "projectile": "Drone", "burst": 8, "burstInterval": 0.3, "swarm": 18, "bonuses": [ { "armor": "Structure", "mult": 1.5 } ] },
-    { "id": "gun_105_bunker", "real": "L7 105 mm", "family": "tank_gun", "size": 105, "pen": 3, "piercing": true, "damageType": "Kinetic", "damage": 200, "cooldown": 4.6, "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" }
+    { "id": "gun_105_bunker", "real": "L7 105 mm", "family": "tank_gun", "size": 105, "pen": 3, "piercing": true, "damageType": "Kinetic", "damage": 200, "cooldown": 4.6, "range": 34, "projectileSpeed": 190, "splash": 1.5, "spread": 0.6, "impactTier": "Medium" },
+    // Prompt 17 D. The heavy tank's high-explosive round (its gun loads it for structures and light vehicles:
+    // "he" on gun_152); the twin tank's pair of 120 mm guns, one volley of two and a long reload; the attack
+    // helicopter's Hellfire Longbows fired in pairs from the Ka-52's stand-off reach.
+    { "id": "gun_152_he", "real": "2A83 152 mm HE-FRAG", "family": "tank_gun", "size": 152, "pen": 3, "damageType": "HighExplosive", "damage": 320, "cooldown": 6, "range": 34, "projectileSpeed": 150, "splash": 5, "spread": 0.7, "impactTier": "Huge", "roundWeight": 343 },
+    { "id": "gun_120_twin", "real": "Rh-120 L/44 120 mm (twin)", "family": "tank_gun", "size": 120, "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 240, "cooldown": 7, "range": 34, "projectileSpeed": 170, "splash": 1.5, "spread": 0.5, "impactTier": "Medium", "burst": 2, "burstInterval": 0.05 },
+    { "id": "hellfire_standoff", "load": 8, "real": "AGM-114L Hellfire Longbow", "family": "atgm", "size": 49, "pen": 4, "piercing": true, "projectileModel": "hellfire_longbow", "projectileScale": 0.65, "damageType": "ShapedCharge", "damage": 250, "cooldown": 7.1, "range": 55, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile", "targets": "Ground", "burst": 2, "burstInterval": 0.45, "roundWeight": 256 }
   ],
 
   // weapon is the main weapon (on the turret; fixed forward on aircraft). secondary lists extra mounts:
@@ -364,11 +370,14 @@
       "firesWhileMoving": true, "weapon": "flak_35",
       "secondary": [ { "weapon": "sam", "slot": "missile", "model": "stinger", "aim": "Free" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
-    { "id": "attack_helicopter", "value": 1.45, "rearmTime": 8.5, "scale": 0.69, "armour": 1,  "hp": 500, "speed": 14, "turnRate": 120, "turretTurnRate": 360, "radius": 3.2, "cp": 9, "vision": 38,
-      "firesWhileMoving": true, "weapon": "heli_atgm", "mainSlot": "missile", "flying": true, "altitude": 15, "captureRate": 0,
+    // Prompt 17 D.2: the Apache and the Ka-52 are one card, the attack helicopter (the Apache's model; the Ka-52's,
+    // heavy_attack_heli, stays in the model library for a later camouflage: "altModels"). It keeps the Ka-52's
+    // stand-off (Hellfire Longbows in pairs from 55 m, hovering at the edge of that reach) and Stingers for aircraft.
+    { "id": "attack_helicopter", "value": 1.05, "altModels": ["heavy_attack_heli"], "rearmTime": 9, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 0.69, "armour": 1,  "hp": 800, "speed": 13, "turnRate": 110, "turretTurnRate": 360, "radius": 3.2, "cp": 11, "vision": 40,
+      "firesWhileMoving": true, "weapon": "hellfire_standoff", "mainSlot": "missile", "flying": true, "standoff": true, "altitude": 15, "captureRate": 0,
       "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" },
                      { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" } ], "skills": ["heli_flares"],
-      "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.6, "tier": "Large" } },
+      "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.6, "tier": "Large" } },
     { "id": "armored_car", "value": 0.94, "scale": 0.85,      "class": "Light", "armour": 1, "hp": 300, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 6.52, "width": 2.68, "cp": 3, "vision": 36,
       "firesWhileMoving": true, "weapon": "autocannon_25", "captureRate": 2,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
@@ -377,7 +386,9 @@
       "firesWhileMoving": true, "weapon": "gun_105_long",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
-    { "id": "heavy_tank", "value": 1.26, "scale": 0.85,       "armour": 4, "hp": 1600, "speed": 4.2, "turnRate": 45, "turretTurnRate": 45, "radius": 2.6, "length": 8.67, "width": 3.76, "cp": 10, "vision": 30,
+    // Prompt 17 D.6: the breakthrough tank. Its 152 mm loads armour-piercing for armour and high explosive for
+    // structures and light vehicles ("he" on the gun); front armour 4, sides 3; slow. The twin tank is the tank hunter.
+    { "id": "heavy_tank", "value": 1.18, "scale": 0.85,       "armour": [4, 3, 2, 2], "hp": 1600, "speed": 4.2, "turnRate": 45, "turretTurnRate": 45, "radius": 2.6, "length": 8.67, "width": 3.76, "cp": 12, "vision": 30,
       "firesWhileMoving": true, "weapon": "gun_152",
       "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 9, "delay": 0.5, "tier": "Huge" } },
@@ -401,11 +412,14 @@
       "firesWhileMoving": true, "weapon": "minigun", "mainSlot": "gun", "flying": true, "altitude": 13, "captureRate": 0,
       "secondary": [ { "weapon": "scout_rockets", "slot": "rocket", "aim": "Hull" } ],
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
-    { "id": "attack_jet", "value": 1.09, "rearmTime": 14, "strongVs": ["Light", "Tank", "Artillery", "Defense"], "scale": 0.56,       "armour": 1,  "hp": 460, "speed": 34, "turnRate": 106, "turretTurnRate": 360, "radius": 3.2, "cp": 13, "vision": 50,
-      "firesWhileMoving": true, "weapon": "jet_cannon", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.6,
+    // Prompt 17 D.1: the Su-25 and the A-10 are one card, the ground-attack jet (the Su-25's model; the A-10's,
+    // tank_buster, stays for a later camouflage). The weapons of both on the calibre scale: the 30 mm cannon, 80 mm
+    // rockets, 250 kg bombs, two Kh-29 anti-tank missiles, two R-60s for self-defence; the A-10's armoured toughness.
+    { "id": "attack_jet", "value": 1.11, "altModels": ["tank_buster"], "rearmTime": 14, "strongVs": ["Light", "Tank", "Heavy", "Artillery", "Defense"], "scale": 0.56,       "armour": 2,  "hp": 700, "speed": 32, "turnRate": 104, "turretTurnRate": 360, "radius": 3.2, "cp": 15, "vision": 50,
+      "firesWhileMoving": true, "weapon": "jet_cannon", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.8,
       "secondary": [ { "weapon": "s8_pods", "slot": "rocket", "aim": "Hull" }, { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" },
-                     { "weapon": "r60", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
-      "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.6, "tier": "Huge" } },
+                     { "weapon": "kh29", "slot": "missile", "aim": "Hull" }, { "weapon": "r60", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
+      "deathExplosion": { "damage": 95, "radius": 7, "delay": 0.6, "tier": "Huge" } },
     { "id": "strike_drone", "value": 0.81, "rearmTime": 8.5, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 0.78, "drone": true, "armour": 0,  "hp": 260, "speed": 19, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.5,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
@@ -440,18 +454,16 @@
                      { "weapon": "griffin", "slot": "ramp", "aim": "Free" } ], "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 220, "radius": 11, "delay": 0.6, "tier": "Ultimate" } },
     // Third wave. Long-range launchers carry limited ammunition and a machine gun for when it runs out.
-    { "id": "twin_tank", "value": 0.96, "scale": 0.85,        "armour": 3, "hp": 1150, "speed": 5.6, "turnRate": 55, "turretTurnRate": 55, "radius": 2.5, "length": 6.63, "width": 3.57, "cp": 9, "vision": 32,
-      "firesWhileMoving": true, "weapon": "gun_105_twin",
+    // Prompt 17 D.6: the tank hunter among the heavies: two 120 mm guns fired as one volley of two, a long 7 s reload
+    // (its opening shot is its strength); front armour 3; faster, and a quicker turret, than the heavy tank.
+    { "id": "twin_tank", "value": 1.09, "scale": 0.85,        "armour": [3, 2, 1, 1], "hp": 1150, "speed": 6, "turnRate": 58, "turretTurnRate": 65, "radius": 2.5, "length": 6.63, "width": 3.57, "cp": 9, "vision": 32,
+      "firesWhileMoving": true, "weapon": "gun_120_twin",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 130, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     { "id": "siege_tank", "value": 1.04, "scale": 0.85,       "class": "Heavy", "armour": 3, "hp": 2200, "speed": 3.6, "turnRate": 38, "turretTurnRate": 35, "radius": 3.0, "length": 10.86, "width": 3.6, "cp": 12, "vision": 36,
       "firesWhileMoving": false, "weapon": "gun_203_siege",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 220, "radius": 11, "delay": 0.5, "tier": "Ultimate" } },
-    // Real-world additions: a wheeled anti-tank missile carrier (Stryker ATGM).
-    { "id": "atgm_carrier", "value": 0.83, "class": "TankHunter", "scale": 0.85,     "armour": 1, "hp": 520, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 2.3, "length": 7.31, "width": 2.89, "cp": 5, "vision": 36,
-      "firesWhileMoving": true, "weapon": "atgm_heavy", "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
-      "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Large" } },
     { "id": "heavy_rocket_artillery", "value": 1.26, "scale": 0.85, "armour": 1, "hp": 420, "speed": 6.5, "turnRate": 55, "turretTurnRate": 40, "radius": 2.6, "length": 12.37, "width": 3.12, "cp": 11, "vision": 30,
       "firesWhileMoving": false, "weapon": "rockets_300mm",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
@@ -460,7 +472,10 @@
       "firesWhileMoving": false, "weapon": "ballistic_missile",
       "secondary": [ { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 260, "radius": 13, "delay": 0.4, "tier": "Ultimate" } },
-    { "id": "engineer_vehicle", "value": 1, "scale": 0.85, "class": "Support", "armour": 2, "hp": 700, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 7.41, "width": 3.33, "cp": 3, "vision": 30,
+    // Prompt 17 D.5: the engineer and the fortification sapper are one card, the engineer: it repairs vehicles and
+    // (at half the rate) towers, clears mines and breaks obstacles, slowly with its MG (the bulldozer is the quick way).
+    // It does not rearm (the ammunition carrier does). The sapper's model stays for a later camouflage.
+    { "id": "engineer_vehicle", "value": 1, "altModels": ["sapper"], "scale": 0.85, "class": "Support", "armour": 2, "hp": 800, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 7.41, "width": 3.33, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_roof", "repair": { "radius": 14, "rate": 0.025 },
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // Prompt 13 F.2: the ammunition carrier, a forward rearm point (the supply truck's model: asset debt).
@@ -482,19 +497,9 @@
       "secondary": [ { "weapon": "wvr_aam", "slot": "aam", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "vtol": true, "skills": ["jet_flares"],
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "tank_buster", "value": 1, "rearmTime": 15, "strongVs": ["Tank", "Heavy", "Light"], "scale": 0.5,      "armour": 2,  "hp": 900, "speed": 28, "turnRate": 101, "turretTurnRate": 360, "radius": 3.6, "cp": 16, "vision": 48,
-      "firesWhileMoving": true, "weapon": "gau_gatling", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 26, "captureRate": 0, "attackHold": 4.0,
-      "secondary": [ { "weapon": "jet_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "maverick", "slot": "missile", "aim": "Hull" },
-                     { "weapon": "aim9", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
-      "deathExplosion": { "damage": 100, "radius": 8, "delay": 0.6, "tier": "Huge" } },
     { "id": "recon_drone", "value": 0.5, "rearmTime": 8.5, "strongVs": ["Scout", "Artillery"], "scale": 0.49, "drone": true, "armour": 0,  "hp": 220, "speed": 18, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 90,
       "firesWhileMoving": true, "weapon": "recon_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0,
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
-    { "id": "heavy_attack_heli", "value": 0.95, "loads": { "s8_pods": 24 }, "rearmTime": 9, "strongVs": ["Tank", "Heavy", "Helicopter"], "scale": 0.48, "armour": 1, "hp": 1250, "speed": 12, "turnRate": 80, "turretTurnRate": 360, "radius": 4.2, "cp": 13, "vision": 40,
-      "firesWhileMoving": true, "weapon": "vikhr", "mainSlot": "missile", "flying": true, "standoff": true, "altitude": 16, "captureRate": 0,
-      "secondary": [ { "weapon": "gsh_23v", "slot": "gun", "aim": "Hull" }, { "weapon": "s8_pods", "slot": "rocket", "aim": "Hull" },
-                     { "weapon": "igla_v", "slot": "aam", "aim": "Free" } ], "skills": ["heli_flares"],
-      "deathExplosion": { "damage": 110, "radius": 8, "delay": 0.6, "tier": "Huge" } },
 
     // Elite enemy variants: refurbished base models (1.15x), tougher, with skills. Never bought.
     // Round 5 vehicles (Docs research 2026-09-27).
@@ -530,9 +535,6 @@
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "ataka", "slot": "missile", "aim": "Turret" },
                      { "weapon": "agl_40", "slot": "agl_l", "aim": "Left" }, { "weapon": "agl_40", "slot": "agl_r", "aim": "Right" } ],
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.4, "tier": "Huge" } },
-    { "id": "sapper", "value": 1, "scale": 0.85,           "class": "Support", "armour": 2, "hp": 800, "speed": 6, "turnRate": 80, "turretTurnRate": 200, "radius": 2.3, "length": 7.77, "width": 3.68, "cp": 5, "vision": 30,
-      "firesWhileMoving": true, "weapon": "hmg_roof", "fortify": { "radius": 12, "rate": 0.006 }, "captureRate": 1,
-      "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // Prompt 8 A.1: an armoured combat bulldozer (D9R). Only a roof machine gun; the blade rams structures down
     // at three times the damage, it ploughs dragon's teeth flat as it drives into them, and takes half a mine's
     // blast. The commander sends it ahead of the line into an enemy base. 3,500 health in game.
@@ -566,7 +568,7 @@
     // on one target. The shield carrier's dome takes every hit but energy for the friends inside until it breaks.
     // The bunker vehicle digs in when it stands (3 s): front armour two levels up, reach +30 %, turret all round.
     // The swarm carrier flies its FPV drones out to anywhere and releases them over the target.
-    { "id": "stealth_fighter", "value": 1, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 0.39, "armour": 0, "hp": 480, "speed": 40, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 20, "vision": 76,
+    { "id": "stealth_fighter", "value": 0.88, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 0.39, "armour": 0, "hp": 480, "speed": 40, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 14, "vision": 76,
       "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 36, "captureRate": 0, "attackHold": 4.0,
       "secondary": [ { "weapon": "guided_bomb", "slot": "bomb", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "stealth": true, "sead": true, "skills": ["jet_flares"],
@@ -575,17 +577,17 @@
       "firesWhileMoving": true, "weapon": "aim9", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 32, "captureRate": 0, "attackHold": 3.0,
       "maxPerSide": 4, "airCapFree": true, "wingman": { "follow": 120, "decoy": 25, "pull": 0.4 },
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.5, "tier": "Large" } },
-    { "id": "laser_tank", "value": 1, "scale": 0.85, "class": "TankHunter", "armour": 3, "hp": 700, "speed": 6.5, "turnRate": 65, "turretTurnRate": 55, "radius": 2.4, "length": 7.41, "width": 3.18, "cp": 10, "vision": 38,
+    { "id": "laser_tank", "value": 1.01, "scale": 0.85, "class": "TankHunter", "armour": 3, "hp": 700, "speed": 6.5, "turnRate": 65, "turretTurnRate": 55, "radius": 2.4, "length": 7.41, "width": 3.18, "cp": 10, "vision": 38,
       "firesWhileMoving": true, "weapon": "focus_laser", "strongVs": ["Heavy", "Tank", "Boss"],
       "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     { "id": "shield_carrier", "value": 1, "scale": 0.85, "class": "Support", "armour": 1, "hp": 480, "speed": 8.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.3, "length": 8.65, "width": 3.0, "cp": 7, "vision": 36,
       "firesWhileMoving": true, "weapon": "hmg_roof", "captureRate": 1, "dome": { "radius": 12, "hp": 1000, "recharge": 20 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.35, "tier": "Huge" } },
-    { "id": "bunker_vehicle", "value": 1, "scale": 0.85, "class": "Heavy", "armour": [2, 2, 1, 1], "hp": 1300, "speed": 5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 7.96, "width": 3.6, "cp": 8, "vision": 36,
+    { "id": "bunker_vehicle", "value": 0.89, "scale": 0.85, "class": "Heavy", "armour": [2, 2, 1, 1], "hp": 1300, "speed": 5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 7.96, "width": 3.6, "cp": 6, "vision": 36,
       "firesWhileMoving": true, "weapon": "gun_105_bunker", "secondary": [ { "weapon": "mg_coax", "slot": "mg", "aim": "Turret" } ],
       "deploy": { "seconds": 3, "front": 2, "range": 1.3, "arc": 45 },
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "swarm_carrier", "value": 1, "rearmTime": 16, "strongVs": ["Tank", "Heavy", "Artillery", "Light"], "scale": 1.22, "armour": 1, "hp": 1400, "speed": 18, "turnRate": 60, "turretTurnRate": 360, "radius": 7, "cp": 14, "vision": 56,
+    { "id": "swarm_carrier", "value": 0.81, "rearmTime": 16, "strongVs": ["Tank", "Heavy", "Artillery", "Light"], "scale": 1.22, "armour": 1, "hp": 1400, "speed": 18, "turnRate": 60, "turretTurnRate": 360, "radius": 7, "cp": 8, "vision": 56,
       "firesWhileMoving": true, "weapon": "swarm_drones", "mainSlot": "drone", "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     { "id": "elite_mbt", "scale": 0.85,        "class": "Tank", "elite": true, "eliteOf": "main_battle_tank", "armour": [4, 2, 1, 1], "hp": 1215, "speed": 6.2, "turnRate": 60, "turretTurnRate": 75, "radius": 2.5, "length": 7.11, "width": 4.06, "cp": 0, "vision": 34,
@@ -661,8 +663,7 @@
     // Towers (prompt 3). An EW tower jams guided rounds and fire support; dragon's teeth block the
     // way (engineers breach them three times as fast); a fixed minefield keeps eight mines round it
     // and lays the field again every 45 s; a C-RAM shoots down rockets, missiles, drones and some shells;
-    // a hidden gun pit stays down (60 % less damage, seen only by scouts, radars and scans) until an
-    // enemy is within 35 m; a drone hangar sends two FPV drones every 20 s.
+    // a drone hangar sends two FPV drones every 20 s. (The hidden gun pit went in prompt 17 D.4.)
     { "id": "ew_tower",         "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 800, "speed": 0, "turnRate": 1, "turretTurnRate": 60, "radius": 1.8, "length": 4, "width": 4, "cp": 0, "vision": 50,
       "weapon": "none", "jammer": 30, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     { "id": "dragons_teeth",    "fort": { "size": "Small" }, "static": true, "obstacle": true, "armour": 3, "hp": 2400, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "length": 5, "width": 2.5, "cp": 0, "vision": 8,
@@ -672,9 +673,6 @@
     { "id": "c_ram",            "fort": { "size": "Medium" }, "static": true, "armour": 1, "hp": 1300, "speed": 0, "turnRate": 1, "turretTurnRate": 240, "radius": 2.5, "length": 5.5, "width": 5.5, "cp": 0, "vision": 60,
       "weapon": "c_ram_gatling", "aps": { "radius": 35, "charges": 2, "recharge": 1.5, "rockets": true, "shells": 0.3 },
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
-    { "id": "gun_pit",          "fort": { "size": "Medium" }, "static": true, "armour": [3, 2, 2, 2], "hp": 1300, "speed": 0, "turnRate": 1, "turretTurnRate": 60, "radius": 2.6, "length": 6, "width": 6, "cp": 0, "vision": 40,
-      "weapon": "gun_pit_105", "secondary": [{"weapon": "mg_coax_ground", "slot": "coax", "aim": "Turret"}], "hidden": { "rise": 35, "cut": 0.6 },
-      "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     { "id": "drone_hangar",     "fort": { "size": "Large" }, "static": true, "armour": 2, "hp": 2200, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3.6, "length": 8, "width": 8, "cp": 0, "vision": 60,
       "weapon": "fpv_hangar", "mainSlot": "door_l", "mainAim": "Hull", "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Ultimate" } },
     // Rank-7 branches: each a trade, for a different fight, not a straight upgrade.
@@ -696,8 +694,6 @@
     { "id": "rocket_turret.thermo", "inherits": "rocket_turret", "branchOf": "rocket_turret", "weapon": "turret_thermobaric" },
     { "id": "c_ram.centurion",   "inherits": "c_ram", "branchOf": "c_ram", "aps": { "radius": 35, "charges": 3, "recharge": 1.5, "rockets": true, "shells": 0.3 } },
     { "id": "c_ram.hunter",      "inherits": "c_ram", "branchOf": "c_ram", "weapon": "c_ram_gatling_long", "aps": { "radius": 35, "charges": 1, "recharge": 1.5, "rockets": true, "shells": 0.3 } },
-    { "id": "gun_pit.ambush",    "inherits": "gun_pit", "branchOf": "gun_pit", "hidden": { "rise": 35, "cut": 0.6, "firstShot": 2 } },
-    { "id": "gun_pit.deep",      "inherits": "gun_pit", "branchOf": "gun_pit", "hidden": { "rise": 30, "cut": 0.75 } },
     { "id": "artillery_emplacement.cb", "inherits": "artillery_emplacement", "branchOf": "artillery_emplacement", "weapon": "howitzer_cb",
       "counterBattery": { "range": 100, "seconds": 6, "bonus": 0.1 } },
     { "id": "artillery_emplacement.ext", "inherits": "artillery_emplacement", "branchOf": "artillery_emplacement", "weapon": "howitzer_ext" },
@@ -756,10 +752,10 @@
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
     // Prompt 16 F: the landing hovercraft's escort, a small air-cushion gunboat (it crosses land and water
-    // like the hovercraft). It borrows the hovercraft's model at a third of its size until the fleet's fast
-    // attack craft model lands (prompt 16 C).
-    { "id": "hover_gunboat", "class": "Light", "model": "landing_hovercraft", "scale": 0.34, "armour": 1, "hp": 520, "speed": 8.5, "turnRate": 70, "turretTurnRate": 160,
-      "radius": 3.0, "length": 9.96, "width": 5.4, "cp": 0, "vision": 46, "firesWhileMoving": true, "weapon": "hover_ciws", "mainSlot": "gun", "mainAim": "Free", "captureRate": 0,
+    // like the hovercraft). It wears the fleet's fast missile boat model (prompt 17 follow-up; before, the
+    // hovercraft's own at a third of its size), its CIWS on the boat's roof mount.
+    { "id": "hover_gunboat", "class": "Light", "model": "missile_boat", "armour": 1, "hp": 520, "speed": 8.5, "turnRate": 70, "turretTurnRate": 160,
+      "radius": 3.2, "length": 14, "width": 3.8, "cp": 0, "vision": 46, "firesWhileMoving": true, "weapon": "hover_ciws", "mainSlot": "mg", "mainAim": "Free", "captureRate": 0,
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Huge" } },
     { "id": "supply_truck",     "class": "Support", "armour": 0, "hp": 700, "speed": 3.6, "turnRate": 90, "turretTurnRate": 180, "radius": 1.9, "length": 7.3, "width": 2.72, "cp": 0, "vision": 26,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 0, "model": "armed_truck",
@@ -1001,7 +997,7 @@
                      { "weapon": "hover_rockets", "slot": "rocket", "aim": "Free" } ],
       "aps": { "radius": 22, "charges": 2, "recharge": 3, "rockets": true },
       "landing": { "every": 35, "stop": 6, "min": 3, "max": 4, "landings": 5, "first": 15,
-                   "units": ["main_battle_tank", "ifv", "armored_car", "atgm_carrier", "aa_vehicle", "main_battle_tank", "ifv"], "ramp": [0, 16] },
+                   "units": ["main_battle_tank", "ifv", "armored_car", "fpv_carrier", "aa_vehicle", "main_battle_tank", "ifv"], "ramp": [0, 16] },
       "phases": [ { "at": 0.5, "transform": 2.5, "speed": 1.2, "radio": "radio.kessler.hovercraft.half" } ],
       "parts": [
         {"id": "ramp", "kind": "ramp", "hp": 0.12, "armour": 3, "node": "Part_ramp", "wreck": "wreck_stump", "at": [0, 12.5, 2.3], "radius": 3.0, "stops": ["landing"], "radio": "radio.part.ramp"},

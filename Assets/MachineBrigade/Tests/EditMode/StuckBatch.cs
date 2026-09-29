@@ -116,7 +116,7 @@ namespace MachineBrigade.Tests
             {
                 HqLevel = 5,
                 Small = { "dragons_teeth", "dragons_teeth", "minefield", "dragons_teeth", "dragons_teeth", "aa_turret" },
-                Medium = { "gun_pit", "c_ram", "gun_pit" },
+                Medium = { "gun_turret", "c_ram", "gun_turret" },
                 Large = { "heavy_turret", "drone_hangar" },
                 Utilities = { "repair_bay", "ammo_depot", "radar_station" },
             },

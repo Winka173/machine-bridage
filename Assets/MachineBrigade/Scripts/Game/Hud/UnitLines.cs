@@ -56,6 +56,8 @@ namespace MachineBrigade.Game.Hud
             // Prompt 17 C: the focused laser's ramp, the swarm's own targets.
             if (w.Ramp is { } ramp) lines.Add(F("ul.ramp", N(ramp.From), N(ramp.To), N(ramp.Seconds)));
             if (w.SwarmReach > 0f) lines.Add(F("ul.swarm", N(w.SwarmReach)));
+            // Prompt 17 D.6: the heavy tank's gun changes rounds on its own.
+            if (w.HeRound is { } he) lines.Add(F("ul.heRound", N(he.Damage), N(he.SplashRadius)));
             var range = w.MinRange > 0f ? F("ul.rangeMin", N(w.Range), N(w.MinRange)) : F("ul.range", N(w.Range));
             lines.Add(w.SplashRadius > 0.5f ? F("ul.splash", range, N(w.SplashRadius)) : range);
             return lines;

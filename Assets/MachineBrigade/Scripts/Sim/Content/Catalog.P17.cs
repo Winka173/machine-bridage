@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 
 namespace MachineBrigade.Sim.Content
 {
@@ -46,6 +47,21 @@ namespace MachineBrigade.Sim.Content
             }
             def.AirCapFree = v.Bool("airCapFree", false);
             def.Sead = v.Bool("sead", false);
+            // Prompt 17 D: the models of the cards merged into this one, kept for a later camouflage.
+            if (v.Has("altModels")) def.AltModels = new List<string>(v.StringArray("altModels"));
+        }
+
+        /// <summary>Prompt 17 D.6: a gun's high-explosive round ("he": another weapon's id), once every weapon is read.</summary>
+        private static void ResolveHeRounds(IEnumerable<JsonObject> raw, Dictionary<string, WeaponDef> weapons)
+        {
+            foreach (var w in raw)
+            {
+                if (!w.Has("he")) continue;
+                var id = w.String("he");
+                if (!weapons.TryGetValue(id, out var he)) throw new FormatException($"{w.Path}.he: unknown weapon '{id}'.");
+                if (he.Burst != 1 || he.Clip > 0 || he.HeRound != null) throw new FormatException($"{w.Path}.he: the round is a plain single-shot weapon.");
+                weapons[w.String("id")].HeRound = he;
+            }
         }
 
         private static void ParseWeaponP17(JsonObject w, WeaponDef def)

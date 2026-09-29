@@ -21,6 +21,13 @@ namespace MachineBrigade.Game.Match
             ["howitzer"] = "artillery",
             ["siege_mortar"] = "siege_tank",
             ["carpet_bombing"] = "airstrike",
+            // Prompt 17 D (roster version 2): the A-10 into the attack jet, the Ka-52 into the attack helicopter, the ATGM
+            // carrier into the FPV carrier, the fortification sapper into the engineer, the hidden gun pit into the gun turret.
+            ["tank_buster"] = "attack_jet",
+            ["heavy_attack_heli"] = "attack_helicopter",
+            ["atgm_carrier"] = "fpv_carrier",
+            ["sapper"] = "engineer_vehicle",
+            [GunPit] = GunTurret,
         };
 
         /// <summary>Cards gone with nothing in their place (the sky gunship is only the Gunship item's aircraft now).</summary>
@@ -31,7 +38,13 @@ namespace MachineBrigade.Game.Match
         {
             ["sky_gunship"] = 4500,
             ["carpet_bombing"] = 3000,
+            ["heavy_attack_heli"] = 3500,
         };
+
+        /// <summary>Prompt 17 D.4: the hidden gun pit, gone from the towers, and the tower its players get instead.</summary>
+        public const string GunPit = "gun_pit";
+
+        public const string GunTurret = "gun_turret";
 
         /// <summary>Owners of the APS tank get this piece: its active protection as an Epic Trophy APS module.</summary>
         public const string ApsTank = "aps_tank";

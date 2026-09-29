@@ -114,7 +114,7 @@ namespace MachineBrigade.Tests
             var boss = world.SpawnVehicle("leviathan", 1, sea.At(pier.X, pier.Y + 40f), 0f);
             boss.Landing = true;
             boss.HoldFire = true;
-            var carrier = world.SpawnVehicle("atgm_carrier", 0, sea.Piers[0], 0f);
+            var carrier = world.SpawnVehicle("atgm_tower", 0, sea.Piers[0], 0f);
             var gun = world.SpawnVehicle("artillery", 0, sea.At(pier.X, pier.Y - 40f), 0f);
             world.Submit(new Command(CommandType.Attack, 0, new[] { carrier.Id, gun.Id }, target: boss.Id));
             int missiles = 0, shells = 0;

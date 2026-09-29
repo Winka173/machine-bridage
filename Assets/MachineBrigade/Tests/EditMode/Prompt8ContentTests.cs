@@ -57,7 +57,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(ProjectileKind.Bullet, d.Mounts[1].Weapon.Projectile, "a machine gun besides the blade");
             Assert.AreEqual(2, d.Mounts.Count);
             Assert.AreEqual(0.5f, d.MineArmor, 1e-3f);
-            Assert.IsFalse(d.MineProof, "it does not clear mines: that is the sapper's job");
+            Assert.IsFalse(d.MineProof, "it does not clear mines: that is the engineer's job");
             CollectionAssert.Contains(MatchSettings.AllVehicles, "armored_bulldozer");
             Assert.IsNotNull(Progression.UnlockMission("armored_bulldozer"), "won in the campaign");
         }

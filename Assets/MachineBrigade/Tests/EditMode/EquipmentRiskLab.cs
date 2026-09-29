@@ -104,7 +104,7 @@ namespace MachineBrigade.Tests
             Lab.Gate();
             var cards = new (GearBranch branch, string card, string[] targets, string[] attackers)[]
             {
-                (GearBranch.Armor, "main_battle_tank", new[] { "main_battle_tank", "ifv", "light_tank" }, new[] { "main_battle_tank", "ifv", "atgm_carrier" }),
+                (GearBranch.Armor, "main_battle_tank", new[] { "main_battle_tank", "ifv", "light_tank" }, new[] { "main_battle_tank", "ifv", "fpv_carrier" }),
                 (GearBranch.Light, "ifv", new[] { "ifv", "armored_car", "light_tank" }, new[] { "main_battle_tank", "ifv", "armored_car" }),
                 (GearBranch.Artillery, "artillery", new[] { "main_battle_tank", "ifv", "armored_car" }, new[] { "ifv", "armored_car", "scout_jeep" }),
                 (GearBranch.Air, "attack_helicopter", new[] { "main_battle_tank", "ifv", "armored_car" }, new[] { "aa_vehicle", "aa_vehicle", "heavy_aa" }),

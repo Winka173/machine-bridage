@@ -50,7 +50,7 @@ namespace MachineBrigade.Editor
             { "scout_jeep", "armored_car", "ifv", "light_tank", "main_battle_tank", "tank_destroyer", "aa_vehicle", "artillery" };
 
         private static readonly string[] AirDeck =
-            { "attack_helicopter", "gunship_heli", "attack_jet", "fighter_jet", "heavy_attack_heli", "tank_buster", "scout_heli", "strike_drone" };
+            { "attack_helicopter", "gunship_heli", "attack_jet", "fighter_jet", "scout_heli", "strike_drone" };
 
         private static readonly string[] ArtilleryDeck =
             { "mlrs", "artillery", "heavy_rocket_artillery", "thermobaric_launcher", "mortar_carrier", "main_battle_tank", "light_tank", "aa_vehicle" };

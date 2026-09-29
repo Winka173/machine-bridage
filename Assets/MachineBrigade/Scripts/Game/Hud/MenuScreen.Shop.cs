@@ -36,7 +36,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A skin is being tried on (null: back to the equipped one).</summary>
         public event Action<string> SkinPreviewed;
 
-        private static readonly string[] PremiumCards = { "titan_tank", "heavy_bomber", "stealth_bomber", "siege_tank", "ballistic_launcher", "heavy_attack_heli", "napalm_strike" };
+        private static readonly string[] PremiumCards = { "titan_tank", "heavy_bomber", "stealth_bomber", "siege_tank", "ballistic_launcher", "napalm_strike" };
 
         private void BuildShopPage()
         {

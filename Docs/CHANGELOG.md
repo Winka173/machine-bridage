@@ -23,6 +23,20 @@
   in Boss Rush). Each group has a helper that repairs the boss, jams your missiles, covers it from the air or marks your
   units for its guns, so you choose between the boss and its escorts. Escorts stay near their boss, pay CP when
   destroyed, wear an orange mark, and the boss bar counts them. The old escort calls are replaced by this.
+## Prompt 17 D: roster review
+
+- Merged cards: the A-10 is now part of the attack jet (30 mm cannon, rockets, bombs, two Kh-29 anti-tank missiles,
+  R-60s; armoured; 15 CP); the Ka-52 is part of the attack helicopter (Hellfires in pairs from 55 m, out of short-range
+  flak, and Stingers; 11 CP); the ATGM carrier is gone (FPV carriers, IFVs and ATGM towers do its job); the fortification
+  sapper is part of the engineer (repairs vehicles and towers, clears mines); the hidden gun pit is gone from the towers.
+- Your progress moves across: the higher rank and the blueprints, the coins of the lower rank back, a bought Ka-52
+  refunded; gun pits in your bases become gun turrets and their equipment moves over (or back to the bag).
+- Twin-barrel tank: two 120 mm guns fired as one volley, a long reload, quicker than the heavy tank: the tank hunter.
+  Heavy tank: its 152 mm loads high explosive for buildings and light vehicles on its own; 12 CP.
+- The new units' costs from the combat-value measure: stealth fighter 14 CP, swarm carrier 8, bunker vehicle 6.
+- Lighthouse Bay has a long Siege map; the hovercraft's escorts ride fast missile boats; the campaign opens 5-7 cards
+  a chapter.
+
 ## Prompt 17 C: new units and towers
 
 - Stealth fighter (20 CP): unseen until it fires, four AIM-120s, two small guided bombs for air defences, a 25 mm gun.

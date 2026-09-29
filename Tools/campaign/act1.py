@@ -524,7 +524,7 @@ add_mission(m('c3m05', 3, 'whiteout', 'Boss', 'Clear', legacy='m03', general='or
               enemyAi='commander', enemyStance='Attack', difficulty='Normal', enemyCp=12, enemyIncome=0.85,
               enemyDeck=['light_tank', 'main_battle_tank', 'ifv', 'mortar_carrier', 'aa_vehicle', 'attack_helicopter'],
               playerCp=26, playerIncome=1.45, playerCap=36, playerBase='Anchor',
-              hqLevel=2, unlocks=['atgm_carrier'], starTime=660, starLosses=10, challenge={'kind': 'NoStrikes'}),
+              hqLevel=2, unlocks=['recon_drone'], starTime=660, starLosses=10, challenge={'kind': 'NoStrikes'}),
             ('Iron Bird', 'Chim Sắt'),
             ('Orlov\'s Iron Bird has come down from the clouds over the pass: a gunship the size of a ship, with rockets, flares and an escort. '
              'This is what the anti-air was for. Bring it down.',

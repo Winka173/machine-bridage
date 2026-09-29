@@ -28,8 +28,8 @@ namespace MachineBrigade.Tests
             ("missile_battery", "sam_battery", "attack_jet", false), ("long_sam", "sam_48n6", "attack_jet", false),
             ("sam_launcher", "sam_long", "attack_helicopter", false), ("aa_vehicle", "sam", "attack_helicopter", false),
             ("fighter_jet", "air_to_air", "attack_jet", false), ("fighter_jet", "wvr_aam", "attack_helicopter", false),
-            ("atgm_carrier", "atgm_heavy", "main_battle_tank", true), ("attack_helicopter", "heli_atgm", "main_battle_tank", true),
-            ("atgm_carrier", "atgm_heavy", "main_battle_tank", false), ("heavy_attack_heli", "vikhr", "main_battle_tank", true),
+            ("bmpt", "ataka", "main_battle_tank", true), ("attack_helicopter", "hellfire_standoff", "main_battle_tank", true),
+            ("bmpt", "ataka", "main_battle_tank", false),
         };
 
         /// <summary>Variants: (name, edits of weapon fields: id, field, value); no edits is the data as it is.</summary>
@@ -94,7 +94,7 @@ namespace MachineBrigade.Tests
             {
                 if (name == "11C") continue;
                 var catalog = edits.Length == 0 ? GameContent.LoadCatalog() : WithFields(edits);
-                foreach (var (a, na, b, nb) in new[] { ("sam_launcher", 3, "attack_jet", 2), ("aa_vehicle", 3, "attack_helicopter", 2), ("sam_launcher", 2, "tank_buster", 1) })
+                foreach (var (a, na, b, nb) in new[] { ("sam_launcher", 3, "attack_jet", 2), ("aa_vehicle", 3, "attack_helicopter", 2), ("sam_launcher", 2, "attack_jet", 1) })
                     for (var seed = 1; seed <= 4; seed++)
                     {
                         var winner = CounterTests.Skirmish(a, na, b, nb, out var summary, catalog: catalog, seed: seed);

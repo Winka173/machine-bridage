@@ -122,7 +122,7 @@ namespace MachineBrigade.Game.Rendering
                     // field they lose their lock and fly wide.
                     var tank = Friend("main_battle_tank", s + new Vector2(-6f, 4f), dummy: true);
                     var ifv = Friend("ifv", s + new Vector2(6f, 3f), dummy: true);
-                    Attacker("atgm_carrier", new Vector2(-7f, _far.Y + 18f), tank);
+                    Attacker("atgm_tower", new Vector2(-7f, _far.Y + 18f), tank);
                     Attacker("lancet_truck", new Vector2(8f, _far.Y + 20f), ifv);
                     Widen(_far.Y + 24f);
                     break;
@@ -131,7 +131,7 @@ namespace MachineBrigade.Game.Rendering
                     var guarded = Friend("main_battle_tank", s + new Vector2(-6f, 5f), dummy: true);
                     var second = Friend("ifv", s + new Vector2(6f, 4f), dummy: true);
                     Attacker("rocket_technical", new Vector2(-8f, _far.Y + 10f), guarded);
-                    Attacker("atgm_carrier", new Vector2(9f, _far.Y + 8f), second);
+                    Attacker("atgm_tower", new Vector2(9f, _far.Y + 8f), second);
                     Widen(_far.Y + 6f);
                     break;
                 case Scene.Repair:

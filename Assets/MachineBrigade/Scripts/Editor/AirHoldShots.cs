@@ -32,7 +32,7 @@ namespace MachineBrigade.Editor
         private const float Step = 0.05f;
 
         private static readonly (string shooter, string target)[] Cases =
-            { ("fighter_jet", "attack_helicopter"), ("attack_jet", "main_battle_tank"), ("tank_buster", "main_battle_tank") };
+            { ("fighter_jet", "attack_helicopter"), ("attack_jet", "main_battle_tank") };
 
         [MenuItem("Machine Brigade/Render Air Attack Hold Shots")]
         public static void Run()

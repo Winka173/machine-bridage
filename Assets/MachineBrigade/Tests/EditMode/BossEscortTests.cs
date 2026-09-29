@@ -74,7 +74,7 @@ namespace MachineBrigade.Tests
             var boss = world.SpawnVehicle(id, 1, Vector2.Zero, 0f);
             boss.HpScale = 50f;
             boss.Hp = boss.MaxHp;
-            for (var k = 0; k < 2; k++) Tough(world, "atgm_carrier", 0, new Vector2(-8f + 16f * k, -34f));
+            for (var k = 0; k < 2; k++) Tough(world, "bmpt", 0, new Vector2(-8f + 16f * k, -34f));
             var before = Run(world, 14f).Count(e => e.Kind == SimEventKind.Intercepted && e.Entity == boss.Id);
             Assert.Greater(before, 0, id + " shoots anti-tank missiles down");
             for (var k = 0; k < parts.Length; k++)
@@ -263,8 +263,8 @@ namespace MachineBrigade.Tests
             { "armored_train", "behemoth_tempest", "behemoth", "behemoth_inferno", "fortress_hive", "fortress_bastion", "nuke_train", "rail_supergun", "landing_hovercraft" };
 
         private static readonly string[] Army =
-            { "main_battle_tank", "main_battle_tank", "main_battle_tank", "main_battle_tank", "tank_destroyer", "tank_destroyer", "atgm_carrier",
-              "atgm_carrier", "aa_vehicle", "ifv", "ifv", "attack_helicopter", "attack_helicopter", "mlrs", "artillery" };
+            { "main_battle_tank", "main_battle_tank", "main_battle_tank", "main_battle_tank", "tank_destroyer", "tank_destroyer", "fpv_carrier",
+              "fpv_carrier", "aa_vehicle", "ifv", "ifv", "attack_helicopter", "attack_helicopter", "mlrs", "artillery" };
 
         /// <summary>A standard army against the boss alone (no escorts, as prompt 9 measured): seconds to the kill, or -1.</summary>
         private static float KillTime(Catalog catalog, string id, int seed)

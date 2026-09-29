@@ -15,7 +15,7 @@ namespace MachineBrigade.Tests
 {
     /// <summary>
     /// The roster cleanup's new jobs: the Lancet hunts artillery and parked vehicles, the Iron Beam
-    /// is point defence, the Ka-52 stands off, the four new vehicles and the four new supports do
+    /// is point defence, the attack helicopter (the Ka-52's stand-off) stands off, the four new vehicles and the four new supports do
     /// what their cards say, and the first balance fixes (car bombs on structures, the siege gun's
     /// bunker-buster, the airstrike's longer line from rank 7).
     /// </summary>
@@ -109,10 +109,10 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheKa52StandsOutsideShortRangeAntiAir()
+        public void TheAttackHelicopterStandsOutsideShortRangeAntiAir()
         {
             var world = Field();
-            var heli = world.SpawnVehicle("heavy_attack_heli", 0, new Vector2(0f, -70f), 0f);
+            var heli = world.SpawnVehicle("attack_helicopter", 0, new Vector2(0f, -70f), 0f);
             var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 0f), 3.14f);
             var aa = world.SpawnVehicle("aa_vehicle", 1, new Vector2(4f, 6f), 3.14f);
             var spotter = world.SpawnVehicle("scout_jeep", 0, new Vector2(-30f, -12f), 0f);
@@ -128,7 +128,7 @@ namespace MachineBrigade.Tests
                 aa.Hp = aa.MaxHp;
                 spotter.Hp = spotter.MaxHp;
             }
-            Assert.Greater(closest, aaReach, "the Ka-52 never comes into the flak's reach");
+            Assert.Greater(closest, aaReach, "the attack helicopter never comes into the flak's reach");
             Assert.Less(tank.Hp, tank.MaxHp, "and still hits the tank from 55 m");
         }
 

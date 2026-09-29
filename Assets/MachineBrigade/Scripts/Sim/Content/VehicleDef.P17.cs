@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 
 namespace MachineBrigade.Sim.Content
 {
@@ -90,6 +91,12 @@ namespace MachineBrigade.Sim.Content
         /// it engages them on its own and its free bomb mount picks them first.
         /// </summary>
         public bool Sead { get; internal set; }
+
+        /// <summary>
+        /// Prompt 17 D: the models of the cards merged into this one (the A-10 in the attack jet, the Ka-52 in the attack
+        /// helicopter, the sapper in the engineer), kept in the model library for a later camouflage; never drawn now.
+        /// </summary>
+        public IReadOnlyList<string> AltModels { get; internal set; } = System.Array.Empty<string>();
 
         /// <summary>Whether it is a manned aircraft a wingman may escort (not a drone, a wingman or a boss).</summary>
         public bool Manned => Flying && !Drone && Wingman == null && !Boss && !Static;

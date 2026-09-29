@@ -70,7 +70,7 @@ namespace MachineBrigade.Game.Match
             public bool freeDealClaimed;
             public bool goldDealBought;
 
-            /// <summary>1: progress on the merged and retired cards has been moved (see CardMerges).</summary>
+            /// <summary>1: progress on the merged and retired cards has been moved (see CardMerges); 2: prompt 17 D's merges too.</summary>
             public int rosterVersion;
 
             /// <summary>

@@ -39,5 +39,18 @@ namespace MachineBrigade.Sim.Content
         /// it (0: not a swarm).
         /// </summary>
         public float SwarmReach { get; internal set; }
+
+        /// <summary>
+        /// Prompt 17 D.6: a dual-purpose gun's high-explosive round (the heavy tank's 152 mm): the gun loads it instead
+        /// of its own round for a structure, a light vehicle or a wall (<see cref="WantsHe"/>); null: one round only.
+        /// </summary>
+        public WeaponDef? HeRound { get; internal set; }
+
+        /// <summary>Armour at or below this front level takes the high-explosive round (light vehicles).</summary>
+        public const int HeArmourMax = 1;
+
+        /// <summary>Whether a dual-purpose gun loads its high-explosive round for this target (a structure, light armour).</summary>
+        public static bool WantsHe(ArmorClass armor, ArmourLevels levels, bool isStatic) =>
+            isStatic || armor == ArmorClass.Structure || levels.Front <= HeArmourMax;
     }
 }

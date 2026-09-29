@@ -29,7 +29,7 @@ namespace MachineBrigade.Tests
             var tank = world.SpawnVehicle("main_battle_tank", 1, new Vector2(0f, 0f), 3.14f);
             Assert.IsNotNull(tank.Aps, "the module fits the tank with an active protection system");
             // In sight and missile range, beyond the carrier's machine gun and the tank's gun: only missiles fly.
-            var carrier = world.SpawnVehicle("atgm_carrier", 0, new Vector2(0f, -34f), 0f);
+            var carrier = world.SpawnVehicle("atgm_tower", 0, new Vector2(0f, -34f), 0f);
             world.Submit(new Command(CommandType.Attack, 0, new[] { carrier.Id }, target: tank.Id));
             var intercepted = 0;
             var hpAfterFirstVolley = -1f;

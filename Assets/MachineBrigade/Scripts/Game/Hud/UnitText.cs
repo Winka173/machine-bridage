@@ -147,6 +147,7 @@ namespace MachineBrigade.Game.Hud
             ["ul.relay"] = ("Its side earns {0} CP a second more (a second relay {1}); nothing for {2} s after a hit; two to a base, never on an outpost", "Phe mình kiếm thêm {0} CP mỗi giây (trạm thứ hai {1}); ngừng {2} giây sau khi bị bắn; tối đa hai trạm mỗi căn cứ, không đặt ở tiền đồn"),
             ["ul.ramp"] = ("Ramps from x{0} to x{1} over {2} s on one target; starts again on another", "Tăng từ ×{0} lên ×{1} trong {2} giây trên cùng một mục tiêu; đổi mục tiêu thì về lại"),
             ["ul.swarm"] = ("Each drone picks its own target within {0} m of the aim, and another if its target is gone", "Mỗi drone tự chọn mục tiêu trong {0} m quanh điểm nhắm, và chọn mục tiêu khác nếu mục tiêu đã bị diệt"),
+            ["ul.heRound"] = ("Loads armour-piercing for armour and high explosive ({0}, {1} m blast) for structures and light vehicles, on its own", "Tự đổi đạn: đạn xuyên cho xe có giáp, đạn nổ mạnh ({0}, nổ {1} m) cho công trình và xe nhẹ"),
             ["hud.deploying"] = ("Digging in", "Đang triển khai"),
             ["hud.deployed"] = ("Dug in", "Đã triển khai"),
             ["hud.packing"] = ("Packing up", "Đang thu lại"),
