@@ -35,18 +35,22 @@ namespace MachineBrigade.Game.Hud
         private float _refreshIn;
         private Action _popupRefresh;
 
-        public SandboxScreen(SandboxController controller)
+        public SandboxScreen(SandboxController controller, VisualElement host = null)
         {
             _c = controller;
-            _settings = ScriptableObject.CreateInstance<PanelSettings>();
-            _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
-            _settings.scaleMode = PanelScaleMode.ConstantPixelSize;
-            _settings.scale = BattleHud.MenuScale(Screen.width, Screen.height, Screen.dpi, Application.isMobilePlatform) * MatchSettings.UiScale;
-            _settings.sortingOrder = 12;
-            _host = new GameObject("Sandbox UI");
-            var document = _host.AddComponent<UIDocument>();
-            document.panelSettings = _settings;
-            _root = document.rootVisualElement;
+            if (host != null) _root = host;
+            else
+            {
+                _settings = ScriptableObject.CreateInstance<PanelSettings>();
+                _settings.themeStyleSheet = Resources.Load<ThemeStyleSheet>("UI/Theme");
+                _settings.scaleMode = PanelScaleMode.ConstantPixelSize;
+                _settings.scale = BattleHud.MenuScale(Screen.width, Screen.height, Screen.dpi, Application.isMobilePlatform) * MatchSettings.UiScale;
+                _settings.sortingOrder = 12;
+                _host = new GameObject("Sandbox UI");
+                var document = _host.AddComponent<UIDocument>();
+                document.panelSettings = _settings;
+                _root = document.rootVisualElement;
+            }
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Hud"));
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Screens"));
             _root.styleSheets.Add(Resources.Load<StyleSheet>("UI/Sandbox"));
@@ -645,6 +649,20 @@ namespace MachineBrigade.Game.Hud
             SandboxSession.Scenario = _c.Editor.Scenario.Clone();
             MatchSettings.InMatch = false;
             Curtain.Close(Strings.Get("sandbox.title").ToUpperInvariant(), "", () => UnityEngine.SceneManagement.SceneManager.LoadScene(UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex));
+        }
+
+        /// <summary>The screenshots' and layout checks' states: a panel open, a unit armed (the selection is the caller's).</summary>
+        internal void Preview(string state)
+        {
+            if (state == "sandbox-palette")
+            {
+                var first = SandboxRules.Palette(_c.World.Catalog, _tab);
+                if (first.Count > 0) _c.Placing = first[0].Id;
+                FillList();
+            }
+            if (state == "sandbox-sheet") Open(BattlePanel);
+            if (state == "sandbox-run") Open(LayersPanel);
+            Refresh();
         }
 
         public void Dispose()

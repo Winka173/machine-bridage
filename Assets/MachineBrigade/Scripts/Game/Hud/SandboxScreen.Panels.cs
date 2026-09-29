@@ -113,9 +113,8 @@ namespace MachineBrigade.Game.Hud
         private void LayersPanel(VisualElement body)
         {
             body.Add(Kit.Text(Kit.Caps(Strings.Get("sandbox.layers")), "fc-panel-title"));
-            var o = _c.Overlays;
             void Toggle(SandboxLayer layer, string key) =>
-                body.Add(new KitToggle(Strings.Get(key), o.IsOn(layer), on => o.On[layer] = on));
+                body.Add(new KitToggle(Strings.Get(key), _c.LayerOn(layer), on => _c.Layers[layer] = on));
             Toggle(SandboxLayer.Range, "sandbox.layer.range");
             Toggle(SandboxLayer.Hits, "sandbox.layer.hits");
             Toggle(SandboxLayer.Dps, "sandbox.layer.dps");
@@ -133,7 +132,7 @@ namespace MachineBrigade.Game.Hud
             void Scores()
             {
                 scores.Clear();
-                if (!o.IsOn(SandboxLayer.Buy)) return;
+                if (!_c.LayerOn(SandboxLayer.Buy)) return;
                 for (var team = 0; team < 2; team++)
                 {
                     if (_c.Battle.Commander(team)?.BuyScores is not { Count: > 0 } buy) continue;

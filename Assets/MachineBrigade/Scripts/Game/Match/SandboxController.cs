@@ -10,6 +10,7 @@ using MachineBrigade.Sim.Sandbox;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using EntityId = MachineBrigade.Sim.Core.EntityId;
 using SimVector2 = System.Numerics.Vector2;
 
@@ -51,6 +52,25 @@ namespace MachineBrigade.Game.Match
             if (!SandboxProfile.HintSeen) Screen.ShowHint();
             if (!Editing) Screen.Toast(Strings.Get("sandbox.noRewards"));
         }
+
+        /// <summary>
+        /// A preview with no battlefield drawn (the screenshots and the layout checks): the screen built into
+        /// <paramref name="host"/>, no overlays, no input.
+        /// </summary>
+        internal SandboxController(SimWorld world, SandboxSession session, VisualElement host)
+        {
+            _world = world;
+            Session = session;
+            Editor = new SandboxEditor(world.Catalog, world.Map, session.Battle.Scenario.Clone(), SandboxSession.Internal,
+                def => session.Access.Allowed(world.Catalog, def));
+            Editor.Changed += OnEdited;
+            Screen = new SandboxScreen(this, host);
+        }
+
+        /// <summary>Which overlays are on (E): kept here so the screen's tray works with or without the overlays drawn.</summary>
+        public Dictionary<SandboxLayer, bool> Layers { get; } = new() { [SandboxLayer.Range] = true, [SandboxLayer.Hits] = true };
+
+        public bool LayerOn(SandboxLayer layer) => Layers.TryGetValue(layer, out var on) && on && (!SandboxOverlays.Internal(layer) || SandboxSession.Internal);
 
         public SimWorld World => _world;
         public SandboxSession Session { get; }
@@ -128,7 +148,7 @@ namespace MachineBrigade.Game.Match
             Selected.RemoveAll(i => Editing ? i < 0 || i >= Editor.Units.Count : !_world.TryGetVehicle(new EntityId(i), out var v) || !v.IsAlive);
             if (!Editing && Battle.LastSwapped > 0 && !Selected.Contains(Battle.LastSwapped) && Selected.Count == 0) Selected.Add(Battle.LastSwapped);
             Screen.Tick();
-            Overlays.Tick(unscaledDt);
+            Overlays?.Tick(unscaledDt);
         }
 
         // ------------------------------------------------------------------ set-up: the field follows the scenario
@@ -136,15 +156,19 @@ namespace MachineBrigade.Game.Match
         private void OnEdited()
         {
             if (!Editing) return;
-            foreach (var id in Battle.Rebuild(_world, Editor.Scenario))
+            var removed = Battle.Rebuild(_world, Editor.Scenario);
+            if (_views != null)
             {
-                var view = _views.Detach(new EntityId(id));
-                if (view != null) Object.Destroy(view.Root.gameObject);
+                foreach (var id in removed)
+                {
+                    var view = _views.Detach(new EntityId(id));
+                    if (view != null) Object.Destroy(view.Root.gameObject);
+                }
+                foreach (var v in _world.Vehicles)
+                    if (v.IsAlive) _views.Add(v);
+                _views.SnapshotAll();
+                _views.SnapshotAll();
             }
-            foreach (var v in _world.Vehicles)
-                if (v.IsAlive) _views.Add(v);
-            _views.SnapshotAll();
-            _views.SnapshotAll();
             Screen.Refresh();
         }
 
@@ -289,13 +313,13 @@ namespace MachineBrigade.Game.Match
         public void OnBoxUpdate(Vector2 startScreen, Vector2 currentScreen)
         {
             _dragging = true;
-            if (Ground(currentScreen, out var to)) Overlays.DragTo = to;
+            if (Overlays != null && Ground(currentScreen, out var to)) Overlays.DragTo = to;
         }
 
         public void OnBoxEnd(Vector2 startScreen, Vector2 endScreen)
         {
             _dragging = false;
-            Overlays.DragTo = null;
+            if (Overlays != null) Overlays.DragTo = null;
             if (!Editing || Selected.Count == 0 || !Ground(endScreen, out var to)) return;
             var from = Editor.Units[Selected[0]].Position;
             Editor.Rotate(Selected, SandboxRules.HeadingTowards(from, to, Editor.FreeRotation));
@@ -304,7 +328,7 @@ namespace MachineBrigade.Game.Match
         public void OnBoxCancel()
         {
             _dragging = false;
-            Overlays.DragTo = null;
+            if (Overlays != null) Overlays.DragTo = null;
         }
 
         public bool Dragging => _dragging;
