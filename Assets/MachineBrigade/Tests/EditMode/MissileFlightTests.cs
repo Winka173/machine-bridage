@@ -95,7 +95,7 @@ namespace MachineBrigade.Tests
         /// <summary>
         /// The motor's flame stays on the drawn tail frame after frame, in the game's order at 30 and
         /// 60 fps (the effects' update, then Unity's particle update, then the draw): a fast direct
-        /// rocket, the thermobaric launcher's rocket on its lobbed path, a SAM and an ATGM. The
+        /// rocket, the thermobaric launcher's and the MLRS's rockets on their lobbed paths, a SAM and an ATGM. The
         /// visible front of the newest flame quad (its particle, less the end the fire shader leaves
         /// unfilled) is measured against the model's tail on every frame of the flight. A frame
         /// that jumps (the frozen-moment tools' old way, or a hitch) puts the flame a frame's travel
@@ -114,6 +114,7 @@ namespace MachineBrigade.Tests
                 {
                     ("heli_rockets", "hydra", ProjectileKind.Rocket, 36f),
                     ("thermobaric_rockets", "tos_rocket", ProjectileKind.Rocket, 60f),
+                    ("mlrs_rockets", "gmlrs", ProjectileKind.Rocket, 70f),
                     ("sam_long", "buk", ProjectileKind.Missile, 55f),
                     ("atgm", "atgm_tow", ProjectileKind.Missile, 34f),
                 };
