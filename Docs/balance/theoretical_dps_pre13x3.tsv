@@ -1,0 +1,110 @@
+id	class	cp	old_light	old_heavy	old_air	old_structure	light	heavy	air	structure	heavy_per_cp
+scout_jeep	Scout	2	49.02	12.26	14.71	14.71	49.02	12.26	14.71	14.71	6.13
+vbied	Scout	3	700	420	0	525	700	420	0	525	140
+armored_car	Light	3	91.39	22.85	12.73	27.42	91.39	22.85	12.73	27.42	7.62
+ifv	Light	5	115.49	40.61	12.73	40.07	115.49	40.61	12.73	40.07	8.12
+light_tank	Tank	4	63.16	38.23	12.73	29.31	63.16	38.23	12.73	29.31	9.56
+turtle_tank	Tank	8	75.26	54.37	12.73	38.99	75.26	54.37	12.73	38.99	6.8
+bmpt	Tank	9	177.58	83.87	12.73	87.11	177.58	83.87	12.73	87.11	9.32
+flame_tank	Heavy	5	152.44	54.61	12.73	100.73	152.44	54.61	12.73	100.73	10.92
+armored_bulldozer	Heavy	7	76.55	39.55	14.46	138.21	76.55	39.55	14.46	138.21	5.65
+main_battle_tank	Heavy	7	123.45	66.42	27.19	53.45	123.45	66.42	27.19	53.45	9.49
+twin_tank	Heavy	9	142.87	92.31	27.19	68.98	142.87	92.31	27.19	68.98	10.26
+heavy_tank	Heavy	10	150.42	80.95	14.46	65.13	150.42	80.95	14.46	65.13	8.09
+siege_tank	Heavy	12	91.25	37.88	14.46	169.46	82.6	32.7	14.46	138.35	2.72
+titan_tank	Heavy	14	192.81	158.89	27.19	108.93	192.81	158.89	27.19	108.93	11.35
+atgm_carrier	TankHunter	6	82.67	58.02	14.46	42.04	82.67	58.02	14.46	42.04	9.67
+fpv_carrier	TankHunter	6	86.2	62.73	14.46	60.07	76.1	49.26	14.46	47.95	8.21
+tank_destroyer	TankHunter	6	96.26	76.14	14.46	52.91	96.26	76.14	14.46	52.91	12.69
+lancet_truck	TankHunter	7	63.19	32.05	14.46	32.46	58.99	26.45	14.46	27.42	3.78
+wheeled_gun	TankHunter	7	91.35	75.83	12.73	51.86	91.35	75.83	12.73	51.86	10.83
+railgun_truck	TankHunter	9	50.79	67.71	0	40.63	50.79	67.71	0	40.63	7.52
+rocket_technical	Artillery	3	74.56	27.58	14.71	53.01	68.07	23.68	14.71	43.28	7.89
+mortar_carrier	Artillery	4	71.6	26.1	14.46	49.58	65.66	22.53	14.46	40.66	5.63
+mlrs	Artillery	5	89.93	37.09	14.46	77.07	79.16	30.63	14.46	60.91	6.13
+artillery	Artillery	6	72.14	26.42	14.46	50.38	68.21	24.06	14.46	44.49	4.01
+shahed_truck	Artillery	8	95.25	40.28	14.46	85.05	82.97	32.92	14.46	66.63	4.11
+heavy_rocket_artillery	Artillery	9	131.39	61.97	14.46	139.26	110.22	49.26	14.46	107.5	5.47
+thermobaric_launcher	Artillery	9	102.24	44.48	14.46	95.54	87.92	35.89	14.46	74.06	3.99
+ballistic_launcher	Artillery	11	101.02	43.75	14.46	93.7	86.55	35.06	14.46	71.99	3.19
+zu23_technical	AntiAir	3	52.31	13.08	196.18	13.08	52.31	13.08	196.18	13.08	4.36
+aa_vehicle	AntiAir	4	35.17	8.79	184.4	8.79	35.17	8.79	184.4	8.79	2.2
+sam_launcher	AntiAir	5	48.19	12.05	168.46	14.46	48.19	12.05	168.46	14.46	2.41
+heavy_aa	AntiAir	7	93.58	23.39	403.42	23.39	93.58	23.39	403.42	23.39	3.34
+iron_beam	AntiAir	9	0	0	105	0	0	0	105	0	0
+long_sam	AntiAir	11	0	0	112.5	0	0	0	112.5	0	0
+supply_truck	Support	0	49.02	12.26	14.71	14.71	49.02	12.26	14.71	14.71	
+smoke_carrier	Support	3	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	4.02
+engineer_vehicle	Support	4	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	3.01
+counter_battery_radar	Support	5	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	2.41
+ew_jammer	Support	5	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	2.41
+mine_layer	Support	5	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	2.41
+sapper	Support	5	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	2.41
+command_vehicle	Support	6	48.19	12.05	14.46	14.46	48.19	12.05	14.46	14.46	2.01
+scout_heli	Helicopter	6	90	35.8	15.6	72.59	90	35.8	15.6	72.59	5.97
+attack_helicopter	Helicopter	9	147.77	91.21	50.08	106.97	147.77	91.21	39.26	106.97	10.13
+gunship_heli	Helicopter	14	305.24	244.79	34.78	221.15	305.24	244.79	34.78	221.15	17.48
+heavy_attack_heli	Helicopter	14	201.48	123.52	55.95	151.68	201.48	123.52	46.95	151.68	8.82
+recon_drone	Plane	6	11.44	15.25	0	9.15	11.44	15.25	0	9.15	2.54
+strike_drone	Plane	7	80.33	85.32	0	105.3	71.84	80.23	0	92.57	11.46
+fighter_jet	Plane	10	50.34	12.58	450.06	12.58	50.34	12.58	310.96	12.58	1.26
+attack_jet	Plane	13	372.2	413.66	37.5	376.62	372.2	413.66	23.08	376.62	31.82
+tank_buster	Plane	18	497.13	615.5	41.25	442.89	497.13	615.5	25.38	442.89	34.19
+heavy_bomber	Plane	20	421.75	253.05	21.23	632.63	412.57	247.54	21.23	618.85	12.38
+stealth_bomber	Plane	20	253.9	152.34	0	380.85	232.19	139.32	0	348.29	6.97
+sky_gunship	Plane	22	389.4	203.22	0	383.38	380.82	191.79	0	376.53	8.72
+aa_turret	Defense	0	93.58	23.39	403.42	23.39	93.58	23.39	403.42	23.39	
+aa_turret.flak	Defense	0	59.84	14.96	224.39	14.96	59.84	14.96	224.39	14.96	
+aa_turret.sam	Defense	0	48.19	12.05	168.46	14.46	48.19	12.05	168.46	14.46	
+airfield	Defense	0	0	0	0	0	0	0	0	0	
+ammo_depot	Defense	0	0	0	0	0	0	0	0	0	
+artillery_emplacement	Defense	0	66.39	24.98	12.73	48.66	62.46	22.62	12.73	42.77	
+artillery_emplacement.cb	Defense	0	66.39	24.98	12.73	48.66	62.46	22.62	12.73	42.77	
+artillery_emplacement.ext	Defense	0	64.01	23.55	12.73	45.08	60.47	21.43	12.73	39.78	
+atgm_tower	Defense	0	32.81	43.75	0	26.25	32.81	43.75	0	26.25	
+atgm_tower.multi	Defense	0	32.81	35	13.13	26.25	32.81	35	13.13	26.25	
+atgm_tower.top	Defense	0	32.81	61.25	0	26.25	32.81	61.25	0	26.25	
+bulwark_post	Defense	0	87.04	21.76	26.11	26.11	87.04	21.76	26.11	26.11	
+c_ram	Defense	0	0	0	121.66	0	0	0	121.66	0	
+c_ram.centurion	Defense	0	0	0	121.66	0	0	0	121.66	0	
+c_ram.hunter	Defense	0	0	0	121.66	0	0	0	121.66	0	
+dragons_teeth	Defense	0	0	0	0	0	0	0	0	0	
+dragons_teeth.hedgehog	Defense	0	0	0	0	0	0	0	0	0	
+dragons_teeth.wire	Defense	0	0	0	0	0	0	0	0	0	
+drone_hangar	Defense	0	10	13.33	0	12	10	13.33	0	12	
+drone_hangar.lancet	Defense	0	9	12	0	10.8	9	12	0	10.8	
+drone_hangar.swarm	Defense	0	15.67	20.9	0	18.81	15.67	20.9	0	18.81	
+ew_tower	Defense	0	0	0	0	0	0	0	0	0	
+ew_tower.drone	Defense	0	0	0	0	0	0	0	0	0	
+ew_tower.spoof	Defense	0	0	0	0	0	0	0	0	0	
+guard_tower	Defense	0	55.71	16.56	14.46	25.74	55.71	16.56	14.46	25.74	
+guard_tower.nest	Defense	0	56.47	16.75	0	25.96	56.47	16.75	0	25.96	
+guard_tower.watch	Defense	0	55.71	16.56	14.46	25.74	55.71	16.56	14.46	25.74	
+gun_pit	Defense	0	81.28	62.4	0	43.8	81.28	62.4	0	43.8	
+gun_pit.ambush	Defense	0	81.28	62.4	0	43.8	81.28	62.4	0	43.8	
+gun_pit.deep	Defense	0	81.28	62.4	0	43.8	81.28	62.4	0	43.8	
+gun_turret	Defense	0	67.44	43.94	0	32.73	67.44	43.94	0	32.73	
+gun_turret.auto	Defense	0	71.09	48.81	0	35.65	71.09	48.81	0	35.65	
+gun_turret.long	Defense	0	64.18	39.6	0	30.12	64.18	39.6	0	30.12	
+headquarters	Defense	0	366.57	191.54	882.46	144.48	366.57	191.54	882.46	144.48	
+heavy_turret	Defense	0	114.81	54.03	0	121.29	114.81	54.03	0	121.29	
+heavy_turret.bastion	Defense	0	114.81	54.03	0	121.29	114.81	54.03	0	121.29	
+heavy_turret.coastal	Defense	0	114.81	54.03	0	121.29	114.81	54.03	0	121.29	
+logistics_station	Defense	0	0	0	0	0	0	0	0	0	
+mg_bunker	Defense	0	92.93	29.62	26.11	30.83	92.93	29.62	26.11	30.83	
+mg_bunker.flame	Defense	0	130	52	0	104	130	52	0	104	
+mg_bunker.twin	Defense	0	111.58	34.28	31.71	36.42	111.58	34.28	31.71	36.42	
+minefield	Defense	0	0	0	0	0	0	0	0	0	
+minefield.at	Defense	0	0	0	0	0	0	0	0	0	
+minefield.scatter	Defense	0	0	0	0	0	0	0	0	0	
+missile_battery	Defense	0	48.19	12.05	111.1	14.46	48.19	12.05	111.1	14.46	
+missile_battery.lrr	Defense	0	48.19	12.05	111.1	14.46	48.19	12.05	111.1	14.46	
+missile_battery.pac3	Defense	0	48.19	12.05	149.76	14.46	48.19	12.05	149.76	14.46	
+radar_station	Defense	0	0	0	0	0	0	0	0	0	
+repair_bay	Defense	0	0	0	0	0	0	0	0	0	
+rocket_turret	Defense	0	83.26	35.1	12.73	73.96	83.26	35.1	12.73	73.96	
+rocket_turret.cluster	Defense	0	75.09	30.2	12.73	61.71	75.09	30.2	12.73	61.71	
+rocket_turret.thermo	Defense	0	93.46	41.22	12.73	112.22	93.46	41.22	12.73	112.22	
+spawn_bastion	Defense	0	134.65	133.55	12.73	86.5	134.65	133.55	12.73	86.5	
+super_gun	Defense	0	0	0	0	0	0	0	0	0	
+targeting_station	Defense	0	0	0	0	0	0	0	0	0	

@@ -1,0 +1,104 @@
+{
+    "version": 1,
+    "map": "whiteout",
+    "source": "Data/maps/whiteout_conquest",
+    "sha1": "de86de582ca644fec6dab87de7fb74a8154e07c0",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -94.063,
+        "z": -93.872
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 187.859,
+    "metresHigh": 117.412,
+    "hq": {
+        "x": -121.0,
+        "z": -114.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -129.0,
+            "z": -90.244
+        },
+        {
+            "x": -126.664,
+            "z": -118.859
+        },
+        {
+            "x": -98.95,
+            "z": -128.674
+        },
+        {
+            "x": -69.279,
+            "z": -138.565
+        },
+        {
+            "x": -49.0,
+            "z": -126.397
+        },
+        {
+            "x": -49.0,
+            "z": -90.19
+        },
+        {
+            "x": -88.123,
+            "z": -57.588
+        },
+        {
+            "x": -127.548,
+            "z": -46.142
+        },
+        {
+            "x": -129.0,
+            "z": -70.824
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -102.67,
+                "z": -53.364
+            },
+            "dir": {
+                "x": -0.165,
+                "z": -0.986
+            },
+            "routes": 1
+        },
+        {
+            "at": {
+                "x": -71.431,
+                "z": -71.497
+            },
+            "dir": {
+                "x": -0.722,
+                "z": -0.692
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -49.0,
+                "z": -99.364
+            },
+            "dir": {
+                "x": -0.989,
+                "z": -0.15
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.773,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

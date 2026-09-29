@@ -1,0 +1,15 @@
+{
+  "map": "ironport",
+  "mode": "Weekly",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 1266ceae app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 505, "def": "titan_tank", "team": 0, "startTick": 1470, "start": 73.5, "end": 83, "seconds": 9.5, "x": -94.637, "y": -91.415, "goalX": -13, "goalY": 13, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_bulldozer(moving)@7.3 armored_bulldozer(moving)@5.0 armored_bulldozer(moving)@8.8"},
+    {"vehicle": 578, "def": "mobile_fortress", "team": 1, "startTick": 7050, "start": 352.5, "end": 365, "seconds": 12.5, "x": 119.163, "y": 107.361, "goalX": 97, "goalY": 93, "order": "Move", "cause": "Unknown", "detail": "speed 1.4 strikes 0", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 514, "def": "twin_tank", "team": 1, "startTick": 8950, "start": 447.5, "end": 463.5, "seconds": 16, "x": 93.986, "y": 96.48, "goalX": 88.455, "goalY": 102.863, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#578", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@6.2 airfield(fixed)@9.9 armored_car(moving)@4.5 flame_tank(moving)@8.3"}
+  ],
+  "rescues": []
+}

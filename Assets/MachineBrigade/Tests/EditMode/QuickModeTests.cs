@@ -36,15 +36,15 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void DeathmatchEndsWhenASideReachesTheKillTarget()
+        public void DeathmatchEndsWhenASideReachesTheScoreTarget()
         {
             var world = new SimWorld(GameContent.LoadCatalog(), GameContent.LoadMap("dunebreak_conquest"), seed: 31);
-            var mode = new DeathmatchMode(new DeathmatchRules { KillTarget = 25, Player = Side(18f, 1.35f), Enemy = Side(18f, 1.35f) });
+            var mode = new DeathmatchMode(new DeathmatchRules { ScoreTarget = 150, Player = Side(18f, 1.35f), Enemy = Side(18f, 1.35f) });
             mode.Setup(world);
             var (kills, minutes) = Play(world, mode, new ConquestAi(null, 0, 1, AiDifficulty.Hard, 3), new ConquestAi(null, 1, 0, AiDifficulty.Normal, 4), 14f);
-            Debug.Log($"Deathmatch: {minutes:0.0} min, kills {mode.Kills(0)}:{mode.Kills(1)}, destroyed {kills}");
+            Debug.Log($"Deathmatch: {minutes:0.0} min, score {mode.Score(0)}:{mode.Score(1)}, kills {mode.Kills(0)}:{mode.Kills(1)}, destroyed {kills}");
             Assert.IsNotNull(mode.Result, "a deathmatch ends");
-            Assert.IsTrue(mode.Kills(0) >= 25 || mode.Kills(1) >= 25 || world.Time >= 12 * 60, "by the kill target or the clock");
+            Assert.IsTrue(mode.Score(0) >= 150 || mode.Score(1) >= 150 || world.Time >= 12 * 60, "by the score target or the clock");
         }
 
         [Test]

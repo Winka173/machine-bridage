@@ -400,7 +400,7 @@ namespace MachineBrigade.Game.Effects
 
         private readonly struct Pending
         {
-            public Pending(float at, int burst, Vector3 position, float scale, float grow, float density)
+            public Pending(float at, int burst, Vector3 position, float scale, float grow, float density, float life, float ring)
             {
                 At = at;
                 BurstIndex = burst;
@@ -408,6 +408,8 @@ namespace MachineBrigade.Game.Effects
                 Scale = scale;
                 Grow = grow;
                 Density = density;
+                Life = life;
+                Ring = ring;
             }
 
             public float At { get; }
@@ -416,6 +418,8 @@ namespace MachineBrigade.Game.Effects
             public float Scale { get; }
             public float Grow { get; }
             public float Density { get; }
+            public float Life { get; }
+            public float Ring { get; }
         }
 
         /// <summary>How a layer grows when a blast is enlarged (see <see cref="Play"/>).</summary>
@@ -476,18 +480,29 @@ namespace MachineBrigade.Game.Effects
         /// little bigger (size x grow^0.65, count x grow^1.4, at most 2.6 times); sparks, debris
         /// and embers come in greater numbers thrown farther; the flash, shockwave and glows (drawn
         /// shapes, sharp at any size) simply grow. The blast covers grow times the ground.
+        /// <paramref name="life"/> (1 or more) makes it linger: the fireballs, smoke, dust and
+        /// embers live that much longer, while the flash, sparks, rings and glows stay as quick
+        /// and every burst still starts on time (DECISIONS 12C). Like the extra particles, the
+        /// extra life is scaled by tier (<see cref="Density"/>), so Low lingers less.
+        /// <paramref name="ring"/>, when above 0, is the grow the ground shockwave is drawn at
+        /// instead of <paramref name="grow"/>: a blast drawn to its damage radius keeps its ring on
+        /// the radius while the rest of it grows.
         /// </summary>
-        public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f)
+        public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f, float life = 1f, float ring = 0f)
         {
             grow = Mathf.Max(1f, grow);
             var density = grow > 1f ? Density : 1f;
+            life = Linger(life, Density);
             for (var i = 0; i < _bursts.Count; i++)
             {
-                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density);
-                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density));
+                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density, life, ring);
+                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density, life, ring));
             }
             _layers.Chunks?.Throw(_chunks, position, scale * grow, now);
         }
+
+        /// <summary>The life stretch in force on a tier: the extra over 1 scaled by its <paramref name="density"/>.</summary>
+        public static float Linger(float life, float density) => life > 1f ? 1f + (life - 1f) * density : 1f;
 
         /// <summary>Emits the later bursts that are due.</summary>
         public void Tick(float now)
@@ -496,7 +511,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var p = _pending[i];
                 if (now < p.At) continue;
-                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density);
+                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density, p.Life, p.Ring);
                 _pending[i] = _pending[_pending.Count - 1];
                 _pending.RemoveAt(_pending.Count - 1);
             }
@@ -511,10 +526,15 @@ namespace MachineBrigade.Game.Effects
                     ? Look.Point
                     : Look.Volume;
 
-        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density)
+        /// <summary>The layers a lingering blast (<see cref="Play"/>'s life) keeps longer: fire, smoke, dust and embers.</summary>
+        private bool Lingers(ParticleSystem s) => s == _layers.Embers || LookOf(s) == Look.Volume;
+
+        private void Emit(in Burst b, Vector3 position, float scale, float grow, float density, float life, float ring)
         {
-            // At grow 1 every factor below is exactly the old one.
+            // At grow 1 and life 1 every factor below is exactly the old one.
             var look = LookOf(b.System);
+            // A blast matched to its damage radius keeps its ground ring on the radius.
+            if (ring > 0f && b.System == _layers.Shockwave) grow = Mathf.Max(1f, ring);
             float size = scale, speed = scale, spread = scale, extra = 0f;
             if (grow > 1f)
             {
@@ -541,7 +561,8 @@ namespace MachineBrigade.Game.Effects
             var main = ps.main;
             main.startSize = new ParticleSystem.MinMaxCurve(b.Size.x * size, b.Size.y * size);
             main.startSpeed = new ParticleSystem.MinMaxCurve(b.Speed.x * speed, b.Speed.y * speed);
-            main.startLifetime = new ParticleSystem.MinMaxCurve(b.Lifetime.x, b.Lifetime.y);
+            var linger = Lingers(b.System) ? life : 1f;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(b.Lifetime.x * linger, b.Lifetime.y * linger);
             var shape = ps.shape;
             if (shape.enabled)
             {
@@ -564,7 +585,7 @@ namespace MachineBrigade.Game.Effects
             }, count);
         }
 
-        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density)
+        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density, float life, float ring)
         {
             var b = _bursts[index];
             if (b.System == _layers.GroundLight)
@@ -572,7 +593,7 @@ namespace MachineBrigade.Game.Effects
                 var main = b.System.main;
                 main.startColor = new Color(1f, 1f, 1f, Mathf.Clamp01(_glow));
             }
-            Emit(b, position, scale, grow, density);
+            Emit(b, position, scale, grow, density, life, ring);
         }
 
         /// <summary>Particles this blast emits enlarged by <paramref name="grow"/> at a tier's <paramref name="density"/> (for the budget log and tests).</summary>
@@ -588,6 +609,30 @@ namespace MachineBrigade.Game.Effects
                 total += b.Count + Mathf.RoundToInt(extra * density);
             }
             return total;
+        }
+
+        /// <summary>
+        /// Particle-seconds this blast costs enlarged by <paramref name="grow"/> and lingering by
+        /// <paramref name="life"/> at a tier's <paramref name="density"/>: each burst's count times
+        /// its mean life (a proxy for the fill it costs over time; for the budget log and tests).
+        /// Split into the lingering layers (fire, smoke, dust, embers) and the rest.
+        /// </summary>
+        public (float lingering, float quick) ParticleSecondsAt(float grow, float life, float density = 1f)
+        {
+            float lingering = 0f, quick = 0f;
+            var stretch = Linger(life, density);
+            foreach (var b in _bursts)
+            {
+                var look = LookOf(b.System);
+                var extra = grow <= 1f || look == Look.Ring ? 0f
+                    : look == Look.Point ? b.Count * (Mathf.Pow(grow, 1.5f) - 1f)
+                    : b.Count * (Mathf.Min(2.6f, Mathf.Pow(grow, 1.4f)) - 1f);
+                var count = b.Count + Mathf.RoundToInt(extra * density);
+                var seconds = count * (b.Lifetime.x + b.Lifetime.y) * 0.5f;
+                if (Lingers(b.System)) lingering += seconds * stretch;
+                else quick += seconds;
+            }
+            return (lingering, quick);
         }
 
         // Layer recipes. Sizes and speeds are in metres.
@@ -785,7 +830,8 @@ namespace MachineBrigade.Game.Effects
         /// black smoke, flakes of metal, embers and a snap of air. Kept tight, so a kill's hulk
         /// blast after it is still the big one. EffectsDirector sizes it by the gun: light tanks
         /// x1.3, main battle tanks and tank destroyers x1.4, heavy, siege and super-heavy x1.5
-        /// (<see cref="BlastSizes"/>).
+        /// (<see cref="BlastSizes"/>), all a tenth bigger again, with the fire, smoke, dust and
+        /// embers lingering 20, 25 and 30 % longer by the same classes (DECISIONS 12C).
         /// </summary>
         public static ExplosionEffect CreateShellHit(BlastLayers l)
         {

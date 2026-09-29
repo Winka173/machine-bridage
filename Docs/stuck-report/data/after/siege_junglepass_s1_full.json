@@ -1,0 +1,13 @@
+{
+  "map": "junglepass",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map 4b12d3e3 app 0.1.0",
+  "ticks": 11147,
+  "journal": [],
+  "records": [
+    {"vehicle": 911, "def": "titan_tank", "team": 0, "startTick": 7230, "start": 361.5, "end": 370, "seconds": 8.5, "x": 6.225, "y": -1.259, "goalX": 84.544, "goalY": 75.408, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "siege_tank#970 moving", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@8.1 siege_tank(moving)@5.2 ifv(moving)@5.5 ifv(moving)@6.1 aa_vehicle(moving)@9.4 tank_trap@7"}
+  ],
+  "rescues": []
+}

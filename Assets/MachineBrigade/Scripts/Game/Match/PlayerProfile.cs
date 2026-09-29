@@ -100,57 +100,18 @@ namespace MachineBrigade.Game.Match
             /// <summary>The player has set the base up on the base screen: an empty camp stays empty.</summary>
             public bool baseEdited;
 
+            /// <summary>
+            /// Prompt 14 G, version 3: the base as three plans (see PlayerProfile.BasePlans.cs) and the one in use; the
+            /// sized lists above are what version 2 kept, moved into the first plan once.
+            /// </summary>
+            public List<PlanData> basePlans = new();
+            public int basePlan;
+
             /// <summary>2: mission progress is in the story campaign's ids (see <see cref="MigrateCampaign"/>).</summary>
             public int campaignVersion;
 
             /// <summary>Chapters whose opening card (the chapter transition) has been shown.</summary>
             public List<int> chaptersSeen = new();
-        }
-
-        /// <summary>
-        /// The base the player takes into battle, like the deck: every HQ level is open for now
-        /// (the campaign unlocks them later), so a new profile starts at the top level with a mix
-        /// of towers. The sim cuts it to what the level allows.
-        /// </summary>
-        public static Sim.Modes.BaseLoadout BaseLoadout
-        {
-            get
-            {
-                // The HQ level chosen, as far as the campaign has opened (every level in a test build).
-                var loadout = new Sim.Modes.BaseLoadout { HqLevel = Mathf.Clamp(D.baseLevel > 0 ? D.baseLevel : 5, 1, Campaign.HqLevelCap) };
-                var empty = !D.baseEdited && D.baseSmall.Count + D.baseMedium.Count + D.baseLarge.Count == 0;
-                // A tower or module not unlocked yet leaves its slot empty (every card is open in a test build).
-                static IEnumerable<string> Owned(IEnumerable<string> ids)
-                {
-                    foreach (var id in ids) yield return string.IsNullOrEmpty(id) || IsUnlocked(id) ? id : Sim.Modes.BaseLoadout.Empty;
-                }
-                loadout.Small.AddRange(Owned(empty ? DefaultSmall : D.baseSmall));
-                loadout.Medium.AddRange(Owned(empty ? DefaultMedium : D.baseMedium));
-                loadout.Large.AddRange(Owned(empty ? DefaultLarge : D.baseLarge));
-                foreach (var id in D.baseUtilities)
-                    if (IsUnlocked(id)) loadout.Utilities.Add(id);
-                foreach (var id in loadout.Towers)
-                    if (TowerBranch(id) is { } branch) loadout.Branches[id] = branch;
-                if (D.baseOutpost.Count > 0)
-                {
-                    loadout.Outpost.Clear();
-                    loadout.Outpost.AddRange(D.baseOutpost);
-                }
-                return loadout;
-            }
-            set
-            {
-                D.baseLevel = value.HqLevel;
-                D.baseSmall = new List<string>(value.Small);
-                D.baseMedium = new List<string>(value.Medium);
-                D.baseLarge = new List<string>(value.Large);
-                D.baseTowers.Clear();
-                D.baseVersion = BaseVersion;
-                D.baseUtilities = new List<string>(value.Utilities);
-                D.baseOutpost = new List<string>(value.Outpost);
-                D.baseEdited = true;
-                Save();
-            }
         }
 
         /// <summary>A new profile's base at HQ level 5: a mix of all three sizes (anti-air, guns, artillery, watchtowers).</summary>
@@ -473,6 +434,7 @@ namespace MachineBrigade.Game.Match
             while (_data.itemCounts.Count < _data.itemIds.Count) _data.itemCounts.Add(0);
             FixArsenal(_data);
             MigrateBase(_data);
+            MigrateToPlans(_data);
             MigrateCampaign(_data);
         }
 
@@ -501,6 +463,7 @@ namespace MachineBrigade.Game.Match
         {
             _data = new Data();
             _noSave = true;
+            MigrateToPlans(_data);
         }
 
         /// <summary>Tests: starts from a saved profile's JSON (an old save, say), never written to the device.</summary>
@@ -510,6 +473,7 @@ namespace MachineBrigade.Game.Match
             _noSave = true;
             FixArsenal(_data);
             MigrateBase(_data);
+            MigrateToPlans(_data);
             MigrateCampaign(_data);
         }
 

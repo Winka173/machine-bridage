@@ -1,0 +1,18 @@
+{
+  "map": "swamp",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map befd816b app 0.1.0",
+  "ticks": 13929,
+  "journal": [],
+  "records": [
+    {"vehicle": 2516, "def": "siege_tank", "team": 0, "startTick": 850, "start": 42.5, "end": 52.5, "seconds": 10, "x": -72.075, "y": -53.144, "goalX": -80.376, "goalY": -58.613, "order": "Move", "cause": "YieldWait", "detail": "behind armored_car#2527", "area": "field", "lanes": "route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@6.3 armored_car(moving)@7.1 armored_car(moving)@5.6 armored_car(moving)@9.2 ifv(moving)@5.3 artillery_wreck@9 wreck_tank@7"},
+    {"vehicle": 2562, "def": "heavy_tank", "team": 1, "startTick": 3000, "start": 150, "end": 162, "seconds": 12, "x": 76.063, "y": 110.439, "goalX": 41.692, "goalY": 65.164, "order": "AttackMove", "cause": "OffRoute", "detail": "to (59.0,101.0) past sandbag_wall", "area": "camp1", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@8.6 long_sam(moving)@7.3 command_vehicle(moving)@8.3 rocket_technical(moving)@4.1 rocket_technical(moving)@4.0 sandbag_wall@6"},
+    {"vehicle": 2516, "def": "siege_tank", "team": 0, "startTick": 5580, "start": 279, "end": 289.5, "seconds": 10.5, "x": -1.993, "y": 3.085, "goalX": -12.228, "goalY": -10.123, "order": "Move", "cause": "BlockedByFriend", "detail": "light_tank#2608 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@8.5 light_tank(moving)@5.8"},
+    {"vehicle": 2520, "def": "siege_tank", "team": 0, "startTick": 5650, "start": 282.5, "end": 291.5, "seconds": 9, "x": 56.566, "y": 23.075, "goalX": -12.347, "goalY": -13.956, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#2600 moving", "area": "field+gate", "lanes": "nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mlrs(moving)@9.1 scout_jeep(moving)@6.1 aa_vehicle(moving)@5.7 aa_vehicle(moving)@9.1"},
+    {"vehicle": 2537, "def": "siege_tank", "team": 0, "startTick": 5890, "start": 294.5, "end": 304.5, "seconds": 10, "x": -1.35, "y": -4.067, "goalX": 11.859, "goalY": 9.31, "order": "Move", "cause": "BlockedByFriend", "detail": "ifv#2596 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@6.6 siege_tank(moving)@7.3 ifv(moving)@5.2 aa_vehicle(moving)@7.7 light_tank(moving)@6.3 ifv(moving)@7.5 scout_jeep(moving)@7.7"},
+    {"vehicle": 2516, "def": "siege_tank", "team": 0, "startTick": 5980, "start": 299, "end": 312.5, "seconds": 13.5, "x": 5.804, "y": -2.824, "goalX": -12.228, "goalY": -10.123, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#2537 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@5.8 aa_vehicle(moving)@6.9 light_tank(moving)@5.3 scout_jeep(moving)@8.9"}
+  ],
+  "rescues": []
+}

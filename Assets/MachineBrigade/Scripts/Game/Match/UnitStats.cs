@@ -41,10 +41,14 @@ namespace MachineBrigade.Game.Match
         private static Catalog _bestFor;
 
         /// <summary>Damage of one trigger pull of the main weapon (the whole salvo, or a whole magazine).</summary>
-        public static float Volley(WeaponDef w) => w.Damage * Mathf.Max(1, w.RoundsPerCycle);
+        public static float Volley(WeaponDef w) => Sim.Combat.FirePower.Volley(w);
 
-        /// <summary>The main weapon's damage a second (salvos over their cooldown, magazines over their change).</summary>
-        public static float Dps(WeaponDef w) => Volley(w) / Mathf.Max(0.1f, w.CycleSeconds);
+        /// <summary>
+        /// The main weapon's damage a second over a whole load (prompt 13 A.1): salvos over their
+        /// cooldown, magazines over their change, a launcher's load over its reload
+        /// (<see cref="Sim.Combat.FirePower.Sustained"/>).
+        /// </summary>
+        public static float Dps(WeaponDef w, VehicleDef carrier = null) => Sim.Combat.FirePower.Sustained(w, carrier);
 
         public static List<Stat> For(Catalog catalog, VehicleDef def, VehicleBoost boost)
         {
@@ -54,7 +58,7 @@ namespace MachineBrigade.Game.Match
             {
                 new("stat.detail.hp", def.MaxHp, def.MaxHp * boost.Hp, best["hp"], "N0"),
                 new("stat.detail.volley", Volley(w), Volley(w) * boost.Damage, best["volley"], "N0"),
-                new("stat.detail.dps", Dps(w), Dps(w) * boost.Damage * boost.FireRate, best["dps"], "N0"),
+                new("stat.detail.dps", Dps(w, def), Dps(w, def) * boost.Damage * boost.FireRate, best["dps"], "N0"),
                 new("stat.detail.range", w.Range, w.Range * (1f + boost.Stat(StatId.Range)), best["range"], "0"),
                 new("stat.detail.speed", def.Speed, def.Speed * boost.Speed, best["speed"], "0.0"),
                 new("stat.detail.vision", def.VisionRange, def.VisionRange * (1f + boost.Stat(StatId.Vision)), best["vision"], "0"),
@@ -72,7 +76,7 @@ namespace MachineBrigade.Game.Match
                 if (d.Boss || d.Static || d.CpCost <= 0) continue;
                 _best["hp"] = Mathf.Max(_best["hp"], d.MaxHp);
                 _best["volley"] = Mathf.Max(_best["volley"], Volley(d.Weapon));
-                _best["dps"] = Mathf.Max(_best["dps"], Dps(d.Weapon));
+                _best["dps"] = Mathf.Max(_best["dps"], Dps(d.Weapon, d));
                 _best["range"] = Mathf.Max(_best["range"], d.Weapon.Range);
                 _best["speed"] = Mathf.Max(_best["speed"], d.Speed);
                 _best["vision"] = Mathf.Max(_best["vision"], d.VisionRange);

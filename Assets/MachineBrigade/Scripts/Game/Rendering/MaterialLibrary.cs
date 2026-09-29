@@ -137,6 +137,12 @@ namespace MachineBrigade.Game.Rendering
             AmmoEmpty = Unlit(unlit, "AmmoEmpty", new Color(1f, 0.26f, 0.18f));
             AmmoSpent = Unlit(unlit, "AmmoSpent", new Color(0.22f, 0.24f, 0.24f));
             RepairMark = Unlit(unlit, "RepairMark", new Color(0.5f, 1.45f, 0.62f));
+            // Prompt 13 C.9: the stores icons (low in the coin yellow, rearming in our side's green, bright at the
+            // full rate and dim at the slow one, flying out in the secondary text grey; empty is AmmoEmpty).
+            StoresLow = Unlit(unlit, "StoresLow", new Color(1f, 0.8f, 0.22f));
+            StoresFull = Unlit(unlit, "StoresFull", new Color(0.42f, 1.35f, 0.58f));
+            StoresSlow = Unlit(unlit, "StoresSlow", new Color(0.24f, 0.62f, 0.34f));
+            StoresMuted = Unlit(unlit, "StoresMuted", new Color(0.62f, 0.66f, 0.7f));
             NavRed = Unlit(unlit, "NavRed", new Color(3.2f, 0.25f, 0.18f));
             NavGreen = Unlit(unlit, "NavGreen", new Color(0.25f, 3f, 0.6f));
             NavWhite = Unlit(unlit, "NavWhite", new Color(4f, 4f, 3.8f));
@@ -221,6 +227,11 @@ namespace MachineBrigade.Game.Rendering
 
         /// <summary>The green wrench over something being repaired (a sapper at a tower).</summary>
         public Material RepairMark { get; }
+
+        public Material StoresLow { get; }
+        public Material StoresFull { get; }
+        public Material StoresSlow { get; }
+        public Material StoresMuted { get; }
 
         /// <summary>Aircraft navigation lights: red on the left wingtip, green on the right, white strobes.</summary>
         public Material NavRed { get; }

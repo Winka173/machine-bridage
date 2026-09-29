@@ -7,6 +7,23 @@ using MachineBrigade.Sim.Core;
 
 namespace MachineBrigade.Sim.Entities
 {
+    /// <summary>An aircraft and its stores (prompt 13 C): fighting, flying out to rearm, or rearming at its holding pattern.</summary>
+    public enum SupplyState
+    {
+        Fighting,
+        Leaving,
+        Holding,
+    }
+
+    /// <summary>Where an aircraft takes its stores on again (prompt 13 C.5).</summary>
+    public enum RearmSite
+    {
+        Holding,
+        LandingPad,
+        Headquarters,
+        AmmoCarrier,
+    }
+
     /// <summary>
     /// A vehicle's authoritative state. Views read it to draw; only the simulation's systems
     /// change it.
@@ -37,7 +54,10 @@ namespace MachineBrigade.Sim.Entities
             {
                 Arms[i] = def.Mounts[i].Weapon;
                 var ammo = def.Mounts[i].Weapon.Ammo;
-                Weapons[i] = new WeaponState { Heading = heading, Ammo = ammo > 0 ? ammo : -1 };
+                // An aircraft's stores (prompt 13 C): rounds when full, taken on again over the field.
+                var load = def.LoadOf(def.Mounts[i].Weapon);
+                Weapons[i] = new WeaponState { Heading = heading, Ammo = load > 0 ? load : ammo > 0 ? ammo : -1, Load = load };
+                if (load > 0) HasStores = true;
             }
             Aps = def.Aps;
             MineLayer = def.Mines;
@@ -69,8 +89,91 @@ namespace MachineBrigade.Sim.Entities
         internal void RefillMagazines()
         {
             for (var i = 0; i < Weapons.Length; i++)
-                Weapons[i].Ammo = Arms[i].Ammo > 0 ? Arms[i].Ammo : -1;
+                Weapons[i].Ammo = Weapons[i].Load > 0 ? Weapons[i].Load : Arms[i].Ammo > 0 ? Arms[i].Ammo : -1;
         }
+
+        // ------------------------------------------------------------ stores and the holding pattern (prompt 13 C)
+
+        /// <summary>An aircraft that carries stores (bombs, missiles, rockets that run out and come back over the field).</summary>
+        public bool HasStores { get; private set; }
+
+        /// <summary>
+        /// A store that counts for its ammunition: its strike stores (bombs, rockets, missiles against the
+        /// ground) when it carries any, else all of them (a fighter's air-to-air missiles). An A-10's or an
+        /// attack helicopter's self-defence missiles do not keep it from going to rearm.
+        /// </summary>
+        private bool Counts(int index)
+        {
+            if (Weapons[index].Load <= 0) return false;
+            if (!_strikeKnown)
+            {
+                _strike = false;
+                for (var i = 0; i < Weapons.Length; i++)
+                    if (Weapons[i].Load > 0 && Arms[i].CanTarget(false)) _strike = true;
+                _strikeKnown = true;
+            }
+            return !_strike || Arms[index].CanTarget(false);
+        }
+
+        private bool _strike, _strikeKnown;
+
+        /// <summary>What its stores have left, 0 to 1 (1 without stores): each weapon's rounds weighted by the damage they carry.</summary>
+        public float StoresShare
+        {
+            get
+            {
+                if (!HasStores) return 1f;
+                float have = 0f, full = 0f;
+                for (var i = 0; i < Weapons.Length; i++)
+                {
+                    if (!Counts(i)) continue;
+                    var weight = MathF.Max(1f, Arms[i].Damage);
+                    have += Math.Max(0, Weapons[i].Ammo) * weight;
+                    full += Weapons[i].Load * weight;
+                }
+                return full > 0f ? have / full : 1f;
+            }
+        }
+
+        /// <summary>Its stores are empty (guns never run out; self-defence missiles do not count, see <see cref="Counts"/>).</summary>
+        public bool StoresEmpty
+        {
+            get
+            {
+                if (!HasStores) return false;
+                for (var i = 0; i < Weapons.Length; i++)
+                    if (Counts(i) && Weapons[i].Ammo > 0) return false;
+                return true;
+            }
+        }
+
+        /// <summary>Rounds left and carried of mount <paramref name="index"/>'s stores (0 and 0: not stores).</summary>
+        public (int left, int full) Stores(int index) => Weapons[index].Load > 0 ? (Math.Max(0, Weapons[index].Ammo), Weapons[index].Load) : (0, 0);
+
+        /// <summary>Where an aircraft is with its stores: fighting, on its way to rearm, or rearming (see <see cref="Abilities.SupplySystem"/>).</summary>
+        public SupplyState Supply { get; internal set; }
+
+        /// <summary>The holding pattern (or the landing pad, the HQ, an ammunition carrier) it rearms at while not fighting.</summary>
+        public Vector2 HoldPoint { get; internal set; }
+
+        /// <summary>Where it rearms: the holding pattern, a landing pad, the HQ or an ammunition carrier.</summary>
+        public RearmSite RearmAt { get; internal set; }
+
+        /// <summary>How fast its stores come back now, against the holding pattern's full rate (0.5 slow, 1 full, 1.5-2 at a pad, the HQ or a carrier); 0 when full.</summary>
+        public float RearmRate { get; internal set; }
+
+        /// <summary>Inside enemy anti-aircraft or fighter reach (checked a few times a second).</summary>
+        public bool InDanger { get; internal set; }
+
+        internal double DangerAt = double.NegativeInfinity;
+
+        /// <summary>The commander asked it to go and rearm early (a lull with its stores low).</summary>
+        internal bool RearmRequested;
+
+        /// <summary>Its post before it left to rearm (an idle aircraft goes back to it), and where it broke off.</summary>
+        internal Vector2 SupplyGuard, SupplyFrom;
+
+        internal double SupplySince;
 
         // ------------------------------------------------------------ equipment and timed effects
         /// <summary>Equipment beyond the plain multipliers: stat lines, traits and their counters (null: none).</summary>
@@ -336,11 +439,17 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>When it last fired anything (a stealthy aircraft shows for a moment after).</summary>
         public double LastFiredAt { get; internal set; } = double.NegativeInfinity;
 
-        /// <summary>A VTOL jet holds in the air to shoot until then.</summary>
-        public double HoverUntil { get; internal set; } = double.NegativeInfinity;
+        /// <summary>An aeroplane holds its guns on its target until then (a VTOL jet hovering; see VehicleDef.AttackHold).</summary>
+        public double HoldUntil { get; internal set; } = double.NegativeInfinity;
 
-        /// <summary>A VTOL jet can stop in the air again from then.</summary>
-        public double HoverReadyAt { get; internal set; } = double.NegativeInfinity;
+        /// <summary>An aeroplane may begin another attack hold from then.</summary>
+        public double HoldReadyAt { get; internal set; } = double.NegativeInfinity;
+
+        /// <summary>An aeroplane in its attack hold this step: slowed (or hovering), its nose on the target.</summary>
+        public bool InAttackHold { get; internal set; }
+
+        /// <summary>An aeroplane flying on past its target (after a pass or a hold) before it turns in again.</summary>
+        public bool Breaking => RunExtending;
 
         /// <summary>What mount <paramref name="index"/> is aimed at this step.</summary>
         public EntityId MountTarget(int index) => Weapons[index].Target;
@@ -411,6 +520,11 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Aeroplanes: flying on past the target before turning in for the next run.</summary>
         internal bool RunExtending;
 
+        /// <summary>A VTOL jet leaving its hover turns away on this heading (not through the target), and to which side the next time.</summary>
+        internal float BreakHeading;
+        internal bool BreakAway;
+        internal float BreakSide = 1f;
+
         /// <summary>Carrying out an order the player gave by hand.</summary>
         internal bool ManualOrder;
 
@@ -472,6 +586,9 @@ namespace MachineBrigade.Sim.Entities
         internal double GunRoundAt = double.NegativeInfinity;
         internal int GunMount = -1;
         internal double HeavyWaitingAt = double.NegativeInfinity;
+
+        /// <summary>When the main gun's stream last stood ready but was held off by a secondary gun's magazine (test feedback 2).</summary>
+        internal double LeadWaitingAt = double.NegativeInfinity;
         internal double AnyRoundAt = double.NegativeInfinity;
         internal int AnyMount = -1;
 

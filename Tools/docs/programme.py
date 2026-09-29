@@ -277,6 +277,80 @@ def feedback(game, h):
             + "</div>")
 
 
+def combat_value(game, h):
+    """Combat value measured in the sim (prompt 13 A): damage dealt with the time not firing counted."""
+    e = h['esc']
+    path = ROOT / 'Docs' / 'balance' / 'combat_value_F3_summary.tsv'
+    if not path.exists():
+        return ''
+    lines = path.read_text(encoding='utf-8').splitlines()
+    head = lines[0].split('\t')
+    names = {v['id']: v['name'] for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
+    def num(x):
+        try:
+            return f"{float(x):.0f}"
+        except ValueError:
+            return ''
+    def pct(x):
+        try:
+            return f"{float(x) * 100:.0f}%"
+        except ValueError:
+            return ''
+    rows = []
+    for line in lines[1:]:
+        c = dict(zip(head, line.split('\t')))
+        rows.append([f"<b>{e(names.get(c['id'], c['id']))}</b>", e(c.get('class', '')), c.get('cp', ''),
+                     num(c.get('light')), num(c.get('tanks')), num(c.get('fort')), num(c.get('air')),
+                     num(c.get('tanks+AA')), pct(c.get('onTarget')), num(c.get('survival')),
+                     num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir'))])
+    return ("<div class='section'><h2>9b. Giá trị thực chiến</h2>"
+            "<p>DPS lý thuyết (phần 9) đã sửa để tính đủ loạt bắn, băng đạn, thời gian thay băng, nạp của bệ phóng và số bom/tên lửa mỗi lần đầy đạn. "
+            "Giá trị thực chiến đo trong mô phỏng: mỗi xe hạng 1, không trang bị, đánh các nhóm mục tiêu chuẩn (cụm xe nhẹ, cụm xe tăng, công sự có tháp, máy bay) "
+            "trong khoảng 90 giây từ lúc tiếp đất, có và không có phòng không đối phương; tính cả thời gian không bắn (di chuyển, xoay tháp, nạp đạn, bay vòng, bị pháo sáng "
+            "và APS chặn). Giá trị = sát thương thực × hệ số sống sót / CP. Mọi quyết định cân bằng của prompt 13 dựa trên bảng này.</p>"
+            + h['table'](['Xe', 'Lớp', 'CP', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
+                          'DPS thật: nhẹ', 'nặng', 'bay'], rows, 'dps') + "</div>")
+
+
+def ammo_system(game, h):
+    """Stores and rearming on the field (prompt 13 C, D, F)."""
+    items = [
+        '<b>Lượng đạn:</b> bom, tên lửa và rốc-két của máy bay và trực thăng có số lượng khi đầy đạn (ghi ở mục "Đạn và nạp đạn" trên mỗi thẻ); pháo máy bay và súng máy không giới hạn, chỉ thay băng.',
+        '<b>Hồi dần trên chiến trường:</b> từng quả hồi theo thời gian, không cần căn cứ. Đang tấn công hoặc trong tầm phòng không/tiêm kích địch: một nửa tốc độ; ra khỏi vùng nguy hiểm liên tục 3 giây: đủ tốc độ.',
+        '<b>Vòng chờ gần:</b> một vòng bay ngay sau tuyến quân ta gần nhất, ngoài tầm phòng không đã biết, cách chỗ giao tranh khoảng 2–3 giây bay; tính lại liên tục theo chiến tuyến. Không đơn vị nào bay về căn cứ hay ra ngoài bản đồ để nạp.',
+        '<b>Rút đúng lúc:</b> hết đạn giữa lượt thì làm xong lượt (bổ nhào, lượt ném bom, vòng bay) rồi mới ra vòng chờ, bay theo đường thật, vẫn bị bắn được; chỉ huy AI cho ra sớm khi đạn dưới 20% và đang có quãng lặng.',
+        '<b>Nạp nhanh hơn:</b> Bãi đáp ×2 (và hồi 3% máu/giây), sở chỉ huy ×1,5 (1% máu/giây), trực thăng cạnh Xe tiếp đạn ×2. Chỉ ghé khi nhanh hơn vòng chờ hoặc cần hồi máu.',
+        '<b>Máy bay ném bom:</b> chỉ vào lượt mới khi có ít nhất 2/3 tải bom; ưu tiên cụm quân và công trình, không thả gần quân ta, nghỉ trước khi ném lại cùng khu vực. Oanh tạc cơ 9 quả, máy bay tàng hình 2, Su-25 16 rốc-két, không kích bất ngờ 10, bom chùm 30 quả con.',
+        '<b>Xe tiếp đạn (mới, 4 CP):</b> điểm nạp tiền phương: trực thăng đứng cạnh hồi đạn nhanh gấp đôi, bệ phóng và xe tên lửa quanh nó nạp nhanh gấp ba. Xe công binh chỉ còn sửa chữa (3 CP).',
+        '<b>Bãi đáp:</b> nhánh hạng 7: Nhà chứa (+1 trần máy bay) hoặc Phục vụ nhanh. AI địch đặt Bãi đáp trong căn cứ; phá Bãi đáp pháo đài trong Công thành được 12 CP.',
+        '<b>Icon trên chiến trường:</b> cạnh thanh máu: sắp hết (vàng), hết (đỏ nhấp nháy), đang ra vòng chờ, đang hồi (vòng tiến độ mờ khi hồi chậm, sáng khi hồi đủ), lóe sáng khi đầy. Địch chỉ hiện hết đạn và đang ra vòng chờ. Bản đồ nhỏ hiện vòng chờ của ta.',
+    ]
+    return ("<div class='section'><h2>12b. Hệ đạn và hồi đạn</h2><ul>" + ''.join(f"<li>{i}</li>" for i in items) + "</ul></div>")
+
+
+def modes_and_ai(game, h):
+    """Mode results and AI difficulty (prompt 13 H, I)."""
+    modes = [('Giữ cứ điểm', '7/12', '7,4', '55–65%, 6–10 phút'), ('Tử chiến (điểm theo giá CP, ngưỡng 480)', '2/6 (8/12 ở seed khác)', '8,5', '6–9 phút'),
+             ('Vua đồi (ngưỡng 170)', '8/12', '7,4', '55–65%, 6–9 phút'), ('Công phá', '8/12', '4,7', '60–70%'),
+             ('Công thành', '6/6', '10,7 (9,2–14)', '60–75%, 10–15 phút'), ('Phòng thủ', 'giữ HQ 6/6, mất tuyến ngoài mọi trận (phút 4–6)', '', 'mất tuyến ngoài 50–70%, giữ HQ ~4/5'),
+             ('Vô tận', '', '15,1', '12–15 phút'), ('Sinh tồn', '', '12,0', '8–12 phút'), ('Săn trùm', '4/4', '18,7', '15–25 phút'),
+             ('Pháo đài tuần', 'chưa thắng được từ giai đoạn 1–3', '', 'giai đoạn cuối vẫn là thử thách')]
+    ai = [('Dễ', 'chọn gần như ngẫu nhiên trong bộ bài, không khắc chế; thu nhập ×0,8', '98%'),
+          ('Thường', 'khắc chế cơ bản theo quân địch đang thấy; ×1', '73%'),
+          ('Khó', 'khắc chế, giữ tỷ lệ đội hình, để dành CP cho xe lớn, phối hợp hỗ trợ với đợt tấn công, săn máy bay đang hồi đạn; ×1,2', '60%'),
+          ('Cực khó (mới)', 'như Khó, biết trước bộ bài người chơi, dồn CP cho đợt tấn công phối hợp, đánh điểm yếu nhất, phản ứng nhanh hơn; ×1,4; tinh nhuệ 30%; thưởng ×1,8; không nhìn xuyên sương mù', '29%')]
+    e = h['esc']
+    return ("<div class='section'><h2>2b. Cân bằng chế độ và độ khó</h2>"
+            "<p>Đo bằng bộ bài mẫu 8 thẻ, độ khó Thường, chỉ huy tự động của người chơi (2 seed trên 2–3 bản đồ mỗi chế độ; đo đủ 5 seed ở phase kiểm tra). "
+            "Bên đang thua quá xa sau phút 4 (quân trên sân chênh từ 1,6 lần) được +25% thu nhập và một lần thả tiếp viện miễn phí; ở Phòng thủ và Vô tận, "
+            "nếu người chơi áp đảo quá thì địch được thêm một đợt công phá. Đợt địch ở Phòng thủ và Vô tận mạnh theo <b>Sức mạnh căn cứ</b> (cùng con số hiện ở màn Căn cứ), có xe ủi, "
+            "pháo công thành và pháo tầm xa bắn từ ngoài tầm tháp.</p>"
+            + h['table'](['Chế độ', 'Người chơi thắng', 'Thời lượng trung vị (phút)', 'Mục tiêu'], [[e(a), e(b), e(c), e(d)] for a, b, c, d in modes])
+            + "<h3>AI mua quân theo độ khó</h3><p>Logic mua quân xác định (deterministic): một hàm chấm điểm (khắc chế quân địch đang thấy, vai trò còn thiếu, giá trị thực chiến theo giá) "
+            "dùng ở mức khác nhau cho mỗi độ khó. Tên độ khó thống nhất: chiến dịch và Tác chiến đổi Anh hùng → Khó, Thép → Cực khó (kỷ lục lưu theo số nên giữ nguyên).</p>"
+            + h['table'](['Độ khó', 'Cách AI chơi', 'Người chơi thắng (48 trận)'], [[e(a), e(b), c] for a, b, c in ai]) + "</div>")
+
+
 def testing(game, h):
     """Section: tests and what the testing phase still has to measure."""
     items = [
@@ -290,6 +364,8 @@ def testing(game, h):
         'Sau buổi chơi thử: khả năng thắng chiến dịch và trận boss khi súng chính xe thường không còn bắn máy bay; thời gian hạ tăng của máy bay cường kích và A-10 với nhịp bắn mới; '
         'tỷ lệ trúng của tên lửa chậm hơn khi có pháo sáng và APS; FPS khi nhiều tên lửa hành trình hoặc ném bom rải thảm cùng lúc ở đồ họa Thấp; khung hình những giây đầu trên điện thoại thật.',
         'Giao diện: FPS của HUD mới ở đồ họa Thấp; vùng an toàn trên máy tai thỏ và đục lỗ thật; toàn bộ bài kiểm tra EditMode.',
+        'Cân bằng (prompt 13): đủ 5 seed mọi chế độ với người chơi thật, nhất là Công thành, Phòng thủ, Pháo đài tuần và Tử chiến; khoảng cách Thường và Khó; Vô tận/Phòng thủ với căn cứ mạnh yếu khác nhau; thời gian từng boss; mọi mutator Tác chiến; toàn bộ chiến dịch nhiều seed; lượt bay ra vòng chờ dài nhất của oanh tạc cơ (4,5 giây, trên mục tiêu 3 giây).',
+        'Xe kẹt (prompt 12): chạy công cụ phát hiện xe kẹt đủ 20 bản đồ mọi chế độ, 5 seed, mọi loadout, bật và tắt lưới an toàn; TickBudgetTests đầy đủ; trận Đầm Lầy và Quần Đảo San Hô.',
     ]
     return ("<div class='section'><h2>17. Kiểm thử và phép đo còn lại</h2>"
             "<p>Bài kiểm tra tự động chạy trong Unity (EditMode): mô phỏng xác định, nên mỗi luật có bài riêng (điểm lưu phát lại khớp tuyệt đối, phản bội không làm lỗi AI, "

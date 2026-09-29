@@ -39,7 +39,7 @@ from mathutils import Euler, Matrix, Vector
 
 import mb_weapons as wpn
 from frontier_kit import chamfered
-from mb_support import _beacon, _light_bar, _plane, _ram, _rod, _stripes, _telescopic_mast, _whip
+from mb_support import _beacon, _light_bar, _plane, _ram, _rod, _rws_turret, _stripes, _telescopic_mast, _whip
 from mb_vehicles import (ACROSS, FORWARD, R90, _dish, _flank, _frame, _glacis, _grille_frame, _hatch,
                          _headlight, _jerrycans, _rail, _roll, _stowage_bin, _taillight, _wheel)
 from mb_vehicles2 import _axis
@@ -1055,7 +1055,22 @@ def railgun_truck(a):
     a.part('Turret_glass', 'Glass', t).box((.3, .03, .14), loc=(.62, -1.105, .64), bevel=0)
 
 
+def armed_truck(a):
+    """Army cargo truck for the ammunition carrier and the supply truck (DECISIONS 13F): the box truck's
+    body (mb_town.truck) along -Y, the cab and stripe in team paint, and a ring-mounted machine gun over
+    the cab on the `Turret` pivot, its flash hider's face `Muzzle_main`. The ring sits far enough forward
+    that the barrel clears the taller cargo box when it turns round."""
+    from mb_town import truck
+    truck(a, paint_mat='Team', turn=False)
+    steel = a.part('Ring_mount', 'Steel')
+    steel.cyl(.36, .06, loc=(0, -2.75, 2.97), seg=16, bevel=.015, bseg=1)             # ring on the cab roof
+    for s in (-1, 1):
+        steel.box((.05, .05, .1), loc=(s * .3, -2.75, 2.97), bevel=0)                    # ring brackets
+    _rws_turret(a, (0, -2.75, 3.0), length=.85, sensor=False, shield=True)
+
+
 BUILDERS = {
+    'armed_truck': (armed_truck, dict(ao_distance=.6, grime_height=.5)),
     'lancet_truck': (lancet_truck, dict(ao_distance=.6, grime_height=.55)),
     'shahed_truck': (shahed_truck, dict(ao_distance=.6, grime_height=.55)),
     'iron_beam': (iron_beam, dict(ao_distance=.6, grime_height=.55)),

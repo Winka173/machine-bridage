@@ -1,0 +1,23 @@
+{
+  "map": "redrock",
+  "mode": "Endless",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 6615,
+  "journal": [],
+  "records": [
+    {"vehicle": 695, "def": "scout_jeep", "team": 0, "startTick": 3000, "start": 150, "end": 158.5, "seconds": 8.5, "x": 124.788, "y": 105.275, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "armored_car#697 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(moving)@3.4 armored_car(moving)@3.0 armored_car(moving)@3.6 base_wall@9"},
+    {"vehicle": 700, "def": "armored_car", "team": 0, "startTick": 3730, "start": 186.5, "end": 197, "seconds": 10.5, "x": 111.807, "y": 114.722, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#694", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "main_battle_tank(moving)@6.1 armored_car(moving)@8.1 armored_car(moving)@3.5 ifv(moving)@4.7"},
+    {"vehicle": 691, "def": "main_battle_tank", "team": 0, "startTick": 3850, "start": 192.5, "end": 202.5, "seconds": 10, "x": 112.132, "y": 109.176, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#694", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@8.3 light_tank(moving)@9.2 armored_car(moving)@9.3 armored_car(moving)@3.2 armored_car(moving)@7.3 armored_car(moving)@4.9 armored_car(moving)@8.6 ifv(parked)@9.1 ifv(moving)@5.4"},
+    {"vehicle": 753, "def": "armored_car", "team": 0, "startTick": 4770, "start": 238.5, "end": 248, "seconds": 9.5, "x": 129.383, "y": 106.727, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "scout_jeep#735 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@4.4 main_battle_tank(moving)@5.4 mobile_fortress(moving)@8.0 scout_jeep(moving)@8.8 scout_jeep(moving)@2.8 base_wall@5 base_wall@7"},
+    {"vehicle": 691, "def": "main_battle_tank", "team": 0, "startTick": 4850, "start": 242.5, "end": 251, "seconds": 8.5, "x": 125.653, "y": 106.286, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "scout_jeep#734 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@7.4 light_tank(moving)@6.8 mobile_fortress(moving)@9.1 armored_car(moving)@3.9 scout_jeep(moving)@3.7 scout_jeep(moving)@3.4 armored_car(moving)@5.9 base_wall@9"},
+    {"vehicle": 700, "def": "armored_car", "team": 0, "startTick": 5310, "start": 265.5, "end": 276.5, "seconds": 11, "x": 117.242, "y": 115.195, "goalX": 113.613, "goalY": 125.538, "order": "AttackMove", "cause": "YieldWait", "detail": "behind aa_vehicle#721", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@6.9 main_battle_tank(moving)@7.0 light_tank(parked)@7.9 armored_car(moving)@9.4 aa_vehicle(moving)@3.7 aa_vehicle(parked)@9.3 ifv(moving)@7.9 scout_jeep(moving)@4.1 scout_jeep(moving)@6.2 elite_mbt(moving)@8.7 elite_heavy_tank(moving)@9.4 armored_car(parked)@8.0"},
+    {"vehicle": 775, "def": "main_battle_tank", "team": 0, "startTick": 6040, "start": 302, "end": 314, "seconds": 12, "x": 119.151, "y": 115.944, "goalX": 114.61, "goalY": 139.33, "order": "AttackMove", "cause": "YieldWait", "detail": "behind ifv#779", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "main_battle_tank(moving)@4.2 main_battle_tank(moving)@8.1 armored_car(moving)@9.0 scout_jeep(moving)@6.9 scout_jeep(parked)@8.1 aa_vehicle(parked)@4.6 ifv(parked)@4.6"},
+    {"vehicle": 780, "def": "ifv", "team": 0, "startTick": 6300, "start": 315, "end": 324.5, "seconds": 9.5, "x": 110.283, "y": 130.78, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "light_tank#692 moving", "area": "fortress+gate", "lanes": "narrow+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(moving)@5.6 light_tank(moving)@3.5 elite_heavy_tank(moving)@4.2 main_battle_tank(moving)@9.0 base_wall@7"}
+  ],
+  "rescues": [
+    "3930,700,armored_car,0,ghost,112.4,114.2,112.4,114.2",
+    "6245,775,main_battle_tank,0,ghost,119.2,115.5,119.2,115.5"
+  ]
+}

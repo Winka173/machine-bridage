@@ -42,6 +42,23 @@ namespace MachineBrigade.Game.Views
         private float _previousSpeed, _currentSpeed;
         private float _recoilTime = -10f;
         private float _pitch, _bank;
+
+        /// <summary>An aeroplane's attack hold eased in and out (0-1), and the height it has climbed breaking away from one (see VehicleDef.AttackHold).</summary>
+        private float _hold, _climb, _climbRate;
+
+        /// <summary>Metres an aeroplane climbs as it breaks away from its attack hold (and dives back down coming in again).</summary>
+        private const float BreakClimb = 5f;
+
+        /// <summary>
+        /// Editor shot tools (AirHoldShots): the step, in seconds, the flight pose animates by each
+        /// render, and the clock it reads; negative, the real frame time (the game).
+        /// </summary>
+        public static float ShotStep = -1f;
+
+        public static float ShotClock;
+
+        private static float FrameStep => ShotStep >= 0f ? ShotStep : Time.deltaTime;
+        private static float FrameTime => ShotStep >= 0f ? ShotClock : Time.time;
         private float _bouncePhase;
         private float _spin;
         private float _crashStart = -1f;
@@ -54,10 +71,8 @@ namespace MachineBrigade.Game.Views
         private readonly Transform _erector, _searchlight;
         private readonly Quaternion _erectorRest, _searchlightRest;
 
-        // A shimmering ring round a vehicle while a shield skill soaks up damage.
-        private Transform _shield;
-        private readonly Material _shieldMaterial;
-        private static Mesh _shieldMesh;
+        /// <summary>Its side is the player's (its shield is drawn blue, else red-orange).</summary>
+        private readonly bool _ours;
 
         public VehicleView(Vehicle vehicle, ModelLibrary models, MeshLibrary meshes, MaterialLibrary materials,
             Transform parent, int playerTeam)
@@ -121,12 +136,20 @@ namespace MachineBrigade.Game.Views
             _previousMount = new float[mounts.Count];
             _currentMount = new float[mounts.Count];
             var sameSlot = new Dictionary<string, int>();
+            _ownBarrel = new int[mounts.Count];
+            var onMainSlot = 0;
+            foreach (var m in mounts)
+                if (m.Slot == mounts[0].Slot) onMainSlot++;
             for (var i = 0; i < mounts.Count; i++)
             {
                 // The k-th mount of a slot in the data is the k-th Mount_/Muzzle_ of it in the model.
                 var slot = mounts[i].Slot;
                 var k = sameSlot.TryGetValue(slot, out var seen) ? seen : 0;
                 sameSlot[slot] = k + 1;
+                // Two weapons on the main gun's slot of a twin-barrelled model (the Inferno's two
+                // flame projectors): each fires from its own barrel, the k-th, instead of both from
+                // the muzzle between them (DECISIONS 12A).
+                _ownBarrel[i] = _barrelTips != null && onMainSlot > 1 && slot == mounts[0].Slot ? k % _barrelTips.Length : -1;
                 if (_model.MountLists.TryGetValue(slot, out var mountList) && mountList.Count > 1) _mounts[i] = mountList[k % mountList.Count];
                 else _model.Mounts.TryGetValue(slot, out _mounts[i]);
                 if (_model.MuzzleLists.TryGetValue(slot, out var muzzleList) && muzzleList.Count > 1) _muzzles[i] = muzzleList[k % muzzleList.Count];
@@ -134,15 +157,19 @@ namespace MachineBrigade.Game.Views
                 // Rockets, missiles and drones leave from the pods and rails on both sides in turn;
                 // twin miniguns from both guns. With two mounts of a slot, each has the pods on it.
                 var kind = mounts[i].Weapon.Projectile;
+                // A twin gun built as one part fires from its barrels in turn, whatever it fires (13E).
                 if (_model.Launchers.TryGetValue(slot, out var launchers) &&
-                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                    (kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun" || launchers.Exists(p => p.Barrel)))
                 {
                     var own = launchers;
                     if (sameSlot[slot] > 0 && mountList != null && mountList.Count > 1 && _mounts[i] != null)
                     {
                         own = launchers.FindAll(p => p.transform.IsChildOf(_mounts[i]));
-                        if (own.Count == 0) own = launchers;
+                        // Another mount's barrels are not this one's: it keeps its own muzzle.
+                        if (own.Count == 0) own = launchers.Exists(p => p.Barrel) ? null : launchers;
                     }
+                    if (own != null && !(kind is ProjectileKind.Rocket or ProjectileKind.Missile or ProjectileKind.Drone || slot == "gun"))
+                        own = own.FindAll(p => p.Barrel) is { Count: > 0 } barrels ? barrels : null;
                     _launchers[i] = own;
                 }
             }
@@ -172,7 +199,8 @@ namespace MachineBrigade.Game.Views
             _barFill = CreateMesh("Fill", _bar, meshes.Quad,
                 vehicle.Team == playerTeam ? materials.BarAlly : vehicle.Team == Teams.Hostile ? materials.BarNeutral : materials.BarEnemy, false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
-            if (vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildAmmoGauge(meshes, materials);
+            // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
+            if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
             _bar.gameObject.SetActive(false);
 
@@ -185,7 +213,7 @@ namespace MachineBrigade.Game.Views
             if (_lift != null) _liftRest = _lift.localPosition;
             if (_erector != null) _erectorRest = _erector.localRotation;
             if (_searchlight != null) _searchlightRest = _searchlight.localRotation;
-            _shieldMaterial = materials.Shockwave;
+            _ours = vehicle.Team == playerTeam;
             AddRotorBlur(materials);
             InitParts(models, meshes, materials);
             // Elite enemies wear a gold health bar.
@@ -204,6 +232,9 @@ namespace MachineBrigade.Game.Views
         public Transform Root { get; }
         public Transform Turret => _model.Turret;
         public Vector3 Position => Root.position;
+
+        /// <summary>Tests and tools (the muzzle audit): the spawned model and its rig.</summary>
+        internal ModelInstance Model => _model;
 
         /// <summary>The detail level it is drawn at (<see cref="VehicleLod"/>): 0 full, 1 simplified, 2 impostor.</summary>
         public int Level => Mathf.Max(VehicleLod.Full, _level);
@@ -531,14 +562,16 @@ namespace MachineBrigade.Game.Views
                 var spread = point.Spread;
                 if (spread == Vector2.zero) return Anchored(point.transform, point.transform.position);
                 var jitter = new Vector3(Random.Range(-spread.x, spread.x), Random.Range(-spread.y, spread.y), 0f);
-                return Anchored(point.transform, point.transform.position + point.transform.parent.TransformVector(jitter));
+                // Across the face itself: the point is turned square to its tubes (a raised box's face tilts back).
+                return Anchored(point.transform, point.transform.position + point.transform.TransformVector(jitter));
             }
-            if (index == 0 && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
+            var own = index < _ownBarrel.Length ? _ownBarrel[index] : -1;
+            if ((index == 0 || own >= 0) && _barrelTips != null && _muzzles.Length > 0 && _muzzles[0] != null)
             {
-                // The barrel firing now: the main muzzle moved across to that barrel's line.
+                // The barrel firing now (or the mount's own barrel): the main muzzle moved across to that barrel's line.
                 var centre = _muzzles[0].position;
-                var along = DirectionOf(0);
-                var offset = BarrelTip(_barrel) - centre;
+                var along = DirectionOf(index);
+                var offset = BarrelTip(own >= 0 ? own : _barrel) - centre;
                 return Anchored(_muzzles[0], centre + offset - along * Vector3.Dot(offset, along));
             }
             // An aircraft's air-to-air missile marked only on the centreline (a hint for the
@@ -585,6 +618,7 @@ namespace MachineBrigade.Game.Views
                 foreach (var list in _model.Launchers.Values)
                     foreach (var point in list)
                     {
+                        if (point.Barrel) continue;
                         var local = _body.InverseTransformPoint(point.transform.position);
                         if (!found || Mathf.Abs(local.x) > Mathf.Abs(outer.x)) outer = local;
                         found = true;
@@ -596,9 +630,11 @@ namespace MachineBrigade.Game.Views
                     found = true;
                 }
                 if (!found || Mathf.Abs(outer.x) < 0.3f) return false;
-                // A little further out than the outermost store: the wingtip rail.
+                // The outermost store, left and right in turn: a rail that is on the model. (It was
+                // pushed 12 % further out for a wingtip rail, which most models do not carry: the
+                // missile then left from thin air beside the wing, DECISIONS 13E.)
                 var side = (_nextLauncher[index]++ & 1) == 0 ? 1f : -1f;
-                at = _body.TransformPoint(new Vector3(Mathf.Abs(outer.x) * 1.12f * side, outer.y, outer.z));
+                at = _body.TransformPoint(new Vector3(Mathf.Abs(outer.x) * side, outer.y, outer.z));
                 return true;
             }
             foreach (var other in new[] { "missile", "rocket", "main", "gun" })
@@ -724,17 +760,70 @@ namespace MachineBrigade.Game.Views
         /// <summary>World-space direction the elevated barrel of mount <paramref name="index"/> points (level for a mount that does not elevate).</summary>
         public Vector3 BarrelDirectionOf(int index)
         {
+            if (ModelledBarrel(index, out var drawn)) return drawn;
             var flat = DirectionOf(index);
             if (index != 0 || _model.Elevation == null || float.IsNaN(_elevation)) return flat;
             var pitch = _elevation * Mathf.Deg2Rad;
             return (flat * Mathf.Cos(pitch) + Vector3.up * Mathf.Sin(pitch)).normalized;
         }
 
+        /// <summary>
+        /// World-space direction the barrel of mount <paramref name="index"/> points in as drawn this
+        /// frame: the part it turns with (its own free mount, the turret or the hull, with the
+        /// hull's pitch and rock) and, for the main gun, the barrel's elevation. Muzzle flashes
+        /// face this way; <see cref="DirectionOf"/> is the simulation's latest heading, up to a
+        /// step ahead of the drawn turret.
+        /// </summary>
+        public Vector3 DrawnBarrelOf(int index)
+        {
+            if (ModelledBarrel(index, out var drawn)) return drawn;
+            var aim = index < Def.Mounts.Count ? Def.Mounts[index].Aim : MountAim.Turret;
+            // A side gun with no barrel of its own to go by (a door gunner): out of its side.
+            if (aim is MountAim.Left or MountAim.Right) return DirectionOf(index);
+            var node = aim == MountAim.Free && index < _mounts.Length && _mounts[index] != null ? _mounts[index]
+                : aim != MountAim.Hull && _model.Turret != null ? _model.Turret : _body;
+            // Another mount whose muzzle rides the main gun's elevating pivot (a boss's second main
+            // barrel, built along the model's front): the way that muzzle faces as drawn.
+            if (index > 0 && index < _muzzles.Length && _muzzles[index] != null && _model.Elevation != null && _muzzles[index].IsChildOf(_model.Elevation))
+                return _muzzles[index].forward;
+            var forward = node.forward;
+            // The main gun's elevation, also for a second mount firing from one of its barrels.
+            var own = index < _ownBarrel.Length ? _ownBarrel[index] : -1;
+            if ((index == 0 || own >= 0) && _model.Elevation != null && !float.IsNaN(_elevation))
+                forward = Quaternion.AngleAxis(-_elevation, node.right) * forward;
+            return forward;
+        }
+
+        /// <summary>
+        /// The way a mount's barrel points as drawn, where the model says so (DECISIONS 13E): a
+        /// launcher along the tubes or rail its round leaves from (its launch points are turned
+        /// square to them), a muzzle turned along its own barrel (ModelLibrary.AlignMuzzles: a
+        /// mortar tube, a door gun, a flak barrel built pointing up) its forward, raised, turned
+        /// and tilted with whatever it rides.
+        /// </summary>
+        private bool ModelledBarrel(int index, out Vector3 direction)
+        {
+            direction = default;
+            if (index < _launchers.Length && _launchers[index] is { Count: > 0 } list)
+            {
+                var point = LastMuzzleNode != null && LastMuzzleNode.GetComponent<LaunchPoint>() is { } last && list.Contains(last) ? last : list[0];
+                if (point.Measured)
+                {
+                    direction = point.transform.forward;
+                    return true;
+                }
+            }
+            if (index >= _muzzles.Length || !ModelLibrary.Aligned(_muzzles[index])) return false;
+            direction = _muzzles[index].forward;
+            return true;
+        }
+
         /// <summary>Starts the barrel kick; called when the simulation reports a main-gun shot.</summary>
         public void Recoil()
         {
             _recoilTime = Time.time;
-            if (_barrelTips != null) _barrel = (_barrel + 1) % _barrelTips.Length;
+            // Barrels fire in turn, unless each belongs to its own weapon mount.
+            if (_barrelTips != null && _ownBarrel[0] < 0) _barrel = (_barrel + 1) % _barrelTips.Length;
         }
 
         /// <summary>Barrels that really stand apart (a twin gun), not one barrel modelled in segments.</summary>
@@ -758,6 +847,19 @@ namespace MachineBrigade.Game.Views
         private Transform[] _barrelTips;
         private int _barrel;
 
+        /// <summary>Per mount: the barrel of a twin-barrelled main gun it fires from alone, or -1 (see the constructor).</summary>
+        private readonly int[] _ownBarrel;
+
+        /// <summary>Eases the attack-hold pose in and out, and the climb away from the hold (see VehicleDef.AttackHold).</summary>
+        private void HoldPose()
+        {
+            var dt = FrameStep;
+            _hold = Mathf.MoveTowards(_hold, Sim.InAttackHold ? 1f : 0f, dt * 2.5f);
+            var climbed = _climb;
+            _climb = Mathf.MoveTowards(_climb, Def.AttackHold > 0f && Sim.Breaking ? BreakClimb : 0f, dt * 4f);
+            _climbRate = dt > 0f ? (_climb - climbed) / dt : 0f;
+        }
+
         public void Render(float alpha, Quaternion cameraRotation)
         {
             if (_wreck)
@@ -769,16 +871,19 @@ namespace MachineBrigade.Game.Views
             var hull = Mathf.LerpAngle(_previousHeading, _currentHeading, alpha);
             var position = Vector3.Lerp(_previousPosition, _currentPosition, alpha);
             var acceleration = (_currentSpeed - _previousSpeed) * 20f;
-            var ease = 1f - Mathf.Exp(-Time.deltaTime * 6f);
+            var ease = 1f - Mathf.Exp(-FrameStep * 6f);
             if (!Flying) Steady(ref position, ref hull);
 
             if (Flying)
             {
                 // Fly in from behind (never out of the ground), then hover with a slow bob, nose
                 // down when speeding up and bank into turns.
-                var arrive = Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
+                var arrive = ShotStep >= 0f ? 1f : Mathf.SmoothStep(0f, 1f, (Time.time - _spawnTime) / ArriveSeconds);
                 var above = 1f - arrive;
-                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + Mathf.Sin(Time.time * 1.3f + Id.Value) * 0.25f * arrive;
+                if (Def.FixedWing) HoldPose();
+                // A jet hanging on its target bobs a little more than one flying level.
+                var bob = Mathf.Sin(FrameTime * 1.3f + Id.Value) * 0.25f + Mathf.Sin(FrameTime * 2.3f + Id.Value * 0.7f) * 0.2f * _hold;
+                Altitude = Def.Altitude + above * (Def.FixedWing ? 8f : 10f) + bob * arrive + _climb;
                 if (above > 0f)
                 {
                     // It flies in along its heading from behind, dropping to its height as it comes.
@@ -788,9 +893,16 @@ namespace MachineBrigade.Game.Views
                 var turn = Mathf.DeltaAngle(_previousHeading, _currentHeading) * 20f;
                 if (Def.FixedWing)
                 {
-                    // Aeroplanes fly level and bank hard into their turns.
-                    _pitch = Mathf.Lerp(_pitch, Mathf.Clamp(acceleration * 0.5f, -4f, 4f), ease);
-                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.45f, -50f, 50f), ease);
+                    // Aeroplanes fly level and bank hard into their turns. In an attack hold the nose
+                    // dips at the target and a jet slowed right down (a hovering VTOL jet) turns without
+                    // banking, rocking a little; breaking away it pitches up into the climb, and comes
+                    // back down nose first.
+                    var flown = Mathf.Clamp01(_currentSpeed / (Def.Speed * 0.6f));
+                    var dip = _hold * Mathf.Clamp(Mathf.Atan2(Def.Altitude - Sim.AimHeight, Mathf.Max(4f, Sim.AimDistance)) * Mathf.Rad2Deg * 0.35f, 0f, 12f);
+                    var level = Mathf.Clamp(acceleration * 0.5f, -4f, 4f) * (1f - _hold);
+                    _pitch = Mathf.Lerp(_pitch, level + dip - Mathf.Clamp(_climbRate * 2.5f, -12f, 12f), ease);
+                    var rock = Mathf.Sin(FrameTime * 1.7f + Id.Value) * 2f * _hold;
+                    _bank = Mathf.Lerp(_bank, Mathf.Clamp(-turn * 0.45f, -50f, 50f) * flown + rock, ease);
                 }
                 else
                 {
@@ -851,22 +963,22 @@ namespace MachineBrigade.Game.Views
             NoteHealth(health);
             RenderHitFeedback();
             if (Time.time >= _trailHoldUntil && _trail > health) _trail = Mathf.MoveTowards(_trail, health, Time.deltaTime * 2f);
-            var reloading = _ammoGauge != null && Sim.OutOfAmmo;
             var repairing = Time.time < _repairUntil;
-            var showBar = Selected || health < 0.999f || reloading || repairing;
+            // The stores icon is drawn under the bar's transform, so it is worked out before the bar is hidden.
+            var stores = _storesMark != null && StoresWanted();
+            var showBar = Selected || health < 0.999f || stores || repairing;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             if (!showBar) return;
             _bar.rotation = cameraRotation;
             if (_repairMark.gameObject.activeSelf != repairing) _repairMark.gameObject.SetActive(repairing);
             if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
-            if (_ammoGauge != null) RenderAmmoGauge(reloading);
+            RenderStoresMark();
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
             _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);
             _barTrail.localPosition = new Vector3(-BarWidth * (1f - _trail) * 0.5f, 0f, -0.01f);
         }
 
-        private Transform _ammoGauge, _reloadFill;
         private Transform _repairMark;
         private float _repairUntil = -1f;
 
@@ -899,64 +1011,6 @@ namespace MachineBrigade.Game.Views
             jaw.localPosition = new Vector3(0.23f, 0.23f, -0.02f);
             _repairMark.gameObject.SetActive(false);
         }
-        private MeshRenderer[] _shells;
-        private Material _ammoReload, _ammoEmpty, _ammoSpent;
-        private int _shownShells = -1;
-        private bool _shownEmptyLook;
-
-        /// <summary>
-        /// A small gauge left of the health bar for weapons that run dry (artillery, launchers):
-        /// three shells that go out as the magazine empties; once it is empty, a reload bar under
-        /// the health bar fills while the crew restocks, the shells glowing amber, or red and
-        /// blinking while the vehicle is on the move and the reload waits (Art of War 3 and
-        /// Warpath show the same at a glance).
-        /// </summary>
-        private void BuildAmmoGauge(MeshLibrary meshes, MaterialLibrary materials)
-        {
-            _ammoReload = materials.AmmoReload;
-            _ammoEmpty = materials.AmmoEmpty;
-            _ammoSpent = materials.AmmoSpent;
-            _ammoGauge = new GameObject("AmmoGauge").transform;
-            _ammoGauge.SetParent(_bar, false);
-            _ammoGauge.localPosition = new Vector3(-BarWidth * 0.5f - 0.5f, 0f, 0f);
-            var back = CreateMesh("Back", _ammoGauge, meshes.Quad, materials.BarBack, false);
-            back.localScale = new Vector3(0.74f, 0.6f, 1f);
-            _shells = new MeshRenderer[3];
-            for (var i = 0; i < _shells.Length; i++)
-            {
-                var shell = CreateMesh("Shell", _ammoGauge, meshes.Quad, materials.AmmoReload, false);
-                shell.localScale = new Vector3(0.14f, 0.42f, 1f);
-                shell.localPosition = new Vector3((i - 1) * 0.21f, 0f, -0.01f);
-                _shells[i] = shell.GetComponent<MeshRenderer>();
-            }
-            _reloadFill = CreateMesh("Reload", _bar, meshes.Quad, materials.AmmoReload, false);
-            _reloadFill.gameObject.SetActive(false);
-        }
-
-        private void RenderAmmoGauge(bool empty)
-        {
-            var max = Sim.Def.Mounts[0].Weapon.Ammo;
-            var left = Mathf.Max(0, Sim.Ammo(0));
-            // Three shells stand for the magazine: each one a third of it.
-            var lit = empty ? 3 : Mathf.CeilToInt(3f * left / Mathf.Max(1, max));
-            var waiting = empty && Sim.ReloadPaused;
-            var blinkOff = waiting && Mathf.Repeat(Time.time * 2.5f, 1f) > 0.5f;
-            var look = empty && !blinkOff;
-            if (lit != _shownShells || look != _shownEmptyLook || waiting)
-            {
-                _shownShells = lit;
-                _shownEmptyLook = look;
-                for (var i = 0; i < _shells.Length; i++)
-                    _shells[i].sharedMaterial = empty ? (blinkOff ? _ammoSpent : waiting ? _ammoEmpty : _ammoReload)
-                        : i < lit ? _ammoReload : _ammoSpent;
-            }
-            if (_reloadFill.gameObject.activeSelf != empty) _reloadFill.gameObject.SetActive(empty);
-            if (!empty) return;
-            var progress = Sim.ReloadProgress;
-            _reloadFill.localScale = new Vector3(BarWidth * Mathf.Max(0.02f, progress), 0.1f, 1f);
-            _reloadFill.localPosition = new Vector3(-BarWidth * (1f - progress) * 0.5f, -BarHeight * 0.5f - 0.14f, -0.02f);
-        }
-
         private Transform _lift;
         private Vector3 _liftRest;
         private float _liftDown;
@@ -981,33 +1035,7 @@ namespace MachineBrigade.Game.Views
                 _lift.localPosition = _liftRest + Vector3.down * (PitDepth * Mathf.SmoothStep(0f, 1f, _liftDown));
             }
 
-            if (Sim.ShieldUp)
-            {
-                if (_shield == null)
-                {
-                    _shieldMesh ??= ShieldQuad();
-                    _shield = CreateMesh("Shield", Root, _shieldMesh, _shieldMaterial, false);
-                }
-                if (!_shield.gameObject.activeSelf) _shield.gameObject.SetActive(true);
-                var size = (Def.HullBound + 1.2f) * 2.4f * (1f + Mathf.Sin(Time.time * 9f) * 0.04f);
-                _shield.position = Root.position + Vector3.up * (Altitude + 1.2f);
-                _shield.rotation = cameraRotation;
-                _shield.localScale = new Vector3(size, size, 1f);
-            }
-            else if (_shield != null && _shield.gameObject.activeSelf) _shield.gameObject.SetActive(false);
-        }
-
-        /// <summary>A camera-facing quad tinted shield blue, for the particle shader's ring shape.</summary>
-        private static Mesh ShieldQuad()
-        {
-            var colour = Primitives.Linear(new Color(0.35f, 0.85f, 1f, 0.9f));
-            var mesh = new Mesh { name = "ShieldQuad" };
-            mesh.SetVertices(new[] { new Vector3(-0.5f, -0.5f, 0f), new Vector3(0.5f, -0.5f, 0f), new Vector3(0.5f, 0.5f, 0f), new Vector3(-0.5f, 0.5f, 0f) });
-            mesh.SetUVs(0, new[] { new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(0f, 1f) });
-            mesh.SetColors(new[] { colour, colour, colour, colour });
-            mesh.SetTriangles(new[] { 0, 2, 1, 0, 3, 2 }, 0);
-            mesh.RecalculateBounds();
-            return mesh;
+            AnimateShield(cameraRotation);
         }
 
         /// <summary>Freezes the view as a burnt-out hulk; the simulation entity is gone.</summary>
@@ -1026,6 +1054,7 @@ namespace MachineBrigade.Game.Views
             if (_shadowRing != null) _shadowRing.Visible = false;
             _bar.gameObject.SetActive(false);
             Selected = false;
+            HideShield();
             _wreck = true;
             if (Flying)
             {

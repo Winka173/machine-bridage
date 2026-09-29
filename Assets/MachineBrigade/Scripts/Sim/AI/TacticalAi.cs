@@ -157,6 +157,13 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public static bool TowerSense = true;
 
+        /// <summary>
+        /// Prompt 13 I.3 (Hard and Very Hard): fighters go after enemy aircraft seen flying out to rearm or
+        /// circling their holding pattern (their stores spent), and with the enemy flying three aircraft or
+        /// more, artillery and strike aircraft go for its landing pads and ammunition carriers.
+        /// </summary>
+        public bool HuntSupply { get; set; }
+
         /// <summary>Our strength at the edge of a defended area must be this many times the defences' there to go in.</summary>
         private const float AssaultOdds = 1.4f;
 
@@ -253,6 +260,7 @@ namespace MachineBrigade.Sim.AI
             DirectSupport(world, front, forward);
             BreachObstacles(world, front, objective);
             DirectBreachers(world, front, objective);
+            if (HuntSupply) HuntRearming(world);
             FocusBoss(world);
             FocusDemolition(world);
             ShootBuildings(world);
@@ -392,9 +400,10 @@ namespace MachineBrigade.Sim.AI
 
         /// <summary>
         /// Empty launchers reload where they stand: the crew restocks only while the vehicle is
-        /// still, so the AI stops them. A supply vehicle close by is worth the short drive, and a
-        /// launcher with an enemy about to reach it moves out of reach first. Once the magazine
-        /// is back they rejoin their role at the next decision.
+        /// still, so the AI stops them. Prompt 13 C.7: an ammunition carrier or home (the camp, with
+        /// its depot) reloads three times as fast; the launcher drives there when the drive and the
+        /// reload there take less time than the reload in place. A launcher with an enemy about to
+        /// reach it moves out of reach first. Once the magazine is back they rejoin their role.
         /// </summary>
         private void SendToRearm(SimWorld world)
         {
@@ -403,16 +412,23 @@ namespace MachineBrigade.Sim.AI
             {
                 _rearmIds.Add(v.Id);
                 Vector2? depot = null;
-                var best = DepotReach;
-                foreach (var e in world.VehicleList)
+                var left = v.Weapons[0].ReloadLeft > 0f ? v.Weapons[0].ReloadLeft : Combat.CombatSystem.ReloadSeconds(v.Arm(0));
+                var speed = MathF.Max(1f, v.Def.Speed * 0.8f);
+                // Time in place, against the drive there and a reload three times as fast (2 s to settle).
+                var best = left;
+                void Offer(Vector2 at, float reach)
                 {
-                    if (!e.IsAlive || e.Team != _team || e.Def.RearmAura == null) continue;
-                    var d = Vector2.Distance(e.Position, v.Position);
-                    if (d >= best) continue;
-                    best = d;
-                    depot = e.Position;
+                    var d = MathF.Max(0f, Vector2.Distance(at, v.Position) - reach);
+                    if (d > DepotReach * 1.5f) return;
+                    var time = d / speed + left / 3f + 2f;
+                    if (time >= best) return;
+                    best = time;
+                    depot = at;
                 }
-                if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f)
+                foreach (var e in world.VehicleList)
+                    if (e.IsAlive && e.Team == _team && e.Def.RearmAura != null && e != v) Offer(e.Position, e.Def.RearmAura.Radius * 0.6f);
+                if (world.TryGetRally(_team, out var camp)) Offer(camp, 12f);
+                if (depot != null && Vector2.Distance(v.Position, depot.Value) > 8f && !world.InEnemyHome(depot.Value, _team))
                 {
                     if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, depot.Value) > 6f)
                         Issue(world, CommandType.Move, v.Id, Clamp(world, depot.Value));
@@ -438,8 +454,11 @@ namespace MachineBrigade.Sim.AI
         private const float RefitBelow = 0.35f, RefitUntil = 0.9f;
 
         /// <summary>
-        /// An aircraft's trip to the airfield (see UtilityDef.AirRepair): sent there empty or below
-        /// 35 % health, released once at 90 % and rearmed, or when the airfield is gone.
+        /// An aircraft's trip to be mended: below 35 % health it goes to the landing pad (see
+        /// UtilityDef.AirRepair; it mends 3 % a second there), else to the HQ (1 % a second), and is
+        /// released at 90 %, or when neither stands. Prompt 13 C.4: never in the middle of an attack
+        /// (its salvo, hold or pass finishes first). Stores are the simulation's own business now
+        /// (SupplySystem: they come back over the field, no trip home needed).
         /// </summary>
         private bool Refit(SimWorld world, Vehicle v)
         {
@@ -447,14 +466,17 @@ namespace MachineBrigade.Sim.AI
             foreach (var m in world.VehicleList)
                 if (m.IsAlive && m.Team == _team && m.Def.Utility is { AirRepair: > 0f }) { field = m; break; }
             if (field == null)
+                foreach (var m in world.VehicleList)
+                    if (m.IsAlive && m.Team == _team && m.Def.Fort is { Kind: FortKind.Hq }) { field = m; break; }
+            if (field == null)
             {
                 _refitting.Remove(v.Id);
                 return false;
             }
             var hurt = v.Hp < v.MaxHp * RefitBelow;
-            if (!_refitting.Contains(v.Id) && (hurt || v.OutOfAmmo)) _refitting.Add(v.Id);
+            if (!_refitting.Contains(v.Id) && hurt && world.Supply.CanBreakOff(v)) _refitting.Add(v.Id);
             if (!_refitting.Contains(v.Id)) return false;
-            if (v.Hp >= v.MaxHp * RefitUntil && !v.NeedsAmmo)
+            if (v.Hp >= v.MaxHp * RefitUntil)
             {
                 _refitting.Remove(v.Id);
                 return false;
@@ -462,6 +484,22 @@ namespace MachineBrigade.Sim.AI
             if (v.Order.Kind != OrderKind.Move || Vector2.Distance(v.Order.Point, field.Position) > 4f)
                 Issue(world, CommandType.Move, v.Id, field.Position);
             return true;
+        }
+
+        /// <summary>
+        /// Prompt 13 C.4: an aircraft with its stores low (under a fifth) goes to rearm early when the
+        /// fight round it has a lull (no known enemy it can hit near it), so it is full for the next one.
+        /// </summary>
+        private void RearmInLulls(SimWorld world, Vehicle v)
+        {
+            if (!v.HasStores || v.Supply != SupplyState.Fighting || v.StoresShare >= Abilities.SupplySystem.LowShare || v.RearmRequested) return;
+            if (v.Target.IsValid || world.Time - v.LastFiredAt < 4.0) return;
+            var reach = v.Def.VisionRange + 15f;
+            foreach (var e in _enemies)
+                if (Vector2.Distance(e.Position, v.Position) < reach) return;
+            _ids.Clear();
+            _ids.Add(v.Id);
+            world.Submit(new Command(CommandType.Rearm, _team, _ids));
         }
 
         /// <summary>
@@ -541,18 +579,52 @@ namespace MachineBrigade.Sim.AI
             }
         }
 
-        /// <summary>Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.</summary>
+        /// <summary>
+        /// Engineers, jammers, command vehicles and radars keep a little behind the middle of the army.
+        /// Prompt 13 F.2: an ammunition carrier parks by the side's launchers and helicopters (a little
+        /// behind them, towards home), where they rearm off it; with none, behind the army too.
+        /// </summary>
         private void DirectSupport(SimWorld world, Vector2 front, Vector2 forward)
         {
             var spot = Clamp(world, front - forward * 9f);
             _ids.Clear();
+            Vector2? resupply = null;
             foreach (var v in _support)
             {
+                var at = spot;
+                if (v.Def.RearmAura != null || v.Def.AirRearm != null)
+                {
+                    resupply ??= ResupplySpot(world, forward) ?? spot;
+                    at = resupply.Value;
+                    if (Vector2.Distance(v.Position, at) < 6f) continue;
+                    if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, at) < 5f) continue;
+                    Issue(world, CommandType.Move, v.Id, at);
+                    continue;
+                }
                 if (Vector2.Distance(v.Position, spot) < 10f) continue;
                 if (v.Order.Kind == OrderKind.Move && Vector2.Distance(v.Order.Point, spot) < 8f) continue;
                 _ids.Add(v.Id);
             }
             if (_ids.Count > 0) Issue(world, CommandType.Move, _ids, spot);
+        }
+
+        /// <summary>The middle of the side's launchers and helicopters, 6 m back towards home (null: it has none).</summary>
+        private Vector2? ResupplySpot(SimWorld world, Vector2 forward)
+        {
+            var sum = Vector2.Zero;
+            var n = 0;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Ally != Allies) continue;
+                var launcher = !v.Flying && v.Arm(0).Ammo > 0;
+                var heli = v.Flying && !v.Def.FixedWing && v.HasStores;
+                if (!launcher && !heli) continue;
+                sum += v.Position;
+                n++;
+            }
+            if (n == 0) return null;
+            var at = world.Lanes.OffLane(Clamp(world, sum / n - forward * 6f), 8f);
+            return Exposed(at, 2f) ? null : at;
         }
 
         /// <summary>Everyone in the line drives (not attack-moves) back to the fall-back point and waits there.</summary>
@@ -613,6 +685,7 @@ namespace MachineBrigade.Sim.AI
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).
                 if (v.Flying && Refit(world, v)) continue;
+                if (v.Flying) RearmInLulls(world, v);
                 // An empty launcher stands and reloads (or goes to a supply vehicle close by) until its magazine is back.
                 if (!v.Flying && v.OutOfAmmo)
                 {
@@ -621,11 +694,55 @@ namespace MachineBrigade.Sim.AI
                 }
                 // Engineers, jammers, command vehicles (their aura, and a forward drop zone when they
                 // stand) and counter-battery radars keep a little behind the middle of the army.
-                if (v.Def.RepairAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
+                if (v.Def.RepairAura != null || v.Def.RearmAura != null || v.Def.Jammer > 0f || v.Def.CommandAura != null || v.Def.CounterBattery != null) _support.Add(v);
                 else if (v.Def.Weapon.MinRange > 0f) _artillery.Add(v);
                 else if (v.Def.Speed >= FastSpeed) _fast.Add(v);
                 else _line.Add(v);
             }
+        }
+
+        private void HuntRearming(SimWorld world)
+        {
+            var aircraft = 0;
+            foreach (var e in _enemies)
+            {
+                if (!e.Flying) continue;
+                aircraft++;
+                if (!e.HasStores || e.Supply == SupplyState.Fighting) continue;
+                // The nearest free fighter within reach goes after it.
+                Vehicle? hunter = null;
+                var best = 150f;
+                foreach (var v in _fast)
+                {
+                    if (!v.Def.Interceptor || v.Order.Kind == OrderKind.Attack) continue;
+                    var d = Vector2.Distance(v.Position, e.Position);
+                    if (d >= best) continue;
+                    best = d;
+                    hunter = v;
+                }
+                if (hunter == null) continue;
+                _fast.Remove(hunter);
+                Issue(world, CommandType.Attack, hunter.Id, e.Position, e.Id);
+            }
+            if (aircraft < 3) return;
+            Vehicle? supply = null;
+            foreach (var e in _enemies)
+                if (e.IsAlive && (e.Def.Utility is { AirRepair: > 0f } || e.Def.AirRearm != null)) { supply = e; break; }
+            if (supply == null) return;
+            foreach (var list in new[] { _artillery, _fast })
+                for (var i = list.Count - 1; i >= 0; i--)
+                {
+                    var v = list[i];
+                    var w = v.Def.Weapon;
+                    var strike = v.Flying && v.Def.FixedWing && !v.Def.Interceptor;
+                    if (!strike && w.MinRange <= 0f) continue;
+                    if (!w.CanTarget(false)) continue;
+                    var d = Vector2.Distance(v.Position, supply.Position);
+                    if (d > w.Range + (strike ? 120f : 20f) || d < w.MinRange) continue;
+                    list.RemoveAt(i);
+                    if (v.Order.Kind == OrderKind.Attack && v.Order.Target == supply.Id) continue;
+                    Issue(world, CommandType.Attack, v.Id, supply.Position, supply.Id);
+                }
         }
 
         /// <summary>How far past its weapon's range a vehicle turns to engage a boss.</summary>

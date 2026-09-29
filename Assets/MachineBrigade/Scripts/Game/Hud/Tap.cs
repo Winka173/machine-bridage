@@ -12,11 +12,17 @@ namespace MachineBrigade.Game.Hud
     /// went down, whoever holds the pointer by then; a real drag (a scroll) cancels it. The
     /// release is watched from the panel's root, so it is seen even when a scroll view has taken
     /// the pointer. While pressed, the element carries the "pressed" class for the pushed-in look.
+    /// A hold (prompt 11: a card held shows its full name) is optional: once the finger has stayed
+    /// down for <see cref="HoldSeconds"/> the hold callback gets true, and on release false, and the
+    /// tap is not fired.
     /// </summary>
     internal sealed class Tap : Manipulator
     {
         /// <summary>How far (panel pixels) a press may travel and still count as a tap.</summary>
         private const float Slop = 18f;
+
+        /// <summary>How long a press must stay down to count as a hold.</summary>
+        public const float HoldSeconds = 0.45f;
 
         /// <summary>Marks a panel root whose release and move events are already watched.</summary>
         private const string RootMark = "tap-root";
@@ -30,8 +36,18 @@ namespace MachineBrigade.Game.Hud
         private static Vector2 _start;
 
         private readonly Action _action;
+        private readonly Action<bool> _hold;
+        private IVisualElementScheduledItem _holdTimer;
+        private bool _holding;
 
         public Tap(Action action) => _action = action;
+
+        /// <param name="hold">Called with true when a press is held, and with false when it ends; a held press fires no tap.</param>
+        public Tap(Action action, Action<bool> hold)
+        {
+            _action = action;
+            _hold = hold;
+        }
 
         /// <summary>The editor keeps statics between Play sessions (domain reload is off); start clean.</summary>
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
@@ -86,6 +102,14 @@ namespace MachineBrigade.Game.Hud
             _downStamp = evt.timestamp;
             _start = evt.position;
             target.AddToClassList("pressed");
+            if (_hold == null) return;
+            _holdTimer?.Pause();
+            _holdTimer = target.schedule.Execute(() =>
+            {
+                if (_pending != this) return;
+                _holding = true;
+                _hold(true);
+            }).StartingIn((long)(HoldSeconds * 1000f));
         }
 
         private static void OnMove(PointerMoveEvent evt)
@@ -99,7 +123,9 @@ namespace MachineBrigade.Game.Hud
             if (_pending == null || evt.pointerId != _pointer) return;
             var tap = _pending;
             var travelled = ((Vector2)evt.position - _start).sqrMagnitude;
+            var held = tap._holding;
             Cancel();
+            if (held) return;
             if (travelled > Slop * Slop || tap.target == null || tap.target.panel == null || !tap.target.enabledInHierarchy) return;
             tap._action?.Invoke();
         }
@@ -112,6 +138,16 @@ namespace MachineBrigade.Game.Hud
         private static void Cancel()
         {
             _pending?.target?.RemoveFromClassList("pressed");
+            if (_pending != null)
+            {
+                _pending._holdTimer?.Pause();
+                _pending._holdTimer = null;
+                if (_pending._holding)
+                {
+                    _pending._holding = false;
+                    _pending._hold?.Invoke(false);
+                }
+            }
             _pending = null;
             _pointer = -1;
         }

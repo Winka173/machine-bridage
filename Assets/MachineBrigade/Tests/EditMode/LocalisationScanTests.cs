@@ -5,6 +5,7 @@ using NUnit.Framework;
 using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
+using UnityEngine.UIElements;
 
 namespace MachineBrigade.Tests
 {
@@ -24,7 +25,7 @@ namespace MachineBrigade.Tests
         public void EveryTextHasBothLanguagesWithTheSamePlaceholders()
         {
             var bad = new List<string>();
-            foreach (var (key, (en, vi)) in Strings.Texts.Concat(GuideText.Table).Concat(CampaignText.Table))
+            foreach (var (key, (en, vi)) in Strings.Texts.Concat(GuideText.Table).Concat(CampaignText.Table).Concat(UnitText.Table))
             {
                 if (string.IsNullOrWhiteSpace(en) || string.IsNullOrWhiteSpace(vi)) bad.Add(key + ": empty");
                 else if (!Placeholders(en).SequenceEqual(Placeholders(vi))) bad.Add(key + ": placeholders differ");
@@ -56,6 +57,43 @@ namespace MachineBrigade.Tests
             }
             Assert.IsEmpty(missing, string.Join(", ", missing));
         }
+
+        /// <summary>
+        /// Prompt 11 B1: every card (vehicles, supports, items, elites, bosses, towers, their branches and the
+        /// utility modules) has a short name of about fourteen letters at most, in both languages, for one line on
+        /// a card, the deck strip, chips and narrow lists.
+        /// </summary>
+        [Test]
+        public void EveryCardHasAShortName()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var ids = MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports).Concat(Progression.Items)
+                .Concat(catalog.Vehicles.Values.Where(v => v.Elite || v.Boss || (v.Static && v.Fort != null)).Select(v => v.Id)).Distinct().ToList();
+            var was = Strings.Vietnamese;
+            var bad = new List<string>();
+            try
+            {
+                foreach (var vietnamese in new[] { false, true })
+                {
+                    Strings.Vietnamese = vietnamese;
+                    foreach (var id in ids)
+                    {
+                        var name = Strings.Short(id);
+                        if (string.IsNullOrWhiteSpace(name) || name.Length > 15 || RawKey.IsMatch(name) || KeyText.IsMatch(name))
+                            bad.Add($"{(vietnamese ? "vi" : "en")} {id}: \"{name}\" ({name?.Length})");
+                    }
+                }
+            }
+            finally
+            {
+                Strings.Vietnamese = was;
+            }
+            Assert.IsEmpty(bad, string.Join("\n", bad));
+        }
+
+        /// <summary>A text table key shown as it is ("support.aa_turret.flak"), anywhere in a text.</summary>
+        private static readonly Regex KeyText =
+            new(@"\b(support|unit|branch|short|mode|goal|kit|hud|rail|toast|radio|camp|base|siege|stat|settings|panel|guide|mission|map|part|gear|special|trait|menu|result|ops|shop|army|detail|campaign|point|err|pause|target|cmd|hint|boss|crate|loot|skin|setup|stage|arsenal|daily)\.[a-z0-9_]+(\.[a-z0-9_]+)*\b");
 
         [Test]
         public void EquipmentReadsAsWordsAtEveryRarityInBothLanguages()
@@ -119,5 +157,49 @@ namespace MachineBrigade.Tests
             }
             Assert.IsEmpty(bad, string.Join("\n", bad));
         }
+
+#if MB_UI_TEST_FRAMEWORK
+        /// <summary>
+        /// Prompt 11 B4: no screen shows a raw key ("support.aa_turret.flak", a tower branch's name once) or an unfilled
+        /// placeholder ("{0} trùm liên tiếp" in Boss Rush once): every menu and battle screen with the demo profile, in
+        /// both languages, every text and tooltip of it.
+        /// </summary>
+        [Test]
+        public void EveryScreenShowsWordsNotKeys()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var was = Strings.Vietnamese;
+            var bad = new List<string>();
+            DemoProfile.Use();
+            try
+            {
+                foreach (var vietnamese in new[] { true, false })
+                {
+                    Strings.Vietnamese = vietnamese;
+                    var language = vietnamese ? "vi" : "en";
+                    foreach (var screen in MenuScreen.ScreenNames)
+                        Scan(MachineBrigade.Editor.UiShots.BuildMenu(catalog, screen, out _), $"{language} screen-{screen}", bad);
+                    foreach (var screen in MachineBrigade.Editor.UiShots.BattleScreenNames)
+                        Scan(MachineBrigade.Editor.UiShots.BuildBattle(catalog, screen, out _), $"{language} battle-{screen}", bad);
+                }
+            }
+            finally
+            {
+                Strings.Vietnamese = was;
+                DemoProfile.Restore();
+            }
+            Assert.IsEmpty(bad, string.Join("\n", bad.Distinct().Take(80)));
+        }
+
+        private static void Scan(UnityEngine.UIElements.VisualElement root, string where, List<string> bad)
+        {
+            bool Wrong(string text) => !string.IsNullOrEmpty(text) && (Placeholder.IsMatch(text) || RawKey.IsMatch(text) || KeyText.IsMatch(text));
+            root.Query<UnityEngine.UIElements.VisualElement>().ForEach(e =>
+            {
+                if (e is UnityEngine.UIElements.TextElement t && Wrong(t.text)) bad.Add($"{where}: \"{t.text}\"");
+                if (Wrong(e.tooltip)) bad.Add($"{where}: tooltip \"{e.tooltip}\"");
+            });
+        }
+#endif
     }
 }

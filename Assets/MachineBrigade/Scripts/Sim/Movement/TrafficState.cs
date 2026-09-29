@@ -103,5 +103,24 @@ namespace MachineBrigade.Sim.Movement
         // ------------------------------------------------------------ firing-spot booking (see LaneMap.Reserve)
         public bool HasReservation;
         public Vector2 ReservedAt;
+
+        // ------------------------------------------------------------ route failures and the safety net (prompt 12)
+        /// <summary>When a route search last failed for it (no way to the goal found), and to where.</summary>
+        public double PathFailedAt = double.NegativeInfinity;
+        public Vector2 PathFailedGoal;
+
+        /// <summary>When the stuck rules last gave up on its route, and where it was going (its commander usually sends it again).</summary>
+        public double GaveUpAt = double.NegativeInfinity;
+        public Vector2 GaveUpGoal;
+
+        /// <summary>The safety net's watch: where it last made headway and since when (see MovementSystem.Rescue).</summary>
+        public Vector2 RescueAnchor;
+        public double RescueSince = double.NaN;
+
+        /// <summary>Drives through its own side's hulls until then (the safety net's first rung).</summary>
+        public double GhostUntil = double.NegativeInfinity;
+
+        /// <summary>How many times the safety net has had to step in for it (the stuck report counts them).</summary>
+        public int Rescues;
     }
 }

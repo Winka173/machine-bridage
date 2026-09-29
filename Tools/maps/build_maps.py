@@ -3056,27 +3056,29 @@ class Archipelago:
 def swamp_layout():
     """Swamp's hummocks, causeways and bridges (one half; the other is its mirror image). The
     causeways and bridges run square to the 4 m water grid and on it, so their width is exact:
-    12 m of dry ground (four walkable 2 m cells, the obstacle clearance off either bank) for a
-    causeway or a main bridge, 8 m (two cells: a narrow pass) for a wooden footbridge."""
+    20 m of dry ground (five 4 m tiles, eight walkable 2 m cells with the obstacle clearance off
+    either bank) for a causeway or a main bridge, 8 m (two cells: a narrow pass) for a wooden
+    footbridge. (They were 12 m, four cells, until prompt 12: a siege army of heavy hulls going both
+    ways jammed on the main bridges to the centre.)"""
     discs = [(0.0, 0.0, 34.0), (62.0, -86.0, 28.0), (-66.0, -22.0, 16.0), (-22.0, -66.0, 16.0), (-108.0, 30.0, 14.0)]
     causeways = [
-        ([(-68.0, -48.0), (-68.0, -32.0)], 6.0),                  # camp - west hummock
-        ([(-48.0, -68.0), (-32.0, -68.0)], 6.0),                  # camp - south hummock
-        ([(-8.0, -64.0), (10.0, -64.0)], 6.0),                    # south hummock - footbridge ...
-        ([(26.0, -64.0), (46.0, -64.0)], 6.0),                    # ... - near objective
-        ([(-48.0, -104.0), (-10.0, -104.0)], 6.0),                # camp - footbridge ...
-        ([(10.0, -104.0), (42.0, -104.0)], 6.0),                  # ... - near objective
-        ([(-108.0, -48.0), (-108.0, 0.0)], 6.0),                  # the west detour: camp - footbridge ...
-        ([(-108.0, 40.0), (-108.0, 76.0), (-86.0, 76.0)], 6.0),   # ... the hummock beyond - far objective
-        ([(-84.0, -20.0), (-104.0, -20.0)], 6.0),                 # west hummock - the detour
-        ([(-20.0, -84.0), (-20.0, -104.0)], 6.0),                 # south hummock - the camp's causeway
+        ([(-68.0, -48.0), (-68.0, -32.0)], 8.0),                  # camp - west hummock
+        ([(-48.0, -68.0), (-32.0, -68.0)], 8.0),                  # camp - south hummock
+        ([(-8.0, -64.0), (10.0, -64.0)], 8.0),                    # south hummock - footbridge ...
+        ([(26.0, -64.0), (46.0, -64.0)], 8.0),                    # ... - near objective
+        ([(-48.0, -104.0), (-10.0, -104.0)], 8.0),                # camp - footbridge ...
+        ([(10.0, -104.0), (42.0, -104.0)], 8.0),                  # ... - near objective
+        ([(-108.0, -48.0), (-108.0, 0.0)], 8.0),                  # the west detour: camp - footbridge ...
+        ([(-108.0, 40.0), (-108.0, 76.0), (-86.0, 76.0)], 8.0),   # ... the hummock beyond - far objective
+        ([(-84.0, -20.0), (-104.0, -20.0)], 8.0),                 # west hummock - the detour
+        ([(-20.0, -84.0), (-20.0, -104.0)], 8.0),                 # south hummock - the camp's causeway
     ]
     # Bridges across the channels: (one end, the other, half width), a deck on shallows. The main
-    # bridges (12 m, half 6) to the centre, footbridges (8 m, half 4: narrow passes) where a
+    # bridges (20 m) to the centre, footbridges (8 m, half 4: narrow passes) where a
     # causeway crosses a channel.
     bridges = [
-        ((-50.0, -20.0), (-26.0, -20.0), 6.0),                   # west hummock - centre
-        ((-20.0, -50.0), (-20.0, -26.0), 6.0),                   # south hummock - centre
+        ((-50.0, -20.0), (-26.0, -20.0), 10.0),                  # west hummock - centre
+        ((-20.0, -50.0), (-20.0, -26.0), 10.0),                  # south hummock - centre
         ((8.0, -66.0), (28.0, -66.0), 4.0),                      # footbridge to the near objective
         ((-12.0, -102.0), (12.0, -102.0), 4.0),                  # footbridge on the camp's causeway
         ((-106.0, -2.0), (-106.0, 18.0), 4.0),                   # footbridge on the west detour
@@ -3105,11 +3107,14 @@ def swamp(seed=193):
         L.road(5, *a, *b)
     A.lay(L)
 
-    # The sunken temple on the central hummock, its fallen gatehouse, broken walls.
-    L.add('temple_ruin', *diag(0, 12), 0, pad=0.5, road_gap=None, ignore_points=True, must=True)
-    L.add('ruin', *diag(0, -12), 0, pad=0.5, road_gap=None, ignore_points=True, must=True)
+    # The sunken temple on the central hummock, its fallen gatehouse, broken walls. (16 m out, not 12:
+    # 3 m apart on the diagonal, they left the hummock's crossing one cell wide; prompt 12.)
+    L.add('temple_ruin', *diag(0, 16), 0, pad=0.5, road_gap=None, ignore_points=True, must=True)
+    L.add('ruin', *diag(0, -16), 0, pad=0.5, road_gap=None, ignore_points=True, must=True)
     for sign in (1, -1):
-        for x, z, kind, rot in ((-10, 10, 'wall', 0), (10, 10, 'stone_wall', 90), (3, 11, 'wall', 0)):
+        # (The pieces at (3, 11) and the stone wall at (10, 10) closed the hummock's crossing to a cell
+        # or two between the temple and the ruin: the heavy hulls could not pass each other; prompt 12.)
+        for x, z, kind, rot in ((-10, 10, 'wall', 0),):
             L.add(kind, sign * x, sign * z, rot, pad=0.4, road_gap=0.3, ignore_points=True)
         L.near('ruin', *diag(sign * -4, sign * 26), 4, 0, pad=0.6)
     # The stilt villages on the side objectives' hummocks, and huts on the others.
@@ -3632,8 +3637,24 @@ def fortify(L, name, buildings=True):
     if missing:
         raise SystemExit(f'{name} siege: unreachable from the player camp: {missing}')
     if buildings:
+        # Room for the biggest hull (prompt 12 C.2), as the big fortress has it (fortress.open_wide):
+        # routes three cells wide to every objective and gateway mouth, the clutter in the way taken
+        # out. (Only on the real build: the outline is carved round the plan without buildings.)
+        fortress.open_wide(ClassicFortress(L, name), 2 * OUTER_LINE)
         print(f'{name} siege: {len(houses)} fortress buildings')
     return L
+
+
+class ClassicFortress:
+    """What fortress.open_wide needs of the classic corner fortress: its layout, name, the attacker's
+    camp, its objectives, and no hardpoints (its defences are map units)."""
+
+    def __init__(self, L, name):
+        self.L, self.name, self.rally = L, name, L.teams[0]
+        self.blocks, self.slots = [], []
+
+    def targets(self):
+        return siege_targets(self.L)
 
 
 # ---------------------------------------------------------------------------- battlefield dressing

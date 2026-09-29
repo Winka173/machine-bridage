@@ -107,57 +107,120 @@ namespace MachineBrigade.Editor
                 foreach (var pair in _tiers) parts.Add($"{pair.Key} {pair.Value.ParticleCount}p/{pair.Value.ChunkCount}c");
                 parts.Add($"Airburst {_airburst.ParticleCount}p/{_airburst.ChunkCount}c");
                 parts.Add($"Napalm {_napalm.ParticleCount}p/{_napalm.ChunkCount}c");
-                // Enlarged (DECISIONS 11A), High / Low tier.
-                string At(string name, ExplosionEffect e, float grow) => $"{name} x{grow:F2} {e.ParticleCountAt(grow)}p/{e.ParticleCountAt(grow, 0.4f)}p-low";
-                parts.Add(At("ShellHit", _shellHit, BlastSizes.LightTank));
-                parts.Add(At("ShellHit", _shellHit, BlastSizes.MainTank));
-                parts.Add(At("ShellHit", _shellHit, BlastSizes.HeavyTank));
-                parts.Add(At("Large", _tiers[ExplosionTier.Large], 1.3f));
-                parts.Add(At("Huge", _tiers[ExplosionTier.Huge], 1.5f));
-                parts.Add(At("Ultimate", _tiers[ExplosionTier.Ultimate], 1.5f));
-                parts.Add(At("Ultimate cruise", _tiers[ExplosionTier.Ultimate], BlastSizes.Reach(18f)));
-                parts.Add(At("Ultimate MOAB", _tiers[ExplosionTier.Ultimate], BlastSizes.Reach(27f)));
+                // Enlarged (DECISIONS 11A, a tenth bigger again and lingering in 12C), High / Medium / Low tier:
+                // particles, then particle-seconds of the lingering layers (fire, smoke, dust, embers) and of the rest.
+                string At(string name, ExplosionEffect e, float grow, float life = 1f)
+                {
+                    string Tier(float d)
+                    {
+                        var (lingering, quick) = e.ParticleSecondsAt(grow, life, d);
+                        return $"{e.ParticleCountAt(grow, d)}p {lingering:F0}+{quick:F0}ps";
+                    }
+                    return $"{name} x{grow:F2} life {life:F2}: {Tier(1f)} / {Tier(0.75f)} / {Tier(0.4f)}";
+                }
+                var bigger = BlastSizes.Bigger;
+                parts.Add(At("ShellHit 11A light", _shellHit, BlastSizes.LightTank));
+                parts.Add(At("ShellHit 11A main", _shellHit, BlastSizes.MainTank));
+                parts.Add(At("ShellHit 11A heavy", _shellHit, BlastSizes.HeavyTank));
+                parts.Add(At("ShellHit light", _shellHit, BlastSizes.LightTank * bigger, BlastSizes.LightLife));
+                parts.Add(At("ShellHit main", _shellHit, BlastSizes.MainTank * bigger, BlastSizes.MainLife));
+                parts.Add(At("ShellHit heavy", _shellHit, BlastSizes.HeavyTank * bigger, BlastSizes.HeavyLife));
+                parts.Add(At("Siege 11A", _tiers[ExplosionTier.Huge], BlastSizes.HeavyTank));
+                parts.Add(At("Siege", _tiers[ExplosionTier.Huge], BlastSizes.HeavyTank * bigger, BlastSizes.HeavyLife));
+                parts.Add(At("Medium", _tiers[ExplosionTier.Medium], bigger));
+                parts.Add(At("Large GBU-12", _tiers[ExplosionTier.Large], 1.3f * bigger));
+                parts.Add(At("Huge Mk 84", _tiers[ExplosionTier.Huge], 1.5f * bigger));
+                parts.Add(At("Ultimate JDAM", _tiers[ExplosionTier.Ultimate], 1.5f * bigger));
+                parts.Add(At("Ultimate cruise", _tiers[ExplosionTier.Ultimate], BlastSizes.Reach(18f) * bigger));
+                parts.Add(At("Ultimate MOAB", _tiers[ExplosionTier.Ultimate], BlastSizes.Reach(27f) * bigger));
+                parts.Add(At("FPV (Medium)", _tiers[ExplosionTier.Medium], BlastSizes.FpvDrone * bigger));
+                parts.Add(At("Lancet (Medium)", _tiers[ExplosionTier.Medium], BlastSizes.LancetDrone * bigger));
+                parts.Add(At("Shahed (Huge)", _tiers[ExplosionTier.Huge], BlastSizes.HeavyDrone * bigger));
                 return string.Join(", ", parts);
             }
         }
 
-        public void Explode(ExplosionTier tier, Vector3 at, float now, float scale = 1f, float grow = 1f) => _tiers[tier].Play(at, now, scale, grow);
+        /// <summary>
+        /// A blast as EffectsDirector.Explode draws it: above the Small tier a tenth bigger again
+        /// (DECISIONS 12C) unless <paramref name="before"/> (as it was after 11A).
+        /// </summary>
+        public void Explode(ExplosionTier tier, Vector3 at, float now, float scale = 1f, float grow = 1f, float life = 1f, float ring = 0f,
+            bool before = false)
+        {
+            if (!before && tier > ExplosionTier.Small) grow = Mathf.Max(1f, grow) * BlastSizes.Bigger;
+            _tiers[tier].Play(at, now, scale, grow, before ? 1f : life, ring);
+        }
 
         /// <summary>
-        /// A tank's round striking a hull (ProjectileImpact of an armour-piercing shell): before the
-        /// play-test fix a spark spray (a Small blast and sparks), after it the shell-hit blast sized
-        /// by the tank's class. Mirrors EffectsDirector.ImpactOfKind.
+        /// A tank's round striking a hull (ProjectileImpact of an armour-piercing shell): the
+        /// shell-hit blast sized by the tank's class; <paramref name="before"/> draws it as after
+        /// the first play test (11A), otherwise a tenth bigger and lingering by the class (12C).
+        /// Mirrors EffectsDirector.ImpactOfKind.
         /// </summary>
         public void TankHit(string weapon, Vector3 at, float now, bool before)
         {
             var round = _catalog.Weapons[weapon];
             var heavy = round.Damage >= 150f;
             var hit = at + Vector3.up * 0.8f;
-            if (before)
-            {
-                Explode(ExplosionTier.Small, hit, now, heavy ? 0.9f : 0.6f);
-                _muzzle.SparkBurst(at + Vector3.up, Vector3.up + Random.insideUnitSphere * 0.5f, heavy ? 36 : 16, 8f, heavy ? 24f : 16f);
-                return;
-            }
-            var grow = BlastSizes.TankShell(round);
-            _shellHit.Play(hit, now, heavy ? 1f : 0.75f, grow);
+            var grow = BlastSizes.TankShell(round) * (before ? 1f : BlastSizes.Bigger);
+            _shellHit.Play(hit, now, heavy ? 1f : 0.75f, grow, before ? 1f : BlastSizes.ShellLife(round));
             var sparks = heavy ? 36 : 16;
             sparks += Mathf.RoundToInt(sparks * (grow - 1f));
             _muzzle.SparkBurst(hit + Vector3.up * 0.2f, Vector3.up + Random.insideUnitSphere * 0.5f, sparks, 8f * grow, (heavy ? 24f : 16f) * grow);
         }
 
-        /// <summary>An aircraft's bomb landing (ProjectileImpact of a Bomb), before or after the fix. Mirrors EffectsDirector.</summary>
+        /// <summary>
+        /// A drone diving onto its target (ProjectileImpact of a Drone, or the strike drone's
+        /// missile): armour-piercing ones as a HEAT hit, the Shahed as its plain blast, grown by the
+        /// drone after 12C. Mirrors EffectsDirector.
+        /// </summary>
+        public void DroneHit(string weapon, Vector3 at, float now, bool before)
+        {
+            var round = _catalog.Weapons[weapon];
+            var grow = before ? 1f : BlastSizes.Drone(round);
+            if (round.DamageType == DamageType.ArmorPiercing)
+            {
+                Explode(ExplosionTier.Medium, at + Vector3.up * 0.8f, now, 0.8f * round.ImpactScale, grow, before: before);
+                _muzzle.SparkBurst(at + Vector3.up, Vector3.up, 18, 10f, 22f);
+                _emitters.DamageSmoke(at + Vector3.up * 1.2f, 1.6f, 0.08f);
+                return;
+            }
+            Explode(round.ImpactTier, at, now, round.ImpactScale, grow, before: before);
+        }
+
+        /// <summary>
+        /// A high-explosive shell landing (the siege tank's 203 mm, a howitzer's 155 mm): the blast, a
+        /// dust ring and smoke hanging over it; after 12C a tenth bigger and the siege tank's lingering.
+        /// Mirrors EffectsDirector.ImpactOfKind.
+        /// </summary>
+        public void ShellLanding(string weapon, Vector3 at, float now, bool before)
+        {
+            var round = _catalog.Weapons[weapon];
+            var siege = BlastSizes.Ground(round);
+            Explode(round.ImpactTier, at, now, round.ImpactScale, siege, BlastSizes.GroundLife(round), before: before);
+            if (!before) siege *= BlastSizes.Bigger;
+            Ring(at, Mathf.Max(4f, round.SplashRadius) * 2.2f * siege, new Color(0.75f, 0.66f, 0.5f, 0.55f));
+            for (var i = 0; i < 3; i++)
+                _emitters.DamageSmoke(at + Random.insideUnitSphere * 1.2f * siege + Vector3.up * (1f + i) * siege,
+                    Mathf.Max(2f, round.SplashRadius * 0.55f) * round.ImpactScale * Mathf.Pow(siege, 0.65f), 0.1f);
+        }
+
+        /// <summary>An aircraft's bomb landing (ProjectileImpact of a Bomb), as after 11A (before) or after 12C. Mirrors EffectsDirector.</summary>
         public void BombHit(string weapon, Vector3 at, float now, bool before)
         {
             var round = _catalog.Weapons[weapon];
-            var bomb = before ? 1f : BlastSizes.Bomb(round.Id);
-            Explode(round.ImpactTier, at, now, round.ImpactScale, bomb);
+            var bomb = BlastSizes.Bomb(round.Id);
+            Explode(round.ImpactTier, at, now, round.ImpactScale, bomb, before: before);
+            if (!before) bomb *= BlastSizes.Bigger;
             Ring(at, Mathf.Max(6f, round.SplashRadius) * 3f * bomb, new Color(1.2f, 1.1f, 0.9f, 0.7f));
             for (var i = 0; i < 3; i++)
                 _emitters.DamageSmoke(at + (Vector3.up * (1.5f + i * 1.5f) + Random.insideUnitSphere) * bomb,
                     Mathf.Max(2.5f, round.SplashRadius * 0.6f) * Mathf.Pow(bomb, 0.65f), 0.3f);
             if (round.ImpactTier >= ExplosionTier.Medium) _decals.Place(at, (round.ImpactTier >= ExplosionTier.Large ? 5f : 2.2f) * bomb);
         }
+
+        /// <summary>A tinted ground ring, as EffectsDirector's pulses draw them (an EMP's, a mine thudding in).</summary>
+        public void Mark(Vector3 at, float size, Color colour) => Ring(at, size, colour);
 
         private void Ring(Vector3 at, float size, Color colour) =>
             _layers.Shockwave.Emit(new ParticleSystem.EmitParams
@@ -185,7 +248,7 @@ namespace MachineBrigade.Editor
         public void Airburst(Vector3 at, ExplosionTier tier, float now)
         {
             var scale = tier >= ExplosionTier.Huge ? 1.8f : tier >= ExplosionTier.Large ? 1.35f : 1f;
-            _airburst.Play(at, now, scale);
+            _airburst.Play(at, now, scale, BlastSizes.Bigger);
         }
 
         /// <summary>A shell or rocket hitting the ground (ProjectileImpact).</summary>
@@ -199,7 +262,8 @@ namespace MachineBrigade.Editor
 
         /// <summary>
         /// A fire-support impact (StrikeImpact); <paramref name="blast"/> is its radius. Mirrors
-        /// EffectsDirector; <paramref name="before"/> draws it as before the play-test fix.
+        /// EffectsDirector; <paramref name="before"/> draws it as after the first play test (11A):
+        /// after the second (12C) it is a tenth bigger, a cruise missile's ring still on its radius.
         /// </summary>
         public void Strike(string support, ExplosionTier tier, float blast, Vector3 at, float now, bool before = false)
         {
@@ -207,15 +271,15 @@ namespace MachineBrigade.Editor
             var nominal = tier switch { ExplosionTier.Large => 4.5f, ExplosionTier.Huge => 6.5f, ExplosionTier.Ultimate => 20f, _ => 3f };
             var scale = Mathf.Clamp(blast / nominal, 0.9f, 1.6f);
             _catalog.TryGetSupport(support, out var def);
-            var matched = !before && def != null && def.Kind == SupportKind.CruiseMissile && huge;
-            var grow = before ? 1f : matched ? BlastSizes.Reach(blast) : BlastSizes.Strike(def);
+            var matched = def != null && def.Kind == SupportKind.CruiseMissile && huge;
+            var grow = matched ? BlastSizes.Reach(blast) : BlastSizes.Strike(def);
             if (matched) scale = 1f;
-            Explode(tier, at, now, scale, grow);
+            Explode(tier, at, now, scale, grow, ring: matched ? grow : 0f, before: before);
             _decals.Place(at, Mathf.Max(4f, blast * (huge ? 1.4f : 1.1f)) * (matched ? 1f : grow));
             if (tier >= ExplosionTier.Large) _fires.Ignite(at, huge ? 2.2f : tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
             if (support == "napalm_strike")
             {
-                _napalm.Play(at, now);
+                _napalm.Play(at, now, 1f, before ? 1f : BlastSizes.Bigger);
                 for (var i = 0; i < 3; i++)
                 {
                     var scatter = new Vector3(Random.Range(-4f, 4f), 0f, Random.Range(-4f, 4f));
@@ -246,7 +310,7 @@ namespace MachineBrigade.Editor
         /// </summary>
         public void Destroyed(VehicleView view, float now, bool blowsUp = true)
         {
-            if (blowsUp) _kill.Play(view.Position + Vector3.up * 0.8f, now);
+            if (blowsUp) _kill.Play(view.Position + Vector3.up * 0.8f, now, 1f, BlastSizes.Bigger);
             else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
             _wrecks.Add(view, now);
         }
@@ -272,7 +336,7 @@ namespace MachineBrigade.Editor
             _fires.Tick(now, dt);
             while (_wrecks.TryCookOff(now, out var cookOff, out var pop))
             {
-                if (pop) _pop.Play(cookOff, now);
+                if (pop) _pop.Play(cookOff, now, 1f, BlastSizes.Bigger);
                 else Explode(ExplosionTier.Small, cookOff, now);
             }
             var alive = 0;

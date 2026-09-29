@@ -26,7 +26,14 @@ namespace MachineBrigade.Game.Hud
             (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
             (GameModeKind.Endless, "trophy", "mode.endless", "mode.endlessSub"),
             (GameModeKind.Survival, "people", "mode.survival", "mode.survivalSub"),
+            // Also on Operations (test feedback 2, DECISIONS 12E); it fights on the chosen map's sandbox.
+            // The weekly fortress stays on Operations only: its map and stage are the week's, not the picker's.
+            (GameModeKind.BossRush, "skull", "mode.bossrush", "mode.bossrushSub"),
         };
+
+        /// <summary>A mode's one line under its name in the picker (Boss Rush says how many bosses).</summary>
+        private static string ModeLine(GameModeKind kind, string key) =>
+            kind == GameModeKind.BossRush ? Strings.Format(key, MachineBrigade.Sim.Modes.BossRushRules.Kinds.Count) : Strings.Get(key);
 
         /// <summary>The modes the home screen's mode dropdown offers (skirmishes and challenges), for the menu's coverage test.</summary>
         internal static IEnumerable<GameModeKind> BattleModes
@@ -38,7 +45,7 @@ namespace MachineBrigade.Game.Hud
         }
 
         private static readonly (AiDifficulty level, string key)[] Difficulties =
-            { (AiDifficulty.Easy, "menu.easy"), (AiDifficulty.Normal, "menu.normal"), (AiDifficulty.Hard, "menu.hard") };
+            { (AiDifficulty.Easy, "menu.easy"), (AiDifficulty.Normal, "menu.normal"), (AiDifficulty.Hard, "menu.hard"), (AiDifficulty.VeryHard, "menu.veryhard") };
 
         private static readonly (WeatherKind kind, string key)[] Weathers =
         {
@@ -51,6 +58,7 @@ namespace MachineBrigade.Game.Hud
         private VisualElement _homeUnlocks, _homeDailyRows, _homeDeckStrip;
         private KitProgress _homeChapterBar;
         private KitDropdown _modeDrop, _mapDrop, _difficultyDrop, _weatherDrop;
+        private readonly List<KitChip> _basePlanChips = new();
         private List<MapInfo> _homeMaps;
 
         private void BuildHomePage()
@@ -92,7 +100,7 @@ namespace MachineBrigade.Game.Hud
             var launch = Kit.Box("fc-home__launch");
             var grid = Kit.Box("fc-home__grid");
             var modes = new List<KitOption>();
-            foreach (var (_, _, name, sub) in QuickModes) modes.Add(new KitOption(Strings.Get(name), Strings.Get(sub)));
+            foreach (var (kind, _, name, sub) in QuickModes) modes.Add(new KitOption(Strings.Get(name), ModeLine(kind, sub)));
             _modeDrop = new KitDropdown(Strings.Get("setup.mode"), modes, 0, i => Set(() => MatchSettings.Mode = QuickModes[i].kind));
             grid.Add(_modeDrop);
             _homeMaps = new List<MapInfo>();
@@ -122,6 +130,17 @@ namespace MachineBrigade.Game.Hud
             var deck = Kit.Box(KitPanel.SurfaceClass + " fc-surface--field fc-home__deck", PickingMode.Position);
             var deckHead = Kit.Box("fc-home__deck-head");
             deckHead.Add(Kit.Text(Kit.Caps(Strings.Get("army.deck")), "fc-panel-title fc-row-text"));
+            // Prompt 14 G4: the base set taken into the battle, switched here as on the Base screen.
+            var plans = Kit.Box("fc-home__plans");
+            plans.Add(Kit.Caption(Strings.Get("setup.base")));
+            for (var i = 0; i < PlayerProfile.BasePlanCount; i++)
+            {
+                var index = i;
+                var chip = new KitChip(Strings.Format("camp.plan", i + 1), i == PlayerProfile.ActiveBasePlan, () => Set(() => PlayerProfile.ActiveBasePlan = index));
+                plans.Add(chip);
+                _basePlanChips.Add(chip);
+            }
+            deckHead.Add(plans);
             deckHead.Add(new KitButton(ButtonTier.Text, Strings.Get("home.editDeck"), () =>
             {
                 _armyView = ArmyView.Deck;
@@ -150,7 +169,8 @@ namespace MachineBrigade.Game.Hud
 
         private void Deploy()
         {
-            if (MatchSettings.Mode == GameModeKind.Campaign) MatchSettings.Mode = GameModeKind.Conquest;
+            // What the picker shows is what starts (a campaign run or the weekly fortress left behind reads as Conquest there).
+            MatchSettings.Mode = QuickModes[_modeDrop.Selected].kind;
             MatchSettings.Save();
             _play();
         }
@@ -206,6 +226,11 @@ namespace MachineBrigade.Game.Hud
             _mapDrop.Select(Math.Max(0, map), false);
             _difficultyDrop.Select(Array.FindIndex(Difficulties, d => d.level == MatchSettings.Difficulty), false);
             _weatherDrop.Select(Math.Max(0, Array.FindIndex(Weathers, w => w.kind == MatchSettings.Weather)), false);
+            for (var i = 0; i < _basePlanChips.Count; i++)
+            {
+                _basePlanChips[i].Selected = i == PlayerProfile.ActiveBasePlan;
+                _basePlanChips[i].tooltip = BasePlanLine(i);
+            }
 
             // The deck: eight vehicles, two supports; a short deck still deploys, with a note.
             _homeDeckStrip.Clear();
@@ -278,6 +303,13 @@ namespace MachineBrigade.Game.Hud
             return new KitVehicleCard(CardData(id), () => OpenDetail(id), compact, showLevel);
         }
 
+        /// <summary>A base set in a line: its towers and modules, and how many maps it sets up on their own.</summary>
+        private static string BasePlanLine(int index)
+        {
+            var plan = PlayerProfile.BasePlanAt(index);
+            return Strings.Format("camp.planLine", plan.Places.Count, plan.Custom.Count);
+        }
+
         /// <summary>A card's picture and numbers for the kit's vehicle card: vehicles from the catalog, supports by hand.</summary>
         private VehicleCardData CardData(string id)
         {
@@ -292,6 +324,7 @@ namespace MachineBrigade.Game.Hud
             {
                 Id = id,
                 Name = Strings.Card(id),
+                ShortName = Strings.Short(id),
                 Branch = KitBranch.Support,
                 ClassIcon = CardIcons.For(id),
                 Cp = CostOf(id),

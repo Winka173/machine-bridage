@@ -229,7 +229,7 @@ namespace MachineBrigade.Sim.Economy
             if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
             if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
             if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
-            if (def.Flying && AircraftCount(team) >= TeamEconomy.MaxAircraft) return CommandResult.Rejected(CommandError.AirAtCapacity);
+            if (def.Flying && AircraftCount(team) >= AircraftCap(team)) return CommandResult.Rejected(CommandError.AirAtCapacity);
 
             // Charged exactly once, when accepted (T03).
             economy.Cp -= price;
@@ -306,9 +306,13 @@ namespace MachineBrigade.Sim.Economy
                 economy.ArmyCp = ArmyCp(economy.Team);
                 economy.VehicleCount = VehicleCount(economy.Team);
             }
+            StepUnderdog();
             foreach (var economy in _teams.Values)
             {
-                var target = _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
+                // Prompt 13 H.12: a mode with the once-a-match help for the side behind gives its income
+                // boost only to the side that got it; the others keep the old sliding boost.
+                var target = Underdog != null ? (UnderdogTeam == economy.Team ? Underdog.Income : 1f)
+                    : _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
                 economy.CatchUp += (target - economy.CatchUp) * MathF.Min(1f, dt / CatchUpSettle);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
             }
@@ -430,6 +434,18 @@ namespace MachineBrigade.Sim.Economy
             foreach (var (pendingTeam, defId, _, landing) in _pending)
                 if (pendingTeam == team && !_allyLandings.Contains(landing)) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
+        }
+
+        /// <summary>
+        /// The most aircraft a side may have up (and on the way): <see cref="TeamEconomy.MaxAircraft"/>, and
+        /// one more for each landing pad of its that took the hangar branch (prompt 13 F.1).
+        /// </summary>
+        public int AircraftCap(int team)
+        {
+            var cap = TeamEconomy.MaxAircraft;
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Team == team && v.Def.Utility is { AirCap: > 0 } u) cap += u.AirCap;
+            return cap;
         }
 
         /// <summary>Aircraft a side has up, plus those on the way.</summary>

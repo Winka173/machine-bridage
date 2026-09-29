@@ -1,0 +1,19 @@
+{
+  "map": "capital",
+  "mode": "Defend",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 667412d4 map 7149bd77 app 0.1.0",
+  "ticks": 6272,
+  "journal": [],
+  "records": [
+    {"vehicle": 858, "def": "titan_tank", "team": 0, "startTick": 2930, "start": 146.5, "end": 159, "seconds": 12.5, "x": 63.032, "y": 109.585, "goalX": 51, "goalY": 119, "order": "AttackMove", "cause": "OffRoute", "detail": "to (65.0,113.0) past container_stack", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@4.4 aa_vehicle(moving)@3.9 ifv(moving)@6.6 container_stack@6"},
+    {"vehicle": 866, "def": "siege_tank", "team": 0, "startTick": 3030, "start": 151.5, "end": 160.5, "seconds": 9, "x": 59.744, "y": 122.496, "goalX": 82.191, "goalY": 49.13, "order": "Move", "cause": "BlockedByFriend", "detail": "ifv#909 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@7.7 aa_vehicle(moving)@6.2 aa_vehicle(moving)@9.8 ifv(moving)@4.9 ifv(moving)@9.0 ifv(moving)@6.5 container_stack@9"},
+    {"vehicle": 864, "def": "siege_tank", "team": 0, "startTick": 3070, "start": 153.5, "end": 163, "seconds": 9.5, "x": 54.026, "y": 122.991, "goalX": 66.565, "goalY": 48.492, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#899 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@5.3 ifv(moving)@6.9 ifv(moving)@5.3"},
+    {"vehicle": 922, "def": "aa_vehicle", "team": 0, "startTick": 3750, "start": 187.5, "end": 196.5, "seconds": 9, "x": 116.085, "y": 138.009, "goalX": 118.408, "goalY": 114.734, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#858 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@5.2 aa_vehicle(moving)@9.2 aa_vehicle(moving)@9.7 aa_vehicle(moving)@4.0 base_wall@6 base_wall@6"},
+    {"vehicle": 917, "def": "armored_bulldozer", "team": 1, "startTick": 4500, "start": 225, "end": 233.5, "seconds": 8.5, "x": 102.708, "y": -23.638, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "Unknown", "detail": "speed 2.7 strikes 2", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 926, "def": "aa_vehicle", "team": 0, "startTick": 5090, "start": 254.5, "end": 264, "seconds": 9.5, "x": 133.278, "y": 145.998, "goalX": 118.305, "goalY": 137.974, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#919", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@4.2"},
+    {"vehicle": 938, "def": "heavy_tank", "team": 0, "startTick": 5260, "start": 263, "end": 279.5, "seconds": 16.5, "x": 136.001, "y": 125.372, "goalX": 118.305, "goalY": 137.974, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mobile_fortress#919 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(parked)@7.2"}
+  ],
+  "rescues": []
+}

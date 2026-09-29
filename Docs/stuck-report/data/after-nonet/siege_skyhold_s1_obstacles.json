@@ -1,0 +1,14 @@
+{
+  "map": "skyhold",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 10feadf3 app 0.1.0",
+  "ticks": 11662,
+  "journal": [],
+  "records": [
+    {"vehicle": 509, "def": "heavy_tank", "team": 0, "startTick": 2480, "start": 124, "end": 133, "seconds": 9, "x": 24, "y": 35.466, "goalX": 57, "goalY": 57, "order": "Attack", "cause": "BlockedByObstacle", "detail": "wreck_tank", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "artillery(parked)@5.7 wreck_tank@6"},
+    {"vehicle": 535, "def": "twin_tank", "team": 1, "startTick": 3180, "start": 159, "end": 169, "seconds": 10, "x": 93.881, "y": 109.144, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "mobile_fortress#532 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(parked)@7.8"}
+  ],
+  "rescues": []
+}

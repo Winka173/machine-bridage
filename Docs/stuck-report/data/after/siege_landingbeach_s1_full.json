@@ -1,0 +1,17 @@
+{
+  "map": "landingbeach",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "full",
+  "dataVersion": "balance 3e925051 map b90df8da app 0.1.0",
+  "ticks": 5790,
+  "journal": [],
+  "records": [
+    {"vehicle": 892, "def": "heavy_tank", "team": 0, "startTick": 2170, "start": 108.5, "end": 117, "seconds": 8.5, "x": -81.097, "y": -82.965, "goalX": -93.646, "goalY": -92.754, "order": "Move", "cause": "BlockedByFriend", "detail": "heavy_tank#886 moving", "area": "field", "lanes": "road+route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@8.4 heavy_tank(moving)@7.0"},
+    {"vehicle": 918, "def": "command_vehicle", "team": 1, "startTick": 4380, "start": 219, "end": 228.5, "seconds": 9.5, "x": 107.298, "y": 116.333, "goalX": 94.485, "goalY": 84.699, "order": "Idle", "cause": "BlockedByFriend", "detail": "mobile_fortress#913 moving", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "fpv_carrier(parked)@7.8 counter_battery_radar(moving)@4.8 elite_heavy_tank(parked)@9.6"},
+    {"vehicle": 927, "def": "artillery", "team": 0, "startTick": 5390, "start": 269.5, "end": 279, "seconds": 9.5, "x": 62.148, "y": 38.51, "goalX": 53.299, "goalY": 59.752, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#923 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_tank(moving)@5.2 main_battle_tank(parked)@9.7 siege_tank(moving)@7.5 aa_vehicle(moving)@4.4 fortress_gate@9"}
+  ],
+  "rescues": [
+    "5554,886,heavy_tank,0,ghost,58.2,35.2,58.2,35.2"
+  ]
+}

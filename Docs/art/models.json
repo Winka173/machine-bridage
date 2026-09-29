@@ -43,6 +43,10 @@
     "file": "aps_tank.glb",
     "triangles": 8164
   },
+  "armed_truck": {
+    "file": "armed_truck.glb",
+    "triangles": 2916
+  },
   "armored_bulldozer": {
     "file": "armored_bulldozer.glb",
     "triangles": 9418
@@ -141,7 +145,11 @@
   },
   "behemoth": {
     "file": "behemoth.glb",
-    "triangles": 17972
+    "triangles": 18716
+  },
+  "behemoth_tempest": {
+    "file": "behemoth_tempest.glb",
+    "triangles": 16536
   },
   "billboard": {
     "file": "billboard.glb",
@@ -301,7 +309,7 @@
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
-    "triangles": 18242
+    "triangles": 19436
   },
   "earth_borer": {
     "file": "earth_borer.glb",
@@ -445,7 +453,7 @@
   },
   "heavy_aa": {
     "file": "heavy_aa.glb",
-    "triangles": 8676
+    "triangles": 8220
   },
   "heavy_attack_heli": {
     "file": "heavy_attack_heli.glb",
@@ -577,7 +585,7 @@
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
-    "triangles": 10740
+    "triangles": 11304
   },
   "mesa": {
     "file": "mesa.glb",
@@ -777,7 +785,7 @@
   },
   "sam_launcher": {
     "file": "sam_launcher.glb",
-    "triangles": 8364
+    "triangles": 8408
   },
   "sandbag_wall": {
     "file": "sandbag_wall.glb",
@@ -830,6 +838,10 @@
   "silver_bug": {
     "file": "silver_bug.glb",
     "triangles": 24035
+  },
+  "sky_fortress": {
+    "file": "sky_fortress.glb",
+    "triangles": 10044
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",

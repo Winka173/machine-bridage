@@ -4,6 +4,7 @@ using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Rendering;
 using MachineBrigade.Sim;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Events;
 using MachineBrigade.Sim.Modes;
 using UnityEngine;
@@ -16,8 +17,9 @@ namespace MachineBrigade.Game.Views
     /// <summary>
     /// A siege fortress's set pieces as the player sees them (the simulation decides, this draws):
     /// <list type="bullet">
-    /// <item><description>the shield dome over the keep while a generator stands, shimmering, and
-    /// its collapse in a flash when the last one falls;</description></item>
+    /// <item><description>the shield dome over the keep while a generator stands (the shared shield
+    /// look, <see cref="ShieldVisual"/>): rounds landing on it ripple it, it flickers as the
+    /// generators are hurt, and it shatters when the last one falls;</description></item>
     /// <item><description>the line in: a rail line with its train, or a runway with the transport
     /// that lands on it, rolls to its stop, lets the vehicles out and takes off again;</description></item>
     /// <item><description>at night, searchlights sweeping from the fortress's floodlight masts,
@@ -46,10 +48,14 @@ namespace MachineBrigade.Game.Views
         private readonly List<Material> _owned = new();
         private readonly int _playerTeam;
 
-        private Transform _dome;
-        private Material _domeMaterial;
+        private ShieldVisual _dome;
         private bool _domeShown;
-        private float _domeFallAt = -1f;
+
+        /// <summary>The fortress's shield generators, their full health together, and what the view last saw of them.</summary>
+        private readonly List<Prop> _generators = new();
+        private float _generatorsFull, _generatorsLast = 1f;
+        private int _generatorsStanding;
+        private float _surgeUntil = -1f, _surge;
 
         private readonly List<Searchlight> _lights = new();
         private Material _coneMaterial, _poolMaterial;
@@ -126,51 +132,27 @@ namespace MachineBrigade.Game.Views
         // ------------------------------------------------------------------ the shield dome
 
         /// <summary>
-        /// A flattened hemisphere of energy: a faint skin, brighter lattice lines (every fourth
-        /// meridian and third parallel) and a glowing rim where it meets the ground.
+        /// The dome over the keep, exactly the simulation's radius (and half as high): blue when
+        /// it is ours (Defend), red-orange when it is the enemy's (Siege).
         /// </summary>
         private void BuildDome()
         {
             if (_mode.DomeRadius <= 1f) return;
-            const int segments = 48, rings = 12;
-            var vertices = new List<Vector3>();
-            var colours = new List<Color>();
-            var uvs = new List<UnityEngine.Vector2>();
-            var triangles = new List<int>();
-            for (var r = 0; r <= rings; r++)
-            {
-                var polar = r / (float)rings * Mathf.PI * 0.5f;
-                for (var s = 0; s <= segments; s++)
-                {
-                    var azimuth = s / (float)segments * Mathf.PI * 2f;
-                    vertices.Add(new Vector3(Mathf.Sin(polar) * Mathf.Cos(azimuth), Mathf.Cos(polar), Mathf.Sin(polar) * Mathf.Sin(azimuth)));
-                    var lattice = s % 4 == 0 || r % 3 == 0 ? 0.55f : 0f;
-                    var rim = r >= rings - 1 ? 0.6f : 0f;
-                    var alpha = 0.07f + lattice * 0.5f + rim + 0.12f * (r / (float)rings);
-                    colours.Add(Primitives.Linear(new Color(0.35f, 0.82f, 1f, Mathf.Clamp01(alpha))));
-                    uvs.Add(new UnityEngine.Vector2(s / (float)segments, r / (float)rings));
-                }
-            }
-            for (var r = 0; r < rings; r++)
-                for (var s = 0; s < segments; s++)
-                {
-                    var a = r * (segments + 1) + s;
-                    var b = a + segments + 1;
-                    triangles.AddRange(new[] { a, a + 1, b, a + 1, b + 1, b });
-                }
-            var mesh = new Mesh { name = "Shield Dome" };
-            mesh.SetVertices(vertices);
-            mesh.SetColors(colours);
-            mesh.SetUVs(0, uvs);
-            mesh.SetTriangles(triangles, 0);
-            mesh.RecalculateBounds();
-            _domeMaterial = Additive("Shield Dome", 1.2f);
-            _dome = Place("Shield Dome", Own(mesh), _domeMaterial).transform;
+            var r = _mode.DomeRadius;
+            _dome = new ShieldVisual("Shield Dome", _root.transform, ShieldVisual.Shape.Dome, r);
             var c = _mode.DomeCentre;
-            _dome.position = new Vector3(c.X, 0f, c.Y);
-            _dome.localScale = new Vector3(_mode.DomeRadius, _mode.DomeRadius * DomeHeight, _mode.DomeRadius);
+            _dome.Transform.position = new Vector3(c.X, 0f, c.Y);
+            _dome.Transform.localScale = new Vector3(r, r * DomeHeight, r);
+            _dome.SetSide(_mode.Defender == _playerTeam);
+            foreach (var prop in _world.Props)
+            {
+                if (!prop.IsAlive || prop.Def.Id != "shield_generator") continue;
+                _generators.Add(prop);
+                _generatorsFull += prop.MaxHp;
+            }
+            _generatorsStanding = _generators.Count;
             _domeShown = _mode.DomeUp;
-            _dome.gameObject.SetActive(_domeShown);
+            if (_domeShown) _dome.Raise(Time.time, 0f);
         }
 
         private void AnimateDome(float time)
@@ -179,36 +161,64 @@ namespace MachineBrigade.Game.Views
             var r = _mode.DomeRadius;
             if (_domeShown && !_mode.DomeUp)
             {
-                // The last generator gone: the dome flares white-hot, swells and is gone.
+                // The last generator gone: the dome flares and shatters, its tiles flying off,
+                // and a ring of its light runs out over the ground.
                 _domeShown = false;
-                _domeFallAt = time;
-                var at = new Vector3(_mode.DomeCentre.X, 1f, _mode.DomeCentre.Y);
-                _effects.Blast(ExplosionTier.Ultimate, at + Vector3.up * r * 0.4f, 1.3f);
-                _effects.Shockwave(at, r * 2.6f, new Color(0.5f, 1.8f, 3f, 1f));
-                _effects.Shockwave(at, r * 1.8f, new Color(1.6f, 2.2f, 3f, 1f));
+                _dome.Collapse(time);
+                var at = new Vector3(_mode.DomeCentre.X, 0.3f, _mode.DomeCentre.Y);
+                var colour = ShieldVisual.SideColour(_mode.Defender == _playerTeam);
+                _effects.Shockwave(at, r * 2.4f, new Color(colour.r * 2.4f, colour.g * 2.4f, colour.b * 2.4f, 1f));
+                _effects.Shockwave(at, r * 1.6f, new Color(1.8f, 1.8f, 1.9f, 0.8f));
+                _effects.Jolt(at + Vector3.up * r * 0.3f, 0.45f, 0.12f);
             }
-            if (_domeFallAt >= 0f)
+            else if (!_domeShown && _mode.DomeUp)
             {
-                var t = (time - _domeFallAt) / 0.9f;
-                if (t >= 1f)
-                {
-                    _dome.gameObject.SetActive(false);
-                    _domeFallAt = -1f;
-                    return;
-                }
-                _domeMaterial.SetFloat("_Intensity", Mathf.Lerp(4.5f, 0f, t * t));
-                var grow = 1f + 0.18f * Mathf.Sqrt(t);
-                _dome.localScale = new Vector3(r * grow, r * DomeHeight * grow, r * grow);
-                return;
+                _domeShown = true;
+                _dome.Raise(time);
             }
-            if (!_domeShown)
+            if (_domeShown) _dome.Flicker = GeneratorFlicker(time);
+            _dome.Tick(time);
+        }
+
+        /// <summary>
+        /// How much the dome flickers: more the more its generators are hurt, a burst when one is
+        /// hit, and a longer surge when one is destroyed while the others hold it up.
+        /// </summary>
+        private float GeneratorFlicker(float time)
+        {
+            if (_generators.Count == 0 || _generatorsFull <= 0f) return 0f;
+            var health = 0f;
+            var standing = 0;
+            foreach (var g in _generators)
             {
-                if (_dome.gameObject.activeSelf) _dome.gameObject.SetActive(false);
-                return;
+                if (!g.IsAlive) continue;
+                health += g.Hp;
+                standing++;
             }
-            // The field shimmers and slowly turns.
-            _domeMaterial.SetFloat("_Intensity", 1.05f + 0.25f * Mathf.Sin(time * 2.3f) + 0.1f * Mathf.Sin(time * 7.1f));
-            _dome.rotation = Quaternion.Euler(0f, time * 6f, 0f);
+            var share = health / _generatorsFull;
+            if (standing < _generatorsStanding) Surge(time, 1f, 1.1f);
+            else if (share < _generatorsLast - 1e-4f) Surge(time, 0.7f, 0.25f);
+            _generatorsStanding = standing;
+            _generatorsLast = share;
+            var flicker = Mathf.Clamp01((1f - share) * 0.8f);
+            if (time < _surgeUntil) flicker = Mathf.Max(flicker, _surge);
+            return flicker;
+        }
+
+        private void Surge(float time, float amount, float seconds)
+        {
+            if (time < _surgeUntil && _surge > amount) return;
+            _surge = amount;
+            _surgeUntil = time + seconds;
+        }
+
+        /// <summary>A round or a strike landing on the dome, or inside it: a ripple where it struck.</summary>
+        private void RippleDome(SimEvent e, float now)
+        {
+            if (!_domeShown || _dome == null) return;
+            var d = System.Numerics.Vector2.Distance(e.Position, _mode.DomeCentre);
+            if (d > _mode.DomeRadius * 1.05f) return;
+            _dome.Hit(new Vector3(e.Position.X, 0.5f, e.Position.Y), now, default, e.Kind == SimEventKind.StrikeImpact ? 1.5f : 1f);
         }
 
         // ------------------------------------------------------------------ the line in
@@ -291,6 +301,7 @@ namespace MachineBrigade.Game.Views
             {
                 if (e.Kind == SimEventKind.Arrival) StartRun(e, now);
                 else if (e.Kind == SimEventKind.FortressAlert && e.DefId != null && e.DefId.EndsWith("gunFire")) GunBlast(e.Position);
+                else if (e.Kind is SimEventKind.ProjectileImpact or SimEventKind.StrikeImpact && !e.Airborne) RippleDome(e, now);
             }
         }
 

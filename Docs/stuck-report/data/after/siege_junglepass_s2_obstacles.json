@@ -1,0 +1,22 @@
+{
+  "map": "junglepass",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 4b12d3e3 app 0.1.0",
+  "ticks": 12466,
+  "journal": [],
+  "records": [
+    {"vehicle": 929, "def": "mine_layer", "team": 1, "startTick": 3510, "start": 175.5, "end": 187, "seconds": 11.5, "x": 104.083, "y": 118.519, "goalX": 119, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "behind mobile_fortress#961", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 1, "rescueKinds": "ghost", "nearby": "ammo_depot(fixed)@7.1 scout_jeep(moving)@9.2 engineer_vehicle(moving)@4.3 ew_jammer(moving)@8.5"},
+    {"vehicle": 939, "def": "rocket_technical", "team": 1, "startTick": 3920, "start": 196, "end": 205, "seconds": 9, "x": 101.276, "y": 109.521, "goalX": 102.076, "goalY": 100.435, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#961", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@5.4 command_vehicle(moving)@8.4 rocket_technical(parked)@5.3 mobile_fortress(parked)@7.8"},
+    {"vehicle": 922, "def": "command_vehicle", "team": 1, "startTick": 3930, "start": 196.5, "end": 208, "seconds": 11.5, "x": 92.974, "y": 108.011, "goalX": 104.572, "goalY": 102.402, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#961", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 1, "rescueKinds": "ghost", "nearby": "rocket_technical(moving)@3.1 rocket_technical(moving)@8.4"},
+    {"vehicle": 904, "def": "engineer_vehicle", "team": 1, "startTick": 3940, "start": 197, "end": 205.5, "seconds": 8.5, "x": 106.659, "y": 110.142, "goalX": 103.567, "goalY": 103.821, "order": "Move", "cause": "YieldWait", "detail": "behind mobile_fortress#961", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "scout_jeep(parked)@6.7 rocket_technical(parked)@5.2 mobile_fortress(parked)@9.6"},
+    {"vehicle": 938, "def": "rocket_technical", "team": 1, "startTick": 4080, "start": 204, "end": 212.5, "seconds": 8.5, "x": 97.126, "y": 107.426, "goalX": 104.271, "goalY": 100.255, "order": "Move", "cause": "BlockedByFriend", "detail": "ew_jammer#913 moving", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "ew_jammer(moving)@5.7 rocket_technical(moving)@7.6 mobile_fortress(parked)@7.4"},
+    {"vehicle": 1015, "def": "siege_tank", "team": 0, "startTick": 7690, "start": 384.5, "end": 393, "seconds": 8.5, "x": 44.078, "y": 35.409, "goalX": 98.659, "goalY": 74.79, "order": "Move", "cause": "Unknown", "detail": "speed 2.7 strikes 1", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "armored_car(moving)@9.5 main_battle_tank(moving)@7.4 wreck_car@8"},
+    {"vehicle": 1094, "def": "ifv", "team": 0, "startTick": 11840, "start": 592, "end": 601, "seconds": 9, "x": -7.314, "y": 5.097, "goalX": 26.594, "goalY": 44.76, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "siege_tank#1084 moving", "area": "field", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "light_tank(moving)@6.0 siege_tank(moving)@4.7 siege_tank(moving)@5.6"}
+  ],
+  "rescues": [
+    "3711,929,mine_layer,1,ghost,104.2,118.0,104.2,118.0",
+    "4128,922,command_vehicle,1,ghost,93.1,107.7,93.1,107.7"
+  ]
+}

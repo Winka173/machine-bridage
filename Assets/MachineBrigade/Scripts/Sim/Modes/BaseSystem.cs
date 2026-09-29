@@ -117,6 +117,12 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Who owns a capture point (set by the mode; -1 neutral), for outposts.</summary>
         public Func<string, int>? PointOwner { get; set; }
 
+        /// <summary>
+        /// Diagnostics only (the stuck report's batch runs, prompt 12): replaces the loadout a mode
+        /// gives a side's camp or fortress (team, the mode's loadout; null keeps it). Never set in play.
+        /// </summary>
+        public Func<int, BaseLoadout, BaseLoadout?>? LoadoutFor { get; set; }
+
         /// <summary>The capture points that may be set up as outposts (a campaign mission's list; empty: none).</summary>
         public HashSet<string> OutpostPoints { get; } = new();
 
@@ -148,6 +154,7 @@ namespace MachineBrigade.Sim.Modes
         public TeamBase Establish(int team, BaseLoadout loadout, BaseRole role, int? siteTeam = null)
         {
             var catalog = _world.Catalog;
+            if (LoadoutFor?.Invoke(team, loadout) is { } swapped) loadout = swapped;
             var fitted = loadout.Fitted(catalog);
             var b = new TeamBase(team, role, fitted);
             _bases[team] = b;
@@ -178,7 +185,12 @@ namespace MachineBrigade.Sim.Modes
                     {
                         if (utility++ >= catalog.Base.UtilitySlots(fitted.HqLevel)) continue;
                         var state = new HardpointState(def, i);
-                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1])) state.Tower = fitted.Utilities[utility - 1];
+                        // A module past rank 7 works as its chosen branch (the landing pad's hangar or service, prompt 13 F.1).
+                        if (utility - 1 < fitted.Utilities.Count && !string.IsNullOrEmpty(fitted.Utilities[utility - 1]))
+                        {
+                            var module = fitted.Utilities[utility - 1];
+                            state.Tower = catalog.Vehicles.ContainsKey(fitted.DefFor(module)) ? fitted.DefFor(module) : module;
+                        }
                         b.Slots.Add(state);
                         continue;
                     }
@@ -209,6 +221,7 @@ namespace MachineBrigade.Sim.Modes
             IReadOnlyList<float>? health = null, IReadOnlyList<float>? damage = null, float manning = 1f)
         {
             var catalog = _world.Catalog;
+            if (LoadoutFor?.Invoke(team, loadout) is { } swapped) loadout = swapped;
             var fitted = loadout.Fitted(catalog);
             var b = new TeamBase(team, role, fitted) { HqPosition = hq };
             _bases[team] = b;
@@ -225,7 +238,7 @@ namespace MachineBrigade.Sim.Modes
                 var id = def.Kind == HardpointKind.Utility ? fitted.UtilityForFortress(utility++) : fitted.TowerForFortress(def.Class, seen[(int)def.Class]++);
                 // An undermanned fortress (an easier one) leaves some tower hardpoints of its outer rings empty, spread evenly.
                 if (def.Kind == HardpointKind.Tower && ring < 3 && manning < 1f && Unmanned(i, manning)) id = null;
-                if (id != null && def.Kind == HardpointKind.Tower && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);
+                if (id != null && catalog.Vehicles.ContainsKey(fitted.DefFor(id))) id = fitted.DefFor(id);
                 if (id != null && catalog.Vehicles.ContainsKey(id)) state.Tower = id;
                 b.Slots.Add(state);
             }

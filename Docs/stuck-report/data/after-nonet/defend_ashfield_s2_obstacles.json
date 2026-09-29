@@ -1,0 +1,13 @@
+{
+  "map": "ashfield",
+  "mode": "Defend",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 91c11044 app 0.1.0",
+  "ticks": 10801,
+  "journal": [],
+  "records": [
+    {"vehicle": 452, "def": "siege_tank", "team": 0, "startTick": 1020, "start": 51, "end": 62.5, "seconds": 11.5, "x": 86.979, "y": 99.995, "goalX": 4.293, "goalY": 74.959, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#450 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@9.9 armored_car(parked)@6.2 aa_vehicle(moving)@5.0 base_wall@5"}
+  ],
+  "rescues": []
+}

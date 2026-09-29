@@ -1,0 +1,16 @@
+{
+  "map": "ashfield",
+  "mode": "Defend",
+  "seed": 2,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map 91c11044 app 0.1.0",
+  "ticks": 10801,
+  "journal": [],
+  "records": [
+    {"vehicle": 452, "def": "siege_tank", "team": 0, "startTick": 1020, "start": 51, "end": 62.5, "seconds": 11.5, "x": 86.979, "y": 99.995, "goalX": 4.293, "goalY": 74.959, "order": "Move", "cause": "BlockedByFriend", "detail": "aa_vehicle#450 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_turret(fixed)@9.9 armored_car(parked)@6.2 aa_vehicle(moving)@5.0 base_wall@5"},
+    {"vehicle": 562, "def": "aa_vehicle", "team": 0, "startTick": 6970, "start": 348.5, "end": 357, "seconds": 8.5, "x": 57.91, "y": 105.925, "goalX": 47.734, "goalY": 117.592, "order": "AttackMove", "cause": "YieldWait", "detail": "behind armored_car#557", "area": "fortress+gate", "lanes": "narrow+nopark", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "gun_pit(fixed)@6.3 main_battle_tank(moving)@5.3 light_tank(parked)@9.8 main_battle_tank(moving)@8.4 light_tank(moving)@8.8 light_tank(parked)@8.6 armored_car(moving)@6.9 scout_jeep(parked)@7.4 aa_vehicle(moving)@8.9 shield_generator@5"}
+  ],
+  "rescues": [
+    "6592,548,light_tank,0,ghost,52.8,106.0,52.8,106.0"
+  ]
+}

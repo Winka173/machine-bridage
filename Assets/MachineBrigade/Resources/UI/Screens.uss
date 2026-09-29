@@ -24,7 +24,8 @@
 .fc-top__rank > .fc-icon { width: 34px; height: 34px; margin-right: var(--fc-space-3); --icon-color: var(--fc-text); }
 .fc-top__rank-text { width: 250px; }
 .fc-top__xp { margin-top: var(--fc-space-1); }
-.fc-top__xp-text { margin-top: var(--fc-space-1); }
+.fc-top__xp-text { margin-top: var(--fc-space-1); white-space: nowrap; }
+.fc-text-large .fc-top__rank-text { width: 330px; }
 .fc-top__gear { margin-left: var(--fc-space-4); }
 .fc-menu-nav { position: absolute; left: 0; top: var(--fc-topbar); bottom: 0; padding-top: var(--fc-space-2); }
 .fc-page { position: absolute; left: var(--fc-nav-width); top: var(--fc-topbar); right: 0; bottom: 0; }
@@ -57,20 +58,31 @@
 .fc-home__launch { margin-top: var(--fc-space-3); flex-shrink: 0; }
 .fc-home__grid { flex-direction: row; flex-wrap: wrap; justify-content: space-between; }
 .fc-home__grid > .fc-dropdown { width: 49%; margin-bottom: var(--fc-space-2); }
+/* Large text: a wider column keeps two dropdowns a row, so the campaign card above them keeps its room. */
+.fc-text-large .fc-home__right { width: 520px; }
+.fc-text-large .fc-home__deck { right: 552px; }
+/* The base set in the home's deck panel: three small chips. */
+.fc-home__plans { flex-direction: row; align-items: center; flex-shrink: 1; }
+.fc-home__plans > .fc-caption { margin-right: var(--fc-space-2); }
+.fc-home__plans > .fc-chip { margin-right: var(--fc-space-1); }
+.fc-home__plans .fc-chip__face { padding: 0 var(--fc-space-2); min-height: 48px; }
+.fc-home__deck-head Label { white-space: nowrap; }
+/* Large text: the chips say which set without the caption before them (the deck panel is narrower). */
+.fc-text-large .fc-home__plans > .fc-caption { display: none; }
 .fc-home__deck {
     position: absolute; left: var(--fc-space-4); bottom: var(--fc-space-4); right: 472px;
     padding: var(--fc-space-3) var(--fc-space-4);
 }
 .fc-home__deck-head { flex-direction: row; align-items: center; justify-content: space-between; }
 .fc-home__deck-strip { margin-top: var(--fc-space-2); }
-.fc-home__deck-strip .unity-scroll-view__content-container { flex-direction: row; align-items: flex-start; }
+.fc-home__deck-strip .unity-scroll-view__content-container { flex-direction: row; align-items: stretch; }
 .fc-deck-divider { width: var(--fc-line); height: 120px; margin: var(--fc-space-4) var(--fc-space-3) 0 var(--fc-space-1); background-color: var(--fc-border-strong); }
 .fc-campaign-card { padding: var(--fc-space-4); }
 .fc-campaign-card__unlocks { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-2); }
 .fc-campaign-card__progress { flex-direction: row; align-items: center; margin-top: var(--fc-space-3); }
 .fc-campaign-card__progress > .fc-progress { flex-grow: 1; margin-right: var(--fc-space-3); }
 .fc-daily { margin-top: var(--fc-space-3); }
-.fc-daily__head { flex-direction: row; align-items: center; justify-content: space-between; margin-bottom: var(--fc-space-2); }
+.fc-daily__head { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; margin-bottom: var(--fc-space-2); }
 .fc-daily__row { flex-direction: row; align-items: center; padding: var(--fc-space-2) 0; border-top-width: var(--fc-line); border-top-color: var(--fc-border); }
 .fc-daily__text { flex-grow: 1; flex-shrink: 1; margin-right: var(--fc-space-3); }
 .fc-daily__text > .fc-progress { margin-top: var(--fc-space-2); }
@@ -185,13 +197,14 @@
 
 /* ================================================================ E3 / E5 / E6 army */
 .fc-army__deck-strip { flex-shrink: 0; margin-bottom: var(--fc-space-3); }
-.fc-army__deck-strip .unity-scroll-view__content-container { flex-direction: row; align-items: flex-start; }
+.fc-army__deck-strip .unity-scroll-view__content-container { flex-direction: row; align-items: stretch; }
 .fc-army__overview { flex-direction: row; align-items: flex-start; margin-bottom: var(--fc-space-2); }
 .fc-army__overview-part { margin-right: var(--fc-space-6); flex-shrink: 1; }
 .fc-army__doctrine { width: 340px; flex-shrink: 0; }
 .fc-army__collection { margin-top: var(--fc-space-3); }
-.fc-army__grid { flex-direction: row; flex-wrap: wrap; align-items: flex-start; }
-.fc-army__gear { position: absolute; left: 0; top: var(--fc-touch); right: 0; bottom: 0; flex-direction: row; }
+/* Cards in a row are one height (prompt 11 B2): the tallest (a locked card with its unlock line) sets it. */
+.fc-army__grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
+.fc-army__gear { position: absolute; left: 0; top: var(--fc-tab); right: 0; bottom: 0; flex-direction: row; }
 .fc-army__gear-left { flex-grow: 1; flex-shrink: 1; }
 .fc-army__gear-right { width: 520px; flex-shrink: 0; margin: var(--fc-space-3) var(--fc-space-4); padding: var(--fc-space-3); }
 .fc-army__gear-info { flex-shrink: 0; margin-bottom: var(--fc-space-3); }
@@ -199,7 +212,9 @@
 .fc-army__slots { margin-top: var(--fc-space-3); }
 .fc-army__slot { margin-right: var(--fc-space-1); }
 .fc-army__slot > .fc-caption { margin-bottom: var(--fc-space-1); }
-.fc-army__base { position: absolute; left: 0; top: var(--fc-touch); right: 0; bottom: 0; }
+/* A slot's card fills its cell, so an empty slot is as tall as a worn one beside it (prompt 11 B2). */
+.fc-army__slot > .fc-gcard { flex-grow: 1; }
+.fc-army__base { position: absolute; left: 0; top: var(--fc-tab); right: 0; bottom: 0; }
 .fc-gear-lines { margin-top: var(--fc-space-2); }
 .fc-gear-line { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-1); }
 .fc-gear-line__roll { width: 72px; margin-left: var(--fc-space-3); }
@@ -207,13 +222,25 @@
 /* ================================================================ E4 vehicle detail */
 .fc-detail { flex-direction: row; }
 .fc-detail__left { width: var(--fc-detail-column); flex-shrink: 0; }
+.fc-detail__left-scroll { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }
 .fc-detail__left-body { padding: var(--fc-space-4) var(--fc-space-5); }
-.fc-detail__stage { height: 300px; margin-bottom: var(--fc-space-3); background-color: var(--fc-bg-2); }
+.fc-detail__stage { height: var(--fc-detail-stage); margin-bottom: var(--fc-space-2); background-color: var(--fc-bg-2); }
 .fc-detail__art { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-to-fit; }
 .fc-detail__preview { position: absolute; left: 0; top: 0; right: 0; bottom: 0; -unity-background-scale-mode: scale-and-crop; }
-.fc-detail__arrow--left { position: absolute; left: var(--fc-space-2); top: 110px; }
-.fc-detail__arrow--right { position: absolute; right: var(--fc-space-2); top: 110px; }
+/* The name with the arrows beside it (small faces in full touch targets), off the picture. */
+.fc-detail__head { align-items: center; }
+.fc-detail__head > .fc-icon-btn { flex-shrink: 0; }
+.fc-detail__previous > .fc-icon-btn__face { rotate: 180deg; }
 .fc-detail__right { flex-grow: 1; flex-shrink: 1; }
+/* The In action tab: a theatre. The preview fills the space under the tabs; the name, the weapons,
+   the deck toggle and the dock (blueprints over the level-up) stand in the side column. */
+.fc-detail--theatre .fc-detail__left { width: var(--fc-detail-side); border-right-width: var(--fc-line); border-right-color: var(--fc-border); }
+.fc-detail--theatre .fc-detail__stage { height: auto; flex-grow: 1; flex-shrink: 1; margin: var(--fc-space-3) var(--fc-space-4); }
+.fc-detail--theatre .fc-detail__body-scroll, .fc-detail--theatre .fc-detail__tags, .fc-detail--theatre .fc-detail__counters { display: none; }
+.fc-detail--theatre .fc-detail__left-body > .fc-page__body { padding: var(--fc-space-2) 0 0 0; }
+.fc-detail--theatre .fc-detail__dock { flex-direction: column; align-items: stretch; }
+.fc-detail--theatre .fc-detail__dock > * { margin-right: 0; }
+.fc-detail--theatre .fc-detail__prints { flex-grow: 0; margin-bottom: var(--fc-space-3); }
 .fc-detail__dock {
     flex-direction: row; align-items: center; flex-wrap: nowrap;
     padding: var(--fc-space-3) var(--fc-space-5);
@@ -264,110 +291,160 @@
 .fc-sheet { width: 720px; }
 .fc-page > .fc-tabs { flex-shrink: 0; }
 
-/* ================================================================ E6 base: BaseScreen restyled over its own classes */
-/* BaseScreen keeps its classes (its tests and drag code read them); these rules put it on the tokens:
-   frames of three sizes that are all full touch targets (small 82, medium 88, large 96, the HQ 88: the
-   size icon in each corner tells them apart as much as the size),
-   every control at the touch size, the kit's type scale and surfaces. The ".fc-menu.menu" prefix
-   outranks the old sheet's ".menu" rules. */
-.fc-menu {
-    --base-frame-small: 82px;
-    --base-frame-medium: 88px;
-    --base-frame-large: 96px;
-    --base-hq: 88px;
-    --base-slot-face: var(--fc-panel-raised);
-    --base-slot-closed: var(--fc-bg-2);
-    --base-hq-face: var(--fc-panel-selected);
-    --base-card-face: var(--fc-panel-raised);
-    --base-lit-face: var(--fc-wash);
-    --base-picked-face: var(--fc-panel-selected);
-    --base-hover-face: var(--fc-wash);
-    --base-scrim: var(--fc-scrim);
-    --base-save-off: var(--fc-border-strong);
-    --base-save-off-text: var(--fc-text-2);
+/* ================================================================ prompt 14: the Base and Outpost screens */
+/* The bar along the top, the tray, the map and the panel side by side, the cover strip along the bottom. The
+   slots sit on the map at their real places: a transparent 44 pt target round a face sized by class. */
+.fc-base { flex-direction: column; padding: var(--fc-space-2) var(--fc-space-3); }
+.fc-base__bar { flex-direction: row; align-items: center; flex-wrap: wrap; flex-shrink: 0; margin-bottom: var(--fc-space-1); }
+.fc-base__hq { flex-direction: row; align-items: center; width: 320px; flex-shrink: 1; margin-right: var(--fc-space-3); }
+.fc-base__hq-icon { width: var(--fc-icon); height: var(--fc-icon); margin-right: var(--fc-space-2); flex-shrink: 0; }
+.fc-base__hq-text { flex-grow: 1; flex-shrink: 1; }
+.fc-base__map-pick { width: 250px; flex-shrink: 1; margin-right: var(--fc-space-3); }
+.fc-base__map-dot { top: var(--fc-space-1); right: var(--fc-space-1); }
+.fc-base__plans { flex-direction: row; margin-right: var(--fc-space-2); }
+.fc-base__plans > .fc-chip { margin-right: var(--fc-space-1); }
+.fc-base__plans .fc-chip__face { padding: 0 var(--fc-space-3); }
+.fc-base__bar > .fc-btn { padding: var(--fc-space-1) var(--fc-space-3); }
+/* "Saved" floats at the bar's end: it never takes a row of its own when the bar is full. */
+.fc-base__saved { position: absolute; right: 0; top: 0; bottom: 0; flex-direction: row; align-items: center; opacity: 0; transition-property: opacity; transition-duration: 0.3s; }
+.fc-base__saved--on { opacity: 1; }
+.fc-base__saved-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-1); --icon-color: var(--fc-positive); }
+.fc-base__body { flex-direction: row; flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; }
+.fc-base__tray { width: 290px; flex-shrink: 0; margin-right: var(--fc-space-2); }
+.fc-base__centre { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; margin-right: var(--fc-space-2); }
+/* The map's two switches in its bottom corner, where the picture is off the battlefield. */
+.fc-base__map-tools { position: absolute; right: var(--fc-space-1); bottom: -8px; flex-direction: column; align-items: flex-end; }
+.fc-base__map-tools > .fc-chip { margin: -14px 0 0 0; }
+.fc-base__map-tools > .fc-chip .fc-chip__face { background-color: var(--fc-panel-field); padding: 0 var(--fc-space-2); min-height: 48px; }
+.fc-base__map-tools .fc-chip__label { font-size: var(--fc-fs-small); }
+/* Large text: the two switches keep their icons only (their names on a long press), off the camp's slots. */
+.fc-text-large .fc-base__map-tools .fc-chip__label { display: none; }
+.fc-text-large .fc-base__map-tools > .fc-chip { margin: var(--fc-space-1) 0 0 0; }
+.fc-text-large .fc-base__hq { width: 400px; }
+.fc-base__map-tools > .fc-chip.fc-chip--selected .fc-chip__face { background-color: var(--fc-text); }
+.fc-base__legend { position: absolute; left: var(--fc-space-1); top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-2); }
+.fc-base__swatch { width: 18px; height: 12px; margin-right: var(--fc-space-2); flex-shrink: 0; }
+.fc-base__swatch--ground { background-color: var(--fc-range-ground); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); }
+.fc-base__swatch--air { background-color: var(--fc-range-air); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-ally); border-right-color: var(--fc-ally); border-bottom-color: var(--fc-ally); border-left-color: var(--fc-ally); }
+.fc-base__panel { width: 300px; flex-shrink: 0; padding: var(--fc-space-2) var(--fc-space-3); }
+.fc-base__panel-scroll { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }
+.fc-base__head { flex-direction: row; align-items: center; margin-bottom: var(--fc-space-2); }
+.fc-base__head-art { width: 72px; height: 72px; flex-shrink: 0; margin-right: var(--fc-space-2); align-items: center; justify-content: center; -unity-background-scale-mode: scale-to-fit; background-color: var(--fc-bg-2); }
+.fc-base__head-icon { width: var(--fc-icon); height: var(--fc-icon); }
+.fc-base__head-text { flex-grow: 1; flex-shrink: 1; }
+.fc-base__caption { margin-top: var(--fc-space-1); margin-bottom: var(--fc-space-1); }
+.fc-base__stat { margin-bottom: var(--fc-space-1); }
+.fc-base__reach { margin-top: var(--fc-space-1); }
+.fc-base__tabs { margin-top: var(--fc-space-2); margin-bottom: var(--fc-space-2); }
+.fc-base__tabs > .fc-tab { flex-grow: 1; padding: 0 var(--fc-space-2); }
+.fc-base__note { margin-bottom: var(--fc-space-2); }
+.fc-base__branch { padding: var(--fc-space-2); margin-bottom: var(--fc-space-2); min-height: var(--fc-touch); }
+.fc-base__branch--chosen { background-color: var(--fc-panel-selected); border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-base__branch--locked { opacity: 0.6; }
+.fc-base__branch-lock { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-left: var(--fc-space-2); --icon-color: var(--fc-text-2); }
+.fc-base__branch-tag { margin-left: var(--fc-space-2); color: var(--fc-positive); }
+.fc-base__gear { flex-direction: row; justify-content: space-between; }
+.fc-base__gear-slot { width: var(--fc-touch); min-height: var(--fc-touch); align-items: center; }
+.fc-base__gear-slot--open { background-color: var(--fc-panel-selected); }
+.fc-base__gear-empty { width: 64px; height: 64px; align-items: center; justify-content: center; border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong); }
+.fc-base__gear-name { -unity-text-align: upper-center; }
+.fc-base__gear-choices { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-2); }
+.fc-base__gear-choice { width: var(--fc-touch); min-height: var(--fc-touch); align-items: center; justify-content: center; margin: 0 var(--fc-space-1) var(--fc-space-1) 0; }
+.fc-base__gear-choice--worn { background-color: var(--fc-panel-selected); }
+.fc-base__buttons { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-3); }
+.fc-base__buttons > .fc-btn { margin: 0 var(--fc-space-2) var(--fc-space-2) 0; padding: var(--fc-space-1) var(--fc-space-3); }
+.fc-base__strength-big { margin-top: var(--fc-space-3); padding: var(--fc-space-2); background-color: var(--fc-bg-2); }
+.fc-base__strength-big > .fc-number { color: var(--fc-accent); }
+.fc-base__strip { flex-direction: row; align-items: center; flex-shrink: 0; margin-top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-3); }
+.fc-base__cover { flex-grow: 1; flex-shrink: 1; }
+.fc-base__cover > .fc-row > .fc-tag { margin: var(--fc-space-1) var(--fc-space-1) 0 0; padding: 0 var(--fc-space-2); }
+.fc-base__cover-title { margin: var(--fc-space-1) var(--fc-space-2) 0 0; }
+.fc-base__numbers { align-items: flex-end; flex-shrink: 0; margin-left: var(--fc-space-3); }
+.fc-base__strength { margin-left: var(--fc-space-2); color: var(--fc-accent); }
+.fc-base__ghost { position: absolute; width: 72px; height: 72px; align-items: center; justify-content: center; -unity-background-scale-mode: scale-to-fit; }
+.fc-base__ghost-icon { width: var(--fc-icon); height: var(--fc-icon); }
+
+/* the map */
+.fc-base-map {
+    --base-arrow: var(--fc-danger); --base-range-ground: var(--fc-range-ground); --base-range-air: var(--fc-range-air);
+    --base-ring: var(--fc-text); --base-drop: var(--fc-coin);
+    flex-grow: 1; background-color: var(--fc-bg-2); border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); }
+.fc-base-map__world { -unity-background-scale-mode: stretch-to-fill; }
+.fc-base-map__scrim { background-color: var(--fc-bg); }
+.fc-base-hq { position: absolute; align-items: center; justify-content: center; background-color: var(--fc-panel-selected); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-base-hq__icon { width: 60%; height: 60%; }
+.fc-base-slot { position: absolute; align-items: center; justify-content: center; }
+.fc-base-face {
+    align-items: center; justify-content: center;
+    background-color: var(--fc-panel-field);
+    border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+    --slot-fill: var(--fc-panel-field); --slot-line: var(--fc-border-strong); --slot-tick: var(--fc-text);
 }
-.fc-menu.menu .base-view { padding: var(--fc-space-3) var(--fc-space-4) var(--fc-space-3) var(--fc-space-4); }
-.fc-menu.menu .base-toolbar { height: auto; min-height: var(--fc-touch); margin-bottom: var(--fc-space-2); }
-.fc-menu.menu .base-level-caption { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); width: 96px; }
-.fc-menu.menu .base-level { width: var(--fc-touch); height: var(--fc-touch); margin-right: var(--fc-space-1); }
-.fc-menu.menu .base-level-text { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-number-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-level.chosen .base-level-text { color: var(--fc-text); }
-/* What the level opens is the legend's counts over the camp (open slots of each size): not repeated in the bar. */
-.fc-menu.menu .base-level-info { display: none; }
-.fc-menu.menu .base-level-box { flex-grow: 1; flex-shrink: 1; }
-.fc-menu.menu .base-map-text { width: 180px; margin: 0 var(--fc-space-1); }
-.fc-menu.menu .base-map-arrow { width: var(--fc-touch); height: var(--fc-touch); }
-.fc-menu.menu .base-map-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); }
-.fc-menu.menu .wide.base-save {
-    width: auto; min-width: 180px; height: auto; min-height: 96px; padding: 0 var(--fc-space-6);
-    background-image: resource("UI/Skin/fc_primary");
-    -unity-slice-left: 40; -unity-slice-top: 40; -unity-slice-right: 40; -unity-slice-bottom: 40; -unity-slice-scale: 0.5px;
-    -unity-background-image-tint-color: var(--fc-accent);
+.fc-base-face--hex { background-color: var(--fc-clear); border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; }
+.fc-base-slot--filled .fc-base-face { background-color: var(--fc-panel-selected); --slot-fill: var(--fc-panel-selected); }
+.fc-base-slot--filled .fc-base-face--hex { background-color: var(--fc-clear); }
+.fc-base-slot--lit .fc-base-face { border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); --slot-line: var(--fc-text); }
+.fc-base-slot--hover .fc-base-face { border-top-color: var(--fc-positive); border-right-color: var(--fc-positive); border-bottom-color: var(--fc-positive); border-left-color: var(--fc-positive); --slot-line: var(--fc-positive); }
+.fc-base-slot--picked .fc-base-face { border-top-color: var(--fc-accent); border-right-color: var(--fc-accent); border-bottom-color: var(--fc-accent); border-left-color: var(--fc-accent); --slot-line: var(--fc-accent); }
+.fc-base-slot--dim { opacity: 0.35; }
+.fc-base-slot--closed .fc-base-face { background-color: var(--fc-bg-2); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-border); --slot-fill: var(--fc-bg-2); --slot-line: var(--fc-border); }
+.fc-base-face--hex > .fc-base-face__art { left: 12%; right: 12%; top: 12%; bottom: 12%; }
+.fc-base-face__art { position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px; -unity-background-scale-mode: scale-to-fit; }
+/* An empty or closed slot's word under its face (the face may be smaller than the word). */
+.fc-base-face__word {
+    position: absolute; top: 100%; left: -40px; right: -40px; margin-top: 1px;
+    -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); -unity-text-align: upper-center;
+    white-space: nowrap; -unity-text-outline-width: 1px; -unity-text-outline-color: var(--fc-bg);
 }
-.fc-menu.menu .wide.base-save .wide-title { -unity-font: var(--fc-font-display); font-size: var(--fc-fs-button); color: var(--fc-ink); }
-.fc-menu.menu .wide.base-save .icon { --icon-color: var(--fc-ink); }
-.fc-menu.menu .wide.base-save.pressed { -unity-background-image-tint-color: var(--fc-accent-press); scale: 1 1; translate: 0 var(--fc-press-shift); }
-.fc-menu.menu .wide.base-save.disabled { -unity-background-image-tint-color: var(--fc-border-strong); }
-.fc-menu.menu .wide.base-save.disabled .wide-title { color: var(--fc-text-2); }
-.fc-menu.menu .wide.base-save.disabled .icon { --icon-color: var(--fc-text-2); }
-.fc-menu.menu .base-caps, .fc-menu.menu .base-list-caps { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-left { width: 240px; margin-right: var(--fc-space-3); }
-.fc-menu.menu .base-tower { flex-shrink: 0; min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); }
-.fc-menu.menu .base-tower.chosen, .fc-menu.menu .base-tower.armed { background-color: var(--fc-panel-selected); border-left-color: var(--fc-text); }
-.fc-menu.menu .base-tower-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); color: var(--fc-text); }
-.fc-menu.menu .base-tower-line { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-tower-count { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); background-color: var(--fc-bg); border-color: var(--fc-border-strong); }
-.fc-menu.menu .base-centre { margin-right: var(--fc-space-3); background-color: var(--fc-panel); border-color: var(--fc-border); }
-/* The hint gets a line of its own under the size counts, so it is never squeezed beside them. */
-.fc-menu.menu .base-legend { flex-wrap: wrap; padding: var(--fc-space-1) var(--fc-space-3); border-bottom-color: var(--fc-border); }
-.fc-menu.menu .base-legend-count { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); }
-.fc-menu.menu .base-hint { width: 100%; flex-grow: 0; flex-shrink: 0; margin: 0 0 var(--fc-space-1) 0; -unity-text-align: middle-left; -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-front-text { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-slot { border-color: var(--fc-border-strong); }
-.fc-menu.menu .base-slot.filled { background-color: var(--fc-panel-selected); }
-.fc-menu.menu .base-slot.closed, .fc-menu.menu .base-slot.soon { border-color: var(--fc-border); }
-.fc-menu.menu .base-slot.lit { border-color: var(--fc-text); }
-.fc-menu.menu .base-slot.picked { border-color: var(--fc-text); }
-.fc-menu.menu .base-slot.hover { border-color: var(--fc-positive); }
-.fc-menu.menu .base-slot-caption { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-slot.dim .base-slot-caption { color: var(--fc-text-2); }
-.fc-menu.menu .base-hq { border-color: var(--fc-border-strong); }
-.fc-menu.menu .base-hq-level { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-right { min-width: 360px; max-width: 400px; }
-/* The panel under the tabs takes what is left of the column and scrolls: the outpost under it stays on screen. */
-.fc-menu.menu .base-panel-scroll { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 0; }
-.fc-menu.menu .base-head { min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-color: var(--fc-border-strong); }
-.fc-menu.menu .base-head-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); }
-.fc-menu.menu .base-head-line { -unity-font: var(--fc-font-text-medium); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-/* The name on its own line, then the size and rank with the count beside them: one line fewer. */
-.fc-menu.menu .base-head-text { flex-direction: row; flex-wrap: wrap; align-items: center; }
-.fc-menu.menu .base-head-name { width: 100%; }
-.fc-menu.menu .base-head-count { color: var(--fc-text-2); margin-left: var(--fc-space-3); }
-.fc-menu.menu.fc-text-large .base-right { min-width: 400px; max-width: 440px; }
-.fc-menu.menu .base-takeout { width: var(--fc-touch); height: var(--fc-touch); }
-.fc-menu.menu .base-tab { height: var(--fc-touch); min-width: var(--fc-touch); }
-.fc-menu.menu .base-note { flex-shrink: 0; -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-branch { flex-shrink: 0; min-height: var(--fc-touch); background-color: var(--fc-panel-raised); border-color: var(--fc-border); }
-.fc-menu.menu .base-branch.chosen { background-color: var(--fc-panel-selected); border-color: var(--fc-text); }
-.fc-menu.menu .base-branch-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); color: var(--fc-text); }
-.fc-menu.menu .base-branch-tag { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); }
-.fc-menu.menu .base-branch-info { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-branch.locked .base-branch-name, .fc-menu.menu .base-branch.locked .base-branch-info { color: var(--fc-text-2); }
-.fc-menu.menu .base-gear-slot { width: 104px; min-height: var(--fc-touch); }
-.fc-menu.menu .base-gear-choice { width: 100px; min-height: 100px; border-color: var(--fc-border); }
-.fc-menu.menu .base-gear-choice.worn { border-color: var(--fc-text-2); }
-.fc-menu.menu .base-gear-name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-gear-empty { width: 88px; height: 88px; border-color: var(--fc-border-strong); }
-.fc-menu.menu .base-outpost { background-color: var(--fc-panel-raised); border-color: var(--fc-border); }
-.fc-menu.menu .base-outpost-info { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-ghost { width: 88px; height: 88px; border-color: var(--fc-text); background-color: var(--fc-panel-selected); }
-.fc-menu.menu .base-confirm-text { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-panel-title); color: var(--fc-text); }
-.fc-menu.menu .wide.base-confirm-button { height: auto; min-height: var(--fc-touch); }
-.fc-menu.menu .base-view .wide-title { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); }
-.fc-menu.menu .base-view .segment-label { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-button); }
-.fc-menu.menu .base-view .menu-caps { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-view .menu-note { -unity-font: var(--fc-font-text); font-size: var(--fc-fs-small); color: var(--fc-text-2); }
-.fc-menu.menu .base-view .gear-art-level { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); }
+.fc-base-face__lock { position: absolute; left: -5px; top: -5px; width: 16px; height: 16px; background-color: var(--fc-bg); --icon-color: var(--fc-text-2); }
+/* The level a closed slot needs, centred on its face in a box of its own (a small face is shorter than the figure). */
+.fc-base-face__need {
+    position: absolute; left: -12px; right: -12px; top: 50%; height: 36px; margin-top: -18px;
+    -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text); -unity-text-align: middle-center;
+    -unity-text-outline-width: 1px; -unity-text-outline-color: var(--fc-bg);
+}
+.fc-base-face__branch { position: absolute; right: -6px; top: -6px; width: var(--fc-icon-small); height: var(--fc-icon-small); background-color: var(--fc-bg); --icon-color: var(--fc-accent); }
+
+/* the tray */
+.fc-base-tray { flex-direction: row; }
+.fc-base-tray__tabs { width: var(--fc-touch); flex-shrink: 0; }
+.fc-base-tray__tab { width: var(--fc-touch); min-height: var(--fc-touch); align-items: center; justify-content: center; border-left-width: var(--fc-bar); border-left-color: var(--fc-clear); }
+.fc-base-tray__tab--on { background-color: var(--fc-panel-selected); border-left-color: var(--fc-accent); }
+.fc-base-tray__tab-icon { width: var(--fc-icon); height: var(--fc-icon); --icon-color: var(--fc-text-2); }
+.fc-base-tray__tab--on > .fc-base-tray__tab-icon { --icon-color: var(--fc-accent); }
+.fc-base-tray__tab-word { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text-2); -unity-text-align: middle-center; }
+.fc-base-tray__tab--on > .fc-base-tray__tab-word { color: var(--fc-text); }
+.fc-base-tray__list { flex-grow: 1; flex-shrink: 1; flex-basis: 0; }
+.fc-base-tray__end { height: var(--fc-space-7); }
+.fc-base-row {
+    flex-direction: row; align-items: center; min-height: var(--fc-touch); padding: var(--fc-space-1); margin-bottom: var(--fc-space-1);
+    background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-bar);
+    border-top-color: var(--fc-border); border-right-color: var(--fc-border); border-bottom-color: var(--fc-border); border-left-color: var(--fc-clear);
+}
+.fc-root .fc-base-row.pressed { background-color: var(--fc-panel-selected); }
+.fc-base-row--armed { background-color: var(--fc-panel-selected); border-left-color: var(--fc-accent); }
+.fc-base-row--nofit { opacity: 0.45; }
+.fc-base-row--locked .fc-base-row__art, .fc-base-row--locked .fc-base-row__name { opacity: 0.45; }
+.fc-base-row__art { width: 64px; height: 56px; flex-shrink: 0; margin-right: var(--fc-space-2); align-items: center; justify-content: center; -unity-background-scale-mode: scale-to-fit; background-color: var(--fc-bg-2); }
+.fc-base-row__icon { width: var(--fc-icon); height: var(--fc-icon); --icon-color: var(--fc-text-2); }
+.fc-base-row__text { flex-grow: 1; flex-shrink: 1; }
+.fc-base-row__name { -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-card); color: var(--fc-text); }
+
+/* the outpost */
+.fc-outpost__site { flex-grow: 1; flex-shrink: 1; flex-basis: 0; margin-right: var(--fc-space-2); padding: var(--fc-space-3); align-items: center; }
+.fc-outpost__ring {
+    flex-direction: row; align-items: center; justify-content: center; margin: var(--fc-space-6) 0; padding: var(--fc-space-7);
+    border-top-left-radius: 50%; border-top-right-radius: 50%; border-bottom-left-radius: 50%; border-bottom-right-radius: 50%;
+    border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+    background-color: var(--fc-bg-2);
+}
+.fc-outpost__slot { position: relative; margin: 0 var(--fc-space-5) var(--fc-space-5) var(--fc-space-5); width: 110px; height: 110px; }
+.fc-outpost__slot.fc-base-slot--small > .fc-base-face { width: 60px; height: 60px; }
+.fc-outpost__slot.fc-base-slot--medium > .fc-base-face { width: 84px; height: 84px; }
+.fc-outpost__caption { -unity-text-align: middle-center; }
 
 /* ================================================================ E10 result, the choice between stages, pause */
 /* One card over the dimmed battle: the outcome and the name on the left with the numbers, what it paid and
@@ -634,3 +711,153 @@
 /* Large text: the deck grows to hold its bigger type, and what sits above it moves up with it. */
 .fc-hud.fc-text-large .fc-deck { height: 196px; }
 .fc-hud.fc-text-large .fc-hud__command, .fc-hud.fc-text-large .fc-hud__hint, .fc-hud.fc-text-large .fc-hud__targeting { bottom: 216px; }
+
+/* ================================================================ prompt 11 A: the compact battle HUD */
+/* Settings > Compact battle HUD (on by default) puts fc-hud--compact on the HUD's root. The battlefield keeps
+   at least 70 % of the screen in a fight: a smaller minimap with two small tools on its corner, one low strip
+   at the top for the objective and the clock, small notices under it, the commander's switches as small icons
+   down the right, a tray a third lower with short names, the selection in one low strip above the tray.
+   Visible faces may be smaller than 44 pt; each sits inside a full touch target (82 panel px) that is not drawn. */
+.fc-hud--compact {
+    --hud-edge: 240px;          /* the top strip, the column under it and the banner stay between the corners */
+    --hud-minimap: 132px;       /* 216 px less 40 % */
+    --hud-face: 44px;           /* the drawn face of a small control inside its touch target */
+    --hud-deck: 104px;          /* the tray: 160 px less 35 % */
+    --hud-card: 108px;          /* ten cards and the CP box fit across 1280 px */
+    --hud-card-art: 68px;
+    --hud-above-deck: 124px;    /* the tray's margin, its height and a gap: what sits just above it */
+    --hud-above-chip: 160px;    /* above the supply chip over the CP box as well */
+}
+/* Large text: the tray's names may take two lines (no card width fits every name on one line across the tray). */
+.fc-hud--compact.fc-text-large { --hud-deck: 134px; --hud-above-deck: 154px; --hud-above-chip: 194px; }
+
+/* top: one strip; pause in the corner as a small face */
+.fc-hud--compact .fc-hud__top { top: var(--fc-space-2); left: var(--hud-edge); right: var(--hud-edge); }
+.fc-hud--compact .fc-hud__corner { top: 0; right: 0; }
+.fc-hud .fc-icon-btn--plain .fc-icon-btn__face { background-color: var(--fc-panel-field); }
+.fc-hud--compact .fc-icon-btn--on { background-color: var(--fc-clear); }
+.fc-hud--compact .fc-icon-btn--on .fc-icon-btn__face { background-color: var(--fc-text); border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-hud--compact .fc-icon-btn--on .fc-icon-btn__face > .fc-icon { --icon-color: var(--fc-ink); }
+.fc-hud--compact .fc-hud__clock { background-color: var(--fc-clear); margin: 0 0 0 var(--fc-space-3); padding: 0; }
+
+.fc-score--compact { flex-direction: row; align-items: center; padding: 0 var(--fc-space-3); }
+.fc-score--compact .fc-score__side { width: 88px; min-height: 0; padding: var(--fc-space-1) 0; }
+.fc-score--compact .fc-score__number { margin: 0 var(--fc-space-2) 0 0; }
+.fc-score--compact .fc-score__side--theirs .fc-score__number { margin: 0 0 0 var(--fc-space-2); }
+.fc-score--compact .fc-score__track { margin-top: 0; }
+.fc-score--compact .fc-score__centre { margin: 0; }
+/* An objective: a small ring inside its full touch target, which reaches above and below the strip. */
+.fc-hud--compact .fc-point { padding: 19px; margin: -15px 0; }
+.fc-hud--compact.fc-text-large .fc-point { padding: 15px; margin: -13px 0; }
+
+.fc-mission-bar--compact { min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
+.fc-mission-bar--compact .fc-mission-bar__text { width: auto; max-width: 440px; }
+.fc-mission-bar__line { flex-direction: row; align-items: center; flex-wrap: wrap; }
+.fc-mission-bar__line > .fc-mission-bar__goal { margin-right: var(--fc-space-2); }
+.fc-mission-bar--compact .fc-mission-bar__progress { margin-top: var(--fc-space-1); }
+
+.fc-hud--compact .fc-hud__stats { padding: 0 var(--fc-space-2); }
+.fc-hud--compact .fc-hud__stat { min-height: 0; padding: var(--fc-space-1) var(--fc-space-2); margin: 0; }
+.fc-hud--compact .fc-hud__stat-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); }
+
+/* left: the minimap, and select-all and box-select as small faces on its right-hand corners */
+.fc-hud--compact .fc-hud__left { left: var(--fc-space-3); top: var(--fc-space-3); width: auto; flex-direction: row; align-items: flex-start; }
+.fc-hud--compact .minimap { width: var(--hud-minimap); height: var(--hud-minimap); }
+.fc-hud--compact .fc-hud__tools { flex-direction: column; margin: 0; }
+.fc-hud--compact .fc-hud__tools > .fc-icon-btn { margin: 0; background-color: var(--fc-clear); align-items: flex-start; justify-content: flex-start; padding-left: var(--fc-space-1); }
+.fc-hud--compact .item-strip { top: 184px; width: 180px; }
+
+/* right: the stance switch, Auto buy, Support and the tower, small faces at the edge */
+.fc-hud--compact .fc-hud__rail { right: 0; top: 88px; width: 120px; align-items: flex-end; }
+.fc-hud__switch { width: 120px; height: var(--fc-touch); align-items: flex-end; justify-content: center; padding-right: var(--fc-space-3); }
+.fc-hud__switch-face { flex-direction: row; padding: 0; }
+.fc-hud__switch-half { width: 48px; height: var(--hud-face); align-items: center; justify-content: center; }
+.fc-hud__switch-half > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); --icon-color: var(--fc-text-2); }
+.fc-hud__switch-half--attack, .fc-hud__switch--defend .fc-hud__switch-half--defend { background-color: var(--fc-text); }
+.fc-hud__switch-half--attack > .fc-icon, .fc-hud__switch--defend .fc-hud__switch-half--defend > .fc-icon { --icon-color: var(--fc-ink); }
+.fc-hud__switch--defend .fc-hud__switch-half--attack { background-color: var(--fc-clear); }
+.fc-hud__switch--defend .fc-hud__switch-half--attack > .fc-icon { --icon-color: var(--fc-text-2); }
+.fc-root .fc-hud__switch.pressed .fc-hud__switch-face { translate: 0 var(--fc-press-shift); }
+.fc-hud__tool { min-width: var(--fc-touch); height: var(--fc-touch); align-items: flex-end; justify-content: center; padding-right: var(--fc-space-3); }
+.fc-hud__tool-face { flex-direction: row; min-width: var(--hud-face); height: var(--hud-face); align-items: center; justify-content: center; padding: 0 var(--fc-space-2); }
+.fc-hud__tool-face > .fc-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); }
+.fc-hud__tool-text { margin-left: var(--fc-space-1); white-space: nowrap; }
+.fc-root .fc-hud__tool.pressed .fc-hud__tool-face { translate: 0 var(--fc-press-shift); background-color: var(--fc-panel-selected); }
+/* On: the text colour with a dark icon. Off: the field panel, a dim icon struck through. */
+.fc-hud__toggle .fc-hud__tool-face > .fc-icon { --icon-color: var(--fc-text-dim); }
+.fc-hud__toggle-slash { position: absolute; left: 50%; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; rotate: 45deg; background-color: var(--fc-text); }
+.fc-hud__toggle--on .fc-hud__tool-face { background-color: var(--fc-text); border-top-color: var(--fc-text); border-right-color: var(--fc-text); border-bottom-color: var(--fc-text); border-left-color: var(--fc-text); }
+.fc-hud__toggle--on .fc-hud__tool-face > .fc-icon { --icon-color: var(--fc-ink); }
+.fc-hud__toggle--on .fc-hud__toggle-slash { display: none; }
+.fc-root .fc-hud__toggle--on.pressed .fc-hud__tool-face { background-color: var(--fc-text-2); }
+
+/* the selection: one low strip just above the tray, on the right */
+.fc-hud--compact .fc-hud__command { right: var(--fc-space-3); bottom: var(--hud-above-deck); width: auto; padding: 0 0 0 var(--fc-space-2); }
+.fc-hud--compact .fc-hud__portrait { width: 72px; height: 52px; margin-right: var(--fc-space-2); }
+.fc-hud--compact .fc-hud__count { position: absolute; right: 0; bottom: 0; padding: 0 var(--fc-space-1); background-color: var(--fc-bg); color: var(--fc-text); letter-spacing: 0; }
+.fc-hud--compact .fc-hud__details-text { width: 156px; flex-grow: 0; }
+.fc-hud--compact.fc-text-large .fc-hud__details-text { width: 176px; }
+.fc-hud--compact .fc-hud__name { color: var(--fc-text); white-space: nowrap; }
+.fc-hud--compact .fc-hud__orders { margin: 0 0 0 var(--fc-space-2); }
+.fc-hud--compact .fc-hud__order {
+    width: var(--fc-touch); flex-grow: 0; flex-basis: auto; margin: 0; background-color: var(--fc-clear);
+    border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: var(--fc-line);
+}
+.fc-hud--compact .fc-hud__order-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); }
+.fc-hud__extras { margin-top: var(--fc-space-1); }
+
+/* the tray: a third lower, the render, the CP and a short name on one line; the penalty as a chip */
+.fc-hud--compact .fc-deck { height: var(--hud-deck); }
+.fc-deck--compact .fc-cpbox { width: var(--hud-card); padding: var(--fc-space-1); justify-content: space-between; }
+.fc-deck--compact .fc-cpbox__bank { margin: 0; }
+.fc-deck--compact .fc-cpbox__income { white-space: nowrap; }
+.fc-hud--compact.fc-text-large .fc-cpbox { width: 116px; }
+.fc-deck--compact .fc-hcard { width: var(--hud-card); }
+.fc-deck--compact .fc-hcard__art { height: var(--hud-card-art); }
+.fc-deck--compact .fc-hcard__seconds { top: 20px; }
+.fc-hcard__name--short {
+    margin: var(--fc-space-1) 2px 0 2px;
+    -unity-font: var(--fc-font-display-semi); font-size: var(--fc-fs-small); color: var(--fc-text);
+    -unity-text-align: upper-center;
+}
+.fc-hcard--short .fc-hcard__name--short, .fc-hcard--locked .fc-hcard__name--short { opacity: 0.45; }
+.fc-hcard__badges { position: absolute; left: var(--fc-space-1); top: var(--fc-space-1); flex-direction: row; }
+.fc-hud .fc-deck__chip {
+    position: absolute; left: 0; bottom: 100%; margin-bottom: var(--fc-space-1); padding: 0 var(--fc-space-2);
+    white-space: nowrap; background-color: var(--fc-panel-field);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-line);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-border-strong);
+}
+.fc-hud .fc-deck__chip.fc-danger-text { border-top-color: var(--fc-danger); border-right-color: var(--fc-danger); border-bottom-color: var(--fc-danger); border-left-color: var(--fc-danger); }
+.fc-deck__tip { position: absolute; bottom: 100%; width: 240px; margin-bottom: var(--fc-space-2); padding: var(--fc-space-2) var(--fc-space-3); align-items: center; }
+.fc-deck__tip > .fc-text { -unity-text-align: middle-center; }
+
+/* the hint (first matches only) and the strike prompt above the tray on the left */
+.fc-hud--compact .fc-hud__hint, .fc-hud--compact .fc-hud__targeting { left: var(--fc-space-3); right: 560px; bottom: var(--hud-above-chip); }
+.fc-hud--compact .fc-hud__hint-face { padding: var(--fc-space-1) var(--fc-space-3); }
+
+/* under the top strip: the boss, the fortress pieces, notices and radio, small */
+.fc-hud--compact .fc-hud__under { top: 64px; left: var(--hud-edge); right: var(--hud-edge); }
+.fc-boss--compact { width: 640px; margin-bottom: var(--fc-space-1); min-height: var(--fc-touch); }
+.fc-boss--collapsed { width: 340px; padding: var(--fc-space-1) var(--fc-space-2); }
+.fc-boss--collapsed .fc-boss__name, .fc-boss--collapsed .fc-boss__phase { font-size: var(--fc-fs-small); }
+/* Closed, the bar says who and which phase; the health in numbers is in the open bar. */
+.fc-boss--collapsed .fc-boss__hp { display: none; }
+.fc-boss--collapsed .fc-boss__icon { width: var(--fc-icon-small); height: var(--fc-icon-small); }
+.fc-boss--collapsed .fc-boss__track { height: 6px; }
+.fc-boss-parts--mini { margin-top: var(--fc-space-1); }
+.fc-boss-parts--mini .fc-boss-part { width: 36px; height: 30px; padding: 2px 4px; margin: 0 var(--fc-space-1) 0 0; }
+.fc-boss-parts--mini .fc-boss-part__icon { width: 20px; height: 20px; }
+.fc-boss-parts--mini .fc-boss-part__cross { top: 3px; bottom: 3px; }
+.fc-root .fc-boss--compact.pressed { background-color: var(--fc-panel-selected); }
+.fc-hud--compact .gun-timer { height: auto; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
+.fc-hud--compact .fc-hud__toast { margin-top: var(--fc-space-1); }
+.fc-hud--compact .fc-hud__toast-face { max-width: 600px; min-height: 0; padding: var(--fc-space-1) var(--fc-space-3); }
+.fc-hud--compact .fc-hud__toast-icon { width: var(--fc-icon-small); height: var(--fc-icon-small); margin-right: var(--fc-space-2); }
+.fc-hud--compact .fc-radio { width: auto; max-width: 520px; margin-top: var(--fc-space-1); padding: var(--fc-space-1) var(--fc-space-3) var(--fc-space-1) var(--fc-space-1); }
+.fc-hud--compact .fc-radio__portrait { width: 48px; height: 48px; margin-right: var(--fc-space-2); }
+.fc-hud--compact .fc-hud__banner { top: 64px; left: var(--hud-edge); right: var(--hud-edge); }
+.fc-hud--compact .fc-hud__banner-face { padding: var(--fc-space-2) var(--fc-space-5); }
+
+/* pause: the commander's switches under the buttons (both layouts) */
+.fc-pause__commander { margin-top: var(--fc-space-4); padding-top: var(--fc-space-2); border-top-width: var(--fc-line); border-top-color: var(--fc-border); }

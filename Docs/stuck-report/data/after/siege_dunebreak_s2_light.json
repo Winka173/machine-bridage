@@ -1,0 +1,13 @@
+{
+  "map": "dunebreak",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 2b9718ef app 0.1.0",
+  "ticks": 4330,
+  "journal": [],
+  "records": [
+    {"vehicle": 546, "def": "siege_tank", "team": 0, "startTick": 1920, "start": 96, "end": 106.5, "seconds": 10.5, "x": 16.067, "y": 62.004, "goalX": 18.737, "goalY": 41.935, "order": "Move", "cause": "BlockedByFriend", "detail": "main_battle_tank#550 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "main_battle_tank(parked)@6.7 wreck_car@5"}
+  ],
+  "rescues": []
+}

@@ -89,7 +89,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>What the base is for in a mode (by the mode's name, as in GameModeKind); None when the data does not say.</summary>
         public BaseRole RoleFor(string mode) => _roles.TryGetValue(mode, out var role) ? role : BaseRole.None;
 
-        private readonly Dictionary<string, int> _aiLevels = new(StringComparer.OrdinalIgnoreCase) { ["Easy"] = 2, ["Normal"] = 3, ["Hard"] = 5 };
+        private readonly Dictionary<string, int> _aiLevels = new(StringComparer.OrdinalIgnoreCase) { ["Easy"] = 2, ["Normal"] = 3, ["Hard"] = 5, ["VeryHard"] = 5 };
 
         /// <summary>The AI's HQ level at a difficulty (by name: Easy, Normal, Hard).</summary>
         public int AiLevel(string difficulty) => _aiLevels.TryGetValue(difficulty, out var level) ? level : 3;

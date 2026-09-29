@@ -1,5 +1,88 @@
 # Changelog
 
+## Prompt 13: combat value, ammunition, modes and difficulty
+
+- Every card measured by what it really does in a fight for its CP (Docs/COMBAT_VALUE.md), and the theoretical
+  damage a second corrected (magazines, salvos, reloads). Prices and weapons tuned by it: tank hunters, artillery,
+  helicopters, aircraft and anti-air in line with the ground units of their role.
+- Damage a round by the real calibre (a 155 mm shell hits harder and comes less often), the same weapon with the same
+  figures everywhere, ground SAMs a little slower with flare resistance.
+- Aircraft carry bombs, missiles and rockets that run out and come back on the field: they finish their attack, fly a
+  few seconds behind our line to a holding pattern, and come back; faster at the landing pad, over the HQ and (for
+  helicopters) beside the new Ammunition carrier. Bombers carry fewer bombs, go in with two thirds of them and never bomb
+  near our own units. The Sky gunship is no longer a card (the Gunship item still flies it).
+- New: the Ammunition carrier (launchers beside it reload much faster, helicopters rearm twice as fast); the engineer
+  repairs only. The landing pad's rank-7 branches: Hangar (one more aircraft up) and Fast service.
+- Ammunition icons beside the health bar (low, empty, flying out, rearming, full), holding patterns on the minimap, the
+  stores bar in the selection panel, and a setting for every unit or aircraft only.
+- Unit details: every weapon's real name, calibre, rounds, magazine or stores and how they come back ("More"), and a
+  Behaviour section, both worked out from the data; four notes corrected where they disagreed with it.
+- Every mode rebalanced: Deathmatch scored in the CP destroyed (first to 480), King of the Hill to 170, a stronger
+  Assault defender, a tougher Siege fortress, Defend and Endless waves scaled by the base and carrying siege breakers,
+  Survival waves that keep coming, and help for the side far behind after 4 minutes (more income and a free drop).
+- The AI by difficulty: Easy, Normal, Hard and the new Very Hard (it knows your deck and masses its attacks; rewards
+  x1.8); decks of 8 to 12 chosen by roles and value; it buys ammunition carriers, hunts rearming aircraft and goes for
+  landing pads. The campaign's Heroic and Iron tiers are now called Hard and Very hard.
+
+## Prompt 12: stuck vehicles in bases
+
+- A stuck detector in the internal build (`StuckWatch`, `-mb-stuck`), batch runs and a report with
+  heatmaps and the ten worst spots in `Docs/stuck-report/`.
+- Fixed at their causes: reachable goals and formation slots, no mutual queueing, head-on in the open,
+  detours off walls, re-planning over newly closed ground, towers clearing their pad, room for the keep's
+  guardian and elites.
+- Fortresses: double sally ports and keep gate, clear yards and approaches, a three-cell route for the
+  biggest hull everywhere (`check_access.py` checks every map); Swamp's causeways widened.
+- A logged safety net for what is left. Episodes over 10 s in 76 battles: 1285 before, 265 after.
+
+## Prompt 14: the Base screen on the real camp, menus sized for a phone
+
+- Menus are sized in the phone's own points, so they look the same size on every phone and a tablet shows
+  more: a slimmer top bar and rail, smaller tabs and buttons (44 pt to tap), smaller type (13 pt text,
+  18 pt titles; Large text 1.2 times) and cards in lists about a fifth smaller. The page's content now takes
+  70-89 % of the screen. The battle HUD is unchanged.
+- The Base screen is a picture of your camp on the chosen map from above, with red arrows where the enemy
+  comes from and every slot where it really is: small, medium and large slots sized 1 / 1.4 / 2, utility
+  slots as hexagons, empty ones saying what they take, closed ones the HQ level they open at. Pinch to zoom,
+  drag to pan. "Show ranges" paints the whole base's cover, ground in amber and air in light blue; tap a
+  tower for its range ring.
+- Towers come from a tray with a tab for each size: drag one onto a slot, or tap it then a slot; only the
+  slots it fits light up. Towers you do not have yet are dimmed with where they unlock.
+- Tapping a tower shows its render, size and rank, its health, damage and range against the other towers
+  of its size, its branch and gear, and Replace, Remove and Details. With nothing chosen, an overview.
+- Along the bottom: what the base covers (light vehicles, tanks, air, rockets and missiles, stealth,
+  repair and resupply; a gap in red), its strength (the same number the Defend and Endless waves grow
+  with) and how many slots of each size are used.
+- The HQ shows its level and what the next one adds; the map list has pictures; every change saves at
+  once ("Saved").
+- One base for every map: towers are placed by where they stand (gate, outer ring, inner ring, beside the
+  HQ, rear), so the same base fits all 20 maps; a tower with no matching slot goes to the nearest one of
+  its size, and a map where something did not fit gets a dot. A map can be set up on its own. Three base
+  sets, switched on the Base screen or on the home screen. "Auto-arrange" lays the base out the way the
+  enemy's AI does, with your towers. Your old base carries over: every map where it would have stood
+  differently is kept exactly as it was.
+- The outpost has its own tab.
+- Every tower and module has its own icon.
+
+## Prompt 11: a compact battle HUD, cards in line, short names, new shields
+
+- A compact battle HUD, on by default (Settings > Compact battle HUD; off gives the full one): a smaller
+  minimap with select-all and box-select on its corner (pinch to zoom), the objective and the clock in one
+  strip at the top, Attack / Defend as one icon switch and Auto buy and Support as icon toggles (also in
+  the pause menu), a card tray a third lower with the render, the CP and a short name (hold a card for
+  its full name), the supply penalty as a small chip, a boss bar half as wide that opens on a tap (tap a
+  part there to focus fire on it), small notices at the top that go after about 3 s one after another, the
+  selected vehicles as one strip above the tray with Advance / Stop / Back, and the "your army fights on
+  its own" hint only in the first three matches. In a fight the HUD covers about a quarter of the screen
+  (the full HUD more than half). Every control is still a 44 pt target.
+- Every vehicle, tower, structure, support and item has a short name for tight places; every card's name
+  area is two lines high, so pictures, CP and levels line up in every row; cards in a row are one height.
+- A tower branch's name no longer shows as a raw "support." key.
+- Every shield redrawn with one shader: a hex-tile energy dome, bright at the rim and clear in the middle,
+  red-orange for the enemy and blue for us, rippling where rounds hit, flickering as its generators are
+  damaged and shattering when it falls; a lighter version on Low graphics. Its size and rules are
+  unchanged.
+
 ## Prompt 10: Field Command 2.0 (the interface)
 
 - New look everywhere, on one theme of tokens (colours, Barlow fonts, type sizes, spacing, touch

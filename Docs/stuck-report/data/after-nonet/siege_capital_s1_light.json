@@ -1,0 +1,13 @@
+{
+  "map": "capital",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 4dcd280f app 0.1.0",
+  "ticks": 5662,
+  "journal": [],
+  "records": [
+    {"vehicle": 805, "def": "siege_tank", "team": 0, "startTick": 3530, "start": 176.5, "end": 185, "seconds": 8.5, "x": 107.552, "y": 35.315, "goalX": 65.525, "goalY": 51.115, "order": "Move", "cause": "BlockedByFriend", "detail": "artillery#817 moving", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "artillery(moving)@4.8 base_wall@6"}
+  ],
+  "rescues": []
+}

@@ -61,11 +61,11 @@ def _gun(a, parent, x, y, z, length, radius, pitch=0.0, suffix='', seg=14, sleev
     return tuple(at(length - .02 + bl))
 
 
-def _ring_mouth(a, parent, m, r, protrude=.06, seg=8):
+def _ring_mouth(a, parent, m, r, protrude=.06, seg=8, name='Tubes'):
     """Open launcher tube mouth facing local +Z of matrix m: a steel cup whose bore bottom sits 2 cm
     behind the launcher face, so a dark face plate in front of the launcher shows through it.
     Cheaper than _tube_mouth's separate bore disk on launchers with many tubes."""
-    a.part('Tubes', 'Steel', parent).lathe([(r, -.04), (r, protrude), (r * .76, protrude), (r * .76, -.02)],
+    a.part(name, 'Steel', parent).lathe([(r, -.04), (r, protrude), (r * .76, protrude), (r * .76, -.02)],
                                            loc=m.to_translation(), rot=m.to_euler('XYZ'), seg=seg)
 
 
@@ -273,9 +273,13 @@ def _twin_autocannon(a, parent, x, y, z, length, pitch, suffix):
     rot = (R90 - pitch, 0, 0)
     at = _axis((x, y, z), pitch)
     cannon = a.part(f'Main_cannon{suffix}', 'Steel', parent)
-    brake = a.part(f'Muzzle_brake{suffix}', 'Undercarriage', parent)
+    # Each barrel's hider is its own barrel tip (Muzzle_brake, _2 on the other gun, _3 and _4 beside them),
+    # so the four barrels fire in turn from their own openings (VehicleView's barrel tips; DECISIONS 13F).
+    outer = {'': '', '_2': '_2'}.get(suffix, suffix)
+    inner = {'': '_3', '_2': '_4'}.get(suffix, suffix)
     cannon.box((.26, .5, .18), loc=at(.1), rot=(-pitch, 0, 0), bevel=0)                      # breech block
     for side in (-.065, .065):
+        brake = a.part(f'Muzzle_brake{outer if side < 0 else inner}', 'Undercarriage', parent)
         cannon.cyl(.04, length, loc=at(length / 2, 0, side), rot=rot, seg=10, bevel=.01, bseg=1)
         cannon.cyl(.058, .5, loc=at(.55, 0, side), rot=rot, seg=10, bevel=.012, bseg=1)       # cooling sleeve
         brake.lathe([(.036, 0), (.056, .02), (.056, .16), (.03, .16), (.03, .1)], loc=at(length - .02, 0, side),
@@ -361,14 +365,17 @@ def heavy_aa(a):
         tarm.box((.34, 1.5, .42), loc=(x, -.25, .7), bevel=.04, seg=1)                     # gun housings
         tsteel.box((.26, .5, .2), loc=(s * .78, -.1, .7), bevel=.02, seg=1)                 # trunnions
         tips.append(_twin_autocannon(a, t, x, -.95, .7, 2.3, pitch, suffix))
-        # Six-round missile pack hinged on the housing, raised 12 degrees.
-        mp = .21
+        # Six-round missile pack hinged on the housing, level with the guns at rest. Its box is Pack_box; a
+        # liner inside the top middle tube is Missile_pack, the launcher each side fires from (DECISIONS 13F).
+        mp = 0.0
         hinge = Vector((x, .45, .93))
         rot = (-mp, 0, 0)
         turn = Euler(rot, 'XYZ').to_matrix()
         centre = hinge - turn @ Vector((0, L / 2, -H / 2))
         pack = _frame(centre, rot)
-        a.part('Missile_pack', 'Team', t).box((W, L, H), loc=centre, rot=rot, bevel=.04)
+        a.part('Pack_box', 'Team', t).box((W, L, H), loc=centre, rot=rot, bevel=.04)
+        a.part('Missile_pack', 'Undercarriage', t).cyl(.06, L - .2, loc=pack @ Vector((0, -.1, .12)), rot=FORWARD, seg=8,
+                                                       bevel=0)
         frame = a.part('Pack_frame', 'Armor', t)
         for y in (-L / 2 + .12, L / 2 - .12):
             frame.box((W + .05, .14, H + .05), loc=pack @ Vector((0, y, 0)), rot=rot, bevel=.02, seg=1)
@@ -377,7 +384,7 @@ def heavy_aa(a):
                                                     rot=rot, bevel=0)
         for cz in (-.12, .12):
             for cx in (-.23, 0, .23):
-                _ring_mouth(a, t, pack @ _frame((cx, -L / 2, cz), FORWARD), .085, protrude=.05, seg=8)
+                _ring_mouth(a, t, pack @ _frame((cx, -L / 2, cz), FORWARD), .085, protrude=.05, seg=8, name='Pack_tubes')
         if s < 0:
             a.pivot('Muzzle_missile', tuple(pack @ Vector((0, -L / 2 - .06, 0))), t)
     a.pivot('Muzzle_main', (0, tips[0][1], tips[0][2]), t)

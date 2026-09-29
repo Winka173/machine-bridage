@@ -37,6 +37,7 @@ namespace MachineBrigade.Game.Rendering
             Shield,
             Smoke,
             Recon,
+            Resupply,
         }
 
         private Scene _scene;
@@ -62,6 +63,8 @@ namespace MachineBrigade.Game.Rendering
         {
             if (def.Jammer > 0f) return Scene.Jammer;
             if (def.Aps != null) return Scene.Interceptor;
+            // The ammunition carrier (prompt 13 F.2): launchers beside it reload three times as fast.
+            if (def.RearmAura != null && def.RepairAura == null) return Scene.Resupply;
             if (def.RepairAura != null || def.RearmAura != null) return Scene.Repair;
             if (def.FortifyAura != null) return Scene.Fortify;
             if (def.CommandAura != null) return Scene.Command;
@@ -130,6 +133,17 @@ namespace MachineBrigade.Game.Rendering
                     // Two knocked-about friends beside it: the engineer patches them up (and they fight on).
                     Wounded(Friend("main_battle_tank", s + new Vector2(-5f, 3f)), 0.55f);
                     Wounded(Friend("ifv", s + new Vector2(5f, 2f)), 0.55f);
+                    break;
+                case Scene.Resupply:
+                    // Two rocket launchers beside it, empty to start with, shooting at the targets: they reload
+                    // on the spot three times as fast as on their own, and fire again.
+                    foreach (var x in new[] { -6f, 6f })
+                    {
+                        var launcher = Friend("mlrs", s + new Vector2(x, 3f));
+                        _world.DebugEmpty(launcher);
+                        var aim = _targets.Count > 0 ? _targets[x < 0f ? 0 : Mathf.Min(1, _targets.Count - 1)] : null;
+                        if (aim != null) _world.Submit(new Command(CommandType.Attack, 0, new[] { launcher.Id }, default, aim.Id));
+                    }
                     break;
                 case Scene.Fortify:
                     // A battered friendly guard tower the sapper shores up as it works.

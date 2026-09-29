@@ -1,0 +1,13 @@
+{
+  "map": "redrock",
+  "mode": "Siege",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 715b281e app 0.1.0",
+  "ticks": 11536,
+  "journal": [],
+  "records": [
+    {"vehicle": 662, "def": "heavy_tank", "team": 1, "startTick": 9050, "start": 452.5, "end": 461, "seconds": 8.5, "x": 94.93, "y": 96.652, "goalX": 100.266, "goalY": 89.583, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "elite_heavy_tank#683 moving", "area": "fortress", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "engineer_vehicle(moving)@9.2 heavy_tank(moving)@5.3 command_vehicle(moving)@9.4 elite_heavy_tank(moving)@7.6 fpv_carrier(moving)@5.3"}
+  ],
+  "rescues": []
+}

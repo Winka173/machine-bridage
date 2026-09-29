@@ -138,7 +138,8 @@ namespace MachineBrigade.Tests
             PlayerProfile.BaseLoadout = BaseLayout.ForSaving(new BaseLoadout { HqLevel = 2 }, catalog);
             PlayerProfile.LoadForTests(PlayerProfile.JsonForTests());
             var back = PlayerProfile.BaseLoadout;
-            Assert.AreEqual(2, back.HqLevel);
+            // Prompt 14 F: no level to choose any more; the base stands at the level the campaign has opened.
+            Assert.AreEqual(Campaign.HqLevelCap, back.HqLevel);
             Assert.IsEmpty(back.Towers, "a camp cleared on the base screen does not come back as the default");
 
             var gaps = new BaseLoadout { HqLevel = 4, Small = { BaseLoadout.Empty, "aa_turret" }, Large = { "heavy_turret" } };

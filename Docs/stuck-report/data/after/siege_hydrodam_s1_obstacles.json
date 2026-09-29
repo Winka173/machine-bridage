@@ -1,0 +1,17 @@
+{
+  "map": "hydrodam",
+  "mode": "Siege",
+  "seed": 1,
+  "config": "obstacles",
+  "dataVersion": "balance 3e925051 map e14651f6 app 0.1.0",
+  "ticks": 7216,
+  "journal": [],
+  "records": [
+    {"vehicle": 1361, "def": "titan_tank", "team": 0, "startTick": 1380, "start": 69, "end": 79, "seconds": 10, "x": -84.935, "y": -83.912, "goalX": -91.901, "goalY": -94.603, "order": "Move", "cause": "BlockedByDefence", "detail": "dragons_teeth#1337 parked", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@5.7 titan_tank(moving)@6.7"},
+    {"vehicle": 1352, "def": "titan_tank", "team": 0, "startTick": 1530, "start": 76.5, "end": 86, "seconds": 9.5, "x": -94.59, "y": -93.342, "goalX": 64.234, "goalY": -30.298, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "titan_tank#1355 moving", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "titan_tank(moving)@6.7 heavy_tank(moving)@5.7 titan_tank(moving)@9.2 armored_bulldozer(moving)@6.1"},
+    {"vehicle": 1365, "def": "titan_tank", "team": 0, "startTick": 2010, "start": 100.5, "end": 109.5, "seconds": 9, "x": -88.003, "y": -86.326, "goalX": -90.452, "goalY": -96.537, "order": "Move", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "route", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@7.2 main_battle_tank(moving)@4.7 heavy_tank(moving)@5.5 heavy_tank(moving)@5.0"},
+    {"vehicle": 1368, "def": "heavy_tank", "team": 0, "startTick": 4000, "start": 200, "end": 209, "seconds": 9, "x": -88.423, "y": -92.071, "goalX": -95.761, "goalY": -99.021, "order": "AttackMove", "cause": "BlockedByFriend", "detail": "aa_vehicle#1387 moving", "area": "camp0", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "dragons_teeth(fixed)@8.5 aa_vehicle(moving)@3.6 aa_vehicle(moving)@4.6 artillery(moving)@8.6"},
+    {"vehicle": 1407, "def": "armored_bulldozer", "team": 0, "startTick": 6150, "start": 307.5, "end": 316, "seconds": 8.5, "x": -93.93, "y": -89.742, "goalX": -102.392, "goalY": -86.173, "order": "Attack", "cause": "YieldWait", "detail": "waiting on a yield", "area": "camp0", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "aa_vehicle(moving)@6.9 armored_bulldozer(moving)@9.2 aa_vehicle(moving)@3.8 aa_vehicle(moving)@7.0 aa_vehicle(moving)@4.6"}
+  ],
+  "rescues": []
+}

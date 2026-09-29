@@ -1,0 +1,85 @@
+{
+    "version": 1,
+    "map": "greenvale",
+    "source": "Data/maps/greenvale_conquest",
+    "sha1": "56ade81863257ea4a774fdc3e7f0e25c878d9a52",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -96.562,
+        "z": -89.526
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 192.84,
+    "metresHigh": 120.525,
+    "hq": {
+        "x": -120.5,
+        "z": -115.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -135.954,
+            "z": -48.626
+        },
+        {
+            "x": -125.917,
+            "z": -120.069
+        },
+        {
+            "x": -97.85,
+            "z": -129.027
+        },
+        {
+            "x": -58.896,
+            "z": -127.914
+        },
+        {
+            "x": -44.553,
+            "z": -108.354
+        },
+        {
+            "x": -49.702,
+            "z": -85.182
+        },
+        {
+            "x": -108.193,
+            "z": -50.087
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -81.807,
+                "z": -65.919
+            },
+            "dir": {
+                "x": -0.598,
+                "z": -0.801
+            },
+            "routes": 2
+        },
+        {
+            "at": {
+                "x": -47.677,
+                "z": -94.296
+            },
+            "dir": {
+                "x": -0.957,
+                "z": -0.29
+            },
+            "routes": 1
+        }
+    ],
+    "brightness": 0.496,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

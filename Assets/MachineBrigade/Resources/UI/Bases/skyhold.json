@@ -1,0 +1,74 @@
+{
+    "version": 1,
+    "map": "skyhold",
+    "source": "Data/maps/skyhold_conquest",
+    "sha1": "e1646dbc7743e399b4dad8dae0d54e51b60cc07a",
+    "width": 1024,
+    "height": 640,
+    "centre": {
+        "x": -104.219,
+        "z": -100.42
+    },
+    "up": {
+        "x": 0.719,
+        "z": 0.695
+    },
+    "metresWide": 196.194,
+    "metresHigh": 122.621,
+    "hq": {
+        "x": -121.0,
+        "z": -114.5
+    },
+    "heading": 46.0,
+    "dropZone": {
+        "x": -108.75,
+        "z": -108.75
+    },
+    "dropRadius": 8.0,
+    "outline": [
+        {
+            "x": -138.304,
+            "z": -140.0
+        },
+        {
+            "x": -113.824,
+            "z": -140.0
+        },
+        {
+            "x": -59.554,
+            "z": -136.808
+        },
+        {
+            "x": -45.717,
+            "z": -114.667
+        },
+        {
+            "x": -67.383,
+            "z": -86.159
+        },
+        {
+            "x": -88.459,
+            "z": -62.975
+        },
+        {
+            "x": -133.572,
+            "z": -44.178
+        }
+    ],
+    "arrowsFrom": "route",
+    "arrows": [
+        {
+            "at": {
+                "x": -81.69,
+                "z": -70.421
+            },
+            "dir": {
+                "x": -0.564,
+                "z": -0.825
+            },
+            "routes": 2
+        }
+    ],
+    "brightness": 0.501,
+    "camera": "orthographic, straight down, front (HQ heading) up; the map's clear-day light (sun 1.35 #ffe9ca, soft shadows 0.7, the theme's cast), no fog, no vignette, exposure -0.35, saturation -8; 2x supersampled; beyond the battlefield's outline dimmed to 50% and greyed 40%"
+}

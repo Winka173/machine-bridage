@@ -101,6 +101,34 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>From this wave on more and more of a wave comes as the elite versions.</summary>
         public int EliteFrom { get; set; } = 6;
 
+        /// <summary>
+        /// Prompt 13 H.7-H.8: the waves grow with the defender's base (its towers' rank and equipment, its
+        /// HQ level: <see cref="BaseStrength"/>): their size times <see cref="BaseStrength.WaveScale"/>, the
+        /// attacker's income times its square root.
+        /// </summary>
+        public bool ScaleToBase { get; set; }
+
+        /// <summary>
+        /// Endless: each wave this share bigger than the last (on top of <see cref="WaveGrowth"/>, which
+        /// adds vehicles), so the pressure climbs smoothly (0: only the added vehicles).
+        /// </summary>
+        public float WaveCompound { get; set; }
+
+        /// <summary>Siege breakers a wave brings from <see cref="BreachFrom"/> on, one more every <see cref="BreachEvery"/> waves (bulldozers, siege guns, long guns that outrange the towers).</summary>
+        public IReadOnlyList<string> WaveBreachers { get; set; } = Array.Empty<string>();
+
+        public int BreachFrom { get; set; } = 2;
+        public int BreachEvery { get; set; } = 2;
+
+        /// <summary>The waves are drawn against the base they attack: its anti-air, anti-armour and machine-gun towers (prompt 13 H.7).</summary>
+        public bool CounterBase { get; set; }
+
+        /// <summary>
+        /// Once a match, a player holding far too easily (after 4 minutes, the defenders on the field worth 1.6
+        /// times the attackers or more) draws an extra breaching wave instead of anything for itself (H.12).
+        /// </summary>
+        public bool BreachWave { get; set; }
+
         /// <summary>Seeds the waves' make-up (drawn one wave ahead, so the preview is the wave that lands).</summary>
         public int WaveSeed { get; set; } = 1;
 
@@ -156,6 +184,12 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>CP the attacker gets for destroying the super-gun (a side objective; Siege pays coins too).</summary>
         public float SuperGunCp { get; set; } = 25f;
+
+        /// <summary>
+        /// CP the attacker gets for each of the fortress's landing pads it destroys (prompt 13 F.1: the
+        /// defender's aircraft then rearm and mend only at their holding patterns and the HQ).
+        /// </summary>
+        public float PadCp { get; set; } = 12f;
 
         /// <summary>
         /// The defender's ground deliveries come in by the fortress's line (a train or an aircraft
@@ -374,6 +408,8 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var slot in fortressBase.Slots)
                 {
                     if (slot.Structure.IsValid) _defences[Math.Clamp(slot.Ring, 1, 3) - 1].Add(slot.Structure);
+                    if (slot.Structure.IsValid && world.TryGetVehicle(slot.Structure, out var module) && module.Def.Utility is { AirRepair: > 0f })
+                        _pads.Add((slot.Structure, module.Position));
                     if (!rebuild) slot.Lost = true;
                 }
             }
@@ -426,8 +462,63 @@ namespace MachineBrigade.Sim.Modes
             if (_rules.WaveSeconds > 0f)
             {
                 _waveRandom = new Random(_rules.WaveSeed * 7919 + 17);
+                // Prompt 13 H.7: the waves by the base they face, and drawn against it.
+                if (_rules.ScaleToBase)
+                {
+                    BaseScore = BaseStrength.Score(world, Defender);
+                    _waveScale = BaseStrength.WaveScale(BaseScore);
+                    if (world.TryGetEconomy(Attacker, out var attacking)) attacking.IncomeScale *= MathF.Sqrt(_waveScale);
+                }
+                if (_rules.CounterBase) _counterRoster = CounterRoster(world);
                 PlanWave(world, 1);
             }
+        }
+
+        /// <summary>The defender's base strength the waves were sized by (100: the mid-level mark; 0 when the waves are not scaled).</summary>
+        public float BaseScore { get; private set; }
+
+        private float _waveScale = 1f;
+        private List<string>? _counterRoster;
+
+        /// <summary>
+        /// The swarm drawn against the base (prompt 13 H.7): the towers' worth by what they are good at
+        /// (anti-air, anti-armour guns and missiles, machine guns and flame, artillery), and the swarm
+        /// weighted away from what they counter: more armour against machine guns, more fast light
+        /// vehicles, drones and long guns against anti-armour towers, no aircraft against a sky full of
+        /// anti-air, fast raiders against artillery.
+        /// </summary>
+        private List<string> CounterRoster(SimWorld world)
+        {
+            float aa = 0f, antiArmour = 0f, guns = 0f, artillery = 0f;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team != Defender || v.Def.Fort is not { Kind: FortKind.Tower } || v.Def.Passive) continue;
+                var w = v.Def.Weapon;
+                var worth = v.Def.Power;
+                if (BaseLoadout.IsAntiAir(world.Catalog, v.Def.Id)) aa += worth;
+                if (w.MinRange > 0f) artillery += worth;
+                else if (w.DamageType == DamageType.ArmorPiercing || w.Projectile == ProjectileKind.Missile) antiArmour += worth;
+                else if (w.DamageType is DamageType.Kinetic or DamageType.Fire || w.Projectile == ProjectileKind.Bullet) guns += worth;
+            }
+            var total = MathF.Max(1f, aa + antiArmour + guns + artillery);
+            var list = new List<string>();
+            void Add(string id, float weight)
+            {
+                if (!world.Catalog.Vehicles.TryGetValue(id, out var def)) return;
+                var n = Math.Clamp((int)MathF.Round(weight), 0, 4);
+                for (var i = 0; i < n; i++) list.Add(id);
+            }
+            foreach (var id in _rules.WaveRoster)
+            {
+                if (!world.Catalog.Vehicles.TryGetValue(id, out var def)) continue;
+                var weight = 1f;
+                if (def.Armor == ArmorClass.Heavy && !def.Flying) weight += 2f * guns / total - 1f * antiArmour / total;
+                if (def.Armor == ArmorClass.Light && def.Speed >= 11f) weight += 2f * antiArmour / total + 1.5f * artillery / total;
+                if (def.Weapon.Projectile == ProjectileKind.Drone || def.Weapon.MinRange > 0f) weight += 1.5f * antiArmour / total;
+                if (def.Flying) weight -= 2.5f * aa / total;
+                Add(id, weight);
+            }
+            return list.Count > 0 ? list : new List<string>(_rules.WaveRoster);
         }
 
         private bool Listed(EntityId id)
@@ -655,11 +746,13 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             if (world.Time >= _nextWave) SendWave(world);
+            if (_rules.BreachWave && !BreachSent && _rules.WaveBreachers.Count > 0 && world.Time >= 240.0) SendBreach(world);
             ReleaseWaves(world);
             if (Stage == 1 && Alive(world, _relays) == 0) Advance(world, 2);
             if (Stage == 2 && Alive(world, _generators) == 0) Advance(world, 3);
             if (Stage == 3) KeepEvents(world);
             RunSuperGun(world);
+            PayForPads(world);
             WatchWorks(world);
             Watch(world);
             PayBounties(world);
@@ -739,7 +832,40 @@ namespace MachineBrigade.Sim.Modes
         {
             if (_rules.Guardian == null || Fortress is not { } hq || !world.Catalog.Vehicles.ContainsKey(_rules.Guardian)) return;
             var toward = world.TryGetRally(Attacker, out var rally) ? Vector2.Normalize(rally - hq) : new Vector2(-0.7f, -0.7f);
-            world.SpawnVehicle(_rules.Guardian, Defender, hq + toward * 12f, SimMath.HeadingOf(toward));
+            world.SpawnVehicle(_rules.Guardian, Defender, RoomFor(world, hq + toward * 12f, world.Catalog.Vehicle(_rules.Guardian)), SimMath.HeadingOf(toward));
+        }
+
+        /// <summary>
+        /// The open ground nearest <paramref name="at"/> with room all round for a hull this big (the
+        /// guardian is 9 m across): it came out in a gap between the HQ, the keep's wall and a tower,
+        /// where it could hardly move (prompt 12). Within 24 m; else the point itself.
+        /// </summary>
+        private static Vector2 RoomFor(SimWorld world, Vector2 at, VehicleDef def)
+        {
+            var grid = world.Grid;
+            var lanes = world.Lanes;
+            var room = Math.Max(2, (int)MathF.Ceiling((def.HullRadius - SimWorld.ObstacleClearance) / grid.CellSize) + 1);
+            var (cx, cy) = grid.CellOf(at);
+            var main = grid.MainRegion;
+            for (var ring = 0; ring <= 12; ring++)
+            {
+                var best = float.MaxValue;
+                var spot = at;
+                for (var y = cy - ring; y <= cy + ring; y++)
+                for (var x = cx - ring; x <= cx + ring; x++)
+                {
+                    if (Math.Abs(x - cx) != ring && Math.Abs(y - cy) != ring) continue;
+                    if (!grid.IsWalkable(x, y) || grid.RegionOf(x, y) != main) continue;
+                    var c = grid.CellCenter(x, y);
+                    if (lanes.ClearanceAt(c) < room) continue;
+                    var d = Vector2.DistanceSquared(c, at);
+                    if (d >= best) continue;
+                    best = d;
+                    spot = c;
+                }
+                if (best < float.MaxValue) return spot;
+            }
+            return at;
         }
 
         /// <summary>
@@ -764,7 +890,9 @@ namespace MachineBrigade.Sim.Modes
                 _glyphUntil = world.Time + 6.0;
                 foreach (var elite in new[] { "elite_mbt", "elite_heavy_tank" })
                     if (world.Catalog.Vehicles.ContainsKey(elite))
-                        world.SpawnVehicle(elite, Defender, hq.Position + new Vector2(-8f, -8f), SimMath.DegToRad(225f));
+                        // (Where it has room: beside the HQ they came down in a pocket and never got out; prompt 12.)
+                        world.SpawnVehicle(elite, Defender, RoomFor(world, hq.Position + new Vector2(-8f, -8f), world.Catalog.Vehicle(elite)),
+                            SimMath.DegToRad(225f));
                 world.Emit(SimEvent.Alert(hq.Position, Key("glyph")));
             }
             else if (_hqPhase == 2 && health < 0.25f)
@@ -862,6 +990,23 @@ namespace MachineBrigade.Sim.Modes
             _superGunFireAt = _rules.SuperGunFirst;
         }
 
+        /// <summary>The fortress's landing pads still to pay for when they fall (prompt 13 F.1).</summary>
+        private readonly List<(EntityId id, Vector2 at)> _pads = new();
+
+        /// <summary>A landing pad of the fortress destroyed: the attacker is paid (the defender's aircraft lose their fast rearm).</summary>
+        private void PayForPads(SimWorld world)
+        {
+            for (var i = _pads.Count - 1; i >= 0; i--)
+            {
+                var (id, at) = _pads[i];
+                if (world.TryGetVehicle(id, out var pad) && pad.IsAlive) continue;
+                _pads.RemoveAt(i);
+                if (_rules.PadCp <= 0f || !world.TryGetEconomy(Attacker, out var economy)) continue;
+                economy.Cp = MathF.Min(economy.Bank, economy.Cp + _rules.PadCp);
+                world.Emit(SimEvent.BountyPaid(Attacker, "airfield", at, _rules.PadCp));
+            }
+        }
+
         /// <summary>
         /// The super-gun fires a huge shell on its countdown at the thickest knot of attackers on the
         /// ground (their camp when they have nobody out); destroyed, it pays the attacker.
@@ -945,14 +1090,18 @@ namespace MachineBrigade.Sim.Modes
         {
             _plan.Clear();
             _preview.Clear();
-            var swarm = _rules.WaveRoster.Count > 0 ? _rules.WaveRoster
+            IReadOnlyList<string> swarm = _counterRoster != null ? _counterRoster : _rules.WaveRoster.Count > 0 ? _rules.WaveRoster
                 : world.TryGetEconomy(Attacker, out var own) ? own.Vehicles : Array.Empty<string>();
             if (swarm.Count == 0) return;
-            var count = Math.Min(_rules.WaveMax, _rules.WaveStart + (int)MathF.Round(_rules.WaveGrowth * (wave - 1)));
+            var raw = (_rules.WaveStart + _rules.WaveGrowth * (wave - 1)) * MathF.Pow(1f + _rules.WaveCompound, wave - 1) * _waveScale;
+            var count = Math.Min(_rules.WaveMax, (int)MathF.Round(raw));
             var heavies = _rules.WaveHeavy.Count > 0 && _rules.HeavyEvery > 0 ? Math.Min(count / 4, wave / _rules.HeavyEvery) : 0;
+            // Siege breakers: bulldozers for the gates and walls, siege guns and long guns that outrange the towers.
+            var breakers = _rules.WaveBreachers.Count > 0 && wave >= _rules.BreachFrom ? Math.Min(count / 4, 1 + (wave - _rules.BreachFrom) / Math.Max(1, _rules.BreachEvery)) : 0;
             var offset = _waveRandom.Next(swarm.Count);
-            for (var i = 0; i < count - heavies; i++) _plan.Add(swarm[(offset + i) % swarm.Count]);
+            for (var i = 0; i < count - heavies - breakers; i++) _plan.Add(swarm[(offset + i) % swarm.Count]);
             for (var i = 0; i < heavies; i++) _plan.Add(_rules.WaveHeavy[(wave + i) % _rules.WaveHeavy.Count]);
+            for (var i = 0; i < breakers; i++) _plan.Add(_rules.WaveBreachers[(wave + i) % _rules.WaveBreachers.Count]);
             var elite = MathF.Min(0.6f, (wave - _rules.EliteFrom + 1) * 0.08f);
             for (var i = 0; i < _plan.Count; i++)
                 if (elite > 0f && world.Catalog.EliteVariant(_plan[i]) is { } better && _waveRandom.NextDouble() < elite)
@@ -983,6 +1132,22 @@ namespace MachineBrigade.Sim.Modes
             if (_rules.Endless && world.TryGetEconomy(Defender, out var ours) && Wave <= 15) ours.IncomeScale *= (1f + 0.02f * Wave) / (1f + 0.02f * (Wave - 1));
             world.Emit(SimEvent.Alert(camp, Key("wave")));
             PlanWave(world, Wave + 1);
+        }
+
+        /// <summary>The extra breaching wave was sent (prompt 13 H.12: a player holding far too easily).</summary>
+        public bool BreachSent { get; private set; }
+
+        private void SendBreach(SimWorld world)
+        {
+            if (!world.TryGetEconomy(Defender, out var ours) || !world.TryGetEconomy(Attacker, out var theirs)) return;
+            if (ours.ArmyCp < 14 || ours.ArmyCp < 1.6f * Math.Max(1, theirs.ArmyCp)) return;
+            if (!world.TryGetRally(Attacker, out var camp)) return;
+            BreachSent = true;
+            // Two of every breaker, elite where there is one: a hammer blow at the line.
+            foreach (var id in _rules.WaveBreachers)
+                for (var k = 0; k < 2; k++) _reserve.Enqueue((Wave, world.Catalog.EliteVariant(id) ?? id));
+            ReleaseWaves(world);
+            world.Emit(SimEvent.Alert(camp, "assist.breach"));
         }
 
         /// <summary>Flies in waiting wave vehicles while the attackers alive (and on their way) are under the ceiling.</summary>

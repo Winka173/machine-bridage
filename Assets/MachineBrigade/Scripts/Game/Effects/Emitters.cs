@@ -19,6 +19,9 @@ namespace MachineBrigade.Game.Effects
         private readonly ParticleSystem _dust;
         private readonly ParticleSystem _motor;
         private readonly ParticleSystem _flame;
+
+        /// <summary>The flames the stream leaves licking up off the ground: under the vehicles standing in them (DECISIONS 12A).</summary>
+        private readonly ParticleSystem _groundFlame;
         private readonly ParticleSystem _flameCore;
         private readonly ParticleSystem _flameBalls;
         private readonly ParticleSystem _flameGlow;
@@ -31,7 +34,19 @@ namespace MachineBrigade.Game.Effects
         {
             public Vector3 From, To;
             public float Travel, Until, RodDebt, BallDebt, SmokeDebt, GlowDebt;
+
+            /// <summary>The nozzle it leaves from, on the part it is drawn on (none: From stays put).</summary>
+            public MuzzleFx.Anchor Nozzle;
         }
+
+        /// <summary>
+        /// Set by the director, which feeds the streams once the vehicles are drawn
+        /// (<see cref="FeedFlames"/>); left false (tools), <see cref="Tick"/> feeds them.
+        /// </summary>
+        public bool LateFeed { get; set; }
+
+        /// <summary>Tests: false leaves each stream where its trigger was pulled (the old behaviour).</summary>
+        internal static bool RideNozzles = true;
 
         private readonly System.Collections.Generic.List<FlameStream> _streams = new();
         private readonly ParticleSystem _flak;
@@ -43,6 +58,8 @@ namespace MachineBrigade.Game.Effects
         {
             _trail = Continuous(parent, "Shell Trails", m.Smoke, 3000, PB.SmokeGradient(0.8f, 0.3f), 0.7f, 2.6f);
             _motor = Continuous(parent, "Rocket Motors", m.Fire, 400, PB.FireGradient, 1f, 0.2f);
+            // Missiles' and rockets' flame cones, glow and smoke trails (DECISIONS 12B).
+            Plumes = new MotorPlumes(m, parent);
             // Jets' vapour: thin white trails that spread and fade behind the engines and wingtips.
             _contrail = Continuous(parent, "Contrails", m.Smoke, 1600,
                 PB.Fade(new Color(0.97f, 0.98f, 1f), new Color(0.94f, 0.96f, 0.99f), new Color(0.9f, 0.92f, 0.96f), 0.5f), 0.45f, 2.4f);
@@ -52,6 +69,9 @@ namespace MachineBrigade.Game.Effects
             _flame = Continuous(parent, "Flame Licks", FxMaterials.Shared.Napalm, 1200,
                 PB.Hold(new Color(0.42f, 0.36f, 0.3f), new Color(0.3f, 0.26f, 0.22f), 0.08f, 0.7f), 0.8f, 1.15f);
             PB.Flipbook(_flame, loop: true, tilt: 8f, pivotY: 0.3f);
+            _groundFlame = Continuous(parent, "Ground Flame Licks", FireSpots.OnGround(FxMaterials.Shared.Napalm), 600,
+                PB.Hold(new Color(0.42f, 0.36f, 0.3f), new Color(0.3f, 0.26f, 0.22f), 0.08f, 0.7f), 0.8f, 1.15f);
+            PB.Flipbook(_groundFlame, loop: true, tilt: 8f, pivotY: 0.3f);
             // Rolling balls of burning fuel down the stream: small at the nozzle, swelling as they
             // fly, splashing onto the target and rolling up off it into black smoke.
             _flameBalls = PB.Create(parent, "Flame Balls", FxMaterials.Shared.FlameBall);
@@ -80,12 +100,12 @@ namespace MachineBrigade.Game.Effects
             var coreEmission = _flameCore.emission;
             coreEmission.enabled = false;
             PB.Colors(_flameCore, PB.Fade(new Color(2.2f, 1.25f, 0.45f), new Color(2f, 0.7f, 0.12f), new Color(1.1f, 0.22f, 0.03f), 0.9f));
-            PB.Grow(_flameCore, 0.45f, 2.2f);
+            PB.Grow(_flameCore, RodGrowFrom, 2.2f);
             _flameCore.Play();
             // Heat round the stream: a soft orange halo for the bloom to spread (additive, over the smoke).
             var heat = new Material(m.Glow) { name = "Flame Heat", renderQueue = 3010, hideFlags = HideFlags.DontSave };
             _flameGlow = Continuous(parent, "Flame Heat", heat, 600,
-                PB.Fade(new Color(1f, 0.5f, 0.15f), new Color(1f, 0.38f, 0.08f), new Color(0.7f, 0.15f, 0.03f), 0.32f), 0.6f, 1.4f);
+                PB.Fade(new Color(1f, 0.5f, 0.15f), new Color(1f, 0.38f, 0.08f), new Color(0.7f, 0.15f, 0.03f), 0.32f), GlowGrowFrom, 1.4f);
             // The ground lit orange where the fire lands.
             _flamePool = PB.Create(parent, "Flame Light", m.Glow, ParticleSystemRenderMode.HorizontalBillboard);
             var pool = _flamePool.main;
@@ -126,6 +146,9 @@ namespace MachineBrigade.Game.Effects
                 PB.Fade(new Color(0.62f, 0.56f, 0.44f), new Color(0.58f, 0.53f, 0.42f), new Color(0.55f, 0.5f, 0.4f), 0.45f), 0.8f, 2.4f);
         }
 
+        /// <summary>The burning motors of missiles and rockets in flight.</summary>
+        public MotorPlumes Plumes { get; }
+
         public void Trail(Vector3 position, float size)
         {
             Emit(_trail, position, Random.insideUnitSphere * 0.2f + Vector3.up * 0.25f, size * Random.Range(0.7f, 1.2f),
@@ -150,6 +173,9 @@ namespace MachineBrigade.Game.Effects
             Emit(_motor, position, -forward * 3f + Random.insideUnitSphere * 0.5f, Random.Range(0.5f, 0.9f) * Mathf.Max(0.6f, scale),
                 Random.Range(0.08f, 0.16f));
         }
+
+        /// <summary>The share of its size a rod streak and a heat halo are born at (they grow as they fly).</summary>
+        private const float RodGrowFrom = 0.45f, GlowGrowFrom = 0.6f;
 
         /// <summary>How much of gravity pulls the burning fuel down: the stream arcs a little on its way.</summary>
         private const float FlameGravity = 0.5f;
@@ -186,17 +212,20 @@ namespace MachineBrigade.Game.Effects
         /// high so it falls onto it), balls of fire roll along it and swell, fire splashes where
         /// it lands and black smoke rises off the burning stream.
         /// </summary>
-        public void FlameJet(Vector3 from, Vector3 to, float seconds, float gap, float now)
+        public void FlameJet(Vector3 from, Vector3 to, float seconds, float gap, float now, MuzzleFx.Anchor nozzle = default)
         {
             var travel = Mathf.Max(0.12f, seconds);
             // The same flamethrower pulling again takes over its stream.
             FlameStream stream = null;
             foreach (var s in _streams)
-                if ((s.From - from).sqrMagnitude < 4f) stream = s;
+                if (nozzle.Valid ? s.Nozzle.Valid && s.Nozzle.Node == nozzle.Node && (s.Nozzle.Local - nozzle.Local).sqrMagnitude < 0.01f
+                        : (s.From - from).sqrMagnitude < 4f)
+                    stream = s;
             if (stream == null) _streams.Add(stream = new FlameStream());
             stream.From = from;
             stream.To = to;
             stream.Travel = travel;
+            stream.Nozzle = nozzle;
             // Fed a little past the next pull, so one pull runs into the next without a gap.
             stream.Until = now + gap * 1.6f;
             // Where it lands: flames licking up the target and off the ground round it, the ground
@@ -205,7 +234,7 @@ namespace MachineBrigade.Game.Effects
                 Emit(_flame, to + Random.insideUnitSphere * 0.5f - Vector3.up * 0.4f, Vector3.up * Random.Range(0.3f, 0.9f) + Random.insideUnitSphere * 0.4f,
                     Random.Range(2f, 2.8f), Random.Range(0.55f, 0.85f), Random.Range(-8f, 8f));
             var disc = Random.insideUnitCircle * 1.6f;
-            Emit(_flame, new Vector3(to.x + disc.x, 0.05f, to.z + disc.y), Vector3.up * 0.2f, Random.Range(1.4f, 2.1f), Random.Range(0.6f, 0.9f),
+            Emit(_groundFlame, new Vector3(to.x + disc.x, 0.05f, to.z + disc.y), Vector3.up * 0.2f, Random.Range(1.4f, 2.1f), Random.Range(0.6f, 0.9f),
                 Random.Range(-6f, 6f));
             _flamePool.Emit(new ParticleSystem.EmitParams
             {
@@ -222,45 +251,102 @@ namespace MachineBrigade.Game.Effects
         public void Charge(Vector3 position, float size) =>
             Emit(_charge, position + Random.insideUnitSphere * 0.05f, Vector3.zero, size * Random.Range(0.8f, 1.2f), 0.12f);
 
-        /// <summary>Per frame: feeds the flame streams from their nozzles.</summary>
+        /// <summary>Per frame: feeds the flame streams from their nozzles (unless the director feeds them after drawing).</summary>
         public void Tick(float now, float dt)
+        {
+            if (!LateFeed) FeedFlames(now, dt);
+        }
+
+        /// <summary>Tests: each live stream's start and the nozzle it rides as drawn now.</summary>
+        internal void Nozzles(System.Collections.Generic.List<(Vector3 from, Vector3 nozzle)> into)
+        {
+            into.Clear();
+            foreach (var s in _streams)
+                if (s.Nozzle.Valid) into.Add((s.From, s.Nozzle.Point));
+        }
+
+        /// <summary>Tests: the back end of every burning rod streak of the flame streams, and the way it points.</summary>
+        internal void RodTails(System.Collections.Generic.List<(Vector3 tail, Vector3 axis, float age)> into)
+        {
+            into.Clear();
+            var count = _flameCore.particleCount;
+            if (count == 0) return;
+            var buffer = new ParticleSystem.Particle[count];
+            count = _flameCore.GetParticles(buffer, count);
+            var rod = _flameCore.GetComponent<ParticleSystemRenderer>();
+            for (var i = 0; i < count; i++)
+            {
+                var p = buffer[i];
+                var axis = p.velocity.normalized;
+                into.Add((p.position - axis * (RodLength(rod, p.GetCurrentSize(_flameCore), p.velocity.magnitude) * (1f - MuzzleFx.FlameShapeMargin)), axis,
+                    p.startLifetime - p.remainingLifetime));
+            }
+        }
+
+        /// <summary>
+        /// How long a stretched streak is drawn: its width times the length scale plus its speed
+        /// times the speed scale, trailing back from the particle, its tip
+        /// (FlashTests.StretchedFlamesTrailBehindTheirParticle).
+        /// </summary>
+        private static float RodLength(ParticleSystemRenderer renderer, float size, float speed) =>
+            size * renderer.lengthScale + speed * renderer.velocityScale;
+
+        /// <summary>
+        /// Feeds each flame stream from its nozzle where it is drawn now: called once the vehicles
+        /// are drawn (EffectsDirector.LaunchShots), so the stream stays on the nozzle as the hull
+        /// drives and the turret turns. It was fed from the point where the trigger was last
+        /// pulled, up to 0.6 s behind a moving flame tank, and each streak was born with its tip
+        /// on the nozzle, its whole length (2-3 m) trailing back over the turret (DECISIONS 12A).
+        /// </summary>
+        public void FeedFlames(float now, float dt)
         {
             if (_streams.Count == 0) return;
             var fall = Physics.gravity * FlameGravity;
             var density = ExplosionEffect.Density;
+            var rod = _flameCore.GetComponent<ParticleSystemRenderer>();
             for (var k = _streams.Count - 1; k >= 0; k--)
             {
                 var s = _streams[k];
-                if (now > s.Until)
+                if (now > s.Until || (s.Nozzle.Node is var gone && !ReferenceEquals(gone, null) && gone == null))
                 {
                     _streams.RemoveAt(k);
                     continue;
                 }
+                if (RideNozzles && s.Nozzle.Valid) s.From = s.Nozzle.Point;
                 var launch = (s.To - s.From) / s.Travel - fall * (0.5f * s.Travel);
                 var straight = (s.To - s.From) / s.Travel;
+                var along = straight.sqrMagnitude > 1e-4f ? straight.normalized : Vector3.forward;
                 s.RodDebt += RodRate * dt;
                 s.BallDebt += BallRate * dt;
                 for (; s.RodDebt >= 1f; s.RodDebt -= 1f)
                 {
                     // Spread over the frame so a slow frame does not bunch the rod up at the nozzle.
+                    // A streak trails back from its particle: born a length out, its back end (where
+                    // the flame shape shows) sits on the nozzle.
                     var tau = Random.value * dt;
-                    Emit(_flameCore, s.From + launch * tau, launch + Random.insideUnitSphere * 0.7f, Random.Range(0.5f, 0.7f),
+                    var velocity = launch + Random.insideUnitSphere * 0.7f;
+                    var size = Random.Range(0.5f, 0.7f);
+                    var length = RideNozzles ? RodLength(rod, size * RodGrowFrom, velocity.magnitude) * (1f - MuzzleFx.FlameShapeMargin) : 0f;
+                    Emit(_flameCore, s.From + velocity.normalized * length + launch * tau, velocity, size,
                         (s.Travel - tau) * Random.Range(0.95f, 1.05f));
                 }
                 for (; s.BallDebt >= 1f; s.BallDebt -= 1f)
                 {
                     var tau = Random.value * dt;
-                    // Balls of fire roll down the stream, splash onto the target and roll up off it (Splash).
-                    Emit(_flameBalls, s.From + straight * tau + Random.insideUnitSphere * 0.12f,
+                    // Balls of fire roll down the stream, splash onto the target and roll up off it
+                    // (Splash); born small (30 %), their middle a little out of the nozzle.
+                    var size = Random.Range(2.4f, 3.2f);
+                    Emit(_flameBalls, s.From + along * (size * 0.3f * 0.4f) + straight * tau + Random.insideUnitSphere * 0.12f,
                         straight * Random.Range(0.94f, 1.04f) + Random.insideUnitSphere * 0.9f,
-                        Random.Range(2.4f, 3.2f), s.Travel * Random.Range(1.8f, 2.2f), Random.Range(-20f, 20f));
+                        size, s.Travel * Random.Range(1.8f, 2.2f), Random.Range(-20f, 20f));
                 }
-                // Heat glowing round the stream (fewer on the Low tier).
+                // Heat glowing round the stream (fewer on the Low tier), its soft halo out in front of the nozzle.
                 s.GlowDebt += GlowRate * density * dt;
                 for (; s.GlowDebt >= 1f; s.GlowDebt -= 1f)
                 {
                     var tau = Random.value * dt;
-                    Emit(_flameGlow, s.From + straight * tau, straight * Random.Range(0.9f, 1f), Random.Range(1.8f, 2.6f),
+                    var size = Random.Range(1.8f, 2.6f);
+                    Emit(_flameGlow, s.From + along * (size * GlowGrowFrom * 0.4f) + straight * tau, straight * Random.Range(0.9f, 1f), size,
                         s.Travel * Random.Range(1f, 1.2f));
                 }
                 // Thick black smoke rolling up off the far half of the stream and the burning target.

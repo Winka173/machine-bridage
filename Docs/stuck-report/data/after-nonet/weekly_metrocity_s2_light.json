@@ -1,0 +1,17 @@
+{
+  "map": "metrocity",
+  "mode": "Weekly",
+  "seed": 2,
+  "config": "light",
+  "dataVersion": "balance 3e925051 map 1ad0f1f4 app 0.1.0",
+  "ticks": 12002,
+  "journal": [],
+  "records": [
+    {"vehicle": 370, "def": "siege_tank", "team": 0, "startTick": 2010, "start": 100.5, "end": 111, "seconds": 10.5, "x": 21.883, "y": 51.019, "goalX": 26.357, "goalY": 61.446, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#383 moving", "area": "fortress", "lanes": "", "outcome": "gave up", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@9.7 scout_jeep(moving)@8.2"},
+    {"vehicle": 398, "def": "heavy_tank", "team": 1, "startTick": 4450, "start": 222.5, "end": 232.5, "seconds": 10, "x": 75.625, "y": 110.824, "goalX": 125, "goalY": 115, "order": "AttackMove", "cause": "YieldWait", "detail": "waiting on a yield", "area": "fortress", "lanes": "road", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "heavy_rocket_artillery(moving)@4.7 ammo_carrier(moving)@6.2 vbied(moving)@6.8"},
+    {"vehicle": 439, "def": "command_vehicle", "team": 1, "startTick": 6020, "start": 301, "end": 312.5, "seconds": 11, "x": 32.339, "y": 60.626, "goalX": 37.503, "goalY": 70.895, "order": "Move", "cause": "BlockedByFriend", "detail": "mobile_fortress#431 parked", "area": "fortress", "lanes": "road", "outcome": "died", "rescues": 0, "rescueKinds": "", "nearby": ""},
+    {"vehicle": 520, "def": "aa_vehicle", "team": 0, "startTick": 8280, "start": 414, "end": 423, "seconds": 9, "x": -52.304, "y": -44.609, "goalX": -36.356, "goalY": -23.627, "order": "Move", "cause": "BlockedByFriend", "detail": "siege_tank#507 moving", "area": "field", "lanes": "route", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "siege_tank(moving)@3.8 siege_tank(moving)@9.1 main_battle_tank(moving)@5.0 aa_vehicle(moving)@8.5"},
+    {"vehicle": 482, "def": "ew_jammer", "team": 1, "startTick": 11810, "start": 590.5, "end": 599, "seconds": 8.5, "x": 93.707, "y": 109.136, "goalX": 65.648, "goalY": 81.512, "order": "Idle", "cause": "BlockedByFriend", "detail": "mobile_fortress#431 parked", "area": "fortress", "lanes": "", "outcome": "moved", "rescues": 0, "rescueKinds": "", "nearby": "mobile_fortress(parked)@9.4 shahed_truck(parked)@6.6 rocket_technical(parked)@9.9"}
+  ],
+  "rescues": []
+}

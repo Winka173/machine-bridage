@@ -75,7 +75,8 @@ namespace MachineBrigade.Game.Hud
             // the coins and the one settings gear on the right.
             _topBar = Kit.Box("fc-top", PickingMode.Position);
             _topLead = Kit.Box("fc-top__lead");
-            _backButton = new KitIconButton("retreat", Strings.Get("menu.back"), () => Back());
+            // The top bar is 44 pt: its icon buttons are small faces inside their 44 pt targets (prompt 14 A3).
+            _backButton = new KitIconButton("retreat", Strings.Get("menu.back"), () => Back(), plain: true);
             _topLead.Add(_backButton);
             _logo = Kit.Box("fc-top__logo");
             _logo.Add(Kit.Icon("logo"));
@@ -99,7 +100,7 @@ namespace MachineBrigade.Game.Hud
             _topBar.Add(rank);
             _coins = new KitCurrency(0, () => OpenShop(ShopTab.Coins));
             _topBar.Add(_coins);
-            var gear = new KitIconButton("settings", Strings.Get("menu.settings"), () => Open(_settings, Strings.Get("menu.settings")));
+            var gear = new KitIconButton("settings", Strings.Get("menu.settings"), () => Open(_settings, Strings.Get("menu.settings")), plain: true);
             gear.AddToClassList("fc-top__gear");
             _topBar.Add(gear);
             Root.Add(_topBar);
@@ -122,11 +123,12 @@ namespace MachineBrigade.Game.Hud
             ShowTab(_reopenTab);
             if (_reopenSettings) Open(_settings, Strings.Get("menu.settings"));
             _reopenSettings = false;
-            // Device check of a detail page: -mb-detail=apc (and -mb-detail-guide for its Guide tab).
+            // Device check of a detail page: -mb-detail=apc (and -mb-detail-guide for its Guide tab, -mb-detail-firing for In action).
             var detail = Match.DebugFlags.Value("-mb-detail=");
             if (!string.IsNullOrEmpty(detail) && (catalog.Vehicles.ContainsKey(detail) || catalog.TryGetSupport(detail, out _)))
             {
                 if (Match.DebugFlags.Has("-mb-detail-guide")) _detailTab = DetailTab.Guide;
+                if (Match.DebugFlags.Has("-mb-detail-firing")) _detailTab = DetailTab.Firing;
                 OpenDetail(detail);
                 Refresh();
             }
@@ -268,6 +270,7 @@ namespace MachineBrigade.Game.Hud
                 return true;
             }
             if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Base && _base.Back()) return true;
+            if (_overlays.Count == 0 && _tab == Tab.Army && _armyView == ArmyView.Outpost && _outpost.Back()) return true;
             if (_overlays.Count > 0)
             {
                 CloseTop();
@@ -402,6 +405,8 @@ namespace MachineBrigade.Game.Hud
                     _reopenSettings = true;
                     SettingsChanged?.Invoke();
                 }));
+            // Prompt 11 A9: the compact battle HUD, on by default; off shows the full one.
+            display.Add(ToggleRow("expand", "settings.compactHud", () => MatchSettings.CompactHud, on => MatchSettings.CompactHud = on));
             display.Add(OptionRow("eye", "settings.colorblind", new[] { Strings.Get("settings.colorsDefault"), Strings.Get("settings.colorsSafe") },
                 () => MatchSettings.ColorBlind ? 1 : 0, i => MatchSettings.ColorBlind = i == 1));
 
@@ -456,6 +461,9 @@ namespace MachineBrigade.Game.Hud
                 new[] { Strings.Get("settings.slow"), Strings.Get("settings.normal"), Strings.Get("settings.fast") },
                 () => MatchSettings.CameraSpeed, i => MatchSettings.CameraSpeed = i));
             game.Add(ToggleRow("info", "settings.fps", () => MatchSettings.ShowFps, on => MatchSettings.ShowFps = on));
+            game.Add(OptionRow("ammo", "settings.ammoIcons",
+                new[] { Strings.Get("settings.ammoIcons.all"), Strings.Get("settings.ammoIcons.air") },
+                () => MatchSettings.AmmoIcons, i => MatchSettings.AmmoIcons = i));
 
             var sound = Section(body, "settings.section.sound");
             sound.Add(Stepper("volume", Strings.Get("settings.volume"), () => $"{Mathf.RoundToInt(MatchSettings.Volume * 100f)}%",
@@ -573,8 +581,8 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-gear", "army-base", "detail-tower", "detail-module",
-            "detail", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "operations", "army-deck", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
         };
 
         /// <summary>Opens one of <see cref="ScreenNames"/> (a fresh menu shows home).</summary>
@@ -603,22 +611,41 @@ namespace MachineBrigade.Game.Hud
                     ShowTab(Tab.Operations);
                     break;
                 case "army-deck":
+                case "army-towers":
                 case "army-gear":
                 case "army-base":
-                    _armyView = screen == "army-deck" ? ArmyView.Deck : screen == "army-gear" ? ArmyView.Equipment : ArmyView.Base;
+                case "army-outpost":
+                    _armyView = screen switch
+                    {
+                        "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
+                        _ => ArmyView.Base,
+                    };
                     ShowTab(Tab.Army);
                     break;
-                case "detail":
+                case "army-base-picked":
+                case "army-base-ranges":
+                    // The base with a filled slot picked (its panel and range rings), or with the whole base's cover shown.
+                    _armyView = ArmyView.Base;
                     ShowTab(Tab.Army);
+                    if (screen == "army-base-ranges") _base.ToggleRanges();
+                    else _base.DebugPickFilled();
+                    break;
+                case "detail":
+                case "detail-action":
+                    ShowTab(Tab.Army);
+                    // The In action tab: the theatre (DECISIONS 12E).
+                    if (screen == "detail-action") _detailTab = DetailTab.Firing;
                     OpenDetail("main_battle_tank");
                     break;
                 case "detail-tower":
                 case "detail-module":
-                    // A structure's page, opened from the base screen (its Equipment tab: branches and gear; a module's numbers).
+                case "detail-tower-action":
+                case "detail-module-action":
+                    // A structure's page, opened from the base screen (its Equipment tab: branches and gear; a module's numbers; or In action).
                     _armyView = ArmyView.Base;
                     ShowTab(Tab.Army);
-                    _detailTab = screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
-                    OpenDetail(screen == "detail-tower" ? "aa_turret" : "repair_bay");
+                    _detailTab = screen.EndsWith("-action") ? DetailTab.Firing : screen == "detail-tower" ? DetailTab.Equipment : DetailTab.Stats;
+                    OpenDetail(screen.StartsWith("detail-tower") ? "aa_turret" : "repair_bay");
                     break;
                 case "settings":
                     Open(_settings, Strings.Get("menu.settings"));
@@ -665,10 +692,10 @@ namespace MachineBrigade.Game.Hud
         };
     }
 
-    /// <summary>Which icon each card shows.</summary>
+    /// <summary>Which icon each card shows. Towers, modules, the HQ and fixed defences have their own (<see cref="TowerIcons"/>).</summary>
     public static class CardIcons
     {
-        public static string For(string id) => id switch
+        public static string For(string id) => TowerIcons.For(id) ?? id switch
         {
             "scout_jeep" => "jeep",
             "artillery" => "artillery",
@@ -704,6 +731,7 @@ namespace MachineBrigade.Game.Hud
             "heavy_rocket_artillery" => "smerch",
             "ballistic_launcher" => "ballistic",
             "engineer_vehicle" => "engineer",
+            "ammo_carrier" => "engineer",
             "ew_jammer" => "jammer",
             "fpv_carrier" => "fpvtruck",
             "recon_drone" => "drone",
@@ -738,17 +766,6 @@ namespace MachineBrigade.Game.Hud
             "cruise_missile" => "missile",
             "smoke_screen" => "smoke",
             "repair_drop" => "repair",
-            // Tower cards (the base screen); a branch shows its tower's icon.
-            "guard_tower" => "tower",
-            "mg_bunker" => "mg",
-            "aa_turret" => "aa",
-            "gun_turret" => "cannon",
-            "rocket_turret" => "mlrs",
-            "atgm_tower" => "atgm",
-            "artillery_emplacement" => "artillery",
-            "missile_battery" => "sam",
-            "heavy_turret" => "siegegun",
-            "headquarters" => "hq",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };

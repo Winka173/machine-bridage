@@ -58,6 +58,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>The campaign's radio chatter (null outside a mission).</summary>
         private RadioDirector _radio;
 
+        /// <summary>The stuck detector of the internal build (prompt 12; null in a release build and on the menu).</summary>
+        private StuckReporter _stuck;
+
         /// <summary>A story moment the camera goes to (a boss, reinforcements, a general): where, and until when.</summary>
         private Vector3 _storyFocus;
         private float _storyUntil;
@@ -96,6 +99,7 @@ namespace MachineBrigade.Game.Match
         private SelectionController _selection;
         private TouchGestures _gestures;
         private BattleHud _hud;
+        private StoresStrip _storesStrip;
         private PlayerCommander _commander;
         private readonly List<(Vector2 at, float radius, float until)> _warnings = new();
         private readonly List<PointInfo> _pointInfo = new();
@@ -211,6 +215,7 @@ namespace MachineBrigade.Game.Match
                 _world.SetBoosts(1, _ => edge, _ => edge.Damage, everything: true);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
+            _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
             if (!_menu) ApplyRankDiscounts(catalog, mission != null);
             if (!_menu && _session is MissionSession storySession)
             {
@@ -304,6 +309,7 @@ namespace MachineBrigade.Game.Match
             }
             _effects = new EffectsDirector(catalog, _materials, _meshes, _models, _camera, worldRoot,
                 options.MaxEffects ? EffectBudget.High : EffectBudget.Eco);
+            _effects.MapHalfSize = _world.Map.HalfSize;
             // Build every vehicle's merged model and the munitions now, not on first use mid-battle.
             // Build the merged models of every vehicle this battle can field now, not on first use
             // mid-battle, and only those: the catalogue holds bosses, elites and defences most
@@ -343,6 +349,9 @@ namespace MachineBrigade.Game.Match
             {
                 _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
                 _fortress.SetNight(weather == WeatherKind.Night);
+                // The objectives' shields are the defender's (blue when the player holds the fortress).
+                _map.ShieldTeam = siegeMode.Defender;
+                _map.PlayerTeam = PlayerTeam;
             }
             _worldRoot = worldRoot;
             _richEffects = options.MaxEffects;
@@ -354,7 +363,14 @@ namespace MachineBrigade.Game.Match
             _views.BlobShadows = options.Shadows == ShadowLevel.Off;
 
             var cards = _menu ? null : PlayerCommander.Cards(_world, MatchSettings.DeckVehicles, MatchSettings.DeckSupports);
-            _hud = new BattleHud(_session.Hud, cards, catalog)
+            var hudSpec = _session.Hud;
+            if (!_menu)
+            {
+                // The standing hint shows in the player's first few matches only (prompt 11 A7).
+                hudSpec.StartHint = MatchSettings.ShowStartHint;
+                MatchSettings.CountHintMatch();
+            }
+            _hud = new BattleHud(hudSpec, cards, catalog)
             {
                 ShowFps = MatchSettings.ShowFps,
             };
@@ -588,6 +604,7 @@ namespace MachineBrigade.Game.Match
                 _session.Mode.Tick(_world, dt);
                 _session.TickAi(_world, dt);
                 _world.Step(dt);
+                _stuck?.Observe(_world);
                 _views.SnapshotAll();
                 _perf?.End(PerfProbe.Section.Sim);
                 _perf?.Begin();
@@ -892,6 +909,7 @@ namespace MachineBrigade.Game.Match
 
         private void OnDestroy()
         {
+            _stuck?.Finish(_world);
             PlayerProfile.Changed -= OnProfileChanged;
             if (_audio != null) UiKit.Clicked -= _audio.Click;
             _perf?.Dispose();
@@ -1314,6 +1332,10 @@ namespace MachineBrigade.Game.Match
             if (playerAi != null)
                 _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
             _hud.SetSelection(_selection.Summary());
+            // Prompt 13 C.9: the selection's ammunition bar under its health bar.
+            _storesStrip ??= new StoresStrip(_hud.SelectionExtras);
+            var (storesLeft, storesFull, storesKind, storesSlow) = _selection.Stores();
+            _storesStrip.Set(storesLeft, storesFull, storesKind, storesSlow, _hud.SelectionExtras);
             UpdateMinimap();
             UpdateBossPartOutline();
         }
@@ -1345,6 +1367,9 @@ namespace MachineBrigade.Game.Match
                 }
                 // An enemy elite has a symbol of its own (a gold ring round its blip).
                 if (v.Def.Elite && v.Team != PlayerTeam) minimap.Elite(new Vector2(v.Position.X, v.Position.Y), v.Flying, !seen);
+                // Prompt 13 C.9: our aircraft's holding patterns, faint rings.
+                if (v.Team == PlayerTeam && v.HasStores && v.Supply != MachineBrigade.Sim.Entities.SupplyState.Fighting)
+                    minimap.Holding(new Vector2(v.HoldPoint.X, v.HoldPoint.Y));
                 minimap.Blip(new Vector2(v.Position.X, v.Position.Y), v.Team == PlayerTeam ? 0 : v.Team == MachineBrigade.Sim.Entities.Teams.Hostile ? 2 : 1, v.Flying, !seen);
             }
             // A mission's targets are known wherever they are (the briefing's intelligence).
@@ -1369,6 +1394,7 @@ namespace MachineBrigade.Game.Match
             if (_cinematics.Active(Time.unscaledTime)) return;
             var outcome = _session.Outcome(_world, _kills, _losses);
             if (outcome == null) return;
+            _stuck?.Finish(_world);
             if (outcome.Result > 0) DailyMissions.Record("wins");
             _resultShown = true;
             Time.timeScale = 1f;

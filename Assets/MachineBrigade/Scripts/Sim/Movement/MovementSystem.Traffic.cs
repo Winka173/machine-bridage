@@ -546,7 +546,9 @@ namespace MachineBrigade.Sim.Movement
                 // both keep right as before. One already making way for the other is left to it.
                 if (!t.YieldingTo.IsValid && !bt.YieldingTo.IsValid &&
                     ((_world.Lanes.At(v.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0 ||
-                     (_world.Lanes.At(blocker.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0))
+                     (_world.Lanes.At(blocker.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0 ||
+                     // In the open too once keeping right has failed: both pressed nose to nose.
+                     (now - t.ParkedSince > HeadOnOpenWait && now - bt.ParkedSince > HeadOnOpenWait)))
                     t.HeadOn = blocker.Id;
                 return false;
             }
@@ -831,10 +833,28 @@ namespace MachineBrigade.Sim.Movement
                 // Boxed in behind: the other one backs out instead.
                 if (float.IsPositiveInfinity(loser == v ? dv : d2)) loser = loser == v ? o : v;
                 var room = loser == v ? dv : d2;
+                var winner = loser == v ? o : v;
+                // In the open (prompt 12): the loser steps aside, off the winner's way, rather than
+                // backing up in front of it; with no room to the side it backs off as in a doorway.
+                if (!InDoorway(loser) && !InDoorway(winner))
+                {
+                    var dir = MoverDirection(winner, loser);
+                    if (TryYieldSpot(loser, winner, dir, MaxYieldDepth, out var aside))
+                    {
+                        StartYield(loser, winner, dir, aside);
+                        continue;
+                    }
+                    if (float.IsPositiveInfinity(room)) room = CanReverse(loser, BackOffDistance) ? BackOffDistance : room;
+                }
                 if (float.IsPositiveInfinity(room)) continue;
-                StartReverse(loser, loser == v ? o : v, room);
+                StartReverse(loser, winner, room);
             }
         }
+
+        /// <summary>Two hulls nose to nose in the open both standing this long: one steps aside (keeping right failed).</summary>
+        private const double HeadOnOpenWait = 1.0;
+
+        private bool InDoorway(Vehicle v) => (_world.Lanes.At(v.Position) & (LaneFlags.Narrow | LaneFlags.NoPark)) != 0;
 
         /// <summary>How far a vehicle must back up to get its whole hull out of the doorway (+inf when it cannot: a wall or a hull behind).</summary>
         private float ReverseRoom(Vehicle v)
@@ -1059,6 +1079,9 @@ namespace MachineBrigade.Sim.Movement
             var mayMove = blocker != null && !blocker.Stunned && !blocker.Def.Static &&
                           (blocker.HasPath || blocker.Traffic.YieldingTo.IsValid || Askable(blocker));
             var cap = request.Strikes >= 2 ? DetourCapLate : DetourCap;
+            // Never queue behind a hull that is queued behind us, or coming the other way: each
+            // would wait for the other for ever (two tanks sent to each other's slots; prompt 12).
+            if (blocker != null && (blocker.Traffic.QueueBehind == v.Id || Oncoming(v, blocker, SimMath.Forward(v.Heading)))) mayMove = false;
             if (blocker != null && blocker.Team == v.Team && mayMove &&
                 (PassesNear(v, _costBuffer, blocker, NoAlternativeLength) ||
                  PathLength(v.Position, _costBuffer) > RemainingLength(v) * cap + DetourSlack))

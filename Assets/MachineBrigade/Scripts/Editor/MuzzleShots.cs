@@ -26,6 +26,8 @@ namespace MachineBrigade.Editor
     /// artillery, mortar and rocket rounds at four moments of their flight with their trails.
     /// Batch mode (with graphics): -executeMethod MachineBrigade.Editor.MuzzleShots.Run
     /// -mbShotsOut &lt;folder&gt; [-mbShotsIds a+b].
+    /// <see cref="Flashes"/>: every weapon's muzzle flash against its drawn barrel tip, for every
+    /// vehicle; <see cref="GroundFire"/>: a tank parked in a burning patch (DECISIONS 12A).
     /// </summary>
     public static class MuzzleShots
     {
@@ -142,6 +144,241 @@ namespace MachineBrigade.Editor
             File.WriteAllBytes(Path.Combine(output, "flights.png"), sheet.EncodeToPNG());
             File.WriteAllText(Path.Combine(output, "shots.txt"), log.ToString());
             Debug.Log("[MuzzleShots] wrote " + Path.GetFullPath(output) + "\n" + log);
+            camera.targetTexture = null;
+            rt.Release();
+            models.Dispose();
+            materials.Dispose();
+        }
+
+        /// <summary>
+        /// flashes_NN.png: one row per vehicle (every one with a gun, elites, bosses, towers and
+        /// aircraft too), facing 0, 90, 180 and 270 degrees with its turret swung onto a dummy off
+        /// to one side, frozen on the frame the most of its mounts show a live flash; a small green
+        /// ball on each drawn barrel tip a flash rides. The fifth column is the last moment again
+        /// through a perspective camera like the detail page's, the vehicle off the middle of its
+        /// view. flashes.txt lists the worst flash offset per cell. Batch mode (with graphics):
+        /// -executeMethod MachineBrigade.Editor.MuzzleShots.Flashes -mbShotsOut &lt;folder&gt; [-mbShotsIds a+b]
+        /// [-mbShotsLate s]: with -mbShotsLate each cell is frozen that long after the first shot
+        /// instead (a flame stream in full flow).
+        /// </summary>
+        public static void Flashes()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/muzzle_shots");
+            Directory.CreateDirectory(output);
+            var only = Argument("-mbShotsIds");
+            var late = float.TryParse(Argument("-mbShotsLate"), System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture, out var l) ? l : 0f;
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260929);
+            var materials = new MaterialLibrary();
+            var meshes = new MeshLibrary();
+            var models = new ModelLibrary(materials);
+            var catalog = GameContent.LoadCatalog();
+            var root = new GameObject("Flash Shots").transform;
+            Stage(materials, root);
+            var camera = MakeCamera(root);
+            var perspective = MakeCamera(root);
+            perspective.orthographic = false;
+            perspective.fieldOfView = 36f;
+            perspective.nearClipPlane = 0.5f;
+            var rt = new RenderTexture(CellW, CellH, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.targetTexture = rt;
+            perspective.targetTexture = rt;
+            camera.Render();
+            var green = Unlit(new Color(0.1f, 2.4f, 0.2f));
+            var log = new System.Text.StringBuilder();
+            var ids = new List<string>();
+            foreach (var def in catalog.Vehicles.Values)
+                if (def.Mounts.Count > 0 && System.Linq.Enumerable.Any(def.Mounts, m => !m.Weapon.Melee) &&
+                    (string.IsNullOrEmpty(only) || System.Array.IndexOf(only.Split('+'), def.Id) >= 0))
+                    ids.Add(def.Id);
+            ids.Sort(System.StringComparer.Ordinal);
+            const int rows = 10;
+            var cols = Headings.Length + 1;
+            for (var page = 0; page * rows < ids.Count; page++)
+            {
+                var count = Mathf.Min(rows, ids.Count - page * rows);
+                var sheet = new Texture2D(CellW * cols, CellH * count, TextureFormat.RGB24, false);
+                for (var r = 0; r < count; r++)
+                {
+                    var id = ids[page * rows + r];
+                    var line = new System.Text.StringBuilder(id + ":");
+                    for (var col = 0; col < Headings.Length; col++)
+                    {
+                        var kit = Build(catalog, models, meshes, materials, root, id, Headings[col], 70f, 0.6f);
+                        kit.Emitters.LateFeed = true;
+                        var worst = FlashMoment(kit, camera, rt, sheet, col, count - 1 - r, green,
+                            col == Headings.Length - 1 ? perspective : null, Headings.Length, late, out var lit);
+                        line.Append($" h{Headings[col]}={worst:0.000}m/{lit}");
+                        Object.DestroyImmediate(kit.Holder.gameObject);
+                    }
+                    log.AppendLine(line.ToString());
+                }
+                sheet.Apply();
+                File.WriteAllBytes(Path.Combine(output, $"flashes_{page + 1:00}.png"), sheet.EncodeToPNG());
+                Object.DestroyImmediate(sheet);
+            }
+            File.WriteAllText(Path.Combine(output, "flashes.txt"), log.ToString());
+            Debug.Log("[MuzzleShots] flashes in " + Path.GetFullPath(output) + "\n" + log);
+            camera.targetTexture = null;
+            perspective.targetTexture = null;
+            rt.Release();
+            models.Dispose();
+            materials.Dispose();
+        }
+
+        /// <summary>
+        /// Plays the fight for up to five seconds in the game's frame order and snaps the cell each
+        /// time more mounts show a live flash than before; returns the worst flash offset seen.
+        /// </summary>
+        private static float FlashMoment(Kit kit, Camera camera, RenderTexture rt, Texture2D sheet, int col, int row, Material green,
+            Camera perspective, int perspectiveCol, float late, out int flashes)
+        {
+            var firstShot = -1f;
+            const float frame = 1f / 30f;
+            var measured = new List<MuzzleFx.Measured>();
+            var balls = new List<GameObject>();
+            var best = 0;
+            var worst = 0f;
+            var accumulator = 0f;
+            var now = 1f;
+            var shots = new List<SimEvent>();
+            var systems = kit.Holder.GetComponentsInChildren<ParticleSystem>();
+            flashes = 0;
+            for (var f = 0; f < 150; f++)
+            {
+                accumulator += frame;
+                while (accumulator >= 0.05f)
+                {
+                    accumulator -= 0.05f;
+                    kit.World.Step(0.05f);
+                    kit.Views.SnapshotAll();
+                    foreach (var e in kit.World.Events)
+                        if (e.Kind == SimEventKind.WeaponFired && e.Entity == kit.Shooter.Id) shots.Add(e);
+                    kit.World.ClearEvents();
+                }
+                now += frame;
+                kit.Muzzle.Tick(now);
+                kit.Emitters.Tick(now, frame);
+                kit.Tracers.Tick(now, kit.Emitters);
+                kit.Projectiles.Tick(now, kit.Emitters);
+                foreach (var ps in systems) ps.Simulate(frame, false, false, false);
+                kit.Views.Render(accumulator / 0.05f, camera.transform.rotation);
+                kit.Muzzle.Follow(now);
+                kit.Emitters.FeedFlames(now, frame);
+                if (!kit.Views.TryGet(kit.Shooter.Id, out var view)) break;
+                foreach (var e in shots) kit.Weapons.Fired(e, view, kit.Views, now);
+                if (shots.Count > 0 && firstShot < 0f) firstShot = now;
+                flashes += shots.Count;
+                shots.Clear();
+                kit.Muzzle.Measure(measured);
+                var tips = new List<Vector3>();
+                foreach (var m in measured)
+                {
+                    worst = Mathf.Max(worst, Vector3.Distance(m.Flash, m.Muzzle));
+                    if (!tips.Exists(t => (t - m.Muzzle).sqrMagnitude < 0.01f)) tips.Add(m.Muzzle);
+                }
+                if (late > 0f ? firstShot < 0f || now < firstShot + late || best > 0 : tips.Count <= best) continue;
+                best = Mathf.Max(1, tips.Count);
+                if (tips.Count == 0) tips.Add(view.LastMuzzleNode != null ? view.LastMuzzleNode.TransformPoint(view.LastMuzzleLocal) : view.MuzzleWorld);
+                foreach (var b in balls) Object.DestroyImmediate(b);
+                balls.Clear();
+                foreach (var t in tips)
+                {
+                    Ball(kit.Holder, green, t, 0.09f);
+                    balls.Add(kit.Holder.GetChild(kit.Holder.childCount - 1).gameObject);
+                }
+                var centre = view.Position + Vector3.up * 1.2f;
+                var span = Mathf.Clamp(view.Def.Radius * 2.2f, 4.5f, 16f) * (view.Flying ? 1.4f : 1f);
+                Frame(camera, centre, span);
+                Snap(camera, rt, sheet, col, row);
+                if (perspective != null)
+                {
+                    // As the detail page's range sees it: from farther back and off to one side, so
+                    // a flash pulled along the view axis would slide off its barrel.
+                    perspective.transform.rotation = camera.transform.rotation;
+                    var distance = span / Mathf.Tan(18f * Mathf.Deg2Rad);
+                    perspective.transform.position = centre - perspective.transform.forward * distance
+                        - perspective.transform.right * (span * 0.8f) - perspective.transform.up * (span * 0.45f);
+                    Snap(perspective, rt, sheet, perspectiveCol, row);
+                }
+            }
+            return worst;
+        }
+
+        /// <summary>
+        /// groundfire.png: a main battle tank and a scout jeep parked in burning ground patches next
+        /// to a patch on its own, from the game's camera, as the flames were drawn (left: pulled
+        /// towards the camera, over the vehicles) and as they are now (right: lying on the ground
+        /// in depth, under them). Batch mode (with graphics):
+        /// -executeMethod MachineBrigade.Editor.MuzzleShots.GroundFire -mbShotsOut &lt;folder&gt;.
+        /// </summary>
+        public static void GroundFire()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/muzzle_shots");
+            Directory.CreateDirectory(output);
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            Random.InitState(20260929);
+            var materials = new MaterialLibrary();
+            var meshes = new MeshLibrary();
+            var models = new ModelLibrary(materials);
+            var catalog = GameContent.LoadCatalog();
+            var root = new GameObject("Ground Fire").transform;
+            Stage(materials, root);
+            var camera = MakeCamera(root);
+            var rt = new RenderTexture(CellW * 2, CellH * 2, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.targetTexture = rt;
+            camera.Render();
+            var sheet = new Texture2D(CellW * 4, CellH * 2, TextureFormat.RGB24, false);
+            for (var pass = 0; pass < 2; pass++)
+            {
+                var holder = new GameObject("pass" + pass).transform;
+                holder.SetParent(root, false);
+                var map = new MapDefinition("fire", 200f,
+                    new[] { new TeamStart(0, new Vector2(0f, -80f)), new TeamStart(1, new Vector2(0f, 80f)) },
+                    new List<PropPlacement>(), new List<UnitPlacement>());
+                var world = new SimWorld(catalog, map, seed: 3);
+                var views = new ViewRegistry(models, meshes, materials, holder, 0);
+                var tank = world.SpawnVehicle("main_battle_tank", 0, new Vector2(-2.5f, 0f), 0.6f);
+                var jeep = world.SpawnVehicle("scout_jeep", 0, new Vector2(4.5f, 3f), 2.2f);
+                views.Add(tank);
+                views.Add(jeep);
+                var fires = new FireSpots(materials, holder);
+                foreach (var ps in holder.GetComponentsInChildren<ParticleSystemRenderer>())
+                    if (ps.sharedMaterial != null && ps.sharedMaterial.HasFloat("_OntoGround") && ps.sharedMaterial.GetFloat("_OntoGround") > 0.5f && pass == 0)
+                        ps.sharedMaterial = new Material(ps.sharedMaterial) { hideFlags = HideFlags.DontSave };
+                if (pass == 0)
+                    foreach (var ps in holder.GetComponentsInChildren<ParticleSystemRenderer>())
+                        if (ps.sharedMaterial != null && ps.sharedMaterial.HasFloat("_OntoGround")) ps.sharedMaterial.SetFloat("_OntoGround", 0f);
+                fires.Ignite(new Vector3(-2.5f, 0.05f, 0f), 1.2f, 60f, 0f);
+                fires.Ignite(new Vector3(4.5f, 0.05f, 3f), 0.8f, 60f, 0f);
+                fires.Ignite(new Vector3(-1f, 0.05f, 7f), 1f, 60f, 0f);
+                var systems = holder.GetComponentsInChildren<ParticleSystem>();
+                var t = 0f;
+                for (var f = 0; f < 60; f++)
+                {
+                    t += 1f / 30f;
+                    world.Step(1f / 30f);
+                    views.SnapshotAll();
+                    world.ClearEvents();
+                    fires.Tick(t, 1f / 30f);
+                    foreach (var ps in systems) ps.Simulate(1f / 30f, false, false, false);
+                    views.Render(1f, camera.transform.rotation);
+                }
+                Frame(camera, new Vector3(0.5f, 1f, 2.5f), 9f);
+                camera.Render();
+                RenderTexture.active = rt;
+                var shot = new Texture2D(CellW * 2, CellH * 2, TextureFormat.RGB24, false);
+                shot.ReadPixels(new Rect(0, 0, CellW * 2, CellH * 2), 0, 0);
+                shot.Apply();
+                sheet.SetPixels(pass * CellW * 2, 0, CellW * 2, CellH * 2, shot.GetPixels());
+                RenderTexture.active = null;
+                Object.DestroyImmediate(shot);
+                Object.DestroyImmediate(holder.gameObject);
+            }
+            sheet.Apply();
+            File.WriteAllBytes(Path.Combine(output, "groundfire.png"), sheet.EncodeToPNG());
+            Debug.Log("[MuzzleShots] ground fire in " + Path.GetFullPath(output));
             camera.targetTexture = null;
             rt.Release();
             models.Dispose();
