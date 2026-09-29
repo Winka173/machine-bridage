@@ -12,7 +12,10 @@ namespace MachineBrigade.Sim.Content
         None,
     }
 
-    /// <summary>Prompt 15 E.2: the columns of a weapon's effect table: the five armour levels on the ground, then aircraft, then structures.</summary>
+    /// <summary>
+    /// Prompt 15 E.2: the columns of a weapon's effect table: the armour levels on the ground (0-4, and 5, a boss's plate
+    /// since play-test 6, DECISIONS 21G), then aircraft, then structures.
+    /// </summary>
     public enum EffectColumn
     {
         Armour0,
@@ -20,6 +23,7 @@ namespace MachineBrigade.Sim.Content
         Armour2,
         Armour3,
         Armour4,
+        Armour5,
         Air,
         Structure,
     }
@@ -94,7 +98,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>From this multiplier (up to <see cref="GoodAt"/>) poorly (~); under it, not at all (✕).</summary>
         public const float PoorAt = 0.12f;
 
-        public static int ColumnCount => 7;
+        public static int ColumnCount => 8;
 
         /// <summary>A unit's armour on each face.</summary>
         public static ArmourLevels ArmourOf(VehicleDef def) => def.Armour;

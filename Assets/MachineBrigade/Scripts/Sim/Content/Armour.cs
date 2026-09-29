@@ -6,13 +6,17 @@ using MachineBrigade.Sim.Core;
 namespace MachineBrigade.Sim.Content
 {
     /// <summary>
-    /// Prompt 15 A: a unit's armour level on each face, 0 (none) to 4 (very thick). Data "armour": one number
+    /// Prompt 15 A: a unit's armour level on each face, 0 (none) to 4 (very thick), 5 for a boss's super-heavy plate
+    /// (play-test 6, DECISIONS 21G: no vehicle or tower has it). Data "armour": one number
     /// (the front; the side one less, the rear and the roof two less, never under 0; a tower, a building or an
     /// aircraft the same all round) or four [front, side, rear, top].
     /// </summary>
     public readonly struct ArmourLevels : IEquatable<ArmourLevels>
     {
-        public const int Max = 4;
+        public const int Max = 5;
+
+        /// <summary>The thickest plate a vehicle or tower may have; <see cref="Max"/> is for bosses only.</summary>
+        public const int MaxUnit = 4;
 
         public ArmourLevels(int front, int side, int rear, int top)
         {

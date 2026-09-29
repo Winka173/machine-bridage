@@ -41,7 +41,8 @@ namespace MachineBrigade.Sim.Bosses
                 v.FactoryStart = now;
             }
             // Its own route, from the waypoint nearest it on (a mission's route replaces it: MissionMode clears it).
-            if (v.Def.RouteName != null && _world.Map.Route(v.Def.RouteName) is { Count: > 0 } route)
+            // A boss that does not move (the railway gun) is only placed by its route (Boss Rush's spawn).
+            if (v.Def.RouteName != null && !v.Def.Static && _world.Map.Route(v.Def.RouteName) is { Count: > 0 } route)
             {
                 var best = 0;
                 for (var i = 1; i < route.Count; i++)
@@ -138,7 +139,7 @@ namespace MachineBrigade.Sim.Bosses
             var right = new Vector2(forward.Y, -forward.X);
             var front = MathF.Max(v.Def.Length * 0.5f, v.Radius * 0.6f);
             var half = MathF.Max(v.Def.Width * 0.5f, v.Radius * 0.5f);
-            var info = new HitInfo(v, v.Team, null, v.Position, HitKind.Strike, false).WithPen(ArmourLevels.Max, false);
+            var info = new HitInfo(v, v.Team, null, v.Position, HitKind.Strike, false).WithPen(ArmourLevels.MaxUnit, false);
             var damage = c.Dps * dt * v.DamageBoost * v.Def.DamageScale;
             foreach (var e in _world.VehicleList)
             {
@@ -182,10 +183,22 @@ namespace MachineBrigade.Sim.Bosses
         {
             var route = v.OwnRoute!;
             if (v.Burrowed || v.Charging || v.Def.Naval != null) return;
-            if (v.OwnRouteAt < route.Count - 1 && Vector2.Distance(v.Position, route[v.OwnRouteAt]) < MathF.Max(6f, v.Radius * 0.8f))
+            var reach = MathF.Max(6f, v.Radius * 0.8f);
+            if (v.OwnRouteAt < route.Count - 1 && Vector2.Distance(v.Position, route[v.OwnRouteAt]) < reach)
             {
                 v.OwnRouteAt++;
                 v.RouteDriven = double.NegativeInfinity;
+            }
+            // Play-test 6 (DECISIONS 21G): a train at the end of its line runs it back (the Boss Hunt's trains).
+            else if (v.OwnRouteAt == route.Count - 1 && route.Count > 1 && v.Def.Frame?.Move == BossMove.Rail &&
+                     Vector2.Distance(v.Position, route[v.OwnRouteAt]) < reach)
+            {
+                var back = new List<Vector2>(route);
+                back.Reverse();
+                v.OwnRoute = back;
+                v.OwnRouteAt = 1;
+                v.RouteDriven = double.NegativeInfinity;
+                route = back;
             }
             // Sent on to its waypoint now and again (a push off its line, a path lost).
             if (now - v.RouteDriven < 6.0) return;

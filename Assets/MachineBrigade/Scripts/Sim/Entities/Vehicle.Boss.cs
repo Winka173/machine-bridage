@@ -13,6 +13,19 @@ namespace MachineBrigade.Sim.Entities
     /// </summary>
     public sealed partial class Vehicle
     {
+        /// <summary>Play-test 6 (DECISIONS 21G): a boss's rank cycles its weapons faster (1 for anything else).</summary>
+        internal float RankFire => Def.RankDef?.FireRate ?? 1f;
+
+        /// <summary>Play-test 6: when the boss's strike window began and what strikes and bombs took from it since (its rank's cap).</summary>
+        internal double StrikeWindowAt = double.NegativeInfinity;
+
+        internal float StrikeWindowTaken;
+
+        /// <summary>Play-test 6: a standoff helicopter's target and when it began firing on it from its ring (infinity: not yet).</summary>
+        internal EntityId StandoffTarget;
+
+        internal double StandoffSince = double.PositiveInfinity;
+
         /// <summary>
         /// Each part's health as a share of its full health (empty: no parts). Its full health is a
         /// share of the body's full health, so a boss made tougher after it spawned (a campaign's

@@ -31,7 +31,7 @@ TYPE_VI = {'Kinetic': 'Động năng', 'ArmorPiercing': 'Xuyên giáp', 'HighExp
            'ShapedCharge': 'Nổ lõm', 'Fragmentation': 'Mảnh', 'Energy': 'Năng lượng'}
 TARGET_VI = {'Ground': 'Mặt đất', 'Air': 'Trên không', 'All': 'Tất cả'}
 # Prompt 15: armour levels, faces, weapon forms, the effect columns and the threats (Matchup in the game).
-LEVEL_VI = ['Không giáp', 'Mỏng', 'Vừa', 'Dày', 'Rất dày']
+LEVEL_VI = ['Không giáp', 'Mỏng', 'Vừa', 'Dày', 'Rất dày', 'Siêu dày']   # 5: a boss's plate (DECISIONS 21G)
 FACE_VI = [('front', 'Trước'), ('side', 'Hông'), ('rear', 'Sau'), ('top', 'Nóc')]
 FORM_VI = {'None': '—', 'BulletSmall': 'đạn súng', 'BulletBig': 'đạn súng (cỡ lớn)', 'BeltedAutocannon': 'đạn pháo động năng (pháo tự động)',
            'Dart': 'đạn pháo động năng', 'DoubleDart': 'đạn pháo động năng (≥120 mm)', 'Rail': 'đạn pháo động năng (điện từ)',
@@ -41,12 +41,15 @@ FORM_VI = {'None': '—', 'BulletSmall': 'đạn súng', 'BulletBig': 'đạn s�
            'Bomb': 'bom thường', 'GuidedBomb': 'bom dẫn đường', 'Cluster': 'bom chùm', 'HeavyBomb': 'bom hạng nặng', 'CarBomb': 'bom hạng nặng (xe bom)',
            'Fpv': 'drone (FPV)', 'Shahed': 'drone (Shahed)', 'Lancet': 'drone (Lancet)', 'Flame': 'lửa', 'Napalm': 'lửa (napalm)',
            'Energy': 'năng lượng', 'Blade': 'cận chiến (lưỡi ủi)', 'Drill': 'cận chiến (mũi khoan)'}
-COLUMN_VI = {'Armour0': 'giáp 0', 'Armour1': 'giáp 1', 'Armour2': 'giáp 2', 'Armour3': 'giáp 3', 'Armour4': 'giáp 4', 'Air': 'trên không', 'Structure': 'công trình'}
+COLUMN_VI = {'Armour0': 'giáp 0', 'Armour1': 'giáp 1', 'Armour2': 'giáp 2', 'Armour3': 'giáp 3', 'Armour4': 'giáp 4', 'Armour5': 'giáp 5',
+             'Air': 'trên không', 'Structure': 'công trình'}
 THREAT_VI = {'SmallArms': 'súng bộ binh', 'HeavyMachineGuns': 'súng máy hạng nặng', 'Fire': 'lửa', 'Fragmentation': 'mảnh', 'Autocannons': 'pháo tự động',
              'HighExplosive': 'nổ mạnh', 'Energy': 'năng lượng', 'TopAttack': 'đánh nóc', 'ShapedCharges': 'nổ lõm', 'TankGuns': 'pháo xe tăng'}
 GOOD_AT, POOR_AT = 0.6, 0.12   # Matchup.GoodAt / PoorAt
 # What each unit was modelled on (real systems, films or games), keyed by unit id; see unit_refs.json's "_about".
 UNIT_REFS = json.loads((Path(__file__).resolve().parent / 'unit_refs.json').read_text(encoding='utf-8'))
+# DamageTable's penetration steps (DECISIONS 20X): the round's level over the face's.
+PEN_STEP_VI = ['hơn từ 2 cấp', 'hơn 1 cấp', 'ngang cấp', 'thiếu 1 cấp', 'thiếu 2 cấp', 'thiếu từ 3 cấp']
 
 
 def level(n):
@@ -88,11 +91,11 @@ def verdict(x):
 
 
 def effect_table(w):
-    """The main weapon against the five armour levels, aircraft and structures, with the game's ✓ ~ ✕."""
+    """The main weapon against the armour levels (0-5: 5 a boss's plate), aircraft and structures, with the game's ✓ ~ ✕."""
     row = w.get('effect') or []
-    if len(row) != 7:
+    if len(row) < 7:
         return ''
-    head = ['Hiệu quả: ' + (w.get('name') or w['id'])] + ['Giáp 0', 'Giáp 1', 'Giáp 2', 'Giáp 3', 'Giáp 4', 'Trên không', 'Công trình']
+    head = ['Hiệu quả: ' + (w.get('name') or w['id'])] + [f'Giáp {i}' for i in range(len(row) - 2)] + ['Trên không', 'Công trình']
     cells = [f"xuyên {w.get('pen', 0)}"] + [f"{verdict(x)} ×{x:.2f}".rstrip('0').rstrip('.') for x in row]
     return table(head, [cells], 'eff')
 SLOT_VI = {'Weapon': 'Vũ khí', 'Loader': 'Nạp đạn', 'Armor': 'Giáp', 'Optics': 'Quang học', 'Engine': 'Động cơ', 'Repair': 'Sửa chữa',
@@ -442,8 +445,9 @@ def build(game, imgdir):
     legend = img(imgdir / 'ui' / 'kit-combat-icons.png', 'shot')
     out.append("<div class='section'><h2>10. Vũ khí và bảng sát thương</h2><h3>Hệ số sát thương theo loại đạn và loại giáp</h3>"
                + table(['Loại đạn'] + [{'Ground': 'Mặt đất', 'Air': 'Trên không', 'Structure': 'Công trình'}[a] for a in armors], rows)
-               + "<p>Prompt 15: mỗi mặt giáp (trước, hông, sau, nóc) có cấp 0–4, mỗi vũ khí có cấp xuyên 0–4. Sát thương nhân theo số cấp xuyên còn thiếu: "
-               + esc(', '.join(f"thiếu {i} cấp ×{m:g}" for i, m in enumerate(pens)))
+               + "<p>Prompt 15: mỗi mặt giáp (trước, hông, sau, nóc) có cấp 0–4 (boss tới cấp 5, giáp siêu dày: DECISIONS 21G), mỗi vũ khí có cấp xuyên 0–4. "
+               "Sát thương nhân theo cấp xuyên so với cấp giáp của mặt trúng đạn: "
+               + esc(', '.join(f"{name} ×{m:g}" for name, m in zip(PEN_STEP_VI if len(pens) == len(PEN_STEP_VI) else [f"bước {i}" for i in range(len(pens))], pens)))
                + f"; đầu nổ nhiệt áp ×{dt.get('thermobaric', 1):g} (xem DECISIONS 14A). Bảng hiệu quả và ký hiệu ✓ ~ ✕ của từng xe nằm ở thẻ xe (phần 8).</p>"
                + "<p>Giáp có hướng (giáp mặt trước dày hơn hông/sau), đạn lệch theo tầm và chuyển động, pháo có tầm tối thiểu. Máy bay có pháo sáng, "
                "xe có hệ thống đánh chặn chủ động (APS) chặn tên lửa/drone, tàng hình chỉ lộ ở 40% tầm nhìn khi không bắn. "

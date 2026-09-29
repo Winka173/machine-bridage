@@ -92,9 +92,10 @@ namespace MachineBrigade.Tests
                 var phases = b.Tiers != null ? b.Tiers.Marks.Count : b.Phases.Count;
                 Assert.AreEqual(b.MiniBoss ? 1 : 2, phases, b.Id + ": a main boss has three phases, a mini boss two");
                 if (!b.MiniBoss) continue;
-                Assert.AreEqual(0.8f, b.DamageScale, 1e-4f, b.Id + ": a mini boss's weapons hit at 80 %");
-                Assert.AreEqual(0.7f, b.BigAttackScale.Damage, 1e-4f, b.Id + ": its big attack at 70 %");
-                Assert.AreEqual(1.3f, b.BigAttackScale.Cooldown, 1e-4f, b.Id + ": 30 % longer cooldown");
+                // Play-test 6 (DECISIONS 21G): 0.8 -> 1.2 (+50 %); the big attack 0.7 -> 0.56 of that (+20 % in all).
+                Assert.AreEqual(1.2f, b.DamageScale, 1e-4f, b.Id + ": a mini boss's weapons hit at 120 %");
+                Assert.AreEqual(0.56f, b.BigAttackScale.Damage, 1e-4f, b.Id + ": its big attack at 56 % of that");
+                Assert.AreEqual(1.1f, b.BigAttackScale.Cooldown, 1e-4f, b.Id + ": 10 % longer cooldown (30 % until play-test 6)");
                 Assert.AreEqual(0f, b.BigAttackScale.Warn, 1e-4f, b.Id + ": the same warning");
             }
             // The resize (F.1, G.2): the model, hull and hit radius together; the parts with them.
@@ -138,13 +139,13 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(2, mini.Parts.Count, "only the parts it keeps");
             Assert.AreEqual(2, mini.Mounts.Count, "and only their weapons");
             Assert.AreEqual(1, mini.Parts[mini.PartIndex("flak_l")].Mounts[0], "the kept mounts renumbered");
-            Assert.AreEqual(0.8f, mini.DamageScale, 1e-4f);
+            Assert.AreEqual(1.2f, mini.DamageScale, 1e-4f);
             Assert.IsNotNull(mini.Tint);
             Assert.IsTrue(mini.HiddenNodes.Contains("Mount_mg"), "the dropped flak is not drawn");
             Assert.AreEqual(2, mini.BigAttack.Strikes[0].Count, "its big attack scaled down from the main boss's");
             Assert.AreEqual(main.BigAttack.Strikes[0].Damage, mini.BigAttack.Strikes[0].Damage, 1e-3f);
             Assert.IsTrue(catalog.Escorts.TryGetValue("test_mk0", out var escorts), "its general's escort template");
-            Assert.LessOrEqual(escorts.Arrive.Units.Count, 3, "a mini boss's two or three escorts");
+            Assert.LessOrEqual(escorts.Arrive.Units.Count, 4, "a mini boss's escorts, four at most since play-test 6");
             Assert.IsNotNull(main.MiniVariant, "the main boss knows a mini version of itself");
         }
 
@@ -181,6 +182,8 @@ namespace MachineBrigade.Tests
             k2.Scripted = true;
             // The wheel broken first, so only the swing (the boom's) hurts.
             world2.Bosses.Break(k2, k2.Def.PartIndex("bucket_wheel"));
+            // Only the swing: its guns (faster since play-test 6) would reach the tanks behind it.
+            for (var m = 0; m < k2.MountOff.Length; m++) k2.MountOff[m] = true;
             var ahead = SimMath.Forward(k2.Heading);
             var front = Group(world2, "main_battle_tank", ahead * (k2.Def.Length * 0.5f + 8f), 2, 1f);
             var behind = Group(world2, "main_battle_tank", -ahead * (k2.Def.Length * 0.5f + 6f), 2, 1f);

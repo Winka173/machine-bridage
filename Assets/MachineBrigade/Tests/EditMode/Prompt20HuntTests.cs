@@ -60,15 +60,22 @@ namespace MachineBrigade.Tests
             Assert.That(Enumerable.Range(0, 10).Select(i => BossHunt.Ramp(i, 10)), Is.Ordered, "stronger down the run");
             Assert.AreEqual(1.2f, BossHunt.Ramp(9, 10), 1e-4f);
 
-            // This build's: from the chapter slots, no train, every boss a boss of its rank.
+            // This build's: from the chapter slots, every boss a boss of its rank; play-test 6 (DECISIONS 21G): the trains may
+            // come (on their line's battlefield), and every week brings bosses that answer aircraft.
             var catalog = GameContent.LoadCatalog();
-            var real = BossHunts.Weekly(202640);
-            Assert.AreEqual(10, real.Count);
-            Assert.AreEqual(3, BossHunts.MainsIn(real));
-            foreach (var id in real)
+            for (var week = 202640; week <= 202652; week++)
             {
-                Assert.IsTrue(catalog.Vehicles[id].Boss, id);
-                Assert.IsFalse(BossHunts.OnRails(catalog.Vehicles[id]), id + " runs on rails");
+                var real = BossHunts.Weekly(week);
+                Assert.AreEqual(10, real.Count);
+                Assert.AreEqual(3, BossHunts.MainsIn(real));
+                foreach (var id in real)
+                {
+                    Assert.IsTrue(catalog.Vehicles[id].Boss, id);
+                    if (BossHunts.OnRails(catalog.Vehicles[id])) Assert.IsNotNull(catalog.Vehicles[id].Arena, id + " has a battlefield with its line");
+                }
+                var air = real.Where(id => BossHunts.AirDefence(catalog.Vehicles[id])).ToList();
+                Assert.GreaterOrEqual(air.Count(id => catalog.Vehicles[id].Rank == BossRank.Main), BossHunt.AirDefenceMains, week + ": " + string.Join(",", real));
+                Assert.GreaterOrEqual(air.Count(id => catalog.Vehicles[id].Rank == BossRank.Mini), BossHunt.AirDefenceMinis, week + ": " + string.Join(",", real));
             }
         }
 
@@ -83,14 +90,13 @@ namespace MachineBrigade.Tests
             // Prompt 22: in the order of play (an interlude, numbered 13-15, comes after the chapter before it).
             var order = Campaign.Chapters.Select(c => c.Number).ToList();
             Assert.That(story.Select(b => order.IndexOf(b.Chapter)), Is.Ordered);
-            // A slot whose boss part E has not built yet (Behemoth Mk.0, Morrigan) comes into the hunt with its def.
+            // Every chapter slot with a def, the trains and the railway gun too (DECISIONS 21G).
             var catalog = GameContent.LoadCatalog();
-            var slots = Campaign.Chapters.SelectMany(c => c.Minis.Append(c.Main)).Where(id => id != null && catalog.Vehicles.ContainsKey(id)).Distinct()
-                .Where(id => !BossHunts.OnRails(catalog.Vehicles[id])).ToList();
+            var slots = Campaign.Chapters.SelectMany(c => c.Minis.Append(c.Main)).Where(id => id != null && catalog.Vehicles.ContainsKey(id)).Distinct().ToList();
             // Prompt 22 E: the new mini bosses no chapter lists yet come in at their interludes.
             slots.AddRange(BossHunts.Unslotted.Select(u => u.id).Where(id => !slots.Contains(id)));
-            CollectionAssert.AreEquivalent(slots, full, "every chapter slot once, the trains aside");
-            Assert.AreEqual(12 - 1, story.Count(b => b.Main), "the twelve main bosses but Nemesis");
+            CollectionAssert.AreEquivalent(slots, full, "every chapter slot once, the trains and the railway gun too (DECISIONS 21G)");
+            Assert.AreEqual(12, story.Count(b => b.Main), "the twelve main bosses, Nemesis too");
             // It opens once the last chapter on is done.
             PlayerProfile.ResetForTests();
             Progression.TestUnlockAll = false;

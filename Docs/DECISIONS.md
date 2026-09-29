@@ -8984,6 +8984,10 @@ and `BossPartsTests`' Behemoth share and shooter tests (the Behemoth's own parts
 - `StuckBatch` on both maps, every version (conquest, sandbox, siege, long), both sides, 5 seeds; `BaseSiteTests`,
   `TrafficTests`, `MapRouteTests` with the two maps added to their lists; `ConquestBattleTests` on them.
 - With graphics: card renders and in-action clips of the two bosses, `BaseMapShots`, a look at both maps' density.
+- Lead note at the 21G merge: 21G raised boss health 1.5-3x after 22E set its minis. Behemoth Mk.0 now has an
+  explicit 12,000 (about 0.8x Behemoth Mk.II's 14,850, a weaker prototype early in the story) and Morrigan 14,800 (2x its
+  7,400: less than the other minis' 2.2-3x, since its duel limits the player to aircraft). Both are unmeasured; the
+  5-seed kill times above decide them.
 - Lead note after the merge: the agent's targeted run had 7 failures outside 22E, not yet rerun on the base (`ModelTests`
   muzzle counts for mobile_fortress, heavy_aa, gunship_heli, fighter_jet; `GearModelTests` save migration; two
   `BossPartsTests` on the Behemoth). The Morrigan card is rendered; Mk.0 and Mara's Behemoth share `behemoth.png`.
@@ -8998,3 +9002,253 @@ fields), `MissionDef` (`duel`, `playerDeck`), `MissionMode` (one line), `Catalog
 test lists (`BossPartsTests`, `Prompt20BossTests`, `Prompt20HuntTests`, `ModelTests`). New: `Catalog.P22.cs`,
 `BossSystem.P22.cs`, `MissionDecks.cs`, `mb_p22_content.py`, `Prompt22ContentTests.cs`, the maps' files and pictures,
 `morrigan.glb`.
+
+## 21G. Play-test 6, bosses, economy and modes: tougher bosses, level 5 plate, the endless rush, the trains in the hunts (2026-09-30)
+
+The owner's play-test 6 items marked [G] (`Docs/prompts/requests_vi.md`) and the six added during the pass (the attack
+helicopter's cannon, the trains and every boss in the hunts, level 5 everywhere it shows, Icarus's opening). Branch
+`feature/boss-mode-balance` from lead/integration 84d4069. The owner played with no equipment and no card ranks and still
+found the bosses easy, so everything here is measured with a **geared army**: card rank 7 (the campaign's curve entering
+act IV, 19A: +30 % health and damage) and equipment at about half its caps (+12 % health and damage, +6 % fire rate, -8 %
+damage taken): `BossBalanceMeasure.Geared`, and `MB_GEAR=1` in `ModeBalanceMeasure`. Agent F's combat pass (21F) raises
+vehicle damage 5-10 % in parallel and some boss weapon rows 5-7.5 % with it: boss health here aims about 10 % high for it.
+
+### A. What was wrong (measured, seed 21, `BossBalanceMeasure`, lead before this pass)
+
+Four geared battle tanks in a column killed every land mini boss in 20-50 s and lost none; the main bosses fell in 50-70 s
+for 0-3 of them (only the Behemoth and the flyers held). The standard army (15 vehicles) killed a main boss in 14-21 s.
+One heavy bomber's load took a mini boss to its phase mark (half its bar: what goes past a mark is lost, so it would have
+taken more) and a main boss to its first (30 %); one rank-7 barrage took 20-50 %. Boss health was low for its role: the
+Behemoth had 4,200 (two battle tanks and a half), a mini boss 1,900-4,500 after its rank's 0.55.
+
+### B. Bosses
+
+**Health**, a factor per boss on its data health (the owner's +50-200 %): main bosses x1.5-2.6, mini bosses x1.8-3.0
+(the table below; variants of a main boss get their own `hp` for their factor; the Roc and Daedalus x1.5, see C). **Armour level 5** (see F) on the
+heaviest plate: the Behemoth, Jötunn, Bastion, Moloch, Nemesis, Leviathan, Typhon (front 5), the Behemoth minis, Atlas
+and Juggernaut; Kronos 3 → 4 in front. A battle tank's 120 mm dart (penetration 4) is one level under a level 5 glacis
+(x0.5 where it was x0.85): tanks flank a boss or bring missiles that strike the roof.
+
+**Ranks** (`bossRanks`, `BossRankDef`: new fields `fireRate`, `airDamage`, `strikeTaken`, `strikeCap`, `strikeWindow`,
+`strikeOver`):
+
+| | Main before | Main after | Mini before | Mini after |
+|---|---|---|---|---|
+| Damage, every source (`damageScale`: weapons, crushing) | 1 | 1.4 | 0.8 | 1.2 |
+| Big attack (on top of the damage) | x1, cooldown x1 | x0.857 (+20 % in all), cooldown x0.85 | x0.7, cooldown x1.3 | x0.56 (+20 %), x1.1 |
+| Weapons, reloads, magazines, clips (`fireRate`) | 1 | 1.25 | 1 | 1.25 |
+| Hits on aircraft (`airDamage`) | 1 | 1.6 | 1 | 1.6 |
+| Strikes and bombs taken (`strikeTaken`) | 1 | 0.5 | 1 | 0.5 |
+| Strikes and bombs in any 10 s (`strikeCap`; past it a fifth) | no cap | 10 % of health | no cap | 15 % |
+| Escorts a wave (`escortCap`) | - | - | 3 | 4 |
+
+The big attacks keep to +20 %: the prompt 18 rule that one never wipes out a full-health group (`BigAttackTests`) held
+there and broke at +40 % (Icarus's rods). A "strike" is a called fire support, a bomb (its blast too) or a strike's
+bomblet (`DamageSystem.StrikeLike`, `CapStrike`); the window starts at the first such hit and runs 10 s, so a bomber's
+load or a barrage lands inside one. `Vehicle.RankFire` joins `FireFactor`, the magazine reload and so the clip change.
+Crushing keeps its penetration 4 (`ArmourLevels.MaxUnit`) so it hurts as before past the damage scale.
+
+**Escorts** (the owner: never towers, 30-50 % more): Brandt's template and the Bastion's table dropped gun turrets, ATGM
+towers, a C-RAM and an AA turret by parachute; they drive in now (tank destroyers, a battle tank, a heavy tank, a
+self-propelled AA gun, a SAM launcher, an engineer). Every arrival wave has one vehicle more (a guard, or air cover where
+it had none), the Earth Worm's drop brings an AA gun (`escort_drop.aa_vehicle`), Atlas has an arrival guard (it met a
+column alone), Tempest keeps its two coilguns as a mini (prompt 20 G.3 had dropped them and it had nothing left for
+tanks: 0 losses to four tanks). Alive at once (`escortRules.cap`): Easy 4 → 5, Normal 5 → 7, Hard 6 → 8, Very Hard,
+Heroic and Iron 6 → 9; in Boss Rush 4 at least (was 3) and 70 % of each wave's guards (was 50 %). Every boss now meets
+aircraft with its own air defence or air cover among its escorts (`PlayTest6BossTests`). **No boss brings a tower**
+(play-test 8, the coordinator): the Bastion's call-in of a gun tower came from those parachuted escorts (its table and
+Brandt's template: the only way a boss brought a structure); the four tower drop rows (`escort_drop.gun_turret`,
+`.atgm_tower`, `.c_ram`, `.aa_turret`) are gone too, and `PlayTest6BossTests.NoBossSummonsOrIsEscortedByATower` checks
+everything a boss brings: escorts and their drops, summons, a big attack's landing party, a factory, pods, landing craft.
+
+| Boss | Rank | Health x | Health | 4 tanks alone | 4 tanks, escorts | Army kill | Bomber load | Barrage | Airstrike |
+|---|---|---|---|---|---|---|---|---|---|
+| argus | Mini | x2.2 | 3366 → 7410 | survives, 0 lost → survives, 0 lost | survives, 2 lost → survives, 1 lost | - → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| armored_train | Mini | x3 | 1940 → 5820 | 24 s, 0 lost → 77 s, 2 lost | 23 s, 0 lost → survives, 4 lost | 9 → 16 s | 50% → 16% | 38% → 6% | 37% → 6% |
+| bastion_mk0 | Mini | x2.8 | 4488 → 12576 | 36 s, 0 lost → 99 s, 0 lost | 47 s, 2 lost → survives, 4 lost | 14 → 33 s | 50% → 12% | 31% → 3% | 23% → 2% |
+| behemoth | Main | x2.4 | 4208 → 10115 | survives, 4 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 14 → 34 s | 30% → 12% | 30% → 8% | 25% → 5% |
+| behemoth_inferno | Mini | x3 | 2945 → 8836 | 25 s, 0 lost → 68 s, 0 lost | 27 s, 0 lost → survives, 4 lost | 10 → 22 s | 46% → 11% | 41% → 7% | 32% → 5% |
+| behemoth_mk2 | Mini | x3 | 2314 → 6942 | 26 s, 0 lost → 72 s, 1 lost | 24 s, 0 lost → survives, 4 lost | 8 → 25 s | 47% → 10% | 50% → 9% | 44% → 7% |
+| behemoth_tempest | Mini | x3 | 1940 → 5820 | 26 s, 0 lost → 102 s, 2 lost | 26 s, 0 lost → survives, 4 lost | 10 → 21 s | 50% → 18% | 50% → 10% | 49% → 8% |
+| command_airship | Main | x1.5 | 11050 → 16575 | survives, 4 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | - → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| daedalus | Main | x1.5 | 6290 → 9435 | survives, 4 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | - → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| drone_mothership | Main | x1.8 | 10455 → 18828 | survives, 0 lost → survives, 0 lost | survives, 1 lost → survives, 1 lost | - → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| earth_borer | Mini | x3 | 3810 → 11430 | 31 s, 0 lost → 68 s, 1 lost | 31 s, 0 lost → survives, 4 lost | 12 → 24 s | 50% → 10% | 30% → 5% | 24% → 4% |
+| fenrir | Mini | x2.8 | 3273 → 9163 | 23 s, 0 lost → survives, 4 lost | 23 s, 0 lost → survives, 4 lost | 11 → 25 s | 50% → 15% | 40% → 7% | 31% → 6% |
+| fortress_bastion | Main | x2.2 | 8160 → 17935 | 71 s, 3 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 21 → 49 s | 30% → 8% | 20% → 2% | 14% → 2% |
+| fortress_hive | Mini | x2.8 | 2712 → 7597 | 30 s, 3 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 13 → 24 s | 50% → 20% | 49% → 9% | 38% → 7% |
+| icarus_mk0 | Mini | x2.6 | 3343 → 8696 | survives, 4 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 52 → 104 s | 0% → 0% | 0% → 0% | 0% → 0% |
+| ixion | Mini | x3 | 2525 → 7574 | 20 s, 0 lost → 39 s, 0 lost | 21 s, 0 lost → 46 s, 1 lost | 7 → 14 s | 50% → 19% | 50% → 15% | 50% → 12% |
+| kronos | Main | x2 | 9180 → 18360 | 52 s, 0 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 20 → 34 s | 28% → 6% | 18% → 5% | 18% → 5% |
+| landing_hovercraft | Mini | x3 | 2431 → 7293 | 21 s, 0 lost → survives, 4 lost | 23 s, 0 lost → 49 s, 2 lost | 7 → 14 s | 50% → 19% | 50% → 15% | 50% → 12% |
+| locust | Mini | x2.6 | 2431 → 6311 | survives, 0 lost → survives, 0 lost | survives, 3 lost → survives, 3 lost | 24 → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| mega_gunship | Mini | x1.8 | 5376 → 9677 | survives, 0 lost → survives, 0 lost | survives, 1 lost → survives, 1 lost | 45 → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| mobile_fortress | Main | x2.6 | 5950 → 15470 | 49 s, 3 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 19 → 54 s | 30% → 10% | 28% → 5% | 20% → 4% |
+| moloch | Main | x2.2 | 7820 → 17213 | 64 s, 2 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 21 → 40 s | 28% → 6% | 21% → 5% | 18% → 4% |
+| nuke_train | Main | x2.6 | 5100 → 13260 | 50 s, 3 lost → survives, 4 lost | 50 s, 3 lost → survives, 4 lost | 19 → 51 s | 30% → 9% | 22% → 4% | 18% → 3% |
+| silver_bug | Main | x2.2 | 6078 → 13388 | survives, 4 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 130 → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| sky_fortress | Mini | x2 | 4254 → 8509 | survives, 4 lost → survives, 4 lost | survives, 4 lost → survives, 4 lost | 66 → - s | 0% → 0% | 0% → 0% | 0% → 0% |
+| supreme_command | Mini | x3 | 2735 → 8205 | 27 s, 0 lost → 74 s, 0 lost | 29 s, 0 lost → survives, 4 lost | 9 → 26 s | 46% → 11% | 33% → 5% | 29% → 5% |
+
+Read: "4 tanks" is four geared battle tanks in a column ordered onto the boss alone (300 s at most); "escorts" the same
+with Normal's escorts; "army" the standard 15 geared vehicles on the boss alone (600 s); "bomber load" what one heavy
+bomber's nine FAB-500s take in the 6 s from the first; barrage and airstrike are one rank-7 call on the boss standing
+still. "survives" means the four tanks were all lost (or the time ran out). The flyers are the air's (tanks cannot reach
+them, as before). The "before" bomber column counted every pass in 40 s (the measure took one load only after the fix).
+
+### C. Economy
+
+Every side's income 0.95 → 0.9 (`economy.income`). Boss Rush and the hunts: income 2 → 1.8 (Hard 1.75 → 1.6, Very Hard
+1.6 → 1.45), the health-step bounty 8 → 6 CP (the kill's 12 and the parts' 2 kept).
+
+**The quick modes keep pace with the arsenal** (`economy.enemyScalingQuick`, `ModeSession.KeepPace`, `MatchRunner`): a
+geared army won every quick mode at every difficulty (Conquest, Deathmatch and Boss Rush, 2 seeds: 62 of 64). As the campaign's enemy has
+since prompt 8 (EnemyScaling, share 0.55), a quick mode's enemy, its bosses and its towers now get a share of the
+deck's edge (toughness on health, firepower on damage) by difficulty: Easy 0.4, Normal 0.75, Hard
+0.85, Very Hard 1.08. A player without ranks or equipment meets the same enemy as before; ranks and equipment
+still tell, less than in full. The Sandbox and the campaign are unchanged. The weekly fortress takes half its share
+(`economy.enemyScalingModes`: its towers are the fight; 2 of 9 won at Normal with the whole share, 4 of 9 with half).
+Boss Rush runs on a clock and was lost to it, not to the bosses: its bosses keep Normal's pace at every difficulty and
+the difficulty is their own strength (`BossRushSession.BossStrength`, health, damage): Easy 0.75, 0.85; Normal 0.85, 1;
+Hard 0.9, 1.05; Very Hard 0.95, 1.12, still well over the old bosses (their health x1.5-3 above). The week's clock
+45 → 50 minutes (`BossHunts.WeeklyMinutes`: a geared Normal run takes about 40). The Roc (`command_airship`) and
+Daedalus keep x1.5: the standard army cannot reach them without anti-air (it could not before either), and the week's
+last boss, the Roc, took 10-25 of those minutes at x1.8.
+
+### D. Boss Rush and the Boss Hunts
+
+- **A mix every week.** `BossHunts.AirDefence`: a boss with two or more mounts made for aircraft (flak, SAMs, air-burst
+  guns; a flying boss without them, the gunships, does not count). The week's draw (`BossHunt.Weekly`) keeps at least 1
+  main and 3 mini bosses with air defence: a drawn boss without it (the latest first) gives way to one with it; the same
+  draw on every device. With the escorts' air cover (B) aircraft no longer rule a run.
+- **Every boss can come.** The trains (Nemesis, Juggernaut) and Gungnir (the railway gun) were left out of the hunts
+  (19N: no hunt battlefield had their line). Now the hunt switches battlefield for them as for Leviathan's sea and
+  Icarus's launch site, carrying the army, CP, supports and clock: `arena` Metro City (Nemesis), Ironport (Juggernaut),
+  the Rust Yard (Gungnir), and a map route `rail` (their missions' own: c7m05 along Metro City's northern avenue, c4m05
+  along Ironport's quayside, c11m05's spot on the Rust Yard's siding) in those maps' JSON and in `build_maps.py`
+  (`FIXED_ROUTES`, kept open by the builder). A boss with a route of the battlefield comes in at its start
+  (`BossRushMode.Spawn`: the trains, Kronos too); a train at the end of its line runs it back; a boss that does not move
+  (Gungnir) is only placed by it. The full hunt has every boss of the chapters switched on (31); the week's draws from
+  all of them.
+- **Endless** (`BossRushRules.EndlessOffer`, on in both hunts): after the last boss the pick panel asks "End the hunt"
+  (the first card, taken when its 20 s run out) or "Endless". Endless runs the roster again from the top, each boss +15 %
+  health and +6 % damage a step over the last (the week's ramp kept under it), its escorts +5 % a step, one more alive at
+  once every two bosses and all their guards. It ends when the army is gone; the rush stays won and every endless boss
+  pays as the rush's do (120 coins, the CP bounties). No checkpoints past the roster; the choice is a recorded input
+  (`MatchJournal` "endless"). HUD: "Endless · N bosses down"; the result card adds the endless count. Strings in both
+  languages (`hunt.endless.*`).
+- **Idle allies** (every mode). `ModeBalanceMeasure` now counts the player's ground vehicles standing with no order and
+  nothing to shoot while the enemy has vehicles out, and the spells over 20 s. Three causes in the commander
+  (`TacticalAi`): the line waits to gather (75 % ready) before its next bound, and a friend stuck on its way held the
+  rest for minutes; a vehicle that reached the objective stayed there with the fight elsewhere; reinforcements waited
+  at the staging point for three of them or 25 s. Now a vehicle idle 12 s goes on (`StaleIdle`, `PushStale`: the nearest
+  enemy on the ground it knows of, else the objective; not while holding a point), and reinforcements go in twos or
+  after 12 s. Spells over 20 s: 11.5 (Boss Rush, Normal, 4 matches; longest 28-56 s) → 2.0 (longest 22-40 s) a battle (the same four battles, before the pace). What is left is mostly the
+  anti-aircraft vehicles with no aircraft about, engineers behind the line and ground units on a shore while a ship
+  fights out at sea.
+- The measure now follows Boss Rush's switches of battlefield as the game does (it stood still at the first sea or
+  arena boss before: the "30-minute cap" of 19B).
+
+### E. Modes (the sweep)
+
+`ModeBalanceMeasure` (`MB_GEAR=1`, 3 seeds, every battlefield of the mode, the sample deck, the player's auto
+commander; 50-minute cap): won / played, median minutes. Targets: Easy 90 %, Normal 70 %, Hard 50 %, Very Hard 30 %.
+
+| Mode | Easy | Normal | Hard | Very Hard |
+|---|---|---|---|---|
+| Conquest | 9/9 (100 %), 5.4 min | 6/9 (67 %), 6.7 min | 5/9 (56 %), 6.7 min | 4/9 (44 %), 6.4 min |
+| Deathmatch | 9/9 (100 %), 7.9 min | 0/9 (0 %), 8.6 min | 3/9 (33 %), 7.6 min | 3/9 (33 %), 7.7 min |
+| KingOfTheHill | 9/9 (100 %), 4.8 min | 9/9 (100 %), 4.9 min | 7/9 (78 %), 6.8 min | 1/9 (11 %), 4.8 min |
+| Assault | 9/9 (100 %), 2.7 min | 9/9 (100 %), 3.6 min | 5/9 (56 %), 8.3 min | 0/9 (0 %), 12.2 min |
+| Siege | 9/9 (100 %), 5.0 min | 8/9 (89 %), 8.8 min | 4/9 (44 %), 17.0 min | 6/9 (67 %), 9.0 min |
+| Defend | 9/9 (100 %), 8.0 min | 9/9 (100 %), 9.0 min | 9/9 (100 %), 10.0 min | 7/9 (78 %), 10.0 min |
+| Endless | 21.8 min | 15.7 min | 14.4 min | 11.8 min |
+| Survival | 15.8 min | 11.0 min | 9.6 min | 6.3 min |
+| BossRush | 6/6 (100 %), 28.6 min * | 5/6 (83 %), 40.8 min * | 3/6 (50 %), 49.8 min * | 0/6 at damage x1.15, 3/6 at x1.1 (x1.12 kept) * |
+| Weekly | 7/9 (78 %), 7.7 min | 4/9 (44 %), 12.3 min * | 3/9 (33 %), 12.5 min * | 3/9 (33 %), 13.4 min * |
+| **Ladder** (the first four) | 36/36 (100 %) | 24/36 (67 %) | 20/36 (56 %) | 8/36 (22 %) at share 1.1, 15/36 (42 %) at 1.05 * |
+
+\* a later run after a change to that mode alone: the weekly fortress with half the share, Boss Rush with its strength and
+clock (the week's roster: Bastion Mk.0, Harpy, Jötunn, Juggernaut, Locust, Leviathan, Behemoth Mk.II, Argus, Gungnir,
+Roc); the Very Hard ladder at share 1.05 (the kept 1.08 lies between the two measured). Before the pace (this code
+without `KeepPace`, 2 seeds): Conquest, Deathmatch and Boss Rush won 62 of 64 at the four difficulties. The ladder (the
+first four modes, as 19B) meets the targets within the sweep's noise (9 battles a cell); the modes differ as they did in
+19B (Deathmatch low at Normal, the Hill and Assault high). Endless and Survival are lasted, not won (their median
+minutes). Defend is its HQ held (the outer line falls in most). Idle spells over 20 s a match in the sweep: Conquest
+0.9, Deathmatch 1.6, the Hill 1.3, Assault 3.1, Siege 1.6, Boss Rush 3.0; Defend 2.7, Endless 7.7 and Survival 4.1 are
+lines holding a point (the commander's hold, left as it is).
+
+### F. Armour level 5
+
+`ArmourLevels.Max` 4 → 5, `MaxUnit` 4 for everything but a boss (the data refuses level 5 on a vehicle or a tower;
+equipment never lifts one past 4, `Vehicle.ArmourOn`). The penetration table is by the difference of levels and needs
+nothing new; `DamageTable` steps are exported whole now (6). Shown everywhere a level shows: `a_g5`, `a_a5`, `a_s5`
+(`Tools/art/combat_icons.py`: level 4's plate under a heavier rim and, on the shields, a seam across it), "Super-heavy
+armour" / "Giáp siêu dày" (`armour.level.5`), the effect tables (`EffectColumn.Armour5`, a sixth armour column in
+`KitCombat.Columns`, ✓ ~ ✕ as for the others), the Guide legend and the icon sheet (they loop `CombatFacts.Levels`),
+the boss page's part chips and the HUD tooltip (`CombatIcons.ClampArmour`), the armour diagram (a 13 px edge),
+the design document (`build_doc.py`: the level names, the effect table's columns, the penetration steps described as
+they are since 20X). The deck's cover row keeps levels 0-4 (nothing is meant to pierce a boss's plate well). The AI's
+armour mix grid is 6 x 6 (`ConquestAi.Levels`: it indexed past its 5 x 5 on the first boss with level 5).
+
+### G. The attack helicopter comes in to its gun (the owner's call on 21F)
+
+A standoff helicopter opens from its missile ring (6 s in the band, its first Hellfires away), then, while no enemy air
+defence covers the ground at its cannon's reach from the target or its own spot (flak, SAMs, autocannons of
+penetration 2 or more; a tank's machine gun does not count), comes in to its cannon's reach (26 m: `HoverReach` no
+longer holds a standoff helicopter at 60 % of its missiles') and fights with the cannon and rockets as well, the
+missiles still firing. Air defence turning up sends it back out to the ring. `CombatValueMeasure` (per CP, seed 13):
+ground 299 → 357, without air defence 315 → 429, the 4-minute mixed fight 689 → 417; the scout helicopter 374 and
+the heavy gunship 375 on the ground, so it lands with them and its price (11 CP) and health stay. (F's first try, coming
+in whenever no air defence stood by, measured +65 % on lead; this one keeps the missile phase and stands off where
+autocannons are.) `AirAttackTests.AnAttackHelicopterComesInUntilItsGunReaches`, failing since the standoff came in,
+passes (its missile is the standoff Hellfire now).
+
+### H. Icarus's opening
+
+It spent 15 s in orbit at 150 m, off the top of the view. Its opening is 0.5 s now: it comes straight down to the high
+tier with its entry glow (the descent, 4 s, and its event are kept), so its first rods (5 s) already fall from the
+satellite it leaves. `OrbitalBossTests` follow (its schedule 14.5 s earlier; the rods test renamed).
+
+### Tests and measures
+
+New: `PlayTest6BossTests` (escorts are vehicles and every boss meets aircraft; the ranks' reloads, air damage and strike
+cap, one barrage under 20 % and one bomber's load under 30 % of three bosses; level 5 for bosses only, named, drawn and
+refused on a vehicle; the endless run, stronger each step, won however it ends, and the unanswered choice; the trains
+and their lines, the switch to Metro City and the spawn on the line; the helicopter at its cannon's reach in the open and
+at its standoff by flak), `BossBalanceMeasure` (`MB_BALANCE=1`). Updated for the intended changes: `AirAttackTests`,
+`ArmourTests`, `BigAttackTests` (the cooldown x0.85), `BossEscortTests` (the Behemoth's four, Normal's cap 7, the rush's
+cap from the rules), `BossPartsTests` (Tempest's five parts; the replay's boss x1.7 not x4), `ExportGameDoc`,
+`OrbitalBossTests`, `Prompt20BossTests` (the mini's 1.2 and 0.56 and 1.1, four escorts, Kronos's swing with its guns
+off), `Prompt20HuntTests` (the trains, every slot, the air-defence mix every week of a quarter). Run, passing:
+`PlayTest6BossTests`, `Prompt20BossTests`, `Prompt20HuntTests`, `OrbitalBossTests`, `BigAttackTests` but one,
+`BossPhaseTests`, `CrushTests`, `CombatIconTests`, `ContentTests`, `L10nTests`, `LocalisationScanTests`, `ArmourTests`,
+`QuickModeTests`, `ModeEndingTests`, `Prompt20CampaignTests`, `SandboxTests`, `ReinforcementTests`, `CounterTests`,
+`ExportGameDoc`, `StanceTests`, `PlayTest5Tests`, `SupportTextTests`, `EconomyTests`, `AirAttackTests`,
+`Prompt16NavalTests`. **Failing on lead/integration 84d4069 already** (each run on it, this work stashed) and not
+touched: `BigAttackTests.SmokeDoesNothingToTheRailgun`, `BossEscortTests.EscortsComeWithTheBossAndAtThePhaseChange...`
+(the phase wave, after the arrival counts this pass updates), `...EveryBossHasAnEscortTableWithAHelperInEachWave`
+(Leviathan sails with its fleet), `...ItsProtectionShootsMissilesDown...(landing_hovercraft)`,
+`...TheTrainsMortarCarHitsATankBehindAHouse`, `BossPartsTests.ABrokenPartHurtsTheBodyByAThirdOfIt`,
+`...ShootersGoForThePartMostDangerousToThem`, `AiReviewTests.FortressBuildingsPayABounty...`,
+`...TheLosingSideIsReinforcedFaster...`.
+
+### For the testing phase and the lead
+
+- The campaign's boss missions with the new bosses (health x1.5-3, level 5, +40-50 % damage; the campaign's own
+  EnemyScaling on top): checked once, `CampaignTests.WinRateOverFiveSeeds` with 3 seeds on the six "Boss" missions of
+  chapters 1-6 (c1m05-c6m05): all won 3 of 3. The operations and chapters 7-12 over seeds are for the testing phase.
+- Merge with 21F: its boss-shared weapon rows are already +5-7.5 %; the boss rows here are health, armour and escorts,
+  not weapons. If a boss is over the mark after the merge, lower its rank's `damageScale` first.
+- Deathmatch at Normal is low in every sweep since 19B (the scoring, not the pace); left as it was.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (bossRanks, escorts, escortRules, economy, boss rows' hp and armour, the trains' and Gungnir's arena and
+route, Icarus's opening, one support row), the maps `ironport_*`, `metrocity_*`, `rustyard_*` (conquest, sandbox, siege:
+a `routes` line), `Tools/maps/build_maps.py` (`FIXED_ROUTES`), `Tools/art/combat_icons.py`, `Icons.Combat.cs`,
+`Tools/docs/build_doc.py`, `Strings.cs`, `BossText.cs`, `CombatIcons.cs`, `KitCombat.cs`, `HuntPanels.cs`, `BattleHud.cs`,
+`ModeSessions.cs` (Boss Rush session, `KeepPace`), `MatchRunner.cs` (one block), `BossHunts.cs`, `BossHunt.cs`,
+`SiegeModes.cs` (Boss Rush), `TacticalAi.cs`, `ConquestAi.cs`, `MovementSystem.cs` (the standoff), `DamageSystem.cs`,
+`CombatSystem.cs`, `Vehicle.cs`, `Vehicle.Boss.cs`, `Armour.cs`, `Matchup.cs`, `Catalog.cs`, `Catalog.P20.cs`,
+`BossSystem.P20.cs`, `BossSystem.BigAttacks.cs` (a comment), the tests above.

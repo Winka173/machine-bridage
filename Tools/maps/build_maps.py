@@ -3692,6 +3692,13 @@ KRONOS = [(round(x, 2), round(z, 2)) for x, z in
           _KRONOS_NE + [(0.0, 0.0)] + [mirror(*p) for p in reversed(_KRONOS_NE)] + [(-104.0, -104.0)]]
 FIXED_ROUTES['openpit'] = {'kronos': KRONOS}
 
+# Play-test 6 (DECISIONS 21G): the trains' lines, for the Boss Hunt (the campaign missions' own routes: c4m05's along
+# Ironport's quayside, c7m05's along Metro City's northern avenue and down its west side). Nothing solid stands on them.
+FIXED_ROUTES['ironport'] = {'rail': [(128.0, 106.8), (75.0, 106.8), (0.0, 106.8), (-75.0, 106.8), (-138.75, 106.8)]}
+FIXED_ROUTES['metrocity'] = {'rail': [(128.0, 101.25), (75.0, 101.25), (0.0, 101.25), (-67.5, 101.25), (-101.25, 101.25), (-101.25, 33.75)]}
+# Gungnir's spot on the Rust Yard's siding (c11m05's boss spawn, kept clear as a campaign placement), facing west.
+FIXED_ROUTES['rustyard'] = {'rail': [(140.0, 11.25), (132.0, 11.25)]}
+
 
 def mirrored(L, kind, x, z, rot=0, radius=0.0, pad=1.0, road_gap=0.8, ignore_points=False, must=False):
     """A prop and its image through the centre, both or neither, so either camp's half is the same

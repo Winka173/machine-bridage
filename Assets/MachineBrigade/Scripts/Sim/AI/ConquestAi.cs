@@ -1007,7 +1007,7 @@ namespace MachineBrigade.Sim.AI
             /// Prompt 15 C.10: the ground enemies' value by the armour they show, front x 5 + roof (a weapon that
             /// strikes the roof meets the roof), and in all.
             /// </summary>
-            public readonly float[] Armour = new float[25];
+            public readonly float[] Armour = new float[Levels * Levels];
 
             public float Ground;
 
@@ -1021,12 +1021,15 @@ namespace MachineBrigade.Sim.AI
             public float Pierce;
         }
 
+        /// <summary>Armour levels 0-5 (5: a boss's plate, DECISIONS 21G): the mix counts armour by front and roof.</summary>
+        private const int Levels = ArmourLevels.Max + 1;
+
         /// <summary>Counts a seen (or known) enemy's armour and defences into the mix.</summary>
         private static void AddArmour(Mix mix, VehicleDef def, Vehicle? seen, float value)
         {
             if (!def.Flying)
             {
-                mix.Armour[def.Armour.Front * 5 + def.Armour.Top] += value;
+                mix.Armour[def.Armour.Front * Levels + def.Armour.Top] += value;
                 mix.Ground += value;
             }
             var aps = seen != null ? seen.Aps != null : def.Aps != null;
@@ -1065,7 +1068,7 @@ namespace MachineBrigade.Sim.AI
                 {
                     var w = def.Mounts[k].Weapon;
                     if (w.Damage <= 0f || !w.CanTarget(false)) continue;
-                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % 5 : i / 5, TargetKind.Ground,
+                    var effect = table.Effective(w, Armour.StrikesTop(w) || (def.Flying && def.FixedWing) ? i % Levels : i / Levels, TargetKind.Ground,
                         def.Flying && def.FixedWing);
                     best = MathF.Max(best, k == 0 ? effect : effect * 0.5f);
                 }

@@ -161,15 +161,16 @@ namespace MachineBrigade.Tests
             var boss = world.SpawnVehicle("behemoth", 1, Vector2.Zero, 0f);
             Run(world, 1f);
             var first = EscortsOf(world, boss);
-            Assert.AreEqual(3, first.Count, "two battle tanks and an anti-aircraft gun come with it");
+            // Play-test 6 (DECISIONS 21G): a heavy tank more in the arrival wave, Normal's cap 7.
+            Assert.AreEqual(4, first.Count, "two battle tanks, a heavy tank and an anti-aircraft gun come with it");
             Assert.AreEqual(1, first.Count(v => v.EscortRole == EscortRole.Cover), "its helper covers it from the air");
-            Assert.AreEqual(3, world.EscortsAlive(boss.Id));
+            Assert.AreEqual(4, world.EscortsAlive(boss.Id));
             Run(world, 4f);
-            Assert.AreEqual(3, EscortsOf(world, boss).Count, "nothing more until a phase change");
+            Assert.AreEqual(4, EscortsOf(world, boss).Count, "nothing more until a phase change");
             boss.Hp = boss.MaxHp * 0.45f;
             Run(world, 1f);
             var second = EscortsOf(world, boss);
-            Assert.AreEqual(5, second.Count, "the phase wave: an elite heavy tank and an engineer (Normal's cap is 5)");
+            Assert.AreEqual(6, second.Count, "the phase wave: an elite heavy tank and an engineer (Normal's cap is 7)");
             Assert.IsTrue(second.Any(v => v.Def.Id == "elite_heavy_tank") && second.Any(v => v.EscortRole == EscortRole.Repair));
 
             // A lower cap: the phase wave's helper comes first.
@@ -184,7 +185,7 @@ namespace MachineBrigade.Tests
 
             // Boss Rush: fewer alive, half the guards, as elites.
             var rush = EscortSettings.For(rules, "Normal", bossRush: true);
-            Assert.AreEqual(3, rush.Cap);
+            Assert.AreEqual(System.Math.Max(rules.BossRushMin, rules.CapFor("Normal") - rules.BossRushCut), rush.Cap);
             world = Escorted(9, rush);
             boss = world.SpawnVehicle("behemoth", 1, Vector2.Zero, 0f);
             Run(world, 1f);

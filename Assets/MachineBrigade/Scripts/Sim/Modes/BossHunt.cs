@@ -10,16 +10,20 @@ namespace MachineBrigade.Sim.Modes
     /// <summary>Prompt 20 N: a boss in the story's order (the chapters switched on): its id, its rank and its chapter.</summary>
     public readonly struct HuntBoss
     {
-        public HuntBoss(string id, bool main, int chapter)
+        public HuntBoss(string id, bool main, int chapter, bool airDefence = false)
         {
             Id = id;
             Main = main;
             Chapter = chapter;
+            AirDefence = airDefence;
         }
 
         public string Id { get; }
         public bool Main { get; }
         public int Chapter { get; }
+
+        /// <summary>Play-test 6 (DECISIONS 21G): it answers aircraft itself (flak, SAMs).</summary>
+        public bool AirDefence { get; }
     }
 
     /// <summary>Prompt 20 N: where a Boss Hunt keeps a checkpoint.</summary>
@@ -45,6 +49,9 @@ namespace MachineBrigade.Sim.Modes
         public const int WeeklyMains = 3;
         public const int WeeklyMinis = 7;
 
+        /// <summary>Play-test 6 (DECISIONS 21G): the week's run has at least this many main and mini bosses that answer aircraft.</summary>
+        public const int AirDefenceMains = 1, AirDefenceMinis = 3;
+
         /// <summary>The week's run (fewer when the chapters switched on have fewer bosses).</summary>
         public static IReadOnlyList<string> Weekly(int week, IReadOnlyList<HuntBoss> story)
         {
@@ -56,6 +63,9 @@ namespace MachineBrigade.Sim.Modes
             var state = 0x9E3779B97F4A7C15UL ^ (ulong)(uint)week * 0xD1B54A32D192ED03UL;
             var pickedMains = Pick(mains, WeeklyMains, ref state);
             var pickedMinis = Pick(minis, WeeklyMinis, ref state);
+            // Play-test 6: aircraft ruled a run of bosses with no air defence; swap the last picks without it for ones with it.
+            Mix(story, mains, pickedMains, AirDefenceMains, ref state);
+            Mix(story, minis, pickedMinis, AirDefenceMinis, ref state);
             var run = new List<string>();
             var groups = pickedMains.Count;
             var m = 0;
@@ -95,6 +105,29 @@ namespace MachineBrigade.Sim.Modes
             var picked = pool.GetRange(0, n);
             picked.Sort();
             return picked;
+        }
+
+        /// <summary>
+        /// Play-test 6: at least <paramref name="want"/> of <paramref name="picked"/> answer aircraft: a drawn boss without air
+        /// defence (the latest in story order first) gives way to one with it not drawn (drawn from the rest), back in story order.
+        /// </summary>
+        private static void Mix(IReadOnlyList<HuntBoss> story, List<int> pool, List<int> picked, int want, ref ulong state)
+        {
+            var have = 0;
+            foreach (var i in picked)
+                if (story[i].AirDefence) have++;
+            var spare = new List<int>();
+            foreach (var i in pool)
+                if (story[i].AirDefence && !picked.Contains(i)) spare.Add(i);
+            for (var k = picked.Count - 1; k >= 0 && have < want && spare.Count > 0; k--)
+            {
+                if (story[picked[k]].AirDefence) continue;
+                var j = (int)(Next(ref state) % (ulong)spare.Count);
+                picked[k] = spare[j];
+                spare.RemoveAt(j);
+                have++;
+            }
+            picked.Sort();
         }
 
         /// <summary>SplitMix64: the same numbers on every runtime (System.Random's are not promised).</summary>
@@ -247,6 +280,31 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Prompt 20 N: the share of its health each of the army's vehicles gets back when a boss falls.</summary>
         public float RestRepair { get; set; }
+
+        /// <summary>
+        /// Play-test 6 (DECISIONS 21G): once the last boss is down the player may carry on: the roster again from the
+        /// top, each boss stronger than the one before and with more escorts, until the army falls. The rush is won
+        /// either way; the endless bosses pay as the rush's do.
+        /// </summary>
+        public bool EndlessOffer { get; set; }
+
+        /// <summary>Seconds the choice stays open (unanswered: the rush ends there, won).</summary>
+        public float EndlessChoice { get; set; } = 20f;
+
+        /// <summary>Each endless boss's health and damage over the rush's last, a share per step.</summary>
+        public float EndlessHp { get; set; } = 0.15f;
+
+        public float EndlessDamage { get; set; } = 0.06f;
+
+        /// <summary>The escorts of the endless run: one more alive at once every this many bosses, all their guards, and this much tougher and harder-hitting a step.</summary>
+        public int EndlessEscortEvery { get; set; } = 2;
+
+        public float EndlessEscort { get; set; } = 0.05f;
+
+        /// <summary>Play-test 6: the difficulty's strength on every boss (health, damage).</summary>
+        public float BossHp { get; set; } = 1f;
+
+        public float BossDamage { get; set; } = 1f;
     }
 
     public sealed partial class BossRushCarry
@@ -259,6 +317,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Prompt 20 N: bosses already paid for in earlier sittings (a resumed run pays only for the rest).</summary>
         public int Paid { get; set; }
+
+        /// <summary>Play-test 6: the run is in its endless part (a switch of battlefield for a sea boss carries it).</summary>
+        public bool Endless { get; set; }
     }
 
     public sealed partial class BossRushMode
@@ -268,6 +329,9 @@ namespace MachineBrigade.Sim.Modes
         private IReadOnlyList<string>? _offer;
         private bool _checkpointDue;
         private float _bountyScale = 1f, _repairScale = 1f, _ramp = 1f;
+        private float _endlessHp = 1f, _endlessDamage = 1f, _escortStrength = 1f;
+        private double _endlessUntil = -1;
+        private int _escortBase = -1;
 
         /// <summary>The supports offered after the main boss just beaten, until one is picked (null: none).</summary>
         public IReadOnlyList<string>? Offer => _offer;
@@ -283,10 +347,69 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Between two bosses: the rest's seconds left (negative: not resting).</summary>
         public float RestLeft(SimWorld world) =>
-            !Boss.IsValid && Defeated > 0 && Defeated < Total && SwitchTo == null && Result == null ? MathF.Max(0f, (float)(_nextBossAt - world.Time)) : -1f;
+            !Boss.IsValid && Defeated > 0 && (Defeated < Total || Endless) && !EndlessOpen && SwitchTo == null && Result == null
+                ? MathF.Max(0f, (float)(_nextBossAt - world.Time)) : -1f;
 
-        /// <summary>The boss that comes next (null once all are down).</summary>
-        public string? Next => Defeated < Total ? _rules.Bosses[Defeated] : null;
+        /// <summary>The boss that comes next (null once all are down, until the endless run).</summary>
+        public string? Next => Defeated < Total || Endless ? BossAt(Defeated) : null;
+
+        /// <summary>Play-test 6 (DECISIONS 21G): the run has gone on past its last boss.</summary>
+        public bool Endless { get; private set; }
+
+        /// <summary>The choice after the last boss is open (the rush ends, won, when it runs out).</summary>
+        public bool EndlessOpen => _endlessUntil >= 0.0;
+
+        /// <summary>Seconds left to choose (negative: no choice open).</summary>
+        public float EndlessChoiceLeft(SimWorld world) => EndlessOpen ? MathF.Max(0f, (float)(_endlessUntil - world.Time)) : -1f;
+
+        /// <summary>Bosses brought down in the endless run.</summary>
+        public int EndlessDefeated => Endless ? Math.Max(0, Defeated - Total) : 0;
+
+        /// <summary>The rush's bosses in order, then (endless) the same again from the top.</summary>
+        private string BossAt(int index) => _rules.Bosses[index % _rules.Bosses.Count];
+
+        private void OfferEndless(SimWorld world)
+        {
+            _endlessUntil = world.Time + _rules.EndlessChoice;
+            _offer = null;
+        }
+
+        /// <summary>The answer to the choice after the last boss (a recorded input): carry on, or end the rush now (won).</summary>
+        public bool ChooseEndless(SimWorld world, bool carryOn)
+        {
+            if (!EndlessOpen || Result != null) return false;
+            _endlessUntil = -1;
+            if (!carryOn)
+            {
+                Finish(world, PlayerTeam);
+                return true;
+            }
+            Endless = true;
+            _nextBossAt = world.Time + _rules.Breather;
+            return true;
+        }
+
+        /// <summary>While the choice is open nothing comes; unanswered, the rush ends won. True while it holds the run.</summary>
+        private bool EndlessTick(SimWorld world)
+        {
+            if (!EndlessOpen) return false;
+            if (world.Time >= _endlessUntil) ChooseEndless(world, false);
+            return true;
+        }
+
+        /// <summary>The endless run's next step: its boss's strength, and the escorts' number and strength.</summary>
+        private void EndlessRamp(SimWorld world)
+        {
+            if (!Endless) return;
+            var step = Math.Max(1, Defeated - Total + 1);
+            _endlessHp = 1f + _rules.EndlessHp * step;
+            _endlessDamage = 1f + _rules.EndlessDamage * step;
+            _escortStrength = 1f + _rules.EndlessEscort * step;
+            if (world.EscortSettings is not { } escorts) return;
+            if (_escortBase < 0) _escortBase = escorts.Cap;
+            escorts.Cap = _escortBase + step / Math.Max(1, _rules.EndlessEscortEvery);
+            escorts.Guards = 1f;
+        }
 
         /// <summary>The share of its health each vehicle gets back when a boss falls (with the workshop support).</summary>
         public float RestRepairShare => _rules.RestRepair * _repairScale;
@@ -320,7 +443,11 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Setup's end: a resumed run takes its supports back (the one-off ones are in its CP and army already).</summary>
         private void HuntSetup(SimWorld world)
         {
-            if (_rules.Ramp) world.SetMutators(EnemyTeam, def => def.Boss ? (_ramp, 1f + (_ramp - 1f) * 0.5f) : (1f, 1f));
+            // The week's ramp, the difficulty's strength and (play-test 6) the endless run's steps on each boss and escort as it comes.
+            if (_rules.Ramp || _rules.EndlessOffer || _rules.BossHp != 1f || _rules.BossDamage != 1f || _rules.Resume is { Endless: true })
+                world.SetMutators(EnemyTeam, def => def.Boss
+                    ? (_ramp * _rules.BossHp * _endlessHp, (1f + (_ramp - 1f) * 0.5f) * _rules.BossDamage * _endlessDamage)
+                    : (_escortStrength, _escortStrength));
             if (_rules.Resume is not { } resume) return;
             foreach (var id in resume.Supports)
                 if (HuntSupports.Get(id) is { } support && !_held.Contains(id))
@@ -394,9 +521,10 @@ namespace MachineBrigade.Sim.Modes
                     if (v.IsAlive && v.Team == PlayerTeam && !v.Def.Static)
                         v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * _rules.RestRepair * _repairScale);
             var main = IsMain(world, fallen);
-            if (_rules.Supports && main) _offer = HuntSupports.Offer(_rules.Seed, Defeated - 1, _held);
+            // Play-test 6: after the last boss the choice to go on comes instead (no support, no checkpoint past the roster).
+            if (_rules.Supports && main && !EndlessOpen) _offer = HuntSupports.Offer(_rules.Seed, Defeated - 1, _held);
             if (_offer is { Count: 0 }) _offer = null;
-            if (_rules.Checkpoints == HuntCheckpoints.EveryBoss || (_rules.Checkpoints == HuntCheckpoints.MainBosses && main)) _checkpointDue = true;
+            if (Defeated < Total && (_rules.Checkpoints == HuntCheckpoints.EveryBoss || (_rules.Checkpoints == HuntCheckpoints.MainBosses && main))) _checkpointDue = true;
         }
 
         /// <summary>The rest is over: an offer not answered takes its first support; the checkpoint is kept (with it).</summary>
@@ -423,6 +551,10 @@ namespace MachineBrigade.Sim.Modes
         internal void DebugOffer(IReadOnlyList<string> offer) => _offer = offer;
 
         /// <summary>The next boss's strength in the week's hunt.</summary>
-        private void HuntRamp() => _ramp = _rules.Ramp ? BossHunt.Ramp(Defeated, Total) : 1f;
+        private void HuntRamp(SimWorld world)
+        {
+            _ramp = _rules.Ramp ? BossHunt.Ramp(Math.Min(Defeated, Total - 1), Total) : 1f;
+            EndlessRamp(world);
+        }
     }
 }

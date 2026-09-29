@@ -105,7 +105,8 @@ namespace MachineBrigade.Game.Hud
             Root.style.display = DisplayStyle.Flex;
         }
 
-        public void SetTime(float seconds) => _time.text = Strings.Format("hunt.pickAuto", UnityEngine.Mathf.CeilToInt(seconds));
+        /// <summary>The seconds left, in the line <paramref name="key"/> gives (the support pick's by default).</summary>
+        public void SetTime(float seconds, string key = null) => _time.text = Strings.Format(key ?? "hunt.pickAuto", UnityEngine.Mathf.CeilToInt(seconds));
 
         public void Hide() => Root.style.display = DisplayStyle.None;
     }

@@ -519,7 +519,8 @@ namespace MachineBrigade.Sim.Bosses
                     {
                         // Prompt 19 F: one rod on each group, each its own ring and moment (a fifth of a second apart).
                         var spots = RodSpots(v, def.Reach, RoundsOf(v, st), st.Radius, s.Aim);
-                        // The first from the craft itself (still in orbit), the rest from the satellite it left there.
+                        // From the craft itself while it is still in orbit, else from the satellite it left there (since play-test 6
+                        // it comes down within the first second, so they all fall from the satellite).
                         s.FromSatellite = v.HasSatellite;
                         s.Origin = v.HasSatellite ? v.SatelliteAt : v.Position;
                         for (var k = 0; k < spots.Count; k++)

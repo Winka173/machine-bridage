@@ -165,7 +165,7 @@ namespace MachineBrigade.Sim.Combat
                 }
                 if (state.ReloadLeft <= 0f) state.ReloadLeft = ReloadSeconds(weapon);
                 // Hot Swap and an ammunition carrier nearby: faster, and on the move too.
-                var rate = _world.Gear.ReloadRate(v, out var onTheMove);
+                var rate = _world.Gear.ReloadRate(v, out var onTheMove) * v.RankFire;
                 if (!v.StillForReload && !onTheMove) continue;
                 state.ReloadLeft -= dt * rate;
                 if (state.ReloadLeft > 0f) continue;

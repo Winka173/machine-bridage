@@ -535,7 +535,7 @@ namespace MachineBrigade.Game.Hud
         public void ShowSupportPick(string title, IReadOnlyList<(string icon, string name, string info)> options, Action<int> chosen) =>
             _supportPick?.Show(title, options, chosen);
 
-        public void SetSupportPickTime(float seconds) => _supportPick?.SetTime(seconds);
+        public void SetSupportPickTime(float seconds, string key = null) => _supportPick?.SetTime(seconds, key);
 
         public void HideSupportPick() => _supportPick?.Hide();
 

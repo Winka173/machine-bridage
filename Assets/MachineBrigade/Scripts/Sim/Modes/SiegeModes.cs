@@ -1441,6 +1441,7 @@ namespace MachineBrigade.Sim.Modes
                 // Carried over from the last battlefield: the army lands at the drop zone, the bosses and the clock go on.
                 Defeated = resume.Defeated;
                 TimeUsed = resume.TimeUsed;
+                Endless = resume.Endless;
                 if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, resume.Cp);
                 world.TryGetRally(PlayerTeam, out var rally);
                 for (var i = 0; i < resume.Army.Count; i++)
@@ -1479,7 +1480,7 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>What the rush carries to the next battlefield: the bosses beaten, the time used, the army standing, the CP.</summary>
         private BossRushCarry Carry(SimWorld world, string map)
         {
-            var carry = new BossRushCarry { Map = map, Defeated = Defeated, TimeUsed = TimeUsed + world.Time };
+            var carry = new BossRushCarry { Map = map, Defeated = Defeated, TimeUsed = TimeUsed + world.Time, Endless = Endless };
             if (world.TryGetEconomy(PlayerTeam, out var economy)) carry.Cp = economy.Cp;
             carry.Supports.AddRange(_held);
             carry.Paid = PaidBefore;
@@ -1518,27 +1519,33 @@ namespace MachineBrigade.Sim.Modes
             if (Boss.IsValid && (escaped || !world.TryGetVehicle(Boss, out var boss) || !boss.IsAlive))
             {
                 Boss = EntityId.None;
-                var fallen = _rules.Bosses[Defeated];
+                var fallen = BossAt(Defeated);
                 Defeated++;
                 // A ship that got away pays nothing (prompt 16); the rush goes on.
                 if (escaped) Escapes++;
                 else if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty * _bountyScale);
-                if (Defeated >= Total)
+                // Play-test 6 (DECISIONS 21G): the last boss down, the player may carry on into the endless run.
+                if (Defeated >= Total && !Endless)
                 {
-                    Finish(world, PlayerTeam);
-                    return;
+                    if (!_rules.EndlessOffer)
+                    {
+                        Finish(world, PlayerTeam);
+                        return;
+                    }
+                    OfferEndless(world);
                 }
                 _nextBossAt = world.Time + _rules.Breather;
                 HuntRest(world, fallen);
             }
-            if (!Boss.IsValid && world.Time >= _nextBossAt && Defeated < Total)
+            if (EndlessTick(world)) return;
+            if (!Boss.IsValid && world.Time >= _nextBossAt && (Defeated < Total || Endless))
             {
                 // Prompt 20 N: the rest is over (a support not picked is taken, the checkpoint kept).
                 HuntRestOver(world);
                 // Prompt 16: a boss that sails is fought at sea; the next one back on the rush's own battlefield.
                 // Prompt 19 G.2: a boss with its own battlefield (the Silver Bug's Launch Site) is fought there, as the sea boss at sea.
-                var sails = Sails(world, _rules.Bosses[Defeated]);
-                var arena = ArenaOf(world, _rules.Bosses[Defeated]);
+                var sails = Sails(world, BossAt(Defeated));
+                var arena = ArenaOf(world, BossAt(Defeated));
                 if (sails && world.Map.Sea == null) SwitchTo = Carry(world, _rules.SeaMap);
                 else if (!sails && arena != null && !On(world, arena)) SwitchTo = Carry(world, arena);
                 else if (!sails && arena == null && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
@@ -1546,29 +1553,36 @@ namespace MachineBrigade.Sim.Modes
                 else Spawn(world);
                 if (SwitchTo != null) return;
             }
-            if (world.Time + TimeUsed >= _rules.TimeLimit)
+            // The endless run is played after the rush was won: however it ends, the rush stays won.
+            if (world.Time + TimeUsed >= _rules.TimeLimit && !Endless)
             {
                 Finish(world, EnemyTeam);
                 return;
             }
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
-            if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
+            if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, Endless ? PlayerTeam : EnemyTeam);
         }
 
         private void Spawn(SimWorld world)
         {
             if (!world.TryGetRally(EnemyTeam, out var rally)) return;
-            var id = _rules.Bosses[Defeated];
+            var id = BossAt(Defeated);
             var home = world.TryGetRally(PlayerTeam, out var h) ? h : Vector2.Zero;
             var heading = SimMath.HeadingOf(home - rally);
+            // Play-test 6 (DECISIONS 21G): a boss that drives a route of this battlefield (a train's line, Kronos's road) starts on it.
+            if (world.Catalog.Vehicles.TryGetValue(id, out var routed) && routed.RouteName != null && world.Map.Route(routed.RouteName) is { Count: >= 2 } line)
+            {
+                rally = line[0];
+                heading = SimMath.HeadingOf(line[1] - line[0]);
+            }
             // A ship comes in on the far lane, from the end away from the player's camp.
             if (world.Map.Sea is { } sea && Sails(world, id) && sea.Lane("far") is { } far)
             {
                 var side = sea.Frame(home).X <= 0f ? 1f : -1f;
                 rally = sea.At(side * far.Patrol, far.W);
             }
-            HuntRamp();
+            HuntRamp(world);
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
             _stepsPaid = 0;
             _partsPaid = 0;

@@ -67,6 +67,26 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A small bar (a mini boss's).</summary>
         public bool Compact { get; internal set; }
+
+        /// <summary>Play-test 6 (DECISIONS 21G): its weapons cycle this much faster (cooldowns, magazines and clips; 1: as the data).</summary>
+        public float FireRate { get; internal set; } = 1f;
+
+        /// <summary>Play-test 6: its hits on aircraft x this (a boss's air defence is fuzed and radar-laid).</summary>
+        public float AirDamage { get; internal set; } = 1f;
+
+        /// <summary>Play-test 6: the share it takes of a called strike's or a bomb's damage.</summary>
+        public float StrikeTaken { get; internal set; } = 1f;
+
+        /// <summary>
+        /// Play-test 6: strikes and bombs take at most this share of its health in <see cref="StrikeWindow"/> seconds
+        /// (0: no cap); past it only <see cref="StrikeOver"/> of their damage gets through. One bomber's load or one
+        /// barrage no longer wipes it.
+        /// </summary>
+        public float StrikeCap { get; internal set; }
+
+        public float StrikeWindow { get; internal set; } = 10f;
+
+        public float StrikeOver { get; internal set; } = 0.2f;
     }
 
     /// <summary>
@@ -254,6 +274,9 @@ namespace MachineBrigade.Sim.Content
                         Rank = Enum.TryParse<BossRank>(key, true, out var rank) ? rank : throw new FormatException($"balance.bossRanks: unknown rank '{key}'."),
                         Intro = MathF.Max(0f, r.Float("intro", 3.5f)), Music = r.Has("music") ? r.String("music") : "boss",
                         Reward = MathF.Max(0f, r.Float("reward", 1f)), EscortCap = Math.Max(0, r.Int("escortCap", 0)), Compact = r.Bool("compact", false),
+                        FireRate = Math.Clamp(r.Float("fireRate", 1f), 0.25f, 4f), AirDamage = Math.Clamp(r.Float("airDamage", 1f), 0f, 5f),
+                        StrikeTaken = Math.Clamp(r.Float("strikeTaken", 1f), 0f, 1f), StrikeCap = Math.Clamp(r.Float("strikeCap", 0f), 0f, 1f),
+                        StrikeWindow = MathF.Max(1f, r.Float("strikeWindow", 10f)), StrikeOver = Math.Clamp(r.Float("strikeOver", 0.2f), 0f, 1f),
                     };
                 }
             }
