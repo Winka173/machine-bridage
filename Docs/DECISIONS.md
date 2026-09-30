@@ -11665,7 +11665,7 @@ main rank's scale, damage x1.2 and cooldown x0.85, and the difficulty's stay on 
 ## 25E. Measures and documents (E2, E3, F1) (2026-09-30)
 
 Prompt 25 F.2 (task E2), F.3 (task E3) and H (task F1). Under the owner's rule of 30/09 no test and no measurement ran:
-the one Unity run was a compile check (batch mode, `-quit`, no `error CS` in the log). The measurement code and the
+the only Unity runs were two compile checks (batch mode, `-quit`, no `error CS` in the log). The measurement code and the
 document's columns are built so that the test phase fills them; every cell that waits for a run shows "—". The design
 document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its Python ran once on an older export
 (`game.json` of the morning of 30/09), which lacks the new fields, to check that every reader falls back.
