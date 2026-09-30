@@ -47,6 +47,7 @@ namespace MachineBrigade.Game.Hud
                 "cp_relay" => "t_relay",
                 // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new structures (their modules too).
                 "heavy_flak_tower" => "t_heavyflak",
+                "at_gun_emplacement" => "t_atgun",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",

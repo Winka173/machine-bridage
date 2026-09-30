@@ -1296,6 +1296,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: mỗi 8 giây một [[xung vi sóng]] làm rơi mọi drone địch trong hình nón 60°, tầm 30 m; xe không hề hấn.\n" +
                 "Mạnh / yếu: quét sạch bầy FPV và máy bay drone; vô dụng với mọi thứ khác.\n" +
                 "Mẹo: đỗ cạnh xe tăng ta, nơi drone lao xuống."),
+            ["guide.at_gun_emplacement"] = (
+                "[[Anti-tank gun emplacement]] · small tower · cheap tank killer\n" +
+                "How it fights: an [[armour-piercing]] shot every 5 s out to 38 m, only 45° either side of its front; the gun turns slowly.\n" +
+                "Strong / weak: stops tanks that come head on; artillery and flanking cars kill it.\n" +
+                "Tip: face it down the road the enemy armour takes.",
+                "[[Ụ pháo chống tăng]] · tháp ô nhỏ · diệt tăng giá rẻ\n" +
+                "Cách đánh: 5 giây một phát [[xuyên giáp]], tầm 38 m, chỉ trong 45° hai bên phía trước; pháo xoay chậm.\n" +
+                "Mạnh / yếu: chặn xe tăng lao thẳng tới; pháo binh và xe vòng sườn diệt được nó.\n" +
+                "Mẹo: quay mặt nó về con đường thiết giáp địch đi."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

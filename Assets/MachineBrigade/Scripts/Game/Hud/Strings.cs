@@ -2489,6 +2489,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.microwave_vehicle"] = ("Anti-drone microwave vehicle", "Xe vi sóng chống drone"),
             ["short.microwave_vehicle"] = ("Microwave", "Vi sóng"),
             ["note.microwave_vehicle"] = ("An Epirus Leonidas-type high-power microwave on an armoured truck: a pulse downs a whole swarm of drones at once.", "Hệ vi sóng công suất cao kiểu Epirus Leonidas trên xe tải bọc thép: một xung làm rơi cả bầy drone cùng lúc."),
+            // dx06: Ụ pháo chống tăng.
+            ["unit.at_gun_emplacement"] = ("Anti-tank gun emplacement", "Ụ pháo chống tăng"),
+            ["short.at_gun_emplacement"] = ("AT gun", "Ụ chống tăng"),
+            ["note.at_gun_emplacement"] = ("A towed MT-12 Rapira 100 mm anti-tank gun behind its shield and sandbags: a cheap tank killer for a small slot.", "Pháo chống tăng kéo MT-12 Rapira 100 mm sau tấm chắn và bao cát: diệt tăng rẻ tiền cho ô nhỏ."),
             // (batch A: new entries above)
         };
 
