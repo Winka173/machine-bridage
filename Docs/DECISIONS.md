@@ -11373,6 +11373,11 @@ first and B2's after it.
   tank, the heavy tank, the super tank) were applied by A1 Trung: the hull kept (60, 58, 45, 45 deg/s), the turret
   115 deg/s (2 rad/s). The step `--upto C4` checks them against both sheets and reports them in the import_b block.
 
+**Owner's answer on the three range rows (2026-09-30).** The sheet's "Tầm bắn" rows for the armoured car, scout jeep and light
+tank copied their vision (42, 55, 36 m). Asked, the owner said "tăng nhẹ cho tầm nhìn": read as keep the weapon ranges (30, 22,
+28 m, the weapon sheet's "Giữ") and raise vision a little instead, about +10 %: armoured car 42 → 46, scout jeep 55 → 60, light
+tank 36 → 40 m.
+
 ## 25B2. Model rebuilds (2026-09-30)
 
 Prompt 25, section C.2 (task B2): rebuild the models from the balance sheet's "Hình dạng (cho AI vẽ)" columns
