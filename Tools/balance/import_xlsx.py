@@ -227,8 +227,34 @@ class Report:
                     text = pat.sub(lambda _: body, text)
             else:
                 text = text.rstrip("\n") + "\n\n" + body
+        text = with_summary(text)
         with open(REPORT, "w", encoding="utf-8", newline="\n") as f:
             f.write(text.rstrip("\n") + "\n")
+
+
+def with_summary(text):
+    """The report with its summary (every step's counts by sheet, read back from the sections) after the header."""
+    rows = []
+    for m in re.finditer(r"<!-- step:(\S+) -->\n## ([^\n]*)\n(.*?)<!-- /step:\1 -->", text, re.S):
+        step, body = m.group(1), m.group(3)
+        table = body.split("| Sheet | Applied | Already so | Deferred | Skipped |", 1)
+        if len(table) < 2:
+            continue
+        for line in table[1].split("\n\n", 1)[0].splitlines()[2:]:
+            cells = [c.strip() for c in line.strip("|").split("|")]
+            if len(cells) == 5:
+                rows.append((step, *cells))
+    out = ["<!-- summary -->", "## Summary", "", "Rows by step and sheet (each step's section below lists them).", "",
+           "| Step | Sheet | Applied | Already so | Deferred | Skipped |", "|---|---|---|---|---|---|"]
+    for r in rows:
+        out.append("| " + " | ".join(r) + " |")
+    out += ["", "<!-- /summary -->", ""]
+    block = "\n".join(out)
+    pat = re.compile(r"<!-- summary -->.*?<!-- /summary -->\n?", re.S)
+    if pat.search(text):
+        return pat.sub(lambda _: block, text)
+    first = text.find("<!-- step:")
+    return text[:first] + block + "\n" + text[first:] if first >= 0 else text + "\n" + block
 
 
 HEADER = """# Balance spreadsheet: apply report (prompt 25)
@@ -401,8 +427,10 @@ class Writer:
         if wid in self.game.raw_weapons:
             changed = False
             for k, v in line_fields.items():
-                if k != "id":
-                    changed |= self.weapon_field(wid, k, v) if k not in ("inherits",) else False
+                # A run that reaches A5 sets blast radii per round there.
+                if k in ("id", "inherits") or (k == "splash" and UPTO >= STEPS.index("A5")):
+                    continue
+                changed |= self.weapon_field(wid, k, v)
             return changed
         self.doc.insert_after("weapons", after, fmt(line_fields))
         self.game.refresh()
@@ -639,7 +667,12 @@ def a1(wr: Writer, wb, report: Report, step, weapon_rows, unit_rows, refs):
         vid = id_
         item = cat
 
+        # What the row changed: the data or the references (a choice's note alone is not a change).
+        before = (wr.doc.text, refs.doc.text)
+
         def add(outcome, detail=""):
+            if outcome == "applied" and (wr.doc.text, refs.doc.text) == before:
+                outcome = "already"
             report.add(step, sh, id_, item, outcome, detail)
 
         if vid not in g.vehicles_raw:
@@ -866,11 +899,13 @@ def loadout(wr: Writer, vid, unit_rows, report, step):
             hell = g.weapon("heli_atgm")
             line = {"id": "heli_ataka", "inherits": "ataka", "load": hell.get("load", 4), "burst": 1, "cooldown": hell["cooldown"],
                     "range": rng or hell["range"]}
-            if wr.new_weapon("ataka", line):
+            ch = wr.new_weapon("ataka", line)
+            if ch:
                 done.append("heli_ataka (9M120 Ataka at the Hellfire mount's rate and load)")
             if wr.swap_mount(vid, "heli_atgm", "heli_ataka"):
+                ch = True
                 done.append("heli_atgm -> heli_ataka")
-            report.add(step, sh, vid, "heli_atgm", "applied" if done else "already", "Hellfire -> 9M120 Ataka")
+            report.add(step, sh, vid, "heli_atgm", "applied" if ch else "already", "Hellfire -> 9M120 Ataka")
         if note.startswith("Đổi Stinger → tên lửa 57E6"):
             m = re.search(r"1\s*×\s*(\d+),\s*Mảnh xuyên\s*(\d),\s*tầm\s*(\d+),\s*tốc độ\s*(\d+)", note)
             dmg, pen, rng, spd = float(m.group(1)), int(m.group(2)), float(m.group(3)), float(m.group(4))

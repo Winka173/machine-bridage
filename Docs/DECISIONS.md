@@ -10947,3 +10947,38 @@ holds half. Where a row offers two options:
 - **Cruise missile**: the first, 600 a hit (a Tomahawk's ~450 kg on the bomb scale) and a 10 m blast; the circle
   drawn on the map is the blast too (10 m; it was 15 round an 18 m blast). The cluster alternative is not taken.
 - Napalm, SEAD, smoke, the UAV scan, repair and the field tower: kept, as the sheet says.
+
+### To measure in the test phase ("Xem lại", "Theo dõi")
+
+Under the owner's no-test rule the combat-value measurements wait for the test phase; every row below keeps the
+game's value for now, and `Docs/balance/apply-report.md` (section "To measure in the test phase") lists them with
+the sheet's proposal. The measurement to run then: `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1`,
+`MB_CV_SEEDS=13,21,34` and `MB_CV_ONLY` naming the cards, against a copy of `balance.json` with the proposal
+(`MB_CV_BALANCE`).
+- **"Xem lại" (Kiểm tra từng mục), 14 rows, all kept:** the speeds the sheet derives from the real vehicle times the
+  map's compression (the engineer vehicle 7 -> ~4.4, the smoke carrier 8 -> ~5.9, the mine layer 8 -> ~5.5, the VBIED
+  13 -> ~6.7, the light tank 9 -> ~4.0, the flame tank 6.5 -> ~4.6, the mortar carrier 8 -> ~5.9, the HIMARS
+  6 -> ~9.4, the strike drone 19 -> ~13.9), the siege tank's vision 38 -> ~30, and four health rows the sheet itself
+  would keep if toughness is the card's identity (the TOS, the siege tank, the swarm carrier, the flying gunship).
+  The sheet says "có thể giữ nếu là chủ đích"; halving the light tank's or the VBIED's speed would change what the
+  card is, so they wait for a measurement rather than a guess.
+- **"Theo dõi" (Cân bằng lần 2):** the rocket technical (3 CP) and the long-range SAM (14 CP): kept; change only if
+  the measurement confirms.
+- **"Đã giảm ở đợt 2":** the attack jet and the heavy bomber (their round-2 cuts are in); the sheet's own note asks
+  for a new measurement.
+- **Changes applied whose words and numbers disagree**, to judge by the same measurement (prompt 25 A.5 allows a
+  tuned value, recorded before and after): the ZU-23 ("giữ DPS", 70 a second, was 143), the Pantsir's 2A38 (171, was
+  252), the AA tower's flak (131, was 193; the sheet wanted its AA value 300 -> 240), the HQ's flak (140, was 157),
+  the scout helicopter's six Hydras a load (was 24), the flamethrower's 21 on every target.
+
+### B.9 (not run)
+
+The full EditMode suite and the regeneration of the combat-value summary that the design document's tables 9 and 9b
+read (`Docs/balance/combat_value_*_summary.tsv`, via `CombatValueMeasure`) are test runs: under the owner's rule they
+wait for the test phase. Tests already brought in line with the sheet's numbers: the bulldozer's speed
+(`Prompt8ContentTests`), Morrigan against the stealth fighter (`Prompt22ContentTests`), the shield dome's hit
+(`Prompt17ContentTests`). Tests likely to need the same once run (they read numbers the sheet changed): the strike
+and support tests (the airstrike's four bombs, the barrage's six shells, the cruise missile's 300 over 10 m), the
+counter and combat-value checks of the re-priced cards, the muzzle tests of the new mounts (the wheeled gun's roof
+M2 on slot "mg", the light tank's gun-launched missile on its main gun), and anything reading the old Hellfire,
+Grad or 155 mm speeds and blasts.
