@@ -286,7 +286,7 @@ def feedback(game, h):
 
 def combat_value(game, h):
     """Combat value measured in the sim (prompt 13 A): damage dealt with the time not firing counted; prompt 25 E2 (support
-    value) in prompt25.py."""
+    value) and E3 (vs a cluster of five, computed from the data) in prompt25.py."""
     e = h['esc']
     path = prompt25.measure_path()
     if path is None:
@@ -317,17 +317,20 @@ def combat_value(game, h):
         rows.append([f"<b>{e(names[c['id']])}</b>", e(c.get('class', '')), str(v['cost']), str(front),
                      num(c.get('light')), num(c.get('tanks')), num(c.get('fort')), num(c.get('air')),
                      num(c.get('tanks+AA')), pct(c.get('onTarget')), num(c.get('survival')),
-                     num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir')),
+                     num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir')), prompt25.cluster_cell(v, game),
                      (num((support.get(c['id']) or {}).get('support')) or '—') if c['id'] in helpers else ''])
     return ("<div class='section'><h2>9b. Giá trị thực chiến</h2>"
             "<p>DPS lý thuyết (phần 9) đã sửa để tính đủ loạt bắn, băng đạn, thời gian thay băng, nạp của bệ phóng và số bom/tên lửa mỗi lần đầy đạn. "
             "Giá trị thực chiến đo trong mô phỏng: mỗi xe hạng 1, không trang bị, đánh các nhóm mục tiêu chuẩn (cụm xe nhẹ, cụm xe tăng, công sự có tháp, máy bay) "
             "trong khoảng 90 giây từ lúc tiếp đất, có và không có phòng không đối phương; tính cả thời gian không bắn (di chuyển, xoay tháp, nạp đạn, bay vòng, bị pháo sáng "
             "và APS chặn). Giá trị = sát thương thực × hệ số sống sót / CP. Mọi quyết định cân bằng của prompt 13 dựa trên bảng này.</p>"
-            "<p><b>Hỗ trợ / CP</b> (E2): giá trị hỗ trợ của xe hỗ trợ, bảng dưới.</p>"
+            "<p><b>vs cụm xe</b> (prompt 25 E3): DPS lên 5 xe nhẹ cách nhau 4 m (một xe ở giữa, bốn xe quanh nó), mọi phát nhắm xe giữa; tính từ dữ liệu, "
+            "không chạy mô phỏng: phát trúng thẳng như bảng 9 (vs nhẹ), cộng nổ lan lên bốn xe quanh theo bán kính nổ (dao động ±15%), độ suy giảm "
+            "(25% ở mép, nhiệt áp 62,5%), cấp xuyên của mảnh nổ (tối đa 1 trên mặt đất) vào hông xe và hệ số loại đạn; bom chùm rải bom con lên cả năm. "
+            "Trong ngoặc: bao nhiêu lần DPS lên một xe. <b>Hỗ trợ / CP</b> (E2): giá trị hỗ trợ của xe hỗ trợ, bảng dưới.</p>"
             + f"<p class='muted'>Số đo: <code>{e(path.name)}</code>; chỉ các thẻ còn trong roster, CP theo dữ liệu hiện tại.</p>"
             + h['table'](['Xe', 'Lớp', 'CP', 'Giáp trước', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
-                          'DPS thật: nhẹ', 'nặng', 'bay', 'Hỗ trợ / CP'], rows, 'dps')
+                          'DPS thật: nhẹ', 'nặng', 'bay', 'vs cụm xe', 'Hỗ trợ / CP'], rows, 'dps')
             + prompt25.support_table(game, h, path) + "</div>")
 
 

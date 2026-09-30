@@ -85,6 +85,109 @@ def f(x, n=1):
     return t
 
 
+# ---------------------------------------------------------------------------------------------------------------- E3
+
+GAP = 4.0          # metres between the cluster's five vehicles (prompt 25 F.3)
+EDGE = 0.25        # DamageSystem.EdgeFalloff: a blast's damage at its edge
+SPREAD = (0.85, 1.15)   # DamageSystem.ResolveImpact: a blast's reach varies by up to 15 %
+CLUSTER = [(0.0, 0.0), (GAP, 0.0), (-GAP, 0.0), (0.0, GAP), (0.0, -GAP)]   # a quincunx: the aim point's vehicle and four round it
+SIDE_LEVEL = 0     # the light class's side (ArmourLevels.Vehicle(1)): the face a neighbour turns to a blast beside it
+
+
+def penetration(table, pen, armour, overmatch=True):
+    """DamageTable.Penetration: the multiplier of a round of a penetration against a face of an armour level."""
+    steps = table.get('penetration') or [1.2, 1, 0.85, 0.5, 0.25, 0.1]
+    last = len(steps) - 1
+    step = 2 - (pen - armour)
+    if not overmatch:
+        step = max(1, step)
+    if step <= 0:
+        return steps[0]
+    if step >= last:
+        return steps[last]
+    low = int(math.floor(step))
+    t = step - low
+    return steps[low] + (steps[min(last, low + 1)] - steps[low]) * t
+
+
+def falloff(distance, radius, thermobaric=False, spread=True):
+    """DamageSystem.ApplyFalloff at a vehicle's edge this far from the blast, over the blast's random reach."""
+    if radius <= 0:
+        return 0.0
+    edge = (1 + EDGE) * 0.5 if thermobaric else EDGE
+    reaches = [radius * (SPREAD[0] + (SPREAD[1] - SPREAD[0]) * k / 30) for k in range(31)] if spread else [radius]
+    total = 0.0
+    for r in reaches:
+        if distance <= r:
+            total += 1 - (1 - edge) * min(1.0, distance / r)
+    return total / len(reaches)
+
+
+def _target_radius(game):
+    for v in game.get('vehicles', []):
+        if v['id'] == 'armored_car':
+            return float(v.get('raw', {}).get('Radius', 2.0) or 2.0)
+    return 2.0
+
+
+_bomblets = {}
+
+
+def _bomblet_share(cluster, radius_t):
+    """Mean summed falloff one bomblet of a cluster round lays on the five vehicles (DamageSystem.Scatter), by a
+    fixed-seed draw over its scatter: a calculation from the data, not a sim run."""
+    key = (cluster.get('radius'), cluster.get('splash'), radius_t)
+    if key in _bomblets:
+        return _bomblets[key]
+    rng = random.Random(25)
+    spread, r = float(cluster.get('radius', 4)), float(cluster.get('splash', 2))
+    n, total = 4000, 0.0
+    for _ in range(n):
+        a = rng.random() * math.tau
+        reach = spread * math.sqrt(0.15 + 0.85 * rng.random())
+        x, y = math.cos(a) * reach, math.sin(a) * reach
+        for cx, cy in CLUSTER:
+            d = max(0.0, math.hypot(x - cx, y - cy) - radius_t)
+            total += falloff(d, r, spread=False)
+    _bomblets[key] = total / n
+    return _bomblets[key]
+
+
+def cluster_dps(v, game):
+    """E3: a unit's damage a second against five light vehicles 4 m apart (a quincunx), every round aimed at the middle
+    one: its direct hit as in table 9 (vs light), and its blast on the four round it with the falloff, the splash's
+    penetration (at most 1 on the ground, Armour.SplashPenetration) against their sides and its type's factor on the
+    ground; a cluster round's bomblets on all five. Returns (vs the cluster, vs one vehicle)."""
+    table = game.get('damageTable', {})
+    single = float((v.get('dpsVs') or {}).get('Light', 0) or 0)
+    total = single
+    radius_t = _target_radius(game)
+    for w in v.get('weapons', []):
+        if w.get('targets') == 'Air' or not (w.get('damage') or 0) > 0:
+            continue
+        dps = float(w.get('dps', 0) or 0)
+        ground = float((table.get(w.get('type'), {}) or {}).get('Ground', 1) or 0)
+        splash = float(w.get('splash', 0) or 0)
+        if splash > 0:
+            share = sum(falloff(max(0.0, math.hypot(x, y) - radius_t), splash, bool(w.get('thermobaric')))
+                        for x, y in CLUSTER[1:])
+            total += dps * share * penetration(table, min(float(w.get('pen', 0) or 0), 1), SIDE_LEVEL) * ground
+        c = weapon_data(w['id']).get('cluster')
+        if c:
+            rounds = dps / float(w['damage'])
+            per = float(c.get('count', 1)) * float(c.get('damage', 0)) * _bomblet_share(c, radius_t)
+            he = float((table.get('HighExplosive', {}) or {}).get('Ground', 1) or 1)
+            total += rounds * per * penetration(table, min(float(c.get('pen', 2)), 1), SIDE_LEVEL) * he
+    return total, single
+
+
+def cluster_cell(v, game):
+    total, single = cluster_dps(v, game)
+    if total <= 0:
+        return DASH
+    return f"{total:.0f}" + (f" (×{f(total / single, 1)})" if single > 0 and total > single * 1.005 else '')
+
+
 # ---------------------------------------------------------------------------------------------------------------- E2
 
 SUPPORT_KEYS = ('repair', 'rearm', 'airRearm', 'jammer', 'dome')

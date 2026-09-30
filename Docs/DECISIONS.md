@@ -11703,3 +11703,24 @@ document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its P
 - **Which measure 9b shows.** It read `combat_value_p18_after_summary.tsv` by name (the balance pass after prompt 18);
   play-tests 5 and 6 measured again after it. It now takes the first of `p25_after` (the test phase's run after prompt
   25: `MB_CV_TAG=p25_after`), `pt6_after` (the last run before prompt 25) and `p18_after`.
+
+### E3 "vs cluster" (`Tools/docs/prompt25.py`, `cluster_dps`)
+
+- **What.** Table 9b's column "vs cụm xe": a unit's damage a second against five light vehicles 4 m apart, the one in the
+  middle and four round it (a quincunx), every round aimed at the middle one; in brackets, how many times its damage a
+  second on one vehicle. It is what artillery, rockets, bombs and every blast weapon are worth against a packed group,
+  which the 9b runs (four vehicles spread 8 m) understate.
+- **Computed from the data, not by a sim run** (the spec allows either): in the document's Python, from the export's
+  weapons (sustained DPS, blast radius, penetration, damage type, thermobaric tag) and balance.json's cluster rounds,
+  with the sim's own rules (`DamageSystem`):
+  - the direct hit on the middle vehicle is table 9's DPS against light armour;
+  - each of the four others takes the blast at its hull's edge (4 m less the armoured car's radius) with the linear
+    falloff to 25 % at the edge (62.5 % for a thermobaric round), averaged over the blast's random reach (0.85-1.15 x);
+  - a splash strikes with at most penetration 1 on the ground (`Armour.SplashPenetration`), on the side the vehicle
+    turns to it (level 0 for the light class), times the damage type's factor on the ground;
+  - a cluster round's bomblets (their count, damage, blast and scatter) fall on all five, by a fixed-seed draw over the
+    scatter (a calculation, repeatable to the digit).
+- **Left out:** misses (like table 9), a railgun's pierce line, equipment's extra blast (rank 1, no gear), and a boss
+  system's own rounds (9b lists cards only).
+- **Examples (older export):** the SP howitzer x2.2, the heavy MLRS x2.9, the stealth bomber x4.0, the thermobaric launcher
+  x2.8; a tank gun or a missile with no blast stays at its one-target DPS.
