@@ -149,6 +149,36 @@ namespace MachineBrigade.Tests
 
         private static int Mathf(float x) => (int)Math.Round(x);
 
+        /// <summary>C2: the Gungnir's 80 cm gun and the Kronos's bucket wheel are weapons (the design document's tables and the Guide list them), fired by the boss system.</summary>
+        [Test]
+        public void TheGungnirsGunAndTheKronossBucketWheelAreWeapons()
+        {
+            var catalog = C;
+            var gungnir = catalog.Vehicle("rail_supergun");
+            var gun = gungnir.Weapon;
+            Assert.AreEqual("supergun_800", gun.Id, "the 80 cm gun is its main weapon");
+            Assert.IsTrue(gun.Laid, "laid by its shot: the combat system never fires it");
+            // "1 × 900 mỗi 25 s, nổ lan 12 m", and its shot fires with those numbers.
+            Assert.AreEqual(900f, gun.Damage, 1e-3f);
+            Assert.AreEqual(25f, gun.Cooldown, 1e-3f);
+            Assert.AreEqual(12f, gun.SplashRadius, 1e-3f);
+            Assert.AreEqual(gun.Damage, gungnir.Bombard.Damage, 1e-3f);
+            Assert.AreEqual(gun.SplashRadius, gungnir.Bombard.Radius, 1e-3f);
+            Assert.AreEqual(gun.Cooldown, gungnir.Bombard.Every, 1e-3f);
+            var kronos = catalog.Vehicle("kronos");
+            var index = -1;
+            for (var i = 0; i < kronos.Mounts.Count; i++)
+                if (kronos.Mounts[i].Weapon.Id == "bucket_wheel") index = i;
+            Assert.GreaterOrEqual(index, 0, "the bucket wheel is one of its weapons");
+            var wheel = kronos.Mounts[index].Weapon;
+            Assert.IsTrue(wheel.Laid, "the crusher is it: the combat system never fires it");
+            CollectionAssert.Contains(kronos.Parts[kronos.PartIndex("bucket_wheel")].Mounts, index, "on its wheel: broken, the crushing stops");
+            Assert.AreEqual(wheel.Damage / wheel.Cooldown, kronos.Crush.Dps, 1e-3f, "the crusher's damage a second is the weapon's");
+            Assert.AreEqual(wheel.Range, kronos.Crush.Reach, 1e-3f);
+            Assert.Greater(MachineBrigade.Sim.Combat.FirePower.Sustained(gun, gungnir), 0f, "the tables give it a damage a second");
+            Assert.Greater(MachineBrigade.Sim.Combat.FirePower.Sustained(wheel, kronos), 0f);
+        }
+
         [Test]
         public void TheBossesTakeTheSheetsHealthBeforeTheCampaignsScale()
         {

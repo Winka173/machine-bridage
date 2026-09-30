@@ -84,6 +84,13 @@ The sheet "Boss đề xuất" by script (`import_xlsx.py --upto C1`).
   bombs, Leviathan's nine shells along a strip, Daedalus's eight pods; each with a warning sound of its own. Mini
   bosses fight with their ordinary weapons only.
 
+### Prompt 25 C2: the Gungnir's gun and the Kronos's bucket wheel as weapons (DECISIONS 25C)
+
+- The Gungnir's 80 cm gun is its main weapon, in the weapons tables and the Guide: one 900 shell every 25 s with a 12 m
+  blast (was 1,400 every 20 s), still at your biggest group anywhere; its shot fires the gun's numbers.
+- The Kronos's bucket wheel is a weapon on its wheel (900 a second within 6 m, three times on walls and towers); its
+  crusher takes the weapon's numbers.
+
 ### Prompt 25 B2: models rebuilt to the balance sheet (DECISIONS 25B2)
 
 - Thirteen models are redrawn from the balance sheet's shape notes and drawing guide, at its sizes (ground vehicles

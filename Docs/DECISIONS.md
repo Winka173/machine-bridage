@@ -11372,6 +11372,26 @@ main rank's scale, damage x1.2 and cooldown x0.85, and the difficulty's stay on 
   or attack changed are rewritten (both languages), and no mini boss's words mention a big attack. The "In action"
   preview runs the live sim, so it follows the data.
 
+### C2 The Gungnir's 80 cm gun and the Kronos's bucket wheel as weapons
+
+- **Gungnir.** Its 80 cm gun (`supergun_800`) is its main weapon now (was `none`), laid (`"laid": true`: the combat system
+  never fires it; its shot does): the row's 1 x 900 every 25 s with a 12 m blast (was 1,400 every 20 s over 14 m; the
+  sheet's blast for a boss system's round, which A5 left to C1/C2). The bombard (the shot at the biggest group anywhere,
+  3 s ahead, wide once its fire control falls) fires with its gun's numbers: with no "damage", "radius" or "every" of
+  its own it takes the weapon's (`BombardDef`, filled in once the weapons are read), so the weapons tables, the Guide and
+  the shot cannot disagree. Its warning ring: the 12 m blast, 15 m with the 3 m it may fall off. Its `weaponDamage`
+  falls to 3.10 (the gun's 36 a second counts at its own numbers).
+- **Kronos.** Its bucket wheel is a weapon (`bucket_wheel`: kinetic, penetration 4, x3 on structures, 900 a second
+  within 6 m: the crusher's numbers, which the sheet leaves as they are), a mount on the wheel's part (broken, the
+  crushing stops, as before), laid. The crusher is the weapon (`"crush": { "weapon": "bucket_wheel" }`): with no "dps"
+  or "reach" of its own it takes the weapon's (damage over cooldown, range). It is a mount, not the main weapon: the
+  main mount aims the turret and names the boss's gun in the Guide, and the 30 mm stays that. Ixion's wheels stay a
+  crusher of their own numbers.
+- Both now show in the design document's weapons table and a boss's Guide lines (a mount that does damage); the
+  document's DPS for them is the weapon's (the wheel's 900 is at the front of its boom only, and is not counted in the
+  sheet's ordinary damage a second above).
+- **Test** (written, not run): `Prompt25BossTests.TheGungnirsGunAndTheKronossBucketWheelAreWeapons`.
+
 ### Tests (written, not run: the owner's rule)
 
 - New, `Prompt25BossTests`: no mini boss has a super weapon (nor in a duel) and every big attack left is a main boss's;

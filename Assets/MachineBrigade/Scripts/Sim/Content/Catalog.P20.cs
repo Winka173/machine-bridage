@@ -137,6 +137,13 @@ namespace MachineBrigade.Sim.Content
         public float DebrisEvery { get; internal set; } = 4f;
         public float DebrisRadius { get; internal set; } = 16f;
         public float DebrisDamage { get; internal set; } = 120f;
+
+        /// <summary>
+        /// Prompt 25 C2 (DECISIONS 25C): the weapon it is (Kronos's bucket wheel, a mount on its wheel, so the weapons
+        /// tables and the Guide show it): with no "dps" or "reach" of its own, its damage a second and its reach are the
+        /// weapon's (damage over cooldown, range). Null: the crusher's own numbers (Ixion's wheels).
+        /// </summary>
+        public string? Weapon { get; internal set; }
     }
 
     public sealed partial class VehicleDef
@@ -240,7 +247,11 @@ namespace MachineBrigade.Sim.Content
                     Structure = MathF.Max(0f, c.Float("structure", 1f)), Hq = c.Bool("hq", false), MinSpeed = MathF.Max(0f, c.Float("minSpeed", 0.2f)),
                     DebrisPhase = c.Int("debrisPhase", -1), DebrisEvery = MathF.Max(1f, c.Float("debrisEvery", 4f)),
                     DebrisRadius = MathF.Max(2f, c.Float("debrisRadius", 16f)), DebrisDamage = MathF.Max(0f, c.Float("debrisDamage", 120f)),
+                    Weapon = c.Has("weapon") ? c.String("weapon") : null,
                 };
+                // Prompt 25 C2: the weapon's numbers where the crusher gives none (filled in once the weapons are read).
+                if (def.Crush.Weapon != null && !c.Has("dps")) def.Crush.Dps = -1f;
+                if (def.Crush.Weapon != null && !c.Has("reach")) def.Crush.Reach = -1f;
             }
             if (v.Has("wake"))
             {

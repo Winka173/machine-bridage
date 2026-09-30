@@ -95,11 +95,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: bắn hạ khoang đang rơi và phá cửa thả: mỗi cửa mất là thả chậm hơn, đòn đổ bộ lớn cũng hụt đi."),
             ["guide.kronos"] = (
                 "[[Boss]] · mining excavator · crushes its way to your HQ\n" +
-                "How it fights: very slowly down a fixed route to your base; its [[bucket wheel]] crushes everything in front of it, walls and towers too. If it reaches your HQ the mission is lost. Two 30 mm and two automatic 57 mm turrets and a rocket pod cover it. Phase 2 it goes faster; phase 3 the wheel spins up and throws rock round it.\n" +
+                "How it fights: very slowly down a fixed route to your base; its [[bucket wheel]] crushes everything in front of it (900 a second within 6 m), walls and towers too (three times as hard). If it reaches your HQ the mission is lost. Two 30 mm and two automatic 57 mm turrets and a rocket pod cover it. Phase 2 it goes faster; phase 3 the wheel spins up and throws rock round it.\n" +
                 "Strong / weak: wheel armour [[4]], body 3, track units [[2]]. Each track unit broken slows it.\n" +
                 "Tip: break the tracks to buy time, and the [[boom]] to stop its sweep; do not build walls in its way.",
                 "[[Boss]] · máy xúc mỏ · nghiền đường tới HQ\n" +
-                "Cách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước, cả tường lẫn tháp. Tới được HQ là thua nhiệm vụ. Hai tháp 30 mm, hai tháp pháo 57 mm tự động và một giàn rốc-két che chắn. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\n" +
+                "Cách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước (900 mỗi giây trong 6 m), cả tường lẫn tháp (gấp ba). Tới được HQ là thua nhiệm vụ. Hai tháp 30 mm, hai tháp pháo 57 mm tự động và một giàn rốc-két che chắn. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\n" +
                 "Mạnh / yếu: bánh gầu giáp cấp [[4]], thân 3, cụm xích [[2]]. Mỗi cụm xích bị phá là nó chậm lại.\n" +
                 "Mẹo: phá cụm xích để câu giờ, phá [[cần gầu]] để chặn đòn quét; đừng xây tường chắn đường nó."),
             ["guide.typhon"] = (

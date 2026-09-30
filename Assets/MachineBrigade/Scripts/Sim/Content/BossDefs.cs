@@ -213,7 +213,11 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The fire-control post that aims it (a guard's def id), or null.</summary>
         public string? Spotter { get; internal set; }
 
-        /// <summary>The weapon drawn firing (its muzzle flash and the shell's flight).</summary>
+        /// <summary>
+        /// The weapon drawn firing (its muzzle flash and the shell's flight). Prompt 25 C2 (DECISIONS 25C): it is the
+        /// boss's gun (the supergun's main weapon, laid by this shot): with no "damage", "radius" or "every" of the
+        /// bombard's own, the shell's damage, blast and cycle are the weapon's (damage, splash, cooldown).
+        /// </summary>
         public string? Weapon { get; internal set; }
 
         /// <summary>The fire support whose warning marks the landing (an event-only support).</summary>

@@ -981,6 +981,11 @@ def header(wr):
 
 
 def earlier_rows(wb, sheet_rows, report, step):
+    # Applied with the boss's own row in this run, already so when that was (a re-run keeps the report of the run that moved).
+    moved = {r[1] for r in report.rows.get(step, []) if r[0] == SHEET and r[3] == "applied"}
+
+    def outcome(vid):
+        return "applied" if vid in moved else "already"
     _, trows = X.sheet(wb, "Thay đổi chi tiết")
     for r in trows:
         vid, cat = r[0], str(r[2])
@@ -989,7 +994,7 @@ def earlier_rows(wb, sheet_rows, report, step):
             note = "by its Boss đề xuất row (exact numbers)"
             if "giáp" in cat.lower():
                 note += "; the armour by its own Giáp row (A1 Thấp: a mini boss's front 4 at most)"
-            report.add(step, "Thay đổi chi tiết", vid, cat, "applied", note)
+            report.add(step, "Thay đổi chi tiết", vid, cat, outcome(vid), note)
     _, krows = X.sheet(wb, "Kiểm tra từng mục")
     for r in krows:
         vid, item, result, prop = r[0], str(r[2]), r[4], str(r[5] or "")
@@ -999,14 +1004,79 @@ def earlier_rows(wb, sheet_rows, report, step):
             m = re.match(r"~?([\d.]+)", prop)
             if m and abs(X.num(m.group(1)) - want) > 1:
                 note += f" (this row's {prop.split('·')[0].strip()}; Boss đề xuất gives the exact number, within the Boss sheet's range)"
-            report.add(step, "Kiểm tra từng mục", vid, "Máu", "applied", note)
+            report.add(step, "Kiểm tra từng mục", vid, "Máu", outcome(vid), note)
 
 
 # ----------------------------------------------------------------------------------------------------------------
 
 
+def _sub_remove(doc, vid, key, subkeys):
+    """Removes fields of a vehicle's nested object (the bombard's, the crusher's own numbers)."""
+    def fn(e: Entry):
+        s = e.sub(key)
+        for k in subkeys:
+            s.remove(k)
+        e.set_raw(key, s.text)
+    before = doc.text
+    doc.edit("vehicles", vid, fn)
+    return doc.text != before
+
+
 def c2(wr, wb, sheet_rows, report, step):
-    pass
+    """The Gungnir's 80 cm gun and the Kronos's bucket wheel as weapons: the gun is its main weapon, laid by its shot
+    (the bombard fires it with its numbers: the row's 1 x 900 every 25 s, a 12 m blast); the wheel a mount on its part,
+    which the crusher is (its numbers the crusher's own, which the sheet does not change: 900 a second within 6 m,
+    three times on structures)."""
+    g = wr.game
+    doc = wr.doc
+    # ---- Gungnir
+    words = str(sheet_rows["rail_supergun"]["Vũ khí thêm / đổi"])
+    m = re.search(r"1\s*×\s*(\d+)\s*mỗi\s*(\d+)\s*s,\s*nổ lan\s*(\d+)\s*m", words)
+    dmg, every, blast = float(m.group(1)), float(m.group(2)), float(m.group(3))
+    done = []
+    for k, v in (("damage", dmg), ("cooldown", every), ("splash", blast), ("laid", True)):
+        if wr.weapon_field("supergun_800", k, v):
+            done.append(f"supergun_800 {k} {fmt(v)}")
+    if g.vehicles_raw["rail_supergun"].get("weapon") != "supergun_800":
+        doc.edit("vehicles", "rail_supergun", lambda e: e.set("weapon", "supergun_800"))
+        done.append("its main weapon (was none)")
+    if _sub_remove(doc, "rail_supergun", "bombard", ("damage", "radius", "every")):
+        done.append("its shot fires the gun's numbers (the bombard's own damage, blast and cycle gone)")
+    g.refresh()
+    scatter = (g.vehicles_raw["rail_supergun"].get("bombard") or {}).get("scatter", 3)
+    shell = next(s for s in g.data["supports"] if s["id"] == "supergun_shell")
+    for k, v in (("blast", blast), ("radius", blast + scatter)):
+        if not X.close(shell.get(k), v):
+            doc.edit("supports", "supergun_shell", lambda e, k=k, v=v: e.set(k, v))
+            done.append(f"its warning ring {k} {fmt(v)}")
+    g.refresh()
+    report.add(step, SHEET, "rail_supergun", "Dữ liệu vũ khí", "applied" if done else "already",
+               ("; ".join(done) + ": " if done else "") + f"the 80 cm gun, 1 x {dmg:.0f} every {every:.0f} s, a {blast:.0f} m blast, at the biggest group anywhere (its shot)")
+    gungnir_done = bool(done)
+    # ---- Kronos
+    done = []
+    crush = dict(g.vehicles_raw["kronos"].get("crush") or {})
+    if "bucket_wheel" not in g.raw_weapons:
+        line = {"id": "bucket_wheel", "real": "bucket wheel", "family": "melee", "size": 3, "pen": 4, "piercing": True, "melee": True, "laid": True,
+                "damageType": "Kinetic", "damage": crush["dps"], "cooldown": 1, "range": crush["reach"], "projectileSpeed": 400,
+                "impactTier": "Large", "bonuses": [{"armor": "Structure", "mult": crush.get("structure", 1)}]}
+        doc.insert_after("weapons", "borer_drill", fmt(line))
+        g.refresh()
+        done.append(f"bucket_wheel: {crush['dps']:g} a second within {crush['reach']:g} m, x{crush.get('structure', 1):g} on structures")
+    if add_mounts(wr, "kronos", "bucket_wheel", 1, "main", aim="Hull", parts=["bucket_wheel"]):
+        done.append("a mount on its bucket wheel")
+    if crush.get("weapon") != "bucket_wheel":
+        set_nested(doc, "kronos", ["crush", "weapon"], "bucket_wheel")
+        done.append("the crusher is the wheel")
+    if _sub_remove(doc, "kronos", "crush", ("dps", "reach")):
+        done.append("its damage a second and reach the weapon's")
+    g.refresh()
+    report.add(step, SHEET, "kronos", "Dữ liệu vũ khí", "applied" if done else "already",
+               ("; ".join(done) + ": " if done else "") + "the bucket wheel, the crusher at the front of its boom")
+    # The same rows of the other sheets (applied with it, already so when it was).
+    for sh in ("Thay đổi chi tiết", "Kiểm tra từng mục"):
+        for vid, moved in (("rail_supergun", gungnir_done), ("kronos", bool(done))):
+            report.add(step, sh, vid, "Dữ liệu vũ khí", "applied" if moved else "already", "by its Boss đề xuất row (C2)")
 
 
 def run(step, wr, wb, report):
