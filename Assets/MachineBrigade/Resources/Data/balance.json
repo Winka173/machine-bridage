@@ -1982,6 +1982,8 @@
     { "id": "instant_counter_battery", "kind": "CounterBattery", "pen": 3, "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 60, "count": 4, "damage": 320, "blast": 7, "tier": "Large", "damageType": "HighExplosive" },
     // ht10: 6 Coyote Block 2-class interceptor missiles homing on the nearest distinct enemy drones (Homing, dronesOnly).
     { "id": "drone_intercept_strike", "kind": "Homing", "pen": 2, "cp": 3, "cooldown": 40, "delay": 1.5, "radius": 40, "count": 6, "damage": 120, "blast": 2, "tier": "Small", "damageType": "Fragmentation", "dronesOnly": true },
+    // ht11: chaff (Smoke): denies the circle for Duration, as the smoke screen does for line of sight and lasers.
+    { "id": "chaff_strike", "kind": "Smoke", "cp": 2, "cooldown": 45, "delay": 1.0, "radius": 30, "count": 1, "duration": 8, "tier": "Small" },
   ],
 
   "props": [

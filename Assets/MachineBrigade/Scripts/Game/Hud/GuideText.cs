@@ -1175,6 +1175,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: tối đa {{count}} tên lửa nhỏ, mỗi quả tự tìm một drone địch khác nhau trong vùng và hạ nó; không đánh thứ gì khác.\n" +
                 "Mạnh / yếu: dập cả bầy drone hoặc đợt đạn lảng vảng cùng lúc; vô dụng với bất cứ thứ gì không phải drone.\n" +
                 "Mẹo: gọi ngay khi bầy drone địch hiện trên minimap."),
+            ["guide.chaff_strike"] = (
+                "[[Radar chaff]] · {{radius}} m circle · {{cp}} CP\n" +
+                "How it fights: for {{duration}} s, the circle denies lock-on the same way a smoke screen does — built on the same zone, so it works exactly like one.\n" +
+                "Strong / weak: opens a corridor for your own aircraft to fly through; a smoke screen already does the same job for ground sightlines and lasers, so pick whichever fits the target.\n" +
+                "Tip: call it along the flight path you want your planes to take.",
+                "[[Rải nhiễu radar]] · vùng {{radius}} m · {{cp}} CP\n" +
+                "Cách đánh: trong {{duration}} giây, vùng này chặn khóa mục tiêu giống hệt màn khói — dùng chung một vùng che, nên hoạt động y hệt màn khói.\n" +
+                "Mạnh / yếu: mở hành lang cho máy bay ta bay qua; màn khói cũng làm được việc này cho tầm nhìn mặt đất và laser, chọn thẻ nào hợp mục tiêu hơn.\n" +
+                "Mẹo: gọi dọc đường bay bạn muốn máy bay mình đi qua."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

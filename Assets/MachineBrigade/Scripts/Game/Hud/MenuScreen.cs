@@ -901,6 +901,7 @@ namespace MachineBrigade.Game.Hud
             "decoy_tank" => "tank",
             "instant_counter_battery" => "barrage",
             "drone_intercept_strike" => "drone",
+            "chaff_strike" => "smoke",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };
