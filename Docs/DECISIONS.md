@@ -10496,3 +10496,102 @@ too, and all pass. No five-seed sweeps and no FPS runs.
   - `Rewards.cs`, `Narrative.cs`, `PlayerProfile.cs` and `PlayerProfile.Story.cs`.
   - `CampaignText.cs`: 62 keys added.
 - **Data and tools:** `build_campaign.py`, `events.py`, `act10.py` (new) and `campaign.json`.
+
+## 23D. Doctrines folded into commanders (2026-09-30)
+
+The owner's call on 22F's open question: "gộp luôn" (fold them in). The commander is now the one choice before a battle.
+The five doctrines are gone as a pick of their own; each one's edge is part of the commander whose style it suited. Where
+that commander already had the same kind of bonus, the two became one number instead of being added.
+
+### The mapping (before → after)
+
+| Doctrine (what it gave) | Commander | Before | After |
+| --- | --- | --- | --- |
+| Armoured fist, free (tanks and heavies +20 % health, tank hunters +10 %) | Crown (Reyn, Heavy) | vehicles of 9 CP or more +15 % health and +15 % damage; every vehicle 10 % dearer | tanks, heavy vehicles and vehicles of 9 CP or more **+20 % health** (one line, reach `ArmourOrDear`); 9 CP or more +15 % damage; 10 % dearer |
+| Air superiority (helicopters and aircraft +20 % health; fire support 15 % faster) | Hawk (Reyes, Air) | aircraft +10 % damage, +15 % reload, rearm 15 % faster, air cap +1; towers −10 % health | the same **and aircraft +20 % health, fire support 15 % faster** |
+| Big guns (artillery +25 % health; fire support 25 % faster) | Longshot (Dahl, Artillery) | artillery +15 % damage, +10 % range; direct fire −10 % damage | the same **and artillery +25 % health, fire support 25 % faster** |
+| Blitz (whole army +15 % speed; scouts and light +15 % health) | Rush (Mendez, Blitz) | vehicles +10 % speed; drops 25 % faster; army −5 % health | vehicles **+15 % speed**; **scouts and light vehicles +15 % health**; drops 25 % faster; army −5 % health |
+| Logistics (+20 % base income; +4 army cap) | Ledger (Brenn, Long game) | all income +10 %; army −5 % damage | all income **+15 %**; **supply +10 %**; army −5 % damage |
+
+- **Crown, not Iron, for the armour.** Crown's style is the heavy deck and his role the heavy armour reserve. Iron (Kade)
+  is already the best of six styles at three seeds with a flat +5 %/+5 % (22F) and needs no more. Crown's +15 % health on
+  dear vehicles and the doctrine's +20 % on tanks and heavies were the same bonus (a dear heavy tank had both, +35 %):
+  one line of +20 % over both reaches. The cheap tank hunters' +10 % is dropped; the dear ones (the railgun truck, the
+  laser tank) have the +20 %.
+- **Hawk and Longshot**: nothing overlapped, so both edges moved in whole. Hawk's faster rearm is his aircraft's own
+  magazines, not the support cards. The fire-support tempo is a new side-wide number, `CommanderDef.StrikeCooldown` (0.85
+  and 0.75), on every support card and item as the doctrine's was.
+- **Rush**: speed was the same bonus in both: one +15 % (the speed cap), not +10 % and +15 %. The light vehicles' +15 %
+  health is new to him; the army's −5 % still comes off after it (a light vehicle +10 % net).
+- **Ledger** takes Logistics (he is the brigade's quartermaster; his Vietnamese role, "hậu cần", is the doctrine's own
+  name). Income was the same bonus: the doctrine's +20 % was on the base rate only, Ledger's +10 % on all income; one
+  number of +15 % on all of it is about the doctrine's worth with two points held, and between the two. The +4 army cap
+  (a tenth of the usual 40) became supply +10 %: a commander has a supply multiplier, not a flat cap. Tide keeps its own
+  supply +15 %.
+
+### How the folded numbers work
+
+- Health and speed are commander lines now, so they go through the loadout's caps like every line (22F): gear and
+  commander together never pass the 25 % health or 15 % speed cap. A doctrine multiplied on top of the caps, so on a
+  fully geared unit the folded edge is smaller than the doctrine was; a commander alone gives its full value.
+- The campaign's enemy keeps pace with the deck's health and damage lines (`EnemyScaling.Match` counts the commander's
+  lines, 22F); it never counted a doctrine. Part of the new health is matched by the campaign's enemy.
+- `StrikeSystem` multiplies a support's cooldown by the side's commander's `StrikeCooldown` where it read the doctrine's.
+- The strength texts are filled from the data (`CommanderText.Values`), with one new placeholder, `{support}` (how much
+  faster fire support recharges).
+
+### Removed
+
+- `Sim/Content/Doctrine.cs`; `TeamEconomy.Doctrine` (its income and army cap); `SimWorld.SetDoctrine` and a spawn's
+  toughness and speed from it. `Vehicle.DoctrineSpeed` is `SpeedScale` now (it still carries the boosts' speed and a Boss
+  Hunt's engines).
+- `MatchSettings.Doctrine` and its setting; `Progression.DoctrinePrice` and `DoctrineOwned`; the doctrine dropdown on
+  the deck page (the commander's row stays under the overview), the four doctrine tiles in the shop's Units page,
+  `MenuScreen.DoctrineIcon`, the `doctrine.*` texts, and the unused `.doctrine-chip` and `.fc-army__doctrine` styles.
+- The enemy: Hard and Very Hard quick-mode enemies (and the menu's background battle) took a random doctrine; they take
+  nothing now. Quick-mode enemies have no commander (F.3), so Hard and Very Hard lose that edge (their income ×1.2 and
+  ×1.4 stay): for the testing phase to check.
+- Test builds: `TestUnlockAll` no longer lends every doctrine (it still opens every commander).
+
+### Save migration
+
+- On load (`PlayerProfile.RefundOldDoctrines`): 1,500 coins back for each of the four doctrines that were sold
+  (`doctrine.air`, `.artillery`, `.blitz`, `.logistics`), once each even if an entry is doubled; every `doctrine.*`
+  entry is removed, the free armoured one's too (no refund). The profile is saved at once, so the refund is paid once:
+  the entries' absence is the flag, no version number. The menu shows a one-off dialog with the coins (`news.refund`,
+  like the tower branches' news). A save that bought none is untouched.
+- `MatchSettings.Load` deletes the old doctrine setting ("mb.doctrine") and never reads it.
+
+### Who got stronger (for the testing phase's 5-seed commander balance)
+
+- Stronger: Crown (tanks under 9 CP +20 % health, dear vehicles 15 → 20 %), Hawk (aircraft +20 % health, fire support
+  15 % faster), Longshot (artillery +25 % health, fire support 25 % faster), Rush (speed 10 → 15 %, light +15 % health),
+  Ledger (income 10 → 15 %, supply +10 %). The other nine are unchanged. In the second sweep (22F) Rush and Longshot were
+  best of no style, so their gain is welcome; Hawk and Ledger were best of some already.
+- The default player loses the free Armoured fist (+20 % tank health) unless they lead with Crown, who opens at
+  Interlude III: early tank decks are a little weaker.
+- Measure with `CommanderMeasure` at five seeds, the five above first. Hawk and Longshot gained most (two edges each, and
+  a fire-support tempo on every support card). If one of them tops more styles than Iron, trim its new health line first
+  (Hawk 20 → 15 %, Longshot 25 → 20 %), then the tempo.
+
+### Tests
+
+- `DoctrineFoldTests` (new, 3): nothing reads a doctrine (no type or member, no text, no doctrine identifier, old id or
+  setting in the scripts outside the migration in `PlayerProfile.cs` and `MatchSettings.cs`, no style; the old setting
+  is dropped); an old save's doctrines are refunded once (a doubled entry once, the free one nothing, the menu told once,
+  a second load pays nothing, a clean save untouched); each doctrine's edge is in its commander (Crown's one number on a
+  7 CP tank and a dear heavy, Hawk's and Longshot's health and faster fire support, Rush's speed and light health,
+  Ledger's income and supply).
+- `CommanderPassiveTests`: Rush's speed 1.10 → 1.15 and Ledger's income 1.10 → 1.15.
+- Run: those two, `L10nTests` and the compile, nothing else (no sweep): `CommanderPassiveTests` 15/15, `DoctrineFoldTests` 3/3, `L10nTests` 12/12; the
+  project compiles.
+
+### Shared edits (merge by hand if they conflict)
+
+- **Sim:** `Commanders.cs`, `CommanderDefs.cs`, `EconomySystem.cs`, `SimWorld.cs`, `Vehicle.cs`, `StrikeSystem.cs`,
+  `BossHunt.cs` (one line); `Doctrine.cs` deleted.
+- **Game:** `CommanderText.cs`, `Strings.cs` (the doctrine block out, `news.refund` beside `news.branches`),
+  `MenuScreen.cs`, `MenuScreen.Army.cs`, `MenuScreen.Shop.cs`, `PlayerProfile.cs`, `MatchSettings.cs`, `ModeSessions.cs`,
+  `Progression.cs`; `Hud.uss`, `Screens.uss`.
+- **Tools and tests:** `programme.py` (12b, 12c), `build_doc.py` (one caption), `ExportGameDoc.cs` (one line),
+  `CommanderPassiveTests.cs` (two numbers).
