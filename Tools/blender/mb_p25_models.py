@@ -96,7 +96,25 @@ MBT_TURRET = (0, .3, 1.24)
 
 def main_battle_tank(a, detail=False):
     """Main battle tank (Leopard 2A4 / M1A1 class), 7.7 x 3.0 x 2.2 m: see the module notes."""
+    _battle_tank(a, detail)
+
+
+TWIN_K = 1.15           # the twin-gun tank: the main battle tank's hull 15 % larger all round (the sheet)
+
+
+def twin_tank(a, detail=False):
+    """Twin-gun tank, 9.0 x 3.5 x 2.6 m: the main battle tank's hull and running gear 15 % larger (the sheet: 'larger
+    than the MBT by about 15 %'), under a turret 18 % wider carrying two 120 mm guns side by side behind one broad
+    mantlet, the coaxial gun between them: from above, the two long parallel barrels are the silhouette.
+    `Main_cannon` / `Main_cannon_2` and `Muzzle_brake` / `_2` recoil in turn; `Muzzle_main` sits between the tips."""
+    _battle_tank(a, detail, twin=True)
+    _scale_asset(a, TWIN_K)
+
+
+def _battle_tank(a, detail=False, twin=False):
+    """The main battle tank; twin=True gives the twin-gun tank's wide turret and guns (twin_tank scales it)."""
     hd.mark(a, detail)
+    w = 1.18 if twin else 1
     half = MBT_HULL / 2
     _lean_tracks(a, 1.18, 5.72, .86, .27, 7, .5, sprocket=1)
     hull = a.part('Hull', 'Team')
@@ -131,38 +149,45 @@ def main_battle_tank(a, detail=False):
     # Plan view: arrowhead cheeks either side of the gun, straight sides, a long bustle.
     outline = [(-.3, -1.5), (.3, -1.5), (1.12, -1.02), (1.2, -.85), (1.2, 1.05), (1.08, 1.72), (.92, 1.9),
                (-.92, 1.9), (-1.08, 1.72), (-1.2, 1.05), (-1.2, -.85), (-1.12, -1.02)]
+    if twin:  # wider, and a broad flat front across both guns
+        outline = [(x * w + (.3 * (1 if x > 0 else -1) if abs(x) < .5 else 0), y) for x, y in outline]
     turret.prism(outline, .68, loc=(0, 0, .37), axis='Z', bevel=.05, seg=1, taper=.93)
     tarm = a.part('Turret_armor', 'Armor', t)
-    tarm.box((.66, .34, .46), loc=(0, -1.52, .38), bevel=.04, seg=1, taper=(.92, .9))            # gun mantlet
+    tarm.box((1.36 if twin else .66, .34, .46), loc=(0, -1.52, .38), bevel=.04, seg=1, taper=(.92, .9))   # mantlet
     for s in (-1, 1):                                                                            # cheek add-on plates
-        tarm.box((.62, .1, .44), loc=(s * .72, -1.3, .37), rot=(0, 0, s * .54), bevel=.02, seg=1)
+        tarm.box((.62, .1, .44), loc=(s * .72 * w * (1.2 if twin else 1), -1.3, .37), rot=(0, 0, s * .54), bevel=.02,
+                 seg=1)
     # Bustle stowage box with a rolled tarpaulin, bins on the bustle sides.
-    tarm.box((1.62, .34, .42), loc=(0, 2.05, .36), bevel=.03, seg=1)
-    a.part('Tarp', 'Canvas', t).cyl(.13, 1.3, loc=(0, 2.02, .7), rot=ACROSS, seg=8, bevel=0)
+    tarm.box((1.62 * w, .34, .42), loc=(0, 2.05, .36), bevel=.03, seg=1)
+    a.part('Tarp', 'Canvas', t).cyl(.13, 1.3 * w, loc=(0, 2.02, .7), rot=ACROSS, seg=8, bevel=0)
     for s in (-1, 1):
-        tarm.box((.18, 1.1, .4), loc=(s * 1.3, 1.0, .28), bevel=.03, seg=1)                     # bustle bins
-        mv._smoke(a, a.part('Smoke', 'Steel', t), 1.07, -.5, .58, s, count=3, gap=.08, r=.05, depth=.15)
+        tarm.box((.18, 1.1, .4), loc=(s * (1.36 if twin else 1.3), 1.0, .28), bevel=.03, seg=1)  # bustle bins
+        mv._smoke(a, a.part('Smoke', 'Steel', t), 1.07 * w, -.5, .58, s, count=3, gap=.08, r=.05, depth=.15)
     # The commander's panoramic sight (right rear), the gunner's sight box (right front), the loader's hatch.
     tsteel = a.part('Turret_steel', 'Steel', t)
-    tsteel.cyl(.15, .16, loc=(-.62, .2, .78), seg=12, bevel=.02, bseg=1)
-    tarm.box((.34, .3, .17), loc=(-.62, .2, .92), bevel=.03, seg=1)
+    tsteel.cyl(.15, .16, loc=(-.62 * w, .2, .78), seg=12, bevel=.02, bseg=1)
+    tarm.box((.34, .3, .17), loc=(-.62 * w, .2, .92), bevel=.03, seg=1)
     glass = a.part('Sight', 'Glass', t)
-    glass.box((.24, .03, .1), loc=(-.62, .04, .93), bevel=0)
-    tarm.box((.36, .42, .24), loc=(-.66, -.95, .8), bevel=.03, seg=1)
-    glass.box((.26, .03, .13), loc=(-.66, -1.17, .82), bevel=0)
-    mv._hatch(a, .55, .45, .72, .27, parent=t, seg=10)
-    mv._periscopes(a, [(.55, .08, .72, 0)], parent=t)
+    glass.box((.24, .03, .1), loc=(-.62 * w, .04, .93), bevel=0)
+    tarm.box((.36, .42, .24), loc=(-.66 * w, -.95, .8), bevel=.03, seg=1)
+    glass.box((.26, .03, .13), loc=(-.66 * w, -1.17, .82), bevel=0)
+    mv._hatch(a, .55 * w, .45, .72, .27, parent=t, seg=10)
+    mv._periscopes(a, [(.55 * w, .08, .72, 0)], parent=t)
     # 120 mm smooth-bore gun: 1.8 m past the nose, drawn 15 % thick.
-    gun = a.part('Main_cannon', 'Steel', t)
     y0, length, z = -1.66, 3.26, .38
-    gun.cyl(.085, length, loc=(0, y0 - length / 2, z), rot=(R90, 0, 0), seg=10, bevel=0)
-    gun.cyl(.105, length * .62, loc=(0, y0 - length * .36, z), rot=(R90, 0, 0), seg=12, bevel=0)   # thermal sleeve
-    gun.cyl(.14, .42, loc=(0, y0 - length * .4, z), rot=(R90, 0, 0), seg=12, bevel=.02, bseg=1)    # fume extractor
-    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.11, .16, loc=(0, y0 - length - .06, z), rot=(R90, 0, 0), seg=10,
-                                                   bevel=.012, bseg=1)                           # muzzle collar
+    for x, suffix in (((-.38, ''), (.38, '_2')) if twin else ((0, ''),)):
+        gun = a.part(f'Main_cannon{suffix}', 'Steel', t)
+        gun.cyl(.085, length, loc=(x, y0 - length / 2, z), rot=(R90, 0, 0), seg=10, bevel=0)
+        gun.cyl(.105, length * .62, loc=(x, y0 - length * .36, z), rot=(R90, 0, 0), seg=12, bevel=0)   # thermal sleeve
+        gun.cyl(.14, .42, loc=(x, y0 - length * .4, z), rot=(R90, 0, 0), seg=12, bevel=.02, bseg=1)    # fume extractor
+        a.part(f'Muzzle_brake{suffix}', 'Undercarriage', t).cyl(.11, .16, loc=(x, y0 - length - .06, z),
+                                                                rot=(R90, 0, 0), seg=10, bevel=.012, bseg=1)  # collar
     a.pivot('Muzzle_main', (0, y0 - length - .15, z), t)
-    mv._coax(a, t, .42, -1.46, .5, length=.4, housing=.26)
-    mv._roof_mg(a, t, (.55, .45, .74), length=.8, shield=False)
+    if twin:
+        mv._coax(a, t, 0, -1.6, .56, length=.4, housing=.26)
+    else:
+        mv._coax(a, t, .42, -1.46, .5, length=.4, housing=.26)
+    mv._roof_mg(a, t, (.55 * w, .45, .74), length=.8, shield=False)
     if detail:
         for u in (.08, .92):
             mv._glacis_bolts(a, (-half - .02, .84), (-2.05, 1.18), u, -1.3, 1.3, 11)
@@ -842,6 +867,7 @@ def scout_jeep(a, detail=False):
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
+    'twin_tank': (twin_tank, dict(ao_distance=.6, grime_height=.55)),
     'fighter_jet': (fighter_jet, dict(ao_distance=.35, ground=False)),
     'swarm_carrier': (swarm_carrier, dict(ao_distance=.9, ground=False)),
     'sky_gunship': (sky_gunship, dict(ao_distance=.9, ground=False)),
