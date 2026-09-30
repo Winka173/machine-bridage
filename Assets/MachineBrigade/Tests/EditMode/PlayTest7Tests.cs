@@ -38,8 +38,10 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(def.Card && def.CpCost > 0 && def.Flying && def.FixedWing && def.Orbit, "a card-carrying aeroplane in a pylon turn");
             Assert.AreEqual(UnitClass.Plane, def.Class);
             Assert.AreEqual(GearBranch.Air, Gear.BranchOf(def), "listed with the aircraft");
-            Assert.IsTrue(Progression.IsPremium("sky_gunship"));
-            Assert.AreEqual(4500, Progression.Price("sky_gunship", catalog));
+            // Prompt 25 D2: the balance sheet opens it in chapter 10, 2,500 coins to buy early (it was premium, 4,500).
+            Assert.IsFalse(Progression.IsPremium("sky_gunship"));
+            Assert.AreEqual(10, Progression.UnlockMission("sky_gunship")?.Chapter);
+            Assert.AreEqual(2500, Progression.Price("sky_gunship", catalog));
             Assert.AreEqual("vehicle", CardArt.EntryFor("sky_gunship")?.kind);
             Assert.AreEqual("sky_gunship", CardArt.EntryFor("sky_gunship")?.model);
             var sides = def.Mounts.Where(m => m.Aim == MountAim.Left).Select(m => m.Weapon.Id).ToList();

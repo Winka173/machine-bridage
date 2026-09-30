@@ -10731,6 +10731,181 @@ muzzles on both models. The five failures are all older:
 triangle counts; as always `Tools/art/resolve_merge.py`), the card manifest and the two card PNGs, the three GLBs,
 `Tools/docs/unit_refs.json` (three rows).
 
+## 25D2. Unlocks and economy (2026-09-30)
+
+Prompt 25 E.2 (task D2) and E.3. The sheet "Phương tiện" of `Docs/balance/Machine_Brigade_Can_bang.xlsx` gives each
+vehicle a proposed unlock ("Mở khóa đề xuất": a starter, a chapter, an interlude or story loot) and an early-buy price
+("Mua sớm"). The four new-content sheets give the shop plan of items not built yet. The sheet "Cốt truyện" is the story
+summary that E.3 checks the campaign against. Every row is listed in `Docs/balance/apply-report.md` under "D2".
+
+### How the sheet is applied
+
+- **By script.** `Tools/balance/import_unlocks.py` reads the workbook with openpyxl (`data_only`). It writes:
+  - `Tools/campaign/unlocks_sheet.json`, which `Tools/campaign/act11.py` reads to move the cards;
+  - the `<unlock-sheet>` block of `Progression.cs`: `StarterVehicles`, `FormerStarters`, `SheetLoot` and `EarlyPrices`;
+  - the test data `UnlockSheetData.cs`.
+
+  It then rebuilds `campaign.json` with `build_campaign.py --no-texts`. `--no-texts` is a new flag: it leaves
+  `CampaignText.cs` as it is, because that file is hand-localised and edited key by key. The other new flag, `--dry`,
+  computes without writing anything. `import_unlocks.py snapshot` saved the economy before the change
+  (`Docs/balance/economy_d2_before.json`); the run writes the after state (`economy_d2_after.json`). A second run
+  changes nothing.
+- **Rows.** The sheet has 58 rows: 56 are applied and 2 skipped. The two skipped rows are `hover_gunboat` ("Không mở
+  (hộ tống boss)") and `supply_truck` ("Nhiệm vụ (không vào bộ bài)"). Neither is a card, and both stay that way.
+
+### The route
+
+- **Starters.** A new player starts with the scout jeep, the armoured car, the IFV and the main battle tank (the sheet's
+  "Có sẵn"). The light tank (chapter 1), the AA vehicle and the SP howitzer (chapter 2) are won now. A save that has
+  played keeps them: this is roster version 6 in `PlayerProfile.MigrateRoster`. It counts a save with a mission, a
+  card or a rank; a fresh profile gets nothing.
+- **Premium vehicles.** The five premium vehicles now open in the campaign, each with an early price:
+  - the ballistic launcher in chapter 8;
+  - the strategic bomber in chapter 9;
+  - the stealth bomber and the AC-130 in chapter 10;
+  - the super-heavy tank in chapter 11.
+
+  The napalm strike is no row of the sheet, so it stays the one premium card, at 1,500 coins. A player who bought a
+  premium card keeps it. The merge that turns an old Gunship support purchase into the AC-130 now keeps it bought (in
+  `owned`), since the AC-130 is no longer premium.
+- **Where a card goes** (`act11.py`):
+  1. A card already in the sheet's chapter keeps its mission. Story loot keeps its story beat.
+  2. A card that moves takes a main mission of its new chapter: the first in order of play with the fewest unlocks.
+     Side missions, the options of a story choice and the operation are left out. Cards moving into one chapter are
+     placed in the order they opened before: former starters first, then by their old mission, then the cards that
+     had no mission, by CP.
+  3. Cards the sheet does not cover (supports, towers, modules, tower branches) stay where they are.
+- **Two towers had no source.** `minefield` and `missile_battery` were in no mission, were not starters and were not
+  sold, so a release build never opened them. Prompt 20's route had dropped them, and a card with no unlock source is
+  a data slip. The minefield goes back to chapter 1 (c1m08), where prompt 4 had it. The long-range SAM site goes to
+  chapter 8 (c8m03), next to the long-range SAM vehicle: under the sheet, chapter 3 (prompt 4's choice) already opens
+  eight cards. `siege_tank` and `engineer_vehicle` had lost their missions the same way; the sheet puts them in
+  chapters 7 and 1.
+- **Interludes.** The sheet opens the turtle tank in interlude I (i1m01, "xưởng của Mara") and the shield carrier in
+  interlude II (i2m01). The builder's rule "an interlude opens no card" gives way. It came from prompt 22 pass 1 and is
+  a builder rule, not one of the owner's; an interlude may now open up to two cards. Interlude missions are on the main
+  path, and an interlude switched off goes with its act, so the act switches still hand its cards on.
+- **Cards per chapter.** The builder counts cards without modules and branches: 8, 9, 8, (interlude I: 1), 9, 6, 7,
+  (II: 1), 4, 4, 4, (III: 0), 4, 3, 3. Before, it was 6, 6, 6, 5, 6, 6, 4, 4, 4, 4, 4, 4. The sheet front-loads the
+  roster: acts I and II open 39 of the 52 campaign vehicles. Prompt 20 D.1 asks for a real reward in every chapter,
+  so the builder's rule goes from 4-7 to 3-10, and the two tests that held 4-7 now hold 3-10.
+- **Flying bosses.** The Harpy (c3m05) still meets four anti-air cards: the AA tower, the ZU-23 (c1m06), the AA
+  vehicle (c2m01) and the SAM launcher (c3m01). The builder checks this.
+- **Early prices.** Vehicles take the sheet's price: 300 coins in act I, 800 in act II and interlude I, 1,500 in act III
+  and interlude II, 2,500 in act IV. Before, every card cost 300 + 150 × CP (750 to 2,700). Supports are no rows of the
+  sheet and keep 300 + 150 × CP. Towers and modules are still not sold.
+- **On the screens.** A lock line reads "Unlocks in Interlude I". The shop's Units tab lists story loot as "Story loot:
+  won in its mission, not for sale", with no buy button, and the deck's lock line says the same.
+
+### Story loot
+
+- **The four cards.** The rail gun (c4m10), the drone mothership (c5m10), the bunker vehicle (c6m10) and the wingman
+  drone (c10m10) were already story loot at the sheet's story beats (prompt 22 D.6, `act9.SWAPS`). Each has one line
+  in both languages saying why (`loot.<card>` in StoryText), shown on the mission and when the card is won. The lines
+  match the sheet's reasons (the Tempest's wreck, Venn's defection, Moloch, Roc), so no text changed.
+- **Never sold.** This is new. `Progression.IsStoryLoot` and `CanBuyEarly` guard it, `Price` is 0, and the shop's
+  button refuses it.
+- **The fifth.** Kessler's cruise missiles (c12m02) are story loot in the game but not in the sheet. They follow the
+  same rule, and E.3 lists them for the owner.
+
+### Act switches
+
+Prompt 20's system is unchanged. `Campaign.All` hands the cards of a chapter switched off to the last operation
+switched on before it: c6m10 for acts I-II, c9m10 for acts I-III. An interlude goes with its act. A new test checks
+this.
+
+### Economy (prompts 7 and 20), from the data
+
+`import_unlocks.py` computes the economy from the data, with no sim runs. The model is a campaign-only player who wins
+each mission once with two stars. Per chapter, it sets the coins earned against the early price of the cards the
+chapter opens; the table is in the report.
+
+- **Coins.** The coins earned do not change (coin scale 100, 234,340 coins over the campaign).
+- **Buying everything early.** Buying every card on sale early costs 48,250 coins, 21 % of the campaign's coins. Before,
+  it cost 70,200 (30 %).
+- **Premium.** Premium cards cost 1,500 in all (before: 23,000).
+- **Per chapter.** A chapter's early prices come to at most 0.37 of the coins earned in it (0.43 in interlude II, one
+  card). Before, chapters 1-5 took 0.46 to 0.71.
+- **The rank tune.** The builder's rank tune (prompt 7; prompt 20 D.3) reruns on the new route:
+  - The blueprint scale falls from 0.75 to 0.50, so every mission pays a third fewer blueprints. The coin scale stays
+    at 100.
+  - The main deck is rank 7.00 entering act IV (was 7.14; the target is about 7) and 7.21 at the end (was 8.00).
+  - Acts I-II alone pay ×3.00 (was ×1.84) and end at 7.00; acts I-III pay ×1.00 and end at 7.00.
+
+  The cause: more cards open (all 52 campaign vehicles, where the premium five used to be outside the campaign), and
+  they open earlier, so the crate's blueprints spread over more cards. At the old scale the deck would still be 7.14
+  entering act IV but only 7.57 at the end. The tune weighs act IV three times as heavily as the end, and 0.50 is the
+  bottom of its search. Prompt 20's system wins, so the tune's result stands.
+- **For the owner and the test phase.** Two points: the late game is slower (rank 7.2 at the end), and acts I-II's ×3.00
+  is the top of its search (1.00-3.00), which also triples a short release's coins.
+
+### E.3: the campaign against "Cốt truyện"
+
+The check compares each chapter's title, main and side missions, battlefields, main boss, the mini bosses the sheet
+names, story loot and the commanders the chapter opens (`Commanders.cs` unlock codes). It found no data slip, so no
+data changed.
+
+- **What matches.** Every title, every main boss and every commander matches. So do the story loot of chapters 4, 5, 6
+  and 10 and the mission counts, except chapter 1's 9 main missions (DECISIONS 22A).
+- **Known.** An earlier decision explains these, or the name is not a boss fight:
+  - chapter 7's Inferno and Juggernaut (prompt 22 B.6);
+  - chapter 10's Morrigan (the Hawk-Raven duel);
+  - chapter 11's Locust (prompt 22 C.4);
+  - the sheet's "Behemoth" in interlude I (the blueprints), chapter 6 (the escorted captured Behemoth, c6m03) and
+    chapter 12 (Mara's Behemoth, the ally).
+- **For the owner** (story or structure):
+  - Battlefields the summary does not list: Greenvale in chapter 6 (c6m16, c6m11); Hollow Dam in chapter 8 (c8m05,
+    c8m06, c8m08); Ironport and Stormbeach in chapter 9 (11 missions, the Typhon operation c9m10 among them, on
+    Ironport, where the sheet and prompt 22 say the bay); Whiteout Pass in chapter 10 (c10m13, c10m08); Frostpeak, Rust
+    Yard and Skyhold in chapter 11 (the sheet names only Skygate Array); Beacon Bay in chapter 12 (c12m02, Kessler's
+    Scylla).
+  - A Locust in chapter 12 (c12m05), from prompt 20's boss slots.
+  - The fifth story loot, the cruise missiles, in chapter 12.
+
+### New content: the shop plan
+
+`Docs/backlog/new_content.json` gives each of its 93 items a note with its planned price and source, taken from
+"Mở khóa đề xuất" ("Ra mắt đề xuất" for the bosses). The notes are written through
+`new_content_tracker.set_notes`, and no status changes. Where a sheet gives two prices, the item's slot (small 2,000,
+medium or utility 3,000) or its CP (5 or less 1,500, 6 or more 2,500) picks one. An item in both "Đề xuất thêm" and
+"Công trình mới" has the same price in each and keeps the note that names more sources. The bosses are not sold:
+each is a season's boss or a weekly event.
+
+### Tests (written, not run: the owner's rule of 30/09)
+
+Only the compile was checked (batch mode, `-quit`, no `error CS` in the log).
+
+- **New: `Prompt25UnlockTests`.**
+  - `EveryCardHasExactlyOneUnlockSource` (acts I-II, I-III and all four): a starter, a premium card or one mission.
+  - `EveryVehicleOpensWhereTheSheetSaysAtItsEarlyPrice`.
+  - `StoryLootCannotBeBoughtEarly`: every story loot card is unsold, costs 0, opens with its beat and has its line in
+    both languages; every other campaign card is for sale early.
+  - `ACardOfAnActSwitchedOffOpensInTheNearestChapterOn` (acts I-II and I-III).
+  - `ASaveFromBeforeKeepsTheFormerStarterCards`.
+- **Updated.**
+  - The 3-10 card range: `CampaignTests.TwelveChaptersOfNineToEighteenMissionsAndThreeInterludes` and
+    `Prompt22NarrativeTests.TheStoryHandsOutItsCardsWithAReason`.
+  - `PlayTest7Tests.TheAc130IsAnAircraftCardInTheAircraftList`: chapter 10, 2,500 coins, not premium.
+- **Should pass now.** `PlayTest5Tests`' "siege tank won in the campaign" could not pass before, because the siege tank had
+  no mission.
+- **To run in the test phase.**
+  - `CampaignTests.NoMissionNeedsALockedCard`.
+  - `Prompt20CampaignTests.ActSwitchesKeepTheCampaignWhole`.
+  - `Prompt22NarrativeTests.NoCardOrUnitIsEverTakenAway`.
+  - `RosterMergeTests` and `Prompt17RosterTests` (the roster migration).
+  - The 5-seed campaign at Normal: chapters 1-2 are now played with four starter vehicles, and the blueprint scale is
+    lower.
+
+### Shared edits (merge by hand if they conflict)
+
+- Data: `campaign.json` (every mission's blueprints and the unlocks), `Docs/backlog/new_content.json` (notes),
+  `Docs/balance/apply-report.md` (the D2 block).
+- Scripts: `Tools/campaign/build_campaign.py` (`STARTERS`, the count rules, the two flags),
+  `Tools/balance/new_content_tracker.py` (`set_notes`).
+- Game code: `Progression.cs`, `PlayerProfile.Arsenal.cs` (roster version 6), `MenuScreen.Shop.cs`, `MenuScreen.cs`,
+  `Strings.cs` (4 keys).
+- Tests: `CampaignTests.cs`, `Prompt22NarrativeTests.cs`, `PlayTest7Tests.cs`.
+
 ## 25D1. Names from the spreadsheet (2026-09-30)
 
 Prompt 25 E.1 (task D1): the sheet "Tên đề xuất" of `Docs/balance/Machine_Brigade_Can_bang.xlsx` gives each unit a full

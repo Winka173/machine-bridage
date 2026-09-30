@@ -7,6 +7,24 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
+
+- Every vehicle opens where the spreadsheet's "Phương tiện" sheet says, and costs the sheet's price to unlock early:
+  300 coins in act I, 800 in act II, 1,500 in act III, 2,500 in act IV (was 300 + 150 per CP). A new player starts
+  with the scout jeep, armoured car, IFV and main battle tank. The light tank, AA vehicle and SP howitzer are won in
+  chapters 1 and 2 now, and a save that has already played keeps them.
+- The super-heavy tank, both bombers, the ballistic launcher and the AC-130 are no longer premium: they open in
+  chapters 8 to 11. The turtle tank and the shield carrier open in interludes I and II. The minefield and the
+  long-range SAM site, which nothing unlocked, open in chapters 1 and 8.
+- Story loot (the railgun truck, the drone mothership, the bunker vehicle, the wingman drone and Kessler's cruise
+  missiles) is never sold. The shop marks it as won in its mission.
+- The economy was recomputed from the data (`Docs/balance/apply-report.md`, section D2). Buying every card early now
+  costs 48,250 coins, 21 % of what the campaign pays (was 70,200). The campaign's blueprint pay dropped by a third, and
+  the main deck is rank 7 as act IV begins.
+- Each new item planned in the spreadsheet (93) has its shop price and source in `Docs/backlog/new_content.json`.
+- The campaign was checked against the spreadsheet's story sheet. It found no data slip, and the differences are listed
+  for the owner.
+
 ### Names from the balance spreadsheet (prompt 25 D1, DECISIONS 25D1)
 
 - 63 units take the full name, short name and English name of the spreadsheet's "Tên đề xuất" sheet: for example

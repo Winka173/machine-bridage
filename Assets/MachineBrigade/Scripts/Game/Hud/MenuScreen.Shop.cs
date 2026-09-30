@@ -36,8 +36,6 @@ namespace MachineBrigade.Game.Hud
         /// <summary>A skin is being tried on (null: back to the equipped one).</summary>
         public event Action<string> SkinPreviewed;
 
-        private static readonly string[] PremiumCards = { "titan_tank", "heavy_bomber", "stealth_bomber", "ballistic_launcher", "napalm_strike", "sky_gunship" };
-
         private void BuildShopPage()
         {
             var page = TabPage(Tab.Shop, "fc-page--opaque fc-shop");
@@ -100,7 +98,8 @@ namespace MachineBrigade.Game.Hud
                     foreach (var skin in Skins.All) _shopGrid.Add(SkinTile(skin));
                     break;
                 case ShopTab.Units:
-                    foreach (var id in PremiumCards) _shopGrid.Add(UnitTile(id, premium: true));
+                    foreach (var id in Progression.PremiumCards) _shopGrid.Add(UnitTile(id, premium: true));
+                    // Prompt 25 D2: every campaign card, the story loot among them, shown as the story's (never sold).
                     foreach (var id in MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports))
                         if (Progression.Route(id) == CardRoute.Campaign) _shopGrid.Add(UnitTile(id, premium: false));
                     break;
@@ -390,9 +389,9 @@ namespace MachineBrigade.Game.Hud
                     if (available) SelectShop(id);
                     else Note(Strings.Format("shop.soon", Strings.Card(id)), true);
                 }, id == _shopSelected);
-            tile.Q(className: "fc-shop__body").Add(available
-                ? PriceLine(Progression.Price(id, _catalog), PlayerProfile.IsUnlocked(id) ? Strings.Get("shop.owned") : null)
-                : Kit.Small(Strings.Get("shop.comingSoon")));
+            tile.Q(className: "fc-shop__body").Add(!available ? Kit.Small(Strings.Get("shop.comingSoon"))
+                : !premium && Progression.IsStoryLoot(id) && !PlayerProfile.IsUnlocked(id) ? Kit.Small(Strings.Get("shop.storyLoot"))
+                : PriceLine(Progression.Price(id, _catalog), PlayerProfile.IsUnlocked(id) ? Strings.Get("shop.owned") : null));
             return tile;
         }
 
@@ -437,6 +436,7 @@ namespace MachineBrigade.Game.Hud
                     if (!IsSkinTab) action.Disable(Strings.Get("shop.ownedShort"));
                     else if (equipped) action.Disable(Strings.Get("shop.equipped"));
                 }
+                else if (!IsItemTab && !IsSkinTab && Progression.IsStoryLoot(_shopSelected)) action.Disable(Strings.Get("shop.storyLootShort"));
                 else if (PlayerProfile.Coins < price) action.Disable(Strings.Format("kit.sample.coinsShort", Kit.Count(price - PlayerProfile.Coins)));
                 else action.Label = IsItemTab ? Strings.Format("shop.buyItems", ("count", Progression.ItemPack), ("price", Kit.Count(price))) : Strings.Format("shop.buy", Kit.Count(price));
             }
@@ -457,6 +457,11 @@ namespace MachineBrigade.Game.Hud
             if (Owned(id))
             {
                 if (IsSkinTab) PlayerProfile.Equip(id);
+            }
+            else if (!IsSkinTab && Progression.IsStoryLoot(id))
+            {
+                // Prompt 25 D2: story loot is won with its story beat, never bought.
+                Note(Strings.Get("shop.storyLoot"), true);
             }
             else if (PlayerProfile.TryBuy(id, PriceOf(id)))
             {

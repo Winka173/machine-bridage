@@ -48,7 +48,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop (a medium slot), or a side-mission reward."
     },
     {
       "key": "dx02",
@@ -62,7 +62,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx03",
@@ -76,7 +76,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx04",
@@ -90,7 +90,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx05",
@@ -104,7 +104,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx06",
@@ -119,7 +119,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx07",
@@ -133,7 +133,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx08",
@@ -147,7 +147,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx09",
@@ -161,7 +161,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx10",
@@ -175,7 +175,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx11",
@@ -189,7 +189,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx12",
@@ -203,7 +203,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx13",
@@ -217,7 +217,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx14",
@@ -231,7 +231,7 @@
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
       "key": "dx15",
@@ -245,7 +245,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx16",
@@ -259,7 +259,7 @@
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
       "key": "dx17",
@@ -273,7 +273,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx18",
@@ -287,7 +287,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx19",
@@ -301,7 +301,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx20",
@@ -315,7 +315,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx21",
@@ -329,7 +329,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx22",
@@ -343,7 +343,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx23",
@@ -357,7 +357,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx24",
@@ -371,7 +371,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx25",
@@ -386,7 +386,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx26",
@@ -401,7 +401,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx27",
@@ -416,7 +416,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop (a utility slot), or a side-mission reward."
     },
     {
       "key": "dx28",
@@ -431,7 +431,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx29",
@@ -446,7 +446,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx30",
@@ -461,7 +461,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop (a utility slot), or a side-mission reward."
     },
     {
       "key": "dx31",
@@ -476,7 +476,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx32",
@@ -490,7 +490,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx33",
@@ -504,7 +504,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx34",
@@ -518,7 +518,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx35",
@@ -532,7 +532,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx36",
@@ -546,7 +546,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx37",
@@ -560,7 +560,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx38",
@@ -574,7 +574,7 @@
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
       "key": "dx39",
@@ -588,7 +588,7 @@
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
       "key": "dx40",
@@ -602,7 +602,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx41",
@@ -616,7 +616,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx42",
@@ -630,7 +630,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx43",
@@ -644,7 +644,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx44",
@@ -658,7 +658,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx45",
@@ -673,7 +673,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx46",
@@ -687,7 +687,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop (a medium slot), or a side-mission reward."
     },
     {
       "key": "dx47",
@@ -701,7 +701,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx48",
@@ -715,7 +715,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx49",
@@ -729,7 +729,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx50",
@@ -743,7 +743,7 @@
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
       "key": "dx51",
@@ -757,7 +757,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx52",
@@ -771,7 +771,7 @@
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
       "key": "dx53",
@@ -785,7 +785,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx54",
@@ -799,7 +799,7 @@
       "unlock": "Cửa hàng: 1.500 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
       "key": "dx55",
@@ -813,7 +813,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
       "key": "dx56",
@@ -827,7 +827,7 @@
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop (a medium slot), or a side-mission reward."
     },
     {
       "key": "ct11",
@@ -841,7 +841,7 @@
       "unlock": "Cửa hàng: 3.000 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop."
     },
     {
       "key": "ct12",
@@ -855,7 +855,7 @@
       "unlock": "Cửa hàng: 2.000 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,000 coins in the shop."
     },
     {
       "key": "ct13",
@@ -869,7 +869,7 @@
       "unlock": "Cửa hàng: 3.000 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop."
     },
     {
       "key": "ct14",
@@ -883,7 +883,7 @@
       "unlock": "Cửa hàng: 3.000 xu",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 3,000 coins in the shop."
     },
     {
       "key": "tl01",
@@ -897,7 +897,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl02",
@@ -911,7 +911,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl03",
@@ -925,7 +925,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl04",
@@ -939,7 +939,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl05",
@@ -953,7 +953,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl06",
@@ -967,7 +967,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl07",
@@ -981,7 +981,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl08",
@@ -995,7 +995,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl09",
@@ -1009,7 +1009,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl10",
@@ -1023,7 +1023,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl11",
@@ -1037,7 +1037,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl12",
@@ -1051,7 +1051,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl13",
@@ -1065,7 +1065,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "tl14",
@@ -1079,7 +1079,7 @@
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
       "key": "ht01",
@@ -1093,7 +1093,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,500 coins in the shop (8 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
       "key": "ht02",
@@ -1107,7 +1107,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (4 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "ht03",
@@ -1121,7 +1121,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,500 coins in the shop (9 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
       "key": "ht04",
@@ -1135,7 +1135,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
       "key": "ht05",
@@ -1149,7 +1149,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "ht06",
@@ -1163,7 +1163,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (5 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "ht07",
@@ -1177,7 +1177,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (1 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "ht08",
@@ -1191,7 +1191,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (2 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "ht09",
@@ -1205,7 +1205,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
       "key": "ht10",
@@ -1219,7 +1219,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "ht11",
@@ -1233,7 +1233,7 @@
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: 1,500 coins in the shop (2 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
       "key": "bs01",
@@ -1247,7 +1247,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs02",
@@ -1261,7 +1261,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs03",
@@ -1275,7 +1275,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs04",
@@ -1289,7 +1289,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs05",
@@ -1303,7 +1303,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs06",
@@ -1317,7 +1317,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs07",
@@ -1331,7 +1331,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
       "key": "bs08",
@@ -1345,7 +1345,7 @@
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
       "status": "chưa làm",
       "id": null,
-      "notes": ""
+      "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     }
   ]
 }
