@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 58,
+    "chưa làm": 57,
     "đang làm": 0,
-    "xong": 35
+    "xong": 36
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 6,
+      "chưa làm": 5,
       "đang làm": 0,
-      "xong": 8
+      "xong": 9
     },
     "support": {
       "chưa làm": 11,
@@ -951,9 +951,9 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "anti_radar_missile",
+      "notes": "Batch C: weapon anti_radar_missile (agm_88_harm family), a secondary on interceptor_jet (the sheet's \"Fighter equipment, SEAD card\" — the existing sead_strike support already covers the SEAD-strike concept, so this is the vehicle side). x2 against AntiAir-class targets via the existing bonuses mechanic (approximates \"only useful against active radar/AD\"); the sheet's \"disables 8 s\" debuff was not added (documented simplification)."
     },
     {
       "key": "tl06",
