@@ -105,8 +105,32 @@ namespace MachineBrigade.Game.Match
             ["napalm_strike"] = 1500,
         };
 
-        /// <summary>The premium cards, in the shop's order.</summary>
-        public static IEnumerable<string> PremiumCards => PremiumPrices.Keys;
+        /// <summary>
+        /// Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures ("Đề xuất thêm", "Công trình
+        /// mới"), sold in the shop at the price D2 planned (Docs/backlog/new_content.json). Their one unlock source is the shop
+        /// (the sheet's "or a side-mission / event / season reward" is left for when those rewards exist). Unlike the premium
+        /// cards, the enemy may field them (<see cref="EnemyMayUse"/>).
+        /// </summary>
+        private static readonly Dictionary<string, int> NewContentPrices = new()
+        {
+            // (batch A: new entries above)
+        };
+
+        /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>
+        public static IEnumerable<string> PremiumCards
+        {
+            get
+            {
+                foreach (var id in PremiumPrices.Keys) yield return id;
+                foreach (var id in NewContentPrices.Keys) yield return id;
+            }
+        }
+
+        /// <summary>Prompt 25 F2 batch A: the new content the shop sells (a premium card the enemy may field too).</summary>
+        public static bool IsNewContent(string id) => NewContentPrices.ContainsKey(id);
+
+        /// <summary>A card the enemy may draw into its deck: anything but a coins-only premium card (the new content may be drawn).</summary>
+        public static bool EnemyMayUse(string id) => !IsPremium(id) || IsNewContent(id);
 
         /// <summary>Single-use items for sale: price for a pack of <see cref="ItemPack"/>.</summary>
         private static readonly Dictionary<string, int> ItemPrices = new()
@@ -134,7 +158,7 @@ namespace MachineBrigade.Game.Match
             System.Array.IndexOf(StarterVehicles, id) >= 0 || System.Array.IndexOf(StarterSupports, id) >= 0 ||
             System.Array.IndexOf(StarterTowers, id) >= 0;
 
-        public static bool IsPremium(string id) => PremiumPrices.ContainsKey(id);
+        public static bool IsPremium(string id) => PremiumPrices.ContainsKey(id) || NewContentPrices.ContainsKey(id);
 
         public static CardRoute Route(string id) => IsStarter(id) ? CardRoute.Starter : IsPremium(id) ? CardRoute.Premium : CardRoute.Campaign;
 
@@ -155,6 +179,7 @@ namespace MachineBrigade.Game.Match
         public static int Price(string id, Catalog catalog)
         {
             if (PremiumPrices.TryGetValue(id, out var premium)) return premium;
+            if (NewContentPrices.TryGetValue(id, out var shop)) return shop;
             if (IsStoryLoot(id)) return 0;
             if (EarlyPrices.TryGetValue(id, out var early)) return early;
             var cp = catalog.Vehicles.TryGetValue(id, out var v) ? v.CpCost : catalog.TryGetSupport(id, out var s) ? s.CpCost : 5;

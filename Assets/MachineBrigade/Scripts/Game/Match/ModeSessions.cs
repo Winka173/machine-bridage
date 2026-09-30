@@ -216,7 +216,8 @@ namespace MachineBrigade.Game.Match
         {
             var pool = new List<string>();
             foreach (var id in MatchSettings.AllVehicles)
-                if (catalog.Vehicles.ContainsKey(id) && !Progression.IsPremium(id) &&
+                // Prompt 25 F2 batch A: the shop's new content is the enemy's too (only coins-only premium cards are not).
+                if (catalog.Vehicles.ContainsKey(id) && Progression.EnemyMayUse(id) &&
                     (difficulty >= AiDifficulty.Hard || PlayerProfile.IsUnlocked(id))) pool.Add(id);
             var vehicles = ConquestAi.PickDeck(catalog, pool, difficulty, seed, difficulty == AiDifficulty.VeryHard ? MatchSettings.DeckVehicles : null);
             var supports = new List<string>();

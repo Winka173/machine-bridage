@@ -2467,6 +2467,13 @@ namespace MachineBrigade.Game.Hud
             ["note.swarm_carrier"] = ("A drone mothership: a big, slow aircraft that flies a swarm of FPV drones out to anywhere and releases them one after another over the target, each finding its own, and drops two guided bombs from the same bay. The drones are not aircraft.", "Máy bay mẹ thả drone: máy bay to, chậm, chở bầy drone FPV tới bất cứ đâu rồi thả lần lượt xuống vùng mục tiêu, mỗi chiếc tự tìm mục tiêu, và thả thêm hai bom dẫn đường từ cùng khoang. Drone không tính là máy bay."),
             ["note.shield_tower"] = ("A shield generator: its dome takes every hit but energy for the towers and units of its side inside until it breaks, and is back 30 s after its last hit.", "Máy phát khiên: vòm khiên hấp thụ mọi đòn trừ năng lượng cho tháp và quân phe mình bên trong cho tới khi vỡ, hồi lại 30 giây sau đòn cuối."),
             ["note.cp_relay"] = ("A CP relay: its side earns more CP (a second relay less, never more than two). It pays nothing for a few seconds after it is hit, and cannot go on an outpost.", "Trạm tiếp tế CP: phe sở hữu kiếm thêm CP (trạm thứ hai ít hơn, tối đa hai trạm). Bị bắn thì ngừng trả vài giây, và không đặt được ở tiền đồn."),
+
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures ("Đề xuất thêm", "Công trình
+            // mới"): names, short names (15 letters at most) and reference lines with the real model; their Guide cards are in GuideText.
+            ["target.paradrop"] = ("Tap ground your side can see to drop {unit} (tap the card again to send it to the drop zone)",
+                "Chạm vào vùng phe ta nhìn thấy để thả dù {unit} (chạm thẻ lần nữa để đưa về bãi thả)"),
+            ["err.DropNotSeen"] = ("Drop only where your side can see, and never into an enemy base", "Chỉ thả dù nơi phe ta nhìn thấy, không thả vào căn cứ địch"),
+            // (batch A: new entries above)
         };
 
         /// <summary>The device's language picks the default (prompt 21 I.1): Vietnamese on a Vietnamese device, English elsewhere.</summary>

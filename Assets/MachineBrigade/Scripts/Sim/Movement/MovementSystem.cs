@@ -95,6 +95,8 @@ namespace MachineBrigade.Sim.Movement
                     v.Speed = 0f;
                     continue;
                 }
+                // Prompt 25 F2 batch A: a reconnaissance jet flies its one straight pass (and leaves the battle at the far edge).
+                if (v.Flying && _world.Works.FlyPass(v, dt)) continue;
                 v.RepathTimer -= dt;
                 if (!v.Flying) TrackTraffic(v);
                 // Out of stores (prompt 13 C): the aircraft flies to its holding pattern and circles there,
@@ -110,6 +112,8 @@ namespace MachineBrigade.Sim.Movement
                 // Prompt 17 C: a bunker vehicle digging in, dug in or packing up stays put.
                 if (DeployHeld(v)) continue;
                 Drive(v, dt);
+                // Prompt 25 F2 batch A: helicopters keep out of an enemy barrage balloon's ground.
+                if (v.Flying && !v.Def.FixedWing) _world.Works.KeepOffBalloons(v, dt);
                 // The safety net for what the traffic rules leave stuck (MovementSystem.Rescue).
                 WatchRescue(v);
             }
@@ -901,6 +905,8 @@ namespace MachineBrigade.Sim.Movement
                 var distance = toTarget.Length();
                 var ahead = Vector2.Dot(SimMath.Forward(v.Heading), toTarget);
                 var mover = FastMover(v, target);
+                // Prompt 25 F2 batch A: a stand-off bomber turns away before it is over its target.
+                if (def.GlideRelease) GlideAway(v, target, range, distance);
                 // Play-test 5 (DECISIONS 20W): a jet whose cannon reaches aircraft gets on an enemy jet's tail: in its rear
                 // cone it keeps the nose on it (the cannon streams), else it flies for a point behind it (lag pursuit).
                 var tail = mover != null && TailGun(v, flying: true) >= 0 ? mover : null;

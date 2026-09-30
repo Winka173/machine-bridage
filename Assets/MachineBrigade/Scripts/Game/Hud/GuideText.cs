@@ -1259,6 +1259,8 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: không có súng; [[+0,1 CP mỗi giây]] cho phe mình, trạm thứ hai +0,06, trạm thứ ba không thêm gì; bị bắn thì ngừng trả 5 giây.\n" +
                 "Mạnh / yếu: thêm CP cho căn cứ yên ổn; chiếm một ô phòng thủ nhỏ, và quân địch tấn công căn cứ sẽ nhắm nó trước.\n" +
                 "Mẹo: tối đa hai trạm mỗi căn cứ, không đặt ở tiền đồn; cân nhắc với tòa tháp mà nó thay chỗ."),
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures.
+            // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
                 "[[Deepcut Mine]] · desert battlefield · a pit in three rings\n" +

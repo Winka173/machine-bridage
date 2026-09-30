@@ -211,6 +211,36 @@ namespace MachineBrigade.Game.Hud
             if (def.AirCapFree) lines.Add(F("ul.airCapFree", def.MaxPerSide));
             if (def.Sead) lines.Add(Strings.Get("ul.sead"));
             if (def.Relay is { } relay) lines.Add(F("ul.relay", ("cp", N(relay.Income)), ("cpSecond", N(relay.Second)), ("seconds", N(relay.Quiet))));
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new units' and structures' mechanisms.
+            if (def.BlastWall is { } wall) lines.Add(F("ul.blastWall", ("metres", N(wall.Radius)), ("percent", N(wall.Cut * 100f))));
+            if (def.Decoy != null) lines.Add(Strings.Get("ul.decoy"));
+            if (def.FireControl is { } fc) lines.Add(F("ul.fireControl", ("metres", N(fc.Radius)), ("percent", N(fc.Damage * 100f))));
+            if (def.Searchlight is { } light) lines.Add(F("ul.searchlight", ("metres", N(light.Radius)), ("percent", N(light.Dazzle * 100f))));
+            if (def.Balloon is { } balloon) lines.Add(F("ul.balloon", ("metres", N(balloon.Radius)), ("percent", N(balloon.Scatter * 100f))));
+            if (def.SightJammer is { } screen) lines.Add(F("ul.sightJammer", ("metres", N(screen.Radius)), ("close", N(screen.Close))));
+            if (def.Shelter is { } shelter) lines.Add(F("ul.shelter", ("metres", N(shelter.Radius)), ("percent", N(shelter.Cut * 100f))));
+            if (def.Flares is { } flares) lines.Add(F("ul.flares", ("seconds", N(flares.Every)), ("metres", N(flares.Radius)), ("range", N(flares.Range))));
+            if (def.Microwave is { } mw) lines.Add(F("ul.microwave", ("metres", N(mw.Range)), ("degrees", N(mw.Arc * 360f / MathF.PI)), ("seconds", N(mw.Cooldown))));
+            if (def.DroneHunt is { } hunt) lines.Add(F("ul.droneHunt", N(hunt.Reach)));
+            if (def.Paradrop is { } drop) lines.Add(F("ul.paradrop", N(drop.Fall)));
+            if (def.ReconPass is { } pass) lines.Add(F("ul.reconPass", ("metres", N(pass.Width)), ("seconds", N(pass.Seconds))));
+            if (def.TurretArc > 0f) lines.Add(F("ul.turretArc", N(def.TurretArc * 360f / MathF.PI)));
+            if (def.SmokeSight) lines.Add(Strings.Get("ul.smokeSight"));
+            if (def.StillVision > 0f) lines.Add(F("ul.stillVision", ("metres", N(def.StillVision)), ("seconds", N(def.StillAfter))));
+            if (def.GlideRelease) lines.Add(Strings.Get("ul.glideRelease"));
+            if (def.FlightTier == AltitudeTier.High) lines.Add(Strings.Get("ul.flightHigh"));
+            foreach (var (arm, _) in Armed(def))
+            {
+                if (arm.GroundRange > 0f) lines.Add(F("ul.groundRange", ("air", N(arm.Range)), ("ground", N(arm.GroundRange))));
+                if (arm.GroupPriority) lines.Add(Strings.Get("ul.groupPriority"));
+                if (arm.BigGame) lines.Add(Strings.Get("ul.bigGame"));
+                if (arm.JamProof) lines.Add(Strings.Get("ul.jamProof"));
+                if (arm.OneAtATime) lines.Add(Strings.Get("ul.oneAtATime"));
+                if (arm.Mrsi) lines.Add(F("ul.mrsi", arm.Burst));
+                if (arm.Glides) lines.Add(Strings.Get("ul.glides"));
+                if (arm.Lofted) lines.Add(Strings.Get("ul.lofted"));
+                if (arm.Prey != Prey.Any) lines.Add(Strings.Get("ul.prey." + arm.Prey));
+            }
             return lines;
         }
 

@@ -133,6 +133,8 @@ namespace MachineBrigade.Sim.Combat
                     Operate(v, i, secondary, dt);
                 }
             }
+            // Prompt 25 F2 batch A: the microwave's pulses and the interceptor drones' hunt.
+            StepDroneKillers();
             UpdateProjectiles(dt);
         }
 
@@ -360,6 +362,8 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
             // Prompt 17 C: shield domes (the generator first), enemy CP relays, a stealth fighter's air-defence hunt.
             score *= NewContentWorth(v, other, weapon);
+            // Prompt 25 F2 batch A: groups and big aircraft, prey, a towed gun's arc, decoys, linked towers.
+            score *= P25Worth(v, other, weapon);
             score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }
@@ -480,6 +484,9 @@ namespace MachineBrigade.Sim.Combat
                 return false;
             var distance = Vector2.Distance(v.Position, target.Position);
             var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
+            // Prompt 25 F2 batch A: a heavy flak gun lowered at the ground reaches less far; a long-range missile has a minimum reach.
+            if (weapon.GroundRange > 0f && !IsFlying(target)) reach *= weapon.GroundRange / weapon.Range;
+            if (weapon.MinReach > 0f && distance - target.Radius < weapon.MinReach) return false;
             // Play-test 8 A: a free-falling bomb reaches as far ahead as the middle of its stick falls.
             if (FreeFall(v, weapon)) reach = MathF.Max(reach, BombReach(v, weapon));
             // Radar-absorbent coating: a missile must come closer to lock on.
@@ -699,6 +706,8 @@ namespace MachineBrigade.Sim.Combat
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;
+            // Prompt 25 F2 batch A: one fibre-optic drone in the air at a time.
+            if (v.Arms[index].OneAtATime && InFlightFrom(v, index)) return false;
             var desired = SimMath.HeadingOf(target.Position - v.Position);
             if (IsSide(mount) && !InArc(v, index, target.Position)) return false;
             if (freeFall) return StickStraddles(v, index, target);
@@ -813,6 +822,8 @@ namespace MachineBrigade.Sim.Combat
                 // Prompt 20 I.7: an Argus directing its side's fire (its radar standing).
                 spread *= _world.Bosses.SpotAuraFor(shooter.Team);
             }
+            // Prompt 25 F2 batch A: dazzled by an enemy searchlight in the dark; bombs over an enemy barrage balloon.
+            if (!weapon.Guided && spread > 0f) spread *= _world.Works.SpreadFactor(shooter, weapon, aimAt);
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
@@ -832,8 +843,13 @@ namespace MachineBrigade.Sim.Combat
             if (freeFall) travel = BombFall(shooter);
             else if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
+            // Prompt 25 F2 batch A: a glide bomb flies at its own speed; a simultaneous-impact salvo lands together.
+            if (weapon.Glides) travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
+            travel = MrsiTravel(shooter, index, pull, travel);
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
+            // Prompt 25 F2 batch A: a tower linked by a fire-control centre.
+            damageScale *= shooter.LinkDamage;
             // Prompt 25 C1: a boss's own weapon damage (the sheet's target damage a second against armour 3), on the ground only:
             // its anti-air keeps its numbers.
             if (!targetFlying) damageScale *= shooter.Def.WeaponDamage;
@@ -857,7 +873,7 @@ namespace MachineBrigade.Sim.Combat
             var fail = index < shooter.MountFail.Length ? shooter.MountFail[index] : 0f;
             if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
             // Prompt 22 F: Dr. Venn's drones shrug off part of the jamming.
-            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)) && !_world.ShrugsJam(shooter, weapon))
+            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)) && !_world.ShrugsJam(shooter, weapon) && !weapon.JamProof)
                 projectile.Jammed = true;
             if (weapon.Guided)
             {

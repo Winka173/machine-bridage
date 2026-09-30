@@ -177,6 +177,8 @@ namespace MachineBrigade.Sim.Content
                 if (w.Has("form")) def.Form = w.Enum<WeaponForm>("form");
                 ParseWeaponP17(w, def);
                 ParseWeaponP19(w, def);
+                // Prompt 25 F2 batch A: the new weapons' mechanisms.
+                ParseWeaponP25A(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))
