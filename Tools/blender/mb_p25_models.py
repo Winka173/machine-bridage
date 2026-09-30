@@ -1120,6 +1120,55 @@ def lancet_truck(a):
     a.pivot('Muzzle_main', tuple(front + along * .08), t)
 
 
+# ----------------------------------------------------------------------------- command vehicle (Stryker CV)
+def command_vehicle(a):
+    """Command vehicle (Stryker CV / BTR-80 KShM class), 5.6 x 2.2 x 2.1 m: a tall 8x8 hull (the axles paired front
+    and rear), a sloped glacis, add-on side armour, a remote machine-gun station (`Mount_mg`, `Muzzle_mg`), and the
+    command fit that makes it read from above: six antenna bases in a ring (stubs 0.1 m thick with the side's lamp
+    on top, no whips that would shimmer), the telescopic mast lying folded along the roof on its cradles with its
+    sensor head, a satellite dish, and the command tent rolled on the rear deck over the ramp."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    hull.prism([(-2.4, .42), (-2.78, .62), (-2.72, .95), (-2.05, 1.5), (2.62, 1.55), (2.8, 1.42), (2.8, .5),
+                (2.45, .42)], 1.86, bevel=.05, seg=1)
+    dark.box((1.4, 4.8, .2), loc=(0, 0, .42), bevel=0)
+    tyres = a.part('Tyres', 'Rubber')
+    for s in (-1, 1):
+        for y in (-1.95, -1.05, .75, 1.65):
+            tyres.cyl(.42, .32, loc=(s * .86, y, .42), rot=ACROSS, seg=12, bevel=.04, bseg=1)
+            a.part('Wheels', 'Armor').cyl(.24, .34, loc=(s * .86, y, .42), rot=ACROSS, seg=8, bevel=0)
+            steel.cyl(.09, .36, loc=(s * .86, y, .42), rot=ACROSS, seg=6, bevel=0)
+        armor.box((.08, 4.4, .5), loc=(s * .98, .1, 1.1), bevel=.02, seg=1)                         # side armour
+        mv._headlight(a, s * .62, -2.74, .95, guard=False)
+        mv._taillight(a, s * .7, 2.8, 1.0)
+    mv._hatch(a, -.45, -1.65, 1.5, .22, handle=False)                                              # driver
+    mv._periscopes(a, [(-.45 + dx, -1.95, 1.48, 0) for dx in (-.14, .14)])
+    armor.box((1.1, .06, 1.0), loc=(0, 2.83, .95), bevel=.02, seg=1)                               # rear ramp
+    mv._exhaust(a, -.7, 2.8, .7, .3, .18)
+    # Command fit on the roof.
+    for k, (x, y) in enumerate(((.8, .2), (-.8, .2), (.8, 1.1), (-.8, 1.1), (.72, 2.1), (-.72, 2.1))):
+        steel.cyl(.08, .12, loc=(x, y, 1.61), seg=8, bevel=0)                                      # antenna base
+        steel.cyl(.05, .4, loc=(x, y, 1.87), seg=6, bevel=0)                                       # stub
+        a.part('Beacons', 'TeamGlow').box((.1, .1, .08), loc=(x, y, 2.1), bevel=0)
+    mast = a.part('Mast', 'Armor')
+    for y in (.35, 1.95):
+        mast.box((.3, .14, .22), loc=(-.2, y, 1.66), bevel=0)                                      # cradles
+    steel.box((.2, 2.5, .2), loc=(-.2, 1.1, 1.84), bevel=.02, seg=1)                               # folded mast
+    mast.box((.4, .34, .3), loc=(-.2, -.3, 1.86), bevel=.03, seg=1)                                # sensor head
+    a.part('Sensor', 'Glass').box((.3, .03, .16), loc=(-.2, -.48, 1.88), bevel=0)
+    a.part('Dish', 'Medical').sphere((.36, .36, .14), loc=(.3, 1.55, 1.72), seg=12, rings=6, cut=0)
+    steel.cyl(.06, .14, loc=(.3, 1.55, 1.62), seg=6, bevel=0)
+    a.part('Tent', 'Canvas').cyl(.22, 1.6, loc=(0, 2.45, 1.78), rot=ACROSS, seg=10, bevel=.03, bseg=1)
+    for x in (-.6, .6):
+        a.part('Straps', 'Undercarriage').cyl(.235, .06, loc=(x, 2.45, 1.78), rot=ACROSS, seg=10, bevel=0)
+    mv._roof_mg(a, None, (.5, -1.4, 1.52), length=.75)
+    a.pivot('Point_exhaust', (-.7, 2.85, .7))
+    a.pivot('Point_fire', (0, .8, 1.6))
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
@@ -1134,4 +1183,5 @@ BUILDERS = {
     'armored_car': (armored_car, dict(ao_distance=.5, grime_height=.45)),
     'fpv_carrier': (fpv_carrier, dict(ao_distance=.5, grime_height=.5)),
     'lancet_truck': (lancet_truck, dict(ao_distance=.5, grime_height=.5)),
+    'command_vehicle': (command_vehicle, dict(ao_distance=.5, grime_height=.5)),
 }
