@@ -109,11 +109,11 @@
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
-    "triangles": 7350
+    "triangles": 3482
   },
   "attack_helicopter_hd": {
     "file": "attack_helicopter_hd.glb",
-    "triangles": 13610
+    "triangles": 5694
   },
   "attack_jet": {
     "file": "attack_jet.glb",

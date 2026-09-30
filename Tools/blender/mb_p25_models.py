@@ -485,10 +485,118 @@ def sky_gunship(a, detail=False):
                     hd.bolt(guns, (face, yc + sy * dy, zc + sz * dz), hd.RIGHT_X, r=.016, h=.024)
 
 
+# ----------------------------------------------------------------------------- attack helicopter (Apache)
+def attack_helicopter(a, detail=False):
+    """Attack helicopter (AH-64D Apache Longbow class), 6.0 m fuselage under a 6.0 m four-blade rotor, 1.9 m to the
+    top of the mast radar: a narrow fuselage with the avionics bays along its cheeks, the stepped tandem canopy
+    (gunner low in front, pilot raised behind), the TADS/PNVS sensor nose, shoulder engines with infrared
+    suppressors, stub wings drawn 20 % long (with the rotor they are the silhouette's cross) carrying a rocket pod
+    inboard and a four-round Hellfire rack outboard each side, Stinger tubes on the wingtips, the chin gun on its own
+    yaw mount (`Mount_gun`), wheels (the Apache has no skids), the tail boom with its fin, stabilator and the
+    X-shaped tail rotor. Origin on the ground under the fuselage (the wheels touch z = 0)."""
+    from mb_air import (BACKWARD, FORWARD, _bubble, _exhaust_duct, _hellfire, _octagon, _pylon, _rocket_pod,
+                        _rotor_head, _tail_rotor)
+    hd.mark(a, detail)
+    body = a.part('Fuselage', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    glass = a.part('Canopy', 'Glass')
+    bv = .03 if detail else .02
+    hull = [_octagon(-3.0, .12, .56, .8), _octagon(-2.75, .23, .45, .95), _octagon(-2.2, .27, .42, 1.0),
+            _octagon(-1.2, .3, .42, 1.02), _octagon(-.2, .32, .45, 1.1), _octagon(.6, .28, .5, 1.08),
+            _octagon(1.0, .18, .7, 1.03)]
+    body.loft(hull, bevel=bv, seg=1)
+    boom = [_octagon(.9, .17, .72, 1.02), _octagon(2.8, .08, .82, .98)]
+    body.loft(boom, bevel=bv * .6, seg=1)
+    body.prism([(2.3, .95), (2.85, .93), (3.02, 1.78), (2.74, 1.8)], .08, bevel=.015, seg=1)       # fin
+    body.box((.95, .3, .04), loc=(0, 2.6, .8), bevel=0, taper=(1, .75))                            # stabilator
+    for s in (-1, 1):
+        body.box((.17, 1.45, .3), loc=(s * .33, -1.3, .72), bevel=.04, seg=1, taper=(.8, .94))     # avionics bays
+    # Stepped tandem canopy.
+    glass.loft([_bubble(-2.55, .17, .93, 1.0), _bubble(-2.3, .25, .98, 1.18), _bubble(-1.98, .26, 1.0, 1.21)],
+               bevel=0)
+    glass.loft([_bubble(-2.0, .27, 1.0, 1.28), _bubble(-1.72, .28, 1.02, 1.4), _bubble(-1.2, .27, 1.04, 1.41),
+                _bubble(-.95, .21, 1.06, 1.28)], bevel=0)
+    # Shoulder engines with their suppressors, the rotor pylon and mast, the mast-mounted radar.
+    for s in (-1, 1):
+        x = s * .34
+        body.cyl(.15, 1.0, loc=(x, -.05, 1.12), rot=FORWARD, seg=10, bevel=.02, bseg=1)
+        dark.cyl(.11, .03, loc=(x, -.56, 1.12), rot=FORWARD, seg=10, bevel=0)                    # intakes
+        _exhaust_duct(a, (s * .4, .6, 1.13), s * -.3, size=(.18, .34, .18))
+    body.box((.42, .95, .26), loc=(0, -.45, 1.2), bevel=.04, seg=1, taper=(.72, .8))                # pylon
+    steel.cyl(.06, .36, loc=(0, -.45, 1.4), seg=8, bevel=0)                                          # mast
+    r = a.pivot('Rotor', (0, -.45, 1.58))
+    _rotor_head(a, r, 4, 3.0, .26, hub=.18, phase=math.pi / 4, t=.035, cap=.08, stripe=.22, droop=.05)
+    steel.cyl(.04, .12, loc=(0, -.45, 1.83), seg=6, bevel=0)                                         # radar stalk
+    armor.sphere((.22, .22, .08), loc=(0, -.45, 1.94), seg=10, rings=6)                              # Longbow radar
+    # TADS drum and PNVS turret at the nose, the landing light.
+    armor.cyl(.12, .3, loc=(0, -2.95, .6), rot=ACROSS, seg=10, bevel=0)
+    sensor = a.part('Sensor', 'Glass')
+    for s in (-1, 1):
+        armor.box((.06, .2, .2), loc=(s * .17, -2.94, .6), bevel=0)
+        sensor.box((.04, .03, .08), loc=(s * .17, -3.05, .62), bevel=0)
+    sensor.box((.1, .03, .08), loc=(0, -3.08, .6), bevel=0)
+    armor.cyl(.06, .1, loc=(0, -2.85, .93), seg=8, bevel=0)
+    # Stub wings: a rocket pod inboard and a Hellfire rack outboard each side, Stinger tubes on the tips.
+    pylons = a.part('Pylons', 'Armor')
+    stingers = a.part('Stinger_tubes', 'Fuel')
+    for s in (-1, 1):
+        body.box((1.0, .46, .08), loc=(s * .78, -.3, .82), rot=(0, s * -.05, 0), bevel=.015, seg=1, taper=(1, .9))
+        _pylon(pylons, s * .62, -.48, -.12, .8, .7, w=.07)
+        a.part('Pods', 'Armor').lathe([(.066, .66), (.1, .6), (.12, .43), (.12, .03), (.11, 0)], loc=(s * .62, -.72, .56),
+                                      rot=BACKWARD, seg=10)                                    # 19-shot rocket pod
+        a.part('Pod_bands', 'Hazard').cyl(.126, .04, loc=(s * .62, -.58, .56), rot=FORWARD, seg=10, bevel=0)
+        a.part('Pod_face', 'Undercarriage').cyl(.09, .02, loc=(s * .62, -.726, .56), rot=FORWARD, seg=10, bevel=0)
+        armor.box((.05, .56, .28), loc=(s * 1.08, -.34, .6), bevel=0)                               # Hellfire rail
+        for x in (1.02, 1.14):
+            for z in (.66, .52):
+                if detail:
+                    _hellfire(a, s * x, -.64, z, length=.66, r=.045, fins=x > 1.1)
+                else:  # body and seeker cone only
+                    a.part('Missiles', 'Fuel').cyl(.045, .6, loc=(s * x, -.64 + .36, z), rot=FORWARD, seg=6, bevel=0)
+                    a.part('Missile_seekers', 'Glass').cyl(.045, .08, r2=.015, loc=(s * x, -.64 + .04, z), rot=FORWARD,
+                                                           seg=6, bevel=0)
+        for dz in (-.035, .035):
+            stingers.cyl(.035, .5, loc=(s * 1.32, -.42, .82 + dz), rot=FORWARD, seg=6, bevel=0)
+        a.part('Wing_lights', 'TeamGlow').box((.05, .1, .05), loc=(s * 1.29, -.12, .83), bevel=0)
+    a.pivot('Muzzle_rocket', (0, -.72, .56))
+    a.pivot('Muzzle_missile', (0, -.64, .59))
+    a.pivot('Muzzle_aam', (0, -.68, .82))
+    # Wheels on short legs (main gear forward, a tail wheel).
+    tyres = a.part('Tyres', 'Rubber')
+    for s in (-1, 1):
+        steel.box((.06, .08, .34), loc=(s * .42, -1.55, .3), rot=(0, s * .35, 0), bevel=0)         # legs
+        tyres.cyl(.13, .08, loc=(s * .5, -1.55, .13), rot=ACROSS, seg=10, bevel=0)
+    steel.box((.05, .3, .06), loc=(0, 2.45, .72), rot=(.9, 0, 0), bevel=0)
+    tyres.cyl(.09, .06, loc=(0, 2.55, .09), rot=ACROSS, seg=8, bevel=0)
+    a.part('Beacon', 'TeamGlow').sphere(.05, loc=(0, 2.9, 1.82), seg=6, rings=4)
+    # Chin gun (M230, drawn thick) on its own yaw mount.
+    g = a.pivot('Mount_gun', (0, -2.3, .38))
+    a.part('Gun_turret', 'Armor', g).cyl(.1, .1, loc=(0, 0, .02), seg=10, bevel=0)
+    gun = a.part('Gun', 'Steel', g)
+    gun.box((.1, .26, .09), loc=(0, -.08, -.06), bevel=0)
+    gun.cyl(.035, .55, loc=(0, -.46, -.06), rot=FORWARD, seg=6, bevel=0)
+    gun.cyl(.045, .06, loc=(0, -.72, -.06), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', (0, -.76, -.06), g)
+    # X-shaped tail rotor on the right of the fin.
+    armor.cyl(.06, .1, loc=(-.08, 2.82, 1.45), rot=ACROSS, seg=8, bevel=0)                           # gearbox
+    tr = a.pivot('Tail_rotor', (-.16, 2.82, 1.45))
+    _tail_rotor(a, tr, 4, .56, .1, t=.02, phase=math.pi / 4, side=-1)
+    a.pivot('Point_exhaust', (.45, .8, 1.13))
+    a.pivot('Point_fire', (0, -.2, 1.1))
+    if detail:
+        rivets = a.part('Rivets', 'Steel')
+        for s in (-1, 1):
+            hd.bolt_line(rivets, (s * .42, -1.95, .87), (s * .42, -.65, .87), 8, rot=hd.side_rot(s), r=.012, h=.018)
+            hd.bolt_line(rivets, (s * .15, -2.6, .88), (s * .15, -2.2, .96), 3, r=.01, h=.016)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
     'fighter_jet': (fighter_jet, dict(ao_distance=.35, ground=False)),
     'swarm_carrier': (swarm_carrier, dict(ao_distance=.9, ground=False)),
     'sky_gunship': (sky_gunship, dict(ao_distance=.9, ground=False)),
+    'attack_helicopter': (attack_helicopter, dict(ao_distance=.4, grime_height=.3)),
 }
