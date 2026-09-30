@@ -210,7 +210,6 @@ Almost all of today's models are over those budgets (6,000-15,000 triangles for 
 | heavy_rocket_artillery | 10.5 x 2.7 x 4.2, keep (note: 9.7 x 2.4 x 2.4) | Long 8-wheel vehicle, a block of 12 large (300 mm) tubes at the rear (BM-30 Smerch). From above: 12 big round tubes in 3 rows. |
 | zu23_technical | 4.5 x 1.8 x 2.1, keep (note: 4.2 x 1.4 x 1.8) | Civilian pickup with a twin-barrel ZU-23 on the bed. From above: two long parallel barrels. |
 | aa_vehicle | 5.6 x 2.7 x 3.0, keep (note: 6.2 x 3.0 x 2.4) | Tracked chassis, a square turret with a 35 mm gun on each side, a round radar dish spinning behind the turret (Gepard). From above: two barrels either side, the dish. |
-| sam_launcher | 6.1 x 3.1 x 4.0, keep (note: 7.4 x 2.6 x 3.0) | Tracked chassis, a turning launcher with four big missiles pointing up, a cylindrical radar in front of the launcher (Buk TELAR). From above: four long parallel missiles. |
 | long_sam | 9.8 x 3.1 x 3.7, keep (note: 11.2 x 2.5 x 3.0) | Very long 8-wheel vehicle with four large horizontal launch tubes, raised upright to fire (S-400 5P85). From above: four tubes as long as the vehicle. |
 | scout_heli | 4.3 x 3.9 x 1.4, keep (note: 4.0 x 3.3 x 1.0) | Small egg-shaped helicopter, five-blade rotor, skids, two small weapon pylons (MH-6 Little Bird). From above: a rotor disc large for the small body. |
 | recon_drone | 2.9 x 5.0 x 0.7, keep (note: 2.6 x 4.8 x 0.9) | Straight-wing UAV, long wing, slim body, inverted V tail, pusher propeller (TB2). From above: a cross with a very long wing. |

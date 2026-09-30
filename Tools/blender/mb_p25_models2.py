@@ -651,6 +651,69 @@ def siege_tank(a):
     a.pivot('Muzzle_mg', (0, -1.12, .52), m)
 
 
+# ----------------------------------------------------------------------------- SAM launcher (Buk TELAR)
+def _sam_round(a, t, x, y_nose, z, length, r, wing=(.2, 1.3), fin=(.26, .45), body='Launcher_missiles',
+               nose='Launcher_face', mat='Fuel', rot=None):
+    """A surface-to-air missile lying along -Y (nose at y_nose) at the round's own length: the white body, the grey
+    radome, four long-chord wings mid-body and four tail fins in an X. The noses are `nose` (a launch face)."""
+    bodies = a.part(body, mat, t)
+    bodies.cyl(r, length - r * 2.4, loc=(x, y_nose + r * 2.4 + (length - r * 2.4) / 2, z), rot=FORWARD, seg=8, bevel=0)
+    a.part(nose, 'Armor', t).cyl(r, r * 2.4, r2=.02, loc=(x, y_nose + r * 1.2, z), rot=FORWARD, seg=8, bevel=0)
+    fins = a.part(body + '_fins', 'MetalSheet', t)
+    for k in range(4):
+        u = math.pi / 4 + k * R90
+        for (span, chord), yc in ((wing, y_nose + length * .45), (fin, y_nose + length - fin[1] / 2 - .04)):
+            d = r + span / 2 - .02
+            fins.box((.04, chord, span), loc=(x + math.sin(u) * d, yc, z + math.cos(u) * d), rot=(0, u, 0), bevel=0,
+                     taper=(1, .7))
+
+
+def sam_launcher(a):
+    """SAM launcher (Buk-M1 9A310 TELAR on the GM-569 chassis), 7.4 x 2.6 x 3.0 m: a flat tracked hull (six road
+    wheels, the driver's cab at the front left), and on its turntable (`Turret`) the Fire Dome tracking radar, a
+    squat cylinder with its flat dark array facing forward (a fixed part, `Radar_dome`: it no longer spins), and over
+    it the launcher with four 9M38 missiles side by side on their rails, at the round's own 4.44 m (B3: the data's
+    length, they used to overflow a 2.45 m box): from above, four long parallel missiles (the sheet). The missiles
+    and rails are Launcher_* (they elevate), their noses the `Launcher_face` the rounds leave from, `Muzzle_main` at
+    its middle. A hull-top machine gun (`Mount_mg`, `Muzzle_mg`)."""
+    hd.mark(a, False)
+    _lean_tracks(a, 1.07, 7.0, .72, .28, 6, .44, sprocket=1)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    armor.prism([(-3.4, .36), (-3.6, .62), (-3.4, .8), (3.4, .8), (3.55, .6), (3.4, .36)], 1.66, bevel=.04, seg=1)
+    hull.prism([(-3.62, .74), (-3.0, 1.18), (3.45, 1.2), (3.55, .74)], 2.6, bevel=.05, seg=1)
+    armor.box((.9, 1.0, .4), loc=(.62, -2.65, 1.34), bevel=.04, seg=1, taper=(.9, .85))          # driver's cab
+    a.part('Glass', 'Glass').box((.6, .03, .18), loc=(.62, -3.16, 1.38), bevel=0)
+    _lights(a, (-1.0, 1.0), -3.45, 1.0, size=(.16, .04, .1))
+    _lights(a, (-1.1, 1.1), 3.56, 1.0, facing=1, size=(.14, .04, .1), lamp='Alloy')
+    a.part('Deck', 'Undercarriage').grille(1.2, .8, loc=(-.55, 3.0, 1.19), rot=(-R90, 0, 0), slats=4, depth=.05,
+                                           thickness=.05)
+    mv._roof_mg(a, None, (.62, -2.65, 1.54), length=.75, shield=False)
+    a.pivot('Point_exhaust', (-.9, 3.4, 1.1))
+    a.pivot('Point_fire', (0, 3.0, 1.25))
+    t = a.pivot('Turret', (0, .4, 1.2))
+    steel.cyl(1.0, .08, loc=(0, .4, 1.2), seg=14, bevel=0)                                        # turret ring
+    a.part('Turret_body', 'Team', t).box((2.1, 2.6, .5), loc=(0, .1, .25), bevel=.05, seg=1, taper=(.95, .95))
+    tarm = a.part('Turret_armor', 'Armor', t)
+    # The Fire Dome tracking radar at the front: a squat drum with its flat array facing forward.
+    tarm.cyl(.55, .6, loc=(0, -1.05, .8), seg=12, bevel=.04, bseg=1)
+    a.part('Radar_dome', 'Team', t).cyl(.58, .1, loc=(0, -1.05, 1.14), seg=12, bevel=.02, bseg=1)
+    a.part('Radar_array', 'Undercarriage', t).box((.8, .06, .5), loc=(0, -1.6, .8), bevel=0)
+    # The launcher: a cradle on trunnions at its rear and four 9M38s at their real length on rails.
+    y_nose, z, length = -2.35, 1.42, 4.44
+    frame = a.part('Launcher_cradle', 'Armor', t)
+    frame.box((2.1, .5, .3), loc=(0, 1.55, 1.0), bevel=.03, seg=1)
+    for s in (-1, 1):
+        tarm.box((.2, .6, .7), loc=(s * .95, 1.55, .72), bevel=.03, seg=1)                        # trunnion posts
+        frame.box((.14, 3.2, .16), loc=(s * .95, .2, 1.18), bevel=0)                               # side beams
+    rails = a.part('Launcher_rails', 'Steel', t)
+    for x in (-.9, -.3, .3, .9):
+        rails.box((.12, 3.4, .1), loc=(x, .1, z - .23), bevel=0)
+        _sam_round(a, t, x, y_nose, z, length, .17)
+    a.pivot('Muzzle_main', (0, y_nose - .06, z), t)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -661,4 +724,5 @@ BUILDERS = {
     'heavy_aa': (heavy_aa, dict(ao_distance=.5, grime_height=.5)),
     'artillery': (artillery, dict(ao_distance=.6, grime_height=.55)),
     'siege_tank': (siege_tank, dict(ao_distance=.7, grime_height=.6)),
+    'sam_launcher': (sam_launcher, dict(ao_distance=.6, grime_height=.55)),
 }
