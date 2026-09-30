@@ -132,6 +132,7 @@ namespace MachineBrigade.Sim.Content
             def.MineArmor = Math.Clamp(v.Float("mineArmor", 1f), 0f, 1f);
             // 0 until FinishExtras fills in the elite default (or 1).
             def.DamageScale = v.Has("damageScale") ? Math.Clamp(v.Float("damageScale", 1f), 0.1f, 5f) : 0f;
+            def.WeaponDamage = Math.Clamp(v.Float("weaponDamage", 1f), 0.1f, 10f);
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");

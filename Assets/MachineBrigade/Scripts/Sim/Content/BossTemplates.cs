@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Keys a variant never takes from its parent.</summary>
         private static readonly string[] NotInherited =
         {
-            "id", "rank", "variantOf", "variant", "phases", "radioSpawn", "bigAttack", "bigAttackScale", "damageScale",
+            "id", "rank", "variantOf", "variant", "phases", "radioSpawn", "bigAttack", "bigAttackScale", "damageScale", "weaponDamage",
             "size", "dropParts", "tint", "mark", "variantName", "hiddenNodes",
         };
 

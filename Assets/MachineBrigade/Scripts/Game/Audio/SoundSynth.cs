@@ -351,6 +351,39 @@ namespace MachineBrigade.Game.Audio
         }
 
         /// <summary>
+        /// Prompt 25 C1: a super weapon's own warning, one recipe a boss (<see cref="SuperCue"/>): a train of tone pulses
+        /// at a pitch, each swept up or down, sine through square, with a rough edge (a saw's buzz and noise), a
+        /// two-tone alarm when <see cref="SuperCue.Alternate"/> is set. Heard wherever the view is, like the siren it
+        /// replaces for these attacks.
+        /// </summary>
+        public static AudioClip SuperWarning(string name, SuperCue c)
+        {
+            var rng = new Random(c.Seed);
+            var length = c.Pulses * (c.Pulse + c.Gap) + 0.25f;
+            var data = new float[(int)(Rate * length)];
+            var low = new OnePole(0.25f);
+            var phase = 0f;
+            for (var i = 0; i < data.Length; i++)
+            {
+                var t = i / (float)Rate;
+                var slot = (int)(t / (c.Pulse + c.Gap));
+                var local = t - slot * (c.Pulse + c.Gap);
+                if (slot >= c.Pulses || local > c.Pulse + 0.2f) continue;
+                var along = Mathf.Clamp01(local / c.Pulse);
+                var pitch = c.Pitch * (c.Alternate > 0f && slot % 2 == 1 ? c.Alternate : 1f) * (1f + c.Sweep * along);
+                phase += pitch / Rate;
+                var sine = Mathf.Sin(2f * Mathf.PI * phase);
+                var square = Mathf.Sign(sine);
+                var tone = Mathf.Lerp(sine, square, c.Square);
+                var edge = c.Buzz * (0.6f * Saw(phase * 0.5f) + 0.4f * Noise(rng));
+                // Up in 10 ms, held, then a short tail past the pulse.
+                var env = local < 0.01f ? local / 0.01f : local <= c.Pulse ? 1f : Mathf.Exp(-(local - c.Pulse) / 0.05f);
+                data[i] = low.Next(tone * 0.55f + edge * 0.35f) * env;
+            }
+            return Finish(name, data, 0.5f);
+        }
+
+        /// <summary>
         /// An incoming shell's whistle: a falling tone with a breathy edge, swelling as it comes
         /// down and cut off at the moment it lands (the blast is its own sound).
         /// </summary>
@@ -495,6 +528,38 @@ namespace MachineBrigade.Game.Audio
             var clip = AudioClip.Create(name, data.Length, 1, Rate, false);
             clip.SetData(data, 0);
             return clip;
+        }
+
+        /// <summary>
+        /// Prompt 25 C1: one super weapon's warning recipe: pulses of <see cref="Pulse"/> seconds <see cref="Gap"/> apart at
+        /// <see cref="Pitch"/> Hz, each swept by <see cref="Sweep"/> (a share of the pitch, up or down), <see cref="Square"/>
+        /// from sine (0) to square (1), <see cref="Buzz"/> of rough edge, every other pulse at <see cref="Alternate"/> x the
+        /// pitch (0: one tone).
+        /// </summary>
+        public readonly struct SuperCue
+        {
+            public SuperCue(int seed, float pitch, int pulses, float pulse, float gap, float sweep, float square, float buzz, float alternate = 0f)
+            {
+                Seed = seed;
+                Pitch = pitch;
+                Pulses = pulses;
+                Pulse = pulse;
+                Gap = gap;
+                Sweep = sweep;
+                Square = square;
+                Buzz = buzz;
+                Alternate = alternate;
+            }
+
+            public int Seed { get; }
+            public float Pitch { get; }
+            public int Pulses { get; }
+            public float Pulse { get; }
+            public float Gap { get; }
+            public float Sweep { get; }
+            public float Square { get; }
+            public float Buzz { get; }
+            public float Alternate { get; }
         }
 
         /// <summary>One-pole low-pass filter; alpha near 0 keeps only the lows.</summary>

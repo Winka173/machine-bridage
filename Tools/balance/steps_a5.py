@@ -24,6 +24,8 @@ INTRO = ("One blast radius for one round (its real name without the mount, damag
          "the round's family (a shell's radius goes with its calibre). A family's radius is written on the family (A3).")
 
 KG_FAMILIES = {"bomb", "cruise", "ballistic", "drone", "atgm", "aa_missile"}
+# Rounds a later step sets from its own sheet (C1: the Scylla's AK-130 from "Boss đề xuất").
+LATER = {"naval_130_twin": "C1 (sheet Boss đề xuất)"}
 
 
 def round_key(w):
@@ -77,6 +79,9 @@ def run(wr, wb, report, weapon_rows):
             refs[(w.get("family"), w.get("damageType"), bool(w.get("thermobaric")))].add((float(w.get("size", 0) or 0), float(row[X.W_SPLASH])))
     for k in sorted(rounds, key=lambda k: (k[0], str(k[1]), k[2], k[3])):
         members = rounds[k]
+        if all(m in LATER for m in members):
+            report.add(step, sh, ", ".join(members), "blast", "deferred", "set by task " + LATER[members[0]])
+            continue
         ws = {m: g.weapon(m) for m in members}
         current = {m: float(ws[m].get("splash", 0) or 0) for m in members}
         first = ws[members[0]]

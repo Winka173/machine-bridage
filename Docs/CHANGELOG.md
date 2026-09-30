@@ -66,6 +66,24 @@ The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`)
   they are built).
 - C.4: the design document's turn rates in degrees a second (it printed the code's radians under a degrees label);
   the tanks' turrets turn faster than their hulls (115 deg/s, from A1).
+### Prompt 25 C1: bosses and super weapons (DECISIONS 25C)
+
+The sheet "Boss đề xuất" by script (`import_xlsx.py --upto C1`).
+
+- Every boss's health from the sheet: Icarus 26,000 (the most of any boss), Daedalus 24,000, Roc 23,000 ... Bastion
+  12,000; mini bosses 6,000-13,000 (Scylla and Bastion Mk.0 about half what they had).
+- Every boss's ordinary fire comes to the sheet's damage a second against armour 3 (a boss's own `weaponDamage`, on the
+  ground only), after the new weapons: the Behemoth's twin Kornet, Jötunn's anti-drone 30 mm, Roc's two twin 30 mm,
+  Moloch's two ZU-23, Bastion's two NSV, Kronos's and Daedalus's two 57 mm, Leviathan's SAM, the mothership's third
+  Lancet bay; Icarus trades its tank guns and flak for two coilguns (four ordinary turrets on its wreck); Scylla fires
+  a twin AK-130 and an anti-ship missile every 15 s instead of a battleship's 460 mm; Typhon a short-range cruise
+  missile every 12 s; Caspian an anti-ship missile each pass and two ZU-23; Ixion and the Harpy 12.7 mm guns.
+- Only the twelve main bosses have a super weapon, with the sheet's numbers, cycle, warning and counter: the Behemoth's
+  six shells in six rings, Jötunn's 203 mm barrage, the mothership's heavy glide bomb (it can be shot down), Nemesis's
+  Doomsday missile on a 6 s clock, Icarus's seven rods (nine in phase 3), Bastion's single 420 mm bomb, Roc's sixteen
+  bombs, Leviathan's nine shells along a strip, Daedalus's eight pods; each with a warning sound of its own. Mini
+  bosses fight with their ordinary weapons only.
+
 ### Prompt 25 B2: models rebuilt to the balance sheet (DECISIONS 25B2)
 
 - Thirteen models are redrawn from the balance sheet's shape notes and drawing guide, at its sizes (ground vehicles

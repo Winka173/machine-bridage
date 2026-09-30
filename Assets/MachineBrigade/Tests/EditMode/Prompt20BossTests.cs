@@ -201,29 +201,19 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(k3.OwnRoute, "Kronos follows the mine's kronos route");
         }
 
+        /// <summary>Prompt 25 C1: a mini boss has no super weapon: Ixion's charge went with it; it still crushes as it rolls.</summary>
         [Test]
-        public void IxionChargesDownItsLineAndABrokenWheelThrowsItOff()
+        public void IxionCrushesAsItRollsAndHasNoCharge()
         {
+            var def = C.Vehicle("ixion");
+            Assert.IsNull(def.BigAttack, "no charge: a mini boss has no super weapon");
+            Assert.IsNotNull(def.Crush, "its wheels still crush what they roll over");
             var world = Field();
             var ixion = world.SpawnVehicle("ixion", 1, Vector2.Zero, 0f);
-            ixion.Scripted = true;
-            var line = Group(world, "light_tank", SimMath.Forward(ixion.Heading) * 30f, 2, 3f);
             world.Bosses.TriggerBig(ixion);
-            var events = Run(world, 12f);
-            Assert.IsTrue(events.Any(e => e.Kind == SimEventKind.BigAttack && e.Mount == 1), "it charges");
-            Assert.Greater(Vector2.Distance(ixion.Position, Vector2.Zero), 30f, "it has rolled down its line");
-            Assert.IsTrue(line.All(v => !v.IsAlive || v.Hp < v.MaxHp), "the tanks on the line are hit");
-            var world2 = Field(5);
-            var i2 = world2.SpawnVehicle("ixion", 1, Vector2.Zero, 0f);
-            i2.Scripted = true;
-            Group(world2, "light_tank", SimMath.Forward(i2.Heading) * 30f, 2, 3f);
-            world2.Bosses.TriggerBig(i2);
-            Run(world2, 2f, () => i2.BigAttack.Stage == BigStage.Charging);
-            Assert.AreEqual(BigStage.Charging, i2.BigAttack.Stage);
-            world2.Bosses.Break(i2, i2.Def.PartIndex("wheel_l"));
-            var e2 = Run(world2, 6f);
-            Assert.IsTrue(e2.Any(e => e.Kind == SimEventKind.BigAttack && e.Mount == 2), "a big wheel broken in the warning: the charge is off");
-            Assert.IsFalse(i2.IsCharging);
+            var events = Run(world, 6f);
+            Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.BigAttack), "nothing to trigger");
+            Assert.IsFalse(ixion.IsCharging);
         }
 
         [Test]
@@ -263,7 +253,7 @@ namespace MachineBrigade.Tests
             world.Bosses.Break(daedalus, daedalus.Def.PartIndex("pod_bay_1"));
             world.Bosses.TriggerBig(daedalus);
             Run(world, 8f, () => daedalus.BigAttack.Stage == BigStage.Firing);
-            Assert.AreEqual(3, daedalus.BigAttack.Rounds, "one bay gone: three pods fall, not six");
+            Assert.AreEqual(4, daedalus.BigAttack.Rounds, "one bay gone: four pods fall, not eight (prompt 25 C1: the sheet's eight)");
         }
 
         [Test]

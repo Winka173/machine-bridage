@@ -6,7 +6,8 @@
 
 The steps run in the task order of the sheet "Viec cho agent" (A1 Cao, A1 Trung, A1 Thap, A2, A3, A4, A5, B7, B8, then
 B1 model sizes, B3 round sizes and C4 turn rates, steps_b.py, and
-A1-review, steps_review.py: the rows the first pass left for a measurement, applied) and each is re-runnable: running the same --upto twice changes nothing the second time. Every number comes from the
+A1-review, steps_review.py: the rows the first pass left for a measurement, applied; then C1 and C2, the bosses,
+steps_c.py) and each is re-runnable: running the same --upto twice changes nothing the second time. Every number comes from the
 spreadsheet (read with openpyxl, data_only: the values the formulas computed); the script holds only the rules that
 map a row onto the data, and the owner's decisions where the sheet offers a choice (DECISIONS 25A). balance.json is
 edited in place, field by field on each entry's own line (jsonc_edit.py), never re-serialised.
@@ -34,7 +35,7 @@ BALANCE = os.path.join(ROOT, "Assets", "MachineBrigade", "Resources", "Data", "b
 REFS = os.path.join(ROOT, "Tools", "docs", "unit_refs.json")
 REPORT = os.path.join(ROOT, "Docs", "balance", "apply-report.md")
 
-STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A2", "A3", "A4", "A5", "B7", "B8", "B1", "B3", "C4", "A1-review"]
+STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A2", "A3", "A4", "A5", "B7", "B8", "B1", "B3", "C4", "A1-review", "C1", "C2"]
 PRIORITY = {"A1-Cao": "Cao", "A1-Trung": "Trung", "A1-Thap": "Thấp"}
 
 # The last step of this run (main sets it): a step reads it to leave a field to a later step of the same run.
@@ -186,7 +187,7 @@ def close(a, b, rel=1e-4):
 
 # Steps whose sections sit in a block of their own in the report (work done in parallel merges without touching the
 # other steps' sections or the summary): the block's name, between "<!-- name:begin -->" and "<!-- name:end -->".
-BLOCKS = {"B1": "import_b", "B3": "import_b", "C4": "import_b"}
+BLOCKS = {"B1": "import_b", "B3": "import_b", "C4": "import_b", "C1": "import_c", "C2": "import_c"}
 # Steps no longer run: their sections are taken out of the report ("review" listed the rows A1-review now applies).
 RETIRED = ("review",)
 
@@ -1042,6 +1043,11 @@ def main():
             import steps_review
             steps_review.run(wr, wb, report, weapon_rows)
             sections.append((step, report.section(step, "A1 review: the rows left for a measurement, and every row deferred or skipped, applied", steps_review.INTRO)))
+        elif step in ("C1", "C2"):
+            import steps_c
+            title = steps_c.run(step, wr, wb, report)
+            if title:
+                sections.append((step, report.section(step, title, steps_c.INTRO.get(step, ""))))
         elif step in ("B1", "B3", "C4"):
             title = steps_b.run(step, wr, wb, report)
             if title:

@@ -95,6 +95,30 @@ namespace MachineBrigade.Game.Audio
         private readonly AudioClip[] _thunder, _clicks;
         private readonly List<float> _thunderAt = new();
         private readonly AudioClip _captured, _lost, _siren;
+
+        /// <summary>
+        /// Prompt 25 C1 (DECISIONS 25C): each main boss's super weapon has its own warning, a synthesised alarm in place of
+        /// the siren: by its big attack's id. Distinct in pitch, rhythm, sweep and timbre, so the player learns which is
+        /// coming by ear: the Behemoth's low horn, the missile train's rising wail, Icarus's electronic chirps, Typhon's
+        /// sonar pings...
+        /// </summary>
+        internal static readonly Dictionary<string, SoundSynth.SuperCue> SuperCues = new()
+        {
+            ["behemoth_barrage"] = new(2501, 196f, 2, 0.55f, 0.18f, -0.18f, 0.7f, 0.35f),
+            ["fortress_203_barrage"] = new(2502, 330f, 3, 0.3f, 0.12f, 0f, 1f, 0.15f),
+            ["carrier_heavy_bomb"] = new(2503, 900f, 1, 1.3f, 0.1f, -0.55f, 0.2f, 0.25f),
+            ["doomsday_missile"] = new(2504, 440f, 2, 0.8f, 0.1f, 0.6f, 0.35f, 0.1f),
+            ["bug_rod_rain"] = new(2505, 1250f, 5, 0.09f, 0.07f, 0.12f, 0f, 0f),
+            ["bastion_420_shell"] = new(2506, 140f, 1, 1.1f, 0.1f, -0.1f, 0.8f, 0.6f),
+            ["airship_carpet"] = new(2507, 520f, 6, 0.1f, 0.06f, 0f, 1f, 0.1f),
+            ["leviathan_volley"] = new(2508, 165f, 2, 0.7f, 0.2f, 0f, 0.45f, 0.7f),
+            ["moloch_factory_dump"] = new(2509, 620f, 4, 0.22f, 0.04f, 0f, 1f, 0.2f, 0.72f),
+            ["daedalus_mass_drop"] = new(2510, 700f, 3, 0.2f, 0.08f, 0.45f, 0.1f, 0.05f),
+            ["kronos_bucket_sweep"] = new(2511, 250f, 4, 0.18f, 0.08f, -0.05f, 0.6f, 0.9f),
+            ["typhon_underwater_launch"] = new(2512, 1480f, 2, 0.35f, 0.45f, -0.02f, 0f, 0f),
+        };
+
+        private readonly Dictionary<string, AudioClip> _superCues = new();
         private readonly Dictionary<Sound, Bank> _banks = new();
         private readonly List<AudioClip> _owned = new();
         private readonly List<(float at, Sound sound, System.Numerics.Vector2 where, float volume)> _delayed = new();
@@ -171,6 +195,7 @@ namespace MachineBrigade.Game.Audio
             _captured = Own(SoundSynth.Radio(true));
             _lost = Own(SoundSynth.Radio(false));
             _siren = Recorded("siren")?[0];
+            foreach (var (id, cue) in SuperCues) _superCues[id] = Own(SoundSynth.SuperWarning("super_" + id, cue));
 
             for (var i = 0; i < Voices; i++)
             {
@@ -329,7 +354,9 @@ namespace MachineBrigade.Game.Audio
                         break;
                     // Prompt 18 A.3: a boss's big attack begins: the alarm (heard wherever the view is) and the whistle as it lands.
                     case SimEventKind.BigAttack when e.Mount == 0 && _playerTeam >= 0:
-                        if (_siren != null) _ui.PlayOneShot(_siren, 0.32f);
+                        // Prompt 25 C1: a super weapon's own warning, else the siren.
+                        if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f);
+                        else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f);
                         MusicDirector.Current?.Alert();
                         Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
                         break;
