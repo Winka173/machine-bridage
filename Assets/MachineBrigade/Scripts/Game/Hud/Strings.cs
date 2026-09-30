@@ -2561,6 +2561,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.fibre_fpv_carrier"] = ("Fibre-optic FPV carrier", "Xe phóng drone FPV cáp quang"),
             ["short.fibre_fpv_carrier"] = ("Fibre FPV", "FPV cáp quang"),
             ["note.fibre_fpv_carrier"] = ("A pickup launching fibre-optic FPV drones, as in the war in Ukraine in 2024-2025: steered down a thin cable, so jammers cannot touch them.", "Xe bán tải phóng drone FPV cáp quang như trong chiến sự Ukraine 2024–2025: điều khiển qua sợi cáp mảnh nên gây nhiễu không chạm được."),
+            // dx48: Xe drone đánh chặn.
+            ["unit.interceptor_drone_vehicle"] = ("Interceptor drone vehicle", "Xe drone đánh chặn"),
+            ["short.interceptor_drone_vehicle"] = ("Drone hunter", "Drone chặn"),
+            ["note.interceptor_drone_vehicle"] = ("A truck launching interceptor drones (a Raytheon Coyote, or the drone-killers of the war in Ukraine) that ram enemy drones and helicopters.", "Xe tải phóng drone đánh chặn (Raytheon Coyote, hay drone săn drone trong chiến sự Ukraine) lao thẳng vào drone và trực thăng địch."),
             // (batch A: new entries above)
         };
 

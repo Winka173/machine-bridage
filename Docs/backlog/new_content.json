@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 5,
-    "xong": 22
+    "đang làm": 4,
+    "xong": 23
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 1,
-      "xong": 22
+      "đang làm": 0,
+      "xong": 23
     },
     "structure": {
       "chưa làm": 0,
@@ -713,8 +713,8 @@
       "group": "Phòng không",
       "priority": "Trung",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "interceptor_drone_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {

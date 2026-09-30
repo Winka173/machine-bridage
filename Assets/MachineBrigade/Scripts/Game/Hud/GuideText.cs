@@ -1458,6 +1458,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: điều khiển từng chiếc [[drone cáp quang]] lao vào xe bọc thép, tầm 60 m, 6 giây một chiếc; gây nhiễu vô tác dụng.\n" +
                 "Mạnh / yếu: thắng xe tăng núp sau xe gây nhiễu; hệ đánh chặn vẫn hạ được drone.\n" +
                 "Mẹo: mang theo khi địch dùng nhiều gây nhiễu."),
+            ["guide.interceptor_drone_vehicle"] = (
+                "[[Interceptor drone vehicle]] · light armour · drones against drones\n" +
+                "How it fights: an [[interceptor drone]] every 4 s out to 60 m at drones and helicopters, and at enemy drones in flight.\n" +
+                "Strong / weak: thins out FPV swarms and helicopters; jets fly past untouched.\n" +
+                "Tip: keep it beside your tanks and artillery.",
+                "[[Xe drone đánh chặn]] · giáp nhẹ · drone chống drone\n" +
+                "Cách đánh: 4 giây một [[drone đánh chặn]], tầm 60 m, vào drone và trực thăng, cả drone địch đang bay tới.\n" +
+                "Mạnh / yếu: làm mỏng bầy FPV và trực thăng; máy bay phản lực bay qua vô sự.\n" +
+                "Mẹo: giữ cạnh xe tăng và pháo binh ta."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

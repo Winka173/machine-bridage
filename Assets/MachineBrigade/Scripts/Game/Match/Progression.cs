@@ -135,6 +135,7 @@ namespace MachineBrigade.Game.Match
             ["barrage_balloon"] = 2000,
             ["visual_jammer"] = 3000,
             ["fibre_fpv_carrier"] = 3000,
+            ["interceptor_drone_vehicle"] = 1500,
             // (batch A: new entries above)
         };
 
