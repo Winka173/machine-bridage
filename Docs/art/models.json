@@ -129,7 +129,7 @@
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
-    "triangles": 8916
+    "triangles": 2544
   },
   "ballistic_missile": {
     "file": "ballistic_missile.glb",
@@ -589,7 +589,7 @@
   },
   "heavy_rocket_artillery": {
     "file": "heavy_rocket_artillery.glb",
-    "triangles": 8492
+    "triangles": 2960
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
@@ -701,7 +701,7 @@
   },
   "laser_tank": {
     "file": "laser_tank.glb",
-    "triangles": 7268
+    "triangles": 2548
   },
   "lava_vent": {
     "file": "lava_vent.glb",
@@ -909,7 +909,7 @@
   },
   "railgun_truck": {
     "file": "railgun_truck.glb",
-    "triangles": 11708
+    "triangles": 2324
   },
   "razor_wire": {
     "file": "razor_wire.glb",
