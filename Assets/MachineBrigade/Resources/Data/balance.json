@@ -1312,6 +1312,9 @@
     // dx53: the AVLB / MTU-72-class bridging vehicle stand-in (engineer_vehicle's hull): laying a bridge over a river map gap is not modelled yet (no river-gap map feature exists: DECISIONS 25F2-B); plays as an armoured support vehicle for now.
     { "id": "bridging_vehicle", "model": "engineer_vehicle", "tint": [0.5, 0.85, 0.75], "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 682, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "deathExplosion": { "damage": 65, "radius": 6, "delay": 0.35, "tier": "Large" } },
+    // dx54: the Pole-21-class GPS jammer vehicle stand-in (ew_jammer's own hull and field: a second copy of its jammer, since the sim has no separate glide-bomb/cruise-missile-only jamming yet: DECISIONS 25F2-B).
+    { "id": "gps_jammer_vehicle", "model": "ew_jammer", "tint": [0.6, 0.6, 0.95], "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 364, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 5, "vision": 35,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 28, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx55: the anti-drone net corridor stand-in (laser_ad_station's hull): a cheap small-slot tower, drones only, passable.
     { "id": "drone_net_tower", "model": "laser_ad_station", "tint": [1.05, 0.85, 1.1], "modelSize": [6.0, 4.0, 4.6], "fort": { "size": "Small" }, "static": true, "passable": true, "armour": 0, "hp": 364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 1.6, "length": 3.0, "width": 8.0, "cp": 0, "vision": 20,
       "weapon": "net_zap" },
