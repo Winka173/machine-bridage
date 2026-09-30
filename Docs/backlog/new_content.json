@@ -1,11 +1,11 @@
 {
   "_about": "Prompt 25 F2: every new item of Docs/balance/Machine_Brigade_Can_bang.xlsx and how far it is. status: chưa làm / đang làm / xong; id: the game id once it exists. Refreshed by Tools/balance/new_content_tracker.py.",
-  "updated": "2026-09-30",
+  "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 66,
+    "chưa làm": 62,
     "đang làm": 0,
-    "xong": 27
+    "xong": 31
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 14,
+      "chưa làm": 10,
       "đang làm": 0,
-      "xong": 0
+      "xong": 4
     },
     "support": {
       "chưa làm": 11,
@@ -895,9 +895,9 @@
       "group": "Bom lượn",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "glide_fab500",
+      "notes": "Batch C: duplicate of dx14 (glide_bomber unit, DECISIONS 25F2-A) — same FAB-500+UMPK numbers already implemented as weapon glide_fab500. No new work."
     },
     {
       "key": "tl02",
@@ -993,9 +993,9 @@
       "group": "Đạn pháo",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "howitzer_guided",
+      "notes": "Batch C: already built by DECISIONS 25G (secondRounds \"guided\"): howitzer_guided, howitzer_cb_guided, howitzer_fixed_guided, casemate_155_guided etc. give every 155 mm howitzer a no-scatter guided shell. No new work."
     },
     {
       "key": "tl09",
@@ -1021,9 +1021,9 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "r37m",
+      "notes": "Batch C: duplicate of dx16 (interceptor_jet unit, DECISIONS 25F2-A) — same R-37M numbers already implemented as weapon r37m. No new work."
     },
     {
       "key": "tl11",
@@ -1035,9 +1035,9 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "spike_nlos",
+      "notes": "Batch C: duplicate of dx07 (nlos_atgm_vehicle unit, DECISIONS 25F2-A) — same Spike NLOS numbers already implemented as weapon spike_nlos. No new work."
     },
     {
       "key": "tl12",
