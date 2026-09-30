@@ -714,6 +714,65 @@ def sam_launcher(a):
     a.pivot('Muzzle_main', (0, y_nose - .06, z), t)
 
 
+# ----------------------------------------------------------------------------- long-range SAM (S-400 5P85 TEL)
+def long_sam(a):
+    """Long-range SAM launcher (S-400's 5P85SM TEL on a MAZ-543 8x8), 11.2 x 2.5 x 3.0 m: the MAZ's two small cabs
+    either side of the engine at the front, four evenly spaced axles, jacks at the tail, and the erector (`Turret`,
+    hinged at the tail as before) carrying four big launch canisters side by side along the whole bed, each at the
+    48N6's 6.0 m (B3's round length: it overflowed the old tubes): from above, four tubes as long as the vehicle (the
+    sheet). The canisters are Launcher_* (they rise upright to fire); their front covers are the `Launcher_covers`
+    face the rounds leave from, `Muzzle_missile` (and `Muzzle_main`) at its middle."""
+    hd.mark(a, False)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Chassis', 'Undercarriage')
+    r = .55
+    dark.box((1.1, 10.4, .34), loc=(0, .1, .78), bevel=0)                                         # frame rails
+    _wheels(a, (-.94, .94), (-4.3, -2.75, .75, 2.3), r, .42)
+    for s in (-1, 1):
+        armor.box((.52, 3.0, .08), loc=(s * .94, -3.52, 1.16), bevel=.02, seg=1)                   # fenders
+        armor.box((.52, 3.0, .08), loc=(s * .94, 1.52, 1.16), bevel=.02, seg=1)
+        # The MAZ-543's two cabs either side of the engine, each with its sloped windscreen.
+        body.prism([(-5.55, 1.1), (-5.6, 1.6), (-5.3, 2.35), (-4.0, 2.4), (-3.9, 1.1)], .9, loc=(s * .75, 0, 0),
+                   bevel=.05, seg=1)
+        a.part('Glass', 'Glass').box((.7, .04, .42), loc=(s * .75, -5.44, 2.0), rot=(-.38, 0, 0), bevel=0)
+        a.part('Glass', 'Glass').box((.03, .7, .36), loc=(s * 1.205, -4.6, 2.0), bevel=0)
+        steel.box((.14, .14, .7), loc=(s * 1.0, 4.9, .75), bevel=0)                                 # tail jacks
+        steel.box((.34, .34, .05), loc=(s * 1.0, 4.9, .03), bevel=0)
+        a.part('Tanks', 'Armor').cyl(.22, 1.1, loc=(s * .8, -1.0, .72), rot=FORWARD, seg=8, bevel=0)
+    body.box((.56, 1.5, .9), loc=(0, -4.8, 1.55), bevel=.04, seg=1, taper=(.9, .9))                # engine between
+    dark.grille(.44, .4, loc=(0, -5.56, 1.4), slats=3, depth=.05, thickness=.04)
+    steel.box((2.3, .16, .24), loc=(0, -5.64, .8), bevel=.03, seg=1)                               # bumper
+    _lights(a, (-.9, .9), -5.62, 1.2)
+    _lights(a, (-1.05, 1.05), 5.12, 1.0, facing=1, size=(.14, .04, .1), lamp='Alloy')
+    body.box((2.3, 1.4, .75), loc=(0, -3.0, 1.4), bevel=.05, seg=1)                                # equipment box
+    armor.box((2.36, 7.6, .14), loc=(0, 1.3, 1.25), bevel=.02, seg=1)                              # launcher bed
+    for y in (-1.7, 3.7):
+        armor.box((2.0, .3, .5), loc=(0, y, 1.55), bevel=.03, seg=1)                               # canister rests
+    a.pivot('Point_exhaust', (0, -4.3, 2.05))
+    a.pivot('Point_fire', (0, -3.0, 1.8))
+    # The erector, hinged at the tail, with the four canisters.
+    t = a.pivot('Turret', (0, 4.0, 1.48))
+    frame = a.part('Launcher_frame', 'Armor', t)
+    frame.box((2.4, .5, .5), loc=(0, .45, .76), bevel=.04, seg=1)                                  # tail yoke
+    for y in (-5.4, -3.2, -1.0):
+        frame.box((2.46, .22, .66), loc=(0, y, .78), bevel=.02, seg=1)                             # canister bands
+    for s in (-1, 1):
+        steel.box((.2, .5, .6), loc=(s * 1.05, 4.2, 1.55), bevel=0)                                # hinge posts
+    tubes = a.part('Launcher_tubes', 'Team', t)
+    ends = a.part('Launcher_ends', 'Armor', t)
+    covers = a.part('Launcher_covers', 'Undercarriage', t)
+    z, front, length = .78, -6.9, 6.0
+    for x in (-.87, -.29, .29, .87):
+        tubes.cyl(.27, length, loc=(x, front + length / 2, z), rot=FORWARD, seg=12, bevel=0)
+        ends.cyl(.29, .14, loc=(x, front + .07, z), rot=FORWARD, seg=12, bevel=0)                  # front rims
+        ends.cyl(.29, .14, loc=(x, front + length - .07, z), rot=FORWARD, seg=12, bevel=0)
+        covers.cyl(.25, .03, loc=(x, front - .01, z), rot=FORWARD, seg=12, bevel=0)
+    a.pivot('Muzzle_missile', (0, front - .05, z), t)
+    a.pivot('Muzzle_main', (0, front - .05, z), t)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -725,4 +784,5 @@ BUILDERS = {
     'artillery': (artillery, dict(ao_distance=.6, grime_height=.55)),
     'siege_tank': (siege_tank, dict(ao_distance=.7, grime_height=.6)),
     'sam_launcher': (sam_launcher, dict(ao_distance=.6, grime_height=.55)),
+    'long_sam': (long_sam, dict(ao_distance=.6, grime_height=.55)),
 }
