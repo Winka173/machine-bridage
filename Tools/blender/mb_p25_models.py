@@ -949,6 +949,60 @@ def flame_tank(a):
     mv._coax(a, t, .36, -1.02, .38, length=.36, housing=.24)
 
 
+# ----------------------------------------------------------------------------- armoured car (Pandur I 6x6)
+def armored_car(a):
+    """Armoured car (Pandur I 6x6 class), 4.7 x 2.0 x 1.5 m with its gun forward: a boxy hull with a steep lower
+    and a long sloped upper glacis, six big wheels standing out under flat arches (from above, three pairs of
+    wheels either side of a narrow hull), a small round turret in the middle with a long 25 mm barrel (drawn
+    15 % long: the silhouette's spike) and a coaxial machine gun, smoke dischargers, a driver's hatch, a side
+    door and the exhaust. `Turret`, `Main_cannon` / `Muzzle_brake`, `Muzzle_main`, `Muzzle_coax` as before."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    hull.prism([(-1.8, .36), (-2.15, .64), (-2.07, .75), (-1.18, 1.0), (1.85, 1.02), (2.15, .82), (2.15, .45),
+                (1.85, .36)], 1.66, bevel=.05, seg=1)
+    dark.box((1.4, 3.4, .2), loc=(0, 0, .33), bevel=0)                                             # belly
+    tyres = a.part('Tyres', 'Rubber')
+    hubs = a.part('Hubs', 'Steel')
+    for s in (-1, 1):
+        for y in (-1.3, .4, 1.36):
+            tyres.cyl(.38, .3, loc=(s * .84, y, .38), rot=ACROSS, seg=12, bevel=.04, bseg=1)
+            a.part('Wheels', 'Armor').cyl(.22, .32, loc=(s * .84, y, .38), rot=ACROSS, seg=8, bevel=0)
+            hubs.cyl(.08, .34, loc=(s * .84, y, .38), rot=ACROSS, seg=6, bevel=0)
+        armor.box((.36, 1.0, .06), loc=(s * .86, -1.3, .83), bevel=0)                              # front arch
+        armor.box((.36, 2.0, .06), loc=(s * .86, .88, .83), bevel=0)                               # rear arches
+        mv._headlight(a, s * .6, -2.07, .8, guard=False)
+        mv._taillight(a, s * .66, 2.15, .86)
+        armor.box((.06, .6, .5), loc=(s * .835, -.45, .76), bevel=.02, seg=1)                      # side doors
+        steel.box((.14, .12, .1), loc=(s * .45, -2.17, .5), bevel=0)                               # tow eyes
+    mv._hatch(a, .42, -1.0, .96, .22, handle=False)                                                # driver
+    mv._periscopes(a, [(.42 + dx, -1.28, .92, 0) for dx in (-.14, .14)])
+    mv._exhaust(a, -.5, 2.15, .72, .34, .18)
+    a.part('Deck', 'Undercarriage').grille(.9, .6, loc=(-.2, 1.45, 1.04), rot=(-R90, 0, 0), slats=4, depth=.06,
+                                           thickness=.04)
+    armor.box((.5, .7, .06), loc=(.55, 1.5, 1.04), bevel=0)                                      # rear hatch (low:
+    a.pivot('Point_exhaust', (-.5, 2.2, .72))                                                     # the gun sweeps it)
+    a.pivot('Point_fire', (0, 1.4, 1.04))
+    # Small round turret with a long 25 mm cannon.
+    t = a.pivot('Turret', (0, .0, 1.02))
+    a.part('Turret_body', 'Team', t).cyl(.62, .32, r2=.52, loc=(0, 0, .17), seg=12, bevel=.04, bseg=1)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.42, .3, .26), loc=(0, -.58, .18), bevel=.04, seg=1, taper=(.85, .9))                # mantlet
+    tarm.box((.3, .26, .16), loc=(-.34, -.1, .39), bevel=.03, seg=1)                               # sight
+    a.part('Sight', 'Glass', t).box((.2, .03, .08), loc=(-.34, -.24, .4), bevel=0)
+    mv._hatch(a, .28, .12, .33, .2, parent=t, seg=10, handle=False)
+    for s in (-1, 1):
+        mv._smoke(a, a.part('Smoke', 'Steel', t), .5, .2, .27, s, count=3, gap=.07, r=.045, depth=.14)
+    cannon = a.part('Main_cannon', 'Steel', t)
+    cannon.cyl(.07, .4, loc=(0, -.8, .18), rot=FORWARD, seg=10, bevel=0)                          # receiver sleeve
+    cannon.cyl(.06, 1.45, loc=(0, -1.72, .18), rot=FORWARD, seg=8, bevel=0)                         # drawn thick
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.085, .14, loc=(0, -2.5, .18), rot=FORWARD, seg=8, bevel=0)
+    a.pivot('Muzzle_main', (0, -2.58, .18), t)
+    mv._coax(a, t, .26, -.62, .24, length=.34, housing=.22)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
@@ -960,4 +1014,5 @@ BUILDERS = {
     'daedalus': (daedalus, dict(ao_distance=.6, ground=False)),
     'scout_jeep': (scout_jeep, dict(ao_distance=.3, grime_height=.3)),
     'flame_tank': (flame_tank, dict(ao_distance=.55, grime_height=.5)),
+    'armored_car': (armored_car, dict(ao_distance=.5, grime_height=.45)),
 }
