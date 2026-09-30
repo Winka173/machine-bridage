@@ -52,6 +52,7 @@ namespace MachineBrigade.Game.Hud
                 "inflatable_decoy" => "t_decoy",
                 "fire_control_centre" => "t_firecontrol",
                 "searchlight" => "t_searchlight",
+                "barrage_balloon" => "t_balloon",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",

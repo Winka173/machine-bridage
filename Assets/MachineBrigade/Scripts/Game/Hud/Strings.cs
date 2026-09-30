@@ -2549,6 +2549,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.searchlight"] = ("Battlefield searchlight", "Đèn pha chiến trường"),
             ["short.searchlight"] = ("Searchlight", "Đèn pha"),
             ["note.searchlight"] = ("A 150 cm defence searchlight on a turntable: it lights the ground round the base at night and dazzles attackers.", "Đèn pha phòng thủ 150 cm trên bệ xoay: chiếu sáng quanh căn cứ ban đêm và làm lóa quân tấn công."),
+            // dx29: Bóng chắn máy bay.
+            ["unit.barrage_balloon"] = ("Barrage balloon", "Bóng chắn máy bay"),
+            ["short.barrage_balloon"] = ("Balloon", "Bóng chắn"),
+            ["note.barrage_balloon"] = ("A tethered balloon on a steel cable, as over the cities of the Second World War, here a modern aerostat: aircraft must climb over it.", "Khí cầu buộc dây cáp thép như trên các thành phố thời Thế chiến II, ở đây là khí cầu hiện đại: máy bay phải bay vọt lên cao."),
             // (batch A: new entries above)
         };
 

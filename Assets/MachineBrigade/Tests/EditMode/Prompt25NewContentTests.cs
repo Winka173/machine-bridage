@@ -65,6 +65,7 @@ namespace MachineBrigade.Tests
             new Row("inflatable_decoy", 300, 0, 0, -1, "none", -1, -1, -1, "decoy"),
             new Row("fire_control_centre", 2500, 0, 1, 40, "none", -1, -1, -1, "link"),
             new Row("searchlight", 1200, 0, 1, 70, "none", -1, -1, -1, "light"),
+            new Row("barrage_balloon", 800, 0, 0, -1, "none", -1, -1, -1, "balloon"),
             // (batch A rows: new ones above)
         };
 

@@ -1431,6 +1431,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[ban đêm và trong sương mù]], phe ta thấy mọi thứ trong 35 m quanh nó; địch trong vùng bắn kém 20%.\n" +
                 "Mạnh / yếu: biến trận đêm thành bất lợi cho kẻ tấn công; ban ngày vô dụng.\n" +
                 "Mẹo: mang theo cho trận đêm và sương mù."),
+            ["guide.barrage_balloon"] = (
+                "[[Barrage balloon]] · small structure · AA that never fires\n" +
+                "How it fights: enemy bombing within 40 m of it [[scatters 50 % wider]]; enemy helicopters keep out.\n" +
+                "Strong / weak: spoils bombing runs on the base; guided bombs do not care.\n" +
+                "Tip: put it over the towers you most want to keep.",
+                "[[Bóng chắn máy bay]] · công trình ô nhỏ · phòng không không bắn\n" +
+                "Cách đánh: bom địch ném trong 40 m quanh nó [[tản mát thêm 50%]]; trực thăng địch tránh vùng.\n" +
+                "Mạnh / yếu: phá các lượt ném bom vào căn cứ; bom dẫn đường không bị ảnh hưởng.\n" +
+                "Mẹo: đặt trên những tháp cần giữ nhất."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
