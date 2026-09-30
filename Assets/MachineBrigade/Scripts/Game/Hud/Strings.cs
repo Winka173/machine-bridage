@@ -590,6 +590,8 @@ namespace MachineBrigade.Game.Hud
             ["short.uav_loiter_strike_support"] = ("Loiter strike", "UAV lượn"),
             ["unit.uav_loiter_strike"] = ("Loitering attack UAV", "UAV lượn tấn công"),
             ["short.uav_loiter_strike"] = ("Attack UAV", "UAV tấn công"),
+            ["support.ammo_resupply"] = ("Ammo resupply", "Thả dù tiếp đạn"),
+            ["short.ammo_resupply"] = ("Resupply", "Tiếp đạn"),
             ["stat.tickets"] = ("TICKETS", "ĐIỂM"),
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{amount}/s", "+{amount}/s"),

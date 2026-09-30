@@ -530,12 +530,12 @@ namespace MachineBrigade.Sim.AI
             // Hard and Very Hard time their fire support with an attack: not while the army holds back.
             if (_difficulty >= AiDifficulty.Hard && _tactics.HoldingBack && _random.NextDouble() < 0.7) return false;
             var supports = Cards(world, economy.Supports, world.Catalog.Supports.Keys);
-            // Repair a battered group first.
+            // Repair or resupply a battered group first (prompt 25 F2 batch C: ht05 reuses the same group as Repair).
             if (FindDamagedGroup(world, out var hurt))
                 foreach (var id in supports)
                 {
                     var s = world.Catalog.Supports[id];
-                    if (s.Kind == SupportKind.Repair && Ready(world, economy, s) &&
+                    if (s.Kind is SupportKind.Repair or SupportKind.Resupply && Ready(world, economy, s) &&
                         world.Submit(Command.Strike(_team, id, hurt)).Accepted) return true;
                 }
 
@@ -563,8 +563,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in supports)
             {
                 var s = world.Catalog.Supports[id];
-                if (s.Kind is SupportKind.Repair or SupportKind.Smoke or SupportKind.Scan or SupportKind.Minefield or SupportKind.Tower or SupportKind.Sead ||
-                    !Ready(world, economy, s)) continue;
+                if (s.Kind is SupportKind.Repair or SupportKind.Smoke or SupportKind.Scan or SupportKind.Minefield or SupportKind.Tower or SupportKind.Sead
+                    or SupportKind.Resupply || !Ready(world, economy, s)) continue;
                 // Save the big one for big targets.
                 if (s.Kind == SupportKind.CruiseMissile && size < ClusterSize + 1) continue;
                 // The dearest strike, the commander's arm first (prompt 22 F.5: Hawk's airstrikes, Longshot's barrages).

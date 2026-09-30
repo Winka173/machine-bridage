@@ -1968,6 +1968,8 @@
     { "id": "cluster_at_strike", "kind": "Homing", "pen": 4, "cp": 9, "cooldown": 90, "delay": 2.0, "radius": 25, "count": 10, "damage": 160, "blast": 3, "tier": "Medium", "damageType": "ShapedCharge" },
     // ht04: a loaned attack UAV that circles the point for Duration, firing at the strongest enemy vehicle it can reach (Escort, as gunship_support).
     { "id": "uav_loiter_strike_support", "kind": "Escort", "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 40, "count": 1, "duration": 20, "tier": "Large", "units": ["uav_loiter_strike"] },
+    // ht05: an ammo resupply drop (Resupply): instantly refills every friendly weapon in the circle.
+    { "id": "ammo_resupply", "kind": "Resupply", "cp": 3, "cooldown": 60, "delay": 1.5, "radius": 15, "count": 1, "tier": "Small" },
   ],
 
   "props": [

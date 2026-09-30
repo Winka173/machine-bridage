@@ -158,6 +158,21 @@ namespace MachineBrigade.Sim.Abilities
             return false;
         }
 
+        /// <summary>
+        /// Prompt 25 F2 batch C (ht05, the ammo resupply drop): instantly fills every weapon of one vehicle, in place
+        /// (unlike the slow trickle of <see cref="RearmAtHome"/> and <see cref="Rearm"/> in <see cref="SupplySystem"/>).
+        /// </summary>
+        public void Resupply(Vehicle v)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+            {
+                var w = v.Weapons[i];
+                if (w.Load > 0) { w.Ammo = w.Load; w.LoadProgress = 0f; }
+                else if (v.Arms[i].Ammo > 0) { w.Ammo = v.Arms[i].Ammo; w.ReloadLeft = 0f; }
+            }
+            v.RearmProgress = 0f;
+        }
+
         // ------------------------------------------------------------------ ammunition and support
 
         private void RearmAtHome(Vehicle v)

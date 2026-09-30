@@ -1121,6 +1121,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: một [[UAV tấn công]] lượn trên điểm chọn trong {{duration}} giây, tự bắn vào xe địch mạnh nhất trong tầm; khác mọi thẻ khác ở đây, đòn này không tức thì.\n" +
                 "Mạnh / yếu: giữ áp lực suốt trận đánh đang diễn ra; phòng không địch bắn hạ được UAV, kết thúc sớm.\n" +
                 "Mẹo: gọi ngay khi trận đánh bắt đầu, có người che chắn phòng không địch."),
+            ["guide.ammo_resupply"] = (
+                "[[Ammo resupply]] · instant refill · {{cp}} CP\n" +
+                "How it fights: every friendly vehicle within {{radius}} m has its weapons refilled at once, no waiting.\n" +
+                "Strong / weak: keeps artillery and aircraft in the fight when their stores run dry; useless on a vehicle that is not limited on ammunition.\n" +
+                "Tip: call it on your howitzers and strike aircraft once their rate of fire drops.",
+                "[[Thả dù tiếp đạn]] · nạp đầy ngay · {{cp}} CP\n" +
+                "Cách đánh: mọi xe ta trong vòng {{radius}} m được nạp đầy đạn ngay lập tức, không phải chờ.\n" +
+                "Mạnh / yếu: giữ pháo binh và máy bay tiếp tục chiến đấu khi hết đạn; vô dụng với xe không giới hạn đạn.\n" +
+                "Mẹo: gọi cho lựu pháo và máy bay tấn công của bạn khi tốc độ bắn giảm."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

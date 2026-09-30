@@ -480,6 +480,17 @@ namespace MachineBrigade.Sim.Strikes
                     return true;
                 }
 
+                // Prompt 25 F2 batch C (ht05): every friendly vehicle within Radius has its weapons refilled at once.
+                case SupportKind.Resupply:
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team != s.Team || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
+                        _world.Abilities.Resupply(v);
+                    }
+                    return true;
+
                 default:
                     return true;
             }

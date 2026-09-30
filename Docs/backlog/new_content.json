@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 48,
+    "chưa làm": 47,
     "đang làm": 0,
-    "xong": 45
+    "xong": 46
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 7,
+      "chưa làm": 6,
       "đang làm": 0,
-      "xong": 4
+      "xong": 5
     },
     "boss": {
       "chưa làm": 8,
@@ -1147,9 +1147,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward."
+      "status": "xong",
+      "id": "ammo_resupply",
+      "notes": "Batch C: support ammo_resupply, a new kind SupportKind.Resupply (StrikeSystem.cs) calling a new AbilitySystem.Resupply(v) that instantly fills a vehicle's weapons (ammo and aircraft stores) instead of the slow trickle of SupplySystem. AI: reuses the Repair-priority block (FindDamagedGroup) and is excluded from the generic enemy-cluster strike path. Sold in the shop (1,500)."
     },
     {
       "key": "ht06",
