@@ -12212,3 +12212,70 @@ blast radius read as a long glowing ring) and three generic grey puffs. Now (`Fl
 - scale 0.8 at 20 mm, 1 at 35, 1.5 at 57, 1.8 at 76 (prompt 25 G's was 0.75 to 1.5); puffs 1.5-1.9 and 2.1-2.6 m times the
   scale before they swell, larger than the old ones; about 40 particles for a 35 mm burst, Low about 25.
 The shot sheet: `EffectShots.FlakBurstShots` (20, 35, 57, 76 mm at 0.03, 0.4 and 2.5 s).
+
+## 25F2-B. New content, batch B (2026-10-01)
+
+Prompt 25 F2 continued: batch B is the 33 "unit" items of `Docs/backlog/new_content.json` at priority Thấp (the
+`dx*` keys). The owner's choice for this batch, unlike A: **stand-in models**. Every item is complete (data,
+mechanics, AI, texts, unlock, card) but draws an existing unit's model with a tint; the real models and any deferred
+mechanism come at prompt 26-27. 32 of the 33 are built; `dx23` (a Super Tank module picked at deploy time, no CP of
+its own) needs a deploy-time UI choice this pass does not build and stays "đang làm".
+
+### The tint ("Prompt 25 F2 batch B card-render tint infrastructure", already merged)
+
+A stand-in's `"tint": [r, g, b]` is not new: it is the boss-variant colour multiply `VehicleView.ApplyTint` already
+puts on every model at spawn (`Catalog.P20.ParseP20` already reads a top-level `"tint"` on any vehicle). What batch B
+needed was its card: `CardRenders.RenderBatch` used to key a card's picture by its model id, so two cards sharing a
+hull shared one picture. Non-boss units with a tint now key their own picture by their own id
+(`CardRenders.PictureKey`) and get the same "_Tint" property-block wash put on the model before the render is
+captured (`CardRenders.Stage.Render`'s new `tint` argument). Boss variants are untouched: they keep sharing their
+frame's picture key, as before.
+
+### How the sheet was read
+
+- **Numbers.** Health is the sheet's over the vehicle toughness (2.2), as in batch A. CP, armour, speed, vision,
+  weapon numbers are the sheet's, on the calibre scale and the sheet's own suggested rate/range where reasonable.
+- **Weapons.** Reused as is wherever an existing weapon was close (the majority): `hmg_roof`, `mg_jeep`, `minigun`,
+  `heli_atgm`, `scout_rockets`, `heli_gun`, `agl_40`, `mg_coax_ground`, `autocannon_25`, `jet_bombs`, `sam`, all
+  already in balance.json. Nine new weapons only where nothing fit: `gun_57mm_2s38`, `gun_125_armata_ke`,
+  `gun_100_river`, `nsm_coastal`, `gun_155_crusader`, `gun_105_ags`, `spg9_73mm`, `cruise_missile_ground`, `net_zap`,
+  and `one_shot_kornet` (`tower_kornet` with `burst: 1` and a `clipReload` that never comes round again).
+- **Mechanics reused as is:** `mines` (dx13's rocket truck, its rockets seed a field rather than fire for damage),
+  `mineProof` (dx21), `aps` with `charges: 2` (dx19), `paradrop` (+ a second chute proxy, dx37, the same shape as
+  batch A's dx10), `repair` (dx41, wider and slower than the engineer's own), `jammer` (dx49, dx54: both play as a
+  second copy of the EW jammer's own effect), `microwave` (dx24: plays as batch A's anti-drone pulse), `flares` and
+  `shelter` (dx44, dx46: literally batch A's ct12/ct11 mechanisms again, in a cheaper small-slot and a bigger
+  medium-slot card respectively — same balance.json fields, new ids).
+- **Unlocks, texts, icons, AI.** The same convention as batch A: the shop at D2's price is the one unlock source
+  (`Progression.NewContentPrices`, `EnemyMayUse`); `unit.`, `short.` (15 letters at most), `note.` (the real vehicle
+  the model and tint stand in for) in `Strings.cs`, a two-line Guide card in `GuideText.cs` (shorter than batch A's
+  four lines: these are quieter items); `CardIcons` / `TowerIcons` entries, every one an existing glyph (no new icon
+  art this pass); `base.ai.styles.default` weights for the six towers (no per-general tuning this pass, unlike
+  batch A's spread across ten generals).
+
+### Simplifications (each also called out on its balance.json line)
+
+No mechanism exists yet, this pass, for: a true side-flip capture (`dx24` downs drones instead), an on-demand
+accuracy-debuff cone separate from jamming (`dx49`, `dx54` play as jammers), a ship-only weapon filter (`dx34` also
+hits ground targets), a water/land speed pair (`dx36` keeps one speed throughout), a deploy-before-firing delay
+(`dx43` is just unarmoured and cheap instead), a wreck-turned-turret entity (`dx22` is a bigger death blast instead),
+a minion-spawn command (`dx40`'s three robots are not modelled; it is one cheap scout), a vehicle-aura field for a
+support unit's own buff (`dx42`'s AA-range bonus and `dx51`'s aircraft-endurance bonus are not modelled; both are
+plain high-vision or unarmed support units for now), an airlift-drop command (`dx52` is an unarmed heavy transport),
+and a river-gap map feature (`dx53` is a plain armoured support vehicle). None of these block a normal match; they
+are all things the item's card correctly sells and fields, just not yet doing the sheet's exact trick.
+
+### Tests (written, not run: the owner's rule)
+
+`Tests/EditMode/Prompt25NewContentBTests.cs`, one row per item (health, CP, texts, the one shop unlock): compact by
+design, unlike batch A's `Prompt25NewContentTests` (no per-mechanism scene — every mechanism reused here already has
+its own batch A coverage, or is a known, documented simplification). Also to run in the test phase: `CatalogCheck`
+(already run: OK, 231 vehicles, 283 weapons), `CardRenderTests`, `StringsTests`, `LocalisationScanTests`,
+`TowerIconTests`.
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (weapons before `net_zap`'s anchor, units before "Mission-only units", `base.ai.styles.default`),
+`Strings.cs`, `GuideText.cs`, `Progression.cs`, `MatchSettings.cs` (`AllVehicles`), `MenuScreen.cs` (`CardIcons`),
+`TowerIcons.cs`, `CardRenders.cs`, `Definitions.cs`, `Catalog.cs`, `Docs/backlog/new_content.json`,
+`Docs/ASSET_DEBT.md`.

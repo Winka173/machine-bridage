@@ -37,6 +37,23 @@ its commits.
   - structures: gabion blast wall, inflatable decoy, fire-control centre, searchlight, barrage balloon, visual jammer,
     troop shelter, flare tower. Searchlights and flare towers work at night and in fog.
 - The catalog loads again: an empty weapon family no longer stops it.
+
+### New content, batch B (prompt 25 F2, DECISIONS 25F2-B)
+
+- 32 more cards from the balance spreadsheet (the Thấp-priority items), each sold in the shop (1,500-5,000 coins) and
+  fielded by the enemy too. The owner's choice for this batch: every card is complete (mechanics, AI, texts, unlock)
+  but wears another unit's model with a colour wash, its own tint, so it reads apart in the shop; the real models
+  come in a later prompt. Among them: a 57 mm AA vehicle, a mine-laying rocket truck, a light prop attack plane and
+  a light attack helicopter, a next-generation tank (a double-charge active protection), a demolition-line vehicle,
+  a drone-hijack vehicle, a MANPADS post, river patrol and gun boats, a coastal anti-ship vehicle, an auto-loading
+  howitzer, an amphibious light vehicle, an airborne light tank (parachutes in like the airborne fighting vehicle), a
+  stealth carrier strike jet, a twin-rotor gunship, a mobile repair vehicle, a towed anti-tank gun, a flare tower and
+  a recoilless gun post at the small slot, a bigger bunker at the medium slot, a laser dazzler and a GPS jammer
+  vehicle, a ground-launched cruise missile vehicle, an aerial tanker, a heavy-lift helicopter, a bridging vehicle, a
+  drone net corridor, and a one-shot ATGM battery.
+- `CardRenders.RenderBatch`: a non-boss unit with a tint now gets its own card picture (keyed by its own id) instead
+  of sharing its borrowed model's, the same colour wash `VehicleView` already puts on a boss variant.
+
 ### Second rounds (prompt 25 G, DECISIONS 25G)
 
 - 66 guns get a second round from the balance sheet's suggestions (`Tools/balance/import_alt_rounds.py`, balance.json
