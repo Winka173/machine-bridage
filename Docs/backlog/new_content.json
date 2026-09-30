@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 53,
+    "chưa làm": 52,
     "đang làm": 0,
-    "xong": 40
+    "xong": 41
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 1,
+      "chưa làm": 0,
       "đang làm": 0,
-      "xong": 13
+      "xong": 14
     },
     "support": {
       "chưa làm": 11,
@@ -1077,9 +1077,9 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "anti_ship_missile",
+      "notes": "Batch C: weapon anti_ship_missile (nsm_oniks family), cataloged with the sheet's numbers but not fitted to a unit — its host, \"coastal anti-ship missile vehicle (new)\", does not exist and building a new vehicle is out of scope for an ordnance-only batch. Per the prompt: unit does not exist, listed in DECISIONS."
     },
     {
       "key": "ht01",

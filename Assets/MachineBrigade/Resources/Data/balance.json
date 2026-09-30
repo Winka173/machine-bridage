@@ -266,6 +266,7 @@
     { "id": "coyote_block_2", "real": "Coyote Block 2", "projectileSpeed": 40, "splash": 2, "roundWeight": 5, "roundLength": 0.8 },
     { "id": "smart_155_bonus", "real": "SMArt 155 / BONUS", "projectileSpeed": 45, "splash": 2, "projectileModel": "smart_155", "roundLength": 0.8 },
     { "id": "switchblade_300", "real": "Switchblade 300", "projectileSpeed": 30, "splash": 2, "roundWeight": 3, "roundLength": 0.8 },
+    { "id": "nsm_oniks", "real": "NSM / P-800 Oniks", "projectileSpeed": 30, "splash": 7, "roundWeight": 680, "roundLength": 3.17 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -624,6 +625,9 @@
     { "id": "smart_at_shell", "real": "SMArt 155 / BONUS", "weaponFamily": "smart_155_bonus", "family": "howitzer", "size": 155, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 25, "range": 90, "minRange": 25, "projectileSpeed": 45, "impactTier": "Medium", "projectileModel": "smart_155", "roundLength": 0.8, "cluster": { "count": 2, "radius": 4, "damage": 220, "splash": 1.5, "pen": 4, "tier": "Medium" } },
     // tl13: Switchblade 300-class mini swarm (fibre_fpv_carrier secondary): 6 cheap kamikaze drones, easily shot down, no jamProof / oneAtATime.
     { "id": "fpv_swarm_mini", "real": "Switchblade 300", "weaponFamily": "switchblade_300", "family": "drone", "size": 3, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 90, "burst": 6, "burstInterval": 0.4, "cooldown": 50, "range": 50, "projectileSpeed": 30, "splash": 2, "impactTier": "Medium", "projectile": "Drone", "projectileModel": "switchblade_300", "roundLength": 0.8 },
+    // tl14: NSM/P-800 Oniks-class coastal anti-ship missile. Not fitted to a unit: its host, "coastal anti-ship missile
+    // vehicle (new)", does not exist yet (out of scope for ordnance-only batch C); cataloged for when it is built.
+    { "id": "anti_ship_missile", "real": "NSM / P-800 Oniks", "weaponFamily": "nsm_oniks", "family": "missile", "size": 680, "pen": 4, "damageType": "HighExplosive", "damage": 450, "cooldown": 30, "range": 140, "projectileSpeed": 30, "splash": 7, "impactTier": "Huge", "projectile": "Missile", "projectileModel": "nsm_oniks", "roundLength": 3.17 },
   ],
 
   // ----------------------------------------------------------------------------------------------------
