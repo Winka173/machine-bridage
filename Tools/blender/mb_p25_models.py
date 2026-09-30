@@ -1003,6 +1003,123 @@ def armored_car(a):
     mv._coax(a, t, .26, -.62, .24, length=.34, housing=.22)
 
 
+# ----------------------------------------------------------------------------- MRAP pair (KamAZ Typhoon-K class)
+def _mrap(a):
+    """The 6x6 MRAP both drone launchers ride (KamAZ Typhoon-K class, 7.2 x 2.0 m at 0.8 x): a tall armoured
+    cab-over crew cab with a sloped two-pane armoured windscreen, a V-hull belly, three axles of big wheels (one
+    forward, a tandem aft), a winch bumper, the roof machine gun (`Mount_mg`, `Muzzle_mg`) and a chassis to y 3.45
+    for the rear module. Returns the chassis top height."""
+    hd.mark(a, False)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Chassis', 'Undercarriage')
+    dark.box((1.3, 6.9, .3), loc=(0, -.1, .72), bevel=0)                                          # frame rails
+    dark.prism([(-.95, .86), (.95, .86), (.35, .5), (-.35, .5)], 3.0, loc=(0, -2.4, 0), axis='Y', bevel=0)  # V-hull
+    tyres = a.part('Tyres', 'Rubber')
+    for s in (-1, 1):
+        for y in (-2.35, 1.1, 2.45):
+            tyres.cyl(.5, .38, loc=(s * .8, y, .5), rot=ACROSS, seg=12, bevel=.05, bseg=1)
+            a.part('Wheels', 'Armor').cyl(.28, .4, loc=(s * .8, y, .5), rot=ACROSS, seg=8, bevel=0)
+            steel.cyl(.1, .42, loc=(s * .8, y, .5), rot=ACROSS, seg=6, bevel=0)
+        armor.box((.42, 1.2, .06), loc=(s * .8, -2.35, 1.07), bevel=0)                              # front fenders
+        armor.box((.42, 2.6, .06), loc=(s * .8, 1.78, 1.07), bevel=0)                               # rear fenders
+        mv._headlight(a, s * .7, -3.64, 1.12, guard=False)
+        mv._taillight(a, s * .75, 3.47, 1.0)
+        armor.box((.06, .8, .9), loc=(s * .97, -2.2, 1.55), bevel=.02, seg=1)                      # door armour
+        a.part('Glass', 'Glass').box((.03, .44, .3), loc=(s * .985, -2.2, 1.95), bevel=0)          # door windows
+        steel.box((.2, .5, .06), loc=(s * .9, -2.2, .98), bevel=0)                                  # steps
+    # Armoured cab: sloped windscreen, flat roof; the bumper with its winch.
+    body.prism([(-3.62, .82), (-3.66, 1.1), (-3.5, 1.5), (-3.1, 2.28), (-1.5, 2.3), (-1.5, .82)], 1.9, bevel=.06,
+               seg=1)
+    glass = a.part('Glass', 'Glass')
+    for s in (-1, 1):
+        glass.box((.8, .04, .56), loc=(s * .44, -3.32, 1.9), rot=(-.44, 0, 0), bevel=0)
+    steel.box((1.9, .16, .2), loc=(0, -3.72, .9), bevel=.03, seg=1)                                 # bumper
+    armor.cyl(.1, .6, loc=(0, -3.8, .9), rot=ACROSS, seg=8, bevel=0)                                # winch
+    armor.box((1.7, .12, .1), loc=(0, -3.18, 2.2), rot=(-.44, 0, 0), bevel=0)                      # sun visor
+    mv._roof_mg(a, None, (.4, -2.35, 2.3), length=.8)
+    a.pivot('Point_exhaust', (-.95, -1.6, 2.1))
+    return .87
+
+
+def fpv_carrier(a):
+    """FPV drone launcher (KamAZ Typhoon-K with a drone module), 7.2 x 2.0 x 2.8 m: the MRAP (_mrap) with a tall
+    armoured rear module, and on its roof at the back the trainable launch rack (`Turret`): a 4 x 5 grid of square
+    cells, some with a drone waiting in them (from above, the grid of small squares the sheet asks for).
+    `Muzzle_main` at the middle of the rack's top."""
+    top = _mrap(a)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    body.box((1.96, 4.9, 1.46), loc=(0, .98, top + .73), bevel=.06, seg=1)                        # rear module
+    armor.box((.9, .06, 1.1), loc=(0, 3.44, top + .66), bevel=.02, seg=1)                          # rear door
+    for s in (-1, 1):
+        armor.box((.06, 3.4, .5), loc=(s * .99, .6, top + .95), bevel=.02, seg=1)                   # add-on plates
+    mv._hatch(a, -.45, -.6, top + 1.46, .25, handle=False)
+    a.pivot('Point_fire', (0, .2, top + 1.5))
+    t = a.pivot('Turret', (0, 2.1, top + 1.46))
+    a.part('Rack_base', 'Steel', t).cyl(.5, .12, loc=(0, 0, .06), seg=10, bevel=0)
+    frame = a.part('Rack_frame', 'Armor', t)
+    frame.box((1.72, 2.1, .36), loc=(0, 0, .3), bevel=.03, seg=1)
+    cells = a.part('Launch_cells', 'Undercarriage', t)
+    drones = a.part('Rack_drones', 'Steel', t)
+    for i in range(4):
+        for j in range(5):
+            x, y = -.63 + i * .42, -.8 + j * .4
+            cells.box((.34, .32, .04), loc=(x, y, .49), bevel=0)
+            if (i + j) % 3 == 0:
+                drones.box((.26, .1, .05), loc=(x, y, .52), rot=(0, 0, .785), bevel=0)
+                drones.box((.26, .1, .05), loc=(x, y, .52), rot=(0, 0, -.785), bevel=0)
+    a.part('Rack_lights', 'TeamGlow', t).box((1.6, .06, .06), loc=(0, -1.07, .4), bevel=0)
+    a.pivot('Muzzle_main', (0, 0, .52), t)
+
+
+def lancet_truck(a):
+    """Lancet launcher (KamAZ Typhoon-K with a flatbed), 7.2 x 2.0 x 2.8 m: the MRAP (_mrap) with a low-sided bed
+    carrying the ground-control station and its folded sensor mast, and at the back the trainable launcher
+    (`Turret`): a long box of six canisters (2 x 3) laid 12 degrees up on its rear hinge between two rams, the
+    munitions' X wings showing in the open cells. From above it is the long rail box down the bed the sheet
+    describes. `Muzzle_main` at the middle of the cells' mouths; the dark `Box_face` behind them is the launch face.
+    The box, cells, munitions and rams are named for ModelLibrary's erector (they rise together to fire)."""
+    top = _mrap(a)
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    a.part('Bed', 'Team').box((1.96, 4.9, .14), loc=(0, .98, top + .07), bevel=.02, seg=1)
+    for s in (-1, 1):
+        armor.box((.08, 4.9, .36), loc=(s * .96, .98, top + .3), bevel=0)                           # side rails
+    a.part('Body', 'Team').box((1.5, 1.2, 1.2), loc=(0, -.8, top + .74), bevel=.06, seg=1)          # control station
+    steel.box((.14, 1.6, .14), loc=(.55, .2, top + 1.42), bevel=0)                                  # folded mast
+    a.part('Sensor', 'Glass').sphere(.16, loc=(.55, 1.05, top + 1.42), seg=8, rings=5)
+    a.pivot('Point_fire', (0, -.8, top + 1.4))
+    t = a.pivot('Turret', (0, 2.2, top + .2))
+    a.part('Rack_base', 'Steel', t).cyl(.45, .14, loc=(0, 0, .07), seg=10, bevel=0)
+    pitch = .21                                                                                    # 12 degrees
+    hinge = Vector((0, .9, .36))
+    along = Vector((0, -math.cos(pitch), math.sin(pitch)))
+    up = Vector((0, math.sin(pitch), math.cos(pitch)))
+    rot = (-pitch, 0, 0)
+    L, W, H = 2.7, 1.2, .7
+    centre = hinge + along * (L / 2) + up * (H / 2)
+    a.part('Box_shell', 'Armor', t).box((W, L, H), loc=tuple(centre), rot=rot, bevel=.04, seg=1)
+    front = hinge + along * L + up * (H / 2)
+    a.part('Box_face', 'Undercarriage', t).box((W - .1, .04, H - .1), loc=tuple(front + along * .01), rot=rot, bevel=0)
+    cells = a.part('Cells', 'Team', t)
+    wings = a.part('Munition_wings', 'Fuel', t)
+    for i in range(3):
+        for j in range(2):
+            c = front + along * .03 + Vector((-.38 + i * .38, 0, 0)) + up * (-.16 + j * .32)
+            cells.box((.3, .06, .28), loc=tuple(c), rot=rot, bevel=0)
+            if (i + j) % 2 == 0:
+                wings.box((.26, .04, .04), loc=tuple(c + along * .03), rot=(-pitch, 0, .785), bevel=0)
+                wings.box((.26, .04, .04), loc=tuple(c + along * .03), rot=(-pitch, 0, -.785), bevel=0)
+    a.part('Stripes', 'Hazard', t).box((W + .02, .12, H + .02), loc=tuple(hinge + along * (L * .7) + up * (H / 2)),
+                                       rot=rot, bevel=0)
+    rams = a.part('Rams', 'Steel', t)
+    for s in (-1, 1):
+        rams.limb((s * .5, -.6, .16), tuple(Vector((s * .5, 0, 0)) + hinge + along * 1.5), .1, .1, bevel=0)
+    a.pivot('Muzzle_main', tuple(front + along * .08), t)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
@@ -1015,4 +1132,6 @@ BUILDERS = {
     'scout_jeep': (scout_jeep, dict(ao_distance=.3, grime_height=.3)),
     'flame_tank': (flame_tank, dict(ao_distance=.55, grime_height=.5)),
     'armored_car': (armored_car, dict(ao_distance=.5, grime_height=.45)),
+    'fpv_carrier': (fpv_carrier, dict(ao_distance=.5, grime_height=.5)),
+    'lancet_truck': (lancet_truck, dict(ao_distance=.5, grime_height=.5)),
 }
