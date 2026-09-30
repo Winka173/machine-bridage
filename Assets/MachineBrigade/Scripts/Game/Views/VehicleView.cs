@@ -1263,8 +1263,9 @@ namespace MachineBrigade.Game.Views
             if (spinners.Count == 0) return;
             _spinAngles ??= new float[spinners.Count];
             var dt = Time.deltaTime * speed;
-            // A knocked-out vehicle's radar (an EMP's or a SEAD strike's stun) stops dead and slumps on its mount.
-            var dead = Sim.Stunned && Sim.IsAlive;
+            // A knocked-out vehicle's radar (an EMP's or a SEAD strike's stun) stops dead and slumps on its mount; a range
+            // dummy's keeps turning (play-test 10: a dummy is held still, not knocked out).
+            var dead = Sim.KnockedOut && Sim.IsAlive;
             _radarDown = Mathf.MoveTowards(_radarDown, dead ? 1f : 0f, Time.deltaTime * (dead ? 2.2f : 0.7f));
             for (var i = 0; i < spinners.Count; i++)
             {
