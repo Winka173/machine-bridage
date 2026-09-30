@@ -143,6 +143,7 @@ namespace MachineBrigade.Game.Match
             "recon_jet",
             "interceptor_jet",
             "radar_scout",
+            "fibre_fpv_carrier",
             // (batch A cards: new entries above)
         };
 

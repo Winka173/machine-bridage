@@ -2557,6 +2557,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.visual_jammer"] = ("Visual jammer", "Máy tạo nhiễu tầm nhìn"),
             ["short.visual_jammer"] = ("Visual jammer", "Nhiễu tầm nhìn"),
             ["note.visual_jammer"] = ("An electronic camouflage station: emitters and aerosol generators that blind cameras and sights round the base.", "Trạm ngụy trang điện tử: bộ phát nhiễu và máy tạo sương làm mù camera và kính ngắm quanh căn cứ."),
+            // dx47: Xe phóng drone FPV cáp quang.
+            ["unit.fibre_fpv_carrier"] = ("Fibre-optic FPV carrier", "Xe phóng drone FPV cáp quang"),
+            ["short.fibre_fpv_carrier"] = ("Fibre FPV", "FPV cáp quang"),
+            ["note.fibre_fpv_carrier"] = ("A pickup launching fibre-optic FPV drones, as in the war in Ukraine in 2024-2025: steered down a thin cable, so jammers cannot touch them.", "Xe bán tải phóng drone FPV cáp quang như trong chiến sự Ukraine 2024–2025: điều khiển qua sợi cáp mảnh nên gây nhiễu không chạm được."),
             // (batch A: new entries above)
         };
 

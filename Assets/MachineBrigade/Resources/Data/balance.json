@@ -493,6 +493,8 @@
     { "id": "glide_fab500", "load": 2, "real": "FAB-500 M-62 with UMPK glide kit", "family": "bomb", "size": 500, "pen": 3, "form": "GuidedBomb", "projectileModel": "bomb", "projectileScale": 0.7324, "roundLength": 1.2, "damageType": "HighExplosive", "damage": 420, "cooldown": 3, "range": 90, "projectileSpeed": 20, "splash": 10, "spread": 1.5, "impactTier": "Huge", "projectile": "Bomb", "guided": true, "glides": true },
     // dx16: R-37M: a very long-range air-to-air missile, two a sortie, no shot inside 15 m; it goes for big aircraft first.
     { "id": "r37m", "ceiling": "high", "load": 2, "real": "R-37M", "family": "aa_missile", "size": 100, "pen": 3, "projectileModel": "aim120", "projectileScale": 1.3, "damageType": "Fragmentation", "damage": 400, "cooldown": 4, "range": 90, "minReach": 15, "projectileSpeed": 70, "splash": 3, "impactTier": "Medium", "projectile": "Missile", "targets": "Air", "flareResist": 0.7, "bigGame": true },
+    // dx47: the fibre-optic FPV drone: jammers do nothing to it; slower, and its operator flies one at a time.
+    { "id": "fpv_fibre", "real": "Fibre-optic FPV drone (1.5 kg)", "family": "drone", "size": 1.5, "pen": 3, "topAttack": true, "piercing": true, "damageType": "ShapedCharge", "damage": 160, "cooldown": 6, "range": 60, "projectileSpeed": 16, "splash": 2.5, "projectileModel": "fpv_drone", "roundLength": 0.8, "projectileScale": 1.4551, "impactTier": "Medium", "projectile": "Drone", "jamProof": true, "oneAtATime": true },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -1072,6 +1074,9 @@
     // dx30: the visual jammer (a utility module, electronic camouflage): enemies see nothing of its side within 35 m of it from further than 15 m, unless they are scouts.
     { "id": "visual_jammer", "modelSize": [6.0, 5.0, 6.5], "fort": { "size": "Medium", "kind": "Utility" }, "static": true, "armour": 1, "hp": 909, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3, "length": 6, "width": 5, "cp": 0, "vision": 30,
       "weapon": "none", "sightJammer": { "radius": 35, "close": 15 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
+    // dx47: the fibre-optic FPV carrier: an answer to a jamming enemy.
+    { "id": "fibre_fpv_carrier", "modelSize": [4.6, 1.9, 2.0], "class": "TankHunter", "armour": 1, "hp": 432, "speed": 10, "turnRate": 110, "turretTurnRate": 90, "radius": 1.8, "length": 4.6, "width": 1.9, "cp": 7, "vision": 44,
+      "firesWhileMoving": false, "weapon": "fpv_fibre", "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

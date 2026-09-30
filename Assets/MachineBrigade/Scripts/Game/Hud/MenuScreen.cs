@@ -865,6 +865,7 @@ namespace MachineBrigade.Game.Hud
             "recon_jet" => "fighter",
             "interceptor_jet" => "fighter",
             "radar_scout" => "armoredcar",
+            "fibre_fpv_carrier" => "fpvtruck",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",

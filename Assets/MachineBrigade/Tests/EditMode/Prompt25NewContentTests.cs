@@ -67,6 +67,7 @@ namespace MachineBrigade.Tests
             new Row("searchlight", 1200, 0, 1, 70, "none", -1, -1, -1, "light"),
             new Row("barrage_balloon", 800, 0, 0, -1, "none", -1, -1, -1, "balloon"),
             new Row("visual_jammer", 2000, 0, 1, 30, "none", -1, -1, -1, "screen"),
+            new Row("fibre_fpv_carrier", 950, 7, 1, -1, "fpv_fibre", 160, 60, 26.7f, "jamProof"),
             // (batch A rows: new ones above)
         };
 

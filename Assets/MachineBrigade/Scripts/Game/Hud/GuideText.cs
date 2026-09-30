@@ -1449,6 +1449,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: địch không thấy gì của ta trong 35 m quanh nó nếu xa hơn [[15 m]], trừ trinh sát.\n" +
                 "Mạnh / yếu: pháo binh không tìm được thứ nó che; trinh sát và UAV quét nhìn xuyên.\n" +
                 "Mẹo: đặt tháp và pháo binh trong vòng 35 m."),
+            ["guide.fibre_fpv_carrier"] = (
+                "[[Fibre-optic FPV carrier]] · light armour · drones jammers cannot stop\n" +
+                "How it fights: flies one [[fibre-optic drone]] at a time onto armour out to 60 m, one every 6 s; no jammer scrambles it.\n" +
+                "Strong / weak: beats tanks behind jammers; point defences still take its drones.\n" +
+                "Tip: bring it when the enemy leans on jammers.",
+                "[[Xe phóng drone FPV cáp quang]] · giáp nhẹ · không thể gây nhiễu\n" +
+                "Cách đánh: điều khiển từng chiếc [[drone cáp quang]] lao vào xe bọc thép, tầm 60 m, 6 giây một chiếc; gây nhiễu vô tác dụng.\n" +
+                "Mạnh / yếu: thắng xe tăng núp sau xe gây nhiễu; hệ đánh chặn vẫn hạ được drone.\n" +
+                "Mẹo: mang theo khi địch dùng nhiều gây nhiễu."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
