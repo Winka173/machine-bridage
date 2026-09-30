@@ -1287,6 +1287,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: tám [[tên lửa tầm nhiệt]] một loạt, tầm 44 m, vừa chạy vừa bắn, rồi nạp 15 giây.\n" +
                 "Mạnh / yếu: hạ trực thăng và drone trong một loạt; pháo sáng lừa được vài quả, dưới đất thứ gì cũng diệt được nó.\n" +
                 "Mẹo: dành loạt tên lửa cho một cặp trực thăng."),
+            ["guide.microwave_vehicle"] = (
+                "[[Anti-drone microwave vehicle]] · light armour · a swarm at once\n" +
+                "How it fights: every 8 s a [[microwave pulse]] downs every enemy drone in a 60° cone out to 30 m; vehicles are unharmed.\n" +
+                "Strong / weak: wipes out FPV swarms and drone aircraft; useless against anything else.\n" +
+                "Tip: park it beside your tanks where the drones dive.",
+                "[[Xe vi sóng chống drone]] · giáp nhẹ · diệt cả bầy\n" +
+                "Cách đánh: mỗi 8 giây một [[xung vi sóng]] làm rơi mọi drone địch trong hình nón 60°, tầm 30 m; xe không hề hấn.\n" +
+                "Mạnh / yếu: quét sạch bầy FPV và máy bay drone; vô dụng với mọi thứ khác.\n" +
+                "Mẹo: đỗ cạnh xe tăng ta, nơi drone lao xuống."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

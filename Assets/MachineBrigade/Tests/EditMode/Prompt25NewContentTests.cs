@@ -49,6 +49,7 @@ namespace MachineBrigade.Tests
             new Row("heavy_flak_tower", 3000, 0, 2, 64, "flak_88", 120, 70, 60, "groundRange"),
             new Row("aa_gun_vehicle", 1000, 5, 1, -1, "bofors_l70", 30, 48, 75, "air"),
             new Row("shorad_vehicle", 700, 4, 0, -1, "avenger_stingers", 170, 44, -1, "ripple"),
+            new Row("microwave_vehicle", 900, 6, 1, -1, "none", -1, -1, -1, "microwave"),
             // (batch A rows: new ones above)
         };
 

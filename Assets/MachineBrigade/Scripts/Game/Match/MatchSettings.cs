@@ -132,6 +132,7 @@ namespace MachineBrigade.Game.Match
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new vehicles.
             "aa_gun_vehicle",
             "shorad_vehicle",
+            "microwave_vehicle",
             // (batch A cards: new entries above)
         };
 

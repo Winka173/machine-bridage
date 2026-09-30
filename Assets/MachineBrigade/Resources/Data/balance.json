@@ -985,6 +985,10 @@
     { "id": "shorad_vehicle", "modelSize": [3.8, 1.8, 2.2], "class": "AntiAir", "armour": 0, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 200, "radius": 1.6, "length": 3.8, "width": 1.8, "cp": 4, "vision": 44,
       "firesWhileMoving": true, "weapon": "avenger_stingers", "mainSlot": "missile", "secondary": [ { "weapon": "hmg_selfdef_21", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.2, "tier": "Large" } },
+    // dx04: a high-power microwave (Epirus Leonidas): a pulse every 8 s downs every enemy drone in a 60 degree cone out to 30 m; nothing else is harmed.
+    { "id": "microwave_vehicle", "modelSize": [5.8, 2.1, 2.9], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 9, "turnRate": 80, "turretTurnRate": 120, "radius": 2.0, "length": 5.8, "width": 2.1, "cp": 6, "vision": 40,
+      "firesWhileMoving": true, "weapon": "none", "microwave": { "range": 30, "arc": 60, "cooldown": 8 },
+      "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

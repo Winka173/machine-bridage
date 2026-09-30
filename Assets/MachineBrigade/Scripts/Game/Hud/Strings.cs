@@ -2485,6 +2485,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.shorad_vehicle"] = ("Light SAM vehicle", "Xe tên lửa phòng không nhẹ"),
             ["short.shorad_vehicle"] = ("Light SAM", "TL PK nhẹ"),
             ["note.shorad_vehicle"] = ("An M1097 Avenger: a light truck with a turret of eight shoulder-launched Stinger-class missiles, fired on the move.", "M1097 Avenger: xe hạng nhẹ với tháp mang tám tên lửa vác vai lớp Stinger, bắn được khi đang chạy."),
+            // dx04: Xe vi sóng chống drone.
+            ["unit.microwave_vehicle"] = ("Anti-drone microwave vehicle", "Xe vi sóng chống drone"),
+            ["short.microwave_vehicle"] = ("Microwave", "Vi sóng"),
+            ["note.microwave_vehicle"] = ("An Epirus Leonidas-type high-power microwave on an armoured truck: a pulse downs a whole swarm of drones at once.", "Hệ vi sóng công suất cao kiểu Epirus Leonidas trên xe tải bọc thép: một xung làm rơi cả bầy drone cùng lúc."),
             // (batch A: new entries above)
         };
 

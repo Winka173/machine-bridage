@@ -854,6 +854,7 @@ namespace MachineBrigade.Game.Hud
             // Prompt 25 F2 batch A (DECISIONS 25F2-A).
             "aa_gun_vehicle" => "aa",
             "shorad_vehicle" => "sam",
+            "microwave_vehicle" => "jammer",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",
