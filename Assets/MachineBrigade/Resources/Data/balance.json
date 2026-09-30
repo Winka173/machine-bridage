@@ -260,6 +260,7 @@
     // Prompt 25 F2 batch C: new ordnance (DECISIONS 25F2-C).
     { "id": "cbu_97_sfw", "real": "CBU-97 Sensor Fuzed Weapon", "projectileSpeed": 35, "splash": 3, "roundWeight": 450, "roundLength": 1.17 },
     { "id": "gbu_28", "real": "GBU-28", "projectileSpeed": 35, "splash": 6, "roundWeight": 2100, "roundLength": 2.92 },
+    { "id": "odab_500", "real": "ODAB-500", "projectileSpeed": 35, "splash": 12, "roundWeight": 500, "roundLength": 1.23 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -606,6 +607,8 @@
     { "id": "cluster_at_bomb", "real": "CBU-97 Sensor Fuzed Weapon", "weaponFamily": "cbu_97_sfw", "family": "bomb", "size": 450, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 90, "range": 30, "projectileSpeed": 35, "impactTier": "Medium", "projectile": "Bomb", "projectileModel": "cbu_97", "roundLength": 1.17, "cluster": { "count": 10, "radius": 12.5, "damage": 160, "splash": 3, "pen": 4, "tier": "Medium" } },
     // tl03: GBU-28-class bunker buster (glide_bomber secondary): x2 against structures, small blast.
     { "id": "bunker_buster_bomb", "real": "GBU-28", "weaponFamily": "gbu_28", "family": "bomb", "size": 2100, "pen": 4, "damageType": "HighExplosive", "damage": 1400, "cooldown": 90, "range": 30, "projectileSpeed": 35, "splash": 6, "impactTier": "Huge", "projectile": "Bomb", "projectileModel": "gbu_28", "roundLength": 2.92, "bonuses": [ { "armor": "Structure", "mult": 2 } ] },
+    // tl04: ODAB-500-class thermobaric bomb (glide_bomber secondary): big blast, x2 on structures and entrenched vehicles.
+    { "id": "thermobaric_bomb", "real": "ODAB-500", "weaponFamily": "odab_500", "family": "bomb", "size": 500, "pen": 3, "damageType": "HighExplosive", "damage": 380, "cooldown": 90, "range": 28, "projectileSpeed": 35, "splash": 12, "impactTier": "Huge", "projectile": "Bomb", "projectileModel": "odab_500", "roundLength": 1.23, "thermobaric": true },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1151,7 +1154,7 @@
       "deathExplosion": { "damage": 70, "radius": 8, "delay": 0.25, "tier": "Large" } },
     // dx14: the long-range glide bomber (a Su-34 with UMPK bombs): it releases from 90 m and turns away, never over its target.
     { "id": "glide_bomber", "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1000, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 16, "vision": 50,
-      "firesWhileMoving": true, "weapon": "glide_fab500", "secondary": [{ "weapon": "cluster_at_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "bunker_buster_bomb", "slot": "bomb", "aim": "Hull" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
+      "firesWhileMoving": true, "weapon": "glide_fab500", "secondary": [{ "weapon": "cluster_at_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "bunker_buster_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "thermobaric_bomb", "slot": "bomb", "aim": "Hull" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
       "skills": ["bomber_flares"], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     // dx15: the high-speed reconnaissance jet (SR-71, MiG-25R): one straight pass at 60 m/s, a 60 m strip shown for 20 s (stealth too), then it leaves; high up, only the high-tier weapons reach it.
     { "id": "recon_jet", "modelSize": [13.1, 6.8, 2.2], "class": "Plane", "armour": 0, "hp": 364, "speed": 60, "turnRate": 45, "turretTurnRate": 360, "radius": 4.5, "cp": 8, "vision": 60,

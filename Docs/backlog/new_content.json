@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 59,
+    "chưa làm": 58,
     "đang làm": 0,
-    "xong": 34
+    "xong": 35
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 7,
+      "chưa làm": 6,
       "đang làm": 0,
-      "xong": 7
+      "xong": 8
     },
     "support": {
       "chưa làm": 11,
@@ -937,9 +937,9 @@
       "group": "Bom",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "thermobaric_bomb",
+      "notes": "Batch C: weapon thermobaric_bomb (odab_500 family), a secondary bomb load on glide_bomber (bomber equipment, same host as tl02/tl03). Reuses the existing \"thermobaric\" flag (prompt 15 C.3) for the x2 vs structures/entrenched rule — no new code."
     },
     {
       "key": "tl05",
