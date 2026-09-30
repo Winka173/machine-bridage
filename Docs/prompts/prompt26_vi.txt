@@ -1,0 +1,261 @@
+Prompt 26: Làm lại số liệu boss (máu, vũ khí, kích thước), đổi Ixion, rà thời kỳ, cân lại Săn trùm
+
+(Chủ dự án, 30/09: lưu, chưa làm, đợi chủ dự án nói, cùng prompt 27.)
+
+Nhiệm vụ:
+(1) Tính lại máu và sát thương của mọi boss theo thời gian hạ mục tiêu, cho trận ngắn hợp với mobile.
+(2) Làm lại bộ vũ khí boss, tăng bắn lan với nổ hai lớp.
+(3) Chỉnh kích thước boss.
+(4) Đổi Ixion và rà thời kỳ của mọi tham chiếu.
+(5) Cân lại hai chế độ Săn trùm.
+Prompt này chỉ đổi số liệu, dữ liệu và kích thước. Không dựng lại hình dạng model (việc đó ở prompt 27). Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md. Các con số là điểm khởi đầu: đo bằng mô phỏng và tự chỉnh để đạt mục tiêu.
+
+Phụ thuộc: chạy sau prompt 25. Ở những chỗ mâu thuẫn về máu, DPS, siêu vũ khí, vũ khí và kích thước boss, prompt này thay cho sheet Boss đề xuất và Kích thước của file docs/balance/Machine_Brigade_Can_bang.xlsx. Mọi phần khác của file Excel giữ nguyên.
+
+Làm theo 3 lượt, chạy đủ test và commit sau mỗi lượt:
+- Lượt 1: phần A, B (máu, vũ khí boss).
+- Lượt 2: phần C, D (kích thước, Ixion, rà thời kỳ).
+- Lượt 3: phần E, F (Săn trùm, kiểm tra tổng).
+
+A. MÁU BOSS
+1. Máu tính theo thời gian hạ mục tiêu, không đặt số cố định:
+   máu boss = P × t × 0,6
+   - P: DPS hiệu dụng của đội quân người chơi lên boss, sau khi tính giáp boss. Đo bằng mô phỏng với bộ bài tiêu chuẩn của chương đó (bộ bài người chơi mở được tới lúc đó, hạng theo đường cong kinh tế, trang bị gợi ý, chỉ huy mặc định).
+   - t: thời gian mục tiêu.
+   - 0,6: tỷ lệ thời gian đội quân thực sự bắn vào boss (còn đánh hộ tống, né đòn, di chuyển).
+2. Thời gian mục tiêu trong chiến dịch (độ khó Thường):
+   - Boss chủ lực: 2,5 phút ở chương 1, tăng đều tới 4 phút ở chương 12.
+   - Mini boss: 60 giây ở chương 1, tăng đều tới 90 giây ở chương 12.
+3. Bảng khởi điểm (P là giả định; thay bằng P đo được):
+   - Chương 1: P ~250 · chủ lực ~22.000 · mini ~9.000.
+   - Chương 3: P ~350 · chủ lực ~35.000 · mini ~14.000.
+   - Chương 6: P ~550 · chủ lực ~63.000 · mini ~25.000.
+   - Chương 9: P ~780 · chủ lực ~100.000 · mini ~38.000.
+   - Chương 12: P ~1.050 · chủ lực ~150.000 · mini ~57.000.
+   Nội suy cho các chương còn lại và cho chương xen kẽ.
+4. Tránh nhân hai lần: kiểm tra chiến dịch hiện có đang tự nhân máu boss theo sức mạnh kho vũ khí người chơi không (prompt 2). Nếu có, bỏ phần nhân đó cho boss và dùng công thức ở A.1. Ghi lại quyết định.
+5. Cấu trúc máu:
+   - Chia theo pha 40% / 35% / 25% (mini boss 2 pha: 55% / 45%).
+   - Máu các bộ phận phá được nằm ngoài máu chính, tổng khoảng 30–40% máu chính.
+   - Giáp boss chủ lực: trước 5, hông 3, sau 2. Mini boss: trước tối đa 4.
+   - Bắn vào hông và sau được ×1,5 sát thương.
+6. Hệ số theo độ khó:
+   - Dễ: máu ×0,75, sát thương ×0,8.
+   - Thường: ×1, ×1.
+   - Khó: ×1,25, ×1,15.
+   - Cực khó: ×1,5, ×1,3.
+7. Chống kéo dài trận: khi trận vượt 1,5 lần thời gian mục tiêu, boss tăng 50% sát thương, có thông báo và một câu thoại.
+
+B. VŨ KHÍ BOSS
+1. DPS thường mục tiêu (chưa tính siêu vũ khí; độ khó Thường; lên giáp cấp 3):
+   - Boss chủ lực theo chương 1 → 12: 600, 650, 700, 800, 850, 1.000, 1.100, 1.200, 1.300, 1.400, 1.500, 1.600.
+   - Mini boss: khoảng 65% boss chủ lực cùng chương.
+2. Cơ cấu sát thương:
+   - Boss chủ lực:
+     - vũ khí chính ~45%: đánh vùng, nổ hai lớp, nhắm chỗ đông xe nhất;
+     - vũ khí phụ ~25%: đánh vùng kiểu khác (rải theo dải, cầu vồng, bầy drone);
+     - vũ khí bắn thẳng ~20%: xuyên cấp 5, nhắm xe đắt nhất trong tầm;
+     - cận vệ ~10%: phòng không, bắn drone, và vòng nổ quanh thân khi có từ 4 xe trở lên trong 15 m.
+   - Mini boss: chính 50%, phụ 30%, cận vệ 20%; xuyên tối đa cấp 4.
+3. Nổ hai lớp cho mọi vũ khí nổ lan của boss:
+   - Lõi: sát thương đầy đủ.
+   - Rìa: rộng gấp đôi lõi, 40% sát thương. Rìa tối đa 20 m.
+   - Lõi lớn gấp khoảng 1,3 lần vũ khí thường cùng cỡ. Khởi điểm: 120 mm lõi 5 / rìa 10 m; 152–155 mm 8,5 / 17 m; 203 mm 10 / 20 m; 406 mm 12 / 20 m.
+   - Hiệu ứng nổ trên màn hình thể hiện rõ cả lõi và rìa.
+4. Đạn pháo lớn của boss có vòng cảnh báo nhỏ khoảng 0,8 giây tại điểm rơi.
+5. Theo pha: pha 2 mở thêm vũ khí phụ; pha 3 nhịp bắn tăng 25%.
+6. Siêu vũ khí:
+   - Chỉ boss chủ lực có. Mini boss không có siêu vũ khí và không có đòn lớn (bỏ đòn lớn cũ của mini boss).
+   - Chu kỳ 40–50 giây; cảnh báo 3–4 giây.
+   - Đủ hạ 3–5 xe trung bình nếu đứng trong vùng.
+   - Tổng sát thương từ siêu vũ khí không vượt 35% tổng sát thương boss gây ra trong trận.
+7. Bộ vũ khí boss chủ lực (Thường; chỉnh con số cho đúng DPS mục tiêu ở B.1 và cơ cấu ở B.2):
+   - Bastion (ch.1):
+     - chính: pháo 155 mm nổ mạnh 540/phát, 1 phát mỗi 2 s;
+     - phụ: cối 240 mm 750/phát mỗi 5 s, lõi 10 m;
+     - bắn thẳng: 2 pháo chống tăng 100 mm 240/phát mỗi 2 s;
+     - cận vệ: 2 súng 12,7 mm quét và vòng nổ quanh thân;
+     - siêu vũ khí: cối 420 mm, 2.000, lõi 10 m, mỗi 45 s.
+   - Behemoth (ch.2):
+     - chính: pháo 152 mm nổ mạnh 590/phát mỗi 2 s, tự đổi sang đạn xuyên khi gặp xe đơn lẻ;
+     - phụ: rốc-két trên lưng, loạt 8 × 160 mỗi 8 s, rải theo dải;
+     - bắn thẳng: 2 pháo 120 mm hông 260/phát mỗi 4 s;
+     - cận vệ: 2 súng 12,7 mm;
+     - siêu vũ khí: loạt pháo chính 6 × 600, mỗi 45 s.
+   - Jötunn (ch.3):
+     - chính: 2 pháo 203 mm bắn cầu vồng 790/phát mỗi 5 s;
+     - phụ: 2 hộp rốc-két, loạt 16 × 110 mỗi 10 s;
+     - bắn thẳng: pháo 125 mm 280/phát mỗi 2 s;
+     - cận vệ: tên lửa phòng không và vòng nổ;
+     - siêu vũ khí: 4 × 900 (203 mm), mỗi 50 s.
+   - Leviathan (ch.4):
+     - chính: 3 tháp pháo 406 mm (thay cho 460 mm, xem D.4), loạt 3 × 1.200 mỗi 10 s;
+     - phụ: 2 tháp 155 mm ba nòng, loạt 6 × 170 mỗi 5 s; hộp phóng tên lửa hành trình Tomahawk;
+     - bắn thẳng: 2 pháo 127 mm đạn xuyên 320/phát mỗi 2 s;
+     - cận vệ: Phalanx và tên lửa phòng không;
+     - siêu vũ khí: 9 × 950 rải theo dải 60 × 12 m, mỗi 50 s.
+   - Matriarch (ch.5):
+     - chính: bầy 6 drone × 320 mỗi 5 s, mỗi drone lõi 3 m;
+     - phụ: pháo 30 mm nổ trên không;
+     - bắn thẳng: tên lửa chống tăng 340/phát mỗi 2 s;
+     - cận vệ: pháo cao xạ;
+     - siêu vũ khí: bom trượt 1.600 (bắn hạ được), mỗi 45 s.
+   - Moloch (ch.6):
+     - chính: 4 tháp 120 mm nổ mạnh 225/phát mỗi 2 s, nhắm cụm;
+     - phụ: cửa xưởng khi mở tạo vòng nổ ra ngoài, kèm xe sinh ra;
+     - bắn thẳng: 4 tháp đổi sang đạn xuyên khi gặp xe đơn lẻ;
+     - cận vệ: 2 bệ ZU-23;
+     - siêu vũ khí: xả xưởng 8 × 350 và thả 6 xe, mỗi 50 s.
+   - Nemesis (ch.7):
+     - chính: toa pháo 152 mm, loạt 4 × 620 mỗi 5 s, rải dọc đường ray;
+     - phụ: toa rốc-két;
+     - bắn thẳng: pháo 125 mm ở toa đầu;
+     - cận vệ: toa phòng không;
+     - siêu vũ khí: tên lửa Tận thế 3.500 (bắn hạ được), mỗi 50 s.
+   - Kronos (ch.8):
+     - chính: bánh gầu, nón 90° và 20 m phía trước, 1.080 mỗi 2 s;
+     - phụ: đá văng 3 × 500 mỗi 5 s;
+     - bắn thẳng: 2 pháo 57 mm tự động;
+     - cận vệ: rốc-két Grad;
+     - siêu vũ khí: quét gầu 120°, 25 m, 2.500, mỗi 45 s.
+   - Typhon (ch.9):
+     - chính: tên lửa hành trình 2 × 1.460 mỗi 5 s khi nổi (bắn hạ được);
+     - phụ: pháo 57 mm, pha 3 thêm pháo boong 100 mm;
+     - bắn thẳng: pháo 57 mm đạn xuyên;
+     - cận vệ: Buk và AK-630;
+     - siêu vũ khí: 6 × 700, mỗi 50 s.
+   - Roc (ch.10):
+     - chính: rải 8 bom × 400 theo dải khi bay qua, mỗi 5 s;
+     - phụ: 2 khoang pháo 105 mm 700/phát mỗi 2 s;
+     - bắn thẳng: tên lửa chống tăng thả từ khoang;
+     - cận vệ: 2 pháo 30 mm đôi dưới bụng;
+     - siêu vũ khí: rải thảm 16 × 400, mỗi 50 s.
+   - Daedalus (ch.11):
+     - chính: 3 khoang đổ bộ × 1.125 mỗi 5 s, chạm đất làm choáng 1 s;
+     - phụ: 2 pháo 57 mm dưới bụng;
+     - bắn thẳng: laser nhắm xe đắt nhất;
+     - cận vệ: laser phòng thủ điểm chặn tên lửa ta;
+     - siêu vũ khí: 8 khoang × 600 và thả xe, mỗi 50 s.
+   - Icarus (ch.12):
+     - chính: coilgun 1.440/phát mỗi 2 s, xuyên qua tối đa 4 xe trên một đường;
+     - phụ: laser quét vòng cung 60°;
+     - bắn thẳng: tháp laser nhắm xe đắt nhất;
+     - cận vệ: tháp phòng thủ điểm;
+     - siêu vũ khí: 7 thanh tungsten × 1.800 mỗi 45 s (pha 3: 9 thanh).
+8. Mini boss: mỗi mini boss có một vũ khí chính mang bản sắc rõ. Khởi điểm:
+   - Inferno: phun lửa nón 60°, 15 m, gây cháy lan.
+   - Harpy: 2 minigun quét hàng xe.
+   - Scylla: AK-130 đôi nổ mạnh, lõi 5 m (bỏ pháo 460 mm); thêm tên lửa chống hạm.
+   - Juggernaut: toa cối rải dọc đường ray.
+   - Tartarus: trồi lên tạo vòng nổ, lõi 6 m.
+   - Caspian: tên lửa chống hạm khi lướt qua, 2 × 700, lõi 7 m.
+   - Morrigan: tên lửa không đối không săn máy bay ta.
+   - Ixion và Gungnir: theo phần D.
+   Các mini boss còn lại tự thiết kế theo cùng cơ cấu 50 / 30 / 20.
+9. AI chọn mục tiêu theo loại vũ khí:
+   - vũ khí đánh vùng nhắm điểm có nhiều xe nhất trong bán kính nổ;
+   - vũ khí bắn thẳng nhắm xe đắt nhất trong tầm;
+   - phòng không ưu tiên máy bay, rồi tới drone.
+10. Cập nhật thẻ Hướng dẫn, clip Xem bắn và âm cảnh báo riêng cho từng siêu vũ khí.
+
+C. KÍCH THƯỚC BOSS
+1. Luật:
+   - Boss mặt đất tối đa khoảng 40 × 24 m để không chặn đường đi; ngoại lệ là boss có đường riêng hoặc map riêng (Kronos, các đoàn tàu).
+   - Boss trên không và phi thuyền được phép to hơn nhiều; bay cao; đổ bóng lớn và rõ xuống mặt đất.
+   - Trùm cuối là vật thể lớn nhất trên trời.
+   - Mini boss bằng khoảng 50–70% boss chủ lực cùng dòng.
+   - Boss chủ lực to dần theo chương.
+   - Với mẫu giả tưởng quá lớn (tàu Star Wars dài hàng trăm mét tới hơn 1 km), chỉ lấy hình dáng; kích thước theo luật ở trên.
+2. Kích thước đề xuất (dài × rộng × cao, m):
+   - Boss chủ lực:
+     - Bastion 40 × 24 × 16; Behemoth 26 × 15 × 11; Jötunn 32 × 18 × 15; Leviathan giữ ~100 × 19 × 29;
+     - Matriarch 55 × 30 × 18; Moloch 40 × 22 × 16; Nemesis 70 × 5,5 × 8;
+     - Kronos 60 × 22 × 30 (boss cao nhất mặt đất); Typhon 70 × 14 × 15;
+     - Roc 80 × 22 × 22; Daedalus 60 × 35 × 14; Icarus 90 × 60 × 18.
+   - Mini boss:
+     - Bastion Mk.0 ~24 × 12; Inferno, Tempest, Behemoth Mk.0, Behemoth Mk.II 16–18 m;
+     - Atlas 16 × 7 × 8; Caspian 36 × 26; Argus 35 × 12; Icarus Mk.0 36 × 24;
+     - Ixion 26 × 12 × 10 (phần D.1); Gungnir theo thiết kế mới ở D.2;
+     - Giữ nguyên: Fenrir, Scylla, Locust, Spectre, Harpy, Morrigan, Juggernaut, Tartarus, Hive, Charybdis.
+3. Cách làm trong prompt này: đổi tham số kích thước trong các script Blender của boss rồi dựng lại (build_assets.py), không vẽ lại hình. Chỉnh vùng va chạm, bán kính thân, điểm gắn vũ khí, vị trí bộ phận và camera theo kích thước mới. Bộ phận to hơn thì dễ nhắm hơn, không tăng máu bộ phận thêm.
+4. Camera tự lùi ra khi boss lớn xuất hiện, để thấy trọn boss trong đoạn giới thiệu.
+5. Boss trên không có bóng đổ lớn và rõ trên mặt đất.
+6. Chạy lại bộ phát hiện xe kẹt quanh mọi boss mặt đất đã đổi kích thước.
+
+D. ĐỔI IXION VÀ RÀ THỜI KỲ
+Bối cảnh game là từ sau Thế chiến II tới hiện tại và tương lai. Mọi mẫu tham chiếu, hình dạng và vũ khí phải thuộc giai đoạn này. Khí tài chế tạo từ trước nhưng còn phục vụ sau chiến tranh (Bofors 40 mm trên AC-130, súng máy M2) được giữ.
+1. Ixion (mini boss chương 8):
+   - Bỏ thiết kế Tsar Tank (1915). Thay bằng Ixion · Xe tải mỏ bọc thép, theo BelAZ-75710, do Thorne cải tạo ở Deepcut Mine. Giữ tên và cơ chế lao thẳng, nghiền, xoay chậm.
+   - Kích thước khoảng 26 × 12 × 10 m. Giáp trước 4, hông 3, sau 2, nóc 2. Tốc độ khoảng 7 m/s khi chạy thẳng, xoay rất chậm.
+   - Vũ khí (DPS mục tiêu khoảng 780, không có siêu vũ khí):
+     - chính (~50%): tháp pháo T-72 125 mm hàn trên thùng xe, xoay 360°, khoảng 780/phát mỗi 2 s; tự đổi đạn nổ mạnh (lõi 5 m, rìa 10 m) với cụm xe và đạn xuyên (xuyên 4) với xe đơn lẻ;
+     - phụ (~30%): lao nghiền khoảng mỗi 10 s, cảnh báo đường thẳng 2 s, khoảng 900 (giảm theo cấp giáp) và choáng 1 s; tháp pháo vẫn bắn trong lúc lao;
+     - cận vệ (~20%): 2 súng máy 12,7 mm trên ca-bin; khi rẽ đổ ra sau một dải 6 quả mìn, tồn tại 20 s.
+   - Bộ phận phá được:
+     - tháp pháo trên thùng (giáp 3): phá thì mất pháo chính;
+     - 2 lốp trước: phá một thì cú lao lệch và dừng, phá cả hai thì quay vòng rất chậm;
+     - 4 lốp sau: điểm yếu, giáp 1;
+     - ca-bin (giáp 2): phá thì súng máy ngừng bắn.
+   - Trong prompt này: dựng một model tạm từ khối có sẵn (thùng hộp, tháp pháo, ca-bin lệch trái, sáu bánh lớn, lưỡi húc chữ V) để chơi thử; bản đẹp làm ở prompt 27.
+2. Gungnir (mini boss chương 11):
+   - Bỏ Schwerer Gustav, Krupp K5 và đầu máy thời Thế chiến II. Thay bằng pháo điện từ siêu nặng trên đường ray: toa pháo ray điện từ, các toa tụ điện, đầu máy diesel hiện đại (tham chiếu US Navy EMRG phóng to, đoàn tàu BZhRK Barguzin).
+   - Vũ khí chính: một phát điện từ xuyên thẳng qua nhiều mục tiêu, nổ ở điểm chạm cuối, mỗi khoảng 25 s; hiển thị như một vũ khí trong dữ liệu. Cân lại theo luật mini boss ở phần B.
+3. Behemoth, Behemoth Mk.0, Behemoth Mk.II, Tempest, Inferno, Siêu tăng: bỏ Landkreuzer Ratte khỏi tham khảo. Dùng Object 279 (1959: bốn dải xích, thân dẹt), cộng giáp composite, APS và cảm biến hiện đại. Siêu tăng dùng NPzK 140 mm và dáng siêu tăng khái niệm tương lai.
+4. Leviathan: bỏ đường nét Yamato. Thiết giáp hạm lớp Iowa hiện đại hóa thập niên 1980, thêm bệ phóng thẳng đứng kiểu tàu lớp Kirov. Pháo chính đổi 460 mm → 406 mm (lõi nổ 12 m, rìa 20 m).
+5. Jötunn, Fenrir: bỏ Antarctic Snow Cruiser. Dùng NASA Crawler-Transporter và Kharkovchanka (1959).
+6. Scylla: tham khảo lớp Sovremenny.
+7. Roc: khí cầu lai hiện đại (Airlander 10, Lockheed P-791). Argus: khí cầu radar neo (JLENS). Giữ Kirov Airship làm tham khảo game.
+8. Tăng phun lửa: bỏ Churchill Crocodile; giữ M67 Zippo, TO-55.
+9. Tháp pháo: bỏ Pantherturm; dùng tháp xe tăng T-55/T-72 chôn làm công sự.
+10. Tháp pháo hạng nặng, Trận địa pháo bờ biển, Siêu pháo, Pháo đài canh điểm xuất quân: bỏ pháo đài Maxim Gorky và Batterie Todt; dùng A-222 Bereg, tháp pháo hạm AK-130 đặt trên bờ, K-300P Bastion-P.
+11. Nội dung mới (sửa trong docs/backlog/new_content.json):
+   - Tháp cao xạ Flak 88 → Tháp cao xạ hạng nặng 100 mm theo KS-19 (1947), giữ cơ chế nổ chậm, nổ to;
+   - Bóng chắn máy bay → Khí cầu neo radar (JLENS): giữ hiệu ứng làm bom địch kém chính xác, thêm lộ máy bay tàng hình gần;
+   - Ụ pháo chống tăng: bỏ Pak 40 khỏi tham khảo, giữ 2A45 Sprut-B;
+   - Boss Monster → theo 2B1 Oka và Object 271 (1957);
+   - Boss Garuda: bỏ Horten Ho 229, dùng B-2 và B-21.
+12. Cập nhật dòng tham khảo, mục Hồ sơ, thẻ Hướng dẫn, thoại của tướng liên quan, và cột "Hình dạng (cho AI vẽ)" trong file Excel (để prompt 27 dùng).
+13. Viết test quét mọi dòng tham khảo và mô tả hình dạng, báo lỗi nếu có mẫu trước 1945 (Ratte, Maus, Gustav, Tsar Tank, Yamato, Zeppelin, Flak 36/37, Pak 40, Pantherturm, Batterie Todt, Horten, Churchill và tương tự). Ngoại lệ ghi rõ trong test: Bofors 40 mm trên AC-130, súng máy M2.
+
+E. SĂN TRÙM
+1. Dùng cùng công thức ở A.1, nhưng:
+   - P đo một lần khi bắt đầu lượt, bằng một trận mô phỏng ngắn với đúng bộ bài, hạng, trang bị và chỉ huy người chơi đang mang (không tính theo chương).
+   - Máu boss thứ i = P × t × 0,6 × mᵢ; DPS boss thứ i = DPS gốc × mᵢ.
+2. Săn trùm (xoay vòng theo tuần, 10 boss):
+   - Gồm 7 mini boss và 3 boss chủ lực ở vị trí 4, 7, 10.
+   - Thời gian mục tiêu mỗi boss: mini khoảng 66 giây, chủ lực khoảng 2,8 phút.
+   - Nghỉ 15 giây giữa hai boss.
+   - Tổng khoảng 18 phút, chia 3 chặng. Mỗi boss chủ lực kết thúc một chặng; checkpoint ở cuối mỗi chặng.
+   - Hệ số tăng dần: mᵢ = 1 + 0,06 × (i − 1), từ ×1,0 tới ×1,54.
+   - Giữa hai boss: xe còn sống được giữ và sửa 30% máu; giữ 50% CP đang có; xe bị hạ thì mất.
+   - Sau mỗi boss chủ lực chọn 1 trong 3 hỗ trợ tác chiến. Trần tổng các hỗ trợ: +40% sức mạnh đội quân.
+3. Săn trùm toàn tập (mọi boss theo thứ tự cốt truyện, khoảng 33 boss):
+   - Thời gian mục tiêu mỗi boss: chủ lực 2,5 phút, mini 1 phút.
+   - Tổng khoảng 1 giờ.
+   - Lưu sau mỗi boss; mỗi boss là một trận mới (quân không giữ, cùng CP ban đầu); chỉ hỗ trợ tác chiến được giữ suốt lượt.
+   - Hệ số tăng dần theo thứ tự cốt truyện, từ ×0,8 ở boss đầu tới ×1,3 ở boss cuối.
+   - Hỗ trợ tác chiến sau mỗi boss chủ lực, vẫn trần +40%. Khi đã chạm trần, chỉ đưa ra các hỗ trợ đổi cách chơi (thêm lần thả tiếp viện, hồi chiêu thẻ nhanh hơn).
+   - Đo lại P ở mỗi checkpoint, để người chơi đổi bộ bài giữa chừng không làm lệch phần còn lại.
+4. Bậc độ khó của Săn trùm:
+   - Thường: máu ×1,0, sát thương ×1,0.
+   - Anh hùng: ×1,3, ×1,15.
+   - Thép: ×1,6, ×1,3.
+   - Huyền thoại: ×2,0, ×1,5; tắt vật phẩm dùng một lần.
+   Mutator nhân riêng sau hệ số bậc. Mutator làm boss mạnh hơn (ví dụ hai boss cùng lúc) thì giảm máu mỗi boss 25%.
+5. Luật chống kéo dài trận (A.7), nổ hai lớp và bắn lan (B.3) áp như chiến dịch.
+6. Kiểm tra với 3 bộ bài mẫu (yếu, trung bình, mạnh): tổng thời gian của cả hai chế độ nằm trong mục tiêu; bộ bài yếu vẫn qua được bậc Thường; bộ bài mạnh không qua bậc Huyền thoại quá dễ.
+
+F. KIỂM TRA TỔNG
+- Boss:
+  - thời gian hạ mục tiêu trong khoảng mục tiêu ở A.2 (±20%);
+  - số xe người chơi bị hạ mỗi phút: boss chủ lực 3–4 ở chương 1 và 7–8 ở chương 12; mini boss 2 ở chương 1 và 4–5 ở chương 12;
+  - sát thương từ vũ khí đánh vùng ≥ 50% (boss chủ lực) và ≥ 30% (mini boss);
+  - sát thương từ siêu vũ khí ≤ 35%;
+  - mini boss không có siêu vũ khí;
+  - tỷ lệ người chơi né được đạn có vòng cảnh báo nằm trong khoảng hợp lý (chỉnh thời gian cảnh báo nếu gần như không ai né được hoặc gần như ai cũng né được).
+- Săn trùm: kết quả kiểm tra ở E.6 đạt; checkpoint khôi phục đúng.
+- Kích thước: thứ tự kích thước boss đúng theo C.1; không xe kẹt quanh boss mặt đất.
+- Rà thời kỳ: test ở D.13 pass.
+- Mô phỏng 5 seed: toàn bộ chiến dịch thắng được ở độ khó Thường.
+- Hiệu năng: đo FPS ở trận Icarus, Kronos, Leviathan sau khi phóng to, trên máy tầm thấp.
+- Cập nhật docs/CHANGELOG.md, docs/DECISIONS.md, docs/balance/apply-report.md, tài liệu thiết kế (boss, Săn trùm), và xuất lại bản Excel đã cập nhật (docs/balance/Machine_Brigade_Can_bang_applied.xlsx) với số boss mới.

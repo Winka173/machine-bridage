@@ -1,6 +1,6 @@
 Prompt 27: Làm lại toàn diện mọi model trong game
 
-(Chủ dự án, 30/09: "đây là prompt 26 và 27, lưu vào nhưng chưa làm đợi tôi nói". Chưa làm. Prompt 26 chưa nhận được: khối dán đầu tiên là đoạn giải thích về cách dựng model của lead, không phải prompt 26.)
+(Chủ dự án, 30/09: "đây là prompt 26 và 27, lưu vào nhưng chưa làm đợi tôi nói". Chưa làm. Prompt 26 nhận sau, lưu ở prompt26_vi.txt.)
 
 Nhiệm vụ: làm lại toàn bộ model trong game (xe, tháp, công trình hai phe, boss, nhà cửa, vật thể và công trình đặc trưng của map) lên chất lượng cao, bằng cách nâng cấp bộ kit dựng hình, thử nghiệm trước khi làm hàng loạt, rồi làm theo đợt. Làm tự chủ, không chờ duyệt, trừ hai điểm dừng ở G.2 và H.6. Ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
 
