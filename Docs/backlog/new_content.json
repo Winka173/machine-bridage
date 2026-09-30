@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 15,
-    "xong": 12
+    "đang làm": 14,
+    "xong": 13
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 11,
-      "xong": 12
+      "đang làm": 10,
+      "xong": 13
     },
     "structure": {
       "chưa làm": 0,
@@ -243,8 +243,8 @@
       "group": "Máy bay",
       "priority": "Trung",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "recon_jet",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {

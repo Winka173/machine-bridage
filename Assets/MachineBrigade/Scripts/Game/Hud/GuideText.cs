@@ -1368,6 +1368,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: thả [[bom lượn]] từ cách 90 m rồi quay đi; bom lượn 20 m/s xuống mục tiêu.\n" +
                 "Mạnh / yếu: đánh tháp và cụm quân ngoài tầm phòng không gần; hệ đánh chặn bắn hạ được bom.\n" +
                 "Mẹo: tung vào công sự cố định, có tiêm kích che."),
+            ["guide.recon_jet"] = (
+                "[[High-speed recon jet]] · no armour · one big look\n" +
+                "How it fights: no weapons; [[one straight pass]] across the map shows a strip 60 m wide for 20 s, stealth too, then it leaves.\n" +
+                "Strong / weak: finds artillery, hidden guns and decoys; flies too high for all but long-range SAMs and fighters.\n" +
+                "Tip: call it just before a barrage.",
+                "[[Máy bay trinh sát tốc độ cao]] · không giáp · một lần nhìn lớn\n" +
+                "Cách đánh: không vũ khí; [[bay thẳng một lượt]] ngang map, làm lộ dải rộng 60 m trong 20 giây, cả tàng hình, rồi rời trận.\n" +
+                "Mạnh / yếu: tìm pháo binh, ụ súng ẩn và mồi nhử; bay cao, chỉ tên lửa tầm xa và tiêm kích với tới.\n" +
+                "Mẹo: gọi ngay trước một trận pháo kích."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

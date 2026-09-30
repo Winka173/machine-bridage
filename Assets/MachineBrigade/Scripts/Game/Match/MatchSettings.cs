@@ -140,6 +140,7 @@ namespace MachineBrigade.Game.Match
             "wheeled_howitzer",
             "sp_mortar",
             "glide_bomber",
+            "recon_jet",
             // (batch A cards: new entries above)
         };
 

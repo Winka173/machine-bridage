@@ -2521,6 +2521,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.glide_bomber"] = ("Long-range glide bomber", "Máy bay ném bom lượn tầm xa"),
             ["short.glide_bomber"] = ("Glide bomber", "Ném bom lượn"),
             ["note.glide_bomber"] = ("A Su-34 with FAB-500 bombs on UMPK glide kits: it drops from far outside the target's short-range air defence.", "Su-34 mang bom FAB-500 gắn bộ lượn UMPK: thả bom từ rất xa, ngoài tầm phòng không tầm gần của mục tiêu."),
+            // dx15: Máy bay trinh sát tốc độ cao.
+            ["unit.recon_jet"] = ("High-speed recon jet", "Máy bay trinh sát tốc độ cao"),
+            ["short.recon_jet"] = ("Recon jet", "Trinh sát nhanh"),
+            ["note.recon_jet"] = ("An SR-71 Blackbird / MiG-25R-type reconnaissance jet: one pass at great height and speed that photographs a whole strip of the battlefield.", "Máy bay trinh sát kiểu SR-71 Blackbird / MiG-25R: một lượt bay rất cao, rất nhanh, chụp cả một dải chiến trường."),
             // (batch A: new entries above)
         };
 

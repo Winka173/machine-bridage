@@ -1040,6 +1040,10 @@
     { "id": "glide_bomber", "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1000, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 16, "vision": 50,
       "firesWhileMoving": true, "weapon": "glide_fab500", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
       "skills": ["bomber_flares"], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
+    // dx15: the high-speed reconnaissance jet (SR-71, MiG-25R): one straight pass at 60 m/s, a 60 m strip shown for 20 s (stealth too), then it leaves; high up, only the high-tier weapons reach it.
+    { "id": "recon_jet", "modelSize": [13.1, 6.8, 2.2], "class": "Plane", "armour": 0, "hp": 364, "speed": 60, "turnRate": 45, "turretTurnRate": 360, "radius": 4.5, "cp": 8, "vision": 60,
+      "firesWhileMoving": true, "weapon": "none", "flying": true, "fixedWing": true, "altitude": 50, "captureRate": 0, "flightTier": "High", "reconPass": { "width": 60, "seconds": 20 },
+      "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.6, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
