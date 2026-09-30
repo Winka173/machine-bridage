@@ -4,8 +4,8 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 1,
-    "xong": 26
+    "đang làm": 0,
+    "xong": 27
   },
   "byKind": {
     "unit": {
@@ -15,8 +15,8 @@
     },
     "structure": {
       "chưa làm": 0,
-      "đang làm": 1,
-      "xong": 3
+      "đang làm": 0,
+      "xong": 4
     },
     "ordnance": {
       "chưa làm": 14,
@@ -881,8 +881,8 @@
       "group": "Vừa",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "aa_gun_tower",
       "notes": "25D2 plan: 3,000 coins in the shop."
     },
     {

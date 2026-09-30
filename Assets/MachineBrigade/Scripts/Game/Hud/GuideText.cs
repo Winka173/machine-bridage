@@ -1494,6 +1494,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[laser]] chỉ bắn drone, tầm 40 m, cùng bộ đánh chặn rốc-két và đạn cối; khói làm tia yếu 80%.\n" +
                 "Mạnh / yếu: dập bầy drone và mưa rốc-két; vô dụng trước máy bay và xe tăng.\n" +
                 "Mẹo: giữ khói của ta tránh xa nó."),
+            ["guide.aa_gun_tower"] = (
+                "[[40 mm AA gun]] · medium tower · steady flak\n" +
+                "How it fights: four [[proximity-fused]] rounds a second out to 48 m, at aircraft and light vehicles.\n" +
+                "Strong / weak: beats helicopters, drones and light cars; tanks shrug it off.\n" +
+                "Tip: the middle AA gun, between the quick flak and the heavy flak.",
+                "[[Pháo phòng không 40 mm]] · tháp ô vừa · cao xạ nhịp đều\n" +
+                "Cách đánh: bốn phát [[ngòi cận đích]] mỗi giây, tầm 48 m, bắn cả máy bay lẫn xe nhẹ.\n" +
+                "Mạnh / yếu: thắng trực thăng, drone và xe nhẹ; xe tăng gần như miễn nhiễm.\n" +
+                "Mẹo: khẩu ở giữa, giữa cao xạ bắn nhanh và cao xạ hạng nặng."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

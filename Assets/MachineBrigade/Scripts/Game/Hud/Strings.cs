@@ -2577,6 +2577,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.laser_ad_station"] = ("Laser anti-drone station", "Trạm phòng không laser chống drone"),
             ["short.laser_ad_station"] = ("Laser AD", "Trạm laser"),
             ["note.laser_ad_station"] = ("A fixed high-energy laser site of the Iron Beam or DragonFire kind: it burns drones out of the sky and never runs out of rounds.", "Trạm laser năng lượng cao cố định kiểu Iron Beam hay DragonFire: đốt drone rơi khỏi bầu trời và không bao giờ hết đạn."),
+            // ct14: Pháo phòng không 40 mm.
+            ["unit.aa_gun_tower"] = ("40 mm AA gun", "Pháo phòng không 40 mm"),
+            ["short.aa_gun_tower"] = ("40 mm AA gun", "Pháo PK 40 mm"),
+            ["note.aa_gun_tower"] = ("A single Bofors 40 mm L/70 on a turntable mount with a fire-control radar: a steady beat of proximity-fused rounds.", "Một khẩu Bofors 40 mm L/70 trên bệ xoay có radar điều khiển hỏa lực: nhịp đạn ngòi cận đích đều đặn."),
             // (batch A: new entries above)
         };
 

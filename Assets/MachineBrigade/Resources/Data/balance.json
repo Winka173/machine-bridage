@@ -58,11 +58,11 @@
     "ai": {
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
-        "default": { "laser_ad_station": 0.5, "flare_tower": 0.25, "troop_shelter": 0.3, "visual_jammer": 0.6, "barrage_balloon": 0.3, "searchlight": 0.3, "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
+        "default": { "aa_gun_tower": 0.8, "laser_ad_station": 0.5, "flare_tower": 0.25, "troop_shelter": 0.3, "visual_jammer": 0.6, "barrage_balloon": 0.3, "searchlight": 0.3, "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
                      "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
         "armour": { "fire_control_centre": 1.0, "inflatable_decoy": 0.6, "blast_wall": 0.8, "at_gun_emplacement": 1.6, "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "troop_shelter": 0.6, "fire_control_centre": 1.0, "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
-        "air": { "laser_ad_station": 1.0, "barrage_balloon": 1.0, "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
+        "air": { "aa_gun_tower": 1.6, "laser_ad_station": 1.0, "barrage_balloon": 1.0, "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
         // A "tower.branch" weight is the general's taste in rank-7 branches (the tower-branch rework, DECISIONS 19T).
         // The enemy generals (prompt 4): Varga anti-tank, Orlov artillery, Kessler an even spread,
         // Dr Sen drones, Quạ Đen anti-air, Aurel everything strong.
@@ -70,7 +70,7 @@
         "orlov": { "troop_shelter": 0.4, "fire_control_centre": 1.2, "artillery_emplacement.cb": 1.3, "rocket_turret.guided": 1.3, "artillery_emplacement": 2.6, "rocket_turret": 1.8, "guard_tower": 1.2, "gun_turret": 0.8, "aa_turret": 0.8 },
         "kessler": { "flare_tower": 0.4, "visual_jammer": 0.4, "searchlight": 0.5, "inflatable_decoy": 0.6, "*": 1.0 },
         "sen": { "laser_ad_station": 1.2, "visual_jammer": 1.0, "drone_hangar.swarm": 1.3, "ew_tower.drone": 1.3, "drone_hangar": 2.6, "ew_tower": 1.6, "c_ram": 1.2, "guard_tower": 1.0, "aa_turret": 1.0, "gun_turret": 0.8 },
-        "quaden": { "laser_ad_station": 0.8, "barrage_balloon": 1.0, "heavy_flak_tower": 2.0, "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
+        "quaden": { "aa_gun_tower": 1.4, "laser_ad_station": 0.8, "barrage_balloon": 1.0, "heavy_flak_tower": 2.0, "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
         "aurel": { "fire_control_centre": 1.2, "inflatable_decoy": 0.4, "blast_wall": 1.0, "at_gun_emplacement": 0.8, "heavy_flak_tower": 1.0, "missile_battery.pac3": 1.3, "shield_tower.bulwark": 1.2, "heavy_turret.bastion": 1.2, "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
       }
     }
@@ -1096,6 +1096,9 @@
     { "id": "laser_ad_station", "modelSize": [6.0, 4.0, 4.6], "fort": { "size": "Medium" }, "static": true, "armour": 1, "hp": 1136, "speed": 0, "turnRate": 1, "turretTurnRate": 180, "radius": 2.5, "length": 5.5, "width": 4.0, "cp": 0, "vision": 56,
       "weapon": "laser_50kw", "aps": { "radius": 40, "shells": 0.5, "charges": 1, "recharge": 0.8, "rockets": true, "laser": true },
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // ct14: the 40 mm AA gun tower (Bofors L/70): aircraft and light vehicles, a steady beat between the quick flak and the heavy flak.
+    { "id": "aa_gun_tower", "modelSize": [5.5, 5.5, 3.2], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1273, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.4, "length": 5.0, "width": 5.0, "cp": 0, "vision": 56,
+      "weapon": "bofors_l70", "secondary": [], "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

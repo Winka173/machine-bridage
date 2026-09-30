@@ -139,6 +139,7 @@ namespace MachineBrigade.Game.Match
             ["troop_shelter"] = 3000,
             ["flare_tower"] = 2000,
             ["laser_ad_station"] = 3000,
+            ["aa_gun_tower"] = 3000,
             // (batch A: new entries above)
         };
 

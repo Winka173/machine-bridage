@@ -57,6 +57,7 @@ namespace MachineBrigade.Game.Hud
                 "troop_shelter" => "t_shelter",
                 "flare_tower" => "t_flare",
                 "laser_ad_station" => "t_laserad",
+                "aa_gun_tower" => "t_aa40",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",
