@@ -224,7 +224,8 @@ namespace MachineBrigade.Sim.Content
                 var id = r.String("roundOf");
                 if (!weapons.TryGetValue(id, out var gun)) throw new FormatException($"{r.Path}.roundOf: unknown weapon '{id}'.");
                 var round = weapons[r.String("id")];
-                if (gun == round || gun.RoundOf != null) throw new FormatException($"{r.Path}.roundOf: a gun's own round, not another second round.");
+                // A gun that is itself another gun's round (the fortress's twin 155 mm inherits the twin gun's) may still carry rounds of its own.
+                if (gun == round) throw new FormatException($"{r.Path}.roundOf: a gun cannot be its own second round.");
                 if (round.Clip > 0 && gun.Clip == 0) throw new FormatException($"{r.Path}: a magazine round in a gun without one.");
                 round.RoundKind = r.Has("round") ? r.String("round") : null;
                 var use = WeaponDef.ParseUse(r.StringArray("for"), r.Path);
