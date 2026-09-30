@@ -10940,3 +10940,22 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 Elites without a model of their own (elite_fpv_carrier, elite_attack_jet, elite_long_sam, elite_artillery) draw their
 rebuilt base and are repainted at run time (`VehicleView.EliteRepaint`); elite_grad keeps `grad_truck`.
 | sky_fortress (boss) | the AC-130 x 1.3, painted dark | 17.62 x 24.08 x 6.93 model units (the shared C-130 at 1.477, the old model's length: every node where the boss data puts it, the props within 0.4 m) | (boss) | 2,380 | AC-130 Spectre (the shared C-130 airframe) | 17.6 x 22.2 model units, 10,044. **data (C1):** scale x size 1.105 draws it 19.5 m long; the sheet's C-130 x 1.3 is 15.5 m, scale x size 0.88 (scale 1.035 with size 0.85) |
+
+**Bosses: reviewed against the sheet, kept (the owner's low-effort rule for this pass: prompt 27 redoes every model
+with the upgraded kit).** The Boss sheet's notes give each boss its references and the same rules: the size it has
+today (its "Kích thước" row keeps it; only Daedalus and Icarus changed, B1), a mini boss smaller than the main boss
+of its line, every destructible part its own readable block with a wreck, the owning general's stripe. The models in
+the tree meet them: every part the boss data lists is its own node (`Part_*`, `Mount_*`, `Propeller*` ...) and the
+data puts a wreck piece in its place (`wreck_turret`, `wreck_engine` ...); each carries the side's colour (`Team`,
+9 % of the Typhon's surface, whose sail, waterline band and screw shrouds are in it, to 67 % of the Caspian's); the
+mini bosses are smaller than their lines' main bosses (the Behemoth 22.3 m in battle over the Tempest 16.2 and the
+Inferno 12.8, the Mobile Fortress 26.1 over the Hive 16.4 and Fenrir, the Fortress Bastion 35.8 over the Mk.0 25.0,
+the command airship 59.2 over Argus 29.6, the drone mothership 42.3 over Locust 25.4, Leviathan 97.6 over Scylla
+48.8, the nuke train 61.6 over the armoured train 24.5). Their nodes stay where the boss data puts them (C1 edits
+that data), so a redraw now would only move risk. Kept as they are: rail_supergun (28,756 triangles),
+armored_train (21,874), behemoth_tempest (16,536), landing_hovercraft (16,228), ixion (21,628), fortress_hive,
+behemoth_inferno, behemoth (19,948), earth_borer (22,590), nuke_train (35,666), mobile_fortress (20,290),
+command_airship (22,180), fortress_bastion (23,948), leviathan (25,992), drone_mothership (19,900), and the variants
+that draw their base (behemoth_mk0 / _mk2, fenrir, bastion_mk0, locust, argus, scylla, icarus_mk0). Under the guide's
+15,000-triangle floor, left for prompt 27: morrigan (1,312: an aircraft-sized boss, the aircraft budget fits it),
+caspian (5,054), typhon (6,348), moloch (7,180), kronos (8,404), supreme_command (9,118), mega_gunship (11,304).

@@ -229,40 +229,17 @@ small rank details (rank stripes, armour cladding at tiers 3 and 5).
 
 ### Bosses
 
-Common to every boss (the sheet): a main boss 1.3-1.5 x its reference, a mini boss smaller than the main boss of its
-line; each destructible part (turrets, tracks, engines) its own readable block with an intact and a broken version;
-the owning general's stripe; the important parts (main turret, engines, factory doors) big and easy to aim at.
-Daedalus was redrawn in this pass; Icarus (`silver_bug`) was reviewed and kept (DECISIONS 25B2).
+Reviewed against the sheet's boss rules in part 2 and kept (DECISIONS 25B2 Part 2: their parts are nodes with wrecks,
+the side's colour is on each, the mini bosses are smaller than their mains; Sky Fortress was redrawn on the shared
+C-130, Daedalus in part 1, Icarus kept). What is left is detail for prompt 27's kit, the bosses under the guide's
+15,000-triangle floor:
 
-| Boss | Rank | Size now | References in the note |
-|---|---|---|---|
-| rail_supergun | Mini | 54.3 x 7.5 x 14.0 | Schwerer Gustav (80 cm), Krupp K5, V 36 / D 311 armoured locomotives: an 80 cm railway super-gun. |
-| behemoth_mk0 | Mini | (none given) | Landkreuzer P. 1000 Ratte, Object 279 (four tracks), 2A65 152 mm, Baneblade (Warhammer 40,000): a land battleship. |
-| armored_train | Mini | 24.5 x 3.3 x 4.8 | Soviet BP-35 armoured train, B-38 152 mm, 2B11 120 mm: an armoured diesel locomotive pulling gun wagons. |
-| behemoth_tempest | Mini | 16.2 x 6.6 x 6.4 | US Navy EMRG railgun, Ratte, Baneblade: a two-turret Behemoth. |
-| locust | Mini | 25.4 x 12.6 x 10.6 | USS Akron / Macon, FPV drones, Kirov Airship (Red Alert 2): a small variant of the drone airship. |
-| morrigan | Mini | 12.9 x 8.4 x 2.2 | (no reference given) |
-| behemoth_mk2 | Mini | 16.1 x 9.6 (height not given) | Ratte, Object 279, Baneblade: the second-generation Behemoth. |
-| landing_hovercraft | Mini | 24.9 x 13.5 x 7.7 | LCAC, Zubr (Project 1232.2), A-22 Ogon 140 mm, AK-630: a landing hovercraft. |
-| argus | Mini | 29.6 x 20.5 x 10.5 | USS Akron / Macon, Zeppelin, Kirov Airship: a variant of the command airship. |
-| ixion | Mini | 21.7 x 19.0 x 11.9 | Tsar Tank (Lebedenko, 1915), Ork deff rolla, the Locust machines (Gears of War), Shagohod (MGS3). |
-| fortress_hive | Mini | 16.4 x 9.3 x 8.5 | NASA Crawler-Transporter, Lancet-3, Patriot, Sandcrawler: a tracked fortress carrying a drone hive. |
-| caspian | Mini | 52.9 x 39.0 x 16.0 | Lun-class ekranoplan MD-160 ("Caspian Sea Monster"): a ground-effect craft. |
-| supreme_command | Mini | 12.4 x 4.3 x 9.5 | MZKT-7930 chassis, an armoured mobile headquarters: a super-heavy four-axle command vehicle. |
-| icarus_mk0 | Mini | 24.1 x 16.2 x 5.8 | Polyus / Skif-DM, ISS, Hubble, SOLG (Ace Combat 5), The Expanse: Icarus's first version (it is Icarus at 0.65). |
-| behemoth_inferno | Mini | 12.8 x 6.6 x 5.6 | TOS-1A, Ratte, Baneblade: a flame Behemoth with red fuel tanks. |
-| fenrir | Mini | 16.2 x 9.1 x 8.3 | Antarctic Snow Cruiser (1939), Crawler-Transporter, Sandcrawler: a variant of the mobile fortress. |
-| mega_gunship | Mini | 23.6 x 15.3 x 7.0 | CH-47 Chinook frame, ACH-47A "Guns-A-Go-Go": a heavy armed tandem-rotor helicopter. |
-| behemoth | Main | 22.3 x 13.3 x 9.6 | Ratte, Object 279 (four tracks), 2A65 152 mm, Baneblade: a land battleship. |
-| earth_borer | Mini | 19.9 x 4.9 x 5.9 | Soviet "Battle Mole", tunnel-boring machines, 2A70 100 mm: a three-segment armoured "Earth Worm". |
-| bastion_mk0 | Mini | 25.0 x 10.3 x 10.1 | 2B8 240 mm, Bofors 40 mm, Sandcrawler: the first, smaller Bastion. |
-| nuke_train | Main | 61.6 x 5.1 x 7.4 | RT-23 Molodets (BZhRK missile train), Patriot: an armoured train carrying a ballistic missile. |
-| scylla | Mini | 48.8 x 9.2 x 14.2 | IJN Yamato, Kirov class: a smaller Leviathan. |
-| mobile_fortress | Main | 26.1 x 14.7 x 13.5 | Antarctic Snow Cruiser, Crawler-Transporter, 2A44 203 mm (2S7 Pion), Sandcrawler: a mobile fortress. |
-| command_airship | Main | 59.2 x 41.0 x 20.9 | USS Akron / Macon, Zeppelin, Kirov Airship: "Sky Admiral", a flying battleship on two gas bags. At 59 m it is bigger than Icarus (see DECISIONS 25B2). |
-| moloch | Main | 26.5 x 14.4 x 12.0 | A tracked mobile factory; Fatboy (Supreme Commander), MCV / War Factory (Command & Conquer). |
-| fortress_bastion | Main | 35.8 x 14.7 x 14.4 | 2B8 240 mm, Bofors 40 mm, Kornet, Sandcrawler: a tracked fortress in thick plate armour. |
-| typhon | Main | 59.0 x 12.2 x 14.1 | Project 941 Akula (Typhoon), The Hunt for Red October: a missile submarine. |
-| kronos | Main | 48.5 x 16.2 x 16.0 | Bagger 288: a giant bucket-wheel excavator. |
-| leviathan | Main | 97.6 x 18.5 x 28.5 | IJN Yamato (1945 fit), Kirov class, Iowa class (1980s missile refit): a battleship on Yamato's lines. |
-| drone_mothership | Main | 42.3 x 21.0 x 17.7 | USS Akron / Macon (the mother airship), FPV drones, Kirov Airship: an armoured airship launching drones. |
+| Boss | Triangles | Needs |
+|---|---|---|
+| caspian | 5,054 | detail over its 52.9 m hull (Lun-class: the eight nose engines, the missile tubes on the back) |
+| typhon | 6,348 | detail over its 59 m hull (the Typhoon's twin pressure hulls under the deck, the anechoic tiles) |
+| moloch | 7,180 | the factory's doors and cranes in more detail |
+| kronos | 8,404 | the Bagger 288's wheel, boom and conveyors in more detail |
+| supreme_command | 9,118 | the MZKT-7930's cabs and the command module |
+| mega_gunship | 11,304 | the Chinook frame's rotors and gun fit |
+| morrigan | 1,312 | none if it counts as an aircraft (2,000-4,000); a stealth-fighter boss at 12.9 m |
