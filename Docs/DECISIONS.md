@@ -10888,3 +10888,4 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | shahed_truck | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.87 (the drones' span 15 % over) | 6.60 x 2.04 | 2,416 | Shahed-136 truck launchers | 5.9 x 2.3 x 4.1 at 0.85, 10,252 |
 | iron_beam | 8.0 x 2.0 x 2.8 | 8.20 x 2.05 x 2.86 | 8.20 x 2.05 | 2,640 | Rafael Iron Beam | 7.8 x 2.7 x 3.7 at 0.85, 10,456 |
 | heavy_aa | 9.6 x 2.6 x 2.8 | 9.80 x 2.68 x 2.83 | 9.80 x 2.18 | 3,004 | Pantsir-S1 on a KamAZ-6560 | 7.0 x 2.5 x 3.3 at 0.85, 8,220 |
+| artillery (+ _hd) | 7.8 x 3.1 x 2.9 | 7.86 x 3.14 x 2.88 | 5.12 x 3.13 | 3,444 / 8,074 | M109A7 Paladin (M284 155 mm) | CAESAR truck, 8.1 x 2.3 x 3.6 at 0.85, 8,676 |

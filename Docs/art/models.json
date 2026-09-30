@@ -73,7 +73,7 @@
   },
   "artillery": {
     "file": "artillery.glb",
-    "triangles": 8676
+    "triangles": 3444
   },
   "artillery_emplacement": {
     "file": "artillery_emplacement.glb",
@@ -89,7 +89,7 @@
   },
   "artillery_hd": {
     "file": "artillery_hd.glb",
-    "triangles": 17116
+    "triangles": 8074
   },
   "artillery_wreck": {
     "file": "artillery_wreck.glb",

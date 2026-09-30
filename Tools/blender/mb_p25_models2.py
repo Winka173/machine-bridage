@@ -429,6 +429,81 @@ def heavy_aa(a):
     a.part('Search_array', 'MetalSheet', rs).box((1.08, .03, .38), loc=(0, .13, .41), rot=(.2, 0, 0), bevel=0)
 
 
+# ----------------------------------------------------------------------------- self-propelled howitzer (M109A7)
+def artillery(a, detail=False):
+    """Self-propelled howitzer (M109A7, the sheet's pick over the CAESAR), 7.8 x 3.1 x 2.9 m with the gun forward:
+    a flat-topped tracked hull (front drive, seven road wheels, the sponsons over the tracks) with a sloped glacis and
+    the folded travel lock on it, the big square turret set at the rear, and the long 155 mm M284 barrel (4.3 m
+    from the mantlet, over half the vehicle's length, reaching 2.6 m past the nose) with its bore evacuator and double-baffle muzzle
+    brake; the commander's cupola with the M2 (`Mount_mg`, `Muzzle_mg`), side doors and stowage boxes, the bustle
+    rack. `Turret`, `Main_cannon` (it elevates), `Muzzle_brake`, `Muzzle_main`. The high-detail variant adds hubs,
+    bolts and vision blocks on the same pivots."""
+    hd.mark(a, detail)
+    _lean_tracks(a, 1.3, 4.9, .8, .28, 7, .42, sprocket=-1)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    armor.prism([(-2.2, .38), (-2.46, .66), (-2.3, .9), (2.4, .9), (2.46, .5), (2.3, .38)], 2.08, bevel=.04, seg=1)
+    hull.prism([(-2.47, .84), (-1.72, 1.24), (2.44, 1.26), (2.48, .84)], 3.02, bevel=.05, seg=1)
+    for s in (-1, 1):
+        _lights(a, (s * 1.2,), -2.2, 1.02, size=(.16, .04, .1))
+        _lights(a, (s * 1.25,), 2.49, 1.05, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        steel.box((.14, .16, .12), loc=(s * .6, -2.5, .62), bevel=0)                               # tow eyes
+        armor.box((.1, .9, .3), loc=(s * 1.46, -1.25, 1.12), bevel=.02, seg=1)                     # side boxes
+    mv._hatch(a, .75, -1.62, 1.24, .24, handle=False)                                              # driver
+    mv._periscopes(a, [(.75 + dx, -1.93, 1.2, 0) for dx in (-.16, .16)])
+    deck = a.part('Deck', 'Undercarriage')
+    deck.grille(.9, .7, loc=(-.72, -1.6, 1.22), rot=(-.5, 0, 0), slats=4, depth=.06, thickness=.05)  # engine intake
+    armor.box((1.1, .06, .95), loc=(0, 2.49, .78), bevel=.02, seg=1)                               # rear door
+    # The travel lock folded down on the glacis: an A-frame with the barrel cradle at its top.
+    lock = a.part('Travel_lock', 'Steel')
+    for s in (-1, 1):
+        lock.limb((s * .42, -2.28, .98), (s * .12, -1.62, 1.33), .1, .1, bevel=0)
+    lock.box((.4, .16, .14), loc=(0, -1.6, 1.36), bevel=.02, seg=1)
+    a.pivot('Point_exhaust', (-1.0, -1.9, 1.3))
+    a.pivot('Point_fire', (0, -1.2, 1.3))
+    # The big square turret at the rear.
+    t = a.pivot('Turret', (0, .95, 1.26))
+    steel.cyl(1.1, .08, loc=(0, .95, 1.26), seg=16, bevel=0)                                      # turret ring
+    a.part('Turret_body', 'Team', t).prism([(-1.24, -1.25), (1.24, -1.25), (1.36, -1.05), (1.36, 1.35), (-1.36, 1.35),
+                                            (-1.36, -1.05)], 1.1, loc=(0, 0, .6), axis='Z', bevel=.05, seg=1, taper=.97)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.9, .34, .7), loc=(0, -1.33, .55), bevel=.04, seg=1, taper=(.9, .9))                 # mantlet
+    for s in (-1, 1):
+        tarm.box((.06, .8, .75), loc=(s * 1.37, .1, .55), bevel=.02, seg=1)                        # side doors
+        tarm.box((.3, .9, .4), loc=(s * 1.42, .8, .7), bevel=.03, seg=1)                          # stowage boxes
+    tarm.box((2.2, .36, .3), loc=(0, 1.52, .5), bevel=.03, seg=1)                                   # bustle rack box
+    a.part('Tarp', 'Canvas', t).cyl(.16, 1.8, loc=(0, 1.52, .78), rot=ACROSS, seg=8, bevel=0)
+    mv._hatch(a, .6, .45, 1.15, .26, parent=t, seg=10, handle=False)                               # loader
+    a.part('Cupola', 'Armor', t).cyl(.36, .2, loc=(-.75, -.45, 1.2), seg=12, bevel=.03, bseg=1)    # commander
+    tarm.box((.4, .3, .26), loc=(.2, -.98, 1.24), bevel=.03, seg=1)                                 # gunner's sight
+    a.part('Sight', 'Glass', t).box((.3, .03, .14), loc=(.2, -1.14, 1.25), bevel=0)
+    mv._roof_mg(a, t, (-.75, -.45, 1.3), length=.8, shield=False)
+    # The 155 mm M284 barrel: 4.3 m from the mantlet, drawn a little thick, bore evacuator, double-baffle brake.
+    gun = a.part('Main_cannon', 'Steel', t)
+    y0, length, z = -1.5, 4.3, .55
+    seg = 14 if detail else 10
+    gun.cyl(.13, length, r2=.105, loc=(0, y0 - length / 2, z), rot=FORWARD, seg=seg, bevel=0)
+    gun.cyl(.17, .7, loc=(0, y0 - length * .62, z), rot=FORWARD, seg=seg, bevel=.02, bseg=1)      # bore evacuator
+    a.part('Main_cannon_cradle', 'Armor', t).box((.44, .9, .4), loc=(0, -1.2, .52), bevel=.03, seg=1)
+    brake = a.part('Muzzle_brake', 'Undercarriage', t)
+    brake.box((.32, .36, .28), loc=(0, y0 - length - .18, z), bevel=.03, seg=1)
+    a.pivot('Muzzle_main', (0, y0 - length - .4, z), t)
+    if detail:
+        det = a.part('Turret_bolts', 'Steel', t)
+        for dx in (-.3, .3):
+            for dz in (-.22, .22):
+                hd.bolt(det, (dx, -1.51, .55 + dz), hd.FRONT, r=.02, h=.026)
+        hd.bolt_ring(det, hd.frame((-.75, -.45, 1.31)), .3, 8, r=.014, h=.02)
+        for s in (-1, 1):
+            hd.bolt_line(det, (s * 1.41, -.25, .85), (s * 1.41, .45, .85), 5, rot=hd.side_rot(s), r=.014, h=.02)
+        mv._periscopes(a, [(-.75 + .3 * math.cos(u), -.45 + .3 * math.sin(u), 1.22, u + R90)
+                           for u in (-2.4, -1.6, -.8)], parent=t)
+        mv._vent(a, .1, 1.0, 1.16, parent=t)
+        mv._eyes(a, [(s * 1.2, -1.05, 1.16, 0) for s in (-1, 1)], parent=t)
+        mv._glacis_bolts(a, (-2.47, .84), (-1.72, 1.24), .5, -1.4, 1.4, 12)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -437,4 +512,5 @@ BUILDERS = {
     'shahed_truck': (shahed_truck, dict(ao_distance=.5, grime_height=.5)),
     'iron_beam': (iron_beam, dict(ao_distance=.5, grime_height=.5)),
     'heavy_aa': (heavy_aa, dict(ao_distance=.5, grime_height=.5)),
+    'artillery': (artillery, dict(ao_distance=.6, grime_height=.55)),
 }
