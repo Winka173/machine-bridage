@@ -138,6 +138,7 @@ namespace MachineBrigade.Game.Match
             "recoilless_jeep",
             "airborne_vehicle",
             "wheeled_howitzer",
+            "sp_mortar",
             // (batch A cards: new entries above)
         };
 

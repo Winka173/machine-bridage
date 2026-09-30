@@ -2513,6 +2513,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.wheeled_howitzer"] = ("Shoot-and-scoot howitzer", "Pháo bánh lốp bắn rồi chạy"),
             ["short.wheeled_howitzer"] = ("Truck howitzer", "Pháo bánh lốp"),
             ["note.wheeled_howitzer"] = ("A CAESAR-type 155 mm truck howitzer (Archer and ATMOS are alike): four rounds in six seconds, then off before the counter-fire lands.", "Pháo 155 mm trên xe tải kiểu CAESAR (Archer, ATMOS tương tự): bốn phát trong sáu giây rồi chạy trước khi phản pháo rơi xuống."),
+            // dx12: Cối tự hành tháp kín.
+            ["unit.sp_mortar"] = ("Turreted SP mortar", "Cối tự hành tháp kín"),
+            ["short.sp_mortar"] = ("Turret mortar", "Cối tháp kín"),
+            ["note.sp_mortar"] = ("A Patria AMOS-type twin 120 mm mortar turret on an 8x8 (the 2S31 Vena is its tracked cousin): four bombs that land together.", "Tháp cối đôi 120 mm kiểu Patria AMOS trên xe 8x8 (2S31 Vena là bản bánh xích): bốn quả đạn rơi xuống cùng lúc."),
             // (batch A: new entries above)
         };
 

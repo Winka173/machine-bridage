@@ -123,6 +123,7 @@ namespace MachineBrigade.Game.Match
             ["recoilless_jeep"] = 1500,
             ["airborne_vehicle"] = 1500,
             ["wheeled_howitzer"] = 1500,
+            ["sp_mortar"] = 1500,
             // (batch A: new entries above)
         };
 

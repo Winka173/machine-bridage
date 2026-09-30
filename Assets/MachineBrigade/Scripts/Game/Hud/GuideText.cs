@@ -1350,6 +1350,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bốn phát 155 mm trong 6 giây, tầm 90 m, rồi [[chạy ngay]] và nạp lại 25 giây.\n" +
                 "Mạnh / yếu: phản pháo rơi vào chỗ trống; thân mỏng, dễ chết.\n" +
                 "Mẹo: giữ thật xa phía sau, có trinh sát đi trước."),
+            ["guide.sp_mortar"] = (
+                "[[Turreted SP mortar]] · medium armour · a rain of bombs\n" +
+                "How it fights: four 120 mm bombs out to 60 m that [[land at the same moment]], then 10 s.\n" +
+                "Strong / weak: crushes a group before it can scatter; loses to tanks up close.\n" +
+                "Tip: aim it at groups your scouts find.",
+                "[[Cối tự hành tháp kín]] · giáp vừa · mưa đạn cối\n" +
+                "Cách đánh: bốn quả cối 120 mm, tầm 60 m, [[rơi xuống cùng lúc]], rồi nghỉ 10 giây.\n" +
+                "Mạnh / yếu: nghiền một cụm quân trước khi kịp tản ra; áp sát thì thua xe tăng.\n" +
+                "Mẹo: nhắm vào các cụm quân trinh sát tìm thấy."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

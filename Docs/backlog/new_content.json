@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 17,
-    "xong": 10
+    "đang làm": 16,
+    "xong": 11
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 13,
-      "xong": 10
+      "đang làm": 12,
+      "xong": 11
     },
     "structure": {
       "chưa làm": 0,
@@ -201,8 +201,8 @@
       "group": "Pháo binh",
       "priority": "Trung",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "sp_mortar",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {

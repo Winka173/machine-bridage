@@ -860,6 +860,7 @@ namespace MachineBrigade.Game.Hud
             "recoilless_jeep" => "jeep",
             "airborne_vehicle" => "ifv",
             "wheeled_howitzer" => "artillery",
+            "sp_mortar" => "mortar",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",
