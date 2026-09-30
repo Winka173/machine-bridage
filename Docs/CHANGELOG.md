@@ -7,6 +7,18 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Names from the balance spreadsheet (prompt 25 D1, DECISIONS 25D1)
+
+- 63 units take the full name, short name and English name of the spreadsheet's "Tên đề xuất" sheet: for example
+  "Pháo hạm bay" / "Airborne gunship" (was "Pháo hạm AC-130"), "Xe phóng đạn lảng vảng" / "Loitering munition truck"
+  (was "Xe phóng Lancet"), "Trạm tên lửa phòng không tầm xa" / "Long-range SAM site" (was "Tên lửa Patriot tầm xa"),
+  "Siêu tăng" / "Super-heavy tank" (was "Siêu tăng Titan"), "Lựu pháo tự hành" / "SP howitzer".
+- The real model a card was named after (AC-130, Patriot, Lancet, Shahed, ZU-23, BMPT Terminator, Iron Beam, TOS-1A) is
+  now on the unit's reference line in the Guide tab, not in its name.
+- Each unit has one name everywhere: its guide opens with it, and the guides, tips, missions and loot lines that used an
+  old name use the new one.
+- `Tools/balance/import_names.py` applies the sheet; `NameSheetTests` checks that no old name is left.
+
 ### Play-test 9 models (DECISIONS 23M)
 
 - Icarus is a spaceship again, not a station: a dagger-shaped warship about as big as before on the map, with a pointed

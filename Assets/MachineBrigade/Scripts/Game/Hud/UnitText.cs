@@ -54,7 +54,7 @@ namespace MachineBrigade.Game.Hud
             ["ul.storesRefill"] = ("Refills on the field: full in {seconds} s at its holding pattern, half as fast while attacking or in danger",
                 "Hồi dần trên chiến trường: đầy trong {seconds} giây ở vòng chờ, chậm gấp đôi khi đang tấn công hoặc trong vùng nguy hiểm"),
             ["ul.storesFaster"] = ("Faster at the landing pad (x{pad}) and over the HQ (x{hq})", "Nhanh hơn ở Bãi đáp (x{pad}) và trên sở chỉ huy (x{hq})"),
-            ["ul.storesCarrier"] = ("Faster at the landing pad (x{pad}), over the HQ (x{hq}) and beside an ammunition carrier (x{times})",
+            ["ul.storesCarrier"] = ("Faster at the landing pad (x{pad}), over the HQ (x{hq}) and beside an ammo carrier (x{times})",
                 "Nhanh hơn ở Bãi đáp (x{pad}), trên sở chỉ huy (x{hq}) và cạnh Xe tiếp đạn (x{times})"),
             ["ul.noun.Bomb"] = ("bombs", "quả bom"),
             ["ul.noun.Missile"] = ("missiles", "tên lửa"),
@@ -94,7 +94,7 @@ namespace MachineBrigade.Game.Hud
             ["ul.leave.bomber"] = ("Goes in only with two thirds of its bombs; short of that it waits at its holding pattern",
                 "Chỉ vào lượt ném khi có đủ 2/3 số bom; thiếu thì chờ ở vòng chờ"),
             ["ul.leave.hurt"] = ("Badly hurt, it flies to the landing pad (else the HQ) to mend", "Máu thấp thì bay về Bãi đáp (không có thì về sở chỉ huy) để sửa"),
-            ["ul.leave.launcher"] = ("Empty, it reloads where it stands, or goes to an ammunition carrier or home when that is quicker",
+            ["ul.leave.launcher"] = ("Empty, it reloads where it stands, or goes to an ammo carrier or home when that is quicker",
                 "Hết đạn thì nạp lại tại chỗ, hoặc tới Xe tiếp đạn hay về nhà khi nhanh hơn"),
 
             // ---------------------------------------------------------------- skills

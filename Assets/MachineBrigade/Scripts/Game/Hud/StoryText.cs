@@ -214,7 +214,7 @@ namespace MachineBrigade.Game.Hud
             ["intel.i3.log.from"] = ("Lieutenant Jonah Reyes", "Trung úy Jonah Reyes"),
             ["intel.i3.log.text"] = ("Hit at nine thousand feet, left engine gone. Saw the black fighter turn for a second pass and not come. He wanted me alive, to hunt. His mistake.", "Trúng đạn ở độ cao chín nghìn bộ, động cơ trái hỏng. Thấy chiếc tiêm kích đen quay lại lượt thứ hai rồi không tới. Hắn muốn tôi sống, để săn. Sai lầm của hắn."),
             ["intel.i3.log.title"] = ("Hawk's flight log", "Nhật ký bay của Hawk"),
-            ["loot.bunker_vehicle"] = ("Moloch's factory floor was still turning out bunker vehicles when it fell. Now they are ours.", "Sàn xưởng của Moloch vẫn đang xuất xưởng xe công sự khi nó thất thủ. Giờ chúng là của ta."),
+            ["loot.bunker_vehicle"] = ("Moloch's factory floor was still turning out deployable bunkers when it fell. Now they are ours.", "Sàn xưởng của Moloch vẫn đang xuất xưởng xe công sự triển khai khi nó thất thủ. Giờ chúng là của ta."),
             ["loot.cruise_missile"] = ("Kessler's last bargain: his cruise missiles, for his sailors' lives.", "Cuộc mặc cả cuối cùng của Kessler: tên lửa hành trình của hắn, đổi lấy mạng sống thủy thủ."),
             ["loot.railgun_truck"] = ("Tempest's rail gun came out of the wreck whole; Mara built a truck round it.", "Pháo điện từ của Tempest được vớt lên nguyên vẹn; Mara dựng cả một chiếc xe quanh nó."),
             ["loot.swarm_carrier"] = ("Venn came over with the plans for her drone mothership, and the Accord built it.", "Venn mang theo bản vẽ máy bay mẹ thả drone của bà khi đào ngũ, và Accord đã chế tạo nó."),

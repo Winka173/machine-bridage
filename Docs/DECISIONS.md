@@ -10730,3 +10730,78 @@ muzzles on both models. The five failures are all older:
 `Tools/blender/build_assets.py` (one import, one line at the end of the builder list), `Docs/art/models.json` (three
 triangle counts; as always `Tools/art/resolve_merge.py`), the card manifest and the two card PNGs, the three GLBs,
 `Tools/docs/unit_refs.json` (three rows).
+
+## 25D1. Names from the spreadsheet (2026-09-30)
+
+Prompt 25 E.1 (task D1): the sheet "Tên đề xuất" of `Docs/balance/Machine_Brigade_Can_bang.xlsx` gives each unit a full
+name, a short name for the HUD and the card tray, and an English name. `Tools/balance/import_names.py` reads it
+(openpyxl, computed values) and edits the hand-localised tables key by key. It never regenerates a file. Its first run
+saved the names from before in `Tools/balance/names_before.json`, so it can be run again: a second run changes nothing.
+Of the 64 rows, 63 are applied and 1 is skipped. The rows are listed in `Docs/balance/apply-report.md` under
+"Tên đề xuất".
+
+- **What a row changes.** It sets `unit.<id>` and `short.<id>` in both languages. It sets the head of `guide.<id>`
+  (`[[Name]] · ...`), because 29 guides opened with a second name for their unit ("Tank hunter", "Săn pháo binh",
+  "Flying IFV"). It also changes every other text that named the unit by its old name.
+- **English.** The sheet's English names are in Title Case and American spelling. They are written the glossary's way:
+  sentence case, British spelling, acronyms kept ("Armored Gunship Helicopter" becomes "Armoured gunship helicopter";
+  "SP howitzer", "Gun–missile AA"). The sheet has no English short names, so the script gives them (`EN_SHORT`). A
+  short name is the English name when it fits, and otherwise the card's usual word ("Loiter munition", "AA gun",
+  "SAM site").
+- **Short names.** Every short name fits one line of a card (15 letters, `LocalisationScanTests.EveryCardHasAShortName`).
+  Three of the sheet's short names were changed:
+  - `ballistic_launcher`: "Tên lửa chiến thuật" is 19 letters, so it became "TL chiến thuật". "TL" is already the short
+    names' abbreviation of "tên lửa".
+  - `wheeled_gun`: "Bánh lốp diệt tăng" is 18 letters, so it became "Pháo xung kích", the start of its full name.
+  - `missile_battery`: the sheet's "PK tầm xa" is also the long-range SAM vehicle's short name, so the tower is "Trạm PK
+    tầm xa" and keeps the "Trạm" of its full name.
+
+  "OTC", the sheet's abbreviation of "oanh tạc cơ" ("OTC tàng hình"), joins the Vietnamese abbreviations of
+  `NameText.Kept`.
+- **Real models go to the reference line.** Prompt 24's camouflage rule puts the real model on the card's sub-line
+  ("Tăng chủ lực · T-90"). Prompt 24 has not been done yet, so the real model goes on the unit's reference line,
+  `note.<id>`, which the Guide tab shows under Notes:
+  - Already there: AC-130 (`sky_gunship`), Lancet, Shahed, TOS-1A, Iskander, Smerch, Tunguska.
+  - Added: ZU-23-2 (`zu23_technical`), BMPT Terminator (`bmpt`) and Iron Beam (`iron_beam`; "Iron Beam" joins
+    `NameText.Kept`).
+  - New key `note.missile_battery`, "A Patriot-style battery..." (towers had no reference line).
+
+  Prompt 24's sub-line should read the model from there. The English short names "TOS-1A", "Patriot", "Lancet",
+  "Shahed", "ZU-23" and "BMPT", and the Vietnamese "Phản lực 300", are gone from the cards. Some real names stay:
+  - munitions ("Lancet drone", "Shahed drone");
+  - tower branches (PAC-3, Iron Dome, Centurion);
+  - boss notes ("A boss AC-130").
+- **Proper names (prompt 22).** None of the new names is a proper name. They are descriptions, translated in each
+  language, so there are no name tokens to add. "Titan" left the super-heavy tank because it is Thorne's call sign.
+- **One name per unit.** An old name that is only a name ("Xe phóng Lancet", "Hover gunboat", "Ụ súng tạm") was replaced
+  everywhere with its case kept: "FALLBACK POST" became "FIELD GUN POST", and English plurals follow. An old name that is
+  also an everyday word or a weapon is left where it means the thing and not the card. This covers "xe phòng không",
+  "tên lửa phòng không", "pháo phản lực", "pháo tự hành", "xe bọc thép", "xe trinh sát", "artillery", "anti-air" and
+  "rocket launcher". It is changed only where a text names the card: the list `PROSE` in the script. Those texts are:
+  - the Patriot, Iron Beam and AC-130 named as cards;
+  - the heavy gunship's guide, which had its old name as the head's second word;
+  - "xe rùa" in the bulldozer's tip;
+  - the Harpy's scout escort;
+  - the elite howitzer's line.
+
+  The unit's own reference line may keep its old or real name ("A loyal wingman", "A focused-laser tank destroyer").
+- **The campaign.** Two briefs in `CampaignText.cs` were edited key by key ("xe tiếp tế" became "xe tải tiếp tế"; strike
+  drones became "strike UAVs"), and so was one loot line in `StoryText.cs`. Neither file was regenerated. Their sources
+  (`Tools/campaign/act2.py`, `act4.py`, `act9.py`, `narrative.py`) say the same, so a rebuild keeps the words.
+- **Left as they are.** The skipped row and the leftovers:
+  - `spawn_bastion` (the skipped row): the sheet asks whether it is still used. It is only the fallback of
+    `ModeSupport.Build` when the catalogue has no HQ, which never happens with the shipped content, so it keeps its
+    name.
+  - The elite variants are not rows of the sheet and keep their names ("Pháo tự hành tinh nhuệ", "Elite rocket
+    launcher", "Phòng không tinh nhuệ"). Renaming them after their bases is a follow-up.
+  - The item "Gunship on call" has the short name "Pháo hạm", the same as the airborne gunship's new one. It lives in the
+    item bar, not the card tray, but it is worth renaming.
+  - The support card "Rải mìn" has always shared its short name with the minelayer.
+- **Width.** Every short name is at most 15 letters. The longest new full names ("Xe tên lửa phòng không tầm trung", 32
+  letters; "Tactical ballistic launcher", 27) are shorter than the longest ones already in the tables (36 and 35).
+- **Tests.** `NameSheetTests` is new, with its data generated in `NameSheetData.cs`. It checks that every unit has the
+  sheet's names, that no id has two names (the guide heads match, and no two cards share a name), and that no old name
+  is left. `PlayTest7Tests` expects the airborne gunship's new names. By the owner's rule these tests were not run. Only
+  the compile was checked; the script's own scan, the same as the test's, finds nothing. Still to run:
+  - `NameSheetTests`, `L10nTests`, `UiLanguageTests`, `LocalisationScanTests`, `StringsTests` and `DialogueLayoutTests`;
+  - `PlayTest7Tests.TheAc130IsAnAircraftCardInTheAircraftList` (the card-name assertion).

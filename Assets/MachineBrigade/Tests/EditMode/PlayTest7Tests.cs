@@ -48,10 +48,11 @@ namespace MachineBrigade.Tests
             try
             {
                 Strings.Vietnamese = false;
-                Assert.AreEqual("AC-130 Gunship", Strings.Card("sky_gunship"));
+                // Prompt 25 D1 (DECISIONS 25D1): the spreadsheet's name; the AC-130 is on its reference line.
+                Assert.AreEqual("Airborne gunship", Strings.Card("sky_gunship"));
                 Assert.AreNotEqual(Strings.Card("sky_gunship"), Strings.Card("gunship_heli"), "not the Mi-24");
                 Strings.Vietnamese = true;
-                Assert.AreEqual("Pháo hạm AC-130", Strings.Card("sky_gunship"));
+                Assert.AreEqual("Pháo hạm bay", Strings.Card("sky_gunship"));
             }
             finally
             {

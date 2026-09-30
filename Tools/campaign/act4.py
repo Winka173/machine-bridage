@@ -443,7 +443,7 @@ new(d, ('Back to the Beach', 'Trở lại bãi biển'),
 d = clone('c4m03', 'c9m03', weather='Night', playerBase='Anchor', **H9)
 new(d, ('Night Convoy', 'Đoàn xe đêm'),
     ('Take the supply convoy through the harbour roads at night. Thorne\'s patrols are waiting.',
-     'Đưa đoàn xe tiếp tế qua các con đường bến cảng trong đêm. Lính tuần của Thorne đang chờ.'),
+     'Đưa đoàn xe tải tiếp tế qua các con đường bến cảng trong đêm. Lính tuần của Thorne đang chờ.'),
     (('Lights off', 'Tắt đèn'), ('The drivers went through the harbour with their lights off. One of them sang all the way.',
                                    'Các tài xế đi qua bến cảng với đèn tắt. Một người hát suốt dọc đường.')),
     [say('linh', 'Start', 'Patrols on the harbour road. Keep moving.', 'Lính tuần trên đường bến cảng. Cứ đi tiếp.')])

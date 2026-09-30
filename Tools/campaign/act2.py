@@ -356,7 +356,7 @@ add_mission(m('c5m07', 5, 'junglepass', 'ShootDown', 'Clear', killsNeeded=14, ti
               waves=waves(['strike_drone', 'strike_drone', 'attack_helicopter', 'recon_drone', 'ifv', 'main_battle_tank'], first=30, interval=42, size=3, grow=0.4, max_size=7, max_alive=14),
               starTime=600, starLosses=10),
             ('Clear the Canopy', 'Quét sạch tán rừng'),
-            ('Venn\'s strike drones own the sky over the pass. Bring fourteen of them down, and the jungle belongs to the brigade again.',
+            ('Venn\'s strike UAVs own the sky over the pass. Bring fourteen of them down, and the jungle belongs to the brigade again.',
              'Drone tấn công của Venn làm chủ bầu trời trên đèo. Bắn rơi mười bốn chiếc, và rừng lại thuộc về lữ đoàn.'),
             (('Birds', 'Chim chóc'),
              ('After the drones were gone, the birds came back to the pass within a week. Hawk claims they were waiting for him.',

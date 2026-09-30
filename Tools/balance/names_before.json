@@ -1,0 +1,880 @@
+{
+ "hover_gunboat": {
+  "unit": [
+   "Hover gunboat",
+   "Xuồng cao tốc đệm khí"
+  ],
+  "short": [
+   "Gunboat",
+   "Xuồng cao tốc"
+  ],
+  "guide": [
+   "Hover gunboat",
+   "Xuồng cao tốc đệm khí"
+  ]
+ },
+ "armored_car": {
+  "unit": [
+   "Armored car",
+   "Xe bọc thép"
+  ],
+  "short": [
+   "Armoured car",
+   "Bọc thép"
+  ],
+  "guide": [
+   "Armoured car",
+   "Xe bọc thép"
+  ]
+ },
+ "ifv": {
+  "unit": [
+   "Infantry fighting vehicle",
+   "Xe chiến đấu bộ binh"
+  ],
+  "short": [
+   "IFV",
+   "Xe bộ binh"
+  ],
+  "guide": [
+   "Infantry fighting vehicle",
+   "Xe chiến đấu bộ binh"
+  ]
+ },
+ "supply_truck": {
+  "unit": [
+   "Supply truck",
+   "Xe tiếp tế"
+  ],
+  "short": [
+   "Supply truck",
+   "Xe tiếp tế"
+  ],
+  "guide": [
+   "Supply truck",
+   "Xe tiếp tế"
+  ]
+ },
+ "engineer_vehicle": {
+  "unit": [
+   "Engineer vehicle",
+   "Xe công binh"
+  ],
+  "short": [
+   "Engineer",
+   "Công binh"
+  ],
+  "guide": [
+   "Engineer",
+   "Xe công binh"
+  ]
+ },
+ "smoke_carrier": {
+  "unit": [
+   "Smoke generator carrier",
+   "Xe tạo khói"
+  ],
+  "short": [
+   "Smoke car",
+   "Xe khói"
+  ],
+  "guide": [
+   "Smoke carrier",
+   "Xe tạo khói"
+  ]
+ },
+ "ammo_carrier": {
+  "unit": [
+   "Ammunition carrier",
+   "Xe tiếp đạn"
+  ],
+  "short": [
+   "Ammo truck",
+   "Tiếp đạn"
+  ],
+  "guide": [
+   "Ammunition carrier",
+   "Xe tiếp đạn"
+  ]
+ },
+ "counter_battery_radar": {
+  "unit": [
+   "Counter-battery radar",
+   "Radar phản pháo"
+  ],
+  "short": [
+   "CB radar",
+   "Phản pháo"
+  ],
+  "guide": [
+   "Counter-battery radar",
+   "Radar phản pháo"
+  ]
+ },
+ "ew_jammer": {
+  "unit": [
+   "EW jammer",
+   "Xe tác chiến điện tử"
+  ],
+  "short": [
+   "Jammer",
+   "Gây nhiễu"
+  ],
+  "guide": [
+   "EW jammer",
+   "Tác chiến điện tử"
+  ]
+ },
+ "mine_layer": {
+  "unit": [
+   "Mine layer",
+   "Xe rải mìn"
+  ],
+  "short": [
+   "Mine layer",
+   "Rải mìn"
+  ],
+  "guide": [
+   "Mine layer",
+   "Xe rải mìn"
+  ]
+ },
+ "command_vehicle": {
+  "unit": [
+   "Command vehicle",
+   "Xe chỉ huy"
+  ],
+  "short": [
+   "Command",
+   "Xe chỉ huy"
+  ],
+  "guide": [
+   "Command vehicle",
+   "Xe chỉ huy"
+  ]
+ },
+ "shield_carrier": {
+  "unit": [
+   "Shield carrier",
+   "Xe phát khiên"
+  ],
+  "short": [
+   "Shield carrier",
+   "Xe phát khiên"
+  ],
+  "guide": [
+   "Shield carrier",
+   "Xe phát khiên"
+  ]
+ },
+ "scout_jeep": {
+  "unit": [
+   "Scout jeep",
+   "Xe trinh sát"
+  ],
+  "short": [
+   "Scout",
+   "Trinh sát"
+  ],
+  "guide": [
+   "Scout",
+   "Trinh sát"
+  ]
+ },
+ "vbied": {
+  "unit": [
+   "Armoured car bomb",
+   "Xe bom tự sát bọc thép"
+  ],
+  "short": [
+   "Car bomb",
+   "Xe bom"
+  ],
+  "guide": [
+   "Car bomb",
+   "Xe bom tự sát"
+  ]
+ },
+ "light_tank": {
+  "unit": [
+   "Light tank",
+   "Tăng hạng nhẹ"
+  ],
+  "short": [
+   "Light tank",
+   "Tăng nhẹ"
+  ],
+  "guide": [
+   "Light tank",
+   "Tăng hạng nhẹ"
+  ]
+ },
+ "flame_tank": {
+  "unit": [
+   "Flame tank",
+   "Tăng phun lửa"
+  ],
+  "short": [
+   "Flame tank",
+   "Phun lửa"
+  ],
+  "guide": [
+   "Flame tank",
+   "Tăng phun lửa"
+  ]
+ },
+ "turtle_tank": {
+  "unit": [
+   "Turtle tank",
+   "Xe tăng rùa"
+  ],
+  "short": [
+   "Turtle",
+   "Xe rùa"
+  ],
+  "guide": [
+   "Turtle tank",
+   "Xe tăng rùa"
+  ]
+ },
+ "bmpt": {
+  "unit": [
+   "BMPT Terminator",
+   "BMPT Terminator"
+  ],
+  "short": [
+   "BMPT",
+   "BMPT"
+  ],
+  "guide": [
+   "Tank support",
+   "Xe yểm trợ tăng"
+  ]
+ },
+ "rocket_technical": {
+  "unit": [
+   "Rocket technical",
+   "Bán tải rốc-két"
+  ],
+  "short": [
+   "Technical",
+   "Bán tải"
+  ],
+  "guide": [
+   "Rocket pickup",
+   "Bán tải rốc-két"
+  ]
+ },
+ "mortar_carrier": {
+  "unit": [
+   "Mortar carrier",
+   "Xe súng cối"
+  ],
+  "short": [
+   "Mortar",
+   "Súng cối"
+  ],
+  "guide": [
+   "Mortar",
+   "Súng cối"
+  ]
+ },
+ "artillery": {
+  "unit": [
+   "Artillery",
+   "Pháo tự hành"
+  ],
+  "short": [
+   "SP gun",
+   "Pháo tự hành"
+  ],
+  "guide": [
+   "Artillery",
+   "Pháo binh"
+  ]
+ },
+ "mlrs": {
+  "unit": [
+   "Rocket launcher",
+   "Pháo phản lực"
+  ],
+  "short": [
+   "Rockets",
+   "Phản lực"
+  ],
+  "guide": [
+   "Rocket artillery",
+   "Pháo phản lực"
+  ]
+ },
+ "shahed_truck": {
+  "unit": [
+   "Shahed launcher truck",
+   "Xe phóng Shahed"
+  ],
+  "short": [
+   "Shahed",
+   "Shahed"
+  ],
+  "guide": [
+   "Shahed launcher",
+   "Xe phóng Shahed"
+  ]
+ },
+ "thermobaric_launcher": {
+  "unit": [
+   "Thermobaric launcher",
+   "Pháo phản lực nhiệt áp"
+  ],
+  "short": [
+   "TOS-1A",
+   "Nhiệt áp"
+  ],
+  "guide": [
+   "Thermobaric launcher",
+   "Pháo nhiệt áp"
+  ]
+ },
+ "ballistic_launcher": {
+  "unit": [
+   "Ballistic missile launcher",
+   "Xe phóng tên lửa đạn đạo"
+  ],
+  "short": [
+   "Ballistic",
+   "Đạn đạo"
+  ],
+  "guide": [
+   "Ballistic missile launcher",
+   "Tên lửa đạn đạo"
+  ]
+ },
+ "heavy_rocket_artillery": {
+  "unit": [
+   "Heavy rocket artillery",
+   "Pháo phản lực hạng nặng"
+  ],
+  "short": [
+   "Heavy MLRS",
+   "Phản lực 300"
+  ],
+  "guide": [
+   "Heavy rocket artillery",
+   "Pháo phản lực hạng nặng"
+  ]
+ },
+ "siege_tank": {
+  "unit": [
+   "Siege tank",
+   "Tăng công thành"
+  ],
+  "short": [
+   "Siege tank",
+   "Công thành"
+  ],
+  "guide": [
+   "Siege tank",
+   "Tăng công thành"
+  ]
+ },
+ "zu23_technical": {
+  "unit": [
+   "ZU-23 technical",
+   "Bán tải ZU-23"
+  ],
+  "short": [
+   "ZU-23",
+   "ZU-23"
+  ],
+  "guide": [
+   "Cheap anti-air",
+   "Phòng không giá rẻ"
+  ]
+ },
+ "aa_vehicle": {
+  "unit": [
+   "Anti-air",
+   "Xe phòng không"
+  ],
+  "short": [
+   "Anti-air",
+   "Phòng không"
+  ],
+  "guide": [
+   "Anti-air",
+   "Phòng không"
+  ]
+ },
+ "sam_launcher": {
+  "unit": [
+   "SAM launcher",
+   "Tên lửa phòng không"
+  ],
+  "short": [
+   "SAM",
+   "Tên lửa PK"
+  ],
+  "guide": [
+   "SAM launcher",
+   "Tên lửa phòng không"
+  ]
+ },
+ "heavy_aa": {
+  "unit": [
+   "Gun-missile air defence",
+   "Pháo tên lửa phòng không"
+  ],
+  "short": [
+   "Gun-SAM",
+   "PK hỗn hợp"
+  ],
+  "guide": [
+   "Gun-missile air defence",
+   "Pháo tên lửa phòng không"
+  ]
+ },
+ "iron_beam": {
+  "unit": [
+   "Iron Beam laser",
+   "La-de phòng không"
+  ],
+  "short": [
+   "Laser AA",
+   "La-de PK"
+  ],
+  "guide": [
+   "Point defence laser",
+   "La-de phòng thủ điểm"
+  ]
+ },
+ "long_sam": {
+  "unit": [
+   "Long-range SAM",
+   "Tên lửa phòng không tầm xa"
+  ],
+  "short": [
+   "Long SAM",
+   "SAM tầm xa"
+  ],
+  "guide": [
+   "Long-range SAM",
+   "Tên lửa phòng không tầm xa"
+  ]
+ },
+ "scout_heli": {
+  "unit": [
+   "Scout helicopter",
+   "Trực thăng trinh sát"
+  ],
+  "short": [
+   "Scout heli",
+   "TT trinh sát"
+  ],
+  "guide": [
+   "Scout helicopter",
+   "Trực thăng trinh sát"
+  ]
+ },
+ "recon_drone": {
+  "unit": [
+   "Recon drone",
+   "UAV trinh sát"
+  ],
+  "short": [
+   "Recon UAV",
+   "UAV do thám"
+  ],
+  "guide": [
+   "Recon drone",
+   "UAV trinh sát"
+  ]
+ },
+ "wingman_drone": {
+  "unit": [
+   "Loyal wingman",
+   "Drone hộ vệ"
+  ],
+  "short": [
+   "Wingman",
+   "Drone hộ vệ"
+  ],
+  "guide": [
+   "Loyal wingman",
+   "Drone hộ vệ"
+  ]
+ },
+ "strike_drone": {
+  "unit": [
+   "Strike drone",
+   "UAV tấn công"
+  ],
+  "short": [
+   "Strike UAV",
+   "UAV tấn công"
+  ],
+  "guide": [
+   "Strike drone",
+   "UAV tấn công"
+  ]
+ },
+ "swarm_carrier": {
+  "unit": [
+   "Drone mothership",
+   "Máy bay mẹ thả drone"
+  ],
+  "short": [
+   "Mothership",
+   "Máy bay mẹ"
+  ],
+  "guide": [
+   "Drone mothership",
+   "Máy bay mẹ thả drone"
+  ]
+ },
+ "attack_helicopter": {
+  "unit": [
+   "Attack helicopter",
+   "Trực thăng tấn công"
+  ],
+  "short": [
+   "Attack heli",
+   "Trực thăng"
+  ],
+  "guide": [
+   "Attack helicopter",
+   "Trực thăng tấn công"
+  ]
+ },
+ "fighter_jet": {
+  "unit": [
+   "Fighter jet",
+   "Tiêm kích"
+  ],
+  "short": [
+   "Fighter",
+   "Tiêm kích"
+  ],
+  "guide": [
+   "Fighter",
+   "Tiêm kích"
+  ]
+ },
+ "stealth_fighter": {
+  "unit": [
+   "Stealth fighter",
+   "Tiêm kích tàng hình"
+  ],
+  "short": [
+   "Stealth jet",
+   "TK tàng hình"
+  ],
+  "guide": [
+   "Stealth fighter",
+   "Tiêm kích tàng hình"
+  ]
+ },
+ "gunship_heli": {
+  "unit": [
+   "Heavy gunship",
+   "Trực thăng hạng nặng"
+  ],
+  "short": [
+   "Heavy gunship",
+   "TT hỏa lực"
+  ],
+  "guide": [
+   "Flying IFV",
+   "Xe bộ binh bay"
+  ]
+ },
+ "attack_jet": {
+  "unit": [
+   "Attack jet",
+   "Máy bay cường kích"
+  ],
+  "short": [
+   "Attack jet",
+   "Cường kích"
+  ],
+  "guide": [
+   "Ground-attack jet",
+   "Cường kích"
+  ]
+ },
+ "stealth_bomber": {
+  "unit": [
+   "Stealth bomber",
+   "Máy bay ném bom tàng hình"
+  ],
+  "short": [
+   "Stealth",
+   "Tàng hình"
+  ],
+  "guide": [
+   "Stealth bomber",
+   "Máy bay tàng hình"
+  ]
+ },
+ "heavy_bomber": {
+  "unit": [
+   "Heavy bomber",
+   "Oanh tạc cơ hạng nặng"
+  ],
+  "short": [
+   "Bomber",
+   "Oanh tạc cơ"
+  ],
+  "guide": [
+   "Heavy bomber",
+   "Oanh tạc cơ"
+  ]
+ },
+ "sky_gunship": {
+  "unit": [
+   "AC-130 Gunship",
+   "Pháo hạm AC-130"
+  ],
+  "short": [
+   "AC-130 Gunship",
+   "Pháo hạm AC-130"
+  ],
+  "guide": [
+   "AC-130 Gunship",
+   "Pháo hạm AC-130"
+  ]
+ },
+ "bunker_vehicle": {
+  "unit": [
+   "Bunker vehicle",
+   "Xe công sự"
+  ],
+  "short": [
+   "Bunker",
+   "Xe công sự"
+  ],
+  "guide": [
+   "Bunker vehicle",
+   "Xe công sự"
+  ]
+ },
+ "armored_bulldozer": {
+  "unit": [
+   "Armoured bulldozer",
+   "Xe ủi bọc thép"
+  ],
+  "short": [
+   "Bulldozer",
+   "Xe ủi"
+  ],
+  "guide": [
+   "Armoured bulldozer",
+   "Xe ủi bọc thép"
+  ]
+ },
+ "main_battle_tank": {
+  "unit": [
+   "Main battle tank",
+   "Tăng chủ lực"
+  ],
+  "short": [
+   "Battle tank",
+   "Tăng chủ lực"
+  ],
+  "guide": [
+   "Battle tank",
+   "Tăng chủ lực"
+  ]
+ },
+ "twin_tank": {
+  "unit": [
+   "Twin-barrel tank",
+   "Tăng hai nòng"
+  ],
+  "short": [
+   "Twin tank",
+   "Hai nòng"
+  ],
+  "guide": [
+   "Twin-barrel tank",
+   "Tăng hai nòng"
+  ]
+ },
+ "heavy_tank": {
+  "unit": [
+   "Heavy tank",
+   "Tăng hạng nặng"
+  ],
+  "short": [
+   "Heavy tank",
+   "Tăng nặng"
+  ],
+  "guide": [
+   "Heavy tank",
+   "Tăng hạng nặng"
+  ]
+ },
+ "titan_tank": {
+  "unit": [
+   "Titan super tank",
+   "Siêu tăng Titan"
+  ],
+  "short": [
+   "Titan",
+   "Siêu tăng"
+  ],
+  "guide": [
+   "Super-heavy tank",
+   "Siêu tăng"
+  ]
+ },
+ "fpv_carrier": {
+  "unit": [
+   "FPV drone carrier",
+   "Xe phóng drone FPV"
+  ],
+  "short": [
+   "FPV drones",
+   "Drone FPV"
+  ],
+  "guide": [
+   "FPV drone carrier",
+   "Xe phóng drone FPV"
+  ]
+ },
+ "lancet_truck": {
+  "unit": [
+   "Loitering munition truck",
+   "Xe phóng Lancet"
+  ],
+  "short": [
+   "Lancet",
+   "Lancet"
+  ],
+  "guide": [
+   "Artillery hunter",
+   "Săn pháo binh"
+  ]
+ },
+ "wheeled_gun": {
+  "unit": [
+   "Wheeled tank hunter",
+   "Pháo bánh lốp diệt tăng"
+  ],
+  "short": [
+   "Wheeled gun",
+   "Pháo bánh lốp"
+  ],
+  "guide": [
+   "Wheeled tank hunter",
+   "Pháo bánh lốp diệt tăng"
+  ]
+ },
+ "tank_destroyer": {
+  "unit": [
+   "Tank destroyer",
+   "Pháo chống tăng"
+  ],
+  "short": [
+   "Tank killer",
+   "Chống tăng"
+  ],
+  "guide": [
+   "Tank hunter",
+   "Diệt tăng"
+  ]
+ },
+ "railgun_truck": {
+  "unit": [
+   "Railgun truck",
+   "Xe súng điện từ"
+  ],
+  "short": [
+   "Railgun",
+   "Pháo điện từ"
+  ],
+  "guide": [
+   "Railgun",
+   "Súng điện từ"
+  ]
+ },
+ "laser_tank": {
+  "unit": [
+   "Focused-laser tank",
+   "Xe la-de tập trung"
+  ],
+  "short": [
+   "Laser tank",
+   "Xe la-de"
+  ],
+  "guide": [
+   "Focused-laser tank",
+   "Xe la-de tập trung"
+  ]
+ },
+ "c_ram": {
+  "unit": [
+   "C-RAM",
+   "Trạm C-RAM"
+  ],
+  "short": [
+   "C-RAM",
+   "C-RAM"
+  ],
+  "guide": [
+   "C-RAM",
+   "Trạm C-RAM"
+  ]
+ },
+ "drone_hangar": {
+  "unit": [
+   "Drone hangar",
+   "Nhà chứa drone"
+  ],
+  "short": [
+   "Drone hangar",
+   "Nhà chứa drone"
+  ],
+  "guide": [
+   "Drone hangar",
+   "Nhà chứa drone"
+  ]
+ },
+ "heavy_turret": {
+  "unit": [
+   "Heavy fortress",
+   "Pháo đài hạng nặng"
+  ],
+  "short": [
+   "Fortress",
+   "Pháo đài"
+  ],
+  "guide": [
+   "Coastal turret",
+   "Tháp pháo bờ biển"
+  ]
+ },
+ "missile_battery": {
+  "unit": [
+   "Patriot battery",
+   "Tên lửa Patriot tầm xa"
+  ],
+  "short": [
+   "Patriot",
+   "Patriot"
+  ],
+  "guide": [
+   "Missile battery",
+   "Dàn tên lửa"
+  ]
+ },
+ "bulwark_post": {
+  "unit": [
+   "Fallback post",
+   "Ụ súng tạm"
+  ],
+  "short": [
+   "Fallback post",
+   "Ụ súng tạm"
+  ]
+ }
+}
