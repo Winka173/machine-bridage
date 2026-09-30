@@ -148,6 +148,7 @@ namespace MachineBrigade.Game.Match
             ["cluster_at_strike"] = 2500,
             ["uav_loiter_strike_support"] = 2500,
             ["ammo_resupply"] = 1500,
+            ["jam_storm"] = 1500,
         };
 
         /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>

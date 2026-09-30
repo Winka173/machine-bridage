@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 47,
+    "chưa làm": 46,
     "đang làm": 0,
-    "xong": 46
+    "xong": 47
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 6,
+      "chưa làm": 5,
       "đang làm": 0,
-      "xong": 5
+      "xong": 6
     },
     "boss": {
       "chưa làm": 8,
@@ -1161,9 +1161,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop (5 CP, so the CP 5 or less price), or a chapter reward."
+      "status": "xong",
+      "id": "jam_storm",
+      "notes": "Batch C: support jam_storm, a new kind SupportKind.JamStorm (StrikeSystem.cs): downs every enemy drone in the circle at once (the microwave vehicle's pulse pattern) and adds the circle to the existing Smoke zone list for Duration. The sheet's \"60% of guided weapons miss\" is not modelled (documented simplification). AI: default cluster-strike path. Sold in the shop (1,500)."
     },
     {
       "key": "ht07",

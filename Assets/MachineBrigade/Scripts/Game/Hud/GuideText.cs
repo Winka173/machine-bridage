@@ -1130,6 +1130,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: mọi xe ta trong vòng {{radius}} m được nạp đầy đạn ngay lập tức, không phải chờ.\n" +
                 "Mạnh / yếu: giữ pháo binh và máy bay tiếp tục chiến đấu khi hết đạn; vô dụng với xe không giới hạn đạn.\n" +
                 "Mẹo: gọi cho lựu pháo và máy bay tấn công của bạn khi tốc độ bắn giảm."),
+            ["guide.jam_storm"] = (
+                "[[Jamming storm]] · {{radius}} m circle · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, every enemy drone in the circle is downed at once, and the circle then hides everything inside it for {{duration}} s.\n" +
+                "Strong / weak: stops a drone swarm cold and blinds the enemy's view of what you do there; ground vehicles and towers are untouched.\n" +
+                "Tip: call it over a drone launch site, or over your own advance to cover it.",
+                "[[Bão gây nhiễu]] · vùng {{radius}} m · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, mọi drone địch trong vùng rơi ngay, và vùng đó bị che khuất trong {{duration}} giây.\n" +
+                "Mạnh / yếu: chặn đứng bầy drone và che mắt địch trong vùng đó; xe mặt đất và tháp canh không bị ảnh hưởng.\n" +
+                "Mẹo: gọi trên điểm phóng drone địch, hoặc che chắn cho đợt tiến quân của bạn."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

@@ -592,6 +592,8 @@ namespace MachineBrigade.Game.Hud
             ["short.uav_loiter_strike"] = ("Attack UAV", "UAV tấn công"),
             ["support.ammo_resupply"] = ("Ammo resupply", "Thả dù tiếp đạn"),
             ["short.ammo_resupply"] = ("Resupply", "Tiếp đạn"),
+            ["support.jam_storm"] = ("Jamming storm", "Bão gây nhiễu"),
+            ["short.jam_storm"] = ("Jam storm", "Gây nhiễu"),
             ["stat.tickets"] = ("TICKETS", "ĐIỂM"),
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{amount}/s", "+{amount}/s"),

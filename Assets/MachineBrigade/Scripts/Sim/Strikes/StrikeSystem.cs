@@ -491,6 +491,25 @@ namespace MachineBrigade.Sim.Strikes
                     }
                     return true;
 
+                // Prompt 25 F2 batch C (ht06): every enemy drone caught in the circle falls at once (as the
+                // microwave vehicle's pulse), and the circle then hides what is in it, as Smoke, for Duration.
+                // The sheet's "guided weapons miss 60 % of the time" is not modelled (a documented simplification).
+                case SupportKind.JamStorm:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var r2 = support.Radius * support.Radius;
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || !v.Flying || !v.Def.Drone) continue;
+                        if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
+                        _world.Damage.Apply(v, v.Hp + 1f, DamageType.Energy, new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Redirect, false));
+                    }
+                    _smoke.Add(new SmokeZone(s.Point, support.Radius, now + support.Duration));
+                    _world.Emit(SimEvent.SmokeDeployed(s.Team, s.Point, support.Radius, support.Duration));
+                    return true;
+                }
+
                 default:
                     return true;
             }
