@@ -568,6 +568,8 @@ namespace MachineBrigade.Game.Hud
             var name = Strings.Card(id);
             if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
             var mission = Progression.UnlockMission(id);
+            // Prompt 25 D2: story loot is won in its mission only.
+            if (mission != null && Progression.IsStoryLoot(id)) return Strings.Format("deck.lockedLoot", ("name", name), ("mission", Campaign.Label(mission)));
             return mission != null
                 ? Strings.Format("deck.lockedMission", ("name", name), ("mission", Campaign.Label(mission)), ("coins", Kit.Count(Progression.Price(id, _catalog))))
                 : Strings.Format("deck.lockedShop", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
@@ -578,6 +580,9 @@ namespace MachineBrigade.Game.Hud
         {
             if (Progression.IsPremium(id)) return Strings.Get("kit.unlockShop");
             var mission = Progression.UnlockMission(id);
+            // Prompt 25 D2: a card may open in an interlude ("Opens in Interlude I").
+            if (mission != null && Campaign.Chapter(mission.Chapter) is { IsInterlude: true } interlude)
+                return Strings.Format("kit.unlockInterlude", ("interlude", interlude.Short));
             return mission != null && mission.Chapter > 0 ? Strings.Format("kit.unlockChapter", mission.Chapter)
                 : mission != null ? Strings.Format("kit.unlockMission", Campaign.Label(mission))
                 : Strings.Get("kit.unlockShop");

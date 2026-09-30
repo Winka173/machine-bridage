@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 5;
+        internal const int RosterVersion = 6;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -49,7 +49,8 @@ namespace MachineBrigade.Game.Match
         /// ranks; the coins and blueprints spent on the lower rank come back (the blueprints as the
         /// new card's). A retired card's coins come back and its blueprints turn universal. Cards
         /// bought with coins that no longer exist are refunded. Owners of the APS tank get an Epic
-        /// Trophy APS module.
+        /// Trophy APS module. Version 6 (prompt 25 D2): a save that has played keeps the cards a new
+        /// player no longer starts with (<see cref="Progression.FormerStarters"/>).
         /// </summary>
         private static void MigrateRoster(Data d)
         {
@@ -59,10 +60,13 @@ namespace MachineBrigade.Game.Match
                 var to = pair.Value;
                 var bought = d.owned.RemoveAll(id => id == from) > 0;
                 var had = d.unlocked.RemoveAll(id => id == from) > 0 || bought;
-                if (bought && CardMerges.PremiumPrices.TryGetValue(from, out var price)) d.coins += price;
+                var price = 0;
+                var refunded = bought && CardMerges.PremiumPrices.TryGetValue(from, out price);
+                if (refunded) d.coins += price;
                 if (had && !Progression.IsStarter(to))
                 {
-                    var list = Progression.IsPremium(to) ? d.owned : d.unlocked;
+                    // A card bought and not refunded stays bought (prompt 25 D2: the AC-130 is a campaign card now, bought early).
+                    var list = Progression.IsPremium(to) || (bought && !refunded) ? d.owned : d.unlocked;
                     if (!list.Contains(to)) list.Add(to);
                 }
                 var ranked = MergeRank(d, from, to);
@@ -115,6 +119,11 @@ namespace MachineBrigade.Game.Match
                     if (!d.branchNews.Contains(tower)) d.branchNews.Add(tower);
                 }
             }
+            // Version 6 (prompt 25 D2): the balance sheet opens the light tank, the AA vehicle and the SP gun in the campaign;
+            // a player who has already played keeps them.
+            if (d.rosterVersion < 6 && (d.missionIds.Count > 0 || d.unlocked.Count > 0 || d.owned.Count > 0 || d.rankIds.Count > 0))
+                foreach (var id in Progression.FormerStarters)
+                    if (!d.unlocked.Contains(id) && !d.owned.Contains(id)) d.unlocked.Add(id);
             d.rosterVersion = RosterVersion;
         }
 

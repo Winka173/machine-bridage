@@ -1,0 +1,279 @@
+{
+ "label": "after",
+ "rows": [
+  {
+   "chapter": 1,
+   "coins": 6955,
+   "before": 0,
+   "total": 6955,
+   "cards": 9,
+   "sold": 6,
+   "price": 2400,
+   "ids": [
+    "rocket_technical",
+    "mortar_carrier",
+    "repair_drop",
+    "rocket_turret",
+    "repair_bay",
+    "light_tank",
+    "zu23_technical",
+    "minefield",
+    "engineer_vehicle"
+   ],
+   "rank": 3.29
+  },
+  {
+   "chapter": 2,
+   "coins": 10840,
+   "before": 6955,
+   "total": 17795,
+   "cards": 10,
+   "sold": 8,
+   "price": 3750,
+   "ids": [
+    "aa_vehicle",
+    "artillery",
+    "flame_tank",
+    "airstrike",
+    "ammo_carrier",
+    "atgm_tower",
+    "ammo_depot",
+    "vbied",
+    "smoke_carrier",
+    "counter_battery_radar"
+   ],
+   "rank": 4.14
+  },
+  {
+   "chapter": 3,
+   "coins": 11865,
+   "before": 17795,
+   "total": 29660,
+   "cards": 9,
+   "sold": 7,
+   "price": 2400,
+   "ids": [
+    "sam_launcher",
+    "attack_helicopter",
+    "fighter_jet",
+    "uav_scan",
+    "dragons_teeth",
+    "radar_station",
+    "recon_drone",
+    "scout_heli",
+    "mine_layer"
+   ],
+   "rank": 5.0
+  },
+  {
+   "chapter": 13,
+   "coins": 2550,
+   "before": 29660,
+   "total": 32210,
+   "cards": 1,
+   "sold": 1,
+   "price": 800,
+   "ids": [
+    "turtle_tank"
+   ],
+   "rank": 5.07
+  },
+  {
+   "chapter": 4,
+   "coins": 18390,
+   "before": 32210,
+   "total": 50600,
+   "cards": 10,
+   "sold": 8,
+   "price": 6800,
+   "ids": [
+    "command_vehicle",
+    "tank_destroyer",
+    "wheeled_gun",
+    "logistics_station",
+    "field_tower",
+    "mlrs",
+    "heavy_aa",
+    "armored_bulldozer",
+    "bmpt",
+    "railgun_truck"
+   ],
+   "rank": 5.21
+  },
+  {
+   "chapter": 5,
+   "coins": 16175,
+   "before": 50600,
+   "total": 66775,
+   "cards": 7,
+   "sold": 5,
+   "price": 4000,
+   "ids": [
+    "strike_drone",
+    "fpv_carrier",
+    "shahed_truck",
+    "airfield",
+    "lancet_truck",
+    "ew_jammer",
+    "swarm_carrier"
+   ],
+   "rank": 5.93
+  },
+  {
+   "chapter": 6,
+   "coins": 22740,
+   "before": 66775,
+   "total": 89515,
+   "cards": 7,
+   "sold": 4,
+   "price": 3200,
+   "ids": [
+    "heavy_tank",
+    "twin_tank",
+    "c_ram",
+    "iron_beam",
+    "gunship_heli",
+    "ew_tower",
+    "bunker_vehicle"
+   ],
+   "rank": 6.07
+  },
+  {
+   "chapter": 14,
+   "coins": 3475,
+   "before": 89515,
+   "total": 92990,
+   "cards": 1,
+   "sold": 1,
+   "price": 1500,
+   "ids": [
+    "shield_carrier"
+   ],
+   "rank": 6.07
+  },
+  {
+   "chapter": 7,
+   "coins": 25795,
+   "before": 92990,
+   "total": 118785,
+   "cards": 4,
+   "sold": 4,
+   "price": 6000,
+   "ids": [
+    "attack_jet",
+    "thermobaric_launcher",
+    "stealth_fighter",
+    "siege_tank"
+   ],
+   "rank": 6.36
+  },
+  {
+   "chapter": 8,
+   "coins": 21375,
+   "before": 118785,
+   "total": 140160,
+   "cards": 4,
+   "sold": 3,
+   "price": 4500,
+   "ids": [
+    "long_sam",
+    "heavy_rocket_artillery",
+    "missile_battery",
+    "ballistic_launcher"
+   ],
+   "rank": 6.57
+  },
+  {
+   "chapter": 9,
+   "coins": 24680,
+   "before": 140160,
+   "total": 164840,
+   "cards": 4,
+   "sold": 3,
+   "price": 4050,
+   "ids": [
+    "laser_tank",
+    "remote_mines",
+    "heavy_bomber",
+    "artillery_emplacement"
+   ],
+   "rank": 7.0
+  },
+  {
+   "chapter": 15,
+   "coins": 4005,
+   "before": 164840,
+   "total": 168845,
+   "cards": 0,
+   "sold": 0,
+   "price": 0,
+   "ids": [],
+   "rank": 7.0
+  },
+  {
+   "chapter": 10,
+   "coins": 26880,
+   "before": 168845,
+   "total": 195725,
+   "cards": 4,
+   "sold": 3,
+   "price": 6350,
+   "ids": [
+    "sead_strike",
+    "stealth_bomber",
+    "sky_gunship",
+    "wingman_drone"
+   ],
+   "rank": 7.14
+  },
+  {
+   "chapter": 11,
+   "coins": 22615,
+   "before": 195725,
+   "total": 218340,
+   "cards": 3,
+   "sold": 1,
+   "price": 2500,
+   "ids": [
+    "titan_tank",
+    "cp_relay",
+    "heavy_turret"
+   ],
+   "rank": 7.21
+  },
+  {
+   "chapter": 12,
+   "coins": 16000,
+   "before": 218340,
+   "total": 234340,
+   "cards": 3,
+   "sold": 0,
+   "price": 0,
+   "ids": [
+    "shield_tower",
+    "cruise_missile",
+    "drone_hangar"
+   ],
+   "rank": 7.21
+  }
+ ],
+ "premium": [
+  [
+   "napalm_strike",
+   1500
+  ]
+ ],
+ "starters": [
+  "scout_jeep",
+  "armored_car",
+  "ifv",
+  "main_battle_tank",
+  "artillery_barrage",
+  "smoke_screen"
+ ],
+ "build": [
+  "193 missions, 1708 texts; coin scale 100, blueprint scale 0.50; deck rank 7.00 as act IV begins, 7.21 at the end",
+  "acts I-II only: pay x3.00, deck rank 7.00 at the end",
+  "acts I-III only: pay x1.00, deck rank 7.00 at the end"
+ ]
+}

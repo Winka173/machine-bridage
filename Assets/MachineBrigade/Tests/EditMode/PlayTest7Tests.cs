@@ -38,8 +38,10 @@ namespace MachineBrigade.Tests
             Assert.IsTrue(def.Card && def.CpCost > 0 && def.Flying && def.FixedWing && def.Orbit, "a card-carrying aeroplane in a pylon turn");
             Assert.AreEqual(UnitClass.Plane, def.Class);
             Assert.AreEqual(GearBranch.Air, Gear.BranchOf(def), "listed with the aircraft");
-            Assert.IsTrue(Progression.IsPremium("sky_gunship"));
-            Assert.AreEqual(4500, Progression.Price("sky_gunship", catalog));
+            // Prompt 25 D2: the balance sheet opens it in chapter 10, 2,500 coins to buy early (it was premium, 4,500).
+            Assert.IsFalse(Progression.IsPremium("sky_gunship"));
+            Assert.AreEqual(10, Progression.UnlockMission("sky_gunship")?.Chapter);
+            Assert.AreEqual(2500, Progression.Price("sky_gunship", catalog));
             Assert.AreEqual("vehicle", CardArt.EntryFor("sky_gunship")?.kind);
             Assert.AreEqual("sky_gunship", CardArt.EntryFor("sky_gunship")?.model);
             var sides = def.Mounts.Where(m => m.Aim == MountAim.Left).Select(m => m.Weapon.Id).ToList();
@@ -48,10 +50,11 @@ namespace MachineBrigade.Tests
             try
             {
                 Strings.Vietnamese = false;
-                Assert.AreEqual("AC-130 Gunship", Strings.Card("sky_gunship"));
+                // Prompt 25 D1 (DECISIONS 25D1): the spreadsheet's name; the AC-130 is on its reference line.
+                Assert.AreEqual("Airborne gunship", Strings.Card("sky_gunship"));
                 Assert.AreNotEqual(Strings.Card("sky_gunship"), Strings.Card("gunship_heli"), "not the Mi-24");
                 Strings.Vietnamese = true;
-                Assert.AreEqual("Pháo hạm AC-130", Strings.Card("sky_gunship"));
+                Assert.AreEqual("Pháo hạm bay", Strings.Card("sky_gunship"));
             }
             finally
             {

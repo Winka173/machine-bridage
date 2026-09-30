@@ -43,11 +43,12 @@ namespace MachineBrigade.Game.Hud
             // Units and abbreviations.
             "CP", "HQ", "HP", "HUD", "UAV", "FPV", "SAM", "EMP", "SEAD", "MOAB", "APS", "ATGM", "IFV", "MLRS", "GMLRS", "EW", "CIWS", "FPS", "XP", "DPS",
             "mm", "cm", "km", "kg", "MW", "Mk", "Lv",
-            // Vietnamese abbreviations in short names: phòng không, trực thăng, sát thương, tên lửa, sở chỉ huy, công trình, tinh nhuệ, tiêm kích.
-            "PK", "TT", "ST", "TL", "SCH", "CT", "TN", "TK",
+            // Vietnamese abbreviations in short names: phòng không, trực thăng, sát thương, tên lửa, sở chỉ huy, công trình, tinh nhuệ, tiêm kích,
+            // oanh tạc cơ (prompt 25 D1).
+            "PK", "TT", "ST", "TL", "SCH", "CT", "TN", "TK", "OTC",
             // Real weapons and vehicles the units are modelled on.
             "AC-130", "Ka-52", "Kh", "Grad", "Smerch", "TOS", "Iskander", "Patriot", "PAC-3", "Tunguska", "ZU", "BMPT", "Terminator", "Ataka", "BTR", "Object",
-            "Bradley", "TOW", "Centauro", "Sprut", "PzH", "Merkava", "Trophy", "Kornet", "Iron", "Dome", "Cobra", "Lancet", "Shahed", "Hellfire", "Stinger", "Apache",
+            "Bradley", "TOW", "Centauro", "Sprut", "PzH", "Merkava", "Trophy", "Kornet", "Iron", "Dome", "Iron Beam", "Cobra", "Lancet", "Shahed", "Hellfire", "Stinger", "Apache",
             "Little Bird", "Reaper", "Maverick", "Alligator", "Vikhr", "Igla", "JASSM", "GBU", "Wolf", "Griffin", "Centurion", "C-RAM", "Pantsir", "Tor", "Buk",
             // Bosses' and branches' code names.
             "Argus", "Atlas", "Bastion", "Behemoth", "Caspian", "Charybdis", "Daedalus", "Fenrir", "Gungnir", "Harpy", "Hive", "Icarus", "Inferno", "Ixion",

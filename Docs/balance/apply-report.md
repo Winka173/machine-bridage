@@ -1307,3 +1307,239 @@ The Gungnir's 80 cm gun and the Kronos's bucket wheel as weapons (rows "Dữ li�
 <!-- /step:C2 -->
 
 <!-- import_c:end -->
+
+<!-- import_names:begin -->
+## Tên đề xuất
+
+Applied by `Tools/balance/import_names.py` (prompt 25 D1, DECISIONS 25D1): 63 rows applied, 1 skipped. A row applies its full name, its short name and its English name to `unit.<id>` and `short.<id>`, the head of `guide.<id>`, and every text that named the unit by its old name.
+
+| id | full name (vi) | short (vi) | English | English short | before |
+|---|---|---|---|---|---|
+| `hover_gunboat` | Xuồng đệm khí hộ tống | Xuồng hộ tống | Escort hovercraft | Hovercraft | Xuồng cao tốc đệm khí / Hover gunboat |
+| `armored_car` | Xe bọc thép bánh lốp | Bánh lốp | Armoured car | Armoured car | Xe bọc thép / Armored car |
+| `ifv` | Xe chiến đấu bộ binh | Xe bộ binh | Infantry fighting vehicle | IFV | Xe chiến đấu bộ binh / Infantry fighting vehicle |
+| `supply_truck` | Xe tải tiếp tế | Tiếp tế | Supply truck | Supply truck | Xe tiếp tế / Supply truck |
+| `engineer_vehicle` | Xe công binh | Công binh | Engineering vehicle | Engineer | Xe công binh / Engineer vehicle |
+| `smoke_carrier` | Xe thả khói | Xe khói | Smoke carrier | Smoke carrier | Xe tạo khói / Smoke generator carrier |
+| `ammo_carrier` | Xe tiếp đạn | Tiếp đạn | Ammo carrier | Ammo carrier | Xe tiếp đạn / Ammunition carrier |
+| `counter_battery_radar` | Xe radar phản pháo | Radar phản pháo | Counter-battery radar | CB radar | Radar phản pháo / Counter-battery radar |
+| `ew_jammer` | Xe gây nhiễu điện tử | Gây nhiễu | EW jammer | Jammer | Xe tác chiến điện tử / EW jammer |
+| `mine_layer` | Xe rải mìn | Rải mìn | Minelayer | Minelayer | Xe rải mìn / Mine layer |
+| `command_vehicle` | Xe chỉ huy | Chỉ huy | Command vehicle | Command | Xe chỉ huy / Command vehicle |
+| `shield_carrier` | Xe phát khiên | Phát khiên | Shield carrier | Shield carrier | Xe phát khiên / Shield carrier |
+| `scout_jeep` | Xe trinh sát hạng nhẹ | Trinh sát | Scout jeep | Scout | Xe trinh sát / Scout jeep |
+| `vbied` | Xe bom bọc thép | Xe bom | Armoured car bomb | Car bomb | Xe bom tự sát bọc thép / Armoured car bomb |
+| `light_tank` | Tăng nhẹ lội nước | Tăng nhẹ | Amphibious light tank | Light tank | Tăng hạng nhẹ / Light tank |
+| `flame_tank` | Tăng phun lửa | Phun lửa | Flame tank | Flame tank | Tăng phun lửa / Flame tank |
+| `turtle_tank` | Tăng mái che | Tăng rùa | Turtle tank | Turtle tank | Xe tăng rùa / Turtle tank |
+| `bmpt` | Xe hỗ trợ tăng | Hỗ trợ tăng | Tank support vehicle | Tank support | BMPT Terminator / BMPT Terminator |
+| `rocket_technical` | Bán tải rốc-két | Bán tải rốc-két | Rocket technical | Rocket pickup | Bán tải rốc-két / Rocket technical |
+| `mortar_carrier` | Xe cối tự hành | Xe cối | Mortar carrier | Mortar | Xe súng cối / Mortar carrier |
+| `artillery` | Lựu pháo tự hành | Lựu pháo | SP howitzer | SP howitzer | Pháo tự hành / Artillery |
+| `mlrs` | Pháo phản lực dẫn đường | Phản lực | Guided MLRS | Guided MLRS | Pháo phản lực / Rocket launcher |
+| `shahed_truck` | Xe phóng drone cảm tử tầm xa | Drone cảm tử | Long-range drone launcher | Kamikaze drones | Xe phóng Shahed / Shahed launcher truck |
+| `thermobaric_launcher` | Pháo phản lực nhiệt áp | Nhiệt áp | Thermobaric launcher | Thermobaric | Pháo phản lực nhiệt áp / Thermobaric launcher |
+| `ballistic_launcher` | Xe phóng tên lửa chiến thuật | TL chiến thuật | Tactical ballistic launcher | Ballistic | Xe phóng tên lửa đạn đạo / Ballistic missile launcher |
+| `heavy_rocket_artillery` | Pháo phản lực hạng nặng | Phản lực nặng | Heavy MLRS | Heavy MLRS | Pháo phản lực hạng nặng / Heavy rocket artillery |
+| `siege_tank` | Pháo cối công thành | Công thành | Siege mortar | Siege mortar | Tăng công thành / Siege tank |
+| `zu23_technical` | Bán tải cao xạ | Cao xạ bán tải | Flak technical | Flak technical | Bán tải ZU-23 / ZU-23 technical |
+| `aa_vehicle` | Pháo cao xạ tự hành | Cao xạ | Self-propelled AA gun | AA gun | Xe phòng không / Anti-air |
+| `sam_launcher` | Xe tên lửa phòng không tầm trung | PK tầm trung | Medium-range SAM | Medium SAM | Tên lửa phòng không / SAM launcher |
+| `heavy_aa` | Xe phòng không pháo – tên lửa | PK hỗn hợp | Gun–missile AA | Gun–missile AA | Pháo tên lửa phòng không / Gun-missile air defence |
+| `iron_beam` | Xe la-de phòng không | La-de PK | Laser AA | Laser AA | La-de phòng không / Iron Beam laser |
+| `long_sam` | Xe tên lửa phòng không tầm xa | PK tầm xa | Long-range SAM | Long-range SAM | Tên lửa phòng không tầm xa / Long-range SAM |
+| `scout_heli` | Trực thăng trinh sát vũ trang | TT trinh sát | Armed scout helicopter | Scout heli | Trực thăng trinh sát / Scout helicopter |
+| `recon_drone` | UAV trinh sát | UAV trinh sát | Recon UAV | Recon UAV | UAV trinh sát / Recon drone |
+| `wingman_drone` | Drone hộ vệ | Drone hộ vệ | Wingman drone | Wingman | Drone hộ vệ / Loyal wingman |
+| `strike_drone` | UAV tấn công | UAV tấn công | Strike UAV | Strike UAV | UAV tấn công / Strike drone |
+| `swarm_carrier` | Máy bay mẹ thả drone | Máy bay mẹ | Drone mothership aircraft | Mothership | Máy bay mẹ thả drone / Drone mothership |
+| `attack_helicopter` | Trực thăng tấn công | TT tấn công | Attack helicopter | Attack heli | Trực thăng tấn công / Attack helicopter |
+| `fighter_jet` | Tiêm kích | Tiêm kích | Fighter | Fighter | Tiêm kích / Fighter jet |
+| `stealth_fighter` | Tiêm kích tàng hình | TK tàng hình | Stealth fighter | Stealth fighter | Tiêm kích tàng hình / Stealth fighter |
+| `gunship_heli` | Trực thăng vũ trang bọc giáp | TT vũ trang | Armoured gunship helicopter | Gunship heli | Trực thăng hạng nặng / Heavy gunship |
+| `attack_jet` | Máy bay cường kích | Cường kích | Attack jet | Attack jet | Máy bay cường kích / Attack jet |
+| `stealth_bomber` | Oanh tạc cơ tàng hình | OTC tàng hình | Stealth bomber | Stealth bomber | Máy bay ném bom tàng hình / Stealth bomber |
+| `heavy_bomber` | Oanh tạc cơ chiến lược | Oanh tạc cơ | Strategic bomber | Bomber | Oanh tạc cơ hạng nặng / Heavy bomber |
+| `sky_gunship` | Pháo hạm bay | Pháo hạm | Airborne gunship | Gunship | Pháo hạm AC-130 / AC-130 Gunship |
+| `bunker_vehicle` | Xe công sự triển khai | Công sự | Deployable bunker | Bunker | Xe công sự / Bunker vehicle |
+| `armored_bulldozer` | Xe ủi bọc thép | Xe ủi | Armoured bulldozer | Bulldozer | Xe ủi bọc thép / Armoured bulldozer |
+| `main_battle_tank` | Tăng chủ lực | Tăng chủ lực | Main battle tank | Battle tank | Tăng chủ lực / Main battle tank |
+| `twin_tank` | Tăng hai nòng | Hai nòng | Twin-gun tank | Twin-gun tank | Tăng hai nòng / Twin-barrel tank |
+| `heavy_tank` | Tăng hạng nặng | Tăng nặng | Heavy tank | Heavy tank | Tăng hạng nặng / Heavy tank |
+| `titan_tank` | Siêu tăng | Siêu tăng | Super-heavy tank | Super tank | Siêu tăng Titan / Titan super tank |
+| `fpv_carrier` | Xe phóng drone FPV | Drone FPV | FPV drone carrier | FPV drones | Xe phóng drone FPV / FPV drone carrier |
+| `lancet_truck` | Xe phóng đạn lảng vảng | Đạn lảng vảng | Loitering munition truck | Loiter munition | Xe phóng Lancet / Loitering munition truck |
+| `wheeled_gun` | Pháo xung kích bánh lốp | Pháo xung kích | Wheeled tank destroyer | Wheeled gun | Pháo bánh lốp diệt tăng / Wheeled tank hunter |
+| `tank_destroyer` | Pháo chống tăng tự hành | Chống tăng | Tank destroyer | Tank destroyer | Pháo chống tăng / Tank destroyer |
+| `railgun_truck` | Xe pháo điện từ | Pháo điện từ | Railgun truck | Railgun | Xe súng điện từ / Railgun truck |
+| `laser_tank` | Xe la-de diệt tăng | La-de diệt tăng | Laser tank destroyer | Laser tank | Xe la-de tập trung / Focused-laser tank |
+| `c_ram` | Trạm đánh chặn C-RAM | C-RAM | C-RAM interceptor | C-RAM | Trạm C-RAM / C-RAM |
+| `drone_hangar` | Nhà chứa drone | Nhà chứa drone | Drone hangar | Drone hangar | Nhà chứa drone / Drone hangar |
+| `heavy_turret` | Tháp pháo hạng nặng | Pháo hạng nặng | Heavy gun turret | Heavy gun | Pháo đài hạng nặng / Heavy fortress |
+| `missile_battery` | Trạm tên lửa phòng không tầm xa | Trạm PK tầm xa | Long-range SAM site | SAM site | Tên lửa Patriot tầm xa / Patriot battery |
+| `bulwark_post` | Ụ súng dã chiến | Ụ súng | Field gun post | Gun post | Ụ súng tạm / Fallback post |
+
+Changed from the sheet:
+
+- `ballistic_launcher` short name "TL chiến thuật": "Tên lửa chiến thuật" is 19 letters, over the 15 of one card line; "TL" is the short names' abbreviation of "tên lửa".
+- `wheeled_gun` short name "Pháo xung kích": "Bánh lốp diệt tăng" is 18 letters; the first words of the full name instead.
+- `missile_battery` short name "Trạm PK tầm xa": "PK tầm xa" is the long-range SAM vehicle's short name too; the tower keeps the "Trạm" of its full name.
+- English names in sentence case and British spelling (the glossary): "Armored Car" is "Armoured car". English short names are the script's (the sheet has none).
+
+Skipped:
+
+- `spawn_bastion` (Tháp căn cứ): the sheet proposes no name ("kiểm tra còn dùng không"): the bastion is only the fallback of ModeSupport.Build when the catalogue has no HQ, which the shipped content always has; its old name stays until the base system drops it.
+
+<!-- import_names:end -->
+
+<!-- import_d2:begin -->
+## D2: unlocks, early buy, story loot (sheet Phương tiện) and E.3 (sheet Cốt truyện)
+
+Applied by `Tools/balance/import_unlocks.py` (prompt 25 D2, DECISIONS 25D2). The route moves are `Tools/campaign/act11.py`; `campaign.json` was rebuilt from the scripts (`build_campaign.py --no-texts`).
+
+Rows: 58. Applied 56, skipped 2 (not cards).
+
+| id | card | before: route | before: early price | sheet: opens | sheet: early price | after: mission | outcome |
+|---|---|---|---|---|---|---|---|
+| `hover_gunboat` | Escort hovercraft | no mission | - | Không mở (hộ tống boss) | - | - | skipped: not a card (the sheet's own words) |
+| `armored_car` | Armoured car | starter | - | starter | - | starter | already so |
+| `ifv` | Infantry fighting vehicle | starter | - | starter | - | starter | already so |
+| `supply_truck` | Supply truck | no mission | - | Nhiệm vụ (không vào bộ bài) | - | - | skipped: not a card (the sheet's own words) |
+| `engineer_vehicle` | Engineering vehicle | no mission | 750 | Chapter 1 | 300 | c1m09 | applied |
+| `smoke_carrier` | Smoke carrier | Chapter 7, c7m04 | 750 | Chapter 2 | 300 | c2m08 | applied |
+| `ammo_carrier` | Ammo carrier | Chapter 3, c3m03 | 900 | Chapter 2 | 300 | c2m05 | applied |
+| `counter_battery_radar` | Counter-battery radar | Chapter 8, c8m02 | 1,050 | Chapter 2 | 300 | c2m09 | applied |
+| `ew_jammer` | EW jammer | Chapter 9, c9m01 | 1,050 | Chapter 5 | 800 | c5m12 | applied |
+| `mine_layer` | Minelayer | Chapter 12, c12m06 | 1,050 | Chapter 3 | 300 | c3m12 | applied |
+| `command_vehicle` | Command vehicle | Chapter 4, c4m01 | 1,200 | Chapter 4 | 800 | c4m01 | applied |
+| `shield_carrier` | Shield carrier | Chapter 6, c6m03 | 1,350 | Interlude II | 1,500 | i2m01 | applied |
+| `scout_jeep` | Scout jeep | starter | - | starter | - | starter | already so |
+| `vbied` | Armoured car bomb | Chapter 7, c7m01 | 750 | Chapter 2 | 300 | c2m07 | applied |
+| `light_tank` | Amphibious light tank | starter | - | Chapter 1 | 300 | c1m05 | applied |
+| `flame_tank` | Flame tank | Chapter 2, c2m03 | 1,050 | Chapter 2 | 300 | c2m03 | applied |
+| `turtle_tank` | Turtle tank | Chapter 7, c7m02 | 1,350 | Interlude I | 800 | i1m01 | applied |
+| `bmpt` | Tank support vehicle | Chapter 7, c7m03 | 1,650 | Chapter 4 | 800 | c4m08 | applied |
+| `rocket_technical` | Rocket technical | Chapter 1, c1m01 | 750 | Chapter 1 | 300 | c1m01 | applied |
+| `mortar_carrier` | Mortar carrier | Chapter 1, c1m02 | 900 | Chapter 1 | 300 | c1m02 | applied |
+| `artillery` | SP howitzer | starter | - | Chapter 2 | 300 | c2m02 | applied |
+| `mlrs` | Guided MLRS | Chapter 2, c2m01 | 1,350 | Chapter 4 | 800 | c4m12 | applied |
+| `shahed_truck` | Long-range drone launcher | Chapter 8, c8m01 | 1,500 | Chapter 5 | 800 | c5m03 | applied |
+| `thermobaric_launcher` | Thermobaric launcher | Chapter 8, c8m03 | 1,650 | Chapter 7 | 1,500 | c7m03 | applied |
+| `ballistic_launcher` | Tactical ballistic launcher | premium 5,000 | - | Chapter 8 | 1,500 | c8m11 | applied |
+| `heavy_rocket_artillery` | Heavy MLRS | Chapter 10, c10m02 | 2,100 | Chapter 8 | 1,500 | c8m02 | applied |
+| `siege_tank` | Siege mortar | no mission | 2,100 | Chapter 7 | 1,500 | c7m04 | applied |
+| `zu23_technical` | Flak technical | Chapter 1, c1m06 | 750 | Chapter 1 | 300 | c1m06 | applied |
+| `aa_vehicle` | Self-propelled AA gun | starter | - | Chapter 2 | 300 | c2m01 | applied |
+| `sam_launcher` | Medium-range SAM | Chapter 2, c2m02 | 1,350 | Chapter 3 | 300 | c3m01 | applied |
+| `heavy_aa` | Gun–missile AA | Chapter 3, c3m01 | 1,350 | Chapter 4 | 800 | c4m07 | applied |
+| `iron_beam` | Laser AA | Chapter 9, c9m03 | 1,200 | Chapter 6 | 800 | c6m16 | applied |
+| `long_sam` | Long-range SAM | Chapter 5, c5m05 | 2,400 | Chapter 8 | 1,500 | c8m01 | applied |
+| `scout_heli` | Armed scout helicopter | Chapter 6, c6m04 | 1,050 | Chapter 3 | 300 | c3m06 | applied |
+| `recon_drone` | Recon UAV | Chapter 3, c3m05 | 1,200 | Chapter 3 | 300 | c3m05 | applied |
+| `wingman_drone` | Wingman drone | Chapter 10, c10m10 | 1,200 | Chapter 10 (story loot) | - | c10m10 | applied: no longer for sale (its story beat was already so) |
+| `strike_drone` | Strike UAV | Chapter 5, c5m01 | 1,650 | Chapter 5 | 800 | c5m01 | applied |
+| `swarm_carrier` | Drone mothership aircraft | Chapter 5, c5m10 | 2,250 | Chapter 5 (story loot) | - | c5m10 | applied: no longer for sale (its story beat was already so) |
+| `attack_helicopter` | Attack helicopter | Chapter 3, c3m02 | 1,650 | Chapter 3 | 300 | c3m02 | applied |
+| `fighter_jet` | Fighter | Chapter 5, c5m09 | 2,100 | Chapter 3 | 300 | c3m11 | applied |
+| `stealth_fighter` | Stealth fighter | Chapter 11, c11m02 | 2,250 | Chapter 7 | 1,500 | c7m16 | applied |
+| `gunship_heli` | Armoured gunship helicopter | Chapter 10, c10m05 | 2,550 | Chapter 6 | 800 | c6m11 | applied |
+| `attack_jet` | Attack jet | Chapter 4, c4m02 | 3,000 | Chapter 7 | 1,500 | c7m01 | applied |
+| `stealth_bomber` | Stealth bomber | premium 5,000 | - | Chapter 10 | 2,500 | c10m02 | applied |
+| `heavy_bomber` | Strategic bomber | premium 4,000 | - | Chapter 9 | 1,500 | c9m03 | applied |
+| `sky_gunship` | Airborne gunship | premium 4,500 | - | Chapter 10 | 2,500 | c10m11 | applied |
+| `bunker_vehicle` | Deployable bunker | Chapter 6, c6m10 | 1,200 | Chapter 6 (story loot) | - | c6m10 | applied: no longer for sale (its story beat was already so) |
+| `armored_bulldozer` | Armoured bulldozer | Chapter 6, c6m02 | 1,350 | Chapter 4 | 800 | c4m16 | applied |
+| `main_battle_tank` | Main battle tank | starter | - | starter | - | starter | already so |
+| `twin_tank` | Twin-gun tank | Chapter 5, c5m04 | 1,650 | Chapter 6 | 800 | c6m13 | applied |
+| `heavy_tank` | Heavy tank | Chapter 2, c2m05 | 2,250 | Chapter 6 | 800 | c6m01 | applied |
+| `titan_tank` | Super-heavy tank | premium 3,000 | - | Chapter 11 | 2,500 | c11m01 | applied |
+| `fpv_carrier` | FPV drone carrier | Chapter 5, c5m02 | 1,200 | Chapter 5 | 800 | c5m02 | applied |
+| `lancet_truck` | Loitering munition truck | Chapter 8, c8m04 | 1,200 | Chapter 5 | 800 | c5m08 | applied |
+| `wheeled_gun` | Wheeled tank destroyer | Chapter 4, c4m03 | 1,200 | Chapter 4 | 800 | c4m03 | applied |
+| `tank_destroyer` | Tank destroyer | Chapter 1, c1m05 | 1,200 | Chapter 4 | 800 | c4m02 | applied |
+| `railgun_truck` | Railgun truck | Chapter 4, c4m10 | 1,800 | Chapter 4 (story loot) | - | c4m10 | applied: no longer for sale (its story beat was already so) |
+| `laser_tank` | Laser tank destroyer | Chapter 11, c11m01 | 1,650 | Chapter 9 | 1,500 | c9m01 | applied |
+
+Starters: scout_jeep, armored_car, ifv, main_battle_tank (were scout_jeep, armored_car, ifv, light_tank, main_battle_tank, aa_vehicle, artillery). A save from before keeps light_tank, aa_vehicle, artillery (roster version 6).
+
+Cards the sheet does not cover, placed by the D2 rule (DECISIONS 25D2): `minefield` Chapter 1, c1m08; `missile_battery` Chapter 8, c8m03.
+
+### Economy (prompts 7 and 20), computed from the data
+
+A campaign-only player who wins each mission once with two stars (the pay of `build_campaign.simulate`: the mission's coins, 50 a star, 300 for the first clear's crate, the level bonuses). "Opens" is what the chapter unlocks (vehicles, supports, towers and base modules); "on sale" are the vehicles and supports the shop sells early, and "price" what buying all of them early costs (towers and modules are won, not sold; after D2 story loot is not sold either). "Rank" is the main deck's average rank at the chapter's end (the builder's model, `build_campaign.simulate`).
+
+| Chapter | Coins in it | Coins before it | Opens (before / after) | On sale (before / after) | Early price (before / after) | Price / coins in it (before / after) | Rank (before / after) |
+|---|---|---|---|---|---|---|---|
+| Chapter 1 | 6,955 | 0 | 7 / 9 | 5 / 6 | 4,500 / 2,400 | 0.65 / 0.35 | 3.21 / 3.29 |
+| Chapter 2 | 10,840 | 6,955 | 7 / 10 | 5 / 8 | 7,650 / 3,750 | 0.71 / 0.35 | 4.14 / 4.14 |
+| Chapter 3 | 11,865 | 17,795 | 7 / 9 | 5 / 7 | 5,700 / 2,400 | 0.48 / 0.20 | 5.07 / 5.00 |
+| Interlude I | 2,550 | 29,660 | 0 / 1 | 0 / 1 | 0 / 800 | 0.00 / 0.31 | 5.07 / 5.07 |
+| Chapter 4 | 18,390 | 32,210 | 6 / 10 | 5 / 8 | 8,400 / 6,800 | 0.46 / 0.37 | 5.43 / 5.21 |
+| Chapter 5 | 16,175 | 50,600 | 7 / 7 | 6 / 5 | 11,250 / 4,000 | 0.70 / 0.25 | 6.07 / 5.93 |
+| Chapter 6 | 22,740 | 66,775 | 6 / 7 | 4 / 4 | 4,950 / 3,200 | 0.22 / 0.14 | 6.21 / 6.07 |
+| Interlude II | 3,475 | 89,515 | 0 / 1 | 0 / 1 | 0 / 1,500 | 0.00 / 0.43 | 6.21 / 6.07 |
+| Chapter 7 | 25,795 | 92,990 | 4 / 4 | 4 / 4 | 4,500 / 6,000 | 0.17 / 0.23 | 7.00 / 6.36 |
+| Chapter 8 | 21,375 | 118,785 | 4 / 4 | 4 / 3 | 5,400 / 4,500 | 0.25 / 0.21 | 7.07 / 6.57 |
+| Chapter 9 | 24,680 | 140,160 | 4 / 4 | 3 / 3 | 3,300 / 4,050 | 0.13 / 0.16 | 7.14 / 7.00 |
+| Interlude III | 4,005 | 164,840 | 0 / 0 | 0 / 0 | 0 / 0 | 0.00 / 0.00 | 7.14 / 7.00 |
+| Chapter 10 | 26,880 | 168,845 | 4 / 4 | 4 / 3 | 7,200 / 6,350 | 0.27 / 0.24 | 7.36 / 7.14 |
+| Chapter 11 | 22,615 | 195,725 | 4 / 3 | 2 / 1 | 3,900 / 2,500 | 0.17 / 0.11 | 7.86 / 7.21 |
+| Chapter 12 | 16,000 | 218,340 | 4 / 3 | 2 / 0 | 3,450 / 0 | 0.22 / 0.00 | 8.00 / 7.21 |
+
+The whole campaign pays 234,340 coins (was 234,340). Buying every card on sale early: 48,250 (was 70,200), 21% of the campaign's coins (was 30%). Premium: `napalm_strike` 1,500 (was `ballistic_launcher` 5,000, `heavy_bomber` 4,000, `napalm_strike` 1,500, `sky_gunship` 4,500, `stealth_bomber` 5,000, `titan_tank` 3,000, 23,000 in all).
+
+The builder's rank tune (prompt 7: the main deck about rank 7 as act IV begins; prompt 20: acts I-II alone end near 7):
+
+- before: 193 missions, 1708 texts; coin scale 100, blueprint scale 0.75; deck rank 7.14 as act IV begins, 8.00 at the end; acts I-II only: pay x1.84, deck rank 7.00 at the end; acts I-III only: pay x1.00, deck rank 7.14 at the end
+- after: 193 missions, 1708 texts; coin scale 100, blueprint scale 0.50; deck rank 7.00 as act IV begins, 7.21 at the end; acts I-II only: pay x3.00, deck rank 7.00 at the end; acts I-III only: pay x1.00, deck rank 7.00 at the end
+
+### New content: the shop plan (Docs/backlog/new_content.json notes)
+
+93 items: each note is its planned price and source from the column "Mở khóa đề xuất" (the statuses are unchanged; nothing is built). Where a sheet gives two prices, the item's slot or CP picks one.
+
+| Plan | Items |
+|---|---|
+| 1,500 coins in the shop. | 24 |
+| 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop. | 14 |
+| 3,000 coins in the shop, or an event reward. | 13 |
+| 2,000 coins in the shop (a small slot), or a side-mission reward. | 9 |
+| not sold in the shop. A main boss is its season's boss, a mini boss a weekly event ("Ra mắt đề xuất"). | 8 |
+| 5,000 coins in the shop, or a season-pass reward. | 5 |
+| 3,000 coins in the shop (a medium slot), or a side-mission reward. | 3 |
+| 3,000 coins in the shop. | 3 |
+| 3,000 coins in the shop (a utility slot), or a side-mission reward. | 2 |
+| 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward. | 2 |
+| 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward. | 2 |
+| 1,500 coins in the shop (2 CP, so the CP 5 or less price), or a chapter reward. | 2 |
+| 2,000 coins in the shop. | 1 |
+| 2,500 coins in the shop (8 CP, so the CP 6 or more price), or a chapter reward. | 1 |
+| 1,500 coins in the shop (4 CP, so the CP 5 or less price), or a chapter reward. | 1 |
+| 2,500 coins in the shop (9 CP, so the CP 6 or more price), or a chapter reward. | 1 |
+| 1,500 coins in the shop (5 CP, so the CP 5 or less price), or a chapter reward. | 1 |
+| 1,500 coins in the shop (1 CP, so the CP 5 or less price), or a chapter reward. | 1 |
+
+### E.3: the campaign against the sheet "Cốt truyện"
+
+Chapter by chapter: title, main and side missions, battlefields, the main boss and the mini bosses the sheet names, the story loot and the commanders the chapter opens. Kinds: "known", explained by an earlier decision or no boss fight at all; "owner", a difference of story or structure left for the owner. No row is a data slip, so no data was changed (DECISIONS 25D2).
+
+| Chapter | Check | Difference | Kind |
+|---|---|---|---|
+| Chapter 1 | counts | sheet 8 + 1, game 9 + 1 (main + side, story choices' options apart) | known: DECISIONS 22A raised chapter 1 from 8 to 9 main missions |
+| Interlude I | mini bosses | the sheet names Behemoth, which are not this chapter's boss slots | known: no boss: the sheet's "bản thiết kế Behemoth" is the blueprints Mara takes back |
+| Chapter 6 | maps | the game also fights on Greenvale (c6m16, c6m11) | owner: prompt 4's map reuse in prompt 20's layout: the missions named fight on battlefields the summary does not list |
+| Chapter 6 | mini bosses | the sheet names Behemoth, which are not this chapter's boss slots | known: no boss: the captured Behemoth the brigade escorts (c6m03, prompt 22 C.4) |
+| Chapter 7 | mini bosses | the sheet does not name Juggernaut, Inferno | known: prompt 22 B.6 brings Inferno and Juggernaut back in the streets of chapter 7 |
+| Chapter 8 | maps | the game also fights on Hollow Dam (c8m05, c8m06, c8m08) | owner: prompt 4's map reuse in prompt 20's layout: the missions named fight on battlefields the summary does not list |
+| Chapter 9 | maps | the game also fights on Ironport (c9m01, c9m03, c9m06, c9m07, c9m10, c9s1), Stormbeach (c9m02, c9m04, c9m05, c9m09, c9s2) | owner: prompt 4's map reuse in prompt 20's layout: the missions named fight on battlefields the summary does not list |
+| Chapter 10 | maps | the game also fights on Whiteout Pass (c10m13, c10m08) | owner: prompt 4's map reuse in prompt 20's layout: the missions named fight on battlefields the summary does not list |
+| Chapter 10 | mini bosses | the sheet does not name Morrigan | known: the sheet's Hawk-Raven duel is Morrigan's fight (c10m12, prompt 22 C.4) |
+| Chapter 11 | maps | the game also fights on Frostpeak (c11m03, c11m06, c11m08, c11m09), Rust Yard (c11m01, c11m05, c11m11), Skyhold (c11m02, c11s1) | owner: prompt 4's map reuse in prompt 20's layout: the missions named fight on battlefields the summary does not list |
+| Chapter 11 | mini bosses | the sheet does not name Locust | known: prompt 22 C.4: "Locust bay trên đầu" in chapter 11; the summary leaves it out |
+| Chapter 12 | maps | the game also fights on Beacon Bay (c12m02) | owner: prompt 4's map reuse in prompt 20's layout: the missions named fight on battlefields the summary does not list |
+| Chapter 12 | mini bosses | the sheet does not name Locust | owner: prompt 20's boss slots (story.CHAPTER_BOSSES) put a Locust in chapter 12 (c12m05); neither the sheet nor prompt 22 names one there |
+| Chapter 12 | mini bosses | the sheet names Behemoth, which are not this chapter's boss slots | known: no boss: Mara's Behemoth, the ally of the last battle (prompt 22 E.4) |
+| Chapter 12 | loot | sheet none, game cruise_missile | owner: prompt 22 D.6's fifth story loot, Kessler's cruise missiles (c12m02); the sheet lists four (never sold either) |
+
+No difference: Chapter 2, Chapter 3, Chapter 4, Chapter 5, Interlude II, Interlude III.
+
+<!-- import_d2:end -->

@@ -6,6 +6,8 @@ xuất thêm" and "Công trình mới" (same name) is one entry, with both sheet
 
     python Tools/balance/new_content_tracker.py                      # refresh from the spreadsheet
     python Tools/balance/new_content_tracker.py --set KEY STATUS [ID]  # mark one item (chưa làm / đang làm / xong)
+
+Tools/balance/import_unlocks.py (prompt 25 D2) writes each item's planned shop price and source into its notes (set_notes).
 """
 import json
 import sys
@@ -95,6 +97,15 @@ def save(items):
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     return data
+
+
+def set_notes(notes):
+    """Prompt 25 D2: writes the notes of the items named (key -> text), keeping every status and id as it is."""
+    items = load().get('items', [])
+    for i in items:
+        if i['key'] in notes:
+            i['notes'] = notes[i['key']]
+    return save(items)
 
 
 def main():
