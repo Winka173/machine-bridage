@@ -257,6 +257,8 @@
     { "id": "tos_1a_220_mm_thermobaric", "real": "TOS-1A 220 mm thermobaric", "projectileSpeed": 35, "splash": 7, "projectileModel": "tos_rocket" },
     // Prompt 25 F2 batch A.
     { "id": "bofors_40_mm_l_70", "real": "Bofors 40 mm L/70", "projectileSpeed": 220, "splash": 2.5, "roundWeight": 51 },
+    // Prompt 25 F2 batch C: new ordnance (DECISIONS 25F2-C).
+    { "id": "cbu_97_sfw", "real": "CBU-97 Sensor Fuzed Weapon", "projectileSpeed": 35, "splash": 3, "roundWeight": 450, "roundLength": 1.17 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -598,7 +600,9 @@
     // ct13: the fixed 50 kW anti-drone laser (Iron Beam fixed site, DragonFire): at drones only; its interceptors (the APS) take rockets and mortar bombs; smoke cuts it by 80 %.
     { "id": "laser_50kw", "real": "50 kW laser (Iron Beam fixed site)", "family": "laser", "size": 50, "pen": 2, "damageType": "Energy", "damage": 6, "cooldown": 0.0667, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true, "prey": "Drones" },
     // (batch A weapons: new entries above)
-    { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
+    { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4},
+    // tl02: CBU-97-class cluster bomb (glide_bomber secondary): 10 top-attack bomblets that only matter against vehicles.
+    { "id": "cluster_at_bomb", "real": "CBU-97 Sensor Fuzed Weapon", "weaponFamily": "cbu_97_sfw", "family": "bomb", "size": 450, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 90, "range": 30, "projectileSpeed": 35, "impactTier": "Medium", "projectile": "Bomb", "projectileModel": "cbu_97", "roundLength": 1.17, "cluster": { "count": 10, "radius": 12.5, "damage": 160, "splash": 3, "pen": 4, "tier": "Medium" } },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1144,7 +1148,7 @@
       "deathExplosion": { "damage": 70, "radius": 8, "delay": 0.25, "tier": "Large" } },
     // dx14: the long-range glide bomber (a Su-34 with UMPK bombs): it releases from 90 m and turns away, never over its target.
     { "id": "glide_bomber", "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1000, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 16, "vision": 50,
-      "firesWhileMoving": true, "weapon": "glide_fab500", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
+      "firesWhileMoving": true, "weapon": "glide_fab500", "secondary": [{ "weapon": "cluster_at_bomb", "slot": "bomb", "aim": "Hull" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
       "skills": ["bomber_flares"], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     // dx15: the high-speed reconnaissance jet (SR-71, MiG-25R): one straight pass at 60 m/s, a 60 m strip shown for 20 s (stealth too), then it leaves; high up, only the high-tier weapons reach it.
     { "id": "recon_jet", "modelSize": [13.1, 6.8, 2.2], "class": "Plane", "armour": 0, "hp": 364, "speed": 60, "turnRate": 45, "turretTurnRate": 360, "radius": 4.5, "cp": 8, "vision": 60,
