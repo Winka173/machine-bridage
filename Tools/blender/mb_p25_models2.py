@@ -773,6 +773,95 @@ def long_sam(a):
     a.pivot('Muzzle_main', (0, front - .05, z), t)
 
 
+# ----------------------------------------------------------------------------- super tank (titan)
+def titan_tank(a):
+    """Super tank (Object 279 / the Ratte's four tracks, the premium card), 11.0 x 5.2 x 3.3 m with its guns forward:
+    four track units, two a side under a hull as wide as two tanks (the sheet's silhouette), side skirts over the
+    outer pair, a long glacis, two machine-gun sub-turrets on the front corners and the rear one on its own mount
+    (`Mount_mg`, `Muzzle_mg`); a big wide turret with twin 140 mm guns 2.5 m past the nose (`Main_cannon` / `_2`,
+    `Muzzle_brake` / `_2`, `Muzzle_main` at the left tip), the coaxial gun, an ATGM pod on each turret side 1.95 m
+    out (`ATGM_pod`, the missile launchers: two, mirrored, a `Muzzle_missile` at each), active-protection blocks and
+    the card's gilt bands."""
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    _lean_tracks(a, 2.24, 8.0, .98, .34, 6, .6, sprocket=1, teeth=6)
+    _lean_tracks(a, 1.5, 7.4, .9, .32, 4, .56, sprocket=1, teeth=5, cleat_pitch=9)             # inner pair, under the hull
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    gilt = a.part('Gilt', 'Gilded')
+    armor.prism([(-3.3, .4), (-3.7, .7), (-3.5, .92), (3.7, .92), (3.8, .6), (3.5, .4)], 2.3, bevel=.04, seg=1)
+    hull.prism([(-4.05, .92), (-2.7, 1.6), (3.95, 1.62), (4.05, .92)], 3.96, bevel=.06, seg=1)
+    for s in (-1, 1):
+        mv._skirt(a, s, 2.56, -3.9, 3.9, .6, 1.3, 3, thick=.1, bolts=False)                       # outer skirts
+        hull.box((.62, 7.9, .1), loc=(s * 2.24, 0, 1.33), bevel=.02, seg=1)                         # outer fenders
+        armor.box((.5, 1.1, .5), loc=(s * 2.2, 2.9, 1.6), bevel=.03, seg=1)                         # rear bins
+        gilt.box((.06, 5.0, .08), loc=(s * 2.62, 0, 1.24), bevel=0)                                 # gilt skirt band
+        steel.box((.2, .2, .16), loc=(s * .7, -3.75, .72), bevel=0)                                 # tow hooks
+        # The front corner sub-turrets: a small dome with twin machine guns each.
+        armor.cyl(.42, .3, loc=(s * 1.55, -2.9, 1.52), seg=12, bevel=.04, bseg=1)
+        a.part('Sub_turrets', 'Team').sphere((.38, .38, .24), loc=(s * 1.55, -2.9, 1.67), seg=12, rings=5, cut=0)
+        for dx in (-.08, .08):
+            steel.cyl(.04, .6, loc=(s * 1.55 + dx, -3.45, 1.72), rot=FORWARD, seg=6, bevel=0)
+    _lights(a, (-1.0, 1.0), -3.75, 1.02)
+    _lights(a, (-1.5, 1.5), 4.06, 1.2, facing=1, size=(.16, .04, .1), lamp='Alloy')
+    mv._hatch(a, 0, -2.45, 1.52, .28, handle=False)                                                # driver
+    mv._periscopes(a, [(dx, -2.75, 1.47, 0) for dx in (-.18, 0, .18)])
+    deck = a.part('Deck', 'Undercarriage')
+    deck.grille(2.0, 1.0, loc=(0, 3.4, 1.63), rot=(-R90, 0, 0), slats=5, depth=.07, thickness=.05)
+    for s in (-1, 1):
+        mv._exhaust(a, s * 1.2, 4.05, 1.25, .5, .24)
+    steel.cyl(1.55, .1, loc=(0, -.3, 1.62), seg=18, bevel=0)                                       # turret ring
+    a.pivot('Point_exhaust', (1.2, 4.1, 1.25))
+    a.pivot('Point_fire', (0, 3.4, 1.7))
+    # The rear sub-turret on its own mount, at the back of the deck.
+    m = a.pivot('Mount_mg', (0, 2.55, 1.62))
+    a.part('Rear_turret', 'Team', m).cyl(.5, .36, r2=.42, loc=(0, 0, .18), seg=12, bevel=.04, bseg=1)
+    a.part('Rear_turret_armor', 'Armor', m).box((.34, .3, .24), loc=(0, -.42, .26), bevel=.03, seg=1)
+    a.part('RWS_gun', 'Steel', m).cyl(.05, .8, loc=(0, -.95, .28), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_mg', (0, -1.38, .28), m)
+    # The big wide turret.
+    t = a.pivot('Turret', (0, -.3, 1.62))
+    a.part('Turret_body', 'Team', t).prism([(-.9, -2.1), (.9, -2.1), (1.75, -1.4), (1.8, 1.2), (1.5, 1.95),
+                                            (-1.5, 1.95), (-1.8, 1.2), (-1.75, -1.4)], .95, loc=(0, 0, .48),
+                                           axis='Z', bevel=.06, seg=1, taper=.9)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((2.0, .4, .7), loc=(0, -2.12, .5), bevel=.05, seg=1, taper=(.92, .9))                 # mantlet
+    for s in (-1, 1):
+        tarm.box((.7, .1, .7), loc=(s * 1.35, -1.8, .48), rot=(0, 0, s * .66), bevel=.02, seg=1)    # cheek plates
+        tarm.box((.24, 1.5, .5), loc=(s * 1.78, .5, .42), bevel=.03, seg=1)                        # side bins
+        a.part('APS', 'Steel', t).box((.3, .3, .2), loc=(s * 1.1, .9, 1.03), bevel=.02, seg=1)    # APS blocks
+    tarm.box((2.6, .5, .5), loc=(0, 2.0, .42), bevel=.04, seg=1)                                   # bustle box
+    a.part('Turret_gilt', 'Gilded', t).box((3.2, .06, .1), loc=(0, -1.0, .96), bevel=0)
+    a.part('Cupola', 'Armor', t).cyl(.34, .24, loc=(-.9, .5, 1.05), seg=12, bevel=.03, bseg=1)
+    mv._hatch(a, .9, .5, .95, .3, parent=t, seg=10, handle=False)
+    a.part('Sight', 'Glass', t).box((.3, .03, .14), loc=(-.9, .15, 1.1), bevel=0)
+    # Twin 140 mm guns, drawn 15 % thick, 2.5 m past the nose.
+    y0, length, z = -2.32, 4.35, .52
+    for x, suffix in ((-.62, ''), (.62, '_2')):
+        gun = a.part(f'Main_cannon{suffix}', 'Steel', t)
+        gun.cyl(.12, length, loc=(x, y0 - length / 2, z), rot=FORWARD, seg=10, bevel=0)
+        gun.cyl(.15, length * .55, loc=(x, y0 - length * .32, z), rot=FORWARD, seg=10, bevel=0)     # thermal sleeve
+        gun.cyl(.19, .5, loc=(x, y0 - length * .4, z), rot=FORWARD, seg=10, bevel=.02, bseg=1)     # fume extractor
+        a.part(f'Main_cannon{suffix}_gilt', 'Gilded', t).cyl(.16, .08, loc=(x, y0 - length * .12, z), rot=FORWARD,
+                                                             seg=10, bevel=0)
+        a.part(f'Muzzle_brake{suffix}', 'Undercarriage', t).cyl(.16, .24, loc=(x, y0 - length - .1, z), rot=FORWARD,
+                                                                seg=10, bevel=.02, bseg=1)
+    a.pivot('Muzzle_main', (-.62, y0 - length - .24, z), t)
+    mv._coax(a, t, 0, -2.3, .7, length=.45, housing=.28)
+    # The ATGM pods on the turret sides: two-round boxes, their tube mouths the launch face.
+    for s in (-1, 1):
+        x = s * 1.95
+        a.part('ATGM_pod', 'Armor', t).box((.36, 1.1, .36), loc=(x, -.8, .9), bevel=.03, seg=1)
+        tarm.box((.2, .4, .2), loc=(s * 1.8, -.7, .78), bevel=0)                                   # pod mounts
+        for dz in (-.08, .08):
+            a.part('Tubes_bore', 'Undercarriage', t).cyl(.07, .03, loc=(x, -1.36, .9 + dz), rot=FORWARD, seg=8,
+                                                         bevel=0)
+    a.pivot('Muzzle_missile', (-1.95, -1.38, .9), t)
+    a.pivot('Muzzle_missile__001', (1.95, -1.38, .9), t)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -785,4 +874,5 @@ BUILDERS = {
     'siege_tank': (siege_tank, dict(ao_distance=.7, grime_height=.6)),
     'sam_launcher': (sam_launcher, dict(ao_distance=.6, grime_height=.55)),
     'long_sam': (long_sam, dict(ao_distance=.6, grime_height=.55)),
+    'titan_tank': (titan_tank, dict(ao_distance=.7, grime_height=.6)),
 }
