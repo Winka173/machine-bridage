@@ -367,6 +367,68 @@ def iron_beam(a):
     a.part('Radar_face', 'Undercarriage', r).box((1.08, .03, .4), loc=(0, -.08, .25), rot=(-.25, 0, 0), bevel=0)
 
 
+def heavy_aa(a):
+    """Gun-missile air defence (Pantsir-S1 on a KamAZ 8x8), 9.6 x 2.6 x 2.8 m: the truck (_truck) with the crew
+    module behind the cab and, on the rear bed, the combat module (`Turret`): a boxy turret carrying the round
+    tracking radar on its roof (`Radar`) and the search array at its back (`Radar_search`), a twin 30 mm gun low on
+    each side (`Main_cannon` / `_2`, their tips `Muzzle_brake` / `_2`, `Muzzle_main` between them), and over them
+    two three-round missile packs a side, 12 tubes in all (from above, the turret with its tubes down both sides, as
+    the sheet asks). A `Missile_pack` liner in each pack's middle tube is a launcher (four, 0.38 m apart across:
+    ModelLibrary finds them as four), a `Muzzle_missile` (.001 ..) at each pack's mouth."""
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    z = _truck(a, -4.8, 4.8, (-3.95, -2.75, 1.5, 2.7), r=.5, width=2.1, cab=1.6, roof=2.15)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    body.box((2.06, 1.9, .92), loc=(0, -2.1, z + .46), bevel=.05, seg=1)                          # crew module
+    a.part('Glass', 'Glass').box((.03, .5, .28), loc=(1.04, -2.3, z + .6), bevel=0)
+    armor.box((2.1, 5.8, .16), loc=(0, 1.9, z + .02), bevel=.03, seg=1)                             # turret bed
+    for s in (-1, 1):
+        steel.box((.14, .14, .6), loc=(s * .95, 4.3, z - .45), bevel=0)                             # jacks
+    a.pivot('Point_fire', (0, -2.1, z + 1.0))
+    t = a.pivot('Turret', (0, 1.6, z + .1))
+    tsteel = a.part('Turret_steel', 'Steel', t)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tsteel.cyl(.8, .1, loc=(0, 0, .05), seg=14, bevel=0)                                            # turntable
+    a.part('Turret_body', 'Team', t).prism([(-.62, -1.0), (.62, -1.0), (.72, -.75), (.72, 1.0), (-.72, 1.0),
+                                            (-.72, -.75)], .7, loc=(0, 0, .45), axis='Z', bevel=.05, seg=1, taper=.94)
+    tarm.box((.4, .28, .3), loc=(0, -1.06, .6), bevel=.03, seg=1)                                 # optical tracker
+    a.part('Sight', 'Glass', t).box((.26, .03, .16), loc=(0, -1.21, .62), bevel=0)
+    # A twin 30 mm gun low on each side, on its trunnion housing.
+    for s, suffix in ((-1, ''), (1, '_2')):
+        x = s * .86
+        tarm.box((.3, 1.2, .36), loc=(x, -.3, .36), bevel=.04, seg=1)                             # gun housing
+        gun = a.part(f'Main_cannon{suffix}', 'Steel', t)
+        brake = a.part(f'Muzzle_brake{suffix}', 'Undercarriage', t)
+        for dx in (-.07, .07):
+            gun.cyl(.045, 1.9, loc=(x + dx, -1.85, .36), rot=FORWARD, seg=8, bevel=0)
+            brake.cyl(.065, .16, loc=(x + dx, -2.86, .36), rot=FORWARD, seg=8, bevel=0)
+    a.pivot('Muzzle_main', (-.86, -2.96, .36), t)
+    # Two three-round missile packs a side over the guns, tubes across (from above, a row of 12 tube ends).
+    for s in (-1, 1):
+        for xc in (.6, 1.1):
+            x = s * xc
+            a.part('Pack_box', 'Team', t).box((.44, 2.3, .22), loc=(x, -.2, .92), bevel=.03, seg=1)
+            frame = a.part('Pack_frame', 'Armor', t)
+            for y in (-1.1, .7):
+                frame.box((.48, .14, .26), loc=(x, y, .92), bevel=0)
+            for dx in (-.14, 0, .14):
+                a.part('Pack_tubes', 'Undercarriage', t).cyl(.055, .04, loc=(x + dx, -1.36, .92), rot=FORWARD, seg=8,
+                                                             bevel=0)
+            a.part('Missile_pack', 'Undercarriage', t).cyl(.05, 2.32, loc=(x, -.24, .92), rot=FORWARD, seg=6, bevel=0)
+            tsteel.box((.12, .3, .3), loc=(x - s * .2, .2, .72), bevel=0)                          # pack mount
+            a.pivot('Muzzle_missile' + ('' if x == -1.1 else '__%03d' % (1 + [-.6, .6, 1.1].index(x))), (x, -1.43, .92), t)
+    # The round tracking radar on the roof front and the search array at the back, each turning on its pivot.
+    r = a.pivot('Radar', (0, -.3, .8), t)
+    a.part('Radar_mast', 'Steel', r).cyl(.08, .16, loc=(0, 0, .08), seg=8, bevel=0)
+    mv._dish(a.part('Radar_dish', 'Armor', r), (0, .05, .42), .32, .32, depth=.12, seg=12, tilt=.15)
+    rs = a.pivot('Radar_search', (0, .75, .8), t)
+    a.part('Search_mount', 'Steel', rs).box((.2, .2, .2), loc=(0, 0, .1), bevel=0)
+    a.part('Search_panel', 'Armor', rs).box((1.2, .14, .45), loc=(0, .05, .4), rot=(.2, 0, 0), bevel=.03, seg=1)
+    a.part('Search_array', 'MetalSheet', rs).box((1.08, .03, .38), loc=(0, .13, .41), rot=(.2, 0, 0), bevel=0)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -374,4 +436,5 @@ BUILDERS = {
     'counter_battery_radar': (counter_battery_radar, dict(ao_distance=.5, grime_height=.5)),
     'shahed_truck': (shahed_truck, dict(ao_distance=.5, grime_height=.5)),
     'iron_beam': (iron_beam, dict(ao_distance=.5, grime_height=.5)),
+    'heavy_aa': (heavy_aa, dict(ao_distance=.5, grime_height=.5)),
 }

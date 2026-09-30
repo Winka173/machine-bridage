@@ -10887,3 +10887,4 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | counter_battery_radar | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.89 (the panel 15 % wider than the truck; the roof gun) | 6.60 x 2.10 | 2,140 | AN/TPQ-53 on an FMTV | 6.2 x 2.2 x 3.9 at 0.85, 8,216 |
 | shahed_truck | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.87 (the drones' span 15 % over) | 6.60 x 2.04 | 2,416 | Shahed-136 truck launchers | 5.9 x 2.3 x 4.1 at 0.85, 10,252 |
 | iron_beam | 8.0 x 2.0 x 2.8 | 8.20 x 2.05 x 2.86 | 8.20 x 2.05 | 2,640 | Rafael Iron Beam | 7.8 x 2.7 x 3.7 at 0.85, 10,456 |
+| heavy_aa | 9.6 x 2.6 x 2.8 | 9.80 x 2.68 x 2.83 | 9.80 x 2.18 | 3,004 | Pantsir-S1 on a KamAZ-6560 | 7.0 x 2.5 x 3.3 at 0.85, 8,220 |
