@@ -311,3 +311,220 @@ script runs it again.
 | Thay đổi chi tiết | zu23_technical | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
 
 <!-- /step:A1-Thap -->
+
+<!-- step:A2 -->
+## A2: sheets Vũ khí đề xuất and Đơn vị – vũ khí
+
+Every row of "Vũ khí đề xuất" (the proposal columns: damage, fire mode, rate, rounds a burst or magazine, rest, reach, speed, blast, penetration), then the loadouts of "Đơn vị – vũ khí" (mounts kept 0 dropped, the new weapons). A cadence the game already fires within 3 % of the sheet's sustained DPS, in the same mode and rounds, stays as it is. Rows of "Đơn vị – vũ khí" that keep a mount without a note are counted, not listed.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Vũ khí đề xuất | 0 | 154 | 0 | 35 |
+| Đơn vị – vũ khí | 0 | 288 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Vũ khí đề xuất | aa_25_triple | weapon | already | as the sheet |
+| Vũ khí đề xuất | agl_40 | weapon | already | as the sheet |
+| Vũ khí đề xuất | aim9 | weapon | already | as the sheet |
+| Vũ khí đề xuất | air_cruise_missile | weapon | already | as the sheet |
+| Vũ khí đề xuất | air_to_air | weapon | already | as the sheet |
+| Vũ khí đề xuất | airship_drones | weapon | already | as the sheet |
+| Vũ khí đề xuất | airship_flak | weapon | already | as the sheet |
+| Vũ khí đề xuất | ataka | weapon | already | as the sheet |
+| Vũ khí đề xuất | atgm | weapon | already | as the sheet |
+| Vũ khí đề xuất | autocannon_25 | weapon | already | as the sheet |
+| Vũ khí đề xuất | autocannon_30 | weapon | already | as the sheet |
+| Vũ khí đề xuất | autocannon_40 | weapon | already | as the sheet |
+| Vũ khí đề xuất | ballistic_missile | weapon | already | as the sheet |
+| Vũ khí đề xuất | bastion_gun | weapon | already | as the sheet |
+| Vũ khí đề xuất | boat_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | bomber_payload | weapon | already | as the sheet |
+| Vũ khí đề xuất | bomber_tail_guns | weapon | already | as the sheet |
+| Vũ khí đề xuất | borer_cannon | weapon | already | as the sheet |
+| Vũ khí đề xuất | borer_drill | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_flak | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_flamer | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_heli_gun | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_hmg | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_howitzer | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_minigun | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_missiles | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_mortar | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_railgun | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | boss_thermo | weapon | already | as the sheet |
+| Vũ khí đề xuất | buk_launcher | weapon | already | as the sheet |
+| Vũ khí đề xuất | bunker_flame | weapon | already | as the sheet |
+| Vũ khí đề xuất | bunker_hmg | weapon | already | as the sheet |
+| Vũ khí đề xuất | bunker_hmg_twin | weapon | already | as the sheet |
+| Vũ khí đề xuất | c_ram_gatling | weapon | already | as the sheet |
+| Vũ khí đề xuất | casemate_155 | weapon | already | as the sheet |
+| Vũ khí đề xuất | ciws_aa | weapon | already | as the sheet |
+| Vũ khí đề xuất | coilgun | weapon | already | as the sheet |
+| Vũ khí đề xuất | cruiser_203 | weapon | already | as the sheet |
+| Vũ khí đề xuất | detonator | weapon | already | as the sheet |
+| Vũ khí đề xuất | door_gun | weapon | already | as the sheet |
+| Vũ khí đề xuất | dozer_blade | weapon | already | as the sheet |
+| Vũ khí đề xuất | drone_missile | weapon | already | as the sheet |
+| Vũ khí đề xuất | fighter_cannon | weapon | already | as the sheet |
+| Vũ khí đề xuất | flak_35 | weapon | already | as the sheet |
+| Vũ khí đề xuất | flak_quad | weapon | already | as the sheet |
+| Vũ khí đề xuất | flamethrower | weapon | already | as the sheet |
+| Vũ khí đề xuất | focus_laser | weapon | already | as the sheet |
+| Vũ khí đề xuất | fpv_hangar | weapon | already | as the sheet |
+| Vũ khí đề xuất | fpv_hangar_swarm | weapon | already | as the sheet |
+| Vũ khí đề xuất | fpv_swarm | weapon | already | as the sheet |
+| Vũ khí đề xuất | grad_cluster | weapon | already | as the sheet |
+| Vũ khí đề xuất | griffin | weapon | already | as the sheet |
+| Vũ khí đề xuất | gsh30k | weapon | already | as the sheet |
+| Vũ khí đề xuất | guided_bomb | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_105_apfsds | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_105_bunker | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_105_long | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_105_wheeled | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_120_twin | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_120mm | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_125_elite | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_140_twin | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_152 | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_152_he | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_152_heat | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_155_coastal | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_155_twin_coastlr | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_155_twin_fort | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_57_auto | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_57mm | weapon | already | as the sheet |
+| Vũ khí đề xuất | gun_behemoth | weapon | already | as the sheet |
+| Vũ khí đề xuất | gunship_105 | weapon | already | as the sheet |
+| Vũ khí đề xuất | gunship_25mm | weapon | already | as the sheet |
+| Vũ khí đề xuất | gunship_40mm | weapon | already | as the sheet |
+| Vũ khí đề xuất | gunship_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | hel_beam | weapon | already | as the sheet |
+| Vũ khí đề xuất | heli_atgm | weapon | already | as the sheet |
+| Vũ khí đề xuất | heli_gun | weapon | already | as the sheet |
+| Vũ khí đề xuất | heli_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | hellfire_standoff | weapon | already | as the sheet |
+| Vũ khí đề xuất | hellfire_volley | weapon | already | as the sheet |
+| Vũ khí đề xuất | hmg_roof | weapon | already | as the sheet |
+| Vũ khí đề xuất | hmg_selfdef_15 | weapon | already | as the sheet |
+| Vũ khí đề xuất | hmg_selfdef_18 | weapon | already | as the sheet |
+| Vũ khí đề xuất | hmg_selfdef_21 | weapon | already | as the sheet |
+| Vũ khí đề xuất | hover_ciws | weapon | already | as the sheet |
+| Vũ khí đề xuất | hover_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | howitzer | weapon | already | as the sheet |
+| Vũ khí đề xuất | howitzer_cb | weapon | already | as the sheet |
+| Vũ khí đề xuất | howitzer_fixed | weapon | already | as the sheet |
+| Vũ khí đề xuất | hq_flak | weapon | already | as the sheet |
+| Vũ khí đề xuất | ifv_30 | weapon | already | as the sheet |
+| Vũ khí đề xuất | jassm | weapon | already | as the sheet |
+| Vũ khí đề xuất | jet_bombs | weapon | already | as the sheet |
+| Vũ khí đề xuất | jet_cannon | weapon | already | as the sheet |
+| Vũ khí đề xuất | kh29 | weapon | already | as the sheet |
+| Vũ khí đề xuất | kornet_multi | weapon | already | as the sheet |
+| Vũ khí đề xuất | kornet_top | weapon | already | as the sheet |
+| Vũ khí đề xuất | kornet_twin | weapon | already | as the sheet |
+| Vũ khí đề xuất | lancet | weapon | already | as the sheet |
+| Vũ khí đề xuất | lancet_hangar | weapon | already | as the sheet |
+| Vũ khí đề xuất | leviathan_460 | weapon | already | as the sheet |
+| Vũ khí đề xuất | mg_coax | weapon | already | as the sheet |
+| Vũ khí đề xuất | mg_jeep | weapon | already | as the sheet |
+| Vũ khí đề xuất | mg_jeep_selfdef | weapon | already | as the sheet |
+| Vũ khí đề xuất | minigun | weapon | already | as the sheet |
+| Vũ khí đề xuất | mlrs_elite | weapon | already | as the sheet |
+| Vũ khí đề xuất | mlrs_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | mortar_120 | weapon | already | as the sheet |
+| Vũ khí đề xuất | mortar_240_fixed | weapon | already | as the sheet |
+| Vũ khí đề xuất | mothership_cannon | weapon | already | as the sheet |
+| Vũ khí đề xuất | mothership_drones | weapon | already | as the sheet |
+| Vũ khí đề xuất | naval_100 | weapon | already | as the sheet |
+| Vũ khí đề xuất | naval_155_triple | weapon | already | as the sheet |
+| Vũ khí đề xuất | naval_76 | weapon | already | as the sheet |
+| Vũ khí đề xuất | orbital_laser | weapon | already | as the sheet |
+| Vũ khí đề xuất | patriot | weapon | already | as the sheet |
+| Vũ khí đề xuất | r60 | weapon | already | as the sheet |
+| Vũ khí đề xuất | railgun | weapon | already | as the sheet |
+| Vũ khí đề xuất | recon_missile | weapon | already | as the sheet |
+| Vũ khí đề xuất | rockets_300mm | weapon | already | as the sheet |
+| Vũ khí đề xuất | s8_pods | weapon | already | as the sheet |
+| Vũ khí đề xuất | sam | weapon | already | as the sheet |
+| Vũ khí đề xuất | sam_48n6 | weapon | already | as the sheet |
+| Vũ khí đề xuất | sam_battery | weapon | already | as the sheet |
+| Vũ khí đề xuất | sam_battery_lrr | weapon | already | as the sheet |
+| Vũ khí đề xuất | sam_pac3 | weapon | already | as the sheet |
+| Vũ khí đề xuất | sam_post | weapon | already | as the sheet |
+| Vũ khí đề xuất | scout_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | shahed | weapon | already | as the sheet |
+| Vũ khí đề xuất | siege_gun_105 | weapon | already | as the sheet |
+| Vũ khí đề xuất | siege_mortar_240 | weapon | already | as the sheet |
+| Vũ khí đề xuất | stealth_payload | weapon | already | as the sheet |
+| Vũ khí đề xuất | stinger_atas | weapon | already | as the sheet |
+| Vũ khí đề xuất | swarm_drones | weapon | already | as the sheet |
+| Vũ khí đề xuất | tamir | weapon | already | as the sheet |
+| Vũ khí đề xuất | technical_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | thermobaric_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | tower_ac25 | weapon | already | as the sheet |
+| Vũ khí đề xuất | tower_flak_30 | weapon | already | as the sheet |
+| Vũ khí đề xuất | tower_hmg | weapon | already | as the sheet |
+| Vũ khí đề xuất | tower_kornet | weapon | already | as the sheet |
+| Vũ khí đề xuất | train_gun | weapon | already | as the sheet |
+| Vũ khí đề xuất | turret_gmlrs | weapon | already | as the sheet |
+| Vũ khí đề xuất | turret_gun_120 | weapon | already | as the sheet |
+| Vũ khí đề xuất | turret_gun_120_long | weapon | already | as the sheet |
+| Vũ khí đề xuất | turret_rockets | weapon | already | as the sheet |
+| Vũ khí đề xuất | turret_rockets_cluster | weapon | already | as the sheet |
+| Vũ khí đề xuất | twin_30_bmpt | weapon | already | as the sheet |
+| Vũ khí đề xuất | twin_30_flak | weapon | already | as the sheet |
+| Vũ khí đề xuất | twin_35_ahead | cadence | skipped | the sheet's mode, rate, rounds or rest cell is empty |
+| Vũ khí đề xuất | twin_35_ahead | weapon | already | as the sheet |
+| Vũ khí đề xuất | wvr_aam | weapon | already | as the sheet |
+| Vũ khí đề xuất | zu23 | weapon | already | as the sheet |
+| Đơn vị – vũ khí | light_tank | gun_launched_atgm | already | Thêm tên lửa bắn qua nòng (1 quả × 200, xuyên 3, mỗi 20 s, tầm 34) |
+| Đơn vị – vũ khí | mlrs | hmg_selfdef_15 | already | not mounted |
+| Đơn vị – vũ khí | ballistic_launcher | hmg_selfdef_15 | already | not mounted |
+| Đơn vị – vũ khí | heavy_rocket_artillery | hmg_selfdef_15 | already | not mounted |
+| Đơn vị – vũ khí | aa_vehicle | sam | already | the Stinger stays (Giữ Stinger phụ — Gepard bản nâng cấp có thể mang Stinger.) |
+| Đơn vị – vũ khí | sam_launcher | hmg_selfdef_18 | already | not mounted |
+| Đơn vị – vũ khí | heavy_aa | sam | already | Stinger -> 57E6: Đổi Stinger → tên lửa 57E6 (Pantsir): 1 × 220, Mảnh xuyên 3, tầm 55, tốc độ 55 |
+| Đơn vị – vũ khí | scout_heli | loadout | already | its A1 row applied it (Hydra: 12 → 6 quả mỗi lần đầy đạn) |
+| Đơn vị – vũ khí | swarm_carrier | loadout | already | its A1 row applied it (Bỏ bom SDB; thêm 2 tên lửa hành trình Rapid Dragon mỗi lượt; Vũ khí thêm theo đề xuất) |
+| Đơn vị – vũ khí | stealth_fighter | loadout | already | its A1 row applied it (Thêm 1 AIM-120 mỗi lần đầy đạn) |
+| Đơn vị – vũ khí | gunship_heli | loadout | already | its A1 row applied it (Đổi Hellfire → 9M120 Ataka) |
+| Đơn vị – vũ khí | attack_jet | loadout | already | its A1 row applied it (FAB-250: 2 → 1 quả mỗi lần đầy đạn) |
+| Đơn vị – vũ khí | wheeled_gun | hmg_roof | already | mounted |
+| Vũ khí đề xuất | twin_35_ahead | DPS check | skipped | the sheet's DPS is None: a cadence cell is empty |
+| Vũ khí đề xuất | gun_launched_atgm | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | missile_57e6 | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | sam_long | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | grad_rockets | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | atgm_heavy | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | jet_rockets | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_155_sph | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_105_twin | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_203_siege | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | mortar_240 | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | igla_v | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gsh_23v | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | heli_ataka | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | vikhr | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gau_gatling | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | maverick | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | hind_rockets | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_155_twin | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_155_twin_ap | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | mg_coax_ground | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_pit_105 | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | turret_gun_120_auto | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_57_air | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | turret_thermobaric | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | howitzer_ext | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | gun_155_twin_long | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | tower_agl | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | atgm_post | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | drone_gun | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | supergun_800 | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | leviathan_cruise | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | train_mortar | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+| Vũ khí đề xuất | naval_127 | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
+
+<!-- /step:A2 -->

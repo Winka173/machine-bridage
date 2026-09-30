@@ -25,6 +25,9 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
 - A1 Thấp: death blasts sized by the vehicle (the ammunition depot 14 m, the flame tank 5 m); mini bosses' front armour
   4 at most; the light tank fires its 57 mm in pairs and sees farther; the Grad turret hits harder; the Pantsir's
   guns and the gunboat's AK-630 fire long streams; the railgun truck, the Smerch and the TOS cost a CP more.
+- A2: every weapon's rate, magazine or burst, rest, reach, speed and blast from the weapon sheet (sustained DPS within
+  5 % of the sheet's, tested); the HIMARS, Iskander, Smerch and Buk launchers lose their machine guns; the wheeled gun
+  gains a roof M2, the light tank a gun-launched missile, the Pantsir its own 57E6 missiles.
 
 ### Play-test 9 models (DECISIONS 23M)
 

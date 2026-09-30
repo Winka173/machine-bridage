@@ -33,7 +33,7 @@ BALANCE = os.path.join(ROOT, "Assets", "MachineBrigade", "Resources", "Data", "b
 REFS = os.path.join(ROOT, "Tools", "docs", "unit_refs.json")
 REPORT = os.path.join(ROOT, "Docs", "balance", "apply-report.md")
 
-STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A1-review", "A2", "A3", "A4", "A5", "B7", "B8", "review"]
+STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A2", "A3", "A4", "A5", "B7", "B8", "review"]
 PRIORITY = {"A1-Cao": "Cao", "A1-Trung": "Trung", "A1-Thap": "Thấp"}
 
 DEG_PER_RAD = 180.0 / math.pi
@@ -182,8 +182,8 @@ class Report:
     def __init__(self):
         self.rows = collections.defaultdict(list)  # step -> [(sheet, id, item, outcome, detail)]
 
-    def add(self, step, sheet_name, id_, item, outcome, detail=""):
-        self.rows[step].append((sheet_name, id_, item, outcome, detail))
+    def add(self, step, sheet_name, id_, item, outcome, detail="", listed=True):
+        self.rows[step].append((sheet_name, id_, item, outcome, detail, listed))
 
     def section(self, step, title, intro=""):
         rows = self.rows.get(step, [])
@@ -197,6 +197,8 @@ class Report:
             out.append(f"| {s} | {counts[(s, 'applied')]} | {counts[(s, 'already')]} | {counts[(s, 'deferred')]} | {counts[(s, 'skipped')]} |")
         out += ["", "| Sheet | id | Item | Outcome | Detail |", "|---|---|---|---|---|"]
         for r in rows:
+            if not r[5]:
+                continue
             detail = str(r[4]).replace("|", "/").replace("\n", " ")
             out.append(f"| {r[0]} | {r[1]} | {r[2]} | {r[3]} | {detail} |")
         out += ["", f"<!-- /step:{step} -->", ""]

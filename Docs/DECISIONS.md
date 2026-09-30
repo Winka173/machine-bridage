@@ -10812,3 +10812,36 @@ not in force yet, so no row was held back for it.
 - **Mini bosses' front armour** is 4 at most (Juggernaut, Bastion Mk.0, the three Behemoth variants, Fenrir, Scylla,
   Atlas). A boss variant (`variantOf`) is read with its base's fields, so Fenrir's front-only row changes the front.
 - **Morrigan's reference** (Su-57, F-22, Ace Combat) goes into `unit_refs.json` as a new row.
+
+### A2 Weapons ("Vũ khí đề xuất", "Đơn vị – vũ khí")
+
+- **From the sheet's columns to the game's fields.** Single shots: `cooldown` = 1 / rate. A magazine ("băng"):
+  `cooldown` = 1 / rate, `clip` = rounds, `clipReload` = rest + one gap. A burst ("loạt"): `burst` = rounds,
+  `burstInterval` = 1 / rate, `cooldown` = rest + one gap. The sheet times a cycle as rounds / rate + rest; the game
+  as rounds - 1 gaps plus the change or the cooldown after the last round, so the extra gap makes the game's cycle,
+  and its sustained DPS, the sheet's exactly. A mode change is applied as written: the IFV's, the BMPT's, the
+  armoured car's and the heavy tank's 25/30 mm guns fire bursts ("xả loạt") instead of magazines.
+- **What stays.** Where the game already fires within 3 % of the sheet's sustained DPS, in the same mode and rounds,
+  its cadence is kept (the sheet rounds rates: 2.22 a second for 0.45 s, 0.12 for one every 8 s); a gap within 1.5 %
+  of the sheet's rate stays the game's. Beyond that the sheet's numbers win, including rows its reason column
+  calls "Giữ" whose rounded rate moved the DPS (the Gepard's 35 mm at 4 a second, 88 a second sustained, was 96).
+- **"Giữ DPS" rows that do not.** The ZU-23 (7 a round, 25 a second, 50 a magazine, 3 s: 70 a second, was 143), the
+  Pantsir's 2A38 (171, was 252), the HQ's and the AA tower's flak (140 and 131, were 157 and 193): the sheet's words
+  keep the DPS, its numbers halve or cut it, and its own DPS column (the one the owner's test names) follows the
+  numbers. The numbers are applied; these cards are measured at the end of the pass (prompt 25 A.5 lets a change be
+  tuned when a measurement shows it runs against the row's reason).
+- **The test.** `BalanceSheetTests.EveryWeaponFiresTheSheetsSustainedDpsWithinFivePercent` holds every weapon of the
+  sheet within 5 % of its sustained DPS column, which the importer exports to `Docs/balance/sheet_dps.tsv` (the
+  test cannot read the workbook). The Skyranger's AHEAD gun is the one row not checked: the sheet's rounds a magazine
+  cell is empty, so its DPS column is 0.
+- **Loadouts.** Mounts kept 0 are dropped: the M2 of the HIMARS, the Iskander and the Smerch launchers, the Buk
+  launcher's, the swarm carrier's small bombs. Added: the wheeled gun's roof M2 (`hmg_roof`), the light tank's
+  gun-launched missile (`gun_launched_atgm`: the note's 200 a missile, pen 3, one every 20 s, 34 m), the Pantsir's
+  57E6 in place of the Stinger (`missile_57e6`: 220, fragmentation, pen 3, 55 m, 55 m/s; the Stinger's rate, the
+  Buk's flare resistance).
+- **New rounds on prompt 13's calibre scale.** Damage rises with size within a family, so a new round's size sits
+  where its damage falls: the gun-launched missile 24 kg (between the TOW's 190 and the Kornet's 230), the 57E6
+  7 kg (between the Stinger's 170 and the AIM-9's 236). Where the sheet names no speed, the gun-launched missile
+  flies at the Kornet's (laser beam-riding, the same class).
+- **Weapons not in the sheet** (30, listed in the report) keep their numbers here; the families (A3) and the blast
+  rule (A5) still reach them.
