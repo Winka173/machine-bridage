@@ -1148,6 +1148,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: pháo sáng chiếu vùng này trong {{duration}} giây, cho phe ta thấy mọi thứ trong đó, dù đêm hay sương mù (như UAV quét).\n" +
                 "Mạnh / yếu: cách rẻ nhất để đối phó thời tiết xấu hoặc đêm tối; UAV quét còn thấy cả tàng hình nhưng đắt hơn.\n" +
                 "Mẹo: gọi trước khi tiến vào khu vực tối hoặc nhiều sương mù."),
+            ["guide.decoy_paradrop"] = (
+                "[[Decoy paradrop]] · 3 fake tanks · {{cp}} CP\n" +
+                "How it fights: 3 [[inflatable tank decoys]] land on the spot; the enemy takes them for real tanks and fires on them until it spots the trick, or for {{duration}} s.\n" +
+                "Strong / weak: pulls fire off your real vehicles for free; a scout, radar or UAV scan up close sees through it at once (as the inflatable decoy tower does).\n" +
+                "Tip: drop it on your flank just before a push, to pull the enemy's eye the wrong way.",
+                "[[Mồi nhử thả dù]] · 3 xe tăng giả · {{cp}} CP\n" +
+                "Cách đánh: 3 [[xe tăng bơm hơi]] rơi xuống điểm chọn; địch tưởng thật và bắn vào chúng cho tới khi phát hiện ra, hoặc hết {{duration}} giây.\n" +
+                "Mạnh / yếu: hút hỏa lực khỏi xe thật miễn phí; trinh sát, radar hoặc UAV quét ở gần phát hiện ra ngay (như tháp mồi nhử bơm hơi).\n" +
+                "Mẹo: thả ở sườn trận địa ngay trước một đợt tiến công, để đánh lạc hướng mắt địch."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

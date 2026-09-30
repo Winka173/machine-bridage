@@ -564,7 +564,7 @@ namespace MachineBrigade.Sim.AI
             {
                 var s = world.Catalog.Supports[id];
                 if (s.Kind is SupportKind.Repair or SupportKind.Smoke or SupportKind.Scan or SupportKind.Minefield or SupportKind.Tower or SupportKind.Sead
-                    or SupportKind.Resupply || !Ready(world, economy, s)) continue;
+                    or SupportKind.Resupply or SupportKind.Reinforce || !Ready(world, economy, s)) continue;
                 // Save the big one for big targets.
                 if (s.Kind == SupportKind.CruiseMissile && size < ClusterSize + 1) continue;
                 // The dearest strike, the commander's arm first (prompt 22 F.5: Hawk's airstrikes, Longshot's barrages).
@@ -638,6 +638,16 @@ namespace MachineBrigade.Sim.AI
                     case SupportKind.Scan:
                         if (ScanTarget(world, out var look) && world.Submit(Command.Strike(_team, id, look)).Accepted) return true;
                         break;
+
+                    // Prompt 25 F2 batch C (ht08): the decoy paradrop goes on our own side, between our group and the
+                    // enemy's, to draw fire — never at the enemy cluster (the generic strike path excludes Reinforce).
+                    case SupportKind.Reinforce when FindCluster(world, out var enemyAt, out _) && OwnCentroid(world, enemyAt, 60f, out var ownAt):
+                    {
+                        var toward = enemyAt - ownAt;
+                        var at = ownAt + (toward.LengthSquared() > 1f ? Vector2.Normalize(toward) : Vector2.UnitX) * 10f;
+                        if (world.Submit(Command.Strike(_team, id, world.ClampToMap(at))).Accepted) return true;
+                        break;
+                    }
                 }
             }
             return false;

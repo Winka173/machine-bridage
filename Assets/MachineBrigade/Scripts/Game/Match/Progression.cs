@@ -150,6 +150,7 @@ namespace MachineBrigade.Game.Match
             ["ammo_resupply"] = 1500,
             ["jam_storm"] = 1500,
             ["illum_flare_strike"] = 1500,
+            ["decoy_paradrop"] = 1500,
         };
 
         /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>

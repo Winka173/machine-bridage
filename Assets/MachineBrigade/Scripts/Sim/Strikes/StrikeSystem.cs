@@ -361,6 +361,8 @@ namespace MachineBrigade.Sim.Strikes
                             unit.GuardPoint = _world.ClampToMap(s.Point);
                             unit.PostRadius = MathF.Max(support.Radius, 12f);
                         }
+                        // Prompt 25 F2 batch C (ht08): a timed Reinforce drop (the inflatable decoys) packs up after Duration too.
+                        else if (support.Duration > 0f) unit.ExpiresAt = now + support.Duration;
                     }
                     return true;
                 }

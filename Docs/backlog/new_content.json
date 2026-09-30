@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 45,
+    "chưa làm": 44,
     "đang làm": 0,
-    "xong": 48
+    "xong": 49
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 4,
+      "chưa làm": 3,
       "đang làm": 0,
-      "xong": 7
+      "xong": 8
     },
     "boss": {
       "chưa làm": 8,
@@ -1189,9 +1189,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop (2 CP, so the CP 5 or less price), or a chapter reward."
+      "status": "xong",
+      "id": "decoy_paradrop",
+      "notes": "Batch C: support decoy_paradrop, kind Reinforce dropping 3 new decoy_tank vehicles (mobile version of dx26's inflatable_decoy, Decoy.Mimic main_battle_tank). StrikeSystem's Reinforce case now also sets ExpiresAt when Duration>0 (it used to be Escort-only). AI: a new Reinforce case in TryUtilityStrike places it on our own side toward the enemy (never at the enemy cluster — Reinforce is now excluded from the generic path)."
     },
     {
       "key": "ht09",

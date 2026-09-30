@@ -897,6 +897,8 @@ namespace MachineBrigade.Game.Hud
             "ammo_resupply" => "ammo",
             "jam_storm" => "jammer",
             "illum_flare_strike" => "eye",
+            "decoy_paradrop" => "reinforce",
+            "decoy_tank" => "tank",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };
