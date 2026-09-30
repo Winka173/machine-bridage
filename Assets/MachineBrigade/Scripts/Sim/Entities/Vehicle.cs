@@ -293,7 +293,8 @@ namespace MachineBrigade.Sim.Entities
             ShieldUp = ShieldUntil > now;
             Overdriven = OverdriveUntil > now;
             FlaresUp = FlaresUntil > now;
-            Stunned = StunnedUntil > now || Dummy;
+            KnockedOut = StunnedUntil > now;
+            Stunned = KnockedOut || Dummy;
             Barraging = BarrageUntil > now;
         }
 
@@ -306,8 +307,14 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Flares are out: guided weapons aimed at it miss.</summary>
         public bool FlaresUp { get; private set; }
 
-        /// <summary>Knocked out by an EMP: cannot drive or fire.</summary>
+        /// <summary>Knocked out by an EMP: cannot drive or fire. A range <see cref="Dummy"/> counts as stunned too (it holds still and never fires).</summary>
         public bool Stunned { get; private set; }
+
+        /// <summary>
+        /// Play-test 10 (DECISIONS PT10 visuals): really knocked out (an EMP's or a SEAD strike's stun), not merely a range
+        /// dummy held still. What the views draw a stun by (the arcs, blue sparks and burnt-electronics smoke, a dead radar).
+        /// </summary>
+        public bool KnockedOut { get; private set; }
 
         /// <summary>Holds its fire (a fortress keep's gun under its shield dome: nothing gets in or out).</summary>
         public bool HoldFire { get; internal set; }

@@ -807,7 +807,8 @@ namespace MachineBrigade.Game.Effects
             for (var i = 0; i < all.Count; i++)
             {
                 var view = all[i];
-                if (!view.Sim.Stunned || !view.Sim.IsAlive || now < view.StunFxAt || !_cull.Visible(view.Position, 0.15f)) continue;
+                // Play-test 10: by KnockedOut, not Stunned, which a range dummy always is (every In action target crackled and smoked).
+                if (!view.Sim.KnockedOut || !view.Sim.IsAlive || now < view.StunFxAt || !_cull.Visible(view.Position, 0.15f)) continue;
                 view.StunFxAt = now + (Low ? 0.34f : 0.18f) * UnityEngine.Random.Range(0.8f, 1.3f);
                 var r = Mathf.Max(1f, view.Sim.Radius * 0.6f);
                 var top = view.Position + Vector3.up * view.Top * 0.75f + UnityEngine.Random.insideUnitSphere * r * 0.5f;
