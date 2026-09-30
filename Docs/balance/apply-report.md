@@ -487,7 +487,7 @@ Every row of "Vũ khí đề xuất" (the proposal columns: damage, fire mode, r
 | Đơn vị – vũ khí | sam_launcher | hmg_selfdef_18 | already | not mounted |
 | Đơn vị – vũ khí | heavy_aa | sam | applied | Stinger -> 57E6: Đổi Stinger → tên lửa 57E6 (Pantsir): 1 × 220, Mảnh xuyên 3, tầm 55, tốc độ 55 |
 | Đơn vị – vũ khí | scout_heli | loadout | already | its A1 row applied it (Hydra: 12 → 6 quả mỗi lần đầy đạn) |
-| Đơn vị – vũ khí | swarm_carrier | loadout | already | its A1 row applied it (Vũ khí thêm theo đề xuất; Bỏ bom SDB; thêm 2 tên lửa hành trình Rapid Dragon mỗi lượt) |
+| Đơn vị – vũ khí | swarm_carrier | loadout | already | its A1 row applied it (Bỏ bom SDB; thêm 2 tên lửa hành trình Rapid Dragon mỗi lượt; Vũ khí thêm theo đề xuất) |
 | Đơn vị – vũ khí | stealth_fighter | loadout | already | its A1 row applied it (Thêm 1 AIM-120 mỗi lần đầy đạn) |
 | Đơn vị – vũ khí | gunship_heli | loadout | already | its A1 row applied it (Đổi Hellfire → 9M120 Ataka) |
 | Đơn vị – vũ khí | attack_jet | loadout | already | its A1 row applied it (FAB-250: 2 → 1 quả mỗi lần đầy đạn) |
@@ -810,3 +810,26 @@ The column "CP đề xuất" of "Giá CP", checked against "CP sau đề xuất"
 | Giá CP | laser_tank | cp | already | 9 CP |
 
 <!-- /step:B7 -->
+
+<!-- step:B8 -->
+## B.8: support cards (sheet Thẻ hỗ trợ)
+
+The sheet names cards by their Vietnamese titles; the table below maps them to the supports' ids (checked against the sheet's "Hiện tại"). Damage in the sheet is what lands (after the strikes' firepower, x2): the data holds half. Where a row offers two options, the one taken is in the detail (DECISIONS 25A).
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Thẻ hỗ trợ | 3 | 6 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Thẻ hỗ trợ | airstrike | card | applied | option 1: 4 FAB-500s of 420 (the bomber's), each blast 10 m by the bomb scale, 9 CP; the bomb line's half-width stays 6 m; count 6 -> 4, damage 400 -> 210, blast 8 -> 10 |
+| Thẻ hỗ trợ | artillery_barrage | card | applied | option 2: 6 shells (was 8): the card was strong for its price; each shell's blast 7 m, the 155 mm howitzer round's (one round, one radius); the circle they fall in stays 10 m; count 8 -> 6, blast 6 -> 7 |
+| Thẻ hỗ trợ | cruise_missile | card | applied | option 1: 600 (a Tomahawk's ~450 kg), a 10 m blast, the circle shown on the map the same 10 m (it was 15 round an 18 m blast); damage 520 -> 300, blast 18 -> 10, radius 15 -> 10 |
+| Thẻ hỗ trợ | napalm_strike | card | already | Bom napalm: kept (9 CP · 8 × 300 · bán kính 5) |
+| Thẻ hỗ trợ | sead_strike | card | already | Đòn SEAD: kept (7 CP · 500) |
+| Thẻ hỗ trợ | smoke_screen | card | already | Màn khói: kept (—) |
+| Thẻ hỗ trợ | uav_scan | card | already | UAV quét: kept (—) |
+| Thẻ hỗ trợ | repair_drop | card | already | Sửa chữa: kept (—) |
+| Thẻ hỗ trợ | field_tower | card | already | Tháp dã chiến: kept (—) |
+
+<!-- /step:B8 -->

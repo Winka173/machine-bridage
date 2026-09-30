@@ -10933,3 +10933,17 @@ already in from their A1 rows: the attack jet 18, the stealth bomber 21, the swa
 the super-heavy tank 18, the heavy tank 13, the stealth fighter 13, the scout helicopter 5, the strike drone 9, the
 SAM launcher, the Pantsir and the HIMARS 7, the TOS 9, the Smerch 12, the railgun truck 10, the laser tank 9, the
 attack helicopter 9, the tank destroyer 6, the Iron Beam 6. B.7 checks them and changes nothing more.
+
+### B.8 Support cards ("Thẻ hỗ trợ")
+
+The sheet names cards by title (Không kích, Pháo kích...): the importer maps them to the supports' ids and checks
+each against the sheet's "Hiện tại". Damage in the sheet is what lands, after the strikes' firepower (x2); the data
+holds half. Where a row offers two options:
+- **Airstrike**: the first, four FAB-500s of 420 (the bomber's bomb) with a 10 m blast each (the bomb scale), still
+  9 CP. The sheet's "bán kính" is the bomb's blast here ("theo thang bom"); the bomb line's half-width stays 6 m.
+- **Artillery barrage**: the second, six shells instead of eight (the reason: strong for its price). The first
+  ("bán kính 10 -> 7") reads the card's 10 m circle as its blast; the shells' blast is 7 m, the 155 mm howitzer
+  round's (one round, one radius: it was 6), and the circle they fall in stays 10 m.
+- **Cruise missile**: the first, 600 a hit (a Tomahawk's ~450 kg on the bomb scale) and a 10 m blast; the circle
+  drawn on the map is the blast too (10 m; it was 15 round an 18 m blast). The cluster alternative is not taken.
+- Napalm, SEAD, smoke, the UAV scan, repair and the field tower: kept, as the sheet says.

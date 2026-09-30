@@ -35,6 +35,8 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
 - A5: one blast radius for one round on every carrier (the siege tank's 203 mm 8 m, the Grad 4.5 m everywhere), and every
   blast drawn exactly as wide as its damage reaches: its shock ring sits on the radius (bombs' rings were twice it);
   small flak and grenade bursts show a faint ring of their own.
+- B.7-B.8: prices checked against the price sheets; the airstrike drops four FAB-500s (10 m each), the barrage fires six
+  shells, the cruise missile hits for 600 over 10 m.
 
 ### Play-test 9 models (DECISIONS 23M)
 

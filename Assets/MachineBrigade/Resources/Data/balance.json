@@ -1725,10 +1725,10 @@
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a
   // bomb line); count impacts spread over duration; blast = radius of each impact. Repair heals damage x max HP in total.
   "supports": [
-    { "id": "artillery_barrage", "kind": "Barrage",       "pen": 3, "cp": 5,  "cooldown": 60,  "delay": 1.5, "radius": 10, "count": 8, "duration": 4,   "damage": 160, "blast": 6,  "tier": "Large" },
-    { "id": "airstrike",         "kind": "Airstrike",     "pen": 3, "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 6,  "count": 6,  "duration": 1.2, "damage": 400, "blast": 8,  "tier": "Huge", "length": 60,
+    { "id": "artillery_barrage", "kind": "Barrage",       "pen": 3, "cp": 5,  "cooldown": 60,  "delay": 1.5, "radius": 10, "count": 6, "duration": 4,   "damage": 160, "blast": 7,  "tier": "Large" },
+    { "id": "airstrike",         "kind": "Airstrike",     "pen": 3, "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 6,  "count": 4,  "duration": 1.2, "damage": 210, "blast": 10,  "tier": "Huge", "length": 60,
       "rankLine": { "rank": 7, "scale": 1.4 } },
-    { "id": "cruise_missile",    "kind": "CruiseMissile", "pen": 3, "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 15, "count": 1,  "damage": 520, "blast": 18, "tier": "Ultimate" },
+    { "id": "cruise_missile",    "kind": "CruiseMissile", "pen": 3, "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 10, "count": 1,  "damage": 300, "blast": 10, "tier": "Ultimate" },
     { "id": "smoke_screen",      "kind": "Smoke",         "cp": 2,  "cooldown": 30,  "delay": 1.0, "radius": 12, "count": 1,  "duration": 12, "tier": "Small" },
     { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" },
     // Premium (bought with coins): a line of fire.

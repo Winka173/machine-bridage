@@ -39,7 +39,74 @@ def run(step, wr, wb, report, weapon_rows, unit_rows, refs=None):
     if step == "B7":
         b7(wr, wb, report)
         return "B.7: CP prices (sheets Giá CP, Kích thước – giá)"
+    if step == "B8":
+        b8(wr, wb, report)
+        return "B.8: support cards (sheet Thẻ hỗ trợ)"
     return None
+
+
+INTRO["B8"] = ("The sheet names cards by their Vietnamese titles; the table below maps them to the supports' ids (checked "
+               "against the sheet's \"Hiện tại\"). Damage in the sheet is what lands (after the strikes' firepower, x2): "
+               "the data holds half. Where a row offers two options, the one taken is in the detail (DECISIONS 25A).")
+
+SUPPORT_IDS = {"Không kích": "airstrike", "Pháo kích": "artillery_barrage", "Tên lửa hành trình": "cruise_missile",
+               "Bom napalm": "napalm_strike", "Đòn SEAD": "sead_strike", "Màn khói": "smoke_screen", "UAV quét": "uav_scan",
+               "Sửa chữa": "repair_drop", "Tháp dã chiến": "field_tower"}
+
+
+def b8(wr, wb, report):
+    import re
+    g = wr.game
+    step = "B8"
+    sh = "Thẻ hỗ trợ"
+    _, rows = X.sheet(wb, sh)
+    strikes = g.strikes
+
+    def support(sid, **fields):
+        done = []
+        for k, v in fields.items():
+            cur = g.supports[sid].get(k)
+            if not X.close(cur, v):
+                wr.doc.edit("supports", sid, lambda e, k=k, v=v: e.set(k, v))
+                g.refresh()
+                done.append(f"{k} {X.fmt(cur)} -> {X.fmt(v)}")
+        return done
+
+    for r in rows:
+        names, cur, prop = str(r[0]), str(r[1]), str(r[2])
+        for name in [n.strip() for n in names.split(",")]:
+            sid = SUPPORT_IDS.get(name)
+            if sid is None or sid not in g.supports:
+                report.add(step, sh, name, "card", "skipped", "no support with this title in balance.json")
+                continue
+            s = g.supports[sid]
+            if prop.strip().startswith("Giữ"):
+                report.add(step, sh, sid, "card", "already", f"{name}: kept ({cur})")
+                continue
+            if sid == "airstrike":
+                m = re.search(r"(\d+) quả FAB-500 × (\d+), bán kính (\d+) m.*?giữ (\d+) CP", prop)
+                count, shown, blast, cp = int(m.group(1)), float(m.group(2)), float(m.group(3)), int(m.group(4))
+                done = support(sid, count=count, damage=shown / strikes, blast=blast, cp=cp)
+                why = (f"option 1: {count} FAB-500s of {X.fmt(shown)} (the bomber's), each blast {X.fmt(blast)} m by the bomb scale, "
+                       f"{cp} CP; the bomb line's half-width stays {X.fmt(s.get('radius'))} m")
+            elif sid == "artillery_barrage":
+                m = re.search(r"(\d+)→(\d+) phát", prop)
+                count = int(m.group(2))
+                shell = g.families.get("m284_155_mm_2", {}).get("splash") or g.weapon("howitzer").get("splash")
+                done = support(sid, count=count, blast=float(shell))
+                why = (f"option 2: {count} shells (was {m.group(1)}): the card was strong for its price; each shell's blast "
+                       f"{X.fmt(shell)} m, the 155 mm howitzer round's (one round, one radius); the circle they fall in stays "
+                       f"{X.fmt(s.get('radius'))} m")
+            elif sid == "cruise_missile":
+                m = re.search(r"Sát thương ([\d.]+)→([\d.]+), bán kính (\d+)→(\d+)", prop)
+                shown, blast = X.num(m.group(2)), float(m.group(4))
+                done = support(sid, damage=shown / strikes, blast=blast, radius=blast)
+                why = (f"option 1: {X.fmt(shown)} (a Tomahawk's ~450 kg), a {X.fmt(blast)} m blast, the circle shown on the "
+                       f"map the same {X.fmt(blast)} m (it was 15 round an 18 m blast)")
+            else:
+                report.add(step, sh, sid, "card", "skipped", f"no rule for '{prop}'")
+                continue
+            report.add(step, sh, sid, "card", "applied" if done else "already", why + ("; " + ", ".join(done) if done else ""))
 
 
 INTRO["B7"] = ("The column \"CP đề xuất\" of \"Giá CP\", checked against \"CP sau đề xuất\" of \"Kích thước – giá\". Most "
