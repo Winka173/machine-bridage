@@ -180,7 +180,154 @@ def main_battle_tank(a, detail=False):
         a.part('Turret_seams', 'Armor', t).box((2.0, .025, .014), loc=(0, -.1, .72), bevel=0)
 
 
+# ----------------------------------------------------------------------------- scaling
+def _scale_asset(a, k):
+    """Scales everything built so far about the origin by k: the shapes (whose vertices sit in their parent pivot's
+    space) and the pivots' offsets (pivots only translate). A builder drawn at another size calls it last."""
+    import bmesh
+    for shape in a.shapes.values():
+        bmesh.ops.scale(shape.bm, vec=(k, k, k), verts=list(shape.bm.verts))
+    for o in a.pivots.values():
+        o.location = o.location * k
+
+
+# ----------------------------------------------------------------------------- fighter (Su-27)
+FIGHTER_K = 8.8 / 19.2     # drawn in the 19.2 m frame of mb_air3's fighter, then scaled to the sheet's 8.8 m
+
+
+def fighter_jet(a, detail=False):
+    """Air-superiority fighter (Su-27 Flanker class), 8.8 x 5.9 x 2.1 m, clearly longer than the attack jet (6.2 m):
+    a long pointed radome with the IRST ball, a bubble canopy far forward, leading-edge root extensions blending
+    into a cropped-delta wing, a flat lifting body over two widely spaced engines with raked intakes and
+    afterburning nozzles, tail booms carrying the twin fins (drawn 15 % tall: the silhouette's second feature),
+    all-moving stabilisers, the tail stinger. Four air-to-air missiles under the wings on separate pylons (the
+    `Missiles` the launch points are found from, far enough apart to read as four), two short-range ones on the
+    wingtip rails, the cannon in the right wing root. Drawn in mb_air3's 19.2 m frame and scaled by FIGHTER_K; the
+    high-detail variant keeps its finer sections, control surfaces and panel lines (mb_air3._fighter_jet_detail)."""
+    from mb_air import (BACKWARD, FORWARD, LEFT, RIGHT, Planform, _aam, _aam_parts, _canopy, _dome, _intake,
+                        _nozzle, _patch, _pylon, _sec, _skin_z, _surface, _upright, _wing)
+    from mb_air3 import _fighter_jet_detail, _sq
+    hd.mark(a, detail)
+    n = 16 if detail else 12
+    bv = 1.0 if detail else 0.0     # bevels are 1 cm or less at this size: only the close-up variant keeps them
+    body = a.part('Fuselage', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    moving = a.part('Control_surfaces', 'Armor')
+    glow = a.part('Wing_lights', 'TeamGlow')
+
+    def sec(y, w, zb, zt):
+        return _sec(y, w, zb, zt, n=n, pt=2.4, pb=2.8)
+    hull = [sec(-7.6, .43, -.42, .38), sec(-6.6, .53, -.5, .5), sec(-5.4, .6, -.54, .56), sec(-4.2, .66, -.56, .58),
+            sec(-3.0, .76, -.55, .55), sec(-1.8, 1.12, -.5, .5), sec(-.4, 1.58, -.45, .46), sec(1.5, 1.8, -.42, .44),
+            sec(4.0, 1.95, -.36, .38), sec(6.0, 1.85, -.28, .32), sec(7.2, 1.15, -.2, .24)]
+    body.loft(hull, bevel=.02 * bv, seg=1)
+    armor.loft([[(0, -9.4, -.03)], sec(-9.0, .16, -.16, .1), sec(-8.4, .3, -.3, .24), sec(-7.55, .425, -.415, .372)])
+    zi = _skin_z(hull, -7.15, -.17)
+    armor.cyl(.1, .12, loc=(-.17, -7.15, zi), seg=8, bevel=0)                                  # IRST ball (right)
+    a.part('Sensor', 'Glass').sphere(.11, loc=(-.17, -7.17, zi + .07), seg=6, rings=4)
+    # Bubble canopy far forward (frameless here: its thin frames would shimmer), the dorsal spine behind it.
+    glass = a.part('Canopy', 'Glass')
+    st = [(-6.95, .14, .64), (-6.55, .34, .88), (-6.0, .43, 1.02), (-5.3, .45, 1.07), (-4.6, .4, 1.0),
+          (-4.1, .27, .87), (-3.75, .13, .72)]
+    stations = [(y, w, _skin_z(hull, y, w) - .03, z1) for y, w, z1 in st]
+    if detail:
+        _canopy(glass, a.part('Canopy_frames', 'Armor'), stations, bows=(-6.5,))
+    else:
+        glass.loft([_dome(y, w, z0, z1, 7) for y, w, z0, z1 in stations], bevel=0)
+    spine = [_dome(y, w, _skin_z(hull, y, w) - .04, z1, 9 if detail else 7) for y, w, z1 in
+             ((-4.3, .34, .92), (-3.2, .42, .8), (-1.4, .46, .68), (1.2, .46, .62), (3.8, .4, .56), (6.2, .3, .44))]
+    body.loft(spine + [[(0, 7.3, .3)]], bevel=.02 * bv, seg=1)
+    _patch(armor, spine, -3.0, -1.7, 1, 5)                                                     # air brake
+    # Leading-edge root extensions into the cropped-delta wing.
+    lerx = Planform(.45, 2.6, -6.4, -.52, 6.9, 2.0, .14, .08, .06, .04)
+    wing = Planform(.9, 6.1, -2.17, 2.51, 5.4, 1.45, .3, .1, .02, -.08)
+    for frame in (RIGHT, LEFT):
+        _surface(body, lerx, frame, bevel=.01 * bv)
+        if detail:
+            _wing(body, moving, wing, frame, cs=[(1.95, 3.9, .75), (3.9, 5.75, .74)])
+        else:
+            _surface(body, wing, frame, bevel=0)
+    # Engine nacelles under the lifting body: raked intakes under the root extensions, nozzles.
+    lips = a.part('Intake_lips', 'Team')
+    m = 10 if detail else 8
+    for s in (-1, 1):
+        x = s * 1.12
+        trunk = [_sq(x, -2.6, -.6, .31, .41, n=m), _sq(x, .5, -.62, .33, .42, p=3.5, n=m),
+                 _sq(x, 4.5, -.6, .36, .42, p=3, n=m), _sq(x, 6.6, -.55, .43, .43, p=2.4, n=m),
+                 _sq(x, 7.3, -.52, .45, .45, p=2.2, n=m)]
+        if detail:
+            _intake(a, body, lips, dark, (x, -3.4, -.58), .3, .4, .25, trunk, depth=.3, wall=.07, n=m)
+        else:  # the same duct without its bevels
+            from mb_air import _squircle
+            rot = (R90 + .25, 0, 0)
+            fm = hd.frame((x, -3.4, -.58), rot)
+            outline = _squircle(.3, .4, m)
+            body.loft([[tuple(fm @ Vector((px, py, 0))) for px, py in outline]] + trunk, bevel=0)
+            lips.shell(outline, .3, .07, loc=(x, -3.4, -.58), rot=rot, bevel=0)
+            dark.box((.48, .64, .03), loc=tuple(fm @ Vector((0, 0, .03))), rot=rot, bevel=0)
+        armor.box((.06, 1.0, .5), loc=(s * .8, -3.2, -.42), bevel=0)                          # splitter
+        _nozzle(a, x, 7.3, -.52, .42, 1.05, seg=14 if detail else 8, glow=detail)
+        if not detail:
+            a.part('Exhaust_glow', 'Alloy').cyl(.26, .04, loc=(x, 7.3 + .55, -.52), rot=FORWARD, seg=8, bevel=0)
+    # Tail booms carrying the twin fins (15 % tall), stabilisers and ventral fins.
+    fin = Planform(0, 3.45, 4.3, 7.0, 2.9, 1.0, .13, .05)
+    stab = Planform(1.95, 5.0, 6.3, 7.9, 2.1, .95, .12, .05, -.03)
+    ventral = Planform(0, .75, 5.5, 6.1, 1.2, .6, .1, .05)
+    for s in (-1, 1):
+        x = s * 1.95
+        boom = [_sec(y, w, zb, zt, n=10 if detail else 8) for y, w, zb, zt in
+                ((2.8, .12, -.12, .1), (3.6, .22, -.25, .2), (7.4, .22, -.25, .2), (8.4, .16, -.16, .12))]
+        body.loft([[(x, 2.2, -.02)]] + [[(x + p[0], p[1], p[2]) for p in r] for r in boom] + [[(x, 8.9, -.02)]],
+                  bevel=.01 * bv, seg=1)
+        frame = _upright(x, .14, .06)
+        if detail:
+            _wing(body, moving, fin, frame, cs=[(.35, 3.2, .68)], lower=1.0)
+        else:
+            _surface(body, fin, frame, lower=1.0, bevel=0)
+        tip = Vector(frame(3.45, 7.1, 0))
+        armor.cyl(.07, .6, loc=tuple(tip + Vector((0, .1, 0))), rot=BACKWARD, seg=6, bevel=0)  # fin-tip fairing
+        glow.box((.08, .16, .08), loc=tuple(tip + Vector((0, .44, 0))), bevel=0)
+        _surface(body, ventral, _upright(x, -.2, math.pi - .3), lower=1.0, bevel=.012 * bv)
+    for frame in (RIGHT, LEFT):
+        _surface(body, stab, frame, bevel=.012 * bv)
+    body.loft([sec(6.5, .45, -.22, .3), sec(8.0, .28, -.14, .2), sec(8.9, .15, -.08, .1), [(0, 9.4, .0)]],
+              bevel=.01 * bv, seg=1)                                                           # tail stinger
+    a.part('Beacon', 'TeamGlow').sphere(.08, loc=(0, 9.38, 0), seg=6, rings=4)
+    # Cannon in the right wing root (the pilot's right is -X): fairing, barrel, muzzle ring.
+    armor.box((.24, 1.3, .16), loc=(-.86, -3.05, .15), bevel=.03, seg=1, taper=(.7, .9))
+    steel.cyl(.06, .45, loc=(-.86, -3.82, .15), rot=FORWARD, seg=6, bevel=0)
+    steel.cyl(.08, .08, loc=(-.86, -4.04, .15), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', (-.86, -4.1, .15))
+    # Wingtip rails with the short-range missiles (a part of their own, not Missiles: they are the aam slot).
+    tips = _aam_parts(a, 'Wingtip_missiles')
+    for s in (-1, 1):
+        x = s * 6.12
+        armor.box((.14, 1.7, .14), loc=(x, 3.1, -.08), bevel=.02, seg=1)
+        _aam(tips, (s * 6.24, 2.75, -.2), length=2.3, r=.1, seg=6, canards=False, fin=1.3)
+        glow.box((.08, .16, .08), loc=(x, 2.2, -.08), bevel=0)
+    # Four medium-range missiles under the wings, one per pylon (Muzzle_missile between their noses).
+    aams = _aam_parts(a)
+    pylons = a.part('Pylons', 'Armor')
+    for s in (-1, 1):
+        for x in (s * 2.75, s * 4.3):
+            zb = wing.bottom(abs(x)) + .05
+            zp = zb - .38
+            _pylon(pylons, x, -.1 + abs(x) * .2, 1.7 + abs(x) * .2, zb, zp + .1, w=.14)
+            _aam(aams, (x, .45 + abs(x) * .2, zp), length=3.0, r=.12, seg=6, canards=False, fin=1.2)
+    zp = wing.bottom(3.5) + .05 - .38
+    a.pivot('Muzzle_missile', (0, -.55, zp))      # just ahead of the noses, clear of the belly light (_hd)
+    a.pivot('Muzzle_aam', (0, 2.75 - 1.2, -.2))
+    a.pivot('Point_exhaust', (0, 8.4, -.52))
+    a.pivot('Point_fire', (0, 1.5, .2))
+    if detail:
+        _fighter_jet_detail(a, hull, spine, lerx, wing, Planform(0, 3.0, 4.3, 6.75, 2.9, 1.05, .13, .05), stab)
+    _scale_asset(a, FIGHTER_K)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
+    'fighter_jet': (fighter_jet, dict(ao_distance=.35, ground=False)),
 }

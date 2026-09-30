@@ -161,7 +161,7 @@ namespace MachineBrigade.Tests
         [TestCase("gunship_heli", "rocket", 2, 1.5f)]
         [TestCase("scout_heli", "gun", 2, 0.8f)]
         [TestCase("heavy_attack_heli", "rocket", 2, 1.5f)]
-        [TestCase("fighter_jet", "missile", 4, 3f)]
+        [TestCase("fighter_jet", "missile", 4, 1f)]
         [TestCase("attack_jet", "missile", 2, 3.5f)]
         [TestCase("tank_buster", "rocket", 2, 3f)]
         public void RoundsLeaveFromTheLaunchersOnBothSides(string id, string slot, int count, float offCentre)

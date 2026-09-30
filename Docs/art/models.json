@@ -457,11 +457,11 @@
   },
   "fighter_jet": {
     "file": "fighter_jet.glb",
-    "triangles": 8612
+    "triangles": 3580
   },
   "fighter_jet_hd": {
     "file": "fighter_jet_hd.glb",
-    "triangles": 16028
+    "triangles": 14528
   },
   "fishing_boat": {
     "file": "fishing_boat.glb",
