@@ -429,7 +429,7 @@
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",
-    "triangles": 8352
+    "triangles": 2304
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
@@ -635,6 +635,10 @@
     "file": "house_small.glb",
     "triangles": 2680
   },
+  "hover_gunboat": {
+    "file": "hover_gunboat.glb",
+    "triangles": 1416
+  },
   "howitzer": {
     "file": "howitzer.glb",
     "triangles": 8800
@@ -817,7 +821,7 @@
   },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",
-    "triangles": 6448
+    "triangles": 2440
   },
   "mountain_a": {
     "file": "mountain_a.glb",
@@ -1089,7 +1093,7 @@
   },
   "smoke_carrier": {
     "file": "smoke_carrier.glb",
-    "triangles": 9280
+    "triangles": 2468
   },
   "snow_pine": {
     "file": "snow_pine.glb",

@@ -10896,3 +10896,7 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | ifv | 5.2 x 2.9 x 2.4 (note; the row keeps 6.2) | 5.48 x 3.02 x 2.50 | 5.31 x 3.02 | 3,192 | M2 Bradley (turret left of centre as the sheet has it, TOW box on its left) | 6.2 x 2.7 x 3.1 at 0.85, 6,416 |
 | light_tank (+ _hd) | 6.1 x 2.6 x 1.8 (note) | 6.39 x 2.61 x 1.89 | 5.72 x 2.61 | 2,728 / 6,828 | PT-76, ZBD-05 | 6.2 x 2.3 x 2.2 at 0.85, 6,748 |
 | aa_vehicle (+ _hd) | 6.2 x 3.0 x 2.4 (note; 2.9 m with the search radar up) | 6.44 x 3.06 x 2.92 | 5.85 x 3.06 | 3,236 / 8,044 | Flakpanzer Gepard 1A2 | 5.6 x 2.7 x 3.0 at 1.0, 6,936 |
+| hover_gunboat | 14.0 x 3.9 x 4.4 (kept) | 14.00 x 3.92 x 3.67 | 14.00 x 3.92 | 1,416 | an air-cushion gunboat with the AK-630 (LCAC-style ducted fans) | missile_boat at 1.0, 432. **model:** drop `"model": "missile_boat"` |
+| engineer_vehicle | 6.9 x 3.0 x 2.6 (note) | 6.45 x 3.02 x 2.02 | 6.45 x 3.02 | 2,304 | BREM-1 on the T-72 hull, M88 | 6.3 x 2.8 x 2.4 at 0.85, 8,352 |
+| smoke_carrier | 3.9 x 2.2 x 2.0 (note) | 4.21 x 2.24 x 2.64 (the generator on the roof) | 4.21 x 2.24 | 2,468 | M1059 Lynx (M113 with the smoke generator) | 4.2 x 2.3 x 2.9 at 0.85, 9,280 |
+| mortar_carrier | 3.9 x 2.2 x 2.0 (note) | 4.21 x 2.30 x 3.20 (the mortar up) | 4.21 x 2.30 | 2,440 | M1064 (M113 with the M120 mortar) | 4.4 x 2.5 x 3.2 at 0.85, 6,448 |

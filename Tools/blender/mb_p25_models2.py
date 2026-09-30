@@ -1038,6 +1038,198 @@ def aa_vehicle(a, detail=False):
         mv._eyes(a, [(s * .9, -.8, .8, 0) for s in (-1, 1)], parent=t)
 
 
+# ----------------------------------------------------------------------------- escort hovercraft
+def _circle(r, n=16):
+    return [(r * math.cos(k * TAU / n), r * math.sin(k * TAU / n)) for k in range(n)]
+
+
+def hover_gunboat(a):
+    """Escort hovercraft (a fast air-cushion gunboat with the AK-630), 14.0 x 3.9 x 3.9 m, the size it has today:
+    a low hull on a black rubber skirt, a teardrop from above (a round bow narrowing aft), the wheelhouse amidships
+    with its mast and small radar, the six-barrel AK-630 on the foredeck (`Mount_mg`, `Muzzle_mg`, its weapon), and
+    two big ducted fans aft in their guard rings (`Propeller`, `Propeller_2`, turning) with rudders behind: from
+    above, the two round rings at the tail. Its own model: balance.json borrows `missile_boat` today."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    stations = ((-7.0, .25), (-6.6, 1.05), (-5.8, 1.6), (-4.2, 1.92), (-1.0, 1.95), (2.5, 1.85), (5.2, 1.6),
+                (6.7, 1.35), (7.0, 1.1))
+    a.part('Skirt', 'Rubber').loft([[(hw * .86, y, 0), (hw, y, .5), (hw * .96, y, .95), (-hw * .96, y, .95),
+                                     (-hw, y, .5), (-hw * .86, y, 0)] for y, hw in stations], bevel=0)
+    hull.loft([[(hw * .95, y, .9), (hw * .9, y, 1.45), (-hw * .9, y, 1.45), (-hw * .95, y, .9)]
+               for y, hw in stations], bevel=.03, seg=1)
+    a.part('Skirt_band', 'Undercarriage').loft([[(hw * 1.005, y, .42), (hw * 1.005, y, .56), (-hw * 1.005, y, .56),
+                                                 (-hw * 1.005, y, .42)] for y, hw in stations[1:-1]], bevel=0)
+    # The wheelhouse amidships, its windows, the mast and radar.
+    hull.prism([(-2.6, 1.4), (-2.2, 2.45), (.8, 2.5), (1.0, 1.4)], 2.3, bevel=.05, seg=1)
+    a.part('Glass', 'Glass').box((2.0, .05, .34), loc=(0, -2.34, 2.12), rot=(-.36, 0, 0), bevel=0)
+    for s in (-1, 1):
+        a.part('Glass', 'Glass').box((.04, 1.6, .3), loc=(s * 1.16, -.9, 2.1), bevel=0)
+    armor.box((1.4, 1.2, .12), loc=(0, -.5, 2.54), bevel=.02, seg=1)                                # wheelhouse roof
+    steel.box((.16, .16, 1.0), loc=(0, .2, 3.05), bevel=0)                                         # mast
+    r = a.pivot('Radar', (0, .2, 3.55))
+    a.part('Radar_bar', 'Armor', r).box((1.1, .16, .12), loc=(0, 0, .06), bevel=0)
+    a.part('Beacon', 'TeamGlow').box((.12, .12, .1), loc=(0, .2, 3.5), bevel=0)
+    # The AK-630 on the foredeck.
+    m = a.pivot('Mount_mg', (0, -4.4, 1.45))
+    mount = a.part('CIWS_mount', 'Armor', m)
+    mount.cyl(.6, .3, loc=(0, 0, .15), seg=12, bevel=.03, bseg=1)
+    mount.box((.9, 1.0, .55), loc=(0, .1, .55), bevel=.06, seg=1, taper=(.8, .8))
+    guns = a.part('CIWS_barrels', 'Steel', m)
+    guns.cyl(.13, 1.5, loc=(0, -1.1, .58), rot=FORWARD, seg=8, bevel=0)
+    guns.cyl(.16, .12, loc=(0, -1.8, .58), rot=FORWARD, seg=8, bevel=0)                          # muzzle clamp
+    a.pivot('Muzzle_mg', (0, -1.9, .58), m)
+    # Two ducted fans aft on pylons, their rudders behind.
+    for s, name in ((1, 'Propeller'), (-1, 'Propeller_2')):
+        x, y, z = s * .95, 5.3, 2.35
+        a.part('Fan_ducts', 'Team').shell(_circle(.95, 16), .6, .12, loc=(x, y - .3, z), rot=(-R90, 0, 0), bevel=0)
+        armor.torus(.95, .05, loc=(x, y + .3, z), rot=(-R90, 0, 0), seg=16, ring=4)                  # guard ring lip
+        steel.box((.16, .5, .9), loc=(x, y, 1.45 + .45), bevel=0)                                   # pylon
+        p = a.pivot(name, (x, y - .05, z))
+        a.part('Fan_hubs', 'Armor', p).cyl(.18, .4, loc=(0, 0, 0), rot=FORWARD, seg=8, bevel=0)
+        blades = a.part('Fan_blades', 'Undercarriage', p)
+        for k in range(5):
+            u = k * TAU / 5
+            blades.box((.2, .05, .72), loc=(math.cos(u) * .48, 0, math.sin(u) * .48), rot=(0, -u + R90, 0), bevel=0)
+        for dx in (-.35, .35):
+            armor.box((.06, .5, 1.5), loc=(x + dx, y + .75, z), bevel=0)                               # rudders
+    a.pivot('Point_exhaust', (0, 5.9, 2.3))
+    a.pivot('Point_fire', (0, -.5, 2.6))
+
+
+# ----------------------------------------------------------------------------- engineer vehicle (BREM-1)
+def engineer_vehicle(a):
+    """Engineer and recovery vehicle (BREM-1 on the T-72 hull, M88 class), 6.9 x 3.0 x 2.6 m: a turretless T-72
+    hull (six road wheels, rear drive), a dozer blade across the nose wider than the hull (`Blade`, it strokes
+    when used), the folding crane lying diagonally along the roof from its pedestal at the front left to the tail
+    (from above, the sheet's diagonal), a cargo platform with spare track links at the back, and the commander's
+    machine-gun cupola (`Turret`, `Main_cannon`, `Muzzle_main`)."""
+    hd.mark(a, False)
+    _lean_tracks(a, 1.1, 5.7, .76, .3, 6, .46, sprocket=1, teeth=6)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    armor.prism([(-2.7, .38), (-2.95, .64), (-2.75, .84), (2.8, .84), (2.92, .56), (2.75, .38)], 1.72, bevel=.04,
+                seg=1)
+    hull.prism([(-3.0, .8), (-2.2, 1.2), (2.85, 1.24), (2.95, .8)], 2.8, bevel=.05, seg=1)
+    for s in (-1, 1):
+        armor.box((.5, 5.6, .06), loc=(s * 1.15, 0, 1.2), bevel=0)                                   # fenders
+        _lights(a, (s * 1.0,), -2.65, 1.1, size=(.14, .04, .1))
+        _lights(a, (s * 1.05,), 2.96, 1.05, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        steel.limb((s * 1.1, -2.8, .72), (s * 1.3, -3.2, .5), .12, .12, bevel=0)                    # blade arms
+    # The dozer blade across the nose, 3.0 m wide: its own pivot at the hinge.
+    b = a.pivot('Blade', (0, -3.1, .55))
+    a.part('Blade_plate', 'Armor', b).box((3.0, .14, .8), loc=(0, -.2, -.05), rot=(-.2, 0, 0), bevel=.03, seg=1)
+    a.part('Blade_edge', 'Steel', b).box((3.0, .12, .1), loc=(0, -.28, -.46), bevel=0)
+    a.part('Blade_stripe', 'Hazard', b).box((3.02, .02, .1), loc=(0, -.29, .2), rot=(-.2, 0, 0), bevel=0)
+    # The crane: its pedestal at the front left, the boom lying diagonally back across the roof, the hook block.
+    a.part('Crane', 'Armor').cyl(.36, .5, loc=(.8, -1.6, 1.48), seg=10, bevel=.03, bseg=1)
+    boom = a.part('Boom_inner', 'Armor')
+    boom.limb((.8, -1.6, 1.75), (-.85, 2.7, 1.6), .3, .3, bevel=.03, seg=1)
+    boom.box((.34, .4, .34), loc=(.8, -1.6, 1.8), bevel=.03, seg=1)
+    a.part('Boom_stripes', 'Hazard').limb((.2, -.05, 1.9), (-.5, 1.75, 1.84), .32, .04, bevel=0)
+    steel.box((.2, .2, .26), loc=(-.85, 2.7, 1.36), bevel=0)                                       # hook block
+    steel.box((.3, .3, .4), loc=(-.85, 2.7, 1.44), bevel=0)                                        # boom rest
+    # The cargo platform at the back, spare track links, the tow bars.
+    armor.box((1.3, 1.5, .1), loc=(.55, 2.1, 1.3), bevel=0)
+    armor.box((1.3, .08, .3), loc=(.55, 1.35, 1.44), bevel=0)                                      # platform rail
+    a.part('Track_links', 'Undercarriage').box((.9, .5, .12), loc=(.55, 2.2, 1.41), bevel=0)
+    steel.box((.1, 1.8, .1), loc=(-1.3, .5, 1.3), bevel=0)                                          # tow bar
+    a.pivot('Point_exhaust', (-1.2, 2.9, 1.1))
+    a.pivot('Point_fire', (0, 1.8, 1.3))
+    # The commander's machine-gun cupola at the front right.
+    t = a.pivot('Turret', (-.75, -1.3, 1.24))
+    a.part('Cupola', 'Team', t).cyl(.42, .3, r2=.36, loc=(0, 0, .15), seg=12, bevel=.03, bseg=1)
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.box((.14, .4, .16), loc=(0, -.1, .42), bevel=.02, seg=1)
+    gun.cyl(.05, .8, loc=(0, -.7, .42), rot=FORWARD, seg=6, bevel=0)
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.07, .1, loc=(0, -1.12, .42), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_main', (0, -1.2, .42), t)
+
+
+# ----------------------------------------------------------------------------- M113 pair (smoke, mortar)
+def _m113(a, cupola=True):
+    """The M113 hull both carriers ride, 3.9 x 2.2 m at 0.8 x: a tall aluminium box with a steep upper glacis,
+    five road wheels under the flush sides, front drive, the trim vane, the rear ramp; with cupola=True the
+    commander's machine-gun cupola (`Turret`, `Main_cannon`, `Muzzle_main`). Returns the roof height."""
+    hd.mark(a, False)
+    _lean_tracks(a, .88, 3.7, .62, .25, 5, .36, sprocket=-1, teeth=6)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    armor.prism([(-1.7, .36), (-1.9, .6), (-1.8, .74), (1.85, .74), (1.95, .5), (1.8, .36)], 1.36, bevel=.03, seg=1)
+    roof = 1.72
+    hull.prism([(-1.96, .66), (-1.98, 1.02), (-1.4, roof - .02), (1.9, roof), (1.96, .66)], 2.16, bevel=.05, seg=1)
+    armor.box((1.9, .5, .05), loc=(0, -1.96, 1.1), rot=(.5, 0, 0), bevel=0)                          # trim vane
+    armor.box((1.3, .06, 1.0), loc=(0, 1.97, .95), bevel=.02, seg=1)                                  # rear ramp
+    for s in (-1, 1):
+        _lights(a, (s * .75,), -1.99, 1.0, size=(.14, .04, .1))
+        _lights(a, (s * .85,), 1.97, 1.4, facing=1, size=(.12, .04, .08), lamp='Alloy')
+    mv._hatch(a, .6, -1.15, roof, .2, handle=False)                                                 # driver
+    a.part('Deck', 'Undercarriage').grille(.6, .5, loc=(-.55, -1.05, roof + .005), rot=(-R90, 0, 0), slats=3,
+                                           depth=.04, thickness=.04)
+    a.pivot('Point_exhaust', (-.95, -1.3, roof - .2))
+    if cupola:
+        t = a.pivot('Turret', (-.1, -.55, roof))
+        a.part('Cupola', 'Armor', t).cyl(.34, .24, r2=.3, loc=(0, 0, .12), seg=10, bevel=.03, bseg=1)
+        a.part('Gun_shield', 'Armor', t).box((.6, .06, .34), loc=(0, -.36, .42), bevel=0)
+        gun = a.part('Main_cannon', 'Steel', t)
+        gun.box((.14, .4, .14), loc=(0, -.1, .38), bevel=.02, seg=1)
+        gun.cyl(.05, .75, loc=(0, -.66, .38), rot=FORWARD, seg=6, bevel=0)
+        a.part('Muzzle_brake', 'Undercarriage', t).cyl(.07, .1, loc=(0, -1.06, .38), rot=FORWARD, seg=6, bevel=0)
+        a.pivot('Muzzle_main', (0, -1.14, .38), t)
+    return roof
+
+
+def smoke_carrier(a):
+    """Smoke generator carrier (M1059 Lynx: the M113 with the smoke generator), 3.9 x 2.2 x 2.0 m: the M113 (_m113)
+    with the big cylindrical fog-oil generator lying across the rear roof and its exhaust stack, the fuel drum
+    beside it, and a four-tube smoke-grenade launcher on each front corner. From above: a plain box, the
+    generator drum at the back (the sheet)."""
+    roof = _m113(a)
+    a.part('Generator', 'MetalSheet').cyl(.36, 1.7, loc=(0, 1.2, roof + .38), rot=ACROSS, seg=12, bevel=.03, bseg=1)
+    a.part('Generator_bands', 'Armor').cyl(.38, .08, loc=(.5, 1.2, roof + .38), rot=ACROSS, seg=12, bevel=0)
+    a.part('Generator_bands', 'Armor').cyl(.38, .08, loc=(-.5, 1.2, roof + .38), rot=ACROSS, seg=12, bevel=0)
+    a.part('Steel', 'Steel').box((.6, .5, .2), loc=(0, 1.2, roof + .06), bevel=0)                     # cradle
+    a.part('Exhaust', 'Undercarriage').cyl(.12, .5, loc=(.7, 1.75, roof + .6), rot=(-.6, 0, 0), seg=8, bevel=0)
+    a.part('Fuel', 'BarrelRed').cyl(.2, .5, loc=(-.72, 1.72, roof + .25), seg=10, bevel=.02, bseg=1)
+    for s in (-1, 1):
+        for k in range(4):
+            a.part('Smoke', 'Steel').cyl(.05, .18, loc=(s * .95, -1.35 + k * .1, roof - .12), rot=(-.6, 0, s * .5),
+                                         seg=6, bevel=0)
+    a.pivot('Point_fire', (0, 1.2, roof + .8))
+
+
+def mortar_carrier(a):
+    """Mortar carrier (M1064: the M113 with a 120 mm mortar), 3.9 x 2.2 x 2.0 m: the M113 (_m113, no cupola) with the
+    big rear roof hatch folded open to both sides and the 120 mm mortar standing up through it on its turntable
+    (`Turret`, `Mortar_tube`: it elevates, `Muzzle_main` at the mouth, 65 degrees up at rest); the commander's M2 on
+    its own mount (`Mount_mg`, `Muzzle_mg`). From above: the big roof opening and the mortar tube."""
+    roof = _m113(a, cupola=False)
+    dark = a.part('Hatch_well', 'Undercarriage')
+    dark.box((1.5, 1.6, .04), loc=(0, .85, roof + .002), bevel=0)                                    # the opening
+    for s in (-1, 1):
+        a.part('Hatch_lids', 'Team').box((.06, 1.5, .72), loc=(s * 1.12, .85, roof + .02), bevel=.01, seg=1)
+        a.part('Armor', 'Armor').box((.08, 1.6, .1), loc=(s * .8, .85, roof + .05), bevel=0)         # coaming
+    mv._roof_mg(a, None, (.55, -.9, roof), length=.75, shield=True)
+    a.pivot('Point_fire', (0, .85, roof))
+    t = a.pivot('Turret', (0, .85, .85))
+    a.part('Turret_steel', 'Steel', t).cyl(.5, .1, loc=(0, 0, .05), seg=12, bevel=0)                 # turntable
+    a.part('Turret_armor', 'Armor', t).box((.5, .5, .3), loc=(0, .1, .25), bevel=.03, seg=1)        # base plate
+    ang = math.radians(65)
+    axis = Vector((0, -math.cos(ang), math.sin(ang)))
+    base = Vector((0, .15, .35))
+    length = 2.1
+    a.part('Mortar_tube', 'Steel', t).cyl(.13, length, loc=tuple(base + axis * length / 2), rot=(R90 - ang, 0, 0),
+                                          seg=10, bevel=0)
+    a.part('Mortar_tube_ring', 'Armor', t).cyl(.16, .1, loc=tuple(base + axis * (length - .05)),
+                                               rot=(R90 - ang, 0, 0), seg=10, bevel=0)
+    a.part('Sight', 'Glass', t).box((.1, .14, .1), loc=(.2, -.3, 1.0), bevel=0)
+    a.part('Turret_armor', 'Armor', t).limb((0, .1, .4), tuple(base + axis * .9), .08, .08, bevel=0)  # bipod
+    a.pivot('Muzzle_main', tuple(base + axis * (length + .05)), t)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -1054,4 +1246,8 @@ BUILDERS = {
     'ifv': (ifv, dict(ao_distance=.55, grime_height=.5)),
     'light_tank': (light_tank, dict(ao_distance=.55, grime_height=.5)),
     'aa_vehicle': (aa_vehicle, dict(ao_distance=.55, grime_height=.5)),
+    'hover_gunboat': (hover_gunboat, dict(ao_distance=.7, grime_height=.3)),
+    'engineer_vehicle': (engineer_vehicle, dict(ao_distance=.55, grime_height=.5)),
+    'smoke_carrier': (smoke_carrier, dict(ao_distance=.45, grime_height=.45)),
+    'mortar_carrier': (mortar_carrier, dict(ao_distance=.45, grime_height=.45)),
 }
