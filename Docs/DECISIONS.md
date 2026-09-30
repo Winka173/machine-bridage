@@ -11775,3 +11775,54 @@ document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its P
   (health after toughness, radians against degrees) are said once, not listed.
 - **Re-running.** `report_summary.py` rewrites its block only; `import_xlsx.py` rewrites its steps and summary only, and
   its summary leaves marked blocks out, so the two can run in any order.
+
+### F1 The applied spreadsheet (`Tools/balance/export_applied_xlsx.py`)
+
+- **What it writes.** `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`: the owner's workbook with a green "Hiện tại"
+  column right after each proposed value (57 columns over 21 sheets), holding the game's number after prompt 25, and a
+  first sheet "Ghi chú áp dụng" that says what the columns are, where the numbers come from and how they are computed
+  (in Vietnamese, like the workbook). The two text sheets, "Thay đổi chi tiết" and "Kiểm tra từng mục", also get a
+  "Kết quả áp" column: each row's outcome in the apply report (applied, already so, waiting, skipped, with the task and
+  the detail). The workbook's own "... hiện" columns are the numbers before prompt 25; the notes sheet says so.
+- **From the data only**, with no game run: balance.json (weapons through their inherits and families, vehicles, the
+  bosses as the loader builds them (`steps_c.expand`), supports, the damage table), campaign.json (the mission that
+  unlocks each card), Progression.cs (starters, early prices, story loot), the Hud text tables (names) and
+  `Docs/backlog/new_content.json` (the five new-content sheets get each item's status and plan). The reports' readers
+  are reused (`import_xlsx.Game` and `cadence`, `import_unlocks`, `steps_c.boss_dps`, `report_summary`).
+- **In the sheet's terms.** The fire mode, rate, rounds a magazine or burst and rest are A2's mapping read backwards (a
+  magazine's change and a burst's cooldown are the rest plus one gap); the sustained DPS is the sheet's formula on the
+  game's numbers; health is shown as the sheet shows it (x2.2 for vehicles, x0.85 and a mini's x0.55 for bosses); a
+  boss's summed DPS takes its `weaponDamage`; death blasts after the vehicles' firepower (x2); support-card damage after
+  the strikes' (x2).
+- **Where "Hiện tại" differs from the proposal**, it is the data after a decision (the families, the 3 % cadence rule,
+  the names' glossary, the swapped weapons) or the game's rules, which prompt 15 set and which the sheet's formulas
+  simplify: a weapon that cannot aim at aircraft or at the ground is 0 there (the sheet computes every column for every
+  weapon), a round that strikes the roof never overmatches (the SP gun's 155 mm on armour 1 is x1.0, not x1.2),
+  thermobaric high explosive is x2 on structures, and a unit's sum includes the weapons the sheet's notes added, which
+  have no row of their own.
+- **Values, not formulas.** The copy is read with openpyxl's `data_only`: every formula becomes the value it computed,
+  since inserted columns would leave a formula's references pointing elsewhere (the owner's file keeps its formulas).
+  Styles, widths, row heights, frozen panes and filters are kept; the workbook has no charts, images, validations or
+  conditional formats to lose.
+
+### To run in the test phase (to fill the "to measure" cells)
+
+1. `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1 MB_CV_TAG=p25_after MB_CV_OUT=Docs/balance`
+   (`MB_CV_SEEDS=13,14,15,16,17` for E1's five seeds): writes `combat_value_p25_after.tsv`, `_summary.tsv` (with E2's
+   columns) and `_support.tsv`. Table 9b and its support sub-table read them; `MeasureTheSupportVehicles` alone fills E2.
+2. `python Tools/balance/report_summary.py`: the by-role table's "after" column from `p25_after`.
+3. The export (`ExportGameDoc`, `MB_EXPORT=<path>`) and `Tools/docs/build_doc.py` (the lead, once prompt 25 is in):
+   sections 8b and 10e and table 9b from the new export.
+4. `python Tools/balance/export_applied_xlsx.py` again after any data change of the test phase.
+
+### Shared edits (merge by hand if they conflict)
+
+- `Tools/docs/programme.py` (table 9b, one function, and an import), `Tools/docs/build_doc.py` (three lines: the import,
+  sections 8b and 10e, the contents line).
+- `Assets/MachineBrigade/Tests/EditMode/CombatValueMeasure.cs` (partial class, `MeasureTheRoster`, `Summary`) and
+  `ExportGameDoc.cs` (new fields, four helpers).
+- `Docs/balance/apply-report.md` (two new blocks after the summary), `Docs/DECISIONS.md` (this section, at the end),
+  `Docs/CHANGELOG.md` (the first block under Unreleased).
+- New files: `CombatValueMeasure.Support.cs`, `Tools/docs/prompt25.py`, `Tools/docs/unit_sheet.py` and `.json`,
+  `Tools/balance/report_summary.py`, `Tools/balance/export_applied_xlsx.py`,
+  `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`.

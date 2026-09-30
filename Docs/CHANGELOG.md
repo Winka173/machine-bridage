@@ -20,6 +20,8 @@ its commits.
 - `Docs/balance/apply-report.md` is finished: rows by task and by sheet for all 28 sheets, the combat value by role
   before and after ("to measure" until the test phase runs it) and the 33 places where the game differs from the
   spreadsheet, with the reason.
+- `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`: the balance spreadsheet with a "Hiện tại" column beside each
+  proposed value, filled with the game's numbers after prompt 25 (`Tools/balance/export_applied_xlsx.py`).
 
 ### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
 
