@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 16,
-    "xong": 11
+    "đang làm": 15,
+    "xong": 12
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 12,
-      "xong": 11
+      "đang làm": 11,
+      "xong": 12
     },
     "structure": {
       "chưa làm": 0,
@@ -229,8 +229,8 @@
       "group": "Máy bay",
       "priority": "Trung",
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "glide_bomber",
       "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {

@@ -2517,6 +2517,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.sp_mortar"] = ("Turreted SP mortar", "Cối tự hành tháp kín"),
             ["short.sp_mortar"] = ("Turret mortar", "Cối tháp kín"),
             ["note.sp_mortar"] = ("A Patria AMOS-type twin 120 mm mortar turret on an 8x8 (the 2S31 Vena is its tracked cousin): four bombs that land together.", "Tháp cối đôi 120 mm kiểu Patria AMOS trên xe 8x8 (2S31 Vena là bản bánh xích): bốn quả đạn rơi xuống cùng lúc."),
+            // dx14: Máy bay ném bom lượn tầm xa.
+            ["unit.glide_bomber"] = ("Long-range glide bomber", "Máy bay ném bom lượn tầm xa"),
+            ["short.glide_bomber"] = ("Glide bomber", "Ném bom lượn"),
+            ["note.glide_bomber"] = ("A Su-34 with FAB-500 bombs on UMPK glide kits: it drops from far outside the target's short-range air defence.", "Su-34 mang bom FAB-500 gắn bộ lượn UMPK: thả bom từ rất xa, ngoài tầm phòng không tầm gần của mục tiêu."),
             // (batch A: new entries above)
         };
 

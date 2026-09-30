@@ -489,6 +489,8 @@
     { "id": "caesar_155", "real": "155 mm L/52 (CAESAR)", "family": "howitzer", "size": 155, "pen": 3, "damageType": "HighExplosive", "damage": 320, "burst": 4, "burstInterval": 2, "cooldown": 25, "range": 90, "minRange": 25, "projectileSpeed": 45, "splash": 7, "spread": 5, "impactTier": "Large", "projectileModel": "shell_155", "roundLength": 0.8, "projectileScale": 0.7273 },
     // dx12: the twin 120 mm AMOS turret: four rounds that land at the same moment (MRSI), then 10 s.
     { "id": "amos_120", "real": "120 mm AMOS (twin)", "family": "mortar", "size": 120, "pen": 2, "damageType": "HighExplosive", "damage": 150, "burst": 4, "burstInterval": 0.25, "cooldown": 10, "range": 60, "minRange": 10, "projectileSpeed": 32, "splash": 5, "spread": 4.5, "impactTier": "Large", "projectileModel": "mortar_bomb", "mrsi": true },
+    // dx14: FAB-500 bombs with UMPK glide kits: released 90 m out, gliding at 20 m/s onto the target; point defences can take them.
+    { "id": "glide_fab500", "load": 2, "real": "FAB-500 M-62 with UMPK glide kit", "family": "bomb", "size": 500, "pen": 3, "form": "GuidedBomb", "projectileModel": "bomb", "projectileScale": 0.7324, "roundLength": 1.2, "damageType": "HighExplosive", "damage": 420, "cooldown": 3, "range": 90, "projectileSpeed": 20, "splash": 10, "spread": 1.5, "impactTier": "Huge", "projectile": "Bomb", "guided": true, "glides": true },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -1034,6 +1036,10 @@
     { "id": "sp_mortar", "modelSize": [6.3, 2.3, 2.5], "class": "Artillery", "armour": 2, "hp": 545, "speed": 8, "turnRate": 80, "turretTurnRate": 60, "radius": 2.1, "length": 6.3, "width": 2.3, "cp": 5, "vision": 26,
       "firesWhileMoving": false, "weapon": "amos_120", "secondary": [ { "weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 70, "radius": 8, "delay": 0.25, "tier": "Large" } },
+    // dx14: the long-range glide bomber (a Su-34 with UMPK bombs): it releases from 90 m and turns away, never over its target.
+    { "id": "glide_bomber", "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1000, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 16, "vision": 50,
+      "firesWhileMoving": true, "weapon": "glide_fab500", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
+      "skills": ["bomber_flares"], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

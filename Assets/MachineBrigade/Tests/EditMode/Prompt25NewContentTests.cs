@@ -57,6 +57,7 @@ namespace MachineBrigade.Tests
             new Row("airborne_vehicle", 1100, 6, 1, -1, "gun_100_2a70", -1, -1, -1, "paradrop"),
             new Row("wheeled_howitzer", 700, 6, 0, -1, "caesar_155", 320, 90, 41.3f, "scoot"),
             new Row("sp_mortar", 1200, 5, 2, -1, "amos_120", 150, 60, -1, "mrsi"),
+            new Row("glide_bomber", 2200, 16, 1, -1, "glide_fab500", 420, 90, -1, "glide"),
             // (batch A rows: new ones above)
         };
 

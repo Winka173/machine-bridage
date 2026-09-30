@@ -861,6 +861,7 @@ namespace MachineBrigade.Game.Hud
             "airborne_vehicle" => "ifv",
             "wheeled_howitzer" => "artillery",
             "sp_mortar" => "mortar",
+            "glide_bomber" => "b52",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",

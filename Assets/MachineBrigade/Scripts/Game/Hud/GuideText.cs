@@ -1359,6 +1359,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bốn quả cối 120 mm, tầm 60 m, [[rơi xuống cùng lúc]], rồi nghỉ 10 giây.\n" +
                 "Mạnh / yếu: nghiền một cụm quân trước khi kịp tản ra; áp sát thì thua xe tăng.\n" +
                 "Mẹo: nhắm vào các cụm quân trinh sát tìm thấy."),
+            ["guide.glide_bomber"] = (
+                "[[Long-range glide bomber]] · light armour · bombs from far off\n" +
+                "How it fights: releases a [[glide bomb]] from 90 m and turns away; the bomb glides onto the target at 20 m/s.\n" +
+                "Strong / weak: hits towers and groups outside short-range AA; point defences can shoot the bombs down.\n" +
+                "Tip: send it at fixed defences, with fighters over it.",
+                "[[Máy bay ném bom lượn tầm xa]] · giáp nhẹ · ném bom từ xa\n" +
+                "Cách đánh: thả [[bom lượn]] từ cách 90 m rồi quay đi; bom lượn 20 m/s xuống mục tiêu.\n" +
+                "Mạnh / yếu: đánh tháp và cụm quân ngoài tầm phòng không gần; hệ đánh chặn bắn hạ được bom.\n" +
+                "Mẹo: tung vào công sự cố định, có tiêm kích che."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
