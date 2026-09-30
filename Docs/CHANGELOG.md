@@ -7,6 +7,13 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Gear menu fix (play-test 10, DECISIONS "PT10 gear menu")
+
+- Army > Equipment: a picked piece's card, names and buttons (equip, level up, merge) stay pinned at the top of the right
+  panel; its long lines and the piece list scroll together under them. A long piece no longer pushes its equip button and
+  the list off the panel, so equipping works again and the list scrolls by wheel, mouse drag and touch.
+- New screenshot and layout-check screen `army-gear-picked` (the Equipment tab with a piece picked).
+
 ### New content, batch A (prompt 25 F2, DECISIONS 25F2-A)
 
 - 27 new cards from the balance spreadsheet, each sold in the shop (1,500-5,000 coins) and fielded by the enemy too:

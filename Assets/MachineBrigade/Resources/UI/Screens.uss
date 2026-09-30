@@ -255,9 +255,13 @@
 .fc-army__grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
 .fc-army__gear { position: absolute; left: 0; top: var(--fc-tab); right: 0; bottom: 0; flex-direction: row; }
 .fc-army__gear-left { flex-grow: 1; flex-shrink: 1; }
-.fc-army__gear-right { width: 520px; flex-shrink: 0; margin: var(--fc-space-3) var(--fc-space-4); padding: var(--fc-space-3); }
+/* Play-test 10: the pinned head (card, names, buttons) never shrinks; the scroll view under it (the piece's lines, then the
+   list) takes the rest and can shrink to it, with a floor so a list is always there to drag. The panel clips, so nothing
+   that spills past it is drawn or picked outside it. */
+.fc-army__gear-right { width: 520px; flex-shrink: 0; margin: var(--fc-space-3) var(--fc-space-4); padding: var(--fc-space-3); overflow: hidden; }
 .fc-army__gear-info { flex-shrink: 0; margin-bottom: var(--fc-space-3); }
-.fc-army__gear-list { flex-grow: 1; flex-shrink: 1; }
+.fc-army__gear-list { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-height: 160px; }
+.fc-army__gear-details { margin-bottom: var(--fc-space-3); }
 .fc-army__slots { margin-top: var(--fc-space-3); }
 .fc-army__slot { margin-right: var(--fc-space-1); }
 .fc-army__slot > .fc-caption { margin-bottom: var(--fc-space-1); }

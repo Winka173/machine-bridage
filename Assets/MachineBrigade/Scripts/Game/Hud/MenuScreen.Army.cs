@@ -50,7 +50,7 @@ namespace MachineBrigade.Game.Hud
             Name,
         }
 
-        private VisualElement _deckView, _gearView, _deckRow, _deckOverview, _collection, _gearSlots, _gearList, _gearInfo, _towersView, _towersBody;
+        private VisualElement _deckView, _gearView, _deckRow, _deckOverview, _collection, _gearSlots, _gearList, _gearInfo, _gearDetails, _towersView, _towersBody;
         private KitTabs _armyTabs;
         private KitSortButton _sortButton;
         private readonly List<(KitChip chip, CardFilter filter)> _filterChips = new();
@@ -131,11 +131,17 @@ namespace MachineBrigade.Game.Hud
             left.Add(_gearSlots);
             gearLeft.Add(left);
             _gearView.Add(gearLeft);
+            // Play-test 10 (DECISIONS "PT10 gear menu"): the picked piece's head and its buttons stay pinned at the top;
+            // its long lines and the list share one scroll view under them. The whole piece's page used to sit above
+            // the list unscrolled, so a long one pushed its buttons and the list off the panel.
             var gearRight = Kit.Box(KitPanel.SurfaceClass + " fc-army__gear-right", PickingMode.Position);
             _gearInfo = Kit.Box("fc-army__gear-info");
             gearRight.Add(_gearInfo);
             var listScroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-army__gear-list");
-            _gearList = listScroll.contentContainer;
+            _gearDetails = Kit.Box("fc-army__gear-details");
+            listScroll.Add(_gearDetails);
+            _gearList = Kit.Box("fc-army__gear-items");
+            listScroll.Add(_gearList);
             gearRight.Add(listScroll);
             _gearView.Add(gearRight);
             page.Add(_gearView);
@@ -479,10 +485,14 @@ namespace MachineBrigade.Game.Hud
             _gearList.Add(grid);
         }
 
-        /// <summary>The picked piece: its lines against the worn one, and what can be done with it.</summary>
+        /// <summary>
+        /// The picked piece: pinned, its card, names and what can be done with it; in the scroll view above the list,
+        /// its lines against the worn one.
+        /// </summary>
         private void GearInfo()
         {
             _gearInfo.Clear();
+            _gearDetails.Clear();
             var item = _gearSelected != null ? PlayerProfile.FindGear(_gearSelected.id) : null;
             if (item == null)
             {
@@ -504,15 +514,16 @@ namespace MachineBrigade.Game.Hud
             head.Add(names);
             _gearInfo.Add(head);
             var current = PlayerProfile.Equipped(_branch, item.Slot);
+            var fits = Gear.FitsBranch(item, _branch);
             if (current != null && current != item)
             {
-                _gearInfo.Add(Kit.Text(Kit.Caps(Strings.Get("kit.preview.compare")), "fc-caption fc-mt-2"));
-                _gearInfo.Add(new KitCompareRow(GearText.SlotName(item.Slot), StatText(current), StatText(item),
+                _gearDetails.Add(Kit.Text(Kit.Caps(Strings.Get("kit.preview.compare")), "fc-caption"));
+                _gearDetails.Add(new KitCompareRow(GearText.SlotName(item.Slot), StatText(current), StatText(item),
                     Math.Sign(Gear.Value(item) - Gear.Value(current))));
             }
-            _gearInfo.Add(GearLines(item));
-            var fits = Gear.FitsBranch(item, _branch);
-            _gearInfo.Add(Kit.Text(GearText.FitLine(item), fits ? "fc-small" : "fc-small fc-danger-text"));
+            _gearDetails.Add(GearLines(item));
+            _gearDetails.Add(Kit.Text(GearText.FitLine(item), fits ? "fc-small" : "fc-small fc-danger-text"));
+            // The buttons under the names, beside the card, so they are always on screen.
             var actions = Kit.Box("fc-row fc-row--wrap fc-mt-2 fc-gap-2");
             var equipped = current == item;
             var equip = new KitButton(ButtonTier.Secondary, Strings.Get(equipped ? "gear.unequip" : "gear.equipShort"), () =>
@@ -546,7 +557,7 @@ namespace MachineBrigade.Game.Hud
                     }
                     Refresh();
                 }, "upgrade"));
-            _gearInfo.Add(actions);
+            names.Add(actions);
         }
 
         /// <summary>A piece's main effect in a few characters: "+8% dmg", "-5% taken", "Smoke 8 m", or a module's name.</summary>

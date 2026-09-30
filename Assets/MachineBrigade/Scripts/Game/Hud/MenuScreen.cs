@@ -624,7 +624,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "dossier-intel", "comic", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "dossier-intel", "comic", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-gear-picked", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
             "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
             // Prompt 22 F.4: the commander picker and the dossier's commander pages.
@@ -687,6 +687,13 @@ namespace MachineBrigade.Game.Hud
                         "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
                         _ => ArmyView.Base,
                     };
+                    ShowTab(Tab.Army);
+                    break;
+                case "army-gear-picked":
+                    // Play-test 10: the Equipment tab with a piece picked (its lines, the equip button, the list under them).
+                    _armyView = ArmyView.Equipment;
+                    _gearSelected = PlayerProfile.VehicleGearOwned.FirstOrDefault(g => Gear.FitsBranch(g, _branch) && !PlayerProfile.IsEquipped(g))
+                                    ?? PlayerProfile.VehicleGearOwned.FirstOrDefault();
                     ShowTab(Tab.Army);
                     break;
                 case "army-deck-supports":
