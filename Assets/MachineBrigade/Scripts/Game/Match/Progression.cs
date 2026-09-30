@@ -130,6 +130,7 @@ namespace MachineBrigade.Game.Match
             ["radar_scout"] = 1500,
             ["blast_wall"] = 2000,
             ["inflatable_decoy"] = 2000,
+            ["fire_control_centre"] = 3000,
             // (batch A: new entries above)
         };
 

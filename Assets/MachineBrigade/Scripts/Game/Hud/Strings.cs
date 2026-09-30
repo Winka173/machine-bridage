@@ -2541,6 +2541,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.inflatable_decoy"] = ("Inflatable decoy", "Mồi nhử bơm hơi"),
             ["short.inflatable_decoy"] = ("Decoy", "Mồi nhử"),
             ["note.inflatable_decoy"] = ("An inflatable gun turret of the kind used in the war in Ukraine: cheap, flimsy, and taken for the real thing by the enemy.", "Tháp pháo bơm hơi như loại dùng trong chiến sự Ukraine: rẻ, mỏng manh, địch tưởng là thật."),
+            // dx27: Trung tâm điều khiển hỏa lực.
+            ["unit.fire_control_centre"] = ("Fire-control centre", "Trung tâm điều khiển hỏa lực"),
+            ["short.fire_control_centre"] = ("Fire control", "TT hỏa lực"),
+            ["note.fire_control_centre"] = ("A fire-direction centre (FDC): shelters, a mast and radios that tie the base's towers into one battery.", "Trung tâm điều khiển hỏa lực (FDC): nhà chứa, cột ăng-ten và điện đài liên kết các tháp của căn cứ thành một khẩu đội."),
             // (batch A: new entries above)
         };
 

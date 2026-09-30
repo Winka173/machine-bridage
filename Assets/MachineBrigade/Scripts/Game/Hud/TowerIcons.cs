@@ -50,6 +50,7 @@ namespace MachineBrigade.Game.Hud
                 "at_gun_emplacement" => "t_atgun",
                 "blast_wall" => "t_wall",
                 "inflatable_decoy" => "t_decoy",
+                "fire_control_centre" => "t_firecontrol",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",

@@ -1413,6 +1413,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: trông như [[tháp pháo]]; địch bắn vào nó cho tới khi trinh sát, radar, drone hoặc UAV quét lật tẩy.\n" +
                 "Mạnh / yếu: làm địch phí đạn pháo và tên lửa; gần như không có máu.\n" +
                 "Mẹo: đặt nơi loạt pháo đầu tiên sẽ rơi."),
+            ["guide.fire_control_centre"] = (
+                "[[Fire-control centre]] · utility module · links the towers\n" +
+                "How it fights: towers within 30 m hit [[12 % harder]] and gang up on one target.\n" +
+                "Strong / weak: turns a tower cluster into one block; useless for towers spread thin.\n" +
+                "Tip: put your best guns within its 30 m.",
+                "[[Trung tâm điều khiển hỏa lực]] · mô-đun tiện ích · liên kết tháp\n" +
+                "Cách đánh: tháp trong 30 m gây thêm [[12%]] sát thương và dồn hỏa lực vào một mục tiêu.\n" +
+                "Mạnh / yếu: biến cụm tháp thành một khối; vô dụng khi tháp đặt thưa.\n" +
+                "Mẹo: đặt các khẩu mạnh nhất trong vòng 30 m."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

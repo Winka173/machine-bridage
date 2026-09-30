@@ -58,20 +58,20 @@
     "ai": {
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
-        "default": { "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
+        "default": { "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
                      "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
-        "armour": { "inflatable_decoy": 0.6, "blast_wall": 0.8, "at_gun_emplacement": 1.6, "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
-        "artillery": { "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
-        "air": { "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
+        "armour": { "fire_control_centre": 1.0, "inflatable_decoy": 0.6, "blast_wall": 0.8, "at_gun_emplacement": 1.6, "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
+        "artillery": { "fire_control_centre": 1.0, "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
+        "air": { "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
         // A "tower.branch" weight is the general's taste in rank-7 branches (the tower-branch rework, DECISIONS 19T).
         // The enemy generals (prompt 4): Varga anti-tank, Orlov artillery, Kessler an even spread,
         // Dr Sen drones, Quạ Đen anti-air, Aurel everything strong.
-        "varga": { "at_gun_emplacement": 1.4, "gun_turret.long": 1.3, "atgm_tower.top": 1.3, "atgm_tower": 2.4, "gun_turret": 1.8, "heavy_turret": 1.6, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6 },
-        "orlov": { "artillery_emplacement.cb": 1.3, "rocket_turret.guided": 1.3, "artillery_emplacement": 2.6, "rocket_turret": 1.8, "guard_tower": 1.2, "gun_turret": 0.8, "aa_turret": 0.8 },
+        "varga": { "fire_control_centre": 1.0, "at_gun_emplacement": 1.4, "gun_turret.long": 1.3, "atgm_tower.top": 1.3, "atgm_tower": 2.4, "gun_turret": 1.8, "heavy_turret": 1.6, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6 },
+        "orlov": { "fire_control_centre": 1.2, "artillery_emplacement.cb": 1.3, "rocket_turret.guided": 1.3, "artillery_emplacement": 2.6, "rocket_turret": 1.8, "guard_tower": 1.2, "gun_turret": 0.8, "aa_turret": 0.8 },
         "kessler": { "inflatable_decoy": 0.6, "*": 1.0 },
         "sen": { "drone_hangar.swarm": 1.3, "ew_tower.drone": 1.3, "drone_hangar": 2.6, "ew_tower": 1.6, "c_ram": 1.2, "guard_tower": 1.0, "aa_turret": 1.0, "gun_turret": 0.8 },
         "quaden": { "heavy_flak_tower": 2.0, "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
-        "aurel": { "inflatable_decoy": 0.4, "blast_wall": 1.0, "at_gun_emplacement": 0.8, "heavy_flak_tower": 1.0, "missile_battery.pac3": 1.3, "shield_tower.bulwark": 1.2, "heavy_turret.bastion": 1.2, "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
+        "aurel": { "fire_control_centre": 1.2, "inflatable_decoy": 0.4, "blast_wall": 1.0, "at_gun_emplacement": 0.8, "heavy_flak_tower": 1.0, "missile_battery.pac3": 1.3, "shield_tower.bulwark": 1.2, "heavy_turret.bastion": 1.2, "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
       }
     }
   },
@@ -1060,6 +1060,9 @@
     // dx26: the inflatable decoy: it passes for a gun turret and draws the enemy's fire until one of their scouts, radars, drones or scans sees it for what it is.
     { "id": "inflatable_decoy", "modelSize": [5.0, 4.6, 2.6], "fort": { "size": "Small" }, "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.3, "length": 4.6, "width": 4.6, "cp": 0, "vision": 1,
       "weapon": "none", "decoy": { "mimic": "gun_turret" } },
+    // dx27: the fire-control centre (a utility module): its side's towers within 30 m hit 12 % harder and gang up on one target.
+    { "id": "fire_control_centre", "modelSize": [6.0, 6.0, 5.5], "fort": { "size": "Medium", "kind": "Utility" }, "static": true, "armour": 1, "hp": 1136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3, "length": 6, "width": 6, "cp": 0, "vision": 40,
+      "weapon": "none", "fireControl": { "radius": 30, "damage": 0.12, "focus": 2 }, "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
