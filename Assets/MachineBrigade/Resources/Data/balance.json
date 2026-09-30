@@ -1063,7 +1063,7 @@
       "stillVision": 80, "stillAfter": 2, "stillCamo": 0.6, "firesWhileMoving": true, "weapon": "hmg_selfdef_21", "mainSlot": "mg", "captureRate": 2,
       "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     // dx25: the gabion blast wall (Hesco): no route blocked; its side's towers up to 10 m behind it take 30 % less direct fire.
-    { "id": "blast_wall", "modelSize": [4.8, 1.9, 2.4], "fort": { "size": "Small" }, "static": true, "passable": true, "armour": 3, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "length": 4.8, "width": 1.9, "cp": 0, "vision": 1,
+    { "id": "blast_wall", "modelSize": [1.9, 4.8, 2.4], "fort": { "size": "Small" }, "static": true, "passable": true, "armour": 3, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "length": 1.9, "width": 4.8, "cp": 0, "vision": 1,
       "weapon": "none", "blastWall": { "radius": 10, "cut": 0.3, "cone": 50 } },
     // dx26: the inflatable decoy: it passes for a gun turret and draws the enemy's fire until one of their scouts, radars, drones or scans sees it for what it is.
     { "id": "inflatable_decoy", "modelSize": [5.0, 4.6, 2.6], "fort": { "size": "Small" }, "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.3, "length": 4.6, "width": 4.6, "cp": 0, "vision": 1,
