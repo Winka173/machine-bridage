@@ -173,3 +173,9 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 11:17) dùng Machine_Brigade_Can_bang.xlsx, chạy luôn prompt 25, skip prompt 24 tạm thời  [Docs/prompts/prompt25_vi.txt, Docs/balance/]
 - (30/09 16:04) tiếp tục, giới hạn chỉ 1 agent, đây là prompt 26 và 27, lưu vào nhưng chưa làm đợi tôi nói  [prompt 27 lưu ở Docs/prompts/prompt27_vi.txt; prompt 26 chưa nhận được (khối dán đầu là đoạn giải thích của lead)]
 - (30/09 16:06) đây là prompt 26, coi có thiếu prompt nào không  [lưu Docs/prompts/prompt26_vi.txt, chờ; đủ prompt 0-27]
+
+## Play-test 10, 30/09 (agent hình ảnh: in-action và flak; agent giao diện: menu gắn đồ)
+
+- (30/09 23:58) khi coi in action preview. sao tất cả các xe dính hiệu ứng có gì trắng trắng chớp chớp và bốc khói mặc dù không hề bị sát thương
+- (30/09 23:58) đạn flag hiệu ứng có vẻ khác ngoài đời, tham khảo lại
+- (30/09 23:58) menu gắn đồ cho phương tiện bug không gắn được, không click được nút gắn và không kéo xuống được
