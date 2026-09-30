@@ -405,11 +405,6 @@ namespace MachineBrigade.Sim
             // Prompt 22 F: the side's commander on top, through the loadout's caps.
             boost = CommanderBoost(team, def, boost);
             if (boost is { } upgrade) Upgrade(vehicle, upgrade);
-            if (Economy.TryGet(team, out var economy) && economy.Doctrine is { } doctrine && !def.Boss && !def.Static)
-            {
-                vehicle.HpScale = doctrine.Toughness(def.Class) * vehicle.BoostHp;
-                vehicle.DoctrineSpeed = doctrine.Speed * vehicle.BoostSpeed;
-            }
             // A mutator's change to a side's strength (the Operations mode's weekly twists).
             if (team >= 0 && team < _mutators.Length && _mutators[team] is { } mutate)
             {
@@ -483,7 +478,7 @@ namespace MachineBrigade.Sim
             v.BoostHp = b.Hp;
             v.BoostSpeed = b.Speed;
             v.HpScale = b.Hp;
-            v.DoctrineSpeed = b.Speed;
+            v.SpeedScale = b.Speed;
             v.DamageBoost = b.Damage;
             v.FireBoost = b.FireRate;
             v.DamageTaken = b.DamageTaken;
@@ -507,24 +502,6 @@ namespace MachineBrigade.Sim
             // Stat lines, tuned weapons, traits and the other modules.
             Gear.Equip(v, b);
             v.RefillMagazines();
-        }
-
-        /// <summary>
-        /// Gives a side its doctrine for the battle; vehicles already on the field are toughened
-        /// (or sped up) in place, keeping their share of health.
-        /// </summary>
-        public void SetDoctrine(int team, Doctrine? doctrine)
-        {
-            if (!Economy.TryGet(team, out var economy)) return;
-            economy.Doctrine = doctrine;
-            foreach (var v in _vehicleList)
-            {
-                if (!v.IsAlive || v.Team != team || v.Def.Boss || v.Def.Static) continue;
-                var share = v.Hp / v.MaxHp;
-                v.HpScale = (doctrine?.Toughness(v.Def.Class) ?? 1f) * v.BoostHp;
-                v.DoctrineSpeed = (doctrine?.Speed ?? 1f) * v.BoostSpeed;
-                v.Hp = v.MaxHp * share;
-            }
         }
 
         /// <summary>

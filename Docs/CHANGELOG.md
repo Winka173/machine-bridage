@@ -7,6 +7,31 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+## v0.32.0: Doctrines folded into the commanders, the owner's answer on the bombs
+
+2026-09-30 · merged into main
+
+Main merges on feature/visual-overhaul since v0.31.0 (newest first): 2c387bb design review PDF after the fold; fd55169 the
+doctrines folded into the commanders (one choice before a battle, bought doctrines refunded, DECISIONS 23D); 3043b0c the owner
+keeps the bombs' fall and the heavy bomber's gap.
+
+
+### Doctrines folded into commanders (DECISIONS 23D)
+
+- The commander is now the only choice before a battle. The doctrine picker on the deck page and the doctrine tiles in
+  the shop are gone, and neither your side nor the enemy takes a doctrine any more.
+- Each doctrine's edge is now part of the commander whose style it suited. Where that commander already had the same
+  bonus, the two are one number, not added:
+  - Crown: tanks, heavy vehicles and vehicles of 9 CP or more +20 % health (was +15 % on the dear ones only); +15 %
+    damage on the dear ones as before.
+  - Hawk: aircraft also +20 % health, and fire support recharges 15 % faster.
+  - Longshot: artillery also +25 % health, and fire support recharges 25 % faster.
+  - Rush: vehicles +15 % speed (was +10 %); scouts and light vehicles +15 % health.
+  - Ledger: all income +15 % (was +10 %) and supply +10 %.
+- Old saves: every doctrine you bought is refunded, 1,500 coins each, once, and the menu tells you how much came back.
+  The free Armoured fist refunds nothing.
+- The design review PDF no longer lists a doctrine price; its commander section shows the new numbers.
+
 ## v0.31.0: Prompt 23 (mission events and in-battle text dialogue) and the 264-page design review
 
 2026-09-30 · merged into main

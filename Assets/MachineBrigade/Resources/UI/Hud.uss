@@ -1222,15 +1222,6 @@
 .deck-summary { flex-grow: 1; flex-shrink: 1; margin-left: 10px; }
 .deck-summary-text { -unity-font: resource("Fonts/BeVietnamPro-SemiBold"); font-size: 13px; color: var(--n200); white-space: normal; }
 .deck-warnings { -unity-font: resource("Fonts/BeVietnamPro-Bold"); font-size: 13px; color: var(--amber-light); white-space: normal; margin-top: 3px; }
-.doctrine-chips { flex-direction: row; margin-top: 6px; }
-.doctrine-chip {
-    width: 56px; height: 48px; margin-right: 6px; align-items: center; justify-content: center;
-    background-color: var(--n700); border-radius: 10px; border-bottom-width: 3px; border-bottom-color: var(--n950);
-}
-.doctrine-chip .icon { width: 26px; height: 26px; }
-.doctrine-chip.chosen { background-color: var(--amber); border-bottom-color: var(--amber-deep); }
-.doctrine-chip.chosen .icon { --icon-color: #1b1206; }
-.doctrine-chip.pressed { translate: 0 2px; }
 .army-filters { flex-direction: row; flex-shrink: 0; }
 .army-scroll { flex-grow: 1; }
 .collection-grid { flex-direction: row; flex-wrap: wrap; }
@@ -1590,7 +1581,7 @@
 
 /* --- reset: no gloss, no lips, square corners, a press that scales ---------------------------------------------- */
 .menu .wide, .menu .segment, .menu .option, .menu .rail-button, .menu .gear-branch, .menu .setup-mode, .menu .deploy-button,
-.menu .event-play, .menu .event-claim, .menu .upgrade-big, .menu .crate-button, .menu .doctrine-chip, .menu .nav-back,
+.menu .event-play, .menu .event-claim, .menu .upgrade-big, .menu .crate-button, .menu .nav-back,
 .menu .nav-icon, .menu .crate-odds, .menu .daily-claim, .menu .home-card-go, .menu .nav-tab, .menu .icon-button,
 .menu .nav-pill-plus, .menu .detail-arrow, .menu .home-card, .menu .deck-slot, .menu .unit-card-big, .menu .gear-slot2,
 .menu .map-card, .menu .shop-card, .menu .setting-row, .menu .mission-row, .menu .tier-chip, .menu .card, .menu .nav-pill,
@@ -1747,20 +1738,20 @@
 .menu .icon-button.pressed, .menu .detail-arrow.pressed, .menu .crate-odds.pressed { background-color: var(--surface-3); }
 
 /* --- tabs, segments, options: a 3 px amber line marks the choice ------------------------------------------------------ */
-.menu .segment, .menu .option, .menu .tier-chip, .menu .doctrine-chip {
+.menu .segment, .menu .option, .menu .tier-chip {
     background-color: var(--surface-2);
     border-top-width: 3px; border-top-color: rgba(0, 0, 0, 0);
     border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px;
     border-right-color: var(--line-1); border-bottom-color: var(--line-1); border-left-color: var(--line-1);
 }
 .menu .segment-label, .menu .option-label { font-size: 17px; color: var(--text-mid); }
-.menu .segment .icon, .menu .doctrine-chip .icon { --icon-color: #a3adb3; }
-.menu .segment.chosen, .menu .option.chosen, .menu .tier-chip.chosen, .menu .doctrine-chip.chosen {
+.menu .segment .icon { --icon-color: #a3adb3; }
+.menu .segment.chosen, .menu .option.chosen, .menu .tier-chip.chosen {
     background-color: var(--surface-3); border-top-color: var(--accent);
     border-right-color: var(--line-2); border-bottom-color: var(--line-2); border-left-color: var(--line-2);
 }
 .menu .segment.chosen .segment-label, .menu .option.chosen .option-label, .menu .tier-chip.chosen .tier-name { color: var(--text-hi); }
-.menu .segment.chosen .icon, .menu .doctrine-chip.chosen .icon { --icon-color: #edeae3; }
+.menu .segment.chosen .icon { --icon-color: #edeae3; }
 /* Rails (shop sections, equipment branches): the amber line on the left. */
 .menu .rail-button, .menu .gear-branch {
     background-color: var(--surface-2); border-left-width: 3px; border-left-color: rgba(0, 0, 0, 0);

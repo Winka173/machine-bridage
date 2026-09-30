@@ -124,8 +124,8 @@ namespace MachineBrigade.Game.Hud
             ["cmdr.lind.strength"] = ("Repair bays and engineers repair {repair}% faster; engineers cost {price}% less CP.",
                 "Trạm sửa chữa và công binh sửa nhanh hơn {repair}%; công binh rẻ hơn {price}% CP."),
             ["cmdr.lind.weakness"] = ("Aircraft and helicopters −{damage}% damage.", "Máy bay và trực thăng −{damage}% sát thương."),
-            ["cmdr.reyes.strength"] = ("Aircraft and helicopters +{damage}% damage and rearm {reload}% faster; air cap +{aircraft}.",
-                "Máy bay và trực thăng +{damage}% sát thương, hồi đạn nhanh hơn {reload}%; trần máy bay +{aircraft}."),
+            ["cmdr.reyes.strength"] = ("Aircraft and helicopters +{damage}% damage and +{health}% health, and rearm {reload}% faster; air cap +{aircraft}; fire support recharges {support}% faster.",
+                "Máy bay và trực thăng +{damage}% sát thương và +{health}% máu, hồi đạn nhanh hơn {reload}%; trần máy bay +{aircraft}; yểm trợ hồi nhanh hơn {support}%."),
             ["cmdr.reyes.weakness"] = ("Towers −{health}% health.", "Tháp −{health}% máu."),
             ["cmdr.kerr.strength"] = ("+{vision}% sight; sees stealth {detect}% farther; exposed enemies take {exposed}% more damage.",
                 "+{vision}% tầm nhìn; phát hiện tàng hình từ xa hơn {detect}%; địch đang bị lộ nhận thêm {exposed}% sát thương."),
@@ -133,14 +133,16 @@ namespace MachineBrigade.Game.Hud
             ["cmdr.venn.strength"] = ("Every drone +{health}% health and +{damage}% damage; your drones are jammed {jam}% less.",
                 "Mọi drone +{health}% máu và +{damage}% sát thương; drone ta bị gây nhiễu ít hơn {jam}%."),
             ["cmdr.venn.weakness"] = ("Tanks −{damage}% damage.", "Xe tăng −{damage}% sát thương."),
-            ["cmdr.mendez.strength"] = ("Vehicles +{speed}% speed; drops land {drop}% faster.", "Xe +{speed}% tốc độ; thả dù nhanh hơn {drop}%."),
+            ["cmdr.mendez.strength"] = ("Vehicles +{speed}% speed; scouts and light vehicles +{health}% health; drops land {drop}% faster.",
+                "Xe +{speed}% tốc độ; trinh sát và xe nhẹ +{health}% máu; thả dù nhanh hơn {drop}%."),
             ["cmdr.mendez.weakness"] = ("Whole army −{health}% health.", "Toàn quân −{health}% máu."),
             ["cmdr.brandt.strength"] = ("Towers +{health}% health and +{damage}% damage; air-dropped towers cost {price}% less CP.",
                 "Tháp +{health}% máu và +{damage}% sát thương; tháp thả dù rẻ hơn {price}% CP."),
             ["cmdr.brandt.weakness"] = ("Vehicles −{speed}% speed.", "Xe −{speed}% tốc độ."),
-            ["cmdr.dahl.strength"] = ("Artillery +{damage}% damage and +{range}% range.", "Pháo binh +{damage}% sát thương và +{range}% tầm bắn."),
+            ["cmdr.dahl.strength"] = ("Artillery +{damage}% damage, +{range}% range and +{health}% health; fire support recharges {support}% faster.",
+                "Pháo binh +{damage}% sát thương, +{range}% tầm bắn và +{health}% máu; yểm trợ hồi nhanh hơn {support}%."),
             ["cmdr.dahl.weakness"] = ("Direct-fire vehicles −{damage}% damage.", "Xe bắn thẳng −{damage}% sát thương."),
-            ["cmdr.brenn.strength"] = ("CP income +{income}%.", "Thu nhập CP +{income}%."),
+            ["cmdr.brenn.strength"] = ("CP income +{income}%; supply +{supply}%.", "Thu nhập CP +{income}%; trần tiếp tế +{supply}%."),
             ["cmdr.brenn.weakness"] = ("Whole army −{damage}% damage.", "Toàn quân −{damage}% sát thương."),
             ["cmdr.adler.strength"] = ("Each capture point pays {points}% more CP; captures {capture}% faster.",
                 "Mỗi cứ điểm cho thêm {points}% CP; chiếm nhanh hơn {capture}%."),
@@ -148,8 +150,8 @@ namespace MachineBrigade.Game.Hud
             ["cmdr.varro.strength"] = ("Vehicles of {cheap} CP or less cost {price}% less; supply +{supply}%.",
                 "Xe giá từ {cheap} CP trở xuống rẻ hơn {price}%; trần tiếp tế +{supply}%."),
             ["cmdr.varro.weakness"] = ("Whole army −{health}% health.", "Toàn quân −{health}% máu."),
-            ["cmdr.reyn.strength"] = ("Vehicles of {dear} CP or more +{health}% health and +{damage}% damage.",
-                "Xe giá từ {dear} CP trở lên +{health}% máu và +{damage}% sát thương."),
+            ["cmdr.reyn.strength"] = ("Tanks, heavy vehicles and vehicles of {dear} CP or more +{health}% health; vehicles of {dear} CP or more +{damage}% damage.",
+                "Xe tăng, xe hạng nặng và xe giá từ {dear} CP trở lên +{health}% máu; xe giá từ {dear} CP trở lên +{damage}% sát thương."),
             ["cmdr.reyn.weakness"] = ("Every vehicle costs {price}% more CP.", "Mọi xe đắt hơn {price}% CP."),
             ["cmdr.quist.strength"] = ("Kills refund {refund}% of their CP instead of {refundFrom}% (every refund stays within {refundCap}%).",
                 "Hạ địch hoàn {refund}% CP thay vì {refundFrom}% (mọi khoản hoàn vẫn trong trần {refundCap}%)."),
@@ -309,6 +311,7 @@ namespace MachineBrigade.Game.Hud
             Add("refundFrom", 25f);
             Add("refundCap", 45f);
             Add("drop", (1f - c.Delivery) * 100f);
+            Add("support", (1f - c.StrikeCooldown) * 100f);
             Add("repair", (c.Repair - 1f) * 100f);
             Add("detect", (c.StealthSight - 1f) * 100f);
             Add("exposed", (c.ExposedTaken - 1f) * 100f);

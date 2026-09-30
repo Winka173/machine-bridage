@@ -722,7 +722,7 @@ def build(game, imgdir):
     out.append("<h3>Tác chiến</h3>" + one('screen-operations-vi-16x9.png', 'Tác chiến: chiến dịch của tuần (mutator), chiến dịch lớn chơi lại, Pháo đài tuần, Săn trùm, thử thách; '
                                                                                 'mỗi mục có ảnh, luật, đồng hồ đổi mới và phần thưởng; chọn cấp độ ngay trong màn.'))
     out.append("<h3>Quân đội</h3>"
-               + one('screen-army-deck-vi-16x9.png', 'Bộ bài: thẻ render 3D, tổng quan bộ bài, độ phủ vai trò (thiếu vai trò thì báo đỏ), học thuyết.')
+               + one('screen-army-deck-vi-16x9.png', 'Bộ bài: thẻ render 3D, tổng quan bộ bài, độ phủ vai trò (thiếu vai trò thì báo đỏ), chỉ huy.')
                + one('screen-army-towers-vi-16x9.png', 'Tháp và mô-đun: thẻ render 3D xếp theo cỡ, tên cao cố định 2 dòng, cấp và dòng mở khóa thẳng hàng; góc thẻ là icon riêng của tháp.'))
     out.append("<h3>Căn cứ và tiền đồn (prompt 14)</h3>"
                + one('screen-army-base-vi-16x9.png', 'Căn cứ: trên cùng là cấp SCH và dòng lên cấp tiếp theo, chọn bản đồ (có ảnh trong danh sách), 3 bộ căn cứ và Tự xếp; tự lưu. '
