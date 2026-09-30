@@ -10919,3 +10919,13 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | railgun_truck | 9.7 x 2.9 x 3.7 (kept) | 9.90 x 2.48 x 2.89 | 9.90 x 2.48 | 2,324 | an EM railgun on an 8x8 (US Navy EMRG rails) | 9.7 x 2.9 x 3.7 at 0.85, 11,708 |
 | laser_tank | 6.3 x 2.7 x 2.6 (kept) | 6.08 x 2.82 x 2.74 | 6.08 x 2.82 | 2,548 | a beam director on a tracked chassis | 6.3 x 2.7 x 2.6 at 0.85, 7,268 |
 | bunker_vehicle | 8.5 x 3.5 x 3.1 (kept) | 9.90 x 4.07 x 2.60 model units = **8.42 x 3.46 x 2.21 at 0.85** (play-test 4's rig units, like the siege tank) | 8.39 x 4.07 units = 7.13 x 3.46 m | 7,032 (3,900 for the vehicle; 3,100 in the emplacement, hidden at 1 % on the move) | Strv 103 dozer blade on an engineer hull (play-test 4's rig kept) | 11,384 |
+| scout_heli | 4.0 x 3.3 x 1.0 (note) | 3.88 x 3.16 x 1.56 (rotor 3.3 m; 1.3 m to the rotor head) | (aircraft) | 1,966 | MH-6 Little Bird | 5.1 x 4.6 x 1.7 at 0.57, 4,266 |
+| recon_drone | 2.6 x 4.8 x 0.9 (note) | 2.67 x 4.83 x 0.48 | (aircraft) | 584 | Bayraktar TB2 | 3.4 x 5.9 x 0.8 at 0.49, 4,574 |
+| wingman_drone | 3.5 x 3.3 x 0.8 (note) | 3.49 x 3.33 x 0.79 | (aircraft) | 688 | XQ-58 Valkyrie | 4.9 x 4.2 x 0.9 at 0.39, 636 |
+| strike_drone | 4.4 x 8.0 x 1.5 (note) | 4.25 x 8.04 x 1.24 | (aircraft) | 1,848 | MQ-9 Reaper | 5.3 x 8.7 x 1.4 at 0.78, 4,142 |
+| stealth_fighter | 7.6 x 5.4 x 2.0 (note; only the size was open) | 7.60 x 5.50 x 1.28 (play-test 9's jet scaled) | (aircraft) | 2,984 | F-22 / Su-57 | 7.2 x 5.2 x 1.2 at 0.39, 2,984 |
+| gunship_heli | 7.0 x 6.9 x 2.6 (note), 15 % over the Apache | 7.59 x 6.58 x 2.10 (rotor 6.9 m) | (aircraft) | 3,112 | Mi-24 Hind | 8.4 x 6.9 x 2.4 at 0.58, 7,894 |
+| attack_jet (+ _hd) | 6.2 x 5.8 x 1.9 (note), shorter than the Su-27 | 6.15 x 6.04 x 1.84 | (aircraft) | 2,376 / 2,520 | Su-25 Frogfoot | 7.5 x 7.1 x 1.7 at 0.56, 9,050 |
+| heavy_bomber | 19.4 x 22.6 x 5.0 (note) | 19.80 x 22.62 x 5.70 | (aircraft) | 2,596 | B-52 Stratofortress | 21.1 x 22.0 x 7.2 at 1.22, 10,106 |
+| stealth_bomber | 8.4 x 21.0 x 2.1 (note) | 8.40 x 21.00 x 1.50 | (aircraft) | 2,096 | B-2 Spirit | 8.3 x 20.7 x 2.3 at 1.29, 5,514 |
+| transport_plane | (no row: the C-130 of the airdrops and the MOAB) | 11.93 x 16.30 x 4.69 (part 1's shared _c130) | (aircraft) | 1,728 | C-130 Hercules | play-test 5's 13.5 m airframe, 8,608. AirDrops scales it by sky_gunship's scale |

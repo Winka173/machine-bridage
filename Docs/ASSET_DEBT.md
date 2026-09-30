@@ -191,19 +191,9 @@ Almost all of today's models are over those budgets (6,000-15,000 triangles for 
 
 | Model | Size now (in battle) → sheet | Shape note |
 |---|---|---|
-| scout_heli | 4.3 x 3.9 x 1.4, keep (note: 4.0 x 3.3 x 1.0) | Small egg-shaped helicopter, five-blade rotor, skids, two small weapon pylons (MH-6 Little Bird). From above: a rotor disc large for the small body. |
-| recon_drone | 2.9 x 5.0 x 0.7, keep (note: 2.6 x 4.8 x 0.9) | Straight-wing UAV, long wing, slim body, inverted V tail, pusher propeller (TB2). From above: a cross with a very long wing. |
-| wingman_drone | 4.2 x 3.6 x 0.8, keep (note: 3.5 x 3.3 x 0.8) | Small fighter-like jet drone, no cockpit, dorsal intake, V tail (XQ-58 Valkyrie). From above: a small arrowhead. |
-| strike_drone | 4.5 x 7.4 x 1.1, keep (note: 4.4 x 8.0 x 1.5) | Large straight-wing UAV, very long wing, bulged nose (radar), Y tail, missiles under the wings (MQ-9). From above: a wing twice as long as the body. |
-| stealth_fighter | 6.1 x 4.2 x 1.2, keep (note: 7.6 x 5.4 x 2.0) | Faceted stealth fighter, two tails canted out, angled intakes, no external stores (F-22 / Su-57). From above: a flat diamond. Play-test 9 redrew it slim; only its size is open. |
-| gunship_heli | 7.1 x 5.8 x 2.0, keep (note: 7.0 x 6.9 x 2.6) | Large armed helicopter, two stepped bubble cockpits, a troop cabin in the middle, drooping stub wings with rocket pods, about 15 % bigger than the attack helicopter (Mi-24). From above: a big body, stub wings with many pylons. After this pass the Apache is 6.0 m long: the Hind must stay 15 % larger. |
-| attack_jet | 6.4 x 6.0 x 1.5, keep (note: 6.2 x 5.8 x 1.9) | Straight-wing attack jet, two engines at the wing roots, many pylons under the wings, shorter than the fighter (Su-25). From above: a wide straight wing. It must stay shorter than the new 8.6 m fighter at B1's scales. |
-| stealth_bomber | 7.0 x 17.6 x 2.0, keep (note: 8.4 x 21.0 x 2.1) | Flying wing with a sawtooth W trailing edge, no tail, very wide for its length (B-2). From above: a sawtooth boomerang. |
-| heavy_bomber | 17.9 x 18.7 x 6.1, keep (note: 19.4 x 22.6 x 5.0) | Eight engines in four pairs under a long swept wing, a long fuselage, a tall tail; the biggest of the player's aircraft (B-52). From above: the swept wing with four engine pairs. |
 
 Related to the rebuilt models: `elite_mbt`, `elite_attack_helicopter` and the other elites of rebuilt units keep the old
-designs (they are their own models); `transport_plane` (airdrops, the MOAB) still flies play-test 5's airframe, not
-the new shared C-130 (`mb_p25_models._c130`); Icarus's scale for "the largest thing in the sky" is B1's (DECISIONS
+designs (they are their own models); Icarus's scale for "the largest thing in the sky" is B1's (DECISIONS
 25B2).
 
 ### Structures

@@ -116,6 +116,8 @@ def all_builders():
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
     # A round 6 builder's own high-detail variant (attack_jet_hd) over the generic one.
     builders.update({k: v for k, v in mb_round6.BUILDERS.items() if k.endswith('_hd')})
+    # Prompt 25 B2 part 2's own high-detail variants (attack_jet_hd) over round 6's.
+    builders.update({k: v for k, v in mb_p25_models2.BUILDERS.items() if k.endswith('_hd')})
     return builders
 
 

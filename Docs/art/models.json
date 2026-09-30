@@ -121,11 +121,11 @@
   },
   "attack_jet": {
     "file": "attack_jet.glb",
-    "triangles": 9050
+    "triangles": 2376
   },
   "attack_jet_hd": {
     "file": "attack_jet_hd.glb",
-    "triangles": 16398
+    "triangles": 2520
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
@@ -561,7 +561,7 @@
   },
   "gunship_heli": {
     "file": "gunship_heli.glb",
-    "triangles": 7894
+    "triangles": 3112
   },
   "hangar": {
     "file": "hangar.glb",
@@ -581,7 +581,7 @@
   },
   "heavy_bomber": {
     "file": "heavy_bomber.glb",
-    "triangles": 10106
+    "triangles": 2596
   },
   "heavy_rocket": {
     "file": "heavy_rocket.glb",
@@ -917,7 +917,7 @@
   },
   "recon_drone": {
     "file": "recon_drone.glb",
-    "triangles": 4574
+    "triangles": 584
   },
   "refinery_tower": {
     "file": "refinery_tower.glb",
@@ -1009,7 +1009,7 @@
   },
   "scout_heli": {
     "file": "scout_heli.glb",
-    "triangles": 4266
+    "triangles": 1966
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
@@ -1105,7 +1105,7 @@
   },
   "stealth_bomber": {
     "file": "stealth_bomber.glb",
-    "triangles": 5514
+    "triangles": 2096
   },
   "stealth_fighter": {
     "file": "stealth_fighter.glb",
@@ -1125,7 +1125,7 @@
   },
   "strike_drone": {
     "file": "strike_drone.glb",
-    "triangles": 4142
+    "triangles": 1848
   },
   "strike_jet": {
     "file": "strike_jet.glb",
@@ -1201,7 +1201,7 @@
   },
   "transport_plane": {
     "file": "transport_plane.glb",
-    "triangles": 8608
+    "triangles": 1728
   },
   "tree": {
     "file": "tree.glb",
@@ -1277,7 +1277,7 @@
   },
   "wingman_drone": {
     "file": "wingman_drone.glb",
-    "triangles": 636
+    "triangles": 688
   },
   "wreck_barrel": {
     "file": "wreck_barrel.glb",

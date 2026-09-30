@@ -10,12 +10,14 @@ the ground at the hull centre.
 
 Headless: blender --background --python Tools/blender/build_assets.py -- supply_truck
 """
+import functools
 import math
 
 from mathutils import Vector
 
 import mb_detail as hd
 import mb_vehicles as mv
+from mb_air import _aam, _aam_parts, _bomb, _pylon, _rocket_pod, _store_parts
 from mb_p25_models import _lean_tracks, _scale_asset  # noqa: F401  (shared with part 1)
 from mb_vehicles import ACROSS, FORWARD, R90, TAU  # noqa: F401
 
@@ -2198,6 +2200,393 @@ def bunker_vehicle(a):
     a.pivots['Deploy_berm'].scale = (BERM_REST,) * 3
 
 
+# ----------------------------------------------------------------------------- aircraft kit (0.4 x real)
+def _fuselage(part, stations, nose=None, tail=None, n=10, pt=2.4, pb=2.8):
+    """A lofted body through (y, half-width, belly z, spine z) stations, closed at the nose and tail points."""
+    from mb_air import _sec
+    rings = [_sec(y, w, zb, zt, n=n, pt=pt, pb=pb) for y, w, zb, zt in stations]
+    part.loft(([[nose]] if nose else []) + rings + ([[tail]] if tail else []), bevel=0)
+
+
+def _prop(a, name, loc, r, blades=3, chord=.08, parent=None, axis='Y'):
+    """A propeller under its own pivot (it spins about the flight axis): a spinner and flat blades."""
+    p = a.pivot(name, loc, parent)
+    a.part(f'{name}_hub', 'Armor', p).cyl(r * .18, r * .4, rot=FORWARD, seg=8, bevel=0)
+    bl = a.part(f'{name}_blades', 'Undercarriage', p)
+    for k in range(blades):
+        u = k * TAU / blades + .3
+        bl.box((chord, .03, r), loc=(math.cos(u) * r / 2, 0, math.sin(u) * r / 2), rot=(0, -u + R90, 0), bevel=0,
+               taper=(.6, 1))
+    return p
+
+
+def _launch_muzzles(a, slot, points):
+    """One `Muzzle_<slot>` per launcher, at its front (`Muzzle_<slot>`, `.001` ...): the first stays the slot's muzzle
+    and every launch point ModelLibrary finds has a muzzle of its slot at it. The builder calls
+    mb_phase2._suffixed(a) so the suffixed names survive the export."""
+    for i, p in enumerate(points):
+        a.pivot(f'Muzzle_{slot}' + (f'__{i:03d}' if i else ''), p)
+
+
+def scout_heli(a):
+    """Light scout helicopter (MH-6 Little Bird), 4.0 x 3.3 x 1.3 m at 0.4 x: a small egg-shaped cabin with its big
+    bubble windscreen, a thin tail boom with a T-tail, skids, the five-blade rotor 3.3 m across (from above, a
+    rotor disc large for the small body: `Rotor`, `Tail_rotor`), and the plank across the doors with a minigun on
+    each end (`Miniguns`, two launchers 0.85 m out, `Muzzle_gun`) and a rocket pod inboard of each (`Pods`,
+    `Muzzle_rocket`). Origin on the ground under the cabin (the skids touch z = 0)."""
+    from mb_air import _dome, _rotor_head, _tail_rotor
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Team')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    _fuselage(body, ((-.8, .3, .44, .98), (-.45, .44, .36, 1.12), (0, .46, .38, 1.14), (.45, .4, .46, 1.06),
+                     (.75, .2, .64, .96)), nose=(0, -.98, .68), tail=(0, .86, .8), n=12, pt=2.2, pb=2.2)
+    a.part('Canopy', 'Glass').loft([_dome(y, w, z0, z1, 7) for y, w, z0, z1 in
+                                    ((-.95, .14, .6, .76), (-.8, .3, .5, .98), (-.5, .42, .6, 1.1), (-.2, .44, .78,
+                                                                                                    1.13))], bevel=0)
+    _fuselage(body, ((.7, .1, .72, .92), (2.35, .05, .8, .88)), n=8)                                # tail boom
+    body.box((.04, .34, .5), loc=(0, 2.3, 1.05), bevel=0, taper=(1, .6))                             # fin
+    body.box((.7, .18, .03), loc=(0, 2.28, 1.3), bevel=0)                                             # T-tail
+    for s in (-1, 1):
+        steel.box((.07, 1.9, .07), loc=(s * .44, -.1, .04), bevel=0)                                  # skids
+        for y in (-.45, .35):
+            steel.limb((s * .44, y, .06), (s * .3, y, .42), .06, .06, bevel=0)
+    steel.box((1.9, .12, .06), loc=(0, -.1, .5), bevel=0)                                             # the plank
+    dark.box((.36, .3, .2), loc=(0, .5, 1.12), bevel=0)                                               # engine
+    steel.cyl(.05, .25, loc=(0, -.05, 1.22), seg=8, bevel=0)                                          # mast
+    r = a.pivot('Rotor', (0, -.05, 1.34))
+    _rotor_head(a, r, 5, 1.65, .13, hub=.1, phase=.3, t=.02, cap=.05, stripe=.18, droop=.03)
+    tr = a.pivot('Tail_rotor', (-.06, 2.36, .95))
+    _tail_rotor(a, tr, 2, .3, .06, t=.015, side=-1)
+    for s in (-1, 1):
+        a.part('Miniguns', 'Steel').cyl(.05, .55, loc=(s * .85, -.35, .44), rot=FORWARD, seg=6, bevel=0)
+        a.part('Minigun_housings', 'Armor').box((.12, .24, .12), loc=(s * .85, -.02, .46), bevel=0)
+        _rocket_pod(a, s * .6, -.42, .38, .07, .5, tubes=5)
+    _launch_muzzles(a, 'gun', [(s * .85, -.645, .44) for s in (-1, 1)])
+    _launch_muzzles(a, 'rocket', [(s * .6, -.44, .38) for s in (-1, 1)])
+    a.part('Beacon', 'TeamGlow').box((.06, .06, .05), loc=(0, .6, 1.22), bevel=0)
+    a.pivot('Point_exhaust', (0, .7, 1.1))
+    a.pivot('Point_fire', (0, .1, 1.1))
+
+
+def recon_drone(a):
+    """Recon drone (Bayraktar TB2), 2.6 x 4.8 x 0.9 m at 0.4 x: a slim body with the sensor ball under the nose, the
+    very long straight wing on top (from above, a cross with a very long wing), twin booms to the inverted-V tail, the
+    pusher propeller (`Propeller`), and two MAM-L bombs under the wings (`Missiles`, `Muzzle_missile`); `Muzzle_gun`
+    at the sensor ball as before."""
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Team')
+    wing = a.part('Wings', 'Fuel')
+    _fuselage(body, ((-1.1, .1, -.1, .08), (-.7, .14, -.14, .13), (.3, .13, -.12, .12), (1.0, .07, -.05, .06)),
+              nose=(0, -1.28, -.02), tail=(0, 1.12, 0), n=10)
+    wing.box((4.8, .34, .05), loc=(0, -.1, .15), bevel=0, taper=(1, .9))                             # the long wing
+    for s in (-1, 1):
+        wing.box((.06, 1.5, .06), loc=(s * .6, .55, .1), bevel=0)                                     # tail booms
+        wing.box((.62, .22, .03), loc=(s * .3, 1.28, -.06), rot=(0, s * .6, 0), bevel=0)              # inverted V
+        a.part('Wing_lights', 'TeamGlow').box((.05, .08, .04), loc=(s * 2.39, -.05, .15), bevel=0)
+    a.part('Sensor', 'Glass').sphere(.1, loc=(0, -.95, -.2), seg=8, rings=5)
+    _prop(a, 'Propeller', (0, 1.16, 0), .34, blades=2)
+    aams = _aam_parts(a)
+    for s in (-1, 1):
+        _pylon(a.part('Pylons', 'Armor'), s * .85, -.25, .05, .13, -.03, w=.05)
+        _aam(aams, (s * .85, -.1, -.1), length=.5, r=.04, seg=6, canards=False, fin=1.4)
+    _launch_muzzles(a, 'missile', [(s * .85, -.37, -.1) for s in (-1, 1)])
+    a.pivot('Muzzle_gun', (0, -1.07, -.22))
+    a.pivot('Point_exhaust', (0, 1.0, .05))
+    a.pivot('Point_fire', (0, 0, .15))
+
+
+def wingman_drone(a):
+    """Loyal-wingman drone (XQ-58 Valkyrie), 3.5 x 3.3 x 0.8 m at 0.4 x: a small arrowhead with no cockpit, a chined
+    nose, the dorsal intake behind it, a cranked-delta wing and the V tail (from above, a small arrowhead), and two
+    air-to-air missiles under the wings (`Missiles`, `Muzzle_missile`)."""
+    from mb_air import LEFT, RIGHT, Planform, _surface, _upright
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Team')
+    _fuselage(body, ((-1.3, .12, -.08, .06), (-.7, .26, -.14, .14), (.2, .3, -.14, .16), (1.3, .2, -.08, .1)),
+              nose=(0, -1.75, -.02), tail=(0, 1.72, 0), n=8, pt=3, pb=3)
+    wing = Planform(.25, 1.65, -.1, .75, 1.35, .4, .08, .03)
+    for frame in (RIGHT, LEFT):
+        _surface(body, wing, frame, bevel=0)
+    fin = Planform(0, .55, .95, 1.3, .6, .3, .05, .02)
+    for s in (-1, 1):
+        _surface(body, fin, _upright(s * .22, .1, .6), lower=1.0, bevel=0)
+    a.part('Intake', 'Undercarriage').box((.3, .5, .12), loc=(0, -.35, .18), bevel=0, taper=(.7, 1))
+    a.part('Exhaust_glow', 'Alloy').cyl(.1, .04, loc=(0, 1.72, 0), rot=FORWARD, seg=8, bevel=0)
+    aams = _aam_parts(a)
+    for s in (-1, 1):
+        _aam(aams, (s * .75, .1, -.14), length=.7, r=.045, seg=6, canards=False)
+        a.part('Wing_lights', 'TeamGlow').box((.05, .08, .04), loc=(s * 1.64, .95, 0), bevel=0)
+    _launch_muzzles(a, 'missile', [(s * .75, -.27, -.14) for s in (-1, 1)])
+    a.pivot('Point_exhaust', (0, 1.75, 0))
+    a.pivot('Point_fire', (0, .2, .15))
+
+
+def strike_drone(a):
+    """Strike drone (MQ-9 Reaper), 4.4 x 8.0 x 1.5 m at 0.4 x: a slim body with the bulged satellite-radar nose, the
+    very long straight wing (twice the body's length: from above, a long wing), the Y tail (a V tail up and the
+    ventral fin down), the pusher propeller (`Propeller`), four Hellfires on the outer pylons (`Missiles`,
+    `Muzzle_missile`) and a guided bomb on each inner one (`Ordnance_*`, `Muzzle_rocket`)."""
+    from mb_air import LEFT, RIGHT, Planform, _surface, _upright
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Team')
+    _fuselage(body, ((-1.8, .2, -.2, .22), (-1.3, .26, -.24, .26), (.2, .22, -.2, .18), (1.7, .1, -.08, .08)),
+              nose=(0, -2.15, 0), tail=(0, 1.95, 0), n=10)
+    wing = Planform(.18, 4.0, -.3, -.12, .6, .28, .09, .04, .1, .16)
+    for frame in (RIGHT, LEFT):
+        _surface(body, wing, frame, bevel=0)
+    fin = Planform(0, .75, 1.35, 1.7, .5, .3, .05, .02)
+    for s in (-1, 1):
+        _surface(body, fin, _upright(s * .06, .08, .7), lower=1.0, bevel=0)
+        a.part('Wing_lights', 'TeamGlow').box((.06, .1, .05), loc=(s * 3.99, -.1, .17), bevel=0)
+    _surface(body, Planform(0, .5, 1.4, 1.65, .4, .28, .05, .02), _upright(0, -.08, math.pi), lower=1.0, bevel=0)
+    _prop(a, 'Propeller', (0, 2.0, 0), .5, blades=3)
+    aams = _aam_parts(a)
+    bombs = _store_parts(a, prefix='Ordnance')
+    pylons = a.part('Pylons', 'Armor')
+    for s in (-1, 1):
+        for x in (s * 1.6, s * 1.95):
+            _pylon(pylons, x, -.35, 0, .12, -.04, w=.05)
+            _aam(aams, (x, -.25, -.12), length=.6, r=.04, seg=6, canards=False, fin=1.4)
+        _pylon(pylons, s * .9, -.4, .05, .12, -.06, w=.06)
+        _bomb(bombs, (s * .9, -.2, -.2), length=.8, r=.07, seg=8, guided=True, lean=True)
+    _launch_muzzles(a, 'missile', [(s * 1.78, -.56, -.12) for s in (-1, 1)])
+    _launch_muzzles(a, 'rocket', [(s * .9, -.62, -.2) for s in (-1, 1)])
+    a.part('Sensor', 'Glass').sphere(.12, loc=(0, -1.55, -.28), seg=8, rings=5)
+    a.pivot('Point_exhaust', (0, 1.8, .05))
+    a.pivot('Point_fire', (0, 0, .2))
+
+
+def stealth_fighter(a):
+    """Stealth fighter: play-test 9's slim faceted jet (mb_pt9_models, the owner kept its design), scaled to the
+    sheet's 7.6 m (0.4 x an F-22 / Su-57); only its size was open."""
+    import mb_pt9_models
+    mb_pt9_models.stealth_fighter(a)
+    _scale_asset(a, 7.6 / 18.36)
+    a.pivot('Point_exhaust', (0, 3.3, 0))
+    a.pivot('Point_fire', (0, .5, .3))
+
+
+def gunship_heli(a):
+    """Assault gunship (Mi-24 Hind), 7.0 x 6.9 x 2.6 m at 0.4 x, 15 % over the Apache's 6.0 m: a big body with the
+    stepped double bubble canopies, the troop cabin with its door guns (`Muzzle_door_l` / `_r`), drooping stub wings
+    with two rocket pods each (`Pods`: one launcher a side, `Muzzle_rocket`) and the ATGM rails on their tips
+    (`Launch_tubes`, `Muzzle_missile`), the chin gun turret (`Mount_gun`, `Muzzle_gun`), the five-blade rotor
+    6.9 m across (`Rotor`) and the tail rotor (`Tail_rotor`). Origin on the ground (the wheels touch z = 0)."""
+    from mb_air import _bubble, _rotor_head, _tail_rotor
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Team')
+    steel = a.part('Steel', 'Steel')
+    armor = a.part('Armor', 'Armor')
+    glass = a.part('Canopy', 'Glass')
+    _fuselage(body, ((-3.3, .14, .5, .76), (-2.9, .3, .38, .92), (-1.8, .44, .3, 1.02), (-.4, .6, .28, 1.12),
+                     (.9, .56, .34, 1.14), (1.5, .3, .62, 1.12)), nose=(0, -3.5, .6), n=12)
+    _fuselage(body, ((1.4, .24, .7, 1.1), (3.3, .1, .86, 1.04)), n=8)                                 # tail boom
+    body.prism([(2.9, 1.0), (3.45, .98), (3.62, 1.9), (3.3, 1.92)], .1, bevel=0)                      # fin
+    body.box((1.0, .32, .05), loc=(0, 3.1, .92), bevel=0)                                              # stabilator
+    glass.loft([_bubble(-3.2, .16, .72, .86), _bubble(-2.9, .26, .82, 1.06), _bubble(-2.55, .26, .88, 1.08)],
+               bevel=0)                                                                                # gunner
+    glass.loft([_bubble(-2.4, .3, .96, 1.14), _bubble(-2.1, .34, 1.0, 1.3), _bubble(-1.7, .33, 1.02, 1.3),
+                _bubble(-1.45, .28, 1.04, 1.18)], bevel=0)                                             # pilot
+    for s in (-1, 1):
+        body.cyl(.2, 1.3, loc=(s * .38, -.55, 1.26), rot=FORWARD, seg=8, bevel=0)                    # engines
+        a.part('Undercarriage', 'Undercarriage').cyl(.14, .03, loc=(s * .38, -1.21, 1.26), rot=FORWARD, seg=8,
+                                                     bevel=0)
+        a.part('Windows', 'Glass').box((.03, .7, .24), loc=(s * .6, -.3, .8), bevel=0)               # cabin windows
+        # The drooping stub wing, two pods, the ATGM rail on the tip.
+        body.box((1.3, .6, .08), loc=(s * 1.0, -.25, .78), rot=(0, s * .2, 0), bevel=0)
+        for x in (1.05, 1.35):
+            _rocket_pod(a, s * x, -.65, .56 - (x - .6) * .2, .12, .75, tubes=7)
+        rail = a.part('Launch_tubes', 'Fuel')
+        for dz in (-.07, .07):
+            rail.cyl(.05, .75, loc=(s * 1.66, -.58, .64 + dz), rot=FORWARD, seg=6, bevel=0)
+        steel.box((.06, .3, .4), loc=(s * .45, -1.9, .22), bevel=0)                                  # nose gear
+        a.part('Tyres', 'Rubber').cyl(.14, .1, loc=(s * .5, -1.9, .14), rot=ACROSS, seg=8, bevel=0)
+        a.part('Tyres', 'Rubber').cyl(.16, .1, loc=(s * .75, .6, .16), rot=ACROSS, seg=8, bevel=0)
+        steel.limb((s * .75, .6, .16), (s * .5, .6, .4), .06, .06, bevel=0)
+    _launch_muzzles(a, 'rocket', [(s * 1.2, -.67, .44) for s in (-1, 1)])
+    _launch_muzzles(a, 'missile', [(s * 1.66, -.97, .64) for s in (-1, 1)])
+    a.pivot('Muzzle_door_l', (.65, -.5, .75))
+    a.pivot('Muzzle_door_r', (-.65, -.5, .75))
+    steel.cyl(.08, .35, loc=(0, -.55, 1.55), seg=8, bevel=0)                                          # mast
+    r = a.pivot('Rotor', (0, -.55, 1.72))
+    _rotor_head(a, r, 5, 3.45, .26, hub=.18, phase=.2, t=.035, cap=.08, stripe=.24, droop=.06)
+    tr = a.pivot('Tail_rotor', (.14, 3.4, 1.5))
+    _tail_rotor(a, tr, 3, .6, .1, t=.02, side=1)
+    g = a.pivot('Mount_gun', (0, -3.1, .42))
+    armor.sphere(.14, loc=(0, -3.1, .4), seg=8, rings=5)
+    gun = a.part('Gun', 'Steel', g)
+    gun.cyl(.04, .55, loc=(0, -.3, -.02), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', (0, -.6, -.02), g)
+    a.part('Beacon', 'TeamGlow').sphere(.05, loc=(0, 3.5, 1.92), seg=6, rings=4)
+    a.pivot('Point_exhaust', (.45, .2, 1.26))
+    a.pivot('Point_fire', (0, -.3, 1.2))
+
+
+def attack_jet(a, detail=False):
+    """Attack jet (Su-25 Frogfoot), 6.2 x 5.8 x 1.9 m at 0.4 x, shorter than the 8.6 m Su-27: a long nose, the
+    armoured cockpit well forward, the two engines in nacelles at the wing roots, a straight, slightly swept
+    shoulder wing 5.8 m across with ten pylons (from above, a wide straight wing), the tall fin; the cannon under the
+    nose (`Muzzle_gun`, `Muzzle_main`), S-8 rocket pods (`Pods`, `Muzzle_rocket`), Kh-29s outboard (`Missiles`:
+    two launchers 1.95 m out, `Muzzle_missile`), bombs inboard (`Ordnance_*`), the R-60s on the wingtip rails
+    (`Wingtip_missiles`, `Muzzle_aam`). The high-detail variant is the same with finer sections."""
+    from mb_air import LEFT, RIGHT, Planform, _dome, _surface, _upright
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, detail)
+    n = 14 if detail else 10
+    body = a.part('Fuselage', 'Team')
+    _fuselage(body, ((-2.8, .12, -.1, .08), (-2.3, .26, -.22, .22), (-1.4, .32, -.28, .32), (-.2, .34, -.3, .3),
+                     (1.6, .3, -.24, .26), (2.8, .16, -.12, .14)), nose=(0, -3.1, -.04), tail=(0, 3.05, 0), n=n)
+    a.part('Canopy', 'Glass').loft([_dome(y, w, z0, z1, 7) for y, w, z0, z1 in
+                                    ((-1.95, .12, .18, .3), (-1.6, .22, .24, .5), (-1.1, .22, .28, .5),
+                                     (-.8, .14, .3, .38))], bevel=0)
+    wing = Planform(.4, 2.9, -.25, .15, 1.35, .6, .14, .06, .12, .1)
+    for frame in (RIGHT, LEFT):
+        _surface(body, wing, frame, bevel=0)
+    for s in (-1, 1):
+        body.cyl(.22, 2.6, loc=(s * .52, .3, -.12), rot=FORWARD, seg=n, bevel=0)                     # nacelles
+        a.part('Intake', 'Undercarriage').cyl(.16, .03, loc=(s * .52, -1.01, -.12), rot=FORWARD, seg=n, bevel=0)
+        a.part('Exhaust_glow', 'Alloy').cyl(.14, .03, loc=(s * .52, 1.61, -.12), rot=FORWARD, seg=n, bevel=0)
+        body.box((1.1, .4, .04), loc=(s * .6, 2.55, .1), rot=(0, s * -.08, 0), bevel=0)             # stabilisers
+    _surface(body, Planform(0, 1.3, 1.6, 2.5, 1.1, .45, .08, .03), _upright(0, .2), lower=1.0, bevel=0)
+    pylons = a.part('Pylons', 'Armor')
+    aams = _aam_parts(a)
+    bombs = _store_parts(a, prefix='Ordnance')
+    for s in (-1, 1):
+        for x in (1.0, 1.4, 1.95, 2.4):
+            _pylon(pylons, s * x, -.15, .3, wing.bottom(x) + .03, wing.bottom(x) - .14, w=.05)
+        _bomb(bombs, (s * 1.0, .05, wing.bottom(1.0) - .24), length=.9, r=.09, seg=8, lean=True)
+        _rocket_pod(a, s * 1.4, -.45, wing.bottom(1.4) - .24, .09, .7, tubes=7)
+        _aam(aams, (s * 1.95, .05, wing.bottom(1.95) - .2), length=1.05, r=.06, seg=6, canards=False, fin=1.5)
+        a.part('Pods_outer', 'Armor').cyl(.08, .6, loc=(s * 2.4, .05, wing.bottom(2.4) - .22), rot=FORWARD, seg=8,
+                                          bevel=0)                                                      # ECM pods
+    tips = _aam_parts(a, 'Wingtip_missiles')
+    for s in (-1, 1):
+        _aam(tips, (s * 2.95, .25, .06), length=.7, r=.035, seg=6, canards=False)
+        a.part('Wing_lights', 'TeamGlow').box((.05, .1, .04), loc=(s * 2.92, -.1, .1), bevel=0)
+    a.part('Gun', 'Steel').cyl(.035, .35, loc=(.12, -2.55, -.26), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', (.12, -2.75, -.26))
+    a.pivot('Muzzle_main', (.12, -2.75, -.26))
+    _launch_muzzles(a, 'rocket', [(s * 1.4, -.47, wing.bottom(1.4) - .24) for s in (-1, 1)])
+    _launch_muzzles(a, 'missile', [(s * 1.95, -.5, wing.bottom(1.95) - .2) for s in (-1, 1)])
+    a.pivot('Muzzle_aam', (2.95, -.12, .06))
+    a.pivot('Point_exhaust', (.52, 1.7, -.12))
+    a.pivot('Point_fire', (0, .3, .2))
+
+
+def heavy_bomber(a):
+    """Heavy bomber (B-52 Stratofortress), 19.4 x 22.6 x 5.0 m at 0.4 x, the biggest of the player's aircraft: a long
+    slab-sided fuselage, the swept shoulder wing drooping to its tips, eight engines in four pairs of pods under it
+    (from above, the swept wing with four engine pairs), the tall fin and tailplane, outrigger wheels; the bomb bay's
+    load on `Bombs` (hidden once it drops, `Muzzle_missile`), cruise missiles under the inner wings
+    (`Standoff_missile`, `Muzzle_rocket`) and the tail guns (`Muzzle_gun`)."""
+    from mb_air import LEFT, RIGHT, Planform, _surface, _upright
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Team')
+    _fuselage(body, ((-9.2, .3, -.4, .2), (-8.4, .8, -.8, .7), (-6.5, 1.0, -1.0, .95), (5.0, 1.0, -.95, .9),
+                     (8.5, .45, -.2, .8)), nose=(0, -9.7, -.1), tail=(0, 9.7, .45), n=12, pt=3, pb=3)
+    a.part('Canopy', 'Glass').box((1.2, .6, .25), loc=(0, -8.2, .82), rot=(-.3, 0, 0), bevel=0)
+    wing = Planform(.9, 11.3, -2.2, 3.6, 4.6, 1.3, .55, .16, .85, .35)
+    for frame in (RIGHT, LEFT):
+        _surface(body, wing, frame, bevel=0)
+    nac = a.part('Nacelles', 'Armor')
+    glow = a.part('Exhaust_glow', 'Alloy')
+    for s in (-1, 1):
+        for x in (3.5, 6.6):
+            le = wing.le(x)
+            z = wing.bottom(x) - .45
+            nac.box((.2, 1.0, .5), loc=(s * x, le + .8, z + .3), bevel=0)                          # pylon
+            for dx in (-.3, .3):
+                nac.cyl(.26, 1.8, loc=(s * x + dx, le - .1, z), rot=FORWARD, seg=10, bevel=0)
+                a.part('Intakes', 'Undercarriage').cyl(.2, .03, loc=(s * x + dx, le - 1.01, z), rot=FORWARD, seg=10,
+                                                       bevel=0)
+                glow.cyl(.16, .03, loc=(s * x + dx, le + .81, z), rot=FORWARD, seg=8, bevel=0)
+        a.part('Wing_lights', 'TeamGlow').box((.12, .3, .1), loc=(s * 11.25, wing.le(11.2) + .4, wing.at(11.2)[3]),
+                                              bevel=0)
+        body.box((4.6, 1.6, .1), loc=(s * 2.6, 8.4, .8), bevel=0, taper=(1, .8))                      # tailplane
+        a.part('Tyres', 'Rubber').cyl(.18, .1, loc=(s * 9.0, wing.le(9.0) + .8, wing.bottom(9.0) - .3), rot=ACROSS,
+                                      seg=8, bevel=0)                                                  # outriggers
+    _surface(body, Planform(0, 4.0, 5.8, 8.6, 3.2, 1.3, .3, .1), _upright(0, .7), lower=1.0, bevel=0)  # the tall fin
+    sm = a.part('Standoff_missile', 'Fuel')
+    for s in (-1, 1):
+        x = s * 2.0
+        a.part('Pylons', 'Armor').box((.2, 1.4, .5), loc=(x, 0.0, wing.bottom(2.0) - .2), bevel=0)
+        for dx in (-.25, .25):
+            sm.cyl(.12, 2.4, loc=(x + dx, -.1, wing.bottom(2.0) - .6), rot=FORWARD, seg=8, bevel=0)
+    _launch_muzzles(a, 'rocket', [(s * 2.0, -1.32, wing.bottom(2.0) - .6) for s in (-1, 1)])
+    bays = a.pivot('Bombs', (0, .25, -.3))
+    parts = _store_parts(a, parent='Bombs')
+    for i in range(3):
+        for j in range(2):
+            _bomb(parts, (-.35 + j * .7, -1.2 + i * 1.3, -.2), length=1.1, r=.16, seg=8, lean=True)
+    a.part('Bomb_rack', 'Undercarriage').box((1.6, 4.0, .05), loc=(0, .25, -.96), bevel=0)
+    a.pivot('Muzzle_missile', (0, .25, -.9))
+    a.part('Tail_guns', 'Steel').cyl(.05, .6, loc=(0, 9.8, .42), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', (0, 10.15, .42))
+    a.pivots['Muzzle_gun'].rotation_euler = (0, 0, math.pi)                                          # it faces aft
+    a.pivot('Point_exhaust', (6.6, wing.le(6.6) + .9, wing.bottom(6.6) - .45))
+    a.pivot('Point_fire', (0, 0, 1.0))
+    _ = bays
+
+
+def stealth_bomber(a):
+    """Stealth bomber (B-2 Spirit), 8.4 x 21.0 x 2.1 m at 0.4 x: a tailless flying wing, the straight swept leading
+    edge and the sawtooth W trailing edge (from above, the sawtooth boomerang), the crew hump with its windows, the
+    buried engines' intakes on top and their flat exhaust troughs; the bomb bays' load on `Bombs` (`Muzzle_missile`)
+    and the JASSMs in the outer bays (`Standoff_missile`, two launchers, `Muzzle_rocket`)."""
+    from mb_air import LEFT, RIGHT, Planform, _surface
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    body = a.part('Fuselage', 'Armor')
+    le = lambda x: -4.2 + x * (6.8 / 10.5)  # noqa: E731
+    stations = ((0, 4.2, 1.5), (1.4, 3.2, 1.0), (2.6, 2.3, .72), (4.9, 4.0, .44), (7.5, 1.7, .3), (10.5, 3.0, .1))
+    for (x0, te0, t0), (x1, te1, t1) in zip(stations, stations[1:]):
+        pf = Planform(x0, x1, le(x0), le(x1), te0 - le(x0), te1 - le(x1), t0, t1)
+        for frame in (RIGHT, LEFT):
+            _surface(body, pf, frame, bevel=0)
+    a.part('Canopy', 'Glass').box((.9, .5, .2), loc=(0, -2.6, .62), rot=(-.4, 0, 0), bevel=0)
+    team = a.part('Team_accents', 'Team')
+    for s in (-1, 1):
+        team.box((.9, .7, .22), loc=(s * 1.5, -.9, .38), bevel=0, taper=(.7, .6))                   # intake humps
+        a.part('Intakes', 'Undercarriage').box((.8, .05, .12), loc=(s * 1.5, -1.24, .42), bevel=0)
+        a.part('Exhaust_glow', 'Alloy').box((.9, .5, .03), loc=(s * 2.0, 2.05, .2), bevel=0)
+        a.part('Wing_lights', 'TeamGlow').box((.12, .2, .06), loc=(s * 10.4, 2.7, 0), bevel=0)
+    sm = a.part('Standoff_missile', 'Fuel')
+    for s in (-1, 1):                                                                                # outer bays, aft
+        sm.box((.26, 1.7, .2), loc=(s * 3.0, 2.15, -.32), bevel=0, taper=(.8, 1))
+    _launch_muzzles(a, 'rocket', [(s * 3.0, 1.28, -.32) for s in (-1, 1)])
+    a.pivot('Bombs', (0, 0, 0))
+    parts = _store_parts(a, parent='Bombs')
+    for i in range(2):
+        for j in range(2):
+            _bomb(parts, (-.3 + j * .6, -.6 + i * 1.3, -.3), length=1.0, r=.14, seg=8, guided=True, lean=True)
+    a.part('Bomb_rack', 'Undercarriage').box((1.3, 2.6, .05), loc=(0, 0, -.58), bevel=0)
+    a.pivot('Muzzle_missile', (0, 0, -.5))
+    a.pivot('Point_exhaust', (2.0, 2.2, .2))
+    a.pivot('Point_fire', (0, .5, .7))
+
+
+def transport_plane(a):
+    """Airdrop transport (C-130 class): the shared four-turboprop airframe of the mothership and the AC-130 (part 1's
+    mb_p25_models._c130, 11.9 x 16.3 m at 0.4 x), ramp shut; `Propeller` .. `Propeller_4` as before."""
+    from mb_p25_models import _c130
+    _c130(a)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -2237,4 +2626,15 @@ BUILDERS = {
     'railgun_truck': (railgun_truck, dict(ao_distance=.6, grime_height=.55)),
     'laser_tank': (laser_tank, dict(ao_distance=.55, grime_height=.5)),
     'bunker_vehicle': (bunker_vehicle, dict(ao_distance=.7, grime_height=.6)),
+    'scout_heli': (scout_heli, dict(ao_distance=.3, grime_height=.25)),
+    'recon_drone': (recon_drone, dict(ao_distance=.25, ground=False)),
+    'wingman_drone': (wingman_drone, dict(ao_distance=.25, ground=False)),
+    'strike_drone': (strike_drone, dict(ao_distance=.3, ground=False)),
+    'stealth_fighter': (stealth_fighter, dict(ao_distance=.35, ground=False)),
+    'gunship_heli': (gunship_heli, dict(ao_distance=.4, grime_height=.3)),
+    'attack_jet': (attack_jet, dict(ao_distance=.35, ground=False)),
+    'attack_jet_hd': (functools.partial(attack_jet, detail=True), dict(ao_distance=.35, ground=False)),
+    'heavy_bomber': (heavy_bomber, dict(ao_distance=.9, ground=False)),
+    'stealth_bomber': (stealth_bomber, dict(ao_distance=.9, ground=False)),
+    'transport_plane': (transport_plane, dict(ao_distance=.9, ground=False)),
 }
