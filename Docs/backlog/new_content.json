@@ -4,8 +4,8 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 4,
-    "xong": 23
+    "đang làm": 3,
+    "xong": 24
   },
   "byKind": {
     "unit": {
@@ -15,8 +15,8 @@
     },
     "structure": {
       "chưa làm": 0,
-      "đang làm": 4,
-      "xong": 0
+      "đang làm": 3,
+      "xong": 1
     },
     "ordnance": {
       "chưa làm": 14,
@@ -839,8 +839,8 @@
       "group": "Vừa",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "troop_shelter",
       "notes": "25D2 plan: 3,000 coins in the shop."
     },
     {

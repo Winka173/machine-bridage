@@ -2565,6 +2565,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.interceptor_drone_vehicle"] = ("Interceptor drone vehicle", "Xe drone đánh chặn"),
             ["short.interceptor_drone_vehicle"] = ("Drone hunter", "Drone chặn"),
             ["note.interceptor_drone_vehicle"] = ("A truck launching interceptor drones (a Raytheon Coyote, or the drone-killers of the war in Ukraine) that ram enemy drones and helicopters.", "Xe tải phóng drone đánh chặn (Raytheon Coyote, hay drone săn drone trong chiến sự Ukraine) lao thẳng vào drone và trực thăng địch."),
+            // ct11: Hầm che quân.
+            ["unit.troop_shelter"] = ("Troop shelter", "Hầm che quân"),
+            ["short.troop_shelter"] = ("Troop shelter", "Hầm che quân"),
+            ["note.troop_shelter"] = ("A half-buried concrete bunker with an earth berm: vehicles sheltering round it ride out a barrage.", "Hầm bê tông nửa chìm có ụ đất phủ: xe núp quanh nó chịu được trận pháo kích."),
             // (batch A: new entries above)
         };
 

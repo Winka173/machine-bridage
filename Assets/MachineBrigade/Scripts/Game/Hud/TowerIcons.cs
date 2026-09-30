@@ -54,6 +54,7 @@ namespace MachineBrigade.Game.Hud
                 "searchlight" => "t_searchlight",
                 "barrage_balloon" => "t_balloon",
                 "visual_jammer" => "t_screen",
+                "troop_shelter" => "t_shelter",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",

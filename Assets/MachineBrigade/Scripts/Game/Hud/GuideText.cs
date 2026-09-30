@@ -1467,6 +1467,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 4 giây một [[drone đánh chặn]], tầm 60 m, vào drone và trực thăng, cả drone địch đang bay tới.\n" +
                 "Mạnh / yếu: làm mỏng bầy FPV và trực thăng; máy bay phản lực bay qua vô sự.\n" +
                 "Mẹo: giữ cạnh xe tăng và pháo binh ta."),
+            ["guide.troop_shelter"] = (
+                "[[Troop shelter]] · medium structure · shelter from shells\n" +
+                "How it fights: your vehicles within 15 m take [[half]] from shells, mortars, bombs and strikes; not direct fire.\n" +
+                "Strong / weak: keeps defenders alive through a barrage; no help against tanks.\n" +
+                "Tip: gather your defenders round it when the shells come.",
+                "[[Hầm che quân]] · công trình ô vừa · tránh đạn pháo\n" +
+                "Cách đánh: xe ta trong 15 m nhận [[một nửa]] sát thương pháo, cối, bom và không kích; không che đạn bắn thẳng.\n" +
+                "Mạnh / yếu: giữ quân phòng thủ sống qua trận pháo kích; vô dụng trước xe tăng.\n" +
+                "Mẹo: kéo quân phòng thủ về quanh nó khi đạn pháo tới."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
