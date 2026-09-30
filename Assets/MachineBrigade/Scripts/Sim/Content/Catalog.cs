@@ -162,7 +162,7 @@ namespace MachineBrigade.Sim.Content
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
-                    WeaponFamily = w.Has("weaponFamily") && w.String("weaponFamily").Length > 0 ? w.String("weaponFamily") : null,
+                    WeaponFamily = w.OptionalString("weaponFamily"),
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                     // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
                     TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
@@ -506,9 +506,8 @@ namespace MachineBrigade.Sim.Content
                 if (!families.TryAdd(f.String("id"), f)) throw new FormatException($"{f.Path}: duplicate weapon family '{f.String("id")}'.");
             return w =>
             {
-                if (!w.Has("weaponFamily")) return w;
-                var id = w.String("weaponFamily");
-                if (id.Length == 0) return w;
+                // An empty family ("") keeps a weapon that inherits a member out of it (JsonObject.String rejects "").
+                if (w.OptionalString("weaponFamily") is not { } id) return w;
                 if (!families.TryGetValue(id, out var family)) throw new FormatException($"{w.Path}.weaponFamily: unknown weapon family '{id}'.");
                 return w.Taking(family, "id", "real");
             };
