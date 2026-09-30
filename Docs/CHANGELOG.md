@@ -7,6 +7,16 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### PT10 visuals (play-test 10, DECISIONS PT10 visuals)
+
+- The In action preview's targets no longer crackle white, spark blue and smoke while unharmed: a range dummy was drawn as
+  knocked out by an EMP because the sim holds it still as "stunned". Only a real stun (an EMP, a SEAD strike) draws the
+  arcs, sparks, burnt-electronics smoke and dead radar now; hit flashes, damage smoke and fire still follow real damage.
+- Flak bursts redrawn after real flak: a sharp orange flash gone in a few frames, a dense round black-to-charcoal puff that
+  blooms, hangs and drifts for 3-6 s, and a quick spark spray of fragments. No ring, no Small blast or grey puffs under
+  it. Sized and weighted by calibre (a small grey tuft at 20 mm, a heavy black ball at 57 mm and over), never smaller than
+  before; Low draws fewer puffs and sparks. Editor: Machine Brigade > Render Flak Burst Shots.
+
 ### New content, batch A (prompt 25 F2, DECISIONS 25F2-A)
 
 - 27 new cards from the balance spreadsheet, each sold in the shop (1,500-5,000 coins) and fielded by the enemy too:

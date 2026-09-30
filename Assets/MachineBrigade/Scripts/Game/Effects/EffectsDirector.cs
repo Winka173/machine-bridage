@@ -68,7 +68,7 @@ namespace MachineBrigade.Game.Effects
         private readonly List<VehicleView> _departing = new();
         private readonly Emitters _emitters;
 
-        /// <summary>Prompt 25 G: the air-burst rounds' bursts (a dark puff, a spark ring, fragments).</summary>
+        /// <summary>Prompt 25 G, play-test 10: the air-burst rounds' bursts (a sharp flash, a black puff that hangs, a spark spray).</summary>
         private readonly FlakBursts _flakBursts;
         private readonly TrackMarks _tracks;
         private readonly NightLights _night;
@@ -206,6 +206,17 @@ namespace MachineBrigade.Game.Effects
                             var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f
                                 : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f : 15f;
                             var burst = new Vector3(e.Position.X, height, e.Position.Y);
+                            // Play-test 10 (DECISIONS PT10 visuals): an air-burst round's burst is its own flak burst alone
+                            // (a sharp flash, a black puff that hangs, a spark spray); no Small blast, lone ring or grey puffs.
+                            var burstRound = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var br) ? br : null;
+                            if (burstRound != null && burstRound.Flak)
+                            {
+                                var flakAt = burst + UnityEngine.Random.insideUnitSphere * 0.6f;
+                                if (!_cull.Visible(flakAt, 0.3f)) break;
+                                _flakBursts.Burst(flakAt, burstRound.Size, e.Value);
+                                _night.Blast(flakAt, 3f * FlakBursts.Scale(burstRound.Size), 0.15f);
+                                break;
+                            }
                             // Play-test 8 A (DECISIONS 22Q): an anti-aircraft missile's burst is drawn at its round's impact
                             // scale (the S-400's 48N6 twice the size, as big as the missile); other rounds as before.
                             var flak = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var aaRound) && aaRound.Targets == TargetLayers.Air
@@ -214,9 +225,6 @@ namespace MachineBrigade.Game.Effects
                             if (e.Tier >= ExplosionTier.Medium) Airburst(burst, e.Tier, now, flak, e.Value);
                             else Explode(e.Tier, burst, now, flak, radius: e.Value);
                             _emitters.Flak(burst);
-                            // Prompt 25 G: an air-burst round goes off by its target: its own burst on top.
-                            var burstRound = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var br) ? br : null;
-                            if (burstRound != null && burstRound.Flak) _flakBursts.Burst(burst + UnityEngine.Random.insideUnitSphere * 0.6f, burstRound.Size, e.Value);
                             break;
                         }
                         var round = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var landed) ? landed : null;

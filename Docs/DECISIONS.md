@@ -12152,3 +12152,39 @@ and the `ammoswap` icon or "2 rounds".
 - `2a75_125_mm_he` gives both 2A75 carriers 220 m/s and weight 345; the 2A38's AP rounds follow their guns' 7 and 7.5.
 - CalibreTests and BalanceSheetTests now see the rounds as weapons; the AI's roles, counters, air-defence lists and stores read
   the gun's own round, as before.
+
+## PT10 visuals. The In action preview and the flak burst (2026-10-01)
+
+The owner (play-test 10): "khi coi in action preview. sao tất cả các xe dính hiệu ứng có gì trắng trắng chớp chớp và bốc
+khói mặc dù không hề bị sát thương" and "đạn flag hiệu ứng có vẻ khác ngoài đời, tham khảo lại". No tests run (the owner's
+rule): compile checks, an In action probe and the flak shot sheet only.
+
+**The cause.** Not the fire stages, HeatLights, the round-switch glyph, the flak burst or modelSize. A probe of the In
+action range (StartupProbe with a temporary per-shot dump of every range vehicle's health and of the particles near it)
+showed the armoured car and the jeep at full health (660/660, 264/264) with "Rail Charge", blue "Sparks" and "Damage Smoke"
+particles on them every second. `Vehicle.RefreshEffects` sets `Stunned = StunnedUntil > now || Dummy`: the sim holds a range
+dummy still by counting it stunned, and play-test 6's `EffectsDirector.ShowStunned` (DECISIONS 21H) draws a stun on
+everything `Stunned`: on Eco and Low a white-blue charge flicker, blue sparks, now and then a puff of burnt-electronics smoke,
+and the radar slumps (`VehicleView.Spin`). Every In action target is a dummy, so every one crackled and smoked.
+
+**The fix.** `Vehicle.KnockedOut` (`StunnedUntil > now`): a real stun only. `Stunned` keeps its meaning for the sim (a dummy
+still never moves or fires); the two views that draw a stun (`ShowStunned`, the radar in `Spin`) read `KnockedOut`. Hit
+flashes, damage smoke and HullFire are untouched and still come from the health: the same probe showed the 120 mm hits'
+flashes and impact smoke on the targets that took them.
+
+**The flak burst.** References: WWII 88 mm and Bofors 40 mm barrage footage, Cold War ZSU-23-4 and Gepard fire, 35 mm AHEAD,
+the Bofors 40 mm 3P proximity round, and the flak of War Thunder and Battlefield. A real burst is a small sharp flash that is
+gone at once (no fireball), then a dense, round, black to charcoal ball that blooms in about a tenth of a second and hangs
+for seconds, drifting and greying at its edge, bigger and blacker for bigger rounds; the fragments show as a quick spray of
+sparks, never a ring. Prompt 25 G's burst laid a spark ring and long streaks over the Small blast (whose lone ring on the
+blast radius read as a long glowing ring) and three generic grey puffs. Now (`FlakBursts`):
+- flash: an orange-white core (0.05 s) and a wider orange pop (0.08 s), `MaterialLibrary.Flash`;
+- puff: 5 to 8 tight dark balls (by `Weight`, 0 at 20 mm to 1 at 57 mm: more, tighter, darker, 3.2 to 5.2 s) and a paler
+  skirt of 3, blooming to full size in 6 % of their life then swelling to 1.5 times while they drift on the wind;
+- fragments: 28 stretched sparks times the scale, three in four gone in 0.07-0.14 s flung out to the blast's reach, one in
+  four slower and falling for 0.25-0.4 s;
+- a flak round in the air draws this alone (no Small blast, lone ring or `Emitters.Flak`), with a 0.15 s night light; a flak
+  round at the ground bursts 1.4 m over its ground impact, as before;
+- scale 0.8 at 20 mm, 1 at 35, 1.5 at 57, 1.8 at 76 (prompt 25 G's was 0.75 to 1.5); puffs 1.5-1.9 and 2.1-2.6 m times the
+  scale before they swell, larger than the old ones; about 40 particles for a 35 mm burst, Low about 25.
+The shot sheet: `EffectShots.FlakBurstShots` (20, 35, 57, 76 mm at 0.03, 0.4 and 2.5 s).

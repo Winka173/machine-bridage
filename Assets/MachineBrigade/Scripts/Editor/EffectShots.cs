@@ -709,6 +709,62 @@ namespace MachineBrigade.Editor
             materials.Dispose();
         }
 
+        /// <summary>
+        /// Play-test 10 (DECISIONS PT10 visuals): flak bursts of 20, 35, 57 and 76 mm side by side in the air, left to right,
+        /// each row a moment of the same bursts (0.03 s: the flash and the spark spray; 0.4 s: the puff bloomed; 2.5 s: the
+        /// puff hanging and drifting). Batch mode (with graphics):
+        /// -executeMethod MachineBrigade.Editor.EffectShots.FlakBurstShots -mbShotsOut &lt;png&gt;.
+        /// </summary>
+        [MenuItem("Machine Brigade/Render Flak Burst Shots")]
+        public static void FlakBurstShots()
+        {
+            var output = Argument("-mbShotsOut") ?? Path.Combine(Application.dataPath, "../Builds/flakbursts.png");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            var materials = new MaterialLibrary();
+            var root = new GameObject("Shots").transform;
+            Stage(materials, root, 200f);
+            var fog = RenderSettings.fog;
+            RenderSettings.fog = false;
+            var camera = Camera(root);
+            camera.orthographicSize = 4.2f;
+            var right = camera.transform.right;
+            var calibres = new[] { 20f, 35f, 57f, 76f };
+            var moments = new[] { 0.03f, 0.4f, 2.5f };
+            var size = new Vector2Int(1600, 420);
+            var sheet = new Texture2D(size.x, size.y * moments.Length, TextureFormat.RGB24, false);
+            var rt = new RenderTexture(size.x, size.y, 24, RenderTextureFormat.ARGB32) { antiAliasing = 4 };
+            camera.aspect = size.x / (float)size.y;
+            camera.targetTexture = rt;
+            camera.transform.position = Vector3.up * 8f - camera.transform.forward * 80f;
+            for (var row = 0; row < moments.Length; row++)
+            {
+                Random.InitState(20261001);
+                var bursts = new FlakBursts(materials, root);
+                var systems = new System.Collections.Generic.List<ParticleSystem>();
+                foreach (var ps in root.GetComponentsInChildren<ParticleSystem>(true))
+                    if (ps.name.StartsWith("Flak")) systems.Add(ps);
+                for (var i = 0; i < calibres.Length; i++) bursts.Burst(Vector3.up * 8f + right * ((i - 1.5f) * 3.6f), calibres[i], 3.5f);
+                const float step = 1f / 60f;
+                for (var time = 0f; time < moments[row]; time += step)
+                    foreach (var ps in systems) ps.Simulate(step, false, false, false);
+                camera.Render();
+                RenderTexture.active = rt;
+                sheet.ReadPixels(new Rect(0, 0, size.x, size.y), 0, (moments.Length - 1 - row) * size.y);
+                RenderTexture.active = null;
+                Debug.Log($"[EffectShots] flak at {moments[row]:0.00} s: {bursts.Alive} particles");
+                foreach (var ps in systems) Object.DestroyImmediate(ps.gameObject);
+            }
+            sheet.Apply();
+            Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(output)) ?? ".");
+            File.WriteAllBytes(output, sheet.EncodeToPNG());
+            Debug.Log($"[EffectShots] wrote {Path.GetFullPath(output)}");
+            RenderSettings.fog = fog;
+            camera.targetTexture = null;
+            rt.Release();
+            Object.DestroyImmediate(sheet);
+            materials.Dispose();
+        }
+
         private static string Argument(string name)
         {
 
