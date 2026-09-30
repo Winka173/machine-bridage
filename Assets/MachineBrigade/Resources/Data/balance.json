@@ -610,7 +610,6 @@
     // ct13: the fixed 50 kW anti-drone laser (Iron Beam fixed site, DragonFire): at drones only; its interceptors (the APS) take rockets and mortar bombs; smoke cuts it by 80 %.
     { "id": "laser_50kw", "real": "50 kW laser (Iron Beam fixed site)", "family": "laser", "size": 50, "pen": 2, "damageType": "Energy", "damage": 6, "cooldown": 0.0667, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true, "prey": "Drones" },
     // (batch A weapons: new entries above)
-<<<<<<< HEAD
     // Prompt 25 F2 batch B (DECISIONS 25F2-B): the "Đề xuất thêm" Thấp-priority items, stand-in models (a borrowed
     // model, "tint"); new weapons only where nothing existing was close, else an existing weapon id is reused as is.
     // dx05: the 2S38 Derivatsiya-PVO's 57 mm autocannon (proximity-fused, also catches light vehicles).
@@ -634,8 +633,6 @@
     // dx56: the one-shot ATGM salvo tower's Kornet, a clip of eight that does not refill: it must be bought again once spent.
     { "id": "one_shot_kornet", "inherits": "tower_kornet", "real": "9M133 Kornet", "burst": 1, "cooldown": 1.2, "clip": 8, "clipReload": 999999 },
     // (batch B weapons: new entries above)
-    { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
-=======
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4},
     // tl02: CBU-97-class cluster bomb (glide_bomber secondary): 10 top-attack bomblets that only matter against vehicles.
     { "id": "cluster_at_bomb", "real": "CBU-97 Sensor Fuzed Weapon", "weaponFamily": "cbu_97_sfw", "family": "bomb", "size": 450, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 90, "range": 30, "projectileSpeed": 35, "impactTier": "Medium", "projectile": "Bomb", "projectileModel": "cbu_97", "roundLength": 1.17, "cluster": { "count": 10, "radius": 12.5, "damage": 160, "splash": 3, "pen": 4, "tier": "Medium" } },
@@ -657,8 +654,7 @@
     // vehicle (new)", does not exist yet (out of scope for ordnance-only batch C); cataloged for when it is built.
     { "id": "anti_ship_missile", "real": "NSM / P-800 Oniks", "weaponFamily": "nsm_oniks", "family": "missile", "size": 680, "pen": 4, "damageType": "HighExplosive", "damage": 450, "cooldown": 30, "range": 140, "projectileSpeed": 30, "splash": 7, "impactTier": "Huge", "projectile": "Missile", "projectileModel": "nsm_oniks", "roundLength": 3.17 },
     // ht04: the loitering attack UAV's missile (an MQ-9/TB2-style Hellfire): goes for the strongest enemy vehicle in reach.
-    { "id": "uav_loiter_missile", "real": "AGM-114 Hellfire (UAV)", "family": "missile", "size": 45, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 260, "cooldown": 7, "range": 40, "projectileSpeed": 26, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "projectileModel": "hellfire_longbow", "bigGame": true },
->>>>>>> feature/p25-new-c
+    { "id": "uav_loiter_missile", "real": "AGM-114 Hellfire (UAV)", "family": "missile", "size": 45, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 260, "cooldown": 7, "range": 40, "projectileSpeed": 26, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "projectileModel": "hellfire_longbow", "bigGame": true }
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -2118,7 +2114,7 @@
     // ht10: 6 Coyote Block 2-class interceptor missiles homing on the nearest distinct enemy drones (Homing, dronesOnly).
     { "id": "drone_intercept_strike", "kind": "Homing", "pen": 2, "cp": 3, "cooldown": 40, "delay": 1.5, "radius": 40, "count": 6, "damage": 120, "blast": 2, "tier": "Small", "damageType": "Fragmentation", "dronesOnly": true },
     // ht11: chaff (Smoke): denies the circle for Duration, as the smoke screen does for line of sight and lasers.
-    { "id": "chaff_strike", "kind": "Smoke", "cp": 2, "cooldown": 45, "delay": 1.0, "radius": 30, "count": 1, "duration": 8, "tier": "Small" },
+    { "id": "chaff_strike", "kind": "Smoke", "cp": 2, "cooldown": 45, "delay": 1.0, "radius": 30, "count": 1, "duration": 8, "tier": "Small" }
   ],
 
   "props": [
