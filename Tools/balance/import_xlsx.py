@@ -285,6 +285,8 @@ script runs it again.
 
 
 FAMILY_KEYS = ("projectileSpeed", "splash", "projectileModel", "roundWeight")
+# B3 round lengths (steps_b.py): on a family when every member takes one; A3 keeps them when it writes the families.
+ROUND_KEYS = ("roundLength", "projectileScale")
 
 
 class Writer:

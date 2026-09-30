@@ -977,4 +977,61 @@ Every "Kích thước model" row of "Kiểm tra từng mục": the vehicle's dra
 
 <!-- /step:B1 -->
 
+<!-- step:B3 -->
+## B3: round sizes (sheet Kích thước đạn)
+
+Every row of "Kích thước đạn": a round's drawn length (its model x its scale, as the sheet measures it: 0.8 x real launched from the ground, 0.5 x real from an aircraft, 0.8 m at least) goes into the data (roundLength; the game fits whichever model flies it to that length), with projectileScale for the model the game has. A row stands for every weapon the design document drew with the same model at the same scale (it lists one row a model and scale, under its first weapon) that fires the same round: a shell row its whole group, another row its weapon's family. The 203 mm shells take 1.3 x the 155 mm's length (prompt 25 C.3); the Kh-29L and the GBU-39 fly models of their own (ASSET_DEBT: until they are built, the Maverick and the GBU-12 stand in, at the new lengths). "Giữ" rows keep their rounds.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Kích thước đạn | 17 | 26 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kích thước đạn | aim9 | AIM-9 Sidewinder | already | kept: 1.54 m (aim9 x 0.7; the rule gives 1.51 m) |
+| Kích thước đạn | air_cruise_missile | Kh-101 (400 kg) | already | kept: 4.04 m (cruise_missile x 1; the rule gives 3.73 m) |
+| Kích thước đạn | air_to_air | AIM-120 AMRAAM | already | kept: 2.21 m (aim120 x 0.85; the rule gives 1.82 m) |
+| Kích thước đạn | ataka | 9M120 Ataka | already | kept: 1.32 m (atgm_ataka x 0.88; the rule gives 1.46 m) |
+| Kích thước đạn | atgm | BGM-71 TOW-2 | already | kept: 1.04 m (atgm_tow x 0.8; the rule gives 0.94 m) |
+| Kích thước đạn | boat_rockets | S-8 80 mm | already | kept: 1.08 m (s8 x 0.9; the rule gives 1.26 m) |
+| Kích thước đạn | boss_railgun | railgun (64 MJ) | already | kept: 0.9 m (rail_slug x 1; the rule gives 0.8 m) |
+| Kích thước đạn | boss_rockets | BM-21 Grad 122 mm | already | kept: 2.2 m (grad x 1; the rule gives 2.3 m) |
+| Kích thước đạn | boss_thermo | TOS-1A 220 mm thermobaric | already | kept: 2.4 m (tos_rocket x 1; the rule gives 2.64 m) |
+| Kích thước đạn | drone_missile | AGM-114 Hellfire | already | kept: 0.91 m (hellfire x 0.65; the rule gives 0.81 m) |
+| Kích thước đạn | grad_cluster | BM-21 Grad 122 mm (cluster) | already | kept: 2.2 m (grad_cluster x 1; the rule gives 2.3 m) |
+| Kích thước đạn | griffin | AGM-176 Griffin | already | kept: 1 m (griffin x 1; the rule gives 0.8 m) |
+| Kích thước đạn | heli_atgm | AGM-114 Hellfire | already | kept: 0.87 m (hellfire x 0.62; the rule gives 0.81 m) |
+| Kích thước đạn | heli_rockets | Hydra 70 mm | already | kept: 1 m (hydra x 1; the rule gives 0.8 m) |
+| Kích thước đạn | hellfire_standoff | AGM-114L Hellfire Longbow | already | kept: 0.91 m (hellfire_longbow x 0.65; the rule gives 0.89 m) |
+| Kích thước đạn | lancet | ZALA Lancet-3 (3 kg) | already | kept: 1.4 m (lancet x 1; the rule gives 1.32 m) |
+| Kích thước đạn | mlrs_elite | M30 GMLRS 227 mm (cluster) | already | kept: 2.8 m (gmlrs x 1; the rule gives 3.15 m) |
+| Kích thước đạn | mortar_120 | 2B11 120 mm | already | kept: 0.9 m (mortar_bomb x 1; the rule gives 0.8 m) |
+| Kích thước đạn | r60 | R-60 | already | kept: 1.04 m (r60 x 0.65; the rule gives 1.04 m) |
+| Kích thước đạn | recon_missile | MAM-L | already | kept: 0.6 m (mam_l x 0.6; the rule gives 0.8 m) |
+| Kích thước đạn | scout_rockets | Hydra 70 mm | already | kept: 0.72 m (hydra x 0.72; the rule gives 0.8 m) |
+| Kích thước đạn | shahed | Shahed-136 (50 kg) | already | kept: 2.6 m (shahed x 1; the rule gives 2.8 m) |
+| Kích thước đạn | stinger_atas | FIM-92 Stinger (ATAS) | already | kept: 0.91 m (stinger x 0.7; the rule gives 0.8 m) |
+| Kích thước đạn | tamir | Tamir interceptor (Iron Dome) | already | kept: 1.98 m (shorad_dart x 0.9; the rule gives 2.4 m) |
+| Kích thước đạn | technical_rockets | Type 63 107 mm | already | kept: 0.9 m (rocket_107 x 1; the rule gives 0.8 m) |
+| Kích thước đạn | wvr_aam | AIM-9X Sidewinder | already | kept: 1.76 m (aim9 x 0.8; the rule gives 1.51 m) |
+| Kích thước đạn | bomber_payload | FAB-500 (500 kg) | applied | 1.64 -> 1.2 m (launched from máy bay: 0.5 x its real 2.4 m, 0.8 m at least); weapons: bomber_payload; moved: bomber_payload 1.64 -> 1.2 m |
+| Kích thước đạn | boss_howitzer | 2A44 203 mm | applied | 1.1 -> 0.8 m (launched from mặt đất: 0.8 x its real 1 m, 0.8 m at least); a 203 mm shell: 1.04 m, 1.3 x the 155 mm's 0.8 m (prompt 25 C.3), not the row's rule; weapons: boss_howitzer, casemate_155, gun_155_coastal, gun_155_sph, gun_155_twin, gun_155_twin_ap, gun_155_twin_coastlr, gun_155_twin_fort, gun_155_twin_long, howitzer, howitzer_cb, howitzer_ext, howitzer_fixed, naval_155_triple; moved: howitzer 1.1 -> 0.8 m; howitzer_fixed 1.1 -> 0.8 m; gun_155_sph 1.1 -> 0.8 m; howitzer_cb 1.1 -> 0.8 m; howitzer_ext 1.1 -> 0.8 m; casemate_155 1.1 -> 0.8 m; gun_155_twin 1.1 -> 0.8 m; gun_155_twin_fort 1.1 -> 0.8 m; gun_155_twin_long 1.1 -> 0.8 m; gun_155_coastal 1.1 -> 0.8 m; gun_155_twin_coastlr 1.1 -> 0.8 m; boss_howitzer 1.1 -> 1.04 m; naval_155_triple 1.1 -> 0.8 m |
+| Kích thước đạn | boss_missiles | 9M133 Kornet | applied | 1.3 -> 0.96 m (launched from mặt đất: 0.8 x its real 1.2 m, 0.8 m at least); weapons: atgm_heavy, boss_missiles, kornet_multi, kornet_top, kornet_twin, tower_kornet; another round on the same model and scale, kept: atgm_post; moved: atgm_heavy 1.3 -> 0.96 m; kornet_twin 1.3 -> 0.96 m; tower_kornet 1.3 -> 0.96 m; kornet_top 1.3 -> 0.96 m; kornet_multi 1.3 -> 0.96 m; boss_missiles 1.3 -> 0.96 m |
+| Kích thước đạn | boss_mortar | 2B8 240 mm | applied | 1.8 -> 1.2 m (launched from mặt đất: 0.8 x its real 1.5 m, 0.8 m at least); weapons: boss_mortar; moved: boss_mortar 1.8 -> 1.2 m |
+| Kích thước đạn | buk_launcher | 9M317 Buk | applied | 2.16 -> 4.44 m (launched from mặt đất: 0.8 x its real 5.55 m, 0.8 m at least); weapons: buk_launcher, sam_long, sam_post; moved: sam_long 2.16 -> 4.44 m; buk_launcher 2.16 -> 4.44 m; sam_post 2.16 -> 4.44 m |
+| Kích thước đạn | cruiser_203 | Mk 71 203 mm (twin) | applied | 1.43 -> 0.8 m (launched from mặt đất: 0.8 x its real 1 m, 0.8 m at least); a 203 mm shell: 1.04 m, 1.3 x the 155 mm's 0.8 m (prompt 25 C.3), not the row's rule; weapons: cruiser_203, gun_203_siege; moved: cruiser_203 1.43 -> 1.04 m; gun_203_siege 1.43 -> 1.04 m |
+| Kích thước đạn | guided_bomb | GBU-39 SDB (110 kg) | applied | 2.2 -> 0.9 m (launched from máy bay: 0.5 x its real 1.8 m, 0.8 m at least); weapons: guided_bomb; moved: guided_bomb 2.2 -> 0.9 m, a model of its own, gbu39 (it flew gbu12; gbu12 stands in until it is built) |
+| Kích thước đạn | jassm | AGM-158 JASSM (450 kg) | applied | 3.01 -> 2.135 m (launched from máy bay: 0.5 x its real 4.27 m, 0.8 m at least); weapons: jassm; moved: jassm 3.01 -> 2.135 m |
+| Kích thước đạn | jet_bombs | FAB-250 (250 kg) | applied | 1.8 -> 0.98 m (launched from máy bay: 0.5 x its real 1.96 m, 0.8 m at least); weapons: jet_bombs; moved: jet_bombs 1.8 -> 0.98 m |
+| Kích thước đạn | kh29 | Kh-29L | applied | 1.16 -> 1.95 m (launched from máy bay: 0.5 x its real 3.9 m, 0.8 m at least); weapons: kh29; another round on the same model and scale, kept: maverick; moved: kh29 1.16 -> 1.95 m, a model of its own, kh29l (it flew maverick; maverick stands in until it is built) |
+| Kích thước đạn | leviathan_460 | Type 94 460 mm/45 (triple) | applied | 2.2 -> 1.56 m (launched from mặt đất: 0.8 x its real 1.95 m, 0.8 m at least); weapons: leviathan_460; moved: leviathan_460 2.2 -> 1.56 m |
+| Kích thước đạn | mortar_240_fixed | 2B8 240 mm (emplacement) | applied | 1.62 -> 1.2 m (launched from mặt đất: 0.8 x its real 1.5 m, 0.8 m at least); weapons: mortar_240, mortar_240_fixed, siege_mortar_240; moved: siege_mortar_240 1.62 -> 1.2 m; mortar_240 1.62 -> 1.2 m; mortar_240_fixed 1.62 -> 1.2 m |
+| Kích thước đạn | patriot | MIM-104 Patriot PAC-2 | applied | 3.13 -> 4.24 m (launched from mặt đất: 0.8 x its real 5.3 m, 0.8 m at least); weapons: patriot, sam_battery, sam_battery_lrr; another round on the same model and scale that inherits a member, so follows it: sam_pac3; moved: sam_battery 3.13 -> 4.24 m; patriot 3.13 -> 4.24 m; sam_battery_lrr 3.13 -> 4.24 m |
+| Kích thước đạn | sam | Starstreak / Stinger SHORAD | applied | 1.65 -> 1.216 m (launched from mặt đất: 0.8 x its real 1.52 m, 0.8 m at least); weapons: sam; moved: sam 1.65 -> 1.216 m |
+| Kích thước đạn | sam_48n6 | S-400 48N6 | applied | 4.42 -> 6 m (launched from mặt đất: 0.8 x its real 7.5 m, 0.8 m at least); weapons: sam_48n6; moved: sam_48n6 4.42 -> 6 m |
+| Kích thước đạn | stealth_payload | GBU-31 JDAM (907 kg) | applied | 2.7 -> 1.94 m (launched from máy bay: 0.5 x its real 3.88 m, 0.8 m at least); weapons: stealth_payload; moved: stealth_payload 2.7 -> 1.94 m |
+| Kích thước đạn | swarm_drones | FPV drone (1.5 kg) | applied | 0.55 -> 0.8 m (launched from máy bay: 0.5 x its real 0.5 m, 0.8 m at least); weapons: airship_drones, fpv_hangar, fpv_hangar_swarm, fpv_swarm, swarm_drones; moved: fpv_swarm 0.55 -> 0.8 m; fpv_hangar 0.55 -> 0.8 m; fpv_hangar_swarm 0.55 -> 0.8 m; airship_drones 0.55 -> 0.8 m; swarm_drones 0.55 -> 0.8 m |
+
+<!-- /step:B3 -->
+
 <!-- import_b:end -->

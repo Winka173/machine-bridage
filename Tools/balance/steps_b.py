@@ -18,7 +18,10 @@ the air), which wins over the row. Towers keep their sizes (the sheet: "vừa c�
 """
 from __future__ import annotations
 
+import collections
 import math
+import os
+import re
 
 import glb_bounds as G
 import import_xlsx as X
@@ -52,6 +55,14 @@ INTRO = {
            "B2 model agent rebuilt (DECISIONS 25B2) is drawn at its built box, the sheet's target (0.8 x real on the "
            "ground, 0.4 x real in the air). Bosses' \"Kích thước\" rows resize the boss (its size). Towers' rows are counted, "
            "not listed: they keep their sizes."),
+    "B3": ("Every row of \"Kích thước đạn\": a round's drawn length (its model x its scale, as the sheet measures it: "
+           "0.8 x real launched from the ground, 0.5 x real from an aircraft, 0.8 m at least) goes into the data "
+           "(roundLength; the game fits whichever model flies it to that length), with projectileScale for the model the "
+           "game has. A row stands for every weapon the design document drew with the same model at the same scale (it "
+           "lists one row a model and scale, under its first weapon) that fires the same round: a shell row its whole "
+           "group, another row its weapon's family. The 203 mm shells take 1.3 x the 155 mm's length (prompt 25 C.3); "
+           "the Kh-29L and the GBU-39 fly models of their own (ASSET_DEBT: until they are built, the Maverick and the "
+           "GBU-12 stand in, at the new lengths). \"Giữ\" rows keep their rounds."),
 }
 
 
@@ -59,6 +70,9 @@ def run(step, wr, wb, report):
     if step == "B1":
         b1(wr, wb, report)
         return "B1: model sizes (sheet Kiểm tra từng mục)"
+    if step == "B3":
+        b3(wr, wb, report)
+        return "B3: round sizes (sheet Kích thước đạn)"
     return None
 
 
@@ -299,3 +313,205 @@ def boss_row(wr, report, step, r, rows):
     if changed:
         detail += "; " + ", ".join(changed)
     report.add(step, SHEET, vid, item, "applied" if changed else "already", detail)
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# B3: round sizes ("Kích thước đạn")
+
+ROUND_SHEET = "Kích thước đạn"
+# Round models the sheet asks for ("cần model riêng") that are not built yet (ASSET_DEBT), and the model that flies for
+# each until it is: WeaponEffects.RoundStandIns mirrors it.
+STAND_IN = {"kh29l": "maverick", "gbu39": "gbu12"}
+RATIO_203 = 1.3  # prompt 25 C.3: 203 mm rounds are drawn 1.3 x the 155 mm's
+ROUNDS_TSV = os.path.join(X.ROOT, "Docs", "balance", "round_sizes.tsv")
+RULE_203 = "the 203 mm rule"
+
+
+def native(model):
+    """A round model's length at scale 1 (its stand-in's while it is not built); None without either."""
+    b = G.length_width_height(model) if model else None
+    if b is None and model in STAND_IN:
+        b = G.length_width_height(STAND_IN[model])
+    return b[0] if b else None
+
+
+def drawn_round(g, wid):
+    """How long a weapon's round is drawn (before the view's legibility boost, WeaponEffects.SizeOf)."""
+    w = g.weapon(wid)
+    if w.get("roundLength"):
+        return float(w["roundLength"])
+    n = native(w.get("projectileModel"))
+    return n * float(w.get("projectileScale", 1) or 1) if n else None
+
+
+def is_shell(w):
+    return (w.get("projectile") or "Shell") == "Shell"
+
+
+def model_id(real):
+    """A round model's id from its real name: "Kh-29L" -> kh29l, "GBU-39 SDB (110 kg)" -> gbu39."""
+    return re.sub(r"[^a-z0-9]", "", str(real).split()[0].lower())
+
+
+def own_family(g, wid):
+    fam = g.raw_weapons[wid].get("weaponFamily")
+    return fam if fam in g.families else None
+
+
+def calibre(g, wid):
+    return float(g.weapon(wid).get("size", 0) or 0)
+
+
+def b3(wr, wb, report):
+    import steps_a3 as F
+    g = wr.game
+    step = "B3"
+    _, rows = X.sheet(wb, ROUND_SHEET)
+    groups = collections.defaultdict(list)  # (model, scale) -> weapons: one row of the design document's round table
+    for wid in g.raw_weapons:
+        w = g.weapon(wid)
+        if w.get("projectileModel"):
+            groups[(w["projectileModel"], float(w.get("projectileScale", 1) or 1))].append(wid)
+
+    targets = {}  # weapon -> (length, its own new model or None)
+    row_of = {}   # weapon -> the row (its weapon id) that set it
+    kept = []     # the weapons of the "Giữ" rows
+    others = {}   # row -> weapons of its group that fire another round (left as they are)
+    for r in rows:
+        model, wid, real, cur, result, reason = r[0], r[1], r[2], r[3], r[10], str(r[11] or "")
+        if wid not in g.raw_weapons:
+            report.add(step, ROUND_SHEET, wid, real, "skipped", "no such weapon id in balance.json")
+            continue
+        w = g.weapon(wid)
+        group = groups[(w.get("projectileModel"), float(w.get("projectileScale", 1) or 1))]
+        if result != "Đổi":
+            kept += group
+            report.add(step, ROUND_SHEET, wid, real, "already",
+                       f"kept: {X.fmt(cur)} m ({model} x {X.fmt(float(w.get('projectileScale', 1) or 1))}; the rule gives "
+                       f"{X.fmt(round(float(r[8]), 2))} m)")
+            continue
+        if is_shell(w):
+            members = list(group)  # every shell drawn alike: the row is theirs
+        elif own_family(g, wid):
+            fam = own_family(g, wid)
+            members = [m for m in g.raw_weapons if own_family(g, m) == fam]
+        else:
+            name = F.real_name(w.get("real") or "")
+            members = [m for m in group if F.real_name(g.weapon(m).get("real") or "") == name]
+        new_model = model_id(real) if "model riêng" in reason else None
+        for m in members:
+            targets[m] = (float(r[8]), new_model if m == wid else None)
+            row_of[m] = wid
+        others[wid] = [m for m in group if m not in members]
+
+    OTHERS_BEFORE.clear()
+    OTHERS_BEFORE.update({m: drawn_round(g, m) for ms in others.values() for m in ms})
+
+    # The 203 mm shells: 1.3 x the 155 mm's length, the 155 mm as this step leaves it.
+    def length_now(m):
+        return targets[m][0] if m in targets else drawn_round(g, m)
+
+    shells = [m for m in g.raw_weapons if g.weapon(m).get("projectileModel") == "shell_155"]
+    l155 = collections.Counter(round(length_now(m), 3) for m in shells if calibre(g, m) == 155 and length_now(m)).most_common(1)
+    l155 = l155[0][0] if l155 else None
+    if l155:
+        for m in shells:
+            if calibre(g, m) == 203:
+                targets[m] = (round(RATIO_203 * l155, 3), None)
+                row_of.setdefault(m, RULE_203)
+
+    # Write: on a family when all its members take one length, else on each weapon's own line.
+    moved = collections.defaultdict(list)  # row -> what moved
+    by_family = collections.defaultdict(list)
+    for m in targets:
+        if own_family(g, m):
+            by_family[own_family(g, m)].append(m)
+    done = set()
+    for fam, ms in by_family.items():
+        members = [m for m in g.raw_weapons if own_family(g, m) == fam]
+        values = {targets[m] for m in members if m in targets}
+        if set(members) != set(ms) or len(values) != 1:
+            continue
+        length, new_model = next(iter(values))
+        if new_model:
+            continue
+        model = g.families[fam].get("projectileModel") or g.weapon(members[0]).get("projectileModel")
+        scale = round(length / native(model), 4)
+        before = {m: drawn_round(g, m) for m in members}
+        entry = g.families[fam]
+        if not (X.close(entry.get("roundLength"), length, 1e-6) and X.close(entry.get("projectileScale"), scale, 1e-6)):
+            def fn(e, length=length, scale=scale):
+                # In A3's order (it writes the families again on every run): after the round weight, else the model.
+                after = next(k for k in ("roundWeight", "projectileModel", "splash") if e.has(k))
+                e.set("roundLength", length, after=after)
+                e.set("projectileScale", scale, after="roundLength")
+            wr.doc.edit("weaponFamilies", fam, fn)
+            for m in members:
+                wr.doc.edit("weapons", m, lambda e: [e.remove(k) for k in X.ROUND_KEYS])
+            g.refresh()
+            for m in members:
+                moved[row_of[m]].append(f"{m} {X.fmt(round(before[m] or 0, 2))} -> {X.fmt(length)} m")
+        done.update(members)
+    for m in sorted(targets):
+        if m in done:
+            continue
+        length, new_model = targets[m]
+        w = g.weapon(m)
+        model = new_model or w.get("projectileModel")
+        scale = round(length / native(model), 4)
+        before = drawn_round(g, m)
+        want = {"projectileModel": new_model} if new_model else {}
+        want.update({"roundLength": length, "projectileScale": scale})
+        change = {k: v for k, v in want.items() if not X.close(w.get(k), v, 1e-6)}
+        if not change:
+            continue
+
+        def fn(e, change=change):
+            for k, v in change.items():
+                e.set(k, v, after="projectileModel" if e.has("projectileModel") and k != "projectileModel" else "id")
+        wr.doc.edit("weapons", m, fn)
+        g.refresh()
+        text = f"{m} {X.fmt(round(before or 0, 2))} -> {X.fmt(length)} m"
+        if new_model:
+            text += (f", a model of its own, {new_model} (it flew {w.get('projectileModel')}; "
+                     f"{STAND_IN.get(new_model, new_model)} stands in until it is built)")
+        moved[row_of[m]].append(text)
+
+    # The report: a line a row, and one a 203 mm shell no row names.
+    for r in rows:
+        wid, real, result = r[1], r[2], r[10]
+        if wid not in g.raw_weapons or result != "Đổi":
+            continue
+        members = sorted(m for m in targets if row_of.get(m) == wid)
+        detail = (f"{X.fmt(r[3])} -> {X.fmt(round(float(r[8]), 3))} m (launched from {r[6]}: {X.fmt(r[7])} x its real "
+                  f"{X.fmt(r[4])} m, 0.8 m at least)")
+        if calibre(g, wid) == 203 and l155:
+            detail += (f"; a 203 mm shell: {X.fmt(targets[wid][0])} m, {X.fmt(RATIO_203)} x the 155 mm's {X.fmt(l155)} m "
+                       f"(prompt 25 C.3), not the row's rule")
+        detail += "; weapons: " + ", ".join(members)
+        follow = [m for m in others.get(wid, []) if not X.close(drawn_round(g, m), OTHERS_BEFORE.get(m), 1e-3)]
+        stay = [m for m in others.get(wid, []) if m not in follow]
+        if follow:
+            detail += "; another round on the same model and scale that inherits a member, so follows it: " + ", ".join(follow)
+        if stay:
+            detail += "; another round on the same model and scale, kept: " + ", ".join(stay)
+        if moved.get(wid):
+            detail += "; moved: " + "; ".join(moved[wid])
+        report.add(step, ROUND_SHEET, wid, real, "applied" if moved.get(wid) else "already", detail)
+    for m in sorted(targets):
+        if row_of.get(m) == RULE_203:
+            report.add(step, ROUND_SHEET, m, g.weapon(m).get("real"), "applied" if moved.get(RULE_203) else "already",
+                       f"no row of its own; the 203 mm rule: {X.fmt(targets[m][0])} m")
+
+    # What the tests check (SizeSheetTests): every round this step set and the kept rows' rounds, with their lengths.
+    tsv = ["# Generated by Tools/balance/import_xlsx.py (B3): each weapon of the sheet \"Kích thước đạn\", the model it "
+           "flies and its drawn length in metres (model x scale, before the view's legibility boost).",
+           "\t".join(["weapon", "model", "length", "source"])]
+    for m in sorted(set(targets) | set(kept)):
+        w = g.weapon(m)
+        tsv.append("\t".join([m, w.get("projectileModel") or "", X.fmt(round(drawn_round(g, m), 3)), "B3" if m in targets else "kept"]))
+    with open(ROUNDS_TSV, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(tsv) + "\n")
+
+
+OTHERS_BEFORE = {}  # the drawn length of the rows' other rounds before B3 writes

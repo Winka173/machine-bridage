@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using NUnit.Framework;
 using MachineBrigade.Game.Match;
@@ -9,7 +11,7 @@ using UnityEngine;
 namespace MachineBrigade.Tests
 {
     /// <summary>
-    /// Prompt 25 B1 (DECISIONS 25B): the balance sheet's model sizes hold in the game. A vehicle is measured as the game
+    /// Prompt 25 B1 and B3 (DECISIONS 25B): the balance sheet's model and round sizes hold in the game. A vehicle is measured as the game
     /// draws it: its model's own box through <see cref="VehicleView.DrawScaleOf(VehicleDef, float)"/>, so a model rebuilt
     /// at another size is held to the same order as the one it replaced.
     /// </summary>
@@ -25,14 +27,14 @@ namespace MachineBrigade.Tests
             var prefab = Resources.Load<GameObject>("Models/" + model);
             if (prefab != null)
             {
-                var go = Object.Instantiate(prefab);
+                var go = UnityEngine.Object.Instantiate(prefab);
                 try
                 {
                     box = VehicleView.Measure(go.transform, go.transform).size;
                 }
                 finally
                 {
-                    Object.DestroyImmediate(go);
+                    UnityEngine.Object.DestroyImmediate(go);
                 }
             }
             return Boxes[model] = box;
@@ -133,6 +135,53 @@ namespace MachineBrigade.Tests
                 if (v.Length < v.ModelLength * 0.5f) failures.Add($"{v.Id}: its hull ({v.Length:0.00} m) is under half its length ({v.ModelLength:0.00} m)");
             }
             Assert.Greater(sized, 55, "every vehicle row of the sheet is sized");
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+        }
+
+        // ------------------------------------------------------------------ B3: rounds
+
+        [Test]
+        public void NoWeaponFliesAnotherRoundsModel()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var failures = new List<string>();
+            // The sheet's rows as the importer applied them (round_sizes.tsv): each weapon flies its model at its length
+            // (the model x its scale, before the view's legibility boost, as the sheet measures it).
+            var rows = BalanceSheetTests.Rows("round_sizes.tsv");
+            foreach (var r in rows)
+            {
+                Assert.IsTrue(catalog.Weapons.ContainsKey(r[0]), $"the sheet's weapon '{r[0]}' is in the catalog");
+                var w = catalog.Weapons[r[0]];
+                if (w.ProjectileModel != r[1]) failures.Add($"{w.Id} flies {w.ProjectileModel}, the sheet's {r[1]}");
+                var want = float.Parse(r[2], CultureInfo.InvariantCulture);
+                var got = w.RoundLength > 0f ? w.RoundLength : BoxOf(w.ProjectileModel ?? "").z * w.ProjectileScale;
+                if (Mathf.Abs(got / want - 1f) > 0.03f) failures.Add($"{w.Id}: {got:0.00} m long, the sheet {want:0.00} m");
+            }
+            Assert.Greater(rows.Count, 60, "every row of the sheet, with the weapons it stands for");
+            // The two the sheet gives models of their own.
+            Assert.AreEqual("kh29l", catalog.Weapons["kh29"].ProjectileModel, "the Kh-29L no longer flies the Maverick");
+            Assert.AreEqual("gbu39", catalog.Weapons["guided_bomb"].ProjectileModel, "the GBU-39 no longer flies the GBU-12");
+            // A model built for one munition flies only it.
+            var named = new Dictionary<string, string>
+            {
+                ["maverick"] = "AGM-65", ["kh29l"] = "Kh-29", ["gbu12"] = "GBU-12", ["gbu39"] = "GBU-39", ["jdam"] = "GBU-31",
+                ["bomb_fab"] = "FAB-250", ["jassm"] = "JASSM", ["aim120"] = "AIM-120", ["r60"] = "R-60", ["stinger"] = "Stinger", ["igla"] = "Igla",
+            };
+            var bombs = new HashSet<string> { "bomb", "bomb_fab", "bomb_mk84", "gbu12", "gbu39", "jdam" };
+            foreach (var w in catalog.Weapons.Values)
+            {
+                if (w.ProjectileModel == null) continue;
+                if (named.TryGetValue(w.ProjectileModel, out var real) && (w.RealName ?? "").IndexOf(real, StringComparison.Ordinal) < 0)
+                    failures.Add($"{w.Id} ({w.RealName}) flies {w.ProjectileModel}, the {real}'s model");
+                if (bombs.Contains(w.ProjectileModel) != (w.Projectile == ProjectileKind.Bomb))
+                    failures.Add($"{w.Id} ({w.Projectile}) flies {w.ProjectileModel}: bombs fly bomb models, and only bombs do");
+            }
+            // Prompt 25 C.3: a 203 mm shell is drawn 1.3 x the 155 mm's.
+            var l155 = catalog.Weapons["howitzer"].RoundLength;
+            Assert.Greater(l155, 0f, "the 155 mm has its length");
+            foreach (var w in catalog.Weapons.Values.Where(w => w.ProjectileModel == "shell_155" && Mathf.Approximately(w.Size, 203f)))
+                if (Mathf.Abs(w.RoundLength / (1.3f * l155) - 1f) > 0.02f)
+                    failures.Add($"{w.Id}: a 203 mm shell {w.RoundLength:0.00} m, 1.3 x the 155 mm's is {1.3f * l155:0.00} m");
             Assert.IsEmpty(failures, string.Join("\n", failures));
         }
     }

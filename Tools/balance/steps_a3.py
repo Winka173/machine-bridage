@@ -131,6 +131,9 @@ def plan(g, wb, weapon_rows):
             e["roundWeight"] = max(weights)  # the heaviest look and report: a round is never drawn smaller
         elif "roundWeight" in g.families.get(fid, {}):
             e["roundWeight"] = g.families[fid]["roundWeight"]
+        for key in X.ROUND_KEYS:  # B3 sets a family's round length (steps_b.py): kept when A3 writes the families again
+            if key in g.families.get(fid, {}):
+                e[key] = g.families[fid][key]
         out.append((fid, e, members, plain))
     return out
 

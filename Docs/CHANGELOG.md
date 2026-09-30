@@ -48,6 +48,10 @@ The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`)
   frame) and the old ones are drawn at the sheet's sizes, their hulls (collision) with them; the super tank 10.6 m,
   the Pantsir 9.6 m, the supply truck 8.2 m, the self-propelled gun, the siege tank, the Iron Beam, the radar and
   Shahed trucks resized; Daedalus ~45 m, and Icarus 60 m, now the largest thing in the sky.
+- B3: rounds at the sheet's lengths (0.8 x real from the ground, 0.5 x from the air, 0.8 m at least): bombs, the
+  JASSM, the Kornet and the 240 mm mortar smaller, the Buk, Patriot and 48N6 bigger; 155 mm shells 0.8 m and every
+  203 mm 1.3 x that; the Kh-29L and the GBU-39 get models of their own (the Maverick and the GBU-12 stand in until
+  they are built).
 
 ### Play-test 9 models (DECISIONS 23M)
 

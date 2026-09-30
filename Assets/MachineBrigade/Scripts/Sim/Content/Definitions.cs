@@ -238,6 +238,14 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>How big that model is drawn (one shell model for 105, 155 and 203 mm).</summary>
         public float ProjectileScale { get; internal set; } = 1f;
+
+        /// <summary>
+        /// Prompt 25 B3 (DECISIONS 25B): how long the round is drawn, in metres (the balance sheet's "Kích thước đạn": 0.8
+        /// x real from the ground, 0.5 x real from an aircraft, 0.8 m at least), 0 for none ("roundLength"). The view fits
+        /// whichever model flies it to that length (its own, a stand-in, its kind's default), before its legibility boost;
+        /// <see cref="ProjectileScale"/> stays the one that gives it on the model the game ships.
+        /// </summary>
+        public float RoundLength { get; internal set; }
         public float Damage { get; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
@@ -292,6 +300,7 @@ namespace MachineBrigade.Sim.Content
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,
+                RoundLength = RoundLength,
                 Clip = Clip,
                 ClipReload = ClipReload,
                 _roundWeight = _roundWeight,

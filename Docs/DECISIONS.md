@@ -11047,3 +11047,43 @@ first and B2's after it.
   trucks, the supply truck 2.72 -> 2.0, the counter-battery radar, the Shahed truck, the Iron Beam, the siege tank
   3.56 -> 2.6); longer or wider (the main battle tank 5.24 x 2.88 -> 6.10 x 3.07, the twin tank 5.64 -> 7.02 m, the
   flame tank, the self-propelled gun 2.29 -> 3.1 m wide, the Pantsir 6.98 -> 9.6 m long, the super tank).
+
+### B3 Round sizes ("Kích thước đạn")
+
+- **The sheet's length.** The sheet measures a round as its model x its projectileScale (the design document's round
+  table), not with the view's legibility boost on top (`WeaponEffects.SizeOf`: missiles x1.1-1.2, rockets x1.15, drones
+  x2), and its rule is 0.8 x real launched from the ground, 0.5 x real from an aircraft, 0.8 m at least. Its "Đổi" rows
+  take its length; "Giữ" rows keep theirs. The boost stays as it was on top of both (it was on top of the sheet's
+  "current" column too; dropping it would shrink every round the sheet kept).
+- **The data holds the length.** `roundLength` (metres, `WeaponDef.RoundLength`): the view fits whichever model flies the
+  round (its own, a stand-in, its kind's default) to that length (`WeaponEffects.RoundScale`), so a round model built
+  later needs no data change. `projectileScale` stays in step for the model the game ships (what the design document,
+  the plume checks and the flight tests read).
+- **Which weapons a row means.** The design document lists one row a model and scale, under its first weapon, so a
+  row's "current" is that whole group's: a shell row applies to its group (every shell drawn alike), another row to its
+  weapon's family (A3: one round, one look), or its weapon alone. On a family when every member takes the length (the
+  155 mm twins and singles, the Kornet, the 240 mm mortar, the Buk, the Patriot PAC-2, the FPV drone: `roundLength`
+  and `projectileScale` on the family, gone from the members' lines; A3 keeps them when it writes the families again).
+  Left as they were: the Konkurs post (`atgm_post`, on the Kornet's model and scale but another missile) and the
+  AGM-65 (`maverick`, on the Kh-29's old model); the PAC-3 follows the PAC-2 it inherits.
+- **155 and 203 mm.** The shell row names the 2A44 203 mm but stands for the shell model at scale 1, every 155 mm with
+  it: the 155 mm take its 0.8 m (the rule's least; a 155 mm shell is under 1 m, 0.8 x that under 0.8 m), was 1.1 m.
+  Every 203 mm shell is 1.3 x that, 1.04 m (the boss's 2A44, the cruiser's Mk 71, the siege tank's M110), was 1.1 or
+  1.43 m, over the rows' own 0.8 (prompt 25 C.3's rule wins over the rule of thumb). The 460 mm 1.56 m (was 2.2), the
+  800 mm supergun (no row) keeps its 3.52 m.
+- **Applied** (was -> now, metres): FAB-500 1.64 -> 1.2, FAB-250 1.8 -> 0.98, JDAM 2.7 -> 1.94, GBU-39 2.2 -> 0.9, JASSM
+  3.01 -> 2.135, Kh-29L 1.16 -> 1.95, Kornet 1.3 -> 0.96, 240 mm mortar 1.62-1.8 -> 1.2, Buk 2.16 -> 4.44, Patriot
+  3.13 -> 4.24, S-400 48N6 4.42 -> 6.0, SHORAD dart 1.65 -> 1.216, FPV drone 0.55 -> 0.8, the shells above.
+- **Models of their own.** The Kh-29L flies `kh29l`, the GBU-39 `gbu39`. The round models are built in
+  `Tools/blender/mb_munitions.py`, inside the B2 model agent's tree (it goes through `build_assets.py`, which B2 edits):
+  not separate, so the models are ASSET_DEBT for B2 (one Kh-29L at 3.9 m real, one GBU-39 at 1.8 m real with its
+  folded wings, any length: the data fits it). Until they are built the Maverick and the GBU-12 fly in their place at
+  the new lengths (`WeaponEffects.RoundStandIns`, `steps_b.py` STAND_IN).
+- **Rounds now longer than their launchers:** the Buk (4.44 m) out of the SAM launcher's 2.45 m box, the Patriot and the
+  48N6 out of their canisters (ASSET_DEBT). `MissileFlightTests.MissilesAreDrawnToFitTheirLaunchers` held the Buk to its
+  box (0.72 of its model); its line now holds the sheet's 4.44 m.
+- **Test (written, not run).** `SizeSheetTests.NoWeaponFliesAnotherRoundsModel`: every weapon of the sheet's rows
+  (`Docs/balance/round_sizes.tsv`, generated) flies its model at its length within 3 %; the Kh-29L and the GBU-39 fly
+  their own; a model built for one munition (the Maverick, the GBU-12 and -39, the JDAM, the FAB-250, the JASSM, the
+  AIM-120, the R-60, the Stinger, the Igla) flies only it; bombs fly bomb models and only bombs do; every 203 mm shell
+  is 1.3 x the 155 mm.

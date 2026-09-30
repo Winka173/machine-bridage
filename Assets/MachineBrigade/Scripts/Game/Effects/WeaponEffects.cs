@@ -137,9 +137,12 @@ namespace MachineBrigade.Game.Effects
             string Model(string fallback)
             {
                 var id = mountModel ?? weapon?.ProjectileModel;
+                if (id != null && !_models.Has(id) && RoundStandIns.TryGetValue(id, out var standIn)) id = standIn;
                 return id != null && _models.Has(id) ? id : fallback;
             }
             var scale = weapon?.ProjectileScale ?? 1f;
+            // Prompt 25 B3: a round with a length in the data is drawn that long whichever model flies it.
+            float Sized(string id) => id == null ? scale : RoundScale(weapon, _models.Merged(id).Mesh.bounds.size.z);
             var flat = to - from;
             flat.y = 0f;
             var forward = flat.sqrMagnitude > 1e-4f ? flat.normalized : Vector3.forward;
@@ -192,7 +195,7 @@ namespace MachineBrigade.Game.Effects
                     if (_hasMissile)
                     {
                         _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),
-                            boost: 0.55f, scale: scale * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
+                            boost: 0.55f, scale: Sized(missile) * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
                             plume: Plume.For(weapon, kind, missile, airborne));
                         Veer(e, views, targetId);
                     }
@@ -211,7 +214,7 @@ namespace MachineBrigade.Game.Effects
                     if (drone != null)
                     {
                         _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * (quad ? 0.1f : 0.12f), quad ? 0f : 0.35f, now,
-                            Homing(views, targetId), wobble: quad ? 0f : 0.6f, scale: scale * SizeOf(weapon, kind, drone, false) * (quad ? QuadScale : 1f));
+                            Homing(views, targetId), wobble: quad ? 0f : 0.6f, scale: Sized(drone) * SizeOf(weapon, kind, drone, false) * (quad ? QuadScale : 1f));
                         if (quad)
                         {
                             var across = Vector3.Cross(Vector3.up, forward);
@@ -242,7 +245,7 @@ namespace MachineBrigade.Game.Effects
                     // A second launcher (not the main, elevating one) lobs along its own tubes too.
                     if (barrel.sqrMagnitude < 0.01f) barrel = _shotBarrel;
                     if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery && !ballistic ? 0.7f : 0.3f,
-                        boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: scale * SizeOf(weapon, kind, rocket, false),
+                        boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: Sized(rocket) * SizeOf(weapon, kind, rocket, false),
                         control: artillery && !ballistic ? Bend(from, to, barrel) : artillery ? null : Leave(from, to, _shotBarrel, arc),
                         plume: Plume.For(weapon, kind, rocket, false));
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
@@ -253,8 +256,9 @@ namespace MachineBrigade.Game.Effects
                 case ProjectileKind.Bomb:
                     // Released from the wing: play-test 8 A (DECISIONS 22Q), it keeps the aircraft's forward speed and falls,
                     // level at first and ever steeper (a steered bomb glides down onto its target on a flatter curve).
+                    var bomb = Model("bomb");
                     if (_hasBomb)
-                        _projectiles.Launch(_models.Merged(Model("bomb")), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: scale,
+                        _projectiles.Launch(_models.Merged(bomb), from, to, Mathf.Max(0.4f, e.Value), 0f, 0f, now, scale: Sized(bomb),
                             control: BombPath(from, to, weapon != null && weapon.GuidedBomb));
                     else _tracers.Launch(from, to, e.Value, 0f, 0.3f, 1f, now);
                     break;
@@ -267,7 +271,8 @@ namespace MachineBrigade.Game.Effects
                     break;
 
                 default:
-                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now, pitch, barrel, Model(null), scale);
+                    var shell = Model(null);
+                    Shells(weapon, e, from, to, forward, aim, groundY, distance, now, pitch, barrel, shell, Sized(shell));
                     break;
             }
         }
@@ -343,6 +348,27 @@ namespace MachineBrigade.Game.Effects
                     _muzzle.SparkBurst(muzzle + ring, -ring.normalized, 1, 3f + 5f * k, 6f + 8f * k, 0.6f);
                 }
             }
+        }
+
+        /// <summary>
+        /// Prompt 25 B3 (DECISIONS 25B): round models the balance sheet asks for that are not built yet (ASSET_DEBT), and
+        /// the model that flies for each until it is, at the round's own length (Tools/balance/steps_b.py STAND_IN).
+        /// </summary>
+        internal static readonly System.Collections.Generic.Dictionary<string, string> RoundStandIns = new()
+        {
+            ["kh29l"] = "maverick",
+            ["gbu39"] = "gbu12",
+        };
+
+        /// <summary>
+        /// Prompt 25 B3: how big a round's model <paramref name="modelLength"/> m long is drawn, before <see cref="SizeOf"/>:
+        /// fitted to the weapon's roundLength where the data gives one (so any model flies at the sheet's length), else
+        /// the weapon's projectileScale.
+        /// </summary>
+        internal static float RoundScale(WeaponDef weapon, float modelLength)
+        {
+            if (weapon == null) return 1f;
+            return weapon.RoundLength > 0f && modelLength > 0.01f ? weapon.RoundLength / modelLength : weapon.ProjectileScale;
         }
 
         /// <summary>
