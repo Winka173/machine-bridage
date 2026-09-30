@@ -10730,3 +10730,55 @@ muzzles on both models. The five failures are all older:
 `Tools/blender/build_assets.py` (one import, one line at the end of the builder list), `Docs/art/models.json` (three
 triangle counts; as always `Tools/art/resolve_merge.py`), the card manifest and the two card PNGs, the three GLBs,
 `Tools/docs/unit_refs.json` (three rows).
+
+## 25A. Balance spreadsheet: data (A1-A5) (2026-09-30)
+
+Prompt 25 applies the owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`, 28 sheets) to the
+game. This section covers the data tasks of its sheet "Việc cho agent": A1 (the sheet "Thay đổi chi tiết", by
+priority Cao, Trung, Thấp), A2 (weapons), A3 (weapon families), A4 (missile speeds), A5 (blast radius), and part B's
+CP prices (B.7) and support cards (B.8). Prompt 24 is skipped for now by the owner: its camouflage keep-list rule is
+not in force yet, so no row was held back for it.
+
+### How the sheet is applied
+
+- **By script.** `Tools/balance/import_xlsx.py` reads the workbook with openpyxl (`data_only`: the values its
+  formulas computed) and writes the changes; `Tools/balance/jsonc_edit.py` edits `balance.json` in place, field by
+  field on each entry's own line (comments, alignment and every other line are left byte for byte). No number is
+  typed in by hand: the script holds only the rules that map a row onto a field, and the choices below where a row
+  offers two. `--upto <step>` runs every step up to that one; a second run changes nothing.
+- **The report.** `Docs/balance/apply-report.md` lists every row of every sheet the script read: applied, already
+  so, deferred to a later task, or skipped, with the reason. A row whose id is not in the data is skipped, never
+  matched by guess.
+- **What wins.** The sheet wins on numbers (stats, prices, ranges, rates of fire, sizes). Earlier prompts win on
+  systems: prompt 15's armour and penetration levels and damage types, prompt 22's names (no Vietnamese proper
+  names), prompt 20's act switches.
+- **Rows of later tasks.** In "Thay đổi chi tiết", names wait for D1 (sheet "Tên đề xuất"), model sizes for B1,
+  models for B2 (the self-propelled gun's M109A7 model and its reference go together), bosses' health and weapons
+  for C1 (sheet "Boss đề xuất" has the exact numbers; this sheet gives ranges), and the Gungnir's gun and the
+  Kronos's bucket wheel as weapons for C2. Mini bosses' armour rows (no front armour 5 below a main boss) are applied
+  here: they are plain armour levels.
+- **Health.** The sheets show health after the global toughness (vehicles x2.2): 1,500 on the wheeled gun is 682 in
+  the data.
+- **Turn rates.** The data and the code are in degrees a second (`balance.json` header, `VehicleDef.TurnRate`); the
+  sheet shows them in radians a second, rounded (60 deg/s shows as 1). Its proposal "1 / 2" for the tanks keeps the
+  hull and sets the turret to 2 rad/s, 115 deg/s.
+
+### A1 Cao
+
+- **The AA tower** ("chọn một"): the reference moves to the 2A38 30 mm (the 2K22 Tunguska) and the weapon stays: the
+  tower already fires the 2A38. Its anti-aircraft value falls through the tower flak's new rate (the weapon row:
+  7 a round at 35 a second, 120 a magazine, 3 s to change; 131 a second sustained, was 193). The sheet's target was
+  300 to 240; the weapon row takes it further (-32 % on paper); the measurement at the end of this pass judges it.
+- **Stores per load.** The attack jet carries one FAB-250 a load (was 3; the jet's own `loads`, as the bomb is shared),
+  the scout helicopter six Hydras (was 24, the weapon's own load: only it carries them). The sheet's "current" for
+  the Hydras is 12, the salvo, not the load; its number, 6, is applied as written (a quarter of the old load), and
+  the scout helicopter is one of the cards measured at the end.
+- **The swarm carrier's Rapid Dragon.** The small guided bombs are dropped and two cruise missiles (the JASSM, the
+  sheet's 410 a missile, 9 m, 90 m reach, 20 m/s) go in their place, two a sortie (`loads`). The carrier costs 13 CP.
+- **The Iron Beam** takes mortar bombs and shells as well as rockets, at the C-RAM's share (0.3): the sheet names no
+  share. "Prefer drones" needs a target rule the game does not have; it is left (report).
+- **The scout jeep hides when it stands:** after a second still, and until it fires, it is seen at 60 % of a
+  spotter's sight (`stillCamo` 0.4, a new vehicle field read by the sight code next to the stealth rule).
+- **Weapon rows** of this sheet take their numbers from the weapon's own row of "Vũ khí đề xuất", which carries the
+  same proposal in columns (fire mode, rate, rounds, rest, reach, speed, blast, penetration). Which weapons a row
+  means is a table in the script, checked against the unit's mounts. How a row becomes the game's fields is under A2.

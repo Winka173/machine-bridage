@@ -7,6 +7,18 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 25 A1-A5
+
+The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) goes into the game data by script
+(`Tools/balance/import_xlsx.py`); what was applied and what waits for a later task is in
+`Docs/balance/apply-report.md` (DECISIONS 25A).
+
+- A1 Cao: new prices (attack helicopter 9, attack jet 18, heavy tank 13, Iron Beam 6, long-range SAM 14, SAM launcher
+  7, scout helicopter 5, stealth fighter 13, strike drone 9, swarm carrier 13, super-heavy tank 18); SAMs and
+  air-to-air missiles fast enough to catch a fighter; the swarm carrier drops cruise missiles instead of small bombs;
+  the scout jeep sees farther (55 m) and hides when it stands; the wheeled gun has less health and reloads like a
+  tank; the ZU-23 fires a stream of lighter rounds farther; the self-propelled gun fires faster.
+
 ### Play-test 9 models (DECISIONS 23M)
 
 - Icarus is a spaceship again, not a station: a dagger-shaped warship about as big as before on the map, with a pointed

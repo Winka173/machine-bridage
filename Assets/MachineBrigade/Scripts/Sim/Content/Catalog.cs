@@ -306,6 +306,7 @@ namespace MachineBrigade.Sim.Content
                     def.Orbit = v.Bool("orbit", false);
                     def.OrbitRadius = v.Float("orbitRadius", 0f);
                     def.Stealth = v.Bool("stealth", false);
+                    def.StillCamouflage = Math.Clamp(v.Float("stillCamo", 0f), 0f, 0.9f);
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
                     def.AttackHold = def.FixedWing ? v.Float("attackHold", 0f) : 0f;

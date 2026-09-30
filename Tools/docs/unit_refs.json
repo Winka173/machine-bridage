@@ -75,7 +75,7 @@
   "missile_battery": { "real": ["MIM-104 Patriot PAC-2", "S-300"], "media": [], "note": "Trận địa tên lửa phòng không bốn ống phóng" },
   "atgm_tower": { "real": ["9M133 Kornet"], "media": [], "note": "Tháp bê tông phóng tên lửa chống tăng" },
   "gun_turret": { "real": ["Rh-120 L/44 120 mm", "Pantherturm (tháp xe tăng đặt trên công sự)"], "media": [], "note": "ước đoán (Pantherturm): tháp pháo 120 mm trên vòng bê tông" },
-  "aa_turret": { "real": ["Oerlikon GDF 35 mm (Skyguard)", "Stinger"], "media": [], "note": "ước đoán: pháo phòng không hai nòng 35 mm trên ụ bao cát" },
+  "aa_turret": { "real": ["2K22 Tunguska (2A38 30 mm)", "Stinger"], "media": [], "note": "ước đoán: pháo phòng không hai nòng 35 mm trên ụ bao cát" },
   "ew_tower": { "real": ["Murmansk-BN", "cột ăng-ten tác chiến điện tử"], "media": [], "note": "ước đoán: cột lưới thép gây nhiễu điện tử" },
   "dragons_teeth": { "real": ["răng rồng tuyến Siegfried (Westwall)", "nhím thép (Czech hedgehog)"], "media": [], "note": "Chướng ngại chống tăng bê tông hai hàng so le" },
   "minefield": { "real": ["bãi mìn có rào và biển báo 'MINES'"], "media": [], "note": "Bãi mìn đánh dấu bằng cọc, dây thép gai và băng đỏ trắng" },

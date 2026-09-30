@@ -1142,6 +1142,9 @@ namespace MachineBrigade.Sim
                     target.SeenByMask = target.VisibleToMask = ~0;
                     continue;
                 }
+                // Prompt 25 A1: a scout hiding where it stands (the scout jeep), until it fires.
+                if (target.Def.StillCamouflage > 0f && !target.IsMoving && Time - target.StillSince >= 1.0 && Time - target.LastFiredAt > StealthReveal)
+                    sight *= 1f - target.Def.StillCamouflage;
                 // Equipment on the target: a camouflage net standing still, Ghillie Mode hidden.
                 var hidden = false;
                 if (target.Gear is { } tg)
