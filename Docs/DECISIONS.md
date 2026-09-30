@@ -9802,6 +9802,11 @@ balance.json (the sky_gunship row), Strings.cs (`note.sky_gunship`), GuideText.c
 EffectsDirector.cs (`ShowDamage`, `Dispose`), Lit.shader, build_assets.py and Docs/art/models.json (as always:
 `Tools/art/resolve_merge.py`), the card manifest.
 
+### Owner's answer on play-test 8 A's bombs (2026-09-30)
+
+Asked whether to keep the bombs' 40 m/s² fall and the heavy bomber's 0.2 s gap between bombs (22Q), the owner said yes
+("Ném bom: có"). Both stay.
+
 ## 23H. In-battle dialogue: one subtitle line instead of the radio (2026-09-30)
 
 Prompt 23 H and F.1 (`Docs/prompts/prompt23_vi.txt`). Branch `feature/p23-dialogue` from lead 8e3af97. The mission
