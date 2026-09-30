@@ -59,6 +59,14 @@ namespace MachineBrigade.Game.Hud
                 "laser_ad_station" => "t_laserad",
                 "aa_gun_tower" => "t_aa40",
                 // (batch A structures: new entries above)
+                // Prompt 25 F2 batch B (DECISIONS 25F2-B): the six tower stand-ins, an existing glyph each (no new icon art).
+                "manpads_tower" => "t_aa",
+                "flare_searchlight_tower" => "t_flare",
+                "recoilless_gun_tower" => "t_atgun",
+                "bunker_shelter_tower" => "t_shelter",
+                "drone_net_tower" => "t_laserad",
+                "one_shot_atgm_tower" => "t_atgm",
+                // (batch B structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",
                 "ammo_depot" => "t_ammo",

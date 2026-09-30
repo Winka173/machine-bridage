@@ -59,7 +59,9 @@
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
         "default": { "aa_gun_tower": 0.8, "laser_ad_station": 0.5, "flare_tower": 0.25, "troop_shelter": 0.3, "visual_jammer": 0.6, "barrage_balloon": 0.3, "searchlight": 0.3, "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
-                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
+                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35,
+                     // Prompt 25 F2 batch B (DECISIONS 25F2-B): the six tower stand-ins (default weight only; no per-general tuning this pass).
+                     "manpads_tower": 0.5, "flare_searchlight_tower": 0.2, "recoilless_gun_tower": 0.6, "bunker_shelter_tower": 0.3, "drone_net_tower": 0.4, "one_shot_atgm_tower": 0.4 },
         "armour": { "fire_control_centre": 1.0, "inflatable_decoy": 0.6, "blast_wall": 0.8, "at_gun_emplacement": 1.6, "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "troop_shelter": 0.6, "fire_control_centre": 1.0, "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
         "air": { "aa_gun_tower": 1.6, "laser_ad_station": 1.0, "barrage_balloon": 1.0, "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
