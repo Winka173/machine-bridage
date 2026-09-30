@@ -2103,6 +2103,101 @@ def laser_tank(a):
     a.pivot('Muzzle_main', tuple(c + axis * .4), t)
 
 
+# ----------------------------------------------------------------------------- bunker vehicle
+def bunker_vehicle(a):
+    """Deployable bunker vehicle, 8.5 x 3.5 x 3.1 m in battle (kept; drawn in play-test 4's model units at 1 / 0.85,
+    where VehicleView.Deploy's pose is measured): a heavy tracked engineer hull, the wide dozer blade under the nose
+    (`Deploy_blade`: from above, the wide blade), tall armoured side plates hinged beside a low, wide turret with the
+    105 mm (`Deploy_plate_l` / `_r`), the telescopic mount it rides (`Deploy_riser`, `Turret`, `Main_cannon`,
+    `Muzzle_main`, the machine gun's `Muzzle_mg`), the rear earth spades (`Deploy_spade_l` / `_r`), and play-test 5's
+    emplacement as its `Deploy_berm` (exported at 1 %, grown by the view as it digs in). Every Deploy_* pivot is
+    where mb_p21_models put it; the hull and turret are drawn lean for the tank budget."""
+    from mb_p21_models import BERM_REST
+    from mb_pt5_models import _emplacement
+    hd.mark(a, False)
+    _lean_tracks(a, 1.38, 7.0, .9, .3, 7, .6, sprocket=1)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    armor.prism([(-3.3, .4), (-3.7, .72), (-3.5, .96), (3.35, .96), (3.55, .62), (3.35, .4)], 2.1, bevel=.04, seg=1)
+    hull.prism([(-3.76, .92), (-2.6, 1.7), (3.3, 1.72), (3.56, 1.1), (3.56, .92)], 3.6, bevel=.05, seg=1)
+    for s in (-1, 1):
+        _lights(a, (s * 1.2,), -3.3, 1.3, size=(.16, .04, .1))
+        _lights(a, (s * 1.5,), 3.57, 1.25, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        mv._hatch(a, s * .6, -2.3, 1.7, .24, handle=False)
+        steel.cyl(.09, .3, loc=(s * .9, 3.62, 1.35), rot=FORWARD, seg=8, bevel=0)                    # exhausts
+        armor.box((.18, .5, .36), loc=(s * 1.62, -2.55, .86), bevel=.03, seg=1)                      # push-arm brackets
+    a.part('Deck', 'Undercarriage').grille(1.6, 1.0, loc=(0, 2.55, 1.73), rot=(-R90, 0, 0), slats=5, depth=.06,
+                                           thickness=.04)
+    steel.cyl(.78, .09, loc=(0, -.3, 1.705), seg=18, bevel=0)                                        # mount well
+    a.pivot('Point_exhaust', (.9, 3.7, 1.35))
+    a.pivot('Point_fire', (0, 2.55, 1.8))
+    # Side plates, hinged along the sponson edges, standing up beside the turret on the move.
+    for s, name in ((1, 'Deploy_plate_l'), (-1, 'Deploy_plate_r')):
+        for y in (-2.1, -.2, 1.7):
+            steel.box((.16, .34, .16), loc=(s * 1.8, y, 1.12), bevel=0)                               # hinge lugs
+        p = a.pivot(name, (s * 1.86, 0, 1.14))
+        a.part(f'{name}_slab', 'Team', p).box((.1, 5.3, 1.02), loc=(s * .06, -.2, .53), bevel=.03, seg=1,
+                                             taper=(1, .96))
+        ribs = a.part(f'{name}_ribs', 'Armor', p)
+        for y in (-2.3, -.2, 1.9):
+            ribs.box((.07, .14, .9), loc=(s * .14, y, .5), bevel=0)
+        ribs.box((.07, 5.0, .1), loc=(s * .14, -.2, .98), bevel=0)
+        a.part(f'{name}_hinge', 'Steel', p).cyl(.07, 5.1, loc=(0, -.2, 0), rot=FORWARD, seg=6, bevel=0)
+    # The dozer blade on two push arms under the nose, raised clear of the ground on the move.
+    p = a.pivot('Deploy_blade', (0, -2.55, .86))
+    arms = a.part('Deploy_blade_arms', 'Steel', p)
+    for s in (-1, 1):
+        arms.limb((s * 1.62, 0, 0), (s * 1.62, -1.75, -.18), .14, .16, bevel=0)
+        arms.limb((s * 1.0, -.4, -.35), (s * 1.3, -1.7, .05), .1, .1, bevel=0)                      # rams
+    board = [(-1.72, -.52), (-1.95, -.5), (-2.02, -.25), (-2.04, .05), (-1.98, .35), (-1.86, .52), (-1.76, .5),
+             (-1.84, .3), (-1.88, .05), (-1.86, -.22), (-1.74, -.42)]
+    a.part('Deploy_blade_plate', 'Armor', p).prism(board, 3.9, axis='X', bevel=.02, seg=1)
+    a.part('Deploy_blade_edge', 'Steel', p).box((3.86, .1, .09), loc=(0, -1.99, -.54), bevel=0)
+    for xx in (-1.2, 0, 1.2):
+        a.part('Deploy_blade_ribs', 'Armor', p).box((.1, .14, .8), loc=(xx, -1.72, -.02), bevel=0)
+    # Rear earth spades, stowed standing up behind the tail plate; each pivot is its hinge axis (X).
+    for s, name in ((1, 'Deploy_spade_l'), (-1, 'Deploy_spade_r')):
+        x = s * .8
+        for dx in (-.38, .38):
+            armor.box((.16, .2, .22), loc=(x + dx, 3.6, .72), bevel=0)                                # hinge lugs
+        p = a.pivot(name, (x, 3.66, .72))
+        a.part(f'{name}_blade', 'Armor', p).box((.9, .08, 1.15), loc=(0, .1, .62), bevel=.02, seg=1)
+        a.part(f'{name}_hinge', 'Steel', p).cyl(.07, .56, rot=ACROSS, seg=6, bevel=0)
+        teeth = a.part(f'{name}_teeth', 'Steel', p)
+        for dx in (-.33, -.11, .11, .33):
+            teeth.box((.14, .06, .16), loc=(dx, .1, 1.24), bevel=0, taper=(.4, 1))
+    # The telescopic mount: two column stages under the turret, hidden in the hull on the move.
+    r = a.pivot('Deploy_riser', (0, -.3, 1.72))
+    a.part('Deploy_riser_column', 'Steel', r).cyl(.6, .9, loc=(0, 0, -.43), seg=14, bevel=0)
+    a.part('Deploy_riser_bands', 'Armor', r).cyl(.63, .08, loc=(0, 0, -.22), seg=14, bevel=0)
+    t = a.pivot('Turret', (0, 0, .04), r)
+    a.part('Turret_body', 'Team', t).prism([(-.8, -1.35), (.8, -1.35), (1.4, -.8), (1.45, .9), (1.1, 1.45),
+                                            (-1.1, 1.45), (-1.45, .9), (-1.4, -.8)], .62, loc=(0, 0, .31), axis='Z',
+                                           bevel=.05, seg=1, taper=.86)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.9, .42, .54), loc=(0, -1.42, .34), bevel=.03, seg=1, taper=(.9, .9))                  # mantlet
+    tarm.box((2.0, .4, .36), loc=(0, 1.45, .3), bevel=.03, seg=1)                                     # bustle bin
+    a.part('Turret_steel', 'Steel', t).box((.22, .26, .22), loc=(.7, -.6, .72), bevel=0)             # sight
+    a.part('Sight', 'Glass', t).box((.16, .04, .1), loc=(.7, -.74, .74), bevel=0)
+    mv._hatch(a, -.55, .3, .62, .28, parent=t, seg=10, handle=False)
+    for s in (-1, 1):
+        mv._smoke(a, a.part('Smoke', 'Steel', t), 1.0, -.7, .66, s, count=3, gap=.08, r=.045, depth=.16)
+    y0, length, z = -1.62, 4.0, .36
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.cyl(.085, length, loc=(0, y0 - length / 2, z), rot=FORWARD, seg=10, bevel=0)
+    gun.cyl(.11, length * .5, loc=(0, y0 - length * .3, z), rot=FORWARD, seg=10, bevel=0)             # sleeve
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.12, .2, loc=(0, y0 - length - .08, z), rot=FORWARD, seg=10,
+                                                   bevel=0)
+    a.pivot('Muzzle_main', (0, y0 - length - .2, z), t)
+    mg = a.part('MG_port', 'Steel', t)
+    mg.box((.12, .3, .12), loc=(.55, -1.4, .3), bevel=0)
+    mg.cyl(.05, .45, loc=(.55, -1.75, .3), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_mg', (.55, -1.99, .3), t)
+    _emplacement(a)
+    a.pivots['Deploy_berm'].scale = (BERM_REST,) * 3
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -2141,4 +2236,5 @@ BUILDERS = {
     'ballistic_launcher': (ballistic_launcher, dict(ao_distance=.6, grime_height=.55)),
     'railgun_truck': (railgun_truck, dict(ao_distance=.6, grime_height=.55)),
     'laser_tank': (laser_tank, dict(ao_distance=.55, grime_height=.5)),
+    'bunker_vehicle': (bunker_vehicle, dict(ao_distance=.7, grime_height=.6)),
 }

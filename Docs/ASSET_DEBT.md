@@ -200,7 +200,6 @@ Almost all of today's models are over those budgets (6,000-15,000 triangles for 
 | attack_jet | 6.4 x 6.0 x 1.5, keep (note: 6.2 x 5.8 x 1.9) | Straight-wing attack jet, two engines at the wing roots, many pylons under the wings, shorter than the fighter (Su-25). From above: a wide straight wing. It must stay shorter than the new 8.6 m fighter at B1's scales. |
 | stealth_bomber | 7.0 x 17.6 x 2.0, keep (note: 8.4 x 21.0 x 2.1) | Flying wing with a sawtooth W trailing edge, no tail, very wide for its length (B-2). From above: a sawtooth boomerang. |
 | heavy_bomber | 17.9 x 18.7 x 6.1, keep (note: 19.4 x 22.6 x 5.0) | Eight engines in four pairs under a long swept wing, a long fuselage, a tall tail; the biggest of the player's aircraft (B-52). From above: the swept wing with four engine pairs. |
-| bunker_vehicle | 8.5 x 3.5 x 3.1, keep | Tracked chassis with a big dozer blade and a low 105 mm turret; deployed, the hull drops and armour plates and sandbags rise round it. From above: the wide blade, the low turret. |
 
 Related to the rebuilt models: `elite_mbt`, `elite_attack_helicopter` and the other elites of rebuilt units keep the old
 designs (they are their own models); `transport_plane` (airdrops, the MOAB) still flies play-test 5's airframe, not

@@ -209,7 +209,7 @@
   },
   "bunker_vehicle": {
     "file": "bunker_vehicle.glb",
-    "triangles": 11384
+    "triangles": 7032
   },
   "bus": {
     "file": "bus.glb",
