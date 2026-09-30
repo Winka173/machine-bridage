@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 51,
+    "chưa làm": 50,
     "đang làm": 0,
-    "xong": 42
+    "xong": 43
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 10,
+      "chưa làm": 9,
       "đang làm": 0,
-      "xong": 1
+      "xong": 2
     },
     "boss": {
       "chưa làm": 8,
@@ -1105,9 +1105,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop (4 CP, so the CP 5 or less price), or a chapter reward."
+      "status": "xong",
+      "id": "guided_shell_strike",
+      "notes": "Batch C: support guided_shell_strike, kind Barrage with a 1.5 m radius and 1 round (no-scatter pinpoint hit) — pure data, no new code. Sold in the shop (1,500). AI: default cluster-strike path."
     },
     {
       "key": "ht03",

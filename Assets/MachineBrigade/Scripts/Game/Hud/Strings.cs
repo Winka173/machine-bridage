@@ -582,6 +582,8 @@ namespace MachineBrigade.Game.Hud
             // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
             ["support.glide_bomb_strike"] = ("Glide bomb strike", "Đòn bom lượn"),
             ["short.glide_bomb_strike"] = ("Glide bombs", "Bom lượn"),
+            ["support.guided_shell_strike"] = ("Guided shell", "Đạn pháo dẫn đường"),
+            ["short.guided_shell_strike"] = ("Guided shell", "Đạn dẫn đường"),
             ["stat.tickets"] = ("TICKETS", "ĐIỂM"),
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{amount}/s", "+{amount}/s"),

@@ -1094,6 +1094,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, {{count}} quả [[bom lượn]] rơi xuống điểm chọn (mỗi quả nổ bán kính {{blast}} m); khác không kích, không có máy bay bay qua mục tiêu, nhưng hệ đánh chặn hạng nặng vẫn bắn hạ được bom.\n" +
                 "Mạnh / yếu: đánh trúng mục tiêu sau lưng phòng không tầm gần; SAM hạng nặng hoặc C-RAM vẫn có thể hạ một quả trước khi rơi.\n" +
                 "Mẹo: dùng cho công sự kiên cố mà máy bay không kích không sống nổi khi bay qua."),
+            ["guide.guided_shell_strike"] = (
+                "[[Guided shell]] · one pinpoint round · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, one [[Excalibur/Krasnopol-class]] shell lands exactly on the spot, no scatter ({{blast}} m blast).\n" +
+                "Strong / weak: certain against a target standing still; a moving vehicle can simply drive off before it lands.\n" +
+                "Tip: call it the moment an enemy gun or vehicle parks; a barrage's 6 rounds scatter, this one does not.",
+                "[[Đạn pháo dẫn đường]] · một phát trúng đích · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, một quả đạn kiểu [[Excalibur/Krasnopol]] rơi đúng điểm chọn, không tản mát (nổ bán kính {{blast}} m).\n" +
+                "Mạnh / yếu: chắc chắn trúng mục tiêu đứng yên; xe đang di chuyển có thể lái đi trước khi đạn rơi.\n" +
+                "Mẹo: gọi ngay khi pháo hoặc xe địch vừa đỗ lại; pháo kích 6 phát tản mát, thẻ này thì không."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

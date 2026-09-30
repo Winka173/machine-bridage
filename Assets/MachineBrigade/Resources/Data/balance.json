@@ -1958,6 +1958,8 @@
     // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
     // ht01: 2 glide bombs dropped from outside nearby air defence; each can still be shot down (CruiseMissile, generalised to several bombs).
     { "id": "glide_bomb_strike", "kind": "CruiseMissile", "pen": 3, "cp": 8, "cooldown": 90, "delay": 3.0, "radius": 10, "count": 2, "damage": 420, "blast": 10, "tier": "Huge" },
+    // ht02: a single Excalibur/Krasnopol-class guided shell, no scatter (Barrage with a tight radius and one round).
+    { "id": "guided_shell_strike", "kind": "Barrage", "pen": 3, "cp": 4, "cooldown": 45, "delay": 2.0, "radius": 1.5, "count": 1, "duration": 0, "damage": 360, "blast": 6, "tier": "Large" },
   ],
 
   "props": [
