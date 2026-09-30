@@ -1053,11 +1053,11 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 18962
+    "triangles": 19136
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",
-    "triangles": 20334
+    "triangles": 20250
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",
@@ -1093,7 +1093,7 @@
   },
   "stealth_fighter": {
     "file": "stealth_fighter.glb",
-    "triangles": 4484
+    "triangles": 2812
   },
   "stilt_hut": {
     "file": "stilt_hut.glb",
