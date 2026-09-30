@@ -1760,6 +1760,176 @@ def tank_destroyer(a, detail=False):
         mv._eyes(a, [(s * .8, -.3, .5, 0) for s in (-1, 1)], parent=t)
 
 
+# ----------------------------------------------------------------------------- T-72 hull (TOS-1A, BMPT)
+def _t72_hull(a, length=5.6, skirts=True):
+    """The T-72 hull at 0.8 x (5.6 x 2.8 m): six big road wheels, rear drive, the pike-nosed glacis, fenders with
+    stowage boxes, rubber side skirts, the engine deck with its grilles, the driver's hatch and vision blocks; the
+    turret ring on top. Returns the deck height."""
+    half = length / 2
+    _lean_tracks(a, 1.1, length - .2, .74, .3, 6, .46, sprocket=1, teeth=6)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    armor.prism([(-half + .2, .38), (-half - .08, .64), (-half + .1, .84), (half - .1, .84), (half, .56),
+                 (half - .15, .38)], 1.72, bevel=.04, seg=1)
+    hull.prism([(-half - .1, .8), (-half + .8, 1.26), (half - .05, 1.28), (half + .02, .8)], 2.24, bevel=.05, seg=1)
+    for s in (-1, 1):
+        armor.box((.52, length - .3, .06), loc=(s * 1.14, 0, 1.18), bevel=0)                          # fenders
+        if skirts:
+            a.part('Skirts', 'Rubber').box((.05, length - .9, .36), loc=(s * 1.4, -.1, .98), bevel=0)
+        armor.box((.42, .9, .24), loc=(s * 1.14, half - .75, 1.33), bevel=.03, seg=1)                # fender boxes
+        _lights(a, (s * .85,), -half + .12, 1.05, size=(.14, .04, .1))
+        _lights(a, (s * .9,), half + .02, 1.05, facing=1, size=(.12, .04, .08), lamp='Alloy')
+    mv._hatch(a, 0, -half + 1.05, 1.24, .2, handle=False)                                          # driver
+    mv._periscopes(a, [(dx, -half + .82, 1.2, 0) for dx in (-.14, .14)])
+    a.part('Deck', 'Undercarriage').grille(1.4, .9, loc=(0, half - 1.0, 1.29), rot=(-R90, 0, 0), slats=5,
+                                           depth=.05, thickness=.04)
+    a.pivot('Point_exhaust', (1.2, half - .4, 1.0))
+    a.pivot('Point_fire', (0, half - 1.0, 1.35))
+    return 1.28
+
+
+# ----------------------------------------------------------------------------- TOS-1A
+def thermobaric_launcher(a):
+    """Heavy flamethrower system (TOS-1A Solntsepyok on the T-72), 7.6 x 2.9 x 1.8 m: the T-72 hull (_t72_hull) and,
+    mid-hull on the turntable (`Turret`), the big 24-tube launcher box (four rows of six) on its lifting mount,
+    level, its face forward over the glacis: from above, a big square block of tubes (the sheet). The box and tubes
+    are Launcher_* / Tubes (they elevate); the tube mouths are the `Launcher_face` the rockets leave from,
+    `Muzzle_rocket` and `Muzzle_main` at its middle. A self-defence machine gun (`Mount_mg`, `Muzzle_mg`)."""
+    hd.mark(a, False)
+    z = _t72_hull(a, 5.9)
+    mv._roof_mg(a, None, (-1.05, 2.65, z), length=.7, shield=False)
+    t = a.pivot('Turret', (0, .5, z))
+    a.part('Turret_steel', 'Steel', t).cyl(.9, .12, loc=(0, 0, .06), seg=14, bevel=0)
+    a.part('Turret_armor', 'Armor', t).box((1.4, 1.2, .3), loc=(0, .5, .26), bevel=.03, seg=1)      # lifting mount
+    L, W, H = 4.0, 2.3, 1.0
+    c = Vector((0, -.55, .4 + H / 2 + .02))
+    a.part('Launcher', 'Team', t).box((W, L, H), loc=tuple(c), bevel=.05, seg=1)
+    arm = a.part('Launcher_armor', 'Armor', t)
+    for y in (-1.6, 0, 1.6):
+        arm.box((W + .1, .16, H + .1), loc=tuple(c + Vector((0, y, 0))), bevel=0)
+    face = a.part('Launcher_face', 'Undercarriage', t)
+    tubes = a.part('Tubes', 'Steel', t)
+    for i in range(6):
+        for j in range(4):
+            p = c + Vector((-.9 + i * .36, -L / 2, -.36 + j * .24))
+            tubes.cyl(.12, .06, loc=tuple(p + Vector((0, -.02, 0))), rot=FORWARD, seg=6, bevel=0)
+            face.cyl(.09, .03, loc=tuple(p + Vector((0, -.05, 0))), rot=FORWARD, seg=6, bevel=0)
+    a.part('Sight', 'Glass', t).box((.2, .03, .12), loc=(.9, -.4, .5), bevel=0)
+    tip = c + Vector((0, -L / 2 - .1, 0))
+    a.pivot('Muzzle_rocket', tuple(tip), t)
+    a.pivot('Muzzle_main', tuple(tip), t)
+
+
+# ----------------------------------------------------------------------------- BMPT Terminator
+def bmpt(a):
+    """Tank support fighting vehicle (BMPT Terminator on the T-72), 5.8 x 2.8 x 2.7 m: the T-72 hull (_t72_hull) with
+    a dozer blade on the nose (`Blade`) and the two 30 mm grenade launchers in the front fender pods
+    (`Muzzle_agl_l` / `_r`); a low, wide turret with a twin 30 mm gun each side (`Main_cannon` / `_2`,
+    `Muzzle_brake` / `_2`, `Muzzle_main`) and an armoured two-round Ataka box above each (`Launch_tubes`: two
+    launchers, a `Muzzle_missile` at each), the coaxial gun and the sight in the middle. From above: a wide turret
+    with many short barrels."""
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    hd.mark(a, False)
+    z = _t72_hull(a, 5.6)
+    armor = a.part('Armor', 'Armor')
+    b = a.pivot('Blade', (0, -2.95, .55))
+    a.part('Blade_plate', 'Armor', b).box((2.4, .12, .5), loc=(0, -.15, -.1), rot=(-.25, 0, 0), bevel=.02, seg=1)
+    for s in (-1, 1):
+        armor.box((.4, .9, .34), loc=(s * 1.14, -2.35, 1.38), bevel=.03, seg=1)                        # AGL pods
+        a.part('AGL', 'Steel').cyl(.06, .5, loc=(s * 1.14, -2.95, 1.4), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_agl_l', (1.14, -3.24, 1.4))
+    a.pivot('Muzzle_agl_r', (-1.14, -3.24, 1.4))
+    t = a.pivot('Turret', (0, .3, z))
+    a.part('Turret_steel', 'Steel', t).cyl(.95, .1, loc=(0, 0, .05), seg=14, bevel=0)
+    a.part('Turret_body', 'Team', t).prism([(-.6, -1.1), (.6, -1.1), (1.1, -.7), (1.15, .9), (.9, 1.2), (-.9, 1.2),
+                                            (-1.15, .9), (-1.1, -.7)], .5, loc=(0, 0, .3), axis='Z', bevel=.04, seg=1,
+                                           taper=.92)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.4, .34, .3), loc=(0, -1.12, .66), bevel=.03, seg=1)                                  # sight
+    a.part('Sight', 'Glass', t).box((.26, .03, .14), loc=(0, -1.3, .68), bevel=0)
+    for s, suffix in ((1, ''), (-1, '_2')):
+        x = s * 1.28
+        tarm.box((.34, 1.1, .4), loc=(x, -.35, .42), bevel=.03, seg=1)                             # gun housings
+        gun = a.part(f'Main_cannon{suffix}', 'Steel', t)
+        brake = a.part(f'Muzzle_brake{suffix}', 'Undercarriage', t)
+        for dz in (-.07, .07):
+            gun.cyl(.045, 1.3, loc=(x, -1.5, .42 + dz), rot=FORWARD, seg=6, bevel=0)
+            brake.cyl(.06, .12, loc=(x, -2.18, .42 + dz), rot=FORWARD, seg=6, bevel=0)
+        # The Ataka box over the gun: two tubes, their mouths forward.
+        a.part('ATGM_box', 'Team', t).box((.36, 1.5, .36), loc=(x, -.2, .86), bevel=.03, seg=1)
+        a.part('ATGM_bands', 'Armor', t).box((.4, .12, .4), loc=(x, .3, .86), bevel=0)
+        for dx in (-.08, .08):
+            a.part('Launch_tubes', 'Undercarriage', t).cyl(.07, .03, loc=(x + dx, -.96, .86), rot=FORWARD, seg=8,
+                                                           bevel=0)
+        a.pivot('Muzzle_missile' if s > 0 else 'Muzzle_missile__001', (x, -1.0, .86), t)
+    a.pivot('Muzzle_main', (1.28, -2.3, .42), t)
+    mv._coax(a, t, .3, -1.1, .38, length=.3, housing=.2)
+    mv._hatch(a, -.5, .5, .55, .22, parent=t, seg=10, handle=False)
+
+
+# ----------------------------------------------------------------------------- heavy tank (Object 195 / T-95)
+def heavy_tank(a, detail=False):
+    """Heavy tank (Object 195 / T-95), 8.4 x 2.9 x 2.4 m with the gun forward, longer than the 7.8 m main battle tank:
+    a very long hull on seven road wheels with skirts, the crew capsule's hatches in the front hull, a small angular
+    unmanned turret, and the big long 152 mm gun (drawn 15 % thick: from above, the very big gun) with its sleeve,
+    fume extractor and muzzle brake (`Main_cannon`, `Muzzle_brake`, `Muzzle_main`), the 30 mm coaxial cannon
+    (`Muzzle_coax`) and the remote machine gun (`Mount_mg`, `Muzzle_mg`). The high-detail variant adds hubs, bolts and
+    vision blocks on the same pivots."""
+    hd.mark(a, detail)
+    _lean_tracks(a, 1.16, 6.2, .8, .3, 7, .5, sprocket=1)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    half = 3.2
+    armor.prism([(-half + .2, .38), (-half - .1, .66), (-half + .1, .86), (half - .1, .86), (half, .56),
+                 (half - .15, .38)], 1.8, bevel=.04, seg=1)
+    hull.prism([(-half - .12, .82), (-half + .9, 1.3), (half - .05, 1.32), (half + .02, .82)], 2.9, bevel=.05, seg=1)
+    for s in (-1, 1):
+        mv._skirt(a, s, 1.45, -half + .2, half - .4, .5, 1.2, 3, thick=.08, bolts=False)
+        _lights(a, (s * 1.05,), -half + .08, 1.08, size=(.14, .04, .1))
+        _lights(a, (s * 1.1,), half + .03, 1.1, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        armor.box((.46, 1.0, .18), loc=(s * 1.2, half - .55, 1.35), bevel=.03, seg=1)                 # fender bins
+    for dx in (-.5, 0, .5):                                                                         # crew capsule
+        mv._hatch(a, dx, -half + 1.35, 1.28, .2, handle=False)
+    mv._periscopes(a, [(dx, -half + 1.05, 1.24, 0) for dx in (-.5, 0, .5)])
+    a.part('Deck', 'Undercarriage').grille(1.6, 1.0, loc=(0, half - 1.1, 1.33), rot=(-R90, 0, 0), slats=6,
+                                           depth=.05, thickness=.04)
+    a.pivot('Point_exhaust', (1.2, half, 1.0))
+    a.pivot('Point_fire', (0, half - 1.1, 1.38))
+    t = a.pivot('Turret', (0, .45, 1.32))
+    steel.cyl(.95, .08, loc=(0, .45, 1.32), seg=14, bevel=0)
+    a.part('Turret_body', 'Team', t).prism([(-.4, -1.25), (.4, -1.25), (1.08, -.8), (1.1, .9), (.9, 1.3), (-.9, 1.3),
+                                            (-1.1, .9), (-1.08, -.8)], .55, loc=(0, 0, .28), axis='Z', bevel=.05,
+                                           seg=1, taper=.88)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.7, .36, .5), loc=(0, -1.3, .3), bevel=.04, seg=1, taper=(.9, .9))                    # mantlet
+    for s in (-1, 1):
+        tarm.box((.5, .1, .45), loc=(s * .72, -1.08, .3), rot=(0, 0, s * .6), bevel=.02, seg=1)     # cheek plates
+    tarm.box((.36, .3, .22), loc=(-.6, -.4, .66), bevel=.03, seg=1)                                  # sight
+    a.part('Sight', 'Glass', t).box((.26, .03, .12), loc=(-.6, -.56, .67), bevel=0)
+    y0, length, z = -1.48, 3.7, .32
+    seg = 14 if detail else 10
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.cyl(.12, length, loc=(0, y0 - length / 2, z), rot=FORWARD, seg=seg, bevel=0)
+    gun.cyl(.15, length * .55, loc=(0, y0 - length * .34, z), rot=FORWARD, seg=seg, bevel=0)       # thermal sleeve
+    gun.cyl(.19, .5, loc=(0, y0 - length * .44, z), rot=FORWARD, seg=seg, bevel=.02, bseg=1)       # fume extractor
+    brake = a.part('Muzzle_brake', 'Undercarriage', t)
+    brake.box((.34, .4, .3), loc=(0, y0 - length - .18, z), bevel=.03, seg=1)
+    a.pivot('Muzzle_main', (0, y0 - length - .42, z), t)
+    mv._coax(a, t, .3, -1.38, .42, length=.5, housing=.26)
+    mv._roof_mg(a, t, (.55, .5, .56), length=.7, shield=False)
+    if detail:
+        det = a.part('Turret_bolts', 'Steel', t)
+        for dx in (-.22, .22):
+            for dz in (-.14, .14):
+                hd.bolt(det, (dx, -1.49, .3 + dz), hd.FRONT, r=.018, h=.024)
+        mv._eyes(a, [(s * .85, -.3, .56, 0) for s in (-1, 1)], parent=t)
+        mv._vent(a, .1, .9, .56, parent=t)
+        for u in (.1, .9):
+            mv._glacis_bolts(a, (-half - .12, .82), (-half + .9, 1.3), u, -1.3, 1.3, 11)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -1791,4 +1961,7 @@ BUILDERS = {
     'turtle_tank': (turtle_tank, dict(ao_distance=.6, grime_height=.5)),
     'armored_bulldozer': (armored_bulldozer, dict(ao_distance=.6, grime_height=.55)),
     'tank_destroyer': (tank_destroyer, dict(ao_distance=.55, grime_height=.5)),
+    'thermobaric_launcher': (thermobaric_launcher, dict(ao_distance=.6, grime_height=.55)),
+    'bmpt': (bmpt, dict(ao_distance=.6, grime_height=.55)),
+    'heavy_tank': (heavy_tank, dict(ao_distance=.6, grime_height=.55)),
 }

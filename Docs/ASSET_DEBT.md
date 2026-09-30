@@ -191,8 +191,6 @@ Almost all of today's models are over those budgets (6,000-15,000 triangles for 
 
 | Model | Size now (in battle) → sheet | Shape note |
 |---|---|---|
-| bmpt | 6.3 x 3.1 x 2.9, keep (note: 5.8 x 2.8 x 2.7) | T-72 chassis, a low wide turret with twin 30 mm guns either side and two box missile launchers, two grenade launchers on the front fenders. From above: a wide turret with many short barrels. |
-| thermobaric_launcher | 6.3 x 3.1 x 2.9, keep (note: 7.6 x 2.9 x 1.8) | T-72 chassis, a big 24-tube box launcher on a lifting mount mid-hull (TOS-1A). From above: a big square block of tubes. |
 | ballistic_launcher | 10.9 x 2.6 x 4.7, keep (note: 10.5 x 2.5 x 2.6) | Long 8-wheel vehicle, one big missile in a casing on the deck, raised upright to fire (Iskander). From above: the long missile down the middle. |
 | heavy_rocket_artillery | 10.5 x 2.7 x 4.2, keep (note: 9.7 x 2.4 x 2.4) | Long 8-wheel vehicle, a block of 12 large (300 mm) tubes at the rear (BM-30 Smerch). From above: 12 big round tubes in 3 rows. |
 | scout_heli | 4.3 x 3.9 x 1.4, keep (note: 4.0 x 3.3 x 1.0) | Small egg-shaped helicopter, five-blade rotor, skids, two small weapon pylons (MH-6 Little Bird). From above: a rotor disc large for the small body. |
@@ -205,7 +203,6 @@ Almost all of today's models are over those budgets (6,000-15,000 triangles for 
 | stealth_bomber | 7.0 x 17.6 x 2.0, keep (note: 8.4 x 21.0 x 2.1) | Flying wing with a sawtooth W trailing edge, no tail, very wide for its length (B-2). From above: a sawtooth boomerang. |
 | heavy_bomber | 17.9 x 18.7 x 6.1, keep (note: 19.4 x 22.6 x 5.0) | Eight engines in four pairs under a long swept wing, a long fuselage, a tall tail; the biggest of the player's aircraft (B-52). From above: the swept wing with four engine pairs. |
 | bunker_vehicle | 8.5 x 3.5 x 3.1, keep | Tracked chassis with a big dozer blade and a low 105 mm turret; deployed, the hull drops and armour plates and sandbags rise round it. From above: the wide blade, the low turret. |
-| heavy_tank | 8.8 x 3.2 x 3.5, keep (note: 8.0 x 2.9 x 2.4) | Very heavy tank, long hull, a small angular unmanned turret, a big long 152 mm gun, seven road wheels (Object 195). From above: the very big gun. Must stay longer than the new 7.7 m MBT. |
 | railgun_truck | 9.7 x 2.9 x 3.7, keep | 8-wheel vehicle with two long parallel guide rails, capacitor coils and blue-glowing radiator panels. From above: two long parallel rails. |
 | laser_tank | 6.3 x 2.7 x 2.6, keep | Tracked chassis with a laser emitter on a fork mount, a big round mirror, radiator panels on both sides. From above: the round mirror disc on its fork. |
 

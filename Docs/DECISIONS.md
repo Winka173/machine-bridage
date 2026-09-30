@@ -10911,3 +10911,6 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | turtle_tank | 7.6 x 2.9 x 2.8 (note) | 7.42 x 2.97 x 2.81 | 6.10 x 2.97 | 2,540 | the T-72 / T-62 "tsar-mangal" turtle tanks (2023-2024) | 8.1 x 3.3 x 3.9 at 0.85, 11,272 |
 | armored_bulldozer | 6.5 x 3.7 x 3.2 (note) | 6.13 x 3.70 x 3.53 | 6.13 x 3.70 | 2,060 | Caterpillar D9R (IDF armour kit) | 6.7 x 3.7 x 4.8 at 0.85, 9,418 |
 | tank_destroyer (+ _hd) | 7.8 x 2.5 x 2.4 (note) | 7.89 x 2.62 x 2.04 | 5.72 x 2.62 | 2,996 / 7,344 | 2S25 Sprut-SD (2A75 125 mm) | 9.2 x 2.7 x 2.2 at 0.85, 7,588 |
+| thermobaric_launcher | 7.6 x 2.9 x 1.8 (note) | 6.02 x 2.85 x 2.79 (the 24-tube box level, face forward) | 6.02 x 2.85 | 3,508 | TOS-1A Solntsepyok on the T-72 | 6.3 x 3.1 x 2.9 at 0.85, 8,548 |
+| bmpt | 5.8 x 2.8 x 2.7 (note) | 6.08 x 2.96 x 2.39 | 6.08 x 2.85 | 3,168 | BMPT Terminator | 6.3 x 3.1 x 2.9 at 0.85, 10,596 |
+| heavy_tank (+ _hd) | 8.0 x 2.9 x 2.4 (note), longer than the MBT | 8.39 x 3.01 x 2.20 | 6.55 x 3.01 | 3,660 / 9,102 | Object 195 / T-95 (152 mm) | 8.8 x 3.2 x 3.5 at 0.85, 8,328 |

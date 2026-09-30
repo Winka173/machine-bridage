@@ -189,7 +189,7 @@
   },
   "bmpt": {
     "file": "bmpt.glb",
-    "triangles": 10596
+    "triangles": 3168
   },
   "bomb": {
     "file": "bomb.glb",
@@ -593,11 +593,11 @@
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
-    "triangles": 8328
+    "triangles": 3660
   },
   "heavy_tank_hd": {
     "file": "heavy_tank_hd.glb",
-    "triangles": 19366
+    "triangles": 9102
   },
   "heavy_turret": {
     "file": "heavy_turret.glb",
@@ -1185,7 +1185,7 @@
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",
-    "triangles": 8548
+    "triangles": 3508
   },
   "titan_tank": {
     "file": "titan_tank.glb",
