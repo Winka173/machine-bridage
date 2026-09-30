@@ -33,7 +33,7 @@ from mathutils import Vector
 
 import mb_detail as hd
 import mb_vehicles as mv
-from mb_vehicles import ACROSS, R90, TAU
+from mb_vehicles import ACROSS, FORWARD, R90, TAU
 
 
 def _lean_tracks(a, x, length, top, wheel_r, wheels, belt_width, sprocket=1, cleat_pitch=.21, wheel_seg=8, teeth=7):
@@ -756,6 +756,89 @@ def daedalus(a):
     a.pivot('Point_fire', (0, 3.0, 3.6))
 
 
+# ----------------------------------------------------------------------------- scout jeep
+JEEP_K = 2.7 / 4.37     # mb_vehicles' jeep is drawn 4.37 m long; the sheet's is 2.7 m (0.8 x an M151)
+
+
+def _crew(a, loc, parent=None, gunner=False):
+    """A seated crewman seen from above: helmet, shoulders and arms (the sheet: the driver and the gunner show)."""
+    x, y, z = loc
+    h = .42 if gunner else .3     # the driver sits low, under the gun's sweep
+    a.part('Crew', 'Suit', parent).box((.5, .3, h), loc=(x, y, z + h / 2), bevel=.06, seg=1, taper=(.85, .8))
+    a.part('Helmets', 'Armor', parent).sphere((.17, .19, .13), loc=(x, y - .02, z + h + .1), seg=8, rings=5)
+    arms = a.part('Crew', 'Suit', parent)
+    for sx in (-1, 1):
+        arms.box((.1, .34 if gunner else .3, .1), loc=(x + sx * .2, y - .2, z + h - .08), rot=(.3, 0, 0), bevel=0)
+
+
+def scout_jeep(a, detail=False):
+    """Scout jeep (M151 / Land Rover class), 2.7 x 1.4 x 1.4 m: the smallest vehicle in the game. mb_vehicles' open
+    4x4 (flat hood, flat fenders, fold-down windscreen, roll bar, the machine gun on its pintle behind the seats,
+    spare wheel and jerrycans at the back) drawn lean for the light-vehicle budget, with the driver and the gunner
+    seated (the sheet: both must show from above); the gunner turns with the gun (`Turret`). Nothing thinner than
+    0.1 m: the roll bar and the windscreen frame are square bars, no mirrors, whip or brush guard. Drawn at mb_vehicles'
+    size and scaled by JEEP_K; the high-detail variant is mb_vehicles' own detailed jeep, scaled the same."""
+    if detail:
+        mv.scout_jeep(a, detail=True)
+        _crew(a, (-.38, -.02, 1.18))
+        _crew(a, (0, .55, .5), parent='Turret', gunner=True)
+        a.pivot('Point_exhaust', (.6, 2.0, .55))
+        a.pivot('Point_fire', (0, -1.2, 1.15))
+        _scale_asset(a, JEEP_K)
+        return
+    hd.mark(a, False)
+    body = a.part('Body', 'Team')
+    steel = a.part('Steel', 'Steel')
+    armor = a.part('Armor', 'Armor')
+    chassis = a.part('Chassis', 'Undercarriage')
+    rubber = a.part('Tyres', 'Rubber')
+    seats = a.part('Seats', 'Canvas')
+    chassis.box((1.45, 3.7, .26), loc=(0, 0, .55), bevel=0)
+    for sx in (-1, 1):
+        for y in (-1.25, 1.2):
+            rubber.cyl(.42, .34, loc=(sx * .86, y, .42), rot=ACROSS, seg=12, bevel=.05, bseg=1)
+            armor.cyl(.24, .37, loc=(sx * .86, y, .42), rot=ACROSS, seg=8, bevel=0)                 # wheel discs
+            body.box((.46, 1.05, .1), loc=(sx * .9, y, .92), bevel=.03, seg=1, taper=(1, .8))        # fenders
+        steel.box((.14, 1.3, .06), loc=(sx * .9, -.05, .64), bevel=0)                               # side steps
+    body.prism([(-2.0, .62), (-2.0, .96), (-1.1, 1.12), (-.36, 1.14), (-.36, .62)], 1.7, bevel=.05, seg=1)
+    body.box((1.72, 2.3, .52), loc=(0, .8, .88), bevel=.05, seg=1)
+    chassis.grille(.7, .45, loc=(0, -.78, 1.15), rot=(-R90, 0, 0), slats=4, depth=.06, thickness=.04)   # louvres
+    for x, y in ((-.38, -.05), (.38, -.05), (-.48, 1.0), (.48, 1.0)):
+        seats.box((.44, .44, .12), loc=(x, y, 1.19), bevel=.03, seg=1)
+        seats.box((.44, .1, .4), loc=(x, y + .25, 1.4), rot=(-.12, 0, 0), bevel=0)
+    # Windscreen frame and roll bar as square bars (0.1 m or more).
+    for x0, x1, y, h in ((-.82, .82, -.36, .54), (-.82, .82, 1.55, .66)):
+        for x in (x0, x1):
+            steel.box((.1, .1, h), loc=(x, y, 1.12 + h / 2), bevel=0)
+        steel.box((x1 - x0 + .1, .1, .1), loc=(0, y, 1.12 + h), bevel=0)
+    a.part('Glass', 'Glass').box((1.54, .03, .42), loc=(0, -.38, 1.39), rot=(-.12, 0, 0), bevel=0)
+    for sx in (-1, 1):
+        mv._headlight(a, sx * .55, -2.0, .8, guard=False)
+        a.part('Jerrycans', 'Hazard').box((.3, .16, .4), loc=(sx * .58, 2.0, 1.05), bevel=.03, seg=1)
+        mv._taillight(a, sx * .72, 1.95, .72)
+    chassis.grille(.64, .26, loc=(0, -2.03, .8), slats=3, depth=.05, thickness=.05)
+    steel.box((1.5, .12, .14), loc=(0, -2.05, .6), bevel=.03, seg=1)                                # bumper
+    rubber.cyl(.36, .22, loc=(0, 2.03, 1.02), rot=FORWARD, seg=12, bevel=0)                         # spare wheel
+    armor.cyl(.2, .25, loc=(0, 2.03, 1.02), rot=FORWARD, seg=8, bevel=0)
+    armor.box((.4, .34, .3), loc=(.55, 1.65, 1.26), bevel=.02, seg=1)                               # radio
+    a.part('Ammo_boxes', 'Crate').box((.4, .3, .24), loc=(-.52, 1.65, 1.23), bevel=.02, seg=1)
+    a.part('Beacon', 'TeamGlow').box((.1, .1, .08), loc=(.72, 1.75, 1.45), bevel=0)
+    _crew(a, (-.38, -.02, 1.18))                                                                    # the driver
+    t = a.pivot('Turret', (0, .72, 1.14))
+    a.part('Mount', 'Steel', t).cyl(.08, .52, loc=(0, 0, .26), seg=8, bevel=0)
+    a.part('Gun_shield', 'Armor', t).box((.66, .08, .42), loc=(0, -.22, .66), bevel=.02, seg=1, taper=(.9, 1))
+    cannon = a.part('Main_cannon', 'Steel', t)
+    cannon.box((.16, .44, .18), loc=(0, 0, .64), bevel=.02, seg=1)
+    cannon.cyl(.06, 1.0, loc=(0, -.66, .66), rot=FORWARD, seg=8, bevel=0)      # drawn 0.12 m thick to read
+    cannon.cyl(.08, .12, loc=(0, -1.11, .66), rot=FORWARD, seg=8, bevel=0)     # flash hider
+    a.part('Ammo_box', 'Armor', t).box((.2, .18, .16), loc=(.18, .05, .56), bevel=.02, seg=1)
+    a.pivot('Muzzle_main', (0, -1.16, .66), t)
+    _crew(a, (0, .55, .5), parent='Turret', gunner=True)                                          # the gunner
+    a.pivot('Point_exhaust', (.6, 2.0, .55))
+    a.pivot('Point_fire', (0, -1.2, 1.15))
+    _scale_asset(a, JEEP_K)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
@@ -764,4 +847,5 @@ BUILDERS = {
     'sky_gunship': (sky_gunship, dict(ao_distance=.9, ground=False)),
     'attack_helicopter': (attack_helicopter, dict(ao_distance=.4, grime_height=.3)),
     'daedalus': (daedalus, dict(ao_distance=.6, ground=False)),
+    'scout_jeep': (scout_jeep, dict(ao_distance=.3, grime_height=.3)),
 }
