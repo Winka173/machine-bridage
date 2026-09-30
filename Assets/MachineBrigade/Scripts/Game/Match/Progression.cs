@@ -121,6 +121,7 @@ namespace MachineBrigade.Game.Match
             ["nlos_atgm_vehicle"] = 3000,
             ["radar_atgm_vehicle"] = 3000,
             ["recoilless_jeep"] = 1500,
+            ["airborne_vehicle"] = 1500,
             // (batch A: new entries above)
         };
 

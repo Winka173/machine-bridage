@@ -2505,6 +2505,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.recoilless_jeep"] = ("Recoilless rifle jeep", "Xe jeep súng không giật"),
             ["short.recoilless_jeep"] = ("Recoilless", "Súng không giật"),
             ["note.recoilless_jeep"] = ("An M40 106 mm recoilless rifle on an M151 jeep (the SPG-9 on a pickup is its cousin): one hard hit, then a long reload.", "Súng không giật M40 106 mm trên xe jeep M151 (họ hàng với SPG-9 trên xe bán tải): một phát đau rồi nạp lâu."),
+            // dx10: Xe đổ bộ đường không.
+            ["unit.airborne_vehicle"] = ("Airborne fighting vehicle", "Xe đổ bộ đường không"),
+            ["short.airborne_vehicle"] = ("Airborne IFV", "Xe đổ bộ"),
+            ["note.airborne_vehicle"] = ("A BMD-4-class airborne vehicle (the 2S25 Sprut-SD shares its hull): a 100 mm gun-launcher and a 30 mm cannon, dropped by parachute.", "Xe đổ bộ đường không lớp BMD-4 (chung thân với 2S25 Sprut-SD): pháo 100 mm phóng được tên lửa và pháo 30 mm, thả bằng dù."),
             // (batch A: new entries above)
         };
 

@@ -54,6 +54,7 @@ namespace MachineBrigade.Tests
             new Row("nlos_atgm_vehicle", 900, 8, 1, -1, "spike_nlos", 300, 90, 30, "lofted"),
             new Row("radar_atgm_vehicle", 1300, 7, 2, -1, "khrizantema", 250, 50, -1, "smokeSight"),
             new Row("recoilless_jeep", 350, 3, 0, -1, "recoilless_106", 220, 32, 33, "ambush"),
+            new Row("airborne_vehicle", 1100, 6, 1, -1, "gun_100_2a70", -1, -1, -1, "paradrop"),
             // (batch A rows: new ones above)
         };
 

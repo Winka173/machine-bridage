@@ -483,6 +483,8 @@
     { "id": "khrizantema", "real": "9M123 Khrizantema", "family": "atgm", "size": 46, "pen": 4, "piercing": true, "projectileModel": "atgm_kornet", "projectileScale": 0.9, "damageType": "ShapedCharge", "damage": 250, "burst": 2, "burstInterval": 0.6, "cooldown": 9, "range": 50, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile" },
     // dx09: the 106 mm recoilless rifle: one heavy HEAT round, a long reload.
     { "id": "recoilless_106", "real": "M40 106 mm recoilless rifle", "family": "tank_gun", "size": 106, "pen": 3, "piercing": true, "damageType": "ShapedCharge", "damage": 220, "cooldown": 6.6667, "range": 32, "projectileSpeed": 150, "spread": 0.9, "impactTier": "Medium" },
+    // dx10: the BMD-4's 2A70 100 mm gun-launcher firing high explosive (its 30 mm is the 2A42 line's).
+    { "id": "gun_100_2a70", "real": "2A70 100 mm", "family": "tank_gun", "size": 100, "pen": 2, "damageType": "HighExplosive", "damage": 200, "cooldown": 6, "range": 32, "projectileSpeed": 120, "splash": 3, "spread": 0.9, "impactTier": "Medium" },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -1012,6 +1014,14 @@
     { "id": "recoilless_jeep", "modelSize": [3.5, 1.4, 1.6], "class": "TankHunter", "stillCamo": 0.3, "armour": 0, "hp": 159, "speed": 12, "turnRate": 200, "turretTurnRate": 120, "radius": 1.3, "length": 3.3, "width": 1.4, "cp": 3, "vision": 36,
       "firesWhileMoving": false, "weapon": "recoilless_106", "captureRate": 2,
       "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.1, "tier": "Large" } },
+    // dx10: the airborne fighting vehicle: dropped by parachute wherever its side sees (never into an enemy base); its stand-in under the canopies is a low-altitude target for anti-air as it falls.
+    { "id": "airborne_vehicle", "modelSize": [5.0, 2.5, 2.0], "class": "Light", "armour": 1, "hp": 500, "speed": 6.5, "turnRate": 90, "turretTurnRate": 100, "radius": 1.9, "length": 4.6, "width": 2.5, "cp": 6, "vision": 36,
+      "firesWhileMoving": true, "weapon": "gun_100_2a70", "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" } ], "captureRate": 1.5,
+      "paradrop": { "proxy": "airborne_vehicle_chute", "fall": 6, "height": 30, "baseKeepOut": 45 },
+      "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // Its stand-in while it falls (no card, no weapon): the vehicle under three canopies.
+    { "id": "airborne_vehicle_chute", "card": false, "modelSize": [9.0, 9.0, 11.0], "class": "Light", "armour": 1, "hp": 500, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
+      "firesWhileMoving": true, "weapon": "none", "flying": true, "altitude": 30, "captureRate": 0 },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

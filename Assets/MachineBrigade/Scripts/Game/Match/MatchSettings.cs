@@ -136,6 +136,7 @@ namespace MachineBrigade.Game.Match
             "nlos_atgm_vehicle",
             "radar_atgm_vehicle",
             "recoilless_jeep",
+            "airborne_vehicle",
             // (batch A cards: new entries above)
         };
 

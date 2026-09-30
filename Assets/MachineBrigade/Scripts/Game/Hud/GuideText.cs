@@ -1332,6 +1332,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 6,7 giây một phát [[nổ lõm]] nặng, tầm 32 m; đỗ yên thì khó thấy cho tới khi bắn.\n" +
                 "Mạnh / yếu: phục kích xe tăng từ sườn chỉ với 3 CP; thứ gì bắn trả cũng hạ được nó.\n" +
                 "Mẹo: bắn vào sườn một chiếc tăng rồi chạy."),
+            ["guide.airborne_vehicle"] = (
+                "[[Airborne fighting vehicle]] · light armour · behind the lines\n" +
+                "How it fights: tap its card, then ground your side sees: it lands by [[parachute]] in 6 s; anti-air can shoot it on the way down.\n" +
+                "Strong / weak: takes empty points and hits artillery from behind; loses to tanks.\n" +
+                "Tip: tap the card twice to send it to the drop zone instead.",
+                "[[Xe đổ bộ đường không]] · giáp nhẹ · sau lưng địch\n" +
+                "Cách đánh: chạm thẻ rồi chạm vùng phe ta nhìn thấy: nó [[nhảy dù]] xuống trong 6 giây; phòng không bắn được khi còn dưới dù.\n" +
+                "Mạnh / yếu: chiếm cứ điểm trống, đánh pháo binh từ phía sau; thua xe tăng.\n" +
+                "Mẹo: chạm thẻ hai lần để đưa nó về bãi thả."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
