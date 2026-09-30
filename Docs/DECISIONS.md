@@ -10939,3 +10939,4 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 
 Elites without a model of their own (elite_fpv_carrier, elite_attack_jet, elite_long_sam, elite_artillery) draw their
 rebuilt base and are repainted at run time (`VehicleView.EliteRepaint`); elite_grad keeps `grad_truck`.
+| sky_fortress (boss) | the AC-130 x 1.3, painted dark | 17.62 x 24.08 x 6.93 model units (the shared C-130 at 1.477, the old model's length: every node where the boss data puts it, the props within 0.4 m) | (boss) | 2,380 | AC-130 Spectre (the shared C-130 airframe) | 17.6 x 22.2 model units, 10,044. **data (C1):** scale x size 1.105 draws it 19.5 m long; the sheet's C-130 x 1.3 is 15.5 m, scale x size 0.88 (scale 1.035 with size 0.85) |

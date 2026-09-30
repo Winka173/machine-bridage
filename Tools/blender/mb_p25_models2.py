@@ -2636,6 +2636,48 @@ def _p1_mbt(a):
     main_battle_tank(a)
 
 
+# ----------------------------------------------------------------------------- Sky Fortress (boss)
+SKYF_K = 5.85 / 3.96        # the shared C-130 scaled so its outer engines sit on the old Propeller nodes
+
+
+def sky_fortress(a):
+    """Sky Fortress, Quaden's AC-130 boss: the sheet asks for the AC-130 scaled 1.3 and painted dark, and the AC-130 is
+    now the shared C-130 airframe (part 1's mb_p25_models._c130). Here it is that airframe at SKYF_K (17.6 m in
+    model units, the old model's length, so the boss data's nodes stay put: `Propeller` .. `_4` on its engines, the
+    gun mounts `Mount_mg` (25 mm), `Mount_gun` / `.001` (the two 40 mm), `Mount_main` (105 mm) with their muzzles out
+    of the left side where the data's parts are, `Muzzle_ramp` at the ramp), its `Armor` repainted `EliteBlack`, the
+    general's colour on the fuselage, the gun blisters and barrels drawn to read. Scale x size in the data then makes
+    it 1.3 x the AC-130 (DECISIONS 25B2 part 2)."""
+    import mb_elites as el
+    from mb_p25_models import _c130
+    from mb_phase2 import _suffixed
+    _suffixed(a)
+    _c130(a)
+    _scale_asset(a, SKYF_K)
+    # The inner props of the scaled frame sit 0.2 m inboard of the old nodes: move them on to them.
+    a.pivots['Propeller_2'].location.x = -3.12
+    a.pivots['Propeller_3'].location.x = 3.12
+    ports = a.part('Gun_ports', 'Armor')
+    guns = a.part('Guns', 'Steel')
+    for name, muzzle, (x, y, z), length, tilt, r, housing in (
+            ('Mount_mg', 'Muzzle_mg', (1.33, -4.29, 0.0), 1.15, .14, .09, (.5, .9, .7)),
+            ('Mount_gun', 'Muzzle_gun', (1.33, -1.23, .06), 1.6, .2, .11, (.55, 1.2, .9)),
+            ('Mount_gun__001', 'Muzzle_gun__001', (1.33, .97, .06), 1.6, .2, .11, (.55, 1.2, .9)),
+            ('Mount_main', 'Muzzle_main', (1.33, 3.7, .03), 2.3, .14, .16, (.7, 1.6, 1.1))):
+        ports.box(housing, loc=(x - .1, y, z), bevel=.04, seg=1)
+        m = a.pivot(name, (x, y, z))
+        rot = (0, R90 + tilt, 0)
+        axis = Vector((math.cos(tilt), 0, -math.sin(tilt)))
+        a.part('Gun_barrels', 'Steel', m).cyl(r, length, loc=tuple(axis * (length / 2)), rot=rot, seg=10, bevel=0)
+        a.part('Gun_breeches', 'Armor', m).box((.4, housing[1] * .6, housing[2] * .6), loc=(.05, 0, 0), bevel=.03, seg=1)
+        a.part('Gun_brakes', 'Undercarriage', m).cyl(r * 1.35, .18, loc=tuple(axis * (length - .06)), rot=rot, seg=10,
+                                                     bevel=0)
+        a.pivot(muzzle, tuple(axis * (length + .14)), m)
+    guns.box((.6, 1.4, .2), loc=(0, 5.5, -.8), rot=(-.3, 0, 0), bevel=0)                           # ramp launcher
+    a.pivot('Muzzle_ramp', (0, 6.32, -.55))
+    el._recolour(a, {'Armor': 'EliteBlack'})
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -2700,4 +2742,5 @@ BUILDERS = {
                  dict(ao_distance=.6, grime_height=.55)),
     'elite_apc': (_elite_on(ifv, roof=(-.1, -.3, .6), bands=(('', (0, -2.3, .3), .08),)),
                   dict(ao_distance=.6, grime_height=.55)),
+    'sky_fortress': (sky_fortress, dict(ao_distance=1.2, ground=False)),
 }

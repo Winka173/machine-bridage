@@ -249,7 +249,6 @@ Daedalus was redrawn in this pass; Icarus (`silver_bug`) was reviewed and kept (
 | fortress_hive | Mini | 16.4 x 9.3 x 8.5 | NASA Crawler-Transporter, Lancet-3, Patriot, Sandcrawler: a tracked fortress carrying a drone hive. |
 | caspian | Mini | 52.9 x 39.0 x 16.0 | Lun-class ekranoplan MD-160 ("Caspian Sea Monster"): a ground-effect craft. |
 | supreme_command | Mini | 12.4 x 4.3 x 9.5 | MZKT-7930 chassis, an armoured mobile headquarters: a super-heavy four-axle command vehicle. |
-| sky_fortress | Mini | 19.4 x 24.6 x 7.7 | AC-130 Spectre: the AC-130 scaled 1.3 and painted dark. The AC-130 is now the shared C-130 airframe (11.9 x 16.3 m): this boss should become that airframe x 1.3. |
 | icarus_mk0 | Mini | 24.1 x 16.2 x 5.8 | Polyus / Skif-DM, ISS, Hubble, SOLG (Ace Combat 5), The Expanse: Icarus's first version (it is Icarus at 0.65). |
 | behemoth_inferno | Mini | 12.8 x 6.6 x 5.6 | TOS-1A, Ratte, Baneblade: a flame Behemoth with red fuel tanks. |
 | fenrir | Mini | 16.2 x 9.1 x 8.3 | Antarctic Snow Cruiser (1939), Crawler-Transporter, Sandcrawler: a variant of the mobile fortress. |
