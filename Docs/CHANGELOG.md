@@ -38,6 +38,18 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
 - B.7-B.8: prices checked against the price sheets; the airstrike drops four FAB-500s (10 m each), the barrage fires six
   shells, the cruise missile hits for 600 over 10 m.
 
+### Prompt 25 A1 review
+
+The rows the first pass kept for a measurement, applied as the sheet has them (the owner's call; DECISIONS 25A,
+`import_xlsx.py --upto A1-review`).
+
+- Nine speeds by the sheet's real speed x the map factor (the engineer vehicle 4.4 m/s, the smoke carrier and the
+  mortar carrier 5.9, the mine layer 5.5, the VBIED 6.7, the light tank 4.0, the flame tank 4.6, the HIMARS 9.4,
+  the strike drone 13.9); the siege tank sees 30 m.
+- Health by the sheet's class median a CP: the TOS 450, the siege tank 600, the swarm carrier 632, the AC-130 1,069
+  (about half).
+- The Skyranger's AHEAD gun changes magazines in 1.21 s (the sheet's formula, 102 a second sustained).
+
 ### Prompt 25 B1, B3 and turn rates
 
 The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`).

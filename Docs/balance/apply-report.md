@@ -3,8 +3,9 @@
 What `Tools/balance/import_xlsx.py` applied from `Docs/balance/Machine_Brigade_Can_bang.xlsx`, sheet by sheet, and
 what it left and why. Outcomes: **applied** (the data now holds the sheet's number), **already** (the data already
 held it), **deferred** (the row belongs to a later task of the sheet "Việc cho agent": names D1, model sizes B1,
-models B2, bosses C1, boss weapons C2), **skipped** (no id in the data, a contradiction, or a measurement that did not
-confirm it). Decisions and their reasons: `Docs/DECISIONS.md`, section 25A. Each step's section is rewritten when the
+models B2, bosses C1, boss weapons C2), **skipped** (no id in the data, or a contradiction in the sheet). The rows
+an earlier step left for a measurement, deferred or skipped are applied by the last step, A1-review, and listed
+again in its section with their before and after (the owner, after the first pass). Decisions and their reasons: `Docs/DECISIONS.md`, section 25A. Each step's section is rewritten when the
 script runs it again.
 
 <!-- summary -->
@@ -29,9 +30,10 @@ Rows by step and sheet (each step's section below lists them).
 | A5 | Tổng quan, Vũ khí đề xuất | 5 | 68 | 2 | 0 |
 | B7 | Giá CP | 0 | 58 | 0 | 0 |
 | B8 | Thẻ hỗ trợ | 3 | 6 | 0 | 0 |
-| review | Cân bằng lần 2 | 0 | 0 | 4 | 0 |
-| review | Kiểm tra từng mục | 0 | 0 | 14 | 0 |
-| review | Vũ khí đề xuất / Thay đổi chi tiết | 0 | 0 | 6 | 0 |
+| A1-review | Cân bằng lần 2 | 0 | 4 | 0 | 0 |
+| A1-review | Kiểm tra từng mục | 14 | 29 | 4 | 3 |
+| A1-review | Vũ khí đề xuất | 1 | 33 | 0 | 0 |
+| A1-review | Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
 
 <!-- /summary -->
 
@@ -862,46 +864,6 @@ The sheet names cards by their Vietnamese titles; the table below maps them to t
 
 <!-- /step:B8 -->
 
-<!-- step:review -->
-## To measure in the test phase: "Xem lại", "Theo dõi" and the rows a measurement should judge
-
-The owner's rule of 30/09: no test or measurement runs until a test phase is approved. The rows below need a measurement (prompt 13's combat value, CombatValueMeasure with MB_BALANCE=1, 3-5 seeds, the cards named) before they change: each keeps the game's value for now. "Xem lại" rows are judged by the measurement; "Theo dõi" rows change only if it confirms; the others are changes applied from the sheet whose words and numbers disagree, or that the sheet's own "Cân bằng lần 2" asks to re-measure.
-
-| Sheet | Applied | Already so | Deferred | Skipped |
-|---|---|---|---|---|
-| Cân bằng lần 2 | 0 | 0 | 4 | 0 |
-| Kiểm tra từng mục | 0 | 0 | 14 | 0 |
-| Vũ khí đề xuất / Thay đổi chi tiết | 0 | 0 | 6 | 0 |
-
-| Sheet | id | Item | Outcome | Detail |
-|---|---|---|---|---|
-| Kiểm tra từng mục | engineer_vehicle | Tốc độ | deferred | Xem lại: kept 7 (the sheet: Mẫu thật × hệ số map ≈ 4.4 m/s); to measure in the test phase |
-| Kiểm tra từng mục | smoke_carrier | Tốc độ | deferred | Xem lại: kept 8 (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s); to measure in the test phase |
-| Kiểm tra từng mục | mine_layer | Tốc độ | deferred | Xem lại: kept 8 (the sheet: Mẫu thật × hệ số map ≈ 5.5 m/s); to measure in the test phase |
-| Kiểm tra từng mục | vbied | Tốc độ | deferred | Xem lại: kept 13 (the sheet: Mẫu thật × hệ số map ≈ 6.7 m/s); to measure in the test phase |
-| Kiểm tra từng mục | light_tank | Tốc độ | deferred | Xem lại: kept 9 (the sheet: Mẫu thật × hệ số map ≈ 4.0 m/s); to measure in the test phase |
-| Kiểm tra từng mục | flame_tank | Tốc độ | deferred | Xem lại: kept 6.5 (the sheet: Mẫu thật × hệ số map ≈ 4.6 m/s); to measure in the test phase |
-| Kiểm tra từng mục | mortar_carrier | Tốc độ | deferred | Xem lại: kept 8 (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s); to measure in the test phase |
-| Kiểm tra từng mục | mlrs | Tốc độ | deferred | Xem lại: kept 6 (the sheet: Mẫu thật × hệ số map ≈ 9.4 m/s); to measure in the test phase |
-| Kiểm tra từng mục | thermobaric_launcher | Máu | deferred | Xem lại: kept 1980 (the sheet: Máu/CP gấp 2.1 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Kiểm tra từng mục | siege_tank | Máu | deferred | Xem lại: kept 3300 (the sheet: Máu/CP gấp 2.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Kiểm tra từng mục | siege_tank | Tầm nhìn | deferred | Xem lại: kept 38 (the sheet: ~30 m); to measure in the test phase |
-| Kiểm tra từng mục | strike_drone | Tốc độ | deferred | Xem lại: kept 19 (the sheet: Mẫu thật × hệ số map ≈ 13.9 m/s); to measure in the test phase |
-| Kiểm tra từng mục | swarm_carrier | Máu | deferred | Xem lại: kept 3080 (the sheet: Máu/CP gấp 3.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Kiểm tra từng mục | sky_gunship | Máu | deferred | Xem lại: kept 4400 (the sheet: Máu/CP gấp 1.7 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Cân bằng lần 2 | rocket_technical | Theo dõi | deferred | Theo dõi: kept (CP 3); Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.; to measure in the test phase |
-| Cân bằng lần 2 | long_sam | Theo dõi | deferred | Theo dõi: kept (CP 14); Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.; to measure in the test phase |
-| Cân bằng lần 2 | attack_jet | Đã giảm ở đợt 2 | deferred | Đã giảm ở đợt 2: kept (CP 18); Đã giảm thêm ở đợt 2 (xem Thay đổi chi tiết). Cột giá trị thực chiến là số đo mô phỏng cũ, cần chạy lại mô phỏng để xác nhận.; to measure in the test phase |
-| Cân bằng lần 2 | heavy_bomber | Đã giảm ở đợt 2 | deferred | Đã giảm ở đợt 2: kept (CP 22); Đã giảm thêm ở đợt 2 (xem Thay đổi chi tiết). Cột giá trị thực chiến là số đo mô phỏng cũ, cần chạy lại mô phỏng để xác nhận.; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | zu23_technical | zu23 | deferred | the row says "giữ DPS"; its numbers give 70 a second (was 143) on a card already at 0.24 of the AA median; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | heavy_aa | twin_30_flak | deferred | "giữ DPS"; its numbers give 171 (was 252); to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | aa_turret | tower_flak_30 | deferred | the sheet wanted its anti-aircraft value 300 -> 240; the weapon row gives 131 a second (was 193); to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | headquarters | hq_flak | deferred | the HQ's flak at 140 (was 157), the 2A38 family's stream; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | scout_heli | scout_rockets | deferred | six Hydras a load (was 24; the sheet read 12, the salvo) and 5 CP; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | flame_tank | flamethrower | deferred | 21 a tick on every target (the row meant -10 % on light vehicles only); to measure in the test phase |
-
-<!-- /step:review -->
-
 <!-- import_b:begin -->
 <!-- step:B1 -->
 ## B1: model sizes (sheet Kiểm tra từng mục)
@@ -1058,3 +1020,83 @@ Prompt 25 C.4. The unit: balance.json gives turn rates in degrees a second (its 
 <!-- /step:C4 -->
 
 <!-- import_b:end -->
+
+<!-- step:A1-review -->
+## A1 review: the rows left for a measurement, and every row deferred or skipped, applied
+
+The owner's rule of 30/09 (after the first pass): every row that waited for a measurement is applied with the sheet's numbers and formulas, and every row a step deferred or skipped for any reason but a later task (bosses C1-C2, names D1, models B2). Health rows take the sheet's formula: the class's median health a CP (the "Lớp" of "Phương tiện", over the class's vehicles the sheet does not flag) times the vehicle's CP. "Đổi" rows of "Kiểm tra từng mục" that no "Thay đổi chi tiết" row repeats are checked against the data here.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Cân bằng lần 2 | 0 | 4 | 0 | 0 |
+| Kiểm tra từng mục | 14 | 29 | 4 | 3 |
+| Vũ khí đề xuất | 1 | 33 | 0 | 0 |
+| Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kiểm tra từng mục | engineer_vehicle | Tốc độ | applied | speed 7 -> 4.4 m/s (the sheet: Mẫu thật × hệ số map ≈ 4.4 m/s) |
+| Kiểm tra từng mục | smoke_carrier | Tốc độ | applied | speed 8 -> 5.9 m/s (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s) |
+| Kiểm tra từng mục | mine_layer | Tốc độ | applied | speed 8 -> 5.5 m/s (the sheet: Mẫu thật × hệ số map ≈ 5.5 m/s) |
+| Kiểm tra từng mục | vbied | Tốc độ | applied | speed 13 -> 6.7 m/s (the sheet: Mẫu thật × hệ số map ≈ 6.7 m/s) |
+| Kiểm tra từng mục | light_tank | Tốc độ | applied | speed 9 -> 4 m/s (the sheet: Mẫu thật × hệ số map ≈ 4.0 m/s) |
+| Kiểm tra từng mục | flame_tank | Tốc độ | applied | speed 6.5 -> 4.6 m/s (the sheet: Mẫu thật × hệ số map ≈ 4.6 m/s) |
+| Kiểm tra từng mục | mortar_carrier | Tốc độ | applied | speed 8 -> 5.9 m/s (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s) |
+| Kiểm tra từng mục | mlrs | Tốc độ | applied | speed 6 -> 9.4 m/s (the sheet: Mẫu thật × hệ số map ≈ 9.4 m/s) |
+| Kiểm tra từng mục | thermobaric_launcher | Máu | applied | health 900 -> 450 (1980 -> 990 after toughness x2.2): the class "Pháo binh"'s median 50 a CP x its 9 CP (the sheet: Máu/CP gấp 2.1 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over rocket_technical, mortar_carrier, artillery, mlrs, shahed_truck, ballistic_launcher, heavy_rocket_artillery) |
+| Kiểm tra từng mục | siege_tank | Máu | applied | health 1500 -> 600 (3300 -> 1320 after toughness x2.2): the class "Pháo binh"'s median 50 a CP x its 12 CP (the sheet: Máu/CP gấp 2.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over rocket_technical, mortar_carrier, artillery, mlrs, shahed_truck, ballistic_launcher, heavy_rocket_artillery) |
+| Kiểm tra từng mục | siege_tank | Tầm nhìn | applied | vision 38 -> 30 m (the sheet: ~30 m) |
+| Kiểm tra từng mục | strike_drone | Tốc độ | applied | speed 19 -> 13.9 m/s (the sheet: Mẫu thật × hệ số map ≈ 13.9 m/s) |
+| Kiểm tra từng mục | swarm_carrier | Máu | applied | health 1400 -> 632 (3080 -> 1390 after toughness x2.2): the class "Máy bay · bay"'s median 48.6 a CP x its 13 CP (the sheet: Máu/CP gấp 3.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over recon_drone, wingman_drone, strike_drone, fighter_jet, stealth_fighter, attack_jet, stealth_bomber, heavy_bomber) |
+| Kiểm tra từng mục | sky_gunship | Máu | applied | health 2000 -> 1069 (4400 -> 2352 after toughness x2.2): the class "Máy bay · bay"'s median 48.6 a CP x its 22 CP (the sheet: Máu/CP gấp 1.7 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over recon_drone, wingman_drone, strike_drone, fighter_jet, stealth_fighter, attack_jet, stealth_bomber, heavy_bomber) |
+| Cân bằng lần 2 | rocket_technical | Theo dõi | already | the row names no number (its words: Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.); the price it rests on, 3 CP after round 1, is in (the data: 3) |
+| Cân bằng lần 2 | long_sam | Theo dõi | already | the row names no number (its words: Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.); the price it rests on, 14 CP after round 1, is in (the data: 14) |
+| Cân bằng lần 2 | attack_jet | Đã giảm ở đợt 2 | already | the row names no number; the round-2 cuts it points to are in (A1: one FAB-250 a load, 18 CP, the GSh-30-2's 70-round magazine), 18 CP |
+| Cân bằng lần 2 | heavy_bomber | Đã giảm ở đợt 2 | already | the row names no number; the round-2 cuts it points to are in (A1: seven FAB-500s a sortie, the Kh-101's speed and blast), 22 CP |
+| Vũ khí đề xuất / Thay đổi chi tiết | zu23_technical | zu23 | applied | sustained 143 -> 70 a second (7 a round, 25 a second, 50 a magazine, 3 s): the sheet's numbers stand (A1, A2), no measurement pending (the row says "giữ DPS"; its numbers give 70 a second (was 143) on a card already at 0.24 of the AA median) |
+| Vũ khí đề xuất / Thay đổi chi tiết | heavy_aa | twin_30_flak | applied | sustained 252 -> 171 a second: the sheet's numbers stand (A1, A2), no measurement pending ("giữ DPS"; its numbers give 171 (was 252)) |
+| Vũ khí đề xuất / Thay đổi chi tiết | aa_turret | tower_flak_30 | applied | sustained 193 -> 131 a second (the sheet's anti-aircraft value 300 -> 240 was its aim): the sheet's numbers stand (A1, A2), no measurement pending (the sheet wanted its anti-aircraft value 300 -> 240; the weapon row gives 131 a second (was 193)) |
+| Vũ khí đề xuất / Thay đổi chi tiết | headquarters | hq_flak | applied | sustained 157 -> 140 a second: the sheet's numbers stand (A1, A2), no measurement pending (the HQ's flak at 140 (was 157), the 2A38 family's stream) |
+| Vũ khí đề xuất / Thay đổi chi tiết | scout_heli | scout_rockets | applied | 24 -> 6 Hydras a load, 5 CP: the sheet's numbers stand (A1, A2), no measurement pending (six Hydras a load (was 24; the sheet read 12, the salvo) and 5 CP) |
+| Vũ khí đề xuất / Thay đổi chi tiết | flame_tank | flamethrower | applied | 23.5 -> 21 a tick on every target: the sheet's numbers stand (A1, A2), no measurement pending (21 a tick on every target (the row meant -10 % on light vehicles only)) |
+| Vũ khí đề xuất | twin_35_ahead | cadence | applied | rounds a magazine: the game's 24 (the row keeps the gun; its cell is blank); the sheet's formula (damage x rounds / (rounds / rate + rest)) gives 101.8 a second: clipReload 1 -> 1.2137 (rest + one gap, A2's rule), 105.5 -> 101.8 a second |
+| Vũ khí đề xuất | gun_launched_atgm | weapon | already | A2's new weapon (the light tank's gun-launched missile), created from the change note and mounted: light_tank |
+| Vũ khí đề xuất | missile_57e6 | weapon | already | A2's new weapon (the Pantsir's 57E6), created from the change note and mounted: heavy_aa |
+| Kiểm tra từng mục | armored_car | Tầm bắn | skipped | the row repeats the vision row's proposal (42 m); the weapon sheet keeps the guns' ranges (autocannon_25 30 m, mg_coax 20 m, 'Giữ'), and the sheet's range order (machine gun < autocannon < tank gun < anti-tank missile, Tỷ lệ map) would break: a contradiction in the sheet, left for the owner (was 30; the row: 42 m) |
+| Kiểm tra từng mục | ifv | Tầm bắn | already | atgm reaches 40 m (A2's weapon row) (was 34; the row: tầm 40 m · tốc độ 20 (bay 2,0 s tới tầm tối đa)) |
+| Kiểm tra từng mục | smoke_carrier | Tầm bắn | already | hmg_selfdef_15 reaches 15 m (A2's weapon row) (was 15; the row: tầm 22→15 m (như xe công binh)) |
+| Kiểm tra từng mục | scout_jeep | Tầm bắn | skipped | the row repeats the vision row's proposal (55 m); the weapon sheet keeps the guns' ranges (mg_jeep 22 m, 'Giữ'), and the sheet's range order (machine gun < autocannon < tank gun < anti-tank missile, Tỷ lệ map) would break: a contradiction in the sheet, left for the owner (was 22; the row: 55 m) |
+| Kiểm tra từng mục | vbied | Máu | already | health 364 (801 after toughness): the sheet's 800 (was 572; the row: 800 máu · nổ lan 10 m) |
+| Kiểm tra từng mục | vbied | Giáp (T/H/S/N) | already | armour 2/1/0/0: the sheet's trước 2 / hông 1 / sau 0 / nóc 0 (was cấp 0 (Không giáp); the row: trước 2 / hông 1 / sau 0 / nóc 0) |
+| Kiểm tra từng mục | light_tank | Tầm bắn | skipped | the row repeats the vision row's proposal (36 m); the weapon sheet keeps the guns' ranges (gun_57mm 28 m, mg_coax 20 m, gun_launched_atgm 34 m, 'Giữ'), and the sheet's range order (machine gun < autocannon < tank gun < anti-tank missile, Tỷ lệ map) would break: a contradiction in the sheet, left for the owner (was 28; the row: 36 m) |
+| Kiểm tra từng mục | artillery | Tham khảo / model | deferred | the model and its reference: task B2 (the model agent) (was CAESAR bánh lốp (nằm trong danh sách giữ lại); the row: Đổi model sang M109A7 xích; giáp trước 1→2; tốc độ 7→6) |
+| Kiểm tra từng mục | mlrs | Giá (CP) | already | 7 CP (B.7) (was 6; the row: 7 CP) |
+| Kiểm tra từng mục | thermobaric_launcher | Giá (CP) | already | 9 CP (B.7) (was 8; the row: 9 CP) |
+| Kiểm tra từng mục | heavy_rocket_artillery | Giá (CP) | already | 12 CP (B.7) (was 11; the row: 12 CP) |
+| Kiểm tra từng mục | zu23_technical | Tầm bắn | already | zu23 reaches 38 m (A2's weapon row) (was 32; the row: 7/phát · 25 viên/s · tầm 38 m (giữ DPS)) |
+| Kiểm tra từng mục | sam_launcher | Giá (CP) | already | 7 CP (B.7) (was 5; the row: 7 CP) |
+| Kiểm tra từng mục | heavy_aa | Giá (CP) | already | 7 CP (B.7) (was 6; the row: 7 CP) |
+| Kiểm tra từng mục | iron_beam | Giá (CP) | already | 6 CP (B.7) (was 7; the row: 6 CP) |
+| Kiểm tra từng mục | long_sam | Giá (CP) | already | 14 CP (B.7) (was 11; the row: 14 CP) |
+| Kiểm tra từng mục | scout_heli | Giá (CP) | already | 5 CP (B.7) (was 4; the row: 5 CP) |
+| Kiểm tra từng mục | strike_drone | Giá (CP) | already | 9 CP (B.7) (was 8; the row: 9 CP) |
+| Kiểm tra từng mục | swarm_carrier | Tầm bắn | already | jassm reaches 90 m (A2's weapon row) (was 60; the row: Bỏ SDB; thêm 2 tên lửa hành trình thả từ khoang (410/quả, Nổ mạnh xuyên 3, nổ lan 9 m, tầm 90, tốc độ 20) mỗi lượt, giữ 8 drone) |
+| Kiểm tra từng mục | swarm_carrier | Giá (CP) | already | 13 CP (B.7) (was 8; the row: 13 CP) |
+| Kiểm tra từng mục | attack_helicopter | Giá (CP) | already | 9 CP (B.7) (was 11; the row: 9 CP) |
+| Kiểm tra từng mục | gunship_heli | Máu | already | health 1182 (2600 after toughness): the sheet's 2600 (was 3080; the row: giáp 2 · máu 2.600) |
+| Kiểm tra từng mục | gunship_heli | Giáp (T/H/S/N) | already | armour 2/1/0/0: the sheet's giáp 2 · máu 2.600 (was cấp 1 (Mỏng); the row: giáp 2 · máu 2.600) |
+| Kiểm tra từng mục | gunship_heli | Tầm bắn | already | heli_ataka reaches 45 m (A2's weapon row) (was 34; the row: 9M120 Ataka · tốc độ 26 · tầm 45) |
+| Kiểm tra từng mục | attack_jet | Giá (CP) | already | 18 CP (B.7) (was 16; the row: 18 CP) |
+| Kiểm tra từng mục | stealth_bomber | Giá (CP) | already | 21 CP (B.7) (was 18; the row: 21 CP) |
+| Kiểm tra từng mục | heavy_tank | Tham khảo / model | already | references ['Object 195 / T-95 (2A83 152 mm)'] (was tham khảo T-14 (danh sách giữ lại) · 12 CP (hiệu quả 1,16); the row: bỏ T-14 khỏi tham khảo, giữ Object 195 / T-95 · giá 13 CP) |
+| Kiểm tra từng mục | titan_tank | Tốc độ | already | speed 4 m/s: the sheet's 4,0 m/s · 18 CP (was 4.6; the row: 4,0 m/s · 18 CP) |
+| Kiểm tra từng mục | tank_destroyer | Giáp (T/H/S/N) | already | armour 2/1/1/0: the sheet's trước 2 / hông 1 / sau 1 / nóc 0 (was 3/2/1/1; the row: trước 2 / hông 1 / sau 1 / nóc 0) |
+| Kiểm tra từng mục | tank_destroyer | Tầm bắn | already | gun_105_long reaches 46 m (A2's weapon row) (was 40; the row: tầm 46 · 0,30 phát/s · 6 CP) |
+| Kiểm tra từng mục | tank_destroyer | Giá (CP) | already | 6 CP (B.7) (was 7; the row: 6 CP) |
+| Kiểm tra từng mục | railgun_truck | Giá (CP) | already | 10 CP (B.7) (was 9; the row: 10 CP) |
+| Kiểm tra từng mục | laser_tank | Giá (CP) | already | 9 CP (B.7) (was 10; the row: 9 CP) |
+| Kiểm tra từng mục | daedalus | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
+| Kiểm tra từng mục | bastion_mk0 | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
+| Kiểm tra từng mục | scylla | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
+
+<!-- /step:A1-review -->

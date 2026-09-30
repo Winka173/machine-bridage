@@ -10875,8 +10875,8 @@ not in force yet, so no row was held back for it.
 
 The owner asked that no test run until a test phase is approved. The tests the spec asks for are written but not
 run from A3 on (the A2 DPS test and the content tests ran once, before the rule, and passed); only compile checks
-(batch mode, `-quit`, the log read for `error CS`) are made. The measurements for the "Xem lại" and "Theo dõi" rows
-wait for the test phase too: those rows keep the game's value for now.
+(batch mode, `-quit`, the log read for `error CS`) are made. The "Xem lại" and "Theo dõi" rows first waited for
+the test phase; after the first pass the owner had them applied (below, A1-review).
 
 ### A4 Missile speeds
 
@@ -10948,28 +10948,51 @@ holds half. Where a row offers two options:
   drawn on the map is the blast too (10 m; it was 15 round an 18 m blast). The cluster alternative is not taken.
 - Napalm, SEAD, smoke, the UAV scan, repair and the field tower: kept, as the sheet says.
 
-### To measure in the test phase ("Xem lại", "Theo dõi")
+### Applied after the first pass: "Xem lại", "Theo dõi" and every row left (A1-review)
 
-Under the owner's no-test rule the combat-value measurements wait for the test phase; every row below keeps the
-game's value for now, and `Docs/balance/apply-report.md` (section "To measure in the test phase") lists them with
-the sheet's proposal. The measurement to run then: `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1`,
-`MB_CV_SEEDS=13,21,34` and `MB_CV_ONLY` naming the cards, against a copy of `balance.json` with the proposal
-(`MB_CV_BALANCE`).
-- **"Xem lại" (Kiểm tra từng mục), 14 rows, all kept:** the speeds the sheet derives from the real vehicle times the
-  map's compression (the engineer vehicle 7 -> ~4.4, the smoke carrier 8 -> ~5.9, the mine layer 8 -> ~5.5, the VBIED
-  13 -> ~6.7, the light tank 9 -> ~4.0, the flame tank 6.5 -> ~4.6, the mortar carrier 8 -> ~5.9, the HIMARS
-  6 -> ~9.4, the strike drone 19 -> ~13.9), the siege tank's vision 38 -> ~30, and four health rows the sheet itself
-  would keep if toughness is the card's identity (the TOS, the siege tank, the swarm carrier, the flying gunship).
-  The sheet says "có thể giữ nếu là chủ đích"; halving the light tank's or the VBIED's speed would change what the
-  card is, so they wait for a measurement rather than a guess.
-- **"Theo dõi" (Cân bằng lần 2):** the rocket technical (3 CP) and the long-range SAM (14 CP): kept; change only if
-  the measurement confirms.
-- **"Đã giảm ở đợt 2":** the attack jet and the heavy bomber (their round-2 cuts are in); the sheet's own note asks
-  for a new measurement.
-- **Changes applied whose words and numbers disagree**, to judge by the same measurement (prompt 25 A.5 allows a
-  tuned value, recorded before and after): the ZU-23 ("giữ DPS", 70 a second, was 143), the Pantsir's 2A38 (171, was
-  252), the AA tower's flak (131, was 193; the sheet wanted its AA value 300 -> 240), the HQ's flak (140, was 157),
-  the scout helicopter's six Hydras a load (was 24), the flamethrower's 21 on every target.
+The first pass kept the "Xem lại" and "Theo dõi" rows for a measurement in the test phase. The owner then asked for
+them applied as the sheet has them ("các chỗ nào cần xem lại thì cứ đổi luôn, cho đúng với công thức trong đó, và mọi
+thứ trong đó cứ thêm hết sửa hết, rồi ta sẽ loại trừ sau nếu dư thừa": change what needs a review, to the sheet's
+formulas; add and change everything in it; what is too much comes out later), and every row a step had deferred or
+skipped for a reason other than a later task (bosses C1-C2, names D1, models B2). `import_xlsx.py --upto A1-review`
+(`Tools/balance/steps_review.py`) does it; its section of `apply-report.md` lists every row with its before and after.
+The old "review" step, which listed them as deferred, is gone from the script and the report.
+- **"Xem lại" (Kiểm tra từng mục), 14 rows, applied.** Speeds, the sheet's real speed x the map's factor: the engineer
+  vehicle 7 -> 4.4 m/s, the smoke carrier 8 -> 5.9, the mine layer 8 -> 5.5, the VBIED 13 -> 6.7, the light tank
+  9 -> 4.0, the flame tank 6.5 -> 4.6, the mortar carrier 8 -> 5.9, the HIMARS 6 -> 9.4, the strike drone 19 -> 13.9;
+  the siege tank's vision 38 -> 30 m. Health by the sheet's formula: the class's median health a CP (its "Lớp" in
+  "Phương tiện", over the class's vehicles the sheet does not flag, today's data) times the vehicle's CP: the TOS
+  900 -> 450 and the siege tank 1,500 -> 600 (artillery, 50 a CP), the swarm carrier 1,400 -> 632 and the AC-130
+  2,000 -> 1,069 (aircraft, 48.6 a CP); in the sheet's units, after toughness, 1,980 -> 990, 3,300 -> 1,320,
+  3,080 -> 1,390, 4,400 -> 2,352. The sheet's "keep it if it is the card's identity" is not taken: the owner will take
+  out what is too much.
+- **"Theo dõi" and "Đã giảm ở đợt 2" (Cân bằng lần 2)** name no number: what they rest on is in (the rocket technical's
+  3 CP, the long-range SAM's 14; the attack jet's and the heavy bomber's round-2 cuts from A1).
+- **The changes a measurement was to judge** stand as applied, the sheet's numbers (not its words): the ZU-23 70 a
+  second (was 143), the Pantsir's 2A38 171 (252), the AA tower's flak 131 (193), the HQ's flak 140 (157), the scout
+  helicopter's six Hydras a load (24), the flamethrower 21 a tick (23.5).
+- **The Skyranger's AHEAD gun** (`twin_35_ahead`, the one weapon row with a blank cell): its rounds a magazine are the
+  game's 24 (the row keeps the gun; the design document the sheet was made from had no magazine column for it), and
+  its cadence the sheet's formula with A2's rule (the change time is the rest plus one gap: 1 -> 1.2137 s), 101.8 a
+  second sustained (was 105.5); `sheet_dps.tsv` now holds it, so the DPS test checks it too.
+- **A2's new weapons** (the gun-launched missile, the 57E6) were created and mounted in A2 (the report listed them with
+  the weapons the sheet does not have); the other 28 weapons the sheet does not list are the game's own: no row, nothing
+  to apply.
+- **"Đổi" rows of "Kiểm tra từng mục" no "Thay đổi chi tiết" row repeats** (A1 read only that sheet): checked against
+  the data. Every price, health, armour, speed and reach one was already in (B.7 prices, A1's rows under other names,
+  A2's weapon rows). Three are left, a contradiction in the sheet: the armoured car's, the scout jeep's and the light
+  tank's "Tầm bắn" rows repeat their vision rows (42, 55 and 36 m) while the weapon sheet keeps their guns (25 mm
+  30 m, the jeep's M2 22 m, the 57 mm 28 m, "Giữ"), and a 55 m machine gun would out-reach every anti-tank missile
+  against the sheet's own range order ("Tỷ lệ map": machine gun < autocannon < tank gun < anti-tank missile). The
+  self-propelled gun's M109A7 model and reference are B2's; three boss health rows are C1's.
+- **Not applied, for the lead:** the weapon sheet's column "Loại đạn thay thế gợi ý" (suggested second rounds, on 70
+  weapons: armour-piercing and air-burst rounds switched by target for the autocannons and flak, high explosive for the
+  tank guns, API for the elites' machine guns, a guided shell for a rank-7 branch or a support card) was never a row of
+  a step; it needs a round switched for a ground target (the game has `he` by armour and `air` for aircraft only) and
+  design choices the column leaves open. And the rows that offer two options were applied one way (the AA tower,
+  the long 120 mm tower, the Grad tower, the three support cards); the other option is not added on top.
+- **Tests likely to need the new numbers once run:** anything reading those speeds, the siege tank's, the TOS's, the
+  swarm carrier's or the AC-130's health, the siege tank's vision, or the AHEAD gun's cadence.
 
 ### B.9 (not run)
 

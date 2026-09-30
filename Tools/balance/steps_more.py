@@ -42,19 +42,10 @@ def run(step, wr, wb, report, weapon_rows, unit_rows, refs=None):
     if step == "B8":
         b8(wr, wb, report)
         return "B.8: support cards (sheet Thẻ hỗ trợ)"
-    if step == "review":
-        review(wr, wb, report)
-        return "To measure in the test phase: \"Xem lại\", \"Theo dõi\" and the rows a measurement should judge"
     return None
 
 
-INTRO["review"] = ("The owner's rule of 30/09: no test or measurement runs until a test phase is approved. The rows below "
-                   "need a measurement (prompt 13's combat value, CombatValueMeasure with MB_BALANCE=1, 3-5 seeds, the "
-                   "cards named) before they change: each keeps the game's value for now. \"Xem lại\" rows are judged by "
-                   "the measurement; \"Theo dõi\" rows change only if it confirms; the others are changes applied from the "
-                   "sheet whose words and numbers disagree, or that the sheet's own \"Cân bằng lần 2\" asks to re-measure.")
-
-# Applied changes a measurement should judge (the sheet's numbers against its own reasons), with what to look at.
+# Applied changes whose words and numbers disagree (the sheet's numbers applied; steps_review.py reports them).
 TO_MEASURE = [
     ("zu23_technical", "zu23", "the row says \"giữ DPS\"; its numbers give 70 a second (was 143) on a card already at 0.24 of the AA median"),
     ("heavy_aa", "twin_30_flak", "\"giữ DPS\"; its numbers give 171 (was 252)"),
@@ -63,29 +54,6 @@ TO_MEASURE = [
     ("scout_heli", "scout_rockets", "six Hydras a load (was 24; the sheet read 12, the salvo) and 5 CP"),
     ("flame_tank", "flamethrower", "21 a tick on every target (the row meant -10 % on light vehicles only)"),
 ]
-
-
-def review(wr, wb, report):
-    g = wr.game
-    step = "review"
-    _, check = X.sheet(wb, "Kiểm tra từng mục")
-    for r in check:
-        if r[4] == "Xem lại":
-            vid, item, cur, prop = r[0], r[2], r[3], r[5]
-            if vid not in g.vehicles_raw:
-                report.add(step, "Kiểm tra từng mục", vid, item, "skipped", "no such vehicle id in balance.json")
-                continue
-            report.add(step, "Kiểm tra từng mục", vid, item, "deferred",
-                       f"Xem lại: kept {cur} (the sheet: {prop}); to measure in the test phase")
-    _, second = X.sheet(wb, "Cân bằng lần 2")
-    for r in second:
-        vid, verdict = r[0], r[9]
-        if verdict in ("Theo dõi", "Đã giảm ở đợt 2") and vid in g.vehicles_raw:
-            report.add(step, "Cân bằng lần 2", vid, verdict, "deferred",
-                       f"{verdict}: kept (CP {r[4]}); {r[10]}; to measure in the test phase")
-    for vid, wid, why in TO_MEASURE:
-        if vid in g.vehicles_raw:
-            report.add(step, "Vũ khí đề xuất / Thay đổi chi tiết", vid, wid or "card", "deferred", why + "; to measure in the test phase")
 
 
 INTRO["B8"] = ("The sheet names cards by their Vietnamese titles; the table below maps them to the supports' ids (checked "
