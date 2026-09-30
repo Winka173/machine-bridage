@@ -10877,3 +10877,24 @@ The owner asked that no test run until a test phase is approved. The tests the s
 run from A3 on (the A2 DPS test and the content tests ran once, before the rule, and passed); only compile checks
 (batch mode, `-quit`, the log read for `error CS`) are made. The measurements for the "Xem lại" and "Theo dõi" rows
 wait for the test phase too: those rows keep the game's value for now.
+
+### A4 Missile speeds
+
+- **The speeds** of the sheet "Tốc độ tên lửa" were already in from A2 (the weapon sheet carries the same column) and
+  A3 (families take the sheet's most common value); A4 checks every row and changes nothing more. Below the sheet's
+  own 1.2-1.5 times the fastest target: the R-60 (1.05 x a fighter), the PAC-3 (1.18 x its 55 m/s ballistic
+  targets), the Iron Dome's Tamir (0.91), the AIM-9s (1.2); the sheet's numbers are kept.
+- **The sheet's ranges** for the TOW (34 m) and the gunship's and the attack helicopter's Hellfires (34 m) are older
+  than the weapon sheet's (40, 45, 45) and the change list's (the TOW's 40): A2's stand.
+- **What speed does in the sim.** A guided missile flies a time set at launch (the distance over its speed) and
+  strikes wherever its target is when it arrives: it does not chase. What loses it is a lost lock at launch (2 % +
+  8 % x the square of the share of its range), flares out while it flew (a slower missile outlasts more of them), a
+  jammer, a decoy or active protection. So the new speeds cut the flare and interception windows and make a missile
+  visibly faster than the aircraft it catches; the hit itself was never a pursuit. No pursuit rule is added: the
+  sheet wins on numbers, the earlier prompts on the sim's rules.
+- **The test** `BalanceSheetTests.EverySamAndAirToAirMissileHitsAFighterAndAnEscortDroneNineTimesInTen` (written, not
+  run): every missile a vehicle carries that engages aircraft, on a test launcher (the SAM launcher's hull), fires at
+  a fighter and at an escort drone with no flares (their skills cut), each circling at 0.9 of its range at its own
+  speed; four seeds, about 30 missiles each; at least 90 % hit. At 0.9 of the range the lost-lock roll alone gives
+  about 91.5 %; right at the edge (1.0) it gives exactly 90 %, which is why the circle is inside it. If the test phase
+  finds it at the margin, the lost-lock rule (prompt 13) is the thing to look at, not the speeds.

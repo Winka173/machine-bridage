@@ -28,7 +28,44 @@ def run(step, wr, wb, report, weapon_rows, unit_rows, refs=None):
             if wr.doc.text == before:
                 break
         return "A3: weapon families (sheets Tốc độ tên lửa, Vũ khí đề xuất)"
+    if step == "A4":
+        a4(wr, wb, report, weapon_rows)
+        return "A4: sheet Tốc độ tên lửa"
     return None
+
+
+INTRO["A4"] = ("The sheet's proposed speed for every missile, rocket and drone it lists. A family member's speed is its "
+               "family's (A3); where the sheet's row for one member differs from its family, the report says so. The "
+               "sheet's ranges are checked against the weapon sheet's (A2 applied those).")
+
+
+def a4(wr, wb, report, weapon_rows):
+    g = wr.game
+    step = "A4"
+    sh = "Tốc độ tên lửa"
+    _, rows = X.sheet(wb, sh)
+    for r in rows:
+        wid, rng, speed, ratio = r[0], r[4], r[8], r[10]
+        if not wid:
+            continue
+        if wid not in g.raw_weapons:
+            report.add(step, sh, wid, "speed", "skipped", "no such weapon id in balance.json")
+            continue
+        w = g.weapon(wid)
+        fam = g.weapon(wid, family=False).get("weaponFamily")
+        notes = []
+        if ratio is not None and ratio < 1.2:
+            notes.append(f"{ratio:.2f} x its fastest target ({r[7]} m/s), below the sheet's 1.2-1.5")
+        if rng is not None and not X.close(float(rng), w.get("range")):
+            notes.append(f"the sheet's range {X.fmt(float(rng))} differs from the weapon sheet's {X.fmt(w.get('range'))} (A2 kept)")
+        if X.close(w.get("projectileSpeed"), float(speed)):
+            report.add(step, sh, wid, "speed", "already", f"{X.fmt(float(speed))} m/s" + ("; " + "; ".join(notes) if notes else ""))
+        elif fam:
+            report.add(step, sh, wid, "speed", "skipped",
+                       f"the sheet's {X.fmt(float(speed))} m/s; its family {fam} flies {X.fmt(w.get('projectileSpeed'))} (A3)" + ("; " + "; ".join(notes) if notes else ""))
+        else:
+            wr.weapon_field(wid, "projectileSpeed", float(speed))
+            report.add(step, sh, wid, "speed", "applied", f"{X.fmt(float(speed))} m/s" + ("; " + "; ".join(notes) if notes else ""))
 
 
 def a2(wr, report, weapon_rows, unit_rows):

@@ -577,3 +577,75 @@ Weapons that are the same real weapon (the same real name once a mount's qualifi
 | Tốc độ tên lửa, Vũ khí đề xuất | sam_pac3 | family | applied | inherits sam_battery but is another weapon: kept out of its family |
 
 <!-- /step:A3 -->
+
+<!-- step:A4 -->
+## A4: sheet Tốc độ tên lửa
+
+The sheet's proposed speed for every missile, rocket and drone it lists. A family member's speed is its family's (A3); where the sheet's row for one member differs from its family, the report says so. The sheet's ranges are checked against the weapon sheet's (A2 applied those).
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Tốc độ tên lửa | 0 | 58 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Tốc độ tên lửa | aim9 | speed | already | 55 m/s; 1.20 x its fastest target (46 m/s), below the sheet's 1.2-1.5 |
+| Tốc độ tên lửa | air_cruise_missile | speed | already | 22 m/s |
+| Tốc độ tên lửa | air_to_air | speed | already | 60 m/s |
+| Tốc độ tên lửa | airship_drones | speed | already | 26 m/s |
+| Tốc độ tên lửa | ataka | speed | already | 26 m/s |
+| Tốc độ tên lửa | atgm | speed | already | 20 m/s; the sheet's range 34 differs from the weapon sheet's 40 (A2 kept) |
+| Tốc độ tên lửa | ballistic_missile | speed | already | 50 m/s |
+| Tốc độ tên lửa | boat_rockets | speed | already | 40 m/s |
+| Tốc độ tên lửa | boss_missiles | speed | already | 22 m/s |
+| Tốc độ tên lửa | boss_rockets | speed | already | 45 m/s |
+| Tốc độ tên lửa | boss_thermo | speed | already | 35 m/s |
+| Tốc độ tên lửa | buk_launcher | speed | already | 50 m/s |
+| Tốc độ tên lửa | drone_missile | speed | already | 26 m/s |
+| Tốc độ tên lửa | fpv_hangar | speed | already | 26 m/s |
+| Tốc độ tên lửa | fpv_hangar_swarm | speed | already | 26 m/s |
+| Tốc độ tên lửa | fpv_swarm | speed | already | 26 m/s |
+| Tốc độ tên lửa | grad_cluster | speed | already | 45 m/s |
+| Tốc độ tên lửa | griffin | speed | already | 22 m/s |
+| Tốc độ tên lửa | guided_bomb | speed | already | 40 m/s |
+| Tốc độ tên lửa | gunship_rockets | speed | already | 40 m/s |
+| Tốc độ tên lửa | heli_atgm | speed | already | 26 m/s; the sheet's range 34 differs from the weapon sheet's 45 (A2 kept) |
+| Tốc độ tên lửa | heli_rockets | speed | already | 40 m/s |
+| Tốc độ tên lửa | hellfire_standoff | speed | already | 26 m/s |
+| Tốc độ tên lửa | hellfire_volley | speed | already | 26 m/s; the sheet's range 34 differs from the weapon sheet's 45 (A2 kept) |
+| Tốc độ tên lửa | hover_rockets | speed | already | 50 m/s |
+| Tốc độ tên lửa | jassm | speed | already | 20 m/s |
+| Tốc độ tên lửa | kh29 | speed | already | 32 m/s |
+| Tốc độ tên lửa | kornet_multi | speed | already | 22 m/s |
+| Tốc độ tên lửa | kornet_top | speed | already | 22 m/s |
+| Tốc độ tên lửa | kornet_twin | speed | already | 22 m/s |
+| Tốc độ tên lửa | lancet | speed | already | 28 m/s |
+| Tốc độ tên lửa | lancet_hangar | speed | already | 28 m/s |
+| Tốc độ tên lửa | mlrs_elite | speed | already | 50 m/s |
+| Tốc độ tên lửa | mlrs_rockets | speed | already | 50 m/s |
+| Tốc độ tên lửa | mothership_drones | speed | already | 28 m/s |
+| Tốc độ tên lửa | patriot | speed | already | 60 m/s |
+| Tốc độ tên lửa | r60 | speed | already | 42 m/s; 1.05 x its fastest target (40 m/s), below the sheet's 1.2-1.5 |
+| Tốc độ tên lửa | recon_missile | speed | already | 22 m/s |
+| Tốc độ tên lửa | rockets_300mm | speed | already | 55 m/s |
+| Tốc độ tên lửa | s8_pods | speed | already | 40 m/s |
+| Tốc độ tên lửa | sam | speed | already | 42 m/s |
+| Tốc độ tên lửa | sam_48n6 | speed | already | 65 m/s |
+| Tốc độ tên lửa | sam_battery | speed | already | 60 m/s |
+| Tốc độ tên lửa | sam_battery_lrr | speed | already | 60 m/s |
+| Tốc độ tên lửa | sam_pac3 | speed | already | 65 m/s; 1.18 x its fastest target (55 m/s), below the sheet's 1.2-1.5 |
+| Tốc độ tên lửa | sam_post | speed | already | 50 m/s |
+| Tốc độ tên lửa | scout_rockets | speed | already | 40 m/s |
+| Tốc độ tên lửa | shahed | speed | already | 20 m/s |
+| Tốc độ tên lửa | stinger_atas | speed | already | 42 m/s |
+| Tốc độ tên lửa | swarm_drones | speed | already | 26 m/s |
+| Tốc độ tên lửa | tamir | speed | already | 50 m/s; 0.91 x its fastest target (55 m/s), below the sheet's 1.2-1.5 |
+| Tốc độ tên lửa | technical_rockets | speed | already | 38 m/s |
+| Tốc độ tên lửa | thermobaric_rockets | speed | already | 35 m/s |
+| Tốc độ tên lửa | tower_kornet | speed | already | 22 m/s |
+| Tốc độ tên lửa | turret_gmlrs | speed | already | 50 m/s |
+| Tốc độ tên lửa | turret_rockets | speed | already | 45 m/s |
+| Tốc độ tên lửa | turret_rockets_cluster | speed | already | 45 m/s |
+| Tốc độ tên lửa | wvr_aam | speed | already | 55 m/s; 1.20 x its fastest target (46 m/s), below the sheet's 1.2-1.5 |
+
+<!-- /step:A4 -->

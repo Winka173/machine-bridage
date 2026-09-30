@@ -30,6 +30,8 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
   gains a roof M2, the light tank a gun-launched missile, the Pantsir its own 57E6 missiles.
 - A3: weapon families: every weapon that is the same real weapon (all Hellfires, all M2s, all Grads...) shares one
   speed, blast radius, round model and look, set once in the data (`weaponFamilies`).
+- A4: every missile flies the sheet's speed (SAMs and air-to-air missiles 42-65 m/s, faster than the aircraft they
+  hunt; cruise missiles and Shaheds kept slow on purpose).
 
 ### Play-test 9 models (DECISIONS 23M)
 

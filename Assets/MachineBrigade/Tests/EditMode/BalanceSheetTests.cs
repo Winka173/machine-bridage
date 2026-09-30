@@ -109,6 +109,123 @@ namespace MachineBrigade.Tests
             Assert.Greater(families, 25, "the families are in the data (weaponFamilies)");
         }
 
+        // ------------------------------------------------------------------ A4: missile speeds
+
+        /// <summary>The span of an entry of balance.json (its braces included), found by its id.</summary>
+        private static (int start, int end) EntrySpan(string text, string id)
+        {
+            var at = text.IndexOf("{ \"id\": \"" + id + "\"", StringComparison.Ordinal);
+            Assert.GreaterOrEqual(at, 0, "no entry " + id);
+            var depth = 0;
+            var inString = false;
+            for (var i = at; i < text.Length; i++)
+            {
+                var c = text[i];
+                if (inString)
+                {
+                    if (c == '\\') i++;
+                    else if (c == '"') inString = false;
+                    continue;
+                }
+                if (c == '"') inString = true;
+                else if (c == '{' || c == '[') depth++;
+                else if ((c == '}' || c == ']') && --depth == 0) return (at, i + 1);
+            }
+            throw new AssertionException("unbalanced entry " + id);
+        }
+
+        /// <summary>
+        /// The shipped catalog with a test launcher (the SAM launcher's hull, <paramref name="missile"/> its only weapon) and
+        /// the fighter and the escort drone without their flares (their skills cut).
+        /// </summary>
+        private static Catalog LauncherOf(string missile)
+        {
+            var text = Resources.Load<TextAsset>("Data/balance").text.Replace("\r\n", "\n");
+            var (s, e) = EntrySpan(text, "sam_launcher");
+            var launcher = System.Text.RegularExpressions.Regex.Replace(text.Substring(s, e - s), "\"weapon\": \"[^\"]+\"", "\"weapon\": \"" + missile + "\"");
+            launcher = System.Text.RegularExpressions.Regex.Replace(launcher, "\"secondary\": \\[[^\\]]*\\]", "\"secondary\": []");
+            text = text.Substring(0, s) + launcher + text.Substring(e);
+            foreach (var id in new[] { "fighter_jet", "wingman_drone" })
+            {
+                (s, e) = EntrySpan(text, id);
+                var entry = System.Text.RegularExpressions.Regex.Replace(text.Substring(s, e - s), "\"skills\": \\[[^\\]]*\\]", "\"skills\": []");
+                text = text.Substring(0, s) + entry + text.Substring(e);
+            }
+            return Catalog.FromJson(text);
+        }
+
+        /// <summary>
+        /// Missiles fired at a target that cannot die, flying a circle at <paramref name="reach"/> of the missile's range round
+        /// the launcher (tangentially, at its own speed): (fired, hits).
+        /// </summary>
+        private static (int fired, int hits) FireAt(Catalog catalog, string missile, string targetId, int seed, float seconds, float reach)
+        {
+            var world = new MachineBrigade.Sim.SimWorld(catalog, new MapDefinition("range", 320f,
+                new[] { new TeamStart(0, new System.Numerics.Vector2(0f, -140f)), new TeamStart(1, new System.Numerics.Vector2(0f, 140f)) },
+                new List<PropPlacement>(), new List<UnitPlacement>()), seed: seed);
+            world.RevealAll = true;
+            var shooter = world.SpawnVehicle("sam_launcher", 0, System.Numerics.Vector2.Zero, 0f);
+            var radius = catalog.Weapons[missile].Range * reach;
+            var target = world.SpawnVehicle(targetId, 1, new System.Numerics.Vector2(radius, 0f), MathF.PI / 2f);
+            world.MakeSparring(target);
+            target.HoldFire = true;
+            var angle = 0f;
+            int fired = 0, hits = 0;
+            for (var t = 0f; t < seconds; t += TestWorlds.Step)
+            {
+                // Round the launcher at its own speed: the edge of the missile's reach the whole time.
+                angle += target.Def.Speed / radius * TestWorlds.Step;
+                target.Position = new System.Numerics.Vector2(MathF.Cos(angle), MathF.Sin(angle)) * radius;
+                target.Heading = angle + MathF.PI / 2f;
+                world.Step(TestWorlds.Step);
+                foreach (var e in world.Events)
+                {
+                    if (e.DefId != missile) continue;
+                    if (e.Kind == MachineBrigade.Sim.Events.SimEventKind.WeaponFired && e.Entity == shooter.Id) fired++;
+                    else if (e.Kind == MachineBrigade.Sim.Events.SimEventKind.ProjectileImpact && e.Team == 0 && e.Entity == target.Id) hits++;
+                }
+                world.ClearEvents();
+                shooter.Hp = shooter.MaxHp;
+            }
+            return (fired, hits);
+        }
+
+        [Test]
+        public void EverySamAndAirToAirMissileHitsAFighterAndAnEscortDroneNineTimesInTen()
+        {
+            // A4 (the sheet's "Tốc độ tên lửa"): every anti-aircraft and air-to-air missile, fired at a fighter (40 m/s) and at
+            // an escort drone (46 m/s) near the edge of its range, with no flares, hits at least 90 % of the time. The sim's
+            // guided missile follows its target; what loses it without flares is a lost lock at launch (2 % + 8 % x the
+            // square of the share of its range: 8.5 % at 0.9), a jammer, a decoy or active protection, none of them here.
+            var shipped = GameContent.LoadCatalog();
+            var missiles = shipped.Weapons.Values
+                .Where(w => w.Projectile == ProjectileKind.Missile && (w.Targets & TargetLayers.Air) != 0 && !w.InterceptOnly && !w.Laid && w.Damage > 0f)
+                .Where(w => shipped.Vehicles.Values.Any(v => v.Mounts.Any(m => m.Weapon.Id == w.Id)))
+                .Select(w => w.Id).OrderBy(id => id).ToList();
+            Assert.Greater(missiles.Count, 12, "the SAMs and air-to-air missiles");
+            var failures = new List<string>();
+            foreach (var id in missiles)
+            {
+                var catalog = LauncherOf(id);
+                var w = catalog.Weapons[id];
+                // Long enough for about 30 missiles a seed (a launcher's magazine and restock counted).
+                var seconds = Math.Min(400f, 30f * w.CycleSeconds / Math.Max(1, w.RoundsPerCycle) + (w.Ammo > 0 ? 30f / w.Ammo * w.MagazineReload : 0f));
+                foreach (var target in new[] { "fighter_jet", "wingman_drone" })
+                {
+                    int fired = 0, hits = 0;
+                    foreach (var seed in new[] { 3, 7, 11, 19 })
+                    {
+                        var (f, h) = FireAt(catalog, id, target, seed, seconds, 0.9f);
+                        fired += f;
+                        hits += h;
+                    }
+                    if (fired < 40) failures.Add($"{id} at {target}: only {fired} fired");
+                    else if (hits < 0.9f * fired) failures.Add($"{id} at {target}: {hits} of {fired} hit ({100f * hits / fired:0} %)");
+                }
+            }
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+        }
+
         [Test]
         public void TheSameRoundBlastsTheSameWhereverItIsFired()
         {
