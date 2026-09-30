@@ -11661,3 +11661,168 @@ main rank's scale, damage x1.2 and cooldown x0.85, and the difficulty's stay on 
 - **Boss battle lengths** (prompt 25 D.3, prompt 20's targets): mini bosses about 1.5-3 minutes, main bosses about
   5-8, over 5 seeds (`BossBalanceMeasure` with `MB_BALANCE=1`, `MB_SEEDS`, the campaign's boss missions); if off,
   health first, then `weaponDamage`. The largest multipliers above (Typhon, Morrigan, Daedalus) first.
+
+## 25E. Measures and documents (E2, E3, F1) (2026-09-30)
+
+Prompt 25 F.2 (task E2), F.3 (task E3) and H (task F1). Under the owner's rule of 30/09 no test and no measurement ran:
+the only Unity runs were two compile checks (batch mode, `-quit`, no `error CS` in the log). The measurement code and the
+document's columns are built so that the test phase fills them; every cell that waits for a run shows "—". The design
+document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its Python ran once on an older export
+(`game.json` of the morning of 30/09), which lacks the new fields, to check that every reader falls back.
+
+### E2 Support value (`CombatValueMeasure.Support.cs`)
+
+- **Why a measure of its own.** The combat value counts damage dealt, so a repair truck scores nothing. The support
+  value counts what a support vehicle does for its side, on the same scale (damage-equivalent x survival factor / CP).
+- **The run.** One vehicle of the kind goes with an escort (two battle tanks, an IFV, an MLRS and an attack helicopter:
+  armour to repair, launchers and a helicopter to rearm, all inside a dome) led by the tactical AI, against a group that
+  fires guided missiles and direct fire (two BMPTs, a battle tank, an attack helicopter; a new wave 3 s after one
+  falls), for 3 minutes on the open field of the combat-value runs, with its seeds (`MB_CV_SEEDS`).
+- **The four measures:**
+  - *Health repaired*: every `Repaired` event of its side. The field has no other source (no base, no gear, no
+    strikes), so they are all its own; an engineer's repair of itself counts (it is part of what it does).
+  - *Ammunition resupplied*, in rounds: a part-empty magazine topped up (only an ammunition aura does that away from
+    home), the share of an in-place reload it cut short (the time taken off beyond the crew's own, as rounds of that
+    magazine), and the stores an aircraft took on while rearming at the carrier (`RearmSite.AmmoCarrier`).
+  - *Missiles decoyed*: the enemy's guided rounds a jammer scrambled at launch (`WeaponFired` with `Jammed`), with all
+    the enemy's guided rounds for the share. The flares of aircraft and the gear's lures are no support vehicle's.
+  - *Shield damage blocked*: what its dome took (`DomeHit` events).
+- **Support value per CP** = (health repaired + shield blocked + the damage of the rounds resupplied and of the missiles
+  decoyed, each at its weapon's damage a round) x (1 + share of the time alive) / 2 / CP.
+- **Which vehicles.** Those with a repair, rearm, air-rearm, jamming or shield aura (`Supporter`): the engineer vehicle,
+  the ammunition carrier, the EW jammer and the shield carrier. The smoke carrier, the command vehicle, the
+  counter-battery radar and the mine layer work in ways the four measures do not catch (smoke, a fire-rate aura,
+  revealing artillery, mines); they keep their combat value, and a measure of their own is left for later.
+- **Output.** `MeasureTheRoster` also runs it and writes `combat_value_<tag>_support.tsv` (every measure, the decoy
+  share, survival) and five summary columns (`repaired`, `resupplied`, `decoyed`, `shielded`, `support`; empty for the
+  other vehicles, and at the end of the line, so the readers that go by the header are unchanged).
+  `MeasureTheSupportVehicles` runs the support part alone. Both need `MB_BALANCE=1`.
+- **In the document.** Table 9b has a column "Hỗ trợ / CP" and a sub-table "Giá trị hỗ trợ (E2)": each support vehicle's
+  auras from balance.json and its four measures, "—" until the test phase measures them (read from the summary, else
+  from the `_support.tsv` of the same tag).
+- **Which measure 9b shows.** It read `combat_value_p18_after_summary.tsv` by name (the balance pass after prompt 18);
+  play-tests 5 and 6 measured again after it. It now takes the first of `p25_after` (the test phase's run after prompt
+  25: `MB_CV_TAG=p25_after`), `pt6_after` (the last run before prompt 25) and `p18_after`.
+
+### E3 "vs cluster" (`Tools/docs/prompt25.py`, `cluster_dps`)
+
+- **What.** Table 9b's column "vs cụm xe": a unit's damage a second against five light vehicles 4 m apart, the one in the
+  middle and four round it (a quincunx), every round aimed at the middle one; in brackets, how many times its damage a
+  second on one vehicle. It is what artillery, rockets, bombs and every blast weapon are worth against a packed group,
+  which the 9b runs (four vehicles spread 8 m) understate.
+- **Computed from the data, not by a sim run** (the spec allows either): in the document's Python, from the export's
+  weapons (sustained DPS, blast radius, penetration, damage type, thermobaric tag) and balance.json's cluster rounds,
+  with the sim's own rules (`DamageSystem`):
+  - the direct hit on the middle vehicle is table 9's DPS against light armour;
+  - each of the four others takes the blast at its hull's edge (4 m less the armoured car's radius) with the linear
+    falloff to 25 % at the edge (62.5 % for a thermobaric round), averaged over the blast's random reach (0.85-1.15 x);
+  - a splash strikes with at most penetration 1 on the ground (`Armour.SplashPenetration`), on the side the vehicle
+    turns to it (level 0 for the light class), times the damage type's factor on the ground;
+  - a cluster round's bomblets (their count, damage, blast and scatter) fall on all five, by a fixed-seed draw over the
+    scatter (a calculation, repeatable to the digit).
+- **Left out:** misses (like table 9), a railgun's pierce line, equipment's extra blast (rank 1, no gear), and a boss
+  system's own rounds (9b lists cards only).
+- **Examples (older export):** the SP howitzer x2.2, the heavy MLRS x2.9, the stealth bomber x4.0, the thermobaric launcher
+  x2.8; a tank gun or a missile with no blast stays at its one-target DPS.
+
+### F1 The design document's new columns and tables
+
+- **Section 8b "Miêu tả, hình dạng và mở khóa"**, a row for every vehicle, tower and boss:
+  - *description*: the Guide card's how-it-fights and strong / weak lines, as the game words them (the sheet's "Miêu
+    tả" was made from the same lines);
+  - *shape*: the sheet's "Hình dạng (cho AI vẽ)" (Phương tiện, Công trình, Boss). The game holds no shape notes (they
+    are the model makers' brief), so `Tools/docs/unit_sheet.py` writes them, with the sheet's descriptions and proposed
+    unlocks for reference, to `Tools/docs/unit_sheet.json`, which the document reads like `unit_refs.json`;
+  - *unlock*: from the game after D2: a starter, a premium card, or the chapter (or interlude) and mission that opens it,
+    its early price, or "story loot, not for sale"; a tower branch opens at its tower's rank 7.
+- **Section 10e**, after the boss summary:
+  - *DPS by armour level* for every weapon (154 on the older export): its sustained DPS against levels 0-5, aircraft
+    and structures (its effect row, the Guide's ✓ ~ ✕ numbers, times its sustained DPS; against aircraft its air DPS,
+    which leaves out a boss's `weaponDamage`; an armour-class bonus counts in);
+  - *missiles*: flight speed and flight time to the longest reach of every missile and guided drone, and for the
+    anti-aircraft ones how many times the fastest aircraft's speed they fly;
+  - *model and round sizes* from the data: every unit's `modelSize` beside its hull, every weapon's `roundLength`;
+  - *the main bosses' super weapons*: name, what it does, its strikes (rounds x damage, blast, area or strip, a
+    missile's health), cycle, warning, how to get out of it and how to stop it, in the Guide's words.
+- **The export** (`ExportGameDoc.cs`, an export tool, not run here) now writes what these read: on a unit `description`,
+  `unlock` (route, mission and its name, chapter, index, story loot, early buy, price), `modelSize` and, on a main boss,
+  `superWeapon` (its id, name, Guide lines, warning, cycle, strikes); on a weapon `dpsAir`, `dpsVsLevel` (the eight
+  columns above), `flightTime` and `roundLength`.
+- **An older export.** Every reader falls back: the description from the Guide text, the unlock from the route, price and
+  the campaign's unlock lists (by name), sizes and cluster rounds from balance.json, the super weapons' words from the
+  Hud text tables, the DPS by level from the effect row.
+
+### F1 The apply report finished (`Docs/balance/apply-report.md`, `Tools/balance/report_summary.py`)
+
+- **By task and by sheet.** `report_summary.py` writes a block of its own (`<!-- f1:begin -->`, after the A steps'
+  summary, which `import_xlsx.py` keeps writing): every task's rows by sheet (the steps' count tables, and D1's, D2's
+  and B2's), and every one of the 28 sheets with its rows, the tasks that read it and each row's outcome at the end. A
+  row a task deferred is followed to the task that took it (names to D1, sizes to B1, bosses to C1-C2, models to B2); a
+  row one task applied and a later one checked counts as applied; the report's rows that stand for no sheet row (A3's
+  families, A5's rounds, the game's 31 weapons with no row) are left out of the sheet counts. Reference sheets (the
+  contents, the rules, the task list, the factors, the scale, the drawing guide, the story) are named with what used
+  them; the five new-content sheets are F2's.
+- **The end state:** every row of "Thay đổi chi tiết" is applied or answered (one skipped: `spawn_bastion`'s name);
+  "Kiểm tra từng mục" has one row open (the SP gun's M109A7 model: ASSET_DEBT) and three skipped (the range rows that
+  repeat the vision rows); every weapon row, boss row, price, missile speed and round length is in.
+- **Combat value by role, before and after.** The sheet's roles ("Giá CP": "Nhóm (9b)") with the value each compares
+  ("Giá trị dùng để so"), and per role the median value per CP, the spread and the cards within 15 % of it (E1's target):
+  before, the measure the sheet was made from (`p18_after`: the script's medians are the sheet's own, which checks the
+  reading) and the last one before prompt 25 (`pt6_after`); after, `p25_after` once the test phase has run it, "to
+  measure" until then. Only the cards the sheet gave a value count (it left out the fighters and the wingman).
+- **Where the game differs from the spreadsheet** is a table of its own (`<!-- differences:begin -->`), written by hand
+  from the report and DECISIONS 25A-25E: 33 places, each with the sheet's number or words, the game's and why. Units
+  (health after toughness, radians against degrees) are said once, not listed.
+- **Re-running.** `report_summary.py` rewrites its block only; `import_xlsx.py` rewrites its steps and summary only, and
+  its summary leaves marked blocks out, so the two can run in any order.
+
+### F1 The applied spreadsheet (`Tools/balance/export_applied_xlsx.py`)
+
+- **What it writes.** `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`: the owner's workbook with a green "Hiện tại"
+  column right after each proposed value (57 columns over 21 sheets), holding the game's number after prompt 25, and a
+  first sheet "Ghi chú áp dụng" that says what the columns are, where the numbers come from and how they are computed
+  (in Vietnamese, like the workbook). The two text sheets, "Thay đổi chi tiết" and "Kiểm tra từng mục", also get a
+  "Kết quả áp" column: each row's outcome in the apply report (applied, already so, waiting, skipped, with the task and
+  the detail). The workbook's own "... hiện" columns are the numbers before prompt 25; the notes sheet says so.
+- **From the data only**, with no game run: balance.json (weapons through their inherits and families, vehicles, the
+  bosses as the loader builds them (`steps_c.expand`), supports, the damage table), campaign.json (the mission that
+  unlocks each card), Progression.cs (starters, early prices, story loot), the Hud text tables (names) and
+  `Docs/backlog/new_content.json` (the five new-content sheets get each item's status and plan). The reports' readers
+  are reused (`import_xlsx.Game` and `cadence`, `import_unlocks`, `steps_c.boss_dps`, `report_summary`).
+- **In the sheet's terms.** The fire mode, rate, rounds a magazine or burst and rest are A2's mapping read backwards (a
+  magazine's change and a burst's cooldown are the rest plus one gap); the sustained DPS is the sheet's formula on the
+  game's numbers; health is shown as the sheet shows it (x2.2 for vehicles, x0.85 and a mini's x0.55 for bosses); a
+  boss's summed DPS takes its `weaponDamage`; death blasts after the vehicles' firepower (x2); support-card damage after
+  the strikes' (x2).
+- **Where "Hiện tại" differs from the proposal**, it is the data after a decision (the families, the 3 % cadence rule,
+  the names' glossary, the swapped weapons) or the game's rules, which prompt 15 set and which the sheet's formulas
+  simplify: a weapon that cannot aim at aircraft or at the ground is 0 there (the sheet computes every column for every
+  weapon), a round that strikes the roof never overmatches (the SP gun's 155 mm on armour 1 is x1.0, not x1.2),
+  thermobaric high explosive is x2 on structures, and a unit's sum includes the weapons the sheet's notes added, which
+  have no row of their own.
+- **Values, not formulas.** The copy is read with openpyxl's `data_only`: every formula becomes the value it computed,
+  since inserted columns would leave a formula's references pointing elsewhere (the owner's file keeps its formulas).
+  Styles, widths, row heights, frozen panes and filters are kept; the workbook has no charts, images, validations or
+  conditional formats to lose.
+
+### To run in the test phase (to fill the "to measure" cells)
+
+1. `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1 MB_CV_TAG=p25_after MB_CV_OUT=Docs/balance`
+   (`MB_CV_SEEDS=13,14,15,16,17` for E1's five seeds): writes `combat_value_p25_after.tsv`, `_summary.tsv` (with E2's
+   columns) and `_support.tsv`. Table 9b and its support sub-table read them; `MeasureTheSupportVehicles` alone fills E2.
+2. `python Tools/balance/report_summary.py`: the by-role table's "after" column from `p25_after`.
+3. The export (`ExportGameDoc`, `MB_EXPORT=<path>`) and `Tools/docs/build_doc.py` (the lead, once prompt 25 is in):
+   sections 8b and 10e and table 9b from the new export.
+4. `python Tools/balance/export_applied_xlsx.py` again after any data change of the test phase.
+
+### Shared edits (merge by hand if they conflict)
+
+- `Tools/docs/programme.py` (table 9b, one function, and an import), `Tools/docs/build_doc.py` (three lines: the import,
+  sections 8b and 10e, the contents line).
+- `Assets/MachineBrigade/Tests/EditMode/CombatValueMeasure.cs` (partial class, `MeasureTheRoster`, `Summary`) and
+  `ExportGameDoc.cs` (new fields, four helpers).
+- `Docs/balance/apply-report.md` (two new blocks after the summary), `Docs/DECISIONS.md` (this section, at the end),
+  `Docs/CHANGELOG.md` (the first block under Unreleased).
+- New files: `CombatValueMeasure.Support.cs`, `Tools/docs/prompt25.py`, `Tools/docs/unit_sheet.py` and `.json`,
+  `Tools/balance/report_summary.py`, `Tools/balance/export_applied_xlsx.py`,
+  `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`.

@@ -7,6 +7,22 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Measures and documents (prompt 25 E2, E3, F1, DECISIONS 25E)
+
+- The combat-value tool measures what support vehicles do for their side (E2): health repaired, rounds resupplied,
+  missiles decoyed and shield damage blocked, and a support value per CP on the combat value's scale. Table 9b has the
+  columns, "—" until the test phase runs `CombatValueMeasure`.
+- Table 9b has a "vs cluster" column (E3): damage a second against five light vehicles 4 m apart, computed from each
+  weapon's blast radius, falloff, penetration and damage type (and cluster bomblets), with how many times one target's.
+- The design document has a new section 8b (every unit's description, shape note and unlock) and 10e (every weapon's
+  DPS against armour levels 0-5, aircraft and structures; missile flight speed and time; model and round sizes from the
+  data; the main bosses' super weapons). `ExportGameDoc` writes the fields they read.
+- `Docs/balance/apply-report.md` is finished: rows by task and by sheet for all 28 sheets, the combat value by role
+  before and after ("to measure" until the test phase runs it) and the 33 places where the game differs from the
+  spreadsheet, with the reason.
+- `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`: the balance spreadsheet with a "Hiện tại" column beside each
+  proposed value, filled with the game's numbers after prompt 25 (`Tools/balance/export_applied_xlsx.py`).
+
 ### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
 
 - Every vehicle opens where the spreadsheet's "Phương tiện" sheet says, and costs the sheet's price to unlock early:

@@ -37,6 +37,145 @@ Rows by step and sheet (each step's section below lists them).
 
 <!-- /summary -->
 
+<!-- f1:begin -->
+## Summary of every task (prompt 25 H.2)
+
+Written by `Tools/balance/report_summary.py` from this report's own tables, the workbook and the measure files (DECISIONS 25E). Rows by task and sheet, every task:
+
+| Task | Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|---|
+| A1-Cao | Thay đổi chi tiết | 28 | 0 | 5 | 0 |
+| A1-Cao | Vũ khí đề xuất | 14 | 1 | 0 | 0 |
+| A1-Cao | Đơn vị – vũ khí | 2 | 0 | 0 | 0 |
+| A1-Trung | Thay đổi chi tiết | 58 | 2 | 27 | 0 |
+| A1-Trung | Vũ khí đề xuất | 23 | 2 | 0 | 0 |
+| A1-Trung | Đơn vị – vũ khí | 1 | 0 | 0 | 0 |
+| A1-Thap | Thay đổi chi tiết | 32 | 2 | 58 | 0 |
+| A1-Thap | Vũ khí đề xuất | 9 | 0 | 0 | 0 |
+| A2 | Vũ khí đề xuất | 62 | 92 | 0 | 35 |
+| A2 | Đơn vị – vũ khí | 7 | 281 | 0 | 0 |
+| A3 | Tốc độ tên lửa, Vũ khí đề xuất | 25 | 10 | 0 | 0 |
+| A4 | Tốc độ tên lửa | 0 | 58 | 0 | 0 |
+| A5 | Tổng quan, Vũ khí đề xuất | 5 | 68 | 2 | 0 |
+| B7 | Giá CP | 0 | 58 | 0 | 0 |
+| B8 | Thẻ hỗ trợ | 3 | 6 | 0 | 0 |
+| B1 | Kiểm tra từng mục | 22 | 130 | 0 | 0 |
+| B3 | Kích thước đạn | 17 | 26 | 0 | 0 |
+| C4 | Kiểm tra từng mục | 0 | 45 | 0 | 0 |
+| C4 | Thay đổi chi tiết | 0 | 4 | 0 | 0 |
+| A1-review | Cân bằng lần 2 | 0 | 4 | 0 | 0 |
+| A1-review | Kiểm tra từng mục | 14 | 29 | 4 | 3 |
+| A1-review | Vũ khí đề xuất | 1 | 35 | 0 | 0 |
+| A1-review | Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
+| C1 | Boss đề xuất | 117 | 16 | 0 | 0 |
+| C1 | Kiểm tra từng mục | 3 | 0 | 0 | 0 |
+| C1 | Thay đổi chi tiết | 27 | 0 | 0 | 0 |
+| C1 | Tổng quan | 1 | 0 | 0 | 0 |
+| C2 | Boss đề xuất | 3 | 0 | 0 | 0 |
+| C2 | Kiểm tra từng mục | 2 | 0 | 0 | 0 |
+| C2 | Thay đổi chi tiết | 2 | 0 | 0 | 0 |
+| D1 | Tên đề xuất | 63 | 0 | 0 | 1 |
+| D2 | Phương tiện (Mở khóa đề xuất, Mua sớm) | 52 | 4 | 0 | 2 |
+| B2 | Phương tiện, Công trình, Boss (Hình dạng), Hướng dẫn vẽ | 13 | 1 | the rest (ASSET_DEBT) | 0 |
+
+### By sheet
+
+Every sheet of the workbook: its rows, the tasks that read it, and each row's outcome at the end. A row a task deferred is followed to the task that took it (names D1, sizes B1, bosses C1-C2, models B2); a row one task applied and a later one checked counts as applied. "Still open" rows wait for work not done yet (models: ASSET_DEBT).
+
+| Sheet | Rows | Tasks | Applied | Already so | Still open | Skipped | Notes |
+|---|---|---|---|---|---|---|---|
+| Mục lục | 27 | - |  |  |  |  | the table of contents |
+| Tổng quan | 33 | A5, C1 |  |  |  |  | the rules: A5's blast rule (75 rounds, each one radius), the bosses' health scale (C1), the decision rules |
+| Cốt truyện | 34 | E.3 |  |  |  |  | E.3: the campaign checked against it chapter by chapter; no data changed (the differences are in the D2 section) |
+| Thay đổi chi tiết | 212 | A1-Cao, A1-Trung, A1-Thap, C4, A1-review, C1, C2 | 207 | 2 |  | 1 | every row applied or answered by its later task (two rows repeat another's id and item); names by D1 (spawn_bastion kept: the sheet asks whether it is still used and proposes no name) |
+| Kiểm tra từng mục | 1290 | B1, C4, A1-review, C1, C2 | 41 | 204 | 1 | 3 | 1053 rows 'Giữ' (nothing to change), 223 'Đổi', 14 'Xem lại'; the rows no task lists (1041) are 'Giữ' rows or 'Đổi' rows that a 'Thay đổi chi tiết' row repeats (applied with it) |
+| Cân bằng lần 2 | 56 | A1-review |  | 4 |  |  | the 51 'Ổn' rows ask for nothing; 'Theo dõi' and 'Đã giảm ở đợt 2' are in (A1-review); the E1 measurement judges them |
+| Việc cho agent | 17 | - |  |  |  |  | the task order, followed (A1 ... F2) |
+| Phương tiện | 58 | D2, B2 | 52 | 4 |  | 2 | D2: 'Mở khóa đề xuất' and 'Mua sớm' (58 rows); B2: 'Hình dạng' (13 models rebuilt, Icarus kept, the rest in ASSET_DEBT); its other columns repeat other sheets |
+| Công trình | 61 | B2 |  |  |  |  | B2: 'Hình dạng' (see Phương tiện); C1 read the Boss sheet's weapons; the other columns repeat other sheets |
+| Boss | 33 | B2 |  |  |  |  | B2: 'Hình dạng' (see Phương tiện); C1 read the Boss sheet's weapons; the other columns repeat other sheets |
+| Boss đề xuất | 33 | C1, C2 | 33 |  |  |  |  |
+| Tên đề xuất | 64 | D1 | 63 |  |  | 1 |  |
+| Kích thước – giá | 58 | - |  |  |  |  | its CP column agrees with 'Giá CP' (B.7); its sizes are B1's rows of 'Kiểm tra từng mục' |
+| Vũ khí đề xuất | 154 | A1-Cao, A1-Trung, A1-Thap, A2, A3, A5, A1-review | 109 | 45 |  |  | 31 of the game's weapons have no row (listed in A2 as skipped: 'not in the sheet'), left out here; the one blank row (twin_35_ahead's rounds a magazine) takes the game's 24 (A1-review) |
+| Đơn vị – vũ khí | 310 | A1-Cao, A1-Trung, A2 | 10 | 281 |  |  | A2: 'Giữ trong đề xuất' and the loadout notes; the bosses' rows are C1's (sheet Boss đề xuất) |
+| Tổng DPS đơn vị | 128 | - |  |  |  |  | sums of the weapon rows by unit: they follow A2 (every weapon within 5 % of its sheet DPS) |
+| Tốc độ tên lửa | 58 | A3, A4 |  | 58 |  |  |  |
+| Kích thước đạn | 43 | B3 | 17 | 26 |  |  |  |
+| Hệ số | 15 | - |  |  |  |  | the damage factors: the game's table (prompt 15), the same numbers (export_applied_xlsx.py shows them side by side) |
+| Giá CP | 58 | B7 |  | 58 |  |  |  |
+| Thẻ hỗ trợ | 6 | B8 | 3 | 6 |  |  | B.8; its last row covers four cards (smoke, UAV scan, repair, field tower), so 9 cards for 6 rows |
+| Thẻ hỗ trợ mới | 11 | - |  |  |  |  | task F2 (new content): each item and its status in Docs/backlog/new_content.json, its shop plan noted by D2 |
+| Đề xuất thêm | 56 | - |  |  |  |  | task F2 (new content): each item and its status in Docs/backlog/new_content.json, its shop plan noted by D2 |
+| Công trình mới | 14 | - |  |  |  |  | task F2 (new content): each item and its status in Docs/backlog/new_content.json, its shop plan noted by D2 |
+| Tên lửa & bom mới | 14 | - |  |  |  |  | task F2 (new content): each item and its status in Docs/backlog/new_content.json, its shop plan noted by D2 |
+| Boss mới | 8 | - |  |  |  |  | task F2 (new content): each item and its status in Docs/backlog/new_content.json, its shop plan noted by D2 |
+| Tỷ lệ map | 14 | - |  |  |  |  | the scale rules B1 and B3 used (ground 0.8 x real, air 0.4 x real, rounds 0.8 / 0.5 x real) |
+| Hướng dẫn vẽ | 13 | B2 |  |  |  |  | the drawing guide B2 followed (7 steps, triangle budgets, LOD, mounts, wrecks) |
+
+## Combat value by role, before and after
+
+The median combat value per CP of each role of the sheet ("Giá CP": "Nhóm (9b)", with the value it compares: nhẹ = the light group, tăng = the tanks, công sự = the fort, máy bay = the aircraft, joined by + for their mean), the spread (lowest and highest card over the median) and how many cards sit within 15 % of it (prompt 25 E1's target). Before: the measure the spreadsheet was made from (the design document's 9b, p18_after) and the last one before prompt 25 (play-test 6, pt6_after). After: "to measure" until the test phase runs `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1 MB_CV_TAG=p25_after MB_CV_SEEDS=13,14,15,16,17` (`MB_CV_OUT=Docs/balance`) and this script again. The support role's value is the light one in the sheet; E2's support value (table 9b) is the fair measure for it once run.
+
+| Role (9b) | Cards | Value compared | Before: the sheet's measure (p18_after) | Before: last measure before prompt 25 (pt6_after) | After prompt 25 (p25_after) |
+|---|---|---|---|---|---|
+| AntiAir | 6 | máy bay | 263 (x0.24-2.28, 2/6 within 15 %) | 237 (x0.23-2.40, 0/6 within 15 %) | to measure |
+| Artillery | 8 | tăng+công sự | 449 (x0.56-1.16, 3/8 within 15 %) | 460 (x0.55-1.23, 3/8 within 15 %) | to measure |
+| Heavy | 8 | nhẹ+tăng+công sự | 393 (x0.65-1.36, 4/8 within 15 %) | 379 (x0.51-1.55, 5/8 within 15 %) | to measure |
+| Helicopter | 3 | nhẹ+tăng+công sự | 509 (x0.66-1.06, 2/3 within 15 %) | 624 (x0.51-1.05, 2/3 within 15 %) | to measure |
+| Light | 2 | nhẹ+tăng | 156 (x0.89-1.11, 2/2 within 15 %) | 122 (x0.87-1.13, 2/2 within 15 %) | to measure |
+| Plane | 7 | nhẹ+tăng+công sự | 581 (x0.19-1.27, 3/7 within 15 %) | 611 (x0.17-1.36, 4/7 within 15 %) | to measure |
+| Scout | 2 | nhẹ | 81 (x0.96-1.04, 2/2 within 15 %) | 77 (x0.90-1.10, 2/2 within 15 %) | to measure |
+| Support | 2 | nhẹ | 164 (x0.62-1.38, 0/2 within 15 %) | 150 (x0.58-1.42, 0/2 within 15 %) | to measure |
+| Tank | 3 | nhẹ+tăng | 466 (x0.48-1.08, 2/3 within 15 %) | 398 (x0.47-1.08, 2/3 within 15 %) | to measure |
+| TankHunter | 6 | tăng | 466 (x0.72-1.22, 3/6 within 15 %) | 404 (x0.46-1.55, 2/6 within 15 %) | to measure |
+<!-- f1:end -->
+
+<!-- differences:begin -->
+## Where the game differs from the spreadsheet, and why
+
+Every place where the data after prompt 25 is not the sheet's number or words, gathered from the sections above and
+DECISIONS 25A-25E. Units are not differences: the sheet shows health after the vehicles' toughness (x2.2), which the
+data holds divided out, and turn rates in radians a second, which the data holds in degrees. A row whose numbers were
+applied although its words wanted something else is listed, since the owner reads the words.
+
+| Where (task) | The sheet | The game | Why |
+|---|---|---|---|
+| "Giữ DPS" rows (A1, A2): ZU-23, the Pantsir's 2A38, the AA tower's and the HQ's flak | keep the DPS | the rows' numbers: 70, 171, 131, 140 a second (were 143, 252, 193, 157) | the numbers and the sheet's own DPS column cut it; the numbers win (prompt 25 A.5), and E1's measurement judges them |
+| Flame tank's flamethrower (A1 Thấp) | -10 % on light vehicles | 21 a tick on every target (was 23.5) | the weapon row makes the cut a plain number, and the DPS test holds the game to it |
+| Rows with two options (A1, B.8) | "chọn một", "hoặc" | one option each: the AA tower's 2A38 reference, the Grad tower's damage (not the shorter reload), the airstrike's four FAB-500s, the barrage's six shells, the cruise missile's 600 and 10 m | the other option is not added on top (DECISIONS 25A) |
+| The Iron Beam (A1 Cao) | prefer drones; takes shells too | takes mortar bombs and shells at the C-RAM's share (0.3); no drone preference | the sheet names no share; a preference needs a target rule the game does not have |
+| Skyranger's AHEAD gun (A2) | rounds a magazine: blank | the game's 24; the sheet's formula for the rest (101.8 a second) | a blank cell is no number |
+| Rates within 3 % (A2) | rounded rates (2.22 a second, 0.12) | the game's cadence where it already fires within 3 % of the sheet's sustained DPS | the sheet rounds; the DPS test holds every weapon within 5 % |
+| Weapon families (A3) | each weapon row's own speed and blast | one value a real weapon, the family's most common proposal (the siege tank's 240 mm 9 m, was 7.2; the fortress's and the SP gun's 155 mm 7 m and 45 m/s; the Lancets 3 m) | prompt 25 B.4: one family, one speed and blast |
+| One blast a round (A5) | a number on one weapon's row | the same radius on every weapon firing that round (the Grad turret's and the boss's Grad 4.5 m; the siege tank's M110 8 m; the naval 127 mm 6 m; the 122 mm thermobaric 4 m) | the sheet's rule: one round, one radius |
+| Missile ranges (A4) | the TOW's and the Hellfires' 34 m in "Tốc độ tên lửa" | 40 and 45 m | older than the weapon sheet's and the change list's |
+| Range rows that repeat the vision rows (A1-review): armoured car 42 m, scout jeep 55 m, light tank 36 m | "Tầm bắn" = the vision proposal | the guns' ranges kept (30, 22, 28 m) | a contradiction in the sheet: its weapon rows keep the guns ("Giữ"), and a 55 m machine gun would outrange every anti-tank missile against its own range order |
+| "Loại đạn thay thế gợi ý" (70 weapons) | suggested second rounds | not added | no task names the column, and it needs a round switched for ground targets that the game does not have |
+| Health rows with "giữ nếu đó là bản sắc" (A1-review) | the formula, unless it is the card's identity | the formula: the TOS 990, the siege tank 1,320, the swarm carrier 1,390, the AC-130 2,352 (the sheet's units) | the owner: apply everything, take out later what is too much |
+| Main battle tank's size (B1, B2) | "Giữ" 6.3 x 2.9 x 2.9 m | 7.79 x 3.07 x 2.30 m | the row is 0.65 x a Leopard 2; the shape note, the 0.8 rule and "longer than the IFV" give 7.7 m; the twin tank follows (8.96 m) |
+| AC-130 and attack helicopter sizes (B1, B2) | 12.2 x 15.4 m; 7.1 x 5.8 m | 11.93 x 16.3 m (one frame with the mothership); 6.35 x 4.44 m | the sheet asks for one frame; its helicopter box has the rotor turning |
+| Model proportions (B1) | length, width and height | the length only, for the models not rebuilt; seven are over 10 % off in width or height (the supply truck, the radar, the SP gun, the Shahed truck, the siege tank, the Pantsir, the Iron Beam) | a uniform fit keeps wheels and turrets true; the rebuilds are ASSET_DEBT |
+| Icarus's width (B1) | ~60 x 40 m | 60 x 30 m | the sheet's "Hiện tại" is the model before play-test 9's hull |
+| 203 mm rounds (B3) | 0.8 m (the rule's least) | 1.04 m (1.3 x the 155 mm's 0.8) | prompt 25 C.3's rule over the rows' own |
+| Two round rows (B3): the Konkurs post, the AGM-65 | the Kornet's and the Kh-29's lengths | left as they were | other missiles on those models |
+| Round models (B3) | own models for the Kh-29L and GBU-39 | stand-ins at the new lengths (the Maverick, the GBU-12) | the models are B2's work (ASSET_DEBT) |
+| Models (B2) | every "Hình dạng" note | 13 rebuilt, Icarus kept, the rest in ASSET_DEBT | not reached in prompt 25 |
+| Bastion Mk.0's health (C1) | ~6,000 (Thay đổi chi tiết) | 6,500 | "Boss đề xuất" is the task's sheet, and 6,500 sits in the Boss sheet's range |
+| Bosses' ordinary damage (C1) | a DPS against armour 3 | the sheet's DPS through `weaponDamage` (up to x9.08, Typhon) | the sheet counts fire the data puts in the boss system; the battle-length measurement judges it |
+| Super weapons (C1) | the rows' numbers | as written, with Moloch's factory dump and Kronos's sweep as they were, and the glide bomb's warning 3.5 s (no number in the row) | the rows name nothing else for them |
+| Kronos's bucket wheel (C2) | a weapon | a weapon at the crusher's numbers (900 a second within 6 m) | the sheet leaves them as they are |
+| Short names (D1) | "Tên lửa chiến thuật", "Bánh lốp diệt tăng", "PK tầm xa" | "TL chiến thuật", "Pháo xung kích", "Trạm PK tầm xa" | 15 letters on a card; "PK tầm xa" is also the SAM vehicle's |
+| English names (D1) | Title Case, American spelling | sentence case, British spelling, acronyms kept | the game's glossary |
+| spawn_bastion (D1) | "kiểm tra còn dùng không" | kept its name | only the fallback when a mode has no HQ; the sheet proposes no name |
+| Real model names (D1) | on the card's sub-line (prompt 24) | on the reference line (`note.<id>`) | prompt 24 is not done yet |
+| Unlocks (D2): hover gunboat, supply truck | "Không mở", "Nhiệm vụ" | skipped | they are no cards |
+| Story loot (D2) | four | five (Kessler's cruise missiles too) | prompt 22 D.6; never sold either |
+| The napalm strike (D2) | no row | premium, 1,500 coins | no row names it |
+| The campaign against "Cốt truyện" (E.3) | the summary's battlefields and bosses | more battlefields in chapters 6 and 8-12, a Locust in chapter 12 | prompt 4's map reuse and prompt 20's boss slots; for the owner (D2 section) |
+| Balance round 2 (E1) | "Theo dõi", "Đã giảm ở đợt 2", ±15 % of the role's median | the numbers they rest on are in; not measured | the owner's rule: no sim run before the test phase (the by-role table above) |
+<!-- differences:end -->
+
 <!-- step:A1-Cao -->
 ## A1 Cao: sheet Thay đổi chi tiết
 
