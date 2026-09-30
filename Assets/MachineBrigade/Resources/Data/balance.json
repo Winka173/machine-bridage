@@ -264,6 +264,7 @@
     { "id": "agm_88_harm", "real": "AGM-88 HARM", "projectileSpeed": 45, "splash": 4, "roundWeight": 360, "roundLength": 2.09 },
     { "id": "apkws", "real": "APKWS (laser-guided Hydra 70)", "projectileSpeed": 45, "splash": 2, "projectileModel": "apkws", "roundWeight": 15, "roundLength": 0.8 },
     { "id": "coyote_block_2", "real": "Coyote Block 2", "projectileSpeed": 40, "splash": 2, "roundWeight": 5, "roundLength": 0.8 },
+    { "id": "smart_155_bonus", "real": "SMArt 155 / BONUS", "projectileSpeed": 45, "splash": 2, "projectileModel": "smart_155", "roundLength": 0.8 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -618,6 +619,8 @@
     { "id": "apkws_rocket", "real": "APKWS (laser-guided Hydra 70)", "weaponFamily": "apkws", "family": "rocket", "size": 70, "pen": 2, "damageType": "ShapedCharge", "damage": 90, "cooldown": 1, "range": 40, "projectileSpeed": 45, "splash": 2, "impactTier": "Medium", "projectile": "Rocket", "projectileModel": "apkws", "roundLength": 0.8, "targets": "All" },
     // tl07: Coyote Block 2-class drone interceptor (interceptor_drone_vehicle secondary): a second, cheaper interceptor round.
     { "id": "coyote_interceptor", "real": "Coyote Block 2", "weaponFamily": "coyote_block_2", "family": "drone", "size": 5, "pen": 2, "damageType": "Fragmentation", "damage": 120, "cooldown": 1.125, "range": 45, "projectileSpeed": 40, "splash": 2, "impactTier": "Small", "projectile": "Drone", "projectileModel": "coyote_block2", "roundLength": 0.8, "targets": "Air", "prey": "Rotors" },
+    // tl09: SMArt 155/BONUS-class top-attack artillery shell (wheeled_howitzer secondary): 2 top-attack submunitions that only matter against vehicles.
+    { "id": "smart_at_shell", "real": "SMArt 155 / BONUS", "weaponFamily": "smart_155_bonus", "family": "howitzer", "size": 155, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 25, "range": 90, "minRange": 25, "projectileSpeed": 45, "impactTier": "Medium", "projectileModel": "smart_155", "roundLength": 0.8, "cluster": { "count": 2, "radius": 4, "damage": 220, "splash": 1.5, "pen": 4, "tier": "Medium" } },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1154,7 +1157,7 @@
       "firesWhileMoving": true, "weapon": "none", "flying": true, "altitude": 30, "captureRate": 0 },
     // dx11: the shoot-and-scoot wheeled howitzer (CAESAR, Archer, ATMOS): after every salvo it drives off 15-25 m.
     { "id": "wheeled_howitzer", "modelSize": [8.0, 2.1, 3.0], "class": "Artillery", "armour": 0, "hp": 318, "speed": 9, "turnRate": 70, "turretTurnRate": 45, "radius": 2.2, "length": 8.0, "width": 2.1, "cp": 6, "vision": 30,
-      "scoot": { "shots": 1, "min": 15, "max": 25 }, "firesWhileMoving": false, "weapon": "caesar_155",
+      "scoot": { "shots": 1, "min": 15, "max": 25 }, "firesWhileMoving": false, "weapon": "caesar_155", "secondary": [{ "weapon": "smart_at_shell", "slot": "gun", "aim": "Turret" }],
       "deathExplosion": { "damage": 80, "radius": 9, "delay": 0.3, "tier": "Large" } },
     // dx12: the turreted self-propelled mortar (Patria AMOS / NEMO, 2S31 Vena): better armour than the mortar carrier.
     { "id": "sp_mortar", "modelSize": [6.3, 2.3, 2.5], "class": "Artillery", "armour": 2, "hp": 545, "speed": 8, "turnRate": 80, "turretTurnRate": 60, "radius": 2.1, "length": 6.3, "width": 2.3, "cp": 5, "vision": 26,

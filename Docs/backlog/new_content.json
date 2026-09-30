@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 55,
+    "chưa làm": 54,
     "đang làm": 0,
-    "xong": 38
+    "xong": 39
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 3,
+      "chưa làm": 2,
       "đang làm": 0,
-      "xong": 11
+      "xong": 12
     },
     "support": {
       "chưa làm": 11,
@@ -1007,9 +1007,9 @@
       "group": "Đạn pháo",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "smart_at_shell",
+      "notes": "Batch C: weapon smart_at_shell (smart_155_bonus family), a secondary on wheeled_howitzer (dx11, \"howitzer equipment\"; not a third artillery_emplacement tower branch, since every existing tower has exactly two). Reuses the existing ClusterDef mechanic (2 top-attack submunitions), no new code."
     },
     {
       "key": "tl10",
