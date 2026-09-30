@@ -161,6 +161,8 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>The bunker vehicle on its tracks: its turret stays within its arc of the nose.</summary>
         private static void KeepToArc(Vehicle v)
         {
+            // Prompt 25 F2 batch A: a towed gun's traverse.
+            if (KeepToTurretArc(v)) return;
             if (v.Def.Deploy is not { } dep || v.Deploy == DeployState.Deployed) return;
             var off = SimMath.WrapAngle(v.TurretHeading - v.Heading);
             if (MathF.Abs(off) > dep.Arc) v.TurretHeading = v.Heading + MathF.Sign(off) * dep.Arc;

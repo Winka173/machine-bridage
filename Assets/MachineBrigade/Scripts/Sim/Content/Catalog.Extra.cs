@@ -280,6 +280,8 @@ namespace MachineBrigade.Sim.Content
             ParseP22(v, def);
             // The tower-branch rework (DECISIONS 19T): tower shields, the loot depot, the radar's air picture, the branch art.
             ParseBranchRework(v, def);
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new units' and structures' mechanisms.
+            ParseP25A(v, def);
         }
 
         /// <summary>
@@ -412,6 +414,8 @@ namespace MachineBrigade.Sim.Content
             CheckTiers();
             // Prompt 22 E: the duels' big attacks.
             FinishP22();
+            // Prompt 25 F2 batch A: the ids the new mechanisms name.
+            FinishP25A();
         }
 
         /// <summary>What an elite of this base card costs the enemy (and refunds when destroyed): its CP times the elite scale, rounded.</summary>

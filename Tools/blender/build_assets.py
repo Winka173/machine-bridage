@@ -49,6 +49,7 @@ import mb_p22_siege  # noqa: E402
 import mb_p22_content  # noqa: E402
 import mb_p25_models  # noqa: E402
 import mb_p25_models2  # noqa: E402
+import mb_p25_new  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -110,7 +111,9 @@ def all_builders():
                 # Prompt 25 B2 (DECISIONS 25B2): models rebuilt to the balance sheet's shape notes and sizes (they win).
                 **mb_p25_models.BUILDERS,
                 # Prompt 25 B2 part 2 (DECISIONS 25B2): the rest of the vehicles, the bosses and the structures (they win).
-                **mb_p25_models2.BUILDERS}
+                **mb_p25_models2.BUILDERS,
+                # Prompt 25 F2 batch A (DECISIONS 25F2-A): the new units and structures.
+                **mb_p25_new.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

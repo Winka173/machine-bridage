@@ -129,6 +129,23 @@ namespace MachineBrigade.Game.Match
             "armored_bulldozer",
             // Prompt 17 C.
             "stealth_fighter", "wingman_drone", "laser_tank", "shield_carrier", "bunker_vehicle", "swarm_carrier",
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new vehicles.
+            "aa_gun_vehicle",
+            "shorad_vehicle",
+            "microwave_vehicle",
+            "nlos_atgm_vehicle",
+            "radar_atgm_vehicle",
+            "recoilless_jeep",
+            "airborne_vehicle",
+            "wheeled_howitzer",
+            "sp_mortar",
+            "glide_bomber",
+            "recon_jet",
+            "interceptor_jet",
+            "radar_scout",
+            "fibre_fpv_carrier",
+            "interceptor_drone_vehicle",
+            // (batch A cards: new entries above)
         };
 
         public static readonly string[] AllSupports =

@@ -2467,6 +2467,121 @@ namespace MachineBrigade.Game.Hud
             ["note.swarm_carrier"] = ("A drone mothership: a big, slow aircraft that flies a swarm of FPV drones out to anywhere and releases them one after another over the target, each finding its own, and drops two guided bombs from the same bay. The drones are not aircraft.", "Máy bay mẹ thả drone: máy bay to, chậm, chở bầy drone FPV tới bất cứ đâu rồi thả lần lượt xuống vùng mục tiêu, mỗi chiếc tự tìm mục tiêu, và thả thêm hai bom dẫn đường từ cùng khoang. Drone không tính là máy bay."),
             ["note.shield_tower"] = ("A shield generator: its dome takes every hit but energy for the towers and units of its side inside until it breaks, and is back 30 s after its last hit.", "Máy phát khiên: vòm khiên hấp thụ mọi đòn trừ năng lượng cho tháp và quân phe mình bên trong cho tới khi vỡ, hồi lại 30 giây sau đòn cuối."),
             ["note.cp_relay"] = ("A CP relay: its side earns more CP (a second relay less, never more than two). It pays nothing for a few seconds after it is hit, and cannot go on an outpost.", "Trạm tiếp tế CP: phe sở hữu kiếm thêm CP (trạm thứ hai ít hơn, tối đa hai trạm). Bị bắn thì ngừng trả vài giây, và không đặt được ở tiền đồn."),
+
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures ("Đề xuất thêm", "Công trình
+            // mới"): names, short names (15 letters at most) and reference lines with the real model; their Guide cards are in GuideText.
+            ["target.paradrop"] = ("Tap ground your side can see to drop {unit} (tap the card again to send it to the drop zone)",
+                "Chạm vào vùng phe ta nhìn thấy để thả dù {unit} (chạm thẻ lần nữa để đưa về bãi thả)"),
+            ["err.DropNotSeen"] = ("Drop only where your side can see, and never into an enemy base", "Chỉ thả dù nơi phe ta nhìn thấy, không thả vào căn cứ địch"),
+            // dx01: Tháp cao xạ hạng nặng Flak 88.
+            ["unit.heavy_flak_tower"] = ("Heavy flak tower", "Tháp cao xạ hạng nặng"),
+            ["short.heavy_flak_tower"] = ("Heavy flak", "Cao xạ nặng"),
+            ["note.heavy_flak_tower"] = ("A heavy anti-aircraft gun of the 8.8 cm Flak 36/37 class: slow, big air bursts against bombers and tight formations; lowered, it hits tanks at 50 m.", "Pháo cao xạ hạng nặng kiểu 8,8 cm Flak 36/37: bắn chậm, đạn nổ trên không bán kính lớn vào oanh tạc cơ và tốp máy bay dày; hạ nòng bắn được xe tăng ở 50 m."),
+            // dx02: Xe cao xạ Bofors 40 mm.
+            ["unit.aa_gun_vehicle"] = ("40 mm AA gun vehicle", "Xe cao xạ 40 mm"),
+            ["short.aa_gun_vehicle"] = ("40 mm AA", "Cao xạ 40 mm"),
+            ["note.aa_gun_vehicle"] = ("A tracked AA gun with a Bofors 40 mm L/70 (M42 Duster, CV90 AA): proximity-fused rounds four a second.", "Xe cao xạ bánh xích mang pháo Bofors 40 mm L/70 (M42 Duster, CV90 AA): đạn ngòi cận đích, bốn phát mỗi giây."),
+            // dx03: Xe tên lửa phòng không Avenger.
+            ["unit.shorad_vehicle"] = ("Light SAM vehicle", "Xe tên lửa phòng không nhẹ"),
+            ["short.shorad_vehicle"] = ("Light SAM", "TL PK nhẹ"),
+            ["note.shorad_vehicle"] = ("An M1097 Avenger: a light truck with a turret of eight shoulder-launched Stinger-class missiles, fired on the move.", "M1097 Avenger: xe hạng nhẹ với tháp mang tám tên lửa vác vai lớp Stinger, bắn được khi đang chạy."),
+            // dx04: Xe vi sóng chống drone.
+            ["unit.microwave_vehicle"] = ("Anti-drone microwave vehicle", "Xe vi sóng chống drone"),
+            ["short.microwave_vehicle"] = ("Microwave", "Vi sóng"),
+            ["note.microwave_vehicle"] = ("An Epirus Leonidas-type high-power microwave on an armoured truck: a pulse downs a whole swarm of drones at once.", "Hệ vi sóng công suất cao kiểu Epirus Leonidas trên xe tải bọc thép: một xung làm rơi cả bầy drone cùng lúc."),
+            // dx06: Ụ pháo chống tăng.
+            ["unit.at_gun_emplacement"] = ("Anti-tank gun emplacement", "Ụ pháo chống tăng"),
+            ["short.at_gun_emplacement"] = ("AT gun", "Ụ chống tăng"),
+            ["note.at_gun_emplacement"] = ("A towed MT-12 Rapira 100 mm anti-tank gun behind its shield and sandbags: a cheap tank killer for a small slot.", "Pháo chống tăng kéo MT-12 Rapira 100 mm sau tấm chắn và bao cát: diệt tăng rẻ tiền cho ô nhỏ."),
+            // dx07: Xe tên lửa chống tăng bắn ngoài tầm nhìn.
+            ["unit.nlos_atgm_vehicle"] = ("Beyond-sight ATGM vehicle", "Xe tên lửa chống tăng ngoài tầm nhìn"),
+            ["short.nlos_atgm_vehicle"] = ("NLOS ATGM", "TL ngoài tầm"),
+            ["note.nlos_atgm_vehicle"] = ("A Spike NLOS launcher truck: missiles lofted over hills and buildings onto a tank's roof, aimed by a friend's eyes.", "Xe phóng Spike NLOS: tên lửa bay vòng qua đồi và nhà, đánh xuống nóc xe tăng, nhờ mắt của quân bạn ngắm."),
+            // dx08: Xe tên lửa chống tăng dẫn radar.
+            ["unit.radar_atgm_vehicle"] = ("Radar-guided ATGM vehicle", "Xe tên lửa chống tăng dẫn radar"),
+            ["short.radar_atgm_vehicle"] = ("Radar ATGM", "TL dẫn radar"),
+            ["note.radar_atgm_vehicle"] = ("A 9P157 Khrizantema-S: anti-tank missiles in pairs, guided by a millimetre-wave radar that smoke does not blind.", "9P157 Khrizantema-S: tên lửa chống tăng bắn từng cặp, dẫn bằng radar sóng milimét nên màn khói không che được."),
+            // dx09: Xe jeep súng không giật.
+            ["unit.recoilless_jeep"] = ("Recoilless rifle jeep", "Xe jeep súng không giật"),
+            ["short.recoilless_jeep"] = ("Recoilless", "Súng không giật"),
+            ["note.recoilless_jeep"] = ("An M40 106 mm recoilless rifle on an M151 jeep (the SPG-9 on a pickup is its cousin): one hard hit, then a long reload.", "Súng không giật M40 106 mm trên xe jeep M151 (họ hàng với SPG-9 trên xe bán tải): một phát đau rồi nạp lâu."),
+            // dx10: Xe đổ bộ đường không.
+            ["unit.airborne_vehicle"] = ("Airborne fighting vehicle", "Xe đổ bộ đường không"),
+            ["short.airborne_vehicle"] = ("Airborne IFV", "Xe đổ bộ"),
+            ["note.airborne_vehicle"] = ("A BMD-4-class airborne vehicle (the 2S25 Sprut-SD shares its hull): a 100 mm gun-launcher and a 30 mm cannon, dropped by parachute.", "Xe đổ bộ đường không lớp BMD-4 (chung thân với 2S25 Sprut-SD): pháo 100 mm phóng được tên lửa và pháo 30 mm, thả bằng dù."),
+            // dx11: Pháo bánh lốp bắn rồi chạy.
+            ["unit.wheeled_howitzer"] = ("Shoot-and-scoot howitzer", "Pháo bánh lốp bắn rồi chạy"),
+            ["short.wheeled_howitzer"] = ("Truck howitzer", "Pháo bánh lốp"),
+            ["note.wheeled_howitzer"] = ("A CAESAR-type 155 mm truck howitzer (Archer and ATMOS are alike): four rounds in six seconds, then off before the counter-fire lands.", "Pháo 155 mm trên xe tải kiểu CAESAR (Archer, ATMOS tương tự): bốn phát trong sáu giây rồi chạy trước khi phản pháo rơi xuống."),
+            // dx12: Cối tự hành tháp kín.
+            ["unit.sp_mortar"] = ("Turreted SP mortar", "Cối tự hành tháp kín"),
+            ["short.sp_mortar"] = ("Turret mortar", "Cối tháp kín"),
+            ["note.sp_mortar"] = ("A Patria AMOS-type twin 120 mm mortar turret on an 8x8 (the 2S31 Vena is its tracked cousin): four bombs that land together.", "Tháp cối đôi 120 mm kiểu Patria AMOS trên xe 8x8 (2S31 Vena là bản bánh xích): bốn quả đạn rơi xuống cùng lúc."),
+            // dx14: Máy bay ném bom lượn tầm xa.
+            ["unit.glide_bomber"] = ("Long-range glide bomber", "Máy bay ném bom lượn tầm xa"),
+            ["short.glide_bomber"] = ("Glide bomber", "Ném bom lượn"),
+            ["note.glide_bomber"] = ("A Su-34 with FAB-500 bombs on UMPK glide kits: it drops from far outside the target's short-range air defence.", "Su-34 mang bom FAB-500 gắn bộ lượn UMPK: thả bom từ rất xa, ngoài tầm phòng không tầm gần của mục tiêu."),
+            // dx15: Máy bay trinh sát tốc độ cao.
+            ["unit.recon_jet"] = ("High-speed recon jet", "Máy bay trinh sát tốc độ cao"),
+            ["short.recon_jet"] = ("Recon jet", "Trinh sát nhanh"),
+            ["note.recon_jet"] = ("An SR-71 Blackbird / MiG-25R-type reconnaissance jet: one pass at great height and speed that photographs a whole strip of the battlefield.", "Máy bay trinh sát kiểu SR-71 Blackbird / MiG-25R: một lượt bay rất cao, rất nhanh, chụp cả một dải chiến trường."),
+            // dx16: Tiêm kích đánh chặn.
+            ["unit.interceptor_jet"] = ("Interceptor", "Tiêm kích đánh chặn"),
+            ["short.interceptor_jet"] = ("Interceptor", "TK đánh chặn"),
+            ["note.interceptor_jet"] = ("A MiG-31BM with R-37M missiles: very fast, a missile that reaches further than any other fighter's, made to kill bombers.", "MiG-31BM mang tên lửa R-37M: rất nhanh, tên lửa bắn xa hơn mọi tiêm kích khác, sinh ra để diệt oanh tạc cơ."),
+            // dx20: Xe trinh sát bọc thép radar mặt đất.
+            ["unit.radar_scout"] = ("Radar scout car", "Xe trinh sát bọc thép radar mặt đất"),
+            ["short.radar_scout"] = ("Radar scout", "TS radar"),
+            ["note.radar_scout"] = ("A Fennek-type armoured scout car (or a BRDM-2 with a radar) with a telescopic sensor mast: it watches from one spot.", "Xe trinh sát bọc thép kiểu Fennek (hoặc BRDM-2 gắn radar) với cột cảm biến kéo dài: đứng một chỗ mà canh."),
+            // dx25: Tường chắn đạn.
+            ["unit.blast_wall"] = ("Gabion blast wall", "Tường chắn đạn"),
+            ["short.blast_wall"] = ("Blast wall", "Tường chắn đạn"),
+            ["note.blast_wall"] = ("A line of Hesco gabions (wire-mesh cells filled with earth): it soaks up direct fire aimed at the towers behind it.", "Một hàng rọ Hesco (ô lưới thép chứa đầy đất): hứng đạn bắn thẳng nhắm vào các tháp phía sau."),
+            // dx26: Mồi nhử bơm hơi.
+            ["unit.inflatable_decoy"] = ("Inflatable decoy", "Mồi nhử bơm hơi"),
+            ["short.inflatable_decoy"] = ("Decoy", "Mồi nhử"),
+            ["note.inflatable_decoy"] = ("An inflatable gun turret of the kind used in the war in Ukraine: cheap, flimsy, and taken for the real thing by the enemy.", "Tháp pháo bơm hơi như loại dùng trong chiến sự Ukraine: rẻ, mỏng manh, địch tưởng là thật."),
+            // dx27: Trung tâm điều khiển hỏa lực.
+            ["unit.fire_control_centre"] = ("Fire-control centre", "Trung tâm điều khiển hỏa lực"),
+            ["short.fire_control_centre"] = ("Fire control", "TT hỏa lực"),
+            ["note.fire_control_centre"] = ("A fire-direction centre (FDC): shelters, a mast and radios that tie the base's towers into one battery.", "Trung tâm điều khiển hỏa lực (FDC): nhà chứa, cột ăng-ten và điện đài liên kết các tháp của căn cứ thành một khẩu đội."),
+            // dx28: Đèn pha chiến trường.
+            ["unit.searchlight"] = ("Battlefield searchlight", "Đèn pha chiến trường"),
+            ["short.searchlight"] = ("Searchlight", "Đèn pha"),
+            ["note.searchlight"] = ("A 150 cm defence searchlight on a turntable: it lights the ground round the base at night and dazzles attackers.", "Đèn pha phòng thủ 150 cm trên bệ xoay: chiếu sáng quanh căn cứ ban đêm và làm lóa quân tấn công."),
+            // dx29: Bóng chắn máy bay.
+            ["unit.barrage_balloon"] = ("Barrage balloon", "Bóng chắn máy bay"),
+            ["short.barrage_balloon"] = ("Balloon", "Bóng chắn"),
+            ["note.barrage_balloon"] = ("A tethered balloon on a steel cable, as over the cities of the Second World War, here a modern aerostat: aircraft must climb over it.", "Khí cầu buộc dây cáp thép như trên các thành phố thời Thế chiến II, ở đây là khí cầu hiện đại: máy bay phải bay vọt lên cao."),
+            // dx30: Máy tạo nhiễu tầm nhìn.
+            ["unit.visual_jammer"] = ("Visual jammer", "Máy tạo nhiễu tầm nhìn"),
+            ["short.visual_jammer"] = ("Visual jammer", "Nhiễu tầm nhìn"),
+            ["note.visual_jammer"] = ("An electronic camouflage station: emitters and aerosol generators that blind cameras and sights round the base.", "Trạm ngụy trang điện tử: bộ phát nhiễu và máy tạo sương làm mù camera và kính ngắm quanh căn cứ."),
+            // dx47: Xe phóng drone FPV cáp quang.
+            ["unit.fibre_fpv_carrier"] = ("Fibre-optic FPV carrier", "Xe phóng drone FPV cáp quang"),
+            ["short.fibre_fpv_carrier"] = ("Fibre FPV", "FPV cáp quang"),
+            ["note.fibre_fpv_carrier"] = ("A pickup launching fibre-optic FPV drones, as in the war in Ukraine in 2024-2025: steered down a thin cable, so jammers cannot touch them.", "Xe bán tải phóng drone FPV cáp quang như trong chiến sự Ukraine 2024–2025: điều khiển qua sợi cáp mảnh nên gây nhiễu không chạm được."),
+            // dx48: Xe drone đánh chặn.
+            ["unit.interceptor_drone_vehicle"] = ("Interceptor drone vehicle", "Xe drone đánh chặn"),
+            ["short.interceptor_drone_vehicle"] = ("Drone hunter", "Drone chặn"),
+            ["note.interceptor_drone_vehicle"] = ("A truck launching interceptor drones (a Raytheon Coyote, or the drone-killers of the war in Ukraine) that ram enemy drones and helicopters.", "Xe tải phóng drone đánh chặn (Raytheon Coyote, hay drone săn drone trong chiến sự Ukraine) lao thẳng vào drone và trực thăng địch."),
+            // ct11: Hầm che quân.
+            ["unit.troop_shelter"] = ("Troop shelter", "Hầm che quân"),
+            ["short.troop_shelter"] = ("Troop shelter", "Hầm che quân"),
+            ["note.troop_shelter"] = ("A half-buried concrete bunker with an earth berm: vehicles sheltering round it ride out a barrage.", "Hầm bê tông nửa chìm có ụ đất phủ: xe núp quanh nó chịu được trận pháo kích."),
+            // ct12: Tháp pháo sáng.
+            ["unit.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
+            ["short.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
+            ["note.flare_tower"] = ("A small tower with a multi-tube illumination mortar: parachute flares that turn night into day over the enemy.", "Tháp nhỏ với cối pháo sáng nhiều ống: pháo sáng dù biến đêm thành ngày trên đầu địch."),
+            // ct13: Trạm phòng không laser chống drone.
+            ["unit.laser_ad_station"] = ("Laser anti-drone station", "Trạm phòng không laser chống drone"),
+            ["short.laser_ad_station"] = ("Laser AD", "Trạm laser"),
+            ["note.laser_ad_station"] = ("A fixed high-energy laser site of the Iron Beam or DragonFire kind: it burns drones out of the sky and never runs out of rounds.", "Trạm laser năng lượng cao cố định kiểu Iron Beam hay DragonFire: đốt drone rơi khỏi bầu trời và không bao giờ hết đạn."),
+            // ct14: Pháo phòng không 40 mm.
+            ["unit.aa_gun_tower"] = ("40 mm AA gun", "Pháo phòng không 40 mm"),
+            ["short.aa_gun_tower"] = ("40 mm AA gun", "Pháo PK 40 mm"),
+            ["note.aa_gun_tower"] = ("A single Bofors 40 mm L/70 on a turntable mount with a fire-control radar: a steady beat of proximity-fused rounds.", "Một khẩu Bofors 40 mm L/70 trên bệ xoay có radar điều khiển hỏa lực: nhịp đạn ngòi cận đích đều đặn."),
+            // (batch A: new entries above)
         };
 
         /// <summary>The device's language picks the default (prompt 21 I.1): Vietnamese on a Vietnamese device, English elsewhere.</summary>

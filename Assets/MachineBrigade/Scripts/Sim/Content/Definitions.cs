@@ -42,7 +42,7 @@ namespace MachineBrigade.Sim.Content
         /// Fires over cover: artillery, mortars and rocket artillery (anything with a minimum
         /// range) lob their rounds, bombs fall and drones fly. Everything else needs a clear line.
         /// </summary>
-        public bool Indirect => MinRange > 0f || Projectile is ProjectileKind.Bomb or ProjectileKind.Drone;
+        public bool Indirect => MinRange > 0f || Lofted || Projectile is ProjectileKind.Bomb or ProjectileKind.Drone;
 
         /// <summary>
         /// Shots (trigger pulls) carried, or 0 for unlimited. Long-range weapons run dry so they
@@ -315,6 +315,9 @@ namespace MachineBrigade.Sim.Content
                 AirRound = AirRound,
                 // Play-test 8 A: a steered bomb stays steered.
                 Steered = Steered,
+                // Prompt 25 F2 batch A: the new weapons' mechanisms.
+                GroundRange = GroundRange, MinReach = MinReach, GroupPriority = GroupPriority, BigGame = BigGame, JamProof = JamProof,
+                OneAtATime = OneAtATime, Lofted = Lofted, Mrsi = Mrsi, Glides = Glides, Prey = Prey,
             };
             return copy;
         }

@@ -11970,3 +11970,102 @@ launchers are done here), `Docs/CHANGELOG.md`, this file.
 got `"scale": 1.0`, `modelSize` = the built box and `length` / `width` = the hull. The borrowed `"model"` lines of the supply
 truck, ammunition carrier, hover gunboat, logistics station and repair bay are gone, radar_station draws `radar_site`, and
 the Sky Fortress draws at scale 1.035 × size 0.85 (1.3 × the AC-130). Re-runnable; nothing tested (the owner's rule).
+
+## 25F2-A. New content, batch A (2026-09-30)
+
+Prompt 25 G (task F2), extended by the owner to every item of the spreadsheet. Batch A is the 27 items of
+`Docs/backlog/new_content.json` listed below: the "unit" items of priority Cao and Trung of "Đề xuất thêm", and the
+four structure-only items of "Công trình mới". Each is in the tracker as "xong" with its game id.
+
+### How the sheet was read
+
+- **Numbers.** Health is the sheet's over the vehicles' toughness (2.2), as `import_xlsx.py` reads it (a tower's 3,000 is
+  data 1,364). CP, armour, speed, vision, damage, rate, reach, blast and penetration are the sheet's. A vision the sheet
+  leaves out is its class's usual one.
+- **Calibre scale (prompt 13) over the sheet's calibre.** The anti-tank emplacement's "100-125 mm, 200 a round" is the
+  100 mm MT-12 Rapira: a 125 mm round is 220-260 on the scale. The R-37M sits at size 100 in the AAM family (400
+  between the PAC-3's 360 and the 48N6's 630). The Stinger ripple is the SHORAD round (170), the Bofors 40 mm one gun
+  for the vehicle and the tower (the tower row's 20-round clips, 75 a second).
+- **Unlocks.** Every item is sold in the shop at D2's planned price (`Progression.NewContentPrices`). That is its one
+  unlock source; the sheet's "or a side-mission / event / season reward" waits for those rewards. Unlike a premium card,
+  the enemy may field it (`Progression.EnemyMayUse`). `Prompt25UnlockTests` counts the premium strike apart.
+- **Texts.** `unit.`, `short.` (15 letters at most), `note.` (the real model) in `Strings.cs`, Guide cards in
+  `GuideText.cs` (four short lines), behaviour lines in `UnitText.cs`. No proper names.
+- **Models.** `Tools/blender/mb_p25_new.py`, low effort (prompt 27 remakes every model): size, silhouette, mounts,
+  muzzles, side colours. 390-3,262 triangles. Cards rendered with `CardRenders.RenderBatch`.
+
+### The items and their mechanisms (`Abilities/FieldWorksSystem.cs`, `Combat/CombatSystem.P25A.cs`)
+
+| Key | Id | What it does |
+| --- | --- | --- |
+| dx01 | `heavy_flak_tower` | 88 mm air bursts (6 m) out to 70 m, 50 m at the ground (`groundRange`); groups and big aircraft first |
+| dx02 | `aa_gun_vehicle` | Bofors 40 mm on a tracked hull, 4 rounds a second |
+| dx03 | `shorad_vehicle` | eight SHORAD missiles in one ripple, a 15 s reload, fires on the move |
+| dx04 | `microwave_vehicle` | every 8 s downs every enemy drone (aircraft and rounds) in a 60 degree cone to 30 m |
+| dx06 | `at_gun_emplacement` | small tower, 100 mm, a 90 degree arc (`turretArc`), front shield level 2 |
+| dx07 | `nlos_atgm_vehicle` | Spike NLOS: `lofted` (over cover, top attack), 90 m, sees only 30 m itself |
+| dx08 | `radar_atgm_vehicle` | missiles in pairs, `smokeSight` (its radar sees through smoke) |
+| dx09 | `recoilless_jeep` | 106 mm, 3 CP, hides when parked (`stillCamo` 0.3: the ambush) |
+| dx10 | `airborne_vehicle` | a parachute drop where its side sees (`Command.Paradrop`), never within 45 m of an enemy camp; its stand-in falls 6 s as a low-altitude target |
+| dx11 | `wheeled_howitzer` | four 155 mm in 6 s, then `scoot` (drives off after every salvo) |
+| dx12 | `sp_mortar` | four 120 mm bombs that land together (`mrsi`) |
+| dx14 | `glide_bomber` | glide bombs from 90 m at 20 m/s (`glides`: the C-RAM and the Iron Dome may take them); breaks away inside 0.75 of its reach (`glideRelease`) |
+| dx15 | `recon_jet` | one straight pass to the far edge, a 60 m strip shown 20 s (scans: stealth too), at the high tier |
+| dx16 | `interceptor_jet` | R-37M at 90 m, big aircraft first (`bigGame`), nothing inside 15 m (`minReach`) |
+| dx20 | `radar_scout` | 50 m moving, 80 m after 2 s standing (`stillVision`), `stillCamo` 0.6 |
+| dx25 | `blast_wall` | passable; towers of its side up to 10 m behind it (a 50 degree cone to the shooter) take 30 % less direct fire |
+| dx26 | `inflatable_decoy` | scored as a gun turret until an enemy scout, radar, drone or scan sees it; then never a target of that side |
+| dx27 | `fire_control_centre` | utility: towers within 30 m hit 12 % harder and weigh a linked tower's target twice |
+| dx28 | `searchlight` | in the dark, its side sees everything within 35 m; enemy shooters there scatter 1.25 times (20 % less accurate) |
+| dx29 | `barrage_balloon` | bombs from over or onto its 40 m scatter 1.5 times; enemy helicopters are pushed out of its 40 m |
+| dx30 | `visual_jammer` | utility: enemy non-scouts see its side within 35 m only from 15 m; UAV scans still show |
+| dx47 | `fibre_fpv_carrier` | `jamProof` drones, `oneAtATime`, 16 m/s |
+| dx48 | `interceptor_drone_vehicle` | `prey: Rotors` (drones, helicopters), and takes enemy drone rounds in flight (`droneHunt`) |
+| ct11 | `troop_shelter` | its side's vehicles within 15 m take half from lobbed rounds, bombs and strikes |
+| ct12 | `flare_tower` | in the dark, every 15 s a flare lights 30 m round the nearest enemy within 40 m for 15 s (a scan for its side) |
+| ct13 | `laser_ad_station` | a beam at drones only (`prey: Drones`), 90 a second; a laser APS for rockets and half the shells; smoke cuts the beam 80 % |
+| ct14 | `aa_gun_tower` | the Bofors 40 mm as a medium tower |
+
+- **Darkness.** The sim had no night. `SimWorld.SetDarkness` is set by the match from its weather (night, fog,
+  sandstorm, and a mission's weather shift down to night's sight), for the searchlight and the flare tower. By day they
+  are lookouts only.
+- **MRSI.** The salvo's first round sets when it lands; the later ones are given the same arrival.
+
+### AI
+
+- **Buying.** The enemy commander and the player's Auto-buy (`ConquestAi.P25CardScore`): the drone killers against
+  drones (dead weight without), fibre-optic drones against jammers, the radar ATGM against smoke, one recon pass at a time
+  when little is seen, the airborne vehicle when points are to take. It drops the airborne vehicle on the nearest point
+  it does not hold that it sees, else sends it to the drop zone.
+- **Bases.** The new towers have weights in `base.ai.styles`; the AI base now fills its utility slots left after the
+  landing pad with modules its style names (the fire-control centre, the visual jammer).
+- **Decoys, walls and lights** need no AI of their own: targeting reads them.
+
+### Found and fixed on the way
+
+- The catalog could not load: `"weaponFamily": ""` (A3's way to keep `gun_155_twin_ap` out of a family) made
+  `JsonObject.String` throw. `OptionalString` reads it now (the card render run found it).
+
+### Prompt 26 (on hold) will change
+
+- `heavy_flak_tower`: a KS-19-class 100 mm tower (the model is already post-war).
+- `barrage_balloon`: a JLENS-type radar aerostat (the model is a modern aerostat).
+- `at_gun_emplacement`: the Pak 40 reference goes (the game reference line never used it).
+
+### Tests (written, not run: the owner's rule)
+
+`Tests/EditMode/Prompt25NewContentTests.cs`, one row per item: `MatchesTheSheetAndHasItsTextsAndShopPrice` (the
+sheet's numbers, DPS within 5 %, texts, one unlock source) and `ItsMechanismWorks` (a short scene per mechanism). Also
+to run in the test phase: `Prompt25UnlockTests` (premium list), `TowerIconTests`, `StringsTests`, `NameSheetTests`,
+`LocalisationScanTests`, `CardRenderTests`, `CalibreTests`, `UnitLinesTests`, `StuckTests` (the new hulls), and the
+combat-value measure of all 27 (`CombatValueMeasure`; their `value` stays 1 until measured).
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (weapons before `aa_25_triple`, the Bofors family before `zala_lancet_3`, units before "Mission-only
+units", `base.ai.styles`), `Strings.cs`, `GuideText.cs`, `UnitText.cs`, `UnitLines.cs`, `Progression.cs`,
+`MatchSettings.cs` (`AllVehicles`), `MenuScreen.cs` (`CardIcons`), `TowerIcons.cs`, `Icons.cs`, `ModeSessions.cs`
+(`EnemyDeck`), `PlayerCommander.cs`, `MatchRunner.cs`, `SimWorld.cs`, `CombatSystem.cs`, `CombatSystem.P17.cs`,
+`DamageSystem.cs`, `MovementSystem.cs`, `ConquestAi.cs`, `BaseLoadout.cs`, `Command.cs`, `Catalog.cs`,
+`Catalog.Extra.cs`, `Definitions.cs`, `JsonObject.cs`, `Prompt25UnlockTests.cs`, `build_assets.py`,
+`Docs/art/models.json`, `UI/Cards/manifest.json`, `Docs/backlog/new_content.json`.

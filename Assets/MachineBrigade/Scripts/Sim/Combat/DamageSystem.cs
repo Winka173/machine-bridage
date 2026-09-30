@@ -286,12 +286,13 @@ namespace MachineBrigade.Sim.Combat
             var kind = weapon.Projectile;
             shell = false;
             if (weapon.Beam || weapon.DamageType == DamageType.Energy) return false;
-            var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
+            // Prompt 25 F2 batch A: a glide bomb is taken like a guided round lobbed from afar.
+            var direct = weapon.Guided || weapon.Glides || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
             var rocket = kind == ProjectileKind.Rocket;
             var lobbedShell = kind == ProjectileKind.Shell && weapon.Indirect;
             var heavy = IsHeavyMissile(weapon);
             if (!direct && !rocket && !lobbedShell && !heavy) return false;
-            var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            var lobbed = kind == ProjectileKind.Drone || weapon.Glides || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
             if (aps.Heavy) return heavy;
             if (!direct && rocket && !aps.Rockets) return false;
             if (!aps.Direct && direct && !lobbed) return false;
@@ -319,12 +320,12 @@ namespace MachineBrigade.Sim.Combat
             // artillery rockets too, a C-RAM a share of the shells.
             // Prompt 15 C: never a beam (energy hits at once) nor a bullet.
             if (weapon.Beam || weapon.DamageType == DamageType.Energy) return false;
-            var direct = weapon.Guided || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
+            var direct = weapon.Guided || weapon.Glides || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
             var rocket = kind == ProjectileKind.Rocket;
             var shell = kind == ProjectileKind.Shell && weapon.Indirect;
             if (!direct && !rocket && !shell && !IsHeavyMissile(weapon)) return false;
             // Lobbed from afar: a drone, or a rocket or missile with a minimum range (artillery, a ballistic missile).
-            var lobbed = kind == ProjectileKind.Drone || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
+            var lobbed = kind == ProjectileKind.Drone || weapon.Glides || (weapon.MinRange > 0f && kind is ProjectileKind.Rocket or ProjectileKind.Missile);
             // A heavy missile (cruise or ballistic): the only thing a PAC-3's interceptors take (DECISIONS 19T).
             var heavy = IsHeavyMissile(weapon);
             var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
@@ -479,6 +480,8 @@ namespace MachineBrigade.Sim.Combat
                 // Hull-down only shields from direct fire: shells, rockets and bombs from above still land.
                 if (type is DamageType.Kinetic or DamageType.ShapedCharge && !hit.Indirect && _world.IsEntrenched(vehicle))
                     damage *= 1f - SimWorld.EntrenchReduction;
+                // Prompt 25 F2 batch A: a blast wall before a tower, a troop shelter over the vehicles round it.
+                damage *= _world.Works.CoverFactor(vehicle, type, hit);
                 damage *= _world.Gear.Incoming(vehicle, type, hit);
                 if (!(damage > 0f)) return 0f;
                 // Prompt 17 C: a shield dome over it takes the hit first (not energy, not a mine; one dome at a time).

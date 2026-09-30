@@ -47,6 +47,10 @@ namespace MachineBrigade.Sim.Content
         public string String(string key) =>
             _values.TryGetValue(key, out var v) && v is string s && s.Length > 0 ? s : throw Invalid(key, "a non-empty string");
 
+        /// <summary>A string that may be absent or empty (null then): prompt 25 A3's "weaponFamily": "" keeps a weapon out of its parent's family.</summary>
+        public string? OptionalString(string key) =>
+            _values.TryGetValue(key, out var v) && v is string s && s.Length > 0 ? s : null;
+
         public bool Bool(string key, bool fallback) =>
             !Has(key) ? fallback : _values[key] is bool b ? b : throw Invalid(key, "true or false");
 

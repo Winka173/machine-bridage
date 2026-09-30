@@ -888,6 +888,8 @@ namespace MachineBrigade.Sim.AI
                     // Prompt 13 F.2: an ammunition carrier once the army has launchers and helicopters to feed (one is enough).
                     if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= 3 && !owned.ContainsKey(id) ? 1.6f + ownResupplied * 0.2f : -3f;
                     score += NewCardScore(def, owned.ContainsKey(id), ownManned, ownTotal, enemy, towers, neutral);
+                    // Prompt 25 F2 batch A: the new cards' reasons (drones to down, jammers and smoke to beat, nothing seen, points to drop on).
+                    score += P25CardScore(def, owned.ContainsKey(id), enemy, neutral);
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
@@ -915,12 +917,13 @@ namespace MachineBrigade.Sim.AI
             var bestCost = economy.PriceOf(best, world.Catalog.Vehicles[best].CpCost);
             if (bestCost <= economy.Cp)
             {
-                world.Submit(Command.Deploy(_team, best));
+                // Prompt 25 F2 batch A: an airborne vehicle is dropped where it is wanted.
+                DeployOrDrop(world, best);
                 return;
             }
             // Save up for the best card, unless the army is thin or CP is about to overflow.
             if (bestAffordable != null && (ownTotal < 4 || economy.Cp >= economy.Bank - 3f || _difficulty == AiDifficulty.Easy))
-                world.Submit(Command.Deploy(_team, bestAffordable));
+                DeployOrDrop(world, bestAffordable);
         }
 
         /// <summary>Very Hard spending its saved CP (see <see cref="TryDeploy"/>).</summary>

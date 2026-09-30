@@ -34,6 +34,9 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Prompt 13 C.4: sends aircraft with stores to rearm now (they finish what they are doing first).</summary>
         Rearm,
+
+        /// <summary>Prompt 25 F2 batch A: buys an airborne vehicle (DefId) dropped by parachute on Point, where the side sees.</summary>
+        Paradrop,
     }
 
     /// <summary>
@@ -61,6 +64,10 @@ namespace MachineBrigade.Sim.Commands
 
         public static Command Deploy(int team, string vehicleId) =>
             new(CommandType.Deploy, team, Array.Empty<EntityId>(), defId: vehicleId);
+
+        /// <summary>Prompt 25 F2 batch A: an airborne vehicle dropped by parachute on <paramref name="point"/>.</summary>
+        public static Command Paradrop(int team, string vehicleId, Vector2 point) =>
+            new(CommandType.Paradrop, team, Array.Empty<EntityId>(), point, defId: vehicleId);
 
         public static Command Strike(int team, string supportId, Vector2 point, Vector2 towards = default) =>
             new(CommandType.Strike, team, Array.Empty<EntityId>(), point, defId: supportId, point2: towards);
@@ -106,6 +113,9 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>The side already has as many of this vehicle as it may field (a command vehicle: one).</summary>
         UnitLimit,
+
+        /// <summary>Prompt 25 F2 batch A: a parachute drop only where the side sees, and never into an enemy base.</summary>
+        DropNotSeen,
     }
 
     public readonly struct CommandResult

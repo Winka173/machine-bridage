@@ -393,6 +393,8 @@ namespace MachineBrigade.Game.Match
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
             _session.SetNight(weather == WeatherKind.Night);
+            // Prompt 25 F2 batch A: searchlights and flare towers light the dark (night, fog, a sandstorm).
+            _world.SetDarkness(weather is WeatherKind.Night or WeatherKind.Fog or WeatherKind.Sandstorm);
             if (!_menu && _session.Mode is MachineBrigade.Sim.Modes.SiegeMode siegeMode && _world.Map.Fortress != null)
             {
                 _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
@@ -531,6 +533,7 @@ namespace MachineBrigade.Game.Match
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather, seconds);
             _effects.Night = next == WeatherKind.Night;
             _session.SetNight(next == WeatherKind.Night);
+            _world.SetDarkness(next is WeatherKind.Night or WeatherKind.Fog or WeatherKind.Sandstorm);
             _fortress?.SetNight(next == WeatherKind.Night);
         }
 

@@ -7,6 +7,21 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### New content, batch A (prompt 25 F2, DECISIONS 25F2-A)
+
+- 27 new cards from the balance spreadsheet, each sold in the shop (1,500-5,000 coins) and fielded by the enemy too:
+  - anti-air: heavy flak tower, 40 mm AA gun vehicle and tower, light SAM vehicle, anti-drone microwave vehicle,
+    interceptor drone vehicle, laser anti-drone station;
+  - anti-tank: anti-tank gun emplacement, beyond-sight and radar-guided ATGM vehicles, recoilless rifle jeep,
+    fibre-optic FPV carrier (never jammed);
+  - artillery and air: shoot-and-scoot wheeled howitzer, turreted SP mortar (four bombs landing at once), long-range
+    glide bomber, high-speed recon jet (one pass), interceptor;
+  - scouting and drops: radar scout car, airborne fighting vehicle (tap the card, then the ground to drop it by
+    parachute where your side sees);
+  - structures: gabion blast wall, inflatable decoy, fire-control centre, searchlight, barrage balloon, visual jammer,
+    troop shelter, flare tower. Searchlights and flare towers work at night and in fog.
+- The catalog loads again: an empty weapon family no longer stops it.
+
 ### Measures and documents (prompt 25 E2, E3, F1, DECISIONS 25E)
 
 - The combat-value tool measures what support vehicles do for their side (E2): health repaired, rounds resupplied,

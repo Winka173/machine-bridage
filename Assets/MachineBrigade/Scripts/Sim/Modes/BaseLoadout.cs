@@ -260,6 +260,20 @@ namespace MachineBrigade.Sim.Modes
                 var aa = Draw(pool, random, p => p.size == SlotSize.Small && IsAntiAir(catalog, p.id)) ?? (catalog.Vehicles.ContainsKey("aa_turret") ? "aa_turret" : null);
                 if (aa != null) loadout.Small[loadout.Small.Count - 1] = aa;
             }
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the style's utility modules (a fire-control centre, a visual jammer) take
+            // the utility slots left, by their weights; only modules a style names (never "*"), one of each.
+            var modules = new List<(string id, SlotSize size, float weight)>();
+            foreach (var def in catalog.Vehicles.Values)
+                if (def.Fort is { Kind: FortKind.Utility } module && def.BranchOf == null && (allowed == null || allowed(def.Id)) &&
+                    weights.TryGetValue(def.Id, out var mw) && mw > 0f && !loadout.Utilities.Contains(def.Id)) modules.Add((def.Id, module.Size, mw));
+            modules.Sort((a, b) => string.CompareOrdinal(a.id, b.id));
+            while (modules.Count > 0 && loadout.Utilities.Count < catalog.Base.UtilitySlots(loadout.HqLevel, layered))
+            {
+                var pick = Draw(modules, random, _ => true);
+                if (pick == null) break;
+                loadout.Utilities.Add(pick);
+                modules.RemoveAll(m => m.id == pick);
+            }
             if (against != null && difficulty != "Easy") ChooseAiBranches(catalog, loadout, against, weights);
             return loadout;
         }
