@@ -71,7 +71,7 @@
             "kind": "vehicle",
             "model": "artillery",
             "source": "Models/artillery_hd",
-            "hash": "v2:53ea4c91b7376ba94b5548a5a82632876617b4a3"
+            "hash": "v2:f195f77a977c3e1df9f9ef5ef0aeae88e5103d3c"
         },
         {
             "id": "mlrs",
@@ -92,7 +92,7 @@
             "kind": "vehicle",
             "model": "sam_launcher",
             "source": "Models/sam_launcher",
-            "hash": "v2:6f69da92aeeb76aa10093961ffbc393016a09698"
+            "hash": "v2:c23ff1c444f1cac7f4d001cb0e5e0c61d3bd5429"
         },
         {
             "id": "scout_heli",
@@ -148,7 +148,7 @@
             "kind": "vehicle",
             "model": "heavy_aa",
             "source": "Models/heavy_aa",
-            "hash": "v2:809271fa97fb6eb9a8e65c3b92ca8644edf678a2"
+            "hash": "v2:6cf71880b3baffb3882d9e5199045ab790a00200"
         },
         {
             "id": "titan_tank",
@@ -190,7 +190,7 @@
             "kind": "vehicle",
             "model": "siege_tank",
             "source": "Models/siege_tank",
-            "hash": "v2:37a1b57e3532ea041f6ce0fc79d888c9f2254b4a"
+            "hash": "v2:df1502e006fd3b96bb09bb00c452dc6c3d41bd5d"
         },
         {
             "id": "heavy_rocket_artillery",
@@ -288,14 +288,14 @@
             "kind": "vehicle",
             "model": "shahed_truck",
             "source": "Models/shahed_truck",
-            "hash": "v2:df6f246ad42a83b22420baf5f2f71f7d03c135f2"
+            "hash": "v2:9e2ad2d55d8f764ca402614a9911847b40b229cf"
         },
         {
             "id": "iron_beam",
             "kind": "vehicle",
             "model": "iron_beam",
             "source": "Models/iron_beam",
-            "hash": "v2:7bf8fd1cd5177030c71ba72b60263868fa5882c0"
+            "hash": "v2:c5fd6b50e52f81a9f70b0e1ebb664b066f9c2cbe"
         },
         {
             "id": "railgun_truck",
@@ -337,14 +337,14 @@
             "kind": "vehicle",
             "model": "counter_battery_radar",
             "source": "Models/counter_battery_radar",
-            "hash": "v2:698d96166045843fa79ce6ec119967e8c1b13970"
+            "hash": "v2:9944c47173b5e2bc88122fe922b9c6ab1a5c99fb"
         },
         {
             "id": "long_sam",
             "kind": "vehicle",
             "model": "long_sam",
             "source": "Models/long_sam",
-            "hash": "v2:612f3db572307f063e868e14ee7dfd64c3063567"
+            "hash": "v2:e94abf8b7458402102396c976f0567f6486d8ab7"
         },
         {
             "id": "armored_bulldozer",
@@ -694,7 +694,7 @@
             "kind": "elite",
             "model": "artillery",
             "source": "Models/artillery_hd",
-            "hash": "v2:53ea4c91b7376ba94b5548a5a82632876617b4a3"
+            "hash": "v2:f195f77a977c3e1df9f9ef5ef0aeae88e5103d3c"
         },
         {
             "id": "elite_attack_helicopter",
@@ -736,7 +736,7 @@
             "kind": "elite",
             "model": "long_sam",
             "source": "Models/long_sam",
-            "hash": "v2:612f3db572307f063e868e14ee7dfd64c3063567"
+            "hash": "v2:e94abf8b7458402102396c976f0567f6486d8ab7"
         },
         {
             "id": "elite_mbt",
