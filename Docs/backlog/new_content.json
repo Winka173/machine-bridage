@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 62,
+    "chưa làm": 61,
     "đang làm": 0,
-    "xong": 31
+    "xong": 32
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 10,
+      "chưa làm": 9,
       "đang làm": 0,
-      "xong": 4
+      "xong": 5
     },
     "support": {
       "chưa làm": 11,
@@ -1049,9 +1049,9 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "cruise_missile",
+      "notes": "Batch C: \"the Cruise missile card (changed)\" — the sheet names the existing support card cruise_missile, not a new vehicle weapon. Updated its damage 300 -> 450 and blast 10 -> 9 to the sheet's stealth cruise missile (Storm Shadow / Tomahawk); pen 3 already matched."
     },
     {
       "key": "tl13",
