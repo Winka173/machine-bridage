@@ -539,9 +539,9 @@ namespace MachineBrigade.Game.Effects
         /// embers live that much longer, while the flash, sparks, rings and glows stay as quick
         /// and every burst still starts on time (DECISIONS 12C). Like the extra particles, the
         /// extra life is scaled by tier (<see cref="Density"/>), so Low lingers less.
-        /// <paramref name="ring"/>, when above 0, is the grow the ground shockwave is drawn at
-        /// instead of <paramref name="grow"/>: a blast drawn to its damage radius keeps its ring on
-        /// the radius while the rest of it grows.
+        /// <paramref name="ring"/>, when above 0, is the size its ring (<see cref="RingLayer"/>) is drawn at against
+        /// the recipe's, instead of <paramref name="grow"/>, smaller as well as bigger: a blast drawn to its damage radius
+        /// keeps its ring on the radius while the rest of it grows (prompt 25 A5: every blast with a radius).
         /// </summary>
         public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f, float life = 1f, float ring = 0f)
         {
@@ -581,6 +581,43 @@ namespace MachineBrigade.Game.Effects
                     ? Look.Point
                     : Look.Volume;
 
+        /// <summary>
+        /// Prompt 25 A5: the layer that shows how far a blast reaches: the ground shockwave, or for a blast with none (in
+        /// the air, a shell striking armour) the air ring. Null for a blast with neither (bullets, pops).
+        /// </summary>
+        public ParticleSystem RingLayer
+        {
+            get
+            {
+                // Found once: a recipe's bursts are all added when it is created, before it first plays.
+                if (_ringKnown) return _ring;
+                _ringKnown = true;
+                foreach (var b in _bursts)
+                    if (b.System == _layers.Shockwave) return _ring = b.System;
+                foreach (var b in _bursts)
+                    if (b.System == _layers.AirShock) return _ring = b.System;
+                return _ring = null;
+            }
+        }
+
+        private ParticleSystem _ring;
+        private bool _ringKnown;
+
+        /// <summary>
+        /// How far its ring reaches at scale 1, in metres: the ring is drawn at <see cref="BlastSizes.RingShare"/> of its
+        /// quad's size (the recipe's two sizes, on average). 0 with no ring.
+        /// </summary>
+        public float RingReach
+        {
+            get
+            {
+                var layer = RingLayer;
+                foreach (var b in _bursts)
+                    if (b.System == layer) return (b.Size.x + b.Size.y) * 0.5f * BlastSizes.RingShare;
+                return 0f;
+            }
+        }
+
         /// <summary>The layers a lingering blast (<see cref="Play"/>'s life) keeps longer: fire, smoke, dust and embers.</summary>
         private bool Lingers(ParticleSystem s) => s == _layers.Embers || LookOf(s) == Look.Volume;
 
@@ -588,10 +625,11 @@ namespace MachineBrigade.Game.Effects
         {
             // At grow 1 and life 1 every factor below is exactly the old one.
             var look = LookOf(b.System);
-            // A blast matched to its damage radius keeps its ground ring on the radius.
-            if (ring > 0f && b.System == _layers.Shockwave) grow = Mathf.Max(1f, ring);
+            // A blast matched to its damage radius keeps its ring on the radius, smaller or bigger (prompt 25 A5).
+            var ringed = ring > 0f && b.System == RingLayer;
             float size = scale, speed = scale, spread = scale, extra = 0f;
-            if (grow > 1f)
+            if (ringed) size = speed = spread = scale * ring;
+            else if (grow > 1f)
             {
                 switch (look)
                 {

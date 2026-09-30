@@ -143,7 +143,9 @@ namespace MachineBrigade.Sim.Content
             var vehicleBlasts = Tune("firepower", "vehicleBlasts");
 
             var weapons = new Dictionary<string, WeaponDef>();
-            foreach (var w in Inherited(root.Array("weapons"), model: false))
+            var families = WeaponFamilies(root);
+            IEnumerable<JsonObject> WeaponEntries() => Inherited(root.Array("weapons"), model: false, families);
+            foreach (var w in WeaponEntries())
             {
                 var def = Wrap(w, () => new WeaponDef(
                     w.String("id"), w.Enum<DamageType>("damageType"), w.Float("damage"), w.Float("cooldown"),
@@ -160,6 +162,7 @@ namespace MachineBrigade.Sim.Content
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
+                    WeaponFamily = w.Has("weaponFamily") && w.String("weaponFamily").Length > 0 ? w.String("weaponFamily") : null,
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                     // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
                     TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
@@ -201,8 +204,8 @@ namespace MachineBrigade.Sim.Content
                 }
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
-            ResolveHeRounds(Inherited(root.Array("weapons"), model: false), weapons);
-            ResolveAirRounds(Inherited(root.Array("weapons"), model: false), weapons);
+            ResolveHeRounds(WeaponEntries(), weapons);
+            ResolveAirRounds(WeaponEntries(), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))
@@ -306,6 +309,7 @@ namespace MachineBrigade.Sim.Content
                     def.Orbit = v.Bool("orbit", false);
                     def.OrbitRadius = v.Float("orbitRadius", 0f);
                     def.Stealth = v.Bool("stealth", false);
+                    def.StillCamouflage = Math.Clamp(v.Float("stillCamo", 0f), 0f, 0.9f);
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
                     def.AttackHold = def.FixedWing ? v.Float("attackHold", 0f) : 0f;
@@ -456,7 +460,8 @@ namespace MachineBrigade.Sim.Content
         /// Vehicle entries with "inherits" (a tower's rank-7 branch) take the named def's fields,
         /// theirs on top; the parent's model too, unless they name their own. In data order.
         /// </summary>
-        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries, bool model)
+        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries, bool model,
+            Func<JsonObject, JsonObject>? finish = null)
         {
             var list = new List<JsonObject>(entries);
             var byId = new Dictionary<string, JsonObject>();
@@ -464,16 +469,37 @@ namespace MachineBrigade.Sim.Content
                 if (v.Has("id")) byId[v.String("id")] = v;
             JsonObject Resolve(JsonObject v, int depth)
             {
-                if (!v.Has("inherits")) return v;
+                if (!v.Has("inherits")) return finish != null ? finish(v) : v;
                 if (depth > 4) throw new FormatException($"{v.Path}: inherits too deep");
                 var parentId = v.String("inherits");
                 if (!byId.TryGetValue(parentId, out var parent)) throw new FormatException($"{v.Path}.inherits: unknown vehicle '{parentId}'");
                 var baseDef = Resolve(parent, depth + 1);
                 var merged = baseDef.Under(v);
                 if (model && !v.Has("model") && !baseDef.Has("model")) merged = merged.With("model", parentId);
-                return merged;
+                return finish != null ? finish(merged) : merged;
             }
             foreach (var v in list) yield return Resolve(v, 0);
+        }
+
+        /// <summary>
+        /// Prompt 25 A3 (DECISIONS 25A): weapon families ("weaponFamilies"), one per real weapon: a weapon naming one
+        /// ("weaponFamily") takes its speed, blast radius, round model and round weight on top of its own line (and its
+        /// parent's); "" keeps a weapon that inherits a member out of the family. Null when the data has none.
+        /// </summary>
+        private static Func<JsonObject, JsonObject>? WeaponFamilies(JsonObject root)
+        {
+            if (!root.Has("weaponFamilies")) return null;
+            var families = new Dictionary<string, JsonObject>();
+            foreach (var f in root.Array("weaponFamilies"))
+                if (!families.TryAdd(f.String("id"), f)) throw new FormatException($"{f.Path}: duplicate weapon family '{f.String("id")}'.");
+            return w =>
+            {
+                if (!w.Has("weaponFamily")) return w;
+                var id = w.String("weaponFamily");
+                if (id.Length == 0) return w;
+                if (!families.TryGetValue(id, out var family)) throw new FormatException($"{w.Path}.weaponFamily: unknown weapon family '{id}'.");
+                return w.Taking(family, "id", "real");
+            };
         }
 
         private static Dictionary<string, int> ReadCaps(JsonObject root, string key, int fallback)

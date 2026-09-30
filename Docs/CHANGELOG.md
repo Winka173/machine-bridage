@@ -18,6 +18,36 @@ its commits.
 - Each unit has one name everywhere: its guide opens with it, and the guides, tips, missions and loot lines that used an
   old name use the new one.
 - `Tools/balance/import_names.py` applies the sheet; `NameSheetTests` checks that no old name is left.
+### Prompt 25 A1-A5
+
+The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) goes into the game data by script
+(`Tools/balance/import_xlsx.py`); what was applied and what waits for a later task is in
+`Docs/balance/apply-report.md` (DECISIONS 25A).
+
+- A1 Cao: new prices (attack helicopter 9, attack jet 18, heavy tank 13, Iron Beam 6, long-range SAM 14, SAM launcher
+  7, scout helicopter 5, stealth fighter 13, strike drone 9, swarm carrier 13, super-heavy tank 18); SAMs and
+  air-to-air missiles fast enough to catch a fighter; the swarm carrier drops cruise missiles instead of small bombs;
+  the scout jeep sees farther (55 m) and hides when it stands; the wheeled gun has less health and reloads like a
+  tank; the ZU-23 fires a stream of lighter rounds farther; the self-propelled gun fires faster.
+- A1 Trung: armour by face for a dozen vehicles (the main battle tank's front 4, the tank destroyer, siege mortar and
+  laser tank lighter); tank turrets turn faster than their hulls; the IFV and the BMPT fire their 30 mm in bursts;
+  the HIMARS moves after every salvo; the heavy turret loads armour-piercing rounds for armour; the gunship carries
+  Ataka missiles and flies faster; the heavy bomber carries seven FAB-500s; the Phalanx fires a real stream.
+- A1 Thấp: death blasts sized by the vehicle (the ammunition depot 14 m, the flame tank 5 m); mini bosses' front armour
+  4 at most; the light tank fires its 57 mm in pairs and sees farther; the Grad turret hits harder; the Pantsir's
+  guns and the gunboat's AK-630 fire long streams; the railgun truck, the Smerch and the TOS cost a CP more.
+- A2: every weapon's rate, magazine or burst, rest, reach, speed and blast from the weapon sheet (sustained DPS within
+  5 % of the sheet's, tested); the HIMARS, Iskander, Smerch and Buk launchers lose their machine guns; the wheeled gun
+  gains a roof M2, the light tank a gun-launched missile, the Pantsir its own 57E6 missiles.
+- A3: weapon families: every weapon that is the same real weapon (all Hellfires, all M2s, all Grads...) shares one
+  speed, blast radius, round model and look, set once in the data (`weaponFamilies`).
+- A4: every missile flies the sheet's speed (SAMs and air-to-air missiles 42-65 m/s, faster than the aircraft they
+  hunt; cruise missiles and Shaheds kept slow on purpose).
+- A5: one blast radius for one round on every carrier (the siege tank's 203 mm 8 m, the Grad 4.5 m everywhere), and every
+  blast drawn exactly as wide as its damage reaches: its shock ring sits on the radius (bombs' rings were twice it);
+  small flak and grenade bursts show a faint ring of their own.
+- B.7-B.8: prices checked against the price sheets; the airstrike drops four FAB-500s (10 m each), the barrage fires six
+  shells, the cruise missile hits for 600 over 10 m.
 
 ### Play-test 9 models (DECISIONS 23M)
 

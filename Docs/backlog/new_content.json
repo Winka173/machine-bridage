@@ -1,0 +1,1351 @@
+{
+  "_about": "Prompt 25 F2: every new item of Docs/balance/Machine_Brigade_Can_bang.xlsx and how far it is. status: chưa làm / đang làm / xong; id: the game id once it exists. Refreshed by Tools/balance/new_content_tracker.py.",
+  "updated": "2026-09-30",
+  "total": 93,
+  "counts": {
+    "chưa làm": 93,
+    "đang làm": 0,
+    "xong": 0
+  },
+  "byKind": {
+    "unit": {
+      "chưa làm": 56,
+      "đang làm": 0,
+      "xong": 0
+    },
+    "structure": {
+      "chưa làm": 4,
+      "đang làm": 0,
+      "xong": 0
+    },
+    "ordnance": {
+      "chưa làm": 14,
+      "đang làm": 0,
+      "xong": 0
+    },
+    "support": {
+      "chưa làm": 11,
+      "đang làm": 0,
+      "xong": 0
+    },
+    "boss": {
+      "chưa làm": 8,
+      "đang làm": 0,
+      "xong": 0
+    }
+  },
+  "items": [
+    {
+      "key": "dx01",
+      "name": "Tháp cao xạ hạng nặng Flak 88",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Tháp phòng không",
+      "priority": "Cao",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx02",
+      "name": "Xe cao xạ Bofors 40 mm",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Phòng không",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx03",
+      "name": "Xe tên lửa phòng không Avenger",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Phòng không",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx04",
+      "name": "Xe vi sóng chống drone",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Phòng không",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx05",
+      "name": "Pháo phòng không tự hành 57 mm",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Phòng không",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx06",
+      "name": "Ụ pháo chống tăng",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Tháp",
+      "priority": "Cao",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx07",
+      "name": "Xe tên lửa chống tăng bắn ngoài tầm nhìn",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Diệt tăng",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx08",
+      "name": "Xe tên lửa chống tăng dẫn radar",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Diệt tăng",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx09",
+      "name": "Xe jeep súng không giật",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Diệt tăng",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx10",
+      "name": "Xe đổ bộ đường không",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Xe nhẹ / Tăng nhẹ",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx11",
+      "name": "Pháo bánh lốp bắn rồi chạy",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Pháo binh",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx12",
+      "name": "Cối tự hành tháp kín",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Pháo binh",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx13",
+      "name": "Pháo phản lực rải mìn",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Pháo binh",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx14",
+      "name": "Máy bay ném bom lượn tầm xa",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Máy bay",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx15",
+      "name": "Máy bay trinh sát tốc độ cao",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Máy bay",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx16",
+      "name": "Tiêm kích đánh chặn",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Máy bay",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx17",
+      "name": "Máy bay cường kích cánh quạt",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Máy bay",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx18",
+      "name": "Trực thăng tấn công hạng nhẹ",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Trực thăng",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx19",
+      "name": "Tăng thế hệ mới",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hạng nặng",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx20",
+      "name": "Xe trinh sát bọc thép radar mặt đất",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Trinh sát",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx21",
+      "name": "Xe phá mìn bằng dây nổ",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx22",
+      "name": "Xe khi hỏng thành công sự",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Xe nhẹ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx23",
+      "name": "Mô-đun cho Siêu tăng",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Nâng cấp",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx24",
+      "name": "Xe chiếm quyền drone",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx25",
+      "name": "Tường chắn đạn",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Cao",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx26",
+      "name": "Mồi nhử bơm hơi",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Cao",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx27",
+      "name": "Trung tâm điều khiển hỏa lực",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Cao",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx28",
+      "name": "Đèn pha chiến trường",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx29",
+      "name": "Bóng chắn máy bay",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx30",
+      "name": "Máy tạo nhiễu tầm nhìn",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx31",
+      "name": "Tổ tên lửa vác vai",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx32",
+      "name": "Tàu tuần tra sông",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hải quân",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx33",
+      "name": "Pháo hạm sông",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hải quân",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx34",
+      "name": "Xe tên lửa chống hạm bờ biển",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Pháo binh",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx35",
+      "name": "Lựu pháo nạp tự động tốc độ cao",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Pháo binh",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx36",
+      "name": "Xe lội nước tốc độ cao",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Xe nhẹ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx37",
+      "name": "Tăng nhẹ thả dù",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Xe tăng",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx38",
+      "name": "Máy bay cường kích tàng hình trên hạm",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Máy bay",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx39",
+      "name": "Pháo hạm trực thăng hai rô-to",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Trực thăng",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx40",
+      "name": "Drone mặt đất mang súng",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx41",
+      "name": "Xe tiếp nhiên liệu – sửa chữa lưu động",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx42",
+      "name": "Xe radar phòng không di động",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx43",
+      "name": "Pháo chống tăng kéo cỡ lớn (xe)",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Diệt tăng",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx44",
+      "name": "Tháp pháo sáng / chiếu sáng",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Công trình",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx45",
+      "name": "Ụ súng không giật",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm",
+        "Công trình mới"
+      ],
+      "group": "Công trình",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx46",
+      "name": "Hầm ngầm che quân",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Công trình",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx47",
+      "name": "Xe phóng drone FPV cáp quang",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Diệt tăng",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx48",
+      "name": "Xe drone đánh chặn",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Phòng không",
+      "priority": "Trung",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx49",
+      "name": "Xe laser chói lóa",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx50",
+      "name": "Xe phóng tên lửa hành trình mặt đất",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Pháo binh",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx51",
+      "name": "Máy bay tiếp dầu",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Máy bay",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx52",
+      "name": "Trực thăng cẩu tháp",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Trực thăng",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx53",
+      "name": "Xe bắc cầu",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx54",
+      "name": "Xe gây nhiễu định vị",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Hỗ trợ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 1.500 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx55",
+      "name": "Lưới chắn drone",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Công trình",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "dx56",
+      "name": "Bệ tên lửa phòng thủ một lần",
+      "kind": "unit",
+      "sheets": [
+        "Đề xuất thêm"
+      ],
+      "group": "Công trình",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ct11",
+      "name": "Hầm che quân",
+      "kind": "structure",
+      "sheets": [
+        "Công trình mới"
+      ],
+      "group": "Vừa",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ct12",
+      "name": "Tháp pháo sáng",
+      "kind": "structure",
+      "sheets": [
+        "Công trình mới"
+      ],
+      "group": "Nhỏ",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 2.000 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ct13",
+      "name": "Trạm phòng không laser chống drone",
+      "kind": "structure",
+      "sheets": [
+        "Công trình mới"
+      ],
+      "group": "Vừa",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ct14",
+      "name": "Pháo phòng không 40 mm",
+      "kind": "structure",
+      "sheets": [
+        "Công trình mới"
+      ],
+      "group": "Vừa",
+      "priority": "Thấp",
+      "unlock": "Cửa hàng: 3.000 xu",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl01",
+      "name": "Bom lượn FAB-500 + bộ lượn",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Bom lượn",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl02",
+      "name": "Bom chùm chống tăng tự tìm",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Bom chùm",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl03",
+      "name": "Bom xuyên boongke",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Bom",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl04",
+      "name": "Bom nhiệt áp",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Bom",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl05",
+      "name": "Tên lửa chống radar",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Tên lửa",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl06",
+      "name": "Rốc-két dẫn đường laser giá rẻ",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Rốc-két",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl07",
+      "name": "Tên lửa đánh chặn drone",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Tên lửa",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl08",
+      "name": "Đạn pháo dẫn đường 155 mm",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Đạn pháo",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl09",
+      "name": "Đạn pháo chống tăng đánh nóc",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Đạn pháo",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl10",
+      "name": "Tên lửa không đối không tầm siêu xa",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Tên lửa",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl11",
+      "name": "Tên lửa chống tăng bắn ngoài tầm nhìn",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Tên lửa",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl12",
+      "name": "Tên lửa hành trình tàng hình",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Tên lửa",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl13",
+      "name": "Drone cảm tử bầy nhỏ",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Drone",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "tl14",
+      "name": "Tên lửa chống hạm",
+      "kind": "ordnance",
+      "sheets": [
+        "Tên lửa & bom mới"
+      ],
+      "group": "Tên lửa",
+      "priority": "",
+      "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht01",
+      "name": "Bom lượn",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht02",
+      "name": "Đạn pháo dẫn đường",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht03",
+      "name": "Bom chùm chống tăng",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht04",
+      "name": "UAV lượn tấn công",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht05",
+      "name": "Thả dù tiếp đạn",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht06",
+      "name": "Bão gây nhiễu",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht07",
+      "name": "Pháo sáng chiếu sáng",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht08",
+      "name": "Mồi nhử thả dù",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht09",
+      "name": "Phản pháo tức thì",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht10",
+      "name": "Đòn tên lửa đánh chặn drone",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "ht11",
+      "name": "Rải nhiễu radar (chaff)",
+      "kind": "support",
+      "sheets": [
+        "Thẻ hỗ trợ mới"
+      ],
+      "group": "",
+      "priority": "",
+      "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs01",
+      "name": "Kraken · Tàu sân bay",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Chủ lực",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs02",
+      "name": "Monster · Pháo tự hành 800 mm",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Chủ lực",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs03",
+      "name": "Garuda · Cánh bay ném bom khổng lồ",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Chủ lực",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs04",
+      "name": "Hyperion · Trạm gương quỹ đạo",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Chủ lực",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs05",
+      "name": "Stymphalos · Bầy UAV phản lực",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Mini",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs06",
+      "name": "Nyx · Tàu khu trục tàng hình",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Mini",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs07",
+      "name": "Cerberus · Đoàn xe ba khung",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Mini",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    },
+    {
+      "key": "bs08",
+      "name": "Hydra · Tàu ngầm mang drone",
+      "kind": "boss",
+      "sheets": [
+        "Boss mới"
+      ],
+      "group": "Mini",
+      "priority": "",
+      "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
+      "status": "chưa làm",
+      "id": null,
+      "notes": ""
+    }
+  ]
+}

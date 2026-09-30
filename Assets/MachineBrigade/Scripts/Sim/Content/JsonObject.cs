@@ -109,6 +109,18 @@ namespace MachineBrigade.Sim.Content
             return new JsonObject(merged, child.Path);
         }
 
+        /// <summary>
+        /// Prompt 25 A3: this object with <paramref name="shared"/>'s fields on top (a weapon family's), but for
+        /// <paramref name="skip"/>; it keeps its own path, so an error names the weapon.
+        /// </summary>
+        internal JsonObject Taking(JsonObject shared, params string[] skip)
+        {
+            var merged = new Dictionary<string, object?>(_values);
+            foreach (var pair in shared._values)
+                if (System.Array.IndexOf(skip, pair.Key) < 0) merged[pair.Key] = pair.Value;
+            return new JsonObject(merged, Path);
+        }
+
         /// <summary>A copy with one field set (a merged def's resolved model).</summary>
         internal JsonObject With(string key, object? value)
         {

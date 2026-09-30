@@ -163,6 +163,12 @@ namespace MachineBrigade.Sim.Content
         public string? RealName { get; internal set; }
 
         /// <summary>
+        /// Prompt 25 A3: the weapon family it belongs to (data "weaponFamily": every weapon that is the same real weapon
+        /// takes the family's speed, blast radius, round model and round weight), or null.
+        /// </summary>
+        public string? WeaponFamily { get; internal set; }
+
+        /// <summary>
         /// Prompt 15 B.1: how deep its rounds pierce, 0 (a 7.62 mm machine gun) to 4 (120 mm darts, heavy
         /// anti-tank missiles, railguns). Data "pen"; without it, by family and size
         /// (<see cref="Armour.DefaultPenetration(WeaponDef)"/>). Shaped charges pierce by their warhead, not their size.
@@ -282,6 +288,7 @@ namespace MachineBrigade.Sim.Content
                 Family = Family,
                 Size = Size,
                 RealName = RealName,
+                WeaponFamily = WeaponFamily,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,
@@ -496,6 +503,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Share of a spotter's sight at which a stealthy aircraft shows.</summary>
         public const float StealthSight = 0.4f;
+
+        /// <summary>
+        /// Prompt 25 A1 (the scout jeep): a scout that hides when it stands. Once it has stood still a second, and until
+        /// it fires, a spotter sees it only at 1 - this share of its sight (data "stillCamo", 0 to 0.9).
+        /// </summary>
+        public float StillCamouflage { get; internal set; }
 
         /// <summary>A fighter on combat air patrol: goes after enemy aircraft well beyond its own post.</summary>
         public bool Interceptor { get; internal set; }

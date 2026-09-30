@@ -10805,3 +10805,255 @@ Of the 64 rows, 63 are applied and 1 is skipped. The rows are listed in `Docs/ba
   the compile was checked; the script's own scan, the same as the test's, finds nothing. Still to run:
   - `NameSheetTests`, `L10nTests`, `UiLanguageTests`, `LocalisationScanTests`, `StringsTests` and `DialogueLayoutTests`;
   - `PlayTest7Tests.TheAc130IsAnAircraftCardInTheAircraftList` (the card-name assertion).
+
+## 25A. Balance spreadsheet: data (A1-A5) (2026-09-30)
+
+Prompt 25 applies the owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`, 28 sheets) to the
+game. This section covers the data tasks of its sheet "Việc cho agent": A1 (the sheet "Thay đổi chi tiết", by
+priority Cao, Trung, Thấp), A2 (weapons), A3 (weapon families), A4 (missile speeds), A5 (blast radius), and part B's
+CP prices (B.7) and support cards (B.8). Prompt 24 is skipped for now by the owner: its camouflage keep-list rule is
+not in force yet, so no row was held back for it.
+
+### How the sheet is applied
+
+- **By script.** `Tools/balance/import_xlsx.py` reads the workbook with openpyxl (`data_only`: the values its
+  formulas computed) and writes the changes; `Tools/balance/jsonc_edit.py` edits `balance.json` in place, field by
+  field on each entry's own line (comments, alignment and every other line are left byte for byte). No number is
+  typed in by hand: the script holds only the rules that map a row onto a field, and the choices below where a row
+  offers two. `--upto <step>` runs every step up to that one; a second run changes nothing.
+- **The report.** `Docs/balance/apply-report.md` lists every row of every sheet the script read: applied, already
+  so, deferred to a later task, or skipped, with the reason. A row whose id is not in the data is skipped, never
+  matched by guess.
+- **What wins.** The sheet wins on numbers (stats, prices, ranges, rates of fire, sizes). Earlier prompts win on
+  systems: prompt 15's armour and penetration levels and damage types, prompt 22's names (no Vietnamese proper
+  names), prompt 20's act switches.
+- **Rows of later tasks.** In "Thay đổi chi tiết", names wait for D1 (sheet "Tên đề xuất"), model sizes for B1,
+  models for B2 (the self-propelled gun's M109A7 model and its reference go together), bosses' health and weapons
+  for C1 (sheet "Boss đề xuất" has the exact numbers; this sheet gives ranges), and the Gungnir's gun and the
+  Kronos's bucket wheel as weapons for C2. Mini bosses' armour rows (no front armour 5 below a main boss) are applied
+  here: they are plain armour levels.
+- **Health.** The sheets show health after the global toughness (vehicles x2.2): 1,500 on the wheeled gun is 682 in
+  the data.
+- **Turn rates.** The data and the code are in degrees a second (`balance.json` header, `VehicleDef.TurnRate`); the
+  sheet shows them in radians a second, rounded (60 deg/s shows as 1). Its proposal "1 / 2" for the tanks keeps the
+  hull and sets the turret to 2 rad/s, 115 deg/s.
+
+### A1 Cao
+
+- **The AA tower** ("chọn một"): the reference moves to the 2A38 30 mm (the 2K22 Tunguska) and the weapon stays: the
+  tower already fires the 2A38. Its anti-aircraft value falls through the tower flak's new rate (the weapon row:
+  7 a round at 35 a second, 120 a magazine, 3 s to change; 131 a second sustained, was 193). The sheet's target was
+  300 to 240; the weapon row takes it further (-32 % on paper); the measurement at the end of this pass judges it.
+- **Stores per load.** The attack jet carries one FAB-250 a load (was 3; the jet's own `loads`, as the bomb is shared),
+  the scout helicopter six Hydras (was 24, the weapon's own load: only it carries them). The sheet's "current" for
+  the Hydras is 12, the salvo, not the load; its number, 6, is applied as written (a quarter of the old load), and
+  the scout helicopter is one of the cards measured at the end.
+- **The swarm carrier's Rapid Dragon.** The small guided bombs are dropped and two cruise missiles (the JASSM, the
+  sheet's 410 a missile, 9 m, 90 m reach, 20 m/s) go in their place, two a sortie (`loads`). The carrier costs 13 CP.
+- **The Iron Beam** takes mortar bombs and shells as well as rockets, at the C-RAM's share (0.3): the sheet names no
+  share. "Prefer drones" needs a target rule the game does not have; it is left (report).
+- **The scout jeep hides when it stands:** after a second still, and until it fires, it is seen at 60 % of a
+  spotter's sight (`stillCamo` 0.4, a new vehicle field read by the sight code next to the stealth rule).
+- **Weapon rows** of this sheet take their numbers from the weapon's own row of "Vũ khí đề xuất", which carries the
+  same proposal in columns (fire mode, rate, rounds, rest, reach, speed, blast, penetration). Which weapons a row
+  means is a table in the script, checked against the unit's mounts. How a row becomes the game's fields is under A2.
+
+### A1 Trung
+
+- **The heavy turret's armour-piercing round.** A new weapon `gun_155_twin_ap` (the sheet's pen 4, 300 a round,
+  kinetic) is the turret's gun, with the twin 155 mm high explosive as its `he` round, switched to by target as on
+  the heavy tank. The loader allowed only a single-shot `he` round; it now also takes one that fires in the gun's own
+  salvo (the two rounds of the twin gun), since `RoundFor` swaps only the round and the gun's cadence governs.
+- **The gunship's Ataka.** `heli_ataka` (inherits `ataka`) takes the Hellfire mount's place: the Hellfire's rate and
+  four a load, the sheet's 45 m reach; its speed is the Ataka family's.
+- **The heavy bomber's FAB-500s**: seven a sortie, the weapon's salvo and its load (only the bomber carries them).
+- **The self-propelled gun's model row** ("Model và tham khảo", Cao) also names its front armour 1->2 and speed 7->6:
+  those go in with this pass (the speed landed in this commit), the M109A7 model and reference with task B2.
+- **The smoke carrier's M2** already has 15 m (it fires the engineer's `hmg_selfdef_15`); the sheet's 22 m was old.
+- Tests whose numbers are now the sheet's: the bulldozer's 4 m/s, Morrigan at least as fast as the stealth fighter
+  (both 44 m/s), and the shield dome's test hits the tank with the long 120 mm (pen 5) as the main battle tank's
+  front is 4 now (the dart's pen 4 no longer pierced it whole).
+
+### A1 Thấp
+
+- **The flame tank's flamethrower** ("sát thương −10% lên xe nhẹ") takes the weapon row's number, 21 a tick (was
+  23.5), on every target: the weapon sheet made the cut a plain number, and the DPS test holds the game to it. It is
+  a little weaker on tanks and structures too than the row's words meant; the flame tank is one of the cards the
+  measurement at the end looks at.
+- **The Grad turret** ("+15 % sát thương hoặc nạp 3,35→2,9 s"): the damage, 66 a rocket (the weapon row's), not the
+  shorter reload.
+- **Death blasts** follow the sheet's "~N m" (the ammunition depot 14 m, the SP gun 10, the flame tank 5, the
+  super-heavy tank 8...); their damage stays.
+- **Mini bosses' front armour** is 4 at most (Juggernaut, Bastion Mk.0, the three Behemoth variants, Fenrir, Scylla,
+  Atlas). A boss variant (`variantOf`) is read with its base's fields, so Fenrir's front-only row changes the front.
+- **Morrigan's reference** (Su-57, F-22, Ace Combat) goes into `unit_refs.json` as a new row.
+
+### A2 Weapons ("Vũ khí đề xuất", "Đơn vị – vũ khí")
+
+- **From the sheet's columns to the game's fields.** Single shots: `cooldown` = 1 / rate. A magazine ("băng"):
+  `cooldown` = 1 / rate, `clip` = rounds, `clipReload` = rest + one gap. A burst ("loạt"): `burst` = rounds,
+  `burstInterval` = 1 / rate, `cooldown` = rest + one gap. The sheet times a cycle as rounds / rate + rest; the game
+  as rounds - 1 gaps plus the change or the cooldown after the last round, so the extra gap makes the game's cycle,
+  and its sustained DPS, the sheet's exactly. A mode change is applied as written: the IFV's, the BMPT's, the
+  armoured car's and the heavy tank's 25/30 mm guns fire bursts ("xả loạt") instead of magazines.
+- **What stays.** Where the game already fires within 3 % of the sheet's sustained DPS, in the same mode and rounds,
+  its cadence is kept (the sheet rounds rates: 2.22 a second for 0.45 s, 0.12 for one every 8 s); a gap within 1.5 %
+  of the sheet's rate stays the game's. Beyond that the sheet's numbers win, including rows its reason column
+  calls "Giữ" whose rounded rate moved the DPS (the Gepard's 35 mm at 4 a second, 88 a second sustained, was 96).
+- **"Giữ DPS" rows that do not.** The ZU-23 (7 a round, 25 a second, 50 a magazine, 3 s: 70 a second, was 143), the
+  Pantsir's 2A38 (171, was 252), the HQ's and the AA tower's flak (140 and 131, were 157 and 193): the sheet's words
+  keep the DPS, its numbers halve or cut it, and its own DPS column (the one the owner's test names) follows the
+  numbers. The numbers are applied; these cards are measured at the end of the pass (prompt 25 A.5 lets a change be
+  tuned when a measurement shows it runs against the row's reason).
+- **The test.** `BalanceSheetTests.EveryWeaponFiresTheSheetsSustainedDpsWithinFivePercent` holds every weapon of the
+  sheet within 5 % of its sustained DPS column, which the importer exports to `Docs/balance/sheet_dps.tsv` (the
+  test cannot read the workbook). The Skyranger's AHEAD gun is the one row not checked: the sheet's rounds a magazine
+  cell is empty, so its DPS column is 0.
+- **Loadouts.** Mounts kept 0 are dropped: the M2 of the HIMARS, the Iskander and the Smerch launchers, the Buk
+  launcher's, the swarm carrier's small bombs. Added: the wheeled gun's roof M2 (`hmg_roof`), the light tank's
+  gun-launched missile (`gun_launched_atgm`: the note's 200 a missile, pen 3, one every 20 s, 34 m), the Pantsir's
+  57E6 in place of the Stinger (`missile_57e6`: 220, fragmentation, pen 3, 55 m, 55 m/s; the Stinger's rate, the
+  Buk's flare resistance).
+- **New rounds on prompt 13's calibre scale.** Damage rises with size within a family, so a new round's size sits
+  where its damage falls: the gun-launched missile 24 kg (between the TOW's 190 and the Kornet's 230), the 57E6
+  7 kg (between the Stinger's 170 and the AIM-9's 236). Where the sheet names no speed, the gun-launched missile
+  flies at the Kornet's (laser beam-riding, the same class).
+- **Weapons not in the sheet** (30, listed in the report) keep their numbers here; the families (A3) and the blast
+  rule (A5) still reach them.
+
+### A3 Weapon families
+
+- **One family a real weapon.** `weaponFamilies` (before `weapons` in `balance.json`) holds, once, the speed, blast
+  radius, round model and round weight (the tracer's look and the report's sound class) of every weapon that is the
+  same real weapon; a member names it (`weaponFamily`) and its own line keeps only what differs (reach, rate, load,
+  damage). The loader applies a family on top of a weapon's line at every level of `inherits`, so a member that
+  inherits another member reads the family, and a weapon that inherits a member but is another weapon (the heavy
+  turret's AP round, the long 120 mm, the 122 mm thermobaric, the PAC-3) carries `"weaponFamily": ""`.
+- **What is the same weapon.** The real name without the mount in brackets ("M2 Browning 12.7 mm (tower)" is the M2),
+  with the sheet's own groupings folded ("mọi Hellfire": the AGM-114 and the AGM-114L; the AIM-9 and the AIM-9X; the
+  Oerlikon KDA on the Gepard and the boss's twin mount), and the same round: damage type, kind, size, a cluster round
+  or not, lobbed or direct. So the fortress's flat-firing twin 155 mm (150 m/s) and the howitzers' lobbed 155 mm
+  (45 m/s) are two families, and so are the Grad and the cluster Grad. The blast radius is still one per round across
+  them (A5).
+- **A family's value** is the sheet's most common proposal among its members (the current one where the sheet has
+  none). A tie goes to the value whose weapons the most cards carry (a player's card 1, a tower 0.3, a boss 0.1),
+  then to the largest; the round weight is the heaviest member's (a round is never drawn smaller). What moved is in
+  the report: the siege tank's 240 mm blast 7.2 -> 9 m (the other two sheet rows say 9), the fortress twins' and the
+  SP gun's 155 mm to 7 m and 45 m/s, the Lancet trucks' Lancets 3 m (the mothership's drones, the only sheet number of
+  the family) and the Lancet model (they flew the FPV quadcopter by default), the Kornet post's TOW model to the
+  Kornet's, the Hellfires all on the Longbow model (the more carried of the two).
+- **The test.** `BalanceSheetTests.NoTwoWeaponsOfOneFamilyDifferInSpeedBlastOrRound`: the members of each family
+  share speed, blast, model and round weight, and every set of weapons that are the same real weapon is one family.
+- **Families for the design document**: `Docs/balance/weapon_families.tsv` (generated).
+
+### Tests in this pass (the owner's rule, 30/09)
+
+The owner asked that no test run until a test phase is approved. The tests the spec asks for are written but not
+run from A3 on (the A2 DPS test and the content tests ran once, before the rule, and passed); only compile checks
+(batch mode, `-quit`, the log read for `error CS`) are made. The measurements for the "Xem lại" and "Theo dõi" rows
+wait for the test phase too: those rows keep the game's value for now.
+
+### A4 Missile speeds
+
+- **The speeds** of the sheet "Tốc độ tên lửa" were already in from A2 (the weapon sheet carries the same column) and
+  A3 (families take the sheet's most common value); A4 checks every row and changes nothing more. Below the sheet's
+  own 1.2-1.5 times the fastest target: the R-60 (1.05 x a fighter), the PAC-3 (1.18 x its 55 m/s ballistic
+  targets), the Iron Dome's Tamir (0.91), the AIM-9s (1.2); the sheet's numbers are kept.
+- **The sheet's ranges** for the TOW (34 m) and the gunship's and the attack helicopter's Hellfires (34 m) are older
+  than the weapon sheet's (40, 45, 45) and the change list's (the TOW's 40): A2's stand.
+- **What speed does in the sim.** A guided missile flies a time set at launch (the distance over its speed) and
+  strikes wherever its target is when it arrives: it does not chase. What loses it is a lost lock at launch (2 % +
+  8 % x the square of the share of its range), flares out while it flew (a slower missile outlasts more of them), a
+  jammer, a decoy or active protection. So the new speeds cut the flare and interception windows and make a missile
+  visibly faster than the aircraft it catches; the hit itself was never a pursuit. No pursuit rule is added: the
+  sheet wins on numbers, the earlier prompts on the sim's rules.
+- **The test** `BalanceSheetTests.EverySamAndAirToAirMissileHitsAFighterAndAnEscortDroneNineTimesInTen` (written, not
+  run): every missile a vehicle carries that engages aircraft, on a test launcher (the SAM launcher's hull), fires at
+  a fighter and at an escort drone with no flares (their skills cut), each circling at 0.9 of its range at its own
+  speed; four seeds, about 30 missiles each; at least 90 % hit. At 0.9 of the range the lost-lock roll alone gives
+  about 91.5 %; right at the edge (1.0) it gives exactly 90 %, which is why the circle is inside it. If the test phase
+  finds it at the margin, the lost-lock rule (prompt 13) is the thing to look at, not the speeds.
+
+### A5 Blast radius
+
+- **One radius for one round.** A round (its real name without the mount, damage type, size, a cluster or not) has
+  one blast radius on every weapon that fires it, lobbed or flat (`BalanceSheetTests.TheSameRoundBlastsTheSameWherever
+  ItIsFired`). Where the weapon sheet numbers it, its number (the most common among the round's weapons; a tie goes to
+  the best carrier: a card, then a tower, then a boss); else the sheet's rule, 10 m x (mass / 500 kg)^(1/3), for
+  rounds weighed in kilograms (bombs, missiles, drones: the new 57E6, 7 kg, 2.5 m); else, for a shell or rocket (its
+  size a calibre), the sheet's own numbers for its family by calibre: a shell's mass goes with the cube of its
+  calibre, so the rule's radius goes with the calibre (read off the line between the two nearest numbered calibres, or
+  scaled from the nearest). A family's radius sits on the family (A3). Moved: the Grad turret's rockets and the boss's
+  Grad 4.5 m (the turret's number, the better carrier), the siege tank's M110 203 mm 8 m (the sheet's 203 mm
+  rows), the naval 127 mm 6 m (between the sheet's 105 and 152 mm), the 122 mm thermobaric rocket 4 m (the
+  TOS's 7 m at 220 mm, by calibre). The rail supergun's 800 mm and the Leviathan's Kalibr are the boss system's own
+  rounds with no number in the sheet: task C1.
+- **The blast on screen is the damage radius.** Every blast with a radius (a round's impact, on the ground or in the
+  air, a strike, a vehicle's, a mine's or a prop's blast) is drawn with its ring exactly on it: the ground shockwave
+  (or, in the air and on a shell striking armour, the air ring) is sized after the blast's random variation so it
+  reaches the radius (`BlastSizes.RingFor`, `ExplosionEffect.RingReach`), smaller as well as bigger (it had a floor of
+  its recipe's size); a blast with no ring of its own (the Small tier: flak, grenades) draws a faint lone ring on its
+  radius. The second rings that marked a shell's dust (1.2 x the radius), a bomb's shock (2 x) and a thermobaric
+  cloud (1.35 x) are drawn on the radius too. The fire, smoke, dust and sparks keep their sizes: nothing is shrunk
+  for looks; only the ring, which shows the reach, follows the radius.
+- **The test** `BlastSizeTests.EverySplashWeaponsBlastIsDrawnAsWideAsItsDamageReaches` (written, not run): for every
+  weapon with a blast, on every recipe the director draws it with (its tier, the medium blast of a HEAT or drone
+  strike, the air burst, the shell hit) and at the scales it draws with, the ring as emitted reaches the radius within
+  1 %.
+
+### B.7 CP prices
+
+Every row of "Giá CP" ("CP đề xuất") and "Kích thước – giá" ("CP sau đề xuất") agrees, and all 58 prices were
+already in from their A1 rows: the attack jet 18, the stealth bomber 21, the swarm carrier 13, the long-range SAM 14,
+the super-heavy tank 18, the heavy tank 13, the stealth fighter 13, the scout helicopter 5, the strike drone 9, the
+SAM launcher, the Pantsir and the HIMARS 7, the TOS 9, the Smerch 12, the railgun truck 10, the laser tank 9, the
+attack helicopter 9, the tank destroyer 6, the Iron Beam 6. B.7 checks them and changes nothing more.
+
+### B.8 Support cards ("Thẻ hỗ trợ")
+
+The sheet names cards by title (Không kích, Pháo kích...): the importer maps them to the supports' ids and checks
+each against the sheet's "Hiện tại". Damage in the sheet is what lands, after the strikes' firepower (x2); the data
+holds half. Where a row offers two options:
+- **Airstrike**: the first, four FAB-500s of 420 (the bomber's bomb) with a 10 m blast each (the bomb scale), still
+  9 CP. The sheet's "bán kính" is the bomb's blast here ("theo thang bom"); the bomb line's half-width stays 6 m.
+- **Artillery barrage**: the second, six shells instead of eight (the reason: strong for its price). The first
+  ("bán kính 10 -> 7") reads the card's 10 m circle as its blast; the shells' blast is 7 m, the 155 mm howitzer
+  round's (one round, one radius: it was 6), and the circle they fall in stays 10 m.
+- **Cruise missile**: the first, 600 a hit (a Tomahawk's ~450 kg on the bomb scale) and a 10 m blast; the circle
+  drawn on the map is the blast too (10 m; it was 15 round an 18 m blast). The cluster alternative is not taken.
+- Napalm, SEAD, smoke, the UAV scan, repair and the field tower: kept, as the sheet says.
+
+### To measure in the test phase ("Xem lại", "Theo dõi")
+
+Under the owner's no-test rule the combat-value measurements wait for the test phase; every row below keeps the
+game's value for now, and `Docs/balance/apply-report.md` (section "To measure in the test phase") lists them with
+the sheet's proposal. The measurement to run then: `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1`,
+`MB_CV_SEEDS=13,21,34` and `MB_CV_ONLY` naming the cards, against a copy of `balance.json` with the proposal
+(`MB_CV_BALANCE`).
+- **"Xem lại" (Kiểm tra từng mục), 14 rows, all kept:** the speeds the sheet derives from the real vehicle times the
+  map's compression (the engineer vehicle 7 -> ~4.4, the smoke carrier 8 -> ~5.9, the mine layer 8 -> ~5.5, the VBIED
+  13 -> ~6.7, the light tank 9 -> ~4.0, the flame tank 6.5 -> ~4.6, the mortar carrier 8 -> ~5.9, the HIMARS
+  6 -> ~9.4, the strike drone 19 -> ~13.9), the siege tank's vision 38 -> ~30, and four health rows the sheet itself
+  would keep if toughness is the card's identity (the TOS, the siege tank, the swarm carrier, the flying gunship).
+  The sheet says "có thể giữ nếu là chủ đích"; halving the light tank's or the VBIED's speed would change what the
+  card is, so they wait for a measurement rather than a guess.
+- **"Theo dõi" (Cân bằng lần 2):** the rocket technical (3 CP) and the long-range SAM (14 CP): kept; change only if
+  the measurement confirms.
+- **"Đã giảm ở đợt 2":** the attack jet and the heavy bomber (their round-2 cuts are in); the sheet's own note asks
+  for a new measurement.
+- **Changes applied whose words and numbers disagree**, to judge by the same measurement (prompt 25 A.5 allows a
+  tuned value, recorded before and after): the ZU-23 ("giữ DPS", 70 a second, was 143), the Pantsir's 2A38 (171, was
+  252), the AA tower's flak (131, was 193; the sheet wanted its AA value 300 -> 240), the HQ's flak (140, was 157),
+  the scout helicopter's six Hydras a load (was 24), the flamethrower's 21 on every target.
+
+### B.9 (not run)
+
+The full EditMode suite and the regeneration of the combat-value summary that the design document's tables 9 and 9b
+read (`Docs/balance/combat_value_*_summary.tsv`, via `CombatValueMeasure`) are test runs: under the owner's rule they
+wait for the test phase. Tests already brought in line with the sheet's numbers: the bulldozer's speed
+(`Prompt8ContentTests`), Morrigan against the stealth fighter (`Prompt22ContentTests`), the shield dome's hit
+(`Prompt17ContentTests`). Tests likely to need the same once run (they read numbers the sheet changed): the strike
+and support tests (the airstrike's four bombs, the barrage's six shells, the cruise missile's 300 over 10 m), the
+counter and combat-value checks of the re-priced cards, the muzzle tests of the new mounts (the wheeled gun's roof
+M2 on slot "mg", the light tank's gun-launched missile on its main gun), and anything reading the old Hellfire,
+Grad or 155 mm speeds and blasts.
