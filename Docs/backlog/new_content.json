@@ -3,15 +3,15 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 66,
-    "đang làm": 0,
-    "xong": 27
+    "chưa làm": 33,
+    "đang làm": 1,
+    "xong": 59
   },
   "byKind": {
     "unit": {
-      "chưa làm": 33,
-      "đang làm": 0,
-      "xong": 23
+      "chưa làm": 0,
+      "đang làm": 1,
+      "xong": 55
     },
     "structure": {
       "chưa làm": 0,
@@ -102,8 +102,8 @@
       "group": "Phòng không",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "aa_57mm_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -215,8 +215,8 @@
       "group": "Pháo binh",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "mine_rocket_truck",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -271,8 +271,8 @@
       "group": "Máy bay",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "prop_attack_plane",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -285,8 +285,8 @@
       "group": "Trực thăng",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "light_attack_heli",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -299,8 +299,8 @@
       "group": "Hạng nặng",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "next_gen_tank",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -327,8 +327,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "demolition_line_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -341,8 +341,8 @@
       "group": "Xe nhẹ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "combat_wreck_car",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -355,7 +355,7 @@
       "group": "Nâng cấp",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
+      "status": "đang làm",
       "id": null,
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
@@ -369,8 +369,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "drone_hijack_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -474,8 +474,8 @@
       "group": "Công trình",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "manpads_tower",
       "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
@@ -488,8 +488,8 @@
       "group": "Hải quân",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "river_patrol_boat",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -502,8 +502,8 @@
       "group": "Hải quân",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "river_gunboat",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -516,8 +516,8 @@
       "group": "Pháo binh",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "coastal_ashm_vehicle",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -530,8 +530,8 @@
       "group": "Pháo binh",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "auto_loader_howitzer",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -544,8 +544,8 @@
       "group": "Xe nhẹ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "amphib_light_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -558,8 +558,8 @@
       "group": "Xe tăng",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "airborne_light_tank",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -572,8 +572,8 @@
       "group": "Máy bay",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "stealth_naval_strike",
       "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
@@ -586,8 +586,8 @@
       "group": "Trực thăng",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "twin_rotor_gunship",
       "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
@@ -600,8 +600,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "ground_drone_carrier",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -614,8 +614,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "mobile_repair_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -628,8 +628,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "radar_support_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -642,8 +642,8 @@
       "group": "Diệt tăng",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "towed_at_gun",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -656,8 +656,8 @@
       "group": "Công trình",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "flare_searchlight_tower",
       "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
@@ -671,8 +671,8 @@
       "group": "Công trình",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "recoilless_gun_tower",
       "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
@@ -685,8 +685,8 @@
       "group": "Công trình",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "bunker_shelter_tower",
       "notes": "25D2 plan: 3,000 coins in the shop (a medium slot), or a side-mission reward."
     },
     {
@@ -727,8 +727,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "dazzler_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -741,8 +741,8 @@
       "group": "Pháo binh",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 5.000 xu, hoặc thưởng thẻ mùa",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "ground_cruise_missile_vehicle",
       "notes": "25D2 plan: 5,000 coins in the shop, or a season-pass reward."
     },
     {
@@ -755,8 +755,8 @@
       "group": "Máy bay",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "aerial_tanker",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -769,8 +769,8 @@
       "group": "Trực thăng",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "heavy_lift_helicopter",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {
@@ -783,8 +783,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "bridging_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -797,8 +797,8 @@
       "group": "Hỗ trợ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "gps_jammer_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {
@@ -811,8 +811,8 @@
       "group": "Công trình",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "drone_net_tower",
       "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {
@@ -825,8 +825,8 @@
       "group": "Công trình",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "one_shot_atgm_tower",
       "notes": "25D2 plan: 3,000 coins in the shop (a medium slot), or a side-mission reward."
     },
     {

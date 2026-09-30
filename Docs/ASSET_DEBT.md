@@ -244,3 +244,44 @@ C-130, Daedalus in part 1, Icarus kept). What is left is detail for prompt 27's 
 | supreme_command | 9,118 | the MZKT-7930's cabs and the command module |
 | mega_gunship | 11,304 | the Chinook frame's rotors and gun fit |
 | morrigan | 1,312 | none if it counts as an aircraft (2,000-4,000); a stealth-fighter boss at 12.9 m |
+
+## Prompt 25 batch B stand-ins (DECISIONS 25F2-B)
+
+The owner's choice: every item below is complete (data, mechanics, AI, texts, unlock, card) but wears a borrowed
+model with a tint (`"tint"` in balance.json, applied as VehicleView's own variant-tint multiply and by
+`CardRenders.RenderBatch` on its card). Real models are prompt 26-27's.
+
+| What | Uses now (borrowed model, tint) | Needs (the sheet's shape) |
+|---|---|---|
+| `aa_57mm_vehicle` | `aa_gun_vehicle`, a green wash | a 2S38 Derivatsiya-PVO: a tracked chassis with a boxy 57 mm autoloading turret |
+| `mine_rocket_truck` | `mlrs`, a tan wash | a BM-27 Uragan-class wheeled rocket truck with a mine-dispensing rocket pod |
+| `prop_attack_plane` | `attack_jet`, an olive wash | an EMB-314 Super Tucano / OV-10 Bronco: a small single-engine turboprop, a bubble canopy |
+| `light_attack_heli` | `scout_heli`, a tan wash | a small stub-winged attack helicopter (AH-1Z Viper light / Mi-28 class) |
+| `next_gen_tank` | `main_battle_tank`, a blue-grey wash | a T-14 Armata: an unmanned low-profile turret set well back on the hull |
+| `demolition_line_vehicle` | `engineer_vehicle`, a violet wash | an M58 MICLIC: a mine-roller frame ahead of the hull and a line-charge rocket rack on the rear deck |
+| `combat_wreck_car` | `armored_car`, a yellow wash | a light car whose wreck resolves into a standing gun pit (a new wreck-turret prop, not just a model) |
+| `drone_hijack_vehicle` | `ew_jammer`, a cyan wash | an EW vehicle with a directional hijack antenna array, distinct from the visual jammer and the GPS jammer |
+| `manpads_tower` | `shield_tower`, a tan wash | a sandbagged pit with two shoulder-launched MANPADS tubes on a low tripod |
+| `river_patrol_boat` | `armored_car`, a blue wash | a Mark VI / Riverine Command Boat hull: a shallow-draft aluminium boat, a pintle MG and a grenade launcher |
+| `river_gunboat` | `artillery`, an orange wash | a Buyan-class river gunboat: a low hull, a forward 100 mm turret |
+| `coastal_ashm_vehicle` | `sam_launcher`, a green wash | an NSM Coastal Defence truck: angled missile canisters on a flatbed |
+| `auto_loader_howitzer` | `artillery`, an olive wash | an XM2001 Crusader: a low-profile tracked self-propelled howitzer with an autoloader bustle |
+| `amphib_light_vehicle` | `ifv`, a sage wash | an EFV / AAV-7: a boat-hulled tracked APC with a bow planing trim vane |
+| `airborne_light_tank` (+ `airborne_light_tank_chute`) | `light_tank`, a magenta wash | an M8 AGS / M10 Booker: a light tank hull with a low-profile 105 mm turret, and its own parachute canopy |
+| `stealth_naval_strike` | `stealth_bomber`, a steel-blue wash | an A-12 Avenger II: a flying-wing stealth strike aircraft, carrier folding wingtips |
+| `twin_rotor_gunship` | `sky_gunship`, a khaki wash | an ACH-47A "Guns-A-Go-Go": a CH-47 tandem-rotor airframe with side gun mounts and a nose turret |
+| `ground_drone_carrier` | `interceptor_drone_vehicle`, a teal wash | a THeMIS / Uran-9 mothership plus three small tracked minion robots (needs a minion-spawn mechanism too) |
+| `mobile_repair_vehicle` | `engineer_vehicle`, a mauve wash | an MTO-UB: a wheeled repair truck with a crane and a welding rig |
+| `radar_support_vehicle` | `radar_scout`, a sky-blue wash | a Giraffe AMB / Kasta: a boxy radar cabin on a mast, raised when stationary |
+| `towed_at_gun` | `tank_destroyer`, a sand wash | a 2A45 Sprut-B: a long-barrelled towed gun on a split trail carriage, no armour |
+| `flare_searchlight_tower` | `flare_tower`, a teal wash | its own small-slot flare launcher post (the medium-slot flare_tower, shrunk) |
+| `recoilless_gun_tower` | `at_gun_emplacement`, a violet wash | an SPG-9 Kopyo emplacement: a small sandbagged pit, a short stubby recoilless tube |
+| `bunker_shelter_tower` | `troop_shelter`, a green wash | a bigger concrete bunker (the medium-slot troop_shelter, grown) |
+| `dazzler_vehicle` | `ew_jammer`, a gold wash | a Peresvet-class dazzler: a boxy vehicle with a large forward-facing lens array |
+| `ground_cruise_missile_vehicle` | `sam_launcher`, a rose wash | a Typhon MRC: a trailer with two long vertical missile canisters |
+| `aerial_tanker` | `heavy_bomber`, a periwinkle wash | a KC-135 / Il-78: an airliner-shaped tanker with a boom or drogue pod under the tail |
+| `heavy_lift_helicopter` | `gunship_heli`, a coral wash | a CH-47 / Mi-26: a big tandem or single heavy-lift rotor helicopter with a cargo hook |
+| `bridging_vehicle` | `engineer_vehicle`, a mint wash | an AVLB / MTU-72: a tank hull carrying a folded scissor bridge span |
+| `gps_jammer_vehicle` | `ew_jammer`, a periwinkle wash | a Pole-21-class jammer: a mast-mounted antenna array on a truck bed, distinct from the visual jammer |
+| `drone_net_tower` | `laser_ad_station`, a pink wash | a net corridor: two poles with anti-drone netting strung wide between them, no turret |
+| `one_shot_atgm_tower` | `atgm_tower`, a tan wash | an automatic launcher box of eight ready-to-fire Kornet tubes, no reload magazine in view |
