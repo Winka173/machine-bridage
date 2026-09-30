@@ -1,0 +1,125 @@
+Prompt 25: Áp toàn bộ file cân bằng Machine_Brigade_Can_bang.xlsx
+
+(Chủ dự án, 30/09: "dùng @Machine_Brigade_Can_bang.xlsx chạy luôn prompt này, skip prompt 24 tạm thời". File lưu ở Docs/balance/Machine_Brigade_Can_bang.xlsx.)
+
+Nhiệm vụ: áp toàn bộ nội dung của file docs/balance/Machine_Brigade_Can_bang.xlsx vào game: dữ liệu cân bằng, vũ khí, kích thước, tên, mở khóa, boss, model, nội dung mới và tài liệu. Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
+
+Phụ thuộc: chạy sau prompt 24 và prompt làm lại nhánh tháp. Khi file Excel mâu thuẫn với prompt trước, file Excel thắng về con số (chỉ số, giá, tầm, nhịp bắn, kích thước). Prompt trước thắng về hệ thống và luật, gồm:
+- cấp giáp, cấp xuyên, loại sát thương (prompt 15);
+- tên riêng không tiếng Việt (prompt 22);
+- danh sách mẫu giữ lại của ngụy trang (prompt 24);
+- hệ bật/tắt theo hồi (prompt 20).
+
+A. CÁCH ĐỌC FILE
+1. Đọc sheet Mục lục trước, rồi sheet Việc cho agent. Làm theo đúng thứ tự mã việc (A1, A2, A3, A4, A5, B1, B2, B3, C1, C2, D1, D2, E1, E2, E3, F1, F2). Không tự đổi thứ tự.
+2. Viết một script đọc file Excel (ví dụ Tools/balance/import_xlsx.py, dùng openpyxl ở chế độ đọc giá trị đã tính). Script sinh ra các thay đổi cho balance.json, campaign.json, localization và dữ liệu model. Không nhập tay từng con số.
+3. Mỗi dòng trong file có id khớp id trong dữ liệu game. Dòng nào không tìm thấy id thì ghi vào báo cáo (phần G), không đoán.
+4. Ý nghĩa cột "Kết quả" và "Kết luận":
+   - "Đổi": áp.
+   - "Xem lại": tự đánh giá bằng mô phỏng, rồi quyết áp hay giữ và ghi lý do.
+   - "Theo dõi": giữ số, chạy mô phỏng, chỉ đổi nếu mô phỏng xác nhận.
+   - "Giữ": không đổi.
+5. Các giá trị trong file là điểm khởi đầu. Sau khi áp, nếu mô phỏng 5 seed cho thấy một thay đổi đi ngược mục tiêu ghi trong cột "Lý do", được chỉnh tiếp. Ghi lại số trước và sau, cùng lý do.
+
+B. DỮ LIỆU CÂN BẰNG (việc A1–A5)
+1. A1, sheet Thay đổi chi tiết: áp mọi dòng theo ưu tiên Cao → Trung → Thấp, mỗi nhóm ưu tiên một commit. Các hạng mục gồm máu, giáp từng mặt, tốc độ, tốc độ xoay, tầm nhìn, tầm bắn, giá, vũ khí, hành vi, bán kính nổ khi bị phá, tham khảo.
+2. A2, sheet Vũ khí đề xuất: với mỗi vũ khí, áp các cột "đề xuất":
+   - sát thương mỗi phát;
+   - chế độ bắn (từng phát / băng / loạt);
+   - số viên mỗi giây;
+   - số viên mỗi băng hoặc mỗi loạt;
+   - thời gian nạp hoặc nghỉ;
+   - tầm, tốc độ đạn, bán kính nổ, cấp xuyên.
+   Sau khi áp, DPS duy trì trong game phải khớp cột "DPS duy trì đề xuất" trong khoảng ±5%. Viết test so từng vũ khí.
+3. Sheet Đơn vị – vũ khí và cột Thay đổi bộ vũ khí:
+   - Bỏ vũ khí ở các dòng có "Giữ trong đề xuất" = 0 (ví dụ súng máy của Buk, Iskander, Smerch, HIMARS; bom SDB của máy bay mẹ).
+   - Thêm các vũ khí ghi thêm (ví dụ Rapid Dragon cho máy bay mẹ, súng máy trên nóc cho pháo bánh lốp, tên lửa bắn qua nòng cho tăng nhẹ, tên lửa riêng cho Pantsir).
+   - Vũ khí mới chưa có trong dữ liệu thì tạo mới theo số liệu ghi trong file, theo thang cỡ nòng của prompt 13.
+4. A3, họ vũ khí: gom mọi vũ khí cùng tên thật thành một "họ" trong dữ liệu (ví dụ mọi Hellfire, mọi S-8, mọi Grad, mọi M2). Họ giữ các thông số chung: tốc độ bay, bán kính nổ, model đạn, âm thanh. Vũ khí riêng chỉ ghi phần khác (tầm, số viên mỗi lần đầy đạn). Viết test: không có hai vũ khí cùng họ khác tốc độ bay hoặc bán kính nổ.
+5. A4, sheet Tốc độ tên lửa: áp tốc độ đề xuất. Viết test: mỗi tên lửa phòng không và không đối không bắn một tiêm kích và một drone hộ vệ ở tầm tối đa, khi không có pháo sáng, trúng ít nhất 90%.
+6. A5, bán kính nổ: tính bán kính theo luật ở sheet Tổng quan (khoảng 10 m × (khối lượng / 500 kg)^(1/3)), trừ nơi file ghi số cụ thể. Hiệu ứng nổ trên màn hình phải bằng đúng bán kính gây sát thương. Viết test so hai giá trị này cho mọi vũ khí nổ lan.
+7. Sheet Giá CP và Kích thước – giá: áp cột CP đề xuất.
+8. Sheet Thẻ hỗ trợ: áp đề xuất cho thẻ hiện có, gồm Không kích, Pháo kích, Tên lửa hành trình.
+9. Sau khi áp xong phần B: chạy toàn bộ test, tạo lại bảng 9 (DPS) và 9b (giá trị thực chiến) từ dữ liệu mới, commit.
+
+C. KÍCH THƯỚC VÀ MODEL (việc B1–B3)
+1. B1: áp kích thước ở các dòng "Kích thước model" của sheet Kiểm tra từng mục, theo tỷ lệ ở sheet Tỷ lệ map (mặt đất 0,8 × thật, trên không 0,4 × thật). Cập nhật vùng va chạm, bán kính thân, điểm gắn vũ khí. Chạy bộ phát hiện xe kẹt (prompt 12) trên mọi map và mọi chế độ. Viết test thứ tự kích thước trong cùng lớp, ví dụ:
+   - Tăng chủ lực dài hơn Xe bộ binh.
+   - Su-27 dài hơn Su-25.
+   - Máy bay mẹ và Pháo hạm bay dùng chung khung và cùng kích thước.
+   - Tăng hai nòng to hơn Tăng chủ lực; Siêu tăng to hơn Tăng hạng nặng.
+   - Trùm cuối Icarus là vật thể lớn nhất trên trời.
+2. B2: dựng lại model theo cột "Hình dạng (cho AI vẽ)" của các sheet Phương tiện, Công trình, Boss, và theo sheet Hướng dẫn vẽ.
+   - Làm đúng quy trình 7 bước, ngân sách tam giác, LOD, điểm gắn và bản vỡ trong sheet đó.
+   - Thứ tự ưu tiên: Tăng chủ lực, Su-27, máy bay mẹ, Apache, Icarus, Daedalus, rồi các xe có dòng "Kích thước" cần đổi, rồi phần còn lại.
+   - Với mỗi model: chụp ảnh bóng đen từ trên xuống và ảnh ở camera trong game, trước và sau, lưu vào docs/ui-screens/models/.
+   - Model chưa kịp làm ghi vào docs/ASSET_DEBT.md.
+3. B3: áp sheet Kích thước đạn:
+   - Đạn phóng từ mặt đất 0,8 × thật, từ máy bay 0,5 × thật, tối thiểu 0,8 m.
+   - Làm model riêng cho Kh-29L và GBU-39 SDB.
+   - Đạn 203 mm dùng tỷ lệ 1,3 so với 155 mm.
+4. Tốc độ xoay: kiểm tra đơn vị thật trong code (°/s hay rad/s), sửa nhãn trong tài liệu cho đúng. Áp đề xuất "tháp xoay nhanh hơn thân" cho các xe tăng ghi trong file.
+
+D. BOSS (việc C1–C2)
+1. Áp sheet Boss đề xuất:
+   - Máu gốc (trước scale chiến dịch) và DPS thường mục tiêu.
+   - Vũ khí thêm hoặc đổi. Ví dụ Icarus bỏ pháo xe tăng, thay bằng coilgun và laser; Scylla bỏ pháo 460 mm, thay bằng AK-130 và tên lửa chống hạm; Caspian và Daedalus thêm vũ khí.
+2. Siêu vũ khí:
+   - Chỉ 12 boss chủ lực có siêu vũ khí, theo đúng sát thương, bán kính hoặc dạng, chu kỳ, cảnh báo và cách chặn ghi trong file.
+   - Thay đòn lớn cũ của boss chủ lực bằng siêu vũ khí này (dùng lại hệ đòn lớn của prompt 18).
+   - Mini boss bỏ đòn lớn, chỉ giữ vũ khí thường.
+   - Cập nhật thẻ Hướng dẫn, clip Xem bắn, âm cảnh báo riêng cho từng siêu vũ khí.
+3. Chạy lại thời lượng trận boss (prompt 20): mini boss khoảng 1,5–3 phút, boss chủ lực khoảng 5–8 phút. Nếu lệch, chỉnh máu trước, sau đó mới chỉnh DPS.
+4. C2: thêm vào dữ liệu và tài liệu các vũ khí chính còn thiếu: khẩu pháo 80 cm của Gungnir, bánh gầu của Kronos.
+
+E. TÊN VÀ MỞ KHÓA (việc D1–D2)
+1. D1: áp sheet Tên đề xuất vào localization (tên đầy đủ, tên ngắn cho HUD và khay thẻ, tên tiếng Anh). Tên mẫu thật (ví dụ AC-130, Patriot, Lancet) chuyển sang dòng phụ theo luật ngụy trang. Một đơn vị chỉ có một tên ở mọi bảng và mọi màn. Viết test quét localization không còn tên cũ.
+2. D2: áp các cột "Mở khóa đề xuất" và "Mua sớm" ở sheet Phương tiện.
+   - Chiến lợi phẩm cốt truyện (Pháo điện từ, Máy bay mẹ, Xe công sự, Drone hộ vệ) không mua sớm được; mở kèm một câu giải thích theo cốt truyện.
+   - Nội dung mới bán trong Cửa hàng theo cột "Mở khóa đề xuất" của các sheet Đề xuất thêm, Công trình mới, Tên lửa & bom mới, Thẻ hỗ trợ mới.
+   - Tính lại đường cong kinh tế (prompt 7 và 20) với giá mới, báo cáo trước và sau.
+   - Hệ bật/tắt theo hồi: thẻ mở ở hồi đang tắt được chuyển sang chương đang bật gần nhất.
+3. Sheet Cốt truyện là bản tóm tắt tham chiếu cho prompt 22. Kiểm tra dữ liệu chiến dịch khớp với sheet này: map, boss, chiến lợi phẩm và chỉ huy mở ở mỗi chương. Ghi lại các chỗ lệch.
+
+F. CÂN BẰNG LẠI VÀ ĐO (việc E1–E3)
+1. E1: sau khi áp phần B đến E, chạy mô phỏng 5 seed toàn bộ chiến dịch và mọi chế độ.
+   - So kết quả với sheet Cân bằng lần 2.
+   - Xử lý các dòng "Theo dõi" và "Đã giảm ở đợt 2" (Cường kích, Oanh tạc cơ) bằng số đo mới.
+   - Mục tiêu: mỗi vai trò nằm trong khoảng ±15% trung vị giá trị thực chiến trên mỗi CP, trừ ngoại lệ có ghi lý do.
+2. E2: thêm chỉ số "giá trị hỗ trợ" cho xe hỗ trợ vào bảng 9b (máu sửa được, đạn nạp thêm, tên lửa hút được, sát thương khiên chặn được).
+3. E3: thêm cột "vs cụm xe" vào bảng 9b (5 xe cách nhau 4 m), để tính đúng giá trị của pháo, rốc-két, bom và vũ khí nổ lan.
+4. Chạy lại toàn bộ test của prompt 12–24 bị ảnh hưởng: xe kẹt, hiệu năng, thời lượng boss, kinh tế, mở tính năng theo tiến độ.
+
+G. NỘI DUNG MỚI (việc F2)
+Làm sau cùng, theo ưu tiên ghi trong từng sheet. Chỉ làm các mục ưu tiên Cao trong prompt này:
+- Công trình: Tường chắn đạn, Mồi nhử bơm hơi, Trung tâm điều khiển hỏa lực, Ụ pháo chống tăng, Tháp cao xạ Flak 88.
+Mỗi thứ mới gồm: dữ liệu theo đúng chỉ số trong file, test hành vi, thẻ Hướng dẫn, clip Xem bắn, model theo Hướng dẫn vẽ, mở khóa theo cột "Mở khóa đề xuất", và qua bộ đo giá trị thực chiến.
+Các mục ưu tiên Trung và Thấp (xe mới, thẻ hỗ trợ mới, tên lửa và bom mới, boss mới) chưa làm. Chỉ tạo stub dữ liệu (id, tên, nhóm, trạng thái "chưa làm") trong một file docs/backlog/new_content.json để các prompt sau dùng.
+
+H. TÀI LIỆU VÀ BÁO CÁO (việc F1)
+1. Tạo lại tài liệu thiết kế từ dữ liệu. Thêm vào các bảng:
+   - cột miêu tả, hình dạng, mở khóa;
+   - DPS theo từng cấp giáp 0–5, trên không, công trình cho mọi vũ khí;
+   - tốc độ bay và thời gian bay của tên lửa;
+   - kích thước model và kích thước đạn;
+   - siêu vũ khí của boss chủ lực.
+2. Viết docs/balance/apply-report.md gồm:
+   - mỗi sheet đã áp bao nhiêu dòng, bỏ qua bao nhiêu và vì sao (id không có, mâu thuẫn, mô phỏng không xác nhận);
+   - bảng trước/sau cho giá trị thực chiến theo vai trò;
+   - danh sách các chỗ đã chỉnh khác file Excel, kèm lý do.
+3. Xuất lại một bản Excel đã cập nhật (docs/balance/Machine_Brigade_Can_bang_applied.xlsx), với các cột "Hiện tại" là số trong game sau khi áp, để tôi so với bản đề xuất.
+
+I. KIỂM TRA TỔNG
+- Toàn bộ test pass, gồm các test mới: DPS khớp ±5%, họ vũ khí thống nhất, tên lửa phòng không trúng ≥ 90%, hiệu ứng nổ bằng bán kính, thứ tự kích thước, không xe kẹt, mini boss không có siêu vũ khí, không còn tên cũ, mọi thẻ có đúng một nguồn mở khóa.
+- Mô phỏng 5 seed: toàn bộ chiến dịch thắng được ở độ khó Thường; chế độ và độ khó đạt mục tiêu của phần 2b.
+- Hiệu năng: đo FPS ở trận nặng nhất (chiến dịch lớn chương 12) và ở màn có nhiều model mới, trên máy tầm thấp.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md và docs/DECISIONS.md.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (30/09 11:48) nhớ có nhiều phương tiện công trình boss mới làm luôn, file đó không bỏ sót gì  [F2 mở rộng: làm hết nội dung mới ở mọi mức ưu tiên (Đề xuất thêm 56, Công trình mới 14, Tên lửa & bom mới 14, Thẻ hỗ trợ mới 11, Boss mới 8), không chỉ mục Cao; docs/backlog/new_content.json thành bảng theo dõi tiến độ]
+- (30/09 11:58) để các test sau cùng để giảm thời gian và tiết kiệm token, khi tôi đồng ý mới run test  [không chạy test, mô phỏng hay đo trong lúc làm; chỉ kiểm tra biên dịch; test vẫn viết nhưng chờ đợt test]
+- (30/09 16:06) trong file excel trước, các chỗ nào cần xem lại thì cứ đổi luôn, cho đúng với công thức trong đó, và mọi thứ trong đó cứ thêm hết sửa hết đi rồi ta sẽ loại trừ sau nếu dư thừa  [áp cả các dòng "Xem lại", "Theo dõi", "Đã giảm ở đợt 2" theo số và công thức trong file; không bỏ dòng nào; tạo mới mọi thứ file có]
+- (30/09 19:00) tầm bắn của xe bọc thép, xe jeep và tăng nhẹ đang trùng với tầm nhìn: tăng nhẹ cho tầm nhìn  [giữ tầm bắn, tầm nhìn +10%: xe bọc thép 46, jeep 60, tăng nhẹ 40 m]
+- (30/09 19:08) Pháo tự động => dùng các đạn flak mới, tạo đạn và hiệu ứng nổ mới; đạn thay thế: đúng ý tôi, làm luôn, nên có icon đổi đạn, nhớ trong phần detail của xe khi xem phải ghi luôn 2 loại đạn, làm trước chưa cần cân bằng lại cứ theo excel  [cơ chế đạn thay thế cho 69 vũ khí theo cột "Loại đạn thay thế gợi ý", làm ngay]
+- (30/09 19:17) áp dụng PDF ngưng cập nhật hẳn, bỏ ảnh model trước và sau, mỗi đợt một file test gọn, thẻ Hướng dẫn ngắn gọn  [đợt D và model đợt B vẫn làm như cũ]
+- (01/10 00:09) chọn làm tạm, prompt sau sẽ làm đầy đủ lại sau  [đợt B (33 xe) và đợt D (8 boss mới): đủ dữ liệu, cơ chế, AI, chữ, mở khóa, ảnh thẻ; model mượn từ xe hoặc boss cũ gần giống nhất (đổi màu, tỷ lệ); model thật và số boss đầy đủ ở prompt 26-27]
