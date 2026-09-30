@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 56,
+    "chưa làm": 55,
     "đang làm": 0,
-    "xong": 37
+    "xong": 38
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 4,
+      "chưa làm": 3,
       "đang làm": 0,
-      "xong": 10
+      "xong": 11
     },
     "support": {
       "chưa làm": 11,
@@ -979,9 +979,9 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "coyote_interceptor",
+      "notes": "Batch C: weapon coyote_interceptor (coyote_block_2 family), a secondary on interceptor_drone_vehicle (dx48, already close: its own interceptor_drone weapon is the same Coyote Block 2 concept). Reuses the existing prey:Rotors targeting, no new code."
     },
     {
       "key": "tl08",

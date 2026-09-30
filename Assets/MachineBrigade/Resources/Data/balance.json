@@ -263,6 +263,7 @@
     { "id": "odab_500", "real": "ODAB-500", "projectileSpeed": 35, "splash": 12, "roundWeight": 500, "roundLength": 1.23 },
     { "id": "agm_88_harm", "real": "AGM-88 HARM", "projectileSpeed": 45, "splash": 4, "roundWeight": 360, "roundLength": 2.09 },
     { "id": "apkws", "real": "APKWS (laser-guided Hydra 70)", "projectileSpeed": 45, "splash": 2, "projectileModel": "apkws", "roundWeight": 15, "roundLength": 0.8 },
+    { "id": "coyote_block_2", "real": "Coyote Block 2", "projectileSpeed": 40, "splash": 2, "roundWeight": 5, "roundLength": 0.8 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -615,6 +616,8 @@
     { "id": "anti_radar_missile", "real": "AGM-88 HARM", "weaponFamily": "agm_88_harm", "family": "missile", "size": 360, "pen": 3, "damageType": "HighExplosive", "damage": 300, "cooldown": 8, "range": 90, "projectileSpeed": 45, "splash": 4, "impactTier": "Large", "projectile": "Missile", "projectileModel": "harm", "roundLength": 2.09, "bonuses": [ { "class": "AntiAir", "mult": 2 } ] },
     // tl06: APKWS-class laser-guided 70 mm rocket (attack_helicopter secondary): precise, cheap, can hit drones.
     { "id": "apkws_rocket", "real": "APKWS (laser-guided Hydra 70)", "weaponFamily": "apkws", "family": "rocket", "size": 70, "pen": 2, "damageType": "ShapedCharge", "damage": 90, "cooldown": 1, "range": 40, "projectileSpeed": 45, "splash": 2, "impactTier": "Medium", "projectile": "Rocket", "projectileModel": "apkws", "roundLength": 0.8, "targets": "All" },
+    // tl07: Coyote Block 2-class drone interceptor (interceptor_drone_vehicle secondary): a second, cheaper interceptor round.
+    { "id": "coyote_interceptor", "real": "Coyote Block 2", "weaponFamily": "coyote_block_2", "family": "drone", "size": 5, "pen": 2, "damageType": "Fragmentation", "damage": 120, "cooldown": 1.125, "range": 45, "projectileSpeed": 40, "splash": 2, "impactTier": "Small", "projectile": "Drone", "projectileModel": "coyote_block2", "roundLength": 0.8, "targets": "Air", "prey": "Rotors" },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1196,7 +1199,7 @@
       "firesWhileMoving": false, "weapon": "fpv_fibre", "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx48: the interceptor-drone vehicle: drones against drones.
     { "id": "interceptor_drone_vehicle", "modelSize": [5.0, 2.0, 2.4], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 10, "turnRate": 100, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 50,
-      "firesWhileMoving": false, "weapon": "interceptor_drone", "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
+      "firesWhileMoving": false, "weapon": "interceptor_drone", "secondary": [{ "weapon": "coyote_interceptor", "slot": "aam", "aim": "Free" }], "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // ct11: the troop shelter (a concrete bunker): its side's vehicles within 15 m take half from shells, mortars, bombs and strikes; direct fire is not stopped.
     { "id": "troop_shelter", "modelSize": [6.0, 5.0, 2.2], "fort": { "size": "Medium" }, "static": true, "armour": 3, "hp": 1818, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.6, "length": 6.0, "width": 5.0, "cp": 0, "vision": 30,
       "weapon": "none", "shelter": { "radius": 15, "cut": 0.5 } },
