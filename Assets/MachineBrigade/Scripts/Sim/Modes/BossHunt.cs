@@ -255,7 +255,7 @@ namespace MachineBrigade.Sim.Modes
                     v.FireBoost *= 1f + s.Value;
                     break;
                 case HuntSupportKind.Engines:
-                    v.DoctrineSpeed *= 1f + s.Value;
+                    v.SpeedScale *= 1f + s.Value;
                     break;
                 case HuntSupportKind.Regen:
                     v.Regen += s.Value;

@@ -250,7 +250,6 @@
 .fc-army__deck-strip .unity-scroll-view__content-container { flex-direction: row; align-items: stretch; }
 .fc-army__overview { flex-direction: row; align-items: flex-start; margin-bottom: var(--fc-space-2); }
 .fc-army__overview-part { margin-right: var(--fc-space-6); flex-shrink: 1; }
-.fc-army__doctrine { width: 340px; flex-shrink: 0; }
 .fc-army__collection { margin-top: var(--fc-space-3); }
 /* Cards in a row are one height (prompt 11 B2): the tallest (a locked card with its unlock line) sets it. */
 .fc-army__grid { flex-direction: row; flex-wrap: wrap; align-items: stretch; }

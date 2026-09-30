@@ -286,7 +286,7 @@ namespace MachineBrigade.Game.Match
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             world.ModeTag = menu ? "Menu" : kind.ToString();
             session.Build(world, seed);
-            // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events, elites or doctrines.
+            // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events or elites.
             if (!menu && kind == GameModeKind.Sandbox) return session;
             // Prompt 13 I.1: the enemy's income by difficulty (Easy x0.8, Normal x1, Hard x1.2, Very Hard x1.4).
             if (!menu && kind != GameModeKind.Campaign && world.TryGetEconomy(EnemyTeam, out var enemyEconomy))
@@ -302,14 +302,6 @@ namespace MachineBrigade.Game.Match
                 bossRush: kind == GameModeKind.BossRush);
             // Prompt 18: every boss's big attack, wherever it appears, scaled by difficulty.
             if (!menu) world.BigAttackSettings = MachineBrigade.Sim.Content.BigAttackSettings.For(world.Catalog.BigAttackRules, session.EliteDifficulty);
-            // Doctrines: the player's choice; a hard enemy picks one of its own.
-            if (!menu && Progression.DoctrineOwned(MatchSettings.Doctrine))
-                world.SetDoctrine(PlayerTeam, MachineBrigade.Sim.Content.Doctrine.Get(MatchSettings.Doctrine));
-            if (session.Difficulty >= AiDifficulty.Hard || menu)
-            {
-                var all = MachineBrigade.Sim.Content.Doctrine.All;
-                world.SetDoctrine(EnemyTeam, all[new System.Random(seed).Next(all.Count)]);
-            }
             return session;
         }
 

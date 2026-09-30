@@ -101,8 +101,6 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case ShopTab.Units:
                     foreach (var id in PremiumCards) _shopGrid.Add(UnitTile(id, premium: true));
-                    foreach (var doctrine in Doctrine.All)
-                        if (doctrine.Id != "armor") _shopGrid.Add(DoctrineTile(doctrine.Id));
                     foreach (var id in MatchSettings.AllVehicles.Concat(MatchSettings.AllSupports))
                         if (Progression.Route(id) == CardRoute.Campaign) _shopGrid.Add(UnitTile(id, premium: false));
                     break;
@@ -406,16 +404,6 @@ namespace MachineBrigade.Game.Hud
             return tile;
         }
 
-        private VisualElement DoctrineTile(string doctrine)
-        {
-            var id = "doctrine." + doctrine;
-            var tile = ShopTile("", null, DoctrineIcon(doctrine), Strings.Get(id), Strings.Get(id + ".info"), () => SelectShop(id), id == _shopSelected);
-            tile.Q(className: "fc-shop__body").Add(PriceLine(Progression.DoctrinePrice, PlayerProfile.Owns(id) ? Strings.Get("shop.owned") : null));
-            return tile;
-        }
-
-        private static bool IsDoctrine(string id) => id.StartsWith("doctrine.");
-
         private void SelectShop(string id)
         {
             _shopSelected = id;
@@ -426,9 +414,9 @@ namespace MachineBrigade.Game.Hud
         private bool IsItemTab => _shopTab == ShopTab.Items;
         private bool IsSkinTab => _shopTab == ShopTab.Skins;
 
-        private bool Owned(string id) => !IsItemTab && (IsSkinTab || IsDoctrine(id) ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id));
+        private bool Owned(string id) => !IsItemTab && (IsSkinTab ? PlayerProfile.Owns(id) : PlayerProfile.IsUnlocked(id));
 
-        private int PriceOf(string id) => IsItemTab ? Progression.ItemPrice(id) : IsDoctrine(id) ? Progression.DoctrinePrice
+        private int PriceOf(string id) => IsItemTab ? Progression.ItemPrice(id)
             : IsSkinTab ? Skins.Get(id).Price : Progression.Price(id, _catalog);
 
         /// <summary>The page's one main button for camouflage, units and items: buy (or use) the picked one.</summary>
@@ -473,7 +461,7 @@ namespace MachineBrigade.Game.Hud
             else if (PlayerProfile.TryBuy(id, PriceOf(id)))
             {
                 if (IsSkinTab) PlayerProfile.Equip(id);
-                Note(Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : IsDoctrine(id) ? Strings.Get(id) : Strings.Card(id)));
+                Note(Strings.Format("shop.bought", IsSkinTab ? Strings.Get("skin." + id) : Strings.Card(id)));
             }
             else
             {

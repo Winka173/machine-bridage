@@ -323,7 +323,7 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * DoctrineSpeed * SpeedGear * PhaseSpeed * PartSpeed;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * SpeedScale * SpeedGear * PhaseSpeed * PartSpeed;
 
         /// <summary>A multi-phase boss: the phases it has passed (0: the first bar).</summary>
         public int Phase { get; internal set; }
@@ -387,11 +387,11 @@ namespace MachineBrigade.Sim.Entities
         public float Hp { get; internal set; }
         public float MaxHp => Def.MaxHp * HpScale;
 
-        /// <summary>Health multiplier from the side's doctrine.</summary>
+        /// <summary>Health multiplier: the side's upgrades, then a mode's changes (a mutator, a hunt's support, a mission's target).</summary>
         internal float HpScale = 1f;
 
         // ------------------------------------------------------------ upgrades (card rank, equipment)
-        /// <summary>The side's upgrades for this vehicle's health and speed (the doctrine multiplies on top).</summary>
+        /// <summary>The side's upgrades for this vehicle's health and speed (card rank, equipment and the commander's lines).</summary>
         internal float BoostHp = 1f;
         internal float BoostSpeed = 1f;
 
@@ -410,8 +410,8 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Its smoke dischargers have fired (once a battle).</summary>
         internal bool SmokeUsed;
 
-        /// <summary>Drive speed multiplier from the side's doctrine.</summary>
-        internal float DoctrineSpeed = 1f;
+        /// <summary>Drive speed multiplier: the side's upgrades, then a mode's changes (a Boss Hunt's engines).</summary>
+        internal float SpeedScale = 1f;
         public float Radius => Def.Radius;
         public ArmorClass Armor => Def.Armor;
         public TargetKind Kind => Crashed ? TargetKind.Ground : Def.Kind;

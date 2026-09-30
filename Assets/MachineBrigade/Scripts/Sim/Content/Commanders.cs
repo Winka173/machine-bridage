@@ -6,7 +6,9 @@ namespace MachineBrigade.Sim.Content
 {
     /// <summary>
     /// Prompt 22 F.2 and F.3: the fourteen commanders of the player's side and the eight enemy generals' passives,
-    /// as the spec lists them. The numbers are the starting point the balance sweep tunes (DECISIONS 22F).
+    /// as the spec lists them. The numbers are the starting point the balance sweep tunes (DECISIONS 22F). The old
+    /// doctrines' edges live here since DECISIONS 23D: Crown has the armoured one, Hawk the air one, Longshot the
+    /// artillery one, Rush the blitz one and Ledger the logistics one, merged where the commander had the same bonus.
     /// </summary>
     public static class Commanders
     {
@@ -40,10 +42,13 @@ namespace MachineBrigade.Sim.Content
             },
             new CommanderDef
             {
+                // DECISIONS 23D: the air doctrine's +20 % aircraft health and 15 % faster fire support (neither overlapped).
                 Id = "reyes", Family = CommanderFamily.Combat, Portrait = "dieuhau", Unlock = "c3", Style = DeckStyle.Air, AirRearm = 1.15f, AirCap = 1,
+                StrikeCooldown = 0.85f,
                 Lines = new[]
                 {
-                    L(StatId.Damage, 0.10f, CommanderReach.Aircraft), L(StatId.MagazineReload, 0.15f, CommanderReach.Aircraft),
+                    L(StatId.Damage, 0.10f, CommanderReach.Aircraft), L(StatId.Health, 0.20f, CommanderReach.Aircraft),
+                    L(StatId.MagazineReload, 0.15f, CommanderReach.Aircraft),
                     L(StatId.Health, -0.10f, CommanderReach.Towers),
                 },
             },
@@ -65,8 +70,14 @@ namespace MachineBrigade.Sim.Content
             },
             new CommanderDef
             {
+                // DECISIONS 23D: the blitz doctrine's +15 % speed merged with Rush's +10 % into one +15 %; its +15 % health on
+                // scouts and light vehicles added (the whole army's -5 % still comes off after it).
                 Id = "mendez", Family = CommanderFamily.Combat, Portrait = "mendez", Unlock = "i2", Style = DeckStyle.Blitz, Delivery = 0.75f,
-                Lines = new[] { L(StatId.Speed, 0.10f, CommanderReach.Vehicles), L(StatId.Health, -0.05f, CommanderReach.Army) },
+                Lines = new[]
+                {
+                    L(StatId.Speed, 0.15f, CommanderReach.Vehicles), L(StatId.Health, 0.15f, CommanderReach.Light),
+                    L(StatId.Health, -0.05f, CommanderReach.Army),
+                },
             },
             new CommanderDef
             {
@@ -78,14 +89,19 @@ namespace MachineBrigade.Sim.Content
                     L(StatId.Speed, -0.05f, CommanderReach.Vehicles),
                 },
             },
+            // DECISIONS 23D: the artillery doctrine's +25 % artillery health and 25 % faster fire support (neither overlapped).
             Combat("dahl", "dahl", "c7", DeckStyle.Artillery,
                 L(StatId.Damage, 0.15f, CommanderReach.Artillery), L(StatId.Range, 0.10f, CommanderReach.Artillery),
-                L(StatId.Damage, -0.10f, CommanderReach.DirectFire)),
+                L(StatId.Health, 0.25f, CommanderReach.Artillery),
+                L(StatId.Damage, -0.10f, CommanderReach.DirectFire)).With(d => d.StrikeCooldown = 0.75f),
 
             // ------------------------------------------------------------ economy
             new CommanderDef
             {
-                Id = "brenn", Family = CommanderFamily.Economy, Portrait = "brenn", Unlock = "i1", Style = DeckStyle.LongGame, Income = 1.10f,
+                // DECISIONS 23D: the logistics doctrine. Its +20 % on the base rate and Ledger's +10 % on all income are one
+                // bonus: +15 % on all income; its +4 army cap (a tenth of the usual 40) as supply +10 %.
+                Id = "brenn", Family = CommanderFamily.Economy, Portrait = "brenn", Unlock = "i1", Style = DeckStyle.LongGame, Income = 1.15f,
+                Supply = 1.10f,
                 Lines = new[] { L(StatId.Damage, -0.05f, CommanderReach.Army) },
             },
             new CommanderDef
@@ -103,9 +119,11 @@ namespace MachineBrigade.Sim.Content
             },
             new CommanderDef
             {
+                // DECISIONS 23D: the armoured doctrine (tanks and heavies +20 % health) and Crown's +15 % health on dear
+                // vehicles are one bonus: +20 % on both (a dear tank no longer gets the two stacked).
                 Id = "reyn", Family = CommanderFamily.Economy, Portrait = "reyn", Unlock = "i3", Style = DeckStyle.Heavy,
                 Prices = new[] { P(PriceReach.Vehicles, 1.10f) },
-                Lines = new[] { L(StatId.Health, 0.15f, CommanderReach.Dear), L(StatId.Damage, 0.15f, CommanderReach.Dear) },
+                Lines = new[] { L(StatId.Health, 0.20f, CommanderReach.ArmourOrDear), L(StatId.Damage, 0.15f, CommanderReach.Dear) },
             },
             Econ("quist", "c8", DeckStyle.Attrition).With(d =>
             {
@@ -218,6 +236,7 @@ namespace MachineBrigade.Sim.Content
                 CommanderReach.Ships => vehicle && def.Naval != null,
                 CommanderReach.Cheap => vehicle && def.CpCost > 0 && def.CpCost <= CheapAt,
                 CommanderReach.Dear => vehicle && def.CpCost >= DearAt,
+                CommanderReach.ArmourOrDear => vehicle && (def.Class is UnitClass.Tank or UnitClass.Heavy || def.CpCost >= DearAt),
                 CommanderReach.Energy => def.Weapon.DamageType == DamageType.Energy,
                 CommanderReach.Shielded => def.Dome != null || def.Wards != null || HasShieldSkill(def),
                 _ => false,
