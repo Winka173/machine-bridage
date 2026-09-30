@@ -66,6 +66,21 @@ The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`)
   they are built).
 - C.4: the design document's turn rates in degrees a second (it printed the code's radians under a degrees label);
   the tanks' turrets turn faster than their hulls (115 deg/s, from A1).
+### Prompt 25 B2: models rebuilt to the balance sheet (DECISIONS 25B2)
+
+- Thirteen models are redrawn from the balance sheet's shape notes and drawing guide, at its sizes (ground vehicles
+  0.8 x real, aircraft 0.4 x real): the main battle tank (a 7.7 m Leopard 2 / Abrams-class tank with its long gun), the
+  Su-27 fighter (now clearly longer than the attack jet), the drone mothership and the AC-130 (one C-130 airframe at
+  one size; the mothership drops its drones from an open ramp), the Apache (with wheels, not skids, and longer stub
+  wings), Daedalus (a two-tier Acclamator-style assault ship with bigger point-defence turrets), the scout jeep (the
+  smallest vehicle, with its driver and gunner), the twin-gun tank (the MBT 15 % larger with two parallel guns), the
+  flame tank (a TO-55 with red fuel tanks on the back), the armoured car (a Pandur 6x6), the FPV and Lancet launchers
+  (one MRAP) and the command vehicle (a Stryker with its mast folded and no tall whips).
+- Each is inside the sheet's triangle budget (most were two to three times over) and keeps every weapon and part
+  point, so shots, bosses' parts and the high-detail variants work as before. Their cards are re-rendered, and
+  before/after shots are in `Docs/ui-screens/models/`.
+- The new sizes take effect in battle when prompt 25 B1 sets the scales; Icarus is unchanged (its size is a scale
+  for B1). The models not reached yet are listed in `Docs/ASSET_DEBT.md`.
 
 ### Play-test 9 models (DECISIONS 23M)
 

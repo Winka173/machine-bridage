@@ -11122,3 +11122,141 @@ first and B2's after it.
 - **Turret faster than the hull.** The sheet's four rows ("1 / 2" in radians a second: the main battle tank, the twin
   tank, the heavy tank, the super tank) were applied by A1 Trung: the hull kept (60, 58, 45, 45 deg/s), the turret
   115 deg/s (2 rad/s). The step `--upto C4` checks them against both sheets and reports them in the import_b block.
+
+## 25B2. Model rebuilds (2026-09-30)
+
+Prompt 25, section C.2 (task B2): rebuild the models from the balance sheet's "Hình dạng (cho AI vẽ)" columns
+(Phương tiện, Công trình, Boss) and its drawing guide ("Hướng dẫn vẽ"), at the sizes of the "Kích thước model"
+rows in "Kiểm tra từng mục" at "Tỷ lệ map"'s scale (ground 0.8 x real, aircraft 0.4 x real). Branch
+`feature/p25-models` from lead b682c47. The new builders are in `Tools/blender/mb_p25_models.py`, registered last in
+`build_assets.py` so they win over the older ones (which stay: other models still use their kits).
+
+### How the guide's rules were applied
+
+- **Silhouette first.** Each model carries the one or two features its shape note names, big enough to read in a
+  black top-down silhouette (`Docs/ui-screens/models/<id>.png`: top-down silhouette above, the battle camera below,
+  before on the left, after on the right, both at the same metres per pixel). Identifying parts are drawn 10-20 %
+  over scale (guns, turrets, rotors, stub wings, props, fins); bodies are not.
+- **Sizes.** Models are built at the sheet's size in model units: they are drawn for a balance.json `scale` of 1.0.
+  balance.json is not touched here (B1 sets the scales, collision capsules and hull radii); the table below gives
+  B1 the numbers. Until B1 lands, the rebuilt models show at their old scales (the fighter at 0.39 is 3.4 m long).
+- **Triangle budgets** (light 1,500-3,000, tanks 3,000-5,000, aircraft 2,000-4,000, bosses 15,000-40,000) apply to
+  the base model, which Low and Medium graphics load; LOD1 is built at runtime (`ModelLibrary.Lod`). The `_hd`
+  variants (High graphics) are the same builders with `detail=True`, keeping every pivot in place.
+- **Nothing under 0.1 m** that would shimmer: no whip antennas (the old command vehicle stood 4.7 m tall on them),
+  grab rails, wire guards, mirrors or thin canopy frames in the base models; roll bars and frames are square bars.
+- **Mount points.** Every node, mount and muzzle name the game looks up is kept (`Turret`, `Main_cannon*`,
+  `Muzzle_brake*`, `Muzzle_<slot>`, `Mount_<slot>`, `Rotor`, `Tail_rotor`, `Propeller*`, the Lancet's erector names,
+  boss part nodes). Every model also gets `Point_exhaust` and `Point_fire` empties where exhaust smoke and fire
+  belong (the guide asks for them; nothing reads them yet, and no runtime name pattern matches `Point_`).
+- **Colours.** `Team` stays the side's colour on hulls and turrets, because it also carries the player's
+  camouflage skin (`MaterialLibrary.ApplySkin`); a separate stripe in the same colour would not show. Bosses carry
+  the enemy side's colour as stripes (Daedalus: two long stripes and a tower band). No real insignia.
+- **Wrecks.** A destroyed vehicle is the same model tinted, slumped and burning at runtime (`VehicleView.BecomeWreck`),
+  so vehicles have no wreck model; boss parts put the generic wreck pieces (`wreck_turret`, `wreck_stump` ...) in their
+  place as the data says; Icarus keeps its crash model `silver_bug_wreck`.
+- **Shots** are rendered in Blender on the CPU (`Tools/blender/model_shots.py`, Cycles), so the GPU the emulator uses
+  is left alone, and laid out by `Tools/art/model_sheet.py`. Cards were re-rendered with Unity
+  (`CardRenders.RenderBatch -mbCardsForce -mbCardsOnly ...`, `-force-d3d11 -force-device-index 1`).
+
+### Sizes built (for B1)
+
+Built size = the model's bounding box at scale 1.0, gun forward (length x width x height, metres). Hull = the
+collision footprint from `Tools/blender/measure_hulls.py` (the hull without the gun; ground vehicles' `length` /
+`width`). Set every model below to `"scale": 1.0` (or give B1's own scale over these sizes).
+
+| Model | Sheet's size | Built | Hull (length x width) | Triangles (base / _hd) | Was (model at its scale, triangles) |
+|---|---|---|---|---|---|
+| main_battle_tank | 7.7 x 3.0 x 2.2 (note) | 7.79 x 3.07 x 2.30 | 6.10 x 3.07 | 4,700 / 12,106 | 7.46 m at 0.85, 8,068 |
+| twin_tank | length >= 1.15 x MBT | 8.96 x 3.53 x 2.64 | 7.02 x 3.53 | 4,956 | 8.13 m at 0.85, 8,832 |
+| flame_tank | 7.2 x 2.6 x 1.9 | 7.12 x 2.66 x 1.87 | 5.75 x 2.66 | 3,726 | 5.30 m at 0.95, 7,784 |
+| armored_car | 4.6 x 2.0 x 1.4 | 4.78 x 2.08 x 1.49 | 4.44 x 2.08 | 2,272 | 6.91 m at 0.85, 6,064 |
+| scout_jeep | 2.7 x 1.3 x 1.4 | 2.64 x 1.40 x 1.41 | 2.64 x 1.40 | 2,212 / 8,908 | 4.37 m at 0.85, 4,044 |
+| fpv_carrier | 7.2 x 2.0 x 2.6 | 7.41 x 2.04 x 2.88 | 7.41 x 2.04 | 2,536 | 8.2 m at 0.85, 8,310 |
+| lancet_truck | 7.2 x 2.0 x 2.6 | 7.41 x 2.02 x 2.70 | 7.41 x 2.02 | 2,216 | 7.8 m at 0.85, 10,234 |
+| command_vehicle | 5.6 x 2.2 x 2.1 | 5.64 x 2.08 x 2.14 | 5.64 x 2.08 | 2,842 | 7.9 m at 0.85, 7,966 |
+| fighter_jet | 8.8 x 5.9 x 2.4 | 8.64 x 5.85 x 2.15 | (aircraft: radius) | 3,580 / 14,528 | 19.18 m at 0.39, 8,612 |
+| attack_helicopter | 7.1 x 5.8 x 1.8 | 6.35 x 4.44 x 2.02 (fuselage 6.0, rotor 6.0 across) | (aircraft) | 3,482 / 5,694 | 10.22 m at 0.69, 7,350 |
+| swarm_carrier | 11.9 x 16.2 x 4.6 | 11.93 x 16.30 x 4.79 | (aircraft) | 2,400 | 15.85 x 18.12 m at 1.22, 7,906 |
+| sky_gunship | same frame and size as the mothership | 11.93 x 16.30 x 4.82 | (aircraft) | 2,708 / 3,764 | 13.51 x 17.1 m at 1.06, 10,736 |
+| daedalus | 36.4 x 20.4 x 11.8, main boss | 37.08 x 20.42 x 12.80 | (boss, unchanged data) | 11,472 | 36.4 m at 1.0, 5,376 |
+
+Notes for B1: `AirDrops` scales the airdrop plane (`transport_plane`, still play-test 5's 13.5 m airframe) by
+`sky_gunship`'s scale. The helicopter's rotor turns at 45 degrees in the model, so its bounding box is under the
+rotor's 6.0 m diameter.
+
+### Per model
+
+- **Main battle tank.** The size row says "keep 6.3 x 2.9 x 2.9", but that is 0.65 x a Leopard 2A4's 9.67 m, and the
+  shape note, the 0.8 rule and "longer than the IFV by about 1.5 times" all give 7.7 x 3.0 x 2.2. **Decided:
+  7.7 m**, gun forward: a Leopard 2A4 / M1A1-class hull 5.9 m long with a shallow glacis, seven road wheels under
+  three-panel skirts, rear drive; an angular turret with arrowhead cheeks and a long bustle; the 120 mm gun 1.8 m
+  past the nose (a third of the hull, 15 % thick), thermal sleeve, fume extractor, muzzle collar; the commander's
+  panoramic sight, gunner's sight, loader's machine gun (no shield: the height), smoke dischargers. Lean track units
+  (cleats only on the curved ends, hubs only at high detail) keep it in the tank budget. The consequence for the
+  ordering rules: the twin tank must be about 8.9 m (built 9.0), the heavy tank (8.8 m in battle today) stays
+  longer, the titan 1.2 x the heavy tank.
+- **Su-27 (fighter_jet).** mb_air3's Flanker, lower in polygons (12-point sections, no bevels under 1 cm, plain wings
+  in the base model) and scaled to 8.8 m; twin fins 15 % tall. Four medium-range missiles on separate pylons (four
+  launch points, far enough apart), the wingtip missiles in a part of their own (`Wingtip_missiles`, the aam slot).
+  Now clearly longer than the attack jet (6.2 m on the sheet).
+- **Drone mothership and AC-130.** The sheet wants them on one frame at one size (0.4 x a C-130). One lean
+  airframe (`_c130`: round fuselage, radome, flight-deck window band, gear sponsons, high straight wing, four
+  nacelles with four-blade props drawn 10 % large, upswept tail, fin 10 % tall) serves both. The mothership lowers
+  its cargo ramp with four FPV drones on rails (`Muzzle_drone` at the ramp's toe; its old belly bay is gone); the
+  gunship keeps its left-side 25 / 40 / 105 mm battery and sensor balls, the muzzles at their guns' tips. The
+  sheet's gunship row says "keep 12.2 x 15.4"; the mothership's says 11.9 x 16.2: both are built 11.9 x 16.3.
+- **Apache.** An AH-64D Longbow at 0.4 x: narrow fuselage with cheek bays, the stepped tandem canopy, TADS nose,
+  shoulder engines, the mast radar, stub wings 20 % long (a rocket pod and a four-round Hellfire rack each side,
+  Stinger tubes on the tips), the chin gun on `Mount_gun`, and wheels: the old model had skids, which the Apache does
+  not. 2.0 m tall with the radar (the sheet's 1.8 m is without it).
+- **Icarus (silver_bug): reviewed, kept.** Play-test 9 redrew it and the owner liked it; its shape note (references,
+  "main boss 1.3-1.5 x", parts as separate readable blocks with wreck pieces, the general's stripe) is met: at 36.3 m
+  it is 1.5 x its Mk.0 (24.1 m), its parts are big separate blocks, the side's colour is on the pods, fins, tower and
+  bow. Its part nodes are pinned in model space (`PlayTest8VisualTests.IcarusKeepsEveryPartNodeAndMuzzle`), so its
+  size is a scale, which is B1's: "Icarus is the largest thing in the sky" needs about 1.65 (60 m) to pass the command
+  airship (59.2 m) and the drone airship (42.3 m), or those scaled down. `Prompt20BossTests` pins Icarus's scale at 1.0
+  today.
+- **Daedalus.** 20Y's single wedge turned into the Acclamator's two tiers: the lower wedge with its lit trench, an
+  upper wedge in off-white plates with lit step windows, a dorsal ridge and the command tower with dishes, Aurel's
+  stripes, twelve twin turbolasers, flank plates, keel and landing feet, and a stern bank of two big and four
+  smaller bells. The point-defence turrets (destructible parts) are drawn three times their old size. All nodes stay
+  where the boss data puts them. 11,472 triangles, under the 15,000 start of the boss range: there is room for more
+  detail, but it reads at battle zoom now. The prompt's two 57 mm belly guns (C1) have no mounts yet: C1 adds them
+  with its data.
+- **Scout jeep.** mb_vehicles' open 4x4 made lean and scaled to 2.7 m, with the driver and the gunner seated (the
+  sheet: both show from above); the gunner turns with the gun.
+- **Twin-gun tank.** The MBT's hull 15 % larger with a turret 18 % wider carrying two 120 mm guns behind one mantlet,
+  the coax between them.
+- **Flame tank.** A TO-55 on the T-55: five big road wheels, a dome turret forward, a short fat flame projector (drawn
+  long enough to read) beside the box searchlight, two dark-red armoured fuel tanks on the rear deck. The projector
+  still meets the rear tanks if the turret turns right round (as the old model's did).
+- **Armoured car.** A Pandur I 6x6: boxy hull, six big exposed wheels, a small round turret mid-hull with a long
+  25 mm barrel (drawn 0.12 m thick to show in the silhouette).
+- **FPV carrier and Lancet truck.** One Typhoon-K MRAP (`_mrap`): cab-over armoured cab, V-hull, three axles, roof
+  machine gun. The FPV carrier has a tall rear module with a 4 x 5 grid of launch cells on its roof; the Lancet truck
+  a flatbed with the control station and a six-canister box on its launcher (named for the erector).
+- **Command vehicle.** A Stryker CV: paired axles, six antenna stubs with lamps, the telescopic mast folded on the
+  roof, a dish, the command tent rolled over the ramp.
+- **Not reached:** the other 46 vehicles, the structures and the other bosses, listed in `Docs/ASSET_DEBT.md`
+  ("Prompt 25 B2") with their shape notes. The supply truck borrows `armed_truck`: its own model needs a data change.
+
+### Tests
+
+Per the owner's rule (no tests until the test phase), none were run. The card-render run compiled the project with
+no `error CS`. Two test cases follow the smaller models: `ModelTests.RoundsLeaveFromTheLaunchersOnBothSides` now
+expects the fighter's missiles more than 1.0 m off centre (was 3.0) and the Apache's rockets 0.45 m and missiles 0.8 m
+(were 1.2 and 2.0). Blender's `check_muzzles.py` passes every muzzle; its per-launcher and turret-sweep warnings are
+the same kind the old models had (a twin tank's centre muzzle, the jeep's roll bar, the flame tank's rear tanks).
+
+To run in the test phase: `ModelTests` (all), `MuzzleTests`, `PlayTest8VisualTests.IcarusKeepsEveryPartNodeAndMuzzle`,
+`BossPartsTests`, `Prompt20BossTests`, `CardRenderTests`, `PlayTest5VisualTests` / `PlayTest6VisualTests` (the
+gunship, the FPV drone, the Lancet erector), then B1's size-order tests and the stuck-vehicle detector once B1 sets
+the scales and capsules.
+
+### Shared edits (merge by hand if they conflict)
+
+`Tools/blender/build_assets.py` (one import, one BUILDERS line), `Docs/art/models.json` (triangle counts; merge with
+`Tools/art/resolve_merge.py`), `Assets/MachineBrigade/Resources/UI/Cards/manifest.json` and the thirteen card PNGs,
+`Assets/MachineBrigade/Tests/EditMode/ModelTests.cs` (three TestCase numbers), `Docs/ASSET_DEBT.md`,
+`Docs/CHANGELOG.md`, this file.
