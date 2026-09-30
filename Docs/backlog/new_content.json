@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 54,
+    "chưa làm": 53,
     "đang làm": 0,
-    "xong": 39
+    "xong": 40
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 2,
+      "chưa làm": 1,
       "đang làm": 0,
-      "xong": 12
+      "xong": 13
     },
     "support": {
       "chưa làm": 11,
@@ -1063,9 +1063,9 @@
       "group": "Drone",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "fpv_swarm_mini",
+      "notes": "Batch C: weapon fpv_swarm_mini (switchblade_300 family), a secondary on fibre_fpv_carrier (\"FPV drone-launcher vehicle branch\" — vehicles have no branch mechanic, so this is its second weapon instead). Plain drone weapon, burst 6, no jamProof/oneAtATime (an easy-kill swarm, unlike the carrier's jam-proof single fpv_fibre), no new code."
     },
     {
       "key": "tl14",

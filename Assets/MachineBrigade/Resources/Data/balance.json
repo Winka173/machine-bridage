@@ -265,6 +265,7 @@
     { "id": "apkws", "real": "APKWS (laser-guided Hydra 70)", "projectileSpeed": 45, "splash": 2, "projectileModel": "apkws", "roundWeight": 15, "roundLength": 0.8 },
     { "id": "coyote_block_2", "real": "Coyote Block 2", "projectileSpeed": 40, "splash": 2, "roundWeight": 5, "roundLength": 0.8 },
     { "id": "smart_155_bonus", "real": "SMArt 155 / BONUS", "projectileSpeed": 45, "splash": 2, "projectileModel": "smart_155", "roundLength": 0.8 },
+    { "id": "switchblade_300", "real": "Switchblade 300", "projectileSpeed": 30, "splash": 2, "roundWeight": 3, "roundLength": 0.8 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -621,6 +622,8 @@
     { "id": "coyote_interceptor", "real": "Coyote Block 2", "weaponFamily": "coyote_block_2", "family": "drone", "size": 5, "pen": 2, "damageType": "Fragmentation", "damage": 120, "cooldown": 1.125, "range": 45, "projectileSpeed": 40, "splash": 2, "impactTier": "Small", "projectile": "Drone", "projectileModel": "coyote_block2", "roundLength": 0.8, "targets": "Air", "prey": "Rotors" },
     // tl09: SMArt 155/BONUS-class top-attack artillery shell (wheeled_howitzer secondary): 2 top-attack submunitions that only matter against vehicles.
     { "id": "smart_at_shell", "real": "SMArt 155 / BONUS", "weaponFamily": "smart_155_bonus", "family": "howitzer", "size": 155, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 25, "range": 90, "minRange": 25, "projectileSpeed": 45, "impactTier": "Medium", "projectileModel": "smart_155", "roundLength": 0.8, "cluster": { "count": 2, "radius": 4, "damage": 220, "splash": 1.5, "pen": 4, "tier": "Medium" } },
+    // tl13: Switchblade 300-class mini swarm (fibre_fpv_carrier secondary): 6 cheap kamikaze drones, easily shot down, no jamProof / oneAtATime.
+    { "id": "fpv_swarm_mini", "real": "Switchblade 300", "weaponFamily": "switchblade_300", "family": "drone", "size": 3, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 90, "burst": 6, "burstInterval": 0.4, "cooldown": 50, "range": 50, "projectileSpeed": 30, "splash": 2, "impactTier": "Medium", "projectile": "Drone", "projectileModel": "switchblade_300", "roundLength": 0.8 },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1199,7 +1202,7 @@
       "weapon": "none", "sightJammer": { "radius": 35, "close": 15 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
     // dx47: the fibre-optic FPV carrier: an answer to a jamming enemy.
     { "id": "fibre_fpv_carrier", "modelSize": [4.6, 1.9, 2.0], "class": "TankHunter", "armour": 1, "hp": 432, "speed": 10, "turnRate": 110, "turretTurnRate": 90, "radius": 1.8, "length": 4.6, "width": 1.9, "cp": 7, "vision": 44,
-      "firesWhileMoving": false, "weapon": "fpv_fibre", "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
+      "firesWhileMoving": false, "weapon": "fpv_fibre", "secondary": [{ "weapon": "fpv_swarm_mini", "slot": "rocket", "aim": "Free" }], "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx48: the interceptor-drone vehicle: drones against drones.
     { "id": "interceptor_drone_vehicle", "modelSize": [5.0, 2.0, 2.4], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 10, "turnRate": 100, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 50,
       "firesWhileMoving": false, "weapon": "interceptor_drone", "secondary": [{ "weapon": "coyote_interceptor", "slot": "aam", "aim": "Free" }], "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
