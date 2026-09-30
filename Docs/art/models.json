@@ -13,11 +13,11 @@
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
-    "triangles": 6936
+    "triangles": 3236
   },
   "aa_vehicle_hd": {
     "file": "aa_vehicle_hd.glb",
-    "triangles": 15600
+    "triangles": 8044
   },
   "adobe_house": {
     "file": "adobe_house.glb",
@@ -645,7 +645,7 @@
   },
   "ifv": {
     "file": "ifv.glb",
-    "triangles": 6416
+    "triangles": 3192
   },
   "iron_beam": {
     "file": "iron_beam.glb",
@@ -709,11 +709,11 @@
   },
   "light_tank": {
     "file": "light_tank.glb",
-    "triangles": 6748
+    "triangles": 2728
   },
   "light_tank_hd": {
     "file": "light_tank_hd.glb",
-    "triangles": 15078
+    "triangles": 6828
   },
   "lighthouse": {
     "file": "lighthouse.glb",

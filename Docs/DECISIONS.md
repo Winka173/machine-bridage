@@ -10893,3 +10893,6 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | sam_launcher | 7.4 x 2.6 x 3.0 (note) | 7.18 x 2.70 x 2.97 | 7.18 x 2.70 | 3,248 | Buk-M1 9A310 TELAR, 9M38 at its 4.44 m (B3) | 5.1 x 2.6 x 3.4 at 0.95, 8,408 |
 | long_sam | 11.2 x 2.5 x 3.0 (note) | 11.02 x 2.46 x 2.59 | 11.02 x 2.44 | 2,576 | S-400 5P85SM TEL on a MAZ-543, 48N6 canisters at 6.0 m (B3) | 9.8 x 3.1 x 3.7 at 0.85, 11,284 |
 | titan_tank | length 10.6 or more, 1.2 x the heavy tank, as wide as two tanks | 11.30 x 5.30 x 2.84 | 8.14 x 5.30 | 5,876 (the heaviest ground vehicle: over the tank range, four tracks) | Object 279, Landkreuzer P. 1000 Ratte | 10.4 x 3.6 x 3.5 at 0.85, 11,144 |
+| ifv | 5.2 x 2.9 x 2.4 (note; the row keeps 6.2) | 5.48 x 3.02 x 2.50 | 5.31 x 3.02 | 3,192 | M2 Bradley (turret left of centre as the sheet has it, TOW box on its left) | 6.2 x 2.7 x 3.1 at 0.85, 6,416 |
+| light_tank (+ _hd) | 6.1 x 2.6 x 1.8 (note) | 6.39 x 2.61 x 1.89 | 5.72 x 2.61 | 2,728 / 6,828 | PT-76, ZBD-05 | 6.2 x 2.3 x 2.2 at 0.85, 6,748 |
+| aa_vehicle (+ _hd) | 6.2 x 3.0 x 2.4 (note; 2.9 m with the search radar up) | 6.44 x 3.06 x 2.92 | 5.85 x 3.06 | 3,236 / 8,044 | Flakpanzer Gepard 1A2 | 5.6 x 2.7 x 3.0 at 1.0, 6,936 |
