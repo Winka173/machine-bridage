@@ -259,6 +259,16 @@
     { "id": "tos_1a_220_mm_thermobaric", "real": "TOS-1A 220 mm thermobaric", "projectileSpeed": 35, "splash": 7, "projectileModel": "tos_rocket" },
     // Prompt 25 F2 batch A.
     { "id": "bofors_40_mm_l_70", "real": "Bofors 40 mm L/70", "projectileSpeed": 220, "splash": 2.5, "roundWeight": 51 },
+    // Prompt 25 F2 batch C: new ordnance (DECISIONS 25F2-C).
+    { "id": "cbu_97_sfw", "real": "CBU-97 Sensor Fuzed Weapon", "projectileSpeed": 35, "splash": 3, "roundWeight": 450, "roundLength": 1.17 },
+    { "id": "gbu_28", "real": "GBU-28", "projectileSpeed": 35, "splash": 6, "roundWeight": 2100, "roundLength": 2.92 },
+    { "id": "odab_500", "real": "ODAB-500", "projectileSpeed": 35, "splash": 12, "roundWeight": 500, "roundLength": 1.23 },
+    { "id": "agm_88_harm", "real": "AGM-88 HARM", "projectileSpeed": 45, "splash": 4, "roundWeight": 360, "roundLength": 2.09 },
+    { "id": "apkws", "real": "APKWS (laser-guided Hydra 70)", "projectileSpeed": 45, "splash": 2, "projectileModel": "apkws", "roundWeight": 15, "roundLength": 0.8 },
+    { "id": "coyote_block_2", "real": "Coyote Block 2", "projectileSpeed": 40, "splash": 2, "roundWeight": 5, "roundLength": 0.8 },
+    { "id": "smart_155_bonus", "real": "SMArt 155 / BONUS", "projectileSpeed": 45, "splash": 2, "projectileModel": "smart_155", "roundLength": 0.8 },
+    { "id": "switchblade_300", "real": "Switchblade 300", "projectileSpeed": 30, "splash": 2, "roundWeight": 3, "roundLength": 0.8 },
+    { "id": "nsm_oniks", "real": "NSM / P-800 Oniks", "projectileSpeed": 30, "splash": 7, "roundWeight": 680, "roundLength": 3.17 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -600,6 +610,7 @@
     // ct13: the fixed 50 kW anti-drone laser (Iron Beam fixed site, DragonFire): at drones only; its interceptors (the APS) take rockets and mortar bombs; smoke cuts it by 80 %.
     { "id": "laser_50kw", "real": "50 kW laser (Iron Beam fixed site)", "family": "laser", "size": 50, "pen": 2, "damageType": "Energy", "damage": 6, "cooldown": 0.0667, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true, "prey": "Drones" },
     // (batch A weapons: new entries above)
+<<<<<<< HEAD
     // Prompt 25 F2 batch B (DECISIONS 25F2-B): the "Đề xuất thêm" Thấp-priority items, stand-in models (a borrowed
     // model, "tint"); new weapons only where nothing existing was close, else an existing weapon id is reused as is.
     // dx05: the 2S38 Derivatsiya-PVO's 57 mm autocannon (proximity-fused, also catches light vehicles).
@@ -624,6 +635,30 @@
     { "id": "one_shot_kornet", "inherits": "tower_kornet", "real": "9M133 Kornet", "burst": 1, "cooldown": 1.2, "clip": 8, "clipReload": 999999 },
     // (batch B weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
+=======
+    { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4},
+    // tl02: CBU-97-class cluster bomb (glide_bomber secondary): 10 top-attack bomblets that only matter against vehicles.
+    { "id": "cluster_at_bomb", "real": "CBU-97 Sensor Fuzed Weapon", "weaponFamily": "cbu_97_sfw", "family": "bomb", "size": 450, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 90, "range": 30, "projectileSpeed": 35, "impactTier": "Medium", "projectile": "Bomb", "projectileModel": "cbu_97", "roundLength": 1.17, "cluster": { "count": 10, "radius": 12.5, "damage": 160, "splash": 3, "pen": 4, "tier": "Medium" } },
+    // tl03: GBU-28-class bunker buster (glide_bomber secondary): x2 against structures, small blast.
+    { "id": "bunker_buster_bomb", "real": "GBU-28", "weaponFamily": "gbu_28", "family": "bomb", "size": 2100, "pen": 4, "damageType": "HighExplosive", "damage": 1400, "cooldown": 90, "range": 30, "projectileSpeed": 35, "splash": 6, "impactTier": "Huge", "projectile": "Bomb", "projectileModel": "gbu_28", "roundLength": 2.92, "bonuses": [ { "armor": "Structure", "mult": 2 } ] },
+    // tl04: ODAB-500-class thermobaric bomb (glide_bomber secondary): big blast, x2 on structures and entrenched vehicles.
+    { "id": "thermobaric_bomb", "real": "ODAB-500", "weaponFamily": "odab_500", "family": "bomb", "size": 500, "pen": 3, "damageType": "HighExplosive", "damage": 380, "cooldown": 90, "range": 28, "projectileSpeed": 35, "splash": 12, "impactTier": "Huge", "projectile": "Bomb", "projectileModel": "odab_500", "roundLength": 1.23, "thermobaric": true },
+    // tl05: AGM-88 HARM-class anti-radar missile (interceptor_jet secondary): x2 against active air defence.
+    { "id": "anti_radar_missile", "real": "AGM-88 HARM", "weaponFamily": "agm_88_harm", "family": "missile", "size": 360, "pen": 3, "damageType": "HighExplosive", "damage": 300, "cooldown": 8, "range": 90, "projectileSpeed": 45, "splash": 4, "impactTier": "Large", "projectile": "Missile", "projectileModel": "harm", "roundLength": 2.09, "bonuses": [ { "class": "AntiAir", "mult": 2 } ] },
+    // tl06: APKWS-class laser-guided 70 mm rocket (attack_helicopter secondary): precise, cheap, can hit drones.
+    { "id": "apkws_rocket", "real": "APKWS (laser-guided Hydra 70)", "weaponFamily": "apkws", "family": "rocket", "size": 70, "pen": 2, "damageType": "ShapedCharge", "damage": 90, "cooldown": 1, "range": 40, "projectileSpeed": 45, "splash": 2, "impactTier": "Medium", "projectile": "Rocket", "projectileModel": "apkws", "roundLength": 0.8, "targets": "All" },
+    // tl07: Coyote Block 2-class drone interceptor (interceptor_drone_vehicle secondary): a second, cheaper interceptor round.
+    { "id": "coyote_interceptor", "real": "Coyote Block 2", "weaponFamily": "coyote_block_2", "family": "drone", "size": 5, "pen": 2, "damageType": "Fragmentation", "damage": 120, "cooldown": 1.125, "range": 45, "projectileSpeed": 40, "splash": 2, "impactTier": "Small", "projectile": "Drone", "projectileModel": "coyote_block2", "roundLength": 0.8, "targets": "Air", "prey": "Rotors" },
+    // tl09: SMArt 155/BONUS-class top-attack artillery shell (wheeled_howitzer secondary): 2 top-attack submunitions that only matter against vehicles.
+    { "id": "smart_at_shell", "real": "SMArt 155 / BONUS", "weaponFamily": "smart_155_bonus", "family": "howitzer", "size": 155, "pen": 4, "damageType": "ShapedCharge", "damage": 0, "cooldown": 25, "range": 90, "minRange": 25, "projectileSpeed": 45, "impactTier": "Medium", "projectileModel": "smart_155", "roundLength": 0.8, "cluster": { "count": 2, "radius": 4, "damage": 220, "splash": 1.5, "pen": 4, "tier": "Medium" } },
+    // tl13: Switchblade 300-class mini swarm (fibre_fpv_carrier secondary): 6 cheap kamikaze drones, easily shot down, no jamProof / oneAtATime.
+    { "id": "fpv_swarm_mini", "real": "Switchblade 300", "weaponFamily": "switchblade_300", "family": "drone", "size": 3, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 90, "burst": 6, "burstInterval": 0.4, "cooldown": 50, "range": 50, "projectileSpeed": 30, "splash": 2, "impactTier": "Medium", "projectile": "Drone", "projectileModel": "switchblade_300", "roundLength": 0.8 },
+    // tl14: NSM/P-800 Oniks-class coastal anti-ship missile. Not fitted to a unit: its host, "coastal anti-ship missile
+    // vehicle (new)", does not exist yet (out of scope for ordnance-only batch C); cataloged for when it is built.
+    { "id": "anti_ship_missile", "real": "NSM / P-800 Oniks", "weaponFamily": "nsm_oniks", "family": "missile", "size": 680, "pen": 4, "damageType": "HighExplosive", "damage": 450, "cooldown": 30, "range": 140, "projectileSpeed": 30, "splash": 7, "impactTier": "Huge", "projectile": "Missile", "projectileModel": "nsm_oniks", "roundLength": 3.17 },
+    // ht04: the loitering attack UAV's missile (an MQ-9/TB2-style Hellfire): goes for the strongest enemy vehicle in reach.
+    { "id": "uav_loiter_missile", "real": "AGM-114 Hellfire (UAV)", "family": "missile", "size": 45, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 260, "cooldown": 7, "range": 40, "projectileSpeed": 26, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "projectileModel": "hellfire_longbow", "bigGame": true },
+>>>>>>> feature/p25-new-c
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -727,8 +762,7 @@
     // stand-off (Hellfire Longbows in pairs from 55 m, hovering at the edge of that reach) and Stingers for aircraft.
     { "id": "attack_helicopter", "value": 1.05, "altModels": ["heavy_attack_heli"], "rearmTime": 9, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1.1765, "modelSize": [6.35, 4.44, 2.02], "armour": 1,  "hp": 800, "speed": 13, "turnRate": 110, "turretTurnRate": 360, "radius": 3.2, "cp": 9, "vision": 40,
       "firesWhileMoving": true, "weapon": "hellfire_standoff", "mainSlot": "missile", "flying": true, "standoff": true, "altitude": 15, "captureRate": 0,
-      "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" },
-                     { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" } ], "skills": ["heli_flares"],
+      "secondary": [{ "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" }, { "weapon": "apkws_rocket", "slot": "rocket2", "aim": "Free" }], "skills": ["heli_flares"],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.6, "tier": "Large" } },
     { "id": "armored_car", "value": 0.94, "scale": 1, "modelSize": [4.78, 2.08, 1.49],      "class": "Light", "armour": 1, "hp": 300, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 3, "vision": 46,
       "firesWhileMoving": true, "weapon": "autocannon_25", "captureRate": 2,
@@ -1161,7 +1195,7 @@
       "firesWhileMoving": true, "weapon": "none", "flying": true, "altitude": 30, "captureRate": 0 },
     // dx11: the shoot-and-scoot wheeled howitzer (CAESAR, Archer, ATMOS): after every salvo it drives off 15-25 m.
     { "id": "wheeled_howitzer", "modelSize": [8.0, 2.1, 3.0], "class": "Artillery", "armour": 0, "hp": 318, "speed": 9, "turnRate": 70, "turretTurnRate": 45, "radius": 2.2, "length": 8.0, "width": 2.1, "cp": 6, "vision": 30,
-      "scoot": { "shots": 1, "min": 15, "max": 25 }, "firesWhileMoving": false, "weapon": "caesar_155",
+      "scoot": { "shots": 1, "min": 15, "max": 25 }, "firesWhileMoving": false, "weapon": "caesar_155", "secondary": [{ "weapon": "smart_at_shell", "slot": "gun", "aim": "Turret" }],
       "deathExplosion": { "damage": 80, "radius": 9, "delay": 0.3, "tier": "Large" } },
     // dx12: the turreted self-propelled mortar (Patria AMOS / NEMO, 2S31 Vena): better armour than the mortar carrier.
     { "id": "sp_mortar", "modelSize": [6.3, 2.3, 2.5], "class": "Artillery", "armour": 2, "hp": 545, "speed": 8, "turnRate": 80, "turretTurnRate": 60, "radius": 2.1, "length": 6.3, "width": 2.3, "cp": 5, "vision": 26,
@@ -1169,7 +1203,7 @@
       "deathExplosion": { "damage": 70, "radius": 8, "delay": 0.25, "tier": "Large" } },
     // dx14: the long-range glide bomber (a Su-34 with UMPK bombs): it releases from 90 m and turns away, never over its target.
     { "id": "glide_bomber", "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1000, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 16, "vision": 50,
-      "firesWhileMoving": true, "weapon": "glide_fab500", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
+      "firesWhileMoving": true, "weapon": "glide_fab500", "secondary": [{ "weapon": "cluster_at_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "bunker_buster_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "thermobaric_bomb", "slot": "bomb", "aim": "Hull" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
       "skills": ["bomber_flares"], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     // dx15: the high-speed reconnaissance jet (SR-71, MiG-25R): one straight pass at 60 m/s, a 60 m strip shown for 20 s (stealth too), then it leaves; high up, only the high-tier weapons reach it.
     { "id": "recon_jet", "modelSize": [13.1, 6.8, 2.2], "class": "Plane", "armour": 0, "hp": 364, "speed": 60, "turnRate": 45, "turretTurnRate": 360, "radius": 4.5, "cp": 8, "vision": 60,
@@ -1177,7 +1211,7 @@
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.6, "tier": "Large" } },
     // dx16: the interceptor (MiG-31BM): dashes in, fires from 90 m and turns home; poor in a close dogfight.
     { "id": "interceptor_jet", "ceiling": "high", "modelSize": [9.1, 5.4, 2.5], "class": "Plane", "strongVs": ["Plane"], "armour": 0, "hp": 591, "speed": 55, "turnRate": 90, "turretTurnRate": 360, "radius": 3.6, "cp": 13, "vision": 72,
-      "firesWhileMoving": true, "weapon": "r37m", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 38, "captureRate": 0, "interceptor": true, "rearmTime": 11,
+      "firesWhileMoving": true, "weapon": "r37m", "secondary": [{ "weapon": "anti_radar_missile", "slot": "aam", "aim": "Free" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 38, "captureRate": 0, "interceptor": true, "rearmTime": 11,
       "skills": ["jet_flares"], "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
     // dx20: the armoured radar scout (Fennek, BRDM-2 with a radar): standing 2 s it raises its mast, sees 80 m and all but hides.
     { "id": "radar_scout", "modelSize": [4.6, 2.0, 4.0], "class": "Scout", "armour": 1, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 4, "vision": 50,
@@ -1203,10 +1237,14 @@
       "weapon": "none", "sightJammer": { "radius": 35, "close": 15 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
     // dx47: the fibre-optic FPV carrier: an answer to a jamming enemy.
     { "id": "fibre_fpv_carrier", "modelSize": [4.6, 1.9, 2.0], "class": "TankHunter", "armour": 1, "hp": 432, "speed": 10, "turnRate": 110, "turretTurnRate": 90, "radius": 1.8, "length": 4.6, "width": 1.9, "cp": 7, "vision": 44,
-      "firesWhileMoving": false, "weapon": "fpv_fibre", "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
+      "firesWhileMoving": false, "weapon": "fpv_fibre", "secondary": [{ "weapon": "fpv_swarm_mini", "slot": "rocket", "aim": "Free" }], "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // ht04: a loaned attack UAV (MQ-9/TB2-class), spawned by the glide_bomb_strike-style Escort support: circles the call point for the card's duration.
+    { "id": "uav_loiter_strike", "model": "strike_drone", "drone": true, "class": "Plane", "modelSize": [4.25, 8.04, 1.24], "armour": 0, "hp": 250, "speed": 20, "turnRate": 90, "turretTurnRate": 360, "radius": 2.5, "cp": 0, "vision": 44, "firesWhileMoving": true, "weapon": "uav_loiter_missile", "mainSlot": "missile", "orbit": true, "orbitRadius": 18, "flying": true, "fixedWing": true, "altitude": 22, "captureRate": 0, "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.3, "tier": "Medium" } },
+    // ht08: a mobile inflatable tank decoy (as dx26's inflatable_decoy, but it mimics a moving tank, not a tower): dropped by parachute, gone after 30 s.
+    { "id": "decoy_tank", "model": "main_battle_tank", "modelSize": [7.5, 3.6, 2.6], "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.5, "cp": 0, "vision": 1, "weapon": "none", "decoy": { "mimic": "main_battle_tank" } },
     // dx48: the interceptor-drone vehicle: drones against drones.
     { "id": "interceptor_drone_vehicle", "modelSize": [5.0, 2.0, 2.4], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 10, "turnRate": 100, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 50,
-      "firesWhileMoving": false, "weapon": "interceptor_drone", "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
+      "firesWhileMoving": false, "weapon": "interceptor_drone", "secondary": [{ "weapon": "coyote_interceptor", "slot": "aam", "aim": "Free" }], "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // ct11: the troop shelter (a concrete bunker): its side's vehicles within 15 m take half from shells, mortars, bombs and strikes; direct fire is not stopped.
     { "id": "troop_shelter", "modelSize": [6.0, 5.0, 2.2], "fort": { "size": "Medium" }, "static": true, "armour": 3, "hp": 1818, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.6, "length": 6.0, "width": 5.0, "cp": 0, "vision": 30,
       "weapon": "none", "shelter": { "radius": 15, "cut": 0.5 } },
@@ -2020,7 +2058,7 @@
     { "id": "artillery_barrage", "kind": "Barrage",       "pen": 3, "cp": 5,  "cooldown": 60,  "delay": 1.5, "radius": 10, "count": 6, "duration": 4,   "damage": 160, "blast": 7,  "tier": "Large" },
     { "id": "airstrike",         "kind": "Airstrike",     "pen": 3, "cp": 9,  "cooldown": 90,  "delay": 2.0, "radius": 6,  "count": 4,  "duration": 1.2, "damage": 210, "blast": 10,  "tier": "Huge", "length": 60,
       "rankLine": { "rank": 7, "scale": 1.4 } },
-    { "id": "cruise_missile",    "kind": "CruiseMissile", "pen": 3, "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 10, "count": 1,  "damage": 300, "blast": 10, "tier": "Ultimate" },
+    { "id": "cruise_missile",    "kind": "CruiseMissile", "pen": 3, "cp": 14, "cooldown": 120, "delay": 3.0, "radius": 10, "count": 1,  "damage": 450, "blast": 9, "tier": "Ultimate" },
     { "id": "smoke_screen",      "kind": "Smoke",         "cp": 2,  "cooldown": 30,  "delay": 1.0, "radius": 12, "count": 1,  "duration": 12, "tier": "Small" },
     { "id": "repair_drop",       "kind": "Repair",        "cp": 4,  "cooldown": 60,  "delay": 1.5, "radius": 12, "count": 6,  "duration": 6,   "damage": 0.4, "tier": "Small" },
     // Premium (bought with coins): a line of fire.
@@ -2057,7 +2095,30 @@
     { "id": "uav_scan",          "kind": "Scan",          "cp": 2,  "cooldown": 45,  "delay": 2.0, "radius": 30, "count": 1, "duration": 10, "tier": "Small" },
     { "id": "remote_mines",      "kind": "Minefield",     "pen": 4, "cp": 5,  "cooldown": 60,  "delay": 2.0, "radius": 12, "count": 8, "duration": 60, "damage": 300, "blast": 4, "tier": "Large", "damageType": "ShapedCharge" },
     { "id": "field_tower",       "kind": "Tower",         "cp": 6,  "cooldown": 90,  "delay": 4.0, "radius": 4,  "count": 1, "duration": 60, "tier": "Small", "units": ["guard_tower", "atgm_tower"], "unitRank": 5 },
-    { "id": "sead_strike",       "kind": "Sead",          "pen": 3, "cp": 7,  "cooldown": 90,  "delay": 2.5, "radius": 20, "count": 1, "duration": 8,  "damage": 250, "blast": 3, "tier": "Large", "damageType": "HighExplosive" }
+    { "id": "sead_strike",       "kind": "Sead",          "pen": 3, "cp": 7,  "cooldown": 90,  "delay": 2.5, "radius": 20, "count": 1, "duration": 8,  "damage": 250, "blast": 3, "tier": "Large", "damageType": "HighExplosive" },
+    // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+    // ht01: 2 glide bombs dropped from outside nearby air defence; each can still be shot down (CruiseMissile, generalised to several bombs).
+    { "id": "glide_bomb_strike", "kind": "CruiseMissile", "pen": 3, "cp": 8, "cooldown": 90, "delay": 3.0, "radius": 10, "count": 2, "damage": 420, "blast": 10, "tier": "Huge" },
+    // ht02: a single Excalibur/Krasnopol-class guided shell, no scatter (Barrage with a tight radius and one round).
+    { "id": "guided_shell_strike", "kind": "Barrage", "pen": 3, "cp": 4, "cooldown": 45, "delay": 2.0, "radius": 1.5, "count": 1, "duration": 0, "damage": 360, "blast": 6, "tier": "Large" },
+    // ht03: 10 CBU-97-class top-attack bomblets homing on the nearest distinct enemy vehicles in the circle (Homing).
+    { "id": "cluster_at_strike", "kind": "Homing", "pen": 4, "cp": 9, "cooldown": 90, "delay": 2.0, "radius": 25, "count": 10, "damage": 160, "blast": 3, "tier": "Medium", "damageType": "ShapedCharge" },
+    // ht04: a loaned attack UAV that circles the point for Duration, firing at the strongest enemy vehicle it can reach (Escort, as gunship_support).
+    { "id": "uav_loiter_strike_support", "kind": "Escort", "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 40, "count": 1, "duration": 20, "tier": "Large", "units": ["uav_loiter_strike"] },
+    // ht05: an ammo resupply drop (Resupply): instantly refills every friendly weapon in the circle.
+    { "id": "ammo_resupply", "kind": "Resupply", "cp": 3, "cooldown": 60, "delay": 1.5, "radius": 15, "count": 1, "tier": "Small" },
+    // ht06: an EW jamming storm (JamStorm): downs enemy drones in the circle, then hides it (as Smoke) for Duration.
+    { "id": "jam_storm", "kind": "JamStorm", "cp": 5, "cooldown": 90, "delay": 2.0, "radius": 30, "count": 1, "duration": 10, "tier": "Medium" },
+    // ht07: an illumination flare (Scan): shows everything in the circle to the caller's side for Duration, night or fog alike.
+    { "id": "illum_flare_strike", "kind": "Scan", "cp": 1, "cooldown": 30, "delay": 1.5, "radius": 35, "count": 1, "duration": 15, "tier": "Small" },
+    // ht08: 3 inflatable decoy tanks dropped by parachute, gone after 30 s (Reinforce, as reinforcements).
+    { "id": "decoy_paradrop", "kind": "Reinforce", "cp": 2, "cooldown": 45, "delay": 2.0, "radius": 6, "count": 3, "duration": 30, "tier": "Small", "units": ["decoy_tank", "decoy_tank", "decoy_tank"] },
+    // ht09: instant counter-battery (CounterBattery): every enemy gun that fired in the last 10 s within Radius takes Count rounds.
+    { "id": "instant_counter_battery", "kind": "CounterBattery", "pen": 3, "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 60, "count": 4, "damage": 320, "blast": 7, "tier": "Large", "damageType": "HighExplosive" },
+    // ht10: 6 Coyote Block 2-class interceptor missiles homing on the nearest distinct enemy drones (Homing, dronesOnly).
+    { "id": "drone_intercept_strike", "kind": "Homing", "pen": 2, "cp": 3, "cooldown": 40, "delay": 1.5, "radius": 40, "count": 6, "damage": 120, "blast": 2, "tier": "Small", "damageType": "Fragmentation", "dronesOnly": true },
+    // ht11: chaff (Smoke): denies the circle for Duration, as the smoke screen does for line of sight and lasers.
+    { "id": "chaff_strike", "kind": "Smoke", "cp": 2, "cooldown": 45, "delay": 1.0, "radius": 30, "count": 1, "duration": 8, "tier": "Small" },
   ],
 
   "props": [

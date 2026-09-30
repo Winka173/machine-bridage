@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 33,
+    "chưa làm": 8,
     "đang làm": 1,
-    "xong": 59
+    "xong": 84
   },
   "byKind": {
     "unit": {
@@ -19,14 +19,14 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 14,
+      "chưa làm": 0,
       "đang làm": 0,
-      "xong": 0
+      "xong": 14
     },
     "support": {
-      "chưa làm": 11,
+      "chưa làm": 0,
       "đang làm": 0,
-      "xong": 0
+      "xong": 11
     },
     "boss": {
       "chưa làm": 8,
@@ -895,8 +895,8 @@
       "group": "Bom lượn",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "glide_fab500",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -909,8 +909,8 @@
       "group": "Bom chùm",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "cluster_at_bomb",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -923,8 +923,8 @@
       "group": "Bom",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "bunker_buster_bomb",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -937,8 +937,8 @@
       "group": "Bom",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "thermobaric_bomb",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -951,8 +951,8 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "anti_radar_missile",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -965,8 +965,8 @@
       "group": "Rốc-két",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "apkws_rocket",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -979,8 +979,8 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "coyote_interceptor",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -993,8 +993,8 @@
       "group": "Đạn pháo",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "howitzer_guided",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1007,8 +1007,8 @@
       "group": "Đạn pháo",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "smart_at_shell",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1021,8 +1021,8 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "r37m",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1035,8 +1035,8 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "spike_nlos",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1049,8 +1049,8 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "cruise_missile",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1063,8 +1063,8 @@
       "group": "Drone",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "fpv_swarm_mini",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1077,8 +1077,8 @@
       "group": "Tên lửa",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "anti_ship_missile",
       "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
     },
     {
@@ -1091,8 +1091,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "glide_bomb_strike",
       "notes": "25D2 plan: 2,500 coins in the shop (8 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
@@ -1105,8 +1105,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "guided_shell_strike",
       "notes": "25D2 plan: 1,500 coins in the shop (4 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
@@ -1119,8 +1119,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "cluster_at_strike",
       "notes": "25D2 plan: 2,500 coins in the shop (9 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
@@ -1133,8 +1133,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "uav_loiter_strike_support",
       "notes": "25D2 plan: 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
@@ -1147,8 +1147,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "ammo_resupply",
       "notes": "25D2 plan: 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
@@ -1161,8 +1161,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "jam_storm",
       "notes": "25D2 plan: 1,500 coins in the shop (5 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
@@ -1175,8 +1175,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "illum_flare_strike",
       "notes": "25D2 plan: 1,500 coins in the shop (1 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
@@ -1189,8 +1189,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "decoy_paradrop",
       "notes": "25D2 plan: 1,500 coins in the shop (2 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
@@ -1203,8 +1203,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "instant_counter_battery",
       "notes": "25D2 plan: 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward."
     },
     {
@@ -1217,8 +1217,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "drone_intercept_strike",
       "notes": "25D2 plan: 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward."
     },
     {
@@ -1231,8 +1231,8 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "chaff_strike",
       "notes": "25D2 plan: 1,500 coins in the shop (2 CP, so the CP 5 or less price), or a chapter reward."
     },
     {

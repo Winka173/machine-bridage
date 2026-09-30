@@ -452,6 +452,8 @@ namespace MachineBrigade.Sim.Content
                         UnitRank = s.Int("unitRank", 0),
                         LineRank = s.Has("rankLine") ? s.Object("rankLine").Int("rank", 0) : 0,
                         LineScale = s.Has("rankLine") ? s.Object("rankLine").Float("scale", 1f) : 1f,
+                        // Prompt 25 F2 batch C: a Homing strike's targets (ht10: drones only; ht03: ground vehicles).
+                        DronesOnly = s.Bool("dronesOnly", false),
                     }));
                 }
             }

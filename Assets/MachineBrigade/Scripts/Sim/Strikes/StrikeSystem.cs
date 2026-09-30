@@ -273,9 +273,16 @@ namespace MachineBrigade.Sim.Strikes
                         s.Announced = true;
                     }
                     if (now < s.Start) return false;
-                    // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile down (items are bombs, not missiles).
-                    if (!support.Consumable && ShotDown(s)) return true;
-                    Blast(s, s.Point);
+                    // Prompt 25 F2 batch C (ht01, the glide bomb): a stand-off strike of several bombs, each one its own
+                    // shoot-down roll and its own blast, spread a little so they do not all vanish to one intercept.
+                    var side = new Vector2(-s.Direction.Y, s.Direction.X);
+                    for (var k = 0; k < s.Count; k++)
+                    {
+                        var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(4f, support.BlastRadius * 0.8f)) : s.Point;
+                        // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile (or glide bomb) down.
+                        if (!support.Consumable && ShotDown(s, at)) continue;
+                        Blast(s, at);
+                    }
                     return true;
                 }
 
@@ -354,6 +361,8 @@ namespace MachineBrigade.Sim.Strikes
                             unit.GuardPoint = _world.ClampToMap(s.Point);
                             unit.PostRadius = MathF.Max(support.Radius, 12f);
                         }
+                        // Prompt 25 F2 batch C (ht08): a timed Reinforce drop (the inflatable decoys) packs up after Duration too.
+                        else if (support.Duration > 0f) unit.ExpiresAt = now + support.Duration;
                     }
                     return true;
                 }
@@ -442,6 +451,87 @@ namespace MachineBrigade.Sim.Strikes
                     return true;
                 }
 
+                // Prompt 25 F2 batch C (ht03, ht10): up to Count self-seeking submunitions, each its own distinct
+                // nearest target within Radius (ht03: ground vehicles; ht10: flying drones), its own hit.
+                case SupportKind.Homing:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var r2 = support.Radius * support.Radius;
+                    var picked = new List<Vehicle>();
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Def.Boss || v.Def.Static) continue;
+                        if (support.DronesOnly ? !(v.Flying && v.Def.Drone) : v.Flying) continue;
+                        if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
+                        picked.Add(v);
+                    }
+                    // Nearest first, ties broken by entity id (deterministic).
+                    picked.Sort((a, b) =>
+                    {
+                        var cmp = Vector2.DistanceSquared(a.Position, s.Point).CompareTo(Vector2.DistanceSquared(b.Position, s.Point));
+                        return cmp != 0 ? cmp : a.Id.Value.CompareTo(b.Id.Value);
+                    });
+                    var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
+                    for (var k = 0; k < picked.Count && k < support.Count; k++)
+                    {
+                        var v = picked[k];
+                        _world.Damage.Apply(v, damage, support.DamageType, new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Strike, true)
+                            .WithPen(support.Penetration, top: true, support.Thermobaric));
+                    }
+                    return true;
+                }
+
+                // Prompt 25 F2 batch C (ht05): every friendly vehicle within Radius has its weapons refilled at once.
+                case SupportKind.Resupply:
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team != s.Team || Vector2.Distance(v.Position, s.Point) > support.Radius + v.Radius) continue;
+                        _world.Abilities.Resupply(v);
+                    }
+                    return true;
+
+                // Prompt 25 F2 batch C (ht06): every enemy drone caught in the circle falls at once (as the
+                // microwave vehicle's pulse), and the circle then hides what is in it, as Smoke, for Duration.
+                // The sheet's "guided weapons miss 60 % of the time" is not modelled (a documented simplification).
+                case SupportKind.JamStorm:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var r2 = support.Radius * support.Radius;
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || !v.Flying || !v.Def.Drone) continue;
+                        if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
+                        _world.Damage.Apply(v, v.Hp + 1f, DamageType.Energy, new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Redirect, false));
+                    }
+                    _smoke.Add(new SmokeZone(s.Point, support.Radius, now + support.Duration));
+                    _world.Emit(SimEvent.SmokeDeployed(s.Team, s.Point, support.Radius, support.Duration));
+                    return true;
+                }
+
+                // Prompt 25 F2 batch C (ht09): every enemy artillery piece that fired in the last 10 s, anywhere within
+                // Radius, takes Count rounds of Damage (as MissionEvents' CounterBattery event punishes the player's).
+                case SupportKind.CounterBattery:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var r2 = support.Radius * support.Radius;
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Flying || v.Def.Class != UnitClass.Artillery) continue;
+                        if (now - v.LastFiredAt > 10.0) continue;
+                        if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
+                        var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
+                        var info = new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Strike, true).WithPen(support.Penetration, top: true, support.Thermobaric);
+                        for (var k = 0; k < support.Count; k++)
+                            _world.Damage.Splash(v.Position, support.BlastRadius, damage, support.DamageType, s.Team, EntityId.None, info: info);
+                    }
+                    return true;
+                }
+
                 default:
                     return true;
             }
@@ -494,17 +584,17 @@ namespace MachineBrigade.Sim.Strikes
 
         private void Blast(Strike s, Vector2 at) => Land(s, Scattered(s, at));
 
-        /// <summary>A cruise-missile strike met over its mark by an enemy heavy-missile interceptor (the PAC-3) with one left.</summary>
-        private bool ShotDown(Strike s)
+        /// <summary>A cruise missile or glide bomb met over <paramref name="at"/> by an enemy heavy-missile interceptor (the PAC-3) with one left.</summary>
+        private bool ShotDown(Strike s, Vector2 at)
         {
             foreach (var v in _world.VehicleList)
             {
                 var aps = v.Aps;
                 if (aps == null || !aps.Heavy || !v.IsAlive || v.Team == s.Team || v.Team < 0 || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
-                if (Vector2.DistanceSquared(v.Position, s.Point) > aps.Radius * aps.Radius) continue;
+                if (Vector2.DistanceSquared(v.Position, at) > aps.Radius * aps.Radius) continue;
                 v.ApsCharges--;
                 if (aps.Reload > 0f) v.ApsReload = 0f;
-                _world.Emit(SimEvent.Intercept(v, v.Def.Weapon, s.Point, v.ApsLeft = !v.ApsLeft));
+                _world.Emit(SimEvent.Intercept(v, v.Def.Weapon, at, v.ApsLeft = !v.ApsLeft));
                 return true;
             }
             return false;

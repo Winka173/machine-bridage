@@ -66,6 +66,25 @@ its commits.
 - The ammo-switch icon marks a gun of two rounds on cards and weapon rows; a glyph flashes on a unit's bar when it changes
   round; the detail page lists both rounds with their figures and what each is for.
 
+### New content, batch C: ordnance and support cards (prompt 25 F2, DECISIONS 25F2-C)
+
+- 9 new weapons from the balance sheet's "Tên lửa & bom mới", each fitted to an existing unit as a secondary or extra
+  weapon (no equipment-purchase system exists yet, so this stands in for it): a CBU-97-class cluster bomb, a GBU-28
+  bunker buster and an ODAB-500 thermobaric bomb on the glide bomber; an AGM-88 HARM anti-radar missile on the
+  interceptor; an APKWS laser-guided rocket on the attack helicopter; a second Coyote Block 2 interceptor round on the
+  interceptor drone vehicle; an SMArt 155/BONUS top-attack shell on the wheeled howitzer; a Switchblade 300 mini swarm
+  on the fibre-optic FPV carrier. An NSM/P-800 Oniks anti-ship missile is catalogued with no host (its coastal vehicle
+  does not exist yet). 4 sheet rows (a glide bomb, an R-37M, a Spike NLOS and a 155 mm guided shell) duplicate weapons
+  batch A and the second-rounds pass already built; the sheet's stealth cruise missile updates the existing
+  `cruise_missile` support card's numbers instead of adding a new one.
+- 11 new support cards from "Thẻ hỗ trợ mới", each sold in the shop (1,500-2,500 coins) and fielded by the enemy too: a
+  stand-off glide bomb strike (can still be shot down), a no-scatter guided shell, a self-seeking cluster bomb and a
+  drone-interceptor strike (one new mechanism, reused for both), a loitering attack UAV, an instant ammo resupply, a
+  jamming storm (downs drones, hides the area), an illumination flare, a decoy paradrop (3 fake tanks that draw fire,
+  never on the enemy), an instant counter-battery strike on enemy guns that just fired, and radar chaff (built on the
+  smoke screen's own zone).
+- The enemy AI can now draw any new-content support card into its quick-battle deck, as it already could for units.
+
 ### Measures and documents (prompt 25 E2, E3, F1, DECISIONS 25E)
 
 - The combat-value tool measures what support vehicles do for their side (E2): health repaired, rounds resupplied,

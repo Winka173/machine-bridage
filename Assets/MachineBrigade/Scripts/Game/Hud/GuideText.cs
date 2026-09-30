@@ -1084,6 +1084,106 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, một quả [[tên lửa]] đánh xuống điểm chọn với vụ nổ bán kính {{blast}} m.\n" +
                 "Mạnh / yếu: cách tốt nhất để xóa sổ một cụm quân hoặc cụm [[công sự]]; mục tiêu đang chạy có thể thoát trước khi nó rơi.\n" +
                 "Mẹo: bắn vào nơi địch đứng yên: cứ điểm đang chiếm, tuyến công thành, pháo binh đang đỗ. Xe gây nhiễu địch làm nó lệch."),
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+            ["guide.glide_bomb_strike"] = (
+                "[[Glide bomb strike]] · {{count}} stand-off bombs · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, {{count}} [[glide bombs]] fall on the spot ({{blast}} m blast each); unlike an airstrike, no aircraft flies over the target, but a heavy interceptor can still shoot a bomb down.\n" +
+                "Strong / weak: reaches a target behind short-range air defence; a heavy SAM or C-RAM can take a bomb out before it lands.\n" +
+                "Tip: call it on dug-in defences an airstrike's jet could not survive flying over.",
+                "[[Đòn bom lượn]] · {{count}} quả bom tầm xa · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, {{count}} quả [[bom lượn]] rơi xuống điểm chọn (mỗi quả nổ bán kính {{blast}} m); khác không kích, không có máy bay bay qua mục tiêu, nhưng hệ đánh chặn hạng nặng vẫn bắn hạ được bom.\n" +
+                "Mạnh / yếu: đánh trúng mục tiêu sau lưng phòng không tầm gần; SAM hạng nặng hoặc C-RAM vẫn có thể hạ một quả trước khi rơi.\n" +
+                "Mẹo: dùng cho công sự kiên cố mà máy bay không kích không sống nổi khi bay qua."),
+            ["guide.guided_shell_strike"] = (
+                "[[Guided shell]] · one pinpoint round · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, one [[Excalibur/Krasnopol-class]] shell lands exactly on the spot, no scatter ({{blast}} m blast).\n" +
+                "Strong / weak: certain against a target standing still; a moving vehicle can simply drive off before it lands.\n" +
+                "Tip: call it the moment an enemy gun or vehicle parks; a barrage's 6 rounds scatter, this one does not.",
+                "[[Đạn pháo dẫn đường]] · một phát trúng đích · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, một quả đạn kiểu [[Excalibur/Krasnopol]] rơi đúng điểm chọn, không tản mát (nổ bán kính {{blast}} m).\n" +
+                "Mạnh / yếu: chắc chắn trúng mục tiêu đứng yên; xe đang di chuyển có thể lái đi trước khi đạn rơi.\n" +
+                "Mẹo: gọi ngay khi pháo hoặc xe địch vừa đỗ lại; pháo kích 6 phát tản mát, thẻ này thì không."),
+            ["guide.cluster_at_strike"] = (
+                "[[AT cluster bomb]] · {{count}} homing bomblets · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, up to {{count}} top-attack bomblets each find the nearest distinct enemy vehicle in the circle and strike its roof; aircraft and buildings are not hit.\n" +
+                "Strong / weak: wipes out a whole cluster of tanks at once; wasted against a single vehicle or a fortified position.\n" +
+                "Tip: call it on a column or a mass of armour, not on towers.",
+                "[[Bom chùm chống tăng]] · {{count}} đầu đạn tự tìm · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, tối đa {{count}} đầu đạn con đánh nóc, mỗi đầu đạn tự tìm một xe địch khác nhau trong vùng; không đánh máy bay và công trình.\n" +
+                "Mạnh / yếu: xóa sổ cả cụm xe tăng cùng lúc; phí phạm nếu chỉ có một xe hoặc công sự kiên cố.\n" +
+                "Mẹo: dùng cho đoàn xe hoặc cụm thiết giáp, không dùng cho tháp canh."),
+            ["guide.uav_loiter_strike_support"] = (
+                "[[Loitering UAV strike]] · circles for {{duration}} s · {{cp}} CP\n" +
+                "How it fights: an [[attack UAV]] circles the point for {{duration}} s, firing at the strongest enemy vehicle it can reach; unlike every other card here, its strike is not instant.\n" +
+                "Strong / weak: keeps pressure on a fight as it develops; enemy air defence can shoot the drone down and end it early.\n" +
+                "Tip: call it as a fight starts, with cover against enemy anti-air.",
+                "[[UAV lượn tấn công]] · lượn {{duration}} giây · {{cp}} CP\n" +
+                "Cách đánh: một [[UAV tấn công]] lượn trên điểm chọn trong {{duration}} giây, tự bắn vào xe địch mạnh nhất trong tầm; khác mọi thẻ khác ở đây, đòn này không tức thì.\n" +
+                "Mạnh / yếu: giữ áp lực suốt trận đánh đang diễn ra; phòng không địch bắn hạ được UAV, kết thúc sớm.\n" +
+                "Mẹo: gọi ngay khi trận đánh bắt đầu, có người che chắn phòng không địch."),
+            ["guide.ammo_resupply"] = (
+                "[[Ammo resupply]] · instant refill · {{cp}} CP\n" +
+                "How it fights: every friendly vehicle within {{radius}} m has its weapons refilled at once, no waiting.\n" +
+                "Strong / weak: keeps artillery and aircraft in the fight when their stores run dry; useless on a vehicle that is not limited on ammunition.\n" +
+                "Tip: call it on your howitzers and strike aircraft once their rate of fire drops.",
+                "[[Thả dù tiếp đạn]] · nạp đầy ngay · {{cp}} CP\n" +
+                "Cách đánh: mọi xe ta trong vòng {{radius}} m được nạp đầy đạn ngay lập tức, không phải chờ.\n" +
+                "Mạnh / yếu: giữ pháo binh và máy bay tiếp tục chiến đấu khi hết đạn; vô dụng với xe không giới hạn đạn.\n" +
+                "Mẹo: gọi cho lựu pháo và máy bay tấn công của bạn khi tốc độ bắn giảm."),
+            ["guide.jam_storm"] = (
+                "[[Jamming storm]] · {{radius}} m circle · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, every enemy drone in the circle is downed at once, and the circle then hides everything inside it for {{duration}} s.\n" +
+                "Strong / weak: stops a drone swarm cold and blinds the enemy's view of what you do there; ground vehicles and towers are untouched.\n" +
+                "Tip: call it over a drone launch site, or over your own advance to cover it.",
+                "[[Bão gây nhiễu]] · vùng {{radius}} m · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, mọi drone địch trong vùng rơi ngay, và vùng đó bị che khuất trong {{duration}} giây.\n" +
+                "Mạnh / yếu: chặn đứng bầy drone và che mắt địch trong vùng đó; xe mặt đất và tháp canh không bị ảnh hưởng.\n" +
+                "Mẹo: gọi trên điểm phóng drone địch, hoặc che chắn cho đợt tiến quân của bạn."),
+            ["guide.illum_flare_strike"] = (
+                "[[Illumination flare]] · {{radius}} m circle · {{cp}} CP\n" +
+                "How it fights: a flare lights the circle for {{duration}} s, showing your side everything inside it, night or fog alike (as a UAV scan).\n" +
+                "Strong / weak: the cheapest way to fight blind weather or the dark; a UAV scan shows stealth too, and costs more.\n" +
+                "Tip: call it before pushing into a dark or foggy sector.",
+                "[[Pháo sáng chiếu sáng]] · vùng {{radius}} m · {{cp}} CP\n" +
+                "Cách đánh: pháo sáng chiếu vùng này trong {{duration}} giây, cho phe ta thấy mọi thứ trong đó, dù đêm hay sương mù (như UAV quét).\n" +
+                "Mạnh / yếu: cách rẻ nhất để đối phó thời tiết xấu hoặc đêm tối; UAV quét còn thấy cả tàng hình nhưng đắt hơn.\n" +
+                "Mẹo: gọi trước khi tiến vào khu vực tối hoặc nhiều sương mù."),
+            ["guide.decoy_paradrop"] = (
+                "[[Decoy paradrop]] · 3 fake tanks · {{cp}} CP\n" +
+                "How it fights: 3 [[inflatable tank decoys]] land on the spot; the enemy takes them for real tanks and fires on them until it spots the trick, or for {{duration}} s.\n" +
+                "Strong / weak: pulls fire off your real vehicles for free; a scout, radar or UAV scan up close sees through it at once (as the inflatable decoy tower does).\n" +
+                "Tip: drop it on your flank just before a push, to pull the enemy's eye the wrong way.",
+                "[[Mồi nhử thả dù]] · 3 xe tăng giả · {{cp}} CP\n" +
+                "Cách đánh: 3 [[xe tăng bơm hơi]] rơi xuống điểm chọn; địch tưởng thật và bắn vào chúng cho tới khi phát hiện ra, hoặc hết {{duration}} giây.\n" +
+                "Mạnh / yếu: hút hỏa lực khỏi xe thật miễn phí; trinh sát, radar hoặc UAV quét ở gần phát hiện ra ngay (như tháp mồi nhử bơm hơi).\n" +
+                "Mẹo: thả ở sườn trận địa ngay trước một đợt tiến công, để đánh lạc hướng mắt địch."),
+            ["guide.instant_counter_battery"] = (
+                "[[Instant counter-battery]] · punishes enemy guns · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, every enemy artillery piece that fired in the last 10 s, anywhere within {{radius}} m, takes {{count}} rounds of {{blast}} m blasts.\n" +
+                "Strong / weak: a real threat to enemy artillery that just opened up; a gun that has not fired recently is safe.\n" +
+                "Tip: call it the moment enemy shells start landing on your side.",
+                "[[Phản pháo tức thì]] · trừng phạt pháo địch · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, mọi khẩu pháo địch vừa bắn trong 10 giây qua, ở bất kỳ đâu trong {{radius}} m, bị {{count}} loạt nổ bán kính {{blast}} m.\n" +
+                "Mạnh / yếu: mối đe dọa thật với pháo địch vừa khai hỏa; khẩu nào chưa bắn gần đây thì an toàn.\n" +
+                "Mẹo: gọi ngay khi đạn pháo địch bắt đầu rơi vào phe ta."),
+            ["guide.drone_intercept_strike"] = (
+                "[[Drone intercept strike]] · {{count}} interceptors · {{cp}} CP\n" +
+                "How it fights: up to {{count}} small missiles each find the nearest distinct enemy drone in the circle and take it down; nothing else is hit.\n" +
+                "Strong / weak: dumps a whole drone swarm or loitering-munition wave at once; useless against anything that is not a drone.\n" +
+                "Tip: call it the moment a drone swarm shows on the minimap.",
+                "[[Đòn tên lửa đánh chặn drone]] · {{count}} tên lửa nhỏ · {{cp}} CP\n" +
+                "Cách đánh: tối đa {{count}} tên lửa nhỏ, mỗi quả tự tìm một drone địch khác nhau trong vùng và hạ nó; không đánh thứ gì khác.\n" +
+                "Mạnh / yếu: dập cả bầy drone hoặc đợt đạn lảng vảng cùng lúc; vô dụng với bất cứ thứ gì không phải drone.\n" +
+                "Mẹo: gọi ngay khi bầy drone địch hiện trên minimap."),
+            ["guide.chaff_strike"] = (
+                "[[Radar chaff]] · {{radius}} m circle · {{cp}} CP\n" +
+                "How it fights: for {{duration}} s, the circle denies lock-on the same way a smoke screen does — built on the same zone, so it works exactly like one.\n" +
+                "Strong / weak: opens a corridor for your own aircraft to fly through; a smoke screen already does the same job for ground sightlines and lasers, so pick whichever fits the target.\n" +
+                "Tip: call it along the flight path you want your planes to take.",
+                "[[Rải nhiễu radar]] · vùng {{radius}} m · {{cp}} CP\n" +
+                "Cách đánh: trong {{duration}} giây, vùng này chặn khóa mục tiêu giống hệt màn khói — dùng chung một vùng che, nên hoạt động y hệt màn khói.\n" +
+                "Mạnh / yếu: mở hành lang cho máy bay ta bay qua; màn khói cũng làm được việc này cho tầm nhìn mặt đất và laser, chọn thẻ nào hợp mục tiêu hơn.\n" +
+                "Mẹo: gọi dọc đường bay bạn muốn máy bay mình đi qua."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

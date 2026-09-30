@@ -175,6 +175,19 @@ namespace MachineBrigade.Game.Match
             ["drone_net_tower"] = 2000,
             ["one_shot_atgm_tower"] = 3000,
             // (batch B: new entries above)
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards, one unlock source each (the shop; the
+            // sheet's "or a chapter reward" waits for those rewards, as batch A's units did).
+            ["glide_bomb_strike"] = 2500,
+            ["guided_shell_strike"] = 1500,
+            ["cluster_at_strike"] = 2500,
+            ["uav_loiter_strike_support"] = 2500,
+            ["ammo_resupply"] = 1500,
+            ["jam_storm"] = 1500,
+            ["illum_flare_strike"] = 1500,
+            ["decoy_paradrop"] = 1500,
+            ["instant_counter_battery"] = 2500,
+            ["drone_intercept_strike"] = 1500,
+            ["chaff_strike"] = 1500,
         };
 
         /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>

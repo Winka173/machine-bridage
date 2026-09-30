@@ -222,7 +222,8 @@ namespace MachineBrigade.Game.Match
             var vehicles = ConquestAi.PickDeck(catalog, pool, difficulty, seed, difficulty == AiDifficulty.VeryHard ? MatchSettings.DeckVehicles : null);
             var supports = new List<string>();
             foreach (var id in MatchSettings.AllSupports)
-                if (catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) &&
+                // Prompt 25 F2 batch C: the shop's new support cards are the enemy's too, as batch A did for units.
+                if (catalog.TryGetSupport(id, out _) && Progression.EnemyMayUse(id) &&
                     (difficulty >= AiDifficulty.Hard || PlayerProfile.IsUnlocked(id))) supports.Add(id);
             return (vehicles.ToArray(), supports.ToArray());
         }
