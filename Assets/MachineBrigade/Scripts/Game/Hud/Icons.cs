@@ -221,6 +221,9 @@ namespace MachineBrigade.Game.Hud
             // Prompt 17 C: the shield generator (a dome over a pylon) and the CP relay (a mast with a coin).
             ["t_shieldgen"] = "<path d=\"M3 21h18M2.5 17.5a9.5 9.5 0 0 1 19 0M9 21v-5h6v5M12 16V9.5\"/><circle cx=\"12\" cy=\"8\" r=\"1.8\"/>",
             ["t_relay"] = "<path d=\"M3 21h10M8 21V6M5 21 8 11l3 10M5 6.5a4 4 0 0 1 6 0M3.5 4a6.5 6.5 0 0 1 9 0\"/><circle cx=\"17.5\" cy=\"15.5\" r=\"4\"/><path d=\"M17.5 13.5v4\"/>",
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new structures.
+            ["t_heavyflak"] = "<path d=\"M2 21h20M5 21v-3h14v3M8 18l2-5h4l2 5M12 13 19 4\"/><circle cx=\"19\" cy=\"4\" r=\"1.6\"/><circle cx=\"7\" cy=\"6\" r=\"1.2\"/><circle cx=\"4\" cy=\"9\" r=\"1\"/>",
+            // (batch A structure icons: new entries above)
             ["t_radar"] = "<path d=\"M3 21h16M7 21l1-5h6l1 5M5.5 11h11\"/><circle cx=\"11\" cy=\"11\" r=\"5.5\"/><path d=\"M17.5 4a5 5 0 0 1 2.5 3M19.5 2a8 8 0 0 1 3 4.5\"/>",
             // Spawn bastion: a crenellated keep with its gate.
             ["t_bastion"] = "<path d=\"M2 21h20M5 21V8h2.5v2h3V8h3v2h3V8H19v13M10 21v-4a2 2 0 0 1 4 0v4\"/>",

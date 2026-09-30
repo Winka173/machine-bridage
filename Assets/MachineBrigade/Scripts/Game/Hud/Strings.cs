@@ -2473,6 +2473,10 @@ namespace MachineBrigade.Game.Hud
             ["target.paradrop"] = ("Tap ground your side can see to drop {unit} (tap the card again to send it to the drop zone)",
                 "Chạm vào vùng phe ta nhìn thấy để thả dù {unit} (chạm thẻ lần nữa để đưa về bãi thả)"),
             ["err.DropNotSeen"] = ("Drop only where your side can see, and never into an enemy base", "Chỉ thả dù nơi phe ta nhìn thấy, không thả vào căn cứ địch"),
+            // dx01: Tháp cao xạ hạng nặng Flak 88.
+            ["unit.heavy_flak_tower"] = ("Heavy flak tower", "Tháp cao xạ hạng nặng"),
+            ["short.heavy_flak_tower"] = ("Heavy flak", "Cao xạ nặng"),
+            ["note.heavy_flak_tower"] = ("A heavy anti-aircraft gun of the 8.8 cm Flak 36/37 class: slow, big air bursts against bombers and tight formations; lowered, it hits tanks at 50 m.", "Pháo cao xạ hạng nặng kiểu 8,8 cm Flak 36/37: bắn chậm, đạn nổ trên không bán kính lớn vào oanh tạc cơ và tốp máy bay dày; hạ nòng bắn được xe tăng ở 50 m."),
             // (batch A: new entries above)
         };
 

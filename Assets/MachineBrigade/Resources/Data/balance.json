@@ -58,11 +58,11 @@
     "ai": {
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
-        "default": { "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
+        "default": { "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
                      "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
         "armour": { "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
-        "air": { "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
+        "air": { "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
         // A "tower.branch" weight is the general's taste in rank-7 branches (the tower-branch rework, DECISIONS 19T).
         // The enemy generals (prompt 4): Varga anti-tank, Orlov artillery, Kessler an even spread,
         // Dr Sen drones, Quạ Đen anti-air, Aurel everything strong.
@@ -70,8 +70,8 @@
         "orlov": { "artillery_emplacement.cb": 1.3, "rocket_turret.guided": 1.3, "artillery_emplacement": 2.6, "rocket_turret": 1.8, "guard_tower": 1.2, "gun_turret": 0.8, "aa_turret": 0.8 },
         "kessler": { "*": 1.0 },
         "sen": { "drone_hangar.swarm": 1.3, "ew_tower.drone": 1.3, "drone_hangar": 2.6, "ew_tower": 1.6, "c_ram": 1.2, "guard_tower": 1.0, "aa_turret": 1.0, "gun_turret": 0.8 },
-        "quaden": { "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
-        "aurel": { "missile_battery.pac3": 1.3, "shield_tower.bulwark": 1.2, "heavy_turret.bastion": 1.2, "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
+        "quaden": { "heavy_flak_tower": 2.0, "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
+        "aurel": { "heavy_flak_tower": 1.0, "missile_battery.pac3": 1.3, "shield_tower.bulwark": 1.2, "heavy_turret.bastion": 1.2, "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
       }
     }
   },
@@ -159,6 +159,8 @@
     { "id": "rh_120_l_44_120_mm", "real": "Rh-120 L/44 120 mm", "projectileSpeed": 170, "splash": 1.5, "roundWeight": 290 },
     { "id": "s_8_80_mm", "real": "S-8 80 mm", "projectileSpeed": 40, "splash": 3, "projectileModel": "s8", "roundWeight": 60 },
     { "id": "tos_1a_220_mm_thermobaric", "real": "TOS-1A 220 mm thermobaric", "projectileSpeed": 35, "splash": 7, "projectileModel": "tos_rocket" },
+    // Prompt 25 F2 batch A.
+    // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
 
@@ -465,6 +467,10 @@
     // DECISIONS 20Y: Leviathan's secondaries (triple 155 mm, the calibre scale's 320) and its 25 mm triples (17 a
     // round, at aircraft only: from the lanes they never reach the shore anyway).
     { "id": "naval_155_triple", "inherits": "naval_76", "real": "155 mm/60 (triple)", "family": "howitzer", "size": 155, "pen": 3, "projectileModel": "shell_155", "projectileScale": 0.7273, "roundLength": 0.8, "damage": 320, "cooldown": 10, "range": 110, "splash": 4.5, "spread": 2.4, "impactTier": "Large", "burst": 3, "burstInterval": 0.25},
+    // Prompt 25 F2 batch A (DECISIONS 25F2-A): the weapons of the balance sheet's new units and structures ("Đề
+    // xuất thêm", "Công trình mới"), their numbers the sheet's, on prompt 13's calibre scale and prompt 15's penetration.
+    { "id": "flak_88", "real": "8.8 cm Flak 36/37", "family": "howitzer", "size": 88, "pen": 3, "damageType": "Fragmentation", "damage": 120, "cooldown": 2, "range": 70, "groundRange": 50, "projectileSpeed": 160, "splash": 6, "spread": 1.5, "impactTier": "Large", "projectile": "Shell", "targets": "All", "groupPriority": true },
+    // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
 
@@ -961,6 +967,13 @@
     { "id": "cp_relay.loot", "art": "cp_relay_b", "branchOf": "cp_relay", "model": "cp_relay", "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 600,
       "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 1.8, "length": 4, "width": 4, "cp": 0, "vision": 30, "weapon": "none",
       "loot": { "radius": 40, "share": 0.2 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
+
+    // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures. Health is the sheet's over
+    // the vehicles' toughness (2.2), as prompt 25 A1 reads it; sizes are 0.8 x real on the ground, 0.4 x real in the air.
+    // dx01: the sheet's Flak 88 (prompt 26 will make it a KS-19-class 100 mm tower): slow, big air bursts, groups and big aircraft first; lowered at the ground it reaches 50 m.
+    { "id": "heavy_flak_tower", "modelSize": [7.0, 6.0, 3.4], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 40, "radius": 2.6, "length": 5.5, "width": 5.5, "cp": 0, "vision": 64,
+      "weapon": "flak_88", "secondary": [], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
+    // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
     // Prompt 16 F: the landing hovercraft's escort, a small air-cushion gunboat (it crosses land and water

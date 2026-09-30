@@ -1260,6 +1260,15 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: thêm CP cho căn cứ yên ổn; chiếm một ô phòng thủ nhỏ, và quân địch tấn công căn cứ sẽ nhắm nó trước.\n" +
                 "Mẹo: tối đa hai trạm mỗi căn cứ, không đặt ở tiền đồn; cân nhắc với tòa tháp mà nó thay chỗ."),
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures.
+            ["guide.heavy_flak_tower"] = (
+                "[[Heavy flak tower]] · medium tower · heavy air bursts\n" +
+                "How it fights: a big shell every 2 s, bursting 6 m wide at aircraft out to 70 m; lowered, it hits tanks out to 50 m.\n" +
+                "Strong / weak: breaks up [[bombers]] and tight formations; too slow for lone jets and drones.\n" +
+                "Tip: pair it with quick AA guns that take the helicopters.",
+                "[[Tháp cao xạ hạng nặng]] · tháp ô vừa · đạn nổ trên không\n" +
+                "Cách đánh: 2 giây một phát lớn, nổ trên không rộng 6 m, tầm 70 m; hạ nòng bắn xe tăng trong 50 m.\n" +
+                "Mạnh / yếu: bẻ gãy [[oanh tạc cơ]] và tốp máy bay dày; quá chậm với tiêm kích lẻ và drone.\n" +
+                "Mẹo: đặt cạnh pháo phòng không bắn nhanh để lo trực thăng."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

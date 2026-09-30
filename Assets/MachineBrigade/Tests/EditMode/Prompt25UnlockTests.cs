@@ -74,7 +74,8 @@ namespace MachineBrigade.Tests
                 if (!loot) Assert.AreEqual(early, Progression.Price(id, catalog), id + ": the sheet's early price");
             }
             CollectionAssert.AreEquivalent(UnlockSheetData.Cards.Where(c => c.chapter == 0).Select(c => c.id), Progression.StarterVehicles);
-            CollectionAssert.AreEqual(new[] { "napalm_strike" }, Progression.PremiumCards.ToArray(), "the premium vehicles open in the campaign now");
+            CollectionAssert.AreEqual(new[] { "napalm_strike" }, Progression.PremiumCards.Where(id => !Progression.IsNewContent(id)).ToArray(),
+                "the premium vehicles open in the campaign now (prompt 25 F2: the new content is sold in the shop)");
             foreach (var id in UnlockSheetData.NotCards) CollectionAssert.DoesNotContain(MatchSettings.AllVehicles, id, "no card");
         }
 

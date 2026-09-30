@@ -113,6 +113,7 @@ namespace MachineBrigade.Game.Match
         /// </summary>
         private static readonly Dictionary<string, int> NewContentPrices = new()
         {
+            ["heavy_flak_tower"] = 3000,
             // (batch A: new entries above)
         };
 
