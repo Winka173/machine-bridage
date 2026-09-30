@@ -1440,6 +1440,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bom địch ném trong 40 m quanh nó [[tản mát thêm 50%]]; trực thăng địch tránh vùng.\n" +
                 "Mạnh / yếu: phá các lượt ném bom vào căn cứ; bom dẫn đường không bị ảnh hưởng.\n" +
                 "Mẹo: đặt trên những tháp cần giữ nhất."),
+            ["guide.visual_jammer"] = (
+                "[[Visual jammer]] · utility module · hides the base\n" +
+                "How it fights: enemies see nothing of yours within 35 m of it from further than [[15 m]], unless they are scouts.\n" +
+                "Strong / weak: artillery cannot find what it covers; scouts and UAV scans see through it.\n" +
+                "Tip: put your towers and artillery inside its 35 m.",
+                "[[Máy tạo nhiễu tầm nhìn]] · mô-đun tiện ích · che căn cứ\n" +
+                "Cách đánh: địch không thấy gì của ta trong 35 m quanh nó nếu xa hơn [[15 m]], trừ trinh sát.\n" +
+                "Mạnh / yếu: pháo binh không tìm được thứ nó che; trinh sát và UAV quét nhìn xuyên.\n" +
+                "Mẹo: đặt tháp và pháo binh trong vòng 35 m."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

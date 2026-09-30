@@ -53,6 +53,7 @@ namespace MachineBrigade.Game.Hud
                 "fire_control_centre" => "t_firecontrol",
                 "searchlight" => "t_searchlight",
                 "barrage_balloon" => "t_balloon",
+                "visual_jammer" => "t_screen",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",

@@ -2553,6 +2553,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.barrage_balloon"] = ("Barrage balloon", "Bóng chắn máy bay"),
             ["short.barrage_balloon"] = ("Balloon", "Bóng chắn"),
             ["note.barrage_balloon"] = ("A tethered balloon on a steel cable, as over the cities of the Second World War, here a modern aerostat: aircraft must climb over it.", "Khí cầu buộc dây cáp thép như trên các thành phố thời Thế chiến II, ở đây là khí cầu hiện đại: máy bay phải bay vọt lên cao."),
+            // dx30: Máy tạo nhiễu tầm nhìn.
+            ["unit.visual_jammer"] = ("Visual jammer", "Máy tạo nhiễu tầm nhìn"),
+            ["short.visual_jammer"] = ("Visual jammer", "Nhiễu tầm nhìn"),
+            ["note.visual_jammer"] = ("An electronic camouflage station: emitters and aerosol generators that blind cameras and sights round the base.", "Trạm ngụy trang điện tử: bộ phát nhiễu và máy tạo sương làm mù camera và kính ngắm quanh căn cứ."),
             // (batch A: new entries above)
         };
 

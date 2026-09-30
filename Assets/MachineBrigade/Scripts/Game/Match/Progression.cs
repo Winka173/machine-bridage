@@ -133,6 +133,7 @@ namespace MachineBrigade.Game.Match
             ["fire_control_centre"] = 3000,
             ["searchlight"] = 2000,
             ["barrage_balloon"] = 2000,
+            ["visual_jammer"] = 3000,
             // (batch A: new entries above)
         };
 
