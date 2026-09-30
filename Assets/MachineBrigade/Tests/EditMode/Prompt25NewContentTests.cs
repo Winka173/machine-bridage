@@ -60,6 +60,7 @@ namespace MachineBrigade.Tests
             new Row("glide_bomber", 2200, 16, 1, -1, "glide_fab500", 420, 90, -1, "glide"),
             new Row("recon_jet", 800, 8, 0, -1, "none", -1, -1, -1, "pass"),
             new Row("interceptor_jet", 1300, 13, 0, -1, "r37m", 400, 90, -1, "bigGame"),
+            new Row("radar_scout", 700, 4, 1, 50, "hmg_selfdef_21", -1, -1, -1, "mast"),
             // (batch A rows: new ones above)
         };
 

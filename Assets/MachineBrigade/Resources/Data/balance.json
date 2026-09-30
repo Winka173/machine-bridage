@@ -1050,6 +1050,10 @@
     { "id": "interceptor_jet", "ceiling": "high", "modelSize": [9.1, 5.4, 2.5], "class": "Plane", "strongVs": ["Plane"], "armour": 0, "hp": 591, "speed": 55, "turnRate": 90, "turretTurnRate": 360, "radius": 3.6, "cp": 13, "vision": 72,
       "firesWhileMoving": true, "weapon": "r37m", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 38, "captureRate": 0, "interceptor": true, "rearmTime": 11,
       "skills": ["jet_flares"], "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
+    // dx20: the armoured radar scout (Fennek, BRDM-2 with a radar): standing 2 s it raises its mast, sees 80 m and all but hides.
+    { "id": "radar_scout", "modelSize": [4.6, 2.0, 4.0], "class": "Scout", "armour": 1, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 4, "vision": 50,
+      "stillVision": 80, "stillAfter": 2, "stillCamo": 0.6, "firesWhileMoving": true, "weapon": "hmg_selfdef_21", "mainSlot": "mg", "captureRate": 2,
+      "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

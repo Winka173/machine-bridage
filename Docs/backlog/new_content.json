@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 13,
-    "xong": 14
+    "đang làm": 12,
+    "xong": 15
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 9,
-      "xong": 14
+      "đang làm": 8,
+      "xong": 15
     },
     "structure": {
       "chưa làm": 0,
@@ -313,8 +313,8 @@
       "group": "Trinh sát",
       "priority": "Trung",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "radar_scout",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {

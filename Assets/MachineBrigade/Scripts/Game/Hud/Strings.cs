@@ -2529,6 +2529,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.interceptor_jet"] = ("Interceptor", "Tiêm kích đánh chặn"),
             ["short.interceptor_jet"] = ("Interceptor", "TK đánh chặn"),
             ["note.interceptor_jet"] = ("A MiG-31BM with R-37M missiles: very fast, a missile that reaches further than any other fighter's, made to kill bombers.", "MiG-31BM mang tên lửa R-37M: rất nhanh, tên lửa bắn xa hơn mọi tiêm kích khác, sinh ra để diệt oanh tạc cơ."),
+            // dx20: Xe trinh sát bọc thép radar mặt đất.
+            ["unit.radar_scout"] = ("Radar scout car", "Xe trinh sát bọc thép radar mặt đất"),
+            ["short.radar_scout"] = ("Radar scout", "TS radar"),
+            ["note.radar_scout"] = ("A Fennek-type armoured scout car (or a BRDM-2 with a radar) with a telescopic sensor mast: it watches from one spot.", "Xe trinh sát bọc thép kiểu Fennek (hoặc BRDM-2 gắn radar) với cột cảm biến kéo dài: đứng một chỗ mà canh."),
             // (batch A: new entries above)
         };
 

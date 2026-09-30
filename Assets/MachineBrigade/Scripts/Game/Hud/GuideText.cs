@@ -1386,6 +1386,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: lao vào, bắn hai [[tên lửa tầm siêu xa]] từ 90 m, ưu tiên máy bay lớn; không bắn trong 15 m.\n" +
                 "Mạnh / yếu: diệt oanh tạc cơ và pháo hạm bay từ sớm; thua khi quần thảo gần.\n" +
                 "Mẹo: giữ lại chờ oanh tạc cơ của địch."),
+            ["guide.radar_scout"] = (
+                "[[Radar scout car]] · light armour · stands watch\n" +
+                "How it fights: sees 50 m moving; standing 2 s it raises its [[radar mast]]: 80 m, and it all but hides.\n" +
+                "Strong / weak: spots for artillery from afar and unmasks decoys; weak on the move.\n" +
+                "Tip: park it on a flank and leave it there.",
+                "[[Xe trinh sát bọc thép radar mặt đất]] · giáp nhẹ · đứng gác\n" +
+                "Cách đánh: khi chạy nhìn 50 m; đứng yên 2 giây thì dựng [[cột radar]]: nhìn 80 m và gần như ẩn.\n" +
+                "Mạnh / yếu: chỉ điểm cho pháo binh từ xa, lật tẩy mồi nhử; di chuyển thì yếu.\n" +
+                "Mẹo: đỗ ở cánh và để yên đó."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
