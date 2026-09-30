@@ -164,3 +164,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 02:29) xong hết hãy update pdf
 - (30/09 03:34) nếu xong mọi thứ mà không có gì làm thì start prompt tiếp theo  [bắt đầu prompt 23 sau v0.30.0]
 - (30/09 08:26) Ném bom: có  [giữ trọng lực bom 40 m/s² và khoảng 0,2 s giữa hai quả của heavy bomber; DECISIONS]
+- (30/09 08:27) (đạo quân trùng với commander) gộp luôn  [gộp đạo quân vào commander, hoàn xu đạo quân đã mua]
