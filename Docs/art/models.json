@@ -519,6 +519,10 @@
     "file": "garage.glb",
     "triangles": 832
   },
+  "gbu39": {
+    "file": "gbu39.glb",
+    "triangles": 190
+  },
   "grad_truck": {
     "file": "grad_truck.glb",
     "triangles": 8092
@@ -662,6 +666,10 @@
   "jungle_tree_c": {
     "file": "jungle_tree_c.glb",
     "triangles": 1022
+  },
+  "kh29l": {
+    "file": "kh29l.glb",
+    "triangles": 238
   },
   "kronos": {
     "file": "kronos.glb",
