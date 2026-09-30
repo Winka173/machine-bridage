@@ -2573,6 +2573,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
             ["short.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
             ["note.flare_tower"] = ("A small tower with a multi-tube illumination mortar: parachute flares that turn night into day over the enemy.", "Tháp nhỏ với cối pháo sáng nhiều ống: pháo sáng dù biến đêm thành ngày trên đầu địch."),
+            // ct13: Trạm phòng không laser chống drone.
+            ["unit.laser_ad_station"] = ("Laser anti-drone station", "Trạm phòng không laser chống drone"),
+            ["short.laser_ad_station"] = ("Laser AD", "Trạm laser"),
+            ["note.laser_ad_station"] = ("A fixed high-energy laser site of the Iron Beam or DragonFire kind: it burns drones out of the sky and never runs out of rounds.", "Trạm laser năng lượng cao cố định kiểu Iron Beam hay DragonFire: đốt drone rơi khỏi bầu trời và không bao giờ hết đạn."),
             // (batch A: new entries above)
         };
 

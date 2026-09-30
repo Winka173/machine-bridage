@@ -58,19 +58,19 @@
     "ai": {
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
-        "default": { "flare_tower": 0.25, "troop_shelter": 0.3, "visual_jammer": 0.6, "barrage_balloon": 0.3, "searchlight": 0.3, "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
+        "default": { "laser_ad_station": 0.5, "flare_tower": 0.25, "troop_shelter": 0.3, "visual_jammer": 0.6, "barrage_balloon": 0.3, "searchlight": 0.3, "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
                      "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
         "armour": { "fire_control_centre": 1.0, "inflatable_decoy": 0.6, "blast_wall": 0.8, "at_gun_emplacement": 1.6, "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "troop_shelter": 0.6, "fire_control_centre": 1.0, "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
-        "air": { "barrage_balloon": 1.0, "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
+        "air": { "laser_ad_station": 1.0, "barrage_balloon": 1.0, "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
         // A "tower.branch" weight is the general's taste in rank-7 branches (the tower-branch rework, DECISIONS 19T).
         // The enemy generals (prompt 4): Varga anti-tank, Orlov artillery, Kessler an even spread,
         // Dr Sen drones, Quạ Đen anti-air, Aurel everything strong.
         "varga": { "fire_control_centre": 1.0, "at_gun_emplacement": 1.4, "gun_turret.long": 1.3, "atgm_tower.top": 1.3, "atgm_tower": 2.4, "gun_turret": 1.8, "heavy_turret": 1.6, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6 },
         "orlov": { "troop_shelter": 0.4, "fire_control_centre": 1.2, "artillery_emplacement.cb": 1.3, "rocket_turret.guided": 1.3, "artillery_emplacement": 2.6, "rocket_turret": 1.8, "guard_tower": 1.2, "gun_turret": 0.8, "aa_turret": 0.8 },
         "kessler": { "flare_tower": 0.4, "visual_jammer": 0.4, "searchlight": 0.5, "inflatable_decoy": 0.6, "*": 1.0 },
-        "sen": { "visual_jammer": 1.0, "drone_hangar.swarm": 1.3, "ew_tower.drone": 1.3, "drone_hangar": 2.6, "ew_tower": 1.6, "c_ram": 1.2, "guard_tower": 1.0, "aa_turret": 1.0, "gun_turret": 0.8 },
-        "quaden": { "barrage_balloon": 1.0, "heavy_flak_tower": 2.0, "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
+        "sen": { "laser_ad_station": 1.2, "visual_jammer": 1.0, "drone_hangar.swarm": 1.3, "ew_tower.drone": 1.3, "drone_hangar": 2.6, "ew_tower": 1.6, "c_ram": 1.2, "guard_tower": 1.0, "aa_turret": 1.0, "gun_turret": 0.8 },
+        "quaden": { "laser_ad_station": 0.8, "barrage_balloon": 1.0, "heavy_flak_tower": 2.0, "aa_turret.sam": 1.3, "missile_battery.lrr": 1.3, "c_ram.dome": 1.2, "aa_turret": 2.4, "missile_battery": 2.2, "c_ram": 1.4, "guard_tower": 1.0, "gun_turret": 0.6 },
         "aurel": { "fire_control_centre": 1.2, "inflatable_decoy": 0.4, "blast_wall": 1.0, "at_gun_emplacement": 0.8, "heavy_flak_tower": 1.0, "missile_battery.pac3": 1.3, "shield_tower.bulwark": 1.2, "heavy_turret.bastion": 1.2, "heavy_turret": 1.6, "missile_battery": 1.4, "artillery_emplacement": 1.2, "atgm_tower": 1.2, "c_ram": 1.2, "*": 0.8 }
       }
     }
@@ -499,6 +499,8 @@
     { "id": "interceptor_drone", "real": "Interceptor drone (1 kg)", "family": "drone", "size": 1, "pen": 1, "damageType": "Fragmentation", "damage": 120, "cooldown": 4, "range": 60, "projectileSpeed": 40, "splash": 1.5, "projectileModel": "fpv_drone", "projectileScale": 1.2, "impactTier": "Small", "projectile": "Drone", "targets": "Air", "prey": "Rotors" },
     // ct12: the illumination flare (no damage): fired every 15 s in the dark.
     { "id": "illum_flare", "real": "Illumination flare", "family": "special", "size": 81, "pen": 0, "form": "None", "damageType": "HighExplosive", "damage": 0, "cooldown": 15, "range": 40, "projectileSpeed": 35, "impactTier": "Small", "projectile": "Shell" },
+    // ct13: the fixed 50 kW anti-drone laser (Iron Beam fixed site, DragonFire): at drones only; its interceptors (the APS) take rockets and mortar bombs; smoke cuts it by 80 %.
+    { "id": "laser_50kw", "real": "50 kW laser (Iron Beam fixed site)", "family": "laser", "size": 50, "pen": 2, "damageType": "Energy", "damage": 6, "cooldown": 0.0667, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true, "prey": "Drones" },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -1090,6 +1092,10 @@
     // ct12: the flare tower: every 15 s at night a flare over the nearest enemy within 40 m shows everything within 30 m of it for 15 s.
     { "id": "flare_tower", "modelSize": [3.6, 3.6, 5.0], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 455, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 1.8, "length": 3.6, "width": 3.6, "cp": 0, "vision": 60,
       "weapon": "illum_flare", "flares": { "every": 15, "range": 40, "radius": 30, "seconds": 15 }, "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.2, "tier": "Large" } },
+    // ct13: the laser anti-drone station.
+    { "id": "laser_ad_station", "modelSize": [6.0, 4.0, 4.6], "fort": { "size": "Medium" }, "static": true, "armour": 1, "hp": 1136, "speed": 0, "turnRate": 1, "turretTurnRate": 180, "radius": 2.5, "length": 5.5, "width": 4.0, "cp": 0, "vision": 56,
+      "weapon": "laser_50kw", "aps": { "radius": 40, "shells": 0.5, "charges": 1, "recharge": 0.8, "rockets": true, "laser": true },
+      "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

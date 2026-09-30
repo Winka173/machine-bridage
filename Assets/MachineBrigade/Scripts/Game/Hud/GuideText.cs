@@ -1485,6 +1485,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: [[ban đêm và trong sương mù]], 15 giây một quả pháo sáng trên địch gần nhất trong 40 m, làm lộ mọi thứ trong 30 m.\n" +
                 "Mạnh / yếu: tìm quân đột kích đêm, cả tàng hình; ban ngày vô dụng.\n" +
                 "Mẹo: đi cặp với đèn pha ở map đêm."),
+            ["guide.laser_ad_station"] = (
+                "[[Laser anti-drone station]] · medium tower · never runs dry\n" +
+                "How it fights: a [[laser]] at drones only out to 40 m, and interceptors for rockets and mortar bombs; smoke cuts it by 80 %.\n" +
+                "Strong / weak: shuts down drone swarms and rocket rain; useless against aircraft and tanks.\n" +
+                "Tip: keep your own smoke away from it.",
+                "[[Trạm phòng không laser chống drone]] · tháp ô vừa · không bao giờ hết đạn\n" +
+                "Cách đánh: [[laser]] chỉ bắn drone, tầm 40 m, cùng bộ đánh chặn rốc-két và đạn cối; khói làm tia yếu 80%.\n" +
+                "Mạnh / yếu: dập bầy drone và mưa rốc-két; vô dụng trước máy bay và xe tăng.\n" +
+                "Mẹo: giữ khói của ta tránh xa nó."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

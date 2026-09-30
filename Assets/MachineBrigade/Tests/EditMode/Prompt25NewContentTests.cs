@@ -71,6 +71,7 @@ namespace MachineBrigade.Tests
             new Row("interceptor_drone_vehicle", 900, 5, 1, -1, "interceptor_drone", 120, 60, 30, "rotors"),
             new Row("troop_shelter", 4000, 0, 3, 30, "none", -1, -1, -1, "shelter"),
             new Row("flare_tower", 1000, 0, 1, 60, "illum_flare", -1, 40, -1, "flares"),
+            new Row("laser_ad_station", 2500, 0, 1, 56, "laser_50kw", 6, 40, 90, "drones"),
             // (batch A rows: new ones above)
         };
 

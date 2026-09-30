@@ -138,6 +138,7 @@ namespace MachineBrigade.Game.Match
             ["interceptor_drone_vehicle"] = 1500,
             ["troop_shelter"] = 3000,
             ["flare_tower"] = 2000,
+            ["laser_ad_station"] = 3000,
             // (batch A: new entries above)
         };
 
