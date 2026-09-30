@@ -892,6 +892,8 @@ namespace MachineBrigade.Game.Hud
             "glide_bomb_strike" => "bomb",
             "guided_shell_strike" => "barrage",
             "cluster_at_strike" => "airstrike",
+            "uav_loiter_strike_support" => "drone",
+            "uav_loiter_strike" => "reaper",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };

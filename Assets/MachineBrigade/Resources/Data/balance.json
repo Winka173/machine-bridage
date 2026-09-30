@@ -628,6 +628,8 @@
     // tl14: NSM/P-800 Oniks-class coastal anti-ship missile. Not fitted to a unit: its host, "coastal anti-ship missile
     // vehicle (new)", does not exist yet (out of scope for ordnance-only batch C); cataloged for when it is built.
     { "id": "anti_ship_missile", "real": "NSM / P-800 Oniks", "weaponFamily": "nsm_oniks", "family": "missile", "size": 680, "pen": 4, "damageType": "HighExplosive", "damage": 450, "cooldown": 30, "range": 140, "projectileSpeed": 30, "splash": 7, "impactTier": "Huge", "projectile": "Missile", "projectileModel": "nsm_oniks", "roundLength": 3.17 },
+    // ht04: the loitering attack UAV's missile (an MQ-9/TB2-style Hellfire): goes for the strongest enemy vehicle in reach.
+    { "id": "uav_loiter_missile", "real": "AGM-114 Hellfire (UAV)", "family": "missile", "size": 45, "pen": 3, "topAttack": true, "damageType": "ShapedCharge", "damage": 260, "cooldown": 7, "range": 40, "projectileSpeed": 26, "splash": 2, "impactTier": "Medium", "projectile": "Missile", "projectileModel": "hellfire_longbow", "bigGame": true },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -1207,6 +1209,8 @@
     // dx47: the fibre-optic FPV carrier: an answer to a jamming enemy.
     { "id": "fibre_fpv_carrier", "modelSize": [4.6, 1.9, 2.0], "class": "TankHunter", "armour": 1, "hp": 432, "speed": 10, "turnRate": 110, "turretTurnRate": 90, "radius": 1.8, "length": 4.6, "width": 1.9, "cp": 7, "vision": 44,
       "firesWhileMoving": false, "weapon": "fpv_fibre", "secondary": [{ "weapon": "fpv_swarm_mini", "slot": "rocket", "aim": "Free" }], "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // ht04: a loaned attack UAV (MQ-9/TB2-class), spawned by the glide_bomb_strike-style Escort support: circles the call point for the card's duration.
+    { "id": "uav_loiter_strike", "model": "strike_drone", "drone": true, "class": "Plane", "modelSize": [4.25, 8.04, 1.24], "armour": 0, "hp": 250, "speed": 20, "turnRate": 90, "turretTurnRate": 360, "radius": 2.5, "cp": 0, "vision": 44, "firesWhileMoving": true, "weapon": "uav_loiter_missile", "mainSlot": "missile", "orbit": true, "orbitRadius": 18, "flying": true, "fixedWing": true, "altitude": 22, "captureRate": 0, "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.3, "tier": "Medium" } },
     // dx48: the interceptor-drone vehicle: drones against drones.
     { "id": "interceptor_drone_vehicle", "modelSize": [5.0, 2.0, 2.4], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 10, "turnRate": 100, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 50,
       "firesWhileMoving": false, "weapon": "interceptor_drone", "secondary": [{ "weapon": "coyote_interceptor", "slot": "aam", "aim": "Free" }], "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
@@ -1962,6 +1966,8 @@
     { "id": "guided_shell_strike", "kind": "Barrage", "pen": 3, "cp": 4, "cooldown": 45, "delay": 2.0, "radius": 1.5, "count": 1, "duration": 0, "damage": 360, "blast": 6, "tier": "Large" },
     // ht03: 10 CBU-97-class top-attack bomblets homing on the nearest distinct enemy vehicles in the circle (Homing).
     { "id": "cluster_at_strike", "kind": "Homing", "pen": 4, "cp": 9, "cooldown": 90, "delay": 2.0, "radius": 25, "count": 10, "damage": 160, "blast": 3, "tier": "Medium", "damageType": "ShapedCharge" },
+    // ht04: a loaned attack UAV that circles the point for Duration, firing at the strongest enemy vehicle it can reach (Escort, as gunship_support).
+    { "id": "uav_loiter_strike_support", "kind": "Escort", "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 40, "count": 1, "duration": 20, "tier": "Large", "units": ["uav_loiter_strike"] },
   ],
 
   "props": [

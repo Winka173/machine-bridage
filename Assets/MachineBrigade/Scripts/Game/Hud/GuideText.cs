@@ -1112,6 +1112,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, tối đa {{count}} đầu đạn con đánh nóc, mỗi đầu đạn tự tìm một xe địch khác nhau trong vùng; không đánh máy bay và công trình.\n" +
                 "Mạnh / yếu: xóa sổ cả cụm xe tăng cùng lúc; phí phạm nếu chỉ có một xe hoặc công sự kiên cố.\n" +
                 "Mẹo: dùng cho đoàn xe hoặc cụm thiết giáp, không dùng cho tháp canh."),
+            ["guide.uav_loiter_strike_support"] = (
+                "[[Loitering UAV strike]] · circles for {{duration}} s · {{cp}} CP\n" +
+                "How it fights: an [[attack UAV]] circles the point for {{duration}} s, firing at the strongest enemy vehicle it can reach; unlike every other card here, its strike is not instant.\n" +
+                "Strong / weak: keeps pressure on a fight as it develops; enemy air defence can shoot the drone down and end it early.\n" +
+                "Tip: call it as a fight starts, with cover against enemy anti-air.",
+                "[[UAV lượn tấn công]] · lượn {{duration}} giây · {{cp}} CP\n" +
+                "Cách đánh: một [[UAV tấn công]] lượn trên điểm chọn trong {{duration}} giây, tự bắn vào xe địch mạnh nhất trong tầm; khác mọi thẻ khác ở đây, đòn này không tức thì.\n" +
+                "Mạnh / yếu: giữ áp lực suốt trận đánh đang diễn ra; phòng không địch bắn hạ được UAV, kết thúc sớm.\n" +
+                "Mẹo: gọi ngay khi trận đánh bắt đầu, có người che chắn phòng không địch."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

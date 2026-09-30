@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 49,
+    "chưa làm": 48,
     "đang làm": 0,
-    "xong": 44
+    "xong": 45
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 8,
+      "chưa làm": 7,
       "đang làm": 0,
-      "xong": 3
+      "xong": 4
     },
     "boss": {
       "chưa làm": 8,
@@ -1133,9 +1133,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward."
+      "status": "xong",
+      "id": "uav_loiter_strike_support",
+      "notes": "Batch C: support uav_loiter_strike_support, kind Escort (as the existing gunship_support item): spawns uav_loiter_strike (a new drone vehicle, cp 0, reuses the strike_drone model), which orbits the call point (the existing \"orbit\"/\"orbitRadius\" mechanic, as sky_gunship) firing uav_loiter_missile (bigGame: true approximates \"goes for the strongest\"). No new sim code. Sold in the shop (2,500)."
     },
     {
       "key": "ht05",
