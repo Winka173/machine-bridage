@@ -119,6 +119,7 @@ namespace MachineBrigade.Game.Match
             ["microwave_vehicle"] = 1500,
             ["at_gun_emplacement"] = 2000,
             ["nlos_atgm_vehicle"] = 3000,
+            ["radar_atgm_vehicle"] = 3000,
             // (batch A: new entries above)
         };
 

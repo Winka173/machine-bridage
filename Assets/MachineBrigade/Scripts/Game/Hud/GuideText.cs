@@ -1314,6 +1314,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 10 giây một tên lửa lớn, tầm 90 m, [[bay vòng qua vật cản]] đánh nóc, vào mục tiêu phe ta nhìn thấy.\n" +
                 "Mạnh / yếu: diệt xe tăng từ sau đồi; tự đi thì mù, bắn chậm.\n" +
                 "Mẹo: đi cặp với trinh sát hoặc UAV quét."),
+            ["guide.radar_atgm_vehicle"] = (
+                "[[Radar-guided ATGM vehicle]] · medium armour · sees through smoke\n" +
+                "How it fights: two heavy missiles 0.6 s apart out to 50 m, then 9 s; its [[radar sees through smoke]].\n" +
+                "Strong / weak: beats tanks hiding in smoke; APS stops some missiles.\n" +
+                "Tip: bring it against smoke carriers.",
+                "[[Xe tên lửa chống tăng dẫn radar]] · giáp vừa · nhìn xuyên khói\n" +
+                "Cách đánh: hai tên lửa lớn cách nhau 0,6 giây, tầm 50 m, rồi nạp 9 giây; [[radar nhìn xuyên khói]].\n" +
+                "Mạnh / yếu: thắng xe tăng nấp trong khói; APS chặn được vài quả.\n" +
+                "Mẹo: đem ra đối đầu xe tạo khói."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

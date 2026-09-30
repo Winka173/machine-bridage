@@ -479,6 +479,8 @@
     { "id": "at_gun_100", "real": "MT-12 Rapira 100 mm", "family": "tank_gun", "size": 100, "pen": 3, "piercing": true, "damageType": "Kinetic", "damage": 200, "cooldown": 5, "range": 38, "projectileSpeed": 200, "spread": 0.6, "impactTier": "Medium" },
     // dx07: Spike NLOS: lofted over cover at what its side sees (it sees little itself), striking the roof.
     { "id": "spike_nlos", "real": "Spike NLOS", "family": "atgm", "size": 70, "pen": 4, "piercing": true, "topAttack": true, "lofted": true, "projectileModel": "atgm_kornet", "projectileScale": 1.2, "damageType": "ShapedCharge", "damage": 300, "cooldown": 10, "range": 90, "projectileSpeed": 26, "impactTier": "Large", "projectile": "Missile" },
+    // dx08: 9M123 Khrizantema: radar-guided, in pairs, then a 9 s reload.
+    { "id": "khrizantema", "real": "9M123 Khrizantema", "family": "atgm", "size": 46, "pen": 4, "piercing": true, "projectileModel": "atgm_kornet", "projectileScale": 0.9, "damageType": "ShapedCharge", "damage": 250, "burst": 2, "burstInterval": 0.6, "cooldown": 9, "range": 50, "projectileSpeed": 24, "impactTier": "Medium", "projectile": "Missile" },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -999,6 +1001,10 @@
     // dx07: the beyond-line-of-sight ATGM vehicle: 90 m, needs a friend or a UAV to see the target.
     { "id": "nlos_atgm_vehicle", "modelSize": [6.0, 2.1, 2.6], "class": "TankHunter", "armour": 1, "hp": 409, "speed": 9, "turnRate": 80, "turretTurnRate": 60, "radius": 2.1, "length": 6.0, "width": 2.1, "cp": 8, "vision": 30,
       "firesWhileMoving": false, "weapon": "spike_nlos", "mainSlot": "missile", "secondary": [ { "weapon": "hmg_selfdef_15", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Huge" } },
+    // dx08: the radar-guided ATGM vehicle (9P157 Khrizantema-S): its radar sees through smoke.
+    { "id": "radar_atgm_vehicle", "modelSize": [5.8, 2.5, 2.3], "class": "TankHunter", "armour": 2, "hp": 591, "speed": 7, "turnRate": 70, "turretTurnRate": 60, "radius": 2.1, "length": 5.8, "width": 2.5, "cp": 7, "vision": 44,
+      "firesWhileMoving": false, "weapon": "khrizantema", "mainSlot": "missile", "smokeSight": true,
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
 

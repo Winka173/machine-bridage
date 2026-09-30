@@ -2497,6 +2497,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.nlos_atgm_vehicle"] = ("Beyond-sight ATGM vehicle", "Xe tên lửa chống tăng ngoài tầm nhìn"),
             ["short.nlos_atgm_vehicle"] = ("NLOS ATGM", "TL ngoài tầm"),
             ["note.nlos_atgm_vehicle"] = ("A Spike NLOS launcher truck: missiles lofted over hills and buildings onto a tank's roof, aimed by a friend's eyes.", "Xe phóng Spike NLOS: tên lửa bay vòng qua đồi và nhà, đánh xuống nóc xe tăng, nhờ mắt của quân bạn ngắm."),
+            // dx08: Xe tên lửa chống tăng dẫn radar.
+            ["unit.radar_atgm_vehicle"] = ("Radar-guided ATGM vehicle", "Xe tên lửa chống tăng dẫn radar"),
+            ["short.radar_atgm_vehicle"] = ("Radar ATGM", "TL dẫn radar"),
+            ["note.radar_atgm_vehicle"] = ("A 9P157 Khrizantema-S: anti-tank missiles in pairs, guided by a millimetre-wave radar that smoke does not blind.", "9P157 Khrizantema-S: tên lửa chống tăng bắn từng cặp, dẫn bằng radar sóng milimét nên màn khói không che được."),
             // (batch A: new entries above)
         };
 

@@ -134,6 +134,7 @@ namespace MachineBrigade.Game.Match
             "shorad_vehicle",
             "microwave_vehicle",
             "nlos_atgm_vehicle",
+            "radar_atgm_vehicle",
             // (batch A cards: new entries above)
         };
 
