@@ -717,11 +717,11 @@
   },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
-    "triangles": 8068
+    "triangles": 4700
   },
   "main_battle_tank_hd": {
     "file": "main_battle_tank_hd.glb",
-    "triangles": 18790
+    "triangles": 12106
   },
   "market_stall": {
     "file": "market_stall.glb",

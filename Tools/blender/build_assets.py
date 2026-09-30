@@ -47,6 +47,7 @@ import mb_pt8_icarus  # noqa: E402
 import mb_pt9_models  # noqa: E402
 import mb_p22_siege  # noqa: E402
 import mb_p22_content  # noqa: E402
+import mb_p25_models  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -104,7 +105,9 @@ def all_builders():
                 # Play-test 8 (DECISIONS 22R): Icarus redrawn as an orbital weapons platform (wins over 20Y's warship).
                 **mb_pt8_icarus.BUILDERS,
                 # Play-test 9 (DECISIONS 23M): Icarus a spaceship again, the stealth jet redrawn slim (they win over the above).
-                **mb_pt9_models.BUILDERS}
+                **mb_pt9_models.BUILDERS,
+                # Prompt 25 B2 (DECISIONS 25B2): models rebuilt to the balance sheet's shape notes and sizes (they win).
+                **mb_p25_models.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
