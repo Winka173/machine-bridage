@@ -2587,6 +2587,55 @@ def transport_plane(a):
     _c130(a)
 
 
+# ----------------------------------------------------------------------------- elites on the rebuilt bases
+def _elite_on(base, roof=None, bands=(), cab=None, scale=1.15, glow=('Sight',), kit=True):
+    """An elite on its rebuilt base (mb_elites' recipe, lean): the base builder unchanged (every pivot, mount and
+    muzzle kept), then gold chevrons, the active-protection ring and the commander's sight (kit=False: the chevrons
+    only, where a roof gun turns) on the turret roof at `roof` (turret space; `cab` for a roof point on the hull when there is no turret roof), gold bands on the guns
+    (`bands`: (suffix, (x, y, z), r) under the Turret), red glowing sights, every `Armor` part repainted
+    `EliteBlack`, and the whole asset scaled up (1.15 x on the ground, 1.1 x for the helicopter)."""
+    import mb_elites as el
+
+    def build(a):
+        base(a)
+        t = 'Turret' if 'Turret' in a.pivots else None
+        if roof is not None:
+            x, y, z = roof
+            el._chevrons(a, el._onto((x, y, z), (0, 0, 1), (0, -1, 0)), w=.4, h=.15, t=.07, gap=.12, parent=t)
+            if kit:
+                el._aps(a, (x - .45, y + .9, z), parent=t)
+                el._cdr_sight(a, (x + .45, y + .5, z), parent=t, yaw=-.25)
+        if cab is not None:
+            el._chevrons(a, el._onto(cab, (0, 0, 1), (0, -1, 0)), w=.4, h=.15, t=.07, gap=.12, parent=None)
+        for suffix, at, r in bands:
+            el._gilt_band(a, 'Turret', suffix, at, r)
+        el._glow_glass(a, glow, parent=el.ANY)
+        el._recolour(a, {'Armor': 'EliteBlack'})
+        el._scale(a, scale)
+    build.__doc__ = f'Elite {base.__name__} (DECISIONS 25B2 part 2): ' + (_elite_on.__doc__ or '')
+    return build
+
+
+def _elite_heli_upgrade(a):
+    """The elite Apache's marks: gold bands round the tail boom and on the stub wings' tips."""
+    gilt = a.part('Elite_gilt', 'Gilded')
+    gilt.box((.4, .1, .36), loc=(0, 1.6, .9), bevel=0)
+    for s in (-1, 1):
+        gilt.box((.06, .3, .1), loc=(s * 1.29, -.3, .9), bevel=0)
+
+
+def _elite_apache(a):
+    """The rebuilt Apache (mb_p25_models.attack_helicopter) with the elite's gold marks."""
+    from mb_p25_models import attack_helicopter as apache
+    apache(a)
+    _elite_heli_upgrade(a)
+
+
+def _p1_mbt(a):
+    from mb_p25_models import main_battle_tank
+    main_battle_tank(a)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -2637,4 +2686,18 @@ BUILDERS = {
     'heavy_bomber': (heavy_bomber, dict(ao_distance=.9, ground=False)),
     'stealth_bomber': (stealth_bomber, dict(ao_distance=.9, ground=False)),
     'transport_plane': (transport_plane, dict(ao_distance=.9, ground=False)),
+    'elite_mbt': (_elite_on(_p1_mbt, roof=(.12, -.78, .72), bands=(('', (0, -4.56, .38), .124),), kit=False),
+                  dict(ao_distance=.6, grime_height=.55)),
+    'elite_heavy_tank': (_elite_on(heavy_tank, roof=(.1, -.6, .56), bands=(('', (0, -4.78, .32), .16),), kit=False),
+                         dict(ao_distance=.65, grime_height=.6)),
+    'elite_tank_destroyer': (_elite_on(tank_destroyer, roof=(.1, -.45, .5), bands=(('', (0, -4.4, .27), .11),), kit=False),
+                             dict(ao_distance=.6, grime_height=.55)),
+    'elite_attack_helicopter': (_elite_on(_elite_apache, glow=('Sensor',), scale=1.1),
+                                dict(ao_distance=.5, grime_height=.35)),
+    'elite_mlrs': (_elite_on(mlrs, cab=(-.2, -2.2, 2.0)), dict(ao_distance=.55, grime_height=.55)),
+    'elite_aa': (_elite_on(aa_vehicle, roof=(0, -.45, .8), bands=(('', (-1.22, -3.0, .55), .095),
+                                                                   ('_2', (1.22, -3.0, .55), .095))),
+                 dict(ao_distance=.6, grime_height=.55)),
+    'elite_apc': (_elite_on(ifv, roof=(-.1, -.3, .6), bands=(('', (0, -2.3, .3), .08),)),
+                  dict(ao_distance=.6, grime_height=.55)),
 }

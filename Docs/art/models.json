@@ -401,31 +401,31 @@
   },
   "elite_aa": {
     "file": "elite_aa.glb",
-    "triangles": 8460
+    "triangles": 3728
   },
   "elite_apc": {
     "file": "elite_apc.glb",
-    "triangles": 7684
+    "triangles": 3632
   },
   "elite_attack_helicopter": {
     "file": "elite_attack_helicopter.glb",
-    "triangles": 9162
+    "triangles": 3518
   },
   "elite_heavy_tank": {
     "file": "elite_heavy_tank.glb",
-    "triangles": 9732
+    "triangles": 3752
   },
   "elite_mbt": {
     "file": "elite_mbt.glb",
-    "triangles": 9904
+    "triangles": 4792
   },
   "elite_mlrs": {
     "file": "elite_mlrs.glb",
-    "triangles": 8896
+    "triangles": 2264
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
-    "triangles": 9548
+    "triangles": 3088
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",

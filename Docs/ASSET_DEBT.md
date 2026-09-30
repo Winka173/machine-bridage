@@ -192,9 +192,7 @@ Almost all of today's models are over those budgets (6,000-15,000 triangles for 
 | Model | Size now (in battle) → sheet | Shape note |
 |---|---|---|
 
-Related to the rebuilt models: `elite_mbt`, `elite_attack_helicopter` and the other elites of rebuilt units keep the old
-designs (they are their own models); Icarus's scale for "the largest thing in the sky" is B1's (DECISIONS
-25B2).
+Related to the rebuilt models: Icarus's scale for "the largest thing in the sky" is B1's (DECISIONS 25B2).
 
 ### Structures
 

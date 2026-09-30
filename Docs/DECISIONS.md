@@ -10929,3 +10929,13 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | heavy_bomber | 19.4 x 22.6 x 5.0 (note) | 19.80 x 22.62 x 5.70 | (aircraft) | 2,596 | B-52 Stratofortress | 21.1 x 22.0 x 7.2 at 1.22, 10,106 |
 | stealth_bomber | 8.4 x 21.0 x 2.1 (note) | 8.40 x 21.00 x 1.50 | (aircraft) | 2,096 | B-2 Spirit | 8.3 x 20.7 x 2.3 at 1.29, 5,514 |
 | transport_plane | (no row: the C-130 of the airdrops and the MOAB) | 11.93 x 16.30 x 4.69 (part 1's shared _c130) | (aircraft) | 1,728 | C-130 Hercules | play-test 5's 13.5 m airframe, 8,608. AirDrops scales it by sky_gunship's scale |
+| elite_mbt | 1.15 x the rebuilt MBT (mb_elites' rule) | 8.96 x 3.53 x 2.64 | 7.02 x 3.53 | 4,792 | the MBT with the elite marks (gold chevrons, gun band, red sights, EliteBlack armour) | 6.2 x 2.9 x 3.1 at 0.85, old base |
+| elite_heavy_tank | 1.15 x the heavy tank | 9.64 x 3.46 x 2.53 | 7.53 x 3.46 | 3,752 | as above | 8.6 x 3.2 x 3.4 at 0.85 |
+| elite_tank_destroyer | 1.15 x the Sprut | 9.08 x 3.01 x 2.34 | 6.58 x 3.01 | 3,088 | as above | 9.0 x 2.9 x 2.2 at 0.85 |
+| elite_attack_helicopter | 1.1 x the Apache | 6.98 x 4.88 x 2.22 | (aircraft) | 3,518 | the Apache with gold bands | 7.8 x 5.2 x 3.0 at 0.69 |
+| elite_mlrs | 1.15 x the HIMARS | 7.01 x 2.30 x 2.99 | 6.68 x 2.30 | 2,264 | the HIMARS (one pod now, was a twin pod) | 7.4 x 2.6 x 4.1 at 0.85 |
+| elite_aa | 1.15 x the Gepard | 7.41 x 3.52 x 3.36 | 6.73 x 3.52 | 3,728 | the Gepard with the APS ring and sight | 6.8 x 3.4 x 3.7 at 1.05 |
+| elite_apc | 1.15 x the Bradley | 6.31 x 3.47 x 3.02 | 6.11 x 3.47 | 3,632 | the Bradley (the side TOW box kept for Deploy_atgm) | 7.4 x 2.8 x 3.3 at 0.85 |
+
+Elites without a model of their own (elite_fpv_carrier, elite_attack_jet, elite_long_sam, elite_artillery) draw their
+rebuilt base and are repainted at run time (`VehicleView.EliteRepaint`); elite_grad keeps `grad_truck`.
