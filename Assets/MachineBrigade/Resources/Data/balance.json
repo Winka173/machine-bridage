@@ -1978,6 +1978,8 @@
     { "id": "illum_flare_strike", "kind": "Scan", "cp": 1, "cooldown": 30, "delay": 1.5, "radius": 35, "count": 1, "duration": 15, "tier": "Small" },
     // ht08: 3 inflatable decoy tanks dropped by parachute, gone after 30 s (Reinforce, as reinforcements).
     { "id": "decoy_paradrop", "kind": "Reinforce", "cp": 2, "cooldown": 45, "delay": 2.0, "radius": 6, "count": 3, "duration": 30, "tier": "Small", "units": ["decoy_tank", "decoy_tank", "decoy_tank"] },
+    // ht09: instant counter-battery (CounterBattery): every enemy gun that fired in the last 10 s within Radius takes Count rounds.
+    { "id": "instant_counter_battery", "kind": "CounterBattery", "pen": 3, "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 60, "count": 4, "damage": 320, "blast": 7, "tier": "Large", "damageType": "HighExplosive" },
   ],
 
   "props": [

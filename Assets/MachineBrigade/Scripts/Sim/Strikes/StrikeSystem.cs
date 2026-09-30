@@ -512,6 +512,26 @@ namespace MachineBrigade.Sim.Strikes
                     return true;
                 }
 
+                // Prompt 25 F2 batch C (ht09): every enemy artillery piece that fired in the last 10 s, anywhere within
+                // Radius, takes Count rounds of Damage (as MissionEvents' CounterBattery event punishes the player's).
+                case SupportKind.CounterBattery:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var r2 = support.Radius * support.Radius;
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Flying || v.Def.Class != UnitClass.Artillery) continue;
+                        if (now - v.LastFiredAt > 10.0) continue;
+                        if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
+                        var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
+                        var info = new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Strike, true).WithPen(support.Penetration, top: true, support.Thermobaric);
+                        for (var k = 0; k < support.Count; k++)
+                            _world.Damage.Splash(v.Position, support.BlastRadius, damage, support.DamageType, s.Team, EntityId.None, info: info);
+                    }
+                    return true;
+                }
+
                 default:
                     return true;
             }

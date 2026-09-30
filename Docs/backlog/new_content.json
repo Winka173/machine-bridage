@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 44,
+    "chưa làm": 43,
     "đang làm": 0,
-    "xong": 49
+    "xong": 50
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 3,
+      "chưa làm": 2,
       "đang làm": 0,
-      "xong": 8
+      "xong": 9
     },
     "boss": {
       "chưa làm": 8,
@@ -1203,9 +1203,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 2,500 coins in the shop (6 CP, so the CP 6 or more price), or a chapter reward."
+      "status": "xong",
+      "id": "instant_counter_battery",
+      "notes": "Batch C: support instant_counter_battery, a new kind SupportKind.CounterBattery (StrikeSystem.cs): every enemy Artillery-class vehicle with v.LastFiredAt within the last 10 s, anywhere within Radius of the call point, takes Count blasts of Damage (reuses v.LastFiredAt, already read by the mission-event counter-battery and by Hunt()). The sheet gives no area for the call itself; Radius 60 is a reasonable battlefield scope, documented. AI: default cluster-strike path. Sold in the shop (2,500)."
     },
     {
       "key": "ht10",

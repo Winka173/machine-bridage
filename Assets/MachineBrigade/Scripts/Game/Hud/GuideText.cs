@@ -1157,6 +1157,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 3 [[xe tăng bơm hơi]] rơi xuống điểm chọn; địch tưởng thật và bắn vào chúng cho tới khi phát hiện ra, hoặc hết {{duration}} giây.\n" +
                 "Mạnh / yếu: hút hỏa lực khỏi xe thật miễn phí; trinh sát, radar hoặc UAV quét ở gần phát hiện ra ngay (như tháp mồi nhử bơm hơi).\n" +
                 "Mẹo: thả ở sườn trận địa ngay trước một đợt tiến công, để đánh lạc hướng mắt địch."),
+            ["guide.instant_counter_battery"] = (
+                "[[Instant counter-battery]] · punishes enemy guns · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, every enemy artillery piece that fired in the last 10 s, anywhere within {{radius}} m, takes {{count}} rounds of {{blast}} m blasts.\n" +
+                "Strong / weak: a real threat to enemy artillery that just opened up; a gun that has not fired recently is safe.\n" +
+                "Tip: call it the moment enemy shells start landing on your side.",
+                "[[Phản pháo tức thì]] · trừng phạt pháo địch · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, mọi khẩu pháo địch vừa bắn trong 10 giây qua, ở bất kỳ đâu trong {{radius}} m, bị {{count}} loạt nổ bán kính {{blast}} m.\n" +
+                "Mạnh / yếu: mối đe dọa thật với pháo địch vừa khai hỏa; khẩu nào chưa bắn gần đây thì an toàn.\n" +
+                "Mẹo: gọi ngay khi đạn pháo địch bắt đầu rơi vào phe ta."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +
