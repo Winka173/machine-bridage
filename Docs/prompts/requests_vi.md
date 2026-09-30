@@ -165,3 +165,8 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 03:34) nếu xong mọi thứ mà không có gì làm thì start prompt tiếp theo  [bắt đầu prompt 23 sau v0.30.0]
 - (30/09 08:26) Ném bom: có  [giữ trọng lực bom 40 m/s² và khoảng 0,2 s giữa hai quả của heavy bomber; DECISIONS]
 - (30/09 08:27) (đạo quân trùng với commander) gộp luôn  [gộp đạo quân vào commander, hoàn xu đạo quân đã mua]
+
+## Play-test 9, 30/09 (agent vẽ lại, DECISIONS 23M)
+
+- (30/09 08:59) icarus nhìn như 1 trạm vũ trụ chứ không phải 1 phi thuyền, vẽ lại, xem các mẫu trên mạng về phi thuyền, star war đẹp nhưng đừng copy 100% do size phi thuyền đó rất to
+- (30/09 08:59) steath jet nên vẽ lại toàn bộ do nó nhìn khá là mập  [stealth_fighter]
