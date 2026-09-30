@@ -426,16 +426,16 @@
         {
             "id": "airfield.hangar",
             "kind": "tower",
-            "model": "helipad",
-            "source": "Models/helipad",
-            "hash": "v2:f3ebc8ec4701ba90d15c3d6573bc8552cdc627d6"
+            "model": "helipad_a",
+            "source": "Models/helipad_a",
+            "hash": "v2:cf4ab898a8edc2233b4bdc853ae40f8aceb899ef"
         },
         {
             "id": "airfield.service",
             "kind": "tower",
-            "model": "helipad",
-            "source": "Models/helipad",
-            "hash": "v2:f3ebc8ec4701ba90d15c3d6573bc8552cdc627d6"
+            "model": "helipad_b",
+            "source": "Models/helipad_b",
+            "hash": "v2:951631ae562546f95897a1fb2bbe1ccffcaa8c45"
         },
         {
             "id": "ammo_depot",
@@ -1100,7 +1100,7 @@
             "kind": "boss",
             "model": "sky_fortress",
             "source": "Models/sky_fortress",
-            "hash": "v2:ae162ea2bf5ae954938d51f6029bd38b26435c16"
+            "hash": "v2:81880c6549f6d34fb8415bd08296689566e63129"
         },
         {
             "id": "spawn_bastion",

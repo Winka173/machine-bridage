@@ -192,7 +192,7 @@ box for every rebuilt model; the supply truck, ammunition carrier and escort hov
 ### Structures
 
 The towers and their rank-7 branches match their notes (the branches differ in their weapon modules) and keep their
-sizes; they are over the guide's tower budget of 1,500-3,500 triangles, left for prompt 27 (base / branch A / B):
+sizes; most are over the guide's tower budget of 1,500-3,500 triangles, left for prompt 27 (base / branch A / B):
 
 | Tower | Triangles |
 |---|---|
