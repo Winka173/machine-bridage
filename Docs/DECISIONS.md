@@ -12152,3 +12152,28 @@ and the `ammoswap` icon or "2 rounds".
 - `2a75_125_mm_he` gives both 2A75 carriers 220 m/s and weight 345; the 2A38's AP rounds follow their guns' 7 and 7.5.
 - CalibreTests and BalanceSheetTests now see the rounds as weapons; the AI's roles, counters, air-defence lists and stores read
   the gun's own round, as before.
+
+## PT10 gear menu (2026-10-01)
+
+**The report (play-test 10).** In the vehicles' equipment menu (Army > Equipment) the equip button could not be clicked and
+the list could not be scrolled down.
+
+**The cause.** The right panel was a column: the picked piece's page (`_gearInfo`, `flex-shrink: 0`, not in a scroll view)
+over the list's scroll view. The page holds the card, the names, the compare row, every affix line (main stat, implicit,
+drawback, sub-stats with roll bars, trait, brand set bonuses) and the fit line, and the buttons came last. With these
+lines a picked piece's page is taller than the panel at 1080 px: it spilled past the panel's bottom (the
+buttons with it, off the screen), and the list's scroll view was squeezed to zero height, so there was nothing to wheel or
+drag. None of the suspects was it: `Tap` (play-test 8 A) fires as before, no overlay covers the panel, and the doctrine
+removal did not touch this tab.
+
+**The fix.** The pinned part is only the head: the card and, beside it, the names with the buttons under them (so equip is
+always on screen, whatever the piece). The compare row, the affix lines and the fit line (`_gearDetails`) are the first
+thing in the list's scroll view, above the heading and the cards. The scroll view has `flex-basis: 0` and a 160 px floor,
+and the panel clips (`overflow: hidden`), so nothing that spills is drawn or picked outside it. The scroll view is the kit's
+(`Kit.Scroll`: touch scrolling clamped, `MouseDragScroll` for a mouse drag, the wheel as usual), so the three ways to scroll
+work; no shared piece (Tap, KitButton, Kit.Scroll) changed, so other screens are as they were.
+
+**Checks.** New debug screen `army-gear-picked` (`MenuScreen.ScreenNames`, so UiShots and UiLayoutTests see it): the
+Equipment tab with the first unworn piece that fits picked. Screenshot before and after at 16:9. Tests not run (the
+owner's rule).
+
