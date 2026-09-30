@@ -114,3 +114,6 @@ I. KIỂM TRA TỔNG
 - Mô phỏng 5 seed: toàn bộ chiến dịch thắng được ở độ khó Thường; chế độ và độ khó đạt mục tiêu của phần 2b.
 - Hiệu năng: đo FPS ở trận nặng nhất (chiến dịch lớn chương 12) và ở màn có nhiều model mới, trên máy tầm thấp.
 - Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md và docs/DECISIONS.md.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (30/09 11:48) nhớ có nhiều phương tiện công trình boss mới làm luôn, file đó không bỏ sót gì  [F2 mở rộng: làm hết nội dung mới ở mọi mức ưu tiên (Đề xuất thêm 56, Công trình mới 14, Tên lửa & bom mới 14, Thẻ hỗ trợ mới 11, Boss mới 8), không chỉ mục Cao; docs/backlog/new_content.json thành bảng theo dõi tiến độ]
