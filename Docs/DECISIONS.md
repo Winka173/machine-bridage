@@ -10677,20 +10677,34 @@ V-tails, so this jet keeps an F-22 planform, so the two stay apart.
 
 **Decided (`stealth_fighter`, no high-detail variant; it is not in `HIGH_DETAIL`):**
 - *Size class kept:* 18.4 m long and 13.2 m span (was 19 x 12.7), so balance.json's scale 0.39 and radius 3.4 hold.
-- *Fuselage:* a chined hexagon section 3.2 m across at most (was 5.0) and 0.55 m deep (was 1.13), flat-bellied, with a
-  sharp chine from the nose that flares into the wing's leading edge (the blended, flat planform). The nose is long
-  and thin.
-- *Wing:* a thin trapezoid (root chord 6.9 m, tip 1.25 m, 42 degree leading edge, trailing edge swept forward about
-  10 degrees, 3 degrees of anhedral), with all-moving tailplanes behind it and twin tails canted out 27 degrees.
+- *Fuselage, blended (after the lead's review of the first card, below):* a flat-bellied fuselage 0.55 m deep (was
+  1.13) with a narrow spine and shoulders 2 m across. From the shoulders the skin thins to a sharp chine. The chine
+  runs from the long, thin nose and flares out in chine shoulders (leading-edge root extensions, swept 68 degrees,
+  the J-20's and F-22's) until it meets the wing's leading edge at 2.8 m out, so the body is 5.4 m across at the wing
+  root. From there it tapers to 2.3 m at the tail. Seen from above the fuselage, shoulders, wing and tailplanes are one
+  flat, continuous planform, and seen from the side the jet stays thin.
+- *Wing:* a thin trapezoid out of that edge (root chord 6.6 m, tip 1.25 m, 42 degree leading edge, trailing edge
+  swept forward about 10 degrees, 3 degrees of anhedral), with all-moving tailplanes behind it and twin tails canted
+  out 27 degrees.
 - *Intakes:* raked caret mouths under the chines, with lips and dark faces. There are two flat 2D nozzles with a tail
   between them, and a frameless canopy with a thin sill frame, a seat and a HUD.
 - *Kept:* the weapon layout and names: the two main bays in tandem with their doors open and a missile each on a
   trapeze (`Missiles`, `Muzzle_missile` between their noses, about 0.4 m under the belly as before), the centre bay's guided
   bomb (`Muzzle_bomb` at its nose) and the cannon on the left (+X) shoulder (`Muzzle_gun` at the barrel's ring, the
-  same barrel and ring as before). Dark gunmetal body with the side's colour on the wings and tails, as before.
+  same barrel and ring as before).
+- *Colours:* all dark gunmetal (`Armor`): body, wings, tailplanes and tails. The side's colour (`Team`) is used only
+  for small accents, as on the other aircraft: the top quarter of each tail, a band along each wingtip and a panel on
+  each shoulder beside the canopy. The side's glow (`TeamGlow`) is unchanged, in the wingtip and tail lights, the
+  exhausts and the beacon.
 - *Detail:* sawtooth panel lines at the nose join and across the body, a sawtooth spine access door, the refuelling
   door, blade antennas, EODAS windows, bay door seams, and hinge lines on the wings.
-- **Triangles:** 2,812 (was 4,484).
+- **Triangles:** 2,984 (was 4,484).
+
+**Lead's review of the first card.** The first version (2,812 triangles) was slim but read as a thin rod lying on two
+flat plates, and half of it was in the side's bright colour (`Team` wings and tails). The body was redone as the
+blended planform above, and the side's colour was cut back to the accents. The nodes, muzzles, bays and size are
+unchanged. The card was re-rendered, and the muzzle, card and weapon-mount tests show only their older failures
+(morrigan's card, `mobile_fortress`, and the catalogue-wide muzzle audit, none of them the jet).
 
 ### Cards and refs
 

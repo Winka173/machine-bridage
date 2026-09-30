@@ -16,9 +16,11 @@ its commits.
   Expanse, Battlestar Galactica and Mass Effect without copying any one ship. Its wreck is the same ship crashed, with
   the tower snapped and the bridge lying beside it. Its parts, weapons and attacks are unchanged, and so is the
   prototype variant (Icarus Mk.0).
-- The stealth jet is redrawn slim: a thin chined body about 3 m across (was 5 m) and half as deep, with a flat, wide
-  trapezoid wing, twin tails canted out, flat thrust-vectoring nozzles and a one-piece canopy (F-22, J-20, YF-23,
-  Su-57 and F-35 mixed). Same size class, same weapons and bays.
+- The stealth jet is redrawn slim, half as deep as before. Seen from above it is one flat, blended shape: sharp chines
+  run from the nose and flare into the wing roots, then the body tapers to the tail. It has a wide trapezoid wing, twin
+  tails canted out, flat thrust-vectoring nozzles and a one-piece canopy (F-22, J-20, YF-23, Su-57 and F-35 mixed). It
+  is all dark gunmetal, with your side's colour only on the tail tips, the wingtips and a panel by the canopy. Same
+  size class, same weapons and bays.
 - Both cards are re-rendered from the new models.
 
 ## v0.32.0: Doctrines folded into the commanders, the owner's answer on the bombs

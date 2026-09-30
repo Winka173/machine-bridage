@@ -34,11 +34,15 @@
     plates blown off, scorched, the engines dark, in its crater and debris.
   * stealth_fighter ("Stealth jet"). Prompt 17's airframe (mb_p17_temp, detailed by mb_pt5_models) looked fat: a 5 m
     wide, 1.1 m deep lifting body. Redrawn from scratch as a slim fifth-generation fighter, 18.4 x 13.2 m (the same
-    size class): a thin chined fuselage 3 m wide and 0.55 m deep that flares into a flat, wide, trapezoid wing
-    (F-22: 42 degree leading edge, the trailing edge swept forward, 2D thrust-vectoring nozzles; J-20: the long,
-    blade-thin chined nose; YF-23: the flat body section; Su-57: the tandem belly bays between widely spaced engines;
-    F-35: the one-piece frameless canopy), caret intakes under the chines, twin tails canted 27 degrees, all-moving
-    tailplanes. Dark gunmetal body, the side's colour on the wings and tails. Kept: `Muzzle_missile` between the noses
+    size class), seen from above one flat, continuous planform: a fuselage 0.55 m deep with a narrow spine, whose
+    sharp chine runs from the nose and flares out in chine shoulders (leading-edge root extensions, swept 68 degrees)
+    into the wing root, 5.4 m across there, then tapers to the tail; the thin trapezoid wing and the tailplanes come
+    out of that edge (F-22: 42 degree leading edge, the trailing edge swept forward, 2D thrust-vectoring nozzles;
+    J-20: the long, blade-thin chined nose and the chine shoulders; YF-23: the flat body section; Su-57: the tandem
+    belly bays between widely spaced engines; F-35: the one-piece frameless canopy), caret intakes under the
+    shoulders, twin tails canted 27 degrees, all-moving tailplanes. All dark gunmetal, the side's colour only in small
+    accents (the fin tips, bands on the wingtips and a panel by the canopy), the side's glow in the lights and
+    exhausts. Kept: `Muzzle_missile` between the noses
     of the two missiles on trapezes under the open main bays, `Muzzle_bomb` at the nose of the guided bomb in the
     rear centre bay, `Muzzle_gun` at the cannon on the left (+X) shoulder. It has no high-detail variant.
 
@@ -58,7 +62,7 @@ if str(HERE) not in sys.path:
 
 import mb_orbital as orb  # noqa: E402
 from mb_air import BACKWARD, FORWARD, R90, _aam, _aam_parts, _dome  # noqa: E402
-from mb_p17_temp import _bay_bomb, _hex, _hex_at, _hex_top, _slab  # noqa: E402
+from mb_p17_temp import _bay_bomb, _slab  # noqa: E402
 from mb_phase2 import _suffixed  # noqa: E402
 from mb_phase8 import autocannon  # noqa: E402
 
@@ -584,36 +588,69 @@ def silver_bug_wreck(a):
 
 
 # ============================================================================= stealth jet
-# The chined fuselage, nose to tail: (y, belly half-width, belly z, chine half-width, chine z, spine half-width,
-# spine z), as mb_p17_temp's _hex. 3.1 m across the chines at most, 0.55 m deep.
-SJ = [(-8.8, .08, -.17, .24, -.1, .05, -.02),
-      (-7.6, .18, -.25, .5, -.12, .12, .08),
-      (-6.2, .28, -.3, .74, -.13, .18, .16),
-      (-4.6, .4, -.32, 1.0, -.13, .25, .2),
-      (-3.0, .58, -.33, 1.42, -.12, .38, .22),
-      (-1.0, .72, -.33, 1.62, -.11, .52, .22),
-      (2.0, .8, -.32, 1.62, -.1, .6, .21),
-      (4.6, .78, -.28, 1.48, -.08, .6, .19),
-      (6.6, .72, -.24, 1.3, -.07, .54, .16),
-      (7.8, .64, -.2, 1.1, -.06, .48, .13)]
+# The blended fuselage, nose to tail: (y, belly half-width, belly z, shoulder half-width, lower shoulder z, upper
+# shoulder z, chine half-width, chine z, spine half-width, spine z). Out to the shoulders it is the fuselage (0.55 m
+# deep at most); from the shoulders the skin thins to the sharp chine, which flares from the nose to the wing root's
+# leading edge (the chine shoulders) and tapers to the tail.
+SJ = [(-8.8, .08, -.17, .16, -.14, -.03, .24, -.1, .05, -.02),
+      (-7.6, .18, -.25, .36, -.2, .04, .5, -.12, .12, .08),
+      (-6.2, .28, -.3, .55, -.24, .1, .84, -.13, .18, .16),
+      (-4.6, .4, -.32, .75, -.27, .12, 1.44, -.13, .25, .2),
+      (-3.0, .55, -.33, .9, -.28, .12, 2.08, -.12, .38, .22),
+      (-1.5, .68, -.33, 1.0, -.28, .11, 2.72, -.11, .48, .22),
+      (.5, .76, -.32, 1.05, -.27, .11, 2.5, -.105, .55, .21),
+      (2.5, .78, -.31, 1.05, -.26, .1, 2.25, -.095, .57, .2),
+      (4.4, .76, -.28, 1.0, -.24, .1, 1.95, -.08, .56, .19),
+      (6.4, .7, -.24, .9, -.21, .08, 1.55, -.07, .52, .16),
+      (7.8, .62, -.2, .8, -.17, .06, 1.15, -.06, .46, .13)]
 SJ_NOSE = -9.6
-# Lifting surfaces: (span from the centreline, leading edge y, chord, thickness).
-SJ_WING = [(1.35, -2.8, 6.9, .13), (6.6, 1.95, 1.25, .035)]
-SJ_STAB = [(1.0, 4.3, 3.0, .08), (3.7, 6.35, 1.05, .03)]
+# Lifting surfaces: (span from the centreline, leading edge y, chord, thickness). The wing's leading edge meets the
+# chine shoulders' edge at (2.79, -1.5).
+SJ_WING = [(1.6, -2.58, 6.63, .12), (6.6, 1.95, 1.25, .035)]
+SJ_STAB = [(1.2, 4.45, 2.85, .07), (3.8, 6.35, 1.05, .03)]
 SJ_FIN = [(0, 3.5, 3.1, .09), (2.35, 5.45, 1.25, .03)]
 SJ_CANT = math.radians(27)
 
 
+def _sj_at(y):
+    """The fuselage table's row interpolated at y."""
+    for a, b in zip(SJ, SJ[1:]):
+        if a[0] <= y <= b[0]:
+            k = (y - a[0]) / (b[0] - a[0])
+            return [p + (q - p) * k for p, q in zip(a[1:], b[1:])]
+    return list((SJ[0] if y < SJ[0][0] else SJ[-1])[1:])
+
+
+def _sj_ring(row):
+    y, wb, zb, ws, zl, zu, w, zc, wt, zt = row
+    half = [(wb, zb), (ws, zl), (w, zc), (ws, zu), (wt, zt)]
+    return [(x, y, z) for x, z in half] + [(-x, y, z) for x, z in reversed(half)]
+
+
 def _sj_belly(y):
-    return _hex_at(SJ, y)[1]
+    return _sj_at(y)[1]
 
 
 def _sj_top(y, x):
-    return _hex_top(SJ, y, x)
+    """Height of the fuselage's upper skin at (x, y)."""
+    wb, zb, ws, zl, zu, w, zc, wt, zt = _sj_at(y)
+    x = abs(x)
+    if x <= wt:
+        return zt
+    if x <= ws:
+        return zt + (zu - zt) * (x - wt) / (ws - wt)
+    return zu + (zc - zu) * min(1.0, (x - ws) / (w - ws))
 
 
 def _wing_z(s):
-    return -.1 - (s - 1.35) * .05          # 3 degrees of anhedral
+    return -.105 - (s - 1.6) * .05          # 3 degrees of anhedral
+
+
+def _stations_at(stations, s):
+    """A lifting surface's (s, le, chord, thickness) interpolated at span s."""
+    (s0, *r0), (s1, *r1) = stations
+    k = (s - s0) / (s1 - s0)
+    return (s, *[p + (q - p) * k for p, q in zip(r0, r1)])
 
 
 def _sj_line(part, pts, lift=.012, r=.011, step=.3):
@@ -636,26 +673,41 @@ def _saw(x0, x1, y, teeth, depth):
 def stealth_fighter(a):
     """The slim fifth-generation stealth jet: see the module docstring."""
     body = a.part('Fuselage', 'Armor', flat=True)
-    skin = a.part('Wings', 'Team', flat=True)
+    skin = a.part('Wings', 'Armor', flat=True)
+    team = a.part('Team_accents', 'Team', flat=True)
     dark = a.part('Undercarriage', 'Undercarriage')
     steel = a.part('Steel', 'Steel')
     glow = a.part('Wing_lights', 'TeamGlow')
     edges = a.part('Detail_edges', 'Armor', flat=True)
     lines = a.part('Panel_lines', 'Undercarriage')
     glass = a.part('Detail_glass', 'Glass')
-    body.loft([[(0, SJ_NOSE, -.1)]] + [_hex(*r) for r in SJ], bevel=0)
+    body.loft([[(0, SJ_NOSE, -.1)]] + [_sj_ring(r) for r in SJ], bevel=0)
     for sg in (-1, 1):
-        _slab(skin, lambda s, y, n, sg=sg: (sg * s, y, _wing_z(s) + n), SJ_WING)                    # trapezoid wing
+        wing = (lambda s, y, n, sg=sg: (sg * s, y, _wing_z(s) + n))
+        _slab(skin, wing, SJ_WING)                                                                # trapezoid wing
+        # A band in the side's colour along the wingtip, a few millimetres proud of the skin.
+        tip0, tip1 = _stations_at(SJ_WING, 6.25), SJ_WING[-1]
+        _slab(team, wing, [(r[0], r[1] - .01, r[2] + .02, r[3] + .012) for r in (tip0, (tip1[0] + .005, *tip1[1:]))])
         _slab(skin, lambda s, y, n, sg=sg: (sg * s, y, -.09 + n), SJ_STAB)                          # all-moving tailplanes
         x0 = sg * 1.05
         z0 = _sj_top(4.6, 1.05) + .02
         dx, dz = sg * math.sin(SJ_CANT), math.cos(SJ_CANT)
         nx, nz = sg * math.cos(SJ_CANT), -math.sin(SJ_CANT)
         fin = (lambda s, y, n, x0=x0, z0=z0, dx=dx, dz=dz, nx=nx, nz=nz: (x0 + dx * s + nx * n, y, z0 + dz * s + nz * n))
-        _slab(skin, fin, SJ_FIN)                                                                  # twin tails, canted
+        # Twin tails canted out, their top quarter in the side's colour (a little thicker, so it sits proud).
+        split = _stations_at(SJ_FIN, 1.72)
+        _slab(skin, fin, [SJ_FIN[0], _stations_at(SJ_FIN, 1.76)])
+        _slab(team, fin, [(split[0], split[1] - .01, split[2] + .02, split[3] + .012),
+                          (SJ_FIN[1][0] + .005, SJ_FIN[1][1] - .01, SJ_FIN[1][2] + .02, SJ_FIN[1][3] + .012)])
         tip = SJ_WING[-1]
-        glow.box((.05, .3, .03), loc=(sg * (tip[0] - .02), tip[1] + .35, _wing_z(tip[0])), bevel=0)  # wingtip lights
-        glow.box((.04, .2, .04), loc=fin(SJ_FIN[-1][0] + .01, SJ_FIN[-1][1] + .8, 0), bevel=0)
+        glow.box((.05, .3, .03), loc=(sg * (tip[0] + .015), tip[1] + .35, _wing_z(tip[0])), bevel=0)  # wingtip lights
+        glow.box((.04, .2, .04), loc=fin(SJ_FIN[-1][0] + .02, SJ_FIN[-1][1] + .8, 0), bevel=0)
+        # A panel in the side's colour on each shoulder beside the canopy.
+        y = -5.4
+        xa, xb = .38, .62
+        ang = math.atan2(_sj_top(y, xa) - _sj_top(y, xb), xb - xa)
+        team.box((xb - xa, .9, .02), loc=(sg * (xa + xb) / 2, y, (_sj_top(y, xa) + _sj_top(y, xb)) / 2 + .012),
+                 rot=(0, sg * ang, 0), bevel=0)
     # One-piece frameless canopy on the spine, a thin frame round its base and a seat and HUD inside.
     st = [(-7.3, .08, .2), (-6.7, .3, .42), (-5.8, .37, .54), (-5.0, .34, .52), (-4.3, .22, .42), (-3.8, .08, .3)]
     a.part('Canopy', 'Glass').loft([_dome(y, w, _sj_top(y, w) - .05, z1, n=7) for y, w, z1 in st], bevel=0)
@@ -731,7 +783,7 @@ def stealth_fighter(a):
     for sg in (-1, 1):
         _sj_line(lines, [(sg * .22, -8.6), (sg * .4, -7.0), (sg * .55, -5.2), (sg * .66, -3.4), (sg * .7, 4.8)])
         glass.box((.02, .2, .09), loc=(sg * .6, -6.3, _sj_top(-6.3, .6) - .02), rot=(0, 0, sg * -.3), bevel=0)  # EODAS
-        s0, s1 = 2.6, 6.0
+        s0, s1 = 2.9, 6.0
         for u in (.8,):
             pts = []
             for s in (s0, (s0 + s1) / 2, s1):
