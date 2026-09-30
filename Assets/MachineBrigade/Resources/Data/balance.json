@@ -485,6 +485,8 @@
     { "id": "recoilless_106", "real": "M40 106 mm recoilless rifle", "family": "tank_gun", "size": 106, "pen": 3, "piercing": true, "damageType": "ShapedCharge", "damage": 220, "cooldown": 6.6667, "range": 32, "projectileSpeed": 150, "spread": 0.9, "impactTier": "Medium" },
     // dx10: the BMD-4's 2A70 100 mm gun-launcher firing high explosive (its 30 mm is the 2A42 line's).
     { "id": "gun_100_2a70", "real": "2A70 100 mm", "family": "tank_gun", "size": 100, "pen": 2, "damageType": "HighExplosive", "damage": 200, "cooldown": 6, "range": 32, "projectileSpeed": 120, "splash": 3, "spread": 0.9, "impactTier": "Medium" },
+    // dx11: CAESAR's 155 mm L/52: four rounds in 6 s, a 25 s reload.
+    { "id": "caesar_155", "real": "155 mm L/52 (CAESAR)", "family": "howitzer", "size": 155, "pen": 3, "damageType": "HighExplosive", "damage": 320, "burst": 4, "burstInterval": 2, "cooldown": 25, "range": 90, "minRange": 25, "projectileSpeed": 45, "splash": 7, "spread": 5, "impactTier": "Large", "projectileModel": "shell_155", "roundLength": 0.8, "projectileScale": 0.7273 },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -1022,6 +1024,10 @@
     // Its stand-in while it falls (no card, no weapon): the vehicle under three canopies.
     { "id": "airborne_vehicle_chute", "card": false, "modelSize": [9.0, 9.0, 11.0], "class": "Light", "armour": 1, "hp": 500, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
       "firesWhileMoving": true, "weapon": "none", "flying": true, "altitude": 30, "captureRate": 0 },
+    // dx11: the shoot-and-scoot wheeled howitzer (CAESAR, Archer, ATMOS): after every salvo it drives off 15-25 m.
+    { "id": "wheeled_howitzer", "modelSize": [8.0, 2.1, 3.0], "class": "Artillery", "armour": 0, "hp": 318, "speed": 9, "turnRate": 70, "turretTurnRate": 45, "radius": 2.2, "length": 8.0, "width": 2.1, "cp": 6, "vision": 30,
+      "scoot": { "shots": 1, "min": 15, "max": 25 }, "firesWhileMoving": false, "weapon": "caesar_155",
+      "deathExplosion": { "damage": 80, "radius": 9, "delay": 0.3, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

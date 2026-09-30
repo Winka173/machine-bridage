@@ -859,6 +859,7 @@ namespace MachineBrigade.Game.Hud
             "radar_atgm_vehicle" => "atgm",
             "recoilless_jeep" => "jeep",
             "airborne_vehicle" => "ifv",
+            "wheeled_howitzer" => "artillery",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",

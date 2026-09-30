@@ -2509,6 +2509,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.airborne_vehicle"] = ("Airborne fighting vehicle", "Xe đổ bộ đường không"),
             ["short.airborne_vehicle"] = ("Airborne IFV", "Xe đổ bộ"),
             ["note.airborne_vehicle"] = ("A BMD-4-class airborne vehicle (the 2S25 Sprut-SD shares its hull): a 100 mm gun-launcher and a 30 mm cannon, dropped by parachute.", "Xe đổ bộ đường không lớp BMD-4 (chung thân với 2S25 Sprut-SD): pháo 100 mm phóng được tên lửa và pháo 30 mm, thả bằng dù."),
+            // dx11: Pháo bánh lốp bắn rồi chạy.
+            ["unit.wheeled_howitzer"] = ("Shoot-and-scoot howitzer", "Pháo bánh lốp bắn rồi chạy"),
+            ["short.wheeled_howitzer"] = ("Truck howitzer", "Pháo bánh lốp"),
+            ["note.wheeled_howitzer"] = ("A CAESAR-type 155 mm truck howitzer (Archer and ATMOS are alike): four rounds in six seconds, then off before the counter-fire lands.", "Pháo 155 mm trên xe tải kiểu CAESAR (Archer, ATMOS tương tự): bốn phát trong sáu giây rồi chạy trước khi phản pháo rơi xuống."),
             // (batch A: new entries above)
         };
 

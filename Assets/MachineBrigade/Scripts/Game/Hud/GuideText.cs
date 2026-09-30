@@ -1341,6 +1341,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: chạm thẻ rồi chạm vùng phe ta nhìn thấy: nó [[nhảy dù]] xuống trong 6 giây; phòng không bắn được khi còn dưới dù.\n" +
                 "Mạnh / yếu: chiếm cứ điểm trống, đánh pháo binh từ phía sau; thua xe tăng.\n" +
                 "Mẹo: chạm thẻ hai lần để đưa nó về bãi thả."),
+            ["guide.wheeled_howitzer"] = (
+                "[[Shoot-and-scoot howitzer]] · no armour · fire and move\n" +
+                "How it fights: four 155 mm shells in 6 s out to 90 m, then it [[drives off]] at once and reloads for 25 s.\n" +
+                "Strong / weak: counter-battery fire lands on empty ground; its thin hull dies fast.\n" +
+                "Tip: keep it far back behind a scout.",
+                "[[Pháo bánh lốp bắn rồi chạy]] · không giáp · bắn rồi đổi chỗ\n" +
+                "Cách đánh: bốn phát 155 mm trong 6 giây, tầm 90 m, rồi [[chạy ngay]] và nạp lại 25 giây.\n" +
+                "Mạnh / yếu: phản pháo rơi vào chỗ trống; thân mỏng, dễ chết.\n" +
+                "Mẹo: giữ thật xa phía sau, có trinh sát đi trước."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
