@@ -36,6 +36,8 @@ namespace MachineBrigade.Sim.Content
         Cheap,
         /// <summary>Vehicles of <see cref="CommanderRules.DearAt"/> CP or more.</summary>
         Dear,
+        /// <summary>Tanks, heavy vehicles and every vehicle of <see cref="CommanderRules.DearAt"/> CP or more (Crown's health, DECISIONS 23D).</summary>
+        ArmourOrDear,
         /// <summary>Units whose main gun does energy damage.</summary>
         Energy,
         /// <summary>Units that carry a shield: a dome, wards or a shield skill.</summary>
@@ -179,6 +181,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A parachute delivery's time multiplier (0.75: 25 % faster).</summary>
         public float Delivery { get; internal set; } = 1f;
+
+        /// <summary>Fire-support cooldown multiplier (0.85: every support card recharges 15 % faster).</summary>
+        public float StrikeCooldown { get; internal set; } = 1f;
 
         /// <summary>Repair rate multiplier of the side's engineers and repair bays.</summary>
         public float Repair { get; internal set; } = 1f;

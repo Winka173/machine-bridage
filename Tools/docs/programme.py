@@ -690,7 +690,9 @@ def commanders(game, h):
     gens = [[f"<b>{e(c['name'])}</b>", e(c.get('strength', '')), e(c.get('weakness', ''))] for c in cs if c['family'] == 'General']
     return ("<div class='section'><h2>12c. Commander</h2>"
             "<p>Người chơi chọn một commander trước trận; nội tại của nó áp cho cả phe, trong mọi chế độ. Mỗi màn gắn với một tướng địch "
-            "thì địch mang nội tại của tướng đó. Commander mở dần theo chương; đạo quân vẫn dùng được cùng lúc (phần 12b).</p>"
+            "thì địch mang nội tại của tướng đó. Commander mở dần theo chương. Không còn chọn học thuyết riêng: lợi thế của năm học thuyết cũ "
+            "đã gộp vào commander hợp lối chơi (Crown: thiết giáp, Hawk: không quân, Longshot: pháo binh, Rush: chớp nhoáng, Ledger: hậu cần), "
+            "chỗ trùng loại thưởng thì gộp thành một con số, không cộng dồn; bảng dưới là số mới.</p>"
             f"<h3>Commander của người chơi ({len(mine)})</h3>"
             + table(['Commander', 'Nhóm', 'Vai trò', 'Hợp lối chơi', 'Điểm mạnh', 'Điểm yếu', 'Mở khóa'], mine)
             + f"<h3>Nội tại của tướng địch ({len(gens)})</h3>" + table(['Tướng', 'Điểm mạnh', 'Điểm yếu'], gens)
@@ -698,7 +700,7 @@ def commanders(game, h):
 
 
 def price_list(game, h, unlock_text):
-    """Section 12b (play-test 8): every price in one place: cards, base towers, supports, items and doctrines."""
+    """Section 12b (play-test 8): every price in one place: cards, base towers, supports and items."""
     e, table = h['esc'], h['table']
     eco = game.get('economy', {})
     money = lambda n: f"{n:,}".replace(',', '.')
@@ -719,13 +721,12 @@ def price_list(game, h, unlock_text):
              for s in game.get('supports', []) if s.get('consumable')]
     return ("<div class='section'><h2>12b. Bảng giá</h2>"
             "<p>Mọi giá trong game ở một chỗ. <b>CP</b> là điểm chỉ huy trả mỗi lần gọi trong trận. <b>Xu</b> là tiền duy nhất ngoài trận: mua thẻ cao cấp, "
-            "mua sớm thẻ chiến dịch trước khi thắng màn mở khóa, mua vật phẩm và đạo quân. Thẻ có sẵn không cần mua. Giá lên hạng thẻ, hòm và gói xu ở phần kinh tế.</p>"
+            "mua sớm thẻ chiến dịch trước khi thắng màn mở khóa, mua vật phẩm. Thẻ có sẵn không cần mua. Giá lên hạng thẻ, hòm và gói xu ở phần kinh tế.</p>"
             f"<h3>Thẻ xe ({len(cards)})</h3>" + table(['Thẻ', 'Lớp', 'CP mỗi lần gọi', 'Cách có', 'Giá mua (xu)'], cards, 'dps')
             + f"<h3>Tháp căn cứ ({len(towers)})</h3><p class='muted'>Tháp không tốn CP khi đặt vào căn cứ: nó chiếm một ô theo cỡ. Bị phá trong trận thì xây lại bằng CP sau một thời gian chờ.</p>"
             + table(['Tháp', 'Ô', 'Xây lại (CP)', 'Chờ xây lại (s)', 'Cách có', 'Giá mua (xu)', 'Nhánh'], towers, 'dps')
             + f"<h3>Thẻ hỗ trợ ({len(sups)})</h3>" + table(['Hỗ trợ', 'Loại', 'CP mỗi lần gọi', 'Cách có', 'Giá mua (xu)'], sups, 'dps')
             + f"<h3>Vật phẩm dùng một lần ({len(items)})</h3>" + table(['Vật phẩm', 'Loại', 'Giá một gói (xu)', 'Số cái mỗi gói', 'Xu mỗi cái'], items, 'dps')
-            + f"<h3>Đạo quân</h3><p>Đạo quân đầu tiên miễn phí; mỗi đạo quân khác {money(eco.get('doctrinePrice', 0))} xu.</p>"
             + "</div>")
 
 

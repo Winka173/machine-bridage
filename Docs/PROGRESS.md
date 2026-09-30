@@ -126,7 +126,7 @@ of equipment that show its rarity, and left the equipment numbers to us.
 - Top bar: rank on the left (Back on a full page), the page title, coins and gems with a + that opens the matching shop section, settings.
 - Five tabs along the bottom, 96 px tall: Shop, Army, BATTLE (raised, in the middle), Campaign, Events. Red dots only when there is something to do: an affordable rank-up (Army), a reward to claim (Events), a free or owned crate (Shop).
 - Battle tab: the lobby battle behind; the next campaign mission and today's challenges on the left; the chosen battle and a 104 px DEPLOY in the bottom-right corner. Tapping the battle card opens Battle Setup as a full page (modes, maps, difficulty, weather, its own Deploy).
-- Army tab: the deck strip (eight vehicles, two supports, average cost, what the deck lacks, the doctrine), filters and a sort by rank, then the collection as big cards (cost, rank, blueprint bar, in-deck tick, upgrade arrow, lock). A tap offers Details or Use/Remove. The Equipment view has branches, the seven-slot loadout with the whole set's total, the chosen piece's panel, and the inventory.
+- Army tab: the deck strip (eight vehicles, two supports, average cost, what the deck lacks, the doctrine, which is now the commander: DECISIONS 23D), filters and a sort by rank, then the collection as big cards (cost, rank, blueprint bar, in-deck tick, upgrade arrow, lock). A tap offers Details or Use/Remove. The Equipment view has branches, the seven-slot loadout with the whole set's total, the chosen piece's panel, and the inventory.
 - Shop tab: a rail of Deals (a free crate every day, the ad crates, a gold crate at 30 % off once a day), Crates (odds one tap away), Gems, Skins, Units, Items.
 - Events tab: today's challenges with progress bars and claim buttons; the weekly fortress, the boss rush and survival, one tap to play.
 - Covered pages rest the lobby: its simulation pauses and its camera draws only a plain clear, with no scene and no post-processing.
@@ -596,7 +596,7 @@ The user asked for:
 - Device check: `-mb-demolish`.
 
 **Menus and testing**
-- `Progression.TestUnlockAll` unlocks every card and doctrine. `Docs/RELEASE_CHECKLIST.md` lists what to switch back before a release.
+- `Progression.TestUnlockAll` unlocks every card and doctrine (every commander since the doctrines were folded in, DECISIONS 23D). `Docs/RELEASE_CHECKLIST.md` lists what to switch back before a release.
 - Menu pages scroll with a mouse drag. UI Toolkit only drag-scrolls for touch, which is why the deck page would not move in the editor.
 - Shop cards line up: two-line name boxes, and the price pinned to the bottom of the card. The items note no longer lingers on other tabs.
 
@@ -758,7 +758,7 @@ The user asked for all of the earlier suggestions, and more:
 
 **Items, doctrines, events and daily challenges**
 - **Items:** seven, bought in pairs for coins and carried into any battle: MOAB, cluster bombs, airdropped tanks, field repair, EMP, shield dome and a gunship on call.
-- **Doctrines:** five, picked on the deck page.
+- **Doctrines:** five, picked on the deck page. Folded into the commanders later (DECISIONS 23D).
 - **Battle events:** supply crates to fight over, neutral bomber raids, and weather that changes mid-battle.
 - **Daily challenges:** three a day, paid in coins.
 

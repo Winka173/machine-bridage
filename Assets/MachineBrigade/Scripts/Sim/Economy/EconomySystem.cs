@@ -40,7 +40,7 @@ namespace MachineBrigade.Sim.Economy
         public float Cp { get; internal set; }
 
         /// <summary>CP per second before objective bonuses.</summary>
-        public float Income => _income * (Doctrine?.Income ?? 1f) * IncomeScale;
+        public float Income => _income * IncomeScale;
 
         /// <summary>The catalog's economy pace: scales the income and objective bonuses (1: as the mode set them).</summary>
         public float IncomeScale { get; internal set; } = 1f;
@@ -52,7 +52,7 @@ namespace MachineBrigade.Sim.Economy
         public float SupplyScale { get; internal set; } = 1f;
 
         private readonly float _income;
-        /// <summary>The mode's supply before doctrine and scale (0 until the world fills it in from the catalog).</summary>
+        /// <summary>The mode's supply before scale (0 until the world fills it in from the catalog).</summary>
         private int _armyCap;
 
         /// <summary>Extra supply from the side's base (a logistics station) or anything else that adds to it.</summary>
@@ -63,9 +63,6 @@ namespace MachineBrigade.Sim.Economy
             get => _armyCap;
             set => _armyCap = value;
         }
-
-        /// <summary>The commander's doctrine for this battle, or none.</summary>
-        public Content.Doctrine? Doctrine { get; set; }
 
         /// <summary>Prompt 22 F: the side's commander (or enemy general), or none (SimWorld.SetCommander).</summary>
         public CommanderDef? Commander { get; internal set; }
@@ -85,7 +82,7 @@ namespace MachineBrigade.Sim.Economy
         public float Bank => _bank + (Commander?.BankBonus ?? 0f);
 
         /// <summary>Supply: the army value the side keeps up at full income; above it, upkeep sets in.</summary>
-        public int ArmyCap => (int)MathF.Round((_armyCap + (Doctrine?.ArmyCap ?? 0) + SupplyBonus) * SupplyScale * (Commander?.Supply ?? 1f));
+        public int ArmyCap => (int)MathF.Round((_armyCap + SupplyBonus) * SupplyScale * (Commander?.Supply ?? 1f));
 
         /// <summary>Vehicles one side may have on the field (and on the way) at once: a safety limit for performance.</summary>
         public const int MaxVehicles = 32;

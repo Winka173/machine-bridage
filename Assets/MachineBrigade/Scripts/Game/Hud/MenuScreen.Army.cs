@@ -12,7 +12,7 @@ namespace MachineBrigade.Game.Hud
     /// The Army tab, four tabs: Deck, Towers &amp; modules, Equipment, Base.
     /// E3, Deck: the eight vehicles and two supports as full cards; beside them the deck's overview
     /// (how many, the average cost) and its role cover (tank killers, anti-air, artillery, repair,
-    /// recon; what is missing in the warning colour), the doctrines with their names; then the
+    /// recon; what is missing in the warning colour), the commander for the next battle; then the
     /// branch filter chips with the sort button apart, and the collection as cards.
     /// E3b, Towers &amp; modules (test feedback 2, DECISIONS 12E): the base's towers by size and its
     /// utility modules as cards (render, rank, size, the upgrade mark), beside the vehicles, since
@@ -272,7 +272,7 @@ namespace MachineBrigade.Game.Hud
             _deckRow.Add(Kit.Box("fc-deck-divider"));
             foreach (var id in MatchSettings.DeckLayout(true)) _deckRow.Add(DeckCard(id, true, compact: true, showLevel: true, combat: true, removable: true));
 
-            // The overview band: how many and how dear, the role cover, the doctrine for the next battle.
+            // The overview band: how many and how dear, the role cover; the commander's row under it.
             _deckOverview.Clear();
             var summary = Kit.Box("fc-army__overview-part");
             summary.Add(Kit.Text(Kit.Caps(Strings.Get("army.overview")), "fc-panel-title fc-mb-2"));
@@ -291,32 +291,6 @@ namespace MachineBrigade.Game.Hud
                 roles.Add(Tag(has ? icon : "info", Strings.Get(key), has ? "fc-tag--ok" : "fc-tag--missing"));
             cover.Add(roles);
             _deckOverview.Add(cover);
-            var doctrines = new List<KitOption>();
-            var chosen = 0;
-            for (var i = 0; i < Doctrine.All.Count; i++)
-            {
-                var id = Doctrine.All[i].Id;
-                if (id == MatchSettings.Doctrine) chosen = i;
-                doctrines.Add(new KitOption(Strings.Get("doctrine." + id), Progression.DoctrineOwned(id)
-                    ? Strings.Get("doctrine." + id + ".info")
-                    : Strings.Format("doctrine.locked", ("doctrine", Strings.Get("doctrine." + id)), ("coins", Kit.Count(Progression.DoctrinePrice)))));
-            }
-            var doctrine = new KitDropdown(Strings.Get("doctrine.title"), doctrines, chosen, i =>
-            {
-                var id = Doctrine.All[i].Id;
-                if (!Progression.DoctrineOwned(id))
-                {
-                    Note(Strings.Format("doctrine.locked", ("doctrine", Strings.Get("doctrine." + id)), ("coins", Kit.Count(Progression.DoctrinePrice))), true);
-                    Refresh();
-                    return;
-                }
-                MatchSettings.Doctrine = id;
-                MatchSettings.Save();
-                Note(Strings.Get("doctrine." + id + ".info"));
-                Refresh();
-            });
-            doctrine.AddToClassList("fc-army__doctrine");
-            _deckOverview.Add(doctrine);
             _deckCommander.Clear();
             _deckCommander.Add(CommanderSlot());
 

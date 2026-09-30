@@ -146,7 +146,7 @@ namespace MachineBrigade.Tests
             // Rush: faster vehicles, and a boss is never reached.
             world.SetCommander(0, C("mendez"));
             var fast = world.SpawnVehicle("light_tank", 0, new Vector2(-20f, -40f), 0f);
-            Assert.AreEqual(1.1f, fast.SpeedFactor, 1e-4f);
+            Assert.AreEqual(1.15f, fast.SpeedFactor, 1e-4f, "Rush: +15 % (the blitz doctrine's number, DECISIONS 23D)");
             var bossId = Catalog.Vehicles.Values.First(d => d.Boss && !d.Flying).Id;
             var boss = world.SpawnVehicle(bossId, 0, new Vector2(0f, -60f), 0f);
             Assert.AreEqual(Catalog.Vehicle(bossId).MaxHp, boss.MaxHp, 1f, "a boss keeps its health");
@@ -173,7 +173,7 @@ namespace MachineBrigade.Tests
             var brennWorld = World();
             ledger = Economy(brennWorld, "brenn");
             brennWorld.Step(0.05f);
-            Assert.AreEqual(none.Earning * 1.1f, ledger.Earning, 1e-4f, "Ledger: +10 % income");
+            Assert.AreEqual(none.Earning * 1.15f, ledger.Earning, 1e-4f, "Ledger: +15 % income (the logistics doctrine merged in, DECISIONS 23D)");
 
             // Vault: the bank from 30 to 45; +10 % from 20 CP; -10 % in the first 90 s.
             var vaultWorld = World();
