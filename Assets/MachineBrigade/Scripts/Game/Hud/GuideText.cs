@@ -1084,6 +1084,16 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, một quả [[tên lửa]] đánh xuống điểm chọn với vụ nổ bán kính {{blast}} m.\n" +
                 "Mạnh / yếu: cách tốt nhất để xóa sổ một cụm quân hoặc cụm [[công sự]]; mục tiêu đang chạy có thể thoát trước khi nó rơi.\n" +
                 "Mẹo: bắn vào nơi địch đứng yên: cứ điểm đang chiếm, tuyến công thành, pháo binh đang đỗ. Xe gây nhiễu địch làm nó lệch."),
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+            ["guide.glide_bomb_strike"] = (
+                "[[Glide bomb strike]] · {{count}} stand-off bombs · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, {{count}} [[glide bombs]] fall on the spot ({{blast}} m blast each); unlike an airstrike, no aircraft flies over the target, but a heavy interceptor can still shoot a bomb down.\n" +
+                "Strong / weak: reaches a target behind short-range air defence; a heavy SAM or C-RAM can take a bomb out before it lands.\n" +
+                "Tip: call it on dug-in defences an airstrike's jet could not survive flying over.",
+                "[[Đòn bom lượn]] · {{count}} quả bom tầm xa · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, {{count}} quả [[bom lượn]] rơi xuống điểm chọn (mỗi quả nổ bán kính {{blast}} m); khác không kích, không có máy bay bay qua mục tiêu, nhưng hệ đánh chặn hạng nặng vẫn bắn hạ được bom.\n" +
+                "Mạnh / yếu: đánh trúng mục tiêu sau lưng phòng không tầm gần; SAM hạng nặng hoặc C-RAM vẫn có thể hạ một quả trước khi rơi.\n" +
+                "Mẹo: dùng cho công sự kiên cố mà máy bay không kích không sống nổi khi bay qua."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

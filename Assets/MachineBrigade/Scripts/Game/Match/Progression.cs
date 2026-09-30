@@ -141,6 +141,9 @@ namespace MachineBrigade.Game.Match
             ["laser_ad_station"] = 3000,
             ["aa_gun_tower"] = 3000,
             // (batch A: new entries above)
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards, one unlock source each (the shop; the
+            // sheet's "or a chapter reward" waits for those rewards, as batch A's units did).
+            ["glide_bomb_strike"] = 2500,
         };
 
         /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>

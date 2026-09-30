@@ -888,6 +888,8 @@ namespace MachineBrigade.Game.Hud
             "cruise_missile" => "missile",
             "smoke_screen" => "smoke",
             "repair_drop" => "repair",
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+            "glide_bomb_strike" => "bomb",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };

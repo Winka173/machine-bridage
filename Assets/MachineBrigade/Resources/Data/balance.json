@@ -1954,7 +1954,10 @@
     { "id": "uav_scan",          "kind": "Scan",          "cp": 2,  "cooldown": 45,  "delay": 2.0, "radius": 30, "count": 1, "duration": 10, "tier": "Small" },
     { "id": "remote_mines",      "kind": "Minefield",     "pen": 4, "cp": 5,  "cooldown": 60,  "delay": 2.0, "radius": 12, "count": 8, "duration": 60, "damage": 300, "blast": 4, "tier": "Large", "damageType": "ShapedCharge" },
     { "id": "field_tower",       "kind": "Tower",         "cp": 6,  "cooldown": 90,  "delay": 4.0, "radius": 4,  "count": 1, "duration": 60, "tier": "Small", "units": ["guard_tower", "atgm_tower"], "unitRank": 5 },
-    { "id": "sead_strike",       "kind": "Sead",          "pen": 3, "cp": 7,  "cooldown": 90,  "delay": 2.5, "radius": 20, "count": 1, "duration": 8,  "damage": 250, "blast": 3, "tier": "Large", "damageType": "HighExplosive" }
+    { "id": "sead_strike",       "kind": "Sead",          "pen": 3, "cp": 7,  "cooldown": 90,  "delay": 2.5, "radius": 20, "count": 1, "duration": 8,  "damage": 250, "blast": 3, "tier": "Large", "damageType": "HighExplosive" },
+    // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+    // ht01: 2 glide bombs dropped from outside nearby air defence; each can still be shot down (CruiseMissile, generalised to several bombs).
+    { "id": "glide_bomb_strike", "kind": "CruiseMissile", "pen": 3, "cp": 8, "cooldown": 90, "delay": 3.0, "radius": 10, "count": 2, "damage": 420, "blast": 10, "tier": "Huge" },
   ],
 
   "props": [

@@ -273,9 +273,16 @@ namespace MachineBrigade.Sim.Strikes
                         s.Announced = true;
                     }
                     if (now < s.Start) return false;
-                    // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile down (items are bombs, not missiles).
-                    if (!support.Consumable && ShotDown(s)) return true;
-                    Blast(s, s.Point);
+                    // Prompt 25 F2 batch C (ht01, the glide bomb): a stand-off strike of several bombs, each one its own
+                    // shoot-down roll and its own blast, spread a little so they do not all vanish to one intercept.
+                    var side = new Vector2(-s.Direction.Y, s.Direction.X);
+                    for (var k = 0; k < s.Count; k++)
+                    {
+                        var at = s.Count > 1 ? s.Point + side * ((k - (s.Count - 1) * 0.5f) * MathF.Max(4f, support.BlastRadius * 0.8f)) : s.Point;
+                        // The tower-branch rework: an enemy PAC-3 over the mark shoots the cruise missile (or glide bomb) down.
+                        if (!support.Consumable && ShotDown(s, at)) continue;
+                        Blast(s, at);
+                    }
                     return true;
                 }
 
@@ -494,17 +501,17 @@ namespace MachineBrigade.Sim.Strikes
 
         private void Blast(Strike s, Vector2 at) => Land(s, Scattered(s, at));
 
-        /// <summary>A cruise-missile strike met over its mark by an enemy heavy-missile interceptor (the PAC-3) with one left.</summary>
-        private bool ShotDown(Strike s)
+        /// <summary>A cruise missile or glide bomb met over <paramref name="at"/> by an enemy heavy-missile interceptor (the PAC-3) with one left.</summary>
+        private bool ShotDown(Strike s, Vector2 at)
         {
             foreach (var v in _world.VehicleList)
             {
                 var aps = v.Aps;
                 if (aps == null || !aps.Heavy || !v.IsAlive || v.Team == s.Team || v.Team < 0 || v.ApsCharges <= 0 || v.Stunned || v.ApsOff) continue;
-                if (Vector2.DistanceSquared(v.Position, s.Point) > aps.Radius * aps.Radius) continue;
+                if (Vector2.DistanceSquared(v.Position, at) > aps.Radius * aps.Radius) continue;
                 v.ApsCharges--;
                 if (aps.Reload > 0f) v.ApsReload = 0f;
-                _world.Emit(SimEvent.Intercept(v, v.Def.Weapon, s.Point, v.ApsLeft = !v.ApsLeft));
+                _world.Emit(SimEvent.Intercept(v, v.Def.Weapon, at, v.ApsLeft = !v.ApsLeft));
                 return true;
             }
             return false;

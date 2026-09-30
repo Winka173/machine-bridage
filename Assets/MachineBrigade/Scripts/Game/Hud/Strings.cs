@@ -579,6 +579,9 @@ namespace MachineBrigade.Game.Hud
             ["support.cruise_missile"] = ("Cruise missile", "Tên lửa hành trình"),
             ["support.smoke_screen"] = ("Smoke", "Màn khói"),
             ["support.repair_drop"] = ("Repair", "Sửa chữa"),
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+            ["support.glide_bomb_strike"] = ("Glide bomb strike", "Đòn bom lượn"),
+            ["short.glide_bomb_strike"] = ("Glide bombs", "Bom lượn"),
             ["stat.tickets"] = ("TICKETS", "ĐIỂM"),
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{amount}/s", "+{amount}/s"),

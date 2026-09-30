@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 52,
+    "chưa làm": 51,
     "đang làm": 0,
-    "xong": 41
+    "xong": 42
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 11,
+      "chưa làm": 10,
       "đang làm": 0,
-      "xong": 0
+      "xong": 1
     },
     "boss": {
       "chưa làm": 8,
@@ -1091,9 +1091,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 2,500 coins in the shop (8 CP, so the CP 6 or more price), or a chapter reward."
+      "status": "xong",
+      "id": "glide_bomb_strike",
+      "notes": "Batch C: support glide_bomb_strike, kind CruiseMissile generalised to fire Count bombs (each its own shoot-down roll and blast) instead of always one — the existing heavy-APS ShotDown mechanic, reused. Sold in the shop (NewContentPrices 2,500), one unlock source. AI: default cluster-strike path (CruiseMissile already reserved for big targets)."
     },
     {
       "key": "ht02",
