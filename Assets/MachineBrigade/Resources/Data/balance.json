@@ -1972,6 +1972,8 @@
     { "id": "ammo_resupply", "kind": "Resupply", "cp": 3, "cooldown": 60, "delay": 1.5, "radius": 15, "count": 1, "tier": "Small" },
     // ht06: an EW jamming storm (JamStorm): downs enemy drones in the circle, then hides it (as Smoke) for Duration.
     { "id": "jam_storm", "kind": "JamStorm", "cp": 5, "cooldown": 90, "delay": 2.0, "radius": 30, "count": 1, "duration": 10, "tier": "Medium" },
+    // ht07: an illumination flare (Scan): shows everything in the circle to the caller's side for Duration, night or fog alike.
+    { "id": "illum_flare_strike", "kind": "Scan", "cp": 1, "cooldown": 30, "delay": 1.5, "radius": 35, "count": 1, "duration": 15, "tier": "Small" },
   ],
 
   "props": [

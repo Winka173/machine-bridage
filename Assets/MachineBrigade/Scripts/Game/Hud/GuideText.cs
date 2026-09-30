@@ -1139,6 +1139,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, mọi drone địch trong vùng rơi ngay, và vùng đó bị che khuất trong {{duration}} giây.\n" +
                 "Mạnh / yếu: chặn đứng bầy drone và che mắt địch trong vùng đó; xe mặt đất và tháp canh không bị ảnh hưởng.\n" +
                 "Mẹo: gọi trên điểm phóng drone địch, hoặc che chắn cho đợt tiến quân của bạn."),
+            ["guide.illum_flare_strike"] = (
+                "[[Illumination flare]] · {{radius}} m circle · {{cp}} CP\n" +
+                "How it fights: a flare lights the circle for {{duration}} s, showing your side everything inside it, night or fog alike (as a UAV scan).\n" +
+                "Strong / weak: the cheapest way to fight blind weather or the dark; a UAV scan shows stealth too, and costs more.\n" +
+                "Tip: call it before pushing into a dark or foggy sector.",
+                "[[Pháo sáng chiếu sáng]] · vùng {{radius}} m · {{cp}} CP\n" +
+                "Cách đánh: pháo sáng chiếu vùng này trong {{duration}} giây, cho phe ta thấy mọi thứ trong đó, dù đêm hay sương mù (như UAV quét).\n" +
+                "Mạnh / yếu: cách rẻ nhất để đối phó thời tiết xấu hoặc đêm tối; UAV quét còn thấy cả tàng hình nhưng đắt hơn.\n" +
+                "Mẹo: gọi trước khi tiến vào khu vực tối hoặc nhiều sương mù."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

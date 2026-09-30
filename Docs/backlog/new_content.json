@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 46,
+    "chưa làm": 45,
     "đang làm": 0,
-    "xong": 47
+    "xong": 48
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 5,
+      "chưa làm": 4,
       "đang làm": 0,
-      "xong": 6
+      "xong": 7
     },
     "boss": {
       "chưa làm": 8,
@@ -1175,9 +1175,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop (1 CP, so the CP 5 or less price), or a chapter reward."
+      "status": "xong",
+      "id": "illum_flare_strike",
+      "notes": "Batch C: support illum_flare_strike, kind Scan (as uav_scan) — pure data, no new code; the AI already special-cases Scan in ConquestAi.TryUtilityStrike. Sold in the shop (1,500)."
     },
     {
       "key": "ht08",
