@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MachineBrigade.Sim.Content
 {
@@ -144,7 +145,9 @@ namespace MachineBrigade.Sim.Content
 
             var weapons = new Dictionary<string, WeaponDef>();
             var families = WeaponFamilies(root);
-            IEnumerable<JsonObject> WeaponEntries() => Inherited(root.Array("weapons"), model: false, families);
+            // Prompt 25 G: the second rounds are weapons too, each inheriting its gun's line (StripRoundLinks).
+            JsonObject Finish(JsonObject w) => StripRoundLinks(families != null ? families(w) : w);
+            IEnumerable<JsonObject> WeaponEntries() => Inherited(root.Array("weapons").Concat(SecondRoundEntries(root)), model: false, Finish);
             foreach (var w in WeaponEntries())
             {
                 var def = Wrap(w, () => new WeaponDef(
@@ -206,6 +209,7 @@ namespace MachineBrigade.Sim.Content
             }
             ResolveHeRounds(WeaponEntries(), weapons);
             ResolveAirRounds(WeaponEntries(), weapons);
+            ResolveSecondRounds(WeaponEntries(), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))
@@ -498,9 +502,11 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         private static Func<JsonObject, JsonObject>? WeaponFamilies(JsonObject root)
         {
-            if (!root.Has("weaponFamilies")) return null;
+            if (!root.Has("weaponFamilies") && !root.Has("secondRounds")) return null;
             var families = new Dictionary<string, JsonObject>();
-            foreach (var f in root.Array("weaponFamilies"))
+            // Prompt 25 G: the second rounds' families sit in their own block.
+            var all = root.Has("weaponFamilies") ? root.Array("weaponFamilies").Concat(SecondRoundFamilies(root)) : SecondRoundFamilies(root);
+            foreach (var f in all)
                 if (!families.TryAdd(f.String("id"), f)) throw new FormatException($"{f.Path}: duplicate weapon family '{f.String("id")}'.");
             return w =>
             {

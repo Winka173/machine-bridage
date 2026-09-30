@@ -65,6 +65,9 @@ namespace MachineBrigade.Game.Hud
 
         public bool Thermobaric, TopAttack, Guided, Splash;
 
+        /// <summary>Prompt 25 G: second rounds the carrier loads in this gun (0: one round only); the chip shows the ammo switch.</summary>
+        public int Rounds;
+
         /// <summary>The weapon (null for a threat's typical weapon on the Weak line).</summary>
         public WeaponDef Def;
     }
@@ -114,13 +117,40 @@ namespace MachineBrigade.Game.Hud
             var seen = new HashSet<string>();
             foreach (var mount in def.Mounts)
             {
-                var w = Of(mount.Weapon);
+                var w = Of(mount.Weapon, def);
                 if (w != null && seen.Add(w.Id)) list.Add(w);
             }
             return list;
         }
 
-        public static WeaponFacts Of(WeaponDef def)
+        /// <summary>
+        /// Every weapon's rounds for the effect table (prompt 25 G): each gun, then each second round its carrier loads in
+        /// it, so both rounds of a gun read side by side.
+        /// </summary>
+        public static List<WeaponFacts> Rounds(VehicleDef def)
+        {
+            var list = new List<WeaponFacts>();
+            if (def == null) return list;
+            var seen = new HashSet<string>();
+            foreach (var mount in def.Mounts)
+                foreach (var round in mount.Weapon.RoundsCarried(def))
+                {
+                    var w = Of(round, def);
+                    if (w != null && seen.Add(w.Id)) list.Add(w);
+                }
+            return list;
+        }
+
+        /// <summary>The second rounds a vehicle of <paramref name="carrier"/> loads in this gun (null carrier: those every carrier has).</summary>
+        public static int SecondRounds(WeaponDef def, VehicleDef carrier)
+        {
+            var n = 0;
+            foreach (var r in def.Rounds)
+                if (r.CarriedBy(carrier)) n++;
+            return n;
+        }
+
+        public static WeaponFacts Of(WeaponDef def, VehicleDef carrier = null)
         {
             if (def == null || def.Damage <= 0f || def.Form == WeaponForm.None) return null;
             return new WeaponFacts
@@ -132,8 +162,9 @@ namespace MachineBrigade.Game.Hud
                 Pen = def.Penetration,
                 Thermobaric = def.Thermobaric,
                 TopAttack = def.TopAttack,
-                Guided = def.Guided,
+                Guided = def.Guided || def.GuidedShell,
                 Splash = def.Splashes,
+                Rounds = SecondRounds(def, carrier),
             };
         }
 

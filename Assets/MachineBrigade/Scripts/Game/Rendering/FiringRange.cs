@@ -169,14 +169,15 @@ namespace MachineBrigade.Game.Rendering
         private static bool HitsGround(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.CanTarget(false) && m.Weapon.Damage > 0f) return true;
+                if (m.Weapon.CanEngage(false, def) && m.Weapon.Damage > 0f) return true;
             return false;
         }
 
         private static bool HitsAir(VehicleDef def)
         {
             foreach (var m in def.Mounts)
-                if (m.Weapon.CanTarget(true) && m.Weapon.Damage > 0f) return true;
+                // Prompt 25 G: a gun with an air-burst round shows it on a helicopter (and its change of rounds).
+                if (m.Weapon.CanEngage(true, def) && m.Weapon.Damage > 0f) return true;
             return false;
         }
 
@@ -417,12 +418,12 @@ namespace MachineBrigade.Game.Rendering
             if (!_shooter.IsAlive || _world.Tick % 20 != 1 || _world.Time < 0.6) return;
             // Stay on the target being shot at until it goes down (an aircraft circling it would
             // otherwise be sent to whichever target happened to be nearest).
-            if (_world.TryGetVehicle(_shooter.Order.Target, out var current) && current.IsAlive && _shooter.Def.Weapon.CanTarget(current.Flying)) return;
+            if (_world.TryGetVehicle(_shooter.Order.Target, out var current) && current.IsAlive && _shooter.Def.Weapon.CanEngage(current.Flying, _shooter.Def)) return;
             Vehicle best = null;
             var bestDistance = float.MaxValue;
             foreach (var t in _targets)
             {
-                if (!t.IsAlive || !_shooter.Def.Weapon.CanTarget(t.Flying)) continue;
+                if (!t.IsAlive || !_shooter.Def.Weapon.CanEngage(t.Flying, _shooter.Def)) continue;
                 var d = Vector2.Distance(t.Position, _shooter.Position);
                 if (d < bestDistance)
                 {

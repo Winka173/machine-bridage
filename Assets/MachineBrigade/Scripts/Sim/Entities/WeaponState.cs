@@ -69,5 +69,14 @@ namespace MachineBrigade.Sim.Entities
 
         public EntityId RampTarget;
         public double RampSince, RampLastAt = double.NegativeInfinity;
+
+        /// <summary>
+        /// Prompt 25 G (DECISIONS 25G): the round in the gun (0 its own, k its k-th second round), the one being loaded
+        /// (-1: none) and when it will be in, and when the round now in went in (it stays at least 2 s).
+        /// </summary>
+        public int Round;
+        public int Loading = -1;
+        public double SwitchDoneAt;
+        public double LoadedAt = double.NegativeInfinity;
     }
 }

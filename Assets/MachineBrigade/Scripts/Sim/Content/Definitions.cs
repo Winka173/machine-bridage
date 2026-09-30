@@ -315,6 +315,10 @@ namespace MachineBrigade.Sim.Content
                 AirRound = AirRound,
                 // Play-test 8 A: a steered bomb stays steered.
                 Steered = Steered,
+                // Prompt 25 G: the gun's second rounds (the rounds are not tuned: the gun's reach and cadence govern).
+                Rounds = Rounds,
+                RoundOf = RoundOf,
+                RoundKind = RoundKind,
             };
             return copy;
         }

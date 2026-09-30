@@ -67,6 +67,9 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Play-test 8 A: loaned aircraft flying off the map after their time (see <see cref="VehicleView.Depart"/>).</summary>
         private readonly List<VehicleView> _departing = new();
         private readonly Emitters _emitters;
+
+        /// <summary>Prompt 25 G: the air-burst rounds' bursts (a dark puff, a spark ring, fragments).</summary>
+        private readonly FlakBursts _flakBursts;
         private readonly TrackMarks _tracks;
         private readonly NightLights _night;
 
@@ -135,6 +138,7 @@ namespace MachineBrigade.Game.Effects
             _tracers = new TracerPool(meshes.Box, materials.Tracer, _root, 320);
             // Flame streams are fed from their nozzles once the vehicles are drawn (LaunchShots).
             _emitters = new Emitters(materials, _root) { LateFeed = true };
+            _flakBursts = new FlakBursts(materials, _root);
             _tracks = new TrackMarks(materials, _root);
             _night = new NightLights(materials, _emitters, _root);
             _fires = new FireSpots(materials, _root);
@@ -210,9 +214,14 @@ namespace MachineBrigade.Game.Effects
                             if (e.Tier >= ExplosionTier.Medium) Airburst(burst, e.Tier, now, flak, e.Value);
                             else Explode(e.Tier, burst, now, flak, radius: e.Value);
                             _emitters.Flak(burst);
+                            // Prompt 25 G: an air-burst round goes off by its target: its own burst on top.
+                            var burstRound = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var br) ? br : null;
+                            if (burstRound != null && burstRound.Flak) _flakBursts.Burst(burst + UnityEngine.Random.insideUnitSphere * 0.6f, burstRound.Size, e.Value);
                             break;
                         }
                         var round = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var landed) ? landed : null;
+                        // Prompt 25 G: an air-burst round fired at the ground bursts just over it.
+                        if (round != null && round.Flak && _cull.Visible(Ground(e.Position, 1.4f), 0.3f)) _flakBursts.Burst(Ground(e.Position, 1.4f), round.Size, e.Value);
                         // A round a unit's dome took whole bursts on the dome's skin (as big as ever), not on the unit.
                         if (DomeTook(e.Position, out var onDome))
                         {
@@ -358,6 +367,11 @@ namespace MachineBrigade.Game.Effects
                     case SimEventKind.GunRevealed:
                         // A counter-battery radar found a gun that fired: a red ping on it.
                         Ring(Ground(e.Position, 0.3f), 7f, new Color(2.4f, 0.4f, 0.25f, 0.8f));
+                        break;
+
+                    case SimEventKind.RoundSwitched:
+                        // Prompt 25 G: the change-of-round glyph flashes on the unit's bar.
+                        if (views.TryGet(e.Entity, out var switcher)) switcher.ShowRoundSwitch();
                         break;
 
                     case SimEventKind.Repaired:

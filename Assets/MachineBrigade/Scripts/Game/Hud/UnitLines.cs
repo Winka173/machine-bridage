@@ -58,12 +58,56 @@ namespace MachineBrigade.Game.Hud
             // Prompt 17 C: the focused laser's ramp, the swarm's own targets.
             if (w.Ramp is { } ramp) lines.Add(F("ul.ramp", ("from", N(ramp.From)), ("to", N(ramp.To)), ("seconds", N(ramp.Seconds))));
             if (w.SwarmReach > 0f) lines.Add(F("ul.swarm", N(w.SwarmReach)));
-            // Prompt 17 D.6: the heavy tank's gun changes rounds on its own.
-            if (w.HeRound is { } he) lines.Add(F("ul.heRound", ("damage", N(he.Damage)), ("metres", N(he.SplashRadius))));
+            // Prompt 17 D.6, prompt 25 G: every second round the gun loads on its own, and what for.
+            foreach (var r in w.Rounds)
+                if (r.CarriedBy(def)) lines.Add(RoundLine(w, r));
             var range = w.MinRange > 0f ? F("ul.rangeMin", ("metres", N(w.Range)), ("minimum", N(w.MinRange))) : F("ul.range", N(w.Range));
             lines.Add(w.SplashRadius > 0.5f ? F("ul.splash", ("range", range), ("metres", N(w.SplashRadius))) : range);
             return lines;
         }
+
+        /// <summary>Prompt 25 G: a round's kind in words ("Air-burst (flak)", "High explosive"): the data's, else from its damage type.</summary>
+        public static string RoundWord(WeaponDef w)
+        {
+            var kind = w.RoundKind ?? (w.Flak ? "flak" : w.GuidedShell ? "guided" : w.DamageType switch
+            {
+                DamageType.Kinetic => w.Family == "mg" ? "ball" : "ap",
+                DamageType.ShapedCharge => "heat",
+                DamageType.HighExplosive => "he",
+                DamageType.Fragmentation => "flak",
+                _ => "other",
+            });
+            return Strings.Get("round." + kind);
+        }
+
+        /// <summary>Prompt 25 G: what a second round is loaded for, in words ("aircraft and drones", "light vehicles, structures").</summary>
+        public static string UseWords(SecondRound r)
+        {
+            var words = new List<string>();
+            var u = r.Use;
+            if ((u & RoundUse.Any) == RoundUse.Any) words.Add(Strings.Get("round.for.any"));
+            else
+            {
+                if ((u & RoundUse.Air) != 0) words.Add(Strings.Get("round.for.air"));
+                if ((u & RoundUse.Ground) != 0) words.Add(Strings.Get("round.for.ground"));
+                if ((u & RoundUse.Armour) != 0) words.Add(Strings.Get("round.for.armour"));
+                if ((u & RoundUse.Light) != 0) words.Add(Strings.Get("round.for.light"));
+                if ((u & RoundUse.Structure) != 0) words.Add(Strings.Get("round.for.structure"));
+                if ((u & RoundUse.Cluster) != 0) words.Add(Strings.Get("round.for.cluster"));
+            }
+            var text = string.Join(", ", words);
+            return r.EliteOnly ? text + " (" + Strings.Get("round.elite") + ")" : text;
+        }
+
+        /// <summary>A round's figures in words: its damage type, penetration, damage a round and blast.</summary>
+        public static string RoundFigures(WeaponDef round) =>
+            F("detail.roundLine", ("type", Strings.Get("ul.type." + round.DamageType)), ("pen", CombatIcons.PenName(round.Penetration)),
+                ("damage", N(round.Damage)), ("splash", round.SplashRadius > 0.5f ? F("detail.roundSplash", N(round.SplashRadius)) : ""));
+
+        /// <summary>Prompt 25 G: one second round's line (the design document's "ammo", the detail page's More).</summary>
+        public static string RoundLine(WeaponDef gun, SecondRound r) =>
+            F("ul.round", ("name", RoundWord(r.Round)), ("figures", RoundFigures(r.Round)), ("targets", UseWords(r)),
+                ("seconds", N(gun.SwitchSeconds(r))));
 
         /// <summary>How the weapon's rounds come back: stores on the field, a magazine, shots reloaded in place, or never out.</summary>
         private static List<string> Reload(VehicleDef def, WeaponDef w)
