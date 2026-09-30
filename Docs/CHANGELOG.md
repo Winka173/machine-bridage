@@ -18,6 +18,10 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
   air-to-air missiles fast enough to catch a fighter; the swarm carrier drops cruise missiles instead of small bombs;
   the scout jeep sees farther (55 m) and hides when it stands; the wheeled gun has less health and reloads like a
   tank; the ZU-23 fires a stream of lighter rounds farther; the self-propelled gun fires faster.
+- A1 Trung: armour by face for a dozen vehicles (the main battle tank's front 4, the tank destroyer, siege mortar and
+  laser tank lighter); tank turrets turn faster than their hulls; the IFV and the BMPT fire their 30 mm in bursts;
+  the HIMARS moves after every salvo; the heavy turret loads armour-piercing rounds for armour; the gunship carries
+  Ataka missiles and flies faster; the heavy bomber carries seven FAB-500s; the Phalanx fires a real stream.
 
 ### Play-test 9 models (DECISIONS 23M)
 

@@ -41,10 +41,11 @@ namespace MachineBrigade.Tests
             }
         }
 
-        /// <summary>A hit of <paramref name="damage"/> on <paramref name="v"/> by a round that pierces anything (a 120 mm dart, a laser, a 203 mm shell), from far off to the north.</summary>
-        private static float Hit(SimWorld world, Vehicle v, float damage, DamageType type)
+        /// <summary>A hit of <paramref name="damage"/> on <paramref name="v"/> by a round that pierces anything (a 120 mm dart, a laser, a 203 mm shell), from far off to the north.
+        /// <paramref name="round"/> names another round (prompt 25: the main battle tank's front is 4, which the long 120 mm's pen 5 pierces whole).</summary>
+        private static float Hit(SimWorld world, Vehicle v, float damage, DamageType type, string round = null)
         {
-            var weapon = world.Catalog.Weapons[type switch { DamageType.Energy => "focus_laser", DamageType.HighExplosive => "gun_203_siege", _ => "gun_120mm" }];
+            var weapon = world.Catalog.Weapons[round ?? type switch { DamageType.Energy => "focus_laser", DamageType.HighExplosive => "gun_203_siege", _ => "gun_120mm" }];
             return world.Damage.Apply(v, damage, type, new MachineBrigade.Sim.Combat.HitInfo(null, 1, weapon, v.Position + new Vector2(0f, 60f), MachineBrigade.Sim.Combat.HitKind.Direct, false));
         }
 
@@ -177,7 +178,7 @@ namespace MachineBrigade.Tests
             var full = carrier.DomeHp;
             Assert.AreEqual(1000f, full, 1f, "the dome is up at full when it arrives");
             var hp = tank.Hp;
-            Hit(world, tank, 400f, DamageType.Kinetic);
+            Hit(world, tank, 400f, DamageType.Kinetic, "turret_gun_120_long");
             Assert.AreEqual(hp, tank.Hp, 0.01f, "a tank 5 m from the carrier takes nothing: the dome does");
             Assert.AreEqual(full - 400f, carrier.DomeHp, 1f);
             var far = outside.Hp;
@@ -194,7 +195,7 @@ namespace MachineBrigade.Tests
             var left = carrier.DomeHp;
             var fuller = second.DomeHp >= left ? second : carrier;
             var other = fuller == second ? carrier : second;
-            Hit(world, tank, 1300f, DamageType.Kinetic);
+            Hit(world, tank, 1300f, DamageType.Kinetic, "turret_gun_120_long");
             Assert.AreEqual(0f, fuller.DomeHp, 1f, "the dome with the most left takes the hit and breaks");
             Assert.AreEqual(other == carrier ? left : 1000f, other.DomeHp, 1f, "the other dome is not touched: domes never add up");
             Assert.Less(tank.Hp, hp - 100f, "what the breaking dome could not take hits the tank");

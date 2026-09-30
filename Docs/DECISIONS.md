@@ -10782,3 +10782,19 @@ not in force yet, so no row was held back for it.
 - **Weapon rows** of this sheet take their numbers from the weapon's own row of "Vũ khí đề xuất", which carries the
   same proposal in columns (fire mode, rate, rounds, rest, reach, speed, blast, penetration). Which weapons a row
   means is a table in the script, checked against the unit's mounts. How a row becomes the game's fields is under A2.
+
+### A1 Trung
+
+- **The heavy turret's armour-piercing round.** A new weapon `gun_155_twin_ap` (the sheet's pen 4, 300 a round,
+  kinetic) is the turret's gun, with the twin 155 mm high explosive as its `he` round, switched to by target as on
+  the heavy tank. The loader allowed only a single-shot `he` round; it now also takes one that fires in the gun's own
+  salvo (the two rounds of the twin gun), since `RoundFor` swaps only the round and the gun's cadence governs.
+- **The gunship's Ataka.** `heli_ataka` (inherits `ataka`) takes the Hellfire mount's place: the Hellfire's rate and
+  four a load, the sheet's 45 m reach; its speed is the Ataka family's.
+- **The heavy bomber's FAB-500s**: seven a sortie, the weapon's salvo and its load (only the bomber carries them).
+- **The self-propelled gun's model row** ("Model và tham khảo", Cao) also names its front armour 1->2 and speed 7->6:
+  those go in with this pass (the speed landed in this commit), the M109A7 model and reference with task B2.
+- **The smoke carrier's M2** already has 15 m (it fires the engineer's `hmg_selfdef_15`); the sheet's 22 m was old.
+- Tests whose numbers are now the sheet's: the bulldozer's 4 m/s, Morrigan at least as fast as the stealth fighter
+  (both 44 m/s), and the shield dome's test hits the tank with the long 120 mm (pen 5) as the main battle tank's
+  front is 4 now (the dart's pen 4 no longer pierced it whole).

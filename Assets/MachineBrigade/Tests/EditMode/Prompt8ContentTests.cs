@@ -52,7 +52,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(2860f, d.MaxHp, 1f, "2,860 health in game");
             Assert.AreEqual(catalog.Vehicle("turtle_tank").MaxHp, d.MaxHp, 1f, "the turtle tank's health");
             Assert.AreEqual(ArmorClass.Heavy, d.Armor);
-            Assert.AreEqual(5f, d.Speed, 1e-3f);
+            Assert.AreEqual(4f, d.Speed, 1e-3f, "prompt 25's balance sheet: 4 m/s (a D9R does about 15 km/h)");
             Assert.AreEqual(UnitClass.Heavy, d.Class);
             Assert.IsTrue(d.Breacher && d.Weapon.Melee, "the blade is a blow, not a gun");
             Assert.AreEqual(4.5f, d.Weapon.Range, 0.6f, "4 m reach");

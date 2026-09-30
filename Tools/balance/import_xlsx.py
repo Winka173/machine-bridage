@@ -490,6 +490,9 @@ def apply_weapon_row(wr: Writer, row, report: Report, step, sheet_name="Vũ khí
         # Within 3 % of the sheet's sustained DPS in the same mode and rounds, the game's cadence stands (the sheet
         # rounds rates and times a cycle as n / rate + rest: DECISIONS 25A); the test allows 5 %.
         keep = mode == row[W_MODE] and n == int(row[W_N]) and want and abs(dps / want - 1) <= 0.03
+        # A single shot's rate as the sheet shows it (two decimals: 0.12 a second for one every 8 s).
+        if mode == row[W_MODE] == "từng phát" and round(rate, 2) == round(row[W_RATE], 2):
+            keep = True
         if not keep:
             for k in ("burst", "burstInterval", "cooldown", "clip", "clipReload"):
                 if k not in cad:
@@ -636,7 +639,7 @@ def a1(wr: Writer, wb, report: Report, step, weapon_rows, unit_rows, refs):
         if cat == "Dữ liệu vũ khí":
             add("deferred", "a boss's main weapon as data: task C2")
             continue
-        if boss and not cat.startswith("Giáp"):
+        if boss and not cat.startswith("Giáp") and (vid, cat) not in A1_WEAPONS:
             add("deferred", "boss health and weapons: task C1 (sheet Boss đề xuất)")
             continue
 
@@ -697,7 +700,19 @@ def a1(wr: Writer, wb, report: Report, step, weapon_rows, unit_rows, refs):
                 elif not done:
                     done.append("")
             elif "model" in cat.lower():
-                pass
+                # "Đổi model sang M109A7 xích; giáp trước 1→2; tốc độ 7→6": the stats now, the model and its
+                # reference with the model (task B2).
+                m = re.search(r"tốc độ\s*[\d,]+\s*→\s*([\d,]+)", str(prop))
+                if m and wr.vehicle_field(vid, "speed", num(m.group(1))):
+                    done.append(f"speed {fmt(num(m.group(1)))}")
+                m = re.search(r"giáp trước\s*\d\s*→\s*(\d)", str(prop))
+                faces = armour_faces(g.vehicle(vid))
+                if m and faces[0] != int(m.group(1)):
+                    faces[0] = int(m.group(1))
+                    wr.vehicle_field(vid, "armour", faces)
+                    done.append(f"front armour {m.group(1)}")
+                if done:
+                    done.append("the model and its reference wait for the model (task B2)")
         # Behaviour ---------------------------------------------------------------------------------------------
         if cat == "Hành vi":
             if vid == "scout_jeep":
@@ -735,7 +750,7 @@ def a1(wr: Writer, wb, report: Report, step, weapon_rows, unit_rows, refs):
             elif detail and "model" in cat.lower():
                 add("deferred", detail)
             else:
-                add("already", "the data already holds it")
+                add("already", ALREADY.get(key, "the data already holds it"))
         else:
             add("already", "the data already holds it")
 
@@ -794,10 +809,13 @@ def a1_special(wr: Writer, key, prop, unit_rows, report, step):
         for vid2 in ("heavy_turret",):
             if wr.vehicle_field(vid2, "weapon", "gun_155_twin_ap"):
                 done.append("heavy_turret fires gun_155_twin_ap, its HE round gun_155_twin_fort for structures and light armour")
-    if key == ("smoke_carrier", "Vũ khí: M2 12,7 mm"):
-        if g.vehicle(vid).get("weapon") == "hmg_selfdef_15":
-            report.add(step, "Thay đổi chi tiết", vid, cat, "already", "it carries hmg_selfdef_15 (15 m) already; the sheet's 22 m is out of date")
     return done
+
+
+# Rows the data already answers in another way (the report says how).
+ALREADY = {
+    ("smoke_carrier", "Vũ khí: M2 12,7 mm"): "it carries hmg_selfdef_15 (15 m, the engineer's) already; the sheet's 22 m is out of date",
+}
 
 
 def loadout(wr: Writer, vid, unit_rows, report, step):

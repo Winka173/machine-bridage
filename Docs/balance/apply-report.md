@@ -12,61 +12,188 @@ script runs it again.
 
 | Sheet | Applied | Already so | Deferred | Skipped |
 |---|---|---|---|---|
-| Thay đổi chi tiết | 27 | 0 | 6 | 0 |
-| Vũ khí đề xuất | 14 | 1 | 0 | 0 |
-| Đơn vị – vũ khí | 2 | 0 | 0 | 0 |
+| Thay đổi chi tiết | 1 | 26 | 6 | 0 |
+| Vũ khí đề xuất | 0 | 15 | 0 | 0 |
+| Đơn vị – vũ khí | 0 | 2 | 0 | 0 |
 
 | Sheet | id | Item | Outcome | Detail |
 |---|---|---|---|---|
-| Vũ khí đề xuất | tower_flak_30 | weapon | applied | damage 7, cooldown 0.0286, clip 120, clipReload 3.0286 (for aa_turret: Vũ khí và tham khảo) |
-| Thay đổi chi tiết | aa_turret | Vũ khí và tham khảo | applied | reference (unit_refs.json); tower_flak_30: damage 7, cooldown 0.0286, clip 120, clipReload 3.0286; choice: the reference moves to the 2A38 (the weapon is kept); the anti-aircraft value falls through the tower flak's new rate (tower_flak_30's row) |
-| Vũ khí đề xuất | howitzer | weapon | applied | cooldown 7.1429 (for artillery: Vũ khí: lựu pháo 155 mm) |
-| Thay đổi chi tiết | artillery | Vũ khí: lựu pháo 155 mm | applied | howitzer: cooldown 7.1429 |
+| Vũ khí đề xuất | tower_flak_30 | weapon | already | as the sheet (for aa_turret: Vũ khí và tham khảo) |
+| Thay đổi chi tiết | aa_turret | Vũ khí và tham khảo | applied | choice: the reference moves to the 2A38 (the weapon is kept); the anti-aircraft value falls through the tower flak's new rate (tower_flak_30's row) |
+| Vũ khí đề xuất | howitzer | weapon | already | as the sheet (for artillery: Vũ khí: lựu pháo 155 mm) |
+| Thay đổi chi tiết | artillery | Vũ khí: lựu pháo 155 mm | already | the data already holds it |
 | Thay đổi chi tiết | artillery | Model và tham khảo | deferred | model and reference follow the model change: task B2 (the armour and speed are its Trung rows) |
-| Thay đổi chi tiết | attack_helicopter | Giá | applied | cp 9 |
+| Thay đổi chi tiết | attack_helicopter | Giá | already | the data already holds it |
 | Vũ khí đề xuất | jet_bombs | weapon | already | as the sheet (for attack_jet: Vũ khí: FAB-250) |
-| Thay đổi chi tiết | attack_jet | Vũ khí: FAB-250 | applied | jet_bombs 1 a load |
-| Vũ khí đề xuất | kh29 | weapon | applied | projectileSpeed 32 (for attack_jet: Vũ khí: Kh-29L, R-60) |
-| Vũ khí đề xuất | r60 | weapon | applied | projectileSpeed 42 (for attack_jet: Vũ khí: Kh-29L, R-60) |
-| Thay đổi chi tiết | attack_jet | Vũ khí: Kh-29L, R-60 | applied | kh29: projectileSpeed 32; r60: projectileSpeed 42 |
-| Thay đổi chi tiết | attack_jet | Giá | applied | cp 18 |
+| Thay đổi chi tiết | attack_jet | Vũ khí: FAB-250 | already | the data already holds it |
+| Vũ khí đề xuất | kh29 | weapon | already | as the sheet (for attack_jet: Vũ khí: Kh-29L, R-60) |
+| Vũ khí đề xuất | r60 | weapon | already | as the sheet (for attack_jet: Vũ khí: Kh-29L, R-60) |
+| Thay đổi chi tiết | attack_jet | Vũ khí: Kh-29L, R-60 | already | the data already holds it |
+| Thay đổi chi tiết | attack_jet | Giá | already | the data already holds it |
 | Thay đổi chi tiết | caspian | Vũ khí | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
 | Thay đổi chi tiết | daedalus | Máu, vũ khí | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
-| Vũ khí đề xuất | air_to_air | weapon | applied | projectileSpeed 60 (for fighter_jet: Vũ khí: AIM-120, AIM-9X) |
-| Vũ khí đề xuất | wvr_aam | weapon | applied | projectileSpeed 55 (for fighter_jet: Vũ khí: AIM-120, AIM-9X) |
-| Thay đổi chi tiết | fighter_jet | Vũ khí: AIM-120, AIM-9X | applied | air_to_air: projectileSpeed 60; wvr_aam: projectileSpeed 55 |
-| Thay đổi chi tiết | heavy_tank | Giá (CP) | applied | cp 13 |
-| Thay đổi chi tiết | iron_beam | Giá | applied | cp 6 |
-| Vũ khí đề xuất | hel_beam | weapon | applied | damage 10 (for iron_beam: Vũ khí: laser 100 kW) |
-| Thay đổi chi tiết | iron_beam | Vũ khí: laser 100 kW | applied | hel_beam: damage 10; aps shells 0.3 (the C-RAM's share of mortar bombs and shells) |
-| Thay đổi chi tiết | long_sam | Giá | applied | cp 14 |
-| Vũ khí đề xuất | patriot | weapon | applied | projectileSpeed 60, cooldown 2.75 (for missile_battery: Vũ khí: Patriot PAC-2) |
-| Thay đổi chi tiết | missile_battery | Vũ khí: Patriot PAC-2 | applied | patriot: projectileSpeed 60, cooldown 2.75 |
-| Vũ khí đề xuất | turret_gmlrs | weapon | applied | damage 160, projectileSpeed 50, splash 4.5, cooldown 7.5 (for rocket_turret.guided: Vũ khí: GMLRS dẫn đường) |
-| Thay đổi chi tiết | rocket_turret.guided | Vũ khí: GMLRS dẫn đường | applied | turret_gmlrs: damage 160, projectileSpeed 50, splash 4.5, cooldown 7.5 |
-| Thay đổi chi tiết | sam_launcher | Giá | applied | cp 7 |
-| Vũ khí đề xuất | buk_launcher | weapon | applied | projectileSpeed 50, cooldown 2.8 (for sam_launcher: Vũ khí: 9M317 Buk) |
-| Thay đổi chi tiết | sam_launcher | Vũ khí: 9M317 Buk | applied | buk_launcher: projectileSpeed 50, cooldown 2.8 |
-| Thay đổi chi tiết | scout_heli | Giá | applied | cp 5 |
-| Vũ khí đề xuất | scout_rockets | weapon | applied | projectileSpeed 40 (for scout_heli: Vũ khí: Hydra 70) |
-| Thay đổi chi tiết | scout_heli | Vũ khí: Hydra 70 | applied | scout_rockets: projectileSpeed 40; scout_rockets 6 a load |
-| Thay đổi chi tiết | scout_jeep | Tầm nhìn | applied | vision 55 |
-| Thay đổi chi tiết | scout_jeep | Hành vi | applied | stillCamo 0.4 (seen at 60 % of a spotter's sight when still) |
+| Vũ khí đề xuất | air_to_air | weapon | already | as the sheet (for fighter_jet: Vũ khí: AIM-120, AIM-9X) |
+| Vũ khí đề xuất | wvr_aam | weapon | already | as the sheet (for fighter_jet: Vũ khí: AIM-120, AIM-9X) |
+| Thay đổi chi tiết | fighter_jet | Vũ khí: AIM-120, AIM-9X | already | the data already holds it |
+| Thay đổi chi tiết | heavy_tank | Giá (CP) | already | the data already holds it |
+| Thay đổi chi tiết | iron_beam | Giá | already | the data already holds it |
+| Vũ khí đề xuất | hel_beam | weapon | already | as the sheet (for iron_beam: Vũ khí: laser 100 kW) |
+| Thay đổi chi tiết | iron_beam | Vũ khí: laser 100 kW | already | the data already holds it |
+| Thay đổi chi tiết | long_sam | Giá | already | the data already holds it |
+| Vũ khí đề xuất | patriot | weapon | already | as the sheet (for missile_battery: Vũ khí: Patriot PAC-2) |
+| Thay đổi chi tiết | missile_battery | Vũ khí: Patriot PAC-2 | already | the data already holds it |
+| Vũ khí đề xuất | turret_gmlrs | weapon | already | as the sheet (for rocket_turret.guided: Vũ khí: GMLRS dẫn đường) |
+| Thay đổi chi tiết | rocket_turret.guided | Vũ khí: GMLRS dẫn đường | already | the data already holds it |
+| Thay đổi chi tiết | sam_launcher | Giá | already | the data already holds it |
+| Vũ khí đề xuất | buk_launcher | weapon | already | as the sheet (for sam_launcher: Vũ khí: 9M317 Buk) |
+| Thay đổi chi tiết | sam_launcher | Vũ khí: 9M317 Buk | already | the data already holds it |
+| Thay đổi chi tiết | scout_heli | Giá | already | the data already holds it |
+| Vũ khí đề xuất | scout_rockets | weapon | already | as the sheet (for scout_heli: Vũ khí: Hydra 70) |
+| Thay đổi chi tiết | scout_heli | Vũ khí: Hydra 70 | already | the data already holds it |
+| Thay đổi chi tiết | scout_jeep | Tầm nhìn | already | the data already holds it |
+| Thay đổi chi tiết | scout_jeep | Hành vi | already | the data already holds it |
 | Thay đổi chi tiết | scylla | Vũ khí, máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
 | Thay đổi chi tiết | silver_bug | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
 | Thay đổi chi tiết | silver_bug | Vũ khí | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
-| Thay đổi chi tiết | stealth_fighter | Giá (CP) | applied | cp 13 |
-| Thay đổi chi tiết | strike_drone | Giá | applied | cp 9 |
-| Vũ khí đề xuất | jassm | weapon | applied | projectileSpeed 20, splash 9, cooldown 9.84 (for swarm_carrier: Vũ khí: thêm Rapid Dragon) |
-| Đơn vị – vũ khí | swarm_carrier | guided_bomb | applied | dropped (kept 0) |
-| Đơn vị – vũ khí | swarm_carrier | jassm | applied | added on slot drone |
-| Thay đổi chi tiết | swarm_carrier | Vũ khí: thêm Rapid Dragon | applied | jassm: projectileSpeed 20, splash 9, cooldown 9.84; guided_bomb dropped; jassm added; jassm 2 a sortie |
-| Thay đổi chi tiết | swarm_carrier | Giá | applied | cp 13 |
-| Thay đổi chi tiết | titan_tank | Giá (CP) | applied | cp 18 |
-| Thay đổi chi tiết | wheeled_gun | Máu | applied | hp 682 (the sheet's 1500 over toughness 2.2) |
-| Vũ khí đề xuất | gun_105_wheeled | weapon | applied | cooldown 3.7037 (for wheeled_gun: Vũ khí: 120 mm) |
-| Thay đổi chi tiết | wheeled_gun | Vũ khí: 120 mm | applied | gun_105_wheeled: cooldown 3.7037 |
-| Vũ khí đề xuất | zu23 | weapon | applied | damage 7, range 38, cooldown 0.04, clip 50, clipReload 3.04 (for zu23_technical: Vũ khí: ZU-23-2) |
-| Thay đổi chi tiết | zu23_technical | Vũ khí: ZU-23-2 | applied | zu23: damage 7, range 38, cooldown 0.04, clip 50, clipReload 3.04 |
+| Thay đổi chi tiết | stealth_fighter | Giá (CP) | already | the data already holds it |
+| Thay đổi chi tiết | strike_drone | Giá | already | the data already holds it |
+| Vũ khí đề xuất | jassm | weapon | already | as the sheet (for swarm_carrier: Vũ khí: thêm Rapid Dragon) |
+| Đơn vị – vũ khí | swarm_carrier | guided_bomb | already | not mounted |
+| Đơn vị – vũ khí | swarm_carrier | jassm | already | mounted |
+| Thay đổi chi tiết | swarm_carrier | Vũ khí: thêm Rapid Dragon | already | the data already holds it |
+| Thay đổi chi tiết | swarm_carrier | Giá | already | the data already holds it |
+| Thay đổi chi tiết | titan_tank | Giá (CP) | already | the data already holds it |
+| Thay đổi chi tiết | wheeled_gun | Máu | already | the data already holds it |
+| Vũ khí đề xuất | gun_105_wheeled | weapon | already | as the sheet (for wheeled_gun: Vũ khí: 120 mm) |
+| Thay đổi chi tiết | wheeled_gun | Vũ khí: 120 mm | already | the data already holds it |
+| Vũ khí đề xuất | zu23 | weapon | already | as the sheet (for zu23_technical: Vũ khí: ZU-23-2) |
+| Thay đổi chi tiết | zu23_technical | Vũ khí: ZU-23-2 | already | the data already holds it |
 
 <!-- /step:A1-Cao -->
+
+<!-- step:A1-Trung -->
+## A1 Trung: sheet Thay đổi chi tiết
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Thay đổi chi tiết | 1 | 59 | 27 | 1 |
+| Vũ khí đề xuất | 0 | 24 | 0 | 0 |
+| Đơn vị – vũ khí | 0 | 1 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Thay đổi chi tiết | aa_turret.sam | Tham khảo | already | the data already holds it |
+| Vũ khí đề xuất | sam | weapon | already | as the sheet (for aa_vehicle: Vũ khí: Stinger) |
+| Thay đổi chi tiết | aa_vehicle | Vũ khí: Stinger | already | the data already holds it |
+| Thay đổi chi tiết | aa_vehicle | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | argus | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | armored_bulldozer | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | armored_train | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | artillery | Giáp (T/H/S/N) | already | the data already holds it |
+| Vũ khí đề xuất | mortar_240_fixed | weapon | already | as the sheet (for artillery_emplacement.mortar: Vũ khí: cối 240 mm) |
+| Thay đổi chi tiết | artillery_emplacement.mortar | Vũ khí: cối 240 mm | already | the data already holds it |
+| Vũ khí đề xuất | hellfire_standoff | weapon | already | as the sheet (for attack_helicopter: Vũ khí: Hellfire, Stinger ATAS) |
+| Vũ khí đề xuất | stinger_atas | weapon | already | as the sheet (for attack_helicopter: Vũ khí: Hellfire, Stinger ATAS) |
+| Thay đổi chi tiết | attack_helicopter | Vũ khí: Hellfire, Stinger ATAS | already | the data already holds it |
+| Vũ khí đề xuất | jet_cannon | weapon | already | as the sheet (for attack_jet: Vũ khí: GSh-30-2) |
+| Thay đổi chi tiết | attack_jet | Vũ khí: GSh-30-2 | already | the data already holds it |
+| Vũ khí đề xuất | ballistic_missile | weapon | already | as the sheet (for ballistic_launcher: Vũ khí: Iskander) |
+| Thay đổi chi tiết | ballistic_launcher | Vũ khí: Iskander | already | the data already holds it |
+| Thay đổi chi tiết | bastion_mk0 | Máu, giáp | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | behemoth | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | behemoth_mk2 | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | behemoth_tempest | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Vũ khí đề xuất | twin_30_bmpt | weapon | already | as the sheet (for bmpt: Vũ khí: 2A42 đôi) |
+| Thay đổi chi tiết | bmpt | Vũ khí: 2A42 đôi | already | the data already holds it |
+| Vũ khí đề xuất | agl_40 | weapon | already | as the sheet (for bmpt: Vũ khí: Mk 19 40 mm) |
+| Thay đổi chi tiết | bmpt | Vũ khí: Mk 19 40 mm | already | the data already holds it |
+| Vũ khí đề xuất | c_ram_gatling | weapon | already | as the sheet (for c_ram: Vũ khí: Phalanx 20 mm) |
+| Thay đổi chi tiết | c_ram | Vũ khí: Phalanx 20 mm | already | the data already holds it |
+| Thay đổi chi tiết | caspian | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | command_airship | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | command_vehicle | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | daedalus | Kích thước | deferred | model size: task B1 |
+| Thay đổi chi tiết | engineer_vehicle | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | flame_tank | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | fortress_bastion | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | fortress_hive | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Vũ khí đề xuất | turret_gun_120_long | weapon | already | as the sheet (for gun_turret.long: Vũ khí: 120 mm L/55) |
+| Thay đổi chi tiết | gun_turret.long | Vũ khí: 120 mm L/55 | applied | choice: penetration +1 (the weapon row's 'xuyên đề xuất' 5), not a first-shot bonus |
+| Thay đổi chi tiết | gunship_heli | Giáp, máu | already | the data already holds it |
+| Vũ khí đề xuất | heli_atgm | weapon | already | as the sheet (for gunship_heli: Vũ khí: tên lửa chống tăng) |
+| Đơn vị – vũ khí | gunship_heli | heli_atgm | already | Hellfire -> 9M120 Ataka |
+| Thay đổi chi tiết | gunship_heli | Vũ khí: tên lửa chống tăng | already | the data already holds it |
+| Thay đổi chi tiết | gunship_heli | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | heavy_aa | Giá | already | the data already holds it |
+| Vũ khí đề xuất | air_cruise_missile | weapon | already | as the sheet (for heavy_bomber: Vũ khí: Kh-101) |
+| Thay đổi chi tiết | heavy_bomber | Vũ khí: Kh-101 | already | the data already holds it |
+| Vũ khí đề xuất | bomber_payload | weapon | already | as the sheet (for heavy_bomber: Vũ khí: FAB-500) |
+| Thay đổi chi tiết | heavy_bomber | Vũ khí: FAB-500 | already | the data already holds it |
+| Thay đổi chi tiết | heavy_tank | Tham khảo, giá | already | the data already holds it |
+| Thay đổi chi tiết | heavy_tank | Tốc độ xoay thân / tháp | already | the data already holds it |
+| Thay đổi chi tiết | heavy_turret | Vũ khí: 155 mm đôi | skipped | gun_155_twin_fort is not on heavy_turret |
+| Thay đổi chi tiết | heavy_turret | Vũ khí: 155 mm đôi | already | the data already holds it |
+| Thay đổi chi tiết | icarus_mk0 | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Vũ khí đề xuất | ifv_30 | weapon | already | as the sheet (for ifv: Vũ khí: 2A42 30 mm) |
+| Thay đổi chi tiết | ifv | Vũ khí: 2A42 30 mm | already | the data already holds it |
+| Vũ khí đề xuất | atgm | weapon | already | as the sheet (for ifv: Vũ khí: TOW-2) |
+| Thay đổi chi tiết | ifv | Vũ khí: TOW-2 | already | the data already holds it |
+| Thay đổi chi tiết | ifv | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | ixion | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | kronos | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | landing_hovercraft | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | laser_tank | Giá, tăng dần | already | the data already holds it |
+| Thay đổi chi tiết | laser_tank | Giáp (T/H/S/N) | already | the data already holds it |
+| Vũ khí đề xuất | leviathan_460 | weapon | already | as the sheet (for leviathan: Vũ khí: 460 mm) |
+| Thay đổi chi tiết | leviathan | Vũ khí: 460 mm | already | the data already holds it |
+| Thay đổi chi tiết | locust | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Vũ khí đề xuất | sam_48n6 | weapon | already | as the sheet (for long_sam: Vũ khí: 48N6) |
+| Thay đổi chi tiết | long_sam | Vũ khí: 48N6 | already | the data already holds it |
+| Thay đổi chi tiết | main_battle_tank | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | main_battle_tank | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | main_battle_tank | Tốc độ xoay thân / tháp | already | the data already holds it |
+| Thay đổi chi tiết | mine_layer | Giáp (T/H/S/N) | already | the data already holds it |
+| Vũ khí đề xuất | sam_battery_lrr | weapon | already | as the sheet (for missile_battery.lrr: Vũ khí) |
+| Thay đổi chi tiết | missile_battery.lrr | Vũ khí | already | the data already holds it |
+| Vũ khí đề xuất | sam_pac3 | weapon | already | as the sheet (for missile_battery.pac3: Vũ khí: PAC-3) |
+| Thay đổi chi tiết | missile_battery.pac3 | Vũ khí: PAC-3 | already | the data already holds it |
+| Thay đổi chi tiết | mlrs | Hành vi | already | the data already holds it |
+| Thay đổi chi tiết | mlrs | Giá | already | the data already holds it |
+| Thay đổi chi tiết | mortar_carrier | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | nuke_train | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | rail_supergun | Dữ liệu vũ khí | deferred | a boss's main weapon as data: task C2 |
+| Thay đổi chi tiết | rail_supergun | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | recon_drone | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | sam_launcher | Máu | already | the data already holds it |
+| Thay đổi chi tiết | sam_launcher | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | scout_jeep | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | siege_tank | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | silver_bug | Kích thước | deferred | model size: task B1 |
+| Thay đổi chi tiết | sky_fortress | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | smoke_carrier | Vũ khí: M2 12,7 mm | already | it carries hmg_selfdef_15 (15 m, the engineer's) already; the sheet's 22 m is out of date |
+| Thay đổi chi tiết | smoke_carrier | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | stealth_bomber | Giá | already | the data already holds it |
+| Vũ khí đề xuất | jassm | weapon | already | as the sheet (for stealth_bomber: Vũ khí: JASSM) |
+| Thay đổi chi tiết | stealth_bomber | Vũ khí: JASSM | already | the data already holds it |
+| Vũ khí đề xuất | air_to_air | weapon | already | as the sheet (for stealth_fighter: Vũ khí và giá) |
+| Thay đổi chi tiết | stealth_fighter | Vũ khí và giá | already | the data already holds it |
+| Thay đổi chi tiết | stealth_fighter | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | supply_truck | Tốc độ | already | the data already holds it |
+| Thay đổi chi tiết | supreme_command | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | swarm_carrier | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | tank_destroyer | Giáp | already | the data already holds it |
+| Vũ khí đề xuất | gun_105_long | weapon | already | as the sheet (for tank_destroyer: Tầm, nhịp, giá) |
+| Thay đổi chi tiết | tank_destroyer | Tầm, nhịp, giá | already | the data already holds it |
+| Thay đổi chi tiết | titan_tank | Tốc độ, giá | already | the data already holds it |
+| Thay đổi chi tiết | titan_tank | Tốc độ xoay thân / tháp | already | the data already holds it |
+| Thay đổi chi tiết | turtle_tank | Giáp (T/H/S/N) | already | the data already holds it |
+| Thay đổi chi tiết | twin_tank | Tốc độ xoay thân / tháp | already | the data already holds it |
+| Thay đổi chi tiết | typhon | Vũ khí | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | typhon | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | vbied | Giáp | already | the data already holds it |
+| Vũ khí đề xuất | detonator | weapon | already | as the sheet (for vbied: Máu, nổ lan) |
+| Thay đổi chi tiết | vbied | Máu, nổ lan | already | the data already holds it |
+| Vũ khí đề xuất | aim9 | weapon | already | as the sheet (for wingman_drone: Vũ khí: AIM-9) |
+| Thay đổi chi tiết | wingman_drone | Vũ khí: AIM-9 | already | the data already holds it |
+
+<!-- /step:A1-Trung -->
