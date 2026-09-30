@@ -10907,3 +10907,7 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | mine_layer | 7.4 x 2.6 x 2.0 (note) | 7.62 x 2.70 x 1.97 (the chute behind) | 7.62 x 2.70 | 2,576 | GMZ-3 | 6.6 x 2.6 x 3.0 at 0.85, 8,164 |
 | mlrs | 5.6 x 1.9 x 2.6 (note) | 6.09 x 2.00 x 2.60 | 5.80 x 2.00 | 2,224 | M142 HIMARS on the FMTV | 6.4 x 2.3 x 3.6 at 0.85, 7,328 |
 | wheeled_gun | 7.9 x 2.4 x 2.2 (note) | 8.97 x 2.39 x 2.31 (the gun 1.9 m past the nose) | 5.97 x 2.36 | 2,508 | Centauro II (120 mm) | 9.4 x 2.6 x 3.1 at 0.85, 7,664 |
+| shield_carrier | 6.3 x 2.4 x 1.9 (note) | 6.29 x 2.46 x 2.84 (the emitter dome on the roof) | 6.29 x 2.46 | 1,918 | Boxer 8x8 with a field emitter | 7.4 x 2.5 x 5.3 at 0.85, 7,380 |
+| turtle_tank | 7.6 x 2.9 x 2.8 (note) | 7.42 x 2.97 x 2.81 | 6.10 x 2.97 | 2,540 | the T-72 / T-62 "tsar-mangal" turtle tanks (2023-2024) | 8.1 x 3.3 x 3.9 at 0.85, 11,272 |
+| armored_bulldozer | 6.5 x 3.7 x 3.2 (note) | 6.13 x 3.70 x 3.53 | 6.13 x 3.70 | 2,060 | Caterpillar D9R (IDF armour kit) | 6.7 x 3.7 x 4.8 at 0.85, 9,418 |
+| tank_destroyer (+ _hd) | 7.8 x 2.5 x 2.4 (note) | 7.89 x 2.62 x 2.04 | 5.72 x 2.62 | 2,996 / 7,344 | 2S25 Sprut-SD (2A75 125 mm) | 9.2 x 2.7 x 2.2 at 0.85, 7,588 |

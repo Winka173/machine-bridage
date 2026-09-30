@@ -61,7 +61,7 @@
   },
   "armored_bulldozer": {
     "file": "armored_bulldozer.glb",
-    "triangles": 9418
+    "triangles": 2060
   },
   "armored_car": {
     "file": "armored_car.glb",
@@ -1033,7 +1033,7 @@
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
-    "triangles": 7380
+    "triangles": 1918
   },
   "shield_generator": {
     "file": "shield_generator.glb",
@@ -1157,11 +1157,11 @@
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",
-    "triangles": 7588
+    "triangles": 2996
   },
   "tank_destroyer_hd": {
     "file": "tank_destroyer_hd.glb",
-    "triangles": 17032
+    "triangles": 7344
   },
   "tank_ditch": {
     "file": "tank_ditch.glb",
@@ -1233,7 +1233,7 @@
   },
   "turtle_tank": {
     "file": "turtle_tank.glb",
-    "triangles": 11272
+    "triangles": 2540
   },
   "twin_tank": {
     "file": "twin_tank.glb",
