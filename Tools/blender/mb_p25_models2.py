@@ -1230,6 +1230,135 @@ def mortar_carrier(a):
     a.pivot('Muzzle_main', tuple(base + axis * (length + .05)), t)
 
 
+# ----------------------------------------------------------------------------- pickups (technicals, VBIED)
+PICKUP_AXLES = (-1.32, 1.22)
+
+
+def _pickup(a, body_mat='Team', plated=False):
+    """The civilian double-cab pickup (Toyota Hilux class) the technicals and the VBIED are built on, 4.2 x 1.45 m at
+    0.8 x: the bonnet, the cab with its windscreen and windows, the load bed with low sides and a drop tailgate, two
+    axles of road tyres under arches, bumpers and lights. plated=True leaves the glass off (the VBIED plates it).
+    Returns the bed floor height."""
+    hd.mark(a, False)
+    body = a.part('Body', body_mat)
+    dark = a.part('Chassis', 'Undercarriage')
+    steel = a.part('Steel', 'Steel')
+    dark.box((1.0, 3.9, .22), loc=(0, 0, .42), bevel=0)                                             # frame
+    _wheels(a, (-.62, .62), PICKUP_AXLES, .33, .24, seg=10, disc='Steel')
+    body.prism([(-2.1, .5), (-2.12, .86), (-1.45, .98), (-.98, 1.02), (-.72, 1.44), (-.12, 1.44), (-.06, .5)], 1.44,
+               bevel=.05, seg=1)
+    for s in (-1, 1):
+        dark.box((.18, .9, .2), loc=(s * .66, PICKUP_AXLES[0], .72), bevel=0)                          # arches
+        dark.box((.18, .9, .2), loc=(s * .66, PICKUP_AXLES[1], .72), bevel=0)
+        if not plated:
+            a.part('Glass', 'Glass').box((.03, .55, .32), loc=(s * .725, -.42, 1.2), bevel=0)
+    if not plated:
+        a.part('Glass', 'Glass').box((1.26, .04, .36), loc=(0, -.85, 1.22), rot=(-.95, 0, 0), bevel=0)
+    body.box((1.44, 2.1, .12), loc=(0, 1.0, .72), bevel=.02, seg=1)                                   # bed floor
+    for s in (-1, 1):
+        body.box((.06, 2.1, .42), loc=(s * .69, 1.0, .98), bevel=0)                                   # bed sides
+    body.box((1.44, .06, .42), loc=(0, -.02, .98), bevel=0)
+    body.box((1.44, .06, .4), loc=(0, 2.04, .97), bevel=0)                                            # tailgate
+    steel.box((1.5, .14, .16), loc=(0, -2.16, .56), bevel=.03, seg=1)                                # bumpers
+    steel.box((1.5, .12, .14), loc=(0, 2.1, .56), bevel=.02, seg=1)
+    _lights(a, (-.52, .52), -2.13, .78, size=(.22, .04, .1))
+    _lights(a, (-.62, .62), 2.08, .9, facing=1, size=(.1, .04, .16), lamp='Alloy')
+    dark.grille(.7, .2, loc=(0, -2.13, .66), slats=2, depth=.04, thickness=.04)
+    a.pivot('Point_exhaust', (.45, 2.1, .45))
+    return .78
+
+
+def vbied(a):
+    """Armoured suicide car (VBIED), 4.2 x 1.5 x 1.8 m: the pickup (_pickup) welded over with patched steel plates
+    of uneven sizes and colours (rusted, bare and painted), a thick ram plate on the nose, vision slits instead of
+    glass, the bed boxed in over its load, spare wheels and sandbags lashed on; no weapon shows. From above: a rough
+    steel box with uneven plate edges (the sheet). `Turret` carries only the roof hatch; `Muzzle_main` is at the
+    ram plate (the detonation)."""
+    import random
+    rng = random.Random(4104)
+    _pickup(a, body_mat='Rust', plated=True)
+    mats = ('MetalSheet', 'Rust', 'Armor', 'Team')
+    # Patched plates over the cab and bonnet, each a little askew, overlapping the body.
+    for k, (x, y, z, w, d, h, rot) in enumerate((
+            (.0, -1.75, 1.0, 1.52, .7, .08, (-.18, 0, 0)), (.0, -1.2, 1.06, 1.5, .55, .08, (-.05, 0, 0)),
+            (.0, -.4, 1.5, 1.52, .72, .08, (0, 0, .04)), (.76, -.45, 1.12, .08, .9, .6, (0, 0, .02)),
+            (-.76, -.45, 1.12, .08, .9, .6, (0, 0, -.03)), (.78, -1.5, .8, .08, 1.0, .42, (0, 0, .05)),
+            (-.78, -1.5, .8, .08, 1.0, .42, (0, 0, -.04)))):
+        a.part(f'Plates_{mats[k % 4]}', mats[k % 4]).box((w, d, h), loc=(x, y, z), rot=rot, bevel=0)
+    slits = a.part('Slits', 'Undercarriage')
+    slits.box((.9, .04, .06), loc=(0, -.88, 1.3), rot=(-.95, 0, 0), bevel=0)
+    for s in (-1, 1):
+        slits.box((.03, .4, .05), loc=(s * .81, -.45, 1.28), bevel=0)
+    a.part('Ram_plate', 'Armor').box((1.62, .2, .75), loc=(0, -2.28, .72), rot=(-.12, 0, 0), bevel=.03, seg=1)
+    # The boxed-in bed over the load, its plates uneven.
+    for k in range(4):
+        w, d = rng.uniform(.62, .78), rng.uniform(.9, 1.1)
+        x = (-1) ** k * .37
+        y = .55 if k < 2 else 1.5
+        a.part(f'Plates_{mats[(k + 1) % 4]}', mats[(k + 1) % 4]).box((w, d, .1), loc=(x, y, 1.3 + rng.uniform(0, .06)),
+                                                                     rot=(rng.uniform(-.05, .05), rng.uniform(-.05, .05), 0),
+                                                                     bevel=0)
+    a.part('Bed_box', 'Armor').box((1.4, 2.0, .5), loc=(0, 1.0, 1.02), bevel=0)
+    a.part('Spare_wheel', 'Rubber').cyl(.3, .2, loc=(.2, 1.3, 1.46), seg=10, bevel=0)
+    a.part('Sandbags', 'Sandbag').box((.5, .3, .2), loc=(-.35, 1.7, 1.45), bevel=.05, seg=1)
+    t = a.pivot('Turret', (0, -.4, 1.54))
+    a.part('Hatch', 'Armor', t).cyl(.22, .08, loc=(0, 0, .04), seg=8, bevel=0)
+    a.pivot('Muzzle_main', (0, -2.06, -.9), t)
+    a.pivot('Point_fire', (0, 1.0, 1.4))
+
+
+def rocket_technical(a):
+    """Rocket technical (a pickup with the Type 63 12-tube 107 mm launcher), 4.2 x 1.4 x 1.6 m: the pickup
+    (_pickup) and on its bed the launcher on a turntable (`Turret`): 12 tubes in three rows of four in a band-clamped
+    cluster (`Rocket_tubes`, `Tubes`: they elevate; the dark mouths are the `Tubes_bore` face the rockets leave from,
+    `Muzzle_main` at its middle), pointing forward over the cab. From above: a grid of small round tubes on the bed.
+    A machine gun on the cab roof (`Mount_mg`, `Muzzle_mg`)."""
+    z = _pickup(a)
+    mv._roof_mg(a, None, (.3, -.72, 1.44), length=.7, shield=False)
+    a.pivot('Point_fire', (0, 1.0, 1.0))
+    t = a.pivot('Turret', (0, 1.05, z))
+    a.part('Turret_steel', 'Steel', t).cyl(.32, .1, loc=(0, 0, .05), seg=10, bevel=0)
+    a.part('Turret_armor', 'Armor', t).box((.5, .5, .36), loc=(0, .1, .28), bevel=.03, seg=1)        # cradle
+    tilt = .12
+    rot = (R90 - tilt, 0, 0)
+    axis = Vector((0, -math.cos(tilt), math.sin(tilt)))
+    c = Vector((0, -.1, .72))
+    tubes = a.part('Rocket_tubes', 'Crate', t)
+    bores = a.part('Tubes_bore', 'Undercarriage', t)
+    for row in range(3):
+        for col in range(4):
+            p = c + Vector((-.3 + col * .2, 0, -.2 + row * .2 + 0)) + Vector((0, 0, 0))
+            tubes.cyl(.085, 1.2, loc=tuple(p), rot=rot, seg=8, bevel=0)
+            bores.cyl(.06, .02, loc=tuple(p + axis * .61), rot=rot, seg=8, bevel=0)
+    bands = a.part('Pod_bands', 'Armor', t)
+    for k in (-.35, .35):
+        bands.box((.86, .06, .66), loc=tuple(c + axis * k), rot=(-tilt, 0, 0), bevel=0)
+    a.pivot('Muzzle_main', tuple(c + axis * .66), t)
+
+
+def zu23_technical(a):
+    """Anti-aircraft technical (a pickup with the ZU-23-2), 4.2 x 1.4 x 1.8 m: the pickup (_pickup) and on its bed the
+    twin 23 mm gun on its carriage (`Turret`): the two long barrels side by side (`Main_cannon` / `_2`, drawn 15 %
+    long and thick: from above, two long parallel barrels), their flash hiders (`Muzzle_brake` / `_2`), the ammunition
+    boxes either side, the gunner's seats and sight. `Muzzle_main` at the left tip."""
+    z = _pickup(a)
+    a.pivot('Point_fire', (0, 1.0, 1.0))
+    t = a.pivot('Turret', (0, 1.1, z))
+    a.part('Gun_carriage', 'Armor', t).cyl(.45, .14, loc=(0, 0, .07), seg=10, bevel=0)
+    a.part('Turret_armor', 'Armor', t).box((.6, .7, .3), loc=(0, .05, .3), bevel=.03, seg=1)        # cradle
+    for s, suffix in ((1, ''), (-1, '_2')):
+        x = s * .16
+        gun = a.part(f'Main_cannon{suffix}', 'Steel', t)
+        gun.box((.14, .6, .16), loc=(x, -.15, .55), bevel=.02, seg=1)                               # receiver
+        gun.cyl(.045, 1.85, loc=(x, -1.37, .55), rot=FORWARD, seg=8, bevel=0)
+        a.part(f'Muzzle_brake{suffix}', 'Undercarriage', t).cyl(.065, .16, loc=(x, -2.36, .55), rot=FORWARD, seg=8,
+                                                                bevel=0)
+        a.part('Ammo_boxes', 'Crate', t).box((.2, .4, .3), loc=(s * .42, -.05, .55), bevel=.02, seg=1)
+        a.part('Seats', 'Canvas', t).box((.26, .24, .1), loc=(s * .3, .5, .42), bevel=.02, seg=1)
+    a.part('Sight', 'Glass', t).box((.1, .1, .1), loc=(.3, .2, .75), bevel=0)
+    a.pivot('Muzzle_main', (.16, -2.46, .55), t)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -1250,4 +1379,7 @@ BUILDERS = {
     'engineer_vehicle': (engineer_vehicle, dict(ao_distance=.55, grime_height=.5)),
     'smoke_carrier': (smoke_carrier, dict(ao_distance=.45, grime_height=.45)),
     'mortar_carrier': (mortar_carrier, dict(ao_distance=.45, grime_height=.45)),
+    'vbied': (vbied, dict(ao_distance=.35, grime_height=.4)),
+    'rocket_technical': (rocket_technical, dict(ao_distance=.35, grime_height=.4)),
+    'zu23_technical': (zu23_technical, dict(ao_distance=.35, grime_height=.4)),
 }

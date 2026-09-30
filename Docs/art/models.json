@@ -949,7 +949,7 @@
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
-    "triangles": 6796
+    "triangles": 1912
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
@@ -1245,7 +1245,7 @@
   },
   "vbied": {
     "file": "vbied.glb",
-    "triangles": 9760
+    "triangles": 1184
   },
   "vehicle_hangar": {
     "file": "vehicle_hangar.glb",
@@ -1313,6 +1313,6 @@
   },
   "zu23_technical": {
     "file": "zu23_technical.glb",
-    "triangles": 9444
+    "triangles": 1356
   }
 }

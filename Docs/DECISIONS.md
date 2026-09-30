@@ -10900,3 +10900,6 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | engineer_vehicle | 6.9 x 3.0 x 2.6 (note) | 6.45 x 3.02 x 2.02 | 6.45 x 3.02 | 2,304 | BREM-1 on the T-72 hull, M88 | 6.3 x 2.8 x 2.4 at 0.85, 8,352 |
 | smoke_carrier | 3.9 x 2.2 x 2.0 (note) | 4.21 x 2.24 x 2.64 (the generator on the roof) | 4.21 x 2.24 | 2,468 | M1059 Lynx (M113 with the smoke generator) | 4.2 x 2.3 x 2.9 at 0.85, 9,280 |
 | mortar_carrier | 3.9 x 2.2 x 2.0 (note) | 4.21 x 2.30 x 3.20 (the mortar up) | 4.21 x 2.30 | 2,440 | M1064 (M113 with the M120 mortar) | 4.4 x 2.5 x 3.2 at 0.85, 6,448 |
+| vbied | 4.2 x 1.5 x 1.8 (note) | 4.58 x 1.68 x 1.60 (the ram plate and side plates) | 4.58 x 1.68 | 1,184 | up-armoured VBIED pickups (Mosul, Syria) | 4.4 x 1.9 x 2.4 at 0.85, 9,760 |
+| rocket_technical | 4.2 x 1.4 x 1.6 (note) | 4.39 x 1.50 x 1.86 | 4.39 x 1.50 | 1,912 | Toyota Hilux with the Type 63 107 mm | 4.6 x 1.8 x 2.8 at 0.85, 6,796 |
+| zu23_technical | 4.2 x 1.4 x 1.8 (note) | 4.39 x 1.50 x 1.56 | 4.39 x 1.50 | 1,356 | Toyota Hilux with the ZU-23-2 | 4.5 x 1.8 x 2.1 at 0.85, 9,444 |
