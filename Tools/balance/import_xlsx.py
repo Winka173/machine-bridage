@@ -4,8 +4,9 @@
     python Tools/balance/import_xlsx.py --upto all       # every step this script knows
     python Tools/balance/import_xlsx.py --upto A2 --dry  # reports, writes nothing
 
-The steps run in the task order of the sheet "Viec cho agent" (A1 Cao, A1 Trung, A1 Thap, A2, A3, A4, A5, B7, B8)
-and each is re-runnable: running the same --upto twice changes nothing the second time. Every number comes from the
+The steps run in the task order of the sheet "Viec cho agent" (A1 Cao, A1 Trung, A1 Thap, A2, A3, A4, A5, B7, B8, then
+B1 model sizes, B3 round sizes and C4 turn rates, steps_b.py, and
+A1-review, steps_review.py: the rows the first pass left for a measurement, applied) and each is re-runnable: running the same --upto twice changes nothing the second time. Every number comes from the
 spreadsheet (read with openpyxl, data_only: the values the formulas computed); the script holds only the rules that
 map a row onto the data, and the owner's decisions where the sheet offers a choice (DECISIONS 25A). balance.json is
 edited in place, field by field on each entry's own line (jsonc_edit.py), never re-serialised.
@@ -33,7 +34,7 @@ BALANCE = os.path.join(ROOT, "Assets", "MachineBrigade", "Resources", "Data", "b
 REFS = os.path.join(ROOT, "Tools", "docs", "unit_refs.json")
 REPORT = os.path.join(ROOT, "Docs", "balance", "apply-report.md")
 
-STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A2", "A3", "A4", "A5", "B7", "B8", "review"]
+STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A2", "A3", "A4", "A5", "B7", "B8", "B1", "B3", "C4", "A1-review"]
 PRIORITY = {"A1-Cao": "Cao", "A1-Trung": "Trung", "A1-Thap": "Thấp"}
 
 # The last step of this run (main sets it): a step reads it to leave a field to a later step of the same run.
@@ -183,6 +184,13 @@ def close(a, b, rel=1e-4):
 # The report
 
 
+# Steps whose sections sit in a block of their own in the report (work done in parallel merges without touching the
+# other steps' sections or the summary): the block's name, between "<!-- name:begin -->" and "<!-- name:end -->".
+BLOCKS = {"B1": "import_b", "B3": "import_b", "C4": "import_b"}
+# Steps no longer run: their sections are taken out of the report ("review" listed the rows A1-review now applies).
+RETIRED = ("review",)
+
+
 class Report:
     def __init__(self):
         self.rows = collections.defaultdict(list)  # step -> [(sheet, id, item, outcome, detail)]
@@ -219,12 +227,20 @@ class Report:
                 text = f.read()
         if not text.startswith("# "):
             text = HEADER
+        for step in RETIRED:
+            text = re.sub(r"<!-- step:" + re.escape(step) + r" -->.*?<!-- /step:" + re.escape(step) + r" -->\n*", "", text, flags=re.S)
         for step, body in sections:
             pat = re.compile(r"<!-- step:" + re.escape(step) + r" -->.*?<!-- /step:" + re.escape(step) + r" -->\n?", re.S)
             if pat.search(text):
                 # A re-run that changed nothing keeps the section of the run that did (what moved, and from what).
                 if self.changed(step):
                     text = pat.sub(lambda _: body, text)
+            elif step in BLOCKS:
+                begin, end = f"<!-- {BLOCKS[step]}:begin -->", f"<!-- {BLOCKS[step]}:end -->"
+                if begin not in text:
+                    text = text.rstrip("\n") + "\n\n" + begin + "\n" + end + "\n"
+                at = text.index(end)
+                text = text[:at] + body + "\n" + text[at:]
             else:
                 text = text.rstrip("\n") + "\n\n" + body
         text = with_summary(text)
@@ -235,7 +251,8 @@ class Report:
 def with_summary(text):
     """The report with its summary (every step's counts by sheet, read back from the sections) after the header."""
     rows = []
-    for m in re.finditer(r"<!-- step:(\S+) -->\n## ([^\n]*)\n(.*?)<!-- /step:\1 -->", text, re.S):
+    outside = re.sub(r"<!-- (\w+):begin -->.*?<!-- \1:end -->", "", text, flags=re.S)  # a block keeps its own counts
+    for m in re.finditer(r"<!-- step:(\S+) -->\n## ([^\n]*)\n(.*?)<!-- /step:\1 -->", outside, re.S):
         step, body = m.group(1), m.group(3)
         table = body.split("| Sheet | Applied | Already so | Deferred | Skipped |", 1)
         if len(table) < 2:
@@ -262,8 +279,9 @@ HEADER = """# Balance spreadsheet: apply report (prompt 25)
 What `Tools/balance/import_xlsx.py` applied from `Docs/balance/Machine_Brigade_Can_bang.xlsx`, sheet by sheet, and
 what it left and why. Outcomes: **applied** (the data now holds the sheet's number), **already** (the data already
 held it), **deferred** (the row belongs to a later task of the sheet "Việc cho agent": names D1, model sizes B1,
-models B2, bosses C1, boss weapons C2), **skipped** (no id in the data, a contradiction, or a measurement that did not
-confirm it). Decisions and their reasons: `Docs/DECISIONS.md`, section 25A. Each step's section is rewritten when the
+models B2, bosses C1, boss weapons C2), **skipped** (no id in the data, or a contradiction in the sheet). The rows
+an earlier step left for a measurement, deferred or skipped are applied by the last step, A1-review, and listed
+again in its section with their before and after (the owner, after the first pass). Decisions and their reasons: `Docs/DECISIONS.md`, section 25A. Each step's section is rewritten when the
 script runs it again.
 """
 
@@ -273,6 +291,8 @@ script runs it again.
 
 
 FAMILY_KEYS = ("projectileSpeed", "splash", "projectileModel", "roundWeight")
+# B3 round lengths (steps_b.py): on a family when every member takes one; A3 keeps them when it writes the families.
+ROUND_KEYS = ("roundLength", "projectileScale")
 
 
 class Writer:
@@ -1007,6 +1027,7 @@ def main():
     report = Report()
     sections = []
     import steps_more  # noqa: E402  (A2 onwards)
+    import steps_b  # noqa: E402  (B1, B3)
     import import_xlsx as as_module  # the same code as a module (steps_more imports it): share the rows
     as_module.A1_TEXT.update(A1_TEXT)
     as_module.UPTO = last
@@ -1017,6 +1038,14 @@ def main():
         if step in PRIORITY:
             a1(wr, wb, report, step, weapon_rows, unit_rows, refs)
             sections.append((step, report.section(step, f"A1 {PRIORITY[step]}: sheet Thay đổi chi tiết")))
+        elif step == "A1-review":
+            import steps_review
+            steps_review.run(wr, wb, report, weapon_rows)
+            sections.append((step, report.section(step, "A1 review: the rows left for a measurement, and every row deferred or skipped, applied", steps_review.INTRO)))
+        elif step in ("B1", "B3", "C4"):
+            title = steps_b.run(step, wr, wb, report)
+            if title:
+                sections.append((step, report.section(step, title, steps_b.INTRO.get(step, ""))))
         else:
             title = steps_more.run(step, wr, wb, report, weapon_rows, unit_rows, refs)
             if title:

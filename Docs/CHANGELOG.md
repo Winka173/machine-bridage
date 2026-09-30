@@ -38,6 +38,35 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
 - B.7-B.8: prices checked against the price sheets; the airstrike drops four FAB-500s (10 m each), the barrage fires six
   shells, the cruise missile hits for 600 over 10 m.
 
+### Prompt 25 A1 review
+
+The rows the first pass kept for a measurement, applied as the sheet has them (the owner's call; DECISIONS 25A,
+`import_xlsx.py --upto A1-review`).
+
+- Nine speeds by the sheet's real speed x the map factor (the engineer vehicle 4.4 m/s, the smoke carrier and the
+  mortar carrier 5.9, the mine layer 5.5, the VBIED 6.7, the light tank 4.0, the flame tank 4.6, the HIMARS 9.4,
+  the strike drone 13.9); the siege tank sees 30 m.
+- Health by the sheet's class median a CP: the TOS 450, the siege tank 600, the swarm carrier 632, the AC-130 1,069
+  (about half).
+- The Skyranger's AHEAD gun changes magazines in 1.21 s (the sheet's formula, 102 a second sustained).
+
+### Prompt 25 B1, B3 and turn rates
+
+The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`).
+
+- B1: every vehicle's drawn size is in the data (`modelSize`) and the game fits its model to it, so the models B2
+  rebuilt (the main battle tank 7.8 m, the twin tank 9.0 m, the flame tank, the armoured car, the scout jeep, the FPV
+  and Lancet trucks, the command vehicle, the Su-27 8.6 m, the Apache, the swarm carrier and the AC-130 on one C-130
+  frame) and the old ones are drawn at the sheet's sizes, their hulls (collision) with them; the super tank 10.6 m,
+  the Pantsir 9.6 m, the supply truck 8.2 m, the self-propelled gun, the siege tank, the Iron Beam, the radar and
+  Shahed trucks resized; Daedalus ~45 m, and Icarus 60 m, now the largest thing in the sky.
+- B3: rounds at the sheet's lengths (0.8 x real from the ground, 0.5 x from the air, 0.8 m at least): bombs, the
+  JASSM, the Kornet and the 240 mm mortar smaller, the Buk, Patriot and 48N6 bigger; 155 mm shells 0.8 m and every
+  203 mm 1.3 x that; the Kh-29L and the GBU-39 get models of their own (the Maverick and the GBU-12 stand in until
+  they are built).
+- C.4: the design document's turn rates in degrees a second (it printed the code's radians under a degrees label);
+  the tanks' turrets turn faster than their hulls (115 deg/s, from A1).
+
 ### Play-test 9 models (DECISIONS 23M)
 
 - Icarus is a spaceship again, not a station: a dagger-shaped warship about as big as before on the map, with a pointed

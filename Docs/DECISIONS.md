@@ -10875,8 +10875,8 @@ not in force yet, so no row was held back for it.
 
 The owner asked that no test run until a test phase is approved. The tests the spec asks for are written but not
 run from A3 on (the A2 DPS test and the content tests ran once, before the rule, and passed); only compile checks
-(batch mode, `-quit`, the log read for `error CS`) are made. The measurements for the "Xem lại" and "Theo dõi" rows
-wait for the test phase too: those rows keep the game's value for now.
+(batch mode, `-quit`, the log read for `error CS`) are made. The "Xem lại" and "Theo dõi" rows first waited for
+the test phase; after the first pass the owner had them applied (below, A1-review).
 
 ### A4 Missile speeds
 
@@ -10948,28 +10948,51 @@ holds half. Where a row offers two options:
   drawn on the map is the blast too (10 m; it was 15 round an 18 m blast). The cluster alternative is not taken.
 - Napalm, SEAD, smoke, the UAV scan, repair and the field tower: kept, as the sheet says.
 
-### To measure in the test phase ("Xem lại", "Theo dõi")
+### Applied after the first pass: "Xem lại", "Theo dõi" and every row left (A1-review)
 
-Under the owner's no-test rule the combat-value measurements wait for the test phase; every row below keeps the
-game's value for now, and `Docs/balance/apply-report.md` (section "To measure in the test phase") lists them with
-the sheet's proposal. The measurement to run then: `CombatValueMeasure.MeasureTheRoster` with `MB_BALANCE=1`,
-`MB_CV_SEEDS=13,21,34` and `MB_CV_ONLY` naming the cards, against a copy of `balance.json` with the proposal
-(`MB_CV_BALANCE`).
-- **"Xem lại" (Kiểm tra từng mục), 14 rows, all kept:** the speeds the sheet derives from the real vehicle times the
-  map's compression (the engineer vehicle 7 -> ~4.4, the smoke carrier 8 -> ~5.9, the mine layer 8 -> ~5.5, the VBIED
-  13 -> ~6.7, the light tank 9 -> ~4.0, the flame tank 6.5 -> ~4.6, the mortar carrier 8 -> ~5.9, the HIMARS
-  6 -> ~9.4, the strike drone 19 -> ~13.9), the siege tank's vision 38 -> ~30, and four health rows the sheet itself
-  would keep if toughness is the card's identity (the TOS, the siege tank, the swarm carrier, the flying gunship).
-  The sheet says "có thể giữ nếu là chủ đích"; halving the light tank's or the VBIED's speed would change what the
-  card is, so they wait for a measurement rather than a guess.
-- **"Theo dõi" (Cân bằng lần 2):** the rocket technical (3 CP) and the long-range SAM (14 CP): kept; change only if
-  the measurement confirms.
-- **"Đã giảm ở đợt 2":** the attack jet and the heavy bomber (their round-2 cuts are in); the sheet's own note asks
-  for a new measurement.
-- **Changes applied whose words and numbers disagree**, to judge by the same measurement (prompt 25 A.5 allows a
-  tuned value, recorded before and after): the ZU-23 ("giữ DPS", 70 a second, was 143), the Pantsir's 2A38 (171, was
-  252), the AA tower's flak (131, was 193; the sheet wanted its AA value 300 -> 240), the HQ's flak (140, was 157),
-  the scout helicopter's six Hydras a load (was 24), the flamethrower's 21 on every target.
+The first pass kept the "Xem lại" and "Theo dõi" rows for a measurement in the test phase. The owner then asked for
+them applied as the sheet has them ("các chỗ nào cần xem lại thì cứ đổi luôn, cho đúng với công thức trong đó, và mọi
+thứ trong đó cứ thêm hết sửa hết, rồi ta sẽ loại trừ sau nếu dư thừa": change what needs a review, to the sheet's
+formulas; add and change everything in it; what is too much comes out later), and every row a step had deferred or
+skipped for a reason other than a later task (bosses C1-C2, names D1, models B2). `import_xlsx.py --upto A1-review`
+(`Tools/balance/steps_review.py`) does it; its section of `apply-report.md` lists every row with its before and after.
+The old "review" step, which listed them as deferred, is gone from the script and the report.
+- **"Xem lại" (Kiểm tra từng mục), 14 rows, applied.** Speeds, the sheet's real speed x the map's factor: the engineer
+  vehicle 7 -> 4.4 m/s, the smoke carrier 8 -> 5.9, the mine layer 8 -> 5.5, the VBIED 13 -> 6.7, the light tank
+  9 -> 4.0, the flame tank 6.5 -> 4.6, the mortar carrier 8 -> 5.9, the HIMARS 6 -> 9.4, the strike drone 19 -> 13.9;
+  the siege tank's vision 38 -> 30 m. Health by the sheet's formula: the class's median health a CP (its "Lớp" in
+  "Phương tiện", over the class's vehicles the sheet does not flag, today's data) times the vehicle's CP: the TOS
+  900 -> 450 and the siege tank 1,500 -> 600 (artillery, 50 a CP), the swarm carrier 1,400 -> 632 and the AC-130
+  2,000 -> 1,069 (aircraft, 48.6 a CP); in the sheet's units, after toughness, 1,980 -> 990, 3,300 -> 1,320,
+  3,080 -> 1,390, 4,400 -> 2,352. The sheet's "keep it if it is the card's identity" is not taken: the owner will take
+  out what is too much.
+- **"Theo dõi" and "Đã giảm ở đợt 2" (Cân bằng lần 2)** name no number: what they rest on is in (the rocket technical's
+  3 CP, the long-range SAM's 14; the attack jet's and the heavy bomber's round-2 cuts from A1).
+- **The changes a measurement was to judge** stand as applied, the sheet's numbers (not its words): the ZU-23 70 a
+  second (was 143), the Pantsir's 2A38 171 (252), the AA tower's flak 131 (193), the HQ's flak 140 (157), the scout
+  helicopter's six Hydras a load (24), the flamethrower 21 a tick (23.5).
+- **The Skyranger's AHEAD gun** (`twin_35_ahead`, the one weapon row with a blank cell): its rounds a magazine are the
+  game's 24 (the row keeps the gun; the design document the sheet was made from had no magazine column for it), and
+  its cadence the sheet's formula with A2's rule (the change time is the rest plus one gap: 1 -> 1.2137 s), 101.8 a
+  second sustained (was 105.5); `sheet_dps.tsv` now holds it, so the DPS test checks it too.
+- **A2's new weapons** (the gun-launched missile, the 57E6) were created and mounted in A2 (the report listed them with
+  the weapons the sheet does not have); the other 28 weapons the sheet does not list are the game's own: no row, nothing
+  to apply.
+- **"Đổi" rows of "Kiểm tra từng mục" no "Thay đổi chi tiết" row repeats** (A1 read only that sheet): checked against
+  the data. Every price, health, armour, speed and reach one was already in (B.7 prices, A1's rows under other names,
+  A2's weapon rows). Three are left, a contradiction in the sheet: the armoured car's, the scout jeep's and the light
+  tank's "Tầm bắn" rows repeat their vision rows (42, 55 and 36 m) while the weapon sheet keeps their guns (25 mm
+  30 m, the jeep's M2 22 m, the 57 mm 28 m, "Giữ"), and a 55 m machine gun would out-reach every anti-tank missile
+  against the sheet's own range order ("Tỷ lệ map": machine gun < autocannon < tank gun < anti-tank missile). The
+  self-propelled gun's M109A7 model and reference are B2's; three boss health rows are C1's.
+- **Not applied, for the lead:** the weapon sheet's column "Loại đạn thay thế gợi ý" (suggested second rounds, on 70
+  weapons: armour-piercing and air-burst rounds switched by target for the autocannons and flak, high explosive for the
+  tank guns, API for the elites' machine guns, a guided shell for a rank-7 branch or a support card) was never a row of
+  a step; it needs a round switched for a ground target (the game has `he` by armour and `air` for aircraft only) and
+  design choices the column leaves open. And the rows that offer two options were applied one way (the AA tower,
+  the long 120 mm tower, the Grad tower, the three support cards); the other option is not added on top.
+- **Tests likely to need the new numbers once run:** anything reading those speeds, the siege tank's, the TOS's, the
+  swarm carrier's or the AC-130's health, the siege tank's vision, or the AHEAD gun's cadence.
 
 ### B.9 (not run)
 
@@ -10982,3 +11005,120 @@ and support tests (the airstrike's four bombs, the barrage's six shells, the cru
 counter and combat-value checks of the re-priced cards, the muzzle tests of the new mounts (the wheeled gun's roof
 M2 on slot "mg", the light tank's gun-launched missile on its main gun), and anything reading the old Hellfire,
 Grad or 155 mm speeds and blasts.
+
+## 25B. Sizes, rounds, turn rates (B1, B3) (2026-09-30)
+
+Prompt 25 C.1 (task B1: model sizes), C.3 (task B3: round sizes) and C.4 (turn rates), applied by
+`Tools/balance/import_xlsx.py --upto B1` and `--upto B3` (`Tools/balance/steps_b.py`; a model's box is read from its
+.glb by `Tools/balance/glb_bounds.py`, no Unity needed). The report's rows are in `Docs/balance/apply-report.md`,
+between `<!-- import_b:begin -->` and `<!-- import_b:end -->` (a block of its own, so the other steps' sections and the
+summary are not touched). The B2 model agent rebuilt thirteen models in parallel (25B2); the lead merges this branch
+first and B2's after it.
+
+### B1 Model sizes ("Kiểm tra từng mục", rows "Kích thước model")
+
+- **The drawn size is data.** `modelSize` [length, width, height] in metres on a vehicle: the model's whole box, gun
+  included, as the sheet measures it (`VehicleDef.ModelLength/Width/Height`). The view fits the model's length to it
+  (`VehicleView.DrawScaleOf(def, modelLength)`: the battle's vehicles, air drops, strike aircraft, the scan drone), so
+  an old model and one rebuilt at another size are drawn alike: this branch draws B2's thirteen at their built sizes
+  with the old models still in, and B2's models sit right when they land. Uniform, by the length: a model whose
+  proportions are not the sheet's keeps its own (a non-uniform scale would squash wheels and skew turrets).
+- **The scale stays in step.** `scale` is still the one that matches the model the game ships (B2's built box for its
+  thirteen, the tree's .glb for the rest), for what draws by the data's scale alone (the menu preview, which frames its
+  model anyway). An aircraft's data scale is its drawn scale over 0.85 (play-test 6's aircraft factor, 21H, stays in
+  one place, `DrawScaleOf(def)`); the fit is the drawn size itself and takes no factor on top, so it is never applied
+  twice: B2's aircraft (built at 0.4 x real for scale 1) are drawn at exactly their built box.
+- **Which size.** "Đổi": the sheet's box; "dài ≥ N m": that length with the box's shape kept (the super tank 10.4 ->
+  10.6 m). "Giữ": the size drawn today, recorded (it changes nothing now and holds when a model is rebuilt). A model B2
+  rebuilt is drawn at its built box, the sheet's target (0.8 x real on the ground, 0.4 x real in the air: the lead's
+  call), over the row: the main battle tank 7.79 m (the row kept 6.3; the old model is 6.34), the AC-130 11.93 x 16.3 m
+  (the row kept 12.2 x 15.4; it is the swarm carrier's C-130, whose row gives 11.9 x 16.2), the attack helicopter
+  6.35 x 4.44 m (the row's 7.1 x 5.8 is the real 17.7 x 14.6 m with the rotor turning; B2's fuselage and rotor are
+  each 0.4 x real, 6.0 m, and its box has the blades at rest), the twin tank 8.96 m (at least 7.2, and 1.15 x the new
+  main battle tank as the row asks).
+- **The hull.** `length` and `width` (the collision capsule; its radius is 0.46 x the width) are B2's built hull
+  footprint for its ground models (the main battle tank 6.10 x 3.07 m, was 5.24 x 2.88), else the old hull resized with
+  the box, never longer or wider than the box (the siege tank's stood 5 % out of its old model: brought in). Aircraft
+  keep their hit radius as their hull; every hit radius stays (the loader's rule: a bigger drawing is not an easier
+  target, 21H).
+- **Bosses** ("Kích thước", two "Đổi" rows) take a `size` (`BossTemplates.Resize`: the scale, the hit radius, the
+  parts and their mounts, the ramp and the death blast together, over the model's own units, which B2 keeps): Daedalus
+  ~45 m, size 1.214 over B2's 37.08 m model (44.2 m on the old model until B2's lands); Icarus ~60 m, size 1.652 (the
+  coordinator's ~1.65), 0.8 m longer than the command airship (59.2 m), the next largest thing in the sky. Their active
+  protection's radius grows with them (Daedalus 26 -> 31.6 m, Icarus 30 -> 49.6 m) so it still covers the hull's ends;
+  Icarus's crash blast by the square root (16 -> 20.6 m, Resize's rule for death blasts) and its crash debris spread
+  with the hull. Icarus Mk.0, a variant (0.65 of Icarus), keeps its 23.6 m (variant size 0.393).
+- **Where the models and the sheet disagree.** The old models fitted by the length are more than 10 % off the sheet's
+  width or height for seven vehicles: the supply truck (8.2 m: 2.93 m wide, 3.78 m high against 2.0 and 2.1), the
+  counter-battery radar, the self-propelled gun (2.2 m wide against 3.1: its M109A7 model is B2's), the Shahed truck,
+  the siege tank, the Pantsir (9.6 m long: 3.39 wide, 4.53 high) and the Iron Beam (in ASSET_DEBT for B2). The sheet's
+  "Hiện tại" is not the model in the tree for Icarus (37 x 25 x 8.9, the model before play-test 9's dagger hull; the
+  tree's is 36.3 x 18.2 x 13.1, so at 60 m it is 30 m wide, not the sheet's ~40) and, a little, the stealth fighter
+  (4.2 x 1.2 against 4.4 x 1.02). B2's boxes against their rows: the main battle tank, the AC-130 and the helicopter
+  above; the armoured car 4.78 against 4.6, the scout jeep 2.64 x 1.40 against 2.7 x 1.3, the FPV and Lancet trucks
+  7.41 against 7.2, the Su-27 8.64 x 5.85 x 2.15 against 8.8 x 5.9 x 2.4, all within 4 %.
+- **Tests (written, not run: the owner's rule).** `SizeSheetTests`: the main battle tank longer than the IFV; the Su-27
+  20 % longer than the Su-25; the twin tank and the super tank at least 10 % longer and no narrower than the main
+  battle tank and the heavy tank; the swarm carrier and the AC-130 on one frame at one size (one modelSize; drawn
+  length, span and height within 2-5 %: passes once B2's shared C-130 airframe is in, the old two are different
+  frames); Icarus longer than every other flyer's length and span; every sized vehicle drawn at its modelSize with its
+  hull inside its box. A size is measured as the game draws it (the model's box through `DrawScaleOf`), so a rebuilt
+  model is held to the same order.
+- **Stuck probe (prompt 12): not run, for the test phase**, on every map and mode: `StuckBatch.Siege` and
+  `StuckBatch.Modes` with `MB_STUCK_SEEDS=1,2,3,4,5 MB_STUCK_MODES=Siege,Defend,Endless,Weekly`, and `StuckTests`. The
+  hulls that moved: narrower (the scout jeep 1.92 -> 1.40 m, the armoured car, the command vehicle, the FPV and Lancet
+  trucks, the supply truck 2.72 -> 2.0, the counter-battery radar, the Shahed truck, the Iron Beam, the siege tank
+  3.56 -> 2.6); longer or wider (the main battle tank 5.24 x 2.88 -> 6.10 x 3.07, the twin tank 5.64 -> 7.02 m, the
+  flame tank, the self-propelled gun 2.29 -> 3.1 m wide, the Pantsir 6.98 -> 9.6 m long, the super tank).
+
+### B3 Round sizes ("Kích thước đạn")
+
+- **The sheet's length.** The sheet measures a round as its model x its projectileScale (the design document's round
+  table), not with the view's legibility boost on top (`WeaponEffects.SizeOf`: missiles x1.1-1.2, rockets x1.15, drones
+  x2), and its rule is 0.8 x real launched from the ground, 0.5 x real from an aircraft, 0.8 m at least. Its "Đổi" rows
+  take its length; "Giữ" rows keep theirs. The boost stays as it was on top of both (it was on top of the sheet's
+  "current" column too; dropping it would shrink every round the sheet kept).
+- **The data holds the length.** `roundLength` (metres, `WeaponDef.RoundLength`): the view fits whichever model flies the
+  round (its own, a stand-in, its kind's default) to that length (`WeaponEffects.RoundScale`), so a round model built
+  later needs no data change. `projectileScale` stays in step for the model the game ships (what the design document,
+  the plume checks and the flight tests read).
+- **Which weapons a row means.** The design document lists one row a model and scale, under its first weapon, so a
+  row's "current" is that whole group's: a shell row applies to its group (every shell drawn alike), another row to its
+  weapon's family (A3: one round, one look), or its weapon alone. On a family when every member takes the length (the
+  155 mm twins and singles, the Kornet, the 240 mm mortar, the Buk, the Patriot PAC-2, the FPV drone: `roundLength`
+  and `projectileScale` on the family, gone from the members' lines; A3 keeps them when it writes the families again).
+  Left as they were: the Konkurs post (`atgm_post`, on the Kornet's model and scale but another missile) and the
+  AGM-65 (`maverick`, on the Kh-29's old model); the PAC-3 follows the PAC-2 it inherits.
+- **155 and 203 mm.** The shell row names the 2A44 203 mm but stands for the shell model at scale 1, every 155 mm with
+  it: the 155 mm take its 0.8 m (the rule's least; a 155 mm shell is under 1 m, 0.8 x that under 0.8 m), was 1.1 m.
+  Every 203 mm shell is 1.3 x that, 1.04 m (the boss's 2A44, the cruiser's Mk 71, the siege tank's M110), was 1.1 or
+  1.43 m, over the rows' own 0.8 (prompt 25 C.3's rule wins over the rule of thumb). The 460 mm 1.56 m (was 2.2), the
+  800 mm supergun (no row) keeps its 3.52 m.
+- **Applied** (was -> now, metres): FAB-500 1.64 -> 1.2, FAB-250 1.8 -> 0.98, JDAM 2.7 -> 1.94, GBU-39 2.2 -> 0.9, JASSM
+  3.01 -> 2.135, Kh-29L 1.16 -> 1.95, Kornet 1.3 -> 0.96, 240 mm mortar 1.62-1.8 -> 1.2, Buk 2.16 -> 4.44, Patriot
+  3.13 -> 4.24, S-400 48N6 4.42 -> 6.0, SHORAD dart 1.65 -> 1.216, FPV drone 0.55 -> 0.8, the shells above.
+- **Models of their own.** The Kh-29L flies `kh29l`, the GBU-39 `gbu39`. The round models are built in
+  `Tools/blender/mb_munitions.py`, inside the B2 model agent's tree (it goes through `build_assets.py`, which B2 edits):
+  not separate, so the models are ASSET_DEBT for B2 (one Kh-29L at 3.9 m real, one GBU-39 at 1.8 m real with its
+  folded wings, any length: the data fits it). Until they are built the Maverick and the GBU-12 fly in their place at
+  the new lengths (`WeaponEffects.RoundStandIns`, `steps_b.py` STAND_IN).
+- **Rounds now longer than their launchers:** the Buk (4.44 m) out of the SAM launcher's 2.45 m box, the Patriot and the
+  48N6 out of their canisters (ASSET_DEBT). `MissileFlightTests.MissilesAreDrawnToFitTheirLaunchers` held the Buk to its
+  box (0.72 of its model); its line now holds the sheet's 4.44 m.
+- **Test (written, not run).** `SizeSheetTests.NoWeaponFliesAnotherRoundsModel`: every weapon of the sheet's rows
+  (`Docs/balance/round_sizes.tsv`, generated) flies its model at its length within 3 %; the Kh-29L and the GBU-39 fly
+  their own; a model built for one munition (the Maverick, the GBU-12 and -39, the JDAM, the FAB-250, the JASSM, the
+  AIM-120, the R-60, the Stinger, the Igla) flies only it; bombs fly bomb models and only bombs do; every 203 mm shell
+  is 1.3 x the 155 mm.
+
+### C.4 Turn rates
+
+- **The unit.** balance.json gives turn rates in degrees a second (its header); `VehicleDef.TurnRate` and
+  `TurretTurnRate` hold radians a second (`SimMath.DegToRad` on load), and the sim turns by them per tick. The design
+  document's rates-and-ballistics table (`Tools/docs/programme.py`, section 10b) printed the radians, rounded to a whole
+  number, under "°/s": the sheet's "1 / 1" (and its note that the label looked wrong). The column now shows degrees a
+  second, as balance.json has them, with a line saying so; its drawn-size column fits a sized vehicle's model as the game
+  does (B1).
+- **Turret faster than the hull.** The sheet's four rows ("1 / 2" in radians a second: the main battle tank, the twin
+  tank, the heavy tank, the super tank) were applied by A1 Trung: the hull kept (60, 58, 45, 45 deg/s), the turret
+  115 deg/s (2 rad/s). The step `--upto C4` checks them against both sheets and reports them in the import_b block.

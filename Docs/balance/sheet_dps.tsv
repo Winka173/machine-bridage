@@ -153,6 +153,6 @@ turret_rockets	97.290
 turret_rockets_cluster	87.238	
 twin_30_bmpt	105.600	
 twin_30_flak	171.429	
-twin_35_ahead		the sheet's DPS is empty (its rounds a magazine cell is blank): the game's cadence stands
+twin_35_ahead	101.824	rounds a magazine: the game's (the sheet's cell is blank), in its formula
 wvr_aam	108.570	
 zu23	70.000	

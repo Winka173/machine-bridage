@@ -3,8 +3,9 @@
 What `Tools/balance/import_xlsx.py` applied from `Docs/balance/Machine_Brigade_Can_bang.xlsx`, sheet by sheet, and
 what it left and why. Outcomes: **applied** (the data now holds the sheet's number), **already** (the data already
 held it), **deferred** (the row belongs to a later task of the sheet "Việc cho agent": names D1, model sizes B1,
-models B2, bosses C1, boss weapons C2), **skipped** (no id in the data, a contradiction, or a measurement that did not
-confirm it). Decisions and their reasons: `Docs/DECISIONS.md`, section 25A. Each step's section is rewritten when the
+models B2, bosses C1, boss weapons C2), **skipped** (no id in the data, or a contradiction in the sheet). The rows
+an earlier step left for a measurement, deferred or skipped are applied by the last step, A1-review, and listed
+again in its section with their before and after (the owner, after the first pass). Decisions and their reasons: `Docs/DECISIONS.md`, section 25A. Each step's section is rewritten when the
 script runs it again.
 
 <!-- summary -->
@@ -29,9 +30,10 @@ Rows by step and sheet (each step's section below lists them).
 | A5 | Tổng quan, Vũ khí đề xuất | 5 | 68 | 2 | 0 |
 | B7 | Giá CP | 0 | 58 | 0 | 0 |
 | B8 | Thẻ hỗ trợ | 3 | 6 | 0 | 0 |
-| review | Cân bằng lần 2 | 0 | 0 | 4 | 0 |
-| review | Kiểm tra từng mục | 0 | 0 | 14 | 0 |
-| review | Vũ khí đề xuất / Thay đổi chi tiết | 0 | 0 | 6 | 0 |
+| A1-review | Cân bằng lần 2 | 0 | 4 | 0 | 0 |
+| A1-review | Kiểm tra từng mục | 14 | 29 | 4 | 3 |
+| A1-review | Vũ khí đề xuất | 1 | 33 | 0 | 0 |
+| A1-review | Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
 
 <!-- /summary -->
 
@@ -862,42 +864,239 @@ The sheet names cards by their Vietnamese titles; the table below maps them to t
 
 <!-- /step:B8 -->
 
-<!-- step:review -->
-## To measure in the test phase: "Xem lại", "Theo dõi" and the rows a measurement should judge
+<!-- import_b:begin -->
+<!-- step:B1 -->
+## B1: model sizes (sheet Kiểm tra từng mục)
 
-The owner's rule of 30/09: no test or measurement runs until a test phase is approved. The rows below need a measurement (prompt 13's combat value, CombatValueMeasure with MB_BALANCE=1, 3-5 seeds, the cards named) before they change: each keeps the game's value for now. "Xem lại" rows are judged by the measurement; "Theo dõi" rows change only if it confirms; the others are changes applied from the sheet whose words and numbers disagree, or that the sheet's own "Cân bằng lần 2" asks to re-measure.
+Every "Kích thước model" row of "Kiểm tra từng mục": the vehicle's drawn box goes into the data (modelSize, length x width x height in metres; the game fits the model's length to it), with its scale for the model the game has and its hull (collision) in step. "Đổi" takes the sheet's box, "Giữ" records today's; a model the B2 model agent rebuilt (DECISIONS 25B2) is drawn at its built box, the sheet's target (0.8 x real on the ground, 0.4 x real in the air). Bosses' "Kích thước" rows resize the boss (its size). Towers' rows are counted, not listed: they keep their sizes.
 
 | Sheet | Applied | Already so | Deferred | Skipped |
 |---|---|---|---|---|
-| Cân bằng lần 2 | 0 | 0 | 4 | 0 |
-| Kiểm tra từng mục | 0 | 0 | 14 | 0 |
-| Vũ khí đề xuất / Thay đổi chi tiết | 0 | 0 | 6 | 0 |
+| Kiểm tra từng mục | 22 | 130 | 0 | 0 |
 
 | Sheet | id | Item | Outcome | Detail |
 |---|---|---|---|---|
-| Kiểm tra từng mục | engineer_vehicle | Tốc độ | deferred | Xem lại: kept 7 (the sheet: Mẫu thật × hệ số map ≈ 4.4 m/s); to measure in the test phase |
-| Kiểm tra từng mục | smoke_carrier | Tốc độ | deferred | Xem lại: kept 8 (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s); to measure in the test phase |
-| Kiểm tra từng mục | mine_layer | Tốc độ | deferred | Xem lại: kept 8 (the sheet: Mẫu thật × hệ số map ≈ 5.5 m/s); to measure in the test phase |
-| Kiểm tra từng mục | vbied | Tốc độ | deferred | Xem lại: kept 13 (the sheet: Mẫu thật × hệ số map ≈ 6.7 m/s); to measure in the test phase |
-| Kiểm tra từng mục | light_tank | Tốc độ | deferred | Xem lại: kept 9 (the sheet: Mẫu thật × hệ số map ≈ 4.0 m/s); to measure in the test phase |
-| Kiểm tra từng mục | flame_tank | Tốc độ | deferred | Xem lại: kept 6.5 (the sheet: Mẫu thật × hệ số map ≈ 4.6 m/s); to measure in the test phase |
-| Kiểm tra từng mục | mortar_carrier | Tốc độ | deferred | Xem lại: kept 8 (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s); to measure in the test phase |
-| Kiểm tra từng mục | mlrs | Tốc độ | deferred | Xem lại: kept 6 (the sheet: Mẫu thật × hệ số map ≈ 9.4 m/s); to measure in the test phase |
-| Kiểm tra từng mục | thermobaric_launcher | Máu | deferred | Xem lại: kept 1980 (the sheet: Máu/CP gấp 2.1 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Kiểm tra từng mục | siege_tank | Máu | deferred | Xem lại: kept 3300 (the sheet: Máu/CP gấp 2.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Kiểm tra từng mục | siege_tank | Tầm nhìn | deferred | Xem lại: kept 38 (the sheet: ~30 m); to measure in the test phase |
-| Kiểm tra từng mục | strike_drone | Tốc độ | deferred | Xem lại: kept 19 (the sheet: Mẫu thật × hệ số map ≈ 13.9 m/s); to measure in the test phase |
-| Kiểm tra từng mục | swarm_carrier | Máu | deferred | Xem lại: kept 3080 (the sheet: Máu/CP gấp 3.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Kiểm tra từng mục | sky_gunship | Máu | deferred | Xem lại: kept 4400 (the sheet: Máu/CP gấp 1.7 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn)); to measure in the test phase |
-| Cân bằng lần 2 | rocket_technical | Theo dõi | deferred | Theo dõi: kept (CP 3); Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.; to measure in the test phase |
-| Cân bằng lần 2 | long_sam | Theo dõi | deferred | Theo dõi: kept (CP 14); Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.; to measure in the test phase |
-| Cân bằng lần 2 | attack_jet | Đã giảm ở đợt 2 | deferred | Đã giảm ở đợt 2: kept (CP 18); Đã giảm thêm ở đợt 2 (xem Thay đổi chi tiết). Cột giá trị thực chiến là số đo mô phỏng cũ, cần chạy lại mô phỏng để xác nhận.; to measure in the test phase |
-| Cân bằng lần 2 | heavy_bomber | Đã giảm ở đợt 2 | deferred | Đã giảm ở đợt 2: kept (CP 22); Đã giảm thêm ở đợt 2 (xem Thay đổi chi tiết). Cột giá trị thực chiến là số đo mô phỏng cũ, cần chạy lại mô phỏng để xác nhận.; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | zu23_technical | zu23 | deferred | the row says "giữ DPS"; its numbers give 70 a second (was 143) on a card already at 0.24 of the AA median; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | heavy_aa | twin_30_flak | deferred | "giữ DPS"; its numbers give 171 (was 252); to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | aa_turret | tower_flak_30 | deferred | the sheet wanted its anti-aircraft value 300 -> 240; the weapon row gives 131 a second (was 193); to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | headquarters | hq_flak | deferred | the HQ's flak at 140 (was 157), the 2A38 family's stream; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | scout_heli | scout_rockets | deferred | six Hydras a load (was 24; the sheet read 12, the salvo) and 5 CP; to measure in the test phase |
-| Vũ khí đề xuất / Thay đổi chi tiết | flame_tank | flamethrower | deferred | 21 a tick on every target (the row meant -10 % on light vehicles only); to measure in the test phase |
+| Kiểm tra từng mục | hover_gunboat | Kích thước model (dài × rộng × cao) | already | kept at 14 x 3.85 x 4.4; modelSize 14 x 3.85 x 4.4 |
+| Kiểm tra từng mục | armored_car | Kích thước model (dài × rộng × cao) | applied | 5.88 x 2.28 x 2.73 -> 4.78 x 2.08 x 1.49; modelSize 4.78 x 2.08 x 1.49, scale 0.85 -> 1, hull 5.54 x 2.28 -> 4.44 x 2.08 m; B2 rebuilt it at 4.78 x 2.08 x 1.49, the sheet's target (DECISIONS 25B2); the row: 4.6 × 2.0 × 1.4 |
+| Kiểm tra từng mục | ifv | Kích thước model (dài × rộng × cao) | already | kept at 6.21 x 2.67 x 3.07; modelSize 6.21 x 2.67 x 3.07 |
+| Kiểm tra từng mục | supply_truck | Kích thước model (dài × rộng × cao) | applied | 7.62 x 2.72 x 3.51 -> 8.2 x 2 x 2.1; modelSize 8.2 x 2 x 2.1, scale 1 -> 1.0768, hull 7.3 x 2.72 -> 7.86 x 2 m; its model, fitted to the length, is 2.93 m width, 3.78 m height |
+| Kiểm tra từng mục | engineer_vehicle | Kích thước model (dài × rộng × cao) | already | kept at 6.3 x 2.83 x 2.44; modelSize 6.3 x 2.83 x 2.44 |
+| Kiểm tra từng mục | smoke_carrier | Kích thước model (dài × rộng × cao) | already | kept at 4.17 x 2.32 x 2.91; modelSize 4.17 x 2.32 x 2.91 |
+| Kiểm tra từng mục | ammo_carrier | Kích thước model (dài × rộng × cao) | already | kept at 6.85 x 2.45 x 3.16; modelSize 6.85 x 2.45 x 3.16 |
+| Kiểm tra từng mục | counter_battery_radar | Kích thước model (dài × rộng × cao) | applied | 7.21 x 2.62 x 3.92 -> 6.4 x 2 x 2.8; modelSize 6.4 x 2 x 2.8, scale 0.85 -> 0.7543, hull 6.8 x 2.21 -> 6.03 x 1.69 m; its model, fitted to the length, is 2.32 m width, 3.48 m height |
+| Kiểm tra từng mục | ew_jammer | Kích thước model (dài × rộng × cao) | already | kept at 7.85 x 2.88 x 5.06; modelSize 7.85 x 2.88 x 5.06 |
+| Kiểm tra từng mục | mine_layer | Kích thước model (dài × rộng × cao) | already | kept at 6.57 x 2.57 x 2.98; modelSize 6.57 x 2.57 x 2.98 |
+| Kiểm tra từng mục | command_vehicle | Kích thước model (dài × rộng × cao) | applied | 6.69 x 2.47 x 4.75 -> 5.64 x 2.08 x 2.14; modelSize 5.64 x 2.08 x 2.14, scale 0.85 -> 1, hull 6.29 x 2.47 -> 5.64 x 2.08 m; B2 rebuilt it at 5.64 x 2.08 x 2.14, the sheet's target (DECISIONS 25B2); the row: 5.6 × 2.2 × 2.1 |
+| Kiểm tra từng mục | shield_carrier | Kích thước model (dài × rộng × cao) | already | kept at 7.36 x 2.55 x 5.3; modelSize 7.36 x 2.55 x 5.3 |
+| Kiểm tra từng mục | scout_jeep | Kích thước model (dài × rộng × cao) | applied | 3.71 x 1.92 x 1.97 -> 2.64 x 1.4 x 1.41; modelSize 2.64 x 1.4 x 1.41, scale 0.85 -> 1, hull 3.75 x 1.92 -> 2.64 x 1.4 m; B2 rebuilt it at 2.64 x 1.4 x 1.41, the sheet's target (DECISIONS 25B2); the row: 2.7 × 1.3 × 1.4 |
+| Kiểm tra từng mục | vbied | Kích thước model (dài × rộng × cao) | already | kept at 4.43 x 1.9 x 2.44; modelSize 4.43 x 1.9 x 2.44 |
+| Kiểm tra từng mục | light_tank | Kích thước model (dài × rộng × cao) | already | kept at 6.17 x 2.33 x 2.21; modelSize 6.17 x 2.33 x 2.21 |
+| Kiểm tra từng mục | flame_tank | Kích thước model (dài × rộng × cao) | applied | 5.04 x 2.83 x 2.66 -> 7.12 x 2.66 x 1.87; modelSize 7.12 x 2.66 x 1.87, scale 0.95 -> 1, hull 5.04 x 2.83 -> 5.75 x 2.66 m; B2 rebuilt it at 7.12 x 2.66 x 1.87, the sheet's target (DECISIONS 25B2); the row: 7.2 × 2.6 × 1.9 |
+| Kiểm tra từng mục | turtle_tank | Kích thước model (dài × rộng × cao) | already | kept at 8.13 x 3.29 x 3.91; modelSize 8.13 x 3.29 x 3.91 |
+| Kiểm tra từng mục | bmpt | Kích thước model (dài × rộng × cao) | already | kept at 6.35 x 3.1 x 2.85; modelSize 6.35 x 3.1 x 2.85 |
+| Kiểm tra từng mục | rocket_technical | Kích thước model (dài × rộng × cao) | already | kept at 4.62 x 1.79 x 2.77; modelSize 4.62 x 1.79 x 2.77 |
+| Kiểm tra từng mục | mortar_carrier | Kích thước model (dài × rộng × cao) | already | kept at 4.39 x 2.53 x 3.22; modelSize 4.39 x 2.53 x 3.22 |
+| Kiểm tra từng mục | artillery | Kích thước model (dài × rộng × cao) | applied | 8.1 x 2.29 x 3.57 -> 7.8 x 3.1 x 2.9; modelSize 7.8 x 3.1 x 2.9, scale 0.85 -> 0.818, hull 8.1 x 2.29 -> 7.8 x 3.1 m; its model, fitted to the length, is 2.2 m width, 3.44 m height |
+| Kiểm tra từng mục | mlrs | Kích thước model (dài × rộng × cao) | already | kept at 6.4 x 2.25 x 3.55; modelSize 6.4 x 2.25 x 3.55 |
+| Kiểm tra từng mục | shahed_truck | Kích thước model (dài × rộng × cao) | applied | 6.88 x 2.6 x 4.13 -> 6.4 x 2 x 2.8; modelSize 6.4 x 2 x 2.8, scale 0.85 -> 0.7911, hull 6.88 x 2.3 -> 6.4 x 1.77 m; its model, fitted to the length, is 2.42 m width, 3.85 m height |
+| Kiểm tra từng mục | thermobaric_launcher | Kích thước model (dài × rộng × cao) | already | kept at 6.29 x 3.1 x 2.89; modelSize 6.29 x 3.1 x 2.89 |
+| Kiểm tra từng mục | ballistic_launcher | Kích thước model (dài × rộng × cao) | already | kept at 10.86 x 2.64 x 4.71; modelSize 10.86 x 2.64 x 4.71 |
+| Kiểm tra từng mục | heavy_rocket_artillery | Kích thước model (dài × rộng × cao) | already | kept at 10.51 x 2.65 x 4.17; modelSize 10.51 x 2.65 x 4.17 |
+| Kiểm tra từng mục | siege_tank | Kích thước model (dài × rộng × cao) | applied | 7.72 x 3.38 x 3.09 -> 6.8 x 2.6 x 2.6; modelSize 6.8 x 2.6 x 2.6, scale 0.85 -> 0.7489, hull 6.8 x 3.56 -> 5.99 x 2.6 m; its model, fitted to the length, is 2.98 m width |
+| Kiểm tra từng mục | zu23_technical | Kích thước model (dài × rộng × cao) | already | kept at 4.52 x 1.84 x 2.11; modelSize 4.52 x 1.84 x 2.11 |
+| Kiểm tra từng mục | aa_vehicle | Kích thước model (dài × rộng × cao) | already | kept at 5.65 x 2.73 x 3; modelSize 5.65 x 2.73 x 3 |
+| Kiểm tra từng mục | sam_launcher | Kích thước model (dài × rộng × cao) | already | kept at 6.05 x 3.07 x 4.05; modelSize 6.05 x 3.07 x 4.05 |
+| Kiểm tra từng mục | heavy_aa | Kích thước model (dài × rộng × cao) | applied | 6.98 x 2.46 x 3.29 -> 9.6 x 2.6 x 2.8; modelSize 9.6 x 2.6 x 2.8, scale 0.85 -> 1.1693, hull 6.98 x 2.47 -> 9.6 x 2.6 m; its model, fitted to the length, is 3.39 m width, 4.53 m height |
+| Kiểm tra từng mục | iron_beam | Kích thước model (dài × rộng × cao) | applied | 7.81 x 2.65 x 3.66 -> 8 x 2 x 2.8; modelSize 8 x 2 x 2.8, scale 0.85 -> 0.8705, hull 7.81 x 2.45 -> 8 x 1.85 m; its model, fitted to the length, is 2.72 m width, 3.75 m height |
+| Kiểm tra từng mục | long_sam | Kích thước model (dài × rộng × cao) | already | kept at 9.85 x 3.06 x 3.73; modelSize 9.85 x 3.06 x 3.73 |
+| Kiểm tra từng mục | scout_heli | Kích thước model (dài × rộng × cao) | already | kept at 4.33 x 3.88 x 1.41; modelSize 4.33 x 3.88 x 1.41 |
+| Kiểm tra từng mục | recon_drone | Kích thước model (dài × rộng × cao) | already | kept at 2.88 x 5.03 x 0.7; modelSize 2.88 x 5.03 x 0.7 |
+| Kiểm tra từng mục | wingman_drone | Kích thước model (dài × rộng × cao) | already | kept at 4.18 x 3.55 x 0.78; modelSize 4.18 x 3.55 x 0.78 |
+| Kiểm tra từng mục | strike_drone | Kích thước model (dài × rộng × cao) | already | kept at 4.5 x 7.35 x 1.15; modelSize 4.5 x 7.35 x 1.15 |
+| Kiểm tra từng mục | swarm_carrier | Kích thước model (dài × rộng × cao) | applied | 16.44 x 18.79 x 6.13 -> 11.93 x 16.3 x 4.79; modelSize 11.93 x 16.3 x 4.79, scale 1.22 -> 1.1765; B2 rebuilt it at 11.93 x 16.3 x 4.79, the sheet's target (DECISIONS 25B2); the row: 11.9 × 16.2 × 4.6 |
+| Kiểm tra từng mục | attack_helicopter | Kích thước model (dài × rộng × cao) | applied | 5.99 x 4.02 x 2.34 -> 6.35 x 4.44 x 2.02; modelSize 6.35 x 4.44 x 2.02, scale 0.69 -> 1.1765; B2 rebuilt it at 6.35 x 4.44 x 2.02, the sheet's target (DECISIONS 25B2); the row: 7.1 × 5.8 × 1.8 |
+| Kiểm tra từng mục | fighter_jet | Kích thước model (dài × rộng × cao) | applied | 6.36 x 4.2 x 1.4 -> 8.64 x 5.85 x 2.15; modelSize 8.64 x 5.85 x 2.15, scale 0.39 -> 1.1765; B2 rebuilt it at 8.64 x 5.85 x 2.15, the sheet's target (DECISIONS 25B2); the row: 8.8 × 5.9 × 2.4 |
+| Kiểm tra từng mục | stealth_fighter | Kích thước model (dài × rộng × cao) | already | kept at 6.09 x 4.4 x 1.02; modelSize 6.09 x 4.4 x 1.02 |
+| Kiểm tra từng mục | gunship_heli | Kích thước model (dài × rộng × cao) | already | kept at 7.11 x 5.85 x 2.01; modelSize 7.11 x 5.85 x 2.01 |
+| Kiểm tra từng mục | attack_jet | Kích thước model (dài × rộng × cao) | already | kept at 6.38 x 6.02 x 1.45; modelSize 6.38 x 6.02 x 1.45 |
+| Kiểm tra từng mục | stealth_bomber | Kích thước model (dài × rộng × cao) | already | kept at 7.04 x 17.62 x 1.98; modelSize 7.04 x 17.62 x 1.98 |
+| Kiểm tra từng mục | heavy_bomber | Kích thước model (dài × rộng × cao) | already | kept at 17.91 x 18.72 x 6.13; modelSize 17.91 x 18.72 x 6.13 |
+| Kiểm tra từng mục | sky_gunship | Kích thước model (dài × rộng × cao) | applied | 12.17 x 15.41 x 5 -> 11.93 x 16.3 x 4.82; modelSize 11.93 x 16.3 x 4.82, scale 1.06 -> 1.1765; B2 rebuilt it at 11.93 x 16.3 x 4.82, the sheet's target (DECISIONS 25B2); the row kept 12.2 × 15.4 × 5.0 |
+| Kiểm tra từng mục | bunker_vehicle | Kích thước model (dài × rộng × cao) | already | kept at 8.54 x 3.46 x 3.11; modelSize 8.54 x 3.46 x 3.11 |
+| Kiểm tra từng mục | armored_bulldozer | Kích thước model (dài × rộng × cao) | already | kept at 6.72 x 3.72 x 4.76; modelSize 6.72 x 3.72 x 4.76 |
+| Kiểm tra từng mục | main_battle_tank | Kích thước model (dài × rộng × cao) | applied | 6.34 x 2.88 x 2.94 -> 7.79 x 3.07 x 2.3; modelSize 7.79 x 3.07 x 2.3, scale 0.85 -> 1, hull 5.24 x 2.88 -> 6.1 x 3.07 m; B2 rebuilt it at 7.79 x 3.07 x 2.3, the sheet's target (DECISIONS 25B2); the row kept 6.3 × 2.9 × 2.9 |
+| Kiểm tra từng mục | twin_tank | Kích thước model (dài × rộng × cao) | applied | 6.91 x 3.03 x 2.89 -> 8.96 x 3.53 x 2.64; modelSize 8.96 x 3.53 x 2.64, scale 0.85 -> 1, hull 5.64 x 3.03 -> 7.02 x 3.53 m; B2 rebuilt it at 8.96 x 3.53 x 2.64, the sheet's target (DECISIONS 25B2); the row: dài ≥ 7.2 m |
+| Kiểm tra từng mục | heavy_tank | Kích thước model (dài × rộng × cao) | already | kept at 8.77 x 3.2 x 3.46; modelSize 8.77 x 3.2 x 3.46 |
+| Kiểm tra từng mục | titan_tank | Kích thước model (dài × rộng × cao) | applied | 10.4 x 3.58 x 3.51 -> 10.6 x 3.65 x 3.58; modelSize 10.6 x 3.65 x 3.58, scale 0.85 -> 0.8667, hull 7.74 x 3.58 -> 7.9 x 3.65 m; the row: dài ≥ 10.6 m |
+| Kiểm tra từng mục | fpv_carrier | Kích thước model (dài × rộng × cao) | applied | 7 x 2.63 x 3.58 -> 7.41 x 2.04 x 2.88; modelSize 7.41 x 2.04 x 2.88, scale 0.85 -> 1, hull 7 x 2.63 -> 7.41 x 2.04 m; B2 rebuilt it at 7.41 x 2.04 x 2.88, the sheet's target (DECISIONS 25B2); the row: 7.2 × 2.0 × 2.6 |
+| Kiểm tra từng mục | lancet_truck | Kích thước model (dài × rộng × cao) | applied | 6.59 x 2.65 x 4.6 -> 7.41 x 2.02 x 2.7; modelSize 7.41 x 2.02 x 2.7, scale 0.85 -> 1, hull 6.6 x 2.23 -> 7.41 x 2.02 m; B2 rebuilt it at 7.41 x 2.02 x 2.7, the sheet's target (DECISIONS 25B2); the row: 7.2 × 2.0 × 2.6 |
+| Kiểm tra từng mục | wheeled_gun | Kích thước model (dài × rộng × cao) | already | kept at 9.43 x 2.62 x 3.13; modelSize 9.43 x 2.62 x 3.13 |
+| Kiểm tra từng mục | tank_destroyer | Kích thước model (dài × rộng × cao) | already | kept at 9.22 x 2.7 x 2.24; modelSize 9.22 x 2.7 x 2.24 |
+| Kiểm tra từng mục | railgun_truck | Kích thước model (dài × rộng × cao) | already | kept at 9.68 x 2.86 x 3.75; modelSize 9.68 x 2.86 x 3.75 |
+| Kiểm tra từng mục | laser_tank | Kích thước model (dài × rộng × cao) | already | kept at 6.28 x 2.7 x 2.61; modelSize 6.28 x 2.7 x 2.61 |
+| Kiểm tra từng mục | daedalus | Kích thước | applied | 45.02 x 24.79 x 15.54 (the row: ~45 × 26 m); measured on B2's rebuilt model, 37.08 x 20.42 x 12.8 at scale 1; size 1 -> 1.214, active protection 26 -> 31.6 m |
+| Kiểm tra từng mục | silver_bug | Kích thước | applied | 60.01 x 30.11 x 21.67 (the row: ~60 × 40 m); size 1 -> 1.652, active protection 30 -> 49.6 m, crash blast 16 -> 20.6 m, crash debris spread with the hull, icarus_mk0 (variant) size 0.65 -> 0.393, kept at 23.61 m |
 
-<!-- /step:review -->
+<!-- /step:B1 -->
+
+<!-- step:B3 -->
+## B3: round sizes (sheet Kích thước đạn)
+
+Every row of "Kích thước đạn": a round's drawn length (its model x its scale, as the sheet measures it: 0.8 x real launched from the ground, 0.5 x real from an aircraft, 0.8 m at least) goes into the data (roundLength; the game fits whichever model flies it to that length), with projectileScale for the model the game has. A row stands for every weapon the design document drew with the same model at the same scale (it lists one row a model and scale, under its first weapon) that fires the same round: a shell row its whole group, another row its weapon's family. The 203 mm shells take 1.3 x the 155 mm's length (prompt 25 C.3); the Kh-29L and the GBU-39 fly models of their own (ASSET_DEBT: until they are built, the Maverick and the GBU-12 stand in, at the new lengths). "Giữ" rows keep their rounds.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Kích thước đạn | 17 | 26 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kích thước đạn | aim9 | AIM-9 Sidewinder | already | kept: 1.54 m (aim9 x 0.7; the rule gives 1.51 m) |
+| Kích thước đạn | air_cruise_missile | Kh-101 (400 kg) | already | kept: 4.04 m (cruise_missile x 1; the rule gives 3.73 m) |
+| Kích thước đạn | air_to_air | AIM-120 AMRAAM | already | kept: 2.21 m (aim120 x 0.85; the rule gives 1.82 m) |
+| Kích thước đạn | ataka | 9M120 Ataka | already | kept: 1.32 m (atgm_ataka x 0.88; the rule gives 1.46 m) |
+| Kích thước đạn | atgm | BGM-71 TOW-2 | already | kept: 1.04 m (atgm_tow x 0.8; the rule gives 0.94 m) |
+| Kích thước đạn | boat_rockets | S-8 80 mm | already | kept: 1.08 m (s8 x 0.9; the rule gives 1.26 m) |
+| Kích thước đạn | boss_railgun | railgun (64 MJ) | already | kept: 0.9 m (rail_slug x 1; the rule gives 0.8 m) |
+| Kích thước đạn | boss_rockets | BM-21 Grad 122 mm | already | kept: 2.2 m (grad x 1; the rule gives 2.3 m) |
+| Kích thước đạn | boss_thermo | TOS-1A 220 mm thermobaric | already | kept: 2.4 m (tos_rocket x 1; the rule gives 2.64 m) |
+| Kích thước đạn | drone_missile | AGM-114 Hellfire | already | kept: 0.91 m (hellfire x 0.65; the rule gives 0.81 m) |
+| Kích thước đạn | grad_cluster | BM-21 Grad 122 mm (cluster) | already | kept: 2.2 m (grad_cluster x 1; the rule gives 2.3 m) |
+| Kích thước đạn | griffin | AGM-176 Griffin | already | kept: 1 m (griffin x 1; the rule gives 0.8 m) |
+| Kích thước đạn | heli_atgm | AGM-114 Hellfire | already | kept: 0.87 m (hellfire x 0.62; the rule gives 0.81 m) |
+| Kích thước đạn | heli_rockets | Hydra 70 mm | already | kept: 1 m (hydra x 1; the rule gives 0.8 m) |
+| Kích thước đạn | hellfire_standoff | AGM-114L Hellfire Longbow | already | kept: 0.91 m (hellfire_longbow x 0.65; the rule gives 0.89 m) |
+| Kích thước đạn | lancet | ZALA Lancet-3 (3 kg) | already | kept: 1.4 m (lancet x 1; the rule gives 1.32 m) |
+| Kích thước đạn | mlrs_elite | M30 GMLRS 227 mm (cluster) | already | kept: 2.8 m (gmlrs x 1; the rule gives 3.15 m) |
+| Kích thước đạn | mortar_120 | 2B11 120 mm | already | kept: 0.9 m (mortar_bomb x 1; the rule gives 0.8 m) |
+| Kích thước đạn | r60 | R-60 | already | kept: 1.04 m (r60 x 0.65; the rule gives 1.04 m) |
+| Kích thước đạn | recon_missile | MAM-L | already | kept: 0.6 m (mam_l x 0.6; the rule gives 0.8 m) |
+| Kích thước đạn | scout_rockets | Hydra 70 mm | already | kept: 0.72 m (hydra x 0.72; the rule gives 0.8 m) |
+| Kích thước đạn | shahed | Shahed-136 (50 kg) | already | kept: 2.6 m (shahed x 1; the rule gives 2.8 m) |
+| Kích thước đạn | stinger_atas | FIM-92 Stinger (ATAS) | already | kept: 0.91 m (stinger x 0.7; the rule gives 0.8 m) |
+| Kích thước đạn | tamir | Tamir interceptor (Iron Dome) | already | kept: 1.98 m (shorad_dart x 0.9; the rule gives 2.4 m) |
+| Kích thước đạn | technical_rockets | Type 63 107 mm | already | kept: 0.9 m (rocket_107 x 1; the rule gives 0.8 m) |
+| Kích thước đạn | wvr_aam | AIM-9X Sidewinder | already | kept: 1.76 m (aim9 x 0.8; the rule gives 1.51 m) |
+| Kích thước đạn | bomber_payload | FAB-500 (500 kg) | applied | 1.64 -> 1.2 m (launched from máy bay: 0.5 x its real 2.4 m, 0.8 m at least); weapons: bomber_payload; moved: bomber_payload 1.64 -> 1.2 m |
+| Kích thước đạn | boss_howitzer | 2A44 203 mm | applied | 1.1 -> 0.8 m (launched from mặt đất: 0.8 x its real 1 m, 0.8 m at least); a 203 mm shell: 1.04 m, 1.3 x the 155 mm's 0.8 m (prompt 25 C.3), not the row's rule; weapons: boss_howitzer, casemate_155, gun_155_coastal, gun_155_sph, gun_155_twin, gun_155_twin_ap, gun_155_twin_coastlr, gun_155_twin_fort, gun_155_twin_long, howitzer, howitzer_cb, howitzer_ext, howitzer_fixed, naval_155_triple; moved: howitzer 1.1 -> 0.8 m; howitzer_fixed 1.1 -> 0.8 m; gun_155_sph 1.1 -> 0.8 m; howitzer_cb 1.1 -> 0.8 m; howitzer_ext 1.1 -> 0.8 m; casemate_155 1.1 -> 0.8 m; gun_155_twin 1.1 -> 0.8 m; gun_155_twin_fort 1.1 -> 0.8 m; gun_155_twin_long 1.1 -> 0.8 m; gun_155_coastal 1.1 -> 0.8 m; gun_155_twin_coastlr 1.1 -> 0.8 m; boss_howitzer 1.1 -> 1.04 m; naval_155_triple 1.1 -> 0.8 m |
+| Kích thước đạn | boss_missiles | 9M133 Kornet | applied | 1.3 -> 0.96 m (launched from mặt đất: 0.8 x its real 1.2 m, 0.8 m at least); weapons: atgm_heavy, boss_missiles, kornet_multi, kornet_top, kornet_twin, tower_kornet; another round on the same model and scale, kept: atgm_post; moved: atgm_heavy 1.3 -> 0.96 m; kornet_twin 1.3 -> 0.96 m; tower_kornet 1.3 -> 0.96 m; kornet_top 1.3 -> 0.96 m; kornet_multi 1.3 -> 0.96 m; boss_missiles 1.3 -> 0.96 m |
+| Kích thước đạn | boss_mortar | 2B8 240 mm | applied | 1.8 -> 1.2 m (launched from mặt đất: 0.8 x its real 1.5 m, 0.8 m at least); weapons: boss_mortar; moved: boss_mortar 1.8 -> 1.2 m |
+| Kích thước đạn | buk_launcher | 9M317 Buk | applied | 2.16 -> 4.44 m (launched from mặt đất: 0.8 x its real 5.55 m, 0.8 m at least); weapons: buk_launcher, sam_long, sam_post; moved: sam_long 2.16 -> 4.44 m; buk_launcher 2.16 -> 4.44 m; sam_post 2.16 -> 4.44 m |
+| Kích thước đạn | cruiser_203 | Mk 71 203 mm (twin) | applied | 1.43 -> 0.8 m (launched from mặt đất: 0.8 x its real 1 m, 0.8 m at least); a 203 mm shell: 1.04 m, 1.3 x the 155 mm's 0.8 m (prompt 25 C.3), not the row's rule; weapons: cruiser_203, gun_203_siege; moved: cruiser_203 1.43 -> 1.04 m; gun_203_siege 1.43 -> 1.04 m |
+| Kích thước đạn | guided_bomb | GBU-39 SDB (110 kg) | applied | 2.2 -> 0.9 m (launched from máy bay: 0.5 x its real 1.8 m, 0.8 m at least); weapons: guided_bomb; moved: guided_bomb 2.2 -> 0.9 m, a model of its own, gbu39 (it flew gbu12; gbu12 stands in until it is built) |
+| Kích thước đạn | jassm | AGM-158 JASSM (450 kg) | applied | 3.01 -> 2.135 m (launched from máy bay: 0.5 x its real 4.27 m, 0.8 m at least); weapons: jassm; moved: jassm 3.01 -> 2.135 m |
+| Kích thước đạn | jet_bombs | FAB-250 (250 kg) | applied | 1.8 -> 0.98 m (launched from máy bay: 0.5 x its real 1.96 m, 0.8 m at least); weapons: jet_bombs; moved: jet_bombs 1.8 -> 0.98 m |
+| Kích thước đạn | kh29 | Kh-29L | applied | 1.16 -> 1.95 m (launched from máy bay: 0.5 x its real 3.9 m, 0.8 m at least); weapons: kh29; another round on the same model and scale, kept: maverick; moved: kh29 1.16 -> 1.95 m, a model of its own, kh29l (it flew maverick; maverick stands in until it is built) |
+| Kích thước đạn | leviathan_460 | Type 94 460 mm/45 (triple) | applied | 2.2 -> 1.56 m (launched from mặt đất: 0.8 x its real 1.95 m, 0.8 m at least); weapons: leviathan_460; moved: leviathan_460 2.2 -> 1.56 m |
+| Kích thước đạn | mortar_240_fixed | 2B8 240 mm (emplacement) | applied | 1.62 -> 1.2 m (launched from mặt đất: 0.8 x its real 1.5 m, 0.8 m at least); weapons: mortar_240, mortar_240_fixed, siege_mortar_240; moved: siege_mortar_240 1.62 -> 1.2 m; mortar_240 1.62 -> 1.2 m; mortar_240_fixed 1.62 -> 1.2 m |
+| Kích thước đạn | patriot | MIM-104 Patriot PAC-2 | applied | 3.13 -> 4.24 m (launched from mặt đất: 0.8 x its real 5.3 m, 0.8 m at least); weapons: patriot, sam_battery, sam_battery_lrr; another round on the same model and scale that inherits a member, so follows it: sam_pac3; moved: sam_battery 3.13 -> 4.24 m; patriot 3.13 -> 4.24 m; sam_battery_lrr 3.13 -> 4.24 m |
+| Kích thước đạn | sam | Starstreak / Stinger SHORAD | applied | 1.65 -> 1.216 m (launched from mặt đất: 0.8 x its real 1.52 m, 0.8 m at least); weapons: sam; moved: sam 1.65 -> 1.216 m |
+| Kích thước đạn | sam_48n6 | S-400 48N6 | applied | 4.42 -> 6 m (launched from mặt đất: 0.8 x its real 7.5 m, 0.8 m at least); weapons: sam_48n6; moved: sam_48n6 4.42 -> 6 m |
+| Kích thước đạn | stealth_payload | GBU-31 JDAM (907 kg) | applied | 2.7 -> 1.94 m (launched from máy bay: 0.5 x its real 3.88 m, 0.8 m at least); weapons: stealth_payload; moved: stealth_payload 2.7 -> 1.94 m |
+| Kích thước đạn | swarm_drones | FPV drone (1.5 kg) | applied | 0.55 -> 0.8 m (launched from máy bay: 0.5 x its real 0.5 m, 0.8 m at least); weapons: airship_drones, fpv_hangar, fpv_hangar_swarm, fpv_swarm, swarm_drones; moved: fpv_swarm 0.55 -> 0.8 m; fpv_hangar 0.55 -> 0.8 m; fpv_hangar_swarm 0.55 -> 0.8 m; airship_drones 0.55 -> 0.8 m; swarm_drones 0.55 -> 0.8 m |
+
+<!-- /step:B3 -->
+
+<!-- step:C4 -->
+## C.4: turn rates (sheets Kiểm tra từng mục, Thay đổi chi tiết)
+
+Prompt 25 C.4. The unit: balance.json gives turn rates in degrees a second (its header), VehicleDef keeps radians a second (SimMath.DegToRad on load); the design document printed the radians under a degrees label, which is why the sheet reads 60 deg/s as 1. Its column is in degrees now (Tools/docs/programme.py). The sheet's "turret faster than the hull" rows ("1 / 2" in radians a second: the hull kept, the turret 2 rad/s, 115 deg/s) were applied by A1 Trung; they are checked here. The other turn-rate rows are counted, not listed: "Giữ".
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Kiểm tra từng mục | 0 | 45 | 0 | 0 |
+| Thay đổi chi tiết | 0 | 4 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kiểm tra từng mục | main_battle_tank | Tốc độ xoay thân / tháp | already | hull 60 deg/s (1.05 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Kiểm tra từng mục | twin_tank | Tốc độ xoay thân / tháp | already | hull 58 deg/s (1.01 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Kiểm tra từng mục | heavy_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Kiểm tra từng mục | titan_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | heavy_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | main_battle_tank | Tốc độ xoay thân / tháp | already | hull 60 deg/s (1.05 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | titan_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | twin_tank | Tốc độ xoay thân / tháp | already | hull 58 deg/s (1.01 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+
+<!-- /step:C4 -->
+
+<!-- import_b:end -->
+
+<!-- step:A1-review -->
+## A1 review: the rows left for a measurement, and every row deferred or skipped, applied
+
+The owner's rule of 30/09 (after the first pass): every row that waited for a measurement is applied with the sheet's numbers and formulas, and every row a step deferred or skipped for any reason but a later task (bosses C1-C2, names D1, models B2). Health rows take the sheet's formula: the class's median health a CP (the "Lớp" of "Phương tiện", over the class's vehicles the sheet does not flag) times the vehicle's CP. "Đổi" rows of "Kiểm tra từng mục" that no "Thay đổi chi tiết" row repeats are checked against the data here.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Cân bằng lần 2 | 0 | 4 | 0 | 0 |
+| Kiểm tra từng mục | 14 | 29 | 4 | 3 |
+| Vũ khí đề xuất | 1 | 33 | 0 | 0 |
+| Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kiểm tra từng mục | engineer_vehicle | Tốc độ | applied | speed 7 -> 4.4 m/s (the sheet: Mẫu thật × hệ số map ≈ 4.4 m/s) |
+| Kiểm tra từng mục | smoke_carrier | Tốc độ | applied | speed 8 -> 5.9 m/s (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s) |
+| Kiểm tra từng mục | mine_layer | Tốc độ | applied | speed 8 -> 5.5 m/s (the sheet: Mẫu thật × hệ số map ≈ 5.5 m/s) |
+| Kiểm tra từng mục | vbied | Tốc độ | applied | speed 13 -> 6.7 m/s (the sheet: Mẫu thật × hệ số map ≈ 6.7 m/s) |
+| Kiểm tra từng mục | light_tank | Tốc độ | applied | speed 9 -> 4 m/s (the sheet: Mẫu thật × hệ số map ≈ 4.0 m/s) |
+| Kiểm tra từng mục | flame_tank | Tốc độ | applied | speed 6.5 -> 4.6 m/s (the sheet: Mẫu thật × hệ số map ≈ 4.6 m/s) |
+| Kiểm tra từng mục | mortar_carrier | Tốc độ | applied | speed 8 -> 5.9 m/s (the sheet: Mẫu thật × hệ số map ≈ 5.9 m/s) |
+| Kiểm tra từng mục | mlrs | Tốc độ | applied | speed 6 -> 9.4 m/s (the sheet: Mẫu thật × hệ số map ≈ 9.4 m/s) |
+| Kiểm tra từng mục | thermobaric_launcher | Máu | applied | health 900 -> 450 (1980 -> 990 after toughness x2.2): the class "Pháo binh"'s median 50 a CP x its 9 CP (the sheet: Máu/CP gấp 2.1 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over rocket_technical, mortar_carrier, artillery, mlrs, shahed_truck, ballistic_launcher, heavy_rocket_artillery) |
+| Kiểm tra từng mục | siege_tank | Máu | applied | health 1500 -> 600 (3300 -> 1320 after toughness x2.2): the class "Pháo binh"'s median 50 a CP x its 12 CP (the sheet: Máu/CP gấp 2.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over rocket_technical, mortar_carrier, artillery, mlrs, shahed_truck, ballistic_launcher, heavy_rocket_artillery) |
+| Kiểm tra từng mục | siege_tank | Tầm nhìn | applied | vision 38 -> 30 m (the sheet: ~30 m) |
+| Kiểm tra từng mục | strike_drone | Tốc độ | applied | speed 19 -> 13.9 m/s (the sheet: Mẫu thật × hệ số map ≈ 13.9 m/s) |
+| Kiểm tra từng mục | swarm_carrier | Máu | applied | health 1400 -> 632 (3080 -> 1390 after toughness x2.2): the class "Máy bay · bay"'s median 48.6 a CP x its 13 CP (the sheet: Máu/CP gấp 3.3 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over recon_drone, wingman_drone, strike_drone, fighter_jet, stealth_fighter, attack_jet, stealth_bomber, heavy_bomber) |
+| Kiểm tra từng mục | sky_gunship | Máu | applied | health 2000 -> 1069 (4400 -> 2352 after toughness x2.2): the class "Máy bay · bay"'s median 48.6 a CP x its 22 CP (the sheet: Máu/CP gấp 1.7 lần trung vị lớp; giữ nếu đó là bản sắc (xe chịu đòn); the median over recon_drone, wingman_drone, strike_drone, fighter_jet, stealth_fighter, attack_jet, stealth_bomber, heavy_bomber) |
+| Cân bằng lần 2 | rocket_technical | Theo dõi | already | the row names no number (its words: Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.); the price it rests on, 3 CP after round 1, is in (the data: 3) |
+| Cân bằng lần 2 | long_sam | Theo dõi | already | the row names no number (its words: Hai phép đo lệch nhau (DPS lý thuyết khác giá trị thực chiến): nguyên nhân thường là thời gian sống, thời gian bắn hoặc tầm; chạy mô phỏng trước khi đổi.); the price it rests on, 14 CP after round 1, is in (the data: 14) |
+| Cân bằng lần 2 | attack_jet | Đã giảm ở đợt 2 | already | the row names no number; the round-2 cuts it points to are in (A1: one FAB-250 a load, 18 CP, the GSh-30-2's 70-round magazine), 18 CP |
+| Cân bằng lần 2 | heavy_bomber | Đã giảm ở đợt 2 | already | the row names no number; the round-2 cuts it points to are in (A1: seven FAB-500s a sortie, the Kh-101's speed and blast), 22 CP |
+| Vũ khí đề xuất / Thay đổi chi tiết | zu23_technical | zu23 | applied | sustained 143 -> 70 a second (7 a round, 25 a second, 50 a magazine, 3 s): the sheet's numbers stand (A1, A2), no measurement pending (the row says "giữ DPS"; its numbers give 70 a second (was 143) on a card already at 0.24 of the AA median) |
+| Vũ khí đề xuất / Thay đổi chi tiết | heavy_aa | twin_30_flak | applied | sustained 252 -> 171 a second: the sheet's numbers stand (A1, A2), no measurement pending ("giữ DPS"; its numbers give 171 (was 252)) |
+| Vũ khí đề xuất / Thay đổi chi tiết | aa_turret | tower_flak_30 | applied | sustained 193 -> 131 a second (the sheet's anti-aircraft value 300 -> 240 was its aim): the sheet's numbers stand (A1, A2), no measurement pending (the sheet wanted its anti-aircraft value 300 -> 240; the weapon row gives 131 a second (was 193)) |
+| Vũ khí đề xuất / Thay đổi chi tiết | headquarters | hq_flak | applied | sustained 157 -> 140 a second: the sheet's numbers stand (A1, A2), no measurement pending (the HQ's flak at 140 (was 157), the 2A38 family's stream) |
+| Vũ khí đề xuất / Thay đổi chi tiết | scout_heli | scout_rockets | applied | 24 -> 6 Hydras a load, 5 CP: the sheet's numbers stand (A1, A2), no measurement pending (six Hydras a load (was 24; the sheet read 12, the salvo) and 5 CP) |
+| Vũ khí đề xuất / Thay đổi chi tiết | flame_tank | flamethrower | applied | 23.5 -> 21 a tick on every target: the sheet's numbers stand (A1, A2), no measurement pending (21 a tick on every target (the row meant -10 % on light vehicles only)) |
+| Vũ khí đề xuất | twin_35_ahead | cadence | applied | rounds a magazine: the game's 24 (the row keeps the gun; its cell is blank); the sheet's formula (damage x rounds / (rounds / rate + rest)) gives 101.8 a second: clipReload 1 -> 1.2137 (rest + one gap, A2's rule), 105.5 -> 101.8 a second |
+| Vũ khí đề xuất | gun_launched_atgm | weapon | already | A2's new weapon (the light tank's gun-launched missile), created from the change note and mounted: light_tank |
+| Vũ khí đề xuất | missile_57e6 | weapon | already | A2's new weapon (the Pantsir's 57E6), created from the change note and mounted: heavy_aa |
+| Kiểm tra từng mục | armored_car | Tầm bắn | skipped | the row repeats the vision row's proposal (42 m); the weapon sheet keeps the guns' ranges (autocannon_25 30 m, mg_coax 20 m, 'Giữ'), and the sheet's range order (machine gun < autocannon < tank gun < anti-tank missile, Tỷ lệ map) would break: a contradiction in the sheet, left for the owner (was 30; the row: 42 m) |
+| Kiểm tra từng mục | ifv | Tầm bắn | already | atgm reaches 40 m (A2's weapon row) (was 34; the row: tầm 40 m · tốc độ 20 (bay 2,0 s tới tầm tối đa)) |
+| Kiểm tra từng mục | smoke_carrier | Tầm bắn | already | hmg_selfdef_15 reaches 15 m (A2's weapon row) (was 15; the row: tầm 22→15 m (như xe công binh)) |
+| Kiểm tra từng mục | scout_jeep | Tầm bắn | skipped | the row repeats the vision row's proposal (55 m); the weapon sheet keeps the guns' ranges (mg_jeep 22 m, 'Giữ'), and the sheet's range order (machine gun < autocannon < tank gun < anti-tank missile, Tỷ lệ map) would break: a contradiction in the sheet, left for the owner (was 22; the row: 55 m) |
+| Kiểm tra từng mục | vbied | Máu | already | health 364 (801 after toughness): the sheet's 800 (was 572; the row: 800 máu · nổ lan 10 m) |
+| Kiểm tra từng mục | vbied | Giáp (T/H/S/N) | already | armour 2/1/0/0: the sheet's trước 2 / hông 1 / sau 0 / nóc 0 (was cấp 0 (Không giáp); the row: trước 2 / hông 1 / sau 0 / nóc 0) |
+| Kiểm tra từng mục | light_tank | Tầm bắn | skipped | the row repeats the vision row's proposal (36 m); the weapon sheet keeps the guns' ranges (gun_57mm 28 m, mg_coax 20 m, gun_launched_atgm 34 m, 'Giữ'), and the sheet's range order (machine gun < autocannon < tank gun < anti-tank missile, Tỷ lệ map) would break: a contradiction in the sheet, left for the owner (was 28; the row: 36 m) |
+| Kiểm tra từng mục | artillery | Tham khảo / model | deferred | the model and its reference: task B2 (the model agent) (was CAESAR bánh lốp (nằm trong danh sách giữ lại); the row: Đổi model sang M109A7 xích; giáp trước 1→2; tốc độ 7→6) |
+| Kiểm tra từng mục | mlrs | Giá (CP) | already | 7 CP (B.7) (was 6; the row: 7 CP) |
+| Kiểm tra từng mục | thermobaric_launcher | Giá (CP) | already | 9 CP (B.7) (was 8; the row: 9 CP) |
+| Kiểm tra từng mục | heavy_rocket_artillery | Giá (CP) | already | 12 CP (B.7) (was 11; the row: 12 CP) |
+| Kiểm tra từng mục | zu23_technical | Tầm bắn | already | zu23 reaches 38 m (A2's weapon row) (was 32; the row: 7/phát · 25 viên/s · tầm 38 m (giữ DPS)) |
+| Kiểm tra từng mục | sam_launcher | Giá (CP) | already | 7 CP (B.7) (was 5; the row: 7 CP) |
+| Kiểm tra từng mục | heavy_aa | Giá (CP) | already | 7 CP (B.7) (was 6; the row: 7 CP) |
+| Kiểm tra từng mục | iron_beam | Giá (CP) | already | 6 CP (B.7) (was 7; the row: 6 CP) |
+| Kiểm tra từng mục | long_sam | Giá (CP) | already | 14 CP (B.7) (was 11; the row: 14 CP) |
+| Kiểm tra từng mục | scout_heli | Giá (CP) | already | 5 CP (B.7) (was 4; the row: 5 CP) |
+| Kiểm tra từng mục | strike_drone | Giá (CP) | already | 9 CP (B.7) (was 8; the row: 9 CP) |
+| Kiểm tra từng mục | swarm_carrier | Tầm bắn | already | jassm reaches 90 m (A2's weapon row) (was 60; the row: Bỏ SDB; thêm 2 tên lửa hành trình thả từ khoang (410/quả, Nổ mạnh xuyên 3, nổ lan 9 m, tầm 90, tốc độ 20) mỗi lượt, giữ 8 drone) |
+| Kiểm tra từng mục | swarm_carrier | Giá (CP) | already | 13 CP (B.7) (was 8; the row: 13 CP) |
+| Kiểm tra từng mục | attack_helicopter | Giá (CP) | already | 9 CP (B.7) (was 11; the row: 9 CP) |
+| Kiểm tra từng mục | gunship_heli | Máu | already | health 1182 (2600 after toughness): the sheet's 2600 (was 3080; the row: giáp 2 · máu 2.600) |
+| Kiểm tra từng mục | gunship_heli | Giáp (T/H/S/N) | already | armour 2/1/0/0: the sheet's giáp 2 · máu 2.600 (was cấp 1 (Mỏng); the row: giáp 2 · máu 2.600) |
+| Kiểm tra từng mục | gunship_heli | Tầm bắn | already | heli_ataka reaches 45 m (A2's weapon row) (was 34; the row: 9M120 Ataka · tốc độ 26 · tầm 45) |
+| Kiểm tra từng mục | attack_jet | Giá (CP) | already | 18 CP (B.7) (was 16; the row: 18 CP) |
+| Kiểm tra từng mục | stealth_bomber | Giá (CP) | already | 21 CP (B.7) (was 18; the row: 21 CP) |
+| Kiểm tra từng mục | heavy_tank | Tham khảo / model | already | references ['Object 195 / T-95 (2A83 152 mm)'] (was tham khảo T-14 (danh sách giữ lại) · 12 CP (hiệu quả 1,16); the row: bỏ T-14 khỏi tham khảo, giữ Object 195 / T-95 · giá 13 CP) |
+| Kiểm tra từng mục | titan_tank | Tốc độ | already | speed 4 m/s: the sheet's 4,0 m/s · 18 CP (was 4.6; the row: 4,0 m/s · 18 CP) |
+| Kiểm tra từng mục | tank_destroyer | Giáp (T/H/S/N) | already | armour 2/1/1/0: the sheet's trước 2 / hông 1 / sau 1 / nóc 0 (was 3/2/1/1; the row: trước 2 / hông 1 / sau 1 / nóc 0) |
+| Kiểm tra từng mục | tank_destroyer | Tầm bắn | already | gun_105_long reaches 46 m (A2's weapon row) (was 40; the row: tầm 46 · 0,30 phát/s · 6 CP) |
+| Kiểm tra từng mục | tank_destroyer | Giá (CP) | already | 6 CP (B.7) (was 7; the row: 6 CP) |
+| Kiểm tra từng mục | railgun_truck | Giá (CP) | already | 10 CP (B.7) (was 9; the row: 10 CP) |
+| Kiểm tra từng mục | laser_tank | Giá (CP) | already | 9 CP (B.7) (was 10; the row: 9 CP) |
+| Kiểm tra từng mục | daedalus | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
+| Kiểm tra từng mục | bastion_mk0 | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
+| Kiểm tra từng mục | scylla | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
+
+<!-- /step:A1-review -->

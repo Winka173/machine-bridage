@@ -115,12 +115,14 @@ namespace MachineBrigade.Game.Effects
             var flight = FlightFor(e.Team, landing, release, now);
 
             var model = _models.Spawn(Match.BranchArt.Model(def, _models), e.Team, _root, castShadows: false);
+            // Drawn as it will be on the ground: its model fitted to its modelSize (prompt 25 B1), else the data's scale.
+            var scale = MachineBrigade.Game.Views.VehicleView.DrawScaleOf(def, model.Root);
             var drop = new Drop
             {
-                Vehicle = model.Root, Landing = landing, Heading = Mathf.Atan2(inward.x, inward.z) * Mathf.Rad2Deg, Scale = def.Scale,
+                Vehicle = model.Root, Landing = landing, Heading = Mathf.Atan2(inward.x, inward.z) * Mathf.Rad2Deg, Scale = scale,
                 Release = release, Land = land,
             };
-            model.Root.transform.localScale = Vector3.one * def.Scale;
+            model.Root.transform.localScale = Vector3.one * scale;
             model.Root.SetActive(false);
             drop.Chute = BuildChute(model.Root.transform, def);
             _drops.Add(drop);
@@ -136,7 +138,7 @@ namespace MachineBrigade.Game.Effects
             plane.Over += Centre;
             plane.Team = team;
             plane.Root = _models.Spawn(TransportModel, team, _root, castShadows: false).Root;
-            if (_catalog.Vehicles.TryGetValue(TransportScale, out var transport)) plane.Root.transform.localScale = Vector3.one * MachineBrigade.Game.Views.VehicleView.DrawScaleOf(transport);
+            if (_catalog.Vehicles.TryGetValue(TransportScale, out var transport)) plane.Root.transform.localScale = Vector3.one * MachineBrigade.Game.Views.VehicleView.DrawScaleOf(transport, plane.Root);
             plane.Root.transform.SetPositionAndRotation(plane.Entry, Quaternion.LookRotation(plane.Inward));
             _planes.Add(plane);
             return plane;

@@ -158,7 +158,7 @@ namespace MachineBrigade.Sim.Content
                     Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
                     InterceptOnly = w.Bool("interceptOnly", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
-                    ProjectileScale = w.Float("projectileScale", 1f),
+                    ProjectileScale = w.Float("projectileScale", 1f), RoundLength = Math.Max(0f, w.Float("roundLength", 0f)),
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
@@ -266,6 +266,16 @@ namespace MachineBrigade.Sim.Content
                     def.Scale = scale;
                     if (v.Has("length")) def.Length = v.Float("length") * scale;
                     if (v.Has("width")) def.Width = v.Float("width") * scale;
+                    // Prompt 25 B1: the drawn box in metres, length x width x height (the view fits the model's length to it).
+                    if (v.Has("modelSize"))
+                    {
+                        var size = v.FloatArray("modelSize");
+                        if (size.Count != 3 || size[0] <= 0f || size[1] <= 0f || size[2] <= 0f)
+                            throw new FormatException($"{v.Path}.modelSize: three positive numbers, length, width and height in metres.");
+                        def.ModelLength = size[0];
+                        def.ModelWidth = size[1];
+                        def.ModelHeight = size[2];
+                    }
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
                     if (v.Has("strongVs"))
                     {

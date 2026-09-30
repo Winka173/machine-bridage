@@ -1,6 +1,7 @@
 """The design document's sections for the 2026-09 programme (prompts 1-10): the story campaign,
 multi-stage missions, the Operations mode, bases and towers, Siege and Defend, and what is left
 to measure. build_doc.py calls these with the exported game (game.json) and its helpers."""
+import math
 import re
 from pathlib import Path
 
@@ -857,12 +858,17 @@ def rates_and_ballistics(game, h):
                           str(w.get('pen', '')), f(raw.get('FlareResist', 0), 2), e(', '.join(tags) or '—')])
     sizes = game.get('modelSizes', {})
 
-    def drawn(model, scale):
+    def drawn(model, scale, fit=0):
         s = sizes.get(model or '')
         if not s:
             return '—'
-        k = scale or 1
+        # Prompt 25 B1: a vehicle with a modelSize has its model's length fitted to it (VehicleView.DrawScaleOf).
+        k = fit / s[2] if fit and s[2] else (scale or 1)
         return f"{s[2] * k:.1f} × {s[0] * k:.1f} × {s[1] * k:.1f}"
+
+    def deg(rad):
+        # Prompt 25 C.4: VehicleDef keeps turn rates in radians a second (balance.json gives degrees); shown in degrees.
+        return float(rad) * 180 / math.pi if rad else 0
 
     move_rows = []
     for group, label in (('vehicles', 'xe'), ('itemVehicles', 'vật phẩm'), ('elites', 'tinh nhuệ'), ('bosses', 'boss'), ('towers', 'tháp')):
@@ -871,14 +877,15 @@ def rates_and_ballistics(game, h):
             scale = raw.get('Scale', 1) or 1
             if v.get('flying') and not raw.get('Boss'):
                 scale *= 0.85   # aircraft are drawn 15 % smaller (DECISIONS 21H)
-            move_rows.append([e(v['name']), label, f(float(v.get('speed', 0) or 0), 1), f(raw.get('TurnRate', 0), 0), f(raw.get('TurretTurnRate', 0), 0),
+            move_rows.append([e(v['name']), label, f(float(v.get('speed', 0) or 0), 1), f(deg(raw.get('TurnRate', 0)), 0), f(deg(raw.get('TurretTurnRate', 0)), 0),
                               f(raw.get('Length', 0), 1), f(raw.get('Width', 0), 1), f(raw.get('HullRadius', 0), 1), f(float(v.get('vision', 0) or 0), 0),
                               f(raw.get('Standoff', 0), 0), f(raw.get('RearmTime', 0), 1), 'có' if raw.get('Stealth') else '—',
-                              f(raw.get('MaxPerSide', 0), 0), *unit_reach(v), drawn(v.get('model'), scale)])
+                              f(raw.get('MaxPerSide', 0), 0), *unit_reach(v), drawn(v.get('model'), scale, raw.get('ModelLength', 0) or 0)])
     return ("<div class='section'><h2>10b. Nhịp bắn, nạp đạn, đường đạn và di chuyển</h2>"
             "<p>Đọc thẳng từ dữ liệu game. <b>Viên/s</b> là nhịp khi đang bắn (trong một loạt, hoặc giữa hai phát). <b>Xả</b> là thời gian hết một băng hay một loạt. "
             "<b>Nghỉ/nạp</b> là thời gian thay băng hay nghỉ giữa hai loạt. <b>Bệ phóng</b> là số lượt bắn trước khi phải nạp lại cả bệ. "
-            "<b>TB viên/s</b> tính cả thời gian nghỉ và nạp. <b>DPS khi xả</b> là sát thương mỗi giây trong lúc bắn, trước giáp; <b>DPS duy trì</b> tính cả thời gian nạp (prompt 13).</p>"
+            "<b>TB viên/s</b> tính cả thời gian nghỉ và nạp. <b>DPS khi xả</b> là sát thương mỗi giây trong lúc bắn, trước giáp; <b>DPS duy trì</b> tính cả thời gian nạp (prompt 13). "
+            "<b>Xoay thân / tháp</b> tính bằng độ mỗi giây, như balance.json (mã giữ radian mỗi giây; bản trước in số radian dưới nhãn °/s, prompt 25 C.4).</p>"
             f"<h3>Nhịp bắn và nạp đạn ({len(rate_rows)} vũ khí)</h3>"
             + table(['Vũ khí', 'Tên thật', 'Trên', 'Viên/s', 'Viên/phút', 'TB viên/s cả chu kỳ', 'Loạt / băng', 'Xả (s)', 'Nghỉ/nạp (s)', 'Bệ phóng', 'Sát thương/phát', 'DPS khi xả', 'DPS duy trì'], rate_rows, 'dps')
             + f"<h3>Đường đạn</h3>"
