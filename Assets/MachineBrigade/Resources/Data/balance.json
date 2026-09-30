@@ -1960,6 +1960,8 @@
     { "id": "glide_bomb_strike", "kind": "CruiseMissile", "pen": 3, "cp": 8, "cooldown": 90, "delay": 3.0, "radius": 10, "count": 2, "damage": 420, "blast": 10, "tier": "Huge" },
     // ht02: a single Excalibur/Krasnopol-class guided shell, no scatter (Barrage with a tight radius and one round).
     { "id": "guided_shell_strike", "kind": "Barrage", "pen": 3, "cp": 4, "cooldown": 45, "delay": 2.0, "radius": 1.5, "count": 1, "duration": 0, "damage": 360, "blast": 6, "tier": "Large" },
+    // ht03: 10 CBU-97-class top-attack bomblets homing on the nearest distinct enemy vehicles in the circle (Homing).
+    { "id": "cluster_at_strike", "kind": "Homing", "pen": 4, "cp": 9, "cooldown": 90, "delay": 2.0, "radius": 25, "count": 10, "damage": 160, "blast": 3, "tier": "Medium", "damageType": "ShapedCharge" },
   ],
 
   "props": [

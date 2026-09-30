@@ -449,6 +449,37 @@ namespace MachineBrigade.Sim.Strikes
                     return true;
                 }
 
+                // Prompt 25 F2 batch C (ht03, ht10): up to Count self-seeking submunitions, each its own distinct
+                // nearest target within Radius (ht03: ground vehicles; ht10: flying drones), its own hit.
+                case SupportKind.Homing:
+                {
+                    if (now < s.Start) return false;
+                    _world.Emit(SimEvent.StrikeImpact(s.Team, support, s.Point));
+                    var r2 = support.Radius * support.Radius;
+                    var picked = new List<Vehicle>();
+                    foreach (var v in _world.VehicleList)
+                    {
+                        if (!v.IsAlive || v.Team == s.Team || v.Team < 0 || v.Def.Boss || v.Def.Static) continue;
+                        if (support.DronesOnly ? !(v.Flying && v.Def.Drone) : v.Flying) continue;
+                        if (Vector2.DistanceSquared(v.Position, s.Point) > r2) continue;
+                        picked.Add(v);
+                    }
+                    // Nearest first, ties broken by entity id (deterministic).
+                    picked.Sort((a, b) =>
+                    {
+                        var cmp = Vector2.DistanceSquared(a.Position, s.Point).CompareTo(Vector2.DistanceSquared(b.Position, s.Point));
+                        return cmp != 0 ? cmp : a.Id.Value.CompareTo(b.Id.Value);
+                    });
+                    var damage = support.Damage * _world.StrikeDamage(s.Team, support.Id);
+                    for (var k = 0; k < picked.Count && k < support.Count; k++)
+                    {
+                        var v = picked[k];
+                        _world.Damage.Apply(v, damage, support.DamageType, new Combat.HitInfo(null, s.Team, null, v.Position, Combat.HitKind.Strike, true)
+                            .WithPen(support.Penetration, top: true, support.Thermobaric));
+                    }
+                    return true;
+                }
+
                 default:
                     return true;
             }

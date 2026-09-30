@@ -44,6 +44,27 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>An anti-radiation missile on the enemy anti-air nearest the point within Radius: Damage, and knocked out for Duration seconds.</summary>
         Sead,
+
+        /// <summary>
+        /// Prompt 25 F2 batch C (ht03, ht10): up to Count self-seeking submunitions, the nearest distinct enemy
+        /// targets within Radius each taking Damage (DronesOnly: flying drones only; otherwise ground vehicles).
+        /// </summary>
+        Homing,
+
+        /// <summary>Prompt 25 F2 batch C (ht05): every friendly vehicle within Radius has its weapons refilled at once.</summary>
+        Resupply,
+
+        /// <summary>
+        /// Prompt 25 F2 batch C (ht06): every enemy drone within Radius is downed at once, and the circle hides
+        /// what is in it (as Smoke) for Duration seconds.
+        /// </summary>
+        JamStorm,
+
+        /// <summary>
+        /// Prompt 25 F2 batch C (ht09): every enemy artillery piece that fired within the last 10 s, anywhere
+        /// within Radius of the point, takes Count rounds of Damage (Blast radius each).
+        /// </summary>
+        CounterBattery,
     }
 
     /// <summary>
@@ -136,6 +157,9 @@ namespace MachineBrigade.Sim.Content
         public int LineRank { get; internal set; }
 
         public float LineScale { get; internal set; } = 1f;
+
+        /// <summary>Prompt 25 F2 batch C: a Homing strike's targets are flying drones only, not ground vehicles.</summary>
+        public bool DronesOnly { get; internal set; }
     }
 
     /// <summary>An objective circle from the map (Conquest).</summary>

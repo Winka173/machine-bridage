@@ -145,6 +145,7 @@ namespace MachineBrigade.Game.Match
             // sheet's "or a chapter reward" waits for those rewards, as batch A's units did).
             ["glide_bomb_strike"] = 2500,
             ["guided_shell_strike"] = 1500,
+            ["cluster_at_strike"] = 2500,
         };
 
         /// <summary>The premium cards, in the shop's order (the new content after the premium strike).</summary>

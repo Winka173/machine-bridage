@@ -152,7 +152,7 @@ namespace MachineBrigade.Game.Match
             { "artillery_barrage", "airstrike", "cruise_missile", "smoke_screen", "repair_drop", "napalm_strike",
               "uav_scan", "remote_mines", "field_tower", "sead_strike",
               // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
-              "glide_bomb_strike", "guided_shell_strike" };
+              "glide_bomb_strike", "guided_shell_strike", "cluster_at_strike" };
 
         // A new player's deck: the starter cards (the rest are won in the campaign or bought).
         private static readonly string[] DefaultVehicles = Progression.StarterVehicles;

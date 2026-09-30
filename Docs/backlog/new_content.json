@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 50,
+    "chưa làm": 49,
     "đang làm": 0,
-    "xong": 43
+    "xong": 44
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 9,
+      "chưa làm": 8,
       "đang làm": 0,
-      "xong": 2
+      "xong": 3
     },
     "boss": {
       "chưa làm": 8,
@@ -1119,9 +1119,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 2,500 coins in the shop (9 CP, so the CP 6 or more price), or a chapter reward."
+      "status": "xong",
+      "id": "cluster_at_strike",
+      "notes": "Batch C: support cluster_at_strike, a new kind SupportKind.Homing (StrikeSystem.cs): up to Count distinct nearest enemy vehicles in Radius each take Damage (deterministic nearest-first, ties by entity id). Sold in the shop (2,500). AI: default cluster-strike path."
     },
     {
       "key": "ht04",

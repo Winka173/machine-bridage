@@ -584,6 +584,8 @@ namespace MachineBrigade.Game.Hud
             ["short.glide_bomb_strike"] = ("Glide bombs", "Bom lượn"),
             ["support.guided_shell_strike"] = ("Guided shell", "Đạn pháo dẫn đường"),
             ["short.guided_shell_strike"] = ("Guided shell", "Đạn dẫn đường"),
+            ["support.cluster_at_strike"] = ("AT cluster bomb", "Bom chùm chống tăng"),
+            ["short.cluster_at_strike"] = ("Cluster bomb", "Bom chùm"),
             ["stat.tickets"] = ("TICKETS", "ĐIỂM"),
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{amount}/s", "+{amount}/s"),

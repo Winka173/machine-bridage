@@ -1103,6 +1103,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, một quả đạn kiểu [[Excalibur/Krasnopol]] rơi đúng điểm chọn, không tản mát (nổ bán kính {{blast}} m).\n" +
                 "Mạnh / yếu: chắc chắn trúng mục tiêu đứng yên; xe đang di chuyển có thể lái đi trước khi đạn rơi.\n" +
                 "Mẹo: gọi ngay khi pháo hoặc xe địch vừa đỗ lại; pháo kích 6 phát tản mát, thẻ này thì không."),
+            ["guide.cluster_at_strike"] = (
+                "[[AT cluster bomb]] · {{count}} homing bomblets · {{cp}} CP\n" +
+                "How it fights: after a {{delay}} s warning, up to {{count}} top-attack bomblets each find the nearest distinct enemy vehicle in the circle and strike its roof; aircraft and buildings are not hit.\n" +
+                "Strong / weak: wipes out a whole cluster of tanks at once; wasted against a single vehicle or a fortified position.\n" +
+                "Tip: call it on a column or a mass of armour, not on towers.",
+                "[[Bom chùm chống tăng]] · {{count}} đầu đạn tự tìm · {{cp}} CP\n" +
+                "Cách đánh: sau {{delay}} giây cảnh báo, tối đa {{count}} đầu đạn con đánh nóc, mỗi đầu đạn tự tìm một xe địch khác nhau trong vùng; không đánh máy bay và công trình.\n" +
+                "Mạnh / yếu: xóa sổ cả cụm xe tăng cùng lúc; phí phạm nếu chỉ có một xe hoặc công sự kiên cố.\n" +
+                "Mẹo: dùng cho đoàn xe hoặc cụm thiết giáp, không dùng cho tháp canh."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

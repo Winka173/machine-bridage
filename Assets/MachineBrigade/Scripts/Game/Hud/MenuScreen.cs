@@ -891,6 +891,7 @@ namespace MachineBrigade.Game.Hud
             // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
             "glide_bomb_strike" => "bomb",
             "guided_shell_strike" => "barrage",
+            "cluster_at_strike" => "airstrike",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };
