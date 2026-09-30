@@ -1323,6 +1323,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: hai tên lửa lớn cách nhau 0,6 giây, tầm 50 m, rồi nạp 9 giây; [[radar nhìn xuyên khói]].\n" +
                 "Mạnh / yếu: thắng xe tăng nấp trong khói; APS chặn được vài quả.\n" +
                 "Mẹo: đem ra đối đầu xe tạo khói."),
+            ["guide.recoilless_jeep"] = (
+                "[[Recoilless rifle jeep]] · no armour · hit and run\n" +
+                "How it fights: one heavy [[HEAT round]] every 6.7 s out to 32 m; parked, it is hard to see until it fires.\n" +
+                "Strong / weak: ambushes tanks from the flank for 3 CP; anything that fires back kills it.\n" +
+                "Tip: hit a tank in the side, then drive off.",
+                "[[Xe jeep súng không giật]] · không giáp · đánh rồi chạy\n" +
+                "Cách đánh: 6,7 giây một phát [[nổ lõm]] nặng, tầm 32 m; đỗ yên thì khó thấy cho tới khi bắn.\n" +
+                "Mạnh / yếu: phục kích xe tăng từ sườn chỉ với 3 CP; thứ gì bắn trả cũng hạ được nó.\n" +
+                "Mẹo: bắn vào sườn một chiếc tăng rồi chạy."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

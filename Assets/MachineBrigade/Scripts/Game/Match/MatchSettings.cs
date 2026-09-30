@@ -135,6 +135,7 @@ namespace MachineBrigade.Game.Match
             "microwave_vehicle",
             "nlos_atgm_vehicle",
             "radar_atgm_vehicle",
+            "recoilless_jeep",
             // (batch A cards: new entries above)
         };
 

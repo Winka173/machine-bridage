@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 20,
-    "xong": 7
+    "đang làm": 19,
+    "xong": 8
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 16,
-      "xong": 7
+      "đang làm": 15,
+      "xong": 8
     },
     "structure": {
       "chưa làm": 0,
@@ -159,8 +159,8 @@
       "group": "Diệt tăng",
       "priority": "Trung",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "recoilless_jeep",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {

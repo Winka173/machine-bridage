@@ -2501,6 +2501,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.radar_atgm_vehicle"] = ("Radar-guided ATGM vehicle", "Xe tên lửa chống tăng dẫn radar"),
             ["short.radar_atgm_vehicle"] = ("Radar ATGM", "TL dẫn radar"),
             ["note.radar_atgm_vehicle"] = ("A 9P157 Khrizantema-S: anti-tank missiles in pairs, guided by a millimetre-wave radar that smoke does not blind.", "9P157 Khrizantema-S: tên lửa chống tăng bắn từng cặp, dẫn bằng radar sóng milimét nên màn khói không che được."),
+            // dx09: Xe jeep súng không giật.
+            ["unit.recoilless_jeep"] = ("Recoilless rifle jeep", "Xe jeep súng không giật"),
+            ["short.recoilless_jeep"] = ("Recoilless", "Súng không giật"),
+            ["note.recoilless_jeep"] = ("An M40 106 mm recoilless rifle on an M151 jeep (the SPG-9 on a pickup is its cousin): one hard hit, then a long reload.", "Súng không giật M40 106 mm trên xe jeep M151 (họ hàng với SPG-9 trên xe bán tải): một phát đau rồi nạp lâu."),
             // (batch A: new entries above)
         };
 
