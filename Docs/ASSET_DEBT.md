@@ -179,49 +179,45 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 
 ## Prompt 25 B2 (DECISIONS 25B2)
 
-The models prompt 25 B2 did not reach, with the shape note ("Hình dạng (cho AI vẽ)") of the balance sheet's
-Phương tiện, Công trình and Boss sheets, in English. Sizes are length x width x height at the map scale (ground
-0.8 x real, aircraft 0.4 x real); "change" marks a model whose "Kích thước model" row in "Kiểm tra từng mục" says
-its size must change. Every one also needs: the side's stripe on the roof and flanks, no real insignia, the
-guide's triangle budget (light 1,500-3,000, tanks 3,000-5,000, aircraft 2,000-4,000, towers 1,500-3,500, bosses
-15,000-40,000), nothing thinner than 0.1 m, its mounts kept, and before/after shots in `Docs/ui-screens/models/`.
-Almost all of today's models are over those budgets (6,000-15,000 triangles for most vehicles).
+Part 2 rebuilt every vehicle left from part 1 (and the seven elites with models of their own) to the balance sheet's
+shape notes and sizes, redrew the Sky Fortress, gave four structures that borrowed another model their own, and
+reviewed the towers and the bosses against the sheet (DECISIONS 25B2 Part 2). The owner's rule for this pass was a
+low effort: prompt 27 redoes every model with an upgraded kit. What is left is below.
 
 ### Vehicles
 
-| Model | Size now (in battle) → sheet | Shape note |
-|---|---|---|
-
-Related to the rebuilt models: Icarus's scale for "the largest thing in the sky" is B1's (DECISIONS 25B2).
+None left. The data changes they need are the lead's (DECISIONS 25B2 Part 2: `scale` 1.0 and `modelSize` = the built
+box for every rebuilt model; the supply truck, ammunition carrier and escort hovercraft drop their borrowed `"model"`).
 
 ### Structures
 
-| Model | Size now | Shape note |
-|---|---|---|
-| aa_turret | 5.4 x 4.5 x 3.2 | Round sandbag emplacement with a twin-barrel anti-aircraft gun on a turntable and two small missile tubes. Branch flak: a four-barrel gun with a small radar. Branch sam: a four-tube missile box instead of the guns. |
-| cp_relay | 4.0 x 4.0 x 7.8 | Steel lattice mast with two dish antennas and an equipment box. Branch hardened: thick concrete cladding. Branch loot: a crane and a pile of containers. |
-| dragons_teeth | 2.5 x 5.2 x 1.3 | A row of truncated concrete pyramids. Branch hedgehog: cross-shaped steel hedgehogs. Branch wire: barbed-wire coils on stakes. |
-| ew_tower | 4.0 x 4.0 x 10.1 | Tall antenna mast (about 10 m) with panels and small dishes. Branch drone: an antenna dome with wave rings. Branch spoof: a flat phased-array panel. |
-| guard_tower | 3.5 x 3.8 x 11.6 | Tall wood-and-steel tower (about 11 m), a roofed hut with a machine gun and a searchlight. Branch watch: a radar mast and a turning searchlight on the hut. Branch nest: a low sandbagged hut with a 25 mm gun. |
-| headquarters | 12.7 x 14.1 x 9.4 | Multi-block concrete command building, antennas, the side's flag, sandbags round it. |
-| mg_bunker | 4.4 x 4.4 x 3.3 | Low round or hexagonal concrete pillbox, loopholes, a barrel sticking out. Branch twin: two machine-gun barrels through the loopholes. Branch flame: a flame nozzle and fuel tanks behind. |
-| minefield | 4.9 x 4.9 x 1.1 | Churned ground with warning signs; the mines show only to their own side. Branch at: a few big mines. Branch scatter: many small mines and dispenser canisters. |
-| ammo_depot | 4.9 x 6.1 x 2.9 | Half-buried store with an earth berm, ammunition crates stacked outside. |
-| atgm_tower | 5.2 x 5.2 x 5.0 | Twin missile launcher on a low steel tower with a shield. Branch top: a tall launcher, missiles arcing up. Branch multi: a four-tube turntable with an anti-air sensor. |
-| c_ram | 5.6 x 5.6 x 5.4 | White multi-barrel gun turret with a cylindrical radar dome on top. Branch centurion: the gatling with a spherical radar. Branch dome: an inclined interceptor launcher. |
-| gun_turret | 8.9 x 5.0 x 4.0 | A tank turret on a square concrete base, a long 120 mm gun. Branch long: one very long barrel with a sight tube. Branch auto: a small turret with two short barrels and a radar. |
-| rocket_turret | 4.7 x 4.7 x 3.4 | A 40-tube rocket launcher on a low turntable. Branch cluster: an open rail rack with many tubes. Branch guided: a closed launch box. |
-| artillery_emplacement | 8.5 x 6.8 x 3.4 | Towed howitzer in a U-shaped earth and sandbag emplacement. Branch cb: a long-barrel howitzer beside a radar dish. Branch mortar: a low mortar with a very big tube. |
-| drone_hangar | 8.0 x 8.0 x 5.0 | Low domed hangar with a roller door and a drone launch rail. Branch lancet: a Lancet launch rail. Branch swarm: a rack of many small drone bays. |
-| heavy_turret | 10.3 x 8.0 x 6.1 | Big twin 155 mm turret on a concrete base, armour-plated. Branch coastal: a long-barrel twin turret turned seawards. Branch bastion: thick armour and two small secondary gun turrets. |
-| missile_battery | 7.0 x 9.1 x 7.3 | Launcher with four big inclined missile boxes beside a phased-array radar truck. Branch pac3: a box of many small tubes. Branch lrr: a big turning radar dish. |
-| shield_tower | 7.2 x 7.2 x 9.2 | Tall shield emitter tower with a ring glowing in the side's colour, a translucent dome when active. Branch bulwark: a central emitter and dome. Branch ward: many small emitter posts joined by light beams to each tower. |
-| bulwark_post | 3.5 x 3.5 x 2.7 | Small sandbag gun post. |
-| coastal_battery | 10.3 x 8.0 x 6.1 | Coastal gun turret on a concrete base by the rocks. |
-| spawn_bastion, super_gun, targeting_station | 10.3 x 8.0 x 6.1; 18.5 x 14.4 x 11.0; 6.5 x 8.2 x 11.0 | No shape note in the sheet (size only). |
+The towers and their rank-7 branches match their notes (the branches differ in their weapon modules) and keep their
+sizes; they are over the guide's tower budget of 1,500-3,500 triangles, left for prompt 27 (base / branch A / B):
 
-The towers' two tier-7 branches must differ in their weapon module's shape at the default zoom; tiers 1-6 add
-small rank details (rank stripes, armour cladding at tiers 3 and 5).
+| Tower | Triangles |
+|---|---|
+| aa_turret | 6,126 / 6,554 / 2,382 |
+| cp_relay | 2,192 / 2,220 / 1,328 |
+| dragons_teeth | 1,508 / 1,980 / 4,088 |
+| ew_tower | 5,104 / 5,436 / 4,544 |
+| guard_tower | 4,656 / 5,372 / 2,594 |
+| mg_bunker | 3,404 / 3,704 / 3,560 |
+| minefield | 3,150 / 3,732 / 4,512 |
+| atgm_tower | 4,958 / 5,510 / 5,558 |
+| c_ram | 5,806 / 6,254 / 7,150 |
+| gun_turret | 6,112 / 6,384 / 6,688 |
+| rocket_turret | 3,894 / 5,102 / 3,010 |
+| artillery_emplacement | 7,334 / 7,766 / 5,770 |
+| drone_hangar | 7,138 / 5,978 / 9,114 |
+| heavy_turret | 9,222 / 9,378 / 11,666 |
+| missile_battery | 6,926 / 8,338 / 6,974 |
+| shield_tower | 5,344 / 7,200 / 6,176 |
+
+Also kept: headquarters (14,260; its note: a multi-block concrete command building, antennas, sandbags),
+ammo_depot (on ammo_dump: the berm-covered store with crates outside, as its note), bulwark_post (on mg_bunker at 0.8),
+coastal_battery, spawn_bastion and super_gun (on heavy_turret; coastal_battery could wear the coastal branch's
+heavy_turret_a instead, a data choice), targeting_station (no note). The Patriot's box (missile_battery) is 4.6 m long
+along its tubes, so B3's 4.24 m round fits it.
 
 ### Bosses
 
