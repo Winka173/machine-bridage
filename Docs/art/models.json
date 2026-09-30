@@ -27,6 +27,10 @@
     "file": "adobe_large.glb",
     "triangles": 3882
   },
+  "ammo_carrier": {
+    "file": "ammo_carrier.glb",
+    "triangles": 2984
+  },
   "ammo_crate": {
     "file": "ammo_crate.glb",
     "triangles": 480
@@ -1130,6 +1134,10 @@
   "supply_pile": {
     "file": "supply_pile.glb",
     "triangles": 1888
+  },
+  "supply_truck": {
+    "file": "supply_truck.glb",
+    "triangles": 2576
   },
   "supreme_command": {
     "file": "supreme_command.glb",

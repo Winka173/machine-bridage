@@ -10868,3 +10868,19 @@ the scales and capsules.
 `Tools/art/resolve_merge.py`), `Assets/MachineBrigade/Resources/UI/Cards/manifest.json` and the thirteen card PNGs,
 `Assets/MachineBrigade/Tests/EditMode/ModelTests.cs` (three TestCase numbers), `Docs/ASSET_DEBT.md`,
 `Docs/CHANGELOG.md`, this file.
+
+### Part 2 (branch `feature/p25-models2`)
+
+The rest of ASSET_DEBT's "Prompt 25 B2" list, in `Tools/blender/mb_p25_models2.py` (registered after part 1's module
+in `build_assets.py`), by the same method and rules; the order was the prompt's: B1's size-mismatch list and B3's two
+round models first, then the vehicles most played first, the elites, the bosses, the structures. Built box and hull
+as in part 1's table (the box at scale 1.0, gun forward; the hull from `measure_hulls.py`). **For the lead (B1's
+data):** set every model below to `"scale": 1.0` with its `modelSize` = the built box, and its `length` / `width` =
+the hull; a vehicle marked "model" needs its `"model"` line changed as the row says.
+
+| Model | Sheet's size | Built | Hull (length x width) | Triangles | References | Was (in battle, triangles) |
+|---|---|---|---|---|---|---|
+| kh29l (round) | Kh-29L, 3.9 m real | 1.95 x 0.48 x 0.48 (half size; `roundLength` fits it) | - | 238 | Kh-29L | the Maverick stood in |
+| gbu39 (round) | GBU-39 SDB, 1.8 m real | 0.90 x 0.18 x 0.18 | - | 190 | GBU-39/B | the GBU-12 stood in |
+| supply_truck | 8.2 x 2.0 x 2.1 | 8.37 x 2.02 x 2.42 (the ring gun over the cab roof) | 8.37 x 2.02 | 2,576 | M977 HEMTT | armed_truck at 1.0: 7.6 x 2.7 x 3.5, 2,916. **model:** drop `"model": "armed_truck"` |
+| ammo_carrier | 8.2 x 2.0 x 2.1 (note) | 8.36 x 2.02 x 2.46 | 8.36 x 2.02 | 2,984 | M1120 HEMTT LHS / M985 | armed_truck at 0.9: 6.9 x 2.4 x 3.2. **model:** drop `"model": "armed_truck"` |
