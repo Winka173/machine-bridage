@@ -177,3 +177,10 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The comic panels after each chapter (48) | A battlefield's shot and a card render, the speaker's portrait and a speech box in a black frame (ComicPage) | Drawn panels (the moment itself: the landing, the ceasefire, the turn in Veyra, Icarus falling), speech balloons |
 | Interlude I's panels | The Rust Yard's shot (the Foundry has no picture yet) | The Foundry's map shot once P22-content's map lands, then the drawn panels |
 
+## Prompt 25 B1 and B3: sizes (DECISIONS 25B)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Supply truck, counter-battery radar, Shahed truck, Iron Beam (the sheet: trucks 2.0 m wide, 2.1-2.8 m high) | Their old models fitted to the sheet's length (`modelSize`): 2.3-2.9 m wide, 3.5-3.9 m high | Models at the sheet's box (0.8 x real) for `"scale": 1`; the data fits any model's length, so nothing else changes |
+| Self-propelled gun (M109A7, 7.8 x 3.1 x 2.9 m), siege tank (6.8 x 2.6 x 2.6 m), Pantsir (9.6 x 2.6 x 2.8 m) | The old models at the sheet's length: the gun 2.2 m wide, the siege tank 3.0 m wide, the Pantsir 3.4 m wide and 4.5 m high | Models at the sheet's box (the M109A7 is on B2's own list) |
+| Icarus at 60 m | The play-test 9 dagger hull, 30 m wide at that length | A planform nearer the sheet's ~60 x 40 m, if the owner wants its width too (its nodes kept where the boss data puts them) |

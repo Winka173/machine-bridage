@@ -559,6 +559,20 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float Scale { get; set; } = 1f;
 
+        /// <summary>
+        /// Prompt 25 B1 (DECISIONS 25B): the drawn model's length, width and height in metres (its whole box, gun
+        /// included: the balance sheet's "Kích thước model"), 0 when the data gives none ("modelSize"). The view fits the
+        /// model's length to it, so an old model and one rebuilt at another size are drawn alike; <see cref="Scale"/>
+        /// stays the one that matches the model the game ships (the importer keeps them in step).
+        /// </summary>
+        public float ModelLength { get; internal set; }
+
+        /// <summary>The drawn model's width in metres (see <see cref="ModelLength"/>).</summary>
+        public float ModelWidth { get; internal set; }
+
+        /// <summary>The drawn model's height in metres (see <see cref="ModelLength"/>).</summary>
+        public float ModelHeight { get; internal set; }
+
         public float HullHalf => MathF.Max(0f, (Length - Width) * 0.5f);
 
         /// <summary>Collision capsule radius (a little inside the hull, so parked vehicles can touch).</summary>

@@ -901,3 +901,80 @@ The owner's rule of 30/09: no test or measurement runs until a test phase is app
 | Vũ khí đề xuất / Thay đổi chi tiết | flame_tank | flamethrower | deferred | 21 a tick on every target (the row meant -10 % on light vehicles only); to measure in the test phase |
 
 <!-- /step:review -->
+
+<!-- import_b:begin -->
+<!-- step:B1 -->
+## B1: model sizes (sheet Kiểm tra từng mục)
+
+Every "Kích thước model" row of "Kiểm tra từng mục": the vehicle's drawn box goes into the data (modelSize, length x width x height in metres; the game fits the model's length to it), with its scale for the model the game has and its hull (collision) in step. "Đổi" takes the sheet's box, "Giữ" records today's; a model the B2 model agent rebuilt (DECISIONS 25B2) is drawn at its built box, the sheet's target (0.8 x real on the ground, 0.4 x real in the air). Bosses' "Kích thước" rows resize the boss (its size). Towers' rows are counted, not listed: they keep their sizes.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Kiểm tra từng mục | 22 | 130 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kiểm tra từng mục | hover_gunboat | Kích thước model (dài × rộng × cao) | already | kept at 14 x 3.85 x 4.4; modelSize 14 x 3.85 x 4.4 |
+| Kiểm tra từng mục | armored_car | Kích thước model (dài × rộng × cao) | applied | 5.88 x 2.28 x 2.73 -> 4.78 x 2.08 x 1.49; modelSize 4.78 x 2.08 x 1.49, scale 0.85 -> 1, hull 5.54 x 2.28 -> 4.44 x 2.08 m; B2 rebuilt it at 4.78 x 2.08 x 1.49, the sheet's target (DECISIONS 25B2); the row: 4.6 × 2.0 × 1.4 |
+| Kiểm tra từng mục | ifv | Kích thước model (dài × rộng × cao) | already | kept at 6.21 x 2.67 x 3.07; modelSize 6.21 x 2.67 x 3.07 |
+| Kiểm tra từng mục | supply_truck | Kích thước model (dài × rộng × cao) | applied | 7.62 x 2.72 x 3.51 -> 8.2 x 2 x 2.1; modelSize 8.2 x 2 x 2.1, scale 1 -> 1.0768, hull 7.3 x 2.72 -> 7.86 x 2 m; its model, fitted to the length, is 2.93 m width, 3.78 m height |
+| Kiểm tra từng mục | engineer_vehicle | Kích thước model (dài × rộng × cao) | already | kept at 6.3 x 2.83 x 2.44; modelSize 6.3 x 2.83 x 2.44 |
+| Kiểm tra từng mục | smoke_carrier | Kích thước model (dài × rộng × cao) | already | kept at 4.17 x 2.32 x 2.91; modelSize 4.17 x 2.32 x 2.91 |
+| Kiểm tra từng mục | ammo_carrier | Kích thước model (dài × rộng × cao) | already | kept at 6.85 x 2.45 x 3.16; modelSize 6.85 x 2.45 x 3.16 |
+| Kiểm tra từng mục | counter_battery_radar | Kích thước model (dài × rộng × cao) | applied | 7.21 x 2.62 x 3.92 -> 6.4 x 2 x 2.8; modelSize 6.4 x 2 x 2.8, scale 0.85 -> 0.7543, hull 6.8 x 2.21 -> 6.03 x 1.69 m; its model, fitted to the length, is 2.32 m width, 3.48 m height |
+| Kiểm tra từng mục | ew_jammer | Kích thước model (dài × rộng × cao) | already | kept at 7.85 x 2.88 x 5.06; modelSize 7.85 x 2.88 x 5.06 |
+| Kiểm tra từng mục | mine_layer | Kích thước model (dài × rộng × cao) | already | kept at 6.57 x 2.57 x 2.98; modelSize 6.57 x 2.57 x 2.98 |
+| Kiểm tra từng mục | command_vehicle | Kích thước model (dài × rộng × cao) | applied | 6.69 x 2.47 x 4.75 -> 5.64 x 2.08 x 2.14; modelSize 5.64 x 2.08 x 2.14, scale 0.85 -> 1, hull 6.29 x 2.47 -> 5.64 x 2.08 m; B2 rebuilt it at 5.64 x 2.08 x 2.14, the sheet's target (DECISIONS 25B2); the row: 5.6 × 2.2 × 2.1 |
+| Kiểm tra từng mục | shield_carrier | Kích thước model (dài × rộng × cao) | already | kept at 7.36 x 2.55 x 5.3; modelSize 7.36 x 2.55 x 5.3 |
+| Kiểm tra từng mục | scout_jeep | Kích thước model (dài × rộng × cao) | applied | 3.71 x 1.92 x 1.97 -> 2.64 x 1.4 x 1.41; modelSize 2.64 x 1.4 x 1.41, scale 0.85 -> 1, hull 3.75 x 1.92 -> 2.64 x 1.4 m; B2 rebuilt it at 2.64 x 1.4 x 1.41, the sheet's target (DECISIONS 25B2); the row: 2.7 × 1.3 × 1.4 |
+| Kiểm tra từng mục | vbied | Kích thước model (dài × rộng × cao) | already | kept at 4.43 x 1.9 x 2.44; modelSize 4.43 x 1.9 x 2.44 |
+| Kiểm tra từng mục | light_tank | Kích thước model (dài × rộng × cao) | already | kept at 6.17 x 2.33 x 2.21; modelSize 6.17 x 2.33 x 2.21 |
+| Kiểm tra từng mục | flame_tank | Kích thước model (dài × rộng × cao) | applied | 5.04 x 2.83 x 2.66 -> 7.12 x 2.66 x 1.87; modelSize 7.12 x 2.66 x 1.87, scale 0.95 -> 1, hull 5.04 x 2.83 -> 5.75 x 2.66 m; B2 rebuilt it at 7.12 x 2.66 x 1.87, the sheet's target (DECISIONS 25B2); the row: 7.2 × 2.6 × 1.9 |
+| Kiểm tra từng mục | turtle_tank | Kích thước model (dài × rộng × cao) | already | kept at 8.13 x 3.29 x 3.91; modelSize 8.13 x 3.29 x 3.91 |
+| Kiểm tra từng mục | bmpt | Kích thước model (dài × rộng × cao) | already | kept at 6.35 x 3.1 x 2.85; modelSize 6.35 x 3.1 x 2.85 |
+| Kiểm tra từng mục | rocket_technical | Kích thước model (dài × rộng × cao) | already | kept at 4.62 x 1.79 x 2.77; modelSize 4.62 x 1.79 x 2.77 |
+| Kiểm tra từng mục | mortar_carrier | Kích thước model (dài × rộng × cao) | already | kept at 4.39 x 2.53 x 3.22; modelSize 4.39 x 2.53 x 3.22 |
+| Kiểm tra từng mục | artillery | Kích thước model (dài × rộng × cao) | applied | 8.1 x 2.29 x 3.57 -> 7.8 x 3.1 x 2.9; modelSize 7.8 x 3.1 x 2.9, scale 0.85 -> 0.818, hull 8.1 x 2.29 -> 7.8 x 3.1 m; its model, fitted to the length, is 2.2 m width, 3.44 m height |
+| Kiểm tra từng mục | mlrs | Kích thước model (dài × rộng × cao) | already | kept at 6.4 x 2.25 x 3.55; modelSize 6.4 x 2.25 x 3.55 |
+| Kiểm tra từng mục | shahed_truck | Kích thước model (dài × rộng × cao) | applied | 6.88 x 2.6 x 4.13 -> 6.4 x 2 x 2.8; modelSize 6.4 x 2 x 2.8, scale 0.85 -> 0.7911, hull 6.88 x 2.3 -> 6.4 x 1.77 m; its model, fitted to the length, is 2.42 m width, 3.85 m height |
+| Kiểm tra từng mục | thermobaric_launcher | Kích thước model (dài × rộng × cao) | already | kept at 6.29 x 3.1 x 2.89; modelSize 6.29 x 3.1 x 2.89 |
+| Kiểm tra từng mục | ballistic_launcher | Kích thước model (dài × rộng × cao) | already | kept at 10.86 x 2.64 x 4.71; modelSize 10.86 x 2.64 x 4.71 |
+| Kiểm tra từng mục | heavy_rocket_artillery | Kích thước model (dài × rộng × cao) | already | kept at 10.51 x 2.65 x 4.17; modelSize 10.51 x 2.65 x 4.17 |
+| Kiểm tra từng mục | siege_tank | Kích thước model (dài × rộng × cao) | applied | 7.72 x 3.38 x 3.09 -> 6.8 x 2.6 x 2.6; modelSize 6.8 x 2.6 x 2.6, scale 0.85 -> 0.7489, hull 6.8 x 3.56 -> 5.99 x 2.6 m; its model, fitted to the length, is 2.98 m width |
+| Kiểm tra từng mục | zu23_technical | Kích thước model (dài × rộng × cao) | already | kept at 4.52 x 1.84 x 2.11; modelSize 4.52 x 1.84 x 2.11 |
+| Kiểm tra từng mục | aa_vehicle | Kích thước model (dài × rộng × cao) | already | kept at 5.65 x 2.73 x 3; modelSize 5.65 x 2.73 x 3 |
+| Kiểm tra từng mục | sam_launcher | Kích thước model (dài × rộng × cao) | already | kept at 6.05 x 3.07 x 4.05; modelSize 6.05 x 3.07 x 4.05 |
+| Kiểm tra từng mục | heavy_aa | Kích thước model (dài × rộng × cao) | applied | 6.98 x 2.46 x 3.29 -> 9.6 x 2.6 x 2.8; modelSize 9.6 x 2.6 x 2.8, scale 0.85 -> 1.1693, hull 6.98 x 2.47 -> 9.6 x 2.6 m; its model, fitted to the length, is 3.39 m width, 4.53 m height |
+| Kiểm tra từng mục | iron_beam | Kích thước model (dài × rộng × cao) | applied | 7.81 x 2.65 x 3.66 -> 8 x 2 x 2.8; modelSize 8 x 2 x 2.8, scale 0.85 -> 0.8705, hull 7.81 x 2.45 -> 8 x 1.85 m; its model, fitted to the length, is 2.72 m width, 3.75 m height |
+| Kiểm tra từng mục | long_sam | Kích thước model (dài × rộng × cao) | already | kept at 9.85 x 3.06 x 3.73; modelSize 9.85 x 3.06 x 3.73 |
+| Kiểm tra từng mục | scout_heli | Kích thước model (dài × rộng × cao) | already | kept at 4.33 x 3.88 x 1.41; modelSize 4.33 x 3.88 x 1.41 |
+| Kiểm tra từng mục | recon_drone | Kích thước model (dài × rộng × cao) | already | kept at 2.88 x 5.03 x 0.7; modelSize 2.88 x 5.03 x 0.7 |
+| Kiểm tra từng mục | wingman_drone | Kích thước model (dài × rộng × cao) | already | kept at 4.18 x 3.55 x 0.78; modelSize 4.18 x 3.55 x 0.78 |
+| Kiểm tra từng mục | strike_drone | Kích thước model (dài × rộng × cao) | already | kept at 4.5 x 7.35 x 1.15; modelSize 4.5 x 7.35 x 1.15 |
+| Kiểm tra từng mục | swarm_carrier | Kích thước model (dài × rộng × cao) | applied | 16.44 x 18.79 x 6.13 -> 11.93 x 16.3 x 4.79; modelSize 11.93 x 16.3 x 4.79, scale 1.22 -> 1.1765; B2 rebuilt it at 11.93 x 16.3 x 4.79, the sheet's target (DECISIONS 25B2); the row: 11.9 × 16.2 × 4.6 |
+| Kiểm tra từng mục | attack_helicopter | Kích thước model (dài × rộng × cao) | applied | 5.99 x 4.02 x 2.34 -> 6.35 x 4.44 x 2.02; modelSize 6.35 x 4.44 x 2.02, scale 0.69 -> 1.1765; B2 rebuilt it at 6.35 x 4.44 x 2.02, the sheet's target (DECISIONS 25B2); the row: 7.1 × 5.8 × 1.8 |
+| Kiểm tra từng mục | fighter_jet | Kích thước model (dài × rộng × cao) | applied | 6.36 x 4.2 x 1.4 -> 8.64 x 5.85 x 2.15; modelSize 8.64 x 5.85 x 2.15, scale 0.39 -> 1.1765; B2 rebuilt it at 8.64 x 5.85 x 2.15, the sheet's target (DECISIONS 25B2); the row: 8.8 × 5.9 × 2.4 |
+| Kiểm tra từng mục | stealth_fighter | Kích thước model (dài × rộng × cao) | already | kept at 6.09 x 4.4 x 1.02; modelSize 6.09 x 4.4 x 1.02 |
+| Kiểm tra từng mục | gunship_heli | Kích thước model (dài × rộng × cao) | already | kept at 7.11 x 5.85 x 2.01; modelSize 7.11 x 5.85 x 2.01 |
+| Kiểm tra từng mục | attack_jet | Kích thước model (dài × rộng × cao) | already | kept at 6.38 x 6.02 x 1.45; modelSize 6.38 x 6.02 x 1.45 |
+| Kiểm tra từng mục | stealth_bomber | Kích thước model (dài × rộng × cao) | already | kept at 7.04 x 17.62 x 1.98; modelSize 7.04 x 17.62 x 1.98 |
+| Kiểm tra từng mục | heavy_bomber | Kích thước model (dài × rộng × cao) | already | kept at 17.91 x 18.72 x 6.13; modelSize 17.91 x 18.72 x 6.13 |
+| Kiểm tra từng mục | sky_gunship | Kích thước model (dài × rộng × cao) | applied | 12.17 x 15.41 x 5 -> 11.93 x 16.3 x 4.82; modelSize 11.93 x 16.3 x 4.82, scale 1.06 -> 1.1765; B2 rebuilt it at 11.93 x 16.3 x 4.82, the sheet's target (DECISIONS 25B2); the row kept 12.2 × 15.4 × 5.0 |
+| Kiểm tra từng mục | bunker_vehicle | Kích thước model (dài × rộng × cao) | already | kept at 8.54 x 3.46 x 3.11; modelSize 8.54 x 3.46 x 3.11 |
+| Kiểm tra từng mục | armored_bulldozer | Kích thước model (dài × rộng × cao) | already | kept at 6.72 x 3.72 x 4.76; modelSize 6.72 x 3.72 x 4.76 |
+| Kiểm tra từng mục | main_battle_tank | Kích thước model (dài × rộng × cao) | applied | 6.34 x 2.88 x 2.94 -> 7.79 x 3.07 x 2.3; modelSize 7.79 x 3.07 x 2.3, scale 0.85 -> 1, hull 5.24 x 2.88 -> 6.1 x 3.07 m; B2 rebuilt it at 7.79 x 3.07 x 2.3, the sheet's target (DECISIONS 25B2); the row kept 6.3 × 2.9 × 2.9 |
+| Kiểm tra từng mục | twin_tank | Kích thước model (dài × rộng × cao) | applied | 6.91 x 3.03 x 2.89 -> 8.96 x 3.53 x 2.64; modelSize 8.96 x 3.53 x 2.64, scale 0.85 -> 1, hull 5.64 x 3.03 -> 7.02 x 3.53 m; B2 rebuilt it at 8.96 x 3.53 x 2.64, the sheet's target (DECISIONS 25B2); the row: dài ≥ 7.2 m |
+| Kiểm tra từng mục | heavy_tank | Kích thước model (dài × rộng × cao) | already | kept at 8.77 x 3.2 x 3.46; modelSize 8.77 x 3.2 x 3.46 |
+| Kiểm tra từng mục | titan_tank | Kích thước model (dài × rộng × cao) | applied | 10.4 x 3.58 x 3.51 -> 10.6 x 3.65 x 3.58; modelSize 10.6 x 3.65 x 3.58, scale 0.85 -> 0.8667, hull 7.74 x 3.58 -> 7.9 x 3.65 m; the row: dài ≥ 10.6 m |
+| Kiểm tra từng mục | fpv_carrier | Kích thước model (dài × rộng × cao) | applied | 7 x 2.63 x 3.58 -> 7.41 x 2.04 x 2.88; modelSize 7.41 x 2.04 x 2.88, scale 0.85 -> 1, hull 7 x 2.63 -> 7.41 x 2.04 m; B2 rebuilt it at 7.41 x 2.04 x 2.88, the sheet's target (DECISIONS 25B2); the row: 7.2 × 2.0 × 2.6 |
+| Kiểm tra từng mục | lancet_truck | Kích thước model (dài × rộng × cao) | applied | 6.59 x 2.65 x 4.6 -> 7.41 x 2.02 x 2.7; modelSize 7.41 x 2.02 x 2.7, scale 0.85 -> 1, hull 6.6 x 2.23 -> 7.41 x 2.02 m; B2 rebuilt it at 7.41 x 2.02 x 2.7, the sheet's target (DECISIONS 25B2); the row: 7.2 × 2.0 × 2.6 |
+| Kiểm tra từng mục | wheeled_gun | Kích thước model (dài × rộng × cao) | already | kept at 9.43 x 2.62 x 3.13; modelSize 9.43 x 2.62 x 3.13 |
+| Kiểm tra từng mục | tank_destroyer | Kích thước model (dài × rộng × cao) | already | kept at 9.22 x 2.7 x 2.24; modelSize 9.22 x 2.7 x 2.24 |
+| Kiểm tra từng mục | railgun_truck | Kích thước model (dài × rộng × cao) | already | kept at 9.68 x 2.86 x 3.75; modelSize 9.68 x 2.86 x 3.75 |
+| Kiểm tra từng mục | laser_tank | Kích thước model (dài × rộng × cao) | already | kept at 6.28 x 2.7 x 2.61; modelSize 6.28 x 2.7 x 2.61 |
+| Kiểm tra từng mục | daedalus | Kích thước | applied | 45.02 x 24.79 x 15.54 (the row: ~45 × 26 m); measured on B2's rebuilt model, 37.08 x 20.42 x 12.8 at scale 1; size 1 -> 1.214, active protection 26 -> 31.6 m |
+| Kiểm tra từng mục | silver_bug | Kích thước | applied | 60.01 x 30.11 x 21.67 (the row: ~60 × 40 m); size 1 -> 1.652, active protection 30 -> 49.6 m, crash blast 16 -> 20.6 m, crash debris spread with the hull, icarus_mk0 (variant) size 0.65 -> 0.393, kept at 23.61 m |
+
+<!-- /step:B1 -->
+
+<!-- import_b:end -->

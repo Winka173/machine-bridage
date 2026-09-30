@@ -38,6 +38,17 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
 - B.7-B.8: prices checked against the price sheets; the airstrike drops four FAB-500s (10 m each), the barrage fires six
   shells, the cruise missile hits for 600 over 10 m.
 
+### Prompt 25 B1, B3 and turn rates
+
+The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`).
+
+- B1: every vehicle's drawn size is in the data (`modelSize`) and the game fits its model to it, so the models B2
+  rebuilt (the main battle tank 7.8 m, the twin tank 9.0 m, the flame tank, the armoured car, the scout jeep, the FPV
+  and Lancet trucks, the command vehicle, the Su-27 8.6 m, the Apache, the swarm carrier and the AC-130 on one C-130
+  frame) and the old ones are drawn at the sheet's sizes, their hulls (collision) with them; the super tank 10.6 m,
+  the Pantsir 9.6 m, the supply truck 8.2 m, the self-propelled gun, the siege tank, the Iron Beam, the radar and
+  Shahed trucks resized; Daedalus ~45 m, and Icarus 60 m, now the largest thing in the sky.
+
 ### Play-test 9 models (DECISIONS 23M)
 
 - Icarus is a spaceship again, not a station: a dagger-shaped warship about as big as before on the map, with a pointed

@@ -105,10 +105,12 @@ namespace MachineBrigade.Game.Views
             // Tower-branch C.2: its card's rank on its body (bars, plates from rank 3, thicker from 5).
             if (TowerArt.WearsRank(vehicle.Def))
                 _rankDetails = TowerRankDetails.Attach(_model.Root.transform, modelId, TowerArt.RankOf(vehicle.Team, vehicle.Def), vehicle.Team, materials);
-            // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
-            DrawScale = DrawScaleOf(vehicle.Def);
-            _body.localScale = Vector3.one * DrawScale;
+            // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included): its model's length
+            // fitted to the data's modelSize where it has one (prompt 25 B1). Measured in the body's frame, so before or
+            // after the body's scale alike.
             ModelBounds = Measure(_model.Root.transform, _body);
+            DrawScale = DrawScaleOf(vehicle.Def, ModelBounds.size.z);
+            _body.localScale = Vector3.one * DrawScale;
             if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
 
@@ -267,6 +269,19 @@ namespace MachineBrigade.Game.Views
         /// <summary>How big a vehicle of <paramref name="def"/> is drawn: its data's scale, an aircraft's 15 % smaller.</summary>
         public static float DrawScaleOf(VehicleDef def) => def.Scale * (def.Flying && !def.Boss ? AirShrink : 1f);
 
+        /// <summary>
+        /// Prompt 25 B1 (DECISIONS 25B): how big a model <paramref name="modelLength"/> m long (at scale 1) of
+        /// <paramref name="def"/> is drawn. A def with a modelSize has the model's length fitted to it, whatever size the
+        /// model was built at (an old one, or one rebuilt at the sheet's size); the fit is the drawn size itself, so no
+        /// aircraft factor goes on top of it. Without one, <see cref="DrawScaleOf(VehicleDef)"/>.
+        /// </summary>
+        public static float DrawScaleOf(VehicleDef def, float modelLength) =>
+            def.ModelLength > 0f && modelLength > 0.01f ? def.ModelLength / modelLength : DrawScaleOf(def);
+
+        /// <summary>How big a spawned <paramref name="model"/> (at scale 1) of <paramref name="def"/> is drawn (see above).</summary>
+        public static float DrawScaleOf(VehicleDef def, GameObject model) =>
+            def.ModelLength > 0f && model != null ? DrawScaleOf(def, Measure(model.transform, model.transform).size.z) : DrawScaleOf(def);
+
         /// <summary>The drawn model's scale (<see cref="DrawScaleOf"/>).</summary>
         public float DrawScale { get; }
         public Transform Root { get; }
@@ -340,7 +355,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>The drawn model's extent in the body's own frame (before the def's scale): span on X, length on Z.</summary>
         public Bounds ModelBounds { get; }
 
-        private static Bounds Measure(Transform model, Transform frame)
+        internal static Bounds Measure(Transform model, Transform frame)
         {
             var bounds = new Bounds();
             var first = true;

@@ -10982,3 +10982,68 @@ and support tests (the airstrike's four bombs, the barrage's six shells, the cru
 counter and combat-value checks of the re-priced cards, the muzzle tests of the new mounts (the wheeled gun's roof
 M2 on slot "mg", the light tank's gun-launched missile on its main gun), and anything reading the old Hellfire,
 Grad or 155 mm speeds and blasts.
+
+## 25B. Sizes, rounds, turn rates (B1, B3) (2026-09-30)
+
+Prompt 25 C.1 (task B1: model sizes), C.3 (task B3: round sizes) and C.4 (turn rates), applied by
+`Tools/balance/import_xlsx.py --upto B1` and `--upto B3` (`Tools/balance/steps_b.py`; a model's box is read from its
+.glb by `Tools/balance/glb_bounds.py`, no Unity needed). The report's rows are in `Docs/balance/apply-report.md`,
+between `<!-- import_b:begin -->` and `<!-- import_b:end -->` (a block of its own, so the other steps' sections and the
+summary are not touched). The B2 model agent rebuilt thirteen models in parallel (25B2); the lead merges this branch
+first and B2's after it.
+
+### B1 Model sizes ("Kiểm tra từng mục", rows "Kích thước model")
+
+- **The drawn size is data.** `modelSize` [length, width, height] in metres on a vehicle: the model's whole box, gun
+  included, as the sheet measures it (`VehicleDef.ModelLength/Width/Height`). The view fits the model's length to it
+  (`VehicleView.DrawScaleOf(def, modelLength)`: the battle's vehicles, air drops, strike aircraft, the scan drone), so
+  an old model and one rebuilt at another size are drawn alike: this branch draws B2's thirteen at their built sizes
+  with the old models still in, and B2's models sit right when they land. Uniform, by the length: a model whose
+  proportions are not the sheet's keeps its own (a non-uniform scale would squash wheels and skew turrets).
+- **The scale stays in step.** `scale` is still the one that matches the model the game ships (B2's built box for its
+  thirteen, the tree's .glb for the rest), for what draws by the data's scale alone (the menu preview, which frames its
+  model anyway). An aircraft's data scale is its drawn scale over 0.85 (play-test 6's aircraft factor, 21H, stays in
+  one place, `DrawScaleOf(def)`); the fit is the drawn size itself and takes no factor on top, so it is never applied
+  twice: B2's aircraft (built at 0.4 x real for scale 1) are drawn at exactly their built box.
+- **Which size.** "Đổi": the sheet's box; "dài ≥ N m": that length with the box's shape kept (the super tank 10.4 ->
+  10.6 m). "Giữ": the size drawn today, recorded (it changes nothing now and holds when a model is rebuilt). A model B2
+  rebuilt is drawn at its built box, the sheet's target (0.8 x real on the ground, 0.4 x real in the air: the lead's
+  call), over the row: the main battle tank 7.79 m (the row kept 6.3; the old model is 6.34), the AC-130 11.93 x 16.3 m
+  (the row kept 12.2 x 15.4; it is the swarm carrier's C-130, whose row gives 11.9 x 16.2), the attack helicopter
+  6.35 x 4.44 m (the row's 7.1 x 5.8 is the real 17.7 x 14.6 m with the rotor turning; B2's fuselage and rotor are
+  each 0.4 x real, 6.0 m, and its box has the blades at rest), the twin tank 8.96 m (at least 7.2, and 1.15 x the new
+  main battle tank as the row asks).
+- **The hull.** `length` and `width` (the collision capsule; its radius is 0.46 x the width) are B2's built hull
+  footprint for its ground models (the main battle tank 6.10 x 3.07 m, was 5.24 x 2.88), else the old hull resized with
+  the box, never longer or wider than the box (the siege tank's stood 5 % out of its old model: brought in). Aircraft
+  keep their hit radius as their hull; every hit radius stays (the loader's rule: a bigger drawing is not an easier
+  target, 21H).
+- **Bosses** ("Kích thước", two "Đổi" rows) take a `size` (`BossTemplates.Resize`: the scale, the hit radius, the
+  parts and their mounts, the ramp and the death blast together, over the model's own units, which B2 keeps): Daedalus
+  ~45 m, size 1.214 over B2's 37.08 m model (44.2 m on the old model until B2's lands); Icarus ~60 m, size 1.652 (the
+  coordinator's ~1.65), 0.8 m longer than the command airship (59.2 m), the next largest thing in the sky. Their active
+  protection's radius grows with them (Daedalus 26 -> 31.6 m, Icarus 30 -> 49.6 m) so it still covers the hull's ends;
+  Icarus's crash blast by the square root (16 -> 20.6 m, Resize's rule for death blasts) and its crash debris spread
+  with the hull. Icarus Mk.0, a variant (0.65 of Icarus), keeps its 23.6 m (variant size 0.393).
+- **Where the models and the sheet disagree.** The old models fitted by the length are more than 10 % off the sheet's
+  width or height for seven vehicles: the supply truck (8.2 m: 2.93 m wide, 3.78 m high against 2.0 and 2.1), the
+  counter-battery radar, the self-propelled gun (2.2 m wide against 3.1: its M109A7 model is B2's), the Shahed truck,
+  the siege tank, the Pantsir (9.6 m long: 3.39 wide, 4.53 high) and the Iron Beam (in ASSET_DEBT for B2). The sheet's
+  "Hiện tại" is not the model in the tree for Icarus (37 x 25 x 8.9, the model before play-test 9's dagger hull; the
+  tree's is 36.3 x 18.2 x 13.1, so at 60 m it is 30 m wide, not the sheet's ~40) and, a little, the stealth fighter
+  (4.2 x 1.2 against 4.4 x 1.02). B2's boxes against their rows: the main battle tank, the AC-130 and the helicopter
+  above; the armoured car 4.78 against 4.6, the scout jeep 2.64 x 1.40 against 2.7 x 1.3, the FPV and Lancet trucks
+  7.41 against 7.2, the Su-27 8.64 x 5.85 x 2.15 against 8.8 x 5.9 x 2.4, all within 4 %.
+- **Tests (written, not run: the owner's rule).** `SizeSheetTests`: the main battle tank longer than the IFV; the Su-27
+  20 % longer than the Su-25; the twin tank and the super tank at least 10 % longer and no narrower than the main
+  battle tank and the heavy tank; the swarm carrier and the AC-130 on one frame at one size (one modelSize; drawn
+  length, span and height within 2-5 %: passes once B2's shared C-130 airframe is in, the old two are different
+  frames); Icarus longer than every other flyer's length and span; every sized vehicle drawn at its modelSize with its
+  hull inside its box. A size is measured as the game draws it (the model's box through `DrawScaleOf`), so a rebuilt
+  model is held to the same order.
+- **Stuck probe (prompt 12): not run, for the test phase**, on every map and mode: `StuckBatch.Siege` and
+  `StuckBatch.Modes` with `MB_STUCK_SEEDS=1,2,3,4,5 MB_STUCK_MODES=Siege,Defend,Endless,Weekly`, and `StuckTests`. The
+  hulls that moved: narrower (the scout jeep 1.92 -> 1.40 m, the armoured car, the command vehicle, the FPV and Lancet
+  trucks, the supply truck 2.72 -> 2.0, the counter-battery radar, the Shahed truck, the Iron Beam, the siege tank
+  3.56 -> 2.6); longer or wider (the main battle tank 5.24 x 2.88 -> 6.10 x 3.07, the twin tank 5.64 -> 7.02 m, the
+  flame tank, the self-propelled gun 2.29 -> 3.1 m wide, the Pantsir 6.98 -> 9.6 m long, the super tank).
