@@ -863,6 +863,7 @@ namespace MachineBrigade.Game.Hud
             "sp_mortar" => "mortar",
             "glide_bomber" => "b52",
             "recon_jet" => "fighter",
+            "interceptor_jet" => "fighter",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",

@@ -2525,6 +2525,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.recon_jet"] = ("High-speed recon jet", "Máy bay trinh sát tốc độ cao"),
             ["short.recon_jet"] = ("Recon jet", "Trinh sát nhanh"),
             ["note.recon_jet"] = ("An SR-71 Blackbird / MiG-25R-type reconnaissance jet: one pass at great height and speed that photographs a whole strip of the battlefield.", "Máy bay trinh sát kiểu SR-71 Blackbird / MiG-25R: một lượt bay rất cao, rất nhanh, chụp cả một dải chiến trường."),
+            // dx16: Tiêm kích đánh chặn.
+            ["unit.interceptor_jet"] = ("Interceptor", "Tiêm kích đánh chặn"),
+            ["short.interceptor_jet"] = ("Interceptor", "TK đánh chặn"),
+            ["note.interceptor_jet"] = ("A MiG-31BM with R-37M missiles: very fast, a missile that reaches further than any other fighter's, made to kill bombers.", "MiG-31BM mang tên lửa R-37M: rất nhanh, tên lửa bắn xa hơn mọi tiêm kích khác, sinh ra để diệt oanh tạc cơ."),
             // (batch A: new entries above)
         };
 

@@ -141,6 +141,7 @@ namespace MachineBrigade.Game.Match
             "sp_mortar",
             "glide_bomber",
             "recon_jet",
+            "interceptor_jet",
             // (batch A cards: new entries above)
         };
 

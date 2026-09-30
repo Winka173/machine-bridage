@@ -1377,6 +1377,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: không vũ khí; [[bay thẳng một lượt]] ngang map, làm lộ dải rộng 60 m trong 20 giây, cả tàng hình, rồi rời trận.\n" +
                 "Mạnh / yếu: tìm pháo binh, ụ súng ẩn và mồi nhử; bay cao, chỉ tên lửa tầm xa và tiêm kích với tới.\n" +
                 "Mẹo: gọi ngay trước một trận pháo kích."),
+            ["guide.interceptor_jet"] = (
+                "[[Interceptor]] · no armour · bomber killer\n" +
+                "How it fights: dashes in and fires two [[very long-range missiles]] from 90 m, big aircraft first; nothing inside 15 m.\n" +
+                "Strong / weak: kills bombers and gunships early; loses a close dogfight.\n" +
+                "Tip: hold it back for the enemy's bombers.",
+                "[[Tiêm kích đánh chặn]] · không giáp · diệt oanh tạc cơ\n" +
+                "Cách đánh: lao vào, bắn hai [[tên lửa tầm siêu xa]] từ 90 m, ưu tiên máy bay lớn; không bắn trong 15 m.\n" +
+                "Mạnh / yếu: diệt oanh tạc cơ và pháo hạm bay từ sớm; thua khi quần thảo gần.\n" +
+                "Mẹo: giữ lại chờ oanh tạc cơ của địch."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
