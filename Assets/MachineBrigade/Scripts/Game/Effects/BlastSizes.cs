@@ -58,7 +58,21 @@ namespace MachineBrigade.Game.Effects
         /// How far out the Ultimate recipe's ground shockwave ring reaches at scale 1, in metres:
         /// the ring is drawn at 0.82 of its quad's half size, 16 x 1.6 m (x 1.04 on average) across.
         /// </summary>
-        public const float UltimateReach = 0.82f * 16f * 1.6f * 1.04f * 0.5f;
+        public const float UltimateReach = RingShare * 16f * 1.6f * 1.04f;
+
+        /// <summary>A ring particle (the shockwave, the air ring) is drawn at 0.82 of its quad's half size: its reach is this share of the quad.</summary>
+        public const float RingShare = 0.82f * 0.5f;
+
+        /// <summary>
+        /// Prompt 25 A5 (DECISIONS 25A): the ring size that puts a blast's ring on its damage radius: <paramref name="radius"/>
+        /// over what the ring reaches at scale 1 (<see cref="ExplosionEffect.RingReach"/>) times the blast's scale. 0 for no
+        /// radius or no ring.
+        /// </summary>
+        public static float RingFor(float radius, float reachAtScale1, float scale) =>
+            radius > 0f && reachAtScale1 > 0f && scale > 0f ? radius / (reachAtScale1 * scale) : 0f;
+
+        /// <summary>A lone ring's quad (EffectsDirector.Ring: a shell's dust ring, a bomb's shock ring) that reaches <paramref name="radius"/>.</summary>
+        public static float RingQuad(float radius) => radius / RingShare;
 
         private enum Class
         {

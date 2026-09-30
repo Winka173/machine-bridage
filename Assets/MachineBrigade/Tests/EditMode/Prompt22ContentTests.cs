@@ -141,7 +141,8 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(Resources.Load<GameObject>("Models/morrigan"), "its own model");
             Assert.IsTrue(m.Flying && m.FixedWing && m.Stealth, "a stealth fighter under the aircraft rules");
             Assert.Greater(m.Speed, C.Vehicle("fighter_jet").Speed, "faster than our fighters");
-            Assert.Greater(m.Speed, C.Vehicle("stealth_fighter").Speed);
+            // Prompt 25 (the balance sheet): the stealth fighter cruises at 44 m/s, as fast as Morrigan.
+            Assert.GreaterOrEqual(m.Speed, C.Vehicle("stealth_fighter").Speed, "at least as fast as our stealth fighter");
             var weapons = m.Mounts.Select(x => x.Weapon.Id).ToList();
             Assert.Contains("air_to_air", weapons);
             Assert.Contains("guided_bomb", weapons);

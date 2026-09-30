@@ -61,8 +61,12 @@ namespace MachineBrigade.Sim.Content
                 if (!w.Has("he")) continue;
                 var id = w.String("he");
                 if (!weapons.TryGetValue(id, out var he)) throw new FormatException($"{w.Path}.he: unknown weapon '{id}'.");
-                if (he.Burst != 1 || he.Clip > 0 || he.HeRound != null) throw new FormatException($"{w.Path}.he: the round is a plain single-shot weapon.");
-                weapons[w.String("id")].HeRound = he;
+                // Prompt 25 A1: a twin gun's high explosive fires in the same pairs as its armour-piercing round (the heavy
+                // turret's 155 mm); the gun's own cadence governs either way (RoundFor swaps only the round).
+                var own = weapons[w.String("id")];
+                if ((he.Burst != 1 && he.Burst != own.Burst) || he.Clip > 0 || he.HeRound != null)
+                    throw new FormatException($"{w.Path}.he: the round is a plain single-shot weapon, or fires in the gun's own salvo.");
+                own.HeRound = he;
             }
         }
 
