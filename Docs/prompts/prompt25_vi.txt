@@ -122,3 +122,4 @@ YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
 - (30/09 19:00) tầm bắn của xe bọc thép, xe jeep và tăng nhẹ đang trùng với tầm nhìn: tăng nhẹ cho tầm nhìn  [giữ tầm bắn, tầm nhìn +10%: xe bọc thép 46, jeep 60, tăng nhẹ 40 m]
 - (30/09 19:08) Pháo tự động => dùng các đạn flak mới, tạo đạn và hiệu ứng nổ mới; đạn thay thế: đúng ý tôi, làm luôn, nên có icon đổi đạn, nhớ trong phần detail của xe khi xem phải ghi luôn 2 loại đạn, làm trước chưa cần cân bằng lại cứ theo excel  [cơ chế đạn thay thế cho 69 vũ khí theo cột "Loại đạn thay thế gợi ý", làm ngay]
 - (30/09 19:17) áp dụng PDF ngưng cập nhật hẳn, bỏ ảnh model trước và sau, mỗi đợt một file test gọn, thẻ Hướng dẫn ngắn gọn  [đợt D và model đợt B vẫn làm như cũ]
+- (01/10 00:09) chọn làm tạm, prompt sau sẽ làm đầy đủ lại sau  [đợt B (33 xe) và đợt D (8 boss mới): đủ dữ liệu, cơ chế, AI, chữ, mở khóa, ảnh thẻ; model mượn từ xe hoặc boss cũ gần giống nhất (đổi màu, tỷ lệ); model thật và số boss đầy đủ ở prompt 26-27]
