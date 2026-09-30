@@ -133,6 +133,7 @@ namespace MachineBrigade.Game.Match
             "aa_gun_vehicle",
             "shorad_vehicle",
             "microwave_vehicle",
+            "nlos_atgm_vehicle",
             // (batch A cards: new entries above)
         };
 

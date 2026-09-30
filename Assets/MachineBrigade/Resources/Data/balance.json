@@ -477,6 +477,8 @@
     { "id": "avenger_stingers", "inherits": "sam", "real": "Starstreak / Stinger SHORAD (Avenger pods)", "burst": 8, "burstInterval": 0.5, "cooldown": 15, "range": 44 },
     // dx06: a towed anti-tank gun: the 100 mm MT-12 Rapira (the sheet's 200 a round is the calibre scale's 100 mm; its 125 mm would be 240).
     { "id": "at_gun_100", "real": "MT-12 Rapira 100 mm", "family": "tank_gun", "size": 100, "pen": 3, "piercing": true, "damageType": "Kinetic", "damage": 200, "cooldown": 5, "range": 38, "projectileSpeed": 200, "spread": 0.6, "impactTier": "Medium" },
+    // dx07: Spike NLOS: lofted over cover at what its side sees (it sees little itself), striking the roof.
+    { "id": "spike_nlos", "real": "Spike NLOS", "family": "atgm", "size": 70, "pen": 4, "piercing": true, "topAttack": true, "lofted": true, "projectileModel": "atgm_kornet", "projectileScale": 1.2, "damageType": "ShapedCharge", "damage": 300, "cooldown": 10, "range": 90, "projectileSpeed": 26, "impactTier": "Large", "projectile": "Missile" },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -994,6 +996,10 @@
     // dx06: the anti-tank gun emplacement: a small slot's tank killer, a 90 degree arc ahead, a front shield of level 2, turning slowly.
     { "id": "at_gun_emplacement", "modelSize": [5.8, 4.2, 2.0], "fort": { "size": "Small" }, "static": true, "armour": [2, 1, 1, 1], "hp": 682, "speed": 0, "turnRate": 1, "turretTurnRate": 15, "turretArc": 45, "radius": 2.0, "length": 4.2, "width": 4.2, "cp": 0, "vision": 40,
       "weapon": "at_gun_100", "secondary": [], "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // dx07: the beyond-line-of-sight ATGM vehicle: 90 m, needs a friend or a UAV to see the target.
+    { "id": "nlos_atgm_vehicle", "modelSize": [6.0, 2.1, 2.6], "class": "TankHunter", "armour": 1, "hp": 409, "speed": 9, "turnRate": 80, "turretTurnRate": 60, "radius": 2.1, "length": 6.0, "width": 2.1, "cp": 8, "vision": 30,
+      "firesWhileMoving": false, "weapon": "spike_nlos", "mainSlot": "missile", "secondary": [ { "weapon": "hmg_selfdef_15", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

@@ -855,6 +855,7 @@ namespace MachineBrigade.Game.Hud
             "aa_gun_vehicle" => "aa",
             "shorad_vehicle" => "sam",
             "microwave_vehicle" => "jammer",
+            "nlos_atgm_vehicle" => "atgm",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",

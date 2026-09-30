@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 22,
-    "xong": 5
+    "đang làm": 21,
+    "xong": 6
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 18,
-      "xong": 5
+      "đang làm": 17,
+      "xong": 6
     },
     "structure": {
       "chưa làm": 0,
@@ -131,8 +131,8 @@
       "group": "Diệt tăng",
       "priority": "Trung",
       "unlock": "Cửa hàng: 3.000 xu, hoặc thưởng sự kiện",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "nlos_atgm_vehicle",
       "notes": "25D2 plan: 3,000 coins in the shop, or an event reward."
     },
     {

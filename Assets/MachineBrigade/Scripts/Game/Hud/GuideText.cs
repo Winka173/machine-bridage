@@ -1305,6 +1305,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 5 giây một phát [[xuyên giáp]], tầm 38 m, chỉ trong 45° hai bên phía trước; pháo xoay chậm.\n" +
                 "Mạnh / yếu: chặn xe tăng lao thẳng tới; pháo binh và xe vòng sườn diệt được nó.\n" +
                 "Mẹo: quay mặt nó về con đường thiết giáp địch đi."),
+            ["guide.nlos_atgm_vehicle"] = (
+                "[[Beyond-sight ATGM vehicle]] · light armour · anti-tank artillery\n" +
+                "How it fights: a heavy missile every 10 s out to 90 m, [[over cover]] onto the roof, at what its side sees.\n" +
+                "Strong / weak: kills tanks from behind a hill; blind alone, slow to fire.\n" +
+                "Tip: pair it with a scout or a UAV scan.",
+                "[[Xe tên lửa chống tăng ngoài tầm nhìn]] · giáp nhẹ · pháo binh chống tăng\n" +
+                "Cách đánh: 10 giây một tên lửa lớn, tầm 90 m, [[bay vòng qua vật cản]] đánh nóc, vào mục tiêu phe ta nhìn thấy.\n" +
+                "Mạnh / yếu: diệt xe tăng từ sau đồi; tự đi thì mù, bắn chậm.\n" +
+                "Mẹo: đi cặp với trinh sát hoặc UAV quét."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

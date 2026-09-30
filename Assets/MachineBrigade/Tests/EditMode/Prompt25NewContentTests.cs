@@ -51,6 +51,7 @@ namespace MachineBrigade.Tests
             new Row("shorad_vehicle", 700, 4, 0, -1, "avenger_stingers", 170, 44, -1, "ripple"),
             new Row("microwave_vehicle", 900, 6, 1, -1, "none", -1, -1, -1, "microwave"),
             new Row("at_gun_emplacement", 1500, 0, 2, 40, "at_gun_100", 200, 38, 40, "arc"),
+            new Row("nlos_atgm_vehicle", 900, 8, 1, -1, "spike_nlos", 300, 90, 30, "lofted"),
             // (batch A rows: new ones above)
         };
 

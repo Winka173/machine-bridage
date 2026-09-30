@@ -2493,6 +2493,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.at_gun_emplacement"] = ("Anti-tank gun emplacement", "Ụ pháo chống tăng"),
             ["short.at_gun_emplacement"] = ("AT gun", "Ụ chống tăng"),
             ["note.at_gun_emplacement"] = ("A towed MT-12 Rapira 100 mm anti-tank gun behind its shield and sandbags: a cheap tank killer for a small slot.", "Pháo chống tăng kéo MT-12 Rapira 100 mm sau tấm chắn và bao cát: diệt tăng rẻ tiền cho ô nhỏ."),
+            // dx07: Xe tên lửa chống tăng bắn ngoài tầm nhìn.
+            ["unit.nlos_atgm_vehicle"] = ("Beyond-sight ATGM vehicle", "Xe tên lửa chống tăng ngoài tầm nhìn"),
+            ["short.nlos_atgm_vehicle"] = ("NLOS ATGM", "TL ngoài tầm"),
+            ["note.nlos_atgm_vehicle"] = ("A Spike NLOS launcher truck: missiles lofted over hills and buildings onto a tank's roof, aimed by a friend's eyes.", "Xe phóng Spike NLOS: tên lửa bay vòng qua đồi và nhà, đánh xuống nóc xe tăng, nhờ mắt của quân bạn ngắm."),
             // (batch A: new entries above)
         };
 
