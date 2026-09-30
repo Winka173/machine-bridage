@@ -10903,3 +10903,7 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | vbied | 4.2 x 1.5 x 1.8 (note) | 4.58 x 1.68 x 1.60 (the ram plate and side plates) | 4.58 x 1.68 | 1,184 | up-armoured VBIED pickups (Mosul, Syria) | 4.4 x 1.9 x 2.4 at 0.85, 9,760 |
 | rocket_technical | 4.2 x 1.4 x 1.6 (note) | 4.39 x 1.50 x 1.86 | 4.39 x 1.50 | 1,912 | Toyota Hilux with the Type 63 107 mm | 4.6 x 1.8 x 2.8 at 0.85, 6,796 |
 | zu23_technical | 4.2 x 1.4 x 1.8 (note) | 4.39 x 1.50 x 1.56 | 4.39 x 1.50 | 1,356 | Toyota Hilux with the ZU-23-2 | 4.5 x 1.8 x 2.1 at 0.85, 9,444 |
+| ew_jammer | 8.8 x 2.4 x 3.2 (note) | 9.01 x 2.76 x 3.83 (the dish 15 % over, tilted up) | 9.01 x 2.38 | 1,976 | Krasukha-4 on a BAZ-6910 | 7.9 x 2.9 x 5.1 at 0.85, 6,516 |
+| mine_layer | 7.4 x 2.6 x 2.0 (note) | 7.62 x 2.70 x 1.97 (the chute behind) | 7.62 x 2.70 | 2,576 | GMZ-3 | 6.6 x 2.6 x 3.0 at 0.85, 8,164 |
+| mlrs | 5.6 x 1.9 x 2.6 (note) | 6.09 x 2.00 x 2.60 | 5.80 x 2.00 | 2,224 | M142 HIMARS on the FMTV | 6.4 x 2.3 x 3.6 at 0.85, 7,328 |
+| wheeled_gun | 7.9 x 2.4 x 2.2 (note) | 8.97 x 2.39 x 2.31 (the gun 1.9 m past the nose) | 5.97 x 2.36 | 2,508 | Centauro II (120 mm) | 9.4 x 2.6 x 3.1 at 0.85, 7,664 |

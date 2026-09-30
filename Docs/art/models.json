@@ -433,7 +433,7 @@
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
-    "triangles": 6516
+    "triangles": 1976
   },
   "ew_tower": {
     "file": "ew_tower.glb",
@@ -769,7 +769,7 @@
   },
   "mine_layer": {
     "file": "mine_layer.glb",
-    "triangles": 8164
+    "triangles": 2576
   },
   "minefield": {
     "file": "minefield.glb",
@@ -805,7 +805,7 @@
   },
   "mlrs": {
     "file": "mlrs.glb",
-    "triangles": 7328
+    "triangles": 2224
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
@@ -1273,7 +1273,7 @@
   },
   "wheeled_gun": {
     "file": "wheeled_gun.glb",
-    "triangles": 7664
+    "triangles": 2508
   },
   "wingman_drone": {
     "file": "wingman_drone.glb",

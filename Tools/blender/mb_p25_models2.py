@@ -1359,6 +1359,176 @@ def zu23_technical(a):
     a.pivot('Muzzle_main', (.16, -2.46, .55), t)
 
 
+# ----------------------------------------------------------------------------- EW jammer (Krasukha-4)
+def ew_jammer(a):
+    """Electronic-warfare jammer (Krasukha-4 on a BAZ-6910 8x8), 8.8 x 2.4 x 3.2 m: the truck (_truck) with a long
+    flat equipment body and, on a turntable at its rear, the big round dish antenna tilted up (drawn 15 % large,
+    wider than the truck: from above, the sheet's big round dish), turning (`Radar`); the cab-roof machine gun
+    (`Turret`, `Main_cannon`, `Muzzle_main`)."""
+    z = _truck(a, -4.4, 4.4, (-3.55, -2.35, 1.95, 3.15), r=.48, width=2.3, cab=1.7, roof=2.2)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    body.box((2.3, 5.2, .9), loc=(0, .15, z + .45), bevel=.05, seg=1)                               # equipment body
+    for y in (-1.6, -.2, 1.2):
+        a.part('Doors', 'Armor').box((.04, .8, .7), loc=(1.16, y, z + .42), bevel=0)
+    armor.box((1.2, .8, .3), loc=(0, -1.6, z + 1.05), bevel=.03, seg=1)                            # cooling unit
+    steel.cyl(.7, .2, loc=(0, 2.9, z + 1.0), seg=14, bevel=0)                                      # turntable
+    for s in (-1, 1):
+        steel.box((.14, .14, .6), loc=(s * 1.05, 3.9, z - .45), bevel=0)                            # jacks
+    a.pivot('Point_fire', (0, -.5, z + 1.0))
+    r = a.pivot('Radar', (0, 2.9, z + 1.1))
+    a.part('Radar_mast', 'Steel', r).box((.5, .5, .3), loc=(0, 0, .15), bevel=.03, seg=1)
+    tilt = math.radians(58)
+    dish_c = Vector((0, .15, .55))
+    mv._dish(a.part('Radar_dish', 'MetalSheet', r), tuple(dish_c), 1.38, 1.38, depth=.35, seg=16, tilt=tilt)
+    a.part('Radar_feed', 'Armor', r).limb(tuple(dish_c), tuple(dish_c + Vector((0, -math.cos(tilt), math.sin(tilt)))
+                                                              * .9), .12, .12, bevel=0)
+    t = a.pivot('Turret', (-.5, -3.3, 2.2))
+    a.part('RWS_ring', 'Armor', t).cyl(.3, .08, loc=(0, 0, .04), seg=10, bevel=0)
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.box((.14, .36, .16), loc=(0, .05, .24), bevel=.02, seg=1)
+    gun.cyl(.05, .6, loc=(0, -.43, .24), rot=FORWARD, seg=6, bevel=0)
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.07, .1, loc=(0, -.76, .24), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_main', (0, -.84, .24), t)
+
+
+# ----------------------------------------------------------------------------- mine layer (GMZ-3)
+def mine_layer(a):
+    """Tracked minelayer (GMZ-3), 7.4 x 2.6 x 2.0 m: a low tracked hull (seven road wheels, front drive), the mine
+    cassettes stacked in rows on the roof (from above, a grid of boxes), and the long inclined mine chute hinged at
+    the tail and running down behind it to the ground (the sheet's silhouette: the long chute at the back, `Chute`),
+    mines waiting in it; the commander's machine-gun cupola (`Turret`, `Main_cannon`, `Muzzle_main`)."""
+    hd.mark(a, False)
+    _lean_tracks(a, 1.07, 5.9, .7, .27, 7, .44, sprocket=-1, teeth=6)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    armor.prism([(-2.8, .36), (-3.05, .6), (-2.9, .8), (2.85, .8), (2.95, .55), (2.8, .36)], 1.66, bevel=.04, seg=1)
+    hull.prism([(-3.05, .76), (-2.35, 1.32), (2.9, 1.34), (2.98, .76)], 2.58, bevel=.05, seg=1)
+    for s in (-1, 1):
+        _lights(a, (s * 1.0,), -2.95, 1.0, size=(.14, .04, .1))
+        armor.box((.5, 5.8, .06), loc=(s * 1.07, 0, 1.18), bevel=0)                                  # fenders
+    mv._hatch(a, .75, -2.1, 1.32, .22, handle=False)                                               # driver
+    # Mine cassettes in rows on the roof.
+    racks = a.part('Mine_racks', 'Armor')
+    boxes = a.part('Mines', 'Crate')
+    for i in range(3):
+        for j in range(4):
+            x, y = -.72 + i * .72, -.95 + j * .78
+            boxes.box((.62, .68, .34), loc=(x, y, 1.52), bevel=0)
+            a.part('Mine_fuzes', 'Hazard').box((.5, .08, .02), loc=(x, y - .2, 1.7), bevel=0)
+    racks.box((2.3, 3.3, .1), loc=(0, .22, 1.37), bevel=0)
+    # The inclined chute at the tail, down to the ground behind the hull, with mines in it.
+    ang = math.radians(40)
+    chute = a.part('Chute', 'Steel')
+    top = Vector((0, 2.9, 1.3))
+    down = Vector((0, math.cos(ang), -math.sin(ang)))
+    length = 1.35 / math.sin(ang)
+    chute.box((.7, length, .08), loc=tuple(top + down * (length / 2)), rot=(-ang, 0, 0), bevel=0)
+    for s in (-1, 1):
+        chute.box((.06, length, .26), loc=tuple(top + down * (length / 2) + Vector((s * .36, 0, .1))), rot=(-ang, 0, 0),
+                  bevel=0)
+        steel.limb((s * .5, 2.7, 1.2), tuple(top + down * (length * .6) + Vector((s * .4, 0, 0))), .1, .1, bevel=0)
+    for k in (.35, .55, .75):
+        a.part('Chute_mines', 'Crate').cyl(.2, .1, loc=tuple(top + down * (length * k) + Vector((0, 0, .1))),
+                                           rot=(-ang, 0, 0), seg=10, bevel=0)
+    a.pivot('Point_exhaust', (-.9, -2.2, 1.35))
+    a.pivot('Point_fire', (0, .2, 1.7))
+    t = a.pivot('Turret', (-.6, -1.9, 1.34))
+    a.part('Turret_body', 'Team', t).cyl(.36, .3, r2=.3, loc=(0, 0, .15), seg=10, bevel=.03, bseg=1)
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.box((.14, .36, .14), loc=(0, -.05, .48), bevel=.02, seg=1)
+    gun.cyl(.05, .7, loc=(0, -.56, .48), rot=FORWARD, seg=6, bevel=0)
+    a.part('Turret_mount', 'Steel', t).box((.1, .1, .2), loc=(0, 0, .36), bevel=0)
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.07, .1, loc=(0, -.93, .48), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_main', (0, -1.0, .48), t)
+
+
+# ----------------------------------------------------------------------------- MLRS (HIMARS)
+def mlrs(a):
+    """Multiple rocket launcher (M142 HIMARS on the FMTV 6x6), 5.6 x 1.9 x 2.6 m: the truck (_truck) with the
+    armoured cab, the launcher's turntable on the rear bed and on it the big six-round pod (2 x 3 GMLRS tubes) in its
+    frame, drawn 8 degrees up, lifting and turning (`Turret`, `Pod`, `Tubes`: they elevate; the tube mouths are the `Tubes_bore` face,
+    `Muzzle_main` at its middle): from above, the rectangular pod over the rear half (the sheet). The cab-roof
+    machine gun (`Mount_mg`, `Muzzle_mg`)."""
+    z = _truck(a, -2.8, 2.8, (-2.05, .95, 2.05), r=.42, width=1.92, cab=1.55, roof=2.0, mg=(.4, -2.1))
+    a.part('Bed', 'Armor').box((1.9, 4.0, .14), loc=(0, .75, z - .05), bevel=.02, seg=1)
+    for s in (-1, 1):
+        a.part('Steel', 'Steel').box((.14, .14, .5), loc=(s * .85, 2.5, z - .4), bevel=0)             # jacks
+    a.pivot('Point_fire', (0, 1.0, z + .9))
+    t = a.pivot('Turret', (0, 1.55, z + .02))
+    a.part('Turret_steel', 'Steel', t).cyl(.55, .12, loc=(0, 0, .06), seg=12, bevel=0)
+    a.part('Turret_armor', 'Armor', t).box((1.4, .7, .3), loc=(0, .6, .25), bevel=.03, seg=1)       # trunnion base
+    L, W, H = 3.7, 1.24, .82
+    pitch = .14                                                                                     # 8 degrees up
+    rot = (-pitch, 0, 0)
+    fm = mv._frame((0, 1.5, .64), rot)                                                               # rear trunnion
+    along = Vector((0, -math.cos(pitch), math.sin(pitch)))
+    c = fm @ Vector((0, -L / 2, 0))
+    a.part('Pod', 'Team', t).box((W, L, H), loc=tuple(c), rot=rot, bevel=.04, seg=1)
+    frame = a.part('Pod_frame', 'Armor', t)
+    for y in (-1.5, 0, 1.5):
+        frame.box((W + .08, .14, H + .08), loc=tuple(fm @ Vector((0, -L / 2 + y, 0))), rot=rot, bevel=0)
+    for i in range(3):
+        for j in range(2):
+            p = fm @ Vector((-.38 + i * .38, -L, -.18 + j * .36))
+            a.part('Tubes', 'Undercarriage', t).cyl(.15, .04, loc=tuple(p + along * .01), rot=(R90 - pitch, 0, 0),
+                                                    seg=10, bevel=0)
+            a.part('Tubes_bore', 'Crate', t).cyl(.11, .03, loc=tuple(p + along * .03), rot=(R90 - pitch, 0, 0),
+                                                 seg=10, bevel=0)
+    a.pivot('Muzzle_main', tuple(fm @ Vector((0, -L - .09, 0))), t)
+
+
+# ----------------------------------------------------------------------------- wheeled tank destroyer (Centauro II)
+def wheeled_gun(a):
+    """Wheeled tank destroyer (Centauro II), 7.9 x 2.4 x 2.2 m with the gun forward: a long 8x8 hull (the axles in two
+    pairs, big wheels), the sloped glacis, a full tank turret with a long bustle and the 120 mm gun 1.9 m past the
+    nose (`Main_cannon`, `Muzzle_brake`, `Muzzle_main`), the coaxial gun and a roof machine gun (`Mount_mg`,
+    `Muzzle_mg`). From above: like a tank, but with four pairs of wheels."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    a.part('Chassis', 'Undercarriage').box((1.5, 5.4, .3), loc=(0, 0, .5), bevel=0)
+    _wheels(a, (-.94, .94), (-2.0, -1.0, .8, 1.8), .46, .34)
+    hull.prism([(-2.6, .58), (-3.0, .9), (-2.2, 1.42), (2.8, 1.44), (2.95, .66)], 2.2, bevel=.05, seg=1)
+    for s in (-1, 1):
+        armor.box((.42, 2.2, .07), loc=(s * .94, -1.5, 1.0), bevel=.02, seg=1)                       # fenders
+        armor.box((.42, 2.2, .07), loc=(s * .94, 1.3, 1.0), bevel=.02, seg=1)
+        armor.box((.08, 5.0, .4), loc=(s * 1.14, .1, 1.2), bevel=.02, seg=1)                         # side armour
+        _lights(a, (s * .75,), -2.85, 1.05, size=(.14, .04, .1))
+        _lights(a, (s * .85,), 2.96, 1.1, facing=1, size=(.12, .04, .08), lamp='Alloy')
+    mv._hatch(a, .8, -2.12, 1.42, .17, handle=False)
+    a.part('Deck', 'Undercarriage').grille(1.2, .8, loc=(0, 2.2, 1.45), rot=(-R90, 0, 0), slats=4, depth=.05,
+                                           thickness=.04)
+    a.pivot('Point_exhaust', (-.8, 2.9, 1.1))
+    a.pivot('Point_fire', (0, 2.2, 1.5))
+    t = a.pivot('Turret', (0, -.1, 1.44))
+    steel.cyl(.95, .08, loc=(0, -.1, 1.44), seg=14, bevel=0)
+    a.part('Turret_body', 'Team', t).prism([(-.35, -1.35), (.35, -1.35), (1.08, -.9), (1.12, 1.0), (.9, 1.75),
+                                            (-.9, 1.75), (-1.12, 1.0), (-1.08, -.9)], .6, loc=(0, 0, .3), axis='Z',
+                                           bevel=.05, seg=1, taper=.92)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.6, .3, .42), loc=(0, -1.4, .3), bevel=.04, seg=1, taper=(.9, .9))                    # mantlet
+    tarm.box((.34, .3, .2), loc=(-.55, -.6, .7), bevel=.03, seg=1)                                   # sight
+    a.part('Sight', 'Glass', t).box((.24, .03, .1), loc=(-.55, -.76, .7), bevel=0)
+    tarm.box((1.6, .3, .32), loc=(0, 1.85, .36), bevel=.03, seg=1)                                   # bustle box
+    for s in (-1, 1):
+        mv._smoke(a, a.part('Smoke', 'Steel', t), 1.0, -.4, .5, s, count=3, gap=.07, r=.045, depth=.14)
+    mv._hatch(a, .5, .4, .6, .24, parent=t, seg=10, handle=False)
+    y0, length, z = -1.52, 4.2, .32
+    gun = a.part('Main_cannon', 'Steel', t)
+    gun.cyl(.08, length, loc=(0, y0 - length / 2, z), rot=FORWARD, seg=10, bevel=0)
+    gun.cyl(.1, length * .6, loc=(0, y0 - length * .34, z), rot=FORWARD, seg=10, bevel=0)           # thermal sleeve
+    gun.cyl(.13, .4, loc=(0, y0 - length * .42, z), rot=FORWARD, seg=10, bevel=.02, bseg=1)          # fume extractor
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.11, .16, loc=(0, y0 - length - .06, z), rot=FORWARD, seg=10,
+                                                   bevel=.012, bseg=1)
+    a.pivot('Muzzle_main', (0, y0 - length - .16, z), t)
+    mv._coax(a, t, -.3, -1.4, .38, length=.36, housing=.24)
+    mv._roof_mg(a, t, (.5, .4, .62), length=.75, shield=False)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -1382,4 +1552,8 @@ BUILDERS = {
     'vbied': (vbied, dict(ao_distance=.35, grime_height=.4)),
     'rocket_technical': (rocket_technical, dict(ao_distance=.35, grime_height=.4)),
     'zu23_technical': (zu23_technical, dict(ao_distance=.35, grime_height=.4)),
+    'ew_jammer': (ew_jammer, dict(ao_distance=.5, grime_height=.5)),
+    'mine_layer': (mine_layer, dict(ao_distance=.55, grime_height=.5)),
+    'mlrs': (mlrs, dict(ao_distance=.5, grime_height=.5)),
+    'wheeled_gun': (wheeled_gun, dict(ao_distance=.55, grime_height=.5)),
 }
