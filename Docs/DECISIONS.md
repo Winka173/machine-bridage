@@ -10972,3 +10972,33 @@ note:**
 | radar_site | 8.1 x 7.9 x 7.8 | 7.90 x 8.12 x 8.04 | 656 | radar_station: the radar tower with a big turning dish (`Radar`) | radar_dome (a radome). **model:** `"model": "radar_site"` (the map prop radar_station is a 14 m mast) |
 | helipad_a | 10.0 x 10.0 | 10.00 x 10.00 x 3.77 | 1,348 | airfield.hangar (TowerArt picks helipad_a: an arched hangar over the pad) | the plain helipad for both branches |
 | helipad_b | 10.0 x 10.0 | 10.00 x 10.00 x 1.93 | 2,084 | airfield.service (helipad_b: a fuel bowser, ammunition crates, a fuel bladder) | as above |
+
+**Data changes for the lead (balance.json; B1 and C1 own it, so none was made here):**
+- every model in the Part 2 table: `"scale": 1.0`, `modelSize` = its built box, `length` / `width` = its hull (the
+  siege tank and bunker vehicle are drawn in their rigs' units: scale 0.745 and 0.85, modelSize 6.8 x 2.6 x 2.6 and
+  8.4 x 3.5 x 2.2);
+- drop the borrowed `"model"` lines: supply_truck and ammo_carrier (`armed_truck`), hover_gunboat (`missile_boat`),
+  logistics_station (`fuel_depot`), repair_bay (`vehicle_hangar`); radar_station takes `"model": "radar_site"` (was
+  `radar_dome`; the map prop radar_station stays a 14 m mast);
+- sky_fortress (C1's boss data): scale x size 0.88 (scale 1.035 with its size 0.85) draws the new C-130 frame 1.3 x
+  the AC-130, as the sheet asks; its nodes did not move;
+- B3's rounds: the Buk (sam_launcher, 4.44 m missiles on rails), the 48N6 (long_sam, 6.0 m canisters) and the Patriot
+  (missile_battery's box is 4.6 m along its tubes) now fit their launchers; no round length needs changing.
+
+**Tests (none run: the owner's rule).** To run in the test phase: `ModelTests` (all: turrets and barrels, launch
+points on both sides with the two cases changed here, the Hind's rockets 1.0 m and the Su-25's missiles 1.5 m off
+centre, boxes of tubes, elevation, the siege tank's and bunker vehicle's Deploy_* parts, the `_hd` pivots of
+light_tank, heavy_tank, aa_vehicle, artillery, tank_destroyer and attack_jet), `MuzzleTests`, `MuzzleAuditTests`,
+`PlayTest5VisualTests`, `PlayTest6VisualTests` (erectors: the Shahed rack, the Iskander, the IFV / elite APC side TOW
+box), `BossPartsTests` and `Prompt20BossTests` (the Sky Fortress's nodes), `TowerBranchArtTests` (helipad_a / _b),
+`CardRenderTests`, `MissileFlightTests.MissilesAreDrawnToFitTheirLaunchers`, B1's `SizeSheetTests` once the scales
+and sizes above are in, and the stuck-vehicle probe (the hulls moved). Blender's `check_muzzles.py` was run on every
+model: the failures left are the kind the old models had (a side-firing gun's muzzle measured along -Y, the siege
+tank's rear-facing 105 mm, a chin turret's rear arc, a bomb bay's muzzle).
+
+**Shared edits (merge by hand if they conflict):** `Tools/blender/build_assets.py` (the part 2 import, its BUILDERS
+line and the `_hd` override), `Tools/blender/mb_munitions.py` (kh29l, gbu39: already cherry-picked on lead),
+`Docs/art/models.json` (`Tools/art/resolve_merge.py`), the Cards folder and its `manifest.json`,
+`Assets/MachineBrigade/Tests/EditMode/ModelTests.cs` (two TestCase numbers), `Docs/ASSET_DEBT.md` (its B2 section
+rewritten; lead's own "Prompt 25 B1 and B3" table's rows for the seven size mismatches, the two rounds and the three
+launchers are done here), `Docs/CHANGELOG.md`, this file.
