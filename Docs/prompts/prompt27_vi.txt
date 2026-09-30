@@ -1,0 +1,159 @@
+Prompt 27: Làm lại toàn diện mọi model trong game
+
+(Chủ dự án, 30/09: "đây là prompt 26 và 27, lưu vào nhưng chưa làm đợi tôi nói". Chưa làm. Prompt 26 chưa nhận được: khối dán đầu tiên là đoạn giải thích về cách dựng model của lead, không phải prompt 26.)
+
+Nhiệm vụ: làm lại toàn bộ model trong game (xe, tháp, công trình hai phe, boss, nhà cửa, vật thể và công trình đặc trưng của map) lên chất lượng cao, bằng cách nâng cấp bộ kit dựng hình, thử nghiệm trước khi làm hàng loạt, rồi làm theo đợt. Làm tự chủ, không chờ duyệt, trừ hai điểm dừng ở G.2 và H.6. Ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
+
+Phụ thuộc: chạy sau prompt 26. Dùng kích thước đã chốt ở prompt 26 (boss) và ở sheet Kiểm tra từng mục, Tỷ lệ map (xe, máy bay, đạn) của file docs/balance/Machine_Brigade_Can_bang.xlsx; dùng cột "Hình dạng (cho AI vẽ)" của các sheet Phương tiện, Công trình, Boss, và sheet Hướng dẫn vẽ làm mô tả cho từng model.
+
+Hiện trạng: model dựng bằng script Python trong Blender (51 script trong Tools/blender/), từ các khối của frontier_kit.py (box, cyl, sphere, loft), xuất 361 file .glb vào Assets/MachineBrigade/Resources/Models/ bằng lệnh blender --background --python Tools/blender/build_assets.py. Unity nạp GLB, tạo LOD lúc chạy; một số xe có bản _hd. Quy ước: Part_*, Mount_*, Muzzle_*; vật liệu Armor, Team, TeamGlow. Chi tiết theo hạng của tháp, particle, hình giáp theo mặt và bản đồ mặt trận vẽ bằng code trong Unity.
+
+Làm theo lượt, chạy đủ test và commit sau mỗi lượt:
+- Lượt 1: phần E, F, G.1 (chấm điểm, nâng cấp bộ kit, bài thử). Dừng ở G.2.
+- Lượt 2: đợt 1 của phần H. Dừng ở H.6.
+- Lượt 3 trở đi: các đợt còn lại của phần H, mỗi đợt một lượt.
+- Lượt cuối: phần I, J (kiểm tra tổng).
+
+E. CHẤM ĐIỂM MODEL HIỆN CÓ
+1. Viết công cụ render trong Blender (chạy nền, cùng cách với build_assets.py). Với mọi model, render:
+   - ảnh xoay quanh (8 góc);
+   - ảnh ở camera trong game (chéo 45–60°), ở đồ họa Thấp và Cao;
+   - ảnh bóng đen nhìn từ trên xuống.
+   Lưu vào docs/ui-screens/models/<id>/.
+2. Chấm điểm 1–5 mỗi model theo 6 tiêu chí:
+   - bóng: tô đen vẫn nhận ra là gì;
+   - tỷ lệ: đúng tỷ lệ chung (mặt đất 0,8 × thật, trên không 0,4 × thật) và đúng thứ tự to nhỏ trong cùng lớp;
+   - mật độ chi tiết: có chi tiết vừa hay chỉ là hộp trơn;
+   - vật liệu: có độ nhám, kim loại, bẩn mép, vạch phe;
+   - dễ đọc trên điện thoại: phân biệt được với thứ cùng lớp ở zoom mặc định và đồ họa Thấp;
+   - đồng bộ phong cách với phần còn lại.
+3. Xuất docs/models/audit.md: bảng điểm của mọi model, xếp từ thấp tới cao, kèm ảnh.
+
+F. NÂNG CẤP BỘ KIT DỰNG HÌNH (Tools/blender/frontier_kit.py)
+1. Thêm các khối mới, mỗi khối có hàm và ví dụ trong docs/models/kit.md:
+   - đùn biên dạng 2D (tháp pháo nhiều mặt vát, thân xe góc cạnh);
+   - tiện tròn quanh trục (đầu rô-to, vòm radar, đạn, bánh có moay-ơ);
+   - quét theo đường cong (ống, lan can dày, dây, ống xả);
+   - lặp theo đường (bánh chịu lực, mắt xích, hàng đinh tán);
+   - đối xứng (mọi xe và máy bay);
+   - cắt khối (cửa, lỗ thông gió, lỗ châu mai, ô lõm);
+   - lõm tấm (đường ghép tấm giáp);
+   - loft có cạnh sắc (máy bay tàng hình: thân nhiều mặt phẳng, cạnh sắc);
+   - rải chi tiết nhỏ (ống, hộp, gờ trên thân phi thuyền và boss lớn);
+   - tấm dán (số hiệu, sọc cảnh báo, đinh tán, lưới tản nhiệt) từ một atlas.
+2. Đổ bóng và vật liệu:
+   - Pháp tuyến có trọng số và vát cạnh nhỏ 2–4 cm trên mọi cạnh lớn.
+   - Nướng bóng khuất (AO) và độ cong vào màu đỉnh, để mép có bẩn và trầy.
+   - Một tấm texture chung (đường ghép tấm, bu-lông, lưới, lỗ thông gió); script tự gán UV vào đúng vùng.
+   - Thêm ô vật liệu Metal, Rubber, Glass, Detail, bên cạnh Armor, Team, TeamGlow. Cập nhật shader trong Unity cho các ô mới; giữ Team đổi màu theo phe lúc chạy.
+3. Thư viện bộ phận dùng chung, dựng từ các khối mới, làm một lần thật đẹp:
+   - di chuyển: bánh chịu lực, bánh sao, bánh căng xích, xích có mắt xích và độ võng, bánh xe tải, cụm treo;
+   - tháp và thân: vòng tháp, nắp cửa, lỗ thông gió, móc kéo, can nhiên liệu;
+   - vũ khí: các cỡ nòng 7,62–152 mm có chụp đầu nòng, bệ súng máy, ống phóng lựu khói, hộp tên lửa, ống phóng;
+   - điện tử: ăng-ten roi, đĩa radar, radar mảng pha, kính ngắm;
+   - trên không: đầu rô-to, cánh quạt, động cơ phản lực, giá treo, càng đáp, buồng lái có kính;
+   - công sự dã chiến: bao cát, rọ đá, container, lưới ngụy trang, rào thép gai, cọc;
+   - công trình đúc sẵn: tấm bê tông, tấm composite, khung thép, cổng, đèn chiếu, camera;
+   - kiến trúc: tường, mái, cửa, cửa sổ, ban công, cầu thang ngoài, ống khói, bồn nước;
+   - hạ tầng: cột điện, đường ray, cầu, cần cẩu, băng tải, bồn chứa, ống dẫn;
+   - thực vật: cây và bụi theo biome, có LOD và instancing.
+4. Quy trình dựng:
+   - LOD dựng sẵn trong Blender (LOD1 khoảng 50%, LOD2 khoảng 20%), thay cho giảm tự động lúc chạy trong Unity.
+   - Bản _hd cho mọi đơn vị hay gặp và mọi boss.
+   - Chi tiết theo hạng của tháp chuyển từ vẽ bằng code trong Unity sang biến thể dựng trong Blender.
+5. Giữ nguyên các quy ước đã có: Part_*, Mount_*, Muzzle_*, lệnh dựng một lần bằng build_assets.py. Đổi kích thước vẫn chỉ cần sửa số và dựng lại.
+
+G. BÀI THỬ VÀ CHỌN HƯỚNG
+1. Làm 3 model theo 2 cách:
+   - Model: Tăng chủ lực, Su-27 (Tiêm kích), Icarus.
+   - Cách 1: dựng bằng bộ kit đã nâng cấp ở phần F.
+   - Cách 2: nhập model có sẵn có giấy phép hợp lệ, rồi chỉnh theo quy ước.
+     - Chỉ dùng CC0, hoặc CC-BY kèm ghi công trong màn Thông tin của game.
+     - Loại mọi model NC, ND, "chỉ dùng biên tập", và mọi model có dấu hiệu trích từ game khác.
+     - Gỡ mọi phù hiệu, cờ, logo thật.
+     - Giảm lưới về ngân sách; tách bộ phận, đặt Part_*, Mount_*, Muzzle_*; gắn lại vật liệu theo quy ước.
+     - Ghi nguồn và giấy phép vào docs/models/credits.md.
+   Render cả 6 phiên bản theo phần E, đặt cạnh nhau ở camera trong game và đồ họa Thấp; chấm điểm theo 6 tiêu chí; ghi thời gian làm mỗi cách. Lưu vào docs/models/pilot.md.
+2. Điểm dừng 1: dừng ở đây và báo cáo cho tôi chọn hướng. Mặc định nếu không có trả lời: dùng cách 1 cho mọi model; chỉ dùng cách 2 cho model nào mà cách 1 vẫn dưới 4 điểm ở tiêu chí bóng hoặc mật độ chi tiết.
+3. Sau khi chọn: áp hướng đã chọn cho phần H.
+
+H. LÀM LẠI TOÀN BỘ MODEL
+1. Bộ quy chuẩn phong cách: viết docs/models/art-bible.md, gồm:
+   - Phong cách bán thực tế, khối chắc. Bộ phận nhận dạng (nòng, tháp, bệ phóng, radar, rô-to) phóng đại 10–20%; thân giữ đúng tỷ lệ.
+   - Cùng một cách đổ bóng, cùng mức bẩn và trầy ở mép, bánh xích, đáy xe.
+   - Bảng màu ngụy trang theo biome; vạch màu phe trên nóc và hai hông; màu và ký hiệu của tướng địch.
+   - Mật độ texture đồng đều giữa thứ to và thứ nhỏ.
+   - Không phù hiệu, cờ, logo thật.
+   - Thời kỳ: từ sau Thế chiến II tới hiện tại và tương lai (theo phần D của prompt 26).
+   - Phong cách công trình hai phe (mục H.4), bảng màu và mức hư hại theo biome, luật chiều cao, độ bão hòa và độ tương phản giữa đơn vị và nền map (mục H.5).
+2. Chuẩn theo loại (bộ phận tối thiểu · tam giác LOD0):
+   - Xe tăng: thân, tháp, nòng có chụp đầu nòng, 6–7 bánh chịu lực mỗi bên, xích, nắp cửa, súng máy nóc, ống phóng khói · 3.000–5.000.
+   - Xe bánh lốp: thân, đúng số bánh như mẫu thật, tháp hoặc bệ, cửa, đèn · 2.000–3.500.
+   - Xe phóng tên lửa: khung, bệ phóng nâng được, ống hoặc hộp phóng, ca-bin · 2.500–4.000.
+   - Trực thăng: thân, rô-to chính và đuôi, cánh ngắn, giá treo, càng · 2.000–3.500.
+   - Máy bay: thân, cánh, đuôi, động cơ, giá treo, buồng lái · 2.000–4.000.
+   - Tháp: bệ, thân, mô-đun vũ khí theo nhánh, chi tiết theo hạng · 1.500–3.500.
+   - Boss: mỗi bộ phận phá được là một khối riêng có bản nguyên và bản vỡ · 15.000–40.000.
+   - Nhà và vật thể map: theo ngân sách của map ở H.5.
+3. Quy trình mỗi model:
+   1. Dựng khối lớn đúng kích thước đã chốt.
+   2. Kiểm tra bóng từ trên xuống, so với thứ cùng lớp.
+   3. Thêm chi tiết vừa từ thư viện bộ phận.
+   4. Vật liệu, vạch phe, bẩn và trầy.
+   5. LOD1 và LOD2.
+   6. Bản vỡ; điểm gắn (tâm xoay tháp, đầu nòng, điểm phóng, điểm khói xả, điểm cháy, điểm thả dù).
+   7. Render theo phần E, chấm lại theo 6 tiêu chí. Chỉ đạt khi mọi tiêu chí ≥ 4.
+   Chuyển động và hiệu ứng đi kèm:
+   - xích chạy, bánh quay và nhún, tháp xoay, nòng giật khi bắn, rô-to quay mờ, cánh lái máy bay;
+   - chớp lửa đầu nòng to nhỏ theo cỡ nòng, khói xả, bụi khi chạy, vệt khói tên lửa;
+   - dấu trúng đạn, khói bốc khi thấp máu, bản vỡ còn khói.
+4. Công trình hai phe phải khác nhau rõ về hình dạng, không chỉ khác màu Team:
+   - Meridian Accord (phe ta): công sự dã chiến thực dụng. Bao cát, rọ đá Hesco, container quân sự cải tạo, lưới ngụy trang, ăng-ten roi, tấm thép hàn, màu ô-liu và cát; chi tiết lắp ghép, hơi chắp vá.
+   - Hegemon (phe địch, tập đoàn quân sự tư nhân): công trình đúc sẵn góc cạnh kiểu doanh nghiệp. Tấm bê tông đúc và tấm composite phẳng, đèn chiếu, camera an ninh, cổng kiểm soát, biển hiệu và logo hư cấu của Hegemon; màu xám đậm và đen, điểm nhấn cam hoặc đỏ; gọn, sạch, đồng bộ.
+   - Mỗi tướng địch có thêm ký hiệu và điểm nhấn riêng trên công trình của mình.
+   - Cách làm: một bộ khung chung cho mỗi loại công trình (giữ vùng va chạm, điểm gắn, mô-đun vũ khí theo nhánh), cộng hai bộ chi tiết phe lắp lên khung; game chọn bộ chi tiết theo phe lúc chạy. Không làm hai model hoàn toàn riêng.
+   - Phạm vi: sở chỉ huy, mọi tháp và nhánh, module tiện ích, chướng ngại, tiền đồn, bãi thả, tường, cổng, pháo đài Công thành, siêu pháo, máy phát khiên, công trình nhiệm vụ.
+5. Nhà cửa, vật thể và công trình đặc trưng của map:
+   - Phạm vi: nhà dân, nhà xưởng, kho, cầu, đập, tháp nước, cột điện, đường ray, bến cảng, cần cẩu, container, hàng rào, tường, trạm xăng, trạm radar, bãi phóng; xe dân sự và xe bị bỏ lại, thùng, bao cát, rào thép gai, biển báo, đá, cây và bụi; công trình trung lập (cứ điểm, tháp trung lập, kho chiến lợi phẩm, đoàn xe trung lập).
+   - Theo biome: mỗi biome (bờ biển ôn đới, sa mạc, tuyết, rừng nhiệt đới, đô thị, công nghiệp, cảng, mỏ, bãi phóng, đảo san hô) có một bộ nhà và vật thể riêng, cùng phong cách và bảng màu, dùng chung atlas texture theo biome.
+   - Thời kỳ: kiến trúc và xe dân sự từ sau Thế chiến II tới hiện tại; không có dáng trước 1945, trừ công trình di tích có chủ đích (ghi trong DECISIONS.md).
+   - Công trình đặc trưng: mỗi map có ít nhất một landmark dễ nhận ra, dùng làm ảnh xem trước map và ảnh chương (ngọn hải đăng ở Beacon Bay, đập ở Hollow Dam, hố mỏ và băng tải ở Deepcut Mine, dãy radar ở Skygate Array, tổ hợp phóng ở Helion Launch Complex, các quận ở Veyra, nhà máy ở Foundry, các cảng ở Ironport).
+   - Không che đơn vị:
+     - vật thể trang trí thấp hơn và có độ bão hòa màu thấp hơn đơn vị;
+     - nhà cao chỉ đặt ở rìa map hoặc nơi không có đường đi chính;
+     - mái nhà tự mờ đi khi có đơn vị đứng sau.
+   - Có trạng thái vỡ cho những gì bị bắn phá được (tường, cầu, nhà ở Veyra, cổng pháo đài); giữ cơ chế phá hiện có, chỉ làm lại hình.
+   - Giữ vùng va chạm và đường đi như hiện tại. Nếu model mới buộc phải đổi kích thước, cập nhật navmesh và chạy lại bộ phát hiện xe kẹt trên map đó.
+   - Ngân sách hiệu năng: vật thể lặp lại dùng instancing; gộp mesh tĩnh theo từng khu; atlas theo biome; ngân sách tam giác và draw call cho toàn bộ map ở đồ họa Thấp, đo trên máy tầm thấp. Nếu vượt, giảm mật độ vật thể trang trí trước, không giảm chất lượng đơn vị.
+6. Làm theo đợt, dựa trên điểm ở docs/models/audit.md; trong mỗi đợt làm model điểm thấp trước:
+   1. Đợt 1: Tăng chủ lực, Xe bộ binh, Xe bọc thép bánh lốp, Xe trinh sát, Trực thăng tấn công, Tiêm kích, Tiêm kích tàng hình, và boss chương 1–3.
+      Điểm dừng 2: sau đợt 1, dừng và báo cáo để tôi chơi thử trên điện thoại thật. Mặc định nếu không có trả lời trong lượt tiếp theo: tiếp tục đợt 2.
+   2. Đợt 2: các xe mặt đất còn lại.
+   3. Đợt 3: máy bay và trực thăng còn lại.
+   4. Đợt 4: tháp, các nhánh và các mốc hạng, kèm bộ chi tiết hai phe (mục H.4).
+   5. Đợt 5: boss và mini boss còn lại, gồm Icarus, Daedalus, Ixion bản đẹp, Gungnir mới, và các boss đổi tham chiếu ở phần D của prompt 26.
+   6. Đợt 6: các công trình hai phe còn lại (sở chỉ huy, module, chướng ngại, tiền đồn, tường, cổng, pháo đài Công thành).
+   7. Đợt 7: nhà cửa và vật thể theo biome, lần lượt từng biome.
+   8. Đợt 8: công trình đặc trưng của từng map và công trình trung lập.
+   Sau mỗi đợt: tạo lại ảnh thẻ, icon, ảnh xem trước map và ảnh chương nếu liên quan; xuất thư viện ảnh trước/sau vào docs/models/wave-N.md; đo dung lượng bản cài; commit.
+7. Dung lượng bản cài: nén texture theo định dạng cho điện thoại (ASTC); đo kích thước gói AAB trước và sau mỗi đợt. Nếu phần tải về ban đầu gần vượt giới hạn của Google Play, chuyển bản _hd, vật thể map và ảnh độ phân giải cao sang Play Asset Delivery; ghi lại trong DECISIONS.md.
+8. Chế độ cho người mù màu: làm cùng đợt 1 và đợt 4. Thêm tùy chọn bảng màu phe cho người mù màu trong Cài đặt; vạch phe có hoa văn khác nhau giữa hai phe (không chỉ khác màu); ký hiệu ✓ ~ ✕ và cảnh báo đòn lớn luôn có dấu hiệu hình dạng ngoài màu.
+
+I. KIỂM TRA TỰ ĐỘNG CHO MODEL
+- Bóng khác nhau: so bóng từ trên xuống của các thứ cùng lớp; hai bóng quá giống nhau thì báo lỗi.
+- Công trình hai phe phân biệt được bằng bóng khi tắt màu Team.
+- Thứ tự kích thước đúng trong cùng lớp (Tăng chủ lực dài hơn Xe bộ binh, Su-27 dài hơn Su-25, máy bay mẹ bằng Pháo hạm bay, Icarus lớn nhất trên trời, Kronos cao nhất mặt đất).
+- Số tam giác trong ngân sách ở mọi LOD; không mặt lật, không lỗ hở; mật độ texture đồng đều.
+- Mọi Part_*, Mount_*, Muzzle_* mà code trận cần đều có trong model.
+- Vạch phe nhìn rõ ở đồ họa Thấp và ở chế độ người mù màu.
+- Đơn vị luôn nổi rõ trên nền map ở mọi biome và mức đồ họa (test độ tương phản).
+- Không có model nào mang dáng trước 1945 ngoài các ngoại lệ đã ghi (dùng lại test của prompt 26, D.13).
+- Mỗi map nằm trong ngân sách tam giác và draw call ở đồ họa Thấp.
+- Không xe kẹt trên mọi map sau khi thay model.
+
+J. KIỂM TRA TỔNG
+- Toàn bộ test pass.
+- Mọi model đạt ≥ 4 điểm ở cả 6 tiêu chí; docs/models/audit.md cập nhật điểm sau khi làm lại.
+- Hiệu năng: đo FPS ở trận Icarus, Kronos, Leviathan, ở trận đông quân nhất, và ở map nặng nhất sau khi thay model, trên máy tầm thấp; nằm trong ngân sách.
+- Dung lượng bản cài nằm trong giới hạn đã đặt ở H.7.
+- Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (xóa các mục đã làm), docs/DECISIONS.md, docs/models/ (audit, kit, pilot, art-bible, credits, wave-N), và tài liệu thiết kế (ảnh model mới).

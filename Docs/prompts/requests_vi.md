@@ -171,3 +171,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 08:59) icarus nhìn như 1 trạm vũ trụ chứ không phải 1 phi thuyền, vẽ lại, xem các mẫu trên mạng về phi thuyền, star war đẹp nhưng đừng copy 100% do size phi thuyền đó rất to
 - (30/09 08:59) steath jet nên vẽ lại toàn bộ do nó nhìn khá là mập  [stealth_fighter]
 - (30/09 11:17) dùng Machine_Brigade_Can_bang.xlsx, chạy luôn prompt 25, skip prompt 24 tạm thời  [Docs/prompts/prompt25_vi.txt, Docs/balance/]
+- (30/09 16:04) tiếp tục, giới hạn chỉ 1 agent, đây là prompt 26 và 27, lưu vào nhưng chưa làm đợi tôi nói  [prompt 27 lưu ở Docs/prompts/prompt27_vi.txt; prompt 26 chưa nhận được (khối dán đầu là đoạn giải thích của lead)]
