@@ -197,3 +197,117 @@ script runs it again.
 | Thay đổi chi tiết | wingman_drone | Vũ khí: AIM-9 | already | the data already holds it |
 
 <!-- /step:A1-Trung -->
+
+<!-- step:A1-Thap -->
+## A1 Thấp: sheet Thay đổi chi tiết
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Thay đổi chi tiết | 1 | 33 | 58 | 0 |
+| Vũ khí đề xuất | 0 | 9 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Thay đổi chi tiết | aa_vehicle | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | ammo_depot | Nổ khi bị phá | already | the data already holds it |
+| Thay đổi chi tiết | armored_car | Tầm nhìn | already | the data already holds it |
+| Thay đổi chi tiết | armored_car | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | armored_car | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | armored_train | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | armored_train | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | artillery | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | artillery | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | artillery | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | attack_helicopter | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | ballistic_launcher | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | bastion_mk0 | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | behemoth_inferno | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | behemoth_mk2 | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | behemoth_tempest | Giáp | already | the data already holds it |
+| Vũ khí đề xuất | ataka | weapon | already | as the sheet (for bmpt: Vũ khí: 9M120 Ataka) |
+| Thay đổi chi tiết | bmpt | Vũ khí: 9M120 Ataka | already | the data already holds it |
+| Thay đổi chi tiết | bmpt | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | bulwark_post | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | bunker_vehicle | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | c_ram | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | command_vehicle | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | counter_battery_radar | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | counter_battery_radar | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | drone_hangar | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | earth_borer | Máu | deferred | boss health and weapons: task C1 (sheet Boss đề xuất) |
+| Thay đổi chi tiết | ew_jammer | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | fenrir | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | fenrir | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | fighter_jet | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Vũ khí đề xuất | flamethrower | weapon | already | as the sheet (for flame_tank: Vũ khí: súng phun lửa) |
+| Thay đổi chi tiết | flame_tank | Vũ khí: súng phun lửa | already | the data already holds it |
+| Thay đổi chi tiết | flame_tank | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | fpv_carrier | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | gunship_heli | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Vũ khí đề xuất | twin_30_flak | weapon | already | as the sheet (for heavy_aa: Vũ khí: 2A38 30 mm đôi) |
+| Thay đổi chi tiết | heavy_aa | Vũ khí: 2A38 30 mm đôi | already | the data already holds it |
+| Thay đổi chi tiết | heavy_aa | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | heavy_aa | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | heavy_bomber | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Vũ khí đề xuất | rockets_300mm | weapon | already | as the sheet (for heavy_rocket_artillery: Vũ khí: Smerch 300 mm) |
+| Thay đổi chi tiết | heavy_rocket_artillery | Vũ khí: Smerch 300 mm | already | the data already holds it |
+| Thay đổi chi tiết | heavy_rocket_artillery | Giá | already | the data already holds it |
+| Thay đổi chi tiết | heavy_turret | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Vũ khí đề xuất | hover_ciws | weapon | already | as the sheet (for hover_gunboat: Vũ khí: AK-630 30 mm) |
+| Thay đổi chi tiết | hover_gunboat | Vũ khí: AK-630 30 mm | already | the data already holds it |
+| Thay đổi chi tiết | hover_gunboat | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | hover_gunboat | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | iron_beam | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | iron_beam | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | kronos | Dữ liệu vũ khí | deferred | a boss's main weapon as data: task C2 |
+| Thay đổi chi tiết | lancet_truck | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | lancet_truck | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | lancet_truck | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | laser_tank | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Vũ khí đề xuất | gun_57mm | weapon | already | as the sheet (for light_tank: Vũ khí: 57 mm) |
+| Thay đổi chi tiết | light_tank | Vũ khí: 57 mm | already | the data already holds it |
+| Thay đổi chi tiết | light_tank | Tầm nhìn | already | the data already holds it |
+| Thay đổi chi tiết | light_tank | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | long_sam | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | missile_battery | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | mlrs | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | morrigan | Tham khảo | already | the data already holds it |
+| Vũ khí đề xuất | mortar_120 | weapon | already | as the sheet (for mortar_carrier: Vũ khí: cối 120 mm) |
+| Thay đổi chi tiết | mortar_carrier | Vũ khí: cối 120 mm | already | the data already holds it |
+| Thay đổi chi tiết | mortar_carrier | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | mortar_carrier | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | railgun_truck | Giá | already | the data already holds it |
+| Thay đổi chi tiết | railgun_truck | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Vũ khí đề xuất | turret_rockets | weapon | already | as the sheet (for rocket_turret: Vũ khí: Grad) |
+| Thay đổi chi tiết | rocket_turret | Vũ khí: Grad | applied | choice: +15 % damage (the weapon row's 66 a rocket), not the shorter reload |
+| Thay đổi chi tiết | sam_launcher | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | scout_heli | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | scout_jeep | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | scylla | Giáp | already | the data already holds it |
+| Vũ khí đề xuất | shahed | weapon | already | as the sheet (for shahed_truck: Vũ khí: Shahed-136) |
+| Thay đổi chi tiết | shahed_truck | Vũ khí: Shahed-136 | already | the data already holds it |
+| Thay đổi chi tiết | shahed_truck | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | shahed_truck | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | siege_tank | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | siege_tank | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | sky_gunship | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | smoke_carrier | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | spawn_bastion | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | stealth_bomber | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | stealth_fighter | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | supply_truck | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | supply_truck | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | supreme_command | Giáp | already | the data already holds it |
+| Thay đổi chi tiết | tank_destroyer | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | thermobaric_launcher | Giá | already | the data already holds it |
+| Thay đổi chi tiết | thermobaric_launcher | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | titan_tank | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | titan_tank | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | titan_tank | Nổ khi bị phá (bán kính) | already | the data already holds it |
+| Thay đổi chi tiết | turtle_tank | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | twin_tank | Kích thước model (dài × rộng × cao) | deferred | model size: task B1 |
+| Thay đổi chi tiết | vbied | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | wheeled_gun | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+| Thay đổi chi tiết | zu23_technical | Tên | deferred | name: task D1 (sheet Tên đề xuất) |
+
+<!-- /step:A1-Thap -->

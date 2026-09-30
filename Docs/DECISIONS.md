@@ -10798,3 +10798,17 @@ not in force yet, so no row was held back for it.
 - Tests whose numbers are now the sheet's: the bulldozer's 4 m/s, Morrigan at least as fast as the stealth fighter
   (both 44 m/s), and the shield dome's test hits the tank with the long 120 mm (pen 5) as the main battle tank's
   front is 4 now (the dart's pen 4 no longer pierced it whole).
+
+### A1 Thấp
+
+- **The flame tank's flamethrower** ("sát thương −10% lên xe nhẹ") takes the weapon row's number, 21 a tick (was
+  23.5), on every target: the weapon sheet made the cut a plain number, and the DPS test holds the game to it. It is
+  a little weaker on tanks and structures too than the row's words meant; the flame tank is one of the cards the
+  measurement at the end looks at.
+- **The Grad turret** ("+15 % sát thương hoặc nạp 3,35→2,9 s"): the damage, 66 a rocket (the weapon row's), not the
+  shorter reload.
+- **Death blasts** follow the sheet's "~N m" (the ammunition depot 14 m, the SP gun 10, the flame tank 5, the
+  super-heavy tank 8...); their damage stays.
+- **Mini bosses' front armour** is 4 at most (Juggernaut, Bastion Mk.0, the three Behemoth variants, Fenrir, Scylla,
+  Atlas). A boss variant (`variantOf`) is read with its base's fields, so Fenrir's front-only row changes the front.
+- **Morrigan's reference** (Su-57, F-22, Ace Combat) goes into `unit_refs.json` as a new row.

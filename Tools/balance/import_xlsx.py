@@ -115,8 +115,9 @@ class Game:
         if vid in self._v:
             return self._v[vid]
         v = dict(self.vehicles_raw[vid])
-        if "inherits" in v:
-            base = dict(self.vehicle(v["inherits"]))
+        parent = v.get("inherits") or v.get("variantOf")  # a boss variant reads its base's fields too
+        if parent in self.vehicles_raw:
+            base = dict(self.vehicle(parent))
             base.update(v)
             v = base
         self._v[vid] = v
@@ -639,7 +640,7 @@ def a1(wr: Writer, wb, report: Report, step, weapon_rows, unit_rows, refs):
         if cat == "Dữ liệu vũ khí":
             add("deferred", "a boss's main weapon as data: task C2")
             continue
-        if boss and not cat.startswith("Giáp") and (vid, cat) not in A1_WEAPONS:
+        if boss and not cat.startswith("Giáp") and cat != "Tham khảo" and (vid, cat) not in A1_WEAPONS:
             add("deferred", "boss health and weapons: task C1 (sheet Boss đề xuất)")
             continue
 

@@ -22,6 +22,9 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
   laser tank lighter); tank turrets turn faster than their hulls; the IFV and the BMPT fire their 30 mm in bursts;
   the HIMARS moves after every salvo; the heavy turret loads armour-piercing rounds for armour; the gunship carries
   Ataka missiles and flies faster; the heavy bomber carries seven FAB-500s; the Phalanx fires a real stream.
+- A1 Thấp: death blasts sized by the vehicle (the ammunition depot 14 m, the flame tank 5 m); mini bosses' front armour
+  4 at most; the light tank fires its 57 mm in pairs and sees farther; the Grad turret hits harder; the Pantsir's
+  guns and the gunboat's AK-630 fire long streams; the railgun truck, the Smerch and the TOS cost a CP more.
 
 ### Play-test 9 models (DECISIONS 23M)
 

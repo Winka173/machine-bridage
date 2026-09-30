@@ -166,5 +166,6 @@
   "locust": { "real": ["USS Akron / Macon", "drone FPV"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể nhỏ của khí cầu mẹ" },
   "behemoth_mk2": { "real": ["Landkreuzer P. 1000 Ratte", "Object 279"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth đời hai" },
   "icarus_mk0": { "real": [], "media": ["Star Destroyer / Venator (Star Wars)", "Tantive IV (Star Wars)", "Tàu frigate UNSC (Halo)", "Rocinante (The Expanse)"], "note": "Bản đầu của Icarus (chiến hạm vũ trụ, nhỏ hơn)" },
-  "argus": { "real": ["USS Akron / Macon", "khí cầu Zeppelin"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể của khí cầu chỉ huy" }
+  "argus": { "real": ["USS Akron / Macon", "khí cầu Zeppelin"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể của khí cầu chỉ huy" },
+  "morrigan": { "real": ["Su-57", "F-22 Raptor"], "media": ["Ace Combat"], "note": "" }
 }
