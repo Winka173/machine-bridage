@@ -5,6 +5,8 @@ import math
 import re
 from pathlib import Path
 
+import prompt25  # noqa: E402  (Tools/docs, on the path build_doc.py sets)
+
 ROOT = Path(__file__).resolve().parents[2]
 
 GOAL_VI_EXTRA = {'Outpost': 'Lập tiền đồn', 'Relieve': 'Giải vây', 'Evacuate': 'Di tản', 'Duel': 'Đấu tướng'}
@@ -283,31 +285,31 @@ def feedback(game, h):
 
 
 def combat_value(game, h):
-    """Combat value measured in the sim (prompt 13 A): damage dealt with the time not firing counted."""
+    """Combat value measured in the sim (prompt 13 A): damage dealt with the time not firing counted; prompt 25 E2 (support
+    value) in prompt25.py."""
     e = h['esc']
-    runs = sorted((ROOT / 'Docs' / 'balance').glob('combat_value_*_summary.tsv'), key=lambda p: p.stat().st_mtime)
-    if not runs:
+    path = prompt25.measure_path()
+    if path is None:
         return ''
-    # The balance pass after prompt 18 names its final measure (a fresh checkout gives every file the same time).
-    latest = ROOT / 'Docs' / 'balance' / 'combat_value_p18_after_summary.tsv'
-    path = latest if latest.exists() else runs[-1]
     lines = path.read_text(encoding='utf-8').splitlines()
-    head = lines[0].split('\t')
+    head = lines[0].split('	')
     units = {v['id']: v for group in ('vehicles', 'towers', 'elites') for v in game.get(group, [])}
     names = {i: v['name'] for i, v in units.items()}
+    support = prompt25.support_rows(path)
+    helpers = {v['id'] for v, _ in prompt25.supporters(game)}
     def num(x):
         try:
             return f"{float(x):.0f}"
-        except ValueError:
+        except (TypeError, ValueError):
             return ''
     def pct(x):
         try:
             return f"{float(x) * 100:.0f}%"
-        except ValueError:
+        except (TypeError, ValueError):
             return ''
     rows = []
     for line in lines[1:]:
-        c = dict(zip(head, line.split('\t')))
+        c = dict(zip(head, line.split('	')))
         v = units.get(c['id'])
         if v is None:
             continue   # a card merged or dropped since the measure
@@ -315,15 +317,18 @@ def combat_value(game, h):
         rows.append([f"<b>{e(names[c['id']])}</b>", e(c.get('class', '')), str(v['cost']), str(front),
                      num(c.get('light')), num(c.get('tanks')), num(c.get('fort')), num(c.get('air')),
                      num(c.get('tanks+AA')), pct(c.get('onTarget')), num(c.get('survival')),
-                     num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir'))])
+                     num(c.get('dpsLight')), num(c.get('dpsHeavy')), num(c.get('dpsAir')),
+                     (num((support.get(c['id']) or {}).get('support')) or '—') if c['id'] in helpers else ''])
     return ("<div class='section'><h2>9b. Giá trị thực chiến</h2>"
             "<p>DPS lý thuyết (phần 9) đã sửa để tính đủ loạt bắn, băng đạn, thời gian thay băng, nạp của bệ phóng và số bom/tên lửa mỗi lần đầy đạn. "
             "Giá trị thực chiến đo trong mô phỏng: mỗi xe hạng 1, không trang bị, đánh các nhóm mục tiêu chuẩn (cụm xe nhẹ, cụm xe tăng, công sự có tháp, máy bay) "
             "trong khoảng 90 giây từ lúc tiếp đất, có và không có phòng không đối phương; tính cả thời gian không bắn (di chuyển, xoay tháp, nạp đạn, bay vòng, bị pháo sáng "
             "và APS chặn). Giá trị = sát thương thực × hệ số sống sót / CP. Mọi quyết định cân bằng của prompt 13 dựa trên bảng này.</p>"
+            "<p><b>Hỗ trợ / CP</b> (E2): giá trị hỗ trợ của xe hỗ trợ, bảng dưới.</p>"
             + f"<p class='muted'>Số đo: <code>{e(path.name)}</code>; chỉ các thẻ còn trong roster, CP theo dữ liệu hiện tại.</p>"
             + h['table'](['Xe', 'Lớp', 'CP', 'Giáp trước', 'Giá trị: xe nhẹ', 'xe tăng', 'công sự', 'máy bay', 'xe tăng + PK', 'Thời gian bắn', 'Sống (s)',
-                          'DPS thật: nhẹ', 'nặng', 'bay'], rows, 'dps') + "</div>")
+                          'DPS thật: nhẹ', 'nặng', 'bay', 'Hỗ trợ / CP'], rows, 'dps')
+            + prompt25.support_table(game, h, path) + "</div>")
 
 
 def ammo_system(game, h):

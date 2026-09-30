@@ -7,6 +7,12 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Measures and documents (prompt 25 E2, E3, F1, DECISIONS 25E)
+
+- The combat-value tool measures what support vehicles do for their side (E2): health repaired, rounds resupplied,
+  missiles decoyed and shield damage blocked, and a support value per CP on the combat value's scale. Table 9b has the
+  columns, "—" until the test phase runs `CombatValueMeasure`.
+
 ### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
 
 - Every vehicle opens where the spreadsheet's "Phương tiện" sheet says, and costs the sheet's price to unlock early:

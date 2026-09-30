@@ -11661,3 +11661,45 @@ main rank's scale, damage x1.2 and cooldown x0.85, and the difficulty's stay on 
 - **Boss battle lengths** (prompt 25 D.3, prompt 20's targets): mini bosses about 1.5-3 minutes, main bosses about
   5-8, over 5 seeds (`BossBalanceMeasure` with `MB_BALANCE=1`, `MB_SEEDS`, the campaign's boss missions); if off,
   health first, then `weaponDamage`. The largest multipliers above (Typhon, Morrigan, Daedalus) first.
+
+## 25E. Measures and documents (E2, E3, F1) (2026-09-30)
+
+Prompt 25 F.2 (task E2), F.3 (task E3) and H (task F1). Under the owner's rule of 30/09 no test and no measurement ran:
+the one Unity run was a compile check (batch mode, `-quit`, no `error CS` in the log). The measurement code and the
+document's columns are built so that the test phase fills them; every cell that waits for a run shows "—". The design
+document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its Python ran once on an older export
+(`game.json` of the morning of 30/09), which lacks the new fields, to check that every reader falls back.
+
+### E2 Support value (`CombatValueMeasure.Support.cs`)
+
+- **Why a measure of its own.** The combat value counts damage dealt, so a repair truck scores nothing. The support
+  value counts what a support vehicle does for its side, on the same scale (damage-equivalent x survival factor / CP).
+- **The run.** One vehicle of the kind goes with an escort (two battle tanks, an IFV, an MLRS and an attack helicopter:
+  armour to repair, launchers and a helicopter to rearm, all inside a dome) led by the tactical AI, against a group that
+  fires guided missiles and direct fire (two BMPTs, a battle tank, an attack helicopter; a new wave 3 s after one
+  falls), for 3 minutes on the open field of the combat-value runs, with its seeds (`MB_CV_SEEDS`).
+- **The four measures:**
+  - *Health repaired*: every `Repaired` event of its side. The field has no other source (no base, no gear, no
+    strikes), so they are all its own; an engineer's repair of itself counts (it is part of what it does).
+  - *Ammunition resupplied*, in rounds: a part-empty magazine topped up (only an ammunition aura does that away from
+    home), the share of an in-place reload it cut short (the time taken off beyond the crew's own, as rounds of that
+    magazine), and the stores an aircraft took on while rearming at the carrier (`RearmSite.AmmoCarrier`).
+  - *Missiles decoyed*: the enemy's guided rounds a jammer scrambled at launch (`WeaponFired` with `Jammed`), with all
+    the enemy's guided rounds for the share. The flares of aircraft and the gear's lures are no support vehicle's.
+  - *Shield damage blocked*: what its dome took (`DomeHit` events).
+- **Support value per CP** = (health repaired + shield blocked + the damage of the rounds resupplied and of the missiles
+  decoyed, each at its weapon's damage a round) x (1 + share of the time alive) / 2 / CP.
+- **Which vehicles.** Those with a repair, rearm, air-rearm, jamming or shield aura (`Supporter`): the engineer vehicle,
+  the ammunition carrier, the EW jammer and the shield carrier. The smoke carrier, the command vehicle, the
+  counter-battery radar and the mine layer work in ways the four measures do not catch (smoke, a fire-rate aura,
+  revealing artillery, mines); they keep their combat value, and a measure of their own is left for later.
+- **Output.** `MeasureTheRoster` also runs it and writes `combat_value_<tag>_support.tsv` (every measure, the decoy
+  share, survival) and five summary columns (`repaired`, `resupplied`, `decoyed`, `shielded`, `support`; empty for the
+  other vehicles, and at the end of the line, so the readers that go by the header are unchanged).
+  `MeasureTheSupportVehicles` runs the support part alone. Both need `MB_BALANCE=1`.
+- **In the document.** Table 9b has a column "Hỗ trợ / CP" and a sub-table "Giá trị hỗ trợ (E2)": each support vehicle's
+  auras from balance.json and its four measures, "—" until the test phase measures them (read from the summary, else
+  from the `_support.tsv` of the same tag).
+- **Which measure 9b shows.** It read `combat_value_p18_after_summary.tsv` by name (the balance pass after prompt 18);
+  play-tests 5 and 6 measured again after it. It now takes the first of `p25_after` (the test phase's run after prompt
+  25: `MB_CV_TAG=p25_after`), `pt6_after` (the last run before prompt 25) and `p18_after`.
