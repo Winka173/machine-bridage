@@ -864,6 +864,91 @@ def scout_jeep(a, detail=False):
     _scale_asset(a, JEEP_K)
 
 
+# ----------------------------------------------------------------------------- flame tank (TO-55)
+def flame_tank(a):
+    """Flame tank (TO-55 on the T-55), 6.9 x 2.6 x 1.9 m: the T-55's low hull on five big road wheels with the gap
+    after the first pair, plain fenders with stowage boxes, a round cast dome turret set forward, and in place of
+    the gun a short, thick flame projector (drawn long and fat enough to read: the silhouette's nozzle) beside the
+    T-55's box searchlight; two armoured dark-red fuel tanks lie on the rear deck in cradles (the silhouette's
+    second feature, as the sheet asks), with their feed pipes to the turret. `Muzzle_main` at the projector's
+    nozzle, `Muzzle_coax` at the coaxial machine gun."""
+    hd.mark(a, False)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    # Running gear: five road wheels, the first pair spaced apart as on the T-55, rear drive.
+    belt = a.part('Tracks', 'Undercarriage')
+    drive = a.part('Sprockets', 'Armor')
+    top, rb, rw, length, x = .74, .22, .31, 5.1, 1.03
+    first = length / 2 - rw - .08
+    circles = [(e * (length / 2 - rb), top - rb, rb) for e in (-1, 1)] + [(e * first, -.01 + rw, rw) for e in (-1, 1)]
+    outline = mv._hull2d([(cy + r * math.cos(k * TAU / 16), cz + r * math.sin(k * TAU / 16))
+                          for cy, cz, r in circles for k in range(16)])
+    ys = [-first, -first + 1.2, -first + 2.0, -first + 2.8, first]
+    for s in (-1, 1):
+        cx = s * x
+        face = cx + s * .23
+        belt.prism(outline, .46, loc=(cx, 0, 0), axis='X', bevel=0)
+        for (py, pz), (ty, tz) in mv._perimeter(outline, .22, .05):
+            if abs(py) < first - .02:
+                continue
+            belt.box((.5, .07, .05), loc=(cx, py + tz * .012, pz - ty * .012), rot=(math.atan2(tz, ty), 0, 0), bevel=0)
+        for y in ys:
+            a.part('Tyres', 'Undercarriage').cyl(rw, .09, loc=(face - s * .03, y, rw - .01), rot=ACROSS, seg=10, bevel=0)
+            a.part('Wheels', 'Team').cyl(rw * .8, .03, loc=(face + s * .025, y, rw - .01), rot=ACROSS, seg=10, bevel=0)
+            a.part('Hubs', 'Steel').cyl(rw * .25, .03, loc=(face + s * .04, y, rw - .01), rot=ACROSS, seg=6, bevel=0)
+        cy = length / 2 - rb
+        drive.cyl(rb * .88, .08, loc=(face - s * .02, cy, top - rb), rot=ACROSS, seg=12, bevel=0)
+        for k in range(7):
+            ang = k * TAU / 7 + .2
+            drive.box((.05, .07, .08), loc=(face - s * .01, cy + math.cos(ang) * (rb * .88 + .02),
+                                            top - rb + math.sin(ang) * (rb * .88 + .02)), rot=(ang + R90, 0, 0), bevel=0)
+        drive.cyl(rb * .7, .08, loc=(face - s * .02, -cy, top - rb), rot=ACROSS, seg=10, bevel=0)     # idler
+        armor.box((.5, 5.3, .05), loc=(s * 1.08, -.05, top + .04), bevel=0)                         # fenders
+        for y in (-1.2, .1):                                                                         # fender boxes
+            armor.box((.38, .9, .28), loc=(s * 1.1, y, top + .2), bevel=.03, seg=1)
+        mv._headlight(a, s * .7, -2.62, .88, guard=False)
+        mv._taillight(a, s * .8, 2.6, .8)
+    # The T-55 hull: a sharp pike-less glacis, a flat deck, the engine grilles aft.
+    hull.prism([(-2.6, .42), (-2.64, .62), (-1.75, 1.04), (2.5, 1.06), (2.6, .9), (2.6, .45)], 1.6, bevel=.05, seg=1)
+    armor.box((1.5, .9, .05), loc=(0, .95, 1.08), bevel=0)                                          # engine grille
+    a.part('Deck', 'Undercarriage').grille(1.3, .8, loc=(0, .95, 1.1), rot=(-R90, 0, 0), slats=5, depth=.08,
+                                           thickness=.05)
+    mv._hatch(a, .5, -1.62, 1.04, .2, handle=False)                                                # driver
+    # Two armoured fuel tanks on the rear deck, dark red, in cradles, feeding the turret.
+    fuel = a.part('Fuel_tanks', 'BarrelRed')
+    for s in (-1, 1):
+        xx = s * .5
+        fuel.cyl(.36, 1.6, loc=(xx, 2.25, 1.44), rot=FORWARD, seg=12, bevel=.06, bseg=1)
+        steel.cyl(.38, .08, loc=(xx, 1.7, 1.44), rot=FORWARD, seg=12, bevel=0)                      # straps
+        steel.cyl(.38, .08, loc=(xx, 2.8, 1.44), rot=FORWARD, seg=12, bevel=0)
+        armor.box((.62, 1.5, .22), loc=(xx, 2.25, 1.12), bevel=.03, seg=1)                          # cradle
+        steel.box((.12, .9, .12), loc=(s * .22, 1.1, 1.18), bevel=0)                                # feed pipe
+    a.pivot('Point_exhaust', (.9, 2.62, .9))
+    a.pivot('Point_fire', (0, 2.25, 1.8))
+    # Round cast dome turret, forward.
+    t = a.pivot('Turret', (0, -.45, 1.05))
+    a.part('Turret_body', 'Team', t).sphere((1.0, 1.0, .66), loc=(0, 0, 0), seg=16, rings=8, cut=0)
+    steel.cyl(.96, .1, loc=(0, -.45, 1.03), seg=16, bevel=0)                                       # turret ring
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tarm.box((.46, .36, .42), loc=(0, -.92, .3), bevel=.05, seg=1, taper=(.85, .85))              # mantlet
+    a.part('Cupola', 'Armor', t).cyl(.26, .16, loc=(-.35, .3, .66), seg=12, bevel=.03, bseg=1)    # commander
+    mv._hatch(a, .38, .35, .6, .22, parent=t, seg=10)                                              # loader
+    tarm.box((.32, .24, .28), loc=(-.42, -.86, .52), bevel=.03, seg=1)                             # searchlight
+    a.part('Lamps', 'Lamp', t).box((.26, .03, .2), loc=(-.42, -.99, .52), bevel=0)
+    # The flame projector: a short fat barrel with a heat jacket, a nozzle ring and a pilot-light glow.
+    gun = a.part('Main_cannon', 'Steel', t)
+    y0, length_p, z = -1.1, 2.3, .3
+    gun.cyl(.12, length_p, loc=(0, y0 - length_p / 2, z), rot=(R90, 0, 0), seg=12, bevel=0)
+    gun.cyl(.17, length_p * .5, loc=(0, y0 - length_p * .3, z), rot=(R90, 0, 0), seg=12, bevel=.02, bseg=1)
+    a.part('Muzzle_brake', 'Undercarriage', t).cyl(.18, .22, loc=(0, y0 - length_p - .08, z), rot=(R90, 0, 0),
+                                                   seg=12, bevel=.02, bseg=1)
+    a.part('Muzzle_brake_glow', 'Alloy', t).cyl(.1, .03, loc=(0, y0 - length_p - .2, z), rot=(R90, 0, 0), seg=10,
+                                                bevel=0)
+    a.pivot('Muzzle_main', (0, y0 - length_p - .22, z), t)
+    mv._coax(a, t, .36, -1.02, .38, length=.36, housing=.24)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
@@ -874,4 +959,5 @@ BUILDERS = {
     'attack_helicopter': (attack_helicopter, dict(ao_distance=.4, grime_height=.3)),
     'daedalus': (daedalus, dict(ao_distance=.6, ground=False)),
     'scout_jeep': (scout_jeep, dict(ao_distance=.3, grime_height=.3)),
+    'flame_tank': (flame_tank, dict(ao_distance=.55, grime_height=.5)),
 }
