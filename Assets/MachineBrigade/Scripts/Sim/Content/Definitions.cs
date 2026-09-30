@@ -318,6 +318,10 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 25 F2 batch A: the new weapons' mechanisms.
                 GroundRange = GroundRange, MinReach = MinReach, GroupPriority = GroupPriority, BigGame = BigGame, JamProof = JamProof,
                 OneAtATime = OneAtATime, Lofted = Lofted, Mrsi = Mrsi, Glides = Glides, Prey = Prey,
+                // Prompt 25 G: the gun's second rounds (the rounds are not tuned: the gun's reach and cadence govern).
+                Rounds = Rounds,
+                RoundOf = RoundOf,
+                RoundKind = RoundKind,
             };
             return copy;
         }

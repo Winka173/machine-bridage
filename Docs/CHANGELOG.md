@@ -21,6 +21,17 @@ its commits.
   - structures: gabion blast wall, inflatable decoy, fire-control centre, searchlight, barrage balloon, visual jammer,
     troop shelter, flare tower. Searchlights and flare towers work at night and in fog.
 - The catalog loads again: an empty weapon family no longer stops it.
+### Second rounds (prompt 25 G, DECISIONS 25G)
+
+- 66 guns get a second round from the balance sheet's suggestions (`Tools/balance/import_alt_rounds.py`, balance.json
+  `secondRounds`): air-burst rounds for the autocannons, armour-piercing rounds for the flak guns, high explosive for the tank
+  guns, guided shells and API rounds for elites and rank-7 branches. The sheet's numbers, no rebalance.
+- A gun loads the round that suits its target on its own: the change takes its reload (at least 0.5 s) and a round stays in
+  at least 2 s. Deterministic, in the checkpoint fingerprint.
+- Air-burst rounds fly a new flak round model and burst in a dark puff with a spark ring and fragment streaks, sized by
+  calibre; the flak guns' own rounds look the same now.
+- The ammo-switch icon marks a gun of two rounds on cards and weapon rows; a glyph flashes on a unit's bar when it changes
+  round; the detail page lists both rounds with their figures and what each is for.
 
 ### Measures and documents (prompt 25 E2, E3, F1, DECISIONS 25E)
 

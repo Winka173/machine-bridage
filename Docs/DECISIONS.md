@@ -12069,3 +12069,86 @@ units", `base.ai.styles`), `Strings.cs`, `GuideText.cs`, `UnitText.cs`, `UnitLin
 `DamageSystem.cs`, `MovementSystem.cs`, `ConquestAi.cs`, `BaseLoadout.cs`, `Command.cs`, `Catalog.cs`,
 `Catalog.Extra.cs`, `Definitions.cs`, `JsonObject.cs`, `Prompt25UnlockTests.cs`, `build_assets.py`,
 `Docs/art/models.json`, `UI/Cards/manifest.json`, `Docs/backlog/new_content.json`.
+
+## 25G. Second rounds (2026-09-30)
+
+The owner: "Pháo tự động => dùng các đạn flak mới, tạo đạn và hiệu ứng nổ mới; đạn thay thế: đúng ý tôi, làm luôn, nên có
+icon đổi đạn, nhớ trong phần detail của xe khi xem phải ghi luôn 2 loại đạn, làm trước chưa cần cân bằng lại cứ theo excel."
+No rebalance: the rounds take the sheet's words and the guns' own numbers. Nothing was run but compile checks (the owner's rule).
+
+**Data.** `Tools/balance/import_alt_rounds.py` (re-runnable; `--check` only reports) reads "Vũ khí đề xuất", column "Loại đạn
+thay thế gợi ý" (69 weapons), and writes one balance.json block, `secondRounds` (between `damageTable` and `weaponFamilies`):
+`families` and `rounds`. **66 weapons get 67 rounds**: air-burst 14, armour-piercing 11, high explosive 16, guided 15, API 11
+(the gunship's 40 mm gets two). **Skipped:** `c_ram_gatling` (intercept-only, 21F: a round for vehicles would make it a ground
+gun), `gun_152` (has `gun_152_he` already, 17 D.6), `gun_152_he` (is itself gun_152's second round). Prompt 17's `he` and the
+tower branch's `air` links are read as second rounds too (gun_152, gun_155_twin_ap, gun_57_auto), with their old rules.
+A round is a weapon of its own: `roundOf` its gun (it inherits the gun's resolved line, so cadence, reach, magazine and speed are
+the gun's), `round` its kind (flak, ap, he, guided, api), `for` its rule, `elite`, and its own damage type, `pen`, damage,
+`splash`, `form`, `piercing`, `targets`. It is out of the gun's family (`weaponFamily` "") or in one of 14 new families (A3: the
+same real round on several guns shares speed, blast and weight; `gun_152_he` joins `2a83_152_mm_he_frag`, its one other edit).
+
+**The words as rules.**
+- *"Tự đổi: đạn xuyên (Động năng) với xe, đạn nổ trên không (Mảnh) với máy bay/drone"* (20-40 mm autocannons): the gun keeps
+  the round of its own damage type. Kinetic guns get an air-burst round `for: air`; flak guns an AP round `for: ground`
+  ("xe": vehicles, and structures too, where kinetic does 0.6 against fragmentation's 0.1); the gunship's HE 40 mm both, its AP
+  `for: armour` (its HE stays for the rest).
+- *"đạn xuyên với xe giáp, đạn nổ mạnh (HE, xuyên 2, nổ lan 3 m) với xe nhẹ và công trình"* (tank guns): HE `for: light,
+  structure` at the sheet's pen 2 and 3 m; the 2A83's other carriers (bastion_gun, gun_152_heat) take gun_152_he's own row
+  (pen 3, 6.5 m, 150 m/s, 320) instead: one real round, one blast (A5).
+- *"Thêm đạn dẫn đường (Excalibur/Krasnopol: 1 phát, không tản mát) cho nhánh hạng 7 hoặc thẻ hỗ trợ"* (big HE guns): a guided
+  shell `for: armour`, `elite`, one round a pull, no scatter, steered onto its target. The support-card half is not built (no
+  support card gives a round).
+- *"Đạn xuyên API (xuyên 2) cho bản tinh nhuệ"* (12.7 mm): API `for: any`, `elite`, pen 2 (it beats pen 1 at every armour level).
+- Rule words: `air` flying or on a tier; `ground` anything on the ground; `armour` a vehicle of front armour 2+; `light` 1 or
+  less; `structure` a fixed defence, the structure class, a wall or building; `cluster` two more of its side within the blast
+  (4 m at least; no sheet row uses it); `any`. `elite`: elites and rank-7 branches (`Elite` or `BranchOf`).
+
+**Numbers the words leave out** (the gun's own numbers and 13's calibre scale): damage a round is the gun's (one calibre, one
+damage), or the real round's where it joins one (2A83 HE-FRAG 320); an air-burst round pierces 1 below 30 mm and 2 from 30 mm
+(15 B.1) and bursts calibre / 12 m to the half metre (the 2A38's 30 mm at 2.5 m: 25 mm 2, 40 mm 3.5); an AP autocannon round
+pierces 2 (B.1); an HE round bursts one impact size up; a guided shell keeps its gun's damage, pen and blast.
+
+**Sim** (`CombatSystem.Rounds.cs`, `SecondRounds.cs`). Against the target it picked, a gun loads the first round it carries
+whose rule takes the target, else its own. Target choice weighs each target with the round it would get; whether the gun is
+made for aircraft stays the gun's (an IFV with an air-burst round still takes the ground first, 22Q's x0.02). A gun reaches any
+layer one of its rounds can hit (`CanEngage`). A change takes `SwitchSeconds` = the gun's reload (a magazine gun's magazine
+change, else the time between its shots or salvos), 0.5 s at least (data `switch` overrides); the mount fires nothing meanwhile
+and a magazine gun's new magazine is full. A round once in stays in 2 s (`RoundHoldSeconds`), so 22Q's 0.5 s re-check cannot
+make a gun flicker; no change starts mid-salvo or mid-charge. The round in the gun sets the salvo (a guided shell one a pull) and
+must reach the target's layer, or the mount waits for its change. Scatter scales with the gun's reach. A guided shell lands on its
+target where it is (as steered bombs do). No random draw; the loaded round of every gun of several rounds is in `StateHash` (the
+checkpoint journal's check); `RoundSwitched` (DefId the round, Value seconds) and `WeaponFired.Round` report it. 17 D.6's
+instant per-round `RoundFor` is gone: the heavy tank now takes its reload to load HE and holds it 2 s.
+
+**Flak.** `WeaponDef.Flak` (autocannon, fragmentation, not intercept-only): the 14 new air-burst rounds and the flak guns' own
+rounds, which had a plain look (aa_25_triple, boss_flak, flak_35, flak_quad, hq_flak, tower_flak_30, twin_30_flak, twin_35_ahead,
+zu23, fighter_cannon, gun_57_air). The proximity fuse is the round's blast: it bursts where it lands by its target and the
+fragments are its splash, so the sim needs no new rule and the flak guns keep their numbers. The view flies `flak_round`
+(`mb_munitions.py`: grey-green body, red fuse cap with a dark sensor ring, yellow band, tracer; 148 triangles, 0.5 m for 35 mm,
+drawn x2 and by calibre) on the tracer, and `FlakBursts` adds a hot flash, a dark puff, a ring of sparks flung to the blast
+radius and fragment streaks, 0.75x at 20 mm, 1x at 35 mm, 1.5x at 57 mm, on top of the burst it had (nothing shrinks). A flak
+round at the ground bursts 1.4 m over it.
+
+**Icons and details.** `ammoswap` (Icons.cs, Field Command strokes): two rounds and a two-way arrow; a badge in the top corner of
+the weapon chip (cards, detail weapon rows, effect table) when the carrier loads a second round; the tooltip adds "Two rounds,
+switched on its own". In battle the same shape (quads, orange on a dark diamond) pulses over the health bar for 1.2 s at every
+change, the bar shown meanwhile. The detail weapon row lists both rounds (chip, kind, damage type, penetration, damage, blast,
+what for; the second's switch time), the effect table has a row per round, More has the `ul.round` line (UnitLines, so the
+design document's "ammo" lines carry it). In action: the preview offers a helicopter to a gun with an air round and orders by
+`CanEngage`, so the change shows.
+
+**The PDF (step 6, left to the lead by the owner).** Fields it needs: a gun's `Rounds` (round id, `RoundKind` or
+`UnitLines.RoundWord`, `DamageType`, `Penetration`, `Damage`, `SplashRadius`, `UnitLines.UseWords`, `EliteOnly`,
+`SwitchSeconds`), `RoundOf` to leave the rounds out of the gun lists or mark them, `CombatFacts.Rounds(def)` for a unit card,
+and the `ammoswap` icon or "2 rounds".
+
+**For the test phase.** `SecondRoundTests` (4 data-driven tests over every gun with a round) is written, not run. To look at:
+- Autocannons gain anti-air: IFV and BMPT 30 mm, M242 25 mm, Bofors 40 mm, the tower's 25 mm, helicopter and jet cannons hit
+  aircraft with fragmentation x1.3 (kinetic x0.3, or nothing): about four times a round.
+- Flak guns gain ground fire: AP kinetic x1.0 on the ground (fragmentation x0.5), x0.6 on structures (x0.1).
+- Tank guns' HE on light vehicles and structures; each change costs a reload; the heavy tank's HE is no longer instant.
+- Elite 12.7 mm guns fire API at everything; guided shells only on elite_artillery, artillery_emplacement.cb and
+  heavy_turret.coastal (the bosses' guns carry theirs but never load them).
+- `2a75_125_mm_he` gives both 2A75 carriers 220 m/s and weight 345; the 2A38's AP rounds follow their guns' 7 and 7.5.
+- CalibreTests and BalanceSheetTests now see the rounds as weapons; the AI's roles, counters, air-defence lists and stores read
+  the gun's own round, as before.

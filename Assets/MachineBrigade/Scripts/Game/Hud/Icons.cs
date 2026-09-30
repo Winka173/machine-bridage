@@ -46,6 +46,8 @@ namespace MachineBrigade.Game.Hud
             // The compact HUD's Auto buy (prompt 11 A2): a cart.
             ["cart"] = "<path d=\"M2 4h3l2.5 11h11L21 7H6\"/><circle cx=\"9\" cy=\"19\" r=\"1.6\"/><circle cx=\"17\" cy=\"19\" r=\"1.6\"/>",
             // Weapons: a gun on its mantlet, a belt of rounds.
+            // Prompt 25 G: a gun of two rounds (the ammo switch): two rounds side by side, a two-way arrow between them.
+            ["ammoswap"] = "<path d=\"M3 21v-8l2-3 2 3v8ZM17 21v-8l2-3 2 3v8ZM3 17.5h4M17 17.5h4\"/><path d=\"M9 8h6m-2-2 2 2-2 2M15 15H9m2-2-2 2 2 2\"/>",
             ["cannon"] = "<path d=\"M3 18h8a3 3 0 0 0 0-6H3Z\"/><path d=\"M12 14h7M19 12.5v3M21 13v2\"/>",
             ["mg"] = "<path d=\"M4 20v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Zm6 0v-9a2 2 0 0 1 4 0v9Z\"/><path d=\"M4 15h4m2 0h4m2 0h4\"/>",
             ["minus"] = "<path d=\"M5 12h14\"/>",

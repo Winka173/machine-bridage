@@ -225,6 +225,8 @@ namespace MachineBrigade.Game.Views
             // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
             if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
+            // Prompt 25 G: the change-of-round glyph (VehicleView.Rounds.cs).
+            BuildRoundMark(meshes, materials);
             BuildEscortMark(meshes, materials);
             // Prompt 23 F.4: the Meridian Accord's sign on its units (VehicleView.Accord.cs).
             BuildAccordMark(meshes, materials);
@@ -1049,7 +1051,7 @@ namespace MachineBrigade.Game.Views
             var repairing = Time.time < _repairUntil;
             // The stores icon is drawn under the bar's transform, so it is worked out before the bar is hidden.
             var stores = _storesMark != null && StoresWanted();
-            var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted;
+            var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted || RoundMarkWanted;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             RenderEscortMark(cameraRotation);
             RenderAccordMark(cameraRotation);
@@ -1059,6 +1061,7 @@ namespace MachineBrigade.Game.Views
             if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
             RenderStoresMark();
             RenderDeployMark();
+            RenderRoundMark();
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
             _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);

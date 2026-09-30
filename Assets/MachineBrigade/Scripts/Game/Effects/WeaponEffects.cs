@@ -24,7 +24,7 @@ namespace MachineBrigade.Game.Effects
         private readonly MuzzleFx _muzzle;
         private readonly Action<Vector3, float> _shake;
         private readonly LaserBeams _lasers;
-        private readonly bool _hasMissile, _hasRocket, _hasBomb;
+        private readonly bool _hasMissile, _hasRocket, _hasBomb, _hasFlak;
 
         /// <summary>
         /// Rounds of one mount already drawn this frame: a burst faster than the simulation's step
@@ -47,6 +47,7 @@ namespace MachineBrigade.Game.Effects
             _hasMissile = models.Has("missile");
             _hasRocket = models.Has("rocket");
             _hasBomb = models.Has("bomb");
+            _hasFlak = models.Has(FlakModel);
             // Test feedback 19P: a jammed round losing its lock: a crackle of sparks and a flicker of light on it.
             projectiles.Jammed = (at, forward) =>
             {
@@ -97,7 +98,9 @@ namespace MachineBrigade.Game.Effects
         /// <summary>A shot by <paramref name="shooter"/> (null when it is not drawn): call once the shooter is drawn this frame.</summary>
         public void Fired(in SimEvent e, VehicleView shooter, ViewRegistry views, float now)
         {
-            var weapon = e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var w) ? w : null;
+            // Prompt 25 G: a second round (the air-burst round, the HE) is drawn as that round.
+            var drawn = e.Round ?? e.DefId;
+            var weapon = drawn != null && _catalog.Weapons.TryGetValue(drawn, out var w) ? w : null;
             Vector3 from;
             float? groundY = 0f;
             var pitch = float.NaN;
@@ -179,6 +182,8 @@ namespace MachineBrigade.Game.Effects
                 Flash(MuzzleFx.Kind.MachineGun, from, Barrel(aim), now, 0.6f, groundY);
                 return;
             }
+            // Prompt 25 G: an air-burst round flies as itself (a short shell with its proximity fuse) on its tracer.
+            if (weapon != null && weapon.Flak && lag <= 0f) FlakRound(weapon, from, to, e.Value, now);
             switch (kind)
             {
                 case ProjectileKind.Bullet:
@@ -418,6 +423,18 @@ namespace MachineBrigade.Game.Effects
         {
             var height = views.TryGet(e.Other, out var target) && target.Flying ? target.Altitude + 0.4f : 0.4f;
             return new Vector3(e.Target.X, height, e.Target.Y);
+        }
+
+        /// <summary>Prompt 25 G: the air-burst round's model (Tools/blender/mb_munitions.py flak_round, built 0.5 m for 35 mm).</summary>
+        internal const string FlakModel = "flak_round";
+
+        /// <summary>How big the flak round is drawn: in step with its calibre, and twice its size so a 30 mm round reads from the battle camera.</summary>
+        internal static float FlakScale(WeaponDef weapon) => Mathf.Clamp(weapon.Size, 20f, 57f) / 35f * 2f;
+
+        private void FlakRound(WeaponDef weapon, Vector3 from, Vector3 to, float travel, float now)
+        {
+            if (!_hasFlak) return;
+            _projectiles.Launch(_models.Merged(FlakModel), from, to, Mathf.Max(0.05f, travel), 0f, 0f, now, scale: FlakScale(weapon));
         }
 
         private void Bullets(WeaponDef weapon, Vector3 from, Vector3 to, Vector3 aim, float? groundY, float travel, float now, float lag = 0f)

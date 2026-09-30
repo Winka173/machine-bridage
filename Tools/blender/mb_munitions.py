@@ -700,6 +700,21 @@ def rail_slug(a):
     m.fins('Fins', STEEL, 4, X4, inner(r, s), .74, .14, .03, .09, .07, r1=.02)
 
 
+def flak_round(a):
+    """Prompt 25 G: an autocannon's air-burst round (35 mm AHEAD / 30 mm HE-FRAG with a proximity fuse; 0.39 m, drawn
+    0.5 m, the game scales it by calibre): a short grey-green body, a red fuze cap with a dark sensor ring (the proximity
+    fuse), a yellow HE band, the copper driving band and a bright tracer in the base."""
+    m, r, s = Round(a, .5), .032, 8
+    m.rev('Fuze', RED, [(0, 0), (.009, .012), (.016, .04)], 6, caps=(False, False))
+    m.rev('Sensor', BLACK, [(.016, .04), (.02, .055)], 6, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(.02, .055), (.028, .1), (r, .15)], s, caps=(False, False))
+    m.rev('Band', YELLOW, [(r, .15), (r, .19)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(r, .19), (r, .38)], s, caps=(False, False))
+    m.rev('Driving_band', COPPER, [(r, .38), (r, .42)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(r, .42), (.027, .5)], s, caps=(False, False))
+    m.motor(.027, .5, .018, s, glow=TRACER)
+
+
 # name: (builder, Asset options). They all fly: no ground occlusion or grime.
 BUILDERS = {name: (fn, dict(ao_distance=ao, ground=False)) for name, fn, ao in (
     ('atgm_tow', atgm_tow, .12), ('atgm_kornet', atgm_kornet, .12), ('atgm_ataka', atgm_ataka, .12),
@@ -711,7 +726,7 @@ BUILDERS = {name: (fn, dict(ao_distance=ao, ground=False)) for name, fn, ao in (
     ('tos_rocket', tos_rocket, .15), ('bomb_mk84', bomb_mk84, .3), ('bomb_fab', bomb_fab, .2), ('gbu12', gbu12, .25),
     ('jdam', jdam, .3), ('lancet', lancet, .2), ('shahed', shahed, .3), ('apfsds', apfsds, .06),
     ('heat_round', heat_round, .08), ('shell_155', shell_155, .1), ('mortar_bomb', mortar_bomb, .08),
-    ('rail_slug', rail_slug, .06),
+    ('rail_slug', rail_slug, .06), ('flak_round', flak_round, .05),
 )}
 
 OUT = HERE.parents[1] / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'

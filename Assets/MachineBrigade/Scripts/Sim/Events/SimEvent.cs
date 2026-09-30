@@ -174,6 +174,12 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Prompt 23 D.9: the weather turns to DefId (a weather name: Snow, Fog, Night ...) over Value seconds.</summary>
         WeatherShift,
+
+        /// <summary>
+        /// Prompt 25 G: a gun (Entity's Mount) starts changing to another round: DefId the round it loads (its own id for
+        /// the gun's own round), Value the seconds the change takes.
+        /// </summary>
+        RoundSwitched,
     }
 
     /// <summary>
@@ -183,8 +189,10 @@ namespace MachineBrigade.Sim.Events
     public readonly struct SimEvent
     {
         private SimEvent(SimEventKind kind, EntityId entity, Vector2 position, Vector2 target, float value,
-            ExplosionTier tier, string? defId, int team, int mount = 0, EntityId other = default, bool airborne = false, Vector2 offset = default)
+            ExplosionTier tier, string? defId, int team, int mount = 0, EntityId other = default, bool airborne = false, Vector2 offset = default,
+            string? round = null)
         {
+            Round = round;
             Offset = offset;
             Airborne = airborne;
             Mount = mount;
@@ -217,6 +225,12 @@ namespace MachineBrigade.Sim.Events
         /// <summary>Vehicle, prop or weapon definition id, for choosing visuals.</summary>
         public string? DefId { get; }
 
+        /// <summary>
+        /// Prompt 25 G: for WeaponFired, the round the gun (DefId) fired when it is one of its second rounds (the flak round,
+        /// the HE), else null; the view draws that round, the gun's own muzzle and report.
+        /// </summary>
+        public string? Round { get; }
+
         public int Team { get; }
 
         /// <summary>The impact or blast happened in the air (flak and missiles hitting aircraft).</summary>
@@ -242,12 +256,17 @@ namespace MachineBrigade.Sim.Events
             new(SimEventKind.VehicleSpawned, v.Id, v.Position, default, 0f, default, v.Def.Id, v.Team);
 
         internal static SimEvent Fired(Vehicle shooter, int mount, Vector2 origin, Vector2 aim, float travelTime, EntityId target,
-            Vector2 wide = default, bool jammed = false)
+            Vector2 wide = default, bool jammed = false, WeaponDef? round = null)
         {
             var weapon = shooter.Def.Mounts[mount].Weapon;
-            return new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, weapon.ImpactTier, weapon.Id,
-                shooter.Team, mount, target, jammed, wide);
+            var own = round == null || round.Id == weapon.Id;
+            return new(SimEventKind.WeaponFired, shooter.Id, origin, aim, travelTime, own ? weapon.ImpactTier : round!.ImpactTier, weapon.Id,
+                shooter.Team, mount, target, jammed, wide, own ? null : round!.Id);
         }
+
+        /// <summary>Prompt 25 G: a gun starts changing rounds (see <see cref="SimEventKind.RoundSwitched"/>).</summary>
+        internal static SimEvent RoundSwitch(Vehicle shooter, int mount, WeaponDef round, float seconds) =>
+            new(SimEventKind.RoundSwitched, shooter.Id, shooter.Position, default, seconds, round.ImpactTier, round.Id, shooter.Team, mount);
 
         /// <summary>A shot from equipment rather than a mount (a Drone Escort drone): drawn from the main muzzle with its own weapon's look.</summary>
         internal static SimEvent FiredWith(Vehicle shooter, WeaponDef weapon, Vector2 origin, Vector2 aim, float travelTime, EntityId target) =>

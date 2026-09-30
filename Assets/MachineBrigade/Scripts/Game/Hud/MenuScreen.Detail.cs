@@ -719,7 +719,7 @@ namespace MachineBrigade.Game.Hud
                 var w = mounts[i].Weapon;
                 var row = Kit.Box(KitPanel.SurfaceClass + " fc-weapon");
                 // Prompt 15 E2: the weapon's chip (its form, the damage-type mark, the extra marks) beside its name; a tap says it in words.
-                var facts = CombatFacts.Of(w);
+                var facts = CombatFacts.Of(w, def);
                 if (facts != null)
                 {
                     var chip = KitCombat.Chip(facts, large: true, extras: true);
@@ -741,10 +741,13 @@ namespace MachineBrigade.Game.Hud
                 // come back, faster sites, range), behind "More".
                 if (_weaponsMore && w.Damage > 0f)
                     foreach (var line in UnitLines.Weapon(def, w)) text.Add(Kit.Small(line));
+                // Prompt 25 G: a gun of two rounds lists both, each with its figures and what it is loaded for.
+                if (CombatFacts.SecondRounds(w, def) > 0) text.Add(RoundsOf(def, w));
                 row.Add(text);
                 _detailBody.Add(row);
             }
-            var weapons = CombatFacts.Weapons(def);
+            // Prompt 25 G: the table has a row for each round of a gun of two rounds.
+            var weapons = CombatFacts.Rounds(def);
             if (table && weapons.Count > 0)
             {
                 // Prompt 15 E2: the effectiveness table, made from the data.
@@ -759,6 +762,40 @@ namespace MachineBrigade.Game.Hud
                 _weaponsMore = !_weaponsMore;
                 RefreshDetail();
             }));
+        }
+
+        /// <summary>
+        /// Prompt 25 G (DECISIONS 25G): a gun's rounds under its line: the ammo switch and "switches on its own", then its own
+        /// round and each second round its carrier loads: the chip, the round's kind, damage type, penetration, damage and
+        /// blast, and what the gun loads it for (its own: everything else).
+        /// </summary>
+        private static VisualElement RoundsOf(VehicleDef def, WeaponDef gun)
+        {
+            var box = Kit.Box("fc-rounds");
+            var head = Kit.Box("fc-rounds__head");
+            head.Add(Kit.Icon("ammoswap", "fc-rounds__icon"));
+            head.Add(Kit.Text(Strings.Get("detail.rounds"), "fc-small"));
+            box.Add(head);
+            box.Add(RoundRow(gun, Strings.Format("detail.roundMain", ("name", UnitLines.RoundWord(gun))), Strings.Format("detail.roundFor",
+                ("targets", Strings.Get("round.for.rest"))), def));
+            foreach (var r in gun.Rounds)
+                if (r.CarriedBy(def))
+                    box.Add(RoundRow(r.Round, UnitLines.RoundWord(r.Round), Strings.Format("detail.roundSwitch", ("targets", UnitLines.UseWords(r)),
+                        ("seconds", gun.SwitchSeconds(r).ToString("0.#", Strings.Culture))), def));
+            return box;
+        }
+
+        private static VisualElement RoundRow(WeaponDef round, string name, string use, VehicleDef def)
+        {
+            var row = Kit.Box("fc-round");
+            var facts = CombatFacts.Of(round);
+            if (facts != null) row.Add(KitCombat.Chip(facts));
+            var text = Kit.Box("fc-row-text fc-grow");
+            text.Add(Kit.Body2(name));
+            text.Add(Kit.Small(UnitLines.RoundFigures(round)));
+            text.Add(Kit.Small(use));
+            row.Add(text);
+            return row;
         }
 
         /// <summary>The weapons tab shows every figure (prompt 13 G.5: "More").</summary>

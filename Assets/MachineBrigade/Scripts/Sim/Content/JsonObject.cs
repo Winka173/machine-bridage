@@ -125,6 +125,14 @@ namespace MachineBrigade.Sim.Content
             return new JsonObject(merged, Path);
         }
 
+        /// <summary>Prompt 25 G: a copy without some fields (a second round leaves its gun's own round links behind).</summary>
+        internal JsonObject Without(params string[] keys)
+        {
+            var copy = new Dictionary<string, object?>(_values);
+            foreach (var k in keys) copy.Remove(k);
+            return new JsonObject(copy, Path);
+        }
+
         /// <summary>A copy with one field set (a merged def's resolved model).</summary>
         internal JsonObject With(string key, object? value)
         {

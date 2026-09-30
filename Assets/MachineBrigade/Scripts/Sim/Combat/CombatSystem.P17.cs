@@ -44,27 +44,6 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>A stealth fighter's bombs weigh an air defence this much more (it hunts them).</summary>
         internal const float SeadPriority = 3f;
 
-        /// <summary>
-        /// Prompt 17 D.6: the round a dual-purpose gun (the heavy tank's 152 mm) fires at this target: its high
-        /// explosive at a structure, a tower, a light vehicle or a wall, its own armour-piercing round at armour.
-        /// </summary>
-        internal WeaponDef RoundFor(WeaponDef weapon, EntityId target, IDamageable? aimTarget)
-        {
-            var he = weapon.HeRound;
-            if (he == null && weapon.AirRound == null) return weapon;
-            var aimed = aimTarget;
-            if (aimed == null && target.IsValid && _world.TryGetTarget(target, out var found)) aimed = found;
-            // The tower-branch rework: an air-burst round for a target in the air (the 57 mm gun's).
-            if (weapon.AirRound is { } air && aimed is Vehicle { Flying: true }) return air;
-            if (he == null) return weapon;
-            return aimed switch
-            {
-                null => weapon,
-                Vehicle v => WeaponDef.WantsHe(v.Armor, v.Armour, v.Def.Static) ? he : weapon,
-                _ => he,
-            };
-        }
-
         /// <summary>The prompt 17 target weights for <see cref="BestInRange"/>.</summary>
         private float NewContentWorth(Vehicle v, Vehicle other, WeaponDef weapon)
         {

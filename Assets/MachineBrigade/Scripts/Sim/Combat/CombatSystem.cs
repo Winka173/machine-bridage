@@ -332,15 +332,18 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         private float Score(Vehicle v, WeaponDef weapon, Vehicle other, EntityId favoured)
         {
-            var effect = _world.Damage.Estimate(weapon, v, other);
+            // Prompt 25 G: a gun with a second round is weighed with the round it would load for this target; whether it
+            // is made for aircraft stays the gun's (an autocannon with an air-burst round still takes the ground first).
+            var round = weapon.HasRounds ? RoundAgainst(v, weapon, other) : weapon;
+            var effect = _world.Damage.Estimate(round, v, other);
             if (effect <= 0f) return 0f;
-            effect *= DamageSystem.BonusFor(weapon, v, other, _world.Time);
+            effect *= DamageSystem.BonusFor(round, v, other, _world.Time);
             var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
             // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
             // anti-aircraft weapons go for aircraft first.
             // Prompt 19: a target on altitude tiers is fair game for any weapon that reaches its tier.
             if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
-            if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
+            if (other.Hp <= round.Damage * effect) score *= 1.5f;
             // An obstacle only when there is nothing else (the commander orders a breach itself).
             if (other.Def.Obstacle) score *= 0.05f;
             if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
@@ -375,7 +378,7 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         private Vehicle? CoaxAirTarget(Vehicle v)
         {
-            if (v.Flying || v.Def.Mounts[0].Aim != MountAim.Turret || v.Def.Weapon.CanTarget(true)) return null;
+            if (v.Flying || v.Def.Mounts[0].Aim != MountAim.Turret || v.Def.Weapon.CanEngage(true, v.Def)) return null;
             var mounts = v.Def.Mounts;
             for (var i = 1; i < mounts.Count; i++)
             {
@@ -480,7 +483,8 @@ namespace MachineBrigade.Sim.Combat
         {
             // Prompt 19 B: a target on altitude tiers is reached by the weapons for its tier (a railgun at low, only
             // long-range SAMs and fighters at high, nothing in orbit); everything else by the ordinary air/ground rule.
-            if (target is Vehicle { Tier: not AltitudeTier.None } tiered ? !TierRules.Reaches(weapon, v.Def, tiered.Tier, true) : !weapon.CanTarget(IsFlying(target)))
+            // Prompt 25 G: a gun reaches whatever one of its rounds can hit (an autocannon's air-burst round, aircraft).
+            if (target is Vehicle { Tier: not AltitudeTier.None } tiered ? !TierRules.Reaches(weapon, v.Def, tiered.Tier, true) : !weapon.CanEngage(IsFlying(target), v.Def))
                 return false;
             var distance = Vector2.Distance(v.Position, target.Position);
             var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
@@ -522,6 +526,8 @@ namespace MachineBrigade.Sim.Combat
                 return;
             }
 
+            // Prompt 25 G: a gun changing rounds fires nothing until the new round is in.
+            if (!KeepRound(v, index, target)) return;
             // A charged weapon powering up: it fires when the charge is full, whatever it aims at
             // by then (the charge is the target's warning); lost targets let it wait at full charge.
             if (state.ChargeLeft > 0f)
@@ -541,10 +547,11 @@ namespace MachineBrigade.Sim.Combat
             }
             // An aircraft's stores (prompt 13 C): the salvo is what is left of them (a Grad-like ripple of
             // rockets from a half-empty pod fires half a ripple); a launcher's magazine counts trigger pulls.
-            var salvo = weapon.Burst;
+            // Prompt 25 G: the round in the gun sets the salvo (a guided shell goes one at a time).
+            var salvo = Loaded(v, index).Burst;
             if (state.Load > 0)
             {
-                salvo = Math.Min(weapon.Burst, Math.Max(0, state.Ammo));
+                salvo = Math.Min(salvo, Math.Max(0, state.Ammo));
                 state.Ammo -= salvo;
             }
             else if (state.Ammo > 0) state.Ammo--;
@@ -698,6 +705,8 @@ namespace MachineBrigade.Sim.Combat
         {
             var mount = v.Def.Mounts[index];
             if (v.Weapons[index].Cooldown > 0f) return false;
+            // Prompt 25 G: the round in the gun must be one for this target's layer (it changes after its 2 s).
+            if (!LoadedReaches(v, index, target)) return false;
             // Prompt 13 D.2: no bombs where friends are too close to where they would fall.
             // Play-test 8 A: a free-falling stick is judged where it will come down, not at the target.
             var freeFall = FreeFall(v, v.Arms[index]);
@@ -759,8 +768,8 @@ namespace MachineBrigade.Sim.Combat
         private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying, float damageScale = 1f, bool pull = true,
             IDamageable? aimTarget = null)
         {
-            // Prompt 17 D.6: a dual-purpose gun loads its high explosive for a structure or light armour.
-            var weapon = RoundFor(shooter.Arms[index], target, aimTarget);
+            // Prompt 17 D.6, prompt 25 G: the round in the gun (its own, or the second round it loaded for this target).
+            var weapon = Loaded(shooter, index);
             shooter.LastFiredAt = _world.Time;
             shooter.Weapons[index].FiredAt = _world.Time;
             if (index == 0 && shooter.Def.Kamikaze)
@@ -796,7 +805,8 @@ namespace MachineBrigade.Sim.Combat
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.
-            var reach = Math.Clamp(distance / weapon.Range, 0f, 1.2f);
+            // The gun's reach (a second round's is its gun's; equipment may lengthen the gun's own).
+            var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, 1.2f);
             var spread = weapon.Guided ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
@@ -882,7 +892,7 @@ namespace MachineBrigade.Sim.Combat
             }
             _projectiles.Add(projectile);
             var wide = projectile.Jammed || projectile.Failed ? projectile.Miss : default;
-            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target, wide, projectile.Jammed));
+            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target, wide, projectile.Jammed, weapon));
         }
 
         /// <summary>
