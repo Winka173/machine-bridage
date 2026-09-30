@@ -36,7 +36,46 @@ def run(step, wr, wb, report, weapon_rows, unit_rows, refs=None):
         INTRO["A5"] = steps_a5.INTRO
         steps_a5.run(wr, wb, report, weapon_rows)
         return "A5: blast radius (sheets Tổng quan, Vũ khí đề xuất)"
+    if step == "B7":
+        b7(wr, wb, report)
+        return "B.7: CP prices (sheets Giá CP, Kích thước – giá)"
     return None
+
+
+INTRO["B7"] = ("The column \"CP đề xuất\" of \"Giá CP\", checked against \"CP sau đề xuất\" of \"Kích thước – giá\". Most "
+               "were applied by their A1 rows; a sheet whose two price columns disagree keeps the price sheet's.")
+
+
+def b7(wr, wb, report):
+    g = wr.game
+    step = "B7"
+    _, prices = X.sheet(wb, "Giá CP")
+    _, sizes = X.sheet(wb, "Kích thước – giá")
+    by_size = {r[0]: r[6] for r in sizes if r[0]}
+    for r in prices:
+        vid, cp = r[0], r[10]
+        if not vid:
+            continue
+        sh = "Giá CP"
+        if vid not in g.vehicles_raw:
+            report.add(step, sh, vid, "cp", "skipped", "no such vehicle id in balance.json")
+            continue
+        if cp is None:
+            report.add(step, sh, vid, "cp", "skipped", "no proposed price")
+            continue
+        note = ""
+        other = by_size.get(vid)
+        if other is not None and int(other) != int(cp):
+            note = f"; Kích thước – giá says {other}"
+        if int(g.vehicle(vid).get("cp", 0)) == int(cp):
+            report.add(step, sh, vid, "cp", "already", f"{int(cp)} CP" + note)
+        else:
+            old = g.vehicle(vid).get("cp")
+            wr.vehicle_field(vid, "cp", int(cp))
+            report.add(step, sh, vid, "cp", "applied", f"{old} -> {int(cp)} CP" + note)
+    for vid in by_size:
+        if vid not in {r[0] for r in prices}:
+            report.add(step, "Kích thước – giá", vid, "cp", "skipped", "not in Giá CP")
 
 
 INTRO["A4"] = ("The sheet's proposed speed for every missile, rocket and drone it lists. A family member's speed is its "

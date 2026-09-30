@@ -320,7 +320,7 @@ Every row of "Vũ khí đề xuất" (the proposal columns: damage, fire mode, r
 | Sheet | Applied | Already so | Deferred | Skipped |
 |---|---|---|---|---|
 | Vũ khí đề xuất | 0 | 154 | 0 | 35 |
-| Đơn vị – vũ khí | 0 | 288 | 0 | 0 |
+| Đơn vị – vũ khí | 1 | 287 | 0 | 0 |
 
 | Sheet | id | Item | Outcome | Detail |
 |---|---|---|---|---|
@@ -485,9 +485,9 @@ Every row of "Vũ khí đề xuất" (the proposal columns: damage, fire mode, r
 | Đơn vị – vũ khí | heavy_rocket_artillery | hmg_selfdef_15 | already | not mounted |
 | Đơn vị – vũ khí | aa_vehicle | sam | already | the Stinger stays (Giữ Stinger phụ — Gepard bản nâng cấp có thể mang Stinger.) |
 | Đơn vị – vũ khí | sam_launcher | hmg_selfdef_18 | already | not mounted |
-| Đơn vị – vũ khí | heavy_aa | sam | already | Stinger -> 57E6: Đổi Stinger → tên lửa 57E6 (Pantsir): 1 × 220, Mảnh xuyên 3, tầm 55, tốc độ 55 |
+| Đơn vị – vũ khí | heavy_aa | sam | applied | Stinger -> 57E6: Đổi Stinger → tên lửa 57E6 (Pantsir): 1 × 220, Mảnh xuyên 3, tầm 55, tốc độ 55 |
 | Đơn vị – vũ khí | scout_heli | loadout | already | its A1 row applied it (Hydra: 12 → 6 quả mỗi lần đầy đạn) |
-| Đơn vị – vũ khí | swarm_carrier | loadout | already | its A1 row applied it (Bỏ bom SDB; thêm 2 tên lửa hành trình Rapid Dragon mỗi lượt; Vũ khí thêm theo đề xuất) |
+| Đơn vị – vũ khí | swarm_carrier | loadout | already | its A1 row applied it (Vũ khí thêm theo đề xuất; Bỏ bom SDB; thêm 2 tên lửa hành trình Rapid Dragon mỗi lượt) |
 | Đơn vị – vũ khí | stealth_fighter | loadout | already | its A1 row applied it (Thêm 1 AIM-120 mỗi lần đầy đạn) |
 | Đơn vị – vũ khí | gunship_heli | loadout | already | its A1 row applied it (Đổi Hellfire → 9M120 Ataka) |
 | Đơn vị – vũ khí | attack_jet | loadout | already | its A1 row applied it (FAB-250: 2 → 1 quả mỗi lần đầy đạn) |
@@ -657,11 +657,11 @@ One blast radius for one round (its real name without the mount, damage type, si
 
 | Sheet | Applied | Already so | Deferred | Skipped |
 |---|---|---|---|---|
-| Tổng quan, Vũ khí đề xuất | 5 | 68 | 2 | 0 |
+| Tổng quan, Vũ khí đề xuất | 1 | 72 | 2 | 0 |
 
 | Sheet | id | Item | Outcome | Detail |
 |---|---|---|---|---|
-| Tổng quan, Vũ khí đề xuất | 122 mm thermobaric (HighExplosive, 122) | blast | applied | 4 m from the sheet's 7 m at 220 mm, scaled by calibre: turret_thermobaric; moved: turret_thermobaric 5.2 -> 4 |
+| Tổng quan, Vũ khí đề xuất | 122 mm thermobaric (HighExplosive, 122) | blast | already | 4 m from the sheet's 7 m at 220 mm, scaled by calibre: turret_thermobaric |
 | Tổng quan, Vũ khí đề xuất | 155 mm/60 (HighExplosive, 155) | blast | already | 4.5 m from the weapon sheet: naval_155_triple |
 | Tổng quan, Vũ khí đề xuất | 2A38 30 mm (Fragmentation, 30) | blast | already | 2.5 m from the weapon sheet: twin_30_flak, tower_flak_30, hq_flak |
 | Tổng quan, Vũ khí đề xuất | 2A44 203 mm (HighExplosive, 203) | blast | already | 8 m from the weapon sheet: boss_howitzer |
@@ -688,7 +688,7 @@ One blast radius for one round (its real name without the mount, damage type, si
 | Tổng quan, Vũ khí đề xuất | AU-220 57 mm (HighExplosive, 57) | blast | already | 3.5 m from the weapon sheet: mothership_cannon |
 | Tổng quan, Vũ khí đề xuất | AU-220 57 mm (Kinetic, 57) | blast | already | 1.5 m from the weapon sheet: gun_57_auto |
 | Tổng quan, Vũ khí đề xuất | B-38 152 mm (Kinetic, 152) | blast | already | 2.5 m from the weapon sheet: train_gun |
-| Tổng quan, Vũ khí đề xuất | BM-21 Grad 122 mm (HighExplosive, 122) | blast | applied | 4.5 m from the weapon sheet: grad_rockets, turret_rockets, boss_rockets; moved: boss_rockets 4 -> 4.5 |
+| Tổng quan, Vũ khí đề xuất | BM-21 Grad 122 mm (HighExplosive, 122) | blast | already | 4.5 m from the weapon sheet: grad_rockets, turret_rockets, boss_rockets |
 | Tổng quan, Vũ khí đề xuất | BM-21 Grad 122 mm (HighExplosive, 122, cluster) | blast | already | 4 m from the weapon sheet: grad_cluster, turret_rockets_cluster |
 | Tổng quan, Vũ khí đề xuất | Bofors 40 mm (Kinetic, 40) | blast | already | 1 m from the weapon sheet: autocannon_40 |
 | Tổng quan, Vũ khí đề xuất | Bofors L/60 40 mm (HighExplosive, 40) | blast | already | 3 m from the weapon sheet: gunship_40mm |
@@ -702,13 +702,13 @@ One blast radius for one round (its real name without the mount, damage type, si
 | Tổng quan, Vũ khí đề xuất | Kh-101 (HighExplosive, 400) | blast | already | 9 m from the weapon sheet: air_cruise_missile |
 | Tổng quan, Vũ khí đề xuất | L7 105 mm (Kinetic, 105) | blast | already | 1.5 m from the weapon sheet: gun_105_twin, siege_gun_105, gun_105_bunker |
 | Tổng quan, Vũ khí đề xuất | M102 105 mm (HighExplosive, 105) | blast | already | 5.5 m from the weapon sheet: gunship_105 |
-| Tổng quan, Vũ khí đề xuất | M110 203 mm (HighExplosive, 203) | blast | applied | 8 m from the sheet's 8 m at 203 mm: gun_203_siege; moved: gun_203_siege 6 -> 8 |
+| Tổng quan, Vũ khí đề xuất | M110 203 mm (HighExplosive, 203) | blast | already | 8 m from the sheet's 8 m at 203 mm: gun_203_siege |
 | Tổng quan, Vũ khí đề xuất | M284 155 mm (HighExplosive, 155) | blast | already | 7 m from the weapon sheet: howitzer, howitzer_fixed, gun_155_sph, gun_155_twin, gun_155_twin_fort, howitzer_cb, howitzer_ext, gun_155_twin_long, gun_155_coastal, gun_155_twin_coastlr, casemate_155 |
 | Tổng quan, Vũ khí đề xuất | M30 GMLRS 227 mm (HighExplosive, 227, cluster) | blast | already | 5 m from the weapon sheet: mlrs_elite |
 | Tổng quan, Vũ khí đề xuất | M31 GMLRS 227 mm (HighExplosive, 227) | blast | already | 4.5 m from the weapon sheet: mlrs_rockets, turret_gmlrs |
 | Tổng quan, Vũ khí đề xuất | MIM-104 Patriot PAC-2 (Fragmentation, 90) | blast | already | 2.5 m from the weapon sheet: sam_battery, patriot, sam_battery_lrr |
 | Tổng quan, Vũ khí đề xuất | Mk 19 40 mm (HighExplosive, 40) | blast | already | 2 m from the weapon sheet: agl_40, tower_agl |
-| Tổng quan, Vũ khí đề xuất | Mk 45 127 mm (HighExplosive, 127) | blast | applied | 6 m from between the sheet's 5.5 m at 105 mm and 6.5 m at 152 mm: naval_127; moved: naval_127 4 -> 6 |
+| Tổng quan, Vũ khí đề xuất | Mk 45 127 mm (HighExplosive, 127) | blast | already | 6 m from between the sheet's 5.5 m at 105 mm and 6.5 m at 152 mm: naval_127 |
 | Tổng quan, Vũ khí đề xuất | Mk 71 203 mm (HighExplosive, 203) | blast | already | 8 m from the weapon sheet: cruiser_203 |
 | Tổng quan, Vũ khí đề xuất | NPzK 140 mm (Kinetic, 140) | blast | already | 2 m from the weapon sheet: gun_140_twin |
 | Tổng quan, Vũ khí đề xuất | OTO Melara 76/62 (HighExplosive, 76) | blast | already | 3 m from the weapon sheet: naval_76 |
@@ -738,3 +738,75 @@ One blast radius for one round (its real name without the mount, damage type, si
 | Tổng quan, Vũ khí đề xuất | supergun_800 | blast | deferred | a boss system's own round the sheet gives no number for: task C1 |
 
 <!-- /step:A5 -->
+
+<!-- step:B7 -->
+## B.7: CP prices (sheets Giá CP, Kích thước – giá)
+
+The column "CP đề xuất" of "Giá CP", checked against "CP sau đề xuất" of "Kích thước – giá". Most were applied by their A1 rows; a sheet whose two price columns disagree keeps the price sheet's.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Giá CP | 0 | 58 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Giá CP | hover_gunboat | cp | already | 0 CP |
+| Giá CP | armored_car | cp | already | 3 CP |
+| Giá CP | ifv | cp | already | 6 CP |
+| Giá CP | supply_truck | cp | already | 0 CP |
+| Giá CP | engineer_vehicle | cp | already | 3 CP |
+| Giá CP | smoke_carrier | cp | already | 3 CP |
+| Giá CP | ammo_carrier | cp | already | 4 CP |
+| Giá CP | counter_battery_radar | cp | already | 5 CP |
+| Giá CP | ew_jammer | cp | already | 5 CP |
+| Giá CP | mine_layer | cp | already | 5 CP |
+| Giá CP | command_vehicle | cp | already | 6 CP |
+| Giá CP | shield_carrier | cp | already | 7 CP |
+| Giá CP | scout_jeep | cp | already | 2 CP |
+| Giá CP | vbied | cp | already | 3 CP |
+| Giá CP | light_tank | cp | already | 3 CP |
+| Giá CP | flame_tank | cp | already | 5 CP |
+| Giá CP | turtle_tank | cp | already | 7 CP |
+| Giá CP | bmpt | cp | already | 9 CP |
+| Giá CP | rocket_technical | cp | already | 3 CP |
+| Giá CP | mortar_carrier | cp | already | 4 CP |
+| Giá CP | artillery | cp | already | 6 CP |
+| Giá CP | mlrs | cp | already | 7 CP |
+| Giá CP | shahed_truck | cp | already | 8 CP |
+| Giá CP | thermobaric_launcher | cp | already | 9 CP |
+| Giá CP | ballistic_launcher | cp | already | 11 CP |
+| Giá CP | heavy_rocket_artillery | cp | already | 12 CP |
+| Giá CP | siege_tank | cp | already | 12 CP |
+| Giá CP | zu23_technical | cp | already | 3 CP |
+| Giá CP | aa_vehicle | cp | already | 4 CP |
+| Giá CP | sam_launcher | cp | already | 7 CP |
+| Giá CP | heavy_aa | cp | already | 7 CP |
+| Giá CP | iron_beam | cp | already | 6 CP |
+| Giá CP | long_sam | cp | already | 14 CP |
+| Giá CP | scout_heli | cp | already | 5 CP |
+| Giá CP | recon_drone | cp | already | 6 CP |
+| Giá CP | wingman_drone | cp | already | 6 CP |
+| Giá CP | strike_drone | cp | already | 9 CP |
+| Giá CP | swarm_carrier | cp | already | 13 CP |
+| Giá CP | attack_helicopter | cp | already | 9 CP |
+| Giá CP | fighter_jet | cp | already | 12 CP |
+| Giá CP | stealth_fighter | cp | already | 13 CP |
+| Giá CP | gunship_heli | cp | already | 15 CP |
+| Giá CP | attack_jet | cp | already | 18 CP |
+| Giá CP | stealth_bomber | cp | already | 21 CP |
+| Giá CP | heavy_bomber | cp | already | 22 CP |
+| Giá CP | sky_gunship | cp | already | 22 CP |
+| Giá CP | bunker_vehicle | cp | already | 6 CP |
+| Giá CP | armored_bulldozer | cp | already | 7 CP |
+| Giá CP | main_battle_tank | cp | already | 7 CP |
+| Giá CP | twin_tank | cp | already | 9 CP |
+| Giá CP | heavy_tank | cp | already | 13 CP |
+| Giá CP | titan_tank | cp | already | 18 CP |
+| Giá CP | fpv_carrier | cp | already | 6 CP |
+| Giá CP | lancet_truck | cp | already | 6 CP |
+| Giá CP | wheeled_gun | cp | already | 6 CP |
+| Giá CP | tank_destroyer | cp | already | 6 CP |
+| Giá CP | railgun_truck | cp | already | 10 CP |
+| Giá CP | laser_tank | cp | already | 9 CP |
+
+<!-- /step:B7 -->

@@ -10925,3 +10925,11 @@ wait for the test phase too: those rows keep the game's value for now.
   weapon with a blast, on every recipe the director draws it with (its tier, the medium blast of a HEAT or drone
   strike, the air burst, the shell hit) and at the scales it draws with, the ring as emitted reaches the radius within
   1 %.
+
+### B.7 CP prices
+
+Every row of "Giá CP" ("CP đề xuất") and "Kích thước – giá" ("CP sau đề xuất") agrees, and all 58 prices were
+already in from their A1 rows: the attack jet 18, the stealth bomber 21, the swarm carrier 13, the long-range SAM 14,
+the super-heavy tank 18, the heavy tank 13, the stealth fighter 13, the scout helicopter 5, the strike drone 9, the
+SAM launcher, the Pantsir and the HIMARS 7, the TOS 9, the Smerch 12, the railgun truck 10, the laser tank 9, the
+attack helicopter 9, the tank destroyer 6, the Iron Beam 6. B.7 checks them and changes nothing more.
