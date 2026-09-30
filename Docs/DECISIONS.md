@@ -11724,3 +11724,30 @@ document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its P
   system's own rounds (9b lists cards only).
 - **Examples (older export):** the SP howitzer x2.2, the heavy MLRS x2.9, the stealth bomber x4.0, the thermobaric launcher
   x2.8; a tank gun or a missile with no blast stays at its one-target DPS.
+
+### F1 The design document's new columns and tables
+
+- **Section 8b "Miêu tả, hình dạng và mở khóa"**, a row for every vehicle, tower and boss:
+  - *description*: the Guide card's how-it-fights and strong / weak lines, as the game words them (the sheet's "Miêu
+    tả" was made from the same lines);
+  - *shape*: the sheet's "Hình dạng (cho AI vẽ)" (Phương tiện, Công trình, Boss). The game holds no shape notes (they
+    are the model makers' brief), so `Tools/docs/unit_sheet.py` writes them, with the sheet's descriptions and proposed
+    unlocks for reference, to `Tools/docs/unit_sheet.json`, which the document reads like `unit_refs.json`;
+  - *unlock*: from the game after D2: a starter, a premium card, or the chapter (or interlude) and mission that opens it,
+    its early price, or "story loot, not for sale"; a tower branch opens at its tower's rank 7.
+- **Section 10e**, after the boss summary:
+  - *DPS by armour level* for every weapon (154 on the older export): its sustained DPS against levels 0-5, aircraft
+    and structures (its effect row, the Guide's ✓ ~ ✕ numbers, times its sustained DPS; against aircraft its air DPS,
+    which leaves out a boss's `weaponDamage`; an armour-class bonus counts in);
+  - *missiles*: flight speed and flight time to the longest reach of every missile and guided drone, and for the
+    anti-aircraft ones how many times the fastest aircraft's speed they fly;
+  - *model and round sizes* from the data: every unit's `modelSize` beside its hull, every weapon's `roundLength`;
+  - *the main bosses' super weapons*: name, what it does, its strikes (rounds x damage, blast, area or strip, a
+    missile's health), cycle, warning, how to get out of it and how to stop it, in the Guide's words.
+- **The export** (`ExportGameDoc.cs`, an export tool, not run here) now writes what these read: on a unit `description`,
+  `unlock` (route, mission and its name, chapter, index, story loot, early buy, price), `modelSize` and, on a main boss,
+  `superWeapon` (its id, name, Guide lines, warning, cycle, strikes); on a weapon `dpsAir`, `dpsVsLevel` (the eight
+  columns above), `flightTime` and `roundLength`.
+- **An older export.** Every reader falls back: the description from the Guide text, the unlock from the route, price and
+  the campaign's unlock lists (by name), sizes and cluster rounds from balance.json, the super weapons' words from the
+  Hud text tables, the DPS by level from the effect row.

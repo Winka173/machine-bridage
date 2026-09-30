@@ -17,6 +17,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import programme  # noqa: E402
+import prompt25  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -368,7 +369,7 @@ def build(game, imgdir):
                "xe tinh nhuệ, boss và bộ phận boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ, giao diện và các phép đo còn chờ phase kiểm tra.</p></div>")
     out.append("<div class='section'><h2>Mục lục</h2><ol class='toc'><li>Tổng quan</li><li>Chế độ chơi</li><li>Chiến dịch</li>"
                "<li>Nhiệm vụ nhiều giai đoạn</li><li>Tác chiến</li><li>Căn cứ và tháp</li><li>Công thành và Phòng thủ</li>"
-               "<li>Phương tiện (thẻ chi tiết)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
+               "<li>Phương tiện (thẻ chi tiết; 8b miêu tả, hình dạng, mở khóa)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
                "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống</li><li>Kiểm thử và phép đo còn lại</li>"
                "<li>Giao diện</li><li>Hình ảnh</li></ol></div>")
 
@@ -442,6 +443,8 @@ def build(game, imgdir):
         out.append(f"<h3>{esc(key)} ({len(vs)})</h3>")
         out.extend(vehicle_card(v, imgdir) for v in vs)
     out.append('</div>')
+    # Prompt 25 F1 (DECISIONS 25E): every unit's description, shape note and unlock.
+    out.append(prompt25.unit_sheet_rows(game, h))
 
     # ------------------------------------------------------------------ DPS table
     rows = [[f"<b>{esc(v['short'])}</b>", CLASS_VI.get(v['class'], v['class']), front_level(v), num(v['hp']), v['cost'],
@@ -500,6 +503,8 @@ def build(game, imgdir):
     out.append(programme.rates_and_ballistics(game, h))
     out.append(programme.blast_radii(game, h))
     out.append(programme.boss_summary(game, h))
+    # Prompt 25 F1: DPS by armour level, missile flight, model and round sizes, the main bosses' super weapons.
+    out.append(prompt25.f1_section(game, h))
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):

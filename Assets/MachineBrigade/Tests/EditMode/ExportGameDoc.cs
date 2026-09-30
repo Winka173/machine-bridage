@@ -251,6 +251,11 @@ namespace MachineBrigade.Tests
                     ["pen"] = w.Penetration, ["form"] = w.Form.ToString(), ["topAttack"] = Armour_StrikesTop(w), ["guided"] = w.Guided,
                     ["splashes"] = w.Splashes, ["thermobaric"] = w.Thermobaric, ["real"] = w.RealName ?? "",
                     ["effect"] = Matchup.EffectRow(catalog.Damage, w).Select(x => (object)x).ToList(),
+                    // Prompt 25 F1 (DECISIONS 25E): the DPS against aircraft (a boss's weaponDamage is the ground's only), the
+                    // DPS by armour level 0-5, on aircraft and on structures, the flight to the longest reach, the round's length.
+                    ["dpsAir"] = MachineBrigade.Sim.Combat.FirePower.SustainedAir(w, v),
+                    ["dpsVsLevel"] = DpsByLevel(catalog, w, v, raw),
+                    ["flightTime"] = w.ProjectileSpeed > 0f ? w.Range / w.ProjectileSpeed : 0f, ["roundLength"] = w.RoundLength,
                     // Every plain number, flag and name the weapon carries (rates, magazines, reloads, ceilings...).
                     ["raw"] = Raw(w),
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
@@ -299,6 +304,66 @@ namespace MachineBrigade.Tests
                 ["partLock"] = v.PartLock != null ? Text("part." + v.PartLock.Kind) + " ×" + v.PartLock.Count : "",
                 ["partPatch"] = v.Skills.Any(k => k.Kind == SkillKind.Patch), ["partTip"] = Text("guide.parts.tip." + v.Id),
                 ["size"] = v.Fort?.Size.ToString() ?? "", ["bossFile"] = Text("bossfile." + v.Id),
+                // Prompt 25 F1 (DECISIONS 25E): the description (the Guide card's how and strong / weak lines), the unlock,
+                // the model's size from the data (modelSize) and a main boss's super weapon.
+                ["description"] = Description(Text("guide." + v.Id)), ["unlock"] = Unlock(catalog, v),
+                ["modelSize"] = v.ModelLength > 0f ? new List<object> { v.ModelLength, v.ModelWidth, v.ModelHeight } : new List<object>(),
+                ["superWeapon"] = SuperWeapon(v),
+            };
+        }
+
+        /// <summary>A weapon's sustained DPS against armour levels 0-5, aircraft and structures (its effect row; an armour-class bonus counts in).</summary>
+        private static List<object> DpsByLevel(Catalog catalog, WeaponDef w, VehicleDef v, float sustained)
+        {
+            var row = Matchup.EffectRow(catalog.Damage, w);
+            var air = MachineBrigade.Sim.Combat.FirePower.SustainedAir(w, v);
+            var list = new List<object>();
+            for (var c = 0; c < row.Length; c++)
+            {
+                var armor = c == row.Length - 2 ? ArmorClass.Air : c == row.Length - 1 ? ArmorClass.Structure : c >= 3 ? ArmorClass.Heavy : ArmorClass.Light;
+                var bonus = 1f;
+                foreach (var b in w.Bonuses)
+                    if (b.Armor == armor && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
+                list.Add((armor == ArmorClass.Air ? air : sustained) * row[c] * bonus);
+            }
+            return list;
+        }
+
+        /// <summary>A Guide card's how-it-fights and strong / weak lines, without their labels and highlights.</summary>
+        private static string Description(string guide)
+        {
+            var lines = guide.Split('\n').Skip(1).Select(l => l.Replace("[[", "").Replace("]]", "").Trim()).Where(l => l.Length > 0).Take(2)
+                .Select(l => l.IndexOf(": ", StringComparison.Ordinal) is var i and > 0 and < 16 ? l.Substring(i + 2) : l);
+            return string.Join(" ", lines);
+        }
+
+        /// <summary>How a card is had (prompt 25 D2): its route, the mission that opens it, its early price, story loot.</summary>
+        private static object Unlock(Catalog catalog, VehicleDef v)
+        {
+            if (v.Boss || v.Elite) return new Dictionary<string, object>();
+            var m = Progression.UnlockMission(v.Id);
+            return new Dictionary<string, object>
+            {
+                ["route"] = Progression.Route(v.Id).ToString(), ["mission"] = m?.Id ?? "", ["missionName"] = m != null ? Text("mission." + m.Id + ".name") : "",
+                ["chapter"] = m?.Chapter ?? 0, ["index"] = m != null ? Campaign.IndexOf(m.Id) + 1 : 0,
+                ["storyLoot"] = Progression.IsStoryLoot(v.Id), ["earlyBuy"] = Progression.CanBuyEarly(v.Id), ["price"] = Progression.Price(v.Id, catalog),
+            };
+        }
+
+        /// <summary>A main boss's super weapon (prompt 25 C1) with the Guide's words; empty for every other unit.</summary>
+        private static object SuperWeapon(VehicleDef v)
+        {
+            var a = v.BigAttack;
+            if (!v.Boss || a == null) return new Dictionary<string, object>();
+            return new Dictionary<string, object>
+            {
+                ["id"] = a.Id, ["name"] = Text(a.NameKey), ["how"] = Text(a.GuideKey("how")), ["dodge"] = Text(a.GuideKey("dodge")),
+                ["stop"] = Text(a.GuideKey("stop")), ["warn"] = a.Warn, ["cooldown"] = a.Cooldown,
+                ["strikes"] = a.Strikes.Select(s => (object)new Dictionary<string, object>
+                {
+                    ["shape"] = s.Shape.ToString(), ["count"] = s.Count, ["damage"] = s.Damage, ["type"] = s.Type.ToString(), ["pen"] = s.Pen,
+                    ["radius"] = s.Radius, ["length"] = s.Length, ["width"] = s.Width,
+                }).ToList(),
             };
         }
 

@@ -14,6 +14,9 @@ its commits.
   columns, "—" until the test phase runs `CombatValueMeasure`.
 - Table 9b has a "vs cluster" column (E3): damage a second against five light vehicles 4 m apart, computed from each
   weapon's blast radius, falloff, penetration and damage type (and cluster bomblets), with how many times one target's.
+- The design document has a new section 8b (every unit's description, shape note and unlock) and 10e (every weapon's
+  DPS against armour levels 0-5, aircraft and structures; missile flight speed and time; model and round sizes from the
+  data; the main bosses' super weapons). `ExportGameDoc` writes the fields they read.
 
 ### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
 
