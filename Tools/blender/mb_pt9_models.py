@@ -33,7 +33,7 @@
     its tower broken off and the bridge lying beside it, a nacelle fin torn off, the back cracked across the waist,
     plates blown off, scorched, the engines dark, in its crater and debris.
   * stealth_fighter ("Stealth jet"). Prompt 17's airframe (mb_p17_temp, detailed by mb_pt5_models) looked fat: a 5 m
-    wide, 1.1 m deep lifting body. Redrawn from scratch as a slim fifth-generation fighter, 19.2 x 13.2 m (the same
+    wide, 1.1 m deep lifting body. Redrawn from scratch as a slim fifth-generation fighter, 18.4 x 13.2 m (the same
     size class): a thin chined fuselage 3 m wide and 0.55 m deep that flares into a flat, wide, trapezoid wing
     (F-22: 42 degree leading edge, the trailing edge swept forward, 2D thrust-vectoring nozzles; J-20: the long,
     blade-thin chined nose; YF-23: the flat body section; Su-57: the tandem belly bays between widely spaced engines;

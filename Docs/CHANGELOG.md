@@ -7,6 +7,20 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Play-test 9 models (DECISIONS 23M)
+
+- Icarus is a spaceship again, not a station: a dagger-shaped warship about as big as before on the map, with a pointed
+  bow, a lit trench along each side, a keel under the bow that carries the laser ball, two long pods on its flanks
+  with the coilguns and the crash turrets, a stepped superstructure, a command tower aft with a wide bridge, a bank of
+  seven engines across the stern and two engine nacelles with canted fins. It borrows from Star Wars, Halo, The
+  Expanse, Battlestar Galactica and Mass Effect without copying any one ship. Its wreck is the same ship crashed, with
+  the tower snapped and the bridge lying beside it. Its parts, weapons and attacks are unchanged, and so is the
+  prototype variant (Icarus Mk.0).
+- The stealth jet is redrawn slim: a thin chined body about 3 m across (was 5 m) and half as deep, with a flat, wide
+  trapezoid wing, twin tails canted out, flat thrust-vectoring nozzles and a one-piece canopy (F-22, J-20, YF-23,
+  Su-57 and F-35 mixed). Same size class, same weapons and bays.
+- Both cards are re-rendered from the new models.
+
 ## v0.32.0: Doctrines folded into the commanders, the owner's answer on the bombs
 
 2026-09-30 · merged into main

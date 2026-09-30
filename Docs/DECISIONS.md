@@ -10595,3 +10595,124 @@ that commander already had the same kind of bonus, the two became one number ins
   `Progression.cs`; `Hud.uss`, `Screens.uss`.
 - **Tools and tests:** `programme.py` (12b, 12c), `build_doc.py` (one caption), `ExportGameDoc.cs` (one line),
   `CommanderPassiveTests.cs` (two numbers).
+
+## 23M. Play-test 9 models: Icarus a spaceship, the stealth jet slim (2026-09-30)
+
+The owner's play-test 9 art items (`Docs/prompts/requests_vi.md`, "Play-test 9"): Icarus "looks like a space station,
+not a spaceship; redraw it, look at spaceship designs online; Star Wars is nice but don't copy it 100%, those ships
+are huge"; the stealth jet "looks rather fat, redraw it fully". Branch `feature/pt9-models` from lead 091f916. Both
+models are built by `Tools/blender/mb_pt9_models.py`, registered last in `build_assets.py`, so they win over
+play-test 8's platform (`mb_pt8_icarus.py`) and prompt 17 / play-test 5's jet (`mb_p17_temp.py`, `mb_pt5_models.py`).
+Those modules stay: Morrigan still builds on `mb_p17_temp`'s airframe kit.
+
+### A. Icarus, a warship again
+
+**What was wrong.** 22R's Icarus had a round white module, a truss, two broad solar wings and radiators: from the
+battle camera a cross, which the owner read as a station. 20Y's before it was a Star Destroyer wedge with a Venator's
+flight-deck doors and red stripes, which he found too close to Star Wars.
+
+**References** (looked up for this pass):
+- Star Wars: the Imperial Star Destroyer and the Venator (the dagger plan, the stepped superstructure under an aft
+  command tower, the lit trench along the side), the CR90 corvette Tantive IV (the hammerhead bridge, the bank of
+  eleven engines across the stern; about 150 m).
+  <https://en.wikipedia.org/wiki/Tantive_IV>, <https://starwars.fandom.com/wiki/CR90_corvette>
+- Halo's UNSC frigates (the Charon class: the keel-mounted gun, flank pods with RCS thrusters and turrets, ventral
+  bays, blocky armour). <https://www.halopedia.org/Charon-class_light_frigate>, <https://www.halopedia.org/UNSC_frigate>
+- The Expanse's Rocinante (46 m, a keel railgun, point-defence cannons) and the MCRN Donnager (the drive cone).
+  <https://expanse.fandom.com/wiki/Rocinante_(TV)>
+- Battlestar Galactica: the Galactica's flight pods along her flanks, with the bay mouths at their fronts.
+- Mass Effect's Normandy SR-2: the engine nacelles aft with their canted fins.
+
+**Decided: a small warship in that language, not a copy of any of them.** The Star Wars shapes are drawn at a
+frigate's scale, with fewer and bigger parts, so the boss reads as a ship on the battlefield rather than a 1.6 km
+dreadnought with tiny detail:
+- *Hull:* a faceted dagger, 36 m from the prow to the drive bell and 18 m across the nacelle fins (22R: 34.5 x 24 m
+  with the wings; balance.json's 34 x 22 m footprint still fits). It swells aft, a sharp point at the bow and a flat
+  stern, with a recessed trench along each side lit by two rows of windows. Two-tone plates on the upper flanks,
+  panel lines, trench boxes, and a short stripe in the side's colour on each bow flank.
+- *Under the bow:* a gunmetal keel housing with heat-sink fins and a sensor window. The ventral laser ball (`Turret`)
+  hangs under it: Halo's keel gun and the Rocinante's keel railgun, done as a turret. The pod bay (`Pod_bay`) sits
+  under a ventral hangar blister.
+- *Flank pods* from the waist aft (Galactica's flight pods, Halo's side pods), with a dark bay mouth and a lamp strip
+  in their fronts and bands in the side's colour. The coilguns (`Mount_gun` / `.001`) stand on barbettes at their
+  inner shoulders, and the crash turrets (`Mount_gun.002` / `.003`) on pylons further aft.
+- *Superstructure:* two steps on the deck (the Star Destroyer's stepped block, only two steps at this scale) with
+  window rows, equipment blocks, vents and masts. The forward flak (`Mount_mg`) is on the front step's nose, the
+  point-defence lasers (`Pd_laser_l` / `_r`) on tubs at its shoulders, the aft flak (`Mount_mg.001`) on the upper step
+  in front of the tower, and the uplink dish (`Uplink`) on a mast on the upper step.
+- *Command tower* aft: a raked neck, then a wide hammerhead bridge with a lit window band, glass above it, cheeks in
+  the side's colour, masts and one sensor ball. It has the Tantive IV's hammerhead shape but stands where a Star
+  Destroyer's tower does, and has no shield domes.
+- *Stern:* an armoured engine block holding seven engines. The big drive bell in the middle is The Expanse's cone;
+  the six round engines round it, with glowing faces, are the Tantive IV's bank. Two outboard nacelles
+  (`Thruster_rl` / `_rr`) on pylons at the stern corners carry fins canted out 35 degrees, after the Normandy SR-2.
+  The forward RCS blocks (`Thruster_fl` / `_fr`) sit off the bow on stubby swept arms.
+- *Colours:* light grey metal (`MetalSheet`) with off-white plates (`Fuel`), and gunmetal (`Armor`) on the trench,
+  keel, engine block and pylons. The side's colour is on the pods' bands, the nacelles' bands and fins, the tower's
+  cheeks and the bow stripes, and the side's glow is in the engines. There are no red deck stripes, no flight-deck
+  doors and no domes.
+- *Kept:* every node and muzzle is at its place (`mb_orbital.NODES`, balance.json's part `at`s). The weapons are the
+  same builders as before (`mb_orbital._build_*`, `mb_phase8.autocannon`), so the turrets, muzzles and launch points
+  are exactly 22R's. Balance, parts, big attacks, the orbital tiers and the Mk.0 variant (the same model at 0.65) are
+  unchanged. `CampaignText`'s boss file already describes "a dagger of a hull, a stepped superstructure under its
+  command tower and a bank of engines across the stern", so no text changed.
+- *Wreck* (`silver_bug_wreck`, raised by `mb_orbital.LIFT`): the same ship crashed. The tower is snapped to a jagged
+  stump, and the hammerhead lies on its side off the starboard quarter. The port nacelle's fin is torn off and lies
+  beside it. The back is broken across the waist (the deck sags, with a charred crack over the steps and flanks), a
+  quarter of the plates are blown off, the hull is scorched, the windows are mostly dark and the engines are charred
+  with one torn out. The coilguns and flak are deployed and the crash turrets awake, in its crater with the six
+  debris piles at their fixed places.
+- **Triangles:** 19,136 for the ship and 20,250 for the wreck (22R: 18,962 / 20,334). The budget was 25k.
+
+### B. The stealth jet, slim
+
+**What was wrong.** Prompt 17's airframe, detailed in play-test 5, was a chined lifting body 5 m across the chines and
+1.1 m deep, which the owner saw as fat.
+
+**References:** the F-22 Raptor (18.9 x 13.6 m; the 42 degree leading edge, the trailing edge swept forward, caret
+intakes, 2D thrust-vectoring nozzles, twin tails canted about 28 degrees, all-moving tailplanes), the J-20 (the long,
+blade-thin chined nose), the YF-23 (the flat, thin body section), the Su-57 (the main bays in tandem between widely
+spaced engines) and the F-35 (a one-piece canopy). Morrigan (22E) already carries the YF-23's diamond wing and
+V-tails, so this jet keeps an F-22 planform, so the two stay apart.
+
+**Decided (`stealth_fighter`, no high-detail variant; it is not in `HIGH_DETAIL`):**
+- *Size class kept:* 18.4 m long and 13.2 m span (was 19 x 12.7), so balance.json's scale 0.39 and radius 3.4 hold.
+- *Fuselage:* a chined hexagon section 3.2 m across at most (was 5.0) and 0.55 m deep (was 1.13), flat-bellied, with a
+  sharp chine from the nose that flares into the wing's leading edge (the blended, flat planform). The nose is long
+  and thin.
+- *Wing:* a thin trapezoid (root chord 6.9 m, tip 1.25 m, 42 degree leading edge, trailing edge swept forward about
+  10 degrees, 3 degrees of anhedral), with all-moving tailplanes behind it and twin tails canted out 27 degrees.
+- *Intakes:* raked caret mouths under the chines, with lips and dark faces. There are two flat 2D nozzles with a tail
+  between them, and a frameless canopy with a thin sill frame, a seat and a HUD.
+- *Kept:* the weapon layout and names: the two main bays in tandem with their doors open and a missile each on a
+  trapeze (`Missiles`, `Muzzle_missile` between their noses, about 0.4 m under the belly as before), the centre bay's guided
+  bomb (`Muzzle_bomb` at its nose) and the cannon on the left (+X) shoulder (`Muzzle_gun` at the barrel's ring, the
+  same barrel and ring as before). Dark gunmetal body with the side's colour on the wings and tails, as before.
+- *Detail:* sawtooth panel lines at the nose join and across the body, a sawtooth spine access door, the refuelling
+  door, blade antennas, EODAS windows, bay door seams, and hinge lines on the wings.
+- **Triangles:** 2,812 (was 4,484).
+
+### Cards and refs
+
+- Cards re-rendered with `CardRenders.RenderBatch -mbCardsForce -mbCardsOnly silver_bug,stealth_fighter` (with
+  graphics, `-force-d3d11 -force-device-index 1`). `Tools/docs/unit_refs.json` names the new references for
+  `silver_bug`, `icarus_mk0` and `stealth_fighter`.
+
+### Tests
+
+Run: the compile, `BossPartsTests`, `PlayTest8VisualTests.IcarusKeepsEveryPartNodeAndMuzzle`,
+`ModelTests.EveryWeaponMountHasAMuzzleOnItsModel`, `MuzzleAuditTests.EveryMuzzleSitsOnItsOwnBarrel` and
+`CardRenderTests`. The result was 19 of 24. The project compiles. Icarus keeps every part node in place and its
+muzzles on both models. The five failures are all older:
+- two in `BossPartsTests` (the known Behemoth ones);
+- `CardRenderTests`: morrigan.glb is newer than its card;
+- `ModelTests`: `mobile_fortress` has no `Muzzle_gun`;
+- `MuzzleAuditTests`: 46 mounts are off across the catalogue, 9 of them known. Icarus's three findings there (the
+  main laser 0.17 m off its lens's middle, the coilguns 0.08 m inside) are the same on lead's 22R model, which was
+  run through the same audit to check: they come from the unchanged weapon builders. The stealth jet has none.
+
+### Shared edits (merge by hand if they conflict)
+
+`Tools/blender/build_assets.py` (one import, one line at the end of the builder list), `Docs/art/models.json` (three
+triangle counts; as always `Tools/art/resolve_merge.py`), the card manifest and the two card PNGs, the three GLBs,
+`Tools/docs/unit_refs.json` (three rows).

@@ -50,7 +50,7 @@
   "wheeled_gun": { "real": ["Centauro B1 / Centauro II 120 mm", "M1128 MGS", "Rooikat"], "media": [], "note": "Pháo chống tăng bánh lốp 8x8" },
   "counter_battery_radar": { "real": ["AN/TPQ-53", "Zoopark-1", "COBRA"], "media": [], "note": "Xe radar phản pháo 6x6" },
   "long_sam": { "real": ["S-300PMU (5P85)", "S-400 (48N6)", "khung MAZ-543"], "media": [], "note": "Bệ phóng tên lửa phòng không tầm xa, dựng đứng ống phóng" },
-  "stealth_fighter": { "real": ["F-22 Raptor", "Su-57", "GAU-22/A 25 mm"], "media": [], "note": "Tiêm kích tàng hình hai đuôi" },
+  "stealth_fighter": { "real": ["F-22 Raptor (cánh hình thang, cửa hút gió caret, ống xả 2D, hai đuôi nghiêng)", "J-20 (mũi dài mảnh có gờ)", "YF-23 (thân dẹt, mỏng)", "Su-57 (hai khoang vũ khí nối tiếp giữa hai động cơ)", "F-35 (kính buồng lái liền một khối)", "GAU-22/A 25 mm"], "media": [], "note": "Tiêm kích tàng hình thế hệ năm: thân mảnh có gờ, cánh hình thang rộng và dẹt, hai đuôi nghiêng (play-test 9, DECISIONS 23M)" },
   "wingman_drone": { "real": ["XQ-58 Valkyrie", "AIM-9 Sidewinder"], "media": [], "note": "Drone 'wingman trung thành' bay cùng tiêm kích" },
   "laser_tank": { "real": ["Rheinmetall HEL", "DE M-SHORAD (laser trên Stryker)"], "media": [], "note": "Pháo chống tăng laser: đầu phát tia trên giá chạc" },
   "shield_carrier": { "real": ["xe 8x8 kiểu Boxer / Stryker"], "media": ["Shield Battery (StarCraft II)", "Bubble Shield (Halo 3)"], "note": "ước đoán: xe 8x8 mang máy phát khiên năng lượng trên cột lưới" },
@@ -135,7 +135,7 @@
   "mega_gunship": { "real": ["CH-47 Chinook (cỡ khung)", "ACH-47A 'Guns-A-Go-Go'"], "media": [], "note": "ước đoán (ACH-47A): trực thăng hai rô-to vũ trang hạng nặng" },
   "drone_mothership": { "real": ["USS Akron / Macon (khí cầu mẹ)", "drone FPV"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: khí cầu bọc thép phóng drone" },
   "nuke_train": { "real": ["RT-23 Molodets (tàu tên lửa BZhRK)", "MIM-104 Patriot"], "media": [], "note": "ước đoán: đoàn tàu bọc thép mang tên lửa đạn đạo" },
-  "silver_bug": { "real": ["Polyus / Skif-DM (trạm vũ khí quỹ đạo Liên Xô, 1987)", "ISS (giàn chính, cánh pin mặt trời, tấm tản nhiệt)", "Hubble / KH-11 (ống kính, cửa khẩu độ, lá vàng cách nhiệt)", "Almaz"], "media": ["SOLG (Ace Combat 5)", "MCRN Donnager (The Expanse): bố cục theo trục đẩy, loa động cơ lớn"], "note": "Icarus: trạm vũ khí quỹ đạo chạy năng lượng mặt trời: thân tròn trắng và vàng, hai cánh pin xanh trên giàn, tản nhiệt trắng, loa động cơ phía sau (play-test 8, DECISIONS 22R)" },
+  "silver_bug": { "real": [], "media": ["Star Destroyer / Venator (Star Wars): thân mũi dao, thượng tầng bậc thang, tháp chỉ huy phía sau, rãnh sáng dọc hai bên", "Tantive IV (CR90, Star Wars): cầu tàu đầu búa, dãy động cơ ở đuôi", "Tàu frigate UNSC lớp Charon (Halo): pháo dọc sống tàu, khoang sườn có động cơ RCS và tháp pháo", "Rocinante / Donnager (The Expanse): pháo ray dưới sống tàu, loa động cơ chính", "Galactica (Battlestar Galactica): hai khoang bay dọc hai sườn", "Normandy SR-2 (Mass Effect): hai gondola động cơ ở đuôi có vây nghiêng"], "note": "Icarus: chiến hạm vũ trụ cỡ nhỏ, thân mũi dao 36 m, hai khoang sườn, thượng tầng bậc thang, tháp chỉ huy đầu búa phía sau, bảy động cơ ở đuôi (play-test 9, DECISIONS 23M)" },
   "drop_pod": { "real": ["khoang hồi quyển Soyuz (tên lửa hãm)"], "media": ["ODST drop pod (Halo)", "Drop Pod (Warhammer 40,000)"], "note": "ước đoán: khoang thả xe từ quỹ đạo" },
   "behemoth_inferno": { "real": ["TOS-1A", "Landkreuzer P. 1000 Ratte"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth phun lửa, thùng nhiên liệu đỏ" },
   "behemoth_tempest": { "real": ["US Navy EMRG (pháo điện từ)", "Landkreuzer P. 1000 Ratte"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth hai tháp pháo điện từ" },
@@ -165,6 +165,6 @@
   "scylla": { "real": ["IJN Yamato", "Kirov-class"], "media": [], "note": "Bản nhỏ của Leviathan" },
   "locust": { "real": ["USS Akron / Macon", "drone FPV"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể nhỏ của khí cầu mẹ" },
   "behemoth_mk2": { "real": ["Landkreuzer P. 1000 Ratte", "Object 279"], "media": ["Baneblade (Warhammer 40,000)"], "note": "ước đoán: Behemoth đời hai" },
-  "icarus_mk0": { "real": ["Polyus / Skif-DM", "ISS", "Hubble"], "media": ["SOLG (Ace Combat 5)", "The Expanse"], "note": "Bản đầu của Icarus (trạm vũ khí quỹ đạo, nhỏ hơn)" },
+  "icarus_mk0": { "real": [], "media": ["Star Destroyer / Venator (Star Wars)", "Tantive IV (Star Wars)", "Tàu frigate UNSC (Halo)", "Rocinante (The Expanse)"], "note": "Bản đầu của Icarus (chiến hạm vũ trụ, nhỏ hơn)" },
   "argus": { "real": ["USS Akron / Macon", "khí cầu Zeppelin"], "media": ["Kirov Airship (Red Alert 2)"], "note": "ước đoán: biến thể của khí cầu chỉ huy" }
 }
