@@ -528,3 +528,52 @@ Every row of "Vũ khí đề xuất" (the proposal columns: damage, fire mode, r
 | Vũ khí đề xuất | naval_127 | weapon | skipped | not in the sheet: left as it is (families and the blast rule still apply) |
 
 <!-- /step:A2 -->
+
+<!-- step:A3 -->
+## A3: weapon families (sheets Tốc độ tên lửa, Vũ khí đề xuất)
+
+Weapons that are the same real weapon (the same real name once a mount's qualifier in brackets is dropped, the same damage type, round, size, and lobbed or direct) form a family in `weaponFamilies`: its speed, blast radius, round model and round weight (the tracer's and the report's) are written once there and every member takes them. A family's value is the sheet's most common proposal among its members (the current one where the sheet has none); where members disagreed, the report says which moved.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Tốc độ tên lửa, Vũ khí đề xuất | 25 | 10 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Tốc độ tên lửa, Vũ khí đề xuất | 2a38_30_mm | family | applied | twin_30_flak, tower_flak_30, hq_flak: speed 280, blast 2.5; moved: tower_flak_30 roundWeight 7 -> 7.5 |
+| Tốc độ tên lửa, Vũ khí đề xuất | 2a42_30_mm | family | applied | autocannon_30, ifv_30, twin_30_bmpt: speed 200, blast 0; moved: twin_30_bmpt projectileSpeed 210 -> 200; twin_30_bmpt roundWeight 30 -> 32 |
+| Tốc độ tên lửa, Vũ khí đề xuất | 2a83_152_mm | family | applied | gun_152, bastion_gun: speed 160, blast 2.5; moved: bastion_gun projectileSpeed 200 -> 160; bastion_gun roundWeight 320 -> 343 |
+| Tốc độ tên lửa, Vũ khí đề xuất | 2b11_120_mm | family | already | mortar_120, train_mortar: speed 32, blast 5, model mortar_bomb |
+| Tốc độ tên lửa, Vũ khí đề xuất | 2b8_240_mm | family | applied | siege_mortar_240, mortar_240, mortar_240_fixed, boss_mortar: speed 38, blast 9, model mortar_bomb; moved: siege_mortar_240 splash 7.2 -> 9; mortar_240 splash 10 -> 9; mortar_240_fixed projectileSpeed 30 -> 38; mortar_240_fixed roundWeight 450 -> 543; boss_mortar projectileSpeed 36 -> 38; boss_mortar roundWeight 460 -> 543 |
+| Tốc độ tên lửa, Vũ khí đề xuất | 9m120_ataka | family | already | ataka, heli_ataka: speed 26, blast 0, model atgm_ataka |
+| Tốc độ tên lửa, Vũ khí đề xuất | 9m133_kornet | family | applied | atgm_heavy, kornet_twin, tower_kornet, kornet_top, kornet_multi, boss_missiles: speed 22, blast 0, model atgm_kornet; moved: atgm_heavy projectileSpeed 19 -> 22; atgm_heavy projectileModel "atgm_tow" -> "atgm_kornet" |
+| Tốc độ tên lửa, Vũ khí đề xuất | 9m317_buk | family | applied | sam_long, buk_launcher, sam_post: speed 50, blast 2, model buk; moved: sam_long projectileSpeed 24 -> 50 |
+| Tốc độ tên lửa, Vũ khí đề xuất | agm_114_hellfire | family | applied | heli_atgm, drone_missile, hellfire_volley, hellfire_standoff: speed 26, blast 0, model hellfire_longbow; moved: heli_atgm projectileModel "hellfire" -> "hellfire_longbow"; heli_atgm roundWeight 256 -> 270; drone_missile projectileModel "hellfire" -> "hellfire_longbow"; hellfire_volley roundWeight 260 -> 270; hellfire_standoff roundWeight 256 -> 270 |
+| Tốc độ tên lửa, Vũ khí đề xuất | aim_9_sidewinder | family | applied | wvr_aam, aim9: speed 55, blast 1.5, model aim9; moved: aim9 roundWeight 236 -> 260 |
+| Tốc độ tên lửa, Vũ khí đề xuất | ak_630_30_mm | family | already | hover_ciws, ciws_aa: speed 300, blast 0 |
+| Tốc độ tên lửa, Vũ khí đề xuất | bm_21_grad_122_mm | family | applied | grad_rockets, turret_rockets: speed 45, blast 4.5, model grad; moved: grad_rockets projectileSpeed 52 -> 45; grad_rockets splash 3.5 -> 4.5; grad_rockets roundWeight 57 -> 66 |
+| Tốc độ tên lửa, Vũ khí đề xuất | bm_21_grad_122_mm_2 | family | applied | grad_cluster, turret_rockets_cluster: speed 45, blast 4, model grad_cluster; moved: turret_rockets_cluster projectileModel "grad" -> "grad_cluster" |
+| Tốc độ tên lửa, Vũ khí đề xuất | fpv_drone | family | applied | fpv_swarm, fpv_hangar, fpv_hangar_swarm, airship_drones, swarm_drones: speed 26, blast 2.5, model fpv_drone; moved: fpv_swarm projectileModel null -> "fpv_drone"; fpv_hangar projectileModel null -> "fpv_drone"; fpv_hangar_swarm projectileModel null -> "fpv_drone"; airship_drones projectileModel null -> "fpv_drone" |
+| Tốc độ tên lửa, Vũ khí đề xuất | hydra_70_mm | family | applied | heli_rockets, scout_rockets, jet_rockets: speed 40, blast 3, model hydra; moved: heli_rockets roundWeight 40 -> 61; scout_rockets roundWeight 47 -> 61; jet_rockets projectileSpeed 48 -> 40; jet_rockets splash 3.5 -> 3 |
+| Tốc độ tên lửa, Vũ khí đề xuất | l7_105_mm | family | already | gun_105_twin, siege_gun_105, gun_105_bunker: speed 190, blast 1.5 |
+| Tốc độ tên lửa, Vũ khí đề xuất | m2_browning_12_7_mm | family | applied | mg_jeep, hmg_roof, hmg_selfdef_21, hmg_selfdef_18, hmg_selfdef_15, mg_jeep_selfdef, tower_hmg: speed 230, blast 0; moved: mg_jeep projectileSpeed 220 -> 230; mg_jeep roundWeight 9.5 -> 11; mg_jeep_selfdef projectileSpeed 220 -> 230; mg_jeep_selfdef roundWeight 9.5 -> 11 |
+| Tốc độ tên lửa, Vũ khí đề xuất | m230_30_mm | family | already | heli_gun, boss_heli_gun: speed 220, blast 0 |
+| Tốc độ tên lửa, Vũ khí đề xuất | m242_bushmaster_25_mm | family | already | autocannon_25, tower_ac25: speed 210, blast 0 |
+| Tốc độ tên lửa, Vũ khí đề xuất | m284_155_mm | family | applied | gun_155_twin, gun_155_twin_fort, gun_155_twin_long, gun_155_coastal, gun_155_twin_coastlr: speed 150, blast 7, model shell_155; moved: gun_155_twin splash 4.5 -> 7; gun_155_twin_long splash 4.5 -> 7 |
+| Tốc độ tên lửa, Vũ khí đề xuất | m284_155_mm_2 | family | applied | howitzer, howitzer_fixed, gun_155_sph, howitzer_cb, howitzer_ext, casemate_155: speed 45, blast 7, model shell_155; moved: gun_155_sph projectileSpeed 50 -> 45; gun_155_sph splash 8 -> 7; casemate_155 projectileSpeed 50 -> 45 |
+| Tốc độ tên lửa, Vũ khí đề xuất | m31_gmlrs_227_mm | family | applied | mlrs_rockets, turret_gmlrs: speed 50, blast 4.5, model gmlrs; moved: mlrs_rockets roundWeight 100 -> 160 |
+| Tốc độ tên lửa, Vũ khí đề xuất | mim_104_patriot_pac_2 | family | already | sam_battery, patriot, sam_battery_lrr: speed 60, blast 2.5, model patriot |
+| Tốc độ tên lửa, Vũ khí đề xuất | mk_19_40_mm | family | already | agl_40, tower_agl: speed 70, blast 2 |
+| Tốc độ tên lửa, Vũ khí đề xuất | nsv_12_7_mm | family | applied | bunker_hmg_twin, bunker_hmg, boss_hmg: speed 240, blast 0; moved: boss_hmg projectileSpeed 230 -> 240; boss_hmg roundWeight 11 -> 14 |
+| Tốc độ tên lửa, Vũ khí đề xuất | oerlikon_35_mm | family | applied | flak_35, boss_flak: speed 260, blast 2.5; moved: boss_flak roundWeight 25 -> 26 |
+| Tốc độ tên lửa, Vũ khí đề xuất | pkt_m240_7_62_mm | family | already | mg_coax, mg_coax_ground: speed 240, blast 0 |
+| Tốc độ tên lửa, Vũ khí đề xuất | rh_120_l_44_120_mm | family | applied | gun_120mm, turret_gun_120, gun_pit_105, turret_gun_120_auto, gun_120_twin: speed 170, blast 1.5; moved: gun_120mm roundWeight 240 -> 290; turret_gun_120 roundWeight 240 -> 290; gun_pit_105 projectileSpeed 220 -> 170; gun_pit_105 splash 0 -> 1.5; turret_gun_120_auto roundWeight 240 -> 290; gun_120_twin roundWeight 240 -> 290 |
+| Tốc độ tên lửa, Vũ khí đề xuất | s_8_80_mm | family | applied | gunship_rockets, s8_pods, hind_rockets, boat_rockets: speed 40, blast 3, model s8; moved: gunship_rockets splash 3.2 -> 3; gunship_rockets roundWeight 42 -> 60; s8_pods roundWeight 32 -> 60; hind_rockets projectileSpeed 48 -> 40; hind_rockets splash 3.5 -> 3; boat_rockets roundWeight 32 -> 60 |
+| Tốc độ tên lửa, Vũ khí đề xuất | tos_1a_220_mm_thermobaric | family | already | thermobaric_rockets, boss_thermo: speed 35, blast 7, model tos_rocket |
+| Tốc độ tên lửa, Vũ khí đề xuất | zala_lancet_3 | family | applied | lancet, lancet_hangar, mothership_drones: speed 28, blast 3, model lancet; moved: lancet splash 0 -> 3; lancet_hangar splash 0 -> 3; mothership_drones projectileModel null -> "lancet" |
+| Tốc độ tên lửa, Vũ khí đề xuất | gun_155_twin_ap | family | applied | inherits gun_155_twin_fort but is another weapon: kept out of its family |
+| Tốc độ tên lửa, Vũ khí đề xuất | turret_gun_120_long | family | applied | inherits turret_gun_120 but is another weapon: kept out of its family |
+| Tốc độ tên lửa, Vũ khí đề xuất | turret_thermobaric | family | applied | inherits turret_rockets but is another weapon: kept out of its family |
+| Tốc độ tên lửa, Vũ khí đề xuất | sam_pac3 | family | applied | inherits sam_battery but is another weapon: kept out of its family |
+
+<!-- /step:A3 -->

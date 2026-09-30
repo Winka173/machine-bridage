@@ -10845,3 +10845,35 @@ not in force yet, so no row was held back for it.
   flies at the Kornet's (laser beam-riding, the same class).
 - **Weapons not in the sheet** (30, listed in the report) keep their numbers here; the families (A3) and the blast
   rule (A5) still reach them.
+
+### A3 Weapon families
+
+- **One family a real weapon.** `weaponFamilies` (before `weapons` in `balance.json`) holds, once, the speed, blast
+  radius, round model and round weight (the tracer's look and the report's sound class) of every weapon that is the
+  same real weapon; a member names it (`weaponFamily`) and its own line keeps only what differs (reach, rate, load,
+  damage). The loader applies a family on top of a weapon's line at every level of `inherits`, so a member that
+  inherits another member reads the family, and a weapon that inherits a member but is another weapon (the heavy
+  turret's AP round, the long 120 mm, the 122 mm thermobaric, the PAC-3) carries `"weaponFamily": ""`.
+- **What is the same weapon.** The real name without the mount in brackets ("M2 Browning 12.7 mm (tower)" is the M2),
+  with the sheet's own groupings folded ("mọi Hellfire": the AGM-114 and the AGM-114L; the AIM-9 and the AIM-9X; the
+  Oerlikon KDA on the Gepard and the boss's twin mount), and the same round: damage type, kind, size, a cluster round
+  or not, lobbed or direct. So the fortress's flat-firing twin 155 mm (150 m/s) and the howitzers' lobbed 155 mm
+  (45 m/s) are two families, and so are the Grad and the cluster Grad. The blast radius is still one per round across
+  them (A5).
+- **A family's value** is the sheet's most common proposal among its members (the current one where the sheet has
+  none). A tie goes to the value whose weapons the most cards carry (a player's card 1, a tower 0.3, a boss 0.1),
+  then to the largest; the round weight is the heaviest member's (a round is never drawn smaller). What moved is in
+  the report: the siege tank's 240 mm blast 7.2 -> 9 m (the other two sheet rows say 9), the fortress twins' and the
+  SP gun's 155 mm to 7 m and 45 m/s, the Lancet trucks' Lancets 3 m (the mothership's drones, the only sheet number of
+  the family) and the Lancet model (they flew the FPV quadcopter by default), the Kornet post's TOW model to the
+  Kornet's, the Hellfires all on the Longbow model (the more carried of the two).
+- **The test.** `BalanceSheetTests.NoTwoWeaponsOfOneFamilyDifferInSpeedBlastOrRound`: the members of each family
+  share speed, blast, model and round weight, and every set of weapons that are the same real weapon is one family.
+- **Families for the design document**: `Docs/balance/weapon_families.tsv` (generated).
+
+### Tests in this pass (the owner's rule, 30/09)
+
+The owner asked that no test run until a test phase is approved. The tests the spec asks for are written but not
+run from A3 on (the A2 DPS test and the content tests ran once, before the rule, and passed); only compile checks
+(batch mode, `-quit`, the log read for `error CS`) are made. The measurements for the "Xem lại" and "Theo dõi" rows
+wait for the test phase too: those rows keep the game's value for now.

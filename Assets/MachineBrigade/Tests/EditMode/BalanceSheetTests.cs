@@ -53,5 +53,74 @@ namespace MachineBrigade.Tests
             Assert.IsEmpty(failures, string.Join("\n", failures));
             Assert.Greater(checkedCount, 140, "every weapon of the sheet is checked");
         }
+
+        // ------------------------------------------------------------------ A3: weapon families
+
+        /// <summary>Names the sheet counts as one weapon (Tools/balance/steps_a3.py ALIASES).</summary>
+        private static readonly Dictionary<string, string> Aliases = new()
+        {
+            ["AGM-114L Hellfire Longbow"] = "AGM-114 Hellfire", ["AIM-9X Sidewinder"] = "AIM-9 Sidewinder", ["Oerlikon KDA 35 mm"] = "Oerlikon 35 mm",
+        };
+
+        /// <summary>A real name without its mount in brackets ("M2 Browning 12.7 mm" for the tower's), aliases folded.</summary>
+        internal static string RealName(string real)
+        {
+            var name = System.Text.RegularExpressions.Regex.Replace(real, @"\s*\([^)]*\)\s*$", "").Trim();
+            return Aliases.TryGetValue(name, out var alias) ? alias : name;
+        }
+
+        /// <summary>
+        /// The same real weapon (steps_a3.real_key): its real name, and the same round (damage type, kind, size, a cluster
+        /// or not) fired the same way (lobbed or direct): a coastal gun's flat 155 mm is not a howitzer's lobbed one.
+        /// </summary>
+        internal static string FamilyKey(WeaponDef w) =>
+            w.RealName == null ? null
+                : string.Join("|", RealName(w.RealName), w.DamageType, w.Projectile, w.Size.ToString(CultureInfo.InvariantCulture), w.Indirect, w.Cluster != null);
+
+        [Test]
+        public void NoTwoWeaponsOfOneFamilyDifferInSpeedBlastOrRound()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var failures = new List<string>();
+            var families = 0;
+            // The families of the data: each shares its speed, blast radius and round model.
+            foreach (var family in catalog.Weapons.Values.Where(w => w.WeaponFamily != null).GroupBy(w => w.WeaponFamily))
+            {
+                families++;
+                var first = family.First();
+                foreach (var w in family)
+                {
+                    if (w.ProjectileSpeed != first.ProjectileSpeed) failures.Add($"{family.Key}: {w.Id} flies {w.ProjectileSpeed}, {first.Id} {first.ProjectileSpeed}");
+                    if (w.SplashRadius != first.SplashRadius) failures.Add($"{family.Key}: {w.Id} blasts {w.SplashRadius} m, {first.Id} {first.SplashRadius} m");
+                    if (w.ProjectileModel != first.ProjectileModel) failures.Add($"{family.Key}: {w.Id} flies {w.ProjectileModel}, {first.Id} {first.ProjectileModel}");
+                    if (w.RoundWeight != first.RoundWeight) failures.Add($"{family.Key}: {w.Id} looks {w.RoundWeight}, {first.Id} {first.RoundWeight}");
+                }
+            }
+            // Every set of weapons that are the same real weapon is one family (none left out of it).
+            foreach (var same in catalog.Weapons.Values.Where(w => FamilyKey(w) != null).GroupBy(FamilyKey).Where(g => g.Count() > 1))
+            {
+                var named = same.Select(w => w.WeaponFamily).Distinct().ToList();
+                if (named.Count != 1 || named[0] == null)
+                    failures.Add($"{same.Key}: {string.Join(", ", same.Select(w => $"{w.Id} ({w.WeaponFamily ?? "none"})"))} are one weapon in one family");
+                if (same.Select(w => w.ProjectileSpeed).Distinct().Count() > 1 || same.Select(w => w.SplashRadius).Distinct().Count() > 1)
+                    failures.Add($"{same.Key}: {string.Join(", ", same.Select(w => $"{w.Id} {w.ProjectileSpeed} m/s {w.SplashRadius} m"))}");
+            }
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+            Assert.Greater(families, 25, "the families are in the data (weaponFamilies)");
+        }
+
+        [Test]
+        public void TheSameRoundBlastsTheSameWhereverItIsFired()
+        {
+            // A5 and the sheet's rule ("cùng một loại đạn phải cùng bán kính ở mọi đơn vị"): the same real round (its name,
+            // damage type, size, a cluster or not) has one blast radius, lobbed or fired flat, on any carrier.
+            var catalog = GameContent.LoadCatalog();
+            var failures = new List<string>();
+            foreach (var round in catalog.Weapons.Values.Where(w => w.RealName != null && w.SplashRadius > 0f)
+                         .GroupBy(w => string.Join("|", RealName(w.RealName), w.DamageType, w.Size.ToString(CultureInfo.InvariantCulture), w.Cluster != null)))
+                if (round.Select(w => w.SplashRadius).Distinct().Count() > 1)
+                    failures.Add($"{round.Key}: {string.Join(", ", round.Select(w => $"{w.Id} {w.SplashRadius} m"))}");
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+        }
     }
 }

@@ -89,12 +89,14 @@ class Game:
         self._v = {}
 
     def weapon(self, wid, family=True):
+        """A weapon's fields as the game reads them: its parent's (resolved, family and all) under its own line, then
+        its family's shared fields on top (Catalog.WeaponEntries); family=False leaves the families out."""
         key = (wid, family)
         if key in self._w:
             return self._w[key]
         w = dict(self.raw_weapons[wid])
         if "inherits" in w:
-            base = dict(self.weapon(w["inherits"], family=False))
+            base = dict(self.weapon(w["inherits"], family))
             base.update(w)
             w = base
         if family and w.get("weaponFamily") in self.families:
@@ -185,6 +187,9 @@ class Report:
     def add(self, step, sheet_name, id_, item, outcome, detail="", listed=True):
         self.rows[step].append((sheet_name, id_, item, outcome, detail, listed))
 
+    def changed(self, step):
+        return any(r[3] == "applied" for r in self.rows.get(step, []))
+
     def section(self, step, title, intro=""):
         rows = self.rows.get(step, [])
         counts = collections.Counter((r[0], r[3]) for r in rows)
@@ -214,7 +219,9 @@ class Report:
         for step, body in sections:
             pat = re.compile(r"<!-- step:" + re.escape(step) + r" -->.*?<!-- /step:" + re.escape(step) + r" -->\n?", re.S)
             if pat.search(text):
-                text = pat.sub(lambda _: body, text)
+                # A re-run that changed nothing keeps the section of the run that did (what moved, and from what).
+                if self.changed(step):
+                    text = pat.sub(lambda _: body, text)
             else:
                 text = text.rstrip("\n") + "\n\n" + body
         with open(REPORT, "w", encoding="utf-8", newline="\n") as f:
@@ -256,7 +263,7 @@ class Writer:
         w = g.weapon(wid)
         if close(w.get(key), value):
             return False
-        if self.at_least("A3") and key in FAMILY_KEYS and g.weapon(wid, family=False).get("weaponFamily"):
+        if key in FAMILY_KEYS and g.weapon(wid, family=False).get("weaponFamily"):
             return False  # the family holds it (A3, A5)
         self.doc.edit("weapons", wid, lambda e: e.set(key, value))
         g.refresh()
@@ -957,6 +964,8 @@ def main():
     report = Report()
     sections = []
     import steps_more  # noqa: E402  (A2 onwards)
+    import import_xlsx as as_module  # the same code as a module (steps_more imports it): share the rows
+    as_module.A1_TEXT.update(A1_TEXT)
 
     for i in range(last + 1):
         step = STEPS[i]
@@ -965,7 +974,7 @@ def main():
             a1(wr, wb, report, step, weapon_rows, unit_rows, refs)
             sections.append((step, report.section(step, f"A1 {PRIORITY[step]}: sheet Thay đổi chi tiết")))
         else:
-            title = steps_more.run(step, wr, wb, report, weapon_rows, unit_rows)
+            title = steps_more.run(step, wr, wb, report, weapon_rows, unit_rows, refs)
             if title:
                 sections.append((step, report.section(step, title, steps_more.INTRO.get(step, ""))))
 

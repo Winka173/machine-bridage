@@ -12,10 +12,22 @@ INTRO = {
 }
 
 
-def run(step, wr, wb, report, weapon_rows, unit_rows):
+def run(step, wr, wb, report, weapon_rows, unit_rows, refs=None):
     if step == "A2":
         a2(wr, report, weapon_rows, unit_rows)
         return "A2: sheets Vũ khí đề xuất and Đơn vị – vũ khí"
+    if step == "A3":
+        import steps_a3
+        INTRO["A3"] = steps_a3.INTRO
+        steps_a3.run(wr, wb, report, weapon_rows)
+        # A member that inherits a member of another family sees that family only once it exists: run again until
+        # nothing moves (the first pass's report stands).
+        for _ in range(3):
+            before = wr.doc.text
+            steps_a3.run(wr, wb, X.Report(), weapon_rows)
+            if wr.doc.text == before:
+                break
+        return "A3: weapon families (sheets Tốc độ tên lửa, Vũ khí đề xuất)"
     return None
 
 

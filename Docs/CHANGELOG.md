@@ -28,6 +28,8 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
 - A2: every weapon's rate, magazine or burst, rest, reach, speed and blast from the weapon sheet (sustained DPS within
   5 % of the sheet's, tested); the HIMARS, Iskander, Smerch and Buk launchers lose their machine guns; the wheeled gun
   gains a roof M2, the light tank a gun-launched missile, the Pantsir its own 57E6 missiles.
+- A3: weapon families: every weapon that is the same real weapon (all Hellfires, all M2s, all Grads...) shares one
+  speed, blast radius, round model and look, set once in the data (`weaponFamilies`).
 
 ### Play-test 9 models (DECISIONS 23M)
 

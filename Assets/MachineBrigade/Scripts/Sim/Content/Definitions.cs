@@ -163,6 +163,12 @@ namespace MachineBrigade.Sim.Content
         public string? RealName { get; internal set; }
 
         /// <summary>
+        /// Prompt 25 A3: the weapon family it belongs to (data "weaponFamily": every weapon that is the same real weapon
+        /// takes the family's speed, blast radius, round model and round weight), or null.
+        /// </summary>
+        public string? WeaponFamily { get; internal set; }
+
+        /// <summary>
         /// Prompt 15 B.1: how deep its rounds pierce, 0 (a 7.62 mm machine gun) to 4 (120 mm darts, heavy
         /// anti-tank missiles, railguns). Data "pen"; without it, by family and size
         /// (<see cref="Armour.DefaultPenetration(WeaponDef)"/>). Shaped charges pierce by their warhead, not their size.
@@ -282,6 +288,7 @@ namespace MachineBrigade.Sim.Content
                 Family = Family,
                 Size = Size,
                 RealName = RealName,
+                WeaponFamily = WeaponFamily,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,
