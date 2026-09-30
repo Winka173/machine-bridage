@@ -128,6 +128,7 @@ namespace MachineBrigade.Game.Match
             ["recon_jet"] = 3000,
             ["interceptor_jet"] = 5000,
             ["radar_scout"] = 1500,
+            ["blast_wall"] = 2000,
             // (batch A: new entries above)
         };
 

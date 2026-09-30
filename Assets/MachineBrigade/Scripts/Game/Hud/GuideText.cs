@@ -1395,6 +1395,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: khi chạy nhìn 50 m; đứng yên 2 giây thì dựng [[cột radar]]: nhìn 80 m và gần như ẩn.\n" +
                 "Mạnh / yếu: chỉ điểm cho pháo binh từ xa, lật tẩy mồi nhử; di chuyển thì yếu.\n" +
                 "Mẹo: đỗ ở cánh và để yên đó."),
+            ["guide.blast_wall"] = (
+                "[[Gabion blast wall]] · small structure · cover for towers\n" +
+                "How it fights: no gun, no obstacle; towers up to 10 m behind it take [[30 % less]] direct fire.\n" +
+                "Strong / weak: keeps front towers alive against tanks; shells and bombs come over it.\n" +
+                "Tip: put it in front of your best tower.",
+                "[[Tường chắn đạn]] · công trình ô nhỏ · che cho tháp\n" +
+                "Cách đánh: không súng, không chặn đường; tháp trong 10 m sau nó nhận ít hơn [[30%]] sát thương bắn thẳng.\n" +
+                "Mạnh / yếu: giữ tháp tuyến đầu trước xe tăng; đạn cầu vồng và bom vẫn vượt qua.\n" +
+                "Mẹo: đặt trước tháp mạnh nhất."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

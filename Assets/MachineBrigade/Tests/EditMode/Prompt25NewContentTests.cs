@@ -61,6 +61,7 @@ namespace MachineBrigade.Tests
             new Row("recon_jet", 800, 8, 0, -1, "none", -1, -1, -1, "pass"),
             new Row("interceptor_jet", 1300, 13, 0, -1, "r37m", 400, 90, -1, "bigGame"),
             new Row("radar_scout", 700, 4, 1, 50, "hmg_selfdef_21", -1, -1, -1, "mast"),
+            new Row("blast_wall", 3000, 0, 3, -1, "none", -1, -1, -1, "wall"),
             // (batch A rows: new ones above)
         };
 

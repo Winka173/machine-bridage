@@ -48,6 +48,7 @@ namespace MachineBrigade.Game.Hud
                 // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new structures (their modules too).
                 "heavy_flak_tower" => "t_heavyflak",
                 "at_gun_emplacement" => "t_atgun",
+                "blast_wall" => "t_wall",
                 // (batch A structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",

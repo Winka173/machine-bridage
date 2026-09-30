@@ -224,6 +224,7 @@ namespace MachineBrigade.Game.Hud
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new structures.
             ["t_heavyflak"] = "<path d=\"M2 21h20M5 21v-3h14v3M8 18l2-5h4l2 5M12 13 19 4\"/><circle cx=\"19\" cy=\"4\" r=\"1.6\"/><circle cx=\"7\" cy=\"6\" r=\"1.2\"/><circle cx=\"4\" cy=\"9\" r=\"1\"/>",
             ["t_atgun"] = "<path d=\"M2 21h20M4 21l3-5h4l2 5M9 16l2-3h3M13 13h9M6 16l-3-3\"/><path d=\"M11 11v4\" /><circle cx=\"8\" cy=\"19\" r=\"1.5\"/>",
+            ["t_wall"] = "<path d=\"M2 21h20M3 21v-5h6v5M9 21v-5h6v5M15 21v-5h6v5M6 16v-5h6v5M12 16v-5h6v5\"/>",
             // (batch A structure icons: new entries above)
             ["t_radar"] = "<path d=\"M3 21h16M7 21l1-5h6l1 5M5.5 11h11\"/><circle cx=\"11\" cy=\"11\" r=\"5.5\"/><path d=\"M17.5 4a5 5 0 0 1 2.5 3M19.5 2a8 8 0 0 1 3 4.5\"/>",
             // Spawn bastion: a crenellated keep with its gate.

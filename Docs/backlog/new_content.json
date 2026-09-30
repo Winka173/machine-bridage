@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 12,
-    "xong": 15
+    "đang làm": 11,
+    "xong": 16
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 8,
-      "xong": 15
+      "đang làm": 7,
+      "xong": 16
     },
     "structure": {
       "chưa làm": 0,
@@ -384,8 +384,8 @@
       "group": "Công trình",
       "priority": "Cao",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "blast_wall",
       "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {

@@ -2533,6 +2533,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.radar_scout"] = ("Radar scout car", "Xe trinh sát bọc thép radar mặt đất"),
             ["short.radar_scout"] = ("Radar scout", "TS radar"),
             ["note.radar_scout"] = ("A Fennek-type armoured scout car (or a BRDM-2 with a radar) with a telescopic sensor mast: it watches from one spot.", "Xe trinh sát bọc thép kiểu Fennek (hoặc BRDM-2 gắn radar) với cột cảm biến kéo dài: đứng một chỗ mà canh."),
+            // dx25: Tường chắn đạn.
+            ["unit.blast_wall"] = ("Gabion blast wall", "Tường chắn đạn"),
+            ["short.blast_wall"] = ("Blast wall", "Tường chắn đạn"),
+            ["note.blast_wall"] = ("A line of Hesco gabions (wire-mesh cells filled with earth): it soaks up direct fire aimed at the towers behind it.", "Một hàng rọ Hesco (ô lưới thép chứa đầy đất): hứng đạn bắn thẳng nhắm vào các tháp phía sau."),
             // (batch A: new entries above)
         };
 
