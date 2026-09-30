@@ -473,6 +473,8 @@
     { "id": "flak_88", "real": "8.8 cm Flak 36/37", "family": "howitzer", "size": 88, "pen": 3, "damageType": "Fragmentation", "damage": 120, "cooldown": 2, "range": 70, "groundRange": 50, "projectileSpeed": 160, "splash": 6, "spread": 1.5, "impactTier": "Large", "projectile": "Shell", "targets": "All", "groupPriority": true },
     // dx02, ct14: the Bofors 40 mm L/70 (proximity-fused rounds): 4 a second from 20-round clips (the tower row's magazine, one gun for both).
     { "id": "bofors_l70", "weaponFamily": "bofors_40_mm_l_70", "real": "Bofors 40 mm L/70", "family": "autocannon", "size": 40, "pen": 2, "damageType": "Fragmentation", "damage": 30, "cooldown": 0.25, "range": 48, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 20, "clipReload": 3 },
+    // dx03: the Avenger's eight shoulder-launched missiles in one ripple, then a long reload (the SHORAD round, 170 a hit).
+    { "id": "avenger_stingers", "inherits": "sam", "real": "Starstreak / Stinger SHORAD (Avenger pods)", "burst": 8, "burstInterval": 0.5, "cooldown": 15, "range": 44 },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -979,6 +981,10 @@
     // dx02: a tracked 40 mm AA gun (CV90 AA, M42 Duster): steady proximity-fused bursts, helicopters and drones, light vehicles too.
     { "id": "aa_gun_vehicle", "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 1, "hp": 455, "speed": 8, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.0, "width": 2.5, "cp": 5, "vision": 45,
       "firesWhileMoving": true, "weapon": "bofors_l70", "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
+    // dx03: a light, fast SAM vehicle (M1097 Avenger): fires on the move.
+    { "id": "shorad_vehicle", "modelSize": [3.8, 1.8, 2.2], "class": "AntiAir", "armour": 0, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 200, "radius": 1.6, "length": 3.8, "width": 1.8, "cp": 4, "vision": 44,
+      "firesWhileMoving": true, "weapon": "avenger_stingers", "mainSlot": "missile", "secondary": [ { "weapon": "hmg_selfdef_21", "slot": "mg", "aim": "Free" } ],
+      "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.2, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.

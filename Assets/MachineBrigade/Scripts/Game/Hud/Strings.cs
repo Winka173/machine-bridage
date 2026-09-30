@@ -2481,6 +2481,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.aa_gun_vehicle"] = ("40 mm AA gun vehicle", "Xe cao xạ 40 mm"),
             ["short.aa_gun_vehicle"] = ("40 mm AA", "Cao xạ 40 mm"),
             ["note.aa_gun_vehicle"] = ("A tracked AA gun with a Bofors 40 mm L/70 (M42 Duster, CV90 AA): proximity-fused rounds four a second.", "Xe cao xạ bánh xích mang pháo Bofors 40 mm L/70 (M42 Duster, CV90 AA): đạn ngòi cận đích, bốn phát mỗi giây."),
+            // dx03: Xe tên lửa phòng không Avenger.
+            ["unit.shorad_vehicle"] = ("Light SAM vehicle", "Xe tên lửa phòng không nhẹ"),
+            ["short.shorad_vehicle"] = ("Light SAM", "TL PK nhẹ"),
+            ["note.shorad_vehicle"] = ("An M1097 Avenger: a light truck with a turret of eight shoulder-launched Stinger-class missiles, fired on the move.", "M1097 Avenger: xe hạng nhẹ với tháp mang tám tên lửa vác vai lớp Stinger, bắn được khi đang chạy."),
             // (batch A: new entries above)
         };
 

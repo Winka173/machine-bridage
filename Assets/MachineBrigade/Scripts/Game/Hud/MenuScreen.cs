@@ -853,6 +853,7 @@ namespace MachineBrigade.Game.Hud
             "swarm_carrier" => "fpvtruck",
             // Prompt 25 F2 batch A (DECISIONS 25F2-A).
             "aa_gun_vehicle" => "aa",
+            "shorad_vehicle" => "sam",
             // (batch A icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",

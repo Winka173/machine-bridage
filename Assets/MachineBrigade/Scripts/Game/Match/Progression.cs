@@ -115,6 +115,7 @@ namespace MachineBrigade.Game.Match
         {
             ["heavy_flak_tower"] = 3000,
             ["aa_gun_vehicle"] = 1500,
+            ["shorad_vehicle"] = 1500,
             // (batch A: new entries above)
         };
 

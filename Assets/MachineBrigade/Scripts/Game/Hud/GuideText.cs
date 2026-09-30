@@ -1278,6 +1278,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: bốn phát [[ngòi cận đích]] mỗi giây, vừa chạy vừa bắn, tầm 48 m.\n" +
                 "Mạnh / yếu: thắng trực thăng, drone và xe nhẹ; xe tăng gần như miễn nhiễm.\n" +
                 "Mẹo: đi cùng tuyến đầu để chống trực thăng."),
+            ["guide.shorad_vehicle"] = (
+                "[[Light SAM vehicle]] · very light armour · one big ripple\n" +
+                "How it fights: eight [[heat-seeking missiles]] in one ripple out to 44 m, on the move, then a 15 s reload.\n" +
+                "Strong / weak: swats helicopters and drones in one burst; flares fool some, and it dies to anything on the ground.\n" +
+                "Tip: save the ripple for a helicopter pair.",
+                "[[Xe tên lửa phòng không nhẹ]] · giáp rất mỏng · xả một loạt\n" +
+                "Cách đánh: tám [[tên lửa tầm nhiệt]] một loạt, tầm 44 m, vừa chạy vừa bắn, rồi nạp 15 giây.\n" +
+                "Mạnh / yếu: hạ trực thăng và drone trong một loạt; pháo sáng lừa được vài quả, dưới đất thứ gì cũng diệt được nó.\n" +
+                "Mẹo: dành loạt tên lửa cho một cặp trực thăng."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
