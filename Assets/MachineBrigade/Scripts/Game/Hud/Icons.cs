@@ -231,6 +231,7 @@ namespace MachineBrigade.Game.Hud
             ["t_balloon"] = "<path d=\"M2 21h20M9 21v-3h6v3M12 18V12\"/><path d=\"M5 7c0-2 3-4 7-4s7 2 7 4-3 4-7 4-7-2-7-4Z\"/><path d=\"M19 7l3-2v4Z\"/>",
             ["t_screen"] = "<path d=\"M2 21h20M9 21v-5h6v5M12 16V4M8 6h8M9 9h6\"/><path d=\"M3 12a9 9 0 0 1 3-6M21 12a9 9 0 0 0-3-6\" dash=\"2 1.5\"/>",
             ["t_shelter"] = "<path d=\"M2 21h20M3 21c1-6 5-9 9-9s8 3 9 9M9 21v-4h6v4M7 12V9M17 12V9\"/>",
+            ["t_flare"] = "<path d=\"M2 21h20M8 21V11h8v10M10 11l2-4 2 4M12 7V5\"/><circle cx=\"17\" cy=\"4\" r=\"2\"/><path d=\"M17 1v1M20 4h1M14 4h-1\"/>",
             // (batch A structure icons: new entries above)
             ["t_radar"] = "<path d=\"M3 21h16M7 21l1-5h6l1 5M5.5 11h11\"/><circle cx=\"11\" cy=\"11\" r=\"5.5\"/><path d=\"M17.5 4a5 5 0 0 1 2.5 3M19.5 2a8 8 0 0 1 3 4.5\"/>",
             // Spawn bastion: a crenellated keep with its gate.

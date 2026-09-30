@@ -1476,6 +1476,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: xe ta trong 15 m nhận [[một nửa]] sát thương pháo, cối, bom và không kích; không che đạn bắn thẳng.\n" +
                 "Mạnh / yếu: giữ quân phòng thủ sống qua trận pháo kích; vô dụng trước xe tăng.\n" +
                 "Mẹo: kéo quân phòng thủ về quanh nó khi đạn pháo tới."),
+            ["guide.flare_tower"] = (
+                "[[Flare tower]] · small structure · light in bursts\n" +
+                "How it fights: at [[night and in fog]], every 15 s a flare over the nearest enemy within 40 m shows everything within 30 m.\n" +
+                "Strong / weak: finds night raiders, stealth too; does nothing by day.\n" +
+                "Tip: pair it with a searchlight on night maps.",
+                "[[Tháp pháo sáng]] · công trình ô nhỏ · chiếu sáng theo đợt\n" +
+                "Cách đánh: [[ban đêm và trong sương mù]], 15 giây một quả pháo sáng trên địch gần nhất trong 40 m, làm lộ mọi thứ trong 30 m.\n" +
+                "Mạnh / yếu: tìm quân đột kích đêm, cả tàng hình; ban ngày vô dụng.\n" +
+                "Mẹo: đi cặp với đèn pha ở map đêm."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

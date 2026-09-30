@@ -4,8 +4,8 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 3,
-    "xong": 24
+    "đang làm": 2,
+    "xong": 25
   },
   "byKind": {
     "unit": {
@@ -15,8 +15,8 @@
     },
     "structure": {
       "chưa làm": 0,
-      "đang làm": 3,
-      "xong": 1
+      "đang làm": 2,
+      "xong": 2
     },
     "ordnance": {
       "chưa làm": 14,
@@ -853,8 +853,8 @@
       "group": "Nhỏ",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 2.000 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "flare_tower",
       "notes": "25D2 plan: 2,000 coins in the shop."
     },
     {

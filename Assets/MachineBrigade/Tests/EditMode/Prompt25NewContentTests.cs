@@ -70,6 +70,7 @@ namespace MachineBrigade.Tests
             new Row("fibre_fpv_carrier", 950, 7, 1, -1, "fpv_fibre", 160, 60, 26.7f, "jamProof"),
             new Row("interceptor_drone_vehicle", 900, 5, 1, -1, "interceptor_drone", 120, 60, 30, "rotors"),
             new Row("troop_shelter", 4000, 0, 3, 30, "none", -1, -1, -1, "shelter"),
+            new Row("flare_tower", 1000, 0, 1, 60, "illum_flare", -1, 40, -1, "flares"),
             // (batch A rows: new ones above)
         };
 

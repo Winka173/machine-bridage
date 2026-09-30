@@ -2569,6 +2569,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.troop_shelter"] = ("Troop shelter", "Hầm che quân"),
             ["short.troop_shelter"] = ("Troop shelter", "Hầm che quân"),
             ["note.troop_shelter"] = ("A half-buried concrete bunker with an earth berm: vehicles sheltering round it ride out a barrage.", "Hầm bê tông nửa chìm có ụ đất phủ: xe núp quanh nó chịu được trận pháo kích."),
+            // ct12: Tháp pháo sáng.
+            ["unit.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
+            ["short.flare_tower"] = ("Flare tower", "Tháp pháo sáng"),
+            ["note.flare_tower"] = ("A small tower with a multi-tube illumination mortar: parachute flares that turn night into day over the enemy.", "Tháp nhỏ với cối pháo sáng nhiều ống: pháo sáng dù biến đêm thành ngày trên đầu địch."),
             // (batch A: new entries above)
         };
 

@@ -137,6 +137,7 @@ namespace MachineBrigade.Game.Match
             ["fibre_fpv_carrier"] = 3000,
             ["interceptor_drone_vehicle"] = 1500,
             ["troop_shelter"] = 3000,
+            ["flare_tower"] = 2000,
             // (batch A: new entries above)
         };
 
