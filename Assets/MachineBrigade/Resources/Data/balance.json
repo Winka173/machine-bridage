@@ -59,7 +59,9 @@
       "levels": { "Easy": 2, "Normal": 3, "Hard": 5, "VeryHard": 5 },
       "styles": {
         "default": { "aa_gun_tower": 0.8, "laser_ad_station": 0.5, "flare_tower": 0.25, "troop_shelter": 0.3, "visual_jammer": 0.6, "barrage_balloon": 0.3, "searchlight": 0.3, "fire_control_centre": 1.0, "inflatable_decoy": 0.4, "blast_wall": 0.4, "at_gun_emplacement": 0.9, "heavy_flak_tower": 0.6, "guard_tower": 1.0, "mg_bunker": 1.0, "aa_turret": 1.2, "gun_turret": 1.2, "rocket_turret": 0.8,
-                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35 },
+                     "artillery_emplacement": 0.7, "missile_battery": 0.6, "heavy_turret": 0.6, "c_ram": 0.8, "atgm_tower": 1.0, "ew_tower": 0.6, "drone_hangar": 0.6, "shield_tower": 0.5, "cp_relay": 0.35,
+                     // Prompt 25 F2 batch B (DECISIONS 25F2-B): the six tower stand-ins (default weight only; no per-general tuning this pass).
+                     "manpads_tower": 0.5, "flare_searchlight_tower": 0.2, "recoilless_gun_tower": 0.6, "bunker_shelter_tower": 0.3, "drone_net_tower": 0.4, "one_shot_atgm_tower": 0.4 },
         "armour": { "fire_control_centre": 1.0, "inflatable_decoy": 0.6, "blast_wall": 0.8, "at_gun_emplacement": 1.6, "gun_turret": 2.0, "heavy_turret": 1.4, "mg_bunker": 1.0, "aa_turret": 0.8, "guard_tower": 0.6, "shield_tower": 0.8 },
         "artillery": { "troop_shelter": 0.6, "fire_control_centre": 1.0, "artillery_emplacement": 2.0, "rocket_turret": 1.6, "gun_turret": 0.8, "aa_turret": 0.8 },
         "air": { "aa_gun_tower": 1.6, "laser_ad_station": 1.0, "barrage_balloon": 1.0, "fire_control_centre": 1.0, "heavy_flak_tower": 1.8, "aa_turret": 2.0, "missile_battery": 1.6, "c_ram": 1.2, "guard_tower": 0.8 },
@@ -598,6 +600,29 @@
     // ct13: the fixed 50 kW anti-drone laser (Iron Beam fixed site, DragonFire): at drones only; its interceptors (the APS) take rockets and mortar bombs; smoke cuts it by 80 %.
     { "id": "laser_50kw", "real": "50 kW laser (Iron Beam fixed site)", "family": "laser", "size": 50, "pen": 2, "damageType": "Energy", "damage": 6, "cooldown": 0.0667, "range": 40, "projectileSpeed": 3000, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "beam": true, "prey": "Drones" },
     // (batch A weapons: new entries above)
+    // Prompt 25 F2 batch B (DECISIONS 25F2-B): the "Đề xuất thêm" Thấp-priority items, stand-in models (a borrowed
+    // model, "tint"); new weapons only where nothing existing was close, else an existing weapon id is reused as is.
+    // dx05: the 2S38 Derivatsiya-PVO's 57 mm autocannon (proximity-fused, also catches light vehicles).
+    { "id": "gun_57mm_2s38", "real": "2A87 57 mm (2S38 Derivatsiya-PVO)", "family": "autocannon", "size": 57, "pen": 2, "damageType": "Fragmentation", "damage": 70, "cooldown": 0.5, "range": 52, "projectileSpeed": 220, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "splash": 3 },
+    // dx19: the new-generation tank's 125 mm (T-14 Armata class), an APS that takes two hits before it needs to recharge.
+    { "id": "gun_125_armata_ke", "real": "125 mm smoothbore (T-14 Armata)", "family": "tank_gun", "size": 125, "pen": 4, "damageType": "Kinetic", "damage": 260, "cooldown": 5, "range": 34, "projectileSpeed": 210, "spread": 0.8, "impactTier": "Large", "projectile": "Shell", "targets": "All" },
+    // dx33: the river gunboat's 100 mm (Buyan class), for shore bombardment.
+    { "id": "gun_100_river", "real": "A-190 100 mm (Buyan-class river gunboat)", "family": "naval_gun", "size": 100, "pen": 2, "damageType": "HighExplosive", "damage": 160, "cooldown": 3, "range": 70, "projectileSpeed": 170, "splash": 4, "impactTier": "Large", "projectile": "Shell", "targets": "All" },
+    // dx34: the coastal anti-ship missile (NSM Coastal Defence class): very long reach, slow to reload, weak inland.
+    { "id": "nsm_coastal", "real": "NSM Coastal Defence", "family": "cruise_missile", "size": 300, "pen": 4, "damageType": "ShapedCharge", "damage": 450, "cooldown": 10, "range": 140, "projectileSpeed": 40, "impactTier": "Huge", "projectile": "Missile", "targets": "All" },
+    // dx35: the XM2001 Crusader's auto-loaded 155 mm: a four-round burst (clip), then a long reload, all landing near together (mrsi).
+    { "id": "gun_155_crusader", "real": "XM2001 Crusader 155 mm (cancelled)", "family": "howitzer", "size": 155, "pen": 2, "damageType": "HighExplosive", "damage": 320, "cooldown": 2.5, "range": 95, "projectileSpeed": 150, "spread": 1.4, "splash": 6, "impactTier": "Large", "projectile": "Shell", "targets": "All", "mrsi": true, "clip": 4, "clipReload": 20 },
+    // dx37: the M8 AGS-class airborne light tank's 105 mm.
+    { "id": "gun_105_ags", "real": "105 mm low-recoil (M8 AGS, cancelled)", "family": "tank_gun", "size": 105, "pen": 3, "damageType": "Kinetic", "damage": 212, "cooldown": 5, "range": 32, "projectileSpeed": 190, "spread": 1, "impactTier": "Medium", "projectile": "Shell", "targets": "All" },
+    // dx45: the SPG-9 73 mm recoilless rifle, the emplacement's cheap anti-tank round.
+    { "id": "spg9_73mm", "real": "SPG-9 Kopyo 73 mm", "family": "recoilless", "size": 73, "pen": 3, "damageType": "ShapedCharge", "damage": 180, "cooldown": 6.67, "range": 28, "projectileSpeed": 120, "spread": 1.5, "impactTier": "Medium", "projectile": "Shell", "targets": "All" },
+    // dx50: the Typhon MRC-class ground-launched cruise missile: two rounds, a long reload, very long reach, shot down like any cruise missile.
+    { "id": "cruise_missile_ground", "real": "Typhon MRC (ground-launched Tomahawk)", "family": "cruise_missile", "size": 450, "pen": 4, "damageType": "ShapedCharge", "damage": 450, "cooldown": 15, "range": 180, "projectileSpeed": 22, "impactTier": "Huge", "projectile": "Missile", "targets": "All", "clip": 2, "clipReload": 30 },
+    // dx55: the drone net corridor's snare (an instant trigger, not a round): drones only.
+    { "id": "net_zap", "real": "Anti-drone net corridor", "family": "special", "size": 1, "pen": 1, "damageType": "Energy", "damage": 999, "cooldown": 0.5, "range": 15, "projectileSpeed": 200, "impactTier": "Small", "projectile": "Bullet", "targets": "Air", "prey": "Drones" },
+    // dx56: the one-shot ATGM salvo tower's Kornet, a clip of eight that does not refill: it must be bought again once spent.
+    { "id": "one_shot_kornet", "inherits": "tower_kornet", "real": "9M133 Kornet", "burst": 1, "cooldown": 1.2, "clip": 8, "clipReload": 999999 },
+    // (batch B weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
 
@@ -1196,6 +1221,112 @@
     { "id": "aa_gun_tower", "modelSize": [5.5, 5.5, 3.2], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1273, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.4, "length": 5.0, "width": 5.0, "cp": 0, "vision": 56,
       "weapon": "bofors_l70", "secondary": [], "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // (batch A units and structures: new entries above)
+    // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 33 "Đề xuất thêm" Thấp-priority items, stand-in models (a
+    // borrowed "model" with a "tint"; the owner's choice, real models at prompt 26-27). dx23 (a Super Tank module
+    // choice, no CP of its own) is not in this pass: see DECISIONS 25F2-B.
+    // dx05: the 2S38 Derivatsiya-PVO stand-in (aa_gun_vehicle's hull): a self-propelled 57 mm, slower but harder-hitting than the 40 mm.
+    { "id": "aa_57mm_vehicle", "model": "aa_gun_vehicle", "tint": [0.6, 1.15, 0.78], "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 2, "hp": 636, "speed": 7, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.9, "width": 2.5, "cp": 6, "vision": 48,
+      "firesWhileMoving": true, "weapon": "gun_57mm_2s38", "deathExplosion": { "damage": 65, "radius": 5, "delay": 0.25, "tier": "Large" } },
+    // dx13: the BM-27 Uragan-class mine-laying rocket stand-in (mlrs's hull): seeds a minefield instead of firing for damage.
+    { "id": "mine_rocket_truck", "model": "mlrs", "tint": [0.75, 0.68, 0.5], "modelSize": [6.09, 2, 2.6], "class": "Artillery", "armour": 1, "hp": 364, "speed": 9.4, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 5.8, "width": 2, "cp": 7, "vision": 30,
+      "weapon": "none", "mines": { "interval": 5, "max": 12, "damage": 380, "radius": 5, "tier": "Large", "trigger": 2.2, "spread": 18 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // dx17: the EMB-314 Super Tucano / OV-10 Bronco stand-in (attack_jet's hull): cheap, slow, low; a gun and rockets against light vehicles.
+    { "id": "prop_attack_plane", "model": "attack_jet", "tint": [0.68, 0.8, 0.56], "value": 0.6, "rearmTime": 9, "strongVs": ["Light", "Scout"], "modelSize": [6.15, 6.04, 1.84], "armour": 1, "hp": 409, "speed": 18, "turnRate": 100, "turretTurnRate": 360, "radius": 3.2, "cp": 7, "vision": 50,
+      "firesWhileMoving": true, "weapon": "hmg_roof", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 20, "captureRate": 0, "attackHold": 3.2,
+      "secondary": [ { "weapon": "scout_rockets", "slot": "rocket", "model": "hydra", "aim": "Hull" } ], "deathExplosion": { "damage": 55, "radius": 6, "delay": 0.4, "tier": "Large" } },
+    // dx18: the AH-1Z Viper (light) / Mi-28-class stand-in (scout_heli's hull): fast, cheap, thin armour; a few ATGMs and a gun.
+    { "id": "light_attack_heli", "model": "scout_heli", "tint": [0.72, 0.58, 0.42], "value": 0.7, "rearmTime": 8, "strongVs": ["Scout", "Light"], "modelSize": [3.88, 3.16, 1.56], "armour": 0, "hp": 500, "speed": 16, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 45,
+      "firesWhileMoving": true, "weapon": "minigun", "mainSlot": "gun", "flying": true, "altitude": 13, "captureRate": 0,
+      "secondary": [ { "weapon": "heli_atgm", "slot": "missile", "model": "atgm_ataka", "aim": "Hull" } ], "deathExplosion": { "damage": 45, "radius": 5, "delay": 0.4, "tier": "Large" } },
+    // dx19: the T-14 Armata-class next-generation tank stand-in (main_battle_tank's hull): an APS that takes two hits before it recharges.
+    { "id": "next_gen_tank", "model": "main_battle_tank", "tint": [0.55, 0.7, 1.15], "modelSize": [7.79, 3.07, 2.3], "armour": [4, 2, 1, 1], "hp": 1045, "speed": 6.5, "turnRate": 60, "turretTurnRate": 115, "radius": 2.2, "length": 7.79, "width": 3.07, "cp": 9, "vision": 34,
+      "weapon": "gun_125_armata_ke", "aps": { "radius": 20, "shells": 0.5, "charges": 2, "recharge": 1.2, "rockets": true, "laser": true }, "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // dx21: the M58 MICLIC-class demolition-line vehicle stand-in (engineer_vehicle's hull): a mine roller ahead of it (mineProof).
+    { "id": "demolition_line_vehicle", "model": "engineer_vehicle", "tint": [0.85, 0.6, 1.1], "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 545, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mineProof": true, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
+    // dx22: the "dies into a gun pit" light vehicle (a C&C Generals Battle Bus idea; armored_car's hull); a bigger cook-off death in this pass (no wreck-turret entity yet: DECISIONS 25F2-B).
+    { "id": "combat_wreck_car", "model": "armored_car", "tint": [1.2, 0.95, 0.5], "modelSize": [4.78, 2.08, 1.49], "class": "Light", "armour": 1, "hp": 409, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 4, "vision": 40,
+      "firesWhileMoving": true, "weapon": "mg_jeep", "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Huge" } },
+    // dx24: the drone-hijack vehicle stand-in (ew_jammer's hull): plays as batch A's microwave pulse (downs drones in a cone) rather than a true side-flip capture, which has no mechanism yet.
+    { "id": "drone_hijack_vehicle", "model": "ew_jammer", "tint": [0.5, 1.1, 1.05], "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 409, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 40,
+      "firesWhileMoving": true, "weapon": "none", "microwave": { "range": 40, "arc": 360, "cooldown": 20 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // dx32: the river patrol boat stand-in (Mark VI / RCB class; armored_car's hull): a machine gun and a grenade launcher.
+    { "id": "river_patrol_boat", "model": "armored_car", "tint": [0.58, 0.85, 1.15], "modelSize": [4.78, 2.08, 1.49], "class": "Light", "armour": 0, "hp": 364, "speed": 14, "turnRate": 160, "turretTurnRate": 220, "radius": 2.0, "length": 4.44, "width": 2.08, "cp": 5, "vision": 40,
+      "firesWhileMoving": true, "weapon": "mg_jeep", "secondary": [ { "weapon": "agl_40", "slot": "mg", "aim": "Free" } ], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    // dx33: the Buyan-class river gunboat stand-in (artillery's hull): a slow 100 mm for shore bombardment.
+    { "id": "river_gunboat", "model": "artillery", "tint": [1.1, 0.7, 0.4], "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 1136, "speed": 6, "turnRate": 50, "turretTurnRate": 45, "radius": 2.7, "length": 7.86, "width": 3.14, "cp": 9, "vision": 34,
+      "weapon": "gun_100_river", "deathExplosion": { "damage": 130, "radius": 8, "delay": 0.4, "tier": "Huge" } },
+    // dx34: the NSM Coastal Defence-class anti-ship vehicle stand-in (sam_launcher's hull): very long reach, slow to reload; the sim has no ship-only filter yet, so it also lands on ground targets (DECISIONS 25F2-B).
+    { "id": "coastal_ashm_vehicle", "model": "sam_launcher", "tint": [0.7, 1.05, 0.85], "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 409, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 10, "vision": 35,
+      "weapon": "nsm_coastal", "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // dx35: the XM2001 Crusader-class auto-loading howitzer stand-in (artillery's hull): a four-round burst that lands together (mrsi), then a long reload.
+    { "id": "auto_loader_howitzer", "model": "artillery", "tint": [0.85, 0.85, 0.55], "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 727, "speed": 6, "turnRate": 60, "turretTurnRate": 45, "radius": 2.5, "length": 7.86, "width": 3.14, "cp": 8, "vision": 30,
+      "weapon": "gun_155_crusader", "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // dx36: the EFV / AAV-7-class amphibious light vehicle stand-in (ifv's hull): the sim has one speed, not a water/land pair yet, so its land speed is used throughout (DECISIONS 25F2-B).
+    { "id": "amphib_light_vehicle", "model": "ifv", "tint": [0.6, 0.75, 0.55], "modelSize": [5.48, 3.02, 2.5], "armour": 1, "hp": 545, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.48, "width": 3.02, "cp": 6, "vision": 34,
+      "firesWhileMoving": true, "weapon": "autocannon_25", "deathExplosion": { "damage": 75, "radius": 6, "delay": 0.3, "tier": "Large" } },
+    // dx37: the M8 AGS-class airborne light tank stand-in (light_tank's hull): dropped by parachute like dx10's airborne_vehicle.
+    { "id": "airborne_light_tank", "model": "light_tank", "tint": [1.15, 0.6, 0.9], "modelSize": [6.39, 2.61, 1.89], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 8, "turnRate": 90, "turretTurnRate": 100, "radius": 1.7, "length": 6.39, "width": 2.61, "cp": 5, "vision": 36,
+      "weapon": "gun_105_ags", "paradrop": { "proxy": "airborne_light_tank_chute", "fall": 6, "height": 30, "baseKeepOut": 45 }, "deathExplosion": { "damage": 85, "radius": 7, "delay": 0.3, "tier": "Large" } },
+    { "id": "airborne_light_tank_chute", "card": false, "model": "light_tank", "tint": [1.15, 0.6, 0.9], "modelSize": [9.0, 9.0, 11.0], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
+      "weapon": "none", "flying": true, "altitude": 30 },
+    // dx38: the A-12 Avenger II-class stealth strike aircraft stand-in (stealth_bomber's hull): two precision bombs, no gun.
+    { "id": "stealth_naval_strike", "model": "stealth_bomber", "tint": [0.7, 0.9, 1.1], "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy"], "modelSize": [8.4, 21, 1.5], "armour": 0, "hp": 682, "speed": 30, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 17, "vision": 50,
+      "firesWhileMoving": true, "weapon": "none", "secondary": [ { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" } ], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 46, "captureRate": 0,
+      "stealth": true, "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.5, "tier": "Huge" } },
+    // dx39: the ACH-47A "Guns-A-Go-Go"-class twin-rotor low gunship stand-in (sky_gunship's hull): lower and slower than the Sky Fortress, easier to hit with small arms.
+    { "id": "twin_rotor_gunship", "model": "sky_gunship", "tint": [0.95, 0.95, 0.6], "rearmTime": 12, "strongVs": ["Light", "Support"], "modelSize": [11.93, 16.3, 4.82], "armour": 1, "hp": 1591, "speed": 9, "turnRate": 70, "turretTurnRate": 360, "radius": 6, "cp": 14, "vision": 50,
+      "firesWhileMoving": true, "weapon": "heli_gun", "mainSlot": "gun", "flying": true, "altitude": 15, "captureRate": 0,
+      "secondary": [ { "weapon": "agl_40", "slot": "mg", "aim": "Free" } ], "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.5, "tier": "Huge" } },
+    // dx40: the THeMIS / Uran-9-class ground drone carrier stand-in (interceptor_drone_vehicle's hull): a cheap decoy screen; its three minion robots are not modelled yet (no minion-spawn mechanism exists: DECISIONS 25F2-B).
+    { "id": "ground_drone_carrier", "model": "interceptor_drone_vehicle", "tint": [0.6, 1.0, 0.85], "modelSize": [5.0, 2.0, 2.4], "class": "Support", "armour": 1, "hp": 409, "speed": 9, "turnRate": 110, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 40,
+      "firesWhileMoving": true, "weapon": "mg_coax_ground", "deathExplosion": { "damage": 45, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    // dx41: the MTO-UB-class mobile repair vehicle stand-in (engineer_vehicle's hull): slower, wider-reaching repair than the engineer (does not mend broken tower parts: DECISIONS 25F2-B).
+    { "id": "mobile_repair_vehicle", "model": "engineer_vehicle", "tint": [0.8, 0.6, 0.75], "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 1, "hp": 591, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "repair": { "radius": 20, "rate": 0.015 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
+    // dx42: the Giraffe AMB / Kasta-class mobile AA radar stand-in (radar_scout's hull): high vision only in this pass; the AA-range aura is not modelled yet (no vehicle-aura field exists: DECISIONS 25F2-B).
+    { "id": "radar_support_vehicle", "model": "radar_scout", "tint": [0.65, 0.8, 0.95], "class": "Scout", "modelSize": [4.6, 2.0, 4.0], "armour": 1, "hp": 409, "speed": 11, "turnRate": 150, "turretTurnRate": 220, "radius": 1.7, "length": 4.4, "width": 2.0, "cp": 5, "vision": 65,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
+    // dx43: the 2A45 Sprut-B-class towed AT gun stand-in (tank_destroyer's hull): unarmoured, no deploy-delay mechanism yet (plays as a cheap glass-cannon AT vehicle: DECISIONS 25F2-B).
+    { "id": "towed_at_gun", "model": "tank_destroyer", "tint": [1.0, 0.75, 0.55], "class": "TankHunter", "modelSize": [7.89, 2.62, 2.04], "armour": 0, "hp": 364, "speed": 5, "turnRate": 60, "turretTurnRate": 40, "radius": 2.4, "length": 7.89, "width": 2.62, "cp": 4, "vision": 32,
+      "weapon": "gun_125_armata_ke", "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
+    // dx44: the battlefield flare tower stand-in (flare_tower's own mechanism, reused in a cheaper small-slot card).
+    { "id": "flare_searchlight_tower", "model": "flare_tower", "tint": [0.55, 0.9, 0.7], "modelSize": [3.6, 3.6, 5.0], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 455, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 1.8, "length": 3.6, "width": 3.6, "cp": 0, "vision": 55,
+      "weapon": "illum_flare", "flares": { "every": 15, "range": 40, "radius": 25, "seconds": 15 }, "deathExplosion": { "damage": 25, "radius": 4, "delay": 0.2, "tier": "Large" } },
+    // dx45: the SPG-9 Kopyo recoilless-gun tower stand-in (at_gun_emplacement's hull): cheaper and weaker than the anti-tank gun emplacement.
+    { "id": "recoilless_gun_tower", "model": "at_gun_emplacement", "tint": [0.9, 0.65, 1.05], "modelSize": [4.2, 4.2, 3.0], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 545, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 32,
+      "weapon": "spg9_73mm", "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.25, "tier": "Large" } },
+    // dx46: the concrete bunker stand-in (troop_shelter's own mechanism, reused in a bigger medium-slot card).
+    { "id": "bunker_shelter_tower", "model": "troop_shelter", "tint": [0.7, 1.1, 0.6], "modelSize": [6.0, 5.0, 2.2], "fort": { "size": "Medium" }, "static": true, "armour": 3, "hp": 1818, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.6, "length": 6.0, "width": 5.0, "cp": 0, "vision": 30,
+      "weapon": "none", "shelter": { "radius": 18, "cut": 0.5 } },
+    // dx49: the Peresvet-class dazzler vehicle stand-in (ew_jammer's hull): plays as an EW jammer (its accuracy effect on nearby enemy fire) rather than a separate on-demand cone, which has no mechanism yet (DECISIONS 25F2-B).
+    { "id": "dazzler_vehicle", "model": "ew_jammer", "tint": [1.1, 0.85, 0.65], "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 409, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 5, "vision": 35,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 30, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    // dx50: the Typhon MRC-class ground-launched cruise missile vehicle stand-in (sam_launcher's hull).
+    { "id": "ground_cruise_missile_vehicle", "model": "sam_launcher", "tint": [1.05, 0.5, 0.65], "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 455, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 12, "vision": 35,
+      "weapon": "cruise_missile_ground", "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // dx51: the KC-135 / Il-78-class aerial tanker stand-in (heavy_bomber's hull): unarmed and high-flying in this pass; the endurance aura is not modelled yet (no aircraft-fuel field exists: DECISIONS 25F2-B).
+    { "id": "aerial_tanker", "model": "heavy_bomber", "tint": [0.55, 0.55, 0.9], "rearmTime": 0, "modelSize": [19.8, 22.62, 5.7], "armour": 0, "hp": 1136, "speed": 20, "turnRate": 68, "turretTurnRate": 360, "radius": 7.5, "cp": 8, "vision": 55,
+      "weapon": "none", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // dx52: the CH-47 / Mi-26-class tower-lift helicopter stand-in (gunship_heli's hull): unarmed heavy transport in this pass; carrying a tower to any seen ground spot is not modelled yet (no airlift-drop command exists: DECISIONS 25F2-B).
+    { "id": "heavy_lift_helicopter", "model": "gunship_heli", "tint": [0.95, 0.5, 0.5], "rearmTime": 9, "modelSize": [7.59, 6.58, 2.1], "armour": 1, "hp": 818, "speed": 12, "turnRate": 90, "turretTurnRate": 1, "radius": 4.5, "cp": 7, "vision": 42,
+      "weapon": "none", "flying": true, "altitude": 17, "captureRate": 1, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
+    // dx53: the AVLB / MTU-72-class bridging vehicle stand-in (engineer_vehicle's hull): laying a bridge over a river map gap is not modelled yet (no river-gap map feature exists: DECISIONS 25F2-B); plays as an armoured support vehicle for now.
+    { "id": "bridging_vehicle", "model": "engineer_vehicle", "tint": [0.5, 0.85, 0.75], "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 682, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "deathExplosion": { "damage": 65, "radius": 6, "delay": 0.35, "tier": "Large" } },
+    // dx54: the Pole-21-class GPS jammer vehicle stand-in (ew_jammer's own hull and field: a second copy of its jammer, since the sim has no separate glide-bomb/cruise-missile-only jamming yet: DECISIONS 25F2-B).
+    { "id": "gps_jammer_vehicle", "model": "ew_jammer", "tint": [0.6, 0.6, 0.95], "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 364, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 5, "vision": 35,
+      "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "jammer": 28, "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
+    // dx55: the anti-drone net corridor stand-in (laser_ad_station's hull): a cheap small-slot tower, drones only, passable.
+    { "id": "drone_net_tower", "model": "laser_ad_station", "tint": [1.05, 0.85, 1.1], "modelSize": [6.0, 4.0, 4.6], "fort": { "size": "Small" }, "static": true, "passable": true, "armour": 0, "hp": 364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 1.6, "length": 3.0, "width": 8.0, "cp": 0, "vision": 20,
+      "weapon": "net_zap" },
+    // dx56: the one-shot ATGM salvo tower stand-in (atgm_tower's hull): a big Kornet clip that does not refill (must be bought again, "dropped by parachute" again).
+    { "id": "one_shot_atgm_tower", "model": "atgm_tower", "tint": [0.65, 0.55, 0.4], "modelSize": [4.8, 4.8, 3.6], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 909, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.8, "width": 4.8, "cp": 0, "vision": 40,
+      "weapon": "one_shot_kornet", "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.4, "tier": "Huge" } },
+    // dx31: the MANPADS sandbag emplacement stand-in (shield_tower's hull): a cheap small-slot Stinger post.
+    { "id": "manpads_tower", "model": "shield_tower", "tint": [0.75, 0.68, 0.5], "modelSize": [3.2, 3.2, 2.4], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 545, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 1.7, "length": 3.0, "width": 3.0, "cp": 0, "vision": 40,
+      "weapon": "sam" },
+    // (batch B units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
     // Prompt 16 F: the landing hovercraft's escort, a small air-cushion gunboat (it crosses land and water

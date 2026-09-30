@@ -146,6 +146,35 @@ namespace MachineBrigade.Game.Match
             "fibre_fpv_carrier",
             "interceptor_drone_vehicle",
             // (batch A cards: new entries above)
+            // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 26 non-tower Thấp-priority items (dx23 not in this pass;
+            // the six towers are base-slot cards, not here).
+            "aa_57mm_vehicle",
+            "mine_rocket_truck",
+            "prop_attack_plane",
+            "light_attack_heli",
+            "next_gen_tank",
+            "demolition_line_vehicle",
+            "combat_wreck_car",
+            "drone_hijack_vehicle",
+            "river_patrol_boat",
+            "river_gunboat",
+            "coastal_ashm_vehicle",
+            "auto_loader_howitzer",
+            "amphib_light_vehicle",
+            "airborne_light_tank",
+            "stealth_naval_strike",
+            "twin_rotor_gunship",
+            "ground_drone_carrier",
+            "mobile_repair_vehicle",
+            "radar_support_vehicle",
+            "towed_at_gun",
+            "dazzler_vehicle",
+            "ground_cruise_missile_vehicle",
+            "aerial_tanker",
+            "heavy_lift_helicopter",
+            "bridging_vehicle",
+            "gps_jammer_vehicle",
+            // (batch B cards: new entries above)
         };
 
         public static readonly string[] AllSupports =
