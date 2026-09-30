@@ -326,8 +326,169 @@ def fighter_jet(a, detail=False):
     _scale_asset(a, FIGHTER_K)
 
 
+# ----------------------------------------------------------------------------- C-130 airframe (mothership, AC-130)
+C130_WING = dict(root_le=-1.0, tip_le=-.62, root_c=1.96, tip_c=1.0, span=8.08, z=.98)
+C130_ENGINES = ((-3.96, 'Propeller'), (-1.96, 'Propeller_2'), (1.96, 'Propeller_3'), (3.96, 'Propeller_4'))
+RAMP = (2.9, -.82, math.tan(.17), .17)     # hinge y, hinge z, slope, angle: lowered 10 degrees below level
+
+
+def _c130(a, detail=False, ramp_open=False):
+    """The shared four-turboprop transport airframe (C-130 class) of the drone mothership and the AC-130, 11.9 x
+    16.2 x 4.6 m: a round fuselage with a radome nose and a band of flight-deck windows, gear sponsons, a high
+    straight wing on a root fairing, four nacelles slung under it with four-blade `Propeller`..`Propeller_4` (drawn
+    10 % large: with the long straight wing they are the silhouette), an upswept tail with a tall fin (10 % tall)
+    and the tailplane. ramp_open lowers the cargo ramp under the tail and shows the dark hold above it. Origin at
+    the fuselage centre (it flies). Returns the wing planform."""
+    from mb_air import LEFT, RIGHT, Planform, _dome, _sec, _surface, _upright
+    hd.mark(a, detail)
+    n = 14 if detail else 12
+    body = a.part('Fuselage', 'Team')
+    armor = a.part('Armor', 'Armor')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    steel = a.part('Steel', 'Steel')
+    glow = a.part('Wing_lights', 'TeamGlow')
+
+    def sec(y, w, zb, zt):
+        return _sec(y, w, zb, zt, n=n, pt=2.4, pb=3.2)
+    hull = [sec(-5.78, .36, -.46, .16), sec(-5.4, .7, -.78, .5), sec(-4.85, .86, -.9, .8), sec(2.5, .86, -.9, .82),
+            sec(3.45, .84, -.56, .82), sec(4.7, .56, .1, .8), sec(5.75, .2, .48, .72)]
+    body.loft([[(0, -5.96, -.16)]] + hull + [[(0, 5.96, .62)]], bevel=.02 if detail else 0, seg=1)
+    armor.loft([[(0, -5.97, -.16)], sec(-5.9, .2, -.34, .04), sec(-5.72, .4, -.52, .22)], bevel=0)   # radome
+    # Flight-deck windows: a glass band round the top of the nose, framed by the skin either side.
+    a.part('Canopy', 'Glass').loft([_dome(y, w, z0, z1, 7) for y, w, z0, z1 in
+                                    ((-5.52, .5, .12, .38), (-5.25, .74, .3, .62), (-4.95, .8, .42, .78))], bevel=0)
+    for s in (-1, 1):                                                                            # gear sponsons
+        armor.box((.42, 2.8, .6), loc=(s * .78, -.3, -.74), bevel=.06 if detail else .04, seg=1, taper=(.75, .95))
+        steel.box((.24, .7, .2), loc=(s * .8, -.2, -1.0), bevel=0)                               # stowed wheels
+    # High straight wing on its root fairing.
+    w = C130_WING
+    wing = Planform(0, w['span'], w['root_le'], w['tip_le'], w['root_c'], w['tip_c'], .36, .15, w['z'], w['z'] + .08)
+    body.box((1.3, 2.4, .34), loc=(0, w['root_le'] + 1.05, .86), bevel=.06, seg=1, taper=(.8, .92))
+    for frame in (RIGHT, LEFT):
+        _surface(body, wing, frame, bevel=.012 if detail else 0)
+    for s in (-1, 1):
+        glow.box((.1, .22, .08), loc=(s * (w['span'] + .02), wing.le(w['span']) + .3, wing.at(w['span'])[3]), bevel=0)
+    # Nacelles under the wing, the turboprops at their fronts.
+    for x, name in C130_ENGINES:
+        le = wing.le(abs(x))
+        zc = wing.bottom(abs(x)) - .12
+        nac = [(le - 1.15, .19, .2), (le - .75, .25, .27), (le + .3, .24, .27), (le + 1.4, .16, .16), (le + 2.1, .07, .08)]
+        rings = [[(x + px, y, zc + pz) for px, _, pz in _sec(0, hw, -hh, hh, n=8 if not detail else 10, pt=2.2, pb=2.2)]
+                 for y, hw, hh in nac]
+        body.loft(rings + [[(x, le + 2.35, zc)]], bevel=0)
+        armor.cyl(.2, .06, loc=(x, le - 1.17, zc), rot=(R90, 0, 0), seg=10, bevel=0)             # intake ring
+        dark.box((.16, .12, .06), loc=(x, le - 1.1, zc - .17), bevel=0)                         # oil-cooler scoop
+        dark.cyl(.06, .3, loc=(x + (.2 if x > 0 else -.2), le + .1, zc + .05), rot=(R90, 0, 0), seg=6, bevel=0)  # exhaust
+        p = a.pivot(name, (x, le - 1.28, zc))
+        spinner = a.part('Spinners', 'Armor', p)
+        spinner.cyl(.12, .3, r2=.03, loc=(0, -.06, 0), rot=(R90, 0, 0), seg=8, bevel=0)
+        blades = a.part('Prop_blades', 'Undercarriage', p)
+        for k in range(4):
+            u = k * math.tau / 4 + .4
+            blades.box((.17, .05, .82), loc=(math.cos(u) * .5, .04, math.sin(u) * .5), rot=(0, -u + R90, 0), bevel=0,
+                       taper=(.7, 1))
+    # Upswept tail: the tall fin (10 % tall) and the tailplane.
+    fin = Planform(0, 2.75, 3.3, 4.85, 2.35, 1.1, .3, .12)
+    _surface(body, fin, _upright(0, .74, 0), lower=1.0, bevel=.012 if detail else 0)
+    stab = Planform(.15, 3.1, 4.25, 4.95, 1.45, .7, .18, .08, .74, .8)
+    for frame in (RIGHT, LEFT):
+        _surface(body, stab, frame, bevel=.012 if detail else 0)
+    a.part('Beacon', 'TeamGlow').sphere(.09, loc=(0, 4.85 + 1.0, .74 + 2.76), seg=6, rings=4)
+    if ramp_open:
+        # Cargo ramp lowered under the upswept tail, the dark hold above it, the upper door raised inside.
+        dark.box((1.3, 2.1, .3), loc=(0, 3.8, -.36), rot=(.49, 0, 0), bevel=0)
+        ramp = a.part('Ramp', 'Armor')
+        ramp.box((1.3, 1.8, .08), loc=(0, RAMP[0] + .9, RAMP[1] - .9 * RAMP[2] - .04), rot=(-RAMP[3], 0, 0), bevel=.02,
+                 seg=1)
+        steel.box((1.1, .1, .06), loc=(0, RAMP[0] + 1.8, RAMP[1] - 1.8 * RAMP[2] - .03), rot=(-RAMP[3], 0, 0),
+                  bevel=0)                                                                     # ramp toe
+        for sx in (-1, 1):
+            steel.box((.06, 1.7, .08), loc=(sx * .5, RAMP[0] + .9, RAMP[1] - .9 * RAMP[2] + .02),
+                      rot=(-RAMP[3], 0, 0), bevel=0)                                           # drone rails
+    else:
+        armor.box((1.2, 1.9, .05), loc=(0, 4.05, -.33), rot=(-.36, 0, 0), bevel=0)             # ramp outline
+    a.pivot('Point_exhaust', (C130_ENGINES[0][0], wing.le(3.96) + .3, wing.bottom(3.96) - .07))
+    a.pivot('Point_fire', (0, -.2, .95))
+    return wing
+
+
+def _small_drone(a, x, y, z, k=0):
+    """An FPV drone at the battle scale (0.5 m across, drawn large enough to read), nose to -Y."""
+    frame = a.part('Drone_frames', 'Undercarriage')
+    frame.box((.12, .2, .07), loc=(x, y, z), bevel=0)
+    for s in (-1, 1):
+        frame.box((.52, .05, .03), loc=(x, y, z + .01), rot=(0, 0, s * math.pi / 4 + .02 * k), bevel=0)
+    motors = a.part('Drone_motors', 'Steel')
+    for dx, dy in ((.18, .18), (-.18, .18), (.18, -.18), (-.18, -.18)):
+        motors.cyl(.05, .05, loc=(x + dx, y + dy, z + .03), seg=6, bevel=0)
+    a.part('Drone_warheads', 'Hazard').cyl(.04, .2, r2=.015, loc=(x, y - .14, z - .06), rot=(R90, 0, 0), seg=6, bevel=0)
+    a.part('Drone_lights', 'TeamGlow').box((.05, .05, .03), loc=(x, y + .08, z + .045), bevel=0)
+
+
+def swarm_carrier(a):
+    """Drone mothership (C-130 class), the AC-130's airframe at its size (_c130) with the cargo ramp lowered: two
+    rows of FPV drones on rails on the ramp, the hold dark behind them. `Muzzle_drone` at the ramp's toe."""
+    _c130(a, ramp_open=True)
+    for i, (x, y) in enumerate(((-.3, 3.25), (.3, 3.6), (-.3, 4.0), (.3, 4.35))):
+        _small_drone(a, x, y, RAMP[1] - (y - RAMP[0]) * RAMP[2] + .12, k=i)
+    a.pivot('Muzzle_drone', (0, RAMP[0] + 1.9, RAMP[1] - 1.9 * RAMP[2] - .05))
+
+
+def sky_gunship(a, detail=False):
+    """AC-130 gunship: the mothership's airframe (_c130, ramp shut) with the left-side battery drawn big enough to
+    read at battle zoom: the 25 mm gatling in a blister behind the crew door (`Muzzle_mg`), the 40 mm Bofors behind
+    its mantlet aft of the wing (`Muzzle_gun`), the 105 mm howitzer in a bulged fairing further aft with its muzzle
+    brake (`Muzzle_main`); a sensor ball under the nose and a second behind the crew door; gun-deck windows."""
+    from mb_air2 import _side_gun
+    _c130(a, detail=detail)
+    guns = a.part('Guns', 'Steel')
+    ports = a.part('Gun_ports', 'Armor')
+    dark = a.part('Gun_bores', 'Undercarriage')
+    seg = 12 if detail else 8
+    at, rot = _side_gun((.8, -2.9, -.05), tilt=.16)                                             # 25 mm GAU-12
+    ports.sphere((.3, .55, .36), loc=(.76, -2.9, -.05), seg=10, rings=6)
+    guns.cyl(.12, .2, loc=at(.2), rot=rot, seg=seg, bevel=0)
+    guns.cyl(.075, .42, loc=at(.42), rot=rot, seg=seg, bevel=0)
+    guns.cyl(.095, .06, loc=at(.6), rot=rot, seg=seg, bevel=0)
+    dark.cyl(.05, .02, loc=at(.635), rot=rot, seg=6, bevel=0)
+    a.pivot('Muzzle_mg', at(.65))
+    at, rot = _side_gun((.8, 1.55, .02), tilt=.14)                                              # 40 mm Bofors
+    ports.box((.32, .9, .7), loc=(.8, 1.55, .04), bevel=.05, seg=1)
+    ports.box((.12, .62, .54), loc=(.98, 1.55, .03), bevel=0)                                   # mantlet
+    guns.cyl(.13, .28, loc=at(.2), rot=rot, seg=seg, bevel=0)
+    guns.cyl(.07, .6, loc=at(.48), rot=rot, seg=seg, bevel=0)
+    guns.cyl(.1, .16, r2=.075, loc=at(.78), rot=rot, seg=seg, bevel=0)                          # flash hider
+    dark.cyl(.045, .02, loc=at(.865), rot=rot, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', at(.88))
+    at, rot = _side_gun((.8, 3.05, .0), tilt=.12)                                               # 105 mm howitzer
+    ports.sphere((.36, 1.0, .55), loc=(.7, 3.05, .02), seg=10, rings=6)
+    ports.box((.12, .8, .72), loc=(1.04, 3.05, .0), bevel=0)                                    # gun shield
+    guns.cyl(.18, .46, loc=at(.4), rot=rot, seg=seg + 2, bevel=0)                               # recoil sleeve
+    guns.cyl(.105, .58, loc=at(.8), rot=rot, seg=seg + 2, bevel=0)
+    brake = a.part('Howitzer_brake', 'Armor')
+    brake.box((.28, .32, .3), loc=at(1.07), rot=(0, .12, 0), bevel=.03, seg=1)
+    dark.cyl(.065, .02, loc=at(1.22), rot=rot, seg=8, bevel=0)
+    a.pivot('Muzzle_main', at(1.24))
+    glass = a.part('Gun_deck_windows', 'Glass')
+    for y in (-2.3, -1.8, 2.15, 2.5):
+        glass.box((.03, .28, .18), loc=(.86, y, .45), bevel=0)
+    armor = a.part('Sensor_turrets', 'Armor')
+    lens = a.part('Sensor', 'Glass')
+    for (x, y, z), rr in (((.44, -4.15, -.93), .3), ((.66, -1.7, -.8), .23)):
+        armor.cyl(rr * .5, .24, loc=(x, y, z + rr * .95), seg=8, bevel=0)
+        armor.sphere(rr, loc=(x, y, z), seg=10 if not detail else 14, rings=6 if not detail else 9)
+        lens.cyl(rr * .45, .05, loc=(x + rr - .015, y, z - rr * .12), rot=ACROSS, seg=8, bevel=0)
+    if detail:  # bolts round the three gun ports' faces
+        for yc, zc, face, dy, dz in ((-2.9, -.05, 1.06, .18, .14), (1.55, .03, 1.045, .26, .22), (3.05, 0, 1.105, .33, .3)):
+            for sy in (-1, 1):
+                for sz in (-1, 1):
+                    hd.bolt(guns, (face, yc + sy * dy, zc + sz * dz), hd.RIGHT_X, r=.016, h=.024)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
     'fighter_jet': (fighter_jet, dict(ao_distance=.35, ground=False)),
+    'swarm_carrier': (swarm_carrier, dict(ao_distance=.9, ground=False)),
+    'sky_gunship': (sky_gunship, dict(ao_distance=.9, ground=False)),
 }

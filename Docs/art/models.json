@@ -1065,11 +1065,11 @@
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",
-    "triangles": 10736
+    "triangles": 2708
   },
   "sky_gunship_hd": {
     "file": "sky_gunship_hd.glb",
-    "triangles": 19674
+    "triangles": 3764
   },
   "skyscraper": {
     "file": "skyscraper.glb",
@@ -1129,7 +1129,7 @@
   },
   "swarm_carrier": {
     "file": "swarm_carrier.glb",
-    "triangles": 7906
+    "triangles": 2400
   },
   "tank_buster": {
     "file": "tank_buster.glb",
