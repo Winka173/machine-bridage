@@ -11087,3 +11087,15 @@ first and B2's after it.
   their own; a model built for one munition (the Maverick, the GBU-12 and -39, the JDAM, the FAB-250, the JASSM, the
   AIM-120, the R-60, the Stinger, the Igla) flies only it; bombs fly bomb models and only bombs do; every 203 mm shell
   is 1.3 x the 155 mm.
+
+### C.4 Turn rates
+
+- **The unit.** balance.json gives turn rates in degrees a second (its header); `VehicleDef.TurnRate` and
+  `TurretTurnRate` hold radians a second (`SimMath.DegToRad` on load), and the sim turns by them per tick. The design
+  document's rates-and-ballistics table (`Tools/docs/programme.py`, section 10b) printed the radians, rounded to a whole
+  number, under "°/s": the sheet's "1 / 1" (and its note that the label looked wrong). The column now shows degrees a
+  second, as balance.json has them, with a line saying so; its drawn-size column fits a sized vehicle's model as the game
+  does (B1).
+- **Turret faster than the hull.** The sheet's four rows ("1 / 2" in radians a second: the main battle tank, the twin
+  tank, the heavy tank, the super tank) were applied by A1 Trung: the hull kept (60, 58, 45, 45 deg/s), the turret
+  115 deg/s (2 rad/s). The step `--upto C4` checks them against both sheets and reports them in the import_b block.

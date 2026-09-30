@@ -52,6 +52,8 @@ The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`)
   JASSM, the Kornet and the 240 mm mortar smaller, the Buk, Patriot and 48N6 bigger; 155 mm shells 0.8 m and every
   203 mm 1.3 x that; the Kh-29L and the GBU-39 get models of their own (the Maverick and the GBU-12 stand in until
   they are built).
+- C.4: the design document's turn rates in degrees a second (it printed the code's radians under a degrees label);
+  the tanks' turrets turn faster than their hulls (115 deg/s, from A1).
 
 ### Play-test 9 models (DECISIONS 23M)
 

@@ -63,6 +63,12 @@ INTRO = {
            "group, another row its weapon's family. The 203 mm shells take 1.3 x the 155 mm's length (prompt 25 C.3); "
            "the Kh-29L and the GBU-39 fly models of their own (ASSET_DEBT: until they are built, the Maverick and the "
            "GBU-12 stand in, at the new lengths). \"Giữ\" rows keep their rounds."),
+    "C4": ("Prompt 25 C.4. The unit: balance.json gives turn rates in degrees a second (its header), VehicleDef keeps "
+           "radians a second (SimMath.DegToRad on load); the design document printed the radians under a degrees label, "
+           "which is why the sheet reads 60 deg/s as 1. Its column is in degrees now (Tools/docs/programme.py). The "
+           "sheet's \"turret faster than the hull\" rows (\"1 / 2\" in radians a second: the hull kept, the turret "
+           "2 rad/s, 115 deg/s) were applied by A1 Trung; they are checked here. The other turn-rate rows are counted, "
+           "not listed: \"Giữ\"."),
 }
 
 
@@ -73,6 +79,9 @@ def run(step, wr, wb, report):
     if step == "B3":
         b3(wr, wb, report)
         return "B3: round sizes (sheet Kích thước đạn)"
+    if step == "C4":
+        c4(wr, wb, report)
+        return "C.4: turn rates (sheets Kiểm tra từng mục, Thay đổi chi tiết)"
     return None
 
 
@@ -515,3 +524,38 @@ def b3(wr, wb, report):
 
 
 OTHERS_BEFORE = {}  # the drawn length of the rows' other rounds before B3 writes
+
+
+# ----------------------------------------------------------------------------------------------------------------
+# C.4: turn rates
+
+
+def c4(wr, wb, report):
+    g = wr.game
+    step = "C4"
+    for sheet_name in (SHEET, "Thay đổi chi tiết"):
+        _, rows = X.sheet(wb, sheet_name)
+        for r in rows:
+            vid, item = r[0], str(r[2] or "")
+            if not item.startswith("Tốc độ xoay"):
+                continue
+            result, prop = (r[4], r[5]) if sheet_name == SHEET else ("Đổi", r[4])
+            if vid not in g.vehicles_raw:
+                report.add(step, sheet_name, vid, item, "skipped", "no such vehicle id in balance.json")
+                continue
+            v = g.vehicle(vid)
+            hull, turret = v.get("turnRate"), v.get("turretTurnRate")
+            if result != "Đổi":
+                report.add(step, sheet_name, vid, item, "already", f"kept ({r[3]} rad/s)", listed=False)
+                continue
+            n = X.nums(prop)
+            want = round(n[1] * X.DEG_PER_RAD) if len(n) > 1 else None
+            ok = want is not None and abs(float(turret) - want) <= 1
+            detail = (f"hull {X.fmt(hull)} deg/s ({X.fmt(round(float(hull) / X.DEG_PER_RAD, 2))} rad/s, the row's {X.fmt(n[0])}), "
+                      f"turret {X.fmt(turret)} deg/s = {X.fmt(round(float(turret) / X.DEG_PER_RAD, 2))} rad/s (the row's {X.fmt(n[1])}), "
+                      "turret faster than the hull")
+            if ok:
+                report.add(step, sheet_name, vid, item, "already", detail + "; applied by A1 Trung")
+            else:
+                wr.vehicle_field(vid, "turretTurnRate", want)
+                report.add(step, sheet_name, vid, item, "applied", f"turretTurnRate {X.fmt(turret)} -> {X.fmt(want)} deg/s")

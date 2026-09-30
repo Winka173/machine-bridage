@@ -1034,4 +1034,27 @@ Every row of "Kích thước đạn": a round's drawn length (its model x its sc
 
 <!-- /step:B3 -->
 
+<!-- step:C4 -->
+## C.4: turn rates (sheets Kiểm tra từng mục, Thay đổi chi tiết)
+
+Prompt 25 C.4. The unit: balance.json gives turn rates in degrees a second (its header), VehicleDef keeps radians a second (SimMath.DegToRad on load); the design document printed the radians under a degrees label, which is why the sheet reads 60 deg/s as 1. Its column is in degrees now (Tools/docs/programme.py). The sheet's "turret faster than the hull" rows ("1 / 2" in radians a second: the hull kept, the turret 2 rad/s, 115 deg/s) were applied by A1 Trung; they are checked here. The other turn-rate rows are counted, not listed: "Giữ".
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Kiểm tra từng mục | 0 | 45 | 0 | 0 |
+| Thay đổi chi tiết | 0 | 4 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Kiểm tra từng mục | main_battle_tank | Tốc độ xoay thân / tháp | already | hull 60 deg/s (1.05 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Kiểm tra từng mục | twin_tank | Tốc độ xoay thân / tháp | already | hull 58 deg/s (1.01 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Kiểm tra từng mục | heavy_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Kiểm tra từng mục | titan_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | heavy_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | main_battle_tank | Tốc độ xoay thân / tháp | already | hull 60 deg/s (1.05 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | titan_tank | Tốc độ xoay thân / tháp | already | hull 45 deg/s (0.79 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+| Thay đổi chi tiết | twin_tank | Tốc độ xoay thân / tháp | already | hull 58 deg/s (1.01 rad/s, the row's 1), turret 115 deg/s = 2.01 rad/s (the row's 2), turret faster than the hull; applied by A1 Trung |
+
+<!-- /step:C4 -->
+
 <!-- import_b:end -->
