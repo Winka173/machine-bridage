@@ -130,6 +130,7 @@ namespace MachineBrigade.Game.Match
             // Prompt 17 C.
             "stealth_fighter", "wingman_drone", "laser_tank", "shield_carrier", "bunker_vehicle", "swarm_carrier",
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new vehicles.
+            "aa_gun_vehicle",
             // (batch A cards: new entries above)
         };
 

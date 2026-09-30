@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 26,
-    "xong": 1
+    "đang làm": 25,
+    "xong": 2
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 22,
-      "xong": 1
+      "đang làm": 21,
+      "xong": 2
     },
     "structure": {
       "chưa làm": 0,
@@ -60,8 +60,8 @@
       "group": "Phòng không",
       "priority": "Trung",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "aa_gun_vehicle",
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
     {

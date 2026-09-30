@@ -1269,6 +1269,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: 2 giây một phát lớn, nổ trên không rộng 6 m, tầm 70 m; hạ nòng bắn xe tăng trong 50 m.\n" +
                 "Mạnh / yếu: bẻ gãy [[oanh tạc cơ]] và tốp máy bay dày; quá chậm với tiêm kích lẻ và drone.\n" +
                 "Mẹo: đặt cạnh pháo phòng không bắn nhanh để lo trực thăng."),
+            ["guide.aa_gun_vehicle"] = (
+                "[[40 mm AA gun vehicle]] · light armour · steady flak\n" +
+                "How it fights: four [[proximity-fused]] rounds a second on the move, out to 48 m.\n" +
+                "Strong / weak: beats helicopters, drones and light cars; tanks shrug it off.\n" +
+                "Tip: keep it with the front line against helicopters.",
+                "[[Xe cao xạ 40 mm]] · giáp nhẹ · cao xạ nhịp đều\n" +
+                "Cách đánh: bốn phát [[ngòi cận đích]] mỗi giây, vừa chạy vừa bắn, tầm 48 m.\n" +
+                "Mạnh / yếu: thắng trực thăng, drone và xe nhẹ; xe tăng gần như miễn nhiễm.\n" +
+                "Mẹo: đi cùng tuyến đầu để chống trực thăng."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

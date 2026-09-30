@@ -2477,6 +2477,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.heavy_flak_tower"] = ("Heavy flak tower", "Tháp cao xạ hạng nặng"),
             ["short.heavy_flak_tower"] = ("Heavy flak", "Cao xạ nặng"),
             ["note.heavy_flak_tower"] = ("A heavy anti-aircraft gun of the 8.8 cm Flak 36/37 class: slow, big air bursts against bombers and tight formations; lowered, it hits tanks at 50 m.", "Pháo cao xạ hạng nặng kiểu 8,8 cm Flak 36/37: bắn chậm, đạn nổ trên không bán kính lớn vào oanh tạc cơ và tốp máy bay dày; hạ nòng bắn được xe tăng ở 50 m."),
+            // dx02: Xe cao xạ Bofors 40 mm.
+            ["unit.aa_gun_vehicle"] = ("40 mm AA gun vehicle", "Xe cao xạ 40 mm"),
+            ["short.aa_gun_vehicle"] = ("40 mm AA", "Cao xạ 40 mm"),
+            ["note.aa_gun_vehicle"] = ("A tracked AA gun with a Bofors 40 mm L/70 (M42 Duster, CV90 AA): proximity-fused rounds four a second.", "Xe cao xạ bánh xích mang pháo Bofors 40 mm L/70 (M42 Duster, CV90 AA): đạn ngòi cận đích, bốn phát mỗi giây."),
             // (batch A: new entries above)
         };
 

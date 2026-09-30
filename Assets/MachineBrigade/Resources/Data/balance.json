@@ -160,6 +160,7 @@
     { "id": "s_8_80_mm", "real": "S-8 80 mm", "projectileSpeed": 40, "splash": 3, "projectileModel": "s8", "roundWeight": 60 },
     { "id": "tos_1a_220_mm_thermobaric", "real": "TOS-1A 220 mm thermobaric", "projectileSpeed": 35, "splash": 7, "projectileModel": "tos_rocket" },
     // Prompt 25 F2 batch A.
+    { "id": "bofors_40_mm_l_70", "real": "Bofors 40 mm L/70", "projectileSpeed": 220, "splash": 2.5, "roundWeight": 51 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -470,6 +471,8 @@
     // Prompt 25 F2 batch A (DECISIONS 25F2-A): the weapons of the balance sheet's new units and structures ("Đề
     // xuất thêm", "Công trình mới"), their numbers the sheet's, on prompt 13's calibre scale and prompt 15's penetration.
     { "id": "flak_88", "real": "8.8 cm Flak 36/37", "family": "howitzer", "size": 88, "pen": 3, "damageType": "Fragmentation", "damage": 120, "cooldown": 2, "range": 70, "groundRange": 50, "projectileSpeed": 160, "splash": 6, "spread": 1.5, "impactTier": "Large", "projectile": "Shell", "targets": "All", "groupPriority": true },
+    // dx02, ct14: the Bofors 40 mm L/70 (proximity-fused rounds): 4 a second from 20-round clips (the tower row's magazine, one gun for both).
+    { "id": "bofors_l70", "weaponFamily": "bofors_40_mm_l_70", "real": "Bofors 40 mm L/70", "family": "autocannon", "size": 40, "pen": 2, "damageType": "Fragmentation", "damage": 30, "cooldown": 0.25, "range": 48, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 20, "clipReload": 3 },
     // (batch A weapons: new entries above)
     { "id": "aa_25_triple", "inherits": "zu23", "real": "Type 96 25 mm (triple)", "family": "autocannon", "size": 25, "pen": 1, "damage": 17, "cooldown": 0.05, "range": 42, "targets": "Air", "clip": 15, "clipReload": 2.4}
   ],
@@ -973,6 +976,9 @@
     // dx01: the sheet's Flak 88 (prompt 26 will make it a KS-19-class 100 mm tower): slow, big air bursts, groups and big aircraft first; lowered at the ground it reaches 50 m.
     { "id": "heavy_flak_tower", "modelSize": [7.0, 6.0, 3.4], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 40, "radius": 2.6, "length": 5.5, "width": 5.5, "cp": 0, "vision": 64,
       "weapon": "flak_88", "secondary": [], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
+    // dx02: a tracked 40 mm AA gun (CV90 AA, M42 Duster): steady proximity-fused bursts, helicopters and drones, light vehicles too.
+    { "id": "aa_gun_vehicle", "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 1, "hp": 455, "speed": 8, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.0, "width": 2.5, "cp": 5, "vision": 45,
+      "firesWhileMoving": true, "weapon": "bofors_l70", "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
     // (batch A units and structures: new entries above)
 
     // Mission-only units (cp 0: never bought). Convoy trucks borrow the civilian truck model.
