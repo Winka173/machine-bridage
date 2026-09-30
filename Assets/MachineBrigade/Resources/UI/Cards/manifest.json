@@ -358,7 +358,7 @@
             "kind": "vehicle",
             "model": "stealth_fighter",
             "source": "Models/stealth_fighter",
-            "hash": "v2:75534fd8d29d7fa0f7b2e1aae6f394b00468fc41"
+            "hash": "v2:b2415f0666e9c01af109cd4f9f2f80d4ca45b954"
         },
         {
             "id": "wingman_drone",
@@ -876,7 +876,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:5e1e18200298c46bbfe3c41ef3eacd77477e7ee3"
+            "hash": "v2:78c6c8056842d336809a1773be70031b4e5826c9"
         },
         {
             "id": "ixion",
@@ -1093,7 +1093,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:5e1e18200298c46bbfe3c41ef3eacd77477e7ee3"
+            "hash": "v2:78c6c8056842d336809a1773be70031b4e5826c9"
         },
         {
             "id": "sky_fortress",
