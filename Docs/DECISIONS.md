@@ -10884,3 +10884,6 @@ the hull; a vehicle marked "model" needs its `"model"` line changed as the row s
 | gbu39 (round) | GBU-39 SDB, 1.8 m real | 0.90 x 0.18 x 0.18 | - | 190 | GBU-39/B | the GBU-12 stood in |
 | supply_truck | 8.2 x 2.0 x 2.1 | 8.37 x 2.02 x 2.42 (the ring gun over the cab roof) | 8.37 x 2.02 | 2,576 | M977 HEMTT | armed_truck at 1.0: 7.6 x 2.7 x 3.5, 2,916. **model:** drop `"model": "armed_truck"` |
 | ammo_carrier | 8.2 x 2.0 x 2.1 (note) | 8.36 x 2.02 x 2.46 | 8.36 x 2.02 | 2,984 | M1120 HEMTT LHS / M985 | armed_truck at 0.9: 6.9 x 2.4 x 3.2. **model:** drop `"model": "armed_truck"` |
+| counter_battery_radar | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.89 (the panel 15 % wider than the truck; the roof gun) | 6.60 x 2.10 | 2,140 | AN/TPQ-53 on an FMTV | 6.2 x 2.2 x 3.9 at 0.85, 8,216 |
+| shahed_truck | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.87 (the drones' span 15 % over) | 6.60 x 2.04 | 2,416 | Shahed-136 truck launchers | 5.9 x 2.3 x 4.1 at 0.85, 10,252 |
+| iron_beam | 8.0 x 2.0 x 2.8 | 8.20 x 2.05 x 2.86 | 8.20 x 2.05 | 2,640 | Rafael Iron Beam | 7.8 x 2.7 x 3.7 at 0.85, 10,456 |

@@ -301,7 +301,7 @@
   },
   "counter_battery_radar": {
     "file": "counter_battery_radar.glb",
-    "triangles": 8216
+    "triangles": 2140
   },
   "cp_relay": {
     "file": "cp_relay.glb",
@@ -649,7 +649,7 @@
   },
   "iron_beam": {
     "file": "iron_beam.glb",
-    "triangles": 10456
+    "triangles": 2640
   },
   "ixion": {
     "file": "ixion.glb",
@@ -1025,7 +1025,7 @@
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",
-    "triangles": 10252
+    "triangles": 2416
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",

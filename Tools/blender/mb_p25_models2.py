@@ -175,8 +175,203 @@ def ammo_carrier(a):
         steel.box((.14, .2, .5), loc=(s * .92, 3.72, z - .1), bevel=0)
 
 
+# ----------------------------------------------------------------------------- cab-over trucks (FMTV, KamAZ, MAN)
+def _truck(a, front, rear, axles, r=.45, tw=.34, width=1.96, cab=1.55, roof=2.0, mg=None):
+    """A forward-control military truck (FMTV / KamAZ / MAN HX class) from y = front to rear: a flat-fronted cab
+    over the first axle with its windscreen, grille and bumper, the nose between the front wheels, a frame to the
+    tail, `axles` of big single tyres under fenders, fuel tanks between the axles, and a machine gun on the cab roof
+    (`Mount_mg`, `Muzzle_mg`) at mg = (x, y) if given. Returns the bed's floor height."""
+    hd.mark(a, False)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Chassis', 'Undercarriage')
+    top = 2 * r + .06
+    wx = width / 2 - tw / 2 - .01
+    dark.box((1.0, rear - front - .4, .28), loc=(0, (front + rear) / 2 + .15, r + .22), bevel=0)   # frame rails
+    _wheels(a, (-wx, wx), axles, r, tw)
+    groups = [[axles[0]]]
+    for y in axles[1:]:
+        if y - groups[-1][-1] < 2 * r + .4:
+            groups[-1].append(y)
+        else:
+            groups.append([y])
+    for s in (-1, 1):
+        for g in groups:
+            armor.box((tw + .1, g[-1] - g[0] + 2 * r + .2, .07), loc=(s * wx, (g[0] + g[-1]) / 2, top + .02), bevel=.02,
+                      seg=1)
+        a.part('Tanks', 'Armor').cyl(.2, .9, loc=(s * (wx - .06), (axles[0] + axles[1]) / 2 + .15, r + .15),
+                                     rot=FORWARD, seg=8, bevel=0)
+        a.part('Glass', 'Glass').box((.03, cab * .42, .38), loc=(s * (width / 2 + .005), front + cab * .45, roof - .3),
+                                     bevel=0)                                                          # door windows
+        steel.box((.18, .4, .06), loc=(s * (width / 2 - .08), front + cab * .5, top - .16), bevel=0)  # steps
+    body.prism([(front + .04, top), (front, top + .45), (front + .12, roof - .02), (front + cab - .05, roof),
+                (front + cab, top)], width, bevel=.05, seg=1)
+    body.box((1.1, cab * .7, top - r * .9), loc=(0, front + cab * .38, r * .9 + (top - r * .9) / 2 - .02), bevel=.03,
+             seg=1)                                                                                    # nose
+    dark.grille(.9, .3, loc=(0, front - .02, top - .2), slats=4, depth=.05, thickness=.05)
+    glass = a.part('Glass', 'Glass')
+    for s in (-1, 1):
+        glass.box((width / 2 - .14, .04, .44), loc=(s * (width / 4 + .02), front + .08, roof - .3), rot=(-.18, 0, 0),
+                  bevel=0)
+    steel.box((width + .04, .16, .22), loc=(0, front - .06, r + .18), bevel=.03, seg=1)             # bumper
+    armor.box((width - .3, .1, .08), loc=(0, front + .12, roof - .02), rot=(-.2, 0, 0), bevel=0)    # visor
+    _lights(a, (-(width / 2 - .25), width / 2 - .25), front - .02, top - .12)
+    _lights(a, (-(width / 2 - .15), width / 2 - .15), rear + .02, top - .05, facing=1, size=(.16, .04, .1), lamp='Alloy')
+    if mg is not None:
+        mv._roof_mg(a, None, (mg[0], mg[1], roof), length=.75)
+    a.pivot('Point_exhaust', (width / 2 - .2, front + cab + .1, roof + .1))
+    steel.cyl(.07, .9, loc=(width / 2 - .2, front + cab + .1, roof - .35), seg=8, bevel=0)           # exhaust stack
+    return top + .14
+
+
+def counter_battery_radar(a):
+    """Counter-battery radar (AN/TPQ-53 on an FMTV 6x6), 6.4 x 2.0 x 2.8 m: the truck (_truck), an equipment shelter
+    behind the cab with its cooling unit and generator, and on the rear third the big flat phased-array panel raised
+    at 45 degrees on its turntable and yoke (the `Radar`, turning as before), drawn 15 % wider than the truck: from
+    above, the flat rectangle the sheet asks for. The cab-roof machine gun is its weapon (`Mount_mg`, `Muzzle_mg`)."""
+    z = _truck(a, -3.2, 3.2, (-2.4, 1.05, 2.15), mg=(-.45, -2.5))
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    a.part('Bed', 'Armor').box((1.96, 4.9, .12), loc=(0, .75, z - .06), bevel=.02, seg=1)
+    body.box((1.9, 1.7, 1.2), loc=(0, -.72, z + .6), bevel=.05, seg=1)                             # shelter
+    armor.box((1.2, .8, .3), loc=(0, -.72, z + 1.35), bevel=.03, seg=1)                             # cooling unit
+    a.part('Fan_grilles', 'Undercarriage').cyl(.28, .04, loc=(0, -.72, z + 1.51), seg=10, bevel=0)
+    armor.box((.6, .6, .5), loc=(-.6, .4, z + .25), bevel=.04, seg=1)                               # generator
+    a.part('Generator_panel', 'Undercarriage').box((.03, .44, .3), loc=(-.91, .4, z + .25), bevel=0)
+    steel.cyl(.6, .12, loc=(0, 1.9, z + .06), seg=14, bevel=.02, bseg=1)                           # turntable
+    for s in (-1, 1):                                                                               # jacks
+        steel.box((.14, .14, .6), loc=(s * .9, 3.0, z - .45), bevel=0)
+        steel.box((.3, .3, .05), loc=(s * .9, 3.0, .03), bevel=0)
+    r = a.pivot('Radar', (0, 1.9, z + .12))
+    tilt = math.radians(45)
+    up = Vector((0, -math.sin(tilt), math.cos(tilt)))
+    back = Vector((0, math.cos(tilt), math.sin(tilt)))
+    yoke = a.part('Radar_yoke', 'Armor', r)
+    yoke.box((1.0, .5, .3), loc=(0, 0, .15), bevel=.03, seg=1)
+    for s in (-1, 1):
+        yoke.limb((s * .5, 0, .2), tuple(Vector((s * .5, 0, 0)) + up * .8 + back * -.12), .12, .16, bevel=0)
+    centre = Vector((0, 0, .2)) + up * .95
+    a.part('Radar_panel', 'Team', r).box((2.3, .16, 1.9), loc=tuple(centre), rot=(tilt, 0, 0), bevel=.03, seg=1)
+    a.part('Radar_face', 'MetalSheet', r).box((2.14, .03, 1.74), loc=tuple(centre + back * .09), rot=(tilt, 0, 0), bevel=0)
+    seams = a.part('Radar_seams', 'Undercarriage', r)
+    for k in (-.55, 0, .55):
+        seams.box((2.16, .03, .05), loc=tuple(centre + back * .11 + up * k), rot=(tilt, 0, 0), bevel=0)
+    a.part('Radar_iff', 'Armor', r).box((1.4, .14, .16), loc=tuple(centre + up * 1.0), rot=(tilt, 0, 0), bevel=.02,
+                                        seg=1)
+    a.pivot('Point_fire', (0, -.7, z + 1.3))
+
+
+def _shahed_drone(a, t, c, pitch, span=2.3, length=1.85):
+    """A Shahed-136 on its rail at c (turret space), nose up the rack: the white delta airframe with its tip winglets,
+    the dark nose, the engine and the pusher propeller at the tail."""
+    rot = (-pitch, 0, 0)
+    fm = mv._frame(tuple(c), rot)
+    h = length / 2
+    air = a.part('Drone_airframe', 'Fuel', t)
+    air.prism([(0, -h), (span / 2, h * .82), (span / 2 - .12, h), (-span / 2 + .12, h), (-span / 2, h * .82)], .07,
+              loc=tuple(c), rot=rot, axis='Z', bevel=0)
+    for s in (-1, 1):
+        air.box((.05, .34, .26), loc=tuple(fm @ Vector((s * (span / 2 - .05), h * .8, .12))), rot=rot, bevel=0)
+    air.box((.2, length * .8, .12), loc=tuple(fm @ Vector((0, .05, .05))), rot=rot, bevel=0)          # fuselage
+    a.part('Drone_nose', 'Undercarriage', t).cyl(.1, .24, r2=.02, loc=tuple(fm @ Vector((0, -h - .06, .05))),
+                                                 rot=(R90 - pitch, 0, 0), seg=6, bevel=0)
+    a.part('Drone_engine', 'Armor', t).cyl(.09, .3, loc=tuple(fm @ Vector((0, h - .1, .14))), rot=(R90 - pitch, 0, 0),
+                                           seg=6, bevel=0)
+    a.part('Drone_prop', 'Undercarriage', t).box((.56, .04, .07), loc=tuple(fm @ Vector((0, h + .08, .14))), rot=rot,
+                                                 bevel=0)
+
+
+def shahed_truck(a):
+    """Shahed launcher (a 6x6 truck with a five-rail rack), 6.4 x 2.0 x 2.8 m: the truck (_truck) with a flatbed
+    and on it the trainable launch rack (`Turret`): five rails in a staircase, 11 degrees nose-up, a white Shahed-136
+    delta on each (its span 15 % over, wider than the truck), one behind and above the next, so from above five
+    triangles in a row down the bed (the sheet).
+    The rack, rails, rams and drones are named for ModelLibrary's erector (they rise together to fire);
+    `Muzzle_main` at the top drone's nose. The cab-roof machine gun (`Mount_mg`, `Muzzle_mg`)."""
+    z = _truck(a, -3.2, 3.2, (-2.4, 1.05, 2.15), mg=(.45, -2.5))
+    armor = a.part('Armor', 'Armor')
+    a.part('Bed', 'Team').box((1.96, 4.9, .14), loc=(0, .75, z - .05), bevel=.02, seg=1)
+    for s in (-1, 1):
+        armor.box((.08, 4.9, .3), loc=(s * .95, .75, z + .12), bevel=0)                            # bed rails
+        a.part('Steel', 'Steel').box((.14, .14, .55), loc=(s * .9, 3.0, z - .42), bevel=0)         # jacks
+    a.pivot('Point_fire', (0, -1.0, z + .3))
+    t = a.pivot('Turret', (0, 1.0, z + .02))
+    a.part('Turntable', 'Steel', t).cyl(.5, .12, loc=(0, 0, .06), seg=12, bevel=0)
+    pitch = .19
+    hinge = Vector((0, 2.0, .3))
+    along = Vector((0, -math.cos(pitch), math.sin(pitch)))
+    normal = Vector((0, math.sin(pitch), math.cos(pitch)))
+    rot = (-pitch, 0, 0)
+    rack = a.part('Rack', 'Armor', t)
+    for s in (-1, 1):
+        rack.box((.12, 4.1, .14), loc=tuple(hinge + along * 2.05 + Vector((s * .82, 0, 0))), rot=rot, bevel=0)
+    for u in (.3, 1.6, 2.9):
+        rack.box((1.76, .12, .12), loc=tuple(hinge + along * u), rot=rot, bevel=0)
+    rails = a.part('Rack_rails', 'Steel', t)
+    top = None
+    for k in range(5):
+        u, n = .95 + k * .5, .14 + k * .12
+        rails.box((.14, 1.7, .08), loc=tuple(hinge + along * (u + .1) + normal * (n - .07)), rot=rot, bevel=0)
+        rack.box((.12, .12, max(.12, n)), loc=tuple(hinge + along * (u + .8) + normal * (n / 2 - .02)), rot=rot,
+                 bevel=0)                                                                            # rail posts
+        c = hinge + along * u + normal * n
+        _shahed_drone(a, t, c, pitch)
+        top = c + along * 1.25
+    a.part('Ram_rods', 'Steel', t).box((.1, .1, 1.2), loc=(0, .2, .55), rot=(.55, 0, 0), bevel=0)
+    a.part('Rams', 'Armor', t).box((.16, .16, .5), loc=(0, .05, .28), rot=(.55, 0, 0), bevel=0)
+    a.pivot('Muzzle_main', tuple(top + normal * .05), t)
+
+
+def iron_beam(a):
+    """Iron Beam (a high-energy laser on an 8x8 truck), 8.0 x 2.0 x 2.8 m: the truck (_truck) with a long power and
+    cooling container, radiator grilles down its flanks and fans on its roof, the laser turret on the container's
+    front (`Turret`): a box with the beam director, a big round glass emitter window in a glowing bezel tilted
+    30 degrees up (from above, the round window stands out, as the sheet asks; `Main_cannon_*`, it elevates),
+    and a small search-radar panel turning at the rear (`Radar`). `Muzzle_main` just ahead of the window."""
+    z = _truck(a, -4.0, 4.0, (-3.2, -2.05, 1.85, 2.95), r=.46)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    body.box((1.96, 6.2, .75), loc=(0, .85, z + .375), bevel=.05, seg=1)                           # container
+    grilles = a.part('Fan_grilles', 'Undercarriage')
+    for s in (-1, 1):
+        for y in (-.9, .9, 2.7):
+            grilles.grille(1.3, .45, loc=(s * .99, y, z + .38), rot=(0, 0, s * R90), slats=4, depth=.05,
+                           thickness=.05)                                                             # radiators
+    for y in (1.3, 2.5):
+        armor.cyl(.42, .1, loc=(0, y, z + .8), seg=12, bevel=.02, bseg=1)                           # fan shrouds
+        grilles.cyl(.36, .03, loc=(0, y, z + .86), seg=12, bevel=0)
+    a.part('Coolant_pipes', 'Steel').box((.12, 4.0, .12), loc=(.7, 1.3, z + .81), bevel=0)
+    a.pivot('Point_fire', (0, 2.0, z + 1.0))
+    t = a.pivot('Turret', (0, -1.25, z + .75))
+    steel.cyl(.62, .1, loc=(0, -1.25, z + .77), seg=14, bevel=0)                                    # ring
+    a.part('Turret_body', 'Team', t).box((1.4, 1.5, .7), loc=(0, .05, .4), bevel=.06, seg=1, taper=(.9, .92))
+    tarm = a.part('Turret_armor', 'Armor', t)
+    for s in (-1, 1):
+        tarm.box((.14, .8, .6), loc=(s * .77, .05, .45), bevel=.03, seg=1)                          # trunnion cheeks
+    tilt = math.radians(30)
+    axis = Vector((0, -math.cos(tilt), math.sin(tilt)))
+    c = Vector((0, -.6, .45))
+    rot = (R90 - tilt, 0, 0)
+    a.part('Main_cannon_pod', 'Armor', t).cyl(.46, .5, loc=tuple(c + axis * .1), rot=rot, seg=16, bevel=.04, bseg=1)
+    a.part('Main_cannon_glow', 'TeamGlow', t).cyl(.43, .04, loc=tuple(c + axis * .36), rot=rot, seg=16, bevel=0)
+    a.part('Main_cannon_window', 'Glass', t).cyl(.37, .05, loc=tuple(c + axis * .37), rot=rot, seg=16, bevel=0)
+    a.part('Main_cannon_sensor', 'Steel', t).box((.3, .3, .2), loc=(.5, .1, .85), bevel=.03, seg=1)
+    a.part('Main_cannon_lens', 'Glass', t).box((.2, .03, .12), loc=(.5, -.06, .86), bevel=0)
+    a.pivot('Muzzle_main', tuple(c + axis * .6), t)
+    steel.box((.16, .16, .5), loc=(0, 3.5, z + 1.0), bevel=0)                                       # radar mast
+    r = a.pivot('Radar', (0, 3.5, z + 1.25))
+    a.part('Radar_panel', 'Armor', r).box((1.2, .14, .5), loc=(0, 0, .25), rot=(-.25, 0, 0), bevel=.03, seg=1)
+    a.part('Radar_face', 'Undercarriage', r).box((1.08, .03, .4), loc=(0, -.08, .25), rot=(-.25, 0, 0), bevel=0)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
     'ammo_carrier': (ammo_carrier, dict(ao_distance=.5, grime_height=.5)),
+    'counter_battery_radar': (counter_battery_radar, dict(ao_distance=.5, grime_height=.5)),
+    'shahed_truck': (shahed_truck, dict(ao_distance=.5, grime_height=.5)),
+    'iron_beam': (iron_beam, dict(ao_distance=.5, grime_height=.5)),
 }
