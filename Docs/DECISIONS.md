@@ -11826,3 +11826,137 @@ document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its P
 - New files: `CombatValueMeasure.Support.cs`, `Tools/docs/prompt25.py`, `Tools/docs/unit_sheet.py` and `.json`,
   `Tools/balance/report_summary.py`, `Tools/balance/export_applied_xlsx.py`,
   `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`.
+
+### Part 2 (branch `feature/p25-models2`)
+
+The rest of ASSET_DEBT's "Prompt 25 B2" list, in `Tools/blender/mb_p25_models2.py` (registered after part 1's module
+in `build_assets.py`), by the same method and rules; the order was the prompt's: B1's size-mismatch list and B3's two
+round models first, then the vehicles most played first, the elites, the bosses, the structures. Built box and hull
+as in part 1's table (the box at scale 1.0, gun forward; the hull from `measure_hulls.py`). **For the lead (B1's
+data):** set every model below to `"scale": 1.0` with its `modelSize` = the built box, and its `length` / `width` =
+the hull; a vehicle marked "model" needs its `"model"` line changed as the row says.
+
+| Model | Sheet's size | Built | Hull (length x width) | Triangles | References | Was (in battle, triangles) |
+|---|---|---|---|---|---|---|
+| kh29l (round) | Kh-29L, 3.9 m real | 1.95 x 0.48 x 0.48 (half size; `roundLength` fits it) | - | 238 | Kh-29L | the Maverick stood in |
+| gbu39 (round) | GBU-39 SDB, 1.8 m real | 0.90 x 0.18 x 0.18 | - | 190 | GBU-39/B | the GBU-12 stood in |
+| supply_truck | 8.2 x 2.0 x 2.1 | 8.37 x 2.02 x 2.42 (the ring gun over the cab roof) | 8.37 x 2.02 | 2,576 | M977 HEMTT | armed_truck at 1.0: 7.6 x 2.7 x 3.5, 2,916. **model:** drop `"model": "armed_truck"` |
+| ammo_carrier | 8.2 x 2.0 x 2.1 (note) | 8.36 x 2.02 x 2.46 | 8.36 x 2.02 | 2,984 | M1120 HEMTT LHS / M985 | armed_truck at 0.9: 6.9 x 2.4 x 3.2. **model:** drop `"model": "armed_truck"` |
+| counter_battery_radar | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.89 (the panel 15 % wider than the truck; the roof gun) | 6.60 x 2.10 | 2,140 | AN/TPQ-53 on an FMTV | 6.2 x 2.2 x 3.9 at 0.85, 8,216 |
+| shahed_truck | 6.4 x 2.0 x 2.8 | 6.65 x 2.30 x 2.87 (the drones' span 15 % over) | 6.60 x 2.04 | 2,416 | Shahed-136 truck launchers | 5.9 x 2.3 x 4.1 at 0.85, 10,252 |
+| iron_beam | 8.0 x 2.0 x 2.8 | 8.20 x 2.05 x 2.86 | 8.20 x 2.05 | 2,640 | Rafael Iron Beam | 7.8 x 2.7 x 3.7 at 0.85, 10,456 |
+| heavy_aa | 9.6 x 2.6 x 2.8 | 9.80 x 2.68 x 2.83 | 9.80 x 2.18 | 3,004 | Pantsir-S1 on a KamAZ-6560 | 7.0 x 2.5 x 3.3 at 0.85, 8,220 |
+| artillery (+ _hd) | 7.8 x 3.1 x 2.9 | 7.86 x 3.14 x 2.88 | 5.12 x 3.13 | 3,444 / 8,074 | M109A7 Paladin (M284 155 mm) | CAESAR truck, 8.1 x 2.3 x 3.6 at 0.85, 8,676 |
+| siege_tank | 6.8 x 2.6 x 2.6 | 9.13 x 3.34 x 3.44 model units = **6.80 x 2.49 x 2.56 at 0.745** (see below) | 8.25 x 3.34 units = 6.15 x 2.49 m | 5,924 | 2S4 Tyulpan (2B8 240 mm), M110 spades; play-test 6's StarCraft rig kept | 7.7 x 3.4 x 3.1 at 0.85, 15,472 |
+| sam_launcher | 7.4 x 2.6 x 3.0 (note) | 7.18 x 2.70 x 2.97 | 7.18 x 2.70 | 3,248 | Buk-M1 9A310 TELAR, 9M38 at its 4.44 m (B3) | 5.1 x 2.6 x 3.4 at 0.95, 8,408 |
+| long_sam | 11.2 x 2.5 x 3.0 (note) | 11.02 x 2.46 x 2.59 | 11.02 x 2.44 | 2,576 | S-400 5P85SM TEL on a MAZ-543, 48N6 canisters at 6.0 m (B3) | 9.8 x 3.1 x 3.7 at 0.85, 11,284 |
+| titan_tank | length 10.6 or more, 1.2 x the heavy tank, as wide as two tanks | 11.30 x 5.30 x 2.84 | 8.14 x 5.30 | 5,876 (the heaviest ground vehicle: over the tank range, four tracks) | Object 279, Landkreuzer P. 1000 Ratte | 10.4 x 3.6 x 3.5 at 0.85, 11,144 |
+| ifv | 5.2 x 2.9 x 2.4 (note; the row keeps 6.2) | 5.48 x 3.02 x 2.50 | 5.31 x 3.02 | 3,192 | M2 Bradley (turret left of centre as the sheet has it, TOW box on its left) | 6.2 x 2.7 x 3.1 at 0.85, 6,416 |
+| light_tank (+ _hd) | 6.1 x 2.6 x 1.8 (note) | 6.39 x 2.61 x 1.89 | 5.72 x 2.61 | 2,728 / 6,828 | PT-76, ZBD-05 | 6.2 x 2.3 x 2.2 at 0.85, 6,748 |
+| aa_vehicle (+ _hd) | 6.2 x 3.0 x 2.4 (note; 2.9 m with the search radar up) | 6.44 x 3.06 x 2.92 | 5.85 x 3.06 | 3,236 / 8,044 | Flakpanzer Gepard 1A2 | 5.6 x 2.7 x 3.0 at 1.0, 6,936 |
+| hover_gunboat | 14.0 x 3.9 x 4.4 (kept) | 14.00 x 3.92 x 3.67 | 14.00 x 3.92 | 1,416 | an air-cushion gunboat with the AK-630 (LCAC-style ducted fans) | missile_boat at 1.0, 432. **model:** drop `"model": "missile_boat"` |
+| engineer_vehicle | 6.9 x 3.0 x 2.6 (note) | 6.45 x 3.02 x 2.02 | 6.45 x 3.02 | 2,304 | BREM-1 on the T-72 hull, M88 | 6.3 x 2.8 x 2.4 at 0.85, 8,352 |
+| smoke_carrier | 3.9 x 2.2 x 2.0 (note) | 4.21 x 2.24 x 2.64 (the generator on the roof) | 4.21 x 2.24 | 2,468 | M1059 Lynx (M113 with the smoke generator) | 4.2 x 2.3 x 2.9 at 0.85, 9,280 |
+| mortar_carrier | 3.9 x 2.2 x 2.0 (note) | 4.21 x 2.30 x 3.20 (the mortar up) | 4.21 x 2.30 | 2,440 | M1064 (M113 with the M120 mortar) | 4.4 x 2.5 x 3.2 at 0.85, 6,448 |
+| vbied | 4.2 x 1.5 x 1.8 (note) | 4.58 x 1.68 x 1.60 (the ram plate and side plates) | 4.58 x 1.68 | 1,184 | up-armoured VBIED pickups (Mosul, Syria) | 4.4 x 1.9 x 2.4 at 0.85, 9,760 |
+| rocket_technical | 4.2 x 1.4 x 1.6 (note) | 4.39 x 1.50 x 1.86 | 4.39 x 1.50 | 1,912 | Toyota Hilux with the Type 63 107 mm | 4.6 x 1.8 x 2.8 at 0.85, 6,796 |
+| zu23_technical | 4.2 x 1.4 x 1.8 (note) | 4.39 x 1.50 x 1.56 | 4.39 x 1.50 | 1,356 | Toyota Hilux with the ZU-23-2 | 4.5 x 1.8 x 2.1 at 0.85, 9,444 |
+| ew_jammer | 8.8 x 2.4 x 3.2 (note) | 9.01 x 2.76 x 3.83 (the dish 15 % over, tilted up) | 9.01 x 2.38 | 1,976 | Krasukha-4 on a BAZ-6910 | 7.9 x 2.9 x 5.1 at 0.85, 6,516 |
+| mine_layer | 7.4 x 2.6 x 2.0 (note) | 7.62 x 2.70 x 1.97 (the chute behind) | 7.62 x 2.70 | 2,576 | GMZ-3 | 6.6 x 2.6 x 3.0 at 0.85, 8,164 |
+| mlrs | 5.6 x 1.9 x 2.6 (note) | 6.09 x 2.00 x 2.60 | 5.80 x 2.00 | 2,224 | M142 HIMARS on the FMTV | 6.4 x 2.3 x 3.6 at 0.85, 7,328 |
+| wheeled_gun | 7.9 x 2.4 x 2.2 (note) | 8.97 x 2.39 x 2.31 (the gun 1.9 m past the nose) | 5.97 x 2.36 | 2,508 | Centauro II (120 mm) | 9.4 x 2.6 x 3.1 at 0.85, 7,664 |
+| shield_carrier | 6.3 x 2.4 x 1.9 (note) | 6.29 x 2.46 x 2.84 (the emitter dome on the roof) | 6.29 x 2.46 | 1,918 | Boxer 8x8 with a field emitter | 7.4 x 2.5 x 5.3 at 0.85, 7,380 |
+| turtle_tank | 7.6 x 2.9 x 2.8 (note) | 7.42 x 2.97 x 2.81 | 6.10 x 2.97 | 2,540 | the T-72 / T-62 "tsar-mangal" turtle tanks (2023-2024) | 8.1 x 3.3 x 3.9 at 0.85, 11,272 |
+| armored_bulldozer | 6.5 x 3.7 x 3.2 (note) | 6.13 x 3.70 x 3.53 | 6.13 x 3.70 | 2,060 | Caterpillar D9R (IDF armour kit) | 6.7 x 3.7 x 4.8 at 0.85, 9,418 |
+| tank_destroyer (+ _hd) | 7.8 x 2.5 x 2.4 (note) | 7.89 x 2.62 x 2.04 | 5.72 x 2.62 | 2,996 / 7,344 | 2S25 Sprut-SD (2A75 125 mm) | 9.2 x 2.7 x 2.2 at 0.85, 7,588 |
+| thermobaric_launcher | 7.6 x 2.9 x 1.8 (note) | 6.02 x 2.85 x 2.79 (the 24-tube box level, face forward) | 6.02 x 2.85 | 3,508 | TOS-1A Solntsepyok on the T-72 | 6.3 x 3.1 x 2.9 at 0.85, 8,548 |
+| bmpt | 5.8 x 2.8 x 2.7 (note) | 6.08 x 2.96 x 2.39 | 6.08 x 2.85 | 3,168 | BMPT Terminator | 6.3 x 3.1 x 2.9 at 0.85, 10,596 |
+| heavy_tank (+ _hd) | 8.0 x 2.9 x 2.4 (note), longer than the MBT | 8.39 x 3.01 x 2.20 | 6.55 x 3.01 | 3,660 / 9,102 | Object 195 / T-95 (152 mm) | 8.8 x 3.2 x 3.5 at 0.85, 8,328 |
+| heavy_rocket_artillery | 9.7 x 2.4 x 2.4 (note) | 10.00 x 2.44 x 3.03 | 10.00 x 2.44 | 2,960 | BM-30 Smerch on the MAZ-543M | 10.5 x 2.7 x 4.2 at 0.85, 8,492 |
+| ballistic_launcher | 10.5 x 2.5 x 2.6 (note; the missile drawn 20 degrees up, as the erector expects) | 10.70 x 2.53 x 4.18 | 10.70 x 2.53 | 2,544 | Iskander-M 9P78-1 on the MZKT-7930 | 10.9 x 2.6 x 4.7 at 0.85, 8,916 |
+| railgun_truck | 9.7 x 2.9 x 3.7 (kept) | 9.90 x 2.48 x 2.89 | 9.90 x 2.48 | 2,324 | an EM railgun on an 8x8 (US Navy EMRG rails) | 9.7 x 2.9 x 3.7 at 0.85, 11,708 |
+| laser_tank | 6.3 x 2.7 x 2.6 (kept) | 6.08 x 2.82 x 2.74 | 6.08 x 2.82 | 2,548 | a beam director on a tracked chassis | 6.3 x 2.7 x 2.6 at 0.85, 7,268 |
+| bunker_vehicle | 8.5 x 3.5 x 3.1 (kept) | 9.90 x 4.07 x 2.60 model units = **8.42 x 3.46 x 2.21 at 0.85** (play-test 4's rig units, like the siege tank) | 8.39 x 4.07 units = 7.13 x 3.46 m | 7,032 (3,900 for the vehicle; 3,100 in the emplacement, hidden at 1 % on the move) | Strv 103 dozer blade on an engineer hull (play-test 4's rig kept) | 11,384 |
+| scout_heli | 4.0 x 3.3 x 1.0 (note) | 3.88 x 3.16 x 1.56 (rotor 3.3 m; 1.3 m to the rotor head) | (aircraft) | 1,966 | MH-6 Little Bird | 5.1 x 4.6 x 1.7 at 0.57, 4,266 |
+| recon_drone | 2.6 x 4.8 x 0.9 (note) | 2.67 x 4.83 x 0.48 | (aircraft) | 584 | Bayraktar TB2 | 3.4 x 5.9 x 0.8 at 0.49, 4,574 |
+| wingman_drone | 3.5 x 3.3 x 0.8 (note) | 3.49 x 3.33 x 0.79 | (aircraft) | 688 | XQ-58 Valkyrie | 4.9 x 4.2 x 0.9 at 0.39, 636 |
+| strike_drone | 4.4 x 8.0 x 1.5 (note) | 4.25 x 8.04 x 1.24 | (aircraft) | 1,848 | MQ-9 Reaper | 5.3 x 8.7 x 1.4 at 0.78, 4,142 |
+| stealth_fighter | 7.6 x 5.4 x 2.0 (note; only the size was open) | 7.60 x 5.50 x 1.28 (play-test 9's jet scaled) | (aircraft) | 2,984 | F-22 / Su-57 | 7.2 x 5.2 x 1.2 at 0.39, 2,984 |
+| gunship_heli | 7.0 x 6.9 x 2.6 (note), 15 % over the Apache | 7.59 x 6.58 x 2.10 (rotor 6.9 m) | (aircraft) | 3,112 | Mi-24 Hind | 8.4 x 6.9 x 2.4 at 0.58, 7,894 |
+| attack_jet (+ _hd) | 6.2 x 5.8 x 1.9 (note), shorter than the Su-27 | 6.15 x 6.04 x 1.84 | (aircraft) | 2,376 / 2,520 | Su-25 Frogfoot | 7.5 x 7.1 x 1.7 at 0.56, 9,050 |
+| heavy_bomber | 19.4 x 22.6 x 5.0 (note) | 19.80 x 22.62 x 5.70 | (aircraft) | 2,596 | B-52 Stratofortress | 21.1 x 22.0 x 7.2 at 1.22, 10,106 |
+| stealth_bomber | 8.4 x 21.0 x 2.1 (note) | 8.40 x 21.00 x 1.50 | (aircraft) | 2,096 | B-2 Spirit | 8.3 x 20.7 x 2.3 at 1.29, 5,514 |
+| transport_plane | (no row: the C-130 of the airdrops and the MOAB) | 11.93 x 16.30 x 4.69 (part 1's shared _c130) | (aircraft) | 1,728 | C-130 Hercules | play-test 5's 13.5 m airframe, 8,608. AirDrops scales it by sky_gunship's scale |
+| elite_mbt | 1.15 x the rebuilt MBT (mb_elites' rule) | 8.96 x 3.53 x 2.64 | 7.02 x 3.53 | 4,792 | the MBT with the elite marks (gold chevrons, gun band, red sights, EliteBlack armour) | 6.2 x 2.9 x 3.1 at 0.85, old base |
+| elite_heavy_tank | 1.15 x the heavy tank | 9.64 x 3.46 x 2.53 | 7.53 x 3.46 | 3,752 | as above | 8.6 x 3.2 x 3.4 at 0.85 |
+| elite_tank_destroyer | 1.15 x the Sprut | 9.08 x 3.01 x 2.34 | 6.58 x 3.01 | 3,088 | as above | 9.0 x 2.9 x 2.2 at 0.85 |
+| elite_attack_helicopter | 1.1 x the Apache | 6.98 x 4.88 x 2.22 | (aircraft) | 3,518 | the Apache with gold bands | 7.8 x 5.2 x 3.0 at 0.69 |
+| elite_mlrs | 1.15 x the HIMARS | 7.01 x 2.30 x 2.99 | 6.68 x 2.30 | 2,264 | the HIMARS (one pod now, was a twin pod) | 7.4 x 2.6 x 4.1 at 0.85 |
+| elite_aa | 1.15 x the Gepard | 7.41 x 3.52 x 3.36 | 6.73 x 3.52 | 3,728 | the Gepard with the APS ring and sight | 6.8 x 3.4 x 3.7 at 1.05 |
+| elite_apc | 1.15 x the Bradley | 6.31 x 3.47 x 3.02 | 6.11 x 3.47 | 3,632 | the Bradley (the side TOW box kept for Deploy_atgm) | 7.4 x 2.8 x 3.3 at 0.85 |
+
+Elites without a model of their own (elite_fpv_carrier, elite_attack_jet, elite_long_sam, elite_artillery) draw their
+rebuilt base and are repainted at run time (`VehicleView.EliteRepaint`); elite_grad keeps `grad_truck`.
+| sky_fortress (boss) | the AC-130 x 1.3, painted dark | 17.62 x 24.08 x 6.93 model units (the shared C-130 at 1.477, the old model's length: every node where the boss data puts it, the props within 0.4 m) | (boss) | 2,380 | AC-130 Spectre (the shared C-130 airframe) | 17.6 x 22.2 model units, 10,044. **data (C1):** scale x size 1.105 draws it 19.5 m long; the sheet's C-130 x 1.3 is 15.5 m, scale x size 0.88 (scale 1.035 with size 0.85) |
+
+**Bosses: reviewed against the sheet, kept (the owner's low-effort rule for this pass: prompt 27 redoes every model
+with the upgraded kit).** The Boss sheet's notes give each boss its references and the same rules: the size it has
+today (its "Kích thước" row keeps it; only Daedalus and Icarus changed, B1), a mini boss smaller than the main boss
+of its line, every destructible part its own readable block with a wreck, the owning general's stripe. The models in
+the tree meet them: every part the boss data lists is its own node (`Part_*`, `Mount_*`, `Propeller*` ...) and the
+data puts a wreck piece in its place (`wreck_turret`, `wreck_engine` ...); each carries the side's colour (`Team`,
+9 % of the Typhon's surface, whose sail, waterline band and screw shrouds are in it, to 67 % of the Caspian's); the
+mini bosses are smaller than their lines' main bosses (the Behemoth 22.3 m in battle over the Tempest 16.2 and the
+Inferno 12.8, the Mobile Fortress 26.1 over the Hive 16.4 and Fenrir, the Fortress Bastion 35.8 over the Mk.0 25.0,
+the command airship 59.2 over Argus 29.6, the drone mothership 42.3 over Locust 25.4, Leviathan 97.6 over Scylla
+48.8, the nuke train 61.6 over the armoured train 24.5). Their nodes stay where the boss data puts them (C1 edits
+that data), so a redraw now would only move risk. Kept as they are: rail_supergun (28,756 triangles),
+armored_train (21,874), behemoth_tempest (16,536), landing_hovercraft (16,228), ixion (21,628), fortress_hive,
+behemoth_inferno, behemoth (19,948), earth_borer (22,590), nuke_train (35,666), mobile_fortress (20,290),
+command_airship (22,180), fortress_bastion (23,948), leviathan (25,992), drone_mothership (19,900), and the variants
+that draw their base (behemoth_mk0 / _mk2, fenrir, bastion_mk0, locust, argus, scylla, icarus_mk0). Under the guide's
+15,000-triangle floor, left for prompt 27: morrigan (1,312: an aircraft-sized boss, the aircraft budget fits it),
+caspian (5,054), typhon (6,348), moloch (7,180), kronos (8,404), supreme_command (9,118), mega_gunship (11,304).
+
+**Structures: the towers and their branches reviewed against the sheet and kept** (their shapes are the notes':
+the tower-branch prompt, C.1, drew them from the same spec; sizes kept, "Giữ"); over the tower budget of 1,500-3,500
+triangles (most are 3,000-11,700), left for prompt 27. **New models where a structure borrowed one that is not its
+note:**
+
+| Model | Sheet's size (kept) | Built | Triangles | For | Was |
+|---|---|---|---|---|---|
+| logistics_station | 8.0 x 10.0 x 3.8 | 10.00 x 8.02 x 3.47 | 984 | the container yard and forklift | fuel_depot (fuel tanks). **model:** drop `"model": "fuel_depot"` |
+| repair_bay | 10.1 x 14.2 x 6.4 | 14.50 x 10.12 x 6.24 | 736 | the corrugated-roof workshop with a gantry crane | vehicle_hangar (no crane). **model:** drop `"model": "vehicle_hangar"` |
+| radar_site | 8.1 x 7.9 x 7.8 | 7.90 x 8.12 x 8.04 | 656 | radar_station: the radar tower with a big turning dish (`Radar`) | radar_dome (a radome). **model:** `"model": "radar_site"` (the map prop radar_station is a 14 m mast) |
+| helipad_a | 10.0 x 10.0 | 10.00 x 10.00 x 3.77 | 1,348 | airfield.hangar (TowerArt picks helipad_a: an arched hangar over the pad) | the plain helipad for both branches |
+| helipad_b | 10.0 x 10.0 | 10.00 x 10.00 x 1.93 | 2,084 | airfield.service (helipad_b: a fuel bowser, ammunition crates, a fuel bladder) | as above |
+
+**Data changes for the lead (balance.json; B1 and C1 own it, so none was made here):**
+- every model in the Part 2 table: `"scale": 1.0`, `modelSize` = its built box, `length` / `width` = its hull (the
+  siege tank and bunker vehicle are drawn in their rigs' units: scale 0.745 and 0.85, modelSize 6.8 x 2.6 x 2.6 and
+  8.4 x 3.5 x 2.2);
+- drop the borrowed `"model"` lines: supply_truck and ammo_carrier (`armed_truck`), hover_gunboat (`missile_boat`),
+  logistics_station (`fuel_depot`), repair_bay (`vehicle_hangar`); radar_station takes `"model": "radar_site"` (was
+  `radar_dome`; the map prop radar_station stays a 14 m mast);
+- sky_fortress (C1's boss data): scale x size 0.88 (scale 1.035 with its size 0.85) draws the new C-130 frame 1.3 x
+  the AC-130, as the sheet asks; its nodes did not move;
+- B3's rounds: the Buk (sam_launcher, 4.44 m missiles on rails), the 48N6 (long_sam, 6.0 m canisters) and the Patriot
+  (missile_battery's box is 4.6 m along its tubes) now fit their launchers; no round length needs changing.
+
+**Tests (none run: the owner's rule).** To run in the test phase: `ModelTests` (all: turrets and barrels, launch
+points on both sides with the two cases changed here, the Hind's rockets 1.0 m and the Su-25's missiles 1.5 m off
+centre, boxes of tubes, elevation, the siege tank's and bunker vehicle's Deploy_* parts, the `_hd` pivots of
+light_tank, heavy_tank, aa_vehicle, artillery, tank_destroyer and attack_jet), `MuzzleTests`, `MuzzleAuditTests`,
+`PlayTest5VisualTests`, `PlayTest6VisualTests` (erectors: the Shahed rack, the Iskander, the IFV / elite APC side TOW
+box), `BossPartsTests` and `Prompt20BossTests` (the Sky Fortress's nodes), `TowerBranchArtTests` (helipad_a / _b),
+`CardRenderTests`, `MissileFlightTests.MissilesAreDrawnToFitTheirLaunchers`, B1's `SizeSheetTests` once the scales
+and sizes above are in, and the stuck-vehicle probe (the hulls moved). Blender's `check_muzzles.py` was run on every
+model: the failures left are the kind the old models had (a side-firing gun's muzzle measured along -Y, the siege
+tank's rear-facing 105 mm, a chin turret's rear arc, a bomb bay's muzzle).
+
+**Shared edits (merge by hand if they conflict):** `Tools/blender/build_assets.py` (the part 2 import, its BUILDERS
+line and the `_hd` override), `Tools/blender/mb_munitions.py` (kh29l, gbu39: already cherry-picked on lead),
+`Docs/art/models.json` (`Tools/art/resolve_merge.py`), the Cards folder and its `manifest.json`,
+`Assets/MachineBrigade/Tests/EditMode/ModelTests.cs` (two TestCase numbers), `Docs/ASSET_DEBT.md` (its B2 section
+rewritten; lead's own "Prompt 25 B1 and B3" table's rows for the seven size mismatches, the two rounds and the three
+launchers are done here), `Docs/CHANGELOG.md`, this file.

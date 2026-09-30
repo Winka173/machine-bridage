@@ -151,6 +151,17 @@ The sheet "Boss đề xuất" by script (`import_xlsx.py --upto C1`).
   before/after shots are in `Docs/ui-screens/models/`.
 - The new sizes take effect in battle when prompt 25 B1 sets the scales; Icarus is unchanged (its size is a scale
   for B1). The models not reached yet are listed in `Docs/ASSET_DEBT.md`.
+- Part 2: every other vehicle is redrawn the same way, in lean builders at the sheet's sizes: the trucks the sheet
+  sized (supply truck and ammunition carrier on a HEMTT, counter-battery radar, Shahed launcher, Iron Beam, Pantsir),
+  the M109A7 self-propelled gun (was a CAESAR truck), the siege tank on 2S4 lines, the Buk and S-400 launchers with
+  missiles at their new lengths, the four-track super tank, the IFV, light tank and Gepard, the hovercraft, engineer,
+  smoke and mortar carriers, the three pickups, jammer, minelayer, HIMARS, Centauro, shield carrier, turtle tank,
+  bulldozer, Sprut, TOS-1A, BMPT, heavy tank, Smerch, Iskander, railgun and laser tanks, the bunker vehicle, and the
+  aircraft (Little Bird, TB2, XQ-58, MQ-9, the stealth jet resized, Hind, Su-25, B-52, B-2, the airdrop plane on the
+  shared C-130). The seven elites with models of their own follow their new bases; the Sky Fortress is the shared
+  C-130 painted dark; the Kh-29L and GBU-39 get round models; the logistics yard, repair bay, radar site and the
+  airfield's two branches get models of their own. Most are 1,000-3,500 triangles (were 6,000-15,000). The towers
+  and the other bosses were checked against the sheet and kept for prompt 27's new kit.
 
 ### Play-test 9 models (DECISIONS 23M)
 

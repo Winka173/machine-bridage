@@ -188,140 +188,59 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | Icarus at 60 m | The play-test 9 dagger hull, 30 m wide at that length | A planform nearer the sheet's ~60 x 40 m, if the owner wants its width too (its nodes kept where the boss data puts them) |
 ## Prompt 25 B2 (DECISIONS 25B2)
 
-The models prompt 25 B2 did not reach, with the shape note ("Hình dạng (cho AI vẽ)") of the balance sheet's
-Phương tiện, Công trình and Boss sheets, in English. Sizes are length x width x height at the map scale (ground
-0.8 x real, aircraft 0.4 x real); "change" marks a model whose "Kích thước model" row in "Kiểm tra từng mục" says
-its size must change. Every one also needs: the side's stripe on the roof and flanks, no real insignia, the
-guide's triangle budget (light 1,500-3,000, tanks 3,000-5,000, aircraft 2,000-4,000, towers 1,500-3,500, bosses
-15,000-40,000), nothing thinner than 0.1 m, its mounts kept, and before/after shots in `Docs/ui-screens/models/`.
-Almost all of today's models are over those budgets (6,000-15,000 triangles for most vehicles).
+Part 2 rebuilt every vehicle left from part 1 (and the seven elites with models of their own) to the balance sheet's
+shape notes and sizes, redrew the Sky Fortress, gave four structures that borrowed another model their own, and
+reviewed the towers and the bosses against the sheet (DECISIONS 25B2 Part 2). The owner's rule for this pass was a
+low effort: prompt 27 redoes every model with an upgraded kit. What is left is below.
 
 ### Vehicles
 
-| Model | Size now (in battle) → sheet | Shape note |
-|---|---|---|
-| hover_gunboat | 14.0 x 3.9 x 4.4, keep | Low hovercraft hull with a black rubber skirt, two big ducted fans aft in guard rings, a small six-barrel turret forward. From above: a teardrop with two round fan rings at the tail. |
-| ifv | 6.2 x 2.7 x 3.1, keep (note: 5.2 x 2.9 x 2.4, M2 Bradley) | Tracked, six road wheels, taller hull than a tank, turret offset left with a short 30 mm gun and a TOW box on the turret side, big rear door. From above: a rectangle with the square missile box beside the turret. |
-| supply_truck | 7.6 x 2.7 x 3.5 → 8.2 x 2.0 x 2.1, change | 8-wheel truck (M977 HEMTT), cab forward, a tarpaulin cargo bed with crates and ammunition boxes showing (2/3 of the length), a machine gun on a cab-roof ring. It borrows `armed_truck` today: a model of its own needs `"model"` changed in balance.json (B1). |
-| engineer_vehicle | 6.3 x 2.8 x 2.4, keep (note: 6.9 x 3.0 x 2.6) | Turretless tank chassis (BREM-1 / M88), a folding crane on the roof, a dozer blade in front. From above: the crane lying diagonally along the hull, the blade wider than the hull. |
-| smoke_carrier | 4.2 x 2.3 x 2.9, keep (note: 3.9 x 2.2 x 2.0) | Low box M113 hull, a cylindrical smoke generator and exhaust on the rear roof, smoke grenade launchers on both sides. From above: a plain box, the generator drum at the back. |
-| ammo_carrier | 6.9 x 2.4 x 3.2, keep (note: 8.2 x 2.0 x 2.1) | 8-wheel truck with an open metal ammunition rack, olive ammunition crates stacked in tiers, a small crane at the back. From above: crates in a grid. |
-| counter_battery_radar | 7.2 x 2.6 x 3.9 → 6.4 x 2.0 x 2.8, change | Truck carrying a big flat radar panel raised at an angle at the rear (about 1/3 of its length; AN/TPQ-53). From above: the flat rectangular panel. |
-| ew_jammer | 7.9 x 2.9 x 5.1, keep (note: 8.8 x 2.4 x 3.2) | 8-wheel truck with a large dish antenna or a tall lattice antenna mast, flat body (Krasukha-4). From above: a big round dish. |
-| mine_layer | 6.6 x 2.6 x 3.0, keep (note: 7.4 x 2.6 x 2.0) | Low tracked chassis, an inclined mine chute at the tail, mine boxes stacked on the roof (GMZ-3). From above: the long chute at the back. |
-| shield_carrier | 7.4 x 2.5 x 5.3, keep (note: 6.3 x 2.4 x 1.9) | 8-wheel vehicle (Boxer chassis) with a domed metal shield emitter ringed in the side's glow; when active a translucent 12 m dome. From above: a glowing round disc mid-hull. |
-| vbied | 4.4 x 1.9 x 2.4, keep (note: 4.2 x 1.5 x 1.8) | Civilian pickup welded over with patched steel plates, small vision slits, thicker front plate, no visible weapon. From above: a rough steel box with uneven plate edges. |
-| light_tank | 6.2 x 2.3 x 2.2, keep (note: 6.1 x 2.6 x 1.8) | Low boat-shaped (amphibious) hull, small turret set forward, long thin 57 mm gun (PT-76 / ZBD-05). From above: a boat-like bow. |
-| turtle_tank | 8.1 x 3.3 x 3.9, keep (note: 7.6 x 2.9 x 2.8) | T-72 covered by a big sheet-metal shell like a turtle's, over hull and turret, only the gun poking out, the edge hanging close to the ground, anti-drone netting. From above: one big oval roof. |
-| bmpt | 6.3 x 3.1 x 2.9, keep (note: 5.8 x 2.8 x 2.7) | T-72 chassis, a low wide turret with twin 30 mm guns either side and two box missile launchers, two grenade launchers on the front fenders. From above: a wide turret with many short barrels. |
-| rocket_technical | 4.6 x 1.8 x 2.8, keep (note: 4.2 x 1.4 x 1.6) | Civilian pickup with a 12-tube rocket launcher on the bed (Type 63). From above: a grid of small round tubes on the bed. |
-| mortar_carrier | 4.4 x 2.5 x 3.2, keep (note: 3.9 x 2.2 x 2.0) | M113 chassis, the rear roof hatch open wide, a 120 mm mortar pointing up through it. From above: the big roof opening and the mortar tube. |
-| artillery | 8.1 x 2.3 x 3.6 → 7.8 x 3.1 x 2.9, change | Tracked self-propelled howitzer (M109A7, the sheet proposes it in place of the CAESAR): a big square turret at the rear, a very long 155 mm barrel (over half the vehicle's length), a travel lock at the nose. From above: the big turret, the barrel reaching past the nose. |
-| mlrs | 6.4 x 2.3 x 3.6, keep (note: 5.6 x 1.9 x 2.6) | 6-wheel truck, a large six-tube box launcher at the rear that lifts and turns (HIMARS). From above: the rectangular pod covering the rear half. |
-| shahed_truck | 6.9 x 2.6 x 4.1 → 6.4 x 2.0 x 2.8, change | Truck carrying a five-rail inclined rack, a white delta-wing drone on each rail. From above: five triangles side by side. |
-| thermobaric_launcher | 6.3 x 3.1 x 2.9, keep (note: 7.6 x 2.9 x 1.8) | T-72 chassis, a big 24-tube box launcher on a lifting mount mid-hull (TOS-1A). From above: a big square block of tubes. |
-| ballistic_launcher | 10.9 x 2.6 x 4.7, keep (note: 10.5 x 2.5 x 2.6) | Long 8-wheel vehicle, one big missile in a casing on the deck, raised upright to fire (Iskander). From above: the long missile down the middle. |
-| heavy_rocket_artillery | 10.5 x 2.7 x 4.2, keep (note: 9.7 x 2.4 x 2.4) | Long 8-wheel vehicle, a block of 12 large (300 mm) tubes at the rear (BM-30 Smerch). From above: 12 big round tubes in 3 rows. |
-| siege_tank | 7.7 x 3.4 x 3.1 → 6.8 x 2.6 x 2.6, change | Tracked chassis, a very large short 240 mm mortar at the tail, spades lowered when firing, a secondary 105 mm gun (2S4 Tyulpan). From above: the big round mortar tube, the spades at the back. |
-| zu23_technical | 4.5 x 1.8 x 2.1, keep (note: 4.2 x 1.4 x 1.8) | Civilian pickup with a twin-barrel ZU-23 on the bed. From above: two long parallel barrels. |
-| aa_vehicle | 5.6 x 2.7 x 3.0, keep (note: 6.2 x 3.0 x 2.4) | Tracked chassis, a square turret with a 35 mm gun on each side, a round radar dish spinning behind the turret (Gepard). From above: two barrels either side, the dish. |
-| sam_launcher | 6.1 x 3.1 x 4.0, keep (note: 7.4 x 2.6 x 3.0) | Tracked chassis, a turning launcher with four big missiles pointing up, a cylindrical radar in front of the launcher (Buk TELAR). From above: four long parallel missiles. |
-| heavy_aa | 7.0 x 2.5 x 3.3 → 9.6 x 2.6 x 2.8, change | 8-wheel truck, a turret with two 30 mm guns and 12 missile tubes round it, a round radar on top (Pantsir-S1 on KamAZ). From above: the turret with tubes on both sides. |
-| iron_beam | 7.8 x 2.7 x 3.7 → 8.0 x 2.0 x 2.8, change | Truck carrying a box laser turret with a large round emitter window at the front, radiator panels. From above: the round window stands out. |
-| long_sam | 9.8 x 3.1 x 3.7, keep (note: 11.2 x 2.5 x 3.0) | Very long 8-wheel vehicle with four large horizontal launch tubes, raised upright to fire (S-400 5P85). From above: four tubes as long as the vehicle. |
-| scout_heli | 4.3 x 3.9 x 1.4, keep (note: 4.0 x 3.3 x 1.0) | Small egg-shaped helicopter, five-blade rotor, skids, two small weapon pylons (MH-6 Little Bird). From above: a rotor disc large for the small body. |
-| recon_drone | 2.9 x 5.0 x 0.7, keep (note: 2.6 x 4.8 x 0.9) | Straight-wing UAV, long wing, slim body, inverted V tail, pusher propeller (TB2). From above: a cross with a very long wing. |
-| wingman_drone | 4.2 x 3.6 x 0.8, keep (note: 3.5 x 3.3 x 0.8) | Small fighter-like jet drone, no cockpit, dorsal intake, V tail (XQ-58 Valkyrie). From above: a small arrowhead. |
-| strike_drone | 4.5 x 7.4 x 1.1, keep (note: 4.4 x 8.0 x 1.5) | Large straight-wing UAV, very long wing, bulged nose (radar), Y tail, missiles under the wings (MQ-9). From above: a wing twice as long as the body. |
-| stealth_fighter | 6.1 x 4.2 x 1.2, keep (note: 7.6 x 5.4 x 2.0) | Faceted stealth fighter, two tails canted out, angled intakes, no external stores (F-22 / Su-57). From above: a flat diamond. Play-test 9 redrew it slim; only its size is open. |
-| gunship_heli | 7.1 x 5.8 x 2.0, keep (note: 7.0 x 6.9 x 2.6) | Large armed helicopter, two stepped bubble cockpits, a troop cabin in the middle, drooping stub wings with rocket pods, about 15 % bigger than the attack helicopter (Mi-24). From above: a big body, stub wings with many pylons. After this pass the Apache is 6.0 m long: the Hind must stay 15 % larger. |
-| attack_jet | 6.4 x 6.0 x 1.5, keep (note: 6.2 x 5.8 x 1.9) | Straight-wing attack jet, two engines at the wing roots, many pylons under the wings, shorter than the fighter (Su-25). From above: a wide straight wing. It must stay shorter than the new 8.6 m fighter at B1's scales. |
-| stealth_bomber | 7.0 x 17.6 x 2.0, keep (note: 8.4 x 21.0 x 2.1) | Flying wing with a sawtooth W trailing edge, no tail, very wide for its length (B-2). From above: a sawtooth boomerang. |
-| heavy_bomber | 17.9 x 18.7 x 6.1, keep (note: 19.4 x 22.6 x 5.0) | Eight engines in four pairs under a long swept wing, a long fuselage, a tall tail; the biggest of the player's aircraft (B-52). From above: the swept wing with four engine pairs. |
-| bunker_vehicle | 8.5 x 3.5 x 3.1, keep | Tracked chassis with a big dozer blade and a low 105 mm turret; deployed, the hull drops and armour plates and sandbags rise round it. From above: the wide blade, the low turret. |
-| armored_bulldozer | 6.7 x 3.7 x 4.8, keep (note: 6.5 x 3.7 x 3.2) | Armoured box-shaped tracked dozer, a very large blade, a caged armoured-glass cab (D9R). From above: a blade wider than the hull. |
-| heavy_tank | 8.8 x 3.2 x 3.5, keep (note: 8.0 x 2.9 x 2.4) | Very heavy tank, long hull, a small angular unmanned turret, a big long 152 mm gun, seven road wheels (Object 195). From above: the very big gun. Must stay longer than the new 7.7 m MBT. |
-| titan_tank | 10.4 x 3.6 x 3.5 → length 10.6 or more, change | Super tank on four tracks (two a side), a big turret with twin 140 mm guns, machine-gun sub-turrets, at least 20 % bigger than the heavy tank. From above: as wide as two tanks. At scale 1.0 today's model is already 12.2 m long; the four tracks and the width are open. |
-| wheeled_gun | 9.4 x 2.6 x 3.1, keep (note: 7.9 x 2.4 x 2.2) | 8-wheel vehicle with a full tank turret and a long 120 mm gun (Centauro II). From above: like a tank but with four pairs of wheels. |
-| tank_destroyer | 9.2 x 2.7 x 2.2, keep (note: 7.8 x 2.5 x 2.4) | Low tank destroyer, a small turret with a very long 125 mm gun (nearly the hull's length; 2S25 Sprut-SD). From above: a very long gun for a small hull. |
-| railgun_truck | 9.7 x 2.9 x 3.7, keep | 8-wheel vehicle with two long parallel guide rails, capacitor coils and blue-glowing radiator panels. From above: two long parallel rails. |
-| laser_tank | 6.3 x 2.7 x 2.6, keep | Tracked chassis with a laser emitter on a fork mount, a big round mirror, radiator panels on both sides. From above: the round mirror disc on its fork. |
-
-Related to the rebuilt models: `elite_mbt`, `elite_attack_helicopter` and the other elites of rebuilt units keep the old
-designs (they are their own models); `transport_plane` (airdrops, the MOAB) still flies play-test 5's airframe, not
-the new shared C-130 (`mb_p25_models._c130`); Icarus's scale for "the largest thing in the sky" is B1's (DECISIONS
-25B2).
+None left. The data changes they need are the lead's (DECISIONS 25B2 Part 2: `scale` 1.0 and `modelSize` = the built
+box for every rebuilt model; the supply truck, ammunition carrier and escort hovercraft drop their borrowed `"model"`).
 
 ### Structures
 
-| Model | Size now | Shape note |
-|---|---|---|
-| aa_turret | 5.4 x 4.5 x 3.2 | Round sandbag emplacement with a twin-barrel anti-aircraft gun on a turntable and two small missile tubes. Branch flak: a four-barrel gun with a small radar. Branch sam: a four-tube missile box instead of the guns. |
-| cp_relay | 4.0 x 4.0 x 7.8 | Steel lattice mast with two dish antennas and an equipment box. Branch hardened: thick concrete cladding. Branch loot: a crane and a pile of containers. |
-| dragons_teeth | 2.5 x 5.2 x 1.3 | A row of truncated concrete pyramids. Branch hedgehog: cross-shaped steel hedgehogs. Branch wire: barbed-wire coils on stakes. |
-| ew_tower | 4.0 x 4.0 x 10.1 | Tall antenna mast (about 10 m) with panels and small dishes. Branch drone: an antenna dome with wave rings. Branch spoof: a flat phased-array panel. |
-| guard_tower | 3.5 x 3.8 x 11.6 | Tall wood-and-steel tower (about 11 m), a roofed hut with a machine gun and a searchlight. Branch watch: a radar mast and a turning searchlight on the hut. Branch nest: a low sandbagged hut with a 25 mm gun. |
-| headquarters | 12.7 x 14.1 x 9.4 | Multi-block concrete command building, antennas, the side's flag, sandbags round it. |
-| mg_bunker | 4.4 x 4.4 x 3.3 | Low round or hexagonal concrete pillbox, loopholes, a barrel sticking out. Branch twin: two machine-gun barrels through the loopholes. Branch flame: a flame nozzle and fuel tanks behind. |
-| minefield | 4.9 x 4.9 x 1.1 | Churned ground with warning signs; the mines show only to their own side. Branch at: a few big mines. Branch scatter: many small mines and dispenser canisters. |
-| airfield | 10.0 x 10.0 x 0.1 | Flat concrete pad with painted markings and lights. Branch hangar: an aircraft hangar. Branch service: a fuel bowser and ammunition crates. |
-| ammo_depot | 4.9 x 6.1 x 2.9 | Half-buried store with an earth berm, ammunition crates stacked outside. |
-| atgm_tower | 5.2 x 5.2 x 5.0 | Twin missile launcher on a low steel tower with a shield. Branch top: a tall launcher, missiles arcing up. Branch multi: a four-tube turntable with an anti-air sensor. |
-| c_ram | 5.6 x 5.6 x 5.4 | White multi-barrel gun turret with a cylindrical radar dome on top. Branch centurion: the gatling with a spherical radar. Branch dome: an inclined interceptor launcher. |
-| gun_turret | 8.9 x 5.0 x 4.0 | A tank turret on a square concrete base, a long 120 mm gun. Branch long: one very long barrel with a sight tube. Branch auto: a small turret with two short barrels and a radar. |
-| logistics_station | 8.0 x 10.0 x 3.8 | Container yard and a forklift. |
-| radar_station | 8.1 x 7.9 x 7.8 | Radar tower with a big turning dish. |
-| repair_bay | 10.1 x 14.2 x 6.4 | Corrugated-roof workshop with a gantry crane. |
-| rocket_turret | 4.7 x 4.7 x 3.4 | A 40-tube rocket launcher on a low turntable. Branch cluster: an open rail rack with many tubes. Branch guided: a closed launch box. |
-| artillery_emplacement | 8.5 x 6.8 x 3.4 | Towed howitzer in a U-shaped earth and sandbag emplacement. Branch cb: a long-barrel howitzer beside a radar dish. Branch mortar: a low mortar with a very big tube. |
-| drone_hangar | 8.0 x 8.0 x 5.0 | Low domed hangar with a roller door and a drone launch rail. Branch lancet: a Lancet launch rail. Branch swarm: a rack of many small drone bays. |
-| heavy_turret | 10.3 x 8.0 x 6.1 | Big twin 155 mm turret on a concrete base, armour-plated. Branch coastal: a long-barrel twin turret turned seawards. Branch bastion: thick armour and two small secondary gun turrets. |
-| missile_battery | 7.0 x 9.1 x 7.3 | Launcher with four big inclined missile boxes beside a phased-array radar truck. Branch pac3: a box of many small tubes. Branch lrr: a big turning radar dish. |
-| shield_tower | 7.2 x 7.2 x 9.2 | Tall shield emitter tower with a ring glowing in the side's colour, a translucent dome when active. Branch bulwark: a central emitter and dome. Branch ward: many small emitter posts joined by light beams to each tower. |
-| bulwark_post | 3.5 x 3.5 x 2.7 | Small sandbag gun post. |
-| coastal_battery | 10.3 x 8.0 x 6.1 | Coastal gun turret on a concrete base by the rocks. |
-| spawn_bastion, super_gun, targeting_station | 10.3 x 8.0 x 6.1; 18.5 x 14.4 x 11.0; 6.5 x 8.2 x 11.0 | No shape note in the sheet (size only). |
+The towers and their rank-7 branches match their notes (the branches differ in their weapon modules) and keep their
+sizes; most are over the guide's tower budget of 1,500-3,500 triangles, left for prompt 27 (base / branch A / B):
 
-The towers' two tier-7 branches must differ in their weapon module's shape at the default zoom; tiers 1-6 add
-small rank details (rank stripes, armour cladding at tiers 3 and 5).
+| Tower | Triangles |
+|---|---|
+| aa_turret | 6,126 / 6,554 / 2,382 |
+| cp_relay | 2,192 / 2,220 / 1,328 |
+| dragons_teeth | 1,508 / 1,980 / 4,088 |
+| ew_tower | 5,104 / 5,436 / 4,544 |
+| guard_tower | 4,656 / 5,372 / 2,594 |
+| mg_bunker | 3,404 / 3,704 / 3,560 |
+| minefield | 3,150 / 3,732 / 4,512 |
+| atgm_tower | 4,958 / 5,510 / 5,558 |
+| c_ram | 5,806 / 6,254 / 7,150 |
+| gun_turret | 6,112 / 6,384 / 6,688 |
+| rocket_turret | 3,894 / 5,102 / 3,010 |
+| artillery_emplacement | 7,334 / 7,766 / 5,770 |
+| drone_hangar | 7,138 / 5,978 / 9,114 |
+| heavy_turret | 9,222 / 9,378 / 11,666 |
+| missile_battery | 6,926 / 8,338 / 6,974 |
+| shield_tower | 5,344 / 7,200 / 6,176 |
+
+Also kept: headquarters (14,260; its note: a multi-block concrete command building, antennas, sandbags),
+ammo_depot (on ammo_dump: the berm-covered store with crates outside, as its note), bulwark_post (on mg_bunker at 0.8),
+coastal_battery, spawn_bastion and super_gun (on heavy_turret; coastal_battery could wear the coastal branch's
+heavy_turret_a instead, a data choice), targeting_station (no note). The Patriot's box (missile_battery) is 4.6 m long
+along its tubes, so B3's 4.24 m round fits it.
 
 ### Bosses
 
-Common to every boss (the sheet): a main boss 1.3-1.5 x its reference, a mini boss smaller than the main boss of its
-line; each destructible part (turrets, tracks, engines) its own readable block with an intact and a broken version;
-the owning general's stripe; the important parts (main turret, engines, factory doors) big and easy to aim at.
-Daedalus was redrawn in this pass; Icarus (`silver_bug`) was reviewed and kept (DECISIONS 25B2).
+Reviewed against the sheet's boss rules in part 2 and kept (DECISIONS 25B2 Part 2: their parts are nodes with wrecks,
+the side's colour is on each, the mini bosses are smaller than their mains; Sky Fortress was redrawn on the shared
+C-130, Daedalus in part 1, Icarus kept). What is left is detail for prompt 27's kit, the bosses under the guide's
+15,000-triangle floor:
 
-| Boss | Rank | Size now | References in the note |
-|---|---|---|---|
-| rail_supergun | Mini | 54.3 x 7.5 x 14.0 | Schwerer Gustav (80 cm), Krupp K5, V 36 / D 311 armoured locomotives: an 80 cm railway super-gun. |
-| behemoth_mk0 | Mini | (none given) | Landkreuzer P. 1000 Ratte, Object 279 (four tracks), 2A65 152 mm, Baneblade (Warhammer 40,000): a land battleship. |
-| armored_train | Mini | 24.5 x 3.3 x 4.8 | Soviet BP-35 armoured train, B-38 152 mm, 2B11 120 mm: an armoured diesel locomotive pulling gun wagons. |
-| behemoth_tempest | Mini | 16.2 x 6.6 x 6.4 | US Navy EMRG railgun, Ratte, Baneblade: a two-turret Behemoth. |
-| locust | Mini | 25.4 x 12.6 x 10.6 | USS Akron / Macon, FPV drones, Kirov Airship (Red Alert 2): a small variant of the drone airship. |
-| morrigan | Mini | 12.9 x 8.4 x 2.2 | (no reference given) |
-| behemoth_mk2 | Mini | 16.1 x 9.6 (height not given) | Ratte, Object 279, Baneblade: the second-generation Behemoth. |
-| landing_hovercraft | Mini | 24.9 x 13.5 x 7.7 | LCAC, Zubr (Project 1232.2), A-22 Ogon 140 mm, AK-630: a landing hovercraft. |
-| argus | Mini | 29.6 x 20.5 x 10.5 | USS Akron / Macon, Zeppelin, Kirov Airship: a variant of the command airship. |
-| ixion | Mini | 21.7 x 19.0 x 11.9 | Tsar Tank (Lebedenko, 1915), Ork deff rolla, the Locust machines (Gears of War), Shagohod (MGS3). |
-| fortress_hive | Mini | 16.4 x 9.3 x 8.5 | NASA Crawler-Transporter, Lancet-3, Patriot, Sandcrawler: a tracked fortress carrying a drone hive. |
-| caspian | Mini | 52.9 x 39.0 x 16.0 | Lun-class ekranoplan MD-160 ("Caspian Sea Monster"): a ground-effect craft. |
-| supreme_command | Mini | 12.4 x 4.3 x 9.5 | MZKT-7930 chassis, an armoured mobile headquarters: a super-heavy four-axle command vehicle. |
-| sky_fortress | Mini | 19.4 x 24.6 x 7.7 | AC-130 Spectre: the AC-130 scaled 1.3 and painted dark. The AC-130 is now the shared C-130 airframe (11.9 x 16.3 m): this boss should become that airframe x 1.3. |
-| icarus_mk0 | Mini | 24.1 x 16.2 x 5.8 | Polyus / Skif-DM, ISS, Hubble, SOLG (Ace Combat 5), The Expanse: Icarus's first version (it is Icarus at 0.65). |
-| behemoth_inferno | Mini | 12.8 x 6.6 x 5.6 | TOS-1A, Ratte, Baneblade: a flame Behemoth with red fuel tanks. |
-| fenrir | Mini | 16.2 x 9.1 x 8.3 | Antarctic Snow Cruiser (1939), Crawler-Transporter, Sandcrawler: a variant of the mobile fortress. |
-| mega_gunship | Mini | 23.6 x 15.3 x 7.0 | CH-47 Chinook frame, ACH-47A "Guns-A-Go-Go": a heavy armed tandem-rotor helicopter. |
-| behemoth | Main | 22.3 x 13.3 x 9.6 | Ratte, Object 279 (four tracks), 2A65 152 mm, Baneblade: a land battleship. |
-| earth_borer | Mini | 19.9 x 4.9 x 5.9 | Soviet "Battle Mole", tunnel-boring machines, 2A70 100 mm: a three-segment armoured "Earth Worm". |
-| bastion_mk0 | Mini | 25.0 x 10.3 x 10.1 | 2B8 240 mm, Bofors 40 mm, Sandcrawler: the first, smaller Bastion. |
-| nuke_train | Main | 61.6 x 5.1 x 7.4 | RT-23 Molodets (BZhRK missile train), Patriot: an armoured train carrying a ballistic missile. |
-| scylla | Mini | 48.8 x 9.2 x 14.2 | IJN Yamato, Kirov class: a smaller Leviathan. |
-| mobile_fortress | Main | 26.1 x 14.7 x 13.5 | Antarctic Snow Cruiser, Crawler-Transporter, 2A44 203 mm (2S7 Pion), Sandcrawler: a mobile fortress. |
-| command_airship | Main | 59.2 x 41.0 x 20.9 | USS Akron / Macon, Zeppelin, Kirov Airship: "Sky Admiral", a flying battleship on two gas bags. At 59 m it is bigger than Icarus (see DECISIONS 25B2). |
-| moloch | Main | 26.5 x 14.4 x 12.0 | A tracked mobile factory; Fatboy (Supreme Commander), MCV / War Factory (Command & Conquer). |
-| fortress_bastion | Main | 35.8 x 14.7 x 14.4 | 2B8 240 mm, Bofors 40 mm, Kornet, Sandcrawler: a tracked fortress in thick plate armour. |
-| typhon | Main | 59.0 x 12.2 x 14.1 | Project 941 Akula (Typhoon), The Hunt for Red October: a missile submarine. |
-| kronos | Main | 48.5 x 16.2 x 16.0 | Bagger 288: a giant bucket-wheel excavator. |
-| leviathan | Main | 97.6 x 18.5 x 28.5 | IJN Yamato (1945 fit), Kirov class, Iowa class (1980s missile refit): a battleship on Yamato's lines. |
-| drone_mothership | Main | 42.3 x 21.0 x 17.7 | USS Akron / Macon (the mother airship), FPV drones, Kirov Airship: an armoured airship launching drones. |
+| Boss | Triangles | Needs |
+|---|---|---|
+| caspian | 5,054 | detail over its 52.9 m hull (Lun-class: the eight nose engines, the missile tubes on the back) |
+| typhon | 6,348 | detail over its 59 m hull (the Typhoon's twin pressure hulls under the deck, the anechoic tiles) |
+| moloch | 7,180 | the factory's doors and cranes in more detail |
+| kronos | 8,404 | the Bagger 288's wheel, boom and conveyors in more detail |
+| supreme_command | 9,118 | the MZKT-7930's cabs and the command module |
+| mega_gunship | 11,304 | the Chinook frame's rotors and gun fit |
+| morrigan | 1,312 | none if it counts as an aircraft (2,000-4,000); a stealth-fighter boss at 12.9 m |
