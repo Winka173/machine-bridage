@@ -1404,6 +1404,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: không súng, không chặn đường; tháp trong 10 m sau nó nhận ít hơn [[30%]] sát thương bắn thẳng.\n" +
                 "Mạnh / yếu: giữ tháp tuyến đầu trước xe tăng; đạn cầu vồng và bom vẫn vượt qua.\n" +
                 "Mẹo: đặt trước tháp mạnh nhất."),
+            ["guide.inflatable_decoy"] = (
+                "[[Inflatable decoy]] · small structure · draws the fire\n" +
+                "How it fights: looks like a [[gun turret]]; the enemy shoots it until their scouts, radars, drones or scans find it out.\n" +
+                "Strong / weak: wastes the enemy's shells and missiles for little; almost no health.\n" +
+                "Tip: put it where the first shells would land.",
+                "[[Mồi nhử bơm hơi]] · công trình ô nhỏ · hút hỏa lực\n" +
+                "Cách đánh: trông như [[tháp pháo]]; địch bắn vào nó cho tới khi trinh sát, radar, drone hoặc UAV quét lật tẩy.\n" +
+                "Mạnh / yếu: làm địch phí đạn pháo và tên lửa; gần như không có máu.\n" +
+                "Mẹo: đặt nơi loạt pháo đầu tiên sẽ rơi."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (

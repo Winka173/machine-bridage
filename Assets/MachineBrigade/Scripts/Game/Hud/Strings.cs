@@ -2537,6 +2537,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.blast_wall"] = ("Gabion blast wall", "Tường chắn đạn"),
             ["short.blast_wall"] = ("Blast wall", "Tường chắn đạn"),
             ["note.blast_wall"] = ("A line of Hesco gabions (wire-mesh cells filled with earth): it soaks up direct fire aimed at the towers behind it.", "Một hàng rọ Hesco (ô lưới thép chứa đầy đất): hứng đạn bắn thẳng nhắm vào các tháp phía sau."),
+            // dx26: Mồi nhử bơm hơi.
+            ["unit.inflatable_decoy"] = ("Inflatable decoy", "Mồi nhử bơm hơi"),
+            ["short.inflatable_decoy"] = ("Decoy", "Mồi nhử"),
+            ["note.inflatable_decoy"] = ("An inflatable gun turret of the kind used in the war in Ukraine: cheap, flimsy, and taken for the real thing by the enemy.", "Tháp pháo bơm hơi như loại dùng trong chiến sự Ukraine: rẻ, mỏng manh, địch tưởng là thật."),
             // (batch A: new entries above)
         };
 
