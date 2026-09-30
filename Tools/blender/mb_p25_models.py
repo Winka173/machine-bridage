@@ -592,6 +592,170 @@ def attack_helicopter(a, detail=False):
             hd.bolt_line(rivets, (s * .15, -2.6, .88), (s * .15, -2.2, .96), 3, r=.01, h=.016)
 
 
+# ----------------------------------------------------------------------------- Daedalus (boss)
+# The upper hull of the Acclamator-style two-tier wedge: (y, half-width, top z), nose (-y) to stern.
+DAEDALUS_UPPER = [(-14.5, .35, 1.25), (-10.0, 1.3, 2.25), (-5.0, 2.25, 2.95), (1.0, 3.2, 3.3), (8.0, 4.2, 3.45),
+                  (13.5, 4.7, 3.45), (15.6, 4.5, 3.2)]
+
+
+def _daedalus_upper(y):
+    """(half-width, top z) of the upper hull at y."""
+    s = DAEDALUS_UPPER
+    if y <= s[0][0]:
+        return s[0][1:]
+    for p, q in zip(s, s[1:]):
+        if y <= q[0]:
+            t = (y - p[0]) / (q[0] - p[0])
+            return p[1] + (q[1] - p[1]) * t, p[2] + (q[2] - p[2]) * t
+    return s[-1][1:]
+
+
+def daedalus(a):
+    """Daedalus, Aurel's assault landing ship (Acclamator class, Star Wars: Attack of the Clones), 36.4 x 20.4 m as
+    before (its part nodes stay where the boss data puts them). Prompt 25 B2 turns 20Y's single wedge into the
+    Acclamator's two tiers: the lower wedge with its lit side trench (mb_redesign_20y._sd_hull), and on it a narrower
+    upper wedge in off-white plates, lit windows along the step, a long dorsal ridge and the command tower aft; the
+    side's colour in two long stripes down the upper wedge's shoulders (the Acclamator's red lines) and a band on the
+    tower. Twelve twin turbolaser turrets on the step and a stern engine bank of two big and four smaller bells drawn
+    over size (the silhouette's notched stern) read at battle zoom; the point-defence turrets (`Pd_laser_l` / `_r`,
+    destructible) are drawn three times their old size on pylons at the step's shoulders, so they can be seen and
+    aimed at. Unchanged nodes: `Pod_bay_1` .. `_3` (the drop bays under the belly), `Mount_gun` / `.001` (the 30 mm
+    guns hanging under the nose), `Thruster_main` (the engine bank)."""
+    import random
+
+    import mb_orbital as orb
+    from mb_p20_bosses import hanging_gun
+    from mb_phase2 import _suffixed
+    from mb_phase8 import pv
+    from mb_redesign_20y import ACC, _sd_at, _sd_greebles, _sd_hull, _sd_surface
+    _suffixed(a)
+    rng = random.Random(1952)
+    _sd_hull(a, 0.0, False, rng, prof=ACC, doors=False, hangar=False)
+    # The upper wedge: a trapezoid section whose foot is buried in the lower hull.
+    rings = []
+    for y, hw, zt in DAEDALUS_UPPER:
+        foot = min(_sd_surface(hw, y, ACC), _sd_surface(0, y, ACC)) - .15
+        rings.append([(hw, y, foot), (hw * .84, y, zt), (-hw * .84, y, zt), (-hw, y, foot), (-hw * .5, y, foot - .4),
+                      (hw * .5, y, foot - .4)])
+    a.part('Upper_hull', 'Fuel').loft(rings, bevel=.06, seg=1)
+    # Lit windows along the step, the plating lines across the upper deck.
+    windows = a.part('Step_windows', 'Lamp')
+    lines = a.part('Deck_lines', 'Armor')
+    for sx in (-1, 1):
+        y = -12.0
+        while y < 15.0:
+            hw, zt = _daedalus_upper(y)
+            base = min(_sd_surface(hw, y, ACC), _sd_surface(0, y, ACC))
+            z = base + (zt - base) * .45
+            windows.box((.08, .5, .14), loc=(sx * (hw * (1 - .16 * .45) + .03), y, z), bevel=0)
+            y += 1.4
+    for y in (-8.0, -3.0, 2.0, 7.0, 12.0):
+        hw, zt = _daedalus_upper(y)
+        lines.box((hw * 1.6, .12, .05), loc=(0, y, zt + .01), bevel=0)
+    # The side's colour: two long stripes down the upper wedge's shoulders, a band on the tower.
+    stripes = a.part('Aurel_stripes', 'Team')
+    for sx in (-1, 1):
+        pts = [(sx * _daedalus_upper(y)[0] * .72, y, _daedalus_upper(y)[1] + .03) for y in (-13.0, -6.0, 1.0, 6.5)]
+        for p, q in zip(pts, pts[1:]):
+            stripes.limb(p, q, .7, .04, bevel=0)
+    # Dorsal ridge and the command tower aft, with its bridge.
+    spine = a.part('Spine', 'MetalSheet')
+    spine.box((2.6, 19.0, 1.0), loc=(0, 3.0, _daedalus_upper(3.0)[1] + .4), bevel=.12, seg=1, taper=(.7, .96))
+    z = _daedalus_upper(11.5)[1]
+    spine.box((3.4, 3.2, 2.4), loc=(0, 11.6, z + 1.1), bevel=.12, seg=1, taper=(.75, .85))
+    spine.box((2.2, 2.2, 1.6), loc=(0, 11.6, z + 2.9), bevel=.1, seg=1, taper=(.8, .85))
+    spine.box((7.0, 2.3, 1.2), loc=(0, 11.6, z + 4.2), bevel=.12, seg=1, taper=(.95, .78))
+    stripes.box((3.5, 3.3, .3), loc=(0, 11.6, z + 1.9), bevel=0, taper=(.95, .95))
+    a.part('Bridge_windows', 'Lamp').box((6.2, .05, .22), loc=(0, 10.46, z + 4.25), bevel=0)
+    a.part('Spine_lights', 'Lamp').box((1.8, .05, .12), loc=(0, -6.52, _daedalus_upper(-6.5)[1] + .6), bevel=0)
+    dishes = a.part('Tower_dishes', 'Medical')
+    for sx in (-1, 1):
+        a.part('Dish_posts', 'Steel').cyl(.18, .6, loc=(sx * 2.6, 12.0, z + 5.05), seg=8, bevel=0)
+        dishes.sphere((.8, .8, .3), loc=(sx * 2.6, 12.0, z + 5.35), seg=12, rings=6, cut=0)
+    # Twelve twin turbolaser turrets on the step, their barrels forward.
+    tur = a.part('Turbolasers', 'Armor')
+    guns = a.part('Turbolaser_barrels', 'Steel')
+    for sx in (-1, 1):
+        for y in (-9.0, -2.0, 1.5, 5.0, 8.5, 12.5):
+            hw, _ = _daedalus_upper(y)
+            x = sx * (hw + 1.0)
+            if abs(y + 5.0) < 1.5:
+                continue   # the point-defence turret stands there
+            base = _sd_surface(x, y, ACC)
+            tur.cyl(.75, .5, loc=(x, y, base + .2), seg=10, bevel=.06, bseg=1)
+            tur.box((1.1, 1.2, .5), loc=(x, y, base + .6), bevel=.08, seg=1, taper=(.8, .75))
+            for o in (-.24, .24):
+                guns.cyl(.09, 1.9, loc=(x + o, y - 1.4, base + .66), rot=(R90, 0, 0), seg=6, bevel=0)
+    _sd_greebles(a, 0.0, rng, ACC, 130)
+    # Two-tone plates on the lower wedge's sloped flanks, dark hangar recesses in the step, the belly's keel plates
+    # and the landing feet the ship sets down on.
+    plates = a.part('Flank_plates', 'Fuel')
+    for sx in (-1, 1):
+        for k in range(16):
+            y = -12.5 + k * 1.75
+            hw, zt, _ = _sd_at(y, ACC)
+            u = .56 + .16 * (k % 2)
+            x0 = hw * u
+            z0 = _sd_surface(x0, y, ACC)
+            slope = math.atan2(zt * .45, hw * .28)
+            plates.box((hw * .12, 1.5, .08), loc=(sx * (x0 + hw * .04), y, z0 + .02), rot=(0, sx * slope, 0),
+                       bevel=.03, seg=1)
+    recess = a.part('Step_recesses', 'Undercarriage')
+    for sx in (-1, 1):
+        for y in (-7.5, 3.3, 6.8, 10.5):
+            hw, zt = _daedalus_upper(y)
+            base = min(_sd_surface(hw, y, ACC), _sd_surface(0, y, ACC))
+            recess.box((.1, 1.4, (zt - base) * .5), loc=(sx * (hw * .95 + .02), y, base + (zt - base) * .35),
+                       bevel=0)
+    keel = a.part('Keel', 'Armor')
+    for y in (-10.0, -4.0, 9.0, 13.0):
+        hw, _, zb = _sd_at(y, ACC)
+        keel.box((hw * .9, 1.2, .3), loc=(0, y, zb - .1), bevel=.06, seg=1, taper=(.85, .9))
+    for x, y in ((5.0, 11.0), (-5.0, 11.0), (1.8, -9.0), (-1.8, -9.0)):
+        _, _, zb = _sd_at(y, ACC)
+        keel.cyl(.7, .45, loc=(x, y, zb - .12), seg=10, bevel=.05, bseg=1)                        # landing feet
+    greeble = a.part('Upper_greebles', 'Armor')
+    for i in range(46):
+        y = rng.uniform(-9.0, 14.0)
+        hw, zt = _daedalus_upper(y)
+        x = rng.uniform(-hw * .75, hw * .75)
+        if abs(x) < 1.5 or abs(y - 11.6) < 2.0:
+            continue
+        w, d, h = rng.uniform(.4, 1.2), rng.uniform(.4, 1.5), rng.uniform(.1, .3)
+        greeble.box((w, d, h), loc=(x, y, zt + h / 2 - .02), bevel=0)
+    # Point-defence turrets (destructible parts): big tubs with a dome and an emitter on pylons at the shoulders.
+    pylons = a.part('Pylons', 'Armor')
+    for name in ('Pd_laser_l', 'Pd_laser_r'):
+        x, y, zz = orb._node(name, 0.0)
+        p = a.pivot(name, (x, y, zz))
+        a.part('Pd_base', 'Armor', p).cyl(.85, .45, loc=(0, 0, -.12), seg=14, bevel=.05, bseg=1)
+        a.part('Pd_dome', 'Steel', p).sphere(.68, loc=(0, 0, .12), seg=14, rings=8, cut=-.1)
+        a.part('Pd_emitter', 'Glass', p).cyl(.2, .5, loc=(0, -.62, .24), rot=(R90, 0, 0), seg=10, bevel=0)
+        a.part('Pd_glow', 'TeamGlow', p).cyl(.13, .03, loc=(0, -.88, .24), rot=(R90, 0, 0), seg=10, bevel=0)
+        base = _sd_surface(x, y, ACC)
+        pylons.cyl(.45, zz - base - .3, loc=(x, y, (zz - .32 + base) / 2), seg=10, bevel=.03, bseg=1)
+    # The engine bank: two big bells and four smaller, drawn over size, standing out behind the stern.
+    right, forward, up = orb.NODES['Thruster_main']
+    t = a.pivot('Thruster_main', orb._pos(right, forward, up))
+    a.part('Engine_housing', 'Armor', t).box((14.0, 2.2, 4.0), loc=(0, 1.3, .2), bevel=.18, seg=1, taper=(.9, .88))
+    nozzle = a.part('Engine_nozzles', 'Steel', t)
+    glow = a.part('Engine_glow', 'TeamGlow', t)
+    for x, r, z in ((2.3, 1.55, .3), (-2.3, 1.55, .3), (5.6, 1.0, .9), (-5.6, 1.0, .9), (5.6, .8, -.9), (-5.6, .8, -.9)):
+        nozzle.cyl(r, 1.2, r2=r * 1.12, loc=(x, 2.9, z), rot=(-R90, 0, 0), seg=18 if r > 1.2 else 14, bevel=.05, bseg=1)
+        glow.cyl(r * .78, .04, loc=(x, 3.45, z), rot=(R90, 0, 0), seg=16 if r > 1.2 else 12, bevel=0)
+    # The three drop bays under the belly and the two guns under the nose, where the boss data puts them.
+    for i, (x, y) in enumerate(((4.0, 2.0), (0.0, 5.0), (-4.0, 2.0))):
+        p = pv(a, f'Pod_bay_{i + 1}', (x, y, -2.0))
+        a.part(f'Bay_frame_{i + 1}', 'Armor', p).box((3.2, 3.8, .55), loc=(0, 0, 0), bevel=.1, seg=1)
+        a.part(f'Bay_ring_{i + 1}', 'Team', p).cyl(1.25, .12, loc=(0, 0, -.3), seg=16, bevel=0)
+        a.part(f'Bay_pod_{i + 1}', 'MetalSheet', p).cyl(1.0, 1.6, loc=(0, 0, -.85), seg=14, r2=.7, bevel=.05, bseg=1)
+        a.part(f'Bay_glow_{i + 1}', 'Energy', p).cyl(.5, .05, loc=(0, 0, -1.67), seg=12, bevel=0)
+    hanging_gun(a, 'Mount_gun', 'Muzzle_gun', (2.4, -6.0, -1.4))
+    hanging_gun(a, 'Mount_gun.001', 'Muzzle_gun.001', (-2.4, -6.0, -1.4))
+    a.pivot('Point_exhaust', (0, 19.0, .6))
+    a.pivot('Point_fire', (0, 3.0, 3.6))
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'main_battle_tank': (main_battle_tank, dict(ao_distance=.6, grime_height=.55)),
@@ -599,4 +763,5 @@ BUILDERS = {
     'swarm_carrier': (swarm_carrier, dict(ao_distance=.9, ground=False)),
     'sky_gunship': (sky_gunship, dict(ao_distance=.9, ground=False)),
     'attack_helicopter': (attack_helicopter, dict(ao_distance=.4, grime_height=.3)),
+    'daedalus': (daedalus, dict(ao_distance=.6, ground=False)),
 }
