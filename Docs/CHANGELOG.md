@@ -32,6 +32,9 @@ The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) g
   speed, blast radius, round model and look, set once in the data (`weaponFamilies`).
 - A4: every missile flies the sheet's speed (SAMs and air-to-air missiles 42-65 m/s, faster than the aircraft they
   hunt; cruise missiles and Shaheds kept slow on purpose).
+- A5: one blast radius for one round on every carrier (the siege tank's 203 mm 8 m, the Grad 4.5 m everywhere), and every
+  blast drawn exactly as wide as its damage reaches: its shock ring sits on the radius (bombs' rings were twice it);
+  small flak and grenade bursts show a faint ring of their own.
 
 ### Play-test 9 models (DECISIONS 23M)
 

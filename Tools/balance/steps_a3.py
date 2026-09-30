@@ -62,12 +62,13 @@ def mode(values, weight=None):
 
 
 def carriers_weight(g, wid):
-    """How much a weapon's carriers weigh in a tie: a card a player fields 1, a tower 0.3, a boss or escort 0.1."""
-    total = 0.0
+    """How much a weapon's carriers weigh in a tie: its best carrier, a card a player fields 1, a tower 0.3, a boss or
+    an escort 0.1 (the best, not the sum: ten bosses sharing a gun do not outweigh one card)."""
+    best = 0.0
     for vid in g.users(wid):
         v = g.vehicles_raw[vid]
-        total += 0.1 if g.is_boss(vid) or v.get("cp", 0) == 0 and not v.get("static") else 0.3 if v.get("static") else 1.0
-    return total
+        best = max(best, 0.1 if g.is_boss(vid) or v.get("cp", 0) == 0 and not v.get("static") else 0.3 if v.get("static") else 1.0)
+    return best
 
 
 def weighted(g, members, values):
@@ -75,7 +76,7 @@ def weighted(g, members, values):
     w = collections.defaultdict(float)
     for m, v in zip(members, values):
         if v is not None:
-            w[v] += carriers_weight(g, m)
+            w[v] = max(w[v], carriers_weight(g, m))
     return w
 
 

@@ -177,6 +177,49 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void EverySplashWeaponsBlastIsDrawnAsWideAsItsDamageReaches()
+        {
+            // Prompt 25 A5 (DECISIONS 25A): the blast on screen is the damage radius. EffectsDirector draws a round's blast
+            // with its splash radius: the recipe's ring (the ground shockwave, or the air ring in the air and on a shell
+            // striking armour) at BlastSizes.RingFor(radius, RingReach, scale), whatever the blast's grow; a blast with no
+            // ring of its own (the Small tier: flak, grenades) a lone ring of BlastSizes.RingQuad(radius). Every one reaches
+            // the radius, at the scales the director draws with (a tenth either way, 0.8 for a HEAT or drone strike).
+            var catalog = GameContent.LoadCatalog();
+            var layers = new BlastLayers(_materials, _root.transform);
+            var recipes = new System.Collections.Generic.Dictionary<ExplosionTier, ExplosionEffect>();
+            foreach (ExplosionTier tier in System.Enum.GetValues(typeof(ExplosionTier))) recipes[tier] = ExplosionEffect.Create(tier, layers);
+            var airburst = ExplosionEffect.CreateAirburst(layers);
+            var shellHit = ExplosionEffect.CreateShellHit(layers);
+            var failures = new System.Collections.Generic.List<string>();
+            var checkedCount = 0;
+            foreach (var w in catalog.Weapons.Values.Where(w => w.SplashRadius > 0f))
+            {
+                var r = w.SplashRadius;
+                var drawn = new System.Collections.Generic.List<(string name, ExplosionEffect fx)>
+                    { ("its tier", recipes[w.ImpactTier]), ("a medium blast", recipes[ExplosionTier.Medium]) };
+                if ((w.Targets & TargetLayers.Air) != 0) drawn.Add(("an air burst", airburst));
+                if (w.Projectile == ProjectileKind.Shell && w.PiercingLook) drawn.Add(("a shell hit", shellHit));
+                foreach (var (name, fx) in drawn)
+                foreach (var scale in new[] { w.ImpactScale * 0.85f, w.ImpactScale * 1.2f, 0.8f * w.ImpactScale })
+                {
+                    checkedCount++;
+                    float reach;
+                    if (fx.RingLayer == null) reach = BlastSizes.RingQuad(r) * BlastSizes.RingShare;
+                    else
+                    {
+                        layers.Clear();
+                        fx.Play(Vector3.zero, 0f, scale, 1.5f, 1f, BlastSizes.RingFor(r, fx.RingReach, scale));
+                        var size = fx.RingLayer.main.startSize;
+                        reach = (size.constantMin + size.constantMax) * 0.5f * BlastSizes.RingShare;
+                    }
+                    if (Mathf.Abs(reach - r) > 0.01f * r) failures.Add($"{w.Id} as {name} at scale {scale:0.00}: its ring reaches {reach:0.00} m, its blast {r} m");
+                }
+            }
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+            Assert.Greater(checkedCount, 200, "every splash weapon, on every recipe it is drawn with");
+        }
+
+        [Test]
         public void ACruiseMissilesShockwaveReachesItsBlastRadius()
         {
             var catalog = GameContent.LoadCatalog();

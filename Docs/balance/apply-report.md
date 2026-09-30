@@ -649,3 +649,92 @@ The sheet's proposed speed for every missile, rocket and drone it lists. A famil
 | Tốc độ tên lửa | wvr_aam | speed | already | 55 m/s; 1.20 x its fastest target (46 m/s), below the sheet's 1.2-1.5 |
 
 <!-- /step:A4 -->
+
+<!-- step:A5 -->
+## A5: blast radius (sheets Tổng quan, Vũ khí đề xuất)
+
+One blast radius for one round (its real name without the mount, damage type, size, a cluster or not) on every weapon that fires it: the weapon sheet's number where it gives one, else the rule of "Tổng quan" (10 m x (mass / 500 kg)^(1/3)) for rounds weighed in kilograms, else the calibre scale of the sheet's own numbers for the round's family (a shell's radius goes with its calibre). A family's radius is written on the family (A3).
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Tổng quan, Vũ khí đề xuất | 5 | 68 | 2 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Tổng quan, Vũ khí đề xuất | 122 mm thermobaric (HighExplosive, 122) | blast | applied | 4 m from the sheet's 7 m at 220 mm, scaled by calibre: turret_thermobaric; moved: turret_thermobaric 5.2 -> 4 |
+| Tổng quan, Vũ khí đề xuất | 155 mm/60 (HighExplosive, 155) | blast | already | 4.5 m from the weapon sheet: naval_155_triple |
+| Tổng quan, Vũ khí đề xuất | 2A38 30 mm (Fragmentation, 30) | blast | already | 2.5 m from the weapon sheet: twin_30_flak, tower_flak_30, hq_flak |
+| Tổng quan, Vũ khí đề xuất | 2A44 203 mm (HighExplosive, 203) | blast | already | 8 m from the weapon sheet: boss_howitzer |
+| Tổng quan, Vũ khí đề xuất | 2A46M-5 125 mm (Kinetic, 125) | blast | already | 1.5 m from the weapon sheet: gun_125_elite |
+| Tổng quan, Vũ khí đề xuất | 2A65 152 mm (HighExplosive, 152) | blast | already | 6.5 m from the weapon sheet: gun_behemoth |
+| Tổng quan, Vũ khí đề xuất | 2A70 100/76 mm (Kinetic, 76) | blast | already | 1.5 m from the weapon sheet: borer_cannon |
+| Tổng quan, Vũ khí đề xuất | 2A83 152 mm (Kinetic, 152) | blast | already | 2.5 m from the weapon sheet: gun_152, bastion_gun |
+| Tổng quan, Vũ khí đề xuất | 2A83 152 mm HE-FRAG (HighExplosive, 152) | blast | already | 6.5 m from the weapon sheet: gun_152_he |
+| Tổng quan, Vũ khí đề xuất | 2A83 152 mm HEAT (ShapedCharge, 152) | blast | already | 3.5 m from the weapon sheet: gun_152_heat |
+| Tổng quan, Vũ khí đề xuất | 2B11 120 mm (HighExplosive, 120) | blast | already | 5 m from the weapon sheet: mortar_120, train_mortar |
+| Tổng quan, Vũ khí đề xuất | 2B8 240 mm (HighExplosive, 240) | blast | already | 9 m from the weapon sheet: siege_mortar_240, mortar_240, mortar_240_fixed, boss_mortar |
+| Tổng quan, Vũ khí đề xuất | leviathan_cruise | blast | deferred | a boss system's own round the sheet gives no number for: task C1 |
+| Tổng quan, Vũ khí đề xuất | 57E6 (Fragmentation, 7) | blast | applied | 2.5 m from the rule: 7 kg: missile_57e6; moved: missile_57e6 2 -> 2.5 |
+| Tổng quan, Vũ khí đề xuất | 9K38 Igla-V (Fragmentation, 1.2) | blast | already | 1.5 m from the rule: 1.2 kg: igla_v |
+| Tổng quan, Vũ khí đề xuất | 9M317 Buk (Fragmentation, 70) | blast | already | 2 m from the weapon sheet: sam_long, buk_launcher, sam_post |
+| Tổng quan, Vũ khí đề xuất | 9M55 Smerch 300 mm (HighExplosive, 300) | blast | already | 8 m from the weapon sheet: rockets_300mm |
+| Tổng quan, Vũ khí đề xuất | 9M723 Iskander (HighExplosive, 700) | blast | already | 10 m from the weapon sheet: ballistic_missile |
+| Tổng quan, Vũ khí đề xuất | A-22 Ogon 140 mm (HighExplosive, 140) | blast | already | 4 m from the weapon sheet: hover_rockets |
+| Tổng quan, Vũ khí đề xuất | AGM-158 JASSM (HighExplosive, 450) | blast | already | 9 m from the weapon sheet: jassm |
+| Tổng quan, Vũ khí đề xuất | AIM-120 AMRAAM (Fragmentation, 20) | blast | already | 2 m from the weapon sheet: air_to_air |
+| Tổng quan, Vũ khí đề xuất | AIM-9 Sidewinder (Fragmentation, 9.4) | blast | already | 1.5 m from the weapon sheet: wvr_aam, aim9 |
+| Tổng quan, Vũ khí đề xuất | AK-100 100 mm (HighExplosive, 100) | blast | already | 3.5 m from the weapon sheet: naval_100 |
+| Tổng quan, Vũ khí đề xuất | AU-220 57 mm (Fragmentation, 57) | blast | already | 3 m from the sheet's 3 m at 57 mm: gun_57_air |
+| Tổng quan, Vũ khí đề xuất | AU-220 57 mm (HighExplosive, 57) | blast | already | 3.5 m from the weapon sheet: mothership_cannon |
+| Tổng quan, Vũ khí đề xuất | AU-220 57 mm (Kinetic, 57) | blast | already | 1.5 m from the weapon sheet: gun_57_auto |
+| Tổng quan, Vũ khí đề xuất | B-38 152 mm (Kinetic, 152) | blast | already | 2.5 m from the weapon sheet: train_gun |
+| Tổng quan, Vũ khí đề xuất | BM-21 Grad 122 mm (HighExplosive, 122) | blast | applied | 4.5 m from the weapon sheet: grad_rockets, turret_rockets, boss_rockets; moved: boss_rockets 4 -> 4.5 |
+| Tổng quan, Vũ khí đề xuất | BM-21 Grad 122 mm (HighExplosive, 122, cluster) | blast | already | 4 m from the weapon sheet: grad_cluster, turret_rockets_cluster |
+| Tổng quan, Vũ khí đề xuất | Bofors 40 mm (Kinetic, 40) | blast | already | 1 m from the weapon sheet: autocannon_40 |
+| Tổng quan, Vũ khí đề xuất | Bofors L/60 40 mm (HighExplosive, 40) | blast | already | 3 m from the weapon sheet: gunship_40mm |
+| Tổng quan, Vũ khí đề xuất | FAB-250 (HighExplosive, 250) | blast | already | 8 m from the weapon sheet: jet_bombs |
+| Tổng quan, Vũ khí đề xuất | FAB-500 (HighExplosive, 500) | blast | already | 10 m from the weapon sheet: bomber_payload |
+| Tổng quan, Vũ khí đề xuất | FIM-92 Stinger (Fragmentation, 3) | blast | already | 1.5 m from the weapon sheet: stinger_atas |
+| Tổng quan, Vũ khí đề xuất | FPV drone (ShapedCharge, 1.5) | blast | already | 2.5 m from the weapon sheet: fpv_swarm, fpv_hangar, fpv_hangar_swarm, airship_drones, swarm_drones |
+| Tổng quan, Vũ khí đề xuất | GBU-31 JDAM (HighExplosive, 907) | blast | already | 13 m from the weapon sheet: stealth_payload |
+| Tổng quan, Vũ khí đề xuất | GBU-39 SDB (HighExplosive, 110) | blast | already | 4 m from the weapon sheet: guided_bomb |
+| Tổng quan, Vũ khí đề xuất | Hydra 70 mm (HighExplosive, 70) | blast | already | 3 m from the weapon sheet: heli_rockets, scout_rockets, jet_rockets |
+| Tổng quan, Vũ khí đề xuất | Kh-101 (HighExplosive, 400) | blast | already | 9 m from the weapon sheet: air_cruise_missile |
+| Tổng quan, Vũ khí đề xuất | L7 105 mm (Kinetic, 105) | blast | already | 1.5 m from the weapon sheet: gun_105_twin, siege_gun_105, gun_105_bunker |
+| Tổng quan, Vũ khí đề xuất | M102 105 mm (HighExplosive, 105) | blast | already | 5.5 m from the weapon sheet: gunship_105 |
+| Tổng quan, Vũ khí đề xuất | M110 203 mm (HighExplosive, 203) | blast | applied | 8 m from the sheet's 8 m at 203 mm: gun_203_siege; moved: gun_203_siege 6 -> 8 |
+| Tổng quan, Vũ khí đề xuất | M284 155 mm (HighExplosive, 155) | blast | already | 7 m from the weapon sheet: howitzer, howitzer_fixed, gun_155_sph, gun_155_twin, gun_155_twin_fort, howitzer_cb, howitzer_ext, gun_155_twin_long, gun_155_coastal, gun_155_twin_coastlr, casemate_155 |
+| Tổng quan, Vũ khí đề xuất | M30 GMLRS 227 mm (HighExplosive, 227, cluster) | blast | already | 5 m from the weapon sheet: mlrs_elite |
+| Tổng quan, Vũ khí đề xuất | M31 GMLRS 227 mm (HighExplosive, 227) | blast | already | 4.5 m from the weapon sheet: mlrs_rockets, turret_gmlrs |
+| Tổng quan, Vũ khí đề xuất | MIM-104 Patriot PAC-2 (Fragmentation, 90) | blast | already | 2.5 m from the weapon sheet: sam_battery, patriot, sam_battery_lrr |
+| Tổng quan, Vũ khí đề xuất | Mk 19 40 mm (HighExplosive, 40) | blast | already | 2 m from the weapon sheet: agl_40, tower_agl |
+| Tổng quan, Vũ khí đề xuất | Mk 45 127 mm (HighExplosive, 127) | blast | applied | 6 m from between the sheet's 5.5 m at 105 mm and 6.5 m at 152 mm: naval_127; moved: naval_127 4 -> 6 |
+| Tổng quan, Vũ khí đề xuất | Mk 71 203 mm (HighExplosive, 203) | blast | already | 8 m from the weapon sheet: cruiser_203 |
+| Tổng quan, Vũ khí đề xuất | NPzK 140 mm (Kinetic, 140) | blast | already | 2 m from the weapon sheet: gun_140_twin |
+| Tổng quan, Vũ khí đề xuất | OTO Melara 76/62 (HighExplosive, 76) | blast | already | 3 m from the weapon sheet: naval_76 |
+| Tổng quan, Vũ khí đề xuất | Oerlikon 35 mm (Fragmentation, 35) | blast | already | 2.5 m from the weapon sheet: flak_35, boss_flak |
+| Tổng quan, Vũ khí đề xuất | Patriot PAC-3 MSE (Fragmentation, 100) | blast | already | 2.5 m from the weapon sheet: sam_pac3 |
+| Tổng quan, Vũ khí đề xuất | Phalanx M61 20 mm (Fragmentation, 20) | blast | already | 1.2 m from the weapon sheet: c_ram_gatling |
+| Tổng quan, Vũ khí đề xuất | R-60 (Fragmentation, 3.5) | blast | already | 1.5 m from the weapon sheet: r60 |
+| Tổng quan, Vũ khí đề xuất | Rh-120 L/44 120 mm (Kinetic, 120) | blast | already | 1.5 m from the weapon sheet: gun_120mm, turret_gun_120, gun_pit_105, turret_gun_120_auto, gun_120_twin |
+| Tổng quan, Vũ khí đề xuất | Rh-120 L/55 120 mm (Kinetic, 120) | blast | already | 1.5 m from the weapon sheet: turret_gun_120_long |
+| Tổng quan, Vũ khí đề xuất | S-400 48N6 (Fragmentation, 180) | blast | already | 7.2 m from the weapon sheet: sam_48n6 |
+| Tổng quan, Vũ khí đề xuất | S-60 57 mm (Fragmentation, 57) | blast | already | 3 m from the weapon sheet: airship_flak |
+| Tổng quan, Vũ khí đề xuất | S-8 80 mm (HighExplosive, 80) | blast | already | 3 m from the weapon sheet: gunship_rockets, s8_pods, hind_rockets, boat_rockets |
+| Tổng quan, Vũ khí đề xuất | Shahed-136 (HighExplosive, 50) | blast | already | 4.5 m from the weapon sheet: shahed |
+| Tổng quan, Vũ khí đề xuất | Skyranger 35 mm AHEAD (Fragmentation, 35) | blast | already | 4 m from the weapon sheet: twin_35_ahead |
+| Tổng quan, Vũ khí đề xuất | Starstreak / Stinger SHORAD (Fragmentation, 3) | blast | already | 2 m from the weapon sheet: sam |
+| Tổng quan, Vũ khí đề xuất | TOS-1A 220 mm thermobaric (HighExplosive, 220) | blast | already | 7 m from the weapon sheet: thermobaric_rockets, boss_thermo |
+| Tổng quan, Vũ khí đề xuất | Tamir interceptor (Fragmentation, 1) | blast | already | 2.5 m from the weapon sheet: tamir |
+| Tổng quan, Vũ khí đề xuất | Type 63 107 mm (HighExplosive, 107) | blast | already | 3.5 m from the weapon sheet: technical_rockets |
+| Tổng quan, Vũ khí đề xuất | Type 94 460 mm/45 (HighExplosive, 460) | blast | already | 13 m from the weapon sheet: leviathan_460 |
+| Tổng quan, Vũ khí đề xuất | ZALA Lancet-3 (ShapedCharge, 3) | blast | already | 3 m from the weapon sheet: lancet, lancet_hangar, mothership_drones |
+| Tổng quan, Vũ khí đề xuất | ZSU-23-4 23 mm (Fragmentation, 23) | blast | already | 3.5 m from the weapon sheet: flak_quad |
+| Tổng quan, Vũ khí đề xuất | car bomb (HighExplosive, 900) | blast | already | 10 m from the weapon sheet: detonator |
+| Tổng quan, Vũ khí đề xuất | flamethrower (Fire, 1) | blast | already | 2.5 m from the weapon sheet: flamethrower |
+| Tổng quan, Vũ khí đề xuất | flamethrower (Fire, 2) | blast | already | 4.5 m from the weapon sheet: bunker_flame |
+| Tổng quan, Vũ khí đề xuất | flamethrower (Fire, 3) | blast | already | 3.5 m from the weapon sheet: boss_flamer |
+| Tổng quan, Vũ khí đề xuất | laser (Energy, 150) | blast | already | 1.5 m from the weapon sheet: orbital_laser |
+| Tổng quan, Vũ khí đề xuất | supergun_800 | blast | deferred | a boss system's own round the sheet gives no number for: task C1 |
+
+<!-- /step:A5 -->

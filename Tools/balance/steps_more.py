@@ -31,6 +31,11 @@ def run(step, wr, wb, report, weapon_rows, unit_rows, refs=None):
     if step == "A4":
         a4(wr, wb, report, weapon_rows)
         return "A4: sheet Tốc độ tên lửa"
+    if step == "A5":
+        import steps_a5
+        INTRO["A5"] = steps_a5.INTRO
+        steps_a5.run(wr, wb, report, weapon_rows)
+        return "A5: blast radius (sheets Tổng quan, Vũ khí đề xuất)"
     return None
 
 

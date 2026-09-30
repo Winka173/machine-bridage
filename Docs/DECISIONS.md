@@ -10898,3 +10898,30 @@ wait for the test phase too: those rows keep the game's value for now.
   speed; four seeds, about 30 missiles each; at least 90 % hit. At 0.9 of the range the lost-lock roll alone gives
   about 91.5 %; right at the edge (1.0) it gives exactly 90 %, which is why the circle is inside it. If the test phase
   finds it at the margin, the lost-lock rule (prompt 13) is the thing to look at, not the speeds.
+
+### A5 Blast radius
+
+- **One radius for one round.** A round (its real name without the mount, damage type, size, a cluster or not) has
+  one blast radius on every weapon that fires it, lobbed or flat (`BalanceSheetTests.TheSameRoundBlastsTheSameWherever
+  ItIsFired`). Where the weapon sheet numbers it, its number (the most common among the round's weapons; a tie goes to
+  the best carrier: a card, then a tower, then a boss); else the sheet's rule, 10 m x (mass / 500 kg)^(1/3), for
+  rounds weighed in kilograms (bombs, missiles, drones: the new 57E6, 7 kg, 2.5 m); else, for a shell or rocket (its
+  size a calibre), the sheet's own numbers for its family by calibre: a shell's mass goes with the cube of its
+  calibre, so the rule's radius goes with the calibre (read off the line between the two nearest numbered calibres, or
+  scaled from the nearest). A family's radius sits on the family (A3). Moved: the Grad turret's rockets and the boss's
+  Grad 4.5 m (the turret's number, the better carrier), the siege tank's M110 203 mm 8 m (the sheet's 203 mm
+  rows), the naval 127 mm 6 m (between the sheet's 105 and 152 mm), the 122 mm thermobaric rocket 4 m (the
+  TOS's 7 m at 220 mm, by calibre). The rail supergun's 800 mm and the Leviathan's Kalibr are the boss system's own
+  rounds with no number in the sheet: task C1.
+- **The blast on screen is the damage radius.** Every blast with a radius (a round's impact, on the ground or in the
+  air, a strike, a vehicle's, a mine's or a prop's blast) is drawn with its ring exactly on it: the ground shockwave
+  (or, in the air and on a shell striking armour, the air ring) is sized after the blast's random variation so it
+  reaches the radius (`BlastSizes.RingFor`, `ExplosionEffect.RingReach`), smaller as well as bigger (it had a floor of
+  its recipe's size); a blast with no ring of its own (the Small tier: flak, grenades) draws a faint lone ring on its
+  radius. The second rings that marked a shell's dust (1.2 x the radius), a bomb's shock (2 x) and a thermobaric
+  cloud (1.35 x) are drawn on the radius too. The fire, smoke, dust and sparks keep their sizes: nothing is shrunk
+  for looks; only the ring, which shows the reach, follows the radius.
+- **The test** `BlastSizeTests.EverySplashWeaponsBlastIsDrawnAsWideAsItsDamageReaches` (written, not run): for every
+  weapon with a blast, on every recipe the director draws it with (its tier, the medium blast of a HEAT or drone
+  strike, the air burst, the shell hit) and at the scales it draws with, the ring as emitted reaches the radius within
+  1 %.

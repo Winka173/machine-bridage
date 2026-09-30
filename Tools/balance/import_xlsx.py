@@ -36,6 +36,9 @@ REPORT = os.path.join(ROOT, "Docs", "balance", "apply-report.md")
 STEPS = ["A1-Cao", "A1-Trung", "A1-Thap", "A2", "A3", "A4", "A5", "B7", "B8", "review"]
 PRIORITY = {"A1-Cao": "Cao", "A1-Trung": "Trung", "A1-Thap": "Thấp"}
 
+# The last step of this run (main sets it): a step reads it to leave a field to a later step of the same run.
+UPTO = len(STEPS) - 1
+
 DEG_PER_RAD = 180.0 / math.pi
 
 
@@ -487,6 +490,9 @@ def apply_weapon_row(wr: Writer, row, report: Report, step, sheet_name="Vũ khí
     done = []
     for k, v in weapon_targets(row).items():
         if k == "splash" and v == 0 and not g.weapon(wid).get("splash"):
+            continue
+        # From A5 on, blast radii are set per round (the sheet's number for the round, on every weapon firing it).
+        if k == "splash" and UPTO >= STEPS.index("A5"):
             continue
         if wr.weapon_field(wid, k, v):
             done.append(f"{k} {fmt(v)}")
@@ -949,6 +955,8 @@ def main():
     ap.add_argument("--dry", action="store_true")
     args = ap.parse_args()
     last = len(STEPS) - 1 if args.upto == "all" else STEPS.index(args.upto)
+    global UPTO
+    UPTO = last
 
     wb = openpyxl.load_workbook(XLSX, data_only=True)
     _, wrows = sheet(wb, "Vũ khí đề xuất")
@@ -966,6 +974,7 @@ def main():
     import steps_more  # noqa: E402  (A2 onwards)
     import import_xlsx as as_module  # the same code as a module (steps_more imports it): share the rows
     as_module.A1_TEXT.update(A1_TEXT)
+    as_module.UPTO = last
 
     for i in range(last + 1):
         step = STEPS[i]
