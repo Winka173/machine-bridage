@@ -619,6 +619,14 @@
     "file": "helipad.glb",
     "triangles": 1128
   },
+  "helipad_a": {
+    "file": "helipad_a.glb",
+    "triangles": 1348
+  },
+  "helipad_b": {
+    "file": "helipad_b.glb",
+    "triangles": 2084
+  },
   "highrise_a": {
     "file": "highrise_a.glb",
     "triangles": 5252
@@ -726,6 +734,10 @@
   "log_cabin": {
     "file": "log_cabin.glb",
     "triangles": 2946
+  },
+  "logistics_station": {
+    "file": "logistics_station.glb",
+    "triangles": 984
   },
   "long_sam": {
     "file": "long_sam.glb",
@@ -883,6 +895,10 @@
     "file": "radar_dome.glb",
     "triangles": 2046
   },
+  "radar_site": {
+    "file": "radar_site.glb",
+    "triangles": 656
+  },
   "radar_station": {
     "file": "radar_station.glb",
     "triangles": 3810
@@ -922,6 +938,10 @@
   "refinery_tower": {
     "file": "refinery_tower.glb",
     "triangles": 5020
+  },
+  "repair_bay": {
+    "file": "repair_bay.glb",
+    "triangles": 736
   },
   "repair_crate": {
     "file": "repair_crate.glb",

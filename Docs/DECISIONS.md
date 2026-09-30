@@ -10959,3 +10959,16 @@ command_airship (22,180), fortress_bastion (23,948), leviathan (25,992), drone_m
 that draw their base (behemoth_mk0 / _mk2, fenrir, bastion_mk0, locust, argus, scylla, icarus_mk0). Under the guide's
 15,000-triangle floor, left for prompt 27: morrigan (1,312: an aircraft-sized boss, the aircraft budget fits it),
 caspian (5,054), typhon (6,348), moloch (7,180), kronos (8,404), supreme_command (9,118), mega_gunship (11,304).
+
+**Structures: the towers and their branches reviewed against the sheet and kept** (their shapes are the notes':
+the tower-branch prompt, C.1, drew them from the same spec; sizes kept, "Giữ"); over the tower budget of 1,500-3,500
+triangles (most are 3,000-11,700), left for prompt 27. **New models where a structure borrowed one that is not its
+note:**
+
+| Model | Sheet's size (kept) | Built | Triangles | For | Was |
+|---|---|---|---|---|---|
+| logistics_station | 8.0 x 10.0 x 3.8 | 10.00 x 8.02 x 3.47 | 984 | the container yard and forklift | fuel_depot (fuel tanks). **model:** drop `"model": "fuel_depot"` |
+| repair_bay | 10.1 x 14.2 x 6.4 | 14.50 x 10.12 x 6.24 | 736 | the corrugated-roof workshop with a gantry crane | vehicle_hangar (no crane). **model:** drop `"model": "vehicle_hangar"` |
+| radar_site | 8.1 x 7.9 x 7.8 | 7.90 x 8.12 x 8.04 | 656 | radar_station: the radar tower with a big turning dish (`Radar`) | radar_dome (a radome). **model:** `"model": "radar_site"` (the map prop radar_station is a 14 m mast) |
+| helipad_a | 10.0 x 10.0 | 10.00 x 10.00 x 3.77 | 1,348 | airfield.hangar (TowerArt picks helipad_a: an arched hangar over the pad) | the plain helipad for both branches |
+| helipad_b | 10.0 x 10.0 | 10.00 x 10.00 x 1.93 | 2,084 | airfield.service (helipad_b: a fuel bowser, ammunition crates, a fuel bladder) | as above |

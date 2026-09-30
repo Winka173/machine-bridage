@@ -206,14 +206,10 @@ Related to the rebuilt models: Icarus's scale for "the largest thing in the sky"
 | headquarters | 12.7 x 14.1 x 9.4 | Multi-block concrete command building, antennas, the side's flag, sandbags round it. |
 | mg_bunker | 4.4 x 4.4 x 3.3 | Low round or hexagonal concrete pillbox, loopholes, a barrel sticking out. Branch twin: two machine-gun barrels through the loopholes. Branch flame: a flame nozzle and fuel tanks behind. |
 | minefield | 4.9 x 4.9 x 1.1 | Churned ground with warning signs; the mines show only to their own side. Branch at: a few big mines. Branch scatter: many small mines and dispenser canisters. |
-| airfield | 10.0 x 10.0 x 0.1 | Flat concrete pad with painted markings and lights. Branch hangar: an aircraft hangar. Branch service: a fuel bowser and ammunition crates. |
 | ammo_depot | 4.9 x 6.1 x 2.9 | Half-buried store with an earth berm, ammunition crates stacked outside. |
 | atgm_tower | 5.2 x 5.2 x 5.0 | Twin missile launcher on a low steel tower with a shield. Branch top: a tall launcher, missiles arcing up. Branch multi: a four-tube turntable with an anti-air sensor. |
 | c_ram | 5.6 x 5.6 x 5.4 | White multi-barrel gun turret with a cylindrical radar dome on top. Branch centurion: the gatling with a spherical radar. Branch dome: an inclined interceptor launcher. |
 | gun_turret | 8.9 x 5.0 x 4.0 | A tank turret on a square concrete base, a long 120 mm gun. Branch long: one very long barrel with a sight tube. Branch auto: a small turret with two short barrels and a radar. |
-| logistics_station | 8.0 x 10.0 x 3.8 | Container yard and a forklift. |
-| radar_station | 8.1 x 7.9 x 7.8 | Radar tower with a big turning dish. |
-| repair_bay | 10.1 x 14.2 x 6.4 | Corrugated-roof workshop with a gantry crane. |
 | rocket_turret | 4.7 x 4.7 x 3.4 | A 40-tube rocket launcher on a low turntable. Branch cluster: an open rail rack with many tubes. Branch guided: a closed launch box. |
 | artillery_emplacement | 8.5 x 6.8 x 3.4 | Towed howitzer in a U-shaped earth and sandbag emplacement. Branch cb: a long-barrel howitzer beside a radar dish. Branch mortar: a low mortar with a very big tube. |
 | drone_hangar | 8.0 x 8.0 x 5.0 | Low domed hangar with a roller door and a drone launch rail. Branch lancet: a Lancet launch rail. Branch swarm: a rack of many small drone bays. |

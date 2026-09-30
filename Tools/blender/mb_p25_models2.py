@@ -2678,6 +2678,182 @@ def sky_fortress(a):
     el._recolour(a, {'Armor': 'EliteBlack'})
 
 
+# ----------------------------------------------------------------------------- base structures without a model of their own
+def _pad(a, w, d, mat='Concrete', h=.1):
+    """A concrete apron w x d under a structure, its edge kerb in the side's colour."""
+    a.part('Pad', mat).box((w, d, h), loc=(0, 0, h / 2 - .02), bevel=.02, seg=1)
+    kerb = a.part('Pad_kerb', 'Team')
+    for s in (-1, 1):
+        kerb.box((w + .02, .2, .06), loc=(0, s * (d / 2 - .1), h + .01), bevel=0)
+        kerb.box((.2, d - .4, .06), loc=(s * (w / 2 - .1), 0, h + .01), bevel=0)
+    return h
+
+
+def _container_box(a, loc, yaw=0.0, mat='ContainerRed', size=(2.4, 1.0, 1.05)):
+    """A shipping container (drawn at the base's scale) with its door end and corrugation ribs."""
+    x, y, z = loc
+    a.part(f'Containers_{mat}', mat).box(size, loc=(x, y, z + size[2] / 2), rot=(0, 0, yaw), bevel=.02, seg=1)
+    a.part('Container_doors', 'Undercarriage').box((.04, size[1] * .9, size[2] * .85),
+                                                   loc=(x + math.cos(yaw) * (size[0] / 2 + .01),
+                                                        y + math.sin(yaw) * (size[0] / 2 + .01), z + size[2] / 2),
+                                                   rot=(0, 0, yaw), bevel=0)
+
+
+def _forklift(a, loc, yaw=0.0):
+    """A forklift: its body, the overhead guard, the mast and forks, four small wheels."""
+    x, y, z = loc
+    fm = mv._frame((x, y, z), (0, 0, yaw))
+    at = lambda p: tuple(fm @ Vector(p))  # noqa: E731
+    rot = (0, 0, yaw)
+    a.part('Forklift', 'CraneYellow').box((.9, 1.5, .7), loc=at((0, 0, .55)), rot=rot, bevel=.05, seg=1)
+    steel = a.part('Forklift_steel', 'Undercarriage')
+    for sx in (-1, 1):
+        steel.box((.08, .08, 1.0), loc=at((sx * .38, .35, 1.4)), rot=rot, bevel=0)               # guard posts
+        steel.box((.1, .1, 1.9), loc=at((sx * .3, -.85, 1.0)), rot=rot, bevel=0)                 # mast
+        steel.box((.12, 1.0, .06), loc=at((sx * .22, -1.4, .15)), rot=rot, bevel=0)              # forks
+        for sy in (-.5, .5):
+            a.part('Forklift_tyres', 'Rubber').cyl(.22, .18, loc=at((sx * .45, sy, .22)), rot=(0, R90, yaw), seg=8,
+                                                   bevel=0)
+    steel.box((.9, 1.0, .06), loc=at((0, .0, 1.9)), rot=rot, bevel=0)                               # overhead guard
+
+
+def logistics_station(a):
+    """Logistics station, 8.0 x 10.0 x 3.8 m (the size the fuel depot gave it, kept): the sheet's container yard and
+    forklift: a concrete apron with the side's kerb, container stacks two high in rows, a forklift lifting a pallet,
+    the yard office cabin with its antenna stub and floodlight post. Its own model: balance.json borrows
+    `fuel_depot` today."""
+    z = _pad(a, 8.0, 10.0)
+    for i, (x, y, yaw, mat, tier) in enumerate((
+            (-2.4, -3.2, 0, 'ContainerRed', 2), (-2.4, -1.9, 0, 'ContainerBlue', 2), (-2.4, -.6, 0, 'Team', 1),
+            (1.6, -3.2, 0, 'Team', 2), (1.6, -1.9, 0, 'ContainerRed', 1), (-2.4, 2.8, R90, 'ContainerBlue', 1))):
+        for k in range(tier):
+            _container_box(a, (x, y, z + k * 1.07), yaw, mat if k == 0 else ('ContainerBlue' if mat != 'ContainerBlue'
+                                                                              else 'ContainerRed'))
+    _forklift(a, (1.2, 1.4, z), yaw=.4)
+    a.part('Pallet', 'Wood').box((1.0, 1.0, .14), loc=(.75, .3, z + .45), rot=(0, 0, .4), bevel=0)
+    a.part('Pallet_load', 'Crate').box((.9, .9, .6), loc=(.75, .3, z + .82), rot=(0, 0, .4), bevel=.03, seg=1)
+    a.part('Office', 'MetalSheet').box((2.2, 1.5, 2.2), loc=(2.6, 3.6, z + 1.1), bevel=.04, seg=1)
+    a.part('Office_windows', 'Glass').box((1.4, .04, .5), loc=(2.6, 2.84, z + 1.5), bevel=0)
+    a.part('Office_roof', 'Team').box((2.4, 1.7, .12), loc=(2.6, 3.6, z + 2.26), bevel=0)
+    a.part('Steel', 'Steel').box((.14, .14, 3.2), loc=(3.6, -4.6, z + 1.6), bevel=0)                    # light post
+    a.part('Lamps', 'Lamp').box((.4, .3, .2), loc=(3.6, -4.6, z + 3.25), bevel=0)
+    a.pivot('Point_fire', (-2.4, -2.0, z + 1.5))
+
+
+def repair_bay(a):
+    """Repair bay, 10.1 x 14.2 x 6.4 m (the vehicle hangar's size, kept): the sheet's corrugated-roof workshop with a
+    gantry crane: the workshop shed along one side (walls, a pitched corrugated roof, two open bays with a vehicle
+    inside one), the apron in front and the yellow gantry crane straddling it with its hoist over a hull under repair,
+    tool racks and tyres. Its own model: balance.json borrows `vehicle_hangar` today."""
+    z = _pad(a, 10.1, 14.2)
+    walls = a.part('Walls', 'Concrete')
+    for y in (-6.9, 6.9):
+        walls.box((4.8, .25, 4.0), loc=(2.55, y, z + 2.0), bevel=.03, seg=1)                            # end walls
+    walls.box((.25, 13.9, 4.0), loc=(4.9, 0, z + 2.0), bevel=.03, seg=1)                              # back wall
+    walls.box((.5, .5, 4.0), loc=(.4, 0, z + 2.0), bevel=0)                                           # mid pillar
+    roof = a.part('Roof', 'Corrugated')
+    for sx, rot in ((1.4, .32), (3.75, -.32)):
+        roof.box((2.6, 14.4, .12), loc=(sx, 0, z + 4.45), rot=(0, rot, 0), bevel=0)
+    a.part('Roof_ridge', 'Team').box((.3, 14.5, .16), loc=(2.58, 0, z + 4.86), bevel=0)
+    a.part('Bay_floor', 'Undercarriage').box((4.4, 13.4, .03), loc=(2.6, 0, z + .02), bevel=0)
+    # A vehicle in the bay, a hull under repair on the apron.
+    a.part('Vehicle_in_bay', 'Armor').box((2.3, 4.6, 1.4), loc=(2.6, 3.3, z + .8), bevel=.08, seg=1)
+    hull = a.part('Repair_hull', 'Team')
+    hull.box((2.6, 5.4, 1.1), loc=(-2.4, -.5, z + .75), bevel=.06, seg=1)
+    a.part('Repair_tracks', 'Undercarriage').box((3.0, 5.6, .5), loc=(-2.4, -.5, z + .28), bevel=0)
+    a.part('Repair_turret', 'Armor').box((1.8, 2.0, .6), loc=(-2.4, -3.8, z + .32), bevel=.06, seg=1)  # lifted off
+    # The gantry crane straddling the apron.
+    crane = a.part('Gantry', 'CraneYellow')
+    for y in (-3.5, 2.5):
+        for x in (-4.6, -.2):
+            crane.box((.3, .3, 5.6), loc=(x, y, z + 2.8), bevel=0)
+        crane.box((4.7, .3, .4), loc=(-2.4, y, z + 5.6), bevel=0)                                      # cross beams
+    for x in (-4.6, -.2):
+        crane.box((.35, 6.3, .45), loc=(x, -.5, z + 5.9), bevel=0)                                     # runway beams
+        crane.box((.5, 6.6, .2), loc=(x, -.5, z + .12), bevel=0)                                       # rails
+    a.part('Hoist', 'Armor').box((.9, .7, .6), loc=(-2.4, -.8, z + 5.3), bevel=.03, seg=1)
+    a.part('Hoist_cable', 'Undercarriage').box((.1, .1, 3.3), loc=(-2.4, -.8, z + 3.4), bevel=0)
+    a.part('Hook', 'Steel').box((.3, .3, .3), loc=(-2.4, -.8, z + 1.6), bevel=0)
+    for k in range(3):
+        a.part('Tyres', 'Rubber').cyl(.42, .3, loc=(-4.3, 4.2 + k * .1, z + .15 + k * .3), seg=10, bevel=0)
+    a.part('Tool_racks', 'Armor').box((.4, 2.2, 1.6), loc=(4.55, -4.0, z + .8), bevel=0)
+    a.pivot('Point_fire', (2.6, 3.3, z + 2.0))
+
+
+def radar_site(a):
+    """Radar station, 8.1 x 7.9 x 7.8 m (the radar dome's size, kept): the sheet's radar tower with a big turning dish:
+    a concrete apron, the equipment shelter and generator, a square steel lattice tower and on its top the big dish
+    turning on its drive (`Radar`). Its own model: balance.json borrows `radar_dome` today (the map prop
+    radar_station is a 14 m mast)."""
+    z = _pad(a, 8.1, 7.9)
+    a.part('Shelter', 'Team').box((3.2, 2.2, 2.3), loc=(-2.0, -2.4, z + 1.15), bevel=.05, seg=1)
+    a.part('Shelter_door', 'Undercarriage').box((.9, .04, 1.8), loc=(-2.0, -3.52, z + .95), bevel=0)
+    a.part('Generator', 'Armor').box((1.6, 1.0, 1.0), loc=(-2.4, 2.6, z + .5), bevel=.04, seg=1)
+    a.part('Fuel', 'BarrelRed').cyl(.35, 1.0, loc=(-.9, 2.8, z + .5), seg=10, bevel=.03, bseg=1)
+    lat = a.part('Lattice', 'Steel')
+    x0, y0, h, half = 1.4, .6, 5.6, .8
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            lat.limb((x0 + sx * half, y0 + sy * half, z), (x0 + sx * .45, y0 + sy * .45, z + h), .12, .12, bevel=0)
+    for k in range(1, 4):
+        zz = z + k * h / 4
+        w = half - (half - .45) * k / 4
+        for sx in (-1, 1):
+            lat.box((.08, 2 * w, .08), loc=(x0 + sx * w, y0, zz), bevel=0)
+            lat.box((2 * w, .08, .08), loc=(x0, y0 + sx * w, zz), bevel=0)
+    a.part('Platform', 'Armor').box((1.4, 1.4, .16), loc=(x0, y0, z + h + .08), bevel=0)
+    r = a.pivot('Radar', (x0, y0, z + h + .16))
+    a.part('Radar_drive', 'Armor', r).box((.5, .5, .5), loc=(0, 0, .25), bevel=.03, seg=1)
+    mv._dish(a.part('Radar_dish', 'MetalSheet', r), (0, .2, 1.0), 1.9, 1.1, depth=.4, seg=16, tilt=.25)
+    a.part('Radar_feed', 'Armor', r).limb((0, .1, 1.0), (0, -1.2, 1.3), .1, .1, bevel=0)
+    a.pivot('Point_fire', (-2.0, -2.4, z + 2.4))
+
+
+def helipad_a(a):
+    """The airfield's hangar branch (rank 7, `helipad_a`): the helipad (mb_siege.helipad) with an arched aircraft
+    hangar over its rear half, its door open on the pad, the side's colour on the arch, a windsock post."""
+    import mb_siege
+    mb_siege.helipad(a)
+    rings = []
+    for k in range(9):
+        u = math.pi * k / 8
+        rings.append((math.cos(u) * 4.2, .1 + math.sin(u) * 3.6))
+    shell = [(x, z) for x, z in rings]
+    a.part('Hangar', 'Corrugated').prism(shell + [(x * .96, z * .96) for x, z in reversed(rings)], 5.2,
+                                         loc=(0, 2.3, 0), axis='Y', bevel=0)
+    a.part('Hangar_band', 'Team').prism([(math.cos(math.pi * k / 8) * 4.25, .1 + math.sin(math.pi * k / 8) * 3.65)
+                                         for k in range(9)] +
+                                        [(math.cos(math.pi * k / 8) * 4.19, .1 + math.sin(math.pi * k / 8) * 3.59)
+                                         for k in reversed(range(9))], .4, loc=(0, -.25, 0), axis='Y', bevel=0)
+    a.part('Hangar_back', 'MetalSheet').prism([(math.cos(math.pi * k / 8) * 4.1, .1 + math.sin(math.pi * k / 8) * 3.5)
+                                               for k in range(9)], .1, loc=(0, 4.85, 0), axis='Y', bevel=0)
+    a.part('Hangar_dark', 'Undercarriage').box((7.6, .05, 2.4), loc=(0, 4.78, 1.3), bevel=0)
+    a.part('Steel', 'Steel').box((.1, .1, 2.6), loc=(-4.4, -4.4, 1.3), bevel=0)                         # windsock post
+    a.part('Windsock', 'SafetyStripe').cyl(.18, .8, r2=.1, loc=(-4.0, -4.4, 2.5), rot=(0, R90, 0), seg=8, bevel=0)
+
+
+def helipad_b(a):
+    """The airfield's service branch (rank 7, `helipad_b`): the helipad (mb_siege.helipad) with a fuel bowser truck
+    parked at its edge, a stack of ammunition crates and a fuel bladder with its hose."""
+    import mb_siege
+    mb_siege.helipad(a)
+    tx, ty = 3.3, 1.0
+    a.part('Bowser_cab', 'Team').box((1.6, 1.4, 1.5), loc=(tx, ty - 2.2, .95), bevel=.05, seg=1)
+    a.part('Bowser_tank', 'Fuel').cyl(.72, 3.4, loc=(tx, ty + .3, 1.15), rot=FORWARD, seg=12, bevel=.05, bseg=1)
+    a.part('Bowser_chassis', 'Undercarriage').box((1.4, 5.2, .4), loc=(tx, ty - .5, .5), bevel=0)
+    for y in (-2.2, -.2, 1.2):
+        for sx in (-1, 1):
+            a.part('Bowser_tyres', 'Rubber').cyl(.34, .26, loc=(tx + sx * .7, ty + y, .34), rot=ACROSS, seg=10, bevel=0)
+    a.part('Bowser_stripe', 'Hazard').cyl(.735, .2, loc=(tx, ty + 1.4, 1.15), rot=FORWARD, seg=12, bevel=0)
+    crates = a.part('Ammo_crates', 'Crate')
+    for i in range(3):
+        for j in range(2):
+            for k in range(2 - (i == 2)):
+                crates.box((.9, .6, .45), loc=(-3.6 + j * .95, -3.4 + i * .65, .3 + k * .47), bevel=.02, seg=1)
+    a.part('Fuel_bladder', 'Rubber').sphere((1.4, 1.0, .35), loc=(-3.3, 3.2, .3), seg=12, rings=5)
+    a.part('Hose', 'Undercarriage').box((.1, 2.6, .1), loc=(-1.9, 2.2, .1), rot=(0, 0, .9), bevel=0)
+
+
 # name: (builder, Asset options).
 BUILDERS = {
     'supply_truck': (supply_truck, dict(ao_distance=.5, grime_height=.5)),
@@ -2743,4 +2919,9 @@ BUILDERS = {
     'elite_apc': (_elite_on(ifv, roof=(-.1, -.3, .6), bands=(('', (0, -2.3, .3), .08),)),
                   dict(ao_distance=.6, grime_height=.55)),
     'sky_fortress': (sky_fortress, dict(ao_distance=1.2, ground=False)),
+    'logistics_station': (logistics_station, dict(ao_distance=.9, grime_height=.4)),
+    'repair_bay': (repair_bay, dict(ao_distance=1.0, grime_height=.4)),
+    'radar_site': (radar_site, dict(ao_distance=.9, grime_height=.4)),
+    'helipad_a': (helipad_a, dict(ao_distance=1.0, grime_height=.3)),
+    'helipad_b': (helipad_b, dict(ao_distance=.9, grime_height=.3)),
 }
