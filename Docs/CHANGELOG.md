@@ -7,6 +7,15 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+## v0.32.0: Doctrines folded into the commanders, the owner's answer on the bombs
+
+2026-09-30 · merged into main
+
+Main merges on feature/visual-overhaul since v0.31.0 (newest first): 2c387bb design review PDF after the fold; fd55169 the
+doctrines folded into the commanders (one choice before a battle, bought doctrines refunded, DECISIONS 23D); 3043b0c the owner
+keeps the bombs' fall and the heavy bomber's gap.
+
+
 ### Doctrines folded into commanders (DECISIONS 23D)
 
 - The commander is now the only choice before a battle. The doctrine picker on the deck page and the doctrine tiles in
