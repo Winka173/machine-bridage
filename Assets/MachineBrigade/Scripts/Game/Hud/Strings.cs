@@ -2545,6 +2545,10 @@ namespace MachineBrigade.Game.Hud
             ["unit.fire_control_centre"] = ("Fire-control centre", "Trung tâm điều khiển hỏa lực"),
             ["short.fire_control_centre"] = ("Fire control", "TT hỏa lực"),
             ["note.fire_control_centre"] = ("A fire-direction centre (FDC): shelters, a mast and radios that tie the base's towers into one battery.", "Trung tâm điều khiển hỏa lực (FDC): nhà chứa, cột ăng-ten và điện đài liên kết các tháp của căn cứ thành một khẩu đội."),
+            // dx28: Đèn pha chiến trường.
+            ["unit.searchlight"] = ("Battlefield searchlight", "Đèn pha chiến trường"),
+            ["short.searchlight"] = ("Searchlight", "Đèn pha"),
+            ["note.searchlight"] = ("A 150 cm defence searchlight on a turntable: it lights the ground round the base at night and dazzles attackers.", "Đèn pha phòng thủ 150 cm trên bệ xoay: chiếu sáng quanh căn cứ ban đêm và làm lóa quân tấn công."),
             // (batch A: new entries above)
         };
 

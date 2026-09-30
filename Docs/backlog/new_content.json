@@ -4,14 +4,14 @@
   "total": 93,
   "counts": {
     "chưa làm": 66,
-    "đang làm": 9,
-    "xong": 18
+    "đang làm": 8,
+    "xong": 19
   },
   "byKind": {
     "unit": {
       "chưa làm": 33,
-      "đang làm": 5,
-      "xong": 18
+      "đang làm": 4,
+      "xong": 19
     },
     "structure": {
       "chưa làm": 0,
@@ -429,8 +429,8 @@
       "group": "Công trình",
       "priority": "Trung",
       "unlock": "Cửa hàng: 2.000 xu (ô nhỏ) / 3.000 xu (ô vừa, tiện ích); hoặc thưởng nhiệm vụ phụ",
-      "status": "đang làm",
-      "id": null,
+      "status": "xong",
+      "id": "searchlight",
       "notes": "25D2 plan: 2,000 coins in the shop (a small slot), or a side-mission reward."
     },
     {

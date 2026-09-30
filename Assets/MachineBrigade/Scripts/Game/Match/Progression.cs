@@ -131,6 +131,7 @@ namespace MachineBrigade.Game.Match
             ["blast_wall"] = 2000,
             ["inflatable_decoy"] = 2000,
             ["fire_control_centre"] = 3000,
+            ["searchlight"] = 2000,
             // (batch A: new entries above)
         };
 

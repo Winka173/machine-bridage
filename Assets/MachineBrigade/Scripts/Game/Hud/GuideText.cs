@@ -1422,6 +1422,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: tháp trong 30 m gây thêm [[12%]] sát thương và dồn hỏa lực vào một mục tiêu.\n" +
                 "Mạnh / yếu: biến cụm tháp thành một khối; vô dụng khi tháp đặt thưa.\n" +
                 "Mẹo: đặt các khẩu mạnh nhất trong vòng 30 m."),
+            ["guide.searchlight"] = (
+                "[[Battlefield searchlight]] · small structure · light in the dark\n" +
+                "How it fights: at [[night and in fog]] your side sees everything within 35 m of it; enemies there shoot 20 % worse.\n" +
+                "Strong / weak: turns night attacks against the attacker; does nothing by day.\n" +
+                "Tip: take it for night and fog battles.",
+                "[[Đèn pha chiến trường]] · công trình ô nhỏ · ánh sáng đêm\n" +
+                "Cách đánh: [[ban đêm và trong sương mù]], phe ta thấy mọi thứ trong 35 m quanh nó; địch trong vùng bắn kém 20%.\n" +
+                "Mạnh / yếu: biến trận đêm thành bất lợi cho kẻ tấn công; ban ngày vô dụng.\n" +
+                "Mẹo: mang theo cho trận đêm và sương mù."),
             // (batch A guides: new entries above)
             // Prompt 20 M: the two new battlefields.
             ["guide.map.openpit"] = (
