@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 57,
+    "chưa làm": 56,
     "đang làm": 0,
-    "xong": 36
+    "xong": 37
   },
   "byKind": {
     "unit": {
@@ -19,9 +19,9 @@
       "xong": 4
     },
     "ordnance": {
-      "chưa làm": 5,
+      "chưa làm": 4,
       "đang làm": 0,
-      "xong": 9
+      "xong": 10
     },
     "support": {
       "chưa làm": 11,
@@ -965,9 +965,9 @@
       "group": "Rốc-két",
       "priority": "",
       "unlock": "Cửa hàng (đồ trang bị cho đơn vị dùng nó): 1.500 xu, hoặc rơi từ hòm",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop, as equipment for the units that fire it, or a crate drop."
+      "status": "xong",
+      "id": "apkws_rocket",
+      "notes": "Batch C: weapon apkws_rocket (its own apkws family, not hydra_70_mm: joining a family overrides the weapon's own speed/splash/model per Catalog.WeaponFamilies' Taking()), a fourth secondary on attack_helicopter (the sheet's \"helicopter, attack aircraft equipment\"; no separate attack-aircraft unit exists). targets: All so it can also hit drones per the sheet."
     },
     {
       "key": "tl07",

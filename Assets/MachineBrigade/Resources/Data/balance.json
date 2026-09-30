@@ -262,6 +262,7 @@
     { "id": "gbu_28", "real": "GBU-28", "projectileSpeed": 35, "splash": 6, "roundWeight": 2100, "roundLength": 2.92 },
     { "id": "odab_500", "real": "ODAB-500", "projectileSpeed": 35, "splash": 12, "roundWeight": 500, "roundLength": 1.23 },
     { "id": "agm_88_harm", "real": "AGM-88 HARM", "projectileSpeed": 45, "splash": 4, "roundWeight": 360, "roundLength": 2.09 },
+    { "id": "apkws", "real": "APKWS (laser-guided Hydra 70)", "projectileSpeed": 45, "splash": 2, "projectileModel": "apkws", "roundWeight": 15, "roundLength": 0.8 },
     // (batch A weapon families: new entries above)
     { "id": "zala_lancet_3", "real": "ZALA Lancet-3", "projectileSpeed": 28, "splash": 3, "projectileModel": "lancet" }
   ],
@@ -612,6 +613,8 @@
     { "id": "thermobaric_bomb", "real": "ODAB-500", "weaponFamily": "odab_500", "family": "bomb", "size": 500, "pen": 3, "damageType": "HighExplosive", "damage": 380, "cooldown": 90, "range": 28, "projectileSpeed": 35, "splash": 12, "impactTier": "Huge", "projectile": "Bomb", "projectileModel": "odab_500", "roundLength": 1.23, "thermobaric": true },
     // tl05: AGM-88 HARM-class anti-radar missile (interceptor_jet secondary): x2 against active air defence.
     { "id": "anti_radar_missile", "real": "AGM-88 HARM", "weaponFamily": "agm_88_harm", "family": "missile", "size": 360, "pen": 3, "damageType": "HighExplosive", "damage": 300, "cooldown": 8, "range": 90, "projectileSpeed": 45, "splash": 4, "impactTier": "Large", "projectile": "Missile", "projectileModel": "harm", "roundLength": 2.09, "bonuses": [ { "class": "AntiAir", "mult": 2 } ] },
+    // tl06: APKWS-class laser-guided 70 mm rocket (attack_helicopter secondary): precise, cheap, can hit drones.
+    { "id": "apkws_rocket", "real": "APKWS (laser-guided Hydra 70)", "weaponFamily": "apkws", "family": "rocket", "size": 70, "pen": 2, "damageType": "ShapedCharge", "damage": 90, "cooldown": 1, "range": 40, "projectileSpeed": 45, "splash": 2, "impactTier": "Medium", "projectile": "Rocket", "projectileModel": "apkws", "roundLength": 0.8, "targets": "All" },
   ],
 
   // ----------------------------------------------------------------------------------------------------
@@ -715,8 +718,7 @@
     // stand-off (Hellfire Longbows in pairs from 55 m, hovering at the edge of that reach) and Stingers for aircraft.
     { "id": "attack_helicopter", "value": 1.05, "altModels": ["heavy_attack_heli"], "rearmTime": 9, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1.1765, "modelSize": [6.35, 4.44, 2.02], "armour": 1,  "hp": 800, "speed": 13, "turnRate": 110, "turretTurnRate": 360, "radius": 3.2, "cp": 9, "vision": 40,
       "firesWhileMoving": true, "weapon": "hellfire_standoff", "mainSlot": "missile", "flying": true, "standoff": true, "altitude": 15, "captureRate": 0,
-      "secondary": [ { "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" },
-                     { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" } ], "skills": ["heli_flares"],
+      "secondary": [{ "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" }, { "weapon": "apkws_rocket", "slot": "rocket2", "aim": "Free" }], "skills": ["heli_flares"],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.6, "tier": "Large" } },
     { "id": "armored_car", "value": 0.94, "scale": 1, "modelSize": [4.78, 2.08, 1.49],      "class": "Light", "armour": 1, "hp": 300, "speed": 11.5, "turnRate": 150, "turretTurnRate": 220, "radius": 2.1, "length": 4.44, "width": 2.08, "cp": 3, "vision": 46,
       "firesWhileMoving": true, "weapon": "autocannon_25", "captureRate": 2,
