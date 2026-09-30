@@ -12177,3 +12177,126 @@ work; no shared piece (Tap, KitButton, Kit.Scroll) changed, so other screens are
 Equipment tab with the first unworn piece that fits picked. Screenshot before and after at 16:9. Tests not run (the
 owner's rule).
 
+## 25F2-C. New content, batch C: ordnance and support cards (2026-10-01)
+
+Prompt 25 F2 (task F2), batch C: the 14 ordnance items (`tl01`-`tl14`) and 11 support cards (`ht01`-`ht11`) of
+`Docs/backlog/new_content.json`, from the spreadsheet's "Tên lửa & bom mới" and "Thẻ hỗ trợ mới" sheets. Batch A
+(25F2-A) is the model followed: the sheet's numbers, `Tools/balance/jsonc_edit.py` for in-place edits, texts in
+`Strings.cs`/`GuideText.cs`, the shop as the one unlock source. Unlike batch A, this batch adds no new purchasable
+units: ordnance is equipment fitted onto existing units (no equipment-purchase system exists yet — see "What batch C
+found" below), and support cards are sold and fielded exactly as batch A's units were.
+
+### Ordnance (`Tools/balance/jsonc_edit.py`, `balance.json` weapons and weaponFamilies)
+
+Four sheet rows turned out to already exist, exact or near-exact numbers, from batch A or 25G: `tl01` (glide bomb) is
+`glide_fab500` (dx14's glide_bomber), `tl10` (R-37M) is `r37m` (dx16's interceptor_jet), `tl11` (Spike NLOS) is
+`spike_nlos` (dx07's nlos_atgm_vehicle), and `tl08` (a guided 155 mm shell) is the secondRounds "guided" round 25G
+already put on every 155 mm howitzer (`howitzer_guided` and siblings) — 25G's own note said the support-card half was
+not built; `ht02` in this batch is that missing half. `tl12` (a stealth cruise missile) names the existing
+`cruise_missile` support card directly ("the card, changed"): its damage and blast were updated in place, no new
+weapon.
+
+The other 9 rows are new weapons, each fitted onto one existing unit as a `secondary` mount (vehicles fire whichever
+mount suits the target; attack_helicopter already carries three this way, so a fourth or a bomber's third follows
+precedent) rather than a new purchasable unit or equipment slot:
+
+| Key | Weapon | Family | Host (secondary) |
+| --- | --- | --- | --- |
+| tl02 | `cluster_at_bomb` | `cbu_97_sfw` | `glide_bomber` |
+| tl03 | `bunker_buster_bomb` | `gbu_28` | `glide_bomber` |
+| tl04 | `thermobaric_bomb` | `odab_500` | `glide_bomber` |
+| tl05 | `anti_radar_missile` | `agm_88_harm` | `interceptor_jet` |
+| tl06 | `apkws_rocket` | `apkws` | `attack_helicopter` |
+| tl07 | `coyote_interceptor` | `coyote_block_2` | `interceptor_drone_vehicle` |
+| tl09 | `smart_at_shell` | `smart_155_bonus` | `wheeled_howitzer` |
+| tl13 | `fpv_swarm_mini` | `switchblade_300` | `fibre_fpv_carrier` |
+| tl14 | `anti_ship_missile` | `nsm_oniks` | none (see below) |
+
+Every one of the 9 reuses an existing weapon mechanism: `ClusterDef` (prompt 15 B.3) for the two self-seeking
+submunition rounds (`tl02`'s 10 bomblets, `tl09`'s 2 top-attack ones — "tự tìm" is read as the existing cluster
+scatter, not a new homing behaviour, matching how every other cluster weapon in the game already works), the
+`bonuses` mult for `tl03`'s x2 on structures and `tl05`'s x2 on AntiAir-class targets (an approximation of "only
+useful against active radar/air defence"; the sheet's "disables it 8 s" is not modelled), the existing `thermobaric`
+flag for `tl04`, and `prey: Rotors` for `tl07`. No new sim code for ordnance at all.
+
+**`tl06` and its family.** APKWS is a laser-guided Hydra 70, so it was first given `weaponFamily: "hydra_70_mm"` to
+share the real Hydra's round — wrong: `Catalog.WeaponFamilies`' `Taking()` puts the family's speed, splash, round
+model and weight *over* the weapon's own line (25A3), so joining the plain Hydra's family would have silently thrown
+away APKWS's own numbers and its seeker-nose model. It gets its own single-member family, `apkws`, instead; every
+other new weapon's family was already single-member on the first pass, so this only bit the one case of joining an
+*existing* family.
+
+**What batch C found (equipment).** The sheet's unlock notes ("equipment for the unit that fires it, bought with
+coins") describe a pre-battle loadout system that does not exist: no code lets a player choose a unit's weapon before
+a match, and `Progression.NewContentPrices` only sells whole cards (vehicles, towers, supports), not individual
+weapons. Building that system is out of scope for an ordnance batch, so every new weapon here is wired onto its host
+directly in the data (always available, not a purchase) and DECISIONS records the gap for whoever adds equipment
+selection later. `tl14`'s host, "a coastal anti-ship missile vehicle (new)", does not exist at all (a unit, out of
+this batch's scope); `anti_ship_missile` is catalogued with the sheet's numbers and no host, per the prompt's rule for
+a missing unit. `tl03`'s host, "a stealth bomber branch", does not exist either: this game's branch mechanic
+(`branchOf`) is tower-only (every tower already has exactly two), so vehicles have no equivalent, and the bomb went on
+`glide_bomber` instead.
+
+**Round models.** `Tools/blender/mb_p25_rounds.py` (one registration line in `build_assets.py`, `**mb_p25_rounds.BUILDERS`),
+built the same way as `mb_munitions.py` (imported and reused, not copied): `cbu_97`, `gbu_28`, `odab_500`, `harm`,
+`apkws`, `coyote_block2`, `smart_155`, `switchblade_300`, `nsm_oniks`. `roundLength` follows prompt 25 B3's rule (0.8x
+real for a ground-launched round, 0.5x air-launched, 0.8 m at least); the drawn model's own length only has to look
+right next to the existing munitions, since the view rescales whichever model flies a weapon to its `roundLength`.
+
+### Support cards (`SupportDef.cs`, `StrikeSystem.cs`, `balance.json` supports)
+
+Four new `SupportKind` values, each because no existing kind's mechanism fit, the rest pure data on existing kinds:
+
+| Key | Id | Kind | What it does |
+| --- | --- | --- | --- |
+| ht01 | `glide_bomb_strike` | CruiseMissile | generalised to fire `Count` bombs, each its own shoot-down roll (the existing heavy-APS intercept) and blast |
+| ht02 | `guided_shell_strike` | Barrage | a 1.5 m radius, one round: pinpoint, no scatter |
+| ht03 | `cluster_at_strike` | **Homing** (new) | up to `Count` distinct nearest enemy ground vehicles in `Radius`, each hit |
+| ht04 | `uav_loiter_strike_support` | Escort | spawns `uav_loiter_strike` (new drone, `orbit`/`orbitRadius`, as sky_gunship), `bigGame` missile |
+| ht05 | `ammo_resupply` | **Resupply** (new) | `AbilitySystem.Resupply(v)`: every friendly weapon in `Radius` refilled at once |
+| ht06 | `jam_storm` | **JamStorm** (new) | downs every enemy drone in `Radius` (the microwave's pulse pattern), then a Smoke zone for `Duration` |
+| ht07 | `illum_flare_strike` | Scan | shows everyone in `Radius` to the caller's side for `Duration`, day or night |
+| ht08 | `decoy_paradrop` | Reinforce | drops 3 `decoy_tank` (dx26's `Decoy`/`Mimic`, a moving tank this time); Reinforce now expires a timed drop |
+| ht09 | `instant_counter_battery` | **CounterBattery** (new) | every enemy `Artillery`-class vehicle with `LastFiredAt` within 10 s, in `Radius`, takes `Count` blasts |
+| ht10 | `drone_intercept_strike` | Homing (`dronesOnly`) | ht03's mechanism, `DronesOnly: true` |
+| ht11 | `chaff_strike` | Smoke | denies the circle the same way the smoke screen does; reuses its zone list, not a separate radar system |
+
+`SupportDef.DronesOnly` (data `dronesOnly`) is the one new field: `Homing`'s target filter (ground vehicles, or drones
+only for `ht10`). Every other new number is existing `SupportDef` fields.
+
+**Simplifications, documented rather than built.** `tl05`/`ht`-adjacent "disables the radar 8 s": not modelled (no
+stun pipeline was added for one weapon). `ht06`'s "enemy guided weapons miss 60 %": not modelled (would need a
+per-projectile miss-chance hook into live weapon guidance; the drone kill and the area hide are built). `ht11`'s
+chaff is mechanically identical to smoke (denies a zone) rather than a separate radar-guidance denial system. `ht09`'s
+call has no sheet-given area (only the per-hit blast, 7 m, is given); `Radius: 60` from the call point is a chosen,
+reasonable battlefield scope, not a global effect.
+
+**AI.** `ConquestAi.TryStrike`'s early block (battered-group priority) now also fires `Resupply` cards, reusing
+`FindDamagedGroup` as a stand-in for "this group needs ammo too". A new `Reinforce` case in `TryUtilityStrike` puts
+the decoy drop on the AI's own side, between its group and the enemy's, never at the enemy (Reinforce is now excluded
+from the generic enemy-cluster strike path, alongside Resupply). Every other new card takes the generic "biggest
+strike on the enemy cluster" path unchanged (Homing, JamStorm, CounterBattery and the generalised CruiseMissile all
+work correctly aimed at a cluster); `chaff_strike` gets no bespoke case, matching `smoke_screen`, which never had one
+either. `ModeSessions.EnemyDeck`'s support pool now reads `Progression.EnemyMayUse` instead of `!IsPremium`, so the
+enemy can draw new-content support cards into a quick-battle deck exactly as it already could for units (batch A).
+
+### Unlocks
+
+Every ordnance weapon is data only (no card, no unlock — batch A's unlock rules are for whole cards). Every support
+card is sold in the shop at the tracker's planned price (`Progression.NewContentPrices`, 1,500-2,500 coins), its one
+unlock source, exactly as batch A did for units; the sheet's "or a chapter reward" waits for those rewards.
+`Progression.IsPremium`/`EnemyMayUse` treat a support id exactly as a vehicle id already.
+
+### Tests (written, not run: the owner's rule)
+
+`Tests/EditMode/Prompt25NewOrdnanceTests.cs`, compact and data-driven: one row per new weapon (its family, host and
+data-driven mechanism where it has one) and one row per support card (its kind, numbers, texts and shop price).
+
+### Shared edits (merge by hand if they conflict)
+
+`balance.json` (weapons after `aa_25_triple`, weaponFamilies after `bofors_40_mm_l_70`, supports after `sead_strike`,
+vehicles' `secondary` arrays and two new vehicles), `Strings.cs`, `GuideText.cs`, `MenuScreen.cs` (`CardIcons`),
+`MatchSettings.cs` (`AllSupports`), `Progression.cs` (`NewContentPrices`), `ModeSessions.cs` (`EnemyDeck`),
+`SupportDef.cs`, `Catalog.cs`, `StrikeSystem.cs`, `AbilitySystem.cs`, `ConquestAi.cs`, `Tools/blender/build_assets.py`,
+`Docs/backlog/new_content.json`.
+
