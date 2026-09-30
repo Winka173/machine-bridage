@@ -54,18 +54,23 @@ namespace MachineBrigade.Editor
         /// <summary>A model ships under Resources/Models (a tower branch's own model, TowerArt).</summary>
         private static bool Ships(string id) => Resources.Load<GameObject>("Models/" + id) != null;
 
-        /// <summary>Every card that needs a picture: (card id, kind, model id).</summary>
+        /// <summary>
+        /// Every card that needs a picture: (card id, kind, picture key). The picture key is the model id, except for a
+        /// Prompt 25 F2 batch B stand-in (a non-boss unit with a tint, <see cref="PictureKey"/>): its own id, so a
+        /// borrowed hull's picture is not shared with the unit it was borrowed from. Boss variants keep sharing their
+        /// frame's picture key as before: their tint is not this pass's concern.
+        /// </summary>
         public static List<(string id, string kind, string model)> Cards(Catalog catalog)
         {
             var cards = new List<(string id, string kind, string model)>();
             var seen = new HashSet<string>();
             foreach (var id in MatchSettings.AllVehicles)
                 if (catalog.Vehicles.TryGetValue(id, out var def) && seen.Add(id))
-                    cards.Add((id, "vehicle", TowerArt.ModelFor(def, Ships)));
+                    cards.Add((id, "vehicle", PictureKey(def)));
             foreach (var def in catalog.Vehicles.Values.OrderBy(d => d.Id, StringComparer.Ordinal))
                 foreach (var (kind, test) in Kinds)
                     if (test(def) && seen.Add(def.Id))
-                        cards.Add((def.Id, kind, TowerArt.ModelFor(def, Ships)));
+                        cards.Add((def.Id, kind, PictureKey(def)));
             // Play-test 5 (DECISIONS 20V): a fire support flown by an aircraft of its own (the gunship on call) shows
             // that aircraft on its card and item.
             foreach (var id in MatchSettings.AllSupports.Concat(Progression.Items))
@@ -74,6 +79,9 @@ namespace MachineBrigade.Editor
                     cards.Add((id, "support", flier.Id));
             return cards;
         }
+
+        /// <summary>The model a def draws, or its own id for a non-boss tinted stand-in (its picture must not be shared).</summary>
+        private static string PictureKey(VehicleDef def) => !def.Boss && def.Tint != null ? def.Id : TowerArt.ModelFor(def, Ships);
 
         /// <summary>The model resource a picture is rendered from: the high-detail variant where one ships.</summary>
         public static string SourceOf(string modelId)
@@ -123,12 +131,21 @@ namespace MachineBrigade.Editor
             var old = ReadManifest();
             Directory.CreateDirectory(OutFolder);
 
+            // A picture key (see Cards/PictureKey) to the real model it draws and its Prompt 25 F2 batch B tint, when
+            // it is a stand-in's own id rather than the model id itself.
+            var realModel = new Dictionary<string, (string model, System.Numerics.Vector3? tint)>();
+            foreach (var def in catalog.Vehicles.Values)
+            {
+                var key = PictureKey(def);
+                if (!realModel.ContainsKey(key)) realModel[key] = (TowerArt.ModelFor(def, Ships), def.Tint);
+            }
+
             // Which models need a picture: missing, stale (hash), forced or asked for.
             var models = new Dictionary<string, (string source, string hash)>();
             foreach (var (_, _, model) in cards)
             {
                 if (models.ContainsKey(model)) continue;
-                var source = SourceOf(model);
+                var source = SourceOf(realModel.TryGetValue(model, out var r) ? r.model : model);
                 models[model] = (source, Hash(source));
             }
             var todo = models.Where(m =>
@@ -160,7 +177,8 @@ namespace MachineBrigade.Editor
                         }
                         // Elites and bosses only ever fight for the enemy: they wear the enemy's colours.
                         var enemy = cards.Where(c => c.model == model).All(c => c.kind is "elite" or "boss");
-                        var png = stage.Render(library, model, enemy ? 1 : 0);
+                        var (drawModel, tint) = realModel.TryGetValue(model, out var r2) ? r2 : (model, null);
+                        var png = stage.Render(library, drawModel, enemy ? 1 : 0, tint);
                         File.WriteAllBytes(Path.Combine(OutFolder, model + ".png"), png);
                         done.Add(model);
                     }
@@ -337,10 +355,24 @@ namespace MachineBrigade.Editor
                 return camera;
             }
 
-            public byte[] Render(ModelLibrary library, string modelId, int team)
+            private static readonly int TintId = Shader.PropertyToID("_Tint");
+            private MaterialPropertyBlock _tintBlock;
+
+            /// <summary>
+            /// Prompt 25 F2 batch B (DECISIONS 25F2-B): a stand-in's wash, the same "_Tint" property block multiply
+            /// VehicleView.ApplyTint puts on a boss variant, at rest (no scorch, no hit flash).
+            /// </summary>
+            public byte[] Render(ModelLibrary library, string modelId, int team, System.Numerics.Vector3? tint = null)
             {
                 var instance = library.Spawn(modelId, team, _root, castShadows: false);
                 var model = instance.Root;
+                if (tint is { } own)
+                {
+                    _tintBlock ??= new MaterialPropertyBlock();
+                    _tintBlock.SetColor(TintId, new Color(own.X, 0.97f * own.Y, 0.95f * own.Z, 1f));
+                    foreach (var r in instance.Renderers) r.SetPropertyBlock(_tintBlock);
+                    foreach (var r in instance.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
+                }
                 SetLayer(model.transform);
                 model.transform.position = Vector3.zero;
                 model.transform.rotation = Quaternion.identity;
