@@ -166,6 +166,42 @@ namespace MachineBrigade.Game.Match
             d.baseVersion = BaseVersion;
         }
 
+        /// <summary>How a save before DECISIONS 23D kept a bought doctrine: "doctrine.air" and so on.</summary>
+        internal const string OldDoctrinePrefix = "doctrine.";
+
+        /// <summary>The four doctrines that were sold (the armoured one was free).</summary>
+        internal static readonly string[] OldDoctrinesSold = { "air", "artillery", "blitz", "logistics" };
+
+        internal const int OldDoctrinePrice = 1500;
+
+        /// <summary>
+        /// DECISIONS 23D: the doctrines are folded into the commanders. A save that bought any gets the 1,500 coins back
+        /// for each, and every doctrine entry goes (the free one's too). Once only: the refund and the removal are
+        /// saved together, so a later load finds nothing to pay. What was paid waits for the menu (<see cref="TakeRefundNews"/>).
+        /// </summary>
+        private static void RefundOldDoctrines(Data d)
+        {
+            if (d.owned == null) return;
+            var paid = 0;
+            foreach (var doctrine in OldDoctrinesSold)
+                if (d.owned.Contains(OldDoctrinePrefix + doctrine)) paid += OldDoctrinePrice;
+            var removed = d.owned.RemoveAll(id => id != null && id.StartsWith(OldDoctrinePrefix, StringComparison.Ordinal));
+            if (removed == 0) return;
+            d.coins += paid;
+            _refundNews += paid;
+            Save();
+        }
+
+        private static int _refundNews;
+
+        /// <summary>Coins an old save got back for its doctrines at this load (0: none), once: the menu says so.</summary>
+        public static int TakeRefundNews()
+        {
+            var coins = _refundNews;
+            _refundNews = 0;
+            return coins;
+        }
+
         private const string Key = "mb.profile";
         private static Data _data;
 
@@ -198,9 +234,8 @@ namespace MachineBrigade.Game.Match
         public static bool IsUnlocked(string cardId) =>
             Progression.TestUnlockAll || Progression.IsStarter(cardId) || D.unlocked.Contains(cardId) || D.owned.Contains(cardId);
 
-        /// <summary>Owned items: skins, doctrines and premium cards (in test builds every doctrine is).</summary>
-        public static bool Owns(string itemId) =>
-            itemId == Skins.Default || D.owned.Contains(itemId) || (Progression.TestUnlockAll && itemId.StartsWith("doctrine."));
+        /// <summary>Owned items: skins and premium cards.</summary>
+        public static bool Owns(string itemId) => itemId == Skins.Default || D.owned.Contains(itemId);
 
         public static int Stars(string missionId)
         {
@@ -536,6 +571,7 @@ namespace MachineBrigade.Game.Match
             MigrateBase(_data);
             MigrateToPlans(_data);
             MigrateCampaign(_data);
+            RefundOldDoctrines(_data);
         }
 
         public static void Save()
@@ -575,6 +611,7 @@ namespace MachineBrigade.Game.Match
             MigrateBase(_data);
             MigrateToPlans(_data);
             MigrateCampaign(_data);
+            RefundOldDoctrines(_data);
         }
 
         /// <summary>Tests: the profile as it would be saved.</summary>

@@ -119,6 +119,7 @@ namespace MachineBrigade.Game.Hud
             Root.Add(_nav);
             Root.Add(_note);
             ShowBranchNews();
+            ShowRefundNews();
 
             // A language change rebuilds the menu; come back to the page the player was on.
             if (_reopenDeck) _armyView = ArmyView.Deck;
@@ -599,6 +600,16 @@ namespace MachineBrigade.Game.Hud
             scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.branches.title"), Strings.Format("news.branches", names), ok));
         }
 
+        /// <summary>DECISIONS 23D: an old save's doctrines were refunded at this load; say so once.</summary>
+        private void ShowRefundNews()
+        {
+            var coins = PlayerProfile.TakeRefundNews();
+            if (coins <= 0) return;
+            VisualElement scrim = null;
+            var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.refund.title"), Strings.Format("news.refund", ("coins", Kit.Count(coins))), ok));
+        }
+
         private void Note(string text, bool warn = false) => KitToast.Show(_note, text, warn ? ToastKind.Alert : ToastKind.Info, 3f);
 
         private readonly VisualElement _note;
@@ -750,15 +761,6 @@ namespace MachineBrigade.Game.Hud
 
     internal sealed partial class MenuScreen
     {
-        internal static string DoctrineIcon(string id) => id switch
-        {
-            "armor" => "heavytank",
-            "air" => "jet",
-            "artillery" => "truckgun",
-            "blitz" => "bolt",
-            _ => "cp",
-        };
-
         internal static string ClassIcon(UnitClass c) => c switch
         {
             UnitClass.Scout => "jeep",
