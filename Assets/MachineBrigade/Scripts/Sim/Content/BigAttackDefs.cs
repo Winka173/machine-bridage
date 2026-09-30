@@ -118,6 +118,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A circle's rounds fall within this radius of the aim (0: on it).</summary>
         public float Area { get; internal set; }
 
+        /// <summary>
+        /// Prompt 25 C1: a circle's rounds are rolled at the warning and each drawn as its own ring (the Behemoth's six),
+        /// in place of one ring round the whole area (data "rings").
+        /// </summary>
+        public bool Rings { get; internal set; }
+
         /// <summary>A single round's scatter round the aim.</summary>
         public float Scatter { get; internal set; }
 
@@ -252,6 +258,24 @@ namespace MachineBrigade.Sim.Content
         public bool Surface { get; internal set; }
 
         public IReadOnlyList<BigStrikeDef> Strikes { get; internal set; } = Array.Empty<BigStrikeDef>();
+
+        /// <summary>
+        /// Prompt 25 C1: from this phase on (0 up: the boss's phase, a tiered boss's altitude phase; -1: never) it comes
+        /// every <see cref="LateCooldown"/> seconds with <see cref="LateCount"/> rounds in its first strike (Icarus's
+        /// phase 3, on the ground: nine rods every 50 s; data "late": phase, cooldown, count).
+        /// </summary>
+        public int LatePhase { get; internal set; } = -1;
+
+        public float LateCooldown { get; internal set; }
+
+        public int LateCount { get; internal set; }
+
+        /// <summary>Its cooldown in <paramref name="phase"/>.</summary>
+        public float CooldownIn(int phase) => LatePhase >= 0 && phase >= LatePhase && LateCooldown > 0f ? LateCooldown : Cooldown;
+
+        /// <summary>Rounds of <paramref name="strike"/> (a plain count) in <paramref name="phase"/>.</summary>
+        public int CountIn(BigStrikeDef strike, int phase) =>
+            LatePhase >= 0 && phase >= LatePhase && LateCount > 0 && Strikes.Count > 0 && ReferenceEquals(strike, Strikes[0]) ? LateCount : strike.Count;
 
         /// <summary>Its name's text key.</summary>
         public string NameKey => "bigattack." + Id;
@@ -389,6 +413,13 @@ namespace MachineBrigade.Sim.Content
                 if (a.Has("hold")) def.Hold = a.StringArray("hold");
                 def.Halt = a.Bool("halt", false);
                 def.Surface = a.Bool("surface", false);
+                if (a.Has("late"))
+                {
+                    var late = a.Object("late");
+                    def.LatePhase = Math.Max(0, late.Int("phase", 2));
+                    def.LateCooldown = late.Has("cooldown") ? MathF.Max(def.Warn + 1f, late.Float("cooldown", def.Cooldown)) : 0f;
+                    def.LateCount = Math.Max(0, late.Int("count", 0));
+                }
                 var strikes = new List<BigStrikeDef>();
                 foreach (var s in a.Array("strikes")) strikes.Add(Wrap(s, () => ParseStrike(s)));
                 if (strikes.Count == 0) throw new FormatException($"balance.bigAttacks.{def.Id}: no strikes.");
@@ -457,6 +488,7 @@ namespace MachineBrigade.Sim.Content
                 Seconds = MathF.Max(0f, s.Float("seconds", 0f)),
                 Cut = s.Has("cut") ? Math.Clamp(s.Float("cut", 0.5f), 0f, 1f) : -1f,
                 Seats = Math.Max(0, s.Int("seats", 0)),
+                Rings = s.Bool("rings", false),
             };
             if (s.Has("at"))
             {

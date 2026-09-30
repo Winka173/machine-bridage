@@ -834,6 +834,9 @@ namespace MachineBrigade.Sim.Combat
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
+            // Prompt 25 C1: a boss's own weapon damage (the sheet's target damage a second against armour 3), on the ground only:
+            // its anti-air keeps its numbers.
+            if (!targetFlying) damageScale *= shooter.Def.WeaponDamage;
             // A gun pit's first shot on rising (the Ambush branch).
             if (index == 0 && shooter.AmbushReady && shooter.Def.Hidden is { } pit)
             {

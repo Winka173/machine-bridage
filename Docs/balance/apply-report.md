@@ -32,7 +32,7 @@ Rows by step and sheet (each step's section below lists them).
 | B8 | Thẻ hỗ trợ | 3 | 6 | 0 | 0 |
 | A1-review | Cân bằng lần 2 | 0 | 4 | 0 | 0 |
 | A1-review | Kiểm tra từng mục | 14 | 29 | 4 | 3 |
-| A1-review | Vũ khí đề xuất | 1 | 33 | 0 | 0 |
+| A1-review | Vũ khí đề xuất | 1 | 35 | 0 | 0 |
 | A1-review | Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
 
 <!-- /summary -->
@@ -1030,7 +1030,7 @@ The owner's rule of 30/09 (after the first pass): every row that waited for a me
 |---|---|---|---|---|
 | Cân bằng lần 2 | 0 | 4 | 0 | 0 |
 | Kiểm tra từng mục | 14 | 29 | 4 | 3 |
-| Vũ khí đề xuất | 1 | 33 | 0 | 0 |
+| Vũ khí đề xuất | 1 | 35 | 0 | 0 |
 | Vũ khí đề xuất / Thay đổi chi tiết | 6 | 0 | 0 | 0 |
 
 | Sheet | id | Item | Outcome | Detail |
@@ -1100,3 +1100,210 @@ The owner's rule of 30/09 (after the first pass): every row that waited for a me
 | Kiểm tra từng mục | scylla | Máu | deferred | a boss: task C1 (sheet Boss đề xuất) |
 
 <!-- /step:A1-review -->
+
+<!-- import_c:begin -->
+<!-- step:C1 -->
+## C1: bosses (sheet Boss đề xuất): health, weapons, damage a second, super weapons
+
+Every row of "Boss đề xuất": health before the campaign's scale (the data holds it over the bosses' toughness 0.85 and a mini boss's rank share 0.55, as the sheet's "Máu hiện" reads today's), the weapons added or swapped, the boss's ordinary damage a second against armour 3 (its weapons' `weaponDamage`), and the super weapons: only the twelve main bosses keep a big attack, with the row's numbers; a mini boss's is taken away. The boss rows of "Thay đổi chi tiết" and "Kiểm tra từng mục" that earlier steps left to C1 are listed with what answers them.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Boss đề xuất | 117 | 16 | 0 | 0 |
+| Kiểm tra từng mục | 3 | 0 | 0 | 0 |
+| Thay đổi chi tiết | 27 | 0 | 0 | 0 |
+| Tổng quan | 1 | 0 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Boss đề xuất | rail_supergun | Máu | applied | hp 14850 -> 27800 (shown 6942 -> 12997: the sheet's 13000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | behemoth_mk0 | Máu | applied | hp 12000 -> 12850 (shown 5610 -> 6007: the sheet's 6000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | armored_train | Máu | applied | hp 12450 -> 18200 (shown 5820 -> 8508: the sheet's 8500 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | behemoth_tempest | Máu | applied | hp 12450 -> 19250 (shown 5820 -> 8999: the sheet's 9000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | locust | Máu | applied | hp 13500 -> 19250 (shown 6311 -> 8999: the sheet's 9000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | morrigan | Máu | applied | hp 14800 -> 23550 (shown 6919 -> 11010: the sheet's 11000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | behemoth_mk2 | Máu | applied | hp 14850 -> 22450 (shown 6942 -> 10495: the sheet's 10500 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | landing_hovercraft | Máu | applied | hp 15600 -> 21400 (shown 7293 -> 10004: the sheet's 10000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | argus | Máu | applied | hp 15850 -> 25650 (shown 7410 -> 11991: the sheet's 12000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | ixion | Máu | applied | hp 16200 -> 23550 (shown 7574 -> 11010: the sheet's 11000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | fortress_hive | Máu | applied | hp 16250 -> 20300 (shown 7597 -> 9490: the sheet's 9500 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | caspian | Máu | applied | hp 16250 -> 25650 (shown 7597 -> 11991: the sheet's 12000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | supreme_command | Máu | applied | hp 17550 -> 21400 (shown 8205 -> 10004: the sheet's 10000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | sky_fortress | Máu | applied | hp 18200 -> 26750 (shown 8508 -> 12506: the sheet's 12500 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | icarus_mk0 | Máu | applied | hp 18600 -> 26750 (shown 8696 -> 12506: the sheet's 12500 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | behemoth_inferno | Máu | applied | hp 18900 -> 14950 (shown 8836 -> 6989: the sheet's 7000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | fenrir | Máu | applied | hp 19600 -> 17100 (shown 9163 -> 7994: the sheet's 8000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | daedalus | Máu | applied | hp 11100 -> 28250 (shown 9435 -> 24012: the sheet's 24000 over toughness 0.85) |
+| Boss đề xuất | mega_gunship | Máu | applied | hp 20700 -> 17100 (shown 9677 -> 7994: the sheet's 8000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | behemoth | Máu | applied | hp 11900 -> 15300 (shown 10115 -> 13005: the sheet's 13000 over toughness 0.85) |
+| Boss đề xuất | earth_borer | Máu | applied | hp 24450 -> 23550 (shown 11430 -> 11010: the sheet's 11000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | bastion_mk0 | Máu | applied | hp 26900 -> 13900 (shown 12576 -> 6498: the sheet's 6500 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | nuke_train | Máu | applied | hp 15600 -> 23550 (shown 13260 -> 20018: the sheet's 20000 over toughness 0.85) |
+| Boss đề xuất | scylla | Máu | applied | hp 28600 -> 19250 (shown 13371 -> 8999: the sheet's 9000 over toughness 0.85 x the mini share 0.55) |
+| Boss đề xuất | silver_bug | Máu | applied | hp 15750 -> 30600 (shown 13388 -> 26010: the sheet's 26000 over toughness 0.85) |
+| Boss đề xuất | mobile_fortress | Máu | applied | hp 18200 -> 17650 (shown 15470 -> 15002: the sheet's 15000 over toughness 0.85) |
+| Boss đề xuất | command_airship | Máu | applied | hp 19500 -> 27050 (shown 16575 -> 22992: the sheet's 23000 over toughness 0.85) |
+| Boss đề xuất | moloch | Máu | applied | hp 20250 -> 22350 (shown 17212 -> 18998: the sheet's 19000 over toughness 0.85) |
+| Boss đề xuất | fortress_bastion | Máu | applied | hp 21100 -> 14100 (shown 17935 -> 11985: the sheet's 12000 over toughness 0.85) |
+| Boss đề xuất | typhon | Máu | applied | hp 21100 -> 25900 (shown 17935 -> 22015: the sheet's 22000 over toughness 0.85) |
+| Boss đề xuất | kronos | Máu | applied | hp 21600 -> 24700 (shown 18360 -> 20995: the sheet's 21000 over toughness 0.85) |
+| Boss đề xuất | leviathan | Máu | applied | hp 22000 -> 20000 (shown 18700 -> 17000: the sheet's 17000 over toughness 0.85) |
+| Boss đề xuất | drone_mothership | Máu | applied | hp 22150 -> 21200 (shown 18828 -> 18020: the sheet's 18000 over toughness 0.85) |
+| Boss đề xuất | behemoth_mk0 | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | armored_train | Vũ khí | applied | +1 boss_flak on the hull: one more flak car: a second twin 35 mm on the train (no car of its own on the model yet) |
+| Boss đề xuất | behemoth_tempest | Vũ khí | already | the railgun stays its main gun (its big attack is gone) |
+| Boss đề xuất | locust | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | morrigan | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | behemoth_mk2 | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | landing_hovercraft | Vũ khí | already | its AK-630s are the gunboat's (hover_ciws, and ciws_aa inherits it): A2 set them |
+| Boss đề xuất | argus | Vũ khí | already | it spots for the artillery (its radar's aura) and keeps its guns |
+| Boss đề xuất | ixion | Vũ khí | applied | +2 boss_hmg on the hull: two NSV 12.7 mm on the hull |
+| Boss đề xuất | fortress_hive | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | caspian | Vũ khí | applied | +2 zu23 on the hull: two ZU-23-2 twin 23 mm; the anti-ship missile of each pass is its cruise missile (below) |
+| Boss đề xuất | supreme_command | Vũ khí | already | no strong weapon: its command aura makes its side hit harder (its antenna); two NSV |
+| Boss đề xuất | sky_fortress | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | behemoth_inferno | Vũ khí | already | the flamethrowers stay its main weapons |
+| Boss đề xuất | fenrir | Vũ khí | already | its two rocket boxes and its flak stay |
+| Boss đề xuất | daedalus | Vũ khí | applied | +2 gun_57mm on the hull: two 57 mm (the 2A91, the AU-220M's automatic gun) under the belly; its two point-defence lasers are in already |
+| Boss đề xuất | mega_gunship | Vũ khí | applied | +2 boss_hmg on the hull: a door gun each side: NSV 12.7 mm |
+| Boss đề xuất | behemoth | Vũ khí | applied | +1 kornet_twin on gun_120: a twin Kornet launcher behind the main turret, on the 120 mm turret's part (the Mk.0 and Mk.II keep their own loadouts) |
+| Boss đề xuất | earth_borer | Vũ khí | already | Giữ: kept |
+| Boss đề xuất | bastion_mk0 | Vũ khí | already | the 240 mm mortar (an ordinary weapon now its big attack is gone) and the two Bofors are its mounts |
+| Boss đề xuất | nuke_train | Vũ khí | already | its 152 mm gun car is in already (gun_car_152, prompt 20 F.3) |
+| Boss đề xuất | mobile_fortress | Vũ khí | applied | +1 twin_30_flak on flak_r: a twin 30 mm anti-drone turret (the 2A38), beside the right flak (Fenrir keeps its own) |
+| Boss đề xuất | command_airship | Vũ khí | applied | +2 twin_30_bmpt on bomb_bay, bomb_bay: two twin 30 mm (2A42) under the belly, by the bomb bay (Argus keeps its own) |
+| Boss đề xuất | moloch | Vũ khí | applied | +2 zu23 on the hull: two ZU-23-2 on the roof |
+| Boss đề xuất | fortress_bastion | Vũ khí | applied | +2 boss_hmg on turret_rl, turret_rr: two NSV 12.7 mm turrets on the sides, with the rear turrets (the Mk.0 keeps its own) |
+| Boss đề xuất | kronos | Vũ khí | applied | +2 gun_57mm on the hull: two automatic 57 mm turrets (the 2A91) |
+| Boss đề xuất | leviathan | Vũ khí | applied | +1 sam_post on radar: a medium-range SAM (the 9M317 Buk), with the radar that guides it (Scylla keeps its own) |
+| Boss đề xuất | drone_mothership | Vũ khí | applied | +1 mothership_drones on uav_bay: a third Lancet bay, in the UAV bay (Locust keeps its own) |
+| Boss đề xuất | silver_bug | Vũ khí | applied | 2 coilguns in place of the 2 Rh-120 and the 2 Oerlikon 35 mm; the wreck's four ordinary turrets (two Bofors, the two crash turrets) wake in phase 3; the coilguns fire from the start |
+| Boss đề xuất | icarus_mk0 | Vũ khí | applied | a point-defence laser (Icarus's left one) in place of the satellite uplink; active protection (the laser's): Icarus's at its size, 19.5 m |
+| Boss đề xuất | scylla | Vũ khí | applied | naval_130_twin: 160 a round, bursts of 2 at 1 a second, 4 m blast, 90 m; its main gun the AK-130 (the 460 mm gone); no main-battery salvo (the 460's); its anti-ship missile (cruise) every 15; its anti-ship missile (cruise) damage 450 |
+| Boss đề xuất | typhon | Vũ khí | applied | cruise every 12; cruise damage 320: its cruise missile, 1 x 320 every 12 s, fired only surfaced |
+| Boss đề xuất | caspian | tên lửa chống hạm | applied | a cruise missile a pass: 1 x 500 every 26 s; its launcher carries it (broken: no more) |
+| Tổng quan | leviathan_cruise | blast | applied | leviathan_cruise 10 m; leviathan's cruise 15 -> 10 m; leviathan_cruise_mark blast 10; leviathan_cruise_mark radius 12 (A5's rule for a 500 kg round: the round A5 left to C1) |
+| Boss đề xuất | behemoth | Siêu vũ khí | applied | behemoth_barrage: 6 x 400, 8 m blast, every 50 s, 3.5 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | mobile_fortress | Siêu vũ khí | applied | fortress_rocket_rain -> fortress_203_barrage: 4 x 700, 8 m blast, every 55 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | drone_mothership | Siêu vũ khí | applied | carrier_heavy_bomb: 1 x 1600, 16 m blast, 3 s in flight, shot down at 250, every 60 s, 3.5 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | nuke_train | Siêu vũ khí | applied | doomsday_missile: 1 x 2500, 18 m blast, 6 s in flight, shot down at 600, every 90 s, 5 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | silver_bug | Siêu vũ khí | applied | bug_rod_rain: 7 x 1800, 7 m blast, every 60 s, 4 s warning (phase 3: 9 every 50 s) (sheet Boss đề xuất). |
+| Boss đề xuất | fortress_bastion | Siêu vũ khí | applied | bastion_mortar_walk -> bastion_420_shell: 1 x 2000, 14 m blast, every 60 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | command_airship | Siêu vũ khí | applied | airship_carpet: 16 x 350, 7 m blast along a strip 80 x 12 m, every 70 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | leviathan | Siêu vũ khí | applied | leviathan_volley: 9 x 950, 13 m blast along a strip 60 x 12 m, every 70 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | moloch | Siêu vũ khí | applied | moloch_factory_dump: 6 vehicles landed + 8 x 300, 6 m blast, every 75 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | daedalus | Siêu vũ khí | applied | daedalus_mass_drop: 8 x 500, 6 m blast, every 70 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | kronos | Siêu vũ khí | applied | kronos_bucket_sweep: a 120 deg x 25 m sweep of 1200, every 60 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | typhon | Siêu vũ khí | applied | typhon_underwater_launch: 6 x 600, 9 m blast, 9 s in flight, shot down at 250, every 75 s, 4 s warning (sheet Boss đề xuất). |
+| Boss đề xuất | rail_supergun | Siêu vũ khí | applied | supergun_heavy taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | behemoth_mk0 | Siêu vũ khí | applied | behemoth_mk0_barrage taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | armored_train | Siêu vũ khí | applied | train_broadside taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | behemoth_tempest | Siêu vũ khí | applied | tempest_rail taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | locust | Siêu vũ khí | applied | locust_swarm taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | morrigan | Siêu vũ khí | applied | morrigan_salvo taken away; its duel's morrigan_duel_salvo too: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | behemoth_mk2 | Siêu vũ khí | applied | behemoth_mk2_barrage taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | landing_hovercraft | Siêu vũ khí | applied | hover_assault taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | argus | Siêu vũ khí | applied | argus_fire_call taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | ixion | Siêu vũ khí | applied | ixion_crush_charge taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | fortress_hive | Siêu vũ khí | applied | hive_swarm taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | caspian | Siêu vũ khí | applied | caspian_antiship_volley taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | supreme_command | Siêu vũ khí | applied | supreme_offensive taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | sky_fortress | Siêu vũ khí | applied | spectre_orbit taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | icarus_mk0 | Siêu vũ khí | applied | icarus_mk0_rods taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | behemoth_inferno | Siêu vũ khí | applied | inferno_firestorm taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | fenrir | Siêu vũ khí | applied | fenrir_rocket_rain taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | mega_gunship | Siêu vũ khí | applied | ironbird_rocket_run taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | earth_borer | Siêu vũ khí | applied | borer_quake taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | bastion_mk0 | Siêu vũ khí | applied | bastion_mk0_mortar taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | scylla | Siêu vũ khí | applied | scylla_cruise taken away: a mini boss has no super weapon (only its ordinary weapons) |
+| Boss đề xuất | bigAttacks | entries | applied | 22 big attacks no boss names any more removed: train_broadside, tempest_rail, supergun_heavy, inferno_firestorm, supreme_offensive, hive_swarm, hover_assault, borer_quake, spectre_orbit, ironbird_rocket_run, ixion_crush_charge, caspian_antiship_volley, bastion_mk0_mortar, fenrir_rocket_rain, scylla_cruise, locust_swarm, behemoth_mk2_barrage, icarus_mk0_rods, argus_fire_call, behemoth_mk0_barrage, morrigan_salvo, morrigan_duel_salvo |
+| Boss đề xuất | rail_supergun | DPS | applied | weaponDamage 1 -> 3.52: 85 -> 300 against armour 3 (target 300; autocannon_40 43, autocannon_40 43) |
+| Boss đề xuất | behemoth_mk0 | DPS | applied | weaponDamage 1 -> 1.019: 196 -> 200 against armour 3 (target 200; gun_behemoth 61, gun_120mm 47, gun_120mm 47, boss_rockets 41) |
+| Boss đề xuất | armored_train | DPS | already | weaponDamage 1.001: 280 -> 280 against armour 3 (target 280; train_gun 63, boss_rockets 41, boss_hmg 18, boss_flak 48, train_gun 63, boss_flak 48) |
+| Boss đề xuất | behemoth_tempest | DPS | applied | weaponDamage 1 -> 0.971: 299 -> 290 against armour 3 (target 290; boss_railgun 90, coilgun 104, coilgun 104) |
+| Boss đề xuất | locust | DPS | applied | weaponDamage 1 -> 1.866: 150 -> 280 against armour 3 (target 280; mothership_drones 102, boss_flak 48) |
+| Boss đề xuất | morrigan | DPS | applied | weaponDamage 1 -> 6.321: 60 -> 380 against armour 3 (target 380; guided_bomb 27, fighter_cannon 33) |
+| Boss đề xuất | behemoth_mk2 | DPS | applied | weaponDamage 1 -> 2.053: 156 -> 320 against armour 3 (target 320; gun_behemoth 61, boss_flak 48, boss_flak 48) |
+| Boss đề xuất | landing_hovercraft | DPS | applied | weaponDamage 1 -> 1.986: 151 -> 300 against armour 3 (target 300; hover_ciws 60, hover_ciws 60, hover_rockets 16, hover_rockets 16) |
+| Boss đề xuất | argus | DPS | applied | weaponDamage 1 -> 4.357: 57 -> 250 against armour 3 (target 250; airship_flak 29, airship_flak 29) |
+| Boss đề xuất | ixion | DPS | applied | weaponDamage 1 -> 3.543: 85 -> 300 against armour 3 (target 300; borer_cannon 49, boss_hmg 18, boss_hmg 18) |
+| Boss đề xuất | fortress_hive | DPS | applied | weaponDamage 1 -> 0.999: 300 -> 300 against armour 3 (target 300; mothership_drones 102, mothership_drones 102, boss_flak 48, boss_flak 48) |
+| Boss đề xuất | caspian | DPS | applied | weaponDamage 1 -> 4.048: 94 -> 330 against armour 3 (target 330; hover_ciws 60, zu23 9, zu23 9, cruise 16) |
+| Boss đề xuất | supreme_command | DPS | applied | weaponDamage 1 -> 1.684: 36 -> 60 against armour 3 (target 60; boss_hmg 18, boss_hmg 18) |
+| Boss đề xuất | sky_fortress | DPS | applied | weaponDamage 1 -> 1.697: 224 -> 380 against armour 3 (target 380; gunship_105 36, gunship_40mm 73, gunship_25mm 79, griffin 36) |
+| Boss đề xuất | icarus_mk0 | DPS | applied | weaponDamage 1 -> 3.333: 90 -> 300 against armour 3 (target 300; orbital_laser 90) |
+| Boss đề xuất | behemoth_inferno | DPS | applied | weaponDamage 1 -> 1.068: 215 -> 230 against armour 3 (target 230; boss_flamer 90, boss_thermo 35, boss_flamer 90) |
+| Boss đề xuất | fenrir | DPS | applied | weaponDamage 1 -> 1.992: 131 -> 260 against armour 3 (target 260; boss_rockets 41, boss_rockets 41, boss_flak 48) |
+| Boss đề xuất | daedalus | DPS | applied | weaponDamage 1 -> 5.908: 118 -> 700 against armour 3 (target 700; autocannon_30 42, gun_57mm 17, gun_57mm 17, autocannon_30 42) |
+| Boss đề xuất | mega_gunship | DPS | applied | weaponDamage 1 -> 1.371: 182 -> 250 against armour 3 (target 250; gunship_rockets 26, boss_heli_gun 46, boss_heli_gun 46, boss_minigun 3, gunship_rockets 26, boss_hmg 18, boss_hmg 18) |
+| Boss đề xuất | behemoth | DPS | applied | weaponDamage 1 -> 0.929: 452 -> 420 against armour 3 (target 420; gun_behemoth 61, gun_120mm 47, boss_flak 48, boss_flak 48, boss_missiles 36, boss_missiles 36, kornet_twin 41, gun_120mm 47, gun_120mm 47, boss_rockets 41) |
+| Boss đề xuất | earth_borer | DPS | applied | weaponDamage 1 -> 1.216: 271 -> 330 against armour 3 (target 330; borer_drill 173, borer_cannon 49, borer_cannon 49) |
+| Boss đề xuất | bastion_mk0 | DPS | applied | weaponDamage 1 -> 1.524: 131 -> 200 against armour 3 (target 200; boss_mortar 46, autocannon_40 43, autocannon_40 43) |
+| Boss đề xuất | nuke_train | DPS | applied | weaponDamage 1 -> 2.067: 290 -> 600 against armour 3 (target 600; gun_behemoth 61, boss_flak 48, boss_flak 48, boss_rockets 41, gun_152_he 45, boss_flak 48) |
+| Boss đề xuất | scylla | DPS | applied | weaponDamage 1 -> 1.401: 221 -> 300 against armour 3 (target 300; naval_130_twin 136, hover_ciws 60, cruise 26) |
+| Boss đề xuất | silver_bug | DPS | applied | weaponDamage 1 -> 1.705: 469 -> 800 against armour 3 (target 800; orbital_laser 90, coilgun 104, coilgun 104, autocannon_40 43, autocannon_40 43, autocannon_40 43, autocannon_40 43) |
+| Boss đề xuất | mobile_fortress | DPS | applied | weaponDamage 1 -> 1.33: 346 -> 460 against armour 3 (target 460; boss_howitzer 44, boss_rockets 41, boss_rockets 41, boss_flak 48, boss_flak 48, boss_missiles 36, twin_30_flak 43, boss_howitzer 44) |
+| Boss đề xuất | command_airship | DPS | applied | weaponDamage 1 -> 2.16: 315 -> 680 against armour 3 (target 680; airship_flak 29, airship_flak 29, airship_drones 39, airship_drones 39, twin_30_bmpt 53, twin_30_bmpt 53, gunship_105 36, gunship_105 36) |
+| Boss đề xuất | moloch | DPS | applied | weaponDamage 1 -> 2.21: 253 -> 560 against armour 3 (target 560; gun_120mm 47, zu23 9, zu23 9, gun_120mm 47, gun_120mm 47, gun_120mm 47, boss_flak 48) |
+| Boss đề xuất | fortress_bastion | DPS | applied | weaponDamage 1 -> 1.084: 332 -> 360 against armour 3 (target 360; boss_mortar 46, autocannon_40 43, autocannon_40 43, autocannon_40 43, autocannon_40 43, kornet_twin 41, boss_hmg 18, boss_hmg 18, casemate_155 21, zu23 9, zu23 9) |
+| Boss đề xuất | typhon | DPS | applied | weaponDamage 1 -> 9.078: 91 -> 640 against armour 3 (target 640; naval_100 68, cruise 23) |
+| Boss đề xuất | kronos | DPS | applied | weaponDamage 1 -> 3.752: 160 -> 600 against armour 3 (target 600; autocannon_30 42, gun_57mm 17, gun_57mm 17, autocannon_30 42, boss_rockets 41) |
+| Boss đề xuất | leviathan | DPS | applied | weaponDamage 1 -> 1.117: 488 -> 520 against armour 3 (target 520; leviathan_460 68 (laid), leviathan_460 68 (laid), leviathan_460 68 (laid), naval_155_triple 78, naval_155_triple 78, hover_ciws 60, hover_ciws 60, cruise 9) |
+| Boss đề xuất | drone_mothership | DPS | applied | weaponDamage 1 -> 1.027: 545 -> 560 against armour 3 (target 560; mothership_cannon 29, mothership_drones 102, boss_flak 48, boss_flak 48, mothership_cannon 29, mothership_drones 102, autocannon_30 42, autocannon_30 42, mothership_drones 102) |
+| Thay đổi chi tiết | caspian | Vũ khí | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | daedalus | Máu, vũ khí | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | scylla | Vũ khí, máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | silver_bug | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | silver_bug | Vũ khí | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | argus | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | armored_train | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | bastion_mk0 | Máu, giáp | applied | by its Boss đề xuất row (exact numbers); the armour by its own Giáp row (A1 Thấp: a mini boss's front 4 at most) |
+| Thay đổi chi tiết | behemoth | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | behemoth_mk2 | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | behemoth_tempest | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | caspian | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | command_airship | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | fortress_bastion | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | fortress_hive | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | icarus_mk0 | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | ixion | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | kronos | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | landing_hovercraft | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | locust | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | nuke_train | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | rail_supergun | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | sky_fortress | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | supreme_command | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | typhon | Vũ khí | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | typhon | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Thay đổi chi tiết | earth_borer | Máu | applied | by its Boss đề xuất row (exact numbers) |
+| Kiểm tra từng mục | daedalus | Máu | applied | Boss đề xuất's 24000 |
+| Kiểm tra từng mục | bastion_mk0 | Máu | applied | Boss đề xuất's 6500 (this row's ~6.000; Boss đề xuất gives the exact number, within the Boss sheet's range) |
+| Kiểm tra từng mục | scylla | Máu | applied | Boss đề xuất's 9000 |
+
+<!-- /step:C1 -->
+
+<!-- step:C2 -->
+## C2: the Gungnir's 80 cm gun and the Kronos's bucket wheel as weapons
+
+The Gungnir's 80 cm gun and the Kronos's bucket wheel as weapons (rows "Dữ liệu vũ khí"): the supergun's shot and the crusher fire them with their numbers, so the weapons tables and the Guide show them.
+
+| Sheet | Applied | Already so | Deferred | Skipped |
+|---|---|---|---|---|
+| Boss đề xuất | 3 | 0 | 0 | 0 |
+| Kiểm tra từng mục | 2 | 0 | 0 | 0 |
+| Thay đổi chi tiết | 2 | 0 | 0 | 0 |
+
+| Sheet | id | Item | Outcome | Detail |
+|---|---|---|---|---|
+| Boss đề xuất | rail_supergun | Dữ liệu vũ khí | applied | supergun_800 damage 900; supergun_800 cooldown 25; supergun_800 splash 12; supergun_800 laid true; its main weapon (was none); its shot fires the gun's numbers (the bombard's own damage, blast and cycle gone); its warning ring blast 12; its warning ring radius 15: the 80 cm gun, 1 x 900 every 25 s, a 12 m blast, at the biggest group anywhere (its shot) |
+| Boss đề xuất | kronos | Dữ liệu vũ khí | applied | bucket_wheel: 900 a second within 6 m, x3 on structures; a mount on its bucket wheel; the crusher is the wheel; its damage a second and reach the weapon's: the bucket wheel, the crusher at the front of its boom |
+| Thay đổi chi tiết | rail_supergun | Dữ liệu vũ khí | applied | by its Boss đề xuất row (C2) |
+| Thay đổi chi tiết | kronos | Dữ liệu vũ khí | applied | by its Boss đề xuất row (C2) |
+| Kiểm tra từng mục | rail_supergun | Dữ liệu vũ khí | applied | by its Boss đề xuất row (C2) |
+| Kiểm tra từng mục | kronos | Dữ liệu vũ khí | applied | by its Boss đề xuất row (C2) |
+| Boss đề xuất | rail_supergun | DPS | applied | weaponDamage 3.52 -> 3.098: 121 -> 300 against armour 3 (target 300; supergun_800 36 (laid), autocannon_40 43, autocannon_40 43) |
+
+<!-- /step:C2 -->
+
+<!-- import_c:end -->

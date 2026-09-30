@@ -71,62 +71,62 @@ namespace MachineBrigade.Game.Hud
             ["note.scylla"] = ("Kessler's destroyer on the near-shore lane: one main turret, missile cells, a CIWS. Tank guns reach it from the piers.", "Tàu khu trục của Kessler trên tuyến gần bờ: một tháp pháo chính, ống phóng tên lửa, CIWS. Pháo xe tăng bắn tới từ đầu cầu tàu."),
             ["note.locust"] = ("A thin-skinned drone tender: launches drones without pause. Bring anti-air.", "Tàu con drone vỏ mỏng: thả drone liên tục. Mang phòng không theo."),
             ["note.behemoth_mk2"] = ("Varga's upgraded Behemoth under ice-coated armour (front 4): main gun, two flak guns, a protection system.", "Behemoth nâng cấp của Varga, giáp phủ băng (trước cấp 4): pháo chính, hai cao xạ, hệ thống bảo vệ chủ động."),
-            ["note.icarus_mk0"] = ("Aurel's prototype spacecraft: high and low on a fixed schedule, never in orbit; a laser turret and a pod bay.", "Phi thuyền nguyên mẫu của Aurel: đổi tầng cao và thấp theo lịch cố định, không lên quỹ đạo; tháp la-de và khoang đổ bộ."),
+            ["note.icarus_mk0"] = ("Aurel's prototype spacecraft: high and low on a fixed schedule, never in orbit; a laser turret, a pod bay and a point-defence laser.", "Phi thuyền nguyên mẫu của Aurel: đổi tầng cao và thấp theo lịch cố định, không lên quỹ đạo; tháp la-de, khoang đổ bộ và la-de phòng thủ điểm."),
             ["note.argus"] = ("A scout airship: while it lives the enemy's artillery falls far tighter. Flak and a radar.", "Khí cầu trinh sát: khi nó còn, pháo binh địch bắn chính xác hơn nhiều. Cao xạ và radar."),
 
             // ---------------------------------------------------------------- Guide cards
             ["guide.moloch"] = (
                 "[[Boss]] · mobile factory · builds an army as it comes\n" +
-                "How it fights: crawls down the mission's road; its two [[workshop doors]] send out 1-2 vehicles every 20 s (light tanks and IFVs, battle tanks from phase 2), one more each minute, never more than six alive. Four 120 mm turrets and flak cover it.\n" +
+                "How it fights: crawls down the mission's road; its two [[workshop doors]] send out 1-2 vehicles every 20 s (light tanks and IFVs, battle tanks from phase 2), one more each minute, never more than six alive. Four 120 mm turrets, flak and two ZU-23 on the roof cover it.\n" +
                 "Strong / weak: front armour [[4]], sides 3, rear [[2]]: the doors are at the back, and so is its weak armour. Broken tracks slow it.\n" +
-                "Tip: flank it and break both doors first: it stops building, and its big attack is only the shells.",
+                "Tip: flank it and break both doors first: it stops building, and its super weapon is only the shells.",
                 "[[Boss]] · nhà máy di động · vừa đi vừa sinh quân\n" +
-                "Cách đánh: bò chậm theo đường của nhiệm vụ; hai [[cửa xưởng]] cứ 20 giây thả 1–2 xe (xe tăng nhẹ và xe bộ binh, từ pha 2 thêm tăng chủ lực), mỗi phút thêm một xe mỗi lượt, tối đa sáu xe còn sống. Bốn tháp pháo 120 mm và cao xạ che chắn.\n" +
+                "Cách đánh: bò chậm theo đường của nhiệm vụ; hai [[cửa xưởng]] cứ 20 giây thả 1–2 xe (xe tăng nhẹ và xe bộ binh, từ pha 2 thêm tăng chủ lực), mỗi phút thêm một xe mỗi lượt, tối đa sáu xe còn sống. Bốn tháp pháo 120 mm, cao xạ và hai ZU-23 trên nóc che chắn.\n" +
                 "Mạnh / yếu: giáp trước cấp [[4]], hông 3, sau [[2]]: cửa xưởng ở phía sau, giáp mỏng cũng ở đó. Phá cụm xích thì nó chậm lại.\n" +
-                "Mẹo: vòng ra sau, phá cả hai cửa trước: nó ngừng sinh xe, đòn lớn chỉ còn loạt pháo."),
+                "Mẹo: vòng ra sau, phá cả hai cửa trước: nó ngừng sinh xe, siêu vũ khí chỉ còn loạt pháo."),
             ["guide.daedalus"] = (
                 "[[Boss]] · orbital lander · a rain of drop pods\n" +
-                "How it fights: about 10 s in orbit (out of reach), then high and low on a fixed schedule, never back to orbit. Its three [[pod bays]] drop pods of 1-2 vehicles without pause (at most eight alive), each pod a target as it falls. In phase 3 it stops low with every bay open.\n" +
+                "How it fights: about 10 s in orbit (out of reach), then high and low on a fixed schedule, never back to orbit. Its three [[pod bays]] drop pods of 1-2 vehicles without pause (at most eight alive), each pod a target as it falls. In phase 3 it stops low with every bay open. Two 30 mm and two 57 mm guns fire from under it.\n" +
                 "Strong / weak: its own guns are weaker than Icarus's; upper hull [[3]], belly [[2]]. Point-defence lasers take missiles aimed at it.\n" +
                 "Tip: shoot the pods down and break the bays: each one lost slows the drops, and the mass drop falls short.",
                 "[[Boss]] · tàu đổ bộ quỹ đạo · mưa khoang đổ bộ\n" +
-                "Cách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang.\n" +
+                "Cách đánh: khoảng 10 giây trên quỹ đạo (không bắn tới được), sau đó đổi tầng cao và thấp theo lịch cố định, không lên lại quỹ đạo. Ba [[cửa thả khoang]] thả liên tục khoang chở 1–2 xe (tối đa tám xe còn sống); khoang đang rơi bắn hạ được. Pha 3 nó dừng hẳn ở tầng thấp, mở toàn bộ khoang. Hai pháo 30 mm và hai pháo 57 mm bắn từ dưới bụng.\n" +
                 "Mạnh / yếu: tự nó bắn yếu hơn Icarus; thân trên cấp [[3]], bụng [[2]]. Tháp la-de phòng thủ chặn tên lửa bắn vào nó.\n" +
                 "Mẹo: bắn hạ khoang đang rơi và phá cửa thả: mỗi cửa mất là thả chậm hơn, đòn đổ bộ lớn cũng hụt đi."),
             ["guide.kronos"] = (
                 "[[Boss]] · mining excavator · crushes its way to your HQ\n" +
-                "How it fights: very slowly down a fixed route to your base; its [[bucket wheel]] crushes everything in front of it, walls and towers too. If it reaches your HQ the mission is lost. Phase 2 it goes faster; phase 3 the wheel spins up and throws rock round it.\n" +
+                "How it fights: very slowly down a fixed route to your base; its [[bucket wheel]] crushes everything in front of it (900 a second within 6 m), walls and towers too (three times as hard). If it reaches your HQ the mission is lost. Two 30 mm and two automatic 57 mm turrets and a rocket pod cover it. Phase 2 it goes faster; phase 3 the wheel spins up and throws rock round it.\n" +
                 "Strong / weak: wheel armour [[4]], body 3, track units [[2]]. Each track unit broken slows it.\n" +
                 "Tip: break the tracks to buy time, and the [[boom]] to stop its sweep; do not build walls in its way.",
                 "[[Boss]] · máy xúc mỏ · nghiền đường tới HQ\n" +
-                "Cách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước, cả tường lẫn tháp. Tới được HQ là thua nhiệm vụ. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\n" +
+                "Cách đánh: chạy rất chậm theo đường cố định về căn cứ ta; [[bánh gầu]] nghiền mọi thứ phía trước (900 mỗi giây trong 6 m), cả tường lẫn tháp (gấp ba). Tới được HQ là thua nhiệm vụ. Hai tháp 30 mm, hai tháp pháo 57 mm tự động và một giàn rốc-két che chắn. Pha 2 nó đi nhanh hơn; pha 3 bánh gầu quay nhanh và hất đá vụn ra xung quanh.\n" +
                 "Mạnh / yếu: bánh gầu giáp cấp [[4]], thân 3, cụm xích [[2]]. Mỗi cụm xích bị phá là nó chậm lại.\n" +
                 "Mẹo: phá cụm xích để câu giờ, phá [[cần gầu]] để chặn đòn quét; đừng xây tường chắn đường nó."),
             ["guide.typhon"] = (
                 "[[Boss]] · missile submarine · strikes from under the sea\n" +
-                "How it fights: submerged (out of reach) and surfaced (a target on the water) on each phase's schedule, coming up somewhere else each time; bubbles mark the spot first. Surfaced, it fires cruise missiles and guards itself with a SAM. Phase 3 it stays up and adds a 100 mm deck gun.\n" +
+                "How it fights: submerged (out of reach) and surfaced (a target on the water) on each phase's schedule, coming up somewhere else each time; bubbles mark the spot first. Surfaced, it fires a short-range cruise missile every 12 s and guards itself with a SAM. Phase 3 it stays up and adds a 100 mm deck gun.\n" +
                 "Strong / weak: hull armour [[4]], sail and deck [[2]]: artillery, bombs and top attacks hit the deck.\n" +
                 "Tip: park artillery and aircraft for the bubbles; break the [[launch doors]] during a warning (they open above the water) or shoot the missiles down.",
                 "[[Boss]] · tàu ngầm tên lửa · đánh từ dưới biển\n" +
-                "Cách đánh: lặn (không bắn tới được) và nổi (mục tiêu trên mặt nước) theo lịch từng pha, mỗi lần nổi ở một chỗ khác; bong bóng báo trước chỗ nổi. Khi nổi nó phóng tên lửa hành trình và tự vệ bằng tên lửa phòng không. Pha 3 nổi hẳn, thêm pháo boong 100 mm.\n" +
+                "Cách đánh: lặn (không bắn tới được) và nổi (mục tiêu trên mặt nước) theo lịch từng pha, mỗi lần nổi ở một chỗ khác; bong bóng báo trước chỗ nổi. Khi nổi nó phóng tên lửa hành trình tầm ngắn mỗi 12 giây và tự vệ bằng tên lửa phòng không. Pha 3 nổi hẳn, thêm pháo boong 100 mm.\n" +
                 "Mạnh / yếu: thân giáp cấp [[4]], tháp chỉ huy và boong [[2]]: pháo binh, bom và đòn đánh nóc đánh vào boong.\n" +
                 "Mẹo: chờ sẵn pháo binh và máy bay chỗ bong bóng; phá [[cửa ống phóng]] lúc cảnh báo (cửa mở trên mặt nước) hoặc bắn hạ tên lửa."),
             ["guide.ixion"] = (
                 "[[Mini boss]] · giant wheel · rolls over your line\n" +
-                "How it fights: rolls fast and straight on two huge [[wheels]], crushing vehicles in its way (light ones worst), and turns very slowly. Its 76 mm gun fires from the hub.\n" +
+                "How it fights: rolls fast and straight on two huge [[wheels]], crushing vehicles in its way (light ones worst), and turns very slowly. Its 76 mm gun fires from the hub, two 12.7 mm machine guns from the hull.\n" +
                 "Strong / weak: the rear [[steering wheel]] is armour 1, its weak point; a big wheel broken makes it circle and slow down.\n" +
                 "Tip: step aside from its line and hit it from the flanks as it turns.",
                 "[[Mini boss]] · xe bánh khổng lồ · lăn qua đội hình ta\n" +
-                "Cách đánh: lăn nhanh theo đường thẳng trên hai [[bánh lớn]], nghiền xe trên đường (xe nhẹ nặng nhất), xoay rất chậm. Pháo 76 mm bắn từ giữa trục.\n" +
+                "Cách đánh: lăn nhanh theo đường thẳng trên hai [[bánh lớn]], nghiền xe trên đường (xe nhẹ nặng nhất), xoay rất chậm. Pháo 76 mm bắn từ giữa trục, hai súng máy 12,7 mm trên thân.\n" +
                 "Mạnh / yếu: [[bánh lái sau]] giáp cấp 1, là điểm yếu; phá một bánh lớn thì nó quay vòng và chậm lại.\n" +
                 "Mẹo: tránh khỏi đường lăn và đánh vào hông khi nó xoay."),
             ["guide.caspian"] = (
                 "[[Mini boss]] · ekranoplan · fast passes along the coast\n" +
-                "How it fights: skims in along the coast for about 6 s at a time, then swings out to sea for about 20 s; a target on the water. Its big attack is four anti-ship missiles at the shore and your base.\n" +
+                "How it fights: skims in along the coast for about 6 s at a time, then swings out to sea for about 20 s; a target on the water. Each pass it fires an anti-ship missile at your biggest group (marked ahead); two twin 23 mm guns and an AK-630 cover it.\n" +
                 "Strong / weak: thin armour; the nose [[engines]] broken slow it down.\n" +
                 "Tip: keep fast-firing guns on the shore for its passes, and anti-air or C-RAM for the missiles.",
                 "[[Mini boss]] · tàu bay sát mặt nước · lao dọc bờ từng lượt\n" +
-                "Cách đánh: lao dọc bờ khoảng 6 giây mỗi lượt rồi vòng ra xa khoảng 20 giây; là mục tiêu trên mặt nước. Đòn lớn là bốn tên lửa chống hạm vào bờ và căn cứ ta.\n" +
+                "Cách đánh: lao dọc bờ khoảng 6 giây mỗi lượt rồi vòng ra xa khoảng 20 giây; là mục tiêu trên mặt nước. Mỗi lượt lao nó phóng một tên lửa chống hạm vào cụm quân lớn nhất (có đánh dấu trước); hai pháo 23 mm đôi và một AK-630 che chắn.\n" +
                 "Mạnh / yếu: giáp mỏng; phá [[cụm động cơ]] ở mũi thì nó chậm lại.\n" +
                 "Mẹo: để sẵn pháo bắn nhanh trên bờ đón lượt lao, và phòng không hoặc C-RAM cho tên lửa."),
             ["guide.bastion_mk0"] = (
@@ -149,11 +149,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đón nó lúc rút, đặt xe diệt tăng trên đường rút."),
             ["guide.scylla"] = (
                 "[[Mini boss]] · destroyer · close to the shore\n" +
-                "How it fights: faster than Leviathan, on the near-shore lane: one main turret shells the shore, missile cells fire cruise missiles, a CIWS takes missiles and drones.\n" +
+                "How it fights: faster than Leviathan, on the near-shore lane: a twin 130 mm AK-130 shells the shore, its missile cells fire an anti-ship missile every 15 s, a CIWS takes missiles and drones.\n" +
                 "Strong / weak: close enough for tank guns on the pier heads.\n" +
                 "Tip: hold the piers with tanks and break the [[CIWS]] before sending missiles.",
                 "[[Mini boss]] · tàu khu trục · sát bờ\n" +
-                "Cách đánh: nhanh hơn Leviathan, chạy tuyến gần bờ: một tháp pháo chính nã vào bờ, ống phóng bắn tên lửa hành trình, CIWS chặn tên lửa và drone.\n" +
+                "Cách đánh: nhanh hơn Leviathan, chạy tuyến gần bờ: pháo AK-130 130 mm đôi nã vào bờ, ống phóng bắn tên lửa chống hạm mỗi 15 giây, CIWS chặn tên lửa và drone.\n" +
                 "Mạnh / yếu: đủ gần để pháo xe tăng ở đầu cầu tàu bắn tới.\n" +
                 "Mẹo: giữ cầu tàu bằng xe tăng, phá [[CIWS]] trước khi dùng tên lửa."),
             ["guide.locust"] = (
@@ -176,20 +176,20 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đánh vào hông; phá [[hệ thống bảo vệ]] trước khi dùng tên lửa."),
             ["guide.icarus_mk0"] = (
                 "[[Mini boss]] · prototype spacecraft · your first look at Project Icarus\n" +
-                "How it fights: never in orbit: high and low on a fixed schedule. A [[laser turret]] and a [[pod bay]]; its satellite link calls down three tungsten rods.\n" +
+                "How it fights: never in orbit: high and low on a fixed schedule. A [[laser turret]], a [[pod bay]] and a [[point-defence laser]] that picks off missiles.\n" +
                 "Strong / weak: at high altitude only long-range anti-air and fighters reach it; low, every anti-air weapon does.\n" +
-                "Tip: wait for its low windows; break the uplink to stop the rods.",
+                "Tip: wait for its low windows; break the point-defence laser before sending missiles.",
                 "[[Mini boss]] · phi thuyền nguyên mẫu · lần đầu thấy Dự án Icarus\n" +
-                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]] và một [[khoang đổ bộ]]; liên kết vệ tinh gọi ba thanh vonfram.\n" +
+                "Cách đánh: không lên quỹ đạo: đổi tầng cao và thấp theo lịch cố định. Một [[tháp la-de]], một [[khoang đổ bộ]] và một [[la-de phòng thủ điểm]] bắn hạ tên lửa.\n" +
                 "Mạnh / yếu: ở tầng cao chỉ phòng không tầm xa và tiêm kích bắn tới; ở tầng thấp mọi vũ khí phòng không đều tới.\n" +
-                "Mẹo: chờ lúc nó xuống thấp; phá ăng-ten liên kết để chặn thanh vonfram."),
+                "Mẹo: chờ lúc nó xuống thấp; phá la-de phòng thủ điểm trước khi dùng tên lửa."),
             ["guide.argus"] = (
                 "[[Mini boss]] · scout airship · directs the enemy's guns\n" +
-                "How it fights: while it lives, the enemy's artillery falls about half as wide; its big attack calls a barrage on a marked area. Flak guns and a [[radar]].\n" +
+                "How it fights: while it lives, the enemy's artillery falls about half as wide. Flak guns and a [[radar]].\n" +
                 "Strong / weak: slow and big; only anti-air and fighters reach it.\n" +
                 "Tip: break the radar and the enemy's artillery scatters again.",
                 "[[Mini boss]] · khí cầu trinh sát · chỉ điểm cho pháo địch\n" +
-                "Cách đánh: khi nó còn, pháo binh địch tản mát chỉ khoảng một nửa; đòn lớn gọi một loạt pháo vào vùng có cảnh báo. Cao xạ và [[radar]].\n" +
+                "Cách đánh: khi nó còn, pháo binh địch tản mát chỉ khoảng một nửa. Cao xạ và [[radar]].\n" +
                 "Mạnh / yếu: chậm và to; chỉ phòng không và tiêm kích bắn tới.\n" +
                 "Mẹo: phá radar là pháo binh địch lại bắn tản mát."),
 
@@ -198,15 +198,15 @@ namespace MachineBrigade.Game.Hud
             ["guide.parts.tip.daedalus"] = ("Tip: break the [[drop-pod bays]] (each one slows the drops; the mass drop falls as three pods with one gone) and the [[point-defence lasers]] before sending missiles.", "Mẹo: phá [[cửa thả khoang]] (mỗi cửa mất là thả chậm hơn; mất một cửa thì đòn đổ bộ lớn chỉ còn ba khoang) và [[tháp la-de phòng thủ]] trước khi dùng tên lửa."),
             ["guide.parts.tip.kronos"] = ("Tip: the four [[track units]] (armour 2) each slow it; the [[boom]] carries its sweep; the [[bucket wheel]] (armour 4) is what crushes.", "Mẹo: mỗi [[cụm xích]] (giáp cấp 2) bị phá là nó chậm lại; [[cần gầu]] mang đòn quét; [[bánh gầu]] (giáp cấp 4) là thứ nghiền."),
             ["guide.parts.tip.typhon"] = ("Tip: the [[launch doors]] carry its missiles (they show above the water during a warning); the [[sail]] aims its SAM; the [[sonar]] its fire control.", "Mẹo: [[cửa ống phóng]] mang tên lửa (lộ trên mặt nước lúc cảnh báo); [[tháp chỉ huy]] ngắm tên lửa phòng không; [[sô-na]] là hệ điều khiển hỏa lực."),
-            ["guide.parts.tip.ixion"] = ("Tip: the rear [[steering wheel]] is armour 1; a [[big wheel]] broken during its charge warning throws it off its line.", "Mẹo: [[bánh lái sau]] giáp cấp 1; phá một [[bánh lớn]] lúc nó cảnh báo cú lao là cú lao bị chệch và dừng."),
-            ["guide.parts.tip.caspian"] = ("Tip: break the [[missile launcher]] on its back to stop the volley; the nose [[engines]] slow its passes.", "Mẹo: phá [[bệ tên lửa]] trên lưng để chặn loạt tên lửa; phá [[cụm động cơ]] ở mũi để các lượt lao chậm lại."),
+            ["guide.parts.tip.ixion"] = ("Tip: the rear [[steering wheel]] is armour 1; a broken [[big wheel]] makes it circle and slow down.", "Mẹo: [[bánh lái sau]] giáp cấp 1; phá một [[bánh lớn]] thì nó quay vòng và chậm lại."),
+            ["guide.parts.tip.caspian"] = ("Tip: break the [[missile launcher]] on its back to stop its missiles; the nose [[engines]] slow its passes.", "Mẹo: phá [[bệ tên lửa]] trên lưng để chặn tên lửa của nó; phá [[cụm động cơ]] ở mũi để các lượt lao chậm lại."),
             ["guide.parts.tip.bastion_mk0"] = ("Tip: break the [[mortar]] first; the two turrets only reach close.", "Mẹo: phá [[khẩu cối]] trước; hai tháp pháo chỉ bắn gần."),
-            ["guide.parts.tip.fenrir"] = ("Tip: each [[rocket box]] broken halves its rain; its flak is all it has against aircraft.", "Mẹo: mỗi [[hộp rốc-két]] bị phá là mưa rốc-két giảm một nửa; cao xạ là thứ duy nhất chống máy bay."),
+            ["guide.parts.tip.fenrir"] = ("Tip: each [[rocket box]] broken halves its rockets; its flak is all it has against aircraft.", "Mẹo: mỗi [[hộp rốc-két]] bị phá là rốc-két của nó giảm một nửa; cao xạ là thứ duy nhất chống máy bay."),
             ["guide.parts.tip.scylla"] = ("Tip: break the [[missile cells]] for its cruise missiles and the [[CIWS]] before sending missiles.", "Mẹo: phá [[ống phóng tên lửa]] để chặn tên lửa hành trình, phá [[CIWS]] trước khi dùng tên lửa."),
             ["guide.parts.tip.locust"] = ("Tip: its [[drone bay]] is everything it has.", "Mẹo: [[khoang drone]] là tất cả những gì nó có."),
             ["guide.parts.tip.behemoth_mk2"] = ("Tip: the [[main gun]] is its punch; the [[protection system]] shoots down two missiles a volley.", "Mẹo: [[pháo chính]] là đòn mạnh nhất; [[hệ thống bảo vệ]] bắn hạ hai tên lửa mỗi loạt."),
-            ["guide.parts.tip.icarus_mk0"] = ("Tip: the [[satellite uplink]] carries the rods, the [[pod bay]] the drops.", "Mẹo: [[ăng-ten liên kết]] mang thanh vonfram, [[khoang đổ bộ]] mang các đợt thả."),
-            ["guide.parts.tip.argus"] = ("Tip: the [[radar]] directs the enemy's guns and carries its barrage call.", "Mẹo: [[radar]] chỉ điểm cho pháo địch và mang đòn gọi pháo."),
+            ["guide.parts.tip.icarus_mk0"] = ("Tip: the [[point-defence laser]] is its protection, the [[pod bay]] its drops.", "Mẹo: [[la-de phòng thủ điểm]] là lớp bảo vệ, [[khoang đổ bộ]] mang các đợt thả."),
+            ["guide.parts.tip.argus"] = ("Tip: the [[radar]] directs the enemy's guns.", "Mẹo: [[radar]] chỉ điểm cho pháo địch."),
 
             // ---------------------------------------------------------------- new part kinds
             ["part.door"] = ("workshop door", "cửa xưởng"),
@@ -279,15 +279,15 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.moloch_factory_dump"] = ("Workshop Dump", "Xả xưởng"),
             ["bigattack.moloch_factory_dump.cancelled"] = ("Workshop dump cut short", "Đã chặn xả xưởng"),
             ["radio.bigattack.moloch_factory_dump"] = ("Varga: \"Open every door. Send them all.\"", "Varga: \"Mở hết các cửa. Thả tất cả ra.\""),
-            ["guide.bigattack.moloch_factory_dump.how"] = ("Every door opens: six vehicles at once, with eight 152 mm high-explosive shells (300 each, 6 m) on your nearest group.", "Mọi cửa cùng mở: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 300, bán kính 6 m) vào cụm quân gần nhất."),
+            ["guide.bigattack.moloch_factory_dump.how"] = ("Its workshop doors open for 4 s, then every door lets out: six vehicles at once, with eight 152 mm high-explosive shells (300 each, 6 m) on your nearest group.", "Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 300, bán kính 6 m) vào cụm quân gần nhất."),
             ["guide.bigattack.moloch_factory_dump.dodge"] = ("Move your group off the marked area; be ready for six more vehicles.", "Đưa cụm quân ra khỏi vùng đánh dấu; sẵn sàng đón thêm sáu xe."),
             ["guide.bigattack.moloch_factory_dump.stop"] = ("Break a workshop door during the warning: only half come out; both broken, only the shells.", "Phá một cửa xưởng lúc cảnh báo: chỉ ra một nửa; phá cả hai thì chỉ còn loạt pháo."),
             ["bigattack.daedalus_mass_drop"] = ("Orbital Mass Drop", "Đổ bộ ồ ạt từ quỹ đạo"),
             ["bigattack.daedalus_mass_drop.cancelled"] = ("Mass drop called off", "Đã chặn đợt đổ bộ"),
             ["radio.bigattack.daedalus_mass_drop"] = ("Aurel: \"All pods on that group. Land on them.\"", "Aurel: \"Mọi khoang vào cụm đó. Đáp thẳng lên đầu chúng.\""),
-            ["guide.bigattack.daedalus_mass_drop.how"] = ("Six pods fall together on one group: 400 kinetic each (high penetration, 5 m) on landing, then each lets a vehicle out.", "Sáu khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 400 động năng (xuyên cao, bán kính 5 m) rồi thả một xe."),
+            ["guide.bigattack.daedalus_mass_drop.how"] = ("Eight pods fall together on one group: 500 kinetic each (high penetration, 6 m) on landing, then each lets a vehicle out; 4 s of warning.", "Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 500 động năng (xuyên cao, bán kính 6 m) rồi thả một xe; cảnh báo 4 giây."),
             ["guide.bigattack.daedalus_mass_drop.dodge"] = ("Scatter the marked group; heavy armour does not save it.", "Tản cụm quân bị đánh dấu ra; giáp dày cũng không cứu được."),
-            ["guide.bigattack.daedalus_mass_drop.stop"] = ("Break a pod bay during the warning: only three pods fall.", "Phá một cửa thả khoang lúc cảnh báo: chỉ còn ba khoang rơi."),
+            ["guide.bigattack.daedalus_mass_drop.stop"] = ("Break a pod bay during the warning: only four pods fall.", "Phá một cửa thả khoang lúc cảnh báo: chỉ còn bốn khoang rơi."),
             ["bigattack.kronos_bucket_sweep"] = ("Bucket Sweep", "Quét gầu"),
             ["bigattack.kronos_bucket_sweep.cancelled"] = ("Bucket sweep stopped", "Đã chặn đòn quét gầu"),
             ["radio.bigattack.kronos_bucket_sweep"] = ("Command: Kronos is swinging its wheel. Clear its front!", "Chỉ huy: Kronos đang vung bánh gầu. Tránh khỏi phía trước nó!"),
@@ -296,64 +296,10 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.kronos_bucket_sweep.stop"] = ("Break the boom (during the warning or before).", "Phá cần gầu (lúc cảnh báo hoặc trước đó)."),
             ["bigattack.typhon_underwater_launch"] = ("Underwater Launch", "Phóng tên lửa từ dưới nước"),
             ["bigattack.typhon_underwater_launch.cancelled"] = ("Launch aborted", "Đã chặn đợt phóng"),
-            ["radio.bigattack.typhon_underwater_launch"] = ("{@lyhan}: \"Launch depth. Three for their headquarters.\"", "{@lyhan}: \"Lên độ sâu phóng. Ba quả cho sở chỉ huy của chúng.\""),
-            ["guide.bigattack.typhon_underwater_launch.how"] = ("Three missiles at your base: about 500 high explosive each (8 m), double on buildings; a clock shows their flight after the warning.", "Ba tên lửa vào căn cứ ta: mỗi quả khoảng 500 nổ mạnh (bán kính 8 m), gấp đôi lên công trình; sau cảnh báo có đồng hồ bay."),
+            ["radio.bigattack.typhon_underwater_launch"] = ("{@lyhan}: \"Launch depth. Six for their headquarters.\"", "{@lyhan}: \"Lên độ sâu phóng. Sáu quả cho sở chỉ huy của chúng.\""),
+            ["guide.bigattack.typhon_underwater_launch.how"] = ("Six missiles at your base: about 600 high explosive each (9 m), double on buildings; a clock shows their flight after the 4 s warning.", "Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 600 nổ mạnh (bán kính 9 m), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay."),
             ["guide.bigattack.typhon_underwater_launch.dodge"] = ("Move units off the marked points; towers cannot move, so cover them.", "Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn."),
             ["guide.bigattack.typhon_underwater_launch.stop"] = ("Break the launch doors during the warning (they show above the water), or shoot the missiles down (250 health each).", "Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu)."),
-            ["bigattack.ixion_crush_charge"] = ("Crushing Charge", "Lao nghiền"),
-            ["bigattack.ixion_crush_charge.cancelled"] = ("Charge thrown off its line", "Cú lao đã bị chệch"),
-            ["radio.bigattack.ixion_crush_charge"] = ("Command: Ixion is lining up a charge. Off the marked line!", "Chỉ huy: Ixion đang lấy đà lao. Ra khỏi đường đánh dấu!"),
-            ["guide.bigattack.ixion_crush_charge.how"] = ("It charges straight down a marked 80 m line: about 900 to every unit on it, stunned for 2 s.", "Nó lao thẳng theo đường đánh dấu dài 80 m: khoảng 900 mỗi đơn vị trên đường, choáng 2 giây."),
-            ["guide.bigattack.ixion_crush_charge.dodge"] = ("Step sideways off the line: it cannot turn.", "Bước ngang ra khỏi đường: nó không xoay kịp."),
-            ["guide.bigattack.ixion_crush_charge.stop"] = ("Break a big wheel during the warning: the charge slews off and stops.", "Phá một bánh lớn lúc cảnh báo: cú lao bị chệch và dừng."),
-            ["bigattack.caspian_antiship_volley"] = ("Anti-Ship Volley", "Loạt tên lửa chống hạm"),
-            ["bigattack.caspian_antiship_volley.cancelled"] = ("Volley cancelled", "Đã chặn loạt tên lửa"),
-            ["radio.bigattack.caspian_antiship_volley"] = ("{@lyhan}: \"Four for the shore. Fire.\"", "{@lyhan}: \"Bốn quả vào bờ. Bắn.\""),
-            ["guide.bigattack.caspian_antiship_volley.how"] = ("Four anti-ship missiles at the shore and your base: about 500 high explosive each (high penetration).", "Bốn tên lửa chống hạm vào bờ và căn cứ ta: mỗi quả khoảng 500 nổ mạnh (xuyên cao)."),
-            ["guide.bigattack.caspian_antiship_volley.dodge"] = ("Move units off the marked points.", "Đưa quân ra khỏi các điểm đánh dấu."),
-            ["guide.bigattack.caspian_antiship_volley.stop"] = ("Break the missile launcher, or shoot the missiles down (220 health each).", "Phá bệ tên lửa, hoặc bắn hạ tên lửa (mỗi quả 220 máu)."),
-            ["bigattack.bastion_mk0_mortar"] = ("Mortar Barrage", "Pháo cối tổng lực"),
-            ["bigattack.bastion_mk0_mortar.cancelled"] = ("Mortar barrage cancelled", "Đã hủy pháo cối tổng lực"),
-            ["radio.bigattack.bastion_mk0_mortar"] = ("Command: the prototype's mortar is walking three bombs at us. Watch the marks!", "Chỉ huy: cối của bản nguyên mẫu đang bắn ba quả tiến dần về phía ta. Để ý các điểm đánh dấu!"),
-            ["guide.bigattack.bastion_mk0_mortar.how"] = ("Three 240 mm bombs walking down a line; double on buildings and towers.", "Ba quả cối 240 mm tiến dần theo một đường; gấp đôi lên công trình và tháp."),
-            ["guide.bigattack.bastion_mk0_mortar.dodge"] = ("Each point has its own countdown: step aside from the line.", "Mỗi điểm có đếm ngược riêng: bước ngang ra khỏi đường."),
-            ["guide.bigattack.bastion_mk0_mortar.stop"] = ("Break the mortar during the warning.", "Phá khẩu cối lúc cảnh báo."),
-            ["bigattack.fenrir_rocket_rain"] = ("Rocket Rain", "Mưa rốc-két"),
-            ["bigattack.fenrir_rocket_rain.cancelled"] = ("Rocket rain cancelled", "Đã chặn mưa rốc-két"),
-            ["radio.bigattack.fenrir_rocket_rain"] = ("Orlov: \"Sixteen, then home.\"", "Orlov: \"Mười sáu quả, rồi về.\""),
-            ["guide.bigattack.fenrir_rocket_rain.how"] = ("Sixteen 122 mm rockets over a circle round your group, eight from each box.", "Mười sáu rốc-két 122 mm rải khắp vùng tròn quanh cụm quân, mỗi hộp tám quả."),
-            ["guide.bigattack.fenrir_rocket_rain.dodge"] = ("Leave the marked circle.", "Ra khỏi vùng tròn đánh dấu."),
-            ["guide.bigattack.fenrir_rocket_rain.stop"] = ("Break a rocket box during the warning: half the rain; both, none.", "Phá một hộp rốc-két lúc cảnh báo: còn một nửa; phá cả hai thì hết."),
-            ["bigattack.scylla_cruise"] = ("Cruise Missiles", "Tên lửa hành trình"),
-            ["bigattack.scylla_cruise.cancelled"] = ("Cruise missiles cancelled", "Đã chặn tên lửa hành trình"),
-            ["radio.bigattack.scylla_cruise"] = ("Kessler: \"Three from Scylla. Their base.\"", "Kessler: \"Ba quả từ Scylla. Căn cứ của chúng.\""),
-            ["guide.bigattack.scylla_cruise.how"] = ("Three cruise missiles at your HQ, towers and groups in the base, twice as hard on buildings.", "Ba tên lửa hành trình vào HQ, tháp và cụm quân trong căn cứ, gấp đôi lên công trình."),
-            ["guide.bigattack.scylla_cruise.dodge"] = ("Move units off the marked points; cover the towers.", "Đưa quân ra khỏi điểm đánh dấu; che chắn các tháp."),
-            ["guide.bigattack.scylla_cruise.stop"] = ("Break the missile cells during the warning, or shoot the missiles down.", "Phá ống phóng lúc cảnh báo, hoặc bắn hạ tên lửa."),
-            ["bigattack.locust_swarm"] = ("Drone Swarm", "Bầy drone"),
-            ["bigattack.locust_swarm.cancelled"] = ("Drone swarm cancelled", "Đã chặn bầy drone"),
-            ["radio.bigattack.locust_swarm"] = ("Dr Venn: \"Ten more. Find the heavy ones.\"", "Tiến sĩ Venn: \"Thêm mười con. Tìm lũ xe nặng.\""),
-            ["guide.bigattack.locust_swarm.how"] = ("Ten drones dive on the heaviest vehicles of a group, from the roof.", "Mười drone bổ nhào vào các xe nặng nhất của một cụm, đánh từ nóc."),
-            ["guide.bigattack.locust_swarm.dodge"] = ("Keep anti-air, C-RAM or jammers with your heavy tanks.", "Để phòng không, C-RAM hoặc xe gây nhiễu đi cùng xe tăng nặng."),
-            ["guide.bigattack.locust_swarm.stop"] = ("Break the drone bay during the warning, or shoot the drones down.", "Phá khoang drone lúc cảnh báo, hoặc bắn hạ drone."),
-            ["bigattack.behemoth_mk2_barrage"] = ("Main Gun Barrage", "Loạt pháo chính"),
-            ["bigattack.behemoth_mk2_barrage.cancelled"] = ("Barrage cancelled", "Đã chặn loạt pháo"),
-            ["radio.bigattack.behemoth_mk2_barrage"] = ("Varga: \"Four rounds. Make them count.\"", "Varga: \"Bốn phát. Phát nào cũng phải trúng.\""),
-            ["guide.bigattack.behemoth_mk2_barrage.how"] = ("Four heavy rounds from the main gun over your group.", "Bốn phát pháo nặng từ pháo chính vào cụm quân."),
-            ["guide.bigattack.behemoth_mk2_barrage.dodge"] = ("Leave the marked circle.", "Ra khỏi vùng tròn đánh dấu."),
-            ["guide.bigattack.behemoth_mk2_barrage.stop"] = ("Break the main gun during the warning.", "Phá pháo chính lúc cảnh báo."),
-            ["bigattack.icarus_mk0_rods"] = ("Tungsten Rods", "Mưa thanh vonfram"),
-            ["bigattack.icarus_mk0_rods.cancelled"] = ("Rods called off", "Đã chặn thanh vonfram"),
-            ["radio.bigattack.icarus_mk0_rods"] = ("Aurel: \"Three rods. A demonstration.\"", "Aurel: \"Ba thanh. Coi như trình diễn.\""),
-            ["guide.bigattack.icarus_mk0_rods.how"] = ("Three tungsten rods, one on each of your densest groups (the heaviest armour first), from the roof.", "Ba thanh vonfram, mỗi thanh vào một cụm quân đông nhất (giáp dày nhất trước), đánh từ nóc."),
-            ["guide.bigattack.icarus_mk0_rods.dodge"] = ("Get out of the rings.", "Ra khỏi các vòng đánh dấu."),
-            ["guide.bigattack.icarus_mk0_rods.stop"] = ("Break the satellite uplink during the warning.", "Phá ăng-ten liên kết vệ tinh lúc cảnh báo."),
-            ["bigattack.argus_fire_call"] = ("Fire Call", "Gọi pháo"),
-            ["bigattack.argus_fire_call.cancelled"] = ("Fire call cut off", "Đã chặn đòn gọi pháo"),
-            ["radio.bigattack.argus_fire_call"] = ("Raven: \"Argus to the batteries: grid marked. Fire for effect.\"", "Raven: \"Argus gọi các khẩu đội: đã đánh dấu tọa độ. Bắn hiệu quả.\""),
-            ["guide.bigattack.argus_fire_call.how"] = ("It calls the enemy's artillery on a marked area: ten shells over 4 s.", "Nó gọi pháo binh địch vào vùng đánh dấu: mười quả trong 4 giây."),
-            ["guide.bigattack.argus_fire_call.dodge"] = ("Leave the marked circle.", "Ra khỏi vùng tròn đánh dấu."),
-            ["guide.bigattack.argus_fire_call.stop"] = ("Break the radar during the warning.", "Phá radar lúc cảnh báo."),
 
             // ---------------------------------------------------------------- prompt 20 pass 3: Boss Hunt (N)
             ["hunt.full"] = ("Full Boss Hunt", "Săn trùm toàn tập"),
@@ -464,19 +410,13 @@ namespace MachineBrigade.Game.Hud
                 "[[Mini boss]] · prototype Behemoth · unfinished\n" +
                 "How it fights: the Behemoth's first build, slower than the finished one: its main gun, two flank guns and a rocket pod on the same hull.\n" +
                 "Strong / weak: front armour [[3]]; no flak and no protection system, so aircraft and missiles meet nothing.\n" +
-                "Tip: bring aircraft and missiles; break the [[main gun]] to stop its barrage.",
+                "Tip: bring aircraft and missiles; break the [[main gun]], its heaviest gun.",
                 "[[Mini boss]] · Behemoth nguyên mẫu · chưa hoàn thiện\n" +
                 "Cách đánh: bản lắp đầu tiên của Behemoth, chậm hơn bản hoàn chỉnh: pháo chính, hai pháo sườn và một giàn rốc-két trên cùng thân xe.\n" +
                 "Mạnh / yếu: mặt trước giáp cấp [[3]]; không có pháo cao xạ và hệ thống bảo vệ chủ động, nên máy bay và tên lửa không gặp cản trở nào.\n" +
-                "Mẹo: mang máy bay và tên lửa; phá [[pháo chính]] để chặn loạt pháo lớn."),
-            ["guide.parts.tip.behemoth_mk0"] = ("Tip: the [[main gun]] fires its barrage; with both [[flank guns]] broken it only fires ahead.", "Mẹo: [[pháo chính]] bắn loạt pháo lớn; phá cả hai [[pháo sườn]] thì nó chỉ còn bắn được phía trước."),
+                "Mẹo: mang máy bay và tên lửa; phá [[pháo chính]], khẩu mạnh nhất của nó."),
+            ["guide.parts.tip.behemoth_mk0"] = ("Tip: the [[main gun]] is its heaviest gun; with both [[flank guns]] broken it only fires ahead.", "Mẹo: [[pháo chính]] là khẩu mạnh nhất; phá cả hai [[pháo sườn]] thì nó chỉ còn bắn được phía trước."),
             ["radio.varga.behemoth_mk0"] = ("Varga: \"The first one off the line. Let's see if it runs.\"", "Varga: \"Chiếc đầu tiên ra khỏi dây chuyền. Xem nó có chạy được không.\""),
-            ["bigattack.behemoth_mk0_barrage"] = ("Prototype Barrage", "Loạt pháo thử nghiệm"),
-            ["bigattack.behemoth_mk0_barrage.cancelled"] = ("Barrage cancelled", "Đã chặn loạt pháo"),
-            ["radio.bigattack.behemoth_mk0_barrage"] = ("Varga: \"Two pairs. Test fire.\"", "Varga: \"Hai cặp. Bắn thử.\""),
-            ["guide.bigattack.behemoth_mk0_barrage.how"] = ("Two pairs of heavy rounds from the main gun over your group.", "Hai cặp đạn pháo nặng từ pháo chính vào cụm quân của bạn."),
-            ["guide.bigattack.behemoth_mk0_barrage.dodge"] = ("Leave the marked circle.", "Ra khỏi vùng tròn đánh dấu."),
-            ["guide.bigattack.behemoth_mk0_barrage.stop"] = ("Break the main gun during the warning.", "Phá pháo chính lúc cảnh báo."),
 
             // Morrigan: Wolff's own stealth fighter.
             ["unit.morrigan"] = ("Morrigan · Raven's Fighter", "Morrigan · Tiêm kích của Raven"),
@@ -486,27 +426,15 @@ namespace MachineBrigade.Game.Hud
                 "[[Mini boss]] · stealth fighter · Wolff's own\n" +
                 "How it fights: faster than any fighter of ours and [[stealthy]]: seen only close up, or for a moment after it fires. Air-to-air missiles from two bays hunt your aircraft; a guided bomb hunts your anti-air.\n" +
                 "Strong / weak: very fast and hard to see; thin armour, and its bays and engines break.\n" +
-                "Tip: keep radar and anti-air near your aircraft so it is seen; shoot the moment it fires; break its [[missile bays]] to stop its salvo.",
+                "Tip: keep radar and anti-air near your aircraft so it is seen; shoot the moment it fires; break its [[missile bays]] to silence its missiles.",
                 "[[Mini boss]] · tiêm kích tàng hình · máy bay riêng của Wolff\n" +
                 "Cách đánh: nhanh hơn mọi tiêm kích của ta và [[tàng hình]]: chỉ bị phát hiện ở cự ly gần, hoặc trong chốc lát sau khi khai hỏa. Tên lửa không đối không từ hai khoang săn máy bay của bạn; bom dẫn đường săn xe phòng không.\n" +
                 "Mạnh / yếu: rất nhanh và khó thấy; giáp mỏng, các khoang và động cơ phá được.\n" +
-                "Mẹo: giữ ra-đa và phòng không gần máy bay để thấy được nó; bắn ngay lúc nó khai hỏa; phá các [[khoang tên lửa]] để chặn loạt phóng."),
-            ["guide.parts.tip.morrigan"] = ("Tip: break both [[missile bays]] and its salvo is gone; broken [[engines]] slow it down.", "Mẹo: phá cả hai [[khoang tên lửa]] là mất loạt phóng; phá [[động cơ]] thì nó chậm lại."),
+                "Mẹo: giữ ra-đa và phòng không gần máy bay để thấy được nó; bắn ngay lúc nó khai hỏa; phá các [[khoang tên lửa]] để chặn tên lửa của nó."),
+            ["guide.parts.tip.morrigan"] = ("Tip: break both [[missile bays]] and its missiles are gone; broken [[engines]] slow it down.", "Mẹo: phá cả hai [[khoang tên lửa]] là hết tên lửa; phá [[động cơ]] thì nó chậm lại."),
             ["radio.quaden.morrigan"] = ("Raven: \"Morrigan is up. I'll take this one myself.\"", "Raven: \"Morrigan đã cất cánh. Trận này ta tự bay.\""),
             ["radio.quaden.morrigan.duel"] = ("Raven: \"Just you and me, Hawk. No escorts, no guns on the ground.\"", "Raven: \"Chỉ có ta và cậu, Hawk. Không hộ tống, không súng dưới đất.\""),
             ["radio.quaden.morrigan.dark"] = ("Raven: \"Going dark. Find me if you can.\"", "Raven: \"Tắt tín hiệu. Tìm được ta thì tìm đi.\""),
-            ["bigattack.morrigan_salvo"] = ("Raven's Salvo", "Loạt phóng của Raven"),
-            ["bigattack.morrigan_salvo.cancelled"] = ("Salvo cancelled", "Đã chặn loạt phóng"),
-            ["radio.bigattack.morrigan_salvo"] = ("Raven: \"Every one of you, on my screen. Fox three.\"", "Raven: \"Tất cả các người đều trên màn hình của ta. Phóng.\""),
-            ["guide.bigattack.morrigan_salvo.how"] = ("Air-to-air missiles from both bays at up to six of your aircraft, and two guided bombs on your strongest anti-air. They home in: there is no circle to leave.", "Tên lửa không đối không từ hai khoang nhắm tới sáu máy bay của bạn, cùng hai quả bom dẫn đường vào xe phòng không mạnh nhất. Chúng tự dẫn: không có vùng tròn nào để tránh."),
-            ["guide.bigattack.morrigan_salvo.dodge"] = ("Keep anti-air and point defence near your aircraft to shoot the rounds down.", "Giữ phòng không và hệ thống đánh chặn gần máy bay để bắn hạ các quả đạn."),
-            ["guide.bigattack.morrigan_salvo.stop"] = ("Break both missile bays during the warning, or hurt it hard while it fires: it breaks off.", "Phá cả hai khoang tên lửa lúc cảnh báo, hoặc gây sát thương nặng lúc nó khai hỏa: nó sẽ bỏ dở."),
-            ["bigattack.morrigan_duel_salvo"] = ("Duel Salvo", "Loạt phóng tay đôi"),
-            ["bigattack.morrigan_duel_salvo.cancelled"] = ("Salvo cancelled", "Đã chặn loạt phóng"),
-            ["radio.bigattack.morrigan_duel_salvo"] = ("Raven: \"Six on your wing, Hawk. Break.\"", "Raven: \"Sáu quả sau cánh cậu đấy, Hawk. Né đi.\""),
-            ["guide.bigattack.morrigan_duel_salvo.how"] = ("In the duel: air-to-air missiles from both bays at up to six of your aircraft. They home in.", "Trong trận tay đôi: tên lửa không đối không từ hai khoang nhắm tới sáu máy bay của bạn. Chúng tự dẫn."),
-            ["guide.bigattack.morrigan_duel_salvo.dodge"] = ("Spread your aircraft; flares and a wingman soak some of them.", "Dàn máy bay ra; mồi bẫy nhiệt và máy bay yểm trợ gánh bớt một phần."),
-            ["guide.bigattack.morrigan_duel_salvo.stop"] = ("Break both missile bays during the warning.", "Phá cả hai khoang tên lửa lúc cảnh báo."),
             ["guide.bigattack.target.air"] = ("your aircraft and anti-air", "máy bay và xe phòng không của bạn"),
             ["guide.bigattack.target.aironly"] = ("your aircraft", "máy bay của bạn"),
 

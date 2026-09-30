@@ -18,7 +18,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(DialogueOutcome.Shown, d.Say(Line(DialoguePriority.Event), 0));
             Assert.AreEqual(DialogueOutcome.Dropped, d.Say(Line(DialoguePriority.Reaction), 1), "a lower line while one is up: dropped, not queued");
             // A warning waits, then cuts the event line short (after a second on show) and follows the fade.
-            Assert.AreEqual(DialogueOutcome.Queued, d.Say(Line(DialoguePriority.Warning, "radio.bigattack.tempest_rail"), 1.2));
+            Assert.AreEqual(DialogueOutcome.Queued, d.Say(Line(DialoguePriority.Warning, "radio.bigattack.doomsday_missile"), 1.2));
             Assert.AreEqual(DialogueOutcome.Dropped, d.Say(Line(DialoguePriority.Event), 1.3), "an event line while a warning waits");
             d.Tick(1.3);
             Assert.IsNull(d.Current, "cut short");
@@ -92,7 +92,7 @@ namespace MachineBrigade.Tests
             var heard = DialogueRules.FromEvent("radio.khai.c9m02.1", 0, 1f, 1, default, null);
             Assert.AreEqual(DialoguePriority.Story, heard.Priority);
             Assert.IsTrue(heard.Moment);
-            Assert.AreEqual(DialoguePriority.Warning, DialogueRules.FromEvent("radio.bigattack.tempest_rail", 1, 0f, 0, default, null).Priority, "by key");
+            Assert.AreEqual(DialoguePriority.Warning, DialogueRules.FromEvent("radio.bigattack.doomsday_missile", 1, 0f, 0, default, null).Priority, "by key");
         }
 
         [Test]
@@ -104,11 +104,11 @@ namespace MachineBrigade.Tests
                 foreach (var vi in new[] { false, true })
                 {
                     Strings.Vietnamese = vi;
-                    var kessler = DialogueRules.Line("radio.bigattack.supergun_heavy", team: 1);
+                    var kessler = DialogueRules.Line("radio.bigattack.leviathan_volley", team: 1);
                     Assert.AreEqual("kessler", kessler.Speaker);
                     Assert.IsTrue(kessler.Enemy);
                     Assert.IsFalse(kessler.Words.Contains("Kessler") || kessler.Words.StartsWith("\""), kessler.Words);
-                    var command = DialogueRules.Line("radio.bigattack.tempest_rail", team: 1);
+                    var command = DialogueRules.Line("radio.bigattack.doomsday_missile", team: 1);
                     Assert.AreEqual("hq", command.Speaker);
                     Assert.IsFalse(command.Enemy, "Command speaks for us whatever the team");
                     Assert.AreEqual(Strings.Get("dialogue.name.hq"), command.Name);

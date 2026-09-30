@@ -267,7 +267,9 @@ namespace MachineBrigade.Tests
                     var bonus = 1f;
                     foreach (var b in w.Bonuses)
                         if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                    dps[a.ToString()] += raw * Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
+                    // Prompt 25 C1: a boss's own weapon damage is the ground's only.
+                    var paper = air ? MachineBrigade.Sim.Combat.FirePower.SustainedAir(w, v) : raw;
+                    dps[a.ToString()] += paper * Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
                 }
             }
             return new Dictionary<string, object>

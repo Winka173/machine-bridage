@@ -11260,3 +11260,154 @@ the scales and capsules.
 `Tools/art/resolve_merge.py`), `Assets/MachineBrigade/Resources/UI/Cards/manifest.json` and the thirteen card PNGs,
 `Assets/MachineBrigade/Tests/EditMode/ModelTests.cs` (three TestCase numbers), `Docs/ASSET_DEBT.md`,
 `Docs/CHANGELOG.md`, this file.
+
+## 25C. Bosses and super weapons (C1, C2) (2026-09-30)
+
+Prompt 25 D (tasks C1 and C2 of "Việc cho agent"): the sheet "Boss đề xuất" (and "Boss" for the bosses' weapon lists),
+applied by `Tools/balance/import_xlsx.py --upto C1` and `--upto C2` (`Tools/balance/steps_c.py`); the rows are in
+`Docs/balance/apply-report.md` between `<!-- import_c:begin -->` and `<!-- import_c:end -->`. Every number is the
+sheet's; the script holds the rules (which weapon a row's words mean, where a new mount goes, which fields a super
+weapon's words fill). A second run changes nothing.
+
+### C1 Health
+
+- **The sheet's "Máu đề xuất (gốc)"** is the boss before the campaign's scale, as its "Máu hiện" column shows today's
+  data: the data's health x the bosses' toughness (0.85) x a mini boss's rank share (0.55). The data holds the sheet's
+  number over both, to the nearest 50: Icarus 26,000 shown (30,600 in the data, the most of any boss), Daedalus
+  24,000 (was 9,435), Roc 23,000, Typhon 22,000, Kronos 21,000, Nemesis 20,000, Moloch 19,000, the mothership 18,000,
+  Leviathan 17,000, Jötunn 15,000, Behemoth 13,000, Bastion 12,000; the minis 6,000-13,000 (Gungnir 13,000, Spectre
+  and Icarus Mk.0 12,500, Bastion Mk.0 6,500 (was 12,576), Scylla 9,000 (was 13,370)).
+- **The rows A1 left to C1** ("Thay đổi chi tiết": a boss's health and weapons; "Kiểm tra từng mục": the Daedalus,
+  Bastion Mk.0 and Scylla health rows A1-review deferred) are answered by the same boss's "Boss đề xuất" row, which
+  gives exact numbers where they give "~". Bastion Mk.0's "~6.000" there and 6,500 here: "Boss đề xuất" is the task's
+  sheet and 6,500 sits in the "Boss" sheet's range (5,400-7,200). Its armour ("trước 5→4") was A1 Thấp's.
+
+### C1 Damage a second (`weaponDamage`)
+
+- **The target.** "DPS thường mục tiêu (vs giáp 3)" is the boss's ordinary fire against armour 3 on the sheet's own
+  formula (every weapon's sustained damage x its type's factor on the ground x the penetration step against level 3,
+  sheet "Hệ số"; the "DPS nặng hiện" column is that sum today), before its rank's scaling (x1.4 damage, x1.25 rate).
+- **How it is met.** A new boss field, `weaponDamage` (`VehicleDef.WeaponDamage`, never inherited by a variant): the
+  boss's ordinary weapons hit that many times as hard, so the sum comes to the target once the row's weapons are added.
+  Only rounds the combat system fires at the ground take it (an aircraft is hit at the weapon's own numbers, or
+  Morrigan's missiles would hit fighters six times as hard); what the boss system fires counts at its own numbers
+  (a ship's laid main battery, the cruise missiles, the supergun's shell) and is taken off the target first; the
+  crusher (Kronos's wheel) is a contact weapon and is left out. `FirePower.Sustained` counts it (the Guide and the
+  design document's DPS), `FirePower.SustainedAir` does not.
+- **The multipliers** (sum against armour 3 before -> after): Typhon 9.08 (91 -> 640), Morrigan 6.32 (60 -> 380),
+  Daedalus 5.91 (118 -> 700), Argus 4.36, Caspian 4.05, Kronos 3.75 (160 -> 600), Ixion 3.54, Gungnir 3.52 (C1; its
+  gun in C2 lowers it), Icarus Mk.0 3.33, Moloch 2.21, Roc 2.16, Nemesis 2.07, Behemoth Mk.II 2.05, Fenrir 1.99, the
+  hovercraft 1.99, Locust 1.87, Icarus 1.71 (469 -> 800), Spectre 1.70, Atlas 1.68, Bastion Mk.0 1.52, Scylla 1.40,
+  Harpy 1.37, Jötunn 1.33, Tartarus 1.22, Leviathan 1.12, Bastion 1.08, Inferno 1.07, the mothership 1.03, Behemoth
+  Mk.0 1.02, Juggernaut and Hive 1.0, Tempest 0.97, Behemoth 0.93 (452 -> 420: the new Kornet takes it past the target).
+  The largest are bosses whose fire the sheet counts but the data puts elsewhere: Typhon's only ordinary ground gun is
+  its 100 mm (its fire is the cruise missile and the super weapon), Daedalus's four guns under a pod carrier. They are
+  the sheet's formula; the battle-length measurement below judges them (prompt 25 D.3: health first, then damage).
+
+### C1 Weapons ("Vũ khí thêm / đổi")
+
+- **Where a new mount goes.** Existing weapons by id, at the calibre and role the row names: on the boss's hull, or,
+  for a main boss with mini variants, on a part the variants leave off (the Behemoth's Kornet on its 120 mm turret, the
+  fortress's 2A38 by its right flak, Roc's 30 mm by the bomb bay, Bastion's NSVs with the rear turrets, Leviathan's SAM
+  with its radar, the mothership's third Lancet bay in its UAV bay), so a variant keeps its own loadout (a mount on no
+  part stays on a variant). New mounts are appended, so every part's mount index stays; the script refuses to add one
+  where an index written by hand points past the boss's own list (a library part's gun), and checks the rules
+  BossPartsTests holds (no mount on two parts, every part doing something, the crash guns, the big attack's parts).
+  No part count changes. The models have no new turrets yet: the mounts fire from their slot's muzzle (model work, B2).
+- **Added:** Juggernaut a second twin 35 mm ("một toa cao xạ"), Ixion two NSV 12.7 mm, Caspian two ZU-23-2, Harpy a
+  12.7 mm door gun each side, Daedalus two 57 mm (the 2A91) under the belly, Behemoth a twin Kornet, Jötunn a twin
+  2A38 anti-drone turret, Roc two twin 2A42 under the belly, Moloch two ZU-23-2 on the roof, Bastion two NSV, Kronos
+  two automatic 57 mm, Leviathan a 9M317 SAM, the mothership a third Lancet bay. Already in: Daedalus's two
+  point-defence lasers, Nemesis's 152 mm car, the hovercraft's AK-630s (the gunboat's weapon).
+- **Icarus:** the two Rh-120 and the two Oerlikon 35 mm go, two coilguns (the Tempest's) fire from the start; the
+  wreck's four ordinary turrets (two Bofors on the hull, the two crash turrets) wake in phase 3 (`crash.guns` 3-6).
+  Icarus Mk.0 keeps a point-defence laser in place of the satellite uplink (its rods are gone), with Icarus's active
+  protection at its own size (19.5 m).
+- **Scylla:** the 460 mm goes for a twin AK-130 (`naval_130_twin`: the row's 160 a round, 1 a second in bursts of two
+  on A2's rule, a 4 m blast, 90 m), fired by the combat system (the 460's salvo mechanism is gone: `"salvo": null`);
+  its anti-ship missile is its cruise missile at the row's 450 every 15 s. A5 leaves the AK-130's blast to C1.
+- **Typhon's short-range cruise missile** "bắn thường khi nổi" is its cruise missile (a submarine fires nothing under
+  water) at the row's 320 every 12 s. **Caspian's one anti-ship missile a pass** is a cruise missile of its own, one
+  every pass (6 s in, 20 s out), at its old volley's 500; its launcher now carries it (broken: none).
+- **The Kalibr's blast** (the boss system's cruise missile, which A5 left to C1): A5's rule for a 500 kg round, 10 m
+  (was 15), on the weapon, Leviathan's cruise and its warning ring (10 m, 12 m with the 2 m it may fall off the mark).
+
+### C1 Super weapons
+
+Only the twelve main bosses have one: prompt 18's big attack with the row's numbers (the data holds the sheet's; the
+main rank's scale, damage x1.2 and cooldown x0.85, and the difficulty's stay on top in battle, as for every attack).
+- Behemoth `behemoth_barrage`: 6 x 400 (three pairs), 8 m, every 50 s, 3.5 s; "vạch 6 vòng tròn": each round's own
+  ring is rolled at the warning and drawn (`"rings": true`, `BigStrikeDef.Rings`), where it then lands.
+- Jötunn `fortress_203_barrage` (new, for the 58-damage rocket rain): 4 x 700 from its two 203 mm howitzers, two each,
+  8 m, over the Behemoth barrage's 14 m circle, every 55 s, 4 s.
+- The mothership `carrier_heavy_bomb`: a glide bomb that can be shot down, a missile of 1 x 1,600, 16 m, at least 3 s
+  in flight, 250 health (the big attacks' missiles'), every 60 s (its warning, not in the row, stays 3.5 s).
+- Nemesis `doomsday_missile`: 1 x 2,500, 18 m, every 90 s, a 6 s flight clock (was 12; farther off it flies at the
+  missiles' 24 m/s), shot down by PAC-3 and Iron Dome (and any anti-air under it, as every big attack's missile).
+- Icarus `bug_rod_rain`: 7 x 1,800, 7 m, every 60 s, 4 s; in phase 3 nine every 50 s (`"late"`: from a phase on, its
+  own cooldown and rounds; `BigAttackDef.LatePhase`, shown in the Guide); smoke and APS do not stop it, shield domes
+  absorb a part (as before).
+- Bastion `bastion_420_shell` (new, for the walking mortar): one 420 mm bomb of 2,000, 14 m, x2 on structures, a red
+  ring 4 s ahead, every 60 s; the shield generator's dome absorbs it (every blast goes through the domes); the mortar
+  carries it: broken, the attack is gone until its one self-repair.
+- Roc `airship_carpet`: 16 x 350, 7 m, along an 80 x 12 m strip, every 70 s, 4 s.
+- Leviathan `leviathan_volley`: 9 x 950 (three a turret), 13 m, along a 60 x 12 m strip (was a 24 m circle), every
+  70 s, 4 s.
+- Moloch `moloch_factory_dump`, Kronos `kronos_bucket_sweep`: as they were (6 vehicles and 8 x 300; a 120 deg x 25 m
+  sweep of 1,200), every 75 and 60 s, 4 s.
+- Daedalus `daedalus_mass_drop`: 8 pods x 500, 6 m, each landing a vehicle, every 70 s, 4 s (a broken bay: four).
+- Typhon `typhon_underwater_launch`: 6 x 600, 9 m, every 75 s, 4 s and a flight clock.
+- **Mini bosses** lose theirs: all 21 (the rail supergun's, the Tempest's railgun shot, the Earth Worm's quake, Morrigan's
+  salvo and its duel's, the variants'...); the 22 entries no boss names any more leave `bigAttacks`, with their words.
+  What made a mini boss itself stays as ordinary mechanisms: the supergun's shell, the burrow, the landing, the
+  command aura, the spotting aura, the orbit. The mini rank's big-attack scale stays in the data, unused. No mission
+  event or campaign entry named a big attack (prompt 23's events and `campaign.json` checked).
+- **Warning sounds.** Each super weapon has its own warning, a synthesised alarm (`SoundSynth.SuperWarning`, recipes
+  in `AudioDirector.SuperCues`: pitch, rhythm, sweep, timbre) in place of the siren: the Behemoth's low horn, Jötunn's
+  three square pulses, the glide bomb's falling whistle, Nemesis's rising wail, Icarus's fast electronic chirps,
+  Bastion's single deep buzz, Roc's klaxon, Leviathan's ship's horn, Moloch's two-tone factory alarm, Daedalus's rising
+  chirps, Kronos's grinding pulses, Typhon's sonar pings. Not listened to under the owner's no-test rule.
+- **Words.** The Guide calls it "Super weapon" / "Siêu vũ khí"; every super weapon's name, radio line and Guide lines
+  (how, getting out, stopping it) give the sheet's numbers; the Guide cards and part tips of every boss whose weapons
+  or attack changed are rewritten (both languages), and no mini boss's words mention a big attack. The "In action"
+  preview runs the live sim, so it follows the data.
+
+### C2 The Gungnir's 80 cm gun and the Kronos's bucket wheel as weapons
+
+- **Gungnir.** Its 80 cm gun (`supergun_800`) is its main weapon now (was `none`), laid (`"laid": true`: the combat system
+  never fires it; its shot does): the row's 1 x 900 every 25 s with a 12 m blast (was 1,400 every 20 s over 14 m; the
+  sheet's blast for a boss system's round, which A5 left to C1/C2). The bombard (the shot at the biggest group anywhere,
+  3 s ahead, wide once its fire control falls) fires with its gun's numbers: with no "damage", "radius" or "every" of
+  its own it takes the weapon's (`BombardDef`, filled in once the weapons are read), so the weapons tables, the Guide and
+  the shot cannot disagree. Its warning ring: the 12 m blast, 15 m with the 3 m it may fall off. Its `weaponDamage`
+  falls to 3.10 (the gun's 36 a second counts at its own numbers).
+- **Kronos.** Its bucket wheel is a weapon (`bucket_wheel`: kinetic, penetration 4, x3 on structures, 900 a second
+  within 6 m: the crusher's numbers, which the sheet leaves as they are), a mount on the wheel's part (broken, the
+  crushing stops, as before), laid. The crusher is the weapon (`"crush": { "weapon": "bucket_wheel" }`): with no "dps"
+  or "reach" of its own it takes the weapon's (damage over cooldown, range). It is a mount, not the main weapon: the
+  main mount aims the turret and names the boss's gun in the Guide, and the 30 mm stays that. Ixion's wheels stay a
+  crusher of their own numbers.
+- Both now show in the design document's weapons table and a boss's Guide lines (a mount that does damage); the
+  document's DPS for them is the weapon's (the wheel's 900 is at the front of its boom only, and is not counted in the
+  sheet's ordinary damage a second above).
+- **Test** (written, not run): `Prompt25BossTests.TheGungnirsGunAndTheKronossBucketWheelAreWeapons`.
+
+### Tests (written, not run: the owner's rule)
+
+- New, `Prompt25BossTests`: no mini boss has a super weapon (nor in a duel) and every big attack left is a main boss's;
+  each main boss's super weapon has the sheet's shape, rounds, damage, blast, cycle, warning and counter (the parts
+  carrying it, a missile's health and flight, the rings, the late phase), its words and its own warning sound; the
+  twelve sounds differ; the sheet's health.
+- Brought in line: `BigAttackTests` (main bosses only; the part test on Jötunn's howitzers; the ring zones; the
+  Tempest's EMP and smoke tests gone with its attack), `Prompt20BossTests` (Ixion has no charge; Daedalus four pods of
+  eight), `Prompt22ContentTests` (Behemoth Mk.0 and Morrigan without a big attack; Morrigan's salvo test replaced),
+  `OrbitalBossTests` (seven rods of 1,800, 7 m), `DialogueTests` (radio lines of attacks that still exist).
+- Likely to need a look once run: `TowerBranchTests`' PAC-3 against the Doomsday missile (a 6 s clock, about 8 s from
+  its test distance, was 12), `BigAttackTests.EachBigAttackAtItsCentreHurtsButNeverWipesOutAGroup` (Bastion's 2,000
+  and the mothership's 1,600 against towers), the campaign and Boss Hunt battles, and anything reading the old health.
+
+### To measure in the test phase
+
+- **Boss battle lengths** (prompt 25 D.3, prompt 20's targets): mini bosses about 1.5-3 minutes, main bosses about
+  5-8, over 5 seeds (`BossBalanceMeasure` with `MB_BALANCE=1`, `MB_SEEDS`, the campaign's boss missions); if off,
+  health first, then `weaponDamage`. The largest multipliers above (Typhon, Morrigan, Daedalus) first.

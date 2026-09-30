@@ -120,13 +120,12 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(mk0.Mounts.Any(m => m.Weapon.Id == "boss_flak"), "no flak");
             Assert.Greater(mk0.HiddenNodes.Count, 0, "the dropped weapons are hidden on the model");
             Assert.Less(mk0.Scale, main.Scale, "smaller than the Behemoth");
-            Assert.AreEqual("behemoth_mk0_barrage", mk0.BigAttack.Id);
-            Assert.AreEqual(4, mk0.BigAttack.Strikes[0].FullCount, "two pairs of the Behemoth's six rounds");
+            Assert.IsNull(mk0.BigAttack, "prompt 25 C1: a mini boss has no super weapon (its barrage is gone)");
             Assert.AreEqual("behemoth_mk2", main.MiniVariant, "the Behemoth's mini version stays Mk.II");
             var world = Field();
             var boss = world.SpawnVehicle("behemoth_mk0", 1, new Vector2(0f, 40f), 0f);
             Assert.AreEqual(4, boss.PartCount);
-            Assert.IsNotNull(boss.BigAttack);
+            Assert.IsNull(boss.BigAttack);
         }
 
         // ------------------------------------------------------------------ E.3: Morrigan
@@ -146,7 +145,9 @@ namespace MachineBrigade.Tests
             var weapons = m.Mounts.Select(x => x.Weapon.Id).ToList();
             Assert.Contains("air_to_air", weapons);
             Assert.Contains("guided_bomb", weapons);
-            Assert.IsNotNull(m.Duel?.BigAttack, "a duel mode");
+            Assert.IsNotNull(m.Duel, "a duel mode");
+            Assert.IsNull(m.BigAttack, "prompt 25 C1: a mini boss has no super weapon");
+            Assert.IsNull(m.Duel.BigAttack, "nor has its duel");
             // Stealth: seen only close up by a spotter on the ground.
             var world = new SimWorld(C, new MapDefinition("lab", 320f,
                 new[] { new TeamStart(0, new Vector2(-120f, -120f)), new TeamStart(1, new Vector2(120f, 120f)) },
@@ -171,57 +172,18 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(0, seenFar, "a plain aircraft would be seen there; the stealth fighter is not");
         }
 
+        /// <summary>Prompt 25 C1: Morrigan's salvo went with the mini bosses' big attacks; its bays' missiles and its bomb are ordinary weapons.</summary>
         [Test]
-        public void MorrigansSalvoHuntsAircraftAndAntiAirAndCanBeInterrupted()
+        public void MorriganFightsWithItsBaysMissilesAndItsBomb()
         {
-            var world = Field();
-            var boss = world.SpawnVehicle("morrigan", 1, new Vector2(0f, 60f), 0f);
-            var jets = new[] { Tough(world, "fighter_jet", new Vector2(-20f, 0f)), Tough(world, "attack_helicopter", new Vector2(20f, 0f)) };
-            var aa = Tough(world, "aa_vehicle", new Vector2(0f, -20f));
-            var tank = Tough(world, "main_battle_tank", new Vector2(30f, -30f));
-            var air = boss.Def.BigAttack.Strikes.First(s => s.Prey == BigPrey.Air);
-            var ground = boss.Def.BigAttack.Strikes.First(s => s.Prey == BigPrey.AntiAir);
-            Run(world, 0.2f);   // (prey must be seen: the sight is worked out as the world steps)
-            var prey = world.Bosses.Prey(boss, air, 0f, 6);
-            CollectionAssert.AreEquivalent(jets, prey, "its missiles hunt the aircraft");
-            Assert.AreEqual(aa, world.Bosses.Prey(boss, ground, 0f, 2).Single(), "its bombs the anti-air, not the tank");
-            Assert.IsFalse(world.Bosses.Prey(boss, ground, 0f, 2).Contains(tank));
-
-            // Prompt 18's rules: a warning first, then the salvo; every round a homing flyer.
-            world.Bosses.TriggerBig(boss);
-            Run(world, 5f, () => boss.BigAttack.Stage == BigStage.Charging);
-            Assert.AreEqual(BigStage.Charging, boss.BigAttack.Stage, "the warning");
-            Assert.IsTrue(Strings.Has(boss.Def.BigAttack.RadioKey), "its radio line");
-            Run(world, 8f, () => boss.BigAttack.Stage == BigStage.Firing);
-            Assert.AreEqual(BigStage.Firing, boss.BigAttack.Stage);
-            Assert.AreEqual(air.FullCount + ground.FullCount, boss.BigAttack.Rounds, "six missiles and two bombs");
-            var next = boss.BigAttack.Next;
-            Assert.GreaterOrEqual(next - boss.BigAttack.LastStart, boss.Def.BigAttack.Cooldown * 0.99, "then its cooldown");
-
-            // Interrupted: both missile bays broken in the warning leave the bombs; every bay broken cancels it.
-            var w2 = Field(4);
-            var b2 = w2.SpawnVehicle("morrigan", 1, new Vector2(0f, 60f), 0f);
-            Tough(w2, "fighter_jet", new Vector2(-20f, 0f));
-            Tough(w2, "aa_vehicle", new Vector2(0f, -20f));
-            w2.Bosses.TriggerBig(b2);
-            Run(w2, 5f, () => b2.BigAttack.Stage == BigStage.Charging);
-            w2.Bosses.Break(b2, b2.Def.PartIndex("bay_l"));
-            w2.Bosses.Break(b2, b2.Def.PartIndex("bay_r"));
-            Run(w2, 8f, () => b2.BigAttack.Stage != BigStage.Charging);
-            Assert.AreEqual(ground.FullCount, b2.BigAttack.Rounds, "the missiles are lost with their bays");
-            var w3 = Field(5);
-            var b3 = w3.SpawnVehicle("morrigan", 1, new Vector2(0f, 60f), 0f);
-            Tough(w3, "fighter_jet", new Vector2(-20f, 0f));
-            w3.Bosses.TriggerBig(b3);
-            Run(w3, 5f, () => b3.BigAttack.Stage == BigStage.Charging);
-            foreach (var id in new[] { "bay_l", "bay_r", "bomb_bay" }) w3.Bosses.Break(b3, b3.Def.PartIndex(id));
-            Run(w3, 8f, () => b3.BigAttack.Stage == BigStage.Ready);
-            Assert.AreEqual(BigStage.Ready, b3.BigAttack.Stage, "cancelled");
-            Assert.AreEqual(0, b3.BigAttack.Rounds, "nothing fired");
+            var m = C.Vehicle("morrigan");
+            Assert.IsNull(m.BigAttack);
+            foreach (var bay in new[] { "bay_l", "bay_r", "bomb_bay" })
+                Assert.Greater(m.Parts[m.PartIndex(bay)].Mounts.Count, 0, bay + " carries a weapon (broken, it falls silent)");
         }
 
         [Test]
-        public void MorrigansDuelModeFliesAloneWithItsOwnSalvoAndGoesDark()
+        public void MorrigansDuelModeFliesAloneAndGoesDark()
         {
             var world = Field();
             var boss = world.SpawnVehicle("morrigan", 1, new Vector2(0f, 60f), 0f);
@@ -230,8 +192,7 @@ namespace MachineBrigade.Tests
             Assert.IsFalse(world.Bosses.Duel(boss), "once");
             Run(world, 2f);
             Assert.AreEqual(0, world.EscortsAlive(boss.Id), "no escorts in the duel");
-            Assert.AreEqual("morrigan_duel_salvo", boss.BigAttack.Def.Id, "the duel's salvo");
-            Assert.IsTrue(boss.BigAttack.Def.Strikes.All(s => s.Prey == BigPrey.Air), "at aircraft only");
+            Assert.IsNull(boss.BigAttack, "prompt 25 C1: no salvo in the duel either (a mini boss has no super weapon)");
             Assert.IsFalse(boss.DuelDark);
             boss.Hp = boss.MaxHp * 0.65f;
             Run(world, 0.5f);
