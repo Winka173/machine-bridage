@@ -17,6 +17,9 @@ its commits.
 - The design document has a new section 8b (every unit's description, shape note and unlock) and 10e (every weapon's
   DPS against armour levels 0-5, aircraft and structures; missile flight speed and time; model and round sizes from the
   data; the main bosses' super weapons). `ExportGameDoc` writes the fields they read.
+- `Docs/balance/apply-report.md` is finished: rows by task and by sheet for all 28 sheets, the combat value by role
+  before and after ("to measure" until the test phase runs it) and the 33 places where the game differs from the
+  spreadsheet, with the reason.
 
 ### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
 

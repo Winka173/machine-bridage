@@ -11751,3 +11751,27 @@ document was not rebuilt (the lead rebuilds the PDF once prompt 25 is in); its P
 - **An older export.** Every reader falls back: the description from the Guide text, the unlock from the route, price and
   the campaign's unlock lists (by name), sizes and cluster rounds from balance.json, the super weapons' words from the
   Hud text tables, the DPS by level from the effect row.
+
+### F1 The apply report finished (`Docs/balance/apply-report.md`, `Tools/balance/report_summary.py`)
+
+- **By task and by sheet.** `report_summary.py` writes a block of its own (`<!-- f1:begin -->`, after the A steps'
+  summary, which `import_xlsx.py` keeps writing): every task's rows by sheet (the steps' count tables, and D1's, D2's
+  and B2's), and every one of the 28 sheets with its rows, the tasks that read it and each row's outcome at the end. A
+  row a task deferred is followed to the task that took it (names to D1, sizes to B1, bosses to C1-C2, models to B2); a
+  row one task applied and a later one checked counts as applied; the report's rows that stand for no sheet row (A3's
+  families, A5's rounds, the game's 31 weapons with no row) are left out of the sheet counts. Reference sheets (the
+  contents, the rules, the task list, the factors, the scale, the drawing guide, the story) are named with what used
+  them; the five new-content sheets are F2's.
+- **The end state:** every row of "Thay đổi chi tiết" is applied or answered (one skipped: `spawn_bastion`'s name);
+  "Kiểm tra từng mục" has one row open (the SP gun's M109A7 model: ASSET_DEBT) and three skipped (the range rows that
+  repeat the vision rows); every weapon row, boss row, price, missile speed and round length is in.
+- **Combat value by role, before and after.** The sheet's roles ("Giá CP": "Nhóm (9b)") with the value each compares
+  ("Giá trị dùng để so"), and per role the median value per CP, the spread and the cards within 15 % of it (E1's target):
+  before, the measure the sheet was made from (`p18_after`: the script's medians are the sheet's own, which checks the
+  reading) and the last one before prompt 25 (`pt6_after`); after, `p25_after` once the test phase has run it, "to
+  measure" until then. Only the cards the sheet gave a value count (it left out the fighters and the wingman).
+- **Where the game differs from the spreadsheet** is a table of its own (`<!-- differences:begin -->`), written by hand
+  from the report and DECISIONS 25A-25E: 33 places, each with the sheet's number or words, the game's and why. Units
+  (health after toughness, radians against degrees) are said once, not listed.
+- **Re-running.** `report_summary.py` rewrites its block only; `import_xlsx.py` rewrites its steps and summary only, and
+  its summary leaves marked blocks out, so the two can run in any order.
