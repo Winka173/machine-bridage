@@ -602,6 +602,8 @@ namespace MachineBrigade.Game.Hud
             ["short.decoy_tank"] = ("Decoy tank", "Xe mồi nhử"),
             ["support.instant_counter_battery"] = ("Instant counter-battery", "Phản pháo tức thì"),
             ["short.instant_counter_battery"] = ("Counter-battery", "Phản pháo"),
+            ["support.drone_intercept_strike"] = ("Drone intercept strike", "Đòn tên lửa đánh chặn drone"),
+            ["short.drone_intercept_strike"] = ("Drone intercept", "Chặn drone"),
             ["stat.tickets"] = ("TICKETS", "ĐIỂM"),
             ["stat.cp"] = ("CP", "CP"),
             ["stat.income"] = ("+{amount}/s", "+{amount}/s"),

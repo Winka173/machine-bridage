@@ -1980,6 +1980,8 @@
     { "id": "decoy_paradrop", "kind": "Reinforce", "cp": 2, "cooldown": 45, "delay": 2.0, "radius": 6, "count": 3, "duration": 30, "tier": "Small", "units": ["decoy_tank", "decoy_tank", "decoy_tank"] },
     // ht09: instant counter-battery (CounterBattery): every enemy gun that fired in the last 10 s within Radius takes Count rounds.
     { "id": "instant_counter_battery", "kind": "CounterBattery", "pen": 3, "cp": 6, "cooldown": 75, "delay": 2.0, "radius": 60, "count": 4, "damage": 320, "blast": 7, "tier": "Large", "damageType": "HighExplosive" },
+    // ht10: 6 Coyote Block 2-class interceptor missiles homing on the nearest distinct enemy drones (Homing, dronesOnly).
+    { "id": "drone_intercept_strike", "kind": "Homing", "pen": 2, "cp": 3, "cooldown": 40, "delay": 1.5, "radius": 40, "count": 6, "damage": 120, "blast": 2, "tier": "Small", "damageType": "Fragmentation", "dronesOnly": true },
   ],
 
   "props": [

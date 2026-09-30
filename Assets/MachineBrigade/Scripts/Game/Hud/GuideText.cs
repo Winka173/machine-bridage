@@ -1166,6 +1166,15 @@ namespace MachineBrigade.Game.Hud
                 "Cách đánh: sau {{delay}} giây cảnh báo, mọi khẩu pháo địch vừa bắn trong 10 giây qua, ở bất kỳ đâu trong {{radius}} m, bị {{count}} loạt nổ bán kính {{blast}} m.\n" +
                 "Mạnh / yếu: mối đe dọa thật với pháo địch vừa khai hỏa; khẩu nào chưa bắn gần đây thì an toàn.\n" +
                 "Mẹo: gọi ngay khi đạn pháo địch bắt đầu rơi vào phe ta."),
+            ["guide.drone_intercept_strike"] = (
+                "[[Drone intercept strike]] · {{count}} interceptors · {{cp}} CP\n" +
+                "How it fights: up to {{count}} small missiles each find the nearest distinct enemy drone in the circle and take it down; nothing else is hit.\n" +
+                "Strong / weak: dumps a whole drone swarm or loitering-munition wave at once; useless against anything that is not a drone.\n" +
+                "Tip: call it the moment a drone swarm shows on the minimap.",
+                "[[Đòn tên lửa đánh chặn drone]] · {{count}} tên lửa nhỏ · {{cp}} CP\n" +
+                "Cách đánh: tối đa {{count}} tên lửa nhỏ, mỗi quả tự tìm một drone địch khác nhau trong vùng và hạ nó; không đánh thứ gì khác.\n" +
+                "Mạnh / yếu: dập cả bầy drone hoặc đợt đạn lảng vảng cùng lúc; vô dụng với bất cứ thứ gì không phải drone.\n" +
+                "Mẹo: gọi ngay khi bầy drone địch hiện trên minimap."),
             ["guide.smoke_screen"] = (
                 "[[Smoke screen]] · blocks sight · {{cp}} CP\n" +
                 "How it fights: after {{delay}} s a {{radius}} m cloud stands for {{duration}} s; no one can see into or through it, so guns lose their [[line of sight]].\n" +

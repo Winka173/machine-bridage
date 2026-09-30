@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 43,
+    "chưa làm": 42,
     "đang làm": 0,
-    "xong": 50
+    "xong": 51
   },
   "byKind": {
     "unit": {
@@ -24,9 +24,9 @@
       "xong": 14
     },
     "support": {
-      "chưa làm": 2,
+      "chưa làm": 1,
       "đang làm": 0,
-      "xong": 9
+      "xong": 10
     },
     "boss": {
       "chưa làm": 8,
@@ -1217,9 +1217,9 @@
       "group": "",
       "priority": "",
       "unlock": "Cửa hàng: 1.500 xu (CP ≤ 5) / 2.500 xu (CP ≥ 6), hoặc thưởng chương",
-      "status": "chưa làm",
-      "id": null,
-      "notes": "25D2 plan: 1,500 coins in the shop (3 CP, so the CP 5 or less price), or a chapter reward."
+      "status": "xong",
+      "id": "drone_intercept_strike",
+      "notes": "Batch C: support drone_intercept_strike, kind Homing with \"dronesOnly\": true (ht03's new kind, reused as intended). Pure data, no new code. Sold in the shop (1,500)."
     },
     {
       "key": "ht11",
