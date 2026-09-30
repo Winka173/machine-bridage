@@ -11960,3 +11960,8 @@ line and the `_hd` override), `Tools/blender/mb_munitions.py` (kh29l, gbu39: alr
 `Assets/MachineBrigade/Tests/EditMode/ModelTests.cs` (two TestCase numbers), `Docs/ASSET_DEBT.md` (its B2 section
 rewritten; lead's own "Prompt 25 B1 and B3" table's rows for the seven size mismatches, the two rounds and the three
 launchers are done here), `Docs/CHANGELOG.md`, this file.
+
+**Lead note at the part 2 merge.** `Tools/balance/apply_model_sizes.py` put the Part 2 table into balance.json: 60 vehicle lines
+got `"scale": 1.0`, `modelSize` = the built box and `length` / `width` = the hull. The borrowed `"model"` lines of the supply
+truck, ammunition carrier, hover gunboat, logistics station and repair bay are gone, radar_station draws `radar_site`, and
+the Sky Fortress draws at scale 1.035 × size 0.85 (1.3 × the AC-130). Re-runnable; nothing tested (the owner's rule).
