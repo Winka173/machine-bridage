@@ -288,18 +288,18 @@ model with a tint (`"tint"` in balance.json, applied as VehicleView's own varian
 
 ## Prompt 25 batch D stand-in bosses (DECISIONS 25F2-D)
 
-All eight draw their parent boss's model with a hue tint; their cards are the parent's picture. Real models come in prompts 26-27.
+All eight have their own models since prompt 27 wave 1b (no tint; cards of their own). What stays open is game work for prompt 28.
 
 | Boss | Stand-in (parent, tint) | The real model |
 |---|---|---|
-| `kraken` | `leviathan`, blue wash, 110 m | a Nimitz / Kuznetsov carrier: flat deck, island to starboard, aircraft parked, lifts, arresting cable, 4 CIWS, 2 SAM mounts |
+| ~~`kraken`~~ | done in prompt 27 wave 1b: its own `kraken` model (a Kuznetsov / Nimitz-style carrier: ski-jump, island, lifts, parked jets, arresting wires on `Part_deck`, 4 CIWS, 2 SAM box launchers), wash dropped. Still open: the runway / arresting-cable rule and the air wing as units (game work, prompt 28); the weapon list is still Leviathan's (see the last row) | - |
 | ~~`monster`~~ | done in prompt 27 wave 1b: its own `monster` model (an 800 mm SPG after 2B1 Oka / Object 271 on the four-cluster layout; nodes `Part_track` .. `.003`, `Part_barrel`), wash dropped. Still open: no part names the track or barrel nodes (a track-break rule is game data, prompt 28) | - |
-| `garuda` | `command_airship`, violet wash | a B-2 / Ho 229 flying wing, 70 m span, sawtooth trailing edge, opening bomb bay, 6 defensive turrets |
-| `hyperion` | `silver_bug`, amber wash | a hexagonal mirror ring round a core with long solar panels, 4 point-defence lasers, 2 landing pods |
-| `stymphalos` | `drone_mothership`, green wash | eight delta-wing jet drones in V formation (separate units, 1,300 health each; a swarm rule) |
+| ~~`garuda`~~ | done in prompt 27 wave 1b: its own `garuda` model (a 70 m flying wing, sawtooth trailing edge, 6 turrets), wash dropped; bomb bay doors built as `Part_bay` / `.001` (closed). Still open: the opening bay view and the circling course (prompt 28) | - |
+| ~~`hyperion`~~ | done in prompt 27 wave 1b: its own `hyperion` model (hexagonal mirror ring, core, solar booms, 4 PD lasers, 2 landing pods on `Pod_bay`), wash dropped; silver_bug / icarus untouched | - |
+| `stymphalos` | model done in prompt 27 wave 1b: `stymphalos` (eight delta-wing jet drones in V formation, each on `Part_drone` .. `.007`) and `stymphalos_drone` (one drone, unlisted), wash dropped | the swarm rule: eight separate units of 1,300 health each, spawned from those nodes (game work, prompt 28) |
 | ~~`nyx`~~ | done in prompt 27 wave 1b: its own `nyx` model (Zumwalt-style), wash dropped | - |
-| `cerberus` | `behemoth`, red wash | three big-wheeled trucks joined by couplings: 125 mm tractor, anti-air middle, rocket trailer (middle first breaks the AA) |
-| `hydra` | `typhon`, teal wash | a small submarine with vertical launch tubes along the back and six FPV drones |
+| `cerberus` | model done in prompt 27 wave 1b: `cerberus` (three big-wheeled cars on `Part_tractor` / `Part_middle` / `Part_trailer`), wash dropped | the coupling rule (the middle car breaks first and takes the AA with it; parts naming those nodes) is game work (prompt 28) |
+| `hydra` | model done in prompt 27 wave 1b: `hydra_sub` (a small VLS submarine, six FPV drones on `Part_drone` .. `.005`), wash dropped | the drones' launch from those nodes (game work, prompt 28) |
 | Weapon lists | the parent's | each sheet weapon list on its own mounts (see 25F2-D); the sun beam's smoke cut; the In-action clips of the four super weapons |
 
 

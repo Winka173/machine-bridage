@@ -13068,3 +13068,52 @@ the runner (OK: 241 vehicles, 371 weapons), card renders, one ModelPreview sheet
 Preview luma (8 angles mean / detail view) against the stand-in's sheet: Monster 0.325 / 0.288 (bastion 0.311 / 0.261),
 Nyx 0.356 / 0.288 (leviathan 0.303 / 0.254). Doubts: Ixion's and Monster's part `at` positions still come from the old
 layouts (hit spheres a metre or two off the new nodes); Monster's rear flak sit inside the main turret's sweep.
+
+## 27 wave 1b (lead pass, 2026-10-02)
+
+The other six batch D bosses, one commit each, builders in `Tools/blender/mb_p27_wave1b.py` (kraken, garuda,
+hyperion, stymphalos + stymphalos_drone, cerberus, hydra_sub). Checks run: Blender rebuilds, `glb_check.py` (compare,
+accept with reasons), CatalogCheck in the runner after every balance.json change (OK: 241 vehicles, 371 weapons), card
+renders, one ModelPreview sheet per model (plus the stand-in's for its luma). No tests, sims or measures.
+
+- **Own model ids.** `hydra.glb` is the Hydra 70 rocket (a munition), so Hydra's boss model is `hydra_sub`. Hyperion
+  gets `hyperion`; silver_bug and icarus are untouched. Every def got `"model"`, its colour wash dropped.
+- **Hit positions follow the new models (data only).** Where the parent's part layout cannot sit on the brief's shape
+  (Garuda: an airship's four engines and top radar on a 4.5 m-thick wing; Hyperion: the Bug's parts sat 1.6x outside
+  the model fitted to 67.2 m; Kraken: three gun turrets on a flight deck) the variant's `tune` now gives each part an
+  `at` on its new node (value = node position / variant size). No health, armour, weapon or behaviour changed.
+  Monster, Nyx, Cerberus and Hydra keep the inherited positions (within about a metre or two of the nodes).
+- **modelSize added** where the def had none, the built box, so the model is drawn 1:1: Garuda [27.9, 70, 4.5]
+  (the brief's 70 m span; B-2 proportions), Stymphalos [15.5, 26, 2.55] (the formation). Cerberus keeps the sheet's
+  16.3 x 8.4 x 5.5, built 16.2 x 7.0 x 5.4: three coupled road vehicles cannot be 8.4 m wide; the wide big-wheel
+  stance gives 7.0 (-17 % on width / length, inside the validator's 25 %, outside the art bible's 4 %).
+- **Node contracts.** Each model carries its parent's mount set (the inherited weapon list keeps its slots) and every
+  node its parts name, including the parent's non-pattern names that merge at runtime as before (Kraken
+  `Part_sec_f` / `_a`, `Part_aa_l` / `_r`; Hydra `Part_doors_l` / `_r`; Hyperion `Thruster_*`, `Pd_laser_*`,
+  `Pod_bay`). Mounts a variant's dropped parts would hide anyway were not built for Stymphalos (`Turret`,
+  `Mount_main.001`, `Mount_mg.001`); Cerberus's tractor RWS (`Mount_gun`) and Hydra's sail SAM box (`Mount_missile`)
+  are built but hidden at runtime by the same rule (their parts `gun_120` and `sam` are dropped).
+- **Nodes for later behaviour (prompt 28, ASSET_DEBT):** Stymphalos `Part_drone` .. `.007` (one per drone; the swarm
+  rule) and `stymphalos_drone` (one drone as a unit model, unlisted); Cerberus `Part_tractor`, `Part_middle`,
+  `Part_trailer` (the coupling rule; no part names them yet); Hydra `Part_drone` .. `.005` (six FPV drones to launch);
+  Garuda `Part_bay` / `.001` (bomb bay doors, closed); Kraken `Part_deck` holds the arresting wires and parked jets.
+- **Flyers and the battle stage.** Stymphalos's low drones vanished in the preview's battle cells (geometry under
+  z 0 is cut by the stage's ground), so the formation sits above z 0; Hyperion's origin is its pods' feet. Hydra,
+  Garuda, Hyperion and Stymphalos bake COLOR_0 with `ground=False` (no ground AO under a hull that floats or flies).
+- **Brightness fixes on the way:** Cerberus's tyres first capped over their hubs (card 0.283 against Behemoth's
+  0.312): open tyre rings, Team hubs both sides, softer AO. Hyperion's dark solar cells: white backing, narrower cells.
+
+| model | tris stand-in -> new | size (m) | COLOR_0 (stand-in -> new) | card luma | preview 8 angles / detail (stand-in) | validator |
+|---|---|---|---|---|---|---|
+| kraken | 25,992 (leviathan) -> 10,796 | 109.8 x 19.0 x 23.6 | 0.626 -> 0.661 | 0.322 -> 0.352 | 0.365 / 0.257 (0.303 / 0.254) | boss_l, no error |
+| garuda | 22,180 (command_airship) -> 2,840 | 27.9 x 70.0 x 4.5 | 0.704 -> 0.740 | 0.311 -> 0.397 | 0.440 / 0.420 (0.335 / 0.263) | boss_l, no error |
+| hyperion | 21,760 (silver_bug) -> 7,914 | 66.8 x 43.7 x 19.9 | 0.742 -> 0.751 | 0.415 -> 0.487 | 0.518 / 0.519 (0.494 / 0.519) | boss_l, no error |
+| stymphalos | 19,900 (drone_mothership) -> 4,186 (+ drone 502) | 15.4 x 26.0 x 2.6 | 0.665 -> 0.812 | 0.308 -> 0.368 | 0.364 / 0.341 (0.322 / 0.317) | boss_s, no error |
+| cerberus | 19,948 (behemoth) -> 11,848 | 16.2 x 7.0 x 5.4 | 0.611 -> 0.741 | 0.312 -> 0.319 | 0.328 / 0.290 (0.313 / 0.257) | boss_s, no error |
+| hydra_sub | 6,348 (typhon) -> 7,268 | 34.8 x 7.2 x 7.8 | 0.616 -> 0.624 | 0.221 -> 0.387 | 0.352 / 0.319 (0.215 / 0.151) | boss_m, no error |
+
+Zero-area triangles 0 on all seven files; every one far inside its boss class budget. The validator still reports the
+18 models with errors of the baseline (none of these). Doubts: Hyperion's LOD1 cell is 0.515 against the Bug's 0.535
+(-4 %; its card, angles and detail pass); Garuda's 2,840 triangles are a plain lofted wing by the jet rule (no skin
+detail); Hydra's preview luma is from before its launch-tube lids were seated (its card was re-rendered after).
+Weapon lists are still the parents' (ASSET_DEBT "Weapon lists"), so Kraken's "guns" fire from its deck cells.

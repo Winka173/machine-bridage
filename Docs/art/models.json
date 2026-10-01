@@ -275,6 +275,10 @@
     "file": "caspian.glb",
     "triangles": 5054
   },
+  "cerberus": {
+    "file": "cerberus.glb",
+    "triangles": 11848
+  },
   "charred_tree": {
     "file": "charred_tree.glb",
     "triangles": 344
@@ -563,6 +567,10 @@
     "file": "garage.glb",
     "triangles": 832
   },
+  "garuda": {
+    "file": "garuda.glb",
+    "triangles": 2840
+  },
   "gbu39": {
     "file": "gbu39.glb",
     "triangles": 190
@@ -699,6 +707,14 @@
     "file": "howitzer.glb",
     "triangles": 8800
   },
+  "hydra_sub": {
+    "file": "hydra_sub.glb",
+    "triangles": 7268
+  },
+  "hyperion": {
+    "file": "hyperion.glb",
+    "triangles": 7914
+  },
   "icbm": {
     "file": "icbm.glb",
     "triangles": 732
@@ -746,6 +762,10 @@
   "kh29l": {
     "file": "kh29l.glb",
     "triangles": 238
+  },
+  "kraken": {
+    "file": "kraken.glb",
+    "triangles": 10796
   },
   "kronos": {
     "file": "kronos.glb",
@@ -1258,6 +1278,14 @@
   "strike_jet": {
     "file": "strike_jet.glb",
     "triangles": 8700
+  },
+  "stymphalos": {
+    "file": "stymphalos.glb",
+    "triangles": 4186
+  },
+  "stymphalos_drone": {
+    "file": "stymphalos_drone.glb",
+    "triangles": 502
   },
   "supply_crate": {
     "file": "supply_crate.glb",

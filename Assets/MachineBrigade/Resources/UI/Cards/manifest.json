@@ -895,9 +895,9 @@
         {
             "id": "cerberus",
             "kind": "boss",
-            "model": "behemoth",
-            "source": "Models/behemoth",
-            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
+            "model": "cerberus",
+            "source": "Models/cerberus",
+            "hash": "v2:ad8e816bcd1adc7786800ac60a4e277a435d333b"
         },
         {
             "id": "coastal_battery",
@@ -1161,9 +1161,9 @@
         {
             "id": "garuda",
             "kind": "boss",
-            "model": "command_airship",
-            "source": "Models/command_airship",
-            "hash": "v2:f97dfe7f43c64f1e0bafc6b8401e09ad9b639cd9"
+            "model": "garuda",
+            "source": "Models/garuda",
+            "hash": "v2:b9dff60ba47acf1405ab5a7fd107e33d7ab21cee"
         },
         {
             "id": "guard_tower",
@@ -1245,16 +1245,16 @@
         {
             "id": "hydra",
             "kind": "boss",
-            "model": "typhon",
-            "source": "Models/typhon",
-            "hash": "v2:ccf57cf97f9ddfe5ac17a193dca855d80cb7c4db"
+            "model": "hydra_sub",
+            "source": "Models/hydra_sub",
+            "hash": "v2:ebdf45bbe57939dfacc95da811ae516a879fdb71"
         },
         {
             "id": "hyperion",
             "kind": "boss",
-            "model": "silver_bug",
-            "source": "Models/silver_bug",
-            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
+            "model": "hyperion",
+            "source": "Models/hyperion",
+            "hash": "v2:55953863ac366e186965bcff076806ddb811cbb4"
         },
         {
             "id": "icarus_mk0",
@@ -1280,9 +1280,9 @@
         {
             "id": "kraken",
             "kind": "boss",
-            "model": "leviathan",
-            "source": "Models/leviathan",
-            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
+            "model": "kraken",
+            "source": "Models/kraken",
+            "hash": "v2:593f895cee8edf4171701a136af7e0f7bce6c60e"
         },
         {
             "id": "kronos",
@@ -1539,9 +1539,9 @@
         {
             "id": "stymphalos",
             "kind": "boss",
-            "model": "drone_mothership",
-            "source": "Models/drone_mothership",
-            "hash": "v2:4f481e05ff883803e3e87915a3e905b2ed94f140"
+            "model": "stymphalos",
+            "source": "Models/stymphalos",
+            "hash": "v2:c63cb2467256a97dea69f0f5040055fae59f0c1f"
         },
         {
             "id": "super_gun",

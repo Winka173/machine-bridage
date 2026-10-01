@@ -1927,25 +1927,33 @@
     // target / the parent's target), and a super weapon for the four main bosses only (25C: a mini has none).
     // A main-rank variant says "rank": "main" and keeps every part of its parent.
     // Kraken: carrier, Kessler's new admiral (Leviathan's hull and parts; the flight deck carries the air raid).
-    { "id": "kraken", "armour": [5, 3, 2, 2], "variantOf": "leviathan", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid",
-      "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "tint": [0.78, 0.92, 1.12], "mark": "kraken"}},
+    { "id": "kraken", "armour": [5, 3, 2, 2], "variantOf": "leviathan", "model": "kraken", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid",
+      "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "mark": "kraken",
+                  "tune": {"turret_fore": {"at": [0, 26.32, 7.89]}, "turret_super": {"at": [0, 17.11, 7.89]}, "turret_aft": {"at": [4.74, -26.32, 7.89]}, "sec_fore": {"at": [6.67, 28.95, 6.49]}, "sec_aft": {"at": [-6.67, -41.23, 6.49]},
+                           "vls": {"at": [4.04, -9.65, 7.89]}, "aa_port": {"at": [-6.93, -3.51, 5.96]}, "aa_starboard": {"at": [6.93, -21.05, 5.96]}, "ciws_fore": {"at": [7.02, 13.6, 7.89]}, "ciws_aft": {"at": [-6.49, -45.18, 7.89]},
+                           "radar": {"at": [6.49, 2.63, 16.14]}, "flight_deck": {"at": [-1.93, -35.09, 7.89]}, "well_deck": {"at": [0, -47.72, 2.28]}, "machinery": {"at": [6.49, -4.04, 13.42]}}}},
     // Monster: the 800 mm self-propelled gun (the Bastion's hull; its mortar stands for the long barrel with a health of its own).
     { "id": "monster", "armour": [5, 3, 2, 3], "variantOf": "fortress_bastion", "model": "monster", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 103100, "weaponDamage": 1.997, "speed": 0.8, "bigAttack": "monster_800_shell",
       "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.05, "mark": "monster"}},
     // Garuda: the flying-wing bomber (the command airship's body; its bomb bay carries the carpet).
-    { "id": "garuda", "variantOf": "command_airship", "rank": "main", "general": "quaden", "radioSpawn": "radio.quaden.garuda", "hp": 137250, "weaponDamage": 0.998, "speed": 6, "bigAttack": "garuda_carpet",
-      "variant": {"size": 1.1, "tint": [0.9, 0.8, 1.12], "mark": "garuda"}},
+    { "id": "garuda", "variantOf": "command_airship", "model": "garuda", "rank": "main", "general": "quaden", "radioSpawn": "radio.quaden.garuda", "hp": 137250, "weaponDamage": 0.998, "speed": 6, "bigAttack": "garuda_carpet", "modelSize": [27.9, 70, 4.5],
+      "variant": {"size": 1.1, "mark": "garuda",
+                  "tune": {"engine_fl": {"at": [-3.64, 1.36, 1.49]}, "engine_fr": {"at": [3.64, 1.36, 1.49]}, "engine_rl": {"at": [-6.91, -0.45, 1.03]}, "engine_rr": {"at": [6.91, -0.45, 1.03]},
+                           "hangar_l": {"at": [-3.82, 0, -0.52]}, "hangar_r": {"at": [3.82, 0, -0.52]}, "radar": {"at": [0, 8.18, -0.71]}, "bomb_bay": {"at": [0, 2.73, -0.84]},
+                           "pod_105_l": {"at": [-13.18, 0, -1.03]}, "pod_105_r": {"at": [13.18, 0, -1.03]}}}},
     // Hyperion: the orbital mirror station (the Silver Bug's body that never comes down: high tier only, no crash, no hijack; no uplink, the crash turrets gone).
-    { "id": "hyperion", "variantOf": "silver_bug", "rank": "main", "general": "aurel", "radioSpawn": "radio.aurel.hyperion", "hp": 176450, "weaponDamage": 1.111, "speed": 3.5, "bigAttack": "hyperion_sun_beam", "arena": null,
+    { "id": "hyperion", "variantOf": "silver_bug", "model": "hyperion", "rank": "main", "general": "aurel", "radioSpawn": "radio.aurel.hyperion", "hp": 176450, "weaponDamage": 1.111, "speed": 3.5, "bigAttack": "hyperion_sun_beam", "arena": null,
       "modelSize": [67.2, 43.7, 20],
       "tiers": {"crash": null, "hijack": null, "schedule": [{"steps": [{"tier": "high", "seconds": 60}]}, {"steps": [{"tier": "high", "seconds": 60}]}, {"steps": [{"tier": "high", "seconds": 60}]}],
                 "radio": {"phase2": "radio.aurel.hyperion.phase2", "phase3": "radio.aurel.hyperion.phase3"}},
       "pods": {"first": 10, "every": 60, "count": 2, "max": 4},
-      "variant": {"size": 1.2, "drop": ["crash_turret_l", "crash_turret_r", "uplink"], "tint": [1.12, 1.0, 0.7], "mark": "hyperion",
-                  "tune": {"main_laser": {"hp": 0.07}, "main_engine": {"hp": 0.07}, "thruster_fl": {"hp": 0.07}, "thruster_fr": {"hp": 0.07}, "thruster_rl": {"hp": 0.07}, "thruster_rr": {"hp": 0.07}, "pd_laser_l": {"hp": 0.07}, "pd_laser_r": {"hp": 0.07}, "pod_bay": {"hp": 0.07}}}},
+      "variant": {"size": 1.2, "drop": ["crash_turret_l", "crash_turret_r", "uplink"], "mark": "hyperion",
+                  "tune": {"main_laser": {"hp": 0.07, "at": [0, 0, 1.92]}, "main_engine": {"hp": 0.07, "at": [0, -3.83, 7.83]},
+                           "thruster_fl": {"hp": 0.07, "at": [-8.36, 14.47, 9.17]}, "thruster_fr": {"hp": 0.07, "at": [8.36, 14.47, 9.17]}, "thruster_rl": {"hp": 0.07, "at": [-8.36, -14.47, 9.17]}, "thruster_rr": {"hp": 0.07, "at": [8.36, -14.47, 9.17]},
+                           "pd_laser_l": {"hp": 0.07, "at": [-12.17, 7, 9]}, "pd_laser_r": {"hp": 0.07, "at": [12.17, 7, 9]}, "pod_bay": {"hp": 0.07, "at": [0, -7.5, 3.67]}}}},
     // Stymphalos: the jet UAV swarm (a drone tender's bays and flak, fast; the swarm itself waits for a model).
-    { "id": "stymphalos", "wake": null, "variantOf": "drone_mothership", "general": "sen", "radioSpawn": "radio.sen.stymphalos", "hp": 45650, "weaponDamage": 1.084, "armour": 1, "speed": 8,
-      "variant": {"size": 0.423, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "tint": [0.8, 1.1, 0.85], "mark": "stymphalos",
+    { "id": "stymphalos", "wake": null, "variantOf": "drone_mothership", "model": "stymphalos", "general": "sen", "radioSpawn": "radio.sen.stymphalos", "hp": 45650, "weaponDamage": 1.084, "armour": 1, "speed": 8, "modelSize": [15.5, 26, 2.55],
+      "variant": {"size": 0.423, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "mark": "stymphalos",
                   "tune": {"drone_bay": {"hp": 0.14}, "drone_bay_2": {"hp": 0.14}, "flak_top": {"hp": 0.14}}}},
     // Nyx: the stealth destroyer (a railgun, a CIWS pair, an anti-ship missile; seen only close up or just after it fires).
     { "id": "nyx", "wake": null, "variantOf": "leviathan", "model": "nyx", "general": "kessler", "radioSpawn": "radio.kessler.nyx", "hp": 37750, "weaponDamage": 1.865, "armour": [4, 4, 3, 2], "weapon": "boss_railgun", "stealth": true, "speed": 5,
@@ -1953,14 +1961,14 @@
       "variant": {"size": 0.55, "keep": ["turret_fore", "vls", "ciws_fore", "ciws_aft"], "mark": "nyx",
                   "tune": {"turret_fore": {"hp": 0.12}, "vls": {"hp": 0.12}, "ciws_fore": {"hp": 0.11}, "ciws_aft": {"hp": 0.11}}}},
     // Cerberus: the three-vehicle convoy (the Behemoth's gun, flak and rocket pod stand for tractor, middle and rear truck).
-    { "id": "cerberus", "guard": null, "wake": null, "variantOf": "behemoth", "general": "varga", "radioSpawn": "radio.varga.cerberus", "hp": 53500, "weaponDamage": 1.326, "armour": [3, 3, 2, 2], "speed": 3, "aps": null,
-      "modelSize": [16.3, 8.4, 5.5], "variant": {"size": 0.6874, "keep": ["main_gun", "flak_r", "flak_l", "rocket_pod"], "tint": [1.08, 0.78, 0.72], "mark": "cerberus",
+    { "id": "cerberus", "guard": null, "wake": null, "variantOf": "behemoth", "model": "cerberus", "general": "varga", "radioSpawn": "radio.varga.cerberus", "hp": 53500, "weaponDamage": 1.326, "armour": [3, 3, 2, 2], "speed": 3, "aps": null,
+      "modelSize": [16.3, 8.4, 5.5], "variant": {"size": 0.6874, "keep": ["main_gun", "flak_r", "flak_l", "rocket_pod"], "mark": "cerberus",
                   "tune": {"main_gun": {"hp": 0.13}, "flak_r": {"hp": 0.11}, "flak_l": {"hp": 0.11}, "rocket_pod": {"hp": 0.12}}}},
     // Hydra: the drone submarine (Typhon's deck gun and launch doors; dives and surfaces faster, one boat for its drones).
-    { "id": "hydra", "armour": [4, 3, 2, 2], "variantOf": "typhon", "general": "hung", "radioSpawn": "radio.hung.hydra", "hp": 81300, "weaponDamage": 1.292, "speed": 4.5,
+    { "id": "hydra", "armour": [4, 3, 2, 2], "variantOf": "typhon", "model": "hydra_sub", "general": "hung", "radioSpawn": "radio.hung.hydra", "hp": 81300, "weaponDamage": 1.292, "speed": 4.5,
       "modelSize": [34.8, 7.2, 8], "burrow": {"surface": 16, "under": 10, "first": 12, "surfaceByPhase": [16, 14], "underByPhase": [10, 12]},
       "cruise": {"every": 16, "damage": 240}, "fleet": [{"unit": "missile_boat", "count": 1}], "wake": null,
-      "variant": {"size": 0.5057, "keep": ["doors_l", "doors_r", "deck_gun", "rudder"], "tint": [0.7, 1.05, 1.0], "mark": "hydra",
+      "variant": {"size": 0.5057, "keep": ["doors_l", "doors_r", "deck_gun", "rudder"], "mark": "hydra",
                   "tune": {"doors_l": {"hp": 0.12}, "doors_r": {"hp": 0.12}, "deck_gun": {"hp": 0.12}, "rudder": {"hp": 0.1}}}},
     // Mara's Behemoth: the Accord's rebuilt Behemoth, a scripted ally for chapter 12's last battle only (a mission's
     // "ally" places it; its allied AI drives it). The Behemoth's model in the Accord's colours; never a card, never
