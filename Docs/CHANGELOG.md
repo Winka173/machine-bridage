@@ -7,6 +7,23 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 26, pass 3 (E): Boss Hunts with the boss health from an estimated P (DECISIONS "26E")
+
+Reduced scope again: no tests, sweeps or measures (compile only; no data changed).
+
+- P, the player's damage a second on a boss, is estimated once from the carried deck (card ranks, gear, commander) by a formula
+  (`HuntPower`); a hunt boss's health is P x its target seconds x 0.6 x m, its damage the data's x m. Replaces the old ramp and
+  `KeepPace` on bosses: no quick mode's boss keeps pace with the arsenal any more (escorts, vehicles and towers still do).
+- The week: 10 bosses with the mains at 4, 7 and 10 (3-2-2 minis), 66 s / 2.8 min targets, a 15 s rest, m = 1 + 0.06 per boss,
+  survivors repaired 30 %, half the CP kept, a checkpoint at each leg's end, a 30 minute clock.
+- The full hunt: 2.5 min mains, 1 min minis, m from x0.8 to x1.3 in story order, every boss a fresh battle (no army, the starting CP),
+  only the supports kept, saved after every boss.
+- Combat supports are capped at +40 % army strength; past it only the play-changing ones (an extra drop, quicker cards) are offered.
+- Hunt tiers: Normal x1 / x1, Heroic (Hard) x1.3 / x1.15, Steel (Very Hard) x1.6 / x1.3 on the existing difficulty picker. Legendary
+  and the hunt mutators are left.
+- The applied Excel is re-exported with the 26AB and 26CD boss numbers; the "to measure" list is gathered in DECISIONS "26E".
+- Written, not run: new cases in `Prompt20HuntTests`.
+
 ### Prompt 26, pass 2 (C and D): boss sizes, Ixion, Gungnir and the post-1945 rule (DECISIONS "26CD")
 
 Reduced scope again: no tests, sweeps or measures; no Blender rebuild, camera pull-back or shadow work.

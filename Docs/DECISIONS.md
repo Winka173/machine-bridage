@@ -12767,3 +12767,68 @@ and whether its 900 plus the boss's damage boost is too much; the mine strip (6 
 block lanes (Kronos 60 m is on its own road; Moloch and Bastion at 40 m, Jotunn 32 m, Matriarch 55 m: C6's stuck probe); the
 hit radius of the enlarged bosses against their models; whether Monster at 42 m and Hyperion at 108 m fit their maps; the
 KS-19 tower at 100 mm with the old 88 mm numbers; the aerostat's 45 m reveal.
+
+
+## 26E. Boss Hunts from an estimated P (prompt 26 E, pass 3) (2026-10-01)
+
+Pass 3 of prompt 26 in the owner's reduced scope ("26 scope" above): no test, sweep or measurement was run; compile only (no data
+changed, so CatalogCheck is unaffected). Every number is the prompt's starting value and is listed under "To measure". Code:
+`Game/Match/HuntPower.cs` (new), `Sim/Modes/BossHunt.cs`, `SiegeModes.cs` (BossRushMode), `Game/Match/ModeSessions.cs`
+(`BossRushSession`, `KeepPace`), `MatchRunner`, `PlayerProfile.Hunt.cs`. Tests written, not run (`Prompt20HuntTests`: the draw's
+3-2-2 legs, the multipliers, the support cap, P and a boss's health).
+
+- **E1 P by formula (no sim battle).** `HuntPower.Estimate`: the mean paper damage a second of the carried deck's combat cards (main
+  weapon `FirePower.Sustained` x the boost's damage x fire rate, the boost being the card rank, gear and the commander, as
+  `PlayerProfile.BoostFor` + `CommanderRules.Merge` make it for the campaign's `EnemyScaling`), x 10 vehicles fielded x 0.3 that
+  lands on a boss, never under 60. Measured once at the run's start by `MatchRunner` (`BossRushSession.Power`), stored in the
+  carry and the save (`HuntSave.power`) so a checkpoint or a later sitting keeps the same P; no re-measure at checkpoints
+  (E.3). A boss's health = P x t x 0.6 x m x the tier's health (`BossRushMode.BossHealthScale`, as a factor on the def's own
+  health through the enemy mutator); its damage = the data's (B's target DPS) x m x the tier's damage. Without a P (a bare test
+  rule set) only m and the tier apply.
+- **What replaced KeepPace where.** A campaign mission's bosses were already out of it (26AB, `BossesUnscaled`). Now every quick
+  mode's are too: `KeepPace` sets `BossesUnscaled` for all kinds (its vehicles, escorts and towers still keep pace by the
+  difficulty's share), so a quick mode's boss has the data's health (the target time) and A6's difficulty factors, and Boss Hunt's
+  boss has P's. Boss Rush still runs KeepPace at Normal's share for its escorts only.
+- **E2 the week.** 10 bosses (7 minis, 3 mains) at 4, 7, 10: the draw puts the extra mini in the first group (3, 2, 2; was 2, 2, 3).
+  Targets mini 66 s, main 2.8 min (168 s), `Breather` 15 s (was 20); m = 1 + 0.06 i (x1.0 to x1.54; `BossHunt.Multiplier`, replaces
+  `Ramp` 0.9-1.2 and the half-strength damage ramp). Between bosses (all there before): survivors kept and repaired 30 %, a
+  checkpoint after each main (the three legs). New: only 50 % of the CP held is kept (`CpKept`, cut as the boss falls, the bounty
+  paid on top); losses are lost as before. Clock 50 -> 30 min (about 18 min of targets plus slack for a weaker deck).
+- **E3 the full hunt.** Every boss in story order (the roster is the chapters switched on, about 41 with all chapters; the prompt
+  said about 33); main 2.5 min (150 s), mini 1 min (60 s); m from x0.8 to x1.3 in story order (`FullRamp`). A checkpoint and a save
+  after every boss (as before). New: each boss a fresh battle (`Fresh`): when the rest ends the scene is rebuilt through the
+  existing battlefield switch with an empty army and the starting CP (`Carry` returns no army and `Player.StartCp`), only the
+  supports kept; the wipe-out loss is checked only while a boss is out; `RestRepair` 0 (no army to repair).
+- **E2/E3 supports.** `HuntSupportDef.Strength` (+% army strength: hull 15, gunnery 10, loaders 12, engines 6, regen 8, logistics 10,
+  war chest 5, supply 8, workshop 5, bounty 5; my estimates) with `HuntSupports.Cap` 0.40: an offer leaves out what would pass the cap.
+  Rapid (cards 25 % quicker) and Airdrop (three vehicles dropped free) have no strength: they are the play-changing ones, always
+  offered, never counted. So the week's three picks are capped at +40 % and the full hunt, once at the cap, offers only those two.
+- **E4 hunt tiers: built small, Legendary and mutators left.** The picker's four difficulties are the tiers
+  (`BossRushSession.BossStrength`): Normal x1 / x1, Hard = Heroic x1.3 / x1.15, Very Hard = Steel x1.6 / x1.3; Easy x0.8 / x0.9 sits
+  below Normal (it was 0.75 / 0.85; Normal was 0.85 / 1, Hard 0.9 / 1.05, Very Hard 0.95 / 1.12). Left: the Legendary tier
+  (x2 / x1.5, one-use items off: needs a fifth step on the picker and a one-use-items switch) and the hunt mutators with the
+  25 % cut for two bosses at once (the hunt has no mutator picker; the Operations mutators are another mode).
+- **E5.** The two-layer blast rule is the damage system's (26AB); A7 dropped. **E6 and every F measure wait.**
+- Texts: `hunt.weekly.rules`, `hunt.full.rules` (en, vi) say the 15 s rest, 30 % repair, half the CP, the +40 % cap and the fresh battles.
+- Excel: `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx` re-exported by `Tools/balance/export_applied_xlsx.py` with the
+  boss numbers of 26AB and 26CD (health, sizes, weapons); the hunt's numbers are code, not sheet cells.
+
+### To measure (the owner's tests wait; this gathers 26AB's and 26CD's too)
+
+- Hunt (E): the calibration of P (10 vehicles x 0.3 uptime): the real kill times of a mini (66 s / 60 s) and a main (168 s / 150 s)
+  with the weak, average and strong sample decks (E.6: a weak deck still clears Normal, a strong one does not clear a hard tier
+  too easily, both modes' total time within target, about 18 min for the week); the 0.6 share; the 30 min weekly clock; half the CP
+  kept and the 30 % repair; the supports' strengths against the +40 % cap; whether the full hunt's fresh start (45 CP bank, 40 CP)
+  lets the army form in time for a mini at x0.8; the load time of a rebuilt scene per boss; the tiers' factors (and Easy 0.8 / 0.9).
+- 26AB: kill times against the chapter targets (2.5 min at ch.1 to 4 min at ch.12 for a main, 60 to 90 s for a mini) with the standard
+  deck; the boss's real DPS with the rank's x1.4 / x1.25 and the phases' x1.1-1.2 (if the prompt meant them in, every number is about
+  1.7 too high); the super weapons' share (35 %); whether the 35 % parts make "break the guns" too cheap; Moloch's 300 per 1 s HE,
+  Icarus's 1,500 slugs, Typhon's 1,460 missiles and the Daedalus pods against their chapters' armies; the crowd targeting; the close
+  guard ring; A6's factors on the quick modes; the flank bonus and armour 5 / 3 / 2 against the cards' penetration.
+- 26CD: kill time and real DPS of Ixion and of Gungnir against 65 % of their chapters' mains; the charge's length (60 m in 4 s) and
+  its 900 damage; the mine strip (6 x 380) on a crowded road; whether the larger bosses block lanes (C6's stuck probe: Kronos 60 m,
+  Moloch and Bastion 40 m, Jotunn 32 m, Matriarch 55 m); the hit radius of the enlarged bosses against their models; Monster at 42 m
+  and Hyperion at 108 m on their maps; the KS-19 tower at 100 mm; the aerostat's 45 m reveal.
+- F (all waiting): per-chapter kill times +-20 %, losses a minute (main 3-4 at ch.1, 7-8 at ch.12; mini 2 and 4-5), area share
+  >= 50 % (main) / >= 30 % (mini), super weapon <= 35 %, dodge rate of the warned shells, the 5-seed campaign at Normal, the era test
+  (written in 26CD), and FPS at Icarus, Kronos and Leviathan on a low-end device.

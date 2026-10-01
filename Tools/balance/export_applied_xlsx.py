@@ -573,7 +573,7 @@ def rebuild(wb, name, inserts):
 def notes_sheet(wb, filled):
     ws = wb.create_sheet("Ghi chú áp dụng", 0)
     lines = [
-        ("Bản đã áp (prompt 25)", f"Xuất ngày {date.today().isoformat()} bằng Tools/balance/export_applied_xlsx.py từ dữ liệu game sau khi áp file cân bằng."),
+        ("Bản đã áp (prompt 26)", f"Xuất ngày {date.today().isoformat()} bằng Tools/balance/export_applied_xlsx.py từ dữ liệu game sau khi áp file cân bằng."),
         ("Cột \"Hiện tại\" (nền xanh)", "Số trong game sau khi áp, đặt ngay cạnh cột đề xuất để so. Các cột \"... hiện\" có sẵn trong file là số TRƯỚC khi áp."),
         ("Cột \"Kết quả áp\"", "Sheet Thay đổi chi tiết và Kiểm tra từng mục: kết quả của từng dòng trong Docs/balance/apply-report.md "
                                 "(đã áp / đã có sẵn / chờ / bỏ qua, kèm việc và chi tiết)."),
