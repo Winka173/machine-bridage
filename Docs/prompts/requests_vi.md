@@ -188,3 +188,5 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (01/10) đổi qua check những commit sau tối hôm qua
 - (01/10) nó vẫn còn hơi tối so với những thứ trước chiều hôm qua
 - (01/10) có vẻ là xe cũ dựng lại và cả boss luôn, con đầu tiên trong boss rush và các con sau có con có con không; ý tôi là full boss rush; check boss đầu tiên trong full boss rush
+- (01/10) build lại bản cho window mới
+- (01/10) tôi vẫn thấy nó hơi tối, ví dụ là trong deck, xem mobile repair vehicle bên ngoài list deck, và bên trong detail khác nhau, bên trong detail thì sáng rõ đúng như ý tôi nhưng ngoài list deck tối, boss cũng chịu mức tối tương tự

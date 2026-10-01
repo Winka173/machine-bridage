@@ -284,27 +284,22 @@ namespace MachineBrigade.Game.Rendering
         public const string HighDetailSuffix = "_hd";
 
         /// <summary>
-        /// Play-test 11 (DECISIONS "PT11 dark hulls"): models prompt 25 B2 rebuilt darker than they were (more of their area
-        /// in the dark Armor and Undercarriage surfaces, less army paint), brightened back to their old mean albedo
-        /// (area-weighted base colour x baked occlusion, measured from the GLBs; at most 1.5 x) through the "_Tint"
-        /// multiply. Prompt 27 remakes every model and drops this.
+        /// A def's own colour (prompt 20 G.2 boss variants, prompt 25 F2 stand-ins) as the "_Tint" multiply: the data's
+        /// colour with the old warm cast (x 1, 0.97, 0.95), scaled to a luminance of 1 so it shifts the hue only. Play-test 11
+        /// (DECISIONS "PT11 dark hulls"): the owner wants a variant as bright as its parent (the detail page's untinted
+        /// preview); the data's tints run 0.5-1.2 and darkened every variant. No channel goes above 1.8.
         /// </summary>
-        private static readonly Dictionary<string, float> Shades = new()
+        public static Vector3 TintOf(System.Numerics.Vector3? tint)
         {
-            ["armored_car"] = 1.43f, ["artillery"] = 1.11f, ["ballistic_launcher"] = 1.47f, ["bmpt"] = 1.27f,
-            ["command_vehicle"] = 1.30f, ["engineer_vehicle"] = 1.20f, ["flame_tank"] = 1.13f, ["fpv_carrier"] = 1.23f,
-            ["heavy_aa"] = 1.11f, ["ifv"] = 1.25f, ["mine_layer"] = 1.30f, ["mortar_carrier"] = 1.13f,
-            ["shield_carrier"] = 1.22f, ["stealth_bomber"] = 1.5f, ["thermobaric_launcher"] = 1.24f, ["titan_tank"] = 1.18f,
-            ["turtle_tank"] = 1.17f, ["vbied"] = 1.5f, ["wheeled_gun"] = 1.11f,
-        };
-
-        /// <summary>How much brighter a model (or its high-detail variant) is drawn: 1 for all but <see cref="Shades"/>.</summary>
-        public static float Shade(string modelId)
-        {
-            if (string.IsNullOrEmpty(modelId)) return 1f;
-            if (modelId.EndsWith(HighDetailSuffix)) modelId = modelId.Substring(0, modelId.Length - HighDetailSuffix.Length);
-            return Shades.TryGetValue(modelId, out var k) ? k : 1f;
+            if (tint is not { } t) return Vector3.one;
+            var c = new Vector3(t.X, 0.97f * t.Y, 0.95f * t.Z);
+            var luma = 0.2126f * c.x + 0.7152f * c.y + 0.0722f * c.z;
+            if (luma <= 1e-3f) return Vector3.one;
+            c /= luma;
+            var top = Mathf.Max(c.x, Mathf.Max(c.y, c.z));
+            return top > 1.8f ? c * (1.8f / top) : c;
         }
+
 
         /// <summary>
         /// Load the high-detail variant of a model (Resources/Models/&lt;id&gt;_hd, built by
@@ -319,6 +314,9 @@ namespace MachineBrigade.Game.Rendering
         private readonly Dictionary<string, string> _detailIds = new();
 
         public ModelLibrary(MaterialLibrary materials) => _materials = materials;
+
+        /// <summary>The material library its models are drawn with.</summary>
+        public MaterialLibrary Materials => _materials;
 
         /// <summary>
         /// The resource a model loads from: its high-detail variant when <see cref="HighDetail"/> is on

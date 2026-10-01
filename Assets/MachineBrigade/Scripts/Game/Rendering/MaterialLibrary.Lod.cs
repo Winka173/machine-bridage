@@ -80,6 +80,7 @@ namespace MachineBrigade.Game.Rendering
             foreach (var name in new[] { "_BaseColor", "_CamoColorB", "_CamoColorC" }) material.SetColor(name, paint.GetColor(name));
             foreach (var name in new[] { "_CamoMode", "_CamoScale", "_Metallic", "_Roughness" }) material.SetFloat(name, paint.GetFloat(name));
             material.SetColor("_EmissionColor", glow.GetColor("_EmissionColor"));
+            RefreshTinted(material);
         }
 
         private void BuildPalette()

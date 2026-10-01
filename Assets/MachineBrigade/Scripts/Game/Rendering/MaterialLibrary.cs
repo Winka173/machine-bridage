@@ -295,6 +295,49 @@ namespace MachineBrigade.Game.Rendering
             return _surfaces.TryGetValue(name, out var material) ? material : Fallback;
         }
 
+        private static readonly int TintProperty = Shader.PropertyToID("_Tint");
+        private readonly Dictionary<(Material source, int r, int g, int b, int a), Material> _tinted = new();
+        private readonly Dictionary<Material, Material> _tintSource = new();
+
+        /// <summary>
+        /// Play-test 11 (DECISIONS "PT11 dark hulls"): a copy of <paramref name="source"/> with its "_Tint" multiply set, shared
+        /// by every renderer that needs that value (rgb in 1/256 steps, the flash alpha in 1/32). Views tint hulls through
+        /// these instead of a MaterialPropertyBlock: any property block on a MachineBrigade/Lit renderer drew it at about
+        /// 40 % of its brightness (measured on the IFV's card: 0.40 without one, 0.15 with a white one, whatever the GPU
+        /// Resident Drawer or instancing setting), which was the hulls going dark once hit. Shared copies keep the SRP
+        /// Batcher. A tint of one gives the source itself; a tinted copy given back resolves to its source first.
+        /// </summary>
+        public Material Tinted(Material source, Vector4 tint)
+        {
+            if (source == null) return null;
+            source = Untinted(source);
+            static int Q(float v, float steps) => Mathf.RoundToInt(Mathf.Clamp(v, 0f, 8f) * steps);
+            var key = (source, Q(tint.x, 256f), Q(tint.y, 256f), Q(tint.z, 256f), Q(tint.w, 32f));
+            if (key.Item2 == 256 && key.Item3 == 256 && key.Item4 == 256 && key.Item5 == 32) return source;
+            if (_tinted.TryGetValue(key, out var cached) && cached != null) return cached;
+            var m = new Material(source) { name = source.name + " tinted" };
+            m.SetVector(TintProperty, new Vector4(key.Item2 / 256f, key.Item3 / 256f, key.Item4 / 256f, key.Item5 / 32f));
+            _owned.Add(m);
+            _tinted[key] = m;
+            _tintSource[m] = source;
+            return m;
+        }
+
+        /// <summary>The material a <see cref="Tinted"/> copy was made from (any other material as it is).</summary>
+        public Material Untinted(Material m) => m != null && _tintSource.TryGetValue(m, out var source) ? source : m;
+
+        /// <summary>Puts a changed source's properties onto its tinted copies (an army's new paint).</summary>
+        private void RefreshTinted(Material source)
+        {
+            foreach (var (key, copy) in _tinted)
+            {
+                if (key.source != source || copy == null) continue;
+                var tint = copy.GetVector(TintProperty);
+                copy.CopyPropertiesFromMaterial(source);
+                copy.SetVector(TintProperty, tint);
+            }
+        }
+
         /// <summary>
         /// Paints the player's army (team 0): base colour, pattern (0 plain, 1 blotches, 2
         /// stripes, 3 digital) with its two other colours and scale, and the finish.
@@ -309,6 +352,7 @@ namespace MachineBrigade.Game.Rendering
             team.SetFloat("_CamoScale", scale);
             team.SetFloat("_Metallic", metallic);
             team.SetFloat("_Roughness", roughness);
+            RefreshTinted(team);
             SyncLodSurface(0);
         }
 
@@ -322,6 +366,8 @@ namespace MachineBrigade.Game.Rendering
                 else Object.DestroyImmediate(m);
             }
             _owned.Clear();
+            _tinted.Clear();
+            _tintSource.Clear();
             if (_noise != null)
             {
                 if (Application.isPlaying) Object.Destroy(_noise);

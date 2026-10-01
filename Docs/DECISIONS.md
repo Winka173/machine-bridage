@@ -12427,3 +12427,17 @@ rebuilds measure 11-73 % darker in mean albedo (area-weighted base colour x bake
 area, less paint), e.g. armored_car -30 %, ifv -19 %, vbied -54 %, stealth_bomber -73 %; `ModelLibrary.Shade` brightens
 each back to its old mean (capped at 1.5 x) through the same multiply, in play and on cards (re-rendered). Prompt 27
 remakes every model and drops the table.
+
+Third pass, the real cause (owner: the deck list's card of the mobile repair vehicle is dark, its detail page's live
+preview bright and right; bosses the same). Measured on cards (mean luminance of the opaque pixels): the IFV card without
+a property block 0.40, with a white `_Tint` property block 0.15, unchanged with the GPU Resident Drawer off (asset and
+runtime), instancing off, an explicit ambient probe, or every material value copied into per-material blocks. So any
+MaterialPropertyBlock on a MachineBrigade/Lit renderer draws it at ~40 % (the non-SRP-Batcher path; the exact loss not
+pinned down). Every hull with a block went dark: a hit's flash or soot, a tinted def, a wreck, and the first two passes'
+spawn-time tint and shade. The B2 rebuilds' cards rendered without a block (30/09 17:54) measure as bright as the old
+models' (IFV 0.40 vs 0.40), so the shade table is withdrawn. Choices: `MaterialLibrary.Tinted` gives shared material
+copies with `_Tint` set (rgb in 1/256 steps, flash alpha in 1/32), which views and cards swap in instead of any block
+(SRP Batcher kept; copies follow army paint changes); tints are a hue shift at luminance 1 (`ModelLibrary.TintOf`, no
+channel above 1.8) so a variant is as bright as its parent, as on the detail preview; the wreck takes its authored
+(0.16, 0.14, 0.13) as is. Cards after: next_gen_tank 0.38 vs main_battle_tank 0.38, mobile_repair_vehicle 0.34 vs
+engineer_vehicle 0.34. 51 cards re-rendered.

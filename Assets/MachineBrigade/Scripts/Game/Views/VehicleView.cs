@@ -34,7 +34,6 @@ namespace MachineBrigade.Game.Views
 
         private const float GentleSeconds = 3.2f;
 
-        private static readonly int TintId = Shader.PropertyToID("_Tint");
 
         private readonly ModelInstance _model;
         private readonly Transform _body;
@@ -94,6 +93,7 @@ namespace MachineBrigade.Game.Views
         {
             Sim = vehicle;
             Def = vehicle.Def;
+            _materials = materials;
             Root = new GameObject($"{vehicle.Def.Id} {vehicle.Id}").transform;
             Root.SetParent(parent, false);
             _body = new GameObject("Body").transform;
@@ -111,9 +111,6 @@ namespace MachineBrigade.Game.Views
             ModelBounds = Measure(_model.Root.transform, _body);
             DrawScale = DrawScaleOf(vehicle.Def, ModelBounds.size.z);
             _body.localScale = Vector3.one * DrawScale;
-            // The def's own colour and the model's shade from the first frame, as on its card (it used to wait for the first hit).
-            _shade = ModelLibrary.Shade(models.ResolveId(modelId));
-            if (vehicle.Def.Tint != null || _shade != 1f) ApplyTint();
             if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
 
@@ -250,6 +247,9 @@ namespace MachineBrigade.Game.Views
             _ours = vehicle.Team == playerTeam;
             AddRotorBlur(materials);
             InitParts(models, meshes, materials);
+            // The def's own colour from the first frame, as on its card (it used to wait for the first hit); after the
+            // elite repaint, which swaps the untinted kit materials.
+            if (vehicle.Def.Tint != null) ApplyTint();
             // Elite enemies wear a gold health bar.
             if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
@@ -532,38 +532,51 @@ namespace MachineBrigade.Game.Views
             ApplyTint();
         }
 
-        private MaterialPropertyBlock _tintBlock;
-
         /// <summary>
-        /// The "_Tint" multiply as the shader gets it, written with SetVector so nothing is converted (owner's reports
-        /// 2026-10-01, DECISIONS "PT11 dark hulls"): SetColor converts gamma to linear in this linear-space project, so the
-        /// soot's 0.45 had reached the shader as 0.17 and a variant's 0.72 as 0.48. The def's own colour (prompt 20 G.2
-        /// boss variants, prompt 25 F2 stand-ins) as written in the data, the model's shade (<see cref="ModelLibrary.Shade"/>),
-        /// the soot shade, the hit flash in alpha.
+        /// The "_Tint" multiply (owner's reports 2026-10-01, DECISIONS "PT11 dark hulls"), set on shared tinted materials
+        /// (<see cref="MaterialLibrary.Tinted"/>) unconverted: the def's own colour (prompt 20 G.2 boss variants, prompt 25
+        /// F2 stand-ins) as a hue shift (<see cref="ModelLibrary.TintOf"/>), the soot
+        /// shade, the hit flash in alpha.
         /// </summary>
         private Vector4 TintValue()
         {
-            var own = Def.Tint is { } t ? new Vector3(t.X, 0.97f * t.Y, 0.95f * t.Z) : Vector3.one;
+            var own = ModelLibrary.TintOf(Def.Tint);
             var soot = _scorch < 1f ? new Vector3(_scorch, _scorch * 0.97f, _scorch * 0.95f) : Vector3.one;
-            return new Vector4(_shade * own.x * soot.x, _shade * own.y * soot.y, _shade * own.z * soot.z, 1f - _shownFlash);
+            return new Vector4(own.x * soot.x, own.y * soot.y, own.z * soot.z, 1f - _shownFlash);
         }
 
-        /// <summary>The model's shade (<see cref="ModelLibrary.Shade"/>), set at spawn.</summary>
-        private float _shade = 1f;
+        private readonly MaterialLibrary _materials;
 
         private void ApplyTint()
         {
-            _tintBlock ??= new MaterialPropertyBlock();
             var tint = TintValue();
-            _tintBlock.SetVector(TintId, tint);
-            foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
+            Retint(_model.Renderers, tint);
             if (_model.Lod1Renderers.Length == 0) return;
             if (VehicleLod.Colours)
             {
                 var debug = VehicleLod.Tint(VehicleLod.Simple);
-                _tintBlock.SetVector(TintId, new Vector4(tint.x * debug.r, tint.y * debug.g, tint.z * debug.b, tint.w));
+                tint = new Vector4(tint.x * debug.r, tint.y * debug.g, tint.z * debug.b, tint.w);
             }
-            foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
+            Retint(_model.Lod1Renderers, tint);
+        }
+
+        /// <summary>Swaps each renderer's materials for their shared copies at this tint (<see cref="MaterialLibrary.Tinted"/>; no property block).</summary>
+        private void Retint(Renderer[] renderers, Vector4 tint)
+        {
+            foreach (var r in renderers)
+            {
+                if (r == null) continue;
+                var shared = r.sharedMaterials;
+                var changed = false;
+                for (var i = 0; i < shared.Length; i++)
+                {
+                    var m = _materials.Tinted(shared[i], tint);
+                    if (m == shared[i]) continue;
+                    shared[i] = m;
+                    changed = true;
+                }
+                if (changed) r.sharedMaterials = shared;
+            }
         }
 
         // Hit feedback: a soft white flash for a hit that takes 2 % or more at once (a shell, a
@@ -1181,10 +1194,10 @@ namespace MachineBrigade.Game.Views
         {
             if (!Match.DebugFlags.Has("-mb-no-tint"))
             {
-                var block = new MaterialPropertyBlock();
-                block.SetColor(TintId, new Color(0.16f, 0.14f, 0.13f));
-                foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
-                foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(block);
+                // Burnt black (play-test 11: through tinted materials, not a property block; the authored value as is).
+                var burnt = new Vector4(0.16f, 0.14f, 0.13f, 1f);
+                Retint(_model.Renderers, burnt);
+                Retint(_model.Lod1Renderers, burnt);
             }
             // A hulk is drawn with meshes: its turret can be thrown off and it sinks away.
             if (_level == VehicleLod.Impostor) SetLevel(VehicleLod.Simple);

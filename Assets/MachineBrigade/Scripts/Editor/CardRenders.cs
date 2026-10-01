@@ -355,26 +355,26 @@ namespace MachineBrigade.Editor
                 return camera;
             }
 
-            private static readonly int TintId = Shader.PropertyToID("_Tint");
-            private MaterialPropertyBlock _tintBlock;
 
             /// <summary>
-            /// Prompt 25 F2 batch B (DECISIONS 25F2-B): a stand-in's wash, the same "_Tint" property block multiply
-            /// VehicleView.ApplyTint puts on a boss variant, at rest (no scorch, no hit flash).
+            /// Prompt 25 F2 batch B (DECISIONS 25F2-B): a stand-in's wash, the same "_Tint" multiply (shared tinted
+            /// materials since play-test 11) VehicleView.ApplyTint puts on a variant, at rest (no scorch, no hit flash).
             /// </summary>
             public byte[] Render(ModelLibrary library, string modelId, int team, System.Numerics.Vector3? tint = null)
             {
                 var instance = library.Spawn(modelId, team, _root, castShadows: false);
                 var model = instance.Root;
-                // Play-test 11: the tint as written (SetVector, unconverted) and the model's shade, as VehicleView draws them.
-                var shade = ModelLibrary.Shade(library.ResolveId(modelId));
-                if (tint != null || shade != 1f)
+                // Play-test 11: the tint as a hue shift (ModelLibrary.TintOf) on shared tinted materials, as VehicleView draws it.
+                if (tint != null)
                 {
-                    var own = tint ?? System.Numerics.Vector3.One;
-                    _tintBlock ??= new MaterialPropertyBlock();
-                    _tintBlock.SetVector(TintId, new Vector4(shade * own.X, shade * 0.97f * own.Y, shade * 0.95f * own.Z, 1f));
-                    foreach (var r in instance.Renderers) r.SetPropertyBlock(_tintBlock);
-                    foreach (var r in instance.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
+                    var own = ModelLibrary.TintOf(tint);
+                    var value = new Vector4(own.x, own.y, own.z, 1f);
+                    foreach (var r in instance.Renderers.Concat(instance.Lod1Renderers))
+                    {
+                        var shared = r.sharedMaterials;
+                        for (var i = 0; i < shared.Length; i++) shared[i] = library.Materials.Tinted(shared[i], value);
+                        r.sharedMaterials = shared;
+                    }
                 }
                 SetLayer(model.transform);
                 model.transform.position = Vector3.zero;
