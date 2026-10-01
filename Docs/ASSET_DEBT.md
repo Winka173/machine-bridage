@@ -285,3 +285,19 @@ model with a tint (`"tint"` in balance.json, applied as VehicleView's own varian
 | `gps_jammer_vehicle` | `ew_jammer`, a periwinkle wash | a Pole-21-class jammer: a mast-mounted antenna array on a truck bed, distinct from the visual jammer |
 | `drone_net_tower` | `laser_ad_station`, a pink wash | a net corridor: two poles with anti-drone netting strung wide between them, no turret |
 | `one_shot_atgm_tower` | `atgm_tower`, a tan wash | an automatic launcher box of eight ready-to-fire Kornet tubes, no reload magazine in view |
+
+## Prompt 25 batch D stand-in bosses (DECISIONS 25F2-D)
+
+All eight draw their parent boss's model with a hue tint; their cards are the parent's picture. Real models come in prompts 26-27.
+
+| Boss | Stand-in (parent, tint) | The real model |
+|---|---|---|
+| `kraken` | `leviathan`, blue wash, 110 m | a Nimitz / Kuznetsov carrier: flat deck, island to starboard, aircraft parked, lifts, arresting cable, 4 CIWS, 2 SAM mounts |
+| `monster` | `fortress_bastion`, sand wash | a Landkreuzer P. 1500: four track clusters (`Part_track_*`), one 800 mm barrel half the hull long (`Part_barrel`), 2 turrets, 4 flak |
+| `garuda` | `command_airship`, violet wash | a B-2 / Ho 229 flying wing, 70 m span, sawtooth trailing edge, opening bomb bay, 6 defensive turrets |
+| `hyperion` | `silver_bug`, amber wash | a hexagonal mirror ring round a core with long solar panels, 4 point-defence lasers, 2 landing pods |
+| `stymphalos` | `drone_mothership`, green wash | eight delta-wing jet drones in V formation (separate units, 1,300 health each; a swarm rule) |
+| `nyx` | `leviathan`, steel wash | a Zumwalt-style tumblehome hull, pyramid superstructure, railgun, 2 CIWS |
+| `cerberus` | `behemoth`, red wash | three big-wheeled trucks joined by couplings: 125 mm tractor, anti-air middle, rocket trailer (middle first breaks the AA) |
+| `hydra` | `typhon`, teal wash | a small submarine with vertical launch tubes along the back and six FPV drones |
+| Weapon lists | the parent's | each sheet weapon list on its own mounts (see 25F2-D); the sun beam's smoke cut; the In-action clips of the four super weapons |

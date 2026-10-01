@@ -28,7 +28,8 @@ namespace MachineBrigade.Tests
         private static Catalog C => Lab.Catalog;
 
         private static readonly string[] NewBosses =
-            { "moloch", "daedalus", "kronos", "typhon", "ixion", "caspian", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus" };
+            { "moloch", "daedalus", "kronos", "typhon", "ixion", "caspian", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus",
+              "kraken", "monster", "garuda", "hyperion", "stymphalos", "nyx", "cerberus", "hydra" };
 
         private static SimWorld Field(int seed = 3)
         {
@@ -79,11 +80,13 @@ namespace MachineBrigade.Tests
                 ["kronos"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["caspian"] = "hung", ["command_airship"] = "quaden",
                 ["mega_gunship"] = "quaden", ["sky_fortress"] = "quaden", ["argus"] = "quaden", ["silver_bug"] = "aurel", ["daedalus"] = "aurel",
                 ["icarus_mk0"] = "aurel", ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
+                // Prompt 25 F2 batch D.
+                ["kraken"] = "kessler", ["monster"] = "orlov", ["garuda"] = "quaden", ["hyperion"] = "aurel", ["stymphalos"] = "sen", ["nyx"] = "kessler", ["cerberus"] = "varga", ["hydra"] = "hung",
             };
             var bosses = C.Vehicles.Values.Where(v => v.Boss).ToList();
-            Assert.AreEqual(33, bosses.Count, "12 main bosses and 21 mini bosses (prompt 22 E's two)");
-            Assert.AreEqual(12, bosses.Count(b => b.Rank == BossRank.Main));
-            Assert.AreEqual(21, bosses.Count(b => b.Rank == BossRank.Mini));
+            Assert.AreEqual(41, bosses.Count, "16 main bosses and 25 mini bosses (prompt 22 E's two, prompt 25 batch D's eight)");
+            Assert.AreEqual(16, bosses.Count(b => b.Rank == BossRank.Main));
+            Assert.AreEqual(25, bosses.Count(b => b.Rank == BossRank.Mini));
             foreach (var b in bosses)
             {
                 Assert.IsNotNull(b.Frame, b.Id + " has a body frame");

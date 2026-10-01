@@ -12447,3 +12447,52 @@ engineer_vehicle 0.34. 51 cards re-rendered.
 The owner dropped dx23 (the Super Tank's deploy-time roof module: AA gatling, missile rack or small repair station):
 "bỏ dx23 không làm". The tracker gains a "bỏ" status (dropped by the owner) and dx23 carries it; batch B is complete.
 The owner also confirmed the play-test 11 dark-hull fix.
+
+## 25F2-D. New content, batch D: the eight new bosses (2026-10-01)
+
+The sheet "Boss mới" (tracker bs01-bs08). The owner chose stand-in models for all eight, so each is a **variant** of the
+nearest existing boss (prompt 20 G.2's mechanism: its parent's built data, model and parts, a hue-only `tint`, `mark`,
+the sheet's size), written in `balance.json` after Morrigan. Real models come with prompts 26-27 (ASSET_DEBT).
+
+| Boss | Borrowed from | Rank | Super weapon |
+|---|---|---|---|
+| Kraken (kessler) | Leviathan, size 1.14 (110 m) | main | `kraken_air_raid`: 12 x 400, 9 m, strip 90 x 14 m, 75 s, 4 s warning, part `flight_deck` |
+| Monster (orlov) | Bastion, size 1.5, speed 0.8 | main | `monster_800_shell`: 1 x 4,000, 20 m, 80 s, 6 s warning, part `mortar` (the barrel) |
+| Garuda (quaden) | Command airship, size 1.1 | main | `garuda_carpet`: 20 x 350, strip 100 x 14 m, 70 s, part `bomb_bay` |
+| Hyperion (aurel) | Silver Bug, size 1.2 | main | `hyperion_sun_beam`: a 70 x 6 m strip, 4 x 500 over 4 s, 65 s, part `main_laser` |
+| Stymphalos (sen) | Drone mothership, size 0.55, keeps 2 drone bays + flak | mini | none |
+| Nyx (kessler) | Leviathan, size 0.55, keeps fore turret, VLS, 2 CIWS; `stealth`, `boss_railgun` | mini | none |
+| Cerberus (varga) | Behemoth, size 0.8, keeps main gun, 2 flak, rocket pod | mini | none |
+| Hydra (hung) | Typhon, size 0.6, keeps doors, deck gun, rudder; faster dive cycle | mini | none |
+
+- **Health.** The sheet's number over the bosses' toughness (0.85) and a mini's share (0.55), to the nearest 50, as 25C:
+  Kraken 25,000 (29,400 in the data), Monster 23,000 (27,050), Garuda 24,000 (28,250), Hyperion 28,000 (32,950), the
+  minis 11,000 / 10,000 / 11,000 / 11,500 (23,550 / 21,400 / 23,550 / 24,600). Hyperion therefore passes Icarus as the
+  boss with the most health (Prompt25BossTests updated).
+- **Damage a second.** `weaponDamage` = the parent's multiplier x the new target / the parent's target in the sheet
+  "Boss đề xuất" (Kraken 1.396, Monster 1.506, Garuda 1.906, Hyperion 1.492; the minis against their sibling variants:
+  Stymphalos 2.13 from Locust, Nyx 1.54 from Scylla, Cerberus 2.18 from Mk.II, Hydra 4.26 from Typhon). The stand-ins
+  keep their parents' weapons, so this is the same estimate, not a measurement: nothing was run (owner's rule). The sheet's
+  own weapon lists (4 CIWS and SAMs on Kraken, six drones from Hydra, three cars of Cerberus, eight UAVs of Stymphalos)
+  need their models and mounts: ASSET_DEBT.
+- **Super weapons** only for the four main bosses (25C's rule); the sheet's numbers, as `BigAttackDefs` shapes (strip,
+  circle). The rank's main scale (damage x0.857, cooldown x0.85) and the difficulty's stay on top. Hyperion's "smoke cuts
+  80 %" has no smoke rule on a strike yet (left to a later pass).
+- **Mechanics kept in the data.** Hyperion stays on the high tier (a three-step all-high schedule, no crash, no hijack;
+  it drops the two crash turrets and the uplink, which only fed the Bug's rods; its other nine parts at 7 %); Nyx is
+  `stealth` (seen at 0.4 of a spotter's sight unless it fired in the last 2.5 s, the existing rule); Hydra's burrow is
+  quicker (surface 16, under 10, first 12 s), its cruise missile every 16 s for 240, `wake` removed (its one gun is awake).
+  Not made (need models): Monster's four track clusters, Kraken's arresting cable and runway, Garuda's circling course,
+  Stymphalos's eight separate drones, Cerberus's three cars.
+- **Words.** `BossText` (unit, short, note, guide, parts tip, radio line; Hyperion's two phase lines), `CampaignText`
+  (boss name, boss file), `BigAttackText` (name, cancelled, radio, how, dodge, stop), en + vi. Kraken/Nyx speak as
+  Kessler, Monster as Orlov, Garuda as Raven, Hyperion as Aurel, Stymphalos as Dr Venn, Cerberus as Varga, Hydra as Ly Han.
+- **Cards.** A boss card draws its parent's model (`PictureKey`), so the eight cards are manifest entries on the existing
+  pictures (rendered with `-mbCardsOnly`; the parents' own pictures were left as they were).
+- **Rush and hunts.** `BossRushRules.Kinds` gains seven kinds: Kraken, Monster, Garuda, Hyperion each alone, `nyx`+`hydra`
+  (the sea), Stymphalos and Cerberus alone. `BossHunts.Unslotted` places them after the chapter of their general or
+  season (Nyx 4, Stymphalos 5, Cerberus 6, Monster 8, Kraken and Hydra 9, Garuda 10, Hyperion 12; no chapter slot yet) and
+  its entries now carry their rank (`Main` from the def), so the week's three mains are drawn from sixteen.
+- **Tests (written, not run).** Prompt20BossTests (41 bosses: 16 main, 25 mini; generals; words), BossPartsTests
+  (part counts), Prompt20HuntTests (generals, 16 mains in the full hunt), Prompt25BossTests (Hyperion has the most health).
+  Checks run: compile, CatalogCheck (241 vehicles, 293 weapons), the card render.

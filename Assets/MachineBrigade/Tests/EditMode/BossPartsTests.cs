@@ -50,6 +50,8 @@ namespace MachineBrigade.Tests
             ["bastion_mk0"] = 3, ["fenrir"] = 3, ["scylla"] = 3, ["locust"] = 2, ["behemoth_mk2"] = 4, ["icarus_mk0"] = 3, ["argus"] = 3,
             // Prompt 22 E: Behemoth Mk.0 (a variant) and Morrigan (two missile bays, the bomb bay, the engines).
             ["behemoth_mk0"] = 4, ["morrigan"] = 4,
+            // Prompt 25 F2 batch D: the stand-ins (a main boss keeps all its parent's parts; Hyperion drops the two crash turrets and the uplink).
+            ["kraken"] = 14, ["monster"] = 9, ["garuda"] = 10, ["hyperion"] = 9, ["stymphalos"] = 3, ["nyx"] = 4, ["cerberus"] = 4, ["hydra"] = 4,
         };
 
         private static Catalog C => GameContent.LoadCatalog();
@@ -78,7 +80,7 @@ namespace MachineBrigade.Tests
                 // A mount is on one part at most.
                 var mounts = def.Parts.SelectMany(p => p.Mounts).ToList();
                 Assert.AreEqual(mounts.Count, mounts.Distinct().Count(), id + ": no mount on two parts");
-                Assert.AreEqual(id == "command_airship" ? 0f : 0.3f, def.Parts[0].BreakDamage, 1e-4f, id + ": the body takes 30 % of a broken part");
+                Assert.AreEqual(id is "command_airship" or "garuda" ? 0f : 0.3f, def.Parts[0].BreakDamage, 1e-4f, id + ": the body takes 30 % of a broken part");
             }
         }
 

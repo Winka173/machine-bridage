@@ -96,7 +96,7 @@ namespace MachineBrigade.Tests
             // Prompt 22 E: the new mini bosses no chapter lists yet come in at their interludes.
             slots.AddRange(BossHunts.Unslotted.Select(u => u.id).Where(id => !slots.Contains(id)));
             CollectionAssert.AreEquivalent(slots, full, "every chapter slot once, the trains and the railway gun too (DECISIONS 21G)");
-            Assert.AreEqual(12, story.Count(b => b.Main), "the twelve main bosses, Nemesis too");
+            Assert.AreEqual(16, story.Count(b => b.Main), "the twelve main bosses, Nemesis too, and batch D's four");
             // It opens once the last chapter on is done.
             PlayerProfile.ResetForTests();
             Progression.TestUnlockAll = false;
@@ -247,6 +247,8 @@ namespace MachineBrigade.Tests
             ["silver_bug"] = "aurel", ["daedalus"] = "aurel", ["icarus_mk0"] = "aurel",
             // Prompt 22 E.
             ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
+            // Prompt 25 F2 batch D.
+            ["kraken"] = "kessler", ["monster"] = "orlov", ["garuda"] = "quaden", ["hyperion"] = "aurel", ["stymphalos"] = "sen", ["nyx"] = "kessler", ["cerberus"] = "varga", ["hydra"] = "hung",
         };
 
         [Test]

@@ -442,6 +442,122 @@ namespace MachineBrigade.Game.Hud
             ["unit.mara_behemoth"] = ("{@mai}'s Behemoth · Allied Behemoth", "{@mai}'s Behemoth · Behemoth đồng minh"),
             ["short.mara_behemoth"] = ("{@mai}'s Behemoth", "Behemoth của {@mai}"),
             ["note.mara_behemoth"] = ("A Behemoth rebuilt by {@mai} in our colours, fighting beside us in the last battle.", "Một chiếc Behemoth được {@mai} dựng lại mang màu cờ của ta, chiến đấu bên ta trong trận cuối."),
+
+            // Prompt 25 F2 batch D: the eight new bosses (stand-ins, DECISIONS 25F2-D).
+            ["unit.kraken"] = ("Kraken · Aircraft Carrier", "Kraken · Tàu sân bay"),
+            ["short.kraken"] = ("Kraken", "Kraken"),
+            ["note.kraken"] = ("Kessler's new flagship: the longest ship afloat, a flat flight deck with aircraft parked on it and a CIWS ring.", "Soái hạm mới của Kessler: con tàu dài nhất mặt nước, boong phẳng đỗ đầy máy bay và một vòng CIWS."),
+            ["guide.kraken"] = (
+                "[[Boss]] · aircraft carrier · air raids from the sea\n" +
+                "How it fights: a stand-in hull for now (Leviathan's guns, missile cells and CIWS). Its [[flight deck]] launches fighters and drones, and every 75 s it calls an air raid.\n" +
+                "Strong / weak: the longest, toughest hull afloat; the elevator deck is thin (armour 2).\n" +
+                "Tip: break the [[flight deck]] and the aircraft stop coming; during the 4 s warning leave the long red strip.",
+                "[[Boss]] · tàu sân bay · không kích từ biển\n" +
+                "Cách đánh: tạm dùng thân tàu Leviathan (pháo, ống phóng tên lửa và CIWS). [[Boong cất cánh]] phóng tiêm kích và drone, và cứ 75 giây nó gọi một đợt không kích.\n" +
+                "Mạnh / yếu: thân tàu dài và dày nhất mặt nước; boong thang máy mỏng (giáp 2).\n" +
+                "Mẹo: phá [[boong cất cánh]] là máy bay hết xuất kích; trong 4 giây cảnh báo hãy ra khỏi dải đỏ dài."),
+            ["guide.parts.tip.kraken"] = ("Tip: the [[flight deck]] feeds its aircraft and carries the air raid; break it first. The [[CIWS]] shoot missiles down before they land.", "Mẹo: [[boong cất cánh]] nuôi máy bay và mang đòn không kích; phá nó trước. [[CIWS]] bắn hạ tên lửa trước khi chúng trúng."),
+            ["radio.kessler.kraken"] = ("Kessler: \"Kraken, launch everything. Let the sky do the work.\"", "Kessler: \"Kraken, thả hết máy bay. Để bầu trời làm việc.\""),
+            ["unit.monster"] = ("Monster · 800 mm Self-Propelled Gun", "Monster · Pháo tự hành 800 mm"),
+            ["short.monster"] = ("Monster", "Monster"),
+            ["note.monster"] = ("A steel mountain on tracks with one 800 mm gun: very slow, and the gun is a part with its own health.", "Một khối thép khổng lồ trên xích với một nòng 800 mm: rất chậm, và nòng là bộ phận có máu riêng."),
+            ["guide.monster"] = (
+                "[[Boss]] · super-heavy self-propelled gun · one shell a minute\n" +
+                "How it fights: a stand-in hull for now (the Bastion's turrets and mortar, bigger). It crawls, and every 80 s its 800 mm gun rises and fires one 4,000-damage shell with a 20 m blast.\n" +
+                "Strong / weak: enormous armour and health, but slower than any boss.\n" +
+                "Tip: leave the red ring the 6 s it is shown; break the [[mortar]] (the long barrel) and the shell is gone.",
+                "[[Boss]] · pháo tự hành siêu nặng · mỗi phút một phát\n" +
+                "Cách đánh: tạm dùng thân Bastion (tháp pháo và khẩu cối, to hơn). Nó bò rất chậm, cứ 80 giây nòng 800 mm nâng lên bắn một quả 4.000 sát thương, nổ lan 20 m.\n" +
+                "Mạnh / yếu: giáp và máu khổng lồ, nhưng chậm hơn mọi boss.\n" +
+                "Mẹo: ra khỏi vòng đỏ trong 6 giây nó hiện; phá [[khẩu cối]] (nòng dài) là mất đòn này."),
+            ["guide.parts.tip.monster"] = ("Tip: the [[mortar]] is the long barrel with its own health; break it and the 800 mm shell is gone. The four turrets only defend.", "Mẹo: [[khẩu cối]] là nòng dài có máu riêng; phá nó là hết quả đạn 800 mm. Bốn tháp pháo chỉ để tự vệ."),
+            ["radio.orlov.monster"] = ("Orlov: \"Monster, advance. Nothing on that field is worth a second shell.\"", "Orlov: \"Monster, tiến lên. Chẳng thứ gì trên chiến trường đáng một phát thứ hai.\""),
+            ["unit.garuda"] = ("Garuda · Giant Flying-Wing Bomber", "Garuda · Cánh bay ném bom khổng lồ"),
+            ["short.garuda"] = ("Garuda", "Garuda"),
+            ["note.garuda"] = ("Wolff's successor's bomber: a huge flying wing with defensive turrets, escorted, and a carpet of bombs.", "Máy bay ném bom của người kế nhiệm Wolff: cánh bay khổng lồ có tháp phòng thủ, có hộ tống, và rải thảm bom."),
+            ["guide.garuda"] = (
+                "[[Boss]] · flying-wing bomber · carpet bombing\n" +
+                "How it fights: a stand-in body for now (the command airship's gun turrets and drones). Its defensive turrets and missiles keep aircraft off; every 70 s it lays a 20-bomb carpet.\n" +
+                "Strong / weak: a wide target with many guns; only low-level anti-air reaches it well.\n" +
+                "Tip: spread out and watch for the long strip; break the bomb bay to stop the carpet.",
+                "[[Boss]] · cánh bay ném bom · rải thảm\n" +
+                "Cách đánh: tạm dùng thân khí cầu chỉ huy (tháp súng và drone). Tháp phòng thủ và tên lửa đuổi máy bay; cứ 70 giây nó rải thảm 20 quả bom.\n" +
+                "Mạnh / yếu: mục tiêu rộng, nhiều súng; chỉ phòng không tầng thấp mới trúng tốt.\n" +
+                "Mẹo: dàn quân ra và để ý dải dài; phá khoang bom để chặn thảm bom."),
+            ["guide.parts.tip.garuda"] = ("Tip: break the bomb bay and the carpet is gone; the engines slow it down.", "Mẹo: phá khoang bom là hết thảm bom; phá động cơ thì nó chậm lại."),
+            ["radio.quaden.garuda"] = ("Raven: \"Garuda, take the high road. Burn everything under it.\"", "Raven: \"Garuda, bay đường cao. Thiêu mọi thứ bên dưới.\""),
+            ["unit.hyperion"] = ("Hyperion · Orbital Mirror Station", "Hyperion · Trạm gương quỹ đạo"),
+            ["short.hyperion"] = ("Hyperion", "Hyperion"),
+            ["note.hyperion"] = ("A ring of hexagonal mirrors round a station core: it never comes down, and burns a strip of ground with sunlight.", "Vòng gương lục giác quanh lõi trạm: không bao giờ xuống thấp, và đốt một dải mặt đất bằng ánh nắng."),
+            ["guide.hyperion"] = (
+                "[[Boss]] · orbital mirror station · never lands\n" +
+                "How it fights: a stand-in body for now (the Silver Bug's, high tier only). Point-defence lasers guard it, it drops two landing pods a minute, and every 65 s a sun beam burns a 70 × 6 m strip for 4 s.\n" +
+                "Strong / weak: it never comes to the low tier, so only long-range missiles and electromagnetic guns reach it.\n" +
+                "Tip: keep long-range missiles and railguns ready; leave the strip at once when the warning shows.",
+                "[[Boss]] · trạm gương quỹ đạo · không bao giờ hạ xuống\n" +
+                "Cách đánh: tạm dùng thân Silver Bug (chỉ ở tầng cao). Tháp la-de phòng thủ điểm che chắn, mỗi phút thả hai khoang đổ bộ, cứ 65 giây một tia mặt trời đốt dải 70 × 6 m trong 4 giây.\n" +
+                "Mạnh / yếu: không bao giờ xuống tầng thấp, chỉ tên lửa tầm xa và pháo điện từ với tới.\n" +
+                "Mẹo: giữ sẵn tên lửa tầm xa và pháo ray; rời dải ngay khi có cảnh báo."),
+            ["guide.parts.tip.hyperion"] = ("Tip: the [[main laser]] carries the sun beam; break it and the beam is gone. The [[point-defence lasers]] shoot your missiles down.", "Mẹo: tia [[la-de chính]] mang đòn tia mặt trời; phá nó là hết tia. [[Tháp la-de phòng thủ]] bắn hạ tên lửa của bạn."),
+            ["radio.aurel.hyperion"] = ("Aurel: \"Hyperion is awake. The sun has a new tenant, Colonel.\"", "Aurel: \"Hyperion đã thức. Mặt trời có người thuê mới, đại tá.\""),
+            ["radio.aurel.hyperion.phase2"] = ("Aurel: \"The mirrors turn. You will not like the next hour.\"", "Aurel: \"Gương xoay rồi. Các người sẽ không thích giờ tới.\""),
+            ["radio.aurel.hyperion.phase3"] = ("Aurel: \"Three mirrors lost. It still burns, Colonel.\"", "Aurel: \"Mất ba gương. Nó vẫn đốt được, đại tá.\""),
+            ["unit.stymphalos"] = ("Stymphalos · Jet UAV Swarm", "Stymphalos · Bầy UAV phản lực"),
+            ["short.stymphalos"] = ("Stymphalos", "Stymphalos"),
+            ["note.stymphalos"] = ("A swarm of small jet drones in a V: fast, no body to aim at, small missiles.", "Bầy drone phản lực nhỏ bay hình chữ V: nhanh, không có thân chính để ngắm, bắn tên lửa nhỏ."),
+            ["guide.stymphalos"] = (
+                "[[Mini boss]] · jet UAV swarm · fast and numerous\n" +
+                "How it fights: a stand-in for now (one hull with a drone tender's bays and flak, quick). It launches small missiles and drones without pause.\n" +
+                "Strong / weak: very fast; thin armour, anti-air brings it down.\n" +
+                "Tip: break the [[drone bay]] and the flak; area anti-air and air bursts do best.",
+                "[[Mini boss]] · bầy UAV phản lực · nhanh và đông\n" +
+                "Cách đánh: tạm là một thân với khoang drone và cao xạ của tàu mẹ, nhanh. Nó bắn tên lửa nhỏ và thả drone liên tục.\n" +
+                "Mạnh / yếu: rất nhanh; giáp mỏng, phòng không hạ nó nhanh.\n" +
+                "Mẹo: phá [[khoang drone]] và cao xạ; phòng không diện rộng và đạn nổ trên không là tốt nhất."),
+            ["guide.parts.tip.stymphalos"] = ("Tip: the [[drone bays]] are its weapons; with both broken only the flak is left.", "Mẹo: [[khoang drone]] là vũ khí của nó; phá cả hai thì chỉ còn cao xạ."),
+            ["radio.sen.stymphalos"] = ("Dr Venn: \"Stymphalos, scatter and sting. Eight wings, one will.\"", "Tiến sĩ Venn: \"Stymphalos, tản ra và châm. Tám cánh, một ý chí.\""),
+            ["unit.nyx"] = ("Nyx · Stealth Destroyer", "Nyx · Tàu khu trục tàng hình"),
+            ["short.nyx"] = ("Nyx", "Nyx"),
+            ["note.nyx"] = ("A wave-piercing, pyramid-topped destroyer: a railgun every 8 s, hidden until it fires or a radar or drone lights it.", "Tàu khu trục mũi xuyên sóng, thượng tầng hình kim tự tháp: pháo điện từ mỗi 8 giây, ẩn mình đến khi bắn hoặc bị radar hay drone soi."),
+            ["guide.nyx"] = (
+                "[[Mini boss]] · stealth destroyer · unseen until it fires\n" +
+                "How it fights: a stand-in hull for now (a small Leviathan). A railgun fires every 8 s, two [[CIWS]] take missiles and drones, an anti-ship missile follows. It is [[stealthy]]: seen only close up or just after it fires.\n" +
+                "Strong / weak: hard to see; thin for its size.\n" +
+                "Tip: keep radar or a drone over the water so it is seen; break the [[CIWS]] before sending missiles.",
+                "[[Mini boss]] · tàu khu trục tàng hình · chỉ lộ khi bắn\n" +
+                "Cách đánh: tạm dùng thân Leviathan thu nhỏ. Pháo điện từ bắn mỗi 8 giây, hai [[CIWS]] chặn tên lửa và drone, rồi tới tên lửa chống hạm. Nó [[tàng hình]]: chỉ thấy ở gần hoặc ngay sau khi bắn.\n" +
+                "Mạnh / yếu: khó thấy; mỏng so với kích cỡ.\n" +
+                "Mẹo: giữ radar hoặc drone trên mặt nước để thấy nó; phá [[CIWS]] trước khi dùng tên lửa."),
+            ["guide.parts.tip.nyx"] = ("Tip: the [[CIWS]] stop your missiles; the missile cells carry its anti-ship missile.", "Mẹo: [[CIWS]] chặn tên lửa của bạn; ống phóng mang tên lửa chống hạm của nó."),
+            ["radio.kessler.nyx"] = ("Kessler: \"Nyx, run silent. Speak only when you fire.\"", "Kessler: \"Nyx, chạy im lặng. Chỉ lên tiếng khi khai hỏa.\""),
+            ["unit.cerberus"] = ("Cerberus · Three-Car Convoy", "Cerberus · Đoàn xe ba khung"),
+            ["short.cerberus"] = ("Cerberus", "Cerberus"),
+            ["note.cerberus"] = ("Three big-wheeled cars chained together: a 125 mm tractor, an anti-air middle car, a rocket trailer.", "Ba xe bánh lớn nối nhau: đầu kéo pháo 125 mm, xe giữa phòng không, rơ-moóc rốc-két."),
+            ["guide.cerberus"] = (
+                "[[Mini boss]] · armoured convoy · three weapons in a line\n" +
+                "How it fights: a stand-in hull for now (the Behemoth's gun, flak and rocket pod). The front gun hits ground units, the middle flak keeps aircraft off, the rear pod saturates an area.\n" +
+                "Strong / weak: each part is its own weapon; slow.\n" +
+                "Tip: break the flak first and air strikes are free; break the [[main gun]] and the convoy cannot hurt tanks.",
+                "[[Mini boss]] · đoàn xe bọc thép · ba vũ khí nối đuôi\n" +
+                "Cách đánh: tạm dùng thân Behemoth (pháo, cao xạ, ổ rốc-két). Pháo đầu bắn xe mặt đất, cao xạ giữa đuổi máy bay, ổ rốc-két sau phủ một vùng.\n" +
+                "Mạnh / yếu: mỗi bộ phận là một vũ khí riêng; chậm.\n" +
+                "Mẹo: phá cao xạ trước thì không kích thoải mái; phá [[pháo chính]] thì đoàn xe không làm hại xe tăng nữa."),
+            ["guide.parts.tip.cerberus"] = ("Tip: the [[flak]] guns keep aircraft off; the [[main gun]] is its heaviest weapon.", "Mẹo: cao xạ đuổi máy bay; [[pháo chính]] là vũ khí mạnh nhất."),
+            ["radio.varga.cerberus"] = ("Varga: \"Cerberus, keep the line tight. Three heads, one road.\"", "Varga: \"Cerberus, giữ hàng sát nhau. Ba đầu, một con đường.\""),
+            ["unit.hydra"] = ("Hydra · Drone Submarine", "Hydra · Tàu ngầm mang drone"),
+            ["short.hydra"] = ("Hydra", "Hydra"),
+            ["note.hydra"] = ("A small submarine with vertical launch tubes along its back: it surfaces to launch drones, and dives and surfaces faster than Typhon.", "Tàu ngầm nhỏ có ống phóng dọc trên lưng: nổi lên thả drone, lặn và nổi nhanh hơn Typhon."),
+            ["guide.hydra"] = (
+                "[[Mini boss]] · drone submarine · surfaces to strike\n" +
+                "How it fights: a stand-in hull for now (Typhon's deck gun and launch doors, smaller and quicker). It dives and surfaces on a short schedule, fires only when up, and sends a cruise missile every 16 s.\n" +
+                "Strong / weak: out of reach while submerged; a thin hull.\n" +
+                "Tip: wait for the bubbles; break the [[launch doors]] to stop the missiles.",
+                "[[Mini boss]] · tàu ngầm mang drone · nổi lên để đánh\n" +
+                "Cách đánh: tạm dùng thân Typhon (pháo boong và cửa ống phóng, nhỏ và nhanh hơn). Nó lặn rồi nổi theo lịch ngắn, chỉ bắn khi nổi, và phóng tên lửa hành trình mỗi 16 giây.\n" +
+                "Mạnh / yếu: lúc lặn không đánh tới được; thân mỏng.\n" +
+                "Mẹo: chờ bong bóng; phá [[cửa ống phóng]] để chặn tên lửa."),
+            ["guide.parts.tip.hydra"] = ("Tip: the [[launch doors]] carry its missiles; the deck gun only shoots when it is up.", "Mẹo: [[cửa ống phóng]] mang tên lửa của nó; pháo boong chỉ bắn khi nổi."),
+            ["radio.hung.hydra"] = ("{@lyhan}: \"Hydra, rise and release. Cut one head, there are six more.\"", "{@lyhan}: \"Hydra, nổi lên và thả. Chặt một đầu, còn sáu đầu nữa.\""),
         };
     }
 }

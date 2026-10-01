@@ -110,6 +110,32 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.leviathan_volley.how"] = ("Nine 460 mm shells, 950 each (13 m blast), from its three main turrets along a 60 × 12 m strip through your base, a third harder on buildings; 4 s of warning.", "Chín quả đạn 460 mm, mỗi quả 950 (nổ lan 13 m), từ ba tháp pháo chính rải theo dải 60 × 12 m qua căn cứ, mạnh hơn một phần ba lên công trình; cảnh báo 4 giây."),
             ["guide.bigattack.leviathan_volley.dodge"] = ("Move units out of the marked strip; shells cannot be shot down, so spread out.", "Đưa quân ra khỏi dải đánh dấu; đạn pháo không bắn hạ được, nên hãy dàn quân ra."),
             ["guide.bigattack.leviathan_volley.stop"] = ("Break a main turret during the warning (armour 4: tank hunters, artillery, bombs): each one broken takes its three shells away.", "Phá một tháp pháo chính trong lúc cảnh báo (giáp cấp 4: xe diệt tăng, pháo binh, bom): mỗi tháp bị phá bớt ba quả đạn."),
+
+            // Prompt 25 F2 batch D: the four new main bosses' super weapons.
+            ["bigattack.kraken_air_raid"] = ("Air Raid", "Đợt không kích"),
+            ["bigattack.kraken_air_raid.cancelled"] = ("Air raid cancelled", "Đã hủy đợt không kích"),
+            ["radio.bigattack.kraken_air_raid"] = ("Kessler: \"Deck crews, clear the bombers. Twelve for the shore.\"", "Kessler: \"Đội boong, thả máy bay ném bom. Mười hai quả cho bờ biển.\""),
+            ["guide.bigattack.kraken_air_raid.how"] = ("Twelve bombs, 400 each (9 m blast), in a 90 × 14 m strip along its heading; 4 s of warning. Every 75 s.", "Mười hai quả bom, mỗi quả 400 (nổ lan 9 m), thành dải 90 × 14 m theo hướng tàu; cảnh báo 4 giây. Mỗi 75 giây."),
+            ["guide.bigattack.kraken_air_raid.dodge"] = ("Step out of the red strip sideways.", "Bước ngang ra khỏi dải đỏ."),
+            ["guide.bigattack.kraken_air_raid.stop"] = ("Break the flight deck during the warning: the raid and the aircraft stop.", "Phá boong cất cánh trong lúc cảnh báo: đợt không kích và máy bay đều dừng."),
+            ["bigattack.monster_800_shell"] = ("800 mm Shell", "Đạn 800 mm"),
+            ["bigattack.monster_800_shell.cancelled"] = ("800 mm shell cancelled", "Đã hủy phát đạn 800 mm"),
+            ["radio.bigattack.monster_800_shell"] = ("Orlov: \"Elevate the barrel. One round.\"", "Orlov: \"Nâng nòng. Một phát.\""),
+            ["guide.bigattack.monster_800_shell.how"] = ("One 800 mm shell: 4,000 at the centre, a 20 m blast, twice as hard on buildings; the barrel rises slowly, a red ring shows for 6 s. Every 80 s.", "Một quả đạn 800 mm: 4.000 ở tâm, nổ lan 20 m, nặng gấp đôi với công trình; nòng nâng từ từ, vòng đỏ hiện 6 giây. Mỗi 80 giây."),
+            ["guide.bigattack.monster_800_shell.dodge"] = ("Leave the red ring; it is wide, so go early.", "Ra khỏi vòng đỏ; vòng rất rộng nên đi sớm."),
+            ["guide.bigattack.monster_800_shell.stop"] = ("Break the mortar (the barrel): the shell goes with it.", "Phá khẩu cối (nòng): mất luôn phát đạn."),
+            ["bigattack.garuda_carpet"] = ("Carpet Run", "Rải thảm"),
+            ["bigattack.garuda_carpet.cancelled"] = ("Carpet run cancelled", "Đã hủy lượt rải thảm"),
+            ["radio.bigattack.garuda_carpet"] = ("Raven: \"Bay open. Twenty down the line.\"", "Raven: \"Mở khoang. Hai mươi quả dọc đường bay.\""),
+            ["guide.bigattack.garuda_carpet.how"] = ("Twenty bombs, 350 each (7 m blast), in a 100 × 14 m strip along its course; 4 s of warning. Every 70 s.", "Hai mươi quả bom, mỗi quả 350 (nổ lan 7 m), thành dải 100 × 14 m theo đường bay; cảnh báo 4 giây. Mỗi 70 giây."),
+            ["guide.bigattack.garuda_carpet.dodge"] = ("Step off the strip sideways.", "Bước ngang ra khỏi dải."),
+            ["guide.bigattack.garuda_carpet.stop"] = ("Break the bomb bay.", "Phá khoang bom."),
+            ["bigattack.hyperion_sun_beam"] = ("Sun Beam", "Tia mặt trời"),
+            ["bigattack.hyperion_sun_beam.cancelled"] = ("Sun beam cancelled", "Đã hủy tia mặt trời"),
+            ["radio.bigattack.hyperion_sun_beam"] = ("Aurel: \"Mirrors aligned. Hold still, it will be over quickly.\"", "Aurel: \"Gương đã thẳng hàng. Đứng yên, sẽ nhanh thôi.\""),
+            ["guide.bigattack.hyperion_sun_beam.how"] = ("A beam burns a 70 × 6 m strip for 4 s, 500 a second; 4 s of warning. Every 65 s.", "Một tia đốt dải 70 × 6 m trong 4 giây, 500 mỗi giây; cảnh báo 4 giây. Mỗi 65 giây."),
+            ["guide.bigattack.hyperion_sun_beam.dodge"] = ("Leave the narrow strip at once.", "Rời ngay dải hẹp."),
+            ["guide.bigattack.hyperion_sun_beam.stop"] = ("Break the main laser during the warning.", "Phá tia la-de chính trong lúc cảnh báo."),
         };
     }
 }

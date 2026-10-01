@@ -3,9 +3,9 @@
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
-    "chưa làm": 8,
+    "chưa làm": 0,
     "đang làm": 0,
-    "xong": 84,
+    "xong": 92,
     "bỏ": 1
   },
   "byKind": {
@@ -34,9 +34,9 @@
       "bỏ": 0
     },
     "boss": {
-      "chưa làm": 8,
+      "chưa làm": 0,
       "đang làm": 0,
-      "xong": 0,
+      "xong": 8,
       "bỏ": 0
     }
   },
@@ -1251,8 +1251,8 @@
       "group": "Chủ lực",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "kraken",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1265,8 +1265,8 @@
       "group": "Chủ lực",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "monster",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1279,8 +1279,8 @@
       "group": "Chủ lực",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "garuda",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1293,8 +1293,8 @@
       "group": "Chủ lực",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "hyperion",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1307,8 +1307,8 @@
       "group": "Mini",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "stymphalos",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1321,8 +1321,8 @@
       "group": "Mini",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "nyx",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1335,8 +1335,8 @@
       "group": "Mini",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "cerberus",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     },
     {
@@ -1349,8 +1349,8 @@
       "group": "Mini",
       "priority": "",
       "unlock": "Theo mùa: boss chủ lực là trùm của mùa; mini boss là sự kiện tuần",
-      "status": "chưa làm",
-      "id": null,
+      "status": "xong",
+      "id": "hydra",
       "notes": "25D2 plan: not sold in the shop. A main boss is its season's boss, a mini boss a weekly event (\"Ra mắt đề xuất\")."
     }
   ]

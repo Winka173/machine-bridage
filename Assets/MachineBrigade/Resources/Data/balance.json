@@ -1844,6 +1844,49 @@
         { "id": "engines", "kind": "engine", "hp": 0.13, "armour": 1, "node": "Part_engines", "wreck": "wreck_engine", "at": [0, -4.9, 0.19], "radius": 1.6, "speed": 0.7, "turn": 0.8, "radio": "radio.part.engines" } ],
       "duel": { "escorts": false, "vanishAt": [0.7, 0.4], "vanishEvery": 45, "vanishSeconds": 6 },
       "deathExplosion": { "damage": 120, "radius": 9, "delay": 0.8, "tier": "Huge" } },
+    // ----------------------------------------------------------------------------------------------------
+    // Prompt 25 F2 batch D (DECISIONS 25F2-D): the eight new bosses of the sheet "Boss mới", as STAND-INS until prompts
+    // 26-27 give them models: each is a variant of the nearest existing boss (its model, parts and mounts), a hue shift
+    // ("tint"), the sheet's size and health (the sheet's number over the bosses' toughness 0.85 and a mini's share
+    // 0.55, to the nearest 50), "weaponDamage" by the ratio the C1 pass used (the parent's multiplier x the new
+    // target / the parent's target), and a super weapon for the four main bosses only (25C: a mini has none).
+    // A main-rank variant says "rank": "main" and keeps every part of its parent.
+    // Kraken: carrier, Kessler's new admiral (Leviathan's hull and parts; the flight deck carries the air raid).
+    { "id": "kraken", "variantOf": "leviathan", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 29400, "weaponDamage": 1.396, "bigAttack": "kraken_air_raid",
+      "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "tint": [0.78, 0.92, 1.12], "mark": "kraken"}},
+    // Monster: the 800 mm self-propelled gun (the Bastion's hull; its mortar stands for the long barrel with a health of its own).
+    { "id": "monster", "variantOf": "fortress_bastion", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 27050, "weaponDamage": 1.506, "speed": 0.8, "bigAttack": "monster_800_shell",
+      "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.5, "tint": [1.1, 0.95, 0.7], "mark": "monster"}},
+    // Garuda: the flying-wing bomber (the command airship's body; its bomb bay carries the carpet).
+    { "id": "garuda", "variantOf": "command_airship", "rank": "main", "general": "quaden", "radioSpawn": "radio.quaden.garuda", "hp": 28250, "weaponDamage": 1.906, "speed": 6, "bigAttack": "garuda_carpet",
+      "variant": {"size": 1.1, "tint": [0.9, 0.8, 1.12], "mark": "garuda"}},
+    // Hyperion: the orbital mirror station (the Silver Bug's body that never comes down: high tier only, no crash, no hijack; no uplink, the crash turrets gone).
+    { "id": "hyperion", "variantOf": "silver_bug", "rank": "main", "general": "aurel", "radioSpawn": "radio.aurel.hyperion", "hp": 32950, "weaponDamage": 1.492, "speed": 3.5, "bigAttack": "hyperion_sun_beam", "arena": null,
+      "modelSize": [67.2, 43.7, 20],
+      "tiers": {"crash": null, "hijack": null, "schedule": [{"steps": [{"tier": "high", "seconds": 60}]}, {"steps": [{"tier": "high", "seconds": 60}]}, {"steps": [{"tier": "high", "seconds": 60}]}],
+                "radio": {"phase2": "radio.aurel.hyperion.phase2", "phase3": "radio.aurel.hyperion.phase3"}},
+      "pods": {"first": 10, "every": 60, "count": 2, "max": 4},
+      "variant": {"size": 1.2, "drop": ["crash_turret_l", "crash_turret_r", "uplink"], "tint": [1.12, 1.0, 0.7], "mark": "hyperion",
+                  "tune": {"main_laser": {"hp": 0.07}, "main_engine": {"hp": 0.07}, "thruster_fl": {"hp": 0.07}, "thruster_fr": {"hp": 0.07}, "thruster_rl": {"hp": 0.07}, "thruster_rr": {"hp": 0.07}, "pd_laser_l": {"hp": 0.07}, "pd_laser_r": {"hp": 0.07}, "pod_bay": {"hp": 0.07}}}},
+    // Stymphalos: the jet UAV swarm (a drone tender's bays and flak, fast; the swarm itself waits for a model).
+    { "id": "stymphalos", "variantOf": "drone_mothership", "general": "sen", "radioSpawn": "radio.sen.stymphalos", "hp": 23550, "weaponDamage": 2.13, "armour": 1, "speed": 8,
+      "variant": {"size": 0.55, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "tint": [0.8, 1.1, 0.85], "mark": "stymphalos",
+                  "tune": {"drone_bay": {"hp": 0.14}, "drone_bay_2": {"hp": 0.14}, "flak_top": {"hp": 0.14}}}},
+    // Nyx: the stealth destroyer (a railgun, a CIWS pair, an anti-ship missile; seen only close up or just after it fires).
+    { "id": "nyx", "variantOf": "leviathan", "general": "kessler", "radioSpawn": "radio.kessler.nyx", "hp": 21400, "weaponDamage": 1.54, "armour": [4, 4, 3, 2], "weapon": "boss_railgun", "stealth": true, "speed": 5,
+      "modelSize": [53, 8.9, 11], "naval": {"lanes": ["near"], "escapePhase": -1}, "craft": null, "air": [], "cruise": {"phase": 0, "damage": 400, "final": 0, "every": 18}, "fleet": [{"unit": "missile_boat", "count": 1}], "salvo": null,
+      "variant": {"size": 0.55, "keep": ["turret_fore", "vls", "ciws_fore", "ciws_aft"], "tint": [0.7, 0.8, 0.95], "mark": "nyx",
+                  "tune": {"turret_fore": {"hp": 0.12}, "vls": {"hp": 0.12}, "ciws_fore": {"hp": 0.11}, "ciws_aft": {"hp": 0.11}}}},
+    // Cerberus: the three-vehicle convoy (the Behemoth's gun, flak and rocket pod stand for tractor, middle and rear truck).
+    { "id": "cerberus", "variantOf": "behemoth", "general": "varga", "radioSpawn": "radio.varga.cerberus", "hp": 23550, "weaponDamage": 2.18, "armour": [3, 3, 2, 2], "speed": 3, "aps": null,
+      "modelSize": [16.3, 8.4, 5.5], "variant": {"size": 0.8, "keep": ["main_gun", "flak_r", "flak_l", "rocket_pod"], "tint": [1.08, 0.78, 0.72], "mark": "cerberus",
+                  "tune": {"main_gun": {"hp": 0.13}, "flak_r": {"hp": 0.11}, "flak_l": {"hp": 0.11}, "rocket_pod": {"hp": 0.12}}}},
+    // Hydra: the drone submarine (Typhon's deck gun and launch doors; dives and surfaces faster, one boat for its drones).
+    { "id": "hydra", "variantOf": "typhon", "general": "hung", "radioSpawn": "radio.hung.hydra", "hp": 24600, "weaponDamage": 4.26, "speed": 4.5,
+      "modelSize": [34.8, 7.2, 8], "burrow": {"surface": 16, "under": 10, "first": 12, "surfaceByPhase": [16, 14], "underByPhase": [10, 12]},
+      "cruise": {"every": 16, "damage": 240}, "fleet": [{"unit": "missile_boat", "count": 1}], "wake": null,
+      "variant": {"size": 0.6, "keep": ["doors_l", "doors_r", "deck_gun", "rudder"], "tint": [0.7, 1.05, 1.0], "mark": "hydra",
+                  "tune": {"doors_l": {"hp": 0.12}, "doors_r": {"hp": 0.12}, "deck_gun": {"hp": 0.12}, "rudder": {"hp": 0.1}}}},
     // Mara's Behemoth: the Accord's rebuilt Behemoth, a scripted ally for chapter 12's last battle only (a mission's
     // "ally" places it; its allied AI drives it). The Behemoth's model in the Accord's colours; never a card, never
     // bought, never unlocked, never in a deck or the Sandbox's palette ("storyOnly").
@@ -2045,7 +2088,16 @@
     // Prompt 25 C1: Kronos's super weapon, a 120 deg x 25 m sweep of 1200, every 60 s, 4 s warning (sheet Boss đề xuất).
     { "id": "kronos_bucket_sweep", "icon": "dune", "warn": 4, "cooldown": 60, "aim": "self", "target": "defences", "strikes": [{ "shape": "arc", "parts": ["boom"], "width": 120, "radius": 25, "damage": 1200, "type": "Kinetic", "pen": 4, "structure": 2 }] },
     // Prompt 25 C1: Typhon's super weapon, 6 x 600, 9 m blast, 9 s in flight, shot down at 250, every 75 s, 4 s warning (sheet Boss đề xuất).
-    { "id": "typhon_underwater_launch", "icon": "missile", "warn": 4, "cooldown": 75, "aim": "base", "target": "base", "surface": true, "hold": ["cruise"], "strikes": [{ "shape": "missile", "parts": ["doors_l", "doors_r"], "count": 6, "damage": 600, "type": "HighExplosive", "pen": 3, "radius": 9, "structure": 2, "hp": 250, "flight": 9, "targets": 3, "weapon": "leviathan_cruise" }] }
+    { "id": "typhon_underwater_launch", "icon": "missile", "warn": 4, "cooldown": 75, "aim": "base", "target": "base", "surface": true, "hold": ["cruise"], "strikes": [{ "shape": "missile", "parts": ["doors_l", "doors_r"], "count": 6, "damage": 600, "type": "HighExplosive", "pen": 3, "radius": 9, "structure": 2, "hp": 250, "flight": 9, "targets": 3, "weapon": "leviathan_cruise" }] },
+    // Prompt 25 F2 batch D: the new main bosses' super weapons (sheet "Boss mới"). Mini bosses have none.
+    // Kraken: an air raid, 12 x 400, 9 m blast along a strip 90 x 14 m, every 75 s, 4 s warning; breaking the flight deck stops it.
+    { "id": "kraken_air_raid", "icon": "bomb", "warn": 4, "cooldown": 75, "aim": "group", "reach": 70, "target": "mixed", "strikes": [{ "shape": "strip", "parts": ["flight_deck"], "count": 12, "damage": 400, "type": "HighExplosive", "pen": 2, "radius": 9, "length": 90, "width": 14, "axis": "heading", "duration": 3 }] },
+    // Monster: the 800 mm shell, 1 x 4000, 20 m blast, every 80 s, 6 s warning (the barrel rises slowly); breaking the barrel stops it.
+    { "id": "monster_800_shell", "icon": "mortar", "warn": 6, "cooldown": 80, "aim": "group", "reach": 90, "target": "defences", "strikes": [{ "shape": "circle", "parts": ["mortar"], "count": 1, "damage": 4000, "type": "HighExplosive", "pen": 4, "structure": 2, "radius": 20, "weapon": "boss_mortar" }] },
+    // Garuda: a carpet, 20 x 350 along a strip 100 x 14 m, every 70 s, 4 s warning.
+    { "id": "garuda_carpet", "icon": "bomb", "warn": 4, "cooldown": 70, "aim": "group", "reach": 60, "target": "light", "strikes": [{ "shape": "strip", "parts": ["bomb_bay"], "count": 20, "damage": 350, "type": "HighExplosive", "pen": 1, "radius": 7, "length": 100, "width": 14, "axis": "heading", "duration": 3 }] },
+    // Hyperion: the sun beam, a 70 x 6 m strip burnt for 4 s at 500 a second, every 65 s, 4 s warning (smoke's 80 % cut waits for a smoke rule on strikes).
+    { "id": "hyperion_sun_beam", "icon": "ballistic", "warn": 4, "cooldown": 65, "aim": "group", "target": "packed", "strikes": [{ "shape": "strip", "parts": ["main_laser"], "count": 4, "damage": 500, "type": "Energy", "pen": 4, "top": true, "radius": 3, "length": 70, "width": 6, "axis": "toward", "duration": 4 }] }
   ],
 
   // Fire support cards (game plan section 5). delay = telegraph seconds; radius = target circle (half-width of a
