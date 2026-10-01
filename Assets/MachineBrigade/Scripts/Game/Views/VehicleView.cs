@@ -111,6 +111,8 @@ namespace MachineBrigade.Game.Views
             ModelBounds = Measure(_model.Root.transform, _body);
             DrawScale = DrawScaleOf(vehicle.Def, ModelBounds.size.z);
             _body.localScale = Vector3.one * DrawScale;
+            // The def's own colour from the first frame, as on its card (it used to wait for the first hit).
+            if (vehicle.Def.Tint != null) ApplyTint();
             if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
 
@@ -308,12 +310,12 @@ namespace MachineBrigade.Game.Views
         /// <summary>Where its impostor card is centred (on its upright axis, at its middle height).</summary>
         public Vector3 ImpostorCentre => Root.position + Vector3.up * ((Impostor != null ? Impostor.Centre.y : Top * 0.5f) * DrawScale);
 
-        /// <summary>The impostor's tint: the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
+        /// <summary>The impostor's tint: the def's own colour, the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
         public Color ImpostorTint
         {
             get
             {
-                var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+                Color tint = TintValue();
                 if (!VehicleLod.Colours) return tint;
                 var debug = VehicleLod.Tint(VehicleLod.Impostor);
                 return new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a);
@@ -531,19 +533,31 @@ namespace MachineBrigade.Game.Views
 
         private MaterialPropertyBlock _tintBlock;
 
+        /// <summary>
+        /// The "_Tint" multiply as the shader gets it: the def's own colour (prompt 20 G.2 variants, prompt 25 F2
+        /// stand-ins) as linear, exactly what the card render's SetColor hands the shader, times the soot shade
+        /// unconverted. Owner's report 2026-10-01: SetColor converts gamma to linear in this linear-space project,
+        /// so the soot's 0.45 reached the shader as 0.17 and, on a stand-in tinted 0.55, as 0.05: hulls went black
+        /// once hit. It is written with SetVector so nothing is converted twice.
+        /// </summary>
+        private Vector4 TintValue()
+        {
+            var own = Def.Tint is { } t ? new Color(t.X, 0.97f * t.Y, 0.95f * t.Z).linear : Color.white;
+            var soot = _scorch < 1f ? new Vector3(_scorch, _scorch * 0.97f, _scorch * 0.95f) : Vector3.one;
+            return new Vector4(own.r * soot.x, own.g * soot.y, own.b * soot.z, 1f - _shownFlash);
+        }
+
         private void ApplyTint()
         {
             _tintBlock ??= new MaterialPropertyBlock();
-            // Prompt 20 G.2: a variant's own colour over its parent's model.
-            var own = Def.Tint ?? System.Numerics.Vector3.One;
-            var tint = new Color(_scorch * own.X, _scorch * 0.97f * own.Y, _scorch * 0.95f * own.Z, 1f - _shownFlash);
-            _tintBlock.SetColor(TintId, tint);
+            var tint = TintValue();
+            _tintBlock.SetVector(TintId, tint);
             foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
             if (_model.Lod1Renderers.Length == 0) return;
             if (VehicleLod.Colours)
             {
                 var debug = VehicleLod.Tint(VehicleLod.Simple);
-                _tintBlock.SetColor(TintId, new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a));
+                _tintBlock.SetVector(TintId, new Vector4(tint.x * debug.r, tint.y * debug.g, tint.z * debug.b, tint.w));
             }
             foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
         }

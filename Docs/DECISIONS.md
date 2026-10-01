@@ -12402,3 +12402,17 @@ vehicles' `secondary` arrays and two new vehicles), `Strings.cs`, `GuideText.cs`
 `MatchSettings.cs` (`AllSupports`), `Progression.cs` (`NewContentPrices`), `ModeSessions.cs` (`EnemyDeck`),
 `SupportDef.cs`, `Catalog.cs`, `StrikeSystem.cs`, `AbilitySystem.cs`, `ConquestAi.cs`, `Tools/blender/build_assets.py`,
 `Docs/backlog/new_content.json`.
+
+## PT11 dark hulls (play-test 11, 2026-10-01)
+
+Owner: new units (batch A real models, batch B stand-ins) and bosses look black in play, worse after taking damage, some
+from the start; cards look right. Checked and ruled out: the GLBs (normals agree with winding on every triangle, vertex
+colours as on the old models, the same kit material names, import settings equal but reportItems), the LOD palette and
+the impostor bake. Cause: `VehicleView.ApplyTint` wrote `_Tint` with `MaterialPropertyBlock.SetColor`, which converts
+gamma to linear (the project is linear), so the soot below half health reached the shader as shade^2.2 (0.45 -> 0.17),
+and batch B's tints (added 01/10 00:xx, e.g. 0.55) multiplied in before the conversion (0.55 x 0.45 -> 0.05). The tint
+was also only written on the first hit flash or soot step, so a stand-in switched from its parent's colours to a dark
+wash the moment it was hit. Choices: the def's tint goes in as `Color.linear` (exactly what CardRenders' SetColor hands
+the shader, so play matches the card), the soot unconverted, written with `SetVector`; a tinted def writes it at spawn;
+the impostor tint carries the def's tint too. The wreck tint stays as it was (SetColor, near black on purpose).
+To measure (when the owner allows tests): a stand-in and an old model at full, half and 10 % health in a battle frame.

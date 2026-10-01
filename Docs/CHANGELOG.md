@@ -7,6 +7,12 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Dark hulls fix (play-test 11, DECISIONS "PT11 dark hulls")
+
+- The hull's own colour and its soot reach the shader as meant: the "_Tint" multiply was written with SetColor, which
+  converts gamma to linear in this linear-space project, so the soot's 0.45 became 0.17 and a stand-in's 0.55 tint with
+  it about 0.05 (black). Stand-ins also wear their colour from the first frame, as on their cards, not from the first hit.
+
 ### Gear menu fix (play-test 10, DECISIONS "PT10 gear menu")
 
 - Army > Equipment: a picked piece's card, names and buttons (equip, level up, merge) stay pinned at the top of the right

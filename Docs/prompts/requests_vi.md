@@ -179,3 +179,10 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 23:58) khi coi in action preview. sao tất cả các xe dính hiệu ứng có gì trắng trắng chớp chớp và bốc khói mặc dù không hề bị sát thương
 - (30/09 23:58) đạn flag hiệu ứng có vẻ khác ngoài đời, tham khảo lại
 - (30/09 23:58) menu gắn đồ cho phương tiện bug không gắn được, không click được nút gắn và không kéo xuống được
+
+## Play-test 11, 01/10 (model đen đen)
+
+- (01/10) các model mới (nội dung mới của prompt 25: đợt A có model thật, đợt B mượn model cũ có đổi màu) hiện bị đen đen khi xem trong Unity, trong khi ảnh thẻ trông bình thường. Tìm nguyên nhân và sửa; ưu tiên điều tra trước, kể cả boss; khoan làm đợt D, dx23, PDF.
+- (01/10) có vẻ ăn sát thương xong là bị đen đáng kể, 1 vài phương tiện / boss bị đen khi mới vào luôn
+- (01/10) nó chỉ xảy ra sau khi commit sau trưa hôm qua
+- (01/10) đổi qua check những commit sau tối hôm qua
