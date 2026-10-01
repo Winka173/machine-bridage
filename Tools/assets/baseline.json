@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 402,
+ "count": 403,
  "budgets": {
   "ground": {
    "normal": {
@@ -333,6 +333,16 @@
    "reason": "P27 wave 1b: Nyx's own Zumwalt-style model (helo deck material, boot-top dropped)",
    "changes": [
     "FLAG nyx: triangles 3,550 -> 3,526 (-0.7%); vertices 3,681 -> 3,633 (-1.3%); materials 7 -> 8 (+14.3%); fileBytes 209,456 -> 207,184 (-1.1%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "hydra_sub"
+   ],
+   "reason": "prompt 27 wave 1b: Hydra's own model (small VLS submarine, six FPV drones on Part_drone nodes), replaces the typhon stand-in",
+   "changes": [
+    "hydra_sub: new (7268 triangles)"
    ]
   }
  ],
@@ -21830,6 +21840,162 @@
    "movingParts": 0,
    "budgetClass": null
   },
+  "hydra_sub": {
+   "file": "hydra_sub.glb",
+   "fileBytes": 444068,
+   "sha1": "dc530108a8e86416",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 67,
+   "meshes": 54,
+   "materials": 8,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 54,
+   "submeshes": 54,
+   "materialSlots": 54,
+   "materialsUsed": 8,
+   "triangles": 7268,
+   "vertices": 8435,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 149,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -3.6,
+    -2.4746,
+    -17.4
+   ],
+   "boundsMax": [
+    3.6,
+    5.36,
+    17.4
+   ],
+   "size": [
+    34.8,
+    7.2,
+    7.835
+   ],
+   "center": [
+    0.0,
+    1.443,
+    -0.0
+   ],
+   "structureHash": "2f2ce8d99b24fdb5",
+   "color0": {
+    "mean": 0.6441,
+    "min": 0.212,
+    "max": 0.9987,
+    "p05": 0.3274,
+    "p95": 0.879,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_missile"
+    ],
+    "part": [
+     "Part_drone",
+     "Part_drone.001",
+     "Part_drone.002",
+     "Part_drone.003",
+     "Part_drone.004",
+     "Part_drone.005",
+     "Part_rudder"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Armor",
+    "Casing",
+    "Fpv_arms_000",
+    "Fpv_arms_001",
+    "Fpv_arms_002",
+    "Fpv_arms_003",
+    "Fpv_arms_004",
+    "Fpv_arms_005",
+    "Fpv_body_000",
+    "Fpv_body_001",
+    "Fpv_body_002",
+    "Fpv_body_003",
+    "Fpv_body_004",
+    "Fpv_body_005",
+    "Fpv_charge_000",
+    "Fpv_charge_001",
+    "Fpv_charge_002",
+    "Fpv_charge_003",
+    "Fpv_charge_004",
+    "Fpv_charge_005",
+    "Fpv_eye_000",
+    "Fpv_eye_001",
+    "Fpv_eye_002",
+    "Fpv_eye_003",
+    "Fpv_eye_004",
+    "Fpv_eye_005",
+    "Fpv_rotors_000",
+    "Fpv_rotors_001",
+    "Fpv_rotors_002",
+    "Fpv_rotors_003",
+    "Fpv_rotors_004",
+    "Fpv_rotors_005",
+    "Gun_armor_gun",
+    "Gun_bore_gun",
+    "Gun_brake_gun",
+    "Gun_dark_gun",
+    "Gun_glass_gun",
+    "Gun_house_gun",
+    "Gun_ring_gun",
+    "Gun_steel_gun",
+    "Hull",
+    "Hull_low",
+    "Mount_gun",
+    "Mount_missile",
+    "Muzzle_gun",
+    "Muzzle_missile",
+    "Part_doors_l",
+    "Part_doors_r",
+    "Part_drone",
+    "Part_drone.001",
+    "Part_drone.002",
+    "Part_drone.003",
+    "Part_drone.004",
+    "Part_drone.005",
+    "Part_rudder",
+    "Pumpjet",
+    "Pumpjet_hub",
+    "Rudder_fins",
+    "Sail_glass",
+    "Sam_base",
+    "Sam_box",
+    "Sam_caps",
+    "Steel",
+    "Vls_lids_l",
+    "Vls_lids_r",
+    "Vls_rims_l",
+    "Vls_rims_r"
+   ],
+   "category": "boss",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "hydra"
+   ],
+   "movingParts": 9,
+   "budgetClass": "boss_m"
+  },
   "icbm": {
    "file": "icbm.glb",
    "fileBytes": 54380,
@@ -41560,12 +41726,9 @@
    "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "hydra: length 59.00 m vs modelSize 34.8 m (fitted at runtime)"
-   ],
+   "warnings": [],
    "units": [
-    "typhon",
-    "hydra"
+    "typhon"
    ],
    "movingParts": 5,
    "budgetClass": "boss_m"

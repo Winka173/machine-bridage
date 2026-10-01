@@ -17,6 +17,12 @@ those parts and mounts name, near the places the resized data puts them (parent 
     with its reverse-raked wave-piercing bow, the faceted pyramid deckhouse with flush radar faces, a railgun in a
     faceted turret on the foredeck (`Part_gun` > `Mount_gun` > `Muzzle_gun`), peripheral VLS banks along the deck
     edges (`Part_vls`), two CIWS (`Part_mg` > `Mount_mg`, `Part_mg.001` > `Mount_mg.001`), the helicopter deck aft.
+  * hydra_sub (Hydra, variant of typhon keeping doors_l, doors_r, deck_gun, rudder; `hydra.glb` is the Hydra 70
+    rocket, so the boss model is `hydra_sub`): a small VLS submarine, 34.8 x 7.2 x 7.8 m, hull axis at z 0: a lathed
+    pressure hull, the sail with fairwater planes and a SAM box (`Mount_missile` > `Muzzle_missile`), the deck gun
+    (`Mount_gun`), ten launch tubes along the back on `Part_doors_l` / `Part_doors_r` (the parent's names), six FPV
+    quadcopters on the drone deck aft (`Part_drone` .. `Part_drone.005`, nodes for a later launch rule), cruciform
+    stern planes and a pump-jet on `Part_rudder`. Built with ground=False (it floats; no ground AO under the hull).
 
 Conventions are frontier_kit's: metres, +Z up, Blender -Y is the front, +X the vehicle's left.
 """
@@ -254,7 +260,90 @@ def nyx(a):
     k.clean(a)
 
 
+# ============================================================================= Hydra
+HY_R = 2.5                      # pressure hull radius (axis at z 0, the waterline near the top)
+
+
+def _fpv(a, name, loc):
+    """One FPV quadcopter on its launch cell, on its own `Part_drone*` node (a later launch rule hides it): a flat
+    body, four arms on the diagonals, four rotor discs, the camera nose and a warhead tube under it."""
+    p = pv(a, name, loc)
+    t = name[-3:] if '.' in name else '000'
+    body = a.part(f'Fpv_body_{t}', 'Team', p)
+    k.block(body, (.42, .56, .16), loc=(0, 0, .06), chamfer=.03)
+    arms = a.part(f'Fpv_arms_{t}', 'Undercarriage', p)
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            u = math.atan2(sy, sx)
+            arms.box((.62, .07, .05), loc=(sx * .2, sy * .22, .12), rot=(0, 0, u), bevel=0)
+            k.lathe(arms, [(.07, 0), (.07, .1), (0, .1)], loc=(sx * .4, sy * .43, .1), seg=8)
+            a.part(f'Fpv_rotors_{t}', 'Steel', p).cyl(.24, .02, loc=(sx * .4, sy * .43, .21), seg=14, bevel=0)
+    a.part(f'Fpv_eye_{t}', 'Glass', p).box((.12, .04, .08), loc=(0, -.29, .1), bevel=0)
+    k.lathe(a.part(f'Fpv_charge_{t}', 'Armor', p), [(.07, .0), (.08, .32), (.05, .38)], loc=(0, -.1, .02),
+            rot=FORWARD, seg=10)
+
+
+def hydra_sub(a):
+    """Hydra, the drone submarine: see the module docstring."""
+    _suffixed(a)
+    team, arm = a.part('Hull', 'Team'), a.part('Armor', 'Armor')
+    steel, dark = a.part('Steel', 'Steel'), a.part('Hull_low', 'Undercarriage')
+    # The pressure hull as one lathe along the length (stern cone to the round bow), the dark lower half a second
+    # skin just inside it below the waterline band, the casing deck on top.
+    k.lathe(team, [(.32, -15.6), (1.05, -14.0), (1.95, -10.8), (HY_R, -6.0), (HY_R, 9.2), (2.3, 12.6), (1.75, 15.0),
+                   (.95, 16.7), (.3, 17.3), (0, 17.4)], rot=FORWARD, seg=22, worn=(4,))
+    k.block(dark, (5.06, 23.0, .5), loc=(0, -1.0, -.35), chamfer=0)                                   # boot topping
+    k.block(a.part('Casing', 'MetalSheet'), (1.9, 25.0, .32), loc=(0, -1.2, HY_R - .12), chamfer=.04)
+    k.greebles(arm, (0, -12.8, HY_R + .2), (1, 0, 0), (0, 1, 0), (1.4, 2.4), 3, seed=2761, height=(.08, .16),
+               chamfer=.02)
+    # Bow planes forward, the sail with its fairwater planes, the SAM box on the sail (`Mount_missile`), masts.
+    k.block(arm, (5.4, 1.3, .2), loc=(0, -11.6, .9), chamfer=0)
+    sail = [(0, -6.9), (.55, -6.6), (.85, -5.8), (.85, -2.6), (.55, -1.2), (0, -.9), (-.55, -1.2), (-.85, -2.6),
+            (-.85, -5.8), (-.55, -6.6)]
+    k.extrude(team, sail, 2.3, loc=(0, 0, HY_R + 1.05), axis='Z', chamfer=.1, taper=(.86, .92))
+    k.block(arm, (4.2, 1.0, .18), loc=(0, -4.9, 3.75), chamfer=0)
+    a.part('Sail_glass', 'Glass').box((.9, .05, .22), loc=(0, -6.72, 4.0), rot=(.4, 0, 0), bevel=0)
+    for x, y, h in ((0, -3.0, .55), (.3, -2.2, .4), (-.3, -1.8, .3)):
+        k.lathe(steel, [(.1, 0), (.1, h), (.06, h + .06)], loc=(x, y, 4.75), seg=8, worn=(1,))
+    m = pv(a, 'Mount_missile', (0, -4.6, 4.75))
+    k.block(a.part('Sam_base', 'Armor', m), (.7, .7, .2), chamfer=.03)
+    box = a.part('Sam_box', 'Team', m)
+    k.block(box, (1.0, 1.4, .5), loc=(0, 0, .18), rot=(.12, 0, 0), chamfer=.05)
+    caps = a.part('Sam_caps', 'Charred', m)
+    for x in (-.25, .25):
+        caps.cyl(.16, .03, loc=(x, -.72, .45), rot=FORWARD, seg=10, bevel=0)
+    pv(a, 'Muzzle_missile', (0, -.75, .45), 'Mount_missile')
+    # The deck gun forward of the sail (`Mount_gun`).
+    autocannon(a, 'Mount_gun', (0, -9.6, HY_R + .05), length=2.6, r=.08, size=(1.3, 1.6, .6))
+    # The vertical launch tubes along the back aft of the sail: a raised casing, two rows of five hatches, one row
+    # on each door node (`Part_doors_l` / `_r`, the parent's names).
+    k.block(arm, (2.9, 8.4, .42), loc=(0, 3.7, HY_R - .2), chamfer=.08)
+    for s, name in ((1, 'Part_doors_l'), (-1, 'Part_doors_r')):
+        pd = pv(a, name, (s * .7, 3.7, HY_R + .22))
+        lids = a.part(f'Vls_lids_{name[-1]}', 'Team', pd)
+        rims = a.part(f'Vls_rims_{name[-1]}', 'Hazard', pd)
+        for j in range(5):
+            y = -3.2 + j * 1.6
+            k.lathe(lids, [(.5, 0), (.5, .06), (.42, .1), (0, .1)], loc=(0, y, 0), seg=14, worn=(1,))
+            k.ring(rims, [(.55, -.01), (.6, -.01), (.6, .04), (.55, .04)], loc=(0, y, 0), seg=14)
+    # The drone deck aft: a dark tray with six FPV quadcopters on their cells (`Part_drone` .. `.005`).
+    k.block(dark, (2.4, 4.6, .14), loc=(0, 10.9, HY_R - .02), chamfer=0)
+    for i, (x, y) in enumerate((x, y) for y in (9.4, 10.9, 12.4) for x in (.62, -.62)):
+        _fpv(a, 'Part_drone' if i == 0 else f'Part_drone.{i:03d}', (x, y, HY_R + .12))
+    # The stern: cruciform planes on `Part_rudder` (the horizontal pair gives the beam), the shrouded pump-jet.
+    pr = pv(a, 'Part_rudder', (0, 14.6, 0))
+    fins = a.part('Rudder_fins', 'Armor', pr)
+    for u, rc, h in ((0, 2.15, 2.9), (math.pi, 2.15, 2.9), (R90, 1.55, 1.7), (-R90, 1.55, 1.7)):
+        fins.box((.2, 2.0, h), loc=(math.cos(u) * rc, .3, math.sin(u) * rc), rot=(0, R90 - u, 0), taper=(1, .55),
+                 bevel=.04, seg=1)
+    k.ring(a.part('Pumpjet', 'Team', pr), [(.75, -.6), (1.05, -.7), (1.05, -1.8), (.85, -1.9)], rot=FORWARD, seg=18,
+           worn=(1,))
+    k.lathe(a.part('Pumpjet_hub', 'Steel', pr), [(.36, -1.0), (.32, -2.4), (0, -2.8)], rot=FORWARD, seg=12)
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=.85, grime_height=.9)),
     'nyx': (nyx, dict(ao_distance=1.0, grime_height=.8)),
+    'hydra_sub': (hydra_sub, dict(ao_distance=.7, ao_strength=.75, ground=False)),
 }

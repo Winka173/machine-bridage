@@ -1245,9 +1245,9 @@
         {
             "id": "hydra",
             "kind": "boss",
-            "model": "typhon",
-            "source": "Models/typhon",
-            "hash": "v2:ccf57cf97f9ddfe5ac17a193dca855d80cb7c4db"
+            "model": "hydra_sub",
+            "source": "Models/hydra_sub",
+            "hash": "v2:dc530108a8e8641666cb2b9703ecba98bf789301"
         },
         {
             "id": "hyperion",

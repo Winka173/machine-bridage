@@ -1957,10 +1957,10 @@
       "modelSize": [16.3, 8.4, 5.5], "variant": {"size": 0.6874, "keep": ["main_gun", "flak_r", "flak_l", "rocket_pod"], "tint": [1.08, 0.78, 0.72], "mark": "cerberus",
                   "tune": {"main_gun": {"hp": 0.13}, "flak_r": {"hp": 0.11}, "flak_l": {"hp": 0.11}, "rocket_pod": {"hp": 0.12}}}},
     // Hydra: the drone submarine (Typhon's deck gun and launch doors; dives and surfaces faster, one boat for its drones).
-    { "id": "hydra", "armour": [4, 3, 2, 2], "variantOf": "typhon", "general": "hung", "radioSpawn": "radio.hung.hydra", "hp": 81300, "weaponDamage": 1.292, "speed": 4.5,
+    { "id": "hydra", "armour": [4, 3, 2, 2], "variantOf": "typhon", "model": "hydra_sub", "general": "hung", "radioSpawn": "radio.hung.hydra", "hp": 81300, "weaponDamage": 1.292, "speed": 4.5,
       "modelSize": [34.8, 7.2, 8], "burrow": {"surface": 16, "under": 10, "first": 12, "surfaceByPhase": [16, 14], "underByPhase": [10, 12]},
       "cruise": {"every": 16, "damage": 240}, "fleet": [{"unit": "missile_boat", "count": 1}], "wake": null,
-      "variant": {"size": 0.5057, "keep": ["doors_l", "doors_r", "deck_gun", "rudder"], "tint": [0.7, 1.05, 1.0], "mark": "hydra",
+      "variant": {"size": 0.5057, "keep": ["doors_l", "doors_r", "deck_gun", "rudder"], "mark": "hydra",
                   "tune": {"doors_l": {"hp": 0.12}, "doors_r": {"hp": 0.12}, "deck_gun": {"hp": 0.12}, "rudder": {"hp": 0.1}}}},
     // Mara's Behemoth: the Accord's rebuilt Behemoth, a scripted ally for chapter 12's last battle only (a mission's
     // "ally" places it; its allied AI drives it). The Behemoth's model in the Accord's colours; never a card, never

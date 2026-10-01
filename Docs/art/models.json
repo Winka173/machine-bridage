@@ -699,6 +699,10 @@
     "file": "howitzer.glb",
     "triangles": 8800
   },
+  "hydra_sub": {
+    "file": "hydra_sub.glb",
+    "triangles": 7268
+  },
   "icbm": {
     "file": "icbm.glb",
     "triangles": 732
