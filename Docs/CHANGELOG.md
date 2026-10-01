@@ -73,6 +73,7 @@ prompt 25 C1-C2, boss numbers and super weapons; fc53b1c prompt 25 B1, B3, sizes
 A1-A5, the sheet's data and weapons; b0f2329 play-test 9 models. Direct commits: play-test 11's dark-hull fix (4337993,
 b22d9d5, 5874c0f), the Windows build target, every campaign mission open while TestUnlockAll is on, dx23 dropped by the
 owner (f2e02c9). Tests, sweeps and measures wait for the owner (every DECISIONS 25x section lists what to measure).
+The design review PDF was rebuilt with 318 pages (the lost screenshots and render pages recovered from the 30/09 PDF into Docs/doc-images; new sections 10f second rounds, 10g bosses' core/edge blasts, phases and sizes, 10h Boss Hunt).
 
 ### New content, batch D: eight new bosses (prompt 25 F2, DECISIONS "25F2-D")
 
