@@ -7,6 +7,20 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+## v0.33.0: Prompt 25 (the balance spreadsheet applied: data, weapons, sizes, rebuilt models, bosses and super weapons, names, unlocks, second rounds, 92 of 93 new items), play-tests 9-11
+
+2026-10-01 · written for the next merge into main (the design review PDF is rebuilt once before it)
+
+Main merges on feature/visual-overhaul since v0.32.0 (newest first): 4775606 batch D, eight new bosses as stand-in
+variants; be53653 batch C, 14 missiles and bombs and 11 support cards; db4ab38 batch B, 32 low-priority units on stand-in
+models; 91a513e and 7e6707e play-test 10 visuals and gear menu; 8df4f41 prompt 25 G, second rounds on 66 weapons;
+f0f8b8c batch A, 27 new units and structures; 78650e4 and 0ab78a5 prompt 25 B2, the models rebuilt at the sheet's sizes;
+bd04bd3 prompt 25 E2, E3, F1, documents and measures; 2a6d6b9 prompt 25 D1-D2, names, unlocks and economy; a122d90
+prompt 25 C1-C2, boss numbers and super weapons; fc53b1c prompt 25 B1, B3, sizes and turn rates; fb9a496 prompt 25
+A1-A5, the sheet's data and weapons; b0f2329 play-test 9 models. Direct commits: play-test 11's dark-hull fix (4337993,
+b22d9d5, 5874c0f), the Windows build target, every campaign mission open while TestUnlockAll is on, dx23 dropped by the
+owner (f2e02c9). Tests, sweeps and measures wait for the owner (every DECISIONS 25x section lists what to measure).
+
 ### New content, batch D: eight new bosses (prompt 25 F2, DECISIONS "25F2-D")
 
 - Four main bosses (Kraken carrier, Monster 800 mm gun, Garuda bomber, Hyperion mirror station) and four mini bosses
