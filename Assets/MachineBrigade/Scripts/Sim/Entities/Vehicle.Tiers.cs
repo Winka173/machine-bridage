@@ -66,6 +66,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Mounts that sleep until it crashes (its guns all round).</summary>
         internal bool[] MountDormant = Array.Empty<bool>();
 
+        /// <summary>Prompt 26 B.2: when its close-guard ring may next go off.</summary>
+        internal double GuardNext;
+
         /// <summary>The height it is drawn at now (m), from its tier or its fall; 0 when crashed.</summary>
         public float AltitudeNow { get; internal set; }
 

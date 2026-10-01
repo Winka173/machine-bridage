@@ -531,6 +531,7 @@ def main():
 
 
 MAX_MINI_WEAPON_DAMAGE = 6.0
+GUARDED = ("fortress_bastion", "behemoth", "mobile_fortress", "moloch", "nuke_train", "kronos")
 
 # the super weapons (B.6, B.7): cycle 45-50 s, warning 3-4 s, the listed rounds
 ATTACKS = {
@@ -624,6 +625,13 @@ def extras(plan, report):
             if "late" in spec:
                 e.set("late", spec["late"])
         plan.attack_edits[aid] = fn
+
+    # B.2: the close guard of the ground main bosses (4 vehicles within 15 m of the hull: a ring of blasts round the body)
+    for vid in GUARDED:
+        plan.set(vid, "guard", {"radius": 15, "count": 4, "every": 5, "damage": int(round(0.25 * target_dps(vid) / 10.0)) * 10, "pad": 6})
+    for vid in MINIS:
+        if plan.vehicles[vid].get("variantOf") in GUARDED and "guard" not in plan.vehicles[vid]:
+            plan.set(vid, "guard", None)
 
     # the bosses' own mechanisms
     kr = copy.deepcopy(plan.vehicles["kronos"]["crush"])

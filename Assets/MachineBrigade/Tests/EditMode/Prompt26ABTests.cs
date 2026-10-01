@@ -218,6 +218,22 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
+        public void TheSixGroundMainBossesHaveACloseGuardAndTheMinisDoNot()
+        {
+            var catalog = C;
+            foreach (var id in new[] { "fortress_bastion", "behemoth", "mobile_fortress", "moloch", "nuke_train", "kronos" })
+            {
+                var ring = catalog.Vehicle(id).GuardRing;
+                Assert.IsNotNull(ring, id);
+                Assert.AreEqual(4, ring.Count, id + ": four vehicles");
+                Assert.AreEqual(15f, ring.Radius, 1e-3f, id + ": within 15 m");
+                Assert.Greater(ring.Damage, 0f, id);
+            }
+            foreach (var mini in catalog.Vehicles.Values.Where(v => v.Boss && v.Rank == BossRank.Mini))
+                Assert.IsNull(mini.GuardRing, mini.Id);
+        }
+
+        [Test]
         public void EverySuperWeaponCyclesEveryFortyFiveToFiftySecondsWithAThreeToFourSecondWarning()
         {
             foreach (var big in C.BigAttacks.Values)

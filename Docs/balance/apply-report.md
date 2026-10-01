@@ -1682,3 +1682,12 @@ Chapter by chapter: title, main and side missions, battlefields, the main boss a
 No difference: Chapter 2, Chapter 3, Chapter 4, Chapter 5, Interlude II, Interlude III.
 
 <!-- import_d2:end -->
+
+
+## Prompt 26 A-B (bosses): what replaces the C1 block above
+
+Prompt 26 overrides the sheet "Boss đề xuất" on bosses' health, damage a second, super weapons and weapons (DECISIONS "26AB"). The
+C1 rows for health, "DPS" and the super weapons above are therefore superseded: health is the prompt's chapter table over the
+bosses' toughness (main 22,000 to 150,000, mini 9,000 to 57,000), the damage a second the prompt's 600-1,600 (a mini 65 %) in the
+45 / 25 / 20 / 10 mix, the super weapons on a 45-50 s cycle; `weaponDamage` is 1 for the twelve main bosses (their `p26_*` weapons
+carry the numbers) and solved for the rest. The Excel is updated in pass 3.

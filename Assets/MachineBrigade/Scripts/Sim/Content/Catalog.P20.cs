@@ -194,6 +194,30 @@ namespace MachineBrigade.Sim.Content
         public int WakePhase { get; internal set; } = -1;
 
         public IReadOnlyList<int> WakeMounts { get; internal set; } = Array.Empty<int>();
+
+        /// <summary>
+        /// Prompt 26 B.2: a close-guard ring (data "guard"): while <see cref="GuardRingDef.Count"/> or more ground vehicles stand
+        /// within <see cref="GuardRingDef.Radius"/> m of its hull it blasts the ground round its body every <see cref="GuardRingDef.Every"/> s.
+        /// </summary>
+        public GuardRingDef? GuardRing { get; internal set; }
+    }
+
+    /// <summary>Prompt 26 B.2: a main boss's close guard (the ring of blasts round its body when a crowd comes in close).</summary>
+    public sealed class GuardRingDef
+    {
+        /// <summary>How near a vehicle must be (from the boss's hull) to count.</summary>
+        public float Radius { get; internal set; } = 15f;
+
+        /// <summary>How many vehicles make a crowd.</summary>
+        public int Count { get; internal set; } = 4;
+
+        /// <summary>Seconds between rings while the crowd stays.</summary>
+        public float Every { get; internal set; } = 5f;
+
+        /// <summary>The blast's damage before the boss's own scale; its core reaches <see cref="Pad"/> m past the hull, the edge twice that (at most 20 m).</summary>
+        public float Damage { get; internal set; }
+
+        public float Pad { get; internal set; } = 6f;
     }
 
     /// <summary>Prompt 20 (DECISIONS 19E): frames, ranks, variants and the new boss mechanisms.</summary>
@@ -252,6 +276,15 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 25 C2: the weapon's numbers where the crusher gives none (filled in once the weapons are read).
                 if (def.Crush.Weapon != null && !c.Has("dps")) def.Crush.Dps = -1f;
                 if (def.Crush.Weapon != null && !c.Has("reach")) def.Crush.Reach = -1f;
+            }
+            if (v.Has("guard"))
+            {
+                var g = v.Object("guard");
+                def.GuardRing = new GuardRingDef
+                {
+                    Radius = MathF.Max(1f, g.Float("radius", 15f)), Count = Math.Max(1, g.Int("count", 4)), Every = MathF.Max(1f, g.Float("every", 5f)),
+                    Damage = MathF.Max(0f, g.Float("damage", 0f)), Pad = MathF.Max(1f, g.Float("pad", 6f)),
+                };
             }
             if (v.Has("wake"))
             {

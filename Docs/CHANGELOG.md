@@ -7,6 +7,25 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 26, pass 1 (A and B): boss health, armour, phases, weapons and two-layer blasts (DECISIONS "26AB")
+
+Reduced scope (no tests, sweeps or measures; every number is the prompt's starting value, solved on paper by
+`Tools/balance/p26_ab.py`).
+
+- Boss health by chapter from the prompt's table (main 22,000 at chapter 1 to 150,000 at 12; mini 9,000 to 57,000; interludes and
+  the eight batch D bosses interpolated). The campaign no longer scales a boss by the player's arsenal (prompt 2's edge); the
+  difficulty scales it instead (health x0.75 / 1 / 1.25 / 1.5, damage x0.8 / 1 / 1.15 / 1.3).
+- Phases 40 / 35 / 25 (mini 55 / 45), the last phase firing 25 % faster; breakable parts about 35 % of the body on top; armour
+  front 5 / side 3 / rear 2 on the ground main bosses (a mini's front at most 4), a hit on a ground boss's side or rear x1.5.
+- New weapon sets for the twelve main bosses at the chapter's target damage a second (600 to 1,600) in the 45 / 25 / 20 / 10 mix,
+  the secondary weapons opening in the second phase, a close-guard ring for six of them, targets chosen by crowd (area weapons)
+  or worth (guns); the super weapons on a 45-50 s cycle with 3-4 s of warning; minis and the batch D bosses scaled to the
+  chapter's target.
+- Two-layer blasts for every boss weapon, big attack, salvo, pod and quake: the core at full damage, an edge twice as wide
+  (20 m at most) at 40 %; both rings show on the blast, a small ring warns of a big boss shell for its last 0.8 s, and the Guide
+  names the core and the edge.
+- Written, not run: `Prompt26ABTests`; the tests whose numbers moved were updated.
+
 ## v0.33.0: Prompt 25 (the balance spreadsheet applied: data, weapons, sizes, rebuilt models, bosses and super weapons, names, unlocks, second rounds, 92 of 93 new items), play-tests 9-11
 
 2026-10-01 · written for the next merge into main (the design review PDF is rebuilt once before it)
