@@ -89,6 +89,8 @@ namespace MachineBrigade.Tests
                     }).ToList(),
                     ["base"] = BaseData(catalog),
                     ["operations"] = OperationsData(),
+                    // Prompt 26 E (DECISIONS 26E): the Boss Hunt's rules, tiers and combat supports.
+                    ["hunt"] = HuntData(),
                 };
                 File.WriteAllText(path, Json(doc), new UTF8Encoding(false));
             }
@@ -96,6 +98,29 @@ namespace MachineBrigade.Tests
             {
                 Strings.Vietnamese = wasVietnamese;
             }
+        }
+
+        /// <summary>Prompt 26 E: the Boss Hunt's rule texts (as the game words them), the week's and the full hunt's counts, the supports and the tiers.</summary>
+        private static object HuntData()
+        {
+            var week = MachineBrigade.Game.Match.BossHunts.ThisWeek;
+            var full = MachineBrigade.Game.Match.BossHunts.Full;
+            var mains = MachineBrigade.Game.Match.BossHunts.MainsIn(week);
+            var rush = new MachineBrigade.Sim.Modes.BossRushRules();
+            return new Dictionary<string, object>
+            {
+                ["weeklyRules"] = Strings.Format("hunt.weekly.rules", ("count", week.Count), ("minis", week.Count - mains), ("mains", mains),
+                    ("minutes", (int)Math.Round(BossHunts.WeeklyMinutes))),
+                ["fullRules"] = Strings.Format("hunt.full.rules", full.Count),
+                ["weekly"] = week.Count, ["weeklyMains"] = mains, ["full"] = full.Count, ["fullMains"] = MachineBrigade.Game.Match.BossHunts.MainsIn(full),
+                ["miniSeconds"] = rush.MiniSeconds, ["mainSeconds"] = rush.MainSeconds, ["cap"] = MachineBrigade.Sim.Modes.HuntSupports.Cap,
+                ["weeklyStep"] = MachineBrigade.Sim.Modes.BossHunt.WeeklyStep, ["fullFrom"] = MachineBrigade.Sim.Modes.BossHunt.FullFrom,
+                ["fullTo"] = MachineBrigade.Sim.Modes.BossHunt.FullTo,
+                ["supports"] = MachineBrigade.Sim.Modes.HuntSupports.All.Select(x => (object)new Dictionary<string, object>
+                {
+                    ["id"] = x.Id, ["name"] = Text("hunt.support." + x.Id), ["info"] = Text("hunt.support." + x.Id + ".info"), ["strength"] = x.Strength,
+                }).ToList(),
+            };
         }
 
         private static string Text(string key) => Strings.Has(key) ? Strings.Get(key) : "";
@@ -258,6 +283,15 @@ namespace MachineBrigade.Tests
                     ["flightTime"] = w.ProjectileSpeed > 0f ? w.Range / w.ProjectileSpeed : 0f, ["roundLength"] = w.RoundLength,
                     // Every plain number, flag and name the weapon carries (rates, magazines, reloads, ceilings...).
                     ["raw"] = Raw(w),
+                    // Prompt 25 G (DECISIONS 25G): the second rounds this gun loads, and (prompt 26 B.3) a boss blast's core and edge.
+                    ["roundOf"] = w.RoundOf?.Id ?? "", ["roundKind"] = w.RoundKind ?? "", ["switchSeconds"] = w.SwitchSeconds(null),
+                    ["secondRounds"] = w.Rounds.Select(r => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = r.Round.Id, ["name"] = UnitLines.WeaponName(r.Round), ["kind"] = UnitLines.RoundWord(r.Round), ["type"] = r.Round.DamageType.ToString(),
+                        ["pen"] = r.Round.Penetration, ["damage"] = r.Round.Damage, ["splash"] = r.Round.SplashRadius, ["use"] = UnitLines.UseWords(r),
+                        ["elite"] = r.EliteOnly, ["switch"] = w.SwitchSeconds(r), ["speed"] = r.Round.ProjectileSpeed,
+                    }).ToList(),
+                    ["splashEdge"] = w.SplashEdge, ["edgeShare"] = w.EdgeShare,
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
                     {
                         ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,
@@ -294,7 +328,12 @@ namespace MachineBrigade.Tests
                 ["deathRadius"] = v.DeathExplosion?.Radius ?? 0f,
                 // Prompt 13 G: the generated lines, as the detail screen shows them.
                 ["behavior"] = UnitLines.Behaviour(catalog, v), ["ammo"] = UnitLines.Ammo(catalog, v),
-                ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",
+                ["phases"] = v.Phases.Select(p => (object)p.At).ToList(),
+                ["phaseData"] = v.Phases.Select(p => (object)new Dictionary<string, object>
+                {
+                    ["at"] = p.At, ["heal"] = p.Heal, ["damage"] = p.Damage, ["speed"] = p.Speed, ["armor"] = p.Armor, ["fireRate"] = p.FireRate,
+                }).ToList(),
+                ["general"] = v.General ?? "",
                 ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object>
                 {
                     ["id"] = p.Id, ["kind"] = p.Kind, ["name"] = Text("part." + p.Kind), ["hp"] = p.Hp, ["breakDamage"] = p.BreakDamage,

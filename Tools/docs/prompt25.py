@@ -575,7 +575,7 @@ def super_table(game, h):
         dodge = sw.get('dodge') or words.get(f'guide.bigattack.{aid}.dodge', '')
         rows.append([f"<b>{e(v['name'])}</b>", f"<b>{e(name)}</b><br><span class='muted'>{e(how)}</span>", e('; '.join(strikes)) + e(late),
                      f"{f(a.get('cooldown', sw.get('cooldown')))} s", f"{f(a.get('warn', sw.get('warn')))} s", e(dodge), e(stop)])
-    return (f"<h3>Siêu vũ khí của boss chủ lực ({len(rows)})</h3><p>Prompt 25 C1: chỉ 12 boss chủ lực có siêu vũ khí (đòn lớn của prompt 18 với số của "
+    return (f"<h3>Siêu vũ khí của boss chủ lực ({len(rows)})</h3><p>Prompt 25 C1: chỉ {len(rows)} boss chủ lực có siêu vũ khí (đòn lớn của prompt 18 với số của "
             "file cân bằng); mini boss không có. Mỗi siêu vũ khí có âm cảnh báo riêng. Số ở đây là số gốc; trong trận cộng hệ số của cấp boss chủ lực "
             "(sát thương ×1,2, hồi ×0,85) và của độ khó.</p>"
             + table(['Boss', 'Siêu vũ khí', 'Gồm', 'Hồi', 'Cảnh báo', 'Cách né', 'Cách ngắt'], rows))
