@@ -13005,3 +13005,18 @@ Step 5 of "27 order" minus the waves. Only the Unity preview (4 experiment model
 - **For the lead:** an unlisted `ixion.glb` (21,628 tris, builder mb_redesign_20y) already ships while the def draws
   `railgun_truck`: check it against the brief before wave 1a builds anew. Stymphalos, ground_drone_carrier,
   combat_wreck_car, Ixion's mines and Gungnir's line warning need game code beside the model.
+
+## 27 waves: lead's answers to the step 5 questions (lead, 2026-10-02)
+
+- The unlisted `ixion.glb` (21,628 tris, builder mb_redesign_20y) is checked against Ixion's brief (prompt 26, BelAZ-75710
+  mine truck, 26 x 12 x 10 m) first in wave 1a; if it fits after the V2 recipe's gates, the wave points Ixion at it
+  instead of building a third model. Reuse before rebuild (token saving).
+- The 5 models over a hard cap (siege_tank, sea_cruiser, flak_tower, command_hq, shield_generator) stay errors: they
+  are wave 2 models anyway, and relaxing caps to clear them would make the caps meaningless.
+- Waves change models, model pointers, ASSET_DEBT lines and view-side node lookups only. New gameplay behaviour that a
+  stand-in's notes ask for (Stymphalos's swarm, the drone carrier's minion spawn, the wreck car's wreck-turret prop,
+  Ixion's mines, Gungnir's line warning) is not wave work: the wave builds the nodes/parts it would need and the
+  behaviour stays listed in ASSET_DEBT for a later prompt (prompt 28 owns AI behaviour). Owner may overrule.
+- The munition hard cap at 1,600 tris (FPV drone a warning) is kept.
+- Wave 1a (Ixion, Gungnir) runs on opus because it judges briefs and big bosses; later waves on sonnet with
+  EXPERIMENT_1's recipe, art-bible.md and the preview (`ModelPreview.RenderBatch`) for changed models only.
