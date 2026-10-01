@@ -253,6 +253,8 @@ namespace MachineBrigade.Game.Match
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
                 ModeSession.KeepPace(_world, deck, MatchSettings.Difficulty, kind);
+                // Prompt 26 E.1: a Boss Hunt's P, estimated once from the carried deck (a resumed run brings its own).
+                if (kind == GameModeKind.BossRush) BossRushSession.Power = HuntPower.ForDeck(catalog, MatchSettings.DeckVehicles, _playerCommander);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
