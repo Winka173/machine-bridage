@@ -36,7 +36,7 @@ namespace MachineBrigade.Game.Hud
             ["unit.daedalus"] = ("Daedalus · Orbital Lander", "Daedalus · Tàu đổ bộ quỹ đạo"),
             ["unit.kronos"] = ("Kronos · Mining Excavator", "Kronos · Máy xúc mỏ"),
             ["unit.typhon"] = ("Typhon · Missile Submarine", "Typhon · Tàu ngầm tên lửa"),
-            ["unit.ixion"] = ("Ixion · Giant Wheel", "Ixion · Xe bánh khổng lồ"),
+            ["unit.ixion"] = ("Ixion · Armoured Mine Truck", "Ixion · Xe tải mỏ bọc thép"),
             ["unit.caspian"] = ("Caspian · Ekranoplan", "Caspian · Tàu bay sát mặt nước"),
             ["unit.bastion_mk0"] = ("Bastion Mk.0 · Prototype Fortress", "Bastion Mk.0 · Pháo đài nguyên mẫu"),
             ["unit.fenrir"] = ("Fenrir · Vanguard", "Fenrir · Xe tiên phong"),
@@ -64,7 +64,7 @@ namespace MachineBrigade.Game.Hud
             ["note.daedalus"] = ("Aurel's troop lander: drops pods without pause, two 30 mm guns, point-defence lasers. Upper hull 3, belly 2.", "Tàu đổ bộ của Aurel: thả khoang đổ bộ liên tục, hai pháo 30 mm, tháp la-de phòng thủ. Thân trên cấp 3, bụng 2."),
             ["note.kronos"] = ("A giant bucket-wheel excavator on a fixed route to your base, crushing walls and towers. Reaching your HQ loses the mission.", "Máy xúc bánh gầu khổng lồ chạy theo đường cố định về căn cứ ta, nghiền cả tường và tháp. Tới HQ là thua nhiệm vụ."),
             ["note.typhon"] = ("A missile submarine: out of reach while submerged, surfaces on a schedule; launches missiles at your base from under water.", "Tàu ngầm tên lửa: lặn thì không bắn tới được, nổi lên theo lịch; phóng tên lửa vào căn cứ ta từ dưới nước."),
-            ["note.ixion"] = ("A Tsar Tank of a wheel: rolls fast and straight, crushes light vehicles, turns very slowly.", "Xe bánh khổng lồ kiểu xe tăng Sa hoàng: lăn nhanh theo đường thẳng, nghiền xe nhẹ, xoay rất chậm."),
+            ["note.ixion"] = ("An armoured BelAZ-75710 mine truck: a 125 mm turret, a crushing charge about every ten seconds, mines dropped behind it when it turns; it turns very slowly.", "Xe tải mỏ BelAZ-75710 bọc thép: tháp pháo 125 mm, cứ khoảng mười giây lại lao nghiền, rải mìn phía sau khi rẽ; xoay rất chậm."),
             ["note.caspian"] = ("A sea monster of an ekranoplan: fast passes along the coast, then away; anti-ship missiles at your base.", "Tàu bay sát mặt nước \"quái vật biển\": lao dọc bờ từng lượt rồi vòng ra xa; tên lửa chống hạm đánh vào căn cứ."),
             ["note.bastion_mk0"] = ("The first Bastion: a mortar and two 40 mm guns on tracks, crawling towards your base.", "Bastion đầu tiên: một khẩu cối và hai pháo 40 mm trên xích, bò dần về căn cứ ta."),
             ["note.fenrir"] = ("Orlov's fast raider: two rocket boxes and flak; it dashes in, fires and pulls back.", "Xe đột kích nhanh của Orlov: hai hộp rốc-két và cao xạ; lao vào bắn rồi rút."),
@@ -112,14 +112,14 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: thân giáp cấp [[4]], tháp chỉ huy và boong [[2]]: pháo binh, bom và đòn đánh nóc đánh vào boong.\n" +
                 "Mẹo: chờ sẵn pháo binh và máy bay chỗ bong bóng; phá [[cửa ống phóng]] lúc cảnh báo (cửa mở trên mặt nước) hoặc bắn hạ tên lửa."),
             ["guide.ixion"] = (
-                "[[Mini boss]] · giant wheel · rolls over your line\n" +
-                "How it fights: rolls fast and straight on two huge [[wheels]], crushing vehicles in its way (light ones worst), and turns very slowly. Its 76 mm gun fires from the hub, two 12.7 mm machine guns from the hull.\n" +
-                "Strong / weak: the rear [[steering wheel]] is armour 1, its weak point; a big wheel broken makes it circle and slow down.\n" +
-                "Tip: step aside from its line and hit it from the flanks as it turns.",
-                "[[Mini boss]] · xe bánh khổng lồ · lăn qua đội hình ta\n" +
-                "Cách đánh: lăn nhanh theo đường thẳng trên hai [[bánh lớn]], nghiền xe trên đường (xe nhẹ nặng nhất), xoay rất chậm. Pháo 76 mm bắn từ giữa trục, hai súng máy 12,7 mm trên thân.\n" +
-                "Mạnh / yếu: [[bánh lái sau]] giáp cấp 1, là điểm yếu; phá một bánh lớn thì nó quay vòng và chậm lại.\n" +
-                "Mẹo: tránh khỏi đường lăn và đánh vào hông khi nó xoay."),
+                "[[Mini boss]] · armoured mine truck · rams your line\n" +
+                "How it fights: an armoured mine truck (BelAZ-75710) that drives straight at about 7 m/s and turns very slowly. Its welded 125 mm turret turns all round and loads a high-explosive shell against a crowd (10 m blast, 5 m core) and an armour-piercing one against a single target, about 780 every 2 s; about every 10 s it charges down a line shown [[2 s]] ahead for about 900 and a 1 s stun, the turret firing all the while; two roof 12.7 mm machine guns; when it turns it drops a strip of six mines behind it that last 20 s.\n" +
+                "Strong / weak: armour 4 in front, 3 on the sides, 2 behind and on top; the four [[rear tyres]] are armour 1, its weak point; break a [[front tyre]] and its charge swerves and stops, both and it circles very slowly; break the [[hull turret]] and it loses its gun, the [[cab]] and the machine guns stop.\n" +
+                "Tip: step off the charge line, hit its flanks and rear as it turns, and keep clear of the mine strip.",
+                "[[Mini boss]] · xe tải mỏ bọc thép · húc vào đội hình ta\n" +
+                "Cách đánh: xe tải mỏ bọc thép (BelAZ-75710) chạy thẳng khoảng 7 m/s và xoay rất chậm. Tháp pháo 125 mm hàn trên thùng xoay 360°, nạp đạn nổ mạnh với đám đông (nổ lõi 5 m, rìa 10 m) và đạn xuyên với mục tiêu đơn lẻ, khoảng 780 mỗi 2 giây; cứ khoảng 10 giây nó lao theo đường thẳng báo trước [[2 giây]], khoảng 900 và choáng 1 giây, tháp pháo vẫn bắn trong lúc lao; hai súng máy 12,7 mm trên nóc; khi rẽ nó đổ ra sau một dải sáu quả mìn tồn tại 20 giây.\n" +
+                "Mạnh / yếu: giáp trước 4, hông 3, sau và nóc 2; bốn [[lốp sau]] giáp cấp 1 là điểm yếu; phá một [[lốp trước]] thì cú lao lệch và dừng, phá cả hai thì nó quay vòng rất chậm; phá [[tháp pháo trên thùng]] là mất pháo, phá [[ca-bin]] là súng máy ngừng bắn.\n" +
+                "Mẹo: tránh khỏi đường lao, đánh vào hông và đuôi khi nó xoay, và tránh dải mìn."),
             ["guide.caspian"] = (
                 "[[Mini boss]] · ekranoplan · fast passes along the coast\n" +
                 "How it fights: skims in along the coast for about 6 s at a time, then swings out to sea for about 20 s; a target on the water. Each pass it fires an anti-ship missile at your biggest group (marked ahead); two twin 23 mm guns and an AK-630 cover it.\n" +
@@ -198,7 +198,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.parts.tip.daedalus"] = ("Tip: break the [[drop-pod bays]] (each one slows the drops; the mass drop falls as three pods with one gone) and the [[point-defence lasers]] before sending missiles.", "Mẹo: phá [[cửa thả khoang]] (mỗi cửa mất là thả chậm hơn; mất một cửa thì đòn đổ bộ lớn chỉ còn ba khoang) và [[tháp la-de phòng thủ]] trước khi dùng tên lửa."),
             ["guide.parts.tip.kronos"] = ("Tip: the four [[track units]] (armour 2) each slow it; the [[boom]] carries its sweep; the [[bucket wheel]] (armour 4) is what crushes.", "Mẹo: mỗi [[cụm xích]] (giáp cấp 2) bị phá là nó chậm lại; [[cần gầu]] mang đòn quét; [[bánh gầu]] (giáp cấp 4) là thứ nghiền."),
             ["guide.parts.tip.typhon"] = ("Tip: the [[launch doors]] carry its missiles (they show above the water during a warning); the [[sail]] aims its SAM; the [[sonar]] its fire control.", "Mẹo: [[cửa ống phóng]] mang tên lửa (lộ trên mặt nước lúc cảnh báo); [[tháp chỉ huy]] ngắm tên lửa phòng không; [[sô-na]] là hệ điều khiển hỏa lực."),
-            ["guide.parts.tip.ixion"] = ("Tip: the rear [[steering wheel]] is armour 1; a broken [[big wheel]] makes it circle and slow down.", "Mẹo: [[bánh lái sau]] giáp cấp 1; phá một [[bánh lớn]] thì nó quay vòng và chậm lại."),
+            ["guide.parts.tip.ixion"] = ("Tip: break the [[hull turret]] and the 125 mm is gone; break a [[front tyre]] and its charge swerves and stops; the [[rear tyres]] are armour 1; break the [[cab]] and the machine guns stop.", "Mẹo: phá [[tháp pháo trên thùng]] là mất pháo 125 mm; phá một [[lốp trước]] thì cú lao lệch và dừng; [[lốp sau]] giáp cấp 1; phá [[ca-bin]] là súng máy ngừng bắn."),
             ["guide.parts.tip.caspian"] = ("Tip: break the [[missile launcher]] on its back to stop its missiles; the nose [[engines]] slow its passes.", "Mẹo: phá [[bệ tên lửa]] trên lưng để chặn tên lửa của nó; phá [[cụm động cơ]] ở mũi để các lượt lao chậm lại."),
             ["guide.parts.tip.bastion_mk0"] = ("Tip: break the [[mortar]] first; the two turrets only reach close.", "Mẹo: phá [[khẩu cối]] trước; hai tháp pháo chỉ bắn gần."),
             ["guide.parts.tip.fenrir"] = ("Tip: each [[rocket box]] broken halves its rockets; its flak is all it has against aircraft.", "Mẹo: mỗi [[hộp rốc-két]] bị phá là rốc-két của nó giảm một nửa; cao xạ là thứ duy nhất chống máy bay."),
@@ -218,7 +218,9 @@ namespace MachineBrigade.Game.Hud
             ["part.launchdoors"] = ("launch doors", "cửa ống phóng"),
             ["part.rudder"] = ("rudder", "bánh lái"),
             ["part.sonar"] = ("sonar", "sô-na"),
-            ["part.wheel"] = ("big wheel", "bánh lớn"),
+            ["part.wheel"] = ("front tyre", "lốp trước"),
+            ["part.reartyre"] = ("rear tyre", "lốp sau"),
+            ["part.hulltower"] = ("hull turret", "tháp pháo trên thùng"),
             ["part.steerwheel"] = ("steering wheel", "bánh lái sau"),
             ["part.wing"] = ("wing", "cánh"),
             ["part.casemate"] = ("casemate gun", "pháo lô cốt"),

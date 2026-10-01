@@ -46,7 +46,7 @@ namespace MachineBrigade.Tests
             ["fortress_hive"] = 6, ["mobile_fortress"] = 9, ["fortress_bastion"] = 9, ["silver_bug"] = 12, ["sky_fortress"] = 8,
             ["mega_gunship"] = 6, ["drone_mothership"] = 11, ["rail_supergun"] = 8, ["earth_borer"] = 4, ["command_airship"] = 10,
             ["landing_hovercraft"] = 8, ["supreme_command"] = 3, ["leviathan"] = 14,
-            ["moloch"] = 9, ["daedalus"] = 8, ["kronos"] = 10, ["typhon"] = 7, ["ixion"] = 4, ["caspian"] = 4,
+            ["moloch"] = 9, ["daedalus"] = 8, ["kronos"] = 10, ["typhon"] = 7, ["ixion"] = 8, ["caspian"] = 4,
             ["bastion_mk0"] = 3, ["fenrir"] = 3, ["scylla"] = 3, ["locust"] = 2, ["behemoth_mk2"] = 4, ["icarus_mk0"] = 3, ["argus"] = 3,
             // Prompt 22 E: Behemoth Mk.0 (a variant) and Morrigan (two missile bays, the bomb bay, the engines).
             ["behemoth_mk0"] = 4, ["morrigan"] = 4,

@@ -238,6 +238,7 @@ namespace MachineBrigade.Tests
         {
             foreach (var big in C.BigAttacks.Values)
             {
+                if (big.Id == "ixion_crush_charge") continue; // prompt 26 D.1: a mini boss's secondary weapon, 10 s and 2 s
                 Assert.That(big.Cooldown, Is.InRange(45f, 50f), big.Id);
                 Assert.That(big.Warn, Is.InRange(3f, 4f), big.Id);
             }

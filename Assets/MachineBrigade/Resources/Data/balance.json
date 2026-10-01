@@ -656,7 +656,7 @@
     { "id": "naval_155_triple", "inherits": "naval_76", "real": "155 mm/60 (triple)", "family": "howitzer", "size": 155, "pen": 3, "projectileModel": "shell_155", "projectileScale": 0.7273, "roundLength": 0.8, "damage": 320, "cooldown": 10, "range": 110, "splash": 4.5, "spread": 2.4, "impactTier": "Large", "burst": 3, "burstInterval": 0.25},
     // Prompt 25 F2 batch A (DECISIONS 25F2-A): the weapons of the balance sheet's new units and structures ("Đề
     // xuất thêm", "Công trình mới"), their numbers the sheet's, on prompt 13's calibre scale and prompt 15's penetration.
-    { "id": "flak_88", "real": "8.8 cm Flak 36/37", "family": "howitzer", "size": 88, "pen": 3, "damageType": "Fragmentation", "damage": 120, "cooldown": 2, "range": 70, "groundRange": 50, "projectileSpeed": 160, "splash": 6, "spread": 1.5, "impactTier": "Large", "projectile": "Shell", "targets": "All", "groupPriority": true },
+    { "id": "flak_88", "real": "KS-19 100 mm (1947)", "family": "howitzer", "size": 100, "pen": 3, "damageType": "Fragmentation", "damage": 120, "cooldown": 2, "range": 70, "groundRange": 50, "projectileSpeed": 160, "splash": 6, "spread": 1.5, "impactTier": "Large", "projectile": "Shell", "targets": "All", "groupPriority": true },
     // dx02, ct14: the Bofors 40 mm L/70 (proximity-fused rounds): 4 a second from 20-round clips (the tower row's magazine, one gun for both).
     { "id": "bofors_l70", "weaponFamily": "bofors_40_mm_l_70", "real": "Bofors 40 mm L/70", "family": "autocannon", "size": 40, "pen": 2, "damageType": "Fragmentation", "damage": 30, "cooldown": 0.25, "range": 48, "spread": 1.2, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 20, "clipReload": 3 },
     // dx03: the Avenger's eight shoulder-launched missiles in one ripple, then a long reload (the SHORAD round, 170 a hit).
@@ -1230,7 +1230,7 @@
 
     // Prompt 25 F2 batch A (DECISIONS 25F2-A): the balance sheet's new units and structures. Health is the sheet's over
     // the vehicles' toughness (2.2), as prompt 25 A1 reads it; sizes are 0.8 x real on the ground, 0.4 x real in the air.
-    // dx01: the sheet's Flak 88 (prompt 26 will make it a KS-19-class 100 mm tower): slow, big air bursts, groups and big aircraft first; lowered at the ground it reaches 50 m.
+    // dx01: the KS-19-class 100 mm heavy AA tower (prompt 26 D.11; the id stays flak_88 / heavy_flak_tower): slow, big air bursts, groups and big aircraft first; lowered at the ground it reaches 50 m.
     { "id": "heavy_flak_tower", "modelSize": [7.0, 6.0, 3.4], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 40, "radius": 2.6, "length": 5.5, "width": 5.5, "cp": 0, "vision": 64,
       "weapon": "flak_88", "secondary": [], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     // dx02: a tracked 40 mm AA gun (CV90 AA, M42 Duster): steady proximity-fused bursts, helicopters and drones, light vehicles too.
@@ -1303,9 +1303,9 @@
     // dx28: the battlefield searchlight: at night and in fog its side sees everything within 35 m of it, and enemies there shoot 20 % worse.
     { "id": "searchlight", "modelSize": [3.6, 3.0, 2.8], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 545, "speed": 0, "turnRate": 1, "turretTurnRate": 30, "radius": 1.8, "length": 3.6, "width": 3.0, "cp": 0, "vision": 70,
       "weapon": "none", "searchlight": { "radius": 35, "dazzle": 0.2 }, "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.2, "tier": "Large" } },
-    // dx29: the barrage balloon (prompt 26 will make it a JLENS-type radar aerostat): enemy aircraft bombing within 40 m of it must climb (bombs scatter 50 % wider); helicopters keep out.
+    // dx29: the JLENS-type radar aerostat (prompt 26 D.11; the id stays barrage_balloon): enemy aircraft bombing within 40 m of it must climb (bombs scatter 50 % wider); helicopters keep out; it shows aircraft within 45 m, stealth ones too (revealAir).
     { "id": "barrage_balloon", "modelSize": [9.0, 4.0, 16.0], "fort": { "size": "Small" }, "static": true, "armour": 0, "hp": 364, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.0, "length": 4.0, "width": 4.0, "cp": 0, "vision": 1,
-      "weapon": "none", "balloon": { "radius": 40, "scatter": 0.5 } },
+      "weapon": "none", "balloon": { "radius": 40, "scatter": 0.5 }, "revealAir": 45 },
     // dx30: the visual jammer (a utility module, electronic camouflage): enemies see nothing of its side within 35 m of it from further than 15 m, unless they are scouts.
     { "id": "visual_jammer", "modelSize": [6.0, 5.0, 6.5], "fort": { "size": "Medium", "kind": "Utility" }, "static": true, "armour": 1, "hp": 909, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 3, "length": 6, "width": 5, "cp": 0, "vision": 30,
       "weapon": "none", "sightJammer": { "radius": 35, "close": 15 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },

@@ -204,19 +204,28 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(k3.OwnRoute, "Kronos follows the mine's kronos route");
         }
 
-        /// <summary>Prompt 25 C1: a mini boss has no super weapon: Ixion's charge went with it; it still crushes as it rolls.</summary>
+        /// <summary>
+        /// Prompt 26 D.1: Ixion, the armoured BelAZ-75710 mine truck, crushes as it rolls and has its charge back as a secondary
+        /// weapon (a 2 s warned line about every 10 s, about 900, a 1 s stun), not a super weapon; it drops a strip of six mines
+        /// that last 20 s when it turns.
+        /// </summary>
         [Test]
-        public void IxionCrushesAsItRollsAndHasNoCharge()
+        public void IxionIsTheMineTruckWithItsChargeMinesAndTurret()
         {
             var def = C.Vehicle("ixion");
-            Assert.IsNull(def.BigAttack, "no charge: a mini boss has no super weapon");
             Assert.IsNotNull(def.Crush, "its wheels still crush what they roll over");
-            var world = Field();
-            var ixion = world.SpawnVehicle("ixion", 1, Vector2.Zero, 0f);
-            world.Bosses.TriggerBig(ixion);
-            var events = Run(world, 6f);
-            Assert.IsFalse(events.Any(e => e.Kind == SimEventKind.BigAttack), "nothing to trigger");
-            Assert.IsFalse(ixion.IsCharging);
+            Assert.IsNotNull(def.BigAttack, "the charge is its secondary weapon");
+            Assert.AreEqual(2f, def.BigAttack.Warn, 1e-3f);
+            Assert.AreEqual(10f, def.BigAttack.Cooldown, 1e-3f);
+            Assert.AreEqual(900f, def.BigAttack.Strikes[0].Damage, 1e-3f);
+            Assert.AreEqual(1f, def.BigAttack.Strikes[0].Stun, 1e-3f);
+            Assert.AreEqual(26f, def.ModelLength, 1e-3f);
+            Assert.AreEqual(4f, def.Armour.Front);
+            Assert.IsNotNull(def.Mines, "the mine strip");
+            Assert.AreEqual(6, def.Mines.Max);
+            Assert.AreEqual(20f, def.Mines.Life, 1e-3f);
+            Assert.Greater(def.Mines.TurnStrip, 0f, "dropped when it turns");
+            Assert.AreEqual(8, def.Parts.Count, "turret, cab, two front tyres, four rear tyres");
         }
 
         [Test]
