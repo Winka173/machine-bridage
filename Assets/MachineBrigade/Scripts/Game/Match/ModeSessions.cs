@@ -960,7 +960,7 @@ namespace MachineBrigade.Game.Match
             else hud.SetBoss(null, 0f);
             // Prompt 20 N/O.4: the rest between bosses, the support pick after a main boss, the checkpoint kept.
             var rest = _mode.RestLeft(world);
-            hud.SetHuntRest(rest >= 0f ? Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)) : null, rest,
+            hud.SetHuntRest(rest < 0f ? null : _mode.RestRepairShare <= 0f ? Strings.Get("hunt.restFresh") : Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)), rest,
                 _mode.Next is { } next ? Strings.Format("hunt.next", Strings.Card(next)) : null, HeldLine());
             if (_mode.EndlessOpen || _endlessShown) ShowEndlessPick(hud, world);
             else ShowSupportPick(hud, world, rest);

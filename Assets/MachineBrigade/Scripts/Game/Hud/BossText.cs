@@ -318,6 +318,8 @@ namespace MachineBrigade.Game.Hud
             ["hunt.roster"] = ("This week's bosses", "Boss tuần này"),
             ["hunt.fullRoster"] = ("In story order", "Theo thứ tự cốt truyện"),
             ["hunt.restTitle"] = ("Rest · army repaired {percent}%", "Nghỉ · quân được sửa {percent}%"),
+            // Prompt 26 E3: the full hunt fights every boss in a fresh battle (no army kept, so nothing to repair).
+            ["hunt.restFresh"] = ("Rest · the next boss is a fresh battle", "Nghỉ · boss sau là một trận mới"),
             ["hunt.next"] = ("Next: {card}", "Tiếp theo: {card}"),
             ["hunt.held"] = ("Supports: {supports}", "Hỗ trợ: {supports}"),
             ["hunt.pickTitle"] = ("Choose a combat support", "Chọn hỗ trợ tác chiến"),
