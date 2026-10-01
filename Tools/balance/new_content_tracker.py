@@ -5,7 +5,7 @@ the status, game id and notes already in the tracker, so it can be re-run as wor
 xuất thêm" and "Công trình mới" (same name) is one entry, with both sheets listed.
 
     python Tools/balance/new_content_tracker.py                      # refresh from the spreadsheet
-    python Tools/balance/new_content_tracker.py --set KEY STATUS [ID]  # mark one item (chưa làm / đang làm / xong)
+    python Tools/balance/new_content_tracker.py --set KEY STATUS [ID]  # mark one item (chưa làm / đang làm / xong / bỏ: dropped by the owner)
 
 Tools/balance/import_unlocks.py (prompt 25 D2) writes each item's planned shop price and source into its notes (set_notes).
 """
@@ -20,7 +20,7 @@ import openpyxl
 ROOT = Path(__file__).resolve().parents[2]
 XLSX = ROOT / 'Docs' / 'balance' / 'Machine_Brigade_Can_bang.xlsx'
 OUT = ROOT / 'Docs' / 'backlog' / 'new_content.json'
-STATUSES = ('chưa làm', 'đang làm', 'xong')
+STATUSES = ('chưa làm', 'đang làm', 'xong', 'bỏ')
 
 # sheet: (tracker prefix, kind, name column, group column, priority column, unlock column)
 SHEETS = {
@@ -86,7 +86,7 @@ def save(items):
         k[i['status']] += 1
     data = {
         '_about': 'Prompt 25 F2: every new item of Docs/balance/Machine_Brigade_Can_bang.xlsx and how far it is. '
-                  'status: chưa làm / đang làm / xong; id: the game id once it exists. Refreshed by '
+                  'status: chưa làm / đang làm / xong / bỏ (dropped by the owner); id: the game id once it exists. Refreshed by '
                   'Tools/balance/new_content_tracker.py.',
         'updated': date.today().isoformat(),
         'total': len(items),
