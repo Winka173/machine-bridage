@@ -2,7 +2,282 @@
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
  "count": 400,
- "budgets": {},
+ "budgets": {
+  "ground": {
+   "normal": {
+    "triangles": [
+     7800,
+     9700
+    ],
+    "vertices": [
+     10100,
+     12600
+    ],
+    "renderers": [
+     61,
+     76
+    ],
+    "movingParts": [
+     8,
+     10
+    ]
+   },
+   "hd": {
+    "triangles": [
+     18800,
+     23300
+    ],
+    "vertices": [
+     27300,
+     34100
+    ],
+    "renderers": [
+     83,
+     103
+    ],
+    "movingParts": [
+     8,
+     10
+    ]
+   }
+  },
+  "helicopter": {
+   "normal": {
+    "triangles": [
+     6600,
+     8300
+    ],
+    "vertices": [
+     8300,
+     10400
+    ],
+    "renderers": [
+     45,
+     56
+    ],
+    "movingParts": [
+     5,
+     6
+    ]
+   },
+   "hd": {
+    "triangles": [
+     15900,
+     20000
+    ],
+    "vertices": [
+     22500,
+     28100
+    ],
+    "renderers": [
+     61,
+     76
+    ],
+    "movingParts": [
+     5,
+     6
+    ]
+   }
+  },
+  "jet": {
+   "normal": {
+    "triangles": [
+     5100,
+     6400
+    ],
+    "vertices": [
+     7100,
+     8900
+    ],
+    "renderers": [
+     36,
+     44
+    ],
+    "movingParts": [
+     6,
+     7
+    ]
+   },
+   "hd": {
+    "triangles": [
+     12300,
+     15400
+    ],
+    "vertices": [
+     19200,
+     24100
+    ],
+    "renderers": [
+     49,
+     60
+    ],
+    "movingParts": [
+     6,
+     7
+    ]
+   }
+  },
+  "boss_s": {
+   "normal": {
+    "triangles": [
+     36000,
+     45000
+    ],
+    "vertices": [
+     43000,
+     54000
+    ],
+    "renderers": [
+     130,
+     162
+    ],
+    "movingParts": [
+     22,
+     28
+    ]
+   }
+  },
+  "boss_m": {
+   "normal": {
+    "triangles": [
+     44000,
+     55000
+    ],
+    "vertices": [
+     56000,
+     70000
+    ],
+    "renderers": [
+     178,
+     222
+    ],
+    "movingParts": [
+     25,
+     31
+    ]
+   }
+  },
+  "boss_l": {
+   "normal": {
+    "triangles": [
+     56000,
+     70000
+    ],
+    "vertices": [
+     72000,
+     90000
+    ],
+    "renderers": [
+     240,
+     299
+    ],
+    "movingParts": [
+     41,
+     52
+    ]
+   }
+  },
+  "structure": {
+   "normal": {
+    "triangles": [
+     7900,
+     9900
+    ],
+    "vertices": [
+     9800,
+     12200
+    ],
+    "renderers": [
+     39,
+     48
+    ],
+    "movingParts": [
+     2,
+     3
+    ]
+   }
+  },
+  "tower": {
+   "normal": {
+    "triangles": [
+     14700,
+     18400
+    ],
+    "vertices": [
+     20100,
+     25100
+    ],
+    "renderers": [
+     144,
+     180
+    ],
+    "movingParts": [
+     8,
+     9
+    ]
+   }
+  },
+  "prop": {
+   "normal": {
+    "triangles": [
+     6900,
+     8600
+    ],
+    "vertices": [
+     9900,
+     12300
+    ],
+    "renderers": [
+     46,
+     58
+    ],
+    "movingParts": [
+     2,
+     3
+    ]
+   }
+  },
+  "scenery": {
+   "normal": {
+    "triangles": [
+     3700,
+     4600
+    ],
+    "vertices": [
+     9700,
+     12100
+    ],
+    "renderers": [
+     12,
+     14
+    ],
+    "movingParts": [
+     2,
+     3
+    ]
+   }
+  },
+  "munition": {
+   "normal": {
+    "triangles": [
+     500,
+     1600
+    ],
+    "vertices": [
+     600,
+     2400
+    ],
+    "renderers": [
+     14,
+     17
+    ],
+    "movingParts": [
+     2,
+     3
+    ]
+   }
+  }
+ },
  "history": [
   {
    "date": "2026-10-02",
@@ -120,7 +395,9 @@
    "warnings": [],
    "units": [
     "aa_gun_tower"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "aa_gun_vehicle": {
    "file": "aa_gun_vehicle.glb",
@@ -227,7 +504,9 @@
    "units": [
     "aa_gun_vehicle",
     "aa_57mm_vehicle"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "aa_turret": {
    "file": "aa_turret.glb",
@@ -351,7 +630,9 @@
    "warnings": [],
    "units": [
     "aa_turret"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "aa_turret_a": {
    "file": "aa_turret_a.glb",
@@ -475,7 +756,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 6,
+   "budgetClass": "tower"
   },
   "aa_turret_b": {
    "file": "aa_turret_b.glb",
@@ -597,7 +880,9 @@
    "warnings": [
     "runtime names with a Blender suffix: Muzzle_missile.001, Muzzle_missile.002, Muzzle_missile.003"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "aa_vehicle": {
    "file": "aa_vehicle.glb",
@@ -730,7 +1015,9 @@
    "warnings": [],
    "units": [
     "aa_vehicle"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "aa_vehicle_hd": {
    "file": "aa_vehicle_hd.glb",
@@ -869,7 +1156,9 @@
    "warnings": [],
    "units": [
     "aa_vehicle"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "adobe_house": {
    "file": "adobe_house.glb",
@@ -959,7 +1248,9 @@
    "warnings": [
     "1 zero-area triangles (0.06%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "adobe_large": {
    "file": "adobe_large.glb",
@@ -1058,7 +1349,9 @@
    "warnings": [
     "1 zero-area triangles (0.03%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "aim120": {
    "file": "aim120.glb",
@@ -1135,7 +1428,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "aim9": {
    "file": "aim9.glb",
@@ -1214,7 +1509,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "airborne_vehicle": {
    "file": "airborne_vehicle.glb",
@@ -1318,7 +1615,9 @@
    "warnings": [],
    "units": [
     "airborne_vehicle"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "airborne_vehicle_chute": {
    "file": "airborne_vehicle_chute.glb",
@@ -1425,7 +1724,9 @@
    "warnings": [],
    "units": [
     "airborne_vehicle_chute"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "jet"
   },
   "ammo_carrier": {
    "file": "ammo_carrier.glb",
@@ -1539,7 +1840,9 @@
    "warnings": [],
    "units": [
     "ammo_carrier"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "ammo_crate": {
    "file": "ammo_crate.glb",
@@ -1609,7 +1912,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "ammo_dump": {
    "file": "ammo_dump.glb",
@@ -1702,7 +2007,9 @@
    "warnings": [],
    "units": [
     "ammo_depot"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "apartment": {
    "file": "apartment.glb",
@@ -1791,7 +2098,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "apc": {
    "file": "apc.glb",
@@ -1917,7 +2226,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": null
   },
   "apc_hd": {
    "file": "apc_hd.glb",
@@ -2060,7 +2371,9 @@
    "hd": true,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": null
   },
   "apfsds": {
    "file": "apfsds.glb",
@@ -2134,7 +2447,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "aps_tank": {
    "file": "aps_tank.glb",
@@ -2277,7 +2592,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": null
   },
   "armed_truck": {
    "file": "armed_truck.glb",
@@ -2378,7 +2695,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": null
   },
   "armored_bulldozer": {
    "file": "armored_bulldozer.glb",
@@ -2487,7 +2806,9 @@
    "warnings": [],
    "units": [
     "armored_bulldozer"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "armored_car": {
    "file": "armored_car.glb",
@@ -2609,7 +2930,9 @@
     "armored_car",
     "combat_wreck_car",
     "river_patrol_boat"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "armored_train": {
    "file": "armored_train.glb",
@@ -2778,7 +3101,9 @@
    "warnings": [],
    "units": [
     "armored_train"
-   ]
+   ],
+   "movingParts": 7,
+   "budgetClass": "boss_s"
   },
   "artillery": {
    "file": "artillery.glb",
@@ -2908,7 +3233,9 @@
     "artillery",
     "river_gunboat",
     "auto_loader_howitzer"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "artillery_emplacement": {
    "file": "artillery_emplacement.glb",
@@ -3029,7 +3356,9 @@
    "warnings": [],
    "units": [
     "artillery_emplacement"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "artillery_emplacement_a": {
    "file": "artillery_emplacement_a.glb",
@@ -3160,7 +3489,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "artillery_emplacement_b": {
    "file": "artillery_emplacement_b.glb",
@@ -3272,7 +3603,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "artillery_hd": {
    "file": "artillery_hd.glb",
@@ -3413,7 +3746,9 @@
     "artillery",
     "river_gunboat",
     "auto_loader_howitzer"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "artillery_wreck": {
    "file": "artillery_wreck.glb",
@@ -3487,7 +3822,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "at_gun_emplacement": {
    "file": "at_gun_emplacement.glb",
@@ -3586,7 +3923,9 @@
    "units": [
     "at_gun_emplacement",
     "recoilless_gun_tower"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "atgm_ataka": {
    "file": "atgm_ataka.glb",
@@ -3661,7 +4000,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "atgm_carrier": {
    "file": "atgm_carrier.glb",
@@ -3789,7 +4130,9 @@
    "warnings": [
     "4 zero-area triangles (0.05%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": null
   },
   "atgm_kornet": {
    "file": "atgm_kornet.glb",
@@ -3865,7 +4208,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "atgm_tow": {
    "file": "atgm_tow.glb",
@@ -3941,7 +4286,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "atgm_tower": {
    "file": "atgm_tower.glb",
@@ -4078,7 +4425,9 @@
    "units": [
     "atgm_tower",
     "one_shot_atgm_tower"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "atgm_tower_a": {
    "file": "atgm_tower_a.glb",
@@ -4222,7 +4571,9 @@
    "warnings": [
     "runtime names with a Blender suffix: Muzzle_missile.001"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "atgm_tower_b": {
    "file": "atgm_tower_b.glb",
@@ -4368,7 +4719,9 @@
    "warnings": [
     "runtime names with a Blender suffix: Muzzle_missile.001, Muzzle_missile.002, Muzzle_missile.003"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "attack_helicopter": {
    "file": "attack_helicopter.glb",
@@ -4496,7 +4849,9 @@
    "warnings": [],
    "units": [
     "attack_helicopter"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "helicopter"
   },
   "attack_helicopter_hd": {
    "file": "attack_helicopter_hd.glb",
@@ -4632,7 +4987,9 @@
    "warnings": [],
    "units": [
     "attack_helicopter"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "helicopter"
   },
   "attack_jet": {
    "file": "attack_jet.glb",
@@ -4754,7 +5111,9 @@
    "units": [
     "attack_jet",
     "prop_attack_plane"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "attack_jet_hd": {
    "file": "attack_jet_hd.glb",
@@ -4876,7 +5235,9 @@
    "units": [
     "attack_jet",
     "prop_attack_plane"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "ballistic_launcher": {
    "file": "ballistic_launcher.glb",
@@ -4993,7 +5354,9 @@
    "warnings": [],
    "units": [
     "ballistic_launcher"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "ballistic_missile": {
    "file": "ballistic_missile.glb",
@@ -5070,7 +5433,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "bamboo_clump": {
    "file": "bamboo_clump.glb",
@@ -5144,7 +5509,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "barn": {
    "file": "barn.glb",
@@ -5232,7 +5599,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "barrage_balloon": {
    "file": "barrage_balloon.glb",
@@ -5309,7 +5678,9 @@
    "warnings": [],
    "units": [
     "barrage_balloon"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "barrel": {
    "file": "barrel.glb",
@@ -5381,7 +5752,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "barricade": {
    "file": "barricade.glb",
@@ -5461,7 +5834,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "basalt_rock_a": {
    "file": "basalt_rock_a.glb",
@@ -5534,7 +5909,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "basalt_rock_b": {
    "file": "basalt_rock_b.glb",
@@ -5607,7 +5984,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "basalt_rock_c": {
    "file": "basalt_rock_c.glb",
@@ -5680,7 +6059,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "base_gate": {
    "file": "base_gate.glb",
@@ -5774,7 +6155,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "base_wall": {
    "file": "base_wall.glb",
@@ -5848,7 +6231,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "behemoth": {
    "file": "behemoth.glb",
@@ -6052,7 +6437,9 @@
     "behemoth_mk0",
     "cerberus",
     "mara_behemoth"
-   ]
+   ],
+   "movingParts": 10,
+   "budgetClass": "boss_s"
   },
   "behemoth_inferno": {
    "file": "behemoth_inferno.glb",
@@ -6227,7 +6614,9 @@
    "warnings": [],
    "units": [
     "behemoth_inferno"
-   ]
+   ],
+   "movingParts": 10,
+   "budgetClass": "boss_s"
   },
   "behemoth_tempest": {
    "file": "behemoth_tempest.glb",
@@ -6401,7 +6790,9 @@
    ],
    "units": [
     "behemoth_tempest"
-   ]
+   ],
+   "movingParts": 11,
+   "budgetClass": "boss_s"
   },
   "billboard": {
    "file": "billboard.glb",
@@ -6482,7 +6873,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "birch": {
    "file": "birch.glb",
@@ -6553,7 +6946,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "blast_wall": {
    "file": "blast_wall.glb",
@@ -6625,7 +7020,9 @@
    "warnings": [],
    "units": [
     "blast_wall"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "bmpt": {
    "file": "bmpt.glb",
@@ -6772,7 +7169,9 @@
    ],
    "units": [
     "bmpt"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "bomb": {
    "file": "bomb.glb",
@@ -6843,7 +7242,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "bomb_fab": {
    "file": "bomb_fab.glb",
@@ -6915,7 +7316,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "bomb_mk84": {
    "file": "bomb_mk84.glb",
@@ -6987,7 +7390,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "boulders": {
    "file": "boulders.glb",
@@ -7055,7 +7460,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "bridge_road": {
    "file": "bridge_road.glb",
@@ -7140,7 +7547,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "bug_satellite": {
    "file": "bug_satellite.glb",
@@ -7227,7 +7636,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "buk": {
    "file": "buk.glb",
@@ -7303,7 +7714,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "bunker_vehicle": {
    "file": "bunker_vehicle.glb",
@@ -7460,10 +7873,14 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "movingParts 9 over the ground normal budget 8"
+   ],
    "units": [
     "bunker_vehicle"
-   ]
+   ],
+   "movingParts": 9,
+   "budgetClass": "ground"
   },
   "bus": {
    "file": "bus.glb",
@@ -7553,7 +7970,9 @@
    "warnings": [
     "2 zero-area triangles (0.09%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "bush": {
    "file": "bush.glb",
@@ -7622,7 +8041,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "c_ram": {
    "file": "c_ram.glb",
@@ -7778,7 +8199,9 @@
    "warnings": [],
    "units": [
     "c_ram"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "c_ram_a": {
    "file": "c_ram_a.glb",
@@ -7931,7 +8354,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "c_ram_b": {
    "file": "c_ram_b.glb",
@@ -8076,7 +8501,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "cactus": {
    "file": "cactus.glb",
@@ -8144,7 +8571,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "camo_net": {
    "file": "camo_net.glb",
@@ -8235,7 +8664,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "car": {
    "file": "car.glb",
@@ -8320,7 +8751,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "caspian": {
    "file": "caspian.glb",
@@ -8443,7 +8876,9 @@
    "warnings": [],
    "units": [
     "caspian"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "boss_m"
   },
   "charred_tree": {
    "file": "charred_tree.glb",
@@ -8515,7 +8950,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "checkpoint": {
    "file": "checkpoint.glb",
@@ -8608,7 +9045,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "church": {
    "file": "church.glb",
@@ -8690,7 +9129,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "cliff_a": {
    "file": "cliff_a.glb",
@@ -8761,7 +9202,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "cliff_b": {
    "file": "cliff_b.glb",
@@ -8832,7 +9275,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "command_airship": {
    "file": "command_airship.glb",
@@ -9082,7 +9527,9 @@
     "command_airship",
     "argus",
     "garuda"
-   ]
+   ],
+   "movingParts": 18,
+   "budgetClass": "boss_m"
   },
   "command_hq": {
    "file": "command_hq.glb",
@@ -9216,9 +9663,13 @@
    ],
    "category": "prop",
    "hd": false,
-   "errors": [],
+   "errors": [
+    "renderers 62 over the prop normal hard cap 58"
+   ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "prop"
   },
   "command_tent": {
    "file": "command_tent.glb",
@@ -9316,7 +9767,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "command_vehicle": {
    "file": "command_vehicle.glb",
@@ -9426,7 +9879,9 @@
    "warnings": [],
    "units": [
     "command_vehicle"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "container": {
    "file": "container.glb",
@@ -9496,7 +9951,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "container_stack": {
    "file": "container_stack.glb",
@@ -9569,7 +10026,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "control_tower": {
    "file": "control_tower.glb",
@@ -9673,7 +10132,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "prop"
   },
   "cottage": {
    "file": "cottage.glb",
@@ -9759,7 +10220,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "counter_battery_radar": {
    "file": "counter_battery_radar.glb",
@@ -9871,7 +10334,9 @@
    "warnings": [],
    "units": [
     "counter_battery_radar"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "cp_relay": {
    "file": "cp_relay.glb",
@@ -9965,7 +10430,9 @@
    "units": [
     "cp_relay",
     "cp_relay.loot"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "cp_relay_a": {
    "file": "cp_relay_a.glb",
@@ -10060,7 +10527,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "cp_relay_b": {
    "file": "cp_relay_b.glb",
@@ -10151,7 +10620,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "crater_large": {
    "file": "crater_large.glb",
@@ -10223,7 +10694,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "cruise_missile": {
    "file": "cruise_missile.glb",
@@ -10296,7 +10769,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "daedalus": {
    "file": "daedalus.glb",
@@ -10449,7 +10924,9 @@
    ],
    "units": [
     "daedalus"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "boss_m"
   },
   "dead_tree": {
    "file": "dead_tree.glb",
@@ -10519,7 +10996,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "debris_concrete": {
    "file": "debris_concrete.glb",
@@ -10587,7 +11066,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "debris_leaves": {
    "file": "debris_leaves.glb",
@@ -10655,7 +11136,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "debris_metal": {
    "file": "debris_metal.glb",
@@ -10724,7 +11207,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "debris_plaster": {
    "file": "debris_plaster.glb",
@@ -10792,7 +11277,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "debris_roof": {
    "file": "debris_roof.glb",
@@ -10860,7 +11347,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "debris_wood": {
    "file": "debris_wood.glb",
@@ -10928,7 +11417,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "dirt_mound": {
    "file": "dirt_mound.glb",
@@ -10997,7 +11488,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "dock_bollards": {
    "file": "dock_bollards.glb",
@@ -11069,7 +11562,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "dragons_teeth": {
    "file": "dragons_teeth.glb",
@@ -11150,7 +11645,9 @@
    "warnings": [],
    "units": [
     "dragons_teeth"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "dragons_teeth_a": {
    "file": "dragons_teeth_a.glb",
@@ -11225,7 +11722,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "dragons_teeth_b": {
    "file": "dragons_teeth_b.glb",
@@ -11301,7 +11800,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "drone_hangar": {
    "file": "drone_hangar.glb",
@@ -11459,7 +11960,9 @@
    "warnings": [],
    "units": [
     "drone_hangar"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "tower"
   },
   "drone_hangar_a": {
    "file": "drone_hangar_a.glb",
@@ -11616,7 +12119,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "tower"
   },
   "drone_hangar_b": {
    "file": "drone_hangar_b.glb",
@@ -11768,7 +12273,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "tower"
   },
   "drone_mothership": {
    "file": "drone_mothership.glb",
@@ -11984,7 +12491,9 @@
     "drone_mothership",
     "locust",
     "stymphalos"
-   ]
+   ],
+   "movingParts": 13,
+   "budgetClass": "boss_s"
   },
   "drop_pod": {
    "file": "drop_pod.glb",
@@ -12069,7 +12578,9 @@
    ],
    "units": [
     "drop_pod"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "earth_borer": {
    "file": "earth_borer.glb",
@@ -12230,7 +12741,9 @@
    ],
    "units": [
     "earth_borer"
-   ]
+   ],
+   "movingParts": 7,
+   "budgetClass": "boss_s"
   },
   "elite_aa": {
    "file": "elite_aa.glb",
@@ -12376,7 +12889,9 @@
    "warnings": [],
    "units": [
     "elite_aa"
-   ]
+   ],
+   "movingParts": 6,
+   "budgetClass": "ground"
   },
   "elite_apc": {
    "file": "elite_apc.glb",
@@ -12513,7 +13028,9 @@
    "warnings": [],
    "units": [
     "elite_apc"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "elite_attack_helicopter": {
    "file": "elite_attack_helicopter.glb",
@@ -12641,7 +13158,9 @@
    "warnings": [],
    "units": [
     "elite_attack_helicopter"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "helicopter"
   },
   "elite_heavy_tank": {
    "file": "elite_heavy_tank.glb",
@@ -12770,7 +13289,9 @@
    "warnings": [],
    "units": [
     "elite_heavy_tank"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "elite_mbt": {
    "file": "elite_mbt.glb",
@@ -12909,7 +13430,9 @@
    "warnings": [],
    "units": [
     "elite_mbt"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "elite_mlrs": {
    "file": "elite_mlrs.glb",
@@ -13023,7 +13546,9 @@
    "warnings": [],
    "units": [
     "elite_mlrs"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "elite_tank_destroyer": {
    "file": "elite_tank_destroyer.glb",
@@ -13149,7 +13674,9 @@
    "warnings": [],
    "units": [
     "elite_tank_destroyer"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "engineer_vehicle": {
    "file": "engineer_vehicle.glb",
@@ -13269,7 +13796,9 @@
     "demolition_line_vehicle",
     "mobile_repair_vehicle",
     "bridging_vehicle"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "ew_jammer": {
    "file": "ew_jammer.glb",
@@ -13386,7 +13915,9 @@
     "drone_hijack_vehicle",
     "dazzler_vehicle",
     "gps_jammer_vehicle"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "ew_tower": {
    "file": "ew_tower.glb",
@@ -13531,7 +14062,9 @@
    ],
    "units": [
     "ew_tower"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "ew_tower_a": {
    "file": "ew_tower_a.glb",
@@ -13669,7 +14202,9 @@
    "warnings": [
     "16 zero-area triangles (0.29%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "ew_tower_b": {
    "file": "ew_tower_b.glb",
@@ -13806,7 +14341,9 @@
    "warnings": [
     "16 zero-area triangles (0.35%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "factory": {
    "file": "factory.glb",
@@ -13901,7 +14438,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fence": {
    "file": "fence.glb",
@@ -13970,7 +14509,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fern_bush": {
    "file": "fern_bush.glb",
@@ -14041,7 +14582,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fibre_fpv_carrier": {
    "file": "fibre_fpv_carrier.glb",
@@ -14133,7 +14676,9 @@
    "warnings": [],
    "units": [
     "fibre_fpv_carrier"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "fighter_jet": {
    "file": "fighter_jet.glb",
@@ -14241,7 +14786,9 @@
    "warnings": [],
    "units": [
     "fighter_jet"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "fighter_jet_hd": {
    "file": "fighter_jet_hd.glb",
@@ -14353,10 +14900,15 @@
    "category": "air",
    "hd": true,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 13,856 over the jet hd budget 12,300",
+    "vertices 20,836 over the jet hd budget 19,200"
+   ],
    "units": [
     "fighter_jet"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "fire_control_centre": {
    "file": "fire_control_centre.glb",
@@ -14437,7 +14989,9 @@
    "warnings": [],
    "units": [
     "fire_control_centre"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "structure"
   },
   "fishing_boat": {
    "file": "fishing_boat.glb",
@@ -14508,7 +15062,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "flak_round": {
    "file": "flak_round.glb",
@@ -14584,7 +15140,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "flak_tower": {
    "file": "flak_tower.glb",
@@ -14782,9 +15340,13 @@
    ],
    "category": "structure",
    "hd": false,
-   "errors": [],
+   "errors": [
+    "movingParts 10 over the tower normal hard cap 9"
+   ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 10,
+   "budgetClass": "tower"
   },
   "flame_tank": {
    "file": "flame_tank.glb",
@@ -14904,7 +15466,9 @@
    "warnings": [],
    "units": [
     "flame_tank"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "flare_tower": {
    "file": "flare_tower.glb",
@@ -14990,7 +15554,9 @@
    "units": [
     "flare_tower",
     "flare_searchlight_tower"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "floodlight_mast": {
    "file": "floodlight_mast.glb",
@@ -15075,7 +15641,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fortress_bastion": {
    "file": "fortress_bastion.glb",
@@ -15311,7 +15879,9 @@
     "fortress_bastion",
     "bastion_mk0",
     "monster"
-   ]
+   ],
+   "movingParts": 14,
+   "budgetClass": "boss_s"
   },
   "fortress_hive": {
    "file": "fortress_hive.glb",
@@ -15479,7 +16049,9 @@
    ],
    "units": [
     "fortress_hive"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "boss_s"
   },
   "foxhole": {
    "file": "foxhole.glb",
@@ -15560,7 +16132,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fpv_carrier": {
    "file": "fpv_carrier.glb",
@@ -15675,7 +16249,9 @@
    "warnings": [],
    "units": [
     "fpv_carrier"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "fpv_drone": {
    "file": "fpv_drone.glb",
@@ -15760,8 +16336,14 @@
    "category": "munition",
    "hd": false,
    "errors": [],
-   "warnings": [],
-   "units": []
+   "warnings": [
+    "triangles 1,520 over the munition normal budget 500",
+    "vertices 2,284 over the munition normal budget 600",
+    "renderers 17 over the munition normal budget 14"
+   ],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "fuel_bladder": {
    "file": "fuel_bladder.glb",
@@ -15848,7 +16430,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fuel_depot": {
    "file": "fuel_depot.glb",
@@ -15945,7 +16529,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fuel_tank": {
    "file": "fuel_tank.glb",
@@ -16020,7 +16606,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "fuel_truck": {
    "file": "fuel_truck.glb",
@@ -16123,7 +16711,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "gantry_crane": {
    "file": "gantry_crane.glb",
@@ -16209,7 +16799,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "garage": {
    "file": "garage.glb",
@@ -16293,7 +16885,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "gbu12": {
    "file": "gbu12.glb",
@@ -16366,7 +16960,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "gbu39": {
    "file": "gbu39.glb",
@@ -16440,7 +17036,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "glide_bomber": {
    "file": "glide_bomber.glb",
@@ -16526,7 +17124,9 @@
    "warnings": [],
    "units": [
     "glide_bomber"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "jet"
   },
   "gmlrs": {
    "file": "gmlrs.glb",
@@ -16601,7 +17201,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "grad": {
    "file": "grad.glb",
@@ -16676,7 +17278,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "grad_cluster": {
    "file": "grad_cluster.glb",
@@ -16752,7 +17356,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "grad_truck": {
    "file": "grad_truck.glb",
@@ -16867,10 +17473,15 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "triangles 8,092 over the ground normal budget 7,800",
+    "vertices 10,240 over the ground normal budget 10,100"
+   ],
    "units": [
     "elite_grad"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "griffin": {
    "file": "griffin.glb",
@@ -16947,7 +17558,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "guard_tower": {
    "file": "guard_tower.glb",
@@ -17096,7 +17709,9 @@
    ],
    "units": [
     "guard_tower"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "guard_tower_a": {
    "file": "guard_tower_a.glb",
@@ -17254,7 +17869,9 @@
    "warnings": [
     "16 zero-area triangles (0.30%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 5,
+   "budgetClass": "tower"
   },
   "guard_tower_b": {
    "file": "guard_tower_b.glb",
@@ -17364,7 +17981,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "gun_pit": {
    "file": "gun_pit.glb",
@@ -17504,7 +18123,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "gun_turret": {
    "file": "gun_turret.glb",
@@ -17639,7 +18260,9 @@
    ],
    "units": [
     "gun_turret"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "gun_turret_a": {
    "file": "gun_turret_a.glb",
@@ -17775,7 +18398,9 @@
    "warnings": [
     "1 zero-area triangles (0.02%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "gun_turret_b": {
    "file": "gun_turret_b.glb",
@@ -17920,7 +18545,9 @@
    "warnings": [
     "1 zero-area triangles (0.01%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "gunship_heli": {
    "file": "gunship_heli.glb",
@@ -18055,7 +18682,9 @@
    "units": [
     "gunship_heli",
     "heavy_lift_helicopter"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "helicopter"
   },
   "hangar": {
    "file": "hangar.glb",
@@ -18163,7 +18792,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "headquarters": {
    "file": "headquarters.glb",
@@ -18381,11 +19012,14 @@
     "82 zero-area triangles (0.58%)"
    ],
    "warnings": [
-    "runtime names with a Blender suffix: Muzzle_main.001, Muzzle_mg.001"
+    "runtime names with a Blender suffix: Muzzle_main.001, Muzzle_mg.001",
+    "vertices 20,274 over the tower normal budget 20,100"
    ],
    "units": [
     "headquarters"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "tower"
   },
   "heat_round": {
    "file": "heat_round.glb",
@@ -18459,7 +19093,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "heavy_aa": {
    "file": "heavy_aa.glb",
@@ -18601,7 +19237,9 @@
    ],
    "units": [
     "heavy_aa"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "ground"
   },
   "heavy_attack_heli": {
    "file": "heavy_attack_heli.glb",
@@ -18729,7 +19367,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": null
   },
   "heavy_bomber": {
    "file": "heavy_bomber.glb",
@@ -18840,7 +19480,9 @@
    "units": [
     "heavy_bomber",
     "aerial_tanker"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "jet"
   },
   "heavy_flak_tower": {
    "file": "heavy_flak_tower.glb",
@@ -18936,7 +19578,9 @@
    "warnings": [],
    "units": [
     "heavy_flak_tower"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "heavy_rocket": {
    "file": "heavy_rocket.glb",
@@ -19011,7 +19655,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "heavy_rocket_artillery": {
    "file": "heavy_rocket_artillery.glb",
@@ -19122,7 +19768,9 @@
    "warnings": [],
    "units": [
     "heavy_rocket_artillery"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "heavy_tank": {
    "file": "heavy_tank.glb",
@@ -19248,7 +19896,9 @@
    "warnings": [],
    "units": [
     "heavy_tank"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "heavy_tank_hd": {
    "file": "heavy_tank_hd.glb",
@@ -19384,7 +20034,9 @@
    "warnings": [],
    "units": [
     "heavy_tank"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "heavy_turret": {
    "file": "heavy_turret.glb",
@@ -19562,7 +20214,9 @@
     "spawn_bastion",
     "heavy_turret",
     "coastal_battery"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "heavy_turret_a": {
    "file": "heavy_turret_a.glb",
@@ -19737,7 +20391,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "heavy_turret_b": {
    "file": "heavy_turret_b.glb",
@@ -19937,7 +20593,9 @@
    "warnings": [
     "runtime names with a Blender suffix: Mount_gun.001, Muzzle_gun.001"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 6,
+   "budgetClass": "tower"
   },
   "hedge": {
    "file": "hedge.glb",
@@ -20006,7 +20664,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "helipad": {
    "file": "helipad.glb",
@@ -20087,7 +20747,9 @@
     "airfield",
     "airfield.hangar",
     "airfield.service"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "helipad_a": {
    "file": "helipad_a.glb",
@@ -20170,7 +20832,9 @@
     "96 zero-area triangles (7.12%)"
    ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "helipad_b": {
    "file": "helipad_b.glb",
@@ -20255,7 +20919,9 @@
     "96 zero-area triangles (4.61%)"
    ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "hellfire": {
    "file": "hellfire.glb",
@@ -20332,7 +20998,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "hellfire_longbow": {
    "file": "hellfire_longbow.glb",
@@ -20409,7 +21077,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "highrise_a": {
    "file": "highrise_a.glb",
@@ -20514,7 +21184,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "highrise_b": {
    "file": "highrise_b.glb",
@@ -20627,7 +21299,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "house_large": {
    "file": "house_large.glb",
@@ -20706,7 +21380,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "house_small": {
    "file": "house_small.glb",
@@ -20784,7 +21460,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "hover_gunboat": {
    "file": "hover_gunboat.glb",
@@ -20895,7 +21573,9 @@
    "warnings": [],
    "units": [
     "hover_gunboat"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "howitzer": {
    "file": "howitzer.glb",
@@ -21038,7 +21718,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 5,
+   "budgetClass": null
   },
   "hydra": {
    "file": "hydra.glb",
@@ -21112,7 +21794,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "icbm": {
    "file": "icbm.glb",
@@ -21190,7 +21874,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "ifv": {
    "file": "ifv.glb",
@@ -21317,7 +22003,9 @@
    "units": [
     "ifv",
     "amphib_light_vehicle"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "igla": {
    "file": "igla.glb",
@@ -21394,7 +22082,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "inflatable_decoy": {
    "file": "inflatable_decoy.glb",
@@ -21468,7 +22158,9 @@
    "warnings": [],
    "units": [
     "inflatable_decoy"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "interceptor_drone_vehicle": {
    "file": "interceptor_drone_vehicle.glb",
@@ -21561,7 +22253,9 @@
    "units": [
     "interceptor_drone_vehicle",
     "ground_drone_carrier"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "interceptor_jet": {
    "file": "interceptor_jet.glb",
@@ -21644,7 +22338,9 @@
    "warnings": [],
    "units": [
     "interceptor_jet"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "iron_beam": {
    "file": "iron_beam.glb",
@@ -21763,7 +22459,9 @@
    "warnings": [],
    "units": [
     "iron_beam"
-   ]
+   ],
+   "movingParts": 7,
+   "budgetClass": "ground"
   },
   "ixion": {
    "file": "ixion.glb",
@@ -21901,7 +22599,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": null
   },
   "jassm": {
    "file": "jassm.glb",
@@ -21976,7 +22676,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "jdam": {
    "file": "jdam.glb",
@@ -22051,7 +22753,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "jersey_barrier": {
    "file": "jersey_barrier.glb",
@@ -22123,7 +22827,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "jungle_tree_a": {
    "file": "jungle_tree_a.glb",
@@ -22196,7 +22902,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "jungle_tree_b": {
    "file": "jungle_tree_b.glb",
@@ -22270,7 +22978,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "jungle_tree_c": {
    "file": "jungle_tree_c.glb",
@@ -22343,7 +23053,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "kh29l": {
    "file": "kh29l.glb",
@@ -22421,7 +23133,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "kronos": {
    "file": "kronos.glb",
@@ -22563,7 +23277,9 @@
    "warnings": [],
    "units": [
     "kronos"
-   ]
+   ],
+   "movingParts": 6,
+   "budgetClass": "boss_m"
   },
   "lamp_post": {
    "file": "lamp_post.glb",
@@ -22636,7 +23352,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "lancet": {
    "file": "lancet.glb",
@@ -22708,7 +23426,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "lancet_truck": {
    "file": "lancet_truck.glb",
@@ -22822,7 +23542,9 @@
    "warnings": [],
    "units": [
     "lancet_truck"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "landing_craft": {
    "file": "landing_craft.glb",
@@ -22909,7 +23631,9 @@
    "warnings": [],
    "units": [
     "landing_craft"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "landing_hovercraft": {
    "file": "landing_hovercraft.glb",
@@ -23130,7 +23854,9 @@
    ],
    "units": [
     "landing_hovercraft"
-   ]
+   ],
+   "movingParts": 17,
+   "budgetClass": "boss_s"
   },
   "laser_ad_station": {
    "file": "laser_ad_station.glb",
@@ -23222,7 +23948,9 @@
    "units": [
     "laser_ad_station",
     "drone_net_tower"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "laser_tank": {
    "file": "laser_tank.glb",
@@ -23337,7 +24065,9 @@
    "warnings": [],
    "units": [
     "laser_tank"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "ground"
   },
   "lava_vent": {
    "file": "lava_vent.glb",
@@ -23412,7 +24142,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "leviathan": {
    "file": "leviathan.glb",
@@ -23769,7 +24501,9 @@
     "scylla",
     "kraken",
     "nyx"
-   ]
+   ],
+   "movingParts": 26,
+   "budgetClass": "boss_l"
   },
   "light_tank": {
    "file": "light_tank.glb",
@@ -23894,7 +24628,9 @@
     "light_tank",
     "airborne_light_tank",
     "airborne_light_tank_chute"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "light_tank_hd": {
    "file": "light_tank_hd.glb",
@@ -24027,7 +24763,9 @@
     "light_tank",
     "airborne_light_tank",
     "airborne_light_tank_chute"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "lighthouse": {
    "file": "lighthouse.glb",
@@ -24105,7 +24843,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "log_cabin": {
    "file": "log_cabin.glb",
@@ -24198,7 +24938,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "logistics_station": {
    "file": "logistics_station.glb",
@@ -24290,7 +25032,9 @@
    "warnings": [],
    "units": [
     "logistics_station"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "long_sam": {
    "file": "long_sam.glb",
@@ -24393,7 +25137,9 @@
    "warnings": [],
    "units": [
     "long_sam"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "main_battle_tank": {
    "file": "main_battle_tank.glb",
@@ -24533,7 +25279,9 @@
     "main_battle_tank",
     "decoy_tank",
     "next_gen_tank"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "main_battle_tank_hd": {
    "file": "main_battle_tank_hd.glb",
@@ -24691,7 +25439,9 @@
     "main_battle_tank",
     "decoy_tank",
     "next_gen_tank"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "mam_l": {
    "file": "mam_l.glb",
@@ -24763,7 +25513,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "market_stall": {
    "file": "market_stall.glb",
@@ -24843,7 +25595,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "maverick": {
    "file": "maverick.glb",
@@ -24921,7 +25675,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "mega_gunship": {
    "file": "mega_gunship.glb",
@@ -25072,7 +25828,9 @@
    ],
    "units": [
     "mega_gunship"
-   ]
+   ],
+   "movingParts": 6,
+   "budgetClass": "boss_s"
   },
   "mesa": {
    "file": "mesa.glb",
@@ -25143,7 +25901,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "mg_bunker": {
    "file": "mg_bunker.glb",
@@ -25275,7 +26035,9 @@
    "units": [
     "mg_bunker",
     "bulwark_post"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "mg_bunker_a": {
    "file": "mg_bunker_a.glb",
@@ -25410,7 +26172,9 @@
    "warnings": [
     "1 zero-area triangles (0.03%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 4,
+   "budgetClass": "tower"
   },
   "mg_bunker_b": {
    "file": "mg_bunker_b.glb",
@@ -25524,7 +26288,9 @@
    "warnings": [
     "1 zero-area triangles (0.03%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "microwave_vehicle": {
    "file": "microwave_vehicle.glb",
@@ -25618,7 +26384,9 @@
    "warnings": [],
    "units": [
     "microwave_vehicle"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "mine": {
    "file": "mine.glb",
@@ -25692,7 +26460,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "mine_layer": {
    "file": "mine_layer.glb",
@@ -25805,7 +26575,9 @@
    "warnings": [],
    "units": [
     "mine_layer"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "minefield": {
    "file": "minefield.glb",
@@ -25896,7 +26668,9 @@
    "warnings": [],
    "units": [
     "minefield"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "minefield_a": {
    "file": "minefield_a.glb",
@@ -25982,7 +26756,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "minefield_b": {
    "file": "minefield_b.glb",
@@ -26068,7 +26844,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "missile": {
    "file": "missile.glb",
@@ -26144,7 +26922,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "missile_battery": {
    "file": "missile_battery.glb",
@@ -26324,7 +27104,9 @@
    "warnings": [],
    "units": [
     "missile_battery"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "missile_battery_a": {
    "file": "missile_battery_a.glb",
@@ -26502,7 +27284,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "missile_battery_b": {
    "file": "missile_battery_b.glb",
@@ -26680,7 +27464,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": "tower"
   },
   "missile_boat": {
    "file": "missile_boat.glb",
@@ -26772,7 +27558,9 @@
    "warnings": [],
    "units": [
     "missile_boat"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "mlrs": {
    "file": "mlrs.glb",
@@ -26886,7 +27674,9 @@
    "units": [
     "mlrs",
     "mine_rocket_truck"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "mobile_fortress": {
    "file": "mobile_fortress.glb",
@@ -27072,7 +27862,9 @@
    "units": [
     "mobile_fortress",
     "fenrir"
-   ]
+   ],
+   "movingParts": 7,
+   "budgetClass": "boss_s"
   },
   "moloch": {
    "file": "moloch.glb",
@@ -27231,7 +28023,9 @@
    ],
    "units": [
     "moloch"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "boss_s"
   },
   "morrigan": {
    "file": "morrigan.glb",
@@ -27352,7 +28146,9 @@
    ],
    "units": [
     "morrigan"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "boss_s"
   },
   "mortar_bomb": {
    "file": "mortar_bomb.glb",
@@ -27424,7 +28220,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "mortar_carrier": {
    "file": "mortar_carrier.glb",
@@ -27539,7 +28337,9 @@
    "warnings": [],
    "units": [
     "mortar_carrier"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "mountain_a": {
    "file": "mountain_a.glb",
@@ -27610,7 +28410,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "mountain_b": {
    "file": "mountain_b.glb",
@@ -27680,7 +28482,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "mountain_c": {
    "file": "mountain_c.glb",
@@ -27750,7 +28554,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "nlos_atgm_vehicle": {
    "file": "nlos_atgm_vehicle.glb",
@@ -27852,7 +28658,9 @@
    "warnings": [],
    "units": [
     "nlos_atgm_vehicle"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "nuke_train": {
    "file": "nuke_train.glb",
@@ -28082,7 +28890,9 @@
    ],
    "units": [
     "nuke_train"
-   ]
+   ],
+   "movingParts": 13,
+   "budgetClass": "boss_m"
   },
   "obsidian_spire": {
    "file": "obsidian_spire.glb",
@@ -28155,7 +28965,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "office_block": {
    "file": "office_block.glb",
@@ -28243,7 +29055,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "oil_pump": {
    "file": "oil_pump.glb",
@@ -28334,7 +29148,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "prop"
   },
   "palm": {
    "file": "palm.glb",
@@ -28407,7 +29223,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "parked_jet": {
    "file": "parked_jet.glb",
@@ -28501,7 +29319,9 @@
    "warnings": [
     "1 zero-area triangles (0.03%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "parking_garage": {
    "file": "parking_garage.glb",
@@ -28614,7 +29434,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "patriot": {
    "file": "patriot.glb",
@@ -28690,7 +29512,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "pier": {
    "file": "pier.glb",
@@ -28760,7 +29584,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "pine": {
    "file": "pine.glb",
@@ -28830,7 +29656,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "pipeline": {
    "file": "pipeline.glb",
@@ -28906,7 +29734,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "power_pylon": {
    "file": "power_pylon.glb",
@@ -28982,7 +29812,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "r60": {
    "file": "r60.glb",
@@ -29059,7 +29891,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "radar_atgm_vehicle": {
    "file": "radar_atgm_vehicle.glb",
@@ -29158,7 +29992,9 @@
    "warnings": [],
    "units": [
     "radar_atgm_vehicle"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "radar_dome": {
    "file": "radar_dome.glb",
@@ -29250,7 +30086,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "radar_scout": {
    "file": "radar_scout.glb",
@@ -29343,7 +30181,9 @@
    "units": [
     "radar_scout",
     "radar_support_vehicle"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "radar_site": {
    "file": "radar_site.glb",
@@ -29432,7 +30272,9 @@
    "warnings": [],
    "units": [
     "radar_station"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "structure"
   },
   "radar_station": {
    "file": "radar_station.glb",
@@ -29544,7 +30386,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "prop"
   },
   "radio_mast": {
    "file": "radio_mast.glb",
@@ -29625,7 +30469,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "rail_boxcar": {
    "file": "rail_boxcar.glb",
@@ -29707,7 +30553,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "rail_slug": {
    "file": "rail_slug.glb",
@@ -29780,7 +30628,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "rail_supergun": {
    "file": "rail_supergun.glb",
@@ -30007,7 +30857,9 @@
    ],
    "units": [
     "rail_supergun"
-   ]
+   ],
+   "movingParts": 22,
+   "budgetClass": "boss_l"
   },
   "rail_tanker": {
    "file": "rail_tanker.glb",
@@ -30087,7 +30939,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "rail_tractor": {
    "file": "rail_tractor.glb",
@@ -30179,7 +31033,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "railgun_truck": {
    "file": "railgun_truck.glb",
@@ -30301,7 +31157,9 @@
    "units": [
     "railgun_truck",
     "ixion"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "ground"
   },
   "razor_wire": {
    "file": "razor_wire.glb",
@@ -30371,7 +31229,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "recoilless_jeep": {
    "file": "recoilless_jeep.glb",
@@ -30469,7 +31329,9 @@
    "warnings": [],
    "units": [
     "recoilless_jeep"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "recon_drone": {
    "file": "recon_drone.glb",
@@ -30574,7 +31436,9 @@
    ],
    "units": [
     "recon_drone"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "jet"
   },
   "recon_jet": {
    "file": "recon_jet.glb",
@@ -30654,7 +31518,9 @@
    "warnings": [],
    "units": [
     "recon_jet"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "refinery_tower": {
    "file": "refinery_tower.glb",
@@ -30742,7 +31608,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "repair_bay": {
    "file": "repair_bay.glb",
@@ -30832,7 +31700,9 @@
    "warnings": [],
    "units": [
     "repair_bay"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "repair_crate": {
    "file": "repair_crate.glb",
@@ -30912,8 +31782,12 @@
    "category": "scenery",
    "hd": false,
    "errors": [],
-   "warnings": [],
-   "units": []
+   "warnings": [
+    "renderers 13 over the scenery normal budget 12"
+   ],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "revetment": {
    "file": "revetment.glb",
@@ -30987,7 +31861,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "rock_a": {
    "file": "rock_a.glb",
@@ -31055,7 +31931,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "rock_b": {
    "file": "rock_b.glb",
@@ -31123,7 +32001,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "rock_c": {
    "file": "rock_c.glb",
@@ -31191,7 +32071,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "rocket": {
    "file": "rocket.glb",
@@ -31264,7 +32146,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "rocket_107": {
    "file": "rocket_107.glb",
@@ -31338,7 +32222,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "rocket_technical": {
    "file": "rocket_technical.glb",
@@ -31446,7 +32332,9 @@
    "warnings": [],
    "units": [
     "rocket_technical"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "rocket_turret": {
    "file": "rocket_turret.glb",
@@ -31566,7 +32454,9 @@
    "warnings": [],
    "units": [
     "rocket_turret"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "rocket_turret_a": {
    "file": "rocket_turret_a.glb",
@@ -31681,7 +32571,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "rocket_turret_b": {
    "file": "rocket_turret_b.glb",
@@ -31800,7 +32692,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": "tower"
   },
   "rubble_large": {
    "file": "rubble_large.glb",
@@ -31871,7 +32765,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "rubble_medium": {
    "file": "rubble_medium.glb",
@@ -31942,7 +32838,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "rubble_small": {
    "file": "rubble_small.glb",
@@ -32013,7 +32911,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "ruin": {
    "file": "ruin.glb",
@@ -32090,7 +32990,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "ruin_house": {
    "file": "ruin_house.glb",
@@ -32175,7 +33077,9 @@
    "warnings": [
     "8 zero-area triangles (0.23%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "ruin_tower": {
    "file": "ruin_tower.glb",
@@ -32256,7 +33160,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "runway_light": {
    "file": "runway_light.glb",
@@ -32330,7 +33236,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "s8": {
    "file": "s8.glb",
@@ -32404,7 +33312,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "sam_launcher": {
    "file": "sam_launcher.glb",
@@ -32522,7 +33432,9 @@
     "sam_launcher",
     "coastal_ashm_vehicle",
     "ground_cruise_missile_vehicle"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "sandbag_wall": {
    "file": "sandbag_wall.glb",
@@ -32591,7 +33503,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "sandbags": {
    "file": "sandbags.glb",
@@ -32659,7 +33573,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "sapper": {
    "file": "sapper.glb",
@@ -32811,7 +33727,9 @@
    "warnings": [
     "15 zero-area triangles (0.15%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 3,
+   "budgetClass": null
   },
   "scout_heli": {
    "file": "scout_heli.glb",
@@ -32930,7 +33848,9 @@
    "units": [
     "scout_heli",
     "light_attack_heli"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "helicopter"
   },
   "scout_jeep": {
    "file": "scout_jeep.glb",
@@ -33040,7 +33960,9 @@
    "warnings": [],
    "units": [
     "scout_jeep"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "scout_jeep_hd": {
    "file": "scout_jeep_hd.glb",
@@ -33165,7 +34087,9 @@
    "warnings": [],
    "units": [
     "scout_jeep"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "sea_corvette": {
    "file": "sea_corvette.glb",
@@ -33275,7 +34199,9 @@
    "warnings": [],
    "units": [
     "sea_corvette"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "ground"
   },
   "sea_cruiser": {
    "file": "sea_cruiser.glb",
@@ -33446,13 +34372,17 @@
    ],
    "category": "ground",
    "hd": false,
-   "errors": [],
+   "errors": [
+    "movingParts 14 over the ground normal hard cap 10"
+   ],
    "warnings": [
     "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Muzzle_gun.001, Muzzle_mg.001"
    ],
    "units": [
     "sea_cruiser"
-   ]
+   ],
+   "movingParts": 14,
+   "budgetClass": "ground"
   },
   "searchlight": {
    "file": "searchlight.glb",
@@ -33538,7 +34468,9 @@
    "warnings": [],
    "units": [
     "searchlight"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "shahed": {
    "file": "shahed.glb",
@@ -33610,7 +34542,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "shahed_truck": {
    "file": "shahed_truck.glb",
@@ -33726,7 +34660,9 @@
    "warnings": [],
    "units": [
     "shahed_truck"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "shell_155": {
    "file": "shell_155.glb",
@@ -33797,7 +34733,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "shield_carrier": {
    "file": "shield_carrier.glb",
@@ -33910,7 +34848,9 @@
    "warnings": [],
    "units": [
     "shield_carrier"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "shield_generator": {
    "file": "shield_generator.glb",
@@ -34045,9 +34985,13 @@
    ],
    "category": "prop",
    "hd": false,
-   "errors": [],
+   "errors": [
+    "renderers 63 over the prop normal hard cap 58"
+   ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "prop"
   },
   "shield_tower": {
    "file": "shield_tower.glb",
@@ -34145,7 +35089,9 @@
     "shield_tower",
     "shield_tower.ward",
     "manpads_tower"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "shield_tower_a": {
    "file": "shield_tower_a.glb",
@@ -34239,7 +35185,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "shield_tower_b": {
    "file": "shield_tower_b.glb",
@@ -34328,7 +35276,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "shop": {
    "file": "shop.glb",
@@ -34425,7 +35375,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "shorad_dart": {
    "file": "shorad_dart.glb",
@@ -34502,7 +35454,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "shorad_vehicle": {
    "file": "shorad_vehicle.glb",
@@ -34601,7 +35555,9 @@
    "warnings": [],
    "units": [
     "shorad_vehicle"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "siege_mortar": {
    "file": "siege_mortar.glb",
@@ -34720,7 +35676,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 2,
+   "budgetClass": null
   },
   "siege_tank": {
    "file": "siege_tank.glb",
@@ -34934,11 +35892,16 @@
    ],
    "category": "ground",
    "hd": false,
-   "errors": [],
+   "errors": [
+    "renderers 80 over the ground normal hard cap 76",
+    "movingParts 22 over the ground normal hard cap 10"
+   ],
    "warnings": [],
    "units": [
     "siege_tank"
-   ]
+   ],
+   "movingParts": 22,
+   "budgetClass": "ground"
   },
   "silo": {
    "file": "silo.glb",
@@ -35009,7 +35972,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "silver_bug": {
    "file": "silver_bug.glb",
@@ -35267,7 +36232,9 @@
     "silver_bug",
     "icarus_mk0",
     "hyperion"
-   ]
+   ],
+   "movingParts": 12,
+   "budgetClass": "boss_m"
   },
   "silver_bug_wreck": {
    "file": "silver_bug_wreck.glb",
@@ -35524,7 +36491,9 @@
     "2 zero-area triangles (0.01%)",
     "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_mg.001"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 12,
+   "budgetClass": "boss_m"
   },
   "sky_fortress": {
    "file": "sky_fortress.glb",
@@ -35668,7 +36637,9 @@
    ],
    "units": [
     "sky_fortress"
-   ]
+   ],
+   "movingParts": 8,
+   "budgetClass": "boss_s"
   },
   "sky_gunship": {
    "file": "sky_gunship.glb",
@@ -35787,7 +36758,9 @@
    "units": [
     "sky_gunship",
     "twin_rotor_gunship"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "jet"
   },
   "sky_gunship_hd": {
    "file": "sky_gunship_hd.glb",
@@ -35908,7 +36881,9 @@
    "units": [
     "sky_gunship",
     "twin_rotor_gunship"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "jet"
   },
   "skyscraper": {
    "file": "skyscraper.glb",
@@ -36023,7 +36998,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "smoke_carrier": {
    "file": "smoke_carrier.glb",
@@ -36138,7 +37115,9 @@
    "warnings": [],
    "units": [
     "smoke_carrier"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "snow_pine": {
    "file": "snow_pine.glb",
@@ -36209,7 +37188,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "snow_rock": {
    "file": "snow_rock.glb",
@@ -36278,7 +37259,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "sp_mortar": {
    "file": "sp_mortar.glb",
@@ -36387,7 +37370,9 @@
    "warnings": [],
    "units": [
     "sp_mortar"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "stealth_bomber": {
    "file": "stealth_bomber.glb",
@@ -36494,7 +37479,9 @@
    "units": [
     "stealth_bomber",
     "stealth_naval_strike"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "jet"
   },
   "stealth_fighter": {
    "file": "stealth_fighter.glb",
@@ -36602,7 +37589,9 @@
    "warnings": [],
    "units": [
     "stealth_fighter"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "stilt_hut": {
    "file": "stilt_hut.glb",
@@ -36699,7 +37688,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "stinger": {
    "file": "stinger.glb",
@@ -36775,7 +37766,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "munition"
   },
   "stone_wall": {
    "file": "stone_wall.glb",
@@ -36843,7 +37836,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "storage_tank": {
    "file": "storage_tank.glb",
@@ -36924,7 +37919,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "strike_drone": {
    "file": "strike_drone.glb",
@@ -37036,7 +38033,9 @@
    "units": [
     "strike_drone",
     "uav_loiter_strike"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "jet"
   },
   "strike_jet": {
    "file": "strike_jet.glb",
@@ -37141,7 +38140,9 @@
     "156 zero-area triangles (1.79%)"
    ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": null
   },
   "supply_crate": {
    "file": "supply_crate.glb",
@@ -37224,8 +38225,12 @@
    "category": "scenery",
    "hd": false,
    "errors": [],
-   "warnings": [],
-   "units": []
+   "warnings": [
+    "renderers 14 over the scenery normal budget 12"
+   ],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "supply_pile": {
    "file": "supply_pile.glb",
@@ -37312,7 +38317,9 @@
    "warnings": [
     "7 zero-area triangles (0.37%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "supply_truck": {
    "file": "supply_truck.glb",
@@ -37427,7 +38434,9 @@
    "warnings": [],
    "units": [
     "supply_truck"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "supreme_command": {
    "file": "supreme_command.glb",
@@ -37582,7 +38591,9 @@
    ],
    "units": [
     "supreme_command"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "boss_s"
   },
   "swarm_carrier": {
    "file": "swarm_carrier.glb",
@@ -37691,7 +38702,9 @@
    "warnings": [],
    "units": [
     "swarm_carrier"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "jet"
   },
   "tank_buster": {
    "file": "tank_buster.glb",
@@ -37802,7 +38815,9 @@
     "163 zero-area triangles (1.82%)"
    ],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "tank_destroyer": {
    "file": "tank_destroyer.glb",
@@ -37926,7 +38941,9 @@
    "units": [
     "tank_destroyer",
     "towed_at_gun"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "tank_destroyer_hd": {
    "file": "tank_destroyer_hd.glb",
@@ -38060,7 +39077,9 @@
    "units": [
     "tank_destroyer",
     "towed_at_gun"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "tank_ditch": {
    "file": "tank_ditch.glb",
@@ -38133,7 +39152,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "tank_trap": {
    "file": "tank_trap.glb",
@@ -38202,7 +39223,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "targeting_station": {
    "file": "targeting_station.glb",
@@ -38320,10 +39343,14 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "movingParts 3 over the structure normal budget 2"
+   ],
    "units": [
     "targeting_station"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "structure"
   },
   "telegraph_pole": {
    "file": "telegraph_pole.glb",
@@ -38403,7 +39430,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "temple_ruin": {
    "file": "temple_ruin.glb",
@@ -38485,7 +39514,9 @@
    "warnings": [
     "3 zero-area triangles (0.06%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "thermobaric_launcher": {
    "file": "thermobaric_launcher.glb",
@@ -38604,7 +39635,9 @@
    "warnings": [],
    "units": [
     "thermobaric_launcher"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "titan_tank": {
    "file": "titan_tank.glb",
@@ -38758,7 +39791,9 @@
    ],
    "units": [
     "titan_tank"
-   ]
+   ],
+   "movingParts": 6,
+   "budgetClass": "ground"
   },
   "tos_rocket": {
    "file": "tos_rocket.glb",
@@ -38831,7 +39866,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": null
   },
   "townhouse": {
    "file": "townhouse.glb",
@@ -38920,7 +39957,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "traffic_light": {
    "file": "traffic_light.glb",
@@ -39001,7 +40040,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "transport_plane": {
    "file": "transport_plane.glb",
@@ -39102,7 +40143,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 4,
+   "budgetClass": null
   },
   "tree": {
    "file": "tree.glb",
@@ -39172,7 +40215,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "tree_broad": {
    "file": "tree_broad.glb",
@@ -39243,7 +40288,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "tree_dead": {
    "file": "tree_dead.glb",
@@ -39311,7 +40358,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "tree_round": {
    "file": "tree_round.glb",
@@ -39381,7 +40430,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "trench_corner": {
    "file": "trench_corner.glb",
@@ -39459,7 +40510,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "trench_straight": {
    "file": "trench_straight.glb",
@@ -39539,7 +40592,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "troop_shelter": {
    "file": "troop_shelter.glb",
@@ -39616,7 +40671,9 @@
    "units": [
     "troop_shelter",
     "bunker_shelter_tower"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "truck": {
    "file": "truck.glb",
@@ -39704,7 +40761,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "turtle_tank": {
    "file": "turtle_tank.glb",
@@ -39813,7 +40872,9 @@
    "warnings": [],
    "units": [
     "turtle_tank"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "twin_tank": {
    "file": "twin_tank.glb",
@@ -39953,7 +41014,9 @@
    "warnings": [],
    "units": [
     "twin_tank"
-   ]
+   ],
+   "movingParts": 4,
+   "budgetClass": "ground"
   },
   "typhon": {
    "file": "typhon.glb",
@@ -40081,7 +41144,9 @@
    "units": [
     "typhon",
     "hydra"
-   ]
+   ],
+   "movingParts": 5,
+   "budgetClass": "boss_m"
   },
   "vbied": {
    "file": "vbied.glb",
@@ -40185,7 +41250,9 @@
    "warnings": [],
    "units": [
     "vbied"
-   ]
+   ],
+   "movingParts": 1,
+   "budgetClass": "ground"
   },
   "vehicle_hangar": {
    "file": "vehicle_hangar.glb",
@@ -40290,7 +41357,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "visual_jammer": {
    "file": "visual_jammer.glb",
@@ -40367,7 +41436,9 @@
    "warnings": [],
    "units": [
     "visual_jammer"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "volcanic_cliff": {
    "file": "volcanic_cliff.glb",
@@ -40445,7 +41516,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "wall": {
    "file": "wall.glb",
@@ -40514,7 +41587,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "warehouse": {
    "file": "warehouse.glb",
@@ -40609,7 +41684,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "watchtower": {
    "file": "watchtower.glb",
@@ -40695,7 +41772,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "prop"
   },
   "water_tower": {
    "file": "water_tower.glb",
@@ -40768,7 +41847,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "wheeled_gun": {
    "file": "wheeled_gun.glb",
@@ -40891,7 +41972,9 @@
    "warnings": [],
    "units": [
     "wheeled_gun"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   },
   "wheeled_howitzer": {
    "file": "wheeled_howitzer.glb",
@@ -40991,7 +42074,9 @@
    "warnings": [],
    "units": [
     "wheeled_howitzer"
-   ]
+   ],
+   "movingParts": 2,
+   "budgetClass": "ground"
   },
   "wingman_drone": {
    "file": "wingman_drone.glb",
@@ -41087,7 +42172,9 @@
    ],
    "units": [
     "wingman_drone"
-   ]
+   ],
+   "movingParts": 0,
+   "budgetClass": "jet"
   },
   "wreck_barrel": {
    "file": "wreck_barrel.glb",
@@ -41161,7 +42248,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "wreck_car": {
    "file": "wreck_car.glb",
@@ -41233,7 +42322,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "wreck_engine": {
    "file": "wreck_engine.glb",
@@ -41308,7 +42399,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "wreck_launcher": {
    "file": "wreck_launcher.glb",
@@ -41384,7 +42477,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "wreck_stump": {
    "file": "wreck_stump.glb",
@@ -41460,7 +42555,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "wreck_tank": {
    "file": "wreck_tank.glb",
@@ -41541,7 +42638,9 @@
    "warnings": [
     "8 zero-area triangles (0.27%)"
    ],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "wreck_truck": {
    "file": "wreck_truck.glb",
@@ -41615,7 +42714,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "prop"
   },
   "wreck_turret": {
    "file": "wreck_turret.glb",
@@ -41693,7 +42794,9 @@
    "hd": false,
    "errors": [],
    "warnings": [],
-   "units": []
+   "units": [],
+   "movingParts": 1,
+   "budgetClass": "tower"
   },
   "zu23_technical": {
    "file": "zu23_technical.glb",
@@ -41805,7 +42908,9 @@
    "warnings": [],
    "units": [
     "zu23_technical"
-   ]
+   ],
+   "movingParts": 3,
+   "budgetClass": "ground"
   }
  }
 }
