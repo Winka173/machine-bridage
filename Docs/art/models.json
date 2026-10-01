@@ -711,6 +711,10 @@
     "file": "hydra_sub.glb",
     "triangles": 7268
   },
+  "hyperion": {
+    "file": "hyperion.glb",
+    "triangles": 7914
+  },
   "icbm": {
     "file": "icbm.glb",
     "triangles": 732

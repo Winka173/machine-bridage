@@ -1252,9 +1252,9 @@
         {
             "id": "hyperion",
             "kind": "boss",
-            "model": "silver_bug",
-            "source": "Models/silver_bug",
-            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
+            "model": "hyperion",
+            "source": "Models/hyperion",
+            "hash": "v2:55953863ac366e186965bcff076806ddb811cbb4"
         },
         {
             "id": "icarus_mk0",

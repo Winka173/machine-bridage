@@ -38,6 +38,15 @@ those parts and mounts name, near the places the resized data puts them (parent 
     bays (`Part_hangar` > `Muzzle_door_l`, `Part_hangar.001` > `Muzzle_door_r`), the nose radar panel
     (`Part_radar`), six defensive turrets: twin 30 mm dorsal (`Mount_gun`, `.001`), 105 mm pods under the wing
     (`Mount_gun.002`, `.003`), two fixed tail barbettes. Jet rule: no insets or panel greebles on the skin.
+  * hyperion (Hyperion, variant of silver_bug without its crash turrets and uplink; its own model id, silver_bug and
+    icarus untouched): an orbital mirror station, 66.8 x 43.7 x 19.9 m (modelSize 67.2 x 43.7 x 20), origin at the
+    pods' feet: a hexagonal ring of box girders carrying white mirror facets tilted to the core, spokes, the turned
+    core with a dish and mast, two long solar panel booms fore and aft, the sun-beam emitter under the core
+    (`Turret` > `Main_cannon`, `Muzzle_main`), the main engine (`Thruster_main`), four RCS pods on the ring's corners
+    (`Thruster_fl` / `_fr` / `_rl` / `_rr`), four point-defence lasers in two pairs (`Pd_laser_l` with `Mount_mg`,
+    `Pd_laser_r` with `Mount_mg.001`, one turning and one fixed each), coilguns `Mount_gun` / `.001` on the front
+    corners, 40 mm guns `Mount_gun.002` / `.003` aft, the two landing pods on `Pod_bay` (`Muzzle_missile`). Its
+    parts' `at` are tuned onto these nodes (the Bug's layout sat 1.6x outside the fitted model).
   * hydra_sub (Hydra, variant of typhon keeping doors_l, doors_r, deck_gun, rudder; `hydra.glb` is the Hydra 70
     rocket, so the boss model is `hydra_sub`): a small VLS submarine, 34.8 x 7.2 x 7.8 m, hull axis at z 0: a lathed
     pressure hull, the sail with fairwater planes and a SAM box (`Mount_missile` > `Muzzle_missile`), the deck gun
@@ -642,6 +651,116 @@ def garuda(a):
     k.clean(a)
 
 
+# ============================================================================= Hyperion
+HP_R = 21.85                            # the hexagonal ring's corner radius (corners on the +-X axis: 43.7 m across)
+HP_Z = 9.5                              # the ring's plane (the station hangs above its pods' feet at z 0)
+HP_W = 3.6                              # the ring's radial width
+
+
+def _hp_corner(i, r=HP_R):
+    u = i * math.pi / 3
+    return Vector((r * math.cos(u), r * math.sin(u), HP_Z))
+
+
+def hyperion(a):
+    """Hyperion, the orbital mirror station: see the module docstring."""
+    _suffixed(a)
+    team, arm = a.part('Hull', 'Team'), a.part('Armor', 'Armor')
+    steel, mirror = a.part('Steel', 'Steel'), a.part('Mirrors', 'Medical')
+    cells = a.part('Solar_cells', 'Glass')
+    # The hexagonal ring: six box girders between the corners, each carrying a row of mirror facets tilted in
+    # towards the core; a node block at every corner.
+    for i in range(6):
+        p0, p1 = _hp_corner(i), _hp_corner(i + 1)
+        mid, d = (p0 + p1) / 2, (p1 - p0)
+        yaw = math.atan2(d.y, d.x)
+        inward = Vector((-math.sin(yaw), math.cos(yaw), 0))
+        if inward.dot(-mid) < 0:
+            inward = -inward
+        c = mid + inward * (HP_W / 2 - .2)
+        k.block(team, (d.length - 2.0, HP_W, 1.6), loc=(c.x, c.y, HP_Z - .8), rot=(0, 0, yaw), chamfer=.12)
+        tilt = .32 if inward.dot(Vector((-math.sin(yaw), math.cos(yaw), 0))) > 0 else -.32
+        for j in range(5):
+            f = (j + .5) / 5 - .5
+            q = c + d.normalized() * f * (d.length - 3.0)
+            mirror.box((3.3, HP_W - .5, .12), loc=(q.x, q.y, HP_Z + .9), rot=(tilt, 0, yaw), bevel=0)
+            steel.box((.3, .3, .5), loc=(q.x, q.y, HP_Z + .45), rot=(0, 0, yaw), bevel=0)
+    for i in range(6):
+        q = _hp_corner(i, HP_R - 1.5)
+        k.block(team, (3.0, 3.4, 2.4), loc=(q.x, q.y, HP_Z - .3), rot=(0, 0, i * math.pi / 3), chamfer=.15)
+        # Spokes to the core.
+        s0 = _hp_corner(i, 5.0)
+        k.block(mirror, ((q - s0).length, .5, .5), loc=tuple((q + s0) / 2 - Vector((0, 0, .3))), rot=(0, 0, i * math.pi / 3),
+                chamfer=0)
+    # The core: a turned drum with collars and a domed top, the dish on top, the antenna mast.
+    k.lathe(team, [(0, 2.4), (2.6, 2.6), (4.4, 3.8), (4.6, 5.0), (4.6, 13.6), (4.2, 14.4), (3.0, 15.6), (1.6, 16.6),
+                   (0, 16.9)], seg=24, worn=(3, 4))
+    for z in (6.6, 12.0):
+        k.ring(arm, [(4.6, z), (4.9, z), (4.9, z + .7), (4.6, z + .7)], seg=24, worn=(1, 2))
+    k.lathe(mirror, [(.6, 16.8), (2.4, 17.8), (2.5, 18.0), (.5, 17.4)], seg=18, caps=(False, False), worn=(2,))
+    parts.antenna(steel, (0, 0, 17.4), h=2.4, r=.12)
+    # The long solar panels: a boom fore and aft from the ring's flat sides, two wings of cells each side of it.
+    for sy in (-1, 1):
+        y0, y1 = sy * 17.0, sy * 33.4
+        k.block(mirror, (.8, abs(y1 - y0), .8), loc=(0, (y0 + y1) / 2, HP_Z - .4), chamfer=.06)
+        for sx in (-1, 1):
+            k.block(mirror, (6.6, 14.6, .16), loc=(sx * 4.0, (y0 + y1) / 2 + sy * .1, HP_Z - .1), chamfer=0)
+            for j in range(6):
+                yc = y0 + sy * (1.5 + j * 2.5)
+                cells.box((5.8, 1.4, .06), loc=(sx * 4.0, yc, HP_Z + .01), bevel=0)
+    # The main laser under the core on `Turret` (`Main_cannon` emitter, `Muzzle_main` at its lens).
+    t = a.pivot('Turret', (0, 0, 2.3))
+    k.lathe(a.part('Laser_mount', 'Armor', t), [(2.0, 0), (2.0, -.4), (1.4, -.9), (0, -1.0)], seg=16, worn=(1,))
+    k.lathe(a.part('Main_cannon', 'Team', t), [(.0, 0), (.9, .1), (.9, 2.6), (.7, 2.8), (.7, 3.2), (0, 3.25)],
+            loc=(0, -.6, -.9), rot=FORWARD, seg=14, worn=(2,))
+    a.part('Main_cannon_lens', 'Energy', t).cyl(.55, .04, loc=(0, -3.86, -.9), rot=FORWARD, seg=14, bevel=0)
+    a.pivot('Muzzle_main', (0, -3.9, -.9), t)
+    # The main engine aft of the core (`Thruster_main`), four RCS thruster pods on the ring's front and rear
+    # corners (`Thruster_fl` / `_fr` / `_rl` / `_rr`).
+    pm = a.pivot('Thruster_main', (0, 4.6, 9.4))
+    k.block(a.part('Engine_mount', 'Armor', pm), (3.2, 2.2, 3.2), loc=(0, .6, -1.6), chamfer=.12)
+    parts.engine_bell(a.part('Engine_bell', 'Steel', pm), a.part('Engine_throat', 'Charred', pm),
+                      a.part('Engine_glow', 'Energy', pm), (0, 1.7, 0), 1.3, 2.4)
+    for name, i in (('Thruster_fl', 5), ('Thruster_fr', 4), ('Thruster_rl', 1), ('Thruster_rr', 2)):
+        q = _hp_corner(i, HP_R - 1.8)
+        pt = a.pivot(name, (q.x, q.y, HP_Z + 1.5))
+        pod = a.part(f'Rcs_{name[-2:]}', 'Team', pt)
+        k.block(pod, (1.6, 1.6, 1.2), chamfer=.1)
+        for u in range(4):
+            v = Vector((math.cos(u * R90), math.sin(u * R90), 0))
+            k.lathe(a.part(f'Rcs_nozzles_{name[-2:]}', 'Steel', pt), [(.18, 0), (.28, .5), (.24, .5)],
+                    loc=tuple(v * .8), rot=(R90 * v.y * -1, R90 * v.x, 0), seg=8, caps=(True, False))
+    # Four point-defence lasers: on `Pd_laser_l` the left pair (`Mount_mg` turning, one fixed), on `Pd_laser_r` the
+    # right pair (`Mount_mg.001`, one fixed); the coilguns (`Mount_gun`, `.001`) on the ring's front corners, the
+    # 40 mm guns (`Mount_gun.002`, `.003`) on its rear sides.
+    for name, mount, sx in (('Pd_laser_l', 'Mount_mg', 1), ('Pd_laser_r', 'Mount_mg.001', -1)):
+        pl = a.pivot(name, (sx * 14.6, -8.4, HP_Z + 1.3))
+        for j, (dx, dy) in enumerate(((0, 0), (sx * 1.5, 2.6))):
+            k.block(a.part(f'Pd_base_{name[-1]}{j}', 'Armor', pl), (1.4, 1.4, .5), loc=(dx, dy, 0), chamfer=.06)
+            key = pv(a, mount, (dx, dy, .5), name) if j == 0 else pl
+            head = a.part(f'Pd_head_{name[-1]}{j}', 'Team', key)
+            k.lathe(head, [(.6, 0), (.6, .5), (.3, .8), (0, .85)], loc=(0, 0, 0) if j == 0 else (dx, dy, .5), seg=12)
+            k.lathe(a.part(f'Pd_emitter_{name[-1]}{j}', 'Steel', key), [(.14, 0), (.14, 1.3), (.2, 1.4), (0, 1.42)],
+                    loc=(0, 0, .45) if j == 0 else (dx, dy, .95), rot=FORWARD, seg=8)
+        pv(a, mount.replace('Mount_', 'Muzzle_'), (0, -1.45, .45), mount)
+    for mount, i, kind in (('Mount_gun', 5, 'coil'), ('Mount_gun.001', 4, 'coil')):
+        q = _hp_corner(i, HP_R - 2.6)
+        gun_turret(a, mount, mount.replace('Mount_', 'Muzzle_'), (q.x, q.y, HP_Z + .9), w=2.0, d=2.4, h=.9, barrel=4.4,
+                   r=.14)
+    for mount, sx in (('Mount_gun.002', 1), ('Mount_gun.003', -1)):
+        autocannon(a, mount, (sx * 14.0, 12.4, HP_Z + 1.0), length=2.6, r=.08, size=(1.3, 1.6, .6))
+    # The two landing pods docked under the ring's rear side on `Pod_bay` (`Muzzle_missile` between them).
+    pb = a.pivot('Pod_bay', (0, 9.0, 4.4))
+    k.block(a.part('Pod_dock', 'Armor', pb), (8.0, 2.6, 1.2), loc=(0, 0, 3.2), chamfer=.1)
+    for sx in (-1, 1):
+        k.lathe(a.part(f'Pod_{sx + 1}', 'Team', pb), [(0, -4.4), (1.4, -4.1), (1.9, -2.8), (1.6, -.2), (1.0, 1.2),
+                                                     (.7, 2.6), (0, 2.7)], loc=(sx * 2.4, 0, 0), seg=16, worn=(2,))
+        a.part(f'Pod_glass_{sx + 1}', 'Glass', pb).box((.9, .05, .5), loc=(sx * 2.4, -1.75, -.6), rot=(-.25, 0, 0),
+                                                         bevel=0)
+    a.pivot('Muzzle_missile', (0, -1.4, -2.0), 'Pod_bay')
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=.85, grime_height=.9)),
     'nyx': (nyx, dict(ao_distance=1.0, grime_height=.8)),
@@ -649,5 +768,6 @@ BUILDERS = {
     'stymphalos': (stymphalos, dict(ao_distance=.5, ao_strength=.7, ground=False)),
     'stymphalos_drone': (stymphalos_drone, dict(ao_distance=.5, ao_strength=.7, ground=False)),
     'garuda': (garuda, dict(ao_distance=.8, ao_strength=.7, ground=False)),
+    'hyperion': (hyperion, dict(ao_distance=.9, ao_strength=.6, ground=False)),
     'hydra_sub': (hydra_sub, dict(ao_distance=.7, ao_strength=.75, ground=False)),
 }

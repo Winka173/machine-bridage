@@ -1939,13 +1939,15 @@
                            "hangar_l": {"at": [-3.82, 0, -0.52]}, "hangar_r": {"at": [3.82, 0, -0.52]}, "radar": {"at": [0, 8.18, -0.71]}, "bomb_bay": {"at": [0, 2.73, -0.84]},
                            "pod_105_l": {"at": [-13.18, 0, -1.03]}, "pod_105_r": {"at": [13.18, 0, -1.03]}}}},
     // Hyperion: the orbital mirror station (the Silver Bug's body that never comes down: high tier only, no crash, no hijack; no uplink, the crash turrets gone).
-    { "id": "hyperion", "variantOf": "silver_bug", "rank": "main", "general": "aurel", "radioSpawn": "radio.aurel.hyperion", "hp": 176450, "weaponDamage": 1.111, "speed": 3.5, "bigAttack": "hyperion_sun_beam", "arena": null,
+    { "id": "hyperion", "variantOf": "silver_bug", "model": "hyperion", "rank": "main", "general": "aurel", "radioSpawn": "radio.aurel.hyperion", "hp": 176450, "weaponDamage": 1.111, "speed": 3.5, "bigAttack": "hyperion_sun_beam", "arena": null,
       "modelSize": [67.2, 43.7, 20],
       "tiers": {"crash": null, "hijack": null, "schedule": [{"steps": [{"tier": "high", "seconds": 60}]}, {"steps": [{"tier": "high", "seconds": 60}]}, {"steps": [{"tier": "high", "seconds": 60}]}],
                 "radio": {"phase2": "radio.aurel.hyperion.phase2", "phase3": "radio.aurel.hyperion.phase3"}},
       "pods": {"first": 10, "every": 60, "count": 2, "max": 4},
-      "variant": {"size": 1.2, "drop": ["crash_turret_l", "crash_turret_r", "uplink"], "tint": [1.12, 1.0, 0.7], "mark": "hyperion",
-                  "tune": {"main_laser": {"hp": 0.07}, "main_engine": {"hp": 0.07}, "thruster_fl": {"hp": 0.07}, "thruster_fr": {"hp": 0.07}, "thruster_rl": {"hp": 0.07}, "thruster_rr": {"hp": 0.07}, "pd_laser_l": {"hp": 0.07}, "pd_laser_r": {"hp": 0.07}, "pod_bay": {"hp": 0.07}}}},
+      "variant": {"size": 1.2, "drop": ["crash_turret_l", "crash_turret_r", "uplink"], "mark": "hyperion",
+                  "tune": {"main_laser": {"hp": 0.07, "at": [0, 0, 1.92]}, "main_engine": {"hp": 0.07, "at": [0, -3.83, 7.83]},
+                           "thruster_fl": {"hp": 0.07, "at": [-8.36, 14.47, 9.17]}, "thruster_fr": {"hp": 0.07, "at": [8.36, 14.47, 9.17]}, "thruster_rl": {"hp": 0.07, "at": [-8.36, -14.47, 9.17]}, "thruster_rr": {"hp": 0.07, "at": [8.36, -14.47, 9.17]},
+                           "pd_laser_l": {"hp": 0.07, "at": [-12.17, 7, 9]}, "pd_laser_r": {"hp": 0.07, "at": [12.17, 7, 9]}, "pod_bay": {"hp": 0.07, "at": [0, -7.5, 3.67]}}}},
     // Stymphalos: the jet UAV swarm (a drone tender's bays and flak, fast; the swarm itself waits for a model).
     { "id": "stymphalos", "wake": null, "variantOf": "drone_mothership", "model": "stymphalos", "general": "sen", "radioSpawn": "radio.sen.stymphalos", "hp": 45650, "weaponDamage": 1.084, "armour": 1, "speed": 8, "modelSize": [15.5, 26, 2.55],
       "variant": {"size": 0.423, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "mark": "stymphalos",
