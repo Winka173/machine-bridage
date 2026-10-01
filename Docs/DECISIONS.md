@@ -12441,3 +12441,9 @@ copies with `_Tint` set (rgb in 1/256 steps, flash alpha in 1/32), which views a
 channel above 1.8) so a variant is as bright as its parent, as on the detail preview; the wreck takes its authored
 (0.16, 0.14, 0.13) as is. Cards after: next_gen_tank 0.38 vs main_battle_tank 0.38, mobile_repair_vehicle 0.34 vs
 engineer_vehicle 0.34. 51 cards re-rendered.
+
+## 25F2-B dx23 dropped (owner, 2026-10-01)
+
+The owner dropped dx23 (the Super Tank's deploy-time roof module: AA gatling, missile rack or small repair station):
+"bỏ dx23 không làm". The tracker gains a "bỏ" status (dropped by the owner) and dx23 carries it; batch B is complete.
+The owner also confirmed the play-test 11 dark-hull fix.

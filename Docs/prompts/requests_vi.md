@@ -190,3 +190,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (01/10) có vẻ là xe cũ dựng lại và cả boss luôn, con đầu tiên trong boss rush và các con sau có con có con không; ý tôi là full boss rush; check boss đầu tiên trong full boss rush
 - (01/10) build lại bản cho window mới
 - (01/10) tôi vẫn thấy nó hơi tối, ví dụ là trong deck, xem mobile repair vehicle bên ngoài list deck, và bên trong detail khác nhau, bên trong detail thì sáng rõ đúng như ý tôi nhưng ngoài list deck tối, boss cũng chịu mức tối tương tự
+- (01/10) bỏ dx23 không làm, bắt đầu làm Đợt D, nhớ áp dụng các quy tắc tiết kiệm token, bug kia confirm đã fix, chỉ dùng maximum 1 agent

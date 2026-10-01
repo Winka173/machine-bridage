@@ -1,37 +1,43 @@
 {
-  "_about": "Prompt 25 F2: every new item of Docs/balance/Machine_Brigade_Can_bang.xlsx and how far it is. status: chưa làm / đang làm / xong; id: the game id once it exists. Refreshed by Tools/balance/new_content_tracker.py.",
+  "_about": "Prompt 25 F2: every new item of Docs/balance/Machine_Brigade_Can_bang.xlsx and how far it is. status: chưa làm / đang làm / xong / bỏ (dropped by the owner); id: the game id once it exists. Refreshed by Tools/balance/new_content_tracker.py.",
   "updated": "2026-10-01",
   "total": 93,
   "counts": {
     "chưa làm": 8,
-    "đang làm": 1,
-    "xong": 84
+    "đang làm": 0,
+    "xong": 84,
+    "bỏ": 1
   },
   "byKind": {
     "unit": {
       "chưa làm": 0,
-      "đang làm": 1,
-      "xong": 55
+      "đang làm": 0,
+      "xong": 55,
+      "bỏ": 1
     },
     "structure": {
       "chưa làm": 0,
       "đang làm": 0,
-      "xong": 4
+      "xong": 4,
+      "bỏ": 0
     },
     "ordnance": {
       "chưa làm": 0,
       "đang làm": 0,
-      "xong": 14
+      "xong": 14,
+      "bỏ": 0
     },
     "support": {
       "chưa làm": 0,
       "đang làm": 0,
-      "xong": 11
+      "xong": 11,
+      "bỏ": 0
     },
     "boss": {
       "chưa làm": 8,
       "đang làm": 0,
-      "xong": 0
+      "xong": 0,
+      "bỏ": 0
     }
   },
   "items": [
@@ -355,7 +361,7 @@
       "group": "Nâng cấp",
       "priority": "Thấp",
       "unlock": "Cửa hàng: 1.500 xu",
-      "status": "đang làm",
+      "status": "bỏ",
       "id": null,
       "notes": "25D2 plan: 1,500 coins in the shop."
     },
