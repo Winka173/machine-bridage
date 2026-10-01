@@ -293,11 +293,11 @@ All eight draw their parent boss's model with a hue tint; their cards are the pa
 | Boss | Stand-in (parent, tint) | The real model |
 |---|---|---|
 | `kraken` | `leviathan`, blue wash, 110 m | a Nimitz / Kuznetsov carrier: flat deck, island to starboard, aircraft parked, lifts, arresting cable, 4 CIWS, 2 SAM mounts |
-| `monster` | `fortress_bastion`, sand wash | a Landkreuzer P. 1500: four track clusters (`Part_track_*`), one 800 mm barrel half the hull long (`Part_barrel`), 2 turrets, 4 flak |
+| ~~`monster`~~ | done in prompt 27 wave 1b: its own `monster` model (an 800 mm SPG after 2B1 Oka / Object 271 on the four-cluster layout; nodes `Part_track` .. `.003`, `Part_barrel`), wash dropped. Still open: no part names the track or barrel nodes (a track-break rule is game data, prompt 28) | - |
 | `garuda` | `command_airship`, violet wash | a B-2 / Ho 229 flying wing, 70 m span, sawtooth trailing edge, opening bomb bay, 6 defensive turrets |
 | `hyperion` | `silver_bug`, amber wash | a hexagonal mirror ring round a core with long solar panels, 4 point-defence lasers, 2 landing pods |
 | `stymphalos` | `drone_mothership`, green wash | eight delta-wing jet drones in V formation (separate units, 1,300 health each; a swarm rule) |
-| `nyx` | `leviathan`, steel wash | a Zumwalt-style tumblehome hull, pyramid superstructure, railgun, 2 CIWS |
+| ~~`nyx`~~ | done in prompt 27 wave 1b: its own `nyx` model (Zumwalt-style), wash dropped | - |
 | `cerberus` | `behemoth`, red wash | three big-wheeled trucks joined by couplings: 125 mm tractor, anti-air middle, rocket trailer (middle first breaks the AA) |
 | `hydra` | `typhon`, teal wash | a small submarine with vertical launch tubes along the back and six FPV drones |
 | Weapon lists | the parent's | each sheet weapon list on its own mounts (see 25F2-D); the sun beam's smoke cut; the In-action clips of the four super weapons |
@@ -307,8 +307,8 @@ All eight draw their parent boss's model with a hue tint; their cards are the pa
 
 | What | Stand-in now | The real thing |
 |---|---|---|
-| Ixion, the armoured BelAZ-75710 mine truck | the `railgun_truck` model fitted to 26 x 12 x 10 m (`modelSize`), mine-yellow tint; its parts sit at the sheet's width | a box body, a welded T-72 turret, a left-offset cab, six big tyres, a V ram (prompt 27) |
+| ~~Ixion, the armoured BelAZ-75710 mine truck~~ | done in prompt 27 wave 1a: its own `ixion` model (26 x 12 x 10 m, mb_p27_wave1a), tint dropped | - |
 | Boss sizes | the old models scaled by `size` (Roc and Garuda stay 56-62 m wide, Icarus 45 m wide, Moloch and Bastion keep their proportions) | models rebuilt at the sheet's sizes (prompt 27) |
-| Gungnir's electromagnetic gun | the old railway gun model; the slug is the existing rail slug projectile | an EMRG rail car, capacitor cars and a modern diesel (prompt 27); a line warning along the slug's path |
-| Ixion's parts: `reartyre`, `hulltower` | the wreck stump and turret pieces; no node of their own on the stand-in | broken tyres and a lost turret |
-| Ixion's mine strip | the ordinary mine model | a mine truck's own mines |
+| Gungnir's electromagnetic gun | model done in prompt 27 wave 1a (`rail_supergun`: EMRG launcher, two capacitor cars; `rail_tractor`: a modern Bo-Bo diesel); the slug is still the existing rail slug projectile | the line warning along the slug's path (game code, prompt 28) |
+| ~~Ixion's parts: `reartyre`, `hulltower`~~ | done in wave 1a: every tyre (`Part_wheel`, `.001`, `Part_tyre` .. `.003`), the cab (`Part_cab`) and the turret (`Turret`) are nodes the parts name, hidden when broken | - |
+| Ixion's mine strip | the ordinary mine model (MineViews spawns `mine` for every layer); the model has `Point_mines` at the dispenser's mouth, unused | a mine truck's own mine model and the view lookup per layer (game code, prompt 28) |

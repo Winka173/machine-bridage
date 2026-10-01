@@ -13020,3 +13020,51 @@ Step 5 of "27 order" minus the waves. Only the Unity preview (4 experiment model
 - The munition hard cap at 1,600 tris (FPV drone a warning) is kept.
 - Wave 1a (Ixion, Gungnir) runs on opus because it judges briefs and big bosses; later waves on sonnet with
   EXPERIMENT_1's recipe, art-bible.md and the preview (`ModelPreview.RenderBatch`) for changed models only.
+
+## 27 wave 1a + 1b (part) (lead pass, 2026-10-02)
+
+Wave 1a (Ixion, Gungnir) plus two wave 1b bosses (Monster, Nyx) on the owner's scope update. Builders
+`Tools/blender/mb_p27_wave1a.py` (ixion, rail_supergun, rail_tractor) and `mb_p27_wave1b.py` (monster, nyx), merged
+last in `all_builders()`. Checks run: Blender rebuilds, `glb_check.py` (compare, accept with reasons), CatalogCheck in
+the runner (OK: 241 vehicles, 371 weapons), card renders, one ModelPreview sheet per model. No tests, sims or measures.
+
+- **Ixion: the unlisted `ixion.glb` was not reused.** It was mb_redesign_20y's Tsar Tank (1915: two 10 m spoked wheels,
+  21.7 x 19 x 11.9 m): a pre-1945 reference (26CD rule), the wrong shape and none of the nodes the parts need. It is
+  replaced under the same file name by a new builder: a Team armoured box body, canopy over a left-offset mine-yellow
+  cab, a welded T-72-class turret (enlarged 1.35x after the first preview), six tyres on three axles, a V ram, the
+  BelAZ deck and stair, a mine dispenser. 26.0 x 12.0 x 10.1 m (modelSize 26 x 12 x 10, so the fit is 1:1).
+- **Nodes for Ixion's parts** (ModelLibrary.PartPattern allows `Part_<letters>[.NNN]` only, so not `Part_wheel_l`):
+  `Part_wheel` / `.001` (wheel_l / wheel_r), `Part_tyre` / `.001` / `.002` / `.003` (rear_l1, r1, l2, r2), `Part_cab`
+  (holding `Mount_mg` / `.001`, so a broken cab hides its guns), `Turret` (gun, already named). balance.json: those
+  parts got `node` fields (a view-side lookup: broken tyres hide, the wreck piece takes their place); no number changed.
+  `Point_mines` at the dispenser mouth is built for a later mine-strip view; MineViews still spawns `mine` (ASSET_DEBT).
+- **Tints:** Ixion's mine yellow, Monster's sand and Nyx's steel washes dropped (the models carry their own colours;
+  Ixion's yellow is the kit's Hazard paint on cab, deck, hood and rims). Gungnir had none.
+- **Gungnir** rebuilt in place: lower carriage, bounds (63.9 x 8.8 x 16.5 m, `size` 0.7039 still valid), every runtime
+  name and the 22 moving parts as before; the Gustav upper carriage replaced by an EMRG mount (square tapering rail
+  launcher, clamp bands, busbars where the truss was, sabot slugs), two capacitor cars coupled ahead under the barrel,
+  a fire-control radar panel on `Part_generator`. `rail_tractor` (its two attached tractors, a WW2 V 36 before) rebuilt
+  as a modern Bo-Bo diesel at the same 11.35 x 3.05 x 5.53 m. The line warning stays game work (ASSET_DEBT).
+- **Monster** (variant of fortress_bastion, inherits all its parts): the Landkreuzer layout kept, its look moved to
+  the 26CD references (2B1 Oka, Object 271): four double-track clusters on `Part_track` .. `.003` (the brief's
+  `Part_track_*`, renamed for the pattern), the 800 mm gun 18.5 m long on `Turret` (cradle on `Part_barrel`), the
+  155 mm bow turret (`Mount_gun.004`), four corner flak (`Mount_gun` .. `.003`), ZU-23 sponsons (`Mount_mg`, `.001`),
+  the Kornet (`Part_missile`). Nodes sit near the parents' `at` x 1.51 x 1.05. 40.05 x 21.9 x 12.9 m. No part names the
+  track / barrel nodes yet (a track-break rule would be data, prompt 28).
+- **Nyx** (variant of leviathan keeping turret_fore, vls, ciws_fore, ciws_aft): Zumwalt-style, 52.9 x 8.9 x 11.0 m,
+  `Part_gun` > `Mount_gun` > `Muzzle_gun` (railgun), `Part_vls`, `Part_mg` / `.001` with their mounts. 3,526 tris
+  (a plain stealth hull; well under the 44k boss-medium budget).
+- **Validator:** `glb_check.resolve` now applies a variant's `keep` / `drop` to its inherited parts (as
+  BossTemplates.Variant does); before, Nyx's own model reported the ten parts the variant drops as missing nodes.
+
+| model | tris old -> new | size (m) | COLOR_0 (stand-in -> new) | card luma (old -> new) | validator |
+|---|---|---|---|---|---|
+| ixion | 2,324 (railgun_truck) / 21,628 (old ixion) -> 17,324 | 26.0 x 12.0 x 10.1 | 0.624 -> 0.657 | 0.252 -> 0.322 | boss_s, no error |
+| rail_supergun | 28,756 -> 36,726 (1.28x) | 63.9 x 8.8 x 16.5 | 0.504 -> 0.508 | 0.328 -> 0.336 | boss_l, no error |
+| rail_tractor | 5,508 -> 4,406 | 11.35 x 3.05 x 5.53 | 0.545 -> 0.587 | (no card) | unlisted |
+| monster | 23,948 (fortress_bastion) -> 23,066 | 40.05 x 21.9 x 12.9 | 0.613 -> 0.632 | 0.289 -> 0.302 | boss_m, no error |
+| nyx | 25,992 (leviathan) -> 3,526 | 52.9 x 8.9 x 11.0 | 0.626 -> 0.687 | 0.322 -> 0.386 | boss_m, no error |
+
+Preview luma (8 angles mean / detail view) against the stand-in's sheet: Monster 0.325 / 0.288 (bastion 0.311 / 0.261),
+Nyx 0.356 / 0.288 (leviathan 0.303 / 0.254). Doubts: Ixion's and Monster's part `at` positions still come from the old
+layouts (hit spheres a metre or two off the new nodes); Monster's rear flak sit inside the main turret's sweep.

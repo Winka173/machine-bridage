@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 27, wave 1a + 1b (part): Ixion, Gungnir, Monster, Nyx (DECISIONS "27 wave 1a + 1b (part)")
+
+- Real models for four stand-in bosses on the V2 kit: Ixion (an armoured BelAZ-75710 mine truck with a T-72-class turret), Gungnir (an electromagnetic railgun train with capacitor cars and a modern diesel tractor), Monster (an 800 mm self-propelled gun on four track clusters) and Nyx (a Zumwalt-style stealth destroyer); their colour washes dropped.
+
 ### Prompt 27, step 5: preview, budgets, Art Bible, wave plan (DECISIONS "27 preview + budgets + art bible")
 
 - A Unity contact-sheet preview for named models (`ModelPreview.RenderBatch -mbPreview`: 8 angles plus detail / LOD1 / impostor views, luma JSON), budgets per class and tier in the GLB validator (Docs/models/BUDGETS.md), the Art Bible (Docs/models/art-bible.md) and the wave plan (Docs/models/PROGRESS.md).

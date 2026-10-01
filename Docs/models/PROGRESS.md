@@ -38,23 +38,23 @@ model (the lead decides whether a wave may touch runtime code): Stymphalos (eigh
 `ground_drone_carrier` (a minion-spawn mechanism), `combat_wreck_car` (a wreck-turret prop), Ixion's own mines,
 Gungnir's line warning, `airborne_light_tank_chute` (its own parachute canopy model only).
 
-### Wave 1a: prompt 26 pass 2 stand-ins (Ixion, Gungnir)
+### Wave 1a: prompt 26 pass 2 stand-ins (Ixion, Gungnir) - **committed** (DECISIONS "27 wave 1a + 1b (part)")
 
 | def | current pointer (model) | its builder | tris now | new model / notes |
 |---|---|---|---:|---|
-| `ixion` | `railgun_truck` (fitted to 26 x 12 x 10 m, mine-yellow tint) | mb_p25_models2 | 2,324 | new `ixion` builder: armoured BelAZ-75710 box body, welded T-72 turret, left-offset cab, six big tyres, V ram; nodes for parts `reartyre`, `hulltower`; own mine model. An unlisted `ixion.glb` already ships (21,628 tris, builder mb_redesign_20y): check it against the brief before building anew |
-| `rail_supergun` (Gungnir) | `rail_supergun` (the old railway gun) | mb_p16_arms | 28,756 | rebuild in place: EMRG rail car, capacitor cars, a modern diesel (post-1945); keep boss part nodes; the line warning is game code (not this wave) |
+| `ixion` (**committed**: `ixion`, 17,324 tris, mb_p27_wave1a) | `railgun_truck` (fitted to 26 x 12 x 10 m, mine-yellow tint) | mb_p25_models2 | 2,324 | new `ixion` builder: armoured BelAZ-75710 box body, welded T-72 turret, left-offset cab, six big tyres, V ram; nodes for parts `reartyre`, `hulltower`; own mine model. An unlisted `ixion.glb` already ships (21,628 tris, builder mb_redesign_20y): check it against the brief before building anew |
+| `rail_supergun` (Gungnir) (**committed**: 36,726 tris, mb_p27_wave1a; `rail_tractor` 4,406) | `rail_supergun` (the old railway gun) | mb_p16_arms | 28,756 | rebuild in place: EMRG rail car, capacitor cars, a modern diesel (post-1945); keep boss part nodes; the line warning is game code (not this wave) |
 
-### Wave 1b: prompt 25 batch D stand-in bosses
+### Wave 1b: prompt 25 batch D stand-in bosses - monster and nyx **committed**, six todo
 
 | def | current pointer | its builder | modelSize | the real model (ASSET_DEBT) |
 |---|---|---|---|---|
 | `kraken` | `leviathan` (blue wash, 110 m) | mb_naval | 110 x 18.4 x 24 | a Nimitz / Kuznetsov carrier: flat deck, island to starboard, aircraft parked, lifts, arresting cable, 4 CIWS, 2 SAM mounts |
-| `monster` | `fortress_bastion` (sand wash) | mb_p20_bosses | 40.3 x 22.1 x 13 | a Landkreuzer P. 1500: four track clusters (`Part_track_*`), one 800 mm barrel half the hull long (`Part_barrel`), 2 turrets, 4 flak |
+| `monster` (**committed**: `monster`, 23,066 tris, mb_p27_wave1b) | `fortress_bastion` (sand wash) | mb_p20_bosses | 40.3 x 22.1 x 13 | a Landkreuzer P. 1500: four track clusters (`Part_track_*`), one 800 mm barrel half the hull long (`Part_barrel`), 2 turrets, 4 flak |
 | `garuda` | `command_airship` (violet wash) | mb_p20_bosses | (boss size) | a B-2 / Ho 229 flying wing, 70 m span, sawtooth trailing edge, opening bomb bay, 6 defensive turrets |
 | `hyperion` | `silver_bug` (amber wash) | mb_p27_experiment | 67.2 x 43.7 x 20 | a hexagonal mirror ring round a core with long solar panels, 4 point-defence lasers, 2 landing pods |
 | `stymphalos` | `drone_mothership` (green wash) | mb_p20_bosses | (boss size) | eight delta-wing jet drones in V formation (separate units, 1,300 health each; a swarm rule) |
-| `nyx` | `leviathan` (steel wash) | mb_naval | 53 x 8.9 x 11 | a Zumwalt-style tumblehome hull, pyramid superstructure, railgun, 2 CIWS |
+| `nyx` (**committed**: `nyx`, 3,526 tris, mb_p27_wave1b) | `leviathan` (steel wash) | mb_naval | 53 x 8.9 x 11 | a Zumwalt-style tumblehome hull, pyramid superstructure, railgun, 2 CIWS |
 | `cerberus` | `behemoth` (red wash) | mb_p20_bosses | 16.3 x 8.4 x 5.5 | three big-wheeled trucks joined by couplings: 125 mm tractor, anti-air middle, rocket trailer (middle first breaks the AA) |
 | `hydra` | `typhon` (teal wash) | mb_redesign_20y | 34.8 x 7.2 x 8 | a small submarine with vertical launch tubes along the back and six FPV drones |
 
