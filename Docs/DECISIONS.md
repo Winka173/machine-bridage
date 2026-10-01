@@ -12960,3 +12960,16 @@ in Docs/models/experiment1/. Only Blender builds, the static validator and card 
 - **Recommendation for checkpoint 1:** V2 for ground vehicles, bosses and structures; jets only the clean-up and the
   library nozzle/canopy at high detail; helicopters V2. Measure draw calls, LOD1 sizes and frame time on one battle
   before a wave goes wide. Draft wave recipe in EXPERIMENT_1.md. Waits for the owner (step 4: checkpoint 1).
+
+## 27 checkpoint 1 (owner, 2026-10-02)
+
+The owner approved experiment 1 at checkpoint 1: V2 (kit primitives + `mb_parts27`) for ground vehicles, bosses and
+structures; jets get only the zero-area clean-up plus the library nozzle and canopy in `_hd` (EXPERIMENT_1.md). The
+one-battle measure (draw calls, frame time) is not wanted now; it waits with the rest of the measures for the owner's
+word. Stand-in models are deliberate: every stand-in listed in Docs/ASSET_DEBT.md (Prompt 25 batch B, Prompt 25 batch
+D bosses, Prompt 26 pass 2, e.g. Ixion on `railgun_truck`) keeps its model pointer until a prompt 27 wave builds its
+real model; the wave then points the def at the new model and strikes the ASSET_DEBT line. Never "fix" a pointer.
+Lead's reading of the prompt's checkpoint 2 under the no-measure rule: the waves run on EXPERIMENT_1's recipe with the
+static gates only (validator, card luminance, preview renders); checkpoint 2's benchmarks happen when the owner allows
+measuring, and the owner may then stop or redo the waves. Next pass: the Unity preview (changed/flagged models only),
+Docs/models/BUDGETS.md from the baseline, Docs/models/art-bible.md and the wave plan (stand-ins first).
