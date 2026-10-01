@@ -1,0 +1,242 @@
+Prompt 28: Làm lại AI, hệ chọn chiến thuật và cân bằng kinh tế trong trận
+
+Nhiệm vụ:
+(1) Làm lại AI của mọi phương tiện, công trình và boss theo ba tầng (tướng AI, đội, đơn vị), dùng chung một mô hình chiến trường (World Model) có độ tin cậy cho thông tin, để quân không kẹt thành cụm, không đứng yên vô lý, biết dàn ra trước vũ khí bắn lan, phối hợp theo đội, và cam kết vào quyết định thay vì đổi ý liên tục.
+(2) Thêm hệ chọn chiến thuật: chọn trước trận, đổi được giữa trận, có cái giá khi đổi.
+(3) Cân bằng kinh tế trong trận bằng áp lực mềm, để số quân hai bên không tích lũy quá nhiều và trận không đứng yên.
+Làm tự chủ, không chờ duyệt, ghi mọi quyết định cùng lý do vào docs/DECISIONS.md.
+
+Thứ tự ưu tiên khi phải chọn: gameplay vui > hành vi AI dễ đọc > quyết định ổn định > hiệu năng mobile > kiến trúc đẹp. Không thêm tầng, hệ thống hay lớp mới chỉ để kiến trúc đẹp nếu hành vi tương tự đạt được bằng các phần đã có trong prompt này. AI chỉ cần trông thông minh với người chơi, không cần mô phỏng quân sự thật.
+
+Nguồn: docs/ai/Machine_Brigade_AI_Research.xlsx (bản v2). Viết script đọc file này (như script đọc file cân bằng của prompt 25) để sinh dữ liệu AI, chiến thuật và tham số; không nhập tay. Các sheet chính:
+- Vai trò, Phương tiện: hành vi theo 28 vai trò và hành vi riêng của 58 xe.
+- Công trình, Boss, Kiểu hành vi boss.
+- Chiến thuật: 16 chiến thuật, gồm hành vi cốt lõi, dấu vân dự kiến, cặp cần kiểm tra gộp, tác động lên AI, ưu tiên mua, tỷ lệ CP cho 8 nhóm quân.
+- Tham số AI: mọi tham số có khởi điểm, nhỏ nhất, lớn nhất, chỉ số đo, lý do chỉnh.
+- Trạng thái đội, Emergency Reposition, Hành động đội, Sự kiện, Đội hình.
+- Dấu vân hành vi, Chỉ số đo, Tính năng chọn chiến thuật, Cân bằng kinh tế, Kỹ thuật AI.
+
+Phụ thuộc: chạy sau prompt 26 (vũ khí bắn lan, nổ hai lớp, siêu vũ khí boss). Dùng lại: AI mua quân và khắc chế (prompt 13 và bổ sung ô có cỡ), hệ đạn và nạp đạn (prompt 13), giáp theo mặt (prompt 15), bộ phát hiện xe kẹt (prompt 12), hệ sự kiện và thoại dạng chữ (prompt 23), hệ Chỉ huy và cá tính tướng (prompt 22), Sa bàn (prompt 21).
+
+Làm theo 6 lượt, chạy đủ test và commit sau mỗi lượt:
+- Lượt 1: phần A, L, N, J (World Model, khung tham số, deterministic, công cụ xem AI).
+- Lượt 2: phần B, C (tướng AI, AI tầng đội).
+- Lượt 3: phần D, G (AI từng đơn vị, chống kẹt và chống đứng yên).
+- Lượt 4: phần E, F (công trình, boss).
+- Lượt 5: phần H, I (chiến thuật, kinh tế).
+- Lượt 6: phần K, M, O (độ khó, hiệu năng, kiểm tra tổng).
+
+A. WORLD MODEL (dùng chung cho cả hai phe)
+1. Một dịch vụ chạy khoảng 2 lần mỗi giây, tính cho từng phe một bảng thông tin chiến trường dạng lưới ô (khởi điểm ô 10 m):
+   - sức mạnh ta và sức mạnh địch ước tính, tính theo giá trị thực chiến;
+   - thành phần quân địch ước tính (theo 8 nhóm quân của sheet Chiến thuật);
+   - mối đe dọa theo loại: phòng không, chống tăng, pháo binh (vùng phủ pháo địch), bắn lan;
+   - vector di chuyển quan sát được của các đội địch;
+   - tiền tuyến ước tính, vùng tranh chấp, điểm nghẽn (mật độ xe trên ô và lối hẹp);
+   - mục tiêu giá trị đã biết (xe đắt, pháo binh, xe hỗ trợ, công trình quan trọng);
+   - các vùng có cảnh báo đòn lớn, siêu vũ khí, viện quân đang tới.
+2. Thông tin có độ tin cậy:
+   - Mỗi mục thông tin về địch có last_seen, information_age và confidence.
+   - Confidence giảm theo information_age (tham số "Tốc độ giảm độ tin cậy").
+   - Không thấy địch không có nghĩa là địch không có. AI phân biệt "chưa thấy phòng không địch" với "đã xác nhận địch không có phòng không ở vùng này". Ví dụ bản ghi: phòng không địch, sức mạnh 3, độ tin cậy 42%, thấy lần cuối 7,2 s trước.
+   - Mỗi phe chỉ dùng thông tin trong tầm nhìn thật của mình, trừ lợi thế đã thiết kế cho độ khó Cực khó (phần K).
+3. Không có trường enemy_intent hay momentum riêng. Khi cần, tướng AI suy ra ý đồ địch từ vector di chuyển, thành phần ước tính và các sự kiện.
+4. Sự kiện: World Model phát hiện tình huống và phát ra sự kiện thuộc 5 loại (sheet Sự kiện): THREAT, OPPORTUNITY, WINDOW, MISMATCH, OBJECTIVE_PRESSURE. Mỗi sự kiện có lý do, mức ưu tiên, độ tin cậy (khi dựa trên thông tin chưa chắc chắn), hạn dùng và vùng liên quan. Ví dụ: pháo binh địch vừa lộ (OPPORTUNITY); phòng không địch vừa dời đi (WINDOW); thiếu phòng không khi địch nhiều máy bay (MISMATCH).
+5. Không thêm tầng Tactical Evaluator riêng: việc phát hiện tình huống nằm trong World Model; tướng AI và đội chỉ đọc sự kiện, không tự xử lý dữ liệu thô của cả bản đồ.
+6. Bảng mối đe dọa và bảng ảnh hưởng tính một lần cho mỗi phe theo nhịp của dịch vụ, rồi dùng chung cho mọi đội và đơn vị; không đơn vị nào tự tính lại.
+
+B. TƯỚNG AI (mỗi phe một tướng, khoảng 1 lần mỗi giây)
+1. Tướng AI chỉ quyết định cái gì, ở đâu, khi nào, ưu tiên gì và chia quân ra sao; không điều khiển cách đội thực hiện. Đầu ra là ý định chiến lược, ví dụ:
+   - PRIMARY_OBJECTIVE (ví dụ chiếm cứ điểm B);
+   - PRIMARY_EFFORT (hướng chính, ví dụ phía bắc);
+   - SECONDARY_OBJECTIVE (ví dụ bảo vệ pháo binh);
+   - TACTICAL_INTENT (ví dụ đánh sườn, giữ, đột phá);
+   - ATTACK_WINDOW (điều kiện mở tấn công, ví dụ phòng không địch vừa dời đi, hoặc sức mạnh ta vượt ngưỡng tấn công).
+2. Tướng AI chia quân thành đội và giao ý định cho từng đội; đội tự chọn cách làm (phần C).
+3. Mua quân theo tỷ lệ CP của chiến thuật (phần H.5), kết hợp AI khắc chế hiện có và sự kiện MISMATCH.
+4. Dùng thẻ hỗ trợ theo sự kiện (ví dụ khói khi đội đang bị pháo; chế áp phòng không trước khi mở ATTACK_WINDOW cho máy bay).
+5. Tướng AI không đổi kế hoạch chiến lược liên tục: kế hoạch có thời gian cam kết tối thiểu và ngưỡng chênh như ở C.3; chỉ đổi sớm khi có sự kiện khẩn cấp (mất mục tiêu chính, boss chuyển pha, đòn tấn công lớn của địch).
+6. Phe người chơi: khi bật Tự mua hoặc Yểm trợ, dùng cùng tướng AI với chiến thuật người chơi đã chọn.
+7. Gợi ý cho người chơi: một dòng gợi ý nhỏ trên HUD (thoại dạng chữ của prompt 23, mức ưu tiên thấp, tắt được trong Cài đặt), lấy từ sự kiện mức ưu tiên cao. Ví dụ: "Cụm quân ở cầu đang kẹt", "Thiếu phòng không ở hướng bắc", "Pháo địch vừa lộ vị trí". Người chơi không bị buộc làm theo.
+
+C. AI TẦNG ĐỘI (khoảng 4 lần mỗi giây)
+1. Quy trình ra quyết định của đội:
+   World Model và sự kiện → sinh các hành động hợp lệ → chấm điểm → áp luật chống đổi ý → chọn → chuyển trạng thái đội → các đơn vị thực hiện.
+   - Chỉ chấm điểm đầy đủ ở cấp đội, khoảng 6–8 hành động ứng viên (sheet Hành động đội): ATTACK, HOLD, FLANK_LEFT / FLANK_RIGHT, OVERWATCH, REPOSITION, SUPPORT, JOIN, REGROUP.
+   - Hành động không khả thi bị loại trước khi chấm điểm (ví dụ FLANK_LEFT không hợp lệ khi không có đường vòng, hoặc mối đe dọa trên đường vượt ngưỡng). Không để hành động bất khả thi tham gia chấm điểm rồi chỉ nhận điểm thấp.
+   - Điểm (thang 0–100) cộng từ các yếu tố của sheet Hành động đội, có trọng số theo chiến thuật và theo ý định tướng AI giao. Thông tin có độ tin cậy thấp làm giảm điểm của hành động dựa trên nó.
+2. Trạng thái đội: 7 trạng thái (sheet Trạng thái đội): TRAVEL, APPROACH, COMBAT, OVERWATCH, FLANK, HOLD, REGROUP. Mỗi trạng thái có điều kiện vào, điều kiện ra, hành động được phép, mức ưu tiên và thời gian cam kết tối thiểu. Không có trạng thái RETREAT.
+3. Chống đổi quyết định liên tục (ưu tiên rất cao):
+   - Hành động mới chỉ thay hành động hiện tại khi: hành động hiện tại không còn hợp lệ; hoặc điểm mới vượt điểm hiện tại ít nhất bằng ngưỡng chênh (switch margin); hoặc có sự kiện khẩn cấp (mối đe dọa lớn, mất mục tiêu, mục tiêu bị hạ, đường bị chặn, boss chuyển pha).
+   - Mỗi hành động và trạng thái giữ ít nhất bằng thời gian cam kết tối thiểu, trừ sự kiện khẩn cấp.
+   - Ví dụ: đang ATTACK 72 điểm, FLANK 75 điểm, ngưỡng chênh 8 → giữ ATTACK.
+   - Mục tiêu: không có chuỗi kiểu FLANK → COMBAT → FLANK → REPOSITION → COMBAT trong vài giây.
+4. Emergency Reposition (sheet Emergency Reposition): hành động khẩn cấp, không phải trạng thái thứ 8, được bỏ qua ngưỡng chênh:
+   - Né vòng cảnh báo (vòng cảnh báo đạn pháo boss, đòn lớn, siêu vũ khí, đường lao nghiền): chạy ra khỏi vùng theo hướng ngắn nhất, rồi quay về đúng hành động và trạng thái cũ, không chấm điểm lại từ đầu. Không tính hồi chiêu; chỉ phụ thuộc độ trễ phản ứng.
+   - Gom về đội bạn: khi sức mạnh địch / ta trong vùng vượt ngưỡng địch áp đảo, hoặc có sự kiện THREAT mức cao, đội gom về đội bạn gần nhất trong vùng giao tranh rồi vào REGROUP. Không rời trận, không về căn cứ. Có hồi chiêu Emergency Reposition cho mỗi đội.
+   - Không có điều kiện nào theo máu: đội gần bị tiêu diệt hay xe thấp máu không kích hoạt hành động khẩn cấp.
+5. Đội hình theo ngữ cảnh: 5 chế độ (sheet Đội hình): TRAVEL, COMBAT / SPREAD, HOLD / AMBUSH, FLANK, REGROUP. Chế độ đổi theo trạng thái đội, và phụ thuộc nhiệm vụ, mối đe dọa, địa hình, tầm vũ khí, thành phần đội và chiến thuật. Mối đe dọa bắn lan và pháo binh xử lý bằng COMBAT / SPREAD với khoảng cách theo tham số "Khoảng cách dàn ra trước bắn lan"; không thêm đội hình riêng.
+6. Dồn hỏa lực: đội ưu tiên cùng một mục tiêu có giá trị nhất mà đội hạ được nhanh; bắn mục tiêu sắp chết trước.
+7. Ma trận ưu tiên mục tiêu theo loại sát thương và cấp xuyên (prompt 15): mỗi vũ khí ưu tiên mục tiêu nó gây nhiều sát thương hiệu dụng nhất; không phí đạn xuyên vào xe không giáp khi có xe tăng trong tầm; súng máy không bắn xe giáp dày khi có mục tiêu khác.
+8. OVERWATCH và yểm hộ luân phiên (khi chiến thuật bật): đội chia hai nhóm; một nhóm ở OVERWATCH, nhóm kia tiến không quá tầm yểm hộ, rồi đổi vai.
+9. Chuyển tuyến (chỉ Phòng thủ chiều sâu và Bảo vệ căn cứ): khi sức mạnh ta trong vùng dưới ngưỡng chuyển tuyến, cả đội chuyển về tuyến sau. Không xe nào rút riêng lẻ.
+
+D. AI TỪNG ĐƠN VỊ (mỗi tick)
+1. Đơn vị không chấm điểm toàn bộ hành động. Đơn vị chỉ dùng logic theo vai trò và trạng thái đội (sheet Vai trò, Phương tiện), cộng chấm điểm chọn mục tiêu.
+2. Chọn mục tiêu: điểm kết hợp sát thương hiệu dụng (loại sát thương, cấp xuyên, giáp theo mặt), giá trị mục tiêu, khoảng cách, mục tiêu đội đang dồn hỏa lực. Đổi mục tiêu cũng theo ngưỡng chênh và cam kết tối thiểu, trừ khi mục tiêu chết hoặc ra khỏi tầm.
+3. Không rút theo máu: không có luật xe tự rút về sửa khi thấp máu, ở mọi vai trò và mọi chiến thuật. Xe đánh tới khi bị hạ. Khi bị áp đảo, xe chỉ đổi vị trí ngắn trong trận theo cột "khi bị áp đảo" của vai trò (vật che gần nhất, ra khỏi khói, đổi chỗ bắn vài chục mét, bắn rồi chạy của pháo binh).
+   - Máy bay và trực thăng về nạp theo hệ đạn (khi hết đạn), không theo máu.
+   - Trạm sửa và công binh vẫn sửa xe đang đứng trong tầm của chúng, nhưng không xe nào tự chạy về để được sửa.
+4. Quay giáp: xe có giáp theo mặt quay mặt trước về phía mối đe dọa lớn nhất khi đứng bắn; khi đổi vị trí, giữ mặt trước hướng về địch nếu có thể.
+5. Giữ khoảng cách giao chiến theo vai trò (% tầm tối đa) và theo chiến thuật; xe bắn xa và nhanh hơn mục tiêu không lao vào tầm của địch.
+6. Bắn khi chạy và dừng mới bắn theo hành vi từng xe; pháo binh bắn rồi dời vị trí, tránh vị trí đã bị radar phản pháo hoặc phản pháo đánh dấu.
+7. Máy bay và trực thăng: tiếp cận theo hướng ít phòng không nhất (theo bảng thông tin, có độ tin cậy); không bay vòng mãi trong vùng phòng không dày; dùng pháo sáng khi bị tên lửa khóa.
+8. Xe hỗ trợ đứng sau đội trong tầm tác dụng; xe trinh sát đứng ở mép tầm nhìn, ẩn khi đứng yên; drone và đạn lảng vảng ưu tiên mục tiêu theo vai trò, tránh vùng EW và C-RAM dày khi có mục tiêu khác.
+9. Né đòn bắn lan không hoàn hảo:
+   - Vòng cảnh báo hiện trên chiến trường là nguy hiểm đã biết với mọi AI; độ khó chỉ đổi độ trễ phản ứng và chất lượng thực hiện.
+   - Pháo binh và rốc-két bắn từ vị trí chưa quan sát được là nguy hiểm không chắc chắn, phụ thuộc độ tin cậy; AI không luôn biết chính xác.
+   - AI chỉ biết những gì hợp lý mà nó có thể biết, và vẫn có sai lầm hợp lý.
+
+E. AI CÔNG TRÌNH
+1. Chế độ chọn mục tiêu cho tháp: Gần nhất, Mạnh nhất, Yếu nhất, Đầu đoàn, Máy bay trước, Cụm đông nhất, Pháo binh trước. Mỗi loại tháp có chế độ mặc định theo sheet Công trình; người chơi đổi được trong màn Căn cứ (prompt 14) và trong trận khi chạm vào tháp.
+2. Các tháp trong cùng vùng ưu tiên cùng một mục tiêu khi mục tiêu đó hạ được nhanh.
+3. Đổi mục tiêu theo ngưỡng chênh và cam kết tối thiểu như đơn vị; giữ mục tiêu tới khi nó chết, ra khỏi tầm, hoặc có mục tiêu ưu tiên cao hơn nhiều (ví dụ tên lửa bay vào C-RAM).
+4. Hành vi đặc biệt theo sheet Công trình. Ví dụ:
+   - Tháp ATGM không bắn xe nhẹ khi có xe giáp trong tầm;
+   - C-RAM và Vòm Sắt ưu tiên đạn đang bay vào công trình quan trọng;
+   - Patriot nhánh PAC-3 ưu tiên tên lửa của siêu vũ khí boss.
+
+F. AI BOSS
+1. Không thêm kiến trúc AI riêng cho boss. Mỗi boss chủ lực có 1–2 kiểu hành vi theo sheet Kiểu hành vi boss (Anti-Blob, Anti-Air, Anti-Artillery, Core Protection, Flank Punishment, Area Denial), gắn với vũ khí đã chốt ở prompt 26. Mỗi boss tạo cách phản công khác nhau, không phải mọi boss đều chỉ nhắm cụm lớn nhất hoặc xe đắt nhất.
+2. Điểm chọn mục tiêu của boss kết hợp: giá trị mục tiêu, mối đe dọa với boss, liên quan tới mục tiêu trận, mức lộ của mục tiêu, cơ hội, khoảng cách, và dự đoán vị trí; trọng số theo kiểu hành vi.
+3. Siêu vũ khí nhắm theo kiểu hành vi của boss, luôn giữ đủ thời gian cảnh báo.
+4. Boss mặt đất quay mặt trước (giáp 5) về phía nhiều hỏa lực nhất nhưng quay chậm để người chơi đánh vòng được; boss trên không bay theo đường cố định, chọn vòng tránh vùng phòng không dày nếu thiết kế cho phép.
+5. Hộ tống đứng chắn hướng địch đông nhất; khi boss xuống pha mới, hộ tống gom lại quanh boss.
+6. Boss tuân theo tầm nhìn: chỉ thấy những gì phe địch thấy.
+7. Mini boss dùng cùng luật, không có siêu vũ khí.
+
+G. CHỐNG KẸT VÀ CHỐNG ĐỨNG YÊN
+1. Di chuyển đám đông: flow field (hoặc cách tương đương) cho đội lớn đi cùng hướng; tránh va chạm cục bộ giữa các xe; chi phí đường đi tăng theo mật độ xe, để xe sau tự chọn lối khác.
+2. Lối hẹp: khi quá đông, đội chia lượt qua, hoặc một phần đội đi lối khác.
+3. Các ngưỡng thời gian chỉ kích hoạt đánh giá lại, không mặc định một hành động:
+   - Đứng yên không lý do quá "Thời gian đánh giá lại khi đứng yên" (không bắn, không giữ điểm, không chờ nạp, không hộ tống, không triển khai, không phục kích) → đội chấm điểm lại. Kết quả có thể là ATTACK, JOIN, SUPPORT, hoặc vẫn HOLD nếu đó là hành động tốt nhất.
+   - Không tiến được quá "Thời gian kẹt trước khi xử lý" khi đang có lệnh di chuyển → xử lý theo thứ tự: lùi nhẹ và thử lại; đổi đường; tách khỏi cụm; nếu vẫn kẹt, đội chấm điểm lại với đường hiện tại bị đánh dấu không hợp lệ. Nếu kẹt quá khoảng 8 s, dịch nhẹ tới điểm đi được gần nhất và ghi vị trí để sửa map.
+4. Không bắn vào đồng đội: xe bắn thẳng không bắn xuyên qua đồng đội nếu đổi góc được; đội không đứng che hướng bắn của xe phía sau.
+
+H. HỆ CHỌN CHIẾN THUẬT
+1. Hành vi trước, tham số sau: mỗi chiến thuật có một hành vi cốt lõi (cột "Hành vi cốt lõi" của sheet Chiến thuật). Làm bằng cách bật, tắt và chỉnh các mô-đun hành vi dùng chung (sẵn sàng tấn công, độ tập trung lực lượng, ưu tiên đánh sườn, dùng quân dự bị, chuẩn bị bằng pháo, khoảng cách giao chiến, gắn kết đội, ưu tiên mục tiêu, kỷ luật hỏa lực, cam kết không quân); không viết AI riêng cho từng chiến thuật.
+2. Hiệu ứng chỉ số trực tiếp (nếu có) tối đa ±5%, tính vào trần chỉ số của cả bộ (cùng chỉ huy và trang bị).
+3. Số chiến thuật: bắt đầu với 16 chiến thuật của sheet Chiến thuật. Đo dấu vân hành vi (sheet Dấu vân hành vi) cho mỗi chiến thuật qua mô phỏng 5 seed. Hai chiến thuật có khoảng cách dấu vân dưới ngưỡng (khởi điểm 0,15) thì gộp, hoặc chỉnh hành vi cốt lõi cho khác hẳn. Kiểm tra trước các cặp ghi ở cột "Cặp cần kiểm tra gộp". Mục tiêu khoảng 12–14 chiến thuật khác nhau rõ; khác nhau về hành vi quan trọng hơn con số chính xác. Ghi các lần gộp và lý do.
+4. Chọn trước trận: chọn 1 chiến thuật ở màn chuẩn bị, cạnh bộ bài và chỉ huy. Màn chọn hiện hành vi cốt lõi, mạnh khi, yếu khi, ưu tiên mua, tỷ lệ lực lượng và chiến thuật khắc chế.
+5. Tỷ lệ lực lượng và ưu tiên mua:
+   - Mỗi chiến thuật có tỷ lệ mục tiêu theo CP đã chi cho 8 nhóm quân (tính theo CP, không theo số xe).
+   - Tỷ lệ là mục tiêu mềm: AI khắc chế được dời mỗi nhóm tối đa ±15 điểm phần trăm khi thấy đối thủ (qua sự kiện MISMATCH).
+   - Bộ bài thiếu nhóm thì phần trăm của nhóm đó chia lại cho các nhóm còn lại.
+   - Trong mỗi nhóm, ưu tiên xe ở cột Ưu tiên mua nếu có trong bộ bài.
+6. Đổi giữa trận, có cái giá:
+   - Nút đổi trên HUD gọn (prompt 11). Hồi chiêu khởi điểm 50 s; mô phỏng chọn giá trị trong 45–60 s. Không tốn CP.
+   - Thời gian chuyển tiếp (khởi điểm 5 s): các đội gom lại theo chiến thuật mới, xe vẫn bắn nhưng không mở đợt tấn công mới.
+   - Đội đang tấn công khi đổi chiến thuật mất nhịp: vào REGROUP và phải gom đủ trước khi tiến tiếp.
+   - Tỷ lệ lực lượng mới chỉ áp cho các lần mua sau; không bán hay đổi quân đã có.
+   - Trong Săn trùm, đổi được ở mỗi lần nghỉ giữa hai boss mà không tính hồi chiêu.
+   - Mục tiêu: đổi chiến thuật là một quyết định chiến thuật, không phải nút buff bật tắt.
+7. Tướng địch:
+   - Chiến thuật ưa thích theo cá tính: Varga Tập trung đột phá; Orlov Hỏa lực áp đảo; Kessler Tiêu hao; Venn Phân tán; Wolff Ưu thế trên không; Thorne Cân bằng; Aurel Tổng tấn công. Brandt và nhiệm vụ không gắn tướng dùng Phòng thủ chiều sâu hoặc Cân bằng. Nếu một chiến thuật bị gộp ở H.3, tướng dùng chiến thuật đã gộp.
+   - Tướng địch đổi chiến thuật theo diễn biến (thua rõ, boss chuyển pha, thấy người chơi đổi chiến thuật qua trinh sát), cùng hồi chiêu và cái giá như người chơi.
+8. Thông tin về chiến thuật: briefing cho biết chiến thuật ưa thích của tướng địch; trong trận, chiến thuật hiện tại của địch chỉ hiện khi trinh sát hoặc UAV của ta soi được đội địch. AI địch cũng chỉ biết chiến thuật của người chơi theo cách đó. Khi địch đổi chiến thuật và ta đang thấy, hiện một câu thoại ngắn.
+9. Thế giữ lửa cho đội: Bắn tự do, Chỉ bắn mục tiêu xác nhận, Giữ lửa. Chiến thuật đặt thế mặc định (Phục kích dùng Giữ lửa).
+10. Chiến thuật theo đội: mở sau chương 6; người chơi gán chiến thuật riêng cho từng đội, mỗi đội có hồi chiêu đổi riêng; đội không được gán dùng chiến thuật chung.
+11. Mở khóa theo cột Mở khóa; Cân bằng, Phòng thủ chiều sâu, Bảo vệ căn cứ có từ chương 1. Mỗi chiến thuật có hướng dẫn ngắn khi mở (prompt 24) và trang trong tab Hướng dẫn.
+12. Màn chuẩn bị gợi ý 1–2 chiến thuật hợp với chỉ huy đang chọn.
+13. Sa bàn: chọn và đổi chiến thuật cho cả hai phe.
+14. Lưu lựa chọn chiến thuật cuối cùng của người chơi theo từng chế độ. Localization tiếng Việt và tiếng Anh.
+
+I. KINH TẾ TRONG TRẬN (áp lực mềm, theo sheet Cân bằng kinh tế)
+1. Giữ trần cứng (32 xe và 6 máy bay mỗi phe); không chiến thuật nào được nới trần.
+2. Phí duy trì quân: thu nhập CP nhân hệ số theo số quân so với trần, khởi điểm dưới 50%: ×1,0; 50–75%: ×0,9; trên 75%: ×0,8. Các hệ số là khởi điểm, đặt trong cấu hình; mô phỏng thử nhiều mức (mức Đông trong khoảng 0,65–0,95) và đo vòng lặp "nhiều quân → ít thu nhập → quân chết → thu nhập tăng → quân lại đầy". Hiện hệ số trên HUD gọn khi đang bị giảm.
+3. Trần CP tích trữ giữ như hiện tại (Vault cao hơn); CP dư khi đã chạm trần thì không tích tiếp.
+4. Dùng hoặc mất: khi phe đã chạm trần quân và CP đầy, ngưỡng tấn công của tướng AI giảm dần từ ngưỡng của chiến thuật xuống khoảng 0,9 trong khoảng 30 s; áp cho mọi chiến thuật. Đây là thay đổi trọng số, không bắt buộc tấn công.
+5. Điểm thắng: ở các chế độ có cứ điểm, bên giữ nhiều cứ điểm hơn làm điểm của bên kia tụt dần. Chỉ thêm ở chế độ chưa có cơ chế tương đương; ghi lại.
+6. Áp lực tăng dần khi trận đứng yên (dùng hệ sự kiện của prompt 23):
+   - Bậc 1 (khoảng 30 s không có giao tranh lớn): cứ điểm tăng giá trị.
+   - Bậc 2 (khoảng 50 s): kho chiến lợi phẩm hoặc phần thưởng xuất hiện ở vùng giữa.
+   - Bậc 3 (khoảng 70 s): áp lực bản đồ tăng (ví dụ pháo kích vào vùng bên đang thụ động).
+   - Bậc 4 (khoảng 90 s): sự kiện ép giao tranh, chỉ là bậc cuối.
+   - Có giao tranh lớn (đo bằng tổng sát thương hai bên) thì quay về bậc 0. Các mốc là khởi điểm để mô phỏng.
+7. Pha cuối: chế độ giao tranh có pha cuối (ví dụ 2 phút cuối, điểm từ cứ điểm ×2).
+8. Cái giá của chiến thuật thủ: Tiêu hao, Phòng thủ chiều sâu, Bảo vệ căn cứ giữ ít cứ điểm hơn nên thu nhập và điểm thấp hơn; Bắn và chạy giảm độ chính xác khi bắn lúc đang lùi; Phân tán không dồn hỏa lực được.
+
+J. CÔNG CỤ XEM AI (trong Sa bàn, bản nội bộ)
+1. Lớp hiển thị: bản đồ ảnh hưởng và mối đe dọa theo loại; độ tin cậy của thông tin (ô mờ dần theo tuổi thông tin); tiền tuyến và điểm nghẽn; sự kiện đang có; mục tiêu, trạng thái, đội hình và chiến thuật của từng đội; tỷ lệ lực lượng thực tế so với mục tiêu; hệ số phí duy trì và thu nhập CP mỗi phe.
+2. Bắt buộc có "VÌ SAO" cho mọi quyết định có chấm điểm:
+   - hành động đã chọn và điểm cuối;
+   - 3 yếu tố cộng điểm lớn nhất và 2 yếu tố trừ điểm lớn nhất;
+   - hành động đứng thứ hai và điểm của nó.
+   Ví dụ: FLANK_LEFT 78 (+ pháo địch lộ +18; + sườn trái yếu +15; + đội cơ động +12; − rủi ro mất gắn kết −10; − phát hiện quân dự bị −7); đứng thứ hai ATTACK_CENTER 69. Không cần ghi toàn bộ phép tính.
+   - Khi chọn đơn vị: trạng thái, mục tiêu, vì sao chọn mục tiêu đó.
+   - Khi chọn đội: nhiệm vụ, trạng thái, vì sao.
+   - Khi chọn tướng AI: kế hoạch hiện tại và các sự kiện dẫn tới kế hoạch đó.
+3. Cảnh báo đổi quyết định: hiện cảnh báo khi số lần đổi hành động, đổi mục tiêu hoặc đổi trạng thái của một đội vượt ngưỡng cảnh báo.
+4. Ghi nhật ký quyết định của tướng AI, các lần đổi chiến thuật và các lần Emergency Reposition trong replay; xem lại được khi báo lỗi.
+
+K. ĐỘ KHÓ
+1. Độ khó đổi chất lượng AI, không chỉ đổi chỉ số. Các trục: độ trễ phản ứng, chất lượng dự đoán, thời gian giữ thông tin (tốc độ giảm độ tin cậy), chất lượng quyết định.
+   - Dễ: phản ứng khoảng 1,5 s; độ tin cậy giảm nhanh; ít dàn ra trước bắn lan; ít đánh sườn; không dồn hỏa lực; tướng địch không đổi chiến thuật giữa trận.
+   - Thường: phản ứng khoảng 0,8 s; đầy đủ các tầng.
+   - Khó: phản ứng khoảng 0,5 s; đánh sườn và dồn hỏa lực thường xuyên; tướng địch đổi chiến thuật khi thua rõ.
+   - Cực khó: phản ứng khoảng 0,3 s; độ tin cậy giảm chậm hơn (nhớ vị trí địch lâu hơn); tướng địch đổi chiến thuật để khắc chế khi trinh sát thấy; cộng các lợi thế đã có từ prompt 13.
+2. Phe người chơi dùng AI Tự mua và Yểm trợ ở mức Thường, không bị giảm theo độ khó.
+
+L. KHUNG THAM SỐ
+1. Mọi tham số AI và kinh tế quan trọng (sheet Tham số AI và Cân bằng kinh tế) có: initial_value, min_value, max_value, measurement_metric, tuning_reason.
+2. Không coi giá trị nào là cuối cùng: đặt trong balance.json, chỉnh bằng cấu hình, và chọn giá trị bằng mô phỏng. Ví dụ các tham số: switch margin, thời gian cam kết tối thiểu, thời gian đánh giá lại khi đứng yên, thời gian kẹt, hồi chiêu Emergency Reposition, ngưỡng địch áp đảo, tốc độ giảm độ tin cậy, khoảng cách dàn ra trước bắn lan, ngưỡng tấn công, ngưỡng chuyển tuyến, hồi chiêu và thời gian chuyển tiếp chiến thuật, hệ số phí duy trì, các mốc áp lực tăng dần, ngưỡng gộp dấu vân.
+3. Viết công cụ quét tham số trong khoảng min–max qua mô phỏng, xuất bảng kết quả theo chỉ số đo của từng tham số.
+
+M. HIỆU NĂNG MOBILE
+1. Nhịp chạy: World Model khoảng 2 lần/s; tướng AI khoảng 1 lần/s; đội khoảng 4 lần/s; đơn vị mỗi tick (chỉ logic cục bộ và chấm điểm mục tiêu).
+2. Đánh giá thô ở tướng AI, đánh giá chi tiết ở đội, đơn vị chỉ xử lý quyết định cục bộ.
+3. Dùng chung và lưu tạm: bảng mối đe dọa và bảng ảnh hưởng tính một lần mỗi phe theo nhịp, không tính lại cùng một mối đe dọa nhiều lần; flow field tính một lần cho mỗi đích và dùng chung cho các đội cùng đích.
+4. Không có tìm kiếm hay lập kế hoạch nặng; chấm điểm chỉ trên tập hành động hợp lệ nhỏ.
+5. Đo ở 32 xe, 6 máy bay mỗi phe, cộng công trình và boss, trên máy tầm thấp: thời gian tick AI trung bình, p95, p99, tick tệ nhất, và thời gian CPU theo từng tầng. Nằm trong ngân sách hiện có. Nếu vượt, giảm nhịp hoặc độ phân giải lưới trước, không bỏ tính năng.
+6. Chỉ thêm giới hạn số quyết định riêng (command budget) nếu đo thực tế cho thấy nhịp chạy, cam kết tối thiểu và ngưỡng chênh vẫn chưa đủ.
+
+N. DETERMINISTIC
+1. Mọi ngẫu nhiên, phân xử khi hòa điểm (chọn hành động, chọn mục tiêu, chọn chiến thuật của tướng địch) và biến thể hành vi đều dùng RNG theo seed của sim.
+2. Replay cùng seed và cùng trạng thái phải tái hiện đúng chuỗi quyết định của tướng AI, đội và đơn vị.
+
+O. KIỂM TRA
+1. Chỉ số đo (sheet Chỉ số đo), lưu sau mỗi trận mô phỏng:
+   - Chất lượng AI: tỷ lệ thời gian đứng yên không lý do; số lần và thời gian kẹt; số lần đổi quyết định, đổi hành động, đổi mục tiêu, đổi trạng thái đội mỗi phút; số xe bị hạ bởi bắn lan; số lần lao vào chỗ chết; tỷ lệ né đòn có cảnh báo; số lần vi phạm đội hình.
+   - Gameplay: tỷ lệ thời gian có giao tranh; số quân trung bình mỗi phe; tỷ lệ thời gian chạm trần quân; thời lượng trận; tỷ lệ lật ngược thế trận; mức tranh chấp cứ điểm; tỷ lệ thiếu thu nhập.
+   - Đa dạng chiến thuật: dấu vân hành vi của từng chiến thuật và khoảng cách giữa các cặp.
+   - Hiệu năng: như M.5.
+2. Mục tiêu khởi điểm:
+   - số quân trung bình mỗi phe khoảng 60–80% trần; chạm trần dưới khoảng 30% thời gian; có giao tranh trên khoảng 60% thời lượng trận;
+   - số lần đổi hành động của đội nằm dưới ngưỡng cảnh báo (đặt ngưỡng sau lần đo đầu);
+   - không chiến thuật nào tốt nhất ở mọi trận; mỗi chiến thuật có ít nhất một chế độ hoặc kiểu trận mà nó là lựa chọn tốt nhất; các cặp khắc chế có hiệu lực đúng hướng.
+   Cặp chiến thuật nào làm trận đứng yên: chỉnh cái giá của chiến thuật thủ trong cặp đó trước, rồi mới chỉnh luật kinh tế và áp lực.
+3. So AI mới với AI cũ chỉ là phép đo hồi quy phụ, không phải tiêu chí bắt buộc thắng.
+4. Bộ kịch bản kiểm tra trong Sa bàn (lưu thành test):
+   - 20 xe qua một cây cầu hẹp: không xe nào kẹt quá thời gian kẹt;
+   - cụm 12 xe gặp boss bắn lan: xe dàn ra; số xe bị hạ bởi một phát siêu vũ khí giảm so với AI cũ;
+   - né vòng cảnh báo: đội né rồi quay về đúng hành động cũ; không tăng số lần đổi hành động;
+   - đội bị áp đảo: Emergency Reposition gom về đội bạn trong vùng giao tranh, không rời trận; không kích hoạt lại trong thời gian hồi chiêu;
+   - xe và đội thấp máu: không rút;
+   - hai hành động có điểm gần nhau (dưới ngưỡng chênh): đội giữ hành động hiện tại;
+   - hành động không khả thi (đường sườn bị chặn): bị loại trước khi chấm điểm, không xuất hiện trong danh sách hành động của công cụ xem AI;
+   - thông tin cũ: AI giảm độ tin cậy theo thời gian và không đánh vào vị trí địch đã rời đi lâu như thể địch vẫn ở đó;
+   - đánh sườn một đội xe tăng: đội được giao đánh sườn đánh vào hông và sau;
+   - máy bay gặp phòng không dày: đổi hướng tiếp cận, không bay vòng tới chết;
+   - đấu pháo binh: pháo bắn rồi dời vị trí, tránh vị trí đã bị đánh dấu;
+   - xe đứng yên không lý do: đội chấm điểm lại (không bắt buộc di chuyển);
+   - tháp với từng chế độ chọn mục tiêu: chọn đúng mục tiêu;
+   - đổi chiến thuật giữa trận: hồi chiêu, chuyển tiếp và mất nhịp đúng; tỷ lệ lực lượng mới chỉ áp cho lần mua sau;
+   - tỷ lệ lực lượng: sau 5 phút, tỷ lệ CP thực tế mỗi nhóm nằm trong ±15 điểm của mục tiêu (khi bộ bài có đủ nhóm);
+   - áp lực tăng dần: các bậc kích hoạt đúng thứ tự và quay về bậc 0 khi có giao tranh lớn;
+   - replay: cùng seed tái hiện đúng chuỗi quyết định.
+5. Mô phỏng 5 seed: toàn bộ chiến dịch thắng được ở độ khó Thường với chiến thuật Cân bằng và với ít nhất 3 chiến thuật khác.
+6. Chụp ảnh tự động: màn chọn chiến thuật, nút đổi chiến thuật trên HUD, các lớp hiển thị và bảng "VÌ SAO" của công cụ xem AI, ở cả hai ngôn ngữ; lưu vào docs/ui-screens/.
+7. Cập nhật docs/CHANGELOG.md, docs/DECISIONS.md và tài liệu thiết kế (AI, chiến thuật, kinh tế trong trận). Xuất lại file nghiên cứu đã cập nhật (docs/ai/Machine_Brigade_AI_Research_applied.xlsx) với các tham số và các lần gộp chiến thuật sau khi chỉnh.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) xem @Machine_Brigade_AI_Research.xlsx và add cả file đó vào và cả prompt này vào cho tương lai làm, commit lên luôn
