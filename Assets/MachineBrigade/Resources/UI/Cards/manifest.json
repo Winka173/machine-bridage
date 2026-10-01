@@ -1280,9 +1280,9 @@
         {
             "id": "kraken",
             "kind": "boss",
-            "model": "leviathan",
-            "source": "Models/leviathan",
-            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
+            "model": "kraken",
+            "source": "Models/kraken",
+            "hash": "v2:593f895cee8edf4171701a136af7e0f7bce6c60e"
         },
         {
             "id": "kronos",

@@ -17,6 +17,16 @@ those parts and mounts name, near the places the resized data puts them (parent 
     with its reverse-raked wave-piercing bow, the faceted pyramid deckhouse with flush radar faces, a railgun in a
     faceted turret on the foredeck (`Part_gun` > `Mount_gun` > `Muzzle_gun`), peripheral VLS banks along the deck
     edges (`Part_vls`), two CIWS (`Part_mg` > `Mount_mg`, `Part_mg.001` > `Mount_mg.001`), the helicopter deck aft.
+  * kraken (Kraken, variant of leviathan with all its 14 parts): a Kuznetsov / Nimitz-style aircraft carrier,
+    109.8 x 19.0 x 23.6 m (modelSize 110 x 18.4 x 24, waterline z 0, keel -3, flight deck z 9): a flared hull, the
+    overhanging deck with the angled landing deck's lines and a ski-jump bow, three deck-edge lifts, the island to
+    starboard with the search radar (`Part_radar` > `Radar`) and the funnel (`Part_engine`), Granit-style cells flush
+    in the deck (`Part_gun`, `.001`, `.002`, each with its `Mount_gun*`), Kinzhal-style cells (`Part_vls`), the two
+    SAM box launchers the brief asks for (`Part_sec_f` > `Mount_gun.003`, `Part_sec_a` > `Mount_gun.004`), four
+    CIWS (`Part_mg` > `Mount_mg`, `Part_mg.001` > `Mount_mg.001`, one drum at each end of both side galleries
+    `Part_aa_l` > `Mount_mg.002` .. `.005`, `Part_aa_r` > `Mount_mg.006` .. `.009`, the middle two 25 mm guns), the
+    landing area with four arresting wires and parked jets on `Part_deck`, more jets forward, the stern boat bay on
+    `Part_welldeck`. Its parts' `at` are tuned onto `KR_NODES`.
   * cerberus (Cerberus, variant of behemoth keeping main_gun, flak_r, flak_l, rocket_pod): three big-wheeled cars
     coupled by drawbars, 16.2 x 7.0 x 5.4 m (modelSize 16.3 x 8.4 x 5.5: a road train cannot be 8.4 m wide; the wide
     stance of the tyres on outboard axles gives 7.0, -17 % on width / length). Each car on its own node for a later
@@ -62,7 +72,7 @@ from mathutils import Vector
 
 import mb_kit27 as k
 import mb_parts27 as parts
-from mb_p20_bosses import _tag, gun_turret
+from mb_p20_bosses import _tag, gun_turret, rocket_box
 from mb_phase2 import _suffixed
 from mb_phase8 import autocannon, ciws, pv
 from mb_vehicles import ACROSS, FORWARD, R90
@@ -761,6 +771,148 @@ def hyperion(a):
     k.clean(a)
 
 
+# ============================================================================= Kraken
+KR_DECK = 9.0                           # flight deck surface (waterline z 0, keel -3)
+KR_NODES = {                            # every part's node: (x, y, z), Blender axes; the def's `at` is tuned onto them
+    'Part_gun': (0.0, -30.0, KR_DECK), 'Part_gun.001': (0.0, -19.5, KR_DECK), 'Part_gun.002': (-5.4, 30.0, KR_DECK),
+    'Part_sec_f': (-7.6, -33.0, KR_DECK - 1.6), 'Part_sec_a': (7.6, 47.0, KR_DECK - 1.6),
+    'Part_vls': (-4.6, 11.0, KR_DECK), 'Part_aa_l': (7.9, 4.0, KR_DECK - 2.2), 'Part_aa_r': (-7.9, 24.0, KR_DECK - 2.2),
+    'Part_mg': (-8.0, -15.5, KR_DECK), 'Part_mg.001': (7.4, 51.5, KR_DECK), 'Part_radar': (-7.4, -3.0, 18.4),
+    'Part_deck': (2.2, 40.0, KR_DECK), 'Part_welldeck': (0.0, 54.4, 2.6), 'Part_engine': (-7.4, 4.6, 15.3)}
+
+
+def _kr_ring(y, wd, ww, keel):
+    """Hull section at y: keel, bilge, the waterline beam ww, the flared side up to the deck edge wd at z 8.4."""
+    return [(0, y, keel), (-ww * .85, y, keel * .5), (-ww, y, .5), (-wd, y, KR_DECK - .6), (wd, y, KR_DECK - .6),
+            (ww, y, .5), (ww * .85, y, keel * .5)]
+
+
+def _kr_jet(a, body, dark, x, y, yaw, parent=None, z0=KR_DECK):
+    """A parked carrier fighter (small, one piece per part): fuselage, folded delta wings, twin fins, canopy."""
+    c, s = math.cos(yaw), math.sin(yaw)
+
+    def at(dx, dy, dz):
+        return (x + dx * c - dy * s, y + dx * s + dy * c, z0 + dz)
+    k.block(body, (1.3, 9.4, .9), loc=at(0, 0, .55), rot=(0, 0, yaw), chamfer=.08, taper=(.8, .95))
+    k.extrude(body, [(0, -2.2), (2.6, 2.6), (2.4, 3.1), (-2.4, 3.1), (-2.6, 2.6)], .16, loc=at(0, 0, .55),
+              rot=(0, 0, yaw), axis='Z', chamfer=0)
+    for sx in (-.5, .5):
+        body.box((.12, 1.6, 1.3), loc=at(sx, 3.6, 1.5), rot=(0, sx * .5, yaw), taper=(1, .6), bevel=0)
+    a.part('Jet_canopies', 'Glass', parent).box((.6, 1.6, .3), loc=at(0, -2.2, 1.1), rot=(0, 0, yaw), bevel=0)
+    dark.box((.9, .4, .5), loc=at(0, 4.6, .55), rot=(0, 0, yaw), bevel=0)
+
+
+def kraken(a):
+    """Kraken, the aircraft carrier: see the module docstring."""
+    _suffixed(a)
+    team, arm = a.part('Hull', 'Team'), a.part('Armor', 'Armor')
+    steel, dark = a.part('Steel', 'Steel'), a.part('Hull_low', 'Undercarriage')
+    deck = a.part('Flight_deck', 'Team')
+    stripe, white = a.part('Deck_lines', 'SafetyStripe'), a.part('Deck_marks', 'Medical')
+    # The hull: a flared loft from the raked stem to the transom, the boot topping at the waterline.
+    k.sharp_loft(team, [[(0, -55.0, KR_DECK - .9)], _kr_ring(-52.0, 2.4, .6, -.5), _kr_ring(-44.0, 5.0, 3.4, -2.2),
+                        _kr_ring(-30.0, 6.6, 5.4, -3.0), _kr_ring(0.0, 7.4, 6.0, -3.0), _kr_ring(30.0, 7.2, 5.8, -2.8),
+                        _kr_ring(50.0, 6.4, 4.6, -1.6), _kr_ring(54.6, 5.8, 4.0, .4)], chamfer=.12, corners=[3, 4])
+    k.block(dark, (11.6, 88.0, .6), loc=(0, 2.0, .2), chamfer=0)
+    # The flight deck: the overhanging outline (angled-deck sponson to port, the island's to starboard), the
+    # ski-jump at the bow, the deck-edge catwalks under the lip.
+    outline = [(-4.6, -55.0), (4.6, -55.0), (8.0, -40.0), (9.2, -12.0), (9.2, 30.0), (8.4, 50.0), (6.0, 54.6),
+               (-6.0, 54.6), (-7.6, 45.0), (-8.0, 20.0), (-9.2, 10.0), (-9.2, -8.0), (-8.0, -14.0), (-7.4, -40.0)]
+    k.extrude(deck, outline, .6, loc=(0, 0, KR_DECK - .3), axis='Z', chamfer=.1)
+    k.extrude(deck, [(0, KR_DECK - .1), (15.0, KR_DECK - .1), (15.0, KR_DECK + .05), (0, KR_DECK + 2.0)], 8.4,
+              loc=(0, -55.0, 0), axis='X', chamfer=.1)
+    for sx in (-1, 1):
+        k.block(arm, (.9, 70.0, .25), loc=(sx * 8.4, 2.0, KR_DECK - 1.0), chamfer=0)
+    # Deck lines: the axial centreline, the angled landing deck's centreline and edge lines (9 degrees to port),
+    # the landing area's markings, the elevator outlines.
+    stripe.box((.3, 72.0, .03), loc=(-1.5, -14.0, KR_DECK + .01), bevel=0)
+    ang = math.radians(9)
+    for dx in (-4.0, 0.0, 4.0):
+        mat = white if dx else stripe
+        mat.box((.3 if dx == 0 else .2, 40.0, .03), loc=(2.0 + dx, 30.0, KR_DECK + .015), rot=(0, 0, ang), bevel=0)
+    for yb in (-46.0, -38.0):
+        white.box((7.0, .3, .03), loc=(0, yb, KR_DECK + .01), bevel=0)
+    # Two deck-edge lifts to starboard, aft of the island, and one to port, as raised plates.
+    for x, y in ((-7.6, 14.5), (-7.6, 24.5), (8.0, -6.0)):
+        k.block(a.part('Lifts', 'MetalSheet'), (3.4, 7.0, .08), loc=(x, y, KR_DECK + .04), chamfer=0)
+    # The island to starboard: two tiers, the bridge glass, the mast with the search radar (`Part_radar` > `Radar`),
+    # the funnel block (`Part_engine`).
+    k.extrude(team, [(-9.2, -10.0), (-5.6, -9.0), (-5.6, 8.0), (-9.2, 8.0)], 5.4, loc=(0, 0, KR_DECK + 2.7), axis='Z',
+              chamfer=.15, taper=(1, .96))
+    k.extrude(team, [(-9.0, -8.6), (-6.2, -7.8), (-6.2, 2.0), (-9.0, 2.0)], 3.0, loc=(0, 0, KR_DECK + 6.9), axis='Z',
+              chamfer=.12)
+    k.inset(team, lambda c, n, f: abs(n.x) > .9 and c.z > KR_DECK + 1, width=.3, depth=.03)
+    a.part('Bridge_glass', 'Glass').box((2.6, .06, .7), loc=(-7.6, -8.25, KR_DECK + 7.6), rot=(-.25, 0, 0), bevel=0)
+    a.part('Bridge_glass_side', 'Glass').box((.06, 6.0, .6), loc=(-6.22, -4.0, KR_DECK + 7.7), bevel=0)
+    pr = pv(a, 'Part_radar', KR_NODES['Part_radar'])
+    k.lathe(a.part('Mast', 'Steel', pr), [(.5, -1.0), (.5, .2), (.3, 1.0), (.25, 1.1)], seg=10, worn=(1,))
+    rad = a.pivot('Radar', (0, 0, 1.1), pr)
+    k.block(a.part('Radar_array', 'Medical', rad), (3.4, .3, 1.1), loc=(0, 0, .55), chamfer=.04)
+    k.block(a.part('Radar_back', 'Undercarriage', rad), (3.0, .2, .8), loc=(0, .24, .55), chamfer=0)
+    pe = pv(a, 'Part_engine', KR_NODES['Part_engine'])
+    k.block(a.part('Funnel', 'Armor', pe), (2.4, 3.6, 2.2), loc=(0, 0, .2), chamfer=.12, taper=(.85, .9))
+    a.part('Funnel_mouth', 'Charred', pe).box((1.7, 2.8, .05), loc=(0, 0, 1.31), bevel=0)
+    for side, z in ((1, KR_DECK + 9.0), (-1, KR_DECK + 9.0)):
+        parts.antenna(steel, (-7.6 + side * .8, 1.2, z - .6), h=.8, r=.1)
+    # The Granit-style missile cells flush in the forward deck (`Part_gun`, `.001`, each with its `Mount_gun*`)
+    # and a third bank aft to starboard (`Part_gun.002`); the Kinzhal-style SAM cells behind the island
+    # (`Part_vls`).
+    for i, name in enumerate(('Part_gun', 'Part_gun.001', 'Part_gun.002')):
+        p = pv(a, name, KR_NODES[name])
+        k.block(a.part(f'Cell_plate_{i}', 'Armor', p), (5.2, 7.0, .1), loc=(0, 0, .05), chamfer=0)
+        hatches = a.part(f'Cell_hatches_{i}', 'MetalSheet', p)
+        for hx in (-1.25, 1.25):
+            for hy in (-2.3, 0.0, 2.3):
+                k.block(hatches, (2.0, 1.8, .1), loc=(hx, hy, .14), chamfer=0)
+        m = pv(a, name.replace('Part_gun', 'Mount_gun'), (0, 0, .2), name)
+        pv(a, name.replace('Part_gun', 'Muzzle_gun'), (0, -1.2, .3), name.replace('Part_gun', 'Mount_gun'))
+    pvl = pv(a, 'Part_vls', KR_NODES['Part_vls'])
+    k.block(a.part('Vls_plate', 'Armor', pvl), (2.4, 5.6, .1), loc=(0, 0, .05), chamfer=0)
+    for hy in (-2.0, -.7, .6, 1.9):
+        k.lathe(a.part('Vls_lids', 'MetalSheet', pvl), [(.45, .1), (.45, .16), (0, .18)], loc=(0, hy, 0), seg=12)
+    # Two SAM box launchers on deck-edge sponsons (`Part_sec_f` > `Mount_gun.003` forward to starboard,
+    # `Part_sec_a` > `Mount_gun.004` aft to port).
+    for name, mount, sx in (('Part_sec_f', 'Mount_gun.003', -1), ('Part_sec_a', 'Mount_gun.004', 1)):
+        p = pv(a, name, KR_NODES[name])
+        k.block(a.part(f'Sponson_{name[-1]}', 'Armor', p), (3.2, 4.4, .4), loc=(-sx * .4, 0, -.2), chamfer=.05)
+        rocket_box(a, mount, mount.replace('Mount_', 'Muzzle_'), (0, 0, 0), parent=name, size=(1.8, 2.4, 1.1))
+    # Four CIWS: forward to starboard (`Part_mg` > `Mount_mg`), aft to port (`Part_mg.001` > `Mount_mg.001`), and the
+    # gallery sponsons down the sides, four 25 mm mounts on each (`Part_aa_l` > `Mount_mg.002` .. `.005`,
+    # `Part_aa_r` > `Mount_mg.006` .. `.009`), two of them CIWS drums.
+    for name, mount in (('Part_mg', 'Mount_mg'), ('Part_mg.001', 'Mount_mg.001')):
+        p = pv(a, name, KR_NODES[name])
+        k.lathe(a.part(f'Ciws_tub_{_tag(name)}', 'Armor', p), [(1.1, -.6), (1.1, .1), (1.0, .2)], seg=14, worn=(1,))
+        ciws(a, mount, (0, 0, .2), parent=name, length=1.8)
+    for name, first, sx in (('Part_aa_l', 2, 1), ('Part_aa_r', 6, -1)):
+        p = pv(a, name, KR_NODES[name])
+        k.block(a.part(f'Gallery_{name[-1]}', 'Armor', p), (2.2, 15.0, .4), loc=(0, 0, -.2), chamfer=.05)
+        for j in range(4):
+            mount = f'Mount_mg.{first + j:03d}'
+            loc = (sx * .2, -5.4 + j * 3.6, 0)
+            if j in (0, 3):
+                ciws(a, mount, loc, parent=name, length=1.5)
+            else:
+                autocannon(a, mount, loc, parent=name, length=1.6, r=.05, size=(.9, 1.1, .5))
+    # The landing area on `Part_deck`: four arresting wires and the parked air wing aft; more jets forward to
+    # starboard on the root. The stern's boat bay on `Part_welldeck`.
+    pd = pv(a, 'Part_deck', KR_NODES['Part_deck'])
+    wires = a.part('Arresting_wires', 'Steel', pd)
+    for j in range(4):
+        wires.box((9.0, .12, .06), loc=(.6, 2.0 + j * 2.2 - 6.0, .06), rot=(0, 0, ang), bevel=0)
+    jb, jd = a.part('Jets_aft', 'MetalSheet', pd), a.part('Jets_aft_dark', 'Charred', pd)
+    for jx, jy, yaw in ((-7.8, 7.0, -.35), (-7.6, 0.0, -.35)):
+        _kr_jet(a, jb, jd, jx, jy, yaw, parent=pd, z0=0.0)
+    jf, jfd = a.part('Jets_fwd', 'MetalSheet'), a.part('Jets_fwd_dark', 'Charred')
+    for jx, jy, yaw in ((-5.0, -24.0, -.35), (-4.8, -31.0, -.35), (-4.4, -38.0, -.35), (5.0, -2.0, .35)):
+        _kr_jet(a, jf, jfd, jx, jy, yaw)
+    pw = pv(a, 'Part_welldeck', KR_NODES['Part_welldeck'])
+    k.block(a.part('Boat_bay', 'Undercarriage', pw), (6.0, .4, 2.6), loc=(0, .2, 0), chamfer=0)
+    k.block(a.part('Boat_bay_rim', 'Armor', pw), (6.8, .3, .3), loc=(0, .25, 1.45), chamfer=0)
+    k.greebles(arm, (0, 30.0, KR_DECK - .6), (1, 0, 0), (0, 1, 0), (6.0, 12.0), 4, seed=2791, height=(.1, .2),
+               chamfer=.02, avoid=())
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=.85, grime_height=.9)),
     'nyx': (nyx, dict(ao_distance=1.0, grime_height=.8)),
@@ -769,5 +921,6 @@ BUILDERS = {
     'stymphalos_drone': (stymphalos_drone, dict(ao_distance=.5, ao_strength=.7, ground=False)),
     'garuda': (garuda, dict(ao_distance=.8, ao_strength=.7, ground=False)),
     'hyperion': (hyperion, dict(ao_distance=.9, ao_strength=.6, ground=False)),
+    'kraken': (kraken, dict(ao_distance=1.0, ao_strength=.7, grime_height=.6)),
     'hydra_sub': (hydra_sub, dict(ao_distance=.7, ao_strength=.75, ground=False)),
 }

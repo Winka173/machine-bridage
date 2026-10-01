@@ -763,6 +763,10 @@
     "file": "kh29l.glb",
     "triangles": 238
   },
+  "kraken": {
+    "file": "kraken.glb",
+    "triangles": 10796
+  },
   "kronos": {
     "file": "kronos.glb",
     "triangles": 8404

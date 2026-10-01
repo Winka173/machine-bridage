@@ -1927,8 +1927,11 @@
     // target / the parent's target), and a super weapon for the four main bosses only (25C: a mini has none).
     // A main-rank variant says "rank": "main" and keeps every part of its parent.
     // Kraken: carrier, Kessler's new admiral (Leviathan's hull and parts; the flight deck carries the air raid).
-    { "id": "kraken", "armour": [5, 3, 2, 2], "variantOf": "leviathan", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid",
-      "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "tint": [0.78, 0.92, 1.12], "mark": "kraken"}},
+    { "id": "kraken", "armour": [5, 3, 2, 2], "variantOf": "leviathan", "model": "kraken", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid",
+      "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "mark": "kraken",
+                  "tune": {"turret_fore": {"at": [0, 26.32, 7.89]}, "turret_super": {"at": [0, 17.11, 7.89]}, "turret_aft": {"at": [4.74, -26.32, 7.89]}, "sec_fore": {"at": [6.67, 28.95, 6.49]}, "sec_aft": {"at": [-6.67, -41.23, 6.49]},
+                           "vls": {"at": [4.04, -9.65, 7.89]}, "aa_port": {"at": [-6.93, -3.51, 5.96]}, "aa_starboard": {"at": [6.93, -21.05, 5.96]}, "ciws_fore": {"at": [7.02, 13.6, 7.89]}, "ciws_aft": {"at": [-6.49, -45.18, 7.89]},
+                           "radar": {"at": [6.49, 2.63, 16.14]}, "flight_deck": {"at": [-1.93, -35.09, 7.89]}, "well_deck": {"at": [0, -47.72, 2.28]}, "machinery": {"at": [6.49, -4.04, 13.42]}}}},
     // Monster: the 800 mm self-propelled gun (the Bastion's hull; its mortar stands for the long barrel with a health of its own).
     { "id": "monster", "armour": [5, 3, 2, 3], "variantOf": "fortress_bastion", "model": "monster", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 103100, "weaponDamage": 1.997, "speed": 0.8, "bigAttack": "monster_800_shell",
       "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.05, "mark": "monster"}},
