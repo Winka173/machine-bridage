@@ -1,4 +1,8 @@
 {
+  "aa_57mm_vehicle": {
+    "file": "aa_57mm_vehicle.glb",
+    "triangles": 5468
+  },
   "aa_gun_tower": {
     "file": "aa_gun_tower.glb",
     "triangles": 1412
@@ -299,6 +303,10 @@
     "file": "cliff_b.glb",
     "triangles": 688
   },
+  "combat_wreck_car": {
+    "file": "combat_wreck_car.glb",
+    "triangles": 2794
+  },
   "command_airship": {
     "file": "command_airship.glb",
     "triangles": 22180
@@ -387,6 +395,10 @@
     "file": "debris_wood.glb",
     "triangles": 44
   },
+  "demolition_line_vehicle": {
+    "file": "demolition_line_vehicle.glb",
+    "triangles": 6202
+  },
   "dirt_mound": {
     "file": "dirt_mound.glb",
     "triangles": 282
@@ -418,6 +430,10 @@
   "drone_hangar_b": {
     "file": "drone_hangar_b.glb",
     "triangles": 9114
+  },
+  "drone_hijack_vehicle": {
+    "file": "drone_hijack_vehicle.glb",
+    "triangles": 3446
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
@@ -803,6 +819,10 @@
     "file": "leviathan.glb",
     "triangles": 25992
   },
+  "light_attack_heli": {
+    "file": "light_attack_heli.glb",
+    "triangles": 3058
+  },
   "light_tank": {
     "file": "light_tank.glb",
     "triangles": 2728
@@ -870,6 +890,10 @@
   "mine_layer": {
     "file": "mine_layer.glb",
     "triangles": 2576
+  },
+  "mine_rocket_truck": {
+    "file": "mine_rocket_truck.glb",
+    "triangles": 5012
   },
   "minefield": {
     "file": "minefield.glb",
@@ -939,6 +963,10 @@
     "file": "mountain_c.glb",
     "triangles": 2252
   },
+  "next_gen_tank": {
+    "file": "next_gen_tank.glb",
+    "triangles": 6512
+  },
   "nlos_atgm_vehicle": {
     "file": "nlos_atgm_vehicle.glb",
     "triangles": 1736
@@ -990,6 +1018,10 @@
   "power_pylon": {
     "file": "power_pylon.glb",
     "triangles": 3020
+  },
+  "prop_attack_plane": {
+    "file": "prop_attack_plane.glb",
+    "triangles": 2758
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",
