@@ -67,11 +67,11 @@ namespace MachineBrigade.Tests
                 var def = catalog.Vehicle(id);
                 Assert.AreEqual(count, def.Parts.Count, id);
                 var total = def.Parts.Sum(p => p.Hp);
-                Assert.That(total, Is.InRange(0.3f, 0.71f), id + ": 50-70 % of the body in all (fewer for bosses with few guns)");
+                Assert.That(total, Is.InRange(0.34f, 0.36f), id + ": prompt 26 A.5: about 35 % of the body in all, on top of it");
                 foreach (var p in def.Parts)
                 {
-                    // Prompt 20 F.3: a main boss with more than ten parts keeps 5-6 % each (the 70 % in all).
-                    Assert.That(p.Hp, Is.InRange(def.Parts.Count > 10 ? 0.049f : 0.069f, 0.151f), $"{id}.{p.Id}: 7-15 % of the body each (5 % with more than ten)");
+                    // Prompt 26 A.5: the parts share the 35 % between them (the library's proportions kept).
+                    Assert.That(p.Hp, Is.InRange(0.004f, 0.151f), $"{id}.{p.Id}: a share of the body");
                     Assert.IsTrue(p.Mounts.Count > 0 || p.Skills.Count > 0 || p.Stops.Count > 0 || p.Speed < 1f || p.Turn < 1f || p.Cadence > 1f || p.Spread > 1f ||
                                   (def.BigAttack?.UsesPart(p.Id) ?? false),
                         $"{id}.{p.Id} does something when it breaks");
@@ -156,7 +156,7 @@ namespace MachineBrigade.Tests
             var boss = world.SpawnVehicle("behemoth", 1, Vector2.Zero, 0f);
             var i = boss.Def.PartIndex("gun_120");
             var full = boss.PartFullHealth(i);
-            Assert.AreEqual(boss.MaxHp * 0.10f, full, 1f);
+            Assert.AreEqual(boss.MaxHp * boss.Def.Parts[i].Hp, full, 1f);
             var before = boss.Hp;
             world.Bosses.Break(boss, i);
             Assert.AreEqual(full * 0.3f, before - boss.Hp, 1f, "30 % of the part's full health");
@@ -320,7 +320,7 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("main_gun", parts, "a tank goes for the twin main gun");
             var hunter = world.SpawnVehicle("tank_destroyer", 0, new Vector2(0f, 30f), MathF.PI);
             var hunted = Enumerable.Range(0, 60).Select(_ => world.Bosses.ChoosePart(hunter, boss, hunter.Weapon)).Where(p => p >= 0).ToList();
-            Assert.IsTrue(hunted.All(p => boss.Def.Parts[p].Hp >= 0.14f), "a tank hunter goes for the toughest part");
+            Assert.IsTrue(hunted.All(p => boss.Def.Parts[p].Hp >= boss.Def.Parts.Max(q => q.Hp) * 0.5f), "a tank hunter goes for the toughest part");
         }
 
         [Test]

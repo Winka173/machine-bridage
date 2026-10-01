@@ -46,6 +46,7 @@ namespace MachineBrigade.Game.Hud
             ["ul.range"] = ("Range {metres} m", "Tầm bắn {metres} m"),
             ["ul.rangeMin"] = ("Range {metres} m, not closer than {minimum} m", "Tầm bắn {metres} m, tối thiểu {minimum} m"),
             ["ul.splash"] = ("{range}, splash {metres} m", "{range}, nổ lan {metres} m"),
+            ["ul.splashEdge"] = ("{range}, blast {metres} m core, {edge} m edge at {share}%", "{range}, nổ lan lõi {metres} m, rìa {edge} m còn {share}%"),
             ["ul.endless"] = ("Never runs out", "Không bao giờ hết đạn"),
             ["ul.clip"] = ("Magazine of {count}, changed in place in {seconds} s", "Băng {count} viên, thay băng tại chỗ {seconds} giây"),
             ["ul.shots"] = ("{count|# shot|# shots}, reloaded in place while standing still ({seconds} s for all)", "{count} phát, nạp lại tại chỗ khi đứng yên ({seconds} giây cho đủ)"),

@@ -12518,3 +12518,135 @@ write tests, never run them). Every number is the prompt's starting value, unmea
   checkpoints. E2, E3 kept. E4 kept if small. E6 waits.
 - F: every measure waits for the owner; the docs, apply-report and the applied Excel are updated.
 Passes, one agent at a time: 1 = A + B; 2 = C + D; 3 = E + docs.
+
+
+## 26AB. Boss health, armour, phases and weapons (prompt 26 A and B, pass 1) (2026-10-01)
+
+Pass 1 of prompt 26 in the owner's reduced scope ("26 scope" above): no test, sweep or measurement was run; every number is the
+prompt's starting value, solved on paper, and listed under "To measure". The data is written by `Tools/balance/p26_ab.py` (a
+second run changes nothing; `--write` saves, the default is a dry run that prints every boss's weapons and DPS); the code is
+under `Scripts/Sim` (damage, bosses, content) with one view change (`EffectsDirector`). Checks run: compile, CatalogCheck
+(241 vehicles, 367 weapons). Tests written, not run: `Prompt26ABTests`, and the old tests whose numbers moved
+(`Prompt25BossTests`: health and the super weapons' table; `BossPartsTests`: the parts' share).
+
+### A. Health, armour, phases
+
+- **A1-A3 health.** The prompt's starting table, a straight line between the chapters, to the nearest 50, shown health
+  (the data holds it over the bosses' toughness 0.85, and a mini's rank share 0.55, as 25C did). Main: ch.1 22,000 / 2 28,500 /
+  3 35,000 / 4 44,350 / 5 53,650 / 6 63,000 / 7 75,350 / 8 87,650 / 9 100,000 / 10 116,650 / 11 133,350 / 12 150,000. Mini:
+  ch.1 9,000 / 2 11,500 / 3 14,000 / interlude 13 (3.5) 15,850 / 4 17,650 / 5 21,350 / 6 25,000 / 7 29,350 / 8 33,650 /
+  interlude 15 (9.5) 41,150 / 9 38,000 / 10 44,350 / 11 50,650 (interlude 14 holds Locust, at its chapter-5 number). Each boss
+  sits at the chapter it is met at first (Monster 8, Kraken 9, Garuda 10, Hyperion 12; Nyx 4, Stymphalos 5, Cerberus 6, Hydra 9,
+  as `BossHunts.Unslotted` places them). Icarus and Hyperion tie at 150,000. No P was measured: a boss is "P x t x 0.6" only in
+  the sense that the prompt's table was built that way.
+- **A4 found and dropped.** The campaign gave the enemy "most of the player's edge" (`EnemyScaling.Match`, `economy.enemyScaling`)
+  through `SimWorld.SetBoosts(everything: true)`, which reached its bosses too (prompt 2). `SimWorld.BossesUnscaled`, set by
+  `MatchRunner` for a campaign mission, keeps a boss out of it; towers, vehicles and elites keep pace as before. Left alone: the
+  quick modes' `ModeSession.KeepPace` (21G) still scales their bosses by the difficulty's share, and the Boss Hunt's own numbers are
+  pass 3's (E).
+- **A5.** Phases 40 / 35 / 25: the main marks 0.6 and 0.25 (the ranks' defaults and the airship's, Leviathan's, Kronos's own; the
+  tiered crafts' marks and the escort table's Icarus marks), the last phase `fireRate 1.25` (B5); a mini 55 / 45 (mark 0.45,
+  Icarus Mk.0's too). Breakable parts: `bossRanks.*.partsShare 0.35` scales every boss's parts, as built from the library and
+  cut down for a variant, so they come to 35 % of the body on top of it, their proportions kept (`BossTemplates.Rank`).
+  Armour: the ground main bosses [5, 3, 2, top kept]; the aircraft and the tiered crafts (Roc, Garuda, Daedalus, Icarus, Hyperion)
+  keep their own (one front for an aircraft, and the tiers' own armour table); a mini's front at most 4 (only Hydra moved,
+  5 -> 4). A ground boss struck on its side or rear takes x1.5 (`DamageSystem.BossFlankBonus`, in `HitMultiplier`; not on a part,
+  not on aircraft, which have no sides).
+- **A6.** `bigAttackRules.difficulty.*.bossHp / bossDamage` (Easy 0.75 / 0.8, Normal 1 / 1, Hard 1.25 / 1.15, Very Hard and the
+  two harder tiers 1.5 / 1.3), applied at spawn to the enemy's boss through `SimWorld.BossDifficulty` (set by the mode session
+  from its elite key). The damage factor is the boss's own `DamageBoost`, so its big attack takes it with its guns; the big
+  attacks' old difficulty damage (0.8 ... 1.1) is therefore 1 for all (cooldown and warning unchanged). Boss Rush is left out
+  (its `BossStrength` is its own difficulty), so its big attacks lose Hard's old 1.1.
+- **A7** dropped (owner).
+
+### B. Weapons
+
+- **B1-B2 method.** Each main boss's target (chapter's DPS: 600 ... 1,600) is the sheet's formula (sustained damage x the type's
+  ground factor x the penetration step against armour 3, `steps_c.boss_dps`) before the rank's x1.4 damage / x1.25 rate, as 25C
+  did. Its mounts are given roles (main 45 %, secondary 25 %, direct 20 %, close 10 %; a role with no weapon gives its share to the
+  others) and a weapon: new `p26_*` weapons carry the prompt's listed rounds, and each role's weapons then take a copy at the scale
+  that makes the role's share come out (first the cadence, within 0.4x-3x and no quicker than 1 s, then the damage), the mounts the
+  prompt does not list kept at 0.2 of their DPS ("tiny"). `mountWeapons` (new boss field: mount index -> weapon id, applied by
+  `BossTemplates` before the variants are cut) writes them, so a mini or a batch D variant takes its parent's set with the mounts it
+  keeps; `weaponDamage` is 1 for the twelve, solved for the rest (below). Result against armour 3 (got / target): Bastion 601 / 600,
+  Behemoth 651 / 650, Jotunn 703 / 700, Leviathan 762 / 800 (the salvo is 3 x 1,200 / 10 s, the prompt's), Matriarch 858 / 850,
+  Moloch 1,001 / 1,000, Nemesis 1,099 / 1,100, Kronos 1,200 / 1,200, Typhon 1,228 / 1,300 (2 cruise missiles x 1,460 / 5 s), Roc 1,402 /
+  1,400, Daedalus 1,420 / 1,500, Icarus 1,599 / 1,600. Per boss (role: mounts -> weapon):
+  - Bastion: main 155 mm (casemate) 515 / 2 s, core 8.5 / 17 m; secondary 240 mm mortar (mount 0) 715 / 5 s, core 10 / 20; direct 2 x
+    100 mm 240 / 5 s (pen 5); close 2 x NSV; the rest at 0.2.
+  - Behemoth: main 152 mm 650 / 2 s (8.5 / 17); secondary dorsal Grad 8 x 195 / 3 s (5 / 10), opens in phase 2; direct 2 x 120 mm
+    255 / 5 s (pen 5); close the two flak.
+  - Jotunn: main 2 x 203 mm 790 / 5 s (10 / 20); secondary two 8 x 130 pods / 4 s (phase 2); direct 125 mm 290 / 2.5 s; close flak.
+  - Leviathan: main 3 x 406 mm 1,200 / 10 s (12 / 20; the salvo data too, `salvo.weapon` p26_leviathan_lev406); secondary 2 x 155 mm
+    triple 3 x 175 / 3.5 s (8.5 / 17, phase 2, with the Tomahawk cruise already opening there); direct 2 x 127 mm 335 / 4.5 s on the
+    two Phalanx mounts (the AA 25 mm and the SAM stay: anti-air, no ground DPS).
+  - Matriarch: main the bay's swarm 6 x 320 / 4 s (core 3 / 6); secondary the two 30 mm and the 57 mm at 0.2 (phase 2); direct the
+    other two bays as 340 ATGM; close the flak.
+  - Moloch: main 2 x 120 mm HE 300 / 1 s (5 / 10); direct 2 x 120 mm AP 220 / 2 s (pen 5); close flak (the workshop-door ring and the
+    shell that switches to AP are not made).
+  - Nemesis: main 152 mm 4 x 655 / 3 s (8.5 / 17); secondary the rocket car 13 x 305 (phase 2); direct 125 mm at the gun car; close flak.
+  - Kronos: main the wheel (data: 1,080 / 2 s); secondary the thrown rock (phase 2; 3 x 500 / 5 s, two-layer); direct 2 x 57 mm AP;
+    close the 30 mm and the Grad. The 90-degree 20 m cone is not made (the crusher keeps its strip).
+  - Typhon: main the cruise missile (2 x 1,460 / 5 s, as `cruise.every 2.5`); secondary two new 57 mm HE mounts (appended to the
+    boss's own list, so the deck gun is mount 3); direct the 100 mm deck gun 580 / 2 s, still waking in phase 3.
+  - Roc: main 8 x 195 bomb strings from the two 57 mm mounts (shell-lobbed stand-ins), secondary 2 x 105 mm 700 / 2 s (phase 2), direct
+    2 x ATGM from the hangars, close the 30 mm pair. Daedalus: main the pods (3 x 1,125, `pods.damage`, a 1 s stun, every 8 / 6.5 /
+    5 s by phase), secondary 2 x 57 mm, direct 2 x laser. Icarus: main 2 coilguns 1,500 / 5 s (`pierceMax 4`), secondary the laser, direct two
+    laser towers, close the crash guns.
+  - Batch D: Monster, Kraken, Garuda, Hyperion take their parent's set with `weaponDamage` solved for the chapter's target (2.0,
+    2.3, 1.0, 1.1); the minis' `weaponDamage` is solved for 65 % of the chapter's target (1.1 ... 4.3), capped at 6 for Supreme
+    Command, Ixion, Caspian, Morrigan and Rail Gungnir, whose fire is mostly not a mount's (so they stay under 65 %).
+  - A mini boss fights from its first second: it takes `wake: null` and (for the ground ones) `guard: null`.
+- **B2 close guard** (new, `GuardRingDef`): the six ground main bosses (Bastion, Behemoth, Jotunn, Moloch, Nemesis, Kronos) blast
+  the ground round the body (core 6 m past the hull, edge twice that, at most 20 m) every 5 s while four or more of the other
+  side's ground vehicles stand within 15 m of the hull; the damage is a quarter of the boss's target DPS a second per ring.
+- **B3 two-layer blasts.** `WeaponDef.SplashEdge / EdgeShare` (data `edge`, `edgeShare`), `DamageSystem.Splash(.., edgeRadius,
+  edgeShare)` and `ApplyFalloff`: full damage within the core, the edge's share (0.4) out to the edge, nothing past it, no falloff
+  inside a layer. Done everywhere a boss blasts: its mounts (every boss mount with a splash of 2 m or more gets a copy of its weapon
+  with an edge of twice the core, at most 20 m, at load: `Catalog.WithEdge`, same id), its big attacks (`BigStrikeDef.EdgeRadius`:
+  data `edge`, else twice the radius for a circle, strip, line, missile, drop or swarm; rods, arcs, sweeps and charges have none), the ships'
+  salvos and cruise missiles and the landings' shells (`ExplosionDef.TwoLayer`), the Kronos debris, the landing pods, Tartarus's quake.
+  The cores of the prompt's starting weapons are set as listed (120 mm 5 / 10 m, 152-155 mm 8.5 / 17, 203 mm 10 / 20, 406 mm 12 /
+  20); every other boss weapon keeps its old radius as its core. **Shown:** the impact and explosion events carry the edge in
+  `Target.X`, and `EffectsDirector.EdgeRing` draws a second, warmer ring on it beyond the core's own ring; the Guide's weapon lines
+  read "blast 8.5 m core, 17 m edge at 40%" (`ul.splashEdge`). The big attacks' warning zones are still the core's.
+- **B4.** A boss's own shell of 5 m core or more that flies at least 1.2 s and is not one of the boss system's laid weapons shows a
+  small ring on its fall point for its last 0.8 s (`EffectsDirector.BossShellWarning`, from the weapon-fired event's aim and
+  flight time); the big attacks, the ships' salvos and the cruise missiles already had warning rings.
+- **B5.** `wake` (phase 1: the second phase) opens the secondary mounts of Behemoth, Jotunn, Leviathan, Matriarch, Nemesis and
+  Roc (Typhon's deck gun was phase 3 already); Bastion's secondary is its main-slot mortar (mount 0), which cannot sleep, so it
+  fires from the start. Phase 3: `BossPhaseDef.FireRate 1.25` (the weapons fire a quarter faster); the tiered crafts (Icarus,
+  Daedalus, Hyperion) have their tiers' own schedule and get no such rate. `wake` mounts follow a variant's cut (`Strip`).
+- **B6 super weapons.** Main bosses only (as 25C); cycle 45-50 s, warning 3-4 s, the listed rounds: Bastion 2,000 core 10 m / 45 s;
+  Behemoth 6 x 600 / 45 s; Jotunn 4 x 900 core 10 / 50 s; Leviathan 9 x 950 core 12 / 50 s; Matriarch 1,600 (shot down at 250) / 45
+  s; Moloch 8 x 350 and six vehicles / 50 s; Nemesis 3,500 (shot down at 600) / 50 s; Kronos 2,500 / 45 s; Typhon 6 x 700 / 50 s; Roc 16
+  x 400 / 50 s; Daedalus 8 x 600 / 50 s; Icarus 7 x 1,800 (nine in phase 3) / 45 s; Kraken, Monster (4,000, 6 s -> 4 s warning),
+  Garuda, Hyperion every 50 s. The "at most 35 % of the boss's damage in a battle" is not enforced (a measure).
+- **B8 (reduced).** Scylla's twin AK-130 core 5 m (edge 10); Caspian 700 per anti-ship missile every 13 s, core 7; Tartarus's
+  surfacing quake core 6 m (edge 12); Harpy's two miniguns and Inferno's flame are the existing weapons. Not made: Inferno's 60 degree
+  cone, Juggernaut's mortar car, Morrigan's air-to-air missile.
+- **B9.** `CombatSystem.P26Worth`: a boss's area weapon (3 m core or more) weighs a ground target by the worth of the vehicles in
+  its core (up to x4), its guns by the target's worth (linearly); anti-air already takes aircraft first.
+- **B10.** Guide: the weapon lines show the two layers; the super weapons' texts (en + vi) carry the new numbers, cycles and cores.
+  No new "In action" clips (owner).
+
+### Skipped, and doubts
+
+- Moloch's workshop-door blast ring and the self-switching AP shells (Moloch, Behemoth), Matriarch's drone bubbles, Leviathan's
+  Tomahawk box (unchanged), Kronos's cone, Typhon's separate Buk / AK-630 close guards: no mechanism or mount for them yet, so their
+  shares were folded into the other roles. The close guard ring is the one new mechanism for B2.
+- The new mounts fire from their slot's muzzle on the old models (Bastion's 155 from the casemate, Leviathan's 127 mm from the
+  CIWS, Matriarch's ATGM from two drone bays, Roc's bomb strings from the gun mounts, Typhon's 57 mm from nowhere in particular): model work
+  (ASSET_DEBT, prompt 27).
+- Armour for aircraft and tiered craft untouched; a mini's side and rear unchanged; Heroic and Iron take Very Hard's factors.
+- The mini bosses whose `weaponDamage` is capped sit below their target on paper.
+- Part health: the library parts were 5-9 % each (50-70 % of the body in all); now about 35 % in all.
+
+### To measure (the owner's tests wait)
+
+Kill times against the chapter's targets (2.5 min at ch.1 to 4 min at ch.12 for a main, 60 to 90 s for a mini) with the
+standard deck; the boss's real DPS with the rank's x1.4 / x1.25 and the phases' x1.1-1.2 (the paper targets exclude them: if the
+prompt meant them in, every number is too high by about 1.7); the super weapons' share (35 %) of the damage a boss does; whether
+the 35 % parts make the "break the guns" play too cheap; Moloch's 300 per 1 s HE shells, Icarus's 1,500 slugs, Typhon's 1,460
+missiles and the Daedalus pods against the armies of their chapters; the crowd targeting; the close guard ring's size; the
+A6 factors on Boss Rush and the quick modes; the flank bonus and armour 5 / 3 / 2 against the cards' penetration.

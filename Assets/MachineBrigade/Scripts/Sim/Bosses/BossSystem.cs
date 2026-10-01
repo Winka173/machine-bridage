@@ -197,19 +197,23 @@ namespace MachineBrigade.Sim.Bosses
             // Prompt 18: the big dive's quake is its big attack's (harder, wider, the same stun).
             if (BigQuakeHits(v)) return;
             var info = new HitInfo(v, v.Team, null, v.Position, HitKind.Strike, true);
+            var edge = MathF.Min(WeaponDef.MaxEdge, b.Radius * 2f);
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || e.Def.Boss) continue;
-                if (Vector2.Distance(e.Position, v.Position) > b.Radius + e.Def.HullRadius) continue;
-                if (!e.Def.Static)
+                // Prompt 26 B.3: two layers: the core (b.Radius) at full damage and a stun, the edge twice as wide at 40 %.
+                var away = Vector2.Distance(e.Position, v.Position) - e.Def.HullRadius;
+                if (away > edge) continue;
+                var core = away <= b.Radius;
+                if (core && !e.Def.Static)
                 {
                     _world.Status.Stun(e, now + b.Stun);
                     e.ClearPath();
                     e.Speed = 0f;
                 }
-                _world.Damage.Apply(e, b.Damage, DamageType.HighExplosive, info);
+                _world.Damage.Apply(e, core ? b.Damage : b.Damage * 0.4f, DamageType.HighExplosive, info);
             }
-            _world.Emit(SimEvent.Exploded(v.Position, new ExplosionDef(0f, b.Radius, 0f, ExplosionTier.Ultimate), v.Id));
+            _world.Emit(SimEvent.Exploded(v.Position, ExplosionDef.TwoLayer(0f, b.Radius, ExplosionTier.Ultimate), v.Id));
         }
 
         // ================================================================== landings
@@ -265,7 +269,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             v.TurretHeading = SimMath.HeadingOf(at - v.Position);
             v.LastFiredAt = now;
-            _world.Damage.Queue(at, new ExplosionDef(b.Damage, b.Radius, 0f, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+            _world.Damage.Queue(at, ExplosionDef.TwoLayer(b.Damage, b.Radius, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
         }
 
         private bool SpotterStands(Vehicle v, string spotter)

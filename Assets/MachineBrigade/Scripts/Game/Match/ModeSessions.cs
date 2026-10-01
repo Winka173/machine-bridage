@@ -287,6 +287,8 @@ namespace MachineBrigade.Game.Match
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             world.ModeTag = menu ? "Menu" : kind.ToString();
+            // Prompt 26 A.6: the enemy's bosses take the difficulty's health and damage factors (Boss Rush has its own strength).
+            if (!menu && kind != GameModeKind.Sandbox && kind != GameModeKind.BossRush) world.BossDifficulty = session.EliteDifficulty;
             session.Build(world, seed);
             // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events or elites.
             if (!menu && kind == GameModeKind.Sandbox) return session;

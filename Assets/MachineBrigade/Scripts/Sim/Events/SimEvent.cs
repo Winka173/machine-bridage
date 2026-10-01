@@ -280,11 +280,11 @@ namespace MachineBrigade.Sim.Events
             new(SimEventKind.TraitProc, v.Id, v.Position, default, 0f, default, key, v.Team, airborne: v.Flying);
 
         internal static SimEvent Impact(WeaponDef weapon, Vector2 at, EntityId hit, int team, bool airborne = false) =>
-            new(SimEventKind.ProjectileImpact, hit, at, default, weapon.SplashRadius, weapon.ImpactTier, weapon.Id, team,
+            new(SimEventKind.ProjectileImpact, hit, at, new Vector2(weapon.SplashEdge, 0f), weapon.SplashRadius, weapon.ImpactTier, weapon.Id, team,
                 airborne: airborne);
 
         internal static SimEvent Exploded(Vector2 at, ExplosionDef explosion, EntityId source) =>
-            new(SimEventKind.Explosion, source, at, default, explosion.Radius, explosion.Tier, null, Teams.Environment);
+            new(SimEventKind.Explosion, source, at, new Vector2(explosion.Edge, 0f), explosion.Radius, explosion.Tier, null, Teams.Environment);
 
         internal static SimEvent Damage(IDamageable target, float amount) =>
             new(SimEventKind.Damaged, target.Id, target.Position, default, amount, default, null, target.Team);

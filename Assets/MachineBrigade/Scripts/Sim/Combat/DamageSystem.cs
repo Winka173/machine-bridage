@@ -107,8 +107,16 @@ namespace MachineBrigade.Sim.Combat
 
             // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
             if (weapon.SplashRadius > 0f && !p.Bounce)
-                Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
-                    weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
+            {
+                // Prompt 26 B.3: a boss weapon's blast has two layers, the core at full damage and the edge twice as wide at 40 %,
+                // both fixed (the ordinary blast's reach varies by up to 15 %).
+                if (weapon.SplashEdge > 0f)
+                    Splash(at, weapon.SplashRadius, weapon.Damage * p.DamageScale, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
+                        info.As(HitKind.Splash), weapon.SplashEdge, weapon.EdgeShare);
+                else
+                    Splash(at, weapon.SplashRadius * (0.85f + 0.3f * (float)_world.Random.NextDouble()), weapon.Damage * p.DamageScale,
+                        weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying, info.As(HitKind.Splash));
+            }
             // A heavy round from equipment bursts round its target too, at half its weight.
             if (p.ExtraSplash > 0f)
                 Splash(at, p.ExtraSplash, weapon.Damage * p.DamageScale * 0.5f, weapon.DamageType, p.OwnerTeam, hit, p.Owner, p.TargetFlying,
@@ -182,7 +190,9 @@ namespace MachineBrigade.Sim.Combat
                 : table.Type(type, kind);
             // DECISIONS 20X: a round overmatches a face it meets side on, not the roof and not an aircraft.
             _lastPen = known ? table.Penetration(pen, armour, DamageTable.Overmatches(kind, face == ArmorFace.Top)) : 1f;
-            return _lastPen * typeMult;
+            // Prompt 26 A.5: a ground boss struck on its side or its rear (not on a part) takes half as much again.
+            var flank = target is Vehicle flanked && flanked.Def.Boss && !flanked.Flying && (face == ArmorFace.Side || face == ArmorFace.Rear) ? BossFlankBonus : 1f;
+            return _lastPen * typeMult * flank;
         }
 
         /// <summary>
@@ -229,6 +239,9 @@ namespace MachineBrigade.Sim.Combat
             }
             return best * worst;
         }
+
+        /// <summary>Prompt 26 A.5: what a ground boss takes from a hit on its side or rear, over the front's.</summary>
+        internal const float BossFlankBonus = 1.5f;
 
         internal const float LightTowerAirBonus = 1.25f;
         internal const float EngineerBreach = 3f;
@@ -379,21 +392,23 @@ namespace MachineBrigade.Sim.Combat
         /// from <see cref="Teams.Environment"/> (cook-offs, fuel) hurt everyone.
         /// </summary>
         public void Splash(Vector2 at, float radius, float damage, DamageType type, int sourceTeam, EntityId exclude,
-            EntityId attacker = default, bool airborne = false, in HitInfo info = default)
+            EntityId attacker = default, bool airborne = false, in HitInfo info = default, float edgeRadius = 0f, float edgeShare = 0.4f)
         {
+            // Prompt 26 B.3: a two-layer blast: full damage within the core (radius), edgeShare of it out to edgeRadius.
+            var reach = edgeRadius > radius ? edgeRadius : radius;
             foreach (var v in _world.VehicleList)
             {
                 // A blast on the ground cannot reach aircraft, and an airburst does not reach the ground.
                 if (!v.IsAlive || v.Id == exclude || v.Flying != airborne) continue;
                 if (sourceTeam != Teams.Environment && v.Team == sourceTeam) continue;
-                if (Reaches(v, at, radius)) Blame(v, attacker, sourceTeam);
-                ApplyFalloff(v, at, radius, damage, type, info.At(at));
+                if (Reaches(v, at, reach)) Blame(v, attacker, sourceTeam);
+                ApplyFalloff(v, at, radius, damage, type, info.At(at), edgeRadius, edgeShare);
             }
             if (airborne) return;
             foreach (var prop in _world.PropList)
             {
                 if (!prop.IsAlive || prop.Id == exclude) continue;
-                ApplyFalloff(prop, at, radius, damage, type, info.At(at));
+                ApplyFalloff(prop, at, radius, damage, type, info.At(at), edgeRadius, edgeShare);
             }
         }
 
@@ -593,7 +608,7 @@ namespace MachineBrigade.Sim.Combat
                 // cook-off, a fuel tank, equipment's) throws fragments at the face turned to it.
                 info = pending.Pen >= 0f ? info.WithPen(pending.Pen, pending.Top) : info.WithPen(Armour.FragmentPenetration, top: false);
                 Splash(pending.Position, pending.Explosion.Radius, pending.Explosion.Damage, DamageType.HighExplosive,
-                    pending.Team, EntityId.None, pending.Attacker?.Id ?? default, false, info);
+                    pending.Team, EntityId.None, pending.Attacker?.Id ?? default, false, info, pending.Explosion.Edge, pending.Explosion.EdgeShare);
             }
         }
 
@@ -604,9 +619,17 @@ namespace MachineBrigade.Sim.Combat
         private static bool Reaches(IDamageable target, Vector2 at, float radius) =>
             Vector2.Distance(target.Position, at) - target.Radius <= radius;
 
-        private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type, in HitInfo info)
+        private void ApplyFalloff(IDamageable target, Vector2 at, float radius, float damage, DamageType type, in HitInfo info,
+            float edgeRadius = 0f, float edgeShare = 0.4f)
         {
             var edgeDistance = MathF.Max(0f, Vector2.Distance(target.Position, at) - target.Radius);
+            // Prompt 26 B.3: two flat layers, no falloff inside either: the core at full damage, the edge at its share.
+            if (edgeRadius > radius)
+            {
+                if (edgeDistance > edgeRadius) return;
+                Apply(target, edgeDistance <= radius ? damage : damage * edgeShare, type, info);
+                return;
+            }
             if (edgeDistance > radius) return;
             // Prompt 15 C.3: a thermobaric blast's pressure falls off half as much.
             var edge = Thermobaric(info) ? (1f + EdgeFalloff) * 0.5f : EdgeFalloff;
@@ -641,6 +664,9 @@ namespace MachineBrigade.Sim.Combat
             if (length < 0.1f) return;
             var along = line / length;
             var info = HitInfo.Of(p, HitKind.Pierce);
+            // Prompt 26 B.7: a slug that goes through at most PierceMax vehicles in all (the one aimed at counts): the nearest first.
+            var capped = p.Weapon.PierceMax > 0;
+            if (capped) _pierced.Clear();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || v.Team == p.OwnerTeam || v.Id == struck || v.Id == p.Owner) continue;
@@ -648,11 +674,28 @@ namespace MachineBrigade.Sim.Combat
                 var t = Vector2.Dot(offset, along);
                 if (t < 0f || t > length + 12f) continue;
                 if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
+                if (capped)
+                {
+                    _pierced.Add((t, v));
+                    continue;
+                }
                 Blame(v, p.Owner, p.OwnerTeam);
                 Apply(v, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType, info);
                 PierceVictims++;
             }
+            if (!capped) return;
+            _pierced.Sort((a, b) => a.t != b.t ? a.t.CompareTo(b.t) : a.v.Id.Value.CompareTo(b.v.Id.Value));
+            var room = p.Weapon.PierceMax - (struck.IsValid ? 1 : 0);
+            for (var k = 0; k < _pierced.Count && k < room; k++)
+            {
+                var hit = _pierced[k].v;
+                Blame(hit, p.Owner, p.OwnerTeam);
+                Apply(hit, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType, info);
+                PierceVictims++;
+            }
         }
+
+        private readonly List<(float t, Vehicle v)> _pierced = new();
 
         /// <summary>Vehicles hit by a piercing round beyond the one it was aimed at, over the battle (balance measurements).</summary>
         internal int PierceVictims { get; private set; }

@@ -62,7 +62,10 @@ namespace MachineBrigade.Game.Hud
             foreach (var r in w.Rounds)
                 if (r.CarriedBy(def)) lines.Add(RoundLine(w, r));
             var range = w.MinRange > 0f ? F("ul.rangeMin", ("metres", N(w.Range)), ("minimum", N(w.MinRange))) : F("ul.range", N(w.Range));
-            lines.Add(w.SplashRadius > 0.5f ? F("ul.splash", ("range", range), ("metres", N(w.SplashRadius))) : range);
+            // Prompt 26 B.3: a boss weapon's blast has two layers, the core at full damage and the edge at 40 %.
+            lines.Add(w.SplashRadius > 0.5f && w.SplashEdge > w.SplashRadius
+                ? F("ul.splashEdge", ("range", range), ("metres", N(w.SplashRadius)), ("edge", N(w.SplashEdge)), ("share", N(w.EdgeShare * 100f)))
+                : w.SplashRadius > 0.5f ? F("ul.splash", ("range", range), ("metres", N(w.SplashRadius))) : range);
             return lines;
         }
 

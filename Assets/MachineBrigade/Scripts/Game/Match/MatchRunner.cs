@@ -239,6 +239,8 @@ namespace MachineBrigade.Game.Match
                 // The commander's lines count towards the army's strength like its equipment (prompt 22 F.1).
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(CommanderRules.Merge(PlayerProfile.BoostFor(def), _playerCommander, def, GearCatalog.StatCap));
+                // Prompt 26 A.4: ... but its bosses do not (their health is set by the target time).
+                _world.BossesUnscaled = true;
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
                 // The elite budget is part of that pace, not on top of it (prompt 8 H).
                 edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));

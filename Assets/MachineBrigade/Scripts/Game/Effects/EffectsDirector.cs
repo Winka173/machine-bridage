@@ -242,6 +242,8 @@ namespace MachineBrigade.Game.Effects
                         // Play-test 5 (DECISIONS 20V): drones, missiles, rockets, shells and the gun turret's rounds by BlastSizes.Round.
                         // Prompt 25 A5: every blast's ring on its damage radius (e.Value, the round's splash radius).
                         if (!ImpactOfKind(round, e, impact, now, size)) Explode(e.Tier, impact, now, size, flash: false, grow: BlastSizes.Round(round), radius: e.Value);
+                        // Prompt 26 B.3: a two-layer blast shows its edge too, a second ring on the edge's radius beyond the core's.
+                        EdgeRing(impact, e.Value, e.Target.X);
                         // Every blast from Medium up scorches the ground under it, as wide as it is drawn.
                         if (e.Tier >= ExplosionTier.Medium)
                             _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round));
@@ -436,6 +438,7 @@ namespace MachineBrigade.Game.Effects
                         }
                         // Prompt 25 A5: a vehicle's, a mine's or a prop's blast drawn as wide as it reaches.
                         Explode(e.Tier, blast, now, radius: e.Value);
+                        EdgeRing(blast, e.Value, e.Target.X);
                         _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
                         _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
@@ -584,6 +587,11 @@ namespace MachineBrigade.Game.Effects
                 // Shots entirely off screen are not drawn (the sound still plays).
                 if (!_cull.Visible(Ground(e.Position, 1f), 0.15f) && !_cull.Visible(Ground(e.Target, 1f), 0.15f)) continue;
                 _weapons.Fired(e, shooter, views, now);
+                // Prompt 26 B.4: a big shell of a boss's own gun warns of its fall (the big attacks and the ships' salvos have their own rings).
+                if (shooter != null && shooter.Sim.Def.Boss && e.Kind == SimEventKind.WeaponFired && e.Value >= 1.2f && e.DefId != null &&
+                    _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid && big.SplashRadius >= BossShellWarnFrom &&
+                    (big.Indirect || big.Projectile == ProjectileKind.Shell))
+                    BossShellWarning(Ground(e.Target, 0.2f), big.SplashRadius, e.Value, now);
                 // At night the flash lights the ground at the muzzle.
                 if (shooter != null && shooter.Root != null && !shooter.Flying && e.DefId != null &&
                     _catalog.Weapons.TryGetValue(e.DefId, out var fired))
@@ -1007,6 +1015,40 @@ namespace MachineBrigade.Game.Effects
 
         /// <summary>Prompt 25 A5: the faint ring a small splash round (flak, a grenade) shows its blast radius with.</summary>
         private static readonly Color LoneRing = new(0.95f, 0.9f, 0.75f, 0.35f);
+
+        /// <summary>Prompt 26 B.4: a boss shell with at least this blast core warns of where it falls.</summary>
+        private const float BossShellWarnFrom = 5f;
+
+        /// <summary>How long before it lands a big boss shell's ring shows (seconds).</summary>
+        private const float BossShellWarningSeconds = 0.8f;
+
+        /// <summary>Prompt 26 B.4: a small warning ring on the spot a big boss shell will fall, for its last 0.8 s in the air.</summary>
+        private void BossShellWarning(Vector3 at, float core, float flight, float now)
+        {
+            var wait = Mathf.Max(0f, flight - BossShellWarningSeconds);
+            var life = Mathf.Min(flight, BossShellWarningSeconds);
+            Later(now + wait, () =>
+            {
+                if (!_cull.Visible(at, 0.2f)) return;
+                var emit = new ParticleSystem.EmitParams
+                {
+                    position = at + Vector3.up * 0.2f, startSize = BlastSizes.RingQuad(core), startColor = BossShellRing, startLifetime = life,
+                    applyShapeToPosition = false,
+                };
+                _layers.Shockwave.Emit(emit, 1);
+            });
+        }
+
+        private static readonly Color BossShellRing = new(1f, 0.35f, 0.2f, 0.6f);
+
+        /// <summary>Prompt 26 B.3: the ring of a two-layer blast's edge (a warm, fainter ring than the core's own), drawn when the edge is wider than the core.</summary>
+        private static readonly Color EdgeRingColour = new(1f, 0.62f, 0.3f, 0.5f);
+
+        private void EdgeRing(Vector3 at, float core, float edge)
+        {
+            if (!(edge > core) || core <= 0f) return;
+            Ring(at, BlastSizes.RingQuad(edge), EdgeRingColour);
+        }
 
         private void Ring(Vector3 at, float size, Color colour)
         {

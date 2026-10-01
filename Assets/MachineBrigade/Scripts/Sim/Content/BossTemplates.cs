@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Keys a variant never takes from its parent.</summary>
         private static readonly string[] NotInherited =
         {
-            "id", "rank", "variantOf", "variant", "phases", "radioSpawn", "bigAttack", "bigAttackScale", "damageScale", "weaponDamage",
+            "id", "rank", "variantOf", "variant", "phases", "radioSpawn", "bigAttack", "bigAttackScale", "damageScale", "weaponDamage", "mountWeapons",
             "size", "dropParts", "tint", "mark", "variantName", "hiddenNodes",
         };
 
@@ -77,6 +77,7 @@ namespace MachineBrigade.Sim.Content
                         }
                         Resize(d, Number(d, "size", 1f));
                     }
+                    MountWeapons(d, path);
                     if (d.TryGetValue("id", out var idValue) && idValue is string id) beforeRank[id] = Copy(d);
                     Rank(d, ranks, path);
                     built[i] = d;
@@ -126,6 +127,25 @@ namespace MachineBrigade.Sim.Content
                 if (secondary.Count > 0) d["secondary"] = secondary;
             }
             return d;
+        }
+
+        /// <summary>
+        /// Prompt 26 B.7: "mountWeapons" {"mount index": "weapon id"} on a boss swaps the weapon on those mounts of the boss as built
+        /// (0 the main weapon, then the secondary list), after its parts and variants are cut down and before its variants are
+        /// cut from it, so a variant takes the swapped weapons with the mounts it keeps (and may swap its own).
+        /// </summary>
+        private static void MountWeapons(Dictionary<string, object?> d, string path)
+        {
+            if (!d.TryGetValue("mountWeapons", out var mw) || mw is not Dictionary<string, object?> swaps) return;
+            d.Remove("mountWeapons");
+            var secondary = d.TryGetValue("secondary", out var s) && s is List<object?> list ? list : new List<object?>();
+            foreach (var pair in swaps)
+            {
+                if (!int.TryParse(pair.Key, out var index) || index < 0 || index > secondary.Count || pair.Value is not string weapon)
+                    throw new FormatException($"{path}.mountWeapons: '{pair.Key}' is no mount of this boss ({1 + secondary.Count}), or its weapon is no id.");
+                if (index == 0) d["weapon"] = weapon;
+                else if (secondary[index - 1] is Dictionary<string, object?> mount) mount["weapon"] = weapon;
+            }
         }
 
         /// <summary>The parts <paramref name="keep"/> says stay, and the mounts and skills that only the others carried gone.</summary>
@@ -194,6 +214,14 @@ namespace MachineBrigade.Sim.Content
                 foreach (var m in Ints(crash, "guns"))
                     if (remap.TryGetValue(m, out var n)) guns.Add((double)n);
                 crash["guns"] = guns;
+            }
+            // Prompt 26 B.5: the mounts that wake in the second phase follow the others.
+            if (d.TryGetValue("wake", out var wk) && wk is Dictionary<string, object?> wake)
+            {
+                var woken = new List<object?>();
+                foreach (var m in Ints(wake, "mounts"))
+                    if (remap.TryGetValue(m, out var n)) woken.Add((double)n);
+                wake["mounts"] = woken;
             }
             if (d.TryGetValue("skills", out var ks) && ks is List<object?> own)
             {
@@ -302,6 +330,17 @@ namespace MachineBrigade.Sim.Content
             if (rules.TryGetValue("hp", out var hp) && hp is double share && d.TryGetValue("hp", out var h) && h is double own) d["hp"] = own * share;
             foreach (var key in new[] { "damageScale", "bigAttackScale" })
                 if (!d.ContainsKey(key) && rules.TryGetValue(key, out var value) && value != null) d[key] = Clone(value);
+            // Prompt 26 A.5: the breakable parts' health comes on top of the body's, about a third of it in all.
+            if (rules.TryGetValue("partsShare", out var ps) && ps is double partsShare && d.TryGetValue("parts", out var pl) && pl is List<object?> partList)
+            {
+                var sum = 0.0;
+                foreach (var o in partList)
+                    if (o is Dictionary<string, object?> part && part.TryGetValue("hp", out var ph) && ph is double phv) sum += phv;
+                if (sum > 0.0)
+                    foreach (var o in partList)
+                        if (o is Dictionary<string, object?> part && part.TryGetValue("hp", out var ph) && ph is double phv)
+                            part["hp"] = Math.Round(Math.Max(0.004, phv * partsShare / sum), 4);
+            }
             var tiered = d.TryGetValue("tiers", out var t) && t != null;
             if (!d.ContainsKey("phases") && !tiered && rules.TryGetValue("phases", out var phases) && phases != null) d["phases"] = Clone(phases);
         }

@@ -67,6 +67,7 @@ namespace MachineBrigade.Sim.Bosses
                     Crush(v, c, dt);
                     if (c.DebrisPhase >= 0 && v.Phase >= c.DebrisPhase && !v.CrushOff && now >= v.DebrisNext) Debris(v, c, now);
                 }
+                if (def.GuardRing is { } ring) Guard(v, ring, now);
                 // Prompt 20 J.4: its later phase's guns (Typhon's deck gun).
                 if (def.WakePhase >= 0 && v.Phase >= def.WakePhase)
                     foreach (var m in def.WakeMounts)
@@ -80,6 +81,30 @@ namespace MachineBrigade.Sim.Bosses
                 boss.Built.Add(built.Id);
             }
             _built.Clear();
+        }
+
+        /// <summary>
+        /// Prompt 26 B.2: a close guard. Four or more of the other side's ground vehicles within the ring's reach of the hull, and
+        /// the boss blasts the ground round its body (a two-layer blast, its core a few metres past the hull), then again after
+        /// its interval while they stay.
+        /// </summary>
+        private void Guard(Vehicle v, GuardRingDef ring, double now)
+        {
+            if (now < v.GuardNext || v.Transforming || v.Burrowed) return;
+            var near = 0;
+            foreach (var e in _world.VehicleList)
+            {
+                if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || e.Def.Static || e.Def.Boss) continue;
+                if (Vector2.Distance(e.Position, v.Position) - v.Radius - e.Radius <= ring.Radius) near++;
+            }
+            if (near < ring.Count)
+            {
+                v.GuardNext = now + 0.5;
+                return;
+            }
+            v.GuardNext = now + ring.Every;
+            _world.Damage.Queue(v.Position, ExplosionDef.TwoLayer(ring.Damage * v.DamageBoost * v.Def.DamageScale, v.Radius + ring.Pad, ExplosionTier.Huge),
+                0.6, v.Team, v, HitKind.Strike, v.Id);
         }
 
         /// <summary>Prompt 20 I.7: how widely the side's artillery scatters now (an Argus directing it: tighter).</summary>
@@ -173,7 +198,7 @@ namespace MachineBrigade.Sim.Bosses
             for (var k = 0; k < 3; k++)
             {
                 var at = _world.ClampToMap(v.Position + RandomIn(_world.Random, c.DebrisRadius));
-                _world.Damage.Queue(at, new ExplosionDef(c.DebrisDamage * v.DamageBoost, 4f, 0f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);
+                _world.Damage.Queue(at, ExplosionDef.TwoLayer(c.DebrisDamage * v.DamageBoost, 4f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);
             }
         }
 

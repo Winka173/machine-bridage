@@ -279,25 +279,25 @@ namespace MachineBrigade.Game.Hud
             ["bigattack.moloch_factory_dump"] = ("Workshop Dump", "Xả xưởng"),
             ["bigattack.moloch_factory_dump.cancelled"] = ("Workshop dump cut short", "Đã chặn xả xưởng"),
             ["radio.bigattack.moloch_factory_dump"] = ("Varga: \"Open every door. Send them all.\"", "Varga: \"Mở hết các cửa. Thả tất cả ra.\""),
-            ["guide.bigattack.moloch_factory_dump.how"] = ("Its workshop doors open for 4 s, then every door lets out: six vehicles at once, with eight 152 mm high-explosive shells (300 each, 6 m) on your nearest group.", "Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 300, bán kính 6 m) vào cụm quân gần nhất."),
+            ["guide.bigattack.moloch_factory_dump.how"] = ("Its workshop doors open for 4 s, then every door lets out: six vehicles at once, with eight 152 mm high-explosive shells (350 each, 6 m core, 12 m edge at 40%) on your nearest group. Every 50 s.", "Cửa xưởng mở 4 giây, rồi mọi cửa cùng xả: sáu xe một lúc, kèm tám phát pháo 152 mm nổ mạnh (mỗi phát 350, lõi 6 m, rìa 12 m còn 40%) vào cụm quân gần nhất. Cứ 50 giây."),
             ["guide.bigattack.moloch_factory_dump.dodge"] = ("Move your group off the marked area; be ready for six more vehicles.", "Đưa cụm quân ra khỏi vùng đánh dấu; sẵn sàng đón thêm sáu xe."),
             ["guide.bigattack.moloch_factory_dump.stop"] = ("Break a workshop door during the warning: only half come out; both broken, only the shells.", "Phá một cửa xưởng lúc cảnh báo: chỉ ra một nửa; phá cả hai thì chỉ còn loạt pháo."),
             ["bigattack.daedalus_mass_drop"] = ("Orbital Mass Drop", "Đổ bộ ồ ạt từ quỹ đạo"),
             ["bigattack.daedalus_mass_drop.cancelled"] = ("Mass drop called off", "Đã chặn đợt đổ bộ"),
             ["radio.bigattack.daedalus_mass_drop"] = ("Aurel: \"All pods on that group. Land on them.\"", "Aurel: \"Mọi khoang vào cụm đó. Đáp thẳng lên đầu chúng.\""),
-            ["guide.bigattack.daedalus_mass_drop.how"] = ("Eight pods fall together on one group: 500 kinetic each (high penetration, 6 m) on landing, then each lets a vehicle out; 4 s of warning.", "Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 500 động năng (xuyên cao, bán kính 6 m) rồi thả một xe; cảnh báo 4 giây."),
+            ["guide.bigattack.daedalus_mass_drop.how"] = ("Eight pods fall together on one group: 600 kinetic each (high penetration, 6 m core, 12 m edge at 40%) on landing, then each lets a vehicle out; 4 s of warning. Every 50 s.", "Tám khoang cùng rơi vào một cụm quân: mỗi khoang chạm đất gây 600 động năng (xuyên cao, lõi 6 m, rìa 12 m còn 40%) rồi thả một xe; cảnh báo 4 giây. Cứ 50 giây."),
             ["guide.bigattack.daedalus_mass_drop.dodge"] = ("Scatter the marked group; heavy armour does not save it.", "Tản cụm quân bị đánh dấu ra; giáp dày cũng không cứu được."),
             ["guide.bigattack.daedalus_mass_drop.stop"] = ("Break a pod bay during the warning: only four pods fall.", "Phá một cửa thả khoang lúc cảnh báo: chỉ còn bốn khoang rơi."),
             ["bigattack.kronos_bucket_sweep"] = ("Bucket Sweep", "Quét gầu"),
             ["bigattack.kronos_bucket_sweep.cancelled"] = ("Bucket sweep stopped", "Đã chặn đòn quét gầu"),
             ["radio.bigattack.kronos_bucket_sweep"] = ("Command: Kronos is swinging its wheel. Clear its front!", "Chỉ huy: Kronos đang vung bánh gầu. Tránh khỏi phía trước nó!"),
-            ["guide.bigattack.kronos_bucket_sweep.how"] = ("The wheel sweeps a 120° arc 25 m in front of it: about 1 200 kinetic (high penetration) to every unit, double on buildings and towers.", "Bánh gầu quét cung 120° dài 25 m phía trước: khoảng 1.200 động năng (xuyên cao) mỗi đơn vị, gấp đôi lên công trình và tháp."),
+            ["guide.bigattack.kronos_bucket_sweep.how"] = ("The wheel sweeps a 120° arc 25 m in front of it: about 2,500 kinetic (high penetration) to every unit, double on buildings and towers. Every 45 s.", "Bánh gầu quét cung 120° dài 25 m phía trước: khoảng 2.500 động năng (xuyên cao) mỗi đơn vị, gấp đôi lên công trình và tháp. Cứ 45 giây."),
             ["guide.bigattack.kronos_bucket_sweep.dodge"] = ("Get out of the marked arc in front of it; attack it from the sides and rear.", "Ra khỏi cung đánh dấu phía trước; đánh vào hông và sau."),
             ["guide.bigattack.kronos_bucket_sweep.stop"] = ("Break the boom (during the warning or before).", "Phá cần gầu (lúc cảnh báo hoặc trước đó)."),
             ["bigattack.typhon_underwater_launch"] = ("Underwater Launch", "Phóng tên lửa từ dưới nước"),
             ["bigattack.typhon_underwater_launch.cancelled"] = ("Launch aborted", "Đã chặn đợt phóng"),
             ["radio.bigattack.typhon_underwater_launch"] = ("{@lyhan}: \"Launch depth. Six for their headquarters.\"", "{@lyhan}: \"Lên độ sâu phóng. Sáu quả cho sở chỉ huy của chúng.\""),
-            ["guide.bigattack.typhon_underwater_launch.how"] = ("Six missiles at your base: about 600 high explosive each (9 m), double on buildings; a clock shows their flight after the 4 s warning.", "Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 600 nổ mạnh (bán kính 9 m), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay."),
+            ["guide.bigattack.typhon_underwater_launch.how"] = ("Six missiles at your base: about 700 high explosive each (9 m core, 18 m edge at 40%), double on buildings; a clock shows their flight after the 4 s warning. Every 50 s.", "Sáu tên lửa vào căn cứ ta: mỗi quả khoảng 700 nổ mạnh (lõi 9 m, rìa 18 m còn 40%), gấp đôi lên công trình; sau 4 giây cảnh báo có đồng hồ bay. Cứ 50 giây."),
             ["guide.bigattack.typhon_underwater_launch.dodge"] = ("Move units off the marked points; towers cannot move, so cover them.", "Đưa quân ra khỏi các điểm đánh dấu; tháp không di chuyển được nên hãy che chắn."),
             ["guide.bigattack.typhon_underwater_launch.stop"] = ("Break the launch doors during the warning (they show above the water), or shoot the missiles down (250 health each).", "Phá cửa ống phóng lúc cảnh báo (cửa lộ trên mặt nước), hoặc bắn hạ tên lửa (mỗi quả 250 máu)."),
 
@@ -449,7 +449,7 @@ namespace MachineBrigade.Game.Hud
             ["note.kraken"] = ("Kessler's new flagship: the longest ship afloat, a flat flight deck with aircraft parked on it and a CIWS ring.", "Soái hạm mới của Kessler: con tàu dài nhất mặt nước, boong phẳng đỗ đầy máy bay và một vòng CIWS."),
             ["guide.kraken"] = (
                 "[[Boss]] · aircraft carrier · air raids from the sea\n" +
-                "How it fights: a stand-in hull for now (Leviathan's guns, missile cells and CIWS). Its [[flight deck]] launches fighters and drones, and every 75 s it calls an air raid.\n" +
+                "How it fights: a stand-in hull for now (Leviathan's guns, missile cells and CIWS). Its [[flight deck]] launches fighters and drones, and every 50 s it calls an air raid.\n" +
                 "Strong / weak: the longest, toughest hull afloat; the elevator deck is thin (armour 2).\n" +
                 "Tip: break the [[flight deck]] and the aircraft stop coming; during the 4 s warning leave the long red strip.",
                 "[[Boss]] · tàu sân bay · không kích từ biển\n" +
@@ -477,7 +477,7 @@ namespace MachineBrigade.Game.Hud
             ["note.garuda"] = ("Wolff's successor's bomber: a huge flying wing with defensive turrets, escorted, and a carpet of bombs.", "Máy bay ném bom của người kế nhiệm Wolff: cánh bay khổng lồ có tháp phòng thủ, có hộ tống, và rải thảm bom."),
             ["guide.garuda"] = (
                 "[[Boss]] · flying-wing bomber · carpet bombing\n" +
-                "How it fights: a stand-in body for now (the command airship's gun turrets and drones). Its defensive turrets and missiles keep aircraft off; every 70 s it lays a 20-bomb carpet.\n" +
+                "How it fights: a stand-in body for now (the command airship's gun turrets and drones). Its defensive turrets and missiles keep aircraft off; every 50 s it lays a 20-bomb carpet.\n" +
                 "Strong / weak: a wide target with many guns; only low-level anti-air reaches it well.\n" +
                 "Tip: spread out and watch for the long strip; break the bomb bay to stop the carpet.",
                 "[[Boss]] · cánh bay ném bom · rải thảm\n" +

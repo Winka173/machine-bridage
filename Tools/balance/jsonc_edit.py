@@ -297,7 +297,8 @@ class Doc:
                 if not seg.lstrip().startswith(","):
                     self.text = self.text[:e] + "," + self.text[e:]
                     eol += 1
-                self.text = self.text[:eol + 1] + indent + line + ",\n" + self.text[eol + 1:]
+                nl = "\r\n" if self.text[eol - 1] == "\r" else "\n"
+                self.text = self.text[:eol + 1] + indent + line + "," + nl + self.text[eol + 1:]
                 return True
         raise KeyError(after_id)
 

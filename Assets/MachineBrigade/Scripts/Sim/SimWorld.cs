@@ -414,11 +414,18 @@ namespace MachineBrigade.Sim
             // (a fortress, a point's watchtower) only when the side boosts everything.
             VehicleBoost? boost = null;
             if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts &&
-                (_boostAll[team] || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
+                // Prompt 26 A.4: a campaign boss keeps its data's health and damage (the target time sets them), never the arsenal's edge.
+                (_boostAll[team] && !(BossesUnscaled && def.Boss) || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
                 boost = boosts(def);
             // Prompt 22 F: the side's commander on top, through the loadout's caps.
             boost = CommanderBoost(team, def, boost);
             if (boost is { } upgrade) Upgrade(vehicle, upgrade);
+            // Prompt 26 A.6: the difficulty's own factors on the enemy's bosses (health, damage).
+            if (team == 1 && def.Boss && BossDifficulty != null && Catalog.BigAttackRules.BossFactors(BossDifficulty) is var (bossHp, bossDamage))
+            {
+                vehicle.HpScale *= bossHp;
+                vehicle.DamageBoost *= bossDamage;
+            }
             // A mutator's change to a side's strength (the Operations mode's weekly twists).
             if (team >= 0 && team < _mutators.Length && _mutators[team] is { } mutate)
             {
@@ -440,6 +447,12 @@ namespace MachineBrigade.Sim
             if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
         }
+
+        /// <summary>Prompt 26 A.4: the enemy's bosses get no share of the player's arsenal edge (the campaign sets it).</summary>
+        public bool BossesUnscaled { get; set; }
+
+        /// <summary>Prompt 26 A.6: the difficulty key whose boss health and damage factors the enemy's bosses take (null: none).</summary>
+        public string? BossDifficulty { get; set; }
 
         private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
         private readonly Func<VehicleDef, (float hp, float damage)>?[] _mutators = new Func<VehicleDef, (float, float)>?[3];
