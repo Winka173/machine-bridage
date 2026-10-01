@@ -12832,3 +12832,56 @@ changed, so CatalogCheck is unaffected). Every number is the prompt's starting v
 - F (all waiting): per-chapter kill times +-20 %, losses a minute (main 3-4 at ch.1, 7-8 at ch.12; mini 2 and 4-5), area share
   >= 50 % (main) / >= 30 % (mini), super weapon <= 35 %, dodge rate of the warned shells, the 5-seed campaign at Normal, the era test
   (written in 26CD), and FPS at Icarus, Kronos and Leviathan on a low-end device.
+
+## 27 scope (v2) (owner, 2026-10-01)
+
+The owner replaced prompt 27 with Docs/prompts/prompt27_v2_en.md (English, verbatim): upgrade the procedural Blender ->
+GLB -> Unity pipeline for mobile and a lightweight PC at 1080p, without a rewrite; Step 0 audit, a baseline of every
+GLB, 100 % machine validation, Unity as the visual ground truth, budgets per category and tier, a controlled experiment
+(MBT, Su-27, Icarus and one complex unit), benchmark scenes, an Art Bible, then waves, with two checkpoints. The old
+Vietnamese prompt27_vi.txt is kept for history only. Lead's notes for whoever starts it (the prompt does not know them):
+
+Repository facts Step 0 must start from (verify, do not re-discover from scratch):
+- Never put a MaterialPropertyBlock on a MachineBrigade/Lit renderer: it draws at ~40 % brightness (PT11, memory note
+  "no property blocks"); tints go through shared copies from `MaterialLibrary.Tinted`. Any per-renderer variation in
+  the experiment must use that, and the Unity preview must not use property blocks.
+- The GPU Resident Drawer is ON in `Assets/Settings/PC_RPAsset.asset` (m_GPUResidentDrawerMode: 1) and off in
+  Mobile_RPAsset. The prompt treats it as a future experiment: Step 0 records that it is already on for PC and measures
+  rather than changes it.
+- SSAO is active on `Assets/Settings/PC_Renderer.asset` (ScreenSpaceAmbientOcclusion, m_Active 1) on top of the AO baked
+  into COLOR_0: the prompt's 3.5 double-darkening check applies to PC for real.
+- Runtime LOD already chooses by on-screen size (`VehicleLod.Choose`: DetailPixels 128, ImpostorPixels 24, a hysteresis
+  band); LOD1 is `MeshSimplifier` per moving part, built once per model and cached, drawn with one `LodSurface` material
+  (palette column per kit surface in UV); impostors are `ImpostorAtlas` cells. No Unity LODGroup.
+- 12 `_hd` GLBs exist (aa_vehicle, apc, artillery, attack_helicopter, attack_jet, fighter_jet, heavy_tank, light_tank,
+  main_battle_tank, scout_jeep, sky_gunship, tank_destroyer), loaded when `ModelLibrary.HighDetail` is on; cards render
+  from them.
+- The card stage (`CardRenders.Stage`) and `UnitPreview` are the existing Unity render paths to extend for the visual
+  validation; card PNG mean luminance was a reliable regression signal in PT11.
+- Structures, towers and bosses share the same GLB pipeline; tower rank details are drawn by `TowerRankDetails` (kept).
+
+The owner's standing rules still apply and take precedence where the prompt asks for runs:
+- No tests, sweeps or measurements until the owner allows them. The static GLB analyzer/validator/baseline (Python over
+  the exported files) and Unity preview renders are tools like CatalogCheck and card renders, so they may run; the
+  EditMode suite, benchmark scenes' FPS/frame-time runs, the experiment's runtime metrics (CPU/GPU/memory/draw calls)
+  and real-device tests wait for the owner's word at checkpoint time (the prompt's section 23 says to follow repository
+  rules). Real-device and PC-hardware benchmarks need the owner's phone and a named PC.
+- At most one agent at a time; opus for the kit, the experiment and reviews, sonnet only for wave work on a recipe the
+  owner approved at checkpoint 1.
+
+Gaps in the prompt, decided by the lead (owner may overrule):
+- "The proposed improved procedural kit" (section 19) is not defined in v2. The improvement to test in the experiment is
+  the old prompt's kit work, one variable at a time: new primitives (profile extrusion, lathe, sweep along a curve,
+  array along a path, mirror, boolean cut-outs, panel insets, sharp-edged loft, greebles) and a shared parts library
+  (road wheels, sprockets, tracks with sag, truck wheels, suspension, hatches, barrels with muzzle brakes, MG mounts,
+  smoke launchers, missile boxes, antennas, radar dishes, rotor heads, jet engines, pylons, landing gear, canopies).
+  No decals/atlas (excluded).
+- Sizes come from prompt 26 (bosses) and the spreadsheet; prompt 26's era rules and the "Hình dạng (cho AI vẽ)"
+  column stay the shape briefs; batch D's stand-in bosses and Ixion's stand-in are the obvious wave candidates.
+- Deliverables go under Docs/models/ (STEP0_AUDIT.md, budgets, experiment report, art-bible.md, PROGRESS.md) and
+  Tools/assets/ (analyzer, validator, baseline JSON), in English.
+
+Parts of the old prompt 27 that v2 puts out of scope, kept here so they are not lost (future prompts if wanted): the
+two factions' structure detail kits (old H.4), biome building sets and map landmarks (H.5), Play Asset Delivery (H.7),
+the colour-blind mode (H.8), roof fade, AI 1-5 scoring of every model, baked LODs and `_hd` for every unit, the texture
+atlas and decals, moving tower rank details into Blender.
