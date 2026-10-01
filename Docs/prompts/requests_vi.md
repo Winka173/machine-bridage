@@ -195,3 +195,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (01/10, chat mới) bắt đầu prompt 27 theo DECISIONS "27 order"; tiết kiệm token là ưu tiên 1, tối đa 1 agent, không chạy test khi chưa cho phép
 - (02/10) điểm dừng 1 của prompt 27: 1. duyệt (V2) 2. không cần đo 1 trận, để làm sau 3. Ixion dùng railgun_truck là model tạm có chủ đích (ASSET_DEBT "Prompt 26 pass 2 stand-ins"); đừng sửa con trỏ model; mọi model tạm trong ASSET_DEBT được thay bằng model thật trong các đợt của prompt 27; đọc lại HANDOFF mục "Stand-in models"
 - (02/10) xong 1a + 2 con boss 1b rồi dừng, commit
+- (02/10) xong 1b 1c luôn
