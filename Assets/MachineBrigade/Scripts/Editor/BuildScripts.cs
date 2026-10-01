@@ -39,6 +39,24 @@ namespace MachineBrigade.Editor
             });
         }
 
+        /// <summary>
+        /// A Windows build to play on a PC (mouse: drag to pan, wheel to zoom, click for taps). Not a store build;
+        /// <c>-buildTarget StandaloneWindows64 -executeMethod MachineBrigade.Editor.BuildScripts.BuildWindows</c>.
+        /// </summary>
+        [MenuItem("Machine Brigade/Build/Windows (exe)")]
+        public static void BuildWindows()
+        {
+            ProjectSetup.Apply();
+            Run(new BuildPlayerOptions
+            {
+                scenes = EnabledScenes(),
+                locationPathName = "Builds/Windows/MachineBrigade.exe",
+                target = BuildTarget.StandaloneWindows64,
+                targetGroup = BuildTargetGroup.Standalone,
+                options = BuildOptions.None,
+            });
+        }
+
         private static void BuildAndroid(string path, bool appBundle, BuildOptions options)
         {
             // Every build starts from the canonical settings, so a stray editor change cannot ship.
