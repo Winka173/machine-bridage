@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 27, wave 1b: the other six batch D bosses (DECISIONS "27 wave 1b (lead pass, 2026-10-02)")
+
+- Real models for Kraken (an aircraft carrier with a ski-jump, island, parked jets), Garuda (a 70 m B-2-style flying wing), Hyperion (a hexagonal mirror ring station, its own model), Stymphalos (eight delta-wing drones in V formation), Cerberus (three coupled big-wheeled cars) and Hydra (a small VLS submarine carrying six FPV drones); their colour washes dropped.
+
 ### Prompt 27, wave 1a + 1b (part): Ixion, Gungnir, Monster, Nyx (DECISIONS "27 wave 1a + 1b (part)")
 
 - Real models for four stand-in bosses on the V2 kit: Ixion (an armoured BelAZ-75710 mine truck with a T-72-class turret), Gungnir (an electromagnetic railgun train with capacitor cars and a modern diesel tractor), Monster (an 800 mm self-propelled gun on four track clusters) and Nyx (a Zumwalt-style stealth destroyer); their colour washes dropped.

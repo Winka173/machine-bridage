@@ -1,7 +1,8 @@
-"""Prompt 27 wave 1b, part (DECISIONS "27 wave 1a + 1b (part)"): two of the prompt 25 batch D stand-in bosses built as
-their own models on the V2 kit (mb_kit27 primitives + mb_parts27 parts), merged last in build_assets.all_builders().
+"""Prompt 27 wave 1b (DECISIONS "27 wave 1a + 1b (part)", "27 wave 1b (lead pass, 2026-10-02)"): the eight prompt 25
+batch D stand-in bosses built as their own models on the V2 kit (mb_kit27 primitives + mb_parts27 parts), merged last
+in build_assets.all_builders().
 
-Both are variants (`variantOf`): they inherit their parent's built parts and mounts, so each model carries every node
+All are variants (`variantOf`): they inherit their parent's built parts and mounts, so each model carries every node
 those parts and mounts name, near the places the resized data puts them (parent `at` x parent size x variant size).
 
   * monster (Orlov's Monster, variant of fortress_bastion): a post-1945 super-heavy self-propelled gun after the 2B1
