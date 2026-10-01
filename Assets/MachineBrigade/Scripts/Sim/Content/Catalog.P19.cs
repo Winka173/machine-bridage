@@ -158,6 +158,7 @@ namespace MachineBrigade.Sim.Content
                 Offset = MathF.Max(0f, p.Float("offset", 30f)),
                 Spread = MathF.Max(0f, p.Float("spread", 12f)),
                 Warning = p.Has("warning") ? p.String("warning") : null,
+                Damage = MathF.Max(0f, p.Float("damage", 0f)), Radius = MathF.Max(1f, p.Float("radius", 6f)), Stun = MathF.Max(0f, p.Float("stun", 1f)),
                 Units = p.Has("units") ? p.StringArray("units") : Array.Empty<string>(),
                 // Prompt 20 H.2: a phase's own interval (Daedalus drops faster, then without pause).
                 EveryByPhase = p.Has("everyByPhase") ? p.FloatArray("everyByPhase") : Array.Empty<float>(),

@@ -664,6 +664,9 @@ namespace MachineBrigade.Sim.Combat
             if (length < 0.1f) return;
             var along = line / length;
             var info = HitInfo.Of(p, HitKind.Pierce);
+            // Prompt 26 B.7: a slug that goes through at most PierceMax vehicles in all (the one aimed at counts): the nearest first.
+            var capped = p.Weapon.PierceMax > 0;
+            if (capped) _pierced.Clear();
             foreach (var v in _world.VehicleList)
             {
                 if (!v.IsAlive || v.Flying || v.Team == p.OwnerTeam || v.Id == struck || v.Id == p.Owner) continue;
@@ -671,11 +674,28 @@ namespace MachineBrigade.Sim.Combat
                 var t = Vector2.Dot(offset, along);
                 if (t < 0f || t > length + 12f) continue;
                 if ((offset - along * t).Length() > v.Radius + 1.2f) continue;
+                if (capped)
+                {
+                    _pierced.Add((t, v));
+                    continue;
+                }
                 Blame(v, p.Owner, p.OwnerTeam);
                 Apply(v, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType, info);
                 PierceVictims++;
             }
+            if (!capped) return;
+            _pierced.Sort((a, b) => a.t != b.t ? a.t.CompareTo(b.t) : a.v.Id.Value.CompareTo(b.v.Id.Value));
+            var room = p.Weapon.PierceMax - (struck.IsValid ? 1 : 0);
+            for (var k = 0; k < _pierced.Count && k < room; k++)
+            {
+                var hit = _pierced[k].v;
+                Blame(hit, p.Owner, p.OwnerTeam);
+                Apply(hit, p.Weapon.Damage * p.DamageScale, p.Weapon.DamageType, info);
+                PierceVictims++;
+            }
         }
+
+        private readonly List<(float t, Vehicle v)> _pierced = new();
 
         /// <summary>Vehicles hit by a piercing round beyond the one it was aimed at, over the battle (balance measurements).</summary>
         internal int PierceVictims { get; private set; }

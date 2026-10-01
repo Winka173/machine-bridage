@@ -279,6 +279,7 @@ namespace MachineBrigade.Sim.Content
             // Prompt 26 B.3: a two-layer blast: "edge" is the outer radius (default none), "edgeShare" its share of the damage.
             def.SplashEdge = MathF.Min(WeaponDef.MaxEdge, MathF.Max(0f, w.Float("edge", 0f)));
             def.EdgeShare = Math.Clamp(w.Float("edgeShare", 0.4f), 0f, 1f);
+            def.PierceMax = Math.Max(0, w.Int("pierceMax", 0));
             if (def.SplashEdge > 0f && def.SplashEdge <= def.SplashRadius) throw new FormatException($"{w.Path}.edge: wider than its splash (the core).");
             if (def.GroundRange > 0f && def.GroundRange > def.Range) throw new FormatException($"{w.Path}.groundRange: shorter than its range.");
         }

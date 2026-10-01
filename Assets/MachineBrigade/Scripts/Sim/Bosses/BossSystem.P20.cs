@@ -173,7 +173,7 @@ namespace MachineBrigade.Sim.Bosses
             for (var k = 0; k < 3; k++)
             {
                 var at = _world.ClampToMap(v.Position + RandomIn(_world.Random, c.DebrisRadius));
-                _world.Damage.Queue(at, new ExplosionDef(c.DebrisDamage * v.DamageBoost, 4f, 0f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);
+                _world.Damage.Queue(at, ExplosionDef.TwoLayer(c.DebrisDamage * v.DamageBoost, 4f, ExplosionTier.Large), 0.8 + 0.3 * k, v.Team, v, HitKind.Strike, v.Id);
             }
         }
 

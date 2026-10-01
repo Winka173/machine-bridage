@@ -48,6 +48,9 @@ namespace MachineBrigade.Sim.Content
             return copy;
         }
 
+        /// <summary>Prompt 26 B.7: a piercing slug goes through at most this many vehicles on its line (data "pierceMax"; 0: all of them).</summary>
+        public int PierceMax { get; internal set; }
+
         /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes (data "edgeShare", 0.4).</summary>
         public float EdgeShare { get; internal set; } = 0.4f;
 
