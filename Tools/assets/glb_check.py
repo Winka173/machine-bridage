@@ -86,6 +86,16 @@ def resolve(vehicles):
         parent = by_id.get(v.get('variantOf') or v.get('inherits') or '')
         return field(parent, key, depth + 1) if parent else None
 
+    def parts_of(v):
+        # A variant's own "variant" keep / drop cut its parent's parts (BossTemplates.Variant), unless it lists its own.
+        parts = field(v, 'parts') or []
+        rules = v.get('variant') if isinstance(v.get('variant'), dict) and 'parts' not in v else {}
+        if rules.get('keep'):
+            parts = [p for p in parts if p.get('id') in rules['keep']]
+        if rules.get('drop'):
+            parts = [p for p in parts if p.get('id') not in rules['drop']]
+        return parts
+
     out = []
     for v in vehicles:
         parent = by_id.get(v.get('variantOf') or '')
@@ -93,7 +103,7 @@ def resolve(vehicles):
         out.append({
             'id': v['id'], 'model': model, 'boss': bool(field(v, 'boss')), 'flying': bool(field(v, 'flying')),
             'speed': field(v, 'speed'), 'class': field(v, 'class'), 'modelSize': v.get('modelSize'),
-            'parts': field(v, 'parts') or [], 'variant': bool(parent),
+            'parts': parts_of(v), 'variant': bool(parent),
         })
     return out
 

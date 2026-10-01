@@ -1275,7 +1275,7 @@
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:b26dffead3e6675df6f0e634d64636602408ecde"
+            "hash": "v2:f46576e4de243912967efc14b3ef94a51c23496f"
         },
         {
             "id": "kraken",
@@ -1413,9 +1413,9 @@
         {
             "id": "monster",
             "kind": "boss",
-            "model": "fortress_bastion",
-            "source": "Models/fortress_bastion",
-            "hash": "v2:e9bba86a92041ca229853754b3204ad25baba3c2"
+            "model": "monster",
+            "source": "Models/monster",
+            "hash": "v2:e4a220003e0743b8ddf19d0fcf684e5ce6c1c623"
         },
         {
             "id": "morrigan",
@@ -1434,9 +1434,9 @@
         {
             "id": "nyx",
             "kind": "boss",
-            "model": "leviathan",
-            "source": "Models/leviathan",
-            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
+            "model": "nyx",
+            "source": "Models/nyx",
+            "hash": "v2:a237c57326dfed4373c5a522c1a1dfe22199d740"
         },
         {
             "id": "one_shot_atgm_tower",
@@ -1450,7 +1450,7 @@
             "kind": "boss",
             "model": "rail_supergun",
             "source": "Models/rail_supergun",
-            "hash": "v2:b284f0edaa6b7de0f516384bc87c5f5b880835b8"
+            "hash": "v2:eb344af603254c6e45d4cd0bd6cabc3c59b6a4e8"
         },
         {
             "id": "recoilless_gun_tower",

@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-02 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (400 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-02 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (402 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,17 +8,17 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 24 | 398,064 | 16,586 | nuke_train (35,666) | 1,622 | 1 | 20 |
+| boss | 27 | 449,950 | 16,664 | rail_supergun (36,726) | 1,780 | 1 | 23 |
 | structure | 72 | 316,328 | 4,393 | headquarters (14,260) | 2,647 | 9 | 21 |
-| ground | 75 | 256,870 | 3,424 | main_battle_tank_hd (16,462) | 1,858 | 2 | 9 |
+| ground | 75 | 256,870 | 3,424 | main_battle_tank_hd (16,462) | 1,858 | 2 | 8 |
 | prop | 115 | 238,276 | 2,071 | house_large (6,056) | 1,620 | 2 | 8 |
-| unlisted | 33 | 127,724 | 3,870 | ixion (21,628) | 668 | 2 | 2 |
+| unlisted | 32 | 104,994 | 3,281 | apc_hd (14,466) | 608 | 2 | 2 |
 | air | 23 | 71,082 | 3,090 | fighter_jet_hd (13,856) | 419 | 2 | 11 |
 | scenery | 29 | 26,976 | 930 | rubble_large (3,516) | 110 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 6,742 | 240 | fpv_drone (1,520) | 191 | 0 | 1 |
 
-All files: 1,462,312 triangles, 18 with errors, 70 more with warnings only.
+All files: 1,491,468 triangles, 18 with errors, 72 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -75,7 +75,7 @@ All files: 1,462,312 triangles, 18 with errors, 70 more with warnings only.
 - **helipad_b** (structure): 96 zero-area triangles (4.61%)
 - **interceptor_jet** (air): interceptor_jet: height/length 0.20 vs modelSize 0.27 (-26%)
 - **laser_ad_station** (structure): laser_ad_station: width/length 1.12 vs modelSize 0.67 (+67%)
-- **mobile_fortress** (boss): mobile_fortress: boss part 'howitzer_2' node Mount_gun not in the model; mobile_fortress: boss part 'sam' node Mount_missile.001 not in the model; fenrir: boss part 'howitzer_2' node Mount_gun not in the model; fenrir: boss part 'sam' node Mount_missile.001 not in the model
+- **mobile_fortress** (boss): mobile_fortress: boss part 'howitzer_2' node Mount_gun not in the model; mobile_fortress: boss part 'sam' node Mount_missile.001 not in the model
 - **sea_cruiser** (ground): movingParts 14 over the ground normal hard cap 10
 - **shield_generator** (prop): renderers 63 over the prop normal hard cap 58
 - **siege_tank** (ground): renderers 80 over the ground normal hard cap 76; movingParts 22 over the ground normal hard cap 10

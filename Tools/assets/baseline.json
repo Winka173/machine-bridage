@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 400,
+ "count": 402,
  "budgets": {
   "ground": {
    "normal": {
@@ -299,6 +299,40 @@
     "FLAG main_battle_tank: triangles 4,700 -> 7,196 (+53.1%); vertices 6,490 -> 8,446 (+30.1%); meshes 36 -> 38 (+5.6%); renderers 36 -> 38 (+5.6%); materialSlots 36 -> 38 (+5.6%); fileBytes 349,320 -> 452,264 (+29.5%); structure changed",
     "FLAG main_battle_tank_hd: triangles 12,106 -> 16,462 (+36.0%); vertices 18,883 -> 21,877 (+15.9%); meshes 55 -> 56 (+1.8%); renderers 55 -> 56 (+1.8%); materialSlots 55 -> 56 (+1.8%); fileBytes 957,528 -> 1,116,380 (+16.6%); structure changed",
     "FLAG silver_bug: triangles 19,136 -> 21,760 (+13.7%); vertices 26,450 -> 29,716 (+12.3%); meshes 118 -> 120 (+1.7%); renderers 118 -> 120 (+1.7%); materialSlots 118 -> 120 (+1.7%); fileBytes 1,377,700 -> 1,534,532 (+11.4%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "ixion",
+    "rail_supergun",
+    "rail_tractor"
+   ],
+   "reason": "P27 wave 1a: Ixion rebuilt as the BelAZ-75710 mine truck (old unlisted Tsar Tank ixion replaced), Gungnir rail_supergun as an EMRG train with capacitor cars, rail_tractor as a modern Bo-Bo diesel; bounds, names, moving parts kept for the rebuilds",
+   "changes": [
+    "FLAG ixion: triangles 21,628 -> 17,324 (-19.9%); vertices 26,404 -> 22,036 (-16.5%); meshes 54 -> 40 (-25.9%); renderers 54 -> 40 (-25.9%); materials 9 -> 11 (+22.2%); materialSlots 54 -> 40 (-25.9%); fileBytes 1,318,224 -> 1,079,840 (-18.1%); structure changed",
+    "FLAG rail_supergun: triangles 28,756 -> 36,726 (+27.7%); vertices 36,451 -> 46,269 (+26.9%); meshes 91 -> 97 (+6.6%); renderers 91 -> 97 (+6.6%); materials 12 -> 11 (-8.3%); materialSlots 91 -> 97 (+6.6%); fileBytes 1,855,808 -> 2,339,896 (+26.1%); structure changed",
+    "FLAG rail_tractor: triangles 5,508 -> 4,406 (-20.0%); vertices 7,096 -> 5,857 (-17.5%); meshes 23 -> 17 (-26.1%); renderers 23 -> 17 (-26.1%); materials 10 -> 9 (-10.0%); materialSlots 23 -> 17 (-26.1%); fileBytes 369,120 -> 302,268 (-18.1%); structure changed"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "ixion"
+   ],
+   "reason": "P27 wave 1a: Ixion's turret enlarged 1.35x after the first preview (read on a 26 m truck)",
+   "changes": [
+    "ixion: vertices 22,036 -> 22,038 (+0.0%); fileBytes 1,079,840 -> 1,079,984 (+0.0%)"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "nyx"
+   ],
+   "reason": "P27 wave 1b: Nyx's own Zumwalt-style model (helo deck material, boot-top dropped)",
+   "changes": [
+    "FLAG nyx: triangles 3,550 -> 3,526 (-0.7%); vertices 3,681 -> 3,633 (-1.3%); materials 7 -> 8 (+14.3%); fileBytes 209,456 -> 207,184 (-1.1%); structure changed"
    ]
   }
  ],
@@ -15872,13 +15906,11 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
-    "monster: length 22.07 m vs modelSize 40.3 m (fitted at runtime)"
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004"
    ],
    "units": [
     "fortress_bastion",
-    "bastion_mk0",
-    "monster"
+    "bastion_mk0"
    ],
    "movingParts": 14,
    "budgetClass": "boss_s"
@@ -22465,24 +22497,24 @@
   },
   "ixion": {
    "file": "ixion.glb",
-   "fileBytes": 1318224,
-   "sha1": "b26dffead3e6675d",
+   "fileBytes": 1079984,
+   "sha1": "f46576e4de243912",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 59,
-   "meshes": 54,
-   "materials": 9,
+   "nodes": 56,
+   "meshes": 40,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 54,
-   "submeshes": 54,
-   "materialSlots": 54,
-   "materialsUsed": 9,
-   "triangles": 21628,
-   "vertices": 26404,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 11,
+   "triangles": 17324,
+   "vertices": 22038,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -22490,118 +22522,145 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 466,
+   "loosePieces": 532,
    "openEdges": 0,
-   "nonManifoldEdges": 48,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -9.5,
-    -0.9418,
-    -12.2341
+    -6.01,
+    -0.0078,
+    -13.0
    ],
    "boundsMax": [
-    9.5,
-    10.9418,
-    9.4496
+    6.01,
+    10.0536,
+    12.9837
    ],
    "size": [
-    21.684,
-    19.0,
-    11.884
+    25.984,
+    12.02,
+    10.061
    ],
    "center": [
     0.0,
-    5.0,
-    -1.392
+    5.023,
+    -0.008
    ],
-   "structureHash": "2034430fab7827b3",
+   "structureHash": "6df12c62d4b14043",
    "color0": {
-    "mean": 0.6145,
+    "mean": 0.6567,
     "min": 0.062,
     "max": 1.0,
-    "p05": 0.191,
-    "p95": 0.8064,
+    "p05": 0.1413,
+    "p95": 0.9461,
     "outOfRange": 0
    },
    "runtimeNodes": {
     "turret": [
      "Turret"
     ],
+    "main_cannon": [
+     "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
+    ],
     "muzzle": [
-     "Muzzle_main"
+     "Muzzle_main",
+     "Muzzle_mg",
+     "Muzzle_mg.001"
+    ],
+    "mount": [
+     "Mount_mg",
+     "Mount_mg.001"
     ],
     "part": [
-     "Part_steer"
+     "Part_cab",
+     "Part_tyre",
+     "Part_tyre.001",
+     "Part_tyre.002",
+     "Part_tyre.003",
+     "Part_wheel",
+     "Part_wheel.001"
+    ],
+    "point": [
+     "Point_exhaust",
+     "Point_fire",
+     "Point_mines"
     ]
    },
-   "runtimeSuffixed": [],
-   "nodeNames": [
-    "Ammo_crates",
-    "Armour_slabs",
-    "Axle",
-    "Axle_collars",
-    "Belly",
-    "Chains",
-    "Cleats_wheel_l",
-    "Cleats_wheel_r",
-    "Counterweight",
-    "Disc_ring_wheel_l",
-    "Disc_ring_wheel_r",
-    "Disc_rivets_wheel_l",
-    "Disc_rivets_wheel_r",
-    "Disc_rust_wheel_l",
-    "Disc_rust_wheel_r",
-    "Disc_wheel_l",
-    "Disc_wheel_r",
-    "Engine_grille",
-    "Exhaust_glow",
-    "Exhausts",
-    "Hub_spikes_wheel_l",
-    "Hub_spikes_wheel_r",
-    "Hub_wheel_l",
-    "Hub_wheel_r",
-    "Hull",
-    "Hull_spikes",
-    "Muzzle_main",
-    "Part_steer",
-    "Part_wheel_l",
-    "Part_wheel_r",
-    "Rims_wheel_l",
-    "Rims_wheel_r",
-    "Rivets",
-    "Roller_arms",
-    "Roller_bands",
-    "Roller_drum",
-    "Roller_spikes",
-    "Rust_streaks",
-    "Soot",
-    "Spokes_wheel_l",
-    "Spokes_wheel_r",
-    "Steer_axle",
-    "Steer_drum",
-    "Steer_fork",
-    "Steer_rims",
-    "Steer_spikes",
-    "T_armor_Turret",
-    "T_barrel_Turret",
-    "T_bore_Turret",
-    "T_brake_Turret",
-    "T_house_Turret",
-    "T_ring_Turret",
-    "Tail_boom",
-    "Tread_spikes_wheel_l",
-    "Tread_spikes_wheel_r",
-    "Tread_wheel_l",
-    "Tread_wheel_r",
-    "Turret",
-    "Vision_slits"
+   "runtimeSuffixed": [
+    "Mount_mg.001",
+    "Muzzle_mg.001"
    ],
-   "category": "unlisted",
+   "nodeNames": [
+    "Antennas",
+    "Armor",
+    "Cab",
+    "Cab_armour",
+    "Cab_glass",
+    "Canopy_band",
+    "Chassis",
+    "Grille",
+    "Hatch_fittings",
+    "Hatches",
+    "Hull",
+    "Lamps",
+    "MG",
+    "MG.001",
+    "MG_armour",
+    "MG_armour.001",
+    "Main_cannon",
+    "Mine_yellow",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Muzzle_brake",
+    "Muzzle_main",
+    "Muzzle_mg",
+    "Muzzle_mg.001",
+    "Part_cab",
+    "Part_tyre",
+    "Part_tyre.001",
+    "Part_tyre.002",
+    "Part_tyre.003",
+    "Part_wheel",
+    "Part_wheel.001",
+    "Point_exhaust",
+    "Point_fire",
+    "Point_mines",
+    "Railings",
+    "Ram",
+    "Ram_stripes",
+    "Rim_21",
+    "Rim_21.001",
+    "Rim_21.002",
+    "Rim_21.003",
+    "Rim_21.004",
+    "Rim_21.005",
+    "Steel",
+    "Tail_lamps",
+    "Turret",
+    "Turret_armor",
+    "Turret_body",
+    "Turret_steel",
+    "Tyre_0",
+    "Tyre_1",
+    "Tyre_2",
+    "Tyre_3",
+    "Tyre_4",
+    "Tyre_5",
+    "Welds"
+   ],
+   "category": "boss",
    "hd": false,
    "errors": [],
-   "warnings": [],
-   "units": [],
-   "movingParts": 2,
-   "budgetClass": null
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_mg.001, Muzzle_mg.001"
+   ],
+   "units": [
+    "ixion"
+   ],
+   "movingParts": 11,
+   "budgetClass": "boss_s"
   },
   "jassm": {
    "file": "jassm.glb",
@@ -24492,15 +24551,12 @@
    "errors": [],
    "warnings": [
     "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004",
-    "kraken (borrowed model): height/length 0.29 vs modelSize 0.22 (+34%)",
-    "nyx (borrowed model): height/length 0.29 vs modelSize 0.21 (+41%)",
-    "nyx: length 87.11 m vs modelSize 53 m (fitted at runtime)"
+    "kraken (borrowed model): height/length 0.29 vs modelSize 0.22 (+34%)"
    ],
    "units": [
     "leviathan",
     "scylla",
-    "kraken",
-    "nyx"
+    "kraken"
    ],
    "movingParts": 26,
    "budgetClass": "boss_l"
@@ -27852,9 +27908,7 @@
    "hd": false,
    "errors": [
     "mobile_fortress: boss part 'howitzer_2' node Mount_gun not in the model",
-    "mobile_fortress: boss part 'sam' node Mount_missile.001 not in the model",
-    "fenrir: boss part 'howitzer_2' node Mount_gun not in the model",
-    "fenrir: boss part 'sam' node Mount_missile.001 not in the model"
+    "mobile_fortress: boss part 'sam' node Mount_missile.001 not in the model"
    ],
    "warnings": [
     "runtime names with a Blender suffix: Mount_mg.001, Mount_rocket.001, Muzzle_mg.001, Muzzle_rocket.001"
@@ -28026,6 +28080,248 @@
    ],
    "movingParts": 5,
    "budgetClass": "boss_s"
+  },
+  "monster": {
+   "file": "monster.glb",
+   "fileBytes": 1372648,
+   "sha1": "e4a220003e0743b8",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 109,
+   "meshes": 83,
+   "materials": 7,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 83,
+   "submeshes": 83,
+   "materialSlots": 83,
+   "materialsUsed": 7,
+   "triangles": 23066,
+   "vertices": 27730,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 661,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -10.95,
+    -0.0,
+    -19.9
+   ],
+   "boundsMax": [
+    10.95,
+    12.9333,
+    20.15
+   ],
+   "size": [
+    40.05,
+    21.9,
+    12.933
+   ],
+   "center": [
+    0.0,
+    6.467,
+    0.125
+   ],
+   "structureHash": "04e038c78aa1e3f1",
+   "color0": {
+    "mean": 0.6319,
+    "min": 0.0801,
+    "max": 1.0,
+    "p05": 0.1944,
+    "p95": 0.8951,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "turret": [
+     "Turret"
+    ],
+    "main_cannon": [
+     "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
+    ],
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_gun.001",
+     "Muzzle_gun.002",
+     "Muzzle_gun.003",
+     "Muzzle_gun.004",
+     "Muzzle_main",
+     "Muzzle_mg",
+     "Muzzle_mg.001",
+     "Muzzle_missile"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_gun.001",
+     "Mount_gun.002",
+     "Mount_gun.003",
+     "Mount_gun.004",
+     "Mount_mg",
+     "Mount_mg.001",
+     "Mount_missile"
+    ],
+    "part": [
+     "Part_barrel",
+     "Part_missile",
+     "Part_track",
+     "Part_track.001",
+     "Part_track.002",
+     "Part_track.003"
+    ],
+    "point": [
+     "Point_exhaust",
+     "Point_fire"
+    ],
+    "launch": [
+     "Launch_tubes",
+     "Launch_tubes_bore"
+    ]
+   },
+   "runtimeSuffixed": [
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Mount_gun.004",
+    "Mount_mg.001",
+    "Muzzle_gun.001",
+    "Muzzle_gun.002",
+    "Muzzle_gun.003",
+    "Muzzle_gun.004",
+    "Muzzle_mg.001"
+   ],
+   "nodeNames": [
+    "Antennas",
+    "Armor",
+    "Atgm_armor",
+    "Atgm_cradle",
+    "Atgm_pedestal",
+    "Atgm_sight_glass",
+    "Barrel_cradle",
+    "Chassis",
+    "Gun_armor_gun",
+    "Gun_armor_gun_001",
+    "Gun_armor_gun_002",
+    "Gun_armor_gun_003",
+    "Gun_armor_mg",
+    "Gun_armor_mg_001",
+    "Gun_bore_gun",
+    "Gun_bore_gun_001",
+    "Gun_bore_gun_002",
+    "Gun_bore_gun_003",
+    "Gun_bore_mg",
+    "Gun_bore_mg_001",
+    "Gun_brake_gun",
+    "Gun_brake_gun_001",
+    "Gun_brake_gun_002",
+    "Gun_brake_gun_003",
+    "Gun_brake_mg",
+    "Gun_brake_mg_001",
+    "Gun_dark_gun",
+    "Gun_dark_gun_001",
+    "Gun_dark_gun_002",
+    "Gun_dark_gun_003",
+    "Gun_dark_mg",
+    "Gun_dark_mg_001",
+    "Gun_glass_gun",
+    "Gun_glass_gun_001",
+    "Gun_glass_gun_002",
+    "Gun_glass_gun_003",
+    "Gun_glass_mg",
+    "Gun_glass_mg_001",
+    "Gun_house_gun",
+    "Gun_house_gun_001",
+    "Gun_house_gun_002",
+    "Gun_house_gun_003",
+    "Gun_house_mg",
+    "Gun_house_mg_001",
+    "Gun_ring_gun",
+    "Gun_ring_gun_001",
+    "Gun_ring_gun_002",
+    "Gun_ring_gun_003",
+    "Gun_ring_mg",
+    "Gun_ring_mg_001",
+    "Gun_steel_gun",
+    "Gun_steel_gun_001",
+    "Gun_steel_gun_002",
+    "Gun_steel_gun_003",
+    "Gun_steel_mg",
+    "Gun_steel_mg_001",
+    "Hatch_fittings",
+    "Hatches",
+    "Hull",
+    "Lamps",
+    "Launch_tubes",
+    "Launch_tubes_bore",
+    "Main_cannon",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Mount_gun.004",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Mount_missile",
+    "Muzzle_brake",
+    "Muzzle_gun",
+    "Muzzle_gun.001",
+    "Muzzle_gun.002",
+    "Muzzle_gun.003",
+    "Muzzle_gun.004",
+    "Muzzle_main",
+    "Muzzle_mg",
+    "Muzzle_mg.001",
+    "Muzzle_missile",
+    "Part_barrel",
+    "Part_missile",
+    "Part_track",
+    "Part_track.001",
+    "Part_track.002",
+    "Part_track.003",
+    "Point_exhaust",
+    "Point_fire",
+    "Steel",
+    "T_armor_Mount_gun_004",
+    "T_barrel_Mount_gun_004",
+    "T_bore_Mount_gun_004",
+    "T_brake_Mount_gun_004",
+    "T_house_Mount_gun_004",
+    "T_ring_Mount_gun_004",
+    "Track_belt_0",
+    "Track_belt_1",
+    "Track_belt_2",
+    "Track_belt_3",
+    "Track_wheels_0",
+    "Track_wheels_1",
+    "Track_wheels_2",
+    "Track_wheels_3",
+    "Turret",
+    "Turret_armor",
+    "Turret_body",
+    "Turret_glass",
+    "Turret_steel"
+   ],
+   "category": "boss",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Mount_gun.004"
+   ],
+   "units": [
+    "monster"
+   ],
+   "movingParts": 16,
+   "budgetClass": "boss_m"
   },
   "morrigan": {
    "file": "morrigan.glb",
@@ -28892,6 +29188,138 @@
     "nuke_train"
    ],
    "movingParts": 13,
+   "budgetClass": "boss_m"
+  },
+  "nyx": {
+   "file": "nyx.glb",
+   "fileBytes": 207184,
+   "sha1": "a237c57326dfed43",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 39,
+   "meshes": 29,
+   "materials": 8,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 29,
+   "submeshes": 29,
+   "materialSlots": 29,
+   "materialsUsed": 8,
+   "triangles": 3526,
+   "vertices": 3633,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 58,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -4.45,
+    -1.6,
+    -26.4
+   ],
+   "boundsMax": [
+    4.45,
+    9.4,
+    26.5
+   ],
+   "size": [
+    52.9,
+    8.9,
+    11.0
+   ],
+   "center": [
+    0.0,
+    3.9,
+    0.05
+   ],
+   "structureHash": "9c6b90d452d0db7b",
+   "color0": {
+    "mean": 0.6865,
+    "min": 0.0802,
+    "max": 0.9987,
+    "p05": 0.2871,
+    "p95": 0.9722,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_mg",
+     "Muzzle_mg.001"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_mg",
+     "Mount_mg.001"
+    ],
+    "part": [
+     "Part_gun",
+     "Part_mg",
+     "Part_mg.001",
+     "Part_vls"
+    ]
+   },
+   "runtimeSuffixed": [
+    "Mount_mg.001",
+    "Muzzle_mg.001"
+   ],
+   "nodeNames": [
+    "Armor",
+    "CIWS_armor_mg",
+    "CIWS_armor_mg_001",
+    "CIWS_barrels_mg",
+    "CIWS_barrels_mg_001",
+    "CIWS_body_mg",
+    "CIWS_body_mg_001",
+    "CIWS_bores_mg",
+    "CIWS_bores_mg_001",
+    "CIWS_dark_mg",
+    "CIWS_dark_mg_001",
+    "CIWS_glass_mg",
+    "CIWS_glass_mg_001",
+    "CIWS_ring_mg",
+    "CIWS_ring_mg_001",
+    "Ciws_base.mg",
+    "Ciws_base_001",
+    "Ciws_bracket.mg",
+    "Dark",
+    "Deck_marks",
+    "Gun_bands",
+    "Gun_bore",
+    "Gun_house",
+    "Gun_rails",
+    "Gun_ring",
+    "Helo_deck",
+    "Hull",
+    "Mount_gun",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Muzzle_gun",
+    "Muzzle_mg",
+    "Muzzle_mg.001",
+    "Part_gun",
+    "Part_mg",
+    "Part_mg.001",
+    "Part_vls",
+    "Radar_faces",
+    "Vls_hatches"
+   ],
+   "category": "boss",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_mg.001, Muzzle_mg.001"
+   ],
+   "units": [
+    "nyx"
+   ],
+   "movingParts": 7,
    "budgetClass": "boss_m"
   },
   "obsidian_spire": {
@@ -30634,24 +31062,22 @@
   },
   "rail_supergun": {
    "file": "rail_supergun.glb",
-   "fileBytes": 1855808,
-   "sha1": "b284f0edaa6b7de0",
+   "fileBytes": 2339896,
+   "sha1": "eb344af603254c6e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [
-    "KHR_materials_emissive_strength"
-   ],
-   "nodes": 108,
-   "meshes": 91,
-   "materials": 12,
+   "extensions": [],
+   "nodes": 114,
+   "meshes": 97,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 91,
-   "submeshes": 91,
-   "materialSlots": 91,
-   "materialsUsed": 12,
-   "triangles": 28756,
-   "vertices": 36451,
+   "renderers": 97,
+   "submeshes": 97,
+   "materialSlots": 97,
+   "materialsUsed": 11,
+   "triangles": 36726,
+   "vertices": 46269,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -30659,7 +31085,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 858,
+   "loosePieces": 1086,
    "openEdges": 80,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -30669,26 +31095,26 @@
    ],
    "boundsMax": [
     4.4221,
-    16.4705,
-    37.9299
+    16.4815,
+    37.9247
    ],
    "size": [
-    63.93,
+    63.925,
     8.844,
-    16.52
+    16.532
    ],
    "center": [
     0.0,
-    8.21,
-    5.965
+    8.216,
+    5.962
    ],
-   "structureHash": "46ddaada22cdb6aa",
+   "structureHash": "932e91e21c3d3234",
    "color0": {
-    "mean": 0.5039,
+    "mean": 0.5077,
     "min": 0.078,
-    "max": 1.0,
-    "p05": 0.1382,
-    "p95": 0.7985,
+    "max": 0.9987,
+    "p05": 0.1299,
+    "p95": 0.8058,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -30740,10 +31166,9 @@
     "Muzzle_mg.001"
    ],
    "nodeNames": [
-    "Antenna",
+    "Antennas",
     "Armor",
     "Ballast",
-    "Beacon",
     "Bogie_steel",
     "Bogies",
     "Buffers",
@@ -30763,7 +31188,12 @@
     "CIWS_ring_mg_001",
     "Cabin",
     "Cabin_glass",
-    "Charges",
+    "Cables",
+    "Car_armour",
+    "Car_body",
+    "Car_frame",
+    "Car_steel",
+    "Car_stripes",
     "Chassis",
     "Couplers",
     "Crane",
@@ -30772,7 +31202,9 @@
     "Genset_body",
     "Genset_doors",
     "Genset_grille",
+    "Genset_mast",
     "Genset_panel",
+    "Genset_radar",
     "Genset_skid",
     "Genset_steel",
     "Genset_stripe",
@@ -30945,24 +31377,24 @@
   },
   "rail_tractor": {
    "file": "rail_tractor.glb",
-   "fileBytes": 369120,
-   "sha1": "be5516b6a0e592d3",
+   "fileBytes": 302268,
+   "sha1": "4c99fd731ea3b359",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 23,
-   "meshes": 23,
-   "materials": 10,
+   "nodes": 17,
+   "meshes": 17,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 23,
-   "submeshes": 23,
-   "materialSlots": 23,
-   "materialsUsed": 10,
-   "triangles": 5508,
-   "vertices": 7096,
+   "renderers": 17,
+   "submeshes": 17,
+   "materialSlots": 17,
+   "materialsUsed": 9,
+   "triangles": 4406,
+   "vertices": 5857,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -30970,7 +31402,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 185,
+   "loosePieces": 154,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -30993,41 +31425,35 @@
     2.765,
     0.0
    ],
-   "structureHash": "b6e0ff3d3f5f4797",
+   "structureHash": "3689afcfdb7b2afc",
    "color0": {
-    "mean": 0.545,
-    "min": 0.0801,
+    "mean": 0.5866,
+    "min": 0.0863,
     "max": 1.0,
-    "p05": 0.1327,
-    "p95": 0.8064,
+    "p05": 0.1693,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antenna",
     "Armor",
+    "Bogie_steel",
+    "Bogies",
     "Buffers",
     "Chassis",
     "Couplers",
     "Handrails",
     "Headstock_bars",
     "Headstocks",
-    "Hood_louvres",
     "Hull",
-    "Lamp_hoods",
     "Lamps",
-    "Latches",
-    "Rods",
-    "Roof_lamp",
-    "Soot",
+    "Marker_lamps",
     "Steel",
-    "Stowage",
-    "Stowage_lid",
     "Tail_lamps",
-    "Vision_slits",
-    "Visors",
     "Wheels",
-    "Whips"
+    "Windows"
    ],
    "category": "unlisted",
    "hd": false,
@@ -31150,13 +31576,9 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "ixion (borrowed model): width/length 0.25 vs modelSize 0.46 (-46%)",
-    "ixion: length 9.90 m vs modelSize 26 m (fitted at runtime)"
-   ],
+   "warnings": [],
    "units": [
-    "railgun_truck",
-    "ixion"
+    "railgun_truck"
    ],
    "movingParts": 5,
    "budgetClass": "ground"
