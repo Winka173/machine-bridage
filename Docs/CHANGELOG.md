@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 27, step 5: preview, budgets, Art Bible, wave plan (DECISIONS "27 preview + budgets + art bible")
+
+- A Unity contact-sheet preview for named models (`ModelPreview.RenderBatch -mbPreview`: 8 angles plus detail / LOD1 / impostor views, luma JSON), budgets per class and tier in the GLB validator (Docs/models/BUDGETS.md), the Art Bible (Docs/models/art-bible.md) and the wave plan (Docs/models/PROGRESS.md).
+
 ### Prompt 27, step 3: experiment 1, the improved kit on four models (DECISIONS "27 experiment 1")
 
 - The main battle tank, Su-27, Icarus and the Apache (and their `_hd` twins) rebuilt with new kit primitives and a shared parts library (Tools/blender/mb_kit27.py, mb_parts27.py, mb_p27_experiment.py): crisper edges, dished road wheels, hatches, a new gun, recessed bays, canopy frames; the Su-27 high-detail model's 390 zero-area triangles fixed; report Docs/models/EXPERIMENT_1.md.

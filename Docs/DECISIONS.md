@@ -12973,3 +12973,35 @@ Lead's reading of the prompt's checkpoint 2 under the no-measure rule: the waves
 static gates only (validator, card luminance, preview renders); checkpoint 2's benchmarks happen when the owner allows
 measuring, and the owner may then stop or redo the waves. Next pass: the Unity preview (changed/flagged models only),
 Docs/models/BUDGETS.md from the baseline, Docs/models/art-bible.md and the wave plan (stand-ins first).
+
+## 27 preview + budgets + art bible (lead pass, 2026-10-02)
+
+Step 5 of "27 order" minus the waves. Only the Unity preview (4 experiment models, once) and the static validator ran.
+- **Preview** `MachineBrigade.Editor.ModelPreview.RenderBatch -mbPreview "ids"` (Editor/ModelPreview.cs), output
+  `Builds/preview/<id>[_hd].png/.json` (git-ignored). Eight angles through the card stage (`CardRenders.Stage`, now
+  internal, with yaw/pitch parameters and the model's luma before the shadow), pitch 26 (the card's). Three gameplay
+  views through LodShots' battle stage (its `Stage`, `Camera`, `Twin` now internal): orthographic pitch 52 / yaw -45,
+  the model at the size where each VehicleLod level is drawn: detail = its size at the closest zoom 9 on 1080 px,
+  clamped to 144-300 px; LOD1 = 103 px (0.95 x the 113 px drop point); impostor = 20 px. Sizes are picked by level,
+  not by zoom, because at the real zoom range (9-42, 50 long maps) most vehicles never reach the impostor and big
+  bosses never reach LOD1 on 1080 px; the JSON gives each view's equivalent zoom on PC (1080 px) and on a phone
+  (720 px at 70 %) and whether it is inside 9-50. Luma = mean Rec. 709 of the sRGB values over the model's own
+  pixels (gameplay views masked by a key-colour render without ground or post). Normal and `_hd` tiers both render
+  in the editor's pipeline asset (PC_RPAsset, SSAO on); tiers differ by file only. No tints, no property blocks;
+  bosses/elites in the enemy colours. First run: 7 sheets in ~25 s; luma 0.33-0.55 per view.
+- **Budgets** (BUDGETS.md, `BUDGETS` in glb_check.py): classes = the baseline categories with air split by a `Rotor`
+  node (helicopter / jet), bosses by the GLB's longest side (< 30 m, < 60 m, larger), statics by a weapon node (tower
+  / structure), wrecks as their parent; unlisted models have no budget. Soft = class p90 x 1.6 (warning), hard =
+  p90 x 2 (error), bosses evened out by size, munitions' hard cap raised to 1,600 triangles (the FPV drone).
+  Metrics: triangles, vertices, GLB renderers, moving parts (new `movingParts` field: turret, main_cannon, mount,
+  rotor, tail_rotor, radar, propeller, part, loose, deploy nodes). Tiers: `normal` (phones, and PC without `_hd`),
+  `hd` = normal x the median `_hd`/normal ratio (2.4 tris, 2.7 verts, 1.35 renderers; moving parts equal).
+- **Result:** 13 models over a budget, 5 over a hard cap (siege_tank, sea_cruiser, flak_tower, command_hq,
+  shield_generator): the validator now reports 18 models with errors (13 + 5). The experiment models pass.
+- **Art Bible** Docs/models/art-bible.md; **wave plan** Docs/models/PROGRESS.md: wave 1 = the ASSET_DEBT stand-ins
+  (1a Ixion, Gungnir; 1b the eight batch D bosses; 1c the 32 batch B units), wave 2 = the 18 flagged models, waves
+  3-8 by class (ground 65, air 15, bosses 21, towers 41, structures 22, the rest 198). A wave points a stand-in at its
+  new model and strikes the ASSET_DEBT line; a pointer never changes otherwise.
+- **For the lead:** an unlisted `ixion.glb` (21,628 tris, builder mb_redesign_20y) already ships while the def draws
+  `railgun_truck`: check it against the brief before wave 1a builds anew. Stymphalos, ground_drone_carrier,
+  combat_wreck_car, Ixion's mines and Gungnir's line warning need game code beside the model.
