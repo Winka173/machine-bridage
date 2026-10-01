@@ -186,3 +186,5 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (01/10) có vẻ ăn sát thương xong là bị đen đáng kể, 1 vài phương tiện / boss bị đen khi mới vào luôn
 - (01/10) nó chỉ xảy ra sau khi commit sau trưa hôm qua
 - (01/10) đổi qua check những commit sau tối hôm qua
+- (01/10) nó vẫn còn hơi tối so với những thứ trước chiều hôm qua
+- (01/10) có vẻ là xe cũ dựng lại và cả boss luôn, con đầu tiên trong boss rush và các con sau có con có con không; ý tôi là full boss rush; check boss đầu tiên trong full boss rush

@@ -111,8 +111,9 @@ namespace MachineBrigade.Game.Views
             ModelBounds = Measure(_model.Root.transform, _body);
             DrawScale = DrawScaleOf(vehicle.Def, ModelBounds.size.z);
             _body.localScale = Vector3.one * DrawScale;
-            // The def's own colour from the first frame, as on its card (it used to wait for the first hit).
-            if (vehicle.Def.Tint != null) ApplyTint();
+            // The def's own colour and the model's shade from the first frame, as on its card (it used to wait for the first hit).
+            _shade = ModelLibrary.Shade(models.ResolveId(modelId));
+            if (vehicle.Def.Tint != null || _shade != 1f) ApplyTint();
             if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
 
@@ -534,18 +535,21 @@ namespace MachineBrigade.Game.Views
         private MaterialPropertyBlock _tintBlock;
 
         /// <summary>
-        /// The "_Tint" multiply as the shader gets it: the def's own colour (prompt 20 G.2 variants, prompt 25 F2
-        /// stand-ins) as linear, exactly what the card render's SetColor hands the shader, times the soot shade
-        /// unconverted. Owner's report 2026-10-01: SetColor converts gamma to linear in this linear-space project,
-        /// so the soot's 0.45 reached the shader as 0.17 and, on a stand-in tinted 0.55, as 0.05: hulls went black
-        /// once hit. It is written with SetVector so nothing is converted twice.
+        /// The "_Tint" multiply as the shader gets it, written with SetVector so nothing is converted (owner's reports
+        /// 2026-10-01, DECISIONS "PT11 dark hulls"): SetColor converts gamma to linear in this linear-space project, so the
+        /// soot's 0.45 had reached the shader as 0.17 and a variant's 0.72 as 0.48. The def's own colour (prompt 20 G.2
+        /// boss variants, prompt 25 F2 stand-ins) as written in the data, the model's shade (<see cref="ModelLibrary.Shade"/>),
+        /// the soot shade, the hit flash in alpha.
         /// </summary>
         private Vector4 TintValue()
         {
-            var own = Def.Tint is { } t ? new Color(t.X, 0.97f * t.Y, 0.95f * t.Z).linear : Color.white;
+            var own = Def.Tint is { } t ? new Vector3(t.X, 0.97f * t.Y, 0.95f * t.Z) : Vector3.one;
             var soot = _scorch < 1f ? new Vector3(_scorch, _scorch * 0.97f, _scorch * 0.95f) : Vector3.one;
-            return new Vector4(own.r * soot.x, own.g * soot.y, own.b * soot.z, 1f - _shownFlash);
+            return new Vector4(_shade * own.x * soot.x, _shade * own.y * soot.y, _shade * own.z * soot.z, 1f - _shownFlash);
         }
+
+        /// <summary>The model's shade (<see cref="ModelLibrary.Shade"/>), set at spawn.</summary>
+        private float _shade = 1f;
 
         private void ApplyTint()
         {

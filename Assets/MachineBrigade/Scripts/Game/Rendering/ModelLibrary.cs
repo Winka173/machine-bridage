@@ -284,6 +284,29 @@ namespace MachineBrigade.Game.Rendering
         public const string HighDetailSuffix = "_hd";
 
         /// <summary>
+        /// Play-test 11 (DECISIONS "PT11 dark hulls"): models prompt 25 B2 rebuilt darker than they were (more of their area
+        /// in the dark Armor and Undercarriage surfaces, less army paint), brightened back to their old mean albedo
+        /// (area-weighted base colour x baked occlusion, measured from the GLBs; at most 1.5 x) through the "_Tint"
+        /// multiply. Prompt 27 remakes every model and drops this.
+        /// </summary>
+        private static readonly Dictionary<string, float> Shades = new()
+        {
+            ["armored_car"] = 1.43f, ["artillery"] = 1.11f, ["ballistic_launcher"] = 1.47f, ["bmpt"] = 1.27f,
+            ["command_vehicle"] = 1.30f, ["engineer_vehicle"] = 1.20f, ["flame_tank"] = 1.13f, ["fpv_carrier"] = 1.23f,
+            ["heavy_aa"] = 1.11f, ["ifv"] = 1.25f, ["mine_layer"] = 1.30f, ["mortar_carrier"] = 1.13f,
+            ["shield_carrier"] = 1.22f, ["stealth_bomber"] = 1.5f, ["thermobaric_launcher"] = 1.24f, ["titan_tank"] = 1.18f,
+            ["turtle_tank"] = 1.17f, ["vbied"] = 1.5f, ["wheeled_gun"] = 1.11f,
+        };
+
+        /// <summary>How much brighter a model (or its high-detail variant) is drawn: 1 for all but <see cref="Shades"/>.</summary>
+        public static float Shade(string modelId)
+        {
+            if (string.IsNullOrEmpty(modelId)) return 1f;
+            if (modelId.EndsWith(HighDetailSuffix)) modelId = modelId.Substring(0, modelId.Length - HighDetailSuffix.Length);
+            return Shades.TryGetValue(modelId, out var k) ? k : 1f;
+        }
+
+        /// <summary>
         /// Load the high-detail variant of a model (Resources/Models/&lt;id&gt;_hd, built by
         /// Tools/blender/build_assets.py) wherever one ships, for the high graphics tiers; models without
         /// one load as usual. Off by default. It may change at any time: models are cached per variant,

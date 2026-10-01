@@ -935,6 +935,13 @@
             "hash": "v2:1c8e5db25314e1e7deb717ebfe1674523d0696df"
         },
         {
+            "id": "decoy_tank",
+            "kind": "structure",
+            "model": "main_battle_tank",
+            "source": "Models/main_battle_tank_hd",
+            "hash": "v2:6954491c2f5322cf028be838304c500b4b36b520"
+        },
+        {
             "id": "dragons_teeth",
             "kind": "tower",
             "model": "dragons_teeth",

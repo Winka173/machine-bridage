@@ -12,6 +12,9 @@ its commits.
 - The hull's own colour and its soot reach the shader as meant: the "_Tint" multiply was written with SetColor, which
   converts gamma to linear in this linear-space project, so the soot's 0.45 became 0.17 and a stand-in's 0.55 tint with
   it about 0.05 (black). Stand-ins also wear their colour from the first frame, as on their cards, not from the first hit.
+- Tints go in as written in the data (the boss variants' 0.72 had become 0.48), and the 19 rebuilt models that came out
+  darker than before (armoured car, IFV, VBIED, stealth bomber and others) are brightened back to their old mean; their
+  cards and the stand-ins' cards re-rendered.
 
 ### Gear menu fix (play-test 10, DECISIONS "PT10 gear menu")
 

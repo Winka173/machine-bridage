@@ -366,10 +366,13 @@ namespace MachineBrigade.Editor
             {
                 var instance = library.Spawn(modelId, team, _root, castShadows: false);
                 var model = instance.Root;
-                if (tint is { } own)
+                // Play-test 11: the tint as written (SetVector, unconverted) and the model's shade, as VehicleView draws them.
+                var shade = ModelLibrary.Shade(library.ResolveId(modelId));
+                if (tint != null || shade != 1f)
                 {
+                    var own = tint ?? System.Numerics.Vector3.One;
                     _tintBlock ??= new MaterialPropertyBlock();
-                    _tintBlock.SetColor(TintId, new Color(own.X, 0.97f * own.Y, 0.95f * own.Z, 1f));
+                    _tintBlock.SetVector(TintId, new Vector4(shade * own.X, shade * 0.97f * own.Y, shade * 0.95f * own.Z, 1f));
                     foreach (var r in instance.Renderers) r.SetPropertyBlock(_tintBlock);
                     foreach (var r in instance.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
                 }

@@ -12416,3 +12416,14 @@ wash the moment it was hit. Choices: the def's tint goes in as `Color.linear` (e
 the shader, so play matches the card), the soot unconverted, written with `SetVector`; a tinted def writes it at spawn;
 the impostor tint carries the def's tint too. The wreck tint stays as it was (SetColor, near black on purpose).
 To measure (when the owner allows tests): a stand-in and an old model at full, half and 10 % health in a battle frame.
+
+Second pass (owner: still a little darker than before 30/09 afternoon, the rebuilt old vehicles and some bosses of the
+full Boss Hunt, the first one included). The full hunt opens on bastion_mk0, a fortress_bastion variant tinted
+[0.8, 0.86, 0.72]; the eight tinted mini bosses (bastion_mk0, fenrir, scylla, locust, behemoth_mk2, icarus_mk0, argus,
+behemoth_mk0) are the "some yes, some no". The first pass still handed the shader the tint as linear (0.72 -> 0.48) and,
+new, from spawn. Choices: every tint goes in as written in the data (SetVector, unconverted) in play and on cards; the
+stand-ins' cards are re-rendered (bosses' cards draw the parent model, untinted, as before). Rebuilt models: 19 of B2's 65
+rebuilds measure 11-73 % darker in mean albedo (area-weighted base colour x baked occlusion; more Armor and Undercarriage
+area, less paint), e.g. armored_car -30 %, ifv -19 %, vbied -54 %, stealth_bomber -73 %; `ModelLibrary.Shade` brightens
+each back to its old mean (capped at 1.5 x) through the same multiply, in play and on cards (re-rendered). Prompt 27
+remakes every model and drops the table.
