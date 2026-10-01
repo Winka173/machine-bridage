@@ -515,6 +515,8 @@ namespace MachineBrigade.Sim.Abilities
             v.DamageBoost *= phase.Damage;
             v.PhaseSpeed *= phase.Speed;
             v.DamageTaken *= phase.Armor;
+            // Prompt 26 B.5: its last phase fires faster.
+            v.FireBoost *= phase.FireRate;
             if (phase.Heal > 0f) v.Hp = MathF.Min(v.MaxHp, v.Hp + v.MaxHp * phase.Heal);
             if (phase.Model != null) v.Form = phase.Model;
             foreach (var skill in phase.Skills) Fire(v, skill, now);

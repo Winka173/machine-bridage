@@ -225,16 +225,20 @@ namespace MachineBrigade.Sim.Content
                 }
 
             var vehicles = new List<VehicleDef>();
+            var twoLayer = new Dictionary<string, WeaponDef>();
             var ownBranches = new Dictionary<string, ArmyBranch?>();
             // Prompt 20 E: bosses built from their frames, the part library, their variants and ranks.
             foreach (var v in BossTemplates.Expand(root, Inherited(root.Array("vehicles"), model: true)))
             {
+                // Prompt 26 B.3: every blast weapon a boss carries has two layers (the core as it was, an edge twice as wide).
+                var bossEdges = v.Bool("boss", false);
                 var weapon = Weapon(weapons, v, "weapon");
+                if (bossEdges) weapon = WithEdge(weapon, twoLayer);
                 var secondary = new List<WeaponMount>();
                 if (v.Has("secondary"))
                 {
                     foreach (var m in v.Array("secondary"))
-                        secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
+                        secondary.Add(new WeaponMount(bossEdges ? WithEdge(Weapon(weapons, m, "weapon"), twoLayer) : Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
                             ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
@@ -308,7 +312,7 @@ namespace MachineBrigade.Sim.Content
                             phases.Add(new BossPhaseDef
                             {
                                 At = p.Float("at"), Transform = p.Float("transform", 3f), Heal = p.Float("heal", 0f),
-                                Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f),
+                                Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f), FireRate = p.Float("fireRate", 1f),
                                 Skills = phaseSkills, Model = p.Has("model") ? p.String("model") : null, Radio = p.Has("radio") ? p.String("radio") : null,
                             });
                         }
@@ -546,6 +550,22 @@ namespace MachineBrigade.Sim.Content
             var o = root.Object("economy").Object("armyCap");
             foreach (var key in o.Keys) caps[key] = o.Int(key, 24);
             return caps;
+        }
+
+        /// <summary>
+        /// Prompt 26 B.3: a boss's copy of a blast weapon (same id, so it looks and sounds the same) with an edge layer twice as
+        /// wide as its core, at most 20 m. A weapon that has an edge already, a flak burst, a beam and a small splash (under
+        /// 2 m, bullets' fragments) are left as they are.
+        /// </summary>
+        private static WeaponDef WithEdge(WeaponDef w, Dictionary<string, WeaponDef> made)
+        {
+            if (w.SplashEdge > 0f || w.SplashRadius < 2f || w.Beam || w.Flak || w.Targets == TargetLayers.Air) return w;
+            if (made.TryGetValue(w.Id, out var copy)) return copy;
+            var edge = MathF.Min(WeaponDef.MaxEdge, w.SplashRadius * 2f);
+            if (edge <= w.SplashRadius) return w;
+            copy = w.WithEdge(edge);
+            made[w.Id] = copy;
+            return copy;
         }
 
         private static WeaponDef Weapon(Dictionary<string, WeaponDef> weapons, JsonObject owner, string key)

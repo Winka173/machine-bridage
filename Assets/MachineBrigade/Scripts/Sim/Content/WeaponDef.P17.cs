@@ -30,6 +30,30 @@ namespace MachineBrigade.Sim.Content
 
     public sealed partial class WeaponDef
     {
+        /// <summary>
+        /// Prompt 26 B.3: a boss weapon's two-layer blast. <see cref="WeaponDef.SplashRadius"/> is the core (full damage);
+        /// this is the edge's outer radius (twice the core, at most <see cref="MaxEdge"/> m), where <see cref="EdgeShare"/>
+        /// of the damage lands. 0: the ordinary blast, falling off linearly across its one radius.
+        /// </summary>
+        public float SplashEdge { get; internal set; }
+
+        /// <summary>
+        /// Prompt 26 B.3: a copy of this weapon (every field, the same id) with an edge layer of <paramref name="edge"/> m, for the
+        /// boss that carries it: the shared definition is never changed.
+        /// </summary>
+        internal WeaponDef WithEdge(float edge)
+        {
+            var copy = (WeaponDef)MemberwiseClone();
+            copy.SplashEdge = edge;
+            return copy;
+        }
+
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes (data "edgeShare", 0.4).</summary>
+        public float EdgeShare { get; internal set; } = 0.4f;
+
+        /// <summary>Prompt 26 B.3: the edge reaches at most this far, whatever the core.</summary>
+        public const float MaxEdge = 20f;
+
         /// <summary>Prompt 17 C: its damage ramps up on one target (null: it does not).</summary>
         public RampDef? Ramp { get; internal set; }
 

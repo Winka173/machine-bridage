@@ -834,12 +834,15 @@ namespace MachineBrigade.Sim.Bosses
                 ? new HitInfo(boss, boss.Team, null, at, HitKind.Direct, true).WithPen(s.Pen, true)
                 : new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
             var half = side.LengthSquared() > 0.01f;
+            // Prompt 26 B.3: two flat layers: the core (s.Radius) at full damage, the edge (twice as wide) at its share.
+            var outer = s.EdgeRadius;
+            var reach = outer > s.Radius ? outer : s.Radius;
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == boss.Team || e.Flying || e.Invulnerable) continue;
                 var edge = MathF.Max(0f, Vector2.Distance(e.Position, at) - e.Radius);
-                if (edge > s.Radius || (half && Vector2.Dot(e.Position - at, side) < 0f)) continue;
-                var share = 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
+                if (edge > reach || (half && Vector2.Dot(e.Position - at, side) < 0f)) continue;
+                var share = outer > s.Radius ? edge <= s.Radius ? 1f : s.EdgeShare : 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
                 var mult = e.Kind == TargetKind.Structure ? s.Structure : 1f;
                 if (damage > 0f) _world.Damage.Apply(e, damage * share * mult, s.Type, info);
                 if (s.Stun > 0f && e.IsAlive && !e.Def.Static && !e.Def.Boss)
@@ -854,12 +857,12 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     if (!prop.IsAlive || prop.Invulnerable) continue;
                     var edge = MathF.Max(0f, Vector2.Distance(prop.Position, at) - prop.Radius);
-                    if (edge > s.Radius || (half && Vector2.Dot(prop.Position - at, side) < 0f)) continue;
-                    var share = 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
+                    if (edge > reach || (half && Vector2.Dot(prop.Position - at, side) < 0f)) continue;
+                    var share = outer > s.Radius ? edge <= s.Radius ? 1f : s.EdgeShare : 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
                     _world.Damage.Apply(prop, damage * share * (prop.Kind == TargetKind.Structure ? s.Structure : 1f), s.Type, info);
                 }
             var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
-            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, s.Radius, 0f, tier), boss.Id));
+            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, s.Radius, 0f, tier) { Edge = outer }, boss.Id));
         }
 
         /// <summary>Round the boss (the Inferno's ring): all round with every part standing, else each standing part's half.</summary>

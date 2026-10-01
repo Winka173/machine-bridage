@@ -307,6 +307,8 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 17 C.
                 Ramp = Ramp,
                 SwarmReach = SwarmReach,
+                // Prompt 26 B.3: a boss weapon's two-layer blast.
+                SplashEdge = SplashEdge, EdgeShare = EdgeShare,
                 // Prompt 19: the tier it reaches goes with it.
                 Ceiling = Ceiling,
                 // Prompt 17 D.
@@ -368,6 +370,16 @@ namespace MachineBrigade.Sim.Content
         public float Radius { get; }
         public float Delay { get; }
         public ExplosionTier Tier { get; }
+
+        /// <summary>Prompt 26 B.3: the outer radius of a two-layer blast (<see cref="Radius"/> is its core); 0: one layer.</summary>
+        public float Edge { get; set; }
+
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes.</summary>
+        public float EdgeShare { get; set; } = 0.4f;
+
+        /// <summary>Prompt 26 B.3: a boss's blast: the core at <paramref name="radius"/>, full damage, and an edge twice as wide (at most 20 m) at 40 %.</summary>
+        public static ExplosionDef TwoLayer(float damage, float radius, ExplosionTier tier) =>
+            new(damage, radius, 0f, tier) { Edge = MathF.Min(WeaponDef.MaxEdge, radius * 2f) is var edge && edge > radius ? edge : 0f };
     }
 
     /// <summary>One weapon on a vehicle and how it is pointed. The first mount is the main weapon.</summary>
@@ -421,6 +433,9 @@ namespace MachineBrigade.Sim.Content
         public float Speed { get; set; } = 1f;
 
         public float Armor { get; set; } = 1f;
+
+        /// <summary>Prompt 26 B.5: its weapons fire this many times as fast from then on (phase 3: 1.25), multiplied in.</summary>
+        public float FireRate { get; set; } = 1f;
 
         /// <summary>Skills it uses at once when the phase begins (summons, a shield, a barrage...).</summary>
         public IReadOnlyList<SkillDef> Skills { get; set; } = Array.Empty<SkillDef>();

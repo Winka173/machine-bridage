@@ -422,7 +422,7 @@ namespace MachineBrigade.Sim.Bosses
                     var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + sea.Along * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, new ExplosionDef(salvo.Damage, salvo.Radius, 0f, ExplosionTier.Huge), salvo.Warn + 0.15 * j, v.Team, v,
+                    _world.Damage.Queue(at, ExplosionDef.TwoLayer(salvo.Damage, salvo.Radius, ExplosionTier.Huge), salvo.Warn + 0.15 * j, v.Team, v,
                         HitKind.Strike, v.Id);
                 }
                 // The turret swings to its aim (inside its arc) and fires (its muzzle flash and the shells' flight).
@@ -449,7 +449,7 @@ namespace MachineBrigade.Sim.Bosses
                 _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, cruise.Warn));
             if (cruise.Weapon != null && _world.Catalog.Weapons.TryGetValue(cruise.Weapon, out var missile))
                 _world.Emit(SimEvent.FiredWith(v, missile, origin, at, cruise.Warn, EntityId.None));
-            _world.Damage.Queue(at, new ExplosionDef(cruise.Damage, cruise.Radius, 0f, ExplosionTier.Ultimate), cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
+            _world.Damage.Queue(at, ExplosionDef.TwoLayer(cruise.Damage, cruise.Radius, ExplosionTier.Ultimate), cruise.Warn, v.Team, v, HitKind.Strike, v.Id);
         }
 
         /// <summary>The enemy's base for the last volley: its HQ and its biggest towers (else its biggest groups).</summary>

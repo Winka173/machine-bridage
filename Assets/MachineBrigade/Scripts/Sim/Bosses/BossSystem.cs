@@ -265,7 +265,7 @@ namespace MachineBrigade.Sim.Bosses
             }
             v.TurretHeading = SimMath.HeadingOf(at - v.Position);
             v.LastFiredAt = now;
-            _world.Damage.Queue(at, new ExplosionDef(b.Damage, b.Radius, 0f, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+            _world.Damage.Queue(at, ExplosionDef.TwoLayer(b.Damage, b.Radius, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
         }
 
         private bool SpotterStands(Vehicle v, string spotter)
