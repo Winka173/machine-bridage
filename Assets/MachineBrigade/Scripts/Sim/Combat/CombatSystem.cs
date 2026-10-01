@@ -367,6 +367,8 @@ namespace MachineBrigade.Sim.Combat
             score *= NewContentWorth(v, other, weapon);
             // Prompt 25 F2 batch A: groups and big aircraft, prey, a towed gun's arc, decoys, linked towers.
             score *= P25Worth(v, other, weapon);
+            // Prompt 26 B.9: a boss's area weapons look for the crowd, its guns for the dearest vehicle.
+            score *= P26Worth(v, other, weapon);
             score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }

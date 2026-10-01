@@ -954,7 +954,7 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: dồn pháo cao xạ và tên lửa phòng không bên dưới, tăng APS hoặc la-de chặn drone, tiêm kích dọn UAV tấn công."),
             ["guide.silver_bug"] = (
                 "[[Boss]] · orbital spacecraft · tungsten rods from orbit\n" +
-                "How it fights: a main laser turret and two coilguns hit the ground from high or low altitude; drop pods land vehicles; every 60 s seven [[tungsten rods]] fall from its satellite (nine every 50 s once it has crashed).\n" +
+                "How it fights: a main laser turret and two coilguns hit the ground from high or low altitude; drop pods land vehicles; every 45 s seven [[tungsten rods]] fall from its satellite (nine once it has crashed).\n" +
                 "Altitude: it opens in low orbit, out of reach, then keeps to a fixed schedule of high-altitude phases (only long-range SAMs, long-range SAM sites and fighters reach it) and low-altitude phases (anything that hits aircraft, plus railguns); below 30% health it crashes and fights on as a ground fortress, four ordinary gun turrets on the wreck.\n" +
                 "Strong / weak: its belly (armour 2) is exposed at low altitude; its two point-defence lasers pick off some of your SAMs and missiles.\n" +
                 "Tip: keep long-range anti-air ready for its high passes, mass everything else for the low ones, shoot down its drop pods before they land, and break its satellite uplink to cancel a rod rain.",
