@@ -36,7 +36,7 @@
             "kind": "vehicle",
             "model": "main_battle_tank",
             "source": "Models/main_battle_tank_hd",
-            "hash": "v2:6954491c2f5322cf028be838304c500b4b36b520"
+            "hash": "v2:3cf333416a30a49781938a48cb7627042d0aec96"
         },
         {
             "id": "heavy_tank",
@@ -106,7 +106,7 @@
             "kind": "vehicle",
             "model": "attack_helicopter",
             "source": "Models/attack_helicopter_hd",
-            "hash": "v2:616e5df54a2e7f5b4997ac9434ff86ccf71d0cb8"
+            "hash": "v2:27732093980fe01c5987cee5b157ae44b16f310c"
         },
         {
             "id": "gunship_heli",
@@ -239,7 +239,7 @@
             "kind": "vehicle",
             "model": "fighter_jet",
             "source": "Models/fighter_jet_hd",
-            "hash": "v2:aa76aea6e0a33695af6035d6605ec5995fdf3e2c"
+            "hash": "v2:975444257a248a5712187c74b34a7a3331ff81b2"
         },
         {
             "id": "recon_drone",
@@ -526,7 +526,7 @@
             "kind": "vehicle",
             "model": "next_gen_tank",
             "source": "Models/main_battle_tank_hd",
-            "hash": "v2:6954491c2f5322cf028be838304c500b4b36b520"
+            "hash": "v2:3cf333416a30a49781938a48cb7627042d0aec96"
         },
         {
             "id": "demolition_line_vehicle",
@@ -946,7 +946,7 @@
             "kind": "structure",
             "model": "main_battle_tank",
             "source": "Models/main_battle_tank_hd",
-            "hash": "v2:6954491c2f5322cf028be838304c500b4b36b520"
+            "hash": "v2:3cf333416a30a49781938a48cb7627042d0aec96"
         },
         {
             "id": "dragons_teeth",
@@ -1254,14 +1254,14 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:78c6c8056842d336809a1773be70031b4e5826c9"
+            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
         },
         {
             "id": "icarus_mk0",
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:78c6c8056842d336809a1773be70031b4e5826c9"
+            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
         },
         {
             "id": "inflatable_decoy",
@@ -1520,7 +1520,7 @@
             "kind": "boss",
             "model": "silver_bug",
             "source": "Models/silver_bug",
-            "hash": "v2:78c6c8056842d336809a1773be70031b4e5826c9"
+            "hash": "v2:5c9e40c9cfb8276a8c409e198d38f1b523e7e44c"
         },
         {
             "id": "sky_fortress",
