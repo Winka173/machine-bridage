@@ -145,7 +145,7 @@ def _mbt(a, detail, v2):
         parts.mg_mount(a, t, (.55, .45, .74), length=.8, shield=False)
         ant = a.part('Antennas', 'Steel', t)
         for s in (-1, 1):
-            parts.antenna(ant, (s * .82, 1.6, .72), h=.38, r=.05)
+            parts.antenna(ant, (s * .82, 1.6, .72), h=.22, r=.05)   # short: the hull height stays the baseline's
     else:
         mv._roof_mg(a, t, (.55, .45, .74), length=.8, shield=False)
     if detail:
@@ -212,11 +212,10 @@ def _fighter(a, detail, v2):
         glass.loft([_dome(y, w, z0, z1, 7) for y, w, z0, z1 in stations], bevel=0)
     spine = [_dome(y, w, _skin_z(hull, y, w) - .04, z1, 9 if detail else 7) for y, w, z1 in
              ((-4.3, .34, .92), (-3.2, .42, .8), (-1.4, .46, .68), (1.2, .46, .62), (3.8, .4, .56), (6.2, .3, .44))]
-    before = k.snapshot(body)
     body.loft(spine + [[(0, 7.3, .3)]], bevel=.02 * bv, seg=1)
     # Panel insets on the dorsal spine between the cockpit and the tail (raised panels, their frames the lines).
-    if not detail:  # the close-up variant draws its own panel lines on the spine (mb_air3._fighter_jet_detail)
-        k.inset(body, lambda c, nn, f: nn.z > .7 and -1.5 < c.y < 6.0, width=.06, depth=.012, since=before)
+    # (Panel insets on this lofted skin were tried: +400 triangles, COLOR_0 -0.7 %, nothing visible on the card;
+    # dropped. The close-up variant draws its own panel lines, mb_air3._fighter_jet_detail.)
     _patch(armor, spine, -3.0, -1.7, 1, 5)
     lerx = Planform(.45, 2.6, -6.4, -.52, 6.9, 2.0, .14, .08, .06, .04)
     wing = Planform(.9, 6.1, -2.17, 2.51, 5.4, 1.45, .3, .1, .02, -.08)
@@ -266,7 +265,7 @@ def _fighter(a, detail, v2):
             _surface(body, fin, frame, lower=1.0, bevel=0)
         tip = Vector(frame(3.45, 7.1, 0))
         k.lathe(armor, [(0, -.32), (.05, -.26), (.07, -.15), (.07, .3)], loc=tuple(tip + Vector((0, .1, 0))),
-                rot=BACKWARD, seg=6)                                                               # fin-tip fairing
+                rot=BACKWARD, seg=6, worn=(1, 2))                                                               # fin-tip fairing
         glow.box((.08, .16, .08), loc=tuple(tip + Vector((0, .44, 0))), bevel=0)
         _surface(body, ventral, _upright(x, -.2, math.pi - .3), lower=1.0, bevel=.012 * bv)
     for frame in (RIGHT, LEFT):
@@ -275,8 +274,8 @@ def _fighter(a, detail, v2):
               bevel=.01 * bv, seg=1)
     a.part('Beacon', 'TeamGlow').sphere(.08, loc=(0, 9.38, 0), seg=6, rings=4)
     k.block(armor, (.24, 1.3, .16), loc=(-.86, -3.05, .15), chamfer=.03, taper=(.7, .9))          # gun fairing
-    k.lathe(steel, [(.06, -.22), (.06, .18), (.08, .19), (.08, .26), (.05, .26), (.05, .22), (0, .22)],
-            loc=(-.86, -3.82, .15), rot=FORWARD, seg=6)                                           # cannon, muzzle ring
+    k.lathe(steel, [(.06, -.22), (.06, .18), (.08, .19), (.08, .26)], loc=(-.86, -3.82, .15), rot=FORWARD, seg=6,
+            worn=(2,))                                                                          # cannon, muzzle ring
     a.pivot('Muzzle_gun', (-.86, -4.1, .15))
     tips = _aam_parts(a, 'Wingtip_missiles')
     for s in (-1, 1):
@@ -546,12 +545,13 @@ def _ic_pods(a, lift, wreck):
     def cutters(tool):
         for sx in (-1, 1):
             k.block(tool, (mouth[0], .7, mouth[1]), loc=P(sx * xc, f - .2, zc), chamfer=0)
-    k.cut(body, cutters)
+    cut = k.cut(body, cutters)
     for sx in (-1, 1):
         for f0 in (1.4, -4.4):
             rows = [[f0] + lerp(POD, f0), [f0 - .5] + lerp(POD, f0 - .5)]
             band.loft([ring(*r, sx, grow=.02) for r in rows], bevel=0)
-        dark.box((mouth[0] + .02, .03, mouth[1] + .02), loc=P(sx * xc, f - .52, zc), bevel=0)
+        # The dark plate at the recess's bottom, or (when the solver gave nothing back) on the face as before.
+        dark.box((mouth[0] + .02, .03, mouth[1] + .02), loc=P(sx * xc, f - .52 if cut else f + .03, zc), bevel=0)
         lamp.box((w * 1.1, .03, .06), loc=P(sx * xc, f + .03, zt - .15 + lift), bevel=0)
         for fv in (-.6, -1.4, -3.4):
             xv = lerp(POD, fv)[0]
@@ -624,7 +624,7 @@ def _ic_flak(a, mount, muzzle, tag, loc, deployed=False):
         p0 = Vector((x, -.02, .42))
         p1 = p0 + d * 1.05
         parts.barrel(a, 'Flak_guns' + tag, m, x, p0.y, p0.z, .75, .036, seg=8, sleeve=1.2, extractor=(.35, 1.45, .16),
-                     brake_name='Flak_brakes' + tag, brake='baffle', rot=(R90 - tilt, 0, 0))
+                     brake_name='Flak_brakes' + tag, brake='baffle', brake_mat='Steel', rot=(R90 - tilt, 0, 0))
         tips.append(p1)
     a.pivot(dotted(muzzle), tuple((tips[0] + tips[1]) / 2), m)
 

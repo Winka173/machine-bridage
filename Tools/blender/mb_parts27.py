@@ -34,13 +34,11 @@ def road_wheel(a, centre, r, width, s, seg=10, tyre='Tyres', disc='Wheels', hub=
     dished disc with a raised rim and a hub boss (the bake darkens the dish), hub bolts at high detail."""
     x, y, z = centre
     w = width
-    k.lathe(a.part(tyre, 'Undercarriage'), [(r * .8, -w / 2), (r * .96, -w / 2), (r, -w / 2 + .02), (r, w / 2 - .02),
-                                            (r * .96, w / 2), (r * .8, w / 2)],
-            loc=(x, y, z), rot=side_rot(s), seg=seg, worn=(2, 3))
-    k.lathe(a.part(disc, disc_mat), [(0, w / 2 + .03), (r * .24, w / 2 + .03), (r * .3, w / 2 + .008),
-                                     (r * .6, w / 2 - .004), (r * .72, w / 2 + .02), (r * .8, w / 2 + .012),
-                                     (r * .8, w / 2 - .03)],
-            loc=(x, y, z), rot=side_rot(s), seg=seg, worn=(4,))
+    k.lathe(a.part(tyre, 'Undercarriage'), [(r * .8, -w / 2), (r, -w / 2 + .02), (r, w / 2 - .02), (r * .8, w / 2)],
+            loc=(x, y, z), rot=side_rot(s), seg=seg, worn=(2,))
+    k.lathe(a.part(disc, disc_mat), [(0, w / 2 + .03), (r * .26, w / 2 + .03), (r * .6, w / 2 - .004),
+                                     (r * .74, w / 2 + .02), (r * .8, w / 2 - .03)],
+            loc=(x, y, z), rot=side_rot(s), seg=seg, worn=(3,))
     if hd.on(a):
         m = hd.frame((x + s * (w / 2 + .03), y, z), side_rot(s))
         hd.bolt_ring(a.part('Wheel_bolts', 'Steel'), m, r * .17, 6, r=.014, h=.02)
@@ -206,19 +204,18 @@ def smoke_launcher(a, part, x, y, z, s, count=3, gap=.07, r=.04, depth=.14):
     rot = (.6, 0, s * .4)
     span = (count - 1) * gap
     k.block(a.part('Smoke_brackets', 'Armor', parent), (span + r * 2.6, r * 2.2, .05),
-            loc=(s * (x + span / 2), y + .02, z - r * 1.1), chamfer=.012)
+            loc=(s * (x + span / 2), y + .02, z - r * 1.1), chamfer=0)
     h = depth / 2
     for i in range(count):
-        k.lathe(part, [(r * .9, -h), (r, -h + .012), (r, h - .016), (r * 1.18, h - .012), (r * 1.18, h),
-                       (r * .74, h), (r * .74, h - .045), (0, h - .045)],
-                loc=(s * (x + i * gap), y, z), rot=rot, seg=8, worn=(4,))
+        k.lathe(part, [(r, -h), (r * 1.1, h), (r * .72, h), (r * .72, h - .04), (0, h - .04)],
+                loc=(s * (x + i * gap), y, z), rot=rot, seg=8, worn=(1,))
 
 
 def antenna(part, loc, h=.45, r=.05, seg=8):
     """Antenna on its base: a turned base boss and a tapered mast at least 10 cm thick (no shimmering whips), a
     ball at the tip."""
-    k.lathe(part, [(r * 2.3, -.02), (r * 2.3, .03), (r * 1.5, .07), (r * 1.1, .09), (r * 1.0, h), (r * 1.25, h + .02),
-                   (r * 1.25, h + .07), (0, h + .09)], loc=loc, seg=seg, worn=(1, 5))
+    k.lathe(part, [(r * 2.2, -.02), (r * 2.2, .03), (r * 1.0, .09), (r * .8, h), (r * 1.2, h + .03), (0, h + .08)],
+            loc=loc, seg=seg, worn=(1, 4))
 
 
 # ----------------------------------------------------------------------------- rotors
@@ -231,9 +228,9 @@ def rotor_head(a, r, blades, R, chord, hub=.3, phase=0.0, t=.05, cap=.25, stripe
     grips = a.part('Rotor_grips', 'Armor', r)
     blades_p = a.part('Rotor_blades', 'Armor', r)
     tips = a.part('Rotor_tips', 'Hazard', r)
-    k.lathe(steel, [(hub * .7, -.06), (hub, -.05), (hub, .05), (hub * .8, .07), (hub * .78, .17), (hub * .55, .19),
-                    (hub * .45, .14 + cap * .5), (hub * .22, .14 + cap), (0, .17 + cap)], seg=14, worn=(2, 4))
-    k.ring(steel, [(hub * .35, -.26), (hub * .82, -.26), (hub * .82, -.21), (hub * .35, -.21)], seg=14, worn=(2,))
+    k.lathe(steel, [(hub * .8, -.05), (hub, -.03), (hub, .05), (hub * .78, .08), (hub * .78, .15), (hub * .5, .15 + cap * .45),
+                    (hub * .22, .14 + cap), (0, .17 + cap)], seg=12, worn=(1, 2, 3, 5))
+    steel.cyl(hub * .8, .05, loc=(0, 0, -.24), seg=12, bevel=0)                          # swashplate
     grip = .5 + hub * .4
     for j in range(blades):
         ang = phase + j * TAU / blades
@@ -242,9 +239,9 @@ def rotor_head(a, r, blades, R, chord, hub=.3, phase=0.0, t=.05, cap=.25, stripe
         k.block(grips, (grip, chord * .55, .1), loc=tuple(d * (hub * .6 + grip / 2) + Vector((0, 0, .012))),
                 rot=(0, 0, ang), chamfer=.02)
         p = d * (hub * .75 + grip * .38) + e * chord * .36 + Vector((0, 0, .02))
-        k.lathe(steel, [(.04, -grip * .35), (.04, grip * .35)], loc=tuple(p), rot=(0, R90, ang), seg=6)
+        steel.cyl(.034, grip * .7, loc=tuple(p), rot=(0, R90, ang), seg=5, bevel=0)      # damper
         q = d * hub * .72 - e * (chord * .275 + .04) + Vector((0, 0, -.12))
-        k.lathe(steel, [(.022, -.13), (.022, .13)], loc=tuple(q), seg=5)
+        steel.cyl(.02, .26, loc=tuple(q), seg=5, bevel=0)                                  # pitch link
         _blade(blades_p, tips, d, e, (0, 0, 1), hub * .6 + grip - .06, R, chord, t, stripe=stripe, droop=droop)
     if hd.on(a):
         bolts = a.part('Rotor_bolts', 'Steel', r)
@@ -286,29 +283,32 @@ def jet_nozzle(a, x, y, z, r, length, seg=12, glow=True):
     lip, a ring of overlapping converging petals whose pointed tips give the serrated rim, a deep dark liner and the
     glowing flame holder."""
     L = length
-    k.lathe(a.part('Nozzles', 'Steel'), [(r * 1.04, -.15), (r, L * .3), (r * .95, L * .45), (r * .9, L * .45),
-                                         (r * .9, L * .3)], loc=(x, y, z), rot=BACKWARD, seg=seg, worn=(2,),
+    k.lathe(a.part('Nozzles', 'Steel'), [(r * 1.04, -.15), (r, L * .3), (r * .97, L * .42), (r * .92, L * .42),
+                                         (r * .92, L * .34)], loc=(x, y, z), rot=BACKWARD, seg=seg, worn=(1, 2),
             caps=(True, False))
     petals = a.part('Nozzle_petals', 'Armor')
     n = seg
     for i in range(n):
         u = (i + .5) * TAU / n
         c, s = math.cos(u), math.sin(u)
-        w = TAU * r * .94 / n * .62
-        # A tapered petal from radius .96 r at L*.42 to .84 r at L, standing out of the shroud.
-        p0 = Vector((x + c * r * .955, y + L * .42, z + s * r * .955))
+        w = TAU * r * .94 / n * .5
+        # A tapered petal from under the shroud's lip (.94 r at L * .4) to .84 r at L, edge to edge with the next.
+        p0 = Vector((x + c * r * .94, y + L * .4, z + s * r * .94))
         p1 = Vector((x + c * r * .85, y + L, z + s * r * .85))
         tang = (p1 - p0).normalized()
         nrm = Vector((c, 0, s))
         side = tang.cross(nrm).normalized()
         L1 = (p1 - p0).length
-        prof = [(-w, 0), (w, 0), (w * .75, L1 * .92), (0, L1 + .02), (-w * .75, L1 * .92)]
+        prof = [(-w, 0), (w, 0), (w * .7, L1 * .9), (0, L1 + .02), (-w * .7, L1 * .9)]
         start = len(petals.bm.verts)
         k.extrude(petals, prof, .014, axis='Z')
         petals.bm.verts.ensure_lookup_table()
         m = Matrix((side, tang, nrm)).transposed().to_4x4()
         m.translation = p0
-        bmesh.ops.transform(petals.bm, matrix=m, verts=list(petals.bm.verts)[start:])
+        new = list(petals.bm.verts)[start:]
+        bmesh.ops.transform(petals.bm, matrix=m, verts=new)
+        for j in (2, 3, 4, 7, 8, 9):                 # the petal's outer end on both faces: a worn, light-catching rim
+            new[j][petals.wear] = 1.0
     k.lathe(a.part('Nozzle_liners', 'Undercarriage'), [(r * .84, L - .02), (r * .74, L * .55), (r * .5, L * .5),
                                                        (0, L * .5)], loc=(x, y, z), rot=BACKWARD, seg=seg,
             caps=(False, False))
@@ -335,22 +335,21 @@ def engine_nacelle(body, dark, loc, r, length, rot=FORWARD, seg=10):
     """A turboshaft nacelle along local +Z from its exhaust end at loc to the intake: a turned cowling with a worn
     seam ring and an intake lip round a dark recessed face."""
     L = length
-    k.lathe(body, [(r * .8, 0), (r * .96, .04), (r, .12), (r, L * .55), (r * 1.03, L * .57), (r * 1.03, L * .61),
-                   (r, L * .63), (r, L - .06), (r * .9, L), (r * .72, L)], loc=loc, rot=rot, seg=seg, worn=(4, 8),
-            caps=(True, False))
-    k.lathe(dark, [(r * .72, L), (r * .7, L - .06), (r * .3, L - .08), (0, L - .06)], loc=loc, rot=rot, seg=seg,
-            caps=(False, False))
+    k.lathe(body, [(r * .8, 0), (r, .1), (r, L * .55), (r * 1.04, L * .58), (r, L * .61), (r, L - .05), (r * .86, L)],
+            loc=loc, rot=rot, seg=seg, worn=(1, 3, 5, 6), caps=(True, False))
+    k.lathe(dark, [(r * .86, L), (r * .76, L - .025), (0, L - .025)], loc=loc, rot=rot, seg=seg, caps=(False, False))
 
 
 # ----------------------------------------------------------------------------- stores
-def pylon(part, x, y0, y1, ztop, zbot, w=.08):
+def pylon(part, x, y0, y1, ztop, zbot, w=.08, braces=False):
     """Store pylon from the skin (ztop, buried) down to zbot, chord y0..y1, a drop-in for mb_air._pylon: the same
-    streamlined profile with rounded corners and chamfered faces, and sway-brace pads at its foot."""
+    streamlined profile (plain: a chamfer under a wing costs triangles and darkens the bake), and sway-brace pads at
+    its foot."""
     prof = [(y0 + .12, ztop), (y0, zbot + .04), (y0 + .1, zbot), (y1 - .15, zbot), (y1, ztop)]
-    k.extrude(part, prof, w, loc=(x, 0, 0), axis='X', chamfer=min(.012, w * .2), corner=.015)
+    k.extrude(part, prof, w, loc=(x, 0, 0), axis='X')
     span = y1 - y0
-    for f in (.3, .65):
-        k.block(part, (w * 2.2, .05, .04), loc=(x, y0 + span * f, zbot + .01), chamfer=.008)
+    for f in ((.3, .65) if braces else ()):
+        k.block(part, (w * 2.2, .05, .04), loc=(x, y0 + span * f, zbot + .01), chamfer=0)
 
 
 def launch_rail(part, x, y0, y1, z, w=.1, h=.08):
@@ -365,16 +364,14 @@ def hellfire_rack(a, x, y, z, s, rows=(.66, .52), cols=(1.02, 1.14), length=.66,
     and fins at high detail)."""
     from mb_air import _hellfire
     rack = a.part('Armor', 'Armor')
-    k.block(rack, (.05, .56, .3), loc=(s * (cols[0] + cols[1]) / 2, y + .3, (rows[0] + rows[1]) / 2), chamfer=.012)
-    for cx in cols:
-        k.block(rack, (.045, .6, .03), loc=(s * cx, y + .3, rows[0] + r + .012), chamfer=.006)
+    k.block(rack, (.05, .56, .3), loc=(s * (cols[0] + cols[1]) / 2, y + .3, (rows[0] + rows[1]) / 2), chamfer=0)
     for cx in cols:
         for cz in rows:
             if detail:
                 _hellfire(a, s * cx, y, cz, length=length, r=r, fins=cx > 1.1)
             else:
-                k.lathe(a.part('Missiles', 'Fuel'), [(r * .9, .06), (r, .1), (r, length * .97), (r * .8, length)],
-                        loc=(s * cx, y, cz), rot=BACKWARD, seg=6, caps=(False, True))
+                k.lathe(a.part('Missiles', 'Fuel'), [(r, .06), (r, length * .96), (r * .8, length)],
+                        loc=(s * cx, y, cz), rot=BACKWARD, seg=6, caps=(False, True), worn=(1,))
                 k.lathe(a.part('Missile_seekers', 'Glass'), [(0, 0), (r * .6, .03), (r * .9, .07)],
                         loc=(s * cx, y, cz), rot=BACKWARD, seg=6, caps=(False, False))
 

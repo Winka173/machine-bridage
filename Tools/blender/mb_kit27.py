@@ -13,7 +13,7 @@ worn (the bake brightens it 24 %, like a two-segment bevel), which keeps edges c
   * mirrored     - context: geometry added inside is duplicated mirrored in X (faces re-wound)
   * inset        - panel insets on chosen faces (a recessed or raised panel inside a frame)
   * sharp_loft   - loft whose chosen corners carry a two-step chamfer along the whole hull (crisp chines)
-  * cut          - boolean difference (EXACT solver) of a cutter built in a scratch Shape; used only where cheap
+  * cut          - boolean difference (MANIFOLD solver) of a cutter built in a scratch Shape; used only where cheap
   * greebles     - deterministic small gear scattered over a rectangle on a surface
   * clean        - dissolves zero-length edges and zero-area faces in every part of an asset (run before finish)
 
@@ -100,19 +100,20 @@ def _faces(shape, rings, cap_start=True, cap_end=True):
 
 # ----------------------------------------------------------------------------- extrusion
 def extrude(shape, profile, depth, loc=(0, 0, 0), rot=(0, 0, 0), axis='X', chamfer=0.0, corner=0.0, taper=1.0,
-            caps=(True, True)):
+            caps=(True, True), ends=(True, True)):
     """Extrude a 2D outline over `depth` centred on the origin (axis X: profile is (y, z); Y: (x, z); Z: (x, y)).
-    chamfer cuts the two end edges in two steps (the middle row worn); corner rounds the profile's own corners
-    (one chamfer each); taper (a number, or one per profile axis) scales the positive end (sloped walls)."""
+    chamfer cuts the end edges listed in `ends` (negative, positive end) in two steps (the middle row worn); corner
+    rounds the profile's own corners (one chamfer each); taper (a number, or one per profile axis) scales the
+    positive end (sloped walls). caps=False leaves that end open."""
     prof = round_corners(profile, corner) if corner > 0 else list(profile)
     c = min(chamfer, depth * .3)
     h = depth / 2
     rows = []   # (offset inwards, position along the axis, worn)
-    if c > 0 and caps[0]:
+    if c > 0 and caps[0] and ends[0]:
         rows += [(c, -h, False), (c * .3, -h + c * .3, True), (0, -h + c, False)]
     else:
         rows.append((0, -h, False))
-    if c > 0 and caps[1]:
+    if c > 0 and caps[1] and ends[1]:
         rows += [(0, h - c, False), (c * .3, h - c * .3, True), (c, h, False)]
     else:
         rows.append((0, h, False))
@@ -136,12 +137,17 @@ def extrude(shape, profile, depth, loc=(0, 0, 0), rot=(0, 0, 0), axis='X', chamf
     return shape
 
 
-def block(shape, size, loc=(0, 0, 0), rot=(0, 0, 0), chamfer=.03, taper=(1, 1)):
-    """Chamfered box (extrude of a chamfered rectangle along Z): plates, bins, blocks, without bmesh bevel."""
+SMALL = .12   # a block thinner than this in any direction stays a plain box (its chamfer would not show)
+
+
+def block(shape, size, loc=(0, 0, 0), rot=(0, 0, 0), chamfer=.03, taper=(1, 1), ends=(False, True)):
+    """Box on its base (extrude of a rectangle along Z) with its vertical corners cut and the edges round the
+    chamfered `ends` (default: the top only, a block stands on something) in two steps, without bmesh bevel: plates,
+    bins, blocks. Blocks under SMALL in any size are plain boxes (12 triangles): the chamfer's cost is wasted there."""
     sx, sy, sz = size
-    c = min(chamfer, sx * .3, sy * .3, sz * .3)
+    c = 0.0 if min(size) < SMALL else min(chamfer, sx * .3, sy * .3, sz * .3)
     prof = [(-sx / 2, -sy / 2), (sx / 2, -sy / 2), (sx / 2, sy / 2), (-sx / 2, sy / 2)]
-    extrude(shape, prof, sz, loc=loc, rot=rot, axis='Z', chamfer=c, corner=c if c > 0 else 0, taper=tuple(taper))
+    extrude(shape, prof, sz, loc=loc, rot=rot, axis='Z', chamfer=c, corner=c, taper=tuple(taper), ends=ends)
     return shape
 
 
@@ -407,7 +413,7 @@ def sharp_loft(shape, rings, chamfer=.04, corners=None, loc=(0, 0, 0), rot=(0, 0
 
 # ----------------------------------------------------------------------------- boolean cut-outs
 def cut(shape, build):
-    """Boolean difference: build(tool) fills a scratch Shape with the cutter (closed solids); the EXACT solver cuts
+    """Boolean difference: build(tool) fills a scratch Shape with the cutter (closed solids); the MANIFOLD solver cuts
     it out of everything in `shape`. Only for parts that are one closed solid (a hull plate, a pod), where the cut
     is cheap and clean; returns False (shape unchanged) when the solver gives nothing back."""
     tool = kit.Shape()
@@ -421,14 +427,20 @@ def cut(shape, build):
     scene.collection.objects.link(oa)
     scene.collection.objects.link(ob)
     ok = False
+    before = shape.bm.calc_volume(signed=True)
     try:
         mod = oa.modifiers.new('cut', 'BOOLEAN')
         mod.operation = 'DIFFERENCE'
-        mod.solver = 'EXACT'
+        mod.solver = 'MANIFOLD'   # EXACT turned this kit's closed solids inside out (volume < 0) in Blender 4.5
         mod.object = ob
         dg = bpy.context.evaluated_depsgraph_get()
+        dg.update()
         res = bpy.data.meshes.new_from_object(oa.evaluated_get(dg))
-        if len(res.polygons):
+        check = bmesh.new()
+        check.from_mesh(res)
+        after = check.calc_volume(signed=True) if check.faces else 0.0
+        check.free()
+        if 0 < after < before:   # a real cut: still a positive solid, smaller than before
             shape.bm.clear()
             shape.bm.from_mesh(res)
             shape.wear = shape.bm.verts.layers.float.get('wear') or shape.bm.verts.layers.float.new('wear')
