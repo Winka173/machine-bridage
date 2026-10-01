@@ -725,7 +725,7 @@
   },
   "ixion": {
     "file": "ixion.glb",
-    "triangles": 21628
+    "triangles": 17324
   },
   "jersey_barrier": {
     "file": "jersey_barrier.glb",
@@ -1001,7 +1001,7 @@
   },
   "rail_tractor": {
     "file": "rail_tractor.glb",
-    "triangles": 5508
+    "triangles": 4406
   },
   "railgun_truck": {
     "file": "railgun_truck.glb",

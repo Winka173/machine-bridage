@@ -300,6 +300,20 @@
     "FLAG main_battle_tank_hd: triangles 12,106 -> 16,462 (+36.0%); vertices 18,883 -> 21,877 (+15.9%); meshes 55 -> 56 (+1.8%); renderers 55 -> 56 (+1.8%); materialSlots 55 -> 56 (+1.8%); fileBytes 957,528 -> 1,116,380 (+16.6%); structure changed",
     "FLAG silver_bug: triangles 19,136 -> 21,760 (+13.7%); vertices 26,450 -> 29,716 (+12.3%); meshes 118 -> 120 (+1.7%); renderers 118 -> 120 (+1.7%); materialSlots 118 -> 120 (+1.7%); fileBytes 1,377,700 -> 1,534,532 (+11.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "ixion",
+    "rail_supergun",
+    "rail_tractor"
+   ],
+   "reason": "P27 wave 1a: Ixion rebuilt as the BelAZ-75710 mine truck (old unlisted Tsar Tank ixion replaced), Gungnir rail_supergun as an EMRG train with capacitor cars, rail_tractor as a modern Bo-Bo diesel; bounds, names, moving parts kept for the rebuilds",
+   "changes": [
+    "FLAG ixion: triangles 21,628 -> 17,324 (-19.9%); vertices 26,404 -> 22,036 (-16.5%); meshes 54 -> 40 (-25.9%); renderers 54 -> 40 (-25.9%); materials 9 -> 11 (+22.2%); materialSlots 54 -> 40 (-25.9%); fileBytes 1,318,224 -> 1,079,840 (-18.1%); structure changed",
+    "FLAG rail_supergun: triangles 28,756 -> 36,726 (+27.7%); vertices 36,451 -> 46,269 (+26.9%); meshes 91 -> 97 (+6.6%); renderers 91 -> 97 (+6.6%); materials 12 -> 11 (-8.3%); materialSlots 91 -> 97 (+6.6%); fileBytes 1,855,808 -> 2,339,896 (+26.1%); structure changed",
+    "FLAG rail_tractor: triangles 5,508 -> 4,406 (-20.0%); vertices 7,096 -> 5,857 (-17.5%); meshes 23 -> 17 (-26.1%); renderers 23 -> 17 (-26.1%); materials 10 -> 9 (-10.0%); materialSlots 23 -> 17 (-26.1%); fileBytes 369,120 -> 302,268 (-18.1%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -22465,24 +22479,24 @@
   },
   "ixion": {
    "file": "ixion.glb",
-   "fileBytes": 1318224,
-   "sha1": "b26dffead3e6675d",
+   "fileBytes": 1079840,
+   "sha1": "54b77a88d5c0383a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 59,
-   "meshes": 54,
-   "materials": 9,
+   "nodes": 56,
+   "meshes": 40,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 54,
-   "submeshes": 54,
-   "materialSlots": 54,
-   "materialsUsed": 9,
-   "triangles": 21628,
-   "vertices": 26404,
+   "renderers": 40,
+   "submeshes": 40,
+   "materialSlots": 40,
+   "materialsUsed": 11,
+   "triangles": 17324,
+   "vertices": 22036,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -22490,117 +22504,142 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 466,
+   "loosePieces": 532,
    "openEdges": 0,
-   "nonManifoldEdges": 48,
+   "nonManifoldEdges": 0,
    "boundsMin": [
-    -9.5,
-    -0.9418,
-    -12.2341
+    -6.01,
+    -0.0078,
+    -13.0
    ],
    "boundsMax": [
-    9.5,
-    10.9418,
-    9.4496
+    6.01,
+    9.92,
+    12.9837
    ],
    "size": [
-    21.684,
-    19.0,
-    11.884
+    25.984,
+    12.02,
+    9.928
    ],
    "center": [
     0.0,
-    5.0,
-    -1.392
+    4.956,
+    -0.008
    ],
-   "structureHash": "2034430fab7827b3",
+   "structureHash": "6df12c62d4b14043",
    "color0": {
-    "mean": 0.6145,
+    "mean": 0.6543,
     "min": 0.062,
     "max": 1.0,
-    "p05": 0.191,
-    "p95": 0.8064,
+    "p05": 0.1372,
+    "p95": 0.9381,
     "outOfRange": 0
    },
    "runtimeNodes": {
     "turret": [
      "Turret"
     ],
+    "main_cannon": [
+     "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
+    ],
     "muzzle": [
-     "Muzzle_main"
+     "Muzzle_main",
+     "Muzzle_mg",
+     "Muzzle_mg.001"
+    ],
+    "mount": [
+     "Mount_mg",
+     "Mount_mg.001"
     ],
     "part": [
-     "Part_steer"
+     "Part_cab",
+     "Part_tyre",
+     "Part_tyre.001",
+     "Part_tyre.002",
+     "Part_tyre.003",
+     "Part_wheel",
+     "Part_wheel.001"
+    ],
+    "point": [
+     "Point_exhaust",
+     "Point_fire",
+     "Point_mines"
     ]
    },
-   "runtimeSuffixed": [],
+   "runtimeSuffixed": [
+    "Mount_mg.001",
+    "Muzzle_mg.001"
+   ],
    "nodeNames": [
-    "Ammo_crates",
-    "Armour_slabs",
-    "Axle",
-    "Axle_collars",
-    "Belly",
-    "Chains",
-    "Cleats_wheel_l",
-    "Cleats_wheel_r",
-    "Counterweight",
-    "Disc_ring_wheel_l",
-    "Disc_ring_wheel_r",
-    "Disc_rivets_wheel_l",
-    "Disc_rivets_wheel_r",
-    "Disc_rust_wheel_l",
-    "Disc_rust_wheel_r",
-    "Disc_wheel_l",
-    "Disc_wheel_r",
-    "Engine_grille",
-    "Exhaust_glow",
-    "Exhausts",
-    "Hub_spikes_wheel_l",
-    "Hub_spikes_wheel_r",
-    "Hub_wheel_l",
-    "Hub_wheel_r",
+    "Antennas",
+    "Armor",
+    "Cab",
+    "Cab_armour",
+    "Cab_glass",
+    "Canopy_band",
+    "Chassis",
+    "Grille",
+    "Hatch_fittings",
+    "Hatches",
     "Hull",
-    "Hull_spikes",
+    "Lamps",
+    "MG",
+    "MG.001",
+    "MG_armour",
+    "MG_armour.001",
+    "Main_cannon",
+    "Mine_yellow",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Muzzle_brake",
     "Muzzle_main",
-    "Part_steer",
-    "Part_wheel_l",
-    "Part_wheel_r",
-    "Rims_wheel_l",
-    "Rims_wheel_r",
-    "Rivets",
-    "Roller_arms",
-    "Roller_bands",
-    "Roller_drum",
-    "Roller_spikes",
-    "Rust_streaks",
-    "Soot",
-    "Spokes_wheel_l",
-    "Spokes_wheel_r",
-    "Steer_axle",
-    "Steer_drum",
-    "Steer_fork",
-    "Steer_rims",
-    "Steer_spikes",
-    "T_armor_Turret",
-    "T_barrel_Turret",
-    "T_bore_Turret",
-    "T_brake_Turret",
-    "T_house_Turret",
-    "T_ring_Turret",
-    "Tail_boom",
-    "Tread_spikes_wheel_l",
-    "Tread_spikes_wheel_r",
-    "Tread_wheel_l",
-    "Tread_wheel_r",
+    "Muzzle_mg",
+    "Muzzle_mg.001",
+    "Part_cab",
+    "Part_tyre",
+    "Part_tyre.001",
+    "Part_tyre.002",
+    "Part_tyre.003",
+    "Part_wheel",
+    "Part_wheel.001",
+    "Point_exhaust",
+    "Point_fire",
+    "Point_mines",
+    "Railings",
+    "Ram",
+    "Ram_stripes",
+    "Rim_21",
+    "Rim_21.001",
+    "Rim_21.002",
+    "Rim_21.003",
+    "Rim_21.004",
+    "Rim_21.005",
+    "Steel",
+    "Tail_lamps",
     "Turret",
-    "Vision_slits"
+    "Turret_armor",
+    "Turret_body",
+    "Turret_steel",
+    "Tyre_0",
+    "Tyre_1",
+    "Tyre_2",
+    "Tyre_3",
+    "Tyre_4",
+    "Tyre_5",
+    "Welds"
    ],
    "category": "unlisted",
    "hd": false,
    "errors": [],
-   "warnings": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_mg.001, Muzzle_mg.001"
+   ],
    "units": [],
-   "movingParts": 2,
+   "movingParts": 11,
    "budgetClass": null
   },
   "jassm": {
@@ -30634,24 +30673,22 @@
   },
   "rail_supergun": {
    "file": "rail_supergun.glb",
-   "fileBytes": 1855808,
-   "sha1": "b284f0edaa6b7de0",
+   "fileBytes": 2339896,
+   "sha1": "eb344af603254c6e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [
-    "KHR_materials_emissive_strength"
-   ],
-   "nodes": 108,
-   "meshes": 91,
-   "materials": 12,
+   "extensions": [],
+   "nodes": 114,
+   "meshes": 97,
+   "materials": 11,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 91,
-   "submeshes": 91,
-   "materialSlots": 91,
-   "materialsUsed": 12,
-   "triangles": 28756,
-   "vertices": 36451,
+   "renderers": 97,
+   "submeshes": 97,
+   "materialSlots": 97,
+   "materialsUsed": 11,
+   "triangles": 36726,
+   "vertices": 46269,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -30659,7 +30696,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 858,
+   "loosePieces": 1086,
    "openEdges": 80,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -30669,26 +30706,26 @@
    ],
    "boundsMax": [
     4.4221,
-    16.4705,
-    37.9299
+    16.4815,
+    37.9247
    ],
    "size": [
-    63.93,
+    63.925,
     8.844,
-    16.52
+    16.532
    ],
    "center": [
     0.0,
-    8.21,
-    5.965
+    8.216,
+    5.962
    ],
-   "structureHash": "46ddaada22cdb6aa",
+   "structureHash": "932e91e21c3d3234",
    "color0": {
-    "mean": 0.5039,
+    "mean": 0.5077,
     "min": 0.078,
-    "max": 1.0,
-    "p05": 0.1382,
-    "p95": 0.7985,
+    "max": 0.9987,
+    "p05": 0.1299,
+    "p95": 0.8058,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -30740,10 +30777,9 @@
     "Muzzle_mg.001"
    ],
    "nodeNames": [
-    "Antenna",
+    "Antennas",
     "Armor",
     "Ballast",
-    "Beacon",
     "Bogie_steel",
     "Bogies",
     "Buffers",
@@ -30763,7 +30799,12 @@
     "CIWS_ring_mg_001",
     "Cabin",
     "Cabin_glass",
-    "Charges",
+    "Cables",
+    "Car_armour",
+    "Car_body",
+    "Car_frame",
+    "Car_steel",
+    "Car_stripes",
     "Chassis",
     "Couplers",
     "Crane",
@@ -30772,7 +30813,9 @@
     "Genset_body",
     "Genset_doors",
     "Genset_grille",
+    "Genset_mast",
     "Genset_panel",
+    "Genset_radar",
     "Genset_skid",
     "Genset_steel",
     "Genset_stripe",
@@ -30945,24 +30988,24 @@
   },
   "rail_tractor": {
    "file": "rail_tractor.glb",
-   "fileBytes": 369120,
-   "sha1": "be5516b6a0e592d3",
+   "fileBytes": 302268,
+   "sha1": "4c99fd731ea3b359",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 23,
-   "meshes": 23,
-   "materials": 10,
+   "nodes": 17,
+   "meshes": 17,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 23,
-   "submeshes": 23,
-   "materialSlots": 23,
-   "materialsUsed": 10,
-   "triangles": 5508,
-   "vertices": 7096,
+   "renderers": 17,
+   "submeshes": 17,
+   "materialSlots": 17,
+   "materialsUsed": 9,
+   "triangles": 4406,
+   "vertices": 5857,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -30970,7 +31013,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 185,
+   "loosePieces": 154,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -30993,41 +31036,35 @@
     2.765,
     0.0
    ],
-   "structureHash": "b6e0ff3d3f5f4797",
+   "structureHash": "3689afcfdb7b2afc",
    "color0": {
-    "mean": 0.545,
-    "min": 0.0801,
+    "mean": 0.5866,
+    "min": 0.0863,
     "max": 1.0,
-    "p05": 0.1327,
-    "p95": 0.8064,
+    "p05": 0.1693,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Antenna",
     "Armor",
+    "Bogie_steel",
+    "Bogies",
     "Buffers",
     "Chassis",
     "Couplers",
     "Handrails",
     "Headstock_bars",
     "Headstocks",
-    "Hood_louvres",
     "Hull",
-    "Lamp_hoods",
     "Lamps",
-    "Latches",
-    "Rods",
-    "Roof_lamp",
-    "Soot",
+    "Marker_lamps",
     "Steel",
-    "Stowage",
-    "Stowage_lid",
     "Tail_lamps",
-    "Vision_slits",
-    "Visors",
     "Wheels",
-    "Whips"
+    "Windows"
    ],
    "category": "unlisted",
    "hd": false,
