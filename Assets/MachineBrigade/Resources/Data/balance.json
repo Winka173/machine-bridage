@@ -1930,8 +1930,8 @@
     { "id": "kraken", "armour": [5, 3, 2, 2], "variantOf": "leviathan", "rank": "main", "general": "kessler", "radioSpawn": "radio.kessler.kraken", "hp": 117650, "weaponDamage": 2.318, "bigAttack": "kraken_air_raid",
       "modelSize": [110, 18.4, 24], "variant": {"size": 1.14, "tint": [0.78, 0.92, 1.12], "mark": "kraken"}},
     // Monster: the 800 mm self-propelled gun (the Bastion's hull; its mortar stands for the long barrel with a health of its own).
-    { "id": "monster", "armour": [5, 3, 2, 3], "variantOf": "fortress_bastion", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 103100, "weaponDamage": 1.997, "speed": 0.8, "bigAttack": "monster_800_shell",
-      "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.05, "tint": [1.1, 0.95, 0.7], "mark": "monster"}},
+    { "id": "monster", "armour": [5, 3, 2, 3], "variantOf": "fortress_bastion", "model": "monster", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 103100, "weaponDamage": 1.997, "speed": 0.8, "bigAttack": "monster_800_shell",
+      "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.05, "mark": "monster"}},
     // Garuda: the flying-wing bomber (the command airship's body; its bomb bay carries the carpet).
     { "id": "garuda", "variantOf": "command_airship", "rank": "main", "general": "quaden", "radioSpawn": "radio.quaden.garuda", "hp": 137250, "weaponDamage": 0.998, "speed": 6, "bigAttack": "garuda_carpet",
       "variant": {"size": 1.1, "tint": [0.9, 0.8, 1.12], "mark": "garuda"}},
