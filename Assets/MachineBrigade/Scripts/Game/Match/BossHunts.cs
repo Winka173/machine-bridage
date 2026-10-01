@@ -13,10 +13,10 @@ namespace MachineBrigade.Game.Match
     public static class BossHunts
     {
         /// <summary>
-        /// The week's clock (10 bosses at 2-5 minutes each and nine 20 s rests: a 30-40 minute run). Play-test 6 (DECISIONS
-        /// 21G): 45 -> 50 minutes for the tougher bosses (a geared army's Normal run takes about 40).
+        /// The week's clock. Prompt 26 E.2: the targets come to about 18 minutes (7 minis at 66 s, 3 mains at 2.8 min, nine 15 s
+        /// rests); 30 minutes leaves room for a weaker deck (50 before, for the old, longer hunt).
         /// </summary>
-        public const float WeeklyMinutes = 50f;
+        public const float WeeklyMinutes = 30f;
 
         /// <summary>The first clear of the week pays this (once a week, the Operations ledger).</summary>
         public const int WeeklyReward = 1500;

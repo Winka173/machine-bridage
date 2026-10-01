@@ -1690,4 +1690,12 @@ Prompt 26 overrides the sheet "Boss đề xuất" on bosses' health, damage a se
 C1 rows for health, "DPS" and the super weapons above are therefore superseded: health is the prompt's chapter table over the
 bosses' toughness (main 22,000 to 150,000, mini 9,000 to 57,000), the damage a second the prompt's 600-1,600 (a mini 65 %) in the
 45 / 25 / 20 / 10 mix, the super weapons on a 45-50 s cycle; `weaponDamage` is 1 for the twelve main bosses (their `p26_*` weapons
-carry the numbers) and solved for the rest. The Excel is updated in pass 3.
+carry the numbers) and solved for the rest. The Excel is re-exported by pass 3 (`Tools/balance/export_applied_xlsx.py`).
+
+
+## Prompt 26 E (Boss Hunts): numbers that are code, not sheet cells
+
+Pass 3 (DECISIONS "26E"). The sheet has no Boss Hunt cells; the hunt's numbers are in code and unmeasured: a boss's health is
+P x t x 0.6 x m (P estimated from the deck, `HuntPower`), the week 66 s / 168 s with m = 1 + 0.06 per boss, 15 s rest, 30 % repair,
+half the CP kept, the full hunt 60 s / 150 s with m x0.8 to x1.3 and fresh battles, supports capped at +40 %. The applied Excel was
+re-exported with the boss health, sizes and weapons of 26AB and 26CD. Legendary tier and hunt mutators: left.

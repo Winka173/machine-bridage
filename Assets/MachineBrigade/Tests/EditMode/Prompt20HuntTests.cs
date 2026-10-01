@@ -33,7 +33,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void TheWeeksHuntIsDrawnByTheWeek()
         {
-            // The draw alone, on a made-up story: 3 mains, 7 minis, two minis before the first two mains and three before the last.
+            // The draw alone, on a made-up story: 3 mains, 7 minis, three minis before the first main and two before each of the others (prompt 26 E.2: mains at 4, 7 and 10).
             var story = new List<HuntBoss>();
             for (var c = 1; c <= 12; c++)
             {
@@ -49,16 +49,18 @@ namespace MachineBrigade.Tests
                 Assert.AreEqual(10, run.Count);
                 CollectionAssert.AllItemsAreUnique(run);
                 var mains = Enumerable.Range(0, run.Count).Where(i => run[i].StartsWith("main")).ToList();
-                CollectionAssert.AreEqual(new[] { 2, 5, 9 }, mains, "minis lead to each main boss: " + string.Join(",", run));
+                CollectionAssert.AreEqual(new[] { 3, 6, 9 }, mains, "minis lead to each main boss: " + string.Join(",", run));
                 // Each group's minis and the mains keep story order.
                 var order = run.Select(id => story.FindIndex(b => b.Id == id)).ToList();
                 Assert.That(mains.Select(i => order[i]), Is.Ordered);
                 runs.Add(string.Join(",", run));
             }
             Assert.Greater(runs.Count, 4, "the run changes from week to week");
-            Assert.AreEqual(1f, BossHunt.Ramp(0, 1));
-            Assert.That(Enumerable.Range(0, 10).Select(i => BossHunt.Ramp(i, 10)), Is.Ordered, "stronger down the run");
-            Assert.AreEqual(1.2f, BossHunt.Ramp(9, 10), 1e-4f);
+            Assert.AreEqual(1f, BossHunt.Multiplier(0, 1, false));
+            Assert.That(Enumerable.Range(0, 10).Select(i => BossHunt.Multiplier(i, 10, false)), Is.Ordered, "stronger down the run");
+            Assert.AreEqual(1.54f, BossHunt.Multiplier(9, 10, false), 1e-4f, "prompt 26 E.2: 1 + 0.06 (i - 1), x1.0 to x1.54");
+            Assert.AreEqual(0.8f, BossHunt.Multiplier(0, 33, true), 1e-4f, "prompt 26 E.3: the full hunt, x0.8 to x1.3");
+            Assert.AreEqual(1.3f, BossHunt.Multiplier(32, 33, true), 1e-4f);
 
             // This build's: from the chapter slots, every boss a boss of its rank; play-test 6 (DECISIONS 21G): the trains may
             // come (on their line's battlefield), and every week brings bosses that answer aircraft.
@@ -335,6 +337,41 @@ namespace MachineBrigade.Tests
                 mode.Tick(world, Step);
                 world.Step(Step);
             }
+        }
+
+        // ------------------------------------------------------------------ Prompt 26 E (written, not run)
+
+        [Test]
+        public void SupportsAreCappedAtFortyPercentThenOnlyPlayChangingOnesComeUp()
+        {
+            Assert.AreEqual(0.40f, HuntSupports.Cap);
+            var held = new List<string> { "hull", "gunnery", "loaders" };
+            Assert.AreEqual(0.37f, HuntSupports.Strength(held), 1e-4f);
+            for (var boss = 0; boss < 20; boss++)
+                foreach (var id in HuntSupports.Offer(7, boss, held))
+                    Assert.That(HuntSupports.Get(id).PlayChanging || 0.37f + HuntSupports.Get(id).Strength <= 0.40f + 1e-4f, id);
+            held.AddRange(new[] { "logistics", "regen", "supply" });
+            foreach (var id in HuntSupports.Offer(7, 3, held)) Assert.IsTrue(HuntSupports.Get(id).PlayChanging, id);
+        }
+
+        [Test]
+        public void AGearedDeckHasAHigherPAndABossesHealthFollowsIt()
+        {
+            var catalog = GameContent.LoadCatalog();
+            var def = catalog.Vehicles.Values.First(v => !v.Boss && !v.Static && v.CpCost > 0 && v.Weapon != null);
+            var bare = HuntPower.Estimate(new[] { (def, VehicleBoost.None) });
+            var geared = HuntPower.Estimate(new[] { (def, new VehicleBoost(1.2f, 1.2f, 1.1f, 1f, 1f, 0f, SpecialModule.None, 0f)) });
+            Assert.Greater(geared, bare);
+            Assert.GreaterOrEqual(HuntPower.Estimate(new (VehicleDef, VehicleBoost)[0]), HuntPower.Floor);
+
+            // Boss health = P x t x 0.6 x m: the first boss of a run with P 400 comes in with 400 x its seconds x 0.6.
+            var world = new SimWorld(catalog, GameContent.LoadMap("ashfield_sandbox"), 3);
+            var mode = new BossRushMode(new BossRushRules { Bosses = new[] { "behemoth_inferno" }, HomeMap = "ashfield", Power = 400f, Ramp = true, MainSeconds = 150f, MiniSeconds = 60f });
+            mode.Setup(world);
+            Run(mode, world, () => mode.Boss.IsValid, 30f);
+            Assert.IsTrue(world.TryGetVehicle(mode.Boss, out var boss));
+            var seconds = boss.Def.Rank == BossRank.Main ? 150f : 60f;
+            Assert.AreEqual(400f * seconds * 0.6f, boss.MaxHp, 1f);
         }
 
         /// <summary>Waits for the next boss and brings it down.</summary>

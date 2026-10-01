@@ -26,6 +26,7 @@ namespace MachineBrigade.Game.Match
             public List<string> army = new();
             public List<float> health = new();
             public List<string> supports = new();
+            public float power;
         }
 
         /// <summary>How many best times the full hunt keeps.</summary>
@@ -54,7 +55,7 @@ namespace MachineBrigade.Game.Match
             var save = new HuntSave
             {
                 kind = kind, week = week, roster = new List<string>(roster), map = carry.Map, defeated = carry.Defeated, time = carry.TimeUsed,
-                cp = carry.Cp, paid = Math.Max(carry.Paid, old != null && Same(roster, old.roster) ? old.paid : 0),
+                cp = carry.Cp, power = carry.Power, paid = Math.Max(carry.Paid, old != null && Same(roster, old.roster) ? old.paid : 0),
             };
             foreach (var (def, health) in carry.Army)
             {
@@ -71,7 +72,7 @@ namespace MachineBrigade.Game.Match
         {
             var h = HuntOf(kind);
             if (h == null || (kind == BossHunts.WeeklyKey && h.week != week) || !Same(roster, h.roster) || h.defeated >= roster.Count) return null;
-            var carry = new BossRushCarry { Map = h.map, Defeated = h.defeated, TimeUsed = h.time, Cp = h.cp, Paid = h.paid, Checkpoint = true };
+            var carry = new BossRushCarry { Map = h.map, Defeated = h.defeated, TimeUsed = h.time, Cp = h.cp, Paid = h.paid, Power = h.power, Checkpoint = true };
             for (var i = 0; i < h.army.Count && i < h.health.Count; i++) carry.Army.Add((h.army[i], h.health[i]));
             carry.Supports.AddRange(h.supports);
             return carry;
