@@ -133,11 +133,11 @@
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
-    "triangles": 3482
+    "triangles": 4362
   },
   "attack_helicopter_hd": {
     "file": "attack_helicopter_hd.glb",
-    "triangles": 5694
+    "triangles": 6542
   },
   "attack_jet": {
     "file": "attack_jet.glb",
@@ -493,11 +493,11 @@
   },
   "fighter_jet": {
     "file": "fighter_jet.glb",
-    "triangles": 3580
+    "triangles": 3948
   },
   "fighter_jet_hd": {
     "file": "fighter_jet_hd.glb",
-    "triangles": 14528
+    "triangles": 13856
   },
   "fire_control_centre": {
     "file": "fire_control_centre.glb",
@@ -809,11 +809,11 @@
   },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
-    "triangles": 4700
+    "triangles": 7196
   },
   "main_battle_tank_hd": {
     "file": "main_battle_tank_hd.glb",
-    "triangles": 12106
+    "triangles": 16462
   },
   "market_stall": {
     "file": "market_stall.glb",
@@ -1185,7 +1185,7 @@
   },
   "silver_bug": {
     "file": "silver_bug.glb",
-    "triangles": 19136
+    "triangles": 21760
   },
   "silver_bug_wreck": {
     "file": "silver_bug_wreck.glb",

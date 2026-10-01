@@ -12930,3 +12930,33 @@ baseline.json), Docs/models/BASELINE.md. The analyzer ran over the exported file
   interceptor_jet, laser_ad_station, visual_jammer; 1 boss part nodes: mobile_fortress lacks Mount_gun and
   Mount_missile.001 for howitzer_2 and sam), 64 more with warnings only. Nothing fixed in this pass (no model or data
   changes); the list is wave input.
+
+## 27 experiment 1 (lead pass, 2026-10-01)
+
+Step 3 of "27 order": MBT (main_battle_tank), Su-27 (fighter_jet), Icarus (silver_bug) and the Apache
+(attack_helicopter) rebuilt with the improved kit, one variable at a time; report Docs/models/EXPERIMENT_1.md, cards
+in Docs/models/experiment1/. Only Blender builds, the static validator and card renders ran.
+- **Variables:** V1 = new primitives in `Tools/blender/mb_kit27.py` (extrude with two-step chamfers, lathe with poles,
+  ring, sweep, along/place, mirrored, inset, sharp_loft, cut, greebles, clean); V2 = V1 + `Tools/blender/mb_parts27.py`
+  (road wheel, sprocket, idler, track unit with sag, hatch, barrel with collar or baffle brake, MG mount, smoke
+  launcher, antenna, rotor and tail-rotor heads, jet nozzle, engine bell, nacelle, pylon, launch rail, Hellfire rack,
+  rocket pod, canopy). Builders in `mb_p27_experiment.py`, merged last; `MB_P27_VARIANT=v0|v1|v2` (default v2).
+  Icarus runs the original builder with its hull/superstructure/greebles/pods (V1) and engines/bridge/flak (V2)
+  swapped in for the call; its wreck keeps the original builder.
+- **Thresholds (set before the builds):** normal-file triangles <= 2x, zero-area 0, COLOR_0 mean >= baseline,
+  runtime names identical, size within 1 %, no new material on a moving part, card luminance not below -1 %.
+- **Shipped: V2.** Triangles 4,700 -> 5,036 -> 7,196 (MBT), 3,580 -> 3,644 -> 3,948 (Su-27), 19,136 -> 20,152 ->
+  21,760 (Icarus), 3,482 -> 4,064 -> 4,362 (Apache); COLOR_0 up on every file (fighter_jet_hd V1 -0.1 %, V2 +0.7 %);
+  card luminance within +-1.2 % (MBT 0.3546 -> 0.3562, Su-27 0.3883 -> 0.3880, Icarus 0.4165 -> 0.4158, Apache
+  0.3213 -> 0.3247). fighter_jet_hd zero-area 390 -> 0 (validator: 13 models with errors, 14 before). baseline.json
+  accepted the 7 files with the reason in its history.
+- **Kit rules learned:** `k.cut` uses Blender's MANIFOLD solver and keeps only a smaller positive solid (EXACT turned
+  the solids inside out); `k.block` chamfers the top only and leaves parts under 12 cm plain (a chamfered box costs
+  ~90 triangles); no deep recess poles (COLOR_0's mean is vertex-weighted); insets only on big flat faces (on a lofted
+  jet skin they cost 400 triangles for nothing visible); antennas short so the bounds stay the baseline's.
+- **Card manifest:** only the hashes of the cards drawing these models changed (main_battle_tank, next_gen_tank,
+  decoy_tank, fighter_jet, attack_helicopter, silver_bug, hyperion, icarus_mk0). The runner's rewrite also moved
+  ixion's entry to railgun_truck (an older drift between the manifest and the catalog): not taken, left for the lead.
+- **Recommendation for checkpoint 1:** V2 for ground vehicles, bosses and structures; jets only the clean-up and the
+  library nozzle/canopy at high detail; helicopters V2. Measure draw calls, LOD1 sizes and frame time on one battle
+  before a wave goes wide. Draft wave recipe in EXPERIMENT_1.md. Waits for the owner (step 4: checkpoint 1).
