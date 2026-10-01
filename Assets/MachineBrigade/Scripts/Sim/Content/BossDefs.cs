@@ -210,6 +210,16 @@ namespace MachineBrigade.Sim.Content
         public float BlindScatter { get; internal set; } = 2.5f;
         public float First { get; internal set; } = 10f;
 
+        /// <summary>
+        /// Prompt 26 D.2 (Gungnir's electromagnetic shot): the slug goes through at most this many enemy ground vehicles on the line
+        /// from the gun to the aim (the nearest first, each takes <see cref="PierceDamage"/>), and the blast lands on the last one hit;
+        /// 0: a plain shell on the aim.
+        /// </summary>
+        public int PierceMax { get; internal set; }
+
+        /// <summary>The damage the slug does to each vehicle it goes through (see <see cref="PierceMax"/>).</summary>
+        public float PierceDamage { get; internal set; }
+
         /// <summary>The fire-control post that aims it (a guard's def id), or null.</summary>
         public string? Spotter { get; internal set; }
 

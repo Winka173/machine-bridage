@@ -402,7 +402,13 @@ namespace MachineBrigade.Sim.Abilities
         private void LayMines(Vehicle v, double now)
         {
             var def = v.MineLayer!;
-            if (v.Flying || now < v.NextMineAt) return;
+            if (v.Flying) return;
+            if (def.TurnStrip > 0f)
+            {
+                LayStrip(v, def, now);
+                return;
+            }
+            if (now < v.NextMineAt) return;
             // A fixed minefield: its whole field at once, and again each interval for any lost.
             if (def.Spread > 0f)
             {
@@ -427,6 +433,31 @@ namespace MachineBrigade.Sim.Abilities
             var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 2.0);
             _mines.Add(laid);
             _world.Emit(SimEvent.MineLaid(laid));
+        }
+
+        /// <summary>
+        /// Prompt 26 D.1 (Ixion): a turn of <see cref="MineLayerDef.TurnStrip"/> degrees on the move drops a strip of mines behind it
+        /// (Max of them, 2.5 m apart, clear of the hull), each clearing itself after its Life.
+        /// </summary>
+        private void LayStrip(Vehicle v, MineLayerDef def, double now)
+        {
+            var delta = MathF.Abs(SimMath.WrapAngle(v.Heading - v.MineHeading));
+            v.MineHeading = v.Heading;
+            if (!v.IsMoving) return;
+            v.MineTurned += delta;
+            if (v.MineTurned < def.TurnStrip * (MathF.PI / 180f) || now < v.NextMineAt) return;
+            v.MineTurned = 0f;
+            v.NextMineAt = now + def.Interval;
+            var back = -SimMath.Forward(v.Heading);
+            var start = v.Def.HullHalf + v.Def.HullRadius + 1.5f;
+            for (var k = 0; k < def.Max; k++)
+            {
+                var at = v.Position + back * (start + k * 2.5f);
+                if (!_world.Map.Contains(at) || !_world.Grid.IsWalkable(at)) continue;
+                var laid = new Mine(new EntityId(_nextMine++), v.Team, v.Id, at, def, now + 1.5) { ExpiresAt = def.Life > 0f ? now + def.Life : double.PositiveInfinity };
+                _mines.Add(laid);
+                _world.Emit(SimEvent.MineLaid(laid));
+            }
         }
 
         private void LayField(Vehicle v, MineLayerDef def, double now)

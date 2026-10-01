@@ -232,6 +232,7 @@ namespace MachineBrigade.Sim.Content
                     Scatter = b.Float("scatter", 3f), BlindScatter = b.Float("blindScatter", 2.5f), First = b.Float("first", 10f),
                     Spotter = b.Has("spotter") ? b.String("spotter") : null, Weapon = b.Has("weapon") ? b.String("weapon") : null,
                     Warning = b.Has("warning") ? b.String("warning") : null,
+                    PierceMax = Math.Max(0, b.Int("pierceMax", 0)), PierceDamage = MathF.Max(0f, b.Float("pierceDamage", 0f)),
                 };
             }
             // Prompt 18: its big attack by id, and its own scaling of it.

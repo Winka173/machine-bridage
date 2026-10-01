@@ -416,7 +416,7 @@ namespace MachineBrigade.Sim.Content
                         var m = v.Object("mines");
                         def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
                             new ExplosionDef(m.Float("damage") * vehicleBlasts, m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
-                            m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
+                            m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f), Life = MathF.Max(0f, m.Float("life", 0f)), TurnStrip = MathF.Max(0f, m.Float("turnStrip", 0f)) };
                     }
                     ParseExtras(v, def);
                     ParseNaval(v, def);

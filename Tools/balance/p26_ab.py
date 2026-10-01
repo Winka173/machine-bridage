@@ -105,7 +105,7 @@ WEAPONS = {
     "jo_rockets": ("boss_rockets", {"real": "BM-30 Smerch 300 mm (pod)", "damage": 110, "burst": 8, "burstInterval": 0.3, "cooldown": cd(10, 8, 0.3), "splash": 5, "edge": 10}),
     "jo125": ("gun_120mm", {**NOFAM, "real": "2A46 125 mm", "size": 125, "damage": 280, "cooldown": 2, "pen": 5, "splash": 0, "range": 38}),
     # Leviathan
-    "lev406": ("leviathan_460", {**NOFAM, "real": "Type 94 406 mm/50 (triple)", "size": 406, "damage": 1200, "cooldown": 10, "splash": 12, "edge": 20}),
+    "lev406": ("leviathan_460", {**NOFAM, "real": "Mk 7 406 mm/50 (Iowa, triple)", "size": 406, "damage": 1200, "cooldown": 10, "splash": 12, "edge": 20}),
     "lev155": ("naval_155_triple", {**NOFAM, "real": "155 mm/60 (triple)", "damage": 170, "burst": 3, "burstInterval": 0.25, "cooldown": cd(5, 3, 0.25), "splash": 8.5, "edge": 17}),
     "lev127": ("naval_100", {**NOFAM, "real": "AK-127 127 mm", "size": 127, "damageType": "Kinetic", "damage": 320, "burst": 1, "cooldown": 2, "pen": 5, "splash": 0}),
     # Matriarch
@@ -476,6 +476,8 @@ def main():
     # ---- everyone else's weaponDamage: mini bosses and the batch D bosses
     built_all = expand(plan.data)
     for vid in list(MINIS) + [m for m in MAINS if m not in SETS]:
+        if vid == "ixion":
+            continue  # prompt 26 D.1 (p26_cd.py): its weapons are the prompt's own numbers, weaponDamage 1
         b = built_all[vid]
         mounts = per_mount(g, b)
         scaled = sum(v for _, v, laid in mounts if not laid)

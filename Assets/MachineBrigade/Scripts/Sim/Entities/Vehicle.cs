@@ -278,6 +278,9 @@ namespace MachineBrigade.Sim.Entities
         internal float ShieldAmount, OverdriveSpeed = 1f, BarrageRate = 1f, Healing, RearmProgress;
         internal double NextMineAt;
 
+        /// <summary>Prompt 26 D.1: the heading last tick and the turn (radians) since the last strip of mines (a turn-strip layer).</summary>
+        internal float MineHeading, MineTurned;
+
         /// <summary>
         /// A boss's own countdown shown on the model, 0 to 1 (the Doomsday Train raising its
         /// missile before launch). Set by the mission.
