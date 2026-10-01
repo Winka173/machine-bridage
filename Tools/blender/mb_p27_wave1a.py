@@ -225,12 +225,12 @@ def ixion(a):
     for i in range(12):
         stripe.box((.32, .07, .42), loc=(-5.3 + i * .96, -12.25, IX_ROOF - .2), rot=(0, .7, 0), bevel=0)
     k.greebles(arm, (0, 9.6, IX_ROOF), (1, 0, 0), (0, 1, 0), (8.0, 3.6), 5, seed=2711, height=(.18, .42),
-               chamfer=.04, avoid=((IX_TURRET, 3.0),))
+               chamfer=.04, avoid=((IX_TURRET, 3.8),))
     k.greebles(arm, (0, -9.6, IX_ROOF), (1, 0, 0), (0, 1, 0), (9.0, 4.0), 4, seed=2712, height=(.15, .32),
                chamfer=.04)
     # The welded adapter plate under the turret, its weld bead.
-    k.block(arm, (5.8, 5.8, .3), loc=(0, IX_TURRET[1], IX_ROOF + .15), chamfer=.08)
-    k.ring(a.part('Welds', 'Charred'), [(2.9, -.02), (3.0, .04), (2.9, .08)], loc=(0, IX_TURRET[1], IX_ROOF),
+    k.block(arm, (7.2, 7.2, .3), loc=(0, IX_TURRET[1], IX_ROOF + .15), chamfer=.08)
+    k.ring(a.part('Welds', 'Charred'), [(3.6, -.02), (3.7, .04), (3.6, .08)], loc=(0, IX_TURRET[1], IX_ROOF),
            seg=24)
 
     # The tail: the mine dispenser and its chute, tail lights.
@@ -243,34 +243,36 @@ def ixion(a):
 
     # The T-72-class turret on its ring: a cast dome, Kontakt-style ERA bricks over the front arc, the mantlet and
     # 125 mm gun, the commander's cupola and gunner's hatch, the IR searchlight, stowage, snorkel, a short antenna.
+    H, V = 1.35, 1.08                     # the T-72's turret blown up to read on a 26 m truck (first preview: too small)
     t = a.pivot('Turret', IX_TURRET)
     tt = a.part('Turret_body', 'Team', t)
-    k.lathe(tt, [(2.05, 0), (2.22, .16), (2.3, .34), (2.12, .68), (1.62, .95), (.9, 1.06), (0, 1.1)], seg=28,
-            worn=(2,))
+    k.lathe(tt, [(2.05 * H, 0), (2.22 * H, .16 * V), (2.3 * H, .34 * V), (2.12 * H, .68 * V), (1.62 * H, .95 * V),
+                 (.9 * H, 1.06 * V), (0, 1.1 * V)], seg=28, worn=(2,))
     tarm = a.part('Turret_armor', 'Armor', t)
     tst = a.part('Turret_steel', 'Steel', t)
-    k.ring(tst, [(1.95, -.02), (2.15, -.02), (2.15, .08), (1.95, .08)], seg=24)
-    for row, (rr, z, tilt) in enumerate(((2.2, .42, .25), (1.95, .8, .7))):
+    k.ring(tst, [(1.95 * H, -.02), (2.15 * H, -.02), (2.15 * H, .08), (1.95 * H, .08)], seg=24)
+    for row, (rr, z, tilt) in enumerate(((2.2 * H, .42 * V, .25), (1.95 * H, .8 * V, .7))):
         for i in range(9):
             u = math.radians(-58 + i * 14.5 + row * 7)
             d = Vector((math.sin(u), -math.cos(u), 0))
-            tarm.box((.62, .26, .36), loc=(d.x * rr, d.y * rr, z), rot=(-tilt * math.cos(u), tilt * math.sin(u), u),
-                     bevel=0)
-    k.block(tarm, (1.2, .6, .8), loc=(0, -2.15, .52), chamfer=.06)                                # mantlet
-    y0, length, z = -2.42, 7.0, .52
-    parts.barrel(a, 'Main_cannon', t, 0, y0, z, length, .13, seg=14, sleeve=1.25, extractor=(.4, 1.6, .5),
+            tarm.box((.62 * H, .3, .36 * V), loc=(d.x * rr, d.y * rr, z),
+                     rot=(-tilt * math.cos(u), tilt * math.sin(u), u), bevel=0)
+    k.block(tarm, (1.5, .7, .95), loc=(0, -2.15 * H, .55 * V), chamfer=.06)                         # mantlet
+    y0, length, z = -2.2 * H - .3, 8.4, .57 * V
+    parts.barrel(a, 'Main_cannon', t, 0, y0, z, length, .17, seg=14, sleeve=1.25, extractor=(.4, 1.6, .6),
                  brake_name='Muzzle_brake', brake='collar')
     a.pivot('Muzzle_main', (0, y0 - length - .15, z), t)
-    parts.hatch(a, .95, .4, 1.0, .46, parent=t, seg=12)
-    k.lathe(tarm, [(.5, -.1), (.52, .02), (.46, .1)], loc=(.95, .4, .98), seg=12)
-    parts.hatch(a, -.95, .5, .98, .4, parent=t, seg=12)
-    k.lathe(tst, [(.3, 0), (.3, .5), (.26, .52), (0, .53)], loc=(-.95, -1.55, .92), rot=FORWARD, seg=12, worn=(1,))
+    parts.hatch(a, .95 * H, .4 * H, 1.0 * V, .55, parent=t, seg=12)
+    k.lathe(tarm, [(.6, -.1), (.62, .02), (.55, .1)], loc=(.95 * H, .4 * H, .98 * V), seg=12)
+    parts.hatch(a, -.95 * H, .5 * H, .98 * V, .48, parent=t, seg=12)
+    k.lathe(tst, [(.36, 0), (.36, .6), (.31, .62), (0, .63)], loc=(-.95 * H, -1.55 * H, .92 * V), rot=FORWARD, seg=12,
+            worn=(1,))
     for s in (-1, 1):
-        k.block(tarm, (.5, 1.6, .55), loc=(s * 1.95, 1.0, .45), rot=(0, 0, -s * .5), chamfer=.05)   # stowage
-    k.lathe(tst, [(.18, -1.4), (.18, 1.4)], loc=(0, 2.25, .6), rot=(0, R90, 0), seg=10)            # snorkel
-    k.block(tarm, (2.2, .5, .5), loc=(0, 2.05, .35), chamfer=.05)
+        k.block(tarm, (.6, 2.0, .6), loc=(s * 1.95 * H, 1.0 * H, .48 * V), rot=(0, 0, -s * .5), chamfer=.05)
+    k.lathe(tst, [(.22, -1.8), (.22, 1.8)], loc=(0, 2.25 * H, .65 * V), rot=(0, R90, 0), seg=10)       # snorkel
+    k.block(tarm, (2.8, .6, .55), loc=(0, 2.05 * H, .38 * V), chamfer=.05)
     ant = a.part('Antennas', 'Steel', t)
-    parts.antenna(ant, (1.3, 1.5, .78), h=.28, r=.06)
+    parts.antenna(ant, (1.3 * H, 1.5 * H, .78 * V), h=.12, r=.06)
     k.clean(a)
 
 

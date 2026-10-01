@@ -1275,7 +1275,7 @@
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:b26dffead3e6675df6f0e634d64636602408ecde"
+            "hash": "v2:f46576e4de243912967efc14b3ef94a51c23496f"
         },
         {
             "id": "kraken",
@@ -1450,7 +1450,7 @@
             "kind": "boss",
             "model": "rail_supergun",
             "source": "Models/rail_supergun",
-            "hash": "v2:b284f0edaa6b7de0f516384bc87c5f5b880835b8"
+            "hash": "v2:eb344af603254c6e45d4cd0bd6cabc3c59b6a4e8"
         },
         {
             "id": "recoilless_gun_tower",

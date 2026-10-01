@@ -314,6 +314,16 @@
     "FLAG rail_supergun: triangles 28,756 -> 36,726 (+27.7%); vertices 36,451 -> 46,269 (+26.9%); meshes 91 -> 97 (+6.6%); renderers 91 -> 97 (+6.6%); materials 12 -> 11 (-8.3%); materialSlots 91 -> 97 (+6.6%); fileBytes 1,855,808 -> 2,339,896 (+26.1%); structure changed",
     "FLAG rail_tractor: triangles 5,508 -> 4,406 (-20.0%); vertices 7,096 -> 5,857 (-17.5%); meshes 23 -> 17 (-26.1%); renderers 23 -> 17 (-26.1%); materials 10 -> 9 (-10.0%); materialSlots 23 -> 17 (-26.1%); fileBytes 369,120 -> 302,268 (-18.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "ixion"
+   ],
+   "reason": "P27 wave 1a: Ixion's turret enlarged 1.35x after the first preview (read on a 26 m truck)",
+   "changes": [
+    "ixion: vertices 22,036 -> 22,038 (+0.0%); fileBytes 1,079,840 -> 1,079,984 (+0.0%)"
+   ]
   }
  ],
  "models": {
@@ -22479,8 +22489,8 @@
   },
   "ixion": {
    "file": "ixion.glb",
-   "fileBytes": 1079840,
-   "sha1": "54b77a88d5c0383a",
+   "fileBytes": 1079984,
+   "sha1": "f46576e4de243912",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -22496,7 +22506,7 @@
    "materialSlots": 40,
    "materialsUsed": 11,
    "triangles": 17324,
-   "vertices": 22036,
+   "vertices": 22038,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -22514,26 +22524,26 @@
    ],
    "boundsMax": [
     6.01,
-    9.92,
+    10.0536,
     12.9837
    ],
    "size": [
     25.984,
     12.02,
-    9.928
+    10.061
    ],
    "center": [
     0.0,
-    4.956,
+    5.023,
     -0.008
    ],
    "structureHash": "6df12c62d4b14043",
    "color0": {
-    "mean": 0.6543,
+    "mean": 0.6567,
     "min": 0.062,
     "max": 1.0,
-    "p05": 0.1372,
-    "p95": 0.9381,
+    "p05": 0.1413,
+    "p95": 0.9461,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -22632,15 +22642,17 @@
     "Tyre_5",
     "Welds"
    ],
-   "category": "unlisted",
+   "category": "boss",
    "hd": false,
    "errors": [],
    "warnings": [
     "runtime names with a Blender suffix: Mount_mg.001, Muzzle_mg.001"
    ],
-   "units": [],
+   "units": [
+    "ixion"
+   ],
    "movingParts": 11,
-   "budgetClass": null
+   "budgetClass": "boss_s"
   },
   "jassm": {
    "file": "jassm.glb",
@@ -31187,13 +31199,9 @@
    "category": "ground",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "ixion (borrowed model): width/length 0.25 vs modelSize 0.46 (-46%)",
-    "ixion: length 9.90 m vs modelSize 26 m (fitted at runtime)"
-   ],
+   "warnings": [],
    "units": [
-    "railgun_truck",
-    "ixion"
+    "railgun_truck"
    ],
    "movingParts": 5,
    "budgetClass": "ground"
