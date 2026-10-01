@@ -1953,8 +1953,8 @@
       "variant": {"size": 0.55, "keep": ["turret_fore", "vls", "ciws_fore", "ciws_aft"], "mark": "nyx",
                   "tune": {"turret_fore": {"hp": 0.12}, "vls": {"hp": 0.12}, "ciws_fore": {"hp": 0.11}, "ciws_aft": {"hp": 0.11}}}},
     // Cerberus: the three-vehicle convoy (the Behemoth's gun, flak and rocket pod stand for tractor, middle and rear truck).
-    { "id": "cerberus", "guard": null, "wake": null, "variantOf": "behemoth", "general": "varga", "radioSpawn": "radio.varga.cerberus", "hp": 53500, "weaponDamage": 1.326, "armour": [3, 3, 2, 2], "speed": 3, "aps": null,
-      "modelSize": [16.3, 8.4, 5.5], "variant": {"size": 0.6874, "keep": ["main_gun", "flak_r", "flak_l", "rocket_pod"], "tint": [1.08, 0.78, 0.72], "mark": "cerberus",
+    { "id": "cerberus", "guard": null, "wake": null, "variantOf": "behemoth", "model": "cerberus", "general": "varga", "radioSpawn": "radio.varga.cerberus", "hp": 53500, "weaponDamage": 1.326, "armour": [3, 3, 2, 2], "speed": 3, "aps": null,
+      "modelSize": [16.3, 8.4, 5.5], "variant": {"size": 0.6874, "keep": ["main_gun", "flak_r", "flak_l", "rocket_pod"], "mark": "cerberus",
                   "tune": {"main_gun": {"hp": 0.13}, "flak_r": {"hp": 0.11}, "flak_l": {"hp": 0.11}, "rocket_pod": {"hp": 0.12}}}},
     // Hydra: the drone submarine (Typhon's deck gun and launch doors; dives and surfaces faster, one boat for its drones).
     { "id": "hydra", "armour": [4, 3, 2, 2], "variantOf": "typhon", "model": "hydra_sub", "general": "hung", "radioSpawn": "radio.hung.hydra", "hp": 81300, "weaponDamage": 1.292, "speed": 4.5,

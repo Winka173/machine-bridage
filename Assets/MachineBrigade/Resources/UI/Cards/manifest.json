@@ -895,9 +895,9 @@
         {
             "id": "cerberus",
             "kind": "boss",
-            "model": "behemoth",
-            "source": "Models/behemoth",
-            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
+            "model": "cerberus",
+            "source": "Models/cerberus",
+            "hash": "v2:ad8e816bcd1adc7786800ac60a4e277a435d333b"
         },
         {
             "id": "coastal_battery",
@@ -1247,7 +1247,7 @@
             "kind": "boss",
             "model": "hydra_sub",
             "source": "Models/hydra_sub",
-            "hash": "v2:dc530108a8e8641666cb2b9703ecba98bf789301"
+            "hash": "v2:ebdf45bbe57939dfacc95da811ae516a879fdb71"
         },
         {
             "id": "hyperion",

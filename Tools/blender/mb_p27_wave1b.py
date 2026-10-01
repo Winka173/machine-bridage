@@ -17,6 +17,13 @@ those parts and mounts name, near the places the resized data puts them (parent 
     with its reverse-raked wave-piercing bow, the faceted pyramid deckhouse with flush radar faces, a railgun in a
     faceted turret on the foredeck (`Part_gun` > `Mount_gun` > `Muzzle_gun`), peripheral VLS banks along the deck
     edges (`Part_vls`), two CIWS (`Part_mg` > `Mount_mg`, `Part_mg.001` > `Mount_mg.001`), the helicopter deck aft.
+  * cerberus (Cerberus, variant of behemoth keeping main_gun, flak_r, flak_l, rocket_pod): three big-wheeled cars
+    coupled by drawbars, 16.2 x 7.0 x 5.4 m (modelSize 16.3 x 8.4 x 5.5: a road train cannot be 8.4 m wide; the wide
+    stance of the tyres on outboard axles gives 7.0, -17 % on width / length). Each car on its own node for a later
+    coupling-break rule: `Part_tractor` (the 125 mm `Turret` with `Main_cannon`, `Muzzle_brake`, `Muzzle_main`, the
+    30 mm RWS `Mount_gun`), `Part_middle` (the anti-air car: flak `Mount_mg` right / `.001` left, the radar panel,
+    the fixed missile packs `Muzzle_missile` / `.001`), `Part_trailer` (the rocket pod `Mount_rocket`, rear guns
+    `Mount_gun.001` / `.002`). The behemoth's mount set, so its inherited weapon list keeps its slots.
   * hydra_sub (Hydra, variant of typhon keeping doors_l, doors_r, deck_gun, rudder; `hydra.glb` is the Hydra 70
     rocket, so the boss model is `hydra_sub`): a small VLS submarine, 34.8 x 7.2 x 7.8 m, hull axis at z 0: a lathed
     pressure hull, the sail with fairwater planes and a SAM box (`Mount_missile` > `Muzzle_missile`), the deck gun
@@ -319,7 +326,7 @@ def hydra_sub(a):
     # on each door node (`Part_doors_l` / `_r`, the parent's names).
     k.block(arm, (2.9, 8.4, .42), loc=(0, 3.7, HY_R - .2), chamfer=.08)
     for s, name in ((1, 'Part_doors_l'), (-1, 'Part_doors_r')):
-        pd = pv(a, name, (s * .7, 3.7, HY_R + .22))
+        pd = pv(a, name, (s * .7, 3.7, HY_R + .03))
         lids = a.part(f'Vls_lids_{name[-1]}', 'Team', pd)
         rims = a.part(f'Vls_rims_{name[-1]}', 'Hazard', pd)
         for j in range(5):
@@ -342,8 +349,107 @@ def hydra_sub(a):
     k.clean(a)
 
 
+# ============================================================================= Cerberus
+CB_R, CB_W, CB_X = 1.0, .85, 3.0        # tyre radius, width, axle half-track (the wide big-wheeled stance)
+
+
+def _cb_body(a, name, y0, y1, axles, h=1.3, deck=1.55, nose=0.0):
+    """One of the three cars on its own `Part_*` node: a ladder chassis, an armoured body with a sloped nose
+    (`nose` m of glacis), fenders over every wheel, the big tyres with dished hubs. Returns the node key."""
+    yc = (y0 + y1) / 2
+    p = a.pivot(name, (0, yc, 0))
+    t = name[5:]
+    team, arm = a.part(f'Body_{t}', 'Team', p), a.part(f'Body_armor_{t}', 'Armor', p)
+    dark = a.part(f'Chassis_{t}', 'Armor', p)
+    L = y1 - y0
+    k.block(dark, (2.0, L - .3, .45), loc=(0, 0, deck - .45), chamfer=.04)
+    prof = [(-L / 2, deck), (L / 2, deck), (L / 2, deck + h), (-L / 2 + nose, deck + h), (-L / 2, deck + h * .45)]
+    k.extrude(team, prof, 4.4, axis='X', chamfer=.08, corner=.06)
+    k.inset(team, lambda c, n, f: n.z > .9, width=.22, depth=.025)
+    tyres, hubs = a.part(f'Tyres_{t}', 'Undercarriage', p), a.part(f'Hubs_{t}', 'Team', p)
+    for ya in axles:
+        y = ya - yc
+        for sx in (-1, 1):
+            k.lathe(tyres, [(CB_R * .8, -CB_W / 2), (CB_R * .92, -CB_W / 2), (CB_R, -CB_W / 2 + .1), (CB_R, CB_W / 2 - .1),
+                            (CB_R * .92, CB_W / 2), (CB_R * .8, CB_W / 2)], loc=(sx * CB_X, y, CB_R),
+                    rot=parts.side_rot(sx), seg=16, caps=(False, False), worn=(2, 3))
+            for hs in (sx, -sx):
+                k.lathe(hubs, [(CB_R * .8, CB_W / 2 - .02), (CB_R * .62, CB_W / 2 - .1), (CB_R * .22, CB_W / 2 - .06),
+                               (0, CB_W / 2 - .04)], loc=(sx * CB_X, y, CB_R), rot=parts.side_rot(hs), seg=12, worn=(0,))
+            k.block(team, (1.05, 2.3, .16), loc=(sx * (CB_X - .05), y, 2.12), chamfer=.04)            # fender
+            k.block(dark, (.9, .5, .7), loc=(sx * 2.45, y, 1.15), chamfer=.04)                        # axle housing
+    return p
+
+
+def cerberus(a):
+    """Cerberus, the three-car convoy: see the module docstring."""
+    _suffixed(a)
+    steel, dark = a.part('Steel', 'Steel'), a.part('Couplings', 'Armor')
+    # The tractor with the 125 mm turret, the anti-air car, the rocket trailer.
+    pt = _cb_body(a, 'Part_tractor', -7.2, -2.0, (-6.0, -3.2), h=1.35, nose=1.3)
+    pm = _cb_body(a, 'Part_middle', -.55, 3.25, (.35, 2.35), h=1.1)
+    pr = _cb_body(a, 'Part_trailer', 4.45, 8.15, (5.45, 7.0), h=.9, deck=1.6)
+    # Couplings: a drawbar with a hitch eye and an air line between each pair.
+    for y0, y1 in ((-2.15, -.4), (3.1, 4.6)):
+        k.block(dark, (.5, y1 - y0, .3), loc=(0, (y0 + y1) / 2, 1.25), chamfer=.04)
+        k.ring(steel, [(.22, -.08), (.3, -.08), (.3, .08), (.22, .08)], loc=(0, y1 - .1, 1.4), seg=12)
+        steel.cyl(.06, y1 - y0, loc=(.6, (y0 + y1) / 2, 1.75), rot=FORWARD, seg=6, bevel=0)
+    # Tractor: driver's vision block, lamps, the turret (`Turret`, `Main_cannon`, `Muzzle_brake`, `Muzzle_main`), the
+    # 30 mm RWS on its roof (`Mount_gun`).
+    a.part('Tractor_glass', 'Glass', pt).box((1.6, .05, .25), loc=(0, -2.3, 2.35), rot=(.8, 0, 0), bevel=0)
+    lamps = a.part('Lamps', 'Lamp', pt)
+    for sx in (-1, 1):
+        lamps.box((.4, .05, .22), loc=(sx * 1.6, -2.63, 2.0), bevel=0)
+    tz = 1.55 + 1.35
+    t = a.pivot('Turret', (0, -3.0, tz))
+    house = a.part('Turret_body', 'Team', t)
+    k.extrude(house, [(-1.55, 0), (1.55, 0), (1.4, .7), (1.0, .95), (-1.0, .95), (-1.4, .7)], 3.0, loc=(0, .3, 0),
+              axis='Y', chamfer=.08, corner=.05)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    k.ring(a.part('Turret_ring', 'Steel', t), [(1.3, -.02), (1.45, -.02), (1.45, .08), (1.3, .08)], seg=24)
+    k.block(tarm, (1.0, .5, .6), loc=(0, -1.35, .18), chamfer=.05)                                    # mantlet
+    parts.barrel(a, 'Main_cannon', t, 0, -1.55, .5, 3.4, .12, seg=14, extractor=(.45, 1.55, .4),
+                 brake_name='Muzzle_brake', brake='collar')
+    a.pivot('Muzzle_main', (0, -5.1, .5), t)
+    parts.hatch(a, .6, .6, .95, .32, parent=t, seg=10)
+    k.greebles(tarm, (0, 1.4, .95), (1, 0, 0), (0, 1, 0), (1.8, .6), 3, seed=2771, height=(.1, .2), chamfer=.03)
+    autocannon(a, 'Mount_gun', (-.65, -.3, .95), parent='Turret', length=1.1, r=.05, size=(.6, .7, .32),
+               body='Armor')
+    # Anti-air car: a raised pedestal, two 30 mm flak turrets side by side (`Mount_mg` right, `.001` left, the
+    # parts' sides), the search radar panel between them, two fixed missile packs (`Muzzle_missile`, `.001`).
+    k.block(a.part('Aa_pedestal', 'Team', pm), (3.0, 2.0, .9), loc=(0, .1, 3.1), chamfer=.08)
+    for mount, x in (('Mount_mg', -.97), ('Mount_mg.001', .97)):
+        autocannon(a, mount, (x, .05, 3.55), parent='Part_middle', length=2.0, r=.06, size=(1.1, 1.4, .6))
+    mast = a.part('Aa_mast', 'Steel', pm)
+    k.lathe(mast, [(.12, 0), (.12, 2.0), (.08, 2.05)], loc=(0, 1.3, 2.65), seg=8, worn=(1,))
+    k.block(a.part('Aa_radar', 'Armor', pm), (1.7, .16, .9), loc=(0, 1.3, 5.0), rot=(-.25, 0, 0),
+            chamfer=.03)
+    packs = a.part('Missile_packs', 'Team', pm)
+    caps = a.part('Missile_caps', 'Charred', pm)
+    for i, sx in enumerate((-1, 1)):
+        k.block(packs, (.75, 1.7, .55), loc=(sx * 1.75, .8, 2.95), rot=(.15, 0, 0), chamfer=.04)
+        for dx in (-.18, .18):
+            caps.cyl(.13, .03, loc=(sx * 1.75 + dx, -.06, 3.07), rot=FORWARD, seg=8, bevel=0)
+        pv(a, 'Muzzle_missile' if i == 0 else 'Muzzle_missile.001', (sx * 1.75, -.1, 3.1), 'Part_middle')
+    # Rocket trailer: the 12-tube rocket pod (`Mount_rocket`), two rear 30 mm guns (`Mount_gun.001`, `.002`).
+    m = a.pivot('Mount_rocket', (0, -.1, 2.5), pr)
+    k.lathe(a.part('Rocket_ring', 'Steel', m), [(.9, 0), (.95, .06), (.95, .18), (.85, .22)], seg=18, worn=(2,))
+    pod = a.part('Rocket_pod', 'Team', m)
+    k.block(pod, (2.4, 2.9, 1.1), loc=(0, 0, .55), rot=(.14, 0, 0), chamfer=.08)
+    tubes = a.part('Rocket_tubes', 'Charred', m)
+    for i in range(4):
+        for j in range(3):
+            tubes.cyl(.17, .03, loc=(-.84 + i * .56, -1.42, .62 + j * .36 - .2), rot=(R90 + .14, 0, 0), seg=8, bevel=0)
+    pv(a, 'Muzzle_rocket', (0, -1.48, .62), 'Mount_rocket')
+    for mount, x in (('Mount_gun.001', 1.5), ('Mount_gun.002', -1.5)):
+        autocannon(a, mount, (x, 1.35, 2.5), parent='Part_trailer', length=1.1, r=.05, size=(.6, .7, .32),
+                   body='Armor')
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=.85, grime_height=.9)),
     'nyx': (nyx, dict(ao_distance=1.0, grime_height=.8)),
+    'cerberus': (cerberus, dict(ao_distance=.5, ao_strength=.6, grime_height=.3)),
     'hydra_sub': (hydra_sub, dict(ao_distance=.7, ao_strength=.75, ground=False)),
 }

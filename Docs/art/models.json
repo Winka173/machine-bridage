@@ -275,6 +275,10 @@
     "file": "caspian.glb",
     "triangles": 5054
   },
+  "cerberus": {
+    "file": "cerberus.glb",
+    "triangles": 11848
+  },
   "charred_tree": {
     "file": "charred_tree.glb",
     "triangles": 344

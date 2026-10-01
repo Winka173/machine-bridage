@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 403,
+ "count": 404,
  "budgets": {
   "ground": {
    "normal": {
@@ -344,6 +344,24 @@
    "changes": [
     "hydra_sub: new (7268 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "hydra_sub"
+   ],
+   "reason": "prompt 27 wave 1b: Hydra's launch-tube lids seated on the casing",
+   "changes": [
+    "hydra_sub: bytes only"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "cerberus"
+   ],
+   "reason": "prompt 27 wave 1b: Cerberus's own model (three coupled big-wheeled cars on Part_tractor / Part_middle / Part_trailer), replaces the behemoth stand-in",
+   "changes": []
   }
  ],
  "models": {
@@ -6472,14 +6490,12 @@
    "hd": false,
    "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_mg.001, Muzzle_gun.001",
-    "cerberus (borrowed model): height/length 0.43 vs modelSize 0.34 (+27%)"
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_mg.001, Muzzle_gun.001"
    ],
    "units": [
     "behemoth",
     "behemoth_mk2",
     "behemoth_mk0",
-    "cerberus",
     "mara_behemoth"
    ],
    "movingParts": 10,
@@ -8923,6 +8939,213 @@
    ],
    "movingParts": 3,
    "budgetClass": "boss_m"
+  },
+  "cerberus": {
+   "file": "cerberus.glb",
+   "fileBytes": 635020,
+   "sha1": "ad8e816bcd1adc77",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 90,
+   "meshes": 71,
+   "materials": 7,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 71,
+   "submeshes": 71,
+   "materialSlots": 71,
+   "materialsUsed": 7,
+   "triangles": 11848,
+   "vertices": 11756,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 177,
+   "openEdges": 384,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -3.475,
+    0.0,
+    -8.15
+   ],
+   "boundsMax": [
+    3.475,
+    5.4484,
+    8.09
+   ],
+   "size": [
+    16.24,
+    6.95,
+    5.448
+   ],
+   "center": [
+    0.0,
+    2.724,
+    -0.03
+   ],
+   "structureHash": "a4357abbee45ae5c",
+   "color0": {
+    "mean": 0.7414,
+    "min": 0.3228,
+    "max": 1.0,
+    "p05": 0.4337,
+    "p95": 0.9898,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "turret": [
+     "Turret"
+    ],
+    "main_cannon": [
+     "Main_cannon"
+    ],
+    "muzzle_brake": [
+     "Muzzle_brake"
+    ],
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_gun.001",
+     "Muzzle_gun.002",
+     "Muzzle_main",
+     "Muzzle_mg",
+     "Muzzle_mg.001",
+     "Muzzle_missile",
+     "Muzzle_missile.001",
+     "Muzzle_rocket"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_gun.001",
+     "Mount_gun.002",
+     "Mount_mg",
+     "Mount_mg.001",
+     "Mount_rocket"
+    ],
+    "part": [
+     "Part_middle",
+     "Part_tractor",
+     "Part_trailer"
+    ]
+   },
+   "runtimeSuffixed": [
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_mg.001",
+    "Muzzle_gun.001",
+    "Muzzle_gun.002",
+    "Muzzle_mg.001",
+    "Muzzle_missile.001"
+   ],
+   "nodeNames": [
+    "Aa_mast",
+    "Aa_pedestal",
+    "Aa_radar",
+    "Body_middle",
+    "Body_tractor",
+    "Body_trailer",
+    "Chassis_middle",
+    "Chassis_tractor",
+    "Chassis_trailer",
+    "Couplings",
+    "Gun_armor_gun",
+    "Gun_armor_gun_001",
+    "Gun_armor_gun_002",
+    "Gun_armor_mg",
+    "Gun_armor_mg_001",
+    "Gun_bore_gun",
+    "Gun_bore_gun_001",
+    "Gun_bore_gun_002",
+    "Gun_bore_mg",
+    "Gun_bore_mg_001",
+    "Gun_brake_gun",
+    "Gun_brake_gun_001",
+    "Gun_brake_gun_002",
+    "Gun_brake_mg",
+    "Gun_brake_mg_001",
+    "Gun_dark_gun",
+    "Gun_dark_gun_001",
+    "Gun_dark_gun_002",
+    "Gun_dark_mg",
+    "Gun_dark_mg_001",
+    "Gun_glass_gun",
+    "Gun_glass_gun_001",
+    "Gun_glass_gun_002",
+    "Gun_glass_mg",
+    "Gun_glass_mg_001",
+    "Gun_house_gun",
+    "Gun_house_gun_001",
+    "Gun_house_gun_002",
+    "Gun_house_mg",
+    "Gun_house_mg_001",
+    "Gun_ring_gun",
+    "Gun_ring_gun_001",
+    "Gun_ring_gun_002",
+    "Gun_ring_mg",
+    "Gun_ring_mg_001",
+    "Gun_steel_gun",
+    "Gun_steel_gun_001",
+    "Gun_steel_gun_002",
+    "Gun_steel_mg",
+    "Gun_steel_mg_001",
+    "Hatch_fittings",
+    "Hatches",
+    "Hubs_middle",
+    "Hubs_tractor",
+    "Hubs_trailer",
+    "Lamps",
+    "Main_cannon",
+    "Missile_caps",
+    "Missile_packs",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_mg",
+    "Mount_mg.001",
+    "Mount_rocket",
+    "Muzzle_brake",
+    "Muzzle_gun",
+    "Muzzle_gun.001",
+    "Muzzle_gun.002",
+    "Muzzle_main",
+    "Muzzle_mg",
+    "Muzzle_mg.001",
+    "Muzzle_missile",
+    "Muzzle_missile.001",
+    "Muzzle_rocket",
+    "Part_middle",
+    "Part_tractor",
+    "Part_trailer",
+    "Rocket_pod",
+    "Rocket_ring",
+    "Rocket_tubes",
+    "Steel",
+    "Tractor_glass",
+    "Turret",
+    "Turret_armor",
+    "Turret_body",
+    "Turret_ring",
+    "Tyres_middle",
+    "Tyres_tractor",
+    "Tyres_trailer"
+   ],
+   "category": "boss",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_mg.001, Muzzle_gun.001"
+   ],
+   "units": [
+    "cerberus"
+   ],
+   "movingParts": 11,
+   "budgetClass": "boss_s"
   },
   "charred_tree": {
    "file": "charred_tree.glb",
@@ -21843,7 +22066,7 @@
   "hydra_sub": {
    "file": "hydra_sub.glb",
    "fileBytes": 444068,
-   "sha1": "dc530108a8e86416",
+   "sha1": "ebdf45bbe57939df",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 67,
@@ -21890,11 +22113,11 @@
    ],
    "structureHash": "2f2ce8d99b24fdb5",
    "color0": {
-    "mean": 0.6441,
-    "min": 0.212,
+    "mean": 0.6241,
+    "min": 0.1944,
     "max": 0.9987,
-    "p05": 0.3274,
-    "p95": 0.879,
+    "p05": 0.2156,
+    "p95": 0.8702,
     "outOfRange": 0
    },
    "runtimeNodes": {
