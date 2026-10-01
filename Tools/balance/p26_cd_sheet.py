@@ -34,7 +34,7 @@ REFS = os.path.join(ROOT, "Tools", "docs", "unit_refs.json")
 TRACKER = os.path.join(ROOT, "Docs", "backlog", "new_content.json")
 
 REF_IDS = ["drone_mothership", "locust", "flame_tank", "titan_tank", "gun_turret", "heavy_turret", "heavy_turret.coastal", "super_gun", "spawn_bastion", "coastal_battery",
-           "behemoth", "behemoth_inferno", "behemoth_tempest", "behemoth_mk2", "mobile_fortress", "fenrir", "rail_supergun", "command_airship",
+           "behemoth", "behemoth_inferno", "behemoth_tempest", "behemoth_mk2", "behemoth_mk0", "mobile_fortress", "fenrir", "rail_supergun", "command_airship",
            "argus", "leviathan", "scylla", "ixion"]
 
 DESC = {

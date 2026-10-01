@@ -301,3 +301,14 @@ All eight draw their parent boss's model with a hue tint; their cards are the pa
 | `cerberus` | `behemoth`, red wash | three big-wheeled trucks joined by couplings: 125 mm tractor, anti-air middle, rocket trailer (middle first breaks the AA) |
 | `hydra` | `typhon`, teal wash | a small submarine with vertical launch tubes along the back and six FPV drones |
 | Weapon lists | the parent's | each sheet weapon list on its own mounts (see 25F2-D); the sun beam's smoke cut; the In-action clips of the four super weapons |
+
+
+## Prompt 26 pass 2 stand-ins (DECISIONS 26CD)
+
+| What | Stand-in now | The real thing |
+|---|---|---|
+| Ixion, the armoured BelAZ-75710 mine truck | the `railgun_truck` model fitted to 26 x 12 x 10 m (`modelSize`), mine-yellow tint; its parts sit at the sheet's width | a box body, a welded T-72 turret, a left-offset cab, six big tyres, a V ram (prompt 27) |
+| Boss sizes | the old models scaled by `size` (Roc and Garuda stay 56-62 m wide, Icarus 45 m wide, Moloch and Bastion keep their proportions) | models rebuilt at the sheet's sizes (prompt 27) |
+| Gungnir's electromagnetic gun | the old railway gun model; the slug is the existing rail slug projectile | an EMRG rail car, capacitor cars and a modern diesel (prompt 27); a line warning along the slug's path |
+| Ixion's parts: `reartyre`, `hulltower` | the wreck stump and turret pieces; no node of their own on the stand-in | broken tyres and a lost turret |
+| Ixion's mine strip | the ordinary mine model | a mine truck's own mines |
