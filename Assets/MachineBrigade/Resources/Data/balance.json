@@ -1363,27 +1363,27 @@
     { "id": "drone_hijack_vehicle", "model": "drone_hijack_vehicle", "modelSize": [9.01, 2.76, 3.83], "class": "Support", "armour": 1, "hp": 409, "speed": 8, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 9.01, "width": 2.38, "cp": 6, "vision": 40,
       "firesWhileMoving": true, "weapon": "none", "microwave": { "range": 40, "arc": 360, "cooldown": 20 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx32: the river patrol boat stand-in (Mark VI / RCB class; armored_car's hull): a machine gun and a grenade launcher.
-    { "id": "river_patrol_boat", "model": "armored_car", "tint": [0.58, 0.85, 1.15], "modelSize": [4.78, 2.08, 1.49], "class": "Light", "armour": 0, "hp": 364, "speed": 14, "turnRate": 160, "turretTurnRate": 220, "radius": 2.0, "length": 4.44, "width": 2.08, "cp": 5, "vision": 40,
+    { "id": "river_patrol_boat", "model": "river_patrol_boat", "modelSize": [4.78, 2.08, 1.49], "class": "Light", "armour": 0, "hp": 364, "speed": 14, "turnRate": 160, "turretTurnRate": 220, "radius": 2.0, "length": 4.44, "width": 2.08, "cp": 5, "vision": 40,
       "firesWhileMoving": true, "weapon": "mg_jeep", "secondary": [ { "weapon": "agl_40", "slot": "mg", "aim": "Free" } ], "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx33: the Buyan-class river gunboat stand-in (artillery's hull): a slow 100 mm for shore bombardment.
-    { "id": "river_gunboat", "model": "artillery", "tint": [1.1, 0.7, 0.4], "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 1136, "speed": 6, "turnRate": 50, "turretTurnRate": 45, "radius": 2.7, "length": 7.86, "width": 3.14, "cp": 9, "vision": 34,
+    { "id": "river_gunboat", "model": "river_gunboat", "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 1136, "speed": 6, "turnRate": 50, "turretTurnRate": 45, "radius": 2.7, "length": 7.86, "width": 3.14, "cp": 9, "vision": 34,
       "weapon": "gun_100_river", "deathExplosion": { "damage": 130, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     // dx34: the NSM Coastal Defence-class anti-ship vehicle stand-in (sam_launcher's hull): very long reach, slow to reload; the sim has no ship-only filter yet, so it also lands on ground targets (DECISIONS 25F2-B).
-    { "id": "coastal_ashm_vehicle", "model": "sam_launcher", "tint": [0.7, 1.05, 0.85], "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 409, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 10, "vision": 35,
+    { "id": "coastal_ashm_vehicle", "model": "coastal_ashm_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 409, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 10, "vision": 35,
       "weapon": "nsm_coastal", "deathExplosion": { "damage": 110, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx35: the XM2001 Crusader-class auto-loading howitzer stand-in (artillery's hull): a four-round burst that lands together (mrsi), then a long reload.
-    { "id": "auto_loader_howitzer", "model": "artillery", "tint": [0.85, 0.85, 0.55], "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 727, "speed": 6, "turnRate": 60, "turretTurnRate": 45, "radius": 2.5, "length": 7.86, "width": 3.14, "cp": 8, "vision": 30,
+    { "id": "auto_loader_howitzer", "model": "auto_loader_howitzer", "modelSize": [7.86, 3.14, 2.88], "armour": [2, 1, 1, 0], "hp": 727, "speed": 6, "turnRate": 60, "turretTurnRate": 45, "radius": 2.5, "length": 7.86, "width": 3.14, "cp": 8, "vision": 30,
       "weapon": "gun_155_crusader", "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx36: the EFV / AAV-7-class amphibious light vehicle stand-in (ifv's hull): the sim has one speed, not a water/land pair yet, so its land speed is used throughout (DECISIONS 25F2-B).
-    { "id": "amphib_light_vehicle", "model": "ifv", "tint": [0.6, 0.75, 0.55], "modelSize": [5.48, 3.02, 2.5], "armour": 1, "hp": 545, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.48, "width": 3.02, "cp": 6, "vision": 34,
+    { "id": "amphib_light_vehicle", "model": "amphib_light_vehicle", "modelSize": [5.48, 3.02, 2.5], "armour": 1, "hp": 545, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.48, "width": 3.02, "cp": 6, "vision": 34,
       "firesWhileMoving": true, "weapon": "autocannon_25", "deathExplosion": { "damage": 75, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx37: the M8 AGS-class airborne light tank stand-in (light_tank's hull): dropped by parachute like dx10's airborne_vehicle.
-    { "id": "airborne_light_tank", "model": "light_tank", "tint": [1.15, 0.6, 0.9], "modelSize": [6.39, 2.61, 1.89], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 8, "turnRate": 90, "turretTurnRate": 100, "radius": 1.7, "length": 6.39, "width": 2.61, "cp": 5, "vision": 36,
+    { "id": "airborne_light_tank", "model": "airborne_light_tank", "modelSize": [6.39, 2.61, 1.89], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 8, "turnRate": 90, "turretTurnRate": 100, "radius": 1.7, "length": 6.39, "width": 2.61, "cp": 5, "vision": 36,
       "weapon": "gun_105_ags", "paradrop": { "proxy": "airborne_light_tank_chute", "fall": 6, "height": 30, "baseKeepOut": 45 }, "deathExplosion": { "damage": 85, "radius": 7, "delay": 0.3, "tier": "Large" } },
-    { "id": "airborne_light_tank_chute", "card": false, "model": "light_tank", "tint": [1.15, 0.6, 0.9], "modelSize": [9.0, 9.0, 11.0], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
+    { "id": "airborne_light_tank_chute", "card": false, "model": "airborne_light_tank_chute", "modelSize": [9.0, 9.0, 11.0], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
       "weapon": "none", "flying": true, "altitude": 30 },
     // dx38: the A-12 Avenger II-class stealth strike aircraft stand-in (stealth_bomber's hull): two precision bombs, no gun.
-    { "id": "stealth_naval_strike", "model": "stealth_bomber", "tint": [0.7, 0.9, 1.1], "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy"], "modelSize": [8.4, 21, 1.5], "armour": 0, "hp": 682, "speed": 30, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 17, "vision": 50,
+    { "id": "stealth_naval_strike", "model": "stealth_naval_strike", "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy"], "modelSize": [8.4, 21, 1.5], "armour": 0, "hp": 682, "speed": 30, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 17, "vision": 50,
       "firesWhileMoving": true, "weapon": "none", "secondary": [ { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" } ], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 46, "captureRate": 0,
       "stealth": true, "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.5, "tier": "Huge" } },
     // dx39: the ACH-47A "Guns-A-Go-Go"-class twin-rotor low gunship stand-in (sky_gunship's hull): lower and slower than the Sky Fortress, easier to hit with small arms.
@@ -1436,7 +1436,7 @@
     { "id": "one_shot_atgm_tower", "model": "atgm_tower", "tint": [0.65, 0.55, 0.4], "modelSize": [4.8, 4.8, 3.6], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 909, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.8, "width": 4.8, "cp": 0, "vision": 40,
       "weapon": "one_shot_kornet", "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx31: the MANPADS sandbag emplacement stand-in (shield_tower's hull): a cheap small-slot Stinger post.
-    { "id": "manpads_tower", "model": "shield_tower", "tint": [0.75, 0.68, 0.5], "modelSize": [3.2, 3.2, 2.4], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 545, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 1.7, "length": 3.0, "width": 3.0, "cp": 0, "vision": 40,
+    { "id": "manpads_tower", "model": "manpads_tower", "modelSize": [3.2, 3.2, 2.4], "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 545, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 1.7, "length": 3.0, "width": 3.0, "cp": 0, "vision": 40,
       "weapon": "sam" },
     // (batch B units and structures: new entries above)
 
