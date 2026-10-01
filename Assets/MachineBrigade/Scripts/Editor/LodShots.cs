@@ -257,7 +257,7 @@ namespace MachineBrigade.Editor
             foreach (var m in spawned) Object.DestroyImmediate(m.Root);
         }
 
-        private static Light Stage(Transform root)
+        internal static Light Stage(Transform root)
         {
             var ground = GameObject.CreatePrimitive(PrimitiveType.Plane);
             ground.transform.SetParent(root, false);
@@ -288,7 +288,7 @@ namespace MachineBrigade.Editor
         }
 
         /// <summary>A fresh camera placed and aimed like <paramref name="camera"/> (a clone does not carry URP's camera data over).</summary>
-        private static Camera Twin(Camera camera, Transform root)
+        internal static Camera Twin(Camera camera, Transform root)
         {
             var twin = Camera(root);
             twin.transform.SetPositionAndRotation(camera.transform.position, camera.transform.rotation);
@@ -299,7 +299,7 @@ namespace MachineBrigade.Editor
             return twin;
         }
 
-        private static Camera Camera(Transform root)
+        internal static Camera Camera(Transform root)
         {
             var camera = new GameObject("Shot Camera").AddComponent<Camera>();
             camera.transform.SetParent(root, false);

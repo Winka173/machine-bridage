@@ -6,8 +6,8 @@
     python Tools/assets/glb_check.py --accept main_battle_tank --reason "turret redesigned"   # intentional update
 
 Writes Tools/assets/baseline.json (every GLB: stats, category, flags) and Docs/models/BASELINE.md (summary).
-Rules: hard errors only where the prompt gives no numeric budget (DECISIONS "27 step 0 + baseline"). Budgets per
-category and tier come with the budgets document (27 order step 5) and plug into BUDGETS below.
+Rules: DECISIONS "27 step 0 + baseline". Budgets per class and tier: Docs/models/BUDGETS.md (DECISIONS "27 preview +
+budgets + art bible"), in BUDGETS below: over the soft budget a warning, over the hard cap an error.
 Exit code 1 when any model has an error (so a build script can stop on it).
 """
 from __future__ import annotations
@@ -34,8 +34,34 @@ SUMMARY = ROOT / 'Docs' / 'models' / 'BASELINE.md'
 # The controlled experiment's models (DECISIONS "27 order" step 3; the complex unit: STEP0_AUDIT.md).
 EXPERIMENT = {'main_battle_tank': 'MBT', 'fighter_jet': 'Su-27', 'silver_bug': 'Icarus', 'attack_helicopter': 'complex unit'}
 
-# Per-category budgets {category: {metric: max}}. Empty until the budgets document: no budget rule fires.
-BUDGETS: dict[str, dict[str, float]] = {}
+# Moving parts: the runtime nodes ModelLibrary.Template keeps as meshes of their own (each a draw per LOD0 instance
+# and a shadow draw): turrets, recoiling guns, mounts, spinners, boss parts, loose and deploy pieces. Muzzles and
+# points are empties; a muzzle brake rides on its gun.
+MOVING_KINDS = ('turret', 'main_cannon', 'mount', 'rotor', 'tail_rotor', 'radar', 'propeller', 'part', 'loose', 'deploy')
+
+# Budgets {class: {tier: {metric: [soft, hard]}}} (Docs/models/BUDGETS.md): soft = baseline p90 of the class x 1.6
+# (the wave's soft gate), hard = p90 x 2 (the experiment's hard gate); bosses evened out by size class, munitions'
+# hard cap raised for the drones. Tier "normal" is the file every platform loads (phones; PC too where no _hd ships);
+# "hd" the PC high tiers' _hd file (normal x the median _hd/normal ratio: triangles 2.4, vertices 2.7, renderers 1.35;
+# moving parts identical). Unlisted models have no class (no def names them) and no budget.
+BUDGET_METRICS = ('triangles', 'vertices', 'renderers', 'movingParts')
+BUDGETS: dict[str, dict[str, dict[str, list[int]]]] = {
+    'ground': {'normal': {'triangles': [7800, 9700], 'vertices': [10100, 12600], 'renderers': [61, 76], 'movingParts': [8, 10]},
+               'hd': {'triangles': [18800, 23300], 'vertices': [27300, 34100], 'renderers': [83, 103], 'movingParts': [8, 10]}},
+    'helicopter': {'normal': {'triangles': [6600, 8300], 'vertices': [8300, 10400], 'renderers': [45, 56], 'movingParts': [5, 6]},
+                   'hd': {'triangles': [15900, 20000], 'vertices': [22500, 28100], 'renderers': [61, 76], 'movingParts': [5, 6]}},
+    'jet': {'normal': {'triangles': [5100, 6400], 'vertices': [7100, 8900], 'renderers': [36, 44], 'movingParts': [6, 7]},
+            'hd': {'triangles': [12300, 15400], 'vertices': [19200, 24100], 'renderers': [49, 60], 'movingParts': [6, 7]}},
+    'boss_s': {'normal': {'triangles': [36000, 45000], 'vertices': [43000, 54000], 'renderers': [130, 162], 'movingParts': [22, 28]}},
+    'boss_m': {'normal': {'triangles': [44000, 55000], 'vertices': [56000, 70000], 'renderers': [178, 222], 'movingParts': [25, 31]}},
+    'boss_l': {'normal': {'triangles': [56000, 70000], 'vertices': [72000, 90000], 'renderers': [240, 299], 'movingParts': [41, 52]}},
+    'structure': {'normal': {'triangles': [7900, 9900], 'vertices': [9800, 12200], 'renderers': [39, 48], 'movingParts': [2, 3]}},
+    'tower': {'normal': {'triangles': [14700, 18400], 'vertices': [20100, 25100], 'renderers': [144, 180], 'movingParts': [8, 9]}},
+    'prop': {'normal': {'triangles': [6900, 8600], 'vertices': [9900, 12300], 'renderers': [46, 58], 'movingParts': [2, 3]}},
+    'scenery': {'normal': {'triangles': [3700, 4600], 'vertices': [9700, 12100], 'renderers': [12, 14], 'movingParts': [2, 3]}},
+    'munition': {'normal': {'triangles': [500, 1600], 'vertices': [600, 2400], 'renderers': [14, 17], 'movingParts': [2, 3]}},
+}
+BOSS_SIZES = ((30.0, 'boss_s'), (60.0, 'boss_m'))   # longest side of the GLB under 30 m: small, under 60 m: medium, else large
 
 SIZE_TOLERANCE = 0.25        # proportions (width/length, height/length) against balance.json modelSize
 LENGTH_TOLERANCE = 0.25      # absolute length: only reported (the view fits the length to modelSize at runtime)
@@ -179,10 +205,40 @@ def validate(rec, category, units_by_model, hd_twin):
         if mine != theirs:
             diff = sorted(set(sum(mine.values(), [])) ^ set(sum(theirs.values(), [])))
             errors.append(f"_hd runtime nodes differ from the normal model: {', '.join(diff[:6])}")
-    for metric, cap in BUDGETS.get(category, {}).items():
-        if rec.get(metric, 0) > cap:
-            warnings.append(f'{metric} {rec[metric]} over the {category} budget {cap}')
     return errors, warnings
+
+
+def budget_class(name, rec, records):
+    """The budget class: the category, with air split by rotors, bosses by size, statics by weapons."""
+    category = rec['category']
+    base = name[:-3] if rec['hd'] else name
+    if category == 'wreck':
+        parent = records.get(base[:-len('_wreck')]) if base.endswith('_wreck') else None
+        if not parent or 'size' not in parent:
+            return None
+        rec, category = parent, parent['category']
+    if category == 'air':
+        return 'helicopter' if 'rotor' in rec['runtimeNodes'] or 'heli' in base else 'jet'
+    if category == 'boss':
+        longest = max(rec['size'])
+        return next((label for limit, label in BOSS_SIZES if longest < limit), 'boss_l')
+    if category == 'structure':
+        nodes = rec['runtimeNodes']
+        return 'tower' if 'turret' in nodes or 'muzzle' in nodes or 'mount' in nodes else 'structure'
+    return category if category in BUDGETS else None
+
+
+def check_budget(rec):
+    """Over the soft budget: a warning; over the hard cap: an error."""
+    tiers = BUDGETS.get(rec.get('budgetClass') or '', {})
+    tier = 'hd' if rec['hd'] and 'hd' in tiers else 'normal'
+    for metric, (soft, hard) in tiers.get(tier, {}).items():
+        value = rec.get(metric, 0)
+        label = f"{rec['budgetClass']} {tier}"
+        if value > hard:
+            rec['errors'].append(f'{metric} {value:,} over the {label} hard cap {hard:,}')
+        elif value > soft:
+            rec['warnings'].append(f'{metric} {value:,} over the {label} budget {soft:,}')
 
 
 def run(names):
@@ -207,6 +263,12 @@ def run(names):
         twin = records.get(n[:-3]) if rec['hd'] else None
         rec['errors'], rec['warnings'] = validate(rec, rec['category'], by_model, twin if twin and 'loadError' not in twin else None)
         rec['units'] = [u['id'] for u in by_model.get(n[:-3] if rec['hd'] else n, [])]
+        rec['movingParts'] = sum(len(rec['runtimeNodes'].get(k, [])) for k in MOVING_KINDS)
+    for n, rec in records.items():
+        if 'loadError' in rec:
+            continue
+        rec['budgetClass'] = budget_class(n, rec, records)
+        check_budget(rec)
     return records
 
 
@@ -252,7 +314,7 @@ HEADER = ('| model | category | triangles | vertices | renderers | materials | s
 REASONS = (('zero-area', 'zero-area triangles over 0.5 %'), ('boss part', 'boss part node missing'),
            ('/length', 'proportions off modelSize by over 25 %'), ('COLOR_0', 'COLOR_0 missing or out of range'),
            ('NaN', 'NaN/Infinity'), ('_hd runtime', '_hd runtime nodes differ'), ('load failed', 'load failed'),
-           ('index', 'bad indices'))
+           ('index', 'bad indices'), (' hard cap ', 'over a budget hard cap'))
 
 
 def reason(error):
@@ -280,8 +342,8 @@ def write_summary(records, stamp):
         '',
         f'Generated {stamp} by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models '
         f'({len(records)} GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).',
-        'Rules: DECISIONS "27 step 0 + baseline". No numeric budgets yet (they come with the budgets document), so',
-        'only hard errors are flagged; warnings are listed in the JSON.',
+        'Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over',
+        'the hard cap an error). Warnings are listed in the JSON.',
         '',
         '## Totals per category',
         '',
@@ -305,6 +367,22 @@ def write_summary(records, stamp):
             r = records.get(m)
             if r and (r['errors'] or r['warnings']):
                 lines.append(f"- {m}: " + '; '.join(r['errors'] + r['warnings']))
+    over = {}
+    for r in records.values():
+        for kind, items in (('hard', r['errors']), ('soft', r['warnings'])):
+            for e in items:
+                if ' hard cap ' in e or ' budget ' in e:
+                    over.setdefault((r.get('budgetClass') or '', e.split(' ')[0], kind), []).append(r['file'][:-4])
+    lines += ['', '## Over budget (models per class and metric)', '',
+              '| class | metric | over soft (warning) | over hard (error) | over the hard cap |', '|---|---|---:|---:|---|']
+    for cls, metric in sorted({(k[0], k[1]) for k in over}):
+        soft = over.get((cls, metric, 'soft'), [])
+        hard = over.get((cls, metric, 'hard'), [])
+        lines.append(f"| {cls} | {metric} | {len(soft)} | {len(hard)} | {', '.join(sorted(hard)) or '-'} |")
+    budgeted = {r['file'][:-4] for r in records.values()
+                if any(' hard cap ' in e or ' budget ' in e for e in r['errors'] + r['warnings'])}
+    hard_models = {r['file'][:-4] for r in records.values() if any(' hard cap ' in e for e in r['errors'])}
+    lines += ['', f'{len(budgeted)} models over a budget, {len(hard_models)} of them over a hard cap.']
     lines += ['', '## Error reasons (count of models)', '']
     lines += [f'- {k}: {v}' for k, v in sorted(reasons.items(), key=lambda kv: -kv[1])] or ['- none']
     lines += ['', f'## Flagged models ({len(flagged)})', '']
