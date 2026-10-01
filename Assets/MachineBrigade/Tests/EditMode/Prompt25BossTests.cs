@@ -27,7 +27,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(21, minis.Count, "the sheet's 21 mini bosses");
             foreach (var m in minis)
             {
-                Assert.IsNull(m.BigAttack, m.Id + ": a mini boss has no super weapon");
+                // Prompt 26 D.1: Ixion's crush charge (2 s warning, about every 10 s) is its secondary weapon, not a super weapon.
+                if (m.Id != "ixion") Assert.IsNull(m.BigAttack, m.Id + ": a mini boss has no super weapon");
                 Assert.IsNull(m.Duel?.BigAttack, m.Id + ": nor in a duel");
                 Assert.Greater(m.Mounts.Count(w => w.Weapon.Damage > 0f), 0, m.Id + ": it keeps its ordinary weapons");
             }

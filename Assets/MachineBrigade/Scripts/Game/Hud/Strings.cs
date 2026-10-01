@@ -2327,7 +2327,7 @@ namespace MachineBrigade.Game.Hud
             ["unit.fortress_hive"] = ("Hive · Drone Fortress", "Hive · Pháo đài drone"),
             ["unit.fortress_bastion"] = ("Bastion · Fortress", "Bastion · Pháo đài"),
             ["unit.sky_fortress"] = ("Spectre · Gunship Aircraft", "Spectre · Máy bay pháo"),
-            ["unit.rail_supergun"] = ("Gungnir · Railway Gun", "Gungnir · Pháo đường ray"),
+            ["unit.rail_supergun"] = ("Gungnir · Rail Electromagnetic Gun", "Gungnir · Pháo điện từ đường ray"),
             ["unit.earth_borer"] = ("Tartarus · Tunnelling Machine", "Tartarus · Máy khoan"),
             ["unit.command_airship"] = ("Roc · Flying Headquarters", "Roc · Khí cầu chỉ huy"),
             ["unit.landing_hovercraft"] = ("Charybdis · Assault Hovercraft", "Charybdis · Tàu đệm khí đổ bộ"),
@@ -2435,11 +2435,11 @@ namespace MachineBrigade.Game.Hud
             ["short.fortress_hive"] = ("Hive", "Hive"),
             ["short.fortress_bastion"] = ("Bastion", "Bastion"),
             ["short.sky_fortress"] = ("Spectre", "Spectre"),
-            ["note.rail_supergun"] = ("Kessler's 80 cm railway gun on its own bed at the edge of the field: one shell every 25 s at your biggest group anywhere on the map, marked 3 s ahead, behind walls, guns and a fire-control post.", "Pháo đường ray 80 cm của Kessler trên nền ray riêng ở mép chiến trường: cứ 25 giây một quả đạn vào cụm quân đông nhất của bạn ở bất cứ đâu, có cảnh báo trước 3 giây, sau tường, súng và trạm chỉ thị mục tiêu."),
+            ["note.rail_supergun"] = ("Kessler's electromagnetic gun on a rail train at the edge of the field (an EMRG, capacitor cars, a modern diesel): one slug every 25 s through a line of your biggest group anywhere on the map, marked 3 s ahead, behind walls, guns and a fire-control post.", "Pháo điện từ của Kessler trên đoàn tàu ở mép chiến trường (pháo ray điện từ, các toa tụ điện, đầu máy diesel hiện đại): cứ 25 giây một phát xuyên qua một hàng của cụm quân đông nhất của bạn ở bất cứ đâu, có cảnh báo trước 3 giây, sau tường, súng và trạm chỉ thị mục tiêu."),
             ["note.earth_borer"] = ("Varga's boring machine: it dives, bores unseen under your biggest group of ground vehicles and breaks out in a quake that stuns everything within 15 m. The cracks give 2 s warning.", "Máy khoan của Varga: chui xuống đất, khoan ngầm tới dưới cụm xe mặt đất đông nhất của bạn rồi trồi lên gây rung chấn làm choáng mọi thứ trong 15 m. Mặt đất nứt báo trước 2 giây."),
             ["note.command_airship"] = ("Wolff's flying battleship: four engines, two drone bays and a fire-control radar, each with its own health; the hull takes no damage until two engines are down.", "Chiến hạm bay của Wolff: bốn động cơ, hai nhà chứa drone và một radar điều khiển hỏa lực, mỗi bộ phận có máu riêng; thân chỉ nhận sát thương khi đã phá hai động cơ."),
             ["note.landing_hovercraft"] = ("An air-cushion landing craft on a fixed run: every 35 s it drops its ramp and lands 3 or 4 vehicles. Stop it before it has landed them all.", "Tàu đệm khí đổ bộ chạy theo lộ trình cố định: cứ 35 giây hạ cửa đổ bộ và thả 3–4 xe lên bờ. Phải chặn nó trước khi đổ bộ hết."),
-            ["note.leviathan"] = ("Kessler's battleship at sea: three triple 460 mm turrets shell the shore, two triple 155 mm and eight 25 mm mounts, cruise missiles at the base, CIWS against missiles and drones. Sides armour 4, deck 2.", "Thiết giáp hạm của Kessler trên biển: ba tháp pháo ba nòng 460 mm nã vào bờ, hai tháp ba nòng 155 mm và tám bệ 25 mm, tên lửa hành trình đánh vào căn cứ, CIWS chặn tên lửa và drone. Giáp hông cấp 4, boong cấp 2."),
+            ["note.leviathan"] = ("Kessler's battleship at sea: three triple 406 mm turrets shell the shore, two triple 155 mm and eight 25 mm mounts, cruise missiles at the base, CIWS against missiles and drones. Sides armour 4, deck 2.", "Thiết giáp hạm của Kessler trên biển: ba tháp pháo ba nòng 406 mm nã vào bờ, hai tháp ba nòng 155 mm và tám bệ 25 mm, tên lửa hành trình đánh vào căn cứ, CIWS chặn tên lửa và drone. Giáp hông cấp 4, boong cấp 2."),
             ["note.sea_corvette"] = ("An escort: a 76 mm gun on the shore and a CIWS that also covers Leviathan within 32 m.", "Tàu hộ vệ: pháo 76 mm bắn vào bờ và CIWS che luôn cả Leviathan trong vòng 32 m."),
             ["note.sea_cruiser"] = ("An escort: two twin 203 mm turrets on the shore and two CIWS that also cover Leviathan within 30 m.", "Tàu hộ tống: hai tháp pháo nòng đôi 203 mm bắn vào bờ và hai CIWS che luôn cả Leviathan trong vòng 30 m."),
             ["note.missile_boat"] = ("Fast and thin-skinned: it dashes in to the pier heads, fires its rockets and runs back out.", "Nhanh và giáp mỏng: lao vào sát đầu cầu tàu, bắn rốc-két rồi quay ra."),
@@ -2500,10 +2500,10 @@ namespace MachineBrigade.Game.Hud
             ["target.paradrop"] = ("Tap ground your side can see to drop {unit} (tap the card again to send it to the drop zone)",
                 "Chạm vào vùng phe ta nhìn thấy để thả dù {unit} (chạm thẻ lần nữa để đưa về bãi thả)"),
             ["err.DropNotSeen"] = ("Drop only where your side can see, and never into an enemy base", "Chỉ thả dù nơi phe ta nhìn thấy, không thả vào căn cứ địch"),
-            // dx01: Tháp cao xạ hạng nặng Flak 88.
+            // dx01: Tháp cao xạ hạng nặng 100 mm (KS-19).
             ["unit.heavy_flak_tower"] = ("Heavy flak tower", "Tháp cao xạ hạng nặng"),
             ["short.heavy_flak_tower"] = ("Heavy flak", "Cao xạ nặng"),
-            ["note.heavy_flak_tower"] = ("A heavy anti-aircraft gun of the 8.8 cm Flak 36/37 class: slow, big air bursts against bombers and tight formations; lowered, it hits tanks at 50 m.", "Pháo cao xạ hạng nặng kiểu 8,8 cm Flak 36/37: bắn chậm, đạn nổ trên không bán kính lớn vào oanh tạc cơ và tốp máy bay dày; hạ nòng bắn được xe tăng ở 50 m."),
+            ["note.heavy_flak_tower"] = ("A heavy anti-aircraft gun of the KS-19 100 mm class (1947): slow, big air bursts against bombers and tight formations; lowered, it hits tanks at 50 m.", "Pháo cao xạ hạng nặng 100 mm kiểu KS-19 (1947): bắn chậm, đạn nổ trên không bán kính lớn vào oanh tạc cơ và tốp máy bay dày; hạ nòng bắn được xe tăng ở 50 m."),
             // dx02: Xe cao xạ Bofors 40 mm.
             ["unit.aa_gun_vehicle"] = ("40 mm AA gun vehicle", "Xe cao xạ 40 mm"),
             ["short.aa_gun_vehicle"] = ("40 mm AA", "Cao xạ 40 mm"),
@@ -2577,9 +2577,9 @@ namespace MachineBrigade.Game.Hud
             ["short.searchlight"] = ("Searchlight", "Đèn pha"),
             ["note.searchlight"] = ("A 150 cm defence searchlight on a turntable: it lights the ground round the base at night and dazzles attackers.", "Đèn pha phòng thủ 150 cm trên bệ xoay: chiếu sáng quanh căn cứ ban đêm và làm lóa quân tấn công."),
             // dx29: Bóng chắn máy bay.
-            ["unit.barrage_balloon"] = ("Barrage balloon", "Bóng chắn máy bay"),
-            ["short.barrage_balloon"] = ("Balloon", "Bóng chắn"),
-            ["note.barrage_balloon"] = ("A tethered balloon on a steel cable, as over the cities of the Second World War, here a modern aerostat: aircraft must climb over it.", "Khí cầu buộc dây cáp thép như trên các thành phố thời Thế chiến II, ở đây là khí cầu hiện đại: máy bay phải bay vọt lên cao."),
+            ["unit.barrage_balloon"] = ("Radar aerostat (JLENS)", "Khí cầu neo radar (JLENS)"),
+            ["short.barrage_balloon"] = ("Aerostat", "Khí cầu radar"),
+            ["note.barrage_balloon"] = ("A tethered radar aerostat in the style of the US Army JLENS: enemy bombs dropped near it fall wide, and aircraft close to it, stealth ones too, show on the map.", "Khí cầu neo radar kiểu JLENS của quân đội Mỹ: bom địch ném gần nó rơi lệch, và máy bay ở gần nó, cả máy bay tàng hình, hiện trên bản đồ."),
             // dx30: Máy tạo nhiễu tầm nhìn.
             ["unit.visual_jammer"] = ("Visual jammer", "Máy tạo nhiễu tầm nhìn"),
             ["short.visual_jammer"] = ("Visual jammer", "Nhiễu tầm nhìn"),

@@ -294,5 +294,14 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>A fixed minefield lays its mines anywhere within this many metres of itself (0: a mine layer drops them behind it).</summary>
         public float Spread { get; internal set; }
+
+        /// <summary>Prompt 26 D.1 (Ixion): seconds a mine lasts before it clears itself (0: until it goes off).</summary>
+        public float Life { get; internal set; }
+
+        /// <summary>
+        /// Prompt 26 D.1 (Ixion): metres of turning (in degrees) after which a strip of <see cref="Max"/> mines is dropped behind the
+        /// vehicle, a metre or two apart, instead of one mine each interval on a straight run (0: the ordinary mine layer).
+        /// </summary>
+        public float TurnStrip { get; internal set; }
     }
 }

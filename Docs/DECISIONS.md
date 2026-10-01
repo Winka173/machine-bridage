@@ -12650,3 +12650,120 @@ prompt meant them in, every number is too high by about 1.7); the super weapons'
 the 35 % parts make the "break the guns" play too cheap; Moloch's 300 per 1 s HE shells, Icarus's 1,500 slugs, Typhon's 1,460
 missiles and the Daedalus pods against the armies of their chapters; the crowd targeting; the close guard ring's size; the
 A6 factors on Boss Rush and the quick modes; the flank bonus and armour 5 / 3 / 2 against the cards' penetration.
+
+
+## 26CD. Boss sizes, Ixion, Gungnir and the post-1945 rule (prompt 26 C and D, pass 2) (2026-10-01)
+
+Pass 2 in the owner's reduced scope ("26 scope" above): no test, sweep or measurement was run, no Blender rebuild, no camera
+pull-back, no shadow work; every number is the prompt's starting value and is listed under "To measure". Sizes, Ixion, Gungnir and
+Leviathan's gun are written by `Tools/balance/p26_cd.py` (second run changes nothing); the Excel and tracker by
+`Tools/balance/p26_cd_sheet.py`. Checks run: compile (tests included) and CatalogCheck (241 vehicles, 371 weapons).
+Tests written, not run: `Prompt26CDTests`, and the old ones whose rules moved (`Prompt20BossTests` Ixion, `Prompt25BossTests`
+and `Prompt26ABTests` for Ixion's charge, `BossPartsTests` Ixion's 8 parts).
+
+### C. Sizes (data only)
+
+- **Mechanism.** A boss is drawn at its model's native length times its scale; `size` (a main or standalone boss) and
+  `variant.size` (a mini made from a main) is what `BossTemplates.Resize` multiplies the scale, hit radius, parts, mounts, ramp and
+  death blast by. The script solves each `size` from the model's native length (`glb_bounds`) so the drawn length is the prompt's;
+  hull radius, part and mount positions follow with it ("bigger parts are easier to aim at", their health unchanged). No `modelSize`
+  was written for these (that fit is for a model rebuilt at its sheet size, prompt 27).
+- **Result, length in metres (before -> after).** Mains: Bastion 35.8 -> 40, Behemoth 22.3 -> 26, Jotunn 26.1 -> 32, Matriarch
+  42.3 -> 55, Moloch 26.5 -> 40, Nemesis 61.6 -> 70, Kronos 48.6 -> 60, Typhon 59.0 -> 70, Roc 59.2 -> 80, Daedalus 45.0 -> 60,
+  Icarus 60.0 -> 90, Leviathan kept (97.6). Minis: Bastion Mk.0 25.0 -> 24, Inferno 12.8 -> 17, Tempest 16.2 -> 17, Behemoth Mk.0
+  15.6 -> 17, Mk.II 16.1 -> 18, Atlas 12.4 -> 16, Caspian 52.9 -> 36, Argus 29.6 -> 35, Icarus Mk.0 23.6 -> 36, Ixion 21.7 -> 26,
+  Gungnir 54.3 -> 45 (50-70 % of Nemesis). Held where they were: Fenrir, Locust, Stymphalos, Cerberus, Hydra, Scylla, Nyx, the
+  others the prompt keeps (their variant sizes were divided by the parent's growth). Batch D mains: Monster 53.6 -> 42 (a ground
+  boss near the 40 m rule), Garuda and Hyperion keep their ratio to their parents (65.1 -> 88, 72.0 -> 108: Hyperion stays the
+  largest object in the sky), Kraken unchanged.
+- **Widths** follow the models: Roc and Garuda stay wide (the model is a 56 m span at 80 m long, against the sheet's 22 m);
+  Icarus 45 m wide against the sheet's 60. Only a rebuilt model changes those (prompt 27).
+- **Dropped here:** C3 (Blender), C4 (camera pull-back), C5 (air shadows), C6 (the stuck probe waits for the owner's tests).
+
+### D1. Ixion, the armoured BelAZ-75710 mine truck
+
+- Same id, name and mechanics (charge, crush, slow turn). Stand-in model: the railgun truck (`railgun_truck`) fitted to 26 x 12 x 10
+  by `modelSize`, tinted mine yellow; no new model (ASSET_DEBT). Armour 4 / 3 / 2 / 2, 7 m/s, turn rate 6, turret 90 deg/s, hit
+  radius 11, hull 26 x 12.
+- **Main (50 %):** a 125 mm turret, `p26_ixion_125` AP (pen 4) 780 every 2 s, and the second round `p26_ixion_125_he` loaded
+  against a cluster (an existing second-round rule, "cluster": two more ground vehicles inside the blast): 780, core 5 m, edge
+  10 m. The turret turns all round; the charge only moves the hull, so it should keep firing during it (not checked in play).
+- **Secondary (30 %):** `ixion_crush_charge`, restored as a big-attack entry: a line warning of 2 s, a cooldown of 10 s, 900 on
+  every vehicle on the line (armour reduces it), a 1 s stun, `bigAttackScale` 1 / 1 / 0 so the mini rank's reductions do not touch
+  it. It is the mine truck's secondary weapon, not a super weapon: the old test "no mini boss has a super weapon" names Ixion as
+  its exception and the "every big attack cycles 45-50 s" test skips it. The crush damage along the road (`crush`) is kept.
+- **Guard (20 %):** two roof 12.7 mm machine guns (15 each, as the pass 1 close guns), and a mine strip: new `mines` fields
+  `turnStrip` (degrees of turning on the move after which the strip is dropped; 15) and `life` (20 s); `max` 6 mines, 2.5 m
+  apart behind the hull, 380 damage in 4 m, an 8 s gap between strips (`AbilitySystem.LayStrip`; the ordinary mine layer is
+  unchanged).
+- **Parts (8):** hull turret (armour 3; broken: the 125 mm goes), cab (armour 2; broken: the machine guns stop), two front tyres
+  (`wheel_l`, `wheel_r`: one broken stops and swerves the charge as before, both make it circle very slowly), four rear tyres
+  (armour 1, the weak point; each slows it a little). Part kinds `reartyre` and `hulltower` have their words. Text: Guide card,
+  profile, notes, parts tip, the charge's four big-attack lines, the mission brief (en and vi).
+- `weaponDamage` is 1 (pass 1 had it capped at 6 for the old guns): the prompt's numbers are used before the mini rank's x1.2
+  and x1.25, the pass 1 convention. `p26_ab.py` skips Ixion now so a rerun does not undo this.
+
+### D2. Gungnir, the rail electromagnetic supergun
+
+- Keeps its model (the rail gun on its bed) and its guards, spotter and tractors. The main weapon is `p26_gungnir_emrg` (data
+  weapon, a rail slug): one shot every 25 s at the biggest group, 3 s of warning ring at the aim. New `bombard` fields
+  `pierceMax` (5) and `pierceDamage` (1,000): the slug goes through up to five enemy ground vehicles on the line from the gun to
+  the aim (nearest first, deterministic order), each takes 1,000, and the 2,000 blast (core 12 m, edge 20 m) lands on the last
+  vehicle hit (on the aim when the line is empty). `BossSystem.PierceLine`.
+- Its other fire (two 40 mm guns, two CIWS) is unchanged; as a mini its DPS target is 65 % of the chapter's main, which the shot
+  alone cannot meet (one shot in 25 s), so the guns keep the `weaponDamage` of 6 the cap gave them: it stays under 65 % on paper.
+- Text: name "Gungnir · Rail Electromagnetic Gun" (unit, boss, notes, Guide, profile). References: US Navy EMRG scaled up, the
+  BZhRK Barguzin train, a modern diesel locomotive.
+
+### D3-D12. The post-1945 rule
+
+- **Reference lines** (`Tools/docs/unit_refs.json`, the model makers' brief, shown on each unit card by `build_doc.py`): Ratte and
+  the Maus-class monsters out of Behemoth, Mk.0, Mk.II, Tempest, Inferno and the super tank (Object 279 of 1959 with composite
+  armour, APS and modern sensors; the super tank NPzK 140 mm and a future concept super tank); Yamato out of Leviathan and Scylla
+  (an Iowa-class of the 1980s with Kirov-style vertical launchers; Scylla after the Sovremenny class); the Snow Cruiser out of
+  Jotunn and Fenrir (NASA Crawler-Transporter, Kharkovchanka of 1959); Roc, Matriarch, Locust and Argus lose the Akron / Macon /
+  Zeppelin airships (Airlander 10, Lockheed P-791; Argus after JLENS); the flame tank loses the Churchill Crocodile; the gun turret
+  loses the Pantherturm (a buried T-55 / T-72 turret); the heavy turret, coastal battery, super gun and spawn bastion lose Maxim
+  Gorky and Batterie Todt (A-222 Bereg, the AK-130 ship turret on the coast, K-300P Bastion-P). New lines for Monster (2B1 Oka,
+  Object 271 of 1957), Garuda (B-2, B-21), the heavy flak tower, the aerostat and the anti-tank emplacement (2A45 Sprut-B).
+- **Texts:** the Guide, profiles, notes and campaign file of Ixion, Gungnir, Leviathan (406 mm), Monster (2B1 Oka class),
+  the flak tower (KS-19 of 1947) and the aerostat; the other generals' lines had no pre-1945 mention.
+- **Leviathan** 460 mm -> 406 mm (Iowa's Mk 7): the data weapon `leviathan_460` is now "Mk 7 406 mm/50 (Iowa, triple)" at a
+  calibre of 406 (the id stays), the main shell and the salvo are the pass 1 `p26_leviathan_lev406` (core 12 m, edge 20 m); all
+  texts say 406.
+- **New content tracker** (`Docs/backlog/new_content.json`, the sheet's "Đề xuất thêm" and "Công trình mới"): dx01 "Tháp cao xạ
+  hạng nặng 100 mm (KS-19)" (the weapon `flak_88` reads KS-19 100 mm, size 100; the id and mechanics stay); dx29 "Khí cầu neo radar
+  (JLENS)" keeps the bomb scatter and gets `revealAir` 45: aircraft within 45 m show to its side, stealth ones too (the Patriot
+  radar's existing rule on a smaller circle); Pak 40 and Horten out of the sheet's reference cells (2A45 Sprut-B stays); Boss
+  mới: Monster after 2B1 Oka and Object 271, Garuda after the B-2 and B-21.
+- **Excel:** the "Tham khảo" cells and the Boss sheet's "Hình dạng (cho AI vẽ)" ("Dựa trên" line, and "Kích thước hiện" now the
+  new sizes; Behemoth's empty size filled), Ixion's and Gungnir's descriptions, the new-content sheets' names (74 cells). The
+  history tabs ("Thay đổi chi tiết", "Kiểm tra từng mục", "Việc cho agent") are logs of past requests and keep their words.
+  `Tools/docs/unit_sheet.json` was regenerated from it.
+- **Kept (the exceptions):** Bofors 40 mm (the AC-130 and the 40 mm towers, the L/70 of 1948 on), the M2 machine gun, Oerlikon
+  KDA 35 mm (Gepard, a post-war gun).
+
+### D13. The era test
+
+`Prompt26CDTests` (written, not run): fails on any pre-1945 name (Landkreuzer, Ratte, Maus, Gustav, Krupp K5, Tsar Tank,
+Yamato, Zeppelin, USS Akron / Macon, Snow Cruiser, Churchill / Crocodile, Pantherturm, Maxim Gorky, Batterie Todt, Flak 36/37 /
+88, Pak 40, Horten / Ho 229 and a few more) in every text table (en and vi), every weapon's `real`, the unit references, the
+shape notes and the tracker; the exceptions are named in the test (`Exceptions`). The Excel is not read by it (the shape notes are
+mirrored in `unit_sheet.json`, which it scans).
+
+### Doubts
+
+- The pierce slug's blast lands on the last vehicle hit, which can be up to 6 m beyond the warning ring (the ring marks the aim).
+- Roc's and Garuda's widths (56 and 62 m) are far over the sheet's 22 m: the models are wide; prompt 27.
+- Ixion's stand-in is a thin truck (6.5 x 7.6 m at 26 m long, against 12 x 10): its parts sit at the sheet's width, so the
+  tyres float beside the body until the model is remade.
+- Ixion's charge now makes the boss bar show a big attack on a mini boss (the HUD treats it as any big attack).
+
+### To measure (the owner's tests wait)
+
+Kill time and real DPS of Ixion (780 / 2 s turret, the charge, the machine guns against armour 3: they are almost harmless) and of
+Gungnir (one slug in 25 s; the guns at `weaponDamage` 6) against 65 % of their chapters' mains; the charge's length (60 m in 4 s)
+and whether its 900 plus the boss's damage boost is too much; the mine strip (6 x 380) on a crowded road; whether the larger bosses
+block lanes (Kronos 60 m is on its own road; Moloch and Bastion at 40 m, Jotunn 32 m, Matriarch 55 m: C6's stuck probe); the
+hit radius of the enlarged bosses against their models; whether Monster at 42 m and Hyperion at 108 m fit their maps; the
+KS-19 tower at 100 mm with the old 88 mm numbers; the aerostat's 45 m reveal.

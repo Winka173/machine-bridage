@@ -974,12 +974,12 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: xây cao xạ và tên lửa phòng không sớm, thêm tiêm kích vì pháo của nó không bắn được máy bay; bay kèm là 2 tiêm kích và 1 UAV đánh dấu quân ta (hạ UAV thì pháo của nó bắn lệch hơn), còn nửa máu thêm 2 tiêm kích."),
 
             ["guide.rail_supergun"] = (
-                "[[Boss]] · railway gun · stays put at the edge of the field\n" +
-                "How it fights: every 25 s one 80 cm [[shell]] (900, a 12 m blast) at your biggest group of ground vehicles, anywhere on the map; a red ring marks where it lands [[3 s]] ahead. Walls, cannon and flak towers and a [[fire-control post]] guard its bed; two 40 mm guns cover it.\n" +
+                "[[Mini boss]] · rail electromagnetic gun · stays put at the edge of the field\n" +
+                "How it fights: every 25 s one electromagnetic [[slug]] at your biggest group of ground vehicles, anywhere on the map: it goes through up to five vehicles in a line (1,000 each) and blasts where it hits the last (2,000 in a 12 m core, 40% out to 20 m); a red ring marks the aim [[3 s]] ahead. Walls, cannon and flak towers and a [[fire-control post]] guard its bed; two 40 mm guns cover it.\n" +
                 "Strong / weak: it punishes an army that bunches up; it cannot move, and once its fire-control post falls its shells land wide.\n" +
                 "Tip: keep moving and spread out when the ring shows; break the fire-control post first, then push in with tanks behind the artillery.",
-                "[[Boss]] · pháo đường ray · đứng yên ở mép chiến trường\n" +
-                "Cách đánh: cứ 25 giây một quả [[đạn 80 cm]] (900, nổ lan 12 m) vào cụm xe mặt đất đông nhất của bạn, ở bất cứ đâu trên bản đồ; vòng đỏ báo chỗ rơi trước [[3 giây]]. Tường, tháp pháo, tháp phòng không và [[trạm chỉ thị mục tiêu]] bảo vệ nền pháo; hai khẩu 40 mm che chắn.\n" +
+                "[[Mini boss]] · pháo điện từ đường ray · đứng yên ở mép chiến trường\n" +
+                "Cách đánh: cứ 25 giây một phát [[điện từ]] vào cụm xe mặt đất đông nhất của bạn, ở bất cứ đâu trên bản đồ: nó xuyên qua tối đa năm xe trên một đường thẳng (1.000 mỗi xe) rồi nổ ở xe cuối (2.000 trong lõi 12 m, còn 40% tới rìa 20 m); vòng đỏ báo điểm ngắm trước [[3 giây]]. Tường, tháp pháo, tháp phòng không và [[trạm chỉ thị mục tiêu]] bảo vệ nền pháo; hai khẩu 40 mm che chắn.\n" +
                 "Mạnh / yếu: trừng phạt đội quân dồn cục; không di chuyển được, và mất trạm chỉ thị thì đạn rơi lệch xa.\n" +
                 "Mẹo: luôn di chuyển và tản ra khi thấy vòng đỏ; phá trạm chỉ thị trước, rồi cho xe tăng tiến vào sau pháo binh."),
             ["guide.earth_borer"] = (
@@ -1011,11 +1011,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: đón đầu nó trước lần đổ bộ đầu tiên bằng xe diệt tăng và pháo binh, và giữ lực lượng dự bị cho số quân đã lên bờ."),
             ["guide.leviathan"] = (
                 "[[Boss]] · battleship at sea · shells the coast, runs when beaten\n" +
-                "How it fights: three triple 460 mm turrets lay [[salvos]] on the shore, one gun a turret, marked ahead, sweeping along it, and fire all nine along a strip through your base as its super weapon; two triple 155 mm fire on their own, eight 25 mm mounts and a medium-range SAM at aircraft; cruise missiles at your groups and your base; [[CIWS]] shoots down missiles, rockets and drones (never shells, bullets or beams). Phase 2 it comes in close, lands tanks and launches helicopters; phase 3 it runs for open sea: sink it before the clock runs out.\n" +
+                "How it fights: three triple 406 mm turrets lay [[salvos]] on the shore, one gun a turret, marked ahead, sweeping along it, and fire all nine along a strip through your base as its super weapon; two triple 155 mm fire on their own, eight 25 mm mounts and a medium-range SAM at aircraft; cruise missiles at your groups and your base; [[CIWS]] shoots down missiles, rockets and drones (never shells, bullets or beams). Phase 2 it comes in close, lands tanks and launches helicopters; phase 3 it runs for open sea: sink it before the clock runs out.\n" +
                 "Strong / weak: its sides are armour [[4]], its deck only [[2]]: artillery, bombs, rocket artillery and top attacks hit the deck; tank guns reach it only from the pier heads, when it comes in close.\n" +
                 "Tip: hold the lighthouse and the coastal batteries; bring artillery and aircraft; break the CIWS (or its cruiser and corvette) before sending missiles, a main turret when the broadside is marked, and the engine room before it runs.",
                 "[[Boss]] · chiến hạm trên biển · nã pháo vào bờ, bỏ chạy khi thua\n" +
-                "Cách đánh: ba tháp pháo ba nòng 460 mm bắn [[loạt]] vào bờ, mỗi tháp một nòng, có cảnh báo trước và quét dần dọc bờ, và bắn cả chín nòng theo dải qua căn cứ khi tung siêu vũ khí; hai tháp ba nòng 155 mm tự bắn, tám bệ 25 mm và một bệ tên lửa phòng không tầm trung bắn máy bay; tên lửa hành trình đánh vào cụm quân và căn cứ; [[CIWS]] bắn hạ tên lửa, rốc-két và drone (không chặn đạn pháo, đạn súng hay Năng lượng). Pha 2 nó áp sát, đổ bộ xe tăng và thả trực thăng; pha 3 nó chạy ra khơi: đánh chìm nó trước khi hết giờ.\n" +
+                "Cách đánh: ba tháp pháo ba nòng 406 mm bắn [[loạt]] vào bờ, mỗi tháp một nòng, có cảnh báo trước và quét dần dọc bờ, và bắn cả chín nòng theo dải qua căn cứ khi tung siêu vũ khí; hai tháp ba nòng 155 mm tự bắn, tám bệ 25 mm và một bệ tên lửa phòng không tầm trung bắn máy bay; tên lửa hành trình đánh vào cụm quân và căn cứ; [[CIWS]] bắn hạ tên lửa, rốc-két và drone (không chặn đạn pháo, đạn súng hay Năng lượng). Pha 2 nó áp sát, đổ bộ xe tăng và thả trực thăng; pha 3 nó chạy ra khơi: đánh chìm nó trước khi hết giờ.\n" +
                 "Mạnh / yếu: hông tàu giáp cấp [[4]], boong chỉ cấp [[2]]: pháo binh, bom, pháo phản lực và đòn đánh nóc đánh vào boong; pháo xe tăng chỉ với tới khi nó áp sát, đứng ở đầu cầu tàu.\n" +
                 "Mẹo: giữ ngọn hải đăng và trận địa pháo bờ biển; mang pháo binh và máy bay; phá CIWS (hoặc tuần dương hạm và tàu hộ vệ) trước khi dùng tên lửa, phá một tháp pháo chính khi loạt bắn mạn được đánh dấu, và phá buồng máy trước khi nó bỏ chạy."),
             ["guide.sea_corvette"] = (
@@ -1532,12 +1532,12 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: biến trận đêm thành bất lợi cho kẻ tấn công; ban ngày vô dụng.\n" +
                 "Mẹo: mang theo cho trận đêm và sương mù."),
             ["guide.barrage_balloon"] = (
-                "[[Barrage balloon]] · small structure · AA that never fires\n" +
-                "How it fights: enemy bombing within 40 m of it [[scatters 50 % wider]]; enemy helicopters keep out.\n" +
+                "[[Radar aerostat]] · small structure · AA that never fires\n" +
+                "How it fights: enemy bombing within 40 m of it [[scatters 50 % wider]]; enemy helicopters keep out; it also [[shows aircraft]] within 45 m, stealth ones too.\n" +
                 "Strong / weak: spoils bombing runs on the base; guided bombs do not care.\n" +
                 "Tip: put it over the towers you most want to keep.",
-                "[[Bóng chắn máy bay]] · công trình ô nhỏ · phòng không không bắn\n" +
-                "Cách đánh: bom địch ném trong 40 m quanh nó [[tản mát thêm 50%]]; trực thăng địch tránh vùng.\n" +
+                "[[Khí cầu neo radar]] · công trình ô nhỏ · phòng không không bắn\n" +
+                "Cách đánh: bom địch ném trong 40 m quanh nó [[tản mát thêm 50%]]; trực thăng địch tránh vùng; nó còn [[làm lộ máy bay]] trong 45 m, cả máy bay tàng hình.\n" +
                 "Mạnh / yếu: phá các lượt ném bom vào căn cứ; bom dẫn đường không bị ảnh hưởng.\n" +
                 "Mẹo: đặt trên những tháp cần giữ nhất."),
             ["guide.visual_jammer"] = (

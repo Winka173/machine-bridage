@@ -269,7 +269,44 @@ namespace MachineBrigade.Sim.Bosses
             }
             v.TurretHeading = SimMath.HeadingOf(at - v.Position);
             v.LastFiredAt = now;
-            _world.Damage.Queue(at, ExplosionDef.TwoLayer(b.Damage, b.Radius, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+            var blast = at;
+            if (b.PierceMax > 0) blast = PierceLine(v, b, at);
+            _world.Damage.Queue(blast, ExplosionDef.TwoLayer(b.Damage, b.Radius, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+        }
+
+        private readonly List<(float t, Vehicle v)> _slugLine = new();
+
+        /// <summary>
+        /// Prompt 26 D.2: the electromagnetic slug goes through the enemy ground vehicles on its line to <paramref name="aim"/> (at most
+        /// PierceMax, the nearest first; a hull's width either side) and each takes the pierce damage; the blast lands on the last one hit
+        /// (the aim itself when the line is empty). Ordered by distance then id, so the run is deterministic.
+        /// </summary>
+        private Vector2 PierceLine(Vehicle v, BombardDef b, Vector2 aim)
+        {
+            var line = aim - v.Position;
+            var length = line.Length();
+            if (length < 1f) return aim;
+            var along = line / length;
+            _slugLine.Clear();
+            foreach (var o in _world.VehicleList)
+            {
+                if (!o.IsAlive || o.Flying || o.Team == v.Team) continue;
+                var offset = o.Position - v.Position;
+                var t = Vector2.Dot(offset, along);
+                if (t < 0f || t > length + 6f) continue;
+                if ((offset - along * t).Length() > o.Radius + 1.2f) continue;
+                _slugLine.Add((t, o));
+            }
+            _slugLine.Sort((x, y) => x.t != y.t ? x.t.CompareTo(y.t) : x.v.Id.Value.CompareTo(y.v.Id.Value));
+            var last = aim;
+            for (var k = 0; k < _slugLine.Count && k < b.PierceMax; k++)
+            {
+                var hit = _slugLine[k].v;
+                last = hit.Position;
+                if (b.PierceDamage > 0f)
+                    _world.Damage.Queue(hit.Position, new ExplosionDef(b.PierceDamage, 2.5f, 0f, ExplosionTier.Large), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+            }
+            return last;
         }
 
         private bool SpotterStands(Vehicle v, string spotter)

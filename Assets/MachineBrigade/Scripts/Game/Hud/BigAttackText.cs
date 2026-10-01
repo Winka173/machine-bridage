@@ -79,6 +79,14 @@ namespace MachineBrigade.Game.Hud
             ["guide.bigattack.bug_rod_rain.dodge"] = ("Get out of the rings; smoke and APS do not stop them. Shield domes absorb part of the hit while they hold.", "Ra khỏi các vòng tròn; khói và APS không chặn được. Vòm khiên hấp thụ một phần sát thương trong lúc còn hoạt động."),
             ["guide.bigattack.bug_rod_rain.stop"] = ("Break the satellite uplink during the warning to cancel that rod; break it for good and no more rods fall until a self-repair puts it back. It can be hit at high or low altitude, and on the ground.", "Phá ăng-ten liên kết vệ tinh trong lúc cảnh báo để hủy thanh đang rơi; phá hẳn thì hết mưa thanh vonfram cho tới khi nó tự vá lại. Ăng-ten bắn được ở tầng cao, tầng thấp, và cả khi đã rơi xuống đất."),
 
+            // ---------------------------------------------------------------- Ixion (prompt 26 D.1: its crush charge, a secondary weapon, not a super weapon)
+            ["bigattack.ixion_crush_charge"] = ("Crush Charge", "Lao nghiền"),
+            ["bigattack.ixion_crush_charge.cancelled"] = ("Charge stopped", "Đã chặn cú lao"),
+            ["radio.bigattack.ixion_crush_charge"] = ("Command: Ixion is lining up its ram. Clear the line!", "Chỉ huy: Ixion đang ngắm đường lao. Ra khỏi đường thẳng!"),
+            ["guide.bigattack.ixion_crush_charge.how"] = ("The mine truck charges down a line shown 2 s ahead: about 900 to every vehicle on it (less with armour) and a 1 s stun; its turret keeps firing. About every 10 s.", "Xe tải mỏ lao theo một đường thẳng báo trước 2 giây: khoảng 900 lên mọi xe trên đường (giảm theo giáp) và choáng 1 giây; tháp pháo vẫn bắn. Cứ khoảng 10 giây."),
+            ["guide.bigattack.ixion_crush_charge.dodge"] = ("Step off the line to the side before the warning ends.", "Bước ngang ra khỏi đường thẳng trước khi hết cảnh báo."),
+            ["guide.bigattack.ixion_crush_charge.stop"] = ("Break a front tyre: the charge swerves and stops.", "Phá một lốp trước: cú lao lệch và dừng."),
+
             // ---------------------------------------------------------------- Bastion
             ["bigattack.bastion_420_shell"] = ("420 mm Mortar", "Pháo cối 420 mm"),
             ["bigattack.bastion_420_shell.cancelled"] = ("420 mm shell cancelled", "Đã hủy phát cối 420 mm"),

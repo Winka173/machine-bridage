@@ -7,6 +7,23 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 26, pass 2 (C and D): boss sizes, Ixion, Gungnir and the post-1945 rule (DECISIONS "26CD")
+
+Reduced scope again: no tests, sweeps or measures; no Blender rebuild, camera pull-back or shadow work.
+
+- Boss sizes as data (`size` / `variant.size`, solved by `Tools/balance/p26_cd.py`): the twelve mains and the minis to the
+  prompt's table (Bastion 40 m, Moloch 40, Roc 80, Icarus 90, Caspian 36, Atlas 16 ...); hit radius, parts and mounts follow.
+- Ixion is the armoured BelAZ-75710 mine truck (stand-in model): a 125 mm turret that loads a high-explosive shell against crowds
+  and an armour-piercing one against single targets, a 2 s warned crush charge every 10 s, two roof machine guns, a strip of six
+  mines dropped when it turns (20 s), eight breakable parts (tyres, turret, cab).
+- Gungnir is a rail electromagnetic gun: one slug every 25 s through up to five vehicles in a line, blasting at the last
+  (new `bombard.pierceMax`, `pierceDamage`).
+- Every pre-1945 reference is gone (Ratte, Yamato, Gustav, Tsar Tank, Snow Cruiser, Akron / Zeppelin, Maxim Gorky, Pantherturm,
+  Churchill Crocodile, Flak 36/37, Pak 40, Horten ...): reference lines, profiles, Guide, campaign text, the balance sheet's
+  shape and reference columns, the new-content tracker (KS-19 100 mm heavy AA tower, JLENS radar aerostat that also shows stealth
+  aircraft). Leviathan's main gun is 406 mm.
+- Written, not run: `Prompt26CDTests` (the era scan, Ixion, Gungnir, Leviathan); the old tests whose rules moved were updated.
+
 ### Prompt 26, pass 1 (A and B): boss health, armour, phases, weapons and two-layer blasts (DECISIONS "26AB")
 
 Reduced scope (no tests, sweeps or measures; every number is the prompt's starting value, solved on paper by
