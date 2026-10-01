@@ -1948,9 +1948,9 @@
       "variant": {"size": 0.423, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "tint": [0.8, 1.1, 0.85], "mark": "stymphalos",
                   "tune": {"drone_bay": {"hp": 0.14}, "drone_bay_2": {"hp": 0.14}, "flak_top": {"hp": 0.14}}}},
     // Nyx: the stealth destroyer (a railgun, a CIWS pair, an anti-ship missile; seen only close up or just after it fires).
-    { "id": "nyx", "wake": null, "variantOf": "leviathan", "general": "kessler", "radioSpawn": "radio.kessler.nyx", "hp": 37750, "weaponDamage": 1.865, "armour": [4, 4, 3, 2], "weapon": "boss_railgun", "stealth": true, "speed": 5,
+    { "id": "nyx", "wake": null, "variantOf": "leviathan", "model": "nyx", "general": "kessler", "radioSpawn": "radio.kessler.nyx", "hp": 37750, "weaponDamage": 1.865, "armour": [4, 4, 3, 2], "weapon": "boss_railgun", "stealth": true, "speed": 5,
       "modelSize": [53, 8.9, 11], "naval": {"lanes": ["near"], "escapePhase": -1}, "craft": null, "air": [], "cruise": {"phase": 0, "damage": 400, "final": 0, "every": 18}, "fleet": [{"unit": "missile_boat", "count": 1}], "salvo": null,
-      "variant": {"size": 0.55, "keep": ["turret_fore", "vls", "ciws_fore", "ciws_aft"], "tint": [0.7, 0.8, 0.95], "mark": "nyx",
+      "variant": {"size": 0.55, "keep": ["turret_fore", "vls", "ciws_fore", "ciws_aft"], "mark": "nyx",
                   "tune": {"turret_fore": {"hp": 0.12}, "vls": {"hp": 0.12}, "ciws_fore": {"hp": 0.11}, "ciws_aft": {"hp": 0.11}}}},
     // Cerberus: the three-vehicle convoy (the Behemoth's gun, flak and rocket pod stand for tractor, middle and rear truck).
     { "id": "cerberus", "guard": null, "wake": null, "variantOf": "behemoth", "general": "varga", "radioSpawn": "radio.varga.cerberus", "hp": 53500, "weaponDamage": 1.326, "armour": [3, 3, 2, 2], "speed": 3, "aps": null,
