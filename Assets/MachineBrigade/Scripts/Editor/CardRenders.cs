@@ -293,8 +293,11 @@ namespace MachineBrigade.Editor
             return null;
         }
 
-        /// <summary>The render set: lights, the card camera, the shadow camera and their targets.</summary>
-        private sealed class Stage : IDisposable
+        /// <summary>
+        /// The render set: lights, the card camera, the shadow camera and their targets. Internal so the prompt 27
+        /// model preview (<see cref="ModelPreview"/>) renders its eight angles through the same lights and camera.
+        /// </summary>
+        internal sealed class Stage : IDisposable
         {
             private const int Layer = 30;
             private readonly Transform _root;
@@ -303,6 +306,13 @@ namespace MachineBrigade.Editor
             private readonly Texture2D _read, _topRead;
             private readonly int _big = Size * Super;
             private const int TopSize = 256;
+            private float _yaw = Yaw, _pitch = Pitch;
+
+            /// <summary>
+            /// The last render's mean Rec. 709 luma (0-1, of the stored sRGB values) over the model's coverage, before the
+            /// ground shadow is composited (the preview's brightness number; the card number includes the shadow).
+            /// </summary>
+            public float LastLuma { get; private set; }
 
             public Stage()
             {
@@ -360,8 +370,13 @@ namespace MachineBrigade.Editor
             /// Prompt 25 F2 batch B (DECISIONS 25F2-B): a stand-in's wash, the same "_Tint" multiply (shared tinted
             /// materials since play-test 11) VehicleView.ApplyTint puts on a variant, at rest (no scorch, no hit flash).
             /// </summary>
-            public byte[] Render(ModelLibrary library, string modelId, int team, System.Numerics.Vector3? tint = null)
+            /// <param name="yaw">Camera yaw (the card's -142 by default; 180 looks at the front).</param>
+            /// <param name="pitch">Camera pitch (the card's 26 by default).</param>
+            public byte[] Render(ModelLibrary library, string modelId, int team, System.Numerics.Vector3? tint = null,
+                float yaw = Yaw, float pitch = Pitch)
             {
+                _yaw = yaw;
+                _pitch = pitch;
                 var instance = library.Spawn(modelId, team, _root, castShadows: false);
                 var model = instance.Root;
                 // Play-test 11: the tint as a hue shift (ModelLibrary.TintOf) on shared tinted materials, as VehicleView draws it.
@@ -391,6 +406,14 @@ namespace MachineBrigade.Editor
                 // as drawn, then render again.
                 if (Refit(_read.GetPixels32())) Capture(_camera, _rt, _read);
                 var colour = _read.GetPixels32();
+                double lumaSum = 0, coverage = 0;
+                foreach (var c in colour)
+                {
+                    // Premultiplied by coverage (cleared to transparent black).
+                    lumaSum += (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) / 255.0;
+                    coverage += c.a / 255.0;
+                }
+                LastLuma = coverage > 0 ? (float)(lumaSum / coverage) : 0f;
 
                 // Its footprint from straight above, for the shadow.
                 var reach = Mathf.Max(bounds.extents.x, bounds.extents.z) * 1.6f + 1f;
@@ -415,7 +438,7 @@ namespace MachineBrigade.Editor
             /// <summary>Points the card camera from the 3/4 angle and fits the model and its ground shadow into the square with a margin.</summary>
             private void FitCamera(Bounds b)
             {
-                var rotation = Quaternion.Euler(Pitch, Yaw, 0f);
+                var rotation = Quaternion.Euler(_pitch, _yaw, 0f);
                 var right = rotation * Vector3.right;
                 var up = rotation * Vector3.up;
                 var points = new List<Vector3>();
