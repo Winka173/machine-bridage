@@ -12885,3 +12885,18 @@ Parts of the old prompt 27 that v2 puts out of scope, kept here so they are not 
 two factions' structure detail kits (old H.4), biome building sets and map landmarks (H.5), Play Asset Delivery (H.7),
 the colour-blind mode (H.8), roof fade, AI 1-5 scoring of every model, baked LODs and `_hd` for every unit, the texture
 atlas and decals, moving tower rank details into Blender.
+
+## 27 order (owner, 2026-10-01: "đồng ý"; token saving first)
+
+Prompt 27 v2 runs in this order, cheapest first, so the owner sees new models before the heavy tooling is built:
+1. A short Step 0 (Docs/models/STEP0_AUDIT.md): only what the experiment needs; start from "27 scope (v2)"'s facts.
+2. The GLB baseline + machine validator (Python over the exported files, JSON out; Tools/assets/). Cheap, and it
+   checks the experiment's models at once.
+3. The controlled experiment on 4 models (MBT, Su-27, Icarus, one complex unit) with the improved kit from "27 scope
+   (v2)", one variable at a time, checked with the existing Unity card renders (no new preview scene yet).
+4. Checkpoint 1: report to the owner with before/after cards and the validator's numbers. Stop.
+5. Only if approved: the Unity preview (8 angles, 3 gameplay distances) rendered only for flagged or changed models,
+   the budgets document and the Art Bible, then the waves.
+6. Benchmark scenes, frame-time measures, SSIM-style visual regression and real-device tests last, when the owner
+   allows measuring.
+One agent per pass; the lead (a fresh chat) only briefs, merges and spot-checks.

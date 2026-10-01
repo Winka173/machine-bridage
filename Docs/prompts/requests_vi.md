@@ -191,3 +191,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (01/10) build lại bản cho window mới
 - (01/10) tôi vẫn thấy nó hơi tối, ví dụ là trong deck, xem mobile repair vehicle bên ngoài list deck, và bên trong detail khác nhau, bên trong detail thì sáng rõ đúng như ý tôi nhưng ngoài list deck tối, boss cũng chịu mức tối tương tự
 - (01/10) bỏ dx23 không làm, bắt đầu làm Đợt D, nhớ áp dụng các quy tắc tiết kiệm token, bug kia confirm đã fix, chỉ dùng maximum 1 agent
+- (01/10) viết luôn, và đồng ý với cách trên (thứ tự tiết kiệm cho prompt 27: rà soát ngắn, script kiểm tra GLB, thí nghiệm 4 model, điểm dừng 1, rồi mới preview và các đợt), viết bàn giao nhớ đề cập tới tiết kiệm token là ưu tiên đầu, cho tôi prompt để đưa chat mới
