@@ -1944,8 +1944,8 @@
       "variant": {"size": 1.2, "drop": ["crash_turret_l", "crash_turret_r", "uplink"], "tint": [1.12, 1.0, 0.7], "mark": "hyperion",
                   "tune": {"main_laser": {"hp": 0.07}, "main_engine": {"hp": 0.07}, "thruster_fl": {"hp": 0.07}, "thruster_fr": {"hp": 0.07}, "thruster_rl": {"hp": 0.07}, "thruster_rr": {"hp": 0.07}, "pd_laser_l": {"hp": 0.07}, "pd_laser_r": {"hp": 0.07}, "pod_bay": {"hp": 0.07}}}},
     // Stymphalos: the jet UAV swarm (a drone tender's bays and flak, fast; the swarm itself waits for a model).
-    { "id": "stymphalos", "wake": null, "variantOf": "drone_mothership", "general": "sen", "radioSpawn": "radio.sen.stymphalos", "hp": 45650, "weaponDamage": 1.084, "armour": 1, "speed": 8,
-      "variant": {"size": 0.423, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "tint": [0.8, 1.1, 0.85], "mark": "stymphalos",
+    { "id": "stymphalos", "wake": null, "variantOf": "drone_mothership", "model": "stymphalos", "general": "sen", "radioSpawn": "radio.sen.stymphalos", "hp": 45650, "weaponDamage": 1.084, "armour": 1, "speed": 8, "modelSize": [15.5, 26, 2.55],
+      "variant": {"size": 0.423, "keep": ["drone_bay", "drone_bay_2", "flak_top"], "mark": "stymphalos",
                   "tune": {"drone_bay": {"hp": 0.14}, "drone_bay_2": {"hp": 0.14}, "flak_top": {"hp": 0.14}}}},
     // Nyx: the stealth destroyer (a railgun, a CIWS pair, an anti-ship missile; seen only close up or just after it fires).
     { "id": "nyx", "wake": null, "variantOf": "leviathan", "model": "nyx", "general": "kessler", "radioSpawn": "radio.kessler.nyx", "hp": 37750, "weaponDamage": 1.865, "armour": [4, 4, 3, 2], "weapon": "boss_railgun", "stealth": true, "speed": 5,

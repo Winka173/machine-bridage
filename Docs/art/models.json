@@ -1267,6 +1267,14 @@
     "file": "strike_jet.glb",
     "triangles": 8700
   },
+  "stymphalos": {
+    "file": "stymphalos.glb",
+    "triangles": 4186
+  },
+  "stymphalos_drone": {
+    "file": "stymphalos_drone.glb",
+    "triangles": 502
+  },
   "supply_crate": {
     "file": "supply_crate.glb",
     "triangles": 1986

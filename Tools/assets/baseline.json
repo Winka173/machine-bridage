@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 404,
+ "count": 406,
  "budgets": {
   "ground": {
    "normal": {
@@ -362,6 +362,18 @@
    ],
    "reason": "prompt 27 wave 1b: Cerberus's own model (three coupled big-wheeled cars on Part_tractor / Part_middle / Part_trailer), replaces the behemoth stand-in",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "stymphalos",
+    "stymphalos_drone"
+   ],
+   "reason": "prompt 27 wave 1b: Stymphalos's own model (eight delta jet drones in V formation on Part_drone .. .007) and one drone on its own for a later swarm rule; replaces the drone_mothership stand-in",
+   "changes": [
+    "stymphalos: new (4186 triangles)",
+    "stymphalos_drone: new (502 triangles)"
+   ]
   }
  ],
  "models": {
@@ -12756,8 +12768,7 @@
    ],
    "units": [
     "drone_mothership",
-    "locust",
-    "stymphalos"
+    "locust"
    ],
    "movingParts": 13,
    "budgetClass": "boss_s"
@@ -38953,6 +38964,265 @@
    "warnings": [],
    "units": [],
    "movingParts": 1,
+   "budgetClass": null
+  },
+  "stymphalos": {
+   "file": "stymphalos.glb",
+   "fileBytes": 241164,
+   "sha1": "c63cb2467256a97d",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 72,
+   "meshes": 55,
+   "materials": 6,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 55,
+   "submeshes": 55,
+   "materialSlots": 55,
+   "materialsUsed": 6,
+   "triangles": 4186,
+   "vertices": 4249,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 80,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -13.0,
+    0.1517,
+    -6.83
+   ],
+   "boundsMax": [
+    13.0,
+    2.7051,
+    8.6
+   ],
+   "size": [
+    15.43,
+    26.0,
+    2.553
+   ],
+   "center": [
+    0.0,
+    1.428,
+    0.885
+   ],
+   "structureHash": "e7747df1293413d1",
+   "color0": {
+    "mean": 0.8115,
+    "min": 0.242,
+    "max": 1.0,
+    "p05": 0.5453,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun",
+     "Muzzle_gun.001",
+     "Muzzle_mg",
+     "Muzzle_missile",
+     "Muzzle_missile.001"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_gun.001",
+     "Mount_mg",
+     "Mount_missile.001"
+    ],
+    "part": [
+     "Part_drone",
+     "Part_drone.001",
+     "Part_drone.002",
+     "Part_drone.003",
+     "Part_drone.004",
+     "Part_drone.005",
+     "Part_drone.006",
+     "Part_drone.007"
+    ]
+   },
+   "runtimeSuffixed": [
+    "Mount_gun.001",
+    "Mount_missile.001",
+    "Muzzle_gun.001",
+    "Muzzle_missile.001"
+   ],
+   "nodeNames": [
+    "Bay_pod",
+    "Dr_armor_0",
+    "Dr_armor_1",
+    "Dr_armor_2",
+    "Dr_armor_3",
+    "Dr_armor_4",
+    "Dr_armor_5",
+    "Dr_armor_6",
+    "Dr_armor_7",
+    "Dr_body_0",
+    "Dr_body_1",
+    "Dr_body_2",
+    "Dr_body_3",
+    "Dr_body_4",
+    "Dr_body_5",
+    "Dr_body_6",
+    "Dr_body_7",
+    "Dr_eye_0",
+    "Dr_eye_1",
+    "Dr_eye_2",
+    "Dr_eye_3",
+    "Dr_eye_4",
+    "Dr_eye_5",
+    "Dr_eye_6",
+    "Dr_eye_7",
+    "Dr_glow_0",
+    "Dr_glow_1",
+    "Dr_glow_2",
+    "Dr_glow_3",
+    "Dr_glow_4",
+    "Dr_glow_5",
+    "Dr_glow_6",
+    "Dr_glow_7",
+    "Dr_intake_0",
+    "Dr_intake_1",
+    "Dr_intake_2",
+    "Dr_intake_3",
+    "Dr_intake_4",
+    "Dr_intake_5",
+    "Dr_intake_6",
+    "Dr_intake_7",
+    "Dr_nozzle_0",
+    "Dr_nozzle_1",
+    "Dr_nozzle_2",
+    "Dr_nozzle_3",
+    "Dr_nozzle_4",
+    "Dr_nozzle_5",
+    "Dr_nozzle_6",
+    "Dr_nozzle_7",
+    "Flak_barrels",
+    "Flak_ring",
+    "Gun_bore_Mount_gun",
+    "Gun_bore_Mount_gun_001",
+    "Gun_pod_Mount_gun",
+    "Gun_pod_Mount_gun_001",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_mg",
+    "Mount_missile.001",
+    "Muzzle_gun",
+    "Muzzle_gun.001",
+    "Muzzle_mg",
+    "Muzzle_missile",
+    "Muzzle_missile.001",
+    "Part_drone",
+    "Part_drone.001",
+    "Part_drone.002",
+    "Part_drone.003",
+    "Part_drone.004",
+    "Part_drone.005",
+    "Part_drone.006",
+    "Part_drone.007"
+   ],
+   "category": "boss",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_missile.001, Muzzle_gun.001, Muzzle_missile.001"
+   ],
+   "units": [
+    "stymphalos"
+   ],
+   "movingParts": 12,
+   "budgetClass": "boss_s"
+  },
+  "stymphalos_drone": {
+   "file": "stymphalos_drone.glb",
+   "fileBytes": 34076,
+   "sha1": "aa7329c19e701731",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 8,
+   "meshes": 7,
+   "materials": 6,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 7,
+   "submeshes": 7,
+   "materialSlots": 7,
+   "materialsUsed": 6,
+   "triangles": 502,
+   "vertices": 516,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 10,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.2,
+    -0.2923,
+    -2.63
+   ],
+   "boundsMax": [
+    2.2,
+    0.9051,
+    2.6
+   ],
+   "size": [
+    5.23,
+    4.4,
+    1.197
+   ],
+   "center": [
+    0.0,
+    0.306,
+    -0.015
+   ],
+   "structureHash": "c28058b0819badbe",
+   "color0": {
+    "mean": 0.8109,
+    "min": 0.3274,
+    "max": 1.0,
+    "p05": 0.5516,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_gun"
+    ]
+   },
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Dr_armor_solo",
+    "Dr_body_solo",
+    "Dr_eye_solo",
+    "Dr_glow_solo",
+    "Dr_intake_solo",
+    "Dr_nozzle_solo",
+    "Muzzle_gun",
+    "Nose_gun"
+   ],
+   "category": "unlisted",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
    "budgetClass": null
   },
   "supply_crate": {

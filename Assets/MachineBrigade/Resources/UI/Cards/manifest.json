@@ -1539,9 +1539,9 @@
         {
             "id": "stymphalos",
             "kind": "boss",
-            "model": "drone_mothership",
-            "source": "Models/drone_mothership",
-            "hash": "v2:4f481e05ff883803e3e87915a3e905b2ed94f140"
+            "model": "stymphalos",
+            "source": "Models/stymphalos",
+            "hash": "v2:c63cb2467256a97dea69f0f5040055fae59f0c1f"
         },
         {
             "id": "super_gun",

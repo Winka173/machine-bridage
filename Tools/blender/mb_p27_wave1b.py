@@ -24,6 +24,12 @@ those parts and mounts name, near the places the resized data puts them (parent 
     30 mm RWS `Mount_gun`), `Part_middle` (the anti-air car: flak `Mount_mg` right / `.001` left, the radar panel,
     the fixed missile packs `Muzzle_missile` / `.001`), `Part_trailer` (the rocket pod `Mount_rocket`, rear guns
     `Mount_gun.001` / `.002`). The behemoth's mount set, so its inherited weapon list keeps its slots.
+  * stymphalos (Stymphalos, variant of drone_mothership keeping drone_bay, drone_bay_2, flak_top): eight delta-wing
+    jet drones (5.2 m long, 4.4 m span each) in a V, 15.4 x 26.0 x 2.6 m (the def gets that modelSize), every drone
+    on its own node (`Part_drone` lead .. `Part_drone.007` the slot drone behind it) for a later swarm rule. The lead
+    carries the dorsal flak `Mount_mg` and `Muzzle_missile`, the slot drone the bay pod `Mount_missile.001`, two arm
+    drones `Mount_gun` / `.001`. `stymphalos_drone` is one drone alone (`Muzzle_gun` nose gun), unlisted until the
+    swarm rule spawns drones as units.
   * hydra_sub (Hydra, variant of typhon keeping doors_l, doors_r, deck_gun, rudder; `hydra.glb` is the Hydra 70
     rocket, so the boss model is `hydra_sub`): a small VLS submarine, 34.8 x 7.2 x 7.8 m, hull axis at z 0: a lathed
     pressure hull, the sail with fairwater planes and a SAM box (`Mount_missile` > `Muzzle_missile`), the deck gun
@@ -39,7 +45,7 @@ from mathutils import Vector
 
 import mb_kit27 as k
 import mb_parts27 as parts
-from mb_p20_bosses import gun_turret
+from mb_p20_bosses import _tag, gun_turret
 from mb_phase2 import _suffixed
 from mb_phase8 import autocannon, ciws, pv
 from mb_vehicles import ACROSS, FORWARD, R90
@@ -447,9 +453,81 @@ def cerberus(a):
     k.clean(a)
 
 
+# ============================================================================= Stymphalos
+SY_L, SY_SPAN = 5.2, 4.4                # one drone's length and span
+SY_SLOTS = [(0.0, -6.0, 1.8)] + [(s * 3.6 * i, -6.0 + 3.4 * i, 1.8 - .25 * i) for i in (1, 2, 3) for s in (1, -1)] \
+    + [(0.0, 3.4, .8)]                  # the lead, three pairs, the slot drone behind the lead (all above z 0)
+
+
+def _sy_drone(a, tag, parent=None):
+    """One delta-wing jet drone round `parent` (its node, or the root): a faceted lofted body, the cranked delta wing
+    with a worn leading edge, the dorsal intake, two canted fins, the nozzle with a small glow. Nose at -Y."""
+    team, arm = a.part(f'Dr_body_{tag}', 'Team', parent), a.part(f'Dr_armor_{tag}', 'Armor', parent)
+    h = SY_L / 2
+
+    def ring(y, w, t, b):
+        return [(0, y, t), (w, y, t * .4), (w * .8, y, -b * .5), (0, y, -b), (-w * .8, y, -b * .5), (-w, y, t * .4)]
+    k.sharp_loft(team, [[(0, -h, 0)], ring(-h + .7, .22, .2, .14), ring(-h + 1.8, .42, .38, .26), ring(.4, .5, .42, .3),
+                        ring(h - .7, .42, .3, .24), ring(h - .1, .3, .22, .2)], chamfer=.04)
+    wing = [(0, -h + 1.0), (SY_SPAN / 2 * .32, -.4), (SY_SPAN / 2, h - .9), (SY_SPAN / 2 - .15, h - .45),
+            (.4, h - .55), (-.4, h - .55), (-SY_SPAN / 2 + .15, h - .45), (-SY_SPAN / 2, h - .9), (-SY_SPAN / 2 * .32, -.4)]
+    k.extrude(team, wing, .14, loc=(0, 0, -.05), axis='Z', chamfer=.04)
+    k.block(arm, (.5, 1.5, .2), loc=(0, -.4, .42), chamfer=.04)                                       # intake
+    a.part(f'Dr_intake_{tag}', 'Charred', parent).box((.42, .04, .14), loc=(0, -1.16, .44), bevel=0)
+    for sx in (1, -1):
+        arm.box((.08, .9, .75), loc=(sx * .42, h - .75, .55), rot=(.0, sx * .45, 0), taper=(1, .6), shift=(0, .2),
+                bevel=0)
+    k.lathe(a.part(f'Dr_nozzle_{tag}', 'Steel', parent), [(.2, -.25), (.24, 0), (.2, .02)], loc=(0, h - .1, .02),
+            rot=(-R90, 0, 0), seg=10, worn=(1,))
+    a.part(f'Dr_glow_{tag}', 'Energy', parent).cyl(.15, .02, loc=(0, h + .02, .02), rot=FORWARD, seg=10, bevel=0)
+    a.part(f'Dr_eye_{tag}', 'Glass', parent).box((.16, .3, .06), loc=(0, -h + 1.1, .22), rot=(.2, 0, 0), bevel=0)
+
+
+def stymphalos(a):
+    """Stymphalos, eight jet drones in V formation: see the module docstring."""
+    _suffixed(a)
+    names = ['Part_drone'] + [f'Part_drone.{i:03d}' for i in range(1, 8)]
+    for i, (name, loc) in enumerate(zip(names, SY_SLOTS)):
+        _sy_drone(a, f'{i}', pv(a, name, loc))
+    # The lead: the dorsal flak turret `Mount_mg` (part flak_top). The slot drone: the drone bay pod
+    # `Mount_missile.001` (part drone_bay_2). The arms: the parent's other kept slots (`Mount_gun`, `.001`,
+    # `Muzzle_missile`). The variant drops the bow cannon, the gondola cannon and the rear flak (their nodes
+    # `Turret`, `Mount_main.001`, `Mount_mg.001` would be hidden), so they are not built.
+    m = pv(a, 'Mount_mg', (0, .5, .5), 'Part_drone')
+    k.lathe(a.part('Flak_ring', 'Armor', m), [(.3, 0), (.3, .08), (.2, .18), (0, .2)], seg=12)
+    for x in (-.09, .09):
+        k.lathe(a.part('Flak_barrels', 'Steel', m), [(.04, 0), (.04, .8), (0, .8)], loc=(x, -.1, .12), rot=FORWARD,
+                seg=6)
+    pv(a, 'Muzzle_mg', (0, -.92, .12), 'Mount_mg')
+    m = pv(a, 'Mount_missile.001', (0, 0, -.42), 'Part_drone.007')
+    pod = a.part('Bay_pod', 'Armor', m)
+    k.lathe(pod, [(0, -1.1), (.2, -.95), (.24, -.5), (.24, .8), (.16, 1.0), (0, 1.05)], rot=FORWARD, seg=10)
+    pv(a, 'Muzzle_missile.001', (0, -1.15, 0), 'Mount_missile.001')
+    for mount, parent in (('Mount_gun', 'Part_drone.001'), ('Mount_gun.001', 'Part_drone.002')):
+        m = pv(a, mount, (0, -.9, -.3), parent)
+        k.lathe(a.part(f'Gun_pod_{_tag(mount)}', 'Armor', m), [(0, -.5), (.13, -.42), (.15, 0), (.12, .5), (0, .55)],
+                rot=FORWARD, seg=8)
+        a.part(f'Gun_bore_{_tag(mount)}', 'Steel', m).cyl(.04, .5, loc=(0, -.7, 0), rot=FORWARD, seg=6, bevel=0)
+        pv(a, mount.replace('Mount_', 'Muzzle_'), (0, -.96, 0), mount)
+    pv(a, 'Muzzle_missile', (0, -.4, -.2), 'Part_drone')
+    k.clean(a)
+
+
+def stymphalos_drone(a):
+    """One Stymphalos drone on its own (for a later swarm rule that spawns them as separate units): the same airframe
+    with its nose gun (`Muzzle_gun`)."""
+    _suffixed(a)
+    _sy_drone(a, 'solo')
+    a.part('Nose_gun', 'Steel').cyl(.04, .5, loc=(0, -SY_L / 2 + .9, -.18), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_gun', (0, -SY_L / 2 + .62, -.18))
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=.85, grime_height=.9)),
     'nyx': (nyx, dict(ao_distance=1.0, grime_height=.8)),
     'cerberus': (cerberus, dict(ao_distance=.5, ao_strength=.6, grime_height=.3)),
+    'stymphalos': (stymphalos, dict(ao_distance=.5, ao_strength=.7, ground=False)),
+    'stymphalos_drone': (stymphalos_drone, dict(ao_distance=.5, ao_strength=.7, ground=False)),
     'hydra_sub': (hydra_sub, dict(ao_distance=.7, ao_strength=.75, ground=False)),
 }
