@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 27, steps 1-2: Step 0 audit and the GLB baseline (DECISIONS "27 step 0 + baseline")
+
+- Docs/models/STEP0_AUDIT.md (the short audit for the 4-model experiment) and Tools/assets/glb_check.py, a static GLB analyzer and validator: Tools/assets/baseline.json covers all 400 GLBs, Docs/models/BASELINE.md sums it up (14 flagged).
+
 ### Prompt 26, pass 3 (E): Boss Hunts with the boss health from an estimated P (DECISIONS "26E")
 
 Reduced scope again: no tests, sweeps or measures (compile only; no data changed).

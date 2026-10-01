@@ -12900,3 +12900,33 @@ Prompt 27 v2 runs in this order, cheapest first, so the owner sees new models be
 6. Benchmark scenes, frame-time measures, SSIM-style visual regression and real-device tests last, when the owner
    allows measuring.
 One agent per pass; the lead (a fresh chat) only briefs, merges and spot-checks.
+
+## 27 step 0 + baseline (lead pass, 2026-10-01)
+
+Steps 1 and 2 of "27 order": Docs/models/STEP0_AUDIT.md, Tools/assets/ (glb_analyze.py, glb_check.py, README.md,
+baseline.json), Docs/models/BASELINE.md. The analyzer ran over the exported files (a static tool); nothing ran in Unity.
+- **Complex unit: attack_helicopter** (AH-64 class): two spinners (Rotor, Tail_rotor), a chin gun on Mount_gun, four
+  muzzle kinds and an `_hd` twin, contracts the MBT, Su-27 (fighter_jet) and Icarus (silver_bug) do not cover.
+- **numpy** (already used by Tools/music and Tools/maps), no scipy; balance.json read with Tools/balance/jsonc_edit.
+- **Categories** (for totals and future budgets) come from balance.json: a model's own def (id == model) decides,
+  else the first def drawing it: boss, air (flying), structure (speed 0 or class Defense, tower branches `_a`/`_b`),
+  ground; props; munitions (projectileModel, supports); wreck, scenery (name patterns); "unlisted" for the 33 GLBs
+  balance.json never names (C#-only models such as strike_jet, stand-ins, spares). `_hd` files take their base's.
+- **No numeric budgets** (prompt v2 gives none): `BUDGETS` in glb_check.py is empty until the budgets document
+  (27 order step 5). Hard errors only: unreadable/invalid GLB, bad indices, NaN/Infinity, no triangles, COLOR_0 or
+  NORMAL missing on a primitive, COLOR_0 outside 0-1, zero-area triangles (< 1e-8 m^2) over 0.5 % of the model
+  (fewer: a warning), a boss part's `node` pattern matching nothing, `_hd` runtime node names differing from the
+  normal model's, and width/length or height/length more than 25 % off the def's `modelSize` when the def owns the
+  model (a def borrowing another model: a warning). Absolute length is only a warning: the view fits the length to
+  modelSize. Warnings also: missing UVs, COLOR_0 mean luminance outside 0.15-0.95, runtime names with a `.001`
+  suffix, ground/structure models more than a quarter of their height below the origin, textures, animations.
+- **Topology is information, not a rule** (the prompt: open surfaces can be valid): loose pieces, open edges and
+  edges shared by 3+ triangles after welding positions at 1e-5 m.
+- **Regression:** glb_check.py refuses to overwrite the baseline when a counted metric (triangles, vertices, meshes,
+  renderers, materials, material slots, file size) moved over 10 %; `--accept NAME --reason TEXT` records the reason
+  in baseline.json's history. `--compare` only lists.
+- **Result:** 400 GLBs, 1,451,412 triangles, 14 with errors (8 zero-area over 0.5 %: fighter_jet_hd, sky_gunship_hd,
+  helipad (+_a, _b), headquarters, strike_jet, tank_buster; 5 proportions: at_gun_emplacement, heavy_flak_tower,
+  interceptor_jet, laser_ad_station, visual_jammer; 1 boss part nodes: mobile_fortress lacks Mount_gun and
+  Mount_missile.001 for howitzer_2 and sam), 64 more with warnings only. Nothing fixed in this pass (no model or data
+  changes); the list is wave input.
