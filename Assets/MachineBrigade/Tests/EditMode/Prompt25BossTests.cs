@@ -186,7 +186,8 @@ namespace MachineBrigade.Tests
             var catalog = C;
             foreach (var (id, shown) in new Dictionary<string, float> { ["silver_bug"] = 26000, ["daedalus"] = 24000, ["behemoth"] = 13000, ["scylla"] = 9000, ["bastion_mk0"] = 6500, ["rail_supergun"] = 13000 })
                 Assert.AreEqual(shown, catalog.Vehicle(id).MaxHp, 30f, id);
-            Assert.AreEqual(catalog.Vehicles.Values.Where(v => v.Boss).Max(v => v.MaxHp), catalog.Vehicle("silver_bug").MaxHp, 1e-3f, "Icarus, the last boss, has the most health");
+            Assert.AreEqual(catalog.Vehicles.Values.Where(v => v.Boss).Max(v => v.MaxHp), catalog.Vehicle("hyperion").MaxHp, 1e-3f, "Hyperion (the sheet's 28,000, batch D) has the most health, Icarus next");
+            Assert.Greater(catalog.Vehicle("silver_bug").MaxHp, catalog.Vehicles.Values.Where(v => v.Boss && v.Id != "hyperion").Where(v => v.Id != "silver_bug").Max(v => v.MaxHp) - 1f);
         }
     }
 }

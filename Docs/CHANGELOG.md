@@ -7,6 +7,13 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### New content, batch D: eight new bosses (prompt 25 F2, DECISIONS "25F2-D")
+
+- Four main bosses (Kraken carrier, Monster 800 mm gun, Garuda bomber, Hyperion mirror station) and four mini bosses
+  (Stymphalos UAV swarm, Nyx stealth destroyer, Cerberus convoy, Hydra drone submarine) as stand-ins: variants of the
+  nearest existing boss with a tint, the sheet's health and size, and a super weapon for each main boss. In the Guide, the
+  Boss Rush kinds and the Boss Hunts; real models come in prompts 26-27.
+
 ### Dark hulls fix (play-test 11, DECISIONS "PT11 dark hulls")
 
 - The hull's own colour and its soot reach the shader as meant: the "_Tint" multiply was written with SetColor, which

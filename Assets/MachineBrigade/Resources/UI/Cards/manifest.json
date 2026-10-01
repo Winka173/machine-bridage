@@ -893,6 +893,13 @@
             "hash": "v2:6876fbf56ecb2fa7b7fab5ed5e5314111cc87b3c"
         },
         {
+            "id": "cerberus",
+            "kind": "boss",
+            "model": "behemoth",
+            "source": "Models/behemoth",
+            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
+        },
+        {
             "id": "coastal_battery",
             "kind": "structure",
             "model": "heavy_turret",
@@ -1152,6 +1159,13 @@
             "hash": "v2:1da9a64ee783f56c86e60d2879bbb1d391559cc4"
         },
         {
+            "id": "garuda",
+            "kind": "boss",
+            "model": "command_airship",
+            "source": "Models/command_airship",
+            "hash": "v2:f97dfe7f43c64f1e0bafc6b8401e09ad9b639cd9"
+        },
+        {
             "id": "guard_tower",
             "kind": "tower",
             "model": "guard_tower",
@@ -1229,6 +1243,20 @@
             "hash": "v2:79f3c1f5b7794a8999518b8b51f722109a9a16b1"
         },
         {
+            "id": "hydra",
+            "kind": "boss",
+            "model": "typhon",
+            "source": "Models/typhon",
+            "hash": "v2:ccf57cf97f9ddfe5ac17a193dca855d80cb7c4db"
+        },
+        {
+            "id": "hyperion",
+            "kind": "boss",
+            "model": "silver_bug",
+            "source": "Models/silver_bug",
+            "hash": "v2:78c6c8056842d336809a1773be70031b4e5826c9"
+        },
+        {
             "id": "icarus_mk0",
             "kind": "boss",
             "model": "silver_bug",
@@ -1248,6 +1276,13 @@
             "model": "ixion",
             "source": "Models/ixion",
             "hash": "v2:b26dffead3e6675df6f0e634d64636602408ecde"
+        },
+        {
+            "id": "kraken",
+            "kind": "boss",
+            "model": "leviathan",
+            "source": "Models/leviathan",
+            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
         },
         {
             "id": "kronos",
@@ -1376,6 +1411,13 @@
             "hash": "v2:674fa737fc430c2b92e590144b57579c7550d982"
         },
         {
+            "id": "monster",
+            "kind": "boss",
+            "model": "fortress_bastion",
+            "source": "Models/fortress_bastion",
+            "hash": "v2:e9bba86a92041ca229853754b3204ad25baba3c2"
+        },
+        {
             "id": "morrigan",
             "kind": "boss",
             "model": "morrigan",
@@ -1388,6 +1430,13 @@
             "model": "nuke_train",
             "source": "Models/nuke_train",
             "hash": "v2:c72e4a443f466d56e2606e0ddbe262aecc6c8873"
+        },
+        {
+            "id": "nyx",
+            "kind": "boss",
+            "model": "leviathan",
+            "source": "Models/leviathan",
+            "hash": "v2:12f3691e880218660348cbbd0b680ae3c1bb0d13"
         },
         {
             "id": "one_shot_atgm_tower",
@@ -1486,6 +1535,13 @@
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
             "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+        },
+        {
+            "id": "stymphalos",
+            "kind": "boss",
+            "model": "drone_mothership",
+            "source": "Models/drone_mothership",
+            "hash": "v2:4f481e05ff883803e3e87915a3e905b2ed94f140"
         },
         {
             "id": "super_gun",

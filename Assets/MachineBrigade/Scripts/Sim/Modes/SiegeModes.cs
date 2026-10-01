@@ -1297,6 +1297,14 @@ namespace MachineBrigade.Sim.Modes
             // Prompt 22 E: the two new mini bosses.
             new[] { "behemoth_mk0", "morrigan" },
             new[] { "scylla", "caspian" },
+            // Prompt 25 F2 batch D: the eight new bosses (stand-ins), the sea ones together, each of the rest alone.
+            new[] { "kraken" },
+            new[] { "monster" },
+            new[] { "garuda" },
+            new[] { "hyperion" },
+            new[] { "nyx", "hydra" },
+            new[] { "stymphalos" },
+            new[] { "cerberus" },
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
