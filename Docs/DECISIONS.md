@@ -12496,3 +12496,25 @@ the sheet's size), written in `balance.json` after Morrigan. Real models come wi
 - **Tests (written, not run).** Prompt20BossTests (41 bosses: 16 main, 25 mini; generals; words), BossPartsTests
   (part counts), Prompt20HuntTests (generals, 16 mains in the full hunt), Prompt25BossTests (Hyperion has the most health).
   Checks run: compile, CatalogCheck (241 vehicles, 293 weapons), the card render.
+
+## 26 scope (owner, 2026-10-01: "đồng ý, cứ theo đề xuất của bạn")
+
+Prompt 26 runs in a reduced scope the owner approved; no tests, sweeps or measures until the owner allows them (agents
+write tests, never run them). Every number is the prompt's starting value, unmeasured, and flagged "to measure".
+- A1-A3: boss health from the prompt's starting table (ch.1 P 250, main 22,000, mini 9,000; ch.3 35,000 / 14,000; ch.6
+  63,000 / 25,000; ch.9 100,000 / 38,000; ch.12 150,000 / 57,000; interpolated, interludes too), no P measured by sim.
+  A4 kept (drop any campaign boss-health scaling by the player's arsenal power, prompt 2). A5, A6 kept. A7 (anti-stall
+  +50 % damage) dropped.
+- B1-B7 kept (target DPS, mix, two-layer blasts with core/edge and their effect, the ~0.8 s impact warning ring where
+  missing, phase rules, super weapon cycle 40-50 s and its share as numbers, the 12 main bosses' weapon sets). B8 reduced:
+  the mini bosses the prompt names get their signature weapon, the rest only numbers. B9 kept where missing. B10
+  reduced: Guide texts updated; super-weapon warning sounds exist since 25C; no new "In action" clips.
+- C1-C2 kept, as data only: sizes through modelSize/scale, collision, hull radius, mount and part positions; C3's Blender
+  rebuild dropped (prompt 27 remakes every model). C4 (camera pull-back) and C5 (big air shadows) dropped. C6 waits.
+- D1-D2 kept for play (Ixion as the armoured BelAZ mine truck, Gungnir as the rail electromagnetic gun) on borrowed
+  stand-in models, no new models. D3-D12 kept (references, profiles, Guide, generals' lines, the Excel "Hình dạng"
+  column, Leviathan 460 -> 406 mm). D13's era test written, not run.
+- E1 reduced: P estimated from the carried deck by a formula, no in-game sim battle; E3 without re-measuring P at
+  checkpoints. E2, E3 kept. E4 kept if small. E6 waits.
+- F: every measure waits for the owner; the docs, apply-report and the applied Excel are updated.
+Passes, one agent at a time: 1 = A + B; 2 = C + D; 3 = E + docs.

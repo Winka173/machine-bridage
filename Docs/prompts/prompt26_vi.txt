@@ -259,3 +259,6 @@ F. KIỂM TRA TỔNG
 - Mô phỏng 5 seed: toàn bộ chiến dịch thắng được ở độ khó Thường.
 - Hiệu năng: đo FPS ở trận Icarus, Kronos, Leviathan sau khi phóng to, trên máy tầm thấp.
 - Cập nhật docs/CHANGELOG.md, docs/DECISIONS.md, docs/balance/apply-report.md, tài liệu thiết kế (boss, Săn trùm), và xuất lại bản Excel đã cập nhật (docs/balance/Machine_Brigade_Can_bang_applied.xlsx) với số boss mới.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (01/10) đồng ý, cứ theo đề xuất của bạn (phạm vi rút gọn: xem DECISIONS "26 scope")
