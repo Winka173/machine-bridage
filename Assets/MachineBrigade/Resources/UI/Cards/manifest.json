@@ -1161,9 +1161,9 @@
         {
             "id": "garuda",
             "kind": "boss",
-            "model": "command_airship",
-            "source": "Models/command_airship",
-            "hash": "v2:f97dfe7f43c64f1e0bafc6b8401e09ad9b639cd9"
+            "model": "garuda",
+            "source": "Models/garuda",
+            "hash": "v2:b9dff60ba47acf1405ab5a7fd107e33d7ab21cee"
         },
         {
             "id": "guard_tower",

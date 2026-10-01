@@ -1933,8 +1933,11 @@
     { "id": "monster", "armour": [5, 3, 2, 3], "variantOf": "fortress_bastion", "model": "monster", "rank": "main", "general": "orlov", "radioSpawn": "radio.orlov.monster", "hp": 103100, "weaponDamage": 1.997, "speed": 0.8, "bigAttack": "monster_800_shell",
       "modelSize": [40.3, 22.1, 13], "variant": {"size": 1.05, "mark": "monster"}},
     // Garuda: the flying-wing bomber (the command airship's body; its bomb bay carries the carpet).
-    { "id": "garuda", "variantOf": "command_airship", "rank": "main", "general": "quaden", "radioSpawn": "radio.quaden.garuda", "hp": 137250, "weaponDamage": 0.998, "speed": 6, "bigAttack": "garuda_carpet",
-      "variant": {"size": 1.1, "tint": [0.9, 0.8, 1.12], "mark": "garuda"}},
+    { "id": "garuda", "variantOf": "command_airship", "model": "garuda", "rank": "main", "general": "quaden", "radioSpawn": "radio.quaden.garuda", "hp": 137250, "weaponDamage": 0.998, "speed": 6, "bigAttack": "garuda_carpet", "modelSize": [27.9, 70, 4.5],
+      "variant": {"size": 1.1, "mark": "garuda",
+                  "tune": {"engine_fl": {"at": [-3.64, 1.36, 1.49]}, "engine_fr": {"at": [3.64, 1.36, 1.49]}, "engine_rl": {"at": [-6.91, -0.45, 1.03]}, "engine_rr": {"at": [6.91, -0.45, 1.03]},
+                           "hangar_l": {"at": [-3.82, 0, -0.52]}, "hangar_r": {"at": [3.82, 0, -0.52]}, "radar": {"at": [0, 8.18, -0.71]}, "bomb_bay": {"at": [0, 2.73, -0.84]},
+                           "pod_105_l": {"at": [-13.18, 0, -1.03]}, "pod_105_r": {"at": [13.18, 0, -1.03]}}}},
     // Hyperion: the orbital mirror station (the Silver Bug's body that never comes down: high tier only, no crash, no hijack; no uplink, the crash turrets gone).
     { "id": "hyperion", "variantOf": "silver_bug", "rank": "main", "general": "aurel", "radioSpawn": "radio.aurel.hyperion", "hp": 176450, "weaponDamage": 1.111, "speed": 3.5, "bigAttack": "hyperion_sun_beam", "arena": null,
       "modelSize": [67.2, 43.7, 20],

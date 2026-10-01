@@ -1,6 +1,6 @@
 # GLB baseline (prompt 27 step 2)
 
-Generated 2026-10-02 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (406 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
+Generated 2026-10-02 by `python Tools/assets/glb_check.py` over Assets/MachineBrigade/Resources/Models (407 GLB files). Full data: Tools/assets/baseline.json. Static analysis only (no Unity run).
 Rules: DECISIONS "27 step 0 + baseline"; budgets: Docs/models/BUDGETS.md (over the soft budget a warning, over
 the hard cap an error). Warnings are listed in the JSON.
 
@@ -8,7 +8,7 @@ the hard cap an error). Warnings are listed in the JSON.
 
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
-| boss | 30 | 473,252 | 15,775 | rail_supergun (36,726) | 1,960 | 1 | 24 |
+| boss | 31 | 476,092 | 15,357 | rail_supergun (36,726) | 2,003 | 1 | 25 |
 | structure | 72 | 316,328 | 4,393 | headquarters (14,260) | 2,647 | 9 | 21 |
 | ground | 75 | 256,870 | 3,424 | main_battle_tank_hd (16,462) | 1,858 | 2 | 8 |
 | prop | 115 | 238,276 | 2,071 | house_large (6,056) | 1,620 | 2 | 8 |
@@ -18,7 +18,7 @@ the hard cap an error). Warnings are listed in the JSON.
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 6,742 | 240 | fpv_drone (1,520) | 191 | 0 | 1 |
 
-All files: 1,515,272 triangles, 18 with errors, 73 more with warnings only.
+All files: 1,518,112 triangles, 18 with errors, 74 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 

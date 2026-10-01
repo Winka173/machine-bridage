@@ -30,6 +30,14 @@ those parts and mounts name, near the places the resized data puts them (parent 
     carries the dorsal flak `Mount_mg` and `Muzzle_missile`, the slot drone the bay pod `Mount_missile.001`, two arm
     drones `Mount_gun` / `.001`. `stymphalos_drone` is one drone alone (`Muzzle_gun` nose gun), unlisted until the
     swarm rule spawns drones as units.
+  * garuda (Garuda, variant of command_airship with all its parts): a B-2 / B-21 flying wing, 27.9 x 70 x 4.5 m
+    (the def gets that modelSize; its parts' `at` are tuned onto the new nodes, the airship's layout did not fit a
+    wing): one loft from tip to tip through the sawtooth trailing edge's stations, the cockpit hump, four buried
+    engines with top intakes and exhaust trenches (`Part_engine` inner left, `.001` inner right, `.002` / `.003`
+    outer), the bomb bay doors (`Part_bay`, `Part_bay.001`, closed: nodes for a later opening view), two belly drone
+    bays (`Part_hangar` > `Muzzle_door_l`, `Part_hangar.001` > `Muzzle_door_r`), the nose radar panel
+    (`Part_radar`), six defensive turrets: twin 30 mm dorsal (`Mount_gun`, `.001`), 105 mm pods under the wing
+    (`Mount_gun.002`, `.003`), two fixed tail barbettes. Jet rule: no insets or panel greebles on the skin.
   * hydra_sub (Hydra, variant of typhon keeping doors_l, doors_r, deck_gun, rudder; `hydra.glb` is the Hydra 70
     rocket, so the boss model is `hydra_sub`): a small VLS submarine, 34.8 x 7.2 x 7.8 m, hull axis at z 0: a lathed
     pressure hull, the sail with fairwater planes and a SAM box (`Mount_missile` > `Muzzle_missile`), the deck gun
@@ -523,11 +531,123 @@ def stymphalos_drone(a):
     k.clean(a)
 
 
+# ============================================================================= Garuda
+GA_HALF = 35.0                          # half span
+GA_NOSE = -14.0
+GA_SWEEP = .65                          # leading edge: y = nose + 0.65 |x| (33 degrees)
+GA_TE = [(0.0, 14.0), (6.5, 8.5), (14.0, 12.6), (24.0, 7.6), (34.6, 10.4)]      # the sawtooth trailing edge
+GA_T = [(2.4, 1.0), (1.6, .7), (1.0, .5), (.45, .25), (.14, .1)]                # upper, lower thickness there
+
+
+def _ga_section(x, te, tu, tl):
+    """The wing's section at station x: leading edge, the upper surface's crest at 35 % chord, the trailing edge."""
+    le = GA_NOSE + GA_SWEEP * abs(x)
+    c = te - le
+    return [(x, le, 0), (x, le + .12 * c, tu * .75), (x, le + .35 * c, tu), (x, le + .7 * c, tu * .5), (x, te, 0),
+            (x, le + .7 * c, -tl * .4), (x, le + .35 * c, -tl), (x, le + .12 * c, -tl * .7)]
+
+
+def _ga_surface(x, y, top=True):
+    """Height of the upper (or lower) skin at (x, y), interpolated between the stations (to seat parts on it)."""
+    ax = min(abs(x), GA_TE[-1][0])
+    for (x0, te0), (x1, te1), t0, t1 in zip(GA_TE, GA_TE[1:], GA_T, GA_T[1:]):
+        if x0 <= ax <= x1:
+            f = (ax - x0) / (x1 - x0)
+            te, tu, tl = te0 + (te1 - te0) * f, t0[0] + (t1[0] - t0[0]) * f, t0[1] + (t1[1] - t0[1]) * f
+            break
+    le = GA_NOSE + GA_SWEEP * ax
+    u = max(0.0, min(1.0, (y - le) / (te - le)))
+    prof = [(0, 0), (.12, .75), (.35, 1.0), (.7, .5), (1, 0)] if top else [(0, 0), (.12, .7), (.35, 1.0), (.7, .4), (1, 0)]
+    for (u0, h0), (u1, h1) in zip(prof, prof[1:]):
+        if u0 <= u <= u1:
+            h = h0 + (h1 - h0) * (u - u0) / (u1 - u0)
+            return h * tu if top else -h * tl
+    return 0.0
+
+
+def garuda(a):
+    """Garuda, the flying-wing bomber: see the module docstring."""
+    _suffixed(a)
+    team, arm = a.part('Wing', 'Team'), a.part('Armor', 'Armor')
+    # The wing: one loft from tip to tip through the sawtooth's stations, its leading and trailing edges worn.
+    out = [(x, te, t) for (x, te), t in zip(GA_TE[1:], GA_T[1:])]
+    st = [(-x, te, t) for x, te, t in reversed(out)] + [(0.0, GA_TE[0][1], GA_T[0])] + out
+    tip_y = GA_NOSE + GA_SWEEP * GA_HALF + .9
+    rings = [[(-GA_HALF, tip_y, 0)]] + [_ga_section(x, te, tu, tl) for x, te, (tu, tl) in st] + [[(GA_HALF, tip_y, 0)]]
+    k.sharp_loft(team, rings, chamfer=.12, corners=[0, 4])
+    # The cockpit hump on the nose with its four windows.
+    hump = []
+    for y, w, h in ((-11.6, .6, .1), (-10.0, 2.6, .55), (-7.0, 3.4, .75), (-3.5, 3.0, .5), (-1.0, 1.6, .1)):
+        z = _ga_surface(0, y) - .05
+        hump.append([(-w / 2, y, z), (w / 2, y, z), (w * .3, y, z + h), (-w * .3, y, z + h)])
+    k.sharp_loft(team, hump, chamfer=.1, corners=[2, 3])
+    glass = a.part('Cockpit_glass', 'Glass')
+    for x in (-.95, -.32, .32, .95):
+        glass.box((.55, .9, .05), loc=(x, -9.25, _ga_surface(0, -9.3) + .5), rot=(-.45, 0, 0), bevel=0)
+    # The four engines: humps on the upper skin, an intake in front and an exhaust trench behind each, on
+    # `Part_engine` (inner left), `.001` (inner right), `.002` (outer left), `.003` (outer right).
+    for name, x, y0 in (('Part_engine', 4.0, -1.5), ('Part_engine.001', -4.0, -1.5), ('Part_engine.002', 7.6, .5),
+                        ('Part_engine.003', -7.6, .5)):
+        z0 = _ga_surface(x, y0)
+        pe = pv(a, name, (x, y0, z0))
+        t = _tag(name)
+        rings = []
+        for i, y in enumerate((y0 - 5.5, y0 - 4.2, y0 + 1.5, y0 + 4.5)):
+            z = _ga_surface(x, y) - .1 - z0
+            hh, ww = (.26, 1.6) if i in (0, 3) else (.75, 2.0)
+            rings.append([(-ww / 2, y - y0, z), (ww / 2, y - y0, z), (ww * .32, y - y0, z + hh), (-ww * .32, y - y0, z + hh)])
+        k.sharp_loft(a.part(f'Engine_{t}', 'Team', pe), rings, chamfer=.08, corners=[2, 3])
+        zi = _ga_surface(x, y0 - 4.2) - z0
+        a.part(f'Intake_{t}', 'Charred', pe).box((1.3, .06, .45), loc=(0, -4.25, zi + .38), rot=(-.5, 0, 0), bevel=0)
+        ze = _ga_surface(x, y0 + 5.6) - z0
+        a.part(f'Exhaust_{t}', 'Charred', pe).box((1.5, 1.6, .05), loc=(0, 5.6, ze + .03), bevel=0)
+        a.part(f'Exhaust_glow_{t}', 'Energy', pe).box((1.2, .06, .06), loc=(0, 6.25, ze + .06), bevel=0)
+    # The belly: the bomb bay doors on `Part_bay` / `Part_bay.001` (closed; nodes for a later opening view), the
+    # two drone bays on `Part_hangar` (left, `Muzzle_door_l`) / `.001` (right, `Muzzle_door_r`), the radar panel
+    # under the nose on `Part_radar`.
+    for name, sx in (('Part_bay', 1), ('Part_bay.001', -1)):
+        pb = pv(a, name, (sx * .62, -3.0, _ga_surface(0, -3.0, top=False)))
+        k.block(a.part(f'Bay_door_{_tag(name)}', 'Armor', pb), (1.2, 6.4, .12), loc=(0, 0, -.1), chamfer=0)
+    for name, muzzle, sx in (('Part_hangar', 'Muzzle_door_l', 1), ('Part_hangar.001', 'Muzzle_door_r', -1)):
+        x = sx * 4.2
+        ph = pv(a, name, (x, 0, _ga_surface(x, 0, top=False)))
+        k.block(a.part(f'Hangar_doors_{_tag(name)}', 'Armor', ph), (1.6, 4.0, .12), loc=(0, 0, -.1), chamfer=0)
+        a.part(f'Hangar_seam_{_tag(name)}', 'Charred', ph).box((.06, 3.8, .04), loc=(0, 0, -.17), bevel=0)
+        pv(a, muzzle, (0, 0, -.3), name)
+    pr = pv(a, 'Part_radar', (0, -9.0, _ga_surface(0, -9.0, top=False)))
+    k.block(a.part('Radar_panel', 'Undercarriage', pr), (3.4, 2.0, .14), loc=(0, 0, -.06), chamfer=0)
+    # Six defensive turrets: twin 30 mm dorsal (`Mount_gun` left, `.001` right), 105 mm pods under the wing
+    # (`Mount_gun.002` left, `.003` right), two tail barbettes (fixed, no weapon slot of their own).
+    for mount, x in (('Mount_gun', 10.0), ('Mount_gun.001', -10.0)):
+        gun_turret(a, mount, mount.replace('Mount_', 'Muzzle_'), (x, -1.0, _ga_surface(x, -1.0) - .05), w=1.5, d=1.8,
+                   h=.6, barrel=2.0, r=.07, twin=True)
+    for mount, x in (('Mount_gun.002', 14.5), ('Mount_gun.003', -14.5)):
+        zb = _ga_surface(x, 0, top=False)
+        k.block(arm, (.5, 1.6, .5), loc=(x, 0, zb - .2), chamfer=.05)                                # pylon
+        m = pv(a, mount, (x, 0, zb - .7))
+        t = _tag(mount)
+        k.lathe(a.part(f'Pod_{t}', 'Team', m), [(0, -2.0), (.4, -1.6), (.5, -.6), (.5, 1.6), (.3, 2.0), (0, 2.1)],
+                rot=FORWARD, seg=12)
+        k.lathe(a.part(f'Pod_gun_{t}', 'Steel', m), [(.13, 0), (.13, 1.6), (.16, 1.62), (.16, 1.9), (0, 1.9)],
+                loc=(0, -1.9, -.05), rot=FORWARD, seg=10)
+        pv(a, mount.replace('Mount_', 'Muzzle_'), (0, -3.85, -.05), mount)
+    for sx in (1, -1):
+        x, y = sx * 2.2, 9.6
+        z = _ga_surface(x, y)
+        k.block(arm, (1.1, 1.4, .45), loc=(x, y, z + .1), chamfer=.06)
+        for dx in (-.15, .15):
+            a.part('Tail_guns', 'Steel').cyl(.05, 1.5, loc=(x + dx, y + 1.3, z + .3), rot=FORWARD, seg=6, bevel=0)
+    k.greebles(arm, (0, 3.0, _ga_surface(0, 3.0) + .02), (1, 0, 0), (0, 1, 0), (2.4, 3.0), 3, seed=2781,
+               height=(.08, .15), chamfer=.02)
+    k.clean(a)
+
+
 BUILDERS = {
     'monster': (monster, dict(ao_distance=.85, grime_height=.9)),
     'nyx': (nyx, dict(ao_distance=1.0, grime_height=.8)),
     'cerberus': (cerberus, dict(ao_distance=.5, ao_strength=.6, grime_height=.3)),
     'stymphalos': (stymphalos, dict(ao_distance=.5, ao_strength=.7, ground=False)),
     'stymphalos_drone': (stymphalos_drone, dict(ao_distance=.5, ao_strength=.7, ground=False)),
+    'garuda': (garuda, dict(ao_distance=.8, ao_strength=.7, ground=False)),
     'hydra_sub': (hydra_sub, dict(ao_distance=.7, ao_strength=.75, ground=False)),
 }

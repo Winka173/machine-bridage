@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 406,
+ "count": 407,
  "budgets": {
   "ground": {
    "normal": {
@@ -373,6 +373,16 @@
    "changes": [
     "stymphalos: new (4186 triangles)",
     "stymphalos_drone: new (502 triangles)"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "garuda"
+   ],
+   "reason": "prompt 27 wave 1b: Garuda's own model (B-2 / B-21 flying wing, 70 m span, sawtooth trailing edge), replaces the command_airship stand-in",
+   "changes": [
+    "garuda: new (2840 triangles)"
    ]
   }
  ],
@@ -9804,8 +9814,7 @@
    ],
    "units": [
     "command_airship",
-    "argus",
-    "garuda"
+    "argus"
    ],
    "movingParts": 18,
    "budgetClass": "boss_m"
@@ -17164,6 +17173,176 @@
    "units": [],
    "movingParts": 0,
    "budgetClass": "prop"
+  },
+  "garuda": {
+   "file": "garuda.glb",
+   "fileBytes": 194608,
+   "sha1": "b9dff60ba47acf14",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 62,
+   "meshes": 43,
+   "materials": 7,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 43,
+   "submeshes": 43,
+   "materialSlots": 43,
+   "materialsUsed": 7,
+   "triangles": 2840,
+   "vertices": 3214,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 64,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -35.0,
+    -1.6368,
+    -13.9344
+   ],
+   "boundsMax": [
+    35.0,
+    2.8391,
+    13.9386
+   ],
+   "size": [
+    27.873,
+    70.0,
+    4.476
+   ],
+   "center": [
+    0.0,
+    0.601,
+    0.002
+   ],
+   "structureHash": "91ba9517f5948ffb",
+   "color0": {
+    "mean": 0.74,
+    "min": 0.2459,
+    "max": 1.0,
+    "p05": 0.4229,
+    "p95": 0.9898,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {
+    "muzzle": [
+     "Muzzle_door_l",
+     "Muzzle_door_r",
+     "Muzzle_gun",
+     "Muzzle_gun.001",
+     "Muzzle_gun.002",
+     "Muzzle_gun.003"
+    ],
+    "mount": [
+     "Mount_gun",
+     "Mount_gun.001",
+     "Mount_gun.002",
+     "Mount_gun.003"
+    ],
+    "part": [
+     "Part_bay",
+     "Part_bay.001",
+     "Part_engine",
+     "Part_engine.001",
+     "Part_engine.002",
+     "Part_engine.003",
+     "Part_hangar",
+     "Part_hangar.001",
+     "Part_radar"
+    ]
+   },
+   "runtimeSuffixed": [
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Muzzle_gun.001",
+    "Muzzle_gun.002",
+    "Muzzle_gun.003"
+   ],
+   "nodeNames": [
+    "Armor",
+    "Bay_door_Part_bay",
+    "Bay_door_Part_bay_001",
+    "Cockpit_glass",
+    "Engine_Part_engine",
+    "Engine_Part_engine_001",
+    "Engine_Part_engine_002",
+    "Engine_Part_engine_003",
+    "Exhaust_Part_engine",
+    "Exhaust_Part_engine_001",
+    "Exhaust_Part_engine_002",
+    "Exhaust_Part_engine_003",
+    "Exhaust_glow_Part_engine",
+    "Exhaust_glow_Part_engine_001",
+    "Exhaust_glow_Part_engine_002",
+    "Exhaust_glow_Part_engine_003",
+    "Hangar_doors_Part_hangar",
+    "Hangar_doors_Part_hangar_001",
+    "Hangar_seam_Part_hangar",
+    "Hangar_seam_Part_hangar_001",
+    "Intake_Part_engine",
+    "Intake_Part_engine_001",
+    "Intake_Part_engine_002",
+    "Intake_Part_engine_003",
+    "Mount_gun",
+    "Mount_gun.001",
+    "Mount_gun.002",
+    "Mount_gun.003",
+    "Muzzle_door_l",
+    "Muzzle_door_r",
+    "Muzzle_gun",
+    "Muzzle_gun.001",
+    "Muzzle_gun.002",
+    "Muzzle_gun.003",
+    "Part_bay",
+    "Part_bay.001",
+    "Part_engine",
+    "Part_engine.001",
+    "Part_engine.002",
+    "Part_engine.003",
+    "Part_hangar",
+    "Part_hangar.001",
+    "Part_radar",
+    "Pod_Mount_gun_002",
+    "Pod_Mount_gun_003",
+    "Pod_gun_Mount_gun_002",
+    "Pod_gun_Mount_gun_003",
+    "Radar_panel",
+    "T_armor_Mount_gun",
+    "T_armor_Mount_gun_001",
+    "T_barrel_Mount_gun",
+    "T_barrel_Mount_gun_001",
+    "T_bore_Mount_gun",
+    "T_bore_Mount_gun_001",
+    "T_brake_Mount_gun",
+    "T_brake_Mount_gun_001",
+    "T_house_Mount_gun",
+    "T_house_Mount_gun_001",
+    "T_ring_Mount_gun",
+    "T_ring_Mount_gun_001",
+    "Tail_guns",
+    "Wing"
+   ],
+   "category": "boss",
+   "hd": false,
+   "errors": [],
+   "warnings": [
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_gun.002, Mount_gun.003, Muzzle_gun.001"
+   ],
+   "units": [
+    "garuda"
+   ],
+   "movingParts": 13,
+   "budgetClass": "boss_l"
   },
   "gbu12": {
    "file": "gbu12.glb",
