@@ -733,6 +733,8 @@ namespace MachineBrigade.Game.Match
             if (index < 0 || index >= All.Count) return false;
             var mission = All[index];
             if (PlayerProfile.Completed(mission.Id)) return true;
+            // Testing (the owner, 2026-10-01): every campaign mission is open while the test unlock is on.
+            if (Progression.TestUnlockAll) return true;
             if (mission.Side) return mission.After == null || PlayerProfile.Completed(mission.After) || !MapExists(Get(mission.After));
             // Prompt 22 D.5: an option of a story choice once it is the one chosen (never the other).
             if (mission.Branch != null && Chosen(mission.Branch) != mission.Option) return false;
