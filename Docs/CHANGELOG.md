@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 27 wave 5b: kronos, moloch, nuke_train, armored_train and earth_borer on the V2 kit (DECISIONS "27 wave 5b").
+
 - Prompt 27 wave 5c: command_airship, drone_mothership, mega_gunship, sky_fortress, daedalus and morrigan on the V2 kit; mega_gunship's lost mount nodes restored (DECISIONS "27 wave 5c").
 
 - Prompt 27 wave 5a: behemoth, behemoth_inferno, behemoth_tempest, fortress_bastion and fortress_hive on the V2 kit (DECISIONS "27 wave 5a").

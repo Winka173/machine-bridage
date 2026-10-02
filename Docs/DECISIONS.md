@@ -14389,3 +14389,4 @@ No runner mirror, no cards, no previews, no tests.
   moloch grow 6 cm in height: the V2 belts reach 1 cm under the ground line (the old ones started at +5 cm).
 - **Card luma (old, alpha > .5, Rec. 709):** kronos .3109, moloch .2946 (the dimmest), nuke_train .3422, armored_train
   .3323, earth_borer .3117. Watch kronos and moloch (COLOR_0 +13 % / +16 %): the goal is >= old and <= ~+20 %.
+- Lead (2026-10-02), wave 5b cards: all five pass (kronos -1.0 % at the edge, moloch -0.9 %, trains and earth_borer +0.5 % to +1.9 %).

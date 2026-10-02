@@ -743,7 +743,7 @@
             "kind": "boss",
             "model": "armored_train",
             "source": "Models/armored_train",
-            "hash": "v2:a40db2aed9b6c63c75a53406dc3dd981c4df7366"
+            "hash": "v2:575ee4ad71948e4c15532c356c423ec57d97b82d"
         },
         {
             "id": "artillery_emplacement",
@@ -1009,7 +1009,7 @@
             "kind": "boss",
             "model": "earth_borer",
             "source": "Models/earth_borer",
-            "hash": "v2:8b2688931aedcb047cfacf5b58194c20c5f92712"
+            "hash": "v2:bb8ac0adb14901d7c745aa8ea15ddc547dc0cbe3"
         },
         {
             "id": "elite_aa",
@@ -1289,7 +1289,7 @@
             "kind": "boss",
             "model": "kronos",
             "source": "Models/kronos",
-            "hash": "v2:df15aa86418908114b6bbcfa12247d07c0f2a88d"
+            "hash": "v2:556daf08911264e0e6ea0607be62719b5798c14a"
         },
         {
             "id": "landing_hovercraft",
@@ -1408,7 +1408,7 @@
             "kind": "boss",
             "model": "moloch",
             "source": "Models/moloch",
-            "hash": "v2:674fa737fc430c2b92e590144b57579c7550d982"
+            "hash": "v2:2ca1a02d5db62b19158eee911f00793ff5ce216b"
         },
         {
             "id": "monster",
@@ -1429,7 +1429,7 @@
             "kind": "boss",
             "model": "nuke_train",
             "source": "Models/nuke_train",
-            "hash": "v2:c72e4a443f466d56e2606e0ddbe262aecc6c8873"
+            "hash": "v2:c809a29b0cb10eeb0167b9f2b95f8a1add90ca9a"
         },
         {
             "id": "nyx",
