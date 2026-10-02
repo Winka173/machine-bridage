@@ -234,15 +234,15 @@ Ground DPS **1532 -> 681** (44 %); anti-air only 0 -> 0. **Not made up within 20
 
 ### landing_hovercraft
 
-Ground DPS **302 -> 302** (100 %); anti-air only 120 -> 120.
+Ground DPS **302 -> 293** (97 %); anti-air only 120 -> 120.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `hover_ciws` | cal_30 | 12 x 60 / 6.00 s = 120 | 12 x 60 / 6.00 s = 120 | 0 / 0 |
 | 1 | `hover_ciws` | cal_30 | 12 x 60 / 6.00 s = 120 | 12 x 60 / 6.00 s = 120 | 0 / 0 |
 | 2 | `ciws_aa` | cal_30 | 12 x 60 / 6.00 s = 120 | 12 x 60 / 6.00 s = 120 | 0 / 0 |
-| 3 | `hover_rockets` | rkt_140 | 65 x 11 / 23.00 s = 31 | 65 x 11 / 23.00 s = 31 | 4 / 0 |
-| 4 | `hover_rockets` | rkt_140 | 65 x 11 / 23.00 s = 31 | 65 x 11 / 23.00 s = 31 | 4 / 0 |
+| 3 | `hover_rockets` | rkt_140 | 65 x 11 / 23.00 s = 31 | 65 x 11 / 27.00 s = 26 | 4 / 0 |
+| 4 | `hover_rockets` | rkt_140 | 65 x 11 / 23.00 s = 31 | 65 x 11 / 27.00 s = 26 | 4 / 0 |
 
 ### supreme_command
 
@@ -572,7 +572,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | rail_supergun | 170 | 170 | 100 % | 240 -> 240 | - |
 | earth_borer | 289 | 213 | 74 % **(< 80 %)** | 0 -> 0 | - |
 | command_airship | 1532 | 681 | 44 % **(< 80 %)** | 0 -> 0 | - |
-| landing_hovercraft | 302 | 302 | 100 % | 120 -> 120 | - |
+| landing_hovercraft | 302 | 293 | 97 % | 120 -> 120 | - |
 | supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
 | sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
 | leviathan | 771 | 771 | 100 % | 804 -> 804 | - |
