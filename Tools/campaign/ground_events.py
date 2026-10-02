@@ -47,3 +47,20 @@ library(E('sandstorm_turn', 'SandstormTurn', {'at': 200}, {'half': 'player', 'si
 events.add('c2m06', {'id': 'sandstorm_turn', 'params': {'sight': 0.65, 'clear': 1.25}})
 # Dunebreak at night (c12m07): the sandstorm that rolled over the whole map now comes over one half, after the wind turns.
 replace_event('c12m07', 'sandstorm', {'id': 'sandstorm_turn', 'trigger': {'at': 180}})
+
+
+# ---------------------------------------------------------------------- Báo động nhà máy (the factory alarm): i1m01
+# The infiltration of the Foundry: once the enemy sees one of the brigade's vehicles (from 30 s in), the alarm sounds, the
+# rolling-mill gate (the lane east of the casting hall, x 42-50) shuts 10 s later, and the garrison's reinforcements follow.
+# The gate's two states are built at load; the lanes round the mill stay open (nav_states.py, NavStates.Validate).
+library(E('factory_alarm', 'GroundChange', {'spotted': True, 'at': 30}, {'navSite': 'mill_gate', 'navState': 'shut'}, lead=10,
+          notices={'warn': 'event.groundChange.alarm.warn', 'start': 'event.groundChange.alarm.start'},
+          lines={'warn': 'radio.linh.ev.groundChange.alarm.warn'}),
+        E('alarm_wave', 'EnemyWave', {'after': 'factory_alarm', 'delay': 4}, {'size': 6},
+          notices={'warn': 'event.enemyWave.alarm.warn'}, lines={'warn': 'radio.linh.ev.enemyWave.alarm.warn'}))
+nav_site('i1m01', {'id': 'mill_gate', 'initial': 'open', 'states': [
+    {'name': 'open'},
+    {'name': 'shut', 'blocks': [{'x': 46, 'z': 0, 'w': 10, 'd': 2}]}]})
+# The garrison's wave comes on the alarm, not on a clock (the sheet: one mistake changes the battle).
+replace_event('i1m01', 'enemy_wave', 'factory_alarm')
+events.add('i1m01', 'alarm_wave')

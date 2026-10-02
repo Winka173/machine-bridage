@@ -140,6 +140,14 @@ namespace MachineBrigade.Game.Hud
             // Prompt 31 L3: the events that change the battlefield (each warned 8-12 s ahead, its places on the minimap).
             ["event.sandstormTurn.warn"] = ("The wind is turning: the sandstorm rolls over the marked half in {seconds} s", "Gió đang đổi hướng: bão cát tràn qua nửa bản đồ được đánh dấu sau {seconds} giây"),
             ["event.sandstormTurn.end"] = ("The sandstorm is passing: sight comes back", "Bão cát đang qua: tầm nhìn trở lại"),
+            ["event.groundChange.warn"] = ("The way ahead closes in {seconds} s: find another route", "Lối đi phía trước sẽ bị chặn sau {seconds} giây: tìm đường khác"),
+            ["event.groundChange.start"] = ("The way is closed: the routes go round it", "Lối đi đã bị chặn: đường đi vòng qua"),
+            ["radio.linh.ev.groundChange.warn"] = ("Something is closing across the road ahead. Plan another way through.", "Có thứ gì đang chắn ngang đường phía trước. Tính đường khác mà qua."),
+            ["event.groundChange.alarm.warn"] = ("Alarm! The rolling-mill gate shuts in {seconds} s", "Báo động! Cổng xưởng cán sẽ đóng sau {seconds} giây"),
+            ["event.groundChange.alarm.start"] = ("The mill gate is shut: go round by the other lanes", "Cổng xưởng cán đã đóng: đi vòng qua các lối khác"),
+            ["radio.linh.ev.groundChange.alarm.warn"] = ("They have seen us. Sirens all over the works, and the mill gate is coming down.", "Chúng thấy ta rồi. Còi báo động khắp xưởng, cổng xưởng cán đang hạ xuống."),
+            ["event.enemyWave.alarm.warn"] = ("The alarm brings the garrison in {seconds} s, {dir}", "Báo động gọi đồn binh tới sau {seconds} giây, {dir}"),
+            ["radio.linh.ev.enemyWave.alarm.warn"] = ("The whole garrison is awake now. Here they come.", "Cả đồn binh đã thức dậy. Chúng tới kìa."),
             ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
         };
     }
