@@ -1,3 +1,0 @@
-id,boss_id,thu_tu,at,model,nguon,raw_json
-rail_supergun/0,rail_supergun,0,2.5;19.26;0.36,rail_tractor,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].attach[0],"{""model"":""rail_tractor"",""at"":[2.5,19.26,0.36]}"
-rail_supergun/1,rail_supergun,1,-2.5;19.26;0.36,rail_tractor,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].attach[1],"{""model"":""rail_tractor"",""at"":[-2.5,19.26,0.36]}"

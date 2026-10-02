@@ -1,9 +1,0 @@
-id,boss_ho_tong_id,thu_tu,unit,role,nguon,raw_json
-armored_train/0,armored_train,0,light_tank,,Assets/MachineBrigade/Resources/Data/balance.json: escorts[0].phase.units[0],"{""unit"":""light_tank""}"
-armored_train/1,armored_train,1,light_tank,,Assets/MachineBrigade/Resources/Data/balance.json: escorts[0].phase.units[1],"{""unit"":""light_tank""}"
-armored_train/2,armored_train,2,engineer_vehicle,repair,Assets/MachineBrigade/Resources/Data/balance.json: escorts[0].phase.units[2],"{""unit"":""engineer_vehicle"",""role"":""repair""}"
-behemoth_tempest/0,behemoth_tempest,0,ew_jammer,jam,Assets/MachineBrigade/Resources/Data/balance.json: escorts[1].phase.units[0],"{""unit"":""ew_jammer"",""role"":""jam""}"
-behemoth_tempest/1,behemoth_tempest,1,ew_jammer,jam,Assets/MachineBrigade/Resources/Data/balance.json: escorts[1].phase.units[1],"{""unit"":""ew_jammer"",""role"":""jam""}"
-earth_borer/0,earth_borer,0,ifv,,Assets/MachineBrigade/Resources/Data/balance.json: escorts[13].phase.units[0],"{""unit"":""ifv""}"
-earth_borer/1,earth_borer,1,aa_vehicle,cover,Assets/MachineBrigade/Resources/Data/balance.json: escorts[13].phase.units[1],"{""unit"":""aa_vehicle"",""role"":""cover""}"
-earth_borer/2,earth_borer,2,engineer_vehicle,repair,Assets/MachineBrigade/Resources/Data/balance.json: escorts[13].phase.units[2],"{""unit"":""engineer_vehicle"",""role"":""repair""}"

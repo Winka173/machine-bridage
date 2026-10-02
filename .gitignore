@@ -56,3 +56,9 @@ __pycache__/
 # Fix pass 8 ModelScan: old GLBs staged during a scan (deleted afterwards)
 /Assets/ScanOld/
 /Assets/ScanOld.meta
+
+# Data export (Tools/export): over ~20 MB, so the dated folders keep only 00_chi_muc/ and md/ in git
+/Docs/export/*/xlsx/
+/Docs/export/*/csv/
+/Docs/export/*/images/
+/Docs/export/*/pdf/

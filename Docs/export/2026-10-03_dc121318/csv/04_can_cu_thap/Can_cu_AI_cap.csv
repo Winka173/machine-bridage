@@ -1,5 +1,0 @@
-id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
-Easy,base.ai.levels,Easy,2,,,Assets/MachineBrigade/Resources/Data/balance.json: base.ai.levels.Easy,2
-Hard,base.ai.levels,Hard,5,,,Assets/MachineBrigade/Resources/Data/balance.json: base.ai.levels.Hard,5
-Normal,base.ai.levels,Normal,3,,,Assets/MachineBrigade/Resources/Data/balance.json: base.ai.levels.Normal,3
-VeryHard,base.ai.levels,VeryHard,5,,,Assets/MachineBrigade/Resources/Data/balance.json: base.ai.levels.VeryHard,5
