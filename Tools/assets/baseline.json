@@ -1077,6 +1077,23 @@
     "FLAG searchlight: triangles 1,124 -> 1,292 (+14.9%); vertices 1,204 -> 1,312 (+9.0%); materials 4 -> 5 (+25.0%); fileBytes 66,640 -> 72,596 (+8.9%); structure changed",
     "wreck_turret: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "aa_gun_tower",
+    "flare_tower",
+    "heavy_turret",
+    "heavy_turret_a",
+    "heavy_turret_b",
+    "missile_battery",
+    "missile_battery_a",
+    "missile_battery_b",
+    "searchlight",
+    "wreck_turret"
+   ],
+   "reason": "merge of feature/p27-wave6e",
+   "changes": []
   }
  ],
  "models": {
