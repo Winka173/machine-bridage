@@ -17087,3 +17087,47 @@ stored in `Tools/balance/fix_boss_before.json`; the reasons the audit reads in `
   than real, the make-up barrels and tubes, the card's full cycle and facts); `Prompt34Tests` (the Smerch, the bombs and
   the 155 mm at their cadence instead of the area bonus; Scylla's AK-130 at 3 s), `Prompt26CDTests` (Ixion's gun 400 / 7.5 s;
   it still read prompt 26's 780 / 2 s), `Prompt26ABTests` (the mains' DPS 0.3-1.5 of the target).
+
+## Sửa lỗi tổng hợp L8 prep (lead pass, 2026-10-02)
+
+Pass 8 of the full fix prompt (Docs/prompts/fix_full_vi.txt "Lượt 8", PDF rule E), prepared so the lead renders the
+scan in one Unity batch run and an agent scores it. No Unity, tests or sims here; the static scorer was run.
+
+- **Standard** `Docs/models/MODEL_STANDARD.md`: the prompt's LOD0 budgets per class (light 3-5k, heavy 4-7k, aircraft
+  4-7k, ships 8-15k, bosses 10-20k, towers 2-4k, structures / HQ 2-6k) on the normal GLB; `_hd` up to 2.4 x the
+  maximum, reported, not graded. These decide the **score**; glb_check.py's prompt 27 caps stay the build's error gate
+  until L9 item 7. LOD1 ~50 % = the run-time `ModelLibrary.Lod` (band 35-65 %, measured by ModelScan); LOD2 ~20 % =
+  the impostor (no mesh LOD2 needed).
+- **Parts by role, not by `Part_*` per piece**: a role is met by `Part_<role>` or by the kit's merged-material node
+  (Wheels, Tracks, Hull, Canopy ...). `Part_*` nodes are run-time parts kept as their own meshes (a draw and a shadow
+  draw each), so "every road wheel / blade / barrel" is a geometry rule checked on the sheet, not a node per wheel.
+  A named part missing statically but visibly modelled in a merged node is cleared by the visual pass.
+- **Proportions, not absolute size**: the 10 % rule is on width/length and height/length against the real reference
+  (aircraft and ships are drawn smaller on purpose). Real sizes in `Tools/models/reference_real.json` (conf high /
+  approx / inspiration / none; fictional bosses are "inspiration", never flagged; the behemoth is a giant on Object
+  279's lines); `scan_prep.py --refs` writes `Docs/models/reference_dimensions.md` (71 units compared, 41 flagged on
+  `modelSize`). Only a high-confidence reference can make a model Kém on proportions.
+- **Grades** Tốt / Cần sửa / Kém as in the standard's section 4; final = the lower of static and visual.
+- **ModelScan** (`Editor/ModelScan.cs`, `MachineBrigade.Editor.ModelScan.RenderBatch`): every model a def draws plus
+  the two HQs (or `-mbScan`), 3 cells at the battle camera's default zoom (orthographic 19 on 1080 px = 28.4 px/m;
+  fitted and flagged when bigger than the 512 px cell): play (pitch 52, front-left 3/4), side (pitch 10, left
+  profile), rear (pitch 30, rear-right 3/4); camera yaw and sun fixed as in battle, the model turned; drawn at its
+  in-game size (`VehicleView.DrawScaleOf`) in its side's colours; shared materials, no property blocks. Old models:
+  `Builds/scan_old_models/<id>.glb` staged in `Assets/ScanOld/Resources/Models/<id>__scanold.glb` with the current
+  model's `.meta` (fresh guid) so the importer settings match, drawn the same way at the same def size, `<id>_old.png`;
+  the staging folder is deleted after the run (and git-ignored).
+- **Old GLBs** (`scan_prep.py --old`, the lead runs it on the runner): the scanned models named by prompt 27's model
+  commits after 07444b1, the mb_p27_* BUILDERS, the "27 wave" sections and PROGRESS's done rows, plus sky_gunship and
+  every tower / structure / HQ; kept when present at 07444b1 and changed since (180 today; 48 are new and have no old
+  copy); `git show` + `git lfs smudge`.
+- **Static score** (`Docs/models/scan/static_scores.csv`, 230 models): Tốt 24, Cần sửa 104, Kém 102; over budget
+  57, under 92; missing named parts in 146 models (409); muzzles short 23, mounts 14, Mount_Flare 16 of 16 flare
+  units (lane B's L4 adds them), Mount_APS 18, boss part nodes 3 (behemoth_tempest, fortress_bastion, monster);
+  proportions > 10 % on 42 (23 > 25 %).
+
+### For the lead (compile, run)
+
+- New script `Editor/ModelScan.cs` (+ .meta). Uses `LodShots.Stage/Camera` (internal, same assembly),
+  `VehicleView.DrawScaleOf(VehicleDef, GameObject)`, `TowerArt.ModelFor`, `UnityEditor.GUID.Generate()`; ships are
+  detected through a "Naval" bool property by reflection (VehicleDef has none today, so ships stand at y = 0 like
+  everything else; harmless). Commands in `Docs/models/scan/README.md`.
