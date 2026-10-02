@@ -16665,3 +16665,40 @@ edges data (a test field) keeps the theme's old picture.
   them gameplay props (see above) or a map layout change: left to the lead.
 - **View** (`Views/Surroundings.Landmarks.cs`): instanced like the scenery, on flat ground inside the map and on the outer
   ground's height beyond it; the scatter (bays, ring, biome clutter) keeps off each landmark's radius.
+
+### L7: validators, the document's section 15g
+
+- **Validators** (`Tools/maps/validate_p33.py`, static Python over the map files, map_dressing.json, balance.json,
+  campaign.json and the view's and the Sim's source; nothing simulated). Errors are broken rules; warnings are judged and
+  allowed. The twelve: 1 edge_ring (no land scenery, landmark or set on a SEA side, the sea dressing sea kinds only, the
+  sea maps declare SEA, every SEA stretch has a shore), 2 camera_cover (band + ring >= the frame + 15 % at 4:3, 16:9,
+  20:9, turned too were the camera to rotate; the horizon ground past it), 3 decoration_inert (every decoration model a
+  GLB with no collider node, dress_* and no gameplay prop, a landmark's prop look allowed as a warning; the Surroundings
+  files add no collider or component but MeshFilter / MeshRenderer and never touch the NavGrid or the world), 4 band_clear
+  (no prop, unit, HQ, slot, wall or gate past the rectangle), 5 continuity (the stored links equal edges.py's recompute;
+  every RIVER stretch, coast junction, rail and sea exit has its way out; every link kind is drawn), 6 entry_gates
+  (gates on open ground with an approach from beyond the edge to them; every edge / rail / sea delivery of the campaign's
+  wave events on its map has a data gate of that kind, else the Sim's implicit one is a warning; a rail gate on blocked
+  ground is a warning: trains only, the Sim's spawn skips it), 7 access (check_access.py; the two failures from before
+  prompt 33 are warnings), 8 terrain_zones, 9 rail_sea_graph, 10 crossing_warning (max(4 s, length / 4.5 + 0.5 s)),
+  11 chokepoints (articulation cells of the open ground at 6 m cells, a one-hull gap: none may cut off more than 45 %
+  of the biggest piece, a warning where the file's asymmetry is intended; the same at 10 m cells is a warning only),
+  12 replay_ingress (static: the row gap a whole number of ticks, no UnityEngine, own Random, clock or Guid in the Sim's
+  ingress, rail and sea code, gate ids unique and numbers finite; the replays themselves are the L2 / L4 / L5 tests).
+- **In the build**: `Tools/maps/map_dressing.py` runs them (quick: without 7 and 11) after writing its file, the last map
+  data step (`--no-validate` skips); a full run (`python Tools/maps/validate_p33.py`) writes `Docs/maps/validate_p33.json`,
+  which the design document reads.
+- **Results** (full run, 2026-10-02): 0 errors, 26 warnings: 13 prop looks drawn as landmarks (3); six rail gates on
+  blocked ground (Metro City, Orbital Gate and Whiteout Siege's siege line, Rust Yard's siding on its three square files)
+  (6); swamp_conquest and veyra_old_quarter_conquest as before (7); Ironport's crossing quay.x2 only warns (10); at 10 m
+  cells a passage holds 46 % of Capital's conquest and sandbox ground and 49 % of Swamp Siege's (11). check_access.py
+  73/75 and the map audit 8 RED / 92 YELLOW unchanged (no map file changed in this pass); glb_check 0 errors on 518 GLBs.
+- **Rings fixed** (the theme's old sea was only north of a harbour map): Coral Keys' four files (sea on every side, in
+  part), Stormbeach's four (E, S, W), Beacon Bay's four (E cliff shore, S beach), Ironport's and Rust Yard's long files
+  (their false north sea gone: the quay is mid-map); the square harbours keep their north sea and gain the quay line
+  running on. Every file also gains its rivers, cliffs, industrial sets, corner pieces, roads and rails beyond the edge.
+- **Design document**: `Tools/docs/prompt33.py` `section15` (15g, in Vietnamese like the rest): the four zones and the
+  ring's numbers, each battlefield's edge types per side (modifier, shore), the corner pieces' counts, the terrain tags'
+  effects and coverage, the landmarks per battlefield, the rail lines, the sea route graphs, the validators' table;
+  build_doc.py imports it beside the other lanes' modules (prompt34 kept) and calls it inside section 15. The PDF is not
+  rebuilt here. The far-zoom edge shots per biome need Unity renders: Docs/ai/LOCAL_TODO.md.

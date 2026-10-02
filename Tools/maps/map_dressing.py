@@ -6,6 +6,7 @@ frame the outer ring is sized from. The map JSON files are not touched (the simu
 
     python Tools/maps/map_dressing.py            # write the file
     python Tools/maps/map_dressing.py --check    # validate the committed file (exit 1 on a problem)
+    (writing also runs Tools/maps/validate_p33.py --quick, the prompt 33 L7 validators; --no-validate skips them)
 
 The four zones of a map (seen from the play area's edge, the map rectangle):
   1. play area   - the map itself (navigation, objectives, gameplay props);
@@ -536,6 +537,7 @@ def check(data):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--check', action='store_true')
+    ap.add_argument('--no-validate', action='store_true', help='skip the prompt 33 L7 validators after writing')
     args = ap.parse_args()
     if args.check:
         data = json.loads(OUT.read_text(encoding='utf-8'))
@@ -556,6 +558,13 @@ def main():
     problems = check(data)
     for p in problems:
         print('PROBLEM', p)
+    # Prompt 33 L7: the map validators after the last map data step (quick: check_access.py and the chokepoints are
+    # run by `python Tools/maps/validate_p33.py`, which also writes the results the design document reads).
+    if '--no-validate' not in sys.argv:
+        import validate_p33
+        found = validate_p33.run(quick=True)
+        print(f'validate_p33 (quick): {sum(len(r.errors) for r in found)} errors, '
+              f'{sum(len(r.warnings) for r in found)} warnings')
     sys.exit(1 if problems else 0)
 
 
