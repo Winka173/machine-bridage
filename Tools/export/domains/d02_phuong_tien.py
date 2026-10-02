@@ -5,7 +5,9 @@ from __future__ import annotations
 from core.model import NEED_CODE_CHECK, child_rows
 from core.units import snake
 
+from . import _b02
 from . import _balance as B
+from . import _game as G
 from . import _units as U
 
 FILE_ID = "02_phuong_tien"
@@ -186,8 +188,10 @@ def build(ctx):
     dm = book.sheet("Doi_mo_man", "Đội mở màn", "openingSquads.commanders / generals: vai trò của đội mở màn")
     dm.col("ben", meaning="commander (người chơi) / general (địch)")
     dm.col("vai_tro", meaning="vai trò (Doi_mo_man_vai_tro)", fk=["02_phuong_tien/Doi_mo_man_vai_tro"])
-    dm.col("base_cp_uoc_tinh", unit="CP", meaning="tổng CP đội (tính trong mã: thẻ rẻ nhất mỗi vai trò)")
-    dm.col("thieu_vai_tro_hoan_cp", meaning="thiếu vai trò thì hoàn CP (luật trong mã)")
+    dm.col("base_cp_uoc_tinh", unit="CP", meaning="tổng baseCP đội với bộ bài trống: thẻ rẻ nhất đủ điều kiện mỗi vai trò "
+           "(port Sim/Modes/OpeningSquads.cs Pick, không trần ngân sách)")
+    dm.col("thieu_vai_tro_hoan_cp", meaning="thiếu vai trò: bo_vai_tro_giu_cp (vai trò không có thẻ bị bỏ, CP của nó giữ lại; "
+           "OpeningSquads.cs Pick)", enum=["bo_vai_tro_giu_cp"])
     for side, sname in (("commanders", "commander"), ("generals", "general")):
         for k, role_list in (os_.get(side) or {}).items():
             path = ("openingSquads", side, k)
@@ -198,12 +202,14 @@ def build(ctx):
                 r.mark(B.BALANCE, path + (j,), "vai_tro")
             if not role_list:
                 r.mark(B.BALANCE, path, "vai_tro")
-            r.set("base_cp_uoc_tinh", NEED_CODE_CHECK)
-            r.set("thieu_vai_tro_hoan_cp", NEED_CODE_CHECK)
+            picks = [G.opening_cheapest(roles[x], res) for x in role_list if x in roles]
+            r.set("base_cp_uoc_tinh", sum(p[1] for p in picks if p))
+            r.set("thieu_vai_tro_hoan_cp", "bo_vai_tro_giu_cp")
     vt = book.sheet("Doi_mo_man_vai_tro", "Đội mở màn: vai trò", "openingSquads.roles: thẻ chọn được cho mỗi vai trò")
     vt.col("ung_vien", meaning="các thẻ chọn được (theo thứ tự ưu tiên của dữ liệu)", fk=VEHICLE_FK)
     vt.col("cp_toi_da", unit="CP", meaning="trần CP thay cho danh sách (maxCp)")
-    vt.col("re_nhat", meaning="ứng viên rẻ nhất theo cp (giá trị game)", fk=VEHICLE_FK)
+    vt.col("re_nhat", meaning="thẻ rẻ nhất đủ điều kiện (cp > 0, không công trình / boss / tinh nhuệ / tàu; cp rồi id; "
+           "port OpeningSquads.cs Pick, bộ bài trống)", fk=VEHICLE_FK)
     vt.col("re_nhat_cp", unit="CP", meaning="cp của ứng viên rẻ nhất")
     for role, cands in roles.items():
         path = ("openingSquads", "roles", role)
@@ -212,12 +218,11 @@ def build(ctx):
             r.set("ung_vien", ";".join(cands))
             for j in range(len(cands)):
                 r.mark(B.BALANCE, path + (j,), "ung_vien")
-            priced = sorted((res[c].get("cp", 0), c) for c in cands if c in res)
-            if priced:
-                r.set("re_nhat", priced[0][1])
-                r.set("re_nhat_cp", priced[0][0])
         elif isinstance(cands, dict):
             r.flatten(cands, B.BALANCE, path, aliases={"maxCp": "cp_toi_da"})
+        best = G.opening_cheapest(cands, res)  # OpeningSquads.cs Pick: eligible cards only (baseCP, then id)
+        r.set("re_nhat", best[0] if best else "")
+        r.set("re_nhat_cp", best[1] if best else "")
     luat = book.kv_sheet("Doi_mo_man_luat", "Đội mở màn: luật", "openingSquads.share / modes / enemyModes")
     book.kv_rows(luat, {k: x for k, x in os_.items() if k not in ("commanders", "generals", "roles")}, B.BALANCE,
                  ("openingSquads",), "openingSquads")
@@ -241,7 +246,9 @@ def build(ctx):
     esc = (d.get("warningRules") or {}).get("escapeSpeed")
     r = tc.row("xe_cham_tham_chieu", f"{B.BALANCE}: warningRules.escapeSpeed (xem 01/Canh_bao_vong)")
     r.set("ten_vi_spec", "xe chậm tham chiếu của vòng cảnh báo")
-    r.set("toc_do_m_s", esc if esc is not None else NEED_CODE_CHECK)
+    r.set("toc_do_m_s", esc if esc is not None else 4.5)  # FixRules.cs WarningRules.EscapeSpeed default 4.5
+
+    _b02.build(ctx, book, d, res)
 
 
 def _lower(k: str) -> str:
