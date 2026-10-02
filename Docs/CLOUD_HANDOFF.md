@@ -218,3 +218,10 @@ Python tools; the prompts' "write automated tests" means write them.
   cloud part is done (DECISIONS "28 appendix", LOCAL_TODO "Prompt 28 appendix"). dotnet compile: 0 errors.
 - Waiting for the owner to merge it; then prompt 30 on `cloud/p30-story` from the latest `origin/feature/visual-overhaul`,
   then prompt 31 on `cloud/p31-decks`.
+
+## Local merge notes for the cloud (2026-10-02)
+
+Prompt 28 appendix merged (feature/visual-overhaul 592d8e2): Unity compile 0 after one fix, CatalogCheck OK. Tests
+written in the cloud must compile under Unity's NUnit 3.5 and with `using UnityEngine;`: no `Is.AnyOf` (use a boolean
+`Is.True`), use `Has.Member`/`Has.No.Member` for collections, and alias `EntityId = MachineBrigade.Sim.Core.EntityId`
+(UnityEngine has its own `EntityId`). Waiting locally: the UI greying of tactics a profile forbids (LOCAL_TODO).
