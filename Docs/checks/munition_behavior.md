@@ -35,3 +35,19 @@ Other findings:
   target driving away (the Sim lands it on the target wherever it is), not even out of its reach.
 - Sight-guided missiles (wire / beam / laser guided) keep going when their shooter dies or loses sight.
 - The SAM has no proximity fuze: its blast is drawn on the aircraft, its hit is direct.
+
+## After pass 4 (step 2, the rules A-G; DECISIONS "Sửa lỗi tổng hợp L4 / L5 / L6")
+
+| group | aims | goes off | misses only by | ring |
+|---|---|---|---|---|
+| ATGM | guided onto the target wherever it drove | end of travel | APS, jam at launch, the launch roll, its shooter dead / in smoke / behind a wall (sight-guided families), target out of reach (self-destruct) | none |
+| air-to-ground missiles | as ATGM; the APKWS rocket now homes too | end of travel | as ATGM (the laser ones are sight-guided, the Longbow and Maverick fire and forget) | none |
+| anti-air missiles | guided, 7 m proximity fuze | end of travel; a decoyed one beside its flare, in the air | flares (IR only, one roll in flight), jam, the launch roll, a tiered craft's APS, out of reach | none |
+| cruise missiles | guided | end of travel | heavy-missile point defence, APS, jam, the roll, out of reach | none |
+| unguided rockets | the target's predicted point (lead), then spread | at that point | a target that turns or brakes after the shot; spread | enemy's 300 mm+ (Smerch): ring |
+| shells, mortars | indirect: predicted point; direct fire: as before | at the aim point | as above | enemy's 203 mm+: ring |
+| bombs, guided bombs | free fall: where the drop puts it; guided: onto the target | end of the fall | free fall: a mover; guided: as missiles | enemy's 400 kg+: ring |
+| kamikaze drones | guided | end of travel | APS, interceptor drones, microwave, lasers, jam, Ghost Net, the roll, out of reach | none |
+| flares | one release = one decoy | -- | -- | -- |
+
+The delayed damage: rounds in flight are drawn on the Sim's clock (Game/Effects/ShotClock.cs).

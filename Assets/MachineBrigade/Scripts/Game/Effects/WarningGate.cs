@@ -38,9 +38,9 @@ namespace MachineBrigade.Game.Effects
         /// <summary>The player's side (its units are what a ring threatens).</summary>
         public int PlayerTeam { get; set; }
 
-        private readonly struct Offer
+        private readonly struct Offered
         {
-            public Offer(object key, Vector3 at, float radius, WarningKind kind)
+            public Offered(object key, Vector3 at, float radius, WarningKind kind)
             {
                 Key = key;
                 At = at;
@@ -54,7 +54,7 @@ namespace MachineBrigade.Game.Effects
             public WarningKind Kind { get; }
         }
 
-        private readonly List<Offer> _offers = new();
+        private readonly List<Offered> _offers = new();
         private readonly List<(float score, object key)> _ranked = new();
         private readonly HashSet<object> _shown = new();
 
@@ -62,7 +62,7 @@ namespace MachineBrigade.Game.Effects
         public void Offer(object key, Vector3 at, float radius, WarningKind kind)
         {
             if (key == null) return;
-            _offers.Add(new Offer(key, at, radius, kind));
+            _offers.Add(new Offered(key, at, radius, kind));
         }
 
         /// <summary>Whether the ring <paramref name="key"/> is drawn (a super weapon always is).</summary>

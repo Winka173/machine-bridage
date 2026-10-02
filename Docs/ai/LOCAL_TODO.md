@@ -230,3 +230,21 @@ widest zoom.
   cooling tower at (123, -6): far from their data place; Hollow Dam's dam face on the reservoir at (0, 114)).
 - Validator warnings to look at: six rail gates on blocked ground (lane B's transit.py; trains only) and the 10 m
   passages holding about half of Capital's and Swamp Siege's ground (Tools/maps/validate_p33.py --list).
+
+## Sửa lỗi tổng hợp L4 / L5 / L6 (lane B, 2026-10-02): for the lead
+
+- Compile: new `Sim/Content/FixRules.cs`, `Sim/Combat/CombatSystem.Munitions.cs`, `Game/Effects/ShotClock.cs`,
+  `EffectsDirector.Munitions.cs`, `WarningGate.cs`, `EffectLife.cs`, `ImpactSmoke.cs`; edits in `DamageSystem`,
+  `CombatSystem`, `Projectile`, `SimEvent` (new kind `RoundDiverted` at the end), `ProjectilePool`, `TracerPool`,
+  `WeaponEffects`, `Emitters`, `EscapeWarnings`, `StrikeEffects`, `BigAttackZones`, `DecalPool`, `GroundMark` (+ the
+  GroundMark shader's style 5), `MatchRunner`, `MatchSettings`, `MenuScreen`, `Strings`; tests `MunitionFixTests`,
+  `WarningRingTests`, `EffectLifeTests`. The new .cs files need their metas. Run CatalogCheck (balance.json gained
+  `munitionRules` and `warningRules`).
+- docs/vfx before / after (fix prompt L6): EffectShots (graphics on) of one impact per band (14.5 / 30 / 105 / 155 / 203 /
+  406 mm) at 0.5, 3, 10, 20 and 40 s, before (04a8b1f1) and after this branch, into `Docs/vfx/`; plus a flare release of
+  a fighter, a helicopter and a heavy bomber (angel wings), and one frame with seven T4 rings (six drawn, the seventh
+  only on the minimap) and a boss big attack on top.
+- Look in Unity: a decoyed IR missile turning onto its flare and bursting there; the flares leaving the Mount_Flare_*
+  points (attack_helicopter, fighter_jet, heavy_bomber) along the tubes, with the aircraft's speed; a Sandbox at 0.25x
+  and stepping: rounds land on the frame their damage does (the delayed-damage fix); the Warning style rings (thin edge,
+  faint fill, darker core, fade-in) and the Settings row "Warning rings".

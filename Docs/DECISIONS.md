@@ -16741,3 +16741,116 @@ edges data (a test field) keeps the theme's old picture.
   effects and coverage, the landmarks per battlefield, the rail lines, the sea route graphs, the validators' table;
   build_doc.py imports it beside the other lanes' modules (prompt34 kept) and calls it inside section 15. The PDF is not
   rebuilt here. The far-zoom edge shots per biome need Unity renders: Docs/ai/LOCAL_TODO.md.
+
+## Sửa lỗi tổng hợp L4 / L5 / L6 (lead pass, 2026-10-02)
+
+Branch `feature/fix-art2`, lane B of Docs/FIX_FULL_PLAN.md (the owner's full fix prompt, `Docs/prompts/fix_full_vi.txt`;
+it wins over prompts 26-34 where they overlap). Nothing run but the Blender build and the GLB validator (no Unity, no
+tests, no sims); the C# is compiled by the lead. Lane A owns `weapons`: lane B's numbers sit in two new blocks of their
+own, `munitionRules` and `warningRules`, and no weapon line changed. Text EN + VI.
+
+### L4: munitions (rules A-G)
+
+Step 1 is `Docs/checks/munition_behavior.md` (the code as found, per group). Changes (`Sim/Combat/CombatSystem.Munitions.cs`,
+`DamageSystem.ResolveImpact`, `Sim/Content/FixRules.cs`):
+
+- **A, guided ground missiles cannot be outrun.** A guided round (missile, drone, guided bomb or shell, and now the
+  laser-guided APKWS rocket, `WeaponDef.GuidedRocket`: variant "guided") lands on its target wherever it drove, as
+  before. It misses only by: an APS (unchanged, `TryIntercept`); a jammer (unchanged, decided at launch); its one seeded
+  launch roll (`Failed`, 2 % + 8 % x reach², unchanged: it never depends on the target's movement); a **sight-guided**
+  missile (data `sightGuided`: TOW, the 9M117, Kornet, Konkurs, Ataka, Vikhr, Khrizantema, the laser Hellfire, Kh-29L,
+  Griffin, MAM-L) whose shooter dies, stands or aims into smoke, or (both on the ground) loses its line behind a wall
+  before it arrives: it lands wide (its `Miss`); the target getting **out of reach** (farther than range x
+  `reachScale` 1.3 from where it left): it self-destructs at the end of its reach. Each is decided on the tick it
+  happens (`GuideRounds`, before the rounds land) and the view is told (`SimEventKind.RoundDiverted`).
+  Fire-and-forget families (Hellfire Longbow, Maverick, Spike NLOS, the drones, the cruise missiles) do not need sight.
+- **The helicopters' "missiles" that all missed a moving tank** were mostly their rockets: the Hydra / S-8 pods and the
+  APKWS are `Rocket`s, aimed at the tank's spot when each left (a salvo's later rockets at its spot then), with no lead:
+  a tank at 6-10 m/s was 6-10 m on after a 1 s flight, past a 3 m spread and a 2-3 m hull. The Hellfire itself always
+  hit (it homes in the Sim) but its rockets' misses read as the helicopter missing. Fixed by rule D (lead) and by the
+  APKWS now homing.
+- **B, anti-air missiles.** Track their aircraft; proximity fuze 7 m (`proximityFuze`); a decoyed one bursts outside it
+  (`flareOffset` 10 m >= fuze + 2); self-destruct when the target dies (an air burst at the aim point, unchanged) or
+  gets out of reach.
+- **C, flares.** One seeded roll per IR missile (`flareDecoyChance` 0.35 x (1 - the weapon's flareResist)), on the first
+  tick its aircraft's flares burn while it flies (was: at impact, if flares burnt any time after launch; the same
+  chance). **Radar-guided families never** (data `radarGuided`: AMRAAM, R-37M, Buk, Patriot PAC-2 and PAC-3, S-400
+  48N6, Pantsir 57E6, Tamir; they were decoyed 5-17 % of the time by flareResist); guns and lasers never (not guided).
+  A decoyed missile flies on to its flare (behind and beside the aircraft) and **bursts there**: an airborne impact
+  event (its burst and its sound), drawn at the flare's height, the missile turned onto the flare in flight and a
+  burning flare where it meets it (no silent vanishing). `flareEligible` false/true still overrides.
+- **D, unguided rounds lead.** Unguided rockets, artillery shells and mortars (indirect shells) and bombs (not a
+  free-falling stick: it falls where its drop puts it, play-test 8 A) aim at where a moving ground vehicle will be after
+  the round's flight (its speed along its heading, two passes, at most `leadCap` 3 s of motion), then scatter and bracket
+  as before; the warning ring is on that point. A tank that turns or brakes after the shot still gets partly clear (the
+  prompt's intent). Direct-fire tank guns keep their old aim; the Fire-Control Computer gear still leads them.
+- **E, cruise missiles** fly to their target and burst there (guided), taken by heavy-missile point defence by the data
+  as before; **F, kamikaze drones** home, burst on contact, and meet APS, interceptor drones, the microwave, lasers,
+  jamming and Ghost Net as before (`StepDroneKillers`, `TryIntercept`, `Gear.Lure`); both now also self-destruct out of
+  reach. **G**: every round lands on its launch-time travel at the latest (its own flight limit); a guided one is
+  diverted on the tick its reason happens. All on the Sim tick from the seeded generator.
+- **The delayed damage ("đạn dính ra 1 khoảng thời gian sau máu mới trừ").** Cause: the drawn round flew on the render
+  clock (`Time.time`) and the damage landed on the Sim tick. Whenever the Sim ran slower than real time (the Sandbox at
+  a slow speed or stepping, a frame needing more than 5 steps, whose rest `SimClock` drops, a heavy frame on a phone),
+  the round got there first and sat on the target until the step landed it. Fix: rounds in flight (`ProjectilePool`,
+  `TracerPool`) run on the Sim's clock as the views draw it (`Game/Effects/ShotClock.cs`, set by MatchRunner every frame;
+  while the battle is frozen at its end it runs on with the frame); a paused Sandbox holds them in the air. Off outside
+  a battle (tests, tools).
+- **Flare visuals** (view only; one release is one decoy in the Sim): 4-6 flares a release for fighters and attack jets,
+  4-8 for helicopters, 8-16 for big aircraft (radius >= 4 m or a boss) in "angel wings" (out and up first), data
+  `flareRelease`; each a very bright point (twice the old glow) burning 3-4 s (`flareBurn`) on a falling curve (air drag
+  and gravity), launched along its tube with the aircraft's velocity, on a thick white smoke trail; a burst of light on
+  the hull. They leave from the model's `Mount_Flare_*` points, else its prompt 29 tubes, else under the hull.
+- **Mount_Flare on the models.** `Tools/blender/mb_flare_mounts.py` wraps the builders last: `Mount_Flare_L` / `_R` at the
+  middle of the prompt 29 tubes on each side (else the rear fuselage's sides at 68 % of the length), `_L2` / `_R2` for a
+  big aircraft's second row, `_TL` / `_TR` at the tail root (86 %). **Not a bare `Mount_Flare`**: the runtime's
+  `Mount_<letters>` pattern (`ModelLibrary.MountPattern`, glb_analyze's `mount`, MuzzleGeometryAudit's groups) would read
+  it as a weapon mount's yaw pivot; the suffix keeps the points out of all three (`ModelLibrary.FlareMountPrefix`,
+  `IsFlareMount`). 21 flare units, 25 GLBs with the `_hd` twins, rebuilt: empties only (no vertex, triangle or renderer
+  changed); `glb_check --accept` with the reason. Every flare unit has at least 4 points (L9 item 6 wants >= 2).
+
+### L5: warning rings
+
+- **Which.** Rings only for an enemy's T4+ round (guns from 203 mm, bombs from 400 kg, rockets from 300 mm: the weapon's
+  tier when it has a family, else its size by kind, `WarningRules.Warns`), the enemy's harmful area supports, the bosses'
+  big attacks and the super weapons (T5 rounds, Ultimate supports). Never a guided round, a small or medium rocket or
+  shell, nor anything of ours. Was: only a **boss's** T4+ rounds rang (prompt 34 L3), plus a 0.8 s ring on a boss's
+  shells with a 5 m core (prompt 26 B.4, now gone), and every support of either side showed its red telegraph; an enemy
+  SPG's 203 mm shell or an enemy bomber's FAB-500 had none.
+- **Time.** max(floor, 0.5 s + core / 4.5 m/s), floors 2.5 s (203-240 mm and the other T4), 3.5 s (406 mm), 4 s (800 mm,
+  super weapons), cap 6 s (`warningRules`; `WeaponDef.WarnSeconds` reads it through `WarningRules.Shared`). The Sim now
+  keeps **every** warned round in the air at least that long (was: a boss's only), both sides alike so the AI fights by
+  the same rules; a family-less round warned by size counts as T4. Supports keep their own delay (not floored).
+- **How many.** `Game/Effects/WarningGate.cs`: at most 6 at once (`maxShown`) besides the super weapons, those over most
+  of the player's units first, then those nearest the view; the rest keep their minimap mark only (MatchRunner's marks,
+  now for every enemy warned round). A boss's big attack counts as a super weapon (the radio calls them that): always
+  shown, drawn on top (a little higher on the ground), Off included.
+- **Look.** A new `GroundMark.Style.Warning`: a thin edge on the damage radius, a faint fill heavier toward the middle
+  (not solid red), the time left as a thin arc round the edge; the core ring darker than the edge; fading in over 0.4 s
+  (`fadeIn`), gone the moment the round lands. One shooter's rounds fired within 0.6 s (`salvoMergeSeconds`) whose rings
+  touch merge into one ring round them all (the smallest circle holding both; its core the widest). An airstrike's
+  bombs keep a ring each but are one warning under the gate. Ring = the real damage area (the blast's edge or core,
+  `WeaponDef.WarnRadius`).
+- **Settings**: "Warning rings / Vòng cảnh báo": Full / Important only (super weapons and the rings over our units) /
+  Off (the super weapons still), `MatchSettings.WarningRings`, PlayerPrefs `mb.warnings`.
+
+### L6: effects by size
+
+- **Lifetimes** (`Game/Effects/EffectLife.cs`, the prompt's table by size band: the weapon's tier, else its explosion
+  tier): fireball 0.2 / 0.3 / 0.5 / 0.8 / 1.2 / 1.8 s, smoke and dust 0.5 / 1-2 / 3-5 / 6-10 / 12-20 (a column) / 25-40 s
+  (a tall column), craters 0 / 10 / 20 / 30 / 45 / 60 s. The recipes' fireballs met it but T4 / T5, whose hot cores now
+  burn 1.05-1.35 / 1.55-2 s (longer, never shorter).
+- **Lingering smoke** (`ImpactSmoke`): a low haze after a 20-155 mm blast for its band's time, a standing column from
+  203 mm and a tall one from 406 mm, drifting on the wind (more the higher it gets) and fading out slowly; at most 3 big
+  columns at once (a new one makes the older clear within 4 s, the oldest gives its slot up); fewer puffs in the middle
+  distance, no haze and a thin column far off; two pooled particle systems. View only: no Sim sight effect (blocking
+  sight stays the smoke screens').
+- **Craters** (`DecalPool`): each lasts its band's time and closes over its last quarter (the shared instanced scorch
+  material has no fade, so it shrinks into the ground's dust instead of blinking out); a wreck's burn mark, a fallen
+  defence's and a boss finale's stay as before.
+- **Kept from prompt 34 L5** (already as the prompt asks, so not redone): the redrawn blasts by tier, the bigger and
+  longer firing looks (flash, puffs, pressure ring, dust or water ring, light), camera shake only from T4 (203 mm) on
+  screen and near, capped, with the Settings toggle (the general shake is off), full detail at most 1 T5 / 3 T4 / 6 T3,
+  distance LOD, the pools. Nothing was shrunk; no MaterialPropertyBlock on MachineBrigade/Lit (GroundMark's block is on
+  its own shader).
+- docs/vfx before / after shots need Unity: Docs/ai/LOCAL_TODO.md.
