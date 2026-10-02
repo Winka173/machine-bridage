@@ -167,6 +167,7 @@ namespace MachineBrigade.Game.Rendering
             _base = previous?._base ?? CaptureBaseline();
             _to = LookOf(kind, clearCast, clearHaze);
             _from = previous != null ? previous.Current : _to;
+            _replaced = previous != null;
             _blend = previous != null ? 0f : 1f;
 
             _root = new GameObject("Weather");
@@ -346,14 +347,32 @@ namespace MachineBrigade.Game.Rendering
             return t < 1.5f;
         }
 
+        /// <summary>
+        /// Prompt 31 L5: how much of this weather the view stands in (1: all of it). The sandstorm that rolls over one half of
+        /// the map (SimWorld.StormSight) sets it low while the camera looks at the other half: the dust thins there and the
+        /// look eases back towards the weather it replaced. Eased over <see cref="PresenceSeconds"/>.
+        /// </summary>
+        public float Presence { get; set; } = 1f;
+
+        private float _presence = 1f;
+        private const float PresenceSeconds = 2.5f;
+
+        /// <summary>Prompt 31 L5: this weather rolled in over another one (which <see cref="Presence"/> eases back towards).</summary>
+        public bool Replaced => _replaced;
+
+        private readonly bool _replaced;
+
         public void Tick()
         {
             Follow();
-            if (_blend < 1f)
+            var target = Mathf.Clamp01(Presence);
+            var shifting = Mathf.Abs(target - _presence) > 0.001f;
+            if (shifting) _presence = Mathf.MoveTowards(_presence, target, Time.deltaTime / PresenceSeconds);
+            if (_blend < 1f || shifting)
             {
-                _blend = Mathf.Min(1f, _blend + Time.deltaTime / _transition);
-                Apply(Current);
-                SetRates(Ease(_blend));
+                if (_blend < 1f) _blend = Mathf.Min(1f, _blend + Time.deltaTime / _transition);
+                Apply(_presence >= 0.999f ? Current : Look.Lerp(_from, Current, _presence));
+                SetRates(Ease(_blend) * _presence);
             }
 
             if (_kind != WeatherKind.Storm || _sun == null) return;
