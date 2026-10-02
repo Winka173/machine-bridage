@@ -20,6 +20,7 @@ import programme  # noqa: E402
 import prompt25  # noqa: E402
 import prompt26  # noqa: E402
 import prompt27  # noqa: E402
+import measure_stamp  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -419,7 +420,10 @@ def build(game, imgdir):
 
     # ------------------------------------------------------------------ campaign and the programme (prompts 1-6)
     h = {'esc': esc, 'table': table, 'img': img, 'num': num, 'guide_html': guide_html, 'GOAL_VI': GOAL_VI}
-    out.append(programme.modes_and_ai(game, h))
+    # Prompt 29 S08 (R10): a measured section goes to the appendix "Lịch sử đo" unless its stamp matches today's data.
+    history = []
+    modes = programme.modes_and_ai(game, h)
+    history.append(modes)  # 2b: numbers measured by hand in prompt 13, no stamp
     out.append(programme.campaign(game, h))
     out.append(programme.multistage(game, h))
     out.append(programme.operations(game, h))
@@ -455,7 +459,11 @@ def build(game, imgdir):
     out.append("<div class='section'><h2>9. Bảng DPS tổng hợp</h2>"
                + table(['Xe', 'Lớp', 'Giáp trước', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
 
-    out.append(programme.combat_value(game, h))
+    cv = programme.combat_value(game, h)
+    if cv and measure_stamp.matches(prompt25.measure_path()):
+        out.append(cv)
+    elif cv:
+        history.append(cv)
 
     # ------------------------------------------------------------------ weapons
     dt = game['damageTable']
@@ -818,6 +826,10 @@ def build(game, imgdir):
             out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
     out.append('</div>')
     out.append(programme.gallery(game, h, imgdir))
+    if history:
+        out.append("<div class='section'><h2>Phụ lục: Lịch sử đo</h2><p>Các bảng đo dưới đây đo trên dữ liệu hoặc luật khác bản hiện tại "
+                   f"(prompt 29 R10). Bảng 9b: {esc(measure_stamp.describe(prompt25.measure_path()))}. Bảng 2b: đo tay ở prompt 13, không có dấu hash.</p></div>")
+        out.extend(history)
     out.append('</body></html>')
     return '\n'.join(out)
 

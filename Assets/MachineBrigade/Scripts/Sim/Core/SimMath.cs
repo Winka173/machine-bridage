@@ -11,6 +11,16 @@ namespace MachineBrigade.Sim.Core
     /// </summary>
     public static class SimMath
     {
+        /// <summary>
+        /// Prompt 29 S02 (R6): the one rounding for derived CP and health, half away from zero on the step (12.5 -> 13,
+        /// 19.5 -> 20; step 10: 2485 -> 2490). Never banker's rounding. Works in decimal so 2.675 x 100 is not 267.49.
+        /// </summary>
+        public static int RoundHalfUp(double value, double step = 1.0)
+        {
+            var q = (decimal)value / (decimal)step;
+            return (int)(Math.Round(q, 0, MidpointRounding.AwayFromZero) * (decimal)step);
+        }
+
         public const float Tau = MathF.PI * 2f;
 
         public static float HeadingOf(Vector2 direction) => MathF.Atan2(direction.X, direction.Y);

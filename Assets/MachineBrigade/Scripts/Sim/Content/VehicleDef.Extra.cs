@@ -29,6 +29,20 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float WeaponDamage { get; internal set; } = 1f;
 
+        /// <summary>
+        /// Prompt 29 S03 (D2, R8): this vehicle's damage on every weapon it fires (ground and air, rank and boss multipliers
+        /// on top), so a card is balanced without editing a weapon other vehicles share. Fire rate, magazine, reload and
+        /// round count stay the weapon's. balance.json "outgoingDamageMult", default 1.
+        /// </summary>
+        public float OutgoingDamageMult { get; internal set; } = 1f;
+
+        /// <summary>Prompt 29 S04: seconds from calling the card to the vehicle landing (balance.json "dropDelay"; default 3.5).</summary>
+        public float DropDelay { get; internal set; } = Economy.EconomySystem.DeliverySeconds;
+
+        /// <summary>Prompt 29 S04 (R7): the card's base price, before any card-rank discount; bounties, supply, drop times and
+        /// every balance class use it. What a call costs a side now is <see cref="Economy.TeamEconomy.RuntimeCallCost"/>.</summary>
+        public int BaseCp => CpCost;
+
         /// <summary>Share of a mine's blast that gets through (the armoured bulldozer's belly plate: 0.5).</summary>
         public float MineArmor { get; internal set; } = 1f;
 

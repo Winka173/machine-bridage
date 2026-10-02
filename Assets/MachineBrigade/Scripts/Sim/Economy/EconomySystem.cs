@@ -154,7 +154,11 @@ namespace MachineBrigade.Sim.Economy
 
         /// <summary>What calling this card costs this side, to the whole CP (shown on the cards): see <see cref="PriceOf"/>.</summary>
         public int CostOf(string id, int price) => PriceScales.Count == 0 ? (Discounts.TryGetValue(id, out var cut) ? Math.Max(1, price - cut) : price)
-            : Math.Max(1, (int)MathF.Round(PriceOf(id, price), MidpointRounding.AwayFromZero));
+            : Math.Max(1, SimMath.RoundHalfUp(PriceOf(id, price)));
+
+        /// <summary>Prompt 29 S04 (R7): what calling the card costs this side now (rank discount, commander); never used to
+        /// classify a card, pay a bounty or count supply (those use <see cref="VehicleDef.BaseCp"/>).</summary>
+        public float RuntimeCallCost(string id, int baseCp) => PriceOf(id, baseCp);
 
         /// <summary>
         /// What calling this card costs this side: its price times the commander's change (prompt 22 F; CP are fractional,
@@ -278,7 +282,8 @@ namespace MachineBrigade.Sim.Economy
             var angle = index * 2.39996f;
             var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
             // Prompt 22 F: Rush's drops come down faster.
-            var delivery = DeliverySeconds * (economy.Commander?.Delivery ?? 1f);
+            // Prompt 29 S04: the card's own drop time (by its base price class, data), then the commander's change.
+            var delivery = def.DropDelay * (economy.Commander?.Delivery ?? 1f);
             _pending.Add((team, defId, _world.Time + delivery, landing));
             economy.ArmyCp = ArmyCp(team);
             economy.VehicleCount = VehicleCount(team);
@@ -314,9 +319,9 @@ namespace MachineBrigade.Sim.Economy
             }
             var angle = index * 2.39996f;
             var landing = _world.ClampToMap(near + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (3f + (index % 5) * 2f));
-            _pending.Add((team, defId, _world.Time + DeliverySeconds, landing));
+            _pending.Add((team, defId, _world.Time + def.DropDelay, landing));
             if (ally) _allyLandings.Add(landing);
-            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(near), DeliverySeconds));
+            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(near), def.DropDelay));
         }
 
         /// <summary>Spends CP for a strike; the caller has already validated everything else.</summary>

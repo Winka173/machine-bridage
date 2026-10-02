@@ -869,6 +869,8 @@ namespace MachineBrigade.Sim.Combat
             // Prompt 25 C1: a boss's own weapon damage (the sheet's target damage a second against armour 3), on the ground only:
             // its anti-air keeps its numbers.
             if (!targetFlying) damageScale *= shooter.Def.WeaponDamage;
+            // Prompt 29 S03: the vehicle's own damage on every weapon (never the weapon's data, R8).
+            damageScale *= shooter.Def.OutgoingDamageMult;
             // A gun pit's first shot on rising (the Ambush branch).
             if (index == 0 && shooter.AmbushReady && shooter.Def.Hidden is { } pit)
             {

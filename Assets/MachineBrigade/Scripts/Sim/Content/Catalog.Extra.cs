@@ -133,6 +133,9 @@ namespace MachineBrigade.Sim.Content
             // 0 until FinishExtras fills in the elite default (or 1).
             def.DamageScale = v.Has("damageScale") ? Math.Clamp(v.Float("damageScale", 1f), 0.1f, 5f) : 0f;
             def.WeaponDamage = Math.Clamp(v.Float("weaponDamage", 1f), 0.1f, 10f);
+            // Prompt 29 S03, S04.
+            def.OutgoingDamageMult = Math.Clamp(v.Float("outgoingDamageMult", 1f), 0.1f, 10f);
+            def.DropDelay = Math.Clamp(v.Float("dropDelay", Economy.EconomySystem.DeliverySeconds), 0.5f, 30f);
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");

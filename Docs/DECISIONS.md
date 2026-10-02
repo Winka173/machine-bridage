@@ -13882,3 +13882,28 @@ upkeep line now shows `Upkeep`; `Docs/ai/ECONOMY.md`, LOCAL_TODO and `WorldModel
   (the shared skills are not edited). The CP bank per mode becomes data (`economy.bankByMode`) holding the manifest's
   [from, to]: the runtime moves a side's bank only when the mode set it to the "from" value, so a mode or side the
   manifest does not describe (a siege defender, the Sandbox) keeps its bank.
+
+## Prompt 29 L1 (cloud, 2026-10-02): infrastructure S01-S04, S08, S09
+
+- **S01** `Tools/balance/p29_apply.py`: reads `manifest_v2.json`, R1-R5 as written in its docstring, bundles in the
+  sheet's order, `--dry` (applies in memory so a later bundle sees an earlier one's value, writes only the log),
+  `--bundles` globs, log `Docs/balance/apply_log_p29.md`. "Xem lại" is looked for in the status-like columns only: the
+  seven B0 rows quote round 1's "Xem lại" in their reason (R4: prose is not read), and they are FIX rows. Code bundles
+  count as done from a list in the tool (each pass adds its own); checks C06/C11/C12 likewise. HP rows compare in data
+  units (one ROUND_HALF_UP over the toughness). R8: the tool stops if any weapon changed after a bundle.
+- **S02** one rounding: `SimMath.RoundHalfUp` (C#, decimal, away from zero) and `round_half_up` (Python, Decimal
+  ROUND_HALF_UP); the card cost's old `MidpointRounding.AwayFromZero` now goes through it (same results).
+- **S03** `VehicleDef.OutgoingDamageMult` ("outgoingDamageMult", default 1): multiplies every shot's damage (ground and
+  air) in `CombatSystem` beside the rank and boss multipliers, and the card's figures (`FirePower`). Fire rate,
+  magazine, reload and round count untouched.
+- **S04** `VehicleDef.BaseCp` (the card price) vs `TeamEconomy.RuntimeCallCost` (rank discount, commander): spending
+  and affordability use the runtime cost (as before); supply, bounty, refunds and the AI's force shares use the base
+  price (the AI's CP-spent shares moved from runtime to base). `VehicleDef.DropDelay` ("dropDelay", default 3.5 s =
+  the old constant) replaces `DeliverySeconds` for a bought or airlifted vehicle (Rush's factor still applies).
+- **S08** measurements stamp what they measured (`Tests/EditMode/MeasureStamp.cs` writes `<file>.stamp.json`: sha256
+  of balance.json and campaign.json, commit, rules "p29"); `Tools/docs/measure_stamp.py` compares; `build_doc.py` puts
+  table 9b in the body only on a matching stamp, else (and table 2b, measured by hand in prompt 13, always) in a new
+  appendix "Lịch sử đo".
+- **S09** the code already keeps radians and the document already converts (prompt 25 C.4); tests added (C# data vs
+  code; Python: the document's °/s columns go through `deg()`).
+- Tests written, not run: `BalanceRound2Tests` (EditMode), `Tools/balance/test_p29.py` (unittest).
