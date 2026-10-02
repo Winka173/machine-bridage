@@ -1,0 +1,164 @@
+# Chapter 8 · Underworld (act 3). Enemy general: Thorne. Arc: chase Thorne into Deepcut Mine with Varro's miners;
+# Tartarus, Ixion, Kronos. Threads: what the place shows, not what anyone names: odd radio gear, stores far beyond a
+# defence's needs, antennas aimed at the sky, works that have nothing to do with a way out. Thorne is calm, tired,
+# talks of "the sky". No word of what he is waiting for.
+
+@c8m01 main=khai
+mission_start | khai | 1 | Ông ta chạy về phía bắc. Ta đuổi theo. || He ran north. We follow.
+time@20 | linh | 2 | Dấu xích của quân Thorne đi vào hẻm núi. Họ đi vội, bỏ lại cả xe hỏng. || Thorne's tracks lead into the canyon. They went in a hurry, leaving broken vehicles.
+point_captured | linh | 3 | Một ngã qua hẻm là của ta. Xe hỏng của họ chở toàn ăng-ten, không chở đạn. || One crossing is ours. Their broken trucks carry antennas, not shells.
+point_lost | khai | 3 | Chúng lấy lại một ngã. Thorne biết vùng này, đi chậm lại. || They took a crossing back. Thorne knows this country; slow down.
+objective_progress:last | khai | 2 | Còn một ngã. Qua được là vào vùng mỏ. || One crossing left. Past it, we are in the mining country.
+victory | khai | 1 | Hẻm núi đã thông. Vùng mỏ ở phía trước, và ông ta ở trong đó. || The canyon is open. The mines are ahead, and he is in them.
+defeat | hung | 1 | Về đi, Marcus. Ở đây chẳng có gì cho các con cả. || Go home, Marcus. There is nothing here for your lads.
+
+@c8m02 main=mai
+mission_start | mai | 1 | Không có quặng thì ông ta không đóng được xe mới. Giữ nó. || No ore, no new tanks for him. Hold it.
+time@40 | mai | 2 | Kho quặng này lớn gấp mười lần nhu cầu của một đạo quân đang chạy trốn. Ông ta đóng gì vậy? || This depot holds ten times what a fleeing army needs. What is he building?
+event_triggered | linh | 2 | Mặt đất đang rung. Có thứ gì đó lớn đang đào dưới chân ta. || The ground is shaking. Something big is digging under us.
+objective_progress:1/2 | khai | 2 | Nửa đêm. Giữ quanh kho, đừng ra mép hố. || Midnight. Stay round the depot; keep off the pit edge.
+timer_60s | khai | 1 | Một phút tới bình minh. Đợt cuối sẽ là đợt nặng nhất. || One minute to dawn. The last wave will be the heaviest.
+victory | mai | 1 | Sáng rồi. Kho quặng là của ta, cùng với ba nghìn tấn ông ta không cần tới. || Morning. The depot is ours, and three thousand tonnes he had no use for.
+defeat | hung | 1 | Quặng thuộc về những người cần nó nhất, đại tá. Hôm nay là ta. || Ore goes to those who need it most, Colonel. Today, that is me.
+
+@c8m03 main=linh
+mission_start | linh | 1 | Ba khẩu đội, đã đánh dấu. Họ biết các mẹo của ta. Họ từng đánh cùng ta. || Three batteries, marked. They know our tricks. They fought beside us.
+general_tactic_change | linh | 3 | Thorne đổi sang đánh rồi chạy. Đúng cách ông ta dạy quân của ông ta năm ngoái. || Thorne has switched to hit and run. Exactly as he taught his own men last year.
+objective_progress:1/3 | linh | 2 | Một khẩu đã gục. Lính của nó đầu hàng, họ mặc quân phục Accord. || One battery down. Its crew surrendered, still in Accord uniform.
+event_triggered | hq | 2 | Bão cát. Pháo của họ mù, xe của ta cũng vậy. || Sandstorm. Their guns are blind, so are our vehicles.
+objective_progress:last | linh | 2 | Còn khẩu tên lửa phòng không. Nó đứng yên khi bắn. Đó là cửa sổ. || The SAM launcher left. It stands still to fire. That is the window.
+victory | linh | 1 | Ba khẩu đã gạch. Con đường mỏ thông rồi. || All three crossed out. The mine road is open.
+defeat | linh | 1 | Họ thoát vào bão. Họ biết cách tránh ta. Chính ta đã dạy họ. || They slipped into the storm. They know how to dodge us. We taught them.
+
+@c8m11 main=varro
+mission_start | varro | 1 | Tide đây. Mọi xe tải trong thung lũng đều theo các anh, đại tá. || Tide here. Every truck in the valley is with you, Colonel.
+time@20 | varro | 2 | Xe này chạy bằng dầu thải và lòng hận. Đủ dùng. || This truck runs on waste oil and spite. It is enough.
+point_captured | varro | 3 | Máy nghiền là của ta! Hai mươi năm tôi làm ở đây, giờ mới thấy nó im. || The crusher is ours! Twenty years I worked here, first time I hear it silent.
+event_triggered | linh | 2 | Có một cột ăng-ten mới trên đáy hố. Nó chĩa thẳng lên trời, không chĩa về phía ta. || A new antenna mast on the pit floor. It points straight up, not at us.
+objective_progress:last | varro | 2 | Còn bến xuất quặng. Bám vào đường vận chuyển, tôi biết từng khúc cua. || The ore loadout left. Stick to the haul road; I know every bend.
+victory | varro | 1 | Không ai giữ được mỏ trước những người đã đào nó. || Nobody holds a mine against the people who dug it.
+defeat | varro | 1 | Lùi về làng. Thợ mỏ biết chờ. Chúng tôi đã chờ hai mươi năm. || Back to the village. Miners know how to wait. We have waited twenty years.
+
+@c8m04 main=khai
+mission_start | khai | 1 | Họ đứng lên vì ta. Ta tới vì họ. || They rose for us. We go for them.
+time@15 | varro | 2 | Thị trấn mỏ có sáu xe vây quanh, đã đánh dấu. Người của tôi giữ nhà thờ. || Six vehicles round the mine town, marked. My people hold the church.
+objective_progress:1/2 | khai | 2 | Vòng vây thủng. Bảo vệ những người trong thị trấn trước, rồi mới đuổi. || The ring is broken. Protect the people inside first, then chase.
+event_triggered | hq | 2 | Bão cát đang tan. Hai bên sẽ thấy nhau rõ, cẩn thận ở chỗ trống. || The sandstorm is clearing. Both sides will see each other; careful in the open.
+critical_failure_imminent | khai | 1 | Sở chỉ huy của thợ mỏ sắp đổ. Mọi khẩu vào xe đang nã nó. || The miners' HQ is about to fall. Every gun on whatever is shelling it.
+victory | varro | 1 | Thị trấn tự do. Đêm nay chúng tôi uống mừng, sáng mai chúng tôi đi cùng các anh. || The town is free. Tonight we drink; tomorrow we ride with you.
+defeat | khai | 1 | Thị trấn thất thủ. Đưa người ra khỏi hầm mỏ trước khi chúng phong tỏa nó. || The town has fallen. Get the people out of the shafts before they seal them.
+
+@c8m05 main=mai
+mission_start | hung | 1 | Các con sẽ không thấy nó tới đâu, Kade. || You will not see it coming, Kade.
+boss_spawn | mai | 1 | Tartarus, máy đào hầm cũ của Varga. Mũi khoan khổng lồ, nhưng phía sau chỉ có tấm giáp mỏng. || Tartarus, Varga's old tunnelling machine. A huge drill, and only thin plate behind it.
+time@40 | linh | 2 | Nó đang đào về phía trạm phát điện dưới đập. Đánh nó khi nó trồi lên. || It is boring towards the power station under the dam. Hit it when it surfaces.
+boss_phase_change | mai | 1 | Nó trồi lên để đổi hướng. Đuôi nó lộ ra, đánh ngay! || It is surfacing to turn. Its tail is out; hit it now!
+boss_part_destroyed | mai | 2 | Một bộ phận làm mát mũi khoan đã vỡ. Nó sẽ nóng lên khi đào. || A drill coolant pack is gone. It will overheat as it digs.
+objective_progress:1/2 | linh | 2 | Nó đã đi nửa đường tới trạm điện. Còn hai lần trồi lên. || It is halfway to the power station. Two more surfacings.
+superweapon_warning | mai | 1 | Nó sắp trồi lên ngay dưới ta. Rời khỏi vùng đỏ, mặt đất sẽ sụt! || It is about to surface right under us. Out of the red; the ground will collapse!
+event_triggered | hq | 2 | Mưa đang thấm vào đất. Đường hầm của nó sẽ yếu đi. || Rain is soaking the ground. Its tunnel will weaken.
+boss_hp:50 | dieuhau | 4 | Một nửa! Bụi bốc lên từ mọi lỗ thông hơi! || Half! Dust pouring out of every vent!
+boss_hp:25 | khai | 4 | Nó đang chậm lại. Giữ áp lực, đừng để nó tới trạm. || It is slowing. Keep the pressure; it does not reach the station.
+critical_failure_imminent | khai | 1 | Nó sắp tới trạm điện. Dồn tất cả vào chỗ nó trồi lên tiếp theo. || It is almost at the power station. Everything where it surfaces next.
+victory | mai | 1 | Tartarus kẹt trong chính đường hầm của nó. || Tartarus is stuck in its own tunnel.
+victory | hung | 1 | Không sao. Ta không cần cái đập đó lâu đâu. || No matter. I will not need that dam for long.
+defeat | hung | 1 | Trạm điện là của ta. Thứ ta đang đợi cần rất nhiều điện, Marcus. || The power station is mine. What I am waiting for needs a great deal of power, Marcus.
+
+@c8m06 main=khai
+mission_start | hung | 1 | Ngọn núi này là của ta, Kade. Từng đường hầm một. || The mountain is mine, Kade. Every tunnel.
+mission_start | khai | 1 | Giữ cửa hầm tới sáng. Không ai ra khỏi núi bằng đường này. || Hold the tunnel mouth till morning. Nobody comes out of the mountain this way.
+event_triggered | hq | 2 | Đoàn cứu viện đang lên từ phía nam. Giữ thêm ít nữa. || The relief column is coming up from the south. Hold a little longer.
+objective_progress:1/2 | khai | 2 | Nửa đêm. Họ ra theo từng nhóm nhỏ, đếm từng xe. || Midnight. They come out in small groups; count every vehicle.
+point_lost | khai | 3 | Mất cửa hầm. Đẩy chúng trở lại, ngay. || The tunnel mouth is lost. Push them back in, now.
+victory | khai | 1 | Cửa hầm đã đóng. Ông ta phải tìm đường khác. || The tunnel mouth is shut. He has to find another way.
+defeat | hung | 1 | Đường hầm thì luôn có lối ra, Marcus. Chỉ cần biết chờ. || A tunnel always has a way out, Marcus. You only have to wait.
+
+@c8m12 main=quist
+mission_start | quist | 1 | Ba kho, không ai canh. Loại tôi thích nhất. || Three depots, all unguarded. My favourite kind.
+point_captured | quist | 3 | Kho thứ nhất: động cơ mới, còn nguyên dầu. Đây không phải trộm, đại tá. Đây là thu hồi. || First depot: new engines, still greased. It is not theft, Colonel. It is recovery.
+event_triggered | linh | 2 | Có thùng thiết bị liên lạc đường dài trong kho. Loại này không dùng để gọi pháo. || Long-range radio crates in the depot. Not the kind used to call in guns.
+objective_progress:last | quist | 2 | Còn một kho. Tôi đã dọn chỗ trên xe cho thứ gì đó nặng. || One depot left. I have cleared space on the truck for something heavy.
+victory | quist | 1 | Động cơ, đạn, và bản đồ hầm ngầm của Thorne. Với một cái máy pha cà phê. || Engines, shells, and a map of Thorne's bunker. And a coffee machine.
+victory | mai | 1 | Một pháo đài dưới đáy hố. Đủ lương thực cho một năm. Ông ta đang chờ thứ gì đó. || A fortress under the pit. A year of food. He is waiting for something.
+defeat | quist | 1 | Họ quay lại lấy hàng trước ta. Đau lòng thật. || They came back for the goods first. Heartbreaking.
+
+@c8m07 main=linh
+mission_start | linh | 1 | Một xe chở quặng bọc thép đang lao xuống đường vận chuyển. Bánh cao hơn xe tăng. || An armoured haul truck is coming down the haul road. Wheels taller than a tank.
+boss_spawn | mai | 1 | Ixion. Bẻ một bánh là nó mất hướng. Nó không phanh kịp đâu. || Ixion. Break a wheel and it loses its line. It cannot brake in time.
+event_triggered | linh | 2 | Một đội đánh phá nhắm vào xe đạn của ta. Ixion chỉ là màn che. || A raiding party is going for our ammunition trucks. Ixion is only the screen.
+boss_part_destroyed | mai | 2 | Một bánh đã nổ! Nó đang trượt về phía mép đường. || A wheel has blown! It is sliding towards the edge.
+boss_phase_change | linh | 1 | Nó quay đầu lên dốc để lấy đà lần nữa. Đứng ra khỏi đường thẳng! || It is turning uphill for another run. Get off its straight line!
+superweapon_warning | mai | 1 | Nó sắp húc thẳng vào đoàn xe. Rời khỏi vùng đỏ, ngay! || It is about to ram straight through the column. Out of the red, now!
+event_triggered | dieuhau | 2 | Tôi đánh vào bánh trước của nó. Mọi người tránh xa đường! || Hitting its front wheels. Everyone off the road!
+boss_hp:50 | khai | 4 | Một nửa. Để nó tự lao xuống, ta chỉ cần không đứng trước nó. || Half. Let it run itself down; we only need to stay out of its way.
+boss_hp:25 | quist | 4 | Lốp của nó mà mang về được thì đủ làm mười cái xuồng. Chỉ nói vậy thôi. || Its tyres would make ten boats if we could bring them home. Just saying.
+hq_below_50 | mai | 2 | Sở chỉ huy bị húc móp một góc. Tôi sửa được nếu nó không quay lại. || It dented a corner of the HQ. I can fix it if it does not come back.
+victory | linh | 1 | Ixion nằm dưới đáy hố. Đường vận chuyển là của ta. || Ixion is at the bottom of the pit. The haul road is ours.
+defeat | linh | 1 | Nó đã đâm xuyên qua cột xe. Rút về chỗ cao. || It has broken through the column. Up to high ground.
+
+@c8m08 main=linh
+mission_start | linh | 1 | Nhìn rồi đi, đừng dừng lại. Ba điểm trên đập. || Look, do not linger. Three spots on the dam.
+point_captured | linh | 3 | Điểm thứ nhất: một chảo ăng-ten lớn, quay lên trời, chưa nối điện. || First spot: a big dish antenna, pointing at the sky, not yet wired in.
+event_triggered | linh | 2 | Pháo của họ bắt đầu bắn theo. Họ không muốn ta nhìn chỗ này. || Their guns are tracking us. They do not want us looking here.
+objective_progress:last | linh | 2 | Còn một điểm. Có một công trình bê tông mới, không cửa sổ, không lối thoát. || One spot left. A new concrete works: no windows, no way out.
+victory | linh | 1 | Tôi có ảnh của cả ba. Không cái nào là đường thoát thân. Tất cả đều quay lên trời. || Photographs of all three. None is an escape route. All of them look at the sky.
+defeat | linh | 1 | Ta chỉ thấy được một nửa. Nửa còn lại vẫn trong sương và bóng tối. || We only saw half. The other half is still in the storm.
+
+@c8m09 main=khai
+mission_start | hung | 1 | Ta đã giành mảnh đất này từ khi các con còn chưa là đại tá. || I earned this country before you were a colonel.
+mission_start | khai | 1 | Và ông đã bán nó. San phẳng sở chỉ huy. || And you sold it. Level the HQ.
+general_tactic_change | linh | 3 | Thorne đổi sang bao vây. Ông ta luôn thích vòng sườn trái. || Thorne has gone to encirclement. He always liked the left hook.
+expensive_unit_lost | khai | 3 | Mất xe nặng ở sườn trái. Ông ta biết ta sẽ đi đâu, đổi đường. || A heavy lost on the left. He knows where we go; change the route.
+time@200 | hung | 2 | Các con chiến đấu giỏi. Ta đã dạy các con điều đó, nhớ không? || You fight well, lads. I taught you that, remember?
+victory | hung | 1 | Rút. Ta không cần cái trại này. Ta chỉ cần thêm chút thời gian. || Withdraw. I do not need this camp. I only need a little more time.
+victory | khai | 1 | Ông ta lại chạy. Ông ta không thua, ông ta câu giờ. Ghi lại. || He is running again. He is not losing; he is buying time. Note it.
+defeat | hung | 1 | Mệt rồi, Marcus. Ta cũng vậy. Về nghỉ đi. || Tired, Marcus. So am I. Go and rest.
+
+@c8m13 main=varro
+mission_start | varro | 1 | Em trai tôi ở trại phía đông. Đưa nó ra, đại tá, và người của tôi sẽ theo ông. || My brother is in the east camp. Get him out, Colonel, and my people will follow you.
+time@20 | linh | 2 | Ba trăm thợ mỏ trong ba trại. Thorne bắt họ đào cho một cỗ máy tên là Kronos. || Three hundred miners in three camps. Thorne has them digging for a machine called Kronos.
+point_captured | varro | 3 | Một trại đã mở! Họ đang chạy ra, có người còn cầm cuốc. || One camp is open! They are running out, some still holding picks.
+event_triggered | varro | 2 | Lính gác đang dồn thợ mỏ vào hầm. Đừng bắn vào cửa hầm! || The guards are herding miners into the shafts. Do not fire at the shaft doors!
+objective_progress:last | varro | 2 | Còn trại phía đông. Em tôi ở đó. Làm ơn. || The east camp is left. My brother is there. Please.
+victory | varro | 1 | Mọi trại đã mở. Sáu mươi người muốn chiến đấu. Tôi đã đồng ý. || Every camp is open. Sixty of them want to fight. I said yes.
+defeat | varro | 1 | Họ bị dồn xuống sâu hơn. Tôi sẽ quay lại, với cả thung lũng. || They have been driven deeper. I will come back, with the whole valley.
+
+@c8m14 main=khai
+mission_start | hung | 1 | Các con tới vì cỗ máy, không phải vì thợ mỏ. Ta với các con giống nhau hơn các con nghĩ. || You came for the machine, not the miners. We are more alike than you think.
+mission_start | khai | 1 | Giữ dốc trong năm phút. Công binh cắt đường điện của Kronos. || Hold the ramp five minutes. The sappers cut Kronos's power line.
+time@30 | mai | 2 | Đường điện này có thể thắp sáng một thành phố nhỏ. Một cỗ máy cần nhiều đến vậy sao? || This line could light a small town. Does one machine need that much?
+event_triggered | linh | 2 | Đợt phản công từ đáy hố. Họ biết ta đang cắt gì. || A counterattack from the pit floor. They know what we are cutting.
+timer_60s | khai | 1 | Một phút. Công binh gần xong, giữ thật chặt. || One minute. The sappers are nearly through; hold tight.
+victory | khai | 1 | Đã cắt đường dây. Kronos chạy bằng pin, và ta có tiền của Thorne. || Line cut. Kronos runs on its batteries now, and we have Thorne's money.
+victory | quist | 1 | Hòm lương. Một năm tiền công. Tôi đã nói mà. || The pay chest. A year of wages. I told you so.
+defeat | hung | 1 | Dây điện vẫn chạy. Kronos vẫn thức, Marcus. || The line still runs. Kronos is still awake, Marcus.
+
+@c8m10 main=khai
+mission_start | khai | 1 | Xuống hố, lữ đoàn. || Into the pit, Brigade.
+time@20 | hung | 2 | Các con đang xuống nơi sâu nhất. Ta thì đang nhìn lên trời. Đó là khác biệt của chúng ta. || You are going down to the deepest place. I am looking at the sky. That is our difference.
+phase_start:2 | khai | 1 | Miệng hố đã chiếm. Chọn đòn tiếp: xưởng hay kho, cả hai đều có giá. || The rim is taken. Next blow: the works or the stores; both cost.
+phase_start:4 | varro | 1 | Phá các xưởng dưới đáy. Người của tôi chỉ chỗ đặt thuốc nổ. || Blow the works at the bottom. My people will show you where to set the charges.
+phase_start:7 | linh | 1 | Kronos ở đáy hố. Nó đang chạy bằng pin dự phòng, nhờ đường dây ta đã cắt. || Kronos is at the bottom, running on batteries thanks to the line we cut.
+boss_spawn | mai | 1 | Kronos: pháo đài khai mỏ. Thùng pin ở hai bên sườn. Pin cạn là nó đứng yên. || Kronos: a mining fortress. Battery banks on both flanks. Drain them and it stops.
+boss_part_destroyed | mai | 2 | Một dãy pin đã vỡ. Nó chuyển sang tiết kiệm năng lượng, bắn chậm lại. || One battery bank is gone. It is saving power; slower fire.
+superweapon_warning | mai | 1 | Nó dồn hết pin cho một loạt. Ra khỏi vùng đỏ, ngay! || It is pouring all its power into one salvo. Out of the red, now!
+boss_hp:50 | quist | 4 | Một nửa. Pin của nó mà còn tốt thì đáng giá lắm. Bắn chỗ khác được không? || Half. Its batteries are worth a fortune intact. Could we shoot somewhere else?
+boss_hp:25 | varro | 4 | Nó đang tắt dần. Người của tôi đã từng thấy máy chết. Nó sắp chết. || It is winding down. My people have seen machines die. This one is dying.
+phase_start:8 | khai | 1 | Kronos đã gục. Giữ đáy hố, quân Thorne đang phản công lần cuối. || Kronos is down. Hold the pit floor; Thorne's men are making a last counterattack.
+victory | linh | 1 | Thorne đã ra tới bờ biển. Ông ta đang đi về phía những con tàu cũ của Kessler. || Thorne has reached the coast. He is heading for Kessler's old ships.
+victory | khai | 1 | Ông ta không chạy trốn ta. Ông ta đang chạy tới một thứ gì đó. || He is not running from us. He is running towards something.
+defeat | hung | 1 | Hố này sâu, Marcus. Đừng xuống đây nữa. || This pit is deep, Marcus. Do not come down here again.
+
+@c8s1 main=linh
+mission_start | linh | 1 | Ba tòa nhà. Vào nhanh, ra nhanh. || Three buildings. Quick in, quick out.
+point_captured | linh | 3 | Tòa thứ nhất: bản đồ khảo sát cũ, đánh dấu những chỗ đất vững nhất trong vùng. || First building: old survey maps marking the firmest ground in the region.
+event_triggered | hq | 2 | Bão cát đang tới. Lấy bản đồ trước khi gió cuốn mất. || A sandstorm is coming. Get the maps before the wind takes them.
+victory | linh | 1 | Có người đã khoanh tròn một khu đất phẳng rất lớn. Không có gì để đào ở đó cả. || Someone circled a very large flat site. There is nothing to mine there.
+defeat | linh | 1 | Gió đã lấy mất bản đồ. Ta mất dấu một nửa vùng mỏ. || The wind took the maps. We lose half the mining country.
+
+@c8s2 main=dieuhau
+mission_start | dieuhau | 1 | Săn đêm. Loại tôi thích nhất. Mười máy bay vận tải, chở vàng của ông ta. || Night hunting. My favourite. Ten transports carrying his gold.
+objective_progress:1/2 | dieuhau | 2 | Năm chiếc! Một chiếc vừa thả hàng xuống sa mạc để bay nhẹ hơn. || Five! One just dumped its cargo in the desert to fly lighter.
+objective_progress:last | dieuhau | 2 | Còn một chiếc, bay rất thấp. Nó nghĩ tôi không thấy nó. Nó sai. || One left, flying very low. It thinks I cannot see it. It is wrong.
+victory | quist | 1 | Vàng rơi đầy sa mạc. Tôi cần ba xe tải và một cái xẻng. || Gold all over the desert. I need three trucks and a shovel.
+defeat | dieuhau | 1 | Chúng thoát được. Vàng của ông ta đã ra biển. || They got away. His gold is out to sea.
