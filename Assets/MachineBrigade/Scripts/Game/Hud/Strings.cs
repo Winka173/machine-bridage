@@ -2082,6 +2082,8 @@ namespace MachineBrigade.Game.Hud
             ["support.leviathan_shell.info"] = ("Where a shell from Leviathan's guns lands, marked ahead.", "Nơi một quả đạn từ pháo của Leviathan sẽ rơi, đánh dấu trước."),
             ["support.leviathan_cruise_mark"] = ("Leviathan's cruise missile", "Tên lửa hành trình Leviathan"),
             ["support.leviathan_cruise_mark.info"] = ("Where one of Leviathan's cruise missiles is coming down, marked ahead.", "Nơi một tên lửa hành trình của Leviathan sắp đánh xuống, đánh dấu trước."),
+            ["support.leviathan_cruise_mark_7"] = ("Caspian's cruise missile", "Tên lửa hành trình Caspian"),
+            ["support.leviathan_cruise_mark_7.info"] = ("Where one of Caspian's cruise missiles is coming down, marked ahead.", "Nơi một tên lửa hành trình của Caspian sắp đánh xuống, đánh dấu trước."),
             ["short.super_gun_shell"] = ("Super-gun", "Siêu pháo"),
             ["mode.deathmatch"] = ("Deathmatch", "Tử chiến"),
             ["mode.deathmatchSub"] = ("First to 480 CP of kills", "Hạ đủ 480 CP xe địch trước"),

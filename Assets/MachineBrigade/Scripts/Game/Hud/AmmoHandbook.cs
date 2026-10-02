@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Hud
     {
         public const string Types = "types", Penetration = "penetration", Top = "mark.top", Thermobaric = "mark.thermobaric",
             Blast = "mark.blast", Guided = "mark.guided", Airburst = "mark.airburst", Alt = "mark.alt", MinRange = "mark.minrange",
-            Defences = "defences", Structures = "structures", Walls = "structures.walls";
+            Defences = "defences", Structures = "structures", Walls = "structures.walls", Tiers = "tiers";
 
         public static readonly DamageType[] DamageTypes =
             { DamageType.Kinetic, DamageType.ShapedCharge, DamageType.HighExplosive, DamageType.Fire, DamageType.Fragmentation, DamageType.Energy };
@@ -177,6 +177,20 @@ namespace MachineBrigade.Game.Hud
             walls.Lines.Add(Strings.Format("hb.walls", ("mult", Mult(c.Base.WallBreakerMultiplier)),
                 ("units", string.Join(", ", c.Base.WallBreakers.Where(c.Vehicles.ContainsKey).Select(Strings.Unit)))));
             list.Add(walls);
+
+            // 6. Prompt 34 L9: the calibre tiers T0-T5 (shot, blast, sound and warning grow with the family's tier).
+            var tiers = new HandbookEntry(Tiers, Strings.Get("hb.tiers.title"))
+            {
+                Header = new[] { Strings.Get("hb.tiers.tier"), Strings.Get("hb.tiers.families"), Strings.Get("hb.tiers.look") },
+            };
+            for (var t = 0; t <= 5; t++)
+            {
+                var names = c.WeaponFamilyTable.Values.Where(f => f.Tier == t).OrderBy(f => f.Id).Take(4).Select(f => f.Name).ToList();
+                tiers.Rows.Add(new[] { "T" + t, names.Count > 0 ? string.Join(", ", names) : Strings.Get("hb.none"), Strings.Get("hb.tiers.t" + t) });
+            }
+            tiers.Lines.Add(Strings.Get("hb.tiers"));
+            tiers.Lines.Add(Strings.Format("hb.tiers.warn", ("floor", Strings.Num(WeaponDef.EscapeWarning(4, "", 0f), "0.#"))));
+            list.Add(tiers);
             return list;
         }
 

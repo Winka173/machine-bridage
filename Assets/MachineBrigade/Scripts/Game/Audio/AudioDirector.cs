@@ -501,6 +501,18 @@ namespace MachineBrigade.Game.Audio
                 if (v.Bank != null && v.Bank.Light && v.Source.isPlaying) v.Source.volume = v.Level * duck;
         }
 
+        /// <summary>Prompt 34 L9: the voices playing now, of 32 (the stress scene's count).</summary>
+        internal int BusyVoices
+        {
+            get
+            {
+                var n = 0;
+                foreach (var v in _voices)
+                    if (v != null && v.Source != null && v.Source.isPlaying) n++;
+                return n;
+            }
+        }
+
         /// <summary>UI feedback; call from button handlers.</summary>
         public void Click() => _ui.PlayOneShot(_clicks[_rng.Next(_clicks.Length)], 0.35f);
 

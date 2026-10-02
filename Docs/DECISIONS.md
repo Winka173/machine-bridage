@@ -15908,3 +15908,41 @@ Pass 6: the report and the design document's sections; the PDF is built by the l
   every tower on a pad, a range ship's hull on the water, the coastal gun's ship target, the preview rings' rule, each
   setting's pieces on the range and the turntable, an aircraft's ground below it, the waves moving within their height, the
   biome's fallback).
+
+### L9: validators, the stress scene, the design document, the report
+
+- **Validators in one run**: `python Tools/balance/p34_validate.py` (exit 1 on a problem): (1) families: one family one
+  round in every boss (`p34_boss_families.validate`) and every variant listed with its reason; (2) warnings: every T4+ boss
+  round against the escape formula (`p34_warnings.check`, Gungnir the named exception); (3) rings: a laid salvo's and a
+  cruise missile's warning support must draw the blast's edge (`radius`) and core (`blast`); (4) muzzles: every vehicle
+  with a gun that fires its barrels together draws a model listed in `p34_barrels.MUZZLES` (whose GLBs are checked), or a
+  listed exception (a variant or a tower branch resolves to its parent's model); (5) previews: a mirror of
+  `PreviewSettings.Of` over balance.json (all four domains used, the rail and sea bosses on theirs); (6) wrecks: no
+  `AddComponent<...Collider>` / `CreatePrimitive` in the wreck code, no model meta with `addColliders: 1`. All six OK.
+  C# tests of the same rules: `Prompt34Tests` (1, 2), `Prompt34ValidatorTests` (3, 4, 6), `Prompt34PreviewTests` (5).
+- **Found by rule 3 and fixed (data, view only)**: the cruise missiles' mark `leviathan_cruise_mark` drew 12 m over a
+  10 m core whose edge reaches 20 m (`ExplosionDef.TwoLayer`: min(20, 2 x core)) on Leviathan, Kraken, Typhon, Hydra, Nyx
+  and Scylla, and over Caspian's 7 m core (edge 14). The mark is now 20 / 10 m; Caspian's cruise uses a new copy
+  `leviathan_cruise_mark_7` (14 / 7 m, with its strings). Both are damage-0 event supports: nothing in the Sim reads
+  them. Written by `p34_validate.py --write` (a rerun changes nothing).
+- **Rings and the one-layer blast**: an ordinary blast's reach varies by up to 15 % in the Sim (`DamageSystem`), so its
+  ring shows the nominal core. Every T4+ boss round that warns has a fixed two-layer blast (tested), so those rings are
+  exact.
+- **Stress scene** (`Game/Match/P34StressCheck.cs`): `-mb-play -mb-lighthousebay -mb-p34stress[=SECONDS]` (default
+  120 s). Lighthouse Bay because it is the map with a sea (the Leviathan on its middle lane). The enemy gets the
+  Leviathan, Jötunn (`mobile_fortress`, the Smerch pods) and Roc (`command_airship`, the 400 kg bombs), each back 10 s
+  after it is lost; both sides are kept at 32 vehicles (bosses not counted) from a 16-unit mix. Once a second it samples
+  the live particles (every ParticleSystem), the busy voices (`AudioDirector.BusyVoices`, of 32) and the wrecks and pieces
+  (`EffectsDirector.WreckCount`, `WreckPieces`); at the end it writes peaks and means to
+  `Docs/balance/p34_stress_counts.json` (editor) and logs them. FPS: NEED PROFILE. Not run in this pass.
+- **Design document** (`Tools/docs/prompt34.py`, wired into `build_doc.py`; the PDF is not rebuilt in this pass): 10i
+  (the family table with tiers, boss numbers and variants' reasons; every boss weapon's family round, core / edge, cycle
+  and warning; the escape warnings by family), 16b (firing, blast, camera and sound by tier; wrecks by class; the
+  previews' settings), and the handbook's T0-T5 tiers after the ammunition handbook. The table of contents names them.
+- **In-game handbook**: a new entry "Calibre tiers T0-T5" (`AmmoHandbook.Tiers`, strings in `BaseText`): each tier's
+  families (from `weaponFamilyTable`) and its look and sound, and the T4+ warning rule.
+- **Report**: `Docs/balance/report_p34.md` (balance before / after by boss, the player families that deviate, the
+  pictures to render (NEED RENDER), the stress scene, the validators, every decision of the prompt).
+- Tests (written, not run): `Prompt34ValidatorTests` (a weapon's rings are its core and edge, every warned boss round has a
+  fixed two-layer blast, the cruise and salvo marks show their blast, every barrel fired together has its muzzle, no model
+  brings a collider, the stress scene's units and map).

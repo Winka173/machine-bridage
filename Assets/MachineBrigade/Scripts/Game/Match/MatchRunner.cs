@@ -125,6 +125,7 @@ namespace MachineBrigade.Game.Match
         private float _lastInput;
         private PerfProbe _perf;
         private CrowdCheck _crowd;
+        private P34StressCheck _p34Stress;
         private FrameRateGovernor _frameRate;
 
         /// <summary>The rate the governor settled on carries over to the next scene load.</summary>
@@ -366,6 +367,8 @@ namespace MachineBrigade.Game.Match
                 _camera.ZoomBy(_camera.Zoom / zoom, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
             }
             if (!_menu) _crowd = CrowdCheck.Create(_world, start);
+            // Prompt 34 L9: the stress scene (-mb-p34stress), counts only.
+            if (!_menu) _p34Stress = P34StressCheck.Create(_world, start);
             if (DebugFlags.Has("-mb-far"))
             {
                 _camera.ZoomBy(0.1f, new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
@@ -757,6 +760,7 @@ namespace MachineBrigade.Game.Match
                 _perf?.End(PerfProbe.Section.Events);
             }
 
+            if (_p34Stress != null && !_paused) _p34Stress.Tick(_world, Time.time, _effects, _audio);
             if (_crowd != null && !_paused)
             {
                 // The crowd check holds the view on the two armies.

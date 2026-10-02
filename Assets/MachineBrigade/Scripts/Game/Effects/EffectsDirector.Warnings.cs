@@ -45,6 +45,11 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public bool PreviewRings { get; set; }
 
+        /// <summary>Prompt 34 L9: the wrecks on the field and their torn-off pieces (the stress scene's counts).</summary>
+        internal int WreckCount => _wrecks.Count;
+
+        internal int WreckPieces => _wrecks.Pieces;
+
         /// <summary>How long a preview's ring shows for a round with no warning of its own.</summary>
         public const float PreviewRingSeconds = 0.8f;
 
