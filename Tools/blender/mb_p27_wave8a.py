@@ -12,7 +12,7 @@ reads brighter at 40 px. Names of existing parts are reused, so no runtime node 
 """
 import math
 
-from mathutils import Euler, Vector
+from mathutils import Euler, Matrix, Vector
 
 import mb_air
 import mb_detail as hd
@@ -20,7 +20,12 @@ import mb_kit27 as kit27
 import mb_parts27 as parts
 import mb_munitions as mu
 import mb_new_trucks
+import mb_air3
 import mb_new_tracked
+import mb_round6
+import mb_p25_models2 as m2
+import mb_orbital
+import mb_pt5_models
 import mb_props as pr
 import mb_support
 import mb_vehicles
@@ -32,6 +37,12 @@ from mb_vehicles import (ACROSS, FORWARD, R90, _antenna, _basket, _cable, _coax,
                          _flank, _frame, _glacis, _grille_frame, _headlight, _jerrycans, _periscopes, _rail, _roll,
                          _roof_mg, _rws, _shackle, _shovel, _exhaust, _pick, _skirt, _sponson_section, _slats, _smoke, _eyes, _vent, _hull_section, _stowage_bin, _taillight, _track_links, _tube_mouth, _wheel)
 from mb_new_tracked import _bucket, _rws_mg
+from mb_air import BACKWARD, _bubble, _exhaust_duct, _hoop, _octagon, _pylon, _rocket_pod, _sec, _skin_z
+from mb_air3 import ICBM_LENGTH, _icbm
+from mb_p27_wave1c import _rotor_head_as
+from mb_round6 import flip_spinner, pivot
+from mb_p25_models import C130_ENGINES, C130_WING, RAMP
+from mb_pt5_models import TAU, _along as _seg
 from mb_support import _beacon, _plane, _ram, _rod, _rws_turret, _stripes
 from mb_vehicles2 import _axis
 from mb_vehicles3 import _heavy_mg
@@ -1103,6 +1114,437 @@ def sapper(a):
 
 UNITS4['sapper'] = sapper
 _OPT4['sapper'] = mb_new_tracked.BUILDERS['sapper'][1]
+
+
+def fpv_drone(a):
+    """FPV kamikaze quadcopter (flies along -Y, origin at its centre), 0.69 m prop tip to prop tip across the
+    diagonal: the old frame, motors, props and RPG-7 charge, plus a speed-controller board, and motor wires (pass 8a4)."""
+    carbon = a.part('Drone_frame', 'Undercarriage')
+    steel = a.part('Drone_motors', 'Steel')
+    bells = a.part('Drone_bells', 'Armor')
+    props = a.part('Drone_props', 'BarrelRed')
+    alloy = a.part('Drone_standoffs', 'Alloy')
+    # Bottom plate and four tapered arms (true X), motor mounts at their tips.
+    carbon.box((.1, .15, .006), loc=(0, 0, .006), bevel=0)
+    for i, (sx, sy) in enumerate(((1, 1), (-1, 1), (-1, -1), (1, -1))):
+        ang = math.atan2(sy, sx)
+        mid = Vector((sx * .08, sy * .08, .007))
+        carbon.box((.2, .036, .007), loc=tuple(mid), rot=(0, 0, ang), bevel=0, taper=(1, .75))
+        carbon.cyl(.022, .007, loc=(sx * .16, sy * .16, .007), seg=8, bevel=0)                   # motor mount
+        # Motor: stator base, bell, shaft and prop nut.
+        bells.cyl(.023, .012, loc=(sx * .16, sy * .16, .017), seg=8, bevel=0)
+        steel.cyl(.024, .02, loc=(sx * .16, sy * .16, .033), seg=10, bevel=0)
+        steel.cyl(.005, .016, loc=(sx * .16, sy * .16, .05), seg=6, bevel=0)
+        bells.cyl(.008, .008, loc=(sx * .16, sy * .16, .058), seg=6, bevel=0)
+        # Tri-blade prop, each blade tapered and pitched, spun a little differently on each motor.
+        props.cyl(.012, .008, loc=(sx * .16, sy * .16, .052), seg=6, bevel=0)
+        for k in range(3):
+            phi = i * .7 + k * TAU / 3
+            c = Vector((sx * .16, sy * .16, .053)) + Vector((math.cos(phi), math.sin(phi), 0)) * .066
+            props.box((.12, .024, .004), loc=tuple(c), rot=(.22 * (1 if (sx * sy) > 0 else -1), 0, phi), bevel=0,
+                      taper=(.55, .7))
+    # Top plate on four alloy standoffs; the flight stack between the plates.
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            alloy.cyl(.005, .03, loc=(sx * .032, sy * .045, .025), seg=6, bevel=0)
+    carbon.box((.078, .118, .005), loc=(0, 0, .042), bevel=0)
+    a.part('Drone_stack', 'Rubber').box((.05, .05, .018), loc=(0, .01, .022), bevel=0)
+    # Battery strapped on top, its lead and plug hanging off the back.
+    a.part('Drone_battery', 'Team').box((.066, .12, .034), loc=(0, .01, .063), bevel=.005, seg=1)
+    straps = a.part('Drone_straps', 'Rubber')
+    for y in (-.02, .045):
+        straps.box((.072, .014, .042), loc=(0, y, .063), bevel=0)
+    a.part('Drone_plug', 'Hazard').box((.018, .02, .012), loc=(0, .082, .05), bevel=0)
+    # Camera pod at the nose: a printed mount with side plates, the camera tilted 25 degrees up, its lens.
+    pod = a.part('Drone_pod', 'Armor')
+    tilt = (-.44, 0, 0)
+    pod.box((.044, .04, .036), loc=(0, -.078, .03), rot=tilt, bevel=.004, seg=1)
+    for sx in (-1, 1):
+        carbon.box((.004, .05, .04), loc=(sx * .026, -.07, .028), bevel=0)
+    lens_at = Vector((0, -.078, .03)) + Matrix.Rotation(-.44, 3, 'X') @ Vector((0, -.027, 0))
+    pod.cyl(.013, .016, loc=tuple(lens_at), rot=(R90 - .44, 0, 0), seg=10, bevel=0)
+    a.part('Drone_lens', 'Glass').cyl(.009, .006, loc=tuple(lens_at + Matrix.Rotation(-.44, 3, 'X') @ Vector((0, -.009, 0))),
+                                      rot=(R90 - .44, 0, 0), seg=10, bevel=0)
+    # Video antenna (a stubby pagoda on a mast) at the back, two receiver whips in a V.
+    loc, rot, length = _seg((0, .07, .046), (0, .1, .1))
+    steel.cyl(.003, length, loc=loc, rot=rot, seg=5, bevel=0)
+    a.part('Drone_antenna', 'Rubber').cyl(.012, .016, loc=(0, .103, .106), rot=(-.5, 0, 0), seg=8, bevel=0)
+    for sx in (-1, 1):
+        loc, rot, length = _seg((sx * .03, .06, .045), (sx * .07, .12, .07))
+        a.part('Drone_whips', 'Undercarriage').cyl(.002, length, loc=loc, rot=rot, seg=4, bevel=0)
+    a.part('Drone_led', 'TeamGlow').box((.04, .006, .008), loc=(0, .077, .012), bevel=0)
+    # The RPG-7 warhead slung under the nose along -Y: booster, band, body, ogive and piezo fuse, zip-tied on.
+    charge = a.part('Drone_charge', 'Armor')
+    profile = [(.022, .16), (.03, .12), (.03, .06), (.044, .03), (.046, -.03), (.04, -.08), (.028, -.12), (.012, -.15),
+               (.004, -.16)]
+    charge.lathe([(r, -z) for r, z in reversed(profile)], loc=(0, -.035, -.03), rot=FORWARD, seg=10)
+    a.part('Drone_band', 'Hazard').cyl(.047, .018, loc=(0, -.055, -.03), rot=FORWARD, seg=10, bevel=0)
+    steel.cyl(.007, .03, loc=(0, -.2, -.03), rot=FORWARD, seg=6, bevel=0)                          # fuse
+    fins = a.part('Drone_fins', 'Undercarriage')
+    for k in range(4):
+        phi = k * R90 + math.pi / 4
+        fins.box((.003, .03, .02), loc=(math.cos(phi) * .026, .12, -.03 + math.sin(phi) * .026), rot=(0, -phi, 0), bevel=0)
+    for y in (-.02, .04):
+        straps.box((.06, .008, .03), loc=(0, y, -.008), bevel=0)
+    # Speed-controller board between the plates, motor wires along the arms.
+    a.part('Drone_plug', 'Hazard').box((.06, .07, .004), loc=(0, .0, .033), bevel=0)
+    wires = straps
+    for sx, sy in ((1, 1), (-1, 1), (-1, -1), (1, -1)):
+        wires.tube([(sx * .02, sy * .02, .036), (sx * .15, sy * .15, .022)], .003, seg=3)
+    kit27.clean(a)
+
+
+# ----------------------------------------------------------------------------- bunker emplacement
+
+
+UNITS4['fpv_drone'] = fpv_drone
+_OPT4['fpv_drone'] = mb_pt5_models.BUILDERS['fpv_drone'][1]
+
+
+def bug_satellite(a):
+    """A small military recon satellite, about 5 m across: a bus, two solar wings, a dish and a rod
+    magazine. Origin at its centre; it flies."""
+    kit27.block(a.part('Bus', 'Armor'), (.9, 1.1, 1.5), loc=(0, 0, 0), chamfer=.06, ends=(True, True))
+    kit27.block(a.part('Bus_band', 'Team'), (.94, .2, 1.54), loc=(0, 0, .1), chamfer=.03, ends=(True, True))
+    a.part('Panels', 'Steel').box((.7, .9, .06), loc=(0, 0, .78), bevel=.02, seg=1)
+    rivet = a.part('Rivets', 'MetalSheet')
+    for sx in (-1, 1):
+        for sz in (-.55, -.15, .3, .65):
+            rivet.cyl(.025, .02, loc=(sx * .47, .3, sz), rot=(0, R90, 0), seg=5, bevel=0)
+            rivet.cyl(.025, .02, loc=(sx * .47, -.3, sz), rot=(0, R90, 0), seg=5, bevel=0)
+    thr = a.part('Rcs', 'Armor')
+    glow = a.part('Rcs_glow', 'TeamGlow')
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            thr.cyl(.08, .18, loc=(sx * .46, sy * .56, -.7), rot=(0, R90, 0), seg=8, bevel=.01, bseg=1)
+            glow.cyl(.05, .02, loc=(sx * .56, sy * .56, -.7), rot=(0, R90, 0), seg=8, bevel=0)
+    wing = a.part('Solar_wing', 'Glass')
+    frame = a.part('Solar_frame', 'Steel')
+    cell = a.part('Solar_cell', 'Steel')
+    for sx in (-1, 1):
+        wing.box((1.9, .85, .03), loc=(sx * 1.55, 0, 0), bevel=0, seg=1)
+        frame.box((1.95, .06, .05), loc=(sx * 1.55, .42, .03), bevel=0, seg=1)
+        frame.box((1.95, .06, .05), loc=(sx * 1.55, -.42, .03), bevel=0, seg=1)
+        frame.box((.1, .9, .1), loc=(sx * .58, 0, 0), bevel=.02, seg=1)
+        for i in range(7):
+            cell.box((.02, .74, .01), loc=(sx * (.65 + i * .25), 0, .022), bevel=0, seg=1)
+    a.part('Sensor_boom', 'Steel').cyl(.03, .9, loc=(0, .3, 1.2), rot=FORWARD, seg=6, bevel=0)
+    kit27.block(a.part('Sensor_head', 'Glass'), (.14, .14, .14), loc=(0, -.15, 1.2), chamfer=.02, ends=(True, True))
+    a.part('Dish_arm', 'Steel').cyl(.05, .5, loc=(0, -.65, .5), rot=FORWARD, seg=8, bevel=0)
+    a.part('Dish', 'Medical').sphere((.4, .4, .18), loc=(0, -.95, .68), rot=FORWARD, seg=18, rings=10, cut=.5)
+    a.part('Dish_feed', 'Steel').cyl(.03, .16, loc=(0, -.87, .68), rot=FORWARD, seg=8, bevel=0)
+    mag = a.part('Rod_magazine', 'Gilded')
+    mag.cyl(.22, 1.6, loc=(0, .3, -.95), rot=(0, R90, 0), seg=10, bevel=.03, bseg=1)
+    tips = a.part('Rod_tips', 'Steel')
+    for i in range(6):
+        tips.cyl(.05, .12, loc=(-.75 + i * .3, .3, -.95), rot=(0, R90, 0), seg=6, bevel=0)
+    a.part('Antenna', 'Steel').cyl(.02, .9, loc=(.2, .3, .95), seg=5, bevel=0)
+    a.part('Beacon', 'TeamGlow').sphere(.05, loc=(.2, .3, 1.42), seg=6, rings=4)
+    # Wing hinge brackets and diagonal ribs, a star tracker on the roof and a bus thermal-blanket seam.
+    for sx in (-1, 1):
+        frame.box((.12, .3, .16), loc=(sx * .5, 0, .0), bevel=0)
+        frame.limb((sx * .65, -.42, .03), (sx * 2.45, .42, .03), .03, .03, bevel=0)
+    a.part('Star_tracker', 'Glass').box((.18, .18, .12), loc=(-.22, -.3, .84), bevel=0)
+    a.part('Bus_blanket', 'Gilded').box((.92, .5, .04), loc=(0, .2, .6), bevel=0)
+    kit27.clean(a)
+
+
+UNITS4['bug_satellite'] = bug_satellite
+_OPT4['bug_satellite'] = mb_orbital.BUILDERS['bug_satellite'][1]
+
+
+def _c130_v2(a, detail=False, ramp_open=False):
+    """The shared four-turboprop transport airframe (C-130 class) of the drone mothership and the AC-130, 11.9 x
+    16.2 x 4.6 m: a round fuselage with a radome nose and a band of flight-deck windows, gear sponsons, a high
+    straight wing on a root fairing, four nacelles slung under it with four-blade `Propeller`..`Propeller_4` (drawn
+    10 % large: with the long straight wing they are the silhouette), an upswept tail with a tall fin (10 % tall)
+    and the tailplane. ramp_open lowers the cargo ramp under the tail and shows the dark hold above it. Origin at
+    the fuselage centre (it flies). Returns the wing planform."""
+    from mb_air import LEFT, RIGHT, Planform, _dome, _sec, _surface, _upright
+    hd.mark(a, detail)
+    n = 14 if detail else 12
+    body = a.part('Fuselage', 'Team')
+    armor = a.part('Armor', 'Armor')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    steel = a.part('Steel', 'Steel')
+    glow = a.part('Wing_lights', 'TeamGlow')
+
+    def sec(y, w, zb, zt):
+        return _sec(y, w, zb, zt, n=n, pt=2.4, pb=3.2)
+    hull = [sec(-5.78, .36, -.46, .16), sec(-5.4, .7, -.78, .5), sec(-4.85, .86, -.9, .8), sec(2.5, .86, -.9, .82),
+            sec(3.45, .84, -.56, .82), sec(4.7, .56, .1, .8), sec(5.75, .2, .48, .72)]
+    body.loft([[(0, -5.96, -.16)]] + hull + [[(0, 5.96, .62)]], bevel=.02 if detail else 0, seg=1)
+    armor.loft([[(0, -5.97, -.16)], sec(-5.9, .2, -.34, .04), sec(-5.72, .4, -.52, .22)], bevel=0)   # radome
+    # Flight-deck windows: a glass band round the top of the nose, framed by the skin either side.
+    a.part('Canopy', 'Glass').loft([_dome(y, w, z0, z1, 7) for y, w, z0, z1 in
+                                    ((-5.52, .5, .12, .38), (-5.25, .74, .3, .62), (-4.95, .8, .42, .78))], bevel=0)
+    for s in (-1, 1):                                                                            # gear sponsons
+        kit27.block(armor, (.42, 2.8, .6), loc=(s * .78, -.3, -.74), chamfer=.06, taper=(.75, .95), ends=(True, True))
+        steel.box((.24, .7, .2), loc=(s * .8, -.2, -1.0), bevel=0)                               # stowed wheels
+    # High straight wing on its root fairing.
+    w = C130_WING
+    wing = Planform(0, w['span'], w['root_le'], w['tip_le'], w['root_c'], w['tip_c'], .36, .15, w['z'], w['z'] + .08)
+    body.box((1.3, 2.4, .34), loc=(0, w['root_le'] + 1.05, .86), bevel=.06, seg=1, taper=(.8, .92))
+    for frame in (RIGHT, LEFT):
+        _surface(body, wing, frame, bevel=.012 if detail else 0)
+    for s in (-1, 1):
+        glow.box((.1, .22, .08), loc=(s * (w['span'] + .02), wing.le(w['span']) + .3, wing.at(w['span'])[3]), bevel=0)
+    # Nacelles under the wing, the turboprops at their fronts.
+    for x, name in C130_ENGINES:
+        le = wing.le(abs(x))
+        zc = wing.bottom(abs(x)) - .12
+        nac = [(le - 1.15, .19, .2), (le - .75, .25, .27), (le + .3, .24, .27), (le + 1.4, .16, .16), (le + 2.1, .07, .08)]
+        rings = [[(x + px, y, zc + pz) for px, _, pz in _sec(0, hw, -hh, hh, n=8 if not detail else 10, pt=2.2, pb=2.2)]
+                 for y, hw, hh in nac]
+        body.loft(rings + [[(x, le + 2.35, zc)]], bevel=0)
+        armor.cyl(.2, .06, loc=(x, le - 1.17, zc), rot=(R90, 0, 0), seg=10, bevel=0)             # intake ring
+        dark.box((.16, .12, .06), loc=(x, le - 1.1, zc - .17), bevel=0)                         # oil-cooler scoop
+        dark.cyl(.06, .3, loc=(x + (.2 if x > 0 else -.2), le + .1, zc + .05), rot=(R90, 0, 0), seg=6, bevel=0)  # exhaust
+        p = a.pivot(name, (x, le - 1.28, zc))
+        spinner = a.part('Spinners', 'Armor', p)
+        spinner.cyl(.12, .3, r2=.03, loc=(0, -.06, 0), rot=(R90, 0, 0), seg=8, bevel=0)
+        blades = a.part('Prop_blades', 'Undercarriage', p)
+        for k in range(4):
+            u = k * math.tau / 4 + .4
+            blades.box((.17, .05, .82), loc=(math.cos(u) * .5, .04, math.sin(u) * .5), rot=(0, -u + R90, 0), bevel=0,
+                       taper=(.7, 1))
+    # Upswept tail: the tall fin (10 % tall) and the tailplane.
+    fin = Planform(0, 2.75, 3.3, 4.85, 2.35, 1.1, .3, .12)
+    _surface(body, fin, _upright(0, .74, 0), lower=1.0, bevel=.012 if detail else 0)
+    stab = Planform(.15, 3.1, 4.25, 4.95, 1.45, .7, .18, .08, .74, .8)
+    for frame in (RIGHT, LEFT):
+        _surface(body, stab, frame, bevel=.012 if detail else 0)
+    a.part('Beacon', 'TeamGlow').sphere(.09, loc=(0, 4.85 + 1.0, .74 + 2.76), seg=6, rings=4)
+    if ramp_open:
+        # Cargo ramp lowered under the upswept tail, the dark hold above it, the upper door raised inside.
+        dark.box((1.3, 2.1, .3), loc=(0, 3.8, -.36), rot=(.49, 0, 0), bevel=0)
+        ramp = a.part('Ramp', 'Armor')
+        ramp.box((1.3, 1.8, .08), loc=(0, RAMP[0] + .9, RAMP[1] - .9 * RAMP[2] - .04), rot=(-RAMP[3], 0, 0), bevel=.02,
+                 seg=1)
+        steel.box((1.1, .1, .06), loc=(0, RAMP[0] + 1.8, RAMP[1] - 1.8 * RAMP[2] - .03), rot=(-RAMP[3], 0, 0),
+                  bevel=0)                                                                     # ramp toe
+        for sx in (-1, 1):
+            steel.box((.06, 1.7, .08), loc=(sx * .5, RAMP[0] + .9, RAMP[1] - .9 * RAMP[2] + .02),
+                      rot=(-RAMP[3], 0, 0), bevel=0)                                           # drone rails
+    else:
+        armor.box((1.2, 1.9, .05), loc=(0, 4.05, -.33), rot=(-.36, 0, 0), bevel=0)             # ramp outline
+    # Paratroop doors and cargo-door seams on the fuselage, a spine antenna fairing with two blade antennas, wing-root
+    # fairing seams and landing-gear door lines (pass 8a4).
+    for s in (-1, 1):
+        armor.box((.03, .95, 1.2), loc=(s * .862, 1.35, .05), bevel=0)
+        steel.box((.04, .06, .1), loc=(s * .868, 1.0, .1), bevel=0)
+        dark.box((.03, 1.7, .05), loc=(s * .805, -.3, -.98), bevel=0)
+        armor.box((.03, .4, .22), loc=(s * .35, -4.1, .86), bevel=0)
+    armor.box((.26, .7, .14), loc=(0, -2.2, .9), bevel=.02, seg=1)
+    for y in (-2.6, 2.0):
+        steel.box((.03, .24, .22), loc=(0, y, .98), bevel=0)
+    for y in (-3.4, -.2, 3.0):
+        dark.box((1.5, .03, .03), loc=(0, y, .62), bevel=0)
+    a.pivot('Point_exhaust', (C130_ENGINES[0][0], wing.le(3.96) + .3, wing.bottom(3.96) - .07))
+    a.pivot('Point_fire', (0, -.2, .95))
+    kit27.clean(a)
+    return wing
+
+
+def transport_plane(a):
+    """Airdrop transport (C-130 class), the shared four-turboprop airframe at its pass 8a4 rebuild: chamfered gear
+    sponsons, paratroop doors, a spine antenna fairing and panel seams on top of the old fuselage, wing, nacelles,
+    `Propeller` .. `Propeller_4`, tail and ramp (shut)."""
+    _c130_v2(a)
+
+
+UNITS4['transport_plane'] = transport_plane
+_OPT4['transport_plane'] = m2.BUILDERS['transport_plane'][1]
+
+
+def icbm(a):
+    """The nuke train's missile as a projectile (nose at -Y, origin at its centre) with a glowing motor in the
+    nozzle, on finer rings (16 sides) since it is seen big on its way up."""
+    _icbm(a, None, seg=16, detail=False)
+    h = ICBM_LENGTH / 2
+    a.part('Motor', 'Alloy').cyl(.3, .04, loc=(0, h + .03, 0), rot=FORWARD, seg=12, bevel=0)
+    kit27.clean(a)
+
+
+UNITS4['icbm'] = icbm
+_OPT4['icbm'] = mb_air3.BUILDERS['icbm'][1]
+
+
+def heavy_attack_heli(a):
+    """Coaxial-rotor attack helicopter (Ka-52 "Alligator" lineage), 15.8 m over the rotors: a radar
+    nose, a wide side-by-side cockpit under a framed canopy with big bulged side windows, engine
+    nacelles with dust-filter caps and outward exhausts high on the sides, a tall coaxial mast with
+    two stacked three-blade rotors, stub wings with a rocket pod and an anti-tank missile pack each and
+    countermeasure pods with twin Igla launchers at the tips, the 30 mm cannon on the right side, a
+    long boom ending in a stabiliser with twin end-plate fins and a small central fin, and tricycle
+    wheels. Origin on the ground under the cabin (wheels on z = 0). Pass 8a4: sharp-edged lofts and blocks, the library
+    rotor heads, chaff and antenna details."""
+    body = a.part('Fuselage', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Undercarriage', 'Undercarriage')
+    glass = a.part('Canopy', 'Glass')
+    frames = a.part('Canopy_frames', 'Armor')
+    panels = a.part('Panels', 'Team')
+    glow = a.part('Wing_lights', 'TeamGlow')
+    hull = [
+        _octagon(-7.85, .26, 1.5, 1.94),
+        _octagon(-7.45, .46, 1.32, 2.04),
+        _octagon(-7.0, .62, 1.2, 2.14),
+        _octagon(-6.4, .8, 1.06, 2.22),
+        _octagon(-5.6, .96, .98, 2.27),
+        _octagon(-4.2, 1.03, .96, 2.32),
+        _octagon(-3.0, 1.03, .98, 2.62),
+        _octagon(-.8, .98, 1.02, 2.76),
+        _octagon(1.0, .82, 1.15, 2.7),
+        _octagon(2.4, .52, 1.55, 2.56),
+    ]
+    kit27.sharp_loft(body, [[(0, -8.12, 1.72)]] + hull, chamfer=.05)                                      # radar nose
+    boom = [_octagon(2.2, .52, 1.58, 2.56), _octagon(5.4, .34, 1.86, 2.4), _octagon(7.0, .2, 1.98, 2.3)]
+    kit27.sharp_loft(body, boom + [[(0, 7.35, 2.14)]], chamfer=.04)
+    armor.lathe([(0, -8.16), (.1, -8.08), (.22, -7.9), (.27, -7.78)], loc=(0, 0, 1.72), rot=BACKWARD, seg=10)  # radome cap
+    # Side-by-side cockpit: a framed canopy wider than the fuselage, bulged side windows, a centre post.
+    st = [(-6.78, .52, 1.95, 2.24), (-6.25, .86, 1.88, 2.86), (-5.3, 1.0, 1.88, 3.06), (-4.3, 1.05, 1.9, 3.03),
+          (-3.82, .94, 1.94, 2.8)]
+    glass.loft([_bubble(y, w, z0, z1) for y, w, z0, z1 in st], bevel=.02, seg=1)
+    secs = [_bubble(y, w + .012, z0, z1 + .012) for y, w, z0, z1 in st]
+    for sec in secs[1:4]:
+        _hoop(frames, sec, r=.035)
+    for i in (2, 3, 4, 5):                                                                       # canopy rails
+        frames.tube([tuple(Vector(q[i]) + Vector((0, 0, .01))) for q in secs[1:]], .03, seg=5)
+    frames.tube([(0, -6.3, 2.88), (0, -5.3, 3.08), (0, -4.3, 3.05)], .035, seg=5)                 # centre spine
+    for s in (-1, 1):
+        frames.tube([(s * 1.02, -5.25, 1.93), (s * .98, -5.1, 2.9)], .03, seg=5)                  # door frames
+        armor.box((.05, 1.3, .36), loc=(s * 1.03, -4.9, 1.62), bevel=.012, seg=1)                 # cockpit armour
+        steel.bolts([(s * 1.06, y, z) for y in (-5.45, -4.35) for z in (1.5, 1.74)], r=.03, h=.03, rot=ACROSS,
+                    seg=6, bevel=0)
+    # Cheek sensor ball under the nose; air-data boom; lamps.
+    armor.cyl(.1, .2, loc=(0, -6.55, 1.02), seg=8, bevel=0)
+    armor.sphere(.3, loc=(0, -6.55, .86), seg=12, rings=8)
+    sensor = a.part('Sensor', 'Glass')
+    sensor.cyl(.14, .05, loc=(0, -6.83, .86), rot=FORWARD, seg=10, bevel=0)
+    sensor.cyl(.06, .05, loc=(.17, -6.79, .96), rot=FORWARD, seg=8, bevel=0)
+    steel.tube([(.3, -7.5, 1.96), (.32, -8.1, 2.0), (.33, -8.6, 2.02)], .025, seg=6)              # air-data boom
+    a.part('Lamps', 'Lamp').box((.22, .15, .06), loc=(0, -5.0, .95), bevel=.01, seg=1)
+    # Engine deck: nacelles on the upper sides, dust-filter caps, outward exhausts; gearbox fairing.
+    for s in (-1, 1):
+        x = s * 1.02
+        body.cyl(.46, 3.3, loc=(x, -1.1, 2.62), rot=FORWARD, seg=14, bevel=.1)
+        armor.cyl(.5, .5, loc=(x, -2.85, 2.62), rot=FORWARD, seg=14, bevel=.04, bseg=1)               # filter drum
+        armor.sphere((.46, .3, .46), loc=(x, -3.1, 2.62), seg=12, rings=6)                            # filter cap
+        dark.grille(.5, .32, loc=(x + s * .49, -2.85, 2.62), rot=(0, 0, s * R90), slats=3, depth=.04, thickness=.03)
+        _exhaust_duct(a, (s * 1.38, .85, 2.78), s * -.55, size=(.4, .9, .44), pitch=-.15)
+        panels.box((.04, 1.4, .4), loc=(x + s * .44, -1.0, 2.62), bevel=.01, seg=1)                  # cowl doors
+    kit27.block(body, (1.2, 3.6, .7), loc=(0, -1.05, 2.95), chamfer=.1, taper=(.7, .82), ends=(True, True))                 # z 2.6 .. 3.3
+    armor.cyl(.34, .12, loc=(0, -.95, 3.32), seg=14, bevel=.02, bseg=1)                              # mast base
+    steel.cyl(.2, .5, loc=(0, -.95, 3.52), seg=12, bevel=0)                                          # z 3.27 .. 3.77
+    steel.cyl(.15, 1.2, loc=(0, -.95, 4.3), seg=10, bevel=0)                                         # inter-rotor mast
+    for zz in (3.62, 4.62):
+        steel.cyl(.3, .05, loc=(0, -.95, zz), seg=12, bevel=0)                                       # swashplates
+        for k in range(3):
+            ang = k * math.tau / 3 + .4
+            steel.cyl(.02, .2, loc=(math.cos(ang) * .22, -.95 + math.sin(ang) * .22, zz + .12), seg=4, bevel=0)
+    a.part('Beacon', 'TeamGlow').sphere(.07, loc=(0, .8, _skin_z(hull, .8, 0) + .02), seg=8, rings=5)
+    steel.cyl(.015, .8, loc=(-.3, 2.3, 2.95), seg=5, bevel=0)                                        # antennas
+    steel.box((.025, .3, .2), loc=(0, -2.6, .92), rot=(.35, 0, 0), bevel=0, taper=(1, .5))
+    # Tail: stabiliser with twin end-plate fins, a small central fin, tail bumper.
+    body.box((3.4, .9, .12), loc=(0, 6.1, 2.28), bevel=.03, seg=1, taper=(1, .7))
+    for s in (-1, 1):
+        body.prism([(5.62, 1.72), (6.62, 1.82), (6.95, 3.22), (6.35, 3.25)], .1, loc=(s * 1.72, 0, 0), bevel=.025)
+        glow.box((.05, .14, .06), loc=(s * 1.78, 6.9, 3.1), bevel=0)
+    body.prism([(6.2, 2.3), (7.2, 2.22), (7.35, 3.05), (6.95, 3.08)], .14, bevel=.03)                # central fin
+    steel.limb((0, 6.6, 1.9), (0, 6.75, 1.45), .08, .08, bevel=0)                                    # tail bumper
+    a.part('Beacon', 'TeamGlow').sphere(.06, loc=(0, 7.35, 2.2), seg=8, rings=5)
+    for s in (-1, 1):                                                                                # flare dispensers
+        armor.box((.1, .6, .24), loc=(s * .44, 3.6, 2.35), bevel=.02, seg=1)
+        dark.grille(.5, .22, loc=(s * .5, 3.6, 2.35), rot=(0, 0, s * R90), slats=3, depth=.03, thickness=.03)
+    # Stub wings: inner pylon a 20-tube rocket pod, outer a six-round missile pack, a countermeasure pod
+    # with twin Igla launchers at each tip.
+    pylons = a.part('Pylons', 'Armor')
+    tubes = a.part('Launch_tubes', 'Fuel')
+    zw = 2.08
+    for s in (-1, 1):
+        kit27.block(body, (2.75, 1.35, .2), loc=(s * 2.3, -1.2, zw), chamfer=.04, taper=(1, .92), ends=(True, True))
+        # Inner: rocket pod.
+        x = s * 1.78
+        _pylon(pylons, x, -1.75, -.55, zw - .05, zw - .38, w=.14)
+        _rocket_pod(a, x, -2.3, zw - .7, .3, 1.95, tubes=9)
+        # Outer: missile pack, two rows of three tubes in a frame.
+        x = s * 2.82
+        _pylon(pylons, x, -1.7, -.6, zw - .05, zw - .3, w=.12)
+        armor.box((.62, 1.6, .06), loc=(x, -1.25, zw - .32), bevel=0)                               # launcher beam
+        for dx in (-.18, 0, .18):
+            for dz in (-.47, -.64):
+                tubes.cyl(.085, 2.0, loc=(x + dx, -1.25, zw + dz), rot=FORWARD, seg=8, bevel=.012, bseg=1)
+                dark.cyl(.062, .02, loc=(x + dx, -2.255, zw + dz), rot=FORWARD, seg=8, bevel=0)
+        for yy in (-1.95, -.6):
+            armor.box((.66, .12, .44), loc=(x, yy, zw - .56), bevel=.015, seg=1)                    # frame bands
+        a.part('Missile_bands', 'Hazard').box((.67, .06, .45), loc=(x, -1.1, zw - .56), bevel=0)
+        # Wingtip: countermeasure pod, its windows, and twin Igla launchers under it.
+        x = s * 3.72
+        cm = a.part('CM_pods', 'Armor')
+        cm.lathe([(0, 0), (.1, .08), (.2, .3), (.2, 1.3), (.14, 1.55), (0, 1.62)], loc=(x, -2.1, zw), rot=BACKWARD,
+                 seg=10)
+        sensor.box((.05, .14, .1), loc=(x + s * .19, -1.8, zw + .03), bevel=0)
+        sensor.box((.05, .14, .1), loc=(x + s * .19, -.72, zw + .03), bevel=0)
+        glow.box((.05, .14, .06), loc=(x + s * .18, -1.2, zw + .14), bevel=0)
+        pylons.box((.08, .9, .12), loc=(x, -1.3, zw - .22), bevel=0)
+        igla = a.part('Igla_tubes', 'Fuel')
+        for dx in (-.08, .08):
+            igla.cyl(.055, 1.7, loc=(x + dx, -1.35, zw - .34), rot=FORWARD, seg=8, bevel=0)
+            dark.cyl(.04, .02, loc=(x + dx, -2.205, zw - .34), rot=FORWARD, seg=8, bevel=0)
+        a.part('Igla_bands', 'Hazard').box((.28, .06, .13), loc=(x, -2.0, zw - .34), bevel=0)
+    a.pivot('Muzzle_rocket', (0, -2.32, zw - .7))
+    a.pivot('Muzzle_missile', (0, -2.27, zw - .555))
+    a.pivot('Muzzle_aam', (3.72 - .08, -2.23, zw - .34))
+    # The 30 mm cannon on the right (-X) of the fuselage under the wing root, on its own mount.
+    armor.box((.3, 1.4, .5), loc=(-1.0, -1.55, 1.45), bevel=.06, seg=1, taper=(.9, .9))            # gun fairing
+    g = pivot(a, 'Mount_gun', (-1.18, -1.7, 1.42))
+    gm = a.part('Gun_mount', 'Armor', g)
+    gm.box((.26, .9, .34), loc=(0, .1, 0), bevel=.04, seg=1)                                         # cradle
+    gm.box((.3, .5, .3), loc=(-.1, .4, .02), bevel=.03, seg=1)                                       # ammo box
+    gun = a.part('Gun', 'Steel', g)
+    gun.box((.18, .9, .2), loc=(0, -.6, 0), bevel=.02, seg=1)                                        # receiver
+    gun.cyl(.075, .6, loc=(0, -1.3, 0), rot=FORWARD, seg=10, bevel=0)                                # jacket
+    gun.cyl(.05, 2.1, loc=(0, -2.5, 0), rot=FORWARD, seg=8, bevel=0)                                 # barrel
+    gun.cyl(.08, .3, loc=(0, -3.6, 0), rot=FORWARD, seg=10, bevel=0)                                 # muzzle brake
+    a.part('Gun_bore', 'Undercarriage', g).cyl(.045, .02, loc=(0, -3.755, 0), rot=FORWARD, seg=8, bevel=0)
+    pivot(a, 'Muzzle_gun', (0, -3.77, 0), 'Mount_gun')
+    # Tricycle gear: twin nose wheels, main wheels on struts from the lower sides.
+    gear = a.part('Gear', 'Steel')
+    tyres = a.part('Tyres', 'Rubber')
+    for x in (-.17, .17):
+        tyres.cyl(.27, .15, loc=(x, -5.25, .27), rot=ACROSS, seg=10, bevel=.04, bseg=1)
+        gear.cyl(.12, .2, loc=(x * 1.02, -5.25, .27), rot=ACROSS, seg=8, bevel=0)
+    gear.cyl(.05, .5, loc=(0, -5.25, .27), rot=ACROSS, seg=6, bevel=0)
+    gear.limb((0, -5.25, .27), (0, -5.1, 1.02), .11, .11, bevel=.02, seg=1)
+    for s in (-1, 1):
+        body.loft([[(s * .96 + q[0], q[1], q[2]) for q in _sec(y, w, .72, 1.3, n=10)] for y, w in
+                   ((-.55, .12), (-.2, .26), (.9, .26), (1.35, .12))], bevel=.02, seg=1)             # gear sponsons
+        tyres.cyl(.36, .24, loc=(s * 1.3, .45, .36), rot=ACROSS, seg=12, bevel=.06, bseg=1)
+        gear.cyl(.17, .27, loc=(s * 1.3, .45, .36), rot=ACROSS, seg=8, bevel=0)
+        gear.limb((s * 1.2, .45, .36), (s * 1.0, .3, 1.0), .12, .12, bevel=.02, seg=1)
+    # Coaxial rotors: upper `Rotor`, lower `Rotor_2` (counter-rotating), blades 60 degrees apart.
+    parts.rotor_head(a, a.pivot('Rotor', (0, -.95, 4.95)), 3, 7.5, .5, hub=.34, phase=0.0, t=.06, cap=.02, stripe=.42,
+                     droop=.1)
+    _rotor_head_as(a, a.pivot('Rotor_2', (0, -.95, 3.82)), 'Rotor_2', 3, 7.5, .5, hub=.34, phase=math.pi / 3, t=.06,
+                   cap=.02, stripe=.42, droop=.1)
+    # Details: a tail-boom spine ridge, blade antennas, chaff cartridges in the flare dispensers' lee, a boom strake.
+    body.box((.1, 5.0, .08), loc=(0, 4.6, 2.62), bevel=0, taper=(1, .6))
+    for y in (-3.6, 3.2):
+        steel.box((.03, .3, .22), loc=(0, y, 3.0 if y < 0 else 2.78), bevel=0)
+    for s in (-1, 1):
+        steel.box((.06, .5, .05), loc=(s * .3, 4.4, 2.5), bevel=0)
+        steel.box((.1, .12, .12), loc=(s * 1.05, -4.6, 2.28), bevel=0)     # cockpit step grabs
+    kit27.clean(a)
+    a.post = [lambda a_: flip_spinner(a_, 'Rotor_2')]
+
+
+# ----------------------------------------------------------------------------- Su-25
+
+
+UNITS4['heavy_attack_heli'] = heavy_attack_heli
+_OPT4['heavy_attack_heli'] = mb_round6.BUILDERS['heavy_attack_heli'][1]
 
 
 BUILDERS.update({n: (fn, dict(_OPT4[n], ao_strength=.65)) for n, fn in UNITS4.items()})
