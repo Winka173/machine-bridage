@@ -1,0 +1,150 @@
+# Chapter 11 · Skygate (act 4). Enemy: Aurel, on the air himself for the first time; Orlov's last battle. Arc: break
+# the Skygate Array; Gungnir; Daedalus lands troops from orbit. Threads: a race against Icarus's launch; Venn's drone
+# programme in Aurel's hands; Orlov surrenders by radio and, once, does not sound cold.
+
+@c11m01 main=khai
+mission_start | khai | 1 | Cổng trước. Rồi tới bãi phóng. || The gate first. Then the launch site.
+time@10 | aurel | 2 | Giám đốc Aurel. Để ghi nhận: vệ tinh đầu tiên của chúng tôi đã lên quỹ đạo sáng nay. || Director Aurel. For the record: our first satellite reached orbit this morning.
+time@20 | linh | 2 | Lần đầu tiên ông ta tự lên sóng. Ông ta không cần giấu nữa. || The first time he has spoken himself. He no longer needs to hide.
+event_triggered | linh | 2 | Khoang đổ bộ đang rơi từ quỹ đạo xuống bãi đường ray. Tránh xa vùng rơi. || Drop pods coming down from orbit onto the rail yard. Stay clear of the landing zone.
+point_captured | linh | 3 | Một ngã đường ray là của ta. Toa tàu ở đây chở nhiên liệu tên lửa. || One crossing is ours. These wagons carry rocket fuel.
+objective_progress:last | khai | 2 | Còn một ngã. Cắt nó và cổng không còn nguồn tiếp tế. || One crossing left. Cut it and the gate has no supply.
+victory | khai | 1 | Bãi đường ray là của ta. Cổng đang đói. || The rail yard is ours. The gate is starving.
+defeat | aurel | 1 | Một sự chậm trễ không đáng kể. Lịch phóng vẫn giữ nguyên. || An insignificant delay. The launch schedule stands.
+
+@c11m02 main=linh
+mission_start | linh | 1 | Mọi trạm. Tôi cần tất cả. || Every station. I need all of them.
+point_captured | linh | 3 | Trạm thứ nhất: chảo radar nhìn thẳng lên, theo dõi một vật thể trên quỹ đạo. || First station: the dish looks straight up, tracking something in orbit.
+event_triggered | linh | 2 | Nhiễu toàn dải. Họ biết có người đang nhìn. || Jamming on every band. They know someone is looking.
+objective_progress:last | linh | 2 | Còn một trạm. Mưa làm hỏng ống kính, đi gần hơn. || One station left. The rain spoils the lenses; get closer.
+victory | linh | 1 | Tôi có cả ba trạm. Cổng Skygate dẫn tàu từ quỹ đạo xuống. Mỗi trạm là một con mắt. || All three stations. The Skygate guides ships down from orbit. Each station is one eye.
+defeat | linh | 1 | Ta chỉ thấy một phần. Sẽ có những con mắt ta không biết. || We saw only part of it. There will be eyes we do not know about.
+
+@c11m03 main=khai
+mission_start | khai | 1 | Làm nó mù, và tàu của ông ta sẽ hạ xuống chỗ ta muốn. || Blind it, and his ships land where we want.
+event_triggered | linh | 2 | Khoang đổ bộ đang rơi quanh chảo radar. Họ muốn giữ nó bằng mọi giá. || Drop pods landing round the dishes. They want them kept at any price.
+enemy_reinforcement | linh | 3 | Viện quân từ phía bắc đang tới chảo radar. Nhanh lên. || Reinforcements from the north heading for the dishes. Faster.
+event_triggered | hq | 2 | Bão tuyết. Chảo radar sẽ khó thấy, nhưng ta cũng khó bị thấy. || Snowstorm. The dishes will be harder to see, and so will we.
+timer_60s | khai | 1 | Một phút. Chảo radar phải câm trước khi tàu tiếp theo hạ xuống. || One minute. The dishes go quiet before the next ship comes down.
+victory | khai | 1 | Chảo radar đã gãy. Tàu của ông ta giờ hạ cánh mù. || The dishes are down. His ships land blind now.
+defeat | khai | 1 | Chảo radar còn nguyên. Tàu của ông ta sẽ hạ xuống chính xác. || The dishes stand. His ships will land on the mark.
+
+@c11m04 main=linh
+mission_start | linh | 1 | Bãi phóng phụ quanh cổng. Tìm chúng trước khi ông ta nạp nhiên liệu. || Side pads round the gate. Find them before he fuels them.
+time@10 | mai | 2 | Tìm bãi phóng. Tôi sẽ mang cờ lê tới. || Find the pads. I will bring the spanners.
+event_triggered | linh | 2 | Một thanh kim loại vừa rơi từ trên trời xuống đồi. Thử nghiệm. Nó tạo hố sâu ba mét. || A metal rod just fell from the sky onto the hill. A test. Three-metre crater.
+point_captured | mai | 3 | Một bãi phóng. Bồn nhiên liệu còn trống. Ta tới sớm. || One pad. The fuel tanks are empty. We are early.
+objective_progress:last | linh | 2 | Còn một bãi. Nó được che bằng lưới ngụy trang, khá vụng. || One pad left. Hidden under camouflage netting, clumsily.
+victory | mai | 1 | Ba bãi phóng, cả ba đều chưa sẵn sàng. Tôi đã tháo vài thứ cho chắc. || Three pads, none ready. I took a few things off, to be sure.
+defeat | linh | 1 | Ta không tìm thấy hết. Một bãi sẽ phóng mà ta không biết. || We did not find them all. One will launch without our knowing.
+
+@c11m05 main=khai
+mission_start | orlov | 1 | Gungnir đã có tọa độ của ông, đại tá. Nhiệm vụ bắn. || Gungnir has your grid, Colonel. Fire mission.
+boss_spawn | mai | 1 | Gungnir: siêu pháo trên đường ray. Nòng dài năm mươi mét. Đứng gần, nó không hạ nòng được. || Gungnir: a rail supergun. Fifty-metre barrel. Get close; it cannot depress that far.
+time@30 | dahl | 2 | Tôi đang nghe tiếng đạn của nó. Bốn mươi giây một phát. Tôi trả lời trong mười một. || I am listening to its shells. Forty seconds a round. I answer in eleven.
+event_triggered | linh | 2 | Pháo của Orlov bắn theo lưới, như ở đèo. Ông ta vẫn đếm từng giây. || Orlov's guns fire on the grid, as in the pass. He still counts every second.
+boss_part_destroyed | mai | 2 | Một bánh xe đường ray đã gãy. Nó không quay nòng được nữa. || A rail bogie is broken. It can no longer traverse.
+superweapon_warning | mai | 1 | Gungnir đang nạp phát chính. Rời khỏi vùng đỏ, ngay! || Gungnir is loading its main round. Out of the red, now!
+boss_phase_change | orlov | 1 | Tính toán lại. Toàn bộ khẩu đội, bắn tự do. || Recalculating. All batteries, fire at will.
+boss_hp:50 | dahl | 4 | Một nửa. Nòng của nó đang nóng đỏ. || Half. Its barrel is glowing red.
+boss_hp:25 | khai | 4 | Gần xong. Áp sát, đứng dưới nòng. || Nearly there. Close in, stand under the barrel.
+hq_below_50 | mai | 2 | Gungnir đang nã sở chỉ huy. Di chuyển nó ra khỏi tầm, nhanh! || Gungnir is shelling the HQ. Move it out of range, quickly!
+victory | orlov | 1 | Tính toán lại… không. Ngừng bắn. Đã hết rồi. || Recalculating... no. Cease fire. It is over.
+victory | orlov | 1 | Mùa đông năm nay đến muộn, đại tá. Tôi mệt rồi. || Winter came late this year, Colonel. I am tired.
+victory | khai | 1 | Đưa ông ấy vào. Đối xử như một người lính. || Bring him in. Treat him as a soldier.
+defeat | orlov | 1 | Tọa độ đã bị xóa. Lần này thì vĩnh viễn. || Coordinate erased. For good, this time.
+
+@c11m06 main=khai
+mission_start | khai | 1 | Giữ chỗ cao. || Hold the high ground.
+time@20 | linh | 2 | Aurel muốn lấy lại sườn đồi trên cổng. Pháo của ta chưa vào vị trí. || Aurel wants the ridge above the gate back. Our guns are not in place yet.
+event_triggered | linh | 2 | Một thanh kim loại nữa rơi từ quỹ đạo. Lần này gần ta hơn. || Another rod from orbit. Closer to us this time.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Pháo đang leo dốc. Giữ thêm chút nữa. || Halfway. The guns are climbing the slope. A little longer.
+point_lost | khai | 3 | Mất sườn đồi. Lấy lại trước khi pháo tới. || The ridge is lost. Take it back before the guns arrive.
+victory | khai | 1 | Pháo đã vào vị trí. Từ đây ta nhìn xuống cả cổng. || The guns are in place. From here we look down on the whole gate.
+defeat | aurel | 1 | Chỗ cao thuộc về những ai nhìn xa nhất. Hôm nay là chúng tôi. || High ground belongs to those who see furthest. Today, us.
+
+@c11m07 main=sen
+mission_start | khai | 1 | Đốt bồn nhiên liệu tên lửa, và hạ tàu sân bay drone. || Burn the rocket's fuel tanks and bring the drone carrier down.
+boss_spawn | sen | 1 | Locust. Aurel đã hoàn thiện thiết kế của tôi. || Locust. Aurel finished my design.
+time@40 | sen | 2 | Ông ta sửa đúng chỗ giá phóng bị kẹt. Ông ta đọc sổ tay của tôi. || He fixed the jamming rack. He read my notebooks.
+boss_part_destroyed | sen | 2 | Một cửa khoang đã vỡ. Nó vẫn có điểm yếu tôi để lại: bộ làm mát pin. || One hangar door is broken. It still has the weak point I left: the battery cooler.
+objective_progress:1/2 | linh | 2 | Nửa số bồn nhiên liệu đã cháy. Khói đen phủ kín bãi phóng. || Half the fuel tanks are burning. Black smoke over the whole pad.
+boss_phase_change | sen | 1 | Nó chuyển sang bảo vệ bồn. Tôi đã viết chế độ đó cho đội cứu hỏa. || It is switching to guard the tanks. I wrote that mode for fire crews.
+superweapon_warning | sen | 1 | Nó sắp thả cả bầy. Rời khỏi vùng đỏ, tản ra! || It is about to drop the whole swarm. Out of the red, spread out!
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó bay loạng choạng như say rượu! || Half! It is wobbling like it is drunk!
+event_triggered | linh | 2 | Một đội đánh phá đang nhắm vào xe đạn của ta. Locust chỉ là màn che. || A raiding party is after our ammunition trucks. The Locust is only a screen.
+timer_60s | khai | 1 | Một phút. Bồn cuối và con Locust, hai việc, một phút. || One minute. The last tank and the Locust: two jobs, one minute.
+victory | sen | 1 | Locust rơi. Tôi ước ông ta chưa bao giờ đọc sổ tay của tôi. || The Locust is down. I wish he had never read my notebooks.
+defeat | sen | 1 | Bồn nhiên liệu còn đầy. Icarus sẽ có đủ để bay. || The fuel tanks are still full. Icarus will have enough to fly.
+
+@c11m11 main=mai
+mission_start | mai | 1 | Đưa kỹ sư của tôi tới nơi nguyên vẹn. Tôi cần thứ trong đống xác đó. || Get my engineers there in one piece. I need what is in that wreck.
+event_triggered | dieuhau | 2 | Tôi dọn đường cho đoàn xe. Cứ đi theo khói của tôi. || Clearing the road for the convoy. Follow my smoke.
+objective_progress:1/3 | mai | 2 | Xe đầu đã tới. Họ đang cắt vào xác bãi phóng. || First truck there. They are cutting into the pad wreck.
+event_triggered | hq | 2 | Sương tan. Khoang đổ bộ sẽ thấy đoàn xe rõ hơn. || The fog is lifting. The drop pods will see the convoy better.
+critical_failure_imminent | mai | 1 | Thêm một xe là ta mất đội cắt. Che chiếc cuối. || One more truck and we lose the cutting crew. Cover the last one.
+victory | mai | 1 | Có rồi. Máy tính dẫn đường, gần như nguyên vẹn. Đừng hỏi để làm gì. || Got it. A guidance computer, nearly intact. Don't ask what for.
+defeat | mai | 1 | Không tới được. Họ sẽ dọn xác trước khi ta quay lại. || We did not get there. They will clear the wreck before we come back.
+
+@c11m08 main=dieuhau
+mission_start | dieuhau | 1 | Không có nhiên liệu, không có yểm trợ trên không. Mang nhiên liệu cho tôi. || No fuel, no air cover. Bring me my fuel.
+first_unit_type_seen | dieuhau | 2 | Máy bay đánh chặn đêm! Chúng nhắm vào xe bồn. Phòng không lên! || Night interceptors! They are after the tankers. Flak up!
+objective_progress:1/3 | okoye | 2 | Xe bồn đầu tiên đã tới đường băng. Đủ cho hai phi vụ. || First tanker at the strip. Enough for two sorties.
+event_triggered | hq | 2 | Bão tuyết trên đèo. Xe bồn đi chậm, giữ khoảng cách. || Snowstorm on the pass. The tankers slow; keep your spacing.
+critical_failure_imminent | khai | 1 | Thêm một xe bồn là không đủ nhiên liệu. Che chiếc cuối. || One more tanker and there is not enough fuel. Cover the last one.
+victory | dieuhau | 1 | Nhiên liệu đã tới. Phi đội của tôi bay được cả tuần. || The fuel is here. My squadron can fly all week.
+defeat | dieuhau | 1 | Không đủ nhiên liệu. Chúng tôi sẽ phải chọn phi vụ nào quan trọng nhất. || Not enough fuel. We will have to choose which sorties matter most.
+
+@c11m09 main=khai
+mission_start | aurel | 1 | Cổng đã đóng, đại tá. Vĩnh viễn. || The gate is closed, Colonel. Permanently.
+mission_start | khai | 1 | Cổng nào cũng có bản lề. San phẳng sở chỉ huy. || Every gate has hinges. Level the HQ.
+general_tactic_change | linh | 3 | Chỉ huy cổng đổi sang phòng thủ căn cứ. Ông ta kéo hết về quanh sở chỉ huy. || The gate commander has gone to base defence. Everything pulled round the HQ.
+event_triggered | linh | 2 | Nhiễu toàn dải. Pháo của ta sẽ bắn theo bản đồ. || Jamming everywhere. Our guns fire by the map.
+expensive_unit_lost | khai | 3 | Mất xe nặng. Khoang đổ bộ rơi sau lưng ta, canh cả hai hướng. || A heavy lost. Drop pods are landing behind us; watch both ways.
+victory | khai | 1 | Sở chỉ huy cổng đã đổ. Đèo đã mở về phía bãi phóng. || The gate HQ is down. The pass is open towards the launch site.
+defeat | aurel | 1 | Như tôi đã nói. Vĩnh viễn. || As I said. Permanently.
+
+@c11m12 main=linh
+mission_start | aurel | 1 | Các anh muốn làm tôi mù? Tôi còn mắt khác, trên quỹ đạo. || You would put out my eyes? I have others, in orbit.
+mission_start | linh | 1 | Radar của dãy ăng-ten chạy bằng bồn nhiên liệu dưới chân cột. Đốt chúng. || The Array's radar runs on the tanks at the foot of its masts. Burn them.
+boss_spawn | sen | 1 | Một Locust nữa. Cùng bản sửa của Aurel. Bộ làm mát pin vẫn là chỗ yếu. || Another Locust. Aurel's same revision. The battery cooler is still its weak point.
+boss_part_destroyed | sen | 2 | Bộ làm mát đã vỡ. Nó sẽ phải hạ cánh trong vài phút. || The cooler is gone. It will have to land within minutes.
+objective_progress:1/2 | linh | 2 | Nửa số bồn đã cháy. Một nửa dãy ăng-ten đã tắt. || Half the tanks are burning. Half the Array is dark.
+boss_phase_change | linh | 1 | Locust hạ thấp che bồn cuối. Đánh nó khi nó dừng lại. || The Locust is dropping low over the last tank. Hit it when it stops.
+superweapon_warning | sen | 1 | Nó sắp thả cả bầy xuống bồn cuối. Rời khỏi vùng đỏ! || It is about to drop the whole swarm on the last tank. Out of the red!
+event_triggered | hq | 2 | Sương đang tan. Dãy ăng-ten sẽ thấy ta, ta cũng thấy nó. || The fog is lifting. The Array will see us, and we it.
+boss_hp:50 | dieuhau | 4 | Một nửa! Bầy của nó đang thưa dần! || Half! Its swarm is thinning!
+timer_60s | khai | 1 | Một phút. Bồn cuối, ngay bây giờ. || One minute. The last tank, right now.
+victory | linh | 1 | Dãy ăng-ten đã tắt. Ở Helion họ sẽ nhìn qua sương mù. || The Array is dark. At Helion they will be looking through fog.
+defeat | aurel | 1 | Mắt của tôi vẫn mở. Trên mặt đất và trên trời. || My eyes are still open. On the ground and in the sky.
+
+@c11m13 main=khai
+mission_start | khai | 1 | Vào, nhìn, ra. Không ai dừng lại đánh nhau. || In, look, out. Nobody stops to fight.
+point_captured | linh | 3 | Bãi một: trống. Bãi hai: trống. Đi tiếp. || Pad one: empty. Pad two: empty. Keep going.
+event_triggered | linh | 2 | Một thanh kim loại nữa từ quỹ đạo. Họ đang thử độ chính xác trên chính đất của họ. || Another rod from orbit. They are testing their aim on their own ground.
+objective_progress:last | khai | 2 | Còn bãi cuối. Nhìn rồi rút, trước khi dãy ăng-ten quay súng. || The last pad. Look and go, before the Array turns its guns.
+victory | linh | 1 | Bốn bãi, một bãi đã nạp đầy. Giờ ta đi trước họ một ngày. || Four pads, one full. We are a day ahead of them now.
+defeat | khai | 1 | Ta bị chặn trên đường công vụ. Không biết bãi nào sẵn sàng. || We were cut off on the service road. We do not know which pad is ready.
+
+@c11m10 main=khai
+mission_start | khai | 1 | Cổng, lữ đoàn. Cánh cửa cuối cùng trước bãi phóng. || The gate, Brigade. The last door before the launch site.
+time@20 | aurel | 2 | Ông vẫn nghĩ đây là chiến tranh, đại tá. Đây là một dự án. Dự án luôn hoàn thành. || You still think this is a war, Colonel. It is a project. Projects get finished.
+phase_start:2 | linh | 1 | Radar đã mù. Chọn đòn tiếp: kho nhiên liệu hay trạm điều khiển. || The radars are blind. Next: the fuel depot or the control station.
+phase_start:4 | sen | 1 | Daedalus đang hạ xuống từ quỹ đạo. Nó mang quân đổ bộ. Chương trình drone của tôi lái nó. || Daedalus is coming down from orbit, full of troops. My drone programme flies it.
+boss_spawn | mai | 1 | Daedalus: tàu đổ bộ từ quỹ đạo. Khi chạm đất, cửa khoang mở. Đó là lúc nó yếu nhất. || Daedalus, an orbital lander. When it touches down its bays open: its weakest moment.
+boss_part_destroyed | mai | 2 | Một khoang đổ bộ đã cháy. Quân bên trong không ra được nữa. || One troop bay is burning. Nobody inside it is getting out.
+superweapon_warning | mai | 1 | Nó sắp đốt động cơ hãm ngay trên đầu ta. Rời khỏi vùng đỏ! || It is about to fire its braking engines right over us. Out of the red!
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó không cất cánh lại được nữa đâu! || Half! It is not taking off again!
+boss_hp:25 | sen | 4 | Bộ điều khiển drone của nó đang tắt. Tôi nghe thấy nó đếm ngược về không. || Its drone controller is shutting down. I can hear it counting to zero.
+phase_start:5 | khai | 1 | Daedalus đã gục. Giữ cổng, quân đổ bộ sẽ đánh lần cuối. || Daedalus is down. Hold the gate; the landed troops will make a last push.
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Cổng này không được mất. || The HQ is critical. We do not lose this gate.
+victory | khai | 1 | Skygate đã sập. Điểm dừng tiếp theo: Helion. || The Skygate is down. Next stop, Helion.
+victory | aurel | 1 | Một trở ngại. Tôi sẽ gặp ông ở Helion, đại tá. Lần này tận mặt. || An obstacle. I will see you at Helion, Colonel. In person, this time.
+defeat | aurel | 1 | Cổng vẫn mở cho tàu của tôi. Bầu trời vẫn là của tôi. || The gate is open to my ships. The sky is still mine.
+
+@c11s1 main=linh
+mission_start | linh | 1 | Xe nhiên liệu, đã đánh dấu. Chiếc nào cũng quan trọng. || Fuel trucks, marked. Every one counts.
+objective_progress:1/2 | linh | 2 | Một xe đã dừng. Nhiên liệu tên lửa, đủ cho một lần phóng thử. || One truck stopped. Rocket fuel, enough for one test launch.
+event_triggered | linh | 2 | Khoang đổ bộ rơi gần xe còn lại. Họ muốn hộ tống nó. || Drop pods landing near the other truck. They want to escort it.
+victory | linh | 1 | Cả hai xe đã dừng. Bãi phóng sẽ đói thêm vài ngày. || Both trucks stopped. The pads go hungry a few more days.
+defeat | linh | 1 | Nhiên liệu đã tới bãi phóng. Đồng hồ của ta chạy nhanh hơn. || The fuel reached the pads. Our clock runs faster now.

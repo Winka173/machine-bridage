@@ -1,0 +1,1265 @@
+{
+"chapter": 11,
+"missions": {
+"c11m01": {
+"main": "khai"
+},
+"c11m02": {
+"main": "linh"
+},
+"c11m03": {
+"main": "khai"
+},
+"c11m04": {
+"main": "linh"
+},
+"c11m05": {
+"main": "khai"
+},
+"c11m06": {
+"main": "khai"
+},
+"c11m07": {
+"main": "sen"
+},
+"c11m11": {
+"main": "mai"
+},
+"c11m08": {
+"main": "dieuhau"
+},
+"c11m09": {
+"main": "khai"
+},
+"c11m12": {
+"main": "linh"
+},
+"c11m13": {
+"main": "khai"
+},
+"c11m10": {
+"main": "khai"
+},
+"c11s1": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c11m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m01.01",
+"en": "The gate first. Then the launch site.",
+"vi": "Cổng trước. Rồi tới bãi phóng."
+},
+{
+"mission": "c11m01",
+"trigger": "time",
+"speaker": "aurel",
+"priority": 2,
+"once": true,
+"key": "script.c11m01.02",
+"en": "Director Aurel. For the record: our first satellite reached orbit this morning.",
+"vi": "Giám đốc Aurel. Để ghi nhận: vệ tinh đầu tiên của chúng tôi đã lên quỹ đạo sáng nay.",
+"at": 10.0
+},
+{
+"mission": "c11m01",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m01.03",
+"en": "The first time he has spoken himself. He no longer needs to hide.",
+"vi": "Lần đầu tiên ông ta tự lên sóng. Ông ta không cần giấu nữa.",
+"at": 20.0
+},
+{
+"mission": "c11m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m01.04",
+"en": "Drop pods coming down from orbit onto the rail yard. Stay clear of the landing zone.",
+"vi": "Khoang đổ bộ đang rơi từ quỹ đạo xuống bãi đường ray. Tránh xa vùng rơi."
+},
+{
+"mission": "c11m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c11m01.05",
+"en": "One crossing is ours. These wagons carry rocket fuel.",
+"vi": "Một ngã đường ray là của ta. Toa tàu ở đây chở nhiên liệu tên lửa."
+},
+{
+"mission": "c11m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c11m01.06",
+"en": "One crossing left. Cut it and the gate has no supply.",
+"vi": "Còn một ngã. Cắt nó và cổng không còn nguồn tiếp tế.",
+"arg": "last"
+},
+{
+"mission": "c11m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m01.07",
+"en": "The rail yard is ours. The gate is starving.",
+"vi": "Bãi đường ray là của ta. Cổng đang đói."
+},
+{
+"mission": "c11m01",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m01.08",
+"en": "An insignificant delay. The launch schedule stands.",
+"vi": "Một sự chậm trễ không đáng kể. Lịch phóng vẫn giữ nguyên."
+},
+{
+"mission": "c11m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m02.01",
+"en": "Every station. I need all of them.",
+"vi": "Mọi trạm. Tôi cần tất cả."
+},
+{
+"mission": "c11m02",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c11m02.02",
+"en": "First station: the dish looks straight up, tracking something in orbit.",
+"vi": "Trạm thứ nhất: chảo radar nhìn thẳng lên, theo dõi một vật thể trên quỹ đạo."
+},
+{
+"mission": "c11m02",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m02.03",
+"en": "Jamming on every band. They know someone is looking.",
+"vi": "Nhiễu toàn dải. Họ biết có người đang nhìn."
+},
+{
+"mission": "c11m02",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m02.04",
+"en": "One station left. The rain spoils the lenses; get closer.",
+"vi": "Còn một trạm. Mưa làm hỏng ống kính, đi gần hơn.",
+"arg": "last"
+},
+{
+"mission": "c11m02",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m02.05",
+"en": "All three stations. The Skygate guides ships down from orbit. Each station is one eye.",
+"vi": "Tôi có cả ba trạm. Cổng Skygate dẫn tàu từ quỹ đạo xuống. Mỗi trạm là một con mắt."
+},
+{
+"mission": "c11m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m02.06",
+"en": "We saw only part of it. There will be eyes we do not know about.",
+"vi": "Ta chỉ thấy một phần. Sẽ có những con mắt ta không biết."
+},
+{
+"mission": "c11m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m03.01",
+"en": "Blind it, and his ships land where we want.",
+"vi": "Làm nó mù, và tàu của ông ta sẽ hạ xuống chỗ ta muốn."
+},
+{
+"mission": "c11m03",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m03.02",
+"en": "Drop pods landing round the dishes. They want them kept at any price.",
+"vi": "Khoang đổ bộ đang rơi quanh chảo radar. Họ muốn giữ nó bằng mọi giá."
+},
+{
+"mission": "c11m03",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c11m03.03",
+"en": "Reinforcements from the north heading for the dishes. Faster.",
+"vi": "Viện quân từ phía bắc đang tới chảo radar. Nhanh lên."
+},
+{
+"mission": "c11m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c11m03.04",
+"en": "Snowstorm. The dishes will be harder to see, and so will we.",
+"vi": "Bão tuyết. Chảo radar sẽ khó thấy, nhưng ta cũng khó bị thấy."
+},
+{
+"mission": "c11m03",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m03.05",
+"en": "One minute. The dishes go quiet before the next ship comes down.",
+"vi": "Một phút. Chảo radar phải câm trước khi tàu tiếp theo hạ xuống."
+},
+{
+"mission": "c11m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m03.06",
+"en": "The dishes are down. His ships land blind now.",
+"vi": "Chảo radar đã gãy. Tàu của ông ta giờ hạ cánh mù."
+},
+{
+"mission": "c11m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m03.07",
+"en": "The dishes stand. His ships will land on the mark.",
+"vi": "Chảo radar còn nguyên. Tàu của ông ta sẽ hạ xuống chính xác."
+},
+{
+"mission": "c11m04",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m04.01",
+"en": "Side pads round the gate. Find them before he fuels them.",
+"vi": "Bãi phóng phụ quanh cổng. Tìm chúng trước khi ông ta nạp nhiên liệu."
+},
+{
+"mission": "c11m04",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c11m04.02",
+"en": "Find the pads. I will bring the spanners.",
+"vi": "Tìm bãi phóng. Tôi sẽ mang cờ lê tới.",
+"at": 10.0
+},
+{
+"mission": "c11m04",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m04.03",
+"en": "A metal rod just fell from the sky onto the hill. A test. Three-metre crater.",
+"vi": "Một thanh kim loại vừa rơi từ trên trời xuống đồi. Thử nghiệm. Nó tạo hố sâu ba mét."
+},
+{
+"mission": "c11m04",
+"trigger": "point_captured",
+"speaker": "mai",
+"priority": 3,
+"once": true,
+"key": "script.c11m04.04",
+"en": "One pad. The fuel tanks are empty. We are early.",
+"vi": "Một bãi phóng. Bồn nhiên liệu còn trống. Ta tới sớm."
+},
+{
+"mission": "c11m04",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m04.05",
+"en": "One pad left. Hidden under camouflage netting, clumsily.",
+"vi": "Còn một bãi. Nó được che bằng lưới ngụy trang, khá vụng.",
+"arg": "last"
+},
+{
+"mission": "c11m04",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m04.06",
+"en": "Three pads, none ready. I took a few things off, to be sure.",
+"vi": "Ba bãi phóng, cả ba đều chưa sẵn sàng. Tôi đã tháo vài thứ cho chắc."
+},
+{
+"mission": "c11m04",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m04.07",
+"en": "We did not find them all. One will launch without our knowing.",
+"vi": "Ta không tìm thấy hết. Một bãi sẽ phóng mà ta không biết."
+},
+{
+"mission": "c11m05",
+"trigger": "mission_start",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.01",
+"en": "Gungnir has your grid, Colonel. Fire mission.",
+"vi": "Gungnir đã có tọa độ của ông, đại tá. Nhiệm vụ bắn."
+},
+{
+"mission": "c11m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.02",
+"en": "Gungnir: a rail supergun. Fifty-metre barrel. Get close; it cannot depress that far.",
+"vi": "Gungnir: siêu pháo trên đường ray. Nòng dài năm mươi mét. Đứng gần, nó không hạ nòng được."
+},
+{
+"mission": "c11m05",
+"trigger": "time",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c11m05.03",
+"en": "I am listening to its shells. Forty seconds a round. I answer in eleven.",
+"vi": "Tôi đang nghe tiếng đạn của nó. Bốn mươi giây một phát. Tôi trả lời trong mười một.",
+"at": 30.0
+},
+{
+"mission": "c11m05",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m05.04",
+"en": "Orlov's guns fire on the grid, as in the pass. He still counts every second.",
+"vi": "Pháo của Orlov bắn theo lưới, như ở đèo. Ông ta vẫn đếm từng giây."
+},
+{
+"mission": "c11m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c11m05.05",
+"en": "A rail bogie is broken. It can no longer traverse.",
+"vi": "Một bánh xe đường ray đã gãy. Nó không quay nòng được nữa."
+},
+{
+"mission": "c11m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.06",
+"en": "Gungnir is loading its main round. Out of the red, now!",
+"vi": "Gungnir đang nạp phát chính. Rời khỏi vùng đỏ, ngay!"
+},
+{
+"mission": "c11m05",
+"trigger": "boss_phase_change",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.07",
+"en": "Recalculating. All batteries, fire at will.",
+"vi": "Tính toán lại. Toàn bộ khẩu đội, bắn tự do."
+},
+{
+"mission": "c11m05",
+"trigger": "boss_hp",
+"speaker": "dahl",
+"priority": 4,
+"once": true,
+"key": "script.c11m05.08",
+"en": "Half. Its barrel is glowing red.",
+"vi": "Một nửa. Nòng của nó đang nóng đỏ.",
+"arg": "50"
+},
+{
+"mission": "c11m05",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c11m05.09",
+"en": "Nearly there. Close in, stand under the barrel.",
+"vi": "Gần xong. Áp sát, đứng dưới nòng.",
+"arg": "25"
+},
+{
+"mission": "c11m05",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c11m05.10",
+"en": "Gungnir is shelling the HQ. Move it out of range, quickly!",
+"vi": "Gungnir đang nã sở chỉ huy. Di chuyển nó ra khỏi tầm, nhanh!"
+},
+{
+"mission": "c11m05",
+"trigger": "victory",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.11",
+"en": "Recalculating... no. Cease fire. It is over.",
+"vi": "Tính toán lại… không. Ngừng bắn. Đã hết rồi."
+},
+{
+"mission": "c11m05",
+"trigger": "victory",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.12",
+"en": "Winter came late this year, Colonel. I am tired.",
+"vi": "Mùa đông năm nay đến muộn, đại tá. Tôi mệt rồi."
+},
+{
+"mission": "c11m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.13",
+"en": "Bring him in. Treat him as a soldier.",
+"vi": "Đưa ông ấy vào. Đối xử như một người lính."
+},
+{
+"mission": "c11m05",
+"trigger": "defeat",
+"speaker": "orlov",
+"priority": 1,
+"once": true,
+"key": "script.c11m05.14",
+"en": "Coordinate erased. For good, this time.",
+"vi": "Tọa độ đã bị xóa. Lần này thì vĩnh viễn."
+},
+{
+"mission": "c11m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m06.01",
+"en": "Hold the high ground.",
+"vi": "Giữ chỗ cao."
+},
+{
+"mission": "c11m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m06.02",
+"en": "Aurel wants the ridge above the gate back. Our guns are not in place yet.",
+"vi": "Aurel muốn lấy lại sườn đồi trên cổng. Pháo của ta chưa vào vị trí.",
+"at": 20.0
+},
+{
+"mission": "c11m06",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m06.03",
+"en": "Another rod from orbit. Closer to us this time.",
+"vi": "Một thanh kim loại nữa rơi từ quỹ đạo. Lần này gần ta hơn."
+},
+{
+"mission": "c11m06",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c11m06.04",
+"en": "Halfway. The guns are climbing the slope. A little longer.",
+"vi": "Nửa thời gian. Pháo đang leo dốc. Giữ thêm chút nữa.",
+"arg": "1/2"
+},
+{
+"mission": "c11m06",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c11m06.05",
+"en": "The ridge is lost. Take it back before the guns arrive.",
+"vi": "Mất sườn đồi. Lấy lại trước khi pháo tới."
+},
+{
+"mission": "c11m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m06.06",
+"en": "The guns are in place. From here we look down on the whole gate.",
+"vi": "Pháo đã vào vị trí. Từ đây ta nhìn xuống cả cổng."
+},
+{
+"mission": "c11m06",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m06.07",
+"en": "High ground belongs to those who see furthest. Today, us.",
+"vi": "Chỗ cao thuộc về những ai nhìn xa nhất. Hôm nay là chúng tôi."
+},
+{
+"mission": "c11m07",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.01",
+"en": "Burn the rocket's fuel tanks and bring the drone carrier down.",
+"vi": "Đốt bồn nhiên liệu tên lửa, và hạ tàu sân bay drone."
+},
+{
+"mission": "c11m07",
+"trigger": "boss_spawn",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.02",
+"en": "Locust. Aurel finished my design.",
+"vi": "Locust. Aurel đã hoàn thiện thiết kế của tôi."
+},
+{
+"mission": "c11m07",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c11m07.03",
+"en": "He fixed the jamming rack. He read my notebooks.",
+"vi": "Ông ta sửa đúng chỗ giá phóng bị kẹt. Ông ta đọc sổ tay của tôi.",
+"at": 40.0
+},
+{
+"mission": "c11m07",
+"trigger": "boss_part_destroyed",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c11m07.04",
+"en": "One hangar door is broken. It still has the weak point I left: the battery cooler.",
+"vi": "Một cửa khoang đã vỡ. Nó vẫn có điểm yếu tôi để lại: bộ làm mát pin."
+},
+{
+"mission": "c11m07",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m07.05",
+"en": "Half the fuel tanks are burning. Black smoke over the whole pad.",
+"vi": "Nửa số bồn nhiên liệu đã cháy. Khói đen phủ kín bãi phóng.",
+"arg": "1/2"
+},
+{
+"mission": "c11m07",
+"trigger": "boss_phase_change",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.06",
+"en": "It is switching to guard the tanks. I wrote that mode for fire crews.",
+"vi": "Nó chuyển sang bảo vệ bồn. Tôi đã viết chế độ đó cho đội cứu hỏa."
+},
+{
+"mission": "c11m07",
+"trigger": "superweapon_warning",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.07",
+"en": "It is about to drop the whole swarm. Out of the red, spread out!",
+"vi": "Nó sắp thả cả bầy. Rời khỏi vùng đỏ, tản ra!"
+},
+{
+"mission": "c11m07",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c11m07.08",
+"en": "Half! It is wobbling like it is drunk!",
+"vi": "Một nửa! Nó bay loạng choạng như say rượu!",
+"arg": "50"
+},
+{
+"mission": "c11m07",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m07.09",
+"en": "A raiding party is after our ammunition trucks. The Locust is only a screen.",
+"vi": "Một đội đánh phá đang nhắm vào xe đạn của ta. Locust chỉ là màn che."
+},
+{
+"mission": "c11m07",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.10",
+"en": "One minute. The last tank and the Locust: two jobs, one minute.",
+"vi": "Một phút. Bồn cuối và con Locust, hai việc, một phút."
+},
+{
+"mission": "c11m07",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.11",
+"en": "The Locust is down. I wish he had never read my notebooks.",
+"vi": "Locust rơi. Tôi ước ông ta chưa bao giờ đọc sổ tay của tôi."
+},
+{
+"mission": "c11m07",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m07.12",
+"en": "The fuel tanks are still full. Icarus will have enough to fly.",
+"vi": "Bồn nhiên liệu còn đầy. Icarus sẽ có đủ để bay."
+},
+{
+"mission": "c11m11",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m11.01",
+"en": "Get my engineers there in one piece. I need what is in that wreck.",
+"vi": "Đưa kỹ sư của tôi tới nơi nguyên vẹn. Tôi cần thứ trong đống xác đó."
+},
+{
+"mission": "c11m11",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c11m11.02",
+"en": "Clearing the road for the convoy. Follow my smoke.",
+"vi": "Tôi dọn đường cho đoàn xe. Cứ đi theo khói của tôi."
+},
+{
+"mission": "c11m11",
+"trigger": "objective_progress",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c11m11.03",
+"en": "First truck there. They are cutting into the pad wreck.",
+"vi": "Xe đầu đã tới. Họ đang cắt vào xác bãi phóng.",
+"arg": "1/3"
+},
+{
+"mission": "c11m11",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c11m11.04",
+"en": "The fog is lifting. The drop pods will see the convoy better.",
+"vi": "Sương tan. Khoang đổ bộ sẽ thấy đoàn xe rõ hơn."
+},
+{
+"mission": "c11m11",
+"trigger": "critical_failure_imminent",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m11.05",
+"en": "One more truck and we lose the cutting crew. Cover the last one.",
+"vi": "Thêm một xe là ta mất đội cắt. Che chiếc cuối."
+},
+{
+"mission": "c11m11",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m11.06",
+"en": "Got it. A guidance computer, nearly intact. Don't ask what for.",
+"vi": "Có rồi. Máy tính dẫn đường, gần như nguyên vẹn. Đừng hỏi để làm gì."
+},
+{
+"mission": "c11m11",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m11.07",
+"en": "We did not get there. They will clear the wreck before we come back.",
+"vi": "Không tới được. Họ sẽ dọn xác trước khi ta quay lại."
+},
+{
+"mission": "c11m08",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c11m08.01",
+"en": "No fuel, no air cover. Bring me my fuel.",
+"vi": "Không có nhiên liệu, không có yểm trợ trên không. Mang nhiên liệu cho tôi."
+},
+{
+"mission": "c11m08",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c11m08.02",
+"en": "Night interceptors! They are after the tankers. Flak up!",
+"vi": "Máy bay đánh chặn đêm! Chúng nhắm vào xe bồn. Phòng không lên!"
+},
+{
+"mission": "c11m08",
+"trigger": "objective_progress",
+"speaker": "okoye",
+"priority": 2,
+"once": true,
+"key": "script.c11m08.03",
+"en": "First tanker at the strip. Enough for two sorties.",
+"vi": "Xe bồn đầu tiên đã tới đường băng. Đủ cho hai phi vụ.",
+"arg": "1/3"
+},
+{
+"mission": "c11m08",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c11m08.04",
+"en": "Snowstorm on the pass. The tankers slow; keep your spacing.",
+"vi": "Bão tuyết trên đèo. Xe bồn đi chậm, giữ khoảng cách."
+},
+{
+"mission": "c11m08",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m08.05",
+"en": "One more tanker and there is not enough fuel. Cover the last one.",
+"vi": "Thêm một xe bồn là không đủ nhiên liệu. Che chiếc cuối."
+},
+{
+"mission": "c11m08",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c11m08.06",
+"en": "The fuel is here. My squadron can fly all week.",
+"vi": "Nhiên liệu đã tới. Phi đội của tôi bay được cả tuần."
+},
+{
+"mission": "c11m08",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c11m08.07",
+"en": "Not enough fuel. We will have to choose which sorties matter most.",
+"vi": "Không đủ nhiên liệu. Chúng tôi sẽ phải chọn phi vụ nào quan trọng nhất."
+},
+{
+"mission": "c11m09",
+"trigger": "mission_start",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m09.01",
+"en": "The gate is closed, Colonel. Permanently.",
+"vi": "Cổng đã đóng, đại tá. Vĩnh viễn."
+},
+{
+"mission": "c11m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m09.02",
+"en": "Every gate has hinges. Level the HQ.",
+"vi": "Cổng nào cũng có bản lề. San phẳng sở chỉ huy."
+},
+{
+"mission": "c11m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c11m09.03",
+"en": "The gate commander has gone to base defence. Everything pulled round the HQ.",
+"vi": "Chỉ huy cổng đổi sang phòng thủ căn cứ. Ông ta kéo hết về quanh sở chỉ huy."
+},
+{
+"mission": "c11m09",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m09.04",
+"en": "Jamming everywhere. Our guns fire by the map.",
+"vi": "Nhiễu toàn dải. Pháo của ta sẽ bắn theo bản đồ."
+},
+{
+"mission": "c11m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c11m09.05",
+"en": "A heavy lost. Drop pods are landing behind us; watch both ways.",
+"vi": "Mất xe nặng. Khoang đổ bộ rơi sau lưng ta, canh cả hai hướng."
+},
+{
+"mission": "c11m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m09.06",
+"en": "The gate HQ is down. The pass is open towards the launch site.",
+"vi": "Sở chỉ huy cổng đã đổ. Đèo đã mở về phía bãi phóng."
+},
+{
+"mission": "c11m09",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m09.07",
+"en": "As I said. Permanently.",
+"vi": "Như tôi đã nói. Vĩnh viễn."
+},
+{
+"mission": "c11m12",
+"trigger": "mission_start",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.01",
+"en": "You would put out my eyes? I have others, in orbit.",
+"vi": "Các anh muốn làm tôi mù? Tôi còn mắt khác, trên quỹ đạo."
+},
+{
+"mission": "c11m12",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.02",
+"en": "The Array's radar runs on the tanks at the foot of its masts. Burn them.",
+"vi": "Radar của dãy ăng-ten chạy bằng bồn nhiên liệu dưới chân cột. Đốt chúng."
+},
+{
+"mission": "c11m12",
+"trigger": "boss_spawn",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.03",
+"en": "Another Locust. Aurel's same revision. The battery cooler is still its weak point.",
+"vi": "Một Locust nữa. Cùng bản sửa của Aurel. Bộ làm mát pin vẫn là chỗ yếu."
+},
+{
+"mission": "c11m12",
+"trigger": "boss_part_destroyed",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c11m12.04",
+"en": "The cooler is gone. It will have to land within minutes.",
+"vi": "Bộ làm mát đã vỡ. Nó sẽ phải hạ cánh trong vài phút."
+},
+{
+"mission": "c11m12",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m12.05",
+"en": "Half the tanks are burning. Half the Array is dark.",
+"vi": "Nửa số bồn đã cháy. Một nửa dãy ăng-ten đã tắt.",
+"arg": "1/2"
+},
+{
+"mission": "c11m12",
+"trigger": "boss_phase_change",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.06",
+"en": "The Locust is dropping low over the last tank. Hit it when it stops.",
+"vi": "Locust hạ thấp che bồn cuối. Đánh nó khi nó dừng lại."
+},
+{
+"mission": "c11m12",
+"trigger": "superweapon_warning",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.07",
+"en": "It is about to drop the whole swarm on the last tank. Out of the red!",
+"vi": "Nó sắp thả cả bầy xuống bồn cuối. Rời khỏi vùng đỏ!"
+},
+{
+"mission": "c11m12",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c11m12.08",
+"en": "The fog is lifting. The Array will see us, and we it.",
+"vi": "Sương đang tan. Dãy ăng-ten sẽ thấy ta, ta cũng thấy nó."
+},
+{
+"mission": "c11m12",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c11m12.09",
+"en": "Half! Its swarm is thinning!",
+"vi": "Một nửa! Bầy của nó đang thưa dần!",
+"arg": "50"
+},
+{
+"mission": "c11m12",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.10",
+"en": "One minute. The last tank, right now.",
+"vi": "Một phút. Bồn cuối, ngay bây giờ."
+},
+{
+"mission": "c11m12",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.11",
+"en": "The Array is dark. At Helion they will be looking through fog.",
+"vi": "Dãy ăng-ten đã tắt. Ở Helion họ sẽ nhìn qua sương mù."
+},
+{
+"mission": "c11m12",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m12.12",
+"en": "My eyes are still open. On the ground and in the sky.",
+"vi": "Mắt của tôi vẫn mở. Trên mặt đất và trên trời."
+},
+{
+"mission": "c11m13",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m13.01",
+"en": "In, look, out. Nobody stops to fight.",
+"vi": "Vào, nhìn, ra. Không ai dừng lại đánh nhau."
+},
+{
+"mission": "c11m13",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c11m13.02",
+"en": "Pad one: empty. Pad two: empty. Keep going.",
+"vi": "Bãi một: trống. Bãi hai: trống. Đi tiếp."
+},
+{
+"mission": "c11m13",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11m13.03",
+"en": "Another rod from orbit. They are testing their aim on their own ground.",
+"vi": "Một thanh kim loại nữa từ quỹ đạo. Họ đang thử độ chính xác trên chính đất của họ."
+},
+{
+"mission": "c11m13",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c11m13.04",
+"en": "The last pad. Look and go, before the Array turns its guns.",
+"vi": "Còn bãi cuối. Nhìn rồi rút, trước khi dãy ăng-ten quay súng.",
+"arg": "last"
+},
+{
+"mission": "c11m13",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m13.05",
+"en": "Four pads, one full. We are a day ahead of them now.",
+"vi": "Bốn bãi, một bãi đã nạp đầy. Giờ ta đi trước họ một ngày."
+},
+{
+"mission": "c11m13",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m13.06",
+"en": "We were cut off on the service road. We do not know which pad is ready.",
+"vi": "Ta bị chặn trên đường công vụ. Không biết bãi nào sẵn sàng."
+},
+{
+"mission": "c11m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.01",
+"en": "The gate, Brigade. The last door before the launch site.",
+"vi": "Cổng, lữ đoàn. Cánh cửa cuối cùng trước bãi phóng."
+},
+{
+"mission": "c11m10",
+"trigger": "time",
+"speaker": "aurel",
+"priority": 2,
+"once": true,
+"key": "script.c11m10.02",
+"en": "You still think this is a war, Colonel. It is a project. Projects get finished.",
+"vi": "Ông vẫn nghĩ đây là chiến tranh, đại tá. Đây là một dự án. Dự án luôn hoàn thành.",
+"at": 20.0
+},
+{
+"mission": "c11m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.03",
+"en": "The radars are blind. Next: the fuel depot or the control station.",
+"vi": "Radar đã mù. Chọn đòn tiếp: kho nhiên liệu hay trạm điều khiển.",
+"arg": "2"
+},
+{
+"mission": "c11m10",
+"trigger": "phase_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.04",
+"en": "Daedalus is coming down from orbit, full of troops. My drone programme flies it.",
+"vi": "Daedalus đang hạ xuống từ quỹ đạo. Nó mang quân đổ bộ. Chương trình drone của tôi lái nó.",
+"arg": "4"
+},
+{
+"mission": "c11m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.05",
+"en": "Daedalus, an orbital lander. When it touches down its bays open: its weakest moment.",
+"vi": "Daedalus: tàu đổ bộ từ quỹ đạo. Khi chạm đất, cửa khoang mở. Đó là lúc nó yếu nhất."
+},
+{
+"mission": "c11m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c11m10.06",
+"en": "One troop bay is burning. Nobody inside it is getting out.",
+"vi": "Một khoang đổ bộ đã cháy. Quân bên trong không ra được nữa."
+},
+{
+"mission": "c11m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.07",
+"en": "It is about to fire its braking engines right over us. Out of the red!",
+"vi": "Nó sắp đốt động cơ hãm ngay trên đầu ta. Rời khỏi vùng đỏ!"
+},
+{
+"mission": "c11m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c11m10.08",
+"en": "Half! It is not taking off again!",
+"vi": "Một nửa! Nó không cất cánh lại được nữa đâu!",
+"arg": "50"
+},
+{
+"mission": "c11m10",
+"trigger": "boss_hp",
+"speaker": "sen",
+"priority": 4,
+"once": true,
+"key": "script.c11m10.09",
+"en": "Its drone controller is shutting down. I can hear it counting to zero.",
+"vi": "Bộ điều khiển drone của nó đang tắt. Tôi nghe thấy nó đếm ngược về không.",
+"arg": "25"
+},
+{
+"mission": "c11m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.10",
+"en": "Daedalus is down. Hold the gate; the landed troops will make a last push.",
+"vi": "Daedalus đã gục. Giữ cổng, quân đổ bộ sẽ đánh lần cuối.",
+"arg": "5"
+},
+{
+"mission": "c11m10",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.11",
+"en": "The HQ is critical. We do not lose this gate.",
+"vi": "Sở chỉ huy nguy cấp. Cổng này không được mất."
+},
+{
+"mission": "c11m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.12",
+"en": "The Skygate is down. Next stop, Helion.",
+"vi": "Skygate đã sập. Điểm dừng tiếp theo: Helion."
+},
+{
+"mission": "c11m10",
+"trigger": "victory",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.13",
+"en": "An obstacle. I will see you at Helion, Colonel. In person, this time.",
+"vi": "Một trở ngại. Tôi sẽ gặp ông ở Helion, đại tá. Lần này tận mặt."
+},
+{
+"mission": "c11m10",
+"trigger": "defeat",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.c11m10.14",
+"en": "The gate is open to my ships. The sky is still mine.",
+"vi": "Cổng vẫn mở cho tàu của tôi. Bầu trời vẫn là của tôi."
+},
+{
+"mission": "c11s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11s1.01",
+"en": "Fuel trucks, marked. Every one counts.",
+"vi": "Xe nhiên liệu, đã đánh dấu. Chiếc nào cũng quan trọng."
+},
+{
+"mission": "c11s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11s1.02",
+"en": "One truck stopped. Rocket fuel, enough for one test launch.",
+"vi": "Một xe đã dừng. Nhiên liệu tên lửa, đủ cho một lần phóng thử.",
+"arg": "1/2"
+},
+{
+"mission": "c11s1",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c11s1.03",
+"en": "Drop pods landing near the other truck. They want to escort it.",
+"vi": "Khoang đổ bộ rơi gần xe còn lại. Họ muốn hộ tống nó."
+},
+{
+"mission": "c11s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11s1.04",
+"en": "Both trucks stopped. The pads go hungry a few more days.",
+"vi": "Cả hai xe đã dừng. Bãi phóng sẽ đói thêm vài ngày."
+},
+{
+"mission": "c11s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c11s1.05",
+"en": "The fuel reached the pads. Our clock runs faster now.",
+"vi": "Nhiên liệu đã tới bãi phóng. Đồng hồ của ta chạy nhanh hơn."
+}
+]
+}
