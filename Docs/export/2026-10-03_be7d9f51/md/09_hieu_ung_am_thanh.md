@@ -1,6 +1,6 @@
 # 09_hieu_ung_am_thanh — Hiệu ứng và âm thanh
 
-Bộ xuất dữ liệu Machine Brigade, commit 5d195554, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Clip âm thanh, bank thư viện, envelope, bảng loạt bắn nhanh, VFX theo bậc, lửa thân xe, hậu kỳ hình ảnh; xác vỡ / mixer (mã)
 
@@ -8,7 +8,7 @@ Mục trong file này: 20. Âm thanh; 20b. Hiệu ứng theo bậc và xác vỡ
 
 ## 20. Âm thanh
 
-Trạng thái: Một phần — chờ prompt xuat_luot6; cần đọc mã (NEED_CODE_CHECK) (sheet Am_thanh_mixer, Am_thanh_mau)
+Trạng thái: Một phần — cần đọc mã (NEED_CODE_CHECK) (sheet Am_thanh_mixer)
 
 Nguồn dữ liệu: 09_hieu_ung_am_thanh/Am_thanh; 09_hieu_ung_am_thanh/Am_thanh_bank; 09_hieu_ung_am_thanh/Am_thanh_loat; 09_hieu_ung_am_thanh/Am_thanh_mixer; 09_hieu_ung_am_thanh/Am_thanh_thu_vien; 09_hieu_ung_am_thanh/Am_thanh_mau. Văn bản: Docs/Machine_Brigade_Design_Review.html (Tools/docs/build_doc.py) §16b. Hiệu ứng.
 
@@ -125,15 +125,19 @@ Sheet: 09_hieu_ung_am_thanh/Am_thanh_thu_vien — Âm thanh: thư viện (1 dòn
 |---|---|---|
 | note | note | Fix pass L7: the sound library (Tools/sfx/build_sfx.py); si… |
 
-Sheet: 09_hieu_ung_am_thanh/Am_thanh_mau — Âm thanh: bản ghi mẫu (1 dòng, 5 cột)
+Sheet: 09_hieu_ung_am_thanh/Am_thanh_mau — Âm thanh: bản ghi mẫu (3 dòng, 29 cột)
 
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| chua_ap | CHUA_AP:prompt_xuat_luot6 | Docs/audio (bản trộn mẫu của Tools/sfx/render_mix.py) |
+| id | tep | do_dai_s | kenh | tan_so_mau_hz | lufs_mmax_tinh | so_moc | events | played | cooldown |
+|---|---|---|---|---|---|---|---|---|---|
+| boss_battle | Docs/audio/samples/boss_battle.ogg | 48.0 | 2 | 44100 | -13.9 | 8 | 1288 | 972 | 261 |
+| crowded_battle | Docs/audio/samples/crowded_battle.ogg | 43.0 | 2 | 44100 | -15.0 | 8 | 5930 | 1830 | 2802 |
+| normal_battle | Docs/audio/samples/normal_battle.ogg | 43.0 | 2 | 44100 | -15.6 | 8 | 1150 | 739 | 251 |
+
+*in 10 / 29 cột; 17 cột khác (và raw_json, nguon): xem sheet.*
 
 ### 20b. Hiệu ứng theo bậc và xác vỡ
 
-Trạng thái: Một phần — chờ prompt xuat_luot6; cần đọc mã (NEED_CODE_CHECK) (sheet VFX_vu_khi, Xac_vo)
+Trạng thái: Một phần — cần đọc mã (NEED_CODE_CHECK) (sheet Xac_vo)
 
 Nguồn dữ liệu: 09_hieu_ung_am_thanh/VFX_bac; 09_hieu_ung_am_thanh/VFX_chay_than_xe; 09_hieu_ung_am_thanh/VFX_vu_khi; 09_hieu_ung_am_thanh/Xac_vo; 09_hieu_ung_am_thanh/Hau_ky_hinh_anh.
 
@@ -164,11 +168,27 @@ Sheet: 09_hieu_ung_am_thanh/VFX_chay_than_xe — VFX: lửa thân xe (3 dòng, 1
 
 *in 10 / 14 cột; 2 cột khác (và raw_json, nguon): xem sheet.*
 
-Sheet: 09_hieu_ung_am_thanh/VFX_vu_khi — VFX theo vũ khí (1 dòng, 5 cột)
+Sheet: 09_hieu_ung_am_thanh/VFX_vu_khi — VFX theo vũ khí (70 dòng, 14 cột)
 
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| chua_ap | CHUA_AP:prompt_xuat_luot6 | ảnh chụp (lượt 6: images/09); bậc theo 01_vu_khi_dan/Vu_khi |
+| id | loai | vu_khi | bac | co_mm | so_nong | loat | don_vi_mang | thu_muc | so_anh |
+|---|---|---|---|---|---|---|---|---|---|
+| amos_120 | vu_khi | amos_120 | 3 | 120 | 1 | FALSE | sp_mortar | Builds/effect_shots/amos_120/ | 8 |
+| bastion_gun | vu_khi | bastion_gun | 3 | 152 | 2 | TRUE | headquarters;headquarters.fortress_air;headquarters.fortres… | Builds/effect_shots/bastion_gun/ | 10 |
+| boss_howitzer | vu_khi | boss_howitzer | 4 | 203 | 1 | FALSE | howitzer_203 | Builds/effect_shots/boss_howitzer/ | 8 |
+| boss_rockets | vu_khi | boss_rockets | 3 | 122 | 1 | FALSE | armored_train;rocket_pod | Builds/effect_shots/boss_rockets/ | 8 |
+| boss_thermo | vu_khi | boss_thermo | 4 | 220 | 1 | FALSE | behemoth_inferno | Builds/effect_shots/boss_thermo/ | 8 |
+| caesar_155 | vu_khi | caesar_155 | 3 | 155 | 1 | FALSE | wheeled_howitzer | Builds/effect_shots/caesar_155/ | 8 |
+| casemate_155 | vu_khi | casemate_155 | 3 | 155 | 1 | FALSE | casemate_155 | Builds/effect_shots/casemate_155/ | 8 |
+| cruiser_203 | vu_khi | cruiser_203 | 4 | 203 | 2 | TRUE | sea_cruiser | Builds/effect_shots/cruiser_203/ | 10 |
+| grad_cluster | vu_khi | grad_cluster | 3 | 122 | 1 | FALSE | elite_grad | Builds/effect_shots/grad_cluster/ | 8 |
+| gun_105_apfsds | vu_khi | gun_105_apfsds | 3 | 125 | 1 | FALSE | elite_tank_destroyer | Builds/effect_shots/gun_105_apfsds/ | 8 |
+| gun_105_long | vu_khi | gun_105_long | 3 | 125 | 1 | FALSE | tank_destroyer | Builds/effect_shots/gun_105_long/ | 8 |
+| gun_105_wheeled | vu_khi | gun_105_wheeled | 3 | 120 | 1 | FALSE | wheeled_gun | Builds/effect_shots/gun_105_wheeled/ | 8 |
+| gun_120_twin | vu_khi | gun_120_twin | 3 | 120 | 1 | FALSE | twin_tank | Builds/effect_shots/gun_120_twin/ | 8 |
+| gun_120mm | vu_khi | gun_120mm | 3 | 120 | 1 | FALSE | main_battle_tank;mara_behemoth;side_gun_120;turret_120;turt… | Builds/effect_shots/gun_120mm/ | 8 |
+| gun_125_armata_ke | vu_khi | gun_125_armata_ke | 3 | 125 | 1 | FALSE | next_gen_tank;towed_at_gun | Builds/effect_shots/gun_125_armata_ke/ | 8 |
+
+*15 / 70 dòng đầu: xem sheet 09_hieu_ung_am_thanh/VFX_vu_khi; in 10 / 14 cột; 2 cột khác (và raw_json, nguon): xem sheet.*
 
 Sheet: 09_hieu_ung_am_thanh/Xac_vo — Xác vỡ (1 dòng, 5 cột)
 
@@ -229,6 +249,41 @@ Sheet: 09_hieu_ung_am_thanh/Am_thanh_envelope — Âm thanh: envelope (216 dòng
 | blast_he_s1_2 | blast_he_s1_2 | 59 | 197;164;174;183;158;153;127;169;147;150;131;139;113;98;87;7… |
 
 *15 / 216 dòng đầu: xem sheet 09_hieu_ung_am_thanh/Am_thanh_envelope.*
+
+### Am_thanh_mau_moc
+
+Trạng thái: Đã áp
+
+Nguồn dữ liệu: 09_hieu_ung_am_thanh/Am_thanh_mau_moc.
+
+Sheet: 09_hieu_ung_am_thanh/Am_thanh_mau_moc — Âm thanh mẫu: mốc tiếng lớn (24 dòng, 10 cột)
+
+| id | am_thanh_mau_id | thu_tu | thoi_diem_s | lufs_400ms | duoi_to_nhat_lu | dinh_dbfs | hang |
+|---|---|---|---|---|---|---|---|
+| boss_battle/1 | boss_battle | 0 | 9.7 | -15.7 | 1.8 | -3.5 | 5 |
+| boss_battle/2 | boss_battle | 1 | 13.2 | -15.1 | 1.2 | -1.2 | 2 |
+| boss_battle/3 | boss_battle | 2 | 21.4 | -15.7 | 1.8 | -2.2 | 6 |
+| boss_battle/4 | boss_battle | 3 | 29.4 | -15.5 | 1.6 | -2.6 | 4 |
+| boss_battle/5 | boss_battle | 4 | 31.7 | -16.6 | 2.7 | -2.2 | 8 |
+| boss_battle/6 | boss_battle | 5 | 33.7 | -13.9 | 0.0 | -1.0 | 1 |
+| boss_battle/7 | boss_battle | 6 | 36.2 | -15.1 | 1.2 | -1.7 | 3 |
+| boss_battle/8 | boss_battle | 7 | 43.1 | -16.0 | 2.1 | -1.6 | 7 |
+| crowded_battle/1 | crowded_battle | 0 | 1.9 | -16.1 | 1.1 | -2.8 | 4 |
+| crowded_battle/2 | crowded_battle | 1 | 10.7 | -15.3 | 0.3 | -1.0 | 2 |
+| crowded_battle/3 | crowded_battle | 2 | 15.3 | -16.5 | 1.5 | -4.1 | 6 |
+| crowded_battle/4 | crowded_battle | 3 | 18.7 | -15.8 | 0.8 | -3.2 | 3 |
+| crowded_battle/5 | crowded_battle | 4 | 22.0 | -16.4 | 1.4 | -4.2 | 5 |
+| crowded_battle/6 | crowded_battle | 5 | 28.4 | -15.0 | 0.0 | -1.9 | 1 |
+| crowded_battle/7 | crowded_battle | 6 | 33.7 | -16.5 | 1.5 | -3.6 | 7 |
+| crowded_battle/8 | crowded_battle | 7 | 38.1 | -16.5 | 1.5 | -3.2 | 8 |
+| normal_battle/1 | normal_battle | 0 | 11.6 | -18.0 | 2.4 | -5.1 | 5 |
+| normal_battle/2 | normal_battle | 1 | 15.7 | -17.9 | 2.3 | -4.7 | 3 |
+| normal_battle/3 | normal_battle | 2 | 19.2 | -15.6 | 0.0 | -2.9 | 1 |
+| normal_battle/4 | normal_battle | 3 | 26.9 | -18.0 | 2.4 | -4.8 | 4 |
+| normal_battle/5 | normal_battle | 4 | 29.0 | -18.1 | 2.5 | -4.0 | 6 |
+| normal_battle/6 | normal_battle | 5 | 31.3 | -18.5 | 2.9 | -3.4 | 8 |
+| normal_battle/7 | normal_battle | 6 | 35.6 | -17.0 | 1.4 | -2.1 | 2 |
+| normal_battle/8 | normal_battle | 7 | 39.5 | -18.2 | 2.6 | -5.0 | 7 |
 
 ### Am_thanh_so_do
 
@@ -324,3 +379,31 @@ Sheet: 09_hieu_ung_am_thanh/VFX_ngan_sach_hat — VFX: trần hạt mỗi bộ p
 | Game/Effects/ParticleBuilder.cs:56 | Game/Effects/ParticleBuilder.cs | 56 | 128.0 |
 | Game/Effects/StrikeEffects.cs:484 | Game/Effects/StrikeEffects.cs | 484 | 220.0 |
 | Game/Effects/TrackMarks.cs:22 | Game/Effects/TrackMarks.cs | 22 | 4000.0 |
+
+### VFX_vu_khi_anh
+
+Trạng thái: Đã áp
+
+Nguồn dữ liệu: 09_hieu_ung_am_thanh/VFX_vu_khi_anh.
+
+Sheet: 09_hieu_ung_am_thanh/VFX_vu_khi_anh — VFX theo vũ khí: ảnh (584 dòng, 9 cột)
+
+| id | vfx_vu_khi_id | thu_tu | khung | thoi_diem_s | duong_dan | trang_thai |
+|---|---|---|---|---|---|---|
+| amos_120/fire_0.2s.png | amos_120 | 1 | fire | 0.2 | Builds/effect_shots/amos_120/fire_0.2s.png | pending |
+| amos_120/fire_0s.png | amos_120 | 0 | fire | 0.0 | Builds/effect_shots/amos_120/fire_0s.png | pending |
+| amos_120/fire_1s.png | amos_120 | 2 | fire | 1.0 | Builds/effect_shots/amos_120/fire_1s.png | pending |
+| amos_120/impact_0.5s.png | amos_120 | 4 | impact | 0.5 | Builds/effect_shots/amos_120/impact_0.5s.png | pending |
+| amos_120/impact_0s.png | amos_120 | 3 | impact | 0.0 | Builds/effect_shots/amos_120/impact_0s.png | pending |
+| amos_120/impact_2s.png | amos_120 | 5 | impact | 2.0 | Builds/effect_shots/amos_120/impact_2s.png | pending |
+| amos_120/impact_10s.png | amos_120 | 6 | impact | 10.0 | Builds/effect_shots/amos_120/impact_10s.png | pending |
+| amos_120/impact_30s.png | amos_120 | 7 | impact | 30.0 | Builds/effect_shots/amos_120/impact_30s.png | pending |
+| bastion_gun/fire_0.2s.png | bastion_gun | 1 | fire | 0.2 | Builds/effect_shots/bastion_gun/fire_0.2s.png | pending |
+| bastion_gun/fire_0s.png | bastion_gun | 0 | fire | 0.0 | Builds/effect_shots/bastion_gun/fire_0s.png | pending |
+| bastion_gun/fire_1s.png | bastion_gun | 2 | fire | 1.0 | Builds/effect_shots/bastion_gun/fire_1s.png | pending |
+| bastion_gun/impact_0.5s.png | bastion_gun | 4 | impact | 0.5 | Builds/effect_shots/bastion_gun/impact_0.5s.png | pending |
+| bastion_gun/impact_0s.png | bastion_gun | 3 | impact | 0.0 | Builds/effect_shots/bastion_gun/impact_0s.png | pending |
+| bastion_gun/impact_2s.png | bastion_gun | 5 | impact | 2.0 | Builds/effect_shots/bastion_gun/impact_2s.png | pending |
+| bastion_gun/impact_10s.png | bastion_gun | 6 | impact | 10.0 | Builds/effect_shots/bastion_gun/impact_10s.png | pending |
+
+*15 / 584 dòng đầu: xem sheet 09_hieu_ung_am_thanh/VFX_vu_khi_anh.*

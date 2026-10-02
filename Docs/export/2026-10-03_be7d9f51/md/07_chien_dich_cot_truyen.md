@@ -1,6 +1,6 @@
 # 07_chien_dich_cot_truyen — Chiến dịch và cốt truyện
 
-Bộ xuất dữ liệu Machine Brigade, commit 5d195554, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Chương, nhiệm vụ (giai đoạn, quân, radio, biến cố, trạng thái nav), thoại (mỗi câu một dòng), nhân vật, trigger, bộ bài game, thư viện biến cố, phát hành, kịch bản gốc
 

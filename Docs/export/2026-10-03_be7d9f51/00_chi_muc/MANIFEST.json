@@ -1,9 +1,9 @@
 {
- "generated_utc": "2026-10-02T19:52:18+00:00",
- "branch": "feature/export-c3",
+ "generated_utc": "2026-10-02T20:13:36+00:00",
+ "branch": "feature/export-c4",
  "tool": "Tools/export v1",
  "ngay": "2026-10-03",
- "commit": "5d195554",
+ "commit": "be7d9f51",
  "ban_goc": "origin/main (9198a675)",
  "nguon_chua_commit": "",
  "balance_sha256": "8fb0f6670ee9fcaf4eb36682572db4f4e3ee5c5fece5049627a61fcf78e2e310",
@@ -15,23 +15,23 @@
  "files": [
   {
    "path": "00_chi_muc/COVERAGE.md",
-   "bytes": 4158,
-   "sha256": "303134fb42a1e8eaa694a408d842b741e6038708efa4f0401ada76caa49cf55b"
+   "bytes": 4159,
+   "sha256": "b5d8dce7d89c4cc20afc72322f71e072469987229937fb8a1bf8cc793dfc75d4"
   },
   {
    "path": "00_chi_muc/Machine_Brigade_00_Index_2026-10-03.xlsx",
-   "bytes": 649362,
-   "sha256": "dc27c13ddd6df174088c2529acb8a10e52e84514bfe15af7a59ff906bdba878a"
+   "bytes": 657678,
+   "sha256": "98fdab7d812fe04feb21585bcfc20474506ef9e03554970e01a441e3d72cf2a9"
   },
   {
    "path": "00_chi_muc/README.md",
    "bytes": 456,
-   "sha256": "5be1c70752efe17c87dea256b3a7decdcc02d207ade4e0451b16f33caf26a905"
+   "sha256": "914e509458a043828957ffeb0dda84314320dbe615ccf802886dde78ab985298"
   },
   {
    "path": "00_chi_muc/SELF_CHECK.md",
    "bytes": 11953,
-   "sha256": "694ffd55e0db5199aeecd7da89b159631a4e668a65638933a512d7eb6f5ac8e4"
+   "sha256": "2c969e7920d6734d230754f6e9bdf644bd158309804c7ee39b17376e92920544"
   },
   {
    "path": "csv/00_chi_muc/Cho_anh_xa.csv",
@@ -45,8 +45,8 @@
   },
   {
    "path": "csv/00_chi_muc/Khoa_ngoai.csv",
-   "bytes": 34608,
-   "sha256": "8aa0ae7b40d2f12e28d5b92c2dd9cebea70c7333c9a1b18f2eb77b2917d459ab"
+   "bytes": 35169,
+   "sha256": "f19565df03607f58b32492635ed2db56c3ffdb4a12fde7c6f2af15057528ed85"
   },
   {
    "path": "csv/00_chi_muc/Khong_xuat.csv",
@@ -65,8 +65,8 @@
   },
   {
    "path": "csv/00_chi_muc/Muc_luc_sheet.csv",
-   "bytes": 69297,
-   "sha256": "748fdfecc26b3785e5eccb38d0ba5125ade35188ad0e56654e0aacb3d5792582"
+   "bytes": 71228,
+   "sha256": "50e068fcfc8a94d9d866b986290a0be9c78c6e28ad6c2bf4bab148a76810ea70"
   },
   {
    "path": "csv/00_chi_muc/Nguon_du_lieu.csv",
@@ -81,12 +81,12 @@
   {
    "path": "csv/00_chi_muc/Phien_ban.csv",
    "bytes": 670,
-   "sha256": "b7ab7db77c394b12d08ea26d43fa8bca148c1df9da58108e872fe674a3d345fe"
+   "sha256": "19b35f3fd01e3ce49d9efc980a3dd660c7869714cc70d8e8a5591b36be8a9ce4"
   },
   {
    "path": "csv/00_chi_muc/Phu.csv",
-   "bytes": 32973,
-   "sha256": "4c436178b37ca7937a8adce7c7ac800c97ec3bf2e503e4cf07ca04f3b256182d"
+   "bytes": 33337,
+   "sha256": "21b31d284608cf3f0bd14ce3057aae12f79c8fb75f72b2f59f9a13cd553aa46a"
   },
   {
    "path": "csv/00_chi_muc/README.csv",
@@ -95,8 +95,8 @@
   },
   {
    "path": "csv/00_chi_muc/Schema.csv",
-   "bytes": 2065595,
-   "sha256": "ce01965af5e5234a97b42ef4e475754f4111fa5fc3be413c9650862cde7b8e29"
+   "bytes": 2080074,
+   "sha256": "0bb6ed1d4a7534586815400681d933a89c7208d795605d15bd101eac39cd4189"
   },
   {
    "path": "csv/00_chi_muc/Van_de.csv",
@@ -1135,8 +1135,13 @@
   },
   {
    "path": "csv/09_hieu_ung_am_thanh/Am_thanh_mau.csv",
-   "bytes": 145,
-   "sha256": "4f9d8b720ee5b6f2f604dd20d29590f7b8431cd84b5daef4b4bce345df7e34cc"
+   "bytes": 2261,
+   "sha256": "a69755ada72da864c27a19c1bd6b9bd87e85fe30d510665b3c58ea9ccacb1003"
+  },
+  {
+   "path": "csv/09_hieu_ung_am_thanh/Am_thanh_mau_moc.csv",
+   "bytes": 2491,
+   "sha256": "4a679ea7a4341aaf4cd9b7d02b20a9ec02e36ddb1043253b489467db24ac2828"
   },
   {
    "path": "csv/09_hieu_ung_am_thanh/Am_thanh_mixer.csv",
@@ -1185,8 +1190,13 @@
   },
   {
    "path": "csv/09_hieu_ung_am_thanh/VFX_vu_khi.csv",
-   "bytes": 166,
-   "sha256": "d290b1c23b2946a7e835010ee9e75947b010bfa7f0b263113216b73f8112d06e"
+   "bytes": 14092,
+   "sha256": "f000c526884a5e40888644cde4746b0a9e965d7caba8d02f24d30fc33c25038d"
+  },
+  {
+   "path": "csv/09_hieu_ung_am_thanh/VFX_vu_khi_anh.csv",
+   "bytes": 98418,
+   "sha256": "66598d8ebcc900d5c8968b5a7aa41e68a17b54133678f999f803ee03d62b74af"
   },
   {
    "path": "csv/09_hieu_ung_am_thanh/Xac_vo.csv",
@@ -1195,8 +1205,8 @@
   },
   {
    "path": "csv/10_model_tai_san/Anh_chup.csv",
-   "bytes": 140,
-   "sha256": "8d590b091a5082d0401b151a502cd62fc510faad987e736435ef9088f488533f"
+   "bytes": 18011,
+   "sha256": "73272cb7cab1c841be778908ec6a835a2f6d17359689c4a4c8ff46825c88f08a"
   },
   {
    "path": "csv/10_model_tai_san/Anh_the.csv",
@@ -1244,9 +1254,14 @@
    "sha256": "51e5b9d91c1d488449536ef9186d88c6d23b0fd7940c952787ac48b1bd62e7e2"
   },
   {
+   "path": "csv/10_model_tai_san/Kit_chi_tiet.csv",
+   "bytes": 11877,
+   "sha256": "c5a80dc144903ccfe922a7b52f6933b669c2718bc1c611a009eca68e431302c1"
+  },
+  {
    "path": "csv/10_model_tai_san/Model.csv",
-   "bytes": 282774,
-   "sha256": "5766e0a3d5713b16a497e8f43ccd54322abb9df4b922b8f4a6882ea43c256a9c"
+   "bytes": 288905,
+   "sha256": "755453d7ad66316309fe6711b629a2258f68e8c2e5e36657489462990321b68a"
   },
   {
    "path": "csv/10_model_tai_san/Model_cham_diem.csv",
@@ -1330,8 +1345,8 @@
   },
   {
    "path": "csv/11_meta_giao_dien/Huong_dan.csv",
-   "bytes": 241,
-   "sha256": "cf0c08e524210f34317785b323498550c7092b7fd4cb88901ad28eab274ec7bf"
+   "bytes": 277199,
+   "sha256": "be8348f8dcb2e7813d11b32cfc2dff1d806fe5181361a97c6b5e8f52f056fea6"
   },
   {
    "path": "csv/11_meta_giao_dien/Meta_bang_hang.csv",
@@ -1579,6 +1594,11 @@
    "sha256": "c279063e106ea56facb0ba362596cb7960a9c7aad543f6186fd2901a11b57cf6"
   },
   {
+   "path": "images/10_model_tai_san/kit_catalog_kit35_catalog.png",
+   "bytes": 2966573,
+   "sha256": "09e299b2f585ffce44d3518c9f7ab184aa045a9dc8d0919d706f6c33c35cca0f"
+  },
+  {
    "path": "images/10_model_tai_san/r6_boss_death.png",
    "bytes": 1736009,
    "sha256": "aa00dab3bf98261d7f99141e58fbc5059393480160b51be7f97cd0d404107776"
@@ -1701,72 +1721,72 @@
   {
    "path": "md/01_vu_khi_dan.md",
    "bytes": 59117,
-   "sha256": "59a0b03f2193b0a5e079729b3b3cced8cdad4ebfdab53195236614be0b97f239"
+   "sha256": "3ffe5184050974fc5297fd551fe6193dc0ebf1e6994d3a78af112f0276190fb8"
   },
   {
    "path": "md/02_phuong_tien.md",
    "bytes": 150656,
-   "sha256": "72c86e15959244406a0e13458c9865e8b68597bd0e9da0865e19a85ae5346bcb"
+   "sha256": "525dc256f71d6d54a87560ca5fabd2df7690f54870abf70aca1dd16e7207dfa1"
   },
   {
    "path": "md/03_boss.md",
    "bytes": 115956,
-   "sha256": "91a7edb207eddcf8b1e1b3db2a263aef6d121a53891bcd96ef18332b431efd37"
+   "sha256": "455d507d79fff95a22d71517a1eee19661836a03fc532114ce43cda663e520c1"
   },
   {
    "path": "md/04_can_cu_thap.md",
    "bytes": 51584,
-   "sha256": "be913fdce9523e1dc18c843d5da35fdbcfff8281cbd7b43b94e9ba34ad5f0db9"
+   "sha256": "01ff6881b0a40e3f0baf0a1ace6b0cb838a4554acea45c9e6ea1194c1449af91"
   },
   {
    "path": "md/05_che_do_kinh_te.md",
    "bytes": 55718,
-   "sha256": "f946feb67b63cf0f49389e0dc2992812dc150010f2aa91228d20f81086168d52"
+   "sha256": "20c13637c63c61a79e6963c0ca451028b16a7cf4d83edefc7e9fc1ca7c31d36a"
   },
   {
    "path": "md/06_ai.md",
    "bytes": 24002,
-   "sha256": "a4d9c65bdfc4421b7da2d989e7ddf3f75be77e67d0c3402954f89b27a9bfc3d5"
+   "sha256": "366990d88698ffb565710db83d1e8f65d07e14611f0790a6cfbd95f9d11bd206"
   },
   {
    "path": "md/07_chien_dich_cot_truyen.md",
    "bytes": 147584,
-   "sha256": "410f96aedcf10f57f4c579a16f48630925909e581585ce844a72e9dd46362ce9"
+   "sha256": "018584c3494d9b7b6ebf87ee9401cdd349c7a58cefe2ecee93442778a0ec9d9b"
   },
   {
    "path": "md/08_ban_do.md",
    "bytes": 101432,
-   "sha256": "84a883591391b5f78322820abf35da2e0563bfcc18d47683506def63f550c4cd"
+   "sha256": "e2e1ad1b48d1952c2faf0e2806b73c9cc100dfae93548917d005bf790e7e1191"
   },
   {
    "path": "md/09_hieu_ung_am_thanh.md",
-   "bytes": 21996,
-   "sha256": "2e0732c71f4f735be2bb899b3581f5a90d1a95a6f34fba2f7fbd8d452f229a13"
+   "bytes": 28491,
+   "sha256": "0776714f5ff9acce9e4e81cfa80d3cd79d596fba95848eb4aafcdfde6e430fbf"
   },
   {
    "path": "md/10_model_tai_san.md",
-   "bytes": 46857,
-   "sha256": "4cb67d9ce56c10951f503596c0dd948df7daf95e0b357278ffa5ba6a2392fef6"
+   "bytes": 52551,
+   "sha256": "ea19397f8e802aad46ea07121a3a6a8d8512299c3fa5148e681766b5cf58c410"
   },
   {
    "path": "md/11_meta_giao_dien.md",
-   "bytes": 24594,
-   "sha256": "f59527ae188e8b91f58ab9877fb6165fd74d51876d6741c1e089793e34a9bf46"
+   "bytes": 29688,
+   "sha256": "2ebdc787a952b6f85695a3d77194a86e35eda4a1e6479e44cab4ad198b0310b7"
   },
   {
    "path": "md/12_he_thong_trang_thai.md",
    "bytes": 52694,
-   "sha256": "e0ab54ac0e69edba891fa47eaf83a36132b046d61a34a54d9e36ef1a8be4ee7e"
+   "sha256": "99a82795cf1bbc22eaa5413ee141c1da30a60cb4a6a761a7db129a30124032bc"
   },
   {
    "path": "md/Machine_Brigade_Design_FULL_2026-10-03.md",
-   "bytes": 694355,
-   "sha256": "42a37079b9941e654b75aa5fb16098302f944639dcafeb82ca88a4571f95afbf"
+   "bytes": 707449,
+   "sha256": "095a3f6265f49b87b8fed39867fc9d3b880754c44c9f0cfab20c43ace6408ab5"
   },
   {
    "path": "pdf/Machine_Brigade_Design_2026-10-03.pdf",
-   "bytes": 3832883,
-   "sha256": "baf5b1a4d349b92f7fb3767ce21a5fe95be3d700a3903f98b6029b7c43c6638c"
+   "bytes": 3896543,
+   "sha256": "450031ce0336a467a20fa4c76ce2894108180ccc6a26d79da6799ee5a7151f32"
   },
   {
    "path": "xlsx/01_vu_khi_dan.xlsx",
@@ -1810,18 +1830,18 @@
   },
   {
    "path": "xlsx/09_hieu_ung_am_thanh.xlsx",
-   "bytes": 106769,
-   "sha256": "a4a6aef5d16d36321fa7197722b7fdbecb8d07d92fa3a6553a069fa20a9c55ad"
+   "bytes": 140122,
+   "sha256": "f6cb05d12ada6c06ee258a8d6156dc648b1ebaf2b463cf9591be676f3410e758"
   },
   {
    "path": "xlsx/10_model_tai_san.xlsx",
-   "bytes": 1842683,
-   "sha256": "a766b52ff37dac15097afc1a5abfc3584ee5dce0bff132d1d64f523e973a98ae"
+   "bytes": 1856735,
+   "sha256": "ad2ad61eb2d58cd1b8e87200c637096992153b2a8b55cf0a204f15606cd94c44"
   },
   {
    "path": "xlsx/11_meta_giao_dien.xlsx",
-   "bytes": 62099,
-   "sha256": "d943152a55f98c717196b17f1cc8ff05efe912d4a41d525d9e128165ed87128e"
+   "bytes": 171506,
+   "sha256": "832b6e421febe2a9166b71e81854caab41c64a6d9f7059096ea1387ea5e1bf14"
   },
   {
    "path": "xlsx/12_he_thong_trang_thai.xlsx",

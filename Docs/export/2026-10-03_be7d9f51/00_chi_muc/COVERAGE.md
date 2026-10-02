@@ -1,6 +1,6 @@
 # COVERAGE (độ phủ khóa, spec 3.3 và 3.5)
 
-Commit 5d195554, bản gốc so sánh origin/main (9198a675). Lá = mọi giá trị lá của mọi nguồn (Nguon_du_lieu).
+Commit be7d9f51, bản gốc so sánh origin/main (9198a675). Lá = mọi giá trị lá của mọi nguồn (Nguon_du_lieu).
 
 | Mục | Số |
 |---|---|
@@ -24,9 +24,9 @@ Commit 5d195554, bản gốc so sánh origin/main (9198a675). Lá = mọi giá t
 | 06_ai | 1310 | 13 | 685 | 870 | 0 | 0 |
 | 07_chien_dich_cot_truyen | 29881 | 32 | 8881 | 32914 | 2 | 3492 |
 | 08_ban_do | 646558 | 39 | 151298 | 200898 | 0 | 0 |
-| 09_hieu_ung_am_thanh | 1032 | 16 | 858 | 606 | 2 | 2 |
-| 10_model_tai_san | 89732 | 20 | 22609 | 24302 | 519 | 519 |
-| 11_meta_giao_dien | 1721 | 24 | 630 | 358 | 2 | 0 |
+| 09_hieu_ung_am_thanh | 1032 | 18 | 1537 | 648 | 0 | 2 |
+| 10_model_tai_san | 89732 | 21 | 22725 | 24396 | 0 | 519 |
+| 11_meta_giao_dien | 1721 | 24 | 1032 | 2720 | 2 | 0 |
 | 12_he_thong_trang_thai | 10885 | 23 | 15765 | 19217 | 28 | 0 |
 
 ## Khong_xuat
@@ -69,6 +69,6 @@ Chế độ kiểm: thường (lá chờ file chưa xuất được phép).
 ## Markdown, ảnh và PDF (lượt 6, spec 6)
 
 - md/: 13 file (01_vu_khi_dan.md, 02_phuong_tien.md, 03_boss.md, 04_can_cu_thap.md, 05_che_do_kinh_te.md, 06_ai.md, 07_chien_dich_cot_truyen.md, 08_ban_do.md, 09_hieu_ung_am_thanh.md, 10_model_tai_san.md, 11_meta_giao_dien.md, 12_he_thong_trang_thai.md, Machine_Brigade_Design_FULL_2026-10-03.md).
-- images/: 34 ảnh chép từ repo (Docs/doc-images, Docs/models/rebuild); ảnh hiệu ứng Unity: chờ (pending).
-- pdf/: Machine_Brigade_Design_2026-10-03.pdf, 118 trang, sinh từ Machine_Brigade_Design_FULL_2026-10-03.md.
+- images/: 35 ảnh chép từ repo (Docs/doc-images, Docs/models/rebuild); ảnh hiệu ứng Unity: chờ (pending).
+- pdf/: Machine_Brigade_Design_2026-10-03.pdf, 120 trang, sinh từ Machine_Brigade_Design_FULL_2026-10-03.md.
 - Mục "Chưa áp": không có.

@@ -1,6 +1,6 @@
 # 05_che_do_kinh_te — Chế độ và kinh tế
 
-Bộ xuất dữ liệu Machine Brigade, commit 5d195554, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Chế độ và luật trận, sao chiến dịch, bảng xếp hạng (vô hạn), Tác chiến (điểm, bậc, tuần, mutator), kinh tế, độ khó
 
