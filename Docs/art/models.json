@@ -221,7 +221,7 @@
   },
   "behemoth": {
     "file": "behemoth.glb",
-    "triangles": 21046
+    "triangles": 21610
   },
   "behemoth_inferno": {
     "file": "behemoth_inferno.glb",
@@ -325,7 +325,7 @@
   },
   "cerberus": {
     "file": "cerberus.glb",
-    "triangles": 11848
+    "triangles": 12434
   },
   "charred_tree": {
     "file": "charred_tree.glb",
@@ -417,7 +417,7 @@
   },
   "daedalus": {
     "file": "daedalus.glb",
-    "triangles": 14644
+    "triangles": 14772
   },
   "dazzler_vehicle": {
     "file": "dazzler_vehicle.glb",
@@ -1089,7 +1089,7 @@
   },
   "hydra_sub": {
     "file": "hydra_sub.glb",
-    "triangles": 7268
+    "triangles": 7548
   },
   "hyperion": {
     "file": "hyperion.glb",
@@ -1309,11 +1309,11 @@
   },
   "moloch": {
     "file": "moloch.glb",
-    "triangles": 9556
+    "triangles": 10244
   },
   "monster": {
     "file": "monster.glb",
-    "triangles": 23066
+    "triangles": 23626
   },
   "morrigan": {
     "file": "morrigan.glb",
@@ -1853,7 +1853,7 @@
   },
   "typhon": {
     "file": "typhon.glb",
-    "triangles": 6596
+    "triangles": 6876
   },
   "uav_loiter_strike": {
     "file": "uav_loiter_strike.glb",

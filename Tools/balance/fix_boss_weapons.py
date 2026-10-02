@@ -224,9 +224,9 @@ def pins(data, ws, edits, boss_ids):
                 continue
             cw = ws.resolve(c)
             for k in f:
-                if k not in ws.raw[c]:
-                    out.setdefault(c, {})[k] = cw.get(k, {"clip": 0, "clipReload": 0, "burst": 1, "barrels": 1,
-                                                          "salvoMode": "RIPPLE"}.get(k))
+                old = cw.get(k, {"clip": 0, "clipReload": 0, "burst": 1, "barrels": 1, "salvoMode": "RIPPLE"}.get(k))
+                if k not in ws.raw[c] and old != f[k]:
+                    out.setdefault(c, {})[k] = old
     return out
 
 
