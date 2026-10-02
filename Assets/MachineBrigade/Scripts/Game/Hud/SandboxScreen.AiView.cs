@@ -94,7 +94,7 @@ namespace MachineBrigade.Game.Hud
                 if (economy != null)
                 {
                     body.Add(Caption("aiview.layer.economy"));
-                    body.Add(Kit.Text(Strings.Format("upkeep.factor", ("factor", economy.ArmyFactor.ToString("0.00", Kit.Culture))) +
+                    body.Add(Kit.Text(Strings.Format("upkeep.factor", ("factor", economy.Upkeep.ToString("0.00", Kit.Culture))) +
                                       " · " + economy.Earning.ToString("0.00", Kit.Culture) + " CP/s · " +
                                       Strings.Format("aiview.pressure", ("tier", world.PressureTier)), "fc-small sb-hint"));
                 }

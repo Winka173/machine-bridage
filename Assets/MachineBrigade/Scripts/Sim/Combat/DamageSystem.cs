@@ -64,7 +64,8 @@ namespace MachineBrigade.Sim.Combat
                 // while it flew (a slow missile outlasts a flare's burn). One roll per missile.
                 var flared = target is Vehicle decoy && (decoy.FlaresUp || decoy.FlaresUntil > p.LaunchedAt);
                 // Prompt 15 C: flares fool missiles only; a jammer or a lost lock any guided round.
-                var decoyed = weapon.Guided && ((flared && weapon.Projectile == ProjectileKind.Missile &&
+                // Prompt 29 S05: a weapon marked flareEligible=false is never pulled off by flares (true: any guided round may be).
+                var decoyed = weapon.Guided && ((flared && weapon.FlareEligible != false && (weapon.Projectile == ProjectileKind.Missile || weapon.FlareEligible == true) &&
                     _world.Random.NextDouble() < FlareDecoy * (1f - weapon.FlareResist)) || p.Jammed || p.Failed);
                 // Equipment that turns a round away: an EW jammer's cover, a decoy, a first missile losing lock.
                 var lure = default(Vector2);
@@ -299,6 +300,8 @@ namespace MachineBrigade.Sim.Combat
         {
             var kind = weapon.Projectile;
             shell = false;
+            // Prompt 29 S05: flagged rounds no point-defence gun takes.
+            if (weapon.Interceptable == false || weapon.CiwsEligible == false) return false;
             if (weapon.Beam || weapon.DamageType == DamageType.Energy) return false;
             // Prompt 25 F2 batch A: a glide bomb is taken like a guided round lobbed from afar.
             var direct = weapon.Guided || weapon.Glides || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
@@ -334,6 +337,8 @@ namespace MachineBrigade.Sim.Combat
             // artillery rockets too, a C-RAM a share of the shells.
             // Prompt 15 C: never a beam (energy hits at once) nor a bullet.
             if (weapon.Beam || weapon.DamageType == DamageType.Energy) return false;
+            // Prompt 29 S05: a round flagged never interceptable (Gungnir's rail round) goes through everything.
+            if (weapon.Interceptable == false) return false;
             var direct = weapon.Guided || weapon.Glides || (kind == ProjectileKind.Rocket && weapon.MinRange <= 0f);
             var rocket = kind == ProjectileKind.Rocket;
             var shell = kind == ProjectileKind.Shell && weapon.Indirect;
@@ -355,6 +360,10 @@ namespace MachineBrigade.Sim.Combat
                 // Prompt 15 C.6: a point-defence laser is an energy weapon: smoke round it or its mark blinds it.
                 if (aps.Laser && (_world.Strikes.InSmoke(v.Position) || _world.Strikes.InSmoke(mark))) continue;
                 if (aps.Heavy && !heavy) continue;
+                // Prompt 29 S07 (D7): a vehicle's own APS takes guided missiles, drones and direct-fire rockets only, and
+                // never a round flagged apsEligible=false.
+                if (v.Def.InterceptionMode == InterceptionMode.SelfAps &&
+                    (weapon.ApsEligible == false || !(direct || kind == ProjectileKind.Drone))) continue;
                 if (!aps.Heavy && !direct && rocket && !aps.Rockets) continue;
                 if (!aps.Heavy && !aps.Direct && direct && !lobbed) continue;
                 if (!aps.Heavy && !direct && shell && (aps.Shells <= 0f || _world.Random.NextDouble() >= aps.Shells)) continue;

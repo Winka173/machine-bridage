@@ -13892,3 +13892,153 @@ The substring build filter touched only `fibre_fpv_carrier` outside the row (out
   the brief it KEEPS its pre-wave-3 model and card (GLB and card from a652a7f, baseline re-accepted). Its V2 builder in
   mb_p27_wave3.py stays for a later look but must not be built until its card passes. Wave 3 is complete: 64 of 65
   models on V2, radar_atgm_vehicle kept old.
+
+## Prompt 29 0 (cloud, 2026-10-02): no second upkeep
+
+The owner amended prompt 28 ("no new upkeep system; use supply"). Removed prompt 28 I.2's `TeamEconomy.ArmyFactor`
+(`EconomySystem.P28.cs` deleted, `Earning` no longer multiplies it), the generated `ai.economy.armyBands` (the importer
+no longer writes them; `AiParams.ArmyBandEdges` gone) and its row in the applied xlsx export. The existing supply
+upkeep (`TeamEconomy.Upkeep`, `Supply`, prompt 7) is untouched and is the in-battle upkeep. The Sandbox AI viewer's
+upkeep line now shows `Upkeep`; `Docs/ai/ECONOMY.md`, LOCAL_TODO and `WorldModelTests` follow. The text key
+`upkeep.factor` ("Upkeep: income x{factor}") stays valid for the supply upkeep.
+
+## Prompt 29 L0 (cloud, 2026-10-02): field map and manifest export
+
+- `Tools/balance/p29_manifest.py` exports the v2 Manifest and bundles to `Docs/balance/manifest_v2.json` with the
+  xlsx's sha256 (4bef428df8e2...); the apply tool reads only the export.
+- C01 (`Docs/balance_field_map.md`): HP in the Manifest is effective health (data hp x toughness 2.2: ifv 520 -> 1144,
+  sky_gunship 1069 -> 2352), so HP rows are compared and written in data units through one ROUND_HALF_UP. Delivery is
+  one constant today (3.5 s), so `dropDelay` is a new per-vehicle key. `outgoingDamageMult` is new: the existing
+  `weaponDamage` touches only ground targets and is already set on 29 vehicles, so reusing it would break the
+  manifest's expected 1.0. Flares are skills with shared cooldowns, so charges and recharge become per-vehicle keys
+  (the shared skills are not edited). The CP bank per mode becomes data (`economy.bankByMode`) holding the manifest's
+  [from, to]: the runtime moves a side's bank only when the mode set it to the "from" value, so a mode or side the
+  manifest does not describe (a siege defender, the Sandbox) keeps its bank.
+
+## Prompt 29 L1 (cloud, 2026-10-02): infrastructure S01-S04, S08, S09
+
+- **S01** `Tools/balance/p29_apply.py`: reads `manifest_v2.json`, R1-R5 as written in its docstring, bundles in the
+  sheet's order, `--dry` (applies in memory so a later bundle sees an earlier one's value, writes only the log),
+  `--bundles` globs, log `Docs/balance/apply_log_p29.md`. "Xem lại" is looked for in the status-like columns only: the
+  seven B0 rows quote round 1's "Xem lại" in their reason (R4: prose is not read), and they are FIX rows. Code bundles
+  count as done from a list in the tool (each pass adds its own); checks C06/C11/C12 likewise. HP rows compare in data
+  units (one ROUND_HALF_UP over the toughness). R8: the tool stops if any weapon changed after a bundle.
+- **S02** one rounding: `SimMath.RoundHalfUp` (C#, decimal, away from zero) and `round_half_up` (Python, Decimal
+  ROUND_HALF_UP); the card cost's old `MidpointRounding.AwayFromZero` now goes through it (same results).
+- **S03** `VehicleDef.OutgoingDamageMult` ("outgoingDamageMult", default 1): multiplies every shot's damage (ground and
+  air) in `CombatSystem` beside the rank and boss multipliers, and the card's figures (`FirePower`). Fire rate,
+  magazine, reload and round count untouched.
+- **S04** `VehicleDef.BaseCp` (the card price) vs `TeamEconomy.RuntimeCallCost` (rank discount, commander): spending
+  and affordability use the runtime cost (as before); supply, bounty, refunds and the AI's force shares use the base
+  price (the AI's CP-spent shares moved from runtime to base). `VehicleDef.DropDelay` ("dropDelay", default 3.5 s =
+  the old constant) replaces `DeliverySeconds` for a bought or airlifted vehicle (Rush's factor still applies).
+- **S08** measurements stamp what they measured (`Tests/EditMode/MeasureStamp.cs` writes `<file>.stamp.json`: sha256
+  of balance.json and campaign.json, commit, rules "p29"); `Tools/docs/measure_stamp.py` compares; `build_doc.py` puts
+  table 9b in the body only on a matching stamp, else (and table 2b, measured by hand in prompt 13, always) in a new
+  appendix "Lịch sử đo".
+- **S09** the code already keeps radians and the document already converts (prompt 25 C.4); tests added (C# data vs
+  code; Python: the document's °/s columns go through `deg()`).
+- Tests written, not run: `BalanceRound2Tests` (EditMode), `Tools/balance/test_p29.py` (unittest).
+
+## Prompt 29 L2 (cloud, 2026-10-02): pre-apply checks
+
+C03, C05, C06, C07, C09, C10, C12, C13, C15, C16 written to `Docs/checks/` (the repository's `Docs`, not `docs`).
+Results that matter for later passes: C05 every flare baseline matches (no B2-FLR conflict); C06 one APS code path,
+bosses carry the same `aps` (classified, numbers kept); C07 iron_beam recharges in 0.8 s in the data; C10 Buk and the
+other AA weapons hit aircraft at x1.3 (the sheet's assumption holds); C12 the low-health return is one condition in
+`TacticalAi.Refit`, already off for the layered AI; C13 no stored flag fields exist (they are computed from the round),
+so S05 adds optional overrides; C16 lists three AoE rows without `splash` (missile blasts) and 28 splash weapons not
+in the AoE list (reported only, B5 is HOLD anyway). C06 and C12 now let their bundles go (`DONE_CHECKS`).
+
+## Prompt 29 L3 (cloud, 2026-10-02): FIX regressions from round 1
+
+Applied B0-sky_gunship (hp 4400), B0-thermobaric_launcher (1980), B0-siege_tank (3300), B0-light_tank (speed 9),
+B0-vbied (13), B0-flame_tank (6.5), B0-engineer_vehicle (7): all OK (current == expected_before). HP is effective
+health, written in data units (sky_gunship 2000, thermobaric_launcher 900, siege_tank 1500 x toughness 2.2).
+known_good cross-checked against round 1 (`Machine_Brigade_Can_bang.xlsx`, sheet "Phương tiện", the values before
+round 1's "Xem lại" rows were applied by mistake): sky_gunship 4400, thermobaric_launcher 1980, siege_tank 3300,
+light_tank 9 m/s, vbied 13, flame_tank 6.5, engineer_vehicle 7: every known_good matches. balance.json keys changed:
+`vehicles[sky_gunship|thermobaric_launcher|siege_tank].hp`, `vehicles[light_tank|vbied|flame_tank|engineer_vehicle].speed`.
+
+## Prompt 29 L4 (cloud, 2026-10-02): E1 and the B1 repricing
+
+- **E1 (D9).** `economy.bankByMode` = { tag: [from, to] } written by the apply tool from the manifest (Conquest,
+  Deathmatch, KingOfTheHill, Assault, Defend, Endless 30 -> 45; Siege 40 -> 55; Survival 30 -> 40; BossRush 45 -> 60).
+  `SimWorld.EnableEconomy` moves a side's bank only when its mode gave it the "from" value (`Catalog.BankFor`), so the
+  siege defender, the Sandbox and the campaign keep theirs. Vault is derived (mode bank + okoye's 15): 45 -> 60 follows
+  without a write. The supply threshold (E2) is HOLD and untouched. E1 could not be cross-checked against the v1 file
+  (it does not exist; logged).
+- **B1.** Applied by class group (six commits): every B1 bundle but B1-sky_gunship (waits for B2-FLR-sky_gunship and
+  B3-AI, pass 7) went OK or with ALREADY_APPLIED rows (the outgoingDamageMult rows at 1.0); no CONFLICT. B5 (HOLD) not
+  applied. Keys changed: `vehicles[*].cp`, `.hp` (data units over toughness 2.2), new `.outgoingDamageMult` and
+  `.dropDelay` on the B1 vehicles (`Docs/balance/apply_log_p29.md` lists them).
+- **Tool state.** A re-check of an applied bundle after a later one moved its values (B0 after B1) gave false
+  CONFLICT rows; the tool now records applied bundles (`Docs/balance/apply_state_p29.json`), skips them and counts them
+  for depends_on. The false rows were removed from the log with a note.
+- **Texts.** Card numbers (price, health, drop time) are drawn from the data at run time; the only hand-written price
+  in the text tables was the siege mortar's guide line ("12 CP" -> 15, EN and VI). Card renders and the PDF are local.
+
+## Prompt 29 L5 (cloud, 2026-10-02): flags, flares, APS, vehicle missiles
+
+- **5.1 S05.** C13 found no stored flag fields: `WeaponDef.CanHitGround/CanHitAir` read the targets; `interceptable`,
+  `flareEligible`, `apsEligible`, `ciwsEligible` are optional data overrides (null = the round rules decide, so every
+  weapon and boss strike has its flags without new data). Enforced in `TryIntercept` (interceptable, apsEligible for a
+  SELF_APS), `GunTakes` (interceptable, ciwsEligible) and the flare roll (flareEligible). No flag is inferred from
+  "is it a boss weapon".
+- **5.2 S06 + B2-FLR (D6).** `flareCharges`, `flareRecharge` per vehicle; a Flares skill with charges spends one per
+  use (the next may go once it has burnt); charges come back one per recharge time in the holding pattern and all at
+  once when rearming on a landing pad or over the HQ; outside the holding pattern the clock waits. A vehicle given
+  charges without a flare skill flies its kind's (`jet_flares` fixed wing, `heli_flares` else). The heat-decoy module
+  (FlareDispenser) now only adds one charge and recharges x0.75 on a vehicle with flares; elsewhere it does nothing
+  (the equipment screen hiding it there is Game code: LOCAL_TODO). All 17 B2-FLR bundles OK (stealth_bomber's flare
+  skill removed, D6's "only when the real aircraft has them").
+- **5.3 S07 + B2-APS (D7).** `apsCapability` (None/BuiltIn/RetrofitEligible; the manifest's NONE/BUILT_IN/RETROFIT_ELIGIBLE,
+  its "—" read as NONE) and `interceptionMode` (SelfAps/PointDefense/BossSelfAps; inferred: bosses BossSelfAps, towers
+  and burst guns PointDefense, else SelfAps; set explicitly per C06 on iron_beam, sea_corvette, sea_cruiser, icarus_mk0
+  PointDefense and next_gen_tank SelfAps). A SELF_APS takes only guided missiles, drones and direct-fire rockets.
+  Trophy: NONE nothing, RETROFIT_ELIGIBLE 2 charges every 20 s, BUILT_IN +1 charge and recharge x0.75. B2-APS-next_gen_tank
+  (2 / 10 s / 20 m, no artillery rockets, no shells), titan_tank (3 / 10 s; radius 20 m as the sheet "APS" gives it,
+  the manifest has no radius row), main_battle_tank (RetrofitEligible), trophy (code) applied. Bosses and towers keep
+  their numbers (C06); iron_beam keeps 0.8 s (C07).
+- **5.4 vehicle missiles.** None of the five had a magazine on its missile (checked: `atgm`, `gun_launched_atgm`,
+  `ataka`, `spike_nlos` have no `ammo`/`reload`), so the prompt's numbers were set per vehicle (`missiles` ->
+  `VehicleDef.WeaponOverrides`, a copy of the shared weapon with its own load and reload; `atgm` stays one shared
+  weapon for ifv and titan_tank): ifv atgm 2 / 20 s, light_tank gun_launched_atgm 2 / 25 s, bmpt ataka 4 / 30 s,
+  nlos_atgm_vehicle spike_nlos 2 / 25 s, titan_tank atgm 4 / 30 s. The main gun fires on when the missiles are out
+  (separate mounts); faster reload near an ammo carrier or depot is the existing rearm aura. The missiles-left icon on
+  the unit and the card is UI (LOCAL_TODO). Caveat: equipment that re-tunes a mount's weapon starts from the shared
+  weapon (the override is lost for a geared mount): listed for the local check.
+- balance.json keys added: `flareCharges`, `flareRecharge`, `apsCapability`, `interceptionMode`, `missiles`, `aps` on
+  titan_tank; changed: next_gen_tank `aps`, stealth_bomber `skills`.
+
+## Prompt 29 L6 (cloud, 2026-10-02): no low-health aircraft retreat (B3-AI)
+
+C12 found the condition in `TacticalAi.Refit` (35 % -> fly to the airfield or HQ, stay to 90 %), already off for the
+layered AI of prompt 28. Removed for every TacticalAi (wave modes, Sandbox Combat AI, allies): no aircraft starts a
+trip home for its health. Untouched: going back for ammunition (SupplySystem), mending while on the airfield or the HQ,
+the holding pattern, engineers and repair stations. Tests `AircraftReturnTests` (low health fights on; out of
+ammunition still leaves), not run. B3-AI is a code bundle (`aircraft.returnBecauseLowHP` false), marked done in the tool.
+
+## Prompt 29 L7 (cloud, 2026-10-02): sky gunship and Gungnir
+
+- **B1-sky_gunship** applied after B0, B2-FLR-sky_gunship and B3-AI (OK).
+- **C11** (`Docs/checks/boss_hunt.md`): main-rank bosses count as mains in the hunts whatever their chapter slot
+  (`BossHunts.Story`); 17 mains / 24 minis; weekly 3 + 7 unchanged.
+- **G1 (D1).** `rail_supergun`: rank mini -> main (its rank's scaling, intro, escorts and rewards follow; its own
+  phase at 45 % stays); health 156,900 data (133,365 shown: the chapter-11 main boss). Super weapon (its `bombard`):
+  every 25 -> 45 s (`every`, no longer the gun's cooldown); targeting: the bombard always aimed at the densest enemy
+  ground group anywhere (no range check existed, so the manifest's "range 400 m" was the weapon's data, not the
+  aim); now explicit `targeting: Global` (a new `Range` option checks the weapon's range; default Global keeps the
+  three bombards as they were). Warning 3 s (unchanged). The pattern was already prompt 26's: pierce up to 5 vehicles
+  x 1,000 on the line, then 2,000 at the last, core 12 m, edge 20 m at 40 % (the two-layer blast, edge = min(2 x core,
+  20)). Flags on `p26_gungnir_emrg`: targets Ground, interceptable/flareEligible/apsEligible false (canHitAir false;
+  the bombard is a queued strike, never a projectile, so nothing could intercept it anyway). The aiming line during the
+  warning is drawn by the view from the `FiredWith` event (origin -> aim, warn delay): LOCAL_TODO.
+- Tests updated: `Prompt25BossTests` (Gungnir health in the main table; its bombard every 45 s).
+
+## Prompt 29 L8 (cloud, 2026-10-02): design document and report
+
+`Tools/docs/prompt29.py` adds the section "Cân bằng đợt 2" (the B1 cards' price, shown health, damage factor and drop
+time; flares by unit; APS by entity; the Gungnir), read from balance.json and the apply state; `build_doc.py` places it
+before table 9b, and (S08) moves 9b and 2b to the appendix "Lịch sử đo" unless their stamps match. The PDF itself is built
+locally (it needs the game export and Edge). Final report: `Docs/balance/report_p29.md`.

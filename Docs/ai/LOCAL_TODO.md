@@ -18,7 +18,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   the allowed list is `catalog.AiData.Towers[defId]` (`Mode` + `Modes`); the Base loadout should save the chosen
   mode per hardpoint and apply it when the tower is placed. Text keys `tower.mode.*` are in the new text table.
 - Pass 5 hooks: `PlayerProfile` saves the last tactic per mode (H.14) and per-squad choices (H.10, after chapter 6:
-  `Commander.SquadTactics = true`, `RequestSquadTactic`); the HUD shows `TeamEconomy.ArmyFactor` when below 1 (I.2) and
+  `Commander.SquadTactics = true`, `RequestSquadTactic`); the HUD shows the supply upkeep `TeamEconomy.Upkeep` when below 1 (I.2; ArmyFactor was removed in prompt 29) and
   `world.PressureTier` (I.6) and Conquest's `InFinalPhase` (I.7); the tactic picker lists `catalog.AiData.Tactics`
   filtered by `AiBehaviour.Unlocked` and highlights `SuitedTo(commander)`; the briefing shows the general's tactic
   (`GeneralTactic`); a line when the enemy switches tactic while `enemy.TacticSeenBy(world, player)` (H.8); the
@@ -42,3 +42,17 @@ The cloud session writes the Sim only. Each line: file, what, why.
   `WorldModel.Peek` (read-only).
 - WAITS FOR THE OWNER: O.6 screenshots of the picker, HUD switch, Base chips and AI viewer; the EditMode suite
   (L10nTests covers the new keys) and a play check of the HUD rail layout on a phone (the rail gained one tool).
+- Prompt 29: re-render the cards (prices, health, drop times changed for ~100 vehicles), run CatalogCheck (new keys
+  `outgoingDamageMult`, `dropDelay`, `economy.bankByMode`, later `flareCharges`, `flareRecharge`, `apsCapability`,
+  `interceptionMode`, `missiles`) and `BalanceRound2Tests`, `Tools/balance/test_p29.py`; rebuild the design PDF
+  (`Tools/docs/build_doc.py`, pass 8 sections).
+- Prompt 29 L5: the equipment screen must not offer the heat-decoy module to vehicles without flares
+  (`VehicleDef.FlareCharges == 0`) nor Trophy to `ApsCapability.None` (Game `GearCatalog`/`VehicleFit`); HUD and card show
+  missiles left (`Weapons[i].Ammo` of the `missiles` mount) and flare charges (`FlareChargesLeft`/`FlareChargesMax`);
+  check that equipment tuning a missile mount keeps the vehicle's own load (VehicleDef.ArmOf).
+- Prompt 29 5.5 (Blender, local): `Tools/blender/mb_p29_details.py` has `flare_tubes` and `aps_cluster` (V2 kit) and the
+  model lists (`FLARE_MODELS`: 16 aircraft; `APS_MODELS`: next_gen_tank, titan_tank; main_battle_tank's Trophy only
+  as gear art). Call them from each model's builder with hull positions, rebuild with build_assets.py, validate,
+  render cards; add the two effects (`FLARE_EFFECT`, `APS_EFFECT` descriptions) in the Game's effects.
+- Prompt 29 G1: the view draws the Gungnir's aiming line (origin to aim) for the 3 s warning from its `FiredWith` event
+  (ASSET_DEBT "Gungnir's line warning"); check the Boss Hunt lists and the hunt UI with 17 mains.

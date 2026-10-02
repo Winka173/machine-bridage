@@ -6,6 +6,12 @@ namespace MachineBrigade.Sim.Entities
 {
     public sealed partial class Vehicle
     {
+        /// <summary>Prompt 29 S06: flare charges left, their most, and when the next one comes back.</summary>
+        public int FlareChargesLeft { get; internal set; }
+        public int FlareChargesMax { get; internal set; }
+        internal double FlareRechargeAt;
+        internal float FlareRechargeScale = 1f;
+
         /// <summary>Prompt 28 H.9: its squad holds fire (an ambush, until the enemy is close or the squad is hit).</summary>
         public bool AiHoldFire { get; internal set; }
 

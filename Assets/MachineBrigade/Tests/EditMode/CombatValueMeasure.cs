@@ -149,6 +149,8 @@ namespace MachineBrigade.Tests
             File.WriteAllText(Path.Combine(outDir, $"combat_value_{tag}_support.tsv"), SupportTsv(support.Values), new UTF8Encoding(false));
             var summary = Summary(catalog, results, support);
             File.WriteAllText(Path.Combine(outDir, $"combat_value_{tag}_summary.tsv"), summary, new UTF8Encoding(false));
+            // Prompt 29 S08: what this measure was taken on.
+            MeasureStamp.Write(Path.Combine(outDir, $"combat_value_{tag}_summary.tsv"));
             TestContext.Out.WriteLine(summary);
             UnityEngine.Debug.Log($"[CombatValueMeasure] {results.Count} runs in {(DateTime.Now - started).TotalSeconds:0} s\n" + summary);
             Assert.Pass();

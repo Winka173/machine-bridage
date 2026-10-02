@@ -169,3 +169,17 @@ Facts the prompt does not know:
 - No runs (owner's rule): the prompt says "write unit tests"; write them, do not run them; the only allowed run is the
   dotnet compile check and Python tools on the xlsx (the manifest export, the apply tool in dry-run and real mode on
   balance.json/campaign.json). CatalogCheck, the Unity compile, the PDF export (pass 8) and card renders are local.
+
+## Cloud state 2026-10-02 (prompt 29)
+
+- Branch `cloud/p29-balance` from `origin/feature/visual-overhaul` (377052b); head: the commit "P29 L8: design doc +
+  report". Sim compile check clean; nothing run but the Python tools (manifest export, apply tool, applied-xlsx export).
+- Done: pass 0 (ArmyFactor removed; field map; manifest export), 1 (S01-S04, S08, S09), 2 (ten checks), 3 (B0), 4 (E1,
+  B1), 5 (S05-S07, B2-FLR, B2-APS, 5.4 missiles, 5.5 Blender parts written), 6 (B3-AI), 7 (B1-sky_gunship, C11, G1),
+  8 (doc section, report). 0 CONFLICT, 0 BLOCKED; HOLD and REJECT skipped. Optional checks C02, C04, C08, C14 not done.
+- Waits for the local session: Unity compile, CatalogCheck, EditMode and Python tests, card renders, PDF, Blender
+  (`Tools/blender/mb_p29_details.py`), UI items in `Docs/ai/LOCAL_TODO.md`.
+- balance.json: ~100 vehicles' `cp`/`hp`/`outgoingDamageMult`/`dropDelay`; 7 FIX values; `economy.bankByMode`;
+  `flareCharges`/`flareRecharge` (17), stealth_bomber's flare skill removed; `apsCapability`, `interceptionMode`, `aps`
+  (next_gen_tank, titan_tank); `missiles` (5 vehicles); rail_supergun rank/hp/bombard; p26_gungnir_emrg flags;
+  `ai.economy.armyBands` removed.

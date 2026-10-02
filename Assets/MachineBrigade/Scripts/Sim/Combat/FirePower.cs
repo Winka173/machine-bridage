@@ -26,10 +26,10 @@ namespace MachineBrigade.Sim.Combat
         public static float Sustained(WeaponDef w, VehicleDef? carrier = null) =>
             // Prompt 25 C1: a boss's own weapon damage on the ground, on what the combat system fires (not a weapon the boss
             // system lays).
-            OnPaper(w, carrier) * (carrier != null && !w.Laid ? carrier.WeaponDamage : 1f);
+            OnPaper(w, carrier) * (carrier != null && !w.Laid ? carrier.WeaponDamage : 1f) * (carrier?.OutgoingDamageMult ?? 1f);
 
         /// <summary>Prompt 25 C1: <see cref="Sustained"/> at aircraft (a boss's own weapon damage is the ground's only).</summary>
-        public static float SustainedAir(WeaponDef w, VehicleDef? carrier = null) => OnPaper(w, carrier);
+        public static float SustainedAir(WeaponDef w, VehicleDef? carrier = null) => OnPaper(w, carrier) * (carrier?.OutgoingDamageMult ?? 1f);
 
         private static float OnPaper(WeaponDef w, VehicleDef? carrier)
         {

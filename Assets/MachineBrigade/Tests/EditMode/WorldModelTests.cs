@@ -43,14 +43,14 @@ namespace MachineBrigade.Tests
             var ai = GameContent.LoadCatalog().Ai;
             var keys = ai.Keys.ToList();
             Assert.That(keys.Count(k => k.StartsWith("params.")), Is.EqualTo(21), "the sheet's 21 parameters");
-            Assert.That(keys, Does.Contain("economy.armyBands.2").And.Contain("economy.escalation.3").And.Contain("world.cell"));
+            Assert.That(keys, Does.Contain("economy.escalation.3").And.Contain("world.cell"));
             foreach (var key in keys)
             {
                 var p = ai.Param(key);
                 Assert.That(p.Value, Is.InRange(p.Min, p.Max), key);
                 Assert.That(p.Metric, Is.Not.Empty, key + ": a measurement metric (L.1)");
             }
-            Assert.That(ai.ArmyBandEdges.Count, Is.EqualTo(3));
+            Assert.That(keys.Any(k => k.StartsWith("economy.armyBands")), Is.False, "prompt 29: no army bands, the supply upkeep is the upkeep");
             Assert.That(ai.With("params.switchMargin", 15f).SwitchMargin, Is.EqualTo(15f));
             Assert.That(ai.SwitchMargin, Is.EqualTo(8f), "With copies");
         }

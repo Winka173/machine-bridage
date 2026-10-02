@@ -217,6 +217,12 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public int PierceMax { get; internal set; }
 
+        /// <summary>
+        /// Prompt 29 G1: where it may aim: Global (the densest enemy group anywhere on the map, as every bombard always did)
+        /// or Range (only within its weapon's range). balance.json bombard "targeting".
+        /// </summary>
+        public bool GlobalTargeting { get; internal set; } = true;
+
         /// <summary>The damage the slug does to each vehicle it goes through (see <see cref="PierceMax"/>).</summary>
         public float PierceDamage { get; internal set; }
 

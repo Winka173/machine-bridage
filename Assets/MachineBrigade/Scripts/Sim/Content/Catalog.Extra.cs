@@ -133,6 +133,14 @@ namespace MachineBrigade.Sim.Content
             // 0 until FinishExtras fills in the elite default (or 1).
             def.DamageScale = v.Has("damageScale") ? Math.Clamp(v.Float("damageScale", 1f), 0.1f, 5f) : 0f;
             def.WeaponDamage = Math.Clamp(v.Float("weaponDamage", 1f), 0.1f, 10f);
+            // Prompt 29 S03, S04.
+            def.OutgoingDamageMult = Math.Clamp(v.Float("outgoingDamageMult", 1f), 0.1f, 10f);
+            def.DropDelay = Math.Clamp(v.Float("dropDelay", Economy.EconomySystem.DeliverySeconds), 0.5f, 30f);
+            // Prompt 29 S06, S07.
+            def.FlareCharges = Math.Max(0, v.Int("flareCharges", 0));
+            def.FlareRecharge = v.Has("flareRecharge") ? Math.Max(1f, v.Float("flareRecharge", 20f)) : null;
+            def.ApsCapability = v.Enum("apsCapability", ApsCapability.None);
+            def.InterceptionModeData = v.Has("interceptionMode") ? v.Enum<InterceptionMode>("interceptionMode") : null;
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");
@@ -233,6 +241,7 @@ namespace MachineBrigade.Sim.Content
                     Spotter = b.Has("spotter") ? b.String("spotter") : null, Weapon = b.Has("weapon") ? b.String("weapon") : null,
                     Warning = b.Has("warning") ? b.String("warning") : null,
                     PierceMax = Math.Max(0, b.Int("pierceMax", 0)), PierceDamage = MathF.Max(0f, b.Float("pierceDamage", 0f)),
+                    GlobalTargeting = !string.Equals(b.Has("targeting") ? b.String("targeting") : "Global", "Range", StringComparison.OrdinalIgnoreCase),
                 };
             }
             // Prompt 18: its big attack by id, and its own scaling of it.

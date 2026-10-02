@@ -63,7 +63,7 @@ namespace MachineBrigade.Sim.AI
 
         private void Bought(SimWorld world, string id, TeamEconomy economy)
         {
-            if (Commander != null && world.Catalog.Vehicles.TryGetValue(id, out var def)) Commander.Bought(def, economy.PriceOf(id, def.CpCost));
+            if (Commander != null && world.Catalog.Vehicles.TryGetValue(id, out var def)) Commander.Bought(def, def.BaseCp); // R7: shares by base CP
         }
     }
 }

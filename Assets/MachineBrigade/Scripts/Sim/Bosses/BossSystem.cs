@@ -254,6 +254,9 @@ namespace MachineBrigade.Sim.Bosses
             if (now < v.BombardNext || v.Stunned || v.Transforming || v.BombardOff) return;
             v.BombardNext = now + b.Every * v.PartCadence;
             if (BiggestGroup(v, out var aim) < 1) return;
+            // Prompt 29 G1: a bombard limited to its range lets a group beyond it be.
+            if (!b.GlobalTargeting && b.Weapon != null && _world.Catalog.Weapons.TryGetValue(b.Weapon, out var reachGun) &&
+                Vector2.Distance(aim, v.Position) > reachGun.Range) return;
             // Its fire-control post gone (a guard or, since prompt 9, a part): the shell falls much wider of the mark.
             var blind = v.SpotterOff || (b.Spotter != null && !SpotterStands(v, b.Spotter));
             var scatter = b.Scatter * (blind ? b.BlindScatter : 1f);

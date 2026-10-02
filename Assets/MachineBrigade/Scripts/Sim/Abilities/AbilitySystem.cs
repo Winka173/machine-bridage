@@ -55,6 +55,7 @@ namespace MachineBrigade.Sim.Abilities
             {
                 if (!v.IsAlive) continue;
                 if (v.Transforming && now >= v.TransformUntil) CompletePhase(v, now);
+                if (v.FlareChargesMax > 0) RechargeFlares(v, now);
                 v.RefreshEffects(now);
                 // A boss's jamming aura stops with its jammer part (prompt 16).
                 if (v.Def.Jammer > 0f && !v.JammerOff) _jammers.Add(v);
@@ -567,12 +568,55 @@ namespace MachineBrigade.Sim.Abilities
                 // A boss's skill on a broken part (a drone hangar's launches) is used no more.
                 if (i < v.SkillOff.Length && v.SkillOff[i]) continue;
                 if (!Triggered(v, skill, now)) continue;
+                // Prompt 29 S06: flares as charges: one is spent, the next can go once this one has burnt.
+                if (skill.Kind == SkillKind.Flares && v.FlareChargesMax > 0)
+                {
+                    if (v.FlareChargesLeft <= 0) continue;
+                    if (v.FlareChargesLeft == v.FlareChargesMax) v.FlareRechargeAt = now + FlareRecharge(v, skill);
+                    v.FlareChargesLeft--;
+                    v.SkillReadyAt[i] = now + MathF.Max(0.5f, skill.Duration);
+                    v.SkillUsed[i] = true;
+                    Fire(v, skill, now);
+                    v.RefreshEffects(now);
+                    _world.Emit(SimEvent.SkillUsed(v, skill));
+                    continue;
+                }
                 v.SkillReadyAt[i] = now + skill.Cooldown * (v.Gear != null ? MathF.Max(0.5f, 1f - v.Gear.Stat(StatId.Cooldowns)) : 1f);
                 v.SkillUsed[i] = true;
                 Fire(v, skill, now);
                 v.RefreshEffects(now);
                 _world.Emit(SimEvent.SkillUsed(v, skill));
             }
+        }
+
+        /// <summary>Seconds for one flare charge: the vehicle's own, else its flare skill's cooldown; the heat-decoy module x0.75.</summary>
+        private static float FlareRecharge(Vehicle v, SkillDef skill) =>
+            (v.Def.FlareRecharge ?? MathF.Max(1f, skill.Cooldown)) * v.FlareRechargeScale;
+
+        /// <summary>
+        /// Prompt 29 S06: flare charges come back one at a time while the aircraft is in its holding pattern, and all at once
+        /// when it rearms on a landing pad or over the HQ.
+        /// </summary>
+        private void RechargeFlares(Vehicle v, double now)
+        {
+            if (v.FlareChargesMax <= 0 || v.FlareChargesLeft >= v.FlareChargesMax) return;
+            if (v.Supply == SupplyState.Holding && v.RearmAt is RearmSite.LandingPad or RearmSite.Headquarters)
+            {
+                v.FlareChargesLeft = v.FlareChargesMax;
+                return;
+            }
+            if (v.Supply != SupplyState.Holding)
+            {
+                // Not in the holding pattern: the clock waits (no charge comes back in the fight).
+                if (v.FlareRechargeAt < now) v.FlareRechargeAt = now;
+                return;
+            }
+            if (now < v.FlareRechargeAt) return;
+            v.FlareChargesLeft++;
+            SkillDef? flare = null;
+            foreach (var s in v.Def.Skills)
+                if (s.Kind == SkillKind.Flares) flare = s;
+            v.FlareRechargeAt = now + (flare != null ? FlareRecharge(v, flare) : 20f);
         }
 
         private bool Triggered(Vehicle v, SkillDef skill, double now) => skill.Trigger switch

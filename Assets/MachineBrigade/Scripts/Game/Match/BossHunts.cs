@@ -51,7 +51,9 @@ namespace MachineBrigade.Game.Match
                     void Add(string id)
                     {
                         if (slots.Contains(id) && catalog.Vehicles.TryGetValue(id, out var def) && (!OnRails(def) || def.Arena != null) && seen.Add(id))
-                            list.Add(new HuntBoss(id, id == chapter.Main, chapter.Number, AirDefence(def)));
+                            // Prompt 29 C11: a boss of the main rank counts as a main boss in the hunts even where its chapter
+                            // lists it in a mini slot (Gungnir, chapter 11: 17 mains and 24 minis to draw 3 and 7 from).
+                            list.Add(new HuntBoss(id, id == chapter.Main || def.Rank == BossRank.Main, chapter.Number, AirDefence(def)));
                     }
                     foreach (var m in Campaign.MissionsOf(chapter.Number))
                         foreach (var b in Campaign.BossesOf(m))

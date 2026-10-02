@@ -9,6 +9,22 @@ namespace MachineBrigade.Sim.Content
     /// elite's army cost, and the new bosses' parts, lock, boring, landings, emplacements and attached
     /// models. Kept apart from Definitions.cs so the two grow without stepping on each other.
     /// </summary>
+    /// <summary>Prompt 29 S07: apsCapability.</summary>
+    public enum ApsCapability
+    {
+        None,
+        BuiltIn,
+        RetrofitEligible,
+    }
+
+    /// <summary>Prompt 29 S07: interceptionSystem.mode (bosses keep their numbers: BossSelfAps).</summary>
+    public enum InterceptionMode
+    {
+        SelfAps,
+        PointDefense,
+        BossSelfAps,
+    }
+
     public sealed partial class VehicleDef
     {
         /// <summary>The army branch whose equipment loadout it wears (see <see cref="ArmyBranch"/>).</summary>
@@ -28,6 +44,42 @@ namespace MachineBrigade.Sim.Content
         /// <see cref="Combat.FirePower.Sustained"/> counts it too.
         /// </summary>
         public float WeaponDamage { get; internal set; } = 1f;
+
+        /// <summary>
+        /// Prompt 29 S03 (D2, R8): this vehicle's damage on every weapon it fires (ground and air, rank and boss multipliers
+        /// on top), so a card is balanced without editing a weapon other vehicles share. Fire rate, magazine, reload and
+        /// round count stay the weapon's. balance.json "outgoingDamageMult", default 1.
+        /// </summary>
+        public float OutgoingDamageMult { get; internal set; } = 1f;
+
+        /// <summary>Prompt 29 S04: seconds from calling the card to the vehicle landing (balance.json "dropDelay"; default 3.5).</summary>
+        public float DropDelay { get; internal set; } = Economy.EconomySystem.DeliverySeconds;
+
+        /// <summary>Prompt 29 S04 (R7): the card's base price, before any card-rank discount; bounties, supply, drop times and
+        /// every balance class use it. What a call costs a side now is <see cref="Economy.TeamEconomy.RuntimeCallCost"/>.</summary>
+        public int BaseCp => CpCost;
+
+        /// <summary>Prompt 29 S06 (D6): flares as charges ("flareCharges", 0: the old cooldown flares or none).</summary>
+        public int FlareCharges { get; internal set; }
+
+        /// <summary>Seconds to get one flare charge back in the holding pattern ("flareRecharge"; null: the flare skill's cooldown).</summary>
+        public float? FlareRecharge { get; internal set; }
+
+        /// <summary>Prompt 29 S07 (D7): whether the vehicle has an APS of its own, may take a retrofit (Trophy), or neither.</summary>
+        public ApsCapability ApsCapability { get; internal set; }
+
+        /// <summary>Prompt 29 S07: how its interception works (a vehicle's own APS, a point defence, a boss's own).</summary>
+        public InterceptionMode InterceptionMode => InterceptionModeData ??
+            (Boss ? InterceptionMode.BossSelfAps : Static || Aps is { Burst: > 0f } ? InterceptionMode.PointDefense : InterceptionMode.SelfAps);
+
+        /// <summary>The data's "interceptionMode", if it names one.</summary>
+        internal InterceptionMode? InterceptionModeData { get; set; }
+
+        /// <summary>Prompt 29 5.4: this vehicle's own copy of a shared missile weapon (its load and reload), by weapon id.</summary>
+        internal Dictionary<string, WeaponDef>? WeaponOverrides { get; set; }
+
+        /// <summary>The weapon a mount fires on this vehicle: its own copy where 5.4 gave one, else the shared one.</summary>
+        public WeaponDef ArmOf(WeaponDef shared) => WeaponOverrides != null && WeaponOverrides.TryGetValue(shared.Id, out var own) ? own : shared;
 
         /// <summary>Share of a mine's blast that gets through (the armoured bulldozer's belly plate: 0.5).</summary>
         public float MineArmor { get; internal set; } = 1f;
