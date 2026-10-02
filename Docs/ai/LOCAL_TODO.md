@@ -139,3 +139,8 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile, CatalogCheck (balance.json base.reference); run BaseWavesP32Tests, DefendLinesTests, DefendModeTests, QuickModeTests.
 - Play: Defend and Endless at HQ 1 and 5 (the reference sizes, Docs/DECISIONS "Prompt 32 L4/L5/L6/L8" L5).
+
+## Prompt 32 L6 (lead pass, 2026-10-02): starting CP and opening squads
+
+- Unity: compile, CatalogCheck (balance.json economy.startCp, openingSquads; 100 map files gained "start": true on their generic units); run OpeningSquadP32Tests, QuickModeTests, ConquestBattleTests' set-up, DefendModeTests, BossRushTests, CampaignStartTests (start CP x 1.16 may move tests that read a start CP).
+- Play: the squads at tick 0 by commander, and the enemy's default scout + light in quick modes.

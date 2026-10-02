@@ -387,6 +387,13 @@ namespace MachineBrigade.Sim.Content
         /// <summary>A chapter's big operation: the Operations mode offers it again once won.</summary>
         public bool Operation { get; set; }
 
+        /// <summary>
+        /// Prompt 32 L6: the mission gives both sides opening squads (campaign.json "openingSquad"; default off: the 23
+        /// fixed-deck missions, missions with placed allies, recon and infiltration, and those opening on a scripted
+        /// convoy never do).
+        /// </summary>
+        public bool OpeningSquad { get; set; }
+
         /// <summary>A notable story battle (a siege, a defence, a duel with a general) the Operations mode offers again once won.</summary>
         public bool Replay { get; set; }
 
@@ -736,6 +743,8 @@ namespace MachineBrigade.Sim.Content
                 };
             }
             if (m.Has("units")) def.Units = Placements(m, "units");
+            // Prompt 32 L6: a mission's opening squads (both sides), off unless the mission says so.
+            def.OpeningSquad = m.Bool("openingSquad", false);
             def.EnemyCap = m.Int("enemyCap", 0);
             def.PlayArea = Content.PlayArea.Read(m, "playArea");
             if (m.Has("ally"))

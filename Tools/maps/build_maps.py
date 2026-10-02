@@ -5066,27 +5066,28 @@ def finish(L):
 
 TEAMS = [{'team': 0, 'x': -58 * S, 'z': -58 * S}, {'team': 1, 'x': 58 * S, 'z': 58 * S}]
 SIZE = int(round(HALF * 2))
+# Prompt 32 L6: the generic start units carry "start": true; the modes with opening squads leave them out (SimWorld.MapUnits).
 CONQUEST_UNITS = [
-    {'def': 'scout_jeep', 'team': 0, 'x': -62.5, 'z': -72.5, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 0, 'x': -72.5, 'z': -62.5, 'heading': 45},
-    {'def': 'ifv', 'team': 0, 'x': -66.25, 'z': -66.25, 'heading': 45},
-    {'def': 'light_tank', 'team': 0, 'x': -75.0, 'z': -75.0, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 1, 'x': 62.5, 'z': 72.5, 'heading': 225},
-    {'def': 'scout_jeep', 'team': 1, 'x': 72.5, 'z': 62.5, 'heading': 225},
-    {'def': 'ifv', 'team': 1, 'x': 66.25, 'z': 66.25, 'heading': 225},
-    {'def': 'light_tank', 'team': 1, 'x': 75.0, 'z': 75.0, 'heading': 225},
+    {'def': 'scout_jeep', 'team': 0, 'x': -62.5, 'z': -72.5, 'heading': 45, 'start': True},
+    {'def': 'scout_jeep', 'team': 0, 'x': -72.5, 'z': -62.5, 'heading': 45, 'start': True},
+    {'def': 'ifv', 'team': 0, 'x': -66.25, 'z': -66.25, 'heading': 45, 'start': True},
+    {'def': 'light_tank', 'team': 0, 'x': -75.0, 'z': -75.0, 'heading': 45, 'start': True},
+    {'def': 'scout_jeep', 'team': 1, 'x': 62.5, 'z': 72.5, 'heading': 225, 'start': True},
+    {'def': 'scout_jeep', 'team': 1, 'x': 72.5, 'z': 62.5, 'heading': 225, 'start': True},
+    {'def': 'ifv', 'team': 1, 'x': 66.25, 'z': 66.25, 'heading': 225, 'start': True},
+    {'def': 'light_tank', 'team': 1, 'x': 75.0, 'z': 75.0, 'heading': 225, 'start': True},
 ]
 SURVIVAL_UNITS = [
-    {'def': 'light_tank', 'team': 0, 'x': -62.5, 'z': -72.5, 'heading': 45},
-    {'def': 'light_tank', 'team': 0, 'x': -72.5, 'z': -62.5, 'heading': 45},
-    {'def': 'main_battle_tank', 'team': 0, 'x': -66.25, 'z': -66.25, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 0, 'x': -76.25, 'z': -57.5, 'heading': 45},
-    {'def': 'scout_jeep', 'team': 0, 'x': -57.5, 'z': -76.25, 'heading': 45},
-    {'def': 'artillery', 'team': 0, 'x': -78.75, 'z': -78.75, 'heading': 45},
-    {'def': 'light_tank', 'team': 1, 'x': 62.5, 'z': 72.5, 'heading': 225},
-    {'def': 'light_tank', 'team': 1, 'x': 72.5, 'z': 62.5, 'heading': 225},
-    {'def': 'main_battle_tank', 'team': 1, 'x': 66.25, 'z': 66.25, 'heading': 225},
-    {'def': 'scout_jeep', 'team': 1, 'x': 57.5, 'z': 76.25, 'heading': 225},
+    {'def': 'light_tank', 'team': 0, 'x': -62.5, 'z': -72.5, 'heading': 45, 'start': True},
+    {'def': 'light_tank', 'team': 0, 'x': -72.5, 'z': -62.5, 'heading': 45, 'start': True},
+    {'def': 'main_battle_tank', 'team': 0, 'x': -66.25, 'z': -66.25, 'heading': 45, 'start': True},
+    {'def': 'scout_jeep', 'team': 0, 'x': -76.25, 'z': -57.5, 'heading': 45, 'start': True},
+    {'def': 'scout_jeep', 'team': 0, 'x': -57.5, 'z': -76.25, 'heading': 45, 'start': True},
+    {'def': 'artillery', 'team': 0, 'x': -78.75, 'z': -78.75, 'heading': 45, 'start': True},
+    {'def': 'light_tank', 'team': 1, 'x': 62.5, 'z': 72.5, 'heading': 225, 'start': True},
+    {'def': 'light_tank', 'team': 1, 'x': 72.5, 'z': 62.5, 'heading': 225, 'start': True},
+    {'def': 'main_battle_tank', 'team': 1, 'x': 66.25, 'z': 66.25, 'heading': 225, 'start': True},
+    {'def': 'scout_jeep', 'team': 1, 'x': 57.5, 'z': 76.25, 'heading': 225, 'start': True},
 ]
 
 MAPS = [

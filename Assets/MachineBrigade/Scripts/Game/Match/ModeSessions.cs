@@ -326,7 +326,10 @@ namespace MachineBrigade.Game.Match
             world.ModeTag = menu ? "Menu" : kind.ToString();
             // Prompt 26 A.6: the enemy's bosses take the difficulty's health and damage factors (Boss Rush has its own strength).
             if (!menu && kind != GameModeKind.Sandbox && kind != GameModeKind.BossRush) world.BossDifficulty = session.EliteDifficulty;
+            // Prompt 32 L6: where the opening squads come, the maps' generic start units are left out.
+            world.SkipStartUnits = !menu && session.OpeningFor(world, kind, player: true);
             session.Build(world, seed);
+            if (!menu && kind != GameModeKind.Sandbox) session.DropOpeningSquads(world, kind);
             // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events or elites.
             if (!menu && kind == GameModeKind.Sandbox) return session;
             // Prompt 13 I.1: the enemy's income by difficulty (Easy x0.8, Normal x1, Hard x1.2, Very Hard x1.4).
@@ -347,6 +350,31 @@ namespace MachineBrigade.Game.Match
         }
 
         protected abstract void Build(SimWorld world, int seed);
+
+        /// <summary>
+        /// Prompt 32 L6: whether a side gets its opening squad in this mode (balance.json "openingSquads"): the player's in
+        /// "modes", the enemy commander's in "enemyModes"; a campaign mission only with its "openingSquad" flag.
+        /// </summary>
+        internal bool OpeningFor(SimWorld world, GameModeKind kind, bool player)
+        {
+            if (kind == GameModeKind.Sandbox) return false;
+            if (kind == GameModeKind.Campaign) return (this as MissionSession)?.Def.OpeningSquad == true;
+            var rules = world.Catalog.Opening;
+            return player ? rules.AppliesTo(kind.ToString()) : rules.EnemyAppliesTo(kind.ToString());
+        }
+
+        /// <summary>
+        /// Prompt 32 L6: the opening squads at tick 0, from the starting CP: the player's by its commander's row, the
+        /// enemy's by its general (a mission's), else its base style, else the table's default.
+        /// </summary>
+        internal void DropOpeningSquads(SimWorld world, GameModeKind kind)
+        {
+            var rules = world.Catalog.Opening;
+            if (OpeningFor(world, kind, player: true) && world.TryGetEconomy(PlayerTeam, out _))
+                OpeningSquads.Apply(world, PlayerTeam, rules.CommanderRoles(world.CommanderOf(PlayerTeam)?.Id));
+            if (OpeningFor(world, kind, player: false) && world.TryGetEconomy(EnemyTeam, out _))
+                OpeningSquads.Apply(world, EnemyTeam, rules.GeneralRoles(EnemyGeneral ?? EnemyStyle));
+        }
 
         /// <summary>
         /// Play-test 6 (DECISIONS 21G): a quick mode's enemy keeps pace with the player's arsenal as the campaign's does
@@ -953,6 +981,8 @@ namespace MachineBrigade.Game.Match
             _mode = new BossRushMode(new BossRushRules
             {
                 Player = player, Bounty = 12f, StepBounty = 6f, Bosses = _roster,
+                // Prompt 32 L6: each later boss brings the commander's opening squad again (the first's at tick 0).
+                OpeningRoles = world.Catalog.Opening.CommanderRoles(world.CommanderOf(PlayerTeam)?.Id),
                 SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
                 Checkpoints = _full ? HuntCheckpoints.EveryBoss : HuntCheckpoints.MainBosses, Supports = true,
                 Seed = _full ? BossHunts.FullSeed : _week, Ramp = true, FullRamp = _full, RestRepair = _full ? 0f : 0.3f,

@@ -35,3 +35,5 @@ Read from the code and data on `feature/p32-a1` (after the prompt 29 appendix); 
    magazine is full. Deterministic (no random draw), in the state hash.
 8. **Prompt 29 appendix.** Not done before; done in this pass first (commit "P29 appendix", DECISIONS "Prompt 29
    appendix (lead pass, 2026-10-02)", Docs/checks/target_mask.md).
+
+L6 (2026-10-02): in the modes with opening squads the maps' generic start units (item 2) are replaced by the squads: marked `"start": true` by `Tools/maps/p32_start_units.py`, left out through `SimWorld.MapUnits`; campaign missions keep them (DECISIONS "Prompt 32 L4/L5/L6/L8", L6).

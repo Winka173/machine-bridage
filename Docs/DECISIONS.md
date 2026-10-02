@@ -15283,3 +15283,62 @@ SiegeRules.ProgressScale`, the attacker's income x its square root as before.
 
 Tests (written, not run): `BaseWavesP32Tests` (a reference for every level; the power grows with the level; two bases at
 the same HQ level get the same waves; the level and the progress factor move them).
+
+### L6: starting CP x 1.16 and opening squads
+
+**Starting CP.** Data `economy.startCp` (`scale` 1.16, `modes`), read by `Content/OpeningRules.cs` and applied once in
+`SimWorld.EnableEconomy`: a listed mode's starting CP x 1.16, rounded half up, both sides (the bank raised to it if it
+was lower). The prompt's numbers (Conquest 18 -> 21, Assault 16 -> 19, Defend 24 -> 28, Siege 34 -> 39) are not the code's
+starting CP; the rule (x 1.16 for the new prices) was applied to what the modes really start with, so:
+
+| mode | player before -> after | enemy before -> after |
+|---|---|---|
+| Conquest | 14 -> 16 | 14 -> 16 |
+| Deathmatch | 18 -> 21 | 18 -> 21 |
+| King of the Hill | 16 -> 19 | 16 -> 19 |
+| Assault | 20 -> 23 | 32 -> 37 |
+| Survival | 16 -> 19 | (waves) |
+| Defend / Endless | 30 -> 35 | 22 -> 26 |
+| Weekly | 26 -> 30 | 22 -> 26 |
+| Siege | 38 -> 44 | 20 / 24 -> 23 / 28 |
+| Boss Hunt | 40 -> 46 (its bank is already 60: kept, not clamped) | |
+| campaign missions | their own CP x 1.16, half up (both sides) | |
+| Showdown | listed for pass 7: a mode starting at 18 gets the prompt's 21 | |
+
+The Sandbox and the menu's battle keep theirs; a test world (no mode tag) keeps its CP. A Boss Hunt resumed at a
+checkpoint sets its CP from the rules' unscaled 40 (the checkpoint path does not pass through EnableEconomy): left as it
+is (a resumed run keeps the CP it carries).
+
+**Opening squads.** Data `openingSquads` (roles as candidate id lists, or `{ "maxCp": 4 }` for Varro's cheap three; the
+commander table; the enemy general table; `modes`, `enemyModes`, `share` 0.6). `Modes/OpeningSquads.cs`: each role of the
+row takes the deck's cheapest card of the role (baseCP, then id), never a card of 0 CP, a fixed structure, a boss, an
+elite or a ship; a role the deck lacks is left out and its CP kept; a card that would take the squad past 60 % of the
+starting CP is left out. `EconomySystem.DeployOpening` drops each as a bought vehicle at the drop zone with the card's
+own drop time (a regular vehicle: supply, refunds, Deathmatch score) for its baseCP (not the ranked or commander price),
+never promoted to an elite; the caps hold. `ModeSession.DropOpeningSquads` runs right after the mode is built (tick 0).
+
+- **Where.** The player's squad in Conquest, Deathmatch, King of the Hill, Assault, Siege, Defend, Endless (Defend's
+  continuation), Survival, Boss Hunt and Showdown (listed for pass 7); the enemy's where an enemy commander buys (Conquest,
+  Deathmatch, King of the Hill, Assault, Siege, Showdown), not where the enemy is waves or bosses. Boss Hunt: the first
+  boss's at tick 0, each later boss's as it arrives (`BossRushRules.OpeningRoles`, within 60 % of the starting CP and the
+  CP the side has then). Campaign missions: only with `"openingSquad": true` (MissionDef, default off; none sets it, so the
+  23 fixed-deck missions, placed allies, recon / infiltration and scripted-convoy openings never get one).
+- **The table** (commander ids in the data: the sheet's Mara, Hawk and Nadia are `lind`, `reyes`, `kerr` by their portraits
+  mai, dieuhau, linh): kade MBT + scout; lind engineer + repair + light; reyes scout helicopter + scout; kerr scout + radar
+  scout + light; venn FPV carrier + scout; mendez wheeled armour + light tank + scout; brandt deployable bunker +
+  engineer; dahl the cheapest mortar or SP gun + scout; brenn none; adler scout + light; varro three of 4 CP or less (the
+  cheapest, repeated); reyn MBT; quist a fortifying vehicle (bunker vehicle or siege tank) + light + scout; okoye none.
+- **Enemy generals** by id or base style: varga tanks, orlov artillery + radar scout, kessler mine layer + light, sen (the
+  data's id of Venn's portrait) and venn drones, aurel the cheapest heavy, wolff helicopter and thorne MBT (no general of
+  those names in the data yet: kept for when they come); every other side (quick modes) the default scout + light.
+- **The maps' start units (precheck item 2).** The units seen at the start came from the maps' generic `units`
+  (build_maps.py CONQUEST_UNITS / SURVIVAL_UNITS), not from another system: they are replaced by the squads where those
+  come. `Tools/maps/p32_start_units.py` marked them `"start": true` in the 100 generated map files (650 units; rerunnable,
+  `--check`), and build_maps.py now writes the flag. `UnitPlacement.Start`; `SimWorld.SkipStartUnits` (set by the session
+  where the player's squad comes) makes `SimWorld.MapUnits` leave them out (Conquest, the quick modes, Survival, Siege,
+  Boss Hunt read MapUnits). The map files keep the units: a campaign mission (MissionMode reads every unit) still has
+  them, and the outlines keep their spots. A siege fortress's own defences are never marked.
+
+Tests (written, not run): `OpeningSquadP32Tests` (the scale per mode; the economy's start; every commander's row and
+every role id; cheapest per role, ties by id; a missing role; the budget; Varro; exclusions; the drop from the starting
+CP as regular vehicles; the marked start units left out; no mission on by default).

@@ -427,7 +427,7 @@ namespace MachineBrigade.Sim.Modes
                 world.SetRally(PlayerTeam, inside);
                 world.SetRally(EnemyTeam, outside);
             }
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, Side(unit.Team), unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, Side(unit.Team), unit.Position, unit.Heading);
             _fortress = world.Map.Fortress;
             foreach (var prop in world.Props)
             {
@@ -1436,6 +1436,12 @@ namespace MachineBrigade.Sim.Modes
 
         public SideSetup Player { get; set; } = new() { StartCp = 30f, Income = 1.5f, ArmyCap = 36 };
 
+        /// <summary>
+        /// Prompt 32 L6: the player's opening squad (its commander's roles), dropped again as each boss after the first
+        /// arrives (the first's at tick 0, by the session); empty: none.
+        /// </summary>
+        public IReadOnlyList<string> OpeningRoles { get; set; } = Array.Empty<string>();
+
         /// <summary>Prompt 16: the battlefield a boss that sails is fought on when the rush's own has no sea.</summary>
         public string SeaMap { get; set; } = "lighthousebay";
 
@@ -1537,7 +1543,7 @@ namespace MachineBrigade.Sim.Modes
                 HuntSetup(world);
                 return;
             }
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             HuntSetup(world);
         }
 
@@ -1663,6 +1669,9 @@ namespace MachineBrigade.Sim.Modes
         private void Spawn(SimWorld world)
         {
             if (!world.TryGetRally(EnemyTeam, out var rally)) return;
+            // Prompt 32 L6: every boss after the first brings the player's opening squad again (within its share of the
+            // starting CP, from the CP the side has now).
+            if (Defeated > 0 && _rules.OpeningRoles.Count > 0) OpeningSquads.Apply(world, PlayerTeam, _rules.OpeningRoles, _rules.Player.StartCp);
             var id = BossAt(Defeated);
             var home = world.TryGetRally(PlayerTeam, out var h) ? h : Vector2.Zero;
             var heading = SimMath.HeadingOf(home - rally);

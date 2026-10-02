@@ -13,6 +13,9 @@
   "firepower": { "strikes": 2.0, "propBlasts": 1.5, "vehicleBlasts": 2.0 },
   // Play-test 6 (DECISIONS 21G): income 0.95 -> 0.9: the owner found the economy a little strong (battles flooded).
   "economy": { "income": 0.9, "supply": 1.05, "bankByMode": { "Conquest": [30, 45], "Deathmatch": [30, 45], "KingOfTheHill": [30, 45], "Assault": [30, 45], "Siege": [40, 55], "Defend": [30, 45], "Endless": [30, 45], "Survival": [30, 40], "BossRush": [45, 60] },
+    // Prompt 32 L6 (DECISIONS "Prompt 32 L4/L5/L6/L8"): every listed mode's starting CP x 1.16 (the new prices), rounded
+    // half up, both sides; a campaign mission's own CP too.
+    "startCp": { "scale": 1.16, "modes": ["Conquest", "Deathmatch", "KingOfTheHill", "Assault", "Siege", "Weekly", "Defend", "Endless", "Survival", "BossRush", "Campaign", "Showdown"] },
     // Army supply per mode, in CP: upkeep starts at 1.5x it (40 x 1.05 x 1.5: about 63 CP, eight
     // to ten mid-tier vehicles). A mode that sets its own (Siege, Defend, a campaign mission) keeps it.
     // The campaign stays at its tuned 24 until its rework; Survival at 30 (more would make the waves easy).
@@ -35,6 +38,49 @@
   // then a cooldown. roles, by mode: Anchor (the HQ cannot fall: a camp to lean on), Target (the enemy
   // base is the objective), Defend (the side loses when its HQ falls), None (no base).
   // Tower tiers (1-10), branches and utility modules come later; "tier", "branches" and "modules" are kept free for them.
+  // Prompt 32 L6: the opening squads. In "modes" the player's commander drops its row at tick 0, in "enemyModes" the enemy
+  // commander its general's (by id or base style, else "default"); each role is the deck's cheapest card of the role
+  // (baseCP, then id; a role the deck lacks is left out, its CP kept), its baseCP taken from the starting CP, at most
+  // "share" of it. They replace the maps' generic start units ("start": true in the map files) in those modes. Campaign
+  // missions only with their "openingSquad" flag (default off). lind, reyes and kerr are the sheet's Mara, Hawk and
+  // Nadia; sen is Venn's general id; wolff and thorne have no general in the data yet.
+  "openingSquads": {
+    "share": 0.6,
+    "modes": ["Conquest", "Deathmatch", "KingOfTheHill", "Assault", "Siege", "Defend", "Endless", "Survival", "BossRush", "Showdown"],
+    "enemyModes": ["Conquest", "Deathmatch", "KingOfTheHill", "Assault", "Siege", "Showdown"],
+    "roles": {
+      "mbt": ["main_battle_tank", "next_gen_tank", "twin_tank", "turtle_tank"],
+      "scout": ["scout_jeep", "radar_scout", "amphib_light_vehicle"],
+      "radar_scout": ["radar_scout", "radar_support_vehicle", "counter_battery_radar"],
+      "engineer": ["engineer_vehicle", "demolition_line_vehicle", "bridging_vehicle"],
+      "repair": ["mobile_repair_vehicle", "ammo_carrier"],
+      "light": ["armored_car", "rocket_technical", "recoilless_jeep", "zu23_technical", "combat_wreck_car"],
+      "scout_heli": ["scout_heli", "light_attack_heli"],
+      "fpv": ["fpv_carrier", "fibre_fpv_carrier"],
+      "wheeled": ["armored_car", "wheeled_gun", "ifv"],
+      "light_tank": ["light_tank", "airborne_light_tank"],
+      "bunker": ["bunker_vehicle"],
+      "fortify": ["bunker_vehicle", "siege_tank"],
+      "artillery": ["mortar_carrier", "sp_mortar", "wheeled_howitzer", "artillery", "auto_loader_howitzer"],
+      "mine_layer": ["mine_layer", "mine_rocket_truck"],
+      "heli": ["attack_helicopter", "light_attack_heli", "scout_heli", "gunship_heli"],
+      "drone": ["fpv_carrier", "fibre_fpv_carrier", "lancet_truck", "ground_drone_carrier"],
+      "tank": ["light_tank", "main_battle_tank", "next_gen_tank", "turtle_tank", "twin_tank", "heavy_tank"],
+      "heavy": ["heavy_tank", "twin_tank", "armored_bulldozer", "titan_tank", "bunker_vehicle"],
+      "cheap4": { "maxCp": 4 }
+    },
+    "commanders": {
+      "kade": ["mbt", "scout"], "lind": ["engineer", "repair", "light"], "reyes": ["scout_heli", "scout"],
+      "kerr": ["scout", "radar_scout", "light"], "venn": ["fpv", "scout"], "mendez": ["wheeled", "light_tank", "scout"],
+      "brandt": ["bunker", "engineer"], "dahl": ["artillery", "scout"], "brenn": [], "adler": ["scout", "light"],
+      "varro": ["cheap4", "cheap4", "cheap4"], "reyn": ["mbt"], "quist": ["fortify", "light", "scout"], "okoye": []
+    },
+    "generals": {
+      "varga": ["tank"], "orlov": ["artillery", "radar_scout"], "kessler": ["mine_layer", "light"], "wolff": ["heli"],
+      "sen": ["drone"], "venn": ["drone"], "thorne": ["mbt"], "aurel": ["heavy"], "default": ["scout", "light"]
+    }
+  },
+
   "base": {
     "hq": "headquarters",
     // Prompt 32 L1 (DECISIONS "Prompt 32 L0/L1/L2"): the player's 22 tower cards (10 small, 7 medium, 5 large).

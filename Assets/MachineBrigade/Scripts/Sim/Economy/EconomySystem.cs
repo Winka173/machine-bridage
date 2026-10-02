@@ -298,6 +298,34 @@ namespace MachineBrigade.Sim.Economy
             return CommandResult.Ok;
         }
 
+        /// <summary>
+        /// Prompt 32 L6: an opening squad's vehicle, dropped as a bought one (the deck's drop zone and the card's own drop
+        /// time; then a regular vehicle: supply, refunds, Deathmatch score) for its baseCP, not the ranked or commander
+        /// price, and never promoted to an elite. The caps still hold.
+        /// </summary>
+        internal CommandResult DeployOpening(int team, string defId)
+        {
+            if (!_teams.TryGetValue(team, out var economy)) return CommandResult.Rejected(CommandError.NotAvailable);
+            if (!_world.Catalog.Vehicles.TryGetValue(defId, out var def)) return CommandResult.Rejected(CommandError.UnknownCard);
+            if (!_world.Bases.TryGetDropZone(team, out var zone)) return CommandResult.Rejected(CommandError.NoRallyPoint);
+            var price = def.CpCost;
+            if (economy.Cp < price) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            if (VehicleCount(team) >= economy.VehicleCap) return CommandResult.Rejected(CommandError.ArmyAtCapacity);
+            if (def.MaxPerSide > 0 && Fielded(team, defId) >= def.MaxPerSide) return CommandResult.Rejected(CommandError.UnitLimit);
+            if (def.Flying && !def.AirCapFree && AircraftCount(team) >= AircraftCap(team)) return CommandResult.Rejected(CommandError.AirAtCapacity);
+            economy.Cp -= price;
+            if (def.Flying) _world.CountAircraft(team);
+            var index = _deliveries++;
+            var angle = index * 2.39996f;
+            var landing = zone + new Vector2(MathF.Sin(angle), MathF.Cos(angle)) * (2f + (index % 5) * 1.5f);
+            var delivery = def.DropDelay * (economy.Commander?.Delivery ?? 1f);
+            _pending.Add((team, defId, _world.Time + delivery, landing));
+            economy.ArmyCp = ArmyCp(team);
+            economy.VehicleCount = VehicleCount(team);
+            _world.Emit(SimEvent.DeploymentQueued(team, defId, landing, Inward(zone), delivery));
+            return CommandResult.Ok;
+        }
+
         /// <summary>How many of a vehicle a side has in the field or on its way.</summary>
         internal int Fielded(int team, string defId)
         {

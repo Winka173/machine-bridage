@@ -103,7 +103,7 @@ namespace MachineBrigade.Sim.Modes
         {
             // Mini bosses carry no superweapon in Survival (the mini-boss rule).
             world.MiniBossesNoBigAttacks = true;
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
         }
 
         public void Tick(SimWorld world, float dt)

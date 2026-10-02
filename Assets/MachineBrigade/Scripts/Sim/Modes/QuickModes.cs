@@ -87,7 +87,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
         }
 
@@ -208,7 +208,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BaseDefences.Build(world, _rules.Bases, PlayerTeam, EnemyTeam);
             _outposts = new Outposts(world, _points, neutral: true);
         }
@@ -367,7 +367,7 @@ namespace MachineBrigade.Sim.Modes
             world.EnableEconomy(_rules.Attacker.Build(Attacker));
             world.EnableEconomy(_rules.Defender.Build(Defender));
             world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
-            foreach (var unit in world.Map.Units) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
+            foreach (var unit in world.MapUnits) world.SpawnVehicle(unit.DefId, unit.Team, unit.Position, unit.Heading);
             BuildSectors(world);
             _deadline = _rules.StartSeconds;
             if (_rules.Defences) Fortify(world);
