@@ -204,3 +204,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) không sao phần còn lại prompt 28 có thể chạy ở đây, tạo 1 file để bàn giao cho claude cloud hiểu, và đưa tôi prompt để gửi bên đó
 - (02/10) nhớ push file đó lên luôn để bên đó thấy
 - (02/10) [dán lại prompt gửi cloud; cloud đã push lượt 1 lên cloud/p28-sim]
+- (02/10) cho tôi phần cần claude cloud làm tiếp, cái gì đưa được cứ đưa

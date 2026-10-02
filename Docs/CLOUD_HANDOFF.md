@@ -105,3 +105,24 @@ waits for the local session, the balance.json keys changed) so the local lead ca
 - balance.json keys added: `ai.world.*`, `ai.params.*` (21), `ai.economy.*` (generated block before `"generals"`); no
   existing value changed.
 - Next: pass 2 (B commander, C squads) reading `world.Intel` and `Catalog.Ai`.
+
+## Scope widened by the owner (2026-10-02, local lead): "cái gì đưa được cứ đưa"
+
+Merged locally after pass 1 (feature/visual-overhaul 63a34f9): pass 1 compiled in Unity with 0 errors, CatalogCheck OK
+(241 vehicles, 371 weapons); the ModeSessions hook of LOCAL_TODO is done. Before pass 2, `git merge origin/feature/visual-overhaul`
+into `cloud/p28-sim`. On top of the Sim passes 2-5, the cloud may now also do (still no runs):
+- **Text tables:** new EN + VI strings for tactics (names, core behaviour, strong/weak when, counters, unlock hints),
+  HUD hints (B.7), tactic-switch lines (H.8), tower targeting modes (E.1), fire stances (H.9), the upkeep factor and
+  pressure tiers (I.2, I.6). Put them in new pure-C# files beside `Scripts/Game/Hud/CommanderText.cs` and copy its
+  pattern exactly (no Unity API in them). The local compile catches mistakes.
+- **Save data in the Sim:** the last tactic per mode (H.14) and per-squad tactics (H.10) as Sim/Content data, if the
+  save layer is Sim-side (grep first); else list it in LOCAL_TODO.
+- **AI viewer data (J.2-J.4):** the "VÌ SAO" records (chosen action + score, top 3 plus and top 2 minus factors,
+  runner-up), the decision-churn counters and the replay decision log, all in the Sim; the local session draws them.
+- **Sandbox scenario tests (O.4)** and the 5-seed campaign/tactic-fingerprint harness (H.3, O.5) as EditMode tests,
+  marked Explicit; written, not run.
+- **Design docs (O.7):** `Docs/ai/AI_DESIGN.md`, `Docs/ai/TACTICS.md`, `Docs/ai/ECONOMY.md` (English, short), and the
+  exporter for `Docs/ai/Machine_Brigade_AI_Research_applied.xlsx` (run it with the initial values; tuned values come
+  after the owner allows the sims).
+Still local: drawing J's overlays, the tactic picker and HUD switch button (UI Toolkit), tower mode UI, screenshots,
+the EditMode suite and every measure.
