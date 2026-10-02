@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK, chua_ap, join_list
 
+from . import _b10
 from . import _lane_c as C
 
 FILE_ID = "10_model_tai_san"
@@ -175,3 +176,6 @@ def build(ctx):
                    "DECISIONS 'Play-test 12 (lane B)'): không có bảng dữ liệu", "Assets/MachineBrigade/Scripts/Editor/ModelPreview.cs")
     C.marker_sheet(book, "Anh_chup", "Ảnh chụp", "Danh sách ảnh dùng trong tài liệu (images/<lĩnh vực>)", chua_ap("xuat_luot6"),
                    "lượt 6 (Markdown, PDF, ảnh): Docs/doc-images", "Docs/doc-images")
+
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b10.build(ctx, book)
