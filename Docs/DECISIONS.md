@@ -14726,3 +14726,43 @@ Pass 8a5 (lane A, last: mb_phase8 wreck_barrel/turret/launcher/stump/engine, mb_
 - `neutral_captured`: `SimEventKind.NeutralCaptured` (Arg the kind), 30 s apart, spoken by the script's speaker
   (speakerRole: Mara for the workshop, Quist for salvage).
 - Tests (written): `NeutralTests` (mirrored pairs, at most two kinds, the modes' kinds).
+
+## 27 stand-in sweep (lead pass, 2026-10-02)
+
+The owner's goal: every stand-in model gets its real model. Wave 1 swept ASSET_DEBT's three stand-in sections; this
+pass audited the older ones (prompts 8 to 25 B2) and the 16 defs whose `model` is another id
+(`Docs/models/STANDIN_AUDIT.md`). Checks run: Blender rebuilds, `glb_check.py --accept`. No Unity, runner, cards,
+previews or tests.
+
+- **Audit.** 11 intentional (elite_grad: `grad_truck` is its own BM-21; spawn_bastion: only `ModeSupport.Build`'s
+  no-HQ fallback, never spawned; ammo_depot: `ammo_dump` is its sheet note; airfield and its two branches: the pad, and
+  `TowerArt.ModelFor` gives the branches `helipad_a` / `_b`; radar_station: `radar_site` is its own; shield_tower.ward,
+  cp_relay.loot: `"art"` branch models; decoy_tank: a decoy looks like what it mimics; hydra: `hydra_sub` is its own),
+  4 stand-ins built, mara_behemoth left for prompt 31. ASSET_DEBT rows found already done and struck: hover_gunboat,
+  ammo_carrier, the landing-pad branches, prompt 17 C's temporary models, the Kh-29L / GBU-39 rounds. The prompt 8
+  elites (EliteRepaint) stay a design choice; map-dressing stand-ins (Veyra's cathedral, Foundry walls) and broken-part
+  wrecks are not def models and stay in their sections.
+- **Models** (`Tools/blender/mb_p27_standins.py`, merged last; V2 kit; ids = the def ids, all free; no `_hd`):
+
+| Model | Was | Triangles | Built (L x W x H) | COLOR_0 (borrowed) | Brief |
+|---|---|---|---|---|---|
+| coastal_battery | heavy_turret | 4,394 | 10.25 x 8.21 x 4.63 | .805 (.661) | sheet: a coastal gun turret on a concrete base by the rocks; AK-130-class twin turret (1985) on a battered drum, shore rocks, fire-control director |
+| super_gun | heavy_turret x 1.8 | 4,266 | 10.38 x 8.00 x 5.21 model (18.7 x 14.4 x 9.4 m drawn) | .812 (.661) | "the fortress's giant twin gun"; twin super-heavy barrels (2A3 Kondensator calibre, 1957) raised 24 degrees on a stepped citadel, shell hoist, loading crane |
+| bulwark_post | mg_bunker x 0.8 | 1,710 | 4.37 x 4.36 x 2.40 model (3.5 x 3.5 x 1.9 m drawn) | .793 (.672) | sheet: a small sandbag gun post; NSV 12.7 mm on a tripod, Team shield and floor |
+| uav_loiter_strike | strike_drone | 1,084 | 4.26 x 8.06 x 1.24 (modelSize 4.25 x 8.04 x 1.24) | .806 (.755) | MQ-1C Gray Eagle (the MQ-9 is strike_drone's): slim high wing, inverted-V tail, satcom hump, four Hellfires |
+
+- **Sizes.** The defs keep their numbers: super_gun (scale 1.8) and bulwark_post (scale 0.8) are built at the sheet's
+  drawn size divided by the scale, so they draw at the sheet's 18.5 x 14.4 and 3.5 x 3.5 m; coastal_battery at the
+  sheet's 10.3 x 8.0 m; the UAV at its modelSize. Heights are lower than the borrowed fortress's antenna tops (no
+  modelSize on the statics, so nothing is fitted to them).
+- **Nodes.** Kept what the def's weapons use: `Turret`, `Main_cannon`, `Main_cannon_2`, `Muzzle_brake`,
+  `Muzzle_brake_2`, `Muzzle_main` (coastal battery, super-gun: twin barrels fire in turn; the super-gun has no weapon of
+  its own but keeps the turret and barrels), `Turret`, `Main_cannon`, `Muzzle_brake`, `Muzzle_main` (bulwark post),
+  `Propeller`, `Muzzle_missile` + `.001`, `Point_exhaust`, `Point_fire` (UAV; the borrowed `Muzzle_rocket` dropped: the
+  def has no rocket). No `Mount_mg`, `Muzzle_coax` or `Mount_missile`: the defs fire none (ModelLibrary would strip them).
+- **Data.** balance.json `model` only: coastal_battery, super_gun, bulwark_post, uav_loiter_strike -> their own ids. No
+  tint existed on them.
+- **Gates.** Zero-area 0, validator 0 errors (the UAV's `.001` suffix warning, as strike_drone's), within BUDGETS
+  (structure, air), COLOR_0 above each borrowed model's, Team or concrete on the big top faces. The build filter
+  rebuilt only the four. Left for the lead: card renders (coastal_battery, super_gun, bulwark_post in the card manifest;
+  uav_loiter_strike has no card) and the GLBs' `.meta` files (Unity writes them on import).

@@ -275,6 +275,10 @@
     "file": "bug_satellite.glb",
     "triangles": 1758
   },
+  "bulwark_post": {
+    "file": "bulwark_post.glb",
+    "triangles": 1710
+  },
   "bunker_shelter_tower": {
     "file": "bunker_shelter_tower.glb",
     "triangles": 1228
@@ -346,6 +350,10 @@
   "coastal_ashm_vehicle": {
     "file": "coastal_ashm_vehicle.glb",
     "triangles": 3508
+  },
+  "coastal_battery": {
+    "file": "coastal_battery.glb",
+    "triangles": 4394
   },
   "combat_wreck_car": {
     "file": "combat_wreck_car.glb",
@@ -1439,6 +1447,10 @@
     "file": "stymphalos_drone.glb",
     "triangles": 502
   },
+  "super_gun": {
+    "file": "super_gun.glb",
+    "triangles": 4266
+  },
   "supply_crate": {
     "file": "supply_crate.glb",
     "triangles": 1986
@@ -1566,6 +1578,10 @@
   "typhon": {
     "file": "typhon.glb",
     "triangles": 6596
+  },
+  "uav_loiter_strike": {
+    "file": "uav_loiter_strike.glb",
+    "triangles": 1084
   },
   "vbied": {
     "file": "vbied.glb",

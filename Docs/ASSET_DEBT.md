@@ -27,7 +27,7 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 
 | What | Uses now | Needs |
 |---|---|---|
-| Hover gunboat (`hover_gunboat`, the landing hovercraft's escort) | The fleet's fast missile boat model (`missile_boat`, prompt 17 D follow-up; it drives over land too) | Its own small air-cushion gunboat, if a boat on land reads wrong |
+| ~~Hover gunboat (`hover_gunboat`, the landing hovercraft's escort)~~ | done: its own `hover_gunboat` model since prompt 25 B2, rebuilt in 27 wave 3 (found by the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md)) | - |
 | The Behemoth's protection system, the Hive's jamming mast | Places on the hull (no node) | Their own nodes (`Part_aps`, `Part_ew`) with a broken piece |
 | The trains' new cars | Rigid with the train, like its other cars (as the models always were) | Articulated cars that follow the rails' curves |
 
@@ -35,8 +35,8 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 
 | What | Uses now | Needs |
 |---|---|---|
-| Ammunition carrier (`ammo_carrier`) | The supply truck's model (`truck`), at 0.9 scale, with its hull measurements | Its own model: a cargo truck with ammunition crates and a loading crane in the bed (a Kamaz-style resupply truck), muzzle `Muzzle_mg` for its roof HMG |
-| Landing pad branches (`airfield.hangar`, `airfield.service`) | The landing pad's model (`helipad`) | A hangar beside the pad; a fuel and ammunition point on the service branch |
+| ~~Ammunition carrier (`ammo_carrier`)~~ | done: its own `ammo_carrier` model since prompt 25 B2, rebuilt in 27 wave 3 (found by the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md)) | - |
+| ~~Landing pad branches (`airfield.hangar`, `airfield.service`)~~ | done: `TowerArt.ModelFor` draws them with `helipad_a` (an arched hangar over the pad) and `helipad_b` (a fuel bowser, ammunition, a fuel bladder), built in 25 B2, rebuilt in 27 wave 2 (found by the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md)) | - |
 
 ## Prompt 16
 
@@ -48,13 +48,13 @@ Art that stands in for its own until it is made. Each line: what, what it uses n
 | Corvette, missile boat, landing craft | First models (`mb_naval.py`) | Detail passes; the missile boat's rocket pods as launch points |
 | The sea and wakes | The river tiles' surface as the sea (lit, or unlit on Low); foam patches for wakes (`WakeView`) | Waves on the open water, a shoreline foam line, bow spray particles |
 | Lighthouse, pier, fishing boat | Simple models (`mb_naval.py`) | The lamp's turning beam at night, a stone jetty, net racks |
-| Coastal battery | The heavy fortress's model | A casemated coastal gun |
+| ~~Coastal battery~~ | done in the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md): its own `coastal_battery` model (an AK-130-class twin turret on a battered concrete drum among shore rocks, a fire-control director; `Turret`, `Main_cannon`, `Main_cannon_2`, `Muzzle_brake`, `Muzzle_brake_2`, `Muzzle_main`) | - |
 | Lighthouse Bay's Base-screen picture | None (the map is left out of the Base screen's list until it exists) | `BaseMapShots.RenderAll -mbBaseMaps lighthousebay` |
 ## Prompt 17 C
 
 | What | Uses now | Needs |
 |---|---|---|
-| Stealth fighter, loyal wingman, laser tank, shield carrier, bunker vehicle, drone mothership, shield generator, CP relay | Simple temporary models (`Tools/blender/mb_p17_temp.py`): faceted airframes, kit tracks and wheels, emitter and mast parts | Detailed models to the 3d_astra bar (panel lines, decals, HD variants) |
+| ~~Stealth fighter, loyal wingman, laser tank, shield carrier, bunker vehicle, drone mothership, shield generator, CP relay~~ | done: every one rebuilt as its own model in prompt 25 B2 and prompt 27 waves 3, 4 and 7 (`mb_p17_temp` no longer wins for any of them; found by the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md)) | - |
 | Their card pictures | Not rendered yet (needs `CardRenders.RenderBatch` in a batch run with graphics) | The renders |
 | Bunker vehicle's coaxial MG | A fixed `MG_port` mesh that turns with the turret but does not elevate | A `Mount_mg` pivot if it should elevate |
 | Shield domes' emitters | Static glowing `Emitter` parts | A slow spin and a pulse on hits |
@@ -183,7 +183,7 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 |---|---|---|
 | Supply truck, counter-battery radar, Shahed truck, Iron Beam (the sheet: trucks 2.0 m wide, 2.1-2.8 m high) | Their old models fitted to the sheet's length (`modelSize`): 2.3-2.9 m wide, 3.5-3.9 m high | Models at the sheet's box (0.8 x real) for `"scale": 1`; the data fits any model's length, so nothing else changes |
 | Self-propelled gun (M109A7, 7.8 x 3.1 x 2.9 m), siege tank (6.8 x 2.6 x 2.6 m), Pantsir (9.6 x 2.6 x 2.8 m) | The old models at the sheet's length: the gun 2.2 m wide, the siege tank 3.0 m wide, the Pantsir 3.4 m wide and 4.5 m high | Models at the sheet's box (the M109A7 is on B2's own list) |
-| Kh-29L (`kh29l`) and GBU-39 SDB (`gbu39`) round models (Tools/blender/mb_munitions.py) | The Maverick and the GBU-12 (`WeaponEffects.RoundStandIns`), fitted to the new lengths, 1.95 and 0.9 m | Their own models: the Kh-29L a long, fat body with big cruciform wings (3.9 m real), the GBU-39 a slim body with folded wings (1.8 m real); any length, the data fits it |
+| ~~Kh-29L (`kh29l`) and GBU-39 SDB (`gbu39`) round models~~ | done: `kh29l.glb` and `gbu39.glb` built in prompt 27 wave 8a; `WeaponEffects.RoundStandIns` only applies to a missing model (found by the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md)) | - |
 | SAM launcher's Buk box, Patriot and 48N6 canisters | Boxes sized for the old rounds (the SAM launcher's 2.45 m); the rounds are 4.44, 4.24 and 6.0 m now | Launchers (sam_launcher, missile_battery, long_sam) whose boxes and tubes hold the sheet's rounds |
 | Icarus at 60 m | The play-test 9 dagger hull, 30 m wide at that length | A planform nearer the sheet's ~60 x 40 m, if the owner wants its width too (its nodes kept where the boss data puts them) |
 ## Prompt 25 B2 (DECISIONS 25B2)
@@ -223,9 +223,10 @@ sizes; most are over the guide's tower budget of 1,500-3,500 triangles, left for
 | shield_tower | 5,344 / 7,200 / 6,176 |
 
 Also kept: headquarters (14,260; its note: a multi-block concrete command building, antennas, sandbags),
-ammo_depot (on ammo_dump: the berm-covered store with crates outside, as its note), bulwark_post (on mg_bunker at 0.8),
-coastal_battery, spawn_bastion and super_gun (on heavy_turret; coastal_battery could wear the coastal branch's
-heavy_turret_a instead, a data choice), targeting_station (no note). The Patriot's box (missile_battery) is 4.6 m long
+ammo_depot (on ammo_dump: the berm-covered store with crates outside, as its note), ~~bulwark_post (on mg_bunker at 0.8),
+coastal_battery~~, spawn_bastion ~~and super_gun~~ (on heavy_turret: only the no-HQ fallback, never spawned with the
+shipped content), targeting_station (no note). bulwark_post, coastal_battery and super_gun have their own models since
+the prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md). The Patriot's box (missile_battery) is 4.6 m long
 along its tubes, so B3's 4.24 m round fits it.
 
 ### Bosses
@@ -312,3 +313,13 @@ All eight have their own models since prompt 27 wave 1b (no tint; cards of their
 | Gungnir's electromagnetic gun | model done in prompt 27 wave 1a (`rail_supergun`: EMRG launcher, two capacitor cars; `rail_tractor`: a modern Bo-Bo diesel); the slug is still the existing rail slug projectile | ~~the line warning along the slug's path (game code, prompt 28)~~ done in prompt 29 G1 (Game `AimLines`: gun to aim for the 3 s warning, from the shot's `FiredWith`) |
 | ~~Ixion's parts: `reartyre`, `hulltower`~~ | done in wave 1a: every tyre (`Part_wheel`, `.001`, `Part_tyre` .. `.003`), the cab (`Part_cab`) and the turret (`Turret`) are nodes the parts name, hidden when broken | - |
 | Ixion's mine strip | the ordinary mine model (MineViews spawns `mine` for every layer); the model has `Point_mines` at the dispenser's mouth, unused | a mine truck's own mine model and the view lookup per layer (game code, prompt 28) |
+
+## Prompt 27 stand-in sweep (DECISIONS "27 stand-in sweep", Docs/models/STANDIN_AUDIT.md)
+
+| What | Stand-in now | The real thing |
+|---|---|---|
+| ~~`super_gun`~~ | done: its own `super_gun` model (a twin super-heavy gun raised 24 degrees on a stepped citadel, shell hoist, loading crane; drawn at its scale 1.8), was `heavy_turret` x 1.8 | - |
+| ~~`bulwark_post`~~ | done: its own `bulwark_post` model (a sandbag ring with an NSV on a tripod behind a Team shield; drawn at its scale 0.8), was `mg_bunker` | - |
+| ~~`uav_loiter_strike`~~ | done: its own `uav_loiter_strike` model (an MQ-1C Gray Eagle with four Hellfires), was `strike_drone` | - |
+| Card pictures of `coastal_battery`, `super_gun`, `bulwark_post`, `uav_loiter_strike` (and their GLB `.meta` files) | the borrowed models' pictures, where they had one | the lead's graphics run after the merge (`CardRenders.RenderBatch`) |
+| `mara_behemoth` | `behemoth` with the Accord tint | prompt 31 (Mara's Behemoth) |

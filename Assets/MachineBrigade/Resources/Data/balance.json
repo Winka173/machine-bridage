@@ -1324,7 +1324,7 @@
       "deathExplosion": { "damage": 260, "radius": 14, "delay": 0.8, "tier": "Ultimate" } },
     // The fortress super-gun (Siege and Defend): a giant twin gun the fortress fires on a countdown at the attackers'
     // army or camp (SiegeMode drives it; it has no gun of its own). Destroying it is a side objective.
-    { "id": "super_gun", "class": "Defense", "static": true, "model": "heavy_turret", "scale": 1.8, "armour": 3, "hp": 5200, "speed": 0, "turnRate": 1, "turretTurnRate": 12, "radius": 7, "length": 8, "width": 8, "cp": 0, "vision": 40,
+    { "id": "super_gun", "class": "Defense", "static": true, "model": "super_gun", "scale": 1.8, "armour": 3, "hp": 5200, "speed": 0, "turnRate": 1, "turretTurnRate": 12, "radius": 7, "length": 8, "width": 8, "cp": 0, "vision": 40,
       "weapon": "none", "deathExplosion": { "damage": 380, "radius": 18, "delay": 0.6, "tier": "Ultimate" } },
     { "id": "spawn_bastion", "class": "Defense", "static": true, "model": "heavy_turret", "armour": [4, 3, 3, 3], "hp": 5000, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 44,
       "firesWhileMoving": true, "weapon": "bastion_gun",
@@ -1422,7 +1422,7 @@
       "weapon": "howitzer_fixed", "secondary": [], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.4, "tier": "Huge" } },
     // Bulwark Engineering (tower equipment, four pieces in the base): a fallen tower leaves this machine-gun
     // post for 20 s. Not a base tower: it takes no hardpoint and no equipment.
-    { "id": "bulwark_post", "class": "Defense", "static": true, "model": "mg_bunker", "armour": 1, "hp": 500, "speed": 0, "turnRate": 1, "turretTurnRate": 160,
+    { "id": "bulwark_post", "class": "Defense", "static": true, "model": "bulwark_post", "armour": 1, "hp": 500, "speed": 0, "turnRate": 1, "turretTurnRate": 160,
       "radius": 1.6, "length": 3.4, "width": 3.4, "scale": 0.8, "cp": 0, "vision": 34, "weapon": "bunker_hmg",
       "deathExplosion": { "damage": 40, "radius": 4, "delay": 0.2, "tier": "Large" } },
     { "id": "guard_tower",      "fort": { "size": "Small" }, "static": true, "armour": 1, "hp": 700, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 1.8, "length": 3.5, "width": 3.5, "cp": 0, "vision": 60, "revealStealth": true, "towerRangeAura": { "radius": 25, "range": 0.1 },
@@ -1528,7 +1528,7 @@
     { "id": "fibre_fpv_carrier", "outgoingDamageMult": 1.1429, "modelSize": [4.6, 1.9, 2.0], "class": "TankHunter", "armour": 1, "hp": 505, "speed": 10, "turnRate": 110, "turretTurnRate": 90, "radius": 1.8, "length": 4.6, "width": 1.9, "cp": 8, "vision": 44,
       "firesWhileMoving": false, "weapon": "fpv_fibre", "secondary": [{ "weapon": "fpv_swarm_mini", "slot": "rocket", "aim": "Free" }], "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // ht04: a loaned attack UAV (MQ-9/TB2-class), spawned by the glide_bomb_strike-style Escort support: circles the call point for the card's duration.
-    { "id": "uav_loiter_strike", "model": "strike_drone", "drone": true, "class": "Plane", "modelSize": [4.25, 8.04, 1.24], "armour": 0, "hp": 250, "speed": 20, "turnRate": 90, "turretTurnRate": 360, "radius": 2.5, "cp": 0, "vision": 44, "firesWhileMoving": true, "weapon": "uav_loiter_missile", "mainSlot": "missile", "orbit": true, "orbitRadius": 18, "flying": true, "fixedWing": true, "altitude": 22, "captureRate": 0, "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.3, "tier": "Medium" } },
+    { "id": "uav_loiter_strike", "model": "uav_loiter_strike", "drone": true, "class": "Plane", "modelSize": [4.25, 8.04, 1.24], "armour": 0, "hp": 250, "speed": 20, "turnRate": 90, "turretTurnRate": 360, "radius": 2.5, "cp": 0, "vision": 44, "firesWhileMoving": true, "weapon": "uav_loiter_missile", "mainSlot": "missile", "orbit": true, "orbitRadius": 18, "flying": true, "fixedWing": true, "altitude": 22, "captureRate": 0, "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.3, "tier": "Medium" } },
     // ht08: a mobile inflatable tank decoy (as dx26's inflatable_decoy, but it mimics a moving tank, not a tower): dropped by parachute, gone after 30 s.
     { "id": "decoy_tank", "model": "main_battle_tank", "modelSize": [7.5, 3.6, 2.6], "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.5, "cp": 0, "vision": 1, "weapon": "none", "decoy": { "mimic": "main_battle_tank" } },
     // dx48: the interceptor-drone vehicle: drones against drones.
@@ -2094,7 +2094,7 @@
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.5, "tier": "Huge" } },
     // An abandoned coastal battery taken by a side (Lighthouse Bay): the heavy fortress's twin 155 mm, reaching the
     // far sea lane, firing on ships only.
-    { "id": "coastal_battery", "class": "Defense", "static": true, "model": "heavy_turret", "armour": [4, 3, 3, 3], "hp": 3000, "speed": 0, "turnRate": 1, "turretTurnRate": 18,
+    { "id": "coastal_battery", "class": "Defense", "static": true, "model": "coastal_battery", "armour": [4, 3, 3, 3], "hp": 3000, "speed": 0, "turnRate": 1, "turretTurnRate": 18,
       "radius": 3.8, "length": 8, "width": 8, "cp": 0, "vision": 130, "weapon": "gun_155_coastal", "navalOnly": true,
       "deathExplosion": { "damage": 220, "radius": 12, "delay": 0.5, "tier": "Ultimate" } },
     // ----------------------------------------------------------------------------------------------------
