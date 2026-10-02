@@ -13986,3 +13986,20 @@ layered AI of prompt 28. Removed for every TacticalAi (wave modes, Sandbox Comba
 trip home for its health. Untouched: going back for ammunition (SupplySystem), mending while on the airfield or the HQ,
 the holding pattern, engineers and repair stations. Tests `AircraftReturnTests` (low health fights on; out of
 ammunition still leaves), not run. B3-AI is a code bundle (`aircraft.returnBecauseLowHP` false), marked done in the tool.
+
+## Prompt 29 L7 (cloud, 2026-10-02): sky gunship and Gungnir
+
+- **B1-sky_gunship** applied after B0, B2-FLR-sky_gunship and B3-AI (OK).
+- **C11** (`Docs/checks/boss_hunt.md`): main-rank bosses count as mains in the hunts whatever their chapter slot
+  (`BossHunts.Story`); 17 mains / 24 minis; weekly 3 + 7 unchanged.
+- **G1 (D1).** `rail_supergun`: rank mini -> main (its rank's scaling, intro, escorts and rewards follow; its own
+  phase at 45 % stays); health 156,900 data (133,365 shown: the chapter-11 main boss). Super weapon (its `bombard`):
+  every 25 -> 45 s (`every`, no longer the gun's cooldown); targeting: the bombard always aimed at the densest enemy
+  ground group anywhere (no range check existed, so the manifest's "range 400 m" was the weapon's data, not the
+  aim); now explicit `targeting: Global` (a new `Range` option checks the weapon's range; default Global keeps the
+  three bombards as they were). Warning 3 s (unchanged). The pattern was already prompt 26's: pierce up to 5 vehicles
+  x 1,000 on the line, then 2,000 at the last, core 12 m, edge 20 m at 40 % (the two-layer blast, edge = min(2 x core,
+  20)). Flags on `p26_gungnir_emrg`: targets Ground, interceptable/flareEligible/apsEligible false (canHitAir false;
+  the bombard is a queued strike, never a projectile, so nothing could intercept it anyway). The aiming line during the
+  warning is drawn by the view from the `FiredWith` event (origin -> aim, warn delay): LOCAL_TODO.
+- Tests updated: `Prompt25BossTests` (Gungnir health in the main table; its bombard every 45 s).

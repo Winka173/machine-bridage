@@ -165,7 +165,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(12f, gun.SplashRadius, 1e-3f);
             Assert.AreEqual(gun.Damage, gungnir.Bombard.Damage, 1e-3f);
             Assert.AreEqual(gun.SplashRadius, gungnir.Bombard.Radius, 1e-3f);
-            Assert.AreEqual(gun.Cooldown, gungnir.Bombard.Every, 1e-3f);
+            // Prompt 29 G1 (D1): the super weapon now fires every 45 s (its own "every"), no longer at the gun's 25 s.
+            Assert.AreEqual(45f, gungnir.Bombard.Every, 1e-3f);
             var kronos = catalog.Vehicle("kronos");
             var index = -1;
             for (var i = 0; i < kronos.Mounts.Count; i++)
@@ -191,7 +192,9 @@ namespace MachineBrigade.Tests
                      {
                          ["fortress_bastion"] = 22000, ["behemoth"] = 28500, ["mobile_fortress"] = 35000, ["leviathan"] = 44350, ["moloch"] = 63000,
                          ["kronos"] = 87650, ["typhon"] = 100000, ["command_airship"] = 116650, ["daedalus"] = 133350, ["silver_bug"] = 150000,
-                         ["bastion_mk0"] = 9000, ["behemoth_inferno"] = 11500, ["scylla"] = 17650, ["rail_supergun"] = 50650,
+                         ["bastion_mk0"] = 9000, ["behemoth_inferno"] = 11500, ["scylla"] = 17650,
+                         // Prompt 29 G1: the Gungnir is a main boss of chapter 11 (Daedalus's 133,350).
+                         ["rail_supergun"] = 133350,
                      })
                 Assert.AreEqual(shown, catalog.Vehicle(id).MaxHp, 60f, id);
             Assert.AreEqual(catalog.Vehicle("silver_bug").MaxHp, catalog.Vehicle("hyperion").MaxHp, 1e-3f, "chapter 12: Icarus and Hyperion");

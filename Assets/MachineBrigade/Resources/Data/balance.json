@@ -695,7 +695,7 @@
     { "id": "p26_jotunn_close_boss_flak", "inherits": "boss_flak", "weaponFamily": "", "damage": 18 },
     { "id": "p26_jotunn_tiny_twin_30_flak", "inherits": "twin_30_flak", "weaponFamily": "", "damage": 1.5 },
     { "id": "p26_leviathan_lev406", "inherits": "leviathan_460", "weaponFamily": "", "real": "Mk 7 406 mm/50 (Iowa, triple)", "size": 406, "damage": 1200, "cooldown": 10, "splash": 12, "edge": 20 },
-    { "id": "p26_gungnir_emrg", "inherits": "supergun_800", "weaponFamily": "", "real": "EMRG electromagnetic railgun (rail train, scaled up)", "size": 250, "projectileModel": "rail_slug", "projectileScale": 3.2, "damage": 2000, "cooldown": 25, "splash": 12, "edge": 20, "pen": 4, "range": 400, "minRange": 30, "projectileSpeed": 700 },
+    { "id": "p26_gungnir_emrg", "apsEligible": false, "flareEligible": false, "interceptable": false, "targets": "Ground", "inherits": "supergun_800", "weaponFamily": "", "real": "EMRG electromagnetic railgun (rail train, scaled up)", "size": 250, "projectileModel": "rail_slug", "projectileScale": 3.2, "damage": 2000, "cooldown": 25, "splash": 12, "edge": 20, "pen": 4, "range": 400, "minRange": 30, "projectileSpeed": 700 },
     { "id": "p26_ixion_mg", "inherits": "boss_hmg", "weaponFamily": "", "damage": 15 },
     { "id": "p26_ixion_125", "inherits": "gun_120mm", "weaponFamily": "", "real": "2A46 125 mm (turret, AP)", "size": 125, "damage": 780, "cooldown": 2, "pen": 4, "splash": 0, "range": 38 },
     { "id": "p26_leviathan_lev155", "inherits": "naval_155_triple", "weaponFamily": "", "real": "155 mm/60 (triple)", "damage": 170, "burst": 3, "burstInterval": 0.25, "cooldown": 4.5, "splash": 8.5, "edge": 17 },
@@ -1074,7 +1074,7 @@
     // 19P: 26 m up and a 22 m pylon turn (was 40 m and 36 m, off the top of the battle camera most of the turn), all
     // three guns (105, 40 and 25 mm) still in reach of the target all the way round.
     // Play-test 7 (DECISIONS 22P): an aircraft card again, "AC-130 Gunship" (premium, 4,500 coins); the Gunship support card is gone.
-    { "id": "sky_gunship", "flareCharges": 3, "rearmTime": 18, "strongVs": ["Light", "Tank", "Artillery"], "scale": 1.1765, "modelSize": [11.93, 16.3, 4.82],      "armour": 0,  "hp": 2000, "speed": 16, "turnRate": 65, "turretTurnRate": 360, "radius": 7.5, "cp": 22, "vision": 64,
+    { "id": "sky_gunship", "dropDelay": 5, "outgoingDamageMult": 1.5159, "flareCharges": 3, "rearmTime": 18, "strongVs": ["Light", "Tank", "Artillery"], "scale": 1.1765, "modelSize": [11.93, 16.3, 4.82],      "armour": 0,  "hp": 2227, "speed": 16, "turnRate": 65, "turretTurnRate": 360, "radius": 7.5, "cp": 29, "vision": 64,
       "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "orbitRadius": 22, "flying": true, "fixedWing": true, "altitude": 26, "captureRate": 0,
       // Play-test 8 (DECISIONS 22R): its guns only; the ramp's Griffin missiles are gone (model and weapons).
       "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" } ],
@@ -1829,12 +1829,12 @@
     // Kessler's rail supergun: it stands on its rails at the edge of the field; every 20 s one 80 cm shell at
     // the biggest group of enemy ground vehicles anywhere on the map, its landing marked 3 s ahead. Guns,
     // walls and its fire-control post round the bed (break the post and the shells fall wide).
-    { "id": "rail_supergun", "frame": "train", "arena": "rustyard", "route": "rail", "rank": "mini", "size": 0.7039, "boss": true, "static": true, "general": "orlov", "radioSpawn": "radio.orlov.supergun", "armour": 3, "structure": false, "hp": 108350, "weaponDamage": 6, "speed": 0,
+    { "id": "rail_supergun", "frame": "train", "arena": "rustyard", "route": "rail", "rank": "main", "size": 0.7039, "boss": true, "static": true, "general": "orlov", "radioSpawn": "radio.orlov.supergun", "armour": 3, "structure": false, "hp": 156900, "weaponDamage": 6, "speed": 0,
       "turnRate": 1, "turretTurnRate": 12, "radius": 14, "length": 27, "width": 8, "scale": 1.0, "cp": 0, "vision": 90, "captureRate": 0,
       "weapon": "supergun_800",
       "secondary": [ { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" }, { "weapon": "autocannon_40", "slot": "gun", "aim": "Free" },
                      { "weapon": "ciws_aa", "slot": "mg", "aim": "Free", "arc": [-107, 150] }, { "weapon": "ciws_aa", "slot": "mg", "aim": "Free", "arc": [107, 150] } ],
-      "bombard": { "warn": 3, "scatter": 3, "blindScatter": 2.5, "first": 10, "weapon": "p26_gungnir_emrg", "warning": "supergun_shell", "pierceMax": 5, "pierceDamage": 1000 },
+      "bombard": { "warn": 3, "targeting": "Global", "every": 45, "scatter": 3, "blindScatter": 2.5, "first": 10, "weapon": "p26_gungnir_emrg", "warning": "supergun_shell", "pierceMax": 5, "pierceDamage": 1000 },
       "guards": [ { "def": "gun_turret", "at": [-16, 20] }, { "def": "gun_turret", "at": [16, 20] },
                   { "def": "aa_turret", "at": [-13, -2] }, { "def": "aa_turret", "at": [13, -2] }, { "def": "mg_bunker", "at": [-8, 27] },
                   { "def": "mg_bunker", "at": [8, 27] }, { "def": "dragons_teeth", "at": [-12, 36] }, { "def": "dragons_teeth", "at": [0, 38] },

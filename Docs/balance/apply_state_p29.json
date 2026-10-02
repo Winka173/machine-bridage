@@ -83,6 +83,7 @@
  "B1-shield_carrier",
  "B1-shorad_vehicle",
  "B1-siege_tank",
+ "B1-sky_gunship",
  "B1-smoke_carrier",
  "B1-sp_mortar",
  "B1-stealth_bomber",
@@ -124,5 +125,6 @@
  "B2-FLR-swarm_carrier",
  "B2-FLR-twin_rotor_gunship",
  "B3-AI",
- "E1"
+ "E1",
+ "G1"
 ]

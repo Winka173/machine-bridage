@@ -54,3 +54,5 @@ The cloud session writes the Sim only. Each line: file, what, why.
   model lists (`FLARE_MODELS`: 16 aircraft; `APS_MODELS`: next_gen_tank, titan_tank; main_battle_tank's Trophy only
   as gear art). Call them from each model's builder with hull positions, rebuild with build_assets.py, validate,
   render cards; add the two effects (`FLARE_EFFECT`, `APS_EFFECT` descriptions) in the Game's effects.
+- Prompt 29 G1: the view draws the Gungnir's aiming line (origin to aim) for the 3 s warning from its `FiredWith` event
+  (ASSET_DEBT "Gungnir's line warning"); check the Boss Hunt lists and the hunt UI with 17 mains.

@@ -241,6 +241,7 @@ namespace MachineBrigade.Sim.Content
                     Spotter = b.Has("spotter") ? b.String("spotter") : null, Weapon = b.Has("weapon") ? b.String("weapon") : null,
                     Warning = b.Has("warning") ? b.String("warning") : null,
                     PierceMax = Math.Max(0, b.Int("pierceMax", 0)), PierceDamage = MathF.Max(0f, b.Float("pierceDamage", 0f)),
+                    GlobalTargeting = !string.Equals(b.Has("targeting") ? b.String("targeting") : "Global", "Range", StringComparison.OrdinalIgnoreCase),
                 };
             }
             // Prompt 18: its big attack by id, and its own scaling of it.

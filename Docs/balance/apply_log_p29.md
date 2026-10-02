@@ -601,3 +601,15 @@ Note: the B1 group runs re-checked B0 bundles applied in pass 3 (thermobaric_lau
 | bundle | outcome | detail |
 |---|---|---|
 | B3-AI | OK | code bundle (1 code rows) |
+
+## Run apply: B1-sky_gunship (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B1-sky_gunship | OK | 4 rows |
+
+## Run apply: G1 (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| G1 | OK | code bundle (5 code rows) |
