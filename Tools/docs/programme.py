@@ -61,7 +61,7 @@ def campaign(game, h):
         out.append(f"<h3>Chương {c['number']}: {esc(c['title'])}</h3>" + table(['#', 'Nhiệm vụ', 'Bản đồ', 'Mục tiêu', 'Tướng', 'Thưởng', 'Mở khóa'], rows))
     out.append("<h3>Kể chuyện</h3><ul>"
                "<li>Briefing dạng thẻ có chân dung người giao nhiệm vụ.</li>"
-               "<li>Radio trong trận: chân dung nhỏ và một dòng, kích hoạt theo sự kiện (chiếm điểm, boss xuất hiện, sở chỉ huy dưới 50% máu...), bỏ qua được.</li>"
+               "<li>Thoại trong trận: dải chân dung nhỏ và tối đa 2 dòng trên khay thẻ, theo kịch bản từng màn và hàng đợi ưu tiên P0–P4 (phần 2c).</li>"
                "<li>Camera lia trong trận khi boss, chi viện hoặc tướng địch xuất hiện; không có cutscene.</li>"
                "<li>Màn chuyển chương có tóm tắt 3–4 câu; sau chương 9 là <b>Kết mạch Thorne</b> (đoạn chuyển, trước chương 15); phần kết thật của game sau c12m10, và thắng c12m10 mở cấp Huyền thoại của chế độ Tác chiến.</li>"
                "<li>Mục Hồ sơ trong menu: tiểu sử nhân vật, hồ sơ boss, dòng thời gian, các mẩu truyện mỗi nhiệm vụ trao.</li></ul>"
@@ -1016,3 +1016,112 @@ def testing(game, h):
             "<p>Bài kiểm tra tự động chạy trong Unity (EditMode): mô phỏng xác định, nên mỗi luật có bài riêng (điểm lưu phát lại khớp tuyệt đối, phản bội không làm lỗi AI, "
             "trần xe, vùng chơi, mutator, bộ phận boss...). Các phép đo dài (5 seed, phòng thí nghiệm trang bị) dồn vào một phase kiểm tra riêng:</p><ul>"
             + ''.join(f"<li>{h['esc'](i)}</li>" for i in items) + "</ul></div>")
+
+
+def prompt30(game, h):
+    """Section 2c (prompt 30): the four acts, the match rules by mode, the endless part, neutral sites, the dialogue
+    strip and the match-end sequence. The rules and the neutral numbers are read from balance.json (matchRules, neutrals)."""
+    import json as _json
+    e, table = h['esc'], h['table']
+    text = (ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'balance.json').read_text(encoding='utf-8')
+    data = _json.loads(re.sub(r'^\s*//.*$', '', text, flags=re.M))
+    rules = data.get('matchRules', {})
+    neutrals = data.get('neutrals', {})
+    out = ["<div class='section'><h2>2c. Luật trận, phần vô hạn, trung lập, thoại và kết trận (prompt 30)</h2>"]
+
+    # The four acts, from the chapters' data.
+    acts = {}
+    for c in game['chapters']:
+        acts.setdefault(c['act'], []).append(c)
+    roman = {1: 'I', 2: 'II', 3: 'III', 4: 'IV'}
+    rows = [[f"Hồi {roman.get(a, a)}", e(', '.join(str(c['number']) for c in cs)), e(' · '.join(c['title'] for c in cs))]
+            for a, cs in sorted(acts.items())]
+    out.append(f"<h3>{len(acts)} hồi</h3><p>Chiến dịch có {len(game['chapters'])} chương trong {len(acts)} hồi (trường <code>act</code> của campaign.json); "
+               "mỗi hồi kết bằng một chương chuyển tiếp (13, 14, 15). Sau c9m10 là <b>Kết mạch Thorne</b> (thẻ chuyển, trước chương 15, hiện một lần và có "
+               "trong dòng thời gian của Hồ sơ); phần kết thật sau c12m10; thắng c12m10 mở cấp Huyền thoại của Tác chiến.</p>"
+               + table(['Hồi', 'Chương (thứ tự chơi)', 'Tên chương'], rows))
+
+    # Match rules by mode.
+    names = {'conquest': 'Giữ cứ điểm', 'deathmatch': 'Tử chiến', 'hill': 'Vua đồi', 'assault': 'Công phá', 'siege': 'Công thành',
+             'defend': 'Phòng thủ', 'survival': 'Sinh tồn', 'endless': 'Vô tận', 'bossrush': 'Săn trùm', 'weekly': 'Pháo đài tuần',
+             'operations': 'Tác chiến'}
+    rows = []
+    for mode, rule in rules.get('modes', {}).items():
+        t = rule.get('text', {})
+        rows.append([f"<b>{e(names.get(mode, mode))}</b>", e(t.get('winCondition', '')), e(t.get('loseCondition', '')),
+                     e(t.get('timeLimit', '')), e(t.get('overtimeRule', '')), e(t.get('drawRule', '')), e(t.get('scoreRule', '')),
+                     e(t.get('catchUpPolicy', ''))])
+    out.append("<h3>Luật trận theo chế độ</h3><p>Mỗi chế độ có bảy trường dữ liệu (thắng, thua, giờ, hiệp phụ, hòa, điểm, bắt kịp) trong "
+               "<code>matchRules</code> của balance.json; số trong dữ liệu thay số cũ của phiên chế độ. Không có luật chung \"hết quân là thua\"; "
+               "giờ tối đa của màn chiến dịch đặt theo từng màn. Tử chiến: mỗi xe hạ cho min(giá gốc CP, 18) điểm. Tác chiến: phần tổn thất "
+               "tính theo CP gốc đã mất (2.000 khi mất 0, về 0 khi mất 150).</p>"
+               + table(['Chế độ', 'Thắng', 'Thua', 'Giờ', 'Hiệp phụ', 'Hòa', 'Điểm', 'Bắt kịp'], rows))
+    star = rules.get('starMastery', {})
+    if star:
+        kinds = {'ConvoyShare': 'đoàn xe còn', 'HoldShare': 'thời gian giữ', 'HqShare': 'máu sở chỉ huy còn', 'ProtectShare': 'mục tiêu bảo vệ còn'}
+        rows = [[e(goal), e(kinds.get(v.get('kind'), v.get('kind', ''))), f"{round(100 * v.get('value', 0))}%"] for goal, v in star.items()
+                if isinstance(v, dict)]
+        out.append("<p><b>Sao chiến dịch</b> (chỉ màn chiến dịch): ★1 hoàn thành; ★2 làm chủ kiểu màn (bảng dưới, theo mục tiêu); "
+                   "★3 mục tiêu phụ riêng của màn. Không dùng mục tiêu dễ vỡ hay chạy giờ chặt.</p>"
+                   + table(['Kiểu màn', '★2 đo bằng', 'Ngưỡng'], rows))
+    boards = rules.get('leaderboards', {})
+    if boards:
+        word = {'waves': 'đợt', 'killedBaseCp': 'CP gốc đã hạ', 'seconds': 'thời gian', 'bosses': 'boss', 'parts': 'bộ phận phá',
+                'cleared': 'giai đoạn qua', 'attempts': 'số lần đánh'}
+        def key(k):
+            return word.get(k[1:], k[1:]) + (' (cao hơn trước)' if k.startswith('-') else ' (thấp hơn trước)')
+        rows = [[e(b), e(' → '.join(key(k) for k in ks))] for b, ks in boards.items()]
+        out.append("<p><b>Bảng xếp hạng</b> sắp theo từng khóa lần lượt, không gộp thành một công thức (không farm được):</p>"
+                   + table(['Bảng', 'Thứ tự sắp'], rows))
+
+    # The endless part (Sim/Modes/Endless.cs, EndlessRules).
+    out.append("<h3>Phần vô hạn</h3><ul>"
+               "<li>Thắng Phòng thủ, Sinh tồn hoặc Săn trùm: bảng kết quả có <b>Đánh tiếp (vô hạn)</b> và <b>Kết thúc</b>. Thưởng thắng được ghi nhận "
+               "trước khi đánh tiếp; thua về sau không lấy lại gì.</li>"
+               "<li>Vô tận (mục menu giữ nguyên) là Phòng thủ bắt đầu ngay ở phần vô hạn: chung mã và chung bảng xếp hạng.</li>"
+               "<li>Tăng độ khó chỉ bằng chỉ số, không thêm xe quá đợt cuối của phần hữu hạn: Phòng thủ / Vô tận / Sinh tồn địch +4% mỗi đợt, "
+               "ta +2% mỗi đợt (tối đa +30%); Săn trùm địch +8% mỗi boss.</li>"
+               "<li>Sinh tồn hữu hạn 10 đợt: đợt 5 mini boss, đợt 10 boss chủ lực; phần vô hạn mỗi 5 đợt mini boss, mỗi 10 đợt boss chủ lực. "
+               "Mini boss không có siêu vũ khí.</li>"
+               "<li>Thưởng: 18 xu × 0,9^k mỗi đợt vượt (Săn trùm 60 xu × 0,9^k mỗi boss), trần 600 xu/ngày cho mọi phần vô hạn; huy hiệu +10/+20/+30 đợt, "
+               "+5/+10 boss. Săn trùm chọn đánh tiếp ở bảng kết quả (không còn lựa chọn 20 s trong trận).</li></ul>")
+
+    # Neutral sites.
+    num = neutrals.get('numbers', {})
+    kind_vi = {'radar': 'Vòm radar', 'workshop': 'Xưởng dã chiến', 'aa_site': 'Trận địa phòng không bỏ hoang', 'ammo_depot': 'Kho đạn'}
+    mode_vi = {'Conquest': 'Giữ cứ điểm', 'Deathmatch': 'Tử chiến', 'KingOfTheHill': 'Vua đồi', 'Assault': 'Công phá', 'Siege': 'Công thành',
+               'Weekly': 'Pháo đài tuần', 'Survival': 'Sinh tồn'}
+    rows = [[e(mode_vi.get(m, m)), e(', '.join(kind_vi.get(k, k) for k in ks))] for m, ks in neutrals.get('modes', {}).items()]
+    out.append("<h3>Trung lập (V1)</h3><p>Một phe đứng một mình (xe mặt đất) trong "
+               f"{num.get('captureRadius', 10)} m quanh điểm trong {num.get('captureSeconds', 8)} s thì chiếm; phe kia chiếm lại cùng cách. "
+               f"<b>Vòm radar:</b> bên giữ nhìn thấy {num.get('radar.radius', 45)} m quanh nó. <b>Xưởng dã chiến:</b> xe mặt đất của bên giữ trong "
+               f"{num.get('workshop.radius', 14)} m hồi {round(100 * num.get('workshop.repair', 0.015), 1)}% máu/giây. <b>Trận địa phòng không bỏ hoang:</b> chiếm thì "
+               f"dựng một tháp phòng không cho bên giữ; bị phá thì {num.get('aa.rebuild', 60)} s sau lại bỏ hoang. <b>Kho đạn:</b> xe bên giữ trong "
+               f"{num.get('ammo.radius', 14)} m được tiếp đạn mỗi {num.get('ammo.seconds', 6)} s; bị bắn nát thì nổ ({num.get('ammo.damage', 300)} trong "
+               f"{num.get('ammo.blast', 14)} m, trúng cả hai bên). Hải pháo bờ biển, ngọn hải đăng, đoàn xe tiếp tế trung lập giữ như cũ; thùng tiếp tế tranh chấp "
+               "rơi giữa hai quân và báo trước 15 s. 0–2 loại mỗi bản đồ; bản đối xứng đặt thành cặp đối xứng.</p>"
+               "<p>Trên chiến trường mỗi điểm là một vòng tròn trên đất theo màu bên giữ, vạch chiếm chạy quanh theo màu bên đang chiếm; điểm phòng không "
+               "bỏ hoang nhấp nháy khi chiếm được; chỗ thùng tiếp tế sắp rơi có vòng cảnh báo trong 15 s. Bản đồ nhỏ: ô vuông theo màu bên giữ, "
+               "cung tiến độ chiếm, vòng hổ phách cho thùng đang rơi.</p>"
+               + table(['Chế độ', 'Loại trung lập'], rows))
+
+    # The dialogue strip and the match end.
+    out.append("<h3>Giao diện thoại</h3><ul>"
+               "<li>Một dải thoại ở giữa phía dưới, trên khay thẻ, trong vùng an toàn: chân dung nhỏ (44 px; 52 px khi chữ Lớn) rồi tối đa 2 dòng, "
+               "tên người nói in hoa theo màu phe. Nhân vật thiếu chân dung dùng chân dung tạm theo phe (ô màu tối của phe với chữ cái đầu).</li>"
+               "<li>Không che đồng hồ mục tiêu, thanh boss và cảnh báo siêu vũ khí (tất cả ở dải trên cùng) ở 16:9, 20:9 và 4:3.</li>"
+               "<li>Ưu tiên P0–P4: P0 cảnh báo hệ thống (không phụ thuộc cài đặt, cắt câu đang hiện); P1 cốt truyện / cảnh báo (bỏ qua khoảng cách, "
+               "chờ câu đang hiện xong); P2 sự kiện của màn (giữ 12 s); P3 phản ứng, P4 không khí (quá 8 s thì bỏ). 9 s / 20 s (có boss) là khoảng cách "
+               "tối thiểu. Cài đặt Đầy đủ / Chỉ quan trọng / Tắt; nhật ký 20 câu từ menu tạm dừng; 6 khoảnh khắc cốt truyện chậm ×0,5.</li>"
+               "<li>Kịch bản 193 màn (1.601 câu), song ngữ, theo người nói chính và điểm kích hoạt của từng màn; validator kiểm ngân sách, độ dài, "
+               "trùng câu, trigger, ngôn ngữ, tên riêng và các mốc cốt truyện.</li></ul>")
+    out.append("<h3>Chuỗi kết trận</h3><ul>"
+               "<li>RUNNING → RESOLVED → PRESENTATION → RESULTS. Ở RESOLVED kết quả, thưởng, sao và điểm đã chốt; từ đó mô phỏng đứng yên "
+               "(không bước mô phỏng, AI hay chế độ), nên kết quả không phụ thuộc phần trình diễn và replay chốt cùng tick.</li>"
+               "<li>PRESENTATION chỉ là hình ảnh: ẩn khay thẻ và nút lệnh (giữ thanh boss, thông báo, thoại), khung điện ảnh, camera tới mục tiêu cuối "
+               "trong 1,5 s đầu, boss nổ từng bộ phận cách nhau 0,4 s rồi nổ thân; thắng lần đầu hoặc trận lớn quay chậm ×0,3 từ giây 1,5 bằng đồng hồ hình ảnh "
+               "(không chạm thời gian mô phỏng).</li>"
+               "<li>Thời lượng: thắng lần đầu màn boss chính hoặc chiến dịch lớn 7 s (6–8), thắng lần đầu 4,5 s (4–5), chơi lại 3 s (2,5–4), "
+               "thua 3,5 s (3–4, không quay chậm: camera về sở chỉ huy hoặc xe cuối, một vụ nổ, câu của tướng địch). Chạm để bỏ qua sau 0,75 s; câu "
+               "cốt truyện bị bỏ qua hiện ở bảng kết quả (mục \"Trên kênh liên lạc\") và vào nhật ký.</li></ul></div>")
+    return '\n'.join(out)
