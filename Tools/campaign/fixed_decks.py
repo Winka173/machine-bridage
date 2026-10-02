@@ -97,6 +97,13 @@ DECKS = {
         replaced={'amphib_light_vehicle': 'ifv', 'coastal_ashm_vehicle': 'railgun_truck', 'prop_attack_plane': 'scout_heli',
                   'guided_shell_strike': 'artillery_barrage'},
         rules=['seaFogLighthouse']),
+    'c5m07': dict(
+        vehicles=['fighter_jet', 'scout_heli', 'attack_helicopter', 'strike_drone', 'sam_launcher', 'ew_jammer', 'iron_beam', 'aa_vehicle'],
+        supports=['drone_intercept_strike', 'uav_scan'],
+        loaned=['iron_beam', 'drone_intercept_strike'],
+        replaced={'light_attack_heli': 'scout_heli', 'wingman_drone': 'strike_drone', 'interceptor_drone_vehicle': 'sam_launcher',
+                  'microwave_vehicle': 'ew_jammer', 'shorad_vehicle': 'aa_vehicle', 'jam_storm': 'uav_scan'},
+        rules=['airCap6']),
 }
 
 

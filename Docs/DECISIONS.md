@@ -14936,3 +14936,8 @@ the lead, the tests are written, not run.
     railgun_truck (owned long-range heavy hitter), prop_attack_plane -> scout_heli (the owned light flyer, it also sees in
     the fog), guided_shell_strike -> artillery_barrage (both barrages). Rule seaFogLighthouse: lighthousebay in Fog and the
     lighthouse's sea sight (Naval.Rules.LighthouseOwner) are existing. Line: Nadia at 30 s.
+  - c5m07 (chapter 5): six of the eight vehicle cards and both supports are locked here; loaned iron_beam (opened in
+    chapter 6) and drone_intercept_strike; light_attack_heli -> scout_heli, wingman_drone -> strike_drone (both owned
+    drones/flyers), interceptor_drone_vehicle -> sam_launcher, microwave_vehicle -> ew_jammer (owned anti-drone jamming),
+    shorad_vehicle -> aa_vehicle, jam_storm -> uav_scan. Rule airCap6 (the cap is 6 everywhere). The sheet's "the canopy
+    hides ground vehicles from drones" is pending (no canopy cover in the Sim). Line: Hawk at 30 s on the loaned laser.
