@@ -27,6 +27,7 @@ critical_failure_imminent | reyn | 1 | Cột cứu hộ sắp vỡ. Giữ xe ch�
 victory | khai | 1 | Nó rút rồi. Đi tiếp trước khi nó quay lại. || It broke off. Keep moving before it comes back.
 victory | quaden | 1 | Bay đẹp đấy, nhóc. Nhưng nhóc đang ngồi trong xe tăng. || Fine flying, kid. But you are sitting in a tank.
 defeat | quaden | 1 | Cột cứu hộ tan rồi. Ta sẽ tìm nhóc sau, Hawk. Không vội. || The rescue column is broken. I will find you later, Hawk. No hurry.
+time@70 | linh | 2 | Mồi nhử thả dù sẽ kéo Morrigan khỏi bệ phóng thật. Thả chúng trước đòn bổ nhào. || The decoys pull Morrigan off the real launchers. Drop them before it dives.
 
 @i3m03 main=reyn
 mission_start | reyn | 1 | Crown đây. Phá vòng vây, và cẩn thận với ngôi làng. || Crown here. Break the ring, and mind the village.
@@ -37,6 +38,7 @@ critical_failure_imminent | reyn | 1 | Nhà thờ sắp sập. Mọi khẩu vào
 victory | dieuhau | 1 | Đúng lúc lắm, đại tá! Tôi bắt đầu thích trà rồi đấy. || About time, Colonel! I was starting to like the tea.
 victory | reyn | 1 | Trung úy. Vào xe tăng. || Lieutenant. Get in the tank.
 defeat | reyn | 1 | Ngôi làng thất thủ. Tôi muốn biết Hawk đã đi đâu. Ngay. || The village has fallen. I want to know where Hawk went. Now.
+time@30 | reyn | 2 | Đội của Crown ít xe, nhưng mỗi chiếc đáng hai. Đừng để mất chiếc nào vô ích. || Crown runs few tanks, but each is worth two. Lose none for nothing.
 
 @i3m04 main=dieuhau
 mission_start | dieuhau | 1 | Năm phút. Rồi tôi trở lại buồng lái, và hắn là của tôi. || Five minutes. Then I am back in a cockpit, and he is mine.

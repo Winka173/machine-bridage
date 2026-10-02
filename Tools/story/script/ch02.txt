@@ -38,6 +38,7 @@ enemy_reinforcement | linh | 3 | Varga gửi xe từ nhà máy lọc dầu xuố
 objective_progress:last | khai | 2 | Còn một trạm. Đốt nó rồi rút, không ai ở lại ngắm lửa. || One station left. Burn it and go; nobody stays to watch the fire.
 victory | khai | 1 | Đường ống đứt ở năm chỗ. Nhà máy lọc dầu sẽ đói trong nhiều tuần. || The pipeline is cut in five places. The refinery goes hungry for weeks.
 defeat | khai | 1 | Đường ống còn chảy. Rút trước khi xe của Varga khóa đường về. || The pipeline still runs. Pull out before Varga's tanks close the road home.
+time@25 | khai | 2 | Không có trại sau lưng. Xe nào hỏng thì sửa tại chỗ, không thì bỏ lại. || No camp behind us. A broken vehicle is fixed on the spot or left.
 
 @c2m05 main=mai
 mission_start | varga | 1 | Đại tá muốn lửa ư? Lửa đây. || You want fire, Colonel? Here is fire.
@@ -133,3 +134,4 @@ first_unit_type_seen | dieuhau | 2 | Trực thăng vũ trang hạng nặng. Cái
 momentum_high_once | dieuhau | 4 | Khá là nóng trên này, nhưng bầu trời đang về tay ta. || Pretty warm up here, but the sky is coming our way.
 victory | dieuhau | 1 | Mười chiếc. Bầu trời sạch rồi, mời các anh lên sân khấu. || Ten. The sky is clean; the stage is yours.
 defeat | dieuhau | 1 | Mất lưới phòng không cuối. Tôi phải bay về, đoàn xe tự lo thôi. || Last anti-air gone. I have to head home; the convoys are on their own.
+time@40 | linh | 2 | Mỗi đợt trực thăng đều có báo trước. Xoay nòng về hướng tôi đánh dấu. || Every wave of helicopters is called in. Turn the guns where I mark.

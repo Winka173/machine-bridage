@@ -342,6 +342,17 @@
 "vi": "Đường ống còn chảy. Rút trước khi xe của Varga khóa đường về."
 },
 {
+"mission": "c2m04",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c2m04.08",
+"en": "No camp behind us. A broken vehicle is fixed on the spot or left.",
+"vi": "Không có trại sau lưng. Xe nào hỏng thì sửa tại chỗ, không thì bỏ lại.",
+"at": 25.0
+},
+{
 "mission": "c2m05",
 "trigger": "mission_start",
 "speaker": "varga",
@@ -1132,6 +1143,17 @@
 "key": "script.c2s2.06",
 "en": "Last anti-air gone. I have to head home; the convoys are on their own.",
 "vi": "Mất lưới phòng không cuối. Tôi phải bay về, đoàn xe tự lo thôi."
+},
+{
+"mission": "c2s2",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c2s2.07",
+"en": "Every wave of helicopters is called in. Turn the guns where I mark.",
+"vi": "Mỗi đợt trực thăng đều có báo trước. Xoay nòng về hướng tôi đánh dấu.",
+"at": 40.0
 }
 ]
 }

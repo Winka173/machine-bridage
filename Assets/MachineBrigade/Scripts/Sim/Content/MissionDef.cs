@@ -381,6 +381,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 22 E: what the player's deck is cut to for this mission: "air" (its aircraft only), or null (the deck as it is).</summary>
         public string? PlayerDeck { get; set; }
 
+        /// <summary>Prompt 31 L1: the deck the game hands out (campaign.json "fixedDeck"); null: the player's own.</summary>
+        public FixedDeckDef? FixedDeck { get; set; }
+
         /// <summary>A chapter's big operation: the Operations mode offers it again once won.</summary>
         public bool Operation { get; set; }
 
@@ -702,6 +705,7 @@ namespace MachineBrigade.Sim.Content
             // A plan change's new goal is the mission's fields with the plan's on top (what it fights is the plan's own).
             if (m.Has("missionEvents"))
                 def.Events = library.Resolve(m, "missionEvents", plan => Parse(Bare(m).Under(plan), library));
+            if (m.Has("fixedDeck")) def.FixedDeck = FixedDeckDef.Parse(m.Object("fixedDeck"));
             if (m.Has("challenge"))
             {
                 var c = m.Object("challenge");

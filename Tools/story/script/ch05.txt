@@ -103,6 +103,7 @@ momentum_high_once | dieuhau | 4 | Khá là đông đúc trên này lúc nãy. G
 victory | dieuhau | 1 | Bầu trời rừng là của ta. Có thể đi dạo dưới tán cây rồi. || The jungle sky is ours. Safe to walk under the trees again.
 victory | linh | 1 | Một điều lạ: Hegemon di chuyển trước khi lệnh của ta được gửi đi. Có người đọc lệnh sớm. || Odd: Hegemon moved before our orders went out. Someone reads them early.
 defeat | dieuhau | 1 | Mất phòng không cuối. Tôi phải bay thấp về, rừng vẫn là của chúng. || Last flak gone. I am flying home low; the jungle is still theirs.
+time@30 | dieuhau | 2 | Khẩu laser chỉ mượn cho trận này. Nó lo bầy nhỏ, tiêm kích lo con to. || The laser is only on loan. It takes the small ones; the jets take the big.
 
 @c5m13 main=khai
 mission_start | khai | 1 | Giữ bến lội tới sáng. Tán cây giấu ta; giữ cho nó tiếp tục như vậy. || Hold the ford till morning. The canopy hides us; keep it that way.

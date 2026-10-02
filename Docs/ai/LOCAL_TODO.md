@@ -100,3 +100,13 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - L6 (DONE but the owner's look and the test run): show the neutral sites (`world.Neutrals.Sites`: kind, place, holder) on the field and the minimap (holder colour,
   capture ring), the abandoned AA site's marker (no building until taken), the supply drop's 15 s marker. The radar
   dome, garage and ammo dump props are existing models; check they read as capturable sites. Run `NeutralTests`.
+
+## Prompt 31 (lane B, feature/p31-b1)
+
+- Compile the Sim and Game edits (FixedDeckDef.cs new, MissionDef, MissionMode, MissionDecks, MatchRunner,
+  ModeSessions, MenuScreen.Campaign, Strings) and the new FixedDeckTests; run CatalogCheck (campaign.json gains
+  `fixedDeck` on 13 missions and an `enemy_barrage` event on c1m01).
+- Look at the mission page's "Mission deck" panel in Unity (10 compact cards in a wrapping row, the "Loaned" tag under a
+  card, the rule lines); it uses existing classes plus `fc-campaign__fixed-deck`, `fc-campaign__fixed-card`,
+  `fc-tag--loaned`, which have no USS rules yet.
+- When the owner allows test runs: FixedDeckTests, and the dialogue validator is already green (script_build.py).

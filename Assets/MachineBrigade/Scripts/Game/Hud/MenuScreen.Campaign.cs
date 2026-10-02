@@ -431,6 +431,8 @@ namespace MachineBrigade.Game.Hud
             // Play-test 6 (DECISIONS 21B): each boss it fights, a link to its file.
             foreach (var boss in MissionBosses(m))
                 body.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.file", Strings.Card(boss)), () => OpenBossGuide(boss), "skull"));
+            // Prompt 31 L1: a mission that hands out its own deck shows it here, read only, with its placed allies and rules.
+            if (m.FixedDeck is { } fixedDeck) body.Add(FixedDeckPanel(m, fixedDeck));
 
             // Three stars.
             body.Add(Kit.Text(Kit.Caps(Strings.Get("campaign.starsTitle")), "fc-panel-title fc-section__title fc-mt-4"));
@@ -480,9 +482,10 @@ namespace MachineBrigade.Game.Hud
             if (_tier > 0) body.Add(Kit.Text(Strings.Get("tier." + _tier + ".rules"), "fc-small"));
 
             // The recommended power (Campaign.RecommendedPower) against the deck's.
+            // Prompt 31 L1: a fixed deck's power is its own cards' at their fixed rank.
             var deck = new List<VehicleBoost>();
-            foreach (var id in MatchSettings.DeckVehicles)
-                if (_catalog.Vehicles.TryGetValue(id, out var card)) deck.Add(PlayerProfile.BoostFor(card));
+            foreach (var id in MissionDecks.Deck(m, MatchSettings.DeckVehicles))
+                if (_catalog.Vehicles.TryGetValue(id, out var card)) deck.Add(MissionDecks.BoostFor(m, card));
             var ours = EnemyScaling.Power(deck);
             var wanted = Campaign.RecommendedPower(m, _tier);
             var power = Kit.Box("fc-row fc-mt-4");
@@ -537,6 +540,58 @@ namespace MachineBrigade.Game.Hud
                     : m.Side ? Strings.Format("campaign.sideAfter", Campaign.Label(Campaign.Get(m.After)))
                     : Strings.Get("campaign.locked"));
             _missionDetail.Add(start);
+        }
+
+        /// <summary>
+        /// Prompt 31 L1: the deck the game hands out for <paramref name="m"/> (it replaces the player's deck there and cannot be
+        /// changed): its eight vehicle cards and two support cards at the deck's rank (a tap opens the card's page), each loaned
+        /// card marked "Loaned for this mission", the placed allies (they take no card slot) and the mission's own rules.
+        /// </summary>
+        private VisualElement FixedDeckPanel(MissionDef m, FixedDeckDef deck)
+        {
+            var panel = Kit.Box("fc-campaign__fixed-deck fc-mt-4");
+            panel.Add(Kit.Text(Kit.Caps(Strings.Get("fixeddeck.title")), "fc-panel-title fc-section__title"));
+            panel.Add(Kit.Text(Strings.Format("fixeddeck.note", MissionDecks.FixedRank(m)), "fc-small"));
+            var cards = Kit.Box("fc-row fc-row--wrap fc-row--top fc-mt-2");
+            foreach (var id in deck.Vehicles) cards.Add(FixedDeckCard(m, deck, id));
+            foreach (var id in deck.Supports) cards.Add(FixedDeckCard(m, deck, id));
+            panel.Add(cards);
+            if (deck.Loaned.Count > 0) panel.Add(Kit.Text(Strings.Get("fixeddeck.loanedNote"), "fc-small fc-mt-2"));
+            if (deck.PlacedAllies.Count > 0)
+            {
+                panel.Add(Kit.Text(Kit.Caps(Strings.Get("fixeddeck.allies")), "fc-caption fc-mt-2"));
+                var allies = Kit.Box("fc-row fc-row--wrap");
+                foreach (var ally in deck.PlacedAllies)
+                {
+                    var name = ally.Name != null && Strings.Has("fixeddeck.ally." + ally.Name) ? Strings.Get("fixeddeck.ally." + ally.Name) : Strings.Card(ally.Def);
+                    allies.Add(Tag("accord", ally.LossIfDestroyed ? Strings.Format("fixeddeck.allyMustLive", name) : name));
+                }
+                panel.Add(allies);
+                panel.Add(Kit.Text(Strings.Get("fixeddeck.alliesNote"), "fc-small"));
+            }
+            foreach (var rule in deck.SpecialRules)
+            {
+                var line = Kit.Box("fc-row fc-row--top fc-mt-2");
+                line.Add(Tag("info", Strings.Get("fixeddeck.ruleTag")));
+                line.Add(Kit.Text(Strings.Format("fixeddeck.rule." + rule, ("seconds", Mathf.RoundToInt(deck.PrepSeconds))), "fc-body-2 fc-row-text fc-ml-2"));
+                panel.Add(line);
+            }
+            return panel;
+        }
+
+        /// <summary>One card of a fixed deck: open to play here at the deck's rank, no upgrade mark, "Loaned" under a loaned one.</summary>
+        private VisualElement FixedDeckCard(MissionDef m, FixedDeckDef deck, string id)
+        {
+            var slot = Kit.Box("fc-campaign__fixed-card");
+            if (!_catalog.Vehicles.ContainsKey(id) && !_catalog.TryGetSupport(id, out _)) return slot;
+            var data = CardData(id);
+            data.Locked = false;
+            data.UnlockWhere = null;
+            data.CanUpgrade = false;
+            data.Level = MissionDecks.FixedRank(m);
+            slot.Add(new KitVehicleCard(data, () => OpenDetail(id), compact: true, showLevel: true));
+            if (deck.IsLoaned(id)) slot.Add(Tag("reinforce", Strings.Get("fixeddeck.loaned"), "fc-tag--loaned"));
+            return slot;
         }
 
         /// <summary>Start pressed: the chapter's opening card the first time, then the briefing, then the battle.</summary>
@@ -604,6 +659,8 @@ namespace MachineBrigade.Game.Hud
                 Strings.Get("map." + mission.Map),
             };
             if (mission.Operation) chips.Insert(0, Strings.Get("campaign.operation"));
+            // Prompt 31 L1: the game hands out this mission's deck.
+            if (MissionDecks.IsFixed(mission)) chips.Add(Strings.Get("fixeddeck.chip"));
             // Prompt 22 F: who leads the player's side.
             chips.Add(Strings.Format("cmdr.yours", ("name", CommanderText.Call(CommanderPick.ForBattle(mission)))));
             (string, string)? aside = null;

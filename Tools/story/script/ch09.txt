@@ -113,6 +113,7 @@ hq_below_50 | mai | 2 | Pháo tàu đang nã trại. Đưa xe hậu cần ra sau
 victory | khai | 1 | Scylla nằm dưới đáy, lần này ở lại đó. || Scylla is on the bottom, and this time it stays there.
 victory | hung | 1 | Tàu của Kessler. Ta đã nói, ông ta chưa bao giờ đóng tàu tốt. || Kessler's ship. I told you; he never built a good one.
 defeat | hung | 1 | Vịnh vẫn là của ta. Typhon cần nó thêm một chút nữa. || The bay is still mine. Typhon needs it a little longer.
+time@40 | mai | 2 | Pháo tầm gần của Scylla bắn hạ tên lửa lẻ. Phóng dồn một lúc, hoặc phá nó trước. || Scylla's close-in guns stop single missiles. Mass them, or break the guns.
 
 @c9m14 main=khai
 mission_start | khai | 1 | Năm phút trên mũi đất. Để chúng tự tới. || Five minutes on the headland. Let them come to us.

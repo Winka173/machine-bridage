@@ -972,6 +972,17 @@
 "vi": "Vịnh vẫn là của ta. Typhon cần nó thêm một chút nữa."
 },
 {
+"mission": "c9m08",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c9m08.14",
+"en": "Scylla's close-in guns stop single missiles. Mass them, or break the guns.",
+"vi": "Pháo tầm gần của Scylla bắn hạ tên lửa lẻ. Phóng dồn một lúc, hoặc phá nó trước.",
+"at": 40.0
+},
+{
 "mission": "c9m14",
 "trigger": "mission_start",
 "speaker": "khai",

@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 31 L2: the 13 MAKE FIRST missions (c1m01, c2m04, c2s2, c3m06, c4m05, c4m06, c5m07, c7m11, c8m11, c9m08, i3m02, i3m03, c11m13) get their fixed decks and special rules from the sheet, the sheet's extra locked cards replaced by owned cards of the same role, one extra line each in the script (budgets kept), c1m01's coastal guns as a repeating barrage event, c4m05's 60 s before the train moves, i3m03's cards one rank up; objectives unchanged (DECISIONS "Prompt 31 L0/L1/L2").
+
+- Prompt 31 L0-L1: precheck (Docs/checks/p31_precheck.md) and the fixed-deck data model: campaign.json `fixedDeck` (8 vehicles, 2 supports, placed allies, loaned cards, special rules, status), loaned cards ("Loaned for this mission" / "Mượn trong nhiệm vụ này", at most two), the campaign generator check, the deck at the campaign rank curve with no equipment, and the read-only deck panel on the mission page (DECISIONS "Prompt 31 L0/L1/L2").
+
 - Prompt 27 stand-in sweep: coastal_battery, super_gun, bulwark_post and uav_loiter_strike get their own models (they drew heavy_turret, mg_bunker, strike_drone); stand-in audit in Docs/models/STANDIN_AUDIT.md (DECISIONS "27 stand-in sweep").
 
 - Prompt 27 wave 8: the remaining 198 models (munitions, debris, map props, towns, themes, harbor, terrain, trees, rubble, wrecks, base pieces, unlisted units) rebuilt or edge-treated on the V2 kit with lighter AO; aim120 and aim9 kept. Prompt 27's eight waves are complete (DECISIONS "27 wave 8a1" to "27 wave 8b7").

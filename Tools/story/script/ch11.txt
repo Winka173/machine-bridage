@@ -125,6 +125,7 @@ event_triggered | linh | 2 | Một thanh kim loại nữa từ quỹ đạo. H�
 objective_progress:last | khai | 2 | Còn bãi cuối. Nhìn rồi rút, trước khi dãy ăng-ten quay súng. || The last pad. Look and go, before the Array turns its guns.
 victory | linh | 1 | Bốn bãi, một bãi đã nạp đầy. Giờ ta đi trước họ một ngày. || Four pads, one full. We are a day ahead of them now.
 defeat | khai | 1 | Ta bị chặn trên đường công vụ. Không biết bãi nào sẵn sàng. || We were cut off on the service road. We do not know which pad is ready.
+time@20 | dieuhau | 2 | Máy bay trinh sát đi trước, xe theo sau. Nó thấy bãi phóng nhanh hơn ai hết. || The recon jet goes first, the cars follow. It sees the pads before anyone.
 
 @c11m10 main=khai
 mission_start | khai | 1 | Cổng, lữ đoàn. Cánh cửa cuối cùng trước bãi phóng. || The gate, Brigade. The last door before the launch site.

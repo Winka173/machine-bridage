@@ -14859,3 +14859,109 @@ previews or tests.
   hands toasts "We hold the {site}" / "The enemy took the {site}". Whether the radar dome, garage and ammo dump read
   as capturable is left for the owner's look in Unity.
 - Lead (2026-10-02): prompt 30 local merged (compile 0 first try); design review PDF rebuilt at 320 pages with section 2c (match rules, endless, neutrals, dialogue UI, match end, 4 acts). Prompt 30 is done except its tests (wait for the owner) and the L3/L5 leftovers listed in report_p30.md.
+
+## Prompt 31 L0/L1/L2 (lead pass, 2026-10-02)
+
+Lane B of `Docs/LOCAL_PLAN_P31_P32.md`, branch `feature/p31-b1`. Passes 0, 1 and 2 only (events are pass 3). Nothing was
+run but the Python tools (build_campaign.py, script_build.py); the C# was written against the code and is compiled by
+the lead, the tests are written, not run.
+
+- L0: `Docs/checks/p31_precheck.md`. Ceasefire is at the damage level already (prompt 28 appendix: DamageSystem.Apply,
+  per team); the allied TacticalAi can drive a lone `Ally` vehicle but is made only for missions with allies and does
+  not follow Attack/Defend; Mara's Behemoth and Hawk's aircraft are data from existing units (behaviour on the player's
+  team is pass 4's check); the card rule lives in `build_campaign.check()`; the NavGrid has reference-counted blockers,
+  a version and lazy regions but no named prebuilt states (pass 3 builds them on that); a table of the locked cards of
+  every one of the 23 decks.
+- L1 data model: campaign.json mission key `fixedDeck` {`vehicleIds`[8], `supportIds`[2], `placedAllies`[] (def, x, z,
+  heading, name, fallback, lossIfDestroyed), `loanedCards`[], `specialRules`[], `status` ("MAKE_FIRST"/"MAKE_LATER"),
+  `rankBonus`, `prepSeconds`}, the sheet's field names in camelCase like the rest of campaign.json. Written by
+  `Tools/campaign/fixed_decks.py` (DECKS, the replacements, the rules), parsed by `Sim/Content/FixedDeckDef.cs`
+  (`MissionDef.FixedDeck`).
+- Rank: "fixed by the main deck's rank curve in that chapter" is `Campaign.ExpectedRank(mission)` (the game's own curve:
+  1 at the start, 7 at act IV, 8 at the end), floored, plus `rankBonus`; no equipment (`Gear.Boost(rank, no pieces)`).
+  The player's own base towers keep the profile's ranks (a base is not part of the deck).
+- Loaned cards: a card not a starter and not unlocked by an earlier mission (a mission's own reward is not owned in it;
+  shop-only cards count as not owned, since a player may not have bought them). Usable in the mission, never unlocked by
+  it (nothing in the game unlocks a card by fielding it; the mission's own `unlocks` still pay on a win). Label
+  "Loaned for this mission" / "Mượn trong nhiệm vụ này" (Strings `fixeddeck.loaned`). At most two a mission; the sheet's
+  other locked cards are replaced by an unlocked card of the same role (L2 list below).
+- c1m01 exception: four loaned cards. A new player owns four vehicle cards (scout_jeep, armored_car, ifv,
+  main_battle_tank), so an eight-card deck there cannot be built with two loans; the four loans are the sheet's
+  amphibious vehicle, light tank, rocket technical (c1m01's own reward) and mortar carrier.
+- Campaign generator: `build_campaign.check()` calls `fixed_decks.check_mission` with the cards owned before the
+  mission: 8 + 2 different cards in balance.json, every card owned or loaned (the only valid exception), a loaned card
+  not owned, at most 2 loaned (`LOAN_EXCEPTIONS`), known rules, the rules' data conditions (no camp for a raid, no
+  outposts or command vehicle for the beach landing, a boss route for the train's wait, a rank bonus for elite armour),
+  and the objective fields equal to `Tools/campaign/p31_objectives_baseline.json` (written from campaign.json before
+  prompt 31, all 23 sheet missions).
+- Game: `MissionDecks` returns the fixed deck for the battle's cards (HUD), the player side (`MissionSession.Build`),
+  the enemy's pace (`EnemyScaling.Match`), the rank discounts, the enemy base's counters, the enemy tips and the defeat
+  hints; `MatchSettings.DeckVehicles` (the saved deck) is never touched, so nothing is overwritten. Fixed-deck screen:
+  the mission page (`MenuScreen.Campaign.FixedDeckPanel`) shows the 8 + 2 cards read only at the deck's rank (a tap opens
+  the card page), "Loaned" under each loaned card, the placed allies (no card slot, "lost if it falls"), and one line per
+  special rule; the briefing card gets a "Fixed deck" chip; the recommended-power line uses the fixed deck.
+- AI: no new AI. A fixed deck's rules are added to the mission type's profile as flags `rule:<id>`
+  (`SimWorld.AddProfileFlags` from `MissionMode.Setup`); the profile's id stays the mission type's.
+- Placed allies: data and screen now; spawning, the allied AI for them (`AllyAi` is already made when a deck has
+  some) and the Attack/Defend order are pass 4 (c6m03 first). None of the 13 MAKE FIRST decks has one.
+- L2 (the 13 MAKE FIRST missions; decks in `Tools/campaign/fixed_decks.py` DECKS, one extra line each in
+  `Tools/story/script/chNN.txt`, budgets kept, `script_build.py` 0 errors). Replacements keep the role as near as the
+  cards owned by then allow; where no card of the role is owned, the nearest job is named.
+  - c1m01 (chapter 1): loaned amphib_light_vehicle, light_tank, rocket_technical, mortar_carrier (the exception above);
+    zu23_technical -> ifv (no anti-air card is owned at the start; the IFV's autocannon is nearest and the beach has no
+    enemy aircraft), engineer_vehicle -> main_battle_tank (the last owned card). Rules: noBaseStart (playerBase None
+    already), beachLanding (deliveries land at the rally on the beach: no outposts, no command vehicle), coastalGuns:
+    the library's `enemy_barrage` at 90 s, every 80 s, four times, 2 salvos of radius 16, each warned by the event's own
+    notice (c1m01 plays 3 events, within A.2's 2-4). Line: Nadia at 60 s on the shore guns' beat.
+  - c2m04, c2s2 (chapter 2): c2m04 loaned vbied (opened later in the chapter), demolition_line_vehicle (the raid's
+    breaching charge); recoilless_jeep -> ifv (no anti-tank card owned yet; the IFV carries anti-armour missiles).
+    Rule raidNoBase (playerBase None already). The sheet's extraction (an exit point after the last station, a win with
+    three vehicles there) is dropped: it would change the objective (Destroy the pipeline). Line: Kade at 25 s, no camp
+    behind them. c2s2 loaned shorad_vehicle, aa_gun_vehicle (the mobile anti-air the mission is about; zu23 and
+    aa_vehicle are the only owned anti-air and are in the deck); mobile_repair_vehicle -> ammo_carrier (the owned
+    support truck), uav_scan -> smoke_screen (no scan card owned yet). Rule warnedAirWaves: the mission's `air_wave`
+    event already warns of its direction (C.3 seconds, minimap mark). Line: Nadia at 40 s.
+  - c3m06 (chapter 3): loaned radar_scout, instant_counter_battery (the cat-and-mouse tools); wheeled_howitzer ->
+    mortar_carrier (owned indirect fire), scout_heli -> attack_helicopter (c3m06's own reward is the scout helicopter, so
+    it is not owned in it; the owned flyer), illum_flare_strike -> uav_scan (both scan cards). Rule nightGuns: Night is
+    the mission's weather, the counter-battery radar shows a gun that fired (StatusKind.Reveal), the hunted guns move on
+    their routes; all existing. Line: Nadia at 30 s.
+  - c4m05, c4m06 (chapter 4): c4m05 loaned towed_at_gun, remote_mines (the trap); demolition_line_vehicle -> vbied (a
+    charge driven at the target), nlos_atgm_vehicle -> artillery (both owned anti-tank cards, tank_destroyer and
+    wheeled_gun, are in the deck; long-range fire at the train instead). Rule trainPrep: `prepSeconds` 60, the route boss
+    stands for 60 s after the stage starts (MissionMode `_bossHeldUntil`), then drives its route; the time limit (1200 s)
+    is unchanged. The sheet's "mines on the rails slow the train" is pending (mines damage it; no slow). Line: Kade at
+    5 s, "sixty seconds" from the data. c4m06 loaned river_patrol_boat, river_gunboat (the fast boats in the fog; they
+    have no `naval` block, so they drive like ground units); amphib_light_vehicle -> ifv, coastal_ashm_vehicle ->
+    railgun_truck (owned long-range heavy hitter), prop_attack_plane -> scout_heli (the owned light flyer, it also sees in
+    the fog), guided_shell_strike -> artillery_barrage (both barrages). Rule seaFogLighthouse: lighthousebay in Fog and the
+    lighthouse's sea sight (Naval.Rules.LighthouseOwner) are existing. Line: Nadia at 30 s.
+  - c5m07 (chapter 5): six of the eight vehicle cards and both supports are locked here; loaned iron_beam (opened in
+    chapter 6) and drone_intercept_strike; light_attack_heli -> scout_heli, wingman_drone -> strike_drone (both owned
+    drones/flyers), interceptor_drone_vehicle -> sam_launcher, microwave_vehicle -> ew_jammer (owned anti-drone jamming),
+    shorad_vehicle -> aa_vehicle, jam_storm -> uav_scan. Rule airCap6 (the cap is 6 everywhere). The sheet's "the canopy
+    hides ground vehicles from drones" is pending (no canopy cover in the Sim). Line: Hawk at 30 s on the loaned laser.
+  - c7m11 (chapter 7): loaned aa_57mm_vehicle, shorad_vehicle (the anti-air the mission is about);
+    radar_support_vehicle -> recon_drone (the owned spotter), illum_flare_strike -> uav_scan (scan cards), sead_strike ->
+    airstrike (sead is opened later). Rule airCap6. Pending: the city blackout is a prompt 31 L3 event, not built yet, so
+    the mission runs without it; the storm cutting radar range has no Sim rule yet.
+    Line: Hawk at 35 s.
+  - c8m11 (chapter 8): loaned combat_wreck_car, recoilless_jeep (cheap patchwork cards); demolition_line_vehicle ->
+    engineer_vehicle (owned support truck), reinforcements -> artillery_barrage (`reinforcements` is a consumable item,
+    not a support card, and no Reinforce-kind card is owned). Rule patchworkDeck (the deck itself). Line: Varro at 45 s.
+  - c9m08 (chapter 9): loaned coastal_ashm_vehicle, ground_cruise_missile_vehicle (the missiles to saturate the
+    defence); stealth_naval_strike -> attack_jet (owned strike aircraft), river_gunboat -> mlrs (rockets in salvos),
+    cruise_missile -> airstrike (the cruise missile opens later), chaff_strike -> smoke_screen (both screens). Rule
+    ciwsSaturate: Scylla's `ciws_fore` part and the point defence of prompt 26 (CombatSystem.PointDefence) already shoot
+    rounds down. Line: Mara at 40 s.
+  - i3m02, i3m03 (interlude III): i3m02 loaned aa_57mm_vehicle, decoy_paradrop (the decoys are the mission's trick);
+    shorad_vehicle -> aa_vehicle, radar_support_vehicle -> recon_drone, interceptor_drone_vehicle -> heavy_aa,
+    mobile_repair_vehicle -> engineer_vehicle, chaff_strike -> smoke_screen. Rule morriganDecoys: Morrigan's big attack
+    already goes for aircraft and anti-air (BigAttackDefs); its preference for anti-air that stands still is pending.
+    Line: Nadia at 70 s. i3m03 loaned next_gen_tank, mobile_repair_vehicle (exactly the sheet's deck); rule eliteRank,
+    `rankBonus` 1 ("one rank above the player": one above the campaign curve the fixed deck fights at). Line: Reyn at 30 s.
+  - c11m13 (chapter 11): loaned recon_jet, gps_jammer_vehicle; airborne_vehicle -> light_tank (owned fast light
+    armour), decoy_paradrop -> sead_strike (opened by then; it keeps Skygate's anti-air busy). Rule timedRecon: Recon
+    against the 600 s limit, the `test_rod` event is Skygate turning its gun; existing. Line: Hawk at 20 s.
+  - Not done in L2: the sheet's MAKE LATER missions (pass 4) keep the player's deck; their rows stay in the sheet and the
+    precheck's table. No objective changed (fixed_decks.check_mission against the baseline; FixedDeckTests too).

@@ -38,6 +38,7 @@ event_triggered | linh | 2 | Có một cột ăng-ten mới trên đáy hố. N�
 objective_progress:last | varro | 2 | Còn bến xuất quặng. Bám vào đường vận chuyển, tôi biết từng khúc cua. || The ore loadout left. Stick to the haul road; I know every bend.
 victory | varro | 1 | Không ai giữ được mỏ trước những người đã đào nó. || Nobody holds a mine against the people who dug it.
 defeat | varro | 1 | Lùi về làng. Thợ mỏ biết chờ. Chúng tôi đã chờ hai mươi năm. || Back to the village. Miners know how to wait. We have waited twenty years.
+time@45 | varro | 2 | Xe của chúng tôi rẻ và nhiều. Mất một chiếc thì gọi chiếc khác, đừng tiếc. || Our trucks are cheap and many. Lose one, call another; no regrets.
 
 @c8m04 main=khai
 mission_start | khai | 1 | Họ đứng lên vì ta. Ta tới vì họ. || They rose for us. We go for them.

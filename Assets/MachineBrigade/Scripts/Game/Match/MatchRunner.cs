@@ -223,7 +223,13 @@ namespace MachineBrigade.Game.Match
             Curtain.Progress(0.1f);
             yield return null;
             // The player's arsenal: card ranks and equipment toughen and sharpen their own vehicles and strikes.
-            if (!_menu && kind != GameModeKind.Sandbox) _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
+            // Prompt 31 L1: a fixed deck's cards fight at the campaign's rank curve with no equipment (MissionDecks).
+            if (!_menu && kind != GameModeKind.Sandbox)
+            {
+                if (MissionDecks.IsFixed(mission))
+                    _world.SetBoosts(PlayerTeam, unit => MissionDecks.BoostFor(mission, unit), card => MissionDecks.StrikeBoost(mission, card), strikeRank: card => MissionDecks.Rank(mission, card));
+                else _world.SetBoosts(PlayerTeam, PlayerProfile.BoostFor, PlayerProfile.StrikeBoost, strikeRank: PlayerProfile.Rank);
+            }
             // Prompt 22 F: the player's commander (a story mission's own, else the one picked; every mode) and the passive of
             // the general a mission is tied to, through the loadout's caps. The Sandbox sets each side's from its scenario.
             _world.SetStatCaps(GearCatalog.StatCap, GearCatalog.TowerStatCap);
@@ -238,8 +244,8 @@ namespace MachineBrigade.Game.Match
             {
                 var deck = new List<VehicleBoost>();
                 // The commander's lines count towards the army's strength like its equipment (prompt 22 F.1).
-                foreach (var id in MatchSettings.DeckVehicles)
-                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(CommanderRules.Merge(PlayerProfile.BoostFor(def), _playerCommander, def, GearCatalog.StatCap));
+                foreach (var id in MissionDecks.Deck(mission, MatchSettings.DeckVehicles))
+                    if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(CommanderRules.Merge(MissionDecks.BoostFor(mission, def), _playerCommander, def, GearCatalog.StatCap));
                 // Prompt 26 A.4: ... but its bosses do not (their health is set by the target time).
                 _world.BossesUnscaled = true;
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
@@ -259,7 +265,7 @@ namespace MachineBrigade.Game.Match
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
-            if (!_menu && kind != GameModeKind.Sandbox) ApplyRankDiscounts(catalog, mission != null);
+            if (!_menu && kind != GameModeKind.Sandbox) ApplyRankDiscounts(catalog, mission);
             // Prompt 21 A.2: nothing in the Sandbox counts towards today's challenges.
             DailyMissions.Suspended = kind == GameModeKind.Sandbox && !_menu;
             StartDialogue();
@@ -597,6 +603,13 @@ namespace MachineBrigade.Game.Match
                 Add(mission.Convoy?.Def);
                 if (mission.Waves != null) foreach (var id in mission.Waves.Roster) Add(id);
                 foreach (var u in mission.Units) Add(u.DefId);
+                // Prompt 31: a fixed deck's placed allies (and the stand-ins of those still being modelled).
+                if (mission.FixedDeck != null)
+                    foreach (var ally in mission.FixedDeck.PlacedAllies)
+                    {
+                        Add(ally.Def);
+                        Add(ally.Fallback);
+                    }
             }
             // Boss Rush brings its bosses and their escorts later.
             if (MatchSettings.Mode == GameModeKind.BossRush && !_menu)
@@ -613,20 +626,22 @@ namespace MachineBrigade.Game.Match
         /// CardRanks.CallCost). In the campaign the enemy gets 80 % of the deck's average cut as
         /// extra income, as it gets 80 % of the arsenal's edge.
         /// </summary>
-        private void ApplyRankDiscounts(Catalog catalog, bool campaign)
+        private void ApplyRankDiscounts(Catalog catalog, MissionDef mission)
         {
             if (!_world.TryGetEconomy(PlayerTeam, out var mine)) return;
+            var campaign = mission != null;
             float full = 0f, paid = 0f;
             void Card(string id, int cost)
             {
-                var price = CardRanks.CallCost(cost, PlayerProfile.Rank(id));
+                // Prompt 31 L1: a fixed deck's cards at its fixed rank.
+                var price = CardRanks.CallCost(cost, MissionDecks.Rank(mission, id));
                 if (price < cost) mine.Discounts[id] = cost - price;
                 full += cost;
                 paid += price;
             }
-            foreach (var id in MatchSettings.DeckVehicles)
+            foreach (var id in MissionDecks.Deck(mission, MatchSettings.DeckVehicles))
                 if (catalog.Vehicles.TryGetValue(id, out var v)) Card(id, v.CpCost);
-            foreach (var id in MatchSettings.DeckSupports)
+            foreach (var id in MissionDecks.SupportDeck(mission, MatchSettings.DeckSupports))
                 if (catalog.TryGetSupport(id, out var s)) Card(id, s.CpCost);
             if (campaign && full > 0f && paid < full && _world.TryGetEconomy(1, out var foe))
                 foe.ScaleIncome(1f + 0.8f * (1f - paid / full));
@@ -1437,7 +1452,7 @@ namespace MachineBrigade.Game.Match
             // Prompt 28 H.6, H.10, E.1 (MatchRunner.Tactics.cs).
             WireTactics();
             _selection.EnemyTapped += def => _hud.ShowEnemyTip(def,
-                MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null), TierOf(def));
+                MissionDecks.Deck((_session as MissionSession)?.Def, MatchSettings.DeckVehicles).Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null), TierOf(def));
             WireBossParts();
             _selection.MoveOrdered += _effects.ShowMoveMarker;
             _selection.BoxChanged += _hud.ShowSelectionBox;
@@ -1723,7 +1738,8 @@ namespace MachineBrigade.Game.Match
                                                         (_session is BossRushSession hunt && hunt.ResumeFrom() != null));
             }
             if (outcome.Result <= 0)
-                outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MatchSettings.DeckVehicles, MatchSettings.DeckSupports,
+                outcome.Hints.AddRange(DefeatHints.For(_tally, _world.Catalog, MissionDecks.Deck((_session as MissionSession)?.Def, MatchSettings.DeckVehicles),
+                    MissionDecks.SupportDeck((_session as MissionSession)?.Def, MatchSettings.DeckSupports),
                     MatchSettings.DeckVehicleSlots, _kills, _losses, _session is SiegeSession or AssaultSession or WeeklySession));
             // Prompt 22 F.4: the commander's word as the battle is decided, on the result card (a checkpoint's note comes first).
             var note = outcome.Note;

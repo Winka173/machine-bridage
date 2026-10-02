@@ -1065,6 +1065,17 @@
 "vi": "Ta bị chặn trên đường công vụ. Không biết bãi nào sẵn sàng."
 },
 {
+"mission": "c11m13",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c11m13.07",
+"en": "The recon jet goes first, the cars follow. It sees the pads before anyone.",
+"vi": "Máy bay trinh sát đi trước, xe theo sau. Nó thấy bãi phóng nhanh hơn ai hết.",
+"at": 20.0
+},
+{
 "mission": "c11m10",
 "trigger": "mission_start",
 "speaker": "khai",

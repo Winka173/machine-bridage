@@ -243,6 +243,17 @@
 "vi": "Cột cứu hộ tan rồi. Ta sẽ tìm nhóc sau, Hawk. Không vội."
 },
 {
+"mission": "i3m02",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.i3m02.15",
+"en": "The decoys pull Morrigan off the real launchers. Drop them before it dives.",
+"vi": "Mồi nhử thả dù sẽ kéo Morrigan khỏi bệ phóng thật. Thả chúng trước đòn bổ nhào.",
+"at": 70.0
+},
+{
 "mission": "i3m03",
 "trigger": "mission_start",
 "speaker": "reyn",
@@ -323,6 +334,17 @@
 "key": "script.i3m03.08",
 "en": "The village has fallen. I want to know where Hawk went. Now.",
 "vi": "Ngôi làng thất thủ. Tôi muốn biết Hawk đã đi đâu. Ngay."
+},
+{
+"mission": "i3m03",
+"trigger": "time",
+"speaker": "reyn",
+"priority": 2,
+"once": true,
+"key": "script.i3m03.09",
+"en": "Crown runs few tanks, but each is worth two. Lose none for nothing.",
+"vi": "Đội của Crown ít xe, nhưng mỗi chiếc đáng hai. Đừng để mất chiếc nào vô ích.",
+"at": 30.0
 },
 {
 "mission": "i3m04",

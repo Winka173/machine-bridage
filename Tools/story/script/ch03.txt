@@ -71,6 +71,7 @@ objective_progress:1/3 | linh | 2 | Một khẩu đã gục. Hai khẩu còn l�
 objective_progress:last | linh | 2 | Còn một khẩu pháo. Ánh chớp đầu nòng của nó ở góc ba trăm mười. || One gun left. Its muzzle flash is at three-one-zero.
 victory | linh | 1 | Ba khẩu đội đã bị gạch. Đêm nay thung lũng sẽ yên tĩnh hơn. || All three crossed out. The valley will be quieter tonight.
 defeat | linh | 1 | Chúng biến mất vào đêm. Hướng đông bắc. Tôi đã ghi lại. || They vanished into the night, north-east. I have it noted.
+time@30 | linh | 2 | Đêm nay chúng chỉ lộ khi khai hỏa. Radar phản pháo sẽ bắt lấy ánh chớp đó. || Tonight they show only when they fire. The radar will catch the flash.
 
 @c3m12 main=khai
 mission_start | khai | 1 | Năm phút dưới pháo của ông ta. Cứ di chuyển, cứ sống. || Five minutes under his guns. Keep moving, keep alive.

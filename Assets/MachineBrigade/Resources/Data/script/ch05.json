@@ -891,6 +891,17 @@
 "vi": "Mất phòng không cuối. Tôi phải bay thấp về, rừng vẫn là của chúng."
 },
 {
+"mission": "c5m07",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m07.09",
+"en": "The laser is only on loan. It takes the small ones; the jets take the big.",
+"vi": "Khẩu laser chỉ mượn cho trận này. Nó lo bầy nhỏ, tiêm kích lo con to.",
+"at": 30.0
+},
+{
 "mission": "c5m13",
 "trigger": "mission_start",
 "speaker": "khai",
