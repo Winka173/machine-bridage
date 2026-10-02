@@ -687,21 +687,21 @@
             "kind": "tower",
             "model": "aa_turret",
             "source": "Models/aa_turret",
-            "hash": "v2:b2ebffded7d338310feb345f08fd68ff20120012"
+            "hash": "v2:8e6d00e266ceabf8144865cadf4698469e56c52d"
         },
         {
             "id": "aa_turret.flak",
             "kind": "tower",
             "model": "aa_turret_a",
             "source": "Models/aa_turret_a",
-            "hash": "v2:e9c0c65bdedb430bfa93e32d8ab910ed1f40c416"
+            "hash": "v2:88bfa5196b539f88f3b14802e198760b04a3ef74"
         },
         {
             "id": "aa_turret.sam",
             "kind": "tower",
             "model": "aa_turret_b",
             "source": "Models/aa_turret_b",
-            "hash": "v2:d8577a5135e23f024181c8a6402fbca3bfa21d13"
+            "hash": "v2:7e53712ff36be3f744fd6f2b6aada66cf57615d1"
         },
         {
             "id": "airfield",
@@ -750,21 +750,21 @@
             "kind": "tower",
             "model": "artillery_emplacement",
             "source": "Models/artillery_emplacement",
-            "hash": "v2:5d9d69d7255658c0b8d40aa3d329f4e4568ed505"
+            "hash": "v2:fef72fd59771b45027cae528e76074d3aad6b042"
         },
         {
             "id": "artillery_emplacement.cb",
             "kind": "tower",
             "model": "artillery_emplacement_a",
             "source": "Models/artillery_emplacement_a",
-            "hash": "v2:a00f05cd6c7d0d0fd19f02a7436647c6af4fdefe"
+            "hash": "v2:15b5ff579fd695cb2a4539e9e2450151bf3514c3"
         },
         {
             "id": "artillery_emplacement.mortar",
             "kind": "tower",
             "model": "artillery_emplacement_b",
             "source": "Models/artillery_emplacement_b",
-            "hash": "v2:25a09572aca7af0de4aa0ff2edd8a37015972d16"
+            "hash": "v2:54107544029317ef96055fe23bcf2d1f7d7b0acd"
         },
         {
             "id": "at_gun_emplacement",
@@ -1170,21 +1170,21 @@
             "kind": "tower",
             "model": "guard_tower",
             "source": "Models/guard_tower",
-            "hash": "v2:0f342acbc5cf1ffa0a7937919bc2e4d3197b6689"
+            "hash": "v2:66b655b8f78c91de63ffcab5c3aa8593c8cee0e5"
         },
         {
             "id": "guard_tower.nest",
             "kind": "tower",
             "model": "guard_tower_b",
             "source": "Models/guard_tower_b",
-            "hash": "v2:82f4dc73b6bb851c3c9b67f546ac55efdc50b273"
+            "hash": "v2:204345dd3c9a594bd9a7517d134ecd36d8af2eed"
         },
         {
             "id": "guard_tower.watch",
             "kind": "tower",
             "model": "guard_tower_a",
             "source": "Models/guard_tower_a",
-            "hash": "v2:48133a35ec9107554ebb47b094997629fca2a80d"
+            "hash": "v2:086ff33131a5d0a441c3682c19f63302783e320a"
         },
         {
             "id": "gun_turret",

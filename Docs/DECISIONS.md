@@ -14096,3 +14096,4 @@ no previews, no tests.
 - **Card luma (old, mean of pixels with alpha > .5, Rec. 709):** aa_turret .4068, aa_turret_a .4084, aa_turret_b .4013,
   artillery_emplacement .3855, _a .4083, _b .3865, guard_tower .3079 (the dimmest: watch it), guard_tower_a .3164, guard_tower_b .4285.
 - **Pitfall:** `k.block` is a plain box under 12 cm in any size, so shield plates were thickened to 13 cm to get chamfers.
+- Lead (2026-10-02), wave 6a cards: all nine pass (+2.6 % to +9.4 %). Parallel lanes merge note: build_assets.py registration lines and the validator baseline conflict; the lead keeps both registrations and re-accepts the lane's models (glb_check.py --accept, without --compare, after git lfs checkout).
