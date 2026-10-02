@@ -2596,6 +2596,16 @@
    "changes": [
     "FLAG rocket_turret: triangles 4,410 -> 9,052 (+105.3%); vertices 5,428 -> 11,948 (+120.1%); meshes 34 -> 39 (+14.7%); renderers 34 -> 39 (+14.7%); materials 15 -> 16 (+6.7%); materialSlots 34 -> 39 (+14.7%); fileBytes 300,216 -> 620,892 (+106.8%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "ixion",
+    "rocket_turret",
+    "zu23_technical"
+   ],
+   "reason": "merge of feature/p35-a",
+   "changes": []
   }
  ],
  "models": {
