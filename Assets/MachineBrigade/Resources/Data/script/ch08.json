@@ -340,6 +340,17 @@
 "vi": "Lùi về làng. Thợ mỏ biết chờ. Chúng tôi đã chờ hai mươi năm."
 },
 {
+"mission": "c8m11",
+"trigger": "time",
+"speaker": "varro",
+"priority": 2,
+"once": true,
+"key": "script.c8m11.08",
+"en": "Our trucks are cheap and many. Lose one, call another; no regrets.",
+"vi": "Xe của chúng tôi rẻ và nhiều. Mất một chiếc thì gọi chiếc khác, đừng tiếc.",
+"at": 45.0
+},
+{
 "mission": "c8m04",
 "trigger": "mission_start",
 "speaker": "khai",

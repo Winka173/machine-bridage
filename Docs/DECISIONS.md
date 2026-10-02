@@ -14944,5 +14944,8 @@ the lead, the tests are written, not run.
   - c7m11 (chapter 7): loaned aa_57mm_vehicle, shorad_vehicle (the anti-air the mission is about);
     radar_support_vehicle -> recon_drone (the owned spotter), illum_flare_strike -> uav_scan (scan cards), sead_strike ->
     airstrike (sead is opened later). Rule airCap6. Pending: the city blackout is a prompt 31 L3 event, not built yet, so
-    the mission runs without it; the storm cutting radar range has no Sim rule yet (Storm only shortens sight, as before).
+    the mission runs without it; the storm cutting radar range has no Sim rule yet.
     Line: Hawk at 35 s.
+  - c8m11 (chapter 8): loaned combat_wreck_car, recoilless_jeep (cheap patchwork cards); demolition_line_vehicle ->
+    engineer_vehicle (owned support truck), reinforcements -> artillery_barrage (`reinforcements` is a consumable item,
+    not a support card, and no Reinforce-kind card is owned). Rule patchworkDeck (the deck itself). Line: Varro at 45 s.

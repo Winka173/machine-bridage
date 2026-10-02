@@ -110,6 +110,12 @@ DECKS = {
         loaned=['aa_57mm_vehicle', 'shorad_vehicle'],
         replaced={'radar_support_vehicle': 'recon_drone', 'illum_flare_strike': 'uav_scan', 'sead_strike': 'airstrike'},
         rules=['airCap6']),
+    'c8m11': dict(
+        vehicles=['combat_wreck_car', 'armored_bulldozer', 'rocket_technical', 'zu23_technical', 'recoilless_jeep', 'mortar_carrier', 'engineer_vehicle', 'vbied'],
+        supports=['artillery_barrage', 'smoke_screen'],
+        loaned=['combat_wreck_car', 'recoilless_jeep'],
+        replaced={'demolition_line_vehicle': 'engineer_vehicle', 'reinforcements': 'artillery_barrage'},
+        rules=['patchworkDeck']),
 }
 
 
