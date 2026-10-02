@@ -1237,9 +1237,11 @@ namespace MachineBrigade.Game.Effects
                     {
                         // A tank's round: a hot burst off the armour, sized by the tank (DECISIONS 11A), a
                         // tenth bigger again and its fire and smoke lingering by the tank's class (12C).
-                        var grow = BlastSizes.TankShell(round) * BlastSizes.Bigger;
+                        // Play-test 12: by its calibre at the least, and at the round's own impact scale (data impactScale,
+                        // which this path used to drop: the gun turret's 1.35, the heavy turret's 1.3).
+                        var grow = BlastSizes.CalibreShell(round) * BlastSizes.Bigger;
                         var hitAt = impact + Vector3.up * 0.8f;
-                        var hitScale = (heavy ? 1f : 0.75f) * (0.9f + 0.2f * UnityEngine.Random.value);
+                        var hitScale = (heavy ? 1f : 0.75f) * (0.9f + 0.2f * UnityEngine.Random.value) * Mathf.Max(1f, size);
                         _shellHit.Play(hitAt, now, hitScale, grow, BlastSizes.ShellLife(round), BlastSizes.RingFor(e.Value, _shellHit.RingReach, hitScale));
                         // Prompt 34 L5: an AP round's sparks grow by its tier (1 to T2, +15 % a tier above).
                         var sparks = Mathf.RoundToInt((heavy ? 36 : 16) * TierFx.Extra(TierFx.Of(round)));
