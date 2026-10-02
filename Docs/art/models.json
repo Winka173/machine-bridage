@@ -197,7 +197,7 @@
   },
   "barricade": {
     "file": "barricade.glb",
-    "triangles": 1706
+    "triangles": 1998
   },
   "basalt_rock_a": {
     "file": "basalt_rock_a.glb",
@@ -257,7 +257,7 @@
   },
   "bridge_road": {
     "file": "bridge_road.glb",
-    "triangles": 2468
+    "triangles": 2788
   },
   "bridging_vehicle": {
     "file": "bridging_vehicle.glb",
@@ -301,7 +301,7 @@
   },
   "camo_net": {
     "file": "camo_net.glb",
-    "triangles": 2878
+    "triangles": 3238
   },
   "car": {
     "file": "car.glb",
@@ -321,7 +321,7 @@
   },
   "checkpoint": {
     "file": "checkpoint.glb",
-    "triangles": 2294
+    "triangles": 2934
   },
   "church": {
     "file": "church.glb",
@@ -353,7 +353,7 @@
   },
   "command_tent": {
     "file": "command_tent.glb",
-    "triangles": 1998
+    "triangles": 2014
   },
   "command_vehicle": {
     "file": "command_vehicle.glb",
@@ -409,7 +409,7 @@
   },
   "dead_tree": {
     "file": "dead_tree.glb",
-    "triangles": 500
+    "triangles": 560
   },
   "debris_concrete": {
     "file": "debris_concrete.glb",
@@ -601,7 +601,7 @@
   },
   "foxhole": {
     "file": "foxhole.glb",
-    "triangles": 954
+    "triangles": 970
   },
   "fpv_carrier": {
     "file": "fpv_carrier.glb",
@@ -613,7 +613,7 @@
   },
   "fuel_bladder": {
     "file": "fuel_bladder.glb",
-    "triangles": 1364
+    "triangles": 1660
   },
   "fuel_depot": {
     "file": "fuel_depot.glb",
@@ -1101,7 +1101,7 @@
   },
   "power_pylon": {
     "file": "power_pylon.glb",
-    "triangles": 3020
+    "triangles": 3276
   },
   "prop_attack_plane": {
     "file": "prop_attack_plane.glb",
@@ -1133,7 +1133,7 @@
   },
   "radio_mast": {
     "file": "radio_mast.glb",
-    "triangles": 2268
+    "triangles": 2308
   },
   "rail_boxcar": {
     "file": "rail_boxcar.glb",
@@ -1249,11 +1249,11 @@
   },
   "ruin_house": {
     "file": "ruin_house.glb",
-    "triangles": 3512
+    "triangles": 3696
   },
   "ruin_tower": {
     "file": "ruin_tower.glb",
-    "triangles": 2660
+    "triangles": 2796
   },
   "runway_light": {
     "file": "runway_light.glb",
@@ -1429,7 +1429,7 @@
   },
   "supply_pile": {
     "file": "supply_pile.glb",
-    "triangles": 1888
+    "triangles": 2460
   },
   "supply_truck": {
     "file": "supply_truck.glb",
@@ -1457,7 +1457,7 @@
   },
   "tank_ditch": {
     "file": "tank_ditch.glb",
-    "triangles": 650
+    "triangles": 810
   },
   "tank_trap": {
     "file": "tank_trap.glb",
@@ -1469,7 +1469,7 @@
   },
   "telegraph_pole": {
     "file": "telegraph_pole.glb",
-    "triangles": 836
+    "triangles": 1040
   },
   "temple_ruin": {
     "file": "temple_ruin.glb",
@@ -1517,11 +1517,11 @@
   },
   "trench_corner": {
     "file": "trench_corner.glb",
-    "triangles": 1878
+    "triangles": 2026
   },
   "trench_straight": {
     "file": "trench_straight.glb",
-    "triangles": 1946
+    "triangles": 2142
   },
   "troop_shelter": {
     "file": "troop_shelter.glb",
@@ -1597,7 +1597,7 @@
   },
   "wreck_car": {
     "file": "wreck_car.glb",
-    "triangles": 1344
+    "triangles": 1464
   },
   "wreck_engine": {
     "file": "wreck_engine.glb",
@@ -1613,11 +1613,11 @@
   },
   "wreck_tank": {
     "file": "wreck_tank.glb",
-    "triangles": 2944
+    "triangles": 3184
   },
   "wreck_truck": {
     "file": "wreck_truck.glb",
-    "triangles": 2228
+    "triangles": 2692
   },
   "wreck_turret": {
     "file": "wreck_turret.glb",
