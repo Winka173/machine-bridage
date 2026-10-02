@@ -990,7 +990,7 @@
     { "id": "mlrs", "outgoingDamageMult": 1.1429, "scoot": { "shots": 1, "min": 15, "max": 20 }, "value": 1.31, "scale": 1, "modelSize": [6.09, 2, 2.6],             "armour": 1, "hp": 373, "speed": 9.4, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 5.8, "width": 2, "cp": 8, "vision": 30,
       "firesWhileMoving": false, "weapon": "mlrs_rockets", "secondary": [],
       "deathExplosion": { "damage": 110, "radius": 8, "delay": 0.3, "tier": "Huge" } },
-    { "id": "aa_vehicle", "value": 1.16, "scale": 1, "modelSize": [6.44, 3.06, 2.92],       "armour": [2, 1, 1, 0], "hp": 350, "speed": 8, "turnRate": 100, "turretTurnRate": 200, "radius": 1.8, "length": 5.85, "width": 3.06, "cp": 4, "vision": 42,
+    { "id": "aa_vehicle", "dropDelay": 2.5, "value": 1.16, "scale": 1, "modelSize": [6.44, 3.06, 2.92],       "armour": [2, 1, 1, 0], "hp": 350, "speed": 8, "turnRate": 100, "turretTurnRate": 200, "radius": 1.8, "length": 5.85, "width": 3.06, "cp": 4, "vision": 42,
       "firesWhileMoving": true, "weapon": "flak_35",
       "secondary": [ { "weapon": "sam", "slot": "missile", "model": "stinger", "aim": "Free" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
@@ -1015,7 +1015,7 @@
       "firesWhileMoving": true, "weapon": "gun_152",
       "secondary": [ { "weapon": "autocannon_30", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 200, "radius": 9, "delay": 0.5, "tier": "Huge" } },
-    { "id": "sam_launcher", "value": 0.72, "scale": 1, "modelSize": [7.18, 2.7, 2.97],     "armour": [1, 1, 0, 0], "hp": 591, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.0, "length": 7.18, "width": 2.7, "cp": 7, "vision": 60,
+    { "id": "sam_launcher", "outgoingDamageMult": 1.1429, "value": 0.72, "scale": 1, "modelSize": [7.18, 2.7, 2.97],     "armour": [1, 1, 0, 0], "hp": 691, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.0, "length": 7.18, "width": 2.7, "cp": 8, "vision": 60,
       "firesWhileMoving": false, "weapon": "buk_launcher", "secondary": [],
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.3, "tier": "Huge" } },
     { "id": "mortar_carrier", "dropDelay": 2.5, "value": 0.88, "scale": 1, "modelSize": [4.21, 2.3, 3.2],   "armour": [1, 1, 0, 0], "hp": 320, "speed": 5.9, "turnRate": 100, "turretTurnRate": 90, "radius": 1.7, "length": 4.21, "width": 2.3, "cp": 4, "vision": 26,
@@ -1053,7 +1053,7 @@
       "firesWhileMoving": true, "weapon": "ifv_30", "captureRate": 3,
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ], "skills": ["apc_smoke"],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.35, "tier": "Large" } },
-    { "id": "heavy_aa", "value": 1, "scale": 1, "modelSize": [9.8, 2.68, 2.83],         "armour": 1, "hp": 540, "speed": 8.5, "turnRate": 90, "turretTurnRate": 220, "radius": 2.1, "length": 9.8, "width": 2.18, "cp": 7, "vision": 60,
+    { "id": "heavy_aa", "outgoingDamageMult": 1.1429, "value": 1, "scale": 1, "modelSize": [9.8, 2.68, 2.83],         "armour": 1, "hp": 632, "speed": 8.5, "turnRate": 90, "turretTurnRate": 220, "radius": 2.1, "length": 9.8, "width": 2.18, "cp": 8, "vision": 60,
       "firesWhileMoving": true, "weapon": "twin_30_flak",
       "secondary": [ { "weapon": "missile_57e6", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.35, "tier": "Huge" } },
@@ -1137,7 +1137,7 @@
     { "id": "vbied", "value": 1.5, "scale": 1, "modelSize": [4.58, 1.68, 1.6],            "class": "Scout", "armour": [2, 1, 0, 0], "hp": 364, "speed": 13, "turnRate": 150, "turretTurnRate": 360, "radius": 1.8, "length": 4.58, "width": 1.68, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "detonator", "mainAim": "Hull", "kamikaze": true, "captureRate": 1,
       "deathExplosion": { "damage": 300, "radius": 6, "delay": 0.1, "tier": "Huge" } },
-    { "id": "zu23_technical", "value": 0.5, "scale": 1, "modelSize": [4.39, 1.5, 1.56],   "class": "AntiAir", "armour": 0, "hp": 210, "speed": 12, "turnRate": 180, "turretTurnRate": 240, "radius": 1.5, "length": 4.39, "width": 1.5, "cp": 3, "vision": 40,
+    { "id": "zu23_technical", "dropDelay": 2.5, "value": 0.5, "scale": 1, "modelSize": [4.39, 1.5, 1.56],   "class": "AntiAir", "armour": 0, "hp": 210, "speed": 12, "turnRate": 180, "turretTurnRate": 240, "radius": 1.5, "length": 4.39, "width": 1.5, "cp": 3, "vision": 40,
       "firesWhileMoving": true, "weapon": "zu23", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
     { "id": "smoke_carrier", "value": 1, "scale": 1, "modelSize": [4.21, 2.24, 2.64],    "class": "Support", "armour": [1, 1, 0, 0], "hp": 400, "speed": 5.9, "turnRate": 100, "turretTurnRate": 200, "radius": 2.0, "length": 4.21, "width": 2.24, "cp": 3, "vision": 30,
@@ -1151,7 +1151,7 @@
       "firesWhileMoving": false, "weapon": "shahed", "captureRate": 1,
       "secondary": [ { "weapon": "hmg_selfdef_15", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.3, "tier": "Huge" } },
-    { "id": "iron_beam", "value": 0.5, "scale": 1, "modelSize": [8.2, 2.05, 2.86],        "class": "AntiAir", "armour": 1, "hp": 450, "speed": 7, "turnRate": 70, "turretTurnRate": 180, "radius": 2.5, "length": 8.2, "width": 2.05, "cp": 6, "vision": 56,
+    { "id": "iron_beam", "outgoingDamageMult": 1.1667, "value": 0.5, "scale": 1, "modelSize": [8.2, 2.05, 2.86],        "class": "AntiAir", "armour": 1, "hp": 536, "speed": 7, "turnRate": 70, "turretTurnRate": 180, "radius": 2.5, "length": 8.2, "width": 2.05, "cp": 7, "vision": 56,
       "firesWhileMoving": true, "weapon": "hel_beam", "captureRate": 1, "aps": {"radius": 30, "shells": 0.3, "charges": 1, "recharge": 0.8, "rockets": true, "laser": true},
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     { "id": "railgun_truck", "outgoingDamageMult": 1.3813, "value": 1.26, "scale": 1, "modelSize": [9.9, 2.48, 2.89],    "class": "TankHunter", "armour": 1, "hp": 568, "speed": 6.5, "turnRate": 60, "turretTurnRate": 45, "radius": 2.7, "length": 9.9, "width": 2.48, "cp": 13, "vision": 40,
@@ -1189,7 +1189,7 @@
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mainSlot": "mg", "mainAim": "Free", "captureRate": 1,
       "counterBattery": { "range": 120, "seconds": 8, "bonus": 0.15 },
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
-    { "id": "long_sam", "value": 1.5, "scale": 1, "modelSize": [11.02, 2.46, 2.59], "class": "AntiAir", "armour": 1, "hp": 440, "speed": 6, "turnRate": 60, "turretTurnRate": 60, "radius": 2.8, "length": 11.02, "width": 2.44, "cp": 14, "vision": 80,
+    { "id": "long_sam", "dropDelay": 5, "outgoingDamageMult": 1.4464, "value": 1.5, "scale": 1, "modelSize": [11.02, 2.46, 2.59], "class": "AntiAir", "armour": 1, "hp": 586, "speed": 6, "turnRate": 60, "turretTurnRate": 60, "radius": 2.8, "length": 11.02, "width": 2.44, "cp": 18, "vision": 80,
       "firesWhileMoving": false, "weapon": "sam_48n6", "mainSlot": "missile", "captureRate": 0,
       "deathExplosion": { "damage": 160, "radius": 10, "delay": 0.4, "tier": "Huge" } },
     // Prompt 17 C: new units. The stealth fighter is seen only close up until it fires (the stealth bomber's
@@ -1397,14 +1397,14 @@
     { "id": "heavy_flak_tower", "modelSize": [7.0, 6.0, 3.4], "fort": { "size": "Medium" }, "static": true, "armour": 2, "hp": 1364, "speed": 0, "turnRate": 1, "turretTurnRate": 40, "radius": 2.6, "length": 5.5, "width": 5.5, "cp": 0, "vision": 64,
       "weapon": "flak_88", "secondary": [], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
     // dx02: a tracked 40 mm AA gun (CV90 AA, M42 Duster): steady proximity-fused bursts, helicopters and drones, light vehicles too.
-    { "id": "aa_gun_vehicle", "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 1, "hp": 455, "speed": 8, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.0, "width": 2.5, "cp": 5, "vision": 45,
+    { "id": "aa_gun_vehicle", "outgoingDamageMult": 1.2, "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 1, "hp": 559, "speed": 8, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.0, "width": 2.5, "cp": 6, "vision": 45,
       "firesWhileMoving": true, "weapon": "bofors_l70", "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
     // dx03: a light, fast SAM vehicle (M1097 Avenger): fires on the move.
-    { "id": "shorad_vehicle", "modelSize": [3.8, 1.8, 2.2], "class": "AntiAir", "armour": 0, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 200, "radius": 1.6, "length": 3.8, "width": 1.8, "cp": 4, "vision": 44,
+    { "id": "shorad_vehicle", "dropDelay": 2.5, "modelSize": [3.8, 1.8, 2.2], "class": "AntiAir", "armour": 0, "hp": 318, "speed": 11, "turnRate": 150, "turretTurnRate": 200, "radius": 1.6, "length": 3.8, "width": 1.8, "cp": 4, "vision": 44,
       "firesWhileMoving": true, "weapon": "avenger_stingers", "mainSlot": "missile", "secondary": [ { "weapon": "hmg_selfdef_21", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.2, "tier": "Large" } },
     // dx04: a high-power microwave (Epirus Leonidas): a pulse every 8 s downs every enemy drone in a 60 degree cone out to 30 m; nothing else is harmed.
-    { "id": "microwave_vehicle", "modelSize": [5.8, 2.1, 2.9], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 9, "turnRate": 80, "turretTurnRate": 120, "radius": 2.0, "length": 5.8, "width": 2.1, "cp": 6, "vision": 40,
+    { "id": "microwave_vehicle", "outgoingDamageMult": 1.1667, "modelSize": [5.8, 2.1, 2.9], "class": "AntiAir", "armour": 1, "hp": 486, "speed": 9, "turnRate": 80, "turretTurnRate": 120, "radius": 2.0, "length": 5.8, "width": 2.1, "cp": 7, "vision": 40,
       "firesWhileMoving": true, "weapon": "none", "microwave": { "range": 30, "arc": 60, "cooldown": 8 },
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // dx06: the anti-tank gun emplacement: a small slot's tank killer, a 90 degree arc ahead, a front shield of level 2, turning slowly.
@@ -1480,7 +1480,7 @@
     // ht08: a mobile inflatable tank decoy (as dx26's inflatable_decoy, but it mimics a moving tank, not a tower): dropped by parachute, gone after 30 s.
     { "id": "decoy_tank", "model": "main_battle_tank", "modelSize": [7.5, 3.6, 2.6], "static": true, "armour": 0, "hp": 136, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.5, "cp": 0, "vision": 1, "weapon": "none", "decoy": { "mimic": "main_battle_tank" } },
     // dx48: the interceptor-drone vehicle: drones against drones.
-    { "id": "interceptor_drone_vehicle", "modelSize": [5.0, 2.0, 2.4], "class": "AntiAir", "armour": 1, "hp": 409, "speed": 10, "turnRate": 100, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 5, "vision": 50,
+    { "id": "interceptor_drone_vehicle", "outgoingDamageMult": 1.2, "modelSize": [5.0, 2.0, 2.4], "class": "AntiAir", "armour": 1, "hp": 505, "speed": 10, "turnRate": 100, "turretTurnRate": 150, "radius": 1.9, "length": 5.0, "width": 2.0, "cp": 6, "vision": 50,
       "firesWhileMoving": false, "weapon": "interceptor_drone", "secondary": [{ "weapon": "coyote_interceptor", "slot": "aam", "aim": "Free" }], "droneHunt": { "reach": 60 }, "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.3, "tier": "Large" } },
     // ct11: the troop shelter (a concrete bunker): its side's vehicles within 15 m take half from shells, mortars, bombs and strikes; direct fire is not stopped.
     { "id": "troop_shelter", "modelSize": [6.0, 5.0, 2.2], "fort": { "size": "Medium" }, "static": true, "armour": 3, "hp": 1818, "speed": 0, "turnRate": 1, "turretTurnRate": 1, "radius": 2.6, "length": 6.0, "width": 5.0, "cp": 0, "vision": 30,
@@ -1500,7 +1500,7 @@
     // borrowed "model" with a "tint"; the owner's choice, real models at prompt 26-27). dx23 (a Super Tank module
     // choice, no CP of its own) is not in this pass: see DECISIONS 25F2-B.
     // dx05: the 2S38 Derivatsiya-PVO stand-in (aa_gun_vehicle's hull): a self-propelled 57 mm, slower but harder-hitting than the 40 mm.
-    { "id": "aa_57mm_vehicle", "model": "aa_57mm_vehicle", "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 2, "hp": 636, "speed": 7, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.9, "width": 2.5, "cp": 6, "vision": 48,
+    { "id": "aa_57mm_vehicle", "outgoingDamageMult": 1.1667, "model": "aa_57mm_vehicle", "modelSize": [5.9, 2.5, 2.7], "class": "AntiAir", "armour": 2, "hp": 759, "speed": 7, "turnRate": 90, "turretTurnRate": 150, "radius": 2.0, "length": 5.9, "width": 2.5, "cp": 7, "vision": 48,
       "firesWhileMoving": true, "weapon": "gun_57mm_2s38", "deathExplosion": { "damage": 65, "radius": 5, "delay": 0.25, "tier": "Large" } },
     // dx13: the BM-27 Uragan-class mine-laying rocket stand-in (mlrs's hull): seeds a minefield instead of firing for damage.
     { "id": "mine_rocket_truck", "outgoingDamageMult": 1.1429, "model": "mine_rocket_truck", "modelSize": [6.09, 2, 2.6], "class": "Artillery", "armour": 1, "hp": 423, "speed": 9.4, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 5.8, "width": 2, "cp": 8, "vision": 30,

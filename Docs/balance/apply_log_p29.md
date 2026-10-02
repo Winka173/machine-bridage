@@ -263,3 +263,27 @@
 | B1-ballistic_launcher | OK | 3 rows |
 | B1-heavy_rocket_artillery | OK | 4 rows |
 | B1-siege_tank | OK | 4 rows |
+
+## Run apply: E1, B0-*, B1-zu23_technical, B1-aa_vehicle, B1-shorad_vehicle, B1-aa_gun_vehicle, B1-interceptor_drone_vehicle, B1-aa_57mm_vehicle, B1-iron_beam, B1-microwave_vehicle, B1-heavy_aa, B1-sam_launcher, B1-long_sam (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | ALREADY_APPLIED | |
+| B0-sky_gunship | ALREADY_APPLIED | |
+| B0-thermobaric_launcher | CONFLICT | units.thermobaric_launcher.hp: current 2490.4, expected 990, new 1980 |
+| B0-siege_tank | CONFLICT | units.siege_tank.hp: current 4270.200000000001, expected 1320, new 3300 |
+| B0-light_tank | ALREADY_APPLIED | |
+| B0-vbied | ALREADY_APPLIED | |
+| B0-flame_tank | ALREADY_APPLIED | |
+| B0-engineer_vehicle | ALREADY_APPLIED | |
+| B1-zu23_technical | OK | 1 rows |
+| B1-aa_vehicle | OK | 1 rows |
+| B1-shorad_vehicle | OK | 1 rows |
+| B1-aa_gun_vehicle | OK | 3 rows |
+| B1-interceptor_drone_vehicle | OK | 3 rows |
+| B1-aa_57mm_vehicle | OK | 3 rows |
+| B1-iron_beam | OK | 3 rows |
+| B1-microwave_vehicle | OK | 3 rows |
+| B1-heavy_aa | OK | 3 rows |
+| B1-sam_launcher | OK | 3 rows |
+| B1-long_sam | OK | 4 rows |
