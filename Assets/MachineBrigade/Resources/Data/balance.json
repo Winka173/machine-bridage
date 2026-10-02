@@ -102,6 +102,70 @@
 
   // The enemy generals: which of their cards they make elites of first (class names; "Drone" for
   // drone carriers and UAVs, "Air" for every aircraft), and cards always in their deck.
+  // <generated ai: Tools/ai/import_ai_xlsx.py, do not edit by hand>
+  // Prompt 28: the AI parameter frame (L.1). Each parameter: value (the starting point, not final), min-max
+  // (the sweep range), metric (what the sweep measures) and reason (the sheet's tuning note).
+  "ai": {
+    "world": {
+      "rate": {"value": 2, "min": 1, "max": 4, "metric": "AI tick time (M.5)", "reason": "prompt 28 A.1/M.1: about twice a second"},
+      "cell": {"value": 10, "min": 6, "max": 16, "metric": "AI tick time (M.5)", "reason": "prompt 28 A.1: 10 m cells to start"},
+      "highValue": {"value": 1.5, "min": 1.2, "max": 2.5, "metric": "Số mục tiêu giá trị bị hạ", "reason": "a contact this many times the mean known strength is high value"},
+      "splashMin": {"value": 2, "min": 1, "max": 4, "metric": "Số xe bị hạ bởi bắn lan mỗi phút", "reason": "a weapon with a blast this wide (m) paints the splash threat"},
+      "eventLife": {"value": 8, "min": 4, "max": 15, "metric": "Số lần đổi hành động mỗi phút của đội", "reason": "seconds an event lasts unless refreshed"},
+      "airShare": {"value": 0.25, "min": 0.15, "max": 0.4, "metric": "Số máy bay bị hạ mỗi lượt", "reason": "MISMATCH: enemy aircraft share of its strength"},
+      "aaShare": {"value": 0.1, "min": 0.05, "max": 0.2, "metric": "Số máy bay bị hạ mỗi lượt", "reason": "MISMATCH: own anti-air share below this"},
+      "armourShare": {"value": 0.4, "min": 0.3, "max": 0.6, "metric": "Thời gian hạ mục tiêu", "reason": "MISMATCH: enemy armour share of its strength"},
+      "atShare": {"value": 0.15, "min": 0.1, "max": 0.3, "metric": "Thời gian hạ mục tiêu", "reason": "MISMATCH: own anti-tank share below this"}
+    },
+    "params": {
+      "attackThreshold": {"value": 1.2, "min": 0.8, "max": 1.6, "metric": "Tỷ lệ thời gian có giao tranh; số đợt tấn công thất bại", "reason": "Thấp quá: lao vào chỗ chết; cao quá: trận đứng yên"},
+      "fallbackRatio": {"value": 0.6, "min": 0.5, "max": 0.7, "metric": "Số tuyến mất; thời lượng trận Phòng thủ", "reason": "Không áp cho từng xe theo máu"},
+      "switchMargin": {"value": 8.0, "min": 4.0, "max": 15.0, "metric": "Số lần đổi hành động mỗi phút của đội", "reason": "Thấp: đổi ý liên tục; cao: không phản ứng kịp"},
+      "minCommit": {"value": 4.0, "min": 2.0, "max": 8.0, "metric": "Số lần đổi trạng thái mỗi phút; tỷ lệ hành động bị bỏ dở", "reason": "Như trên"},
+      "idleReassess": {"value": 5.0, "min": 3.0, "max": 10.0, "metric": "Tỷ lệ thời gian đứng yên không lý do", "reason": ""},
+      "stuckTime": {"value": 3.0, "min": 2.0, "max": 5.0, "metric": "Số lần kẹt mỗi phút, thời gian kẹt trung bình", "reason": ""},
+      "emergencyCooldown": {"value": 25.0, "min": 15.0, "max": 40.0, "metric": "Số lần dùng khẩn cấp mỗi phút; chỉ số đổi quyết định", "reason": "Ngăn dùng khẩn cấp để lách luật cam kết"},
+      "overwhelmRatio": {"value": 2.0, "min": 1.6, "max": 3.0, "metric": "Số xe bị hạ khi bị áp đảo; số lần gom", "reason": ""},
+      "confidenceDecay": {"value": 0.06, "min": 0.03, "max": 0.12, "metric": "Số lần AI đánh vào nơi địch đã đi; số lần bị bất ngờ", "reason": "Theo độ khó: Cực khó giảm chậm hơn"},
+      "splashSpread": {"value": 1.0, "min": 0.5, "max": 2.0, "metric": "Số xe bị hạ bởi bắn lan mỗi phút; độ dàn trải đội", "reason": ""},
+      "reactionDelay": {"value": 0.8, "min": 0.3, "max": 1.5, "metric": "Tỷ lệ né đòn có cảnh báo", "reason": "Theo độ khó"},
+      "flankWeight": {"value": 1.0, "min": 0.5, "max": 2.0, "metric": "Tỷ lệ thời gian đánh sườn", "reason": "Dấu vân hành vi"},
+      "focusWeight": {"value": 1.0, "min": 0.5, "max": 2.0, "metric": "Số mục tiêu đổi mỗi phút; thời gian hạ mục tiêu", "reason": ""},
+      "cohesion": {"value": 1.0, "min": 0.0, "max": 1.0, "metric": "Vi phạm đội hình mỗi phút", "reason": ""},
+      "artilleryPrep": {"value": 0.0, "min": 0.0, "max": 2.0, "metric": "Thời điểm đợt tấn công đầu tiên", "reason": ""},
+      "airAaLimit": {"value": 1.0, "min": 0.5, "max": 1.5, "metric": "Số máy bay bị hạ mỗi lượt", "reason": ""},
+      "holdFire": {"value": 0.0, "min": 0.0, "max": 0.6, "metric": "Tỷ lệ thời gian giữ lửa; sát thương phát đầu", "reason": "Phục kích"},
+      "mainEffort": {"value": 0.5, "min": 0.3, "max": 0.8, "metric": "Độ tập trung lực lượng", "reason": ""},
+      "cpSaving": {"value": 0.0, "min": 0.0, "max": 1.0, "metric": "CP trung bình tích trữ", "reason": "Tổng tấn công"},
+      "tacticCooldown": {"value": 50.0, "min": 45.0, "max": 60.0, "metric": "Số lần đổi mỗi trận; tỷ lệ thắng sau khi đổi", "reason": ""},
+      "tacticTransition": {"value": 5.0, "min": 3.0, "max": 8.0, "metric": "Sát thương mất trong lúc chuyển", "reason": "Cái giá của việc đổi"}
+    },
+    "economy": {
+      "baseIncome": {"value": 1.0, "min": 1.0, "max": 1.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Thu nhập khi chưa có cứ điểm"},
+      "perPoint": {"value": 0.25, "min": 0.25, "max": 0.25, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Như hiện tại; chỉnh theo dữ liệu game"},
+      "groundCap": {"value": 32.0, "min": 32.0, "max": 32.0, "metric": "FPS ở trần quân", "reason": "Không chiến thuật nào được nới"},
+      "airCap": {"value": 6.0, "min": 6.0, "max": 6.0, "metric": "FPS ở trần quân", "reason": ""},
+      "stockCap": {"value": 30.0, "min": 30.0, "max": 30.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Chỉ huy Vault: 45"},
+      "attackThreshold": {"value": 1.2, "min": 1.2, "max": 1.2, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Tỷ lệ sức mạnh ta / địch tối thiểu"},
+      "useOrLoseThreshold": {"value": 0.9, "min": 0.9, "max": 0.9, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Khi đã chạm trần quân và CP đầy"},
+      "useOrLoseRamp": {"value": 30.0, "min": 30.0, "max": 30.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Từ ngưỡng mặc định xuống ngưỡng thấp nhất"},
+      "stockCapVault": {"value": 45.0, "min": 45.0, "max": 45.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Chỉ huy Vault: 45"},
+      "escalation": [
+        {"value": 30.0, "min": 30.0, "max": 30.0, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Các bậc sau: khoảng 50, 70, 90 s (bảng luật bên dưới)"},
+        {"value": 50.0, "min": 50.0, "max": 50.0, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Các bậc sau: khoảng 50, 70, 90 s (bảng luật bên dưới)"},
+        {"value": 70.0, "min": 70.0, "max": 70.0, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Các bậc sau: khoảng 50, 70, 90 s (bảng luật bên dưới)"},
+        {"value": 90.0, "min": 90.0, "max": 90.0, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Các bậc sau: khoảng 50, 70, 90 s (bảng luật bên dưới)"}
+      ],
+      "armyBands": [
+        {"value": 1.0, "min": 1.0, "max": 1.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Thu nhập đầy đủ", "from": 0.0, "to": 0.5},
+        {"value": 0.9, "min": 0.85, "max": 1.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Bắt đầu giảm nhẹ (thử 0,85–1,0)", "from": 0.5, "to": 0.75},
+        {"value": 0.8, "min": 0.65, "max": 0.95, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Khởi điểm 0,80, chỉ là giá trị đầu; mô phỏng thử 0,65–0,95 và đo vòng lặp nhiều quân → ít thu nhập → quân chết → thu nhập tăng", "from": 0.75, "to": 1.0}
+      ],
+      "finalPhase": {"value": 120, "min": 120, "max": 120, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Chế độ giao tranh có pha cuối (ví dụ 2 phút cuối, điểm từ cứ điểm ×2) để trận luôn kết thúc."},
+      "finalPhaseScale": {"value": 2, "min": 2, "max": 2, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Chế độ giao tranh có pha cuối (ví dụ 2 phút cuối, điểm từ cứ điểm ×2) để trận luôn kết thúc."}
+    }
+  },
+  // </generated ai>
   "generals": {
     "varga": { "elites": ["Tank", "Heavy"], "deck": ["armored_bulldozer"] },
     "orlov": { "elites": ["Artillery"] },

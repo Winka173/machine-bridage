@@ -94,3 +94,14 @@ E, F; pass 5: H, I, K). Pass 6's measuring waits for the owner.
 
 Push, then write a short state note at the end of this file (`## Cloud state <date>`: branch head, passes done, what
 waits for the local session, the balance.json keys changed) so the local lead can merge and continue.
+
+## Cloud state 2026-10-02
+
+- Branch `cloud/p28-sim`, head: see `git log origin/cloud/p28-sim -1` (the commit after "Prompt 28 pass 1 (Sim)").
+- Done: pass 1 Sim part (A World Model, L frame + L.3 sweep tool, N per-layer RNG, the xlsx generator). DECISIONS "28 1".
+- Compile check: `dotnet build Tools/simbuild/Sim.csproj` clean (Sim only; tests are not compiled in the cloud).
+- Waits for the local session: CatalogCheck and EditMode suite (new `WorldModelTests`; `AiParamSweep` is Explicit),
+  the hooks in `Docs/ai/LOCAL_TODO.md`, J viewer.
+- balance.json keys added: `ai.world.*`, `ai.params.*` (21), `ai.economy.*` (generated block before `"generals"`); no
+  existing value changed.
+- Next: pass 2 (B commander, C squads) reading `world.Intel` and `Catalog.Ai`.
