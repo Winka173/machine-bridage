@@ -1714,6 +1714,27 @@
     "traffic_light: bytes only",
     "volcanic_cliff: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "jungle_tree_b",
+    "jungle_tree_c",
+    "lava_vent",
+    "obsidian_spire",
+    "parked_jet",
+    "parking_garage",
+    "radar_dome",
+    "revetment",
+    "runway_light",
+    "skyscraper",
+    "stilt_hut",
+    "temple_ruin",
+    "traffic_light",
+    "volcanic_cliff"
+   ],
+   "reason": "merge of feature/p27-wave8b6",
+   "changes": []
   }
  ],
  "models": {
