@@ -49,6 +49,7 @@ RULES = {
     'cityBlackout': 'the city_blackout event (prompt 31 L3): night falls and the towers on the grid shut down, both sides',
     'behemothOurs': "the escorted Behemoth is Mara's, a placed ally (convoy): the escort's loss rule; it holds on the order Defend",
     'hawkWingman': "Hawk's fighter is a placed ally under the allied AI and the general order; MissionMode loses the mission if it falls",
+    'maraBehemoth': "Mara's repainted Behemoth (mara_behemoth) is a placed ally under the allied AI and the general order",
 }
 
 # The sheet's rules not in effect yet, and why (the report and DECISIONS list them).
@@ -167,6 +168,16 @@ DECKS = {
                   'shorad_vehicle': 'aa_vehicle'},
         allies=[{'def': 'fighter_jet', 'x': -92, 'z': -92, 'heading': 45, 'name': 'hawk_jet', 'lossIfDestroyed': True}],
         rules=['hawkWingman'], status='MAKE_LATER'),
+    # c12m03 (the last Behemoth works): Mara's Behemoth, repainted, fights beside the brigade (placed ally, allied AI, the
+    # general order: Attack at Varga's HQ, Defend by our camp); the Duel objective kept; not lost if it falls (the sheet asks
+    # nothing harder than c6m03). Only the mobile repair vehicle is locked: loaned.
+    'c12m03': dict(
+        vehicles=['main_battle_tank', 'bmpt', 'tank_destroyer', 'mobile_repair_vehicle', 'ammo_carrier', 'mlrs', 'sam_launcher', 'engineer_vehicle'],
+        supports=['repair_drop', 'artillery_barrage'],
+        loaned=['mobile_repair_vehicle'],
+        replaced={},
+        allies=[{'def': 'mara_behemoth', 'fallback': 'behemoth', 'x': -96, 'z': -88, 'heading': 45, 'name': 'behemoth_mara_repainted'}],
+        rules=['maraBehemoth'], status='MAKE_LATER'),
 }
 
 
