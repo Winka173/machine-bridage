@@ -1,0 +1,192 @@
+# Chapter 6 · Counterstrike (act 2). Enemy general: Varga. Arc: Hegemon strikes back at what we took; Brandt comes
+# over; our own Behemoth runs; the Hollow Dam ceasefire. Threads: Thorne late again at the dam (logged, no
+# conclusion); the only time Kade and Varga speak as men; Aurel's orders, not Varga's.
+
+@c6m01 main=khai
+mission_start | varga | 1 | Các anh lấy pháo đài của ta. Ta tới để lấy lại. || You took my fortress. I have come to collect it.
+mission_start | khai | 1 | Nó chưa bao giờ là của ông. Giữ tường. || It was never yours. Hold the walls.
+event_triggered | brandt | 2 | Tôi xây những bức tường này. Varga sẽ đánh cửa bắc trước, tôi biết. || I built these walls. Varga hits the north gate first; I know it.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Chúng đánh từ mọi hướng, nhưng tường vẫn đứng. || Halfway. They come from every side, and the walls still stand.
+hq_below_50 | mai | 2 | Sở chỉ huy dưới một nửa. Tôi đưa đội sửa vào, giữ chúng tránh xa sân trong. || The HQ is under half. My repair crew is going in; keep them off the inner yard.
+critical_failure_imminent | khai | 1 | Sở chỉ huy sắp sập. Mọi thứ về sân trong, ngay. || The HQ is about to fall. Everything to the inner yard, now.
+victory | khai | 1 | Ashfield vẫn là của ta. Lần thứ hai. || Ashfield is still ours. Twice now.
+defeat | varga | 1 | Pháo đài đã về với chủ của nó. || The fortress is back with its owner.
+
+@c6m13 main=brandt
+mission_start | brandt | 1 | Varga tới bằng đường phía đông. Lần nào cũng vậy. Xây tường ở đó. || Varga comes by the east road. He always does. Walls there.
+time@25 | khai | 2 | Thiếu tá, tháng trước ông còn bắn vào ta. || Major, last month you were shooting at us.
+time@30 | brandt | 2 | Tháng trước tôi bắn nhầm hướng. || Last month I was facing the wrong way.
+point_captured:town | brandt | 3 | Quảng trường là của ta. Thả tháp ở góc đông nam, tầm bắn phủ cả đường. || The square is ours. Towers at the south-east corner; they cover the whole road.
+event_triggered | linh | 2 | Đợt phản công đang tới, đúng đường phía đông như thiếu tá nói. || The counterattack is coming, by the east road, just as the Major said.
+objective_progress:1/2 | brandt | 2 | Nửa tường đã lên. Cho đội công binh thêm một phút, tôi không xây tường vội. || Half the wall is up. Give the engineers a minute; I do not build walls in a hurry.
+victory | khai | 1 | Tường tốt, thiếu tá. || Good walls, Major.
+victory | brandt | 1 | Loại duy nhất tôi xây, đại tá. || The only kind I build, Colonel.
+defeat | brandt | 1 | Tường chưa xong đã đổ. Lỗi của tôi. Tôi sẽ xây lại. || The wall fell before it was finished. My fault. I will build again.
+
+@c6m02 main=khai
+mission_start | khai | 1 | Không ai bị bỏ lại. Giữ hồ băng tới khi chiếc xe cuối rời đi. || Nobody is left behind. Hold the lake until the last truck leaves.
+time@20 | hq | 2 | Tám xe chở dân làng, cách nhau vài giây. Cần ít nhất năm chiếc tới trại. || Eight trucks of villagers, a few seconds apart. Five must reach the camp.
+time@80 | linh | 2 | Một nửa số xe đã ra. Varga đang ép mạnh hơn. || Half the trucks are out. Varga is pushing harder.
+event_triggered | brandt | 2 | Hàng hào cũ của tôi ở phía tây vẫn còn. Dùng nó để chặn đường. || My old trench line to the west is still there. Use it to block the road.
+critical_failure_imminent | khai | 1 | Thêm một xe là không đủ. Đi cùng chiếc cuối, sát bên nó. || One more truck and it is not enough. Stay with the last one, right beside it.
+victory | khai | 1 | Dân làng đã xuống núi. Họ sẽ có lửa và bánh mì tối nay. || The villagers are down the mountain. They will have fire and bread tonight.
+defeat | khai | 1 | Không đủ xe thoát ra. Tôi muốn danh sách những người còn ở trên đó. || Not enough trucks got out. I want the names of everyone still up there.
+
+@c6m16 main=khai
+mission_start | khai | 1 | Ta đã lấy thung lũng này một lần. Ta lấy lại lần nữa. || We took this valley once. We take it again.
+point_captured:town | linh | 3 | Ngã tư lại là của ta. Biển chỉ đường ta cắm hồi đầu vẫn còn đó. || The crossroads is ours again. The signpost we put up in the first days is still there.
+point_lost | khai | 3 | Chúng lấy lại một điểm. Varga không bỏ đất đã chiếm. || They took one back. Varga does not give ground he has taken.
+event_triggered | hq | 2 | Sương tan rồi. Hai bên sẽ thấy nhau rõ hơn, cẩn thận ở chỗ trống. || The fog has lifted. Both sides see more now; careful in the open.
+objective_progress:last | khai | 2 | Còn trang trại. Lần này giữ nó cho tới khi xong chiến tranh. || Only the farm. This time we keep it until the war is over.
+victory | varga | 1 | Các anh tranh từng cánh đồng, đại tá. Ta tôn trọng điều đó. || You fight for every field, Colonel. I respect that.
+victory | khai | 1 | Greenvale trở lại. Đừng để mất nó lần thứ ba. || Greenvale is back. We do not lose it a third time.
+defeat | varga | 1 | Thung lũng này đổi chủ nhiều lần rồi. Hôm nay nó là của ta. || This valley has changed hands often. Today it is mine.
+
+@c6m11 main=khai
+mission_start | khai | 1 | Giữ các silo đứng vững. Greenvale đã từng nuôi ta. || Keep the silos standing. Greenvale fed us once.
+time@60 | varga | 2 | Lệnh của Aurel, không phải của ta, đại tá. Ta tiếc cho những ổ bánh mì. || Aurel's orders, not mine, Colonel. I am sorry for the bread.
+time@75 | linh | 2 | Ghi nhận: Varga vừa nói ra tên Aurel trên kênh mở. Ông ta không thích lệnh này. || Noted: Varga just named Aurel on an open channel. He does not like this order.
+objective_progress:1/2 | khai | 2 | Nửa cơn bão. Giữ xe giữa đồi và các silo. || Half the storm. Keep the vehicles between the ridge and the silos.
+critical_failure_imminent | khai | 1 | Chỉ còn một công trình. Che nó bằng thân xe nếu phải. || One building left. Cover it with your hulls if you must.
+victory | khai | 1 | Lúa vẫn trong silo. Thung lũng sẽ có ăn qua mùa đông. || The grain is in the silos. The valley will eat this winter.
+defeat | khai | 1 | Silo đã cháy. Ghi lại ai ra lệnh. Sẽ có ngày người đó phải trả lời. || The silos are burning. Write down who gave the order. One day they answer for it.
+
+@c6m03 main=mai
+mission_start | mai | 1 | Nó chạy rồi, đại tá. Chậm, ồn, nhưng chạy được. Giữ nó nguyên vẹn. || She runs, Colonel. Slowly, loudly, but she runs. Keep her in one piece.
+mission_start | varga | 1 | Đó là cỗ máy CỦA TA! Đốt nó đi! || That is MY machine! Burn it!
+time@40 | mai | 2 | Đừng đi sát nó bên trái. Động cơ phụ chưa được che, nó sẽ bắn tung sỏi. || Do not drive on her left. The auxiliary engine is open; she throws gravel.
+event_triggered | brandt | 2 | Hàng phòng thủ của tôi trên đồi sẽ che sườn trái. Đi qua dưới đó. || My line on the hill covers the left flank. Go under it.
+objective_progress:1/2 | mai | 2 | Nửa đường. Nhiệt độ động cơ ổn. Tôi thì không. || Halfway. Engine temperature is fine. Mine is not.
+critical_failure_imminent | mai | 1 | Giáp của nó sắp vỡ. Đứng chắn trước nó, làm ơn! || Her armour is about to give. Stand in front of her, please!
+victory | mai | 1 | Nó tới nơi rồi. Có thể tôi sẽ khóc. Đừng nói với ai. || She made it. I may cry. Do not tell anyone.
+defeat | varga | 1 | Nó về lại với ta, dù là xác. Một cỗ máy luôn nhớ ai đã làm ra nó. || She comes back to me, even as a wreck. A machine remembers who made it.
+
+@c6m05 main=mai
+mission_start | mai | 1 | Họ vá nó lại. Vá vụng. Các tấm giáp sau vẫn là của tôi. || They patched it. Badly. The rear plates are still mine.
+boss_spawn | varga | 1 | Ta đã sửa nó, đại tá. Lần nào ta cũng sửa nó. || I fixed her, Colonel. I always fix her.
+boss_spawn | mai | 1 | Behemoth Mk.II. Nặng hơn, có sưởi cho tuyết. Nhưng các tấm sau vẫn yếu. || Behemoth Mk.II. Heavier, heated for the snow. The rear plates are still weak.
+event_triggered | dahl | 2 | Pháo binh vào vị trí. Tôi cần nó đứng yên mười hai giây. || Artillery in position. I need it standing still for twelve seconds.
+boss_part_destroyed | mai | 2 | Bộ sưởi đã vỡ. Trong tuyết thế này, động cơ của nó sẽ đông dần. || The heater is gone. In this snow its engine will slowly freeze.
+boss_phase_change | mai | 1 | Nó khóa xích để bắn loạt. Giống hệt con ở Red Rock, rời trục nòng! || It locks its tracks to fire a barrage. Same as Red Rock; off its line!
+superweapon_warning | mai | 1 | Loạt đạn lớn sắp tới. Ra khỏi vùng đỏ, nhanh lên! || Heavy salvo incoming. Out of the red, quickly!
+event_triggered | hq | 2 | Bão tuyết. Tầm nhìn giảm mạnh; nó cũng không thấy ta rõ hơn. || Snowstorm. Visibility is falling; it cannot see us any better.
+boss_hp:50 | khai | 4 | Một nửa. Đánh vào phía sau, đúng chỗ Mara nói. || Half. Hit the back, where Mara said.
+boss_hp:25 | dieuhau | 4 | Nó đang bốc hơi! Như cái ấm nước khổng lồ! || It is steaming! Like a giant kettle!
+hq_below_50 | mai | 2 | Trại đang bị nó nã. Kéo nó vào khe núi, nó không quay được ở đó. || It is shelling the camp. Draw it into the gully; it cannot turn in there.
+victory | varga | 1 | Lần này ta sẽ không sửa nó nữa. || I will not fix her this time.
+victory | mai | 1 | Nghỉ đi. Lần này thì nghỉ hẳn. || Rest. This time for good.
+defeat | varga | 1 | Thép của ta đứng trên tuyết của các anh. Về đi, đại tá. || My steel stands on your snow. Go home, Colonel.
+
+@c6m12 main=linh
+mission_start | linh | 1 | Ba toán quan sát, đã đánh dấu. Không có họ, Charybdis đổ bộ mù. || Three spotter teams, marked. Without them Charybdis lands blind.
+time@25 | brandt | 2 | Tìm dưới mỏm đá thứ ba. Nếu là tôi, tôi sẽ ngồi đó. || Look under the third rock shelf. That is where I would sit.
+objective_progress:1/3 | linh | 2 | Một toán đã câm. Máy bộ đàm của họ đang gọi tàu đổ bộ. || One team silenced. Their radio was calling the landing craft.
+event_triggered | hq | 2 | Giông đang tới từ biển. Mưa sẽ làm ta chậm, nhưng cũng làm ống nhòm của họ mù. || A storm front off the sea. The rain slows us, and blinds their binoculars.
+objective_progress:last | linh | 2 | Còn một toán, dưới mỏm đá thứ ba. Thiếu tá Brandt nói đúng. || One team left, under the third shelf. Brandt was right.
+victory | linh | 1 | Bãi biển đã mù. Charybdis sẽ phải đổ bộ mà không có mắt. || The beach is blind. Charybdis will have to land without eyes.
+defeat | linh | 1 | Họ vẫn còn trên vách đá. Charybdis sẽ biết chính xác ta ở đâu. || They are still on the bluffs. Charybdis will know exactly where we are.
+
+@c6m08 main=linh
+mission_start | linh | 1 | Charybdis, trên mặt nước. Nó đang tới bãi biển của ta. || Charybdis, on the water. It is coming for our beach.
+boss_spawn | mai | 1 | Tàu đệm khí đổ bộ. Váy hơi ở hai bên là chỗ yếu, xé nó ra và nó ì lại. || A landing hovercraft. The skirts are its weak point; tear them and it bogs down.
+time@30 | khai | 2 | Bãi biển này là nơi ta đổ bộ. Không ai đổ bộ lên nó nữa. || This is the beach we landed on. Nobody lands on it again.
+boss_part_destroyed | mai | 2 | Một bên váy hơi đã rách. Nó đang chạy lệch, đánh vào đuôi. || One skirt is torn. It is running crooked; hit its stern.
+boss_phase_change | linh | 1 | Nó hạ cửa mũi. Xe tăng của Varga sắp ra! Đánh ngay khi cửa mở! || It is lowering its bow door. Varga's tanks are coming out! Hit them as it opens!
+superweapon_warning | mai | 1 | Nó bắn rocket trải thảm lên bờ. Rời vùng đỏ trên cát! || It is carpeting the beach with rockets. Off the red sand!
+boss_hp:50 | dieuhau | 4 | Một nửa! Nó bắt đầu ngập nước rồi! || Half! It is starting to take on water!
+boss_hp:25 | khai | 4 | Nó sắp chìm. Đừng để nó tới được bãi cát. || It is going down. Do not let it reach the sand.
+event_triggered | hq | 2 | Đoàn đổ bộ của Accord đang tới hỗ trợ. Mở chỗ trên bãi cho họ. || An Accord landing party is coming in to help. Make room on the beach.
+hq_below_50 | mai | 2 | Sở chỉ huy ở bãi biển đang dính đạn. Đẩy nó ra xa bờ! || The beach HQ is taking hits. Push it off the shore!
+victory | khai | 1 | Bãi biển vẫn là của ta. || The beach stays ours.
+victory | linh | 1 | Charybdis chìm cùng cả đại đội thiết giáp. Varga mất cánh quân biển. || Charybdis sank with a whole armour company. Varga loses his sea flank.
+defeat | linh | 1 | Nó đã đổ bộ. Xe tăng của Varga đang trên bãi biển đầu tiên của ta. || It has landed. Varga's tanks are on our first beach.
+
+@c6m07 main=khai
+mission_start | khai | 1 | Phá vòng vây. Sở chỉ huy của họ trước, mọi thứ khác sau. || Break the ring. Their HQ first, everything else second.
+time@15 | hq | 2 | Dân quân thị trấn gọi: bảy xe vây quanh, đã đánh dấu. Họ còn ít đạn. || Town militia calling: seven vehicles in the ring, marked. They are short of ammunition.
+event_triggered | brandt | 2 | Tôi biết thị trấn này. Hàng tường đá phía nam che được xe khi tiến vào. || I know this town. The stone wall on the south side covers vehicles going in.
+objective_progress:1/2 | khai | 2 | Vòng vây thủng một nửa. Giờ bảo vệ những người trong thị trấn trước. || The ring is half broken. Protect the people inside first now.
+critical_failure_imminent | khai | 1 | Sở chỉ huy dân quân sắp sập. Mọi thứ vào xe đang nã nó. || The militia HQ is about to fall. Everything on whatever is shelling it.
+victory | khai | 1 | Vòng vây tan. Giờ mới đuổi theo, không phải trước. || The ring is broken. Now we chase, not before.
+defeat | khai | 1 | Thị trấn thất thủ. Đưa những ai còn sống ra ngoài. || The town has fallen. Get out whoever is left alive.
+
+@c6m04 main=linh
+mission_start | linh | 1 | Trinh sát của Varga đã ở trạm thủy điện. Hollow Dam thắp sáng nửa bờ biển. || Varga's scouts are at the power station. The Hollow Dam lights half the coast.
+point_captured:west | linh | 3 | Trạm thủy điện là của ta. Đèn của nửa bờ biển giờ do ta giữ. || The power station is ours. Half the coast's lights are in our hands now.
+event_triggered | hq | 2 | Sương từ hồ đang lan xuống thung lũng. Tầm nhìn giảm. || Mist from the reservoir rolling into the valley. Visibility dropping.
+point_lost | linh | 3 | Chúng lấy lại cầu đường bộ. Không có cầu thì xe nặng không qua được. || They retook the road bridge. Without it, heavy armour cannot cross.
+objective_progress:last | khai | 2 | Còn chỗ lội. Chiếm nó và thung lũng đập là của ta. || The ford is left. Take it and the dam valley is ours.
+victory | khai | 1 | Ta tới đập trước. Varga sẽ phải đánh lên dốc. || We reached the dam first. Varga will have to attack uphill.
+defeat | linh | 1 | Varga giữ đập. Nửa bờ biển giờ sáng theo ý ông ta. || Varga holds the dam. Half the coast is lit at his pleasure now.
+
+@c6m06 main=khai
+mission_start | khai | 1 | Cây cầu, bốn phút. Không ai qua được. || The bridge, four minutes. Nobody crosses.
+event_triggered | linh | 2 | Varga đang dàn quân trên bờ bên kia. Ông ta tự mình chỉ huy. || Varga is forming up on the far bank. He is commanding in person.
+objective_progress:1/2 | khai | 2 | Hai phút. Cầu vẫn của ta. Giữ đầu cầu, đừng ra giữa nhịp. || Two minutes. The bridge is still ours. Hold the bridgehead; stay off the span.
+event_triggered | hq | 2 | Một đội đánh phá đang nhắm vào kho của ta phía sau. Đưa hai xe về. || A raiding party is going for our depot behind us. Send two vehicles back.
+point_lost | khai | 3 | Chúng giữ đầu cầu. Đẩy chúng xuống sông, ngay. || They hold the bridgehead. Push them into the river, now.
+victory | khai | 1 | Cây cầu vẫn đứng và vẫn là của ta. Thiết giáp của Varga phải đi vòng. || The bridge stands, and it is ours. Varga's armour has to go round.
+defeat | khai | 1 | Mất cầu. Thiết giáp của Varga đang qua sông. || The bridge is lost. Varga's armour is crossing.
+
+@c6m09 main=khai
+mission_start | varga | 1 | Mỗi chiếc xe tăng các anh đốt, ta đóng thêm hai. || Every tank you burn, I build two.
+time@20 | brandt | 2 | Các vị trí cũ của tôi. Pháo chống tăng ở hàng thứ hai, không phải hàng đầu. || My old positions. The anti-tank guns are in the second row, not the first.
+general_tactic_change | linh | 3 | Varga chuyển sang phòng thủ chiều sâu. Ông ta để hàng đầu cho ta lấy. || Varga has gone to defence in depth. He is letting us have the first row.
+expensive_unit_lost | khai | 3 | Mất xe nặng ở hàng thứ hai. Đúng như Brandt nói. Pháo trước, xe tăng sau. || A heavy lost at the second row. As Brandt said. Guns first, tanks after.
+event_triggered | hq | 2 | Bão tuyết. Pháo của chúng sẽ bắn mù trong vài phút. || Snowstorm. Their guns fire blind for a few minutes.
+victory | varga | 1 | Lùi về đập. Moloch sẽ kết thúc chuyện này. || Fall back to the dam. Moloch will finish this.
+victory | linh | 1 | Sở chỉ huy của tướng Thorne im lặng một giờ. Pháo của Varga cũng vậy. Cùng một giờ. || Thorne's HQ went quiet for an hour. So did Varga's guns. The same hour.
+defeat | varga | 1 | Trại mùa đông của ta đứng vững. Mùa đông này là của ta, đại tá. || My winter camp stands. This winter is mine, Colonel.
+
+@c6m15 main=linh
+mission_start | linh | 1 | Quân của tướng Thorne im lặng từ một giờ trước. Hoàn toàn im lặng. || Thorne's army went quiet an hour ago. Completely quiet.
+mission_start | khai | 1 | Ông ấy hứa chiếm chỗ lội từ phía bắc. Ta không đợi. Lấy cả ba. || He promised to take the ford from the north. We do not wait. Take all three.
+ally_late | linh | 2 | Cánh quân Thorne vẫn chưa tới chỗ lội. Họ báo đang đổi hướng theo tin tình báo mới. || Thorne's column is not at the ford. They say new intelligence changed their route.
+point_captured | linh | 3 | Một điểm là của ta. Không có dấu xích nào từ phía bắc. || One point ours. No tracks from the north at all.
+objective_progress:last | khai | 2 | Còn một điểm. Làm xong việc của cả hai đạo quân. || One left. We finish the work of two armies.
+victory | linh | 1 | Đại tá, có một tin từ sở chỉ huy của Thorne, trên băng tần của Hegemon. Tôi ghi lại. || Colonel, a message from Thorne's HQ, on a Hegemon band. I am logging it.
+victory | khai | 1 | Ghi lại. Chưa nói với ai. Ta cần thêm hơn một tin nhắn. || Log it. Tell nobody yet. We need more than one message.
+defeat | linh | 1 | Đường tràn vẫn trong tay Varga. Và chỗ lội vẫn trống. || The spillway road is still Varga's. And the ford is still empty.
+
+@c6m14 main=khai
+time@45 | linh | 2 | Drone đang tới. Không phải của Varga: lưới an ninh của Aurel. || Drones inbound. Not Varga's: Aurel's security net.
+time@60 | varga | 2 | Đó không phải của ta, đại tá. Ta không thể bắn chúng mà không phá lời hứa. || Those are not mine, Colonel. I cannot fire on them without breaking my word.
+time@65 | khai | 2 | Vậy để chúng cho chúng tôi. Ông giữ lời, chúng tôi giữ đường. || Then leave them to us. You keep your word; we keep the road.
+objective_progress:1/2 | hq | 2 | Nửa số xe đã qua cầu. Đập đang nứt thêm, nhanh lên. || Half the trucks are over the bridge. The dam is cracking further; hurry.
+event_triggered | hq | 2 | Một kho thả dù đang rơi gần đường đi. Ai lấy trước cũng được, miễn là không bắn. || A supply drop coming down near the road. Whoever gets there first, no shooting.
+critical_failure_imminent | khai | 1 | Thêm một xe là không đủ. Che chiếc cuối khỏi drone. || One more truck and it is not enough. Cover the last one from the drones.
+victory | varga | 1 | Trưa rồi, đại tá. Đó là một vinh dự. Giờ ta lại là kẻ thù. || Noon, Colonel. It was an honour. Now we are enemies again.
+victory | khai | 1 | Sáng nay ông là người lính, tướng quân. || This morning you were a soldier, General.
+victory | varga | 1 | Sáng mai thì không. || Tomorrow morning I will not be.
+defeat | khai | 1 | Không đủ xe qua cầu. Tôi muốn biết tên từng người còn lại dưới đập. || Not enough trucks crossed. I want every name still below the dam.
+
+@c6m10 main=khai
+mission_start | khai | 1 | Con đập, căn cứ, con quái. Theo đúng thứ tự đó. Giữ. || The dam, the base, the monster. In that order. Hold.
+time@20 | varga | 2 | Đây là lá bài cuối của ta, đại tá. Ta chơi nó đến cùng. || This is my last card, Colonel. I play it to the end.
+phase_start:2 | khai | 1 | Đợt đầu đã bị chặn. Giờ phá căn cứ tiến công của chúng dưới chân đập. || The first wave is stopped. Now break their forward base below the dam.
+ally_late | hung | 2 | Đường bị chặn, đại tá. Các con của ta đang chạy hết sức. Giữ thêm chút nữa. || The roads were blocked, Colonel. My lads are running flat out. Hold a little longer.
+phase_start:4 | linh | 1 | Moloch đang lên đỉnh đập. Một nhà máy trên xích, nó đóng xe tăng khi đang chạy. || Moloch is climbing to the crest. A factory on tracks; it builds tanks as it rolls.
+boss_spawn | mai | 1 | Moloch. Băng chuyền lắp ráp ở hai bên. Phá băng chuyền là nó ngừng đẻ xe. || Moloch. Assembly lines on both sides. Break them and it stops making tanks.
+boss_part_destroyed | mai | 2 | Một băng chuyền đã cháy. Nó chỉ còn đóng được nửa số xe. || One assembly line is burning. It can only build half as many now.
+superweapon_warning | mai | 1 | Nó chuẩn bị nã cả dàn pháo lên đỉnh đập. Rời vùng đỏ! || It is about to fire everything at the crest. Out of the red!
+boss_hp:50 | dieuhau | 4 | Một nửa! Khói đen bốc ra từ ống khói của nó! || Half! Black smoke out of its stacks!
+ally_arrives | hung | 2 | Quân của Thorne đã tới, các con. Xin lỗi vì muộn. Giờ để ta lo cánh trái. || Thorne's army is here, lads. Sorry we are late. Leave the left to me now.
+boss_hp:25 | khai | 4 | Gần xong. Đừng để nó tới được đập. || Nearly there. Do not let it reach the dam.
+phase_start:5 | khai | 1 | Moloch đã gục. Trụ lại, đợt phản công cuối cùng của Varga đang tới. || Moloch is down. Hold; Varga's last counterattack is coming.
+victory | khai | 1 | Đập vẫn đứng. Đợt phản công đã gãy, lữ đoàn. || The dam holds. The counterstrike is broken, Brigade.
+victory | linh | 1 | Quân Thorne đã ở đây. Muộn, lại một lần nữa. || Thorne's army is here. Late, again.
+defeat | varga | 1 | Đập là của ta. Nửa bờ biển sẽ tối đêm nay. || The dam is mine. Half the coast goes dark tonight.
+
+@c6s1 main=dieuhau
+mission_start | dieuhau | 1 | Chúng bay thấp từ phía bắc. Cứ để chúng tới. Mười bốn chiếc trước bình minh. || They come in low from the north. Let them. Fourteen before dawn.
+objective_progress:1/2 | dieuhau | 2 | Bảy chiếc! Phi công đêm của Varga không giỏi bằng phi công ngày. || Seven! Varga's night pilots are not as good as his day ones.
+objective_progress:last | dieuhau | 2 | Còn một chiếc, đang lượn quanh tháp pháo đài. Bật đèn pha lên! || One more, circling the fortress tower. Searchlights on!
+victory | dieuhau | 1 | Mười bốn. Pháo đài ngủ ngon tối nay. Tôi thì không, tôi còn đang phấn khích. || Fourteen. The fortress sleeps well tonight. Not me, I am still buzzing.
+defeat | dieuhau | 1 | Mất phòng không cuối. Pháo đài sẽ bị ném bom tới sáng. || Last flak gone. The fortress gets bombed till morning.
+
+@c6s2 main=linh
+mission_start | linh | 1 | Ba lần nhìn cho đội kỹ sư. Nhanh lên, Varga không xa đâu. || Three looks for the engineers. Quickly, Varga is not far.
+point_captured | mai | 3 | Bê tông ở trạm thủy điện có vết nứt cũ, đã được trám. Nó chịu được, tạm thời. || The concrete at the power station has old cracks, filled. It holds, for now.
+event_triggered | hq | 2 | Mưa bắt đầu. Mực nước hồ sẽ lên trong vài giờ. || Rain starting. The reservoir will rise within hours.
+victory | mai | 1 | Đập chịu được vây hãm, nếu không ai bắn vào chân nó. Tôi sẽ nhắc mọi người. || The dam can take a siege, if nobody shells its foot. I will remind everyone.
+defeat | linh | 1 | Ta không xem được đập. Ta sẽ đánh mà không biết nó chịu được bao nhiêu. || We could not survey the dam. We fight not knowing how much it can take.
