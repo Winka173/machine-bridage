@@ -17670,3 +17670,19 @@ test or sim run. Code: `Tools/export/core/doc_parts.py` (section list, text fixe
   unedited export gives 0; the demo copies 01 and 02 into temp, edits weapons gun_120mm damage, vehicle light_tank cp and
   02/Xe_suy_ra dps_tren_cp with openpyxl, and gets exactly 2 DECIDE entries (precondition OK) and 1 rejection; no data file
   changes. It is a Python script, not a data file, so the coverage scan of Tools/ is unchanged.
+- **Apply by real key path (lead, 03/10).** `python Tools/balance/p29_apply.py --manifest <manifest_import.json> [--bundles P] --dry-run`
+  (Tools/balance/manifest_apply.py); without --manifest p29_apply is unchanged. A bundle goes only when its Trạng thái
+  is APPLY, and only its rows with status APPLY (DECIDE rows wait); depends_on as in R3. Per row: id_path resolved in the
+  current file (list items by id; a moved field_path is logged), the R2 precondition ALREADY_APPLIED / OK / CONFLICT; a
+  CONFLICT, a type change, an unresolved path or a file outside Assets/*.json drops the whole bundle and writes nothing.
+  The value text is swapped in place (jsonc_edit.value_span, any JSON / JSONC layout), so comments and other bytes stay;
+  after each bundle the file must parse to the old data with only those leaves changed. Log and applied-bundle state sit
+  beside the manifest (`<stem>_apply_log.md`, `<stem>_apply_state.json`); `--root` points at a copy of the tree.
+  campaign.json rows apply but the log says it is generated (Tools/campaign/build_campaign.py): the generator input must
+  change too, or the next build undoes it. This supersedes the 'Apply path' line above (copying into the appendix).
+- **Check.** `python Tools/export/tests/test_manifest_apply.py` (run, PASS) works on a temp copy of balance.json,
+  campaign.json and one map: dry run writes nothing; weapon damage, vehicle hp, a map value and a campaign value land at
+  their id_path with every other line the same; DECIDE skipped, CONFLICT and type change write nothing, ALREADY_APPLIED,
+  depends_on BLOCKED / OK, rerun APPLIED, CLI dry run; the real data hash is unchanged. Nothing was applied to real data.
+- **Owner answers.** Rejecting the named (resolved) columns with a pointer to the raw column is kept; the import .md now
+  says so and gives the apply commands. `Docs/export/*/import/` stays in git as the decision record (not ignored).

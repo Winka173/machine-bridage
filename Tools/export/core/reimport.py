@@ -399,8 +399,13 @@ def write(man: dict, out: Path):
     lines = [f"# Import manifest: {man['source']}", "",
              f"Made {dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()} (UTC) by "
              "`python Tools/export/export.py import <export> --dry-run`; commit " + man["current"]["commit"] + ".",
-             "Nothing was written to the data. Set a bundle's Trạng thái (and its rows' status) to APPLY to accept it; "
-             "the apply path is prompt 29's (Tools/balance/p29_apply.py, see DECISIONS 'pass 9').", ""]
+             "Nothing was written to the data. To accept a change, set its bundle's Trạng thái and its rows' status to "
+             "APPLY in manifest_import.json, then run `python Tools/balance/p29_apply.py --manifest <this json> --dry-run` "
+             "and, when the log says OK, the same without --dry-run (per bundle; OK / ALREADY_APPLIED / CONFLICT; a "
+             "CONFLICT writes nothing).",
+             "Named columns such as 02/Xe base_cp, mau_hp or 01/Vu_khi sat_thuong_moi_phat show the resolved value "
+             "(inheritance and defaults) and are rejected; edit the raw data column next to them (cp, hp, damage), which "
+             "the rejection names.", ""]
     lines += [f"- warning: {w}" for w in man["warnings"]]
     lines += ["", f"Entries: {len(man['rows'])} (bundles {len(man['bundles'])}); rejected: {len(man['rejected'])}; "
               f"cells compared {man['notes']['cells_compared']}, drift {man['notes']['drift_cells']}.", "",

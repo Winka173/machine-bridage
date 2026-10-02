@@ -121,6 +121,41 @@ def fmt(value) -> str:
     raise TypeError(type(value))
 
 
+def value_span(text: str, path: tuple) -> tuple[int, int]:
+    """(start, end) of the value text at a path of keys and list indices, from the file's root (any JSON / JSONC
+    layout): the import manifest swaps exactly that text, so comments and every other byte stay."""
+    i = _skip(text, 0)
+    for seg in path:
+        c = text[i]
+        if isinstance(seg, int):
+            if c != "[":
+                raise KeyError(f"[{seg}] on a non-list")
+            end = _match(text, i)
+            j, idx = i + 1, 0
+            while True:
+                j = _skip(text, j)
+                if j >= end:
+                    raise KeyError(f"index {seg} out of range")
+                if text[j] == ",":
+                    j += 1
+                    continue
+                if idx == seg:
+                    i = j
+                    break
+                j = _value_end(text, j)
+                idx += 1
+        else:
+            if c != "{":
+                raise KeyError(f"key {seg!r} on a non-object")
+            for k, ks, vs, ve in Entry(text[i:_match(text, i) + 1])._keys():
+                if k == seg:
+                    i += vs
+                    break
+            else:
+                raise KeyError(f"no key {seg!r}")
+    return i, _value_end(text, i)
+
+
 class Entry:
     """One object's text (its braces included), edited field by field at its own depth."""
 

@@ -3,6 +3,7 @@
     python Tools/balance/p29_apply.py --dry                       # checks every bundle, writes nothing but the log
     python Tools/balance/p29_apply.py --bundles "B0-*"            # applies the matching bundles that pass
     python Tools/balance/p29_apply.py --bundles "B1-*,E1" --dry
+    python Tools/balance/p29_apply.py --manifest <import manifest.json> --dry-run   # an Excel import (manifest_apply.py)
 
 Rules (the sheet "Quy tắc"): only FIX and APPLY rows change data (R1); a row whose text says "Xem lại" waits for the owner;
 before applying, each row is ALREADY_APPLIED (current == new), OK (current == expected_before within tolerance) or
@@ -415,8 +416,17 @@ def run(patterns, dry):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--bundles", default="*")
-    ap.add_argument("--dry", action="store_true")
+    ap.add_argument("--dry", "--dry-run", dest="dry", action="store_true")
+    ap.add_argument("--manifest", help="an import manifest (Tools/export export.py import): applied by real key paths "
+                                       "(manifest_apply.py), not the C01 table")
+    ap.add_argument("--root", help="--manifest only: read and write the data files under this copy of the repository")
     args = ap.parse_args()
+    if args.manifest:
+        import manifest_apply  # noqa: WPS433
+        manifest_apply.run(args.manifest, args.bundles.split(","), args.dry, args.root)
+        return
+    if args.root:
+        ap.error("--root goes with --manifest")
     if not os.path.exists(LOG):
         with open(LOG, "w", encoding="utf-8", newline="\n") as f:
             f.write("# Prompt 29 apply log (Tools/balance/p29_apply.py)\n")
