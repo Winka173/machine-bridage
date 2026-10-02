@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Full fix prompt L2: calibre and warhead apart (caliberMm / warheadKg / powerKw / energyMj on 224 weapon lines, Tools/balance/fix_calibre.py); the card prints "152 mm", "warhead 400 kg", "300 kW" from the data, never the digits of an id (every prompt 26 gun read "26 mm"); "Main gun" only on the main mount, lasers and railguns named as such (DECISIONS "Sửa lỗi tổng hợp L2").
 - Full fix prompt L1: the full weapon audit (Tools/balance/full_weapon_audit.py, Docs/checks/full_weapon_audit.md): every weapon of every boss, player vehicle, tower and structure against the wave 1 sheet and the real rates (sources in the tool), with the six flags; before: bosses 25 too fast, 9 too slow, 1 unit error, 47 off wave 1, 7 off family, 65 display (DECISIONS "Sửa lỗi tổng hợp L1").
 - Full fix prompt L0: precheck of the prompts that ran (26-34), the boss weapons' state, where the card's calibre and "every X s" come from, audio, VFX, flares and the prompt 27 models (Docs/checks/fix_precheck.md; DECISIONS "Sửa lỗi tổng hợp L0").
 - RED map fixes: the 8 maps with a sealed walkable pocket fixed (Tools/maps/red_fixes.py, run by build_maps.py and longmap.py): Border Bridge (Conquest, Sandbox) and Ember Ridge (Conquest, Sandbox, long) opened by dropping a wreck (and moving one rock), Open-Pit Mine Siege by dropping a sandbag line, the fortress back corners of Coral Isles and Swamp Siege filled with revetments; map audit 8 RED -> 0, access 73/75 as before.

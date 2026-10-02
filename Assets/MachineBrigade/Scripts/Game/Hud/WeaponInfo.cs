@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using MachineBrigade.Sim.Content;
 
 namespace MachineBrigade.Game.Hud
@@ -7,9 +6,10 @@ namespace MachineBrigade.Game.Hud
     /// <summary>
     /// How a weapon is named and drawn in unit details: a kind (main gun, machine gun,
     /// autocannon, howitzer, mortar, rockets, anti-tank or anti-air missile, flamethrower, bombs,
-    /// kamikaze drones) with its calibre when the weapon's id carries one, what it can hit, and
-    /// whether it runs out of rounds. Worked out from the weapon's data, so new weapons need no
-    /// new strings.
+    /// kamikaze drones, laser, railgun) with its calibre, warhead, power or energy from the data's own
+    /// fields (full fix L2: never the digits of the id, which read "26 mm" on every prompt 26 weapon),
+    /// what it can hit, and whether it runs out of rounds. "Main gun" is the main mount's only; a gun
+    /// on another mount is a "Gun". Worked out from the weapon's data, so new weapons need no new strings.
     /// </summary>
     public static class WeaponInfo
     {
@@ -33,24 +33,38 @@ namespace MachineBrigade.Game.Hud
             public int Ammo { get; }
         }
 
-        private static readonly Regex Calibre = new(@"(\d{2,3})");
-
-        /// <summary>Every weapon a vehicle carries, main gun first.</summary>
+        /// <summary>Every weapon a vehicle carries, main gun first (only the first mount is the "Main gun").</summary>
         public static List<Line> Of(VehicleDef def)
         {
             var lines = new List<Line>(def.Mounts.Count);
-            foreach (var mount in def.Mounts) lines.Add(Describe(mount.Weapon));
+            for (var i = 0; i < def.Mounts.Count; i++) lines.Add(Describe(def.Mounts[i].Weapon, i == 0));
             return lines;
         }
 
-        public static Line Describe(WeaponDef w)
+        /// <summary>
+        /// Full fix L2: the weapon's size in words from its data: "152 mm" (guns, rockets), "warhead 400 kg" (missiles,
+        /// bombs, drones), "300 kW" (lasers), "64 MJ" (railguns); empty for a flamethrower or a close-in tool.
+        /// </summary>
+        public static string Spec(WeaponDef w)
         {
-            var id = w.Id;
+            var c = Strings.Culture;
+            if (w.CaliberMm > 0f) return w.CaliberMm.ToString("0.##", c) + " mm";
+            if (w.WarheadKg > 0f) return Strings.Format("wpn.warhead", ("kg", w.WarheadKg.ToString("0.##", c)));
+            if (w.PowerKw > 0f) return w.PowerKw.ToString("0.##", c) + " kW";
+            if (w.EnergyMj > 0f) return w.EnergyMj.ToString("0.##", c) + " MJ";
+            return "";
+        }
+
+        public static Line Describe(WeaponDef w) => Describe(w, true);
+
+        /// <summary>A weapon's line; <paramref name="main"/> is false for any mount but the first ("Gun", not "Main gun").</summary>
+        public static Line Describe(WeaponDef w, bool main)
+        {
             var (kind, icon) = Kind(w);
+            if (kind == "gun" && !main) kind = "cannon";
             var name = Strings.Get("wpn." + kind);
-            var calibre = Calibre.Match(id);
-            if (calibre.Success && int.Parse(calibre.Value) >= 20 && kind is "gun" or "autocannon" or "howitzer" or "mortar" or "rockets")
-                name += " " + calibre.Value + " mm";
+            var spec = Spec(w);
+            if (spec.Length > 0) name += " " + spec;
             var targets = w.Targets switch
             {
                 TargetLayers.Air => Strings.Get("wpn.air"),
@@ -63,6 +77,10 @@ namespace MachineBrigade.Game.Hud
         private static (string kind, string icon) Kind(WeaponDef w)
         {
             var id = w.Id;
+            // Full fix L2: a laser, a railgun and a close-in tool are their own kinds (a laser was a "machine gun", a drill a "main gun").
+            if (w.Melee || w.Family == "melee") return ("melee", "swords");
+            if (w.Family == "laser" || w.PowerKw > 0f) return ("laser", "laser");
+            if (w.Family == "railgun" || w.EnergyMj > 0f) return ("railgun", "railgun");
             switch (w.Projectile)
             {
                 case ProjectileKind.Flame:

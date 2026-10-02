@@ -210,6 +210,12 @@ namespace MachineBrigade.Game.Hud
             ["short.gunship_support"] = ("Gunship", "Pháo hạm"),
             ["short.carpet_bombing"] = ("Carpet", "Rải thảm"),
             ["wpn.gun"] = ("Main gun", "Pháo chính"),
+            // Full fix L2: a gun on any mount but the main one; lasers, railguns, close-in tools; a missile's warhead.
+            ["wpn.cannon"] = ("Gun", "Pháo"),
+            ["wpn.laser"] = ("Laser", "La-de"),
+            ["wpn.railgun"] = ("Railgun", "Pháo điện từ"),
+            ["wpn.melee"] = ("Close-in tool", "Công cụ cận chiến"),
+            ["wpn.warhead"] = ("warhead {kg} kg", "đầu nổ {kg} kg"),
             ["wpn.autocannon"] = ("Autocannon", "Pháo tự động"),
             ["wpn.howitzer"] = ("Howitzer", "Lựu pháo"),
             ["wpn.mortar"] = ("Mortar", "Súng cối"),

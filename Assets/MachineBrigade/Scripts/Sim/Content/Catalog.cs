@@ -171,6 +171,9 @@ namespace MachineBrigade.Sim.Content
                     ApsEligible = w.Has("apsEligible") ? w.Bool("apsEligible", true) : null,
                     CiwsEligible = w.Has("ciwsEligible") ? w.Bool("ciwsEligible", true) : null,
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
+                    // Full fix L2: the display calibre / warhead / power / energy, apart from the Sim's "size".
+                    CaliberMm = w.Float("caliberMm", 0f), WarheadKg = w.Float("warheadKg", 0f), PowerKw = w.Float("powerKw", 0f),
+                    EnergyMj = w.Float("energyMj", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
                     WeaponFamily = w.OptionalString("weaponFamily"),
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),

@@ -16777,3 +16777,27 @@ the last round, not the full cycle. Audio, VFX, flares and the prompt 27 models 
   125 mm 1.03-3.45 s, Moloch's 120 mm 1.13 s), the small side mounts too slow (the 2A38 every 103 s, the 57 mm every 41 s, the
   ZU-23 every 25 s, the 40 mm every 17.6 s), and the card prints "26 mm" on every `p26_*` gun.
 - Not a source for the cadence: the wave 2 balance files (DPS a vehicle only).
+
+## Sửa lỗi tổng hợp L2 (lead pass, 2026-10-02)
+
+- **Data** (`Tools/balance/fix_calibre.py`, rerun-safe, with its own check): every weapon line that carries a `size` now says
+  what it is in one display field: `caliberMm` (guns, autocannons, howitzers, mortars, naval guns, grenade launchers,
+  recoilless guns, rockets, the 800 mm gun), `warheadKg` (missiles, bombs, drones), `powerKw` (lasers), `energyMj`
+  (railguns, coilguns; Gungnir's EMRG 250 MJ, its data's 250, the scaled-up US Navy EMRG; nothing else of Gungnir moves).
+  Flamethrowers and close-in tools have none. 224 lines; a child line that would inherit the wrong kind from its parent
+  gets that field as 0 (Gungnir and Roc's bomb sticks inherit a howitzer / the 800 mm gun). A missile whose data `size` was
+  the whole missile's mass shows its real warhead (`full_weapon_audit.WARHEAD`, Wikipedia: TOW-2 5.9, Hellfire 9, Kornet 7,
+  Kh-29L 320, Ataka 7.4, Griffin 5.9, Maverick 57, Iskander 480, Kalibr 200, HARM 68 ...); a bomb shows its class weight.
+- **`size` stays** as the Sim's round size (default penetration, form, flak look): so no battle number moves and the 30
+  tools that read it keep working. The validator rule "no field mixes mm and kg" holds for the display fields.
+- **Card**: `WeaponInfo.Spec` prints the field ("152 mm", "warhead 400 kg" / "đầu nổ 400 kg", "300 kW", "64 MJ"),
+  `WeaponInfo.Describe(w, main)` no longer reads the id's digits (the "26 mm" on every `p26_*` gun) and gives "Main gun" to
+  the first mount only; a gun elsewhere is "Gun" / "Pháo". Lasers, railguns and close-in tools are their own kinds (a laser
+  read "machine gun", a drill "main gun"). `UnitLines.WeaponName` adds the field when the real name does not say it.
+- **Name fixes**: Roc's "bomb-bay stick 400 kg" no longer gets a calibre (prompt 34 L1 had already dropped the "203 mm";
+  now there is no path that can add one); lasers carry kW only.
+- `ExportGameDoc` exports caliberMm / warheadKg / powerKw / energyMj, barrels, simultaneous, the full cycle, rounds a cycle
+  and the family (for the lead's PDF pass).
+- Test (written, not run): `FixFullTests` L2 (one display field at most, a gun's calibre is its size, the card prints the
+  field and never a calibre from the id, "Main gun" only on mount 0, the name fixes).
+- Audit after L2: DISPLAY bosses 65 -> 41 (what is left is "every X s", L3).

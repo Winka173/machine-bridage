@@ -84,5 +84,23 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 34 L4: the view's gap between the flashes of one volley's barrels (0.05-0.1 s in the prompt).</summary>
         public const float BarrelGap = 0.07f;
+
+        // ------------------------------------------------------------------------------------------------ full fix L2
+
+        /// <summary>
+        /// Full fix prompt L2 (DECISIONS "Sửa lỗi tổng hợp L2"): the calibre in mm of a gun, autocannon, howitzer, mortar,
+        /// naval gun or rocket (data "caliberMm"); 0 for everything else. The card prints this, never the digits of an id.
+        /// <see cref="Size"/> stays the Sim's round size (penetration, form), unchanged.
+        /// </summary>
+        public float CaliberMm { get; internal set; }
+
+        /// <summary>Full fix L2: a missile's, bomb's or drone's warhead in kg (data "warheadKg"); 0 for the rest.</summary>
+        public float WarheadKg { get; internal set; }
+
+        /// <summary>Full fix L2: a laser's power in kW (data "powerKw"); 0 for the rest.</summary>
+        public float PowerKw { get; internal set; }
+
+        /// <summary>Full fix L2: a railgun's or coilgun's muzzle energy in MJ (data "energyMj"); 0 for the rest.</summary>
+        public float EnergyMj { get; internal set; }
     }
 }
