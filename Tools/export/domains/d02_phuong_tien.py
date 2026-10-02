@@ -234,6 +234,8 @@ def build(ctx):
     tc.col("toc_do_m_s", unit="m/s", meaning="tốc độ (giá trị game)")
     tc.col("mau_trong_tran_hp", unit="hp", meaning="máu trong trận (giá trị game)")
     tc.col("giap_truoc", meaning="giáp trước (giá trị game)")
+    tc.col("giap_noc", meaning="giáp nóc (giá trị game)")
+    tc.col("cong_trinh", meaning="là công trình (giáp đều, hệ số Structure)")
     for vid, name in REFERENCE:
         r = tc.row(vid, "Docs/prompts/export_full_vi.txt (spec 03 B)")
         r.set("ten_vi_spec", name)
@@ -243,6 +245,8 @@ def build(ctx):
             r.set("toc_do_m_s", e["toc_do_m_s"])
             r.set("mau_trong_tran_hp", e["mau_trong_tran_hp"])
             r.set("giap_truoc", e["giap_truoc"])
+            r.set("giap_noc", e["giap_noc"])
+            r.set("cong_trinh", e["cong_trinh"])
     esc = (d.get("warningRules") or {}).get("escapeSpeed")
     r = tc.row("xe_cham_tham_chieu", f"{B.BALANCE}: warningRules.escapeSpeed (xem 01/Canh_bao_vong)")
     r.set("ten_vi_spec", "xe chậm tham chiếu của vòng cảnh báo")
