@@ -217,6 +217,14 @@ def analyse(x: np.ndarray, sr: int) -> dict:
 # ------------------------------------------------------------------------------------------------------- report
 
 
+# What each size played before this pass (prompt 34 L6's banks; Docs/audio/diagnosis.md): the shot, and the blast or hit.
+BEFORE_MAP = {
+    's0': ('p34/shot_t0', 'impact_metal'), 's1': ('p34/shot_t1', 'p34/blast_he_t1'), 's2': ('p34/shot_t2', 'p34/blast_he_t2'),
+    's3': ('p34/shot_t3', 'p34/blast_he_t3'), 's4': ('p34/shot_t4', 'p34/blast_he_t4'), 'bomb': (None, 'p34/blast_he_t4'),
+    's406': ('p34/shot_t5', 'p34/blast_he_t5'), 'super': ('p34/shot_t5', 'p34/blast_he_t5'),
+}
+
+
 def bank_of(rel: str) -> str:
     parts = rel.split('/')
     return '/'.join(parts[:-1]) if len(parts) > 1 else parts[0]
@@ -290,10 +298,25 @@ def write_md(clips: dict, rows, problems, kengs, path: Path, title: str, before:
     lines += ['', 'Rising check: ' + ('every step rises.' if not problems else 'FAILS: ' + '; '.join(problems)), '',
               'Keng outside the armour-metal group: ' + (', '.join(kengs) if kengs else 'none.'), '']
     if before:
-        lines += ['## Before / after (bank means)', '', '| bank (before) | M-max | sub % | tail s | keng clips |', '|---|---|---|---|---|']
         bb = {}
         for rel, m in before.items():
             bb.setdefault(bank_of(rel), []).append(m)
+        mean = lambda bank, k: float(np.mean([m[k] for m in bb[bank]])) if bank in bb else None
+        lines += ['## Per size before this pass (prompt 34 L6 banks, as the game played them) and after', '',
+                  '| size | before shot (bank) | M-max | sub % | tail s | after shot M-max | sub % | tail s | before blast / hit (bank) | M-max | sub % | tail s | keng | after blast M-max | sub % | tail s |',
+                  '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|']
+        for r in rows:
+            shot_b, blast_b = BEFORE_MAP[r['size']]
+            s_now, b_now = r.get('shot'), r.get('blast')
+            f = lambda v: '-' if v is None else f'{v:.1f}'
+            kb = sum(m['keng'] for m in bb.get(blast_b, []))
+            lines.append(f"| {r['name']} | {shot_b or '-'} | {f(mean(shot_b, 'lufs_mmax'))} | {f(mean(shot_b, 'sub150'))} | {f(mean(shot_b, 'tail'))} | "
+                         f"{f(s_now and s_now['lufs_mmax'])} | {f(s_now and s_now['sub150'])} | {f(s_now and s_now['tail'])} | "
+                         f"{blast_b} | {f(mean(blast_b, 'lufs_mmax'))} | {f(mean(blast_b, 'sub150'))} | {f(mean(blast_b, 'tail'))} | {kb}/{len(bb.get(blast_b, []))} | "
+                         f"{f(b_now and b_now['lufs_mmax'])} | {f(b_now and b_now['sub150'])} | {f(b_now and b_now['tail'])} |")
+        lines += ['', 'Before, the 20-40 mm to 203-240 mm kinetic rounds without a blast (autocannons, tank guns, railguns) landed on '
+                  '`p34/blast_ap_t1..t4`, the T0 machine guns on `impact_metal`, whatever they struck.', '']
+        lines += ['## Before / after (bank means)', '', '| bank (before) | M-max | sub % | tail s | keng clips |', '|---|---|---|---|---|']
         for bank in sorted(bb):
             ms = bb[bank]
             lines.append(f'| {bank} | {np.mean([m["lufs_mmax"] for m in ms]):.1f} | {np.mean([m["sub150"] for m in ms]):.1f} | '

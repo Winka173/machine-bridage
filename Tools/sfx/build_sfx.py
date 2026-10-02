@@ -49,7 +49,7 @@ SIZES = az.SIZES  # s0 <= 14.5, s1 20-40, s2 57-105, s3 120-155, s4 203-240, bom
 # Per size (index in SIZES): loudness the clip hits at (momentary max LUFS), the share of its energy under 150 Hz (%), the
 # tail's decay (s). The shots and the blasts each rise steadily (analyze_sfx --check).
 SHOT_LUFS = [-21.0, -19.0, -16.5, -14.5, -13.0, None, -11.5, -10.5]
-SHOT_SUB = [5.0, 16.0, 32.0, 45.0, 55.0, None, 64.0, 72.0]
+SHOT_SUB = [6.0, 18.0, 38.0, 53.0, 61.0, None, 70.0, 76.0]
 SHOT_TAIL = [0.05, 0.12, 0.25, 0.42, 0.62, None, 0.85, 1.1]
 BLAST_LUFS = [-22.0, -18.0, -15.5, -13.5, -12.0, -11.0, -10.0, -9.0]
 BLAST_SUB = [12.0, 30.0, 45.0, 55.0, 62.0, 67.0, 72.0, 78.0]
