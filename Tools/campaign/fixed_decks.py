@@ -47,6 +47,7 @@ RULES = {
     'eliteRank': 'the cards fight one rank above the curve (rankBonus 1)',
     'timedRecon': 'Recon against the time limit; the test_rod event is Skygate turning its gun',
     'cityBlackout': 'the city_blackout event (prompt 31 L3): night falls and the towers on the grid shut down, both sides',
+    'behemothOurs': "the escorted Behemoth is Mara's, a placed ally (convoy): the escort's loss rule; it holds on the order Defend",
 }
 
 # The sheet's rules not in effect yet, and why (the report and DECISIONS list them).
@@ -142,6 +143,16 @@ DECKS = {
         loaned=['recon_jet', 'gps_jammer_vehicle'],
         replaced={'airborne_vehicle': 'light_tank', 'decoy_paradrop': 'sead_strike'},
         rules=['timedRecon']),
+    # Prompt 31 L4 (MAKE LATER), c6m03 first: the placed-ally trial. Mara's Behemoth is the Escort's own convoy (the objective
+    # kept: it must reach the end of its route), so the placed ally is that convoy unit: shown on the deck page, lost if it
+    # falls (the escort's rule), halting while the player's general order is Defend.
+    'c6m03': dict(
+        vehicles=['mobile_repair_vehicle', 'ammo_carrier', 'engineer_vehicle', 'aa_vehicle', 'ifv', 'smoke_carrier', 'tank_destroyer', 'scout_jeep'],
+        supports=['repair_drop', 'smoke_screen'],
+        loaned=['mobile_repair_vehicle'],
+        replaced={},
+        allies=[{'def': 'behemoth', 'x': -100, 'z': -100, 'heading': 45, 'name': 'behemoth_mara', 'convoy': True, 'lossIfDestroyed': True}],
+        rules=['behemothOurs'], status='MAKE_LATER'),
 }
 
 
@@ -150,7 +161,7 @@ def apply():
     for mid, d in DECKS.items():
         m = kit.mission(mid)
         deck = {'vehicleIds': list(d['vehicles']), 'supportIds': list(d['supports']), 'placedAllies': list(d.get('allies', [])),
-                'loanedCards': list(d['loaned']), 'specialRules': list(d['rules']), 'status': 'MAKE_FIRST'}
+                'loanedCards': list(d['loaned']), 'specialRules': list(d['rules']), 'status': d.get('status', 'MAKE_FIRST')}
         if d.get('rankBonus'):
             deck['rankBonus'] = d['rankBonus']
         if d.get('prepSeconds'):
@@ -218,6 +229,12 @@ def check_mission(m, owned, defs, fail):
         fail(f'{mid}: the city blackout rule wants the city_blackout event')
     if 'eliteRank' in rules and deck.get('rankBonus', 0) < 1:
         fail(f'{mid}: elite armour wants a rank bonus')
+    # Prompt 31 L4: placed allies: a unit the catalog has (or its fallback), the convoy one the mission's own convoy.
+    for a in deck.get('placedAllies', []):
+        if a['def'] not in defs and a.get('fallback') not in defs:
+            fail(f"{mid}: placed ally {a['def']} is not in balance.json")
+        if a.get('convoy') and m.get('convoy', {}).get('def') != a['def']:
+            fail(f"{mid}: placed ally {a['def']} is the convoy, but the mission's convoy is {m.get('convoy', {}).get('def')}")
     if mid not in BASELINE:
         fail(f'{mid}: no objective baseline from before prompt 31')
     elif objectives(m) != BASELINE[mid]:

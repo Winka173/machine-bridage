@@ -1400,11 +1400,19 @@ namespace MachineBrigade.Game.Match
             player.Demolish = w => _mode.PlayerDemolish(w);
             // The allied commander goes where the player's goal is, with its own units only (prompt 23 C.2: the Accord's waves too).
             // Prompt 31: a fixed deck's placed allies are driven by it too (they spawn from prompt 31 L4 on).
-            if (def.Ally != null || MissionEventSystem.NeedsAllies(def) || def.FixedDeck is { PlacedAllies: { Count: > 0 } })
+            // Prompt 31 L4: placed allies follow the player's general order: Attack goes where the player's goal is, Defend
+            // holds by the player's rally (a convoy that is a placed ally, c6m03's Behemoth, halts).
+            var placed = def.FixedDeck is { PlacedAllies: { Count: > 0 } };
+            if (_single != null) _single.PlayerDefends = () => player.Stance == CommanderStance.Defend;
+            if (def.Ally != null || MissionEventSystem.NeedsAllies(def) || placed)
                 AllyAi = new TacticalAi(PlayerTeam, EnemyTeam, seed + 11)
                 {
                     Allies = true,
-                    Objective = w => _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null),
+                    Objective = w =>
+                    {
+                        if (placed && player.Stance == CommanderStance.Defend && w.TryGetRally(PlayerTeam, out var home)) return home;
+                        return _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null);
+                    },
                 };
             Configure(world);
             // Extra mini boss (prompt 20 N.3): one more from the enemy's camp, of the mission's boss rank and chapter.

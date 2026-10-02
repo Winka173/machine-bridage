@@ -115,6 +115,10 @@ def reverse(m):
     turn_xy(m, 'targetX', 'targetZ')
     if 'playArea' in m:
         m['playArea'] = turn_area(m['playArea'])
+    # Prompt 31 L4: a fixed deck's placed allies are written from the player's corner too.
+    for a in m.get('fixedDeck', {}).get('placedAllies', []):
+        turn_xy(a)
+        turn_heading(a)
     if 'ally' in m:
         a = m['ally']
         turn_xy(a)
