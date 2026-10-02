@@ -1173,6 +1173,23 @@
     "targeting_station: triangles 4,286 -> 4,446 (+3.7%); vertices 6,135 -> 6,239 (+1.7%); materials 12 -> 13 (+8.3%); fileBytes 334,428 -> 340,152 (+1.7%); structure changed",
     "FLAG troop_shelter: triangles 740 -> 916 (+23.8%); vertices 932 -> 1,056 (+13.3%); materials 6 -> 7 (+16.7%); fileBytes 53,164 -> 59,872 (+12.6%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "ammo_dump",
+    "barrage_balloon",
+    "blast_wall",
+    "fire_control_centre",
+    "inflatable_decoy",
+    "logistics_station",
+    "radar_site",
+    "repair_bay",
+    "targeting_station",
+    "troop_shelter"
+   ],
+   "reason": "merge of feature/p27-wave7b",
+   "changes": []
   }
  ],
  "models": {
