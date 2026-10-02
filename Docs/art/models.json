@@ -233,7 +233,7 @@
   },
   "billboard": {
     "file": "billboard.glb",
-    "triangles": 1284
+    "triangles": 1356
   },
   "birch": {
     "file": "birch.glb",
@@ -285,7 +285,7 @@
   },
   "bus": {
     "file": "bus.glb",
-    "triangles": 2156
+    "triangles": 2280
   },
   "bush": {
     "file": "bush.glb",
@@ -377,7 +377,7 @@
   },
   "control_tower": {
     "file": "control_tower.glb",
-    "triangles": 2368
+    "triangles": 2496
   },
   "cottage": {
     "file": "cottage.glb",
@@ -633,7 +633,7 @@
   },
   "fuel_truck": {
     "file": "fuel_truck.glb",
-    "triangles": 3204
+    "triangles": 3396
   },
   "gantry_crane": {
     "file": "gantry_crane.glb",
@@ -709,7 +709,7 @@
   },
   "hangar": {
     "file": "hangar.glb",
-    "triangles": 4976
+    "triangles": 5520
   },
   "headquarters": {
     "file": "headquarters.glb",
@@ -781,11 +781,11 @@
   },
   "highrise_a": {
     "file": "highrise_a.glb",
-    "triangles": 5252
+    "triangles": 5964
   },
   "highrise_b": {
     "file": "highrise_b.glb",
-    "triangles": 5760
+    "triangles": 6112
   },
   "house_large": {
     "file": "house_large.glb",
