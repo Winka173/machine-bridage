@@ -130,6 +130,8 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 **Pass 3b done (2026-10-02, static gates pass; cards not rendered by the agent):** laser_tank, flame_tank, twin_tank, bmpt, ifv, elite_apc, armored_bulldozer, engineer_vehicle.
 
+**Pass 3c done (2026-10-02, static gates pass; cards not rendered by the agent):** aa_vehicle (+hd), artillery (+hd), heavy_aa, elite_aa, mortar_carrier, mine_layer, smoke_carrier, shield_carrier.
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |

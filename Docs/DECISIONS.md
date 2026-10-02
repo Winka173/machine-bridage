@@ -13731,3 +13731,28 @@ previews (owner's rule after 3a), no tests.
 - Card luma (old, mean of pixels with alpha > .5): laser .3595, flame .3193, twin .3705, bmpt .3279, ifv .3828, elite_apc
   .3019, bulldozer .3058, engineer .3434. New cards: the lead renders them after the merge.
 - Lead (2026-10-02), wave 3b cards: all eight pass (laser +0.5 %, flame +4.2 %, twin +1.1 %, bmpt +2.3 %, ifv -0.1 %, elite_apc -0.2 %, bulldozer +2.0 %, engineer +0.9 %).
+
+## 27 wave 3c (lead pass, 2026-10-02)
+
+Pass 3c, the eight rows aa_vehicle (+hd), artillery (+hd), heavy_aa, elite_aa, mortar_carrier, mine_layer, smoke_carrier,
+shield_carrier, builders appended to `mb_p27_wave3.py`. Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror,
+no cards, no previews, no tests.
+
+- **Builders.** Same recipe, copy-first: `parts.track_unit`, `k.extrude` hulls and turrets with chamfers and insets, `k.block`
+  plates and bins, `parts.barrel` one-surface barrels (35 mm pairs, twin 30 mm per side, 155 mm with the baffle brake, MGs),
+  `k.lathe` / `k.ring` for the drums, tubes, emitter and mortar, `parts.mg_mount`, seeded greebles (seeds 2731-2734).
+  New `_truck_v2` (the m2 truck with the V2 wheels and an extruded cab, for heavy_aa) and `_m113_v2` (smoke and mortar
+  carriers). `elite_aa` wraps the new `aa_vehicle` with the old `_elite_on` arguments.
+- **Gates (baseline -> new).** aa 3,236 -> 4,964 (1.53x); aa_hd 8,044 -> 12,556 (1.56x); artillery 3,444 -> 5,326 (1.55x);
+  artillery_hd 8,074 -> 12,260 (1.52x); heavy_aa 3,004 -> 4,524 (1.51x); elite_aa 3,728 -> 5,456 (1.46x); mortar 2,440 -> 3,242
+  (1.33x); mine_layer 2,576 -> 3,872 (1.50x); smoke 2,468 -> 3,698 (1.50x); shield 1,918 -> 2,476 (1.29x). Zero-area 0, 0 errors,
+  runtime nodes identical on all ten, COLOR_0 mean up (+0.03 to +0.09). Size (length / width / height) inside 2 % on all.
+- **Triangle budget** was the constraint: the first build was 1.6-1.9x on aa, mine_layer and smoke. Cut: track wheels at 6-7
+  sides on those three and the M113 pair (the `_hd` keeps 14), cleat pitch .44-.56, mine cassettes unchamfered, no hull insets
+  on aa and mine_layer, own 6-sided smoke tubes (the library launcher is 8-sided), no greebles on aa and smoke.
+- **Notes.** heavy_aa keeps the old `Muzzle_missile.001-.003` suffix warning (the `_suffixed` convention). heavy_aa and
+  shield_carrier lose the `Rubber` material (the V2 wheel's tyre is `Undercarriage`, as in the earlier passes). The smoke
+  carrier gains one mesh (`Smoke_brackets`). Building `artillery` also rebuilt `artillery_emplacement*`, `artillery_wreck` and
+  `heavy_rocket_artillery` (substring filter): reverted with `git checkout`.
+- Card luma (old, mean of pixels with alpha > .5): aa_vehicle .3581, artillery .3541, heavy_aa .3238, elite_aa .2786,
+  mortar_carrier .3340, mine_layer .3479, smoke_carrier .3565, shield_carrier .4079. New cards: the lead renders them after the merge.
