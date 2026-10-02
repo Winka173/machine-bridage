@@ -2134,6 +2134,7 @@ namespace MachineBrigade.Game.Hud
             ["fixeddeck.rule.ceasefireFaction"] = ("Varga's column keeps the ceasefire for the whole battle: no weapon of ours picks it or can hurt it, so no stray shot breaks it. The enemy is Aurel's drones.", "Cánh quân của Varga giữ lệnh ngừng bắn suốt trận: không vũ khí nào của ta nhắm hay gây sát thương được cho họ, nên không phát bắn lạc nào phá được nó. Kẻ địch là drone của Aurel."),
             ["fixeddeck.rule.mirewoodFog"] = ("Light and fast in the fog: take the two villages and the sunken temple before they see you coming.", "Nhẹ và nhanh trong sương: chiếm hai làng và ngôi đền chìm trước khi địch kịp thấy ta tới."),
             ["fixeddeck.rule.thorneAnomaly"] = ("You fight with {@lyhan}'s army. Mid-battle his wing turns away on new intelligence, then comes back.", "Ta chiến đấu bằng đạo quân của {@lyhan}. Giữa trận, cánh quân của ông ấy đổi hướng theo tin tình báo mới, rồi quay lại."),
+            ["fixeddeck.rule.islandHop"] = ("Island to island: take one island's point, then cross to the next. The middle island is the key to both sides.", "Nhảy đảo: chiếm điểm trên một đảo rồi vượt sang đảo kế. Đảo giữa là then chốt của cả hai bên."),
             ["fixeddeck.rule.timedRecon"] = ("Against the clock: see each launcher, then pull out before Skygate turns its gun.", "Chạy đua với giờ: xem từng bệ phóng rồi rút trước khi Skygate quay pháo."),
             // Prompt 25 D2: story loot is never sold.
             ["deck.lockedLoot"] = ("{name}: story loot, won in mission {mission}. It is not for sale.",

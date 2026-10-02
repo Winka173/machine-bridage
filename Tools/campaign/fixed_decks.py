@@ -55,6 +55,7 @@ RULES = {
     'ceasefireFaction': "the ceasefire event with faction: Varga's column is Sworn (DamageSystem: no damage from another side), for the whole mission",
     'mirewoodFog': 'the deck itself (light, fast, amphibious) on swamp in Fog; the objective (two villages and the sunken temple) kept',
     'thorneAnomaly': "MissionSession's allied AI: from 180 s to 270 s Thorne's wing turns to the objective the player is not going for",
+    'islandHop': "the deck itself (amphibious, boats, air) over Coral Keys' three island points; the objective kept",
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -235,6 +236,17 @@ DECKS = {
         loaned=[],
         replaced={},
         rules=['thorneAnomaly'], status='MAKE_LATER'),
+    # c9m12 (chapter 9, Coral Keys): the Capture objective kept (west, town, east). Loaned the amphibious light vehicle and the
+    # river patrol boat (no naval block: it drives like a ground unit, as in c4m06); river_gunboat -> mlrs (fire in salvos, as
+    # c9m08), coastal_ashm_vehicle -> railgun_truck (owned long-range heavy hitter), airborne_vehicle -> armored_car (owned fast
+    # light armour), guided_shell_strike -> artillery_barrage. The sheet's 'take one island before landing on the next' is not a
+    # Sim rule (the deliveries come to the rally): the rule's words say how to play it, nothing more.
+    'c9m12': dict(
+        vehicles=['amphib_light_vehicle', 'light_tank', 'mlrs', 'river_patrol_boat', 'railgun_truck', 'attack_helicopter', 'sam_launcher', 'armored_car'],
+        supports=['artillery_barrage', 'smoke_screen'],
+        loaned=['amphib_light_vehicle', 'river_patrol_boat'],
+        replaced={'river_gunboat': 'mlrs', 'coastal_ashm_vehicle': 'railgun_truck', 'airborne_vehicle': 'armored_car', 'guided_shell_strike': 'artillery_barrage'},
+        rules=['islandHop'], status='MAKE_LATER'),
 }
 
 
