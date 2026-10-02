@@ -201,3 +201,5 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) merge toàn bộ vào main (v0.33.0, prompt 27 đợt 1, PDF, prompt 28)
 - (02/10) bắt đầu đợt 2
 - (02/10) check dùm tôi prompt 28 có chạy được trên claude cloud không
+- (02/10) không sao phần còn lại prompt 28 có thể chạy ở đây, tạo 1 file để bàn giao cho claude cloud hiểu, và đưa tôi prompt để gửi bên đó
+- (02/10) nhớ push file đó lên luôn để bên đó thấy
