@@ -66,6 +66,7 @@ import mb_p27_wave5_air  # noqa: E402
 import mb_p27_wave8b  # noqa: E402
 import mb_p27_standins  # noqa: E402
 import mb_p34_barrels  # noqa: E402
+import mb_fix_barrels  # noqa: E402
 import mb_p34_parts  # noqa: E402
 import mb_p32_walls  # noqa: E402
 import mb_p33_biomes  # noqa: E402
@@ -187,6 +188,8 @@ def all_builders():
     builders.update({k: v for k, v in mb_p27_wave4.BUILDERS.items() if k.endswith('_hd')})
     # Prompt 34 L4: a muzzle for every barrel of the guns that fire their barrels together (after every other builder).
     builders = mb_p34_barrels.wrap(builders)
+    # Full fix L3: the bosses' twin guns (a second barrel where one was) and their per-barrel muzzles.
+    builders = mb_fix_barrels.wrap(builders)
     # Prompt 34 L7: separable wreck parts (Part_wheel, Part_wheelb, Part_wing, Part_tail) for the breakup by class.
     builders = mb_p34_parts.wrap(builders)
     return builders

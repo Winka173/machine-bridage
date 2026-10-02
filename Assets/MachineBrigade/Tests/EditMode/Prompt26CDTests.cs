@@ -117,8 +117,9 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(2f, def.Armour.Top);
             Assert.AreEqual(7f, def.Speed, 1e-3f);
             var gun = def.Mounts[0].Weapon;
-            Assert.AreEqual(780f, gun.Damage, 1e-3f);
-            Assert.AreEqual(2f, gun.Cooldown, 1e-3f);
+            // Prompt 34 L2: the 125 mm AP family's 400; full fix L3: the 2A46's real 8 rpm (7.5 s).
+            Assert.AreEqual(400f, gun.Damage, 1e-3f);
+            Assert.AreEqual(7.5f, gun.Cooldown, 1e-3f);
             Assert.AreEqual(1, gun.Rounds.Count, "an HE round for a crowd, the AP shell for a single target");
             Assert.AreEqual(5f, gun.Rounds[0].Round.SplashRadius, 1e-3f);
             Assert.AreEqual(10f, gun.Rounds[0].Round.SplashEdge, 1e-3f);

@@ -299,7 +299,7 @@ SHEET_ALIAS = {
     "p26_nemesis_sec_boss_rockets": "boss_rockets", "p26_kronos_close_boss_rockets": "boss_rockets",
     "p26_jotunn_jo203": "boss_howitzer", "p26_jotunn_sec_jo_rockets": "rockets_300mm", "p26_jotunn_direct_jo125": "gun_125_elite",
     "p26_nemesis_direct_ne125": "gun_125_elite", "p26_ixion_125": "gun_125_elite", "p26_jotunn_tiny_twin_30_flak": "twin_30_flak",
-    "p26_matriarch_tiny_mothership_cannon": "mothership_cannon", "p26_matriarch_ma_drones": "mothership_drones",
+    "p26_matriarch_tiny_mothership_cannon": "mothership_cannon",
     "p26_matriarch_sec_autocannon_30": "autocannon_30", "p26_kronos_close_autocannon_30": "autocannon_30",
     "p26_nemesis_main_ne152": "gun_152_he", "p26_icarus_sec_orbital_laser": "orbital_laser",
     "p26_icarus_close_autocannon_40": "autocannon_40", "p26_bastion_sec_b240": "boss_mortar",
@@ -308,6 +308,13 @@ SHEET_ALIAS = {
     "p26_roc_roc105": "gunship_105", "p26_leviathan_sec_lev155": "naval_155_triple", "p26_moloch_main_mo120": "gun_120mm",
     "p26_moloch_direct_mo120ap": "gun_120mm", "p26_daedalus_sec_dae57": "mothership_cannon", "p26_kronos_direct_kr57": "mothership_cannon",
     "p26_typhon_sec_ty57": "mothership_cannon", "p26_typhon_direct_ty100": "naval_100", "p26_ixion_mg": "boss_hmg",
+}
+
+
+# One real weapon whose boss lines may differ (FAMILY), with the reason: left out of the family check, listed in the report.
+FAMILY_EXCEPT = {
+    "autocannon_40": "Gungnir's own 40 mm guns (their 1 m burst): Gungnir is frozen but for its main gun's name (fix rule 8)",
+    "gunship_105": "the player's AC-130 gun, carried by Sky Fortress too: player weapons wait for the owner",
 }
 
 
@@ -545,7 +552,7 @@ def audit(data):
     # FAMILY: the same real weapon (variant aside) differs between bosses.
     groups = collections.defaultdict(list)
     for r in rows:
-        if any(g == "boss" for g, _, _ in r["users"]) and r["w"].get("damage", 0) > 0:
+        if any(g == "boss" for g, _, _ in r["users"]) and r["w"].get("damage", 0) > 0 and r["id"] not in FAMILY_EXCEPT:
             w = r["w"]
             groups[(F.real_base(w).lower(), w.get("weaponVariantId") or "")].append(r)
     for key, items in groups.items():
@@ -633,6 +640,7 @@ def report(rows, built, ws, before):
             out.append(f"| `{r['id']}` ({w.get('real') or '-'}) | {fam} | {fmt_cal(r['cal'])} / {r['card'] or '-'} | {cad} | "
                        f"{nb['dps']:.0f} | {rb} | {r['wave1'] or '-'} | {ustr or '-'} | {', '.join(r['touched']) or '-'} | {fl or 'ok'} |")
         out.append("")
+    out += ["## Left out of the family check", ""] + [f"- `{k}`: {v}." for k, v in FAMILY_EXCEPT.items()] + [""]
     out += ["## Support cards", "", "Not weapons: a card's strike (count x damage every cooldown, blast radius). No real rate applies.", "",
             "| card | kind | count x damage | blast | cooldown |", "|---|---|---|---|---|"]
     for s in DATA["supports"]:
