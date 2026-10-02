@@ -87,6 +87,9 @@ namespace MachineBrigade.Game.Effects
         private readonly ProjectilePool _projectiles;
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
+
+        /// <summary>Prompt 29 G1: Gungnir's aiming line for its warning.</summary>
+        private readonly AimLines _aimLines;
         private readonly StrikeEffects _strikes;
         private readonly AirDrops _drops;
         private readonly GroundMark _marker;
@@ -155,6 +158,7 @@ namespace MachineBrigade.Game.Effects
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
             _bigZones = new BigAttackZones(materials, meshes, _root);
+            _aimLines = new AimLines(materials, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
@@ -584,6 +588,11 @@ namespace MachineBrigade.Game.Effects
                     _weapons.Charging(e, shooter, now);
                     continue;
                 }
+                // Prompt 29 G1 (ASSET_DEBT "Gungnir's line warning"): a pierce shot's FiredWith (the bombard's gun, the warning as its
+                // travel time) draws its aiming line, gun to aim, for the warning; drawn even when both ends are off screen.
+                if (shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Def.Bombard is { PierceMax: > 0 } pierce &&
+                    e.DefId != null && e.DefId == pierce.Weapon && e.Value > 0.2f)
+                    _aimLines.Show(Ground(e.Position, 0.6f), Ground(e.Target, 0.6f), e.Value, now);
                 // Shots entirely off screen are not drawn (the sound still plays).
                 if (!_cull.Visible(Ground(e.Position, 1f), 0.15f) && !_cull.Visible(Ground(e.Target, 1f), 0.15f)) continue;
                 _weapons.Fired(e, shooter, views, now);
@@ -632,6 +641,7 @@ namespace MachineBrigade.Game.Effects
             _emitters.Tick(now, Time.deltaTime);
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
+            _aimLines.Tick(now);
             TickBigCharge(views, now);
             _drops.Tick(now);
             JetTrails(views, now);

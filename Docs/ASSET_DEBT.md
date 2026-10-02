@@ -309,6 +309,6 @@ All eight have their own models since prompt 27 wave 1b (no tint; cards of their
 |---|---|---|
 | ~~Ixion, the armoured BelAZ-75710 mine truck~~ | done in prompt 27 wave 1a: its own `ixion` model (26 x 12 x 10 m, mb_p27_wave1a), tint dropped | - |
 | Boss sizes | the old models scaled by `size` (Roc and Garuda stay 56-62 m wide, Icarus 45 m wide, Moloch and Bastion keep their proportions) | models rebuilt at the sheet's sizes (prompt 27) |
-| Gungnir's electromagnetic gun | model done in prompt 27 wave 1a (`rail_supergun`: EMRG launcher, two capacitor cars; `rail_tractor`: a modern Bo-Bo diesel); the slug is still the existing rail slug projectile | the line warning along the slug's path (game code, prompt 28) |
+| Gungnir's electromagnetic gun | model done in prompt 27 wave 1a (`rail_supergun`: EMRG launcher, two capacitor cars; `rail_tractor`: a modern Bo-Bo diesel); the slug is still the existing rail slug projectile | ~~the line warning along the slug's path (game code, prompt 28)~~ done in prompt 29 G1 (Game `AimLines`: gun to aim for the 3 s warning, from the shot's `FiredWith`) |
 | ~~Ixion's parts: `reartyre`, `hulltower`~~ | done in wave 1a: every tyre (`Part_wheel`, `.001`, `Part_tyre` .. `.003`), the cab (`Part_cab`) and the turret (`Turret`) are nodes the parts name, hidden when broken | - |
 | Ixion's mine strip | the ordinary mine model (MineViews spawns `mine` for every layer); the model has `Point_mines` at the dispenser's mouth, unused | a mine truck's own mine model and the view lookup per layer (game code, prompt 28) |
