@@ -17380,3 +17380,48 @@ Nothing run but the Python tools; the C# is compiled by the lead.
   burning whole / broken up into a flat spin; tank turret thrown / turret stays with a long flame jet / turret knocked off
   sideways; wheeled wheels off and rolled / onto its roof / wheels off, frame bucks; truck cargo chain / cab blast onto its
   side; artillery slow cook-off / all at once. View only; the Sim is unchanged. Tests in PlayTest12LaneBTests (not run).
+
+## Bộ xuất dữ liệu toàn bộ (lane B, pass 5)
+
+Branch `feature/export-b`, 2026-10-03: layer B of files 01-04 and the code-constant scan (spec 2.2, 2.3, 4 "B:", 5). Python only.
+
+- **Formulas.** `core/formula.py`: an `F` cell holds a template (`{col}`, `{Sheet!col}`, `{Sheet!col@id}`, `{Sheet!col@*}`)
+  resolved to A1 references once every book is built; same-file references only. The xlsx gets the formula (workbook set
+  to recalculate on open), the CSV its value. A small pure-Python evaluator (IF/AND/OR/NOT, MAX/MIN/SUM, INDEX/MATCH,
+  SLOPE/INTERCEPT/MEDIAN/COUNT, LN/EXP/SQRT, ROUND/CEILING/FLOOR, ISNUMBER) computes every cell; `formulas` is not
+  installed and not needed. An empty text cell is #VALUE! in arithmetic, as in Excel.
+- **The test.** Each formula cell carries its reference value: a `_game` column (the Python port of the C# named in
+  Schema.nguon_khoa, `domains/_game.py`) or, for an analysis column the game does not compute, the exporter's own Python
+  ("python: ..."). Pass = |formula - reference| <= 1e-6 x max(1, |reference|) on every row; exit 1 otherwise. Results
+  in 00/Kiem_cong_thuc. Today 86 formula columns, 15 118 cells, all OK (35 columns against C# ports).
+- **Ports.** FirePower (Volley, OnPaper, Sustained, SustainedAir), Definitions (RoundsPerCycle, CycleSeconds,
+  MagazineReload, CanTarget, LoadOf), WeaponDef.P34 RoundsPerPull / WarnSeconds, DamageTable (Penetration, TypeOf,
+  Effective), Armour (StrikesTop, DefaultPenetration), FixRules WarningRules (Warns, Seconds), Catalog (DefaultRearm,
+  WithEdge, ParseExtras clamps), BossTemplates.Rank damageScale, BaseRules.RebuildCost, OpeningSquads.Pick. The C# is
+  float; the ports are double (7th-digit differences from the game itself are possible, not from the formula).
+- **Inputs.** `input_<name>` sheets copy what a file needs from another (02, 03, 04 copy weapon numbers from 01; 03 the
+  reference units from 02/Xe_tham_chieu); the copy test compares each cell with the source file's (39 columns, OK).
+- **Layer A cells settled by the ports.** 01 Vu_khi xuyen default, thoi_gian_canh_bao_s, co_vong_canh_bao,
+  thoi_gian_bay_toi_tam_s (formula); 02 Doi_mo_man base_cp_uoc_tinh and the cheapest card (eligibility as Pick);
+  03 Boss_vu_khi ria_tren_boss_m, canh_bao_s, chu_ky_day_du_s; 04 Thap runtime_rebuild_cp. 102 Don_vi_chua_ro columns of
+  01-04 settled from the C# (`domains/_unit_settle.py`, unit in Schema.don_vi, citation in y_nghia; names unchanged so
+  the coverage marks hold); 84 remain for the owner.
+- **Choices.** dps_may_bay at aircraft armour 0 (14 of 22 card aircraft); dps_cong_trinh at structure armour 2 (the
+  default); the regression's light / heavy targets are armour 1 / 3 and DPS is the main weapon's (UnitStats.Dps), filter
+  CP > 0, not Support / Scout, card vehicles only (no elites); Boss_hieu_qua uses the main weapon (mount 0), five vehicles
+  8 m apart (a row; a cluster = centre + four at 8 m), escape time = core / the reference unit's speed; time to kill uses
+  FirePower sustained x damageScale (rank fireRate and phases not applied); May_bay_so_phat uses stinger_post (FIM-92),
+  buk_launcher, air_to_air (AMRAAM). The tower price steps are Tools/balance/p32_tower_prices.py's (the game only reads
+  rebuildCp): medians are inputs from it, the steps after them formulas; 58 of 60 prices equal the game's
+  (lech_voi_game shows the 2 others). Nha_chinh_so_sanh is Tools/balance/p32_hq_types.py's model. ghi_chu_lech /
+  ty_le_chu_ky_so_voi_ngoai_doi / cung_ho_nhat_quan are Tools/balance/full_weapon_audit.py values (WAVE 1 flag shown as
+  LECH_DOT_1).
+- **Left NEED_CODE_CHECK.** 02 Xe_suy_ra nhom_gia / he_so_gia / thuong_suc_manh / tha_du_theo_nhom_s (no price group in
+  the code); 02 Doi_mo_man_suy_ra phan_tram_cp_khoi_dau (start CP is a literal per mode session, file 05); 02
+  May_bay_so_phat dai_muc_tieu (no target band in the repo); 03 Boss_dps cach_bu (a design call).
+- **Hang_so_trong_ma.** `Tools/export/scan_constants.py` `scan(root)` returns the rows (columns in `COLUMNS`): const,
+  static readonly, property defaults, data-read defaults and literals of Sim/** and Game/Match/** (comments and strings
+  blanked; 0 / 1, indexes, enums skipped; view folders keep declarations only, domain 09-11, "khong"). 7 249 rows today;
+  the co / khong suggestion is the scan's heuristic for the owner to review.
+- **TODO (lane C / lead):** wire `scan_constants.scan(repo.ROOT)` into d12 as sheet Hang_so_trong_ma (one row per item, id
+  = `<file>:<line>:<col>`, columns from `COLUMNS`); no change to d12 made here.
