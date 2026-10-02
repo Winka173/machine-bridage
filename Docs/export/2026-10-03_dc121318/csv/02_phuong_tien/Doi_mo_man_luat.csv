@@ -1,4 +1,0 @@
-id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
-enemyModes,openingSquads,enemyModes,,Conquest;Deathmatch;KingOfTheHill;Assault;Siege;Showdown,,Assets/MachineBrigade/Resources/Data/balance.json: openingSquads.enemyModes,"[""Conquest"",""Deathmatch"",""KingOfTheHill"",""Assault"",""Siege"",""Showdown""]"
-modes,openingSquads,modes,,Conquest;Deathmatch;KingOfTheHill;Assault;Siege;Defend;Endless;Survival;BossRush;Showdown,,Assets/MachineBrigade/Resources/Data/balance.json: openingSquads.modes,"[""Conquest"",""Deathmatch"",""KingOfTheHill"",""Assault"",""Siege"",""Defend"",""Endless"",""Survival"",""BossRush"",""Showdown""]"
-share,openingSquads,share,0.6,,,Assets/MachineBrigade/Resources/Data/balance.json: openingSquads.share,0.6

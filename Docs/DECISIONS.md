@@ -17310,6 +17310,41 @@ Lane A, 2026-10-03: passes 0-2 of Docs/prompts/export_full_vi.txt (plan, framewo
 - Size: commit the whole export while it stays under ~20 MB; above that, `.gitignore` the dated folders' xlsx/, csv/, images/ and pdf/ and keep 00_chi_muc/ and md/ (spec §8).
 - Don_vi_chua_ro (200 columns): the pass 5 lane resolves what the code reading settles; the rest stays listed for the owner.
 
+## Bộ xuất dữ liệu toàn bộ (lane C, passes 3-4)
+
+Lane C, 2026-10-03: layer A of files 05-12 (`Tools/export/domains/d05..d12`, helpers in `_lane_c.py`). Read only; no
+Unity, test or sim run.
+
+- **Coverage.** 999 sources, 802 226 leaves: 799 681 mapped, 1 849 Khong_xuat, 0 unmapped, 0 mapped twice; 210 foreign
+  keys OK. The only pending claim left is `Tools/docs/unit_refs.json` (696 leaves) for file 13, which is pass 10 (spec 12).
+- **Maps.** Every leaf of the 100 map files is a row or a cell, nothing summarised: props one row each (89 245), terrain
+  tag rectangles one row each (38 788, x0/z0/x1/z1 as TerrainTags.cs reads them), boundary and other number lists joined
+  by ';' in their map's row. Child ids are `<map>/<item id or index>` (ids repeat across a map's 4 variants). Sea route
+  segment ends get `nut_a` / `nut_b` = `<map>/<node>` for the FK; the raw `a` / `b` stay as written.
+- **Split of shared sources.** campaign.json: economy and `eventLibrary.rules.difficulty` -> 05 (Do_kho), generals -> 06,
+  `weatherSight` -> 08 (Thoi_tiet), migration -> 12, the rest -> 07. The modes' `economy.bankByMode` sits in 05/Che_do.
+- **C# tables.** Meta tables are every `static readonly` literal array of the meta files (Arsenal, DailyMissions,
+  Progression, Skins, GraphicsOptions, MatchSettings, PlayerProfile*), read with `core/cs.py`; named ones get their own
+  sheet (Nang_hang, Hom_do, Cua_hang, Nhiem_vu_ngay, Skin, Ban_do_menu), the rest go to 11/Meta_bang_hang. Crate odds
+  columns are `ty_le_0..4` (rarity order as in Arsenal.cs; no names guessed). VFX by tier from TierFx.Fire +
+  EffectLife.Bands, hull fire from HullFire.Looks, bursts from SoundLibrary.Bursts.
+- **Docs inputs of file 12.** `Docs/checks/fix_validate.json` and `Docs/balance/apply_state_p29.json` are registered as
+  sources (so the coverage test walks them). The README prompt table, DECISIONS headings (## and ###), HOLD / DECIDE /
+  owner lines, the C01-C16 checks of report_p29.md, the field map and the bundle outcomes are parsed from Markdown;
+  absolute local paths in Docs text are replaced by `<DUONG_DAN_MAY_CA_NHAN>`. `fix_validate.json models.summary.scanDir`
+  (an absolute local path) is Khong_xuat (spec 8).
+- **Markers.** Code-only sheets hold one marker row: NEED_CODE_CHECK (wrecks, mixer, preview, rewards) or
+  CHUA_AP:prompt_xuat_luot5/6/8 (end-of-match, slow-motion moments, default settings, sample recordings, weapon VFX
+  images, photos, prompt commits, Lich_su_do STALE, Hang_so_trong_ma). Absent features say KHONG_CO (achievements,
+  telemetry); the tutorial is CHUA_AP:prompt_24. Test results are KHONG_CHAY (owner rule 30/09).
+- **Clip facts.** Length, channels and rate come from each Ogg file's headers; author, source and licence from
+  Audio/CREDITS.md and Music/MUSIC_CREDITS.md; sfx banks are marked as made by Tools/sfx/build_sfx.py.
+- **Counts against the spec.** 193 missions, 15 chapters, 23 game decks: match. 41 bosses: file 03. Maps: 25 base maps x 4
+  variants = 100 map files (spec says 50).
+- **Size.** The whole output is 56 MB (08_ban_do: 8 MB xlsx, 32 MB csv), so per the lead's call the dated folders' xlsx/,
+  csv/, images/ and pdf/ are git-ignored; 00_chi_muc/ (and md/ from pass 6) stay committed. Every xlsx is under 50 MB, no
+  _a / _b split.
+
 ## Play-test 12 audio (lane C)
 
 Branch `feature/pt12-audio`. The owner: machine guns and autocannons much worse than yesterday (`f5e565d3`); artillery,

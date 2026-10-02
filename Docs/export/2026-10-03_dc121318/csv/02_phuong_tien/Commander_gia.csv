@@ -1,6 +1,0 @@
-id,commander_id,thu_tu,reach_m,scale,nguon,raw_json
-brandt/0,brandt,0,AirdropTowers,0.8,Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs#All (6.Prices[0]),"{""reach"":""AirdropTowers"",""scale"":0.8}"
-gen.kessler/0,gen.kessler,0,Vehicles,0.9,Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs#Generals (3.Prices[0]),"{""reach"":""Vehicles"",""scale"":0.9}"
-lind/0,lind,0,Engineers,0.8,Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs#All (1.Prices[0]),"{""reach"":""Engineers"",""scale"":0.8}"
-reyn/0,reyn,0,Vehicles,1.1,Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs#All (11.Prices[0]),"{""reach"":""Vehicles"",""scale"":1.1}"
-varro/0,varro,0,Cheap,0.85,Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs#All (10.Prices[0]),"{""reach"":""Cheap"",""scale"":0.85}"

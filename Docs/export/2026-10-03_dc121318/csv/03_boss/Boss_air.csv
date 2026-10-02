@@ -1,2 +1,0 @@
-id,boss_id,thu_tu,phase,units,nguon,raw_json
-leviathan/0,leviathan,0,1,attack_jet;attack_jet,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[223].air[0],"{""phase"":1,""units"":[""attack_jet"",""attack_jet""]}"

@@ -1,5 +1,0 @@
-id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
-damageTable.thermobaric,damageTable,thermobaric,2.0,,,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.thermobaric,2.0
-firepower.propBlasts,firepower,propBlasts,1.5,,,Assets/MachineBrigade/Resources/Data/balance.json: firepower.propBlasts,1.5
-firepower.strikes,firepower,strikes,2.0,,,Assets/MachineBrigade/Resources/Data/balance.json: firepower.strikes,2.0
-firepower.vehicleBlasts,firepower,vehicleBlasts,2.0,,,Assets/MachineBrigade/Resources/Data/balance.json: firepower.vehicleBlasts,2.0

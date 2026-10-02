@@ -1,9 +1,0 @@
-id,boss_id,thu_tu,unit,abeam,at,count,nguon,raw_json
-hydra/0,hydra,0,missile_boat,,,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[251].fleet[0],"{""unit"":""missile_boat"",""count"":1}"
-leviathan/0,leviathan,0,sea_cruiser,-17,22,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[223].fleet[0],"{""unit"":""sea_cruiser"",""count"":1,""at"":22,""abeam"":-17}"
-leviathan/1,leviathan,1,sea_corvette,-16,-27,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[223].fleet[1],"{""unit"":""sea_corvette"",""count"":1,""at"":-27,""abeam"":-16}"
-leviathan/2,leviathan,2,missile_boat,,,3,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[223].fleet[2],"{""unit"":""missile_boat"",""count"":3}"
-nyx/0,nyx,0,missile_boat,,,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[249].fleet[0],"{""unit"":""missile_boat"",""count"":1}"
-scylla/0,scylla,0,missile_boat,,,2,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[237].fleet[0],"{""unit"":""missile_boat"",""count"":2}"
-typhon/0,typhon,0,sea_corvette,,26,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[232].fleet[0],"{""unit"":""sea_corvette"",""count"":1,""at"":26}"
-typhon/1,typhon,1,missile_boat,,,2,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[232].fleet[1],"{""unit"":""missile_boat"",""count"":2}"

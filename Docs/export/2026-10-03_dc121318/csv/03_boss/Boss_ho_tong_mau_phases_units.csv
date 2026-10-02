@@ -1,5 +1,0 @@
-id,boss_ho_tong_mau_phases_id,thu_tu,role,unit,nguon,raw_json
-aurel/0/0,aurel/0,0,,bmpt,Assets/MachineBrigade/Resources/Data/balance.json: escortTemplates.aurel.phases[0].units[0],"{""unit"":""bmpt""}"
-aurel/0/1,aurel/0,1,jam,ew_jammer,Assets/MachineBrigade/Resources/Data/balance.json: escortTemplates.aurel.phases[0].units[1],"{""unit"":""ew_jammer"",""role"":""jam""}"
-aurel/1/0,aurel/1,0,,elite_attack_helicopter,Assets/MachineBrigade/Resources/Data/balance.json: escortTemplates.aurel.phases[1].units[0],"{""unit"":""elite_attack_helicopter""}"
-aurel/1/1,aurel/1,1,repair,engineer_vehicle,Assets/MachineBrigade/Resources/Data/balance.json: escortTemplates.aurel.phases[1].units[1],"{""unit"":""engineer_vehicle"",""role"":""repair""}"
