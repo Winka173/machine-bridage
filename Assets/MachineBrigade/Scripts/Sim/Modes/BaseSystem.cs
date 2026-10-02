@@ -60,12 +60,15 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Its ring is lost to the attacker: it is never flown back in.</summary>
         public bool Lost { get; internal set; }
 
+        /// <summary>Prompt 32 L3: a gun wall's tower: this small slot's tower stands on its wall line's gun segment.</summary>
+        public bool OnWall { get; internal set; }
+
         /// <summary>How much tougher and harder-hitting a tower raised here is (a fortress's inner lines).</summary>
         internal float HealthScale = 1f, DamageScale = 1f;
     }
 
     /// <summary>A side's base in the battle: its role, its HQ, its hardpoints and its outposts.</summary>
-    public sealed class TeamBase
+    public sealed partial class TeamBase
     {
         internal TeamBase(int team, BaseRole role, BaseLoadout loadout)
         {
@@ -215,6 +218,8 @@ namespace MachineBrigade.Sim.Modes
                     b.Slots.Add(slot);
                 }
             }
+            // Prompt 32 L3: the camp's wall lines (the map's camp of this site), before its towers stand.
+            BuildWalls(b, "camp" + (siteTeam ?? team));
             foreach (var slot in b.Slots)
                 if (slot.Tower != null) Raise(b, slot);
             return b;
@@ -296,6 +301,8 @@ namespace MachineBrigade.Sim.Modes
                 if (id != null && catalog.Vehicles.ContainsKey(id)) state.Tower = id;
                 b.Slots.Add(state);
             }
+            // Prompt 32 L3: the fortress's fall-back lines (Defend's three wall lines).
+            BuildWalls(b, "fortress");
             foreach (var slot in b.Slots)
                 if (slot.Tower != null) Raise(b, slot);
             return b;
@@ -321,6 +328,8 @@ namespace MachineBrigade.Sim.Modes
         private void Raise(TeamBase b, HardpointState slot)
         {
             var tower = _world.SpawnVehicle(slot.Tower!, b.Team, slot.Def.Position, slot.Def.Facing);
+            // Prompt 32 L3: a gun wall's tower stands on its segment (whose ground the wall holds), not beside it.
+            if (slot.OnWall) tower.Position = slot.Def.Position;
             _world.AnchorDefence(tower);
             if (slot.HealthScale != 1f)
             {

@@ -52,7 +52,18 @@ ROWS = [
 # The world's mode tags (SimWorld.ModeTag) and the campaign's mission goals (MissionDef.MissionGoal).
 MODES = {"Conquest": "conquest", "Sandbox": "conquest", "Deathmatch": "deathmatch", "KingOfTheHill": "hill",
          "Assault": "assault", "Siege": "siege", "Weekly": "siege", "Defend": "defend", "Endless": "defend",
-         "Survival": "survival", "BossRush": "bossrush", "Operation": "operation", "FixedDeck": "fixed_deck"}
+         "Survival": "survival", "BossRush": "bossrush", "Operation": "operation", "FixedDeck": "fixed_deck",
+         "Showdown": "showdown"}
+
+# Prompt 32 L7: Showdown (Đối công) has no row in the sheet: its profile as the prompt words it (data only, prompt 28's
+# fields): commanders both sides, stall BOTH, spend and advance pressure on, its objective policy, the wall and HQ rules.
+SHOWDOWN = {"name": "Đối công", "controllers": ["Commander"], "tactics": ["*"], "generalTactic": False, "stall": "Both",
+            "spend": True, "advance": True, "support": "Normal", "engagement": "Normal", "defender": "none",
+            "hqSkillThreat": 8, "wallRoute": {"route": 1, "threat": 1, "breach": 0.9}, "targetMask": ["enemy"],
+            "objectivePolicy": "(1) thủ căn cứ khi có mối đe dọa đáng kể; (2) phá phòng tuyến ngoài (cổng hoặc phá tường theo "
+                               "routeCost + threatCost + breachTimeCost); (3) đánh nhà chính; (4) trung lập khi có lợi; dùng kỹ "
+                               "năng nhà chính",
+            "autoAiNote": "Thủ nhà, phá tuyến ngoài, đánh nhà chính"}
 GOALS = {"Capture": "capture", "Destroy": "capture", "Duel": "capture", "Hold": "hold", "Survive": "hold",
          "Escort": "escort", "Evacuate": "escort", "Protect": "protect", "Recon": "recon", "Hunt": "hunt",
          "Intercept": "hunt", "ShootDown": "shootdown", "Outpost": "outpost", "Relieve": "relieve", "Boss": "bossrush"}
@@ -64,11 +75,14 @@ TACTIC_NAMES = {"Phục kích": "ambush", "Bảo vệ căn cứ": "base_defence"
 # What the sheet says in prose, as fields (the appendix's mandatory rules).
 EXTRA = {
     # Defending side: "ai" the AI's commander holds, "player" the player holds; the defender never gets stall pressure.
-    "assault": {"defender": "ai", "leashRegion": "zone", "leashDistance": 40, "hqSkillThreat": 10},
-    "siege": {"defender": "ai", "leashRegion": "defenceLayer", "leashDistance": 30, "hqSkillThreat": 12},
+    # Prompt 32 L3: "wallRoute": a squad's weights for the way into a walled base (route, threat, breach time; default 1).
+    "assault": {"defender": "ai", "leashRegion": "zone", "leashDistance": 40, "hqSkillThreat": 10,
+                "wallRoute": {"route": 1, "threat": 1.2, "breach": 0.9}},
+    "siege": {"defender": "ai", "leashRegion": "defenceLayer", "leashDistance": 30, "hqSkillThreat": 12,
+              "wallRoute": {"route": 1, "threat": 1.2, "breach": 0.8}},
     # Prompt 32 L4: the enemy CP inside a base's region at which the AI uses its HQ's skill (the profile's default is 8).
-    "conquest": {"hqSkillThreat": 8},
-    "hill": {"hqSkillThreat": 8},
+    "conquest": {"hqSkillThreat": 8, "wallRoute": {"route": 1, "threat": 1, "breach": 1}},
+    "hill": {"hqSkillThreat": 8, "wallRoute": {"route": 1, "threat": 1, "breach": 1}},
     "defend": {"defender": "player"},
     "survival": {"defender": "player"},
     "hold": {"defender": "player"},
@@ -82,7 +96,7 @@ EXTRA = {
     "outpost": {"phaseOverrides": [{"when": "step:clear", "stall": "Both"}, {"when": "step:capture", "stall": "Both"},
                                    {"when": "step:build", "stall": "ObjectiveStallOnly"},
                                    {"when": "step:hold", "stall": "AttackerOnly"}]},
-    "deathmatch": {"flags": ["riskWeightByUnitValue"], "hqSkillThreat": 8},
+    "deathmatch": {"flags": ["riskWeightByUnitValue"], "hqSkillThreat": 8, "wallRoute": {"route": 1, "threat": 1, "breach": 1}},
     "bossrush": {"flags": ["noGeneralTactic"]},
     "fixed_deck": {"inherits": True},
     # "theo giai đoạn": the operation's phases override; between phases it plays like a capture mission.
@@ -210,6 +224,7 @@ def main():
     ap.add_argument("--dry", action="store_true")
     args = ap.parse_args()
     data = profiles(openpyxl.load_workbook(XLSX, data_only=True))
+    data["showdown"] = SHOWDOWN
     assign = {"modes": MODES, "goals": GOALS}
     check_goals(assign, data)
     new = block(data, assign)

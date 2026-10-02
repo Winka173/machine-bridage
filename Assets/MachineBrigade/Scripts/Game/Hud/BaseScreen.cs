@@ -78,6 +78,10 @@ namespace MachineBrigade.Game.Hud
         private readonly CampMap _map;
         private readonly VisualElement _panelBody, _strip, _hq, _saved, _mapBox, _legend, _dropHost;
         private readonly Label _hqTitle, _hqNext, _hqType;
+
+        // Prompt 32 L3: the wall lines (outer, inner, a fortress's keep line), a tap each cycles its type.
+        private readonly VisualElement[] _wallChips = new VisualElement[PlayerProfile.WallLines];
+        private readonly Label[] _wallLabels = new Label[PlayerProfile.WallLines];
         private readonly List<(KitChip chip, int plan)> _planChips = new();
         private readonly KitChip _customChip, _rangeChip;
         private VisualElement _hqMark;
@@ -125,6 +129,16 @@ namespace MachineBrigade.Game.Hud
             hqText.Add(_hqType);
             _hq.Add(hqText);
             bar.Add(_hq);
+            var walls = Kit.Box("fc-base__walls");
+            for (var i = 0; i < PlayerProfile.WallLines; i++)
+            {
+                var line = i;
+                _wallChips[i] = Kit.Tappable("fc-base__wall", () => CycleWall(line));
+                _wallLabels[i] = Kit.Text("", "fc-small fc-row-text");
+                _wallChips[i].Add(_wallLabels[i]);
+                walls.Add(_wallChips[i]);
+            }
+            bar.Add(walls);
             _dropHost = Kit.Box("fc-base__map-pick");
             bar.Add(_dropHost);
             var plans = Kit.Box("fc-base__plans");
@@ -746,8 +760,35 @@ namespace MachineBrigade.Game.Hud
             _changed();
         }
 
+        /// <summary>Prompt 32 L3: a line's type as it reads ("Outer wall: T-wall").</summary>
+        private static string WallName(WallType type) => Strings.Get("wall.type." + WallRules.Key(type));
+
+        /// <summary>Prompt 32 L3: the next type of a wall line, and what it does (numbers from the data).</summary>
+        private void CycleWall(int line)
+        {
+            PlayerProfile.NextWallType(line);
+            var type = PlayerProfile.WallOf(line);
+            var def = _catalog.Base.Walls.Of(type);
+            var info = Strings.Format("wall.type." + WallRules.Key(type) + ".info", ("durability", Strings.Num(def?.Durability ?? 0f, "0.0")));
+            _note(Strings.Get("wall.line." + (line + 1)) + " · " + info, false);
+            Refresh();
+            _changed();
+        }
+
+        private void RefreshWalls()
+        {
+            // A camp has two lines; a long battlefield's layered base (Defend's fortress) three.
+            var lines = _site != null && _site.Layered ? _catalog.Base.Walls.FortressLines : _catalog.Base.Walls.CampLines;
+            for (var i = 0; i < _wallChips.Length; i++)
+            {
+                _wallChips[i].style.display = i < lines ? DisplayStyle.Flex : DisplayStyle.None;
+                _wallLabels[i].text = Strings.Format("camp.wall", ("line", Strings.Get("wall.line." + (i + 1))), ("type", WallName(PlayerProfile.WallOf(i))));
+            }
+        }
+
         private void RefreshBar(BaseLoadout layout)
         {
+            RefreshWalls();
             var rules = _catalog.Base;
             var level = layout.HqLevel;
             _hqTitle.text = Kit.Caps(Strings.Format("camp.hqBadge", level));

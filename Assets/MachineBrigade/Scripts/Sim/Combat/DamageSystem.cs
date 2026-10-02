@@ -226,7 +226,9 @@ namespace MachineBrigade.Sim.Combat
                 (vehicle.Def.Class == UnitClass.Helicopter || vehicle.Def.Drone))
                 best = LightTowerAirBonus;
             // Engineers (and the armoured bulldozer) breach obstacles three times as fast.
-            if (vehicle != null && vehicle.Def.Obstacle && (attacker.Def.RepairAura != null || attacker.Def.Breacher)) best = MathF.Max(best, EngineerBreach);
+            if (vehicle != null && vehicle.Def.Obstacle && !vehicle.Def.Wall && (attacker.Def.RepairAura != null || attacker.Def.Breacher)) best = MathF.Max(best, EngineerBreach);
+            // Prompt 32 L3: the wall breakers (bulldozer, engineer vehicle, line charge) hit walls 1.5 times as hard (walls only).
+            if (vehicle != null && vehicle.Def.Wall && attacker.Def.WallBreaker) best = MathF.Max(best, attacker.Def.WallBreakerScale);
             for (var i = 0; i < bonuses.Count; i++)
             {
                 var b = bonuses[i];
@@ -570,6 +572,9 @@ namespace MachineBrigade.Sim.Combat
                     phaseReached = true;
                 }
             }
+            // Prompt 32 L7: Showdown's anti-snipe on an HQ (and its sudden-death count of the damage the HQs take).
+            if (_world.HqDamageRule != null && vehicle.Def.Static && vehicle.Def.Fort == null && !vehicle.Def.Wall) damage = _world.HqDamageRule(vehicle, hit, damage);
+            if (!(damage > 0f)) return 0f;
             vehicle.Hp = MathF.Max(0f, vehicle.Hp - damage);
             DamageLog?.Invoke(hit.Attacker, vehicle, damage, hit.Kind, hit.Weapon);
             if (phaseReached) _world.Abilities.BeginPhase(vehicle);
@@ -741,6 +746,8 @@ namespace MachineBrigade.Sim.Combat
 
         private void OnVehicleDestroyed(Vehicle vehicle, in HitInfo hit)
         {
+            // Prompt 32 L3: a wall segment turns to rubble (its ground opens at the next tick).
+            if (vehicle.Def.Wall) _world.Walls.OnDestroyed(vehicle);
             var speed = vehicle.Speed;
             vehicle.ClearPath();
             vehicle.Speed = 0f;

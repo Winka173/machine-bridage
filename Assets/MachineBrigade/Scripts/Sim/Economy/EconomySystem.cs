@@ -414,7 +414,7 @@ namespace MachineBrigade.Sim.Economy
             var team = victim.LastAttackerTeam;
             var paid = 0f;
             // Prompt 32 L4: a garrison squad pays nobody.
-            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && !victim.Garrison && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
+            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && !victim.Def.Wall && !victim.Garrison && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
             {
                 paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team), economy.Commander?.KillRefund ?? KillReward);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);
@@ -503,7 +503,7 @@ namespace MachineBrigade.Sim.Economy
         /// </summary>
         private float Bounty(TeamEconomy killer, Vehicle victim)
         {
-            if (!_world.CatchUp || !_teams.TryGetValue(victim.Team, out var loser)) return 1f;
+            if (!_world.CatchUp || _world.CatchUpIncomeOnly || !_teams.TryGetValue(victim.Team, out var loser)) return 1f;
             // The victim still counts: it was part of the army the killer was up against.
             var theirs = MathF.Max(CatchUpMinimumArmy, loser.ArmyCp + victim.Def.ArmyCost);
             var ours = MathF.Max(CatchUpMinimumArmy, killer.ArmyCp);

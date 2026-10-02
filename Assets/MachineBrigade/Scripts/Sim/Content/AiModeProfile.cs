@@ -126,6 +126,15 @@ namespace MachineBrigade.Sim.Content
         /// its HQ's skill (the Fortress's barrage, the Garrison's alarm, the Shield's emergency dome).
         /// </summary>
         public float HqSkillThreat { get; internal set; } = 8f;
+
+        /// <summary>
+        /// Prompt 32 L3 (data only, "wallRoute"): how a squad weighs the way into a walled base, through the gate or through a
+        /// wall it breaks: cost = route x <see cref="WallRouteCost"/> + threat x <see cref="WallThreatCost"/> + breach time x
+        /// <see cref="WallBreachCost"/> (all in metres of driving; see SquadLayer.Walls.cs).
+        /// </summary>
+        public float WallRouteCost { get; internal set; } = 1f;
+        public float WallThreatCost { get; internal set; } = 1f;
+        public float WallBreachCost { get; internal set; } = 1f;
         public EscortParams? Escort { get; internal set; }
 
         /// <summary>A fixed-deck mission: takes the mission type's profile, changed only by its special rules.</summary>
@@ -181,6 +190,13 @@ namespace MachineBrigade.Sim.Content
                 Inherits = o.Bool("inherits", false),
                 HqSkillThreat = System.Math.Max(0f, o.Float("hqSkillThreat", 8f)),
             };
+            if (o.Has("wallRoute"))
+            {
+                var w = o.Object("wallRoute");
+                p.WallRouteCost = System.Math.Max(0f, w.Float("route", 1f));
+                p.WallThreatCost = System.Math.Max(0f, w.Float("threat", 1f));
+                p.WallBreachCost = System.Math.Max(0f, w.Float("breach", 1f));
+            }
             if (o.Has("targetMask")) p.TargetMask = o.StringArray("targetMask");
             if (o.Has("flags")) p.Flags = o.StringArray("flags");
             var controllers = AiController.None;

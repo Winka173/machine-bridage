@@ -247,6 +247,13 @@ namespace MachineBrigade.Sim.Abilities
         /// <summary>Wire round an obstacle: enemy ground vehicles within it move slower.</summary>
         private void SlowAuras()
         {
+            // Prompt 32 L3: rubble of a wall slows every ground vehicle crossing it (only while there is rubble).
+            if (_world.HasWalls && _world.Walls.HasRubble)
+            {
+                var slow = _world.Catalog.Base.Walls.RubbleSlow;
+                foreach (var v in _world.VehicleList)
+                    if (v.IsAlive && !v.Flying && !v.Def.Static && _world.Walls.InRubble(v.Position)) _world.Status.Slow(v, slow, AuraInterval * 2f);
+            }
             foreach (var w in _world.VehicleList)
             {
                 var aura = w.Def.SlowAura;

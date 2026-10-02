@@ -643,6 +643,8 @@ namespace MachineBrigade.Sim.AI
                 {
                     if (s.Action == SquadAction.Support && LosingFriend(intel, s) is { } f) target = f.Centre;
                     goal = target;
+                    // Prompt 32 L3: the way into a walled base: through the gate, or through a wall the squad breaks.
+                    if (s.Action == SquadAction.Attack && Breach(world, intel, s, target)) return;
                     if (s.State == SquadState.Combat && NearestEnemy(intel, s.Centre) is { } enemy)
                     {
                         // Engagement distance (D.5): stand at the role's (or the tactic's) share of the reach.

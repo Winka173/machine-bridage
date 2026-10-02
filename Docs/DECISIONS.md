@@ -15636,3 +15636,107 @@ section alone; it ran on the data).
 Tests (written, not run): `HandbookP32Tests` (the type table, the penetration row, the worked example, the marks, the
 defences and their locked rule, the structure table and walls, in both languages, against the data; every chip opens an
 entry that exists).
+
+## Prompt 32 L3 / L7 / L9 (lead pass, 2026-10-02)
+
+Prompt 32 passes 3, 7 and 9 on `feature/p32-a3` (lane A of Docs/LOCAL_PLAN_P31_P32.md), on prompt 31's prebuilt NavGrid
+states (DECISIONS "Prompt 31 L3"). Nothing run but the Python tools, the Blender build and the GLB validator (no Unity, no
+tests, no sims); the C# is compiled by the lead. Locked rules of section 0 hold: aiModeProfile extended by data only (one
+new optional field, `wallRoute`, and a Showdown profile), match rules in prompt 30's schema, no new HUD button (the walls
+are chosen on the Base screen), deterministic (switches at a tick boundary, choices in id order).
+
+### L3: walls on prebuilt NavGrid ground
+
+**Data.** `base.walls` (parsed by `Content/WallRules.cs`, `BaseRules.Walls`): `segmentHp` 2400 (HESCO), `rubbleSlow` 0.2,
+`campLines` 2, `fortressLines` 3, `default` hesco, `types` (hesco `wall_hesco` 1.0; t_wall `wall_t` 1.6 with `extra`;
+gun_wall `wall_gun` 1.2 with `gun`), `ai` (brandt, kessler t_wall; varga gun_wall; default hesco); the breakers and x1.5
+were already there (L8). Three new vehicle defs `wall_hesco` / `wall_t` / `wall_gun`: `"wall": true`, static obstacles,
+no card, no CP, weapon none, 12 x 2 m (`width` 12, `length` 2), hp 2400 / 3840 / 2880 (segmentHp x durability; a test
+checks it), armour 3 / 4 / 3. No currency of their own: the type is a free loadout choice, like the HQ type.
+
+**Map data.** Each base map file has `"walls"` (`Tools/maps/p32_walls.py`, rerunnable, `--check`; build_maps.py calls it
+after a rebuild; `MapDefinition.Walls`, `WallsOf(owner)`; a reversed battlefield swaps the camps' owners): lines with
+`owner` (`camp0`, `camp1`, `fortress`), `ring` (1 outer, 2 inner, 3 a fortress's keep line; the loadout's line index is
+ring - 1), `radius` (Chebyshev from the HQ: inside it is the base), `gate` and 3-5 axis-aligned segments (12 x 2 m, one
+NavGrid block each), `facing` out of the base, one `gun` (next to the gate) and at most one `extra` (half the gate).
+How a line is laid (my choices): on a square round the HQ at radius R on the sides facing the enemy (an L for a corner
+camp, a straight line for a long map's head-on attack), the gate where a road crosses nearest the middle (else the
+middle: the corner), 3-4 plain segments from the gate outwards, alternately each side, each pushed up to 6 m in or out
+to free ground; a slot touching anything blocked (props, the outline, every hardpoint filled at 0.8 of its size, the HQ),
+a drop zone (18 m), a capture circle, a neutral site, a start unit, an outpost slot, a fortress's super-gun or firing
+spots is skipped. Radii tried in order: camps ring 1 58/52/64/46/70, ring 2 34/30/38/42/27; a corner fortress
+siegeRings[0] - 7 (then +-6 to 18), siegeRings[1] + 9, siegeRings[1] - 14; a layered fortress outerWall - 9, innerWall - 9
+and 40 m beyond the outer wall's line. The worst case of the three types (every segment, the extra, the gun tower's 4 m
+block) must keep both rallies, the capture points and the neutral sites in one region and seal off no more than 6 open
+cells, else segments are dropped until it does (fewer than 3: NONE). A conquest map keeps its camps alike (a ring only one
+camp could take is dropped from the other).
+
+Result (75 base maps, 280 lines, about 1,080 segments). Conquest: both lines in both camps on every map but landingbeach
+(ring 2 seals 35 cells round the camp's buildings) and lighthousebay (ring 2 seals 62-86 cells on the harbour): ring 1
+only; openpit (ring 1 has 2 free slots at most): ring 2 only. Siege and long camps (side 0): both lines but
+borderbridge_long, landingbeach_long, openpit_long, veyra_old_quarter_long (none: hemmed in by the long map's props),
+capital_long, hydrodam_long, launchsite_long, redrock_long, saltflat_long, landingbeach_siege, lighthousebay_siege,
+openpit_siege (one line). Fortresses: every layered fortress (the long maps, Defend's usual ground) has its three lines;
+the corner fortresses mostly ring 2 only (at the outer line and at the keep no 12 m slot is free among the works: NONE),
+rings 1 and 2 on dunebreak, greenvale, ironport, landingbeach, redrock, skyhold, ring 1 only on orbitalgate, none on the
+classic fortresses (coralisles, foundry, metrocity, openpit, swamp). A line the loadout leaves NONE builds nothing.
+
+**Sim** (`Modes/WallSystem.cs`, `world.Walls`; `Modes/BaseSystem.Walls.cs`): `BaseSystem.Establish` builds the camp's lines
+(owner `camp<site>`), `EstablishFortress` the fortress's, SiegeMode a classic fortress's, all before the towers stand and
+before the first step. For each line the loadout gives a type: the whole line is drawn on the grid and the anchors
+(rallies, points, neutral sites) checked to stay in one region, else the line is not built (NONE, `Walls.Problems`); then
+each segment is a static obstacle vehicle (spawned before its ground closes, so the spawn does not move it) on its own
+site `wall.<team>.<ring>.<k>` with the states INTACT (its block) and RUBBLE (none) through prompt 31's `NavStates.Define`
+(INTACT in force). The segment's own vehicle anchor is never laid: the site alone holds the ground. RUBBLE only opens
+ground, so no RUBBLE state can fail prompt 31's Validate (not called again); the INTACT state, which Validate does not
+look at, is the line check above.
+
+- **Event-driven.** `DamageSystem.OnVehicleDestroyed` -> `Walls.OnDestroyed`: the segment asks `Schedule(site, RUBBLE,
+  tick + 1)`, its ground becomes a rubble area, a gun wall's tower on it is destroyed with it. Nothing of the walls runs
+  per tick; the rubble slow rides the slow-aura pass (every 0.5 s, only while there is rubble): ground vehicles inside a
+  rubble area get the Slow status at 0.2 (20 % slower), either side's.
+- **Never trapped, always a way.** The gate and the open line ends by construction, checked at load; a switch to RUBBLE
+  only opens ground; prompt 31's displacement covers the rest.
+- **Loads.** `Walls.Snapshot()` (the rubble sites) / `Restore()` (segments removed quietly, sites straight to RUBBLE);
+  the sites are in the battle's fingerprint, so a replay switches on the same steps. A weekly fortress's broken rings
+  start in rubble (`RuinRing`).
+- **Gun wall.** It takes the last small slot the HQ level opens that holds a tower (never a free slot): that tower stands
+  on the gun segment (`HardpointState.OnWall`, the slot's hardpoint moved there), is flown back in there by the L2 rules,
+  and falls with its segment. No small tower in the base: the gun wall stands without one.
+- **T-wall.** Builds the line's extra segment: half the 24 m gate closed (12 m, 9 m clear of the clearances), so the
+  side's own vehicles take the narrower or the longer way. HESCO and the gun wall leave the full gate.
+- **Wall breakers** (`VehicleDef.WallBreaker`, `WallBreakerScale`; an elite or a branch of one too): x1.5 on walls only
+  (`DamageSystem.BonusFor`); the engineers' x3 on obstacles and the bulldozer's plough do not apply to walls (they stay on
+  dragon's teeth, hedgehogs and wire). Walls pay no CP to anyone, count in no supply and score nothing in Deathmatch (the
+  kill ledger skips them).
+- **Targeting.** Walls are obstacles: picked last by the guns (x0.05), breached by the waves' existing obstacle rules.
+
+**AI** (`AI/SquadLayer.Walls.cs`, prompt 28's squad scoring, no behaviour tree): an attacking squad whose goal lies behind
+an enemy line it stands outside (the outermost such line) compares in metres of driving the open ways (the gate, any
+rubble) with breaking each standing segment: cost = route x `wallRoute.route` + threat x `wallRoute.threat` (anti-tank and
+artillery reach along the way over the squad's strength, 40 m a unit) + breach x `wallRoute.breach` (the segment's health
+over the squad's damage a second against it, the wall breakers' x1.5 counted, times the slowest member's speed). A breach
+is taken only at 80 % of the best open way's cost (no flipping); the members attack the segment (logged "breach wall");
+once it is rubble the open way wins. Data: `aiModeProfiles` `wallRoute` on conquest, deathmatch, hill (1 / 1 / 1), assault
+(1 / 1.2 / 0.9), siege (1 / 1.2 / 0.8), showdown (1 / 1 / 0.9), also in Tools/ai/import_ai_modes.py's EXTRA (the generated
+block was edited by hand as before: the script's key order differs since L4). The enemy's wall type by general
+(`base.walls.ai`, `BaseLoadout.ForAi`: every line the same type).
+
+**Game.** The player's lines in the save (`wallTypes`, `PlayerProfile.WallOf` / `NextWallType`; every resolved loadout
+carries them); the Base screen shows one row per line (two for a camp, three for a layered base), a tap cycles NONE ->
+HESCO -> T-wall -> gun wall with the type's line (EN + VI, `Hud/BaseText.cs`). Written blind (no USS for the new rows).
+Rubble is drawn as the segment's own wreck (a fixed defence slumps into a burnt ruin, VehicleView.BecomeWreck): no rubble
+model.
+
+**Models** (`Tools/blender/mb_p32_walls.py`, on the V2 kit through wave 8b's `_v2()` and `k.clean`): `wall_hesco` (three
+4 m gabion bays on a berm, Team band, razor wire; 3,276 triangles), `wall_t` (five precast T-wall panels; 1,798),
+`wall_gun` (two bays and a 4 m firing platform; 2,672), 12 x 2 m, ends flush. The substring filter (`wall_hesco wall_t
+wall_gun`) built only these three. `glb_check.py --accept` (new; 0 errors).
+
+Tests (written, not run): `WallP32Tests` (the data and durability; the enemy's type by general; the breakers x1.5 on walls
+only; every base map's lines 3-5 segments with a gate; every line intact keeps every base map joined, T-walls and gun
+walls; every INTACT/RUBBLE combination of ashfield's camp 0 (up to 1,024) on the grid; every segment switched to rubble for
+real on three maps; the widest ground card through a T-wall's gate and the way back from in front of every segment; the
+switch on the next tick only and no switch without a fall; rubble slowing by a fifth; the gun wall taking a small slot of
+the base; a line that would cut the battlefield refused; a replay's fingerprint and walls; a snapshot restored). Not
+tested: the AI's route choice (it needs a commander's squads in a running battle): NEED SIM.

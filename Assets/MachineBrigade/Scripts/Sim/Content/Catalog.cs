@@ -510,6 +510,7 @@ namespace MachineBrigade.Sim.Content
                 WeaponFamilyTable = familyTable,
             };
             catalog.FinishExtras(root, ownBranches);
+            catalog.FinishWalls();
             catalog.CheckNaval();
             return catalog;
         }
