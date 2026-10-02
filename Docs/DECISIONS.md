@@ -17327,3 +17327,9 @@ Pass 1 (kit library):
 - Thin plates (skirts, ERA, doors, panels) get their chamfer through `plate` (mb_kit27.block leaves anything under 12 cm plain).
 - Unit tests: Tools/blender/tests/test_kit35.py (size, bevel, triangle ceiling, names, zero-area, COLOR_0 per component; run in Blender, 70/70). Catalogue picture: Docs/models/kit_catalog/kit35_catalog.png.
 - No mesh LOD1 / LOD2 in the GLBs: the runtime builds LOD1 (MeshSimplifier) and the impostor (MODEL_STANDARD section 1); tier 3 pieces are small separate pieces, the first the simplifier removes.
+Pass 2 (specs, the three pilots only):
+- Specs are JSON in Tools/blender/specs/ (ixion, zu23_technical, rocket_turret); `validate_specs.py` checks them against balance.json (weapons, barrels, flares, APS, boss parts) and, with --glb, against the built file (every named node, size within the tolerance).
+- A feature maps to a node name, not always a `Part_*` pivot: MODEL_STANDARD section 2 forbids a `Part_*` per feature (each is a draw and a shadow draw); `Part_*` stays for what breaks (boss parts, wreck wheels).
+- Pilot 2 = zu23_technical: no starter-deck vehicle (scout_jeep, armored_car, ifv, main_battle_tank) borrows geometry (ifv and the MBT are the originals their elites copy); zu23_technical is the first player card in REBUILD_LIST group 2 (chapter 1, Kém, 39 % shared with rocket_technical, under the triangle floor).
+- Pilot 3 = rocket_turret: no common tower borrows geometry from another tower type (only the walls and the barrage balloon share); rocket_turret is the first tower a player builds (chapter 1 unlock) and Kém. Its branches rocket_turret_a / _b keep their old builder until wave 1 (QUESTIONS.md).
+- Ixion's modelSize is x1.26 of the BelAZ-75710's length, under prompt 35's x1.3-1.5 for bosses: data kept (no gameplay change), asked in QUESTIONS.md. zu23 has no `barrels` (1 muzzle) although the ZU-23-2 is twin-barrelled: one Muzzle_main kept.

@@ -1,0 +1,53 @@
+{
+ "id": "ixion",
+ "class": "boss",
+ "frame": "wheeled",
+ "real": ["BelAZ-75710 (the largest mining dump truck)", "T-72 turret, 2A46 125 mm, welded on the body"],
+ "shape": "unit_sheet.json Boss: based on the BelAZ-75710 with a T-72 125 mm turret welded on the body; Thorne's armoured mine truck at Deepcut Mine: cab offset left, six big wheels, a V ram (model tạm). 26.0 x 12.0 x 10.0 m; breakable parts (turret, wheels, engine) separate and easy to see; a wreck per part; the owning general's colour stripe.",
+ "confidence": "cao (BelAZ-75710 dimensions: Wikipedia, reference_dimensions.md high)",
+ "target_size": {"L": 26.0, "W": 12.0, "H": 10.0, "source": "balance.json modelSize (x1.26 / x1.22 / x1.22 of the real 20.6 x 9.87 x 8.16 m)", "tolerance": 0.10},
+ "features": [
+  {"feature": "BelAZ dump body (the armoured box over the frame, its canopy reaching over the cab)", "nodes": ["Body", "Canopy"]},
+  {"feature": "cab offset to the left under the canopy", "nodes": ["Part_cab", "Cab"]},
+  {"feature": "six big mining tyres: two front, four rear on two axles (the sheet's six; data parts)", "nodes": ["Part_wheel", "Part_wheel.001", "Part_tyre", "Part_tyre.001", "Part_tyre.002", "Part_tyre.003"]},
+  {"feature": "V ram across the front", "nodes": ["Ram"]},
+  {"feature": "T-72-class 125 mm turret welded on the body roof", "nodes": ["Turret", "Main_cannon", "Muzzle_main"]},
+  {"feature": "two 12.7 mm MGs on the cab roof", "nodes": ["Mount_mg", "Mount_mg.001", "Muzzle_mg", "Muzzle_mg.001"]},
+  {"feature": "front upper deck with the diagonal stair over the radiator (the BelAZ signature)", "nodes": ["Deck", "Stair"]},
+  {"feature": "radiator grille behind an armour guard", "nodes": ["Grilles", "Grille_guard"]},
+  {"feature": "mine dispenser chute under the tail (the mine strip)", "nodes": ["Mine_dispenser", "Point_mines"]},
+  {"feature": "exhaust stacks above the deck", "nodes": ["Exhaust"]}
+ ],
+ "class_parts": ["body", "weapons", "running_gear", "every parts[].node of the def"],
+ "weapons": [
+  {"weapon": "p26_ixion_125", "slot": "main (mountWeapons 0)", "mount": "Turret", "muzzles": ["Muzzle_main"]},
+  {"weapon": "p26_ixion_mg", "slot": "mg (mountWeapons 1)", "mount": "Mount_mg", "muzzles": ["Muzzle_mg"]},
+  {"weapon": "p26_ixion_mg", "slot": "mg (mountWeapons 2)", "mount": "Mount_mg.001", "muzzles": ["Muzzle_mg.001"]}
+ ],
+ "flare": false, "aps": false,
+ "budget": {"lod0": [10000, 20000], "floor": 7000, "lod1_share": 0.5, "lod2_share": 0.2, "note": "LOD1 / impostor built at run time"},
+ "team_zones": ["body sides and roof (Team)", "canopy (Team)", "the general's stripe along the body top rails (Team band)"],
+ "colour_zones_min": 6,
+ "breakable": [
+  {"part": "wheel_l", "node": "Part_wheel"}, {"part": "wheel_r", "node": "Part_wheel.001"},
+  {"part": "rear_l1", "node": "Part_tyre"}, {"part": "rear_r1", "node": "Part_tyre.001"},
+  {"part": "rear_l2", "node": "Part_tyre.002"}, {"part": "rear_r2", "node": "Part_tyre.003"},
+  {"part": "gun", "node": "Turret"}, {"part": "cab", "node": "Part_cab"}
+ ],
+ "wreck": "wreck_engine (front tyres), wreck_stump (rear tyres, cab), wreck_turret (turret): runtime wreck models, unchanged",
+ "boss": {
+  "weak_points_visible": [
+   "the four rear tyres (armour 1) stand bare behind the body: no skirt over them, their rims hazard yellow so the player sees the target",
+   "the two front tyres (breaking one throws the charge off) stand outside the ram's ends under the deck"
+  ],
+  "how_to_fight": "unit_sheet description: armour front 4, side 3, rear and roof 2; four rear tyres armour 1 are the weak point; a front tyre broken stops the charge",
+  "scale_note": "modelSize is x1.26 of the real length (prompt 35 asks x1.3-1.5): kept, data is not changed (QUESTIONS.md)"
+ },
+ "faction_style": "Hegemon general's machine (Hung): a mine truck up-armoured in the field: bolted appliqué plates, welded turret adapter, cage guards",
+ "details": {
+  "tier1": ["body", "canopy", "cab", "six tyres", "turret", "ram", "front deck", "hood"],
+  "tier2": ["appliqué plates", "body ribs", "canopy posts", "grille guard", "stair", "hoist rams", "fuel tank", "air cleaners", "mine dispenser", "turret ERA", "hatches", "mantlet", "mirrors"],
+  "tier3": ["rivets", "bolts on the plates", "wheel nuts", "handrails", "lamps with guards", "ladders", "weld beads", "periscopes", "antenna", "tow hooks", "cables"]
+ },
+ "questions": ["The real BelAZ-75710 runs on eight tyres (twin front axles); the sheet and the data say six: kept six."]
+}
