@@ -520,8 +520,8 @@ def flak_tower(a):
     # ---------------------------------------------------------------- quad heavy flak mount
     t = a.pivot('Turret', (0, 0, roof + .53))                                                # z 3.88
     a.part('Turntable', 'Armor', t).cyl(1.6, .14, loc=(0, 0, .05), seg=24, bevel=.02, bseg=1)
-    tarm = a.part('Mount_armor', 'Armor', t)
-    tsteel = a.part('Mount_steel', 'Steel', t)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    tsteel = a.part('Turret_steel', 'Steel', t)
     tarm.cyl(1.1, .3, loc=(0, 0, .25), seg=16, bevel=.03, bseg=1)                               # carriage ring
     bottom = [(-.6, -1.1), (.6, -1.1), (.75, -.7), (.75, 1.1), (.6, 1.3), (-.6, 1.3), (-.75, 1.1), (-.75, -.7)]
     top = [(-.48, -.45), (.48, -.45), (.64, -.2), (.66, 1.0), (.52, 1.2), (-.52, 1.2), (-.66, 1.0), (-.64, -.2)]

@@ -809,7 +809,7 @@
   },
   "interceptor_jet": {
     "file": "interceptor_jet.glb",
-    "triangles": 1052
+    "triangles": 1140
   },
   "iron_beam": {
     "file": "iron_beam.glb",
@@ -1349,7 +1349,7 @@
   },
   "sky_gunship_hd": {
     "file": "sky_gunship_hd.glb",
-    "triangles": 3764
+    "triangles": 3548
   },
   "skyscraper": {
     "file": "skyscraper.glb",
@@ -1401,7 +1401,7 @@
   },
   "strike_jet": {
     "file": "strike_jet.glb",
-    "triangles": 8700
+    "triangles": 8532
   },
   "stymphalos": {
     "file": "stymphalos.glb",
@@ -1433,7 +1433,7 @@
   },
   "tank_buster": {
     "file": "tank_buster.glb",
-    "triangles": 8958
+    "triangles": 8790
   },
   "tank_destroyer": {
     "file": "tank_destroyer.glb",

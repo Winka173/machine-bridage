@@ -12,11 +12,18 @@ The proportion fixes (heavy_flak_tower, at_gun_emplacement, laser_ad_station, vi
 mb_p25_new.py. Conventions are frontier_kit's: metres, +Z up, Blender -Y is the front.
 """
 import math
+import re
 
+import bmesh
 from mathutils import Vector
 
+import mb_air
+import mb_air3
 import mb_bosses2
+import mb_fortress
 import mb_kit27 as k
+import mb_naval
+import mb_p25_models
 import mb_p25_models2
 import mb_phase2
 import mb_siege
@@ -28,6 +35,57 @@ def _cleaned(build):
     def wrapped(a):
         build(a)
         k.clean(a)
+    return wrapped
+
+
+# Names the runtime looks up by prefix or pattern (ModelLibrary: turret, rig parts, mounts, spinners, loose parts, boss
+# and deploy parts, barrel groups, coax): a mesh with one of them is never merged into another.
+_KEEP = re.compile(r'^(turret|main_cannon|muzzle|mortar_tube|rocket_tubes|tubes|tube_bores|pod|atgm_pod|launcher|coax|'
+                   r'mount_|rotor|tail_rotor|radar|propeller|deploy_|part_|bombs|pump_beam|erector|searchlight|lift|'
+                   r'blade|parachute|elevation|missile_|barrel|cannon|icbm_payload|point_|launch_)', re.I)
+
+
+def merge_static(a):
+    """Merge parts that share material, parent and shading into one mesh (one renderer; the runtime merges per moving
+    part anyway). The first part's name is kept; runtime-looked-up names are never merged."""
+    groups = {}
+    for key in a.order:
+        name, mat, parent = key
+        sh = a.shapes[key]
+        if not sh.bm.faces or _KEEP.match(name) or k.kit.RIG.match(name) or k.kit.RUNTIME.match(name):
+            continue
+        groups.setdefault((mat, parent, bool(getattr(sh, 'flat', False))), []).append(key)
+    for keys in groups.values():
+        first = a.shapes[keys[0]]
+        for key in keys[1:]:
+            src = a.shapes[key].bm
+            dst = first.bm
+            vmap = {}
+            for v in src.verts:
+                nv = dst.verts.new(v.co)
+                nv[first.wear] = v[a.shapes[key].wear]          # the baked wear layer
+                vmap[v] = nv
+            for f in src.faces:
+                dst.faces.new([vmap[v] for v in f.verts])
+            src.free()
+            del a.shapes[key]
+            a.order.remove(key)
+
+
+def _merged(build):
+    def wrapped(a):
+        build(a)
+        merge_static(a)
+    return wrapped
+
+
+def _cleaned_hd(build):
+    """k.clean only for the high-detail build (sky_gunship's normal file has no slivers and stays as it was)."""
+    def wrapped(a, detail=False, **kw):
+        build(a, detail=detail, **kw)
+        if detail:
+            k.clean(a)
+            a.ao_strength = .85         # the cleaned slivers lost a little COLOR_0
     return wrapped
 
 
@@ -73,9 +131,9 @@ def mobile_fortress(a):
     k.clean(a)
 
 
-def _opts(module, name):
+def _opts(module, name, ao=.7):
     """The original options with a softer ambient occlusion (the fixes lost a little COLOR_0 to the cleaned slivers)."""
-    return dict(module.BUILDERS[name][1], ao_strength=.7)
+    return dict(module.BUILDERS[name][1], ao_strength=ao)
 
 
 BUILDERS = {
@@ -84,4 +142,12 @@ BUILDERS = {
     'helipad_a': (_cleaned(mb_p25_models2.helipad_a), _opts(mb_p25_models2, 'helipad_a')),
     'helipad_b': (_cleaned(mb_p25_models2.helipad_b), _opts(mb_p25_models2, 'helipad_b')),
     'mobile_fortress': (mobile_fortress, _opts(mb_bosses2, 'mobile_fortress')),
+    # Pass B: renderer merges and sliver clean-ups (flak_tower, sea_cruiser, interceptor_jet are edits in their builders).
+    'command_hq': (_merged(mb_siege.command_hq), mb_siege.BUILDERS['command_hq'][1]),
+    'shield_generator': (_merged(mb_fortress.shield_generator), mb_fortress.BUILDERS['shield_generator'][1]),
+    'siege_tank': (_merged(mb_p25_models2.siege_tank), mb_p25_models2.BUILDERS['siege_tank'][1]),
+    'sky_gunship': (_cleaned_hd(mb_p25_models.sky_gunship), mb_p25_models.BUILDERS['sky_gunship'][1]),
+    'strike_jet': (_cleaned(mb_air.strike_jet), mb_air.BUILDERS['strike_jet'][1]),
+    'tank_buster': (_cleaned(mb_air3.tank_buster), _opts(mb_air3, 'tank_buster', .85)),
+    'sea_cruiser': (mb_naval.sea_cruiser, _opts(mb_naval, 'sea_cruiser', .85)),
 }
