@@ -152,6 +152,41 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>The player's losses so far (scripted trucks and the boss not counted).</summary>
         public int Losses => _ledger.Losses(PlayerTeam);
 
+        private float _ownedSeconds;
+        private int _bossParts, _reconQuiet;
+
+        /// <summary>Prompt 30 L4: the battle's part of a won mission's star facts (the session adds the challenge's).</summary>
+        public StarFacts StarFacts(SimWorld world)
+        {
+            var f = new StarFacts
+            {
+                Won = Result is { WinningTeam: PlayerTeam },
+                ConvoyArrived = _arrived,
+                ConvoySent = Math.Max(_convoySpawned, _def.Goal is MissionGoal.Escort or MissionGoal.Evacuate ? _def.ConvoyCount : 0),
+                HoldShare = _def.Goal == MissionGoal.Outpost && _def.HoldSeconds > 0f
+                    ? Math.Min(1f, _outpostHeld / _def.HoldSeconds)
+                    : _ownedSeconds / MathF.Max(1f, (float)Now(world)),
+                ProtectStanding = _def.Goal == MissionGoal.Protect ? AliveTargets(world) : 0,
+                ProtectTotal = _def.Goal == MissionGoal.Protect ? _targets.Count : 0,
+                LostCp = _ledger.LostCp(PlayerTeam),
+                ArmyCpLeft = world.TryGetEconomy(PlayerTeam, out var economy) ? economy.ArmyCp : 0,
+                BossParts = _bossParts,
+                HqShare = 1f,
+                AllyHqShare = 1f,
+                ReconQuiet = _reconQuiet,
+                ReconTotal = _def.Goal == MissionGoal.Recon ? _points.Count : 0,
+                Kills = _ledger.Kills(PlayerTeam),
+                UsedStrikes = world.StrikesCalled(PlayerTeam) > 0,
+                BoughtAircraft = world.AircraftBought(PlayerTeam) > 0,
+            };
+            if (world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hq))
+                f.HqShare = hq.IsAlive ? hq.Hp / hq.MaxHp : 0f;
+            return f;
+        }
+
+        /// <summary>Prompt 30 L4: the base CP the player has lost (Operations' losses part).</summary>
+        public int LostBaseCp => _ledger.LostBaseCp(PlayerTeam);
+
         public int Kills => _ledger.Kills(PlayerTeam);
 
         public int Wave => _wave;
@@ -373,6 +408,9 @@ namespace MachineBrigade.Sim.Modes
             DriveBoss(world);
             CheckFlee(world);
             if (_def.Goal == MissionGoal.Outpost) HoldOutpost(world, dt);
+            // Prompt 30 L4: what the stars read.
+            if (_points.Count > 0 && PointCapture.Held(_points, PlayerTeam) > 0) _ownedSeconds += dt;
+            if (world.TryGetVehicle(_boss, out var hunted) && hunted.IsAlive) _bossParts = Math.Max(_bossParts, hunted.BrokenParts);
 
             var won = _def.Goal switch
             {
@@ -762,6 +800,7 @@ namespace MachineBrigade.Sim.Modes
                 if (seconds < ScoutSeconds) continue;
                 PointCapture.Own(point, PlayerTeam);
                 point.Locked = true;
+                if (!world.Alarm) _reconQuiet++;
                 world.Emit(SimEvent.Captured(point.Def.Id, point.Def.Position, PlayerTeam));
             }
         }

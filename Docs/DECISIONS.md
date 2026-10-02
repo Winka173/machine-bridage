@@ -14588,3 +14588,40 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
   (`Skip`), `Skipped` tells the results panel to show the story line it cut. `SlowMotion` is off for a loss and a replay.
 - Tests (written): `MatchEndTests` (frozen after the resolve, same state with or without the presentation, same
   resolve tick on a replay, the skip).
+
+### L4: match rules and scoring
+
+- **Data** (`Tools/story/import_match_rules.py` -> balance.json `matchRules`, `Sim/Content/MatchRules.cs`): per mode
+  the schema's seven fields as the sheet words them plus the numbers the code reads; the campaign's star rules; the
+  leaderboards' key orders. Each quick mode's rules class has `RulesId` and `Apply(world)` (called in `Setup`): the
+  data's numbers replace the session's older ones. The menu's background battle sets `RulesId = null` (no clock).
+- **No general "army gone = lost" rule.** Siege's "attacking player wiped out for 12 s loses" is off (`WipeLoses`,
+  data); Survival and Boss Rush keep theirs because the sheet declares them.
+- **Conquest**: 500 points a side, bleed 0.8 x the point difference, a 10-minute clock, the last 2 minutes x2 (with a
+  clock the final phase is the clock's, the ETA rule stays for clockless uses), holding all three adds nothing extra.
+  Kills no longer cost points (`killTicketFactor` 0: the sheet's score rule has the bleed only; the number is data if
+  the owner wants it back). Level at the limit: up to 60 s overtime, the first side to take one more point wins,
+  else a draw. Catch-up at most +25 % (`SimWorld.CatchUpMax`, was +50 % for every quick mode).
+- **Deathmatch**: a kill scores min(baseCP, 18) (`KillLedger.ScoreCap`, base price, not the rank-discounted one), 480
+  to win, 9 minutes; level: up to 60 s in which the next kill decides, else a draw; catch-up +25 %.
+- **King of the Hill**: 170 at +1/s alone on the hill, 9 minutes; level or contested at the limit: overtime that lasts
+  while contested (at most 60 s); one side alone on the hill then decides (higher score, the holder on a tie); after
+  it, the higher score, else a draw.
+- **Assault**: 4:00 start, +2:30 a sector, at most 5:00 in the bank, 60 s overtime; the difficulty's start keeps its
+  ratio to Normal's (Easy 4:48, Hard 3:36, Very Hard 3:24).
+- **Siege / Weekly**: 60 s overtime while the last target is under attack (was 90). The time limit is the existing bank:
+  8 min + 5 + 5 per ring broken = 18 min at most, as the sheet's ~18. Campaign siege missions keep their own times.
+- **Defend** (CHECK of the sheet's ~12 min): today 8 min + 1 + 1.5 per line lost, at most 10.5 min (Hard 11.5); left
+  as is and reported; no overtime (data), losing outer lines is not a loss (unchanged).
+- **Operations**: the losses part counts base CP lost: 2000 at none, 0 from 150 (`OperationScoring`, operations.json
+  `lossesAtZeroCp`); `MissionMode`/`OperationMode.LostBaseCp`.
+- **Campaign stars** (`CampaignStars`, missions only): ★1 the win; ★2 the type's mastery by goal (escort/evacuate
+  >= 80 % of the trucks, hold/outpost >= 80 % of the time owned, protect >= 75 % standing, survive/duel HQ >= 50 %,
+  boss >= 2 parts broken, recon >= 2/3 of the points seen before the alarm, the rest at most 40 % of the army lost);
+  ★3 the mission's own challenge, else a default by goal (kills, no strikes, no aircraft). No star is fragile or a
+  tight clock, none is a loss condition. `Rewards.Mission` takes the count; the old time/losses rule stays as the
+  fallback.
+- **Leaderboards** (`BoardOrder`): key by key, never a merged formula: Endless/Defend/Survival endless: waves, then
+  base CP of enemies destroyed, then time alive; Boss Rush: bosses, then time (ascending), then parts; Weekly: cleared,
+  then attempts (ascending), then total time (ascending).
+- Tests (written): `MatchRulesTests`.

@@ -1199,6 +1199,9 @@ namespace MachineBrigade.Game.Match
         private int Kills => _op != null ? _op.Kills : _single.Kills;
         private int Losses => _op != null ? _op.Losses : _single.Losses;
 
+        /// <summary>Prompt 30 L4: the base CP lost (Operations' score).</summary>
+        private int LostBaseCp => _op != null ? _op.LostBaseCp : _single.LostBaseCp;
+
         /// <summary>A stage's name (its own text, else "Stage n").</summary>
         public string StageTitle(string stageId, int number)
         {
@@ -1443,6 +1446,15 @@ namespace MachineBrigade.Game.Match
         private int _nextTip;
         private int _tier;
 
+        /// <summary>Prompt 30 L4: the facts for campaignStarRules (the battle's from the mission, the win from the result).</summary>
+        private StarFacts StarFacts(SimWorld world, bool won)
+        {
+            var facts = (_single ?? _op.Current).StarFacts(world);
+            facts.Won = won;
+            facts.Kills = Kills;
+            return facts;
+        }
+
         /// <summary>Whether the mission's own third-star challenge was met.</summary>
         private bool ChallengeMet(SimWorld world) => _def.Challenge switch
         {
@@ -1487,7 +1499,7 @@ namespace MachineBrigade.Game.Match
             var hq = 1f;
             if (world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hqVehicle))
                 hq = hqVehicle.IsAlive ? hqVehicle.Hp / hqVehicle.MaxHp : 0f;
-            var score = Operations.Data.Scoring.Score(won, world.Time, Losses, hq, Operations.Tier(_tier), _run.Mutators);
+            var score = Operations.Data.Scoring.Score(won, world.Time, LostBaseCp, hq, Operations.Tier(_tier), _run.Mutators);
             var best = PlayerProfile.BestScore(_def.Id, _tier);
             var record = PlayerProfile.RecordOperation(_def.Id, _tier, score, (float)world.Time);
             outcome.Subtitle = Strings.Format("ops.resultTitle", ("title", Title), ("tier", Strings.Get("tier." + _tier)));
@@ -1568,7 +1580,8 @@ namespace MachineBrigade.Game.Match
             outcome.Rows.Add((Strings.Get("result.time"), Clock(world.Time)));
             if (_op != null && _op.StageCount > 1)
                 outcome.Rows.Add((Strings.Get("result.stages"), won ? _op.Path.Count.ToString() : UnityEngine.Mathf.Max(0, _op.Path.Count - 1).ToString()));
-            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), System.Math.Min(_tier, 2));
+            outcome.Reward = Rewards.Mission(_def, won, (float)world.Time, Losses, ChallengeMet(world), System.Math.Min(_tier, 2),
+                world.Catalog.MatchRules.Stars.Count(_def, StarFacts(world, won)));
             EventRewards(outcome, world);
             if (_run != null) OperationRows(outcome, world, won);
             if (_tier > 0) outcome.Rows.Add((Strings.Get("tier.label"), Strings.Get("tier." + _tier)));

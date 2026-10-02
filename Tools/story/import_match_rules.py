@@ -51,7 +51,7 @@ MASTERY = {
     "Survive": {"kind": "HqShare", "value": 0.5}, "Protect": {"kind": "ProtectShare", "value": 0.75},
     "Capture": {"kind": "LossShare", "value": 0.4}, "Destroy": {"kind": "LossShare", "value": 0.4},
     "Hunt": {"kind": "LossShare", "value": 0.4}, "Intercept": {"kind": "LossShare", "value": 0.4},
-    "ShootDown": {"kind": "LossShare", "value": 0.4}, "Relieve": {"kind": "AllyHqShare", "value": 0.5},
+    "ShootDown": {"kind": "LossShare", "value": 0.4}, "Relieve": {"kind": "LossShare", "value": 0.4},
     "Boss": {"kind": "BossParts", "value": 2}, "Duel": {"kind": "HqShare", "value": 0.5},
     "Recon": {"kind": "ReconQuiet", "value": 0.67},
 }

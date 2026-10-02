@@ -93,7 +93,8 @@ namespace MachineBrigade.Sim.Content
         public float Time { get; set; } = 3000f;
         public float Par { get; set; } = 1500f;
         public float Losses { get; set; } = 2000f;
-        public float LossesAtZero { get; set; } = 20f;
+        /// <summary>Prompt 30 L4: the base CP lost at which the losses part reaches 0 (it counted vehicles, 20, before).</summary>
+        public float LossesAtZero { get; set; } = 150f;
         public float Hq { get; set; } = 2000f;
 
         /// <summary>
@@ -101,6 +102,7 @@ namespace MachineBrigade.Sim.Content
         /// <see cref="LossesAtZero"/> and the HQ's health left, all times the tier's and the
         /// mutators' multipliers.
         /// </summary>
+        /// <param name="losses">The base CP the player lost (prompt 30 L4: 2000 at 0, nothing from 150).</param>
         public int Score(bool won, double seconds, int losses, float hqLeft, OperationTier tier, IReadOnlyList<MutatorDef> mutators)
         {
             if (!won) return 0;
@@ -226,7 +228,7 @@ namespace MachineBrigade.Sim.Content
                 data.Scoring = new OperationScoring
                 {
                     Win = s.Float("win", 5000f), Time = s.Float("time", 3000f), Par = s.Float("par", 1500f),
-                    Losses = s.Float("losses", 2000f), LossesAtZero = s.Float("lossesAtZero", 20f), Hq = s.Float("hq", 2000f),
+                    Losses = s.Float("losses", 2000f), LossesAtZero = s.Float("lossesAtZeroCp", 150f), Hq = s.Float("hq", 2000f),
                 };
             }
             if (root.Has("weekly"))

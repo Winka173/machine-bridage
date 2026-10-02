@@ -11,6 +11,21 @@ namespace MachineBrigade.Sim.Modes
 {
     public sealed class SiegeRules
     {
+        /// <summary>Prompt 30 L4: the "matchRules" row (siege, weekly, defend); null keeps the numbers as set.</summary>
+        public string? RulesId { get; set; } = "siege";
+
+        /// <summary>An attacking player wiped out for 12 s loses. Off by the sheet: Siege is lost on time only.</summary>
+        public bool WipeLoses { get; set; }
+
+        public void Apply(SimWorld world)
+        {
+            var id = PlayerDefends ? "defend" : RulesId;
+            if (id == null || world.Catalog.MatchRules.For(id) is not { } r) return;
+            // Siege: 60 s while the last target is under attack; Defend: none (sheet "Luật trận").
+            Overtime = r.Get("overtime", 0f);
+            WipeLoses = r.Get("wipeLoses", 0f) > 0f;
+        }
+
         /// <summary>
         /// The clock is a time bank (as in Overwatch escort): this much at the start, and each
         /// stage cleared adds its bonus, up to <see cref="MaxBank"/> on the clock at once.
@@ -369,6 +384,7 @@ namespace MachineBrigade.Sim.Modes
 
         public void Setup(SimWorld world)
         {
+            _rules.Apply(world);
             world.EnableEconomy(_rules.Attacker.Build(Attacker));
             world.EnableEconomy(_rules.Defender.Build(Defender));
             // Defend: the camps trade places, so the player's drop zone is inside the fortress.
@@ -777,7 +793,7 @@ namespace MachineBrigade.Sim.Modes
                 return;
             }
             // An attacking player wiped out has lost; an attacking AI always buys more.
-            if (_rules.PlayerDefends) return;
+            if (_rules.PlayerDefends || !_rules.WipeLoses) return;
             var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, EnemyTeam);
