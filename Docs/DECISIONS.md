@@ -17639,3 +17639,34 @@ test or sim run. Code: `Tools/export/core/doc_parts.py` (section list, text fixe
 - **Open.** The pass 6 markers inside domain modules (10/Anh_chup, 10/Model.anh_3_goc, 09/Am_thanh_mau, 09/VFX_vu_khi,
   11/Huong_dan say CHUA_AP:prompt_xuat_luot6) are left to the domain owner: this lane does not edit d01-d12; the picture
   list is in COVERAGE.md and MANIFEST.
+
+## Bộ xuất dữ liệu toàn bộ (lane B, pass 9)
+
+- **Command.** `python Tools/export/export.py import <export folder | edited xlsx> --dry-run [--out DIR]`
+  (Tools/export/core/reimport.py). Without `--dry-run` it refuses: there is no import mode that writes data. Output:
+  `<export>/import/manifest_import.json` + `.md` (or `--out`); no data file is opened for writing.
+- **Finding an edit.** The export is rebuilt from the current tree with the export's own base ref (00_chi_muc/MANIFEST.json
+  `ban_goc`), and each xlsx cell is compared with the cell the exporter writes now (numbers to 1e-12, formulas without
+  spaces / case). When the folder has csv/, a cell equal to the export's csv but not to the current tree is drift, not an
+  edit. Unedited export: 0 entries, 0 rejections (2 267 633 cells compared).
+- **Inverse mapping.** Row.mark is recorded per cell during the rebuild (file, sheet, row id, column -> source leaves); only
+  a cell with exactly one leaf in a JSON file under Assets/, whose shown value equals that leaf, becomes an entry. Rejected
+  with a reason: id, nguon, raw_json, child link / thu_tu, layer B formulas, columns with no leaf (resolved, computed or
+  copied: e.g. 02/Xe base_cp and 01/Vu_khi sat_thuong_moi_phat are resolved values; the raw keys are cp and damage, and the
+  message names the raw column with the same value), list cells, converted values, non-JSON or Tools/ sources, new rows,
+  new columns, new sheets, empty cells. Deleted rows / columns are ignored with a warning.
+- **Manifest.** Prompt 29's columns and bundle shape (Docs/balance/manifest_v2.json): rows bundle_id (`XL<file>-<sheet>-<id>`),
+  entity_id, field_path (the data file's key path, `vehicles[1].cp`), unit, value_type, expected_before (the export-time
+  value from the csv, else the current one), new_value, tolerance 0, derivation / source (file, sheet, cell), status DECIDE,
+  scope data; plus data_file, id_path (`vehicles[id=light_tank].cp`), c01_path (the prompt 29 C01 path when it is the same
+  key as is: cp, speed, dropDelay, flares, aps, weapon targets; not hp, which C01 holds as hp x toughness) and
+  precondition_now (R2 against the current data: OK / ALREADY_APPLIED / CONFLICT). Bundles: Trạng thái DECIDE.
+- **Apply path.** The only data writer stays Tools/balance/p29_apply.py (R1-R8). It reads only manifest_v2.json + the
+  appendix and maps C01 paths, so an import row reaches the data only when the owner sets it to APPLY and it is copied into
+  Docs/balance/manifest_p29_appendix.json with its c01_path as field_path, then `p29_apply.py --bundles "XL*" --dry` and the
+  real run. Rows with no c01_path (weapon damage, hp, maps, campaign) cannot be applied yet: an unmapped path is CONFLICT
+  (R5). No direct writer was built (open: a `--manifest` option and a raw-key-path mapper for p29_apply).
+- **Check.** `python Tools/export/tests/test_import_demo.py [export folder]` (exports into temp when no folder is given): the
+  unedited export gives 0; the demo copies 01 and 02 into temp, edits weapons gun_120mm damage, vehicle light_tank cp and
+  02/Xe_suy_ra dps_tren_cp with openpyxl, and gets exactly 2 DECIDE entries (precondition OK) and 1 rejection; no data file
+  changes. It is a Python script, not a data file, so the coverage scan of Tools/ is unchanged.
