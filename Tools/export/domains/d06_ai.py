@@ -2,8 +2,7 @@
 squad states, tower and boss behaviour."""
 from __future__ import annotations
 
-from core.model import chua_ap
-
+from . import _b06
 from . import _balance as B
 from . import _lane_c as C
 
@@ -128,7 +127,5 @@ def build(ctx):
         kv = book.kv_sheet("AI_hanh_vi_khac", "Hành vi AI: khóa khác", "aiBehaviour: khóa chưa có sheet riêng")
         book.kv_rows(kv, rest, B.BALANCE, ("aiBehaviour",), "aiBehaviour")
 
-    # ------------------------------------------------------------------ layer B placeholder
-    C.marker_sheet(book, "AI_xung_dot", "AI: xung đột ghi đè", "Chỗ hồ sơ chế độ bị độ khó hoặc chiến thuật tướng ghi đè (lớp B)",
-                   chua_ap("xuat_luot5"), "lớp B: so AI_ho_so_che_do với AI_tuong.chien_thuat_ua_thich và Chien_thuat.modules",
-                   "Tools/export (lượt 5)")
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b06.build(ctx, book, d)

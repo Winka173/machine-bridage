@@ -156,8 +156,8 @@ def build(ctx, book, d, built, base_built, base_w):
                                "số (CombatSystem.cs; DamageBoost, CommandDamage, LinkDamage = 1)",
                                "Sim/Combat/CombatSystem.cs damageScale x DamageSystem.cs Apply", True),
         "so_don_de_ha": ("", "số phát để hạ (máu trong trận / sát thương một phát, làm tròn lên)", "ceil", False),
-        "thoi_gian_ha_s": ("s", "thời gian hạ khi chỉ bệ 0 bắn liên tục (DPS duy trì x damageScale x hệ số; chưa nhân fireRate "
-                           "của hạng, pha)", "máu / DPS", False),
+        "thoi_gian_ha_s": ("s", "thời gian hạ khi chỉ bệ 0 bắn liên tục (DPS duy trì x damageScale x hệ số); giả định (lead chấp nhận 03/10): vũ khí chính "
+                           "(bệ 0), không nhân fireRate của hạng và pha", "máu / DPS", False),
         "so_xe_trung_loi_hang": ("", "xe trúng lõi: 5 xe một hàng cách 8 m, nổ ở xe giữa", "1 + 2 x min(2, floor(lõi / 8))", False),
         "so_xe_trung_ria_hang": ("", "xe trong rìa (rìa trên boss: Boss_vu_khi.ria_tren_boss_m), hàng 5 xe cách 8 m",
                                  "1 + 2 x min(2, floor(max(lõi, rìa) / 8))", False),

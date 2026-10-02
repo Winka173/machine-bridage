@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK, chua_ap, join_list
 
+from . import _b10
 from . import _lane_c as C
 
 FILE_ID = "10_model_tai_san"
@@ -15,6 +16,8 @@ DESC = "Model GLB (nút, vật liệu, mesh, tam giác, Part / Mount / Muzzle), 
 MODELS = "Assets/MachineBrigade/Resources/Models/"
 BASELINE = "Tools/assets/baseline.json"
 REAL = "Tools/models/reference_real.json"
+GOLD = "Tools/assets/gold_metrics.json"
+SPECS = "Tools/blender/specs/"
 CARDS = "Assets/MachineBrigade/Resources/UI/Cards/manifest.json"
 LICENSES = "Assets/MachineBrigade/Resources/Licenses/"
 MODEL_FK = ["10_model_tai_san/Model"]
@@ -115,6 +118,21 @@ def build(ctx):
             kv2 = book.kv_sheet("Kich_thuoc_that_chung", "Kích thước thật: ghi chú", "reference_real.json: khóa ngoài units")
             book.kv_rows(kv2, rest, REAL, (), "reference_real")
 
+    # ------------------------------------------------------------------ prompt 35 model rebuild data (lane B, pass 5 part 2)
+    # Tools/assets/gold_metrics.json (gold-set class means of the quality gate) and Tools/blender/specs/*.json (the rebuild
+    # specs of the pilot models): every leaf one row of a key / value sheet (new sources after lane C's passes 3-4)
+    if GOLD in ctx.sources:
+        gm = book.kv_sheet("Model_chuan_vang", "Model: số đo bộ mẫu vàng", "Tools/assets/gold_metrics.json: trung bình theo lớp của "
+                           "bộ model mẫu (quality_gate.compute_gold, prompt 35)")
+        book.kv_rows(gm, ctx.data(GOLD), GOLD, (), "gold_metrics")
+    specs = sorted(s for s in ctx.sources if s.startswith(SPECS) and s.endswith(".json"))
+    if specs:
+        ms = book.kv_sheet("Model_spec_dung", "Model: spec dựng lại", "Tools/blender/specs/<model>.json: spec dựng lại model (mẫu thật, "
+                           "kích thước đích, bộ phận, vũ khí, ngân sách, vùng màu; prompt 35); id = <model>.<đường dẫn>")
+        for sid in specs:
+            stem = sid.rsplit("/", 1)[-1][:-5]
+            book.kv_rows(ms, ctx.data(sid), sid, (), stem, prefix=(stem,))
+
     # ------------------------------------------------------------------ card renders (UI/Cards/manifest.json)
     if CARDS in ctx.sources:
         cards = ctx.data(CARDS)
@@ -176,3 +194,6 @@ def build(ctx):
                    "DECISIONS 'Play-test 12 (lane B)'): không có bảng dữ liệu", "Assets/MachineBrigade/Scripts/Editor/ModelPreview.cs")
     C.marker_sheet(book, "Anh_chup", "Ảnh chụp", "Danh sách ảnh dùng trong tài liệu (images/<lĩnh vực>)", chua_ap("xuat_luot6"),
                    "lượt 6 (Markdown, PDF, ảnh): Docs/doc-images", "Docs/doc-images")
+
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b10.build(ctx, book)

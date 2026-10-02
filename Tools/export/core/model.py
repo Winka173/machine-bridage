@@ -20,7 +20,7 @@ def chua_ap(prompt) -> str:
     return f"CHUA_AP:prompt_{prompt}"
 
 
-MARKER = re.compile(r"^(CHUA_AP:prompt_[\w.]+|NEED_CODE_CHECK|NEED_SOURCE)$")
+MARKER = re.compile(r"^(CHUA_AP:prompt_[\w.]+|NEED_CODE_CHECK|NEED_SOURCE|KHONG_CO)$")  # KHONG_CO: the thing does not exist (a marker row)
 SHEET_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]{0,30}$")
 RAW_LIMIT = 32000  # an Excel cell holds 32,767 characters
 

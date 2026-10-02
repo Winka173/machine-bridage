@@ -23,6 +23,8 @@ AA_REF = [("stinger", "stinger_post", "FIM-92 Stinger"), ("buk", "buk_launcher",
           ("ten_lua_tiem_kich", "air_to_air", "AIM-120 AMRAAM (tên lửa tiêm kích)")]
 NOT_IN_FIT = ("Support", "Scout")  # spec: the standard filter drops CP 0, Support and Scout
 LIGHT, HEAVY = 1, 3                # the regression's light / heavy target armour (front)
+HQ_MEAN = {"dps_nhe": "DPS vũ khí chính lên mục tiêu nhẹ; giả định (lead chấp nhận 03/10): nhẹ = giáp 1", "dps_nang": "DPS vũ khí chính lên mục tiêu nặng; giả định (lead chấp nhận 03/10): nặng = giáp 3",
+           "dps_may_bay": "DPS vũ khí chính lên máy bay; giả định (lead chấp nhận 03/10): máy bay giáp 0"}
 BANDS = [("le8", "<=8", lambda cp: cp <= 8), ("9_15", "9-15", lambda cp: 9 <= cp <= 15), ("ge16", ">=16", lambda cp: cp >= 16)]
 
 V_COLS = [("sat_thuong_moi_phat", "sat_thuong_moi_phat", "hp", "sát thương mỗi phát"),
@@ -164,7 +166,7 @@ def build(ctx, book, d, res):
     units = {"cp": "CP", "mau_hp": "hp", "dps_nhe": "hp/s", "dps_nang": "hp/s", "dps_may_bay": "hp/s", "dps_max": "hp/s"}
     for c, t in T2.items():
         LB.declare(hd, c, t, "hồi quy (bộ xuất)", unit=units.get(c, "hp/CP" if c.startswith("mau_tren") else
-                   "hp/s/CP" if c.startswith("dps_tren") else ""), game=False, meaning=c.replace("_", " "))
+                   "hp/s/CP" if c.startswith("dps_tren") else ""), game=False, meaning=HQ_MEAN.get(c, c.replace("_", " ")))
     pts = []
     for r in xrows:
         if r.id not in per:

@@ -133,6 +133,7 @@ class _Eval:
     def __init__(self, books):
         self.books = books
         self.grids = {}
+        self.ranges = {}
         self.lay = _layout(books)
 
     def grid(self, fid, sname):
@@ -305,6 +306,82 @@ def _if(c, a=False, b=False):
     return a if _bool(c) else b
 
 
+def _crit(c):
+    """An Excel criterion (COUNTIFS / SUMIFS; MAXIFS is left out: Excel stores it as _xlfn.MAXIFS): a number matches equal numbers; a text with a leading <, >, <=, >=,
+    = or <> compares; any other text matches case-insensitively with the wildcards * and ? (~ escapes)."""
+    if isinstance(c, bool):
+        return lambda x: isinstance(x, bool) and x == c
+    if isinstance(c, (int, float)):
+        return lambda x: isinstance(x, (int, float)) and not isinstance(x, bool) and float(x) == float(c)
+    c = "" if c is None else str(c)
+    m = re.match(r"^(<=|>=|<>|<|>|=)(.*)$", c, re.S)
+    op, rest = (m.group(1), m.group(2)) if m else ("=", c)
+    try:
+        num = float(rest)
+    except ValueError:
+        num = None
+    if op in ("<", ">", "<=", ">=") or (num is not None and m):
+        if num is None:
+            return lambda x: isinstance(x, str) and _cmp(x, rest, op)
+        if op in ("=", "<>"):
+            eq = lambda x: isinstance(x, (int, float)) and not isinstance(x, bool) and float(x) == num  # noqa: E731
+            return eq if op == "=" else (lambda x: not eq(x))
+        return lambda x: isinstance(x, (int, float)) and not isinstance(x, bool) and _cmp(float(x), num, op)
+    rx = re.compile("^" + _wild(rest) + "$", re.I | re.S)
+    if rest == "":
+        hit = lambda x: x is None or x == ""  # noqa: E731
+    else:
+        hit = lambda x: x is not None and not isinstance(x, bool) and rx.match(_text(x)) is not None  # noqa: E731
+    return hit if op == "=" else (lambda x: not hit(x))
+
+
+def _wild(pattern: str) -> str:
+    """An Excel wildcard pattern as a regex: * any run, ? one character, ~* ~? ~~ the character itself."""
+    out, i = [], 0
+    while i < len(pattern):
+        ch = pattern[i]
+        if ch == "~" and i + 1 < len(pattern) and pattern[i + 1] in "*?~":
+            out.append(re.escape(pattern[i + 1]))
+            i += 2
+            continue
+        out.append(".*" if ch == "*" else "." if ch == "?" else re.escape(ch))
+        i += 1
+    return "".join(out)
+
+
+def _ifs_mask(pairs):
+    if len(pairs) % 2:
+        raise FormulaError("#VALUE! (criteria pairs)")
+    rngs = pairs[0::2]
+    if not all(isinstance(r, Range) for r in rngs) or len({len(r) for r in rngs}) != 1:
+        raise FormulaError("#VALUE! (criteria ranges of one size)")
+    tests = [_crit(c) for c in pairs[1::2]]
+    return [all(t(r[i]) for r, t in zip(rngs, tests)) for i in range(len(rngs[0]))]
+
+
+def _countifs(*pairs):
+    return float(sum(_ifs_mask(list(pairs))))
+
+
+def _agg_ifs(fn, empty):
+    def run(values, *pairs):
+        if not isinstance(values, Range):
+            raise FormulaError("#VALUE! (a range of values)")
+        mask = _ifs_mask(list(pairs))
+        if len(mask) != len(values):
+            raise FormulaError("#VALUE! (ranges of one size)")
+        xs = [float(v) for v, ok in zip(values, mask) if ok and isinstance(v, (int, float)) and not isinstance(v, bool)]
+        return fn(xs) if xs else empty
+    return run
+
+
+def _find(needle, hay, start=1):
+    i = _text(hay).find(_text(needle), int(_num(start)) - 1)
+    if i < 0:
+        raise FormulaError("#VALUE! (FIND: not found)")
+    return float(i + 1)
+
+
 FUNCS = {
     "IF": _if,
     "AND": lambda *a: all(_bool(x) for x in a),
@@ -329,8 +406,14 @@ FUNCS = {
     "INDEX": _index,
     "MATCH": _match,
     "ISNUMBER": lambda x: isinstance(x, (int, float)) and not isinstance(x, bool),
+    "COUNTIFS": _countifs,
+    "SUMIFS": _agg_ifs(sum, 0.0),
+    "LEN": lambda x: float(len(_text(x))),
+    "FIND": _find,
+    "LEFT": lambda x, n=1: _text(x)[:max(0, int(_num(n)))],
+    "SUBSTITUTE": lambda x, old, new: _text(x).replace(_text(old), _text(new)) if _text(old) else _text(x),
 }
-LAZY = {"IF"}
+LAZY = {"IF", "IFERROR", "ISNUMBER"}
 
 
 class _Parser:
@@ -437,6 +520,16 @@ class _Parser:
             fn = FUNCS.get(name)
             if fn is None:
                 raise FormulaError(f"function {name} is not in the evaluator's subset")
+            if name in ("IFERROR", "ISNUMBER"):
+                # an error inside is caught (Excel: IFERROR gives its second argument, ISNUMBER FALSE)
+                try:
+                    v = self.sub(args_src[0], args_src[1], True) if len(args_src) > 1 else self.sub(args_src[0], end)
+                    v = _scalar(v)
+                except (FormulaError, ZeroDivisionError, ValueError, OverflowError):
+                    if name == "ISNUMBER":
+                        return False
+                    return self.sub(args_src[1], end) if len(args_src) > 1 else 0.0
+                return fn(v) if name == "ISNUMBER" else v
             if name in LAZY:
                 c = self.sub(args_src[0], args_src[1], True) if len(args_src) > 1 else self.sub(args_src[0], end)
                 pick = 1 if _bool(_scalar(c)) else 2
@@ -494,10 +587,14 @@ class _Parser:
             return self.ev.cell(self.fid, sheet, _col_num(cells[0].group(1)), int(cells[0].group(2)))
         c1, r1 = _col_num(cells[0].group(1)), int(cells[0].group(2))
         c2, r2 = _col_num(cells[1].group(1)), int(cells[1].group(2))
+        key = (self.fid, sheet, c1, r1, c2, r2)
+        if key in self.ev.ranges:
+            return self.ev.ranges[key]
         out = Range()
         for c in range(c1, c2 + 1):
             for r in range(r1, r2 + 1):
                 out.append(self.ev.cell(self.fid, sheet, c, r))
+        self.ev.ranges[key] = out
         return out
 
 

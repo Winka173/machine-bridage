@@ -9,6 +9,7 @@ import struct
 from core.model import NEED_CODE_CHECK, chua_ap
 from core.repo import ROOT
 
+from . import _b09
 from . import _lane_c as C
 
 FILE_ID = "09_hieu_ung_am_thanh"
@@ -152,7 +153,7 @@ def build(ctx):
     vb = book.sheet("VFX_bac", "VFX theo bậc", "Bậc T0-T5: chớp đầu nòng, khói, vòng bụi, sóng nước, ánh sáng, giật (TierFx.Fire) "
                     "và thời gian cầu lửa, khói, hố (EffectLife.Bands); rung camera, hạt, LOD, đồng thời tối đa: hàm trong TierFx (mã)")
     vb.col("bac", meaning="bậc T0-T5")
-    vb.col("rung_camera_dong_thoi", meaning="ShakeAt, FullCap, Weight, Busy: hàm theo bậc trong TierFx.cs")
+    vb.col("rung_camera_dong_thoi", meaning="ShakeAt, FullCap, Weight, Busy: hàm theo bậc trong TierFx.cs; giá trị theo bậc ở VFX_ngan_sach (XEM_VFX_ngan_sach)")
     for path, array, prefix in ((TIERFX, "Fire", "ban_"), (LIFE, "Bands", "doi_")):
         sid, rows, lines = ctx.cs_table(path, array)
         for i, item in enumerate(rows):
@@ -162,7 +163,7 @@ def build(ctx):
                 r.flatten(item, sid, (i,), prefix=prefix)
             else:
                 C.cs_element_row(r, item, sid, (i,))
-            r.set("rung_camera_dong_thoi", NEED_CODE_CHECK)
+            r.set("rung_camera_dong_thoi", "XEM_VFX_ngan_sach")  # lane B pass 5: TierFx ShakeAt / FullCap / Weight / Busy ported there
     vc = book.sheet("VFX_chay_than_xe", "VFX: lửa thân xe", "HullFire.Looks: 3 mức lửa (thân, lưỡi lửa, khói, tàn, tia)")
     sid, rows, lines = ctx.cs_table(HULLFIRE, "Looks")
     for i, item in enumerate(rows):
@@ -213,3 +214,6 @@ def build(ctx):
                    chua_ap("xuat_luot6"), "Docs/audio (bản trộn mẫu của Tools/sfx/render_mix.py)", "Docs/audio")
     C.marker_sheet(book, "VFX_vu_khi", "VFX theo vũ khí", "Mỗi vũ khí >= 120 mm: bậc, ảnh lúc bắn / nổ, lưới mét, thước Tăng chủ lực",
                    chua_ap("xuat_luot6"), "ảnh chụp (lượt 6: images/09); bậc theo 01_vu_khi_dan/Vu_khi", "Tools/export (lượt 6)")
+
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b09.build(ctx, book)

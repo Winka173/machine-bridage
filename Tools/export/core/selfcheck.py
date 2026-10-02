@@ -122,9 +122,19 @@ def check1(books, planned: dict):
 
 
 def _src_files(schema_row: dict) -> frozenset:
-    """The source files a column reads (Schema.nguon_khoa '<file>: <path>; ...')."""
+    """The source collections a column reads (Schema.nguon_khoa '<file>: <path>, <path>; ...'): '<file>#<root>', root = the
+    path's first key (vehicles, props, ...), so the same id in two collections of one file (balance.json vehicles[] and
+    props[] both have radar_station) is two entities, not one datum (lane B, pass 5 part 2)."""
     text = schema_row.get("nguon_khoa", "") if schema_row else ""
-    return frozenset(p.split(":")[0].strip() for p in text.split(";") if ":" in p)
+    out = set()
+    for part in text.split(";"):
+        if ":" not in part:
+            continue
+        f, pats = part.split(":", 1)
+        for pat in pats.split(","):
+            root = re.split(r"[\[.…\s]", pat.strip(), maxsplit=1)[0]
+            out.add(f"{f.strip()}#{root}")
+    return frozenset(out)
 
 
 def cross_file(books):
