@@ -221,3 +221,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) phụ lục prompt 29 (đạn thay thế và mục tiêu vũ khí) + prompt 32 (hệ căn cứ); làm luôn các prompt mới
 - (02/10) đây là prompt 33 và 34, xong thì làm luôn, tăng agent lên 3
 - (02/10) tiếp tục (sau khi 3 agent bị dừng vì hết quota phiên)
+- (02/10) [chọn] sửa 8 bản đồ RED; Pháo đài thép chấp nhận giá 18; giảm sát thương tháp nhỏ: nới trần lên 11

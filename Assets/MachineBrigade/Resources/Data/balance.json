@@ -1568,7 +1568,7 @@
       "weapon": "tower_kornet", "mainSlot": "missile", "deathExplosion": { "damage": 90, "radius": 6, "delay": 0.3, "tier": "Large" } },
     { "id": "gun_turret", "rebuildCp": 11, "branches": ["gun_turret.long", "gun_turret.auto"],       "fort": { "size": "Medium" }, "static": true, "armour": 3, "hp": 1800, "speed": 0, "turnRate": 1, "turretTurnRate": 28, "radius": 2.5, "length": 5, "width": 5, "cp": 0, "vision": 42,
       "weapon": "turret_gun_120", "secondary": [], "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "aa_turret", "outgoingDamageMult": 0.5762, "rebuildCp": 6, "branches": ["aa_turret.flak", "aa_turret.sam"],        "fort": { "size": "Small" }, "static": true, "armour": 2, "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 60,
+    { "id": "aa_turret", "outgoingDamageMult": 1, "rebuildCp": 6, "branches": ["aa_turret.flak", "aa_turret.sam"],        "fort": { "size": "Small" }, "static": true, "armour": 2, "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 200, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 60,
       "weapon": "tower_flak_30", "secondary": [{"weapon": "sam", "slot": "missile", "aim": "Turret"}], "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // Towers (prompt 3). An EW tower jams guided rounds and fire support; dragon's teeth block the
     // way (engineers breach them three times as fast); a fixed minefield keeps eight mines round it
@@ -1588,8 +1588,8 @@
     // Rank-7 branches: each a trade, for a different fight, not a straight upgrade.
     { "id": "guard_tower.watch", "rebuildCp": 5, "towerRole": "observation_reach", "art": "guard_tower_a", "inherits": "guard_tower", "branchOf": "guard_tower", "vision": 78, "towerRangeAura": { "radius": 30, "range": 0.15 } },
     { "id": "guard_tower.nest", "rebuildCp": 5, "towerRole": "autocannon_25", "art": "guard_tower_b",  "inherits": "guard_tower", "branchOf": "guard_tower", "weapon": "tower_ac25", "vision": 48 },
-    { "id": "mg_bunker.twin", "outgoingDamageMult": 0.2672, "rebuildCp": 6, "towerRole": "mg_twin", "art": "mg_bunker_a",    "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_hmg_twin" },
-    { "id": "mg_bunker.flame", "outgoingDamageMult": 0.1716, "rebuildCp": 6, "towerRole": "flame_close", "art": "mg_bunker_b",   "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_flame", "secondary": [] },
+    { "id": "mg_bunker.twin", "outgoingDamageMult": 0.5036, "rebuildCp": 6, "towerRole": "mg_twin", "art": "mg_bunker_a",    "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_hmg_twin" },
+    { "id": "mg_bunker.flame", "outgoingDamageMult": 0.3248, "rebuildCp": 6, "towerRole": "flame_close", "art": "mg_bunker_b",   "inherits": "mg_bunker", "branchOf": "mg_bunker", "weapon": "bunker_flame", "secondary": [] },
     { "id": "ew_tower.drone", "rebuildCp": 3, "towerRole": "jam_drones_guided", "art": "ew_tower_a",    "inherits": "ew_tower", "branchOf": "ew_tower", "jammer": 45 },
     { "id": "ew_tower.spoof", "rebuildCp": 3, "towerRole": "radar_spoof_counterbattery", "art": "ew_tower_b",    "inherits": "ew_tower", "branchOf": "ew_tower", "counterBattery": { "range": 80, "seconds": 6, "bonus": 0 } },
     { "id": "dragons_teeth.hedgehog", "rebuildCp": 3, "towerRole": "obstacle_block", "art": "dragons_teeth_a", "inherits": "dragons_teeth", "branchOf": "dragons_teeth", "hp": 4800 },
@@ -1639,12 +1639,12 @@
       "weapon": "none", "utility": { "revealBase": true }, "counterBattery": { "range": 120, "seconds": 8, "bonus": 0 } },
     // Rank-7 branches of the AA tower: the old Flakturm's quad 23 mm (no missiles; close in, against drones and
     // small swarms), or a SAM post (60 m, against aircraft and helicopters; the Patriot reaches furthest).
-    { "id": "aa_turret.flak", "outgoingDamageMult": 0.4139, "rebuildCp": 6, "towerRole": "aa_gun_23_drones_helis", "art": "aa_turret_a", "inherits": "aa_turret", "branchOf": "aa_turret", "weapon": "flak_quad", "secondary": [] },
+    { "id": "aa_turret.flak", "outgoingDamageMult": 0.7869, "rebuildCp": 6, "towerRole": "aa_gun_23_drones_helis", "art": "aa_turret_a", "inherits": "aa_turret", "branchOf": "aa_turret", "weapon": "flak_quad", "secondary": [] },
     { "id": "aa_turret.sam", "outgoingDamageMult": 1, "rebuildCp": 5, "towerRole": "aa_manpads_aircraft", "art": "aa_turret_b", "inherits": "aa_turret", "branchOf": "aa_turret", "weapon": "stinger_post", "mainSlot": "missile", "vision": 60,
       "secondary": [] },
     { "id": "rocket_turret", "rebuildCp": 11, "branches": ["rocket_turret.cluster", "rocket_turret.guided"],    "fort": { "size": "Medium" }, "static": true, "armour": 1, "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 90, "radius": 2.3, "length": 4.5, "width": 4.5, "cp": 0, "vision": 55,
       "weapon": "turret_rockets", "secondary": [], "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.4, "tier": "Huge" } },
-    { "id": "mg_bunker", "outgoingDamageMult": 0.3204, "rebuildCp": 6, "branches": ["mg_bunker.twin", "mg_bunker.flame"],        "fort": { "size": "Small" }, "static": true, "armour": [3, 2, 2, 2], "hp": 1500, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.0, "length": 4, "width": 4, "cp": 0, "vision": 36,
+    { "id": "mg_bunker", "outgoingDamageMult": 0.6086, "rebuildCp": 6, "branches": ["mg_bunker.twin", "mg_bunker.flame"],        "fort": { "size": "Small" }, "static": true, "armour": [3, 2, 2, 2], "hp": 1500, "speed": 0, "turnRate": 1, "turretTurnRate": 120, "radius": 2.0, "length": 4, "width": 4, "cp": 0, "vision": 36,
       "weapon": "bunker_hmg", "secondary": [], "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     { "id": "artillery_emplacement", "rebuildCp": 12, "branches": ["artillery_emplacement.cb", "artillery_emplacement.mortar"], "fort": { "size": "Large" }, "static": true, "armour": 1, "hp": 1100, "speed": 0, "turnRate": 1, "turretTurnRate": 30, "radius": 3.0, "length": 6.5, "width": 6.5, "cp": 0, "vision": 30,
       "weapon": "howitzer_fixed", "secondary": [], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.4, "tier": "Huge" } },

@@ -41,7 +41,7 @@ OUT = os.path.join(ROOT, "Docs", "balance", "p32_tower_prices.md")
 CAPS = {"Small": (3, 6), "Medium": (5, 11), "Large": (9, 18)}
 BANDS = {"Small": (3, 8), "Medium": (5, 12), "Large": (9, 20)}
 ENGAGEMENT = 30.0
-SMALL_EQ_CAP = 8.0
+SMALL_EQ_CAP = 11.0  # owner 2026-10-02: cap 8 -> 11. Do not rerun --apply blindly: it reads the already-cut DPS and re-prices heavy_turret and atgm_tower.multi.
 FORTRESS = "heavy_turret.bastion"
 
 # Role of each card family (a branch takes its card's unless named): the target its DPS is read on and the vehicles it

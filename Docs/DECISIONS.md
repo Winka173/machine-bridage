@@ -16577,3 +16577,13 @@ bands in its own `map_dressing.json` and reads the data below; it edits no map f
 - Fingerprint: unchanged (the tags are static; positions are mixed already).
 - Data keys changed: every map file + `"terrain"`, `"landmarks"`; the 50 `_siege` / `_long` files + `"asymmetry"`.
   balance.json, campaign.json and the dialogue unchanged. Docs/checks/map_audit.md / .csv rewritten with the tags.
+
+## Owner calls on the prompt 32 HOLD numbers (owner, 2026-10-02)
+
+- Steel fortress (`heavy_turret.bastion`): the formula price 18 is accepted (HOLD lifted, stats unchanged).
+- Small-tower damage cuts: the equivalentCP cap is raised from 8 to 11, so outgoingDamageMult = min(1, (11 / eq)^2) on
+  the same eq as before: mg_bunker 0.6086 (was 0.3204), mg_bunker.twin 0.5036 (0.2672), mg_bunker.flame 0.3248 (0.1716),
+  aa_turret 1 (0.5762, no cut), aa_turret.flak 0.7869 (0.4139). Set by hand: rerunning `p32_tower_prices.py --apply`
+  reads the already-cut DPS and would re-price heavy_turret (18 -> 14) and atgm_tower.multi (6 -> 7), so it was not used.
+- The 8 RED maps (sealed pockets of 100-284 m2; every objective reachable) are fixed despite prompt 30 L8's report-only
+  rule: the owner asked for it.
