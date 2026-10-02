@@ -14227,3 +14227,25 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
 - **Card luma (old, alpha > .5, Rec. 709):** cp_relay .3705, _a .3982, _b .3114 (dimmest: watch it); shield_tower .3920, _a .4644, _b .4176; dragons_teeth .4102, _a .3552, _b .4296;
   minefield .3608, _a .3747, _b .3623.
 - Lead (2026-10-02), wave 7a cards: all twelve pass, +25 % to +52 % (dragons_teeth .4102 -> .6131, minefield .3608 -> .5477). Spot-checked: pale sand/plaster, not washed out. To keep statics from standing out on dark maps, from 7b on a static should not end more than about +30 % over its old card luma (pale sand/concrete, not white).
+
+## 27 wave 7b (lead pass, 2026-10-02)
+
+Pass 7b (lane B, structures): barrage_balloon, blast_wall, fire_control_centre, inflatable_decoy, troop_shelter, logistics_station, radar_site, repair_bay, ammo_dump, targeting_station
+(no branches), in `Tools/blender/mb_p27_wave7.py` (`_plain`: the old builder, then a V2 pass that strips and rebuilds only the big hard parts under the same names). Nodes, pivots and
+moving parts untouched. Run: Blender rebuild of the ten, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests.
+
+- New lead rule applied (pale sand/concrete, small gains): pads `Rock` (logistics_station, ammo_dump ground) or `Plaster` (fire_control_centre, radar_site, targeting_station, barrage_balloon
+  pad), `Concrete` kept on repair_bay, troop_shelter roof `Rock`; no white except the radar shelter roof slab. Chamfered `k.block`/`k.extrude` with recessed panels on the biggest faces.
+- **ao_strength is the main COLOR_0 lever**: the old default is .9, and a rebuilt block surface alone dims COLOR_0 (blast_wall -9 % at .9). Used .9 (default) for fire_control_centre,
+  troop_shelter, ammo_dump, targeting_station, 1.0 for logistics_station and repair_bay (to hold their gain down), .8 / .85 / .85 / .8 for blast_wall / inflatable_decoy / radar_site /
+  barrage_balloon (to stay at or above the old value). Lower strength = brighter.
+- Per model: blast_wall chamfered tapered gabions; inflatable_decoy blower block and four stakes; fire_control_centre pad, shelters, generator; troop_shelter chamfered earth berm,
+  roof, ramp; barrage_balloon winch block and a pale pad under it (envelope, fins untouched); logistics_station pad, containers (same positions and colours, door-side panels), office;
+  radar_site pad, shelter + `Shelter_roof`, generator; repair_bay pad, walls, roof planes, hull, bay vehicle, lifted turret; ammo_dump V2 crates (same positions; `mb_siege.crate`
+  swapped during the build) and a `Ground` slab; targeting_station pad, cabin and roof (visors, slits, door untouched).
+- **Gates (old -> new triangles, COLOR_0).** barrage_balloon 1,480 -> 1,748 (.669 -> .673); blast_wall 792 -> 1,032 (.459 -> .460); fire_control_centre 388 -> 612 (.605 -> .623);
+  inflatable_decoy 1,090 -> 1,378 (.661 -> .670); troop_shelter 740 -> 916 (.574 -> .590); logistics_station 984 -> 1,576 (.550 -> .579); radar_site 656 -> 900 (.608 -> .615);
+  repair_bay 736 -> 1,152 (.546 -> .603, the biggest gain: watch its card); ammo_dump 3,484 -> 5,276 (.556 -> .573); targeting_station 4,286 -> 4,446 (.654 -> .659). All at most 1.6x, bounds
+  within .1 m, no errors; targeting_station keeps its old movingParts warning.
+- **Card luma (old, alpha > .5, Rec. 709):** barrage_balloon .5838, blast_wall .3723, fire_control_centre .3961, inflatable_decoy .4254, troop_shelter .4112, ammo_dump .3466,
+  targeting_station .4216. logistics_station, radar_site and repair_bay have no card of their own yet (balance.json borrows fuel_depot, radar_dome, vehicle_hangar), so there is no old luma.
