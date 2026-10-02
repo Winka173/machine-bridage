@@ -62,22 +62,22 @@ Gungnir's line warning, `airborne_light_tank_chute` (its own parachute canopy mo
 
 | def | current pointer | its builder | class | the real model (ASSET_DEBT) |
 |---|---|---|---|---|
-| `aa_57mm_vehicle` | `aa_gun_vehicle` (a green wash) | mb_p25_new | ground | a 2S38 Derivatsiya-PVO: a tracked chassis with a boxy 57 mm autoloading turret |
-| `mine_rocket_truck` | `mlrs` (a tan wash) | mb_p25_models2 | ground | a BM-27 Uragan-class wheeled rocket truck with a mine-dispensing rocket pod |
-| `prop_attack_plane` | `attack_jet` (an olive wash) | mb_p25_models2 | jet | an EMB-314 Super Tucano / OV-10 Bronco: a small single-engine turboprop, a bubble canopy |
-| `light_attack_heli` | `scout_heli` (a tan wash) | mb_p25_models2 | helicopter | a small stub-winged attack helicopter (AH-1Z Viper light / Mi-28 class) |
-| `next_gen_tank` | `main_battle_tank` (a blue-grey wash) | mb_p27_experiment | ground | a T-14 Armata: an unmanned low-profile turret set well back on the hull |
-| `demolition_line_vehicle` | `engineer_vehicle` (a violet wash) | mb_p25_models2 | ground | an M58 MICLIC: a mine-roller frame ahead of the hull and a line-charge rocket rack on the rear deck |
-| `combat_wreck_car` | `armored_car` (a yellow wash) | mb_p25_models | ground | a light car whose wreck resolves into a standing gun pit (a new wreck-turret prop, not just a model) |
-| `drone_hijack_vehicle` | `ew_jammer` (a cyan wash) | mb_p25_models2 | ground | an EW vehicle with a directional hijack antenna array, distinct from the visual jammer and the GPS jammer |
-| `manpads_tower` | `shield_tower` (a tan wash) | mb_p17_temp | structure | a sandbagged pit with two shoulder-launched MANPADS tubes on a low tripod |
-| `river_patrol_boat` | `armored_car` (a blue wash) | mb_p25_models | ground | a Mark VI / Riverine Command Boat hull: a shallow-draft aluminium boat, a pintle MG and a grenade launcher |
-| `river_gunboat` | `artillery` (an orange wash) | mb_p25_models2 | ground | a Buyan-class river gunboat: a low hull, a forward 100 mm turret |
-| `coastal_ashm_vehicle` | `sam_launcher` (a green wash) | mb_p25_models2 | ground | an NSM Coastal Defence truck: angled missile canisters on a flatbed |
-| `auto_loader_howitzer` | `artillery` (an olive wash) | mb_p25_models2 | ground | an XM2001 Crusader: a low-profile tracked self-propelled howitzer with an autoloader bustle |
-| `amphib_light_vehicle` | `ifv` (a sage wash) | mb_p25_models2 | ground | an EFV / AAV-7: a boat-hulled tracked APC with a bow planing trim vane |
-| `airborne_light_tank` | `light_tank` (a magenta wash) | mb_p25_models2 | ground | an M8 AGS / M10 Booker: a light tank hull with a low-profile 105 mm turret, and its own parachute canopy Also `airborne_light_tank_chute`. |
-| `stealth_naval_strike` | `stealth_bomber` (a steel-blue wash) | mb_p25_models2 | jet | an A-12 Avenger II: a flying-wing stealth strike aircraft, carrier folding wingtips |
+| `aa_57mm_vehicle` (**committed**: `aa_57mm_vehicle`, 6,028 tris, mb_p27_wave1c) | `aa_gun_vehicle` (a green wash) | mb_p25_new | ground | a 2S38 Derivatsiya-PVO: a tracked chassis with a boxy 57 mm autoloading turret |
+| `mine_rocket_truck` (**committed**: `mine_rocket_truck`, 5,012 tris, mb_p27_wave1c) | `mlrs` (a tan wash) | mb_p25_models2 | ground | a BM-27 Uragan-class wheeled rocket truck with a mine-dispensing rocket pod |
+| `prop_attack_plane` (**committed**: `prop_attack_plane`, 2,634 tris, mb_p27_wave1c) | `attack_jet` (an olive wash) | mb_p25_models2 | jet | an EMB-314 Super Tucano / OV-10 Bronco: a small single-engine turboprop, a bubble canopy |
+| `light_attack_heli` (**committed**: `light_attack_heli`, 3,058 tris, mb_p27_wave1c) | `scout_heli` (a tan wash) | mb_p25_models2 | helicopter | a small stub-winged attack helicopter (AH-1Z Viper light / Mi-28 class) |
+| `next_gen_tank` (**committed**: `next_gen_tank`, 6,512 tris, mb_p27_wave1c) | `main_battle_tank` (a blue-grey wash) | mb_p27_experiment | ground | a T-14 Armata: an unmanned low-profile turret set well back on the hull |
+| `demolition_line_vehicle` (**committed**: `demolition_line_vehicle`, 6,202 tris, mb_p27_wave1c) | `engineer_vehicle` (a violet wash) | mb_p25_models2 | ground | an M58 MICLIC: a mine-roller frame ahead of the hull and a line-charge rocket rack on the rear deck |
+| `combat_wreck_car` (**committed**: `combat_wreck_car`, 2,794 tris, mb_p27_wave1c) | `armored_car` (a yellow wash) | mb_p25_models | ground | a light car whose wreck resolves into a standing gun pit (a new wreck-turret prop, not just a model) |
+| `drone_hijack_vehicle` (**committed**: `drone_hijack_vehicle`, 3,446 tris, mb_p27_wave1c) | `ew_jammer` (a cyan wash) | mb_p25_models2 | ground | an EW vehicle with a directional hijack antenna array, distinct from the visual jammer and the GPS jammer |
+| `manpads_tower` (**committed**: `manpads_tower`, 1,750 tris, mb_p27_wave1c) | `shield_tower` (a tan wash) | mb_p17_temp | structure | a sandbagged pit with two shoulder-launched MANPADS tubes on a low tripod |
+| `river_patrol_boat` (**committed**: `river_patrol_boat`, 1,624 tris, mb_p27_wave1c) | `armored_car` (a blue wash) | mb_p25_models | ground | a Mark VI / Riverine Command Boat hull: a shallow-draft aluminium boat, a pintle MG and a grenade launcher |
+| `river_gunboat` (**committed**: `river_gunboat`, 2,302 tris, mb_p27_wave1c) | `artillery` (an orange wash) | mb_p25_models2 | ground | a Buyan-class river gunboat: a low hull, a forward 100 mm turret |
+| `coastal_ashm_vehicle` (**committed**: `coastal_ashm_vehicle`, 3,508 tris, mb_p27_wave1c) | `sam_launcher` (a green wash) | mb_p25_models2 | ground | an NSM Coastal Defence truck: angled missile canisters on a flatbed |
+| `auto_loader_howitzer` (**committed**: `auto_loader_howitzer`, 6,520 tris, mb_p27_wave1c) | `artillery` (an olive wash) | mb_p25_models2 | ground | an XM2001 Crusader: a low-profile tracked self-propelled howitzer with an autoloader bustle |
+| `amphib_light_vehicle` (**committed**: `amphib_light_vehicle`, 4,606 tris, mb_p27_wave1c) | `ifv` (a sage wash) | mb_p25_models2 | ground | an EFV / AAV-7: a boat-hulled tracked APC with a bow planing trim vane |
+| `airborne_light_tank` (**committed**: `airborne_light_tank`, 5,550 tris + `airborne_light_tank_chute`, 3,514 tris, mb_p27_wave1c) | `light_tank` (a magenta wash) | mb_p25_models2 | ground | an M8 AGS / M10 Booker: a light tank hull with a low-profile 105 mm turret, and its own parachute canopy Also `airborne_light_tank_chute`. |
+| `stealth_naval_strike` (**committed**: `stealth_naval_strike`, 2,124 tris, mb_p27_wave1c) | `stealth_bomber` (a steel-blue wash) | mb_p25_models2 | jet | an A-12 Avenger II: a flying-wing stealth strike aircraft, carrier folding wingtips |
 | `twin_rotor_gunship` | `sky_gunship` (a khaki wash) | mb_p25_models | jet | an ACH-47A "Guns-A-Go-Go": a CH-47 tandem-rotor airframe with side gun mounts and a nose turret |
 | `ground_drone_carrier` | `interceptor_drone_vehicle` (a teal wash) | mb_p25_new | ground | a THeMIS / Uran-9 mothership plus three small tracked minion robots (needs a minion-spawn mechanism too) |
 | `mobile_repair_vehicle` | `engineer_vehicle` (a mauve wash) | mb_p25_models2 | ground | an MTO-UB: a wheeled repair truck with a crane and a welding rig |

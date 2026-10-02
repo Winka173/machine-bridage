@@ -1,7 +1,7 @@
 {
   "aa_57mm_vehicle": {
     "file": "aa_57mm_vehicle.glb",
-    "triangles": 5468
+    "triangles": 6028
   },
   "aa_gun_tower": {
     "file": "aa_gun_tower.glb",
@@ -1045,7 +1045,7 @@
   },
   "prop_attack_plane": {
     "file": "prop_attack_plane.glb",
-    "triangles": 2758
+    "triangles": 2634
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",

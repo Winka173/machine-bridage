@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 27, wave 1c pass A: sixteen batch B units get their own models (DECISIONS "27 wave 1c pass A (lead pass, 2026-10-02)")
+
+- Own models (V2 kit, `mb_p27_wave1c.py`) and cards for aa_57mm_vehicle, mine_rocket_truck, prop_attack_plane, light_attack_heli, next_gen_tank, demolition_line_vehicle, combat_wreck_car, drone_hijack_vehicle, manpads_tower, river_patrol_boat, river_gunboat, coastal_ashm_vehicle, auto_loader_howitzer, amphib_light_vehicle, airborne_light_tank (+ its parachute proxy) and stealth_naval_strike; the colour washes are gone, no number or behaviour changed.
+
 ### Prompt 27, wave 1b: the other six batch D bosses (DECISIONS "27 wave 1b (lead pass, 2026-10-02)")
 
 - Real models for Kraken (an aircraft carrier with a ski-jump, island, parked jets), Garuda (a 70 m B-2-style flying wing), Hyperion (a hexagonal mirror ring station, its own model), Stymphalos (eight delta-wing drones in V formation), Cerberus (three coupled big-wheeled cars) and Hydra (a small VLS submarine carrying six FPV drones); their colour washes dropped.

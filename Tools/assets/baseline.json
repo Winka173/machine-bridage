@@ -454,29 +454,71 @@
     "river_patrol_boat: new (1624 triangles)",
     "stealth_naval_strike: new (2124 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "aa_57mm_vehicle",
+    "mine_rocket_truck",
+    "prop_attack_plane",
+    "light_attack_heli",
+    "next_gen_tank",
+    "demolition_line_vehicle",
+    "combat_wreck_car",
+    "drone_hijack_vehicle",
+    "manpads_tower",
+    "river_patrol_boat",
+    "river_gunboat",
+    "coastal_ashm_vehicle",
+    "auto_loader_howitzer",
+    "amphib_light_vehicle",
+    "airborne_light_tank",
+    "airborne_light_tank_chute",
+    "stealth_naval_strike"
+   ],
+   "reason": "prompt 27 wave 1c pass A: card-luminance pass (lighter Team surfaces, softer AO), final geometry of the sixteen units and the chute proxy",
+   "changes": [
+    "FLAG aa_57mm_vehicle: triangles 5,468 -> 6,028 (+10.2%); vertices 6,478 -> 7,198 (+11.1%); meshes 30 -> 33 (+10.0%); renderers 30 -> 33 (+10.0%); materialSlots 30 -> 33 (+10.0%); fileBytes 348,372 -> 386,260 (+10.9%); structure changed",
+    "airborne_light_tank: bytes only",
+    "airborne_light_tank_chute: bytes only",
+    "amphib_light_vehicle: structure changed",
+    "auto_loader_howitzer: fileBytes 411,300 -> 411,304 (+0.0%); structure changed",
+    "FLAG coastal_ashm_vehicle: meshes 18 -> 19 (+5.6%); renderers 18 -> 19 (+5.6%); materials 8 -> 9 (+12.5%); materialSlots 18 -> 19 (+5.6%); fileBytes 199,656 -> 200,780 (+0.6%); structure changed",
+    "combat_wreck_car: bytes only",
+    "demolition_line_vehicle: meshes 32 -> 33 (+3.1%); renderers 32 -> 33 (+3.1%); materialSlots 32 -> 33 (+3.1%); fileBytes 386,460 -> 387,364 (+0.2%); structure changed",
+    "FLAG drone_hijack_vehicle: meshes 22 -> 24 (+9.1%); renderers 22 -> 24 (+9.1%); materials 8 -> 9 (+12.5%); materialSlots 22 -> 24 (+9.1%); fileBytes 211,756 -> 213,836 (+1.0%); structure changed",
+    "light_attack_heli: bytes only",
+    "manpads_tower: bytes only",
+    "mine_rocket_truck: bytes only",
+    "next_gen_tank: meshes 30 -> 31 (+3.3%); renderers 30 -> 31 (+3.3%); materialSlots 30 -> 31 (+3.3%); fileBytes 406,936 -> 407,856 (+0.2%); structure changed",
+    "prop_attack_plane: triangles 2,758 -> 2,634 (-4.5%); vertices 3,233 -> 3,073 (-4.9%); meshes 16 -> 15 (-6.2%); renderers 16 -> 15 (-6.2%); materialSlots 16 -> 15 (-6.2%); fileBytes 176,276 -> 167,512 (-5.0%); structure changed",
+    "river_gunboat: fileBytes 149,764 -> 149,712 (-0.0%); structure changed",
+    "river_patrol_boat: meshes 20 -> 19 (-5.0%); renderers 20 -> 19 (-5.0%); materialSlots 20 -> 19 (-5.0%); fileBytes 111,608 -> 110,668 (-0.8%); structure changed",
+    "stealth_naval_strike: bytes only"
+   ]
   }
  ],
  "models": {
   "aa_57mm_vehicle": {
    "file": "aa_57mm_vehicle.glb",
-   "fileBytes": 348372,
-   "sha1": "1aa650824b5f3b5a",
+   "fileBytes": 386260,
+   "sha1": "bee71d1a6cc830be",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 35,
-   "meshes": 30,
+   "nodes": 38,
+   "meshes": 33,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 30,
-   "submeshes": 30,
-   "materialSlots": 30,
+   "renderers": 33,
+   "submeshes": 33,
+   "materialSlots": 33,
    "materialsUsed": 8,
-   "triangles": 5468,
-   "vertices": 6478,
+   "triangles": 6028,
+   "vertices": 7198,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -484,22 +526,22 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 121,
+   "loosePieces": 141,
    "openEdges": 0,
    "nonManifoldEdges": 8,
    "boundsMin": [
-    -1.27,
+    -1.295,
     -0.0376,
     -2.9901
    ],
    "boundsMax": [
-    1.27,
+    1.295,
     2.63,
     2.75
    ],
    "size": [
     5.74,
-    2.54,
+    2.59,
     2.668
    ],
    "center": [
@@ -507,13 +549,13 @@
     1.296,
     -0.12
    ],
-   "structureHash": "e9d920bcca868d10",
+   "structureHash": "1ee7a0e261b4f62d",
    "color0": {
-    "mean": 0.6922,
-    "min": 0.2771,
+    "mean": 0.7949,
+    "min": 0.5489,
     "max": 1.0,
-    "p05": 0.3708,
-    "p95": 0.981,
+    "p05": 0.6862,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -549,6 +591,7 @@
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_tub",
     "Lamps",
     "Light_housing",
     "Main_cannon",
@@ -564,6 +607,8 @@
     "Radar_panel",
     "Sight_drum",
     "Sight_glass",
+    "Skirt_edge",
+    "Skirts",
     "Smoke",
     "Smoke_brackets",
     "Sprockets",
@@ -1797,7 +1842,7 @@
   "airborne_light_tank": {
    "file": "airborne_light_tank.glb",
    "fileBytes": 351436,
-   "sha1": "60e675e318a28939",
+   "sha1": "1a7e46957def37e7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -1846,11 +1891,11 @@
    ],
    "structureHash": "1b4a51fb731504bc",
    "color0": {
-    "mean": 0.692,
-    "min": 0.2729,
+    "mean": 0.7975,
+    "min": 0.5444,
     "max": 1.0,
-    "p05": 0.3957,
-    "p95": 0.9727,
+    "p05": 0.7001,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -1922,7 +1967,7 @@
   "airborne_light_tank_chute": {
    "file": "airborne_light_tank_chute.glb",
    "fileBytes": 228424,
-   "sha1": "01a43d1d612401eb",
+   "sha1": "d46f14163f60f40d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 23,
@@ -1969,11 +2014,11 @@
    ],
    "structureHash": "62dbdd79f77e45f1",
    "color0": {
-    "mean": 0.6933,
-    "min": 0.2729,
+    "mean": 0.7949,
+    "min": 0.5444,
     "max": 0.9987,
-    "p05": 0.4168,
-    "p95": 0.9461,
+    "p05": 0.6857,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -2532,7 +2577,7 @@
   "amphib_light_vehicle": {
    "file": "amphib_light_vehicle.glb",
    "fileBytes": 294676,
-   "sha1": "7d470549d62d4230",
+   "sha1": "5b613e0c6c4fa684",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -2579,13 +2624,13 @@
     1.186,
     -0.05
    ],
-   "structureHash": "6d991feeca67458a",
+   "structureHash": "26b43406d8269c95",
    "color0": {
-    "mean": 0.6872,
-    "min": 0.2771,
+    "mean": 0.7962,
+    "min": 0.5444,
     "max": 1.0,
-    "p05": 0.3554,
-    "p95": 0.9816,
+    "p05": 0.679,
+    "p95": 0.9905,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -5872,8 +5917,8 @@
   },
   "auto_loader_howitzer": {
    "file": "auto_loader_howitzer.glb",
-   "fileBytes": 411300,
-   "sha1": "318e2facf008349e",
+   "fileBytes": 411304,
+   "sha1": "25f3b009b5810341",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -5920,13 +5965,13 @@
     1.414,
     -0.0
    ],
-   "structureHash": "bc18a9a7663c3d6b",
+   "structureHash": "6af0257eaf9f43b5",
    "color0": {
-    "mean": 0.6949,
-    "min": 0.2771,
+    "mean": 0.7992,
+    "min": 0.5507,
     "max": 1.0,
-    "p05": 0.3842,
-    "p95": 0.9898,
+    "p05": 0.6934,
+    "p95": 0.9962,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -5955,7 +6000,6 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
-    "Armor",
     "Autoloader_bustle",
     "Bustle_hatch",
     "Exhaust",
@@ -5966,6 +6010,7 @@
     "Hatches.001",
     "Hubs",
     "Hull",
+    "Hull_tub",
     "Lamps",
     "Light_housing",
     "MG",
@@ -10252,22 +10297,22 @@
   },
   "coastal_ashm_vehicle": {
    "file": "coastal_ashm_vehicle.glb",
-   "fileBytes": 199656,
-   "sha1": "697ccd902ab09170",
+   "fileBytes": 200780,
+   "sha1": "42ee256cbe6a9006",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 22,
-   "meshes": 18,
-   "materials": 8,
+   "nodes": 23,
+   "meshes": 19,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 18,
-   "submeshes": 18,
-   "materialSlots": 18,
-   "materialsUsed": 8,
+   "renderers": 19,
+   "submeshes": 19,
+   "materialSlots": 19,
+   "materialsUsed": 9,
    "triangles": 3508,
    "vertices": 3617,
    "degenerateTriangles": 0,
@@ -10300,12 +10345,12 @@
     1.475,
     0.025
    ],
-   "structureHash": "c7f45b2297dca491",
+   "structureHash": "7d9b811ee2ec4cb5",
    "color0": {
-    "mean": 0.7318,
-    "min": 0.3031,
+    "mean": 0.8145,
+    "min": 0.6086,
     "max": 1.0,
-    "p05": 0.4122,
+    "p05": 0.7073,
     "p95": 0.9987,
     "outOfRange": 0
    },
@@ -10324,12 +10369,13 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Antennas",
-    "Armor",
     "Cab",
     "Canister_bands",
     "Canister_frame",
     "Canisters",
     "Chassis",
+    "Fenders",
+    "Flatbed",
     "Hatch_fittings",
     "Hatches",
     "Lamps",
@@ -10359,7 +10405,7 @@
   "combat_wreck_car": {
    "file": "combat_wreck_car.glb",
    "fileBytes": 176636,
-   "sha1": "e3d9938d6a7a369e",
+   "sha1": "d4f485b74cae276d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -10408,10 +10454,10 @@
    ],
    "structureHash": "083e36cc44a8da48",
    "color0": {
-    "mean": 0.7039,
-    "min": 0.3075,
+    "mean": 0.8034,
+    "min": 0.6105,
     "max": 1.0,
-    "p05": 0.3592,
+    "p05": 0.6928,
     "p95": 0.9987,
     "outOfRange": 0
    },
@@ -12616,21 +12662,21 @@
   },
   "demolition_line_vehicle": {
    "file": "demolition_line_vehicle.glb",
-   "fileBytes": 386460,
-   "sha1": "bef3f1d8bf73b897",
+   "fileBytes": 387364,
+   "sha1": "c97aacc1faed88ef",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 36,
-   "meshes": 32,
+   "nodes": 37,
+   "meshes": 33,
    "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 32,
-   "submeshes": 32,
-   "materialSlots": 32,
+   "renderers": 33,
+   "submeshes": 33,
+   "materialSlots": 33,
    "materialsUsed": 9,
    "triangles": 6202,
    "vertices": 7203,
@@ -12664,13 +12710,13 @@
     0.962,
     0.025
    ],
-   "structureHash": "544b5925a082a762",
+   "structureHash": "cd445f3d8195332d",
    "color0": {
-    "mean": 0.6736,
-    "min": 0.2533,
+    "mean": 0.7978,
+    "min": 0.5444,
     "max": 1.0,
-    "p05": 0.354,
-    "p95": 0.9728,
+    "p05": 0.6934,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -12703,6 +12749,7 @@
     "Hatches",
     "Hubs",
     "Hull",
+    "Hull_tub",
     "Lamps",
     "Light_housing",
     "Main_cannon",
@@ -13598,22 +13645,22 @@
   },
   "drone_hijack_vehicle": {
    "file": "drone_hijack_vehicle.glb",
-   "fileBytes": 211756,
-   "sha1": "1c06eb7dcdc1d2fc",
+   "fileBytes": 213836,
+   "sha1": "3b3cb1cf8cbe69cb",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 27,
-   "meshes": 22,
-   "materials": 8,
+   "nodes": 29,
+   "meshes": 24,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 22,
-   "submeshes": 22,
-   "materialSlots": 22,
-   "materialsUsed": 8,
+   "renderers": 24,
+   "submeshes": 24,
+   "materialSlots": 24,
+   "materialsUsed": 9,
    "triangles": 3446,
    "vertices": 3816,
    "degenerateTriangles": 0,
@@ -13646,13 +13693,13 @@
     1.899,
     0.025
    ],
-   "structureHash": "9dbcf8bf5cacd24f",
+   "structureHash": "f575fca38176df4e",
    "color0": {
-    "mean": 0.7327,
-    "min": 0.3075,
+    "mean": 0.8104,
+    "min": 0.6105,
     "max": 1.0,
-    "p05": 0.4338,
-    "p95": 0.9905,
+    "p05": 0.7079,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -13672,11 +13719,12 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
     "Array_cells",
     "Array_panel",
     "Cab",
     "Chassis",
+    "Door_panels",
+    "Fenders",
     "Hatch_fittings",
     "Hatches",
     "Lamps",
@@ -13688,6 +13736,7 @@
     "Radar_dish",
     "Radar_feed",
     "Radar_mast",
+    "Roof_boxes",
     "Shelter",
     "Steel",
     "Tail_lights",
@@ -26794,7 +26843,7 @@
   "light_attack_heli": {
    "file": "light_attack_heli.glb",
    "fileBytes": 203256,
-   "sha1": "7da581d1b65040db",
+   "sha1": "a31f30b0e1905c6a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -26843,11 +26892,11 @@
    ],
    "structureHash": "a01e96a435459399",
    "color0": {
-    "mean": 0.7355,
-    "min": 0.3075,
+    "mean": 0.8069,
+    "min": 0.5827,
     "max": 1.0,
-    "p05": 0.4617,
-    "p95": 0.9816,
+    "p05": 0.7146,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -27915,7 +27964,7 @@
   "manpads_tower": {
    "file": "manpads_tower.glb",
    "fileBytes": 141816,
-   "sha1": "7117605d6e30f861",
+   "sha1": "152edec9d204fa65",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 18,
@@ -27962,11 +28011,11 @@
    ],
    "structureHash": "92391fd4ef49e311",
    "color0": {
-    "mean": 0.7463,
-    "min": 0.4552,
+    "mean": 0.7876,
+    "min": 0.5972,
     "max": 0.9987,
-    "p05": 0.5016,
-    "p95": 0.9125,
+    "p05": 0.6877,
+    "p95": 0.9471,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -29079,7 +29128,7 @@
   "mine_rocket_truck": {
    "file": "mine_rocket_truck.glb",
    "fileBytes": 298264,
-   "sha1": "226030b2b85f9079",
+   "sha1": "199a011e5257abd6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -29128,11 +29177,11 @@
    ],
    "structureHash": "82b91bbe43066757",
    "color0": {
-    "mean": 0.7378,
-    "min": 0.2987,
+    "mean": 0.8077,
+    "min": 0.6105,
     "max": 1.0,
-    "p05": 0.4489,
-    "p95": 0.981,
+    "p05": 0.722,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -31405,21 +31454,21 @@
   },
   "next_gen_tank": {
    "file": "next_gen_tank.glb",
-   "fileBytes": 406936,
-   "sha1": "e4857abb40c88c72",
+   "fileBytes": 407856,
+   "sha1": "1bd64a8cb727b7d8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 37,
-   "meshes": 30,
+   "nodes": 38,
+   "meshes": 31,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 30,
-   "submeshes": 30,
-   "materialSlots": 30,
+   "renderers": 31,
+   "submeshes": 31,
+   "materialSlots": 31,
    "materialsUsed": 8,
    "triangles": 6512,
    "vertices": 7657,
@@ -31453,13 +31502,13 @@
     1.097,
     -0.005
    ],
-   "structureHash": "8c8a042e800687d1",
+   "structureHash": "1bca852237520a81",
    "color0": {
-    "mean": 0.673,
-    "min": 0.278,
+    "mean": 0.7927,
+    "min": 0.5444,
     "max": 1.0,
-    "p05": 0.356,
-    "p95": 0.9634,
+    "p05": 0.6857,
+    "p95": 0.9816,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -31499,6 +31548,7 @@
     "Hatches",
     "Hubs",
     "Hull",
+    "Hull_tub",
     "Lamps",
     "Light_housing",
     "MG",
@@ -32927,24 +32977,24 @@
   },
   "prop_attack_plane": {
    "file": "prop_attack_plane.glb",
-   "fileBytes": 176276,
-   "sha1": "fbe1e89741ea38f9",
+   "fileBytes": 167512,
+   "sha1": "68da0375ae4fa4ae",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 23,
-   "meshes": 16,
+   "nodes": 22,
+   "meshes": 15,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 16,
-   "submeshes": 16,
-   "materialSlots": 16,
+   "renderers": 15,
+   "submeshes": 15,
+   "materialSlots": 15,
    "materialsUsed": 8,
-   "triangles": 2758,
-   "vertices": 3233,
+   "triangles": 2634,
+   "vertices": 3073,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -32952,9 +33002,9 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 42,
-   "openEdges": 32,
-   "nonManifoldEdges": 234,
+   "loosePieces": 41,
+   "openEdges": 0,
+   "nonManifoldEdges": 243,
    "boundsMin": [
     -3.02,
     0.0083,
@@ -32975,13 +33025,13 @@
     0.894,
     -0.303
    ],
-   "structureHash": "bbfaa512de66e3d9",
+   "structureHash": "a5cb52ede8e41d8b",
    "color0": {
-    "mean": 0.751,
-    "min": 0.3464,
+    "mean": 0.801,
+    "min": 0.6644,
     "max": 1.0,
-    "p05": 0.539,
-    "p95": 0.9816,
+    "p05": 0.7368,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -33014,7 +33064,6 @@
     "Muzzle_rocket",
     "Muzzle_rocket.001",
     "Pod_bands",
-    "Pod_face",
     "Pods",
     "Point_exhaust",
     "Point_fire",
@@ -35084,8 +35133,8 @@
   },
   "river_gunboat": {
    "file": "river_gunboat.glb",
-   "fileBytes": 149764,
-   "sha1": "d358907898bb235c",
+   "fileBytes": 149712,
+   "sha1": "901c402cd11b98dc",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 25,
@@ -35130,12 +35179,12 @@
     1.481,
     -0.105
    ],
-   "structureHash": "86def765a67aacd6",
+   "structureHash": "8576a1a8e7f09f5c",
    "color0": {
-    "mean": 0.7349,
-    "min": 0.2887,
+    "mean": 0.8087,
+    "min": 0.679,
     "max": 0.9987,
-    "p05": 0.4171,
+    "p05": 0.7073,
     "p95": 0.9898,
     "outOfRange": 0
    },
@@ -35201,21 +35250,21 @@
   },
   "river_patrol_boat": {
    "file": "river_patrol_boat.glb",
-   "fileBytes": 111608,
-   "sha1": "027abf5d03f967d5",
+   "fileBytes": 110668,
+   "sha1": "66c578f060ada9e9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 26,
-   "meshes": 20,
+   "nodes": 25,
+   "meshes": 19,
    "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 20,
-   "submeshes": 20,
-   "materialSlots": 20,
+   "renderers": 19,
+   "submeshes": 19,
+   "materialSlots": 19,
    "materialsUsed": 8,
    "triangles": 1624,
    "vertices": 1845,
@@ -35249,12 +35298,12 @@
     0.69,
     -0.03
    ],
-   "structureHash": "cb6b172c18fdd8ad",
+   "structureHash": "dd5dc7480114d2a5",
    "color0": {
-    "mean": 0.7128,
-    "min": 0.2899,
+    "mean": 0.8068,
+    "min": 0.6086,
     "max": 1.0,
-    "p05": 0.3516,
+    "p05": 0.6862,
     "p95": 0.9987,
     "outOfRange": 0
    },
@@ -35288,7 +35337,6 @@
     "Agl_pedestal",
     "Ammo_box",
     "Antennas",
-    "Armor",
     "Beacon",
     "Fenders",
     "Hull",
@@ -41041,7 +41089,7 @@
   "stealth_naval_strike": {
    "file": "stealth_naval_strike.glb",
    "fileBytes": 150588,
-   "sha1": "d37db455aea2bef2",
+   "sha1": "27b306bed5ac9c5a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -41090,10 +41138,10 @@
    ],
    "structureHash": "96f305123b76553c",
    "color0": {
-    "mean": 0.7153,
-    "min": 0.3182,
+    "mean": 0.7907,
+    "min": 0.6644,
     "max": 1.0,
-    "p05": 0.4069,
+    "p05": 0.7006,
     "p95": 0.9898,
     "outOfRange": 0
    },

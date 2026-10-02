@@ -253,22 +253,22 @@ model with a tint (`"tint"` in balance.json, applied as VehicleView's own varian
 
 | What | Uses now (borrowed model, tint) | Needs (the sheet's shape) |
 |---|---|---|
-| `aa_57mm_vehicle` | `aa_gun_vehicle`, a green wash | a 2S38 Derivatsiya-PVO: a tracked chassis with a boxy 57 mm autoloading turret |
-| `mine_rocket_truck` | `mlrs`, a tan wash | a BM-27 Uragan-class wheeled rocket truck with a mine-dispensing rocket pod |
-| `prop_attack_plane` | `attack_jet`, an olive wash | an EMB-314 Super Tucano / OV-10 Bronco: a small single-engine turboprop, a bubble canopy |
-| `light_attack_heli` | `scout_heli`, a tan wash | a small stub-winged attack helicopter (AH-1Z Viper light / Mi-28 class) |
-| `next_gen_tank` | `main_battle_tank`, a blue-grey wash | a T-14 Armata: an unmanned low-profile turret set well back on the hull |
-| `demolition_line_vehicle` | `engineer_vehicle`, a violet wash | an M58 MICLIC: a mine-roller frame ahead of the hull and a line-charge rocket rack on the rear deck |
-| `combat_wreck_car` | `armored_car`, a yellow wash | a light car whose wreck resolves into a standing gun pit (a new wreck-turret prop, not just a model) |
-| `drone_hijack_vehicle` | `ew_jammer`, a cyan wash | an EW vehicle with a directional hijack antenna array, distinct from the visual jammer and the GPS jammer |
-| `manpads_tower` | `shield_tower`, a tan wash | a sandbagged pit with two shoulder-launched MANPADS tubes on a low tripod |
-| `river_patrol_boat` | `armored_car`, a blue wash | a Mark VI / Riverine Command Boat hull: a shallow-draft aluminium boat, a pintle MG and a grenade launcher |
-| `river_gunboat` | `artillery`, an orange wash | a Buyan-class river gunboat: a low hull, a forward 100 mm turret |
-| `coastal_ashm_vehicle` | `sam_launcher`, a green wash | an NSM Coastal Defence truck: angled missile canisters on a flatbed |
-| `auto_loader_howitzer` | `artillery`, an olive wash | an XM2001 Crusader: a low-profile tracked self-propelled howitzer with an autoloader bustle |
-| `amphib_light_vehicle` | `ifv`, a sage wash | an EFV / AAV-7: a boat-hulled tracked APC with a bow planing trim vane |
-| `airborne_light_tank` (+ `airborne_light_tank_chute`) | `light_tank`, a magenta wash | an M8 AGS / M10 Booker: a light tank hull with a low-profile 105 mm turret, and its own parachute canopy |
-| `stealth_naval_strike` | `stealth_bomber`, a steel-blue wash | an A-12 Avenger II: a flying-wing stealth strike aircraft, carrier folding wingtips |
+| ~~`aa_57mm_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `aa_57mm_vehicle` model (a 2S38 Derivatsiya-PVO: tracked chassis with skirts, boxy faceted turret with autoloader boxes, 57 mm barrel (baffle brake), spinning roof search radar `Radar`), wash dropped | - |
+| ~~`mine_rocket_truck`~~ | done in prompt 27 wave 1c pass A: its own `mine_rocket_truck` model (a BM-27 Uragan-class 8x8 truck: forward cab, mine-dispensing 16-tube pod with a hazard band on a turntable (`Turret`, `Muzzle_main`)), wash dropped | - |
+| ~~`prop_attack_plane`~~ | done in prompt 27 wave 1c pass A: its own `prop_attack_plane` model (a Super Tucano-class turboprop: lofted fuselage, straight wing, bubble canopy, spinning `Propeller`, two underwing rocket pods (`Muzzle_rocket`, `.001`), wing guns (`Muzzle_gun`)), wash dropped | - |
+| ~~`light_attack_heli`~~ | done in prompt 27 wave 1c pass A: its own `light_attack_heli` model (a small stub-winged attack helicopter: tandem canopy, tail boom with fin, 4-blade `Rotor`, `Tail_rotor`, gun and rocket pods (`Muzzle_gun`, `Muzzle_rocket`, each with `.001`)), wash dropped | - |
+| ~~`next_gen_tank`~~ | done in prompt 27 wave 1c pass A: its own `next_gen_tank` model (a T-14 Armata: low flat unmanned turret set back, ERA blocks, APS panels, remote MG (`Mount_mg`), 125 mm gun, side skirts, rear cage), wash dropped | - |
+| ~~`demolition_line_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `demolition_line_vehicle` model (an M58 MICLIC: tracked hull, two pushing arms with five-disc mine rollers ahead, line-charge rack with the rocket and cable box on the rear deck, remote MG turret), wash dropped | - |
+| ~~`combat_wreck_car`~~ | done in prompt 27 wave 1c pass A: its own `combat_wreck_car` model (a light armoured pickup car with a roof gun post; the `Wreck_turret` node (a sandbag ring round the gun post) is built, the wreck-resolves-into-a-gun-pit rule is still game work), wash dropped | - |
+| ~~`drone_hijack_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `drone_hijack_vehicle` model (an 8x8 EW truck: cab, equipment shelter, phased-array hijack panel with yagi elements and a feed horn on the turning `Turret` (`Muzzle_main`), spinning sensor dish `Radar`), wash dropped | - |
+| ~~`manpads_tower`~~ | done in prompt 27 wave 1c pass A: its own `manpads_tower` model (a sandbagged round pit with two shoulder-launched MANPADS tubes on a tripod head (`Turret`, `Muzzle_main`, `Muzzle_missile`, `.001`), crates, radio mast), wash dropped | - |
+| ~~`river_patrol_boat`~~ | done in prompt 27 wave 1c pass A: its own `river_patrol_boat` model (a riverine command boat: V hull with chines, wheelhouse, twin outboards, pintle MG on the bow (`Turret`) and a grenade launcher aft (`Mount_mg` > `Muzzle_mg`)), wash dropped | - |
+| ~~`river_gunboat`~~ | done in prompt 27 wave 1c pass A: its own `river_gunboat` model (a Buyan-class gunboat: flared low hull, faceted deckhouse with mast and radar, forward 100 mm turret, eight VLS cells, stern CIWS (`Mount_mg`)), wash dropped | - |
+| ~~`coastal_ashm_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `coastal_ashm_vehicle` model (an NSM Coastal Defence 6x6 truck: cab, flatbed, turntable (`Turret`) with four angled missile canisters (`Muzzle_main`), jacks), wash dropped | - |
+| ~~`auto_loader_howitzer`~~ | done in prompt 27 wave 1c pass A: its own `auto_loader_howitzer` model (an XM2001 Crusader: wide tracked hull with skirts, faceted turret with a big autoloader bustle, cradle (`Main_cannon_cradle`), 155 mm barrel with baffle brake, roof MG), wash dropped | - |
+| ~~`amphib_light_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `amphib_light_vehicle` model (an EFV / AAV-7: slab-sided boat hull on narrow tracks, sloped planing bow with a folded trim vane, rear ramp, small right-front turret (25 mm, coax)), wash dropped | - |
+| ~~`airborne_light_tank`~~ (+ `airborne_light_tank_chute`) | done in prompt 27 wave 1c pass A: its own `airborne_light_tank` model (an M10 Booker: light hull on six road wheels, low flat turret with a big mantlet and bustle, 105 mm barrel with baffle brake; its `airborne_light_tank_chute` proxy is the same tank under a 9 m 12-gore canopy with rigging (9 x 9 x 11 m, a leaner tank body)), wash dropped | - |
+| ~~`stealth_naval_strike`~~ | done in prompt 27 wave 1c pass A: its own `stealth_naval_strike` model (an A-12 Avenger II: flat-iron flying wing (one loft, 35 degree leading edge, clipped tips with fold seams), flush canopy, dorsal intakes, exhaust troughs, weapon bays (`Muzzle_rocket`, `.001`), `Bombs` rack (`Muzzle_missile`)), wash dropped | - |
 | `twin_rotor_gunship` | `sky_gunship`, a khaki wash | an ACH-47A "Guns-A-Go-Go": a CH-47 tandem-rotor airframe with side gun mounts and a nose turret |
 | `ground_drone_carrier` | `interceptor_drone_vehicle`, a teal wash | a THeMIS / Uran-9 mothership plus three small tracked minion robots (needs a minion-spawn mechanism too) |
 | `mobile_repair_vehicle` | `engineer_vehicle`, a mauve wash | an MTO-UB: a wheeled repair truck with a crane and a welding rig |
