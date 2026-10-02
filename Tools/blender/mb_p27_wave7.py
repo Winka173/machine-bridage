@@ -7,10 +7,17 @@ edit (mb_tower_branches) so `_a`/`_b` still find the parts they strip. Big hard 
 Medical). Nodes, pivots and moving parts are untouched; no new moving parts.
 
 Pass 7a: cp_relay, shield_tower, dragons_teeth, minefield, each with `_a` and `_b`.
+Pass 7b: barrage_balloon, blast_wall, fire_control_centre, inflatable_decoy, troop_shelter, logistics_station,
+radar_site, repair_bay, ammo_dump, targeting_station (no branches). Lead rule: pale sand/concrete, small COLOR_0 gains.
 """
+import math
 import random
 
 import mb_kit27 as k
+import mb_p25_models2
+import mb_p25_new
+import mb_phase8
+import mb_siege
 import mb_tower_branches as tb
 from frontier_kit import chamfered
 from mb_towers3 import _runtime_names
@@ -132,3 +139,187 @@ BUILDERS = {
     'minefield_a': _build('minefield', _mine_up, tb.minefield_a),
     'minefield_b': _build('minefield', _mine_up, tb.minefield_b),
 }
+
+
+# ============================================================================= pass 7b
+def _plain(base, up, ao=.9):
+    """A model without branches: its own old builder, then the V2 pass."""
+    build, options = base
+
+    def run(a):
+        build(a)
+        up(a)
+        k.clean(a)
+    return _runtime_names(run), dict(options, ao_strength=ao)
+
+
+def _walls(shape, sel=None, width=.09, depth=-.014):
+    """Recessed panels on the vertical faces of a block (not its chamfer facets)."""
+    k.inset(shape, lambda c, n, f: (abs(n.x) > .95 or abs(n.y) > .95) and (sel is None or sel(c, n)),
+            width=width, depth=depth)
+
+
+def _slab(a, name, mat, w, d, h, z, cut=.3, c=.03):
+    k.extrude(a.part(name, mat), chamfered(w, d, cut), h, loc=(0, 0, z), axis='Z', chamfer=c, corner=.02)
+
+
+def _blast_up(a):
+    tb.strip(a, ('Gabions',))
+    fill = a.part('Gabions', 'Sandbag')
+    for i in range(5):
+        x = (i - 2) * .95
+        for y, z in ((-.47, .58), (.47, .58), (0, 1.78)):
+            k.block(fill, (.92, .92, 1.15), loc=(x, y, z), chamfer=.07, taper=(.96, .96), ends=(False, True))
+
+
+def _decoy_up(a):
+    tb.strip(a, ('Blower',))
+    bl = a.part('Blower', 'Armor')
+    k.block(bl, (.6, .5, .5), loc=(2.2, -1.2, .25), chamfer=.05, ends=(False, True))
+    _walls(bl, width=.07, depth=-.012)
+    stakes = a.part('Stakes', 'Concrete')
+    for sx, sy in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
+        k.block(stakes, (.16, .16, .14), loc=(sx * 2.2, sy * 2.1, .07), chamfer=.03)
+
+
+def _fcc_up(a):
+    tb.strip(a, ('Pad', 'Shelters', 'Generator'))
+    k.extrude(a.part('Pad', 'Plaster'), chamfered(5.8, 5.8, .5), .12, loc=(0, 0, .06), axis='Z', chamfer=.03,
+              corner=.03)
+    sh = a.part('Shelters', 'Team')
+    k.block(sh, (2.4, 4.2, 2.3), loc=(-1.3, 0, 1.27), chamfer=.07, ends=(False, True))
+    k.block(sh, (2.0, 3.0, 2.0), loc=(1.2, .5, 1.12), chamfer=.07, ends=(False, True))
+    g = a.part('Generator', 'Armor')
+    k.block(g, (1.0, 1.3, .9), loc=(1.8, -1.8, .57), chamfer=.05, ends=(False, True))
+    _walls(g, width=.07, depth=-.012)
+
+
+def _troop_up(a):
+    tb.strip(a, ('Berm', 'Roof', 'Ramp'))
+    k.extrude(a.part('Berm', 'Dirt'), [(-3.0, 0), (-2.0, 1.6), (2.0, 1.6), (3.0, 0)], 5.0, axis='X', chamfer=.12,
+              corner=.1)
+    roof = a.part('Roof', 'Rock')
+    k.block(roof, (4.2, 4.0, .4), loc=(0, 0, 1.75), chamfer=.07, ends=(True, True))
+    _walls(roof, width=.07, depth=-.012)
+    k.block(a.part('Ramp', 'Concrete'), (1.8, 1.0, .12), loc=(0, 3.0, .15), rot=(-.25, 0, 0), chamfer=.03,
+            ends=(True, True))
+
+
+def _balloon_up(a):
+    tb.strip(a, ('Winch',))
+    w = a.part('Winch', 'Armor')
+    k.block(w, (2.4, 3.0, .9), loc=(0, 0, .55), chamfer=.08, ends=(True, True))
+    _walls(w, lambda c, n: c.z > .3, width=.09, depth=-.014)
+    _slab(a, 'Pad', 'Plaster', 3.2, 4.0, .08, .02, cut=.4, c=.02)
+
+
+def _logi_up(a):
+    tb.strip(a, ('Pad', 'Containers_ContainerRed', 'Containers_ContainerBlue', 'Containers_Team', 'Office',
+                 'Office_roof'))
+    k.extrude(a.part('Pad', 'Rock'), chamfered(8.0, 10.0, .8), .1, loc=(0, 0, .03), axis='Z', chamfer=.03,
+              corner=.03)
+    z = .1
+    for x, y, yaw, mat, tier in ((-2.4, -3.2, 0, 'ContainerRed', 2), (-2.4, -1.9, 0, 'ContainerBlue', 2),
+                                 (-2.4, -.6, 0, 'Team', 1), (1.6, -3.2, 0, 'Team', 2),
+                                 (1.6, -1.9, 0, 'ContainerRed', 1), (-2.4, 2.8, math.pi / 2, 'ContainerBlue', 1)):
+        for t in range(tier):
+            m = mat if t == 0 else ('ContainerBlue' if mat != 'ContainerBlue' else 'ContainerRed')
+            p = a.part(f'Containers_{m}', m)
+            k.block(p, (2.4, 1.0, 1.05), loc=(x, y, z + t * 1.07 + .525), rot=(0, 0, yaw), chamfer=.04,
+                    ends=(False, True))
+            k.inset(p, lambda c, n, f: abs(n.z) < .3 and abs(n.y) > .95 and abs(c.x - x) < 1.0 and
+                    abs(c.y - y) > .3, width=.1, depth=-.012)
+    off = a.part('Office', 'MetalSheet')
+    k.block(off, (2.2, 1.5, 2.2), loc=(2.6, 3.6, z + 1.1), chamfer=.04, ends=(False, True))
+    k.block(a.part('Office_roof', 'Team'), (2.4, 1.7, .12), loc=(2.6, 3.6, z + 2.26), chamfer=.03,
+            ends=(True, True))
+
+
+def _radar_up(a):
+    tb.strip(a, ('Pad', 'Shelter', 'Generator'))
+    k.extrude(a.part('Pad', 'Plaster'), chamfered(8.1, 7.9, .7), .1, loc=(0, 0, .03), axis='Z', chamfer=.03,
+              corner=.03)
+    z = .1
+    sh = a.part('Shelter', 'Team')
+    k.block(sh, (3.2, 2.2, 2.3), loc=(-2.0, -2.4, z + 1.15), chamfer=.06, ends=(False, True))
+    k.inset(sh, lambda c, n, f: abs(n.x) > .95 or n.y > .95, width=.11, depth=-.014)
+    k.block(a.part('Shelter_roof', 'PlasterWhite'), (3.3, 2.3, .08), loc=(-2.0, -2.4, z + 2.34), chamfer=.02,
+            ends=(True, True))
+    g = a.part('Generator', 'Armor')
+    k.block(g, (1.6, 1.0, 1.0), loc=(-2.4, 2.6, z + .5), chamfer=.05, ends=(False, True))
+    _walls(g, width=.08, depth=-.012)
+
+
+def _bay_up(a):
+    tb.strip(a, ('Pad', 'Walls', 'Roof', 'Vehicle_in_bay', 'Repair_hull', 'Repair_turret'))
+    k.extrude(a.part('Pad', 'Concrete'), chamfered(10.1, 14.2, .9), .1, loc=(0, 0, .03), axis='Z', chamfer=.03,
+              corner=.03)
+    z = .1
+    walls = a.part('Walls', 'Concrete')
+    for y in (-6.9, 6.9):
+        k.block(walls, (4.8, .25, 4.0), loc=(2.55, y, z + 2.0), chamfer=.04, ends=(False, True))
+    k.block(walls, (.25, 13.9, 4.0), loc=(4.9, 0, z + 2.0), chamfer=.04, ends=(False, True))
+    k.block(walls, (.5, .5, 4.0), loc=(.4, 0, z + 2.0), chamfer=.04, ends=(False, True))
+    roof = a.part('Roof', 'Corrugated')
+    for sx, rot in ((1.4, .32), (3.75, -.32)):
+        k.block(roof, (2.6, 14.4, .12), loc=(sx, 0, z + 4.45), rot=(0, rot, 0), chamfer=.04, ends=(False, True))
+    veh = a.part('Vehicle_in_bay', 'Armor')
+    k.block(veh, (2.3, 4.6, 1.4), loc=(2.6, 3.3, z + .8), chamfer=.1, ends=(False, True))
+    hull = a.part('Repair_hull', 'Team')
+    k.block(hull, (2.6, 5.4, 1.1), loc=(-2.4, -.5, z + .75), chamfer=.09, ends=(False, True))
+    _walls(hull, lambda c, n: c.z > .5, width=.12, depth=-.014)
+    k.block(a.part('Repair_turret', 'Armor'), (1.8, 2.0, .6), loc=(-2.4, -3.8, z + .32), chamfer=.07,
+            ends=(False, True))
+
+
+def _crate_v2(a, loc, size=(1.1, .5, .38), yaw=0.0, parent=None, band=True, mat='Crate'):
+    w, d, h = size
+    m = mb_siege._frame(loc, (0, 0, yaw))
+    rot = (0, 0, yaw)
+    body = a.part('Crates', mat, parent)
+    k.block(body, (w, d, h), loc=m @ mb_siege.Vector((0, 0, h / 2)), rot=rot, chamfer=.035, ends=(True, True))
+    k.inset(body, lambda c, n, f: n.z > .95, width=.06, depth=-.01)
+    cleat = a.part('Crate_cleats', 'Wood', parent)
+    for s in (-1, 1):
+        cleat.box((.06, d + .025, h + .02), loc=m @ mb_siege.Vector((s * (w / 2 - .09), 0, h / 2)), rot=rot,
+                  bevel=0)
+    if band:
+        a.part('Crate_bands', 'Hazard', parent).box((w * .3, d + .03, .06),
+                                                    loc=m @ mb_siege.Vector((0, 0, h * .66)), rot=rot, bevel=0)
+
+
+def _ammo_build(a):
+    old = mb_siege.crate
+    mb_siege.crate = _crate_v2
+    try:
+        mb_siege.ammo_dump(a)
+    finally:
+        mb_siege.crate = old
+
+
+def _ammo_up(a):
+    _slab(a, 'Ground', 'Rock', 5.4, 4.6, .06, .01, cut=.5, c=.02)
+
+
+def _target_up(a):
+    tb.strip(a, ('Pad', 'Cabin', 'Cabin_roof'))
+    k.extrude(a.part('Pad', 'Plaster'), chamfered(8.0, 6.5, .7), .3, loc=(0, 0, .1), axis='Z', chamfer=.04,
+              corner=.04)
+    cx, cy, cw, cd, ch, z0 = -1.6, .2, 3.4, 2.8, 2.6, .25
+    k.block(a.part('Cabin', 'Team'), (cw, cd, ch), loc=(cx, cy, z0 + ch / 2), chamfer=.07, ends=(False, True))
+    k.block(a.part('Cabin_roof', 'Team'), (cw + .3, cd + .3, .14), loc=(cx, cy, z0 + ch + .05), chamfer=.04,
+            ends=(True, True))
+
+
+BUILDERS.update({
+    'blast_wall': _plain(mb_p25_new.BUILDERS['blast_wall'], _blast_up, ao=.8),
+    'inflatable_decoy': _plain(mb_p25_new.BUILDERS['inflatable_decoy'], _decoy_up, ao=0.85),
+    'fire_control_centre': _plain(mb_p25_new.BUILDERS['fire_control_centre'], _fcc_up),
+    'troop_shelter': _plain(mb_p25_new.BUILDERS['troop_shelter'], _troop_up),
+    'barrage_balloon': _plain(mb_p25_new.BUILDERS['barrage_balloon'], _balloon_up, ao=0.8),
+    'logistics_station': _plain(mb_p25_models2.BUILDERS['logistics_station'], _logi_up, ao=1.0),
+    'radar_site': _plain(mb_p25_models2.BUILDERS['radar_site'], _radar_up, ao=0.85),
+    'repair_bay': _plain(mb_p25_models2.BUILDERS['repair_bay'], _bay_up, ao=1.0),
+    'ammo_dump': _plain((_ammo_build, mb_siege.BUILDERS['ammo_dump'][1]), _ammo_up),
+    'targeting_station': _plain(mb_phase8.BUILDERS['targeting_station'], _target_up),
+})
