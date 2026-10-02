@@ -1,4 +1,4 @@
-# Audio metrics (fix pass L7)
+# Audio metrics (fix pass L7; play-test 12 lane C)
 
 Written by `python Tools/sfx/analyze_sfx.py` (rerunnable; the numbers come from the .ogg files, nothing by hand).
 LUFS: ITU-R BS.1770-4 integrated; M-max: the loudest 400 ms (what a one-shot hits at). Peak: sample / 4x true peak, dBFS.
@@ -9,8 +9,8 @@ Keng: a 2-6 kHz peak at least 12 dB over its 1/3-octave median, under 160 Hz wid
 
 | size | shot M-max | shot sub % | shot tail s | blast M-max | blast sub % | blast tail s |
 |---|---|---|---|---|---|---|
-| <= 14.5 mm | -20.3 | 7.1 | 0.2 | -20.7 | 12.7 | 0.2 |
-| 20-40 mm | -19.2 | 18.2 | 0.7 | -18.1 | 31.1 | 0.9 |
+| <= 14.5 mm | -28.1 | 1.8 | 0.3 | -24.2 | 12.7 | 0.2 |
+| 20-40 mm | -23.8 | 12.0 | 0.5 | -18.1 | 31.1 | 0.9 |
 | 57-105 mm | -16.6 | 39.1 | 1.4 | -15.6 | 45.5 | 1.7 |
 | 120-155 mm | -14.6 | 53.6 | 2.0 | -13.6 | 55.6 | 2.4 |
 | 203-240 mm | -13.1 | 61.3 | 2.9 | -12.1 | 61.3 | 4.2 |
@@ -26,8 +26,8 @@ Keng outside the armour-metal group: none.
 
 | size | before shot (bank) | M-max | sub % | tail s | after shot M-max | sub % | tail s | before blast / hit (bank) | M-max | sub % | tail s | keng | after blast M-max | sub % | tail s |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| <= 14.5 mm | p34/shot_t0 | -21.5 | 1.9 | 0.3 | -20.3 | 7.1 | 0.2 | impact_metal | -16.9 | 9.5 | 0.3 | 0/3 | -20.7 | 12.7 | 0.2 |
-| 20-40 mm | p34/shot_t1 | -19.4 | 11.5 | 0.5 | -19.2 | 18.2 | 0.7 | p34/blast_he_t1 | -18.6 | 15.7 | 0.6 | 0/3 | -18.1 | 31.1 | 0.9 |
+| <= 14.5 mm | p34/shot_t0 | -21.5 | 1.9 | 0.3 | -28.1 | 1.8 | 0.3 | impact_metal | -16.9 | 9.5 | 0.3 | 0/3 | -24.2 | 12.7 | 0.2 |
+| 20-40 mm | p34/shot_t1 | -19.4 | 11.5 | 0.5 | -23.8 | 12.0 | 0.5 | p34/blast_he_t1 | -18.6 | 15.7 | 0.6 | 0/3 | -18.1 | 31.1 | 0.9 |
 | 57-105 mm | p34/shot_t2 | -17.0 | 35.4 | 1.0 | -16.6 | 39.1 | 1.4 | p34/blast_he_t2 | -16.1 | 38.8 | 1.1 | 0/3 | -15.6 | 45.5 | 1.7 |
 | 120-155 mm | p34/shot_t3 | -15.1 | 51.5 | 1.7 | -14.6 | 53.6 | 2.0 | p34/blast_he_t3 | -15.7 | 53.7 | 2.2 | 0/3 | -13.6 | 55.6 | 2.4 |
 | 203-240 mm | p34/shot_t4 | -13.7 | 58.5 | 2.9 | -13.1 | 61.3 | 2.9 | p34/blast_he_t4 | -14.0 | 61.9 | 3.5 | 0/3 | -12.1 | 61.3 | 4.2 |
@@ -197,6 +197,27 @@ Before, the 20-40 mm to 203-240 mm kinetic rounds without a blast (autocannons, 
 | sfx/blast_thermo_s3/blast_thermo_s3_2.ogg | 3.18 | -17.4 | -12.9 | -0.7 | -0.6 | 61.6 | 2.54 | 0 / 0 / 0 |  |
 | sfx/blast_thermo_s4/blast_thermo_s4_1.ogg | 4.72 | -17.5 | -11.4 | -3.1 | -3.1 | 67.4 | 4.36 | 0 / 0 / 0 |  |
 | sfx/blast_thermo_s4/blast_thermo_s4_2.ogg | 4.86 | -19.4 | -11.4 | -1.1 | -1.0 | 68.9 | 4.68 | 0 / 0 / 0 |  |
+| sfx/burst_s0_10/burst_s0_10_1.ogg | 0.57 | -23.7 | -23.0 | -8.1 | -7.7 | 1.9 | 0.51 | 4 / 58 / 5060 |  |
+| sfx/burst_s0_10/burst_s0_10_2.ogg | 0.57 | -24.2 | -23.3 | -7.6 | -7.4 | 1.8 | 0.51 | 5 / 35 / 5039 |  |
+| sfx/burst_s0_10/burst_s0_10_3.ogg | 0.57 | -23.6 | -23.1 | -7.8 | -7.6 | 1.5 | 0.31 | 4 / 163 / 2433 |  |
+| sfx/burst_s0_16/burst_s0_16_1.ogg | 0.62 | -22.5 | -20.6 | -7.3 | -6.6 | 1.5 | 0.50 | 5 / 221 / 2433 |  |
+| sfx/burst_s0_16/burst_s0_16_2.ogg | 0.62 | -22.8 | -21.0 | -7.4 | -6.6 | 1.6 | 0.56 | 5 / 23 / 2433 |  |
+| sfx/burst_s0_16/burst_s0_16_3.ogg | 0.62 | -23.2 | -21.5 | -7.3 | -7.0 | 1.8 | 0.56 | 5 / 116 / 2433 |  |
+| sfx/burst_s0_55/burst_s0_55_1.ogg | 0.70 | -21.1 | -18.8 | -8.0 | -8.0 | 1.9 | 0.43 | 5 / 232 / 2433 |  |
+| sfx/burst_s0_55/burst_s0_55_2.ogg | 0.72 | -21.4 | -19.0 | -8.4 | -8.4 | 2.2 | 0.41 | 2 / 116 / 4134 |  |
+| sfx/burst_s0_55/burst_s0_55_3.ogg | 0.70 | -21.5 | -19.1 | -7.7 | -7.6 | 1.7 | 0.33 | 3 / 58 / 2433 |  |
+| sfx/burst_s1_10/burst_s1_10_1.ogg | 0.80 | -22.3 | -19.5 | -4.4 | -4.4 | 12.0 | 0.60 | 3 / 232 / 5146 |  |
+| sfx/burst_s1_10/burst_s1_10_2.ogg | 0.80 | -21.9 | -19.3 | -5.8 | -5.8 | 15.1 | 0.50 | 3 / 151 / 4910 |  |
+| sfx/burst_s1_10/burst_s1_10_3.ogg | 0.78 | -22.2 | -20.4 | -6.4 | -5.7 | 10.9 | 0.59 | 3 / 46 / 4027 |  |
+| sfx/burst_s1_22/burst_s1_22_1.ogg | 0.91 | -21.7 | -19.3 | -7.8 | -7.7 | 15.3 | 0.67 | 3 / 139 / 4974 |  |
+| sfx/burst_s1_22/burst_s1_22_2.ogg | 0.90 | -21.2 | -18.9 | -7.4 | -7.2 | 8.6 | 0.53 | 3 / 104 / 2261 |  |
+| sfx/burst_s1_22/burst_s1_22_3.ogg | 0.91 | -22.1 | -20.0 | -7.5 | -7.5 | 14.2 | 0.58 | 3 / 139 / 5556 |  |
+| sfx/burst_s1_35/burst_s1_35_1.ogg | 0.94 | -18.8 | -16.9 | -6.8 | -6.8 | 10.7 | 0.58 | 4 / 186 / 3488 |  |
+| sfx/burst_s1_35/burst_s1_35_2.ogg | 0.95 | -18.8 | -16.9 | -5.0 | -4.9 | 11.3 | 0.52 | 4 / 325 / 5469 |  |
+| sfx/burst_s1_35/burst_s1_35_3.ogg | 0.94 | -18.5 | -16.5 | -5.3 | -5.3 | 12.1 | 0.54 | 3 / 221 / 3704 |  |
+| sfx/burst_s1_55/burst_s1_55_1.ogg | 0.93 | -17.8 | -15.7 | -3.4 | -3.4 | 12.6 | 0.60 | 3 / 174 / 5771 |  |
+| sfx/burst_s1_55/burst_s1_55_2.ogg | 0.92 | -17.7 | -15.8 | -4.9 | -4.9 | 15.0 | 0.57 | 2 / 163 / 2455 |  |
+| sfx/burst_s1_55/burst_s1_55_3.ogg | 0.92 | -17.9 | -15.9 | -4.3 | -4.2 | 10.5 | 0.59 | 4 / 163 / 2907 |  |
 | sfx/crash_fall/crash_fall_1.ogg | 2.80 | -18.2 | -15.4 | -4.6 | -4.6 | 8.1 | 0.17 | 0 / 0 / 0 |  |
 | sfx/crash_fall/crash_fall_2.ogg | 2.80 | -17.9 | -15.2 | -4.7 | -4.6 | 8.0 | 0.22 | 0 / 0 / 0 |  |
 | sfx/crash_impact/crash_impact_1.ogg | 4.00 | -18.1 | -11.6 | -1.2 | -1.2 | 62.3 | 3.92 | 0 / 0 / 0 |  |
@@ -209,15 +230,15 @@ Before, the 20-40 mm to 203-240 mm kinetic rounds without a blast (autocannons, 
 | sfx/hit_concrete_heavy/hit_concrete_heavy_1.ogg | 0.85 | -20.3 | -16.2 | -1.1 | -0.8 | 27.3 | 0.79 | 5 / 58 / 3230 |  |
 | sfx/hit_concrete_heavy/hit_concrete_heavy_2.ogg | 0.86 | -21.3 | -16.3 | -1.6 | -1.5 | 27.2 | 0.78 | 6 / 81 / 3359 |  |
 | sfx/hit_concrete_heavy/hit_concrete_heavy_3.ogg | 1.02 | -21.6 | -16.5 | -1.1 | -1.1 | 28.8 | 0.92 | 3 / 93 / 2885 |  |
-| sfx/hit_concrete_light/hit_concrete_light_1.ogg | 0.40 | -21.5 | -21.5 | -1.9 | -1.5 | 14.8 | 0.33 | 7 / 46 / 3941 |  |
-| sfx/hit_concrete_light/hit_concrete_light_2.ogg | 0.37 | -21.0 | -21.0 | -1.1 | -1.1 | 14.8 | 0.31 | 5 / 46 / 2304 |  |
-| sfx/hit_concrete_light/hit_concrete_light_3.ogg | 0.40 | -21.3 | -21.3 | -1.7 | -1.3 | 14.1 | 0.33 | 6 / 46 / 4630 |  |
+| sfx/hit_concrete_light/hit_concrete_light_1.ogg | 0.40 | -25.1 | -25.1 | -1.7 | -1.5 | 13.3 | 0.33 | 6 / 46 / 3941 |  |
+| sfx/hit_concrete_light/hit_concrete_light_2.ogg | 0.37 | -24.5 | -24.5 | -4.0 | -4.0 | 14.4 | 0.18 | 6 / 46 / 2304 |  |
+| sfx/hit_concrete_light/hit_concrete_light_3.ogg | 0.40 | -24.9 | -24.9 | -4.7 | -4.4 | 13.3 | 0.33 | 5 / 58 / 3058 |  |
 | sfx/hit_ground_heavy/hit_ground_heavy_1.ogg | 0.98 | -22.0 | -17.1 | -3.2 | -3.1 | 36.1 | 0.85 | 2 / 128 / 4587 |  |
 | sfx/hit_ground_heavy/hit_ground_heavy_2.ogg | 0.87 | -21.4 | -17.2 | -2.6 | -2.6 | 37.8 | 0.63 | 3 / 128 / 2369 |  |
 | sfx/hit_ground_heavy/hit_ground_heavy_3.ogg | 0.93 | -21.3 | -17.1 | -1.7 | -1.7 | 37.2 | 0.76 | 3 / 139 / 4177 |  |
-| sfx/hit_ground_light/hit_ground_light_1.ogg | 0.31 | -21.1 | -21.1 | -1.5 | -1.5 | 13.6 | 0.24 | 7 / 35 / 2089 |  |
-| sfx/hit_ground_light/hit_ground_light_2.ogg | 0.26 | -20.4 | -20.4 | -1.6 | -1.6 | 12.7 | 0.20 | 6 / 58 / 5060 |  |
-| sfx/hit_ground_light/hit_ground_light_3.ogg | 0.28 | -20.7 | -20.7 | -1.3 | -1.3 | 11.8 | 0.21 | 6 / 70 / 2735 |  |
+| sfx/hit_ground_light/hit_ground_light_1.ogg | 0.31 | -24.7 | -24.7 | -4.2 | -4.2 | 13.8 | 0.24 | 7 / 46 / 2089 |  |
+| sfx/hit_ground_light/hit_ground_light_2.ogg | 0.26 | -23.9 | -23.9 | -4.9 | -4.8 | 12.5 | 0.20 | 6 / 46 / 5060 |  |
+| sfx/hit_ground_light/hit_ground_light_3.ogg | 0.28 | -24.1 | -24.1 | -4.4 | -4.3 | 11.8 | 0.21 | 7 / 70 / 2735 |  |
 | sfx/hit_metal_heavy/hit_metal_heavy_1.ogg | 0.68 | -18.6 | -16.1 | -1.4 | -1.2 | 18.3 | 0.43 | 0 / 0 / 0 |  |
 | sfx/hit_metal_heavy/hit_metal_heavy_2.ogg | 0.72 | -18.1 | -16.1 | -3.1 | -3.0 | 16.4 | 0.48 | 0 / 0 / 0 |  |
 | sfx/hit_metal_heavy/hit_metal_heavy_3.ogg | 0.69 | -18.5 | -16.1 | -1.1 | -1.0 | 18.0 | 0.43 | 0 / 0 / 0 |  |
@@ -227,23 +248,42 @@ Before, the 20-40 mm to 203-240 mm kinetic rounds without a blast (autocannons, 
 | sfx/hit_pen_heavy/hit_pen_heavy_1.ogg | 0.99 | -20.4 | -15.1 | -1.3 | -1.3 | 41.7 | 0.86 | 2 / 151 / 3639 |  |
 | sfx/hit_pen_heavy/hit_pen_heavy_2.ogg | 1.00 | -20.7 | -15.2 | -1.2 | -1.2 | 45.1 | 0.88 | 3 / 209 / 2067 |  |
 | sfx/hit_pen_heavy/hit_pen_heavy_3.ogg | 0.89 | -19.0 | -15.2 | -1.1 | -1.1 | 44.2 | 0.65 | 2 / 81 / 2067 |  |
-| sfx/hit_pen_light/hit_pen_light_1.ogg | 0.43 | -19.2 | -19.2 | -0.6 | -0.6 | 25.8 | 0.24 | 5 / 58 / 3941 |  |
-| sfx/hit_pen_light/hit_pen_light_2.ogg | 0.41 | -19.3 | -19.3 | -0.9 | -0.7 | 24.8 | 0.24 | 6 / 93 / 4328 |  |
-| sfx/hit_pen_light/hit_pen_light_3.ogg | 0.41 | -19.3 | -19.3 | -1.3 | -1.3 | 26.0 | 0.25 | 4 / 35 / 3575 |  |
-| sfx/launch_big/launch_big_1.ogg | 4.02 | -15.1 | -12.2 | -0.8 | -0.8 | 45.9 | 3.68 | 4 / 139 / 2433 |  |
-| sfx/launch_big/launch_big_2.ogg | 4.02 | -13.8 | -12.1 | -3.0 | -3.0 | 43.2 | 3.96 | 1 / 46 / 2003 |  |
-| sfx/launch_s2/launch_s2_1.ogg | 1.52 | -20.9 | -16.6 | -4.0 | -4.0 | 19.1 | 1.17 | 4 / 197 / 4457 |  |
-| sfx/launch_s2/launch_s2_2.ogg | 1.51 | -20.0 | -16.6 | -1.3 | -1.1 | 17.4 | 1.25 | 3 / 46 / 3596 |  |
-| sfx/launch_s3/launch_s3_1.ogg | 2.47 | -17.8 | -14.8 | -2.7 | -2.7 | 30.6 | 1.96 | 3 / 476 / 2132 |  |
-| sfx/launch_s3/launch_s3_2.ogg | 2.54 | -16.4 | -14.6 | -1.8 | -1.8 | 30.5 | 2.25 | 2 / 46 / 2907 |  |
+| sfx/hit_pen_light/hit_pen_light_1.ogg | 0.38 | -22.5 | -22.5 | -1.2 | -1.2 | 24.9 | 0.21 | 4 / 81 / 3618 |  |
+| sfx/hit_pen_light/hit_pen_light_2.ogg | 0.36 | -22.2 | -22.2 | -1.7 | -1.7 | 24.9 | 0.22 | 5 / 93 / 4328 |  |
+| sfx/hit_pen_light/hit_pen_light_3.ogg | 0.36 | -22.6 | -22.6 | -2.2 | -2.2 | 26.2 | 0.25 | 4 / 35 / 3575 |  |
+| sfx/launch_atgm/launch_atgm_1.ogg | 1.53 | -20.1 | -17.2 | -4.8 | -4.6 | 7.1 | 0.99 | 4 / 209 / 4845 |  |
+| sfx/launch_atgm/launch_atgm_2.ogg | 1.49 | -20.2 | -17.3 | -5.5 | -5.4 | 6.7 | 1.04 | 4 / 104 / 4759 |  |
+| sfx/launch_atgm/launch_atgm_3.ogg | 1.54 | -20.2 | -17.3 | -4.8 | -4.8 | 7.3 | 1.06 | 3 / 81 / 2692 |  |
+| sfx/launch_big/launch_big_1.ogg | 3.02 | -15.0 | -12.2 | -2.6 | -2.6 | 28.8 | 2.36 | 3 / 267 / 2627 |  |
+| sfx/launch_big/launch_big_2.ogg | 2.97 | -15.0 | -12.2 | -3.5 | -3.3 | 28.5 | 2.39 | 3 / 197 / 4953 |  |
+| sfx/launch_big/launch_big_3.ogg | 2.98 | -14.8 | -12.2 | -3.2 | -3.2 | 28.2 | 2.15 | 3 / 70 / 3273 |  |
+| sfx/launch_cruise/launch_cruise_1.ogg | 2.84 | -15.7 | -12.7 | -1.5 | -1.5 | 22.6 | 2.10 | 2 / 337 / 5556 |  |
+| sfx/launch_cruise/launch_cruise_2.ogg | 2.84 | -15.9 | -12.7 | -1.7 | -1.6 | 22.6 | 2.30 | 4 / 23 / 4974 |  |
+| sfx/launch_cruise/launch_cruise_3.ogg | 2.84 | -15.5 | -12.7 | -3.2 | -3.2 | 22.9 | 2.58 | 3 / 430 / 5125 |  |
+| sfx/launch_s2/launch_s2_1.ogg | 1.09 | -18.8 | -16.8 | -4.8 | -4.6 | 9.2 | 0.57 | 3 / 244 / 4500 |  |
+| sfx/launch_s2/launch_s2_2.ogg | 1.13 | -19.8 | -16.7 | -4.2 | -4.2 | 8.6 | 0.63 | 4 / 70 / 5469 |  |
+| sfx/launch_s2/launch_s2_3.ogg | 1.09 | -18.8 | -16.7 | -2.7 | -2.5 | 9.1 | 0.64 | 3 / 151 / 4565 |  |
+| sfx/launch_s3/launch_s3_1.ogg | 1.91 | -17.6 | -14.7 | -2.9 | -2.9 | 17.7 | 1.27 | 3 / 267 / 3488 |  |
+| sfx/launch_s3/launch_s3_2.ogg | 1.84 | -17.5 | -14.7 | -2.7 | -2.6 | 17.4 | 1.33 | 3 / 81 / 4005 |  |
+| sfx/launch_s3/launch_s3_3.ogg | 1.86 | -18.3 | -14.7 | -3.1 | -3.1 | 17.3 | 1.32 | 3 / 81 / 4888 |  |
+| sfx/launch_sam/launch_sam_1.ogg | 1.99 | -18.6 | -15.8 | -2.5 | -2.4 | 11.3 | 1.17 | 3 / 418 / 5835 |  |
+| sfx/launch_sam/launch_sam_2.ogg | 1.98 | -18.9 | -15.7 | -3.0 | -3.0 | 11.3 | 1.40 | 4 / 279 / 4199 |  |
+| sfx/launch_sam/launch_sam_3.ogg | 2.02 | -18.3 | -15.8 | -4.5 | -4.2 | 11.4 | 1.44 | 3 / 372 / 5879 |  |
+| sfx/missile_hiss/missile_hiss_1.ogg | 0.50 | -23.0 | -21.2 | -7.2 | -6.9 | 1.7 | 0.02 | 3 / 70 / 4737 |  |
+| sfx/missile_hiss/missile_hiss_2.ogg | 0.55 | -23.1 | -21.1 | -6.5 | -6.2 | 1.4 | 0.02 | 3 / 58 / 5857 |  |
 | sfx/ship_engine/ship_engine_1.ogg | 4.00 | -19.4 | -19.1 | -5.1 | -5.1 | 71.3 | 1.08 | 2 / 313 / 2756 |  |
 | sfx/ship_horn/ship_horn_1.ogg | 3.80 | -13.7 | -13.0 | -1.0 | -1.0 | 52.6 | 1.34 | 0 / 0 / 0 |  |
-| sfx/shot_s0/shot_s0_1.ogg | 0.31 | -20.2 | -20.2 | -1.9 | -1.8 | 7.4 | 0.18 | 6 / 58 / 5297 |  |
-| sfx/shot_s0/shot_s0_2.ogg | 0.32 | -20.3 | -20.3 | -1.3 | -1.2 | 7.2 | 0.18 | 6 / 46 / 5986 |  |
-| sfx/shot_s0/shot_s0_3.ogg | 0.32 | -20.4 | -20.4 | -0.9 | -0.8 | 6.6 | 0.17 | 6 / 23 / 4328 |  |
-| sfx/shot_s1/shot_s1_1.ogg | 0.91 | -24.2 | -19.2 | -2.8 | -2.6 | 18.2 | 0.72 | 5 / 35 / 2519 |  |
-| sfx/shot_s1/shot_s1_2.ogg | 0.91 | -22.4 | -19.2 | -3.0 | -3.0 | 18.2 | 0.74 | 4 / 35 / 3553 |  |
-| sfx/shot_s1/shot_s1_3.ogg | 0.88 | -22.1 | -19.1 | -3.5 | -3.5 | 18.1 | 0.68 | 4 / 35 / 3962 |  |
+| sfx/shot_ac57/shot_ac57_1.ogg | 0.71 | -23.3 | -19.3 | -0.7 | -0.7 | 12.3 | 0.59 | 5 / 46 / 5512 |  |
+| sfx/shot_ac57/shot_ac57_2.ogg | 0.71 | -22.6 | -18.6 | -1.7 | -1.6 | 15.9 | 0.60 | 4 / 23 / 2735 |  |
+| sfx/shot_ac57/shot_ac57_3.ogg | 0.71 | -25.1 | -21.0 | -2.5 | -2.4 | 12.1 | 0.60 | 4 / 58 / 2713 |  |
+| sfx/shot_s0/shot_s0_1.ogg | 0.35 | -26.4 | -26.4 | -8.2 | -8.0 | 4.0 | 0.31 | 6 / 46 / 4156 |  |
+| sfx/shot_s0/shot_s0_2.ogg | 0.35 | -29.0 | -29.0 | -8.1 | -7.1 | 1.1 | 0.31 | 5 / 58 / 3424 |  |
+| sfx/shot_s0/shot_s0_3.ogg | 0.35 | -28.4 | -28.4 | -6.8 | -6.6 | 0.6 | 0.31 | 6 / 35 / 4500 |  |
+| sfx/shot_s0/shot_s0_4.ogg | 0.35 | -28.4 | -28.4 | -8.1 | -7.5 | 1.3 | 0.31 | 6 / 70 / 3704 |  |
+| sfx/shot_s1/shot_s1_1.ogg | 0.60 | -26.4 | -23.8 | -5.5 | -5.2 | 10.3 | 0.50 | 4 / 81 / 3725 |  |
+| sfx/shot_s1/shot_s1_2.ogg | 0.60 | -25.7 | -23.2 | -5.7 | -5.6 | 14.0 | 0.50 | 4 / 81 / 5039 |  |
+| sfx/shot_s1/shot_s1_3.ogg | 0.60 | -28.3 | -25.7 | -7.2 | -6.8 | 10.6 | 0.50 | 4 / 151 / 3230 |  |
+| sfx/shot_s1/shot_s1_4.ogg | 0.60 | -25.0 | -22.4 | -5.5 | -5.5 | 13.1 | 0.48 | 5 / 104 / 5728 |  |
 | sfx/shot_s2/shot_s2_1.ogg | 1.92 | -21.0 | -16.6 | -2.8 | -2.8 | 38.5 | 1.74 | 4 / 128 / 2842 |  |
 | sfx/shot_s2/shot_s2_2.ogg | 1.76 | -22.3 | -16.6 | -1.5 | -1.5 | 38.7 | 1.24 | 4 / 58 / 2584 |  |
 | sfx/shot_s2/shot_s2_3.ogg | 1.74 | -22.5 | -16.6 | -3.2 | -3.2 | 40.2 | 1.26 | 1 / 81 / 2003 |  |
@@ -257,9 +297,9 @@ Before, the 20-40 mm to 203-240 mm kinetic rounds without a blast (autocannons, 
 | sfx/shot_s406/shot_s406_2.ogg | 5.43 | -18.2 | -11.6 | -2.3 | -2.3 | 70.5 | 4.26 | 3 / 372 / 2089 |  |
 | sfx/shot_super/shot_super_1.ogg | 7.45 | -15.2 | -10.6 | -1.0 | -0.9 | 73.1 | 7.20 | 0 / 0 / 0 |  |
 | sfx/shot_super/shot_super_2.ogg | 7.45 | -15.1 | -10.6 | -0.9 | -0.9 | 77.5 | 7.32 | 0 / 0 / 0 |  |
-| sfx/smallarms_cluster/smallarms_cluster_1.ogg | 1.80 | -17.2 | -16.3 | -0.7 | -0.7 | 10.4 | 0.64 | 3 / 35 / 3725 |  |
-| sfx/smallarms_cluster/smallarms_cluster_2.ogg | 1.80 | -18.8 | -16.2 | -2.9 | -2.9 | 10.4 | 0.86 | 5 / 255 / 3639 |  |
-| sfx/smallarms_cluster/smallarms_cluster_3.ogg | 1.80 | -18.4 | -16.2 | -1.7 | -1.6 | 10.5 | 0.91 | 4 / 46 / 4479 |  |
+| sfx/smallarms_cluster/smallarms_cluster_1.ogg | 1.60 | -18.4 | -17.9 | -5.2 | -5.2 | 2.2 | 0.35 | 3 / 163 / 4371 |  |
+| sfx/smallarms_cluster/smallarms_cluster_2.ogg | 1.60 | -18.7 | -17.1 | -4.1 | -4.1 | 2.7 | 1.10 | 3 / 221 / 5599 |  |
+| sfx/smallarms_cluster/smallarms_cluster_3.ogg | 1.60 | -17.8 | -15.8 | -4.1 | -3.9 | 2.6 | 1.23 | 4 / 23 / 3445 |  |
 | sfx/train_horn/train_horn_1.ogg | 3.10 | -14.8 | -13.5 | -2.8 | -2.8 | 0.0 | 1.68 | 0 / 0 / 0 |  |
 | sfx/train_horn/train_horn_2.ogg | 3.10 | -14.5 | -13.5 | -3.3 | -3.3 | 0.0 | 1.55 | 0 / 0 / 0 |  |
 | sfx/train_rails/train_rails_1.ogg | 4.00 | -21.4 | -20.1 | -3.8 | -3.8 | 27.9 | 1.03 | 3 / 58 / 2433 |  |
