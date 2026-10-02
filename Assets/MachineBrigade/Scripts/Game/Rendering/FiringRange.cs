@@ -82,7 +82,9 @@ namespace MachineBrigade.Game.Rendering
             var flier = catalog.Vehicles.TryGetValue(vehicleId, out var shown) && shown.Flying;
             var strike = shown == null;
             // An aircraft needs room for its circuit (a pylon turn is 40-70 m across), a fire support for its run.
-            var map = new MapDefinition("range", flier || strike ? 220f : 90f,
+            // Play-test 12: a boss's scene (a target per gun, at its reach) needs the room an aircraft's circuit does.
+            var boss = shown != null && shown.Boss;
+            var map = new MapDefinition("range", flier || strike || boss ? 220f : 90f,
                 new[] { new TeamStart(0, new Vector2(0f, -70f)), new TeamStart(1, new Vector2(0f, 70f)) },
                 new List<PropPlacement>(), new List<UnitPlacement>());
             _world = new SimWorld(catalog, map, seed: 11);
@@ -133,12 +135,16 @@ namespace MachineBrigade.Game.Rendering
             var distance = TowerScene ? TowerDistance : TargetDistance(def);
             if (Setting == PreviewSetting.Sea) distance = PreviewSettings.SeaDistance(def, distance);
             _start = new Vector2(0f, -distance * 0.5f);
+            // Play-test 12: a naval boss mid-range, the shore well past its bow, its line abreast of targets on its beam.
+            _bossShow = def.Boss;
+            if (def.Boss && Setting == PreviewSetting.Sea) _start = BossSeaStart;
             _shooter = _world.SpawnVehicle(vehicleId, 0, _start, 0f);
             // A tower on show never falls (a relay under fire, a shield generator shelled).
             if (def.Static) _world.MakeSparring(_shooter);
             _ground = HitsGround(def);
             _air = HitsAir(def);
             _far = new Vector2(0f, distance * 0.5f);
+            if (def.Boss && Setting == PreviewSetting.Sea) _far = new Vector2(0f, _start.Y + BossSeaFar(def));
             _reach = distance;
             _stage = PreviewStage.ForRange(materials, _root, Setting, PreviewSettings.Biome(), _start.Y, _far.Y, def.Length, def.Width);
             SetLayer(_root);
@@ -235,6 +241,12 @@ namespace MachineBrigade.Game.Rendering
             _targetsUp = true;
             // A tower's own scene brings its own enemies; the depot's launchers want the usual targets.
             if (TowerScene && _scene != Scene.Depot) return;
+            // Play-test 12: a boss gets an enemy for every gun, in its reach and arc, laid out for its domain.
+            if (_bossShow && _shooter != null)
+            {
+                BossTargets();
+                return;
+            }
             // Prompt 34 L8: a gun that fires on ships only gets a ship at sea (the range's other targets are on land).
             if (_shooter != null && _shooter.Def.NavalOnly)
             {
@@ -285,13 +297,14 @@ namespace MachineBrigade.Game.Rendering
         private double _runnerAt;
 
         /// <summary>A range target: it stands still and never fires, but it can be knocked out (a new one comes in).</summary>
-        private void Target(string id, Vector2 at)
+        private void Target(string id, Vector2 at, float heading = MathF.PI)
         {
-            var target = _world.SpawnVehicle(id, 1, at, MathF.PI);
+            var target = _world.SpawnVehicle(id, 1, at, heading);
             _world.MakeDummy(target);
             _world.MakeMortal(target);
             _targets.Add(target);
             _slots.Add((id, at, double.NaN));
+            _headings.Add(heading);
         }
 
         /// <summary>
@@ -313,17 +326,20 @@ namespace MachineBrigade.Game.Rendering
                 if (_world.Time < due) continue;
                 _slots[i] = (id, at, double.NaN);
                 var flies = _world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Flying;
-                if (flies)
+                // Play-test 12: a ship of a naval boss's line comes back on its spot too (nothing drives up on the water).
+                var heading = i < _headings.Count ? _headings[i] : MathF.PI;
+                if (flies || (def != null && def.Naval != null))
                 {
-                    var target = _world.SpawnVehicle(id, 1, at, MathF.PI);
+                    var target = _world.SpawnVehicle(id, 1, at, heading);
                     _world.MakeDummy(target);
                     _world.MakeMortal(target);
                     _targets[i] = target;
                     continue;
                 }
-                // From beyond the spot, a little off the wreck's line.
+                // From beyond the spot, a little off the wreck's line (a boss's targets from out beyond theirs, away from it).
                 var from = at + new Vector2(i % 2 == 0 ? -3f : 3f, 16f);
-                var coming = _world.SpawnVehicle(id, 1, Inside(from), MathF.PI);
+                if (_bossShow && Vector2.DistanceSquared(at, _start) > 1f) from = at + Vector2.Normalize(at - _start) * 16f;
+                var coming = _world.SpawnVehicle(id, 1, Inside(from), _bossShow ? heading : MathF.PI);
                 _silenced.Add(coming.Id);
                 _world.Submit(new Command(CommandType.Move, 1, new[] { coming.Id }, at));
                 _arriving.Add((coming, at));
@@ -394,6 +410,7 @@ namespace MachineBrigade.Game.Rendering
                 Stage();
                 if (_shooter != null && !Directs()) Order();
                 HoldUntilFramed();
+                BossShow();
                 _world.Step(Step);
                 _views.SnapshotAll();
                 foreach (var e in _world.Events)
@@ -468,7 +485,13 @@ namespace MachineBrigade.Game.Rendering
             Vector3 centre;
             float span;
             var orbiter = _shooter != null && _shooter.Def.Orbit ? _shooter.Def : _support != null ? EscortOrbiter() : null;
-            if (orbiter != null)
+            // Play-test 12: a boss's scene (its hull and a target per gun) framed whole.
+            if (orbiter == null && BossFrame(out var whole, out var reach))
+            {
+                centre = whole;
+                span = reach;
+            }
+            else if (orbiter != null)
             {
                 var radius = Mathf.Max(orbiter.OrbitRadius, 14f);
                 centre = new Vector3(_far.X, orbiter.Altitude * 0.45f, _far.Y);
