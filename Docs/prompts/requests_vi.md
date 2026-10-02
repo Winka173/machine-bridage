@@ -230,3 +230,13 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 ## Xuất toàn bộ dữ liệu, 03/10
 - "làm cái này luôn, tôi cần cái này cho tương lai để thấy mọi chỉ số và cân bằng game sau khi phát hành" + prompt "XUẤT TOÀN BỘ DỮ LIỆU GAME THÀNH BỘ FILE CÂN BẰNG, CHIA THEO LĨNH VỰC" (nguyên văn: export_full_vi.txt). Thay mọi yêu cầu xuất / Excel / Markdown trước đó.
 - Bổ sung 03/10: mục 12 "Lớp tham chiếu ngoài đời và game" + lượt 10 + file 13_tham_chieu_nguon (nguyên văn cuối export_full_vi.txt).
+
+## Play-test 12, 03/10 (sau bản sửa tổng hợp, 331065a)
+- nhiều thứ bị bể, các đạn đạo không còn được bay mà dính ở nòng, bug cực nặng
+- âm thanh vẫn tệ, các âm thanh từ hôm qua vẫn còn tốt hôm nay tệ hẳn, âm thanh machine gun và auto canon cực tệ, âm thanh pháo, xe tăng, bom thì tốt nên giữ, siege mortar hiệu ứng âm thanh và nổ rất tốt, tên lửa thì gần giống xe tăng nên chưa tốt lắm, cái nào tệ thì có thể tham khảo lại các âm thanh cũ
+- các boss khi bắn thì không được rung lắc, các boss trong in action preview sao lại không bắn hết súng, tôi đang coi leviathan và không thấy bắn súng chính, và làm preview cho hợp lý hơn, các boss thì nên spawn nhiều địch cho bắn, mỗi súng 1 mục tiêu, boss nước thì dàn hàng ngang ... những thứ này nên tự biết
+- giảm thời gian khói đen ở các vụ nổ lại, đang rất dài
+- logic flare chưa tốt, nó bay quá xa
+- check nhiều súng cỡ nòng to mà lại nổ quá bé như heavy gun turret và gun turret, có vẻ size nòng chưa khớp ngoài đời
+- các logic bể xác khi nổ mỗi loại nên có 2-3 loại random nhau, tôi coi trực thăng có đúng 1 kiểu là mất cánh quạt
+về model: quan trọng đọc kỹ: (prompt 35, nguyên văn: prompt35_vi.txt)

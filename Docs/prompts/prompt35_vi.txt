@@ -1,0 +1,131 @@
+(03/10, chủ dự án — nguyên văn; gửi kèm danh sách lỗi play-test 12, xem requests_vi.md)
+
+# PROMPT 35 — DỰNG LẠI TỪ ĐẦU CÁC MODEL TẠM VÀ MODEL CHẤT LƯỢNG THẤP (KỂ CẢ BOSS) THEO CHUẨN NHƯ CÁC MODEL TỐT CỦA GAME
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Ghi mọi quyết định vào docs/DECISIONS.md mục "Prompt 35" kèm lý do. Chia lượt, mỗi lượt có commit. DỪNG ở các điểm dừng (mục 6 và mục 8) và chờ chủ dự án; ngoài các điểm đó không chờ duyệt.
+
+## 0. VẤN ĐỀ VÀ MỤC TIÊU
+Nhiều model làm sau này (kể cả boss) mượn hình từ model khác để dùng tạm, và dù sửa nhiều lần vẫn thiếu rất nhiều chi tiết. Mục tiêu: DỰNG LẠI TỪ ĐẦU (không vá bản cũ) cho đạt chất lượng ngang các model tốt có từ đầu.
+Chuẩn vàng:
+(a) bốn model V2 đã được chủ dự án duyệt ở prompt 27 EXPERIMENT_1: main_battle_tank, fighter_jet, silver_bug, attack_helicopter;
+(b) top 10% mỗi lớp theo điểm chất lượng (mục 5).
+Art Bible và các ngân sách của prompt 27 là luật nền. Nếu mâu thuẫn với prompt này thì theo chuẩn CAO hơn và ghi DECISIONS.
+
+## 1. LUẬT KHÔNG ĐƯỢC VI PHẠM
+- Chỉ đổi model. KHÔNG đổi dữ liệu lối chơi. Giữ nguyên id, tên nút (Part_*, Mount_*, Muzzle_*), vật liệu Armor / Team / TeamGlow, màu đỉnh COLOR_0, kích thước theo modelSize (sai số ≤ 10%).
+- "Dựng lại từ đầu": mỗi model một script Blender mới trong Tools/blender; KHÔNG copy script hay mesh của model khác rồi sửa. Được dùng thư viện thành phần có tham số (mục 3).
+- Không dùng model ngoài (CC0 / CC-BY) trừ khi Art Bible cho phép; nếu dùng, ghi nguồn và giấy phép vào docs/ASSET_LICENSES.md.
+- Chi tiết phải có chức năng theo mẫu thật; không rải chi tiết ngẫu nhiên vô nghĩa.
+- Không dùng phù hiệu, cờ, logo, tên quốc gia thật trên model.
+- Dựng deterministic (seed cố định); build_assets.py cho cùng GLB mỗi lần.
+- Mobile: theo ngân sách ở mục 5. Nếu docs/models/MODEL_STANDARD.md chưa có thì tạo theo mục 5.
+- Boss giữ quy mô ×1,3–1,5 so với mẫu thật theo modelSize hiện có.
+- Dòng "Xem lại" trong file Excel nào: không áp.
+
+## 2. LƯỢT 0 — KIỂM KÊ VÀ DANH SÁCH DỰNG LẠI (không dựng)
+1. Quét MỌI GLB. Xác định model mượn tạm bằng:
+   (a) hash hình học từng Part: model có ≥ 30% đỉnh / tam giác trùng model khác (ngoài thư viện thành phần dùng đúng quy định);
+   (b) ghi chú "model tạm" / "stand-in" trong DECISIONS, Tools/docs/unit_sheet.json, comment hoặc tên hàm trong script Blender;
+   (c) script gọi hoặc copy hàm dựng của model khác;
+   (d) điểm chất lượng thấp (mục 5.2).
+2. Chấm điểm mọi model; xếp P1 (mượn tạm hoặc Kém), P2 (Cần sửa), P3 (Đạt).
+3. Ghi docs/models/REBUILD_LIST.md: id, loại, lý do, điểm, số tam giác, model nó mượn, ưu tiên, chương người chơi gặp sớm nhất.
+4. Tính số đo chuẩn vàng theo lớp (mục 5.3) vào docs/models/GOLD_METRICS.md.
+5. Thứ tự dựng: (1) mọi boss mượn tạm; (2) xe, tàu, máy bay mượn tạm trong bộ bài khởi đầu và chương 1–5; (3) tháp, công trình, nhà chính, tường; (4) các P1 còn lại; (5) P2.
+Commit.
+
+## 3. LƯỢT 1 — NÂNG BỘ KIT THÀNH THƯ VIỆN CHI TIẾT (làm trước khi dựng bất kỳ model nào)
+frontier_kit.py hiện chỉ có box, cyl, sphere, loft. Thêm thư viện thành phần tham số (đúng kích thước thật, có vát cạnh, tự đặt tên Part_* chuẩn, có biến thể):
+- Chung: vát cạnh chuẩn; ốp tấm (panel inset); đường hàn, đinh tán, bu-lông; bản lề; tay nắm; nắp hầm có vành; đèn; ăng-ten (roi, lưới, đĩa); kính ngắm; móc kéo, cáp kéo; thùng chứa, ba lô, cuộn lưới ngụy trang; lưới tản nhiệt; ống xả.
+- Xe xích: bánh chịu tải (mâm, lốp, trục), bánh dẫn động có răng, bánh căng, con lăn đỡ xích, xích có đốt hoặc vân, váy hông có bản lề, chắn bùn, tháp pháo (ụ nòng, mặt nạ pháo, vòng xoay, nắp tháp), nòng (phanh đầu nòng, hộp hút khói, ống bọc cách nhiệt), súng máy nóc, ống phóng lựu khói, giáp phản ứng (gạch), lồng chắn, giáp lưới.
+- Xe bánh lốp: bánh (mâm, lốp có vân, moay-ơ), cầu và treo, cabin (kính, gương, cần gạt), thùng, chân chống.
+- Máy bay: thân theo mặt cắt (loft), cánh (vuốt, thon, vát), cánh đuôi ngang và đứng, cửa hút gió, ống xả, buồng lái kính, càng đáp, giá treo, tên lửa, bom, thùng dầu phụ, ống phóng pháo sáng, ăng-ten.
+- Trực thăng: moay-ơ, cánh quạt (thon, xoắn), cánh quạt đuôi, càng, cánh phụ vũ khí, buồng lái kính, ống xả, giá treo, tháp súng.
+- Tàu: thân (loe mũi, đường nước), boong, thượng tầng nhiều tầng, cột (radar, ăng-ten), tháp pháo nhiều nòng (đế, giáp, nòng), CIWS, bệ VLS (ô), xuồng, cần cẩu, nhà chứa, bãi đáp trực thăng, lan can, thang.
+- Tàu hỏa và ray: đầu máy, toa (khung, bánh, bogie), toa vũ khí, ray, tà vẹt.
+- Công trình, tháp: chân đế bê tông, bao cát, lưới thép, mái, ăng-ten, cửa, đèn pha, tường (HESCO, T-wall), nhà chính; hai phong cách phe: Accord thực dụng (bao cát, ván, vật liệu tận dụng), Hegemon đúc sẵn (khối bê tông, module).
+- Boss: chân đế lớn, tấm giáp lớn có đinh tán, cụm vũ khí nhiều nòng, bộ phận phá được (mảng riêng, khác màu nhẹ), xích lớn, thùng nhiên liệu, ống khói, đèn cảnh báo.
+- Màu đỉnh COLOR_0 tự động qua hàm kit: AO (khe, rãnh, gầm tối hơn), gradient bụi / bùn nửa dưới và quanh bánh, mòn mép (sáng ở cạnh), vệt dầu / khói quanh nòng và ống xả, dải tô phe tiêu chuẩn.
+- Test đơn vị cho từng thành phần (kích thước, bevel, tam giác tối đa); ảnh catalog docs/models/kit_catalog/.
+Commit.
+
+## 4. LƯỢT 2 — HỒ SƠ DỰNG (SPEC) CHO TỪNG MODEL TRƯỚC KHI DỰNG
+Mỗi model một file Tools/blender/specs/<id>.json (hoặc .md):
+- id; mẫu thật (từ Tools/docs/unit_refs.json); mô tả hình dạng (từ Tools/docs/unit_sheet.json, cột "Hình dạng (bản vẽ)");
+- kích thước mục tiêu (dài × rộng × cao; theo modelSize; sai số ≤ 10% so với mẫu thật hoặc có lý do);
+- ĐẶC ĐIỂM NHẬN DẠNG trích từ bản vẽ (ví dụ "2 động cơ, 2 đuôi đứng, cánh tam giác cắt, tên lửa dưới cánh"); mỗi đặc điểm ánh xạ tới một Part_* bắt buộc;
+- danh sách bộ phận theo lớp (mục 5);
+- Mount_* và Muzzle_*: số Muzzle = số nòng trong dữ liệu vũ khí (đọc từ balance.json); Mount_Flare / Mount_APS nếu đơn vị có hệ đó;
+- ngân sách tam giác LOD0 / 1 / 2; vùng màu phe;
+- bộ phận phá được và bộ phận xác vỡ (Part_*);
+- boss: điểm yếu nhìn thấy được, khớp mục "Cách đánh" và "Mẹo" của thẻ;
+- phong cách phe (công trình);
+- danh sách chi tiết bậc 1, 2, 3 phải có.
+Nếu không truy cập được nguồn hình dạng: ghi do_tin_cay = ban_dau_doan, dùng bản vẽ trong unit_sheet.json; KHÔNG tự bịa đặc điểm không có trong bản vẽ hay mẫu thật; chỗ thiếu thông tin ghi vào danh sách "Cau_hoi_chu_du_an" (docs/models/QUESTIONS.md).
+Validator spec: mọi đặc điểm có Part_* tương ứng; mọi vũ khí có Mount_* và đủ Muzzle_*.
+Làm spec cho 3 model pilot trước; các model còn lại làm theo đợt (mục 8).
+Commit.
+
+## 5. CHUẨN CHẤT LƯỢNG VÀ CỔNG KIỂM (Tools/assets/quality_gate.py, mở rộng glb_check.py)
+5.1 Cổng cứng (không qua là chưa đạt):
+- Tam giác LOD0 trong ngân sách và không dưới sàn (sàn = 70% mức thấp của khoảng). Ngân sách khởi điểm: xe nhẹ / bánh lốp 1,5–4k; xe xích, xe hạng nặng 3–6k; máy bay, trực thăng 2–5k; tàu 6–15k; boss 8–20k; tháp 1–4k; công trình 1–6k. LOD1 ~50%, LOD2 ~20%.
+- Đủ Part_* bắt buộc theo lớp và spec; đủ Mount_*, Muzzle_* (số Muzzle = số nòng trong dữ liệu), Mount_Flare / Mount_APS khi có; có LOD.
+- Kích thước sai ≤ 10% so với spec.
+- Hình học riêng: ≤ 30% tam giác trùng (hash) với bất kỳ model khác. Thành phần chung từ kit được dùng nhưng tham số phải khác; thân, tháp, cánh, thượng tầng PHẢI riêng.
+- Không tam giác diện tích 0, không lỗ, pháp tuyến đúng; vật liệu và COLOR_0 đủ; số vùng màu ≥ N (xe 4, máy bay 4, tàu 5, boss 6, công trình 3); có AO, bụi, mòn trong COLOR_0.
+- Không "thân đơn": thân và tháp có ≥ 3 mặt vát khác phương.
+5.2 Cổng mềm (điểm 0–100; Tốt ≥ 80, Cần sửa 60–79, Kém < 60):
+- Hình bóng: render 3 hình chiếu (cạnh, trước, trên) ở khoảng cách camera thường; mọi đặc điểm nhận dạng trong spec thấy được; độ lồi / lõm hình bóng (chu vi so với bao lồi) ≥ 85% chuẩn vàng cùng lớp.
+- Mật độ chi tiết: ở khoảng cách camera thường (cố định ánh sáng, cố định camera), mật độ cạnh và số vùng độ sáng riêng ≥ 80% trung bình chuẩn vàng cùng lớp.
+- Số bộ phận riêng trên mét vuông bề mặt (không tính thành phần kit lặp) ≥ 80% chuẩn vàng.
+- Phân cấp chi tiết: bậc 1 (khối chính), bậc 2 (nắp, chắn bùn, váy, cửa, cụm vũ khí), bậc 3 (bu-lông, bản lề, tay nắm, ăng-ten, cáp: nhỏ hơn ~0,3 m ở xe); mỗi bậc đạt tối thiểu theo chuẩn vàng.
+- Bất đối xứng hợp lý như mẫu thật (chi tiết lệch trái / phải).
+- Đánh giá của agent (nếu xem được ảnh): tỷ lệ, hình bóng, chi tiết, vật liệu, đọc rõ ở xa, mỗi mục kèm ví dụ cụ thể; nếu không xem được ảnh: ghi NA và để người duyệt.
+5.3 Chuẩn vàng: tính cho 4 model V2 đã duyệt và top 10% mỗi lớp; ngưỡng mềm theo trung bình chuẩn vàng cùng lớp; lớp thiếu chuẩn vàng dùng lớp gần nhất, ghi DECISIONS.
+5.4 Báo cáo: docs/models/quality_report.xlsx (mỗi model: số đo, điểm, xếp hạng, đạt / chưa) + ảnh.
+Commit.
+
+## 6. LƯỢT 3 — PILOT (3 model rồi DỪNG)
+Dựng 3 model: (1) Ixion (boss, ghi "model tạm"); (2) một xe mượn tạm trong bộ bài khởi đầu (chọn theo REBUILD_LIST); (3) một tháp hoặc công trình mượn tạm phổ biến.
+Mỗi model theo quy trình mục 7. Ghi docs/models/PILOT_REPORT.md:
+- ảnh trước / sau: 6 góc (trước, sau, hông, trên, 3/4 trước, 3/4 sau) + ảnh ở khoảng cách camera trong trận (chụp bằng cảnh xem trước của game);
+- bảng số đo (tam giác, Part_*, điểm, so chuẩn vàng);
+- thời gian dựng mỗi model và ước lượng cho phần còn lại;
+- thành phần phát hiện thiếu trong kit (bổ sung kit rồi dựng lại model nào cần);
+- câu hỏi cho chủ dự án (QUESTIONS.md).
+DỪNG. Chỉ tiếp tục khi chủ dự án trả lời "tiếp tục" hoặc đưa chỉnh sửa; ghi chỉnh sửa vào Art Bible và MODEL_STANDARD.
+
+## 7. QUY TRÌNH DỰNG MỖI MODEL (lặp tối đa 4 vòng cho tới khi qua cổng)
+1. Blockout khối chính theo spec; kiểm kích thước, tỷ lệ, hình bóng; chụp.
+2. Khối phụ (bậc 2): nắp, chắn bùn, váy, cửa, cánh phụ, cụm vũ khí; chụp.
+3. Chi tiết nhỏ (bậc 3): bu-lông, bản lề, tay nắm, ăng-ten, cáp, đèn, kính, ống xả, đồ đeo; mỗi chi tiết có vai trò theo mẫu thật.
+4. Vật liệu và màu đỉnh: Armor / Team / TeamGlow; dải phe; AO, bụi, mòn, khói; phong cách phe.
+5. Điểm gắn: Mount_*, Muzzle_* (từng nòng), Mount_Flare, Mount_APS; Part_* cho bộ phận phá được và xác vỡ; boss: nút bộ phận và điểm yếu nhìn thấy.
+6. LOD1, LOD2 (bỏ chi tiết bậc 3 trước, giữ hình bóng).
+7. Xuất GLB; chạy glb_check và quality_gate; chụp 6 góc và ảnh trong trận; so với chuẩn vàng.
+8. Chưa qua cổng: ghi chi tiết nào thiếu (đối chiếu spec và chuẩn vàng), sửa, lặp. Sau 4 vòng chưa qua: đánh dấu NEEDS_HUMAN kèm lý do, đi tiếp model khác.
+9. Commit "P35: <id>" kèm ảnh trước / sau vào docs/models/rebuild/<id>/.
+Quy định riêng theo lớp:
+- Boss: hình bóng lớn nhận ra từ xa; bộ phận phá được là mảng riêng có đinh tán, hơi khác màu; vũ khí chính thấy rõ cỡ (tháp nhiều nòng thì mỗi nòng đủ Muzzle); điểm yếu khớp "Cách đánh"; vạch màu tướng sở hữu.
+- Tàu: loe mũi, đường nước, thượng tầng nhiều tầng, cột radar, CIWS, VLS, xuồng, boong chi tiết; Part_* tách để chìm hoặc gãy.
+- Máy bay, trực thăng: buồng lái kính, cửa hút gió, ống xả, giá treo thật (vũ khí nhìn thấy khớp dữ liệu), Mount_Flare theo mẫu thật.
+- Xe xích: từng bánh chịu tải, bánh dẫn động / căng, con lăn đỡ, xích có đốt, váy hông, nắp tháp, kính ngắm, súng máy nóc, ống lựu khói.
+- Xe bánh lốp: từng bánh có mâm và lốp có vân, cầu, treo, cabin kính, gương.
+- Công trình, tháp: chân đế, bao cát hoặc vật liệu, mái, ăng-ten, cửa, đèn; hai phong cách phe; mỗi loại tháp có thân khác nhau (không dùng chung thân).
+
+## 8. LƯỢT 4+ — CÁC ĐỢT (WAVE)
+- Mỗi đợt ≤ 20 model theo thứ tự REBUILD_LIST; làm spec trước khi dựng.
+- Sau MỖI đợt: chạy quality_gate toàn bộ (model cũ không bị hỏng), ghi docs/models/WAVE_<n>_REPORT.md (bảng ảnh trước / sau, số đo, NEEDS_HUMAN).
+- DỪNG sau đợt 1 chờ chủ dự án duyệt; các đợt sau chạy liền.
+- Đợt cuối: mọi P1, rồi P2.
+
+## 9. TÍCH HỢP VÀ KIỂM TRA
+- build_assets.py xuất lại GLB; kiểm tải trong Unity (không lỗi): tỉ lệ so với modelSize, nút Part_*, Muzzle_*, xác vỡ, cảnh xem trước.
+- Ảnh trong cảnh xem trước (đúng miền đất / biển / ray / không) cho mọi model đã dựng lại.
+- Không đổi dữ liệu lối chơi; kích thước đổi quá 10% thì ghi DECISIONS và báo, không tự sửa dữ liệu.
+- Dung lượng: tổng GLB tăng ≤ 25% so với trước; vượt thì giảm LOD hoặc gộp mesh.
+- Draw call: gộp mesh theo vật liệu; không quá 4–6 vật liệu mỗi model.
+- Nếu bộ xuất dữ liệu đã có: cập nhật sheet Model và Model_cham_diem.
+
+## 10. BÁO CÁO CUỐI docs/models/REBUILD_REPORT.md
+Số model xem xét, số dựng lại, số NEEDS_HUMAN; bảng điểm trước / sau theo lớp; chuẩn vàng so với trung bình mới; thành phần kit đã thêm; thời gian trung bình mỗi model; những model còn Kém và lý do; câu hỏi cho chủ dự án; chỗ tự quyết.
