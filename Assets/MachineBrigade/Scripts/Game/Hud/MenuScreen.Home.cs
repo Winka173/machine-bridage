@@ -22,6 +22,8 @@ namespace MachineBrigade.Game.Hud
             (GameModeKind.Deathmatch, "swords", "mode.deathmatch", "mode.deathmatchSub"),
             (GameModeKind.KingOfTheHill, "crown", "mode.hill", "mode.hillSub"),
             (GameModeKind.Assault, "attack", "mode.assault", "mode.assaultSub"),
+            // Prompt 32 L7: base against base.
+            (GameModeKind.Showdown, "swords", "mode.showdown", "mode.showdownSub"),
             (GameModeKind.Defend, "shield", "mode.defend", "mode.defendSub"),
             (GameModeKind.Siege, "home", "mode.siege", "mode.siegeSub"),
             (GameModeKind.Endless, "trophy", "mode.endless", "mode.endlessSub"),

@@ -150,3 +150,10 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - Unity: compile, CatalogCheck (balance.json handbook, base.walls); run HandbookP32Tests, LocalisationScanTests (the hb.* texts), UiLayoutTests (the Dossier's eighth tab, the detail chips).
 - PDF: build_doc.py now adds the handbook section (Tools/docs/prompt32.py) after the prompt 29 section.
 - UI: the handbook table rows (`fc-hb__row` / `fc-hb__cell`) and the chips strip (`fc-hb__chips`) have inline layout only, no USS yet.
+
+## Prompt 32 L3 / L7 (lead pass, 2026-10-02): walls and Showdown
+
+- Unity: compile, CatalogCheck (balance.json base.walls, wall_hesco / wall_t / wall_gun, aiModeProfiles wallRoute and showdown, matchRules showdown with its new "lists", neutrals Showdown; the 75 map files' "walls"); run WallP32Tests, ShowdownP32Tests, AiModeProfileTests (the Showdown mode tag), OperationsModeTests (Showdown reachable from the menu), LocalisationScanTests (wall.* and mode.showdown* texts).
+- Import the three new GLBs (wall_hesco, wall_t, wall_gun) and check a wall segment's orientation in a battle (its long side across its facing, its front out of the base) and its slumped wreck as rubble.
+- UI: the Base screen's wall rows (`fc-base__walls`, `fc-base__wall`) have no USS yet; the home screen's map picker is not filtered for Showdown (an ineligible map is replaced by the first eligible one as the battle loads); no HUD notice at Showdown's minute 6, minute 10 or sudden death.
+- Sims (when the owner allows): the AI's gate-or-breach choice (SquadLayer.Walls.cs), Showdown's real break times against Docs/checks/showdown_static.md.

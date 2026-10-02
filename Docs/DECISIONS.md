@@ -15740,3 +15740,64 @@ real on three maps; the widest ground card through a T-wall's gate and the way b
 switch on the next tick only and no switch without a fall; rubble slowing by a fifth; the gun wall taking a small slot of
 the base; a line that would cut the battlefield refused; a replay's fingerprint and walls; a snapshot restored). Not
 tested: the AI's route choice (it needs a commander's squads in a running battle): NEED SIM.
+
+### L7: Showdown (Đối công)
+
+**Match rules** (prompt 30's schema; `matchRules.modes.showdown`, added to Tools/story/import_match_rules.py's `SHOWDOWN`,
+which reproduced the generated block exactly before the change and was rerun): the seven fields as the prompt words them
+(Vietnamese, like the other rows), plus `antiSnipeRule`, `breachRule`, `escalation`, `mapEligibility`; numbers
+`timeLimit` 720, `antiSnipeShare` 0.25, `antiSnipeRange` 60, `escalationAt` 360, `escalationIncome` 1.5, `rebuildCutoff`
+600, `overtimeLead` 0.05, `suddenDeath` 90, `suddenDeathIncome` 2, `catchUpMax` 0.25, `baseRadius` 46, `neutralsMax` 2; a new
+`lists` object (`MatchRuleSet.List`) with `maps`. Neutrals: `neutrals.modes.Showdown` = ammo_depot (the maps' two
+mirrored depots near the middle: 0-2 sites by map, symmetric by neutrals.py).
+
+**Maps** (`lists.maps`, from `Docs/checks/map_audit.csv` by the script's `showdown_maps()`): symmetric Conquest files (300 x
+300) with no RED flag, median path delta and neutral value delta both 10 % or less (the audit's GREEN bands): 22 maps,
+ashfield, capital, coralisles, dunebreak, foundry, frostpeak, greenvale, ironport, junglepass, landingbeach, launchsite,
+lighthousebay, metrocity, openpit, orbitalgate, redrock, rustyard, saltflat, skyhold, swamp, veyra_old_quarter, whiteout;
+out: borderbridge and emberridge (RED connectivity), hydrodam (RED path delta 19 %); no 300 x 480 map. The session plays
+the chosen map when it is listed, else the first listed (`ModeSession.MapFile`, `ShowdownSession.MapOf`); the menu's map
+picker is not filtered (written blind: the picked map is replaced as the battle loads).
+
+**Mode** (`Sim/Modes/ShowdownMode.cs`, `Game/Match/ShowdownSession.cs`, `GameModeKind.Showdown`, appended to the enum):
+
+- Both bases `BaseRole.Target` (both HQs can fall; data `base.roles.Showdown`), each with its full loadout (towers, walls,
+  HQ type), its commander and its opening squad (L6 already listed the mode); the enemy's HQ level is its difficulty's,
+  never above the player's (`min(AiLevel, player level)`). Starting CP 18 -> 21 by L6's x1.16; income 1.35 both.
+- Win: the enemy HQ destroyed; both on one step: a draw.
+- **Anti-snipe** (`SimWorld.HqDamageRule`, applied in `DamageSystem.HitVehicle` after every other rule): until a side's
+  outer defence is breached its HQ takes 25 % from artillery (an indirect weapon, a called strike), missiles, rockets,
+  drones and aircraft fired from beyond 60 m (a shooter's distance; a strike always counts as from afar).
+- **outerDefenseBreached** (looked at every 0.5 s, then for good): a rubble segment of the side's ring-1 line that opens a
+  route (`WallSystem.RubbleRoute`: the ground in front of and behind the fallen segment open and in one NavGrid region,
+  worked out once per grid version), or an enemy ground vehicle inside the base (behind the outer line, or within 46 m of
+  the HQ with no line). A camp's gate is an opening, not an entity: "the main gate destroyed" reads as the enemy driving
+  in through it (my reading; a gate entity would close the side's own way out).
+- **Escalation**: minute 6, income x1.5 both sides (`ScaleIncome`) and the CP relays stop paying (`SimWorld.RelaysOff`, in
+  EconomySystem.StepRelays); minute 10, `BaseSystem.RebuildUntil` = 600 (L2's cut-off: a paid drop still lands).
+- **At 12 minutes**: a lead of 5 HQ health points or more wins; under 5, sudden death for 90 s: no anti-snipe, still no
+  rebuilding, income x2 of the base (x2 / 1.5 on top of the escalation), the HQ skill's cooldown untouched; an HQ destroyed
+  wins, else the side that did more damage to the enemy HQ in those 90 s (counted in the same hook); level, a draw. No
+  side score.
+- **Catch-up**: income only, +25 % at most (`world.CatchUpMax` 0.25, `SimWorld.CatchUpIncomeOnly` turns off the kill pay
+  by the odds); no Underdog (no free reinforcement).
+- **AI** (data only): profile `showdown` (controllers Commander, stall Both, spend and advance pressure on, the objective
+  policy as the prompt lists it, `hqSkillThreat` 8, `wallRoute` 1 / 1 / 0.9), mode tag `Showdown` -> `showdown`. Both
+  commanders get the two HQs as their objectives (`ShowdownMode.Points`: each side's HQ a point it holds, never captured),
+  so they defend their own when threatened and attack the other's, through the gate or a breach by L3's rule; the HQ
+  skill by L4's `AutoSkill`; neutrals by the existing rules.
+- **Menu and words**: Showdown in the home screen's mode list (icon swords), loading line, HUD (HQ health % each side and
+  the clock), results (HQ %, sudden-death damage); texts `mode.showdown*`, `stat.hq`, `stat.suddenDeath` (EN + VI,
+  `Hud/BaseText.cs`). Written blind: no HUD notice at minute 6, 10 or at sudden death (left for the lead, Docs/ai/LOCAL_TODO).
+
+**Static estimate** (`Tools/balance/p32_showdown_static.py`, `Docs/checks/showdown_static.md`; no simulation): an army of the
+median ground card (main_battle_tank, 8 CP) against the HQ 5 reference base under the fire of its covering half of the
+towers: 40 and 80 CP armies stall at the towers or the HQ; 120 CP breaks it in 2.5 min without walls, 3.0 with HESCO, 3.2
+with gun walls, and stalls at the HQ against T-walls; 160 CP in 1.9 / 2.2 / 2.8 (T-wall) / 2.2 min. Verdict: 12 minutes
+is a reasonable limit (about 950 CP a side to spend; a side that wins the field by minute 6-8 has time to break in, an
+even match goes to the HQ lead or sudden death). NEED SIM.
+
+Tests (written, not run): `ShowdownP32Tests` (the schema and numbers; only symmetric 300 m maps, the RED ones out, the
+fallback map; the profile as data, the role, the opening squads; both HQs can fall, the cut-off, catch-up income only, no
+Underdog; 25 % from 100 m and full from 30 m, full once breached; a rubble route breaching the base; minute 6; the 5-point
+lead; sudden death, its damage count and the draw; the menu and both languages).

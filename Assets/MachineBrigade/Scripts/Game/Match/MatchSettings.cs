@@ -34,6 +34,9 @@ namespace MachineBrigade.Game.Match
 
         /// <summary>Prompt 21: the Sandbox (a battle set up by hand; no rewards).</summary>
         Sandbox,
+
+        /// <summary>Prompt 32 L7: Showdown, base against base: destroy the enemy HQ (12 minutes, then the HQ lead or sudden death).</summary>
+        Showdown,
     }
 
     public enum WeatherKind

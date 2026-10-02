@@ -319,6 +319,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Siege => new SiegeSession(),
                 GameModeKind.BossRush => new BossRushSession(),
                 GameModeKind.Sandbox => new SandboxSession(),
+                GameModeKind.Showdown => new ShowdownSession(),
                 GameModeKind.Campaign => new MissionSession(mission ?? Campaign.Get(MatchSettings.Mission) ?? Campaign.All[0]),
                 _ => new ConquestSession(),
             };
@@ -407,6 +408,8 @@ namespace MachineBrigade.Game.Match
             // Prompt 16: part way through, the rush may be at sea (Lighthouse Bay) for its ship.
             GameModeKind.BossRush => (BossRushSession.Pending?.Map ?? mapId) + "_sandbox",
             GameModeKind.Weekly => Fortified(WeeklyFortress.MapId),
+            // Prompt 32 L7: only the symmetric 300 x 300 battlefields the data lists.
+            GameModeKind.Showdown => ShowdownSession.MapOf(GameContent.LoadCatalog(), mapId) + "_conquest",
             _ => LegacyMapFile(kind, mapId),
         };
 

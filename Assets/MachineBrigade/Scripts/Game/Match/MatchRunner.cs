@@ -1502,6 +1502,7 @@ namespace MachineBrigade.Game.Match
                 GameModeKind.Survival => "mode.survival",
                 GameModeKind.Siege => "mode.siege",
                 GameModeKind.BossRush => "mode.bossrush",
+                GameModeKind.Showdown => "mode.showdown",
                 _ => "mode.conquest",
             };
             return Strings.Get(mode) + "  ·  " + Strings.Get("map." + MatchSettings.CurrentMap.Id);

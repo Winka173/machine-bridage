@@ -1,0 +1,143 @@
+"""Prompt 32 L7: a static estimate of how long an average army takes to break an HQ 5 base with walls in Showdown.
+
+    python Tools/balance/p32_showdown_static.py      # writes Docs/checks/showdown_static.md
+
+No simulation: a one-second step model on the data (damage table, penetration, the second rounds of prompt 29 via
+p32_tower_prices.Model). Assumptions (provisional, mine; DECISIONS "Prompt 32 L3 / L7 / L9"):
+
+- The defender: base.reference level 5 (HQ 5: 6 small, 3 medium, 2 large towers, 3 modules), the plain HQ (no type),
+  two wall lines of the chosen type, of which the attack breaks one segment each (the gate is the other way in: it takes
+  the same towers' fire, so the breach is the slower bound and the gate the faster one).
+- The attacker: the median ground card vehicle by CP among tanks, IFVs and light vehicles ("quân trung bình"), bought from
+  Showdown's starting CP (21) and its income (1.35 CP/s x economy 0.9; x1.5 after minute 6), up to the 32-vehicle cap,
+  driving 260 m to the base at its speed; its fire on structures by the damage table and the structures' front armour.
+- The fight: the towers covering the approach (half of the base's towers, the outer half) fire at the attackers' front
+  armour all along; the attackers break the outer wall segment, then those towers, then the inner segment, then the HQ
+  (the HQ's own guns firing from the inner line on). Anti-snipe does not apply: the army fires from inside 60 m. The
+  defender's own army is left out (both sides attack with the same income), so this is the time an unopposed attack needs.
+"""
+from __future__ import annotations
+
+import os
+import statistics
+import sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, HERE)
+from p32_tower_prices import Model, front  # noqa: E402
+
+ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
+OUT = os.path.join(ROOT, "Docs", "checks", "showdown_static.md")
+
+START_CP, INCOME, ECONOMY, LATE = 21.0, 1.35, 0.9, 1.5
+LATE_AT, CAP, DRIVE = 360.0, 32, 260.0
+LIMIT = 720.0
+COVER = 0.5
+
+
+def structure_dps(m, v, armour):
+    total = 0.0
+    for gun in m.mounts(v):
+        r, sw = m.round_for(gun, "structure", False)
+        if r.get("targets", "Ground") == "Air" or r.get("interceptOnly"):
+            continue
+        dps = m.sustained(r) * m.mult(r, armour, "Structure", "Structure")
+        if r is not gun and sw > 0:
+            dps *= 30.0 / (30.0 + sw)
+        total += dps
+    return total * float(v.get("outgoingDamageMult", 1))
+
+
+def run(m, wall_type, army_cp):
+    d = m.d
+    tough = m.tough
+    walls = d["base"]["walls"]
+    ref = next(r for r in d["base"]["reference"] if r["level"] == 5)
+    towers = [m.V[t] for t in ref["small"] + ref["medium"] + ref["large"] if t in m.V]
+    hq = m.V["headquarters"]
+    # The attacker's average vehicle.
+    pool = [v for v in m.cards if m.vclass(v) in ("Tank", "Heavy", "Light") and not v.get("flying")]
+    pool.sort(key=lambda v: (float(v.get("cp", 0)), v["id"]))
+    unit = pool[len(pool) // 2]
+    cp = float(unit["cp"])
+    hp = float(unit["hp"]) * tough
+    speed = float(unit.get("speed", 6))
+    stages = []
+    seg = None
+    if wall_type != "none":
+        seg = m.V[walls["types"][wall_type]["def"]]
+        stages.append(("outer wall segment", float(seg["hp"]) * tough, front(seg)))
+    # The towers covering the approach: the outer half, the large and medium ones first (they outrange the rest).
+    ordered = [m.V[t] for t in ref["large"] + ref["medium"] + ref["small"] if t in m.V]
+    cover = ordered[: max(1, int(round(len(ordered) * COVER)))]
+    for t in cover:
+        stages.append((t["id"], float(t["hp"]) * tough, front(t)))
+    if seg is not None:
+        stages.append(("inner wall segment", float(seg["hp"]) * tough, front(seg)))
+    stages.append(("HQ", float(hq["hp"]) * tough, front(hq)))
+    unit_front = front(unit)
+
+    def tower_dps(t):
+        return m.dps_on(t, "heavy" if unit_front >= 3 else "light", unit_front)
+    standing = list(cover)
+    force = min(CAP, army_cp // cp)
+    start = force
+    time = DRIVE / max(1.0, speed)
+    log, stage, left = [], 0, stages[0][1]
+    while time < 3600.0 and stage < len(stages) and force > 0.05:
+        time += 1.0
+        name, _, armour = stages[stage]
+        left -= force * structure_dps(m, unit, armour)
+        incoming = sum(tower_dps(t) for t in standing) + (tower_dps(hq) if stage >= len(stages) - 2 else 0.0)
+        force = max(0.0, force - incoming / hp)
+        if left <= 0:
+            log.append((name, time))
+            if standing and name == standing[0]["id"]:
+                standing = standing[1:]
+            stage += 1
+            if stage < len(stages):
+                left = stages[stage][1]
+    return unit, start, log, force, stages[stage][0] if stage < len(stages) else None
+
+
+ARMIES = (40, 80, 120, 160)
+
+
+def main():
+    m = Model()
+    lines = ["# Showdown: static base-break estimate (prompt 32 L7)", "",
+             "Generated by `Tools/balance/p32_showdown_static.py` (no simulation). An army of the average ground card (fixed, no",
+             "reinforcement) against an HQ 5 base (base.reference level 5) with two wall lines, under the fire of the towers covering",
+             "the approach; the assumptions are in the script's header and DECISIONS \"Prompt 32 L3 / L7 / L9\".", "",
+             "| walls | army | vehicles | outer segment | covering towers | inner segment | HQ down | left |", "|---|---|---|---|---|---|---|---|"]
+    summary = {}
+    for wall in ("none", "hesco", "t_wall", "gun_wall"):
+        for army in ARMIES:
+            unit, start, log, left, stuck = run(m, wall, army)
+            at = dict(log)
+            def mm(t):
+                return f"{int(t) // 60}:{int(t) % 60:02d}" if t is not None else "-"
+            towers = [t for n, t in log if n not in ("outer wall segment", "inner wall segment", "HQ")]
+            hq = at.get("HQ")
+            summary[(wall, army)] = hq
+            lines.append(f"| {wall} | {army} CP | {int(start)} x {unit['id']} | {mm(at.get('outer wall segment'))} | "
+                         f"{mm(towers[-1] if towers else None)} ({len(towers)}) | {mm(at.get('inner wall segment'))} | "
+                         f"{mm(hq) if hq else 'held (stopped at ' + str(stuck) + ')'} | {left:.1f} |")
+    lines += ["", "## Reading", ""]
+    for army in ARMIES:
+        row = ", ".join(f"{w} {summary[(w, army)] / 60:.1f} min" if summary[(w, army)] else f"{w} held" for w in ("none", "hesco", "t_wall", "gun_wall"))
+        lines.append(f"- {army} CP: {row}.")
+    lines += ["",
+              "Showdown's 12 minutes buy about 950 CP a side at its income (21 at the start, 1.35 CP/s x 0.9, x1.5 from minute 6),",
+              "most of it spent against the other side's army; an attack that breaks a walled HQ 5 base needs an army of the size",
+              "where the base falls above, arriving with the defender's army beaten. The walls add the segments' time (the T-wall",
+              "the most) and keep the covering towers firing longer. Verdict (static): 12 minutes is a reasonable limit: a side",
+              "that wins the field battle by minute 6-8 has time to break in; an even match goes to the HQ lead or sudden death.",
+              "NEED SIM: the real times (no simulation was run)."]
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
+    open(OUT, "w", encoding="utf-8", newline=chr(10)).write(chr(10).join(lines) + chr(10))
+    print(chr(10).join(lines[6:]))
+
+
+if __name__ == "__main__":
+    main()
