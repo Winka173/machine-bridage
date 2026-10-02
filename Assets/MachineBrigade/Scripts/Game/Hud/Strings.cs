@@ -210,6 +210,12 @@ namespace MachineBrigade.Game.Hud
             ["short.gunship_support"] = ("Gunship", "Pháo hạm"),
             ["short.carpet_bombing"] = ("Carpet", "Rải thảm"),
             ["wpn.gun"] = ("Main gun", "Pháo chính"),
+            // Full fix L2: a gun on any mount but the main one; lasers, railguns, close-in tools; a missile's warhead.
+            ["wpn.cannon"] = ("Gun", "Pháo"),
+            ["wpn.laser"] = ("Laser", "La-de"),
+            ["wpn.railgun"] = ("Railgun", "Pháo điện từ"),
+            ["wpn.melee"] = ("Close-in tool", "Công cụ cận chiến"),
+            ["wpn.warhead"] = ("warhead {kg} kg", "đầu nổ {kg} kg"),
             ["wpn.autocannon"] = ("Autocannon", "Pháo tự động"),
             ["wpn.howitzer"] = ("Howitzer", "Lựu pháo"),
             ["wpn.mortar"] = ("Mortar", "Súng cối"),
@@ -1142,7 +1148,14 @@ namespace MachineBrigade.Game.Hud
             ["detail.cooldown"] = ("Ready again in {seconds} s", "Hồi chiêu {seconds} giây"),
             ["detail.count"] = ("{count|# blast|# blasts}", "{count} phát nổ"),
             ["detail.main"] = ("main", "chính"),
-            ["detail.weaponLine"] = ("{damage} dmg  ·  every {seconds} s  ·  {metres} m  ·  {targets}", "{damage} ST  ·  mỗi {seconds} giây  ·  {metres} m  ·  {targets}"),
+            // Full fix L3: a single-shot weapon "every X s" (its full cycle); a salvo or magazine "salvo N · cycle X s" (the
+            // time to fire it all plus the reload); the sustained damage a second, the barrels, a blast's core and edge.
+            ["detail.weaponLine"] = ("{damage} dmg  ·  every {seconds} s  ·  {metres} m  ·  {targets}", "{damage} ST  ·  mỗi {seconds} s  ·  {metres} m  ·  {targets}"),
+            ["detail.weaponLineSalvo"] = ("{damage} dmg  ·  salvo {count}  ·  cycle {seconds} s  ·  {metres} m  ·  {targets}", "{damage} ST  ·  loạt {count}  ·  chu kỳ {seconds} s  ·  {metres} m  ·  {targets}"),
+            ["detail.sustained"] = ("Sustained {dps} dmg/s", "DPS duy trì {dps}/s"),
+            ["detail.barrels"] = ("{count} barrels firing together", "{count} nòng bắn cùng lúc"),
+            ["detail.coreEdge"] = ("blast core {core} m / edge {edge} m", "lõi nổ {core} m / rìa {edge} m"),
+            ["detail.core"] = ("blast {core} m", "nổ lan {core} m"),
             ["detail.sharedGear"] = ("Shared by every {card} vehicle. Tap a slot to change it.", "Dùng chung cho mọi xe {card}. Chạm vào ô để thay."),
             ["stat.detail.hp"] = ("Health", "Máu"),
             ["stat.detail.volley"] = ("Damage per shot", "Sát thương mỗi phát"),

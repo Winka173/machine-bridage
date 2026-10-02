@@ -1,5 +1,10 @@
 """Prompt 34 L2: the boss family table applied to the boss weapons, keeping each weapon's DPS (DECISIONS "Prompt 34 L2").
 
+RETIRED by the full fix prompt L3 (DECISIONS "Sửa lỗi tổng hợp L3"): it kept the prompt 26 DPS as the target, which that
+prompt says was wrong from the start, and a run would write those cadences back. Its main() refuses to run; the boss
+weapons are Tools/balance/fix_boss_weapons.py's. The helpers (boss_users, validate) stay for p34_validate, p34_warnings and
+the design document.
+
     python Tools/balance/p34_boss_families.py                 # dry run: the plan and the per-boss check
     python Tools/balance/p34_boss_families.py --write         # save balance.json and Docs/balance/boss_weapon_families.md
     python Tools/balance/p34_boss_families.py --write --only leviathan   # only the weapons that boss owns (commit per boss)
@@ -274,6 +279,11 @@ def owner_of(users, wid, order):
 
 
 def main():
+    print("p34_boss_families.py is retired (full fix L3): run Tools/balance/fix_boss_weapons.py instead. Nothing written.")
+    sys.exit(1)
+
+
+def _retired_main():
     write = "--write" in sys.argv
     only = sys.argv[sys.argv.index("--only") + 1] if "--only" in sys.argv else None
     doc = Doc(F.PATH)

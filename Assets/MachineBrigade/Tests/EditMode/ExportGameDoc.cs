@@ -275,6 +275,10 @@ namespace MachineBrigade.Tests
                     // Prompt 15: penetration, the round's form, its tags, and its effect on each armour level, aircraft and structures.
                     ["pen"] = w.Penetration, ["form"] = w.Form.ToString(), ["topAttack"] = Armour_StrikesTop(w), ["guided"] = w.Guided,
                     ["splashes"] = w.Splashes, ["thermobaric"] = w.Thermobaric, ["real"] = w.RealName ?? "",
+                    // Full fix L2 / L3: the display calibre, warhead, power, energy; the barrels, the full cycle, its rounds, the family.
+                    ["caliberMm"] = w.CaliberMm, ["warheadKg"] = w.WarheadKg, ["powerKw"] = w.PowerKw, ["energyMj"] = w.EnergyMj,
+                    ["barrels"] = w.Barrels, ["simultaneous"] = w.Simultaneous, ["cycle"] = w.CycleSeconds, ["roundsPerCycle"] = w.RoundsPerCycle,
+                    ["familyId"] = w.WeaponFamilyId ?? "",
                     ["effect"] = Matchup.EffectRow(catalog.Damage, w).Select(x => (object)x).ToList(),
                     // Prompt 25 F1 (DECISIONS 25E): the DPS against aircraft (a boss's weaponDamage is the ground's only), the
                     // DPS by armour level 0-5, on aircraft and on structures, the flight to the longest reach, the round's length.

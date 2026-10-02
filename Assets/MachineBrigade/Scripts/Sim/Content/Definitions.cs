@@ -308,6 +308,7 @@ namespace MachineBrigade.Sim.Content
                 PiercingLook = PiercingLook,
                 Family = Family,
                 Size = Size,
+                CaliberMm = CaliberMm, WarheadKg = WarheadKg, PowerKw = PowerKw, EnergyMj = EnergyMj,
                 RealName = RealName,
                 WeaponFamily = WeaponFamily,
                 // Prompt 34 L1: the family, variant and tier travel with the copy.

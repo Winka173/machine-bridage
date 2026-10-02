@@ -28,17 +28,15 @@ namespace MachineBrigade.Game.Hud
             if (!string.IsNullOrEmpty(w.RealName))
             {
                 var name = w.RealName!;
-                // Prompt 34 L1: only a gun's size is a calibre; a laser's is its power, a bomb's or a missile's its weight.
-                if (w.Size > 0f && !name.Contains(" mm") && w.Size >= 5f && w.Projectile is ProjectileKind.Bullet or ProjectileKind.Shell && IsGun(w))
-                    name += " " + N(w.Size) + " mm";
+                // Full fix L2: the data's own field (calibre, warhead, power, energy), added only when the name does not say it.
+                if (w.CaliberMm > 0f && !name.Contains(" mm")) name += " " + WeaponInfo.Spec(w);
+                else if (w.WarheadKg > 0f && !name.Contains("kg")) name += " · " + WeaponInfo.Spec(w);
+                else if (w.PowerKw > 0f && !name.Contains("kW")) name += " " + WeaponInfo.Spec(w);
+                else if (w.EnergyMj > 0f && !name.Contains("MJ")) name += " " + WeaponInfo.Spec(w);
                 return name;
             }
             return WeaponInfo.Describe(w).Name;
         }
-
-        /// <summary>Prompt 34 L1: a gun, whose "size" is its calibre in mm (a laser's is kW, a railgun's MJ, a bomb's kg).</summary>
-        private static bool IsGun(WeaponDef w) =>
-            w.Family is null or "mg" or "autocannon" or "tank_gun" or "howitzer" or "mortar" or "naval_gun" or "grenade" or "recoilless";
 
         /// <summary>The weapons that do damage, main one first.</summary>
         private static IEnumerable<(WeaponDef w, int index)> Armed(VehicleDef def)

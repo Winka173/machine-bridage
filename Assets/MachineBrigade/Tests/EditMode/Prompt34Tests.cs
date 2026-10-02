@@ -152,19 +152,21 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void TheAreaBonusSlowsTheSmerchAndTheBombs()
+        public void TheSmerchTheBombsAndThe155AtTheirCadence()
         {
+            // Full fix L3 (DECISIONS "Sửa lỗi tổng hợp L3") replaces prompt 34 L2's area bonus: the real cadence first, the DPS
+            // the result. Smerch: 8 x 450, the real 3.17 s between rockets, wave 1's 15.76 s after the ripple.
             var c = C;
-            // Smerch: 8 x 130 every 6.1 s (170 a second) before; 8 x 450, the cycle for 170 a second times 1.6 (core 5 -> 8 m).
             var smerch = c.Weapons["p26_jotunn_sec_jo_rockets"];
             Assert.AreEqual(450f, smerch.Damage, 1e-3f);
-            Assert.AreEqual(170f / 1.6f, smerch.SustainedDps, 3f);
-            // Bombs: 8 x 320 every 8.1 s (316) before; 8 x 700, the cycle times 2 (core 5 -> 10 m).
+            Assert.AreEqual(3.17f, smerch.BurstInterval, 1e-3f);
+            Assert.AreEqual(8f * 450f / (15.76f + 7f * 3.17f), smerch.SustainedDps, 1f);
+            // Bombs: 8 x 700, the 35.4 s cycle kept (no real rate for an airship's bay).
             var bombs = c.Weapons["p26_roc_main_roc_bombs"];
             Assert.AreEqual(700f, bombs.Damage, 1e-3f);
-            Assert.AreEqual(316f / 2f, bombs.SustainedDps, 3f);
-            // Leviathan's 155 mm/60: 600 x 3 at the old 131 a second.
-            Assert.AreEqual(131f, c.Weapons["p26_leviathan_sec_lev155"].SustainedDps, 2f);
+            Assert.AreEqual(8f * 700f / 35.44f, bombs.SustainedDps, 3f);
+            // Leviathan's 155 mm/60: the triple turret, 3 x 600 every 10.5 s (wave 1).
+            Assert.AreEqual(3f * 600f / 10.5f, c.Weapons["p26_leviathan_sec_lev155"].SustainedDps, 1f);
         }
 
         [Test]
@@ -272,8 +274,8 @@ namespace MachineBrigade.Tests
         public void TheVolleysKeepTheirDamageASecond()
         {
             var c = C;
-            // The old ripple's gaps went onto the cooldown: Scylla's AK-130 was 2 x 380 over 3.75 s + 1 s.
-            Assert.AreEqual(2f * 380f / 4.75f, c.Weapons["naval_130_twin"].SustainedDps, 1f);
+            // Full fix L3: Scylla's AK-130 twin at the real 20 rpm a barrel, 2 x 380 every 3 s (4.75 s was too slow).
+            Assert.AreEqual(2f * 380f / 3f, c.Weapons["naval_130_twin"].SustainedDps, 1f);
             // The heavy turret's twin 155 mm AP: 2 x 300 over 5.5 s + 0.05 s.
             Assert.AreEqual(2f * 300f / 5.55f, c.Weapons["gun_155_twin_ap"].SustainedDps, 1f);
             // A guided shell still goes one at a time.

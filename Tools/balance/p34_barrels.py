@@ -81,6 +81,15 @@ MUZZLES = {
     "heavy_turret": {"Muzzle_main": 2},
     "headquarters": {"Muzzle_main": 2},
     "titan_tank": {"Muzzle_main": 2},
+    # Full fix L3 (DECISIONS "Sửa lỗi tổng hợp L3", Tools/blender/mb_fix_barrels.py): the bosses' twin guns.
+    "behemoth": {"Muzzle_main": 2, "Muzzle_gun": 2, "Muzzle_gun.001": 2, "Muzzle_gun.002": 2},
+    "cerberus": {"Muzzle_main": 2},
+    "moloch": {"Muzzle_main": 2, "Muzzle_gun": 2, "Muzzle_gun.001": 2, "Muzzle_gun.002": 2},
+    "typhon": {"Muzzle_gun": 2},
+    "hydra_sub": {"Muzzle_gun": 2, "Muzzle_missile": 2},
+    "daedalus": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
+    "monster": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
+    "fortress_bastion": {"Muzzle_gun": 2, "Muzzle_gun.001": 2},
 }
 KNOWN_MISSING = {"kraken": "its 406 mm and 155 mm mounts are launch cells and rocket boxes with no barrels: one muzzle each"}
 

@@ -746,11 +746,15 @@ namespace MachineBrigade.Game.Hud
                 else row.Add(Kit.Icon(lines[i].Icon, "fc-weapon__icon"));
                 var text = Kit.Box("fc-row-text fc-grow");
                 text.Add(Kit.Text(Kit.Caps(lines[i].Name + (i == 0 ? "  ·  " + Strings.Get("detail.main") : "")), "fc-panel-title"));
-                var burst = w.RoundsPerCycle > 1 ? $" × {w.RoundsPerCycle}" : "";
-                // A magazine gun: its rounds, then the magazine change.
-                var pause = w.Clip > 0 ? w.ClipReload : w.Cooldown;
-                text.Add(Kit.Body2(Strings.Format("detail.weaponLine", ("damage", w.Damage.ToString("N0", Strings.Culture) + burst), ("seconds", pause.ToString("0.#", Strings.Culture)), ("metres", Mathf.RoundToInt(w.Range)),
-                    ("targets", lines[i].Targets))));
+                // Full fix L3: the full cycle (the salvo or magazine fired off plus its reload), never the pause alone:
+                // "salvo N · cycle X s" for a salvo or a magazine, "every X s" for a single shot.
+                var cycle = w.CycleSeconds.ToString(w.CycleSeconds >= 10f ? "0" : "0.#", Strings.Culture);
+                var dmg = w.Damage.ToString("N0", Strings.Culture);
+                text.Add(Kit.Body2(w.RoundsPerCycle > 1
+                    ? Strings.Format("detail.weaponLineSalvo", ("damage", dmg), ("count", w.RoundsPerCycle), ("seconds", cycle), ("metres", Mathf.RoundToInt(w.Range)),
+                        ("targets", lines[i].Targets))
+                    : Strings.Format("detail.weaponLine", ("damage", dmg), ("seconds", cycle), ("metres", Mathf.RoundToInt(w.Range)), ("targets", lines[i].Targets))));
+                if (w.Damage > 0f) text.Add(Kit.Small(WeaponFacts(def, w)));
                 if (lines[i].Ammo > 0) text.Add(Kit.Small(Strings.Format("detail.ammo", lines[i].Ammo)));
                 // Prompt 13 G.1: every figure (real name and calibre, rounds, magazine or stores and how they
                 // come back, faster sites, range), behind "More".
@@ -815,6 +819,23 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>The weapons tab shows every figure (prompt 13 G.5: "More").</summary>
         private bool _weaponsMore;
+
+        /// <summary>
+        /// Full fix L3: a weapon's sustained damage a second on this carrier (a cycle's rounds over the cycle, every barrel,
+        /// a launcher's reload, the boss's own weapon damage), its barrels fired together, a blast's core and edge.
+        /// </summary>
+        internal static string WeaponFacts(VehicleDef def, WeaponDef w)
+        {
+            var parts = new List<string>
+            {
+                Strings.Format("detail.sustained", ("dps", MachineBrigade.Sim.Combat.FirePower.Sustained(w, def).ToString("N0", Strings.Culture))),
+            };
+            if (w.Simultaneous && w.Barrels > 1) parts.Add(Strings.Format("detail.barrels", ("count", w.Barrels)));
+            if (w.SplashRadius > 0.5f && w.SplashEdge > w.SplashRadius)
+                parts.Add(Strings.Format("detail.coreEdge", ("core", w.SplashRadius.ToString("0.#", Strings.Culture)), ("edge", w.SplashEdge.ToString("0.#", Strings.Culture))));
+            else if (w.SplashRadius > 0.5f) parts.Add(Strings.Format("detail.core", ("core", w.SplashRadius.ToString("0.#", Strings.Culture))));
+            return string.Join("  ·  ", parts);
+        }
 
         /// <summary>What a utility module does for the base, from its data (repairs, reloads, aircraft, supply, radar).</summary>
         private void ModuleFacts(VehicleDef def)

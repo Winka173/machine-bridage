@@ -212,9 +212,10 @@ namespace MachineBrigade.Tests
                     var per = FirePower.Sustained(w, def);
                     sum += per * table.Effective(w, 3f, TargetKind.Ground);
                 }
-                // the crusher, the thrown rock, the pods and the cruise missiles are the boss system's and counted by hand in the script;
-                // the mounts alone come to at least a third of the target for every main boss, and never above it
-                Assert.LessOrEqual(sum, target[i] * 1.12f, Mains[i] + ": not above the chapter's target");
+                // the crusher, the thrown rock, the pods and the cruise missiles are the boss system's and counted by hand in the script.
+                // Full fix L3 (DECISIONS "Sửa lỗi tổng hợp L3"): the cadence is the real one and the DPS its result, so the chapter's
+                // target is a guide only (Docs/balance/boss_weapon_families.md): the mounts between 0.3 and 1.5 of it.
+                Assert.LessOrEqual(sum, target[i] * 1.5f, Mains[i] + ": not far above the chapter's target");
                 Assert.GreaterOrEqual(sum, target[i] * 0.3f, Mains[i] + ": the mounts carry a good part of it");
             }
         }
