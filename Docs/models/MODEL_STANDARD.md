@@ -76,7 +76,9 @@ turret (`turretTurnRate`).
 - **Cần sửa** (needs fixing): any other fault above (over or under budget, 1-3 parts, a secondary muzzle or mount,
   Mount_Flare / Mount_APS, boss part node, proportions 10-25 %, LOD1 outside 35-65 %), or a visual fault.
 - **Tốt** (good): nothing found, statically and on the sheet.
-- Final grade = the lower of the static and the visual grade. Old vs new (models rebuilt in prompt 27): the lower
+- Final grade = the lower of the static and the visual grade, with one exception: a "missing part" that the sheet
+  shows modelled inside a merged node (an idler inside `Wheels`, a mantlet inside `Turret_body`) is cleared by the
+  visual pass, which says so in its reason (the static check only sees node names). Old vs new (models rebuilt in prompt 27): the lower
   scoring version loses; when the new one scores lower, restore the old GLB or rebuild it to pass.
 
 ## 5. How the scorer assigns a class
