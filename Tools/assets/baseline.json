@@ -536,6 +536,16 @@
     "towed_at_gun: new (1996 triangles)",
     "twin_rotor_gunship: new (3422 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "bridging_vehicle"
+   ],
+   "reason": "wave 1c pass B: tread plates Steel (card luma)",
+   "changes": [
+    "bridging_vehicle: bytes only"
+   ]
   }
  ],
  "models": {
@@ -8493,7 +8503,7 @@
   "bridging_vehicle": {
    "file": "bridging_vehicle.glb",
    "fileBytes": 330664,
-   "sha1": "0eafb25d498ec351",
+   "sha1": "f34965246884d65e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"

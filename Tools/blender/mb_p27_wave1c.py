@@ -1490,7 +1490,7 @@ def bridging_vehicle(a):
     for y in (-2.0, -1.0, 1.0, 2.0):
         k.block(armor, (2.3, .12, .06), loc=(0, y, 1.94), chamfer=0)
     for s in (-1, 1):
-        a.part('Tread_plates', 'Undercarriage').box((.8, 5.6, .04), loc=(s * .75, 0, 1.93), bevel=0)
+        a.part('Tread_plates', 'Steel').box((.8, 5.6, .04), loc=(s * .75, 0, 1.93), bevel=0)
     parts.hatch(a, -.8, -2.1, 1.1, .22)
     mv._periscopes(a, [(-.8 + dx, -2.5, 1.0, 0) for dx in (-.17, 0, .17)])
     _rws(a, 1.0, -2.3, 1.1, length=.6)
