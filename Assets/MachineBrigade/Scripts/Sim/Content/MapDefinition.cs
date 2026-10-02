@@ -274,6 +274,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 16: the sea beside the battlefield (its lanes, beaches, piers, batteries), or null.</summary>
         public SeaDef? Sea { get; internal set; }
 
+        /// <summary>Prompt 30 L6: the neutral sites (radar, workshop, abandoned AA, ammo depot), placed by Tools/maps/place_neutrals.py.</summary>
+        public IReadOnlyList<NeutralSiteDef> Neutrals { get; internal set; } = Array.Empty<NeutralSiteDef>();
+
         /// <summary>
         /// Prompt 23 B: spawn points the map sets by hand (map data "spawns": [{"team", "kind", "x", "z", "fromX", "fromZ"}]),
         /// on top of the ones worked out from the map (<see cref="Navigation.SpawnPoints"/>). Empty on most maps.
@@ -382,6 +385,7 @@ namespace MachineBrigade.Sim.Content
                 Sea = root.Has("sea") ? SeaDef.Parse(root.Object("sea")) : null,
                 Routes = routes,
                 Spawns = SpawnPointDef.ParseAll(root),
+                Neutrals = NeutralSiteDef.ParseAll(root),
             };
         }
     }

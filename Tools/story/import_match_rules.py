@@ -64,6 +64,15 @@ THIRD = {
     "Intercept": {"kind": "NoStrikes"}, "ShootDown": {"kind": "Kills", "value": 12}, "Relieve": {"kind": "Kills", "value": 12},
     "Boss": {"kind": "NoAircraft"}, "Duel": {"kind": "Kills", "value": 15}, "Recon": {"kind": "NoStrikes"},
 }
+# Prompt 30 L6 (sheet "Trung lập", V1): the neutral sites' numbers and the kinds each mode tag switches on (sheet
+# "Chế độ", column "Yếu tố trung lập V1"; Defend's is the contested supply drop, an event; Boss Rush none).
+NEUTRALS = {
+    "numbers": {"captureRadius": 10, "captureSeconds": 8, "radar.radius": 45, "workshop.radius": 14, "workshop.repair": 0.015,
+                "ammo.radius": 14, "ammo.seconds": 6, "ammo.blast": 14, "ammo.damage": 300, "aa.rebuild": 60},
+    "modes": {"Conquest": ["radar", "workshop"], "Deathmatch": ["ammo_depot", "aa_site"], "KingOfTheHill": ["workshop"],
+              "Assault": ["ammo_depot"], "Siege": ["aa_site"], "Weekly": ["ammo_depot"], "Survival": ["workshop"]},
+}
+
 # Leaderboards: keys in order, each "-" descending, "+" ascending (sheet "Luật trận", "Vô hạn").
 LEADERBOARDS = {
     "endless": ["-waves", "-killedBaseCp", "-seconds"],
@@ -100,7 +109,9 @@ def main():
             f'    "starMastery": {json.dumps(MASTERY)},',
             f'    "starThird": {json.dumps(THIRD)},',
             f'    "leaderboards": {json.dumps(LEADERBOARDS)}',
-            "  },", END]
+            "  },",
+            "  // Prompt 30 L6: the neutral sites (sheet \"Trung lập\", V1): numbers and the kinds each mode uses.",
+            f'  "neutrals": {json.dumps(NEUTRALS)},', END]
     if args.dry:
         print("\n".join(out))
         return

@@ -91,3 +91,6 @@ The cloud session writes the Sim only. Each line: file, what, why.
   (`result.endRun`), with `result.endlessKept`. Call `session.PayEndless(modeId)` each frame (or each wave) and toast
   the coins and badges. Boss Rush's in-battle endless pick no longer opens (EndlessAtResults). Endless's menu entry
   unchanged. Leaderboards: sort with `world.Catalog.MatchRules.Board(id)`. Run `EndlessTests`, `MatchRulesTests`.
+- L6: show the neutral sites (`world.Neutrals.Sites`: kind, place, holder) on the field and the minimap (holder colour,
+  capture ring), the abandoned AA site's marker (no building until taken), the supply drop's 15 s marker. The radar
+  dome, garage and ammo dump props are existing models; check they read as capturable sites. Run `NeutralTests`.

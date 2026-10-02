@@ -204,6 +204,10 @@ namespace MachineBrigade.Game.Match
                         _superweaponSaid = Trigger(world, RadioTrigger.Superweapon, e.DefId, generic: false);
                         _lastPhaseAt = Math.Max(_lastPhaseAt, world.Time);
                         break;
+                    case SimEventKind.NeutralCaptured when e.Team == 0 && world.Time - _neutralAt >= 30.0:
+                        // Prompt 30 L6: neutral_captured (30 s apart), Arg the site's kind.
+                        if (Trigger(world, RadioTrigger.NeutralCaptured, e.DefId, generic: false)) _neutralAt = world.Time;
+                        break;
                     case SimEventKind.EventNotice when e.DefId != null && _eventsSeen.Add(e.NoticeKind.ToString()):
                         Trigger(world, RadioTrigger.EventTriggered, e.NoticeKind.ToString(), generic: false);
                         break;
@@ -297,6 +301,7 @@ namespace MachineBrigade.Game.Match
         private double _lastTacticSwitch = double.NegativeInfinity;
         private float _lastProgress = -1f;
         private int _expensiveLost;
+        private double _neutralAt = double.NegativeInfinity;
         private bool _allyArrived, _superweaponSaid, _stallSaid, _criticalSaid, _momentumSaid, _timerSaid;
 
         /// <summary>The goal marks, the stall, the critical moment, the momentum, the last minute, units first seen, the general's tactic.</summary>

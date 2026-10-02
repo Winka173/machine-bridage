@@ -830,6 +830,7 @@ namespace MachineBrigade.Sim
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();
+            if (Map.Neutrals.Count > 0) Neutrals.Step(dt);
             RemoveDead();
         }
 

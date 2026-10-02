@@ -499,6 +499,7 @@ namespace MachineBrigade.Sim.Content
                 AiData = root.Has("aiBehaviour") ? AiBehaviour.Parse(root.Object("aiBehaviour")) : new AiBehaviour(),
                 AiModes = root.Has("aiModeProfiles") ? AiModeProfiles.Parse(root.Object("aiModeProfiles")) : new AiModeProfiles(),
                 MatchRules = root.Has("matchRules") ? MatchRules.Parse(root.Object("matchRules")) : new MatchRules(),
+                Neutrals = root.Has("neutrals") ? NeutralRules.Parse(root.Object("neutrals")) : new NeutralRules(),
             };
             catalog.FinishExtras(root, ownBranches);
             catalog.CheckNaval();

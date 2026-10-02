@@ -15,7 +15,8 @@ namespace MachineBrigade.Sim.Modes
     /// </summary>
     public sealed partial class BattleEvents
     {
-        private const float CrateFall = 5f;
+        /// <summary>Prompt 30 L6: the contested drop is announced (and marked) 15 s before it lands (5 s before).</summary>
+        private const float CrateFall = 15f;
         private const float CrateLife = 50f;
         private const float ClaimReach = 6f;
         private const float ClaimSeconds = 2f;
@@ -58,12 +59,16 @@ namespace MachineBrigade.Sim.Modes
 
         private void DropCrate(SimWorld world, double now)
         {
-            // Somewhere open in the middle band, well away from both rally points.
+            // Prompt 30 L6: between the two armies (else the middle band), open ground, well away from both rally points.
+            var a = ArmyCentre(world, 0);
+            var b = ArmyCentre(world, 1);
+            var middle = a != null && b != null ? (a.Value + b.Value) * 0.5f : world.Map.Centre;
             for (var attempt = 0; attempt < 20; attempt++)
             {
                 var map = world.Map;
-                var at = map.Centre + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * 0.225f,
-                    (float)(_random.NextDouble() * 2 - 1) * map.Length * 0.225f);
+                var spread = attempt < 10 ? 0.1f : 0.225f;
+                var at = (attempt < 10 ? middle : map.Centre) + new Vector2((float)(_random.NextDouble() * 2 - 1) * map.Width * spread,
+                    (float)(_random.NextDouble() * 2 - 1) * map.Length * spread);
                 if (!world.Grid.IsWalkable(at)) continue;
                 var clear = true;
                 foreach (var team in world.Map.Teams)

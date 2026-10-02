@@ -33,7 +33,14 @@ KNOWN = {"mission_start", "phase_start", "phase_end", "objective_progress", "poi
 # Command (the brigade's HQ voice) is not in the sheet: system-like reports only.
 HQ = {"roles": ["command net"], "triggers": ["objective_progress", "event_triggered", "enemy_reinforcement", "timer_60s"]}
 MAIN = ["mission_start", "victory", "defeat", "critical_failure_imminent", "momentum_high_once", "objective_stall_90s"]
-SCRIPTED = ["phase_start", "phase_end", "objective_progress", "boss_phase_change", "event_triggered", "time"]
+# The sheet "Điểm kích hoạt" names no fixed speaker for these ("Theo kịch bản", "Theo sự kiện", "Theo boss", "Người giữ
+# điểm"; the superweapon's guide line has none either): the script picks one.
+SCRIPTED = ["phase_start", "phase_end", "objective_progress", "boss_phase_change", "event_triggered", "time", "boss_hp",
+            "superweapon_warning", "point_captured", "point_lost"]
+# The trigger table names a speaker the voice sheet's allowedTriggers leave out: expensive_unit_lost "Kade hoặc chỉ huy
+# liên quan", ally_late "Đồng minh / Nadia".
+# Brandt is chapter 1's enemy general: the generals' lines too.
+EXTRA_TRIGGERS = {"khai": ["expensive_unit_lost"], "linh": ["ally_late"], "brandt": GENERAL}
 
 
 def triggers(cell: str) -> list[str]:
@@ -70,6 +77,8 @@ def main():
     speakers["aurel"]["note"] = "direct from chapter 11; before, at most one line a chapter through a device"
     speakers["hung"]["note"] = "ally_late only before chapter 7"
     speakers["hq"] = {"name": "Command", **HQ}
+    for sid, extra in EXTRA_TRIGGERS.items():
+        speakers[sid]["triggers"] += [t for t in extra if t not in speakers[sid]["triggers"]]
     data = {"speakers": speakers, "mainTriggers": MAIN, "scriptedTriggers": SCRIPTED}
     with open(OUT, "w", encoding="utf-8", newline="\n") as f:
         json.dump(data, f, ensure_ascii=False, indent=1)

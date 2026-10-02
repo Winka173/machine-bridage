@@ -11,7 +11,8 @@
     "critical_failure_imminent",
     "victory",
     "defeat",
-    "timer_60s"
+    "timer_60s",
+    "expensive_unit_lost"
    ]
   },
   "mai": {
@@ -49,7 +50,8 @@
     "enemy_reinforcement",
     "general_tactic_change",
     "first_unit_type_seen",
-    "objective_stall_90s"
+    "objective_stall_90s",
+    "ally_late"
    ]
   },
   "hung": {
@@ -69,7 +71,11 @@
     "fortification"
    ],
    "triggers": [
-    "phase_start"
+    "phase_start",
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
    ]
   },
   "brenn": {
@@ -258,6 +264,10 @@
   "objective_progress",
   "boss_phase_change",
   "event_triggered",
-  "time"
+  "time",
+  "boss_hp",
+  "superweapon_warning",
+  "point_captured",
+  "point_lost"
  ]
 }

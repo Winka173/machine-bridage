@@ -314,6 +314,8 @@
     "starThird": {"Escort": {"kind": "Kills", "value": 10}, "Evacuate": {"kind": "Kills", "value": 10}, "Hold": {"kind": "Kills", "value": 15}, "Outpost": {"kind": "Kills", "value": 12}, "Survive": {"kind": "Kills", "value": 20}, "Protect": {"kind": "Kills", "value": 15}, "Capture": {"kind": "Kills", "value": 10}, "Destroy": {"kind": "NoStrikes"}, "Hunt": {"kind": "Kills", "value": 10}, "Intercept": {"kind": "NoStrikes"}, "ShootDown": {"kind": "Kills", "value": 12}, "Relieve": {"kind": "Kills", "value": 12}, "Boss": {"kind": "NoAircraft"}, "Duel": {"kind": "Kills", "value": 15}, "Recon": {"kind": "NoStrikes"}},
     "leaderboards": {"endless": ["-waves", "-killedBaseCp", "-seconds"], "defendEndless": ["-waves", "-killedBaseCp", "-seconds"], "survivalEndless": ["-waves", "-killedBaseCp", "-seconds"], "bossrush": ["-bosses", "+seconds", "-parts"], "bossrushEndless": ["-bosses", "+seconds", "-parts"], "weekly": ["-cleared", "+attempts", "+seconds"]}
   },
+  // Prompt 30 L6: the neutral sites (sheet "Trung lập", V1): numbers and the kinds each mode uses.
+  "neutrals": {"numbers": {"captureRadius": 10, "captureSeconds": 8, "radar.radius": 45, "workshop.radius": 14, "workshop.repair": 0.015, "ammo.radius": 14, "ammo.seconds": 6, "ammo.blast": 14, "ammo.damage": 300, "aa.rebuild": 60}, "modes": {"Conquest": ["radar", "workshop"], "Deathmatch": ["ammo_depot", "aa_site"], "KingOfTheHill": ["workshop"], "Assault": ["ammo_depot"], "Siege": ["aa_site"], "Weekly": ["ammo_depot"], "Survival": ["workshop"]}},
   // </generated match rules>
   "generals": {
     "varga": { "elites": ["Tank", "Heavy"], "deck": ["armored_bulldozer"] },

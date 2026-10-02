@@ -14652,3 +14652,26 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
 - CHECK reported: the Boss Rush session's roster and limit (the full hunt has no clock, the weekly hunt its own) do not
   match the sheet's "10 bosses, 30 minutes"; left as they are (a roster change is a design call).
 - Tests (written): `EndlessTests`.
+
+### L6: neutral sites V1
+
+- The eight V1 rows: the coastal battery, the lighthouse and the neutral supply convoy exist and stay; the contested
+  supply drop now lands between the two armies (else the middle band) and is announced 15 s before (`BattleEvents`,
+  was 5 s), with its marker from the existing `CrateIncoming` event. New: radar (the holder sees 45 m round it),
+  field workshop (the holder's ground vehicles within 14 m mend 1.5 % a second), abandoned AA site (taking it raises an
+  `aa_turret` for the holder; the next holder takes the gun over; destroyed, the site is free again 60 s later), ammo
+  depot (the holder's vehicles within 14 m are resupplied, once each 6 s; its building shot to pieces blows up, 300
+  in 14 m, hurting everyone). `Sim/Modes/Neutrals.cs`, data balance.json `neutrals` (numbers, kinds by mode). No LATER row.
+- Taking a site: a side's ground vehicles alone within 10 m for 8 s (another side takes it the same way), like the
+  coastal batteries. Sites act through the system, not through base utilities (those act team-wide at the HQ).
+- Placement (`Tools/maps/neutrals.py`, on the generated map files; `build_maps.py` did not reproduce the committed
+  maps byte for byte, so the maps were not regenerated): each battlefield's Conquest version (and its Sandbox twin)
+  has two kinds, each a pair mirrored through the middle like the camps (equal value for either side); its Siege
+  version an AA site and an ammo depot on the attacker's half. Buildings: radar dome, garage, ammo dump (existing
+  props), marked `"neutral": 1`. The long versions have none. A spot not walkable in the Sim's grid is dropped.
+- Modes (sheet "Chế độ", column V1): Conquest radar + workshop; Deathmatch ammo depot + AA; King of the Hill workshop;
+  Assault ammo depot; Siege AA; Weekly ammo depot; Survival workshop; Defend the supply drop (event); Boss Rush, the
+  campaign and Operations none (the campaign's battlefields keep their story; the sheet's "như chiến dịch").
+- `neutral_captured`: `SimEventKind.NeutralCaptured` (Arg the kind), 30 s apart, spoken by the script's speaker
+  (speakerRole: Mara for the workshop, Quist for salvage).
+- Tests (written): `NeutralTests` (mirrored pairs, at most two kinds, the modes' kinds).
