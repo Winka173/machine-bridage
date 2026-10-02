@@ -28,6 +28,24 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Each side's base loadout and role; null: a bare HQ each.</summary>
         public BaseSetup? Bases { get; set; }
+
+        /// <summary>Prompt 30 L4: a kill scores min(baseCP, KillCap); 0 scores its price as before.</summary>
+        public int KillCap { get; set; } = 18;
+
+        /// <summary>Level at the limit: up to this long, the next vehicle destroyed decides; else a draw.</summary>
+        public float Overtime { get; set; } = 60f;
+
+        public string? RulesId { get; set; } = "deathmatch";
+
+        public void Apply(SimWorld world)
+        {
+            if (RulesId == null || world.Catalog.MatchRules.For(RulesId) is not { } r) return;
+            ScoreTarget = (int)r.Get("target", ScoreTarget);
+            KillCap = (int)r.Get("killCap", KillCap);
+            TimeLimit = r.Get("timeLimit", TimeLimit);
+            Overtime = r.Get("overtime", Overtime);
+            world.CatchUpMax = r.Get("catchUpMax", world.CatchUpMax);
+        }
     }
 
     /// <summary>
@@ -35,7 +53,7 @@ namespace MachineBrigade.Sim.Modes
     /// the first side to destroy the target CP worth of enemy vehicles wins; at the time limit the
     /// side with the higher score does.
     /// </summary>
-    public sealed class DeathmatchMode : IGameMode
+    public sealed partial class DeathmatchMode : IGameMode
     {
         public const int PlayerTeam = 0;
         public const int EnemyTeam = 1;
@@ -51,14 +69,21 @@ namespace MachineBrigade.Sim.Modes
 
         public int Kills(int team) => _ledger.Kills(team);
 
-        /// <summary>The CP worth of what the side has destroyed.</summary>
-        public int Score(int team) => _ledger.LostCp(1 - team);
+        /// <summary>The side's score: min(baseCP, the cap) for each enemy vehicle destroyed (prompt 30 L4; base price, not the discounted one).</summary>
+        public int Score(int team) => _ledger.LostScore(1 - team);
+
+        private double _overtimeUntil = double.NaN;
+        private int _killsAtOvertime;
+
+        public bool InOvertime => !double.IsNaN(_overtimeUntil);
 
         public float SecondsLeft(SimWorld world) => MathF.Max(0f, _rules.TimeLimit - (float)world.Time);
 
         public void Setup(SimWorld world)
         {
             world.CatchUp = true;
+            _rules.Apply(world);
+            _ledger.ScoreCap = _rules.KillCap;
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
@@ -73,10 +98,36 @@ namespace MachineBrigade.Sim.Modes
             var ours = Score(PlayerTeam);
             var theirs = Score(EnemyTeam);
             var winner = ours >= _rules.ScoreTarget ? PlayerTeam : theirs >= _rules.ScoreTarget ? EnemyTeam : (int?)null;
-            if (winner == null && world.Time >= _rules.TimeLimit) winner = ours == theirs ? -1 : ours > theirs ? PlayerTeam : EnemyTeam;
+            winner ??= AtTheLimit(world, ours, theirs);
             if (winner == null) return;
             Result = new MatchResult(winner.Value);
             world.IsOver = true;
+        }
+    }
+
+    public sealed partial class DeathmatchMode
+    {
+        /// <summary>
+        /// Prompt 30 L4 at the limit: the higher score wins; level, up to <see cref="DeathmatchRules.Overtime"/> s in which the
+        /// first vehicle destroyed decides (its loser loses); none, a draw.
+        /// </summary>
+        internal int? AtTheLimit(SimWorld world, int ours, int theirs)
+        {
+            if (world.Time < _rules.TimeLimit) return null;
+            if (!InOvertime)
+            {
+                if (ours != theirs) return ours > theirs ? PlayerTeam : EnemyTeam;
+                _overtimeUntil = world.Time + _rules.Overtime;
+                _killsAtOvertime = _ledger.Losses(PlayerTeam) + _ledger.Losses(EnemyTeam);
+                return null;
+            }
+            if (_ledger.Losses(PlayerTeam) + _ledger.Losses(EnemyTeam) > _killsAtOvertime)
+            {
+                var a = Score(PlayerTeam);
+                var b = Score(EnemyTeam);
+                if (a != b) return a > b ? PlayerTeam : EnemyTeam;
+            }
+            return world.Time >= _overtimeUntil ? -1 : null;
         }
     }
 
@@ -96,6 +147,21 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Id of the map objective that becomes the hill.</summary>
         public string Hill { get; set; } = "town";
+
+        /// <summary>Prompt 30 L4: level or contested at the limit, an overtime of up to this long.</summary>
+        public float Overtime { get; set; } = 60f;
+
+        public string? RulesId { get; set; } = "hill";
+
+        public void Apply(SimWorld world)
+        {
+            if (RulesId == null || world.Catalog.MatchRules.For(RulesId) is not { } r) return;
+            ScoreTarget = r.Get("target", ScoreTarget);
+            ScorePerSecond = r.Get("perSecond", ScorePerSecond);
+            TimeLimit = r.Get("timeLimit", TimeLimit);
+            Overtime = r.Get("overtime", Overtime);
+            world.CatchUpMax = r.Get("catchUpMax", world.CatchUpMax);
+        }
 
         public SideSetup Player { get; set; } = new() { StartCp = 16f, Income = 1.2f };
         public SideSetup Enemy { get; set; } = new() { StartCp = 16f, Income = 1.2f };
@@ -138,6 +204,7 @@ namespace MachineBrigade.Sim.Modes
             hill ??= world.Map.Points.Count > 0 ? world.Map.Points[0] : null;
             if (hill != null) _points.Add(new ObjectiveState(hill.Value));
             world.CatchUp = true;
+            _rules.Apply(world);
             world.EnableEconomy(_rules.Player.Build(PlayerTeam));
             world.EnableEconomy(_rules.Enemy.Build(EnemyTeam));
             world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
@@ -147,6 +214,31 @@ namespace MachineBrigade.Sim.Modes
         }
 
         private Outposts? _outposts;
+        private double _overtimeUntil = double.NaN;
+
+        public bool InOvertime => !double.IsNaN(_overtimeUntil);
+
+        /// <summary>
+        /// Prompt 30 L4 at the limit: ahead with the hill not contested wins. Level, or the hill contested: an overtime of up
+        /// to <see cref="KingOfTheHillRules.Overtime"/> s that lasts while it is contested; once one side holds it alone, the
+        /// higher score wins (the holder on a tie). At the overtime's end, the higher score, else a draw.
+        /// </summary>
+        internal int? AtTheLimit(SimWorld world, ObjectiveState hill)
+        {
+            if (world.Time < _rules.TimeLimit) return null;
+            var a = Score(PlayerTeam);
+            var b = Score(EnemyTeam);
+            var sole = hill.Owner is PlayerTeam or EnemyTeam && !hill.Contested ? hill.Owner : -1;
+            if (!InOvertime)
+            {
+                if (a != b && !hill.Contested) return a > b ? PlayerTeam : EnemyTeam;
+                _overtimeUntil = world.Time + _rules.Overtime;
+                return null;
+            }
+            if (sole >= 0) return a == b ? sole : a > b ? PlayerTeam : EnemyTeam;
+            if (world.Time < _overtimeUntil) return null;
+            return a == b ? -1 : a > b ? PlayerTeam : EnemyTeam;
+        }
 
         public void Tick(SimWorld world, float dt)
         {
@@ -160,8 +252,7 @@ namespace MachineBrigade.Sim.Modes
             if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = hill.Owner == EnemyTeam ? 0.35f : 0f;
 
             int? winner = _score[PlayerTeam] >= _rules.ScoreTarget ? PlayerTeam : _score[EnemyTeam] >= _rules.ScoreTarget ? EnemyTeam : null;
-            if (winner == null && world.Time >= _rules.TimeLimit)
-                winner = Score(PlayerTeam) == Score(EnemyTeam) ? -1 : Score(PlayerTeam) > Score(EnemyTeam) ? PlayerTeam : EnemyTeam;
+            winner ??= AtTheLimit(world, hill);
             if (winner == null) return;
             Result = new MatchResult(winner.Value);
             world.IsOver = true;
@@ -197,6 +288,22 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>The Defend mode: the enemy attacks and the player holds the sectors.</summary>
         public bool PlayerDefends { get; set; }
+
+        public string? RulesId { get; set; } = "assault";
+
+        /// <summary>
+        /// Prompt 30 L4 (sheet "Luật trận"): start 4:00, +2:30 a sector, at most 5:00 in the bank, 60 s overtime. The
+        /// difficulty's start (the session's, around Normal's 300 s) keeps its ratio to Normal.
+        /// </summary>
+        public void Apply(SimWorld world)
+        {
+            if (RulesId == null || PlayerDefends || world.Catalog.MatchRules.For(RulesId) is not { } r) return;
+            StartSeconds = r.Get("start", 300f) * (StartSeconds / 300f);
+            SectorBonus = r.Get("sectorBonus", SectorBonus);
+            MaxBank = r.Get("maxBank", MaxBank);
+            Overtime = r.Get("overtime", Overtime);
+            world.CatchUpMax = r.Get("catchUpMax", world.CatchUpMax);
+        }
 
         /// <summary>
         /// Each side's base loadout and role. The attacker's camp is an Anchor; the defender's base
@@ -256,6 +363,7 @@ namespace MachineBrigade.Sim.Modes
         public void Setup(SimWorld world)
         {
             world.CatchUp = true;
+            _rules.Apply(world);
             world.EnableEconomy(_rules.Attacker.Build(Attacker));
             world.EnableEconomy(_rules.Defender.Build(Defender));
             world.Economy.Underdog = new Economy.UnderdogRules { After = _rules.UnderdogAfter };
