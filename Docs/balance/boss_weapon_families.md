@@ -328,14 +328,14 @@ Ground DPS **439 -> 708** (161 %); anti-air only 0 -> 0.
 
 ### typhon
 
-Ground DPS **707 -> 707** (100 %); anti-air only 145 -> 145. Made up: `p26_typhon_sec_ty57` 2 barrels together.
+Ground DPS **707 -> 619** (88 %); anti-air only 145 -> 145. Made up: `p26_typhon_sec_ty57` 2 barrels together.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `sam_post` | sam_9m317_buk | 320 x 2 / 4.40 s = 145 | 320 x 2 / 4.40 s = 145 | 2 / 0 |
-| 1 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 2 / 1.15 s = 208 | 3 / 6 |
-| 2 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 2 / 1.15 s = 208 | 3 / 6 |
-| 3 | `p26_typhon_direct_ty100` | cal_100_105_he | 300 x 1 / 1.03 s = 290 | 300 x 1 / 1.03 s = 290 | 5 / 10 |
+| 1 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 8 (2 together) / 4.29 s = 224 | 3 / 6 |
+| 2 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 8 (2 together) / 4.29 s = 224 | 3 / 6 |
+| 3 | `p26_typhon_direct_ty100` | cal_100_105_he | 300 x 1 / 1.03 s = 290 | 300 x 2 / 3.50 s = 171 | 5 / 10 |
 
 ### ixion
 
@@ -546,13 +546,13 @@ Ground DPS **875 -> 879** (101 %); anti-air only 0 -> 0. Made up: `p26_behemoth_
 
 ### hydra
 
-Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_sec_ty57` 2 barrels together.
+Ground DPS **707 -> 619** (88 %); anti-air only 0 -> 0. Made up: `p26_typhon_sec_ty57` 2 barrels together.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 2 / 1.15 s = 208 | 3 / 6 |
-| 1 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 2 / 1.15 s = 208 | 3 / 6 |
-| 2 | `p26_typhon_direct_ty100` | cal_100_105_he | 300 x 1 / 1.03 s = 290 | 300 x 1 / 1.03 s = 290 | 5 / 10 |
+| 0 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 8 (2 together) / 4.29 s = 224 | 3 / 6 |
+| 1 | `p26_typhon_sec_ty57` | cal_57 | 120 x 2 / 1.15 s = 208 | 120 x 8 (2 together) / 4.29 s = 224 | 3 / 6 |
+| 2 | `p26_typhon_direct_ty100` | cal_100_105_he | 300 x 1 / 1.03 s = 290 | 300 x 2 / 3.50 s = 171 | 5 / 10 |
 
 ## Totals
 
@@ -579,7 +579,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | moloch | 1382 | 652 | 47 % **(< 80 %)** | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
 | daedalus | 745 | 778 | 104 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
 | kronos | 439 | 708 | 161 % | 0 -> 0 | - |
-| typhon | 707 | 707 | 100 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
+| typhon | 707 | 619 | 88 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
 | ixion | 615 | 615 | 100 % | 0 -> 0 | - |
 | caspian | 260 | 260 | 100 % | 0 -> 0 | - |
 | morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
@@ -598,7 +598,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | stymphalos | 622 | 586 | 94 % | 0 -> 0 | - |
 | nyx | 239 | 343 | 144 % | 0 -> 0 | - |
 | cerberus | 875 | 879 | 101 % | 0 -> 0 | `p26_behemoth_sec_be_rockets` 40 tubes |
-| hydra | 707 | 707 | 100 % | 0 -> 0 | `p26_typhon_sec_ty57` 2 barrels together |
+| hydra | 707 | 619 | 88 % | 0 -> 0 | `p26_typhon_sec_ty57` 2 barrels together |
 
 ## Kept as they are
 
