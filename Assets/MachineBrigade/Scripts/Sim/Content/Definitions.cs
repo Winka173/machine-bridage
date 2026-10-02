@@ -309,6 +309,8 @@ namespace MachineBrigade.Sim.Content
                 Size = Size,
                 RealName = RealName,
                 WeaponFamily = WeaponFamily,
+                // Prompt 34 L1: the family, variant and tier travel with the copy.
+                WeaponFamilyId = WeaponFamilyId, WeaponVariantId = WeaponVariantId, Tier = Tier,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,

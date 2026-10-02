@@ -15173,3 +15173,37 @@ Reaching 13-15 would need health about 1,200. Verdict: not applied; the fortress
 Tests (written, not run): `TowerRebuildP32Tests` (rebuilt towers outside the supply army value; no CP for a destroyed
 tower; runtime vs base under Brandt; no drop with an enemy within 20 m; the drop by size; the Showdown cut-off with a paid
 drop landing; the HQ rescue; every price in its band), `BaseTests` (a medium tower's price from the data).
+
+## Prompt 34 L0 (lead pass, 2026-10-02)
+
+Precheck only (`Docs/checks/p34_precheck.md`): sustained DPS (`FirePower`, `steps_c.sustained`, boss laid salvos and
+cruise counted apart), today's warnings (boss shells: a core-sized ring for the last 0.8 s, view only; salvos 3 s, cruise
+5 s, big attacks 3-4 s, Gungnir 3 s), the VFX pools and the 32-voice audio pool, wrecks (view only) and the Sim's crash
+blast, and the preview scenes (one flat ground quad for every unit; the turntable has no ground).
+
+## Prompt 34 L1 (lead pass, 2026-10-02)
+
+- **Families.** `weaponFamilyId` on every weapon (372, 103 families) and `weaponVariantId` where the round or fire mode
+  differs. Both are written by `Tools/balance/p34_families.py`. For guns the family is a calibre class, as in the prompt's
+  table (`cal_12_7` ... `cal_406`, `cal_120_he` / `cal_120_ap`, `cal_125_ap` / `cal_125_he`, `cal_100_105_he` / `_ap`). For
+  everything else it is the real weapon (`atgm_kornet`, `rkt_grad_122`, `rkt_smerch_300`, `bomb_400`, `sam_9m317_buk` ...).
+  The same real name (without its mount in brackets) is always the same family; the script warns on any clash and so does
+  `Prompt34Tests`. A line carries the id only where it differs from what it inherits.
+- **Variants** (each with its reason in the table): `flak` (an air-burst round on a calibre that fires plain rounds:
+  25/30/40/57 mm, KS-19), `ap` (35 mm AP, 57 mm AP, the 152-155 mm AP fired direct), `he` (the AC-130's 40 mm HE, an AP gun's
+  HE second round), `mortar` (120 mm mortar bombs in the 120 mm HE family), `heat` / `smart` / `guided` (152-155 mm), and
+  `thermobaric` / `cluster` (Grad, GMLRS), `guided` (APKWS).
+- **The table** is `weaponFamilyTable` in balance.json: id, name, tier T0-T5 (by the prompt's L5 table; families outside the
+  calibre table get a tier from their family and size), the prompt's boss numbers (L2), and the variants. `Catalog` reads it
+  (`WeaponFamilyTable`, `WeaponDef.WeaponFamilyId / WeaponVariantId / Tier`). It throws on an unknown family or on a variant
+  its family does not list. A data `edge` may now reach 28 m (`WeaponDef.MaxEdgeT5`, for the T5 profiles); the default edge
+  (twice the core) still stops at 20 m.
+- **Player weapons**: labelled only, no number changed. `Docs/checks/player_weapon_family.md` lists the 19 families whose
+  player weapons differ in damage per round, speed, blast or damage type, and the 10 weapons bosses share with players.
+- **Display names.** Roc's bomb stick (`p26_roc_roc_bombs`) is family `bomb`, size 400. It reads "bomb-bay stick 400 kg",
+  no longer with "203 mm" after it. Its penetration is explicit on its parent (4), so nothing in the Sim moves; its form
+  becomes Bomb (view only). The Smerch pods (`p26_jotunn_jo_rockets`) are size 300 (they said 122; the parent's pen 2 is
+  explicit). `UnitLines.WeaponName` adds "<size> mm" only to guns (mg, autocannon, tank gun, howitzer, mortar, naval gun,
+  grenade, recoilless), so lasers (kW), railguns (MJ), bombs and missiles (kg) lose the wrong "mm".
+- Tests (written, not run): `Prompt34Tests` L1 (every weapon has a family from the table, same real weapon same family,
+  every variant has its reason, the table's tiers, the display names).

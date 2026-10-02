@@ -1,0 +1,46 @@
+#nullable enable
+using System;
+using System.Collections.Generic;
+
+namespace MachineBrigade.Sim.Content
+{
+    /// <summary>
+    /// Prompt 34 L1: one weapon family of balance.json's "weaponFamilyTable": a calibre class for guns ("152-155 mm",
+    /// "120 mm HE") or the real weapon for the rest. <see cref="Tier"/> is the prompt's T0-T5 (warnings, later effects and
+    /// sounds); <see cref="Variants"/> the variants a weapon of the family may name, each with its reason; the boss numbers
+    /// (a round's damage, core, edge) are what Tools/balance/p34_boss_families.py writes onto the boss weapons (null: the
+    /// prompt's table has none).
+    /// </summary>
+    public sealed class WeaponFamilyInfo
+    {
+        public WeaponFamilyInfo(string id, string name, int tier)
+        {
+            Id = id;
+            Name = name;
+            Tier = Math.Clamp(tier, 0, 5);
+        }
+
+        public string Id { get; }
+        public string Name { get; }
+        public int Tier { get; }
+        public IReadOnlyDictionary<string, string> Variants { get; internal set; } = new Dictionary<string, string>();
+        public float? BossDamage { get; internal set; }
+        public float BossCore { get; internal set; }
+        public float BossEdge { get; internal set; }
+    }
+
+    public sealed partial class WeaponDef
+    {
+        /// <summary>Prompt 34 L1: the weapon's family ("weaponFamilyId"; the same real weapon is always the same family), or null.</summary>
+        public string? WeaponFamilyId { get; internal set; }
+
+        /// <summary>Prompt 34 L1: its variant inside the family ("weaponVariantId": another round or fire mode), or null.</summary>
+        public string? WeaponVariantId { get; internal set; }
+
+        /// <summary>Prompt 34 L1: the family's tier, T0 (up to 14.5 mm) to T5 (406 mm and the super weapons); -1 without a family.</summary>
+        public int Tier { get; internal set; } = -1;
+
+        /// <summary>Prompt 34 L1: a T5 blast's edge may reach this far (the 406 mm's 24 m, the 800 mm's 28 m); T0-T4 keep <see cref="MaxEdge"/>.</summary>
+        public const float MaxEdgeT5 = 28f;
+    }
+}

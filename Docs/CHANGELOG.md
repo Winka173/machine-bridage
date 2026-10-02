@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 34 L0-L1: precheck (Docs/checks/p34_precheck.md); weapon families and variants on every weapon (`weaponFamilyId`, `weaponVariantId`, the `weaponFamilyTable` with tiers T0-T5), player weapons labelled only, with their deviations in Docs/checks/player_weapon_family.md; Roc's bomb stick reads 400 kg and lasers lose their "mm" (DECISIONS "Prompt 34 L0", "Prompt 34 L1").
 - Prompt 31 L2: the 13 MAKE FIRST missions (c1m01, c2m04, c2s2, c3m06, c4m05, c4m06, c5m07, c7m11, c8m11, c9m08, i3m02, i3m03, c11m13) get their fixed decks and special rules from the sheet, the sheet's extra locked cards replaced by owned cards of the same role, one extra line each in the script (budgets kept), c1m01's coastal guns as a repeating barrage event, c4m05's 60 s before the train moves, i3m03's cards one rank up; objectives unchanged (DECISIONS "Prompt 31 L0/L1/L2").
 
 - Prompt 31 L0-L1: precheck (Docs/checks/p31_precheck.md) and the fixed-deck data model: campaign.json `fixedDeck` (8 vehicles, 2 supports, placed allies, loaned cards, special rules, status), loaned cards ("Loaned for this mission" / "Mượn trong nhiệm vụ này", at most two), the campaign generator check, the deck at the campaign rank curve with no equipment, and the read-only deck panel on the mission page (DECISIONS "Prompt 31 L0/L1/L2").
