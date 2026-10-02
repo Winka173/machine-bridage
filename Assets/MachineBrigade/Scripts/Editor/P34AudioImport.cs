@@ -27,7 +27,7 @@ namespace MachineBrigade.Editor
             var name = Path.GetFileNameWithoutExtension(assetPath);
             var loop = name.StartsWith("train_rails") || name.StartsWith("ship_engine") || name.StartsWith("engine_");
             var big = name.Contains("_s4") || name.Contains("_s406") || name.Contains("super") || name.Contains("bomb") || name.StartsWith("wreck_") ||
-                      name.StartsWith("crash_") || name.Contains("horn") || name.StartsWith("blast_thermo") || name.StartsWith("launch_big");
+                      name.StartsWith("crash_") || name.Contains("horn") || name.StartsWith("blast_thermo") || name.StartsWith("launch_big") || name.StartsWith("launch_cruise");
             if (loop || big)
             {
                 settings.loadType = AudioClipLoadType.CompressedInMemory;

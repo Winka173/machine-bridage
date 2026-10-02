@@ -59,6 +59,12 @@ namespace MachineBrigade.Game.Audio
             /// <summary>Arrives late when far off (speed of sound).</summary>
             public bool Delayed;
 
+            /// <summary>
+            /// Play-test 12 (the rapid-fire bursts): at its voice limit the bank does not cut its oldest voice mid-burst; a new
+            /// sound takes the quietest one only when it is twice as loud, else it is dropped (no stutter, no clicks).
+            /// </summary>
+            public bool NoSteal;
+
             public float LastPlayed = -10f;
             private int _last = -1;
 
@@ -331,6 +337,8 @@ namespace MachineBrigade.Game.Audio
                         }
                         // Prompt 34 L6: by tier and round, small arms as clusters, at the 7-step priority.
                         Shot(e, weapon);
+                        // Play-test 12: a missile or a rocket hisses in just before it lands.
+                        Incoming(e, weapon);
                         // Heavy shells on a long flight whistle down onto where they are aimed.
                         if (weapon != null && weapon.MinRange > 0f && weapon.Projectile == ProjectileKind.Shell && e.Value > WhistleLead + 0.2f)
                             Whistle(e.Target, 0.7f, e.Value - WhistleLead, SoundLibrary.SizeOf(weapon) >= SizeClass.S406);
@@ -626,7 +634,7 @@ namespace MachineBrigade.Game.Audio
         /// Plays a bank's next clip at <paramref name="at"/>: through its cooldown, its reach and (far off, for big blasts)
         /// the speed of sound. <paramref name="priority"/> is the 7-step priority it plays at (-1: the bank's own).
         /// </summary>
-        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority)
+        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f)
         {
             if (_ranging) volume *= RangeGain;
             var now = Time.unscaledTime;
@@ -637,10 +645,10 @@ namespace MachineBrigade.Game.Audio
             // Big blasts far off arrive a moment after the flash (capped: a few tenths at most).
             var delay = bank.Delayed ? Mathf.Min(0.3f, Mathf.Max(0f, distance - 30f) / SpeedOfSound) : 0f;
             if (delay > 0.02f) _delayed.Add((now + delay, bank, at, volume, priority));
-            else Start(bank, at, volume, reachBonus, priority);
+            else Start(bank, at, volume, reachBonus, priority, pitch);
         }
 
-        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority)
+        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority, float pitch = 1f)
         {
             var now = Time.unscaledTime;
             var world = new Vector3(at.X, 0f, at.Y);
@@ -667,7 +675,7 @@ namespace MachineBrigade.Game.Audio
             voice.Source.clip = bank.Next(_rng);
             voice.Source.volume = (bank.Light ? level * Duck(now) : level) * _busGain;
             voice.Source.panStereo = Mathf.Clamp((screen.x - 0.5f) * 1.4f, -0.9f, 0.9f);
-            voice.Source.pitch = bank.Pitch * (1f + ((float)_rng.NextDouble() - 0.5f) * bank.PitchSpread);
+            voice.Source.pitch = bank.Pitch * pitch * (1f + ((float)_rng.NextDouble() - 0.5f) * bank.PitchSpread);
             // Far sounds lose their top end.
             var far = Mathf.Pow(Mathf.Clamp01(distance / reach), 0.8f);
             voice.Filter.cutoffFrequency = Mathf.Lerp(22000f, 2200f, far);
@@ -681,7 +689,7 @@ namespace MachineBrigade.Game.Audio
         /// </summary>
         private Voice PickVoice(Bank bank, float level, int priority)
         {
-            Voice oldest = null, free = null, weakest = null;
+            Voice oldest = null, free = null, weakest = null, quietest = null;
             var playing = 0;
             var busy = 0;
             foreach (var v in _voices)
@@ -696,11 +704,16 @@ namespace MachineBrigade.Game.Audio
                 {
                     playing++;
                     if (oldest == null || v.Started < oldest.Started) oldest = v;
+                    if (quietest == null || v.Level < quietest.Level) quietest = v;
                 }
                 if (v.Priority > priority || (v.Priority == priority && v.Level > level)) continue;
                 if (weakest == null || v.Priority < weakest.Priority || (v.Priority == weakest.Priority && v.Level < weakest.Level)) weakest = v;
             }
-            if (playing >= bank.MaxVoices) return oldest;
+            if (playing >= bank.MaxVoices)
+            {
+                if (!bank.NoSteal) return oldest;
+                return quietest != null && quietest.Level * 2f < level ? quietest : null;
+            }
             // Prompt 34 L6: about 24 effect voices at once before the least important is cut; the pool's last 8 are kept
             // for the warnings and the T5 / boss sounds.
             if (busy >= EffectVoices && priority < SoundPriority.Boss) return weakest;

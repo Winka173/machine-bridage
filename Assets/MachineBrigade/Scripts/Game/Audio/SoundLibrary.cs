@@ -114,14 +114,83 @@ namespace MachineBrigade.Game.Audio
             {
                 case ProjectileKind.Rocket:
                 case ProjectileKind.Missile:
-                    return size <= SizeClass.S1 ? null : size == SizeClass.S2 ? "launch_s2" : size == SizeClass.S3 ? "launch_s3" : "launch_big";
+                    return LaunchBank(weapon);
+                // Play-test 12: flak (the AA guns' fragmentation rounds) keeps the recorded flak burst it played yesterday.
+                case ProjectileKind.Bullet when weapon.DamageType == DamageType.Fragmentation && size <= SizeClass.S2:
                 case ProjectileKind.Flame:
                 case ProjectileKind.Drone:
                 case ProjectileKind.Bomb:
                     return null;
+                // Play-test 12: the 57 mm autocannon is an autocannon (yesterday's 30 mm, deeper), not a tank gun.
+                case ProjectileKind.Bullet when size == SizeClass.S2:
+                    return "shot_ac57";
                 default:
                     return size == SizeClass.Super ? "shot_super" : "shot_" + Suffix(size);
             }
+        }
+
+        /// <summary>
+        /// Play-test 12: a rocket's or a missile's launch by family (a rocket motor, not a gun): ATGMs (shaped charge), SAMs and
+        /// the other T2 missiles, small rockets, 122 mm rockets and T3 missiles, big rockets (MLRS, ballistic), cruise missiles.
+        /// Null for T0-T1 (the old categories).
+        /// </summary>
+        public static string LaunchBank(WeaponDef weapon)
+        {
+            if (weapon == null) return null;
+            var size = SizeOf(weapon);
+            if (size <= SizeClass.S1) return null;
+            var missile = weapon.Projectile == ProjectileKind.Missile;
+            if (size == SizeClass.S2)
+                return !missile ? "launch_s2" : weapon.DamageType == DamageType.ShapedCharge ? "launch_atgm" : "launch_sam";
+            if (size == SizeClass.S3) return "launch_s3";
+            return missile ? "launch_cruise" : "launch_big";
+        }
+
+        /// <summary>
+        /// Play-test 12: the rapid-fire burst banks (Tools/sfx/build_sfx.py BURSTS): the bank, its size, the cyclic rate its
+        /// clips are built at (rounds a second) and the rounds in one segment.
+        /// </summary>
+        internal static readonly (string Bank, SizeClass Size, float Rate, int Rounds)[] Bursts =
+        {
+            ("burst_s0_10", SizeClass.S0, 10f, 3), ("burst_s0_16", SizeClass.S0, 16f, 5), ("burst_s0_55", SizeClass.S0, 55f, 18),
+            ("burst_s1_10", SizeClass.S1, 10f, 3), ("burst_s1_22", SizeClass.S1, 22f, 7), ("burst_s1_35", SizeClass.S1, 35f, 12),
+            ("burst_s1_55", SizeClass.S1, 55f, 18),
+        };
+
+        /// <summary>From this many rounds a second a machine gun or an autocannon plays bursts, not a clip a round.</summary>
+        public const float BurstFrom = 8.5f;
+
+        /// <summary>The playback pitch range a burst may take to match a gun's own rate (its rhythm scales with it).</summary>
+        public const float BurstPitchMin = 0.85f, BurstPitchMax = 1.18f;
+
+        /// <summary>
+        /// Play-test 12: the burst bank of a rapid-fire gun (a bullet of up to 40 mm at <see cref="BurstFrom"/> rounds a second
+        /// or more; null: a clip a round), the playback pitch that brings the clip's rhythm to the gun's own cyclic rate, and
+        /// how long one segment lasts at that pitch (s): the director plays one segment a shooter and the next when it ends.
+        /// </summary>
+        public static string BurstBank(WeaponDef weapon, out float pitch, out float segment)
+        {
+            pitch = 1f;
+            segment = 0f;
+            if (weapon == null || weapon.Beam || weapon.Projectile != ProjectileKind.Bullet || weapon.Charge > 0f || weapon.Cooldown <= 0f) return null;
+            var size = SizeOf(weapon);
+            if (size > SizeClass.S1) return null;
+            var rate = 1f / weapon.Cooldown;
+            if (rate < BurstFrom) return null;
+            var best = -1;
+            var bestError = float.MaxValue;
+            for (var i = 0; i < Bursts.Length; i++)
+            {
+                if (Bursts[i].Size != size) continue;
+                var error = Mathf.Abs(Mathf.Log(rate / Bursts[i].Rate));
+                if (error >= bestError) continue;
+                bestError = error;
+                best = i;
+            }
+            if (best < 0) return null;
+            pitch = Mathf.Clamp(rate / Bursts[best].Rate, BurstPitchMin, BurstPitchMax);
+            segment = Bursts[best].Rounds / Bursts[best].Rate / pitch;
+            return Bursts[best].Bank;
         }
 
         /// <summary>
