@@ -14181,3 +14181,4 @@ old builder, V2 `_up` pass under the same part names, then the branch's own old 
   drone_hangar 7,138 -> 7,794 (.524 -> .600); _a 5,978 -> 6,634 (.540 -> .610); _b 9,114 -> 9,770 (.551 -> .619). All at most 1.18x, runtime nodes and open
   edges identical, size within .1 %, no errors or warnings.
 - **Card luma (old, alpha > .5, Rec. 709):** ew_tower .3421 (the dimmest: watch it), _a .4080, _b .3824; drone_hangar .3538, _a .3577, _b .3564.
+- Lead (2026-10-02), wave 6d cards: all pass. atgm_tower trio fixed (now .4798/.4743/.4740 vs the originals .4124/.4075/.4093, +16 %): pale Plaster body and a PlasterWhite roof slab. ew_tower +7.5 % to +9.7 %, drone_hangar +4.1 % to +4.2 %. Lesson kept: the base colour of the biggest top/side faces drives the card, not AO.
