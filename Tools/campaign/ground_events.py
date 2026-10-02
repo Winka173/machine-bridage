@@ -72,3 +72,12 @@ events.add('i1m01', 'alarm_wave')
 # is knocked out for 90 s until the backup power comes on. No ground changes.
 library(E('city_blackout', 'CityBlackout', {'at': 240}, {'seconds': 25, 'outage': 90}, lead=10))
 events.add('c7m11', 'city_blackout')
+
+
+# ---------------------------------------------------------------------- Phản bội (the betrayal, warned): c7m10
+# Thorne turns when the Square's 180 s hold ends (the betrayal stage's Betrayal at its start). New: the warning before it, in
+# the Square's last seconds: his columns marked on the minimap and Nadia's line 10 s ahead (the trigger at 168 s, the lead
+# 10 s), so the turn is a betrayal the player saw coming, not a coin toss.
+library(E('betrayal_warning', 'BetrayalWarning', {'at': 168}, lead=10, priority=0,
+          notices={'warn': 'event.betrayalWarning.warn'}, lines={'warn': 'radio.linh.ev.betrayalWarning.warn'}))
+events.add_stage('c7m10', 'square', 'betrayal_warning')

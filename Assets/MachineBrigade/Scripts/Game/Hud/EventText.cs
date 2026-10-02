@@ -151,6 +151,8 @@ namespace MachineBrigade.Game.Hud
             ["event.cityBlackout.warn"] = ("The city's grid is failing: lights out and the towers on the grid shut down in {seconds} s", "Lưới điện thành phố đang sập: đèn tắt và các tháp nối lưới ngừng hoạt động sau {seconds} giây"),
             ["event.cityBlackout.end"] = ("Backup power: the towers on the grid are working again", "Có điện dự phòng: các tháp nối lưới đã hoạt động lại"),
             ["radio.linh.ev.cityBlackout.warn"] = ("The substations are going down one by one. In a moment the whole city goes dark, theirs and ours.", "Các trạm biến áp đang sập từng cái một. Lát nữa cả thành phố sẽ tối om, của chúng lẫn của ta."),
+            ["event.betrayalWarning.warn"] = ("{@lyhan}'s columns are breaking formation: pull back from them within {seconds} s", "Các cánh quân của {@lyhan} đang rời đội hình: lùi xa khỏi họ trong {seconds} giây"),
+            ["radio.linh.ev.betrayalWarning.warn"] = ("Colonel, the Accord columns have stopped answering. Their turrets are turning towards us.", "Đại tá, các cánh quân Accord đã ngừng trả lời. Tháp pháo của họ đang quay về phía ta."),
             ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
         };
     }
