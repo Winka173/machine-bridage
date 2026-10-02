@@ -2,7 +2,7 @@
 
 Every sound in this folder is a recorded sound effect taken from a free source whose licence allows commercial use in a game without an in-game credit. Nothing here is CC-BY or otherwise attribution-bound, so no credit screen is required; the credits below are kept for provenance.
 
-The `p34` folder is not recorded: prompt 34 L6's tiered sounds are synthesised by `Tools/sfx/build_sfx.py` (no recordings, no AI; Docs/ASSET_LICENSES.md).
+The `sfx` folder (fix pass L7; it replaced prompt 34's synthesised `p34`) is premixed by `Tools/sfx/build_sfx.py`: its guns from 20 mm and its blasts use the recorded clips below (`autocannon`, `cannon`, `heavy_cannon`, `explosion_*`, `flak`, `rocket_launch`, `missile_launch`, `debris`) as their main layer, pitched and layered, with synthesised sub and tail layers; the rest of it is synthesised (no AI; Docs/ASSET_LICENSES.md). The Sonniss licence allows the modification; no credit is required.
 
 ## Licences used
 

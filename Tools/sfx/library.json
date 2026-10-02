@@ -1,0 +1,455 @@
+{
+ "note": "Fix pass L7: the sound library (Tools/sfx/build_sfx.py); sizes s0 = <= 14.5 mm, s1 = 20-40 mm, s2 = 57-105 mm, s3 = 120-155 mm, s4 = 203-240 mm, bomb = bombs, s406 = big rockets / >= 406 mm, super = super weapons",
+ "banks": {
+  "shot_s0": {
+   "group": "shot",
+   "size": "s0",
+   "row": "shot",
+   "variants": 3
+  },
+  "shot_s1": {
+   "group": "shot",
+   "size": "s1",
+   "row": "shot",
+   "variants": 3
+  },
+  "shot_s2": {
+   "group": "shot",
+   "size": "s2",
+   "row": "shot",
+   "variants": 3
+  },
+  "shot_s3": {
+   "group": "shot",
+   "size": "s3",
+   "row": "shot",
+   "variants": 3
+  },
+  "shot_s4": {
+   "group": "shot",
+   "size": "s4",
+   "row": "shot",
+   "variants": 3
+  },
+  "shot_s406": {
+   "group": "shot",
+   "size": "s406",
+   "row": "shot",
+   "variants": 2
+  },
+  "shot_super": {
+   "group": "shot",
+   "size": "super",
+   "row": "shot",
+   "variants": 2
+  },
+  "launch_s2": {
+   "group": "launch",
+   "size": "s2",
+   "row": null,
+   "variants": 2
+  },
+  "launch_s3": {
+   "group": "launch",
+   "size": "s3",
+   "row": null,
+   "variants": 2
+  },
+  "launch_big": {
+   "group": "launch",
+   "size": "s406",
+   "row": null,
+   "variants": 2
+  },
+  "blast_he_s1": {
+   "group": "blast",
+   "size": "s1",
+   "row": "blast",
+   "variants": 3
+  },
+  "blast_he_s2": {
+   "group": "blast",
+   "size": "s2",
+   "row": "blast",
+   "variants": 3
+  },
+  "blast_he_s3": {
+   "group": "blast",
+   "size": "s3",
+   "row": "blast",
+   "variants": 3
+  },
+  "blast_he_s4": {
+   "group": "blast",
+   "size": "s4",
+   "row": "blast",
+   "variants": 3
+  },
+  "blast_bomb": {
+   "group": "blast",
+   "size": "bomb",
+   "row": "blast",
+   "variants": 3
+  },
+  "blast_he_s406": {
+   "group": "blast",
+   "size": "s406",
+   "row": "blast",
+   "variants": 2
+  },
+  "blast_super": {
+   "group": "blast",
+   "size": "super",
+   "row": "blast",
+   "variants": 2
+  },
+  "blast_thermo_s3": {
+   "group": "blast_thermo",
+   "size": "s3",
+   "row": null,
+   "variants": 2
+  },
+  "blast_thermo_s4": {
+   "group": "blast_thermo",
+   "size": "s4",
+   "row": null,
+   "variants": 2
+  },
+  "blast_heat_s2": {
+   "group": "blast_heat",
+   "size": "s2",
+   "row": null,
+   "variants": 2
+  },
+  "blast_heat_s3": {
+   "group": "blast_heat",
+   "size": "s3",
+   "row": null,
+   "variants": 2
+  },
+  "blast_air_s1": {
+   "group": "blast_air",
+   "size": "s1",
+   "row": null,
+   "variants": 2
+  },
+  "blast_air_s2": {
+   "group": "blast_air",
+   "size": "s2",
+   "row": null,
+   "variants": 2
+  },
+  "blast_air_s3": {
+   "group": "blast_air",
+   "size": "s3",
+   "row": null,
+   "variants": 2
+  },
+  "hit_ground_light": {
+   "group": "hit_ground",
+   "size": "s0",
+   "row": "blast",
+   "variants": 3
+  },
+  "hit_ground_heavy": {
+   "group": "hit_ground",
+   "size": "s2",
+   "row": null,
+   "variants": 3
+  },
+  "hit_concrete_light": {
+   "group": "hit_concrete",
+   "size": "s0",
+   "row": null,
+   "variants": 3
+  },
+  "hit_concrete_heavy": {
+   "group": "hit_concrete",
+   "size": "s2",
+   "row": null,
+   "variants": 3
+  },
+  "hit_pen_light": {
+   "group": "hit_pen",
+   "size": "s1",
+   "row": null,
+   "variants": 3
+  },
+  "hit_pen_heavy": {
+   "group": "hit_pen",
+   "size": "s3",
+   "row": null,
+   "variants": 3
+  },
+  "hit_metal_light": {
+   "group": "armour_metal",
+   "size": "s1",
+   "row": null,
+   "variants": 3
+  },
+  "hit_metal_heavy": {
+   "group": "armour_metal",
+   "size": "s3",
+   "row": null,
+   "variants": 3
+  },
+  "wreck_tank": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_wheeled": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_truck": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_artillery": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_aircraft": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_heli": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_ship": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "wreck_drone": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "crash_fall": {
+   "group": "aircraft",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "crash_impact": {
+   "group": "aircraft",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "smallarms_cluster": {
+   "group": "shot",
+   "size": "s0",
+   "row": null,
+   "variants": 3
+  },
+  "engine_tracked": {
+   "group": "engine",
+   "size": null,
+   "row": null,
+   "variants": 1
+  },
+  "engine_wheeled": {
+   "group": "engine",
+   "size": null,
+   "row": null,
+   "variants": 1
+  },
+  "engine_heavy": {
+   "group": "engine",
+   "size": null,
+   "row": null,
+   "variants": 1
+  },
+  "ship_engine": {
+   "group": "ship",
+   "size": null,
+   "row": null,
+   "variants": 1
+  },
+  "ship_horn": {
+   "group": "ship",
+   "size": null,
+   "row": null,
+   "variants": 1
+  },
+  "train_horn": {
+   "group": "train",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "train_rails": {
+   "group": "train",
+   "size": null,
+   "row": null,
+   "variants": 1
+  },
+  "flare_pop": {
+   "group": "flare",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "warn_whistle": {
+   "group": "warning",
+   "size": null,
+   "row": null,
+   "variants": 3
+  },
+  "warn_whistle_big": {
+   "group": "warning",
+   "size": null,
+   "row": null,
+   "variants": 2
+  },
+  "jet_loop": {
+   "group": "aircraft",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "jet_pass": {
+   "group": "aircraft",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "rotor_loop": {
+   "group": "helicopter",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "debris": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "collapse": {
+   "group": "wreck",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "flame": {
+   "group": "shot",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "fire_loop": {
+   "group": "ambience",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "wind_loop": {
+   "group": "ambience",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "rain_loop": {
+   "group": "ambience",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "thunder": {
+   "group": "ambience",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "siren": {
+   "group": "warning",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "mg": {
+   "group": "shot",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "autocannon": {
+   "group": "shot",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "cannon": {
+   "group": "shot",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "heavy_cannon": {
+   "group": "shot",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "rocket_launch": {
+   "group": "launch",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "missile_launch": {
+   "group": "launch",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "flak": {
+   "group": "blast_air",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "explosion_small": {
+   "group": "blast",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "explosion_medium": {
+   "group": "blast",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "explosion_large": {
+   "group": "blast",
+   "size": null,
+   "row": null,
+   "kept": true
+  },
+  "explosion_huge": {
+   "group": "blast",
+   "size": null,
+   "row": null,
+   "kept": true
+  }
+ }
+}

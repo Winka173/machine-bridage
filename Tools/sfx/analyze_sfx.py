@@ -13,7 +13,7 @@ Per clip:
   * tail: seconds from the peak until the 10 ms envelope falls 40 dB under it and stays there;
   * keng: a narrow peak between 2 and 6 kHz that rings on. The spectrum of the part 30-400 ms after the onset is compared with
     its own 1/3-octave median; the strongest 2-6 kHz bin's prominence over that median (dB) and the time the bin itself takes
-    to fall 20 dB (s). keng = prominence >= KENG_PROMINENCE dB and decay >= KENG_DECAY s and a -6 dB width under KENG_WIDTH Hz.
+    to fall 20 dB (s); a bin more than KENG_FLOOR dB under the window's loudest is not heard and is skipped. keng = prominence >= KENG_PROMINENCE dB and decay >= KENG_DECAY s and a -6 dB width under KENG_WIDTH Hz.
 
 The size table reads Tools/sfx/library.json (written by build_sfx.py): each bank's group and size class; it must rise steadily
 (louder, deeper, longer) from <= 14.5 mm to the super weapons, for the shots and for the blasts.
@@ -41,6 +41,7 @@ KENG_BAND = (2000.0, 6000.0)
 KENG_PROMINENCE = 12.0  # dB over the 1/3-octave median
 KENG_DECAY = 0.12  # s for the peak bin to fall 20 dB
 KENG_WIDTH = 160.0  # Hz, the peak's -6 dB width
+KENG_FLOOR = 30.0  # dB: a peak further than this under the window's loudest bin is not heard as a ring
 
 SIZES = ['s0', 's1', 's2', 's3', 's4', 'bomb', 's406', 'super']
 SIZE_NAMES = {
@@ -175,12 +176,13 @@ def keng(x: np.ndarray, sr: int):
     avg = 20 * np.log10(np.maximum(mag[:, :span].mean(axis=1), 1e-12))
     band = np.nonzero((f >= KENG_BAND[0]) & (f <= KENG_BAND[1]))[0]
     best = (0.0, 0.0, 0.0, 0.0, False)
+    loudest = float(avg.max())
     # 1/3-octave running median as the "smooth" spectrum a ring would stand out of.
     for i in band:
         lo, hi = np.searchsorted(f, f[i] / 2 ** (1 / 6)), np.searchsorted(f, f[i] * 2 ** (1 / 6))
         med = float(np.median(avg[lo:max(lo + 1, hi)]))
         prom = avg[i] - med
-        if prom <= best[0]:
+        if prom <= best[0] or avg[i] < loudest - KENG_FLOOR:
             continue
         # A local maximum only.
         if avg[i] < avg[max(0, i - 1)] or avg[i] < avg[min(len(avg) - 1, i + 1)]:
@@ -278,7 +280,7 @@ def write_md(clips: dict, rows, problems, kengs, path: Path, title: str, before:
              'LUFS: ITU-R BS.1770-4 integrated; M-max: the loudest 400 ms (what a one-shot hits at). Peak: sample / 4x true peak, dBFS.',
              'Sub: share of the energy under 150 Hz. Tail: s from the peak until the 10 ms envelope stays 40 dB under it.',
              f'Keng: a 2-6 kHz peak at least {KENG_PROMINENCE:.0f} dB over its 1/3-octave median, under {KENG_WIDTH:.0f} Hz wide, '
-             f'that takes at least {KENG_DECAY * 1000:.0f} ms to fall 20 dB (measured 30-400 ms after the onset).', '']
+             f'that takes at least {KENG_DECAY * 1000:.0f} ms to fall 20 dB (measured 30-400 ms after the onset; bins more than {KENG_FLOOR:.0f} dB under the loudest are not heard and skipped).', '']
     lines += ['## Per size (must rise: louder, deeper, longer)', '',
               '| size | shot M-max | shot sub % | shot tail s | blast M-max | blast sub % | blast tail s |', '|---|---|---|---|---|---|---|']
     for r in rows:
