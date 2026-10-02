@@ -128,6 +128,8 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 **Pass 3a done (2026-10-02, V2 rebuild in `mb_p27_wave3`; static gates pass, cards and previews not yet rendered):** heavy_tank (+hd), light_tank (+hd), tank_destroyer (+hd), elite_heavy_tank, elite_mbt, elite_tank_destroyer, titan_tank, turtle_tank.
 
+**Pass 3b done (2026-10-02, static gates pass; cards not rendered by the agent):** laser_tank, flame_tank, twin_tank, bmpt, ifv, elite_apc, armored_bulldozer, engineer_vehicle.
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |

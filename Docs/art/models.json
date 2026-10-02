@@ -97,7 +97,7 @@
   },
   "armored_bulldozer": {
     "file": "armored_bulldozer.glb",
-    "triangles": 2060
+    "triangles": 3244
   },
   "armored_car": {
     "file": "armored_car.glb",
@@ -241,7 +241,7 @@
   },
   "bmpt": {
     "file": "bmpt.glb",
-    "triangles": 3168
+    "triangles": 5056
   },
   "bomb": {
     "file": "bomb.glb",
@@ -493,7 +493,7 @@
   },
   "elite_apc": {
     "file": "elite_apc.glb",
-    "triangles": 3632
+    "triangles": 5480
   },
   "elite_attack_helicopter": {
     "file": "elite_attack_helicopter.glb",
@@ -517,7 +517,7 @@
   },
   "engineer_vehicle": {
     "file": "engineer_vehicle.glb",
-    "triangles": 2304
+    "triangles": 3670
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
@@ -573,7 +573,7 @@
   },
   "flame_tank": {
     "file": "flame_tank.glb",
-    "triangles": 3726
+    "triangles": 5258
   },
   "flare_searchlight_tower": {
     "file": "flare_searchlight_tower.glb",
@@ -797,7 +797,7 @@
   },
   "ifv": {
     "file": "ifv.glb",
-    "triangles": 3192
+    "triangles": 5040
   },
   "inflatable_decoy": {
     "file": "inflatable_decoy.glb",
@@ -869,7 +869,7 @@
   },
   "laser_tank": {
     "file": "laser_tank.glb",
-    "triangles": 2548
+    "triangles": 3844
   },
   "lava_vent": {
     "file": "lava_vent.glb",
@@ -1529,7 +1529,7 @@
   },
   "twin_tank": {
     "file": "twin_tank.glb",
-    "triangles": 4956
+    "triangles": 7154
   },
   "typhon": {
     "file": "typhon.glb",

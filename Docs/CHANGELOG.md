@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Models (prompt 27 wave 3b): laser, flame, twin, BMPT, IFV, elite APC, armored bulldozer and engineer vehicle rebuilt on the V2 kit (V2 running gear, extruded and chamfered hulls, lofted turrets, one-surface barrels); same nodes, pivots and proportions, 1.4-1.6x triangles, brighter vertex colours. Cards rendered by the lead after the merge.
 - Models (prompt 27 wave 3a): eight tanks rebuilt on the V2 kit (heavy, light, tank destroyer with their `_hd`, titan, turtle and the three elites on the new bases): V2 running gear, chamfered hulls, lofted turrets, one-surface barrels; same nodes, pivots and proportions, 1.4-1.6x triangles, brighter vertex colours. Cards not re-rendered yet.
 - AI UI (28 local pass): tactic picker beside deck and commander (suggested for the commander, unlock by chapter, last pick per mode), HUD tactic switch with cooldown and per-squad tactics, scouted enemy tactic, AI hint line (Settings toggle), upkeep factor on the supply line, pressure lines, tower targeting modes on the Base screen and on a tap, player AI at Normal skill, Sandbox tactic per side and the internal AI viewer sheet. Compiled only; not played.
 - AI (28 extras, cloud): EN/VI text tables for tactics, hints, tower modes, fire stances, upkeep, pressure and the AI viewer; unit-level "VÌ SAO"; Sandbox scenario tests and 5-seed fingerprint/campaign sweeps (Explicit, not run); design docs AI_DESIGN, TACTICS, ECONOMY; the applied research xlsx and its exporter.
