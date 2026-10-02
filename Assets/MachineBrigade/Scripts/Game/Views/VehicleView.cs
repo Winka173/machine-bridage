@@ -1251,6 +1251,12 @@ namespace MachineBrigade.Game.Views
                 return;
             }
             if (!Flying || _crashStart < 0f || Root.position.y <= 0f) return;
+            // Prompt 34 L7: a planned crash flies its show path onto the Sim's crash point and time (VehicleView.Crash).
+            if (_planned)
+            {
+                ShowFall();
+                return;
+            }
             // Out of control: it drifts on with its momentum, spins faster and faster as the tail
             // goes, tips over and drops, the rotor winding down, until it hits the ground.
             var t = Time.time - _crashStart;

@@ -295,6 +295,13 @@ namespace MachineBrigade.Sim.Events
         internal static SimEvent VehicleLost(Vehicle v) =>
             new(SimEventKind.VehicleDestroyed, v.Id, v.Position, default, 0f, ExplosionTier.Medium, v.Def.Id, v.Team);
 
+        /// <summary>
+        /// Prompt 34 L7: a shot-down aircraft lost: where its crash lands (Target) and in how many seconds (Value), the Sim's
+        /// own crash blast (DamageSystem.CrashPlan). The view's falling wreck lands there and then.
+        /// </summary>
+        internal static SimEvent VehicleLost(Vehicle v, Vector2 crashAt, float fall) =>
+            new(SimEventKind.VehicleDestroyed, v.Id, v.Position, crashAt, fall, ExplosionTier.Medium, v.Def.Id, v.Team);
+
         /// <summary>A vehicle bought: where it will land (Position), which way it faces in (Target), and in how long (Value).</summary>
         internal static SimEvent DeploymentQueued(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds) =>
             new(SimEventKind.DeploymentQueued, EntityId.None, at, inward, seconds, default, vehicleId, team);
