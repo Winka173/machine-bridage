@@ -64,6 +64,7 @@ import mb_p27_wave8a  # noqa: E402
 import mb_p27_wave5_ground  # noqa: E402
 import mb_p27_wave5_air  # noqa: E402
 import mb_p27_wave8b  # noqa: E402
+import mb_p27_standins  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -157,7 +158,10 @@ def all_builders():
                 # Prompt 27 wave 8 (lane A): munitions, props and unlisted units (last, so it wins).
                 **mb_p27_wave8a.BUILDERS,
                 # Prompt 27 wave 8 (lane B): props, scenery and town on the V2 kit (last, so it wins).
-                **mb_p27_wave8b.BUILDERS}
+                **mb_p27_wave8b.BUILDERS,
+                # Prompt 27 stand-in sweep: coastal_battery, super_gun, bulwark_post, uav_loiter_strike get their own
+                # models (they drew heavy_turret, mg_bunker, strike_drone; last, so it wins).
+                **mb_p27_standins.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
