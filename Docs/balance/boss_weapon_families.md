@@ -390,11 +390,11 @@ Ground DPS **350 -> 380** (109 %); anti-air only 0 -> 0.
 
 ### scylla
 
-Ground DPS **234 -> 287** (122 %); anti-air only 0 -> 0.
+Ground DPS **234 -> 380** (162 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `naval_130_twin` | cal_127_130 | 380 x 2 / 4.75 s = 160 | 380 x 2 (2 together) / 4.75 s = 160 | 5 / 10 |
+| 0 | `naval_130_twin` | cal_127_130 | 380 x 2 / 4.75 s = 160 | 380 x 2 (2 together) / 3.00 s = 253 | 5 / 10 |
 | 1 | `p26_leviathan_direct_lev127` | cal_127_130 | 380 x 1 / 5.10 s = 74 | 380 x 1 / 3.00 s = 127 | 0 / 0 |
 
 ### locust
@@ -585,7 +585,7 @@ Ground DPS **707 -> 619** (88 %); anti-air only 0 -> 0. Made up: `p26_typhon_sec
 | morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
 | bastion_mk0 | 239 | 130 | 54 % **(< 80 %)** | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | fenrir | 350 | 380 | 109 % | 0 -> 0 | - |
-| scylla | 234 | 287 | 122 % | 0 -> 0 | - |
+| scylla | 234 | 380 | 162 % | 0 -> 0 | - |
 | locust | 552 | 575 | 104 % | 0 -> 0 | - |
 | behemoth_mk2 | 569 | 515 | 90 % | 0 -> 0 | - |
 | icarus_mk0 | 400 | 400 | 100 % | 0 -> 0 | - |
