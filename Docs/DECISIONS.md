@@ -14766,3 +14766,4 @@ previews or tests.
   (structure, air), COLOR_0 above each borrowed model's, Team or concrete on the big top faces. The build filter
   rebuilt only the four. Left for the lead: card renders (coastal_battery, super_gun, bulwark_post in the card manifest;
   uav_loiter_strike has no card) and the GLBs' `.meta` files (Unity writes them on import).
+- Lead (2026-10-02), stand-in sweep merged: 4 real models (coastal_battery, super_gun, bulwark_post, uav_loiter_strike); cards are named by model id, so the full stale render drew the 4 new cards (spot-checked 3: fine). CatalogCheck OK. Left: mara_behemoth (prompt 31), map-dressing stand-ins (Veyra's cathedral, Foundry walls) and per-part wreck pieces in ASSET_DEBT.

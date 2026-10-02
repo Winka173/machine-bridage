@@ -860,9 +860,9 @@
         {
             "id": "bulwark_post",
             "kind": "structure",
-            "model": "mg_bunker",
-            "source": "Models/mg_bunker",
-            "hash": "v2:370aaacbd0fc8e43e332da8ba18839c11d19a74f"
+            "model": "bulwark_post",
+            "source": "Models/bulwark_post",
+            "hash": "v2:3686ca6da036b42d556335eb9d571420cf64f4a5"
         },
         {
             "id": "bunker_shelter_tower",
@@ -909,9 +909,9 @@
         {
             "id": "coastal_battery",
             "kind": "structure",
-            "model": "heavy_turret",
-            "source": "Models/heavy_turret",
-            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
+            "model": "coastal_battery",
+            "source": "Models/coastal_battery",
+            "hash": "v2:9d75c6a800b073838e1c3a754b8fec2dc2accf94"
         },
         {
             "id": "command_airship",
@@ -1574,9 +1574,9 @@
         {
             "id": "super_gun",
             "kind": "structure",
-            "model": "heavy_turret",
-            "source": "Models/heavy_turret",
-            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
+            "model": "super_gun",
+            "source": "Models/super_gun",
+            "hash": "v2:168205204e02814e367790d1164f2bc48fb09ed8"
         },
         {
             "id": "supreme_command",
@@ -1612,6 +1612,13 @@
             "model": "visual_jammer",
             "source": "Models/visual_jammer",
             "hash": "v2:c5bee2a5f7825cdaf8bbddad3b546184b3e27c7d"
+        },
+        {
+            "id": "uav_loiter_strike_support",
+            "kind": "support",
+            "model": "uav_loiter_strike",
+            "source": "Models/uav_loiter_strike",
+            "hash": "v2:4e903c0fc21cb288b4ee6a2fdf1f6820d2ad1ed6"
         },
         {
             "id": "gunship_support",
