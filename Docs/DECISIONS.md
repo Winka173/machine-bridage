@@ -13272,3 +13272,14 @@ tests, sims or measures.
 | gps_jammer_vehicle | 1,976 (ew_jammer) -> 4,396 | 9.15x2.72x3.85 | 0.6070 -> 0.8075 | 0.3797 -> 0.3967 | ground, no error |
 | drone_net_tower | 390 (laser_ad_station) -> 1,378 | 6.00x4.08x4.60 | 0.7098 -> 0.8150 | 0.4362 -> 0.6129 | tower, no error |
 | one_shot_atgm_tower | 4,958 (atgm_tower) -> 2,186 | 4.81x4.80x3.57 | 0.6103 -> 0.7923 | 0.4148 -> 0.4279 | tower, no error |
+
+## 27 PDF rebuild (lead pass, 2026-10-02)
+
+The design review PDF rebuilt (`Docs/Machine_Brigade_Design_Review.pdf`, 316 pages, copy in OneDrive/Documents/Tank-arena)
+by the README recipe: the ExportGameDoc fixture in the runner tree (`MB_EXPORT`; the fixture passed, the fixture class's
+other test `EveryUnitHasArmourLevelsAndEveryWeaponAPenetrationAndAForm` fails on `turret_gun_120_long: a penetration 0-4`,
+not touched here), then `Tools/docs/build_doc.py`. New: `Tools/docs/prompt27.py` adds section 10h (the prompt 27 pipeline:
+STEP0_AUDIT, BASELINE, EXPERIMENT_1, BUDGETS, art bible, wave 1 counts read from PROGRESS.md, wave 2 in one line) and lists the
+CHANGELOG "Unreleased" headings. Wave 1 models and cards come from `Resources/UI/Cards` as before. The owner cancelled the
+three wave 2 models of this task (mobile_fortress, headquarters, heavy_flak_tower): nothing of them is committed and the
+PROGRESS wave 2 rows are untouched.
