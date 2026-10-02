@@ -1599,6 +1599,28 @@
     "FLAG storage_tank: triangles 3,340 -> 3,952 (+18.3%); vertices 3,998 -> 4,388 (+9.8%); fileBytes 209,976 -> 229,952 (+9.5%); structure changed",
     "watchtower: triangles 1,494 -> 1,622 (+8.6%); vertices 2,646 -> 2,738 (+3.5%); fileBytes 138,788 -> 143,612 (+3.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "adobe_house",
+    "adobe_large",
+    "cactus",
+    "log_cabin",
+    "market_stall",
+    "mesa",
+    "oil_pump",
+    "palm",
+    "pipeline",
+    "radar_station",
+    "refinery_tower",
+    "snow_pine",
+    "snow_rock",
+    "storage_tank",
+    "watchtower"
+   ],
+   "reason": "merge of feature/p27-wave8b4",
+   "changes": []
   }
  ],
  "models": {
