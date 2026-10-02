@@ -8,14 +8,14 @@
             "kind": "vehicle",
             "model": "scout_jeep",
             "source": "Models/scout_jeep_hd",
-            "hash": "v2:ca667f84ad83487734ea7de9434558a0302637a7"
+            "hash": "v2:08c4b4a8b8a05f45891746d69562a24e3cb33b6c"
         },
         {
             "id": "armored_car",
             "kind": "vehicle",
             "model": "armored_car",
             "source": "Models/armored_car",
-            "hash": "v2:92880b99aaac70ee6c9e2b4765a896bc0278080c"
+            "hash": "v2:407fb5e7d799c028bf82c060b8ed91060f5193b7"
         },
         {
             "id": "rocket_technical",
@@ -225,7 +225,7 @@
             "kind": "vehicle",
             "model": "fpv_carrier",
             "source": "Models/fpv_carrier",
-            "hash": "v2:121fd6e50ba04cde1d9cb2c32c4bae103ed161ea"
+            "hash": "v2:a085a58333ef9492f26545e81b58d1b43e03614e"
         },
         {
             "id": "mine_layer",
@@ -274,7 +274,7 @@
             "kind": "vehicle",
             "model": "lancet_truck",
             "source": "Models/lancet_truck",
-            "hash": "v2:befe300f5eeb8c02238d58ecfe4a4dbd3011720e"
+            "hash": "v2:d7ddb67f48b815f7162c68142affa35cd3b21509"
         },
         {
             "id": "shahed_truck",
@@ -316,7 +316,7 @@
             "kind": "vehicle",
             "model": "command_vehicle",
             "source": "Models/command_vehicle",
-            "hash": "v2:e4fce688076d4826a3d539a53f14070eaf4ec4f2"
+            "hash": "v2:f43512be6917c5f212798ecd87536e1614cedd20"
         },
         {
             "id": "wheeled_gun",
@@ -414,14 +414,14 @@
             "kind": "vehicle",
             "model": "nlos_atgm_vehicle",
             "source": "Models/nlos_atgm_vehicle",
-            "hash": "v2:b3456e7982308eca00874ca06b59bf7313a754cb"
+            "hash": "v2:b3a08b484dc04aec1d61d972e78e4014241cb931"
         },
         {
             "id": "radar_atgm_vehicle",
             "kind": "vehicle",
             "model": "radar_atgm_vehicle",
             "source": "Models/radar_atgm_vehicle",
-            "hash": "v2:e2cc76ff10db3cfe20137340360c773f1e3dbd1f"
+            "hash": "v2:7f2fdff579ae395854b4256464a4ec62d31600ee"
         },
         {
             "id": "recoilless_jeep",
@@ -1051,14 +1051,14 @@
             "kind": "elite",
             "model": "fpv_carrier",
             "source": "Models/fpv_carrier",
-            "hash": "v2:121fd6e50ba04cde1d9cb2c32c4bae103ed161ea"
+            "hash": "v2:a085a58333ef9492f26545e81b58d1b43e03614e"
         },
         {
             "id": "elite_grad",
             "kind": "elite",
             "model": "grad_truck",
             "source": "Models/grad_truck",
-            "hash": "v2:88082bc3fda3b6c7d7d140c6c647e86db2923b15"
+            "hash": "v2:fcbf694eda0434ec7dcd0e667bf09fca5184f716"
         },
         {
             "id": "elite_heavy_tank",

@@ -13887,3 +13887,8 @@ The substring build filter touched only `fibre_fpv_carrier` outside the row (out
   proportions within 2 % (armoured car 4.87 against 4.78 long).
 - **Card luma (old, mean of pixels with alpha > .5):** armored_car .3365, command_vehicle .3759, fpv_carrier .3427,
   lancet_truck .3262, scout_jeep .3337, grad_truck .2794 (the dimmest of the row: watch it). The three boats have no card PNG.
+- Lead (2026-10-02), wave 3h cards: nlos_atgm_vehicle fixed (.3863 vs the original .3856); the 3h row passes (+2.2 % to
+  +7.9 %; grad_truck the dimmest at .2855); radar_atgm_vehicle stayed 3 % darker after two tries (.4031 -> .3909), so by
+  the brief it KEEPS its pre-wave-3 model and card (GLB and card from a652a7f, baseline re-accepted). Its V2 builder in
+  mb_p27_wave3.py stays for a later look but must not be built until its card passes. Wave 3 is complete: 64 of 65
+  models on V2, radar_atgm_vehicle kept old.
