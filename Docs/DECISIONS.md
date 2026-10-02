@@ -14960,3 +14960,8 @@ the lead, the tests are written, not run.
     already goes for aircraft and anti-air (BigAttackDefs); its preference for anti-air that stands still is pending.
     Line: Nadia at 70 s. i3m03 loaned next_gen_tank, mobile_repair_vehicle (exactly the sheet's deck); rule eliteRank,
     `rankBonus` 1 ("one rank above the player": one above the campaign curve the fixed deck fights at). Line: Reyn at 30 s.
+  - c11m13 (chapter 11): loaned recon_jet, gps_jammer_vehicle; airborne_vehicle -> light_tank (owned fast light
+    armour), decoy_paradrop -> sead_strike (opened by then; it keeps Skygate's anti-air busy). Rule timedRecon: Recon
+    against the 600 s limit, the `test_rod` event is Skygate turning its gun; existing. Line: Hawk at 20 s.
+  - Not done in L2: the sheet's MAKE LATER missions (pass 4) keep the player's deck; their rows stay in the sheet and the
+    precheck's table. No objective changed (fixed_decks.check_mission against the baseline; FixedDeckTests too).

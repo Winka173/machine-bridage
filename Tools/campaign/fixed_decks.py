@@ -135,6 +135,12 @@ DECKS = {
         loaned=['next_gen_tank', 'mobile_repair_vehicle'],
         replaced={},
         rules=['eliteRank'], rankBonus=1),
+    'c11m13': dict(
+        vehicles=['recon_jet', 'scout_heli', 'armored_car', 'scout_jeep', 'smoke_carrier', 'ew_jammer', 'gps_jammer_vehicle', 'light_tank'],
+        supports=['smoke_screen', 'sead_strike'],
+        loaned=['recon_jet', 'gps_jammer_vehicle'],
+        replaced={'airborne_vehicle': 'light_tank', 'decoy_paradrop': 'sead_strike'},
+        rules=['timedRecon']),
 }
 
 
