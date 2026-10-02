@@ -15479,3 +15479,47 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
 - Tests (written, not run): `Prompt34ViewTests` L5 (caps, the budget stepping down and back, detail by distance and zoom,
   shake only T4+, each tier's overlay bigger than the one below, the overlay's size, firing looks growing by tier, the
   406 mm's tier).
+
+### L6: sounds by tier
+
+- **Synthesised, not recorded** (`Tools/sfx/build_sfx.py`, numpy + scipy + soundfile like `Tools/music`; fixed seeds, so a
+  rebuild gives the same files; no AI audio, no samples; `Docs/ASSET_LICENSES.md`). 83 mono Ogg clips, 1.7 MB, in
+  `Resources/Audio/p34/<bank>/`. Each shot is the prompt's three layers premixed into ONE clip (one voice a shot): the
+  mechanism near the gun (bolt, breech, rail clank), the report (crack and body: cutoff 6.5 kHz and 35 ms at T0 down to
+  1 kHz and 0.9 s at T5, with a falling-sine thump from T1) and the tail (slap-back echoes and a bed decaying 0.08 s at T0 to
+  2.6 s at T5, a sub rumble at T4-T5). Phones play little under 150 Hz, so the rumble stays under the mid body (a T5 shot
+  is ~70 % under 150 Hz, ~20 % at 150-600 Hz; the first mix had 93 % under 150 Hz and was cut back).
+- **Banks**: `shot_t0..t5` (3 each), `launch_t2..t5` (rockets and missiles), `blast_he_t1..t5`, `blast_ap_t1..t4` (metal
+  crack and ring), `blast_heat` (crack and jet hiss), `blast_thermo_t3/t4` (pop, then the long whoomp), `smallarms_cluster`,
+  `wreck_<class>` (tank, wheeled, truck, artillery, aircraft, heli, ship, drone), `crash_fall`, `crash_impact`,
+  `train_horn`, `train_rails` (loop), `ship_horn`, `ship_engine` (loop). Picked by `AudioDirector.ShotBank` (guns by tier;
+  flak keeps its burst, flame, drones and bombs keep theirs), `ImpactBank` (thermobaric, HEAT, AP without splash, else HE by
+  tier) and `WreckBank` (L7's `WreckClasses`). A bank whose clips are not imported yet falls back to the old category, so
+  nothing goes silent.
+- **Priority** (`SoundPriority`, the prompt's seven steps as numbers, higher wins): warnings 70 (the incoming-fire whistles;
+  the super weapons' alarms and the siren keep their own source), T5 or a boss's round 60, T4 near the view 50, T3 near 40,
+  our side's important weapons (T2+, missiles, rockets, drones) 30, an enemy's T2 25 (between steps 5 and 6), small arms 20,
+  the environment 10. "Near" is inside 45 % of the hearing reach; a far T4 counts as a near T3, a far T3 as step 5. The
+  priority is per sound played (`Voice.Priority`), not per bank. The old banks' 0-5 map onto it (`SoundPriority.Steps`).
+- **Voices**: the 32-voice pool stays; at 24 busy voices (`EffectVoices`) a new sound under 60 only takes the least important
+  and quietest voice that matters no more than it (else it is dropped), so the last 8 are kept for warnings and T5 / boss.
+- **Small arms as clusters**: T0-T1 streaming bullets (not flak or a railgun) within 20 m of each other inside 0.5 s: from
+  the third, the firefight is one `smallarms_cluster` clip (4-6 guns near and far) at their centre, at most every 0.9 s, and
+  the shots in it take no voice of their own.
+- **Distance**: the old falloff and low-pass stay; a source off the screen is 0.6 as loud.
+- **Wrecks, trains, ships, crashes**: a lost vehicle plays its class's wreck (it carries the blast, so the old blast and
+  debris do not play over it); a falling aircraft also plays its fall, and its crash clip when the Sim's crash blast comes
+  (the Explosion event from the same entity, not before the fall time on the loss event, L7). A train sounds its horn on
+  arrival and every 35-50 s while near; the rails loop follows the nearest moving train, the engine loop the nearest ship;
+  a big ship (radius 4 m+) sounds its horn on arrival. A salvo ship's shells (Explosion events from it) play as its gun's
+  round (the 406 mm: `blast_he_t5`, priority 60).
+- **Volume groups**: Settings has Effects and Dialogue beside Music (`MatchSettings.EffectsVolume`, `DialogueVolume`, saved
+  as `mb.effects`, `mb.dialogue`). Effects scale every one-shot, the loops, the alarms and thunder; Dialogue the radio
+  squelches (the game has no recorded speech yet; the radio lines are text).
+- **Compression and loading**: `Editor/P34AudioImport` (an AssetPostprocessor on `Resources/Audio/p34` only): mono; T0-T3
+  shots and blasts and the clusters ADPCM decompressed on load; T4-T5, wrecks, crashes, horns and thermobaric Vorbis 0.5
+  compressed in memory; the loops Vorbis 0.35; all load in the background. The core banks load with the battle (behind the
+  curtain, as before); the "naval" group (ship horn, engines, ship wrecks) and the "rail" group (train horn, rails) load
+  when the first ship or train arrives, so a map without them never loads them.
+- Tests (written, not run): `Prompt34ViewTests` L6 (every bank a weapon can play has clips, shots and landings by tier and
+  round, the seven steps in order, 24 voices, small arms are streaming bullets only).

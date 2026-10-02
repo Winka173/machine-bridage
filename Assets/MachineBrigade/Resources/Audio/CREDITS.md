@@ -2,6 +2,8 @@
 
 Every sound in this folder is a recorded sound effect taken from a free source whose licence allows commercial use in a game without an in-game credit. Nothing here is CC-BY or otherwise attribution-bound, so no credit screen is required; the credits below are kept for provenance.
 
+The `p34` folder is not recorded: prompt 34 L6's tiered sounds are synthesised by `Tools/sfx/build_sfx.py` (no recordings, no AI; Docs/ASSET_LICENSES.md).
+
 ## Licences used
 
 - **Sonniss #GameAudioGDC bundles** (58 files). Sonniss gives these bundles away every year for GDC. Licence terms (from the License.pdf shipped inside every bundle zip, and https://sonniss.com/gdc-bundle-license/): worldwide, non-exclusive, royalty-free; use on unlimited projects; use and modify for personal and commercial projects **without attribution**; games explicitly included. Restrictions: do not sell the sounds as they come (selling them inside a game is allowed), do not claim authorship of the original recordings, do not use them to train AI. Copyright stays with the original publishers named below.

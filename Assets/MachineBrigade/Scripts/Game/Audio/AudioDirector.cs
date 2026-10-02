@@ -29,7 +29,7 @@ namespace MachineBrigade.Game.Audio
     /// fade with what is near the view.</item>
     /// </list>
     /// </summary>
-    public sealed class AudioDirector : IDisposable
+    public sealed partial class AudioDirector : IDisposable
     {
         private enum Sound
         {
@@ -75,6 +75,9 @@ namespace MachineBrigade.Game.Audio
             public Bank Bank;
             public float Level;
             public float Started;
+
+            /// <summary>Prompt 34 L6: what this sound counts for when the voices run out (<see cref="SoundPriority"/>, 1-7).</summary>
+            public int Priority;
         }
 
         private const int Voices = 32;
@@ -121,7 +124,7 @@ namespace MachineBrigade.Game.Audio
         private readonly Dictionary<string, AudioClip> _superCues = new();
         private readonly Dictionary<Sound, Bank> _banks = new();
         private readonly List<AudioClip> _owned = new();
-        private readonly List<(float at, Sound sound, System.Numerics.Vector2 where, float volume)> _delayed = new();
+        private readonly List<(float at, Bank bank, System.Numerics.Vector2 where, float volume, int priority)> _delayed = new();
         private readonly List<(Vector3 at, float until)> _fires = new();
         private readonly System.Random _rng = new(5);
         private float _duckUntil;
@@ -186,7 +189,7 @@ namespace MachineBrigade.Game.Audio
             Add(Sound.Jet, "jet_pass", i => SoundSynth.JetPass(900 + i), 0.9f, 2, 0.5f, 4);
             // Incoming shells whistle down onto where they land: the warning is in the world, where
             // the danger is, not a beep from the interface (Company of Heroes and Men of War do the same).
-            Add(Sound.Whistle, "whistle", i => SoundSynth.Whistle(950 + i), 0.5f, 3, 0.22f, 3);
+            Add(Sound.Whistle, "whistle", i => SoundSynth.Whistle(950 + i), 0.5f, 3, 0.22f, SoundPriority.Warning);
             // Test feedback 19P: an FPV drone leaves its rack with a buzz of props, not a rocket's roar; a beam
             // ignites with a rising whine before its hum takes over.
             Add(Sound.Drone, "drone_buzz", i => SoundSynth.DroneBuzz(970 + i), 0.5f, 4, 0.12f, 2, light: true);
@@ -196,6 +199,8 @@ namespace MachineBrigade.Game.Audio
             _lost = Own(SoundSynth.Radio(false));
             _siren = Recorded("siren")?[0];
             foreach (var (id, cue) in SuperCues) _superCues[id] = Own(SoundSynth.SuperWarning("super_" + id, cue));
+            // Prompt 34 L6: the tiered banks (Resources/Audio/p34, Tools/sfx/build_sfx.py); the naval and rail ones load with their units.
+            AddTierBanks();
 
             for (var i = 0; i < Voices; i++)
             {
@@ -242,6 +247,9 @@ namespace MachineBrigade.Game.Audio
             foreach (var bank in _banks.Values)
                 foreach (var clip in bank.Clips)
                     Load(clip);
+            foreach (var bank in _tierBanks.Values)
+                foreach (var clip in bank.Clips)
+                    Load(clip);
             foreach (var clip in _thunder) Load(clip);
             foreach (var clip in _clicks) Load(clip);
             Load(_siren);
@@ -264,7 +272,7 @@ namespace MachineBrigade.Game.Audio
         public float AmbientLevel
         {
             get => _ambient.volume;
-            set => _ambient.volume = _lobby ? value * LobbyAmbience : value;
+            set => _ambient.volume = (_lobby ? value * LobbyAmbience : value) * Fx;
         }
 
         /// <summary>Rain loop level (0 = dry).</summary>
@@ -272,7 +280,7 @@ namespace MachineBrigade.Game.Audio
         {
             set
             {
-                _rain.volume = value;
+                _rain.volume = value * Fx;
                 if (value > 0f && !_rain.isPlaying) _rain.Play();
                 else if (value <= 0f && _rain.isPlaying) _rain.Stop();
             }
@@ -317,7 +325,8 @@ namespace MachineBrigade.Game.Audio
                             Beam(weapon, e.Position);
                             break;
                         }
-                        Play(WeaponSound(weapon), e.Position, 1f);
+                        // Prompt 34 L6: by tier and round, small arms as clusters, at the 7-step priority.
+                        Shot(e, weapon);
                         // Heavy shells on a long flight whistle down onto where they are aimed.
                         if (weapon != null && weapon.MinRange > 0f && weapon.Projectile == ProjectileKind.Shell && e.Value > WhistleLead + 0.2f)
                             Schedule(Sound.Whistle, e.Target, 0.7f, e.Value - WhistleLead);
@@ -325,6 +334,7 @@ namespace MachineBrigade.Game.Audio
                     case SimEventKind.ProjectileImpact:
                         // A beam's burn is in its hum: no ping for each of its shots.
                         if (e.Tier < ExplosionTier.Medium && e.DefId != null && _catalog.Weapons.TryGetValue(e.DefId, out var burnt) && burnt.Beam) break;
+                        if (Landed(e)) break;
                         if (e.Tier >= ExplosionTier.Medium) Play(Blast(e.Tier), e.Position, e.Tier >= ExplosionTier.Huge ? 1f : 0.85f);
                         else Play(Sound.Impact, e.Position, 1f);
                         break;
@@ -333,6 +343,7 @@ namespace MachineBrigade.Game.Audio
                         Play(Sound.ExplosionSmall, e.Position, 0.6f);
                         break;
                     case SimEventKind.Explosion:
+                        if (Exploded(e)) break;
                         Play(e.Tier <= ExplosionTier.Small ? Sound.ExplosionSmall : Blast(e.Tier < ExplosionTier.Large ? ExplosionTier.Large : e.Tier),
                             e.Position, 1f);
                         break;
@@ -355,8 +366,8 @@ namespace MachineBrigade.Game.Audio
                     // Prompt 18 A.3: a boss's big attack begins: the alarm (heard wherever the view is) and the whistle as it lands.
                     case SimEventKind.BigAttack when e.Mount == 0 && _playerTeam >= 0:
                         // Prompt 25 C1: a super weapon's own warning, else the siren.
-                        if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f);
-                        else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f);
+                        if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f * Fx);
+                        else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f * Fx);
                         MusicDirector.Current?.Alert();
                         Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
                         break;
@@ -365,21 +376,26 @@ namespace MachineBrigade.Game.Audio
                         var alarm = Vector3.Distance(new Vector3(e.Position.X, 0f, e.Position.Y), Focus);
                         if (alarm < 120f)
                         {
-                            _ui.PlayOneShot(_siren, 0.28f * (1f - alarm / 120f) + 0.06f);
+                            _ui.PlayOneShot(_siren, (0.28f * (1f - alarm / 120f) + 0.06f) * Fx);
                             MusicDirector.Current?.Alert();
                         }
                         break;
                     case SimEventKind.StageCleared when _playerTeam >= 0:
-                        _ui.PlayOneShot(_captured, 0.6f);
+                        _ui.PlayOneShot(_captured, 0.6f * Talk);
                         break;
                     case SimEventKind.PointCaptured when _playerTeam >= 0:
-                        if (e.Team == _playerTeam) _ui.PlayOneShot(_captured, 0.5f);
-                        else if (e.Team >= 0) _ui.PlayOneShot(_lost, 0.5f);
+                        if (e.Team == _playerTeam) _ui.PlayOneShot(_captured, 0.5f * Talk);
+                        else if (e.Team >= 0) _ui.PlayOneShot(_lost, 0.5f * Talk);
                         break;
                     case SimEventKind.VehicleDestroyed:
+                        Burn(e.Position, 25f);
+                        // Prompt 34 L6: the wreck by its class (and an aircraft's fall); the old blast where there is no clip.
+                        if (Wrecked(e)) break;
                         Play(Sound.ExplosionLarge, e.Position, 0.9f);
                         Play(Sound.Debris, e.Position, 0.8f);
-                        Burn(e.Position, 25f);
+                        break;
+                    case SimEventKind.VehicleSpawned:
+                        Spawned(e);
                         break;
                     case SimEventKind.PropDestroyed:
                         if (e.Value >= 3f)
@@ -418,15 +434,15 @@ namespace MachineBrigade.Game.Audio
             var reach = Reach(0f);
             // The lobby's aircraft and fires are not heard (its views are the lobby battle's).
             if (_lobby) nearest = nearestJet = float.MaxValue;
-            var target = nearest < float.MaxValue ? Mathf.Clamp01(1f - nearest / reach) * 0.5f : 0f;
+            var target = nearest < float.MaxValue ? Mathf.Clamp01(1f - nearest / reach) * 0.5f * Fx : 0f;
             _rotor.volume = Mathf.MoveTowards(_rotor.volume, target, Time.unscaledDeltaTime * 0.8f);
-            var jetTarget = nearestJet < float.MaxValue ? Mathf.Clamp01(1f - nearestJet / (reach + 20f)) * 0.4f : 0f;
+            var jetTarget = nearestJet < float.MaxValue ? Mathf.Clamp01(1f - nearestJet / (reach + 20f)) * 0.4f * Fx : 0f;
             _jetLoop.volume = Mathf.MoveTowards(_jetLoop.volume, jetTarget, Time.unscaledDeltaTime * 0.8f);
             if (_jetLoop.volume > 0f && !_jetLoop.isPlaying) _jetLoop.Play();
             else if (_jetLoop.volume <= 0f && _jetLoop.isPlaying) _jetLoop.Stop();
 
             // A laser's beam hums while it burns, swelling in fast and dying away in a moment after its last shot.
-            var beamTarget = now < _beamUntil ? _beamLevel : 0f;
+            var beamTarget = now < _beamUntil ? _beamLevel * Fx : 0f;
             _beam.volume = Mathf.MoveTowards(_beam.volume, beamTarget, Time.unscaledDeltaTime * (beamTarget > _beam.volume ? 6f : 2.5f));
             _beam.panStereo = _beamPan;
             if (_beam.volume > 0f && !_beam.isPlaying) _beam.Play();
@@ -453,7 +469,7 @@ namespace MachineBrigade.Game.Audio
                 var near = Mathf.Clamp01(1f - Vector3.Distance(view.Position, Focus) / reach);
                 fire += near * near * Mathf.Min(1f, 0.25f * view.Sim.BrokenParts);
             }
-            var fireTarget = _lobby ? 0f : Mathf.Min(0.55f, fire * 0.3f);
+            var fireTarget = _lobby ? 0f : Mathf.Min(0.55f, fire * 0.3f) * Fx;
             _fire.volume = Mathf.MoveTowards(_fire.volume, fireTarget, Time.unscaledDeltaTime * 0.5f);
             if (_fire.volume > 0f && !_fire.isPlaying) _fire.Play();
             else if (_fire.volume <= 0f && _fire.isPlaying) _fire.Stop();
@@ -462,22 +478,23 @@ namespace MachineBrigade.Game.Audio
             {
                 if (now < _thunderAt[i]) continue;
                 _thunderAt.RemoveAt(i);
-                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], ThunderLevel);
+                _ui.PlayOneShot(_thunder[_rng.Next(_thunder.Length)], ThunderLevel * Fx);
             }
             for (var i = _delayed.Count - 1; i >= 0; i--)
             {
                 var d = _delayed[i];
                 if (now < d.at) continue;
                 _delayed.RemoveAt(i);
-                Start(d.sound, d.where, d.volume);
+                Start(d.bank, d.where, d.volume, 0f, d.priority);
             }
             for (var i = _scheduled.Count - 1; i >= 0; i--)
             {
                 var s = _scheduled[i];
                 if (now < s.at) continue;
                 _scheduled.RemoveAt(i);
-                Play(s.sound, s.where, s.volume);
+                Play(s.bank, s.where, s.volume, 0f, s.priority);
             }
+            TickTiers(views, now);
             // Small arms come back up after a big blast.
             var duck = Duck(now);
             foreach (var v in _voices)
@@ -551,22 +568,31 @@ namespace MachineBrigade.Game.Audio
         private const float WhistleLead = 1.15f;
 
         /// <summary>Sounds due later (a whistle timed to a landing), played through the usual limits when due.</summary>
-        private readonly List<(float at, Sound sound, System.Numerics.Vector2 where, float volume)> _scheduled = new();
+        private readonly List<(float at, Bank bank, System.Numerics.Vector2 where, float volume, int priority)> _scheduled = new();
 
-        private void Schedule(Sound sound, System.Numerics.Vector2 at, float volume, float delay)
+        private void Schedule(Sound sound, System.Numerics.Vector2 at, float volume, float delay) =>
+            Schedule(_banks[sound], at, volume, delay, -1);
+
+        private void Schedule(Bank bank, System.Numerics.Vector2 at, float volume, float delay, int priority)
         {
             if (_scheduled.Count > 24) return;
             if (_ranging) volume *= RangeGain;
-            _scheduled.Add((Time.unscaledTime + Mathf.Max(0f, delay), sound, at, volume));
+            _scheduled.Add((Time.unscaledTime + Mathf.Max(0f, delay), bank, at, volume, priority));
         }
 
         private void Burn(System.Numerics.Vector2 at, float seconds) =>
             _fires.Add((new Vector3(at.X, 0f, at.Y), Time.unscaledTime + seconds));
 
-        private void Play(Sound sound, System.Numerics.Vector2 at, float volume, float reachBonus = 0f)
+        private void Play(Sound sound, System.Numerics.Vector2 at, float volume, float reachBonus = 0f) =>
+            Play(_banks[sound], at, volume, reachBonus, -1);
+
+        /// <summary>
+        /// Plays a bank's next clip at <paramref name="at"/>: through its cooldown, its reach and (far off, for big blasts)
+        /// the speed of sound. <paramref name="priority"/> is the 7-step priority it plays at (-1: the bank's own).
+        /// </summary>
+        private void Play(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority)
         {
             if (_ranging) volume *= RangeGain;
-            var bank = _banks[sound];
             var now = Time.unscaledTime;
             if (now - bank.LastPlayed < bank.Cooldown) return;
             var distance = Vector3.Distance(new Vector3(at.X, 0f, at.Y), Focus);
@@ -574,25 +600,29 @@ namespace MachineBrigade.Game.Audio
             bank.LastPlayed = now;
             // Big blasts far off arrive a moment after the flash (capped: a few tenths at most).
             var delay = bank.Delayed ? Mathf.Min(0.3f, Mathf.Max(0f, distance - 30f) / SpeedOfSound) : 0f;
-            if (delay > 0.02f) _delayed.Add((now + delay, sound, at, volume));
-            else Start(sound, at, volume, reachBonus);
+            if (delay > 0.02f) _delayed.Add((now + delay, bank, at, volume, priority));
+            else Start(bank, at, volume, reachBonus, priority);
         }
 
-        private void Start(Sound sound, System.Numerics.Vector2 at, float volume, float reachBonus = 0f)
+        private void Start(Bank bank, System.Numerics.Vector2 at, float volume, float reachBonus, int priority)
         {
-            var bank = _banks[sound];
             var now = Time.unscaledTime;
             var world = new Vector3(at.X, 0f, at.Y);
             var distance = Vector3.Distance(world, Focus);
             var reach = Reach(reachBonus);
             var attenuation = Mathf.Clamp01(1f - distance / reach);
             if (attenuation <= 0.02f) return;
-            var level = bank.Volume * volume * attenuation * attenuation;
-
-            var voice = PickVoice(bank, level);
-            if (voice == null) return;
-            if (bank.Priority >= 4) _duckUntil = now + 0.35f;
             var screen = View.WorldToViewportPoint(world);
+            // Prompt 34 L6: a source off the screen is quieter; the effects' own volume (settings) on top.
+            var offScreen = screen.x < 0f || screen.x > 1f || screen.y < 0f || screen.y > 1f || screen.z < 0f;
+            var level = bank.Volume * volume * attenuation * attenuation * (offScreen ? OffScreenGain : 1f) * Fx;
+            if (level <= 0.001f) return;
+            if (priority < 0) priority = bank.Priority;
+
+            var voice = PickVoice(bank, level, priority);
+            if (voice == null) return;
+            if (priority >= SoundPriority.T3Near) _duckUntil = now + 0.35f;
+            voice.Priority = priority;
             voice.Bank = bank;
             voice.Level = level;
             voice.Started = now;
@@ -611,10 +641,11 @@ namespace MachineBrigade.Game.Audio
         /// free one, else the least important and quietest playing one that matters no more than
         /// the new sound. Null drops the new sound.
         /// </summary>
-        private Voice PickVoice(Bank bank, float level)
+        private Voice PickVoice(Bank bank, float level, int priority)
         {
             Voice oldest = null, free = null, weakest = null;
             var playing = 0;
+            var busy = 0;
             foreach (var v in _voices)
             {
                 if (!v.Source.isPlaying || v.Bank == null)
@@ -622,16 +653,19 @@ namespace MachineBrigade.Game.Audio
                     free ??= v;
                     continue;
                 }
+                busy++;
                 if (v.Bank == bank)
                 {
                     playing++;
                     if (oldest == null || v.Started < oldest.Started) oldest = v;
                 }
-                if (v.Bank.Priority > bank.Priority || (v.Bank.Priority == bank.Priority && v.Level > level)) continue;
-                if (weakest == null || v.Bank.Priority < weakest.Bank.Priority ||
-                    (v.Bank.Priority == weakest.Bank.Priority && v.Level < weakest.Level)) weakest = v;
+                if (v.Priority > priority || (v.Priority == priority && v.Level > level)) continue;
+                if (weakest == null || v.Priority < weakest.Priority || (v.Priority == weakest.Priority && v.Level < weakest.Level)) weakest = v;
             }
             if (playing >= bank.MaxVoices) return oldest;
+            // Prompt 34 L6: about 24 effect voices at once before the least important is cut; the pool's last 8 are kept
+            // for the warnings and the T5 / boss sounds.
+            if (busy >= EffectVoices && priority < SoundPriority.Boss) return weakest;
             return free ?? weakest;
         }
 
@@ -640,7 +674,8 @@ namespace MachineBrigade.Game.Audio
         {
             _banks[sound] = new Bank
             {
-                Clips = Recorded(folder) ?? Make(synth, 3), Volume = volume, MaxVoices = voices, Cooldown = cooldown, Priority = priority,
+                Clips = Recorded(folder) ?? Make(synth, 3), Volume = volume, MaxVoices = voices, Cooldown = cooldown,
+                Priority = SoundPriority.Steps(priority),
                 Pitch = pitch, Light = light, Delayed = delayed,
             };
         }

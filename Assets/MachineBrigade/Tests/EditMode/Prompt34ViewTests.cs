@@ -1,5 +1,6 @@
 using System.Linq;
 using NUnit.Framework;
+using MachineBrigade.Game.Audio;
 using MachineBrigade.Game.Effects;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Rendering;
@@ -147,6 +148,79 @@ namespace MachineBrigade.Tests
             Assert.That(leviathan.Salvo?.Weapon, Is.Not.Null, "Leviathan's salvo names its gun");
             Assert.AreEqual(5, TierFx.Of(c.Weapons[leviathan.Salvo.Weapon]), "the 406 mm is T5");
             Assert.AreEqual(-1, TierFx.Of(null));
+        }
+        // -------------------------------------------------------------------------------------------------- L6 sounds
+
+        private static string P34Folder(string bank) => System.IO.Path.Combine(Application.dataPath, "MachineBrigade", "Resources", "Audio", "p34", bank);
+
+        [Test]
+        public void EveryTieredBankItsWeaponsPlayHasItsClips()
+        {
+            var c = GameContent.LoadCatalog();
+            var missing = new System.Collections.Generic.SortedSet<string>();
+            foreach (var w in c.Weapons.Values)
+                foreach (var bank in new[] { AudioDirector.ShotBank(w), AudioDirector.ImpactBank(w) })
+                    if (bank != null && (!System.IO.Directory.Exists(P34Folder(bank)) || System.IO.Directory.GetFiles(P34Folder(bank), "*.ogg").Length == 0))
+                        missing.Add(bank + " (" + w.Id + ")");
+            foreach (WreckClass k in System.Enum.GetValues(typeof(WreckClass)))
+            {
+                var bank = AudioDirector.WreckBank(k);
+                if (bank != null && !System.IO.Directory.Exists(P34Folder(bank))) missing.Add(bank);
+            }
+            foreach (var bank in new[] { "smallarms_cluster", "crash_fall", "crash_impact", "train_horn", "train_rails", "ship_horn", "ship_engine" })
+                if (!System.IO.Directory.Exists(P34Folder(bank))) missing.Add(bank);
+            Assert.That(missing, Is.Empty, "missing sound banks (python Tools/sfx/build_sfx.py): " + string.Join(", ", missing));
+        }
+
+        [Test]
+        public void ShotsAndLandingsPickTheirBankByTierAndRound()
+        {
+            var c = GameContent.LoadCatalog();
+            foreach (var w in c.Weapons.Values)
+            {
+                var shot = AudioDirector.ShotBank(w);
+                if (shot != null && shot.StartsWith("shot_t")) Assert.AreEqual("shot_t" + System.Math.Min(5, w.Tier), shot, w.Id);
+                var land = AudioDirector.ImpactBank(w);
+                if (land == null) continue;
+                if (w.DamageType == DamageType.ShapedCharge) Assert.AreEqual("blast_heat", land, w.Id);
+                if (land.StartsWith("blast_he_")) Assert.AreEqual("blast_he_t" + System.Math.Max(1, System.Math.Min(5, w.Tier)), land, w.Id);
+            }
+            var leviathan = c.Vehicles["leviathan"];
+            Assert.AreEqual("blast_he_t5", AudioDirector.ImpactBank(c.Weapons[leviathan.Salvo.Weapon]), "the 406 mm lands as a T5 blast");
+            Assert.IsNull(AudioDirector.ShotBank(null));
+        }
+
+        [Test]
+        public void ThePrioritiesFollowThePromptsSevenSteps()
+        {
+            Assert.Greater(SoundPriority.Warning, SoundPriority.Boss, "1 warnings over 2 T5 / boss");
+            Assert.Greater(SoundPriority.Boss, SoundPriority.T4Near, "2 over 3 T4 near");
+            Assert.Greater(SoundPriority.T4Near, SoundPriority.T3Near, "3 over 4 T3 near");
+            Assert.Greater(SoundPriority.T3Near, SoundPriority.Ally, "4 over 5 our important weapons");
+            Assert.Greater(SoundPriority.Ally, SoundPriority.SmallArms, "5 over 6 small arms");
+            Assert.Greater(SoundPriority.SmallArms, SoundPriority.Ambient, "6 over 7 the environment");
+            Assert.AreEqual(SoundPriority.Boss, SoundPriority.For(5, false, false, false, true));
+            Assert.AreEqual(SoundPriority.Boss, SoundPriority.For(2, true, false, false, true), "a boss's round");
+            Assert.AreEqual(SoundPriority.T4Near, SoundPriority.For(4, false, false, true, true));
+            Assert.Less(SoundPriority.For(4, false, false, false, true), SoundPriority.T4Near, "a T4 far off counts less");
+            Assert.AreEqual(SoundPriority.Ally, SoundPriority.For(2, false, true, false, true));
+            Assert.AreEqual(SoundPriority.SmallArms, SoundPriority.For(0, false, true, true, false));
+            Assert.AreEqual(SoundPriority.Warning, SoundPriority.Steps(7));
+            Assert.AreEqual(24, AudioDirector.EffectVoices, "about 24 effect voices before cutting by priority");
+        }
+
+        [Test]
+        public void SmallArmsAreTheStreamingBulletsOnly()
+        {
+            var c = GameContent.LoadCatalog();
+            foreach (var w in c.Weapons.Values)
+            {
+                if (!AudioDirector.SmallArms(w)) continue;
+                Assert.That(w.Tier, Is.LessThanOrEqualTo(1), w.Id);
+                Assert.AreEqual(ProjectileKind.Bullet, w.Projectile, w.Id);
+                Assert.AreNotEqual(DamageType.Fragmentation, w.DamageType, w.Id + ": flak keeps its own burst");
+            }
+            Assert.That(AudioDirector.ClusterFrom, Is.GreaterThanOrEqualTo(2));
         }
     }
 }

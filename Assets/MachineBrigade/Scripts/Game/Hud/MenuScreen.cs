@@ -488,6 +488,13 @@ namespace MachineBrigade.Game.Hud
             sound.Add(Stepper("volume", Strings.Get("settings.music"),
                 () => MatchSettings.MusicVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.MusicVolume * 100f)}%",
                 step => MatchSettings.MusicVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.MusicVolume + step * 0.1f) * 10f) / 10f)));
+            // Prompt 34 L6: the effects and the dialogue have their own levels too.
+            sound.Add(Stepper("volume", Strings.Get("settings.effectsVolume"),
+                () => MatchSettings.EffectsVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.EffectsVolume * 100f)}%",
+                step => MatchSettings.EffectsVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.EffectsVolume + step * 0.1f) * 10f) / 10f)));
+            sound.Add(Stepper("volume", Strings.Get("settings.dialogueVolume"),
+                () => MatchSettings.DialogueVolume <= 0f ? Strings.Get("settings.off") : $"{Mathf.RoundToInt(MatchSettings.DialogueVolume * 100f)}%",
+                step => MatchSettings.DialogueVolume = Mathf.Clamp01(Mathf.Round((MatchSettings.DialogueVolume + step * 0.1f) * 10f) / 10f)));
         }
 
         // ------------------------------------------------------------------ shared building blocks
