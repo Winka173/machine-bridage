@@ -15,7 +15,7 @@ from core.repo import ROOT
 
 from . import _balance as B
 from . import _game as G
-from . import _b01
+from . import _b01, _unit_settle
 
 FILE_ID = "01_vu_khi_dan"
 TITLE = "Vũ khí và đạn"
@@ -377,5 +377,6 @@ def build(ctx):
                         "floorT5": "s", "base": "s", "escapeSpeed": "m/s", "cap": "s", "maxShown": "",
                         "salvoMergeSeconds": "s", "fadeIn": "s"})
     _b01.build(ctx, book, d, res, tiers, warn_rules)
+    _unit_settle.apply(book)
     ctx.note("01_canh_bao", "Canh_bao_vong.cap đọc là giây (trần thời gian cảnh báo) và base là giây: suy từ tên khóa; "
              "công thức thời gian cảnh báo nằm trong mã (Vu_khi.thoi_gian_canh_bao_s = NEED_CODE_CHECK).")

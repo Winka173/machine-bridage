@@ -5,7 +5,7 @@ from __future__ import annotations
 from core.model import NEED_CODE_CHECK, child_rows
 from core.units import snake
 
-from . import _b02
+from . import _b02, _unit_settle
 from . import _balance as B
 from . import _game as G
 from . import _units as U
@@ -253,6 +253,7 @@ def build(ctx):
     r.set("toc_do_m_s", esc if esc is not None else 4.5)  # FixRules.cs WarningRules.EscapeSpeed default 4.5
 
     _b02.build(ctx, book, d, res)
+    _unit_settle.apply(book)
 
 
 def _lower(k: str) -> str:

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK, chua_ap, child_rows
 
-from . import _b03
+from . import _b03, _unit_settle
 from . import _balance as B
 from . import _units as U
 
@@ -275,6 +275,7 @@ def build(ctx):
         r.set("phong_khong", NEED_CODE_CHECK)
         r.set("tuan", NEED_CODE_CHECK)
     _b03.build(ctx, book, d, built, base_built, base_w)
+    _unit_settle.apply(book)
     ctx.note("03_sanhunt", f"Sanhunt: {len(story)} boss theo port của BossHunts.Story (spec ghi 41; boss trên ray không có arena "
              "bị loại như trong mã).")
     us = book.sheet("Sanhunt_chua_xep", "Săn trùm: boss chưa có ô chương", "BossHunts.Unslotted: boss mới và chương nó đứng sau")

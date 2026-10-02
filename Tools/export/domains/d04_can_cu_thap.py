@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK, chua_ap
 
-from . import _b04
+from . import _b04, _unit_settle
 from . import _balance as B
 from . import _game as G
 from . import _units as U
@@ -190,5 +190,6 @@ def build(ctx):
             r.set("thap", tower if tower != "*" else "")
             r.set("trong_so", w, B.BALANCE, path)
     _b04.build(ctx, book, d, res)
+    _unit_settle.apply(book)
     al = book.kv_sheet("Can_cu_AI_cap", "AI xây căn cứ: cấp HQ theo độ khó", "base.ai.levels")
     book.kv_rows(al, (base_cfg.get("ai") or {}).get("levels") or {}, B.BALANCE, ("base", "ai", "levels"), "base.ai.levels")
