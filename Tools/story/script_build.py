@@ -162,8 +162,9 @@ def validate(chapter_files, campaign, speakers):
             if len(l["vi"]) > VI_SOFT[1] or len(l["en"]) > EN_SOFT[1]:
                 warnings.append(f"{where}: over the soft length ({len(l['vi'])} / {len(l['en'])})")
             for name in NAMES:
-                in_en = re.search(rf"\b{re.escape(name)}\b", l["en"]) is not None
-                in_vi = re.search(rf"\b{re.escape(name)}\b", l["vi"]) is not None
+                # A plural or possessive ("Behemoths", "Kade's") is the same name.
+                in_en = re.search(rf"\b{re.escape(name)}", l["en"]) is not None
+                in_vi = re.search(rf"\b{re.escape(name)}", l["vi"]) is not None
                 if in_en != in_vi:
                     errors.append(f"{where}: proper name {name} in one language only")
             for lang in ("vi", "en"):

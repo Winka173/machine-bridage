@@ -1,0 +1,1729 @@
+{
+"chapter": 4,
+"missions": {
+"c4m01": {
+"main": "khai"
+},
+"c4m02": {
+"main": "linh"
+},
+"c4m03": {
+"main": "khai"
+},
+"c4m04": {
+"main": "linh"
+},
+"c4m05": {
+"main": "khai"
+},
+"c4m12": {
+"main": "adler"
+},
+"c4m07": {
+"main": "khai"
+},
+"c4m16": {
+"main": "linh"
+},
+"c4m08": {
+"main": "linh"
+},
+"c4m13": {
+"main": "linh"
+},
+"c4m09": {
+"main": "khai"
+},
+"c4m10": {
+"main": "khai"
+},
+"c4m14": {
+"main": "khai"
+},
+"c4m17": {
+"main": "khai"
+},
+"c4m18": {
+"main": "linh"
+},
+"c4m06": {
+"main": "khai"
+},
+"c4m15": {
+"main": "khai"
+},
+"c4m11": {
+"main": "khai"
+},
+"c4s1": {
+"main": "linh"
+},
+"c4s2": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c4m01",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m01.01",
+"en": "You are four minutes behind schedule, Colonel.",
+"vi": "Các anh trễ bốn phút so với lịch, đại tá."
+},
+{
+"mission": "c4m01",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m01.02",
+"en": "Then we will make up the time.",
+"vi": "Vậy ta sẽ bù lại thời gian."
+},
+{
+"mission": "c4m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m01.03",
+"en": "Reinforcement trains pulling in. Six vehicles each, one every twelve minutes.",
+"vi": "Tàu tiếp viện vào ga. Mỗi chuyến chở sáu xe, cứ mười hai phút một chuyến."
+},
+{
+"mission": "c4m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c4m01.04",
+"en": "The marshalling yard is ours. Kessler has nowhere to make up his trains.",
+"vi": "Bãi dồn toa là của ta. Kessler mất chỗ ghép đoàn tàu.",
+"arg": "town"
+},
+{
+"mission": "c4m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m01.05",
+"en": "Only the scrapyard. Do not let them hide behind the scrap piles.",
+"vi": "Còn bãi phế liệu. Đừng để chúng giấu xe sau đống sắt.",
+"arg": "last"
+},
+{
+"mission": "c4m01",
+"trigger": "victory",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m01.06",
+"en": "A small loss. Entered in the books.",
+"vi": "Một khoản lỗ nhỏ. Đã ghi sổ."
+},
+{
+"mission": "c4m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m01.07",
+"en": "The rails are cut. His trains have nowhere to go.",
+"vi": "Đường ray đã cắt. Tàu của ông ta giờ không có chỗ để đi."
+},
+{
+"mission": "c4m01",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m01.08",
+"en": "On time, as always. You were not.",
+"vi": "Đúng giờ, như mọi khi. Các anh thì không."
+},
+{
+"mission": "c4m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m02.01",
+"en": "Three objectives, all dug in. Take the factories first and build there.",
+"vi": "Ba mục tiêu, cả ba đều đào hầm kỹ. Chiếm khu nhà máy trước rồi dựng căn cứ ở đó."
+},
+{
+"mission": "c4m02",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m02.02",
+"en": "The port's cargo lists mention one name: Tempest. No idea what it is yet.",
+"vi": "Bản kê hàng của cảng ghi tên một thứ: Tempest. Chưa rõ là gì.",
+"at": 30.0
+},
+{
+"mission": "c4m02",
+"trigger": "point_captured",
+"speaker": "mai",
+"priority": 3,
+"once": true,
+"key": "script.c4m02.03",
+"en": "The factories are ours. Drop the towers in the inner yard; the walls are thick there.",
+"vi": "Khu nhà máy là của ta. Thả tháp xuống sân trong, tường ở đó dày.",
+"arg": "town"
+},
+{
+"mission": "c4m02",
+"trigger": "point_lost",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c4m02.04",
+"en": "They retook the docks. Kessler guards cargo better than soldiers.",
+"vi": "Chúng chiếm lại bến tàu. Kessler bảo vệ hàng hóa hơn bảo vệ lính."
+},
+{
+"mission": "c4m02",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m02.05",
+"en": "One minute. The rail yard is ours before the next train comes in.",
+"vi": "Một phút. Bãi đường ray phải là của ta trước khi đoàn tàu tiếp theo vào."
+},
+{
+"mission": "c4m02",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m02.06",
+"en": "We have a foot in Ironport. From here we see the whole port.",
+"vi": "Ironport có chân của ta rồi. Từ đây ta nhìn thấy cả cảng."
+},
+{
+"mission": "c4m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m02.07",
+"en": "We could not hold all three. Kessler unloads everything before we return.",
+"vi": "Ta không giữ được ba điểm. Kessler sẽ dỡ hết hàng trước khi ta quay lại."
+},
+{
+"mission": "c4m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m03.01",
+"en": "Fog is cover. Use it, and stay with the trucks.",
+"vi": "Sương là chỗ nấp. Dùng nó, và đừng rời xe tải."
+},
+{
+"mission": "c4m03",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c4m03.02",
+"en": "Five trucks of engineers and explosives. Three on the quay to blow the dock gates.",
+"vi": "Năm xe chở công binh và thuốc nổ. Cần ba xe tới cầu tàu để phá cửa đập.",
+"at": 15.0
+},
+{
+"mission": "c4m03",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c4m03.03",
+"en": "Hitting the gun nest on the jetty. Tell the convoy to wait ten seconds.",
+"vi": "Tôi đánh vào ổ súng máy trên cầu cảng. Bảo đoàn xe chờ mười giây."
+},
+{
+"mission": "c4m03",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m03.04",
+"en": "First truck on the quay. Engineers getting off.",
+"vi": "Xe đầu tiên tới cầu tàu. Công binh đang xuống.",
+"arg": "1/3"
+},
+{
+"mission": "c4m03",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m03.05",
+"en": "No spare trucks. Every one has to make it.",
+"vi": "Không còn xe thừa. Chiếc nào cũng phải tới."
+},
+{
+"mission": "c4m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m03.06",
+"en": "The engineers are on the quay. The dock gates go up before supper.",
+"vi": "Công binh đã ở cầu tàu. Cửa đập sẽ bay lên trước bữa tối."
+},
+{
+"mission": "c4m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m03.07",
+"en": "Not enough explosives. The dock gates still stand.",
+"vi": "Không đủ thuốc nổ. Cửa đập vẫn đứng."
+},
+{
+"mission": "c4m04",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m04.01",
+"en": "Three looks. Count the wagons if you can.",
+"vi": "Ba lần nhìn. Đếm toa tàu nếu được."
+},
+{
+"mission": "c4m04",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c4m04.02",
+"en": "Fourteen wagons, six empty. Waiting for something heavy.",
+"vi": "Mười bốn toa, sáu toa trống. Chúng đang chờ hàng nặng."
+},
+{
+"mission": "c4m04",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m04.03",
+"en": "One more. I hear rivet guns from the north shed.",
+"vi": "Còn một điểm. Tôi nghe tiếng búa tán đinh từ xưởng phía bắc.",
+"arg": "last"
+},
+{
+"mission": "c4m04",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m04.04",
+"en": "A train coming in. Hide; do not let them see the scouts.",
+"vi": "Một đoàn tàu đang vào ga. Nấp đi, đừng để chúng thấy xe trinh sát."
+},
+{
+"mission": "c4m04",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m04.05",
+"en": "Juggernaut is being built in the north shed. I have the place and the test time.",
+"vi": "Juggernaut được lắp ở xưởng phía bắc. Tôi có vị trí và giờ chạy thử."
+},
+{
+"mission": "c4m04",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m04.06",
+"en": "We saw nothing. Juggernaut will come without warning.",
+"vi": "Ta không thấy gì. Juggernaut sẽ tới mà không báo trước."
+},
+{
+"mission": "c4m05",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.01",
+"en": "The train leaves on time, Colonel. It always does.",
+"vi": "Đoàn tàu rời ga đúng giờ, đại tá. Luôn luôn như vậy."
+},
+{
+"mission": "c4m05",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m05.02",
+"en": "The cargo is listed as foundry equipment. The weight does not match.",
+"vi": "Hàng trên tàu ghi là thiết bị luyện kim. Trọng lượng thì không khớp.",
+"at": 10.0
+},
+{
+"mission": "c4m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.03",
+"en": "Armoured train, three gun wagons. The engine is in the middle; aim at the couplings.",
+"vi": "Tàu bọc thép, ba toa pháo. Đầu máy ở giữa, nhắm vào khớp nối hai bên đầu máy."
+},
+{
+"mission": "c4m05",
+"trigger": "boss_spawn",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.04",
+"en": "Each of your vehicles costs me one shell. A very good rate.",
+"vi": "Mỗi chiếc xe của các anh tốn của ta một quả đạn. Tỷ giá rất tốt."
+},
+{
+"mission": "c4m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c4m05.05",
+"en": "One gun wagon silent. The train slows, dragging the wreck.",
+"vi": "Một toa pháo đã câm. Đoàn tàu chậm lại khi kéo toa hỏng."
+},
+{
+"mission": "c4m05",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m05.06",
+"en": "A third of the way. Two stations before the docks.",
+"vi": "Tàu qua một phần ba quãng đường. Còn hai ga trước khi tới bến.",
+"arg": "1/3"
+},
+{
+"mission": "c4m05",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m05.07",
+"en": "Two thirds. The docks are in sight now.",
+"vi": "Hai phần ba. Cầu cảng đã trong tầm nhìn của nó.",
+"arg": "2/3"
+},
+{
+"mission": "c4m05",
+"trigger": "boss_phase_change",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.08",
+"en": "It has stopped to unload guns. This is the moment. Everything on the train, now!",
+"vi": "Nó dừng lại dỡ pháo. Đây là lúc. Mọi thứ vào tàu, ngay!"
+},
+{
+"mission": "c4m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.09",
+"en": "The last wagon is loading a heavy round. Off the rails and out of the red!",
+"vi": "Toa cuối đang nạp đạn lớn. Rời khỏi đường ray và vùng đỏ!"
+},
+{
+"mission": "c4m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c4m05.10",
+"en": "The engine is venting steam! It is about to jump the rails!",
+"vi": "Đầu máy đang phun hơi! Nó sắp trật bánh!",
+"arg": "25"
+},
+{
+"mission": "c4m05",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.11",
+"en": "It is nearly at the docks. Everything onto the engine; no time left.",
+"vi": "Nó sắp tới bến. Dồn hết vào đầu máy, không còn thời gian."
+},
+{
+"mission": "c4m05",
+"trigger": "victory",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.12",
+"en": "Cancel the timetable.",
+"vi": "Hủy lịch trình."
+},
+{
+"mission": "c4m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.13",
+"en": "The train is off the rails. Whatever it carried is in a ditch now.",
+"vi": "Tàu trật bánh. Bất kể nó chở gì, giờ nó nằm trong mương."
+},
+{
+"mission": "c4m05",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m05.14",
+"en": "On time. As I said.",
+"vi": "Đúng giờ. Như ta đã nói."
+},
+{
+"mission": "c4m12",
+"trigger": "mission_start",
+"speaker": "adler",
+"priority": 1,
+"once": true,
+"key": "script.c4m12.01",
+"en": "Three forts, three flags. I brought four, just in case.",
+"vi": "Ba pháo đài, ba lá cờ. Tôi mang bốn lá, đề phòng."
+},
+{
+"mission": "c4m12",
+"trigger": "point_captured",
+"speaker": "adler",
+"priority": 3,
+"once": true,
+"key": "script.c4m12.02",
+"en": "Flag up on the strongpoint. Anyone who wants it can come and take it.",
+"vi": "Cờ đã cắm trên cứ điểm. Ai muốn thì tới lấy."
+},
+{
+"mission": "c4m12",
+"trigger": "point_lost",
+"speaker": "adler",
+"priority": 3,
+"once": true,
+"key": "script.c4m12.03",
+"en": "They took a strongpoint back. Fine. I have flags and a whole afternoon.",
+"vi": "Chúng giật mất một cứ điểm. Không sao, tôi còn cờ và còn cả buổi chiều."
+},
+{
+"mission": "c4m12",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m12.04",
+"en": "Sea fog over the harbour wall. Visibility fifty metres.",
+"vi": "Sương biển tràn vào bờ tường cảng. Tầm nhìn còn năm mươi mét."
+},
+{
+"mission": "c4m12",
+"trigger": "objective_progress",
+"speaker": "adler",
+"priority": 2,
+"once": true,
+"key": "script.c4m12.05",
+"en": "The last fort. From it we see the whole wall to the lighthouse.",
+"vi": "Còn cứ điểm cuối. Từ đó ta nhìn thấy cả tường cảng tới ngọn hải đăng.",
+"arg": "last"
+},
+{
+"mission": "c4m12",
+"trigger": "victory",
+"speaker": "adler",
+"priority": 1,
+"once": true,
+"key": "script.c4m12.06",
+"en": "Flags up on all three! And one spare for the office.",
+"vi": "Cờ lên cả ba! Còn một lá cho văn phòng."
+},
+{
+"mission": "c4m12",
+"trigger": "defeat",
+"speaker": "adler",
+"priority": 1,
+"once": true,
+"key": "script.c4m12.07",
+"en": "The flags are down. We plant them again, deeper next time.",
+"vi": "Cờ hạ rồi. Ta sẽ cắm lại, lần sau cắm sâu hơn."
+},
+{
+"mission": "c4m07",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m07.01",
+"en": "The factories are the objective. Everything else is noise.",
+"vi": "Nhà máy là mục tiêu. Mọi thứ khác chỉ là tiếng ồn."
+},
+{
+"mission": "c4m07",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m07.02",
+"en": "The workers are back at their benches. Over two hundred people inside.",
+"vi": "Công nhân đã quay lại xưởng. Hơn hai trăm người ở trong khu nhà máy.",
+"at": 20.0
+},
+{
+"mission": "c4m07",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m07.03",
+"en": "A raiding party slipping into the depot from the south. They want to burn, not take.",
+"vi": "Một nhóm đánh phá đang lẻn vào kho từ phía nam. Chúng muốn đốt chứ không chiếm."
+},
+{
+"mission": "c4m07",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m07.04",
+"en": "Halfway. Keep the vehicles between them and the factory doors.",
+"vi": "Nửa thời gian. Giữ xe giữa chúng và cửa xưởng.",
+"arg": "1/2"
+},
+{
+"mission": "c4m07",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m07.05",
+"en": "One building left. Stop everything aimed at it.",
+"vi": "Chỉ còn một tòa nhà. Chặn mọi thứ đang nhắm vào nó."
+},
+{
+"mission": "c4m07",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m07.06",
+"en": "The factories stand and the workers are still there. Kessler burned money for nothing.",
+"vi": "Nhà máy vẫn đứng, công nhân vẫn ở đó. Kessler đốt tiền mà không mua được gì."
+},
+{
+"mission": "c4m07",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m07.07",
+"en": "An asset written off. Mine and yours.",
+"vi": "Một tài sản đã bị xóa sổ. Cả của ta lẫn của các anh."
+},
+{
+"mission": "c4m16",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m16.01",
+"en": "Two cars, marked. I want their paperwork, not their drivers.",
+"vi": "Hai xe đã đánh dấu. Tôi cần giấy tờ của chúng, không cần tài xế."
+},
+{
+"mission": "c4m16",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m16.02",
+"en": "A train just pulled in. Both command cars are turning towards it.",
+"vi": "Tàu tiếp viện vừa vào ga. Hai xe chỉ huy đang đổi hướng về phía đó."
+},
+{
+"mission": "c4m16",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m16.03",
+"en": "One car stopped. The files are intact, a little damp.",
+"vi": "Một xe đã dừng. Hồ sơ còn nguyên, chỉ hơi ướt.",
+"arg": "1/2"
+},
+{
+"mission": "c4m16",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m16.04",
+"en": "Skimming: the shipments list Behemoths, with Varga's works numbers.",
+"vi": "Đọc sơ qua: các chuyến hàng ghi tên Behemoth, kèm số hiệu xưởng của Varga.",
+"at": 180.0
+},
+{
+"mission": "c4m16",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m16.05",
+"en": "The other car is running for the gate. It does not leave Ironport.",
+"vi": "Xe còn lại đang chạy về cổng. Nó không được ra khỏi Ironport.",
+"arg": "last"
+},
+{
+"mission": "c4m16",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m16.06",
+"en": "Varga's Behemoths, by the shipload. One called Tempest is still on the quay.",
+"vi": "Behemoth của Varga, chở theo từng tàu. Một chiếc tên Tempest vẫn còn trên cầu cảng."
+},
+{
+"mission": "c4m16",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m16.07",
+"en": "The files are out of the gate. We will never know what he shipped.",
+"vi": "Hồ sơ đã ra khỏi cổng. Ta sẽ không biết ông ta đã chở gì đi."
+},
+{
+"mission": "c4m08",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m08.01",
+"en": "Three marked vehicles, moving slowly. Where they have been, drive carefully.",
+"vi": "Ba xe đã đánh dấu, chạy chậm. Chỗ chúng đã đi qua, lái cẩn thận."
+},
+{
+"mission": "c4m08",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m08.02",
+"en": "Enemy guns on our road. Covering the minelayers, I think.",
+"vi": "Pháo địch đang bắn vào đường ta đi. Có lẽ để che xe rải mìn."
+},
+{
+"mission": "c4m08",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m08.03",
+"en": "One minelayer down. Its own mines are still aboard; stand clear.",
+"vi": "Một xe rải mìn đã nổ. Mìn còn trên xe của nó, đứng xa ra.",
+"arg": "1/3"
+},
+{
+"mission": "c4m08",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m08.04",
+"en": "One left. It is circling to the scrapyard; its trail is already mined.",
+"vi": "Còn một xe. Nó đi vòng ra bãi phế liệu, đường nó qua đã có mìn.",
+"arg": "last"
+},
+{
+"mission": "c4m08",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c4m08.05",
+"en": "A heavy lost to a mine. Follow the tracks of the vehicle ahead.",
+"vi": "Mất một xe nặng vì mìn. Đi theo vết của xe phía trước."
+},
+{
+"mission": "c4m08",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m08.06",
+"en": "The port roads are clear. One thing: Thorne's column is late again, fuel. Second time.",
+"vi": "Đường tới cảng sạch mìn. Còn một chuyện: cánh của tướng Thorne lại tới muộn, vì nhiên liệu. Lần thứ hai."
+},
+{
+"mission": "c4m08",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m08.07",
+"en": "The minelayers finished their round. Tomorrow we drive on mines.",
+"vi": "Xe rải mìn xong vòng của chúng. Sáng mai ta đi trên mìn."
+},
+{
+"mission": "c4m13",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m13.01",
+"en": "Thorne's column is not on our left. It is not anywhere.",
+"vi": "Cánh quân của tướng Thorne không có ở bên trái ta. Không ở đâu cả."
+},
+{
+"mission": "c4m13",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m13.02",
+"en": "Then we hold both flanks. Three and a half minutes, no retreat.",
+"vi": "Vậy ta giữ cả hai cánh. Ba phút rưỡi, không lùi."
+},
+{
+"mission": "c4m13",
+"trigger": "ally_late",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m13.03",
+"en": "Ten minutes late. Thorne's signals say the road is blocked. I am noting it.",
+"vi": "Trễ hẹn mười phút. Liên lạc của tướng Thorne báo đường bị chặn. Tôi ghi lại."
+},
+{
+"mission": "c4m13",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m13.04",
+"en": "Halfway. The left is thin; move the reserve over.",
+"vi": "Nửa thời gian. Sườn trái đang mỏng, đưa xe dự bị qua đó.",
+"arg": "1/2"
+},
+{
+"mission": "c4m13",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c4m13.05",
+"en": "The crossing is lost. Take it back; nobody is coming to help.",
+"vi": "Mất giao lộ. Lấy lại, không ai tới giúp ta đâu."
+},
+{
+"mission": "c4m13",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m13.06",
+"en": "We are still here. Alone, but standing.",
+"vi": "Ta vẫn đứng đây. Một mình, nhưng vẫn đứng."
+},
+{
+"mission": "c4m13",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m13.07",
+"en": "I have a question for General Thorne. Nobody will want to hear it.",
+"vi": "Tôi có một câu hỏi cho tướng Thorne. Sẽ không ai muốn nghe nó."
+},
+{
+"mission": "c4m13",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m13.08",
+"en": "The crossing is lost. No left flank, no crossing.",
+"vi": "Giao lộ mất. Không có sườn trái thì không có giao lộ."
+},
+{
+"mission": "c4m09",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m09.01",
+"en": "Every road here is mined. I checked.",
+"vi": "Mọi con đường ở đây đều có mìn. Ta đã kiểm tra."
+},
+{
+"mission": "c4m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m09.02",
+"en": "Then we use his roads. Engineers in front.",
+"vi": "Vậy ta đi đường của ông ta. Công binh dẫn đầu."
+},
+{
+"mission": "c4m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c4m09.03",
+"en": "Kessler has gone to base defence; everything behind the container stacks.",
+"vi": "Kessler đổi sang phòng thủ căn cứ, kéo hết xe về sau hàng container."
+},
+{
+"mission": "c4m09",
+"trigger": "time",
+"speaker": "kessler",
+"priority": 2,
+"once": true,
+"key": "script.c4m09.04",
+"en": "We could talk like businessmen, Colonel. What is your price?",
+"vi": "Ta có thể nói chuyện như những người làm ăn, đại tá. Ông muốn giá bao nhiêu?",
+"at": 180.0
+},
+{
+"mission": "c4m09",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m09.05",
+"en": "Not for sale.",
+"vi": "Không bán.",
+"at": 185.0
+},
+{
+"mission": "c4m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c4m09.06",
+"en": "Lost a heavy. He trades mines for tanks; do not let him profit.",
+"vi": "Mất xe hạng nặng. Ông ta đổi mìn lấy xe, đừng để ông ta có lãi."
+},
+{
+"mission": "c4m09",
+"trigger": "victory",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m09.07",
+"en": "Evacuate the quarters. By sea.",
+"vi": "Sơ tán khu chỉ huy. Bằng đường biển."
+},
+{
+"mission": "c4m09",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m09.08",
+"en": "A good investment. Thank you for your cooperation, Colonel.",
+"vi": "Một khoản đầu tư tốt. Cảm ơn sự hợp tác, đại tá."
+},
+{
+"mission": "c4m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.01",
+"en": "The port, Brigade. All of it, by tonight.",
+"vi": "Cả cảng, lữ đoàn. Tất cả, trước khi trời tối."
+},
+{
+"mission": "c4m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.02",
+"en": "The rail yard is ours. Now choose factories or docks first; each has its price.",
+"vi": "Bãi đường ray là của ta. Giờ chọn: nhà máy hay bến tàu trước, mỗi đường một cái giá.",
+"arg": "2"
+},
+{
+"mission": "c4m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.03",
+"en": "The docks. Kessler has thrown everything he has left there.",
+"vi": "Bến tàu. Kessler dồn hết những gì còn lại ra đó.",
+"arg": "4"
+},
+{
+"mission": "c4m10",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.04",
+"en": "Tempest is charging its railgun. It fires dead straight; stay off its line.",
+"vi": "Tempest đang nạp súng ray. Nó bắn theo đường thẳng; đứng lệch khỏi trục nòng."
+},
+{
+"mission": "c4m10",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c4m10.05",
+"en": "Tempest is at half. Kessler just ordered the last ship loaded.",
+"vi": "Tempest mất một nửa sức. Kessler vừa ra lệnh chất hàng lên tàu cuối.",
+"arg": "50"
+},
+{
+"mission": "c4m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.06",
+"en": "Tempest is down. Hold the quay; the last counterattack is coming.",
+"vi": "Tempest gục. Giữ cầu cảng, đợt phản công cuối đang tới.",
+"arg": "7"
+},
+{
+"mission": "c4m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.07",
+"en": "Ironport is free. Kessler's timetable is ours now.",
+"vi": "Ironport tự do. Lịch trình của Kessler giờ là của ta."
+},
+{
+"mission": "c4m10",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m10.08",
+"en": "The port still runs. This quarter's figures hold.",
+"vi": "Cảng vẫn hoạt động. Doanh thu quý này vẫn ổn."
+},
+{
+"mission": "c4m14",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m14.01",
+"en": "My ship leaves at eighteen hundred, Colonel. Do not be late.",
+"vi": "Tàu của ta rời bến lúc mười tám giờ, đại tá. Đừng tới muộn."
+},
+{
+"mission": "c4m14",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m14.02",
+"en": "No stopping the ships today. Five minutes with his rearguard, then Rust Yard is ours.",
+"vi": "Hôm nay ta không chặn được tàu. Năm phút với hậu quân, rồi Rust Yard là của ta."
+},
+{
+"mission": "c4m14",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c4m14.03",
+"en": "Light bombers off the sea! They are covering the ships.",
+"vi": "Máy bay ném bom hạng nhẹ phía biển! Chúng đang che đường cho đoàn tàu."
+},
+{
+"mission": "c4m14",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m14.04",
+"en": "Kessler changed the plan: the rearguard falls back to the pier early. Do not chase them in.",
+"vi": "Kessler đổi kế hoạch: hậu quân rút về cầu tàu sớm. Đừng đuổi vào đó."
+},
+{
+"mission": "c4m14",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m14.05",
+"en": "One minute. The ships are out; the rearguard throws everything at us.",
+"vi": "Một phút. Tàu đã ra khơi, hậu quân sẽ dồn hết vào ta."
+},
+{
+"mission": "c4m14",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m14.06",
+"en": "He is at sea. Let him go. We meet his fleet at Beacon Bay.",
+"vi": "Ông ta ra biển rồi. Để ông ta đi. Ta gặp hạm đội ở Beacon Bay."
+},
+{
+"mission": "c4m14",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m14.07",
+"en": "The schedule holds. My rearguard earned its pay.",
+"vi": "Lịch trình được giữ. Hậu quân của ta đáng đồng tiền."
+},
+{
+"mission": "c4m17",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m17.01",
+"en": "Chasing me, Colonel? The harbour burns behind you.",
+"vi": "Đuổi theo ta sao, đại tá? Cảng đang cháy sau lưng ông."
+},
+{
+"mission": "c4m17",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m17.02",
+"en": "Two cars with codebooks and coastal charts. Neither one boards a boat.",
+"vi": "Hai xe chở sổ mật mã và bản đồ bờ biển. Không chiếc nào được lên tàu."
+},
+{
+"mission": "c4m17",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m17.03",
+"en": "One car stopped. The codebook is still sealed in its lead case.",
+"vi": "Một xe đã dừng. Sổ mật mã còn nguyên trong cặp chì.",
+"arg": "1/2"
+},
+{
+"mission": "c4m17",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m17.04",
+"en": "Enemy landing craft at the west pier. They have come for the other car.",
+"vi": "Tàu đổ bộ của địch đang cập cầu tàu phía tây. Chúng tới đón xe còn lại."
+},
+{
+"mission": "c4m17",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m17.05",
+"en": "One left. It is running along the quay; cut it off at the pier.",
+"vi": "Còn một xe. Nó đang chạy dọc bến, cắt đường nó ở cầu tàu.",
+"arg": "last"
+},
+{
+"mission": "c4m17",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m17.06",
+"en": "He sails without his charts. Now we know every fuel dump on this coast.",
+"vi": "Ông ta ra khơi mà không có bản đồ. Giờ ta biết mọi kho nhiên liệu trên bờ biển này."
+},
+{
+"mission": "c4m17",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m17.07",
+"en": "The charts got aboard. He still sees his coast.",
+"vi": "Bản đồ đã lên tàu. Ông ta vẫn nhìn rõ bờ biển của mình."
+},
+{
+"mission": "c4m18",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m18.01",
+"en": "Kessler is getting away. The ferries are not. Your call was the right one.",
+"vi": "Kessler đang trốn thoát. Các chuyến phà thì không. Đại tá đã chọn đúng."
+},
+{
+"mission": "c4m18",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m18.02",
+"en": "Three ferries full of families. Each needs two minutes to clear the berth.",
+"vi": "Ba chuyến phà đầy các gia đình. Mỗi chuyến cần ít nhất hai phút để rời bến.",
+"at": 15.0
+},
+{
+"mission": "c4m18",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m18.03",
+"en": "The rearguard's guns are on the quays. Keep vehicles between the shore and the hill.",
+"vi": "Pháo hậu quân đang nã vào cầu tàu. Giữ xe chắn giữa bờ và đồi."
+},
+{
+"mission": "c4m18",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m18.04",
+"en": "The first ferry is out. Two left.",
+"vi": "Chuyến phà đầu đã ra khơi. Còn hai.",
+"arg": "1/2"
+},
+{
+"mission": "c4m18",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c4m18.05",
+"en": "The ferry terminal is lost. Take it back; the ferries cannot wait.",
+"vi": "Mất nhà ga phà. Lấy lại, phà không đợi được."
+},
+{
+"mission": "c4m18",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m18.06",
+"en": "All three ferries clear. Kessler can wait.",
+"vi": "Cả ba chuyến phà đã ra khơi. Kessler có thể đợi."
+},
+{
+"mission": "c4m18",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m18.07",
+"en": "One ferry did not get out. I am calling the fishing boats in.",
+"vi": "Một chuyến phà chưa ra được. Tôi đang gọi tàu cá tới."
+},
+{
+"mission": "c4m06",
+"trigger": "mission_start",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.01",
+"en": "Scylla leaves on time, Colonel.",
+"vi": "Scylla rời bến đúng giờ, đại tá."
+},
+{
+"mission": "c4m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.02",
+"en": "Sink it in the fog. His fleet does not get out of the bay.",
+"vi": "Chìm nó trong sương. Hạm đội của ông ta không được ra khỏi vịnh."
+},
+{
+"mission": "c4m06",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.03",
+"en": "Scylla, the command destroyer. Guns fore and aft, radar on the mast. Radar first.",
+"vi": "Scylla, tàu khu trục chỉ huy. Pháo hai đầu, ra-đa trên cột. Hạ ra-đa trước."
+},
+{
+"mission": "c4m06",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c4m06.04",
+"en": "The radar is down. It is firing blind in the fog, like us.",
+"vi": "Ra-đa gãy. Nó đang bắn mù trong sương như ta."
+},
+{
+"mission": "c4m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m06.05",
+"en": "Kessler's fleet is slipping out behind Scylla. It is the door; shut it.",
+"vi": "Hạm đội của Kessler đang rút sau Scylla. Nó là cánh cửa, đóng nó lại.",
+"at": 60.0
+},
+{
+"mission": "c4m06",
+"trigger": "boss_phase_change",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.06",
+"en": "It is turning broadside to fire everything. Get off its beam!",
+"vi": "Nó quay mạn để bắn toàn bộ. Ra khỏi trục ngang của nó!"
+},
+{
+"mission": "c4m06",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.07",
+"en": "Full broadside coming. Off the red stretch of beach, now!",
+"vi": "Loạt đạn toàn mạn sắp tới. Rời vùng đỏ trên bãi biển ngay!"
+},
+{
+"mission": "c4m06",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c4m06.08",
+"en": "It is listing! Half the ship is smoking!",
+"vi": "Nó nghiêng rồi! Một nửa con tàu đang khói!",
+"arg": "50"
+},
+{
+"mission": "c4m06",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m06.09",
+"en": "The fog is lifting. Both sides will see further.",
+"vi": "Sương đang tan. Tầm bắn của cả hai bên sẽ dài ra."
+},
+{
+"mission": "c4m06",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c4m06.10",
+"en": "It is going down. Keep the rhythm; nobody runs onto the pier.",
+"vi": "Nó sắp chìm. Giữ nhịp, đừng ai lao ra cầu tàu.",
+"arg": "25"
+},
+{
+"mission": "c4m06",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c4m06.11",
+"en": "The ship's guns are on the camp. Move the support vehicles behind the hill.",
+"vi": "Pháo tàu đang đánh vào trại. Lùi xe hậu cần vào sau đồi."
+},
+{
+"mission": "c4m06",
+"trigger": "victory",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.12",
+"en": "One ship. A loss. Not bankruptcy.",
+"vi": "Một con tàu. Một khoản lỗ. Không phải phá sản."
+},
+{
+"mission": "c4m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.13",
+"en": "Scylla is on the bottom. His fleet goes the long way round.",
+"vi": "Scylla nằm dưới đáy vịnh. Hạm đội của ông ta phải đi đường dài."
+},
+{
+"mission": "c4m06",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m06.14",
+"en": "The fleet is at sea. As scheduled.",
+"vi": "Hạm đội đã ra khơi. Như lịch trình."
+},
+{
+"mission": "c4m15",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m15.01",
+"en": "Hold the fishing village till dawn. Our guns are coming up the coast road.",
+"vi": "Giữ làng chài tới sáng. Pháo của ta đang lên đường ven biển."
+},
+{
+"mission": "c4m15",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m15.02",
+"en": "Landing craft beaching to the south. Two waves, maybe three.",
+"vi": "Tàu đổ bộ đang cập bờ phía nam. Hai đợt, có lẽ ba."
+},
+{
+"mission": "c4m15",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m15.03",
+"en": "Midnight. The villagers are up the hill; now it is only us and them.",
+"vi": "Nửa đêm. Dân làng đã lên đồi, giờ chỉ còn ta và chúng.",
+"arg": "1/2"
+},
+{
+"mission": "c4m15",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c4m15.04",
+"en": "The village is lost. Take it back before they put guns on the roofs.",
+"vi": "Mất làng. Lấy lại trước khi chúng đặt pháo trên mái nhà."
+},
+{
+"mission": "c4m15",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4m15.05",
+"en": "Sea fog on the shore. Harder to see the landings, harder for them to aim.",
+"vi": "Sương biển phủ bờ. Đổ bộ sẽ khó nhìn hơn, nhưng cũng khó bắn hơn."
+},
+{
+"mission": "c4m15",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m15.06",
+"en": "The guns are up. From here we can reach the whole bay.",
+"vi": "Pháo đã lên. Từ đây ta với tới được cả vịnh."
+},
+{
+"mission": "c4m15",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m15.07",
+"en": "The village is lost. The guns stop further back; we will not reach the bay.",
+"vi": "Làng mất. Pháo sẽ phải dừng ở xa hơn, ta sẽ không với tới vịnh."
+},
+{
+"mission": "c4m11",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m11.01",
+"en": "Leviathan is on the far lane. We cannot see its fleet from the beach; the lighthouse can.",
+"vi": "Leviathan ở làn xa. Từ bãi biển ta không thấy hạm đội của nó; từ hải đăng thì thấy.",
+"at": 3.0
+},
+{
+"mission": "c4m11",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.02",
+"en": "Lighthouse first, then the guns, then the village. Then the ship.",
+"vi": "Hải đăng trước, rồi pháo, rồi làng. Rồi đến con tàu."
+},
+{
+"mission": "c4m11",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c4m11.03",
+"en": "Its sides stop anything we have. Its deck does not: artillery and bombs.",
+"vi": "Mạn tàu chặn mọi thứ ta có. Boong thì không: pháo và bom.",
+"at": 20.0
+},
+{
+"mission": "c4m11",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.04",
+"en": "The lighthouse is lit. Choose the guns for this; each kind has its cost.",
+"vi": "Hải đăng đã sáng. Chọn pháo cho trận này, mỗi loại có giá của nó.",
+"arg": "2"
+},
+{
+"mission": "c4m11",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.05",
+"en": "The fishing village next. Leviathan is turning its guns that way.",
+"vi": "Làng chài tiếp theo. Leviathan đang dồn pháo về phía đó.",
+"arg": "4"
+},
+{
+"mission": "c4m11",
+"trigger": "boss_spawn",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.06",
+"en": "Leviathan is my largest asset. Worth more than your whole brigade.",
+"vi": "Leviathan là tài sản lớn nhất của ta. Đắt hơn cả lữ đoàn của ông."
+},
+{
+"mission": "c4m11",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.07",
+"en": "Leviathan. Sides like a wall, a thin deck. Only plunging fire will bite.",
+"vi": "Leviathan. Mạn dày như tường, nhưng boong mỏng. Đạn rơi từ trên xuống mới ăn."
+},
+{
+"mission": "c4m11",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c4m11.08",
+"en": "A deck turret is burning. The bombs are doing their job.",
+"vi": "Một tháp pháo trên boong đã cháy. Bom đang làm việc của nó."
+},
+{
+"mission": "c4m11",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.09",
+"en": "Its main guns are swinging to the shore. Out of the red before the salvo!",
+"vi": "Pháo chính của nó đang quay về bờ. Rời vùng đỏ trước loạt đạn!"
+},
+{
+"mission": "c4m11",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c4m11.10",
+"en": "It is coming in close. Tanks on the pier heads, now.",
+"vi": "Nó đang tiến sát bờ. Xe tăng ra đầu cầu tàu, ngay.",
+"arg": "50"
+},
+{
+"mission": "c4m11",
+"trigger": "boss_phase_change",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.11",
+"en": "Leviathan is calling its escorts. Two smaller ships in from the north.",
+"vi": "Leviathan gọi tàu hộ tống. Hai tàu nhỏ vào từ phía bắc."
+},
+{
+"mission": "c4m11",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c4m11.12",
+"en": "Its stern is going under! One more bomb run!",
+"vi": "Nó đang chìm phần đuôi! Một loạt bom nữa!",
+"arg": "25"
+},
+{
+"mission": "c4m11",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.13",
+"en": "The HQ is critical. Every gun on Leviathan, right now.",
+"vi": "Sở chỉ huy nguy cấp. Mọi khẩu pháo vào Leviathan, ngay bây giờ."
+},
+{
+"mission": "c4m11",
+"trigger": "victory",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.14",
+"en": "Abandon ship. Record the loss, and the time.",
+"vi": "Bỏ tàu. Ghi nhận khoản lỗ, và thời gian."
+},
+{
+"mission": "c4m11",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.15",
+"en": "Kessler's timetable ends here.",
+"vi": "Lịch trình của Kessler kết thúc ở đây."
+},
+{
+"mission": "c4m11",
+"trigger": "defeat",
+"speaker": "kessler",
+"priority": 1,
+"once": true,
+"key": "script.c4m11.16",
+"en": "A loss, Colonel. Never bankruptcy.",
+"vi": "Một khoản lỗ. Không phải phá sản, đại tá. Không bao giờ."
+},
+{
+"mission": "c4s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s1.01",
+"en": "The prisoners are at the scrapyard. Bring them home. Four trucks, three must arrive.",
+"vi": "Tù binh ở bãi phế liệu. Đưa họ về nhà. Bốn xe, ba phải tới."
+},
+{
+"mission": "c4s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4s1.02",
+"en": "First truck safe. Sixteen people, two of them Hawk's.",
+"vi": "Xe đầu tiên đã an toàn. Mười sáu người, có hai người của Hawk.",
+"arg": "1/3"
+},
+{
+"mission": "c4s1",
+"trigger": "critical_failure_imminent",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s1.03",
+"en": "One more truck lost and someone stays behind. Cover the last one.",
+"vi": "Mất thêm một xe là có người bị bỏ lại. Bọc chặt chiếc cuối."
+},
+{
+"mission": "c4s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s1.04",
+"en": "They are home. Some are crying, some want food. Both are good signs.",
+"vi": "Họ đã về. Có người khóc, có người đòi ăn. Cả hai đều tốt."
+},
+{
+"mission": "c4s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s1.05",
+"en": "Not enough trucks made it. I will find another way for the rest.",
+"vi": "Không đủ xe tới. Tôi sẽ tìm cách khác cho những người còn lại."
+},
+{
+"mission": "c4s2",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s2.01",
+"en": "Two command cars, marked. They talk a lot; that is how I found them.",
+"vi": "Hai xe chỉ huy, đã đánh dấu. Họ nói nhiều lắm; đó là cách tôi tìm ra họ."
+},
+{
+"mission": "c4s2",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4s2.02",
+"en": "One harbour master caught. He is asking for a lawyer.",
+"vi": "Một trưởng cảng đã bị bắt. Ông ta đang đòi gặp luật sư.",
+"arg": "1/2"
+},
+{
+"mission": "c4s2",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c4s2.03",
+"en": "Cloud coming over. Aircraft on both sides will fly lower.",
+"vi": "Mây đang kéo tới. Máy bay hai bên sẽ bay thấp hơn."
+},
+{
+"mission": "c4s2",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s2.04",
+"en": "The smuggling routes are shut. Kessler loses his last income on this coast.",
+"vi": "Đường buôn lậu đã đóng. Kessler mất nguồn tiền cuối ở bờ biển này."
+},
+{
+"mission": "c4s2",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c4s2.05",
+"en": "They got away. The smuggling runs another season.",
+"vi": "Họ trốn rồi. Đường buôn lậu sẽ còn chạy thêm một mùa."
+}
+]
+}

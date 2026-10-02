@@ -1,0 +1,205 @@
+# Chapter 4 · Iron Harbor (act 2). Enemy general: Kessler. Arc: Rust Yard and Ironport, stop Juggernaut, Tempest,
+# sink Leviathan. Threads: Kessler's ledger voice; the intercepts name Tempest; Thorne's column late again, then a
+# flank left empty (Nadia notes it, draws no conclusion). Adler (Flag) and his strongpoints.
+
+@c4m01 main=khai
+mission_start | kessler | 1 | Các anh trễ bốn phút so với lịch, đại tá. || You are four minutes behind schedule, Colonel.
+mission_start | khai | 1 | Vậy ta sẽ bù lại thời gian. || Then we will make up the time.
+event_triggered | linh | 2 | Tàu tiếp viện vào ga. Mỗi chuyến chở sáu xe, cứ mười hai phút một chuyến. || Reinforcement trains pulling in. Six vehicles each, one every twelve minutes.
+point_captured:town | linh | 3 | Bãi dồn toa là của ta. Kessler mất chỗ ghép đoàn tàu. || The marshalling yard is ours. Kessler has nowhere to make up his trains.
+objective_progress:last | khai | 2 | Còn bãi phế liệu. Đừng để chúng giấu xe sau đống sắt. || Only the scrapyard. Do not let them hide behind the scrap piles.
+victory | kessler | 1 | Một khoản lỗ nhỏ. Đã ghi sổ. || A small loss. Entered in the books.
+victory | khai | 1 | Đường ray đã cắt. Tàu của ông ta giờ không có chỗ để đi. || The rails are cut. His trains have nowhere to go.
+defeat | kessler | 1 | Đúng giờ, như mọi khi. Các anh thì không. || On time, as always. You were not.
+
+@c4m02 main=linh
+mission_start | linh | 1 | Ba mục tiêu, cả ba đều đào hầm kỹ. Chiếm khu nhà máy trước rồi dựng căn cứ ở đó. || Three objectives, all dug in. Take the factories first and build there.
+time@30 | linh | 2 | Bản kê hàng của cảng ghi tên một thứ: Tempest. Chưa rõ là gì. || The port's cargo lists mention one name: Tempest. No idea what it is yet.
+point_captured:town | mai | 3 | Khu nhà máy là của ta. Thả tháp xuống sân trong, tường ở đó dày. || The factories are ours. Drop the towers in the inner yard; the walls are thick there.
+point_lost | linh | 3 | Chúng chiếm lại bến tàu. Kessler bảo vệ hàng hóa hơn bảo vệ lính. || They retook the docks. Kessler guards cargo better than soldiers.
+timer_60s | khai | 1 | Một phút. Bãi đường ray phải là của ta trước khi đoàn tàu tiếp theo vào. || One minute. The rail yard is ours before the next train comes in.
+victory | khai | 1 | Ironport có chân của ta rồi. Từ đây ta nhìn thấy cả cảng. || We have a foot in Ironport. From here we see the whole port.
+defeat | linh | 1 | Ta không giữ được ba điểm. Kessler sẽ dỡ hết hàng trước khi ta quay lại. || We could not hold all three. Kessler unloads everything before we return.
+
+@c4m03 main=khai
+mission_start | khai | 1 | Sương là chỗ nấp. Dùng nó, và đừng rời xe tải. || Fog is cover. Use it, and stay with the trucks.
+time@15 | mai | 2 | Năm xe chở công binh và thuốc nổ. Cần ba xe tới cầu tàu để phá cửa đập. || Five trucks of engineers and explosives. Three on the quay to blow the dock gates.
+event_triggered | dieuhau | 2 | Tôi đánh vào ổ súng máy trên cầu cảng. Bảo đoàn xe chờ mười giây. || Hitting the gun nest on the jetty. Tell the convoy to wait ten seconds.
+objective_progress:1/3 | hq | 2 | Xe đầu tiên tới cầu tàu. Công binh đang xuống. || First truck on the quay. Engineers getting off.
+critical_failure_imminent | khai | 1 | Không còn xe thừa. Chiếc nào cũng phải tới. || No spare trucks. Every one has to make it.
+victory | khai | 1 | Công binh đã ở cầu tàu. Cửa đập sẽ bay lên trước bữa tối. || The engineers are on the quay. The dock gates go up before supper.
+defeat | khai | 1 | Không đủ thuốc nổ. Cửa đập vẫn đứng. || Not enough explosives. The dock gates still stand.
+
+@c4m04 main=linh
+mission_start | linh | 1 | Ba lần nhìn. Đếm toa tàu nếu được. || Three looks. Count the wagons if you can.
+point_captured | linh | 3 | Mười bốn toa, sáu toa trống. Chúng đang chờ hàng nặng. || Fourteen wagons, six empty. Waiting for something heavy.
+objective_progress:last | linh | 2 | Còn một điểm. Tôi nghe tiếng búa tán đinh từ xưởng phía bắc. || One more. I hear rivet guns from the north shed.
+event_triggered | hq | 2 | Một đoàn tàu đang vào ga. Nấp đi, đừng để chúng thấy xe trinh sát. || A train coming in. Hide; do not let them see the scouts.
+victory | linh | 1 | Juggernaut được lắp ở xưởng phía bắc. Tôi có vị trí và giờ chạy thử. || Juggernaut is being built in the north shed. I have the place and the test time.
+defeat | linh | 1 | Ta không thấy gì. Juggernaut sẽ tới mà không báo trước. || We saw nothing. Juggernaut will come without warning.
+
+@c4m05 main=khai
+mission_start | kessler | 1 | Đoàn tàu rời ga đúng giờ, đại tá. Luôn luôn như vậy. || The train leaves on time, Colonel. It always does.
+time@10 | linh | 2 | Hàng trên tàu ghi là thiết bị luyện kim. Trọng lượng thì không khớp. || The cargo is listed as foundry equipment. The weight does not match.
+boss_spawn | mai | 1 | Tàu bọc thép, ba toa pháo. Đầu máy ở giữa, nhắm vào khớp nối hai bên đầu máy. || Armoured train, three gun wagons. The engine is in the middle; aim at the couplings.
+boss_spawn | kessler | 1 | Mỗi chiếc xe của các anh tốn của ta một quả đạn. Tỷ giá rất tốt. || Each of your vehicles costs me one shell. A very good rate.
+boss_part_destroyed | mai | 2 | Một toa pháo đã câm. Đoàn tàu chậm lại khi kéo toa hỏng. || One gun wagon silent. The train slows, dragging the wreck.
+objective_progress:1/3 | linh | 2 | Tàu qua một phần ba quãng đường. Còn hai ga trước khi tới bến. || A third of the way. Two stations before the docks.
+objective_progress:2/3 | linh | 2 | Hai phần ba. Cầu cảng đã trong tầm nhìn của nó. || Two thirds. The docks are in sight now.
+boss_phase_change | khai | 1 | Nó dừng lại dỡ pháo. Đây là lúc. Mọi thứ vào tàu, ngay! || It has stopped to unload guns. This is the moment. Everything on the train, now!
+superweapon_warning | mai | 1 | Toa cuối đang nạp đạn lớn. Rời khỏi đường ray và vùng đỏ! || The last wagon is loading a heavy round. Off the rails and out of the red!
+boss_hp:25 | dieuhau | 4 | Đầu máy đang phun hơi! Nó sắp trật bánh! || The engine is venting steam! It is about to jump the rails!
+critical_failure_imminent | khai | 1 | Nó sắp tới bến. Dồn hết vào đầu máy, không còn thời gian. || It is nearly at the docks. Everything onto the engine; no time left.
+victory | kessler | 1 | Hủy lịch trình. || Cancel the timetable.
+victory | khai | 1 | Tàu trật bánh. Bất kể nó chở gì, giờ nó nằm trong mương. || The train is off the rails. Whatever it carried is in a ditch now.
+defeat | kessler | 1 | Đúng giờ. Như ta đã nói. || On time. As I said.
+
+@c4m12 main=adler
+mission_start | adler | 1 | Ba pháo đài, ba lá cờ. Tôi mang bốn lá, đề phòng. || Three forts, three flags. I brought four, just in case.
+point_captured | adler | 3 | Cờ đã cắm trên cứ điểm. Ai muốn thì tới lấy. || Flag up on the strongpoint. Anyone who wants it can come and take it.
+point_lost | adler | 3 | Chúng giật mất một cứ điểm. Không sao, tôi còn cờ và còn cả buổi chiều. || They took a strongpoint back. Fine. I have flags and a whole afternoon.
+event_triggered | hq | 2 | Sương biển tràn vào bờ tường cảng. Tầm nhìn còn năm mươi mét. || Sea fog over the harbour wall. Visibility fifty metres.
+objective_progress:last | adler | 2 | Còn cứ điểm cuối. Từ đó ta nhìn thấy cả tường cảng tới ngọn hải đăng. || The last fort. From it we see the whole wall to the lighthouse.
+victory | adler | 1 | Cờ lên cả ba! Còn một lá cho văn phòng. || Flags up on all three! And one spare for the office.
+defeat | adler | 1 | Cờ hạ rồi. Ta sẽ cắm lại, lần sau cắm sâu hơn. || The flags are down. We plant them again, deeper next time.
+
+@c4m07 main=khai
+mission_start | khai | 1 | Nhà máy là mục tiêu. Mọi thứ khác chỉ là tiếng ồn. || The factories are the objective. Everything else is noise.
+time@20 | hq | 2 | Công nhân đã quay lại xưởng. Hơn hai trăm người ở trong khu nhà máy. || The workers are back at their benches. Over two hundred people inside.
+event_triggered | linh | 2 | Một nhóm đánh phá đang lẻn vào kho từ phía nam. Chúng muốn đốt chứ không chiếm. || A raiding party slipping into the depot from the south. They want to burn, not take.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Giữ xe giữa chúng và cửa xưởng. || Halfway. Keep the vehicles between them and the factory doors.
+critical_failure_imminent | khai | 1 | Chỉ còn một tòa nhà. Chặn mọi thứ đang nhắm vào nó. || One building left. Stop everything aimed at it.
+victory | khai | 1 | Nhà máy vẫn đứng, công nhân vẫn ở đó. Kessler đốt tiền mà không mua được gì. || The factories stand and the workers are still there. Kessler burned money for nothing.
+defeat | kessler | 1 | Một tài sản đã bị xóa sổ. Cả của ta lẫn của các anh. || An asset written off. Mine and yours.
+
+@c4m16 main=linh
+mission_start | linh | 1 | Hai xe đã đánh dấu. Tôi cần giấy tờ của chúng, không cần tài xế. || Two cars, marked. I want their paperwork, not their drivers.
+event_triggered | hq | 2 | Tàu tiếp viện vừa vào ga. Hai xe chỉ huy đang đổi hướng về phía đó. || A train just pulled in. Both command cars are turning towards it.
+objective_progress:1/2 | linh | 2 | Một xe đã dừng. Hồ sơ còn nguyên, chỉ hơi ướt. || One car stopped. The files are intact, a little damp.
+time@180 | linh | 2 | Đọc sơ qua: các chuyến hàng ghi tên Behemoth, kèm số hiệu xưởng của Varga. || Skimming: the shipments list Behemoths, with Varga's works numbers.
+objective_progress:last | linh | 2 | Xe còn lại đang chạy về cổng. Nó không được ra khỏi Ironport. || The other car is running for the gate. It does not leave Ironport.
+victory | linh | 1 | Behemoth của Varga, chở theo từng tàu. Một chiếc tên Tempest vẫn còn trên cầu cảng. || Varga's Behemoths, by the shipload. One called Tempest is still on the quay.
+defeat | linh | 1 | Hồ sơ đã ra khỏi cổng. Ta sẽ không biết ông ta đã chở gì đi. || The files are out of the gate. We will never know what he shipped.
+
+@c4m08 main=linh
+mission_start | linh | 1 | Ba xe đã đánh dấu, chạy chậm. Chỗ chúng đã đi qua, lái cẩn thận. || Three marked vehicles, moving slowly. Where they have been, drive carefully.
+event_triggered | linh | 2 | Pháo địch đang bắn vào đường ta đi. Có lẽ để che xe rải mìn. || Enemy guns on our road. Covering the minelayers, I think.
+objective_progress:1/3 | linh | 2 | Một xe rải mìn đã nổ. Mìn còn trên xe của nó, đứng xa ra. || One minelayer down. Its own mines are still aboard; stand clear.
+objective_progress:last | linh | 2 | Còn một xe. Nó đi vòng ra bãi phế liệu, đường nó qua đã có mìn. || One left. It is circling to the scrapyard; its trail is already mined.
+expensive_unit_lost | khai | 3 | Mất một xe nặng vì mìn. Đi theo vết của xe phía trước. || A heavy lost to a mine. Follow the tracks of the vehicle ahead.
+victory | linh | 1 | Đường tới cảng sạch mìn. Còn một chuyện: cánh của tướng Thorne lại tới muộn, vì nhiên liệu. Lần thứ hai. || The port roads are clear. One thing: Thorne's column is late again, fuel. Second time.
+defeat | linh | 1 | Xe rải mìn xong vòng của chúng. Sáng mai ta đi trên mìn. || The minelayers finished their round. Tomorrow we drive on mines.
+
+@c4m13 main=linh
+mission_start | linh | 1 | Cánh quân của tướng Thorne không có ở bên trái ta. Không ở đâu cả. || Thorne's column is not on our left. It is not anywhere.
+mission_start | khai | 1 | Vậy ta giữ cả hai cánh. Ba phút rưỡi, không lùi. || Then we hold both flanks. Three and a half minutes, no retreat.
+ally_late | linh | 2 | Trễ hẹn mười phút. Liên lạc của tướng Thorne báo đường bị chặn. Tôi ghi lại. || Ten minutes late. Thorne's signals say the road is blocked. I am noting it.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Sườn trái đang mỏng, đưa xe dự bị qua đó. || Halfway. The left is thin; move the reserve over.
+point_lost | khai | 3 | Mất giao lộ. Lấy lại, không ai tới giúp ta đâu. || The crossing is lost. Take it back; nobody is coming to help.
+victory | khai | 1 | Ta vẫn đứng đây. Một mình, nhưng vẫn đứng. || We are still here. Alone, but standing.
+victory | linh | 1 | Tôi có một câu hỏi cho tướng Thorne. Sẽ không ai muốn nghe nó. || I have a question for General Thorne. Nobody will want to hear it.
+defeat | khai | 1 | Giao lộ mất. Không có sườn trái thì không có giao lộ. || The crossing is lost. No left flank, no crossing.
+
+@c4m09 main=khai
+mission_start | kessler | 1 | Mọi con đường ở đây đều có mìn. Ta đã kiểm tra. || Every road here is mined. I checked.
+mission_start | khai | 1 | Vậy ta đi đường của ông ta. Công binh dẫn đầu. || Then we use his roads. Engineers in front.
+general_tactic_change | linh | 3 | Kessler đổi sang phòng thủ căn cứ, kéo hết xe về sau hàng container. || Kessler has gone to base defence; everything behind the container stacks.
+time@180 | kessler | 2 | Ta có thể nói chuyện như những người làm ăn, đại tá. Ông muốn giá bao nhiêu? || We could talk like businessmen, Colonel. What is your price?
+time@185 | khai | 2 | Không bán. || Not for sale.
+expensive_unit_lost | khai | 3 | Mất xe hạng nặng. Ông ta đổi mìn lấy xe, đừng để ông ta có lãi. || Lost a heavy. He trades mines for tanks; do not let him profit.
+victory | kessler | 1 | Sơ tán khu chỉ huy. Bằng đường biển. || Evacuate the quarters. By sea.
+defeat | kessler | 1 | Một khoản đầu tư tốt. Cảm ơn sự hợp tác, đại tá. || A good investment. Thank you for your cooperation, Colonel.
+
+@c4m10 main=khai
+mission_start | khai | 1 | Cả cảng, lữ đoàn. Tất cả, trước khi trời tối. || The port, Brigade. All of it, by tonight.
+phase_start:2 | linh | 1 | Bãi đường ray là của ta. Giờ chọn: nhà máy hay bến tàu trước, mỗi đường một cái giá. || The rail yard is ours. Now choose factories or docks first; each has its price.
+phase_start:4 | khai | 1 | Bến tàu. Kessler dồn hết những gì còn lại ra đó. || The docks. Kessler has thrown everything he has left there.
+boss_phase_change | mai | 1 | Tempest đang nạp súng ray. Nó bắn theo đường thẳng; đứng lệch khỏi trục nòng. || Tempest is charging its railgun. It fires dead straight; stay off its line.
+boss_hp:50 | linh | 4 | Tempest mất một nửa sức. Kessler vừa ra lệnh chất hàng lên tàu cuối. || Tempest is at half. Kessler just ordered the last ship loaded.
+phase_start:7 | khai | 1 | Tempest gục. Giữ cầu cảng, đợt phản công cuối đang tới. || Tempest is down. Hold the quay; the last counterattack is coming.
+victory | khai | 1 | Ironport tự do. Lịch trình của Kessler giờ là của ta. || Ironport is free. Kessler's timetable is ours now.
+defeat | kessler | 1 | Cảng vẫn hoạt động. Doanh thu quý này vẫn ổn. || The port still runs. This quarter's figures hold.
+
+@c4m14 main=khai
+mission_start | kessler | 1 | Tàu của ta rời bến lúc mười tám giờ, đại tá. Đừng tới muộn. || My ship leaves at eighteen hundred, Colonel. Do not be late.
+mission_start | khai | 1 | Hôm nay ta không chặn được tàu. Năm phút với hậu quân, rồi Rust Yard là của ta. || No stopping the ships today. Five minutes with his rearguard, then Rust Yard is ours.
+first_unit_type_seen | dieuhau | 2 | Máy bay ném bom hạng nhẹ phía biển! Chúng đang che đường cho đoàn tàu. || Light bombers off the sea! They are covering the ships.
+event_triggered | linh | 2 | Kessler đổi kế hoạch: hậu quân rút về cầu tàu sớm. Đừng đuổi vào đó. || Kessler changed the plan: the rearguard falls back to the pier early. Do not chase them in.
+timer_60s | khai | 1 | Một phút. Tàu đã ra khơi, hậu quân sẽ dồn hết vào ta. || One minute. The ships are out; the rearguard throws everything at us.
+victory | khai | 1 | Ông ta ra biển rồi. Để ông ta đi. Ta gặp hạm đội ở Beacon Bay. || He is at sea. Let him go. We meet his fleet at Beacon Bay.
+defeat | kessler | 1 | Lịch trình được giữ. Hậu quân của ta đáng đồng tiền. || The schedule holds. My rearguard earned its pay.
+
+@c4m17 main=khai
+mission_start | kessler | 1 | Đuổi theo ta sao, đại tá? Cảng đang cháy sau lưng ông. || Chasing me, Colonel? The harbour burns behind you.
+mission_start | khai | 1 | Hai xe chở sổ mật mã và bản đồ bờ biển. Không chiếc nào được lên tàu. || Two cars with codebooks and coastal charts. Neither one boards a boat.
+objective_progress:1/2 | linh | 2 | Một xe đã dừng. Sổ mật mã còn nguyên trong cặp chì. || One car stopped. The codebook is still sealed in its lead case.
+event_triggered | hq | 2 | Tàu đổ bộ của địch đang cập cầu tàu phía tây. Chúng tới đón xe còn lại. || Enemy landing craft at the west pier. They have come for the other car.
+objective_progress:last | khai | 2 | Còn một xe. Nó đang chạy dọc bến, cắt đường nó ở cầu tàu. || One left. It is running along the quay; cut it off at the pier.
+victory | khai | 1 | Ông ta ra khơi mà không có bản đồ. Giờ ta biết mọi kho nhiên liệu trên bờ biển này. || He sails without his charts. Now we know every fuel dump on this coast.
+defeat | khai | 1 | Bản đồ đã lên tàu. Ông ta vẫn nhìn rõ bờ biển của mình. || The charts got aboard. He still sees his coast.
+
+@c4m18 main=linh
+mission_start | linh | 1 | Kessler đang trốn thoát. Các chuyến phà thì không. Đại tá đã chọn đúng. || Kessler is getting away. The ferries are not. Your call was the right one.
+time@15 | hq | 2 | Ba chuyến phà đầy các gia đình. Mỗi chuyến cần ít nhất hai phút để rời bến. || Three ferries full of families. Each needs two minutes to clear the berth.
+event_triggered | linh | 2 | Pháo hậu quân đang nã vào cầu tàu. Giữ xe chắn giữa bờ và đồi. || The rearguard's guns are on the quays. Keep vehicles between the shore and the hill.
+objective_progress:1/2 | linh | 2 | Chuyến phà đầu đã ra khơi. Còn hai. || The first ferry is out. Two left.
+point_lost | khai | 3 | Mất nhà ga phà. Lấy lại, phà không đợi được. || The ferry terminal is lost. Take it back; the ferries cannot wait.
+victory | khai | 1 | Cả ba chuyến phà đã ra khơi. Kessler có thể đợi. || All three ferries clear. Kessler can wait.
+defeat | linh | 1 | Một chuyến phà chưa ra được. Tôi đang gọi tàu cá tới. || One ferry did not get out. I am calling the fishing boats in.
+
+@c4m06 main=khai
+mission_start | kessler | 1 | Scylla rời bến đúng giờ, đại tá. || Scylla leaves on time, Colonel.
+mission_start | khai | 1 | Chìm nó trong sương. Hạm đội của ông ta không được ra khỏi vịnh. || Sink it in the fog. His fleet does not get out of the bay.
+boss_spawn | mai | 1 | Scylla, tàu khu trục chỉ huy. Pháo hai đầu, ra-đa trên cột. Hạ ra-đa trước. || Scylla, the command destroyer. Guns fore and aft, radar on the mast. Radar first.
+boss_part_destroyed | mai | 2 | Ra-đa gãy. Nó đang bắn mù trong sương như ta. || The radar is down. It is firing blind in the fog, like us.
+time@60 | linh | 2 | Hạm đội của Kessler đang rút sau Scylla. Nó là cánh cửa, đóng nó lại. || Kessler's fleet is slipping out behind Scylla. It is the door; shut it.
+boss_phase_change | mai | 1 | Nó quay mạn để bắn toàn bộ. Ra khỏi trục ngang của nó! || It is turning broadside to fire everything. Get off its beam!
+superweapon_warning | mai | 1 | Loạt đạn toàn mạn sắp tới. Rời vùng đỏ trên bãi biển ngay! || Full broadside coming. Off the red stretch of beach, now!
+boss_hp:50 | dieuhau | 4 | Nó nghiêng rồi! Một nửa con tàu đang khói! || It is listing! Half the ship is smoking!
+event_triggered | hq | 2 | Sương đang tan. Tầm bắn của cả hai bên sẽ dài ra. || The fog is lifting. Both sides will see further.
+boss_hp:25 | khai | 4 | Nó sắp chìm. Giữ nhịp, đừng ai lao ra cầu tàu. || It is going down. Keep the rhythm; nobody runs onto the pier.
+hq_below_50 | mai | 2 | Pháo tàu đang đánh vào trại. Lùi xe hậu cần vào sau đồi. || The ship's guns are on the camp. Move the support vehicles behind the hill.
+victory | kessler | 1 | Một con tàu. Một khoản lỗ. Không phải phá sản. || One ship. A loss. Not bankruptcy.
+victory | khai | 1 | Scylla nằm dưới đáy vịnh. Hạm đội của ông ta phải đi đường dài. || Scylla is on the bottom. His fleet goes the long way round.
+defeat | kessler | 1 | Hạm đội đã ra khơi. Như lịch trình. || The fleet is at sea. As scheduled.
+
+@c4m15 main=khai
+mission_start | khai | 1 | Giữ làng chài tới sáng. Pháo của ta đang lên đường ven biển. || Hold the fishing village till dawn. Our guns are coming up the coast road.
+event_triggered | linh | 2 | Tàu đổ bộ đang cập bờ phía nam. Hai đợt, có lẽ ba. || Landing craft beaching to the south. Two waves, maybe three.
+objective_progress:1/2 | khai | 2 | Nửa đêm. Dân làng đã lên đồi, giờ chỉ còn ta và chúng. || Midnight. The villagers are up the hill; now it is only us and them.
+point_lost | khai | 3 | Mất làng. Lấy lại trước khi chúng đặt pháo trên mái nhà. || The village is lost. Take it back before they put guns on the roofs.
+event_triggered | hq | 2 | Sương biển phủ bờ. Đổ bộ sẽ khó nhìn hơn, nhưng cũng khó bắn hơn. || Sea fog on the shore. Harder to see the landings, harder for them to aim.
+victory | khai | 1 | Pháo đã lên. Từ đây ta với tới được cả vịnh. || The guns are up. From here we can reach the whole bay.
+defeat | khai | 1 | Làng mất. Pháo sẽ phải dừng ở xa hơn, ta sẽ không với tới vịnh. || The village is lost. The guns stop further back; we will not reach the bay.
+
+@c4m11 main=khai
+time@3 | linh | 2 | Leviathan ở làn xa. Từ bãi biển ta không thấy hạm đội của nó; từ hải đăng thì thấy. || Leviathan is on the far lane. We cannot see its fleet from the beach; the lighthouse can.
+mission_start | khai | 1 | Hải đăng trước, rồi pháo, rồi làng. Rồi đến con tàu. || Lighthouse first, then the guns, then the village. Then the ship.
+time@20 | mai | 2 | Mạn tàu chặn mọi thứ ta có. Boong thì không: pháo và bom. || Its sides stop anything we have. Its deck does not: artillery and bombs.
+phase_start:2 | khai | 1 | Hải đăng đã sáng. Chọn pháo cho trận này, mỗi loại có giá của nó. || The lighthouse is lit. Choose the guns for this; each kind has its cost.
+phase_start:4 | linh | 1 | Làng chài tiếp theo. Leviathan đang dồn pháo về phía đó. || The fishing village next. Leviathan is turning its guns that way.
+boss_spawn | kessler | 1 | Leviathan là tài sản lớn nhất của ta. Đắt hơn cả lữ đoàn của ông. || Leviathan is my largest asset. Worth more than your whole brigade.
+boss_spawn | mai | 1 | Leviathan. Mạn dày như tường, nhưng boong mỏng. Đạn rơi từ trên xuống mới ăn. || Leviathan. Sides like a wall, a thin deck. Only plunging fire will bite.
+boss_part_destroyed | mai | 2 | Một tháp pháo trên boong đã cháy. Bom đang làm việc của nó. || A deck turret is burning. The bombs are doing their job.
+superweapon_warning | mai | 1 | Pháo chính của nó đang quay về bờ. Rời vùng đỏ trước loạt đạn! || Its main guns are swinging to the shore. Out of the red before the salvo!
+boss_hp:50 | khai | 4 | Nó đang tiến sát bờ. Xe tăng ra đầu cầu tàu, ngay. || It is coming in close. Tanks on the pier heads, now.
+boss_phase_change | linh | 1 | Leviathan gọi tàu hộ tống. Hai tàu nhỏ vào từ phía bắc. || Leviathan is calling its escorts. Two smaller ships in from the north.
+boss_hp:25 | dieuhau | 4 | Nó đang chìm phần đuôi! Một loạt bom nữa! || Its stern is going under! One more bomb run!
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Mọi khẩu pháo vào Leviathan, ngay bây giờ. || The HQ is critical. Every gun on Leviathan, right now.
+victory | kessler | 1 | Bỏ tàu. Ghi nhận khoản lỗ, và thời gian. || Abandon ship. Record the loss, and the time.
+victory | khai | 1 | Lịch trình của Kessler kết thúc ở đây. || Kessler's timetable ends here.
+defeat | kessler | 1 | Một khoản lỗ. Không phải phá sản, đại tá. Không bao giờ. || A loss, Colonel. Never bankruptcy.
+
+@c4s1 main=linh
+mission_start | linh | 1 | Tù binh ở bãi phế liệu. Đưa họ về nhà. Bốn xe, ba phải tới. || The prisoners are at the scrapyard. Bring them home. Four trucks, three must arrive.
+objective_progress:1/3 | linh | 2 | Xe đầu tiên đã an toàn. Mười sáu người, có hai người của Hawk. || First truck safe. Sixteen people, two of them Hawk's.
+critical_failure_imminent | linh | 1 | Mất thêm một xe là có người bị bỏ lại. Bọc chặt chiếc cuối. || One more truck lost and someone stays behind. Cover the last one.
+victory | linh | 1 | Họ đã về. Có người khóc, có người đòi ăn. Cả hai đều tốt. || They are home. Some are crying, some want food. Both are good signs.
+defeat | linh | 1 | Không đủ xe tới. Tôi sẽ tìm cách khác cho những người còn lại. || Not enough trucks made it. I will find another way for the rest.
+
+@c4s2 main=linh
+mission_start | linh | 1 | Hai xe chỉ huy, đã đánh dấu. Họ nói nhiều lắm; đó là cách tôi tìm ra họ. || Two command cars, marked. They talk a lot; that is how I found them.
+objective_progress:1/2 | linh | 2 | Một trưởng cảng đã bị bắt. Ông ta đang đòi gặp luật sư. || One harbour master caught. He is asking for a lawyer.
+event_triggered | hq | 2 | Mây đang kéo tới. Máy bay hai bên sẽ bay thấp hơn. || Cloud coming over. Aircraft on both sides will fly lower.
+victory | linh | 1 | Đường buôn lậu đã đóng. Kessler mất nguồn tiền cuối ở bờ biển này. || The smuggling routes are shut. Kessler loses his last income on this coast.
+defeat | linh | 1 | Họ trốn rồi. Đường buôn lậu sẽ còn chạy thêm một mùa. || They got away. The smuggling runs another season.
