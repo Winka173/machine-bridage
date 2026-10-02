@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK, chua_ap
 
+from . import _b04
 from . import _balance as B
+from . import _game as G
 from . import _units as U
 
 FILE_ID = "04_can_cu_thap"
@@ -50,7 +52,9 @@ def build(ctx):
         sh.col("vai_tro", meaning="vai trò tháp (towerRole)")
         sh.col("trong_roster", meaning="có trong base.roster (thẻ tháp người chơi chọn)")
         sh.col("base_rebuild_cp", unit="CP", meaning="giá xây lại riêng (rebuildCp) hoặc theo cỡ ô (base.rebuild.<cỡ>.cp)")
-        sh.col("runtime_rebuild_cp", unit="CP", meaning="giá xây lại lúc chạy (công thức trong mã: effectiveHP, roleDPS...)")
+        sh.col("runtime_rebuild_cp", unit="CP", meaning="giá game thu khi thả lại tháp: rebuildCp > 0, còn lại CP theo cỡ ô "
+               "(port Sim/Content/BaseRules.cs RebuildCost; công thức định giá ở Thap_gia_cong_thuc)",
+               source_note="port Sim/Content/BaseRules.cs RebuildCost")
         sh.col("xay_lai_cho_s", unit="s", meaning="thời gian chờ xây lại theo cỡ ô (base.rebuild.<cỡ>.cooldown)")
         sh.col("xay_lai_tha_s", unit="s", meaning="thời gian thả khi xây lại theo cỡ ô (base.rebuild.<cỡ>.drop)")
         sh.col("mo_khoa", meaning="mở khóa (07 / 11)")
@@ -68,7 +72,7 @@ def build(ctx):
         r.set("trong_roster", vid in roster)
         per_size = rebuild.get(size.lower(), {}) if size else {}
         r.set("base_rebuild_cp", rr.get("rebuildCp", per_size.get("cp", "")))
-        r.set("runtime_rebuild_cp", NEED_CODE_CHECK)
+        r.set("runtime_rebuild_cp", G.rebuild_cost(rr, rebuild))
         r.set("xay_lai_cho_s", per_size.get("cooldown", ""))
         r.set("xay_lai_tha_s", per_size.get("drop", ""))
         r.set("mo_khoa", NEED_CODE_CHECK)
@@ -185,5 +189,6 @@ def build(ctx):
             r.set("kieu", style)
             r.set("thap", tower if tower != "*" else "")
             r.set("trong_so", w, B.BALANCE, path)
+    _b04.build(ctx, book, d, res)
     al = book.kv_sheet("Can_cu_AI_cap", "AI xây căn cứ: cấp HQ theo độ khó", "base.ai.levels")
     book.kv_rows(al, (base_cfg.get("ai") or {}).get("levels") or {}, B.BALANCE, ("base", "ai", "levels"), "base.ai.levels")
