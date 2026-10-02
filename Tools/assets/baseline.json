@@ -1049,6 +1049,34 @@
     "FLAG ew_tower_a: triangles 5,436 -> 6,268 (+15.3%); vertices 7,596 -> 8,434 (+11.0%); fileBytes 424,928 -> 466,812 (+9.9%); structure changed",
     "FLAG ew_tower_b: triangles 4,544 -> 5,376 (+18.3%); vertices 6,698 -> 7,536 (+12.5%); fileBytes 379,060 -> 420,944 (+11.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "heavy_turret",
+    "heavy_turret_a",
+    "heavy_turret_b",
+    "missile_battery",
+    "missile_battery_a",
+    "missile_battery_b",
+    "aa_gun_tower",
+    "flare_tower",
+    "searchlight",
+    "wreck_turret"
+   ],
+   "reason": "prompt 27 wave 6e: towers on V2 kit (pale casemate/pad/roof), wreck_turret AO .6",
+   "changes": [
+    "FLAG aa_gun_tower: triangles 1,412 -> 1,724 (+22.1%); vertices 1,612 -> 1,812 (+12.4%); fileBytes 90,600 -> 101,308 (+11.8%); structure changed",
+    "FLAG flare_tower: triangles 500 -> 680 (+36.0%); vertices 624 -> 920 (+47.4%); meshes 7 -> 9 (+28.6%); renderers 7 -> 9 (+28.6%); materialSlots 7 -> 9 (+28.6%); fileBytes 38,200 -> 53,348 (+39.7%); structure changed",
+    "FLAG heavy_turret: triangles 9,222 -> 9,514 (+3.2%); vertices 12,405 -> 12,613 (+1.7%); meshes 79 -> 80 (+1.3%); renderers 79 -> 80 (+1.3%); materials 18 -> 20 (+11.1%); materialSlots 79 -> 80 (+1.3%); fileBytes 678,916 -> 691,128 (+1.8%); structure changed",
+    "FLAG heavy_turret_a: triangles 9,378 -> 9,670 (+3.1%); vertices 12,597 -> 12,805 (+1.7%); meshes 81 -> 82 (+1.2%); renderers 81 -> 82 (+1.2%); materials 18 -> 20 (+11.1%); materialSlots 81 -> 82 (+1.2%); fileBytes 690,204 -> 702,420 (+1.8%); structure changed",
+    "FLAG heavy_turret_b: triangles 11,666 -> 11,958 (+2.5%); vertices 15,705 -> 15,913 (+1.3%); meshes 93 -> 94 (+1.1%); renderers 93 -> 94 (+1.1%); materials 18 -> 20 (+11.1%); materialSlots 93 -> 94 (+1.1%); fileBytes 849,316 -> 861,528 (+1.4%); structure changed",
+    "FLAG missile_battery: triangles 6,926 -> 7,242 (+4.6%); vertices 10,063 -> 10,278 (+2.1%); meshes 90 -> 91 (+1.1%); renderers 90 -> 91 (+1.1%); materials 19 -> 21 (+10.5%); materialSlots 90 -> 91 (+1.1%); fileBytes 569,264 -> 581,948 (+2.2%); structure changed",
+    "FLAG missile_battery_a: triangles 8,338 -> 8,654 (+3.8%); vertices 11,831 -> 12,046 (+1.8%); meshes 90 -> 91 (+1.1%); renderers 90 -> 91 (+1.1%); materials 19 -> 21 (+10.5%); materialSlots 90 -> 91 (+1.1%); fileBytes 655,828 -> 668,508 (+1.9%); structure changed",
+    "FLAG missile_battery_b: triangles 6,974 -> 7,290 (+4.5%); vertices 10,077 -> 10,292 (+2.1%); meshes 90 -> 91 (+1.1%); renderers 90 -> 91 (+1.1%); materials 19 -> 21 (+10.5%); materialSlots 90 -> 91 (+1.1%); fileBytes 570,168 -> 582,852 (+2.2%); structure changed",
+    "FLAG searchlight: triangles 1,124 -> 1,292 (+14.9%); vertices 1,204 -> 1,312 (+9.0%); materials 4 -> 5 (+25.0%); fileBytes 66,640 -> 72,596 (+8.9%); structure changed",
+    "wreck_turret: bytes only"
+   ]
   }
  ],
  "models": {
@@ -1185,8 +1213,8 @@
   },
   "aa_gun_tower": {
    "file": "aa_gun_tower.glb",
-   "fileBytes": 90600,
-   "sha1": "fcf11d004b98dd50",
+   "fileBytes": 101308,
+   "sha1": "1025a648efa86c1a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 12,
@@ -1199,8 +1227,8 @@
    "submeshes": 10,
    "materialSlots": 10,
    "materialsUsed": 8,
-   "triangles": 1412,
-   "vertices": 1612,
+   "triangles": 1724,
+   "vertices": 1812,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -1213,7 +1241,7 @@
    "nonManifoldEdges": 0,
    "boundsMin": [
     -2.85,
-    0.0,
+    -0.01,
     -2.85
    ],
    "boundsMax": [
@@ -1224,20 +1252,20 @@
    "size": [
     5.887,
     5.7,
-    3.197
+    3.207
    ],
    "center": [
     -0.0,
-    1.598,
+    1.593,
     0.093
    ],
-   "structureHash": "27c228e0b42ce39d",
+   "structureHash": "034ebc65916dc78e",
    "color0": {
-    "mean": 0.62,
-    "min": 0.0848,
+    "mean": 0.667,
+    "min": 0.2476,
     "max": 0.9987,
-    "p05": 0.2516,
-    "p95": 0.8064,
+    "p05": 0.3603,
+    "p95": 0.9125,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -18124,22 +18152,22 @@
   },
   "flare_tower": {
    "file": "flare_tower.glb",
-   "fileBytes": 38200,
-   "sha1": "9d9f470dabbe17b9",
+   "fileBytes": 53348,
+   "sha1": "f4b6f34c9cd94090",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 9,
-   "meshes": 7,
+   "nodes": 11,
+   "meshes": 9,
    "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 7,
-   "submeshes": 7,
-   "materialSlots": 7,
+   "renderers": 9,
+   "submeshes": 9,
+   "materialSlots": 9,
    "materialsUsed": 5,
-   "triangles": 500,
-   "vertices": 624,
+   "triangles": 680,
+   "vertices": 920,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -18147,7 +18175,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 15,
+   "loosePieces": 26,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -18170,13 +18198,13 @@
     2.236,
     -0.155
    ],
-   "structureHash": "0b74b973ff163536",
+   "structureHash": "c751cc4d7f257472",
    "color0": {
-    "mean": 0.7088,
-    "min": 0.1527,
+    "mean": 0.732,
+    "min": 0.3166,
     "max": 0.9987,
-    "p05": 0.2343,
-    "p95": 0.8137,
+    "p05": 0.4448,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -18191,9 +18219,11 @@
    "nodeNames": [
     "Ammo",
     "Base",
+    "Base_plates",
     "Deck",
     "Ladder",
     "Launcher",
+    "Leg_gussets",
     "Legs",
     "Muzzle_main",
     "Tubes",
@@ -23343,24 +23373,24 @@
   },
   "heavy_turret": {
    "file": "heavy_turret.glb",
-   "fileBytes": 678916,
-   "sha1": "7715b5faad943a43",
+   "fileBytes": 691128,
+   "sha1": "07db06b6a981d80e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 84,
-   "meshes": 79,
-   "materials": 18,
+   "nodes": 85,
+   "meshes": 80,
+   "materials": 20,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 79,
-   "submeshes": 79,
-   "materialSlots": 79,
-   "materialsUsed": 18,
-   "triangles": 9222,
-   "vertices": 12405,
+   "renderers": 80,
+   "submeshes": 80,
+   "materialSlots": 80,
+   "materialsUsed": 20,
+   "triangles": 9514,
+   "vertices": 12613,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23368,36 +23398,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 305,
+   "loosePieces": 306,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.9939,
+    -3.9923,
     -0.02,
-    -3.9939
+    -3.9923
    ],
    "boundsMax": [
-    3.9939,
+    3.9923,
     6.085,
     6.2635
    ],
    "size": [
-    10.257,
-    7.988,
+    10.256,
+    7.985,
     6.105
    ],
    "center": [
     0.0,
     3.033,
-    1.135
+    1.136
    ],
-   "structureHash": "1871126a4d03c96f",
+   "structureHash": "3a74c49a39af229c",
    "color0": {
-    "mean": 0.6096,
-    "min": 0.0765,
+    "mean": 0.6608,
+    "min": 0.2476,
     "max": 1.0,
-    "p05": 0.2267,
-    "p95": 0.8058,
+    "p05": 0.3808,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23486,6 +23516,7 @@
     "Roof_hatch",
     "Roof_hatch_bar",
     "Roof_seams",
+    "Roof_slab",
     "Rungs",
     "Sandbags",
     "Shell_cases",
@@ -23523,24 +23554,24 @@
   },
   "heavy_turret_a": {
    "file": "heavy_turret_a.glb",
-   "fileBytes": 690204,
-   "sha1": "79f3c1f5b7794a89",
+   "fileBytes": 702420,
+   "sha1": "70ed4da9621dedba",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 86,
-   "meshes": 81,
-   "materials": 18,
+   "nodes": 87,
+   "meshes": 82,
+   "materials": 20,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 81,
-   "submeshes": 81,
-   "materialSlots": 81,
-   "materialsUsed": 18,
-   "triangles": 9378,
-   "vertices": 12597,
+   "renderers": 82,
+   "submeshes": 82,
+   "materialSlots": 82,
+   "materialsUsed": 20,
+   "triangles": 9670,
+   "vertices": 12805,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23548,36 +23579,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 310,
+   "loosePieces": 311,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.9939,
+    -3.9923,
     -0.02,
-    -3.9939
+    -3.9923
    ],
    "boundsMax": [
-    3.9939,
+    3.9923,
     6.085,
     8.6635
    ],
    "size": [
-    12.657,
-    7.988,
+    12.656,
+    7.985,
     6.105
    ],
    "center": [
     0.0,
     3.033,
-    2.335
+    2.336
    ],
-   "structureHash": "dcd618b1ca2b7f4e",
+   "structureHash": "831f08f75867bb9b",
    "color0": {
-    "mean": 0.6089,
-    "min": 0.0765,
+    "mean": 0.6603,
+    "min": 0.2476,
     "max": 1.0,
-    "p05": 0.2135,
-    "p95": 0.8058,
+    "p05": 0.3709,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23668,6 +23699,7 @@
     "Roof_hatch",
     "Roof_hatch_bar",
     "Roof_seams",
+    "Roof_slab",
     "Rungs",
     "Sandbags",
     "Shell_cases",
@@ -23700,24 +23732,24 @@
   },
   "heavy_turret_b": {
    "file": "heavy_turret_b.glb",
-   "fileBytes": 849316,
-   "sha1": "98a523ae69e08d74",
+   "fileBytes": 861528,
+   "sha1": "b8e6ef3af8eed6f4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 102,
-   "meshes": 93,
-   "materials": 18,
+   "nodes": 103,
+   "meshes": 94,
+   "materials": 20,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 93,
-   "submeshes": 93,
-   "materialSlots": 93,
-   "materialsUsed": 18,
-   "triangles": 11666,
-   "vertices": 15705,
+   "renderers": 94,
+   "submeshes": 94,
+   "materialSlots": 94,
+   "materialsUsed": 20,
+   "triangles": 11958,
+   "vertices": 15913,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23725,36 +23757,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 378,
+   "loosePieces": 379,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.9939,
+    -3.9923,
     -0.02,
-    -3.9939
+    -3.9923
    ],
    "boundsMax": [
-    3.9939,
+    3.9923,
     6.085,
     6.2635
    ],
    "size": [
-    10.257,
-    7.988,
+    10.256,
+    7.985,
     6.105
    ],
    "center": [
     0.0,
     3.033,
-    1.135
+    1.136
    ],
-   "structureHash": "aa6d7f19667f27e4",
+   "structureHash": "90ca69bd90931d59",
    "color0": {
-    "mean": 0.597,
-    "min": 0.0674,
+    "mean": 0.6528,
+    "min": 0.2398,
     "max": 1.0,
-    "p05": 0.1986,
-    "p95": 0.8058,
+    "p05": 0.361,
+    "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -23856,6 +23888,7 @@
     "Roof_plate_bolts",
     "Roof_plates",
     "Roof_seams",
+    "Roof_slab",
     "Rungs",
     "Sandbags",
     "Shell_cases",
@@ -31252,24 +31285,24 @@
   },
   "missile_battery": {
    "file": "missile_battery.glb",
-   "fileBytes": 569264,
-   "sha1": "00532fa9c5a43379",
+   "fileBytes": 581948,
+   "sha1": "d888c2a990b17fd9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 95,
-   "meshes": 90,
-   "materials": 19,
+   "nodes": 96,
+   "meshes": 91,
+   "materials": 21,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 90,
-   "submeshes": 90,
-   "materialSlots": 90,
-   "materialsUsed": 19,
-   "triangles": 6926,
-   "vertices": 10063,
+   "renderers": 91,
+   "submeshes": 91,
+   "materialSlots": 91,
+   "materialsUsed": 21,
+   "triangles": 7242,
+   "vertices": 10278,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31277,36 +31310,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 301,
+   "loosePieces": 302,
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -4.4932,
+    -4.4913,
     -0.02,
-    -3.4947
+    -3.4933
    ],
    "boundsMax": [
     4.6,
     7.3074,
-    3.4947
+    3.4933
    ],
    "size": [
-    6.989,
-    9.093,
+    6.987,
+    9.091,
     7.327
    ],
    "center": [
-    0.053,
+    0.054,
     3.644,
     0.0
    ],
-   "structureHash": "0a9a4a9c89863bc0",
+   "structureHash": "f49e4ebc7823580e",
    "color0": {
-    "mean": 0.6183,
-    "min": 0.0727,
+    "mean": 0.6724,
+    "min": 0.2468,
     "max": 1.0,
-    "p05": 0.2246,
-    "p95": 0.8702,
+    "p05": 0.3766,
+    "p95": 0.9642,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -31401,6 +31434,7 @@
     "Shelter_door",
     "Shelter_fittings",
     "Shelter_frame",
+    "Shelter_roof",
     "Shelter_stencil",
     "Shelter_steps",
     "Shelter_vents",
@@ -31434,24 +31468,24 @@
   },
   "missile_battery_a": {
    "file": "missile_battery_a.glb",
-   "fileBytes": 655828,
-   "sha1": "fd103bae1eb1e866",
+   "fileBytes": 668508,
+   "sha1": "15ee93fc292c5611",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 95,
-   "meshes": 90,
-   "materials": 19,
+   "nodes": 96,
+   "meshes": 91,
+   "materials": 21,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 90,
-   "submeshes": 90,
-   "materialSlots": 90,
-   "materialsUsed": 19,
-   "triangles": 8338,
-   "vertices": 11831,
+   "renderers": 91,
+   "submeshes": 91,
+   "materialSlots": 91,
+   "materialsUsed": 21,
+   "triangles": 8654,
+   "vertices": 12046,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31459,36 +31493,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 320,
+   "loosePieces": 321,
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -4.4932,
+    -4.4913,
     -0.02,
-    -3.4947
+    -3.4933
    ],
    "boundsMax": [
     4.6,
     7.3074,
-    3.4947
+    3.4933
    ],
    "size": [
-    6.989,
-    9.093,
+    6.987,
+    9.091,
     7.327
    ],
    "center": [
-    0.053,
+    0.054,
     3.644,
     0.0
    ],
-   "structureHash": "14640b4fcf6ff23b",
+   "structureHash": "8dbaa5a51f5255e5",
    "color0": {
-    "mean": 0.6316,
-    "min": 0.0727,
+    "mean": 0.6809,
+    "min": 0.2468,
     "max": 1.0,
-    "p05": 0.223,
-    "p95": 0.8143,
+    "p05": 0.381,
+    "p95": 0.9137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -31583,6 +31617,7 @@
     "Shelter_door",
     "Shelter_fittings",
     "Shelter_frame",
+    "Shelter_roof",
     "Shelter_stencil",
     "Shelter_steps",
     "Shelter_vents",
@@ -31614,24 +31649,24 @@
   },
   "missile_battery_b": {
    "file": "missile_battery_b.glb",
-   "fileBytes": 570168,
-   "sha1": "080c803f106fda4e",
+   "fileBytes": 582852,
+   "sha1": "a955b476277a1004",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 95,
-   "meshes": 90,
-   "materials": 19,
+   "nodes": 96,
+   "meshes": 91,
+   "materials": 21,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 90,
-   "submeshes": 90,
-   "materialSlots": 90,
-   "materialsUsed": 19,
-   "triangles": 6974,
-   "vertices": 10077,
+   "renderers": 91,
+   "submeshes": 91,
+   "materialSlots": 91,
+   "materialsUsed": 21,
+   "triangles": 7290,
+   "vertices": 10292,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31639,36 +31674,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 301,
+   "loosePieces": 302,
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -4.4932,
+    -4.4913,
     -0.02,
-    -3.4947
+    -3.4933
    ],
    "boundsMax": [
     5.6,
     7.9187,
-    3.4947
+    3.4933
    ],
    "size": [
-    6.989,
-    10.093,
+    6.987,
+    10.091,
     7.939
    ],
    "center": [
-    0.553,
+    0.554,
     3.949,
     0.0
    ],
-   "structureHash": "dfcf85769bf90d43",
+   "structureHash": "970968196d0b6e6d",
    "color0": {
-    "mean": 0.6192,
-    "min": 0.0727,
+    "mean": 0.6729,
+    "min": 0.2468,
     "max": 1.0,
-    "p05": 0.2246,
-    "p95": 0.8702,
+    "p05": 0.3759,
+    "p95": 0.9641,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -31763,6 +31798,7 @@
     "Shelter_door",
     "Shelter_fittings",
     "Shelter_frame",
+    "Shelter_roof",
     "Shelter_stencil",
     "Shelter_steps",
     "Shelter_vents",
@@ -40058,24 +40094,24 @@
   },
   "searchlight": {
    "file": "searchlight.glb",
-   "fileBytes": 66640,
-   "sha1": "b38759340e8a92b9",
+   "fileBytes": 72596,
+   "sha1": "0e8dfed14976c2db",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 8,
    "meshes": 6,
-   "materials": 4,
+   "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 6,
    "submeshes": 6,
    "materialSlots": 6,
-   "materialsUsed": 4,
-   "triangles": 1124,
-   "vertices": 1204,
+   "materialsUsed": 5,
+   "triangles": 1292,
+   "vertices": 1312,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -40106,12 +40142,12 @@
     1.506,
     0.0
    ],
-   "structureHash": "3b4c132e4ee00172",
+   "structureHash": "236c2bfb7c3a7f82",
    "color0": {
-    "mean": 0.6733,
-    "min": 0.0769,
+    "mean": 0.7113,
+    "min": 0.2485,
     "max": 1.0,
-    "p05": 0.2943,
+    "p05": 0.3982,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -48962,7 +48998,7 @@
   "wreck_turret": {
    "file": "wreck_turret.glb",
    "fileBytes": 80904,
-   "sha1": "d10b37b56d1c137d",
+   "sha1": "b2d3d418cbebe46c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -49011,10 +49047,10 @@
    ],
    "structureHash": "82cf9f274a04a04f",
    "color0": {
-    "mean": 0.6224,
-    "min": 0.0997,
+    "mean": 0.6734,
+    "min": 0.3012,
     "max": 1.0,
-    "p05": 0.2406,
+    "p05": 0.3702,
     "p95": 1.0,
     "outOfRange": 0
    },

@@ -13,6 +13,7 @@ Pass 6a: aa_turret, artillery_emplacement, guard_tower, each with `_a` and `_b`.
 Pass 6b: gun_turret, mg_bunker, rocket_turret, each with `_a` and `_b`.
 Pass 6c: atgm_tower, c_ram, each with `_a` and `_b`; gun_pit.
 Pass 6d: drone_hangar, ew_tower, each with `_a` and `_b`.
+Pass 6e: heavy_turret, missile_battery (each with `_a`, `_b`); aa_gun_tower, flare_tower, searchlight, wreck_turret.
 """
 import math
 import random
@@ -20,6 +21,8 @@ import random
 import mb_kit27 as k
 from mathutils import Euler, Vector
 import mb_tower_branches as tb
+import mb_p25_new
+import mb_phase8
 from frontier_kit import chamfered
 from mb_siege import _circle
 from mb_towers3 import _runtime_names
@@ -446,4 +449,121 @@ BUILDERS.update({
     'drone_hangar': _build('drone_hangar', _hangar_up),
     'drone_hangar_a': _build('drone_hangar', _hangar_up, tb.drone_hangar_a),
     'drone_hangar_b': _build('drone_hangar', _hangar_up, tb.drone_hangar_b),
+})
+
+
+# ============================================================================= heavy_turret (coastal battery)
+def _heavy_up(a):
+    t = 'Turret'
+    tb.strip(a, ('Pad', 'Casemate', 'Turret_body'))
+    k.extrude(a.part('Pad', 'Concrete'), chamfered(8.0, 8.0, 1.0), .26, loc=(0, 0, .11), axis='Z', chamfer=.05,
+              corner=.04, taper=.99)
+    # Pale battered casemate (same rings as the old loft, so embrasures and the stencil sit on its faces).
+    W, H, TP, z0 = 6.0, 2.2, .93, .2
+    base = chamfered(W, W, 1.0)
+    cas = a.part('Casemate', 'Plaster')
+    k.sharp_loft(cas, [[(x * (1 - (1 - TP) * f), y * (1 - (1 - TP) * f), z0 + H * f) for x, y in base]
+                       for f in (0, 1)], chamfer=.06)
+    k.extrude(cas, chamfered(6.12, 6.12, 1.02), .1, loc=(0, 0, .26), axis='Z', chamfer=.03, corner=.02)   # plinth
+    k.block(cas, (2.2, 1.1, 2.25), loc=(0, 3.05, 1.325), chamfer=.05)                                          # portal
+    k.extrude(a.part('Roof_slab', 'PlasterWhite'), chamfered(6.4, 6.4, 1.05), .34, loc=(0, 0, 2.54), axis='Z',
+              chamfer=.045, corner=.03)
+    # Turret body: a sharp loft of the same rings.
+    bottom = [(-1.4, -2.0), (1.4, -2.0), (2.1, -1.2), (2.1, 1.9), (1.7, 2.5), (-1.7, 2.5), (-2.1, 1.9), (-2.1, -1.2)]
+    top = [(-1.25, -.95), (1.25, -.95), (1.95, -.55), (1.98, 1.85), (1.6, 2.4), (-1.6, 2.4), (-1.98, 1.85),
+           (-1.95, -.55)]
+    zb, zt = .12, 1.5
+    body = a.part('Turret_body', 'Team', t)
+    k.sharp_loft(body, [[(x, y, zb) for x, y in bottom], [(x, y, zt) for x, y in top]], chamfer=.07)
+
+
+# ============================================================================= missile_battery (SAM site)
+def _msl_up(a):
+    t = 'Turret'
+    tb.strip(a, ('Pad', 'Platform', 'Mast_footing', 'Shelter', 'Shelter_blocks'))
+    k.extrude(a.part('Pad', 'Plaster'), chamfered(9.0, 7.0, .8), .26, loc=(0, 0, .11), axis='Z', chamfer=.05,
+              corner=.04, taper=.99)
+    plat = a.part('Platform', 'Medical', t)
+    k.block(plat, (2.2, 3.4, .42), loc=(0, .55, .33), chamfer=.05, ends=(True, True))
+    k.inset(plat, lambda c, n, f: abs(n.x) > .8 and c.z > .1, width=.07, depth=-.012)
+    k.block(a.part('Mast_footing', 'Concrete'), (1.6, 1.6, .45), loc=(3.3, 1.4, .425), chamfer=.05)
+    sx_, sy_, sw, sd, sh = 2.55, -1.9, 2.8, 1.6, 1.62
+    for x in (-1, 1):
+        for y in (-1, 1):
+            k.block(a.part('Shelter_blocks', 'Concrete'), (.36, .36, .22),
+                    loc=(sx_ + x * (sw / 2 - .3), sy_ + y * (sd / 2 - .25), .33), chamfer=.03)
+    z0 = .43
+    sh_ = a.part('Shelter', 'Team')
+    k.block(sh_, (sw, sd, sh), loc=(sx_, sy_, z0 + sh / 2), chamfer=.05, ends=(True, True))
+    k.inset(sh_, lambda c, n, f: n.y > .8 or n.x < -.8, width=.09, depth=-.012)
+    k.block(a.part('Shelter_roof', 'PlasterWhite'), (sw + .08, sd + .08, .1), loc=(sx_, sy_, z0 + sh + .065),
+            chamfer=.03, ends=(True, True))
+
+
+# ============================================================================= aa_gun_tower (40 mm in a sandbag ring)
+def _aagun_up(a):
+    t = 'Turret'
+    tb.strip(a, ('Pad', 'Mount', 'Shield', 'Clips'))
+    k.extrude(a.part('Pad', 'Plaster'), chamfered(5.2, 5.2, .6), .17, loc=(0, 0, .075), axis='Z', chamfer=.03,
+              corner=.03)
+    mount = a.part('Mount', 'Team', t)
+    k.block(mount, (1.3, 1.5, 1.0), loc=(0, .1, .8), chamfer=.06, ends=(True, True))
+    k.inset(mount, lambda c, n, f: abs(n.x) > .8, width=.08, depth=-.012)
+    k.block(a.part('Shield', 'Armor', t), (1.4, .13, .7), loc=(0, -.7, 1.1), rot=(.2, 0, 0), chamfer=.03,
+            ends=(True, True))
+    clips = a.part('Clips', 'Crate')
+    k.block(clips, (.8, .4, .5), loc=(-1.8, 1.2, .4), chamfer=.04, ends=(True, True))
+    k.inset(clips, lambda c, n, f: n.y > .8, width=.06, depth=-.01)
+
+
+# ============================================================================= flare_tower
+def _flare_up(a):
+    tb.strip(a, ('Deck',))
+    deck = a.part('Deck', 'Medical')
+    k.block(deck, (3.0, 3.0, .2), loc=(0, 0, 3.1), chamfer=.045, ends=(True, True))
+    k.greebles(deck, (0, 0, 3.2), (1, 0, 0), (0, 1, 0), (2.4, 2.4), 3, seed=3101, height=(.03, .07), chamfer=.012,
+               avoid=(((0, 0, 0), .85), ((.9, .9, 0), .6), ((0, 1.6, 0), .45)))
+    plates = a.part('Base_plates', 'Steel')
+    gus = a.part('Leg_gussets', 'Steel')
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            plates.box((.5, .5, .06), loc=(sx * 1.2, sy * 1.2, .03), bevel=0)             # plain boxes: the tower is tiny
+            gus.box((.3, .3, .1), loc=(sx * 1.2, sy * 1.2, 2.85), bevel=0)
+
+
+# ============================================================================= searchlight (drum on a trailer)
+def _search_up(a):
+    t = 'Turret'
+    tb.strip(a, ('Trailer', 'Generator', 'Yoke'))
+    tr = a.part('Trailer', 'Fuel')
+    k.block(tr, (1.6, 2.2, .4), loc=(0, .3, .45), chamfer=.05, ends=(True, True))
+    for s in (-1, 1):
+        tr.limb((s * .7, 0, .5), (s * 1.5, -.9, .05), .12, .12)
+    gen = a.part('Generator', 'Armor')
+    k.block(gen, (.9, .8, .7), loc=(0, 1.2, 1.0), chamfer=.05, ends=(True, True))
+    k.inset(gen, lambda c, n, f: abs(n.x) > .8 or n.y > .8, width=.07, depth=-.01)
+    k.block(a.part('Yoke', 'Team', t), (1.7, .4, 1.1), loc=(0, 0, .55), chamfer=.05, ends=(True, True))
+
+
+def _from(mod, name, up, ao):
+    build, options = mod.BUILDERS[name]
+
+    def run(a):
+        build(a)
+        up(a)
+        k.clean(a)
+    return _runtime_names(run), dict(options, ao_strength=ao)
+
+
+BUILDERS.update({
+    'heavy_turret': _build('heavy_turret', _heavy_up),
+    'heavy_turret_a': _build('heavy_turret', _heavy_up, tb.heavy_turret_a),
+    'heavy_turret_b': _build('heavy_turret', _heavy_up, tb.heavy_turret_b),
+    'missile_battery': _build('missile_battery', _msl_up),
+    'missile_battery_a': _build('missile_battery', _msl_up, tb.missile_battery_a),
+    'missile_battery_b': _build('missile_battery', _msl_up, tb.missile_battery_b),
+    'aa_gun_tower': _from(mb_p25_new, 'aa_gun_tower', _aagun_up, AO),
+    'flare_tower': _from(mb_p25_new, 'flare_tower', _flare_up, AO),
+    'searchlight': _from(mb_p25_new, 'searchlight', _search_up, AO),
+    'wreck_turret': _from(mb_phase8, 'wreck_turret', lambda a: None, .6),
 })

@@ -14182,3 +14182,27 @@ old builder, V2 `_up` pass under the same part names, then the branch's own old 
   edges identical, size within .1 %, no errors or warnings.
 - **Card luma (old, alpha > .5, Rec. 709):** ew_tower .3421 (the dimmest: watch it), _a .4080, _b .3824; drone_hangar .3538, _a .3577, _b .3564.
 - Lead (2026-10-02), wave 6d cards: all pass. atgm_tower trio fixed (now .4798/.4743/.4740 vs the originals .4124/.4075/.4093, +16 %): pale Plaster body and a PlasterWhite roof slab. ew_tower +7.5 % to +9.7 %, drone_hangar +4.1 % to +4.2 %. Lesson kept: the base colour of the biggest top/side faces drives the card, not AO.
+
+## 27 wave 6e (lead pass, 2026-10-02)
+
+Pass 6e (lane B, the last tower pass): heavy_turret, missile_battery (each with `_a`, `_b`); aa_gun_tower, flare_tower, searchlight, wreck_turret, in
+`Tools/blender/mb_p27_wave6.py` (method of 6a-6d: old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and
+pivots untouched). Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 (wreck_turret .6).
+
+- **Lesson of 6c/6d applied from the start:** the biggest top and side faces are pale. heavy_turret: casemate `Plaster` (same rings as the old loft, so
+  embrasures and the stencil still sit on its faces), roof slab its own part `Roof_slab` in `PlasterWhite`, extruded pad, plinth, chamfered portal, turret
+  body a `k.sharp_loft` of the old rings. missile_battery: `Plaster` pad, `Medical` launcher platform, chamfered shelter with recessed panels and a
+  `PlasterWhite` roof, footing and blocks as `k.block`. Launchers, radar, mast, guns untouched (`_a` and `_b` edit by name as before).
+- aa_gun_tower: Plaster pad, chamfered mount, shield, clip rack. flare_tower: Medical deck block with greebles, base plates, gussets (plain boxes: the
+  model is 500 triangles, so chamfered blocks and bolts took it to 3.4x on the first build; now 1.36x). searchlight: pale `Fuel` trailer, generator and yoke blocks.
+- wreck_turret: geometry unchanged (a charred ruin must stay dark and ragged), only `k.clean` and `ao_strength` .6 for a higher COLOR_0; if its card does not
+  hold the gate, restore the old GLB.
+- **Pitfall:** `k.block` `loc` is the block's CENTRE (as in 6a-6d), not its base; the first build put the heavy_turret casemate portal 1.1 m below the pad and
+  grew nothing else, but showed as size 6.1 -> 7.0 in the validator for missile_battery (a block at the base height) until the centres were fixed.
+  The `flare_searchlight_tower` GLB (rebuilt by the `searchlight` substring) was reverted.
+- **Gates (old -> new triangles, COLOR_0).** heavy_turret 9,222 -> 9,514 (.610 -> .661); _a 9,378 -> 9,670 (.609 -> .660); _b 11,666 -> 11,958 (.597 -> .653);
+  missile_battery 6,926 -> 7,242 (.618 -> .672); _a 8,338 -> 8,654 (.632 -> .681); _b 6,974 -> 7,290 (.619 -> .673); aa_gun_tower 1,412 -> 1,724 (1.22x;
+  .620 -> .667); flare_tower 500 -> 680 (1.36x; .709 -> .732); searchlight 1,124 -> 1,292 (.673 -> .711); wreck_turret 1,112 same (.622 -> .673). Zero-area 0, runtime
+  nodes identical, sizes within .1 %, open edges unchanged (missile_battery 16, as before), no errors.
+- **Card luma (old, alpha > .5, Rec. 709):** heavy_turret .4109, _a .4042, _b .3628 (watch it); missile_battery .3973, _a .3958, _b .4125; aa_gun_tower .4465;
+  flare_tower .2429 (the dimmest by far: watch it); searchlight .4713; wreck_turret has no card PNG.
