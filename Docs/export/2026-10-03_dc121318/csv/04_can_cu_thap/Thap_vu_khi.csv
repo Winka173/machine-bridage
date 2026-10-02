@@ -1,0 +1,4 @@
+id,thap_id,thu_tu,weapon,aim,slot,nguon,raw_json
+aa_turret/0,aa_turret,0,sam,Turret,missile,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[78].secondary[0],"{""weapon"":""sam"",""slot"":""missile"",""aim"":""Turret""}"
+heavy_turret.bastion/0,heavy_turret.bastion,0,hmg_roof,Free,gun,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[110].secondary[0],"{""weapon"":""hmg_roof"",""slot"":""gun"",""aim"":""Free""}"
+heavy_turret.bastion/1,heavy_turret.bastion,1,hmg_roof,Free,gun,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[110].secondary[1],"{""weapon"":""hmg_roof"",""slot"":""gun"",""aim"":""Free""}"

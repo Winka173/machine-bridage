@@ -1,0 +1,5 @@
+id,lop,nguon,raw_json
+Air,Helicopter;Plane,Assets/MachineBrigade/Resources/Data/balance.json: branches.Air,"[""Helicopter"",""Plane""]"
+Armor,Tank;Heavy;TankHunter,Assets/MachineBrigade/Resources/Data/balance.json: branches.Armor,"[""Tank"",""Heavy"",""TankHunter""]"
+Artillery,Artillery,Assets/MachineBrigade/Resources/Data/balance.json: branches.Artillery,"[""Artillery""]"
+Light,Light;Scout;AntiAir;Support,Assets/MachineBrigade/Resources/Data/balance.json: branches.Light,"[""Light"",""Scout"",""AntiAir"",""Support""]"

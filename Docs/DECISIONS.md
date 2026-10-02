@@ -17275,3 +17275,31 @@ sims or measures; the Python tools were run (fix_validate item 7, a build_doc HT
 3. `python Tools/docs/build_doc.py <dir>/game.json <img> <out.pdf>`, `<img>` holding shots/, r6/, ui/ (as before) and fx/
    (Builds/effect_shots), scan/ (runner Builds/scan), scan_after/ (runner Builds/scan_after); file names in
    Docs/doc-images/README.md.
+
+## Bộ xuất dữ liệu toàn bộ (lane A)
+
+Lane A, 2026-10-03: passes 0-2 of Docs/prompts/export_full_vi.txt (plan, framework, file 00, coverage and FK tests, layer A of 01-04).
+
+- **Tool.** `python Tools/export/export.py [--out DIR] [--base REF] [--strict]`; subcommands `coverage` and `fk` run one check
+  and write nothing. Read only. Output `Docs/export/<date>_<commit>/`; the date is the HEAD commit's date (not the clock) so a
+  rerun on the same commit rewrites the same folder byte for byte. README.md and MANIFEST.json carry the run time.
+- **Domains.** One module per file in `Tools/export/domains/` (FILE_ID, TITLE, DESC, build(ctx)), listed in
+  `domains/__init__.py`. Leaves a later file will export are claimed in `domains/_pending.py`; a lane deletes its claims
+  when it registers its module. File 13 (spec 12) registers the same way.
+- **Coverage.** Concrete leaf paths, not patterns: a vehicles[] entry splits across Xe / Thap / Tuong / Nha_chinh /
+  Mo_dun_tien_ich / Boss by classification, and every leaf must land in exactly one column. Exit 1 on an unmapped leaf or a
+  leaf mapped twice; pending leaves (claimed by a file not built) pass unless `--strict` (the pass 8 self-check uses it).
+- **Two column blocks.** Spec-named Vietnamese columns hold the value the game builds (Python ports of Catalog.Inherited,
+  WeaponFamilies, StripRoundLinks, the armour-face rule, toughness, the ParseExtras defaults, EliteCost; bosses via
+  Tools/balance/p26_ab.expand; Boss Hunt order via a port of BossHunts.Story). snake_case columns hold each source key as
+  written; those are the columns the coverage test maps. A field added to the data gets its column automatically.
+- **game.json not used.** The only ExportGameDoc output found lies outside the repo, predates today's balance.json and cannot
+  be rebuilt in CI. C#-only values are NEED_CODE_CHECK; C# literal tables are read by `core/cs.py` (GearCatalog, Commanders,
+  HuntSupports, Unslotted) and become cs_table sources under the coverage test.
+- **_truoc / _sau.** Against `--base` (default `origin/main`, the last release 9198a675): `so_voi_ban_goc` = giong / doi /
+  moi and `<col>_truoc` / `<col>_sau` filled only for changed key columns.
+- **Markers.** Layer B cells are `CHUA_AP:prompt_xuat_luot5`; real-world numbers only from the repo (the REAL table of
+  full_weapon_audit.py), else NEED_SOURCE.
+- **Units.** Suffix from `core/units.py`; a numeric column of unknown unit goes to 00/Don_vi_chua_ro (200 today) instead of a guess.
+- **Kept in git.** The output is 3 MB for files 00-04, so it is committed whole. When 08 (maps) makes it heavy, add
+  `Docs/export/*/xlsx/` and `Docs/export/*/csv/` to .gitignore; 00_chi_muc stays committed.

@@ -1,0 +1,293 @@
+"""03_boss, layer A: bosses (main and mini, variants), their mounts as built, parts, phases, the parts library, frames,
+ranks, super weapons, escorts, Boss Hunt (order and combat supports)."""
+from __future__ import annotations
+
+from core.model import NEED_CODE_CHECK, chua_ap, child_rows
+
+from . import _balance as B
+from . import _units as U
+
+FILE_ID = "03_boss"
+TITLE = "Boss"
+DESC = "Boss chủ lực / mini và biến thể, bệ vũ khí (đã dựng), bộ phận, pha, khung, hạng, siêu vũ khí, hộ tống, Săn trùm"
+
+HUNT = "Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs"
+HUNTS = "Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs"
+BOSS_FK = ["03_boss/Boss"]
+VEHICLE_FK = ["02_phuong_tien/Xe"]
+LAYER_B = chua_ap("xuat_luot5")
+
+
+def _chapters(ctx):
+    camp = ctx.data(B.CAMPAIGN) if B.CAMPAIGN in ctx.sources else {}
+    of, order = {}, []
+    for ch in camp.get("chapters", []):
+        for bid in list(ch.get("minis", [])) + ([ch["main"]] if ch.get("main") else []):
+            of.setdefault(bid, []).append(ch.get("number"))
+            if bid not in order:
+                order.append(bid)
+    missions = {}
+    for m in camp.get("missions", []):
+        b = m.get("boss")
+        if isinstance(b, dict) and b.get("def"):
+            missions.setdefault(b["def"], []).append(m["id"])
+    return of, order, missions
+
+
+def build(ctx):
+    book = ctx.book(FILE_ID, TITLE, DESC)
+    d = B.bal(ctx)
+    built = B.boss_built(ctx)
+    base = B.base_view(ctx)
+    base_built = B.boss_built(base) if base else {}
+    wres = B.resolved_weapons(ctx)
+    base_w = B.resolved_weapons(base) if base else {}
+    attacks = {a["id"]: a for a in d.get("bigAttacks", [])}
+    frames = d.get("bossFrames") or {}
+    escorts = {e.get("boss") for e in d.get("escorts", [])}
+    ch_of, _order, missions = _chapters(ctx)
+
+    # ------------------------------------------------------------------ Boss (+ raw children)
+    bs = book.sheet("Boss", "Boss", "Mỗi boss (41: chủ lực, mini, biến thể) một dòng: giá trị game (đã dựng) và trường gốc")
+    bs.col("phan_loai", meaning="main (chủ lực) / mini", enum=["main", "mini"])
+    U.declare(bs)
+    for c, m, fk in (("khung", "khung di chuyển (frame)", ["03_boss/Boss_khung"]),
+                     ("kieu_duong_di", "kiểu đường đi: đất / biển / ray / không (bossFrames[frame].move)", None),
+                     ("tuong", "tướng địch sở hữu (general)", None),
+                     ("bien_the_cua", "boss gốc của biến thể (variantOf)", BOSS_FK),
+                     ("so_be", "số bệ vũ khí khi dựng (1 + secondary)", None),
+                     ("so_nong", "tổng số nòng trên mọi bệ (barrels của vũ khí)", None),
+                     ("sieu_vu_khi", "siêu vũ khí (bigAttack)", ["03_boss/Boss_sieu_vu_khi"]),
+                     ("sieu_vu_khi_chu_ky_s", "chu kỳ siêu vũ khí (bigAttacks.cooldown)", None),
+                     ("sieu_vu_khi_cach_nham", "cách nhắm siêu vũ khí (bigAttacks.aim)", None),
+                     ("ho_tong", "có đội hộ tống riêng (escorts[].boss)", None),
+                     ("chuong", "chương có boss (campaign chapters main / minis)", None),
+                     ("nhiem_vu", "nhiệm vụ có boss (campaign missions[].boss.def)", None),
+                     ("thoi_gian_ha_muc_tieu_s", "thời gian hạ mục tiêu thiết kế (tính trong mã / bảng cân bằng)", None)):
+        bs.col(c, meaning=m, fk=fk, unit="s" if c.endswith("_s") else "")
+    raw_mounts = U.mounts_child("Boss_be_goc", "Boss: bệ phụ gốc", book, bs)
+    parts = book.sheet("Boss_bo_phan", "Boss: bộ phận", "parts[]: bộ phận phá được (use = mẫu ở Boss_bo_phan_thu_vien)", parent=bs)
+    parts.col("use", meaning="mẫu bộ phận", fk=["03_boss/Boss_bo_phan_thu_vien"])
+    phases = book.sheet("Boss_phase", "Boss: pha", "phases[]: ngưỡng máu, biến hình, đổi vũ khí / sát thương", parent=bs)
+    tune = book.sheet("Boss_bien_the_chinh", "Boss: chỉnh bộ phận của biến thể", "variant.tune: bộ phận -> trường đổi", parent=bs)
+    fleet = book.sheet("Boss_ham_doi", "Boss: hạm đội đi kèm", "fleet[]", parent=bs)
+    fleet.col("unit", meaning="đơn vị", fk=VEHICLE_FK)
+    for vid, v, path in B.vehicle_entries(ctx):
+        if B.classify(ctx, vid) != "boss":
+            continue
+        b = built.get(vid, v)
+        r = bs.row(vid, B.nguon(path), raw=v)
+        r.set("phan_loai", b.get("rank", "main"))
+        U.fill(ctx, r, vid, b, boss=True, base_record=base_built.get(vid), has_base=base is not None)
+        frame = b.get("frame", "")
+        r.set("khung", frame)
+        r.set("kieu_duong_di", (frames.get(frame) or {}).get("move", ""))
+        r.set("tuong", b.get("general", ""))
+        r.set("bien_the_cua", v.get("variantOf", ""))
+        mounts = [b.get("weapon")] + [m.get("weapon") for m in b.get("secondary") or []]
+        r.set("so_be", len(mounts))
+        r.set("so_nong", sum(int(wres.get(w, {}).get("barrels", 1) or 1) for w in mounts if w))
+        att = attacks.get(b.get("bigAttack"))
+        r.set("sieu_vu_khi", b.get("bigAttack", ""))
+        r.set("sieu_vu_khi_chu_ky_s", att.get("cooldown", "") if att else "")
+        r.set("sieu_vu_khi_cach_nham", att.get("aim", "") if att else "")
+        r.set("ho_tong", vid in escorts)
+        r.set("chuong", ";".join(str(c) for c in ch_of.get(vid, [])))
+        r.set("nhiem_vu", ";".join(sorted(missions.get(vid, []))))
+        r.set("thoi_gian_ha_muc_tieu_s", NEED_CODE_CHECK)
+
+        def variant_cb(row, val, src, p):
+            row.flatten({k: x for k, x in val.items() if k != "tune"}, src, p, prefix="variant_",
+                        vectors={"tint": ["r", "g", "b"]})
+            for j, (part_id, fields) in enumerate((val.get("tune") or {}).items()):
+                tr = tune.row(f"{row.id}/{part_id}", f"{src}: {'.'.join(str(x) for x in p)}.tune.{part_id}", raw=fields)
+                tr.set(tune.parent_col, row.id)
+                tr.set("thu_tu", j)
+                tr.set("bo_phan", part_id)
+                tr.flatten(fields, src, p + ("tune", part_id), vectors={"at": ["x_m", "y_m", "z_m"]})
+            if "tune" in val and not val["tune"]:
+                row.set("variant_tune", "", src, p + ("tune",))
+
+        U.raw(r, v, path, children={
+            "secondary": U.child(raw_mounts),
+            "parts": lambda row, items, src, p: child_rows(parts, row, items, src, p, vectors={"at": ["x_m", "y_m", "z_m"]}),
+            "phases": lambda row, items, src, p: child_rows(phases, row, items, src, p),
+            "fleet": lambda row, items, src, p: child_rows(fleet, row, items, src, p),
+            "variant": variant_cb,
+        }, extra_skip=())
+
+    # ------------------------------------------------------------------ Boss_vu_khi (mounts as built)
+    bv = book.sheet("Boss_vu_khi", "Boss: vũ khí theo bệ", "Mỗi bệ của boss khi dựng (thư viện bộ phận, mountWeapons, biến thể): "
+                    "một dòng; số lấy từ 01/Vu_khi (giá trị game)")
+    for c, unit, m, fk in (
+            ("boss_id", "", "boss", BOSS_FK), ("chi_so_be", "", "0 = vũ khí chính, k = secondary[k-1]", None),
+            ("vu_khi", "", "vũ khí trên bệ", ["01_vu_khi_dan/Vu_khi"]), ("slot", "", "loại bệ (gun / mg / missile...)", None),
+            ("aim", "", "cách nhắm của bệ (Free / Hull...)", None), ("bo_phan", "", "bộ phận mang bệ (parts[].mounts)", None),
+            ("so_nong", "", "số nòng của vũ khí", None), ("sat_thuong_moi_phat", "hp", "sát thương mỗi phát (vũ khí, trước hệ số boss)", None),
+            ("thoi_gian_nap_s", "s", "thời gian nạp", None), ("loi_m", "m", "lõi nổ", None),
+            ("ria_tren_boss_m", "m", "rìa nổ trên boss (Catalog: mọi vũ khí nổ của boss có rìa gấp đôi lõi: WithEdge)", None),
+            ("canh_bao_s", "s", "thời gian cảnh báo (công thức trong mã)", None),
+            ("chu_ky_day_du_s", "s", "chu kỳ đầy đủ (lớp B)", None)):
+        bv.col(c, unit=unit, meaning=m, fk=fk)
+    B.declare_changes(bv, ["vu_khi"])
+    for bid in sorted(built):
+        b = built[bid]
+        mounts = [(b.get("weapon"), {"slot": b.get("mainSlot", "main"), "aim": b.get("mainAim", "")})] + \
+                 [(m.get("weapon"), m) for m in b.get("secondary") or []]
+        part_of = {}
+        for p in b.get("parts") or []:
+            for m in p.get("mounts", []) or []:
+                part_of.setdefault(int(m), []).append(p.get("id", ""))
+        bb = base_built.get(bid)
+        base_mounts = ([bb.get("weapon")] + [m.get("weapon") for m in bb.get("secondary") or []]) if bb else None
+        for k, (wid, m) in enumerate(mounts):
+            w = wres.get(wid, {})
+            r = bv.row(f"{bid}/{k}", f"{B.BALANCE}: vehicles[id={bid}] dựng bởi Tools/balance/p26_ab.expand")
+            r.set("boss_id", bid)
+            r.set("chi_so_be", k)
+            r.set("vu_khi", wid or "")
+            r.set("slot", m.get("slot", ""))
+            r.set("aim", m.get("aim", ""))
+            r.set("bo_phan", ";".join(part_of.get(k, [])))
+            r.set("so_nong", w.get("barrels", 1) if w else "")
+            r.set("sat_thuong_moi_phat", w.get("damage", "") if w else "")
+            r.set("thoi_gian_nap_s", w.get("cooldown", "") if w else "")
+            r.set("loi_m", w.get("splash", 0.0) if w else "")
+            r.set("ria_tren_boss_m", NEED_CODE_CHECK)
+            r.set("canh_bao_s", NEED_CODE_CHECK)
+            r.set("chu_ky_day_du_s", LAYER_B)
+            if base is not None:
+                if base_mounts is None:
+                    r.set("so_voi_ban_goc", "moi")
+                else:
+                    old = base_mounts[k] if k < len(base_mounts) else None
+                    B.set_changes(r, ["vu_khi"], {"vu_khi": wid or ""}, {"vu_khi": old or ""} if k < len(base_mounts) else None, True)
+
+    # ------------------------------------------------------------------ library parts, frames, ranks
+    lib = book.sheet("Boss_bo_phan_thu_vien", "Thư viện bộ phận boss", "bossParts: mẫu bộ phận (máu theo phần, giáp, vũ khí, xác)")
+    lib.col("weapon", meaning="vũ khí của bộ phận", fk=["01_vu_khi_dan/Vu_khi"])
+    for pid, p in (d.get("bossParts") or {}).items():
+        path = ("bossParts", pid)
+        r = lib.row(pid, B.nguon(path), raw=p)
+        r.flatten(p, B.BALANCE, path, vectors={"arc": ["center_deg", "half_deg"]})
+    fr = book.sheet("Boss_khung", "Khung boss", "bossFrames: kiểu di chuyển và trường mặc định theo khung")
+    for fid, f in frames.items():
+        path = ("bossFrames", fid)
+        r = fr.row(fid, B.nguon(path), raw=f)
+        r.flatten(f, B.BALANCE, path)
+    rk = book.kv_sheet("Boss_hang", "Hạng boss", "bossRanks: main / mini: hệ số sát thương, nhịp, máu, pha, thưởng")
+    book.kv_rows(rk, d.get("bossRanks") or {}, B.BALANCE, ("bossRanks",), "bossRanks")
+
+    # ------------------------------------------------------------------ super weapons
+    sv = book.sheet("Boss_sieu_vu_khi", "Siêu vũ khí", "bigAttacks: cảnh báo, chu kỳ, cách nhắm, tầm, mục tiêu")
+    sv.col("dung_boi", meaning="boss / công trình dùng (bigAttack)")
+    strikes = book.sheet("Boss_sieu_vu_khi_don", "Siêu vũ khí: đòn", "strikes[]: hình, số lượng, sát thương, bán kính", parent=sv)
+    strikes.col("weapon", meaning="vũ khí bắn đòn", fk=["01_vu_khi_dan/Vu_khi"])
+    who = {}
+    for vid, rr in B.resolved_vehicles(ctx).items():
+        rec = built.get(vid, rr)
+        if rec.get("bigAttack"):
+            who.setdefault(rec["bigAttack"], set()).add(vid)
+    hq_types = ((d.get("base") or {}).get("hqTypes") or {})
+    for k, t in hq_types.items():
+        if isinstance(t, dict) and t.get("barrage"):
+            who.setdefault(t["barrage"], set()).add(f"hqTypes.{k}")
+    for i, a in enumerate(d.get("bigAttacks", [])):
+        path = ("bigAttacks", i)
+        r = sv.row(a["id"], B.nguon(path), raw=a)
+        r.set("dung_boi", ";".join(sorted(who.get(a["id"], []))))
+        r.flatten(a, B.BALANCE, path, children={
+            "strikes": lambda row, items, src, p: child_rows(strikes, row, items, src, p)})
+    sl = book.kv_sheet("Boss_sieu_vu_khi_luat", "Siêu vũ khí: luật", "bigAttackRules: lần đầu, chặn, né, theo độ khó")
+    book.kv_rows(sl, d.get("bigAttackRules") or {}, B.BALANCE, ("bigAttackRules",), "bigAttackRules")
+
+    # ------------------------------------------------------------------ escorts
+    ht = book.sheet("Boss_ho_tong", "Hộ tống boss", "escorts[]: đội đến cùng boss và đội gọi thêm ở pha sau")
+    ht.col("boss", meaning="boss", fk=BOSS_FK)
+    arrive = book.sheet("Boss_ho_tong_den", "Hộ tống: đến cùng boss", "escorts[].arrive[]", parent=ht)
+    arrive.col("unit", meaning="đơn vị", fk=VEHICLE_FK)
+    phase_u = book.sheet("Boss_ho_tong_pha", "Hộ tống: gọi ở pha sau", "escorts[].phase.units[]", parent=ht)
+    phase_u.col("unit", meaning="đơn vị", fk=VEHICLE_FK)
+    for i, e in enumerate(d.get("escorts", [])):
+        path = ("escorts", i)
+        r = ht.row(e.get("boss", str(i)), B.nguon(path), raw=e)
+        r.flatten(e, B.BALANCE, path, children={
+            "arrive": lambda row, items, src, p: child_rows(arrive, row, items, src, p),
+            "phase.units": lambda row, items, src, p: child_rows(phase_u, row, items, src, p)})
+    hm = book.sheet("Boss_ho_tong_mau", "Hộ tống mẫu theo tướng", "escortTemplates: đội hộ tống mặc định của mỗi tướng")
+    hm_a = book.sheet("Boss_ho_tong_mau_den", "Hộ tống mẫu: đến", "escortTemplates.*.arrive[]", parent=hm)
+    hm_a.col("unit", meaning="đơn vị", fk=VEHICLE_FK)
+    hm_p = book.sheet("Boss_ho_tong_mau_pha", "Hộ tống mẫu: pha sau", "escortTemplates.*.phase[]", parent=hm)
+    hm_p.col("unit", meaning="đơn vị", fk=VEHICLE_FK)
+    for gen, t in (d.get("escortTemplates") or {}).items():
+        path = ("escortTemplates", gen)
+        r = hm.row(gen, B.nguon(path), raw=t)
+        r.flatten(t, B.BALANCE, path, children={
+            "arrive": lambda row, items, src, p: child_rows(hm_a, row, items, src, p),
+            "phase": lambda row, items, src, p: child_rows(hm_p, row, items, src, p)})
+    hl = book.kv_sheet("Boss_ho_tong_luat", "Hộ tống: luật", "escortRules: trần theo độ khó, Săn trùm, dây buộc, thưởng")
+    book.kv_rows(hl, d.get("escortRules") or {}, B.BALANCE, ("escortRules",), "escortRules")
+
+    # ------------------------------------------------------------------ Sanhunt (Boss Hunt): port of BossHunts.Story
+    sid_u, unslotted, u_lines = ctx.cs_table(HUNTS, "Unslotted")
+    camp = ctx.data(B.CAMPAIGN) if B.CAMPAIGN in ctx.sources else {}
+    listed = {x for ch in camp.get("chapters", []) for x in list(ch.get("minis", [])) + [ch.get("main")]}
+    story, seen = [], set()
+    for ch in camp.get("chapters", []):  # data order: the story order with the interludes (Campaign.Chapters)
+        slots = list(ch.get("minis", [])) + ([ch["main"]] if ch.get("main") else [])
+
+        def add(bid, chapter=ch):
+            b = built.get(bid)
+            if bid not in slots or b is None or bid in seen:
+                return
+            if (frames.get(b.get("frame", "")) or {}).get("move") == "rail" and not b.get("arena"):
+                return  # OnRails without an arena (its line's battlefield)
+            seen.add(bid)
+            story.append((bid, bid == chapter.get("main") or b.get("rank") == "main", chapter.get("number"), "slot"))
+
+        for m in camp.get("missions", []):
+            if m.get("chapter") != ch.get("number"):
+                continue
+            for bdef in [m.get("boss")] + [st.get("boss") for st in m.get("stages", []) or [] if isinstance(st, dict)]:
+                if isinstance(bdef, dict) and bdef.get("def"):
+                    add(bdef["def"])
+        for bid in slots:
+            add(bid)
+        for pair in unslotted:
+            bid, after = (pair[0], pair[1]) if isinstance(pair, list) else (pair.get("arg0"), pair.get("arg1"))
+            if after == ch.get("number") and bid not in seen and bid not in listed and bid in built:
+                seen.add(bid)
+                story.append((bid, built[bid].get("rank") == "main", ch.get("number"), "unslotted"))
+    sh = book.sheet("Sanhunt", "Săn trùm", "Boss của Săn trùm theo thứ tự cốt truyện (port BossHunts.Story: chương theo thứ tự "
+                    "dữ liệu, boss theo nhiệm vụ đầu tiên đánh nó, rồi ô chương, rồi Unslotted)")
+    for c, m in (("thu_tu", "thứ tự cốt truyện (BossHunts.Story)"), ("chu_luc", "tính là boss chủ lực trong Săn trùm"),
+                 ("chuong", "chương"), ("cach_xep", "slot (ô chương) / unslotted (BossHunts.Unslotted)"),
+                 ("phong_khong", "boss tự chống máy bay (AirDefence: 2 bệ phòng không trở lên)"),
+                 ("tuan", "có trong 10 boss tuần nào (BossHunt.Weekly theo hạt giống tuần)")):
+        sh.col(c, meaning=m)
+    sh.col("id", fk=BOSS_FK)
+    for k, (bid, main, chapter, how) in enumerate(story):
+        r = sh.row(bid, f"{B.CAMPAIGN}: chapters / missions (port Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs Story)")
+        r.set("thu_tu", k + 1)
+        r.set("chu_luc", bool(main))
+        r.set("chuong", chapter)
+        r.set("cach_xep", how)
+        r.set("phong_khong", NEED_CODE_CHECK)
+        r.set("tuan", NEED_CODE_CHECK)
+    ctx.note("03_sanhunt", f"Sanhunt: {len(story)} boss theo port của BossHunts.Story (spec ghi 41; boss trên ray không có arena "
+             "bị loại như trong mã).")
+    us = book.sheet("Sanhunt_chua_xep", "Săn trùm: boss chưa có ô chương", "BossHunts.Unslotted: boss mới và chương nó đứng sau")
+    us.col("sau_chuong", meaning="đứng sau chương")
+    us.col("id", fk=BOSS_FK)
+    for i, pair in enumerate(unslotted):
+        bid, after = (pair[0], pair[1]) if isinstance(pair, list) else (pair.get("arg0"), pair.get("arg1"))
+        r = us.row(bid, f"{HUNTS}:{u_lines[i] if i < len(u_lines) else ''} (Unslotted[{i}])", raw=pair)
+        r.mark(sid_u, (i, 0), "id")
+        r.set("sau_chuong", after, sid_u, (i, 1))
+    sid, rows, lines = ctx.cs_table(HUNT, "All")
+    hs = book.sheet("Sanhunt_ho_tro", "Săn trùm: hỗ trợ tác chiến", "HuntSupports.All (BossHunt.cs): 12 hỗ trợ chọn sau boss chủ lực")
+    hs.col("ten_vi", meaning="tên tiếng Việt (HUD hunt.support.<id>)")
+    for i, rowd in enumerate(rows):
+        r = hs.row(rowd.get("id", str(i)), f"{HUNT}:{lines[i] if i < len(lines) else ''} (HuntSupports.All[{i}])", raw=rowd)
+        r.set("ten_vi", B.name_of(ctx, f"hunt.support.{rowd.get('id')}")[1])
+        r.flatten(rowd, sid, (i,))

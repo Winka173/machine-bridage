@@ -1,0 +1,10 @@
+id,boss_id,thu_tu,at,def,nguon,raw_json
+rail_supergun/0,rail_supergun,0,-16;20,gun_turret,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[0],"{""def"":""gun_turret"",""at"":[-16,20]}"
+rail_supergun/1,rail_supergun,1,16;20,gun_turret,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[1],"{""def"":""gun_turret"",""at"":[16,20]}"
+rail_supergun/2,rail_supergun,2,-13;-2,aa_turret,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[2],"{""def"":""aa_turret"",""at"":[-13,-2]}"
+rail_supergun/3,rail_supergun,3,13;-2,aa_turret,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[3],"{""def"":""aa_turret"",""at"":[13,-2]}"
+rail_supergun/4,rail_supergun,4,-8;27,mg_bunker,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[4],"{""def"":""mg_bunker"",""at"":[-8,27]}"
+rail_supergun/5,rail_supergun,5,8;27,mg_bunker,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[5],"{""def"":""mg_bunker"",""at"":[8,27]}"
+rail_supergun/6,rail_supergun,6,-12;36,dragons_teeth,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[6],"{""def"":""dragons_teeth"",""at"":[-12,36]}"
+rail_supergun/7,rail_supergun,7,0;38,dragons_teeth,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[7],"{""def"":""dragons_teeth"",""at"":[0,38]}"
+rail_supergun/8,rail_supergun,8,12;36,dragons_teeth,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[216].guards[8],"{""def"":""dragons_teeth"",""at"":[12,36]}"

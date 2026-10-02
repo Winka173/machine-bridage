@@ -1,0 +1,7 @@
+id,chenh_xuyen_giap,he_so,nguon,raw_json
+buoc_0,+2,1.2,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.penetration[0],1.2
+buoc_1,+1,1.0,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.penetration[1],1.0
+buoc_2,0,0.85,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.penetration[2],0.85
+buoc_3,-1,0.5,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.penetration[3],0.5
+buoc_4,-2,0.25,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.penetration[4],0.25
+buoc_5,-3,0.1,Assets/MachineBrigade/Resources/Data/balance.json: damageTable.penetration[5],0.1

@@ -1,0 +1,11 @@
+id,boss_id,thu_tu,nguon,raw_json
+daedalus/0,daedalus,0,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[230].tiers.schedule[0],"{""steps"":[{""tier"":""high"",""seconds"":20},{""tier"":""low"",""seconds"":14}]}"
+daedalus/1,daedalus,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[230].tiers.schedule[1],"{""steps"":[{""tier"":""high"",""seconds"":14},{""tier"":""low"",""seconds"":20}]}"
+daedalus/2,daedalus,2,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[230].tiers.schedule[2],"{""steps"":[{""tier"":""low"",""seconds"":60}]}"
+hyperion/0,hyperion,0,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[247].tiers.schedule[0],"{""steps"":[{""tier"":""high"",""seconds"":60}]}"
+hyperion/1,hyperion,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[247].tiers.schedule[1],"{""steps"":[{""tier"":""high"",""seconds"":60}]}"
+hyperion/2,hyperion,2,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[247].tiers.schedule[2],"{""steps"":[{""tier"":""high"",""seconds"":60}]}"
+icarus_mk0/0,icarus_mk0,0,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[240].tiers.schedule[0],"{""steps"":[{""tier"":""high"",""seconds"":18},{""tier"":""low"",""seconds"":12}]}"
+icarus_mk0/1,icarus_mk0,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[240].tiers.schedule[1],"{""steps"":[{""tier"":""high"",""seconds"":12},{""tier"":""low"",""seconds"":18}]}"
+silver_bug/0,silver_bug,0,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[210].tiers.schedule[0],"{""steps"":[{""tier"":""high"",""seconds"":25},{""tier"":""low"",""seconds"":10}]}"
+silver_bug/1,silver_bug,1,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[210].tiers.schedule[1],"{""steps"":[{""tier"":""high"",""seconds"":15},{""tier"":""low"",""seconds"":20}]}"

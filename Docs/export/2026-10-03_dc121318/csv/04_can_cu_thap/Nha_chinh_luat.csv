@@ -1,0 +1,14 @@
+id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
+hq,base,hq,,headquarters,,Assets/MachineBrigade/Resources/Data/balance.json: base.hq,"""headquarters"""
+hqTypes.ai.Easy,base.hqTypes,Easy,,garrison,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.Easy,"""garrison"""
+hqTypes.ai.Hard,base.hqTypes,Hard,,shield,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.Hard,"""shield"""
+hqTypes.ai.Normal,base.hqTypes,Normal,,fortress,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.Normal,"""fortress"""
+hqTypes.ai.VeryHard,base.hqTypes,VeryHard,,fortress,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.VeryHard,"""fortress"""
+hqTypes.ai.aurel,base.hqTypes,aurel,,shield,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.aurel,"""shield"""
+hqTypes.ai.brandt,base.hqTypes,brandt,,fortress,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.brandt,"""fortress"""
+hqTypes.ai.kessler,base.hqTypes,kessler,,fortress,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.kessler,"""fortress"""
+hqTypes.ai.orlov,base.hqTypes,orlov,,shield,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.orlov,"""shield"""
+hqTypes.ai.varga,base.hqTypes,varga,,garrison,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.ai.varga,"""garrison"""
+hqTypes.default,base.hqTypes,default,,fortress,,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.default,"""fortress"""
+hqTypes.radius,base.hqTypes,radius,45,,m,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.radius,45
+hqTypes.skillCooldown,base.hqTypes,skillCooldown,120,,s,Assets/MachineBrigade/Resources/Data/balance.json: base.hqTypes.skillCooldown,120

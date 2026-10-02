@@ -1,0 +1,13 @@
+id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
+base,warningRules,base,0.5,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.base,0.5
+bombMinKg,warningRules,bombMinKg,400,,kg,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.bombMinKg,400
+cap,warningRules,cap,6,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.cap,6
+escapeSpeed,warningRules,escapeSpeed,4.5,,m/s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.escapeSpeed,4.5
+fadeIn,warningRules,fadeIn,0.4,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.fadeIn,0.4
+floor406,warningRules,floor406,3.5,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.floor406,3.5
+floorT4,warningRules,floorT4,2.5,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.floorT4,2.5
+floorT5,warningRules,floorT5,4,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.floorT5,4
+gunMinMm,warningRules,gunMinMm,203,,mm,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.gunMinMm,203
+maxShown,warningRules,maxShown,6,,,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.maxShown,6
+rocketMinMm,warningRules,rocketMinMm,300,,mm,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.rocketMinMm,300
+salvoMergeSeconds,warningRules,salvoMergeSeconds,0.6,,s,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.salvoMergeSeconds,0.6

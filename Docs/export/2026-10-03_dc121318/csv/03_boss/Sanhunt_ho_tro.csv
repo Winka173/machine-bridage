@@ -1,0 +1,13 @@
+id,ten_vi,icon,kind,strength,value,nguon,raw_json
+airdrop,Tiếp viện miễn phí,reinforce,Airdrop,,3,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:234 (HuntSupports.All[11]),"{""id"":""airdrop"",""icon"":""reinforce"",""kind"":""Airdrop"",""value"":3}"
+bounty,Hợp đồng săn thưởng,trophy,Bounty,0.05,0.5,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:233 (HuntSupports.All[10]),"{""id"":""bounty"",""icon"":""trophy"",""kind"":""Bounty"",""value"":0.5,""strength"":0.05}"
+engines,Tinh chỉnh động cơ,move,Engines,0.06,0.12,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:226 (HuntSupports.All[3]),"{""id"":""engines"",""icon"":""move"",""kind"":""Engines"",""value"":0.12,""strength"":0.06}"
+gunnery,Huấn luyện pháo thủ,crosshair,Gunnery,0.1,0.1,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:224 (HuntSupports.All[1]),"{""id"":""gunnery"",""icon"":""crosshair"",""kind"":""Gunnery"",""value"":0.1,""strength"":0.1}"
+hull,Gia cố thân xe,shield,Hull,0.15,0.15,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:223 (HuntSupports.All[0]),"{""id"":""hull"",""icon"":""shield"",""kind"":""Hull"",""value"":0.15,""strength"":0.15}"
+loaders,Nạp đạn nhanh,ammo,Loaders,0.12,0.12,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:225 (HuntSupports.All[2]),"{""id"":""loaders"",""icon"":""ammo"",""kind"":""Loaders"",""value"":0.12,""strength"":0.12}"
+logistics,Đoàn tiếp tế,cp,Logistics,0.1,0.2,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:229 (HuntSupports.All[6]),"{""id"":""logistics"",""icon"":""cp"",""kind"":""Logistics"",""value"":0.2,""strength"":0.1}"
+rapid,Điều phối nhanh,airstrike,Rapid,,0.25,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:228 (HuntSupports.All[5]),"{""id"":""rapid"",""icon"":""airstrike"",""kind"":""Rapid"",""value"":0.25}"
+regen,Sửa chữa dã chiến,repair,Regen,0.08,0.01,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:227 (HuntSupports.All[4]),"{""id"":""regen"",""icon"":""repair"",""kind"":""Regen"",""value"":0.01,""strength"":0.08}"
+supply,Thêm kíp lái,people,Supply,0.08,6,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:231 (HuntSupports.All[8]),"{""id"":""supply"",""icon"":""people"",""kind"":""Supply"",""value"":6,""strength"":0.08}"
+warchest,Quỹ chiến tranh,coin,WarChest,0.05,35,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:230 (HuntSupports.All[7]),"{""id"":""warchest"",""icon"":""coin"",""kind"":""WarChest"",""value"":35,""strength"":0.05}"
+workshop,Xưởng lưu động,gear,Workshop,0.05,1,Assets/MachineBrigade/Scripts/Sim/Modes/BossHunt.cs:232 (HuntSupports.All[9]),"{""id"":""workshop"",""icon"":""gear"",""kind"":""Workshop"",""value"":1,""strength"":0.05}"

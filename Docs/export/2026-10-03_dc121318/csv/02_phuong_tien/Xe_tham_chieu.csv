@@ -1,0 +1,7 @@
+id,ten_vi_spec,don_vi_id,toc_do_m_s,mau_trong_tran_hp,giap_truoc,nguon,raw_json
+armored_car,Xe bọc thép bánh lốp,armored_car,11.5,660.0,1,Docs/prompts/export_full_vi.txt (spec 03 B),
+gun_turret,Tháp vừa (pháo),gun_turret,0,3960.0,3,Docs/prompts/export_full_vi.txt (spec 03 B),
+heavy_tank,Tăng hạng nặng,heavy_tank,4.2,4470.4,4,Docs/prompts/export_full_vi.txt (spec 03 B),
+ifv,Xe chiến đấu bộ binh,ifv,8,1370.6,2,Docs/prompts/export_full_vi.txt (spec 03 B),
+main_battle_tank,Tăng chủ lực,main_battle_tank,6.5,2310.0,4,Docs/prompts/export_full_vi.txt (spec 03 B),
+xe_cham_tham_chieu,xe chậm tham chiếu của vòng cảnh báo,,4.5,,,Assets/MachineBrigade/Resources/Data/balance.json: warningRules.escapeSpeed (xem 01/Canh_bao_vong),

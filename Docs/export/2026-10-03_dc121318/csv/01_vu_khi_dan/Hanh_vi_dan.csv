@@ -1,0 +1,12 @@
+id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
+flareBurn,munitionRules,flareBurn,,3;4,s,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.flareBurn,"[3,4]"
+flareDecoyChance,munitionRules,flareDecoyChance,0.35,,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.flareDecoyChance,0.35
+flareOffset,munitionRules,flareOffset,10,,m,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.flareOffset,10
+flareRelease.fighter,munitionRules,fighter,,4;6,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.flareRelease.fighter,"[4,6]"
+flareRelease.helicopter,munitionRules,helicopter,,4;8,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.flareRelease.helicopter,"[4,8]"
+flareRelease.large,munitionRules,large,,8;16,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.flareRelease.large,"[8,16]"
+leadCap,munitionRules,leadCap,3,,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.leadCap,3
+proximityFuze,munitionRules,proximityFuze,7,,m,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.proximityFuze,7
+radarGuided,munitionRules,radarGuided,,sam_aim_120_amraam;sam_r_37m;sam_9m317_buk;sam_mim_104_patriot_pac_2;sam_patriot_pac_3_mse;sam_s_400_48n6;sam_57e6;sam_tamir_interceptor,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.radarGuided,"[""sam_aim_120_amraam"",""sam_r_37m"",""sam_9m317_buk"",""sam_mim_104_patriot_pac_2"",""sam_patriot_pac_3_mse"",""sam_s_400_48n6"",""sam_57e6"",""sam_tamir_interceptor""]"
+reachScale,munitionRules,reachScale,1.3,,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.reachScale,1.3
+sightGuided,munitionRules,sightGuided,,atgm_bgm_71_tow_2;atgm_gun_launched_atgm;atgm_kornet;atgm_9m113_konkurs;atgm_9m120_ataka;atgm_9k121_vikhr;atgm_9m123_khrizantema;atgm_agm_114_hellfire;atgm_kh_29l;atgm_agm_176_griffin;atgm_mam_l,,Assets/MachineBrigade/Resources/Data/balance.json: munitionRules.sightGuided,"[""atgm_bgm_71_tow_2"",""atgm_gun_launched_atgm"",""atgm_kornet"",""atgm_9m113_konkurs"",""atgm_9m120_ataka"",""atgm_9k121_vikhr"",""atgm_9m123_khrizantema"",""atgm_agm_114_hellfire"",""atgm_kh_29l"",""atgm_agm_176_griffin"",""atgm_mam_l""]"

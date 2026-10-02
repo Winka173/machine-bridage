@@ -1,0 +1,2 @@
+# Export output is stored byte for byte (MANIFEST.json hashes the files as written).
+* -text

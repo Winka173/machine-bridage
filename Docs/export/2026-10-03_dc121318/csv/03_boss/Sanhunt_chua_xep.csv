@@ -1,0 +1,11 @@
+id,sau_chuong,nguon,raw_json
+behemoth_mk0,3,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:79 (Unslotted[0]),"[""behemoth_mk0"",3]"
+cerberus,6,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[4]),"[""cerberus"",6]"
+garuda,10,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[8]),"[""garuda"",10]"
+hydra,9,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[7]),"[""hydra"",9]"
+hyperion,12,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[9]),"[""hyperion"",12]"
+kraken,9,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[6]),"[""kraken"",9]"
+monster,8,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[5]),"[""monster"",8]"
+morrigan,9,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:79 (Unslotted[1]),"[""morrigan"",9]"
+nyx,4,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[2]),"[""nyx"",4]"
+stymphalos,5,Assets/MachineBrigade/Scripts/Game/Match/BossHunts.cs:81 (Unslotted[3]),"[""stymphalos"",5]"

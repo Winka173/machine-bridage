@@ -1,0 +1,3 @@
+id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
+bosses,toughness,bosses,0.85,,,Assets/MachineBrigade/Resources/Data/balance.json: toughness.bosses,0.85
+vehicles,toughness,vehicles,2.2,,,Assets/MachineBrigade/Resources/Data/balance.json: toughness.vehicles,2.2
