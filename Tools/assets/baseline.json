@@ -1001,6 +1001,26 @@
     "FLAG atgm_tower_a: meshes 53 -> 54 (+1.9%); renderers 53 -> 54 (+1.9%); materials 15 -> 17 (+13.3%); materialSlots 53 -> 54 (+1.9%); fileBytes 413,020 -> 413,072 (+0.0%); structure changed",
     "FLAG atgm_tower_b: meshes 50 -> 51 (+2.0%); renderers 50 -> 51 (+2.0%); materials 15 -> 17 (+13.3%); materialSlots 50 -> 51 (+2.0%); fileBytes 413,020 -> 413,068 (+0.0%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "ew_tower",
+    "ew_tower_a",
+    "ew_tower_b",
+    "drone_hangar",
+    "drone_hangar_a",
+    "drone_hangar_b"
+   ],
+   "reason": "6d: V2 ew_tower and drone_hangar families",
+   "changes": [
+    "drone_hangar: triangles 7,138 -> 7,794 (+9.2%); vertices 11,469 -> 11,915 (+3.9%); fileBytes 620,820 -> 644,636 (+3.8%); structure changed",
+    "FLAG drone_hangar_a: triangles 5,978 -> 6,634 (+11.0%); vertices 9,259 -> 9,705 (+4.8%); fileBytes 519,856 -> 543,664 (+4.6%); structure changed",
+    "drone_hangar_b: triangles 9,114 -> 9,770 (+7.2%); vertices 14,913 -> 15,359 (+3.0%); fileBytes 780,624 -> 804,440 (+3.1%); structure changed",
+    "FLAG ew_tower: triangles 5,104 -> 5,936 (+16.3%); vertices 7,710 -> 8,548 (+10.9%); fileBytes 430,980 -> 472,864 (+9.7%); structure changed",
+    "FLAG ew_tower_a: triangles 5,436 -> 6,268 (+15.3%); vertices 7,596 -> 8,434 (+11.0%); fileBytes 424,928 -> 466,812 (+9.9%); structure changed",
+    "FLAG ew_tower_b: triangles 4,544 -> 5,376 (+18.3%); vertices 6,698 -> 7,536 (+12.5%); fileBytes 379,060 -> 420,944 (+11.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -14093,8 +14113,8 @@
   },
   "drone_hangar": {
    "file": "drone_hangar.glb",
-   "fileBytes": 620820,
-   "sha1": "c292d8d7a83c6097",
+   "fileBytes": 644636,
+   "sha1": "6a0bb9dc4fcbf35f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -14109,8 +14129,8 @@
    "submeshes": 77,
    "materialSlots": 77,
    "materialsUsed": 21,
-   "triangles": 7138,
-   "vertices": 11469,
+   "triangles": 7794,
+   "vertices": 11915,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14122,18 +14142,18 @@
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.9964,
+    -3.9955,
     -0.02,
-    -3.9964
+    -3.9955
    ],
    "boundsMax": [
-    3.9964,
+    3.9955,
     4.949,
-    3.9964
+    3.9955
    ],
    "size": [
-    7.993,
-    7.993,
+    7.991,
+    7.991,
     4.969
    ],
    "center": [
@@ -14141,13 +14161,13 @@
     2.464,
     0.0
    ],
-   "structureHash": "f1bb37bf6980f52f",
+   "structureHash": "528b05a7ec11c07d",
    "color0": {
-    "mean": 0.5238,
-    "min": 0.0669,
+    "mean": 0.5998,
+    "min": 0.2321,
     "max": 1.0,
-    "p05": 0.1354,
-    "p95": 0.8064,
+    "p05": 0.3056,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -14253,8 +14273,8 @@
   },
   "drone_hangar_a": {
    "file": "drone_hangar_a.glb",
-   "fileBytes": 519856,
-   "sha1": "45a09db3f4e75388",
+   "fileBytes": 543664,
+   "sha1": "69bae7890fa27e54",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -14269,8 +14289,8 @@
    "submeshes": 81,
    "materialSlots": 81,
    "materialsUsed": 21,
-   "triangles": 5978,
-   "vertices": 9259,
+   "triangles": 6634,
+   "vertices": 9705,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14282,18 +14302,18 @@
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.9964,
+    -3.9955,
     -0.02,
-    -3.9964
+    -3.9955
    ],
    "boundsMax": [
-    3.9964,
+    3.9955,
     5.4271,
-    3.9964
+    3.9955
    ],
    "size": [
-    7.993,
-    7.993,
+    7.991,
+    7.991,
     5.447
    ],
    "center": [
@@ -14301,13 +14321,13 @@
     2.704,
     0.0
    ],
-   "structureHash": "7b988afdf18e405c",
+   "structureHash": "387f4de5af4e2439",
    "color0": {
-    "mean": 0.5401,
-    "min": 0.0669,
+    "mean": 0.6102,
+    "min": 0.2321,
     "max": 1.0,
-    "p05": 0.1356,
-    "p95": 0.8137,
+    "p05": 0.3012,
+    "p95": 0.8216,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -14412,8 +14432,8 @@
   },
   "drone_hangar_b": {
    "file": "drone_hangar_b.glb",
-   "fileBytes": 780624,
-   "sha1": "3e515611409e7b0d",
+   "fileBytes": 804440,
+   "sha1": "c1be443d08210fc1",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -14428,8 +14448,8 @@
    "submeshes": 76,
    "materialSlots": 76,
    "materialsUsed": 21,
-   "triangles": 9114,
-   "vertices": 14913,
+   "triangles": 9770,
+   "vertices": 15359,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -14441,18 +14461,18 @@
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -3.9964,
+    -3.9955,
     -0.02,
-    -3.9964
+    -3.9955
    ],
    "boundsMax": [
-    3.9964,
+    3.9955,
     4.95,
-    3.9964
+    3.9955
    ],
    "size": [
-    7.993,
-    7.993,
+    7.991,
+    7.991,
     4.97
    ],
    "center": [
@@ -14460,12 +14480,12 @@
     2.465,
     0.0
    ],
-   "structureHash": "c3d78a927abebcb1",
+   "structureHash": "5e5bd66559b65722",
    "color0": {
-    "mean": 0.5514,
-    "min": 0.0669,
+    "mean": 0.6188,
+    "min": 0.2321,
     "max": 1.0,
-    "p05": 0.1445,
+    "p05": 0.3137,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -16417,8 +16437,8 @@
   },
   "ew_tower": {
    "file": "ew_tower.glb",
-   "fileBytes": 430980,
-   "sha1": "36b5768494a46676",
+   "fileBytes": 472864,
+   "sha1": "47950057153d125f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -16433,31 +16453,31 @@
    "submeshes": 63,
    "materialSlots": 63,
    "materialsUsed": 19,
-   "triangles": 5104,
-   "vertices": 7710,
-   "degenerateTriangles": 16,
+   "triangles": 5936,
+   "vertices": 8548,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 226,
+   "loosePieces": 238,
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.9969,
+    -1.9962,
     -0.0859,
-    -1.9969
+    -1.9962
    ],
    "boundsMax": [
-    1.9969,
+    1.9962,
     9.99,
-    1.9969
+    1.9962
    ],
    "size": [
-    3.994,
-    3.994,
+    3.992,
+    3.992,
     10.076
    ],
    "center": [
@@ -16465,12 +16485,12 @@
     4.952,
     0.0
    ],
-   "structureHash": "20854d16c9c056e4",
+   "structureHash": "fcc440b11877275d",
    "color0": {
-    "mean": 0.6271,
-    "min": 0.0727,
+    "mean": 0.6633,
+    "min": 0.2437,
     "max": 1.0,
-    "p05": 0.223,
+    "p05": 0.356,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -16553,9 +16573,7 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "16 zero-area triangles (0.31%)"
-   ],
+   "warnings": [],
    "units": [
     "ew_tower"
    ],
@@ -16564,8 +16582,8 @@
   },
   "ew_tower_a": {
    "file": "ew_tower_a.glb",
-   "fileBytes": 424928,
-   "sha1": "b542e9ef626d7124",
+   "fileBytes": 466812,
+   "sha1": "73b30f7ce5ab502a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -16580,22 +16598,22 @@
    "submeshes": 58,
    "materialSlots": 58,
    "materialsUsed": 19,
-   "triangles": 5436,
-   "vertices": 7596,
-   "degenerateTriangles": 16,
+   "triangles": 6268,
+   "vertices": 8434,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 186,
+   "loosePieces": 198,
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.9969,
+    -1.9962,
     -0.0859,
-    -1.9969
+    -1.9962
    ],
    "boundsMax": [
     2.29,
@@ -16603,8 +16621,8 @@
     2.24
    ],
    "size": [
-    4.237,
-    4.287,
+    4.236,
+    4.286,
     9.286
    ],
    "center": [
@@ -16612,12 +16630,12 @@
     4.557,
     0.122
    ],
-   "structureHash": "d31ddc032740b9c6",
+   "structureHash": "3e37d5a225d970be",
    "color0": {
-    "mean": 0.6992,
-    "min": 0.0727,
+    "mean": 0.7165,
+    "min": 0.2437,
     "max": 1.0,
-    "p05": 0.229,
+    "p05": 0.3588,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -16695,17 +16713,15 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "16 zero-area triangles (0.29%)"
-   ],
+   "warnings": [],
    "units": [],
    "movingParts": 1,
    "budgetClass": "tower"
   },
   "ew_tower_b": {
    "file": "ew_tower_b.glb",
-   "fileBytes": 379060,
-   "sha1": "48876fd95e9d0d95",
+   "fileBytes": 420944,
+   "sha1": "14af8b37d21a35ae",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -16720,31 +16736,31 @@
    "submeshes": 57,
    "materialSlots": 57,
    "materialsUsed": 19,
-   "triangles": 4544,
-   "vertices": 6698,
-   "degenerateTriangles": 16,
+   "triangles": 5376,
+   "vertices": 7536,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 186,
+   "loosePieces": 198,
    "openEdges": 16,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.9969,
+    -1.9962,
     -0.0859,
-    -1.9969
+    -1.9962
    ],
    "boundsMax": [
-    1.9969,
+    1.9962,
     9.5557,
-    1.9969
+    1.9962
    ],
    "size": [
-    3.994,
-    3.994,
+    3.992,
+    3.992,
     9.642
    ],
    "center": [
@@ -16752,13 +16768,13 @@
     4.735,
     0.0
    ],
-   "structureHash": "912167dc8542a6dc",
+   "structureHash": "c08d0408d6c7db03",
    "color0": {
-    "mean": 0.6382,
-    "min": 0.0727,
+    "mean": 0.6685,
+    "min": 0.2437,
     "max": 1.0,
-    "p05": 0.2254,
-    "p95": 1.0,
+    "p05": 0.356,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -16834,9 +16850,7 @@
    "category": "structure",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "16 zero-area triangles (0.35%)"
-   ],
+   "warnings": [],
    "units": [],
    "movingParts": 1,
    "budgetClass": "tower"

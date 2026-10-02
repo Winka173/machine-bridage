@@ -14147,3 +14147,26 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
   (the dimmest: watch it).
 - **Pitfall:** a name substring build (`-- atgm_tower`) also rebuilds `one_shot_atgm_tower`; its GLB was reverted (not in this pass).
 - Lead (2026-10-02), wave 6c cards: c_ram and branches +1.6 % to +2.0 %, gun_pit +0.0 %; atgm_tower, _a, _b FAIL at -5.9 % to -6.6 % (.4124/.4075/.4093 -> .3850/.3835/.3824) although COLOR_0 rose: merged, pass 6d brightens them first (likely the new sharp-loft body or roof slab reads darker from the card angle).
+
+## 27 wave 6d (lead pass, 2026-10-02)
+
+Pass 6d (lane B, towers): drone_hangar, ew_tower, each with `_a` and `_b`, plus the 6c atgm_tower fix, in `Tools/blender/mb_p27_wave6.py` (method of 6a-6c:
+old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and pivots untouched). Run: Blender rebuild,
+`glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 (atgm_tower trio .5).
+
+- **6c fix (atgm_tower, _a, _b, cards -6 %).** The V2 body kept `Concrete` (#8d8a7e, the darkest large base colour in the tower) and the roof slab was
+  merged into the same part; from the card's high three-quarter view those two surfaces are most of the tower's pixels, so a higher COLOR_0 (AO) did
+  not help. Now the `Tower` body is `Plaster` (#ddd2b8), the roof slab is its own part `Roof_slab` in `PlasterWhite` (#ece8dc; one extra static mesh,
+  not a runtime node), AO .5. Fascia stays Team, pad stays Concrete, nodes unchanged. COLOR_0 (6c -> fixed): atgm_tower .657 -> .691, _a .669 -> .699,
+  _b .661 -> .693; triangles unchanged (5,374 / 5,926 / 5,974). `one_shot_atgm_tower` (rebuilt by the substring filter) reverted. Lesson: for a card
+  gate, the base colour of the largest upward and side faces counts more than AO; use a pale material there.
+- ew_tower: extruded chamfered pad, footings as `k.block` with anchor bolts, chamfered platform plate, chamfered shelter with recessed panels on the back and
+  right (door side untouched), pale `Medical` roof, aircon with recessed grille panels. The lattice mast, head, arrays, dishes, antennas are untouched.
+  The old 16 zero-area triangles are gone. `_a` (dome and wave rings) and `_b` (flat array) edit the head by name as before.
+- drone_hangar: extruded pad, the arch as a `k.sharp_loft` of the old U ring (edge chamfers), chamfered headwall piers and lintel with back panels, a thicker
+  Team fascia, lipped cap, door box, roof deck plate, container with recessed far-side panels and chamfered blocks. Earth cover, toes, launch rail, drone
+  racks, mast, generator are untouched, so the `_a`/`_b` strips (`RAIL`, `Drone_*` inside `DECK`) cut the same parts.
+- **Gates (old -> new triangles, COLOR_0).** ew_tower 5,104 -> 5,936 (.627 -> .663); _a 5,436 -> 6,268 (.699 -> .717); _b 4,544 -> 5,376 (.638 -> .669);
+  drone_hangar 7,138 -> 7,794 (.524 -> .600); _a 5,978 -> 6,634 (.540 -> .610); _b 9,114 -> 9,770 (.551 -> .619). All at most 1.18x, runtime nodes and open
+  edges identical, size within .1 %, no errors or warnings.
+- **Card luma (old, alpha > .5, Rec. 709):** ew_tower .3421 (the dimmest: watch it), _a .4080, _b .3824; drone_hangar .3538, _a .3577, _b .3564.
