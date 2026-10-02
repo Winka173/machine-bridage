@@ -18,8 +18,9 @@ namespace MachineBrigade.Game.Effects
     {
         private const int Marks = 28, Outlines = 8;
 
-        private static readonly Color Edge = new(2.6f, 0.3f, 0.16f, 0.95f);
-        private static readonly Color Fill = new(2.8f, 0.85f, 0.25f, 1f);
+        // Fix prompt L5: a thin edge and a faint fill (GroundMark.Style.Warning), brighter than an ordinary round's: a super weapon.
+        private static readonly Color Edge = new(2.6f, 0.36f, 0.18f, 1f);
+        private static readonly Color Fill = new(2f, 0.4f, 0.16f, 0.7f);
         private static readonly Color Soft = new(1.4f, 1.1f, 0.9f, 0.55f);
 
         private readonly List<GroundMark> _marks = new();
@@ -32,7 +33,7 @@ namespace MachineBrigade.Game.Effects
             root.SetParent(parent, false);
             for (var i = 0; i < Marks; i++)
             {
-                var mark = new GroundMark("Big Attack Mark", root, meshes, materials, GroundMark.Style.Strike) { Visible = false };
+                var mark = new GroundMark("Big Attack Mark", root, meshes, materials, GroundMark.Style.Warning) { Visible = false };
                 _marks.Add(mark);
             }
             for (var i = 0; i < Outlines; i++)
@@ -54,6 +55,15 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
+        /// <summary>
+        /// Fix prompt L5: the gate the zones are offered to. A boss's big attack is a super weapon's: always shown, drawn on
+        /// top (<see cref="SuperHeight"/>), Off in the Settings included; none for a boss of the player's side.
+        /// </summary>
+        public WarningGate Gate { get; set; }
+
+        /// <summary>A super weapon's rings sit this high, over every other ring.</summary>
+        private const float SuperHeight = 0.16f;
+
         /// <summary>Every frame: the zones of every boss whose big attack is warning or landing.</summary>
         public void Tick(ViewRegistry views, float now)
         {
@@ -64,6 +74,8 @@ namespace MachineBrigade.Game.Effects
             {
                 var sim = all[v].Sim;
                 if (sim?.BigAttack is not { } big || big.Stage == BigStage.Ready || !sim.IsAlive) continue;
+                if (sim.Team == views.PlayerTeam) continue;
+                Gate?.Offer(big, new Vector3(sim.Position.X, 0f, sim.Position.Y), sim.Radius, WarningKind.Super);
                 var zones = big.Zones;
                 for (var z = 0; z < zones.Count; z++)
                 {
@@ -73,7 +85,7 @@ namespace MachineBrigade.Game.Effects
                     var urgency = Mathf.Clamp01(1f - (float)(zone.Due - big.Now) / 2f);
                     var edge = zone.Harmful ? Edge : Soft;
                     var fill = zone.Harmful ? Fill : Soft;
-                    var centre = new Vector3(zone.Centre.X, 0.12f, zone.Centre.Y);
+                    var centre = new Vector3(zone.Centre.X, SuperHeight, zone.Centre.Y);
                     if (!zone.Rect)
                     {
                         if (mark >= _marks.Count) continue;

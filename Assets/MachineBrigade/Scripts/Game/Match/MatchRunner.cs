@@ -765,6 +765,8 @@ namespace MachineBrigade.Game.Match
             // Fix prompt L4: rounds in flight are drawn on the Sim's clock (as the views interpolate it), so each lands on
             // the frame its damage is drawn (Effects/ShotClock.cs: the delayed damage).
             ShotClock.Advance(_world.Time - _clock.StepSeconds * (1.0 - _clock.Alpha), frozen, Time.deltaTime);
+            // Fix prompt L5: the warning rings' Settings choice.
+            _effects.WarningLevel = MatchSettings.WarningRings;
 
             if (_p34Stress != null && !_paused) _p34Stress.Tick(_world, Time.time, _effects, _audio);
             if (_crowd != null && !_paused)

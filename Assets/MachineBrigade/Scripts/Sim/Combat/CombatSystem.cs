@@ -879,7 +879,8 @@ namespace MachineBrigade.Sim.Combat
             travel = MrsiTravel(shooter, index, pull, travel);
             // Prompt 34 L3: a boss's T4+ round (203 mm and up, the Smerch, the 400 kg bombs) lands no sooner than its escape warning,
             // so the warning ring on its fall point shows that long. A guided round chases its target and has no fixed fall point.
-            if (shooter.Def.Boss && !weapon.Guided && weapon.WarnSeconds > travel) travel = weapon.WarnSeconds;
+            // Fix prompt L5: every shooter's warned round, not only a boss's (the view rings the enemy's; both sides alike here).
+            if (weapon.WarnSeconds > travel && _world.Catalog.Warnings.Warns(weapon)) travel = weapon.WarnSeconds;
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
             // Prompt 32 L4: a mount's own scale (a Fortress HQ's gun by HQ level).

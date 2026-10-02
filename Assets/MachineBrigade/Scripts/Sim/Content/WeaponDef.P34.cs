@@ -59,7 +59,9 @@ namespace MachineBrigade.Sim.Content
         public static float EscapeWarning(int tier, string? familyId, float core) => WarningRules.Shared.Seconds(tier, familyId, core);
 
         /// <summary>Prompt 34 L3: this round's escape warning (0 below T4).</summary>
-        public float WarnSeconds => EscapeWarning(Tier, WeaponFamilyId, SplashRadius);
+        /// <para>Fix prompt L5: a round with no family that the rules warn of by its size (a 203 mm gun, a 400 kg bomb, a 300 mm
+        /// rocket) warns as a T4.</para>
+        public float WarnSeconds => EscapeWarning(Tier < 0 && WarningRules.Shared.Warns(this) ? 4 : Tier, WeaponFamilyId, SplashRadius);
 
         /// <summary>Prompt 34 L3: the ring a warning draws: the blast's edge when it has two layers, else its core.</summary>
         public float WarnRadius => SplashEdge > SplashRadius ? SplashEdge : SplashRadius;

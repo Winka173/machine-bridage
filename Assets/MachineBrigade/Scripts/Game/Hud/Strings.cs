@@ -1933,6 +1933,10 @@ namespace MachineBrigade.Game.Hud
             ["settings.balanced"] = ("Balanced", "Cân bằng"),
             ["settings.max"] = ("Maximum", "Tối đa"),
             ["settings.shake"] = ("Screen shake", "Rung màn hình"),
+            // Fix prompt L5: the warning rings setting.
+            ["settings.warnings"] = ("Warning rings", "Vòng cảnh báo"),
+            ["settings.warnings.full"] = ("Full", "Đầy đủ"),
+            ["settings.warnings.important"] = ("Important only", "Chỉ quan trọng"),
             ["settings.full"] = ("Full", "Đầy đủ"),
             ["settings.camera"] = ("Camera speed", "Tốc độ máy quay"),
             ["settings.cinematic"] = ("Cinematic moments", "Khoảnh khắc điện ảnh"),
