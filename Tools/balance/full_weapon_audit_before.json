@@ -1,0 +1,34 @@
+{
+ "boss": {
+  "TOO FAST": 25,
+  "TOO SLOW": 9,
+  "UNIT": 1,
+  "WAVE 1": 47,
+  "FAMILY": 7,
+  "DISPLAY": 65
+ },
+ "player": {
+  "TOO FAST": 29,
+  "TOO SLOW": 6,
+  "UNIT": 0,
+  "WAVE 1": 6,
+  "FAMILY": 1,
+  "DISPLAY": 60
+ },
+ "tower": {
+  "TOO FAST": 19,
+  "TOO SLOW": 1,
+  "UNIT": 0,
+  "WAVE 1": 1,
+  "FAMILY": 0,
+  "DISPLAY": 26
+ },
+ "all": {
+  "TOO FAST": 105,
+  "TOO SLOW": 17,
+  "UNIT": 2,
+  "WAVE 1": 80,
+  "FAMILY": 7,
+  "DISPLAY": 139
+ }
+}

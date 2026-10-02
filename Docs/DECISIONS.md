@@ -16751,3 +16751,29 @@ weapons keep prompt 34 L2's cadence, solved from the prompt 26 DPS (wrong from t
 guns fire 3-12 times faster than real and the side mounts very rarely; the card's calibre is the first digits of the
 weapon id ("26 mm" for every `p26_*`), and "Main gun" is every direct-fire gun's kind; "every X s" shows the pause after
 the last round, not the full cycle. Audio, VFX, flares and the prompt 27 models are noted for lanes B, C and the lead.
+
+## Sửa lỗi tổng hợp L1 (lead pass, 2026-10-02)
+
+- **Tool** `Tools/balance/full_weapon_audit.py` (rerun after any balance change; report only): every weapon line (372)
+  with its users (bosses through `p26_ab.expand`, player vehicles, towers / structures / their branches), the support
+  cards apart. Per weapon: real name, family, calibre or warhead (data / what the card prints), mode, rounds a cycle,
+  interval, pause, full cycle, sustained DPS (every barrel, a launcher's reload), (a) the wave 1 row of the sheet "Vũ khí
+  đề xuất" (by id, else `SHEET_ALIAS` for the `p26_*` lines, else the parent line), (b) the real rate (`REAL`, ~110 systems,
+  each with its source; "est." where none is published), the prompts that touched it. Report: `Docs/checks/full_weapon_audit.md`.
+- **The flags as implemented** (my reading of the prompt): the time a barrel takes for one round (the cycle x the barrels
+  the rounds come out of / the rounds a cycle) against the real gap at the maximum rate; for tank guns, howitzers, mortars and
+  naval guns that gap is divided by 0.7 first (the "30 % slower" rule; machine guns, autocannons, AA guns and missiles have
+  no such rule). TOO FAST under 0.6 x; a salvo's own interval is checked the same way when one barrel fires twice inside
+  it. TOO SLOW over 2 x (streams, missiles: against the practical rate, as they fire in bursts or aimed shots; rockets: the
+  ripple interval only; aircraft stores, bombs and one-shot sites: no slow check, they rearm). UNIT: a single-shot gun
+  40-80 x off (rounds a minute read as a second), a salvo whose pause is shorter than its own interval, a twin / triple
+  gun fired as one barrel. WAVE 1: the cycle more than 20 % off (or other rounds a cycle) with no reason in
+  `Tools/balance/fix_weapon_reasons.json` (L3 writes the reasons). FAMILY: one real weapon (variant aside) with another
+  damage, core, edge, speed or damage type on two bosses. DISPLAY: the card's calibre or its "every X s" against the data,
+  the card worked out the way the C# does it today (the tool reads WeaponInfo.cs / MenuScreen.Detail.cs to know).
+- **Before** (stored in `Tools/balance/full_weapon_audit_before.json`): bosses TOO FAST 25, TOO SLOW 9, UNIT 1, WAVE 1 47,
+  FAMILY 7, DISPLAY 65; players 29 / 6 / 0 / 6 / 1 / 60; towers 19 / 1 / 0 / 1 / 0 / 26 (all lines: 105 / 17 / 2 / 80 / 7 /
+  139). As the prompt says: every big boss gun is 3-12 x too fast (2A65 1.85 s, M284 2.33 s, 2B8 7.7 s, 2A44 5.7 s, the
+  125 mm 1.03-3.45 s, Moloch's 120 mm 1.13 s), the small side mounts too slow (the 2A38 every 103 s, the 57 mm every 41 s, the
+  ZU-23 every 25 s, the 40 mm every 17.6 s), and the card prints "26 mm" on every `p26_*` gun.
+- Not a source for the cadence: the wave 2 balance files (DPS a vehicle only).
