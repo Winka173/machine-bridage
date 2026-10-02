@@ -15745,3 +15745,57 @@ Lane B, branch `feature/p33-b1` (prompt 33 L0, L4, L5; lane A does L1-L3 and L6)
   only, ships are created inside the map. L4/L5 give ships and trains their own routes beyond the play area and the
   Siege support train its gate and entry tick (lane A's L2 does the other reinforcements' gates).
 - The boss trains drive the ground grid like tanks: L5 puts them on rails.
+
+## Prompt 33 L4 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b1`. Pass 4: the big ships' sea route graph. Nothing run but the Python tools
+(Tools/maps/transit.py, check_access.py); the C# is compiled by the lead; Prompt33SeaRouteTests is written, not run.
+
+- **Graph** (`Sim/Navigation/SeaRouteGraph.cs`, map data `"seaRoutes"`): the sea lanes cut into segments: a track node
+  every 40 m along each lane (u in the coast's frame) from -end to +end, an exit node 40 m beyond each end (outside the
+  map: the ships' routes run on out of the play area, the prompt's exception to the entry contract), holding nodes
+  (the passing bays) on two holding lines, 16 m inshore of the near lane and 18 m out beyond the far one, where they are
+  on the water (8 m off the waterline) and 12 m inside the map, each joined to its lane's node; cross links between
+  neighbouring lanes at the same u. Every segment is two-way: the rule is passing bays, not one-way lanes (the data and
+  the code take `oneWay`, unused). `Tools/maps/transit.py` writes the graph (Lighthouse Bay's three files: 29 nodes, 8
+  holding, 36 segments) by the same rule as `SeaRouteGraph.FromSea`, which builds it at load for a sea without one (the
+  Sandbox's coastal range); the test checks the file and the rule agree. Checks (`Validate`, transit.py): nodes on the
+  water, exits beyond the edge, each lane joined end to end, a passing bay within 60 m along the coast of every lane
+  node, every bay joined.
+- **Big ships**: a naval hull 25 m or longer (Leviathan, Typhon, Caspian, Scylla's kind, the cruiser and the corvette;
+  the 14 m attack boats and 17 m landing craft are small boats and keep to the lanes as before). Their goals are still
+  the naval system's (patrol, phase lanes, the run, the slots); `NavalSystem.RouteTraffic` runs between the goals and the
+  sailing (the step's single loop became goals for all, the traffic rules, then sailing for all: an escort now reads its
+  flagship's place before it moved this step).
+- **Reservations and the gap**: each big ship holds its lane segment and the next one in its direction. A ship never
+  closes on a big ship in its way (ahead along the coast, their hulls overlapping across it, 1.5 m margin) inside half
+  its length + half the other's + 10 m: its speed is capped to the other's speed along its way + 0.25 m/s per metre of
+  room left inside a 20 m band (slows, then waits). No ship is ever moved by another (no push).
+- **Priority** (fixed, deterministic): 0 a boss on its run, 1 a boss or key ship, 2 a scripted transport (a big lander),
+  3 an escort, 4 any other; then the lower entity id. Head-on on a segment both hold: the lower pulls into the nearest
+  free holding node at once. Stopped by the gap for more than 60 ticks (3 s): the lower of the two does. A holding node
+  is free when no other ship holds it or stands within the minimum gap of it, and off the other ship's line. It comes
+  back out after at least 40 ticks once the other ship is past and clear (or gone). The boss's run (Leviathan's last
+  phase): any big ship in its way within 60 m beyond the gap but its own escorts pulls in at once.
+- **Escort slots** PORT_FORWARD / STARBOARD_FORWARD / PORT_REAR / STARBOARD_REAR in the boss's frame, kept as a place in
+  the coast's frame beside it (port-forward sailing +u is starboard-rear once it comes about: the escort stays put). The
+  fleet data's place is the first choice (`at` along, `abeam` across, as 20Y; an entry without `abeam`, Typhon's
+  corvette, is now abeam inshore instead of on the boss's own lane inside its hull), at least half the two widths + 2.5 m
+  out. The leash (escortRules `leash`, 28 m) is measured from the boss's hull, not its middle (an 86 m Leviathan's middle
+  would leave no room); a slot within the minimum gap of a slot taken before it slides along away from it (+4 m slack)
+  while it stays in the leash. Valid: on the water 2 m beyond its half width and within the graph's 20 m corridor over the
+  boss's whole patrol on that lane, inside the map with the boss mid-patrol (near the patrol's ends every ship is kept in
+  the square, as before). Fallback order, fixed: the other end on the same side, the same end on the other side, both;
+  then the same four 12 m further out; none: the data's place is kept and counted (`SlotProblems`, the test wants 0).
+  Resolved in spawn order as the fleet sails out and in entity-id order when the boss changes lane; an escort changing
+  side goes round astern of it first. Leviathan on the far lane: the cruiser port-forward (+22, -17), the corvette
+  slid aft to (-39, -16) (it was 49 m from the cruiser, under the new 57 m gap), an operation's extra corvette (+27, -27).
+- **Coming about**: a flagship turns where it is (its bow and stern sweep a circle of half its length), so while it is not
+  lined up with its way, within 45 m of the end of its patrol, or off its lane's line (a lane change), its escorts stand
+  out on their side beyond that circle (half its length + half their width + 2 m) and come back once it is lined up.
+  The leash is kept on the slot, not during the turn.
+- **Small boats**: the attack boats wait on the near lane whenever the flagship on the far lane has escorts (all now
+  abeam inshore), on the far lane when it sails the mid lane (before: its own lane), else the mid lane.
+- Fingerprint: the holding count and each big ship's holding node and wait (`NavalSystem.MixRoutes`).
+- Data keys changed: map files `lighthousebay_conquest`, `_sandbox`, `_siege` + `"seaRoutes"` (generated). balance.json
+  and campaign.json unchanged.

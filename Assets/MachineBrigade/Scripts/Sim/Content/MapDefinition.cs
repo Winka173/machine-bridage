@@ -108,7 +108,7 @@ namespace MachineBrigade.Sim.Content
         }
     }
 
-    public sealed class MapDefinition
+    public sealed partial class MapDefinition
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
@@ -393,6 +393,8 @@ namespace MachineBrigade.Sim.Content
                 Routes = routes,
                 Spawns = SpawnPointDef.ParseAll(root),
                 Neutrals = NeutralSiteDef.ParseAll(root),
+                // Prompt 33 L4: the big ships' sea routes.
+                SeaRoutes = root.Has("seaRoutes") ? Navigation.SeaRouteGraph.Parse(root.Object("seaRoutes")) : null,
             };
         }
     }

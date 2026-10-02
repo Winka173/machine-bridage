@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 33 L4: big ships sail a sea route graph (Lighthouse Bay's lanes in 40 m segments running out beyond the map, passing bays inshore and out to sea): each holds its segment and the next, keeps half its length + half the other's + 10 m behind a big ship in its way (slows, waits, never pushes), gives way by a fixed priority (the boss's run, bosses, transports, escorts, then the lower id) into the nearest free passing bay after 3 s or at once head-on; escorts keep PORT/STARBOARD FORWARD/REAR slots within 28 m of the boss's hull with fixed fallbacks and stand out beyond its turning circle while it comes about (Tools/maps/transit.py; DECISIONS "Prompt 33 L4").
+
 - Prompt 33 L0: precheck (Docs/checks/p33_precheck.md): the camera's widest view, how reinforcements, trains, ships and aircraft come in, no per-type path costs, wrecks, stealth and sight, how the boss trains move (DECISIONS "Prompt 33 L0").
 
 - Prompt 31 L6: the prompt 31 report (Docs/story/report_p31.md) and the design document's sections on the fixed-deck missions and the battlefield events (Tools/docs/prompt31.py; the PDF is rebuilt by the lead) (DECISIONS "Prompt 31 L6").

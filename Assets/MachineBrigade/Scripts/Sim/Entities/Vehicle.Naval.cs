@@ -60,5 +60,28 @@ namespace MachineBrigade.Sim.Entities
 
         /// <summary>The flagship's lane, in the coast's frame, as the view and the HUD see it.</summary>
         public string? NavalLane { get; internal set; }
+
+        // ------------------------------------------------------------------ prompt 33 L4: the sea routes
+
+        /// <summary>A big ship's lane segment on the sea routes and the next one it sails into (both reserved); -1: none.</summary>
+        internal int SeaSegment = -1, SeaNextSegment = -1;
+
+        /// <summary>This step's speed cap (m/s) from the minimum gap to a big ship in its way; infinity: none.</summary>
+        internal float SeaCap = float.PositiveInfinity;
+
+        /// <summary>Ticks it has been held up (stopped by the gap rule) in a row.</summary>
+        internal int SeaWait;
+
+        /// <summary>The holding node it is pulling into (-1: none), the ship it gave way to, and the tick it began.</summary>
+        internal int SeaHold = -1;
+        internal EntityId SeaHoldFor;
+        internal long SeaHoldSince;
+
+        /// <summary>The lane a flagship's escort slots were resolved for; an escort on its way round astern to a slot on the other side.</summary>
+        internal string? SlotLane;
+        internal bool SlotVia;
+
+        /// <summary>Holding in a passing bay (the view and the tests).</summary>
+        public bool SeaHolding => SeaHold >= 0;
     }
 }

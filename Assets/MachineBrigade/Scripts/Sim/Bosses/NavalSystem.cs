@@ -34,7 +34,7 @@ namespace MachineBrigade.Sim.Bosses
     /// Deterministic: everything runs in vehicle-list order off the world's clock and random stream, and
     /// draws random numbers only when a ship is on the field.
     /// </summary>
-    internal sealed class NavalSystem
+    internal sealed partial class NavalSystem
     {
         /// <summary>A coastal battery's gun (a fixed defence that fires on ships only).</summary>
         internal const string BatteryGun = "coastal_battery";
@@ -95,6 +95,9 @@ namespace MachineBrigade.Sim.Bosses
                 }
             // A share of the fleet (Boss Rush's half) is taken over all its escorts, the first entries first.
             var escortsLeft = Math.Max(0, (int)MathF.Round(escortCount * Rules.FleetShare));
+            // Prompt 33 L4: every escort keeps a slot beside it (PORT/STARBOARD FORWARD/REAR), resolved in spawn order.
+            _taken.Clear();
+            v.SlotLane = v.NavalLane;
             for (var e = 0; e < v.Def.Fleet.Count; e++)
             {
                 var ship = v.Def.Fleet[e];
@@ -108,9 +111,13 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     Vector2? station = null;
                     Vector2 at;
-                    if (role == NavalRole.Escort && ship.Beside)
+                    if (role == NavalRole.Escort)
                     {
-                        var s = StationOf(ship, k);
+                        // The data's place (abeam, or ahead / astern of it on its line), resolved to a valid slot.
+                        var preferred = ship.Beside ? StationOf(ship, k)
+                            : new Vector2((escorts++ % 2 == 0 ? 1f : -1f) * (ship.Station + 8f * (k / 2)), 0f);
+                        var s = ResolveSlot(v, def, preferred, _taken, v.NavalLane);
+                        _taken.Add((s, def));
                         station = s;
                         at = sea.At(f.X + s.X, (sea.Lane(v.NavalLane)?.W ?? f.Y) + s.Y);
                     }
@@ -145,7 +152,16 @@ namespace MachineBrigade.Sim.Bosses
         /// escorts abeam inshore of it (they are on the mid lane then).
         /// </summary>
         private string RaiderLane(Vehicle flag) =>
-            flag.NavalLane == "far" && EscortsBeside(flag.Def) && Sea?.Lane("near") != null ? "near" : "mid";
+            // Prompt 33 L4: every escort now rides abeam inshore of it (its slot), so the boats keep off its lane and theirs.
+            flag.NavalLane == "far" && (EscortsBeside(flag.Def) || HasEscorts(flag.Def)) && Sea?.Lane("near") != null ? "near"
+            : flag.NavalLane == "mid" && Sea?.Lane("far") != null ? "far" : "mid";
+
+        private bool HasEscorts(VehicleDef def)
+        {
+            foreach (var ship in def.Fleet)
+                if ((_world.Catalog.Vehicle(ship.Unit).Naval?.Role ?? NavalRole.Escort) == NavalRole.Escort) return true;
+            return false;
+        }
 
         /// <summary>
         /// Trains a gun the naval system lays (a main turret) on a heading, inside its own firing arc (DECISIONS 20Y:
@@ -194,6 +210,12 @@ namespace MachineBrigade.Sim.Bosses
                         Lander(v, sea, now);
                         break;
                 }
+            }
+            // Prompt 33 L4: the big ships' traffic rules on the sea routes (gaps, priority, holding), then everyone sails.
+            RouteTraffic(sea);
+            foreach (var v in _world.VehicleList)
+            {
+                if (!v.IsAlive || v.Def.Naval is not { } naval || v.Escaped) continue;
                 // Prompt 20 J.4: a submarine under water is the boss system's to move.
                 if (v.Burrow == Vehicle.BurrowState.Surface) Sail(v, naval, sea, dt);
             }
@@ -247,6 +269,8 @@ namespace MachineBrigade.Sim.Bosses
             var alignment = MathF.Max(0.25f, Vector2.Dot(SimMath.Forward(v.Heading), to / distance));
             // Slows to a stop at its goal (a landing craft on the sand, a boat holding off a pier).
             var target = speed * alignment * MathF.Min(1f, distance / 8f + 0.2f);
+            // Prompt 33 L4: never closing on a big ship in its way inside the minimum gap.
+            target = MathF.Min(target, v.SeaCap);
             v.Speed += Math.Clamp(target - v.Speed, -v.Def.Speed * dt, v.Def.Speed * 0.5f * dt);
             var next = v.Position + SimMath.Forward(v.Heading) * v.Speed * dt;
             // The waterline: a ship keeps its hull's half-width off it (a lander may ground on the sand).
@@ -320,6 +344,8 @@ namespace MachineBrigade.Sim.Bosses
                     if (sea.Lane(v.NavalLane) == null) v.NavalLane = naval.LaneFor(phase);
                 }
                 // Patrol: along its lane to the end of its stretch, then about.
+                // Prompt 33 L4: a new lane, its escorts' slots again.
+                if (v.SlotLane != v.NavalLane) ResolveFleet(v);
                 var lane = sea.Lane(v.NavalLane)!;
                 var turnU = v.NavalDir * lane.Patrol;
                 if ((f.X - turnU) * v.NavalDir > -4f) v.NavalDir = -v.NavalDir;
@@ -497,10 +523,24 @@ namespace MachineBrigade.Sim.Bosses
                 v.NavalDir = flag.NavalDir;
                 if (v.OnStation)
                 {
-                    // DECISIONS 20Y: abeam of it on its station (inside its length, on the shore side), a little
-                    // further in while it runs.
                     var w = flag.Escaping ? ff.Y : sea.Lane(flag.NavalLane)?.W ?? ff.Y;
-                    v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + v.StationAt.Y * (flag.Escaping ? 1.25f : 1f));
+                    // Prompt 33 L4: a slot on the other side of it: round astern first (never across its bows or through it).
+                    if (v.SlotVia && !flag.Escaping)
+                    {
+                        var astern = new Vector2(ff.X - flag.NavalDir * ((flag.Def.Length + v.Def.Length) * 0.5f + GapExtra), w);
+                        v.NavalGoal = astern;
+                        if (Vector2.Distance(sea.At(astern.X, astern.Y), v.Position) < 8f) v.SlotVia = false;
+                        return;
+                    }
+                    // DECISIONS 20Y, prompt 33 L4: on its slot beside it (the coast's frame, inside the leash of its hull), a
+                    // little further out while it runs; out beyond its turning circle while it comes about.
+                    var across = v.StationAt.Y;
+                    if (!flag.Escaping && Turning(flag, sea, ff))
+                    {
+                        var wide = (flag.Def.Length + v.Def.Width) * 0.5f + 2f;
+                        if (MathF.Abs(across) < wide) across = (across > 0f ? 1f : -1f) * wide;
+                    }
+                    v.NavalGoal = new Vector2(ff.X + v.StationAt.X + flag.NavalDir * 4f, w + across * (flag.Escaping ? 1.25f : 1f));
                     return;
                 }
                 var station = naval.Station == 0f ? 24f : naval.Station;
@@ -756,6 +796,7 @@ namespace MachineBrigade.Sim.Bosses
             foreach (var b in _batteries) mix(b.team * 1000 + (long)MathF.Round(b.progress * 100f));
             mix(Rules.LighthouseOwner);
             mix(Rules.Escapes);
+            MixRoutes(mix);
         }
     }
 }
