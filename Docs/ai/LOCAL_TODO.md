@@ -8,3 +8,21 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - J (AI viewer overlays in the Sandbox) reads `world.Intel.For(team)`: `Own`/`Enemy`/`Threat[k]` grids
   (`Columns` x `Rows`, `CellCentre`), `Contacts` (confidence via `Confidence(now, ConfidenceDecay)`), `EnemyGroups`,
   `Front`, `Contested`, `Chokepoints`, `Warnings`, `Events`.
+- Pass 2 hooks: the tactic picker sets `ConquestAi.Tactic` (player Auto-buy/Support AI and the Sandbox's two sides)
+  before the first tick; the HUD switch button calls `ai.Commander.RequestTactic(world, id)` (shows `TacticReadyAt`,
+  `InTransition`); the player's AI gets `Skill = AiSkill.For(AiDifficulty.Normal, catalog.Ai)` (K.2); the hint line
+  calls `ai.Hints.Next(world, team, ai.Commander?.Squads)` about once a second (a side without an AI: `new AiHints()`).
+  Boss Rush: set `Commander.FreeSwitch` during a break. Run CatalogCheck (`aiBehaviour` added) and the EditMode suite;
+  `ConquestAi.LayeredDefault = false` gives the old AI for comparison.
+- Pass 4 hooks: the Base screen (prompt 14) and a tap on a tower in battle call `world.SetTowerMode(team, id, mode)`;
+  the allowed list is `catalog.AiData.Towers[defId]` (`Mode` + `Modes`); the Base loadout should save the chosen
+  mode per hardpoint and apply it when the tower is placed. Text keys `tower.mode.*` are in the new text table.
+- Pass 5 hooks: `PlayerProfile` saves the last tactic per mode (H.14) and per-squad choices (H.10, after chapter 6:
+  `Commander.SquadTactics = true`, `RequestSquadTactic`); the HUD shows `TeamEconomy.ArmyFactor` when below 1 (I.2) and
+  `world.PressureTier` (I.6) and Conquest's `InFinalPhase` (I.7); the tactic picker lists `catalog.AiData.Tactics`
+  filtered by `AiBehaviour.Unlocked` and highlights `SuitedTo(commander)`; the briefing shows the general's tactic
+  (`GeneralTactic`); a line when the enemy switches tactic while `enemy.TacticSeenBy(world, player)` (H.8); the
+  Sandbox's side panel gets a tactic picker (`SandboxSide.Tactic`) and a switch button (H.13).
+- Text tables: `Scripts/Game/Hud/TacticText.cs` (EN + VI: tactics, hints `aihint.*`, tower modes, fire stances, upkeep,
+  pressure tiers, AI viewer words incl. `why.<factor>`), registered in `Strings.Get/Entries/Has`. Written blind:
+  the local compile and L10nTests check them.

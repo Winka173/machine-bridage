@@ -131,10 +131,13 @@ namespace MachineBrigade.Sim.Sandbox
         /// <summary>Prompt 22 F.1: the side's commander or general ("kade", "gen.varga"; empty: none).</summary>
         public string Commander = "";
 
+        /// <summary>Prompt 28 H.13: the side's tactic for the full AI (empty: its general's preference).</summary>
+        public string Tactic = "";
+
         public SandboxSide Clone() => new()
         {
             Ai = Ai, Cp = Cp, Income = Income, Cooldowns = Cooldowns, Immortal = Immortal, Deck = new List<string>(Deck),
-            Supports = new List<string>(Supports), Base = Base, BaseLevel = BaseLevel, Commander = Commander,
+            Supports = new List<string>(Supports), Base = Base, BaseLevel = BaseLevel, Commander = Commander, Tactic = Tactic,
         };
     }
 
@@ -267,6 +270,7 @@ namespace MachineBrigade.Sim.Sandbox
                 b.Append(",\"deck\":").Append(List(s.Deck)).Append(",\"supports\":").Append(List(s.Supports));
                 b.Append(",\"base\":").Append(Q(s.Base.ToString())).Append(",\"baseLevel\":").Append(Q(s.BaseLevel));
                 if (!string.IsNullOrEmpty(s.Commander)) b.Append(",\"commander\":").Append(Q(s.Commander));
+                if (!string.IsNullOrEmpty(s.Tactic)) b.Append(",\"tactic\":").Append(Q(s.Tactic));
                 b.Append('}');
             }
             b.Append("],\"units\":[");
@@ -358,6 +362,7 @@ namespace MachineBrigade.Sim.Sandbox
                         if (so.IsArray("supports")) side.Supports.AddRange(so.StringArray("supports"));
                         side.Base = so.Enum("base", SandboxBase.None);
                         side.BaseLevel = Str(so, "baseLevel", "Normal");
+                        side.Tactic = Str(so, "tactic", "");
                         side.Commander = Str(so, "commander", "");
                     }
                 }

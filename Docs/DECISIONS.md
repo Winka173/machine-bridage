@@ -13402,3 +13402,231 @@ is local. Nothing was run but the generator and a compile check (owner's rule); 
   points), over seeds and maps, an AI-vs-AI Conquest; writes `Docs/ai/sweep.csv` with the key's own metric beside the
   common ones (fight share, destroyed per minute, captures, average alive, wins). Until passes 2-5 make the AI read the
   parameters, a sweep shows no effect except from the World Model's own thresholds.
+
+## 28 2 (cloud, 2026-10-02)
+
+Prompt 28 pass 2, Sim only: B (AI general), C (squad layer), plus the J.2-J.4 data they write. Nothing was run but the
+generator and the compile check.
+
+- **Generator, part 2.** `import_ai_xlsx.py` now also writes `aiBehaviour`: the 7 squad states (priority, commitment),
+  28 roles (engagement band as a share of reach; the overwhelmed move by keyword: cover, shift, scoot, smoke, rearm,
+  hold), 58 units -> role, 16 tactics (CP shares, preferred cards matched by the sheet's vehicle names, unlock, the
+  commanders it suits by call sign -> id from NameText, counters, the merge pair, and the behaviour modules read from
+  "Tác động lên AI": numbers by pattern, flags by keyword), generals' tactics (Thorne's "Cân bằng như Kade" parsed;
+  Brandt -> depth and the no-general default -> balanced from prompt H.7, not in the sheet), tower modes (the sheet's
+  13 rows mapped to 23 tower ids) and boss behaviour types (12 bosses by their big attacks). Tactic ids are English
+  slugs (`balanced`, `blitz`, `firepower`, `depth`, `encircle`, `bounding`, `ambush`, `hit_and_run`, `breakthrough`,
+  `dispersal`, `air_superiority`, `sead`, `attrition`, `decapitation`, `base_defence`, `all_out`). One preferred name
+  matched no card ("dùng sớm thẻ Đòn SEAD": a support, covered by the SEAD module); names after "Tránh" are skipped.
+- **How it plugs in.** No new AI from scratch (prompt 28 "Dùng lại"): `ConquestAi` (buying, counters, strikes) gets an
+  `AiCommander` (B) and `TacticalAi` a `Layered` switch: its helpers (rearm, crates, breach, support, artillery, boss
+  focus, demolition, aircraft) stay; for ground vehicles it drops the main body, flankers, the fall-back on bad odds
+  and the pull-back of damaged vehicles (D.3: no retreat on health). The squad layer moves the ground army.
+  `ConquestAi.LayeredDefault` (true) switches every commander back to the old AI for the regression comparison (O.3).
+  Wave modes driven by TacticalAi alone (Survival, Defend, Siege waves) are unchanged in this pass.
+- **General (B).** 1/s. Primary objective = the existing objective chooser (prompt 13 scoring), held for
+  `params.minCommit` unless an emergency (a THREAT >= 90, a boss phase change); effort = towards it; secondary = own
+  artillery, else a pressured own point (none for `dropSecondary`). ATTACK_WINDOW opens on own/enemy strength >= the
+  threshold near the objective (the tactic's, else the parameter's, lowered by use-or-lose I.4), on a WINDOW or
+  OPPORTUNITY event there older than the reaction delay, or with no enemy known; shut while waiting for air
+  (air_superiority), for the artillery prep (`artilleryPrep` x 8 s with own artillery), in a tactic transition or when
+  defending; the window too is held for the minimum commitment. Squads to tasks: nearest to the objective first until
+  the main effort's share of strength; the rest hold the secondary; pincer gives the first 2-3 primary squads
+  alternating flank sides; base defence holds the camp. Supports by event (B.4): smoke on a squad in combat under
+  artillery reach above its strength; SEAD on the strongest known enemy AA for SEAD-first and air superiority.
+  Plan changes and windows go to the decision log with their reason, and the commander's "VÌ SAO" lists the events.
+- **Plan switch margin.** The objective chooser gives a point, not a score, so the general's plan uses the commitment
+  time and emergencies only; the switch margin applies where actions are scored (squads).
+- **Squads (C).** 4/s. Ground vehicles from TacticalAi's line and fast lists join the nearest squad of their kind
+  (fast >= 11 m/s or not) within 40 m with room (max 6), else a new one; JOIN merges squads under 3. Actions are
+  filtered for validity first (C.1): ATTACK needs an objective or a known enemy; FLANK needs a walkable waypoint
+  beside the goal with route threat <= 1.5x the squad's strength and not marked blocked; OVERWATCH a friendly squad
+  advancing within 60 m and a reach >= 40 m; REPOSITION a spot within 25 m with < 60 % of the danger (or the line
+  behind for depth's fall-back); SUPPORT a friend in combat within 80 m losing; JOIN a squad of its kind within 60 m;
+  REGROUP spread > 25 m (until < 12 m). Scores are a base plus named factors from the sheet's columns (ratio vs
+  threshold +-25, window +15, high value +10, primary +8, counterattack +15, low confidence -15 x (1-c), route threat,
+  not gathered, transition -30, waiting for air/artillery, flank tactic weight, pincer side +15, cohesion risk -8,
+  reserve that way, ...), clamped 0-100; the top 3 plus and 2 minus and the runner-up are the "VÌ SAO" record.
+- **Anti-churn (C.3).** Change only if the current action became invalid, an urgent event (focus target dead,
+  objective moved > 30 m, flank route blocked), an idle reassessment (G.3), or after the commitment (max of
+  `params.minCommit` and the state's own) the new score beats the current by `params.switchMargin`. States: a move to
+  a lower-priority state waits for the current state's commitment; contact (COMBAT, priority 3) is entered at once.
+- **Emergency Reposition (C.4).** Dodge: any member inside an enemy warning ring (known for >= the reaction delay)
+  drives straight out; the squad keeps its action and state and re-issues its orders when clear (no cooldown, no
+  churn count). Gather: local enemy >= `overwhelmRatio` x own, or a THREAT >= 80 with confidence >= 0.5 on the squad:
+  the nearest friendly squad within 120 m, REGROUP, cooldown `emergencyCooldown`. Never on health.
+- **Formation (C.5).** TRAVEL/APPROACH column (heaviest first), COMBAT line abreast at max(6 m, 2 x strongest known
+  blast x splashSpread x tactic spread x skill), HOLD/OVERWATCH line at 9 m facing the enemy, FLANK column fastest
+  first, REGROUP ring of 5 m. Orders go out only when the goal moves > 6 m or the action changes (no reshuffling).
+- **Focus (C.6) and targets (C.7, D.2).** The squad picks a focus (value x nearly-dead / health x strength, tactic
+  target groups x2, the old focus x1.3); members carry `SquadFocus`; CombatSystem's existing effective-damage target
+  scoring (play-test 8 A: damage type, penetration, facing, switch margin 1.3 and 0.5 s looks) already is the D.2/C.7
+  matrix, so pass 3 only adds the focus and tactic weights to it.
+- **Overwatch bounding (C.8).** With the bounding module: halves alternate every 6 s, the moving half going at most
+  0.8 x reach (<= 30 m) ahead. **Fall-back lines (C.9).** Depth/base defence squads holding below `fallback` x enemy
+  reposition 35 m towards their camp as a whole squad.
+- **Engagement distance (D.5, used by squads).** In combat, a squad stands at its members' role band midpoint (or the
+  tactic's band) of its median reach from the nearest enemy when standoff/kiting or already too close; hit-and-run
+  backs off with a move order when the enemy is inside its kite share.
+- **Difficulty (K, Sim side).** `AiSkill.For`: Easy reaction = the parameter's max (1.5 s), confidence decays x1.5,
+  spreads half, flanks half, no focus, never switches; Normal = the parameter (0.8 s); Hard 0.5 s, decay x0.85, flank
+  and focus x1.3, switches when losing (own < 0.6 x enemy for 20 s: to a counter of the seen enemy tactic, else depth,
+  else attrition); Very Hard = the min (0.3 s), decay x0.6, counters the enemy tactic its scouts see. ConquestAi.Skill
+  overrides it (K.2: the player's AI at Normal, a local hook).
+- **Tactic switching (H.6).** `RequestTactic`: cooldown `tacticCooldown` (free in Boss Rush breaks via `FreeSwitch`),
+  transition `tacticTransition` (no new window, ATTACK -30, REGROUP +20), attacking squads lose their commitment and
+  regroup; new CP shares only change later purchases. H.8: `TacticSeenBy` (a recon, UAV or scout helicopter of the
+  viewer has one of the side's vehicles within its vision). H.10: per-squad tactics with their own cooldown when
+  `SquadTactics` is on.
+- **Buying (H.5).** With the layered AI, the old role mix term is replaced by the tactic's: (target - spent share) x 6
+  (target moved +0.15 x confidence for a MISMATCH's group, the deck's missing groups' shares spread over the rest),
+  +1.5 for the tactic's preferred cards; spent = CP of every purchase per group. All-out assault saves to 90 % of the
+  bank with 4+ vehicles out and nothing under fire, then spends to 6 CP.
+- **Hints (B.7).** `AiHints.Next` gives one key (`hint.*`) and place from an event >= 60 priority or a stuck squad,
+  each key at most every 20 s; the HUD words it (text tables), off in Settings (local).
+- **Determinism.** Squads and members in id order; options built in a fixed order; ties keep the first. The layers
+  draw no random numbers yet (AiRandom is there for later tie-breaks).
+
+## 28 3 (cloud, 2026-10-02)
+
+Prompt 28 pass 3, Sim only: D (unit layer), G (anti-stuck, anti-idle). Compile check only.
+
+- **Where the unit layer runs.** Target choice stays per tick in CombatSystem (its effective-damage score is the D.2/C.7
+  matrix: damage type, penetration, facing, a 1.3x switch margin, looks every 0.5 s; held until the target dies or
+  leaves reach). `P28Worth` adds: the squad focus x(1 + 0.6 x focus weight), the tactic's target groups x1.8 (SEAD
+  first: anti-air; decapitation: support and artillery), and a friend within 1 m of a direct-fire line x0.6 (G.4: the
+  sim has no friendly fire, so this only makes a shooter take another angle or target when one is as good; spread and
+  hold formations already stand line abreast across the enemy direction). The local logic (facing, short moves,
+  scouts) runs with the squad layer at 4/s, the logic of vehicles outside squads (artillery, aircraft) with the general
+  at 1/s: cheaper than per tick, and the prompt's per-tick part is the target score.
+- **No retreat on health (D.3).** Layered: TacticalAi's pull-back of damaged vehicles and its fall-back on odds are off
+  for ground vehicles (pass 2), and aircraft refit for ammunition only (`Refit` ignores health). Repair auras still
+  mend whatever stands in reach. Overwhelmed (and the gather emergency on cooldown): each member makes its role's
+  short move at most every 8 s: Cover (the spot 6 m back with the least anti-tank reach of five), Shift (20 m across),
+  Smoke (out of the smoke ring); Hold, Rearm and Scoot roles do nothing extra (artillery has its own scoot below).
+- **Facing (D.4).** A standing ground vehicle whose front armour is thicker than its side turns its hull to the focus
+  target or the nearest known enemy within 1.5x reach, at half its turn rate (`Vehicle.FaceHeading`, read in the
+  movement system's stopped branch). While moving it keeps the normal heading (no reversing in the sim).
+- **Scouts (D.8).** Recon-role members in combat closer than 0.75 x vision to the enemy back off to 0.9 x vision.
+  Support vehicles keep TacticalAi's existing "behind the army" placement. Drones avoiding EW/C-RAM: not added (no
+  per-drone routing in the sim; the strike drones' own logic stands).
+- **Artillery (D.6).** Every own gun without a scoot of its own moves 18 m after 3 shots when enemy guns or a
+  counter-battery radar are known (across the line of fire, sides alternating by id and time, then back), staying in
+  reach; spots where a standing gun was hit while enemy guns were known are marked (last 12) and avoided within 15 m,
+  and a gun on a marked spot moves after its next shot. No random draw (deterministic without RNG).
+- **Aircraft (D.7).** An aircraft attack-moving onto a point under known anti-air (the World Model's layer, with its
+  confidence) flies in through the cheapest of three waypoints 50 m out (straight, +-60 degrees) when it is at least
+  30 % less defended, then attacks; one idle 10 s in anti-air above twice its strength leaves 60 m to the clearest of
+  8 directions. Flares stay the existing automatic ones.
+- **G.1 crowds.** The movement system already has traffic rules, a parked-hull cost field (UnitCostField) and lanes
+  (prompt 12); squads add formations, so no flow field was added (M.3 says to share one only if measured to be needed).
+- **G.2 narrow passages.** A squad travelling with a chokepoint (a narrow cell holding 3+ vehicles) within 12 m of its
+  next 40 m sends its front half; the back half stops 3 s and is then re-sent by the idle-member rule.
+- **G.3.** Idle: no member moving, firing within 3 s, reloading, deploying or with a target, and the action not
+  HOLD/OVERWATCH, for `idleReassess` -> the squad re-scores ignoring commitment and margin (it may keep HOLD). Stuck:
+  a member with a move order making < 2 m in `stuckTime` -> back off 4 m, then a side step towards the goal, then out
+  of the cluster, then the squad re-scores with that route marked blocked (flanks) and its orders re-issued. The
+  movement system's safety net (prompt 12, 10 s: nudged onto free ground, logged for the map) stays as the last rung;
+  its 10 s were not changed to the prompt's ~8 s (a measured value of prompt 12).
+
+## 28 4 (cloud, 2026-10-02)
+
+Prompt 28 pass 4, Sim only: E (towers), F (bosses). Compile check only.
+
+- **Tower modes (E.1).** `TowerMode` on each tower: Default means the data's mode for its type (`aiBehaviour.towers`,
+  generated from the sheet "Công trình"); `SimWorld.SetTowerMode(team, id, mode)` accepts the type's default or a
+  listed alternative (the Base screen and the in-battle tap are local UI). A tactic's tower mode (base defence:
+  Lead) applies to towers that offer it and were not set by the player. Modes are factors on the existing target
+  score (so E.3's switch margin and hold-until-dead are the vehicles' own): Nearest 1/(1 + 2 d/reach), Strongest
+  sqrt(strength), Weakest (1.6 - health share) + 200/hp, Lead 1 + 60/(distance to own camp), Air first x3 on
+  aircraft, Biggest aircraft 1 + hp/300, Cluster 1 + 0.5 per neighbour within 8 m, Artillery first x3 on guns.
+- **Special rules (E.4).** ATGM, recoilless and AT-gun towers x0.05 on a light vehicle while heavy armour is in reach;
+  guard tower x1.5 on light vehicles and scouts; MG bunker 1 + 0.3 per light neighbour; rocket turret x2 on a group of
+  3+, else x0.6; drone hangar x2 on guns and still targets. Point defence (C-RAM, Iron Beam, Patriot by mode): rounds
+  from bosses or aimed at structures first for ShieldKey (C-RAM's default), missiles and rockets first for
+  MissilesFirst (PAC-3), else the soonest impact as before. Vehicles' APS keep the old order exactly. Stealth reveal
+  (guard tower) and the EW tower's "strongest when a swarm comes" were not changed (their systems already do it or
+  have no targeting choice).
+- **Shared targets (E.2).** A tower x1.4 on a target under 50 % health that another own tower within 40 m is firing at.
+- **Boss types (F.1, F.2).** `aiBehaviour.bosses` (12 bosses by id; mini bosses by id prefix). Weights on the boss's
+  existing target score (value, distance, reach): Anti-Blob 1 + 0.4 per neighbour within 10 m; Anti-Air x2.5 on
+  aircraft; Anti-Artillery x3 on guns, x1.3 still; Core Protection x1.8 on one attacking it within 30 m; Flank
+  Punishment x2.2 off its front 120 degrees; Area Denial x1.6 still; anyone shooting the boss x1.2. No separate boss AI
+  (F.1).
+- **Big attacks (F.3).** Where a big attack's aim is the generic densest group, the boss's types pick the point
+  instead (guns, still targets, crowds, close attackers, flankers; visible ones only); the other aims (still, HQ, base,
+  prey, self) were designed in prompt 26 and stay. Warning times are untouched.
+- **Facing and escorts (F.4, F.5).** A standing ground boss turns its front to the strength-weighted direction of the
+  enemies its side sees within 100 m at half its turn rate (flanking stays possible). Escort slots are laid out on the
+  direction of the enemy mass within 90 m instead of the boss's heading, and close to half the distance for 8 s after
+  a new escort wave (a phase change). Air bosses keep their designed routes.
+- **Left as they are.** The stand-in AI items of ASSET_DEBT (Stymphalos's swarm, Cerberus's coupling break, Hydra's
+  drones, Ixion's mines, the carrier's minions, Monster's track break, Gungnir's line warning) are boss mechanics, not
+  the targeting and positioning prompt 28 F covers; they stay for their own prompt.
+
+## 28 5 (cloud, 2026-10-02)
+
+Prompt 28 pass 5, Sim only: H (tactics), I (in-battle economy), K (difficulty, Sim side). Compile check only. Most
+of H and K was built with the general in pass 2 (`AiCommander`: modules, switching, buying, stance, per-squad tactics,
+visibility; `AiSkill`); this pass adds the rest.
+
+- **H.1 modules.** Each tactic is the shared modules the generator read from the sheet (attack readiness, cohesion,
+  flank weight, pincer, focus, main effort, spread, hold fire and stance, engagement band, kiting, artillery prep,
+  fall-back and counter-attack ratios, pace, bounding, hold, base hold, wait for air, CP saving, together, standoff,
+  target groups, tower mode, heavy lead, drop secondary, SEAD cards, mass support); Balanced has none (the standard
+  thresholds). No tactic has its own AI. **H.2:** no direct stat effects were added (the sheet gives none; "nếu có").
+- **H.3 merges.** Not decided here: fingerprints need the 5-seed runs (`TacticFingerprintSweep`, written, Explicit);
+  `TacticDef.MergedInto` and `AiBehaviour.Tactic()` follow a merge once the owner allows the runs and one is chosen.
+- **H.7 generals.** Preferred tactics from the sheet (Thorne "Cân bằng như Kade" -> balanced), Brandt -> depth and the
+  default -> balanced (prompt). A general's ConquestAi without `Tactic` uses `GeneralTactic(economy.Commander.Id)`.
+- **H.11, H.12.** `AiBehaviour.Unlocked(tactic, chapter, interludes)` (chapter <= 1 tactics always open) and
+  `SuitedTo(commanderId)` (the sheet's "Hợp chỉ huy", first two). **H.13:** a Sandbox side has `tactic` (saved in the
+  scenario JSON); mid-battle switching goes through `SandboxBattle.Commander(team).Commander.RequestTactic`.
+- **H.14 saving.** The save layer (`PlayerProfile`, PlayerPrefs) is Game code: listed in LOCAL_TODO, not written blind.
+- **I.1, I.3.** The caps (32 ground, 6 aircraft) and the CP bank are the existing ones; nothing loosens them.
+- **I.2 upkeep by numbers.** `TeamEconomy.ArmyFactor` = the army band's factor for vehicles out / vehicle cap
+  (`economy.armyBands`: 1 under 50 %, 0.9 to 75 %, 0.8 above), multiplied into `Earning` beside the existing supply
+  upkeep (CP-based, prompt 7) and catch-up. Every mode with an economy is affected: this is the prompt's soft pressure.
+- **I.4** use-or-lose is in the general (pass 2). **I.5** Conquest already drains the side holding fewer points
+  (`Bleed`, Company of Heroes style): nothing added; other point modes keep their own rules.
+- **I.6 escalation** runs on prompt 23's battle events (`BattleEvents`, every mode that has them, so not the
+  campaign): a big fight = both sides lost >= `world.bigFight` (600) health in the last 5 s; quiet past the
+  `economy.escalation` tiers (30/50/70/90 s): 1 points worth x`world.escalationPoints` (1.5) in income and bleed
+  (Conquest reads `world.PointScale`) and the World Model raises "point worth more" OBJECTIVE_PRESSURE events; 2 a
+  supply crate in the middle (the events' own crate drop); 3 an environment barrage (`artillery_barrage`) on the army
+  further from the middle; 4 each army revealed to the other for 15 s (UAV scan zones) to force contact. A big fight
+  returns to tier 0. `world.PressureTier` is for the HUD.
+- **I.7 final phase.** Conquest has tickets, not a clock, so the final phase starts when the losing side's tickets
+  would run out within `economy.finalPhase` (120 s) at the current bleed; from then points count x`finalPhaseScale`.
+- **I.8 defensive costs.** Holding fewer points costs income and tickets by itself; hit-and-run fires with x1.3 spread
+  while backing off (`AiKiting`); dispersal's focus is halved (module).
+- **K.** Difficulty axes are in `AiSkill` (pass 2). "Prediction quality" has no separate model: reaction delay,
+  memory and decision quality carry it. The player's AI at Normal is a session hook (LOCAL_TODO).
+- **balance.json keys added this pass:** `ai.world.bigFight`, `ai.world.escalationPoints`, `ai.world.churnWarn`.
+
+## 28 extras (cloud, 2026-10-02)
+
+The owner widened the cloud's scope ("cái gì đưa được cứ đưa"). Still no runs: only the generator, the exporter and
+the Sim compile check ran.
+
+- **Text tables.** `Scripts/Game/Hud/TacticText.cs`, the CommanderText pattern (no Unity API), registered in
+  `Strings.Get`, `Entries` and `Has` (three one-line additions to Strings.cs: a table nobody looks up shows keys).
+  Tactic names: the sheet's Vietnamese, English by me (Blitz, Overwhelming Fire, Defence in Depth, Encirclement,
+  Bounding Overwatch, Ambush, Hit and Run, Breakthrough, Dispersal, Air Superiority, SEAD First, Attrition,
+  Decapitation, Base Defence, All-Out Assault). The Sim's hint keys were renamed `aihint.*` (the HUD already had
+  `hint.*` keys for other lines). Factor words `why.<key>` match the factor keys the squads write.
+- **Unit "VÌ SAO".** Recorded when a squad member's target changes: target, squad state, and which of squad focus,
+  tactic target group, shooting at us, nearly dead, effective damage (always: the combat score's base), not in sight.
+- **Order economy.** Squads keep a bound's goal until near it, a hold or regroup point while it is valid, and re-issue
+  combat slots only when the goal moves over 10 m: fewer route requests (the path queue of prompt 12 is shared).
+- **Tests.** `AiScenarioTests` (O.4: 17 scenarios incl. 7 tower modes; Explicit, category AI28): bridge, splash vs
+  old AI, dodge, gather on friends, low health, switch margin (from the log lines "old score -> new score"), infeasible
+  flank, old information, flank hits, aircraft in anti-air, artillery scoot and marks, idle re-score, tower modes,
+  tactic switch, CP shares after 5 minutes, pressure tiers, replay. `TacticFingerprintSweep` (H.3: 8 fingerprint
+  numbers x 16 tactics x 5 seeds against Balanced, normalised, pair distances, merge candidates under
+  `world.mergeThreshold` 0.15 read from the sheet's merge rule; O.5: every mission x 5 seeds x Balanced + blitz,
+  depth, firepower at Normal). Thresholds in them are first guesses to be set after the first runs.
+- **Docs and export.** `Docs/ai/AI_DESIGN.md`, `TACTICS.md` (the tactic table generated from the data), `ECONOMY.md`;
+  `Tools/ai/export_applied_xlsx.py` writes `Machine_Brigade_AI_Research_applied.xlsx` (green game columns on "Tham số
+  AI", "Cân bằng kinh tế", "Chiến thuật", a "Tham số thế giới" sheet and a note sheet); exported with the initial values.
+- **balance.json keys added here:** `ai.world.mergeThreshold`.

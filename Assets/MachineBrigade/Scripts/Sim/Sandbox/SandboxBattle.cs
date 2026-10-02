@@ -220,6 +220,7 @@ namespace MachineBrigade.Sim.Sandbox
                         _commanders[team] = new ConquestAi(null, team, 1 - team, AiDifficulty.Hard, seed)
                         {
                             AutoDeploy = true, AutoStrike = true, BuyScores = TraceBuying ? new Dictionary<string, float>() : null,
+                            Tactic = string.IsNullOrEmpty(s.Sides[team].Tactic) ? null : s.Sides[team].Tactic,
                         };
                         break;
                     case SandboxAi.Combat:

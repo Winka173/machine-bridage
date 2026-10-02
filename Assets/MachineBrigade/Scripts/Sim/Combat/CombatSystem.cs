@@ -76,7 +76,7 @@ namespace MachineBrigade.Sim.Combat
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
                 // Prompt 17 C: a bunker vehicle digging in or packing up does not fire either.
                 // Prompt 19: a tiered boss in orbit holds its fire (its big attack is the boss system's).
-                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy || v.Tier == AltitudeTier.Orbit)
+                if (v.Stunned || v.Lowered || v.HoldFire || v.AiHoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy || v.Tier == AltitudeTier.Orbit)
                 {
                     v.Target = EntityId.None;
                     continue;
@@ -369,6 +369,8 @@ namespace MachineBrigade.Sim.Combat
             score *= P25Worth(v, other, weapon);
             // Prompt 26 B.9: a boss's area weapons look for the crowd, its guns for the dearest vehicle.
             score *= P26Worth(v, other, weapon);
+            // Prompt 28: the squad's focus and tactic, a tower's mode, a boss's behaviour type, friends in the line of fire.
+            score *= P28Worth(v, other, weapon);
             score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }
@@ -812,6 +814,8 @@ namespace MachineBrigade.Sim.Combat
             var spread = weapon.Guided ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
+            // Prompt 28 I.8: hit and run pays for firing while backing off.
+            if (shooter.AiKiting && shooter.IsMoving) spread *= 1.3f;
             // An escort spotter's mark (prompt 16 F): the boss's guns fall tighter on the marked target.
             if (shooter.Def.Boss && spread > 0f && aimTarget is Vehicle spotted && Marked(spotted, shooter.Team)) spread *= _world.Catalog.EscortRules.SpotSpread;
             if (!weapon.Guided && spread > 0f && (shooter.Gear != null || aimTarget is Vehicle { Gear: not null }))

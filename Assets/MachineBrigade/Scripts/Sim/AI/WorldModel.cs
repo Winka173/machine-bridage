@@ -652,12 +652,15 @@ namespace MachineBrigade.Sim.AI
                         Vector2.Zero, 0f, EntityId.None, ForceGroup.AntiTank);
             }
 
-            // OBJECTIVE_PRESSURE: an own point contested, or a point the enemy is taking.
+            // OBJECTIVE_PRESSURE: an own point contested, or a point the enemy is taking; points worth more (I.6).
             if (_model.Objectives is { } mode)
             {
                 for (var i = 0; i < mode.Points.Count; i++)
                 {
                     var p = mode.Points[i];
+                    if (_world.PressureTier >= 1 && p.Owner != Team && !p.Locked)
+                        Raise(IntelEventKind.ObjectivePressure, $"point {p.Def.Name} worth more", 55f, 1f, now + life, p.Def.Position, p.Def.Radius,
+                            new EntityId(-(i + 1)));
                     if (p.Owner == Team && p.Contested)
                         Raise(IntelEventKind.ObjectivePressure, $"losing point {p.Def.Name}", 75f, 1f, now + life, p.Def.Position, p.Def.Radius,
                             new EntityId(-(i + 1)));

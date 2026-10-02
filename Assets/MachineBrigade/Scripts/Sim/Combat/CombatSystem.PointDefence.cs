@@ -70,7 +70,8 @@ namespace MachineBrigade.Sim.Combat
             {
                 if (p.OwnerTeam == v.Team || p.Tandem || p.TargetFlying || p.EngagedBy.IsValid || p.PdPassed) continue;
                 if (p.TimeLeft < ShortestBurst || p.TimeLeft > EngageWindow) continue;
-                if (best != null && p.TimeLeft >= best.TimeLeft) continue;
+                // Prompt 28 E.4: a tower's mode orders the rounds (key structures, boss missiles); the soonest first otherwise.
+                if (best != null && !BetterRound(v, p, best)) continue;
                 var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 if (!DamageSystem.GunTakes(aps, p.Weapon, out var shell)) continue;

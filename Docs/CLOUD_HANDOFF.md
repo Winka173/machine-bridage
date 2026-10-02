@@ -126,3 +126,23 @@ into `cloud/p28-sim`. On top of the Sim passes 2-5, the cloud may now also do (s
   after the owner allows the sims).
 Still local: drawing J's overlays, the tactic picker and HUD switch button (UI Toolkit), tower mode UI, screenshots,
 the EditMode suite and every measure.
+
+## Cloud state 2026-10-02 (passes 2-5 and the widened scope)
+
+- Branch `cloud/p28-sim` (merged `origin/feature/visual-overhaul` at 212383f first); head: the commit "Cloud state after
+  prompt 28 passes 2-5". Sim compile check clean (`dotnet build Tools/simbuild/Sim.csproj`); nothing was run.
+- Done, Sim side: pass 2 (B general `AiCommander`, C `SquadLayer`, decision log), pass 3 (D unit layer, G anti-stuck),
+  pass 4 (E tower modes and rules, F boss behaviour types), pass 5 (H tactics, I economy, K difficulty). DECISIONS
+  "28 2" to "28 5" and "28 extras".
+- Done, widened scope: `Game/Hud/TacticText.cs` (+ 3 lines in `Strings.cs`), Sandbox side tactic, "VÌ SAO" for
+  general, squads and units, churn counters, replay log, `AiScenarioTests`, `TacticFingerprintSweep`, three design docs,
+  the applied xlsx and its exporter.
+- Waits for the local session: Unity compile (Game and Tests were written blind), CatalogCheck (`aiBehaviour` and new
+  `ai.world` keys), the EditMode suite, then the owner's go for the Explicit runs (scenarios, sweeps, fingerprints,
+  campaign); the hooks in `Docs/ai/LOCAL_TODO.md` (tactic picker, HUD switch, hint line, tower mode UI, saving, player AI
+  at Normal, viewer overlays, screenshots).
+- Behaviour change to check first: `ConquestAi.LayeredDefault = true` puts every ConquestAi on the new AI, and the
+  army-band upkeep and pressure tiers change every mode with an economy or battle events. If a regression blocks the
+  merge, `LayeredDefault = false` restores the old commander; `BattleEvents.Escalation = false` the old events.
+- balance.json keys added: `ai.world.bigFight`, `ai.world.escalationPoints`, `ai.world.churnWarn`,
+  `ai.world.mergeThreshold`, and the whole generated `aiBehaviour` block; no existing value changed.
