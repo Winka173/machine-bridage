@@ -995,7 +995,7 @@
     { "id": "p26_typhon_ty100", "inherits": "naval_100", "weaponFamily": "", "real": "AK-100 100 mm (deck)", "damage": 600, "burst": 1, "cooldown": 2.5, "pen": 4, "splash": 5, "edge": 10 },
     { "id": "p26_typhon_ty57", "inherits": "gun_57mm", "weaponVariantId": "", "weaponFamily": "", "real": "AU-220 57 mm (deck)", "damageType": "HighExplosive", "damage": 130, "burst": 2, "burstInterval": 0.1, "cooldown": 1.4, "pen": 3, "splash": 3, "edge": 6, "range": 40 },
     { "id": "p26_typhon_sec_ty57", "inherits": "p26_typhon_ty57", "real": "AU-220 57 mm (twin deck mount)", "salvoMode": "SIMULTANEOUS", "barrels": 2, "burstInterval": 0.5, "burst": 4, "cooldown": 2.79, "damage": 120 },
-    { "id": "p26_typhon_direct_ty100", "inherits": "p26_typhon_ty100", "burst": 2, "projectileSpeed": 120, "cooldown": 3, "damage": 300 },
+    { "id": "p26_typhon_direct_ty100", "inherits": "p26_typhon_ty100", "burstInterval": 1, "burst": 2, "projectileSpeed": 120, "cooldown": 2.5, "damage": 300 },
     { "id": "p26_roc_roc_bombs", "inherits": "boss_howitzer", "weaponFamilyId": "bomb_400", "weaponFamily": "", "real": "bomb-bay stick 400 kg", "size": 400, "caliberMm": 0, "warheadKg": 400, "family": "bomb", "damage": 400, "burst": 8, "burstInterval": 0.3, "cooldown": 2.9, "splash": 5, "edge": 10, "range": 45, "minRange": 0, "topAttack": true },
     { "id": "p26_roc_roc105", "inherits": "gunship_105", "real": "M102 105 mm (gondola)", "damage": 300, "cooldown": 6, "splash": 5, "edge": 10 },
     { "id": "p26_roc_roc_atgm", "inherits": "boss_missiles", "weaponFamily": "", "real": "Kornet (dropped from the bay)", "damage": 300, "cooldown": 2, "pen": 5, "range": 55 },
