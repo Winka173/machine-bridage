@@ -677,15 +677,15 @@
   },
   "gun_turret": {
     "file": "gun_turret.glb",
-    "triangles": 6112
+    "triangles": 6430
   },
   "gun_turret_a": {
     "file": "gun_turret_a.glb",
-    "triangles": 6384
+    "triangles": 6702
   },
   "gun_turret_b": {
     "file": "gun_turret_b.glb",
-    "triangles": 6688
+    "triangles": 7006
   },
   "gunship_heli": {
     "file": "gunship_heli.glb",
@@ -937,15 +937,15 @@
   },
   "mg_bunker": {
     "file": "mg_bunker.glb",
-    "triangles": 3404
+    "triangles": 3904
   },
   "mg_bunker_a": {
     "file": "mg_bunker_a.glb",
-    "triangles": 3704
+    "triangles": 4204
   },
   "mg_bunker_b": {
     "file": "mg_bunker_b.glb",
-    "triangles": 3560
+    "triangles": 4060
   },
   "microwave_vehicle": {
     "file": "microwave_vehicle.glb",
@@ -1213,15 +1213,15 @@
   },
   "rocket_turret": {
     "file": "rocket_turret.glb",
-    "triangles": 3894
+    "triangles": 4410
   },
   "rocket_turret_a": {
     "file": "rocket_turret_a.glb",
-    "triangles": 5102
+    "triangles": 5554
   },
   "rocket_turret_b": {
     "file": "rocket_turret_b.glb",
-    "triangles": 3010
+    "triangles": 3526
   },
   "rubble_large": {
     "file": "rubble_large.glb",

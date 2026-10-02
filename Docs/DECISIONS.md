@@ -14097,3 +14097,23 @@ no previews, no tests.
   artillery_emplacement .3855, _a .4083, _b .3865, guard_tower .3079 (the dimmest: watch it), guard_tower_a .3164, guard_tower_b .4285.
 - **Pitfall:** `k.block` is a plain box under 12 cm in any size, so shield plates were thickened to 13 cm to get chamfers.
 - Lead (2026-10-02), wave 6a cards: all nine pass (+2.6 % to +9.4 %). Parallel lanes merge note: build_assets.py registration lines and the validator baseline conflict; the lead keeps both registrations and re-accepts the lane's models (glb_check.py --accept, without --compare, after git lfs checkout).
+
+## 27 wave 6b (lead pass, 2026-10-02)
+
+Pass 6b (lane B, towers): gun_turret, mg_bunker, rocket_turret, each with `_a` and `_b`, in `Tools/blender/mb_p27_wave6.py` (method of 6a:
+old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and pivots untouched). Run: Blender
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 for all nine.
+
+- gun_turret: extruded chamfered ring pad, lathe drum with a stepped coping skirt, `k.block` buttresses and ammunition porch with lintel, the
+  faceted turret body as a `k.sharp_loft` of the old outline and .86 taper (cheek and side plates still sit on its faces), side recesses,
+  roof greebles. The old zero-area triangle is gone. `_a` (longer gun, scope) and `_b` (twin 57, radar) edit by name as before.
+- mg_bunker: finer lathes (plinth, formwork ridge, flared column, lipped roof with a flatter crown), chamfered steps and a door lintel.
+  Berm, net, sandbags, fascia, cupola, MG and ATGM unchanged. Open edges unchanged (192 / 192 / 104: the old net and berm sheets).
+- rocket_turret: extruded pad, chamfered blast wall with recessed panels, `k.block` launcher base and box (rotated 30 degrees, same centre),
+  panel recesses, roof greebles; `_a` rack and `_b` covers edit the box parts as before.
+- **Gates (old -> new triangles, COLOR_0).** gun_turret 6,112 -> 6,430 (.580 -> .650); _a 6,384 -> 6,702 (.581 -> .651); _b 6,688 -> 7,006
+  (.585 -> .654); mg_bunker 3,404 -> 3,904 (.623 -> .672); _a 3,704 -> 4,204 (.631 -> .677); _b 3,560 -> 4,060 (.622 -> .672);
+  rocket_turret 3,894 -> 4,410 (.579 -> .663); _a 5,102 -> 5,554 (.645 -> .699); _b 3,010 -> 3,526 (.607 -> .686). All at most 1.18x
+  triangles, zero-area 0, runtime nodes identical, size within .1 %, no errors or warnings.
+- **Card luma (old, alpha > .5, Rec. 709):** gun_turret .3963, _a .3969, _b .4070; mg_bunker .3988, _a .4020, _b .3958; rocket_turret .3672
+  (the dimmest: watch it), _a .3866, _b .4143.
