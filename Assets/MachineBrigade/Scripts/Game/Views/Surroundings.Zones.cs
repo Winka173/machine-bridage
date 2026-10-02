@@ -28,7 +28,7 @@ namespace MachineBrigade.Game.Views
         {
             foreach (var pool in new[] { theme.LowlandTrees, theme.HighlandTrees, theme.Trees })
                 if (pool != null)
-                    foreach (var id in pool) _treeModels.Add(id);
+                    foreach (var poolId in pool) _treeModels.Add(poolId);
             var id = _dress != null && !string.IsNullOrEmpty(_dress.farTree) ? _dress.farTree : _biome?.farTree;
             if (string.IsNullOrEmpty(id) || id == "none") return null;
             return models.Has(id) ? id : null;
