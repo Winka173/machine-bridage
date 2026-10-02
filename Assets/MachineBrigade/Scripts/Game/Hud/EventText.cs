@@ -168,6 +168,9 @@ namespace MachineBrigade.Game.Hud
             ["event.groundChange.bridge.down.warn"] = ("Charges on the marked bridge: it falls in {seconds} s, get off it", "Có thuốc nổ trên cây cầu được đánh dấu: cầu sập sau {seconds} giây, rời khỏi cầu"),
             ["event.groundChange.bridge.down.start"] = ("The bridge is down: cross by the other bridge or the ford", "Cầu đã sập: qua sông bằng cây cầu kia hoặc chỗ nước cạn"),
             ["radio.linh.ev.groundChange.bridge.down.warn"] = ("Their sappers are under the east bridge. It is going into the river.", "Công binh của chúng đang ở dưới cầu phía đông. Cây cầu sắp đổ xuống sông."),
+            ["event.groundChange.crane.fallen.warn"] = ("The crane is buckling: it comes down along the marked quay in {seconds} s", "Cần cẩu đang oằn xuống: nó sẽ đổ dọc bến cảng được đánh dấu sau {seconds} giây"),
+            ["event.groundChange.crane.fallen.start"] = ("The crane is down across the quay: go round by the lanes north and south", "Cần cẩu đã đổ chắn bến cảng: đi vòng qua các lối phía bắc và phía nam"),
+            ["radio.linh.ev.groundChange.crane.fallen.warn"] = ("That crane is going over. Clear the quay, the boom will come down right along it.", "Cái cần cẩu đó sắp đổ. Dọn khỏi bến, cần trục sẽ đổ dọc theo bến."),
         };
     }
 }

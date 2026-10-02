@@ -22,9 +22,9 @@ namespace MachineBrigade.Tests
         private static Catalog _catalog;
         private static Catalog Catalog => _catalog ??= GameContent.LoadCatalog();
 
-        private static SimWorld Field(int seed = 1) => new(Catalog, new MapDefinition("field", 300f,
+        private static SimWorld Field(int seed = 1, List<PropPlacement> props = null) => new(Catalog, new MapDefinition("field", 300f,
             new[] { new TeamStart(0, new Vector2(-108.75f, -108.75f)), new TeamStart(1, new Vector2(108.75f, 108.75f)) },
-            new List<PropPlacement>(), new List<UnitPlacement>()), seed);
+            props ?? new List<PropPlacement>(), new List<UnitPlacement>()), seed);
 
         /// <summary>A mission of one survive goal on the open field with the given library rows, nav sites and references.</summary>
         private static MissionDef Mission(string events, string sites, string refs) =>
@@ -32,9 +32,9 @@ namespace MachineBrigade.Tests
                                     "\"goal\": \"Survive\", \"surviveSeconds\": 5000, \"enemyAi\": \"none\", \"navStates\": [" + sites + "], " +
                                     "\"missionEvents\": [" + refs + "]}]}")[0];
 
-        private static (SimWorld world, MissionMode mode) Start(MissionDef def, int seed = 1)
+        private static (SimWorld world, MissionMode mode) Start(MissionDef def, int seed = 1, List<PropPlacement> props = null)
         {
-            var world = Field(seed);
+            var world = Field(seed, props);
             var mode = new MissionMode(def, new SideSetup(), new SideSetup()) { EventLevel = EventLevel.Normal };
             mode.Setup(world);
             world.SpawnVehicle("main_battle_tank", 0, new Vector2(-100f, -100f), 0f).Invulnerable = true;
@@ -62,7 +62,7 @@ namespace MachineBrigade.Tests
         public void EveryLaterEventHasItsWordsInBothLanguages()
         {
             // Every ("text", state) a campaign event brings in (Tools/campaign/ground_events.py, prompt 31 L5).
-            var variants = new[] { "tide.high", "tide.low", "bridge.down" };
+            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen" };
             var keys = new List<string>();
             foreach (var v in variants)
                 keys.AddRange(new[] { $"event.groundChange.{v}.warn", $"event.groundChange.{v}.start", $"radio.linh.ev.groundChange.{v}.warn" });
@@ -77,6 +77,8 @@ namespace MachineBrigade.Tests
         {
             ("c1m01", "tide_turn", "shoal"),
             ("i2m03", "bridge_collapse", "east_bridge"),
+            ("c4m05", "crane_fall", "crane"),
+            ("c4m02", "crane_fall", "crane"),
         };
 
         [Test]
@@ -140,6 +142,34 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(a.NavStates.Sites[0].SwitchedAt, b.NavStates.Sites[0].SwitchedAt);
             Assert.AreEqual(a.NavStates.Switches, b.NavStates.Switches);
             Assert.GreaterOrEqual(a.NavStates.Switches, 2);
+        }
+
+        // ================================================================== Cần cẩu đổ (the crane falls)
+
+        [Test]
+        public void TheCraneFallsOnlyOnceItIsDestroyedAndClosesTheQuay()
+        {
+            const string fall = "{\"id\": \"cf\", \"kind\": \"GroundChange\", \"trigger\": {\"propDown\": {\"def\": \"gantry_crane\", \"x\": 40, \"z\": 60}}, " +
+                                "\"lead\": 10, \"params\": {\"navSite\": \"crane\", \"navState\": \"fallen\", \"text\": \"crane\"}}";
+            const string site = "{\"id\": \"crane\", \"initial\": \"standing\", \"states\": [{\"name\": \"standing\"}, {\"name\": \"fallen\", " +
+                                "\"blocks\": [{\"x\": 70, \"z\": 60, \"w\": 30, \"d\": 5}]}]}";
+            var props = new List<PropPlacement> { new("gantry_crane", new Vector2(40f, 60f), 0) };
+            var (world, mode) = Start(Mission(fall, site, "\"cf\""), 1, props);
+            Run(world, mode, 30f);
+            var s = State(mode, "cf");
+            Assert.AreEqual(EventPhase.Waiting, s.Phase, "a standing crane never falls");
+            Assert.AreEqual("standing", world.NavStates.ActiveOf("crane"));
+            var crane = world.Props.First(p => p.Def.Id == "gantry_crane");
+            world.Damage.Apply(crane, 1000000f, DamageType.HighExplosive);
+            Assert.IsFalse(crane.IsAlive);
+            Run(world, mode, 1f);
+            Assert.AreEqual(EventPhase.Warned, s.Phase, "it buckles: warned first");
+            Assert.AreEqual(1, s.Marks.Count, "the boom's ground on the minimap");
+            Assert.AreEqual("standing", world.NavStates.ActiveOf("crane"));
+            Run(world, mode, 11f);
+            Assert.AreEqual("fallen", world.NavStates.ActiveOf("crane"));
+            Assert.IsFalse(world.Grid.IsWalkable(new Vector2(70f, 60f)), "the boom lies across the quay");
+            Assert.IsTrue(world.Grid.IsWalkable(new Vector2(40f, 60f)), "the crane's own footprint opened when it was destroyed");
         }
     }
 }

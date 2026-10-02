@@ -68,6 +68,32 @@ namespace MachineBrigade.Sim.Modes
             return false;
         }
 
+        /// <summary>Prompt 31 L5: the prop each "propDown" trigger watches (its instance: the prop's id, None where none stands).</summary>
+        private readonly Dictionary<string, EntityId> _watchedProps = new(StringComparer.Ordinal);
+
+        /// <summary>Prompt 31 L5: whether the prop a trigger watches (its def nearest its point, within 8 m) has been destroyed.</summary>
+        private bool PropDown(SimWorld world, EventState s)
+        {
+            var t = s.Def.Trigger;
+            if (!_watchedProps.TryGetValue(s.Def.Instance, out var id))
+            {
+                id = EntityId.None;
+                var at = new Vector2(t.PropX, t.PropZ);
+                var best = 8f * 8f;
+                // The props in the order the map placed them: the same pick in every replay.
+                foreach (var p in world.Props)
+                {
+                    if (p.Def.Id != t.PropDown) continue;
+                    var d = Vector2.DistanceSquared(p.Position, at);
+                    if (d > best) continue;
+                    best = d;
+                    id = p.Id;
+                }
+                _watchedProps[s.Def.Instance] = id;
+            }
+            return id.IsValid && world.TryGetProp(id, out var prop) && !prop.IsAlive;
+        }
+
         private bool PrepareP31(SimWorld world, EventState s)
         {
             var e = s.Def;

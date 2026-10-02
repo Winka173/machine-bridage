@@ -148,6 +148,15 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Prompt 31 L3: the enemy has seen one of the player's vehicles (an infiltration found out).</summary>
         public bool Spotted { get; set; }
 
+        /// <summary>
+        /// Prompt 31 L5: a prop of this definition standing within 8 m of (<see cref="PropX"/>, <see cref="PropZ"/>) has been
+        /// destroyed (the neutral crane brought down); data "propDown": {"def", "x", "z"}. Never holds where no such prop stands.
+        /// </summary>
+        public string? PropDown { get; set; }
+
+        public float PropX { get; set; }
+        public float PropZ { get; set; }
+
         /// <summary>Seconds between the conditions holding and the event starting.</summary>
         public double Delay { get; set; }
 
@@ -168,6 +177,9 @@ namespace MachineBrigade.Sim.Content
             After = o.Has("after") ? o.String("after") : null,
             Outnumbered = o.Has("outnumbered") ? o.Float("outnumbered") : null,
             Spotted = o.Bool("spotted", false),
+            PropDown = o.Has("propDown") ? o.Object("propDown").String("def") : null,
+            PropX = o.Has("propDown") ? o.Object("propDown").Float("x", 0f) : 0f,
+            PropZ = o.Has("propDown") ? o.Object("propDown").Float("z", 0f) : 0f,
             Delay = o.Float("delay", 0f),
             Every = o.Float("every", 0f),
             Times = o.Int("times", o.Has("every") ? 99 : 1),

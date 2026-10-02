@@ -207,6 +207,7 @@ namespace MachineBrigade.Sim.Modes
             if (t.After != null && Find(t.After) is not { HappenedAt: >= 0 }) return false;
             if (t.Outnumbered is { } ratio && Army(world, MissionMode.EnemyTeam) < ratio * MathF.Max(1f, Army(world, MissionMode.PlayerTeam))) return false;
             if (t.Spotted && !Spotted(world)) return false;
+            if (t.PropDown != null && !PropDown(world, s)) return false;
             s.ReadyAt = world.Time + t.Delay;
             return world.Time >= s.ReadyAt;
         }

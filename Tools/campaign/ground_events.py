@@ -134,3 +134,18 @@ nav_site('i2m03', {'id': 'east_bridge', 'initial': 'standing', 'states': [
     {'name': 'standing'},
     {'name': 'down', 'blocks': [{'x': 122, 'z': 0, 'w': 9, 'd': 50}]}]})
 replace_event('i2m03', 'nightfall', 'bridge_collapse')
+
+
+# ---------------------------------------------------------------------- Cần cẩu đổ (the crane falls): c4m05, c4m02
+# The dock's neutral gantry crane (-7.5, 131.25 on Ironport) can be shot down (an attack order or a strike; 2,000 hp). Once it is
+# destroyed (the new trigger "propDown": the prop of that def nearest the point, within 8 m), it buckles: 10 s later its boom
+# comes down east along the quay (x 2..32, z 128.5..133.5) and closes the quay's middle lane for good; the lanes north and south
+# of it stay. It falls along the quay, not south, so the rail line at z 106.8 (c4m05's train, the rail deliveries) is never
+# crossed. The crane's own footprint opens as any destroyed building's does.
+library(E('crane_fall', 'GroundChange', {'propDown': {'def': 'gantry_crane', 'x': -7.5, 'z': 131.25}},
+          {'navSite': 'crane', 'navState': 'fallen', 'text': 'crane'}, lead=10))
+for mid in ('c4m05', 'c4m02'):
+    nav_site(mid, {'id': 'crane', 'initial': 'standing', 'states': [
+        {'name': 'standing'},
+        {'name': 'fallen', 'blocks': [{'x': 17, 'z': 131, 'w': 30, 'd': 5}]}]})
+    events.add(mid, 'crane_fall')
