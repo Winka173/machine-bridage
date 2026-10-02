@@ -71,8 +71,8 @@ namespace MachineBrigade.Sim.Modes
             var m = 0;
             for (var g = 0; g < groups; g++)
             {
-                // The minis spread over the groups, the extra ones in the last (7 over 3: 2, 2, 3).
-                var take = pickedMinis.Count / groups + (g >= groups - pickedMinis.Count % groups ? 1 : 0);
+                // The minis spread over the groups, the extra ones in the first (7 over 3: 3, 2, 2, so the mains stand at 4, 7 and 10; prompt 26 E.2).
+                var take = pickedMinis.Count / groups + (g < pickedMinis.Count % groups ? 1 : 0);
                 for (var i = 0; i < take && m < pickedMinis.Count; i++) run.Add(story[pickedMinis[m++]].Id);
                 run.Add(story[pickedMains[g]].Id);
             }
@@ -89,8 +89,22 @@ namespace MachineBrigade.Sim.Modes
             return run;
         }
 
-        /// <summary>The week's hunt grows stronger down the run: the i-th of n bosses' health x this (0.9 to 1.2).</summary>
-        public static float Ramp(int index, int count) => count <= 1 ? 1f : 0.9f + 0.3f * Math.Clamp(index, 0, count - 1) / (count - 1);
+        /// <summary>The full hunt's first and last boss multipliers (prompt 26 E.3).</summary>
+        public const float FullFrom = 0.8f, FullTo = 1.3f;
+
+        /// <summary>The week's step per boss (prompt 26 E.2: 1 + 0.06 (i - 1), x1.0 to x1.54 over ten).</summary>
+        public const float WeeklyStep = 0.06f;
+
+        /// <summary>
+        /// Prompt 26 E.2/E.3: the i-th (0-based) of n bosses' multiplier m on its health and damage. The week's hunt: 1 + 0.06 i.
+        /// The full hunt: a straight line in story order from x0.8 at the first boss to x1.3 at the last.
+        /// </summary>
+        public static float Multiplier(int index, int count, bool full)
+        {
+            var i = Math.Clamp(index, 0, Math.Max(0, count - 1));
+            if (!full) return 1f + WeeklyStep * i;
+            return count <= 1 ? 1f : FullFrom + (FullTo - FullFrom) * i / (count - 1);
+        }
 
         /// <summary><paramref name="count"/> of the story indices drawn (a partial shuffle), back in story order.</summary>
         private static List<int> Pick(List<int> from, int count, ref ulong state)
@@ -160,8 +174,9 @@ namespace MachineBrigade.Sim.Modes
     /// <summary>Prompt 20 N: a combat support picked after a main boss, kept for the rest of the run.</summary>
     public sealed class HuntSupportDef
     {
-        public HuntSupportDef(string id, string icon, HuntSupportKind kind, float value)
+        public HuntSupportDef(string id, string icon, HuntSupportKind kind, float value, float strength = 0f)
         {
+            Strength = strength;
             Id = id;
             Icon = icon;
             Kind = kind;
@@ -174,6 +189,14 @@ namespace MachineBrigade.Sim.Modes
         public string Icon { get; }
 
         public HuntSupportKind Kind { get; }
+
+        /// <summary>
+        /// Prompt 26 E.2: how much army strength it adds (a share, 0.15 = +15 %); the supports held may add up to
+        /// <see cref="HuntSupports.Cap"/>. 0: it changes how the run is played instead (an extra drop, quicker cards) and is never capped.
+        /// </summary>
+        public float Strength { get; }
+
+        public bool PlayChanging => Strength <= 0f;
 
         /// <summary>How much (a share, CP, vehicles: see <see cref="HuntSupports.All"/>).</summary>
         public float Value { get; }
@@ -192,19 +215,22 @@ namespace MachineBrigade.Sim.Modes
     {
         public const int Offered = 3;
 
+        /// <summary>Prompt 26 E.2: all the supports together add at most this much army strength (+40 %).</summary>
+        public const float Cap = 0.40f;
+
         public static readonly IReadOnlyList<HuntSupportDef> All = new[]
         {
-            new HuntSupportDef("hull", "shield", HuntSupportKind.Hull, 0.15f),          // the army's health +15 %
-            new HuntSupportDef("gunnery", "crosshair", HuntSupportKind.Gunnery, 0.10f), // its damage +10 %
-            new HuntSupportDef("loaders", "ammo", HuntSupportKind.Loaders, 0.12f),      // its fire rate +12 %
-            new HuntSupportDef("engines", "move", HuntSupportKind.Engines, 0.12f),      // its speed +12 %
-            new HuntSupportDef("regen", "repair", HuntSupportKind.Regen, 0.01f),        // 1 % of health a second out of fire
+            new HuntSupportDef("hull", "shield", HuntSupportKind.Hull, 0.15f, 0.15f),          // the army's health +15 %
+            new HuntSupportDef("gunnery", "crosshair", HuntSupportKind.Gunnery, 0.10f, 0.10f), // its damage +10 %
+            new HuntSupportDef("loaders", "ammo", HuntSupportKind.Loaders, 0.12f, 0.12f),      // its fire rate +12 %
+            new HuntSupportDef("engines", "move", HuntSupportKind.Engines, 0.12f, 0.06f),      // its speed +12 %
+            new HuntSupportDef("regen", "repair", HuntSupportKind.Regen, 0.01f, 0.08f),        // 1 % of health a second out of fire
             new HuntSupportDef("rapid", "airstrike", HuntSupportKind.Rapid, 0.25f),     // fire support cooldowns -25 %
-            new HuntSupportDef("logistics", "cp", HuntSupportKind.Logistics, 0.20f),    // CP income +20 %
-            new HuntSupportDef("warchest", "coin", HuntSupportKind.WarChest, 35f),      // 35 CP now
-            new HuntSupportDef("supply", "people", HuntSupportKind.Supply, 6f),         // army cap +6
-            new HuntSupportDef("workshop", "gear", HuntSupportKind.Workshop, 1f),       // rests repair twice as much
-            new HuntSupportDef("bounty", "trophy", HuntSupportKind.Bounty, 0.5f),       // boss bounties +50 %
+            new HuntSupportDef("logistics", "cp", HuntSupportKind.Logistics, 0.20f, 0.10f),    // CP income +20 %
+            new HuntSupportDef("warchest", "coin", HuntSupportKind.WarChest, 35f, 0.05f),      // 35 CP now
+            new HuntSupportDef("supply", "people", HuntSupportKind.Supply, 6f, 0.08f),         // army cap +6
+            new HuntSupportDef("workshop", "gear", HuntSupportKind.Workshop, 1f, 0.05f),       // rests repair twice as much
+            new HuntSupportDef("bounty", "trophy", HuntSupportKind.Bounty, 0.5f, 0.05f),       // boss bounties +50 %
             new HuntSupportDef("airdrop", "reinforce", HuntSupportKind.Airdrop, 3f),    // three of the deck's vehicles, free
         };
 
@@ -218,9 +244,12 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Three supports not held yet, drawn from the run's seed and the boss just beaten (the same on a resumed run).</summary>
         public static IReadOnlyList<string> Offer(int seed, int boss, IReadOnlyCollection<string> held)
         {
+            // Prompt 26 E.2/E.3: a support that would take the held ones past the +40 % cap is not offered; once the cap is
+            // reached only the play-changing ones are (the extra drop, the quicker cards).
+            var used = Strength(held);
             var pool = new List<string>();
             foreach (var s in All)
-                if (!Contains(held, s.Id)) pool.Add(s.Id);
+                if (!Contains(held, s.Id) && (s.PlayChanging || used + s.Strength <= Cap + 1e-4f)) pool.Add(s.Id);
             var state = (ulong)(uint)seed * 0x9E3779B97F4A7C15UL ^ (ulong)(uint)(boss + 1) * 0xC2B2AE3D27D4EB4FUL;
             var n = Math.Min(Offered, pool.Count);
             for (var i = 0; i < n; i++)
@@ -236,6 +265,15 @@ namespace MachineBrigade.Sim.Modes
             foreach (var s in list)
                 if (s == id) return true;
             return false;
+        }
+
+        /// <summary>The army strength the supports held add together (counts against <see cref="Cap"/>).</summary>
+        public static float Strength(IReadOnlyCollection<string> held)
+        {
+            var sum = 0f;
+            foreach (var id in held)
+                if (Get(id) is { } s) sum += s.Strength;
+            return sum;
         }
 
         /// <summary>A per-vehicle support on one of the army's vehicles (its share of health kept).</summary>
@@ -301,6 +339,30 @@ namespace MachineBrigade.Sim.Modes
 
         public float EndlessEscort { get; set; } = 0.05f;
 
+        /// <summary>
+        /// Prompt 26 E.1: the player's estimated damage a second on a boss (<c>HuntPower</c>), set once from the carried deck. A boss's
+        /// health is then P x its target seconds x <see cref="HpShare"/> x m x the tier's health; its damage the data's x m x the
+        /// tier's. 0: no estimate (a bare test battle): the ramp and the tier's factors only.
+        /// </summary>
+        public float Power { get; set; }
+
+        /// <summary>Seconds a mini and a main boss should take to bring down (weekly 66 s / 2.8 min; the full hunt 1 / 2.5 min).</summary>
+        public float MiniSeconds { get; set; } = 66f;
+
+        public float MainSeconds { get; set; } = 168f;
+
+        /// <summary>The share of P x t the boss's health is (0.6: the army does not hit all the time).</summary>
+        public float HpShare { get; set; } = 0.6f;
+
+        /// <summary>Prompt 26 E.3: the ramp is the full hunt's (x0.8 to x1.3 in story order), not the week's.</summary>
+        public bool FullRamp { get; set; }
+
+        /// <summary>Prompt 26 E.3: every boss is a fresh battle: the army is not kept and the CP is the starting CP; only supports are.</summary>
+        public bool Fresh { get; set; }
+
+        /// <summary>Prompt 26 E.2: the share of the CP held that is kept between two bosses (1: all, as before; the week's 0.5).</summary>
+        public float CpKept { get; set; } = 1f;
+
         /// <summary>Play-test 6: the difficulty's strength on every boss (health, damage).</summary>
         public float BossHp { get; set; } = 1f;
 
@@ -320,6 +382,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Play-test 6: the run is in its endless part (a switch of battlefield for a sea boss carries it).</summary>
         public bool Endless { get; set; }
+
+        /// <summary>Prompt 26 E.1: the run's P (measured once at its start, kept over checkpoints and sittings); 0: estimate again.</summary>
+        public float Power { get; set; }
     }
 
     public sealed partial class BossRushMode
@@ -444,9 +509,9 @@ namespace MachineBrigade.Sim.Modes
         private void HuntSetup(SimWorld world)
         {
             // The week's ramp, the difficulty's strength and (play-test 6) the endless run's steps on each boss and escort as it comes.
-            if (_rules.Ramp || _rules.EndlessOffer || _rules.BossHp != 1f || _rules.BossDamage != 1f || _rules.Resume is { Endless: true })
+            if (_rules.Ramp || _rules.Power > 0f || _rules.EndlessOffer || _rules.BossHp != 1f || _rules.BossDamage != 1f || _rules.Resume is { Endless: true })
                 world.SetMutators(EnemyTeam, def => def.Boss
-                    ? (_ramp * _rules.BossHp * _endlessHp, (1f + (_ramp - 1f) * 0.5f) * _rules.BossDamage * _endlessDamage)
+                    ? (BossHealthScale(def) * _endlessHp, _ramp * _rules.BossDamage * _endlessDamage)
                     : (_escortStrength, _escortStrength));
             if (_rules.Resume is not { } resume) return;
             foreach (var id in resume.Supports)
@@ -533,28 +598,48 @@ namespace MachineBrigade.Sim.Modes
             if (_offer is { Count: > 0 } offer) Choose(world, offer[0]);
             if (!_checkpointDue) return;
             _checkpointDue = false;
-            var map = _rules.HomeMap ?? world.Map.Id;
-            // The map's id without its version (prompt 22 E's "veyra_old_quarter" has underscores of its own).
-            foreach (var suffix in new[] { "_conquest", "_sandbox", "_siege", "_long" })
-                if (map.EndsWith(suffix, StringComparison.Ordinal))
-                {
-                    map = map.Substring(0, map.Length - suffix.Length);
-                    break;
-                }
-            var carry = Carry(world, map);
+            var carry = Carry(world, BaseMap(world, _rules.HomeMap ?? world.Map.Id));
             carry.Checkpoint = true;
             Checkpoint = carry;
             CheckpointsTaken++;
         }
 
+        /// <summary>A map's id without its version (prompt 22 E's "veyra_old_quarter" has underscores of its own); default: the battle's map.</summary>
+        private static string BaseMap(SimWorld world, string? map = null)
+        {
+            map ??= world.Map.Id;
+            foreach (var suffix in new[] { "_conquest", "_sandbox", "_siege", "_long" })
+                if (map.EndsWith(suffix, StringComparison.Ordinal))
+                    return map.Substring(0, map.Length - suffix.Length);
+            return map;
+        }
+
         /// <summary>Tests: offers these supports now (as after a main boss).</summary>
         internal void DebugOffer(IReadOnlyList<string> offer) => _offer = offer;
 
-        /// <summary>The next boss's strength in the week's hunt.</summary>
+        /// <summary>
+        /// Prompt 26 E.1: the factor on a boss def's health. With P: health = P x t x 0.6 x m x the tier's, so the factor is that over
+        /// the def's own; without (no estimate): m x the tier's.
+        /// </summary>
+        private float BossHealthScale(VehicleDef def)
+        {
+            if (_rules.Power <= 0f || def.MaxHp <= 0f) return _ramp * _rules.BossHp;
+            var seconds = def.Rank == BossRank.Main ? _rules.MainSeconds : _rules.MiniSeconds;
+            return _rules.Power * seconds * _rules.HpShare * _ramp * _rules.BossHp / def.MaxHp;
+        }
+
+        /// <summary>The next boss's multiplier m (prompt 26 E.2/E.3), on its health and damage.</summary>
         private void HuntRamp(SimWorld world)
         {
-            _ramp = _rules.Ramp ? BossHunt.Ramp(Math.Min(Defeated, Total - 1), Total) : 1f;
+            _ramp = _rules.Ramp ? BossHunt.Multiplier(Math.Min(Defeated, Total - 1), Total, _rules.FullRamp) : 1f;
             EndlessRamp(world);
+        }
+
+        /// <summary>Prompt 26 E.2: when a boss falls only this share of the CP held is kept (the bounty comes on top).</summary>
+        private void HuntCpCut(SimWorld world)
+        {
+            if (_rules.CpKept >= 1f || !world.TryGetEconomy(PlayerTeam, out var economy)) return;
+            economy.Cp *= Math.Clamp(_rules.CpKept, 0f, 1f);
         }
     }
 }

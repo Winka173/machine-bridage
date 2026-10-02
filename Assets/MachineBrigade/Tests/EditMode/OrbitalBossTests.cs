@@ -230,15 +230,16 @@ namespace MachineBrigade.Tests
                 // Play-test 6 (DECISIONS 21G): the craft is down by then, so the first already falls from the satellite it left.
                 Assert.IsTrue(big.FromSatellite, "the first from the satellite (the craft came down at once)");
                 Assert.AreEqual(4.0, big.FireAt - big.WarnStart, 1e-3, "4 s of warning");
-                Assert.AreEqual(5, big.Zones.Count, "five rings");
-                Assert.IsTrue(big.Zones.All(z => System.Math.Abs(z.Radius - 6f) < 1e-3f), "6 m each");
+                // Prompt 25 C1 (the balance sheet): seven rods of 1,800, 7 m each; five groups, the other two round the first.
+                Assert.AreEqual(7, big.Zones.Count, "seven rings");
+                Assert.IsTrue(big.Zones.All(z => System.Math.Abs(z.Radius - 7f) < 1e-3f), "7 m each");
                 foreach (var list in groups)
                     Assert.IsTrue(big.Zones.Any(z => Vector2.Distance(z.Centre, list[0].Position) < 5f), "a ring on every group");
                 Run(world, 8f, () => bug.BigAttack.Stage == BigStage.Ready);
                 float Worst(List<Vehicle> list) => list.Max(v => taken.TryGetValue(v, out var d) ? d : 0f);
                 // Play-test 6 (DECISIONS 21G): x the main rank's damage and big-attack scale (+20 %).
                 var rank = bug.Def.DamageScale * bug.Def.BigAttackScale.Damage;
-                Assert.AreEqual(1600f * rank, Worst(groups[0]), 16f * rank, "1 600 on a heavy tank's roof at the centre (penetration 4)");
+                Assert.AreEqual(1800f * rank, Worst(groups[0]), 18f * rank, "1 800 on a heavy tank's roof at the centre (penetration 4)");
                 Assert.AreEqual(Worst(groups[0]), Worst(groups[1]), 16f, "smoke does nothing to a rod");
                 var shielded = groups[2].Sum(v => taken.TryGetValue(v, out var d) ? d : 0f);
                 var plain = groups[3].Sum(v => taken.TryGetValue(v, out var d) ? d : 0f);

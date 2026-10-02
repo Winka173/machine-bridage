@@ -768,6 +768,18 @@
 }
 .fc-wchip--large > .fc-wchip__mark { width: var(--fc-cmark-large); height: var(--fc-cmark-large); right: -4px; bottom: -4px; }
 .fc-wchip__mark-icon { flex-grow: 1; --icon-color: var(--fc-text); }
+/* Prompt 25 G: the ammo switch of a gun with two rounds, top right of its chip. */
+.fc-wchip__swap {
+    position: absolute; right: -3px; top: -3px; width: var(--fc-cmark); height: var(--fc-cmark);
+    background-color: var(--fc-chip-bg); padding: 1px;
+}
+.fc-wchip--large > .fc-wchip__swap { width: var(--fc-cmark-large); height: var(--fc-cmark-large); right: -4px; top: -4px; }
+.fc-wchip__swap-icon { flex-grow: 1; --icon-color: var(--fc-accent); }
+.fc-rounds { margin-top: var(--fc-space-1); }
+.fc-rounds__head { flex-direction: row; align-items: center; }
+.fc-rounds__icon { width: var(--fc-cmark-large); height: var(--fc-cmark-large); margin-right: var(--fc-space-1); --icon-color: var(--fc-accent); }
+.fc-round { flex-direction: row; align-items: center; margin-top: var(--fc-space-1); }
+.fc-round > .fc-wchip { margin-right: var(--fc-space-2); }
 .fc-wchip-group { align-items: center; flex-shrink: 0; }
 .fc-wchip-group > .fc-wchip { margin-right: var(--fc-space-2); }
 .fc-xmark { width: var(--fc-cmark-large); height: var(--fc-cmark-large); margin-right: var(--fc-space-1); --icon-color: var(--fc-text-2); }

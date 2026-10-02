@@ -183,6 +183,13 @@ namespace MachineBrigade.Sim.Content
         public float Offset { get; internal set; } = 30f;
         public float Spread { get; internal set; } = 12f;
         public string? Warning { get; internal set; }
+
+        /// <summary>Prompt 26 B.7: what a pod does where it lands: a two-layer blast of this damage (0: none) within <see cref="Radius"/> m and a <see cref="Stun"/> second stun.</summary>
+        public float Damage { get; internal set; }
+
+        public float Radius { get; internal set; } = 6f;
+        public float Stun { get; internal set; } = 1f;
+
         public IReadOnlyList<AltitudeTier> Tiers { get; internal set; } = new[] { AltitudeTier.Orbit, AltitudeTier.High };
         public IReadOnlyList<string> Units { get; internal set; } = Array.Empty<string>();
 

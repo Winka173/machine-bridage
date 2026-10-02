@@ -45,6 +45,28 @@ namespace MachineBrigade.Game.Hud
                 // Prompt 17 C.
                 "shield_tower" => "t_shieldgen",
                 "cp_relay" => "t_relay",
+                // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new structures (their modules too).
+                "heavy_flak_tower" => "t_heavyflak",
+                "at_gun_emplacement" => "t_atgun",
+                "blast_wall" => "t_wall",
+                "inflatable_decoy" => "t_decoy",
+                "fire_control_centre" => "t_firecontrol",
+                "searchlight" => "t_searchlight",
+                "barrage_balloon" => "t_balloon",
+                "visual_jammer" => "t_screen",
+                "troop_shelter" => "t_shelter",
+                "flare_tower" => "t_flare",
+                "laser_ad_station" => "t_laserad",
+                "aa_gun_tower" => "t_aa40",
+                // (batch A structures: new entries above)
+                // Prompt 25 F2 batch B (DECISIONS 25F2-B): the six tower stand-ins, an existing glyph each (no new icon art).
+                "manpads_tower" => "t_aa",
+                "flare_searchlight_tower" => "t_flare",
+                "recoilless_gun_tower" => "t_atgun",
+                "bunker_shelter_tower" => "t_shelter",
+                "drone_net_tower" => "t_laserad",
+                "one_shot_atgm_tower" => "t_atgm",
+                // (batch B structures: new entries above)
                 // Utility modules.
                 "repair_bay" => "t_repair",
                 "ammo_depot" => "t_ammo",

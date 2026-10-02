@@ -85,6 +85,18 @@ namespace MachineBrigade.Game.Match
             if (!_camera.TryGroundPoint(screen, out var ground)) return true;
             var id = ArmedSupport;
             var point = new SimVector2(ground.x, ground.z);
+            // Prompt 25 F2 batch A: an armed airborne vehicle card drops it on the tapped ground.
+            if (_armed >= 0 && !_cards[_armed].Support)
+            {
+                var drop = _world.SubmitPlayer(Command.Paradrop(_team, id, point));
+                if (!drop.Accepted) _hud.ShowError(drop.Error);
+                else
+                {
+                    _hud.Toast(Strings.Format("toast.deployed", Strings.Unit(id)));
+                    Disarm();
+                }
+                return true;
+            }
             var towards = point;
             if (_world.Catalog.TryGetSupport(id, out var support) && support.IsLine && _world.TryGetRally(_team, out var home))
             {
@@ -117,7 +129,7 @@ namespace MachineBrigade.Game.Match
                 }
                 else
                 {
-                    _states[i] = new CardState(economy.Cp >= Price(economy, card), economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, false);
+                    _states[i] = new CardState(economy.Cp >= Price(economy, card), economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, i == _armed);
                 }
             }
             _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp, _states);
@@ -156,8 +168,23 @@ namespace MachineBrigade.Game.Match
         private void OnCard(int index)
         {
             var card = _cards[index];
+            // Prompt 25 F2 batch A: an airborne vehicle's card arms a drop (tap the map where the side sees); tapped again it
+            // comes to the drop zone as any vehicle does.
+            if (!card.Support && _armed != index && _world.Catalog.Vehicles.TryGetValue(card.Id, out var airborne) && airborne.Paradrop != null)
+            {
+                if (_world.TryGetEconomy(_team, out var cash) && cash.Cp < Price(cash, card))
+                {
+                    _hud.ShowError(CommandError.NotEnoughCp);
+                    return;
+                }
+                _armed = index;
+                _armedItem = -1;
+                _hud.SetTargeting(Strings.Format("target.paradrop", Strings.Unit(card.Id)));
+                return;
+            }
             if (!card.Support)
             {
+                if (_armed == index) Disarm();
                 var result = _world.SubmitPlayer(Command.Deploy(_team, card.Id));
                 if (result.Accepted) _hud.Toast(Strings.Format("toast.deployed", Strings.Unit(card.Id)));
                 else _hud.ShowError(result.Error);

@@ -133,6 +133,8 @@ namespace MachineBrigade.Sim.Combat
                     Operate(v, i, secondary, dt);
                 }
             }
+            // Prompt 25 F2 batch A: the microwave's pulses and the interceptor drones' hunt.
+            StepDroneKillers();
             UpdateProjectiles(dt);
         }
 
@@ -330,15 +332,18 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         private float Score(Vehicle v, WeaponDef weapon, Vehicle other, EntityId favoured)
         {
-            var effect = _world.Damage.Estimate(weapon, v, other);
+            // Prompt 25 G: a gun with a second round is weighed with the round it would load for this target; whether it
+            // is made for aircraft stays the gun's (an autocannon with an air-burst round still takes the ground first).
+            var round = weapon.HasRounds ? RoundAgainst(v, weapon, other) : weapon;
+            var effect = _world.Damage.Estimate(round, v, other);
             if (effect <= 0f) return 0f;
-            effect *= DamageSystem.BonusFor(weapon, v, other, _world.Time);
+            effect *= DamageSystem.BonusFor(round, v, other, _world.Time);
             var score = (0.4f + effect) * (1.6f - other.Hp / other.MaxHp);
             // Guns and cannons turn on aircraft only when nothing on the ground is in reach;
             // anti-aircraft weapons go for aircraft first.
             // Prompt 19: a target on altitude tiers is fair game for any weapon that reaches its tier.
             if (other.Flying != IsAntiAir(weapon) && other.Tier == AltitudeTier.None) score *= 0.02f;
-            if (other.Hp <= weapon.Damage * effect) score *= 1.5f;
+            if (other.Hp <= round.Damage * effect) score *= 1.5f;
             // An obstacle only when there is nothing else (the commander orders a breach itself).
             if (other.Def.Obstacle) score *= 0.05f;
             if (_focus.Contains((v.Team, other.Id)) || other.Id == favoured) score *= 1.3f;
@@ -360,6 +365,10 @@ namespace MachineBrigade.Sim.Combat
             if (weapon.Projectile == ProjectileKind.Bomb && weapon.Burst > 1) score *= BombWorth(v.Team, other, weapon);
             // Prompt 17 C: shield domes (the generator first), enemy CP relays, a stealth fighter's air-defence hunt.
             score *= NewContentWorth(v, other, weapon);
+            // Prompt 25 F2 batch A: groups and big aircraft, prey, a towed gun's arc, decoys, linked towers.
+            score *= P25Worth(v, other, weapon);
+            // Prompt 26 B.9: a boss's area weapons look for the crowd, its guns for the dearest vehicle.
+            score *= P26Worth(v, other, weapon);
             score /= 1f + 0.5f * Vector2.Distance(v.Position, other.Position) / MathF.Max(1f, weapon.Range);
             return score;
         }
@@ -371,7 +380,7 @@ namespace MachineBrigade.Sim.Combat
         /// </summary>
         private Vehicle? CoaxAirTarget(Vehicle v)
         {
-            if (v.Flying || v.Def.Mounts[0].Aim != MountAim.Turret || v.Def.Weapon.CanTarget(true)) return null;
+            if (v.Flying || v.Def.Mounts[0].Aim != MountAim.Turret || v.Def.Weapon.CanEngage(true, v.Def)) return null;
             var mounts = v.Def.Mounts;
             for (var i = 1; i < mounts.Count; i++)
             {
@@ -476,10 +485,14 @@ namespace MachineBrigade.Sim.Combat
         {
             // Prompt 19 B: a target on altitude tiers is reached by the weapons for its tier (a railgun at low, only
             // long-range SAMs and fighters at high, nothing in orbit); everything else by the ordinary air/ground rule.
-            if (target is Vehicle { Tier: not AltitudeTier.None } tiered ? !TierRules.Reaches(weapon, v.Def, tiered.Tier, true) : !weapon.CanTarget(IsFlying(target)))
+            // Prompt 25 G: a gun reaches whatever one of its rounds can hit (an autocannon's air-burst round, aircraft).
+            if (target is Vehicle { Tier: not AltitudeTier.None } tiered ? !TierRules.Reaches(weapon, v.Def, tiered.Tier, true) : !weapon.CanEngage(IsFlying(target), v.Def))
                 return false;
             var distance = Vector2.Distance(v.Position, target.Position);
             var reach = weapon.Range * _world.Gear.Reach(v, target, weapon);
+            // Prompt 25 F2 batch A: a heavy flak gun lowered at the ground reaches less far; a long-range missile has a minimum reach.
+            if (weapon.GroundRange > 0f && !IsFlying(target)) reach *= weapon.GroundRange / weapon.Range;
+            if (weapon.MinReach > 0f && distance - target.Radius < weapon.MinReach) return false;
             // Play-test 8 A: a free-falling bomb reaches as far ahead as the middle of its stick falls.
             if (FreeFall(v, weapon)) reach = MathF.Max(reach, BombReach(v, weapon));
             // Radar-absorbent coating: a missile must come closer to lock on.
@@ -515,6 +528,8 @@ namespace MachineBrigade.Sim.Combat
                 return;
             }
 
+            // Prompt 25 G: a gun changing rounds fires nothing until the new round is in.
+            if (!KeepRound(v, index, target)) return;
             // A charged weapon powering up: it fires when the charge is full, whatever it aims at
             // by then (the charge is the target's warning); lost targets let it wait at full charge.
             if (state.ChargeLeft > 0f)
@@ -534,10 +549,11 @@ namespace MachineBrigade.Sim.Combat
             }
             // An aircraft's stores (prompt 13 C): the salvo is what is left of them (a Grad-like ripple of
             // rockets from a half-empty pod fires half a ripple); a launcher's magazine counts trigger pulls.
-            var salvo = weapon.Burst;
+            // Prompt 25 G: the round in the gun sets the salvo (a guided shell goes one at a time).
+            var salvo = Loaded(v, index).Burst;
             if (state.Load > 0)
             {
-                salvo = Math.Min(weapon.Burst, Math.Max(0, state.Ammo));
+                salvo = Math.Min(salvo, Math.Max(0, state.Ammo));
                 state.Ammo -= salvo;
             }
             else if (state.Ammo > 0) state.Ammo--;
@@ -691,6 +707,8 @@ namespace MachineBrigade.Sim.Combat
         {
             var mount = v.Def.Mounts[index];
             if (v.Weapons[index].Cooldown > 0f) return false;
+            // Prompt 25 G: the round in the gun must be one for this target's layer (it changes after its 2 s).
+            if (!LoadedReaches(v, index, target)) return false;
             // Prompt 13 D.2: no bombs where friends are too close to where they would fall.
             // Play-test 8 A: a free-falling stick is judged where it will come down, not at the target.
             var freeFall = FreeFall(v, v.Arms[index]);
@@ -699,6 +717,8 @@ namespace MachineBrigade.Sim.Combat
             // Artillery and rocket launchers must stop to fire their main weapon; their machine guns need not.
             if (index == 0 && !v.Def.FiresWhileMoving && v.IsMoving) return false;
             if (!InReach(v, target, v.Arms[index]) || !HasLineOfFire(v, target, v.Arms[index])) return false;
+            // Prompt 25 F2 batch A: one fibre-optic drone in the air at a time.
+            if (v.Arms[index].OneAtATime && InFlightFrom(v, index)) return false;
             var desired = SimMath.HeadingOf(target.Position - v.Position);
             if (IsSide(mount) && !InArc(v, index, target.Position)) return false;
             if (freeFall) return StickStraddles(v, index, target);
@@ -750,8 +770,8 @@ namespace MachineBrigade.Sim.Combat
         private void Launch(Vehicle shooter, int index, Vector2 aimAt, EntityId target, bool targetFlying, float damageScale = 1f, bool pull = true,
             IDamageable? aimTarget = null)
         {
-            // Prompt 17 D.6: a dual-purpose gun loads its high explosive for a structure or light armour.
-            var weapon = RoundFor(shooter.Arms[index], target, aimTarget);
+            // Prompt 17 D.6, prompt 25 G: the round in the gun (its own, or the second round it loaded for this target).
+            var weapon = Loaded(shooter, index);
             shooter.LastFiredAt = _world.Time;
             shooter.Weapons[index].FiredAt = _world.Time;
             if (index == 0 && shooter.Def.Kamikaze)
@@ -787,7 +807,8 @@ namespace MachineBrigade.Sim.Combat
             var distance = Vector2.Distance(shooter.Position, aimAt);
             // Rounds scatter more the farther they fly: tight up close, and at the edge of range
             // wide enough that a long shot can miss outright.
-            var reach = Math.Clamp(distance / weapon.Range, 0f, 1.2f);
+            // The gun's reach (a second round's is its gun's; equipment may lengthen the gun's own).
+            var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, 1.2f);
             var spread = weapon.Guided ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
@@ -813,6 +834,8 @@ namespace MachineBrigade.Sim.Combat
                 // Prompt 20 I.7: an Argus directing its side's fire (its radar standing).
                 spread *= _world.Bosses.SpotAuraFor(shooter.Team);
             }
+            // Prompt 25 F2 batch A: dazzled by an enemy searchlight in the dark; bombs over an enemy barrage balloon.
+            if (!weapon.Guided && spread > 0f) spread *= _world.Works.SpreadFactor(shooter, weapon, aimAt);
             var aim = aimAt + RandomInCircle(spread);
             var origin = shooter.Position + SimMath.Forward(shooter.MountHeading(index)) * shooter.Radius;
             // A direct-fire round that meets a wall on its way (the spread took it wide, or the
@@ -832,8 +855,16 @@ namespace MachineBrigade.Sim.Combat
             if (freeFall) travel = BombFall(shooter);
             else if (weapon.Projectile == ProjectileKind.Bomb && shooter.Flying)
                 travel = MathF.Max(0.8f, Vector2.Distance(origin, aim) / MathF.Max(8f, shooter.Speed));
+            // Prompt 25 F2 batch A: a glide bomb flies at its own speed; a simultaneous-impact salvo lands together.
+            if (weapon.Glides) travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
+            travel = MrsiTravel(shooter, index, pull, travel);
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
+            // Prompt 25 F2 batch A: a tower linked by a fire-control centre.
+            damageScale *= shooter.LinkDamage;
+            // Prompt 25 C1: a boss's own weapon damage (the sheet's target damage a second against armour 3), on the ground only:
+            // its anti-air keeps its numbers.
+            if (!targetFlying) damageScale *= shooter.Def.WeaponDamage;
             // A gun pit's first shot on rising (the Ambush branch).
             if (index == 0 && shooter.AmbushReady && shooter.Def.Hidden is { } pit)
             {
@@ -854,7 +885,7 @@ namespace MachineBrigade.Sim.Combat
             var fail = index < shooter.MountFail.Length ? shooter.MountFail[index] : 0f;
             if (weapon.Guided && _world.Random.NextDouble() < 0.02 + 0.08 * reach * reach + fail) projectile.Failed = true;
             // Prompt 22 F: Dr. Venn's drones shrug off part of the jamming.
-            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)) && !_world.ShrugsJam(shooter, weapon))
+            if (weapon.Guided && (_world.Abilities.Jammed(shooter.Position, shooter.Team) || _world.Abilities.Jammed(aimAt, shooter.Team)) && !_world.ShrugsJam(shooter, weapon) && !weapon.JamProof)
                 projectile.Jammed = true;
             if (weapon.Guided)
             {
@@ -863,7 +894,7 @@ namespace MachineBrigade.Sim.Combat
             }
             _projectiles.Add(projectile);
             var wide = projectile.Jammed || projectile.Failed ? projectile.Miss : default;
-            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target, wide, projectile.Jammed));
+            _world.Emit(SimEvent.Fired(shooter, index, origin, aim, travel, target, wide, projectile.Jammed, weapon));
         }
 
         /// <summary>

@@ -17,6 +17,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import programme  # noqa: E402
+import prompt25  # noqa: E402
+import prompt26  # noqa: E402
+import prompt27  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -368,7 +371,7 @@ def build(game, imgdir):
                "xe tinh nhuệ, boss và bộ phận boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ, giao diện và các phép đo còn chờ phase kiểm tra.</p></div>")
     out.append("<div class='section'><h2>Mục lục</h2><ol class='toc'><li>Tổng quan</li><li>Chế độ chơi</li><li>Chiến dịch</li>"
                "<li>Nhiệm vụ nhiều giai đoạn</li><li>Tác chiến</li><li>Căn cứ và tháp</li><li>Công thành và Phòng thủ</li>"
-               "<li>Phương tiện (thẻ chi tiết)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
+               "<li>Phương tiện (thẻ chi tiết; 8b miêu tả, hình dạng, mở khóa)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương (10c-10h: tầm nổ, boss, đạn thay thế, boss hai lớp nổ, Săn trùm)</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
                "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống</li><li>Kiểm thử và phép đo còn lại</li>"
                "<li>Giao diện</li><li>Hình ảnh</li></ol></div>")
 
@@ -398,10 +401,9 @@ def build(game, imgdir):
         'Campaign': f"Chiến dịch {len(game['chapters'])} chương, {len(game['campaign'])} nhiệm vụ (xem phần 3); chơi lại các trận lớn ở Tác chiến (phần 5).",
         'Siege': 'Công thành: pháo đài chiếm 45% bản đồ, 3 giai đoạn (trạm radar tuyến ngoài → máy phát khiên trong tường → sở chỉ huy), cổng, tường sập, vòm khiên, '
                  'siêu pháo, chi viện bằng tàu hỏa hoặc đường băng (phần 7).',
-        'BossRush': f"Săn trùm: lần lượt {len(game.get('bossRushKinds', []))} loại boss kèm hộ tống, mỗi loại bốc ngẫu nhiên 1 biến thể: "
-                    + '; '.join(' / '.join(bn.get(i, i) for i in kind) for kind in game.get('bossRushKinds', []))
-                    + '. Thưởng thêm 2 CP mỗi bộ phận boss bị phá. '
-                    'Thưởng CP khi boss mất 25/50/75% máu (8 CP mỗi mốc) và 12 CP khi hạ; không có không kích ngẫu nhiên.',
+        'BossRush': (f"Săn trùm (Boss Hunt): tuần này {game['hunt']['weekly']} boss ({game['hunt']['weeklyMains']} chủ lực) tăng dần, máu boss theo sức mạnh bộ bài; "
+                     f"chế độ toàn bộ {game['hunt']['full']} boss theo thứ tự cốt truyện; hỗ trợ tác chiến tối đa +{game['hunt']['cap'] * 100:g}% (xem phần 10h). "
+                     'Thưởng thêm 2 CP mỗi bộ phận boss bị phá.') if game.get('hunt') else 'Săn trùm.',
         'Defend': 'Phòng thủ: pháo đài là loadout căn cứ của bạn, ba tuyến lùi (mất tuyến được thưởng CP rút lui) và sở chỉ huy là trận chốt; đợt địch hiện trước bằng icon.',
         'Weekly': 'Pháo đài tuần: một cuộc công thành mà vòng thành đã phá được giữ nguyên cả tuần; thắng lần đầu trong tuần có thưởng.',
         'Endless': 'Vô tận: pháo đài của bạn trước các đợt địch không ngừng (mỗi 55 giây, to dần, tinh nhuệ dần); lưu kỷ lục đợt xa nhất.',
@@ -442,6 +444,8 @@ def build(game, imgdir):
         out.append(f"<h3>{esc(key)} ({len(vs)})</h3>")
         out.extend(vehicle_card(v, imgdir) for v in vs)
     out.append('</div>')
+    # Prompt 25 F1 (DECISIONS 25E): every unit's description, shape note and unlock.
+    out.append(prompt25.unit_sheet_rows(game, h))
 
     # ------------------------------------------------------------------ DPS table
     rows = [[f"<b>{esc(v['short'])}</b>", CLASS_VI.get(v['class'], v['class']), front_level(v), num(v['hp']), v['cost'],
@@ -500,6 +504,13 @@ def build(game, imgdir):
     out.append(programme.rates_and_ballistics(game, h))
     out.append(programme.blast_radii(game, h))
     out.append(programme.boss_summary(game, h))
+    # Prompt 25 F1: DPS by armour level, missile flight, model and round sizes, the main bosses' super weapons.
+    out.append(prompt25.f1_section(game, h))
+    # Prompt 25 G / 26: second rounds, the bosses' two-layer blasts and phases, the Boss Hunt.
+    out.append(prompt26.rounds_section(game, h))
+    out.append(prompt26.boss_blast_section(game, h))
+    out.append(prompt26.hunt_section(game, h))
+    out.append(prompt27.section(game, h))
 
     # ------------------------------------------------------------------ towers, elites, bosses
     def simple_rows(vs):

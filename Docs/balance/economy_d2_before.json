@@ -1,0 +1,585 @@
+{
+ "label": "before",
+ "rows": [
+  {
+   "chapter": 1,
+   "coins": 6955,
+   "before": 0,
+   "total": 6955,
+   "cards": 7,
+   "sold": 5,
+   "price": 4500,
+   "ids": [
+    "rocket_technical",
+    "mortar_carrier",
+    "repair_drop",
+    "rocket_turret",
+    "repair_bay",
+    "tank_destroyer",
+    "zu23_technical"
+   ],
+   "rank": 3.21
+  },
+  {
+   "chapter": 2,
+   "coins": 10840,
+   "before": 6955,
+   "total": 17795,
+   "cards": 7,
+   "sold": 5,
+   "price": 7650,
+   "ids": [
+    "mlrs",
+    "sam_launcher",
+    "flame_tank",
+    "airstrike",
+    "heavy_tank",
+    "atgm_tower",
+    "ammo_depot"
+   ],
+   "rank": 4.14
+  },
+  {
+   "chapter": 3,
+   "coins": 11865,
+   "before": 17795,
+   "total": 29660,
+   "cards": 7,
+   "sold": 5,
+   "price": 5700,
+   "ids": [
+    "heavy_aa",
+    "attack_helicopter",
+    "uav_scan",
+    "ammo_carrier",
+    "dragons_teeth",
+    "radar_station",
+    "recon_drone"
+   ],
+   "rank": 5.07
+  },
+  {
+   "chapter": 13,
+   "coins": 2550,
+   "before": 29660,
+   "total": 32210,
+   "cards": 0,
+   "sold": 0,
+   "price": 0,
+   "ids": [],
+   "rank": 5.07
+  },
+  {
+   "chapter": 4,
+   "coins": 18390,
+   "before": 32210,
+   "total": 50600,
+   "cards": 6,
+   "sold": 5,
+   "price": 8400,
+   "ids": [
+    "command_vehicle",
+    "attack_jet",
+    "wheeled_gun",
+    "logistics_station",
+    "field_tower",
+    "railgun_truck"
+   ],
+   "rank": 5.43
+  },
+  {
+   "chapter": 5,
+   "coins": 16175,
+   "before": 50600,
+   "total": 66775,
+   "cards": 7,
+   "sold": 6,
+   "price": 11250,
+   "ids": [
+    "strike_drone",
+    "fpv_carrier",
+    "twin_tank",
+    "airfield",
+    "long_sam",
+    "fighter_jet",
+    "swarm_carrier"
+   ],
+   "rank": 6.07
+  },
+  {
+   "chapter": 6,
+   "coins": 22740,
+   "before": 66775,
+   "total": 89515,
+   "cards": 6,
+   "sold": 4,
+   "price": 4950,
+   "ids": [
+    "armored_bulldozer",
+    "c_ram",
+    "ew_tower",
+    "shield_carrier",
+    "scout_heli",
+    "bunker_vehicle"
+   ],
+   "rank": 6.21
+  },
+  {
+   "chapter": 14,
+   "coins": 3475,
+   "before": 89515,
+   "total": 92990,
+   "cards": 0,
+   "sold": 0,
+   "price": 0,
+   "ids": [],
+   "rank": 6.21
+  },
+  {
+   "chapter": 7,
+   "coins": 25795,
+   "before": 92990,
+   "total": 118785,
+   "cards": 4,
+   "sold": 4,
+   "price": 4500,
+   "ids": [
+    "vbied",
+    "bmpt",
+    "smoke_carrier",
+    "turtle_tank"
+   ],
+   "rank": 7.0
+  },
+  {
+   "chapter": 8,
+   "coins": 21375,
+   "before": 118785,
+   "total": 140160,
+   "cards": 4,
+   "sold": 4,
+   "price": 5400,
+   "ids": [
+    "shahed_truck",
+    "counter_battery_radar",
+    "thermobaric_launcher",
+    "lancet_truck"
+   ],
+   "rank": 7.07
+  },
+  {
+   "chapter": 9,
+   "coins": 24680,
+   "before": 140160,
+   "total": 164840,
+   "cards": 4,
+   "sold": 3,
+   "price": 3300,
+   "ids": [
+    "ew_jammer",
+    "remote_mines",
+    "iron_beam",
+    "artillery_emplacement"
+   ],
+   "rank": 7.14
+  },
+  {
+   "chapter": 15,
+   "coins": 4005,
+   "before": 164840,
+   "total": 168845,
+   "cards": 0,
+   "sold": 0,
+   "price": 0,
+   "ids": [],
+   "rank": 7.14
+  },
+  {
+   "chapter": 10,
+   "coins": 26880,
+   "before": 168845,
+   "total": 195725,
+   "cards": 4,
+   "sold": 4,
+   "price": 7200,
+   "ids": [
+    "sead_strike",
+    "heavy_rocket_artillery",
+    "gunship_heli",
+    "wingman_drone"
+   ],
+   "rank": 7.36
+  },
+  {
+   "chapter": 11,
+   "coins": 22615,
+   "before": 195725,
+   "total": 218340,
+   "cards": 4,
+   "sold": 2,
+   "price": 3900,
+   "ids": [
+    "laser_tank",
+    "stealth_fighter",
+    "cp_relay",
+    "heavy_turret"
+   ],
+   "rank": 7.86
+  },
+  {
+   "chapter": 12,
+   "coins": 16000,
+   "before": 218340,
+   "total": 234340,
+   "cards": 4,
+   "sold": 2,
+   "price": 3450,
+   "ids": [
+    "shield_tower",
+    "cruise_missile",
+    "drone_hangar",
+    "mine_layer"
+   ],
+   "rank": 8.0
+  }
+ ],
+ "premium": [
+  [
+   "ballistic_launcher",
+   5000
+  ],
+  [
+   "heavy_bomber",
+   4000
+  ],
+  [
+   "napalm_strike",
+   1500
+  ],
+  [
+   "sky_gunship",
+   4500
+  ],
+  [
+   "stealth_bomber",
+   5000
+  ],
+  [
+   "titan_tank",
+   3000
+  ]
+ ],
+ "starters": [
+  "scout_jeep",
+  "armored_car",
+  "ifv",
+  "light_tank",
+  "main_battle_tank",
+  "aa_vehicle",
+  "artillery",
+  "artillery_barrage",
+  "smoke_screen"
+ ],
+ "build": [
+  "193 missions, 1708 texts; coin scale 100, blueprint scale 0.75; deck rank 7.14 as act IV begins, 8.00 at the end",
+  "acts I-II only: pay x1.84, deck rank 7.00 at the end",
+  "acts I-III only: pay x1.00, deck rank 7.14 at the end"
+ ],
+ "rules": {
+  "starters": [
+   "scout_jeep",
+   "armored_car",
+   "ifv",
+   "light_tank",
+   "main_battle_tank",
+   "aa_vehicle",
+   "artillery",
+   "artillery_barrage",
+   "smoke_screen",
+   "guard_tower",
+   "mg_bunker",
+   "aa_turret",
+   "gun_turret"
+  ],
+  "premium": {
+   "titan_tank": 3000,
+   "heavy_bomber": 4000,
+   "stealth_bomber": 5000,
+   "ballistic_launcher": 5000,
+   "napalm_strike": 1500,
+   "sky_gunship": 4500
+  },
+  "early": {},
+  "items": [
+   "cluster_strike",
+   "emp_blast",
+   "field_repair",
+   "gunship_support",
+   "moab",
+   "reinforcements",
+   "shield_dome"
+  ]
+ },
+ "route": {
+  "rocket_technical": [
+   1,
+   "c1m01"
+  ],
+  "mortar_carrier": [
+   1,
+   "c1m02"
+  ],
+  "repair_drop": [
+   1,
+   "c1m03"
+  ],
+  "rocket_turret": [
+   1,
+   "c1m04"
+  ],
+  "repair_bay": [
+   1,
+   "c1m04"
+  ],
+  "tank_destroyer": [
+   1,
+   "c1m05"
+  ],
+  "zu23_technical": [
+   1,
+   "c1m06"
+  ],
+  "mlrs": [
+   2,
+   "c2m01"
+  ],
+  "sam_launcher": [
+   2,
+   "c2m02"
+  ],
+  "flame_tank": [
+   2,
+   "c2m03"
+  ],
+  "airstrike": [
+   2,
+   "c2m04"
+  ],
+  "heavy_tank": [
+   2,
+   "c2m05"
+  ],
+  "atgm_tower": [
+   2,
+   "c2m06"
+  ],
+  "ammo_depot": [
+   2,
+   "c2m06"
+  ],
+  "heavy_aa": [
+   3,
+   "c3m01"
+  ],
+  "attack_helicopter": [
+   3,
+   "c3m02"
+  ],
+  "uav_scan": [
+   3,
+   "c3m03"
+  ],
+  "ammo_carrier": [
+   3,
+   "c3m03"
+  ],
+  "dragons_teeth": [
+   3,
+   "c3m04"
+  ],
+  "radar_station": [
+   3,
+   "c3m04"
+  ],
+  "recon_drone": [
+   3,
+   "c3m05"
+  ],
+  "command_vehicle": [
+   4,
+   "c4m01"
+  ],
+  "attack_jet": [
+   4,
+   "c4m02"
+  ],
+  "wheeled_gun": [
+   4,
+   "c4m03"
+  ],
+  "logistics_station": [
+   4,
+   "c4m04"
+  ],
+  "field_tower": [
+   4,
+   "c4m05"
+  ],
+  "railgun_truck": [
+   4,
+   "c4m10"
+  ],
+  "heavy_turret.coastal": [
+   4,
+   "c4m11"
+  ],
+  "strike_drone": [
+   5,
+   "c5m01"
+  ],
+  "fpv_carrier": [
+   5,
+   "c5m02"
+  ],
+  "twin_tank": [
+   5,
+   "c5m04"
+  ],
+  "airfield": [
+   5,
+   "c5m04"
+  ],
+  "long_sam": [
+   5,
+   "c5m05"
+  ],
+  "fighter_jet": [
+   5,
+   "c5m09"
+  ],
+  "swarm_carrier": [
+   5,
+   "c5m10"
+  ],
+  "armored_bulldozer": [
+   6,
+   "c6m02"
+  ],
+  "c_ram": [
+   6,
+   "c6m02"
+  ],
+  "ew_tower": [
+   6,
+   "c6m03"
+  ],
+  "shield_carrier": [
+   6,
+   "c6m03"
+  ],
+  "scout_heli": [
+   6,
+   "c6m04"
+  ],
+  "bunker_vehicle": [
+   6,
+   "c6m10"
+  ],
+  "vbied": [
+   7,
+   "c7m01"
+  ],
+  "bmpt": [
+   7,
+   "c7m03"
+  ],
+  "smoke_carrier": [
+   7,
+   "c7m04"
+  ],
+  "turtle_tank": [
+   7,
+   "c7m02"
+  ],
+  "shahed_truck": [
+   8,
+   "c8m01"
+  ],
+  "counter_battery_radar": [
+   8,
+   "c8m02"
+  ],
+  "thermobaric_launcher": [
+   8,
+   "c8m03"
+  ],
+  "lancet_truck": [
+   8,
+   "c8m04"
+  ],
+  "ew_jammer": [
+   9,
+   "c9m01"
+  ],
+  "remote_mines": [
+   9,
+   "c9m02"
+  ],
+  "iron_beam": [
+   9,
+   "c9m03"
+  ],
+  "artillery_emplacement": [
+   9,
+   "c9m04"
+  ],
+  "sead_strike": [
+   10,
+   "c10m01"
+  ],
+  "heavy_rocket_artillery": [
+   10,
+   "c10m02"
+  ],
+  "gunship_heli": [
+   10,
+   "c10m05"
+  ],
+  "wingman_drone": [
+   10,
+   "c10m10"
+  ],
+  "laser_tank": [
+   11,
+   "c11m01"
+  ],
+  "stealth_fighter": [
+   11,
+   "c11m02"
+  ],
+  "cp_relay": [
+   11,
+   "c11m03"
+  ],
+  "heavy_turret": [
+   11,
+   "c11m04"
+  ],
+  "shield_tower": [
+   12,
+   "c12m03"
+  ],
+  "cruise_missile": [
+   12,
+   "c12m02"
+  ],
+  "drone_hangar": [
+   12,
+   "c12m04"
+  ],
+  "mine_layer": [
+   12,
+   "c12m06"
+  ]
+ }
+}

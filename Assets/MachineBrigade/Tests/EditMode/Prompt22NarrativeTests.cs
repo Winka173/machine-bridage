@@ -220,7 +220,8 @@ namespace MachineBrigade.Tests
             {
                 var cards = Campaign.MissionsOf(c, side: false).SelectMany(m => m.Unlocks)
                     .Count(id => !id.Contains('.') && !(catalog.Vehicles.TryGetValue(id, out var v) && v.Fort is { Kind: FortKind.Utility }));
-                Assert.That(cards, Is.InRange(4, 7), $"chapter {c} still opens four to seven cards");
+                // Prompt 25 D2: the balance sheet's route opens 3 to 10 cards a chapter (was 4 to 7).
+                Assert.That(cards, Is.InRange(3, 10), $"chapter {c} still opens three to ten cards");
             }
         }
 

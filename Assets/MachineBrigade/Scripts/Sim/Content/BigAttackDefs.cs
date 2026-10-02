@@ -115,8 +115,35 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The share of the damage left at a blast's rim.</summary>
         public float Falloff { get; internal set; } = 0.25f;
 
+        /// <summary>Prompt 26 B.3: the edge layer's outer radius (data "edge"); negative: twice <see cref="Radius"/> for a blast shape, at most 20 m. 0: no edge.</summary>
+        public float Edge { get; internal set; } = -1f;
+
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes (data "edgeShare").</summary>
+        public float EdgeShare { get; internal set; } = 0.4f;
+
+        /// <summary>
+        /// Prompt 26 B.3: every blast of a boss has two layers: the core (<see cref="Radius"/>, full damage) and the edge, twice
+        /// as wide (at most 20 m) at <see cref="EdgeShare"/>. A rod, a sweep, a swing or a charge has no blast, so no edge.
+        /// </summary>
+        public float EdgeRadius
+        {
+            get
+            {
+                if (Edge >= 0f) return MathF.Min(WeaponDef.MaxEdge, Edge) > Radius ? MathF.Min(WeaponDef.MaxEdge, Edge) : 0f;
+                var blast = Shape is BigShape.Circle or BigShape.Strip or BigShape.Line or BigShape.Missile or BigShape.Drop or BigShape.Swarm;
+                var edge = MathF.Min(WeaponDef.MaxEdge, Radius * 2f);
+                return blast && edge > Radius ? edge : 0f;
+            }
+        }
+
         /// <summary>A circle's rounds fall within this radius of the aim (0: on it).</summary>
         public float Area { get; internal set; }
+
+        /// <summary>
+        /// Prompt 25 C1: a circle's rounds are rolled at the warning and each drawn as its own ring (the Behemoth's six),
+        /// in place of one ring round the whole area (data "rings").
+        /// </summary>
+        public bool Rings { get; internal set; }
 
         /// <summary>A single round's scatter round the aim.</summary>
         public float Scatter { get; internal set; }
@@ -253,6 +280,24 @@ namespace MachineBrigade.Sim.Content
 
         public IReadOnlyList<BigStrikeDef> Strikes { get; internal set; } = Array.Empty<BigStrikeDef>();
 
+        /// <summary>
+        /// Prompt 25 C1: from this phase on (0 up: the boss's phase, a tiered boss's altitude phase; -1: never) it comes
+        /// every <see cref="LateCooldown"/> seconds with <see cref="LateCount"/> rounds in its first strike (Icarus's
+        /// phase 3, on the ground: nine rods every 50 s; data "late": phase, cooldown, count).
+        /// </summary>
+        public int LatePhase { get; internal set; } = -1;
+
+        public float LateCooldown { get; internal set; }
+
+        public int LateCount { get; internal set; }
+
+        /// <summary>Its cooldown in <paramref name="phase"/>.</summary>
+        public float CooldownIn(int phase) => LatePhase >= 0 && phase >= LatePhase && LateCooldown > 0f ? LateCooldown : Cooldown;
+
+        /// <summary>Rounds of <paramref name="strike"/> (a plain count) in <paramref name="phase"/>.</summary>
+        public int CountIn(BigStrikeDef strike, int phase) =>
+            LatePhase >= 0 && phase >= LatePhase && LateCount > 0 && Strikes.Count > 0 && ReferenceEquals(strike, Strikes[0]) ? LateCount : strike.Count;
+
         /// <summary>Its name's text key.</summary>
         public string NameKey => "bigattack." + Id;
 
@@ -325,6 +370,13 @@ namespace MachineBrigade.Sim.Content
 
         public Dictionary<string, BigAttackScale> Difficulty { get; } = new();
 
+        /// <summary>Prompt 26 A.6: a difficulty's factors on an enemy boss's health and damage (data "bossHp", "bossDamage" in its entry).</summary>
+        public Dictionary<string, (float hp, float damage)> Boss { get; } = new();
+
+        /// <summary>The boss factors of a difficulty (null when the data gives none).</summary>
+        public (float hp, float damage)? BossFactors(string? difficulty) =>
+            difficulty != null && Boss.TryGetValue(difficulty, out var f) ? f : null;
+
         public BigAttackScale For(string? difficulty) =>
             difficulty != null && Difficulty.TryGetValue(difficulty, out var s) ? s : Difficulty.TryGetValue("Normal", out var n) ? n : BigAttackScale.One;
     }
@@ -364,6 +416,7 @@ namespace MachineBrigade.Sim.Content
                     foreach (var key in d.Keys)
                     {
                         var o = d.Object(key);
+                        if (o.Has("bossHp") || o.Has("bossDamage")) rules.Boss[key] = (MathF.Max(0.1f, o.Float("bossHp", 1f)), MathF.Max(0.1f, o.Float("bossDamage", 1f)));
                         rules.Difficulty[key] = new BigAttackScale(MathF.Max(0f, o.Float("damage", 1f)), MathF.Max(0.1f, o.Float("cooldown", 1f)), o.Float("warn", 0f));
                     }
                 }
@@ -389,6 +442,13 @@ namespace MachineBrigade.Sim.Content
                 if (a.Has("hold")) def.Hold = a.StringArray("hold");
                 def.Halt = a.Bool("halt", false);
                 def.Surface = a.Bool("surface", false);
+                if (a.Has("late"))
+                {
+                    var late = a.Object("late");
+                    def.LatePhase = Math.Max(0, late.Int("phase", 2));
+                    def.LateCooldown = late.Has("cooldown") ? MathF.Max(def.Warn + 1f, late.Float("cooldown", def.Cooldown)) : 0f;
+                    def.LateCount = Math.Max(0, late.Int("count", 0));
+                }
                 var strikes = new List<BigStrikeDef>();
                 foreach (var s in a.Array("strikes")) strikes.Add(Wrap(s, () => ParseStrike(s)));
                 if (strikes.Count == 0) throw new FormatException($"balance.bigAttacks.{def.Id}: no strikes.");
@@ -432,6 +492,8 @@ namespace MachineBrigade.Sim.Content
                 Structure = MathF.Max(0f, s.Float("structure", 1f)),
                 Radius = MathF.Max(0.5f, s.Float("radius", 5f)),
                 Falloff = Math.Clamp(s.Float("falloff", 0.25f), 0f, 1f),
+                Edge = s.Has("edge") || s.Has("edgeShare") ? MathF.Max(0f, s.Float("edge", -1f)) : -1f,
+                EdgeShare = Math.Clamp(s.Float("edgeShare", 0.4f), 0f, 1f),
                 Area = MathF.Max(0f, s.Float("area", 0f)),
                 Scatter = MathF.Max(0f, s.Float("scatter", 0f)),
                 Length = MathF.Max(0f, s.Float("length", 0f)),
@@ -457,6 +519,7 @@ namespace MachineBrigade.Sim.Content
                 Seconds = MathF.Max(0f, s.Float("seconds", 0f)),
                 Cut = s.Has("cut") ? Math.Clamp(s.Float("cut", 0.5f), 0f, 1f) : -1f,
                 Seats = Math.Max(0, s.Int("seats", 0)),
+                Rings = s.Bool("rings", false),
             };
             if (s.Has("at"))
             {

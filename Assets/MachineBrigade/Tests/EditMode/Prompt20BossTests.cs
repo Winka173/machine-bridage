@@ -28,7 +28,8 @@ namespace MachineBrigade.Tests
         private static Catalog C => Lab.Catalog;
 
         private static readonly string[] NewBosses =
-            { "moloch", "daedalus", "kronos", "typhon", "ixion", "caspian", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus" };
+            { "moloch", "daedalus", "kronos", "typhon", "ixion", "caspian", "bastion_mk0", "fenrir", "scylla", "locust", "behemoth_mk2", "icarus_mk0", "argus",
+              "kraken", "monster", "garuda", "hyperion", "stymphalos", "nyx", "cerberus", "hydra" };
 
         private static SimWorld Field(int seed = 3)
         {
@@ -79,11 +80,13 @@ namespace MachineBrigade.Tests
                 ["kronos"] = "hung", ["ixion"] = "hung", ["earth_borer"] = "hung", ["typhon"] = "hung", ["caspian"] = "hung", ["command_airship"] = "quaden",
                 ["mega_gunship"] = "quaden", ["sky_fortress"] = "quaden", ["argus"] = "quaden", ["silver_bug"] = "aurel", ["daedalus"] = "aurel",
                 ["icarus_mk0"] = "aurel", ["behemoth_mk0"] = "varga", ["morrigan"] = "quaden",
+                // Prompt 25 F2 batch D.
+                ["kraken"] = "kessler", ["monster"] = "orlov", ["garuda"] = "quaden", ["hyperion"] = "aurel", ["stymphalos"] = "sen", ["nyx"] = "kessler", ["cerberus"] = "varga", ["hydra"] = "hung",
             };
             var bosses = C.Vehicles.Values.Where(v => v.Boss).ToList();
-            Assert.AreEqual(33, bosses.Count, "12 main bosses and 21 mini bosses (prompt 22 E's two)");
-            Assert.AreEqual(12, bosses.Count(b => b.Rank == BossRank.Main));
-            Assert.AreEqual(21, bosses.Count(b => b.Rank == BossRank.Mini));
+            Assert.AreEqual(41, bosses.Count, "16 main bosses and 25 mini bosses (prompt 22 E's two, prompt 25 batch D's eight)");
+            Assert.AreEqual(16, bosses.Count(b => b.Rank == BossRank.Main));
+            Assert.AreEqual(25, bosses.Count(b => b.Rank == BossRank.Mini));
             foreach (var b in bosses)
             {
                 Assert.IsNotNull(b.Frame, b.Id + " has a body frame");
@@ -201,29 +204,28 @@ namespace MachineBrigade.Tests
             Assert.IsNotNull(k3.OwnRoute, "Kronos follows the mine's kronos route");
         }
 
+        /// <summary>
+        /// Prompt 26 D.1: Ixion, the armoured BelAZ-75710 mine truck, crushes as it rolls and has its charge back as a secondary
+        /// weapon (a 2 s warned line about every 10 s, about 900, a 1 s stun), not a super weapon; it drops a strip of six mines
+        /// that last 20 s when it turns.
+        /// </summary>
         [Test]
-        public void IxionChargesDownItsLineAndABrokenWheelThrowsItOff()
+        public void IxionIsTheMineTruckWithItsChargeMinesAndTurret()
         {
-            var world = Field();
-            var ixion = world.SpawnVehicle("ixion", 1, Vector2.Zero, 0f);
-            ixion.Scripted = true;
-            var line = Group(world, "light_tank", SimMath.Forward(ixion.Heading) * 30f, 2, 3f);
-            world.Bosses.TriggerBig(ixion);
-            var events = Run(world, 12f);
-            Assert.IsTrue(events.Any(e => e.Kind == SimEventKind.BigAttack && e.Mount == 1), "it charges");
-            Assert.Greater(Vector2.Distance(ixion.Position, Vector2.Zero), 30f, "it has rolled down its line");
-            Assert.IsTrue(line.All(v => !v.IsAlive || v.Hp < v.MaxHp), "the tanks on the line are hit");
-            var world2 = Field(5);
-            var i2 = world2.SpawnVehicle("ixion", 1, Vector2.Zero, 0f);
-            i2.Scripted = true;
-            Group(world2, "light_tank", SimMath.Forward(i2.Heading) * 30f, 2, 3f);
-            world2.Bosses.TriggerBig(i2);
-            Run(world2, 2f, () => i2.BigAttack.Stage == BigStage.Charging);
-            Assert.AreEqual(BigStage.Charging, i2.BigAttack.Stage);
-            world2.Bosses.Break(i2, i2.Def.PartIndex("wheel_l"));
-            var e2 = Run(world2, 6f);
-            Assert.IsTrue(e2.Any(e => e.Kind == SimEventKind.BigAttack && e.Mount == 2), "a big wheel broken in the warning: the charge is off");
-            Assert.IsFalse(i2.IsCharging);
+            var def = C.Vehicle("ixion");
+            Assert.IsNotNull(def.Crush, "its wheels still crush what they roll over");
+            Assert.IsNotNull(def.BigAttack, "the charge is its secondary weapon");
+            Assert.AreEqual(2f, def.BigAttack.Warn, 1e-3f);
+            Assert.AreEqual(10f, def.BigAttack.Cooldown, 1e-3f);
+            Assert.AreEqual(900f, def.BigAttack.Strikes[0].Damage, 1e-3f);
+            Assert.AreEqual(1f, def.BigAttack.Strikes[0].Stun, 1e-3f);
+            Assert.AreEqual(26f, def.ModelLength, 1e-3f);
+            Assert.AreEqual(4f, def.Armour.Front);
+            Assert.IsNotNull(def.Mines, "the mine strip");
+            Assert.AreEqual(6, def.Mines.Max);
+            Assert.AreEqual(20f, def.Mines.Life, 1e-3f);
+            Assert.Greater(def.Mines.TurnStrip, 0f, "dropped when it turns");
+            Assert.AreEqual(8, def.Parts.Count, "turret, cab, two front tyres, four rear tyres");
         }
 
         [Test]
@@ -263,7 +265,7 @@ namespace MachineBrigade.Tests
             world.Bosses.Break(daedalus, daedalus.Def.PartIndex("pod_bay_1"));
             world.Bosses.TriggerBig(daedalus);
             Run(world, 8f, () => daedalus.BigAttack.Stage == BigStage.Firing);
-            Assert.AreEqual(3, daedalus.BigAttack.Rounds, "one bay gone: three pods fall, not six");
+            Assert.AreEqual(4, daedalus.BigAttack.Rounds, "one bay gone: four pods fall, not eight (prompt 25 C1: the sheet's eight)");
         }
 
         [Test]

@@ -44,8 +44,17 @@ import mb_p20_bosses  # noqa: E402
 import mb_p21_models  # noqa: E402
 import mb_pt5_models  # noqa: E402
 import mb_pt8_icarus  # noqa: E402
+import mb_pt9_models  # noqa: E402
 import mb_p22_siege  # noqa: E402
 import mb_p22_content  # noqa: E402
+import mb_p25_models  # noqa: E402
+import mb_p25_models2  # noqa: E402
+import mb_p25_new  # noqa: E402
+import mb_p25_rounds  # noqa: E402
+import mb_p27_experiment  # noqa: E402
+import mb_p27_wave1a  # noqa: E402
+import mb_p27_wave1b  # noqa: E402
+import mb_p27_wave1c  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -101,12 +110,34 @@ def all_builders():
                 # DECISIONS 20Y: Ixion and Icarus redesigned from outside references (they win over the builders above).
                 **mb_redesign_20y.BUILDERS,
                 # Play-test 8 (DECISIONS 22R): Icarus redrawn as an orbital weapons platform (wins over 20Y's warship).
-                **mb_pt8_icarus.BUILDERS}
+                **mb_pt8_icarus.BUILDERS,
+                # Play-test 9 (DECISIONS 23M): Icarus a spaceship again, the stealth jet redrawn slim (they win over the above).
+                **mb_pt9_models.BUILDERS,
+                # Prompt 25 B2 (DECISIONS 25B2): models rebuilt to the balance sheet's shape notes and sizes (they win).
+                **mb_p25_models.BUILDERS,
+                # Prompt 25 B2 part 2 (DECISIONS 25B2): the rest of the vehicles, the bosses and the structures (they win).
+                **mb_p25_models2.BUILDERS,
+                # Prompt 25 F2 batch A (DECISIONS 25F2-A): the new units and structures.
+                **mb_p25_new.BUILDERS,
+                # Prompt 25 F2 batch C (DECISIONS 25F2-C): the new ordnance's rounds.
+                **mb_p25_rounds.BUILDERS,
+                # Prompt 27 experiment 1 (DECISIONS "27 experiment 1"): MBT, Su-27, Icarus, Apache on the improved
+                # kit; last, so it wins (MB_P27_VARIANT=v0 gives the original builders back).
+                **mb_p27_experiment.BUILDERS,
+                # Prompt 27 wave 1a (DECISIONS "27 wave 1a"): Ixion, Gungnir (rail_supergun) and its rail_tractor on
+                # the V2 kit; last, so it wins.
+                **mb_p27_wave1a.BUILDERS,
+                # Prompt 27 wave 1b (part): Monster and Nyx get their own models.
+                # Prompt 27 wave 1c pass A: the first sixteen batch B stand-in units get their own models.
+                **mb_p27_wave1b.BUILDERS,
+                **mb_p27_wave1c.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)
     # A round 6 builder's own high-detail variant (attack_jet_hd) over the generic one.
     builders.update({k: v for k, v in mb_round6.BUILDERS.items() if k.endswith('_hd')})
+    # Prompt 25 B2 part 2's own high-detail variants (attack_jet_hd) over round 6's.
+    builders.update({k: v for k, v in mb_p25_models2.BUILDERS.items() if k.endswith('_hd')})
     return builders
 
 

@@ -35,6 +35,7 @@ namespace MachineBrigade.Sim.Bosses
             public Vehicle Pod = null!;
             public Vehicle Boss = null!;
             public string[] Units = Array.Empty<string>();
+            public PodDef Def = null!;
         }
 
         private readonly List<PodFlight> _podFlights = new();
@@ -283,7 +284,7 @@ namespace MachineBrigade.Sim.Bosses
             pod.PodLands = now + p.Fall;
             pod.PodFrom = height;
             pod.AltitudeNow = height;
-            _podFlights.Add(new PodFlight { Pod = pod, Boss = boss, Units = units });
+            _podFlights.Add(new PodFlight { Pod = pod, Boss = boss, Units = units, Def = p });
             if (p.Warning != null && _world.Catalog.TryGetSupport(p.Warning, out var warning))
                 _world.Emit(SimEvent.StrikeWarning(boss.Team, warning, at, at, p.Fall));
         }
@@ -314,7 +315,22 @@ namespace MachineBrigade.Sim.Bosses
                 }
                 pod.Hp = 0f;
                 _world.Emit(SimEvent.Retired(pod));
-                _world.Emit(SimEvent.Exploded(pod.Position, new ExplosionDef(0f, 5f, 0f, ExplosionTier.Large), pod.Id));
+                if (f.Def.Damage > 0f)
+                {
+                    // Prompt 26 B.7: a landing pod hurts where it falls (two layers) and stuns the ground units under it.
+                    _world.Damage.Queue(pod.Position, ExplosionDef.TwoLayer(f.Def.Damage * f.Boss.DamageBoost * f.Boss.Def.DamageScale, f.Def.Radius, ExplosionTier.Large),
+                        0.0, f.Boss.Team, f.Boss, HitKind.Strike, pod.Id);
+                    if (f.Def.Stun > 0f)
+                        foreach (var e in _world.VehicleList)
+                        {
+                            if (!e.IsAlive || e.Team == f.Boss.Team || e.Team < 0 || e.Flying || e.Def.Static || e.Def.Boss) continue;
+                            if (Vector2.Distance(e.Position, pod.Position) > f.Def.Radius + e.Def.HullRadius) continue;
+                            _world.Status.Stun(e, now + f.Def.Stun);
+                            e.ClearPath();
+                            e.Speed = 0f;
+                        }
+                }
+                else _world.Emit(SimEvent.Exploded(pod.Position, new ExplosionDef(0f, 5f, 0f, ExplosionTier.Large), pod.Id));
                 _world.Emit(SimEvent.Landed(f.Boss, pod.Position, f.Units.Length));
             }
             for (var i = _podLanded.Count - 1; i >= 0; i--)

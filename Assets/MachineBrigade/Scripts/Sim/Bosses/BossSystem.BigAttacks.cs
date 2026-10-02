@@ -133,6 +133,9 @@ namespace MachineBrigade.Sim.Bosses
 
         private BigAttackScale ScaleOf(Vehicle v, BigAttackSettings settings) => settings.Scale.Then(v.Def.BigAttackScale);
 
+        /// <summary>Prompt 25 C1: the boss's phase for its attack's late numbers (a tiered boss's altitude phase: Icarus's third is the crash).</summary>
+        private static int AttackPhase(Vehicle v) => v.Def.Tiers != null ? v.TierPhase : v.Phase;
+
         /// <summary>A big attack's damage multiplier on this boss: the difficulty's and the boss's own (campaign scaling, a phase's).</summary>
         private static float DamageOf(Vehicle v, BigAttackScale scale) => scale.Damage * v.DamageBoost * v.Def.DamageScale;
 
@@ -203,7 +206,7 @@ namespace MachineBrigade.Sim.Bosses
                 s.Stage = BigStage.Charging;
                 s.LastStart = s.WarnStart = now;
                 s.FireAt = double.PositiveInfinity;
-                s.Next = now + def.Cooldown * ScaleOf(v, settings).Cooldown;
+                s.Next = now + def.CooldownIn(AttackPhase(v)) * ScaleOf(v, settings).Cooldown;
                 return;
             }
             // A held mechanism's own round still in the air (the supergun's ordinary shell): wait for it to land first,
@@ -223,7 +226,7 @@ namespace MachineBrigade.Sim.Bosses
             s.Stage = BigStage.Charging;
             s.LastStart = s.WarnStart = now;
             s.FireAt = now + warn;
-            s.Next = now + MathF.Max(warn + 1f, def.Cooldown * scale.Cooldown);
+            s.Next = now + MathF.Max(warn + 1f, def.CooldownIn(AttackPhase(v)) * scale.Cooldown);
             s.Aim = aim;
             s.Origin = v.Position;
             s.Forward = SimMath.Forward(v.Heading);
@@ -465,6 +468,19 @@ namespace MachineBrigade.Sim.Bosses
                     {
                         var self = def.Aim == BigAim.Self;
                         var centre = self ? v.Position : s.Aim;
+                        if (st.Rings && !self && st.Area > 0f)
+                        {
+                            // Prompt 25 C1: every round's landing rolled now and drawn as its own ring (the Behemoth's six).
+                            var n = RoundsOf(v, st);
+                            for (var k = 0; k < n; k++)
+                            {
+                                var at = _world.ClampToMap(centre + RandomIn(_world.Random, st.Area));
+                                var due = fire + CircleDelay(st, n, k);
+                                s.Points.Add((at, due));
+                                s.ZoneList.Add(new BigZone(at, st.Radius, due, true));
+                            }
+                            break;
+                        }
                         var radius = st.Area > 0f ? st.Area : st.Radius + (s.Blind ? def.BlindScatter : st.Scatter);
                         s.ZoneList.Add(new BigZone(centre, radius, fire, true, st.Area > 0f ? st.Radius : 0f));
                         break;
@@ -571,7 +587,7 @@ namespace MachineBrigade.Sim.Bosses
             int n;
             if (st.PerPart > 0) n = st.PerPart * armed;
             else if (st.Every > 0f) n = st.FullCount;
-            else n = st.Count;
+            else n = v.BigAttack is { } state ? state.Def.CountIn(st, AttackPhase(v)) : st.Count;
             // Prompt 20: a part carrying it broken cuts it to its share (Daedalus: six pods fall as three).
             if (st.Cut > 0f && st.PerPart <= 0 && armed < st.Parts.Count) n = Math.Max(1, (int)MathF.Round(n * st.Cut));
             return n;
@@ -663,6 +679,10 @@ namespace MachineBrigade.Sim.Bosses
                     case BigShape.Circle when def.Aim == BigAim.Self:
                         SelfBlast(v, s, st, scale, now);
                         break;
+                    case BigShape.Circle when st.Rings && st.Area > 0f && s.Points.Count > 0:
+                        // Prompt 25 C1: the rings drawn at the warning are where the rounds land.
+                        for (var k = 0; k < n && k < s.Points.Count; k++) Round(v, s, st, s.Points[k].at, now + CircleDelay(st, n, k), scale, k);
+                        break;
                     case BigShape.Circle:
                     {
                         var salvo = Math.Max(1, st.Salvo);
@@ -741,6 +761,15 @@ namespace MachineBrigade.Sim.Bosses
             _world.Emit(SimEvent.Big(v, def.Id, 1, s.Aim, 0f));
         }
 
+        /// <summary>When a circle's k-th round of n lands after it fires: its salvos spread over the duration (or every "every" s).</summary>
+        private static double CircleDelay(BigStrikeDef st, int n, int k)
+        {
+            var salvo = Math.Max(1, st.Salvo);
+            var volleys = (n + salvo - 1) / salvo;
+            var gap = st.Every > 0f ? st.Every : volleys > 1 ? st.Duration / (volleys - 1) : 0f;
+            return (k / salvo) * gap + 0.08 * (k % salvo);
+        }
+
         private static Vector2 RandomIn(Random rng, float radius)
         {
             var angle = (float)rng.NextDouble() * SimMath.Tau;
@@ -805,12 +834,15 @@ namespace MachineBrigade.Sim.Bosses
                 ? new HitInfo(boss, boss.Team, null, at, HitKind.Direct, true).WithPen(s.Pen, true)
                 : new HitInfo(boss, boss.Team, null, at, HitKind.Strike, true).At(at).WithPen(s.Pen, true, s.Thermo);
             var half = side.LengthSquared() > 0.01f;
+            // Prompt 26 B.3: two flat layers: the core (s.Radius) at full damage, the edge (twice as wide) at its share.
+            var outer = s.EdgeRadius;
+            var reach = outer > s.Radius ? outer : s.Radius;
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == boss.Team || e.Flying || e.Invulnerable) continue;
                 var edge = MathF.Max(0f, Vector2.Distance(e.Position, at) - e.Radius);
-                if (edge > s.Radius || (half && Vector2.Dot(e.Position - at, side) < 0f)) continue;
-                var share = 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
+                if (edge > reach || (half && Vector2.Dot(e.Position - at, side) < 0f)) continue;
+                var share = outer > s.Radius ? edge <= s.Radius ? 1f : s.EdgeShare : 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
                 var mult = e.Kind == TargetKind.Structure ? s.Structure : 1f;
                 if (damage > 0f) _world.Damage.Apply(e, damage * share * mult, s.Type, info);
                 if (s.Stun > 0f && e.IsAlive && !e.Def.Static && !e.Def.Boss)
@@ -825,12 +857,12 @@ namespace MachineBrigade.Sim.Bosses
                 {
                     if (!prop.IsAlive || prop.Invulnerable) continue;
                     var edge = MathF.Max(0f, Vector2.Distance(prop.Position, at) - prop.Radius);
-                    if (edge > s.Radius || (half && Vector2.Dot(prop.Position - at, side) < 0f)) continue;
-                    var share = 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
+                    if (edge > reach || (half && Vector2.Dot(prop.Position - at, side) < 0f)) continue;
+                    var share = outer > s.Radius ? edge <= s.Radius ? 1f : s.EdgeShare : 1f - (1f - s.Falloff) * Math.Clamp(edge / s.Radius, 0f, 1f);
                     _world.Damage.Apply(prop, damage * share * (prop.Kind == TargetKind.Structure ? s.Structure : 1f), s.Type, info);
                 }
             var tier = damage >= 800f ? ExplosionTier.Ultimate : damage >= 200f ? ExplosionTier.Huge : damage >= 50f ? ExplosionTier.Large : ExplosionTier.Medium;
-            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, s.Radius, 0f, tier), boss.Id));
+            _world.Emit(SimEvent.Exploded(at, new ExplosionDef(0f, s.Radius, 0f, tier) { Edge = outer }, boss.Id));
         }
 
         /// <summary>Round the boss (the Inferno's ring): all round with every part standing, else each standing part's half.</summary>

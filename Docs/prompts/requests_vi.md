@@ -179,3 +179,23 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (30/09 23:58) khi coi in action preview. sao tất cả các xe dính hiệu ứng có gì trắng trắng chớp chớp và bốc khói mặc dù không hề bị sát thương
 - (30/09 23:58) đạn flag hiệu ứng có vẻ khác ngoài đời, tham khảo lại
 - (30/09 23:58) menu gắn đồ cho phương tiện bug không gắn được, không click được nút gắn và không kéo xuống được
+
+## Play-test 11, 01/10 (model đen đen)
+
+- (01/10) các model mới (nội dung mới của prompt 25: đợt A có model thật, đợt B mượn model cũ có đổi màu) hiện bị đen đen khi xem trong Unity, trong khi ảnh thẻ trông bình thường. Tìm nguyên nhân và sửa; ưu tiên điều tra trước, kể cả boss; khoan làm đợt D, dx23, PDF.
+- (01/10) có vẻ ăn sát thương xong là bị đen đáng kể, 1 vài phương tiện / boss bị đen khi mới vào luôn
+- (01/10) nó chỉ xảy ra sau khi commit sau trưa hôm qua
+- (01/10) đổi qua check những commit sau tối hôm qua
+- (01/10) nó vẫn còn hơi tối so với những thứ trước chiều hôm qua
+- (01/10) có vẻ là xe cũ dựng lại và cả boss luôn, con đầu tiên trong boss rush và các con sau có con có con không; ý tôi là full boss rush; check boss đầu tiên trong full boss rush
+- (01/10) build lại bản cho window mới
+- (01/10) tôi vẫn thấy nó hơi tối, ví dụ là trong deck, xem mobile repair vehicle bên ngoài list deck, và bên trong detail khác nhau, bên trong detail thì sáng rõ đúng như ý tôi nhưng ngoài list deck tối, boss cũng chịu mức tối tương tự
+- (01/10) bỏ dx23 không làm, bắt đầu làm Đợt D, nhớ áp dụng các quy tắc tiết kiệm token, bug kia confirm đã fix, chỉ dùng maximum 1 agent
+- (01/10) viết luôn, và đồng ý với cách trên (thứ tự tiết kiệm cho prompt 27: rà soát ngắn, script kiểm tra GLB, thí nghiệm 4 model, điểm dừng 1, rồi mới preview và các đợt), viết bàn giao nhớ đề cập tới tiết kiệm token là ưu tiên đầu, cho tôi prompt để đưa chat mới
+- (01/10, chat mới) bắt đầu prompt 27 theo DECISIONS "27 order"; tiết kiệm token là ưu tiên 1, tối đa 1 agent, không chạy test khi chưa cho phép
+- (02/10) điểm dừng 1 của prompt 27: 1. duyệt (V2) 2. không cần đo 1 trận, để làm sau 3. Ixion dùng railgun_truck là model tạm có chủ đích (ASSET_DEBT "Prompt 26 pass 2 stand-ins"); đừng sửa con trỏ model; mọi model tạm trong ASSET_DEBT được thay bằng model thật trong các đợt của prompt 27; đọc lại HANDOFF mục "Stand-in models"
+- (02/10) xong 1a + 2 con boss 1b rồi dừng, commit
+- (02/10) xong 1b 1c luôn
+- (02/10) update pdf, rồi làm khoảng 3 model đợt 2
+- (02/10) hủy agent đợt 2, chỉ pdf
+- (02/10) merge toàn bộ vào main (v0.33.0, prompt 27 đợt 1, PDF, prompt 28)

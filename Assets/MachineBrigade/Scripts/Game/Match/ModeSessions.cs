@@ -216,12 +216,14 @@ namespace MachineBrigade.Game.Match
         {
             var pool = new List<string>();
             foreach (var id in MatchSettings.AllVehicles)
-                if (catalog.Vehicles.ContainsKey(id) && !Progression.IsPremium(id) &&
+                // Prompt 25 F2 batch A: the shop's new content is the enemy's too (only coins-only premium cards are not).
+                if (catalog.Vehicles.ContainsKey(id) && Progression.EnemyMayUse(id) &&
                     (difficulty >= AiDifficulty.Hard || PlayerProfile.IsUnlocked(id))) pool.Add(id);
             var vehicles = ConquestAi.PickDeck(catalog, pool, difficulty, seed, difficulty == AiDifficulty.VeryHard ? MatchSettings.DeckVehicles : null);
             var supports = new List<string>();
             foreach (var id in MatchSettings.AllSupports)
-                if (catalog.TryGetSupport(id, out _) && !Progression.IsPremium(id) &&
+                // Prompt 25 F2 batch C: the shop's new support cards are the enemy's too, as batch A did for units.
+                if (catalog.TryGetSupport(id, out _) && Progression.EnemyMayUse(id) &&
                     (difficulty >= AiDifficulty.Hard || PlayerProfile.IsUnlocked(id))) supports.Add(id);
             return (vehicles.ToArray(), supports.ToArray());
         }
@@ -285,6 +287,8 @@ namespace MachineBrigade.Game.Match
             };
             if (!menu && kind != GameModeKind.Campaign) session.Difficulty = MatchSettings.Difficulty;
             world.ModeTag = menu ? "Menu" : kind.ToString();
+            // Prompt 26 A.6: the enemy's bosses take the difficulty's health and damage factors (Boss Rush has its own strength).
+            if (!menu && kind != GameModeKind.Sandbox && kind != GameModeKind.BossRush) world.BossDifficulty = session.EliteDifficulty;
             session.Build(world, seed);
             // Prompt 21: the Sandbox sets up its own sides, bosses and weather; no difficulty, events or elites.
             if (!menu && kind == GameModeKind.Sandbox) return session;
@@ -319,6 +323,9 @@ namespace MachineBrigade.Game.Match
             // own strength (BossRushSession.BossStrength), more in damage than in health, so a hard run is lost to the
             // bosses rather than to the clock.
             if (kind == GameModeKind.BossRush) difficulty = AiDifficulty.Normal;
+            // Prompt 26 E (DECISIONS 26E): no quick mode's boss keeps pace any more: a boss's health is its data's (the target time,
+            // then the difficulty's factors) and the Boss Hunt's comes from P; vehicles, escorts and towers still keep pace.
+            world.BossesUnscaled = true;
             var share = world.Catalog.QuickScalingFor(difficulty.ToString(), kind.ToString());
             if (share <= 0f) return;
             var edge = EnemyScaling.Match(deck, share);
@@ -852,6 +859,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>The rush carried over from the last battlefield or a checkpoint (set before the scene is rebuilt, taken up by the next session).</summary>
         internal static BossRushCarry Pending;
 
+        /// <summary>Prompt 26 E.1: P estimated from the deck at the battle's start (set by the match runner before the session is built).</summary>
+        internal static float Power;
+
         /// <summary>Prompt 20 N: the next Boss Hunt is the full one (every boss in story order), else the week's.</summary>
         internal static bool Full;
 
@@ -885,6 +895,8 @@ namespace MachineBrigade.Game.Match
             // Prompt 20 N: the week's hunt (3 main and 7 mini bosses drawn by the week, stronger down the run, 45 minutes)
             // or the full hunt (every boss in story order, no clock); a 20 s rest that repairs 30 % of the army, a support
             // after each main boss, checkpoints. The bounty comes as the boss loses health (8 CP at 75, 50 and 25 %) and 12 on the kill.
+            // Prompt 26 E.1: P is estimated once at the run's start and kept over its checkpoints (the carry holds it).
+            var power = Pending is { Power: > 0f } carried ? carried.Power : Power;
             _week = WeeklyFortress.Week;
             _roster = _full ? BossHunts.Full : BossHunts.Weekly(_week);
             _mode = new BossRushMode(new BossRushRules
@@ -892,7 +904,11 @@ namespace MachineBrigade.Game.Match
                 Player = player, Bounty = 12f, StepBounty = 6f, Bosses = _roster,
                 SeaMap = SeaMap, HomeMap = MatchSettings.CurrentMap.Id, Resume = Pending,
                 Checkpoints = _full ? HuntCheckpoints.EveryBoss : HuntCheckpoints.MainBosses, Supports = true,
-                Seed = _full ? BossHunts.FullSeed : _week, Ramp = !_full, RestRepair = 0.3f, Breather = 20f,
+                Seed = _full ? BossHunts.FullSeed : _week, Ramp = true, FullRamp = _full, RestRepair = _full ? 0f : 0.3f,
+                // Prompt 26 E.2/E.3: P sets the health (bosses 66 s / 2.8 min in the week, 1 min / 2.5 min in the full hunt), a 15 s rest, the
+                // week's half of the CP kept, the full hunt's every boss a fresh battle.
+                Power = power, MiniSeconds = _full ? 60f : 66f, MainSeconds = _full ? 150f : 168f, Breather = 15f,
+                CpKept = _full ? 1f : 0.5f, Fresh = _full,
                 TimeLimit = _full ? float.MaxValue : BossHunts.WeeklyMinutes * 60f,
                 // Play-test 6 (DECISIONS 21G): the endless run after the last boss, and the bosses' strength by difficulty.
                 EndlessOffer = true,
@@ -910,10 +926,12 @@ namespace MachineBrigade.Game.Match
         /// <summary>Play-test 6 (DECISIONS 21G): the bosses' health and damage by difficulty (the escorts' by the elite and cap tables).</summary>
         internal static (float hp, float damage) BossStrength(AiDifficulty difficulty) => difficulty switch
         {
-            AiDifficulty.Easy => (0.75f, 0.85f),
-            AiDifficulty.Hard => (0.9f, 1.05f),
-            AiDifficulty.VeryHard => (0.95f, 1.12f),
-            _ => (0.85f, 1f),
+            // Prompt 26 E.4 (DECISIONS 26E): the hunt's tiers are the four difficulties already on the picker: Normal x1 / x1,
+            // Hard = Heroic x1.3 / x1.15, Very Hard = Steel x1.6 / x1.3; Easy sits below Normal. Legendary is left (see DECISIONS).
+            AiDifficulty.Easy => (0.8f, 0.9f),
+            AiDifficulty.Hard => (1.3f, 1.15f),
+            AiDifficulty.VeryHard => (1.6f, 1.3f),
+            _ => (1f, 1f),
         };
 
         private static Vector2? PlayerCentre(SimWorld world)
@@ -942,7 +960,7 @@ namespace MachineBrigade.Game.Match
             else hud.SetBoss(null, 0f);
             // Prompt 20 N/O.4: the rest between bosses, the support pick after a main boss, the checkpoint kept.
             var rest = _mode.RestLeft(world);
-            hud.SetHuntRest(rest >= 0f ? Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)) : null, rest,
+            hud.SetHuntRest(rest < 0f ? null : _mode.RestRepairShare <= 0f ? Strings.Get("hunt.restFresh") : Strings.Format("hunt.restTitle", UnityEngine.Mathf.RoundToInt(_mode.RestRepairShare * 100f)), rest,
                 _mode.Next is { } next ? Strings.Format("hunt.next", Strings.Card(next)) : null, HeldLine());
             if (_mode.EndlessOpen || _endlessShown) ShowEndlessPick(hud, world);
             else ShowSupportPick(hud, world, rest);

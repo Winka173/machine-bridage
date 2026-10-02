@@ -54,18 +54,23 @@ namespace MachineBrigade.Editor
         /// <summary>A model ships under Resources/Models (a tower branch's own model, TowerArt).</summary>
         private static bool Ships(string id) => Resources.Load<GameObject>("Models/" + id) != null;
 
-        /// <summary>Every card that needs a picture: (card id, kind, model id).</summary>
+        /// <summary>
+        /// Every card that needs a picture: (card id, kind, picture key). The picture key is the model id, except for a
+        /// Prompt 25 F2 batch B stand-in (a non-boss unit with a tint, <see cref="PictureKey"/>): its own id, so a
+        /// borrowed hull's picture is not shared with the unit it was borrowed from. Boss variants keep sharing their
+        /// frame's picture key as before: their tint is not this pass's concern.
+        /// </summary>
         public static List<(string id, string kind, string model)> Cards(Catalog catalog)
         {
             var cards = new List<(string id, string kind, string model)>();
             var seen = new HashSet<string>();
             foreach (var id in MatchSettings.AllVehicles)
                 if (catalog.Vehicles.TryGetValue(id, out var def) && seen.Add(id))
-                    cards.Add((id, "vehicle", TowerArt.ModelFor(def, Ships)));
+                    cards.Add((id, "vehicle", PictureKey(def)));
             foreach (var def in catalog.Vehicles.Values.OrderBy(d => d.Id, StringComparer.Ordinal))
                 foreach (var (kind, test) in Kinds)
                     if (test(def) && seen.Add(def.Id))
-                        cards.Add((def.Id, kind, TowerArt.ModelFor(def, Ships)));
+                        cards.Add((def.Id, kind, PictureKey(def)));
             // Play-test 5 (DECISIONS 20V): a fire support flown by an aircraft of its own (the gunship on call) shows
             // that aircraft on its card and item.
             foreach (var id in MatchSettings.AllSupports.Concat(Progression.Items))
@@ -74,6 +79,9 @@ namespace MachineBrigade.Editor
                     cards.Add((id, "support", flier.Id));
             return cards;
         }
+
+        /// <summary>The model a def draws, or its own id for a non-boss tinted stand-in (its picture must not be shared).</summary>
+        private static string PictureKey(VehicleDef def) => !def.Boss && def.Tint != null ? def.Id : TowerArt.ModelFor(def, Ships);
 
         /// <summary>The model resource a picture is rendered from: the high-detail variant where one ships.</summary>
         public static string SourceOf(string modelId)
@@ -123,12 +131,21 @@ namespace MachineBrigade.Editor
             var old = ReadManifest();
             Directory.CreateDirectory(OutFolder);
 
+            // A picture key (see Cards/PictureKey) to the real model it draws and its Prompt 25 F2 batch B tint, when
+            // it is a stand-in's own id rather than the model id itself.
+            var realModel = new Dictionary<string, (string model, System.Numerics.Vector3? tint)>();
+            foreach (var def in catalog.Vehicles.Values)
+            {
+                var key = PictureKey(def);
+                if (!realModel.ContainsKey(key)) realModel[key] = (TowerArt.ModelFor(def, Ships), def.Tint);
+            }
+
             // Which models need a picture: missing, stale (hash), forced or asked for.
             var models = new Dictionary<string, (string source, string hash)>();
             foreach (var (_, _, model) in cards)
             {
                 if (models.ContainsKey(model)) continue;
-                var source = SourceOf(model);
+                var source = SourceOf(realModel.TryGetValue(model, out var r) ? r.model : model);
                 models[model] = (source, Hash(source));
             }
             var todo = models.Where(m =>
@@ -160,7 +177,8 @@ namespace MachineBrigade.Editor
                         }
                         // Elites and bosses only ever fight for the enemy: they wear the enemy's colours.
                         var enemy = cards.Where(c => c.model == model).All(c => c.kind is "elite" or "boss");
-                        var png = stage.Render(library, model, enemy ? 1 : 0);
+                        var (drawModel, tint) = realModel.TryGetValue(model, out var r2) ? r2 : (model, null);
+                        var png = stage.Render(library, drawModel, enemy ? 1 : 0, tint);
                         File.WriteAllBytes(Path.Combine(OutFolder, model + ".png"), png);
                         done.Add(model);
                     }
@@ -275,8 +293,11 @@ namespace MachineBrigade.Editor
             return null;
         }
 
-        /// <summary>The render set: lights, the card camera, the shadow camera and their targets.</summary>
-        private sealed class Stage : IDisposable
+        /// <summary>
+        /// The render set: lights, the card camera, the shadow camera and their targets. Internal so the prompt 27
+        /// model preview (<see cref="ModelPreview"/>) renders its eight angles through the same lights and camera.
+        /// </summary>
+        internal sealed class Stage : IDisposable
         {
             private const int Layer = 30;
             private readonly Transform _root;
@@ -285,6 +306,13 @@ namespace MachineBrigade.Editor
             private readonly Texture2D _read, _topRead;
             private readonly int _big = Size * Super;
             private const int TopSize = 256;
+            private float _yaw = Yaw, _pitch = Pitch;
+
+            /// <summary>
+            /// The last render's mean Rec. 709 luma (0-1, of the stored sRGB values) over the model's coverage, before the
+            /// ground shadow is composited (the preview's brightness number; the card number includes the shadow).
+            /// </summary>
+            public float LastLuma { get; private set; }
 
             public Stage()
             {
@@ -337,10 +365,32 @@ namespace MachineBrigade.Editor
                 return camera;
             }
 
-            public byte[] Render(ModelLibrary library, string modelId, int team)
+
+            /// <summary>
+            /// Prompt 25 F2 batch B (DECISIONS 25F2-B): a stand-in's wash, the same "_Tint" multiply (shared tinted
+            /// materials since play-test 11) VehicleView.ApplyTint puts on a variant, at rest (no scorch, no hit flash).
+            /// </summary>
+            /// <param name="yaw">Camera yaw (the card's -142 by default; 180 looks at the front).</param>
+            /// <param name="pitch">Camera pitch (the card's 26 by default).</param>
+            public byte[] Render(ModelLibrary library, string modelId, int team, System.Numerics.Vector3? tint = null,
+                float yaw = Yaw, float pitch = Pitch)
             {
+                _yaw = yaw;
+                _pitch = pitch;
                 var instance = library.Spawn(modelId, team, _root, castShadows: false);
                 var model = instance.Root;
+                // Play-test 11: the tint as a hue shift (ModelLibrary.TintOf) on shared tinted materials, as VehicleView draws it.
+                if (tint != null)
+                {
+                    var own = ModelLibrary.TintOf(tint);
+                    var value = new Vector4(own.x, own.y, own.z, 1f);
+                    foreach (var r in instance.Renderers.Concat(instance.Lod1Renderers))
+                    {
+                        var shared = r.sharedMaterials;
+                        for (var i = 0; i < shared.Length; i++) shared[i] = library.Materials.Tinted(shared[i], value);
+                        r.sharedMaterials = shared;
+                    }
+                }
                 SetLayer(model.transform);
                 model.transform.position = Vector3.zero;
                 model.transform.rotation = Quaternion.identity;
@@ -356,6 +406,14 @@ namespace MachineBrigade.Editor
                 // as drawn, then render again.
                 if (Refit(_read.GetPixels32())) Capture(_camera, _rt, _read);
                 var colour = _read.GetPixels32();
+                double lumaSum = 0, coverage = 0;
+                foreach (var c in colour)
+                {
+                    // Premultiplied by coverage (cleared to transparent black).
+                    lumaSum += (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) / 255.0;
+                    coverage += c.a / 255.0;
+                }
+                LastLuma = coverage > 0 ? (float)(lumaSum / coverage) : 0f;
 
                 // Its footprint from straight above, for the shadow.
                 var reach = Mathf.Max(bounds.extents.x, bounds.extents.z) * 1.6f + 1f;
@@ -380,7 +438,7 @@ namespace MachineBrigade.Editor
             /// <summary>Points the card camera from the 3/4 angle and fits the model and its ground shadow into the square with a margin.</summary>
             private void FitCamera(Bounds b)
             {
-                var rotation = Quaternion.Euler(Pitch, Yaw, 0f);
+                var rotation = Quaternion.Euler(_pitch, _yaw, 0f);
                 var right = rotation * Vector3.right;
                 var up = rotation * Vector3.up;
                 var points = new List<Vector3>();

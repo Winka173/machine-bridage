@@ -284,6 +284,24 @@ namespace MachineBrigade.Game.Rendering
         public const string HighDetailSuffix = "_hd";
 
         /// <summary>
+        /// A def's own colour (prompt 20 G.2 boss variants, prompt 25 F2 stand-ins) as the "_Tint" multiply: the data's
+        /// colour with the old warm cast (x 1, 0.97, 0.95), scaled to a luminance of 1 so it shifts the hue only. Play-test 11
+        /// (DECISIONS "PT11 dark hulls"): the owner wants a variant as bright as its parent (the detail page's untinted
+        /// preview); the data's tints run 0.5-1.2 and darkened every variant. No channel goes above 1.8.
+        /// </summary>
+        public static Vector3 TintOf(System.Numerics.Vector3? tint)
+        {
+            if (tint is not { } t) return Vector3.one;
+            var c = new Vector3(t.X, 0.97f * t.Y, 0.95f * t.Z);
+            var luma = 0.2126f * c.x + 0.7152f * c.y + 0.0722f * c.z;
+            if (luma <= 1e-3f) return Vector3.one;
+            c /= luma;
+            var top = Mathf.Max(c.x, Mathf.Max(c.y, c.z));
+            return top > 1.8f ? c * (1.8f / top) : c;
+        }
+
+
+        /// <summary>
         /// Load the high-detail variant of a model (Resources/Models/&lt;id&gt;_hd, built by
         /// Tools/blender/build_assets.py) wherever one ships, for the high graphics tiers; models without
         /// one load as usual. Off by default. It may change at any time: models are cached per variant,
@@ -296,6 +314,9 @@ namespace MachineBrigade.Game.Rendering
         private readonly Dictionary<string, string> _detailIds = new();
 
         public ModelLibrary(MaterialLibrary materials) => _materials = materials;
+
+        /// <summary>The material library its models are drawn with.</summary>
+        public MaterialLibrary Materials => _materials;
 
         /// <summary>
         /// The resource a model loads from: its high-detail variant when <see cref="HighDetail"/> is on

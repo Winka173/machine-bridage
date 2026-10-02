@@ -116,6 +116,8 @@ namespace MachineBrigade.Game.Hud
                 if (w.TopAttack) sb.Append(" · ").Append(Strings.Get("tag.top"));
                 if (w.Guided) sb.Append(" · ").Append(Strings.Get("tag.guided"));
                 if (w.Splash) sb.Append(" · ").Append(Strings.Get("tag.splash"));
+                // Prompt 25 G: a gun of two rounds.
+                if (w.Rounds > 0) sb.Append(" · ").Append(Strings.Get("tag.swap"));
             }
             return sb.ToString();
         }

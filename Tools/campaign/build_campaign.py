@@ -1,8 +1,9 @@
 """Builds the story campaign: Resources/Data/campaign.json and Scripts/Game/Hud/CampaignText.cs.
 
-    python Tools/campaign/build_campaign.py [--report <dir>]
+    python Tools/campaign/build_campaign.py [--report <dir>] [--no-texts] [--dry]
 
-The mission events' library is events.py (prompt 23), the events each mission plays act10.py (prompt 23 E). The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
+The mission events' library is events.py (prompt 23), the events each mission plays act10.py (prompt 23 E), the balance
+sheet's unlock route act11.py (prompt 25 D2). The missions are written in act1.py, act2.py and act3.py, laid out in twelve chapters by act4.py
 (prompt 20), in chapters of 9-18 missions and three interludes by act5.py-act8.py (prompt 22), the
 story's choices and story loot by act9.py (prompt 22 D), the people and chapters in story.py. This script turns reversed missions round, gives every mission its
 pay (the economy curve of Docs/DECISIONS.md section 4, 19A for twelve chapters), checks the campaign's
@@ -35,6 +36,7 @@ import act7  # noqa: E402,F401
 import act8  # noqa: E402,F401
 import act9  # noqa: E402,F401
 import act10  # noqa: E402,F401
+import act11  # noqa: E402
 import events  # noqa: E402
 
 DATA = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Resources', 'Data')
@@ -43,9 +45,9 @@ TEXT_CS = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Scripts', 'Game', 'Hud
 GOALS = {'Capture', 'Hold', 'Destroy', 'Escort', 'Survive', 'Boss', 'Intercept', 'Hunt', 'Recon', 'Protect', 'ShootDown',
          'Outpost', 'Relieve', 'Evacuate', 'Duel'}
 
-# The cards a new player owns (Progression.StarterVehicles / StarterSupports / StarterTowers).
-STARTERS = ['scout_jeep', 'armored_car', 'ifv', 'light_tank', 'main_battle_tank', 'aa_vehicle', 'artillery',
-            'artillery_barrage', 'smoke_screen', 'guard_tower', 'mg_bunker', 'aa_turret', 'gun_turret']
+# The cards a new player owns (Progression.StarterVehicles / StarterSupports / StarterTowers; prompt 25 D2: the sheet's
+# starter vehicles, act11.py).
+STARTERS = act11.STARTERS
 MODULES = {'repair_bay', 'ammo_depot', 'airfield', 'logistics_station', 'radar_station'}
 # Cards that shoot at aircraft from the ground (and the fighter), for the anti-air rule.
 ANTI_AIR = {'aa_vehicle', 'sam_launcher', 'heavy_aa', 'zu23_technical', 'long_sam', 'fighter_jet', 'aa_turret', 'missile_battery', 'iron_beam'}
@@ -363,13 +365,15 @@ def check(missions):
                 fail(f"{m['id']}: an operation needs a choice")
             if len(st) < 4:
                 fail(f"{m['id']}: an operation of {len(st)} stages")
+    # Prompt 20 D.1: a real reward in every chapter. Prompt 25 D2: the balance sheet opens most vehicles in acts I-II, so a
+    # chapter opens 3 to 10 cards (was 4 to 7), and an interlude up to two (the sheet's turtle tank and shield carrier).
     for c in range(1, CHAPTERS + 1):
         n = per_chapter.get(c, 0)
-        if not 4 <= n <= 7:
+        if not 3 <= n <= 10:
             fail(f'chapter {c} unlocks {n} cards')
     for c in story.INTERLUDES:
-        if per_chapter.get(c, 0):
-            fail(f'interlude {c} unlocks cards (the route stays in the chapters)')
+        if per_chapter.get(c, 0) > 2:
+            fail(f'interlude {c} unlocks {per_chapter[c]} cards (two at most)')
     modules = [u for m in missions for u in m.get('unlocks', []) if u in MODULES]
     if sorted(modules) != sorted(MODULES):
         fail(f'modules {modules}')
@@ -566,8 +570,12 @@ def main():
     check(missions)
     cs, ps, result = tune(missions)
     scales = release_scales(missions, cs, ps)
-    write_json(missions, scales)
-    write_texts(missions)
+    # --dry writes nothing (Tools/balance/import_unlocks.py reads the economy line); --no-texts leaves CampaignText.cs as
+    # it is (prompt 25: its words are hand-localised, edited key by key).
+    if '--dry' not in sys.argv:
+        write_json(missions, scales)
+        if '--no-texts' not in sys.argv:
+            write_texts(missions)
     folder = sys.argv[sys.argv.index('--report') + 1] if '--report' in sys.argv else None
     rows = report(missions, cs, ps, result, folder) if folder else None
     at4 = rank_at(result, missions, ACT_IV)

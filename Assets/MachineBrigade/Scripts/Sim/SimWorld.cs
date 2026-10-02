@@ -71,6 +71,8 @@ namespace MachineBrigade.Sim
             Bases = new Modes.BaseSystem(this);
             Domes = new Abilities.DomeSystem(this);
             Deploying = new Abilities.DeploySystem(this);
+            // Prompt 25 F2 batch A: the new structures' and units' mechanisms.
+            Works = new Abilities.FieldWorksSystem(this);
 
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
@@ -195,6 +197,18 @@ namespace MachineBrigade.Sim
 
         /// <summary>Prompt 17 C: shield domes (the shield carrier, the shield generator).</summary>
         internal Abilities.DomeSystem Domes { get; }
+
+        /// <summary>Prompt 25 F2 batch A (DECISIONS 25F2-A): walls, shelters, decoys, lights, balloons, jammers, drops and passes.</summary>
+        internal Abilities.FieldWorksSystem Works { get; }
+
+        /// <summary>
+        /// Prompt 25 F2 batch A: night, fog or a sandstorm on this battlefield (the game sets it from its weather, before the
+        /// battle and when the weather turns): searchlights and flare towers light the dark.
+        /// </summary>
+        public void SetDarkness(bool dark) => Works.SetDark(dark);
+
+        /// <summary>Whether the battlefield is dark now (see <see cref="SetDarkness"/>).</summary>
+        public bool Dark => Works.Dark;
 
         /// <summary>Prompt 17 C: vehicles that dig in (the bunker vehicle).</summary>
         internal Abilities.DeploySystem Deploying { get; }
@@ -400,11 +414,18 @@ namespace MachineBrigade.Sim
             // (a fortress, a point's watchtower) only when the side boosts everything.
             VehicleBoost? boost = null;
             if (team >= 0 && team < _boosts.Length && _boosts[team] is { } boosts &&
-                (_boostAll[team] || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
+                // Prompt 26 A.4: a campaign boss keeps its data's health and damage (the target time sets them), never the arsenal's edge.
+                (_boostAll[team] && !(BossesUnscaled && def.Boss) || (!def.Boss && (!def.Static || def.Fort is { Kind: Content.FortKind.Tower }))))
                 boost = boosts(def);
             // Prompt 22 F: the side's commander on top, through the loadout's caps.
             boost = CommanderBoost(team, def, boost);
             if (boost is { } upgrade) Upgrade(vehicle, upgrade);
+            // Prompt 26 A.6: the difficulty's own factors on the enemy's bosses (health, damage).
+            if (team == 1 && def.Boss && BossDifficulty != null && Catalog.BigAttackRules.BossFactors(BossDifficulty) is var (bossHp, bossDamage))
+            {
+                vehicle.HpScale *= bossHp;
+                vehicle.DamageBoost *= bossDamage;
+            }
             // A mutator's change to a side's strength (the Operations mode's weekly twists).
             if (team >= 0 && team < _mutators.Length && _mutators[team] is { } mutate)
             {
@@ -418,6 +439,7 @@ namespace MachineBrigade.Sim
             // Its parts, a boss's timers, radio line and guards (prompt 8).
             Bosses.Joined(vehicle);
             Naval.Joined(vehicle);
+            Works.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
             if (def.Static) AnchorDefence(vehicle);
@@ -425,6 +447,12 @@ namespace MachineBrigade.Sim
             if (HomeZones && !vehicle.Def.Static) vehicle.GraceUntil = Time + 5.0;
             return vehicle;
         }
+
+        /// <summary>Prompt 26 A.4: the enemy's bosses get no share of the player's arsenal edge (the campaign sets it).</summary>
+        public bool BossesUnscaled { get; set; }
+
+        /// <summary>Prompt 26 A.6: the difficulty key whose boss health and damage factors the enemy's bosses take (null: none).</summary>
+        public string? BossDifficulty { get; set; }
 
         private readonly Func<VehicleDef, VehicleBoost>?[] _boosts = new Func<VehicleDef, VehicleBoost>?[3];
         private readonly Func<VehicleDef, (float hp, float damage)>?[] _mutators = new Func<VehicleDef, (float, float)>?[3];
@@ -618,6 +646,8 @@ namespace MachineBrigade.Sim
                     Mix((long)MathF.Round(v.Position.X * 100f));
                     Mix((long)MathF.Round(v.Position.Y * 100f));
                     Mix((long)MathF.Round(v.Hp * 10f));
+                    // Prompt 25 G: the round each gun of several rounds has in.
+                    CombatSystem.MixRounds(v, Mix);
                     // A boss's parts (prompt 9): a checkpoint's replay must bring every part back the same.
                     for (var i = 0; i < v.PartCount; i++)
                         Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
@@ -668,6 +698,7 @@ namespace MachineBrigade.Sim
         {
             if (IsOver) return CommandResult.Rejected(CommandError.MatchOver);
             if (command.Type == CommandType.Deploy) return Economy.Deploy(command.Team, command.DefId);
+            if (command.Type == CommandType.Paradrop) return Economy.Paradrop(command.Team, command.DefId, command.Point);
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
             if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
             if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
@@ -768,6 +799,7 @@ namespace MachineBrigade.Sim
             Gear.Step(dt);
             Deploying.Step();
             Domes.Step();
+            Works.Step(dt);
             _combat.Step(dt);
             Strikes.Step();
             Damage.Step();
@@ -814,6 +846,7 @@ namespace MachineBrigade.Sim
             Gear.Step(dt);
             Deploying.Step();
             Domes.Step();
+            Works.Step(dt);
             Lap(7);
             _combat.Step(dt);
             Lap(8);
@@ -1120,6 +1153,9 @@ namespace MachineBrigade.Sim
                     // A thermal imager sees through smoke out to its share of the vision range.
                     if (g.Has(TraitId.ThermalImager)) thermal = reach * MathF.Min(1f, g.Trait(TraitId.ThermalImager).A);
                 }
+                // Prompt 25 F2 batch A: a scout's mast up (more sight standing still); a radar sees through smoke.
+                reach = Works.SpotterReach(spotter, reach);
+                if (spotter.Def.SmokeSight) thermal = reach;
                 _sight.Add(reach);
                 _thermal.Add(thermal);
             }
@@ -1142,6 +1178,9 @@ namespace MachineBrigade.Sim
                     target.SeenByMask = target.VisibleToMask = ~0;
                     continue;
                 }
+                // Prompt 25 A1: a scout hiding where it stands (the scout jeep), until it fires.
+                if (target.Def.StillCamouflage > 0f && !target.IsMoving && Time - target.StillSince >= 1.0 && Time - target.LastFiredAt > StealthReveal)
+                    sight *= 1f - target.Def.StillCamouflage;
                 // Equipment on the target: a camouflage net standing still, Ghillie Mode hidden.
                 var hidden = false;
                 if (target.Gear is { } tg)
@@ -1150,6 +1189,8 @@ namespace MachineBrigade.Sim
                     hidden = tg.Hidden;
                 }
                 var naval = target.Def.Naval != null && Map.Sea != null;
+                // Prompt 25 F2 batch A: a visual jammer of its side over it: only a scout, or an enemy this close, sees it.
+                var screened = Works.ScreenedFrom(target);
                 // Prompt 16: whoever holds the lighthouse watches the sea from its lamp.
                 if (naval && Naval.Rules.LighthouseOwner is >= 0 and < 31 && target.Team != Naval.Rules.LighthouseOwner && !BlackedOut(Naval.Rules.LighthouseOwner) &&
                     Vector2.Distance(Map.Sea!.Lamp, target.Position) <= LighthouseSight * Naval.Rules.SeaSight + target.Radius)
@@ -1171,6 +1212,7 @@ namespace MachineBrigade.Sim
                         range = MathF.Max(range, spotter.Def.RevealAir);
                     // Prompt 16: a ship's tall silhouette shows from further off (its hull's size), less in a sea storm.
                     if (naval) range = (range + target.Radius) * Naval.Rules.SeaSight;
+                    if (screened < range && spotter.Def.Class != UnitClass.Scout) range = screened;
                     if (spotter.Team == target.Team) mask |= 1 << spotter.Team;
                     else
                     {
@@ -1193,6 +1235,8 @@ namespace MachineBrigade.Sim
                 for (var t = 0; t < _blackoutUntil.Length; t++)
                     if (Time < _blackoutUntil[t]) radar &= ~(1 << t);
                 mask |= radar;
+                // Prompt 25 F2 batch A: a searchlight's beam or a flare over it, in the dark (eyes, not radar: no blackout cuts it).
+                mask |= Works.LitMask(target);
                 target.SeenByMask = mask;
                 target.VisibleToMask = mask | known;
             }

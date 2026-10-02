@@ -20,6 +20,15 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float DamageScale { get; internal set; } = 1f;
 
+        /// <summary>
+        /// Prompt 25 C1 (DECISIONS 25C): a boss's own weapons' damage multiplier (data "weaponDamage"), so its ordinary
+        /// fire meets the balance sheet's target damage a second against armour 3. Only what the combat system fires at
+        /// the ground takes it (never a weapon the boss system lays: a ship's main battery, the supergun's shell, the
+        /// crusher; never a round at an aircraft), on top of its rank's <see cref="DamageScale"/>;
+        /// <see cref="Combat.FirePower.Sustained"/> counts it too.
+        /// </summary>
+        public float WeaponDamage { get; internal set; } = 1f;
+
         /// <summary>Share of a mine's blast that gets through (the armoured bulldozer's belly plate: 0.5).</summary>
         public float MineArmor { get; internal set; } = 1f;
 

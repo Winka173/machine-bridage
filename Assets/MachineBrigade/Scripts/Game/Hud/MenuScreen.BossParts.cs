@@ -129,7 +129,12 @@ namespace MachineBrigade.Game.Hud
                         hits.Add(Strings.Format("guide.bigattack.hits", ("count", s.FullCount), ("damage", Mathf.RoundToInt(s.Damage)), ("type", Strings.Get("dtype." + s.Type).ToLowerInvariant()), ("level", s.Pen)));
                         break;
                 }
-            return Strings.Format("guide.bigattack.stats", ("hits", string.Join(" + ", hits)), ("warning", big.Warn.ToString("0.#", Strings.Culture)), ("seconds", Mathf.RoundToInt(big.Cooldown)));
+            var stats = Strings.Format("guide.bigattack.stats", ("hits", string.Join(" + ", hits)), ("warning", big.Warn.ToString("0.#", Strings.Culture)), ("seconds", Mathf.RoundToInt(big.Cooldown)));
+            // Prompt 25 C1: a later phase's own numbers (Icarus on the ground).
+            if (big.LatePhase >= 0)
+                stats += " · " + Strings.Format("guide.bigattack.late", ("phase", big.LatePhase + 1), ("count", big.LateCount > 0 ? big.LateCount : big.Strikes[0].FullCount),
+                    ("seconds", Mathf.RoundToInt(big.LateCooldown > 0f ? big.LateCooldown : big.Cooldown)));
+            return stats;
         }
 
         /// <summary>What breaking a part does, in words, from its data.</summary>

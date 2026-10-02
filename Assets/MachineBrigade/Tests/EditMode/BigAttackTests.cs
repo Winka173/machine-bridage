@@ -14,10 +14,11 @@ using Vector2 = System.Numerics.Vector2;
 namespace MachineBrigade.Tests
 {
     /// <summary>
-    /// Prompt 18: every boss's big attack. Its data and words, the difficulty's scaling, its rhythm (about 30 s,
-    /// then its cooldown), its zones' shapes and sizes, cancelling it by breaking the part in time (each gun car its
-    /// own shells), an EMP's delay, the missiles shot down in flight, smoke against the laser but not the railgun,
-    /// units getting out and back (deterministic), and a measure of what each does at the centre of its zone.
+    /// Prompt 18: every main boss's big attack (prompt 25 C1: its super weapon; a mini boss has none, Prompt25BossTests).
+    /// Its data and words, the difficulty's scaling, its rhythm (about 30 s, then its cooldown), its zones' shapes and
+    /// sizes, cancelling it by breaking the part in time (each howitzer its own shells), the missiles shot down in
+    /// flight, units getting out and back (deterministic), and a measure of what each does at the centre of its zone.
+    /// The tests of the mini bosses' attacks (the Tempest's EMP delay and its slug through smoke) went with them.
     /// </summary>
     public class BigAttackTests
     {
@@ -63,13 +64,15 @@ namespace MachineBrigade.Tests
             return list;
         }
 
-        private static IEnumerable<string> Bosses => BossPartsTests.Expected.Keys;
+        /// <summary>Prompt 25 C1: the bosses with a big attack, the twelve main ones.</summary>
+        private static IEnumerable<string> Bosses => BossPartsTests.Expected.Keys.Where(id => C.Vehicle(id).Rank == BossRank.Main);
 
         // ------------------------------------------------------------------ data and words
 
         [Test]
-        public void EveryBossHasOneBigAttackWithItsWordsAndItsNewParts()
+        public void EveryMainBossHasOneBigAttackWithItsWordsAndItsNewParts()
         {
+            Assert.AreEqual(12, Bosses.Count(), "the twelve main bosses");
             foreach (var id in Bosses)
             {
                 var def = C.Vehicle(id);
@@ -125,7 +128,7 @@ namespace MachineBrigade.Tests
             Assert.That(times.Count, Is.GreaterThanOrEqualTo(2), "two big attacks in 100 s");
             Assert.AreEqual(30.0, times[0], 1.0, "the first about 30 s after it appears");
             // Play-test 6 (DECISIONS 21G): a main boss's rank brings it 15 % sooner.
-            Assert.AreEqual(65.0 * C.Vehicle("behemoth").BigAttackScale.Cooldown, times[1] - times[0], 1.0, "then its cooldown, start to start");
+            Assert.AreEqual(C.Vehicle("behemoth").BigAttack.Cooldown * C.Vehicle("behemoth").BigAttackScale.Cooldown, times[1] - times[0], 1.0, "then its cooldown, start to start");
         }
 
         [Test]
@@ -150,28 +153,15 @@ namespace MachineBrigade.Tests
         [Test]
         public void EachPartBringsItsOwnRounds()
         {
-            // The Iron Bird (no self-repair to put the pod back): each rocket pod brings 24 of the 48.
+            // Prompt 25 C1: Jötunn (no self-repair to put the howitzer back): each 203 mm howitzer brings two of the four shells.
             var world = Field();
-            var bird = world.SpawnVehicle("mega_gunship", 1, Vector2.Zero, 0f);
+            var fortress = world.SpawnVehicle("mobile_fortress", 1, Vector2.Zero, 0f);
             Group(world, "ifv", new Vector2(0f, 30f));
-            Run(world, 40f, () => bird.BigAttack.Stage == BigStage.Charging);
-            world.Bosses.Break(bird, bird.Def.PartIndex("pod_l"));
-            Run(world, 8f, () => bird.BigAttack.Stage == BigStage.Firing);
-            Assert.AreEqual(BigStage.Firing, bird.BigAttack.Stage, "one pod left: it still fires");
-            Assert.AreEqual(24, bird.BigAttack.Rounds, "24 rockets of the 48");
-        }
-
-        [Test]
-        public void AnEmpDelaysTheRailgun()
-        {
-            var world = Field();
-            var tempest = world.SpawnVehicle("behemoth_tempest", 1, Vector2.Zero, 0f);
-            Group(world, "main_battle_tank", new Vector2(0f, 40f));
-            Run(world, 40f, () => tempest.BigAttack.Stage == BigStage.Charging);
-            var due = tempest.BigAttack.FireAt;
-            world.Status.Stun(tempest, world.Time + 1.0);
-            Run(world, 0.2f);
-            Assert.AreEqual(due + 2.0, tempest.BigAttack.FireAt, 1e-3, "2 s more to charge");
+            Run(world, 40f, () => fortress.BigAttack.Stage == BigStage.Charging);
+            world.Bosses.Break(fortress, fortress.Def.PartIndex("howitzer"));
+            Run(world, 8f, () => fortress.BigAttack.Stage == BigStage.Firing);
+            Assert.AreEqual(BigStage.Firing, fortress.BigAttack.Stage, "one howitzer left: it still fires");
+            Assert.AreEqual(2, fortress.BigAttack.Rounds, "two shells of the four");
         }
 
         // ------------------------------------------------------------------ zones, shapes and sizes
@@ -203,6 +193,11 @@ namespace MachineBrigade.Tests
                         Assert.IsFalse(zone.Rect, id);
                         Assert.AreEqual(s.Radius, zone.Radius, 1e-3f, id + ": the landing's blast");
                         Assert.Greater(zone.Due, big.FireAt + s.Flight - 0.1, id + ": landing after its flight");
+                        break;
+                    case BigShape.Circle when s.Rings:
+                        // Prompt 25 C1: each round its own ring (the Behemoth's six), drawn at the warning.
+                        Assert.AreEqual(s.FullCount, big.Zones.Count, id + ": a ring a round");
+                        Assert.IsTrue(big.Zones.All(z => !z.Rect && System.Math.Abs(z.Radius - s.Radius) < 1e-3f), id + ": each its blast");
                         break;
                     case BigShape.Circle:
                         Assert.IsFalse(zone.Rect, id);
@@ -253,43 +248,6 @@ namespace MachineBrigade.Tests
             }
         }
 
-        /// <summary>
-        /// Prompt 19 F moved the Silver Bug off its laser sweep (the one big attack smoke cut), so no boss's big attack is
-        /// stopped by smoke now (DECISIONS 18A); the railgun's slug still is not.
-        /// </summary>
-        [Test]
-        public void SmokeDoesNothingToTheRailgun()
-        {
-            var dealt = new Dictionary<Vehicle, float>();
-            DamageSystem.DamageLog = (attacker, victim, damage, kind, weapon) =>
-            {
-                if (weapon == null && kind == HitKind.Pierce) dealt[victim] = (dealt.TryGetValue(victim, out var d) ? d : 0f) + damage;
-            };
-            try
-            {
-                var world = Field();
-                var tempest = world.SpawnVehicle("behemoth_tempest", 1, Vector2.Zero, 0f);
-                var front = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 30f), SimMath.HeadingOf(new Vector2(0f, -1f)));
-                var back = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 42f), SimMath.HeadingOf(new Vector2(0f, -1f)));
-                foreach (var v in new[] { front, back })
-                {
-                    v.HpScale = 60f;
-                    v.Hp = v.MaxHp;
-                    v.Scripted = true;
-                }
-                dealt.Clear();
-                Run(world, 40f, () => tempest.BigAttack.Stage == BigStage.Charging);
-                world.Strikes.AddSmoke(0, front.Position, 5f, 30f);
-                Run(world, 8f, () => tempest.BigAttack.Stage == BigStage.Ready);
-                Assert.IsTrue(dealt.ContainsKey(front) && dealt.ContainsKey(back), "the slug went through both");
-                Assert.AreEqual(0.85f, dealt[back] / dealt[front], 0.02f, "15 % less behind; smoke did nothing to it");
-            }
-            finally
-            {
-                DamageSystem.DamageLog = null;
-            }
-        }
-
         // ------------------------------------------------------------------ getting out of the way
 
         [Test]
@@ -302,10 +260,11 @@ namespace MachineBrigade.Tests
                 var group = Group(world, "ifv", new Vector2(0f, 34f), 3, still: false, toughness: 100f);
                 var start = group[0].Position;
                 Run(world, 40f, () => boss.BigAttack.Stage == BigStage.Charging);
-                var zone = boss.BigAttack.Zones[0];
+                // Prompt 25 C1: the Behemoth's six rings, one a round.
+                var zones = boss.BigAttack.Zones.ToList();
                 Run(world, 10f, () => boss.BigAttack.Stage == BigStage.Firing);
                 var during = group[0].Position;
-                Assert.IsFalse(zone.Contains(during, group[0].Radius), "out of the circle when it lands");
+                Assert.IsFalse(zones.Any(z => z.Contains(during, group[0].Radius)), "out of the rings when they land");
                 Run(world, 20f);
                 Assert.Less(Vector2.Distance(group[0].Position, start), 4f, "back where it stood");
                 return (during, group[0].Position, group[0].Hp);

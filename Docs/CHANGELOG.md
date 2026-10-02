@@ -7,6 +7,384 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+Nothing yet.
+
+## v0.34.0: Prompt 26 (bosses: health, weapons, two-layer blasts, sizes, Boss Hunt health), prompt 27 wave 1 (the model pipeline and 43 new models), prompt 28 saved
+
+2026-10-02 · merged into main together with v0.33.0 (the owner: "toàn bộ"); the design review PDF was rebuilt first (316 pages)
+
+Main merges on feature/visual-overhaul since v0.33.0 was written (newest first): 3329117 the PDF rebuild; 593d785 wave 1c
+pass B; 5ae66c9 wave 1c pass A; ba5eda4 wave 1b; 66ce86a wave 1a + Monster, Nyx; 8138b9b preview, budgets, Art Bible,
+wave plan; 67dc88a experiment 1; 1536eff Step 0 and the GLB baseline; e25dc0b the 318-page PDF; 4a2b4c1 prompt 26 pass 3;
+4633f03 prompt 26 pass 2; 78dbf58 prompt 26 pass 1. Docs only: 34b06fa prompt 28 and Docs/ai/Machine_Brigade_AI_Research.xlsx.
+
+### Design review PDF rebuilt (DECISIONS "27 PDF rebuild")
+
+- 316 pages: wave 1 models and cards, a new section 10h on the prompt 27 model pipeline, the Unreleased headings
+
+### Prompt 27, wave 1c pass B: the last sixteen batch B units get their own models (DECISIONS "27 wave 1c pass B (lead pass, 2026-10-02)"); wave 1c complete
+
+- Own models (V2 kit, `mb_p27_wave1c.py`) and cards for twin_rotor_gunship, ground_drone_carrier, mobile_repair_vehicle, radar_support_vehicle, towed_at_gun, flare_searchlight_tower, recoilless_gun_tower, bunker_shelter_tower, dazzler_vehicle, ground_cruise_missile_vehicle, aerial_tanker, heavy_lift_helicopter, bridging_vehicle, gps_jammer_vehicle, drone_net_tower, one_shot_atgm_tower; washes dropped
+
+### Prompt 27, wave 1c pass A: sixteen batch B units get their own models (DECISIONS "27 wave 1c pass A (lead pass, 2026-10-02)")
+
+- Own models (V2 kit, `mb_p27_wave1c.py`) and cards for aa_57mm_vehicle, mine_rocket_truck, prop_attack_plane, light_attack_heli, next_gen_tank, demolition_line_vehicle, combat_wreck_car, drone_hijack_vehicle, manpads_tower, river_patrol_boat, river_gunboat, coastal_ashm_vehicle, auto_loader_howitzer, amphib_light_vehicle, airborne_light_tank (+ its parachute proxy) and stealth_naval_strike; the colour washes are gone, no number or behaviour changed.
+
+### Prompt 27, wave 1b: the other six batch D bosses (DECISIONS "27 wave 1b (lead pass, 2026-10-02)")
+
+- Real models for Kraken (an aircraft carrier with a ski-jump, island, parked jets), Garuda (a 70 m B-2-style flying wing), Hyperion (a hexagonal mirror ring station, its own model), Stymphalos (eight delta-wing drones in V formation), Cerberus (three coupled big-wheeled cars) and Hydra (a small VLS submarine carrying six FPV drones); their colour washes dropped.
+
+### Prompt 27, wave 1a + 1b (part): Ixion, Gungnir, Monster, Nyx (DECISIONS "27 wave 1a + 1b (part)")
+
+- Real models for four stand-in bosses on the V2 kit: Ixion (an armoured BelAZ-75710 mine truck with a T-72-class turret), Gungnir (an electromagnetic railgun train with capacitor cars and a modern diesel tractor), Monster (an 800 mm self-propelled gun on four track clusters) and Nyx (a Zumwalt-style stealth destroyer); their colour washes dropped.
+
+### Prompt 27, step 5: preview, budgets, Art Bible, wave plan (DECISIONS "27 preview + budgets + art bible")
+
+- A Unity contact-sheet preview for named models (`ModelPreview.RenderBatch -mbPreview`: 8 angles plus detail / LOD1 / impostor views, luma JSON), budgets per class and tier in the GLB validator (Docs/models/BUDGETS.md), the Art Bible (Docs/models/art-bible.md) and the wave plan (Docs/models/PROGRESS.md).
+
+### Prompt 27, step 3: experiment 1, the improved kit on four models (DECISIONS "27 experiment 1")
+
+- The main battle tank, Su-27, Icarus and the Apache (and their `_hd` twins) rebuilt with new kit primitives and a shared parts library (Tools/blender/mb_kit27.py, mb_parts27.py, mb_p27_experiment.py): crisper edges, dished road wheels, hatches, a new gun, recessed bays, canopy frames; the Su-27 high-detail model's 390 zero-area triangles fixed; report Docs/models/EXPERIMENT_1.md.
+
+### Prompt 27, steps 1-2: Step 0 audit and the GLB baseline (DECISIONS "27 step 0 + baseline")
+
+- Docs/models/STEP0_AUDIT.md (the short audit for the 4-model experiment) and Tools/assets/glb_check.py, a static GLB analyzer and validator: Tools/assets/baseline.json covers all 400 GLBs, Docs/models/BASELINE.md sums it up (14 flagged).
+
+### Prompt 26, pass 3 (E): Boss Hunts with the boss health from an estimated P (DECISIONS "26E")
+
+Reduced scope again: no tests, sweeps or measures (compile only; no data changed).
+
+- P, the player's damage a second on a boss, is estimated once from the carried deck (card ranks, gear, commander) by a formula
+  (`HuntPower`); a hunt boss's health is P x its target seconds x 0.6 x m, its damage the data's x m. Replaces the old ramp and
+  `KeepPace` on bosses: no quick mode's boss keeps pace with the arsenal any more (escorts, vehicles and towers still do).
+- The week: 10 bosses with the mains at 4, 7 and 10 (3-2-2 minis), 66 s / 2.8 min targets, a 15 s rest, m = 1 + 0.06 per boss,
+  survivors repaired 30 %, half the CP kept, a checkpoint at each leg's end, a 30 minute clock.
+- The full hunt: 2.5 min mains, 1 min minis, m from x0.8 to x1.3 in story order, every boss a fresh battle (no army, the starting CP),
+  only the supports kept, saved after every boss.
+- Combat supports are capped at +40 % army strength; past it only the play-changing ones (an extra drop, quicker cards) are offered.
+- Hunt tiers: Normal x1 / x1, Heroic (Hard) x1.3 / x1.15, Steel (Very Hard) x1.6 / x1.3 on the existing difficulty picker. Legendary
+  and the hunt mutators are left.
+- The applied Excel is re-exported with the 26AB and 26CD boss numbers; the "to measure" list is gathered in DECISIONS "26E".
+- Written, not run: new cases in `Prompt20HuntTests`.
+
+### Prompt 26, pass 2 (C and D): boss sizes, Ixion, Gungnir and the post-1945 rule (DECISIONS "26CD")
+
+Reduced scope again: no tests, sweeps or measures; no Blender rebuild, camera pull-back or shadow work.
+
+- Boss sizes as data (`size` / `variant.size`, solved by `Tools/balance/p26_cd.py`): the twelve mains and the minis to the
+  prompt's table (Bastion 40 m, Moloch 40, Roc 80, Icarus 90, Caspian 36, Atlas 16 ...); hit radius, parts and mounts follow.
+- Ixion is the armoured BelAZ-75710 mine truck (stand-in model): a 125 mm turret that loads a high-explosive shell against crowds
+  and an armour-piercing one against single targets, a 2 s warned crush charge every 10 s, two roof machine guns, a strip of six
+  mines dropped when it turns (20 s), eight breakable parts (tyres, turret, cab).
+- Gungnir is a rail electromagnetic gun: one slug every 25 s through up to five vehicles in a line, blasting at the last
+  (new `bombard.pierceMax`, `pierceDamage`).
+- Every pre-1945 reference is gone (Ratte, Yamato, Gustav, Tsar Tank, Snow Cruiser, Akron / Zeppelin, Maxim Gorky, Pantherturm,
+  Churchill Crocodile, Flak 36/37, Pak 40, Horten ...): reference lines, profiles, Guide, campaign text, the balance sheet's
+  shape and reference columns, the new-content tracker (KS-19 100 mm heavy AA tower, JLENS radar aerostat that also shows stealth
+  aircraft). Leviathan's main gun is 406 mm.
+- Written, not run: `Prompt26CDTests` (the era scan, Ixion, Gungnir, Leviathan); the old tests whose rules moved were updated.
+
+### Prompt 26, pass 1 (A and B): boss health, armour, phases, weapons and two-layer blasts (DECISIONS "26AB")
+
+Reduced scope (no tests, sweeps or measures; every number is the prompt's starting value, solved on paper by
+`Tools/balance/p26_ab.py`).
+
+- Boss health by chapter from the prompt's table (main 22,000 at chapter 1 to 150,000 at 12; mini 9,000 to 57,000; interludes and
+  the eight batch D bosses interpolated). The campaign no longer scales a boss by the player's arsenal (prompt 2's edge); the
+  difficulty scales it instead (health x0.75 / 1 / 1.25 / 1.5, damage x0.8 / 1 / 1.15 / 1.3).
+- Phases 40 / 35 / 25 (mini 55 / 45), the last phase firing 25 % faster; breakable parts about 35 % of the body on top; armour
+  front 5 / side 3 / rear 2 on the ground main bosses (a mini's front at most 4), a hit on a ground boss's side or rear x1.5.
+- New weapon sets for the twelve main bosses at the chapter's target damage a second (600 to 1,600) in the 45 / 25 / 20 / 10 mix,
+  the secondary weapons opening in the second phase, a close-guard ring for six of them, targets chosen by crowd (area weapons)
+  or worth (guns); the super weapons on a 45-50 s cycle with 3-4 s of warning; minis and the batch D bosses scaled to the
+  chapter's target.
+- Two-layer blasts for every boss weapon, big attack, salvo, pod and quake: the core at full damage, an edge twice as wide
+  (20 m at most) at 40 %; both rings show on the blast, a small ring warns of a big boss shell for its last 0.8 s, and the Guide
+  names the core and the edge.
+- Written, not run: `Prompt26ABTests`; the tests whose numbers moved were updated.
+
+## v0.33.0: Prompt 25 (the balance spreadsheet applied: data, weapons, sizes, rebuilt models, bosses and super weapons, names, unlocks, second rounds, 92 of 93 new items), play-tests 9-11
+
+2026-10-01 · written for the next merge into main (the design review PDF is rebuilt once before it)
+
+Main merges on feature/visual-overhaul since v0.32.0 (newest first): 4775606 batch D, eight new bosses as stand-in
+variants; be53653 batch C, 14 missiles and bombs and 11 support cards; db4ab38 batch B, 32 low-priority units on stand-in
+models; 91a513e and 7e6707e play-test 10 visuals and gear menu; 8df4f41 prompt 25 G, second rounds on 66 weapons;
+f0f8b8c batch A, 27 new units and structures; 78650e4 and 0ab78a5 prompt 25 B2, the models rebuilt at the sheet's sizes;
+bd04bd3 prompt 25 E2, E3, F1, documents and measures; 2a6d6b9 prompt 25 D1-D2, names, unlocks and economy; a122d90
+prompt 25 C1-C2, boss numbers and super weapons; fc53b1c prompt 25 B1, B3, sizes and turn rates; fb9a496 prompt 25
+A1-A5, the sheet's data and weapons; b0f2329 play-test 9 models. Direct commits: play-test 11's dark-hull fix (4337993,
+b22d9d5, 5874c0f), the Windows build target, every campaign mission open while TestUnlockAll is on, dx23 dropped by the
+owner (f2e02c9). Tests, sweeps and measures wait for the owner (every DECISIONS 25x section lists what to measure).
+The design review PDF was rebuilt with 318 pages (the lost screenshots and render pages recovered from the 30/09 PDF into Docs/doc-images; new sections 10f second rounds, 10g bosses' core/edge blasts, phases and sizes, 10h Boss Hunt).
+
+### New content, batch D: eight new bosses (prompt 25 F2, DECISIONS "25F2-D")
+
+- Four main bosses (Kraken carrier, Monster 800 mm gun, Garuda bomber, Hyperion mirror station) and four mini bosses
+  (Stymphalos UAV swarm, Nyx stealth destroyer, Cerberus convoy, Hydra drone submarine) as stand-ins: variants of the
+  nearest existing boss with a tint, the sheet's health and size, and a super weapon for each main boss. In the Guide, the
+  Boss Rush kinds and the Boss Hunts; real models come in prompts 26-27.
+
+### Dark hulls fix (play-test 11, DECISIONS "PT11 dark hulls")
+
+- The hull's own colour and its soot reach the shader as meant: the "_Tint" multiply was written with SetColor, which
+  converts gamma to linear in this linear-space project, so the soot's 0.45 became 0.17 and a stand-in's 0.55 tint with
+  it about 0.05 (black). Stand-ins also wear their colour from the first frame, as on their cards, not from the first hit.
+- The real cause: any MaterialPropertyBlock drew a hull at about 40 % brightness, so a vehicle went dark at its first
+  hit, and tinted stand-ins and boss variants were dark from the start. Hulls are now tinted through shared tinted
+  materials, and a tint shifts the hue only, so a variant is as bright as its parent (as on the detail page). Stand-in
+  cards re-rendered.
+
+### Gear menu fix (play-test 10, DECISIONS "PT10 gear menu")
+
+- Army > Equipment: a picked piece's card, names and buttons (equip, level up, merge) stay pinned at the top of the right
+  panel; its long lines and the piece list scroll together under them. A long piece no longer pushes its equip button and
+  the list off the panel, so equipping works again and the list scrolls by wheel, mouse drag and touch.
+- New screenshot and layout-check screen `army-gear-picked` (the Equipment tab with a piece picked).
+### PT10 visuals (play-test 10, DECISIONS PT10 visuals)
+
+- The In action preview's targets no longer crackle white, spark blue and smoke while unharmed: a range dummy was drawn as
+  knocked out by an EMP because the sim holds it still as "stunned". Only a real stun (an EMP, a SEAD strike) draws the
+  arcs, sparks, burnt-electronics smoke and dead radar now; hit flashes, damage smoke and fire still follow real damage.
+- Flak bursts redrawn after real flak: a sharp orange flash gone in a few frames, a dense round black-to-charcoal puff that
+  blooms, hangs and drifts for 3-6 s, and a quick spark spray of fragments. No ring, no Small blast or grey puffs under
+  it. Sized and weighted by calibre (a small grey tuft at 20 mm, a heavy black ball at 57 mm and over), never smaller than
+  before; Low draws fewer puffs and sparks. Editor: Machine Brigade > Render Flak Burst Shots.
+
+### New content, batch A (prompt 25 F2, DECISIONS 25F2-A)
+
+- 27 new cards from the balance spreadsheet, each sold in the shop (1,500-5,000 coins) and fielded by the enemy too:
+  - anti-air: heavy flak tower, 40 mm AA gun vehicle and tower, light SAM vehicle, anti-drone microwave vehicle,
+    interceptor drone vehicle, laser anti-drone station;
+  - anti-tank: anti-tank gun emplacement, beyond-sight and radar-guided ATGM vehicles, recoilless rifle jeep,
+    fibre-optic FPV carrier (never jammed);
+  - artillery and air: shoot-and-scoot wheeled howitzer, turreted SP mortar (four bombs landing at once), long-range
+    glide bomber, high-speed recon jet (one pass), interceptor;
+  - scouting and drops: radar scout car, airborne fighting vehicle (tap the card, then the ground to drop it by
+    parachute where your side sees);
+  - structures: gabion blast wall, inflatable decoy, fire-control centre, searchlight, barrage balloon, visual jammer,
+    troop shelter, flare tower. Searchlights and flare towers work at night and in fog.
+- The catalog loads again: an empty weapon family no longer stops it.
+
+### New content, batch B (prompt 25 F2, DECISIONS 25F2-B)
+
+- 32 more cards from the balance spreadsheet (the Thấp-priority items), each sold in the shop (1,500-5,000 coins) and
+  fielded by the enemy too. The owner's choice for this batch: every card is complete (mechanics, AI, texts, unlock)
+  but wears another unit's model with a colour wash, its own tint, so it reads apart in the shop; the real models
+  come in a later prompt. Among them: a 57 mm AA vehicle, a mine-laying rocket truck, a light prop attack plane and
+  a light attack helicopter, a next-generation tank (a double-charge active protection), a demolition-line vehicle,
+  a drone-hijack vehicle, a MANPADS post, river patrol and gun boats, a coastal anti-ship vehicle, an auto-loading
+  howitzer, an amphibious light vehicle, an airborne light tank (parachutes in like the airborne fighting vehicle), a
+  stealth carrier strike jet, a twin-rotor gunship, a mobile repair vehicle, a towed anti-tank gun, a flare tower and
+  a recoilless gun post at the small slot, a bigger bunker at the medium slot, a laser dazzler and a GPS jammer
+  vehicle, a ground-launched cruise missile vehicle, an aerial tanker, a heavy-lift helicopter, a bridging vehicle, a
+  drone net corridor, and a one-shot ATGM battery.
+- `CardRenders.RenderBatch`: a non-boss unit with a tint now gets its own card picture (keyed by its own id) instead
+  of sharing its borrowed model's, the same colour wash `VehicleView` already puts on a boss variant.
+
+### Second rounds (prompt 25 G, DECISIONS 25G)
+
+- 66 guns get a second round from the balance sheet's suggestions (`Tools/balance/import_alt_rounds.py`, balance.json
+  `secondRounds`): air-burst rounds for the autocannons, armour-piercing rounds for the flak guns, high explosive for the tank
+  guns, guided shells and API rounds for elites and rank-7 branches. The sheet's numbers, no rebalance.
+- A gun loads the round that suits its target on its own: the change takes its reload (at least 0.5 s) and a round stays in
+  at least 2 s. Deterministic, in the checkpoint fingerprint.
+- Air-burst rounds fly a new flak round model and burst in a dark puff with a spark ring and fragment streaks, sized by
+  calibre; the flak guns' own rounds look the same now.
+- The ammo-switch icon marks a gun of two rounds on cards and weapon rows; a glyph flashes on a unit's bar when it changes
+  round; the detail page lists both rounds with their figures and what each is for.
+
+### New content, batch C: ordnance and support cards (prompt 25 F2, DECISIONS 25F2-C)
+
+- 9 new weapons from the balance sheet's "Tên lửa & bom mới", each fitted to an existing unit as a secondary or extra
+  weapon (no equipment-purchase system exists yet, so this stands in for it): a CBU-97-class cluster bomb, a GBU-28
+  bunker buster and an ODAB-500 thermobaric bomb on the glide bomber; an AGM-88 HARM anti-radar missile on the
+  interceptor; an APKWS laser-guided rocket on the attack helicopter; a second Coyote Block 2 interceptor round on the
+  interceptor drone vehicle; an SMArt 155/BONUS top-attack shell on the wheeled howitzer; a Switchblade 300 mini swarm
+  on the fibre-optic FPV carrier. An NSM/P-800 Oniks anti-ship missile is catalogued with no host (its coastal vehicle
+  does not exist yet). 4 sheet rows (a glide bomb, an R-37M, a Spike NLOS and a 155 mm guided shell) duplicate weapons
+  batch A and the second-rounds pass already built; the sheet's stealth cruise missile updates the existing
+  `cruise_missile` support card's numbers instead of adding a new one.
+- 11 new support cards from "Thẻ hỗ trợ mới", each sold in the shop (1,500-2,500 coins) and fielded by the enemy too: a
+  stand-off glide bomb strike (can still be shot down), a no-scatter guided shell, a self-seeking cluster bomb and a
+  drone-interceptor strike (one new mechanism, reused for both), a loitering attack UAV, an instant ammo resupply, a
+  jamming storm (downs drones, hides the area), an illumination flare, a decoy paradrop (3 fake tanks that draw fire,
+  never on the enemy), an instant counter-battery strike on enemy guns that just fired, and radar chaff (built on the
+  smoke screen's own zone).
+- The enemy AI can now draw any new-content support card into its quick-battle deck, as it already could for units.
+
+### Measures and documents (prompt 25 E2, E3, F1, DECISIONS 25E)
+
+- The combat-value tool measures what support vehicles do for their side (E2): health repaired, rounds resupplied,
+  missiles decoyed and shield damage blocked, and a support value per CP on the combat value's scale. Table 9b has the
+  columns, "—" until the test phase runs `CombatValueMeasure`.
+- Table 9b has a "vs cluster" column (E3): damage a second against five light vehicles 4 m apart, computed from each
+  weapon's blast radius, falloff, penetration and damage type (and cluster bomblets), with how many times one target's.
+- The design document has a new section 8b (every unit's description, shape note and unlock) and 10e (every weapon's
+  DPS against armour levels 0-5, aircraft and structures; missile flight speed and time; model and round sizes from the
+  data; the main bosses' super weapons). `ExportGameDoc` writes the fields they read.
+- `Docs/balance/apply-report.md` is finished: rows by task and by sheet for all 28 sheets, the combat value by role
+  before and after ("to measure" until the test phase runs it) and the 33 places where the game differs from the
+  spreadsheet, with the reason.
+- `Docs/balance/Machine_Brigade_Can_bang_applied.xlsx`: the balance spreadsheet with a "Hiện tại" column beside each
+  proposed value, filled with the game's numbers after prompt 25 (`Tools/balance/export_applied_xlsx.py`).
+
+### Unlocks and economy from the balance spreadsheet (prompt 25 D2 and E.3, DECISIONS 25D2)
+
+- Every vehicle opens where the spreadsheet's "Phương tiện" sheet says, and costs the sheet's price to unlock early:
+  300 coins in act I, 800 in act II, 1,500 in act III, 2,500 in act IV (was 300 + 150 per CP). A new player starts
+  with the scout jeep, armoured car, IFV and main battle tank. The light tank, AA vehicle and SP howitzer are won in
+  chapters 1 and 2 now, and a save that has already played keeps them.
+- The super-heavy tank, both bombers, the ballistic launcher and the AC-130 are no longer premium: they open in
+  chapters 8 to 11. The turtle tank and the shield carrier open in interludes I and II. The minefield and the
+  long-range SAM site, which nothing unlocked, open in chapters 1 and 8.
+- Story loot (the railgun truck, the drone mothership, the bunker vehicle, the wingman drone and Kessler's cruise
+  missiles) is never sold. The shop marks it as won in its mission.
+- The economy was recomputed from the data (`Docs/balance/apply-report.md`, section D2). Buying every card early now
+  costs 48,250 coins, 21 % of what the campaign pays (was 70,200). The campaign's blueprint pay dropped by a third, and
+  the main deck is rank 7 as act IV begins.
+- Each new item planned in the spreadsheet (93) has its shop price and source in `Docs/backlog/new_content.json`.
+- The campaign was checked against the spreadsheet's story sheet. It found no data slip, and the differences are listed
+  for the owner.
+
+### Names from the balance spreadsheet (prompt 25 D1, DECISIONS 25D1)
+
+- 63 units take the full name, short name and English name of the spreadsheet's "Tên đề xuất" sheet: for example
+  "Pháo hạm bay" / "Airborne gunship" (was "Pháo hạm AC-130"), "Xe phóng đạn lảng vảng" / "Loitering munition truck"
+  (was "Xe phóng Lancet"), "Trạm tên lửa phòng không tầm xa" / "Long-range SAM site" (was "Tên lửa Patriot tầm xa"),
+  "Siêu tăng" / "Super-heavy tank" (was "Siêu tăng Titan"), "Lựu pháo tự hành" / "SP howitzer".
+- The real model a card was named after (AC-130, Patriot, Lancet, Shahed, ZU-23, BMPT Terminator, Iron Beam, TOS-1A) is
+  now on the unit's reference line in the Guide tab, not in its name.
+- Each unit has one name everywhere: its guide opens with it, and the guides, tips, missions and loot lines that used an
+  old name use the new one.
+- `Tools/balance/import_names.py` applies the sheet; `NameSheetTests` checks that no old name is left.
+### Prompt 25 A1-A5
+
+The owner's balance spreadsheet (`Docs/balance/Machine_Brigade_Can_bang.xlsx`) goes into the game data by script
+(`Tools/balance/import_xlsx.py`); what was applied and what waits for a later task is in
+`Docs/balance/apply-report.md` (DECISIONS 25A).
+
+- A1 Cao: new prices (attack helicopter 9, attack jet 18, heavy tank 13, Iron Beam 6, long-range SAM 14, SAM launcher
+  7, scout helicopter 5, stealth fighter 13, strike drone 9, swarm carrier 13, super-heavy tank 18); SAMs and
+  air-to-air missiles fast enough to catch a fighter; the swarm carrier drops cruise missiles instead of small bombs;
+  the scout jeep sees farther (55 m) and hides when it stands; the wheeled gun has less health and reloads like a
+  tank; the ZU-23 fires a stream of lighter rounds farther; the self-propelled gun fires faster.
+- A1 Trung: armour by face for a dozen vehicles (the main battle tank's front 4, the tank destroyer, siege mortar and
+  laser tank lighter); tank turrets turn faster than their hulls; the IFV and the BMPT fire their 30 mm in bursts;
+  the HIMARS moves after every salvo; the heavy turret loads armour-piercing rounds for armour; the gunship carries
+  Ataka missiles and flies faster; the heavy bomber carries seven FAB-500s; the Phalanx fires a real stream.
+- A1 Thấp: death blasts sized by the vehicle (the ammunition depot 14 m, the flame tank 5 m); mini bosses' front armour
+  4 at most; the light tank fires its 57 mm in pairs and sees farther; the Grad turret hits harder; the Pantsir's
+  guns and the gunboat's AK-630 fire long streams; the railgun truck, the Smerch and the TOS cost a CP more.
+- A2: every weapon's rate, magazine or burst, rest, reach, speed and blast from the weapon sheet (sustained DPS within
+  5 % of the sheet's, tested); the HIMARS, Iskander, Smerch and Buk launchers lose their machine guns; the wheeled gun
+  gains a roof M2, the light tank a gun-launched missile, the Pantsir its own 57E6 missiles.
+- A3: weapon families: every weapon that is the same real weapon (all Hellfires, all M2s, all Grads...) shares one
+  speed, blast radius, round model and look, set once in the data (`weaponFamilies`).
+- A4: every missile flies the sheet's speed (SAMs and air-to-air missiles 42-65 m/s, faster than the aircraft they
+  hunt; cruise missiles and Shaheds kept slow on purpose).
+- A5: one blast radius for one round on every carrier (the siege tank's 203 mm 8 m, the Grad 4.5 m everywhere), and every
+  blast drawn exactly as wide as its damage reaches: its shock ring sits on the radius (bombs' rings were twice it);
+  small flak and grenade bursts show a faint ring of their own.
+- B.7-B.8: prices checked against the price sheets; the airstrike drops four FAB-500s (10 m each), the barrage fires six
+  shells, the cruise missile hits for 600 over 10 m.
+
+### Prompt 25 A1 review
+
+The rows the first pass kept for a measurement, applied as the sheet has them (the owner's call; DECISIONS 25A,
+`import_xlsx.py --upto A1-review`).
+
+- Nine speeds by the sheet's real speed x the map factor (the engineer vehicle 4.4 m/s, the smoke carrier and the
+  mortar carrier 5.9, the mine layer 5.5, the VBIED 6.7, the light tank 4.0, the flame tank 4.6, the HIMARS 9.4,
+  the strike drone 13.9); the siege tank sees 30 m.
+- Health by the sheet's class median a CP: the TOS 450, the siege tank 600, the swarm carrier 632, the AC-130 1,069
+  (about half).
+- The Skyranger's AHEAD gun changes magazines in 1.21 s (the sheet's formula, 102 a second sustained).
+
+### Prompt 25 B1, B3 and turn rates
+
+The spreadsheet's sizes (DECISIONS 25B; `import_xlsx.py --upto B1`, `--upto B3`).
+
+- B1: every vehicle's drawn size is in the data (`modelSize`) and the game fits its model to it, so the models B2
+  rebuilt (the main battle tank 7.8 m, the twin tank 9.0 m, the flame tank, the armoured car, the scout jeep, the FPV
+  and Lancet trucks, the command vehicle, the Su-27 8.6 m, the Apache, the swarm carrier and the AC-130 on one C-130
+  frame) and the old ones are drawn at the sheet's sizes, their hulls (collision) with them; the super tank 10.6 m,
+  the Pantsir 9.6 m, the supply truck 8.2 m, the self-propelled gun, the siege tank, the Iron Beam, the radar and
+  Shahed trucks resized; Daedalus ~45 m, and Icarus 60 m, now the largest thing in the sky.
+- B3: rounds at the sheet's lengths (0.8 x real from the ground, 0.5 x from the air, 0.8 m at least): bombs, the
+  JASSM, the Kornet and the 240 mm mortar smaller, the Buk, Patriot and 48N6 bigger; 155 mm shells 0.8 m and every
+  203 mm 1.3 x that; the Kh-29L and the GBU-39 get models of their own (the Maverick and the GBU-12 stand in until
+  they are built).
+- C.4: the design document's turn rates in degrees a second (it printed the code's radians under a degrees label);
+  the tanks' turrets turn faster than their hulls (115 deg/s, from A1).
+### Prompt 25 C1: bosses and super weapons (DECISIONS 25C)
+
+The sheet "Boss đề xuất" by script (`import_xlsx.py --upto C1`).
+
+- Every boss's health from the sheet: Icarus 26,000 (the most of any boss), Daedalus 24,000, Roc 23,000 ... Bastion
+  12,000; mini bosses 6,000-13,000 (Scylla and Bastion Mk.0 about half what they had).
+- Every boss's ordinary fire comes to the sheet's damage a second against armour 3 (a boss's own `weaponDamage`, on the
+  ground only), after the new weapons: the Behemoth's twin Kornet, Jötunn's anti-drone 30 mm, Roc's two twin 30 mm,
+  Moloch's two ZU-23, Bastion's two NSV, Kronos's and Daedalus's two 57 mm, Leviathan's SAM, the mothership's third
+  Lancet bay; Icarus trades its tank guns and flak for two coilguns (four ordinary turrets on its wreck); Scylla fires
+  a twin AK-130 and an anti-ship missile every 15 s instead of a battleship's 460 mm; Typhon a short-range cruise
+  missile every 12 s; Caspian an anti-ship missile each pass and two ZU-23; Ixion and the Harpy 12.7 mm guns.
+- Only the twelve main bosses have a super weapon, with the sheet's numbers, cycle, warning and counter: the Behemoth's
+  six shells in six rings, Jötunn's 203 mm barrage, the mothership's heavy glide bomb (it can be shot down), Nemesis's
+  Doomsday missile on a 6 s clock, Icarus's seven rods (nine in phase 3), Bastion's single 420 mm bomb, Roc's sixteen
+  bombs, Leviathan's nine shells along a strip, Daedalus's eight pods; each with a warning sound of its own. Mini
+  bosses fight with their ordinary weapons only.
+
+### Prompt 25 C2: the Gungnir's gun and the Kronos's bucket wheel as weapons (DECISIONS 25C)
+
+- The Gungnir's 80 cm gun is its main weapon, in the weapons tables and the Guide: one 900 shell every 25 s with a 12 m
+  blast (was 1,400 every 20 s), still at your biggest group anywhere; its shot fires the gun's numbers.
+- The Kronos's bucket wheel is a weapon on its wheel (900 a second within 6 m, three times on walls and towers); its
+  crusher takes the weapon's numbers.
+
+### Prompt 25 B2: models rebuilt to the balance sheet (DECISIONS 25B2)
+
+- Thirteen models are redrawn from the balance sheet's shape notes and drawing guide, at its sizes (ground vehicles
+  0.8 x real, aircraft 0.4 x real): the main battle tank (a 7.7 m Leopard 2 / Abrams-class tank with its long gun), the
+  Su-27 fighter (now clearly longer than the attack jet), the drone mothership and the AC-130 (one C-130 airframe at
+  one size; the mothership drops its drones from an open ramp), the Apache (with wheels, not skids, and longer stub
+  wings), Daedalus (a two-tier Acclamator-style assault ship with bigger point-defence turrets), the scout jeep (the
+  smallest vehicle, with its driver and gunner), the twin-gun tank (the MBT 15 % larger with two parallel guns), the
+  flame tank (a TO-55 with red fuel tanks on the back), the armoured car (a Pandur 6x6), the FPV and Lancet launchers
+  (one MRAP) and the command vehicle (a Stryker with its mast folded and no tall whips).
+- Each is inside the sheet's triangle budget (most were two to three times over) and keeps every weapon and part
+  point, so shots, bosses' parts and the high-detail variants work as before. Their cards are re-rendered, and
+  before/after shots are in `Docs/ui-screens/models/`.
+- The new sizes take effect in battle when prompt 25 B1 sets the scales; Icarus is unchanged (its size is a scale
+  for B1). The models not reached yet are listed in `Docs/ASSET_DEBT.md`.
+- Part 2: every other vehicle is redrawn the same way, in lean builders at the sheet's sizes: the trucks the sheet
+  sized (supply truck and ammunition carrier on a HEMTT, counter-battery radar, Shahed launcher, Iron Beam, Pantsir),
+  the M109A7 self-propelled gun (was a CAESAR truck), the siege tank on 2S4 lines, the Buk and S-400 launchers with
+  missiles at their new lengths, the four-track super tank, the IFV, light tank and Gepard, the hovercraft, engineer,
+  smoke and mortar carriers, the three pickups, jammer, minelayer, HIMARS, Centauro, shield carrier, turtle tank,
+  bulldozer, Sprut, TOS-1A, BMPT, heavy tank, Smerch, Iskander, railgun and laser tanks, the bunker vehicle, and the
+  aircraft (Little Bird, TB2, XQ-58, MQ-9, the stealth jet resized, Hind, Su-25, B-52, B-2, the airdrop plane on the
+  shared C-130). The seven elites with models of their own follow their new bases; the Sky Fortress is the shared
+  C-130 painted dark; the Kh-29L and GBU-39 get round models; the logistics yard, repair bay, radar site and the
+  airfield's two branches get models of their own. Most are 1,000-3,500 triangles (were 6,000-15,000). The towers
+  and the other bosses were checked against the sheet and kept for prompt 27's new kit.
+
+### Play-test 9 models (DECISIONS 23M)
+
+- Icarus is a spaceship again, not a station: a dagger-shaped warship about as big as before on the map, with a pointed
+  bow, a lit trench along each side, a keel under the bow that carries the laser ball, two long pods on its flanks
+  with the coilguns and the crash turrets, a stepped superstructure, a command tower aft with a wide bridge, a bank of
+  seven engines across the stern and two engine nacelles with canted fins. It borrows from Star Wars, Halo, The
+  Expanse, Battlestar Galactica and Mass Effect without copying any one ship. Its wreck is the same ship crashed, with
+  the tower snapped and the bridge lying beside it. Its parts, weapons and attacks are unchanged, and so is the
+  prototype variant (Icarus Mk.0).
+- The stealth jet is redrawn slim, half as deep as before. Seen from above it is one flat, blended shape: sharp chines
+  run from the nose and flare into the wing roots, then the body tapers to the tail. It has a wide trapezoid wing, twin
+  tails canted out, flat thrust-vectoring nozzles and a one-piece canopy (F-22, J-20, YF-23, Su-57 and F-35 mixed). It
+  is all dark gunmetal, with your side's colour only on the tail tips, the wingtips and a panel by the canopy. Same
+  size class, same weapons and bays.
+- Both cards are re-rendered from the new models.
+
 ## v0.32.0: Doctrines folded into the commanders, the owner's answer on the bombs
 
 2026-09-30 · merged into main

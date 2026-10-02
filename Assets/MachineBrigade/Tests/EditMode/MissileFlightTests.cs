@@ -238,8 +238,9 @@ namespace MachineBrigade.Tests
             var catalog = GameContent.LoadCatalog();
             float Drawn(string id, string model, bool air = false) =>
                 catalog.Weapons[id].ProjectileScale * WeaponEffects.SizeOf(catalog.Weapons[id], catalog.Weapons[id].Projectile, model, air);
-            // The SAM launcher's Buk (3.6 m model) out of its 2.45 m launcher box: 2.6 m, was 4.3 m.
-            Assert.AreEqual(0.72f, Drawn("sam_long", "buk"), 0.01f, "the SAM launcher's missile");
+            // Prompt 25 B3: the Buk at the sheet's 4.44 m (0.8 x its real 5.55 m) on its 3.6 m model, x1.2 as a SAM; it
+            // was fitted to the SAM launcher's 2.45 m box (2.6 m): the box is ASSET_DEBT now.
+            Assert.AreEqual(4.44f / 3.6f * 1.2f, Drawn("sam_long", "buk"), 0.01f, "the SAM launcher's missile");
             Assert.Less(Drawn("sam", "shorad_dart"), 1f, "SHORAD darts no bigger than their model");
             Assert.AreEqual(0.744f, Drawn("heli_atgm", "hellfire", true), 0.01f, "a helicopter's Hellfire (1.04 m, its rack 0.81 m)");
             Assert.AreEqual(0.696f, Drawn("maverick", "maverick", true), 0.01f, "the A-10's Maverick (1.39 m, its rack 1.1 m)");

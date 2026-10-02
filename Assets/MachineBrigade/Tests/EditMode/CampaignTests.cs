@@ -197,7 +197,8 @@ namespace MachineBrigade.Tests
                 Assert.IsTrue(last.Stages.Any(s => s.Choices.Count == 2), $"chapter {c}: its operation has a choice of two");
                 Assert.AreEqual(last, Campaign.OperationOf(c));
                 var cards = main.SelectMany(m => m.Unlocks).Count(id => !id.Contains('.') && !(catalog.Vehicles.TryGetValue(id, out var v) && v.Fort is { Kind: FortKind.Utility }));
-                Assert.That(cards, Is.InRange(4, 7), $"chapter {c} unlocks {cards} cards");
+                // Prompt 25 D2: the balance sheet opens most vehicles in acts I-II (3 to 10 a chapter; was 4 to 7).
+                Assert.That(cards, Is.InRange(3, 10), $"chapter {c} unlocks {cards} cards");
             }
             Assert.AreEqual("3-6", Campaign.Label(Campaign.Get("c3m05")), "a new mission before it");
             Assert.AreEqual("3-S1", Campaign.Label(Campaign.Get("c3s1")));

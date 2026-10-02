@@ -42,7 +42,7 @@ namespace MachineBrigade.Sim.Content
         /// Fires over cover: artillery, mortars and rocket artillery (anything with a minimum
         /// range) lob their rounds, bombs fall and drones fly. Everything else needs a clear line.
         /// </summary>
-        public bool Indirect => MinRange > 0f || Projectile is ProjectileKind.Bomb or ProjectileKind.Drone;
+        public bool Indirect => MinRange > 0f || Lofted || Projectile is ProjectileKind.Bomb or ProjectileKind.Drone;
 
         /// <summary>
         /// Shots (trigger pulls) carried, or 0 for unlimited. Long-range weapons run dry so they
@@ -163,6 +163,12 @@ namespace MachineBrigade.Sim.Content
         public string? RealName { get; internal set; }
 
         /// <summary>
+        /// Prompt 25 A3: the weapon family it belongs to (data "weaponFamily": every weapon that is the same real weapon
+        /// takes the family's speed, blast radius, round model and round weight), or null.
+        /// </summary>
+        public string? WeaponFamily { get; internal set; }
+
+        /// <summary>
         /// Prompt 15 B.1: how deep its rounds pierce, 0 (a 7.62 mm machine gun) to 4 (120 mm darts, heavy
         /// anti-tank missiles, railguns). Data "pen"; without it, by family and size
         /// (<see cref="Armour.DefaultPenetration(WeaponDef)"/>). Shaped charges pierce by their warhead, not their size.
@@ -232,6 +238,14 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>How big that model is drawn (one shell model for 105, 155 and 203 mm).</summary>
         public float ProjectileScale { get; internal set; } = 1f;
+
+        /// <summary>
+        /// Prompt 25 B3 (DECISIONS 25B): how long the round is drawn, in metres (the balance sheet's "Kích thước đạn": 0.8
+        /// x real from the ground, 0.5 x real from an aircraft, 0.8 m at least), 0 for none ("roundLength"). The view fits
+        /// whichever model flies it to that length (its own, a stand-in, its kind's default), before its legibility boost;
+        /// <see cref="ProjectileScale"/> stays the one that gives it on the model the game ships.
+        /// </summary>
+        public float RoundLength { get; internal set; }
         public float Damage { get; }
 
         /// <summary>Seconds between shots. Keeps counting down while moving or retargeting.</summary>
@@ -282,15 +296,19 @@ namespace MachineBrigade.Sim.Content
                 Family = Family,
                 Size = Size,
                 RealName = RealName,
+                WeaponFamily = WeaponFamily,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,
+                RoundLength = RoundLength,
                 Clip = Clip,
                 ClipReload = ClipReload,
                 _roundWeight = _roundWeight,
                 // Prompt 17 C.
                 Ramp = Ramp,
                 SwarmReach = SwarmReach,
+                // Prompt 26 B.3: a boss weapon's two-layer blast.
+                SplashEdge = SplashEdge, EdgeShare = EdgeShare,
                 // Prompt 19: the tier it reaches goes with it.
                 Ceiling = Ceiling,
                 // Prompt 17 D.
@@ -299,6 +317,13 @@ namespace MachineBrigade.Sim.Content
                 AirRound = AirRound,
                 // Play-test 8 A: a steered bomb stays steered.
                 Steered = Steered,
+                // Prompt 25 F2 batch A: the new weapons' mechanisms.
+                GroundRange = GroundRange, MinReach = MinReach, GroupPriority = GroupPriority, BigGame = BigGame, JamProof = JamProof,
+                OneAtATime = OneAtATime, Lofted = Lofted, Mrsi = Mrsi, Glides = Glides, Prey = Prey,
+                // Prompt 25 G: the gun's second rounds (the rounds are not tuned: the gun's reach and cadence govern).
+                Rounds = Rounds,
+                RoundOf = RoundOf,
+                RoundKind = RoundKind,
             };
             return copy;
         }
@@ -345,6 +370,16 @@ namespace MachineBrigade.Sim.Content
         public float Radius { get; }
         public float Delay { get; }
         public ExplosionTier Tier { get; }
+
+        /// <summary>Prompt 26 B.3: the outer radius of a two-layer blast (<see cref="Radius"/> is its core); 0: one layer.</summary>
+        public float Edge { get; set; }
+
+        /// <summary>Prompt 26 B.3: the share of the damage the edge layer takes.</summary>
+        public float EdgeShare { get; set; } = 0.4f;
+
+        /// <summary>Prompt 26 B.3: a boss's blast: the core at <paramref name="radius"/>, full damage, and an edge twice as wide (at most 20 m) at 40 %.</summary>
+        public static ExplosionDef TwoLayer(float damage, float radius, ExplosionTier tier) =>
+            new(damage, radius, 0f, tier) { Edge = MathF.Min(WeaponDef.MaxEdge, radius * 2f) is var edge && edge > radius ? edge : 0f };
     }
 
     /// <summary>One weapon on a vehicle and how it is pointed. The first mount is the main weapon.</summary>
@@ -398,6 +433,9 @@ namespace MachineBrigade.Sim.Content
         public float Speed { get; set; } = 1f;
 
         public float Armor { get; set; } = 1f;
+
+        /// <summary>Prompt 26 B.5: its weapons fire this many times as fast from then on (phase 3: 1.25), multiplied in.</summary>
+        public float FireRate { get; set; } = 1f;
 
         /// <summary>Skills it uses at once when the phase begins (summons, a shield, a barrage...).</summary>
         public IReadOnlyList<SkillDef> Skills { get; set; } = Array.Empty<SkillDef>();
@@ -497,6 +535,12 @@ namespace MachineBrigade.Sim.Content
         /// <summary>Share of a spotter's sight at which a stealthy aircraft shows.</summary>
         public const float StealthSight = 0.4f;
 
+        /// <summary>
+        /// Prompt 25 A1 (the scout jeep): a scout that hides when it stands. Once it has stood still a second, and until
+        /// it fires, a spotter sees it only at 1 - this share of its sight (data "stillCamo", 0 to 0.9).
+        /// </summary>
+        public float StillCamouflage { get; internal set; }
+
         /// <summary>A fighter on combat air patrol: goes after enemy aircraft well beyond its own post.</summary>
         public bool Interceptor { get; internal set; }
 
@@ -545,6 +589,20 @@ namespace MachineBrigade.Sim.Content
         /// (the hull) include it; the radius, which decides how easily it is hit, does not.
         /// </summary>
         public float Scale { get; set; } = 1f;
+
+        /// <summary>
+        /// Prompt 25 B1 (DECISIONS 25B): the drawn model's length, width and height in metres (its whole box, gun
+        /// included: the balance sheet's "Kích thước model"), 0 when the data gives none ("modelSize"). The view fits the
+        /// model's length to it, so an old model and one rebuilt at another size are drawn alike; <see cref="Scale"/>
+        /// stays the one that matches the model the game ships (the importer keeps them in step).
+        /// </summary>
+        public float ModelLength { get; internal set; }
+
+        /// <summary>The drawn model's width in metres (see <see cref="ModelLength"/>).</summary>
+        public float ModelWidth { get; internal set; }
+
+        /// <summary>The drawn model's height in metres (see <see cref="ModelLength"/>).</summary>
+        public float ModelHeight { get; internal set; }
 
         public float HullHalf => MathF.Max(0f, (Length - Width) * 0.5f);
 

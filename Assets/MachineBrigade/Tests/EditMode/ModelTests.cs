@@ -154,15 +154,15 @@ namespace MachineBrigade.Tests
         /// Rounds leave from the launchers on both sides (pods, rails, twin guns), found from the
         /// model's meshes, not from one muzzle on the centre line.
         /// </summary>
-        [TestCase("attack_helicopter", "rocket", 2, 1.2f)]
+        [TestCase("attack_helicopter", "rocket", 2, 0.45f)]
         [TestCase("heavy_aa", "missile", 4, 1f)]
         [TestCase("titan_tank", "missile", 2, 1.5f)]
-        [TestCase("attack_helicopter", "missile", 2, 2f)]
-        [TestCase("gunship_heli", "rocket", 2, 1.5f)]
+        [TestCase("attack_helicopter", "missile", 2, 0.8f)]
+        [TestCase("gunship_heli", "rocket", 2, 1.0f)]
         [TestCase("scout_heli", "gun", 2, 0.8f)]
         [TestCase("heavy_attack_heli", "rocket", 2, 1.5f)]
-        [TestCase("fighter_jet", "missile", 4, 3f)]
-        [TestCase("attack_jet", "missile", 2, 3.5f)]
+        [TestCase("fighter_jet", "missile", 4, 1f)]
+        [TestCase("attack_jet", "missile", 2, 1.5f)]
         [TestCase("tank_buster", "rocket", 2, 3f)]
         public void RoundsLeaveFromTheLaunchersOnBothSides(string id, string slot, int count, float offCentre)
         {

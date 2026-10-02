@@ -1,3 +1,5 @@
+(ĐÃ THAY 01/10: chủ dự án đưa bản mới bằng tiếng Anh, Docs/prompts/prompt27_v2_en.md, kèm ghi chú của lead ở DECISIONS "27 scope (v2)". Bản dưới đây chỉ giữ để tra cứu; các phần bị bỏ khỏi bản mới được ghi ở DECISIONS.)
+
 Prompt 27: Làm lại toàn diện mọi model trong game
 
 (Chủ dự án, 30/09: "đây là prompt 26 và 27, lưu vào nhưng chưa làm đợi tôi nói". Chưa làm. Prompt 26 nhận sau, lưu ở prompt26_vi.txt.)
@@ -157,3 +159,7 @@ J. KIỂM TRA TỔNG
 - Hiệu năng: đo FPS ở trận Icarus, Kronos, Leviathan, ở trận đông quân nhất, và ở map nặng nhất sau khi thay model, trên máy tầm thấp; nằm trong ngân sách.
 - Dung lượng bản cài nằm trong giới hạn đã đặt ở H.7.
 - Cập nhật docs/CHANGELOG.md, docs/ASSET_DEBT.md (xóa các mục đã làm), docs/DECISIONS.md, docs/models/ (audit, kit, pilot, art-bible, credits, wave-N), và tài liệu thiết kế (ảnh model mới).
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (01/10) chọn phương án hiện tại (Blender dựng bằng script), xem prompt 27 và miêu tả hoàn chỉnh phương pháp render đó cho tôi xem có gì sửa không
+- (01/10) đây là feedback, update vào prompt, và các file liên quan để khi bắt đầu làm prompt sẽ theo đúng, và cho nhận xét về nó: [bản prompt 27 mới bằng tiếng Anh, lưu nguyên văn ở prompt27_v2_en.md]

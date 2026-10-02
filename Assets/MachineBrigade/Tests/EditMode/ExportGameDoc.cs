@@ -89,6 +89,8 @@ namespace MachineBrigade.Tests
                     }).ToList(),
                     ["base"] = BaseData(catalog),
                     ["operations"] = OperationsData(),
+                    // Prompt 26 E (DECISIONS 26E): the Boss Hunt's rules, tiers and combat supports.
+                    ["hunt"] = HuntData(),
                 };
                 File.WriteAllText(path, Json(doc), new UTF8Encoding(false));
             }
@@ -96,6 +98,29 @@ namespace MachineBrigade.Tests
             {
                 Strings.Vietnamese = wasVietnamese;
             }
+        }
+
+        /// <summary>Prompt 26 E: the Boss Hunt's rule texts (as the game words them), the week's and the full hunt's counts, the supports and the tiers.</summary>
+        private static object HuntData()
+        {
+            var week = MachineBrigade.Game.Match.BossHunts.ThisWeek;
+            var full = MachineBrigade.Game.Match.BossHunts.Full;
+            var mains = MachineBrigade.Game.Match.BossHunts.MainsIn(week);
+            var rush = new MachineBrigade.Sim.Modes.BossRushRules();
+            return new Dictionary<string, object>
+            {
+                ["weeklyRules"] = Strings.Format("hunt.weekly.rules", ("count", week.Count), ("minis", week.Count - mains), ("mains", mains),
+                    ("minutes", (int)Math.Round(BossHunts.WeeklyMinutes))),
+                ["fullRules"] = Strings.Format("hunt.full.rules", full.Count),
+                ["weekly"] = week.Count, ["weeklyMains"] = mains, ["full"] = full.Count, ["fullMains"] = MachineBrigade.Game.Match.BossHunts.MainsIn(full),
+                ["miniSeconds"] = rush.MiniSeconds, ["mainSeconds"] = rush.MainSeconds, ["cap"] = MachineBrigade.Sim.Modes.HuntSupports.Cap,
+                ["weeklyStep"] = MachineBrigade.Sim.Modes.BossHunt.WeeklyStep, ["fullFrom"] = MachineBrigade.Sim.Modes.BossHunt.FullFrom,
+                ["fullTo"] = MachineBrigade.Sim.Modes.BossHunt.FullTo,
+                ["supports"] = MachineBrigade.Sim.Modes.HuntSupports.All.Select(x => (object)new Dictionary<string, object>
+                {
+                    ["id"] = x.Id, ["name"] = Text("hunt.support." + x.Id), ["info"] = Text("hunt.support." + x.Id + ".info"), ["strength"] = x.Strength,
+                }).ToList(),
+            };
         }
 
         private static string Text(string key) => Strings.Has(key) ? Strings.Get(key) : "";
@@ -251,8 +276,22 @@ namespace MachineBrigade.Tests
                     ["pen"] = w.Penetration, ["form"] = w.Form.ToString(), ["topAttack"] = Armour_StrikesTop(w), ["guided"] = w.Guided,
                     ["splashes"] = w.Splashes, ["thermobaric"] = w.Thermobaric, ["real"] = w.RealName ?? "",
                     ["effect"] = Matchup.EffectRow(catalog.Damage, w).Select(x => (object)x).ToList(),
+                    // Prompt 25 F1 (DECISIONS 25E): the DPS against aircraft (a boss's weaponDamage is the ground's only), the
+                    // DPS by armour level 0-5, on aircraft and on structures, the flight to the longest reach, the round's length.
+                    ["dpsAir"] = MachineBrigade.Sim.Combat.FirePower.SustainedAir(w, v),
+                    ["dpsVsLevel"] = DpsByLevel(catalog, w, v, raw),
+                    ["flightTime"] = w.ProjectileSpeed > 0f ? w.Range / w.ProjectileSpeed : 0f, ["roundLength"] = w.RoundLength,
                     // Every plain number, flag and name the weapon carries (rates, magazines, reloads, ceilings...).
                     ["raw"] = Raw(w),
+                    // Prompt 25 G (DECISIONS 25G): the second rounds this gun loads, and (prompt 26 B.3) a boss blast's core and edge.
+                    ["roundOf"] = w.RoundOf?.Id ?? "", ["roundKind"] = w.RoundKind ?? "", ["switchSeconds"] = w.SwitchSeconds(null),
+                    ["secondRounds"] = w.Rounds.Select(r => (object)new Dictionary<string, object>
+                    {
+                        ["id"] = r.Round.Id, ["name"] = UnitLines.WeaponName(r.Round), ["kind"] = UnitLines.RoundWord(r.Round), ["type"] = r.Round.DamageType.ToString(),
+                        ["pen"] = r.Round.Penetration, ["damage"] = r.Round.Damage, ["splash"] = r.Round.SplashRadius, ["use"] = UnitLines.UseWords(r),
+                        ["elite"] = r.EliteOnly, ["switch"] = w.SwitchSeconds(r), ["speed"] = r.Round.ProjectileSpeed,
+                    }).ToList(),
+                    ["splashEdge"] = w.SplashEdge, ["edgeShare"] = w.EdgeShare,
                     ["bonuses"] = w.Bonuses.Select(b => (object)new Dictionary<string, object>
                     {
                         ["mult"] = b.Mult, ["class"] = b.Class?.ToString() ?? "", ["armor"] = b.Armor?.ToString() ?? "", ["still"] = b.StillFor, ["flank"] = b.Flank,
@@ -267,7 +306,9 @@ namespace MachineBrigade.Tests
                     var bonus = 1f;
                     foreach (var b in w.Bonuses)
                         if (b.Armor == a && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
-                    dps[a.ToString()] += raw * Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
+                    // Prompt 25 C1: a boss's own weapon damage is the ground's only.
+                    var paper = air ? MachineBrigade.Sim.Combat.FirePower.SustainedAir(w, v) : raw;
+                    dps[a.ToString()] += paper * Matchup.ClassEffect(catalog.Damage, w, a) * bonus;
                 }
             }
             return new Dictionary<string, object>
@@ -287,7 +328,12 @@ namespace MachineBrigade.Tests
                 ["deathRadius"] = v.DeathExplosion?.Radius ?? 0f,
                 // Prompt 13 G: the generated lines, as the detail screen shows them.
                 ["behavior"] = UnitLines.Behaviour(catalog, v), ["ammo"] = UnitLines.Ammo(catalog, v),
-                ["phases"] = v.Phases.Select(p => (object)p.At).ToList(), ["general"] = v.General ?? "",
+                ["phases"] = v.Phases.Select(p => (object)p.At).ToList(),
+                ["phaseData"] = v.Phases.Select(p => (object)new Dictionary<string, object>
+                {
+                    ["at"] = p.At, ["heal"] = p.Heal, ["damage"] = p.Damage, ["speed"] = p.Speed, ["armor"] = p.Armor, ["fireRate"] = p.FireRate,
+                }).ToList(),
+                ["general"] = v.General ?? "",
                 ["parts"] = v.Parts.Select(p => (object)new Dictionary<string, object>
                 {
                     ["id"] = p.Id, ["kind"] = p.Kind, ["name"] = Text("part." + p.Kind), ["hp"] = p.Hp, ["breakDamage"] = p.BreakDamage,
@@ -297,6 +343,66 @@ namespace MachineBrigade.Tests
                 ["partLock"] = v.PartLock != null ? Text("part." + v.PartLock.Kind) + " ×" + v.PartLock.Count : "",
                 ["partPatch"] = v.Skills.Any(k => k.Kind == SkillKind.Patch), ["partTip"] = Text("guide.parts.tip." + v.Id),
                 ["size"] = v.Fort?.Size.ToString() ?? "", ["bossFile"] = Text("bossfile." + v.Id),
+                // Prompt 25 F1 (DECISIONS 25E): the description (the Guide card's how and strong / weak lines), the unlock,
+                // the model's size from the data (modelSize) and a main boss's super weapon.
+                ["description"] = Description(Text("guide." + v.Id)), ["unlock"] = Unlock(catalog, v),
+                ["modelSize"] = v.ModelLength > 0f ? new List<object> { v.ModelLength, v.ModelWidth, v.ModelHeight } : new List<object>(),
+                ["superWeapon"] = SuperWeapon(v),
+            };
+        }
+
+        /// <summary>A weapon's sustained DPS against armour levels 0-5, aircraft and structures (its effect row; an armour-class bonus counts in).</summary>
+        private static List<object> DpsByLevel(Catalog catalog, WeaponDef w, VehicleDef v, float sustained)
+        {
+            var row = Matchup.EffectRow(catalog.Damage, w);
+            var air = MachineBrigade.Sim.Combat.FirePower.SustainedAir(w, v);
+            var list = new List<object>();
+            for (var c = 0; c < row.Length; c++)
+            {
+                var armor = c == row.Length - 2 ? ArmorClass.Air : c == row.Length - 1 ? ArmorClass.Structure : c >= 3 ? ArmorClass.Heavy : ArmorClass.Light;
+                var bonus = 1f;
+                foreach (var b in w.Bonuses)
+                    if (b.Armor == armor && b.Class == null && b.StillFor <= 0f && !b.Flank) bonus *= b.Mult;
+                list.Add((armor == ArmorClass.Air ? air : sustained) * row[c] * bonus);
+            }
+            return list;
+        }
+
+        /// <summary>A Guide card's how-it-fights and strong / weak lines, without their labels and highlights.</summary>
+        private static string Description(string guide)
+        {
+            var lines = guide.Split('\n').Skip(1).Select(l => l.Replace("[[", "").Replace("]]", "").Trim()).Where(l => l.Length > 0).Take(2)
+                .Select(l => l.IndexOf(": ", StringComparison.Ordinal) is var i and > 0 and < 16 ? l.Substring(i + 2) : l);
+            return string.Join(" ", lines);
+        }
+
+        /// <summary>How a card is had (prompt 25 D2): its route, the mission that opens it, its early price, story loot.</summary>
+        private static object Unlock(Catalog catalog, VehicleDef v)
+        {
+            if (v.Boss || v.Elite) return new Dictionary<string, object>();
+            var m = Progression.UnlockMission(v.Id);
+            return new Dictionary<string, object>
+            {
+                ["route"] = Progression.Route(v.Id).ToString(), ["mission"] = m?.Id ?? "", ["missionName"] = m != null ? Text("mission." + m.Id + ".name") : "",
+                ["chapter"] = m?.Chapter ?? 0, ["index"] = m != null ? Campaign.IndexOf(m.Id) + 1 : 0,
+                ["storyLoot"] = Progression.IsStoryLoot(v.Id), ["earlyBuy"] = Progression.CanBuyEarly(v.Id), ["price"] = Progression.Price(v.Id, catalog),
+            };
+        }
+
+        /// <summary>A main boss's super weapon (prompt 25 C1) with the Guide's words; empty for every other unit.</summary>
+        private static object SuperWeapon(VehicleDef v)
+        {
+            var a = v.BigAttack;
+            if (!v.Boss || a == null) return new Dictionary<string, object>();
+            return new Dictionary<string, object>
+            {
+                ["id"] = a.Id, ["name"] = Text(a.NameKey), ["how"] = Text(a.GuideKey("how")), ["dodge"] = Text(a.GuideKey("dodge")),
+                ["stop"] = Text(a.GuideKey("stop")), ["warn"] = a.Warn, ["cooldown"] = a.Cooldown,
+                ["strikes"] = a.Strikes.Select(s => (object)new Dictionary<string, object>
+                {
+                    ["shape"] = s.Shape.ToString(), ["count"] = s.Count, ["damage"] = s.Damage, ["type"] = s.Type.ToString(), ["pen"] = s.Pen,
+                    ["radius"] = s.Radius, ["length"] = s.Length, ["width"] = s.Width,
+                }).ToList(),
             };
         }
 

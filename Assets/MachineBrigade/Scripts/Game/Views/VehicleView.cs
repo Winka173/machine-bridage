@@ -34,7 +34,6 @@ namespace MachineBrigade.Game.Views
 
         private const float GentleSeconds = 3.2f;
 
-        private static readonly int TintId = Shader.PropertyToID("_Tint");
 
         private readonly ModelInstance _model;
         private readonly Transform _body;
@@ -94,6 +93,7 @@ namespace MachineBrigade.Game.Views
         {
             Sim = vehicle;
             Def = vehicle.Def;
+            _materials = materials;
             Root = new GameObject($"{vehicle.Def.Id} {vehicle.Id}").transform;
             Root.SetParent(parent, false);
             _body = new GameObject("Body").transform;
@@ -105,10 +105,12 @@ namespace MachineBrigade.Game.Views
             // Tower-branch C.2: its card's rank on its body (bars, plates from rank 3, thicker from 5).
             if (TowerArt.WearsRank(vehicle.Def))
                 _rankDetails = TowerRankDetails.Attach(_model.Root.transform, modelId, TowerArt.RankOf(vehicle.Team, vehicle.Def), vehicle.Team, materials);
-            // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included).
-            DrawScale = DrawScaleOf(vehicle.Def);
-            _body.localScale = Vector3.one * DrawScale;
+            // The whole drawn vehicle takes the def's scale (muzzles, turret and wreck included): its model's length
+            // fitted to the data's modelSize where it has one (prompt 25 B1). Measured in the body's frame, so before or
+            // after the body's scale alike.
             ModelBounds = Measure(_model.Root.transform, _body);
+            DrawScale = DrawScaleOf(vehicle.Def, ModelBounds.size.z);
+            _body.localScale = Vector3.one * DrawScale;
             if (vehicle.Def.Flying) BuildNavLights(meshes, materials);
             _spawnTime = Time.time;
 
@@ -223,6 +225,8 @@ namespace MachineBrigade.Game.Views
             // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
             if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
+            // Prompt 25 G: the change-of-round glyph (VehicleView.Rounds.cs).
+            BuildRoundMark(meshes, materials);
             BuildEscortMark(meshes, materials);
             // Prompt 23 F.4: the Meridian Accord's sign on its units (VehicleView.Accord.cs).
             BuildAccordMark(meshes, materials);
@@ -243,6 +247,9 @@ namespace MachineBrigade.Game.Views
             _ours = vehicle.Team == playerTeam;
             AddRotorBlur(materials);
             InitParts(models, meshes, materials);
+            // The def's own colour from the first frame, as on its card (it used to wait for the first hit); after the
+            // elite repaint, which swaps the untinted kit materials.
+            if (vehicle.Def.Tint != null) ApplyTint();
             // Elite enemies wear a gold health bar.
             if (vehicle.Def.Elite && vehicle.Team != playerTeam) _barFill.GetComponent<MeshRenderer>().sharedMaterial = materials.BarElite;
 
@@ -266,6 +273,19 @@ namespace MachineBrigade.Game.Views
 
         /// <summary>How big a vehicle of <paramref name="def"/> is drawn: its data's scale, an aircraft's 15 % smaller.</summary>
         public static float DrawScaleOf(VehicleDef def) => def.Scale * (def.Flying && !def.Boss ? AirShrink : 1f);
+
+        /// <summary>
+        /// Prompt 25 B1 (DECISIONS 25B): how big a model <paramref name="modelLength"/> m long (at scale 1) of
+        /// <paramref name="def"/> is drawn. A def with a modelSize has the model's length fitted to it, whatever size the
+        /// model was built at (an old one, or one rebuilt at the sheet's size); the fit is the drawn size itself, so no
+        /// aircraft factor goes on top of it. Without one, <see cref="DrawScaleOf(VehicleDef)"/>.
+        /// </summary>
+        public static float DrawScaleOf(VehicleDef def, float modelLength) =>
+            def.ModelLength > 0f && modelLength > 0.01f ? def.ModelLength / modelLength : DrawScaleOf(def);
+
+        /// <summary>How big a spawned <paramref name="model"/> (at scale 1) of <paramref name="def"/> is drawn (see above).</summary>
+        public static float DrawScaleOf(VehicleDef def, GameObject model) =>
+            def.ModelLength > 0f && model != null ? DrawScaleOf(def, Measure(model.transform, model.transform).size.z) : DrawScaleOf(def);
 
         /// <summary>The drawn model's scale (<see cref="DrawScaleOf"/>).</summary>
         public float DrawScale { get; }
@@ -291,12 +311,12 @@ namespace MachineBrigade.Game.Views
         /// <summary>Where its impostor card is centred (on its upright axis, at its middle height).</summary>
         public Vector3 ImpostorCentre => Root.position + Vector3.up * ((Impostor != null ? Impostor.Centre.y : Top * 0.5f) * DrawScale);
 
-        /// <summary>The impostor's tint: the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
+        /// <summary>The impostor's tint: the def's own colour, the hull's scorching and the hit flash (as on the meshes), the debug colour.</summary>
         public Color ImpostorTint
         {
             get
             {
-                var tint = new Color(_scorch, _scorch * 0.97f, _scorch * 0.95f, 1f - _shownFlash);
+                Color tint = TintValue();
                 if (!VehicleLod.Colours) return tint;
                 var debug = VehicleLod.Tint(VehicleLod.Impostor);
                 return new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a);
@@ -340,7 +360,7 @@ namespace MachineBrigade.Game.Views
         /// <summary>The drawn model's extent in the body's own frame (before the def's scale): span on X, length on Z.</summary>
         public Bounds ModelBounds { get; }
 
-        private static Bounds Measure(Transform model, Transform frame)
+        internal static Bounds Measure(Transform model, Transform frame)
         {
             var bounds = new Bounds();
             var first = true;
@@ -512,23 +532,51 @@ namespace MachineBrigade.Game.Views
             ApplyTint();
         }
 
-        private MaterialPropertyBlock _tintBlock;
+        /// <summary>
+        /// The "_Tint" multiply (owner's reports 2026-10-01, DECISIONS "PT11 dark hulls"), set on shared tinted materials
+        /// (<see cref="MaterialLibrary.Tinted"/>) unconverted: the def's own colour (prompt 20 G.2 boss variants, prompt 25
+        /// F2 stand-ins) as a hue shift (<see cref="ModelLibrary.TintOf"/>), the soot
+        /// shade, the hit flash in alpha.
+        /// </summary>
+        private Vector4 TintValue()
+        {
+            var own = ModelLibrary.TintOf(Def.Tint);
+            var soot = _scorch < 1f ? new Vector3(_scorch, _scorch * 0.97f, _scorch * 0.95f) : Vector3.one;
+            return new Vector4(own.x * soot.x, own.y * soot.y, own.z * soot.z, 1f - _shownFlash);
+        }
+
+        private readonly MaterialLibrary _materials;
 
         private void ApplyTint()
         {
-            _tintBlock ??= new MaterialPropertyBlock();
-            // Prompt 20 G.2: a variant's own colour over its parent's model.
-            var own = Def.Tint ?? System.Numerics.Vector3.One;
-            var tint = new Color(_scorch * own.X, _scorch * 0.97f * own.Y, _scorch * 0.95f * own.Z, 1f - _shownFlash);
-            _tintBlock.SetColor(TintId, tint);
-            foreach (var r in _model.Renderers) r.SetPropertyBlock(_tintBlock);
+            var tint = TintValue();
+            Retint(_model.Renderers, tint);
             if (_model.Lod1Renderers.Length == 0) return;
             if (VehicleLod.Colours)
             {
                 var debug = VehicleLod.Tint(VehicleLod.Simple);
-                _tintBlock.SetColor(TintId, new Color(tint.r * debug.r, tint.g * debug.g, tint.b * debug.b, tint.a));
+                tint = new Vector4(tint.x * debug.r, tint.y * debug.g, tint.z * debug.b, tint.w);
             }
-            foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(_tintBlock);
+            Retint(_model.Lod1Renderers, tint);
+        }
+
+        /// <summary>Swaps each renderer's materials for their shared copies at this tint (<see cref="MaterialLibrary.Tinted"/>; no property block).</summary>
+        private void Retint(Renderer[] renderers, Vector4 tint)
+        {
+            foreach (var r in renderers)
+            {
+                if (r == null) continue;
+                var shared = r.sharedMaterials;
+                var changed = false;
+                for (var i = 0; i < shared.Length; i++)
+                {
+                    var m = _materials.Tinted(shared[i], tint);
+                    if (m == shared[i]) continue;
+                    shared[i] = m;
+                    changed = true;
+                }
+                if (changed) r.sharedMaterials = shared;
+            }
         }
 
         // Hit feedback: a soft white flash for a hit that takes 2 % or more at once (a shell, a
@@ -1034,7 +1082,7 @@ namespace MachineBrigade.Game.Views
             var repairing = Time.time < _repairUntil;
             // The stores icon is drawn under the bar's transform, so it is worked out before the bar is hidden.
             var stores = _storesMark != null && StoresWanted();
-            var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted;
+            var showBar = Selected || health < 0.999f || stores || repairing || DeployWanted || RoundMarkWanted;
             if (_bar.gameObject.activeSelf != showBar) _bar.gameObject.SetActive(showBar);
             RenderEscortMark(cameraRotation);
             RenderAccordMark(cameraRotation);
@@ -1044,6 +1092,7 @@ namespace MachineBrigade.Game.Views
             if (repairing) _repairMark.localScale = Vector3.one * (1f + 0.08f * Mathf.Sin(Time.time * 6f));
             RenderStoresMark();
             RenderDeployMark();
+            RenderRoundMark();
             _barFill.localScale = new Vector3(BarWidth * health, BarHeight, 1f);
             _barFill.localPosition = new Vector3(-BarWidth * (1f - health) * 0.5f, 0f, -0.02f);
             _barTrail.localScale = new Vector3(BarWidth * _trail, BarHeight, 1f);
@@ -1145,10 +1194,10 @@ namespace MachineBrigade.Game.Views
         {
             if (!Match.DebugFlags.Has("-mb-no-tint"))
             {
-                var block = new MaterialPropertyBlock();
-                block.SetColor(TintId, new Color(0.16f, 0.14f, 0.13f));
-                foreach (var r in _model.Renderers) r.SetPropertyBlock(block);
-                foreach (var r in _model.Lod1Renderers) r.SetPropertyBlock(block);
+                // Burnt black (play-test 11: through tinted materials, not a property block; the authored value as is).
+                var burnt = new Vector4(0.16f, 0.14f, 0.13f, 1f);
+                Retint(_model.Renderers, burnt);
+                Retint(_model.Lod1Renderers, burnt);
             }
             // A hulk is drawn with meshes: its turret can be thrown off and it sinks away.
             if (_level == VehicleLod.Impostor) SetLevel(VehicleLod.Simple);
@@ -1245,8 +1294,9 @@ namespace MachineBrigade.Game.Views
             if (spinners.Count == 0) return;
             _spinAngles ??= new float[spinners.Count];
             var dt = Time.deltaTime * speed;
-            // A knocked-out vehicle's radar (an EMP's or a SEAD strike's stun) stops dead and slumps on its mount.
-            var dead = Sim.Stunned && Sim.IsAlive;
+            // A knocked-out vehicle's radar (an EMP's or a SEAD strike's stun) stops dead and slumps on its mount; a range
+            // dummy's keeps turning (play-test 10: a dummy is held still, not knocked out).
+            var dead = Sim.KnockedOut && Sim.IsAlive;
             _radarDown = Mathf.MoveTowards(_radarDown, dead ? 1f : 0f, Time.deltaTime * (dead ? 2.2f : 0.7f));
             for (var i = 0; i < spinners.Count; i++)
             {

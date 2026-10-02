@@ -413,6 +413,39 @@ def maverick(a):
     m.fins('Fins', WHITE, 4, X4, r * .95, 1.74, .22, .12, .10, .10)
 
 
+def kh29l(a):
+    """Kh-29L (3.9 m, 380 mm; drawn at half size, 1.95 m, thickened 15 %): the laser-guided Kh-29 (prompt 25 B3: the
+    Su-25's heavy missile, flying the Maverick until now). A blunt glass seeker dome in a steel ring, four small delta
+    canards just behind it, a long fat grey-green body with a yellow warhead band and a brown motor band, and the big
+    cruciform trapezoid wings at the tail that make the Kh-29 read from any side; the motor glows in the tail."""
+    m, r, s = Round(a, 1.95), .11, 8
+    m.rev('Seeker', GLASS, [(0, 0), (.045, .01), (.078, .035), (.094, .065)], s, caps=(False, False))
+    m.rev('Seeker_ring', STEEL, [(.094, .065), (.1, .09), (.1, .12)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(.1, .12), (r, .2), (r, .52)], s, caps=(False, False))
+    m.rev('Band', YELLOW, [(r, .52), (r, .58)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(r, .58), (r, 1.12)], s, caps=(False, False))
+    m.rev('Band_motor', BROWN, [(r, 1.12), (r, 1.17)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(r, 1.17), (r, 1.9), (.1, 1.95)], s, caps=(False, False))
+    m.motor(.1, 1.95, .065, s)
+    m.fins('Canards', GREY_GREEN, 4, X4, inner(r, s), .2, .26, .1, .02, .2)
+    m.fins('Wings', GREY_GREEN, 4, X4, inner(r, s), 1.28, .56, .24, .26, .2)
+
+
+def gbu39(a):
+    """GBU-39 Small Diameter Bomb (1.8 m, 190 mm; drawn at half size, 0.9 m, thickened a quarter): a slim grey glide
+    bomb with a pointed steel nose, a yellow band, the Diamond Back wings folded flat along its back (a long plate on a
+    spine: how it hangs on the rack and falls for the first moment), and a ring of small tail fins. No motor."""
+    m, r, s = Round(a, .9), .06, 8
+    m.rev('Nose', STEEL, [(0, 0), (.02, .03), (.04, .08)], s, caps=(False, False))
+    m.rev('Body', MID_GREY, [(.04, .08), (r, .18), (r, .3)], s, caps=(False, False))
+    m.rev('Band', YELLOW, [(r, .3), (r, .33)], s, caps=(False, False))
+    m.rev('Body', MID_GREY, [(r, .33), (r, .74), (.045, .86), (.03, .9)], s, caps=(False, True))
+    m.box('Wing_spine', DARK_GREY, (.05, .44, .03), m.at(r + .005, .5))
+    m.box('Wings', DARK_GREY, (.16, .5, .014), m.at(r + .03, .5))
+    m.fins('Fins', MID_GREY, 4, X4, inner(r, s), .72, .14, .07, .06, .06, r1=.045)
+    _lugs(m, r, (.36, .62))
+
+
 def jassm(a):
     """AGM-158 JASSM (4.27 m x 0.55 wide x 0.45 high; drawn 3.0 m), dark grey and faceted: a trapezoid
     body with a chine, a chisel nose, the straight wing folded out on top, one vertical tail fin, the
@@ -667,18 +700,33 @@ def rail_slug(a):
     m.fins('Fins', STEEL, 4, X4, inner(r, s), .74, .14, .03, .09, .07, r1=.02)
 
 
+def flak_round(a):
+    """Prompt 25 G: an autocannon's air-burst round (35 mm AHEAD / 30 mm HE-FRAG with a proximity fuse; 0.39 m, drawn
+    0.5 m, the game scales it by calibre): a short grey-green body, a red fuze cap with a dark sensor ring (the proximity
+    fuse), a yellow HE band, the copper driving band and a bright tracer in the base."""
+    m, r, s = Round(a, .5), .032, 8
+    m.rev('Fuze', RED, [(0, 0), (.009, .012), (.016, .04)], 6, caps=(False, False))
+    m.rev('Sensor', BLACK, [(.016, .04), (.02, .055)], 6, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(.02, .055), (.028, .1), (r, .15)], s, caps=(False, False))
+    m.rev('Band', YELLOW, [(r, .15), (r, .19)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(r, .19), (r, .38)], s, caps=(False, False))
+    m.rev('Driving_band', COPPER, [(r, .38), (r, .42)], s, caps=(False, False))
+    m.rev('Body', GREY_GREEN, [(r, .42), (.027, .5)], s, caps=(False, False))
+    m.motor(.027, .5, .018, s, glow=TRACER)
+
+
 # name: (builder, Asset options). They all fly: no ground occlusion or grime.
 BUILDERS = {name: (fn, dict(ao_distance=ao, ground=False)) for name, fn, ao in (
     ('atgm_tow', atgm_tow, .12), ('atgm_kornet', atgm_kornet, .12), ('atgm_ataka', atgm_ataka, .12),
     ('hellfire', hellfire, .12), ('hellfire_longbow', hellfire_longbow, .12), ('griffin', griffin, .1),
     ('mam_l', mam_l, .12), ('stinger', stinger, .08), ('igla', igla, .08), ('shorad_dart', shorad_dart, .12),
     ('aim9', aim9, .15), ('r60', r60, .12), ('aim120', aim120, .15), ('patriot', patriot, .25), ('buk', buk, .3),
-    ('maverick', maverick, .2), ('jassm', jassm, .3), ('hydra', hydra, .08), ('s8', s8, .08), ('grad', grad, .12),
+    ('maverick', maverick, .2), ('kh29l', kh29l, .2), ('gbu39', gbu39, .12), ('jassm', jassm, .3), ('hydra', hydra, .08), ('s8', s8, .08), ('grad', grad, .12),
     ('grad_cluster', grad_cluster, .12), ('rocket_107', rocket_107, .08), ('gmlrs', gmlrs, .15),
     ('tos_rocket', tos_rocket, .15), ('bomb_mk84', bomb_mk84, .3), ('bomb_fab', bomb_fab, .2), ('gbu12', gbu12, .25),
     ('jdam', jdam, .3), ('lancet', lancet, .2), ('shahed', shahed, .3), ('apfsds', apfsds, .06),
     ('heat_round', heat_round, .08), ('shell_155', shell_155, .1), ('mortar_bomb', mortar_bomb, .08),
-    ('rail_slug', rail_slug, .06),
+    ('rail_slug', rail_slug, .06), ('flak_round', flak_round, .05),
 )}
 
 OUT = HERE.parents[1] / 'Assets' / 'MachineBrigade' / 'Resources' / 'Models'

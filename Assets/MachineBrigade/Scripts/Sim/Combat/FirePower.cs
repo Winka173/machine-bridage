@@ -23,7 +23,15 @@ namespace MachineBrigade.Sim.Combat
         /// over the time to fire them plus the time to reload them (a launcher standing still; an
         /// aircraft's stores at the holding pattern's full rate: <paramref name="carrier"/>'s rearm time).
         /// </summary>
-        public static float Sustained(WeaponDef w, VehicleDef? carrier = null)
+        public static float Sustained(WeaponDef w, VehicleDef? carrier = null) =>
+            // Prompt 25 C1: a boss's own weapon damage on the ground, on what the combat system fires (not a weapon the boss
+            // system lays).
+            OnPaper(w, carrier) * (carrier != null && !w.Laid ? carrier.WeaponDamage : 1f);
+
+        /// <summary>Prompt 25 C1: <see cref="Sustained"/> at aircraft (a boss's own weapon damage is the ground's only).</summary>
+        public static float SustainedAir(WeaponDef w, VehicleDef? carrier = null) => OnPaper(w, carrier);
+
+        private static float OnPaper(WeaponDef w, VehicleDef? carrier)
         {
             if (w.Damage <= 0f) return 0f;
             var cycle = MathF.Max(0.05f, w.CycleSeconds);

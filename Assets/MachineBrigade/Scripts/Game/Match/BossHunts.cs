@@ -13,10 +13,10 @@ namespace MachineBrigade.Game.Match
     public static class BossHunts
     {
         /// <summary>
-        /// The week's clock (10 bosses at 2-5 minutes each and nine 20 s rests: a 30-40 minute run). Play-test 6 (DECISIONS
-        /// 21G): 45 -> 50 minutes for the tougher bosses (a geared army's Normal run takes about 40).
+        /// The week's clock. Prompt 26 E.2: the targets come to about 18 minutes (7 minis at 66 s, 3 mains at 2.8 min, nine 15 s
+        /// rests); 30 minutes leaves room for a weaker deck (50 before, for the old, longer hunt).
         /// </summary>
-        public const float WeeklyMinutes = 50f;
+        public const float WeeklyMinutes = 30f;
 
         /// <summary>The first clear of the week pays this (once a week, the Operations ledger).</summary>
         public const int WeeklyReward = 1500;
@@ -61,7 +61,7 @@ namespace MachineBrigade.Game.Match
                     foreach (var (id, after) in Unslotted)
                         if (after == chapter.Number && !seen.Contains(id) && !Listed(id) && catalog.Vehicles.TryGetValue(id, out var def) && def.Boss &&
                             seen.Add(id))
-                            list.Add(new HuntBoss(id, false, chapter.Number));
+                            list.Add(new HuntBoss(id, def.Rank == BossRank.Main, chapter.Number));
                 }
                 return list;
             }
@@ -72,7 +72,12 @@ namespace MachineBrigade.Game.Match
         /// interlude I after chapter 3, Morrigan in interlude III after chapter 9), for the hunts until the campaign lists
         /// them in a chapter's slots; once it does, the slot wins and this is not used.
         /// </summary>
-        public static readonly (string id, int after)[] Unslotted = { ("behemoth_mk0", 3), ("morrigan", 9) };
+        public static readonly (string id, int after)[] Unslotted =
+        {
+            ("behemoth_mk0", 3), ("morrigan", 9),
+            // Prompt 25 F2 batch D (DECISIONS 25F2-D): the eight new bosses, by the chapter their general or season belongs to.
+            ("nyx", 4), ("stymphalos", 5), ("cerberus", 6), ("monster", 8), ("kraken", 9), ("hydra", 9), ("garuda", 10), ("hyperion", 12),
+        };
 
         private static bool Listed(string id)
         {

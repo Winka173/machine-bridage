@@ -377,7 +377,7 @@ namespace MachineBrigade.Game.Effects
             {
                 jet = new Jet { Root = _models.Spawn(model, team, _root).Root, Model = model };
                 var twin = model == "strike_jet" ? "attack_jet" : model == TransportModel ? AirDrops.TransportScale : model;
-                if (_catalog.Vehicles.TryGetValue(twin, out var sized)) jet.Root.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(sized);
+                if (_catalog.Vehicles.TryGetValue(twin, out var sized)) jet.Root.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(sized, jet.Root);
                 foreach (var t in jet.Root.GetComponentsInChildren<Transform>(true))
                     if (t.name.StartsWith("Bombs")) jet.Bombs = t;
                 _jets.Add(jet);
@@ -401,7 +401,7 @@ namespace MachineBrigade.Game.Effects
             if (d == null)
             {
                 d = new ScanDrone { Root = _models.Spawn("recon_drone", team, _root).Root };
-                if (_catalog.Vehicles.TryGetValue("recon_drone", out var sized)) d.Root.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(sized);
+                if (_catalog.Vehicles.TryGetValue("recon_drone", out var sized)) d.Root.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(sized, d.Root);
                 _drones.Add(d);
             }
             d.Root.SetActive(true);
@@ -954,7 +954,7 @@ namespace MachineBrigade.Game.Effects
                 var angle = k * Mathf.PI * 2f / Mathf.Max(1, units.Count);
                 var at = point + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * (units.Count > 1 ? 6f : 0f);
                 var body = _models.Spawn(def.Model, team, _root, castShadows: false).Root;
-                body.transform.localScale = Vector3.one * def.Scale;
+                body.transform.localScale = Vector3.one * VehicleView.DrawScaleOf(def, body);
                 var f = Add(Round.Vehicle, body, at + Vector3.up * (TransportAltitude - 4f), at, release + k * 0.12f, impact);
                 f.Heading = 90f;
                 f.Chute = Chute(f.Root.transform, Mathf.Max(def.Length, def.Width) * 0.65f + 0.8f, 5f + Mathf.Max(def.Length, def.Width) * 0.26f,

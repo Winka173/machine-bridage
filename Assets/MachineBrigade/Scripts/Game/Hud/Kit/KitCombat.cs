@@ -40,6 +40,13 @@ namespace MachineBrigade.Game.Hud
                 badge.Add(Kit.Icon(mark, "fc-wchip__mark-icon", 2f));
                 chip.Add(badge);
             }
+            // Prompt 25 G: a gun of two rounds wears the ammo switch in its top corner (the card, the detail page, the rows).
+            if (w.Rounds > 0)
+            {
+                var swap = Kit.Box("fc-wchip__swap");
+                swap.Add(Kit.Icon("ammoswap", "fc-wchip__swap-icon", 2f));
+                chip.Add(swap);
+            }
             chip.tooltip = CombatIcons.WeaponTip(w);
             if (!extras) return chip;
             var group = Kit.Box("fc-row fc-wchip-group");

@@ -177,3 +177,138 @@ Dome's renamed `t_cram_b`); rank details made at run time (`TowerRankDetails`). 
 | The comic panels after each chapter (48) | A battlefield's shot and a card render, the speaker's portrait and a speech box in a black frame (ComicPage) | Drawn panels (the moment itself: the landing, the ceasefire, the turn in Veyra, Icarus falling), speech balloons |
 | Interlude I's panels | The Rust Yard's shot (the Foundry has no picture yet) | The Foundry's map shot once P22-content's map lands, then the drawn panels |
 
+## Prompt 25 B1 and B3: sizes (DECISIONS 25B)
+
+| What | Uses now | Needs |
+|---|---|---|
+| Supply truck, counter-battery radar, Shahed truck, Iron Beam (the sheet: trucks 2.0 m wide, 2.1-2.8 m high) | Their old models fitted to the sheet's length (`modelSize`): 2.3-2.9 m wide, 3.5-3.9 m high | Models at the sheet's box (0.8 x real) for `"scale": 1`; the data fits any model's length, so nothing else changes |
+| Self-propelled gun (M109A7, 7.8 x 3.1 x 2.9 m), siege tank (6.8 x 2.6 x 2.6 m), Pantsir (9.6 x 2.6 x 2.8 m) | The old models at the sheet's length: the gun 2.2 m wide, the siege tank 3.0 m wide, the Pantsir 3.4 m wide and 4.5 m high | Models at the sheet's box (the M109A7 is on B2's own list) |
+| Kh-29L (`kh29l`) and GBU-39 SDB (`gbu39`) round models (Tools/blender/mb_munitions.py) | The Maverick and the GBU-12 (`WeaponEffects.RoundStandIns`), fitted to the new lengths, 1.95 and 0.9 m | Their own models: the Kh-29L a long, fat body with big cruciform wings (3.9 m real), the GBU-39 a slim body with folded wings (1.8 m real); any length, the data fits it |
+| SAM launcher's Buk box, Patriot and 48N6 canisters | Boxes sized for the old rounds (the SAM launcher's 2.45 m); the rounds are 4.44, 4.24 and 6.0 m now | Launchers (sam_launcher, missile_battery, long_sam) whose boxes and tubes hold the sheet's rounds |
+| Icarus at 60 m | The play-test 9 dagger hull, 30 m wide at that length | A planform nearer the sheet's ~60 x 40 m, if the owner wants its width too (its nodes kept where the boss data puts them) |
+## Prompt 25 B2 (DECISIONS 25B2)
+
+Part 2 rebuilt every vehicle left from part 1 (and the seven elites with models of their own) to the balance sheet's
+shape notes and sizes, redrew the Sky Fortress, gave four structures that borrowed another model their own, and
+reviewed the towers and the bosses against the sheet (DECISIONS 25B2 Part 2). The owner's rule for this pass was a
+low effort: prompt 27 redoes every model with an upgraded kit. What is left is below.
+
+### Vehicles
+
+None left. The data changes they need are the lead's (DECISIONS 25B2 Part 2: `scale` 1.0 and `modelSize` = the built
+box for every rebuilt model; the supply truck, ammunition carrier and escort hovercraft drop their borrowed `"model"`).
+
+### Structures
+
+The towers and their rank-7 branches match their notes (the branches differ in their weapon modules) and keep their
+sizes; most are over the guide's tower budget of 1,500-3,500 triangles, left for prompt 27 (base / branch A / B):
+
+| Tower | Triangles |
+|---|---|
+| aa_turret | 6,126 / 6,554 / 2,382 |
+| cp_relay | 2,192 / 2,220 / 1,328 |
+| dragons_teeth | 1,508 / 1,980 / 4,088 |
+| ew_tower | 5,104 / 5,436 / 4,544 |
+| guard_tower | 4,656 / 5,372 / 2,594 |
+| mg_bunker | 3,404 / 3,704 / 3,560 |
+| minefield | 3,150 / 3,732 / 4,512 |
+| atgm_tower | 4,958 / 5,510 / 5,558 |
+| c_ram | 5,806 / 6,254 / 7,150 |
+| gun_turret | 6,112 / 6,384 / 6,688 |
+| rocket_turret | 3,894 / 5,102 / 3,010 |
+| artillery_emplacement | 7,334 / 7,766 / 5,770 |
+| drone_hangar | 7,138 / 5,978 / 9,114 |
+| heavy_turret | 9,222 / 9,378 / 11,666 |
+| missile_battery | 6,926 / 8,338 / 6,974 |
+| shield_tower | 5,344 / 7,200 / 6,176 |
+
+Also kept: headquarters (14,260; its note: a multi-block concrete command building, antennas, sandbags),
+ammo_depot (on ammo_dump: the berm-covered store with crates outside, as its note), bulwark_post (on mg_bunker at 0.8),
+coastal_battery, spawn_bastion and super_gun (on heavy_turret; coastal_battery could wear the coastal branch's
+heavy_turret_a instead, a data choice), targeting_station (no note). The Patriot's box (missile_battery) is 4.6 m long
+along its tubes, so B3's 4.24 m round fits it.
+
+### Bosses
+
+Reviewed against the sheet's boss rules in part 2 and kept (DECISIONS 25B2 Part 2: their parts are nodes with wrecks,
+the side's colour is on each, the mini bosses are smaller than their mains; Sky Fortress was redrawn on the shared
+C-130, Daedalus in part 1, Icarus kept). What is left is detail for prompt 27's kit, the bosses under the guide's
+15,000-triangle floor:
+
+| Boss | Triangles | Needs |
+|---|---|---|
+| caspian | 5,054 | detail over its 52.9 m hull (Lun-class: the eight nose engines, the missile tubes on the back) |
+| typhon | 6,348 | detail over its 59 m hull (the Typhoon's twin pressure hulls under the deck, the anechoic tiles) |
+| moloch | 7,180 | the factory's doors and cranes in more detail |
+| kronos | 8,404 | the Bagger 288's wheel, boom and conveyors in more detail |
+| supreme_command | 9,118 | the MZKT-7930's cabs and the command module |
+| mega_gunship | 11,304 | the Chinook frame's rotors and gun fit |
+| morrigan | 1,312 | none if it counts as an aircraft (2,000-4,000); a stealth-fighter boss at 12.9 m |
+
+## Prompt 25 batch B stand-ins (DECISIONS 25F2-B)
+
+The owner's choice: every item below is complete (data, mechanics, AI, texts, unlock, card) but wears a borrowed
+model with a tint (`"tint"` in balance.json, applied as VehicleView's own variant-tint multiply and by
+`CardRenders.RenderBatch` on its card). Real models are prompt 26-27's.
+
+| What | Uses now (borrowed model, tint) | Needs (the sheet's shape) |
+|---|---|---|
+| ~~`aa_57mm_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `aa_57mm_vehicle` model (a 2S38 Derivatsiya-PVO: tracked chassis with skirts, boxy faceted turret with autoloader boxes, 57 mm barrel (baffle brake), spinning roof search radar `Radar`), wash dropped | - |
+| ~~`mine_rocket_truck`~~ | done in prompt 27 wave 1c pass A: its own `mine_rocket_truck` model (a BM-27 Uragan-class 8x8 truck: forward cab, mine-dispensing 16-tube pod with a hazard band on a turntable (`Turret`, `Muzzle_main`)), wash dropped | - |
+| ~~`prop_attack_plane`~~ | done in prompt 27 wave 1c pass A: its own `prop_attack_plane` model (a Super Tucano-class turboprop: lofted fuselage, straight wing, bubble canopy, spinning `Propeller`, two underwing rocket pods (`Muzzle_rocket`, `.001`), wing guns (`Muzzle_gun`)), wash dropped | - |
+| ~~`light_attack_heli`~~ | done in prompt 27 wave 1c pass A: its own `light_attack_heli` model (a small stub-winged attack helicopter: tandem canopy, tail boom with fin, 4-blade `Rotor`, `Tail_rotor`, gun and rocket pods (`Muzzle_gun`, `Muzzle_rocket`, each with `.001`)), wash dropped | - |
+| ~~`next_gen_tank`~~ | done in prompt 27 wave 1c pass A: its own `next_gen_tank` model (a T-14 Armata: low flat unmanned turret set back, ERA blocks, APS panels, remote MG (`Mount_mg`), 125 mm gun, side skirts, rear cage), wash dropped | - |
+| ~~`demolition_line_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `demolition_line_vehicle` model (an M58 MICLIC: tracked hull, two pushing arms with five-disc mine rollers ahead, line-charge rack with the rocket and cable box on the rear deck, remote MG turret), wash dropped | - |
+| ~~`combat_wreck_car`~~ | done in prompt 27 wave 1c pass A: its own `combat_wreck_car` model (a light armoured pickup car with a roof gun post; the `Wreck_turret` node (a sandbag ring round the gun post) is built, the wreck-resolves-into-a-gun-pit rule is still game work), wash dropped | - |
+| ~~`drone_hijack_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `drone_hijack_vehicle` model (an 8x8 EW truck: cab, equipment shelter, phased-array hijack panel with yagi elements and a feed horn on the turning `Turret` (`Muzzle_main`), spinning sensor dish `Radar`), wash dropped | - |
+| ~~`manpads_tower`~~ | done in prompt 27 wave 1c pass A: its own `manpads_tower` model (a sandbagged round pit with two shoulder-launched MANPADS tubes on a tripod head (`Turret`, `Muzzle_main`, `Muzzle_missile`, `.001`), crates, radio mast), wash dropped | - |
+| ~~`river_patrol_boat`~~ | done in prompt 27 wave 1c pass A: its own `river_patrol_boat` model (a riverine command boat: V hull with chines, wheelhouse, twin outboards, pintle MG on the bow (`Turret`) and a grenade launcher aft (`Mount_mg` > `Muzzle_mg`)), wash dropped | - |
+| ~~`river_gunboat`~~ | done in prompt 27 wave 1c pass A: its own `river_gunboat` model (a Buyan-class gunboat: flared low hull, faceted deckhouse with mast and radar, forward 100 mm turret, eight VLS cells, stern CIWS (`Mount_mg`)), wash dropped | - |
+| ~~`coastal_ashm_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `coastal_ashm_vehicle` model (an NSM Coastal Defence 6x6 truck: cab, flatbed, turntable (`Turret`) with four angled missile canisters (`Muzzle_main`), jacks), wash dropped | - |
+| ~~`auto_loader_howitzer`~~ | done in prompt 27 wave 1c pass A: its own `auto_loader_howitzer` model (an XM2001 Crusader: wide tracked hull with skirts, faceted turret with a big autoloader bustle, cradle (`Main_cannon_cradle`), 155 mm barrel with baffle brake, roof MG), wash dropped | - |
+| ~~`amphib_light_vehicle`~~ | done in prompt 27 wave 1c pass A: its own `amphib_light_vehicle` model (an EFV / AAV-7: slab-sided boat hull on narrow tracks, sloped planing bow with a folded trim vane, rear ramp, small right-front turret (25 mm, coax)), wash dropped | - |
+| ~~`airborne_light_tank`~~ (+ `airborne_light_tank_chute`) | done in prompt 27 wave 1c pass A: its own `airborne_light_tank` model (an M10 Booker: light hull on six road wheels, low flat turret with a big mantlet and bustle, 105 mm barrel with baffle brake; its `airborne_light_tank_chute` proxy is the same tank under a 9 m 12-gore canopy with rigging (9 x 9 x 11 m, a leaner tank body)), wash dropped | - |
+| ~~`stealth_naval_strike`~~ | done in prompt 27 wave 1c pass A: its own `stealth_naval_strike` model (an A-12 Avenger II: flat-iron flying wing (one loft, 35 degree leading edge, clipped tips with fold seams), flush canopy, dorsal intakes, exhaust troughs, weapon bays (`Muzzle_rocket`, `.001`), `Bombs` rack (`Muzzle_missile`)), wash dropped | - |
+| ~~`twin_rotor_gunship`~~ | done in prompt 27 wave 1c pass B: its own `twin_rotor_gunship` model (an ACH-47A Guns-A-Go-Go: a boxy fuselage with a three-blade `Rotor` forward and `Rotor_rear` on a tall aft pylon between two nacelles, side gun sponsons (`Muzzle_mg`, `.001`), chin turret (`Muzzle_gun`); modelSize width 16.3 -> 5.7), wash dropped | - |
+| ~~`ground_drone_carrier`~~ | done in prompt 27 wave 1c pass B: its own `ground_drone_carrier` model (a THeMIS / Uran-9 tracked carrier with a remote turret (`Turret`, `Muzzle_main`) and three docked minion robots (`Minion_1` .. `Minion_3`, nodes only; the spawn mechanism is still open)), wash dropped | - |
+| ~~`mobile_repair_vehicle`~~ | done in prompt 27 wave 1c pass B: its own `mobile_repair_vehicle` model (an MTO-UB 6x6 repair truck: workshop box, slewing crane (`Crane`), welding rig, outriggers, roof RWS (`Turret`, `Muzzle_main`)), wash dropped | - |
+| ~~`radar_support_vehicle`~~ | done in prompt 27 wave 1c pass B: its own `radar_support_vehicle` model (a Giraffe AMB 4x4 radar truck: equipment box, raised telescopic mast with a turning array (`Radar`), jacks, roof RWS), wash dropped | - |
+| ~~`towed_at_gun`~~ | done in prompt 27 wave 1c pass B: its own `towed_at_gun` model (a 2A45 Sprut-B: long smoothbore barrel with baffle brake (`Turret`, `Main_cannon`, `Muzzle_brake`, `Muzzle_main`), gun shield, two wheels, split trails), wash dropped | - |
+| ~~`flare_searchlight_tower`~~ | done in prompt 27 wave 1c pass B: its own `flare_searchlight_tower` model (a braced steel lattice post with deck, ladder, flare launcher on a turntable (`Turret`, `Launcher`, `Tubes`, `Muzzle_main`), floodlight, flare drums), wash dropped | - |
+| ~~`recoilless_gun_tower`~~ | done in prompt 27 wave 1c pass B: its own `recoilless_gun_tower` model (an SPG-9 emplacement: round sandbagged pit, tripod head, short recoilless tube (`Turret`, `Cradle`, `Main_cannon`, `Muzzle_main`), shield, rounds), wash dropped | - |
+| ~~`bunker_shelter_tower`~~ | done in prompt 27 wave 1c pass B: its own `bunker_shelter_tower` model (a concrete bunker: Team roof slab, earth berms, entrance porch with steel door, sandbag piles, roof vents (no weapon node)), wash dropped | - |
+| ~~`dazzler_vehicle`~~ | done in prompt 27 wave 1c pass B: its own `dazzler_vehicle` model (a Peresvet-class 8x8 EW truck with a lift-frame housing of six glowing lenses, roof RWS (`Turret`, `Muzzle_main`)), wash dropped | - |
+| ~~`ground_cruise_missile_vehicle`~~ | done in prompt 27 wave 1c pass B: its own `ground_cruise_missile_vehicle` model (a Typhon MRC tractor and trailer with two long vertical canisters on a turntable (`Turret`, `Muzzle_main` at the tops)), wash dropped | - |
+| ~~`aerial_tanker`~~ | done in prompt 27 wave 1c pass B: its own `aerial_tanker` model (a KC-135 / Il-78 tanker: glazed nose, swept wings, four turbofans, wingtip hose pods, refuelling boom under the tail (`Muzzle_gun`)), wash dropped | - |
+| ~~`heavy_lift_helicopter`~~ | done in prompt 27 wave 1c pass B: its own `heavy_lift_helicopter` model (a Mi-26 class heavy-lift helicopter: six-blade `Rotor`, nose glazing, roof engines, `Tail_rotor`, sponsons with wheels, cargo hook), wash dropped | - |
+| ~~`bridging_vehicle`~~ | done in prompt 27 wave 1c pass B: its own `bridging_vehicle` model (an MTU-72 bridgelayer: tracked hull with skirts, folded two-half scissor bridge on rams, driver hatch, fender RWS (`Turret`, `Muzzle_main`)), wash dropped | - |
+| ~~`gps_jammer_vehicle`~~ | done in prompt 27 wave 1c pass B: its own `gps_jammer_vehicle` model (a Pole-21 class 8x8 truck: shelter, flatbed with stowed antenna sections, tall mast with a turning three-tier dipole array (`Radar`), roof RWS), wash dropped | - |
+| ~~`drone_net_tower`~~ | done in prompt 27 wave 1c pass B: its own `drone_net_tower` model (two poles on concrete bases with splayed A-frame legs, netting between them, a zap emitter ball on each pole top (`Turret`, `Muzzle_main` on the first)), wash dropped | - |
+| ~~`one_shot_atgm_tower`~~ | done in prompt 27 wave 1c pass B: its own `one_shot_atgm_tower` model (a concrete pedestal with sandbag apron, Team roof deck, turntable with a box of eight ready-to-fire Kornet tubes (`Turret`, `Launcher`, `Tubes`, `Muzzle_main`, `Muzzle_missile`, `.001`), no spare missiles), wash dropped | - |
+
+## Prompt 25 batch D stand-in bosses (DECISIONS 25F2-D)
+
+All eight have their own models since prompt 27 wave 1b (no tint; cards of their own). What stays open is game work for prompt 28.
+
+| Boss | Stand-in (parent, tint) | The real model |
+|---|---|---|
+| ~~`kraken`~~ | done in prompt 27 wave 1b: its own `kraken` model (a Kuznetsov / Nimitz-style carrier: ski-jump, island, lifts, parked jets, arresting wires on `Part_deck`, 4 CIWS, 2 SAM box launchers), wash dropped. Still open: the runway / arresting-cable rule and the air wing as units (game work, prompt 28); the weapon list is still Leviathan's (see the last row) | - |
+| ~~`monster`~~ | done in prompt 27 wave 1b: its own `monster` model (an 800 mm SPG after 2B1 Oka / Object 271 on the four-cluster layout; nodes `Part_track` .. `.003`, `Part_barrel`), wash dropped. Still open: no part names the track or barrel nodes (a track-break rule is game data, prompt 28) | - |
+| ~~`garuda`~~ | done in prompt 27 wave 1b: its own `garuda` model (a 70 m flying wing, sawtooth trailing edge, 6 turrets), wash dropped; bomb bay doors built as `Part_bay` / `.001` (closed). Still open: the opening bay view and the circling course (prompt 28) | - |
+| ~~`hyperion`~~ | done in prompt 27 wave 1b: its own `hyperion` model (hexagonal mirror ring, core, solar booms, 4 PD lasers, 2 landing pods on `Pod_bay`), wash dropped; silver_bug / icarus untouched | - |
+| `stymphalos` | model done in prompt 27 wave 1b: `stymphalos` (eight delta-wing jet drones in V formation, each on `Part_drone` .. `.007`) and `stymphalos_drone` (one drone, unlisted), wash dropped | the swarm rule: eight separate units of 1,300 health each, spawned from those nodes (game work, prompt 28) |
+| ~~`nyx`~~ | done in prompt 27 wave 1b: its own `nyx` model (Zumwalt-style), wash dropped | - |
+| `cerberus` | model done in prompt 27 wave 1b: `cerberus` (three big-wheeled cars on `Part_tractor` / `Part_middle` / `Part_trailer`), wash dropped | the coupling rule (the middle car breaks first and takes the AA with it; parts naming those nodes) is game work (prompt 28) |
+| `hydra` | model done in prompt 27 wave 1b: `hydra_sub` (a small VLS submarine, six FPV drones on `Part_drone` .. `.005`), wash dropped | the drones' launch from those nodes (game work, prompt 28) |
+| Weapon lists | the parent's | each sheet weapon list on its own mounts (see 25F2-D); the sun beam's smoke cut; the In-action clips of the four super weapons |
+
+
+## Prompt 26 pass 2 stand-ins (DECISIONS 26CD)
+
+| What | Stand-in now | The real thing |
+|---|---|---|
+| ~~Ixion, the armoured BelAZ-75710 mine truck~~ | done in prompt 27 wave 1a: its own `ixion` model (26 x 12 x 10 m, mb_p27_wave1a), tint dropped | - |
+| Boss sizes | the old models scaled by `size` (Roc and Garuda stay 56-62 m wide, Icarus 45 m wide, Moloch and Bastion keep their proportions) | models rebuilt at the sheet's sizes (prompt 27) |
+| Gungnir's electromagnetic gun | model done in prompt 27 wave 1a (`rail_supergun`: EMRG launcher, two capacitor cars; `rail_tractor`: a modern Bo-Bo diesel); the slug is still the existing rail slug projectile | the line warning along the slug's path (game code, prompt 28) |
+| ~~Ixion's parts: `reartyre`, `hulltower`~~ | done in wave 1a: every tyre (`Part_wheel`, `.001`, `Part_tyre` .. `.003`), the cab (`Part_cab`) and the turret (`Turret`) are nodes the parts name, hidden when broken | - |
+| Ixion's mine strip | the ordinary mine model (MineViews spawns `mine` for every layer); the model has `Point_mines` at the dispenser's mouth, unused | a mine truck's own mine model and the view lookup per layer (game code, prompt 28) |

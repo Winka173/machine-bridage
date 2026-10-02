@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MachineBrigade.Sim.Content
 {
@@ -143,7 +144,11 @@ namespace MachineBrigade.Sim.Content
             var vehicleBlasts = Tune("firepower", "vehicleBlasts");
 
             var weapons = new Dictionary<string, WeaponDef>();
-            foreach (var w in Inherited(root.Array("weapons"), model: false))
+            var families = WeaponFamilies(root);
+            // Prompt 25 G: the second rounds are weapons too, each inheriting its gun's line (StripRoundLinks).
+            JsonObject Finish(JsonObject w) => StripRoundLinks(families != null ? families(w) : w);
+            IEnumerable<JsonObject> WeaponEntries() => Inherited(root.Array("weapons").Concat(SecondRoundEntries(root)), model: false, Finish);
+            foreach (var w in WeaponEntries())
             {
                 var def = Wrap(w, () => new WeaponDef(
                     w.String("id"), w.Enum<DamageType>("damageType"), w.Float("damage"), w.Float("cooldown"),
@@ -156,10 +161,11 @@ namespace MachineBrigade.Sim.Content
                     Pierce = w.Bool("pierce", false), Beam = w.Bool("beam", false), Melee = w.Bool("melee", false),
                     InterceptOnly = w.Bool("interceptOnly", false),
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
-                    ProjectileScale = w.Float("projectileScale", 1f),
+                    ProjectileScale = w.Float("projectileScale", 1f), RoundLength = Math.Max(0f, w.Float("roundLength", 0f)),
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
+                    WeaponFamily = w.OptionalString("weaponFamily"),
                     Clip = w.Int("clip", 0), ClipReload = w.Float("clipReload", 0f), RoundWeight = w.Float("roundWeight", 0f),
                     // Prompt 15: penetration, the top-attack and thermobaric tags, the round's shape, its impact's look.
                     TopAttack = w.Bool("topAttack", false), Thermobaric = w.Bool("thermobaric", false), PiercingLook = w.Bool("piercing", false),
@@ -174,6 +180,8 @@ namespace MachineBrigade.Sim.Content
                 if (w.Has("form")) def.Form = w.Enum<WeaponForm>("form");
                 ParseWeaponP17(w, def);
                 ParseWeaponP19(w, def);
+                // Prompt 25 F2 batch A: the new weapons' mechanisms.
+                ParseWeaponP25A(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))
@@ -201,8 +209,9 @@ namespace MachineBrigade.Sim.Content
                 }
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
-            ResolveHeRounds(Inherited(root.Array("weapons"), model: false), weapons);
-            ResolveAirRounds(Inherited(root.Array("weapons"), model: false), weapons);
+            ResolveHeRounds(WeaponEntries(), weapons);
+            ResolveAirRounds(WeaponEntries(), weapons);
+            ResolveSecondRounds(WeaponEntries(), weapons);
 
             var skills = new Dictionary<string, SkillDef>();
             if (root.Has("skills"))
@@ -216,16 +225,20 @@ namespace MachineBrigade.Sim.Content
                 }
 
             var vehicles = new List<VehicleDef>();
+            var twoLayer = new Dictionary<string, WeaponDef>();
             var ownBranches = new Dictionary<string, ArmyBranch?>();
             // Prompt 20 E: bosses built from their frames, the part library, their variants and ranks.
             foreach (var v in BossTemplates.Expand(root, Inherited(root.Array("vehicles"), model: true)))
             {
+                // Prompt 26 B.3: every blast weapon a boss carries has two layers (the core as it was, an edge twice as wide).
+                var bossEdges = v.Bool("boss", false);
                 var weapon = Weapon(weapons, v, "weapon");
+                if (bossEdges) weapon = WithEdge(weapon, twoLayer);
                 var secondary = new List<WeaponMount>();
                 if (v.Has("secondary"))
                 {
                     foreach (var m in v.Array("secondary"))
-                        secondary.Add(new WeaponMount(Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
+                        secondary.Add(new WeaponMount(bossEdges ? WithEdge(Weapon(weapons, m, "weapon"), twoLayer) : Weapon(weapons, m, "weapon"), m.String("slot"), m.Enum("aim", MountAim.Free))
                         {
                             ProjectileModel = m.Has("model") ? m.String("model") : null,
                             ArcCentre = m.Has("arc") ? m.FloatArray("arc")[0] * MathF.PI / 180f : 0f,
@@ -263,6 +276,16 @@ namespace MachineBrigade.Sim.Content
                     def.Scale = scale;
                     if (v.Has("length")) def.Length = v.Float("length") * scale;
                     if (v.Has("width")) def.Width = v.Float("width") * scale;
+                    // Prompt 25 B1: the drawn box in metres, length x width x height (the view fits the model's length to it).
+                    if (v.Has("modelSize"))
+                    {
+                        var size = v.FloatArray("modelSize");
+                        if (size.Count != 3 || size[0] <= 0f || size[1] <= 0f || size[2] <= 0f)
+                            throw new FormatException($"{v.Path}.modelSize: three positive numbers, length, width and height in metres.");
+                        def.ModelLength = size[0];
+                        def.ModelWidth = size[1];
+                        def.ModelHeight = size[2];
+                    }
                     def.Class = v.Has("class") ? v.Enum<UnitClass>("class") : InferClass(def);
                     if (v.Has("strongVs"))
                     {
@@ -289,7 +312,7 @@ namespace MachineBrigade.Sim.Content
                             phases.Add(new BossPhaseDef
                             {
                                 At = p.Float("at"), Transform = p.Float("transform", 3f), Heal = p.Float("heal", 0f),
-                                Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f),
+                                Damage = p.Float("damage", 1f), Speed = p.Float("speed", 1f), Armor = p.Float("armor", 1f), FireRate = p.Float("fireRate", 1f),
                                 Skills = phaseSkills, Model = p.Has("model") ? p.String("model") : null, Radio = p.Has("radio") ? p.String("radio") : null,
                             });
                         }
@@ -306,6 +329,7 @@ namespace MachineBrigade.Sim.Content
                     def.Orbit = v.Bool("orbit", false);
                     def.OrbitRadius = v.Float("orbitRadius", 0f);
                     def.Stealth = v.Bool("stealth", false);
+                    def.StillCamouflage = Math.Clamp(v.Float("stillCamo", 0f), 0f, 0.9f);
                     def.Interceptor = v.Bool("interceptor", false);
                     def.Vtol = v.Bool("vtol", false);
                     def.AttackHold = def.FixedWing ? v.Float("attackHold", 0f) : 0f;
@@ -392,7 +416,7 @@ namespace MachineBrigade.Sim.Content
                         var m = v.Object("mines");
                         def.Mines = new MineLayerDef(m.Float("interval"), m.Int("max", 6),
                             new ExplosionDef(m.Float("damage") * vehicleBlasts, m.Float("radius"), 0f, m.Enum("tier", ExplosionTier.Large)),
-                            m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f) };
+                            m.Float("trigger", 2f)) { Spread = m.Float("spread", 0f), Life = MathF.Max(0f, m.Float("life", 0f)), TurnStrip = MathF.Max(0f, m.Float("turnStrip", 0f)) };
                     }
                     ParseExtras(v, def);
                     ParseNaval(v, def);
@@ -432,6 +456,8 @@ namespace MachineBrigade.Sim.Content
                         UnitRank = s.Int("unitRank", 0),
                         LineRank = s.Has("rankLine") ? s.Object("rankLine").Int("rank", 0) : 0,
                         LineScale = s.Has("rankLine") ? s.Object("rankLine").Float("scale", 1f) : 1f,
+                        // Prompt 25 F2 batch C: a Homing strike's targets (ht10: drones only; ht03: ground vehicles).
+                        DronesOnly = s.Bool("dronesOnly", false),
                     }));
                 }
             }
@@ -456,7 +482,8 @@ namespace MachineBrigade.Sim.Content
         /// Vehicle entries with "inherits" (a tower's rank-7 branch) take the named def's fields,
         /// theirs on top; the parent's model too, unless they name their own. In data order.
         /// </summary>
-        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries, bool model)
+        private static IEnumerable<JsonObject> Inherited(IEnumerable<JsonObject> entries, bool model,
+            Func<JsonObject, JsonObject>? finish = null)
         {
             var list = new List<JsonObject>(entries);
             var byId = new Dictionary<string, JsonObject>();
@@ -464,16 +491,38 @@ namespace MachineBrigade.Sim.Content
                 if (v.Has("id")) byId[v.String("id")] = v;
             JsonObject Resolve(JsonObject v, int depth)
             {
-                if (!v.Has("inherits")) return v;
+                if (!v.Has("inherits")) return finish != null ? finish(v) : v;
                 if (depth > 4) throw new FormatException($"{v.Path}: inherits too deep");
                 var parentId = v.String("inherits");
                 if (!byId.TryGetValue(parentId, out var parent)) throw new FormatException($"{v.Path}.inherits: unknown vehicle '{parentId}'");
                 var baseDef = Resolve(parent, depth + 1);
                 var merged = baseDef.Under(v);
                 if (model && !v.Has("model") && !baseDef.Has("model")) merged = merged.With("model", parentId);
-                return merged;
+                return finish != null ? finish(merged) : merged;
             }
             foreach (var v in list) yield return Resolve(v, 0);
+        }
+
+        /// <summary>
+        /// Prompt 25 A3 (DECISIONS 25A): weapon families ("weaponFamilies"), one per real weapon: a weapon naming one
+        /// ("weaponFamily") takes its speed, blast radius, round model and round weight on top of its own line (and its
+        /// parent's); "" keeps a weapon that inherits a member out of the family. Null when the data has none.
+        /// </summary>
+        private static Func<JsonObject, JsonObject>? WeaponFamilies(JsonObject root)
+        {
+            if (!root.Has("weaponFamilies") && !root.Has("secondRounds")) return null;
+            var families = new Dictionary<string, JsonObject>();
+            // Prompt 25 G: the second rounds' families sit in their own block.
+            var all = root.Has("weaponFamilies") ? root.Array("weaponFamilies").Concat(SecondRoundFamilies(root)) : SecondRoundFamilies(root);
+            foreach (var f in all)
+                if (!families.TryAdd(f.String("id"), f)) throw new FormatException($"{f.Path}: duplicate weapon family '{f.String("id")}'.");
+            return w =>
+            {
+                // An empty family ("") keeps a weapon that inherits a member out of it (JsonObject.String rejects "").
+                if (w.OptionalString("weaponFamily") is not { } id) return w;
+                if (!families.TryGetValue(id, out var family)) throw new FormatException($"{w.Path}.weaponFamily: unknown weapon family '{id}'.");
+                return w.Taking(family, "id", "real");
+            };
         }
 
         private static Dictionary<string, int> ReadCaps(JsonObject root, string key, int fallback)
@@ -501,6 +550,22 @@ namespace MachineBrigade.Sim.Content
             var o = root.Object("economy").Object("armyCap");
             foreach (var key in o.Keys) caps[key] = o.Int(key, 24);
             return caps;
+        }
+
+        /// <summary>
+        /// Prompt 26 B.3: a boss's copy of a blast weapon (same id, so it looks and sounds the same) with an edge layer twice as
+        /// wide as its core, at most 20 m. A weapon that has an edge already, a flak burst, a beam and a small splash (under
+        /// 2 m, bullets' fragments) are left as they are.
+        /// </summary>
+        private static WeaponDef WithEdge(WeaponDef w, Dictionary<string, WeaponDef> made)
+        {
+            if (w.SplashEdge > 0f || w.SplashRadius < 2f || w.Beam || w.Flak || w.Targets == TargetLayers.Air) return w;
+            if (made.TryGetValue(w.Id, out var copy)) return copy;
+            var edge = MathF.Min(WeaponDef.MaxEdge, w.SplashRadius * 2f);
+            if (edge <= w.SplashRadius) return w;
+            copy = w.WithEdge(edge);
+            made[w.Id] = copy;
+            return copy;
         }
 
         private static WeaponDef Weapon(Dictionary<string, WeaponDef> weapons, JsonObject owner, string key)

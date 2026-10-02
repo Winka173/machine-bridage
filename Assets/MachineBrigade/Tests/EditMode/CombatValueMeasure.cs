@@ -36,7 +36,7 @@ namespace MachineBrigade.Tests
     /// Run with MB_BALANCE=1 (and MB_CV_OUT for the output folder; default the temp folder); a
     /// filter MB_CV_ONLY=a,b limits it to some vehicles.
     /// </summary>
-    public class CombatValueMeasure
+    public partial class CombatValueMeasure
     {
         private const float Budget = 18f;
 
@@ -139,12 +139,15 @@ namespace MachineBrigade.Tests
                 if (Limited(def)) results.Add(Mean(Seeds.Select(seed => Run(catalog, id, LongRun, seed)).ToList()));
                 results.Add(Mean(Seeds.Select(seed => Run(catalog, id, Artillery, seed)).ToList()));
             }
+            // Prompt 25 E2: the support vehicles' own run (what they repair, resupply, decoy and shield), in the summary too.
+            var support = MeasureSupport(catalog);
             var outDir = Environment.GetEnvironmentVariable("MB_CV_OUT");
             if (string.IsNullOrEmpty(outDir)) outDir = Path.GetTempPath();
             Directory.CreateDirectory(outDir);
             var tag = Environment.GetEnvironmentVariable("MB_CV_TAG") ?? "now";
             File.WriteAllText(Path.Combine(outDir, $"combat_value_{tag}.tsv"), Tsv(results), new UTF8Encoding(false));
-            var summary = Summary(catalog, results);
+            File.WriteAllText(Path.Combine(outDir, $"combat_value_{tag}_support.tsv"), SupportTsv(support.Values), new UTF8Encoding(false));
+            var summary = Summary(catalog, results, support);
             File.WriteAllText(Path.Combine(outDir, $"combat_value_{tag}_summary.tsv"), summary, new UTF8Encoding(false));
             TestContext.Out.WriteLine(summary);
             UnityEngine.Debug.Log($"[CombatValueMeasure] {results.Count} runs in {(DateTime.Now - started).TotalSeconds:0} s\n" + summary);
@@ -584,12 +587,17 @@ namespace MachineBrigade.Tests
             return sb.ToString();
         }
 
-        /// <summary>One line per vehicle: class, CP, value per CP in each scenario, the mean over the standard ones, and on-target share.</summary>
-        internal static string Summary(Catalog catalog, List<Result> results)
+        /// <summary>
+        /// One line per vehicle: class, CP, value per CP in each scenario, the mean over the standard ones, and on-target share;
+        /// prompt 25 E2: a support vehicle's own run (health repaired, rounds resupplied, missiles decoyed, shield damage
+        /// blocked, support value per CP), empty for the others.
+        /// </summary>
+        internal static string Summary(Catalog catalog, List<Result> results, IReadOnlyDictionary<string, SupportResult> support = null)
         {
             var sb = new StringBuilder();
             var names = Standards.Select(s => s.Name).Concat(new[] { LongRun.Name, Artillery.Name }).ToList();
-            sb.AppendLine("id\tclass\tcp\t" + string.Join("\t", names) + "\tground\tnoAA\tonTarget\tsurvival\tready\tdpsLight\tdpsHeavy\tdpsFort\tdpsAir");
+            sb.AppendLine("id\tclass\tcp\t" + string.Join("\t", names) + "\tground\tnoAA\tonTarget\tsurvival\tready\tdpsLight\tdpsHeavy\tdpsFort\tdpsAir" +
+                "\trepaired\tresupplied\tdecoyed\tshielded\tsupport");
             foreach (var g in results.GroupBy(r => r.Id))
             {
                 var def = catalog.Vehicle(g.Key);
@@ -603,7 +611,8 @@ namespace MachineBrigade.Tests
                     F(ground.Average(r => r.Value)) + "\t" + F(noAa.Average(r => r.Value)) + "\t" + F(standard.Average(r => r.OnTarget)) + "\t" +
                     F(standard.Average(r => r.Survival)) + "\t" +
                     (def.Flying ? F(g.Average(r => r.Ready)) : "") + "\t" +
-                    string.Join("\t", new[] { "light", "tanks", "fort", "air" }.Select(n => g.FirstOrDefault(r => r.Scenario == n) is { } r ? F(r.RealDps) : "")));
+                    string.Join("\t", new[] { "light", "tanks", "fort", "air" }.Select(n => g.FirstOrDefault(r => r.Scenario == n) is { } r ? F(r.RealDps) : "")) +
+                    "\t" + SupportCells(support, g.Key));
             }
             return sb.ToString();
         }

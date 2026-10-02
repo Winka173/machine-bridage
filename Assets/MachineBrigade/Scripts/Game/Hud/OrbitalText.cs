@@ -28,7 +28,7 @@ namespace MachineBrigade.Game.Hud
             ["guide.tiers"] = ("Altitude tiers", "Tầng độ cao"),
             ["guide.tiers.rule"] = ("It keeps to a fixed schedule whatever you do; only this boss and its falling drop pods use altitude tiers.", "Nó bám theo lịch cố định bất kể bạn làm gì; chỉ boss này và các khoang đổ bộ đang rơi của nó dùng khái niệm tầng độ cao."),
             ["guide.tiers.orbit"] = ("Low orbit: only in the opening, about 15 s. Nothing in your deck reaches it there.", "Quỹ đạo thấp: chỉ trong đoạn mở màn, khoảng 15 giây. Không vũ khí nào của bạn bắn tới được."),
-            ["guide.tiers.high"] = ("High altitude: only long-range SAMs, Patriot batteries, fighters and stealth fighters reach it.", "Tầng cao: chỉ SAM tầm xa, dàn Patriot, tiêm kích và tiêm kích tàng hình bắn tới được."),
+            ["guide.tiers.high"] = ("High altitude: only long-range SAMs, long-range SAM sites, fighters and stealth fighters reach it.", "Tầng cao: chỉ PK tầm xa, trạm PK tầm xa, tiêm kích và tiêm kích tàng hình bắn tới được."),
             ["guide.tiers.low"] = ("Low altitude: every weapon that can hit aircraft or helicopters reaches it, plus railguns against this boss only.", "Tầng thấp: mọi vũ khí bắn được máy bay hoặc trực thăng đều bắn tới, cộng thêm pháo điện từ chỉ riêng với boss này."),
             ["guide.tiers.shift"] = ("Changing altitude takes about 3-4 s; while it does, it is hit as at the lower of the two tiers.", "Đổi tầng mất khoảng 3-4 giây; trong lúc đó nó bị bắn theo tầng thấp hơn trong hai tầng."),
             ["guide.tiers.phase1"] = ("Phase 1 (100-70%): about {high} s high, then {low} s low.", "Pha 1 (100-70%): khoảng {high} giây ở tầng cao, rồi {low} giây ở tầng thấp."),

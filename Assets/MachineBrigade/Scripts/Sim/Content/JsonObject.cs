@@ -47,6 +47,10 @@ namespace MachineBrigade.Sim.Content
         public string String(string key) =>
             _values.TryGetValue(key, out var v) && v is string s && s.Length > 0 ? s : throw Invalid(key, "a non-empty string");
 
+        /// <summary>A string that may be absent or empty (null then): prompt 25 A3's "weaponFamily": "" keeps a weapon out of its parent's family.</summary>
+        public string? OptionalString(string key) =>
+            _values.TryGetValue(key, out var v) && v is string s && s.Length > 0 ? s : null;
+
         public bool Bool(string key, bool fallback) =>
             !Has(key) ? fallback : _values[key] is bool b ? b : throw Invalid(key, "true or false");
 
@@ -107,6 +111,26 @@ namespace MachineBrigade.Sim.Content
             var merged = new Dictionary<string, object?>(_values);
             foreach (var pair in child._values) merged[pair.Key] = pair.Value;
             return new JsonObject(merged, child.Path);
+        }
+
+        /// <summary>
+        /// Prompt 25 A3: this object with <paramref name="shared"/>'s fields on top (a weapon family's), but for
+        /// <paramref name="skip"/>; it keeps its own path, so an error names the weapon.
+        /// </summary>
+        internal JsonObject Taking(JsonObject shared, params string[] skip)
+        {
+            var merged = new Dictionary<string, object?>(_values);
+            foreach (var pair in shared._values)
+                if (System.Array.IndexOf(skip, pair.Key) < 0) merged[pair.Key] = pair.Value;
+            return new JsonObject(merged, Path);
+        }
+
+        /// <summary>Prompt 25 G: a copy without some fields (a second round leaves its gun's own round links behind).</summary>
+        internal JsonObject Without(params string[] keys)
+        {
+            var copy = new Dictionary<string, object?>(_values);
+            foreach (var k in keys) copy.Remove(k);
+            return new JsonObject(copy, Path);
         }
 
         /// <summary>A copy with one field set (a merged def's resolved model).</summary>

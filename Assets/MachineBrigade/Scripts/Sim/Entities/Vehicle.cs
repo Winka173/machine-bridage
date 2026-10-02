@@ -278,6 +278,9 @@ namespace MachineBrigade.Sim.Entities
         internal float ShieldAmount, OverdriveSpeed = 1f, BarrageRate = 1f, Healing, RearmProgress;
         internal double NextMineAt;
 
+        /// <summary>Prompt 26 D.1: the heading last tick and the turn (radians) since the last strip of mines (a turn-strip layer).</summary>
+        internal float MineHeading, MineTurned;
+
         /// <summary>
         /// A boss's own countdown shown on the model, 0 to 1 (the Doomsday Train raising its
         /// missile before launch). Set by the mission.
@@ -293,7 +296,8 @@ namespace MachineBrigade.Sim.Entities
             ShieldUp = ShieldUntil > now;
             Overdriven = OverdriveUntil > now;
             FlaresUp = FlaresUntil > now;
-            Stunned = StunnedUntil > now || Dummy;
+            KnockedOut = StunnedUntil > now;
+            Stunned = KnockedOut || Dummy;
             Barraging = BarrageUntil > now;
         }
 
@@ -306,8 +310,14 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Flares are out: guided weapons aimed at it miss.</summary>
         public bool FlaresUp { get; private set; }
 
-        /// <summary>Knocked out by an EMP: cannot drive or fire.</summary>
+        /// <summary>Knocked out by an EMP: cannot drive or fire. A range <see cref="Dummy"/> counts as stunned too (it holds still and never fires).</summary>
         public bool Stunned { get; private set; }
+
+        /// <summary>
+        /// Play-test 10 (DECISIONS PT10 visuals): really knocked out (an EMP's or a SEAD strike's stun), not merely a range
+        /// dummy held still. What the views draw a stun by (the arcs, blue sparks and burnt-electronics smoke, a dead radar).
+        /// </summary>
+        public bool KnockedOut { get; private set; }
 
         /// <summary>Holds its fire (a fortress keep's gun under its shield dome: nothing gets in or out).</summary>
         public bool HoldFire { get; internal set; }

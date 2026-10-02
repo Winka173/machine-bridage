@@ -1297,6 +1297,14 @@ namespace MachineBrigade.Sim.Modes
             // Prompt 22 E: the two new mini bosses.
             new[] { "behemoth_mk0", "morrigan" },
             new[] { "scylla", "caspian" },
+            // Prompt 25 F2 batch D: the eight new bosses (stand-ins), the sea ones together, each of the rest alone.
+            new[] { "kraken" },
+            new[] { "monster" },
+            new[] { "garuda" },
+            new[] { "hyperion" },
+            new[] { "nyx", "hydra" },
+            new[] { "stymphalos" },
+            new[] { "cerberus" },
         };
 
         /// <summary>One boss of each kind, in the usual order, the variant drawn by <paramref name="seed"/>.</summary>
@@ -1400,6 +1408,9 @@ namespace MachineBrigade.Sim.Modes
         private double _nextBossAt;
         private double _wipedSince = -1;
 
+        /// <summary>Prompt 26 E.3: this battle was built fresh for the next boss (a reload with no army); the boss comes in without another reload.</summary>
+        private bool _arrivedFresh;
+
         public BossRushMode(BossRushRules? rules = null) => _rules = rules ?? new BossRushRules();
 
         public MatchResult? Result { get; private set; }
@@ -1442,6 +1453,7 @@ namespace MachineBrigade.Sim.Modes
                 Defeated = resume.Defeated;
                 TimeUsed = resume.TimeUsed;
                 Endless = resume.Endless;
+                _arrivedFresh = true;
                 if (world.TryGetEconomy(PlayerTeam, out var economy)) economy.Cp = MathF.Min(economy.Bank, resume.Cp);
                 world.TryGetRally(PlayerTeam, out var rally);
                 for (var i = 0; i < resume.Army.Count; i++)
@@ -1480,10 +1492,16 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>What the rush carries to the next battlefield: the bosses beaten, the time used, the army standing, the CP.</summary>
         private BossRushCarry Carry(SimWorld world, string map)
         {
-            var carry = new BossRushCarry { Map = map, Defeated = Defeated, TimeUsed = TimeUsed + world.Time, Endless = Endless };
+            var carry = new BossRushCarry { Map = map, Defeated = Defeated, TimeUsed = TimeUsed + world.Time, Endless = Endless, Power = _rules.Power };
             if (world.TryGetEconomy(PlayerTeam, out var economy)) carry.Cp = economy.Cp;
             carry.Supports.AddRange(_held);
             carry.Paid = PaidBefore;
+            // Prompt 26 E.3: a fresh battle starts with no army and the starting CP; only the supports go on.
+            if (_rules.Fresh)
+            {
+                carry.Cp = _rules.Player.StartCp;
+                return carry;
+            }
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Team == PlayerTeam && !v.Def.Static && !v.Scripted && v.Def.CpCost > 0)
                     carry.Army.Add((v.Def.Id, v.Hp / v.MaxHp));
@@ -1523,7 +1541,12 @@ namespace MachineBrigade.Sim.Modes
                 Defeated++;
                 // A ship that got away pays nothing (prompt 16); the rush goes on.
                 if (escaped) Escapes++;
-                else if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty * _bountyScale);
+                else
+                {
+                    // Prompt 26 E.2: part of the CP held is lost between two bosses (the week's hunt keeps half), then the bounty is paid.
+                    HuntCpCut(world);
+                    if (world.TryGetEconomy(PlayerTeam, out var ours)) ours.Cp = MathF.Min(ours.Bank, ours.Cp + _rules.Bounty * _bountyScale);
+                }
                 // Play-test 6 (DECISIONS 21G): the last boss down, the player may carry on into the endless run.
                 if (Defeated >= Total && !Endless)
                 {
@@ -1550,6 +1573,8 @@ namespace MachineBrigade.Sim.Modes
                 else if (!sails && arena != null && !On(world, arena)) SwitchTo = Carry(world, arena);
                 else if (!sails && arena == null && world.Map.Sea != null && _rules.HomeMap != null && _rules.HomeMap != _rules.SeaMap) SwitchTo = Carry(world, _rules.HomeMap);
                 else if (!sails && arena == null && _rules.HomeMap != null && !On(world, _rules.HomeMap) && OnAnArena(world)) SwitchTo = Carry(world, _rules.HomeMap);
+                // Prompt 26 E.3: the full hunt's next boss is a fresh battle (the scene is rebuilt with no army and the starting CP).
+                else if (_rules.Fresh && !_arrivedFresh && Defeated > 0) SwitchTo = Carry(world, BaseMap(world));
                 else Spawn(world);
                 if (SwitchTo != null) return;
             }
@@ -1559,7 +1584,8 @@ namespace MachineBrigade.Sim.Modes
                 Finish(world, EnemyTeam);
                 return;
             }
-            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0;
+            // A fresh battle's army is bought after the boss arrives; it is only lost once the boss is out.
+            var wiped = world.TryGetEconomy(PlayerTeam, out var economy) && economy.ArmyCp == 0 && world.Time > 5.0 && (!_rules.Fresh || Boss.IsValid);
             _wipedSince = wiped ? (_wipedSince < 0 ? world.Time : _wipedSince) : -1;
             if (_wipedSince >= 0 && world.Time - _wipedSince > 12.0) Finish(world, Endless ? PlayerTeam : EnemyTeam);
         }
@@ -1583,6 +1609,7 @@ namespace MachineBrigade.Sim.Modes
                 rally = sea.At(side * far.Patrol, far.W);
             }
             HuntRamp(world);
+            _arrivedFresh = false;
             Boss = world.SpawnVehicle(id, EnemyTeam, rally, heading).Id;
             _stepsPaid = 0;
             _partsPaid = 0;

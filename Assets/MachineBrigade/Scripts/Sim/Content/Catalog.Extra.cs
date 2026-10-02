@@ -132,6 +132,7 @@ namespace MachineBrigade.Sim.Content
             def.MineArmor = Math.Clamp(v.Float("mineArmor", 1f), 0f, 1f);
             // 0 until FinishExtras fills in the elite default (or 1).
             def.DamageScale = v.Has("damageScale") ? Math.Clamp(v.Float("damageScale", 1f), 0.1f, 5f) : 0f;
+            def.WeaponDamage = Math.Clamp(v.Float("weaponDamage", 1f), 0.1f, 10f);
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");
@@ -224,10 +225,14 @@ namespace MachineBrigade.Sim.Content
                 var b = v.Object("bombard");
                 def.Bombard = new BombardDef
                 {
-                    Every = b.Float("every", 20f), Warn = b.Float("warn", 3f), Damage = b.Float("damage", 1400f), Radius = b.Float("radius", 14f),
+                    // Prompt 25 C2: -1 takes the weapon's (below, once the weapons are read).
+                    Every = b.Has("every") ? b.Float("every", 20f) : b.Has("weapon") ? -1f : 20f, Warn = b.Float("warn", 3f),
+                    Damage = b.Has("damage") ? b.Float("damage", 1400f) : b.Has("weapon") ? -1f : 1400f,
+                    Radius = b.Has("radius") ? b.Float("radius", 14f) : b.Has("weapon") ? -1f : 14f,
                     Scatter = b.Float("scatter", 3f), BlindScatter = b.Float("blindScatter", 2.5f), First = b.Float("first", 10f),
                     Spotter = b.Has("spotter") ? b.String("spotter") : null, Weapon = b.Has("weapon") ? b.String("weapon") : null,
                     Warning = b.Has("warning") ? b.String("warning") : null,
+                    PierceMax = Math.Max(0, b.Int("pierceMax", 0)), PierceDamage = MathF.Max(0f, b.Float("pierceDamage", 0f)),
                 };
             }
             // Prompt 18: its big attack by id, and its own scaling of it.
@@ -276,6 +281,8 @@ namespace MachineBrigade.Sim.Content
             ParseP22(v, def);
             // The tower-branch rework (DECISIONS 19T): tower shields, the loot depot, the radar's air picture, the branch art.
             ParseBranchRework(v, def);
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new units' and structures' mechanisms.
+            ParseP25A(v, def);
         }
 
         /// <summary>
@@ -374,12 +381,26 @@ namespace MachineBrigade.Sim.Content
                 }
                 foreach (var guard in def.Guards)
                     if (!_vehicles.ContainsKey(guard.Def)) throw new FormatException($"{def.Id}.guards: unknown vehicle '{guard.Def}'.");
+                // Prompt 25 C2: a crusher that is a weapon (Kronos's bucket wheel) takes its numbers.
+                if (def.Crush is { Weapon: { } wheel } crush)
+                {
+                    if (!_weapons.TryGetValue(wheel, out var w)) throw new FormatException($"{def.Id}.crush.weapon: unknown weapon '{wheel}'.");
+                    if (crush.Dps < 0f) crush.Dps = w.Damage / MathF.Max(0.05f, w.Cooldown);
+                    if (crush.Reach < 0f) crush.Reach = MathF.Max(0.5f, w.Range);
+                }
                 if (def.Landing != null)
                     foreach (var id in def.Landing.Units)
                         if (!_vehicles.ContainsKey(id)) throw new FormatException($"{def.Id}.landing.units: unknown vehicle '{id}'.");
                 if (def.Bombard is { } bombard)
                 {
                     if (bombard.Weapon != null && !_weapons.ContainsKey(bombard.Weapon)) throw new FormatException($"{def.Id}.bombard.weapon: unknown weapon '{bombard.Weapon}'.");
+                    // Prompt 25 C2: the gun's own numbers where the bombard gives none.
+                    if (bombard.Weapon != null && _weapons.TryGetValue(bombard.Weapon, out var gun))
+                    {
+                        if (bombard.Damage < 0f) bombard.Damage = gun.Damage;
+                        if (bombard.Radius < 0f) bombard.Radius = MathF.Max(1f, gun.SplashRadius);
+                        if (bombard.Every < 0f) bombard.Every = MathF.Max(bombard.Warn + 1f, gun.Cooldown);
+                    }
                     if (bombard.Warning != null && !_supports.ContainsKey(bombard.Warning)) throw new FormatException($"{def.Id}.bombard.warning: unknown support '{bombard.Warning}'.");
                     if (bombard.Spotter != null && !_vehicles.ContainsKey(bombard.Spotter)) throw new FormatException($"{def.Id}.bombard.spotter: unknown vehicle '{bombard.Spotter}'.");
                 }
@@ -394,6 +415,8 @@ namespace MachineBrigade.Sim.Content
             CheckTiers();
             // Prompt 22 E: the duels' big attacks.
             FinishP22();
+            // Prompt 25 F2 batch A: the ids the new mechanisms name.
+            FinishP25A();
         }
 
         /// <summary>What an elite of this base card costs the enemy (and refunds when destroyed): its CP times the elite scale, rounded.</summary>

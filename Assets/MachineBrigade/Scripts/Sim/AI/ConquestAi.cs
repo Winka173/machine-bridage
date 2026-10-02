@@ -530,12 +530,12 @@ namespace MachineBrigade.Sim.AI
             // Hard and Very Hard time their fire support with an attack: not while the army holds back.
             if (_difficulty >= AiDifficulty.Hard && _tactics.HoldingBack && _random.NextDouble() < 0.7) return false;
             var supports = Cards(world, economy.Supports, world.Catalog.Supports.Keys);
-            // Repair a battered group first.
+            // Repair or resupply a battered group first (prompt 25 F2 batch C: ht05 reuses the same group as Repair).
             if (FindDamagedGroup(world, out var hurt))
                 foreach (var id in supports)
                 {
                     var s = world.Catalog.Supports[id];
-                    if (s.Kind == SupportKind.Repair && Ready(world, economy, s) &&
+                    if (s.Kind is SupportKind.Repair or SupportKind.Resupply && Ready(world, economy, s) &&
                         world.Submit(Command.Strike(_team, id, hurt)).Accepted) return true;
                 }
 
@@ -563,8 +563,8 @@ namespace MachineBrigade.Sim.AI
             foreach (var id in supports)
             {
                 var s = world.Catalog.Supports[id];
-                if (s.Kind is SupportKind.Repair or SupportKind.Smoke or SupportKind.Scan or SupportKind.Minefield or SupportKind.Tower or SupportKind.Sead ||
-                    !Ready(world, economy, s)) continue;
+                if (s.Kind is SupportKind.Repair or SupportKind.Smoke or SupportKind.Scan or SupportKind.Minefield or SupportKind.Tower or SupportKind.Sead
+                    or SupportKind.Resupply or SupportKind.Reinforce || !Ready(world, economy, s)) continue;
                 // Save the big one for big targets.
                 if (s.Kind == SupportKind.CruiseMissile && size < ClusterSize + 1) continue;
                 // The dearest strike, the commander's arm first (prompt 22 F.5: Hawk's airstrikes, Longshot's barrages).
@@ -638,6 +638,16 @@ namespace MachineBrigade.Sim.AI
                     case SupportKind.Scan:
                         if (ScanTarget(world, out var look) && world.Submit(Command.Strike(_team, id, look)).Accepted) return true;
                         break;
+
+                    // Prompt 25 F2 batch C (ht08): the decoy paradrop goes on our own side, between our group and the
+                    // enemy's, to draw fire — never at the enemy cluster (the generic strike path excludes Reinforce).
+                    case SupportKind.Reinforce when FindCluster(world, out var enemyAt, out _) && OwnCentroid(world, enemyAt, 60f, out var ownAt):
+                    {
+                        var toward = enemyAt - ownAt;
+                        var at = ownAt + (toward.LengthSquared() > 1f ? Vector2.Normalize(toward) : Vector2.UnitX) * 10f;
+                        if (world.Submit(Command.Strike(_team, id, world.ClampToMap(at))).Accepted) return true;
+                        break;
+                    }
                 }
             }
             return false;
@@ -888,6 +898,8 @@ namespace MachineBrigade.Sim.AI
                     // Prompt 13 F.2: an ammunition carrier once the army has launchers and helicopters to feed (one is enough).
                     if (def.RearmAura != null || def.AirRearm != null) score += ownResupplied >= 3 && !owned.ContainsKey(id) ? 1.6f + ownResupplied * 0.2f : -3f;
                     score += NewCardScore(def, owned.ContainsKey(id), ownManned, ownTotal, enemy, towers, neutral);
+                    // Prompt 25 F2 batch A: the new cards' reasons (drones to down, jammers and smoke to beat, nothing seen, points to drop on).
+                    score += P25CardScore(def, owned.ContainsKey(id), enemy, neutral);
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
@@ -915,12 +927,13 @@ namespace MachineBrigade.Sim.AI
             var bestCost = economy.PriceOf(best, world.Catalog.Vehicles[best].CpCost);
             if (bestCost <= economy.Cp)
             {
-                world.Submit(Command.Deploy(_team, best));
+                // Prompt 25 F2 batch A: an airborne vehicle is dropped where it is wanted.
+                DeployOrDrop(world, best);
                 return;
             }
             // Save up for the best card, unless the army is thin or CP is about to overflow.
             if (bestAffordable != null && (ownTotal < 4 || economy.Cp >= economy.Bank - 3f || _difficulty == AiDifficulty.Easy))
-                world.Submit(Command.Deploy(_team, bestAffordable));
+                DeployOrDrop(world, bestAffordable);
         }
 
         /// <summary>Very Hard spending its saved CP (see <see cref="TryDeploy"/>).</summary>

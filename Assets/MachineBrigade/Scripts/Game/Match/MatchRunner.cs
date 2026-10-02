@@ -239,6 +239,8 @@ namespace MachineBrigade.Game.Match
                 // The commander's lines count towards the army's strength like its equipment (prompt 22 F.1).
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(CommanderRules.Merge(PlayerProfile.BoostFor(def), _playerCommander, def, GearCatalog.StatCap));
+                // Prompt 26 A.4: ... but its bosses do not (their health is set by the target time).
+                _world.BossesUnscaled = true;
                 var edge = EnemyScaling.Match(deck, catalog.EnemyScaling);
                 // The elite budget is part of that pace, not on top of it (prompt 8 H).
                 edge = EnemyScaling.WithElites(edge, catalog.Elites.PowerEdge(catalog.Elites.BudgetFor(ModeSession.EliteKey(mission.Difficulty, MatchSettings.MissionTier))));
@@ -251,6 +253,8 @@ namespace MachineBrigade.Game.Match
                 foreach (var id in MatchSettings.DeckVehicles)
                     if (catalog.Vehicles.TryGetValue(id, out var def)) deck.Add(PlayerProfile.BoostFor(def));
                 ModeSession.KeepPace(_world, deck, MatchSettings.Difficulty, kind);
+                // Prompt 26 E.1: a Boss Hunt's P, estimated once from the carried deck (a resumed run brings its own).
+                if (kind == GameModeKind.BossRush) BossRushSession.Power = HuntPower.ForDeck(catalog, MatchSettings.DeckVehicles, _playerCommander);
             }
             _session = ModeSession.Create(kind, _menu, _world, seed);
             _stuck = _menu ? null : StuckReporter.Create(mapFile, kind, seed);
@@ -393,6 +397,8 @@ namespace MachineBrigade.Game.Match
             _weatherKind = weather;
             _effects.Night = weather == WeatherKind.Night;
             _session.SetNight(weather == WeatherKind.Night);
+            // Prompt 25 F2 batch A: searchlights and flare towers light the dark (night, fog, a sandstorm).
+            _world.SetDarkness(weather is WeatherKind.Night or WeatherKind.Fog or WeatherKind.Sandstorm);
             if (!_menu && _session.Mode is MachineBrigade.Sim.Modes.SiegeMode siegeMode && _world.Map.Fortress != null)
             {
                 _fortress = new FortressView(_world, siegeMode, _models, _materials, _effects, worldRoot, PlayerTeam);
@@ -531,6 +537,7 @@ namespace MachineBrigade.Game.Match
             _weather = new Weather(next, _atmosphere, _materials, _camera, _audio, _worldRoot, _richEffects, theme.Cast, theme.Haze, _leavingWeather, seconds);
             _effects.Night = next == WeatherKind.Night;
             _session.SetNight(next == WeatherKind.Night);
+            _world.SetDarkness(next is WeatherKind.Night or WeatherKind.Fog or WeatherKind.Sandstorm);
             _fortress?.SetNight(next == WeatherKind.Night);
         }
 

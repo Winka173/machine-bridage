@@ -568,6 +568,8 @@ namespace MachineBrigade.Game.Hud
             var name = Strings.Card(id);
             if (Progression.IsPremium(id)) return Strings.Format("deck.lockedPremium", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
             var mission = Progression.UnlockMission(id);
+            // Prompt 25 D2: story loot is won in its mission only.
+            if (mission != null && Progression.IsStoryLoot(id)) return Strings.Format("deck.lockedLoot", ("name", name), ("mission", Campaign.Label(mission)));
             return mission != null
                 ? Strings.Format("deck.lockedMission", ("name", name), ("mission", Campaign.Label(mission)), ("coins", Kit.Count(Progression.Price(id, _catalog))))
                 : Strings.Format("deck.lockedShop", ("name", name), ("coins", Kit.Count(Progression.Price(id, _catalog))));
@@ -578,6 +580,9 @@ namespace MachineBrigade.Game.Hud
         {
             if (Progression.IsPremium(id)) return Strings.Get("kit.unlockShop");
             var mission = Progression.UnlockMission(id);
+            // Prompt 25 D2: a card may open in an interlude ("Opens in Interlude I").
+            if (mission != null && Campaign.Chapter(mission.Chapter) is { IsInterlude: true } interlude)
+                return Strings.Format("kit.unlockInterlude", ("interlude", interlude.Short));
             return mission != null && mission.Chapter > 0 ? Strings.Format("kit.unlockChapter", mission.Chapter)
                 : mission != null ? Strings.Format("kit.unlockMission", Campaign.Label(mission))
                 : Strings.Get("kit.unlockShop");
@@ -619,7 +624,7 @@ namespace MachineBrigade.Game.Hud
         /// <summary>The screens the rebuild covers, by name (UiShots and UiLayoutTests open each in turn).</summary>
         internal static readonly string[] ScreenNames =
         {
-            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "dossier-intel", "comic", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
+            "home", "setup-mode", "setup-map", "campaign", "campaign-chapter", "briefing", "dossier", "dossier-intel", "comic", "operations", "army-deck", "army-deck-supports", "army-deck-air", "army-towers", "army-gear", "army-gear-picked", "army-base", "army-base-picked", "army-base-ranges", "army-outpost", "detail-tower", "detail-module",
             "detail", "detail-action", "detail-tower-action", "detail-module-action", "shop-deals", "shop-crates", "shop-coins", "shop-skins", "shop-units", "shop-items", "settings",
             "legend", "detail-weapons", "detail-armour", "detail-boss", "detail-boss-stats",
             // Prompt 22 F.4: the commander picker and the dossier's commander pages.
@@ -682,6 +687,13 @@ namespace MachineBrigade.Game.Hud
                         "army-deck" => ArmyView.Deck, "army-towers" => ArmyView.Towers, "army-gear" => ArmyView.Equipment, "army-outpost" => ArmyView.Outpost,
                         _ => ArmyView.Base,
                     };
+                    ShowTab(Tab.Army);
+                    break;
+                case "army-gear-picked":
+                    // Play-test 10: the Equipment tab with a piece picked (its lines, the equip button, the list under them).
+                    _armyView = ArmyView.Equipment;
+                    _gearSelected = PlayerProfile.VehicleGearOwned.FirstOrDefault(g => Gear.FitsBranch(g, _branch) && !PlayerProfile.IsEquipped(g))
+                                    ?? PlayerProfile.VehicleGearOwned.FirstOrDefault();
                     ShowTab(Tab.Army);
                     break;
                 case "army-deck-supports":
@@ -846,6 +858,51 @@ namespace MachineBrigade.Game.Hud
             "shield_carrier" => "shield",
             "bunker_vehicle" => "siegegun",
             "swarm_carrier" => "fpvtruck",
+            // Prompt 25 F2 batch A (DECISIONS 25F2-A).
+            "aa_gun_vehicle" => "aa",
+            "shorad_vehicle" => "sam",
+            "microwave_vehicle" => "jammer",
+            "nlos_atgm_vehicle" => "atgm",
+            "radar_atgm_vehicle" => "atgm",
+            "recoilless_jeep" => "jeep",
+            "airborne_vehicle" => "ifv",
+            "wheeled_howitzer" => "artillery",
+            "sp_mortar" => "mortar",
+            "glide_bomber" => "b52",
+            "recon_jet" => "fighter",
+            "interceptor_jet" => "fighter",
+            "radar_scout" => "armoredcar",
+            "fibre_fpv_carrier" => "fpvtruck",
+            "interceptor_drone_vehicle" => "drone",
+            // (batch A icons: new entries above)
+            // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 26 non-tower stand-ins, an existing glyph each.
+            "aa_57mm_vehicle" => "aa",
+            "mine_rocket_truck" => "mlrs",
+            "prop_attack_plane" => "su25",
+            "light_attack_heli" => "gunship",
+            "next_gen_tank" => "titan",
+            "demolition_line_vehicle" => "engineer",
+            "combat_wreck_car" => "armoredcar",
+            "drone_hijack_vehicle" => "jammer",
+            "river_patrol_boat" => "technical",
+            "river_gunboat" => "artillery",
+            "coastal_ashm_vehicle" => "missile",
+            "auto_loader_howitzer" => "artillery",
+            "amphib_light_vehicle" => "ifv",
+            "airborne_light_tank" => "lighttank",
+            "stealth_naval_strike" => "b2",
+            "twin_rotor_gunship" => "ac130",
+            "ground_drone_carrier" => "drone",
+            "mobile_repair_vehicle" => "engineer",
+            "radar_support_vehicle" => "armoredcar",
+            "towed_at_gun" => "destroyer",
+            "dazzler_vehicle" => "jammer",
+            "ground_cruise_missile_vehicle" => "missile",
+            "aerial_tanker" => "b52",
+            "heavy_lift_helicopter" => "gunship",
+            "bridging_vehicle" => "engineer",
+            "gps_jammer_vehicle" => "jammer",
+            // (batch B icons: new entries above)
             "napalm_strike" => "flame",
             "moab" => "bomb",
             "cluster_strike" => "airstrike",
@@ -859,6 +916,20 @@ namespace MachineBrigade.Game.Hud
             "cruise_missile" => "missile",
             "smoke_screen" => "smoke",
             "repair_drop" => "repair",
+            // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards.
+            "glide_bomb_strike" => "bomb",
+            "guided_shell_strike" => "barrage",
+            "cluster_at_strike" => "airstrike",
+            "uav_loiter_strike_support" => "drone",
+            "uav_loiter_strike" => "reaper",
+            "ammo_resupply" => "ammo",
+            "jam_storm" => "jammer",
+            "illum_flare_strike" => "eye",
+            "decoy_paradrop" => "reinforce",
+            "decoy_tank" => "tank",
+            "instant_counter_battery" => "barrage",
+            "drone_intercept_strike" => "drone",
+            "chaff_strike" => "smoke",
             _ when id.Contains('.') => For(id.Substring(0, id.IndexOf('.'))),
             _ => "tank",
         };

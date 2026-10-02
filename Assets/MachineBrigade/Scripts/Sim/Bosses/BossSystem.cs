@@ -197,19 +197,23 @@ namespace MachineBrigade.Sim.Bosses
             // Prompt 18: the big dive's quake is its big attack's (harder, wider, the same stun).
             if (BigQuakeHits(v)) return;
             var info = new HitInfo(v, v.Team, null, v.Position, HitKind.Strike, true);
+            var edge = MathF.Min(WeaponDef.MaxEdge, b.Radius * 2f);
             foreach (var e in _world.VehicleList)
             {
                 if (!e.IsAlive || e.Team == v.Team || e.Team < 0 || e.Flying || e.Def.Boss) continue;
-                if (Vector2.Distance(e.Position, v.Position) > b.Radius + e.Def.HullRadius) continue;
-                if (!e.Def.Static)
+                // Prompt 26 B.3: two layers: the core (b.Radius) at full damage and a stun, the edge twice as wide at 40 %.
+                var away = Vector2.Distance(e.Position, v.Position) - e.Def.HullRadius;
+                if (away > edge) continue;
+                var core = away <= b.Radius;
+                if (core && !e.Def.Static)
                 {
                     _world.Status.Stun(e, now + b.Stun);
                     e.ClearPath();
                     e.Speed = 0f;
                 }
-                _world.Damage.Apply(e, b.Damage, DamageType.HighExplosive, info);
+                _world.Damage.Apply(e, core ? b.Damage : b.Damage * 0.4f, DamageType.HighExplosive, info);
             }
-            _world.Emit(SimEvent.Exploded(v.Position, new ExplosionDef(0f, b.Radius, 0f, ExplosionTier.Ultimate), v.Id));
+            _world.Emit(SimEvent.Exploded(v.Position, ExplosionDef.TwoLayer(0f, b.Radius, ExplosionTier.Ultimate), v.Id));
         }
 
         // ================================================================== landings
@@ -265,7 +269,44 @@ namespace MachineBrigade.Sim.Bosses
             }
             v.TurretHeading = SimMath.HeadingOf(at - v.Position);
             v.LastFiredAt = now;
-            _world.Damage.Queue(at, new ExplosionDef(b.Damage, b.Radius, 0f, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+            var blast = at;
+            if (b.PierceMax > 0) blast = PierceLine(v, b, at);
+            _world.Damage.Queue(blast, ExplosionDef.TwoLayer(b.Damage, b.Radius, ExplosionTier.Ultimate), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+        }
+
+        private readonly List<(float t, Vehicle v)> _slugLine = new();
+
+        /// <summary>
+        /// Prompt 26 D.2: the electromagnetic slug goes through the enemy ground vehicles on its line to <paramref name="aim"/> (at most
+        /// PierceMax, the nearest first; a hull's width either side) and each takes the pierce damage; the blast lands on the last one hit
+        /// (the aim itself when the line is empty). Ordered by distance then id, so the run is deterministic.
+        /// </summary>
+        private Vector2 PierceLine(Vehicle v, BombardDef b, Vector2 aim)
+        {
+            var line = aim - v.Position;
+            var length = line.Length();
+            if (length < 1f) return aim;
+            var along = line / length;
+            _slugLine.Clear();
+            foreach (var o in _world.VehicleList)
+            {
+                if (!o.IsAlive || o.Flying || o.Team == v.Team) continue;
+                var offset = o.Position - v.Position;
+                var t = Vector2.Dot(offset, along);
+                if (t < 0f || t > length + 6f) continue;
+                if ((offset - along * t).Length() > o.Radius + 1.2f) continue;
+                _slugLine.Add((t, o));
+            }
+            _slugLine.Sort((x, y) => x.t != y.t ? x.t.CompareTo(y.t) : x.v.Id.Value.CompareTo(y.v.Id.Value));
+            var last = aim;
+            for (var k = 0; k < _slugLine.Count && k < b.PierceMax; k++)
+            {
+                var hit = _slugLine[k].v;
+                last = hit.Position;
+                if (b.PierceDamage > 0f)
+                    _world.Damage.Queue(hit.Position, new ExplosionDef(b.PierceDamage, 2.5f, 0f, ExplosionTier.Large), b.Warn, v.Team, v, HitKind.Strike, v.Id);
+            }
+            return last;
         }
 
         private bool SpotterStands(Vehicle v, string spotter)
