@@ -78,8 +78,9 @@ namespace MachineBrigade.Game.Effects
                 }
                 else if (reach > 0f) TierRing(at, reach, TierShockColour, 0.7f);
                 if (reach > 0f) Later(now + (tier >= 5 ? 0.4f : 0.12f), () => TierRing(at, reach, TierDustRingColour, 1.2f));
-                // A big crater, very big and lasting for T5 (the scorch marks stay until the pool wraps round).
-                _decals.Place(at, Mathf.Max(4f, (core > 0f ? core : 4f) * (tier >= 5 ? 1.5f : 1.2f)));
+                // A big crater, very big and lasting for T5.
+                // Fix prompt L6: for its band's time (45 s, 60 s for T5), closing slowly.
+                _decals.Place(at, Mathf.Max(4f, (core > 0f ? core : 4f) * (tier >= 5 ? 1.5f : 1.2f)), EffectLife.Crater(tier));
                 _camera.AddTierTrauma(TierFx.Shake(tier, distance, onScreen), TierFx.ShakeCap);
                 RockLight(views, at, reach > 0f ? reach : 8f, tier);
                 if (tier >= 5 && onScreen && Flash != null) Flash(0.16f / (1f + distance / 40f));

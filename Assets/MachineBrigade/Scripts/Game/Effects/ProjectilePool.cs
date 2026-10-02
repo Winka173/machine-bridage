@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MachineBrigade.Game.Rendering;
 using UnityEngine;
 using UnityEngine.Rendering;
+using EntityId = MachineBrigade.Sim.Core.EntityId;
 
 namespace MachineBrigade.Game.Effects
 {
@@ -32,6 +33,9 @@ namespace MachineBrigade.Game.Effects
             public Vector3 Mid;
             public bool Bent;
             public Func<Vector3?> Homing;
+
+            /// <summary>Fix prompt L4: the vehicle a guided round goes for (none for the rest), for the Sim's diversions.</summary>
+            public EntityId Target;
             public float Start, Duration, Arc, Trail, PuffT, PuffStep, Wobble, Boost;
             public bool Flame, Active;
 
@@ -153,7 +157,8 @@ namespace MachineBrigade.Game.Effects
             shot.Homing = homing;
             shot.Bent = control.HasValue;
             shot.Mid = control ?? Vector3.zero;
-            shot.Start = now + delay;
+            // Fix prompt L4: on the shot clock, so it lands on the Sim tick its damage does (ShotClock).
+            shot.Start = ShotClock.Map(now) + delay;
             shot.Duration = Mathf.Max(0.05f, duration);
             shot.Arc = arc;
             shot.Trail = trail;
@@ -174,6 +179,7 @@ namespace MachineBrigade.Game.Effects
             shot.Wide = Vector3.zero;
             shot.JamAt = 0f;
             shot.Tumble = shot.JamShown = shot.Drone = false;
+            shot.Target = default;
             shot.Spread = Vector3.zero;
             shot.Phase = UnityEngine.Random.value * 100f;
             if (shot.Rotors != null) shot.Rotors.gameObject.SetActive(false);
@@ -181,6 +187,39 @@ namespace MachineBrigade.Game.Effects
             shot.Transform.gameObject.SetActive(delay <= 0f);
             _launched = shot;
             Place(shot, 0f);
+        }
+
+        /// <summary>Fix prompt L4: the round just launched goes for <paramref name="target"/> (a guided round), so the Sim can divert it in flight.</summary>
+        public void Tag(EntityId target)
+        {
+            if (_launched != null) _launched.Target = target;
+        }
+
+        /// <summary>
+        /// Fix prompt L4: the Sim took a guided round off <paramref name="target"/> in flight (a flare, lost sight, out of
+        /// reach, SimEventKind.RoundDiverted): of the rounds going for it, the one due nearest <paramref name="remaining"/> s
+        /// from <paramref name="now"/> turns onto <paramref name="to"/> (it eases round within a few frames, HomingRate) and
+        /// arrives there on time, where its burst is drawn. False when none was drawn (off screen when fired).
+        /// </summary>
+        public bool Divert(EntityId target, Vector3 to, float remaining, float now)
+        {
+            now = ShotClock.Map(now);
+            Shot best = null;
+            var bestGap = float.MaxValue;
+            foreach (var shot in _shots)
+            {
+                if (!shot.Active || !shot.Target.IsValid || shot.Target != target) continue;
+                var gap = Mathf.Abs(shot.Start + shot.Duration - now - remaining);
+                if (gap >= bestGap) continue;
+                bestGap = gap;
+                best = shot;
+            }
+            if (best == null || bestGap > 0.35f) return false;
+            best.Homing = () => to;
+            best.Wide = Vector3.zero;
+            best.JamAt = 0f;
+            best.Target = default;
+            return true;
         }
 
         /// <summary>
@@ -268,6 +307,11 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now, Emitters emitters)
         {
+            now = ShotClock.Map(now);
+            // A clock that went back (a new battle): start over.
+            if (!float.IsNaN(_last) && now < _last - 0.5f) _last = float.NaN;
+            // The shot clock stands still while the Sim does (the Sandbox paused): the rounds hold where they are, no motor smoke piles up.
+            var still = !float.IsNaN(_last) && now <= _last;
             var dt = float.IsNaN(_last) || now <= _last ? 1f / 30f : Mathf.Min(0.1f, now - _last);
             _last = now;
             var plumes = emitters.Plumes;
@@ -295,6 +339,7 @@ namespace MachineBrigade.Game.Effects
                     if (shot.Tumble) Jammed?.Invoke(shot.Transform.position, shot.Transform.forward);
                 }
                 Place(shot, t);
+                if (still) continue;
                 if (shot.Rotors != null && shot.Drone)
                     shot.Rotors.localScale = Vector3.one * (0.92f + 0.16f * Mathf.PerlinNoise(now * 23f, shot.Phase));
                 var forward = shot.Transform.forward;

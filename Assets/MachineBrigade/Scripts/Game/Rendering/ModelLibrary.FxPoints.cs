@@ -16,6 +16,17 @@ namespace MachineBrigade.Game.Rendering
         /// </summary>
         public const string FlarePointName = "FxPoint_flares", ApsPointName = "FxPoint_aps";
 
+        /// <summary>
+        /// Fix prompt L4: the empties a model's flares leave from (Tools/blender/flare_mounts.py): Mount_Flare_L / _R on the rear
+        /// fuselage or tail boom, Mount_Flare_TL / _TR at the tail root, a big aircraft's second row _L2 / _R2. Never a bare
+        /// `Mount_Flare`: <see cref="MountPattern"/> (`Mount_&lt;letters&gt;`) would read it as a weapon mount's yaw pivot; the
+        /// suffix keeps these out of it, out of the muzzle and part patterns and out of MuzzleGeometryAudit's groups.
+        /// </summary>
+        public const string FlareMountPrefix = "Mount_Flare_";
+
+        /// <summary>A Mount_Flare_* empty (Blender's .001 suffixes too).</summary>
+        public static bool IsFlareMount(string name) => name != null && name.StartsWith(FlareMountPrefix, StringComparison.Ordinal);
+
         /// <summary>Tubes closer than this along the hull (model metres) are one row; farther apart, two (a big aircraft's).</summary>
         private const float EffectRowGap = 0.15f;
 

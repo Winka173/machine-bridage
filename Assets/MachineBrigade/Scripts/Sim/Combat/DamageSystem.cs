@@ -55,18 +55,20 @@ namespace MachineBrigade.Sim.Combat
             if (!p.Tandem && !p.TargetFlying && p.Target.IsValid && _world.TryGetVehicle(p.Target, out var shooting) && shooting.Gear != null &&
                 _world.Gear.ShootDown(p, shooting)) return;
             var info = HitInfo.Of(p, HitKind.Direct);
+            // Fix prompt L4: a guided round taken off its target in flight (a flare, its shooter's lost sight, out of reach,
+            // CombatSystem.GuideRounds) goes off where it was diverted to, its target or not still there: no direct hit.
+            if (p.Diverted != Divert.None)
+            {
+                at = p.DivertAt;
+                Burst(p, weapon, at, hit, info);
+                return;
+            }
             if (_world.TryGetTarget(p.Target, out var target) && target.IsAlive)
             {
-                // Guided missiles follow their target (unless flares decoy them or a jammer scrambles
-                // them); everything else lands where it was aimed.
-                // Flares pull a missile off about one time in three, less as its seeker sees through them
-                // (a radar-guided SAM mostly does: WeaponDef.FlareResist): flares out now, or put out
-                // while it flew (a slow missile outlasts a flare's burn). One roll per missile.
-                var flared = target is Vehicle decoy && (decoy.FlaresUp || decoy.FlaresUntil > p.LaunchedAt);
-                // Prompt 15 C: flares fool missiles only; a jammer or a lost lock any guided round.
-                // Prompt 29 S05: a weapon marked flareEligible=false is never pulled off by flares (true: any guided round may be).
-                var decoyed = weapon.Guided && ((flared && weapon.FlareEligible != false && (weapon.Projectile == ProjectileKind.Missile || weapon.FlareEligible == true) &&
-                    _world.Random.NextDouble() < FlareDecoy * (1f - weapon.FlareResist)) || p.Jammed || p.Failed);
+                // Guided missiles follow their target (unless a jammer scrambles them or the launch roll lost the lock: the
+                // flares are rolled in flight now, fix prompt L4); everything else lands where it was aimed.
+                // Prompt 15 C: a jammer or a lost lock takes any guided round.
+                var decoyed = weapon.Guided && (p.Jammed || p.Failed);
                 // Equipment that turns a round away: an EW jammer's cover, a decoy, a first missile losing lock.
                 var lure = default(Vector2);
                 var lured = !decoyed && target is Vehicle guarded && _world.Gear.Lure(guarded, p, out lure);
@@ -75,7 +77,8 @@ namespace MachineBrigade.Sim.Combat
                 {
                     // Play-test 8 A: a steered bomb (the SDB, the JDAM) glides onto its target too.
                     // Prompt 25 G: so does a guided shell (the Excalibur, the Krasnopol).
-                    if ((weapon.Guided || weapon.GuidedBomb || weapon.GuidedShell) && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
+                    // Fix prompt L4 rule A: and a guided rocket (the APKWS).
+                    if (CombatSystem.Homes(weapon) && !decoyed) at = p.Part >= 0 && target is Vehicle aimedBoss ? aimedBoss.PartPosition(p.Part) : target.Position;
                     if (decoyed) at = target.Position + p.Miss;
                 }
                 // A round aimed at a boss's part strikes it only if it lands on it; else it strikes the body.
@@ -105,7 +108,12 @@ namespace MachineBrigade.Sim.Combat
                     : HullContact.On(struck.Def, struck.Position, struck.Heading, p.Origin);
 
             if (weapon.Pierce && !p.TargetFlying && !p.Bounce) PierceLine(p, at, hit);
+            Burst(p, weapon, at, hit, info);
+        }
 
+        /// <summary>A round going off at <paramref name="at"/> (struck <paramref name="hit"/>, none for a miss): its blast, the impact event and its bomblets.</summary>
+        private void Burst(Projectile p, WeaponDef weapon, Vector2 at, EntityId hit, in HitInfo info)
+        {
             // Every blast is a little different: its reach varies by up to 15 %. A ricochet strikes its target only.
             if (weapon.SplashRadius > 0f && !p.Bounce)
             {
@@ -734,9 +742,6 @@ namespace MachineBrigade.Sim.Combat
 
         /// <summary>Vehicles hit by a piercing round beyond the one it was aimed at, over the battle (balance measurements).</summary>
         internal int PierceVictims { get; private set; }
-
-        /// <summary>Chance a guided missile at an aircraft with its flares out is decoyed.</summary>
-        private const double FlareDecoy = 0.35;
 
         /// <summary>Prompt 15 C.4: the share of a fire hit's damage that burns on afterwards, and over how long.</summary>
         internal const float FireAfterburn = 0.3f, FireBurnSeconds = 3f;

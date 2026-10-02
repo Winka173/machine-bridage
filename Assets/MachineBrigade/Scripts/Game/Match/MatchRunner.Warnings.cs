@@ -11,11 +11,12 @@ namespace MachineBrigade.Game.Match
         /// </summary>
         private void EscapeMark(SimEvent e)
         {
-            if (e.DefId == null || !_world.TryGetVehicle(e.Entity, out var shooter) || !shooter.Def.Boss) return;
+            // Fix prompt L5: every enemy shooter's warned round (not only a boss's); none of ours.
+            if (e.DefId == null || !_world.TryGetVehicle(e.Entity, out var shooter) || shooter.Team == PlayerTeam) return;
             var mounts = shooter.Def.Mounts;
             if (e.Mount < 0 || e.Mount >= mounts.Count) return;
             var round = e.Round != null && _world.Catalog.Weapons.TryGetValue(e.Round, out var r) ? r : mounts[e.Mount].Weapon;
-            if (round.WarnSeconds <= 0f || round.Guided || round.Laid) return;
+            if (round.WarnSeconds <= 0f || !_world.Catalog.Warnings.Warns(round)) return;
             _warnings.Add((new Vector2(e.Target.X, e.Target.Y), round.WarnRadius, Time.time + Mathf.Max(0.05f, e.Value) + 0.2f));
         }
     }

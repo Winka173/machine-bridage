@@ -85,6 +85,16 @@ namespace MachineBrigade.Game.Effects
         private readonly FireSpots _fires;
         private readonly HullFire _hullFire;
         private readonly ProjectilePool _projectiles;
+
+        /// <summary>Fix prompt L6: the smoke and dust blasts leave behind (EffectLife's table).</summary>
+        private readonly ImpactSmoke _smoke;
+
+        /// <summary>Fix prompt L6: a blast's lingering smoke at its distance's detail (on screen, or a big column near it).</summary>
+        private void Linger(int band, Vector3 at, float core, float now)
+        {
+            if (!_cull.Visible(at, band >= 4 ? 1.2f : 0.4f)) return;
+            _smoke.Linger(band, at, core, now, TierFx.DetailAt(Vector3.Distance(at, _camera.Focus), _camera.Zoom));
+        }
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
 
@@ -165,6 +175,10 @@ namespace MachineBrigade.Game.Effects
             _bigZones = new BigAttackZones(materials, meshes, _root);
             // Prompt 34 L3: the T4+ rounds' escape warnings.
             _escape = new EscapeWarnings(materials, meshes, _root);
+            // Fix prompt L6: the smoke and dust a blast leaves, by its size band.
+            _smoke = new ImpactSmoke(_root);
+            // Fix prompt L5: one gate decides which warning rings are drawn (data warningRules).
+            InitWarningGate();
             _aimLines = new AimLines(materials, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
             _ingress = new IngressStandIns(catalog, models, _root);
@@ -219,8 +233,10 @@ namespace MachineBrigade.Game.Effects
                         {
                             // Flak and missiles bursting around an aircraft, at its height (a killing
                             // hit finds it among the wrecks); misses burst at a typical flying height.
+                            // Fix prompt L4: a missile a flare decoyed (or one out of reach) bursts where it was sent, at its height.
                             var height = views.TryGet(e.Entity, out var struck) && struck.Flying ? struck.Altitude + 0.5f
-                                : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f : 15f;
+                                : _wrecks.TryGetAircraftWreck(e.Entity, out var falling) ? falling.y + 0.5f
+                                : DecoyHeight(e.Position, now, out var decoyed) ? decoyed : 15f;
                             var burst = new Vector3(e.Position.X, height, e.Position.Y);
                             // Play-test 10 (DECISIONS PT10 visuals): an air-burst round's burst is its own flak burst alone
                             // (a sharp flash, a black puff that hangs, a spark spray); no Small blast, lone ring or grey puffs.
@@ -262,9 +278,13 @@ namespace MachineBrigade.Game.Effects
                         EdgeRing(impact, e.Value, e.Target.X);
                         // Prompt 34 L5: its tier's redrawn blast on top, the exact shockwave rings, the shake.
                         TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views);
-                        // Every blast from Medium up scorches the ground under it, as wide as it is drawn.
+                        // Fix prompt L6: the smoke and dust it leaves, as long as its size band says (EffectLife).
+                        var band = EffectLife.BandOf(round, e.Tier);
+                        Linger(band, impact, e.Value, now);
+                        // Every blast from Medium up scorches the ground under it, as wide as it is drawn, for its band's time.
                         if (e.Tier >= ExplosionTier.Medium)
-                            _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round));
+                            _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round),
+                                EffectLife.Crater(band));
                         // Play-test 5 (DECISIONS 20V): a railgun's slug leaves a burn on what it struck, like the focused laser's.
                         if (round != null && round.Family == "railgun" && _cull.Visible(impact, 0.3f))
                         {
@@ -306,7 +326,10 @@ namespace MachineBrigade.Game.Effects
                         var missileGrow = matched && strike.Id != "moab" ? BlastSizes.MissileGrow : 1f;
                         // Prompt 25 A5: every strike's ring on its blast radius (a cruise missile's since 12C, now all of them).
                         Explode(e.Tier, hit, now, strikeScale, grow: strikeGrow * missileGrow, exact: matched, radius: e.Value);
-                        _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)) * (matched ? 1f : strikeGrow));
+                        // Fix prompt L6: its crater and its lingering smoke for its size band's time.
+                        var strikeBand = EffectLife.BandOf(e.Tier);
+                        _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)) * (matched ? 1f : strikeGrow), EffectLife.Crater(strikeBand));
+                        Linger(strikeBand, hit, e.Value, now);
                         if (strike != null && strike.Kind == SupportKind.Sead) SeadKill(hit, views, now);
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")
@@ -462,7 +485,7 @@ namespace MachineBrigade.Game.Effects
                         if (e.Tier == ExplosionTier.Small)
                         {
                             Pop(_pop, blast + Vector3.up * 0.3f, now);
-                            _decals.Place(blast, 1.8f);
+                            _decals.Place(blast, 1.8f, EffectLife.Crater(1));
                             break;
                         }
                         // Prompt 25 A5: a vehicle's, a mine's or a prop's blast drawn as wide as it reaches.
@@ -470,7 +493,7 @@ namespace MachineBrigade.Game.Effects
                         EdgeRing(blast, e.Value, e.Target.X);
                         // Prompt 34 L5: a salvo's shell (Leviathan's 406 mm) lands as its tier.
                         TierImpact(SalvoTier(e, views), blast, e.Value, e.Target.X, now, views);
-                        _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
+                        _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f), EffectLife.Crater(EffectLife.BandOf(e.Tier)));
                         _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
                         {
@@ -480,6 +503,11 @@ namespace MachineBrigade.Game.Effects
                         {
                             _fires.Ignite(blast, 0.9f, 18f, now);
                         }
+                        break;
+
+                    case SimEventKind.RoundDiverted:
+                        // Fix prompt L4: a guided round taken off its target in flight turns onto where it now goes off.
+                        RoundDiverted(e, views, now);
                         break;
 
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Flares:
@@ -588,7 +616,7 @@ namespace MachineBrigade.Game.Effects
         private void Crash(Vector3 at, float size, float now)
         {
             Explode(size >= 2.5f ? ExplosionTier.Huge : ExplosionTier.Large, at + Vector3.up * 0.6f, now);
-            _decals.Place(new Vector3(at.x, 0.15f, at.z), 5f);
+            _decals.Place(new Vector3(at.x, 0.15f, at.z), 5f, EffectLife.Crater(EffectLife.Top));
             _fires.Ignite(at + new Vector3(UnityEngine.Random.Range(-1.5f, 1.5f), 0f, UnityEngine.Random.Range(-1.5f, 1.5f)), 0.8f, 20f, now);
             var metal = Chunk("debris_metal");
             for (var i = 0; i < 8; i++)
@@ -635,12 +663,12 @@ namespace MachineBrigade.Game.Effects
                 var stagger = shooter != null ? BarrelStagger(e, shooter) : 0f;
                 if (stagger > 0f) LaterShot(e, shooter, views, now + stagger, stagger);
                 else _weapons.Fired(e, shooter, views, now);
-                // Prompt 26 B.4: a big shell of a boss's own gun warns of its fall (the big attacks and the ships' salvos have their own rings).
-                // Prompt 34 L3: a T4+ round warns by escape time instead, its edge and its core, for its whole warning.
-                if (shooter != null && shooter.Sim.Def.Boss && e.Kind == SimEventKind.WeaponFired && e.DefId != null &&
-                    _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid && !EscapeRing(e, shooter, big, now) &&
-                    e.Value >= 1.2f && big.SplashRadius >= BossShellWarnFrom && (big.Indirect || big.Projectile == ProjectileKind.Shell))
-                    BossShellWarning(Ground(e.Target, 0.2f), big.SplashRadius, e.Value, now);
+                // Prompt 34 L3, fix prompt L5: an enemy's T4+ round (a gun from 203 mm, a 400 kg bomb, a 300 mm rocket; any shooter,
+                // not only a boss) warns by escape time, its edge and its core, for its whole warning. Nothing of ours, and no
+                // small or medium shell (prompt 26 B.4's 0.8 s ring on a boss's 5 m shells is gone).
+                if (shooter != null && shooter.Sim.Team != views.PlayerTeam && e.Kind == SimEventKind.WeaponFired && e.DefId != null &&
+                    _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid)
+                    EscapeRing(e, shooter, big, now);
                 // Prompt 34 L8: a preview shows every blast round of its unit landing inside its ring, at the round's real size.
                 if (PreviewRings && shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Team == 0 && e.DefId != null &&
                     _catalog.Weapons.TryGetValue(e.DefId, out var shown))
@@ -653,28 +681,6 @@ namespace MachineBrigade.Game.Effects
                         fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
             }
             _shots.Clear();
-        }
-
-        /// <summary>
-        /// Prompt 29 5.5 (FLARE_EFFECT): 4 points from each dispenser point the model has (a side and a row each: 2 x 4, a big
-        /// aircraft's two rows at once), or from under both sides of the hull on a model without dispensers.
-        /// </summary>
-        private void FlareSalvo(VehicleView flyer)
-        {
-            var scale = Mathf.Clamp(flyer.Sim.Radius / 3.2f, 0.8f, 1.6f);
-            var points = flyer.FlarePoints;
-            var fired = false;
-            for (var i = 0; i < points.Count; i++)
-            {
-                if (points[i] == null) continue;
-                _emitters.Flares(points[i].position, points[i].forward, scale);
-                fired = true;
-            }
-            if (fired || flyer.Root == null) return;
-            var right = flyer.Root.right;
-            var below = flyer.Position - flyer.Root.up * 0.3f - flyer.Root.forward * flyer.Sim.Radius * 0.2f;
-            for (var s = -1; s <= 1; s += 2)
-                _emitters.Flares(below + right * (s * flyer.Sim.Radius * 0.3f), right * s - Vector3.up * 1.2f - flyer.Root.forward * 0.3f, scale);
         }
 
         /// <summary>The point nearest <paramref name="to"/>, or null when there are none.</summary>
@@ -724,6 +730,13 @@ namespace MachineBrigade.Game.Effects
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
             _escape.Tick(now);
+            // Fix prompt L6: the lingering smoke columns and the craters' lives.
+            _smoke.Tick(now);
+            _decals.Tick(now);
+            // Fix prompt L5: the rings offered this frame decide what is drawn next frame.
+            _gate.PlayerTeam = views.PlayerTeam;
+            _strikes.PlayerTeam = views.PlayerTeam;
+            _gate.Resolve(views, _camera.Focus);
             _aimLines.Tick(now);
             TickBigCharge(views, now);
             _drops.Tick(now);
@@ -1116,27 +1129,7 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Prompt 26 B.4: a boss shell with at least this blast core warns of where it falls.</summary>
         private const float BossShellWarnFrom = 5f;
 
-        /// <summary>How long before it lands a big boss shell's ring shows (seconds).</summary>
-        private const float BossShellWarningSeconds = 0.8f;
 
-        /// <summary>Prompt 26 B.4: a small warning ring on the spot a big boss shell will fall, for its last 0.8 s in the air.</summary>
-        private void BossShellWarning(Vector3 at, float core, float flight, float now)
-        {
-            var wait = Mathf.Max(0f, flight - BossShellWarningSeconds);
-            var life = Mathf.Min(flight, BossShellWarningSeconds);
-            Later(now + wait, () =>
-            {
-                if (!_cull.Visible(at, 0.2f)) return;
-                var emit = new ParticleSystem.EmitParams
-                {
-                    position = at + Vector3.up * 0.2f, startSize = BlastSizes.RingQuad(core), startColor = BossShellRing, startLifetime = life,
-                    applyShapeToPosition = false,
-                };
-                _layers.Shockwave.Emit(emit, 1);
-            });
-        }
-
-        private static readonly Color BossShellRing = new(1f, 0.35f, 0.2f, 0.6f);
 
         /// <summary>Prompt 26 B.3: the ring of a two-layer blast's edge (a warm, fainter ring than the core's own), drawn when the edge is wider than the core.</summary>
         private static readonly Color EdgeRingColour = new(1f, 0.62f, 0.3f, 0.5f);

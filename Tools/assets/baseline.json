@@ -2362,6 +2362,64 @@
    ],
    "reason": "merge of feature/p33-a2",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "aerial_tanker",
+    "attack_helicopter",
+    "attack_helicopter_hd",
+    "attack_jet",
+    "attack_jet_hd",
+    "drone_mothership",
+    "elite_attack_helicopter",
+    "fighter_jet",
+    "fighter_jet_hd",
+    "glide_bomber",
+    "gunship_heli",
+    "heavy_bomber",
+    "heavy_lift_helicopter",
+    "interceptor_jet",
+    "light_attack_heli",
+    "mega_gunship",
+    "morrigan",
+    "prop_attack_plane",
+    "scout_heli",
+    "sky_fortress",
+    "sky_gunship",
+    "sky_gunship_hd",
+    "stealth_fighter",
+    "swarm_carrier",
+    "twin_rotor_gunship"
+   ],
+   "reason": "Fix prompt L4: Mount_Flare_* empties (rear fuselage both sides, tail root) added by Tools/blender/mb_flare_mounts.py; no vertex changed",
+   "changes": [
+    "aerial_tanker: fileBytes 270,968 -> 271,584 (+0.2%); structure changed",
+    "attack_helicopter: fileBytes 319,396 -> 319,804 (+0.1%); structure changed",
+    "attack_helicopter_hd: fileBytes 490,048 -> 490,456 (+0.1%); structure changed",
+    "attack_jet: fileBytes 230,156 -> 230,576 (+0.2%); structure changed",
+    "attack_jet_hd: fileBytes 308,932 -> 309,352 (+0.1%); structure changed",
+    "drone_mothership: fileBytes 1,261,212 -> 1,260,644 (-0.0%); structure changed",
+    "elite_attack_helicopter: fileBytes 294,264 -> 294,676 (+0.1%); structure changed",
+    "fighter_jet: fileBytes 312,404 -> 312,820 (+0.1%); structure changed",
+    "fighter_jet_hd: fileBytes 1,071,808 -> 1,072,224 (+0.0%); structure changed",
+    "glide_bomber: fileBytes 106,492 -> 107,120 (+0.6%); structure changed",
+    "gunship_heli: fileBytes 297,936 -> 298,352 (+0.1%); structure changed",
+    "heavy_bomber: fileBytes 267,880 -> 268,496 (+0.2%); structure changed",
+    "heavy_lift_helicopter: fileBytes 262,424 -> 263,040 (+0.2%); structure changed",
+    "interceptor_jet: fileBytes 95,588 -> 95,992 (+0.4%); structure changed",
+    "light_attack_heli: fileBytes 232,956 -> 233,364 (+0.2%); structure changed",
+    "mega_gunship: fileBytes 736,660 -> 737,268 (+0.1%); structure changed",
+    "morrigan: fileBytes 130,212 -> 130,624 (+0.3%); structure changed",
+    "prop_attack_plane: fileBytes 205,232 -> 205,640 (+0.2%); structure changed",
+    "scout_heli: fileBytes 190,428 -> 190,844 (+0.2%); structure changed",
+    "sky_fortress: fileBytes 201,448 -> 201,860 (+0.2%); structure changed",
+    "sky_gunship: fileBytes 265,696 -> 266,308 (+0.2%); structure changed",
+    "sky_gunship_hd: fileBytes 308,328 -> 308,944 (+0.2%); structure changed",
+    "stealth_fighter: fileBytes 278,196 -> 278,616 (+0.2%); structure changed",
+    "swarm_carrier: fileBytes 257,192 -> 257,812 (+0.2%); structure changed",
+    "twin_rotor_gunship: fileBytes 291,748 -> 292,364 (+0.2%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -3558,13 +3616,13 @@
   },
   "aerial_tanker": {
    "file": "aerial_tanker.glb",
-   "fileBytes": 270968,
-   "sha1": "0e3b52350da899f2",
+   "fileBytes": 271584,
+   "sha1": "6b3558147cd8e8a5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 27,
+   "nodes": 33,
    "meshes": 23,
    "materials": 8,
    "animations": 0,
@@ -3606,7 +3664,7 @@
     2.86,
     -0.088
    ],
-   "structureHash": "437ea9f434dff018",
+   "structureHash": "a27a3be993e4359c",
    "color0": {
     "mean": 0.8166,
     "min": 0.6785,
@@ -3646,6 +3704,12 @@
     "Hose_pods.001",
     "Intakes",
     "Intakes.001",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Nacelles",
     "Nacelles.001",
@@ -7409,13 +7473,13 @@
   },
   "attack_helicopter": {
    "file": "attack_helicopter.glb",
-   "fileBytes": 319396,
-   "sha1": "aa5687a17ec0d2dd",
+   "fileBytes": 319804,
+   "sha1": "ac15f0c8dcbafc67",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 39,
+   "nodes": 43,
    "meshes": 30,
    "materials": 9,
    "animations": 0,
@@ -7457,7 +7521,7 @@
     1.01,
     -0.079
    ],
-   "structureHash": "5b9669b45cf1f147",
+   "structureHash": "2b658e522104d86f",
    "color0": {
     "mean": 0.7192,
     "min": 0.2381,
@@ -7502,6 +7566,10 @@
     "Gun_turret",
     "Missile_seekers",
     "Missiles",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Muzzle_aam",
     "Muzzle_gun",
@@ -7541,13 +7609,13 @@
   },
   "attack_helicopter_hd": {
    "file": "attack_helicopter_hd.glb",
-   "fileBytes": 490048,
-   "sha1": "b3c26d816193ffa8",
+   "fileBytes": 490456,
+   "sha1": "a408e6916c9b160b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 47,
+   "nodes": 51,
    "meshes": 38,
    "materials": 9,
    "animations": 0,
@@ -7589,7 +7657,7 @@
     1.01,
     -0.079
    ],
-   "structureHash": "4d6ff84ff2448593",
+   "structureHash": "8975457ce1451c57",
    "color0": {
     "mean": 0.6856,
     "min": 0.2381,
@@ -7639,6 +7707,10 @@
     "Missile_fins",
     "Missile_seekers",
     "Missiles",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Muzzle_aam",
     "Muzzle_gun",
@@ -7681,13 +7753,13 @@
   },
   "attack_jet": {
    "file": "attack_jet.glb",
-   "fileBytes": 230156,
-   "sha1": "994c0f056ca82009",
+   "fileBytes": 230576,
+   "sha1": "ee55588fdb3282fe",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 54,
+   "nodes": 58,
    "meshes": 44,
    "materials": 9,
    "animations": 0,
@@ -7729,7 +7801,7 @@
     0.58,
     0.025
    ],
-   "structureHash": "24b406d542a8b101",
+   "structureHash": "e2e806d5a19c0cc0",
    "color0": {
     "mean": 0.7104,
     "min": 0.1587,
@@ -7779,6 +7851,10 @@
     "Missile_seekers.001",
     "Missiles",
     "Missiles.001",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_aam",
     "Muzzle_gun",
     "Muzzle_main",
@@ -7831,13 +7907,13 @@
   },
   "attack_jet_hd": {
    "file": "attack_jet_hd.glb",
-   "fileBytes": 308932,
-   "sha1": "8a99fdc375c1a82e",
+   "fileBytes": 309352,
+   "sha1": "b93671965d2c9e01",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 61,
+   "nodes": 65,
    "meshes": 51,
    "materials": 9,
    "animations": 0,
@@ -7879,7 +7955,7 @@
     0.58,
     0.025
    ],
-   "structureHash": "513e3b52a29d1f1d",
+   "structureHash": "25a689fc373bfbff",
    "color0": {
     "mean": 0.7138,
     "min": 0.1557,
@@ -7930,6 +8006,10 @@
     "Missile_seekers.001",
     "Missiles",
     "Missiles.001",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_aam",
     "Muzzle_gun",
     "Muzzle_main",
@@ -21362,13 +21442,13 @@
   },
   "drone_mothership": {
    "file": "drone_mothership.glb",
-   "fileBytes": 1261212,
-   "sha1": "cb19814a92d23605",
+   "fileBytes": 1260644,
+   "sha1": "cbbdc0df830f6acf",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 95,
+   "nodes": 99,
    "meshes": 76,
    "materials": 12,
    "animations": 0,
@@ -21410,9 +21490,9 @@
     -0.17,
     -0.048
    ],
-   "structureHash": "c26f8eab34aa59be",
+   "structureHash": "a55b958fd7715b65",
    "color0": {
-    "mean": 0.6912,
+    "mean": 0.6913,
     "min": 0.1978,
     "max": 1.0,
     "p05": 0.2999,
@@ -21515,6 +21595,10 @@
     "Lamps",
     "Main_cannon",
     "Main_cannon_2",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Mount_gun.001",
     "Mount_main.001",
@@ -22209,13 +22293,13 @@
   },
   "elite_attack_helicopter": {
    "file": "elite_attack_helicopter.glb",
-   "fileBytes": 294264,
-   "sha1": "377181e595303d4b",
+   "fileBytes": 294676,
+   "sha1": "dc14d49604fa07c8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 38,
+   "nodes": 42,
    "meshes": 29,
    "materials": 11,
    "animations": 0,
@@ -22257,7 +22341,7 @@
     1.111,
     -0.087
    ],
-   "structureHash": "f8998259719f7d0a",
+   "structureHash": "33aa855e27e4fa53",
    "color0": {
     "mean": 0.6849,
     "min": 0.0801,
@@ -22301,6 +22385,10 @@
     "Gun_turret",
     "Missile_seekers",
     "Missiles",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Muzzle_aam",
     "Muzzle_gun",
@@ -23867,13 +23955,13 @@
   },
   "fighter_jet": {
    "file": "fighter_jet.glb",
-   "fileBytes": 312404,
-   "sha1": "89bcc9a481b52cbb",
+   "fileBytes": 312820,
+   "sha1": "f94ec97294634cd1",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 46,
+   "nodes": 50,
    "meshes": 40,
    "materials": 9,
    "animations": 0,
@@ -23915,7 +24003,7 @@
     0.596,
     -0.014
    ],
-   "structureHash": "a74cdd44f30ea45d",
+   "structureHash": "23de7fb9699e3b19",
    "color0": {
     "mean": 0.7461,
     "min": 0.3228,
@@ -23961,6 +24049,10 @@
     "Missile_seekers.001",
     "Missiles",
     "Missiles.001",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_aam",
     "Muzzle_gun",
     "Muzzle_missile",
@@ -24001,13 +24093,13 @@
   },
   "fighter_jet_hd": {
    "file": "fighter_jet_hd.glb",
-   "fileBytes": 1071808,
-   "sha1": "f42888ee03cd7fab",
+   "fileBytes": 1072224,
+   "sha1": "1ba9846fe3176b71",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 57,
+   "nodes": 61,
    "meshes": 51,
    "materials": 9,
    "animations": 0,
@@ -24049,7 +24141,7 @@
     0.599,
     -0.014
    ],
-   "structureHash": "5c07eea7614325ae",
+   "structureHash": "ae71b45c37254864",
    "color0": {
     "mean": 0.7036,
     "min": 0.3137,
@@ -24102,6 +24194,10 @@
     "Missile_seekers.001",
     "Missiles",
     "Missiles.001",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_aam",
     "Muzzle_gun",
     "Muzzle_missile",
@@ -26553,13 +26649,13 @@
   },
   "glide_bomber": {
    "file": "glide_bomber.glb",
-   "fileBytes": 106492,
-   "sha1": "3933df6b9842b73e",
+   "fileBytes": 107120,
+   "sha1": "3b6faf95b9f4ed7e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 16,
+   "nodes": 22,
    "meshes": 14,
    "materials": 5,
    "animations": 0,
@@ -26601,9 +26697,9 @@
     0.41,
     -0.025
    ],
-   "structureHash": "6f437d6cb836bba3",
+   "structureHash": "cacb3d5956a4aa15",
    "color0": {
-    "mean": 0.8112,
+    "mean": 0.811,
     "min": 0.5643,
     "max": 1.0,
     "p05": 0.6167,
@@ -26631,6 +26727,12 @@
     "Flares",
     "Flares_glow",
     "Fuselage",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_missile",
     "Nacelles",
     "Nacelles.001",
@@ -28449,13 +28551,13 @@
   },
   "gunship_heli": {
    "file": "gunship_heli.glb",
-   "fileBytes": 297936,
-   "sha1": "c1d730cd93d2a6e4",
+   "fileBytes": 298352,
+   "sha1": "ac59fbaf467bf2c7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 36,
+   "nodes": 40,
    "meshes": 24,
    "materials": 9,
    "animations": 0,
@@ -28497,7 +28599,7 @@
     1.048,
     -0.109
    ],
-   "structureHash": "0274757f08fdc2a5",
+   "structureHash": "6cb06a93e3b762dd",
    "color0": {
     "mean": 0.721,
     "min": 0.2828,
@@ -28548,6 +28650,10 @@
     "Fuselage",
     "Gun",
     "Launch_tubes",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Muzzle_door_l",
     "Muzzle_door_r",
@@ -29284,13 +29390,13 @@
   },
   "heavy_bomber": {
    "file": "heavy_bomber.glb",
-   "fileBytes": 267880,
-   "sha1": "313a92e9ec62c2fe",
+   "fileBytes": 268496,
+   "sha1": "e7c5e13dde58dab7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 32,
+   "nodes": 38,
    "meshes": 24,
    "materials": 10,
    "animations": 0,
@@ -29332,7 +29438,7 @@
     1.85,
     -0.2
    ],
-   "structureHash": "17cf62f9dabb080f",
+   "structureHash": "d765bc6033f1fff0",
    "color0": {
     "mean": 0.7524,
     "min": 0.2499,
@@ -29377,6 +29483,12 @@
     "Fuselage.001",
     "Intakes",
     "Intakes.001",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_missile",
     "Muzzle_rocket",
@@ -29506,13 +29618,13 @@
   },
   "heavy_lift_helicopter": {
    "file": "heavy_lift_helicopter.glb",
-   "fileBytes": 262424,
-   "sha1": "8f41dc61c498d204",
+   "fileBytes": 263040,
+   "sha1": "2c2501b3ccdad2eb",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 27,
+   "nodes": 33,
    "meshes": 22,
    "materials": 8,
    "animations": 0,
@@ -29554,7 +29666,7 @@
     1.055,
     -0.476
    ],
-   "structureHash": "8923011baedfc343",
+   "structureHash": "53a228ec4579e91b",
    "color0": {
     "mean": 0.8202,
     "min": 0.5444,
@@ -29590,6 +29702,12 @@
     "Flares_glow",
     "Fuselage",
     "Hubs",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_main",
     "Point_exhaust",
     "Point_fire",
@@ -32678,13 +32796,13 @@
   },
   "interceptor_jet": {
    "file": "interceptor_jet.glb",
-   "fileBytes": 95588,
-   "sha1": "b8c679b230278745",
+   "fileBytes": 95992,
+   "sha1": "b5cc1cfbf65e0218",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 13,
+   "nodes": 17,
    "meshes": 11,
    "materials": 5,
    "animations": 0,
@@ -32726,9 +32844,9 @@
     0.561,
     -0.025
    ],
-   "structureHash": "bc6abd6cafd82a65",
+   "structureHash": "df1527e5ba9915e7",
    "color0": {
-    "mean": 0.7922,
+    "mean": 0.7923,
     "min": 0.5516,
     "max": 1.0,
     "p05": 0.5901,
@@ -32753,6 +32871,10 @@
     "Intakes",
     "Intakes.001",
     "Missiles",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_missile",
     "Part_wing",
     "Tails",
@@ -35302,13 +35424,13 @@
   },
   "light_attack_heli": {
    "file": "light_attack_heli.glb",
-   "fileBytes": 232956,
-   "sha1": "75354507c6397a87",
+   "fileBytes": 233364,
+   "sha1": "8c494cdde973cf70",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 30,
+   "nodes": 34,
    "meshes": 22,
    "materials": 7,
    "animations": 0,
@@ -35350,7 +35472,7 @@
     0.765,
     -0.206
    ],
-   "structureHash": "fb9720f44ddbdb5e",
+   "structureHash": "356ee816a2aeccd0",
    "color0": {
     "mean": 0.8099,
     "min": 0.5827,
@@ -35389,6 +35511,10 @@
     "Flares",
     "Flares_glow",
     "Fuselage",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Muzzle_rocket",
@@ -36701,13 +36827,13 @@
   },
   "mega_gunship": {
    "file": "mega_gunship.glb",
-   "fileBytes": 736660,
-   "sha1": "b6231857ae9e9644",
+   "fileBytes": 737268,
+   "sha1": "9ec8987445c950bd",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 54,
+   "nodes": 60,
    "meshes": 41,
    "materials": 11,
    "animations": 0,
@@ -36749,7 +36875,7 @@
     3.04,
     -0.45
    ],
-   "structureHash": "c1169cdd84093138",
+   "structureHash": "6a67d30729d730cb",
    "color0": {
     "mean": 0.6788,
     "min": 0.1733,
@@ -36811,6 +36937,12 @@
     "Missile_fins",
     "Missile_noses",
     "Missiles",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Mount_gun.001",
     "Mount_mg",
@@ -39565,13 +39697,13 @@
   },
   "morrigan": {
    "file": "morrigan.glb",
-   "fileBytes": 130212,
-   "sha1": "d3dc7e3d8b9c6939",
+   "fileBytes": 130624,
+   "sha1": "86cc62a9cd30d7d3",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 37,
+   "nodes": 41,
    "meshes": 29,
    "materials": 9,
    "animations": 0,
@@ -39613,7 +39745,7 @@
     0.665,
     0.8
    ],
-   "structureHash": "40d1ec6a062cc301",
+   "structureHash": "96ea7dd00b28d7af",
    "color0": {
     "mean": 0.6842,
     "min": 0.2499,
@@ -39658,6 +39790,10 @@
     "Canopy",
     "Exhaust_glow",
     "Fuselage",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_bomb",
     "Muzzle_gun",
     "Muzzle_missile",
@@ -41747,13 +41883,13 @@
   },
   "prop_attack_plane": {
    "file": "prop_attack_plane.glb",
-   "fileBytes": 205232,
-   "sha1": "e377c6f457c83501",
+   "fileBytes": 205640,
+   "sha1": "87031eb46d72cea9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 33,
+   "nodes": 37,
    "meshes": 25,
    "materials": 8,
    "animations": 0,
@@ -41795,7 +41931,7 @@
     0.894,
     -0.303
    ],
-   "structureHash": "a7bcfd2968f8f5ec",
+   "structureHash": "ebe725a1f02e2adc",
    "color0": {
     "mean": 0.8062,
     "min": 0.6644,
@@ -41837,6 +41973,10 @@
     "Flares_glow",
     "Fuselage",
     "Fuselage.001",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_rocket",
@@ -46309,13 +46449,13 @@
   },
   "scout_heli": {
    "file": "scout_heli.glb",
-   "fileBytes": 190428,
-   "sha1": "632cddb0b0cc88fb",
+   "fileBytes": 190844,
+   "sha1": "fcba6e2eb20730ef",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 29,
+   "nodes": 33,
    "meshes": 21,
    "materials": 7,
    "animations": 0,
@@ -46357,7 +46497,7 @@
     0.783,
     -0.529
    ],
-   "structureHash": "91328aa68184731d",
+   "structureHash": "3a9faefcc3936e5c",
    "color0": {
     "mean": 0.7393,
     "min": 0.2655,
@@ -46398,6 +46538,10 @@
     "Fuselage",
     "Minigun_housings",
     "Miniguns",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Muzzle_rocket",
@@ -49054,13 +49198,13 @@
   },
   "sky_fortress": {
    "file": "sky_fortress.glb",
-   "fileBytes": 201448,
-   "sha1": "01e6fde8a20a86c6",
+   "fileBytes": 201860,
+   "sha1": "716590fe2f98841d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 44,
+   "nodes": 48,
    "meshes": 29,
    "materials": 6,
    "animations": 0,
@@ -49102,7 +49246,7 @@
     1.839,
     0.007
    ],
-   "structureHash": "9af5dabed9324c35",
+   "structureHash": "af509e4559a08e24",
    "color0": {
     "mean": 0.7458,
     "min": 0.1981,
@@ -49159,6 +49303,10 @@
     "Gun_breeches.003",
     "Gun_ports",
     "Guns",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Mount_gun",
     "Mount_gun.001",
     "Mount_main",
@@ -49200,13 +49348,13 @@
   },
   "sky_gunship": {
    "file": "sky_gunship.glb",
-   "fileBytes": 265696,
-   "sha1": "cbfd9a3b9edb85ed",
+   "fileBytes": 266308,
+   "sha1": "932e99fde710385d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 38,
+   "nodes": 44,
    "meshes": 28,
    "materials": 6,
    "animations": 0,
@@ -49248,7 +49396,7 @@
     1.18,
     0.005
    ],
-   "structureHash": "557848cbf42eb5e0",
+   "structureHash": "4d6f6a182a0521cf",
    "color0": {
     "mean": 0.7216,
     "min": 0.2381,
@@ -49292,6 +49440,12 @@
     "Gun_ports",
     "Guns",
     "Howitzer_brake",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_mg",
@@ -49330,13 +49484,13 @@
   },
   "sky_gunship_hd": {
    "file": "sky_gunship_hd.glb",
-   "fileBytes": 308328,
-   "sha1": "e278c0bfbc57e446",
+   "fileBytes": 308944,
+   "sha1": "5cb147ac94179d09",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 38,
+   "nodes": 44,
    "meshes": 28,
    "materials": 6,
    "animations": 0,
@@ -49378,7 +49532,7 @@
     1.18,
     0.005
    ],
-   "structureHash": "62b50da809ef09c5",
+   "structureHash": "ae3b89cb49dcd31b",
    "color0": {
     "mean": 0.7197,
     "min": 0.2381,
@@ -49422,6 +49576,12 @@
     "Gun_ports",
     "Guns",
     "Howitzer_brake",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_mg",
@@ -50080,13 +50240,13 @@
   },
   "stealth_fighter": {
    "file": "stealth_fighter.glb",
-   "fileBytes": 278196,
-   "sha1": "081b678c488b4892",
+   "fileBytes": 278616,
+   "sha1": "dfb657228a9266bb",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 38,
+   "nodes": 42,
    "meshes": 32,
    "materials": 9,
    "animations": 0,
@@ -50128,7 +50288,7 @@
     0.287,
     0.174
    ],
-   "structureHash": "2b2c4d674f862e35",
+   "structureHash": "6beb9858a19c54bf",
    "color0": {
     "mean": 0.6351,
     "min": 0.0801,
@@ -50170,6 +50330,10 @@
     "Missile_fins",
     "Missile_seekers",
     "Missiles",
+    "Mount_Flare_L",
+    "Mount_Flare_R",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_bomb",
     "Muzzle_gun",
     "Muzzle_missile",
@@ -51717,13 +51881,13 @@
   },
   "swarm_carrier": {
    "file": "swarm_carrier.glb",
-   "fileBytes": 257192,
-   "sha1": "c7c5574b7f3bd433",
+   "fileBytes": 257812,
+   "sha1": "5e24d2d9368d0cb5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 34,
+   "nodes": 40,
    "meshes": 26,
    "materials": 7,
    "animations": 0,
@@ -51765,7 +51929,7 @@
     1.194,
     0.005
    ],
-   "structureHash": "5945a7f081acf537",
+   "structureHash": "22c8dc53bcc21885",
    "color0": {
     "mean": 0.6629,
     "min": 0.0801,
@@ -51803,6 +51967,12 @@
     "Flares_glow",
     "Fuselage",
     "Fuselage.001",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_drone",
     "Part_wing",
     "Point_exhaust",
@@ -54123,13 +54293,13 @@
   },
   "twin_rotor_gunship": {
    "file": "twin_rotor_gunship.glb",
-   "fileBytes": 291748,
-   "sha1": "152756e1536e8708",
+   "fileBytes": 292364,
+   "sha1": "8f18a689f962f503",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 31,
+   "nodes": 37,
    "meshes": 23,
    "materials": 8,
    "animations": 0,
@@ -54171,7 +54341,7 @@
     2.418,
     -0.05
    ],
-   "structureHash": "c376a7b52312c45a",
+   "structureHash": "9d6dfd17d6463a89",
    "color0": {
     "mean": 0.8275,
     "min": 0.5615,
@@ -54210,6 +54380,12 @@
     "Fuselage",
     "Gun_pods",
     "Hubs",
+    "Mount_Flare_L",
+    "Mount_Flare_L2",
+    "Mount_Flare_R",
+    "Mount_Flare_R2",
+    "Mount_Flare_TL",
+    "Mount_Flare_TR",
     "Muzzle_gun",
     "Muzzle_main",
     "Muzzle_mg",

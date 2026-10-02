@@ -511,6 +511,8 @@ namespace MachineBrigade.Sim.Content
                 WeaponFamilyTable = familyTable,
             };
             catalog.FinishExtras(root, ownBranches);
+            // Fix prompt L4 / L5: the munition and warning rules (lane B's blocks).
+            catalog.FinishFixRules(root);
             catalog.FinishWalls();
             catalog.CheckNaval();
             return catalog;

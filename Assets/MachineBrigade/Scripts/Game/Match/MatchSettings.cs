@@ -402,6 +402,12 @@ namespace MachineBrigade.Game.Match
 
         public static float ShakeScale => ScreenShake switch { 0 => 0f, 1 => 0.35f, _ => 1f };
 
+        /// <summary>
+        /// Fix prompt L5: the warning rings (Effects/WarningGate): 0 Full (at most six, the most threatening first), 1 Important
+        /// only (super weapons and the rings over our units), 2 Off (super weapons still shown).
+        /// </summary>
+        public static int WarningRings { get; set; }
+
         /// <summary>Short vibrations on the heaviest moments.</summary>
         public static bool Haptics { get; set; } = true;
 
@@ -523,6 +529,7 @@ namespace MachineBrigade.Game.Match
                 // Reduced motion (older saves) became the low screen-shake setting.
                 ScreenShake = Mathf.Clamp(PlayerPrefs.GetInt("mb.shake", PlayerPrefs.GetInt("mb.reducedMotion", 0) == 1 ? 1 : 2), 0, 2);
                 CameraSpeed = Mathf.Clamp(PlayerPrefs.GetInt("mb.cameraSpeed", 1), 0, 2);
+                WarningRings = Mathf.Clamp(PlayerPrefs.GetInt("mb.warnings", 0), 0, 2);
                 CinematicMoments = PlayerPrefs.GetInt("mb.cinematic", 1) == 1;
                 Dialogue = (DialogueSetting)Mathf.Clamp(PlayerPrefs.GetInt("mb.dialogue", 0), 0, 2);
                 // DECISIONS 23D: the doctrines are the commanders' now; an old save's doctrine choice is dropped, never read.
@@ -579,6 +586,7 @@ namespace MachineBrigade.Game.Match
                 if (Graphics == GraphicsQuality.Custom) _custom?.Save("mb.gfx.");
                 PlayerPrefs.SetInt("mb.shake", ScreenShake);
                 PlayerPrefs.SetInt("mb.cameraSpeed", CameraSpeed);
+                PlayerPrefs.SetInt("mb.warnings", WarningRings);
                 PlayerPrefs.SetInt("mb.cinematic", CinematicMoments ? 1 : 0);
                 PlayerPrefs.SetInt("mb.dialogue", (int)Dialogue);
                 PlayerPrefs.SetInt("mb.haptics", Haptics ? 1 : 0);

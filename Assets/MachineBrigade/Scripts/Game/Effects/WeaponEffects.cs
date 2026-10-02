@@ -243,6 +243,8 @@ namespace MachineBrigade.Game.Effects
                         _projectiles.Launch(_models.Merged(missile), from, to, e.Value, distance * 0.06f, 0.7f, now, Homing(views, targetId, weapon != null && weapon.TopAttack ? null : from),
                             boost: 0.55f, scale: Sized(missile) * SizeOf(weapon, kind, missile, airborne), control: Leave(from, to, _shotBarrel, distance * 0.06f),
                             plume: Plume.For(weapon, kind, missile, airborne));
+                        // Fix prompt L4: the Sim may divert it in flight (a flare, lost sight, out of reach).
+                        _projectiles.Tag(targetId);
                         Veer(e, views, targetId);
                     }
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
@@ -261,6 +263,7 @@ namespace MachineBrigade.Game.Effects
                     {
                         _projectiles.Launch(_models.Merged(drone), from, to, e.Value, distance * (quad ? 0.1f : 0.12f), quad ? 0f : 0.35f, now,
                             Homing(views, targetId), wobble: quad ? 0f : 0.6f, scale: Sized(drone) * SizeOf(weapon, kind, drone, false) * (quad ? QuadScale : 1f));
+                        _projectiles.Tag(targetId);
                         if (quad)
                         {
                             var across = Vector3.Cross(Vector3.up, forward);
@@ -290,10 +293,17 @@ namespace MachineBrigade.Game.Effects
                     var ballistic = weapon?.Id == "ballistic_missile";
                     // A second launcher (not the main, elevating one) lobs along its own tubes too.
                     if (barrel.sqrMagnitude < 0.01f) barrel = _shotBarrel;
-                    if (_hasRocket) _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, wobble: artillery && !ballistic ? 0.7f : 0.3f,
-                        boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: Sized(rocket) * SizeOf(weapon, kind, rocket, false),
-                        control: artillery && !ballistic ? Bend(from, to, barrel) : artillery ? null : Leave(from, to, _shotBarrel, arc),
-                        plume: Plume.For(weapon, kind, rocket, false));
+                    // Fix prompt L4 rule A: a guided rocket (the APKWS) bends onto its target like a missile.
+                    var steered = weapon != null && weapon.GuidedRocket;
+                    if (_hasRocket)
+                    {
+                        _projectiles.Launch(_models.Merged(rocket), from, to, e.Value, arc, 0.55f, now, steered ? Homing(views, targetId, from) : null,
+                            wobble: artillery && !ballistic ? 0.7f : steered ? 0f : 0.3f,
+                            boost: ballistic ? 0.6f : artillery ? 0.2f : 0.3f, scale: Sized(rocket) * SizeOf(weapon, kind, rocket, false),
+                            control: artillery && !ballistic ? Bend(from, to, barrel) : artillery ? null : Leave(from, to, _shotBarrel, arc),
+                            plume: Plume.For(weapon, kind, rocket, false));
+                        if (steered) _projectiles.Tag(targetId);
+                    }
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
                     Flash(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : Tube(aim), now, artillery ? 1.2f : 0.9f, groundY);
                     _shake(from, artillery ? 0.06f : 0.03f);

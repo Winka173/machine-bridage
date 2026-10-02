@@ -12,8 +12,21 @@ namespace MachineBrigade.Game.Views
     {
         private Transform[] _flarePoints, _apsPoints;
 
-        /// <summary>The flare dispensers' points (one per side and row; each looks the way its flares leave).</summary>
-        public IReadOnlyList<Transform> FlarePoints => _flarePoints ??= FxPoints(ModelLibrary.FlarePointName);
+        /// <summary>
+        /// The flare dispensers' points: fix prompt L4, the model's own Mount_Flare_* empties (rear fuselage, both sides, tail
+        /// root; <see cref="ModelLibrary.FlareMountPrefix"/>), else one per side and row of its `Flares` tubes.
+        /// </summary>
+        public IReadOnlyList<Transform> FlarePoints => _flarePoints ??= FlareMounts() ?? FxPoints(ModelLibrary.FlarePointName);
+
+        /// <summary>The model's Mount_Flare_* empties, or null when it has none.</summary>
+        private Transform[] FlareMounts()
+        {
+            if (_model?.Root == null) return null;
+            List<Transform> list = null;
+            foreach (var t in _model.Root.GetComponentsInChildren<Transform>(true))
+                if (ModelLibrary.IsFlareMount(t.name)) (list ??= new List<Transform>()).Add(t);
+            return list?.ToArray();
+        }
 
         /// <summary>The APS cassettes' points (one per side).</summary>
         public IReadOnlyList<Transform> ApsPoints => _apsPoints ??= FxPoints(ModelLibrary.ApsPointName);

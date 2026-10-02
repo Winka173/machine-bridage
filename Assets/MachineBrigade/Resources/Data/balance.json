@@ -2708,6 +2708,37 @@
     { "id": "chaff_strike", "kind": "Smoke", "cp": 2, "cooldown": 45, "delay": 1.0, "radius": 30, "count": 1, "duration": 8, "tier": "Small" }
   ],
 
+  // Fix prompt L4 (DECISIONS "Sửa lỗi tổng hợp L4 / L5 / L6"): how munitions behave in flight. Lane B's own block: the
+  // weapons' numbers stay in "weapons". Families are weaponFamilyIds. flareDecoyChance: one roll per IR missile when its
+  // aircraft's flares burn (times 1 - flareResist); radar-guided families ignore flares. flareOffset: where a decoyed
+  // missile meets its flare (m behind and beside the aircraft, past the fuze). proximityFuze: an anti-air missile bursts
+  // this close (the prompt's 6-8 m). reachScale: a guided round self-destructs once its target is farther than its range
+  // x this from where it left. leadCap: unguided rockets, shells, mortars and bombs lead a moving target by at most this
+  // many seconds. sightGuided: wire, beam and laser guided missiles, lost when their shooter dies or loses sight (smoke,
+  // a wall). flareRelease: flares one release puts out on screen (fighters and attack jets, helicopters, big aircraft);
+  // flareBurn: how long each burns (s). View only, both: a release is one decoy in the simulation.
+  "munitionRules": {
+    "flareDecoyChance": 0.35, "flareOffset": 10, "proximityFuze": 7, "reachScale": 1.3, "leadCap": 3,
+    "radarGuided": ["sam_aim_120_amraam", "sam_r_37m", "sam_9m317_buk", "sam_mim_104_patriot_pac_2", "sam_patriot_pac_3_mse",
+      "sam_s_400_48n6", "sam_57e6", "sam_tamir_interceptor"],
+    "sightGuided": ["atgm_bgm_71_tow_2", "atgm_gun_launched_atgm", "atgm_kornet", "atgm_9m113_konkurs", "atgm_9m120_ataka",
+      "atgm_9k121_vikhr", "atgm_9m123_khrizantema", "atgm_agm_114_hellfire", "atgm_kh_29l", "atgm_agm_176_griffin", "atgm_mam_l"],
+    "flareRelease": { "fighter": [4, 6], "helicopter": [4, 8], "large": [8, 16] },
+    "flareBurn": [3, 4]
+  },
+
+  // Fix prompt L5: which rounds warn and for how long. Rings only for enemy guns from 203 mm, bombs from 400 kg, rockets
+  // from 300 mm (the weapon's tier T4+ when it has a family), the bosses' big attacks, the super weapons and the enemy's
+  // area supports. A warned round stays in the air at least max(floor, base + core / escapeSpeed), at most cap (s):
+  // floors 2.5 s (203-240 mm and the other T4), 3.5 s (406 mm), 4 s (800 mm and the super weapons). The view shows at
+  // most maxShown rings at once (super weapons always, on top), merges one shooter's rounds fired within
+  // salvoMergeSeconds into one ring, and fades each in over fadeIn s.
+  "warningRules": {
+    "gunMinMm": 203, "bombMinKg": 400, "rocketMinMm": 300,
+    "floorT4": 2.5, "floor406": 3.5, "floorT5": 4, "base": 0.5, "escapeSpeed": 4.5, "cap": 6,
+    "maxShown": 6, "salvoMergeSeconds": 0.6, "fadeIn": 0.4
+  },
+
   "props": [
     { "id": "house_small", "scale": 1.49, "armor": "Structure", "hp": 780,  "width": 11.05,   "depth": 11.96,   "blocks": true },
     { "id": "house_large", "scale": 1.49, "armor": "Structure", "hp": 1430, "width": 16.25,  "depth": 14.56,  "blocks": true },

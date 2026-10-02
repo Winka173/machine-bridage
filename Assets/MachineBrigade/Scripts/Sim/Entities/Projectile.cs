@@ -94,5 +94,32 @@ namespace MachineBrigade.Sim.Entities
         /// hit strikes the part while it stands, and its blast lands on the body only.
         /// </summary>
         public int Part { get; set; } = -1;
+
+        /// <summary>
+        /// Fix prompt L4: why a guided round no longer goes for its target (none: it flies true). Decided in flight, on
+        /// the tick it happens (<see cref="Combat.CombatSystem"/> GuideRounds); it then lands on <see cref="DivertAt"/>.
+        /// </summary>
+        public Divert Diverted { get; set; }
+
+        /// <summary>Fix prompt L4: where a diverted round goes off (the flare it chased, its target's spot plus its miss, the end of its reach).</summary>
+        public Vector2 DivertAt { get; set; }
+
+        /// <summary>Fix prompt L4 rule C: this missile has had its one roll against flares.</summary>
+        public bool FlareRolled { get; set; }
+    }
+
+    /// <summary>Fix prompt L4: what took a guided round off its target in flight.</summary>
+    public enum Divert
+    {
+        None,
+
+        /// <summary>Rule C: an IR missile chased a flare; it bursts beside the flare.</summary>
+        Flare,
+
+        /// <summary>Rule A: a sight-guided missile whose shooter died or lost sight (smoke, a wall): it flies on and lands wide.</summary>
+        Sight,
+
+        /// <summary>Rules A, G: its target got out of its reach: it self-destructs at the end of it.</summary>
+        Reach,
     }
 }

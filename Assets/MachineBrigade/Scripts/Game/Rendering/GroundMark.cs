@@ -18,6 +18,9 @@ namespace MachineBrigade.Game.Rendering
             Selection = 2,
             Move = 3,
             Aircraft = 4,
+
+            /// <summary>Fix prompt L5: a warning ring (a thin edge, a faint fill heavier toward the middle, the time left round the edge).</summary>
+            Warning = 5,
         }
 
         private static readonly int ColorId = Shader.PropertyToID("_Color");
@@ -26,7 +29,8 @@ namespace MachineBrigade.Game.Rendering
 
         private readonly MeshRenderer _renderer;
         private readonly MaterialPropertyBlock _block = new();
-        private readonly float _style, _seed;
+        private readonly float _seed;
+        private float _style;
         private Color _color, _accent;
         private float _progress = -1f, _pulse = -1f;
 
@@ -53,6 +57,14 @@ namespace MachineBrigade.Game.Rendering
             {
                 if (_renderer.enabled != value) _renderer.enabled = value;
             }
+        }
+
+        /// <summary>Fix prompt L5: draws it in another style from now on (a pooled mark reused as a warning ring).</summary>
+        public void Restyle(Style style)
+        {
+            if (Mathf.Approximately(_style, (int)style)) return;
+            _style = (int)style;
+            _progress = -1f;
         }
 
         public void Set(Color color, Color accent, float progress = 0f, float pulse = 0f)

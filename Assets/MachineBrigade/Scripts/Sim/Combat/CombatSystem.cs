@@ -800,6 +800,10 @@ namespace MachineBrigade.Sim.Combat
                 mods = _world.Gear.Shot(shooter, index, target, aimAt, weapon, pull);
                 damageScale *= mods.Scale * _world.Gear.PintleScale(shooter, index, targetFlying);
             }
+            // Fix prompt L4 rule D: unguided rockets, shells, mortars and bombs aim where a moving ground target will be
+            // after their flight (in place of the fire-control computer's lead, which only the main gun had).
+            if (aimTarget is Vehicle mover && !targetFlying && Leads(weapon, FreeFall(shooter, weapon)))
+                aimAt = LeadPoint(shooter, mover, weapon, _world.Catalog.Munitions.LeadCap);
             if (pull) _world.Gear.Fired(shooter, weapon);
             // Prompt 17 C: a wingman may pull an anti-air missile onto itself; the laser's damage ramps up on one target.
             var pulled = WingmanPull(shooter, weapon, target, targetFlying);
@@ -822,7 +826,7 @@ namespace MachineBrigade.Sim.Combat
             // wide enough that a long shot can miss outright.
             // The gun's reach (a second round's is its gun's; equipment may lengthen the gun's own).
             var reach = Math.Clamp(distance / shooter.Arms[index].Range, 0f, 1.2f);
-            var spread = weapon.Guided ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
+            var spread = weapon.Guided || weapon.GuidedRocket ? 0f : freeFall ? weapon.Spread * FreeFallScatter : weapon.Spread * (0.35f + 1.25f * MathF.Pow(reach, 1.4f));
             // A boss's broken fire-control radar: its guns scatter wider.
             if (index < shooter.MountSpread.Length) spread *= shooter.MountSpread[index];
             // Prompt 28 I.8: hit and run pays for firing while backing off.
@@ -875,7 +879,8 @@ namespace MachineBrigade.Sim.Combat
             travel = MrsiTravel(shooter, index, pull, travel);
             // Prompt 34 L3: a boss's T4+ round (203 mm and up, the Smerch, the 400 kg bombs) lands no sooner than its escape warning,
             // so the warning ring on its fall point shows that long. A guided round chases its target and has no fixed fall point.
-            if (shooter.Def.Boss && !weapon.Guided && weapon.WarnSeconds > travel) travel = weapon.WarnSeconds;
+            // Fix prompt L5: every shooter's warned round, not only a boss's (the view rings the enemy's; both sides alike here).
+            if (weapon.WarnSeconds > travel && _world.Catalog.Warnings.Warns(weapon)) travel = weapon.WarnSeconds;
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
             // Prompt 32 L4: a mount's own scale (a Fortress HQ's gun by HQ level).
@@ -936,6 +941,8 @@ namespace MachineBrigade.Sim.Combat
         private void UpdateProjectiles(float dt)
         {
             EngageIncoming(dt);
+            // Fix prompt L4: flares, lost sight and reach take guided rounds off their targets in flight.
+            GuideRounds();
             for (var i = _projectiles.Count - 1; i >= 0; i--)
             {
                 var p = _projectiles[i];

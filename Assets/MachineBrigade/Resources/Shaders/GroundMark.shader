@@ -5,7 +5,7 @@
 // from a MaterialPropertyBlock:
 //   _Color   main colour (HDR glows through bloom)
 //   _Accent  second colour (capture progress, strike fill)
-//   _Params  x: style (0 objective, 1 strike, 2 selection, 3 move marker, 4 aircraft ring)
+//   _Params  x: style (0 objective, 1 strike, 2 selection, 3 move marker, 4 aircraft ring, 5 warning ring)
 //            y: progress 0..1 (capture, time to impact)
 //            z: pulse 0..1 (contested point, imminent strike)
 //            w: seed (desynchronises animation between marks)
@@ -130,6 +130,17 @@ Shader "MachineBrigade/GroundMark"
                     half sweep = saturate((progress - turn) / aaTurn + 0.5) * step(r, 0.9) * 0.22;
                     colour = lerp(_Color.rgb, _Accent.rgb, sweep > 0.01 ? 0.35 : 0.0) * beat;
                     alpha = saturate(rim + dashes * 0.85 + crosshair * 0.8 + centreDot + sweep) * step(r, 1.0);
+                }
+                else if (style > 4.5)
+                {
+                    // Fix prompt L5: a warning ring: a thin edge on the damage radius and a faint fill (not solid red),
+                    // heavier toward the middle; the time left runs round the edge as a thin arc. _Color.a fades it in.
+                    half rim = Band(r, 0.975, 0.016, aa);
+                    half arc = Band(r, 0.93, 0.012, aa) * saturate((progress - turn) / aaTurn + 0.5) * step(0.005, progress);
+                    half fill = (0.07 + 0.11 * saturate(1.0 - r)) * step(r, 0.96);
+                    half beat = 1.0 + pulse * 0.25 * sin(time * 14.0);
+                    colour = lerp(_Color.rgb, _Accent.rgb, saturate(arc + fill * 2.0)) * beat;
+                    alpha = saturate(rim + arc * 0.8 + fill * _Accent.a) * step(r, 1.0);
                 }
                 else if (style < 2.5)
                 {

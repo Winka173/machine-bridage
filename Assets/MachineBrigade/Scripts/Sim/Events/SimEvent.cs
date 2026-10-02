@@ -191,6 +191,13 @@ namespace MachineBrigade.Sim.Events
         /// approach so that it reaches Position at that moment. View only: nothing in the simulation reads it.
         /// </summary>
         Ingress,
+
+        /// <summary>
+        /// Fix prompt L4: a guided round (DefId its weapon, Entity its shooter, Other its target, Team the shooter's) was
+        /// taken off its target in flight: it now goes off at Position in Value seconds. Mount the reason (1 a flare decoyed
+        /// it, 2 its shooter lost sight, 3 its target got out of reach); Airborne when it was fired at an aircraft. View only.
+        /// </summary>
+        RoundDiverted,
     }
 
     /// <summary>
@@ -289,6 +296,11 @@ namespace MachineBrigade.Sim.Events
 
         internal static SimEvent Proc(Vehicle v, string key) =>
             new(SimEventKind.TraitProc, v.Id, v.Position, default, 0f, default, key, v.Team, airborne: v.Flying);
+
+        /// <summary>Fix prompt L4: a guided round taken off its target in flight (see <see cref="SimEventKind.RoundDiverted"/>).</summary>
+        internal static SimEvent Diverted(Projectile p, Vector2 to, int reason) =>
+            new(SimEventKind.RoundDiverted, p.Owner, to, p.Origin, MathF.Max(0f, p.TimeLeft), p.Weapon.ImpactTier, p.Weapon.Id, p.OwnerTeam, reason,
+                p.Target, p.TargetFlying);
 
         internal static SimEvent Impact(WeaponDef weapon, Vector2 at, EntityId hit, int team, bool airborne = false) =>
             new(SimEventKind.ProjectileImpact, hit, at, new Vector2(weapon.SplashEdge, 0f), weapon.SplashRadius, weapon.ImpactTier, weapon.Id, team,

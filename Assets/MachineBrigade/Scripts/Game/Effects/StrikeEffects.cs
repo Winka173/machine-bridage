@@ -37,7 +37,20 @@ namespace MachineBrigade.Game.Effects
             public float Start, Impact, End, Radius;
             public bool Active;
             public Color Edge = WarningColor, Fill = WarningFill;
+
+            /// <summary>Fix prompt L5: an enemy's harmful support: a warning ring under the gate (Kind), drawn in the warning style.</summary>
+            public bool Warns;
+            public WarningKind Kind;
+            public Vector3 Centre;
         }
+
+        /// <summary>Fix prompt L5: the gate that decides which warning rings are drawn (none: all are), and their fade-in (s).</summary>
+        public WarningGate Gate { get; set; }
+        public float WarnFadeIn { get; set; } = 0.4f;
+
+        /// <summary>Fix prompt L5: the warning look of an enemy support's ring (a thin edge, a faint fill).</summary>
+        private static readonly Color WarnEdge = new(2.2f, 0.42f, 0.2f, 0.9f);
+        private static readonly Color WarnFill = new(1.6f, 0.36f, 0.16f, 0.55f);
 
         private static readonly Color WarningColor = new(2.4f, 0.32f, 0.18f, 0.95f);
         private static readonly Color WarningFill = new(2.6f, 0.9f, 0.3f, 1f);
@@ -140,7 +153,7 @@ namespace MachineBrigade.Game.Effects
         /// <summary>A support called (StrikeWarning): its telegraph, and the rounds that come down with no aircraft pass or shell of the simulation's own.</summary>
         internal void Warned(SupportDef support, int team, Vector3 point, Vector3 end, float delay, float now)
         {
-            ShowTelegraph(support, point, end, now, delay);
+            ShowTelegraph(support, point, end, now, delay, team);
             var impact = now + delay;
             switch (support.Kind)
             {
@@ -188,10 +201,30 @@ namespace MachineBrigade.Game.Effects
                 var progress = Mathf.Clamp01((now - t.Start) / Mathf.Max(0.1f, t.Impact - t.Start));
                 var urgency = Mathf.Clamp01(1f - (t.Impact - now) / 2f);
                 var breathe = 1f + 0.05f * Mathf.Sin(now * Mathf.Lerp(6f, 20f, urgency));
+                // Fix prompt L5: a warning ring is offered to the gate, drawn only while shown, fading in.
+                var shown = true;
+                var edge = t.Edge;
+                if (t.Warns)
+                {
+                    var reach = t.Radius;
+                    for (var r = 0; r < t.Used; r++) reach = Mathf.Max(reach, Vector3.Distance(t.Rings[r].Transform.position, t.Centre) + t.Radius);
+                    Gate?.Offer(t, t.Centre, reach, t.Kind);
+                    shown = Gate == null || Gate.Shown(t, t.Kind);
+                    var fade = WarnFadeIn > 0f ? Mathf.Clamp01((now - t.Start) / WarnFadeIn) : 1f;
+                    edge = new Color(edge.r, edge.g, edge.b, edge.a * fade);
+                }
                 for (var r = 0; r < t.Used; r++)
                 {
-                    t.Rings[r].Set(t.Edge, t.Fill, progress, urgency);
-                    t.Rings[r].Transform.localScale = Vector3.one * t.Radius * breathe;
+                    t.Rings[r].Visible = shown;
+                    if (!shown) continue;
+                    t.Rings[r].Set(edge, t.Fill, progress, urgency);
+                    t.Rings[r].Transform.localScale = Vector3.one * t.Radius * (t.Warns ? 1f : breathe);
+                    // A super weapon's ring sits above the others.
+                    if (t.Warns && t.Kind == WarningKind.Super)
+                    {
+                        var at = t.Rings[r].Transform.position;
+                        t.Rings[r].Transform.position = new Vector3(at.x, Mathf.Max(at.y, 0.16f), at.z);
+                    }
                 }
             }
 
@@ -293,9 +326,24 @@ namespace MachineBrigade.Game.Effects
             }
         }
 
-        private void ShowTelegraph(SupportDef support, Vector3 point, Vector3 end, float now, float delay)
+        /// <summary>The player's side: its own harmful supports draw no warning ring (fix prompt L5).</summary>
+        public int PlayerTeam { get; set; }
+
+        /// <summary>Fix prompt L5: a support that harms where it lands (its ring is a warning).</summary>
+        private static bool Harmful(SupportDef support) => support.Damage > 0f || support.Kind == SupportKind.Emp;
+
+        private void ShowTelegraph(SupportDef support, Vector3 point, Vector3 end, float now, float delay, int team = -1)
         {
+            // Fix prompt L5: no warning ring for a harmful support of ours; an enemy's harmless one (a scan) shows nothing.
+            var harmful = Harmful(support);
+            var ours = team == PlayerTeam;
+            if (harmful && ours) return;
+            if (!harmful && !ours && support.Kind != SupportKind.Tower) return;
             var t = _telegraphs.Find(x => !x.Active) ?? _telegraphs[0];
+            t.Warns = harmful;
+            t.Kind = support.Tier >= ExplosionTier.Ultimate ? WarningKind.Super : WarningKind.Support;
+            t.Centre = (point + end) * 0.5f;
+            foreach (var ring in t.Rings) ring.Restyle(harmful ? GroundMark.Style.Warning : GroundMark.Style.Strike);
             t.Active = true;
             t.Start = now;
             t.Impact = now + delay;
@@ -303,9 +351,10 @@ namespace MachineBrigade.Game.Effects
             foreach (var ring in t.Rings) ring.Visible = false;
             if (support.IsLine)
             {
-                // One ring per bomb, where it will land.
+                // One ring per bomb, where it will land (one warning under the gate: the salvo is one hull).
                 t.Used = Mathf.Min(support.Count, RingsPerTelegraph);
                 t.Radius = support.BlastRadius;
+                (t.Edge, t.Fill) = (WarnEdge, WarnFill);
                 for (var i = 0; i < t.Used; i++)
                 {
                     var along = t.Used > 1 ? i / (float)(t.Used - 1) : 0.5f;
@@ -322,7 +371,7 @@ namespace MachineBrigade.Game.Effects
             {
                 SupportKind.Scan => (ScanColor, ScanFill),
                 SupportKind.Tower => (DropColor, DropColor),
-                _ => (WarningColor, WarningFill),
+                _ => (WarnEdge, WarnFill),
             };
             // A scan's circle stays up while the drone watches it.
             if (support.Kind == SupportKind.Scan) t.End = now + delay + support.Duration;

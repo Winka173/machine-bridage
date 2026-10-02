@@ -53,7 +53,8 @@ namespace MachineBrigade.Game.Effects
 
                 case 4:
                     e.Flash(14f);
-                    e.Fireball(2, new Vector2(9f, 11.5f), new Vector2(0.85f, 1.1f), 0.8f, hot: true);
+                    // Fix prompt L6: the hot core burns ~1.2 s (EffectLife band 4; it was 0.85-1.1 s, never shorter).
+                    e.Fireball(2, new Vector2(9f, 11.5f), new Vector2(1.05f, 1.35f), 0.8f, hot: true);
                     e.Fireball(4, new Vector2(8f, 10.5f), new Vector2(1.35f, 1.75f), 2.4f);
                     e.Fireball(3, new Vector2(7f, 9f), new Vector2(1.2f, 1.5f), 3f, 0.15f);
                     e.Fireball(2, new Vector2(6f, 8f), new Vector2(1.1f, 1.4f), 3.4f, 0.32f);
@@ -75,7 +76,8 @@ namespace MachineBrigade.Game.Effects
 
                 default: // T5
                     e.Flash(22f);
-                    e.Fireball(3, new Vector2(13f, 16f), new Vector2(1f, 1.3f), 1.4f, hot: true);
+                    // Fix prompt L6: the hot core burns ~1.8 s (EffectLife band 5; it was 1-1.3 s, never shorter).
+                    e.Fireball(3, new Vector2(13f, 16f), new Vector2(1.55f, 2f), 1.4f, hot: true);
                     e.Fireball(5, new Vector2(11f, 14.5f), new Vector2(1.5f, 1.95f), 4f);
                     e.Fireball(4, new Vector2(9.5f, 12.5f), new Vector2(1.35f, 1.7f), 5f, 0.16f);
                     e.Fireball(3, new Vector2(8.5f, 11f), new Vector2(1.25f, 1.55f), 5.6f, 0.36f);

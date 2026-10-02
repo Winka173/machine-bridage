@@ -67,6 +67,7 @@ import mb_p27_wave8b  # noqa: E402
 import mb_p27_standins  # noqa: E402
 import mb_p34_barrels  # noqa: E402
 import mb_p34_parts  # noqa: E402
+import mb_flare_mounts  # noqa: E402
 import mb_p32_walls  # noqa: E402
 import mb_p33_biomes  # noqa: E402
 import mb_p33_edges  # noqa: E402
@@ -189,6 +190,8 @@ def all_builders():
     builders = mb_p34_barrels.wrap(builders)
     # Prompt 34 L7: separable wreck parts (Part_wheel, Part_wheelb, Part_wing, Part_tail) for the breakup by class.
     builders = mb_p34_parts.wrap(builders)
+    # Fix prompt L4: the Mount_Flare_* points on every unit with flares (after every other builder and wrapper).
+    builders = mb_flare_mounts.wrap(builders)
     return builders
 
 

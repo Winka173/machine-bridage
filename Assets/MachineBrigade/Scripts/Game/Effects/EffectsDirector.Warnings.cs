@@ -14,6 +14,34 @@ namespace MachineBrigade.Game.Effects
     {
         private readonly EscapeWarnings _escape;
 
+        /// <summary>Fix prompt L5: which warning rings are drawn (<see cref="WarningGate"/>).</summary>
+        private readonly WarningGate _gate = new();
+
+        /// <summary>Fix prompt L5: the Settings choice for warning rings (MatchSettings.WarningRings): 0 Full, 1 Important only, 2 Off.</summary>
+        public int WarningLevel
+        {
+            get => _gate.Level;
+            set => _gate.Level = Mathf.Clamp(value, 0, 2);
+        }
+
+        /// <summary>The player's side (no rings for its own rounds; its units are what a ring threatens).</summary>
+        private int PlayerTeam => _gate.PlayerTeam;
+
+        private void InitWarningGate()
+        {
+            var rules = _catalog.Warnings;
+            _gate.MaxShown = rules.MaxShown;
+            _escape.Gate = _gate;
+            _escape.FadeIn = rules.FadeIn;
+            _escape.SalvoMerge = rules.SalvoMerge;
+            _strikes.Gate = _gate;
+            _strikes.WarnFadeIn = rules.FadeIn;
+            _bigZones.Gate = _gate;
+        }
+
+        /// <summary>Tests: rings the gate shows now.</summary>
+        internal int WarningsShown => _gate.ShownCount;
+
         /// <summary>The round a fired event carried: its second round, else the mount's own weapon as the boss carries it (its edge).</summary>
         private WeaponDef FiredRound(SimEvent e, VehicleView shooter, WeaponDef fallback)
         {
@@ -30,10 +58,13 @@ namespace MachineBrigade.Game.Effects
         {
             var round = FiredRound(e, shooter, weapon);
             var warn = round.WarnSeconds;
-            if (warn <= 0f || round.Guided || round.Laid) return false;
+            // Fix prompt L5: only the rounds the rules warn of (never a guided one, nor a beam).
+            if (warn <= 0f || !_catalog.Warnings.Warns(round)) return false;
             var flight = Mathf.Max(0.05f, e.Value);
             var start = now + Mathf.Max(0f, flight - warn);
-            _escape.Add(Ground(e.Target, 0.13f), round.SplashRadius, round.WarnRadius, start, now + flight);
+            // One shooter's mount: its salvo's rings merge into one; a T5 round is a super weapon's.
+            var owner = ((long)e.Entity.Value << 8) | (uint)(e.Mount & 0xff);
+            _escape.Add(Ground(e.Target, 0.13f), round.SplashRadius, round.WarnRadius, start, now + flight, now, owner, round.Tier >= 5);
             return true;
         }
 
@@ -66,7 +97,8 @@ namespace MachineBrigade.Game.Effects
             if (!PreviewRingFor(round, shooter.Sim.Def.Boss)) return;
             var flight = Mathf.Max(0.05f, e.Value);
             var warn = round.WarnSeconds > 0f ? round.WarnSeconds : PreviewRingSeconds;
-            _escape.Add(Ground(e.Target, 0.13f), round.SplashRadius, round.WarnRadius, now + Mathf.Max(0f, flight - warn), now + flight);
+            // A preview's rings are its tool: always drawn (as a super weapon's, past the gate).
+            _escape.Add(Ground(e.Target, 0.13f), round.SplashRadius, round.WarnRadius, now + Mathf.Max(0f, flight - warn), now + flight, now, 0, true);
         }
 
         /// <summary>Prompt 34 L4: rounds of each shooter's mount already drawn in this batch (a simultaneous volley's barrels).</summary>
@@ -104,7 +136,9 @@ namespace MachineBrigade.Game.Effects
         {
             if (e.DefId == null || !_catalog.TryGetSupport(e.DefId, out var support) || !support.EventOnly || support.IsLine) return;
             if (support.BlastRadius <= 0f || support.BlastRadius >= support.Radius - 0.25f) return;
-            _escape.Add(Ground(e.Position, 0.13f), support.BlastRadius, support.Radius, now, now + Mathf.Max(0.2f, e.Value));
+            // Fix prompt L5: the 406 mm salvo is a super weapon's (always drawn, on top); none for a salvo of ours.
+            if (e.Team == PlayerTeam) return;
+            _escape.Add(Ground(e.Position, 0.13f), support.BlastRadius, support.Radius, now, now + Mathf.Max(0.2f, e.Value), now, 0, true);
         }
     }
 }

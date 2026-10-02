@@ -467,6 +467,10 @@ namespace MachineBrigade.Game.Hud
             game.Add(OptionRow("move", "settings.shake",
                     new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                     () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
+            // Fix prompt L5: the warning rings: full, important only, off (off keeps the super weapons').
+            game.Add(OptionRow("flame", "settings.warnings",
+                    new[] { Strings.Get("settings.warnings.full"), Strings.Get("settings.warnings.important"), Strings.Get("settings.off") },
+                    () => MatchSettings.WarningRings, i => MatchSettings.WarningRings = i));
             game.Add(ToggleRow("bolt", "settings.haptics", () => MatchSettings.Haptics, on => MatchSettings.Haptics = on));
             game.Add(ToggleRow("camera", "settings.cinematic", () => MatchSettings.CinematicMoments, on => MatchSettings.CinematicMoments = on));
             // Prompt 23 H.7: the battle's dialogue; story lines show whatever is chosen.
