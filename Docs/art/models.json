@@ -41,7 +41,7 @@
   },
   "aerial_tanker": {
     "file": "aerial_tanker.glb",
-    "triangles": 3220
+    "triangles": 4164
   },
   "airborne_light_tank": {
     "file": "airborne_light_tank.glb",
@@ -153,11 +153,11 @@
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
-    "triangles": 4362
+    "triangles": 4722
   },
   "attack_helicopter_hd": {
     "file": "attack_helicopter_hd.glb",
-    "triangles": 6542
+    "triangles": 6902
   },
   "attack_jet": {
     "file": "attack_jet.glb",
@@ -553,11 +553,11 @@
   },
   "fighter_jet": {
     "file": "fighter_jet.glb",
-    "triangles": 3948
+    "triangles": 4308
   },
   "fighter_jet_hd": {
     "file": "fighter_jet_hd.glb",
-    "triangles": 13856
+    "triangles": 14216
   },
   "fire_control_centre": {
     "file": "fire_control_centre.glb",
@@ -717,7 +717,7 @@
   },
   "heavy_lift_helicopter": {
     "file": "heavy_lift_helicopter.glb",
-    "triangles": 3138
+    "triangles": 3858
   },
   "heavy_rocket": {
     "file": "heavy_rocket.glb",
@@ -813,7 +813,7 @@
   },
   "interceptor_jet": {
     "file": "interceptor_jet.glb",
-    "triangles": 1140
+    "triangles": 1500
   },
   "iron_beam": {
     "file": "iron_beam.glb",
@@ -885,7 +885,7 @@
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
-    "triangles": 3058
+    "triangles": 3418
   },
   "light_tank": {
     "file": "light_tank.glb",
@@ -1037,7 +1037,7 @@
   },
   "next_gen_tank": {
     "file": "next_gen_tank.glb",
-    "triangles": 6512
+    "triangles": 6620
   },
   "nlos_atgm_vehicle": {
     "file": "nlos_atgm_vehicle.glb",
@@ -1097,7 +1097,7 @@
   },
   "prop_attack_plane": {
     "file": "prop_attack_plane.glb",
-    "triangles": 2634
+    "triangles": 2994
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",
@@ -1349,11 +1349,11 @@
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",
-    "triangles": 2708
+    "triangles": 3652
   },
   "sky_gunship_hd": {
     "file": "sky_gunship_hd.glb",
-    "triangles": 3548
+    "triangles": 4492
   },
   "skyscraper": {
     "file": "skyscraper.glb",
@@ -1473,7 +1473,7 @@
   },
   "titan_tank": {
     "file": "titan_tank.glb",
-    "triangles": 8276
+    "triangles": 8384
   },
   "towed_at_gun": {
     "file": "towed_at_gun.glb",
@@ -1529,7 +1529,7 @@
   },
   "twin_rotor_gunship": {
     "file": "twin_rotor_gunship.glb",
-    "triangles": 3422
+    "triangles": 4366
   },
   "twin_tank": {
     "file": "twin_tank.glb",

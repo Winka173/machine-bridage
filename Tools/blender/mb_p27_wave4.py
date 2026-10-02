@@ -10,6 +10,12 @@ stealth_fighter and glide_bomber.
 Pass 4a: scout_heli, gunship_heli, elite_attack_helicopter (on the V2 Apache), swarm_carrier, recon_drone, strike_drone,
 wingman_drone, drop_pod. The prompt 29 5.5 flare tubes (mb_p29_details.flare_tubes) are on the FLARE models of the pass
 (scout_heli, gunship_heli, swarm_carrier).
+
+Pass 4c (prompt 29 5.5 details only, no rebuild): the CURRENT builders of heavy_lift_helicopter, light_attack_heli,
+prop_attack_plane, aerial_tanker, twin_rotor_gunship, next_gen_tank (wave 1c), attack_helicopter, fighter_jet
+(experiment 1), interceptor_jet (p25 new), sky_gunship (wave 2), titan_tank (wave 3) wrapped to add the flare tube rows
+(`Flares` nodes) or the APS cluster (`Aps_cluster`, on the Turret); the `_hd` twins of the three high-detail jets and the
+helicopter come through the same wrappers. Row positions come from ray casts of the built hulls.
 """
 import functools
 import math
@@ -24,6 +30,9 @@ import mb_p25_new as pn
 import mb_pt9_models as pt9
 import mb_p27_experiment as exp
 import mb_p29_details as p29
+import mb_p27_wave1c as w1c
+import mb_p27_wave2 as w2
+import mb_p27_wave3 as w3
 import mb_parts27 as parts
 from mb_air import BACKWARD, FORWARD, LEFT, RIGHT, Planform, _bubble, _dome, _octagon, _surface, _upright
 from mb_vehicles import ACROSS, R90
@@ -427,6 +436,55 @@ def _opts(name):
     return m2.BUILDERS[name][1]
 
 
+# ============================================================================= pass 4c: prompt 29 5.5 details
+def _detailed(build, extra, ao=None):
+    """The model's current builder (same options, same nodes) plus a detail pass on top; `ao` softens the ambient
+    occlusion (the tubes and the thin hulls around them dim COLOR_0 and the card)."""
+    @functools.wraps(build)
+    def wrapped(a, **kw):
+        build(a, **kw)
+        extra(a)
+        if ao is not None:
+            a.ao_strength = ao
+    wrapped.__doc__ = f'{build.__name__} as it is, plus the prompt 29 5.5 detail (pass 4c).'
+    return wrapped
+
+
+def _flare_rows(name, rows, **kw):
+    kw = dict(dict(seg=6), **kw)
+    return lambda a: _rows(a, name, rows, **kw)
+
+
+def _aps(x, y, z):
+    return lambda a: p29.aps_cluster(a, 'Turret', x, y, z)
+
+
+_AO_4C = {'interceptor_jet': .3, 'fighter_jet': .6, 'attack_helicopter': .7, 'sky_gunship': .7}
+_DETAIL_4C = {
+    # (current builder, options) source, then the detail pass. Rows are (x, y, z) a side, from ray casts of the hulls.
+    'heavy_lift_helicopter': (w1c.BUILDERS, _flare_rows('heavy_lift_helicopter', [(.36, 2.45, 1.27), (.27, 3.1, 1.27)],
+                                                        count=3, gap=.07, r=.03, depth=.1)),
+    'light_attack_heli': (w1c.BUILDERS, _flare_rows('light_attack_heli', [(.21, .74, .6)],
+                                                    count=3, gap=.05, r=.02, depth=.08)),
+    'prop_attack_plane': (w1c.BUILDERS, _flare_rows('prop_attack_plane', [(.29, 1.35, .78)],
+                                                    count=3, gap=.08, r=.028, depth=.1)),
+    'aerial_tanker': (w1c.BUILDERS, _flare_rows('aerial_tanker', [(1.11, 5.5, 1.9), (.93, 6.3, 1.9)],
+                                                count=4, gap=.12, r=.045, depth=.16)),
+    'twin_rotor_gunship': (w1c.BUILDERS, _flare_rows('twin_rotor_gunship', [(1.09, 2.2, 1.45), (1.09, 2.95, 1.45)],
+                                                     count=4, gap=.12, r=.04, depth=.14)),
+    'attack_helicopter': (exp.BUILDERS, _flare_rows('attack_helicopter', [(.17, 1.05, .93)],
+                                                    count=3, gap=.05, r=.02, depth=.08)),
+    'fighter_jet': (exp.BUILDERS, _flare_rows('fighter_jet', [(.99, 2.2, .05)], count=3, gap=.06, r=.02, depth=.08)),
+    'interceptor_jet': (pn.BUILDERS, _flare_rows('interceptor_jet', [(.35, 2.2, .12)],
+                                                 count=3, gap=.07, r=.022, depth=.09)),
+    'sky_gunship': (w2.BUILDERS, _flare_rows('sky_gunship', [(.61, 3.95, .4), (.5, 4.65, .4)],
+                                             count=4, gap=.12, r=.04, depth=.14)),
+    # The APS cluster on a free stretch of the turret roof (Turret-local coordinates).
+    'next_gen_tank': (w1c.BUILDERS, _aps(-.1, .72, .47)),
+    'titan_tank': (w3.BUILDERS, _aps(0, -.7, .96)),
+}
+
+
 BUILDERS = {
     'scout_heli': (scout_heli, dict(_opts('scout_heli'), ao_strength=.65)),
     'gunship_heli': (gunship_heli, dict(_opts('gunship_heli'), ao_strength=.65)),
@@ -446,4 +504,6 @@ BUILDERS = {
     'glide_bomber': (glide_bomber, dict(_opts('glide_bomber'), ao_strength=0.3)),
     'recon_jet': (_cleaned(pn.recon_jet), dict(_opts('recon_jet'), ao_strength=0.85)),
     'airborne_vehicle_chute': (_cleaned(pn.airborne_vehicle_chute), _opts('airborne_vehicle_chute')),
+    # Pass 4c
+    **{name: (_detailed(src[name][0], extra, _AO_4C.get(name)), src[name][1]) for name, (src, extra) in _DETAIL_4C.items()},
 }
