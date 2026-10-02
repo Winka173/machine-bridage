@@ -204,3 +204,37 @@
 | B1-twin_tank | OK | 3 rows |
 | B1-heavy_tank | OK | 4 rows |
 | B1-titan_tank | OK | 4 rows |
+
+## Run apply: E1, B0-*, B1-armored_car, B1-combat_wreck_car, B1-river_patrol_boat, B1-airborne_vehicle, B1-amphib_light_vehicle, B1-ifv, B1-auto_loader_howitzer, B1-river_gunboat, B1-coastal_ashm_vehicle, B1-ground_cruise_missile_vehicle, B1-recoilless_jeep, B1-towed_at_gun, B1-fpv_carrier, B1-lancet_truck, B1-tank_destroyer, B1-wheeled_gun, B1-fibre_fpv_carrier, B1-radar_atgm_vehicle, B1-nlos_atgm_vehicle, B1-laser_tank, B1-railgun_truck (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | ALREADY_APPLIED | |
+| B0-sky_gunship | ALREADY_APPLIED | |
+| B0-thermobaric_launcher | ALREADY_APPLIED | |
+| B0-siege_tank | ALREADY_APPLIED | |
+| B0-light_tank | ALREADY_APPLIED | |
+| B0-vbied | ALREADY_APPLIED | |
+| B0-flame_tank | ALREADY_APPLIED | |
+| B0-engineer_vehicle | ALREADY_APPLIED | |
+| B1-armored_car | OK | 1 rows |
+| B1-combat_wreck_car | OK | 1 rows |
+| B1-river_patrol_boat | OK | 3 rows |
+| B1-airborne_vehicle | OK | 3 rows |
+| B1-amphib_light_vehicle | OK | 3 rows |
+| B1-ifv | OK | 3 rows |
+| B1-auto_loader_howitzer | OK | 3 rows |
+| B1-river_gunboat | OK | 3 rows |
+| B1-coastal_ashm_vehicle | OK | 3 rows |
+| B1-ground_cruise_missile_vehicle | OK | 4 rows |
+| B1-recoilless_jeep | OK | 1 rows |
+| B1-towed_at_gun | OK | 1 rows |
+| B1-fpv_carrier | OK | 3 rows |
+| B1-lancet_truck | OK | 3 rows |
+| B1-tank_destroyer | OK | 3 rows |
+| B1-wheeled_gun | OK | 3 rows |
+| B1-fibre_fpv_carrier | OK | 3 rows |
+| B1-radar_atgm_vehicle | OK | 3 rows |
+| B1-nlos_atgm_vehicle | OK | 3 rows |
+| B1-laser_tank | OK | 3 rows |
+| B1-railgun_truck | OK | 3 rows |
