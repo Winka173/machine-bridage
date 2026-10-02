@@ -14158,3 +14158,26 @@ Pass 4c (lane A): prompt 29 5.5 details only, no rebuild. In `Tools/blender/mb_p
 - **Gates (triangles old -> new, COLOR_0 mean old -> new).** heavy_lift 3,138 -> 3,858 (.8162 -> .8202); light_attack_heli 3,058 -> 3,418 (.8069 -> .8099); prop_attack_plane 2,634 -> 2,994 (.8010 -> .8061); aerial_tanker 3,220 -> 4,164 (.8095 -> .8165); twin_rotor 3,422 -> 4,366 (.8241 -> .8275); attack_helicopter 4,362 -> 4,722 (.6933 -> .7192), _hd 6,542 -> 6,902 (.6492 -> .6856); fighter_jet 3,948 -> 4,308 (.7127 -> .7457), _hd 13,856 -> 14,216 (.6493 -> .7033); interceptor_jet 1,140 -> 1,500 (1.32x; .7347 -> .7921; one new material, TeamGlow, on a static part); sky_gunship 2,708 -> 3,652 (1.35x; .7040 -> .7220), _hd 3,548 -> 4,492 (.7056 -> .7200); next_gen_tank 6,512 -> 6,620 (.7927 -> .7924); titan_tank 8,276 -> 8,384 (.5964 -> .5961). Zero-area 0, open edges and sizes unchanged, no errors or warnings, runtime nodes unchanged.
 - **Card luma (old, alpha > .5, Rec. 709):** heavy_lift .4198, light_attack_heli .4051, prop_attack_plane .3925 (the dimmest air card: watch it), aerial_tanker .4667, twin_rotor_gunship .3979, attack_helicopter .3714, fighter_jet .4290, interceptor_jet .4224, sky_gunship .4361, next_gen_tank .3683 (watch it; the cluster uses pale Armor and Team), titan_tank .3704. No card or preview renders (lead).
 - Lead (2026-10-02), wave 4c cards: all eleven pass (-0.7 % to +1.9 %). Wave 4 is complete (aircraft on V2 / cleaned, prompt 29 flare tubes on the 16 FLARE_MODELS, APS clusters on next_gen_tank and titan_tank).
+
+## 27 wave 6d (lead pass, 2026-10-02)
+
+Pass 6d (lane B, towers): drone_hangar, ew_tower, each with `_a` and `_b`, plus the 6c atgm_tower fix, in `Tools/blender/mb_p27_wave6.py` (method of 6a-6c:
+old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and pivots untouched). Run: Blender rebuild,
+`glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 (atgm_tower trio .5).
+
+- **6c fix (atgm_tower, _a, _b, cards -6 %).** The V2 body kept `Concrete` (#8d8a7e, the darkest large base colour in the tower) and the roof slab was
+  merged into the same part; from the card's high three-quarter view those two surfaces are most of the tower's pixels, so a higher COLOR_0 (AO) did
+  not help. Now the `Tower` body is `Plaster` (#ddd2b8), the roof slab is its own part `Roof_slab` in `PlasterWhite` (#ece8dc; one extra static mesh,
+  not a runtime node), AO .5. Fascia stays Team, pad stays Concrete, nodes unchanged. COLOR_0 (6c -> fixed): atgm_tower .657 -> .691, _a .669 -> .699,
+  _b .661 -> .693; triangles unchanged (5,374 / 5,926 / 5,974). `one_shot_atgm_tower` (rebuilt by the substring filter) reverted. Lesson: for a card
+  gate, the base colour of the largest upward and side faces counts more than AO; use a pale material there.
+- ew_tower: extruded chamfered pad, footings as `k.block` with anchor bolts, chamfered platform plate, chamfered shelter with recessed panels on the back and
+  right (door side untouched), pale `Medical` roof, aircon with recessed grille panels. The lattice mast, head, arrays, dishes, antennas are untouched.
+  The old 16 zero-area triangles are gone. `_a` (dome and wave rings) and `_b` (flat array) edit the head by name as before.
+- drone_hangar: extruded pad, the arch as a `k.sharp_loft` of the old U ring (edge chamfers), chamfered headwall piers and lintel with back panels, a thicker
+  Team fascia, lipped cap, door box, roof deck plate, container with recessed far-side panels and chamfered blocks. Earth cover, toes, launch rail, drone
+  racks, mast, generator are untouched, so the `_a`/`_b` strips (`RAIL`, `Drone_*` inside `DECK`) cut the same parts.
+- **Gates (old -> new triangles, COLOR_0).** ew_tower 5,104 -> 5,936 (.627 -> .663); _a 5,436 -> 6,268 (.699 -> .717); _b 4,544 -> 5,376 (.638 -> .669);
+  drone_hangar 7,138 -> 7,794 (.524 -> .600); _a 5,978 -> 6,634 (.540 -> .610); _b 9,114 -> 9,770 (.551 -> .619). All at most 1.18x, runtime nodes and open
+  edges identical, size within .1 %, no errors or warnings.
+- **Card luma (old, alpha > .5, Rec. 709):** ew_tower .3421 (the dimmest: watch it), _a .4080, _b .3824; drone_hangar .3538, _a .3577, _b .3564.

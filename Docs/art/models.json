@@ -141,15 +141,15 @@
   },
   "atgm_tower": {
     "file": "atgm_tower.glb",
-    "triangles": 4958
+    "triangles": 5374
   },
   "atgm_tower_a": {
     "file": "atgm_tower_a.glb",
-    "triangles": 5510
+    "triangles": 5926
   },
   "atgm_tower_b": {
     "file": "atgm_tower_b.glb",
-    "triangles": 5558
+    "triangles": 5974
   },
   "attack_helicopter": {
     "file": "attack_helicopter.glb",
@@ -457,15 +457,15 @@
   },
   "drone_hangar": {
     "file": "drone_hangar.glb",
-    "triangles": 7138
+    "triangles": 7794
   },
   "drone_hangar_a": {
     "file": "drone_hangar_a.glb",
-    "triangles": 5978
+    "triangles": 6634
   },
   "drone_hangar_b": {
     "file": "drone_hangar_b.glb",
-    "triangles": 9114
+    "triangles": 9770
   },
   "drone_hijack_vehicle": {
     "file": "drone_hijack_vehicle.glb",
@@ -525,15 +525,15 @@
   },
   "ew_tower": {
     "file": "ew_tower.glb",
-    "triangles": 5104
+    "triangles": 5936
   },
   "ew_tower_a": {
     "file": "ew_tower_a.glb",
-    "triangles": 5436
+    "triangles": 6268
   },
   "ew_tower_b": {
     "file": "ew_tower_b.glb",
-    "triangles": 4544
+    "triangles": 5376
   },
   "factory": {
     "file": "factory.glb",

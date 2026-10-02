@@ -12,6 +12,7 @@ what was there.
 Pass 6a: aa_turret, artillery_emplacement, guard_tower, each with `_a` and `_b`.
 Pass 6b: gun_turret, mg_bunker, rocket_turret, each with `_a` and `_b`.
 Pass 6c: atgm_tower, c_ram, each with `_a` and `_b`; gun_pit.
+Pass 6d: drone_hangar, ew_tower, each with `_a` and `_b`.
 """
 import math
 import random
@@ -32,7 +33,7 @@ def _rect(x0, x1, y0, y1, z):
     return [(x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)]
 
 
-def _build(base, up, mod=None, post=None):
+def _build(base, up, mod=None, post=None, ao=AO):
     """(builder, options): the tower's old builder, the V2 upgrade, then the branch's own edit and post-upgrade."""
     build, options = tb.BASES[base] if isinstance(base, str) else base
 
@@ -44,7 +45,7 @@ def _build(base, up, mod=None, post=None):
         if post:
             post(a)
         k.clean(a)
-    return _runtime_names(run), dict(options, ao_strength=AO)
+    return _runtime_names(run), dict(options, ao_strength=ao)
 
 
 # ============================================================================= aa_turret (twin 35 mm flak)
@@ -279,13 +280,14 @@ def _atgm_up(a):
     tb.strip(a, ('Pad', 'Tower', 'Fascia', 'Launcher_sight', 'Base_housing'))
     k.extrude(a.part('Pad', 'Concrete'), chamfered(5.2, 5.2, .7), .26, loc=(0, 0, .11), axis='Z', chamfer=.05,
               corner=.03, taper=.99)
-    conc = a.part('Tower', 'Concrete')
+    conc = a.part('Tower', 'Plaster')            # pale body: Concrete (#8d8a7e) read dark from the card's high view (6c)
     base = chamfered(3.4, 3.4, .55)
     z0, H, TP = .2, 2.8, .9
     k.sharp_loft(conc, [[(x * (1 - (1 - TP) * f), y * (1 - (1 - TP) * f), z0 + H * f) for x, y in base]
                         for f in (0, 1)], chamfer=.05)                                      # same outline as the old loft
     k.extrude(conc, chamfered(3.56, 3.56, .6), .12, loc=(0, 0, .26), axis='Z', chamfer=.03, corner=.02)  # plinth
-    k.extrude(conc, chamfered(3.7, 3.7, .6), .3, loc=(0, 0, 3.12), axis='Z', chamfer=.04, corner=.03)  # roof slab
+    k.extrude(a.part('Roof_slab', 'PlasterWhite'), chamfered(3.7, 3.7, .6), .3, loc=(0, 0, 3.12), axis='Z', chamfer=.04,
+              corner=.03)                                                                        # roof slab, palest
     k.extrude(a.part('Fascia', 'Team'), chamfered(3.78, 3.78, .62), .18, loc=(0, 0, 3.12), axis='Z', chamfer=.025,
               corner=.02)
     hous = a.part('Base_housing', 'Team', t)
@@ -355,14 +357,93 @@ def _pit_up(a):
     tarm.cyl(.28, .2, loc=(-.38, .12, .67), seg=14, bevel=.03, bseg=1)
 
 
+# ============================================================================= ew_tower (jamming mast)
+def _ew_up(a):
+    tb.strip(a, ('Pad', 'Footings', 'Base_plates', 'Platform', 'Shelter_blocks', 'Shelter', 'Shelter_roof', 'Aircon'))
+    k.extrude(a.part('Pad', 'Concrete'), chamfered(4.0, 4.0, .45), .26, loc=(0, 0, .11), axis='Z', chamfer=.05,
+              corner=.03, taper=.99)
+    top = .24
+    mx, my, hw0, z1 = .3, -.25, .6, 6.6
+    bolts = a.part('Base_plates', 'Steel')
+    for sx in (-1, 1):
+        for sy in (-1, 1):
+            x, y = mx + sx * hw0, my + sy * hw0
+            k.block(a.part('Footings', 'Concrete'), (.46, .46, .14), loc=(x, y, top + .04), chamfer=.035,
+                    ends=(True, True))
+            bolts.bolts([(x + dx, y + dy, top + .11) for dx in (-.15, .15) for dy in (-.15, .15)], r=.025, h=.03,
+                        seg=6, bevel=0)
+    k.block(a.part('Platform', 'Armor'), (1.3, 1.3, .13), loc=(mx, my, z1 + .045), chamfer=.03, ends=(True, True))
+    sx_, sy_, sw, sd, sh = -.62, 1.3, 1.9, 1.05, 1.3
+    for x in (-1, 1):
+        k.block(a.part('Shelter_blocks', 'Concrete'), (.3, sd + .1, .14), loc=(sx_ + x * (sw / 2 - .25), sy_, top + .05),
+                chamfer=.03, ends=(True, True))
+    zs = top + .11
+    sh_ = a.part('Shelter', 'Team')
+    k.block(sh_, (sw, sd, sh), loc=(sx_, sy_, zs + sh / 2), chamfer=.05, ends=(True, True))
+    k.inset(sh_, lambda c, n, f: n.y > .8 or n.x > .8, width=.08, depth=-.012)
+    roof = a.part('Shelter_roof', 'Medical')                                                    # pale top
+    k.block(roof, (sw + .06, sd + .06, .13), loc=(sx_, sy_, zs + sh), chamfer=.035, ends=(True, True))
+    ac = a.part('Aircon', 'Fuel')
+    k.block(ac, (.36, .7, .62), loc=(sx_ - sw / 2 - .15, sy_, zs + .6), chamfer=.04)
+    k.inset(ac, lambda c, n, f: n.y > .8 or n.y < -.8, width=.05, depth=-.01)
+
+
+# ============================================================================= drone_hangar (arch shelter, roof deck)
+def _hangar_up(a):
+    tb.strip(a, ('Pad', 'Headwall', 'Headwall_cap', 'Fascia', 'Door_box', 'Container', 'Container_blocks', 'Deck',
+                 'Hangar'))
+    k.extrude(a.part('Pad', 'Concrete'), chamfered(8.0, 8.0, .9), .22, loc=(0, 0, .09), axis='Z', chamfer=.05,
+              corner=.04, taper=.995)
+    top = .2
+    hx, A, B, th = -.55, 2.45, 2.8, .32
+    yf, yb = -2.25, 2.5
+    n = 12
+    from mb_towers3 import _arch
+    outer = _arch(hx, A, B, top, 0, math.pi, n)
+    inner = _arch(hx, A - th, B - th * .95, top, math.pi, 0, n)
+    ring = outer + inner
+    k.sharp_loft(a.part('Hangar', 'Concrete'), [[(x, y, z) for x, z in ring] for y in (yf, -1.0, .25, 1.5, yb)],
+                 chamfer=.05)
+    # Headwall: chamfered piers and lintel with panels on the back, a thicker Team fascia, a lipped cap.
+    hw = a.part('Headwall', 'Concrete')
+    y0_, y1_ = -2.8, -2.2
+    yc_, dp = (y0_ + y1_) / 2, y1_ - y0_
+    dw, dh, H = 1.1, 2.1, 3.25
+    k.block(hw, (2.75 - dw, dp, H), loc=(hx - (2.75 + dw) / 2, yc_, top + H / 2), chamfer=.05, ends=(True, True))
+    k.block(hw, (2.75 - dw, dp, H), loc=(hx + (2.75 + dw) / 2, yc_, top + H / 2), chamfer=.05, ends=(True, True))
+    k.block(hw, (2 * dw + .1, dp, H - dh), loc=(hx, yc_, top + dh + (H - dh) / 2), chamfer=.05, ends=(True, True))
+    k.inset(hw, lambda c, nn, f: nn.y > .8, width=.12, depth=-.02)
+    k.block(a.part('Fascia', 'Team'), (5.56, .13, .32), loc=(hx, y0_ - .045, top + H - .26), chamfer=.025)
+    k.block(a.part('Headwall_cap', 'Concrete'), (5.6, dp + .1, .13), loc=(hx, yc_, top + H + .045), chamfer=.035,
+            ends=(True, True))
+    k.block(a.part('Door_box', 'Team'), (2 * dw + .3, .36, .42), loc=(hx, y0_ - .17, top + dh + .24), chamfer=.04)
+    # Roof deck: chamfered plate (top at zd as before).
+    zd = top + B + .45
+    dx, dy = hx, .7
+    k.block(a.part('Deck', 'Armor'), (2.5, 3.2, .13), loc=(dx, dy, zd - .065), chamfer=.03, ends=(True, True))
+    # Ground-control container: chamfered body with panels on the back and the far side, roof blocks.
+    gx, gy, gw, gd, gh = 2.85, .3, 1.25, 2.6, 1.25
+    for sy in (-1, 1):
+        k.block(a.part('Container_blocks', 'Concrete'), (gw + .1, .3, .14), loc=(gx, gy + sy * (gd / 2 - .3), top + .05),
+                chamfer=.03, ends=(True, True))
+    zg = top + .1
+    cont = a.part('Container', 'Team')
+    k.block(cont, (gw, gd, gh), loc=(gx, gy, zg + gh / 2), chamfer=.05, ends=(True, True))
+    k.inset(cont, lambda c, nn, f: nn.x < -.8, width=.09, depth=-.012)
 
 
 BUILDERS.update({
-    'atgm_tower': _build(tb.BASES['atgm_tower'], _atgm_up),
-    'atgm_tower_a': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_a),
-    'atgm_tower_b': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_b),
+    'atgm_tower': _build(tb.BASES['atgm_tower'], _atgm_up, ao=.5),
+    'atgm_tower_a': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_a, ao=.5),
+    'atgm_tower_b': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_b, ao=.5),
     'c_ram': _build(tb.BASES['c_ram'], _cram_up),
     'c_ram_a': _build(tb.BASES['c_ram'], _cram_up, tb.c_ram_a),
     'c_ram_b': _build(tb.BASES['c_ram'], _cram_up, tb.c_ram_b),
     'gun_pit': _build(tb.BASES['gun_pit'], _pit_up),
+    'ew_tower': _build('ew_tower', _ew_up),
+    'ew_tower_a': _build('ew_tower', _ew_up, tb.ew_tower_a),
+    'ew_tower_b': _build('ew_tower', _ew_up, tb.ew_tower_b),
+    'drone_hangar': _build('drone_hangar', _hangar_up),
+    'drone_hangar_a': _build('drone_hangar', _hangar_up, tb.drone_hangar_a),
+    'drone_hangar_b': _build('drone_hangar', _hangar_up, tb.drone_hangar_b),
 })
