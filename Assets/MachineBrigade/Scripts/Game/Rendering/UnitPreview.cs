@@ -127,8 +127,11 @@ namespace MachineBrigade.Game.Rendering
             _camera.projectionMatrix = Matrix4x4.Perspective(fov, aspect, _camera.nearClipPlane, _camera.farClipPlane);
         }
 
-        /// <summary>Shows a vehicle's model (in the player's colours) and starts the camera.</summary>
-        public void Show(string modelId, float scale)
+        /// <summary>
+        /// Shows a vehicle's model (in the player's colours) and starts the camera. Prompt 34 L8: with its card
+        /// (<paramref name="def"/>) the model stands in its own setting on the turntable (<see cref="PreviewStage"/>).
+        /// </summary>
+        public void Show(string modelId, float scale, VehicleDef def = null)
         {
             var fromRange = _range != null;
             CloseRange();
@@ -145,8 +148,51 @@ namespace MachineBrigade.Game.Rendering
                 _shown = modelId;
                 Frame();
             }
+            Dress(def);
             Project();
             _camera.enabled = true;
+        }
+
+        private PreviewStage _stage;
+        private string _stageKey;
+        private Vector3 _rest;
+        private bool _hover;
+        private float _bob;
+
+        /// <summary>
+        /// Prompt 34 L8: the setting under the turntable's model (the biome's ground, a wavy sea at the waterline, the water's
+        /// edge, a track, a base pad; an aircraft hangs over the ground and bobs). Rebuilt when the model, setting or biome changes.
+        /// </summary>
+        private void Dress(VehicleDef def)
+        {
+            if (_model == null) return;
+            var setting = PreviewSettings.Of(def);
+            var biome = PreviewSettings.Biome();
+            var key = _shown + "|" + setting + "|" + biome;
+            var renderers = _model.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0) return;
+            var rotation = _turntable.rotation;
+            _turntable.rotation = Quaternion.identity;
+            var bounds = renderers[0].bounds;
+            foreach (var r in renderers) bounds.Encapsulate(r.bounds);
+            _turntable.rotation = rotation;
+            if (_stage == null || _stageKey != key)
+            {
+                _stage?.Dispose();
+                // The model's own origin over its foot is where a ship rides on the water in battle; a model drawn from its keel
+                // gets a fifth of its height.
+                var waterline = _model.transform.localPosition.y;
+                if (waterline < 0.05f || waterline > bounds.size.y * 0.6f) waterline = bounds.size.y * 0.22f;
+                var lift = setting == PreviewSetting.Air ? Mathf.Clamp((def?.Altitude ?? 0f) * 0.3f, 3f, 9f) + bounds.extents.y : 0f;
+                _stage = PreviewStage.ForTurntable(_materials, _turntable, setting, biome, bounds.extents, waterline, lift);
+                _stageKey = key;
+                SetLayer(_stage.Root);
+            }
+            _hover = setting == PreviewSetting.Air;
+            _bob = Mathf.Clamp(bounds.size.y * 0.05f, 0.08f, 0.5f);
+            _rest = _model.transform.localPosition;
+            _camera.farClipPlane = Mathf.Max(_camera.farClipPlane,
+                Vector3.Distance(_camera.transform.position, _turntable.position) + _stage.Radius + 10f);
         }
 
         /// <summary>The vehicle (or a fire support, by its card id) in action: on a little range of its own (see <see cref="FiringRange"/>).</summary>
@@ -205,7 +251,12 @@ namespace MachineBrigade.Game.Rendering
                 _range.Tick(dt);
                 if (Audio != null) Audio.FocusOverride = _range.Look;
             }
-            else _turntable.Rotate(0f, 22f * dt, 0f, Space.Self);
+            else
+            {
+                _turntable.Rotate(0f, 22f * dt, 0f, Space.Self);
+                _stage?.Tick(Time.unscaledTime);
+                if (_hover && _model != null) _model.transform.localPosition = _rest + Vector3.up * Mathf.Sin(Time.unscaledTime * 1.3f) * _bob;
+            }
         }
 
         /// <summary>Centres the model on the turntable and backs the camera off to fit it, from a little above.</summary>

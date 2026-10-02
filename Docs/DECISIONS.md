@@ -15862,3 +15862,49 @@ Pass 6: the report and the design document's sections; the PDF is built by the l
   "a vehicle that becomes cover when destroyed", does not exist in the data yet; nothing to keep.
 - Tests (written, not run): `Prompt34ViewTests` L7 (the class table on the roster, lives and caps, the parts in the
   rebuilt models, the loss event's crash plan matching the Sim's crash blast in place and time).
+
+## Prompt 34 L8 / L9 (lead pass, 2026-10-02)
+
+### L8: every preview in the unit's own setting
+
+- **The settings** (`PreviewSettings.Of`, view only): Air (anything flying: aircraft, helicopters, drones, the flying
+  bosses), Rail (a boss frame that moves on rails, a `route: "rail"`, the ids `armored_train`, `nuke_train`,
+  `rail_supergun`), Sea (a `naval` block or a ship / submarine boss frame: ships, the sea bosses; and the river boats by
+  their ids, which the Sim drives as ground vehicles), WaterEdge (the hovercraft frame, `hover_*`, `amphib_*` and the
+  "Amphibious light tank" `light_tank`: the Sim drives them on land, so the ids decide), Coast (a `navalOnly` gun: the
+  coastal battery), BasePad (static: towers and fixed defences), else Ground. The domain (`PreviewSettings.Domain`) is
+  Air / Rail / Water (Sea, WaterEdge) / Ground (Ground, BasePad, Coast).
+- **The biome** is the chosen map's theme (`MatchSettings.CurrentMap`, which falls back to the first map when the chosen
+  one is not there; the menu only lets an unlocked map be chosen), drawn from `MapTheme.For(theme)`: its grass, dirt
+  and sand in noise patches, speckled, and its water colour.
+- **Temporary scenes, not prompt 33's** (`PreviewStage`): prompt 33's biome, sea and rail assets are on another lane and
+  not merged, so the stage builds scenes of the right kind from procedural meshes: a ground grid in the biome's colours, a
+  flat sea with three crossing swells (0.14 m, moved on the CPU with their normals; the range's sea is 33 x 33 cells of
+  4 m), a wet-sand shore strip, a short track (ballast, sleepers, two steel rails, a buffer stop; the gauge 0.62 x the
+  train's width, 1.4-5 m), a base slot's pad (concrete over a dark rim, hazard corner marks). Swap for prompt 33's pieces
+  when it merges (one class). Own plain materials, because `materials.Ground` carries the lobby map's painted texture
+  (the old range's quad showed the whole lobby map squeezed onto it); no property blocks.
+- **"In action"** (`FiringRange`): the 260 m quad is replaced by the stage. Sea: water from the back edge to a shore 12 m
+  before the targets, which stand on the shore; a ship stands far enough off for its bow to stay on the water
+  (`PreviewSettings.SeaDistance`: half its length + 14 m, but never past 90 % of its longest reach; the Leviathan goes from
+  42 m to 57 m). WaterEdge: the shooter's rear over the water, the shore under it. Rail: a track under the train along its
+  heading, from the back edge to 10 m past its nose (stopping 8 m short of the targets). Air: the biome's ground below (the
+  flight is the Sim's, as before). BasePad: the pad under the tower. Coast: the battery on its pad on the shore, the sea
+  beyond, and a missile boat for its target (`FiringRange.ShipTarget`: it fires on ships only, so on the old range it had
+  nothing to shoot at).
+- **The turntable** (`UnitPreview.Show(model, scale, def)`, the detail page of vehicles, bosses and towers): a disc of the
+  setting under the model, turning with it, its rim darkened into the menu's backdrop: ground; a wavy sea at the model's
+  waterline (its own origin over its foot, else a fifth of its height); half water, half shore; a track along the model's
+  long side; a pad; for an aircraft the ground lies 3-9 m (0.3 x its altitude) below its foot and the model bobs.
+- **Test fire** in the preview is the battle's own: the range's events go through `EffectsDirector` (L5's tier overlays,
+  rings, firing looks) and `AudioDirector.ConsumeRange` (L6's banks and priority). The dummies stay the right kind:
+  armour 0-4 ground vehicles for ground weapons, an attack helicopter for anti-air, a ship for a coastal gun.
+  **Rings** (`EffectsDirector.PreviewRings`, set by the range only): every unguided blast round the shown unit fires shows
+  L3's pair of rings on its fall point, the edge (`WarnRadius`) and the core, exactly the round's damage area: for its
+  warning when it is T4+ (a player's T4 round too, in the preview only), else for its last 0.8 s. A boss's rounds that
+  already warn (L3's escape warning, prompt 26 B.4's ring) are left to those, so nothing draws twice.
+- **The ammunition handbook** has no 3D scene (precheck item 5): nothing to stand in a setting. Its tiers come in L9.
+- Tests (written, not run): `Prompt34PreviewTests` (every roster unit's domain against its data, the named units' settings,
+  every tower on a pad, a range ship's hull on the water, the coastal gun's ship target, the preview rings' rule, each
+  setting's pieces on the range and the turntable, an aircraft's ground below it, the waves moving within their height, the
+  biome's fallback).
