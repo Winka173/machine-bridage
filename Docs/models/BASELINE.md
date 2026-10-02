@@ -9,16 +9,16 @@ the hard cap an error). Warnings are listed in the JSON.
 | category | models | triangles | avg | largest | material slots | with errors | with warnings |
 |---|---:|---:|---:|---|---:|---:|---:|
 | boss | 33 | 495,942 | 15,028 | rail_supergun (36,726) | 2,197 | 0 | 27 |
-| ground | 95 | 342,332 | 3,603 | main_battle_tank_hd (16,462) | 2,379 | 2 | 6 |
-| structure | 78 | 327,100 | 4,193 | headquarters (14,164) | 2,745 | 1 | 20 |
-| prop | 115 | 238,276 | 2,071 | house_large (6,056) | 1,620 | 2 | 8 |
-| unlisted | 33 | 105,496 | 3,196 | apc_hd (14,466) | 615 | 2 | 2 |
-| air | 30 | 92,192 | 3,073 | fighter_jet_hd (13,856) | 542 | 2 | 15 |
+| ground | 95 | 342,332 | 3,603 | main_battle_tank_hd (16,462) | 2,366 | 1 | 7 |
+| structure | 78 | 327,100 | 4,193 | headquarters (14,164) | 2,745 | 0 | 20 |
+| prop | 115 | 238,276 | 2,071 | house_large (6,056) | 1,540 | 0 | 8 |
+| unlisted | 33 | 105,160 | 3,186 | apc_hd (14,466) | 615 | 0 | 2 |
+| air | 30 | 92,064 | 3,068 | fighter_jet_hd (13,856) | 542 | 0 | 15 |
 | scenery | 29 | 26,976 | 930 | rubble_large (3,516) | 110 | 0 | 2 |
 | wreck | 1 | 20,250 | 20,250 | silver_bug_wreck (20,250) | 123 | 0 | 1 |
 | munition | 28 | 6,742 | 240 | fpv_drone (1,520) | 191 | 0 | 1 |
 
-All files: 1,655,306 triangles, 9 with errors, 81 more with warnings only.
+All files: 1,654,842 triangles, 1 with errors, 82 more with warnings only.
 
 ## Experiment models (DECISIONS "27 order" step 3)
 
@@ -39,8 +39,8 @@ All files: 1,655,306 triangles, 9 with errors, 81 more with warnings only.
 
 | class | metric | over soft (warning) | over hard (error) | over the hard cap |
 |---|---|---:|---:|---|
-| ground | movingParts | 1 | 2 | sea_cruiser, siege_tank |
-| ground | renderers | 0 | 1 | siege_tank |
+| ground | movingParts | 2 | 1 | siege_tank |
+| ground | renderers | 1 | 0 | - |
 | ground | triangles | 1 | 0 | - |
 | ground | vertices | 1 | 0 | - |
 | jet | triangles | 1 | 0 | - |
@@ -48,28 +48,16 @@ All files: 1,655,306 triangles, 9 with errors, 81 more with warnings only.
 | munition | renderers | 1 | 0 | - |
 | munition | triangles | 1 | 0 | - |
 | munition | vertices | 1 | 0 | - |
-| prop | renderers | 0 | 2 | command_hq, shield_generator |
 | scenery | renderers | 2 | 0 | - |
 | structure | movingParts | 1 | 0 | - |
-| tower | movingParts | 0 | 1 | flak_tower |
 | tower | vertices | 1 | 0 | - |
 
-13 models over a budget, 5 of them over a hard cap.
+10 models over a budget, 1 of them over a hard cap.
 
 ## Error reasons (count of models)
 
-- over a budget hard cap: 5
-- zero-area triangles over 0.5 %: 3
-- proportions off modelSize by over 25 %: 1
+- over a budget hard cap: 1
 
-## Flagged models (9)
+## Flagged models (1)
 
-- **command_hq** (prop): renderers 62 over the prop normal hard cap 58
-- **flak_tower** (structure): movingParts 10 over the tower normal hard cap 9
-- **interceptor_jet** (air): interceptor_jet: height/length 0.20 vs modelSize 0.27 (-26%)
-- **sea_cruiser** (ground): movingParts 14 over the ground normal hard cap 10
-- **shield_generator** (prop): renderers 63 over the prop normal hard cap 58
-- **siege_tank** (ground): renderers 80 over the ground normal hard cap 76; movingParts 22 over the ground normal hard cap 10
-- **sky_gunship_hd** (air): 202 zero-area triangles (5.37%)
-- **strike_jet** (unlisted): 156 zero-area triangles (1.79%)
-- **tank_buster** (unlisted): 163 zero-area triangles (1.82%)
+- **siege_tank** (ground): movingParts 22 over the ground normal hard cap 10

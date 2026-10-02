@@ -577,6 +577,11 @@ def interceptor_jet(a):
     for x in (-.35, .35):
         for y in (-.6, 1.0):
             missiles.cyl(.08, 1.5, loc=(x, y, -.45), rot=FORWARD, seg=8, bevel=.02)
+    # The def is 9.1 x 5.4 x 2.5 m (balance.json modelSize); the model stood 1.87 m (DECISIONS 27 wave 2 pass B): tall
+    # twin outboard fins on the tailplanes, as on the MiG-31, bring it to 2.1 m.
+    fins = a.part('Fins', 'Team')
+    for s in (-1, 1):
+        fins.box((.08, 1.3, 1.6), loc=(s * 1.08, 9.1 / 2 - .75, .8), rot=(-.25, s * .1, 0), bevel=.01, seg=1, taper=(1, .5))
     a.pivot('Muzzle_missile', (0, -.2, -.55))
 
 

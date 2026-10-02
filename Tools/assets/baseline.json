@@ -572,6 +572,32 @@
     "FLAG mobile_fortress: triangles 22,116 -> 23,256 (+5.2%); vertices 26,100 -> 27,341 (+4.8%); meshes 63 -> 74 (+17.5%); renderers 63 -> 74 (+17.5%); materialSlots 63 -> 74 (+17.5%); fileBytes 1,333,344 -> 1,404,764 (+5.4%); structure changed",
     "visual_jammer: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "command_hq",
+    "shield_generator",
+    "flak_tower",
+    "sea_cruiser",
+    "siege_tank",
+    "sky_gunship_hd",
+    "strike_jet",
+    "tank_buster",
+    "interceptor_jet"
+   ],
+   "reason": "wave 2 pass B: static meshes merged per material (command_hq, shield_generator, siege_tank), flak_tower Mount_armor/steel meshes renamed Turret_*, sea_cruiser unused Part_* renamed Piece_*, k.clean on sky_gunship_hd/strike_jet/tank_buster, interceptor_jet tall twin fins (2.18 m)",
+   "changes": [
+    "FLAG command_hq: vertices 9,232 -> 9,184 (-0.5%); meshes 62 -> 27 (-56.5%); renderers 62 -> 27 (-56.5%); materialSlots 62 -> 27 (-56.5%); fileBytes 502,484 -> 470,904 (-6.3%); structure changed",
+    "flak_tower: fileBytes 717,736 -> 717,740 (+0.0%); structure changed",
+    "FLAG interceptor_jet: triangles 1,052 -> 1,140 (+8.4%); vertices 998 -> 1,102 (+10.4%); fileBytes 57,964 -> 63,068 (+8.8%); structure changed",
+    "sea_cruiser: fileBytes 351,308 -> 351,312 (+0.0%); structure changed",
+    "FLAG shield_generator: vertices 8,301 -> 8,139 (-2.0%); meshes 63 -> 18 (-71.4%); renderers 63 -> 18 (-71.4%); materialSlots 63 -> 18 (-71.4%); fileBytes 459,972 -> 413,844 (-10.0%); structure changed",
+    "FLAG siege_tank: meshes 80 -> 67 (-16.2%); renderers 80 -> 67 (-16.2%); materialSlots 80 -> 67 (-16.2%); fileBytes 465,492 -> 455,068 (-2.2%); structure changed",
+    "sky_gunship_hd: triangles 3,764 -> 3,548 (-5.7%); vertices 4,540 -> 4,313 (-5.0%); fileBytes 243,428 -> 232,140 (-4.6%); structure changed",
+    "strike_jet: triangles 8,700 -> 8,532 (-1.9%); vertices 9,841 -> 9,669 (-1.7%); fileBytes 511,564 -> 502,984 (-1.7%); structure changed",
+    "tank_buster: triangles 8,958 -> 8,790 (-1.9%); vertices 10,514 -> 10,340 (-1.7%); fileBytes 546,688 -> 538,020 (-1.6%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -11146,24 +11172,24 @@
   },
   "command_hq": {
    "file": "command_hq.glb",
-   "fileBytes": 502484,
-   "sha1": "368ee411cd75fc4d",
+   "fileBytes": 470904,
+   "sha1": "d19cd4a68e5a66c0",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 63,
-   "meshes": 62,
+   "nodes": 28,
+   "meshes": 27,
    "materials": 23,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 62,
-   "submeshes": 62,
-   "materialSlots": 62,
+   "renderers": 27,
+   "submeshes": 27,
+   "materialSlots": 27,
    "materialsUsed": 23,
    "triangles": 5982,
-   "vertices": 9232,
+   "vertices": 9184,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -11194,7 +11220,7 @@
     8.765,
     -0.036
    ],
-   "structureHash": "6344005a09b81956",
+   "structureHash": "144458586f84249d",
    "color0": {
     "mean": 0.6197,
     "min": 0.0651,
@@ -11212,46 +11238,21 @@
    "nodeNames": [
     "Aircon",
     "Aircon_fans",
-    "Annex",
-    "Antenna",
-    "Antennas",
     "Apron",
     "Beacon",
-    "Blast_door",
-    "Bunker",
-    "Cable_tray",
-    "Cables",
     "Camo_net",
     "Camo_net_garnish",
     "Camo_net_garnish.001",
     "Camo_net_garnish.002",
-    "Command_room",
     "Dish_pedestal",
-    "Door_frame",
     "Door_hazard",
     "Door_hazard.001",
-    "Door_ribs",
     "Drums",
-    "Flag",
-    "Flag_pole",
-    "Generator",
-    "Generator_doors",
-    "Generator_exhaust",
-    "Generator_louvres",
-    "Generator_panel",
-    "Generator_roof",
     "Generator_skid",
-    "Generator_stripe",
-    "Junction_boxes",
     "Lit_windows",
-    "Mast",
-    "Mast_dish",
-    "Mast_footing",
     "Net_poles",
     "Obstruction_lights",
     "Panel_antennas",
-    "Parapet",
-    "Portal",
     "Radar",
     "Radar_dish",
     "Radar_frame",
@@ -11259,26 +11260,14 @@
     "Radar_turntable",
     "Roller_door",
     "Roof_deck",
-    "Roof_hatch",
     "Roof_plate",
     "Roof_sandbags",
-    "Room_door",
-    "Sign",
-    "T_wall_bands",
-    "T_walls",
-    "Vents",
-    "Wall_lamp",
-    "Wall_lamp_base",
-    "Wall_lamp_guard",
     "Window_frames",
-    "Window_visors",
     "Windows"
    ],
    "category": "prop",
    "hd": false,
-   "errors": [
-    "renderers 62 over the prop normal hard cap 58"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [],
    "movingParts": 1,
@@ -17213,8 +17202,8 @@
   },
   "flak_tower": {
    "file": "flak_tower.glb",
-   "fileBytes": 717736,
-   "sha1": "f90e3d2adc10538f",
+   "fileBytes": 717740,
+   "sha1": "c2b397d82c73207b",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -17261,7 +17250,7 @@
     3.494,
     0.0
    ],
-   "structureHash": "f71ed93a3b130558",
+   "structureHash": "3551672ae2001ae6",
    "color0": {
     "mean": 0.5845,
     "min": 0.0687,
@@ -17291,9 +17280,7 @@
      "Muzzle_missile"
     ],
     "mount": [
-     "Mount_armor",
-     "Mount_missile",
-     "Mount_steel"
+     "Mount_missile"
     ],
     "radar": [
      "Radar"
@@ -17342,9 +17329,7 @@
     "Main_cannon_2",
     "Main_cannon_3",
     "Main_cannon_4",
-    "Mount_armor",
     "Mount_missile",
-    "Mount_steel",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_brake_3",
@@ -17399,6 +17384,8 @@
     "Tower",
     "Turntable",
     "Turret",
+    "Turret_armor",
+    "Turret_steel",
     "Wall_bands",
     "Wall_lamp",
     "Wall_lamp_base",
@@ -17407,12 +17394,10 @@
    ],
    "category": "structure",
    "hd": false,
-   "errors": [
-    "movingParts 10 over the tower normal hard cap 9"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [],
-   "movingParts": 10,
+   "movingParts": 8,
    "budgetClass": "tower"
   },
   "flame_tank": {
@@ -25421,8 +25406,8 @@
   },
   "interceptor_jet": {
    "file": "interceptor_jet.glb",
-   "fileBytes": 57964,
-   "sha1": "538a4e9880d73c84",
+   "fileBytes": 63068,
+   "sha1": "b89ace81e9edf3aa",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 8,
@@ -25435,8 +25420,8 @@
    "submeshes": 7,
    "materialSlots": 7,
    "materialsUsed": 4,
-   "triangles": 1052,
-   "vertices": 998,
+   "triangles": 1140,
+   "vertices": 1102,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -25444,7 +25429,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 13,
+   "loosePieces": 15,
    "openEdges": 0,
    "nonManifoldEdges": 10,
    "boundsMin": [
@@ -25454,25 +25439,25 @@
    ],
    "boundsMax": [
     2.7,
-    1.3411,
+    1.6518,
     4.55
    ],
    "size": [
     9.15,
     5.4,
-    1.871
+    2.182
    ],
    "center": [
     0.0,
-    0.406,
+    0.561,
     -0.025
    ],
-   "structureHash": "b9ef47c7ea5d8d53",
+   "structureHash": "5eaf36dc8be53989",
    "color0": {
-    "mean": 0.7309,
+    "mean": 0.7347,
     "min": 0.1744,
     "max": 0.9987,
-    "p05": 0.3708,
+    "p05": 0.3762,
     "p95": 0.9898,
     "outOfRange": 0
    },
@@ -25494,9 +25479,7 @@
    ],
    "category": "air",
    "hd": false,
-   "errors": [
-    "interceptor_jet: height/length 0.20 vs modelSize 0.27 (-26%)"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [
     "interceptor_jet"
@@ -39337,8 +39320,8 @@
   },
   "sea_cruiser": {
    "file": "sea_cruiser.glb",
-   "fileBytes": 351308,
-   "sha1": "e864687b6bcf7fa6",
+   "fileBytes": 351312,
+   "sha1": "6f49a8a2d1670c9c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -39385,12 +39368,12 @@
     7.96,
     -0.175
    ],
-   "structureHash": "b82e25a471e0cdf7",
+   "structureHash": "8cbb7039ed2ab937",
    "color0": {
-    "mean": 0.6303,
-    "min": 0.0782,
+    "mean": 0.6398,
+    "min": 0.117,
     "max": 1.0,
-    "p05": 0.2088,
+    "p05": 0.2422,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -39411,15 +39394,11 @@
      "Radar"
     ],
     "part": [
-     "Part_deck",
-     "Part_engine",
      "Part_gun",
      "Part_gun.001",
      "Part_mg",
      "Part_mg.001",
-     "Part_radar",
-     "Part_vls",
-     "Part_welldeck"
+     "Part_radar"
     ]
    },
    "runtimeSuffixed": [
@@ -39484,15 +39463,15 @@
     "Muzzle_mg.001",
     "Nav_green",
     "Nav_red",
-    "Part_deck",
-    "Part_engine",
     "Part_gun",
     "Part_gun.001",
     "Part_mg",
     "Part_mg.001",
     "Part_radar",
-    "Part_vls",
-    "Part_welldeck",
+    "Piece_deck",
+    "Piece_engine",
+    "Piece_vls",
+    "Piece_welldeck",
     "Radar",
     "Radar_bar",
     "Radar_base",
@@ -39504,16 +39483,15 @@
    ],
    "category": "ground",
    "hd": false,
-   "errors": [
-    "movingParts 14 over the ground normal hard cap 10"
-   ],
+   "errors": [],
    "warnings": [
-    "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Muzzle_gun.001, Muzzle_mg.001"
+    "runtime names with a Blender suffix: Mount_gun.001, Mount_mg.001, Muzzle_gun.001, Muzzle_mg.001",
+    "movingParts 10 over the ground normal budget 8"
    ],
    "units": [
     "sea_cruiser"
    ],
-   "movingParts": 14,
+   "movingParts": 10,
    "budgetClass": "ground"
   },
   "searchlight": {
@@ -39986,24 +39964,24 @@
   },
   "shield_generator": {
    "file": "shield_generator.glb",
-   "fileBytes": 459972,
-   "sha1": "d58b4e72ef5afe17",
+   "fileBytes": 413844,
+   "sha1": "e5060cd6a1bd2c4e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 64,
-   "meshes": 63,
+   "nodes": 19,
+   "meshes": 18,
    "materials": 14,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 63,
-   "submeshes": 63,
-   "materialSlots": 63,
+   "renderers": 18,
+   "submeshes": 18,
+   "materialSlots": 18,
    "materialsUsed": 14,
    "triangles": 5864,
-   "vertices": 8301,
+   "vertices": 8139,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -40034,7 +40012,7 @@
     2.91,
     0.0
    ],
-   "structureHash": "b7e4fbb7cc6ab9fe",
+   "structureHash": "28df05c76b35ee58",
    "color0": {
     "mean": 0.6676,
     "min": 0.0801,
@@ -40050,76 +40028,29 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Barrier_bands",
-    "Barriers",
     "Blast_door",
-    "Block_band",
-    "Block_roof",
     "Block_stencil",
-    "Cable_boxes",
-    "Cables",
-    "Cage",
-    "Collar",
     "Conduits",
-    "Conservator_legs",
-    "Conservators",
-    "Cooling_fins",
-    "Core",
-    "Core_sockets",
-    "Crossarms",
-    "Crown",
     "Door_frame",
     "Door_hazard",
     "Door_hazard.001",
     "Emitter_glow",
-    "Emitter_lenses",
     "Emitter_nodes",
-    "Emitter_ring",
-    "Exhausts",
-    "Fin_frames",
     "Fin_headers",
-    "Finial",
-    "Finial_tip",
-    "Generator_block",
     "Insulators",
-    "Line_terminals",
     "Lines",
-    "Louvre_frames",
     "Louvres",
-    "Mast_column",
-    "Mast_plinth",
-    "Mast_rings",
     "Pad",
-    "Plinth_hazard",
-    "Plinth_hazard.001",
-    "Plinths",
-    "Pylon_footings",
     "Pylon_lights",
-    "Pylons",
     "Radar_2",
-    "Radiator_fins",
-    "Radiator_headers",
     "Ring_arms",
     "Ring_collar",
-    "Sign_edges",
-    "Sign_marks",
-    "Sign_posts",
-    "Signs",
-    "Soot",
-    "Terminals",
-    "Transformer_bands",
-    "Transformer_tanks",
     "Wall_lamp",
-    "Wall_lamp_base",
-    "Wall_lamp_guard",
-    "Warning_marks",
-    "Warning_plates"
+    "Wall_lamp_base"
    ],
    "category": "prop",
    "hd": false,
-   "errors": [
-    "renderers 63 over the prop normal hard cap 58"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [],
    "movingParts": 1,
@@ -40810,21 +40741,21 @@
   },
   "siege_tank": {
    "file": "siege_tank.glb",
-   "fileBytes": 465492,
-   "sha1": "df1502e006fd3b96",
+   "fileBytes": 455068,
+   "sha1": "04cec36c64bf39fe",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 103,
-   "meshes": 80,
+   "nodes": 90,
+   "meshes": 67,
    "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 80,
-   "submeshes": 80,
-   "materialSlots": 80,
+   "renderers": 67,
+   "submeshes": 67,
+   "materialSlots": 67,
    "materialsUsed": 7,
    "triangles": 5924,
    "vertices": 8290,
@@ -40858,9 +40789,9 @@
     1.681,
     -0.335
    ],
-   "structureHash": "868aa6152ac05b1d",
+   "structureHash": "fcb195b5614dff4f",
    "color0": {
-    "mean": 0.5883,
+    "mean": 0.5884,
     "min": 0.062,
     "max": 1.0,
     "p05": 0.1481,
@@ -40914,8 +40845,6 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Armor",
-    "Deck",
     "Deploy_brace_l",
     "Deploy_brace_l_arm",
     "Deploy_brace_l_steel",
@@ -40975,18 +40904,12 @@
     "Deploy_spade_r_stripe",
     "Deploy_spade_r_teeth",
     "Gun105_brakes",
-    "Gun105_bridge",
     "Gun105_mantlet",
     "Gun105_tubes",
     "Hatch_fittings",
-    "Hatch_fittings.001",
     "Hatches",
-    "Hatches.001",
     "Hubs",
-    "Hull",
     "Lamps",
-    "Leg_lugs",
-    "Light_rims",
     "MG_mount",
     "MG_shield",
     "Main_cannon_cradle",
@@ -41000,31 +40923,27 @@
     "Muzzle_main",
     "Muzzle_mg",
     "Periscope",
-    "Periscope_hoods",
     "Pod_trim",
     "Point_exhaust",
     "Point_fire",
     "Sight",
-    "Spade_lugs",
     "Sprockets",
-    "Steel",
     "Tail_lamps",
-    "Track_pods",
     "Tracks",
     "Turret",
     "Turret_armor",
     "Turret_body",
     "Turret_steel",
-    "Tyres",
     "Wheels"
    ],
    "category": "ground",
    "hd": false,
    "errors": [
-    "renderers 80 over the ground normal hard cap 76",
     "movingParts 22 over the ground normal hard cap 10"
    ],
-   "warnings": [],
+   "warnings": [
+    "renderers 67 over the ground normal budget 61"
+   ],
    "units": [
     "siege_tank"
    ],
@@ -41889,8 +41808,8 @@
   },
   "sky_gunship_hd": {
    "file": "sky_gunship_hd.glb",
-   "fileBytes": 243428,
-   "sha1": "8a9365ed4fd89b32",
+   "fileBytes": 232140,
+   "sha1": "9ef08b1f5b87aed4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -41905,9 +41824,9 @@
    "submeshes": 22,
    "materialSlots": 22,
    "materialsUsed": 6,
-   "triangles": 3764,
-   "vertices": 4540,
-   "degenerateTriangles": 202,
+   "triangles": 3548,
+   "vertices": 4313,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
@@ -41916,7 +41835,7 @@
    },
    "loosePieces": 91,
    "openEdges": 0,
-   "nonManifoldEdges": 24,
+   "nonManifoldEdges": 29,
    "boundsMin": [
     -8.15,
     -1.23,
@@ -41937,12 +41856,12 @@
     1.18,
     0.005
    ],
-   "structureHash": "af253bcb89e54774",
+   "structureHash": "528cc69e2b4b7334",
    "color0": {
-    "mean": 0.7011,
-    "min": 0.0801,
+    "mean": 0.7056,
+    "min": 0.1194,
     "max": 1.0,
-    "p05": 0.2343,
+    "p05": 0.2603,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -41999,9 +41918,7 @@
    ],
    "category": "air",
    "hd": true,
-   "errors": [
-    "202 zero-area triangles (5.37%)"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [
     "sky_gunship"
@@ -43274,8 +43191,8 @@
   },
   "strike_jet": {
    "file": "strike_jet.glb",
-   "fileBytes": 511564,
-   "sha1": "82800280dcae704c",
+   "fileBytes": 502984,
+   "sha1": "2e854ed273c50ac2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -43290,9 +43207,9 @@
    "submeshes": 25,
    "materialSlots": 25,
    "materialsUsed": 9,
-   "triangles": 8700,
-   "vertices": 9841,
-   "degenerateTriangles": 156,
+   "triangles": 8532,
+   "vertices": 9669,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
@@ -43301,7 +43218,7 @@
    },
    "loosePieces": 162,
    "openEdges": 0,
-   "nonManifoldEdges": 103,
+   "nonManifoldEdges": 159,
    "boundsMin": [
     -4.849,
     -0.7037,
@@ -43322,12 +43239,12 @@
     0.715,
     0.179
    ],
-   "structureHash": "9b600936e85fc16a",
+   "structureHash": "12292f741e845079",
    "color0": {
-    "mean": 0.6903,
+    "mean": 0.6909,
     "min": 0.0782,
     "max": 1.0,
-    "p05": 0.2786,
+    "p05": 0.2761,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -43371,9 +43288,7 @@
    ],
    "category": "unlisted",
    "hd": false,
-   "errors": [
-    "156 zero-area triangles (1.79%)"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [],
    "movingParts": 1,
@@ -44202,8 +44117,8 @@
   },
   "tank_buster": {
    "file": "tank_buster.glb",
-   "fileBytes": 546688,
-   "sha1": "0f43b344b82cf5be",
+   "fileBytes": 538020,
+   "sha1": "3548613cdfc36419",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -44218,9 +44133,9 @@
    "submeshes": 29,
    "materialSlots": 29,
    "materialsUsed": 9,
-   "triangles": 8958,
-   "vertices": 10514,
-   "degenerateTriangles": 163,
+   "triangles": 8790,
+   "vertices": 10340,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
@@ -44229,7 +44144,7 @@
    },
    "loosePieces": 191,
    "openEdges": 0,
-   "nonManifoldEdges": 229,
+   "nonManifoldEdges": 307,
    "boundsMin": [
     -8.45,
     -1.9405,
@@ -44250,12 +44165,12 @@
     0.137,
     1.135
    ],
-   "structureHash": "1f360a7debbef791",
+   "structureHash": "2ce68a8cbfc034cc",
    "color0": {
-    "mean": 0.6858,
-    "min": 0.0801,
+    "mean": 0.6926,
+    "min": 0.1194,
     "max": 1.0,
-    "p05": 0.2499,
+    "p05": 0.2786,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -44305,9 +44220,7 @@
    ],
    "category": "unlisted",
    "hd": false,
-   "errors": [
-    "163 zero-area triangles (1.82%)"
-   ],
+   "errors": [],
    "warnings": [],
    "units": [],
    "movingParts": 0,

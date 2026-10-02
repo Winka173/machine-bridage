@@ -76,7 +76,7 @@ def _twin_turret(a, mount, part_name, loc, size=(4.6, 5.6, 2.2), barrel=9.0, bor
 def sea_cruiser(a):
     """The missile cruiser of Leviathan's fleet: prompt 16's first Leviathan, kept as it was built (64 x 11 m;
     the data draws it at 0.72, 46 x 8 m). Its turrets `Mount_gun` / `Mount_gun.001` (`Muzzle_gun*` between the
-    barrels), its CIWS `Mount_mg` / `Mount_mg.001`; the other Part_ empties are only pieces now."""
+    barrels), its CIWS `Mount_mg` / `Mount_mg.001`; the other empties (Piece_vls, Piece_engine, Piece_deck, Piece_welldeck) are plain pieces: no def part uses them (DECISIONS 27 wave 2 pass B) and Part_radar only carries the Radar."""
     _suffixed(a)
     hull = a.part('Hull', 'Armor')
     # Bow (-Y) to stern: a sharp raked stem, a raised forecastle with sheer, flat sides, a square transom.
@@ -104,7 +104,7 @@ def sea_cruiser(a):
     _twin_turret(a, 'Mount_gun.001', 'Part_gun.001', (0, 16.0, 3.4), spread=0.55)
 
     # The launch cells before the bridge: a raised block of hatches.
-    pvls = pv(a, 'Part_vls', (0, -11.5, 3.4))
+    pvls = pv(a, 'Piece_vls', (0, -11.5, 3.4))
     a.part('Vls_block', 'Armor', pvls).box((6.2, 4.4, 0.8), loc=(0, 0, 0.4), bevel=0.06, seg=1)
     hatch = a.part('Vls_hatches', 'Undercarriage', pvls)
     for i in range(4):
@@ -144,7 +144,7 @@ def sea_cruiser(a):
     a.part('Mast_lamp', 'Lamp', prad).sphere(0.12, loc=(0, 0, 1.6), seg=8, rings=4)
 
     # The funnel (the engine room below it is the part): raked, with its cap.
-    peng = pv(a, 'Part_engine', (0, 2.5, 8.0))
+    peng = pv(a, 'Piece_engine', (0, 2.5, 8.0))
     fun = a.part('Funnel', 'Armor', peng)
     fun.box((3.0, 4.2, 5.0), loc=(0, 0.4, 2.5), rot=(-0.12, 0, 0), bevel=0.3, seg=2, taper=(0.85, 0.8))
     a.part('Funnel_cap', 'Charred', peng).box((2.4, 3.0, 0.4), loc=(0, 0.8, 5.1), rot=(-0.12, 0, 0), bevel=0.1, seg=1)
@@ -153,7 +153,7 @@ def sea_cruiser(a):
     # The hangar and the helicopter deck aft (Part_deck), the well-deck gate in the transom (Part_welldeck).
     a.part('Hangar', 'Team').box((8.0, 7.0, 3.6), loc=(0, 10.0, 5.1), bevel=0.1, seg=1)
     a.part('Hangar_door', 'Undercarriage').box((5.4, 0.08, 3.0), loc=(0, 13.53, 5.0), bevel=0)
-    pdeck = pv(a, 'Part_deck', (0, 24.5, 3.36))
+    pdeck = pv(a, 'Piece_deck', (0, 24.5, 3.36))
     pad = a.part('Flight_deck', 'Asphalt', pdeck)
     pad.box((10.0, 11.0, 0.08), loc=(0, 0, 0.04), bevel=0, seg=1)
     mark = a.part('Deck_marks', 'SafetyStripe', pdeck)
@@ -162,7 +162,7 @@ def sea_cruiser(a):
         mark.box((0.35, 1.1, 0.02), loc=(math.cos(u) * 3.2, math.sin(u) * 3.2, 0.09), rot=(0, 0, u + R90), bevel=0)
     mark.box((0.3, 3.0, 0.02), loc=(0, 0, 0.09), bevel=0)
     a.part('Deck_lights', 'Lamp', pdeck).box((9.6, 0.1, 0.05), loc=(0, 5.45, 0.1), bevel=0)
-    pwell = pv(a, 'Part_welldeck', (0, 30.5, 2.0))
+    pwell = pv(a, 'Piece_welldeck', (0, 30.5, 2.0))
     a.part('Stern_gate', 'Armor', pwell).box((6.4, 0.4, 2.6), loc=(0, 1.55, 0.0), bevel=0.05, seg=1)
     a.part('Gate_edges', 'Hazard', pwell).box((6.5, 0.1, 0.2), loc=(0, 1.8, 1.2), bevel=0)
     for s in (-1, 1):
