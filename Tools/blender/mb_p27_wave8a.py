@@ -1548,3 +1548,31 @@ _OPT4['heavy_attack_heli'] = mb_round6.BUILDERS['heavy_attack_heli'][1]
 
 
 BUILDERS.update({n: (fn, dict(_OPT4[n], ao_strength=.65)) for n, fn in UNITS4.items()})
+
+
+# ----------------------------------------------------------------------------- pass 8a5: wrecks, naval props, siege kit
+# Each model's own builder inside lane B's V2 edge-treatment wrapper (`_gen`: chamfers on plain boxes and cylinders,
+# a few more segments on round parts, `k.clean`, lighter AO). Nodes, parts, materials and shapes stay the same.
+import mb_phase8
+import mb_naval
+import mb_siege
+from mb_p27_wave8b import _gen
+
+_OPT5 = {
+    'wreck_barrel': (mb_phase8, .6, dict(seg_add=2)),
+    'wreck_turret': (mb_phase8, .5, dict(box_min=.3, seg_add=2)),
+    'wreck_launcher': (mb_phase8, .6, dict(box_min=.3, seg_add=2)),
+    'wreck_stump': (mb_phase8, .6, dict(box_min=.3, seg_add=2)),
+    'wreck_engine': (mb_phase8, .6, dict(box_min=.3, seg_add=0)),
+    'fishing_boat': (mb_naval, .8, dict(seg_add=2)),
+    'lighthouse': (mb_naval, .75, dict(cyl_min=2.0)),
+    'pier': (mb_naval, .65, dict(cyl_min=.3)),
+    'base_gate': (mb_siege, .8, dict(box_min=.3, seg_add=2)),
+    'base_wall': (mb_siege, .8, dict(box_min=.3, seg_add=2)),
+    'floodlight_mast': (mb_siege, .8, dict(seg_add=2)),
+    'fuel_depot': (mb_siege, .8, dict(box_min=.3, seg_add=0)),
+    'razor_wire': (mb_siege, .8, dict(seg_add=2)),
+    'sandbag_wall': (mb_siege, .8, dict(box_min=.3)),
+    'vehicle_hangar': (mb_siege, .8, dict(box_min=.4, seg_add=2)),
+}
+BUILDERS.update({n: _gen(m, n, ao, **kw) for n, (m, ao, kw) in _OPT5.items()})

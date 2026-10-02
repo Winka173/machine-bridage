@@ -213,7 +213,7 @@
   },
   "base_gate": {
     "file": "base_gate.glb",
-    "triangles": 1736
+    "triangles": 1752
   },
   "base_wall": {
     "file": "base_wall.glb",
@@ -597,7 +597,7 @@
   },
   "floodlight_mast": {
     "file": "floodlight_mast.glb",
-    "triangles": 2240
+    "triangles": 2272
   },
   "fortress_bastion": {
     "file": "fortress_bastion.glb",
@@ -625,7 +625,7 @@
   },
   "fuel_depot": {
     "file": "fuel_depot.glb",
-    "triangles": 3516
+    "triangles": 3940
   },
   "fuel_tank": {
     "file": "fuel_tank.glb",
@@ -1573,7 +1573,7 @@
   },
   "vehicle_hangar": {
     "file": "vehicle_hangar.glb",
-    "triangles": 3964
+    "triangles": 4280
   },
   "visual_jammer": {
     "file": "visual_jammer.glb",
@@ -1613,7 +1613,7 @@
   },
   "wreck_barrel": {
     "file": "wreck_barrel.glb",
-    "triangles": 1068
+    "triangles": 1140
   },
   "wreck_car": {
     "file": "wreck_car.glb",
@@ -1621,15 +1621,15 @@
   },
   "wreck_engine": {
     "file": "wreck_engine.glb",
-    "triangles": 1238
+    "triangles": 1286
   },
   "wreck_launcher": {
     "file": "wreck_launcher.glb",
-    "triangles": 1848
+    "triangles": 1936
   },
   "wreck_stump": {
     "file": "wreck_stump.glb",
-    "triangles": 932
+    "triangles": 972
   },
   "wreck_tank": {
     "file": "wreck_tank.glb",
@@ -1641,7 +1641,7 @@
   },
   "wreck_turret": {
     "file": "wreck_turret.glb",
-    "triangles": 1112
+    "triangles": 1152
   },
   "zu23_technical": {
     "file": "zu23_technical.glb",
