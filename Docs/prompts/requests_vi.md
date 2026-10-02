@@ -214,3 +214,5 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) [đợt 8 prompt 27] làm hết 198 model
 - (02/10) xem 3 prompt này (phụ lục prompt 28, prompt 30, prompt 31) và file Machine_Brigade_Cot_truyen_Che_do_v2.xlsx + đẩy lên luôn, xem phần nào claude cloud làm và phần nào bạn làm, xong đưa tôi prompt gửi cho claude cloud
 - (02/10) [báo cáo cloud: phụ lục prompt 28 xong, cloud/p28-modes; 19 hồ sơ aiModeProfiles; spend/advancePressure tách; ngừng bắn ở cấp sát thương]
+- (02/10) tất cả các model dùng tạm đã được tạo rồi đúng không, và tất cả model đều theo ref của các thứ nó ref
+- (02/10) [chọn] dựng model thật cho model tạm còn lại
