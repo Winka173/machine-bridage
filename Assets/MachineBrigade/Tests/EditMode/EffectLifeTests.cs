@@ -18,8 +18,8 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(10f, EffectLife.Crater(1), 1e-4f);
             Assert.AreEqual(30f, EffectLife.Crater(3), 1e-4f);
             Assert.AreEqual(60f, EffectLife.Crater(5), 1e-4f);
-            Assert.AreEqual(12f, EffectLife.Of(4).SmokeMin, 1e-4f, "a 203 mm column 12-20 s");
-            Assert.AreEqual(40f, EffectLife.Of(5).SmokeMax, 1e-4f, "a 406 mm column up to 40 s");
+            Assert.AreEqual(6f, EffectLife.Of(4).SmokeMin, 1e-4f, "a 203 mm column 6-10 s (play-test 12: halved)");
+            Assert.AreEqual(15f, EffectLife.Of(5).SmokeMax, 1e-4f, "a 406 mm column up to 15 s (play-test 12: capped)");
             for (var b = 1; b <= EffectLife.Top; b++)
             {
                 Assert.Greater(EffectLife.Of(b).Fireball, EffectLife.Of(b - 1).Fireball, "fireball band " + b);

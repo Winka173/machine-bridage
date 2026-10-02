@@ -5,8 +5,8 @@ namespace MachineBrigade.Game.Effects
 {
     /// <summary>
     /// Fix prompt L6 (DECISIONS "Sửa lỗi tổng hợp L4 / L5 / L6"): the smoke and dust a blast leaves after its own recipe is
-    /// done, as long as its size band says (<see cref="EffectLife"/>): a low haze for 20-155 mm (1-2 s, 3-5 s, 6-10 s), a
-    /// standing column for 203 mm and up (12-20 s), and a tall one for 406 mm and the super weapons (25-40 s), each
+    /// done, as long as its size band says (<see cref="EffectLife"/>): a low haze for 20-155 mm (play-test 12: 0.5-1 s, 1.5-2.5 s, 3-5 s), a
+    /// standing column for 203 mm and up (6-10 s), and a tall one for 406 mm and the super weapons (10-15 s), each
     /// drifting off on the wind and fading out slowly (never blinking out). Added on top of what every blast always drew.
     /// <list type="bullet">
     /// <item>At most <see cref="BigColumns"/> (3) big columns at once: a new one makes the older ones fade faster
