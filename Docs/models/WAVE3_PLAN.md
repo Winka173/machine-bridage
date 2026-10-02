@@ -7,7 +7,7 @@ one agent at a time, each pass on its own branch `feature/p27-wave3<x>` from `le
 |---|---|
 | 3a | heavy_tank (+hd), light_tank (+hd), tank_destroyer (+hd), elite_heavy_tank, elite_mbt, elite_tank_destroyer, titan_tank, turtle_tank | done (builds and static gates; cards and previews still to render, DECISIONS 27 wave 3a)
 | 3b | laser_tank, flame_tank, twin_tank, bmpt, ifv, elite_apc, armored_bulldozer, engineer_vehicle | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3b)
-| 3c | aa_vehicle (+hd), artillery (+hd), heavy_aa, elite_aa, mortar_carrier, mine_layer, smoke_carrier, shield_carrier |
+| 3c | aa_vehicle (+hd), artillery (+hd), heavy_aa, elite_aa, mortar_carrier, mine_layer, smoke_carrier, shield_carrier | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3c)
 | 3d | mlrs, elite_mlrs, heavy_rocket_artillery, thermobaric_launcher, ballistic_launcher, long_sam, sam_launcher, iron_beam |
 | 3e | counter_battery_radar, ew_jammer, bunker_vehicle, ammo_carrier, supply_truck, railgun_truck, shahed_truck, vbied |
 | 3f | wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle, fibre_fpv_carrier, interceptor_drone_vehicle |

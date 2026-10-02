@@ -25,11 +25,11 @@
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
-    "triangles": 3236
+    "triangles": 4964
   },
   "aa_vehicle_hd": {
     "file": "aa_vehicle_hd.glb",
-    "triangles": 8044
+    "triangles": 12556
   },
   "adobe_house": {
     "file": "adobe_house.glb",
@@ -109,7 +109,7 @@
   },
   "artillery": {
     "file": "artillery.glb",
-    "triangles": 3444
+    "triangles": 5326
   },
   "artillery_emplacement": {
     "file": "artillery_emplacement.glb",
@@ -125,7 +125,7 @@
   },
   "artillery_hd": {
     "file": "artillery_hd.glb",
-    "triangles": 8074
+    "triangles": 12260
   },
   "artillery_wreck": {
     "file": "artillery_wreck.glb",
@@ -489,7 +489,7 @@
   },
   "elite_aa": {
     "file": "elite_aa.glb",
-    "triangles": 3728
+    "triangles": 5456
   },
   "elite_apc": {
     "file": "elite_apc.glb",
@@ -697,7 +697,7 @@
   },
   "heavy_aa": {
     "file": "heavy_aa.glb",
-    "triangles": 3004
+    "triangles": 4524
   },
   "heavy_attack_heli": {
     "file": "heavy_attack_heli.glb",
@@ -953,7 +953,7 @@
   },
   "mine_layer": {
     "file": "mine_layer.glb",
-    "triangles": 2576
+    "triangles": 3872
   },
   "mine_rocket_truck": {
     "file": "mine_rocket_truck.glb",
@@ -1017,7 +1017,7 @@
   },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",
-    "triangles": 2440
+    "triangles": 3242
   },
   "mountain_a": {
     "file": "mountain_a.glb",
@@ -1293,7 +1293,7 @@
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
-    "triangles": 1918
+    "triangles": 2476
   },
   "shield_generator": {
     "file": "shield_generator.glb",
@@ -1357,7 +1357,7 @@
   },
   "smoke_carrier": {
     "file": "smoke_carrier.glb",
-    "triangles": 2468
+    "triangles": 3698
   },
   "snow_pine": {
     "file": "snow_pine.glb",
