@@ -968,7 +968,7 @@
     { "id": "scout_jeep", "stillCamo": 0.4, "value": 0.5, "scale": 1, "modelSize": [2.64, 1.4, 1.41],       "armour": 0, "hp": 120, "speed": 12, "turnRate": 200, "turretTurnRate": 360, "radius": 1.3, "length": 2.64, "width": 1.4, "cp": 2, "vision": 60,
       "firesWhileMoving": true, "weapon": "mg_jeep", "captureRate": 2,
       "deathExplosion": { "damage": 30, "radius": 4, "delay": 0.1, "tier": "Large" } },
-    { "id": "light_tank", "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 460, "speed": 4, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 3, "vision": 40,
+    { "id": "light_tank", "value": 0.5, "scale": 1, "modelSize": [6.39, 2.61, 1.89],       "class": "Tank", "armour": 2, "hp": 460, "speed": 9, "turnRate": 90, "turretTurnRate": 120, "radius": 1.7, "length": 5.72, "width": 2.61, "cp": 3, "vision": 40,
       "firesWhileMoving": true, "weapon": "gun_57mm",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "gun_launched_atgm", "slot": "main", "aim": "Turret" } ],
       "deathExplosion": { "damage": 60, "radius": 5, "delay": 0.25, "tier": "Large" } },
@@ -976,7 +976,7 @@
       "firesWhileMoving": true, "weapon": "gun_120mm",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 150, "radius": 7, "delay": 0.45, "tier": "Huge" } },
-    { "id": "flame_tank", "value": 0.73, "scale": 1, "modelSize": [7.12, 2.66, 1.87],       "armour": 3, "hp": 600, "speed": 4.6, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "length": 5.75, "width": 2.66, "cp": 5, "vision": 26,
+    { "id": "flame_tank", "value": 0.73, "scale": 1, "modelSize": [7.12, 2.66, 1.87],       "armour": 3, "hp": 600, "speed": 6.5, "turnRate": 80, "turretTurnRate": 110, "radius": 1.9, "length": 5.75, "width": 2.66, "cp": 5, "vision": 26,
       "firesWhileMoving": true, "weapon": "flamethrower",
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" } ],
       "deathExplosion": { "damage": 140, "radius": 5, "delay": 0.3, "tier": "Huge" } },
@@ -1046,7 +1046,7 @@
     { "id": "strike_drone", "value": 0.81, "rearmTime": 8.5, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1, "modelSize": [4.25, 8.04, 1.24], "drone": true, "armour": 0,  "hp": 480, "speed": 13.9, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 9, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.5,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
-        { "id": "thermobaric_launcher", "value": 0.78, "scale": 1, "modelSize": [6.02, 2.85, 2.79], "armour": 3, "hp": 450, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 6.02, "width": 2.85, "cp": 9, "vision": 30,
+        { "id": "thermobaric_launcher", "value": 0.78, "scale": 1, "modelSize": [6.02, 2.85, 2.79], "armour": 3, "hp": 900, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 6.02, "width": 2.85, "cp": 9, "vision": 30,
       "firesWhileMoving": false, "weapon": "thermobaric_rockets", "secondary": [{"weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free"}], "mainSlot": "rocket",
       "deathExplosion": { "damage": 180, "radius": 9, "delay": 0.4, "tier": "Ultimate" } },
     { "id": "ifv", "value": 1.06, "scale": 1, "modelSize": [5.48, 3.02, 2.5],              "armour": 2, "hp": 520, "speed": 8, "turnRate": 110, "turretTurnRate": 160, "radius": 2.3, "length": 5.31, "width": 3.02, "cp": 6, "vision": 34,
@@ -1074,7 +1074,7 @@
     // 19P: 26 m up and a 22 m pylon turn (was 40 m and 36 m, off the top of the battle camera most of the turn), all
     // three guns (105, 40 and 25 mm) still in reach of the target all the way round.
     // Play-test 7 (DECISIONS 22P): an aircraft card again, "AC-130 Gunship" (premium, 4,500 coins); the Gunship support card is gone.
-    { "id": "sky_gunship", "rearmTime": 18, "strongVs": ["Light", "Tank", "Artillery"], "scale": 1.1765, "modelSize": [11.93, 16.3, 4.82],      "armour": 0,  "hp": 1069, "speed": 16, "turnRate": 65, "turretTurnRate": 360, "radius": 7.5, "cp": 22, "vision": 64,
+    { "id": "sky_gunship", "rearmTime": 18, "strongVs": ["Light", "Tank", "Artillery"], "scale": 1.1765, "modelSize": [11.93, 16.3, 4.82],      "armour": 0,  "hp": 2000, "speed": 16, "turnRate": 65, "turretTurnRate": 360, "radius": 7.5, "cp": 22, "vision": 64,
       "firesWhileMoving": true, "weapon": "gunship_105", "mainAim": "Left", "orbit": true, "orbitRadius": 22, "flying": true, "fixedWing": true, "altitude": 26, "captureRate": 0,
       // Play-test 8 (DECISIONS 22R): its guns only; the ramp's Griffin missiles are gone (model and weapons).
       "secondary": [ { "weapon": "gunship_40mm", "slot": "gun", "aim": "Left" }, { "weapon": "gunship_25mm", "slot": "mg", "aim": "Left" } ],
@@ -1090,7 +1090,7 @@
     // Play-test 5 (DECISIONS 20W): StarCraft 2's siege tank. Tank mode drives and fires its 105 mm; standing with an
     // enemy in the mortar's reach (or on guard) it sieges in 2.5 s: braces down, turret up, the 240 mm mortar raised;
     // it packs up as long to move, or when enemies close inside the mortar's 16 m with nothing further to shell.
-    { "id": "siege_tank", "value": 1.04, "scale": 1, "modelSize": [9.13, 3.34, 3.44],       "class": "Artillery", "strongVs": ["Defense", "Heavy", "Tank"], "armour": [2, 1, 1, 0], "hp": 600, "speed": 5.5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 8.25, "width": 3.34, "cp": 12, "vision": 30,
+    { "id": "siege_tank", "value": 1.04, "scale": 1, "modelSize": [9.13, 3.34, 3.44],       "class": "Artillery", "strongVs": ["Defense", "Heavy", "Tank"], "armour": [2, 1, 1, 0], "hp": 1500, "speed": 5.5, "turnRate": 45, "turretTurnRate": 40, "radius": 2.7, "length": 8.25, "width": 3.34, "cp": 12, "vision": 30,
       "firesWhileMoving": false, "weapon": "siege_mortar_240",
       "secondary": [ { "weapon": "siege_gun_105", "slot": "gun", "aim": "Turret" }, { "weapon": "hmg_selfdef_21", "slot": "mg", "aim": "Free" } ],
       "deploy": { "seconds": 2.5, "front": 0, "range": 1, "arc": 180, "siege": true, "tankMount": 1 },
@@ -1106,7 +1106,7 @@
     // Prompt 17 D.5: the engineer and the fortification sapper are one card, the engineer: it repairs vehicles and
     // (at half the rate) towers, clears mines and breaks obstacles, slowly with its MG (the bulldozer is the quick way).
     // It does not rearm (the ammunition carrier does). The sapper's model stays for a later camouflage.
-    { "id": "engineer_vehicle", "value": 1, "altModels": ["sapper"], "scale": 1, "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": [2, 1, 1, 0], "hp": 800, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 3, "vision": 30,
+    { "id": "engineer_vehicle", "value": 1, "altModels": ["sapper"], "scale": 1, "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": [2, 1, 1, 0], "hp": 800, "speed": 7, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "repair": { "radius": 14, "rate": 0.025 },
       "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.35, "tier": "Large" } },
     // Prompt 13 F.2: the ammunition carrier, a forward rearm point (the supply truck's model: asset debt).
@@ -1134,7 +1134,7 @@
 
     // Elite enemy variants: refurbished base models (1.15x), tougher, with skills. Never bought.
     // Round 5 vehicles (Docs research 2026-09-27).
-    { "id": "vbied", "value": 1.5, "scale": 1, "modelSize": [4.58, 1.68, 1.6],            "class": "Scout", "armour": [2, 1, 0, 0], "hp": 364, "speed": 6.7, "turnRate": 150, "turretTurnRate": 360, "radius": 1.8, "length": 4.58, "width": 1.68, "cp": 3, "vision": 30,
+    { "id": "vbied", "value": 1.5, "scale": 1, "modelSize": [4.58, 1.68, 1.6],            "class": "Scout", "armour": [2, 1, 0, 0], "hp": 364, "speed": 13, "turnRate": 150, "turretTurnRate": 360, "radius": 1.8, "length": 4.58, "width": 1.68, "cp": 3, "vision": 30,
       "firesWhileMoving": true, "weapon": "detonator", "mainAim": "Hull", "kamikaze": true, "captureRate": 1,
       "deathExplosion": { "damage": 300, "radius": 6, "delay": 0.1, "tier": "Huge" } },
     { "id": "zu23_technical", "value": 0.5, "scale": 1, "modelSize": [4.39, 1.5, 1.56],   "class": "AntiAir", "armour": 0, "hp": 210, "speed": 12, "turnRate": 180, "turretTurnRate": 240, "radius": 1.5, "length": 4.39, "width": 1.5, "cp": 3, "vision": 40,

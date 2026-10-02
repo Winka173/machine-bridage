@@ -161,3 +161,15 @@
 | R-icarus | SKIPPED(REJECT) | |
 | R-round-hover | SKIPPED(REJECT) | |
 | R-speed-new | SKIPPED(REJECT) | |
+
+## Run apply: B0-* (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B0-sky_gunship | OK | 1 rows |
+| B0-thermobaric_launcher | OK | 1 rows |
+| B0-siege_tank | OK | 1 rows |
+| B0-light_tank | OK | 1 rows |
+| B0-vbied | OK | 1 rows |
+| B0-flame_tank | OK | 1 rows |
+| B0-engineer_vehicle | OK | 1 rows |

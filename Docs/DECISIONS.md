@@ -13917,3 +13917,13 @@ other AA weapons hit aircraft at x1.3 (the sheet's assumption holds); C12 the lo
 `TacticalAi.Refit`, already off for the layered AI; C13 no stored flag fields exist (they are computed from the round),
 so S05 adds optional overrides; C16 lists three AoE rows without `splash` (missile blasts) and 28 splash weapons not
 in the AoE list (reported only, B5 is HOLD anyway). C06 and C12 now let their bundles go (`DONE_CHECKS`).
+
+## Prompt 29 L3 (cloud, 2026-10-02): FIX regressions from round 1
+
+Applied B0-sky_gunship (hp 4400), B0-thermobaric_launcher (1980), B0-siege_tank (3300), B0-light_tank (speed 9),
+B0-vbied (13), B0-flame_tank (6.5), B0-engineer_vehicle (7): all OK (current == expected_before). HP is effective
+health, written in data units (sky_gunship 2000, thermobaric_launcher 900, siege_tank 1500 x toughness 2.2).
+known_good cross-checked against round 1 (`Machine_Brigade_Can_bang.xlsx`, sheet "Phương tiện", the values before
+round 1's "Xem lại" rows were applied by mistake): sky_gunship 4400, thermobaric_launcher 1980, siege_tank 3300,
+light_tank 9 m/s, vbied 13, flame_tank 6.5, engineer_vehicle 7: every known_good matches. balance.json keys changed:
+`vehicles[sky_gunship|thermobaric_launcher|siege_tank].hp`, `vehicles[light_tank|vbied|flame_tank|engineer_vehicle].speed`.
