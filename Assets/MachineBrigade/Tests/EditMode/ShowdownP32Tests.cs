@@ -154,7 +154,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void MinuteSixRaisesIncomeAndStopsTheRelays()
         {
-            var mode = Match(out var world, new ShowdownRules { EscalationAt = 1f });
+            var mode = Match(out var world, new ShowdownRules { RulesId = null, EscalationAt = 1f });
             world.Economy.TryGet(0, out var e);
             var before = e.IncomeScale;
             for (var i = 0; i < 30; i++)
@@ -169,7 +169,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void AFivePointLeadWinsAtTheLimit()
         {
-            var mode = Match(out var world, new ShowdownRules { TimeLimit = 0.5f, EscalationAt = 999f });
+            var mode = Match(out var world, new ShowdownRules { RulesId = null, TimeLimit = 0.5f, EscalationAt = 999f });
             var hq = Hq(world, 1);
             hq.Hp = hq.MaxHp * 0.94f;
             for (var i = 0; i < 20 && mode.Result == null; i++)
@@ -183,7 +183,7 @@ namespace MachineBrigade.Tests
         [Test]
         public void UnderFivePointsGoesToSuddenDeathThenTheDamageThenADraw()
         {
-            var mode = Match(out var world, new ShowdownRules { TimeLimit = 0.5f, SuddenDeath = 1f, EscalationAt = 999f });
+            var mode = Match(out var world, new ShowdownRules { RulesId = null, TimeLimit = 0.5f, SuddenDeath = 1f, EscalationAt = 999f });
             Hq(world, 1).Hp = Hq(world, 1).MaxHp * 0.97f;
             for (var i = 0; i < 12; i++)
             {
@@ -204,7 +204,7 @@ namespace MachineBrigade.Tests
             }
             Assert.AreEqual(0, mode.Result.Value.WinningTeam, "more damage to the enemy HQ in sudden death wins");
 
-            var level = Match(out var w2, new ShowdownRules { TimeLimit = 0.5f, SuddenDeath = 1f, EscalationAt = 999f });
+            var level = Match(out var w2, new ShowdownRules { RulesId = null, TimeLimit = 0.5f, SuddenDeath = 1f, EscalationAt = 999f });
             for (var i = 0; i < 60 && level.Result == null; i++)
             {
                 level.Tick(w2, Dt);

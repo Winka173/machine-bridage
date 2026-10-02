@@ -75,7 +75,9 @@ namespace MachineBrigade.Tests
                 Assert.IsTrue(def.Wall && def.Obstacle && def.Static, t.Def);
                 Assert.AreEqual(0, def.CpCost, t.Def);
                 Assert.IsNull(def.Fort, t.Def + " is no tower card");
-                Assert.That(def.MaxHp, Is.EqualTo(walls.SegmentHp * durability).Within(1f), t.Def + ": health = segment health x durability");
+                // The data's hp is segmentHp x durability; the catalog's MaxHp carries the toughness on top, so the ratio to HESCO's.
+                var hesco = Catalog.Vehicles[walls.Of(WallType.Hesco).Def];
+                Assert.That(def.MaxHp / hesco.MaxHp, Is.EqualTo(durability).Within(1e-3f), t.Def + ": health = segment health x durability");
             }
             Assert.IsTrue(walls.Of(WallType.TWall).Extra, "the T-wall builds the extra segment (the narrower gate)");
             Assert.IsTrue(walls.Of(WallType.GunWall).Gun, "the gun wall carries a small tower");
