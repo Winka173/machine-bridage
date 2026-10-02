@@ -22,11 +22,8 @@ import prompt26  # noqa: E402
 import prompt27  # noqa: E402
 import measure_stamp  # noqa: E402
 import prompt29  # noqa: E402
-<<<<<<< HEAD
 import prompt32  # noqa: E402
-=======
 import prompt31  # noqa: E402
->>>>>>> 353561717123774da8524f7887c83f92b05df11d
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
