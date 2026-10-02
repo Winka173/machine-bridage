@@ -14420,3 +14420,18 @@ mirror, no cards, no previews, no tests. The substring filter rebuilt nothing ou
 - **Card luma (old, alpha > .5, Rec. 709):** leviathan .3217, caspian .3595, typhon .2215 (the dimmest: watch it), landing_hovercraft .2849,
   supreme_command .3304. Target: >= old, at most about +20 %.
 - Lead (2026-10-02), wave 5d cards: all five pass (+0.3 % to +2.9 %). Wave 5 is complete (21 bosses). Waves 1-7 are done; wave 8 (198 props, scenery, munitions, unlisted) waits for the owner's call on scope.
+
+## 27 wave 8a1 (lead pass, 2026-10-02)
+
+Pass 8a1 (lane A, first half of the generated munitions row): new `Tools/blender/mb_p27_wave8a.py` (registered last in `build_assets.py`). The current builders of `mb_munitions` and
+`mb_props` are reused unchanged (silhouette, nodes, sizes), with a lighter AO bake (`ao_strength` .5 for rounds, 0 for buk and gmlrs, .8 for debris) and a few small real details:
+guide studs (atgm_tow, kornet, ataka, griffin, gmlrs, grad, grad_cluster), hanger lugs (buk, gbu12) and an arming vane (bomb_fab, bomb_mk84), all in existing or static nodes.
+Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests.
+
+- **Kept old:** aim120 and aim9 (COLOR_0 .804 / .806 is at the bake's ceiling; an added part lowers the mean, so no gain was possible without dropping the lugs, which were the only change).
+- **Gates (old -> new triangles, COLOR_0):** apfsds 94 -> 94 (.768 -> .785); atgm_ataka 150 -> 174 (.800 -> .801); atgm_kornet 222 -> 246 (.780 -> .790); atgm_tow 222 -> 246 (.771 -> .785);
+  bomb_fab 230 -> 242 (.688 -> .739); bomb_mk84 204 -> 216 (.762 -> .777); buk 230 -> 254 (.803 -> .805 at ao 0); flak_round 148 -> 148 (unchanged); gbu12 238 -> 262 (.782 -> .789);
+  gbu39 190 -> 190 (.733 -> .761); gmlrs 126 -> 150 (.808 -> .808); grad 114 -> 126 (.793 -> .802); grad_cluster 126 -> 138 (.796 -> .804); griffin 174 -> 198 (.798 -> .800);
+  debris concrete/leaves/plaster 20 -> 20 (+.2 %, +.1 %, +.4 %), metal 88 -> 88 (+1.4 %), roof 44 -> 44 (+1.4 %), wood 44 -> 44 (+.7 %). All at most 1.19x, sizes identical, no errors or warnings.
+- **Lesson:** near the .80 ceiling every extra vertex lowers the COLOR_0 mean; give additions a light material (`MetalSheet`) and a low `ao_strength`, or skip the model. A rebar stub on debris_concrete
+  changed its bounds 22 % and its COLOR_0 -2.8 %: dropped.
