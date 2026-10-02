@@ -345,7 +345,7 @@
   },
   "command_airship": {
     "file": "command_airship.glb",
-    "triangles": 22180
+    "triangles": 22840
   },
   "command_hq": {
     "file": "command_hq.glb",
@@ -401,7 +401,7 @@
   },
   "daedalus": {
     "file": "daedalus.glb",
-    "triangles": 11472
+    "triangles": 14644
   },
   "dazzler_vehicle": {
     "file": "dazzler_vehicle.glb",
@@ -477,7 +477,7 @@
   },
   "drone_mothership": {
     "file": "drone_mothership.glb",
-    "triangles": 19900
+    "triangles": 20206
   },
   "drone_net_tower": {
     "file": "drone_net_tower.glb",
@@ -937,7 +937,7 @@
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
-    "triangles": 11304
+    "triangles": 11476
   },
   "mesa": {
     "file": "mesa.glb",
@@ -1025,7 +1025,7 @@
   },
   "morrigan": {
     "file": "morrigan.glb",
-    "triangles": 1312
+    "triangles": 1344
   },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",
@@ -1353,7 +1353,7 @@
   },
   "sky_fortress": {
     "file": "sky_fortress.glb",
-    "triangles": 2380
+    "triangles": 3084
   },
   "sky_gunship": {
     "file": "sky_gunship.glb",

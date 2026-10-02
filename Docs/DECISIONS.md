@@ -14325,3 +14325,32 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
 - **Card luma (old, alpha > .5, Rec. 709):** behemoth .3124, behemoth_inferno .3129, behemoth_tempest .3219, fortress_bastion
   .2888 (the dimmest: watch it), fortress_hive .3181.
 - Lead (2026-10-02), wave 5a cards: all five pass (+0.1 % to +0.5 %, close to the old look as wanted for bosses).
+
+## 27 wave 5c (lead pass, 2026-10-02)
+
+Pass 5c (lane B, bosses): command_airship, drone_mothership, mega_gunship, sky_fortress, daedalus, morrigan, in the new `Tools/blender/mb_p27_wave5_air.py`
+(registered last in `build_assets.py`). Method of wave 6: the current builder, then a V2 pass that swaps the big hard surfaces under the SAME part names,
+then `k.clean`. Every empty (runtime and boss-part nodes: `Part_*`, `Mount_*`/`Muzzle_*`, `Propeller*`, `Pd_laser_*`, `Pod_bay_*`, `Thruster_main`,
+`Part_bay_l/_r`, `Part_bomb_bay`, phase/launch nodes) is at the same name and position (checked against the old GLBs), materials unchanged, no new moving
+part, so the variants argus / locust (keep lists) and the hit positions need nothing. Run: Blender rebuild, `glb_check.py` (compare, accept). No runner
+mirror, no cards, no previews, no tests. The substring filter rebuilt nothing outside the row. `ao_strength` .75 (morrigan .7).
+
+- command_airship: spine hull a `k.sharp_loft` on the old sections with recessed side panels, chamfered bridge tiers (panels) and command deck,
+  chamfered 105 mm pods with side panels, turned barbettes, seeded `Deck_gear` (Steel, four patches; the only new mesh). Envelopes, nacelles, hangars untouched.
+- drone_mothership: gondola a sharp loft on the old `_sec6` rings; chamfered turret / gondola-gun armour, second bay frame; quad flak bodies (turned base,
+  chamfered house with panels) and shields (13 cm, chamfered). The old file's 16 zero-area triangles are gone.
+- mega_gunship: the library `parts.rotor_head` on both tandem rotors (3 blades, R 7.5, chord .64, same phases; the rear head's meshes renamed
+  `Rotor_rear_*`, the kit refuses duplicate mesh names), turned tyres. **Pitfall:** its old builder never called `_suffixed`; the committed GLB came from
+  mb_round6's own build loop, so `build_assets.py` alone wrote `Mount_gun__001` and the validator lost `gun_r` / `minigun_r`. The wrapper now calls
+  `_suffixed` for every boss (idempotent).
+- sky_fortress, morrigan: jet rule (lofted skins untouched): sky_fortress chamfered gun-port housings and breeches (`EliteBlack`, as the recolour leaves
+  them) and turned barrels; morrigan only the shoulder cannon as one turned barrel, plus `k.clean`.
+- daedalus: upper wedge a sharp loft (top shoulders only), chamfered dorsal ridge and tower with recessed panels, V2 twin turbolasers (turned base,
+  chamfered house, turned barrels), 25 seeded greebles in six patches on the deck slope instead of the 46 plain boxes, chamfered keel plates, turned
+  feet, chamfered bay frames, chamfered engine housing with panels and turned bells (shallow throat, no deep pole), turned point-defence tubs.
+- **Gates (old -> new triangles, COLOR_0).** command_airship 22,180 -> 22,840 (.704 -> .714); drone_mothership 19,900 -> 20,206 (.665 -> .691);
+  mega_gunship 11,304 -> 11,476 (.655 -> .679); sky_fortress 2,380 -> 3,084 (1.30x; .705 -> .746); daedalus 11,472 -> 14,644 (1.28x; .717 -> .758);
+  morrigan 1,312 -> 1,344 (.647 -> .684). Zero-area 0, sizes identical except mega_gunship +.3 % (the rotor), no errors, each inside its boss class.
+  Not gated: non-manifold edges drone_mothership 146 -> 208, sky_fortress 20 -> 35 (overlapping chamfered pieces).
+- **Card luma (old, alpha > .5, Rec. 709):** command_airship .3109, drone_mothership .3076, mega_gunship .3352, sky_fortress .3551, daedalus .4252,
+  morrigan .3448. Target: >= old, at most about +20 %; daedalus has the biggest COLOR_0 gain (+5.6 %): watch it.
