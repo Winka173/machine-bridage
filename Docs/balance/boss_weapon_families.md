@@ -61,18 +61,18 @@ Ground DPS **1012 -> 1099** (109 %); anti-air only 0 -> 0. Made up: `p26_behemot
 
 ### mobile_fortress
 
-Ground DPS **954 -> 954** (100 %); anti-air only 145 -> 145.
+Ground DPS **954 -> 1204** (126 %); anti-air only 145 -> 145.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_jotunn_jo203` | cal_203 | 900 x 1 / 5.70 s = 158 | 900 x 1 / 5.70 s = 158 | 8.5 / 17 |
-| 1 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 33.78 s = 107 | 8 / 16 |
-| 2 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 33.78 s = 107 | 8 / 16 |
-| 3 | `p26_jotunn_close_boss_flak` | cal_35 | 25 x 41 / 7.47 s = 137 | 25 x 41 / 7.47 s = 137 | 2.5 / 0 |
-| 4 | `p26_jotunn_close_boss_flak` | cal_35 | 25 x 41 / 7.47 s = 137 | 25 x 41 / 7.47 s = 137 | 2.5 / 0 |
-| 5 | `p26_jotunn_direct_jo125` | cal_125_ap | 400 x 1 / 3.45 s = 116 | 400 x 1 / 3.45 s = 116 | 0 / 0 |
-| 6 | `p26_jotunn_tiny_twin_30_flak` | cal_30 | 22 x 160 / 102.66 s = 34 | 22 x 160 / 102.66 s = 34 | 2.5 / 0 |
-| 7 | `p26_jotunn_jo203` | cal_203 | 900 x 1 / 5.70 s = 158 | 900 x 1 / 5.70 s = 158 | 8.5 / 17 |
+| 0 | `p26_jotunn_jo203` | cal_203 | 900 x 1 / 5.70 s = 158 | 900 x 1 / 24.00 s = 38 | 8.5 / 17 |
+| 1 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 37.95 s = 95 | 8 / 16 |
+| 2 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 37.95 s = 95 | 8 / 16 |
+| 3 | `p26_jotunn_close_boss_flak` | cal_35 | 25 x 41 / 7.47 s = 137 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 4 | `p26_jotunn_close_boss_flak` | cal_35 | 25 x 41 / 7.47 s = 137 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 5 | `p26_jotunn_direct_jo125` | cal_125_ap | 400 x 1 / 3.45 s = 116 | 400 x 1 / 7.50 s = 53 | 0 / 0 |
+| 6 | `p26_jotunn_tiny_twin_30_flak` | cal_30 | 22 x 160 / 102.66 s = 34 | 22 x 160 / 6.97 s = 505 | 2.5 / 0 |
+| 7 | `p26_jotunn_jo203` | cal_203 | 900 x 1 / 5.70 s = 158 | 900 x 1 / 24.00 s = 38 | 8.5 / 17 |
 | 8 | `sam_post` | sam_9m317_buk | 320 x 2 / 4.40 s = 145 | 320 x 2 / 4.40 s = 145 | 2 / 0 |
 
 ### armored_train
@@ -380,13 +380,13 @@ Ground DPS **239 -> 239** (100 %); anti-air only 0 -> 0. Made up: `p26_bastion_d
 
 ### fenrir
 
-Ground DPS **350 -> 350** (100 %); anti-air only 0 -> 0.
+Ground DPS **350 -> 380** (109 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 33.78 s = 107 | 8 / 16 |
-| 1 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 33.78 s = 107 | 8 / 16 |
-| 2 | `p26_jotunn_close_boss_flak` | cal_35 | 25 x 41 / 7.47 s = 137 | 25 x 41 / 7.47 s = 137 | 2.5 / 0 |
+| 0 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 37.95 s = 95 | 8 / 16 |
+| 1 | `p26_jotunn_sec_jo_rockets` | rkt_smerch_300 | 450 x 8 / 33.78 s = 107 | 450 x 8 / 37.95 s = 95 | 8 / 16 |
+| 2 | `p26_jotunn_close_boss_flak` | cal_35 | 25 x 41 / 7.47 s = 137 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
 
 ### scylla
 
@@ -559,7 +559,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | boss | ground before | ground after | after / before | anti-air before -> after | make-up |
 |---|---|---|---|---|---|
 | behemoth | 1012 | 1099 | 109 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
-| mobile_fortress | 954 | 954 | 100 % | 145 -> 145 | - |
+| mobile_fortress | 954 | 1204 | 126 % | 145 -> 145 | - |
 | armored_train | 660 | 660 | 100 % | 0 -> 0 | - |
 | mega_gunship | 462 | 462 | 100 % | 0 -> 0 | - |
 | drone_mothership | 1304 | 1304 | 100 % | 0 -> 0 | - |
@@ -584,7 +584,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | caspian | 260 | 260 | 100 % | 0 -> 0 | - |
 | morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
 | bastion_mk0 | 239 | 239 | 100 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
-| fenrir | 350 | 350 | 100 % | 0 -> 0 | - |
+| fenrir | 350 | 380 | 109 % | 0 -> 0 | - |
 | scylla | 234 | 234 | 100 % | 0 -> 0 | - |
 | locust | 552 | 552 | 100 % | 0 -> 0 | - |
 | behemoth_mk2 | 569 | 515 | 90 % | 0 -> 0 | - |
