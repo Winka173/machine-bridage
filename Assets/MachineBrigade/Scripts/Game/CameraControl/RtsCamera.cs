@@ -149,6 +149,19 @@ namespace MachineBrigade.Game.CameraControl
             _trauma = Mathf.Min(1f, _trauma + amount * ShakeScale);
         }
 
+        /// <summary>
+        /// Prompt 34 L5: the one shake left on while <see cref="ShakeEnabled"/> is off: T4+ blasts and shots near the view
+        /// (Effects.TierFx.Shake). Scaled by the screen shake setting (<see cref="ShakeScale"/>, off / low / full) and never
+        /// past <paramref name="cap"/> in all, so a salvo of big shells does not pile up into a jolt.
+        /// </summary>
+        public void AddTierTrauma(float amount, float cap)
+        {
+            if (amount <= 0f || Match.DebugFlags.Has("-mb-no-shake")) return;
+            var add = amount * ShakeScale;
+            if (add <= 0f || _trauma >= cap) return;
+            _trauma = Mathf.Min(Mathf.Min(1f, cap), _trauma + add);
+        }
+
         /// <summary>Scales camera shake; the Reduced motion setting lowers it.</summary>
         public float ShakeScale { get; set; } = 1f;
 

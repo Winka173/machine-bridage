@@ -17,7 +17,7 @@ namespace MachineBrigade.Game.Effects
     /// later rounds of a burst appearing where the barrel had been (DECISIONS 12A). Sparks,
     /// smoke, the fireball and dust stay in the air they were thrown into.
     /// </summary>
-    internal sealed class MuzzleFx
+    internal sealed partial class MuzzleFx
     {
         public enum Kind
         {

@@ -124,3 +124,8 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile, CatalogCheck (balance.json: 60 rebuildCp, 5 outgoingDamageMult cuts, base.rebuild drop/enemyRadius/showdownCutoff/hqRescue); run TowerRebuildP32Tests, BaseTests, TowerGearTests, DefendLinesTests, BaseDefenceTests.
 - Play: the REBALANCE_STATS cuts (MG bunker x0.32, twin x0.27, flame x0.17, AA tower x0.58, flak x0.41) and the tap on a fallen slot with Auto-buy off; the steel fortress verdict (HOLD) for the owner.
+
+## Prompt 34 L5/L6/L7 (lead pass, 2026-10-02)
+
+- Unity: compile; run `Prompt34ViewTests` (L5 tiers, budget, shake; L6 sounds; L7 wrecks and the crash plan) with `Prompt34Tests`, `BlastSizeTests`, `EffectsTests`.
+- docs/vfx (the lead renders): before/after shots of each tier's shot and blast, T0-T5 (`EffectShots` or the In action range: a 12.7 mm, 30 mm, 100 mm, 152 mm, 203 mm and the 406 mm salvo), saved as `Docs/vfx/p34_t<k>_{fire,blast}_{before,after}.png`; before = the commit before "Prompt 34 L5" (`TierImpact` and `TierShot` off).

@@ -391,7 +391,7 @@ namespace MachineBrigade.Game.Effects
     /// scaling up. Later bursts (secondary pops, the fireball rolling on) are scheduled and
     /// emitted by <see cref="Tick"/>.
     /// </summary>
-    internal sealed class ExplosionEffect
+    internal sealed partial class ExplosionEffect
     {
         private readonly struct Burst
         {
@@ -424,8 +424,10 @@ namespace MachineBrigade.Game.Effects
 
         private readonly struct Pending
         {
-            public Pending(float at, int burst, Vector3 position, float scale, float grow, float density, float life, float ring)
+            public Pending(float at, int burst, Vector3 position, float scale, float grow, float density, float life, float ring,
+                float share = 1f)
             {
+                Share = share;
                 At = at;
                 BurstIndex = burst;
                 Position = position;
@@ -444,6 +446,9 @@ namespace MachineBrigade.Game.Effects
             public float Density { get; }
             public float Life { get; }
             public float Ring { get; }
+
+            /// <summary>Prompt 34 L5: the share of a tier overlay's particles its distance and budget allow (1: all).</summary>
+            public float Share { get; }
         }
 
         /// <summary>How a layer grows when a blast is enlarged (see <see cref="Play"/>).</summary>
@@ -543,17 +548,26 @@ namespace MachineBrigade.Game.Effects
         /// the recipe's, instead of <paramref name="grow"/>, smaller as well as bigger: a blast drawn to its damage radius
         /// keeps its ring on the radius while the rest of it grows (prompt 25 A5: every blast with a radius).
         /// </summary>
-        public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f, float life = 1f, float ring = 0f)
+        public void Play(Vector3 position, float now, float scale = 1f, float grow = 1f, float life = 1f, float ring = 0f) =>
+            Play(position, now, scale, grow, life, ring, 1f);
+
+        /// <summary>
+        /// Prompt 34 L5: as above, emitting <paramref name="share"/> of every burst (never fewer than one particle of each).
+        /// Only the tier overlays (<see cref="CreateTier"/>) are played below 1, by distance and the concurrency budget
+        /// (<see cref="TierFx"/>); every older recipe is played whole.
+        /// </summary>
+        public void Play(Vector3 position, float now, float scale, float grow, float life, float ring, float share)
         {
             grow = Mathf.Max(1f, grow);
             var density = grow > 1f ? Density : 1f;
             life = Linger(life, Density);
+            share = Mathf.Clamp01(share);
             for (var i = 0; i < _bursts.Count; i++)
             {
-                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density, life, ring);
-                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density, life, ring));
+                if (_bursts[i].Time <= 0f) EmitBurst(i, position, scale, grow, density, life, ring, share);
+                else _pending.Add(new Pending(now + _bursts[i].Time, i, position, scale, grow, density, life, ring, share));
             }
-            _layers.Chunks?.Throw(_chunks, position, scale * grow, now);
+            if (share >= 0.99f) _layers.Chunks?.Throw(_chunks, position, scale * grow, now);
         }
 
         /// <summary>The life stretch in force on a tier: the extra over 1 scaled by its <paramref name="density"/>.</summary>
@@ -566,7 +580,7 @@ namespace MachineBrigade.Game.Effects
             {
                 var p = _pending[i];
                 if (now < p.At) continue;
-                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density, p.Life, p.Ring);
+                EmitBurst(p.BurstIndex, p.Position, p.Scale, p.Grow, p.Density, p.Life, p.Ring, p.Share);
                 _pending[i] = _pending[_pending.Count - 1];
                 _pending.RemoveAt(_pending.Count - 1);
             }
@@ -679,7 +693,7 @@ namespace MachineBrigade.Game.Effects
             }, count);
         }
 
-        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density, float life, float ring)
+        private void EmitBurst(int index, Vector3 position, float scale, float grow, float density, float life, float ring, float share = 1f)
         {
             var b = _bursts[index];
             if (b.System == _layers.GroundLight)
@@ -687,7 +701,7 @@ namespace MachineBrigade.Game.Effects
                 var main = b.System.main;
                 main.startColor = new Color(1f, 1f, 1f, Mathf.Clamp01(_glow));
             }
-            Emit(b, position, scale, grow, density, life, ring, index >= _richFrom ? RichShare : 1f);
+            Emit(b, position, scale, grow, density, life, ring, Mathf.Min(share, index >= _richFrom ? RichShare : 1f));
         }
 
         /// <summary>Particles this blast emits enlarged by <paramref name="grow"/> at a tier's <paramref name="density"/> (for the budget log and tests).</summary>

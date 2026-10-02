@@ -461,9 +461,9 @@ namespace MachineBrigade.Game.Hud
                 () => MatchSettings.Options.MaxEffects ? 1 : 0, i => MatchSettings.Customise(o => o.MaxEffects = i == 1)));
 
             var game = Section(body, "settings.section.game");
-            // Camera shake is switched off for now (RtsCamera.ShakeEnabled), so its setting is hidden with it.
-            if (CameraControl.RtsCamera.ShakeEnabled)
-                game.Add(OptionRow("move", "settings.shake",
+            // Camera shake: the general shake is switched off for now (RtsCamera.ShakeEnabled), but prompt 34 L5's T4+ blasts and
+            // shots near the view shake it (RtsCamera.AddTierTrauma), so the setting is always shown: off, low or full.
+            game.Add(OptionRow("move", "settings.shake",
                     new[] { Strings.Get("settings.off"), Level(GraphicsQuality.Low), Strings.Get("settings.full") },
                     () => MatchSettings.ScreenShake, i => MatchSettings.ScreenShake = i));
             game.Add(ToggleRow("bolt", "settings.haptics", () => MatchSettings.Haptics, on => MatchSettings.Haptics = on));
