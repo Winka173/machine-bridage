@@ -13730,3 +13730,4 @@ previews (owner's rule after 3a), no tests.
   gone.
 - Card luma (old, mean of pixels with alpha > .5): laser .3595, flame .3193, twin .3705, bmpt .3279, ifv .3828, elite_apc
   .3019, bulldozer .3058, engineer .3434. New cards: the lead renders them after the merge.
+- Lead (2026-10-02), wave 3b cards: all eight pass (laser +0.5 %, flame +4.2 %, twin +1.1 %, bmpt +2.3 %, ifv -0.1 %, elite_apc -0.2 %, bulldozer +2.0 %, engineer +0.9 %).

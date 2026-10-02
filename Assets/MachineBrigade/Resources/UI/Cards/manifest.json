@@ -57,7 +57,7 @@
             "kind": "vehicle",
             "model": "flame_tank",
             "source": "Models/flame_tank",
-            "hash": "v2:af9e3b0b4c965ce59ba07ee2e24b885e5523bab8"
+            "hash": "v2:eb3e9a7b9febc9c7b5f19112b26bf217e95e8b33"
         },
         {
             "id": "mortar_carrier",
@@ -134,7 +134,7 @@
             "kind": "vehicle",
             "model": "ifv",
             "source": "Models/ifv",
-            "hash": "v2:8b98a831d35c197cb374241719d0861c834b56bd"
+            "hash": "v2:b699dc526bf5355bc659bfa58e75aadd254bbbfd"
         },
         {
             "id": "thermobaric_launcher",
@@ -183,7 +183,7 @@
             "kind": "vehicle",
             "model": "twin_tank",
             "source": "Models/twin_tank",
-            "hash": "v2:6a850f6cd2a8ce64ec9bb755f97b319152f9a5c8"
+            "hash": "v2:1541891e431237e60b5ac72c57e38286201173e7"
         },
         {
             "id": "siege_tank",
@@ -211,7 +211,7 @@
             "kind": "vehicle",
             "model": "engineer_vehicle",
             "source": "Models/engineer_vehicle",
-            "hash": "v2:fea7325173df6f42013b55ff6ce8c083cef89b09"
+            "hash": "v2:6344746508f8421527fb58f4bdbfcd231839c6e2"
         },
         {
             "id": "ew_jammer",
@@ -309,7 +309,7 @@
             "kind": "vehicle",
             "model": "bmpt",
             "source": "Models/bmpt",
-            "hash": "v2:561af7f3cbae96c9747969960bf4f545b0894001"
+            "hash": "v2:6658239eb33946c36fef7d1cf07c80578adedc4c"
         },
         {
             "id": "command_vehicle",
@@ -344,7 +344,7 @@
             "kind": "vehicle",
             "model": "armored_bulldozer",
             "source": "Models/armored_bulldozer",
-            "hash": "v2:1328dd0b614ebfc974aa5317ae406ba356a0ca0d"
+            "hash": "v2:7c241a2570033679a3b36a63a99ee9ddb17a2695"
         },
         {
             "id": "stealth_fighter",
@@ -365,7 +365,7 @@
             "kind": "vehicle",
             "model": "laser_tank",
             "source": "Models/laser_tank",
-            "hash": "v2:8c44e668b42f3baea4be7211675a445e68bd2398"
+            "hash": "v2:e4a27747fae855455b243506d9a636c88614248d"
         },
         {
             "id": "shield_carrier",
@@ -1023,7 +1023,7 @@
             "kind": "elite",
             "model": "elite_apc",
             "source": "Models/elite_apc",
-            "hash": "v2:6c8a30a0aec92a82b2ae66ef80a90f2daeb14f85"
+            "hash": "v2:a616d0ba73c91ca7522da40dfd55da8702d8d0ce"
         },
         {
             "id": "elite_artillery",
