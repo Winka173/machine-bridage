@@ -2420,6 +2420,38 @@
     "swarm_carrier: fileBytes 257,192 -> 257,812 (+0.2%); structure changed",
     "twin_rotor_gunship: fileBytes 291,748 -> 292,364 (+0.2%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "aerial_tanker",
+    "attack_helicopter",
+    "attack_helicopter_hd",
+    "attack_jet",
+    "attack_jet_hd",
+    "drone_mothership",
+    "elite_attack_helicopter",
+    "fighter_jet",
+    "fighter_jet_hd",
+    "glide_bomber",
+    "gunship_heli",
+    "heavy_bomber",
+    "heavy_lift_helicopter",
+    "interceptor_jet",
+    "light_attack_heli",
+    "mega_gunship",
+    "morrigan",
+    "prop_attack_plane",
+    "scout_heli",
+    "sky_fortress",
+    "sky_gunship",
+    "sky_gunship_hd",
+    "stealth_fighter",
+    "swarm_carrier",
+    "twin_rotor_gunship"
+   ],
+   "reason": "merge of feature/fix-art2",
+   "changes": []
   }
  ],
  "models": {
