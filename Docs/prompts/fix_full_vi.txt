@@ -1,0 +1,282 @@
+(02/10, chủ dự án) tôi thấy có rất nhiều vấn đề, sửa ngay:
+
+# PROMPT SỬA LỖI TỔNG HỢP — VŨ KHÍ (CỠ NÒNG, NHỊP BẮN), HÀNH VI ĐẠN, PHÁO SÁNG, VÒNG CẢNH BÁO, KHÓI NỔ, ÂM THANH, MODEL, TÀI LIỆU PDF
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt. Mọi quyết định ghi vào docs/DECISIONS.md (mục "Sửa lỗi tổng hợp") kèm lý do. Chia lượt, mỗi lượt một hoặc vài commit. Số trong prompt là điểm khởi đầu.
+
+## 0. LUẬT CHUNG
+- Mô phỏng deterministic 20 tick/s, tách khỏi hình ảnh / âm thanh. Hình ảnh và âm thanh không được đổi kết quả mô phỏng.
+- KHÔNG mô phỏng trận, không test trong game, không đo FPS. Được và phải viết test tự động, validator, công cụ đo offline (ảnh chụp, số đo âm thanh, đếm thực thể).
+- Model bằng script Blender (Tools/blender, frontier_kit.py), quy ước Part_* / Mount_* / Muzzle_*, vật liệu Armor / Team / TeamGlow; xuất GLB bằng build_assets.py. Tài sản ngoài chỉ CC0 / CC-BY, ghi docs/ASSET_LICENSES.md. Âm thanh: tổng hợp bằng script hoặc CC0 / CC-BY; KHÔNG dùng AI tạo âm.
+- Dòng ghi "Xem lại" trong bất kỳ file Excel nào: KHÔNG áp.
+- Hướng thiết kế đã chốt cho vũ khí boss: vũ khí càng to thì mỗi phát càng mạnh, nổ càng lớn, hiệu ứng bắn và tiếng càng lớn; bù bằng thời gian nạp dài hơn. Nhịp bắn đặt theo thực tế TRƯỚC; DPS là kết quả.
+- Các luật trong prompt này là nền. Prompt chưa chạy (28–34) chạy sau phải giữ, không ghi đè; khi gặp chỗ trùng thì làm theo prompt này và ghi DECISIONS.
+
+## 1. CÁC LƯỢT
+
+### Lượt 0 — Kiểm trạng thái (không sửa), ghi docs/checks/fix_precheck.md
+1. Prompt nào trong 26–34 và các tin nhắn sửa lỗi trước đã thực sự chạy (đọc DECISIONS, git log). Vũ khí boss hiện đang ở trạng thái nào (đã chuẩn hóa họ vũ khí chưa).
+2. Code lấy cỡ nòng hiển thị trên thẻ từ đâu (thẻ boss Behemoth đang ghi "26 MM" cho mọi vũ khí).
+3. Cách tính và hiển thị "mỗi X s" (là chu kỳ đầy đủ hay chỉ thời gian nạp).
+4. Hệ âm thanh hiện tại: thư viện, mixer, số kênh, AudioSource theo phát hay theo nguồn.
+5. Hệ VFX nổ / khói: pool, thời gian tồn tại.
+6. Pháo sáng: điểm phát, số quả mỗi lần thả, hiệu ứng.
+7. Model đã làm lại ở prompt 27 (danh sách, commit).
+
+### Lượt 1 — Rà soát toàn bộ vũ khí (chỉ báo cáo), docs/checks/full_weapon_audit.md
+Phạm vi: MỌI vũ khí của MỌI boss (Bastion Mk.0, Inferno, Harpy, Fenrir, Behemoth Mk.0, Juggernaut, Scylla, Hive, Locust, Stymphalos, Bastion, Charybdis, Behemoth Mk.II, Cerberus, Behemoth, Tartarus, Ixion, Jötunn, Hydra, Morrigan, Spectre, Icarus Mk.0, Argus, Leviathan, Gungnir, Matriarch, Moloch, Nemesis, Kronos, Monster, Typhon, Kraken, Roc, Garuda, Daedalus, Icarus, Hyperion, Tempest, Nyx… và mọi boss khác trong dữ liệu), mọi xe người chơi, tháp, công trình, thẻ hỗ trợ.
+
+Nguồn chuẩn để so:
+(a) docs/balance/Machine_Brigade_Can_bang.xlsx, sheet "Vũ khí đề xuất": Cỡ (mm/kg), Chế độ, Viên/s, Viên mỗi băng/loạt, Nạp/nghỉ, cột "Ngoài đời";
+(b) số phát / phút ngoài đời của mẫu thật (ghi nguồn).
+File cân bằng đợt 2 (v1, v2) KHÔNG phải nguồn cho nhịp bắn (chỉ có DPS theo xe).
+
+Mỗi vũ khí một dòng:
+- id, tên thật, weaponFamilyId, cỡ (dữ liệu / thẻ đang hiện), đầu nổ (kg nếu có);
+- chế độ, viên mỗi loạt, nhịp trong loạt, nạp, chu kỳ đầy đủ, DPS duy trì;
+- so với (a) và (b);
+- prompt / lần sửa nào đã chạm vào.
+
+Đánh dấu:
+- NHANH QUÁ: chu kỳ ngắn hơn 0,6 lần khoảng cách giữa hai phát ở nhịp tối đa ngoài đời (sau luật "súng trừ súng máy và pháo phòng không chậm hơn 30%");
+- CHẬM QUÁ: dài hơn 2 lần;
+- LỖI ĐƠN VỊ: phát/phút với phát/giây, nhịp trong loạt với chu kỳ, nhân / chia nhầm số nòng;
+- LỆCH ĐỢT 1: khác đề xuất đợt 1 không có ghi chú lý do;
+- LỆCH HỌ: cùng tên thật nhưng khác sát thương / bán kính / tốc độ đạn giữa các boss;
+- HIỂN THỊ SAI: cỡ hoặc nhịp trên thẻ khác dữ liệu.
+Đã biết: bộ vũ khí boss id p26_* (prompt 26) không theo đợt 1; pháo cỡ lớn nhanh gấp 3–5 lần thực tế (ví dụ 2A65 152 mm của Behemoth mỗi 2 s, trong khi đợt 1 đề xuất bệ đôi, loạt 2, nạp ~9 s; 2A44 203 mm và 2B8 240 mm mỗi 5 s; M284 155 mm của Bastion mỗi 2 s).
+Commit.
+
+### Lượt 2 — Trường cỡ nòng / đầu nổ và hiển thị
+- Cột "Cỡ (mm)" trong dữ liệu đang chứa lẫn mm và kg (tên lửa, bom, drone ghi khối lượng đầu nổ: ví dụ Kh-101 400, bom xuyên boongke 2.100, Lancet 3, Buk 70). Tách thành:
+  - caliberMm: súng, pháo, cối, rốc-két;
+  - warheadKg: tên lửa, bom, drone, thuốc nổ.
+  Súng phun lửa, la-de không có cỡ.
+- Thẻ vũ khí đọc trường này (KHÔNG lấy chữ số trong tên định danh như 2A65, 2A46, 2A42):
+  - súng, pháo, rốc-két: "152 mm";
+  - tên lửa, bom, drone: "đầu nổ 400 kg";
+  - la-de: theo công suất (kW).
+- Nhãn "Main gun" chỉ cho vũ khí chính; vũ khí phụ dùng tên họ (ví dụ "Pháo 120 mm").
+- Sửa tên sai:
+  - "bomb-bay stick 400 kg 203 mm" → bom 400 kg;
+  - la-de bỏ "mm".
+- Test: mọi vũ khí hiện cỡ / đầu nổ khớp dữ liệu.
+Commit.
+
+### Lượt 3 — Sửa nhịp bắn, họ vũ khí, bù DPS boss
+Thứ tự:
+1. Họ vũ khí: weaponFamilyId (cùng tên thật = cùng họ), weaponVariantId chỉ khi đạn / dạng đạn / chế độ bắn thật sự khác (ghi lý do). Cùng họ thì cùng sát thương gốc, tốc độ đạn, bán kính, loại sát thương ở MỌI boss.
+2. Chu kỳ thật cho từng họ theo (a) / (b). Pháo nạp tự động được nhanh hơn nạp tay nhưng không vượt nhịp tối đa ngoài đời.
+3. Sát thương mỗi phát (thang boss), tăng đều TRONG từng họ:
+   | Họ | /phát | Lõi / rìa (m) |
+   | 12,7 mm | 15 | — |
+   | 23 mm | 7 | — |
+   | 30 mm | 22 | — |
+   | 35 mm | 25 | 2,5 |
+   | 40 mm | 30 | flak 3,5 |
+   | 57 mm | 120 | 3 / 6 |
+   | 100–105 mm nổ mạnh | 300 | 5 / 10 |
+   | 120 mm nổ mạnh | 340 | 5 / 10 |
+   | 120 mm xuyên giáp | 260 | — |
+   | 125 mm xuyên giáp | 400 | — |
+   | 127–130 mm | 380 | 5 / 10 |
+   | 152–155 mm | 600 | 7 / 14 |
+   | 203 mm | 900 | 8,5 / 17 |
+   | 240 mm | 1.100 | 10 / 20 |
+   | 406 mm | 2.400 | 14 / 24 |
+   | 800 mm | 4.000 | 16 / 28 |
+   | Grad 122 | 200 | 4,5 / 9 |
+   | Smerch 300 | 450 | 8 / 16 |
+   | bom 400 kg | 700 | 10 / 20 |
+   | Kornet | 230 | — |
+   Rìa: dưới 300 mm = min(2 × lõi, 20 m); từ 300 mm trở lên và siêu vũ khí dùng hồ sơ chỉ định riêng như bảng.
+4. DPS là KẾT QUẢ. KHÔNG dùng DPS cũ của vũ khí p26_* làm gốc (sai từ đầu).
+5. Bù cho boss: nếu tổng DPS duy trì của boss tụt quá 20%, bù bằng thêm nòng bắn cùng lúc (tháp đôi / ba nòng theo mẫu thật hoặc theo đợt 1, ví dụ Behemoth: 2A65 152 mm bệ đôi) hoặc thêm bệ; KHÔNG bù bằng rút ngắn nạp. Không bù được thì ghi báo cáo. Máu boss giữ theo công thức hiện có (P × t × 0,6).
+6. Nhiều nòng bắn cùng lúc (salvoMode SIMULTANEOUS, lệch hình ảnh 0,05–0,1 s mỗi nòng) cho tàu, tháp pháo hạng nặng, Siêu tăng, và bệ đôi / ba của boss. Mỗi nòng một Muzzle_*; model thiếu thì thêm trong script Blender.
+7. Bệ phụ có chu kỳ vô lý sau chuẩn hóa (dài hơn 2 lần thời gian nạp thật của họ, ví dụ pháo 120 mm bệ nhỏ mỗi 20 s, Kornet mỗi 32–55 s): đổi sang họ nhỏ hơn hợp vai, hoặc gộp các bệ trùng thành một bệ (ví dụ 3 bệ Kornet của Behemoth thành 1 bệ đôi).
+8. Gungnir: KHÔNG đụng sát thương, bán kính, chu kỳ, cách nhắm nếu gói G1 (prompt 29) đã chạy hoặc sắp chạy; chỉ sửa tên và cỡ hiển thị.
+9. Xe, tháp người chơi: chỉ sửa LỖI ĐƠN VỊ và NHANH QUÁ / CHẬM QUÁ rõ ràng. Khi sửa nhịp thì chỉnh sát thương mỗi phát để GIỮ DPS (cân bằng người chơi chờ sau prompt 29). Chỗ không rõ là lỗi hay chủ đích: không sửa, ghi danh sách chờ chủ dự án.
+10. Hiển thị trên thẻ:
+    - vũ khí bắn loạt / theo băng: "loạt N · chu kỳ X s" (X = thời gian bắn hết loạt + nạp);
+    - bắn từng phát: "mỗi X s";
+    - trang chi tiết thêm DPS duy trì, bán kính lõi / rìa cho vũ khí nổ mạnh, số nòng.
+Ghi bảng trước / sau theo từng boss vào docs/balance/boss_weapon_families.md (gồm tổng DPS boss trước / sau và cách bù). Commit theo boss.
+
+### Lượt 4 — Hành vi đạn
+Bước 1: liệt kê hành vi hiện tại theo code vào docs/checks/munition_behavior.md. Với từng nhóm: cách nhắm, khi nào nổ, vì sao trượt, có vòng cảnh báo không. Nhóm:
+- tên lửa chống tăng;
+- tên lửa từ trực thăng / máy bay bắn mặt đất;
+- tên lửa phòng không;
+- tên lửa hành trình;
+- rốc-két không điều khiển;
+- đạn pháo, đạn cối;
+- bom thường, bom dẫn đường;
+- drone tự sát;
+- pháo sáng.
+Bước 2: áp luật:
+A. Tên lửa dẫn đường đánh mặt đất (ATGM; tên lửa từ trực thăng / máy bay như Hellfire, Kh-29, Spike; bom dẫn đường):
+   - bám mục tiêu đến khi trúng; tốc độ quay đủ để xe mặt đất KHÔNG né được bằng cách chạy;
+   - chỉ trượt khi:
+     • APS chặn;
+     • bị gây nhiễu (theo bảng khắc chế);
+     • tên lửa điều khiển bằng tầm nhìn mà bên bắn mất tầm nhìn (khói, vật chắn) hoặc bị hạ trước khi tên lửa tới;
+     • mục tiêu ra ngoài tầm tối đa;
+     • một lần tung xác suất trúng theo độ chính xác, xác định theo seed lúc bắn, không phụ thuộc chuyển động.
+   - Sửa lỗi: tên lửa từ trực thăng trượt hết khi xe tăng chạy liên tục.
+B. Tên lửa phòng không: bám mục tiêu bay; ngòi cận đích ~6–8 m (nổ mảnh); tự hủy khi hết thời gian bay hoặc mất mục tiêu.
+C. Pháo sáng:
+   - lừa mọi tên lửa
+   - tên lửa bám vào máy bay có pháo sáng thì máy bay thả pháo sáng (số lần / hồi theo dữ liệu);
+   - mỗi tên lửa tung một lần theo độ kháng đầu dò (theo seed);
+   - bị lừa thì bay theo pháo sáng và NỔ cạnh pháo sáng (nổ ngòi cận đích, có hiệu ứng và tiếng), không biến mất im lặng;
+   - không tác dụng với tên lửa radar, súng, la-de.
+D. Rốc-két không điều khiển, đạn pháo, đạn cối, bom thường: nhắm điểm DỰ ĐOÁN (đón đầu theo vận tốc mục tiêu lúc bắn), rơi đúng điểm đó với độ tản theo dữ liệu; nổ khi chạm đất hoặc mục tiêu; xe chạy có thể thoát một phần là chủ đích.
+E. Tên lửa hành trình: bay tới điểm / mục tiêu đã định, nổ tại đó; bị phòng thủ điểm bắn hạ theo dữ liệu.
+F. Drone tự sát: bám mục tiêu, nổ khi chạm hoặc cận đích; bị la-de, lưới, gây nhiễu, APS chặn theo bảng khắc chế.
+G. Mọi loại có giới hạn thời gian bay, hết thì tự hủy. Theo tick, deterministic.
+Hình ảnh pháo sáng (chỉ hình ảnh; một lần thả vẫn là MỘT lần chặn trong dữ liệu):
+- đốm sáng rất chói, vệt khói trắng dày, cháy ~3–4 s, rơi theo đường cong; hướng ban đầu theo hướng ống phóng cộng vận tốc máy bay; chiếu sáng nhẹ thân máy bay;
+- số quả mỗi lần thả: tiêm kích / cường kích 4–6; trực thăng 4–8; máy bay lớn 8–16 kiểu "cánh thiên thần";
+- lỗi chung: đạn dính ra 1 khoảng thời gian sau máu mới trừ
+- phát ra đúng ống phóng: thêm Mount_Flare (thân sau, hai bên thân, gốc đuôi theo mẫu thật) cho mọi đơn vị có pháo sáng; thiếu thì thêm trong script Blender và xuất lại GLB.
+Commit theo nhóm.
+
+### Lượt 5 — Vòng cảnh báo: bớt rối
+- CHỈ hiện cho:
+  - đòn của địch thuộc pháo ≥ 203 mm, bom ≥ 400 kg, rốc-két ≥ 300 mm;
+  - đòn lớn của boss, siêu vũ khí;
+  - thẻ hỗ trợ có vùng của địch.
+- KHÔNG hiện cho: tên lửa dẫn đường, rốc-két và đạn pháo cỡ nhỏ / vừa, mọi đòn của phe ta.
+- Kiểu hiển thị:
+  - viền mảnh + nền mờ (không đỏ đặc); tâm lõi đậm hơn rìa;
+  - hiện dần, tắt khi nổ;
+  - một loạt nhiều quả gộp thành một vùng bao;
+  - tối đa ~6 vùng cùng lúc (ưu tiên vùng đe dọa quân ta nhiều nhất, gần camera); còn lại chỉ dấu nhỏ trên bản đồ nhỏ;
+  - siêu vũ khí luôn hiện, luôn trên cùng.
+- Thời gian cảnh báo ≥ max(sàn, 0,5 s + lõi / 4,5 m/s); sàn: 203–240 mm 2,5 s; 406 mm 3,5 s; 800 mm / siêu vũ khí 4 s; trần 6 s.
+- Cài đặt "Vòng cảnh báo: Đầy đủ / Chỉ quan trọng / Tắt"; Tắt vẫn giữ siêu vũ khí.
+- Vòng hiển thị = vùng sát thương thật.
+Commit.
+
+### Lượt 6 — Hiệu ứng bắn và nổ: vẽ lại theo cỡ, khói tồn tại lâu theo cỡ
+- Khi bán kính nổ đổi, VẼ LẠI hiệu ứng nổ cho đúng cỡ (cầu lửa, cột khói, mảnh, sóng xung kích), KHÔNG chỉ phóng to prefab.
+- Hiệu ứng bắn làm lại TO HƠN, DÀI HƠN theo cỡ:
+  - chớp đầu nòng, luồng khói đầu nòng dài, sóng áp lực;
+  - từ 203 mm có vòng bụi quanh xe / tháp, tàu có sóng trên mặt nước, ánh chớp chiếu lên địa hình.
+- Thời gian tồn tại theo bậc:
+  | Bậc | Cầu lửa | Khói / bụi | Hố, vết cháy |
+  | ≤ 14,5 mm | ~0,2 s | ~0,5 s | không |
+  | 20–40 mm | ~0,3 s | 1–2 s | ~10 s |
+  | 57–105 mm | ~0,5 s | 3–5 s | ~20 s |
+  | 120–155 mm, Grad | ~0,8 s | 6–10 s | ~30 s |
+  | 203–240 mm, bom ≥ 400 kg, Smerch | ~1,2 s | cột khói 12–20 s trôi theo gió | ~45 s |
+  | ≥ 406 mm, siêu vũ khí | ~1,8 s | cột khói 25–40 s bốc cao trôi theo gió | ~60 s |
+- Khói tan dần, không biến mất đột ngột; khói không chặn tầm nhìn trong mô phỏng.
+- Rung camera chỉ từ 203 mm; khi nguồn hoặc điểm nổ trên màn hình và gần camera; có trần; có cài đặt tắt.
+- Hiệu năng:
+  - tối đa ~3 cột khói lớn cùng lúc (cột cũ tan nhanh hơn khi có cột mới);
+  - LOD theo khoảng cách;
+  - đồng thời đầy đủ chi tiết: ≥ 406 mm 1, 203–240 mm 2–3, 120–155 mm 4–6;
+  - pool cho đạn, vệt, khói, nổ, mảnh, hố.
+- Ảnh trước / sau vào docs/vfx/.
+Commit theo bậc.
+
+### Lượt 7 — Âm thanh: làm lại toàn bộ
+Vấn đề: toàn tiếng "keng keng"; tiếng nổ và tiếng bắn mất lực so với trước.
+1. Chẩn đoán, ghi docs/audio/diagnosis.md:
+   - tiếng "keng" phát từ đâu (trúng giáp, đạn nảy, hay mọi phát trúng dùng chung clip kim loại);
+   - so với commit trước khi tiếng nổ yếu đi: clip, mixer, nén, giới hạn âm lượng, số kênh đã đổi gì.
+2. Thư viện mới:
+   - bắn theo cỡ (≤ 14,5 / 20–40 / 57–105 / 120–155 / 203–240, bom, rốc-két lớn / ≥ 406, siêu vũ khí);
+   - nổ theo cỡ và loại đạn (nổ mạnh, nhiệt áp, nổ lõm, mảnh trên không);
+   - trúng giáp: tiếng kim loại CHỈ khi đạn động năng trúng xe giáp mà KHÔNG xuyên; trúng có xuyên là va đập nặng; trúng đất / công trình là đất, bê tông; tiếng kim loại có giới hạn tần suất toàn trận;
+   - động cơ theo lớp xe, tàu biển, tàu hỏa (còi, bánh ray), máy bay, trực thăng; xác vỡ; pháo sáng; cảnh báo.
+3. Lực: mỗi tiếng có lớp nổ chính, lớp trầm (năng lượng dưới ~150 Hz tăng theo cỡ), đuôi vang / tiếng dội dài dần theo cỡ; trộn sẵn thành một file (không cần nhiều AudioSource mỗi phát).
+4. Mixer:
+   - nhóm Hiệu ứng / Nhạc / Thoại / Giao diện;
+   - compressor + limiter trên Hiệu ứng;
+   - giảm âm theo khoảng cách camera;
+   - ~24 kênh hiệu ứng, cắt theo ưu tiên: cảnh báo > boss / pháo ≥ 406 mm > nổ gần > bắn gần > súng nhỏ (gộp thành tiếng "cụm") > môi trường;
+   - không một AudioSource cho mỗi viên đạn.
+5. Clip cũ tốt hơn thì được khôi phục.
+6. Kiểm khách quan, ghi docs/audio/metrics.md:
+   - mỗi clip: độ to (LUFS), đỉnh, tỷ lệ năng lượng dưới 150 Hz, thời lượng đuôi;
+   - phát hiện "keng" (đỉnh phổ hẹp 2–6 kHz tắt chậm);
+   - bảng theo cỡ phải tăng đều (cỡ lớn hơn thì to hơn, trầm hơn, dài hơn).
+7. Xuất 3 đoạn ghi âm thử offline (trận thường, trận boss pháo lớn, trận đông) vào docs/audio/samples/.
+Commit.
+
+### Lượt 8 — Model: tiêu chuẩn, quét, sửa bản xấu đi
+1. Viết docs/models/MODEL_STANDARD.md:
+   - Ngân sách tam giác LOD0: xe nhẹ 3k–5k; xe tăng / hạng nặng 4–7k; máy bay, trực thăng 4–7k; tàu 8k–15k; boss 10k–20k; tháp 2k–4k; công trình 2k–6k. Có LOD1 (~50%), LOD2 (~20%).
+   - Bộ phận tối thiểu theo lớp (Part_* chuẩn):
+     • xích: thân, tháp, ụ nòng, từng nòng, TỪNG bánh chịu tải, bánh dẫn động, bánh căng, xích có đốt / vân, váy hông, nắp tháp, kính ngắm, súng máy nóc, ống lựu khói, đồ đeo;
+     • bánh lốp: từng bánh, cầu, cabin có kính, đèn, đồ đeo, vũ khí;
+     • máy bay: thân, buồng lái có kính, cánh có độ vuốt / thon đúng mẫu, cánh đuôi ngang và đứng, cửa hút gió, ống xả, giá treo có vũ khí, ống phóng pháo sáng;
+     • trực thăng: thân, kính, moay-ơ và từng cánh quạt, quạt đuôi, càng / bánh, cánh vũ khí và vũ khí;
+     • tàu: thân có độ loe mũi, các tầng thượng tầng, cột radar, từng tháp và nòng, CIWS, xuồng, chi tiết boong;
+     • tháp, công trình: chân đế, bao cát / tường, mái, ăng-ten, chi tiết khác nhau theo phe (Accord thực dụng, Hegemon đúc sẵn).
+   - Yêu cầu chung:
+     • tỷ lệ sai ≤ 10% so với mẫu thật (bảng docs/models/reference_dimensions.md);
+     • không tháp / thân hình hộp đơn; vát cạnh lớn;
+     • tách vật liệu và màu chi tiết;
+     • mỗi nòng Muzzle_*, mỗi vũ khí Mount_*, có Mount_Flare / Mount_APS nếu có hệ đó;
+     • hình bóng nhận ra được ở khoảng cách camera thường.
+2. Quét MỌI model xe, máy bay, tàu, boss, tháp, công trình, nhà chính:
+   - chụp 3 góc cố định ở khoảng cách camera thường, ghép bảng ảnh docs/models/scan/;
+   - chấm Tốt / Cần sửa / Kém kèm lý do cụ thể.
+3. Bản xấu đi: với mọi model đã làm lại ở prompt 27, lấy GLB cũ từ git, chụp cùng góc, chấm cả hai bản. Bản mới thấp điểm hơn thì khôi phục bản cũ hoặc làm lại cho đạt. Bắt buộc kiểm trước: Pháo hạm bay (sky_gunship), mọi công trình, tháp, nhà chính.
+4. Làm lại tối đa 15 model Kém xếp đầu (ưu tiên: bản xấu đi, xe trong bộ bài khởi đầu, tháp phổ biến, boss chương đầu) bằng bộ kit hiện có; xuất lại GLB; ảnh trước / sau. Còn lại ghi danh sách.
+Commit theo model.
+
+### Lượt 9 — Validator (chạy trong build)
+1. Cỡ / đầu nổ trên thẻ khớp dữ liệu; không trường cỡ trộn mm và kg.
+2. Cùng weaponFamilyId thì cùng sát thương gốc, bán kính, tốc độ đạn ở mọi boss; biến thể có lý do.
+3. Không vũ khí nào NHANH QUÁ / CHẬM QUÁ so với nguồn chuẩn, trừ danh sách đã ghi lý do.
+4. Mục tiêu khai báo có loại đạn gây sát thương được (ví dụ không vũ khí nổ mạnh nào khai báo bắn máy bay mà không có đạn bắn được máy bay).
+5. Vũ khí ≥ 203 mm có cảnh báo ≥ công thức; vòng hiển thị = vùng sát thương.
+6. Mỗi nòng trong loạt bắn cùng lúc có Muzzle_*; mọi đơn vị có pháo sáng có ≥ 2 Mount_Flare và pháo sáng phát từ đó.
+7. Model trong ngân sách tam giác, đủ Part_* bắt buộc theo lớp, có LOD.
+8. Âm thanh: không clip nào bị phát hiện "keng" ngoài nhóm trúng giáp; bảng âm thanh theo cỡ tăng đều.
+Commit.
+
+### Lượt 10 — Sửa tài liệu PDF và báo cáo
+Sửa trình xuất tài liệu thiết kế (sinh từ dữ liệu, không viết tay) và xuất lại PDF:
+
+Mục 10 (vũ khí):
+1. Bảng "Đường đạn": tách cột "Cỡ (mm)" thành "Cỡ (mm)" và "Đầu nổ (kg)". Thêm cột: Họ vũ khí, Số nòng, Chu kỳ đầy đủ (s), Nhịp ngoài đời (phát/phút), DPS duy trì. Đánh dấu vũ khí đã đổi trong lần sửa này.
+2. Bảng nhịp bắn vũ khí boss (id p26_*): số mới, chu kỳ đầy đủ, số nòng.
+3. Bảng "Vụ nổ lõi / rìa của boss": số mới theo họ; thêm cột thời gian cảnh báo.
+4. Mục mới "Họ vũ khí": bảng họ (sát thương mỗi phát, lõi / rìa, cỡ, nguồn ngoài đời).
+5. Mục mới "Hành vi đạn": bảng theo nhóm (cách nhắm, khi nào nổ, khi nào trượt, có cảnh báo không), luật pháo sáng.
+6. Mục "Vòng cảnh báo": luật hiển thị mới và công thức thời gian.
+7. Mục hiệu ứng: bảng thời gian tồn tại nổ / khói theo bậc; luật rung camera.
+
+Thẻ boss và thẻ xe trong PDF:
+8. Cỡ / đầu nổ đúng; nhịp dạng "loạt N · chu kỳ X s" hoặc "mỗi X s"; DPS duy trì; lõi / rìa; số nòng.
+9. Bỏ nhãn "Main gun" cho vũ khí phụ.
+
+Âm thanh, model:
+10. Mục âm thanh: thư viện theo nhóm, mixer, số kênh, ưu tiên, bảng số đo.
+11. Mục model: tiêu chuẩn MODEL_STANDARD, bảng chấm mọi model, danh sách bản xấu đi đã xử lý, ảnh trước / sau 15 model.
+
+Sửa văn bản mâu thuẫn với code (chỉ sửa chữ cho khớp code, KHÔNG đổi lối chơi; chỗ nào thuộc prompt chưa chạy thì giữ, ghi chú "chờ prompt N"):
+12. "15 chương trong 3 hồi" và bảng chương ghi hồi 1–4: ghi đúng theo dữ liệu.
+13. "Phần kết sau chương 9" và Huyền thoại mở hai chỗ khác nhau: ghi đúng theo code.
+14. Mục Kể chuyện ghi "chân dung nhỏ" trong khi thoại trong trận là dải phụ đề không chân dung: ghi đúng theo code.
+15. Nhánh Centurion "chặn cả đạn bắn thẳng"; Iron Beam mô tả "đạn pháo bay qua được" nhưng hành vi ghi chặn 30%; tháp la-de cố định chặn 50% đạn pháo: ghi đúng theo code hiện tại và đánh dấu "chờ prompt 29 / 32" nếu sẽ đổi.
+16. Mô-đun Trạm hậu cần ghi "phí duy trì": ghi "tiếp tế".
+17. Mô-đun Sân bay dã chiến ghi "về khi dưới 35% máu": ghi đúng theo code hiện tại (nếu phụ lục prompt 28 đã chạy thì là "về khi hết đạn").
+18. Tháp canh: "+10%" ở phần chung và "+15%" ở nhánh Quan sát: ghi đúng theo code (thay hay cộng dồn).
+
+Báo cáo docs/fixes/report_full_fix.md:
+- trạng thái prompt đã chạy (Lượt 0);
+- số vũ khí NHANH QUÁ / CHẬM QUÁ / LỖI ĐƠN VỊ / LỆCH ĐỢT 1 / LỆCH HỌ / HIỂN THỊ SAI, trước và sau;
+- bảng boss trước / sau (DPS, cách bù);
+- danh sách xe người chơi chờ quyết;
+- bảng hành vi đạn trước / sau;
+- nguyên nhân tiếng "keng" và tiếng nổ yếu, số đo trước / sau;
+- bảng chấm model, bản xấu đi, 15 model đã làm lại;
+- mọi chỗ tự quyết;
+- danh sách mục PDF đã sửa.
+Commit.
