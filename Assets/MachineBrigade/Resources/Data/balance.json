@@ -943,7 +943,7 @@
     // Test feedback 2 (12D): the bosses' guns stream too (a boss's mounts take turns step by step, the one
     // waiting longest first). A boss's machine gun used to fire one round a second (its runs never started),
     // so its rounds are light to keep the damage it did; boss_hmg is the roof gun for the bosses.
-    { "id": "boss_heli_gun", "weaponFamily": "m230_30_mm", "real": "M230 30 mm", "family": "autocannon", "size": 30,     "pen": 2, "inherits": "heli_gun", "cooldown": 0.1667, "clip": 40, "clipReload": 3.1667 },
+    { "id": "boss_heli_gun", "weaponFamily": "", "real": "M230 30 mm", "family": "autocannon", "size": 30,     "pen": 2, "inherits": "heli_gun", "splash": 0, "projectileSpeed": 200, "cooldown": 0.1667, "clip": 40, "clipReload": 3.167 },
     { "id": "boss_minigun", "real": "GShG 7.62 mm", "family": "mg", "size": 7.62,      "pen": 0, "inherits": "minigun", "cooldown": 0.0172, "roundWeight": 7, "clip": 40, "clipReload": 6.09 },
     { "id": "boss_hmg", "weaponFamily": "nsv_12_7_mm", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,          "pen": 1, "inherits": "hmg_roof", "damage": 15, "cooldown": 0.0833, "clip": 100, "clipReload": 12.8 },
     { "id": "hover_ciws", "weaponFamilyId": "cal_30", "weaponFamily": "ak_630_30_mm", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 12, "cooldown": 0.0167, "range": 34, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 60, "clipReload": 5.0167 },
