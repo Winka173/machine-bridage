@@ -14446,3 +14446,12 @@ Pass 8b1 (lane B, mb_props), in the new `Tools/blender/mb_p27_wave8b.py` (regist
 - ao_strength: .9 default; .8 house_small, .85 house_large, .65 wall, .55 barrel, .6 ammo_crate, .85 / .8 / .88 rock_a/b/c (lower = brighter; a rebuilt block surface dims COLOR_0).
 - Gates (old -> new triangles, COLOR_0): house_small 2,680 -> 2,332 (.621 -> .633); house_large 6,056 -> 5,708 (.654 -> .662); wall 832 -> 736 (.655 -> .670); fuel_tank 2,164 -> 1,950 (.582 -> .599); barrel 816 -> 672 (.651 -> .674); ammo_crate 480 -> 496 (.698 -> .705); bush 80 -> 100 (.568 -> .592); rock_a 360 -> 380 (.637 -> .639); rock_b 360 -> 380 (.635 -> .641); rock_c 360 -> 380 (.630 -> .630). Sizes within .02 m except bush height +.03 m; no errors or warnings.
 - Lead (2026-10-02), wave 8b1 merged: ten mb_props models rebuilt (no cards), nine trees and rubbles kept.
+
+## 27 wave 8b2 (lead pass, 2026-10-02)
+
+Pass 8b2 (lane B, mb_mapkit), in `Tools/blender/mb_p27_wave8b.py`. The map kit is already bespoke, hand-detailed work (wrecks, earthworks, lattice pylon, mast, tent, net, bridge, ruins): a V2 rebuild gains little there, so only the four models with plain volumes were rebuilt; helpers and small parts are imported from `mb_mapkit`. No new materials or parts, nodes identical, no runner mirror, no cards, no previews, no tests. The substring filter rebuilt nothing outside the pass.
+
+- Rebuilt: checkpoint (chamfered concrete blocks, barrier post, counterweight, roof, posts; lathe stove drum), barricade (chamfered door, rounder tyres, lathe drum), supply_pile (chamfered crates, pallets and tarp stack, lathe drums), telegraph_pole (lathe tapered pole, chamfered arms and anchor).
+- Kept old: wreck_tank, wreck_truck, wreck_car, trench_straight, trench_corner, foxhole, crater_large, tank_ditch (natural earthworks and wrecks), command_tent, camo_net, fuel_bladder, power_pylon, radio_mast (lattice and cable work), bridge_road, ruin_house, ruin_tower, dead_tree.
+- ao_strength: .8 checkpoint, barricade, supply_pile; .7 telegraph_pole.
+- Gates (old -> new triangles, COLOR_0): checkpoint 2,294 -> 2,934 (.627 -> .639); barricade 1,706 -> 1,998 (.525 -> .545); supply_pile 1,888 -> 2,460 (.533 -> .572); telegraph_pole 836 -> 1,040 (.721 -> .727). Sizes within .05 m; no errors or warnings.

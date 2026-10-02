@@ -1387,6 +1387,22 @@
     "rock_c: triangles 360 -> 380 (+5.6%); vertices 1,080 -> 1,140 (+5.6%); fileBytes 51,052 -> 53,812 (+5.4%); structure changed",
     "FLAG wall: triangles 832 -> 736 (-11.5%); fileBytes 39,856 -> 39,284 (-1.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "barricade",
+    "checkpoint",
+    "supply_pile",
+    "telegraph_pole"
+   ],
+   "reason": "wave 8b2 mapkit V2 rebuild",
+   "changes": [
+    "FLAG barricade: triangles 1,706 -> 1,998 (+17.1%); vertices 2,823 -> 3,005 (+6.4%); fileBytes 148,468 -> 158,236 (+6.6%); structure changed",
+    "FLAG checkpoint: triangles 2,294 -> 2,934 (+27.9%); vertices 3,361 -> 3,869 (+15.1%); fileBytes 185,664 -> 213,116 (+14.8%); structure changed",
+    "FLAG supply_pile: triangles 1,888 -> 2,460 (+30.3%); vertices 2,806 -> 3,202 (+14.1%); fileBytes 153,956 -> 174,860 (+13.6%); structure changed",
+    "FLAG telegraph_pole: triangles 836 -> 1,040 (+24.4%); vertices 1,398 -> 1,516 (+8.4%); fileBytes 80,484 -> 86,912 (+8.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -7591,8 +7607,8 @@
   },
   "barricade": {
    "file": "barricade.glb",
-   "fileBytes": 148468,
-   "sha1": "98813a80268ce1b7",
+   "fileBytes": 158236,
+   "sha1": "bc5fa3e196e5202c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 13,
@@ -7605,8 +7621,8 @@
    "submeshes": 13,
    "materialSlots": 13,
    "materialsUsed": 9,
-   "triangles": 1706,
-   "vertices": 2823,
+   "triangles": 1998,
+   "vertices": 3005,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -7625,25 +7641,25 @@
    "boundsMax": [
     2.9563,
     1.2664,
-    0.9725
+    0.954
    ],
    "size": [
-    1.943,
+    1.925,
     6.135,
     1.302
    ],
    "center": [
     -0.111,
     0.616,
-    0.001
+    -0.008
    ],
-   "structureHash": "0c1f62d2df932d17",
+   "structureHash": "d7eca590270c7996",
    "color0": {
-    "mean": 0.5245,
-    "min": 0.0655,
+    "mean": 0.5447,
+    "min": 0.1265,
     "max": 0.8222,
-    "p05": 0.1044,
-    "p95": 0.7985,
+    "p05": 0.1649,
+    "p95": 0.798,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -11208,8 +11224,8 @@
   },
   "checkpoint": {
    "file": "checkpoint.glb",
-   "fileBytes": 185664,
-   "sha1": "404f9fa6c95749cc",
+   "fileBytes": 213116,
+   "sha1": "18b181bf8f1852df",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -11224,8 +11240,8 @@
    "submeshes": 24,
    "materialSlots": 24,
    "materialsUsed": 13,
-   "triangles": 2294,
-   "vertices": 3361,
+   "triangles": 2934,
+   "vertices": 3869,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -11239,30 +11255,30 @@
    "boundsMin": [
     -3.1,
     -0.0302,
-    -1.8948
+    -1.893
    ],
    "boundsMax": [
-    3.1047,
+    3.15,
     2.4545,
-    2.0334
+    2.0319
    ],
    "size": [
-    3.928,
-    6.205,
+    3.925,
+    6.25,
     2.485
    ],
    "center": [
-    0.002,
+    0.025,
     1.212,
     0.069
    ],
-   "structureHash": "ddcd932533636a67",
+   "structureHash": "9a60fcecb91decf7",
    "color0": {
-    "mean": 0.6273,
-    "min": 0.0939,
+    "mean": 0.639,
+    "min": 0.1618,
     "max": 1.0,
-    "p05": 0.2459,
-    "p95": 0.8064,
+    "p05": 0.2711,
+    "p95": 0.9172,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -44612,8 +44628,8 @@
   },
   "supply_pile": {
    "file": "supply_pile.glb",
-   "fileBytes": 153956,
-   "sha1": "d63900a6f2bf68c1",
+   "fileBytes": 174860,
+   "sha1": "d62ebbb3860af393",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 18,
@@ -44626,9 +44642,9 @@
    "submeshes": 18,
    "materialSlots": 18,
    "materialsUsed": 10,
-   "triangles": 1888,
-   "vertices": 2806,
-   "degenerateTriangles": 7,
+   "triangles": 2460,
+   "vertices": 3202,
+   "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
     "COLOR_0": 0,
@@ -44639,32 +44655,32 @@
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.9864,
-    -0.01,
+    -1.9838,
+    -0.016,
     -1.3355
    ],
    "boundsMax": [
-    1.9372,
+    1.956,
     1.15,
     1.7749
    ],
    "size": [
     3.11,
-    3.924,
-    1.16
+    3.94,
+    1.166
    ],
    "center": [
-    -0.025,
-    0.57,
+    -0.014,
+    0.567,
     0.22
    ],
-   "structureHash": "b053242d971895cd",
+   "structureHash": "0fa0b3f743520831",
    "color0": {
-    "mean": 0.5333,
-    "min": 0.0655,
+    "mean": 0.5719,
+    "min": 0.1401,
     "max": 0.9987,
-    "p05": 0.1539,
-    "p95": 0.7907,
+    "p05": 0.2107,
+    "p95": 0.8058,
     "outOfRange": 0
    },
    "runtimeNodes": {},
@@ -44692,9 +44708,7 @@
    "category": "prop",
    "hd": false,
    "errors": [],
-   "warnings": [
-    "7 zero-area triangles (0.37%)"
-   ],
+   "warnings": [],
    "units": [],
    "movingParts": 0,
    "budgetClass": "prop"
@@ -45731,8 +45745,8 @@
   },
   "telegraph_pole": {
    "file": "telegraph_pole.glb",
-   "fileBytes": 80484,
-   "sha1": "572c29d95ff785f0",
+   "fileBytes": 86912,
+   "sha1": "19a90b4859822e56",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 13,
@@ -45745,8 +45759,8 @@
    "submeshes": 13,
    "materialSlots": 13,
    "materialsUsed": 8,
-   "triangles": 836,
-   "vertices": 1398,
+   "triangles": 1040,
+   "vertices": 1516,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -45758,31 +45772,31 @@
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.8928,
-    -0.0874,
+    -1.9144,
+    -0.1036,
     -0.8666
    ],
    "boundsMax": [
     0.6659,
-    7.2673,
+    7.2697,
     1.343
    ],
    "size": [
     2.21,
-    2.559,
-    7.355
+    2.58,
+    7.373
    ],
    "center": [
-    -0.613,
-    3.59,
+    -0.624,
+    3.583,
     0.238
    ],
-   "structureHash": "d630ec0a4ab91bc9",
+   "structureHash": "53a68e2199290565",
    "color0": {
-    "mean": 0.7207,
-    "min": 0.1864,
+    "mean": 0.7272,
+    "min": 0.2856,
     "max": 0.8216,
-    "p05": 0.4789,
+    "p05": 0.5386,
     "p95": 0.8064,
     "outOfRange": 0
    },

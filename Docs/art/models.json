@@ -197,7 +197,7 @@
   },
   "barricade": {
     "file": "barricade.glb",
-    "triangles": 1706
+    "triangles": 1998
   },
   "basalt_rock_a": {
     "file": "basalt_rock_a.glb",
@@ -321,7 +321,7 @@
   },
   "checkpoint": {
     "file": "checkpoint.glb",
-    "triangles": 2294
+    "triangles": 2934
   },
   "church": {
     "file": "church.glb",
@@ -1429,7 +1429,7 @@
   },
   "supply_pile": {
     "file": "supply_pile.glb",
-    "triangles": 1888
+    "triangles": 2460
   },
   "supply_truck": {
     "file": "supply_truck.glb",
@@ -1469,7 +1469,7 @@
   },
   "telegraph_pole": {
     "file": "telegraph_pole.glb",
-    "triangles": 836
+    "triangles": 1040
   },
   "temple_ruin": {
     "file": "temple_ruin.glb",
