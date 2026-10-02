@@ -37,6 +37,78 @@ namespace MachineBrigade.Game.Views
         public int seed, hills, berms, ditches, dryBeds;
     }
 
+    /// <summary>Prompt 33 L2 (view): the prebuilt piece for a corner name of the map's edges data.</summary>
+    [Serializable]
+    public sealed class DressingCorner
+    {
+        /// <summary><see cref="first"/>: the edge type on the piece's own -X side (a junction) or its +Z strip (an outer corner).</summary>
+        public string piece, model, first;
+        public float radius;
+    }
+
+    /// <summary>Prompt 33 L2 (view): what dresses a SEA stretch out to the horizon (water only: no land, houses or woods).</summary>
+    [Serializable]
+    public sealed class DressingSea
+    {
+        public string[] waves, ships, islands;
+        public float waveDensity, laneStep;
+        public string surf, stack, quay, crane, containers, laneBuoy;
+        public int shipsPerSide, islandsPerSide;
+    }
+
+    /// <summary>Prompt 33 L2 (view): an edge type's or modifier's ring dressing (INDUSTRIAL, HARBOR, URBAN, CLIFF).</summary>
+    [Serializable]
+    public sealed class DressingEdgeSet
+    {
+        public string key;
+        public float ring;
+        public string[] set;
+    }
+
+    [Serializable]
+    public sealed class DressingRail
+    {
+        public string track, portal;
+        public float step;
+    }
+
+    [Serializable]
+    public sealed class DressingEdges
+    {
+        public DressingCorner[] corners;
+        public DressingSea sea;
+        public DressingEdgeSet[] sets;
+        public DressingRail rail;
+
+        public DressingCorner Corner(string piece)
+        {
+            if (corners == null) return null;
+            foreach (var c in corners)
+                if (c != null && c.piece == piece) return c;
+            return null;
+        }
+
+        public DressingEdgeSet Set(string key)
+        {
+            if (sets == null || string.IsNullOrEmpty(key)) return null;
+            foreach (var s in sets)
+                if (s != null && s.key == key) return s;
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Prompt 33 L3 (view): a landmark model the map has no prop for, stood where map_dressing.py found room for it
+    /// (decoration: no collider, no sight blocking; <see cref="onPlay"/> when it stands on drivable ground).
+    /// </summary>
+    [Serializable]
+    public sealed class DressingLandmark
+    {
+        public string map, id, model;
+        public float x, z, yaw, scale;
+        public bool onPlay;
+    }
+
     [Serializable]
     public sealed class MapDressingData
     {
@@ -44,6 +116,8 @@ namespace MachineBrigade.Game.Views
         public DressingCamera camera;
         public DressingBiome[] biomes;
         public DressingMap[] maps;
+        public DressingEdges edges;
+        public DressingLandmark[] landmarks;
     }
 
     /// <summary>Reads Resources/Data/map_dressing.json (prompt 33 L1 / L6), for the view only.</summary>
@@ -65,7 +139,10 @@ namespace MachineBrigade.Game.Views
                 if (_data != null) return _data;
                 var asset = Resources.Load<TextAsset>(ResourcePath);
                 _data = asset != null ? Parse(asset.text) : null;
-                return _data ??= new MapDressingData { biomes = Array.Empty<DressingBiome>(), maps = Array.Empty<DressingMap>() };
+                return _data ??= new MapDressingData
+                {
+                    biomes = Array.Empty<DressingBiome>(), maps = Array.Empty<DressingMap>(), landmarks = Array.Empty<DressingLandmark>(),
+                };
             }
         }
 
@@ -77,6 +154,7 @@ namespace MachineBrigade.Game.Views
                 if (data == null) return null;
                 data.biomes ??= Array.Empty<DressingBiome>();
                 data.maps ??= Array.Empty<DressingMap>();
+                data.landmarks ??= Array.Empty<DressingLandmark>();
                 return data;
             }
             catch (ArgumentException)
@@ -149,6 +227,16 @@ namespace MachineBrigade.Game.Views
                 }
                 return (int)(hash & 0x7FFFFFFFu);
             }
+        }
+
+        /// <summary>The landmark models to stand on one map file (its exact id; none for a map without any).</summary>
+        public static System.Collections.Generic.List<DressingLandmark> LandmarksFor(string mapId)
+        {
+            var list = new System.Collections.Generic.List<DressingLandmark>();
+            if (string.IsNullOrEmpty(mapId) || Data.landmarks == null) return list;
+            foreach (var l in Data.landmarks)
+                if (l != null && l.map == mapId) list.Add(l);
+            return list;
         }
 
         /// <summary>For tests: forget the loaded file.</summary>

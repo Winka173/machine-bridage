@@ -167,6 +167,60 @@ MAP_TABLE = {
 }
 
 
+# Prompt 33 L2 (view side, DECISIONS "Prompt 33 L2 view / L7"): what stands beyond each edge type. The view
+# (Surroundings.Edges.cs) reads the map's own "edges" data (Tools/maps/edges.py) and dresses by it:
+# - corners: the prebuilt piece per corner name (dress_edge_<piece>, mb_p33_edges.py), "first" = the type on the
+#   piece's own -X side (a junction) or on its +Z strip (an outer corner); the view mirrors it when the data's order
+#   is the other way round; "radius" keeps the scatter and the relief off it.
+# - sea: on a SEA stretch the water runs to the horizon (no land, houses or woods): whitecaps per hectare, surf lines
+#   along a BEACH coast, stacks along a CLIFF coast, quay walls, cranes and containers along a QUAY coast, far ships
+#   and hazy islands on the horizon, buoys along the sea lanes' way out.
+# - sets: the edge modifiers' ring dressing (instances per hectare of the ring beyond that stretch).
+# - rail: the track section laid along every RailSpline and the portal at its far end(s).
+EDGE_DRESSING = {
+    'corners': [
+        dict(piece='outer_land', model='dress_edge_outer_land', first='LAND', radius=22.0),
+        dict(piece='corner_land_cliff', model='dress_edge_corner_land_cliff', first='LAND', radius=24.0),
+        dict(piece='outer_urban', model='dress_edge_outer_urban', first='URBAN', radius=18.0),
+        dict(piece='bank_land_river', model='dress_edge_bank_land_river', first='LAND', radius=22.0),
+        dict(piece='corner_land_sea', model='dress_edge_corner_land_sea', first='LAND', radius=26.0),
+        dict(piece='outer_sea', model='dress_edge_outer_sea', first='SEA', radius=20.0),
+        dict(piece='embankment_urban_river', model='dress_edge_embankment_urban_river', first='URBAN', radius=20.0),
+        dict(piece='outer_land_sea', model='dress_edge_outer_land_sea', first='SEA', radius=22.0),
+        dict(piece='outer_cliff', model='dress_edge_outer_cliff', first='CLIFF', radius=24.0),
+        dict(piece='outer_river', model='dress_edge_outer_river', first='RIVER', radius=18.0),
+    ],
+    'sea': dict(waves=['dress_sea_whitecap'], waveDensity=6.0, surf='dress_sea_surf', stack='dress_sea_stack',
+                quay='dress_edge_quay', crane='dress_edge_crane_far', containers='dress_edge_containers',
+                ships=['dress_sea_ship_far', 'dress_sea_tanker_far'],
+                islands=['dress_sea_island_haze', 'dress_coast_island_far'], shipsPerSide=2, islandsPerSide=2,
+                laneBuoy='dress_coast_buoy', laneStep=40.0),
+    'sets': [
+        dict(key='INDUSTRIAL', ring=5.0, set=['dress_edge_chimney', 'dress_edge_tanks', 'dress_harbor_shed_far',
+                                              'dress_harbor_shed_far', 'dress_harbor_pipes', 'dress_edge_containers']),
+        dict(key='HARBOR', ring=6.0, set=['dress_edge_containers', 'dress_edge_containers', 'dress_harbor_shed_far',
+                                          'dress_harbor_drums', 'dress_harbor_pallets']),
+        dict(key='URBAN', ring=10.0, set=['dress_urban_block_far', 'dress_urban_kiosk', 'dress_urban_billboard']),
+        dict(key='CLIFF', ring=14.0, set=['dress_edge_scree', 'dress_edge_scree', 'dress_desert_far']),
+    ],
+    'rail': dict(track='dress_edge_rail_track', portal='dress_edge_tunnel_portal', step=6.0),
+}
+
+PIECES = ('outer_land', 'corner_land_cliff', 'outer_urban', 'bank_land_river', 'corner_land_sea', 'outer_sea',
+          'embankment_urban_river', 'outer_land_sea', 'outer_cliff', 'outer_river')
+
+
+def edge_models(edges):
+    """Every model id the edge dressing names."""
+    out = [c['model'] for c in edges['corners']]
+    sea = edges['sea']
+    out += sea['waves'] + sea['ships'] + sea['islands'] + [sea[k] for k in ('surf', 'stack', 'quay', 'crane',
+                                                                             'containers', 'laneBuoy')]
+    for s in edges['sets']:
+        out += s['set']
+    out += [edges['rail']['track'], edges['rail']['portal']]
+    return out
+
 def families():
     out = set()
     for f in glob.glob(str(MAPS / '*.json')):
@@ -193,7 +247,7 @@ def build():
         maps.append(dict(id=fam, biome=biome, edgeBand=float(band), density=density, seed=stable_seed(fam),
                          farTree=row[3] if len(row) > 3 else '',
                          hills=b['hills'], berms=b['berms'], ditches=b['ditches'], dryBeds=b['dryBeds']))
-    return {'version': 1, 'camera': cam, 'biomes': BIOMES, 'maps': maps}
+    return {'version': 2, 'camera': cam, 'biomes': BIOMES, 'maps': maps, 'edges': EDGE_DRESSING}
 
 
 def check(data):
@@ -224,6 +278,21 @@ def check(data):
             problems.append(f'{b["id"]}: farTree {b["farTree"]}.glb missing')
         if not b['playSet'] or not b['bandSet'] or not b['ringSet'] or not b['farSet']:
             problems.append(f'{b["id"]}: an empty set')
+    edges = data.get('edges')
+    if not edges:
+        problems.append('no edge dressing (prompt 33 L2 view)')
+    else:
+        pieces = {c['piece'] for c in edges['corners']}
+        for piece in PIECES:
+            if piece not in pieces:
+                problems.append(f'edges.corners: no model for {piece}')
+        for m in edge_models(edges):
+            if not m.startswith('dress_'):
+                problems.append(f'edges: {m} is not a decoration model (dress_*)')
+            if m in gameplay:
+                problems.append(f'edges: {m} is a gameplay prop')
+            if not (MODELS / f'{m}.glb').exists():
+                problems.append(f'edges: {m}.glb missing')
     seen = {m['id'] for m in data['maps']}
     for fam in families():
         if fam not in seen:

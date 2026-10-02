@@ -283,7 +283,13 @@ namespace MachineBrigade.Game.Views
         /// <summary>Buoys on the sea in the band and ring, islets on the horizon beyond the ring (harbour and coast maps).</summary>
         private void DressSea(ModelLibrary models, Random rng, List<string> buoys, List<string> islets)
         {
-            if (_theme.Water != ThemeWater.Sea) return;
+            // With edges data the sea side is dressed by DressSeaEdges (prompt 33 L2 view); its buoys stay on the sea.
+            if (_theme.Water != ThemeWater.Sea && !(HasEdges && _edges.HasSea)) return;
+            if (HasEdges)
+            {
+                DressEdgeBuoys(models, rng, buoys);
+                return;
+            }
             var reachX = Mathf.Min(Extent, _zones.OuterX);
             var count = Mathf.RoundToInt(6f * DressDensity * reachX / 300f);
             for (var i = 0; i < count && buoys.Count > 0; i++)
@@ -337,6 +343,12 @@ namespace MachineBrigade.Game.Views
                 if (NVector2.Distance(team.Rally, at) < RallyClearance) return false;
             foreach (var point in world.Map.Points)
                 if (NVector2.Distance(point.Position, at) < point.Radius + PointClearance) return false;
+            // Nor on a rail's band (prompt 33 L2 view: the track is drawn along the whole line).
+            foreach (var rail in world.Map.Rails)
+            {
+                var along = rail.Project(at, out _);
+                if (NVector2.Distance(rail.At(along), at) < MachineBrigade.Sim.Navigation.RailSpline.BandHalf + 0.5f) return false;
+            }
             foreach (var road in world.Map.Roads)
                 for (var i = 0; i + 1 < road.Points.Count; i++)
                 {

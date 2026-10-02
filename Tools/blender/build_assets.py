@@ -69,6 +69,7 @@ import mb_p34_barrels  # noqa: E402
 import mb_p34_parts  # noqa: E402
 import mb_p32_walls  # noqa: E402
 import mb_p33_biomes  # noqa: E402
+import mb_p33_edges  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -169,7 +170,9 @@ def all_builders():
                 # Prompt 32 L3: the base wall segments (HESCO, T-wall, gun wall) on the V2 kit.
                 **mb_p32_walls.BUILDERS,
                 # Prompt 33 L6: biome dressing (decoration only, drawn instanced by Surroundings.Dressing; last).
-                **mb_p33_biomes.BUILDERS}
+                **mb_p33_biomes.BUILDERS,
+                # Prompt 33 L2 view: the edge corner pieces, the sea's and the edge types' dressing (decoration; last).
+                **mb_p33_edges.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

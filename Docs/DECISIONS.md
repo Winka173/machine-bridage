@@ -16577,3 +16577,60 @@ bands in its own `map_dressing.json` and reads the data below; it edits no map f
 - Fingerprint: unchanged (the tags are static; positions are mixed already).
 - Data keys changed: every map file + `"terrain"`, `"landmarks"`; the 50 `_siege` / `_long` files + `"asymmetry"`.
   balance.json, campaign.json and the dialogue unchanged. Docs/checks/map_audit.md / .csv rewritten with the tags.
+
+## Prompt 33 L2 view / L7 (lead pass, 2026-10-02)
+
+Branch `feature/p33-a2` (lane A, after the merge of `feature/p33-b2`). The view side of pass 2, the landmark models of
+pass 3 and pass 7. Nothing run but the Python tools, the Blender build and the GLB validator, the map validators,
+check_access.py and the map audit (no Unity, no tests, no sims); the C# is compiled by the lead.
+
+### L2 view: the outer ring follows the edge types
+
+The view (`Views/Surroundings.Edges.cs`, a partial of `Surroundings`) reads the map's own `"edges"` (`world.Map.Edges`)
+and `map_dressing.json`'s new `"edges"` block (`Tools/maps/map_dressing.py` EDGE_DRESSING, version 2). A map without
+edges data (a test field) keeps the theme's old picture.
+
+- **SEA**: a point beyond the rectangle is sea when the stretch beyond its side (by the larger overshoot; in a corner
+  square either side) is SEA. So the sea runs from the edge to the horizon, and at a rectangle corner with one SEA side
+  the sea takes the corner and the coast runs on along that side's line (Ironport's quay line carries on east and west).
+  Where a SEA stretch meets another type along a side, the coast leaves the map at the junction and runs out straight for
+  36 m (the corner piece), then wobbles (Perlin, +-17 m). Drawn as a sea mesh in 2 m runs over the decorated square and
+  20 m runs out to three times it (cells fitted to the square: no gap), on the theme's water material. Every scatter
+  already asks `InSea` (forests, rocks, scenery, farmhouses, fields, the city's blocks, the relief, the range and the
+  horizon range, the biome dressing): with edges data it is this sea (a 4 m distance field gives the margins), so the SEA
+  side has no land, house, wood, field or hill; the range falls away within 30 m of it. The theme's own north sea
+  (`ThemeWater.Sea`) is used only without edges data: Ironport's long file (no SEA stretch, its quay mid-map) has no sea
+  past its north edge any more. On the sea: whitecaps (6 per hectare), the biome's buoys, two far ships (a container
+  ship and a tanker, 40-170 m past the ring) and two hazy islands (170-430 m past it) off each SEA side, and a line of
+  buoys along each sea lane's way out (L4's routes beyond the play area). The ground's paint turns to sand within 7 m of
+  the sea and the rivers.
+- **Shores** along each coast line beyond the map, by the SEA stretch's `shore`: BEACH a broken surf line every 11 m;
+  CLIFF sea stacks every 20 m; QUAY quay wall sections end to end (every 12 m), a gantry crane every 48 m and container
+  stacks behind.
+- **RIVER**: each `river` link's river runs on out as a channel of its width (the reservoir's 210 m included),
+  meandering past 36 m, the hills opened round it, its banks sanded; the theme's own parallel river is kept.
+- **CLIFF**: the ground beyond a CLIFF stretch rises as part of the faceted range: from 2 m out to 8-13 m by 11 m (x the
+  theme's peaks), faded over 14 m at the stretch's ends, plus scree. **URBAN**: the theme's city (every URBAN map has a
+  skyline theme); the urban set only on a map without one.
+- **Modifiers**: ring sets per hectare beyond the stretch: INDUSTRIAL 5 (chimney, tanks, sheds, pipes, containers),
+  HARBOR 6, URBAN 10 (only without a skyline), CLIFF 14 (scree). A SEA stretch's modifier dresses its coast (the QUAY
+  shore above).
+- **Corner pieces** (`Tools/blender/mb_p33_edges.py`, registered last): the ten names edges.py uses, `dress_edge_<piece>`,
+  standing at each corner of the data. Frame: the edge along local X, local +Z out of the map; a junction piece has its
+  first type (`first` in the data: LAND for corner_land_sea, bank_land_river, corner_land_cliff; URBAN for
+  embankment_urban_river) on its -X side; an outer piece has its first type on its +Z strip (SEA for outer_land_sea).
+  When the data's order is the other way round the piece is mirrored, so they are stood as plain GameObjects (no
+  collider: `ModelLibrary.Spawn`) rather than instanced (a mirrored instance would draw inside out); at most ten a map.
+  The scatter keeps off each piece's radius (18-26 m) and the relief and the range flatten under it. Their ground patches
+  dip under the view's ground at the rim; nothing in them is water (the view's sea and rivers show through).
+- **Continuity**: roads (the `road` links) run on out as painted strips to the horizon with a cut through the hills;
+  rails: the track (`dress_edge_rail_track`, 6 m sections) is laid along every RailSpline's whole length (nothing drew
+  the L5 lines, in play or out) and a tunnel portal stands at each end beyond the map; the play area's biome clutter keeps
+  off the rails' band. Rivers and the coast as above; the sea lanes as buoy lines; the air corridors have nothing to draw.
+- **Models** (24, existing kit materials, validator 0 errors): corner pieces outer_land 408, corner_land_cliff 560,
+  outer_urban 372, bank_land_river 828, corner_land_sea 1,104, outer_sea 624, embankment_urban_river 328, outer_land_sea
+  276, outer_cliff 254, outer_river 232; sea whitecap 60, surf 180, ship_far 104, tanker_far 68, island_haze 100, stack
+  360; edge quay 68, crane_far 108, containers 72, chimney 160, tanks 216, scree 100, rail_track 156, tunnel_portal 152.
+- Not done: the outline's bays inside the square on a SEA side stay the map's (its ground covers the whole square; Coral
+  Keys' sea inside the square is the map view's); shore CLIFF draws stacks only (no raised headland beyond the land
+  side); level crossings have no barrier model.

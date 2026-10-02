@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "camera": {
   "tiltDegrees": 52.0,
   "maxZoomSquare": 42.0,
@@ -635,5 +635,140 @@
    "ditches": 0,
    "dryBeds": 1
   }
- ]
+ ],
+ "edges": {
+  "corners": [
+   {
+    "piece": "outer_land",
+    "model": "dress_edge_outer_land",
+    "first": "LAND",
+    "radius": 22.0
+   },
+   {
+    "piece": "corner_land_cliff",
+    "model": "dress_edge_corner_land_cliff",
+    "first": "LAND",
+    "radius": 24.0
+   },
+   {
+    "piece": "outer_urban",
+    "model": "dress_edge_outer_urban",
+    "first": "URBAN",
+    "radius": 18.0
+   },
+   {
+    "piece": "bank_land_river",
+    "model": "dress_edge_bank_land_river",
+    "first": "LAND",
+    "radius": 22.0
+   },
+   {
+    "piece": "corner_land_sea",
+    "model": "dress_edge_corner_land_sea",
+    "first": "LAND",
+    "radius": 26.0
+   },
+   {
+    "piece": "outer_sea",
+    "model": "dress_edge_outer_sea",
+    "first": "SEA",
+    "radius": 20.0
+   },
+   {
+    "piece": "embankment_urban_river",
+    "model": "dress_edge_embankment_urban_river",
+    "first": "URBAN",
+    "radius": 20.0
+   },
+   {
+    "piece": "outer_land_sea",
+    "model": "dress_edge_outer_land_sea",
+    "first": "SEA",
+    "radius": 22.0
+   },
+   {
+    "piece": "outer_cliff",
+    "model": "dress_edge_outer_cliff",
+    "first": "CLIFF",
+    "radius": 24.0
+   },
+   {
+    "piece": "outer_river",
+    "model": "dress_edge_outer_river",
+    "first": "RIVER",
+    "radius": 18.0
+   }
+  ],
+  "sea": {
+   "waves": [
+    "dress_sea_whitecap"
+   ],
+   "waveDensity": 6.0,
+   "surf": "dress_sea_surf",
+   "stack": "dress_sea_stack",
+   "quay": "dress_edge_quay",
+   "crane": "dress_edge_crane_far",
+   "containers": "dress_edge_containers",
+   "ships": [
+    "dress_sea_ship_far",
+    "dress_sea_tanker_far"
+   ],
+   "islands": [
+    "dress_sea_island_haze",
+    "dress_coast_island_far"
+   ],
+   "shipsPerSide": 2,
+   "islandsPerSide": 2,
+   "laneBuoy": "dress_coast_buoy",
+   "laneStep": 40.0
+  },
+  "sets": [
+   {
+    "key": "INDUSTRIAL",
+    "ring": 5.0,
+    "set": [
+     "dress_edge_chimney",
+     "dress_edge_tanks",
+     "dress_harbor_shed_far",
+     "dress_harbor_shed_far",
+     "dress_harbor_pipes",
+     "dress_edge_containers"
+    ]
+   },
+   {
+    "key": "HARBOR",
+    "ring": 6.0,
+    "set": [
+     "dress_edge_containers",
+     "dress_edge_containers",
+     "dress_harbor_shed_far",
+     "dress_harbor_drums",
+     "dress_harbor_pallets"
+    ]
+   },
+   {
+    "key": "URBAN",
+    "ring": 10.0,
+    "set": [
+     "dress_urban_block_far",
+     "dress_urban_kiosk",
+     "dress_urban_billboard"
+    ]
+   },
+   {
+    "key": "CLIFF",
+    "ring": 14.0,
+    "set": [
+     "dress_edge_scree",
+     "dress_edge_scree",
+     "dress_desert_far"
+    ]
+   }
+  ],
+  "rail": {
+   "track": "dress_edge_rail_track",
+   "portal": "dress_edge_tunnel_portal",
+   "step": 6.0
+  }
+ }
 }
