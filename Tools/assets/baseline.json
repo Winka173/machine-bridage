@@ -1218,6 +1218,18 @@
     "fortress_bastion: triangles 23,948 -> 25,064 (+4.7%); vertices 28,306 -> 28,502 (+0.7%); meshes 91 -> 90 (-1.1%); renderers 91 -> 90 (-1.1%); materials 14 -> 13 (-7.1%); materialSlots 91 -> 90 (-1.1%); fileBytes 1,466,180 -> 1,481,688 (+1.1%); structure changed",
     "fortress_hive: triangles 18,866 -> 19,334 (+2.5%); vertices 22,691 -> 22,527 (-0.7%); meshes 65 -> 64 (-1.5%); renderers 65 -> 64 (-1.5%); materials 15 -> 14 (-6.7%); materialSlots 65 -> 64 (-1.5%); fileBytes 1,170,644 -> 1,164,776 (-0.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "behemoth",
+    "behemoth_inferno",
+    "behemoth_tempest",
+    "fortress_bastion",
+    "fortress_hive"
+   ],
+   "reason": "merge of feature/p27-wave5a",
+   "changes": []
   }
  ],
  "models": {
