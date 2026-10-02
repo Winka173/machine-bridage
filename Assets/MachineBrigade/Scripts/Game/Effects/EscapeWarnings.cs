@@ -75,6 +75,10 @@ namespace MachineBrigade.Game.Effects
         public void Add(Vector3 at, float core, float edge, float start, float due, float now = 0f, long owner = 0, bool super = false)
         {
             if (due <= start || (core <= 0f && edge <= 0f)) return;
+            // Fix prompt L4: on the shot clock, as the round it warns of (it goes the frame the round lands).
+            start = ShotClock.Map(start);
+            due = ShotClock.Map(due);
+            now = ShotClock.Map(now);
             var coreRadius = Mathf.Max(0.5f, core);
             var edgeRadius = Mathf.Max(coreRadius, edge);
             // A salvo: the same shooter's ring fired just before that this one touches grows to hold both.
@@ -133,6 +137,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now)
         {
+            now = ShotClock.Map(now);
             foreach (var p in _pairs)
             {
                 if (!p.Active) continue;
