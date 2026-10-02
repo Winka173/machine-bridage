@@ -14132,8 +14132,7 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
 
 Pass 6c (lane B, towers): atgm_tower, c_ram, each with `_a` and `_b`; gun_pit, in `Tools/blender/mb_p27_wave6.py` (method of 6a/6b:
 old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and pivots untouched). Run: Blender
-rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 for atgm_tower and c_ram
-(gun_pit keeps its own .9 default via its options, the pass sets .65 for all too).
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 for all seven.
 
 - atgm_tower: extruded pad, roof slab and Team fascia, the tower body a `k.sharp_loft` of the old outline (embrasures and bands still sit
   on its faces), a plinth, chamfered launcher housing and sight box with recesses. Tubes, lips, stair, sandbags untouched.
