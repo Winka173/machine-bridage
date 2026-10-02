@@ -246,6 +246,13 @@ namespace MachineBrigade.Sim.Content
         /// with its camp, hardpoints and the units placed there (a fortress's towers too). A campaign
         /// mission that comes back to a map from the other side plays on this.
         /// </summary>
+        private List<WallLineDef> SwappedWalls()
+        {
+            var list = new List<WallLineDef>();
+            foreach (var l in Walls) list.Add(l.Swapped());
+            return list;
+        }
+
         public MapDefinition Reversed()
         {
             static int Swap(int team) => team == 0 ? 1 : team == 1 ? 0 : team;
@@ -266,7 +273,7 @@ namespace MachineBrigade.Sim.Content
             var spawns = new List<SpawnPointDef>();
             foreach (var sp in Spawns) spawns.Add(new SpawnPointDef(Swap(sp.Side), sp.Kind, sp.Position, sp.From));
             return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases,
-                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns };
+                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns, Walls = SwappedWalls() };
         }
 
         /// <summary>
@@ -283,6 +290,19 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 30 L6: the neutral sites (radar, workshop, abandoned AA, ammo depot), placed by Tools/maps/place_neutrals.py.</summary>
         public IReadOnlyList<NeutralSiteDef> Neutrals { get; internal set; } = Array.Empty<NeutralSiteDef>();
+
+        /// <summary>Prompt 32 L3: the wall lines of the camps and the fortress (map data "walls", Tools/maps/p32_walls.py).</summary>
+        public IReadOnlyList<WallLineDef> Walls { get; internal set; } = Array.Empty<WallLineDef>();
+
+        /// <summary>A camp's wall lines (outer first), or the fortress's (<paramref name="owner"/> "fortress").</summary>
+        public List<WallLineDef> WallsOf(string owner)
+        {
+            var list = new List<WallLineDef>();
+            foreach (var l in Walls)
+                if (l.Owner == owner) list.Add(l);
+            list.Sort((a, b) => a.Ring.CompareTo(b.Ring));
+            return list;
+        }
 
         /// <summary>
         /// Prompt 23 B: spawn points the map sets by hand (map data "spawns": [{"team", "kind", "x", "z", "fromX", "fromZ"}]),
@@ -393,6 +413,7 @@ namespace MachineBrigade.Sim.Content
                 Routes = routes,
                 Spawns = SpawnPointDef.ParseAll(root),
                 Neutrals = NeutralSiteDef.ParseAll(root),
+                Walls = WallLineDef.ParseAll(root),
             };
         }
     }

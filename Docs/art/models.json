@@ -1603,6 +1603,18 @@
     "file": "wall.glb",
     "triangles": 736
   },
+  "wall_gun": {
+    "file": "wall_gun.glb",
+    "triangles": 2672
+  },
+  "wall_hesco": {
+    "file": "wall_hesco.glb",
+    "triangles": 3276
+  },
+  "wall_t": {
+    "file": "wall_t.glb",
+    "triangles": 1798
+  },
   "warehouse": {
     "file": "warehouse.glb",
     "triangles": 4536

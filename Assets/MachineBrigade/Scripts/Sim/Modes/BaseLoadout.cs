@@ -23,6 +23,15 @@ namespace MachineBrigade.Sim.Modes
         public HqBranch HqBranch { get; set; } = HqBranch.Ground;
 
         /// <summary>
+        /// Prompt 32 L3: each wall line's type, outer line first (a camp reads two, a fortress three). Empty or NONE: no wall
+        /// (a loadout made in code, the modes' bare camps); the player's takes the save's, the AI's its general's.
+        /// </summary>
+        public List<WallType> Walls { get; set; } = new();
+
+        /// <summary>The wall type of a line (0 the outer line); NONE past the list.</summary>
+        public WallType WallFor(int line) => line >= 0 && line < Walls.Count ? Walls[line] : WallType.None;
+
+        /// <summary>
         /// Laid on a long battlefield's layered base (prompt 17 B.4): the HQ level opens the long table's slots
         /// (more of every size), and its forward strongpoints repeat the towers (<see cref="BaseRules.ForwardSlots"/>).
         /// </summary>
@@ -143,7 +152,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var rules = catalog.Base;
             var level = Math.Clamp(HqLevel, 1, rules.MaxLevel);
-            var fitted = new BaseLoadout { HqLevel = level, HqType = HqType, HqBranch = HqBranch, Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
+            var fitted = new BaseLoadout { HqLevel = level, HqType = HqType, HqBranch = HqBranch, Walls = new List<WallType>(Walls), Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
             foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
                 var open = rules.Slots(level, size, Layered);
@@ -283,6 +292,9 @@ namespace MachineBrigade.Sim.Modes
             // Prompt 32 L4: the HQ type by its general (the style it fights with), else by difficulty; a Fortress takes the
             // anti-air gun against a deck with many aircraft.
             loadout.HqType = rules.HqTypes.ForAi(style, difficulty);
+            // Prompt 32 L3: every line of the enemy's walls by its general (Brandt, Kessler T-walls; Varga gun walls; HESCO).
+            var wall = rules.Walls.ForAi(style);
+            loadout.Walls = new List<WallType> { wall, wall, wall };
             loadout.HqBranch = HqBranch.Ground;
             if (loadout.HqType == HqType.Fortress && against != null && against.Count > 0)
             {
@@ -337,7 +349,7 @@ namespace MachineBrigade.Sim.Modes
 
         public BaseLoadout Clone() => new()
         {
-            HqLevel = HqLevel, HqType = HqType, HqBranch = HqBranch, Layered = Layered, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
+            HqLevel = HqLevel, HqType = HqType, HqBranch = HqBranch, Walls = new List<WallType>(Walls), Layered = Layered, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
             Utilities = new List<string>(Utilities), Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches),
         };
     }

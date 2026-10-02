@@ -20,6 +20,12 @@ namespace MachineBrigade.Sim.Economy
             {
                 var pay = 0f;
                 var counted = 0;
+                // Prompt 32 L7: Showdown's minute 6: the CP relays stop paying.
+                if (_world.RelaysOff)
+                {
+                    economy.Relay = 0f;
+                    continue;
+                }
                 foreach (var v in _world.VehicleList)
                 {
                     if (counted >= RelayDef.MaxPerBase) break;

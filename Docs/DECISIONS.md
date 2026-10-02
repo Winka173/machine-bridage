@@ -15862,3 +15862,195 @@ Pass 6: the report and the design document's sections; the PDF is built by the l
   "a vehicle that becomes cover when destroyed", does not exist in the data yet; nothing to keep.
 - Tests (written, not run): `Prompt34ViewTests` L7 (the class table on the roster, lives and caps, the parts in the
   rebuilt models, the loss event's crash plan matching the Sim's crash blast in place and time).
+
+## Prompt 32 L3 / L7 / L9 (lead pass, 2026-10-02)
+
+Prompt 32 passes 3, 7 and 9 on `feature/p32-a3` (lane A of Docs/LOCAL_PLAN_P31_P32.md), on prompt 31's prebuilt NavGrid
+states (DECISIONS "Prompt 31 L3"). Nothing run but the Python tools, the Blender build and the GLB validator (no Unity, no
+tests, no sims); the C# is compiled by the lead. Locked rules of section 0 hold: aiModeProfile extended by data only (one
+new optional field, `wallRoute`, and a Showdown profile), match rules in prompt 30's schema, no new HUD button (the walls
+are chosen on the Base screen), deterministic (switches at a tick boundary, choices in id order).
+
+### L3: walls on prebuilt NavGrid ground
+
+**Data.** `base.walls` (parsed by `Content/WallRules.cs`, `BaseRules.Walls`): `segmentHp` 2400 (HESCO), `rubbleSlow` 0.2,
+`campLines` 2, `fortressLines` 3, `default` hesco, `types` (hesco `wall_hesco` 1.0; t_wall `wall_t` 1.6 with `extra`;
+gun_wall `wall_gun` 1.2 with `gun`), `ai` (brandt, kessler t_wall; varga gun_wall; default hesco); the breakers and x1.5
+were already there (L8). Three new vehicle defs `wall_hesco` / `wall_t` / `wall_gun`: `"wall": true`, static obstacles,
+no card, no CP, weapon none, 12 x 2 m (`width` 12, `length` 2), hp 2400 / 3840 / 2880 (segmentHp x durability; a test
+checks it), armour 3 / 4 / 3. No currency of their own: the type is a free loadout choice, like the HQ type.
+
+**Map data.** Each base map file has `"walls"` (`Tools/maps/p32_walls.py`, rerunnable, `--check`; build_maps.py calls it
+after a rebuild; `MapDefinition.Walls`, `WallsOf(owner)`; a reversed battlefield swaps the camps' owners): lines with
+`owner` (`camp0`, `camp1`, `fortress`), `ring` (1 outer, 2 inner, 3 a fortress's keep line; the loadout's line index is
+ring - 1), `radius` (Chebyshev from the HQ: inside it is the base), `gate` and 3-5 axis-aligned segments (12 x 2 m, one
+NavGrid block each), `facing` out of the base, one `gun` (next to the gate) and at most one `extra` (half the gate).
+How a line is laid (my choices): on a square round the HQ at radius R on the sides facing the enemy (an L for a corner
+camp, a straight line for a long map's head-on attack), the gate where a road crosses nearest the middle (else the
+middle: the corner), 3-4 plain segments from the gate outwards, alternately each side, each pushed up to 6 m in or out
+to free ground; a slot touching anything blocked (props, the outline, every hardpoint filled at 0.8 of its size, the HQ),
+a drop zone (18 m), a capture circle, a neutral site, a start unit, an outpost slot, a fortress's super-gun or firing
+spots is skipped. Radii tried in order: camps ring 1 58/52/64/46/70, ring 2 34/30/38/42/27; a corner fortress
+siegeRings[0] - 7 (then +-6 to 18), siegeRings[1] + 9, siegeRings[1] - 14; a layered fortress outerWall - 9, innerWall - 9
+and 40 m beyond the outer wall's line. The worst case of the three types (every segment, the extra, the gun tower's 4 m
+block) must keep both rallies, the capture points and the neutral sites in one region and seal off no more than 6 open
+cells, else segments are dropped until it does (fewer than 3: NONE). A conquest map keeps its camps alike (a ring only one
+camp could take is dropped from the other).
+
+Result (75 base maps, 280 lines, about 1,080 segments). Conquest: both lines in both camps on every map but landingbeach
+(ring 2 seals 35 cells round the camp's buildings) and lighthousebay (ring 2 seals 62-86 cells on the harbour): ring 1
+only; openpit (ring 1 has 2 free slots at most): ring 2 only. Siege and long camps (side 0): both lines but
+borderbridge_long, landingbeach_long, openpit_long, veyra_old_quarter_long (none: hemmed in by the long map's props),
+capital_long, hydrodam_long, launchsite_long, redrock_long, saltflat_long, landingbeach_siege, lighthousebay_siege,
+openpit_siege (one line). Fortresses: every layered fortress (the long maps, Defend's usual ground) has its three lines;
+the corner fortresses mostly ring 2 only (at the outer line and at the keep no 12 m slot is free among the works: NONE),
+rings 1 and 2 on dunebreak, greenvale, ironport, landingbeach, redrock, skyhold, ring 1 only on orbitalgate, none on the
+classic fortresses (coralisles, foundry, metrocity, openpit, swamp). A line the loadout leaves NONE builds nothing.
+
+**Sim** (`Modes/WallSystem.cs`, `world.Walls`; `Modes/BaseSystem.Walls.cs`): `BaseSystem.Establish` builds the camp's lines
+(owner `camp<site>`), `EstablishFortress` the fortress's, SiegeMode a classic fortress's, all before the towers stand and
+before the first step. For each line the loadout gives a type: the whole line is drawn on the grid and the anchors
+(rallies, points, neutral sites) checked to stay in one region, else the line is not built (NONE, `Walls.Problems`); then
+each segment is a static obstacle vehicle (spawned before its ground closes, so the spawn does not move it) on its own
+site `wall.<team>.<ring>.<k>` with the states INTACT (its block) and RUBBLE (none) through prompt 31's `NavStates.Define`
+(INTACT in force). The segment's own vehicle anchor is never laid: the site alone holds the ground. RUBBLE only opens
+ground, so no RUBBLE state can fail prompt 31's Validate (not called again); the INTACT state, which Validate does not
+look at, is the line check above.
+
+- **Event-driven.** `DamageSystem.OnVehicleDestroyed` -> `Walls.OnDestroyed`: the segment asks `Schedule(site, RUBBLE,
+  tick + 1)`, its ground becomes a rubble area, a gun wall's tower on it is destroyed with it. Nothing of the walls runs
+  per tick; the rubble slow rides the slow-aura pass (every 0.5 s, only while there is rubble): ground vehicles inside a
+  rubble area get the Slow status at 0.2 (20 % slower), either side's.
+- **Never trapped, always a way.** The gate and the open line ends by construction, checked at load; a switch to RUBBLE
+  only opens ground; prompt 31's displacement covers the rest.
+- **Loads.** `Walls.Snapshot()` (the rubble sites) / `Restore()` (segments removed quietly, sites straight to RUBBLE);
+  the sites are in the battle's fingerprint, so a replay switches on the same steps. A weekly fortress's broken rings
+  start in rubble (`RuinRing`).
+- **Gun wall.** It takes the last small slot the HQ level opens that holds a tower (never a free slot): that tower stands
+  on the gun segment (`HardpointState.OnWall`, the slot's hardpoint moved there), is flown back in there by the L2 rules,
+  and falls with its segment. No small tower in the base: the gun wall stands without one.
+- **T-wall.** Builds the line's extra segment: half the 24 m gate closed (12 m, 9 m clear of the clearances), so the
+  side's own vehicles take the narrower or the longer way. HESCO and the gun wall leave the full gate.
+- **Wall breakers** (`VehicleDef.WallBreaker`, `WallBreakerScale`; an elite or a branch of one too): x1.5 on walls only
+  (`DamageSystem.BonusFor`); the engineers' x3 on obstacles and the bulldozer's plough do not apply to walls (they stay on
+  dragon's teeth, hedgehogs and wire). Walls pay no CP to anyone, count in no supply and score nothing in Deathmatch (the
+  kill ledger skips them).
+- **Targeting.** Walls are obstacles: picked last by the guns (x0.05), breached by the waves' existing obstacle rules.
+
+**AI** (`AI/SquadLayer.Walls.cs`, prompt 28's squad scoring, no behaviour tree): an attacking squad whose goal lies behind
+an enemy line it stands outside (the outermost such line) compares in metres of driving the open ways (the gate, any
+rubble) with breaking each standing segment: cost = route x `wallRoute.route` + threat x `wallRoute.threat` (anti-tank and
+artillery reach along the way over the squad's strength, 40 m a unit) + breach x `wallRoute.breach` (the segment's health
+over the squad's damage a second against it, the wall breakers' x1.5 counted, times the slowest member's speed). A breach
+is taken only at 80 % of the best open way's cost (no flipping); the members attack the segment (logged "breach wall");
+once it is rubble the open way wins. Data: `aiModeProfiles` `wallRoute` on conquest, deathmatch, hill (1 / 1 / 1), assault
+(1 / 1.2 / 0.9), siege (1 / 1.2 / 0.8), showdown (1 / 1 / 0.9), also in Tools/ai/import_ai_modes.py's EXTRA (the generated
+block was edited by hand as before: the script's key order differs since L4). The enemy's wall type by general
+(`base.walls.ai`, `BaseLoadout.ForAi`: every line the same type).
+
+**Game.** The player's lines in the save (`wallTypes`, `PlayerProfile.WallOf` / `NextWallType`; every resolved loadout
+carries them); the Base screen shows one row per line (two for a camp, three for a layered base), a tap cycles NONE ->
+HESCO -> T-wall -> gun wall with the type's line (EN + VI, `Hud/BaseText.cs`). Written blind (no USS for the new rows).
+Rubble is drawn as the segment's own wreck (a fixed defence slumps into a burnt ruin, VehicleView.BecomeWreck): no rubble
+model.
+
+**Models** (`Tools/blender/mb_p32_walls.py`, on the V2 kit through wave 8b's `_v2()` and `k.clean`): `wall_hesco` (three
+4 m gabion bays on a berm, Team band, razor wire; 3,276 triangles), `wall_t` (five precast T-wall panels; 1,798),
+`wall_gun` (two bays and a 4 m firing platform; 2,672), 12 x 2 m, ends flush. The substring filter (`wall_hesco wall_t
+wall_gun`) built only these three. `glb_check.py --accept` (new; 0 errors).
+
+Tests (written, not run): `WallP32Tests` (the data and durability; the enemy's type by general; the breakers x1.5 on walls
+only; every base map's lines 3-5 segments with a gate; every line intact keeps every base map joined, T-walls and gun
+walls; every INTACT/RUBBLE combination of ashfield's camp 0 (up to 1,024) on the grid; every segment switched to rubble for
+real on three maps; the widest ground card through a T-wall's gate and the way back from in front of every segment; the
+switch on the next tick only and no switch without a fall; rubble slowing by a fifth; the gun wall taking a small slot of
+the base; a line that would cut the battlefield refused; a replay's fingerprint and walls; a snapshot restored). Not
+tested: the AI's route choice (it needs a commander's squads in a running battle): NEED SIM.
+
+### L7: Showdown (Đối công)
+
+**Match rules** (prompt 30's schema; `matchRules.modes.showdown`, added to Tools/story/import_match_rules.py's `SHOWDOWN`,
+which reproduced the generated block exactly before the change and was rerun): the seven fields as the prompt words them
+(Vietnamese, like the other rows), plus `antiSnipeRule`, `breachRule`, `escalation`, `mapEligibility`; numbers
+`timeLimit` 720, `antiSnipeShare` 0.25, `antiSnipeRange` 60, `escalationAt` 360, `escalationIncome` 1.5, `rebuildCutoff`
+600, `overtimeLead` 0.05, `suddenDeath` 90, `suddenDeathIncome` 2, `catchUpMax` 0.25, `baseRadius` 46, `neutralsMax` 2; a new
+`lists` object (`MatchRuleSet.List`) with `maps`. Neutrals: `neutrals.modes.Showdown` = ammo_depot (the maps' two
+mirrored depots near the middle: 0-2 sites by map, symmetric by neutrals.py).
+
+**Maps** (`lists.maps`, from `Docs/checks/map_audit.csv` by the script's `showdown_maps()`): symmetric Conquest files (300 x
+300) with no RED flag, median path delta and neutral value delta both 10 % or less (the audit's GREEN bands): 22 maps,
+ashfield, capital, coralisles, dunebreak, foundry, frostpeak, greenvale, ironport, junglepass, landingbeach, launchsite,
+lighthousebay, metrocity, openpit, orbitalgate, redrock, rustyard, saltflat, skyhold, swamp, veyra_old_quarter, whiteout;
+out: borderbridge and emberridge (RED connectivity), hydrodam (RED path delta 19 %); no 300 x 480 map. The session plays
+the chosen map when it is listed, else the first listed (`ModeSession.MapFile`, `ShowdownSession.MapOf`); the menu's map
+picker is not filtered (written blind: the picked map is replaced as the battle loads).
+
+**Mode** (`Sim/Modes/ShowdownMode.cs`, `Game/Match/ShowdownSession.cs`, `GameModeKind.Showdown`, appended to the enum):
+
+- Both bases `BaseRole.Target` (both HQs can fall; data `base.roles.Showdown`), each with its full loadout (towers, walls,
+  HQ type), its commander and its opening squad (L6 already listed the mode); the enemy's HQ level is its difficulty's,
+  never above the player's (`min(AiLevel, player level)`). Starting CP 18 -> 21 by L6's x1.16; income 1.35 both.
+- Win: the enemy HQ destroyed; both on one step: a draw.
+- **Anti-snipe** (`SimWorld.HqDamageRule`, applied in `DamageSystem.HitVehicle` after every other rule): until a side's
+  outer defence is breached its HQ takes 25 % from artillery (an indirect weapon, a called strike), missiles, rockets,
+  drones and aircraft fired from beyond 60 m (a shooter's distance; a strike always counts as from afar).
+- **outerDefenseBreached** (looked at every 0.5 s, then for good): a rubble segment of the side's ring-1 line that opens a
+  route (`WallSystem.RubbleRoute`: the ground in front of and behind the fallen segment open and in one NavGrid region,
+  worked out once per grid version), or an enemy ground vehicle inside the base (behind the outer line, or within 46 m of
+  the HQ with no line). A camp's gate is an opening, not an entity: "the main gate destroyed" reads as the enemy driving
+  in through it (my reading; a gate entity would close the side's own way out).
+- **Escalation**: minute 6, income x1.5 both sides (`ScaleIncome`) and the CP relays stop paying (`SimWorld.RelaysOff`, in
+  EconomySystem.StepRelays); minute 10, `BaseSystem.RebuildUntil` = 600 (L2's cut-off: a paid drop still lands).
+- **At 12 minutes**: a lead of 5 HQ health points or more wins; under 5, sudden death for 90 s: no anti-snipe, still no
+  rebuilding, income x2 of the base (x2 / 1.5 on top of the escalation), the HQ skill's cooldown untouched; an HQ destroyed
+  wins, else the side that did more damage to the enemy HQ in those 90 s (counted in the same hook); level, a draw. No
+  side score.
+- **Catch-up**: income only, +25 % at most (`world.CatchUpMax` 0.25, `SimWorld.CatchUpIncomeOnly` turns off the kill pay
+  by the odds); no Underdog (no free reinforcement).
+- **AI** (data only): profile `showdown` (controllers Commander, stall Both, spend and advance pressure on, the objective
+  policy as the prompt lists it, `hqSkillThreat` 8, `wallRoute` 1 / 1 / 0.9), mode tag `Showdown` -> `showdown`. Both
+  commanders get the two HQs as their objectives (`ShowdownMode.Points`: each side's HQ a point it holds, never captured),
+  so they defend their own when threatened and attack the other's, through the gate or a breach by L3's rule; the HQ
+  skill by L4's `AutoSkill`; neutrals by the existing rules.
+- **Menu and words**: Showdown in the home screen's mode list (icon swords), loading line, HUD (HQ health % each side and
+  the clock), results (HQ %, sudden-death damage); texts `mode.showdown*`, `stat.hq`, `stat.suddenDeath` (EN + VI,
+  `Hud/BaseText.cs`). Written blind: no HUD notice at minute 6, 10 or at sudden death (left for the lead, Docs/ai/LOCAL_TODO).
+
+**Static estimate** (`Tools/balance/p32_showdown_static.py`, `Docs/checks/showdown_static.md`; no simulation): an army of the
+median ground card (main_battle_tank, 8 CP) against the HQ 5 reference base under the fire of its covering half of the
+towers: 40 and 80 CP armies stall at the towers or the HQ; 120 CP breaks it in 2.5 min without walls, 3.0 with HESCO, 3.2
+with gun walls, and stalls at the HQ against T-walls; 160 CP in 1.9 / 2.2 / 2.8 (T-wall) / 2.2 min. Verdict: 12 minutes
+is a reasonable limit (about 950 CP a side to spend; a side that wins the field by minute 6-8 has time to break in, an
+even match goes to the HQ lead or sudden death). NEED SIM.
+
+Tests (written, not run): `ShowdownP32Tests` (the schema and numbers; only symmetric 300 m maps, the RED ones out, the
+fallback map; the profile as data, the role, the opening squads; both HQs can fall, the cut-off, catch-up income only, no
+Underdog; 25 % from 100 m and full from 30 m, full once breached; a rubble route breaching the base; minute 6; the 5-point
+lead; sudden death, its damage count and the draw; the menu and both languages).
+
+### L9: audits, the design document, the report
+
+- **Overlaps** (`Tools/balance/p32_base_audit.py` -> `Docs/checks/base_overlap.md`): the prompt's pairs kept apart as it
+  rules (radar module inside the base / the neutral radar's map area; repair bay at home / neutral workshop on the map /
+  shield tower's dome; C-RAM / laser / shield under L4's one-system-per-round rule). Every pair of the 22 cards and their
+  branches with the same targets, damage type, reach within 10 % and the same rebuildCp: 9 pairs of a card and its own
+  branch (the branch inherits the gun and adds its role: by design) and 2 between cards, reported, not changed:
+  `aa_turret.flak` / `heavy_flak_tower.bofors` (fragmentation, 46 / 48 m, 6 CP; a small and a medium slot) and
+  `aa_turret.sam` / `c_ram.dome` (air, 56 / 60 m, 5 CP; a missile post and an interceptor dome).
+- **Performance** (same script -> `Docs/checks/base_perf.md`): about 63 long-lived entities a side in Showdown at HQ 5
+  (HQ, 11 towers, 3 modules, up to 10 wall segments, 32 + 6 vehicles), about 126 a match plus 0-2 neutral sites (the prompt
+  expected about 75 / 150); the largest short-lived sources (projectiles, drones, mines, strikes); confirmed: walls have no
+  per-tick logic, the Garrison is held by the caps, views are pooled (the Sim's `Projectile` is not: one allocation a
+  shot); NEED PROFILE listed there.
+- **Forward drop at an outpost: HOLD.** Precheck item 5 as found: it exists (`BaseSystem.TryGetDropZone`) and only where a
+  campaign mission marks outposts (`MissionSession` fills `OutpostPoints`); not switched on in Conquest, King of the Hill
+  or Showdown (Showdown has no capture points). Nothing changed.
+- **Design document** (`Tools/docs/prompt32_base.py`, `base_system`, called by build_doc.py before the handbook; Vietnamese
+  and English, every number from balance.json and the map files): 6a the 22-tower roster and its branches with their roles
+  and rebuild prices, 6b rebuilding, 6c walls (types, durability, segment health, the maps' line count), 6d HQ types by
+  level, 7 Defend / Endless by HQ level (the reference bases), Showdown (its rules, numbers and maps), 14 starting CP and
+  opening squads (commanders, enemy generals); the handbook (L8) follows. It ran alone (`python
+  Tools/docs/prompt32_base.py`); the PDF is not built (the lead does).
+- **Report** `Docs/balance/report_p32.md`: pass 0's results, the rebuild prices (provisional and script), the towers cut,
+  the steel fortress verdict (HOLD), the three HQ types compared, the Showdown static check, the overlaps and performance,
+  every decision taken alone.

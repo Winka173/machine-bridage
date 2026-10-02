@@ -22,7 +22,7 @@ namespace MachineBrigade.Sim.Abilities
             if (v.Stunned || v.Flying) return;
             foreach (var o in _world.VehicleList)
             {
-                if (!o.IsAlive || !o.Def.Obstacle || o.Team == v.Team || o.Team < 0) continue;
+                if (!o.IsAlive || !o.Def.Obstacle || o.Def.Wall || o.Team == v.Team || o.Team < 0) continue;
                 var reach = v.Def.HullBound + o.Def.HullBound + 1.5f;
                 if (Vector2.DistanceSquared(o.Position, v.Position) > reach * reach) continue;
                 _world.Damage.Apply(o, o.Hp + o.MaxHp, v.Weapon.DamageType, new HitInfo(v, v.Team, v.Weapon, v.Position, HitKind.Direct, false));

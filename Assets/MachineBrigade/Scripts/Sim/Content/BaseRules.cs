@@ -118,6 +118,9 @@ namespace MachineBrigade.Sim.Content
         private readonly List<string> _wallBreakers = new();
         public float WallBreakerMultiplier { get; internal set; } = 1.5f;
 
+        /// <summary>Prompt 32 L3: the wall types, the AI's choice by general, rubble ("base.walls").</summary>
+        public WallRules Walls { get; internal set; } = new();
+
         /// <summary>Prompt 32 L4: the HQ types ("base.hqTypes"): Fortress, Garrison, Shield.</summary>
         public HqTypeRules HqTypes { get; internal set; } = new();
 
@@ -209,6 +212,7 @@ namespace MachineBrigade.Sim.Content
                 var w = b.Object("walls");
                 rules.WallBreakerMultiplier = Math.Max(0f, w.Float("breakerMultiplier", 1.5f));
                 if (w.Has("breakers")) rules._wallBreakers.AddRange(w.StringArray("breakers"));
+                rules.Walls = WallRules.Parse(w);
             }
             if (b.Has("reference"))
                 foreach (var r in b.Array("reference"))

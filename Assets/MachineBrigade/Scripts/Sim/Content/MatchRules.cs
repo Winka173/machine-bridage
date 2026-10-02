@@ -18,6 +18,11 @@ namespace MachineBrigade.Sim.Content
         public float Get(string key, float fallback) => _numbers.TryGetValue(key, out var v) ? v : fallback;
         public bool Has(string key) => _numbers.ContainsKey(key);
 
+        private readonly Dictionary<string, IReadOnlyList<string>> _lists = new();
+
+        /// <summary>Prompt 32 L7: a named list of the rules ("lists": Showdown's eligible maps); empty when the data has none.</summary>
+        public IReadOnlyList<string> List(string key) => _lists.TryGetValue(key, out var l) ? l : Array.Empty<string>();
+
         internal static MatchRuleSet Parse(string mode, JsonObject o)
         {
             var set = new MatchRuleSet { Mode = mode };
@@ -32,6 +37,11 @@ namespace MachineBrigade.Sim.Content
             {
                 var n = o.Object("numbers");
                 foreach (var k in n.Keys) set._numbers[k] = n.Float(k);
+            }
+            if (o.Has("lists"))
+            {
+                var l = o.Object("lists");
+                foreach (var k in l.Keys) set._lists[k] = l.StringArray(k);
             }
             return set;
         }

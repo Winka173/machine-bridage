@@ -463,6 +463,9 @@ namespace MachineBrigade.Sim.Modes
                     if (!rebuild) slot.Lost = true;
                 }
             }
+            // Prompt 32 L3: a classic fortress (no hardpoints of its own) still gets the map's fall-back wall lines.
+            if ((_fortress == null || _fortress.Slots.Count == 0) && Fortress is { } classicHq && world.Map.WallsOf("fortress").Count > 0)
+                world.Walls.Build(Defender, world.Map.WallsOf("fortress"), _rules.FortressLoadout ?? BaseLoadout.ForAi(world.Catalog, "Normal"), classicHq);
             // An older map's fortress: its guns are map units.
             foreach (var v in world.VehicleList)
                 if (v.IsAlive && v.Team == Defender && v.Def.Static && !Listed(v.Id))
@@ -491,6 +494,8 @@ namespace MachineBrigade.Sim.Modes
                 foreach (var id in _defences[Stage - 1])
                     if (world.TryGetVehicle(id, out var gun)) world.RemoveQuietly(gun);
                 world.Bases.LoseRing(Defender, Stage);
+                // Prompt 32 L3: that ring's wall line lies in rubble too.
+                world.Walls.RuinRing(Defender, Stage);
                 // Past the walls: their gates were blown in that attack.
                 if (Stage == 2)
                     foreach (var (id, ring, _) in _gates)

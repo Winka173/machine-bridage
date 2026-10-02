@@ -128,6 +128,8 @@ namespace MachineBrigade.Game.Match
             // Prompt 32 L4: the HQ type chosen on the Base screen.
             resolved.HqType = HqType;
             resolved.HqBranch = HqBranch;
+            // Prompt 32 L3: the wall lines chosen on the Base screen.
+            resolved.Walls = WallTypes();
             // A module's rank-7 branch too (the landing pad's, prompt 13 F.1).
             foreach (var id in resolved.Utilities)
                 if (!string.IsNullOrEmpty(id) && TowerBranch(id) is { } branch) resolved.Branches[id] = branch;

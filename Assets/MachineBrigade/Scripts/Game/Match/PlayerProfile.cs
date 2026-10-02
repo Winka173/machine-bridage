@@ -109,6 +109,9 @@ namespace MachineBrigade.Game.Match
             /// </summary>
             public string hqType = "";
             public string hqBranch = "";
+
+            /// <summary>Prompt 32 L3: each wall line's type, outer first ("none", "hesco", "t_wall", "gun_wall"; missing: the data's default).</summary>
+            public List<string> wallTypes = new();
             public int hqTypeVersion;
             public bool hqTypeNews;
             public List<string> baseUtilities = new();
