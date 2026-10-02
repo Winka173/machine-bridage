@@ -81,11 +81,11 @@
   },
   "apc": {
     "file": "apc.glb",
-    "triangles": 6448
+    "triangles": 7006
   },
   "apc_hd": {
     "file": "apc_hd.glb",
-    "triangles": 14466
+    "triangles": 14968
   },
   "aps_tank": {
     "file": "aps_tank.glb",
@@ -93,7 +93,7 @@
   },
   "armed_truck": {
     "file": "armed_truck.glb",
-    "triangles": 2916
+    "triangles": 3216
   },
   "armored_bulldozer": {
     "file": "armored_bulldozer.glb",
@@ -273,7 +273,7 @@
   },
   "bug_satellite": {
     "file": "bug_satellite.glb",
-    "triangles": 1670
+    "triangles": 1758
   },
   "bunker_shelter_tower": {
     "file": "bunker_shelter_tower.glb",
@@ -617,7 +617,7 @@
   },
   "fpv_drone": {
     "file": "fpv_drone.glb",
-    "triangles": 1520
+    "triangles": 1564
   },
   "fuel_bladder": {
     "file": "fuel_bladder.glb",
@@ -721,7 +721,7 @@
   },
   "heavy_attack_heli": {
     "file": "heavy_attack_heli.glb",
-    "triangles": 8778
+    "triangles": 9242
   },
   "heavy_bomber": {
     "file": "heavy_bomber.glb",
@@ -813,7 +813,7 @@
   },
   "icbm": {
     "file": "icbm.glb",
-    "triangles": 732
+    "triangles": 858
   },
   "ifv": {
     "file": "ifv.glb",
@@ -1289,7 +1289,7 @@
   },
   "sapper": {
     "file": "sapper.glb",
-    "triangles": 10062
+    "triangles": 10706
   },
   "scout_heli": {
     "file": "scout_heli.glb",
@@ -1517,7 +1517,7 @@
   },
   "transport_plane": {
     "file": "transport_plane.glb",
-    "triangles": 1728
+    "triangles": 2024
   },
   "tree": {
     "file": "tree.glb",
