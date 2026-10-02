@@ -14913,3 +14913,11 @@ the lead, the tests are written, not run.
     already), beachLanding (deliveries land at the rally on the beach: no outposts, no command vehicle), coastalGuns:
     the library's `enemy_barrage` at 90 s, every 80 s, four times, 2 salvos of radius 16, each warned by the event's own
     notice (c1m01 plays 3 events, within A.2's 2-4). Line: Nadia at 60 s on the shore guns' beat.
+  - c2m04, c2s2 (chapter 2): c2m04 loaned vbied (opened later in the chapter), demolition_line_vehicle (the raid's
+    breaching charge); recoilless_jeep -> ifv (no anti-tank card owned yet; the IFV carries anti-armour missiles).
+    Rule raidNoBase (playerBase None already). The sheet's extraction (an exit point after the last station, a win with
+    three vehicles there) is dropped: it would change the objective (Destroy the pipeline). Line: Kade at 25 s, no camp
+    behind them. c2s2 loaned shorad_vehicle, aa_gun_vehicle (the mobile anti-air the mission is about; zu23 and
+    aa_vehicle are the only owned anti-air and are in the deck); mobile_repair_vehicle -> ammo_carrier (the owned
+    support truck), uav_scan -> smoke_screen (no scan card owned yet). Rule warnedAirWaves: the mission's `air_wave`
+    event already warns of its direction (C.3 seconds, minimap mark). Line: Nadia at 40 s.

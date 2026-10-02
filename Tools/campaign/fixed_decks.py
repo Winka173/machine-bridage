@@ -66,6 +66,18 @@ DECKS = {
         replaced={'zu23_technical': 'ifv', 'engineer_vehicle': 'main_battle_tank'},
         rules=['noBaseStart', 'beachLanding', 'coastalGuns'],
         events=[{'id': 'enemy_barrage', 'trigger': {'at': 90, 'every': 80, 'times': 4}, 'params': {'salvos': 2, 'radius': 16}}]),
+    'c2m04': dict(
+        vehicles=['armored_car', 'scout_jeep', 'vbied', 'rocket_technical', 'ifv', 'light_tank', 'zu23_technical', 'demolition_line_vehicle'],
+        supports=['smoke_screen', 'repair_drop'],
+        loaned=['vbied', 'demolition_line_vehicle'],
+        replaced={'recoilless_jeep': 'ifv'},
+        rules=['raidNoBase']),
+    'c2s2': dict(
+        vehicles=['zu23_technical', 'aa_vehicle', 'shorad_vehicle', 'aa_gun_vehicle', 'armored_car', 'ifv', 'engineer_vehicle', 'ammo_carrier'],
+        supports=['smoke_screen', 'repair_drop'],
+        loaned=['shorad_vehicle', 'aa_gun_vehicle'],
+        replaced={'mobile_repair_vehicle': 'ammo_carrier', 'uav_scan': 'smoke_screen'},
+        rules=['warnedAirWaves']),
 }
 
 
