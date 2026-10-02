@@ -257,6 +257,9 @@ namespace MachineBrigade.Sim
         /// </summary>
         public bool CatchUp { get; set; }
 
+        /// <summary>Prompt 30 L4: the catch-up's ceiling (+50 % by default; Conquest and Deathmatch +25 %, sheet "Luật trận").</summary>
+        public float CatchUpMax { get; set; } = MachineBrigade.Sim.Economy.EconomySystem.MaxCatchUp;
+
         private readonly int[] _strikesCalled = new int[2];
         private readonly int[] _aircraftBought = new int[2];
 

@@ -69,6 +69,34 @@ namespace MachineBrigade.Sim.Modes
         public IReadOnlyList<string> PlayerSupports { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> EnemyVehicles { get; set; } = Array.Empty<string>();
         public IReadOnlyList<string> EnemySupports { get; set; } = Array.Empty<string>();
+
+        /// <summary>Prompt 30 L4: the rules row of balance.json "matchRules" that sets the numbers below; null keeps them (the menu battle).</summary>
+        public string? RulesId { get; set; } = "conquest";
+
+        /// <summary>Seconds; 0: no clock (the side with more points wins at the limit, then overtime).</summary>
+        public float TimeLimit { get; set; }
+
+        /// <summary>The last seconds of the clock in which points count <see cref="FinalScale"/> times.</summary>
+        public float FinalPhaseSeconds { get; set; } = 120f;
+
+        public float FinalScale { get; set; } = 2f;
+
+        /// <summary>Tied at the limit: up to this long, the first side to take one more point wins; else a draw.</summary>
+        public float Overtime { get; set; } = 60f;
+
+        /// <summary>Sets the numbers from the data (sheet "Luật trận"), and the world's catch-up ceiling.</summary>
+        public void Apply(SimWorld world)
+        {
+            if (RulesId == null || world.Catalog.MatchRules.For(RulesId) is not { } r) return;
+            Tickets = (int)r.Get("points", Tickets);
+            Bleed = r.Get("bleed", Bleed);
+            KillTicketFactor = r.Get("killTicketFactor", KillTicketFactor);
+            TimeLimit = r.Get("timeLimit", TimeLimit);
+            FinalPhaseSeconds = r.Get("finalPhase", FinalPhaseSeconds);
+            FinalScale = r.Get("finalScale", FinalScale);
+            Overtime = r.Get("overtime", Overtime);
+            world.CatchUpMax = r.Get("catchUpMax", world.CatchUpMax);
+        }
     }
 
     /// <summary>
@@ -90,7 +118,10 @@ namespace MachineBrigade.Sim.Modes
         {
             _rules = rules ?? new ConquestRules();
             // A destroyed vehicle costs its side tickets: its CP cost times the kill ticket factor (at least one).
-            _ledger.Lost += (team, cost) => _tickets[team] -= MathF.Max(1f, MathF.Ceiling(cost * _rules.KillTicketFactor));
+            _ledger.Lost += (team, cost) =>
+            {
+                if (_rules.KillTicketFactor > 0f) _tickets[team] -= MathF.Max(1f, MathF.Ceiling(cost * _rules.KillTicketFactor));
+            };
         }
 
         public IReadOnlyList<ObjectiveState> Points => _points;
@@ -105,6 +136,12 @@ namespace MachineBrigade.Sim.Modes
 
         private float FinalPhase(SimWorld world, int held0, int held1)
         {
+            // Prompt 30 L4: with a clock, the final phase is its last minutes ("2 phút cuối x2").
+            if (_rules.TimeLimit > 0f)
+            {
+                InFinalPhase = world.Time >= _rules.TimeLimit - _rules.FinalPhaseSeconds;
+                return InFinalPhase ? _rules.FinalScale : 1f;
+            }
             var ai = world.Catalog.Ai;
             if (!InFinalPhase && held0 != held1)
             {
@@ -123,6 +160,7 @@ namespace MachineBrigade.Sim.Modes
 
         public void Setup(SimWorld world)
         {
+            _rules.Apply(world);
             _tickets[0] = _tickets[1] = _rules.Tickets;
             foreach (var def in world.Map.Points) _points.Add(new ObjectiveState(def));
             world.CatchUp = true;
@@ -163,9 +201,40 @@ namespace MachineBrigade.Sim.Modes
             Comeback(world);
             var lost0 = _tickets[PlayerTeam] <= 0f;
             var lost1 = _tickets[EnemyTeam] <= 0f;
-            if (!lost0 && !lost1) return;
-            Result = new MatchResult(lost0 && lost1 ? -1 : lost0 ? EnemyTeam : PlayerTeam);
+            int? winner = lost0 || lost1 ? lost0 && lost1 ? -1 : lost0 ? EnemyTeam : PlayerTeam : null;
+            winner ??= AtTheLimit(world, held0, held1);
+            if (winner == null) return;
+            Result = new MatchResult(winner.Value);
             world.IsOver = true;
+        }
+
+        private double _overtimeUntil = double.NaN;
+        private readonly int[] _heldAtOvertime = new int[2];
+
+        /// <summary>The clock is out (or in overtime): seconds left of it, 0 without a clock.</summary>
+        public float SecondsLeft(SimWorld world) => _rules.TimeLimit > 0f ? MathF.Max(0f, _rules.TimeLimit - (float)world.Time) : 0f;
+
+        public bool InOvertime => !double.IsNaN(_overtimeUntil);
+
+        /// <summary>
+        /// Prompt 30 L4 at the time limit: more points wins; level, an overtime of up to <see cref="ConquestRules.Overtime"/> s
+        /// in which the first side to take one more point than it held wins; still level after it, a draw.
+        /// </summary>
+        internal int? AtTheLimit(SimWorld world, int held0, int held1)
+        {
+            if (_rules.TimeLimit <= 0f || world.Time < _rules.TimeLimit) return null;
+            if (!InOvertime)
+            {
+                if (Tickets(PlayerTeam) != Tickets(EnemyTeam)) return Tickets(PlayerTeam) > Tickets(EnemyTeam) ? PlayerTeam : EnemyTeam;
+                _overtimeUntil = world.Time + _rules.Overtime;
+                _heldAtOvertime[PlayerTeam] = held0;
+                _heldAtOvertime[EnemyTeam] = held1;
+                return null;
+            }
+            var gain0 = held0 > _heldAtOvertime[PlayerTeam];
+            var gain1 = held1 > _heldAtOvertime[EnemyTeam];
+            if (gain0 != gain1) return gain0 ? PlayerTeam : EnemyTeam;
+            return world.Time >= _overtimeUntil ? -1 : null;
         }
 
         private void Capture(SimWorld world, ObjectiveState point, float dt) => PointCapture.Tick(world, point, dt, _rules.CaptureSeconds);

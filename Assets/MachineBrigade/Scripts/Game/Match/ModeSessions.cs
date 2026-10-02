@@ -370,6 +370,7 @@ namespace MachineBrigade.Game.Match
                 PlayerVehicles = MatchSettings.AllVehicles, PlayerSupports = MatchSettings.AllSupports,
                 EnemyVehicles = MatchSettings.AllVehicles, EnemySupports = MatchSettings.AllSupports,
                 Bases = Bases(world, GameModeKind.Conquest, seed, menu: true), UnderdogAfter = 0f,
+                RulesId = null, // prompt 30 L4: the menu's battle keeps no clock
             });
             Mode = mode;
             mode.Setup(world);
