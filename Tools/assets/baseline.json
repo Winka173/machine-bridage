@@ -2544,6 +2544,28 @@
     "FLAG visual_jammer: triangles 4,252 -> 3,672 (-13.6%); vertices 4,949 -> 4,481 (-9.5%); fileBytes 267,472 -> 243,304 (-9.0%); structure changed",
     "wheeled_howitzer: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "fire_control_centre",
+    "flare_tower",
+    "heavy_flak_tower",
+    "interceptor_drone_vehicle",
+    "laser_ad_station",
+    "microwave_vehicle",
+    "nlos_atgm_vehicle",
+    "radar_scout",
+    "radar_site",
+    "recoilless_jeep",
+    "repair_bay",
+    "sp_mortar",
+    "troop_shelter",
+    "visual_jammer",
+    "wheeled_howitzer"
+   ],
+   "reason": "merge of feature/fix-l8b",
+   "changes": []
   }
  ],
  "models": {
