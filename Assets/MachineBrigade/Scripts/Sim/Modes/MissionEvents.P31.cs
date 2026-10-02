@@ -293,6 +293,8 @@ namespace MachineBrigade.Sim.Modes
                 world.NavStates.Schedule(site, "landed", world.Tick + 1, world.Tick);
                 s.Units.Add(tower.Id);
                 plan.Landed.Add((tower.Id, site));
+                // The minimap marks the sites while the pods fall; once down, the towers are on the map as any enemy is.
+                if (plan.Falling.Count == 0) s.Marks.Clear();
             }
             var standing = 0;
             foreach (var (id, site) in plan.Landed)

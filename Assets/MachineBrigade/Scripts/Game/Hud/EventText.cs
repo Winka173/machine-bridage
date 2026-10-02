@@ -153,6 +153,9 @@ namespace MachineBrigade.Game.Hud
             ["radio.linh.ev.cityBlackout.warn"] = ("The substations are going down one by one. In a moment the whole city goes dark, theirs and ours.", "Các trạm biến áp đang sập từng cái một. Lát nữa cả thành phố sẽ tối om, của chúng lẫn của ta."),
             ["event.betrayalWarning.warn"] = ("{@lyhan}'s columns are breaking formation: pull back from them within {seconds} s", "Các cánh quân của {@lyhan} đang rời đội hình: lùi xa khỏi họ trong {seconds} giây"),
             ["radio.linh.ev.betrayalWarning.warn"] = ("Colonel, the Accord columns have stopped answering. Their turrets are turning towards us.", "Đại tá, các cánh quân Accord đã ngừng trả lời. Tháp pháo của họ đang quay về phía ta."),
+            ["event.orbitalPods.warn"] = ("Orbital drop: enemy structures land on the marked sites in {seconds} s", "Thả từ quỹ đạo: công trình địch sẽ đáp xuống các điểm được đánh dấu sau {seconds} giây"),
+            ["event.orbitalPods.start"] = ("Pods falling: get clear of the marked sites", "Khoang đổ bộ đang rơi: rời khỏi các điểm được đánh dấu"),
+            ["radio.linh.ev.orbitalPods.warn"] = ("Its bays are opening up there. Those are not troops: they are building a fort on our heads.", "Các khoang trên kia đang mở. Không phải quân đâu: chúng đang dựng pháo đài ngay trên đầu ta."),
             ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
         };
     }

@@ -81,3 +81,17 @@ events.add('c7m11', 'city_blackout')
 library(E('betrayal_warning', 'BetrayalWarning', {'at': 168}, lead=10, priority=0,
           notices={'warn': 'event.betrayalWarning.warn'}, lines={'warn': 'radio.linh.ev.betrayalWarning.warn'}))
 events.add_stage('c7m10', 'square', 'betrayal_warning')
+
+
+# ---------------------------------------------------------------------- Khoang đổ bộ quỹ đạo (the orbital drop pods): c11m10
+# In the Skygate's fortress stage Daedalus drops three pods that stand up as new enemy structures (its existing pod drop's warning
+# rings, then a gun turret, a missile battery and an anti-air turret). Each lands on a prebuilt site ("clear" -> "landed", the
+# tower's square: SimWorld.StaticFootprint, max(length, width) x 0.8) checked at load; a tower destroyed opens its site again.
+PODS = [('pod_site_1', 20, 60, 'gun_turret', 4.0), ('pod_site_2', 60, 20, 'missile_battery', 7.2), ('pod_site_3', -10, 90, 'aa_turret', 3.6)]
+library(E('orbital_pods', 'OrbitalPods', {'at': 60}, {'sites': [p[0] for p in PODS], 'towers': [p[3] for p in PODS], 'fall': 6}, lead=10,
+          notices={'warn': 'event.orbitalPods.warn', 'start': 'event.orbitalPods.start'}, lines={'warn': 'radio.linh.ev.orbitalPods.warn'}))
+for site, x, z, _, size in PODS:
+    nav_site('c11m10', {'id': site, 'initial': 'clear', 'states': [
+        {'name': 'clear'},
+        {'name': 'landed', 'blocks': [{'x': x, 'z': z, 'w': size, 'd': size}]}]})
+events.add_stage('c11m10', 'fortress', 'orbital_pods')
