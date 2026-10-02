@@ -14146,3 +14146,4 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
 - **Card luma (old, alpha > .5, Rec. 709):** atgm_tower .4124, _a .4075, _b .4093; c_ram .4531, _a .4695, _b .4234; gun_pit .3282
   (the dimmest: watch it).
 - **Pitfall:** a name substring build (`-- atgm_tower`) also rebuilds `one_shot_atgm_tower`; its GLB was reverted (not in this pass).
+- Lead (2026-10-02), wave 6c cards: c_ram and branches +1.6 % to +2.0 %, gun_pit +0.0 %; atgm_tower, _a, _b FAIL at -5.9 % to -6.6 % (.4124/.4075/.4093 -> .3850/.3835/.3824) although COLOR_0 rose: merged, pass 6d brightens them first (likely the new sharp-loft body or roof slab reads darker from the card angle).
