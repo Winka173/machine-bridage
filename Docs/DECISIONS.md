@@ -14226,3 +14226,4 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
   no errors or warnings.
 - **Card luma (old, alpha > .5, Rec. 709):** cp_relay .3705, _a .3982, _b .3114 (dimmest: watch it); shield_tower .3920, _a .4644, _b .4176; dragons_teeth .4102, _a .3552, _b .4296;
   minefield .3608, _a .3747, _b .3623.
+- Lead (2026-10-02), wave 7a cards: all twelve pass, +25 % to +52 % (dragons_teeth .4102 -> .6131, minefield .3608 -> .5477). Spot-checked: pale sand/plaster, not washed out. To keep statics from standing out on dark maps, from 7b on a static should not end more than about +30 % over its old card luma (pale sand/concrete, not white).

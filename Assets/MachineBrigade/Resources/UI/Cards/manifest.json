@@ -918,21 +918,21 @@
             "kind": "tower",
             "model": "cp_relay",
             "source": "Models/cp_relay",
-            "hash": "v2:d6bc51c9b6e1eb8cbce42838558e98096dc15b09"
+            "hash": "v2:ff5026bf113c5395d8f129635dd6ef1d90b8bbb8"
         },
         {
             "id": "cp_relay.hardened",
             "kind": "tower",
             "model": "cp_relay_a",
             "source": "Models/cp_relay_a",
-            "hash": "v2:20e5e01b3fcf37972174cf85e30a6be304ffc40b"
+            "hash": "v2:915d1498e8176b97a62a468e4129609cff6e1c73"
         },
         {
             "id": "cp_relay.loot",
             "kind": "tower",
             "model": "cp_relay_b",
             "source": "Models/cp_relay_b",
-            "hash": "v2:a67760d8973ca5f044387813a51f26e3def7ee97"
+            "hash": "v2:018ba6297f1e2d048cd6b235866f307ca5f245f5"
         },
         {
             "id": "daedalus",
@@ -953,21 +953,21 @@
             "kind": "tower",
             "model": "dragons_teeth",
             "source": "Models/dragons_teeth",
-            "hash": "v2:37f1b25fe2a6c37888ec5c0fd39ad12e6b5a1350"
+            "hash": "v2:8209253818a687d7acd33bee773b63d20dab5b70"
         },
         {
             "id": "dragons_teeth.hedgehog",
             "kind": "tower",
             "model": "dragons_teeth_a",
             "source": "Models/dragons_teeth_a",
-            "hash": "v2:305a28caee6e6534c97ecbbc5c370d7e4186b451"
+            "hash": "v2:228785f7619cc9c93b3a8a5c26bdf21fd8741d3e"
         },
         {
             "id": "dragons_teeth.wire",
             "kind": "tower",
             "model": "dragons_teeth_b",
             "source": "Models/dragons_teeth_b",
-            "hash": "v2:9b31ee1a569f5c3954a069739f6fe8d7e2302342"
+            "hash": "v2:179c25307f5843f95bdecd3572f28794fe7b0a0b"
         },
         {
             "id": "drone_hangar",
@@ -1359,21 +1359,21 @@
             "kind": "tower",
             "model": "minefield",
             "source": "Models/minefield",
-            "hash": "v2:a65dc206fd94ab4865f16150f4be255deaa6f225"
+            "hash": "v2:e4df1b826752f245e85bb93d4c5cccb4e517f747"
         },
         {
             "id": "minefield.at",
             "kind": "tower",
             "model": "minefield_a",
             "source": "Models/minefield_a",
-            "hash": "v2:dfe90d581a25d76044e4458b1c6c086669e879bd"
+            "hash": "v2:0320f7c223203456195eaeeff1fb32aee6fe0ab5"
         },
         {
             "id": "minefield.scatter",
             "kind": "tower",
             "model": "minefield_b",
             "source": "Models/minefield_b",
-            "hash": "v2:5028143334b1b5efd7a7c9c90c1ae18397dd5caa"
+            "hash": "v2:efa42b24d693cd2dc7c7c78155970325d37ca94a"
         },
         {
             "id": "missile_battery",
@@ -1499,21 +1499,21 @@
             "kind": "tower",
             "model": "shield_tower",
             "source": "Models/shield_tower",
-            "hash": "v2:d71a0d1addbe8e271e0b07417a25a1e1021001b7"
+            "hash": "v2:0befb816fe5e23d9e115f283a2a1bac2131aace4"
         },
         {
             "id": "shield_tower.bulwark",
             "kind": "tower",
             "model": "shield_tower_a",
             "source": "Models/shield_tower_a",
-            "hash": "v2:07748c7e81fa96d3789593ff7e624edbfb60ecb6"
+            "hash": "v2:edea238755fe12bc3f048c81f5b27fd2bafd9c40"
         },
         {
             "id": "shield_tower.ward",
             "kind": "tower",
             "model": "shield_tower_b",
             "source": "Models/shield_tower_b",
-            "hash": "v2:99763a170523e1501304696f3eb43335c968a19f"
+            "hash": "v2:c0d6c2a3c0bb1faf544427e46aefe21ebd495020"
         },
         {
             "id": "silver_bug",
