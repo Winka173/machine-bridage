@@ -17583,3 +17583,59 @@ items. Python only; no Unity, test, sim or measure run; no game value changed.
   gold_metrics.json, Tools/blender/specs/*.json) are exported in 10 (Model_chuan_vang, Model_spec_dung) to keep coverage.
 - **Self-check 4** counts a formula column with a Python reference (no `_game`, Schema.nguon_khoa "python: ...") as a gap;
   those are analysis columns the game does not compute (left for lane C / the lead to read the reference instead).
+
+## Bộ xuất dữ liệu toàn bộ (lane C, pass 6)
+
+Lane C, 2026-10-03: spec 6 (md, FULL.md, PDF, images), spec 9 check 5, spec 11 pass 6. Read only; Python only, no Unity,
+test or sim run. Code: `Tools/export/core/doc_parts.py` (section list, text fixes), `docmd.py` (md, images), `docpdf.py`
+(PDF); wired into `export.py` (`write_docs`, after the csv) and `selfcheck.py`.
+
+- **Source of the tables.** The md reads the csv/ the same run just wrote (not the domain modules), so every table prints
+  the exact cell of the csv / xlsx and a column or sheet lane B adds later shows up by itself. Per table: id + the first 9
+  non-empty columns (raw_json, nguon and the `_truoc` / `_sau` block left out), a note naming the rest; over 40 rows the
+  first 15 and "xem sheet". The id is never cut (check 5 finds the row by it); other text cells cut at 60 characters,
+  numbers never. Every sheet of a file no section names is printed at the end of that file's md ("Các sheet khác");
+  input_<name> copies are not printed again.
+- **Source of the prose.** The committed design review `Docs/Machine_Brigade_Design_Review.html` (the build_doc.py
+  render; build_doc itself needs the Unity game.json, so it is not rerun). Kept: paragraphs, lists, h3 / h4, text tables
+  (under 30 % numeric cells). Left out: number tables (102; the sheets replace them), the 234 unit cards (stats are in the
+  sheets; each unit's text is now the current in-game guide string `guide.<id>` from 10/Dia_phuong_hoa, so it matches the
+  code), 308 pictures whose files are not in the repo, and the review's file:// paths. Sections 15b and 16b embed
+  Docs/checks/map_audit.md, mode_static_audit.md and showdown_static.md; 21 embeds Docs/models/MODEL_STANDARD.md.
+- **Section order.** PDF 1-19 (with its sub-parts: 2b, 2c, 7b, 8b in 8, 9b in 9, 10b-10h, 12b, 12c) plus 3b (game decks,
+  review "Prompt 31: Màn bộ bài game"), 3c (events: "Prompt 31: Biến cố" + 7c), 10i (round handbook: "Sổ tay đạn"), the
+  review's old 10i (families, warnings) renumbered 10j as in fix L10, 15b, 16b, 20 (audio: the review's 16b effects /
+  audio part), 20b (effects by tier, Unity shots), 21 (models: the review's "10h Prompt 27"). Spec 6 names P1-P5 without
+  contents; chosen: P1 code constants, P2 measurement history, P3 DECISIONS and open calls, P4 prompt status /
+  validators / manifest / save, P5 the index of fixes and dropped review parts. Each section's domain md is set in
+  doc_parts (e.g. 10d/10g/10h in 03_boss, 11 in 03 with the tower guides). FULL.md = all sections in that order.
+- **Status line.** Computed from the section's sheets: a sheet of only marker rows (CHUA_AP / KHONG_CO) = not done, a
+  NEED_CODE_CHECK-only sheet or any CHUA_AP cell = partial, else done; "chờ prompt N" takes N from the marker
+  (xuat_luot5, 24, ...). 15b and 16b are fixed "Một phần": spec 4 names a static map-measure sheet and a mode static-check
+  sheet in 08 that no domain builds yet; their numbers are only in the Docs/checks reports.
+- **Text fixed to the code (spec 6 list).** Checked against code / data; applied as regex fixes on the review's text,
+  each counted in P5: Legend tier opens on c12m10 (Operations.LegendMission), not "the last big campaign"; the in-battle
+  line has a small portrait (DialogueViews); airfield sends aircraft back when out of ammunition (no 35 % trip since
+  prompt 29); "phí duy trì" -> "tiếp tế"; watchtower +10 % in 25 m, the Tháp quan sát branch 15 % in 30 m instead (data
+  and branch string). Already right: 15 chapters in 4 acts (acts 1-4 in campaign.json), C-RAM 30 % / laser 0 % of shells,
+  laser station does not stop shells; the Centurion / Iron Beam card text is gone with the cards (guide strings now).
+- **Pictures.** Copied (as is, gitignored) to images/<domain>/: the review's r6 / shots pictures where they stand, the
+  rest of Docs/doc-images in 19, Docs/models/rebuild before / after and Unity scans in 21 (34 files). Captions give the
+  unit: no metre grid in these shots, so each names the MBT ruler (main_battle_tank glb size from 10/Model) and, for a
+  rebuild, the model's own glb size. Effect shots: `--effect-shots <copy of Builds/effect_shots>` puts tier_T*/
+  impact_0.5s and fire_0.2s into 20b; without it a "pending" caption (no absolute path written either way).
+- **PDF.** PyMuPDF Story renders FULL.md through a small md -> HTML step (no other text); A4, bookmarks from h1-h3,
+  fixed metadata (commit date), no new file id: same md, same bytes (check 7 passes). Font Barlow from the repo: Inter's
+  contextual hyphen glyphs extract as private-use characters, so numbers like -25.46 were not findable. Table cells get
+  a zero-width space after "_", "/" and ";" (a too-wide table lost its right columns). Header shading dropped (Story
+  painted it at wrong places). Pictures are shrunk to JPEG 1100 px in memory. CI installs pymupdf, beautifulsoup4,
+  pillow; without them the PDF / prose are skipped with a note.
+- **Self-check 5.** 200 numeric cells (seed 20261003) from every md table headed "Sheet: <file>/<sheet>" must equal the
+  csv (any row with that id); plus 200 cells (seed 20261004) of FULL.md must equal the csv and stand on a PDF page that
+  also holds their row id (page text NFKC, zero-width spaces and wraps after "_" / "/" removed). A heading ends a
+  "Sheet:" scope. FULL.md gets SELF_CHECK.md at the top after the check and the PDF is rendered again; both are added to
+  MANIFEST (COVERAGE.md gains a pass 6 block). Lead's calls (same pass): check 4 accepts a formula column without `_game`
+  when Schema.nguon_khoa starts with "python:"; check 1 no longer expects a sheet "Can_sua" (a model grade in spec 4).
+- **Open.** The pass 6 markers inside domain modules (10/Anh_chup, 10/Model.anh_3_goc, 09/Am_thanh_mau, 09/VFX_vu_khi,
+  11/Huong_dan say CHUA_AP:prompt_xuat_luot6) are left to the domain owner: this lane does not edit d01-d12; the picture
+  list is in COVERAGE.md and MANIFEST.

@@ -33,6 +33,8 @@ NOT_DETERMINISTIC = {"00_chi_muc/README.md", "00_chi_muc/MANIFEST.json", "00_chi
 MARKER = re.compile(r"^(CHUA_AP:prompt_[\w.]+|NEED_CODE_CHECK|NEED_SOURCE|KHONG_CO|KHONG_CHAY)$")
 UNIT_TEXT = re.compile(r"^\s*-?\d+(?:[.,]\d+)?\s*(?:s|ms|m|km|kg|g|mm|cm|cp|hp|%|deg|°|m/s|km/h|rpm|giây|phút)\s*$", re.I)
 # columns that name a different thing in each file (kv blocks, notes, status): left out of the (id, column) test
+# names of spec 4 the sheet-name pattern catches that are values, not sheets (the model grades Tot / Can_sua / Kem)
+NOT_SHEETS = {"Can_sua"}
 GENERIC_COLS = {"nhom", "khoa", "gia_tri_so", "gia_tri_chu", "trang_thai", "ghi_chu", "mo_ta"}
 BAL = "Assets/MachineBrigade/Resources/Data/balance.json"
 CAMP = "Assets/MachineBrigade/Resources/Data/campaign.json"
@@ -87,7 +89,7 @@ def spec_sheets() -> dict:
         fid = sec.split()[0]
         names = set(re.findall(r"(?<![\w/])([A-Z][A-Za-z0-9]*_[A-Za-z0-9_]*[A-Za-z0-9]|[A-Z][a-z]+(?=\s*[:(]))", sec))
         out[fid] = sorted(n for n in names if not n.isupper() and not n.startswith(("Mount_", "Machine_Brigade"))
-                          and not re.fullmatch(r"[A-Z0-9_]+", n))
+                          and not re.fullmatch(r"[A-Z0-9_]+", n) and n not in NOT_SHEETS)
     return out
 
 
@@ -271,15 +273,21 @@ def check4(books):
     by_sheet = collections.defaultdict(set)
     for x in game_cols:
         by_sheet[(x["file"], x["sheet"])].add(x["cot"][:-5])
+    python_ref = 0
     for x in formulas:
-        if x["cot"] not in by_sheet[(x["file"], x["sheet"])]:
-            no_game.append([x["file"], x["sheet"], x["cot"]])
+        if x["cot"] in by_sheet[(x["file"], x["sheet"])]:
+            continue
+        if x.get("nguon_khoa", "").startswith("python:"):  # an analysis column checked against a Python reference
+            python_ref += 1
+            continue
+        no_game.append([x["file"], x["sheet"], x["cot"]])
     if no_game:
         gaps.append(f"{len(no_game)} cột công thức không có cột _game")
     if conflicts:
         gaps.append(f"{len(conflicts)} ô input_ khác file nguồn")
     status = "CHUA_AP" if not formulas else ("DAT" if not gaps else "CHUA_DAT")
-    body = [f"Cột công thức (Schema.cong_thuc): {len(formulas)}; cột _game: {len(game_cols)}; sheet input_: {len(inputs)}.",
+    body = [f"Cột công thức (Schema.cong_thuc): {len(formulas)}; cột _game: {len(game_cols)}; cột phân tích so với bản "
+            f"Python (Schema.nguon_khoa 'python:', không cần _game): {python_ref}; sheet input_: {len(inputs)}.",
             "So công thức với _game (sai số 1e-6) là test của lượt 5; ở đây: mỗi cột công thức có cột _game, và mọi ô "
             "input_ bằng giá trị ở file nguồn (cùng id, cùng cột).", ""]
     body += ["Cột công thức thiếu _game:", ""] + _table(["file", "sheet", "cột"], no_game)

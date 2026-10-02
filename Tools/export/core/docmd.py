@@ -219,7 +219,8 @@ def table_md(fid: str, sheet: str, header: list, rows: list, names: dict) -> lis
     lines.append("| " + " | ".join(header[i] for i in cols) + " |")
     lines.append("|" + "---|" * len(cols))
     for r in shown:
-        lines.append("| " + " | ".join(_cell(r[i]) if i < len(r) else "" for i in cols) + " |")
+        # the id is never cut: self-check 5 finds the row by it
+        lines.append("| " + " | ".join(_cell(r[i], 400 if i == 0 else MAX_TEXT) if i < len(r) else "" for i in cols) + " |")
     notes = []
     if len(rows) > MAX_ROWS:
         notes.append(f"{HEAD_ROWS} / {len(rows)} dòng đầu: xem sheet {title}")
