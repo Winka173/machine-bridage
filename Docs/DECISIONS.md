@@ -17341,3 +17341,42 @@ Nothing run but the Python tools; the C# is compiled by the lead.
 - **Files**: new banks need .meta files (the lead copies them); `P34AudioImport` marks `launch_cruise` big. Test
   `Playtest12AudioTests` written, not run. `Tools/sfx/render_mix.py` mirrors the bursts, the shooter cluster, flak and the
   hiss; `Docs/audio/metrics.md` and the sample mixes rebuilt.
+
+## Play-test 12 (lane B)
+
+- **Stuck rounds (root cause):** L4's ShotClock was one static. MatchRunner kept it on while its battle took no steps
+  (`_lobbyCovered` while a menu page covers the lobby, pause), so SimNow froze; the menu's in-action preview runs its own
+  FiringRange Sim with its own EffectsDirector, mapped every launch and every tick to that frozen time, and each round sat
+  at its muzzle (t = 0). Fix: ShotClock is now an instance owned by each EffectsDirector (pools, tracers, escape warnings);
+  MatchRunner and FiringRange each advance their own, from their own world's time as the views draw it. A clock never
+  advanced is off (tools, tests). Rounds launched during a step start at that step's start (`Launching`), so they land on
+  the frame their impact is drawn (L4's intent). A paused battle freezes its own rounds only. Other L4 changes checked
+  (Divert, Tag, steered rockets, flares, munition rules): no other breakage found.
+- **Boss firing shake:** a boss's own shots add no camera trauma (WeaponEffects.FiringShake, TierShot); impacts keep
+  their tiered shake.
+- **Boss in-action preview:** one enemy per gun mount, in that mount's reach and arc. Sea: a line abreast of ships
+  (corvette, missile boats) off the port beam, bows on, along the hull, on the water short of the shore. Ground: the main
+  gun's target nearest, dead ahead; arc mounts at their arc centre; free mounts fanned +-46 deg. Rail: down both sides of
+  the track. Air: one ground target per gun round its spot. AA-only guns: up to 2 helicopters. Secondary Turret / Hull
+  mounts fire only on the main target in the Sim, so they get none of their own. Cap 8 targets. The Leviathan's main
+  battery is `laid` (only NavalSystem.Salvo fires it, only on a sea map): the preview fires it via preview-only
+  SimWorld.PreviewSalvo (each turret at a ship of its own, inside its arc) every 9 s and the cells via PreviewCruise every
+  15 s. SimWorld.Hasten caps any wait at 8 s in the preview (the 60 s main guns). No battle calls these; no gameplay value
+  changed.
+- **Smoke:** EffectLife's lingering smoke about halved, band order kept: 0.5-1 / 1.5-2.5 / 3-5 / 6-10 / 10-15 s (was
+  1-2 / 3-5 / 6-10 / 12-20 / 25-40). Fireballs, blasts, fires and craters unchanged.
+- **Flares:** full gravity, drag 1.6/s (terminal fall ~6 m/s), kick 8-12 m/s plus the aircraft's speed: ~20-40 m of travel
+  from a jet, 10-20 m from a helicopter, 3-4 s burn (data flareBurn), cut short before the ground. Still from Mount_Flare_*.
+- **Calibre vs blast size:** sweep over balance.json (weaponFamilyTable tier vs calibre band, impactTier vs band): the
+  data agrees; only railguns (caliberMm holds MJ, tier 3 intended), recoilless 106 mm (T2, a HEAT rifle), the 2S38's 57 mm
+  air burst (Small) and SMArt 155 (Medium, submunitions) differ, all deliberate. No calibre value was wrong. The small look
+  was the view: the AP-hit path dropped the data's impactScale (gun turret 1.35, heavy turret 1.3, Bastion 1.5), hits were
+  sized by tank class not calibre (a 155 mm AP as a 125 mm), and play-test 6's FortressSmaller 0.8 shrank the heavy
+  turret's 155 mm HE. Now: impactScale applied, BlastSizes.CalibreShell floors a hit by calibre (<90 / <140 / <155 / 155+),
+  FortressSmaller = 1 (its HE as any 155 mm shell). Grows: gun turret 120 mm hit 2.18 -> 2.95, heavy turret 155 AP
+  1.80 -> 2.69, its HE x1.5, bastion_gun 1.68 -> 2.70, gun_105_wheeled 1.56 -> 1.68.
+- **Wreck variants:** 2-3 per class, picked from the entity id (WreckClasses.Variant): helicopter tail boom snaps and
+  spins / engine fire, burning slant / torn apart (rotor, tail, pieces); fighter and big aircraft wing off / engines
+  burning whole / broken up into a flat spin; tank turret thrown / turret stays with a long flame jet / turret knocked off
+  sideways; wheeled wheels off and rolled / onto its roof / wheels off, frame bucks; truck cargo chain / cab blast onto its
+  side; artillery slow cook-off / all at once. View only; the Sim is unchanged. Tests in PlayTest12LaneBTests (not run).

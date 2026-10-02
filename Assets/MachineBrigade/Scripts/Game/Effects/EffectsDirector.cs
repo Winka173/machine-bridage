@@ -175,6 +175,8 @@ namespace MachineBrigade.Game.Effects
             _bigZones = new BigAttackZones(materials, meshes, _root);
             // Prompt 34 L3: the T4+ rounds' escape warnings.
             _escape = new EscapeWarnings(materials, meshes, _root);
+            // Play-test 12: the rounds, streaks and warning rings on this director's own shot clock (ShotClock.cs).
+            _tracers.Clock = _projectiles.Clock = _escape.Clock = Clock;
             // Fix prompt L6: the smoke and dust a blast leaves, by its size band.
             _smoke = new ImpactSmoke(_root);
             // Fix prompt L5: one gate decides which warning rings are drawn (data warningRules).
@@ -187,6 +189,12 @@ namespace MachineBrigade.Game.Effects
             _marker.Transform.localScale = Vector3.one * 2.2f;
             _marker.Visible = false;
         }
+
+        /// <summary>
+        /// Play-test 12: the clock this director's rounds in flight are drawn on (L4's delayed-damage fix), advanced by the
+        /// world that feeds it (MatchRunner, the preview's FiringRange); never advanced, it is off and the render clock is used.
+        /// </summary>
+        internal ShotClock Clock { get; } = new ShotClock();
 
         public void Consume(IReadOnlyList<SimEvent> events, ViewRegistry views, MapView map)
         {
@@ -1229,9 +1237,11 @@ namespace MachineBrigade.Game.Effects
                     {
                         // A tank's round: a hot burst off the armour, sized by the tank (DECISIONS 11A), a
                         // tenth bigger again and its fire and smoke lingering by the tank's class (12C).
-                        var grow = BlastSizes.TankShell(round) * BlastSizes.Bigger;
+                        // Play-test 12: by its calibre at the least, and at the round's own impact scale (data impactScale,
+                        // which this path used to drop: the gun turret's 1.35, the heavy turret's 1.3).
+                        var grow = BlastSizes.CalibreShell(round) * BlastSizes.Bigger;
                         var hitAt = impact + Vector3.up * 0.8f;
-                        var hitScale = (heavy ? 1f : 0.75f) * (0.9f + 0.2f * UnityEngine.Random.value);
+                        var hitScale = (heavy ? 1f : 0.75f) * (0.9f + 0.2f * UnityEngine.Random.value) * Mathf.Max(1f, size);
                         _shellHit.Play(hitAt, now, hitScale, grow, BlastSizes.ShellLife(round), BlastSizes.RingFor(e.Value, _shellHit.RingReach, hitScale));
                         // Prompt 34 L5: an AP round's sparks grow by its tier (1 to T2, +15 % a tier above).
                         var sparks = Mathf.RoundToInt((heavy ? 36 : 16) * TierFx.Extra(TierFx.Of(round)));

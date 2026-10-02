@@ -81,6 +81,32 @@ namespace MachineBrigade.Game.Effects
             return WreckClass.Tank;
         }
 
+        /// <summary>
+        /// Play-test 12 ("mỗi loại nên có 2-3 loại random"): how many ways a class breaks up (WreckManager picks one).
+        /// </summary>
+        public static int Variants(WreckClass c) => c switch
+        {
+            WreckClass.Tank or WreckClass.Wheeled or WreckClass.Fighter or WreckClass.Helicopter or WreckClass.BigAircraft => 3,
+            WreckClass.Truck or WreckClass.Artillery or WreckClass.Train => 2,
+            _ => 1,
+        };
+
+        /// <summary>
+        /// Play-test 12: the way this wreck breaks up, 0 to <see cref="Variants"/> - 1, picked from its entity id (the same
+        /// vehicle always breaks the same way; neighbours differ). View only.
+        /// </summary>
+        public static int Variant(MachineBrigade.Sim.Core.EntityId id, WreckClass c)
+        {
+            var n = Variants(c);
+            if (n <= 1) return 0;
+            unchecked
+            {
+                var h = (uint)id.Value * 2654435761u;
+                h ^= h >> 15;
+                return (int)(h % (uint)n);
+            }
+        }
+
         /// <summary>An aircraft class whose wreck falls (its crash is the Sim's: a fixed point and time).</summary>
         public static bool Falls(WreckClass c) => c is WreckClass.Fighter or WreckClass.Helicopter or WreckClass.BigAircraft;
 

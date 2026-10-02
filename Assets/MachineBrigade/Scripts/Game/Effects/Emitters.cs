@@ -151,11 +151,15 @@ namespace MachineBrigade.Game.Effects
             _flares = Continuous(parent, "Decoy Flares", m.Sparks, 600,
                 PB.Fade(new Color(6.5f, 6f, 5.2f), new Color(5f, 3.6f, 1.6f), new Color(2.4f, 0.9f, 0.25f)), 1f, 0.6f);
             var flareMain = _flares.main;
-            flareMain.gravityModifier = 0.3f;
+            // Play-test 12 ("flare bay quá xa"): full gravity under strong air drag. A flare leaves with its aircraft's speed plus
+            // its kick and the air stops it within a second or two: 20-40 m from a jet, 10-20 m from a helicopter, falling at
+            // about 6 m/s (g / drag) as it burns out. L4's 0.3 g under 0.9 drag carried a fast jet's flares 60 m and more.
+            flareMain.gravityModifier = 1f;
             var flareDrag = _flares.limitVelocityOverLifetime;
             flareDrag.enabled = true;
-            flareDrag.limit = new ParticleSystem.MinMaxCurve(60f);
-            flareDrag.drag = new ParticleSystem.MinMaxCurve(0.9f);
+            flareDrag.limit = new ParticleSystem.MinMaxCurve(45f);
+            flareDrag.dampen = 0.2f;
+            flareDrag.drag = new ParticleSystem.MinMaxCurve(FlareDrag);
             flareDrag.multiplyDragByParticleSize = false;
             flareDrag.multiplyDragByParticleVelocity = false;
             var flareTrails = _flares.trails;
@@ -394,6 +398,9 @@ namespace MachineBrigade.Game.Effects
         /// <param name="burnMin">Fix prompt L4: each flare burns between this and <paramref name="burnMax"/> seconds (data munitionRules.flareBurn).</param>
         public void Flares(Vector3 position, Vector3 look, float scale, int count = 4, Vector3 carrier = default, float burnMin = 3f, float burnMax = 4f)
         {
+            // Play-test 12: a flare is kicked out at 8-12 m/s whatever the aircraft's size (the size only grows its glow), and
+            // it burns out before it would reach the ground (falling at about g / drag).
+            var ground = Mathf.Max(1.2f, position.y / (Physics.gravity.magnitude / FlareDrag) + 0.6f);
             look = look.sqrMagnitude > 1e-4f ? look.normalized : Vector3.down;
             var axis = Vector3.Cross(look, Vector3.down);
             if (axis.sqrMagnitude < 1e-4f) axis = Vector3.right;
@@ -403,10 +410,13 @@ namespace MachineBrigade.Game.Effects
                 // From well out to nearly down: the fan of a salvo (the "angel wings" when both sides and rows fire).
                 var t = count > 1 ? i / (count - 1f) : 0.5f;
                 var dir = Quaternion.AngleAxis(Mathf.Lerp(-20f, 35f, t) + Random.Range(-5f, 5f), axis) * look;
-                Emit(_flares, position + Random.insideUnitSphere * 0.1f * scale, dir * Random.Range(6.5f, 9f) * Mathf.Max(0.6f, scale) + carrier,
-                    Random.Range(0.6f, 0.85f) * scale, Random.Range(burnMin, Mathf.Max(burnMin, burnMax)));
+                Emit(_flares, position + Random.insideUnitSphere * 0.1f * scale, dir * Random.Range(8f, 12f) + carrier,
+                    Random.Range(0.6f, 0.85f) * scale, Mathf.Min(ground, Random.Range(burnMin, Mathf.Max(burnMin, burnMax))));
             }
         }
+
+        /// <summary>Play-test 12: the air's drag on a burning flare (per second; with full gravity it falls at about 6 m/s).</summary>
+        internal const float FlareDrag = 1.6f;
 
         /// <summary>Fix prompt L4: the one flare a decoyed missile chases, burning at <paramref name="position"/> for <paramref name="seconds"/>.</summary>
         public void LoneFlare(Vector3 position, float seconds, Vector3 drift) =>

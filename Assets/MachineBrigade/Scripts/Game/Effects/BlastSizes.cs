@@ -48,8 +48,10 @@ namespace MachineBrigade.Game.Effects
         /// <summary>
         /// Play-test 6 (DECISIONS 21H), the owner's asks, multiplied onto the above: the gun turret's blasts 20 % bigger
         /// again (1.56 over the 11A size; 2.18 on its 120 mm), the heavy fortress's twin 155 mm blasts 20 % smaller.
+        /// Play-test 12 ("súng cỡ nòng to mà lại nổ quá bé", the heavy gun turret): the shrink undone; the twin 155 mm's high
+        /// explosive bursts as big as any 155 mm shell (<see cref="ArtilleryGrow"/>).
         /// </summary>
-        public const float TurretBigger = 1.2f, FortressSmaller = 0.8f;
+        public const float TurretBigger = 1.2f, FortressSmaller = 1f;
 
         /// <summary>The heavy fortress's guns (its twin 155 mm and the coastal branch's long-range pair).</summary>
         public static bool FortressGun(WeaponDef w) => w != null && w.Id.StartsWith("gun_155_twin");
@@ -108,6 +110,25 @@ namespace MachineBrigade.Game.Effects
             return w.Damage < 120f ? Class.Light : w.Damage < 300f ? Class.Main : Class.Heavy;
         }
 
+        /// <summary>
+        /// Play-test 12: a direct-fire armour-piercing round's hit by its calibre at the least (the tank classes went by the
+        /// firing tank or the damage, so a 155 mm AP round burst like a 125 mm one): under 90 mm a light tank's, under 140 mm
+        /// a main battle tank's, under 155 mm a heavy tank's, 155 mm and up 15 % more again. Never smaller than
+        /// <see cref="TankShell"/>.
+        /// </summary>
+        public static float CalibreShell(WeaponDef w)
+        {
+            if (w == null) return 1f;
+            // The display calibre (full fix L2), else the Sim's size (a gun's calibre too).
+            var calibre = w.CaliberMm > 0f ? w.CaliberMm : w.Size;
+            var byCalibre = calibre <= 0f ? 0f
+                : calibre < 90f ? LightTank * TankGrow
+                : calibre < 140f ? MainTank * TankGrow
+                : calibre < 155f ? HeavyTank * TankGrow
+                : HeavyTank * TankGrow * 1.15f;
+            return Mathf.Max(TankShell(w), byCalibre);
+        }
+
         /// <summary>The gun turret's guns (its 120 mm, the long branch's and the autocannon branch's 57 mm).</summary>
         public static bool TurretGun(WeaponDef w) => w != null && (w.Id.StartsWith("turret_gun_") || w.Id == "gun_57_auto");
 
@@ -161,7 +182,7 @@ namespace MachineBrigade.Game.Effects
             if (w.Projectile is ProjectileKind.Missile or ProjectileKind.Rocket) return MissileGrow;
             if (TurretGun(w)) return TurretGrow * TurretBigger;
             if (w.Projectile == ProjectileKind.Shell && w.Indirect) return Artillery(w);
-            if (FortressGun(w)) return FortressSmaller;
+            if (FortressGun(w)) return ArtilleryGrow * FortressSmaller;
             return w.Family == "tank_gun" ? TankGrow : 1f;
         }
 

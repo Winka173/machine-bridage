@@ -123,6 +123,15 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         internal float TravelCut { get; set; }
 
+        /// <summary>Play-test 12: the shot being drawn is a boss's (its firing shakes nothing).</summary>
+        private bool _bossFiring;
+
+        /// <summary>The camera's kick from a shot fired at <paramref name="from"/>; none for a boss's.</summary>
+        private void FiringShake(Vector3 from, float amount)
+        {
+            if (!_bossFiring) _shake(from, amount);
+        }
+
         public void Fired(in SimEvent e, ViewRegistry views, float now) =>
             Fired(e, views.TryGet(e.Entity, out var shooter) ? shooter : null, views, now);
 
@@ -130,6 +139,8 @@ namespace MachineBrigade.Game.Effects
         public void Fired(in SimEvent e, VehicleView shooter, ViewRegistry views, float now)
         {
             _flashed = false;
+            // Play-test 12: a boss's own guns never shake the camera (its rounds' impacts still do, by tier).
+            _bossFiring = shooter != null && shooter.Def != null && shooter.Def.Boss;
             DrawShot(e, shooter, views, now);
             if (!_flashed || TierShot == null) return;
             var drawn = e.Round ?? e.DefId;
@@ -249,7 +260,7 @@ namespace MachineBrigade.Game.Effects
                     }
                     else _tracers.Launch(from, to, e.Value, distance * 0.06f, 0.2f, 1.2f, now, 0f, 0.7f);
                     Flash(MuzzleFx.Kind.Missile, from, Tube(aim), now, 1f, groundY);
-                    _shake(from, 0.05f);
+                    FiringShake(from, 0.05f);
                     break;
 
                 case ProjectileKind.Drone:
@@ -306,7 +317,7 @@ namespace MachineBrigade.Game.Effects
                     }
                     else _tracers.Launch(from, to, e.Value, arc, 0.18f, 1.0f, now, 0f, 0.55f);
                     Flash(MuzzleFx.Kind.Rocket, from, artillery ? Launch(barrel, forward, 0.8f) : Tube(aim), now, artillery ? 1.2f : 0.9f, groundY);
-                    _shake(from, artillery ? 0.06f : 0.03f);
+                    FiringShake(from, artillery ? 0.06f : 0.03f);
                     break;
 
                 case ProjectileKind.Bomb:
@@ -350,7 +361,7 @@ namespace MachineBrigade.Game.Effects
             // Ionised air along the line, drifting off.
             var length = Vector3.Distance(from, to);
             for (var d = 3f; d < length; d += 4f) _emitters.Trail(Vector3.Lerp(from, to, d / length), heavy ? 0.5f : 0.35f);
-            _shake(from, heavy ? 0.12f : 0.06f);
+            FiringShake(from, heavy ? 0.12f : 0.06f);
         }
 
         /// <summary>
@@ -587,7 +598,7 @@ namespace MachineBrigade.Game.Effects
                 _tracers.Launch(from, to, travel, 0f, big ? 0.28f : heavy ? 0.22f : 0.16f, big ? 3.6f : heavy ? 3.2f : 2.6f, now, 0f,
                     big ? 1.1f : heavy ? 0.95f : 0.75f);
                 Flash(MuzzleFx.Kind.Cannon, from, Barrel(aim), now, big ? 1.5f : heavy ? 1.25f : 1f, groundY);
-                _shake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
+                FiringShake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
                 return;
             }
             // Artillery: a high arc, leaving at the barrel's angle, with a thin trail of hot gas;
@@ -599,7 +610,7 @@ namespace MachineBrigade.Game.Effects
             // A mortar's flash is small: at the artillery size it covered the carrier seen from above.
             var mortar = weapon != null && weapon.Id.Contains("mortar");
             Flash(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, mortar ? 0.55f : 1f, groundY);
-            _shake(from, 0.12f);
+            FiringShake(from, 0.12f);
         }
     }
 }

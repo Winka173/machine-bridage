@@ -165,34 +165,69 @@ namespace MachineBrigade.Game.Effects
             var drift = view.Def.FixedWing ? root.forward * Mathf.Max(6f, view.Def.Speed * 0.6f) : Vector3.zero;
             var style = VehicleView.FallStyle.Spin;
             var side = Random.value < 0.5f ? -1f : 1f;
+            // Play-test 12: each class breaks up one of two or three ways, by the vehicle's id (WreckClasses.Variant).
+            var variant = WreckClasses.Variant(w.Id, w.Class);
+            var radius = view.Sim.Radius;
             switch (w.Class)
             {
                 case WreckClass.Fighter:
                 case WreckClass.BigAircraft:
                 {
                     var big = w.Class == WreckClass.BigAircraft;
-                    style = big ? VehicleView.FallStyle.Slant : VehicleView.FallStyle.Spiral;
+                    if (variant == 1)
+                    {
+                        // Its engines on fire, whole: a long burning dive (a fighter nose down, a big one banking over).
+                        style = VehicleView.FallStyle.Slant;
+                        _fires.Ignite(root.position - root.forward * radius * 0.45f, big ? 1.5f : 1f, Mathf.Max(6f, fall + 4f), now, root);
+                        if (big) _fires.Ignite(root.position + root.right * radius * 0.35f, 1.2f, Mathf.Max(6f, fall + 4f), now, root);
+                        break;
+                    }
                     // The separated wing is the left one: it rolls and banks to that side.
                     side = -1f;
+                    // Variant 0: the wing goes, a spiral (a long slant for a big one); 2: it breaks up in the air, the wing and a
+                    // shower of burning pieces, and the rest goes down in a flat spin.
+                    style = variant == 2 ? VehicleView.FallStyle.Spin : big ? VehicleView.FallStyle.Slant : VehicleView.FallStyle.Spiral;
                     var wing = view.FindPart("Part_wing");
                     if (wing != null)
                         _breakup.Throw(wing, root, drift * 0.7f - root.right * (big ? 2.5f : 4f) + Vector3.up * (big ? 1.5f : 3f),
                             Random.insideUnitSphere * (big ? 120f : 320f), true, 0.3f, 25f, now);
+                    if (variant == 2) _chunks?.Wreck(root.position, radius * 0.8f, view.Team, false, now);
                     // A smoke trail off the torn wing root; a big aircraft's engine burning hard on that side.
-                    var at = root.position - root.right * view.Sim.Radius * (big ? 0.35f : 0.2f);
+                    var at = root.position - root.right * radius * (big ? 0.35f : 0.2f);
                     _fires.Ignite(at, big ? 1.4f : 0.8f, Mathf.Max(6f, fall + 4f), now, root);
                     break;
                 }
                 case WreckClass.Helicopter:
                 {
                     var tail = view.FindPart("Tail_rotor");
-                    if (tail != null)
-                        _breakup.Throw(tail, root, -root.forward * 5f + Vector3.up * 2f + Random.insideUnitSphere, new Vector3(720f, 0f, 90f), false,
-                            0.2f, 20f, now);
                     var rotor = view.FindPart("Rotor") ?? view.FindPart("Rotor_front");
-                    if (rotor != null)
-                        _breakup.Throw(rotor, root, Vector3.up * 7f + Random.insideUnitSphere * 3f, new Vector3(30f, 900f, 20f), false, 0.15f, 20f,
-                            now);
+                    switch (variant)
+                    {
+                        case 0:
+                            // The tail boom snaps: the tail rotor goes tumbling, the main rotor still turns and it spins down faster and faster.
+                            style = VehicleView.FallStyle.Spin;
+                            if (tail != null)
+                                _breakup.Throw(tail, root, -root.forward * 5f + Vector3.up * 1f + Random.insideUnitSphere, new Vector3(720f, 0f, 90f), true,
+                                    0.2f, 20f, now);
+                            _fires.Ignite(root.position - root.forward * radius * 0.6f, 0.7f, Mathf.Max(6f, fall + 4f), now, root);
+                            break;
+                        case 1:
+                            // Hit in the engine: nothing comes off; it burns hard under the rotor and goes down in a long burning slant.
+                            style = VehicleView.FallStyle.Slant;
+                            _fires.Ignite(root.position + Vector3.up * 0.6f, Mathf.Clamp(radius / 1.4f, 1f, 1.8f), Mathf.Max(6f, fall + 4f), now, root);
+                            break;
+                        default:
+                            // Torn apart: the main rotor flies off, the tail with it, a burst of burning pieces; the cabin drops tumbling.
+                            style = VehicleView.FallStyle.Spiral;
+                            if (tail != null)
+                                _breakup.Throw(tail, root, -root.forward * 5f + Vector3.up * 2f + Random.insideUnitSphere, new Vector3(720f, 0f, 90f), false,
+                                    0.2f, 20f, now);
+                            if (rotor != null)
+                                _breakup.Throw(rotor, root, Vector3.up * 7f + Random.insideUnitSphere * 3f, new Vector3(30f, 900f, 20f), false, 0.15f, 20f,
+                                    now);
+                            _chunks?.Wreck(root.position, radius * 0.7f, view.Team, false, now);
+                            break;
+                    }
                     break;
                 }
             }
@@ -255,15 +290,36 @@ namespace MachineBrigade.Game.Effects
                     wreck.JetUntil = wreck.JetFrom + Random.Range(1.4f, 2.6f);
                 }
             }
+            // Play-test 12: each class breaks up one of two or three ways, by the vehicle's id (WreckClasses.Variant).
+            var variant = WreckClasses.Variant(wreck.Id, wreck.Class);
             switch (wreck.Class)
             {
                 case WreckClass.Wheeled:
-                    ThrowWheels(wreck, now);
-                    // The frame rolls onto its side or its roof.
+                    // 0: the wheels thrown and the frame over on its side or roof; 1: thrown onto its roof whole, burning;
+                    // 2: the wheels blown off, the burning frame bucking high and dropping where it stood.
+                    if (variant != 1) ThrowWheels(wreck, now);
+                    if (variant == 2)
+                    {
+                        wreck.HopVelocity = Random.Range(4.5f, 6f);
+                        break;
+                    }
                     wreck.FlipStart = now + 0.05f;
-                    wreck.FlipAngle = Random.value < 0.55f ? Random.Range(85f, 100f) : Random.Range(160f, 180f);
+                    wreck.FlipAngle = variant == 1 ? Random.Range(165f, 180f)
+                        : Random.value < 0.55f ? Random.Range(85f, 100f) : Random.Range(160f, 180f);
                     wreck.FlipSide = Random.value < 0.5f ? -1f : 1f;
                     wreck.FlipBase = view.Root.rotation;
+                    if (variant == 1) wreck.HopVelocity = Random.Range(5f, 6.5f);
+                    break;
+                case WreckClass.Truck when variant == 1:
+                    // The cab goes up: one hard blast that throws it onto its side, a short chain after.
+                    wreck.ChainLeft = Random.Range(2, 4);
+                    wreck.NextChain = now + Random.Range(0.4f, 0.7f);
+                    wreck.HopVelocity = Random.Range(4.5f, 6f);
+                    wreck.FlipStart = now + 0.08f;
+                    wreck.FlipAngle = Random.Range(80f, 95f);
+                    wreck.FlipSide = Random.value < 0.5f ? -1f : 1f;
+                    wreck.FlipBase = view.Root.rotation;
+                    _fires.Ignite(view.Root.position + view.Root.forward * radius * 0.5f + Vector3.up * 1f, 0.9f, wreck.Burn * 0.8f, now);
                     break;
                 case WreckClass.Truck:
                     // The cargo goes up in a chain along the bed, and the bed burns.
@@ -280,10 +336,33 @@ namespace MachineBrigade.Game.Effects
                     wreck.PopsLeft += 3;
                     wreck.JetFrom = now + Random.Range(0.3f, 0.6f);
                     wreck.JetUntil = wreck.JetFrom + Random.Range(2f, 3.5f);
-                    if (Random.value < 0.5f) TossTurret(wreck);
+                    // Play-test 12, variant 1: it all goes at once, the turret or launcher thrown high and the hull bucking hard.
+                    if (variant == 1)
+                    {
+                        wreck.ChainLeft = Random.Range(3, 5);
+                        wreck.SlowChain = false;
+                        wreck.HopVelocity = Random.Range(5f, 6.5f);
+                        TossTurret(wreck);
+                    }
+                    else if (Random.value < 0.5f) TossTurret(wreck);
                     break;
                 default:
+                    // Play-test 12: 0 the turret thrown high (the old way); 1 the turret stays and the hull burns out with a long
+                    // jet of flame from the turret ring (a catastrophic cook-off); 2 the turret knocked off sideways onto the ground.
+                    if (variant == 1 && view.Turret != null)
+                    {
+                        wreck.JetFrom = now + Random.Range(0.2f, 0.5f);
+                        wreck.JetUntil = wreck.JetFrom + Random.Range(3f, 4.5f);
+                        wreck.ChainLeft += 2;
+                        break;
+                    }
                     TossTurret(wreck);
+                    if (variant == 2 && wreck.TurretFlying && view.Root != null)
+                    {
+                        var aside = (Random.value < 0.5f ? -1f : 1f) * view.Root.right;
+                        wreck.TurretVelocity = aside * Random.Range(3.5f, 5.5f) + Vector3.up * Random.Range(4.5f, 6.5f);
+                        wreck.TurretSpin = new Vector3(Random.Range(-90f, 90f), Random.Range(-200f, 200f), Random.Range(-160f, 160f));
+                    }
                     break;
             }
         }

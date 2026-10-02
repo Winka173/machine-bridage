@@ -30,6 +30,9 @@ namespace MachineBrigade.Game.Effects
         private readonly List<Tracer> _tracers = new();
         private int _next;
 
+        /// <summary>Play-test 12: the owning EffectsDirector's shot clock (none: the times given are used as they are).</summary>
+        internal ShotClock Clock { get; set; }
+
         public TracerPool(Mesh mesh, Material material, Transform parent, int capacity)
         {
             var root = new GameObject("Tracers").transform;
@@ -68,7 +71,7 @@ namespace MachineBrigade.Game.Effects
             tracer.From = from;
             tracer.To = to;
             // Fix prompt L4: on the shot clock, so it lands on the Sim tick its damage does (ShotClock).
-            tracer.Start = ShotClock.Map(now) + delay;
+            tracer.Start = ShotClock.Map(Clock, now) + delay;
             tracer.Duration = Mathf.Max(0.03f, duration);
             tracer.Arc = arc;
             tracer.Trail = trail;
@@ -96,7 +99,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now, Emitters emitters)
         {
-            now = ShotClock.Map(now);
+            now = ShotClock.Map(Clock, now);
             foreach (var tracer in _tracers)
             {
                 if (!tracer.Active) continue;

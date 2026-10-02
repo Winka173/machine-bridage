@@ -10,11 +10,12 @@ namespace MachineBrigade.Game.Effects
     /// <code>
     /// band  rounds                                  fireball  smoke / dust                          crater, scorch
     /// 0     up to 14.5 mm                           0.2 s     0.5 s                                 none
-    /// 1     20-40 mm                                0.3 s     1-2 s                                 10 s
-    /// 2     57-105 mm                               0.5 s     3-5 s                                 20 s
-    /// 3     120-155 mm, Grad                        0.8 s     6-10 s                                30 s
-    /// 4     203-240 mm, bombs 400 kg+, Smerch       1.2 s     a column 12-20 s drifting on the wind 45 s
-    /// 5     406 mm+, super weapons                  1.8 s     a column 25-40 s, high, on the wind   60 s
+    /// 1     20-40 mm                                0.3 s     0.5-1 s                               10 s
+    /// 2     57-105 mm                               0.5 s     1.5-2.5 s                             20 s
+    /// 3     120-155 mm, Grad                        0.8 s     3-5 s                                 30 s
+    /// 4     203-240 mm, bombs 400 kg+, Smerch       1.2 s     a column 6-10 s drifting on the wind  45 s
+    /// 5     406 mm+, super weapons                  1.8 s     a column 10-15 s, high, on the wind   60 s
+    /// (play-test 12: the smoke column halved from L6's 1-2 / 3-5 / 6-10 / 12-20 / 25-40 s, "khói đen rất dài")
     /// </code>
     /// A blast's own recipe (ExplosionEffect, never cut or shrunk) draws the fireball and its first smoke; the lingering
     /// smoke and dust after it are <see cref="ImpactSmoke"/>'s, the craters <see cref="DecalPool"/>'s.
@@ -47,11 +48,13 @@ namespace MachineBrigade.Game.Effects
         public static readonly Band[] Bands =
         {
             new(0.2f, 0.5f, 0.5f, 0f),
-            new(0.3f, 1f, 2f, 10f),
-            new(0.5f, 3f, 5f, 20f),
-            new(0.8f, 6f, 10f, 30f),
-            new(1.2f, 12f, 20f, 45f),
-            new(1.8f, 25f, 40f, 60f),
+            // Play-test 12: the lingering smoke about half as long (the band order kept, the 406 mm plume capped at 15 s);
+            // fireballs and craters unchanged.
+            new(0.3f, 0.5f, 1f, 10f),
+            new(0.5f, 1.5f, 2.5f, 20f),
+            new(0.8f, 3f, 5f, 30f),
+            new(1.2f, 6f, 10f, 45f),
+            new(1.8f, 10f, 15f, 60f),
         };
 
         /// <summary>A round's band: its tier, else its explosion tier's (Small 1, Medium 2, Large 3, Huge 4, Ultimate 5).</summary>

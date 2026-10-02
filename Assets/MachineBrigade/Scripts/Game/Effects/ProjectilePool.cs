@@ -77,6 +77,9 @@ namespace MachineBrigade.Game.Effects
 
         private static Mesh _rotorDiscs;
 
+        /// <summary>Play-test 12: the owning EffectsDirector's shot clock (none: the times given are used as they are).</summary>
+        internal ShotClock Clock { get; set; }
+
         public ProjectilePool(Transform parent, int capacity)
         {
             var root = new GameObject("Projectiles").transform;
@@ -158,7 +161,7 @@ namespace MachineBrigade.Game.Effects
             shot.Bent = control.HasValue;
             shot.Mid = control ?? Vector3.zero;
             // Fix prompt L4: on the shot clock, so it lands on the Sim tick its damage does (ShotClock).
-            shot.Start = ShotClock.Map(now) + delay;
+            shot.Start = ShotClock.Map(Clock, now) + delay;
             shot.Duration = Mathf.Max(0.05f, duration);
             shot.Arc = arc;
             shot.Trail = trail;
@@ -203,7 +206,7 @@ namespace MachineBrigade.Game.Effects
         /// </summary>
         public bool Divert(EntityId target, Vector3 to, float remaining, float now)
         {
-            now = ShotClock.Map(now);
+            now = ShotClock.Map(Clock, now);
             Shot best = null;
             var bestGap = float.MaxValue;
             foreach (var shot in _shots)
@@ -307,7 +310,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now, Emitters emitters)
         {
-            now = ShotClock.Map(now);
+            now = ShotClock.Map(Clock, now);
             // A clock that went back (a new battle): start over.
             if (!float.IsNaN(_last) && now < _last - 0.5f) _last = float.NaN;
             // The shot clock stands still while the Sim does (the Sandbox paused): the rounds hold where they are, no motor smoke piles up.

@@ -968,6 +968,23 @@ namespace MachineBrigade.Sim
             }
         }
 
+        /// <summary>
+        /// Play-test 12, previews only: no weapon of <paramref name="v"/> waits more than <paramref name="most"/> s for its next
+        /// round, nor its supergun or naval salvo and cells (a 60 s main battery shows in the "In action" clip). A battle never calls it.
+        /// </summary>
+        public void Hasten(Vehicle v, float most)
+        {
+            for (var i = 0; i < v.Weapons.Length; i++)
+                if (v.Weapons[i].Cooldown > most) v.Weapons[i].Cooldown = most;
+            if (v.BombardNext > Time + most) v.BombardNext = Time + most;
+        }
+
+        /// <summary>Play-test 12, previews only (no sea there): a flagship's main turrets fire a salvo, each at an enemy of its own.</summary>
+        public bool PreviewSalvo(Vehicle v) => Naval.PreviewSalvo(v);
+
+        /// <summary>Play-test 12, previews only: a flagship's launch cells fire a cruise missile at the farthest enemy.</summary>
+        public bool PreviewCruise(Vehicle v) => Naval.PreviewCruise(v);
+
         /// <summary>Previews: holds a vehicle's fire (or frees it), whatever its orders.</summary>
         public void HoldFire(Vehicle v, bool hold) => v.HoldFire = hold;
 

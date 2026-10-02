@@ -4,35 +4,50 @@ namespace MachineBrigade.Game.Effects
 {
     /// <summary>
     /// Fix prompt L4, the delayed damage ("đạn dính ra 1 khoảng thời gian sau máu mới trừ"): rounds in flight
-    /// (<see cref="ProjectilePool"/>, <see cref="TracerPool"/>) are drawn on the simulation's clock, not the render clock.
-    /// A round's damage lands on the Sim tick its travel ends; flown on <c>Time.time</c>, the drawn round got there first
-    /// whenever the Sim ran slower than real time (the Sandbox slowed or stepping, a frame needing more than
-    /// <see cref="MachineBrigade.Sim.Core.SimClock.MaxStepsPerFrame"/> steps, whose rest is dropped, a heavy frame on a
-    /// phone), and sat there until the hit points dropped. On this clock it lands on the frame its impact is drawn.
-    /// <para>MatchRunner sets <see cref="SimNow"/> every frame to the time the views are drawn at (the last step less the
-    /// part of a step still to come, as the views interpolate); while the battle is frozen (its end) it runs on with the
-    /// frame so the rounds still in the air finish. Off (tests, tools, the menu's preview), the pools keep the time they
-    /// are given.</para>
+    /// (<see cref="ProjectilePool"/>, <see cref="TracerPool"/>, <see cref="EscapeWarnings"/>) are drawn on the simulation's
+    /// clock, not the render clock. A round's damage lands on the Sim tick its travel ends; flown on <c>Time.time</c>, the
+    /// drawn round got there first whenever the Sim ran slower than real time (the Sandbox slowed, a frame needing more
+    /// than <see cref="MachineBrigade.Sim.Core.SimClock.MaxStepsPerFrame"/> steps, a heavy frame on a phone).
+    /// <para>Play-test 12 (DECISIONS "Play-test 12 (lane B)"): L4's clock was one static for the whole game. The menu's
+    /// in-action preview (<see cref="MachineBrigade.Game.Rendering.FiringRange"/>) runs its own little Sim while the lobby
+    /// battle behind the menu rests (no steps), so the lobby froze the shared clock while it stayed on, and every round of
+    /// the preview (and of any other tool drawing through an EffectsDirector) stuck at its muzzle. Now each
+    /// <see cref="EffectsDirector"/> owns its clock, and the world that feeds it (MatchRunner, FiringRange) advances it.
+    /// A clock never advanced stays off and passes the time it is given through.</para>
     /// </summary>
-    internal static class ShotClock
+    internal sealed class ShotClock
     {
-        /// <summary>Set by a running battle; off, <see cref="Map"/> returns the time it is given.</summary>
-        public static bool Active { get; set; }
+        /// <summary>Set once the owning world has advanced it; off, <see cref="Map"/> returns the time it is given.</summary>
+        public bool Active { get; set; }
 
         /// <summary>The simulation seconds the views are drawn at this frame.</summary>
-        public static float SimNow { get; set; }
+        public float SimNow { get; set; }
 
         /// <summary>
         /// A render-clock time (<c>Time.time</c>, or a moment that far ahead of it) on the shot clock: the same offset from
         /// <see cref="SimNow"/>. Unchanged while the clock is off.
         /// </summary>
-        public static float Map(float now) => Active ? SimNow + (now - Time.time) : now;
+        public float Map(float now) => Active ? SimNow + (now - Time.time) : now;
 
         /// <summary>The frame's update: <paramref name="simSeconds"/> as drawn, or on with the frame while the battle is frozen.</summary>
-        public static void Advance(double simSeconds, bool frozen, float frame)
+        public void Advance(double simSeconds, bool frozen, float frame)
         {
+            if (frozen && Active) SimNow += Mathf.Max(0f, frame);
+            else SimNow = (float)simSeconds;
             Active = true;
-            SimNow = frozen ? SimNow + Mathf.Max(0f, frame) : (float)simSeconds;
         }
+
+        /// <summary>
+        /// Play-test 12: while a step's events are drawn, the time that step began (rounds launched now start where the
+        /// views draw that step, so they land on the frame their impact is drawn rather than up to a frame early).
+        /// </summary>
+        public void Launching(double stepStart)
+        {
+            SimNow = (float)stepStart;
+            Active = true;
+        }
+
+        /// <summary><paramref name="clock"/>'s time for <paramref name="now"/>, or <paramref name="now"/> with no clock.</summary>
+        public static float Map(ShotClock clock, float now) => clock != null ? clock.Map(now) : now;
     }
 }

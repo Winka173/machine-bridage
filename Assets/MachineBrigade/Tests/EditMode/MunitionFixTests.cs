@@ -153,14 +153,28 @@ namespace MachineBrigade.Tests
         [Test]
         public void TheShotClockIsOffOutsideABattle()
         {
-            Game.Effects.ShotClock.Active = false;
-            Assert.AreEqual(12.5f, Game.Effects.ShotClock.Map(12.5f), 1e-5f);
-            Game.Effects.ShotClock.Advance(40.0, false, 0.016f);
-            Assert.IsTrue(Game.Effects.ShotClock.Active);
-            Assert.AreEqual(40f, Game.Effects.ShotClock.SimNow, 1e-4f, "the Sim's time as drawn");
-            Game.Effects.ShotClock.Advance(99.0, true, 0.5f);
-            Assert.AreEqual(40.5f, Game.Effects.ShotClock.SimNow, 1e-4f, "frozen: it runs on with the frame");
-            Game.Effects.ShotClock.Active = false;
+            var clock = new Game.Effects.ShotClock();
+            Assert.IsFalse(clock.Active, "a clock never advanced is off");
+            Assert.AreEqual(12.5f, clock.Map(12.5f), 1e-5f);
+            Assert.AreEqual(12.5f, Game.Effects.ShotClock.Map(null, 12.5f), 1e-5f, "no clock: the time as given");
+            clock.Advance(40.0, false, 0.016f);
+            Assert.IsTrue(clock.Active);
+            Assert.AreEqual(40f, clock.SimNow, 1e-4f, "the Sim's time as drawn");
+            clock.Advance(99.0, true, 0.5f);
+            Assert.AreEqual(40.5f, clock.SimNow, 1e-4f, "frozen: it runs on with the frame");
+        }
+
+        [Test]
+        public void EachWorldKeepsItsOwnShotClock()
+        {
+            // Play-test 12: the lobby resting behind the menu must not freeze the preview's rounds.
+            var lobby = new Game.Effects.ShotClock();
+            var preview = new Game.Effects.ShotClock();
+            lobby.Advance(10.0, false, 0.016f);
+            preview.Advance(1.0, false, 0.016f);
+            preview.Advance(1.5, false, 0.016f);
+            Assert.AreEqual(10f, lobby.SimNow, 1e-4f);
+            Assert.AreEqual(1.5f, preview.SimNow, 1e-4f, "the preview's clock moves on its own");
         }
     }
 }
