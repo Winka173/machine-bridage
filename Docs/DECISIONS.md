@@ -13702,3 +13702,7 @@ refused by the permission system, so no card renders and no previews); the card 
   `Muzzle_missile.001` suffix warning is the old `_suffixed` convention. Four track units cost 1.9 k alone.
 - **Pitfall:** the builder filter in `build_assets.py` is a substring match, so building `light_tank` also rebuilds
   `airborne_light_tank` (+chute); their GLBs came out byte-different and were reverted with `git checkout`.
+- Lead (2026-10-02), wave 3a cards: rendered by the lead after the merge (owner's choice; agents no longer mirror).
+  Card luma old -> new: heavy_tank .388 -> .388 (-0.1 %), light_tank +2.4 %, tank_destroyer +1.5 %, elite_heavy_tank
+  +0.5 %, elite_mbt +0.8 %, elite_tank_destroyer +1.3 %, titan_tank +0.8 %, turtle_tank +1.4 %: all pass the -1 % gate.
+  Previews skipped to save tokens (the card luma is the gate; previews only when a card fails or looks off).

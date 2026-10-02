@@ -29,7 +29,7 @@
             "kind": "vehicle",
             "model": "light_tank",
             "source": "Models/light_tank_hd",
-            "hash": "v2:edf50063023c5355de0bd0f65a02abd9414aa6de"
+            "hash": "v2:b7ab35870c3e32192d2feafb7f8bc6afbd450ddc"
         },
         {
             "id": "main_battle_tank",
@@ -43,14 +43,14 @@
             "kind": "vehicle",
             "model": "heavy_tank",
             "source": "Models/heavy_tank_hd",
-            "hash": "v2:d30ad4ea7df3e8389c5e66defca9461cd63c45ec"
+            "hash": "v2:5cabb24cc052624f25809e1ef02cc87301693529"
         },
         {
             "id": "tank_destroyer",
             "kind": "vehicle",
             "model": "tank_destroyer",
             "source": "Models/tank_destroyer_hd",
-            "hash": "v2:3cf6295d7c2a35f450d8859028aaf9a969958639"
+            "hash": "v2:d69a3743b964e28410770994e4255e45dbc2c1d7"
         },
         {
             "id": "flame_tank",
@@ -155,7 +155,7 @@
             "kind": "vehicle",
             "model": "titan_tank",
             "source": "Models/titan_tank",
-            "hash": "v2:4f609b2f34b52e4327a9011210bf299e92e0faee"
+            "hash": "v2:b9f70fbc9df6274f4c96ce2c57688f947ecfb02e"
         },
         {
             "id": "heavy_bomber",
@@ -302,7 +302,7 @@
             "kind": "vehicle",
             "model": "turtle_tank",
             "source": "Models/turtle_tank",
-            "hash": "v2:d180f6e15307ea21ab7ab1b82736ee3253bbd019"
+            "hash": "v2:d782184e0954fbffe2be6f84a3d671c773e01678"
         },
         {
             "id": "bmpt",
@@ -1065,7 +1065,7 @@
             "kind": "elite",
             "model": "elite_heavy_tank",
             "source": "Models/elite_heavy_tank",
-            "hash": "v2:350b4ad8e49f07910e8d6ebf7f799d0f72c89107"
+            "hash": "v2:cfbc0b9c3a0c2c0b8461ac51eb462a8ae93a7997"
         },
         {
             "id": "elite_long_sam",
@@ -1079,7 +1079,7 @@
             "kind": "elite",
             "model": "elite_mbt",
             "source": "Models/elite_mbt",
-            "hash": "v2:4c7a623e7b0a2203552e5622d4869650e97ac38c"
+            "hash": "v2:7dc16b6f2a5d000ef6b14e6d69502d57e9c85f9d"
         },
         {
             "id": "elite_mlrs",
@@ -1093,7 +1093,7 @@
             "kind": "elite",
             "model": "elite_tank_destroyer",
             "source": "Models/elite_tank_destroyer",
-            "hash": "v2:973e2298e8b83e62efc5900945b7d580f29af01b"
+            "hash": "v2:0045548fded26d6c60062cd328ffd2a46cbb4125"
         },
         {
             "id": "ew_tower",
