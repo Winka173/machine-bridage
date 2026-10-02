@@ -8,13 +8,19 @@ namespace MachineBrigade.Game.Hud
     /// <summary>One card in the deck bar.</summary>
     public readonly struct CardInfo
     {
-        public CardInfo(string id, bool support, int cost, string icon)
+        public CardInfo(string id, bool support, int cost, string icon, int missiles = 0, int flares = 0)
         {
             Id = id;
             Support = support;
             Cost = cost;
             Icon = icon;
+            Missiles = missiles;
+            Flares = flares;
         }
+
+        /// <summary>Prompt 29 L5: its own missile mount's load and its flare charges, for the card's badges (0: none).</summary>
+        public int Missiles { get; }
+        public int Flares { get; }
 
         public string Id { get; }
         public bool Support { get; }
@@ -130,7 +136,11 @@ namespace MachineBrigade.Game.Hud
                 art.Add(Kit.Icon("lock", "fc-hcard__lock"));
                 card.Short = Kit.Text("", "fc-caption fc-hcard__short");
                 art.Add(card.Short);
-                art.Add(Kit.Box("fc-hcard__badges"));
+                var badges = Kit.Box("fc-hcard__badges");
+                // Prompt 29 L5: small flat marks for the missile mount's load and the flare charges.
+                if (info.Missiles > 0) badges.Add(Badge("missile", info.Missiles));
+                if (info.Flares > 0) badges.Add(Badge("flares", info.Flares));
+                art.Add(badges);
                 card.Root.Add(art);
                 var cost = Kit.Box("fc-hcard__cost");
                 cost.Add(Kit.Text(info.Cost.ToString(), "fc-number-small"));
@@ -172,6 +182,15 @@ namespace MachineBrigade.Game.Hud
         internal Func<string, VisualElement> TipRow;
 
         private readonly VisualElement _tipRow;
+
+        /// <summary>A badge in the card's top-left corner: a small icon and a number on the field panel.</summary>
+        private static VisualElement Badge(string icon, int count)
+        {
+            var badge = Kit.Box("fc-hcard__badge", PickingMode.Ignore);
+            badge.Add(Kit.Icon(icon, "fc-hcard__badge-icon", 2f));
+            badge.Add(Kit.Text(count.ToString(), "fc-hcard__badge-text"));
+            return badge;
+        }
 
         /// <summary>Shows a held card's full name (and its armour and weapons) over it; null hides it.</summary>
         private void ShowTip(VisualElement card, string id)

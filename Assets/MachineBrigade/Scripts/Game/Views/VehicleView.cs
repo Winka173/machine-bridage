@@ -223,7 +223,7 @@ namespace MachineBrigade.Game.Views
                 vehicle.Team == playerTeam ? materials.BarAlly : vehicle.Team == Teams.Hostile ? materials.BarNeutral : materials.BarEnemy, false);
             _barFill.localPosition = new Vector3(0f, 0f, -0.02f);
             // Prompt 13 C.9: the stores icon for aircraft, helicopters and launchers (it took over the three-shell gauge).
-            if (vehicle.HasStores || vehicle.Def.Mounts[0].Weapon.Ammo > 0) BuildStoresMark(meshes, materials);
+            if (vehicle.HasStores || vehicle.Arm(0).Ammo > 0) BuildStoresMark(meshes, materials);
             BuildRepairMark(meshes, materials);
             // Prompt 25 G: the change-of-round glyph (VehicleView.Rounds.cs).
             BuildRoundMark(meshes, materials);

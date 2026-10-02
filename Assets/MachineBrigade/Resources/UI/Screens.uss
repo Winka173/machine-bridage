@@ -951,6 +951,13 @@
 }
 .fc-hcard--short .fc-hcard__name--short, .fc-hcard--locked .fc-hcard__name--short { opacity: 0.45; }
 .fc-hcard__badges { position: absolute; left: var(--fc-space-1); top: var(--fc-space-1); flex-direction: row; }
+/* Prompt 29 L5: the missile mount's load and the flare charges, small and flat on the field panel */
+.fc-hcard__badge {
+    flex-direction: row; align-items: center; margin-right: 2px; padding: 0 3px;
+    background-color: var(--fc-panel-field);
+}
+.fc-hcard__badge-icon { width: 16px; height: 16px; }
+.fc-hcard__badge-text { font-size: var(--fc-fs-small); color: var(--fc-text); margin-left: 1px; -unity-font: var(--fc-font-display-semi); }
 .fc-hud .fc-deck__chip {
     position: absolute; left: 0; bottom: 100%; margin-bottom: var(--fc-space-1); padding: 0 var(--fc-space-2);
     white-space: nowrap; background-color: var(--fc-panel-field);

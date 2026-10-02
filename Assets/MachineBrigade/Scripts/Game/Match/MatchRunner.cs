@@ -1545,7 +1545,9 @@ namespace MachineBrigade.Game.Match
             // Prompt 13 C.9: the selection's ammunition bar under its health bar.
             _storesStrip ??= new StoresStrip(_hud.SelectionExtras);
             var (storesLeft, storesFull, storesKind, storesSlow) = _selection.Stores();
-            _storesStrip.Set(storesLeft, storesFull, storesKind, storesSlow, _hud.SelectionExtras);
+            var (missilesLeft, missilesFull, flaresLeft, flaresFull) = _selection.Loadout();
+            _storesStrip.Set(storesLeft, storesFull, storesKind, storesSlow, _hud.SelectionExtras,
+                StoresStrip.KitLine(missilesLeft, missilesFull, flaresLeft, flaresFull));
             UpdateMinimap();
             UpdateBossPartOutline();
         }
