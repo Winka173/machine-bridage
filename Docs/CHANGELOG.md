@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 27 wave 4a: eight helicopters and drones on the V2 kit, prompt 29 flare tubes on three (DECISIONS "27 wave 4a").
+
 - Models (prompt 27 wave 3h, the last of wave 3): armoured car, command vehicle, FPV carrier, Lancet truck, scout jeep (+hd), Grad truck, missile boat, sea corvette and landing craft rebuilt on the V2 kit (V2 wheels, extruded hulls, cabs and superstructures, lofted boat hulls, revolved barrels, tubes and masts); same nodes, pivots and proportions, 1.0-1.6x triangles (the Grad truck now under its old budget), brighter vertex colours; the 3g NLOS and radar ATGM vehicles brightened (their cards came out darker). Cards rendered by the lead after the merge.
 - Balance round 2 (prompt 29, cloud): manifest tool (`Tools/balance/p29_apply.py`), one rounding, per-vehicle damage factor and drop time, base CP vs call cost, measure stamps; 7 FIX regressions, CP bank by mode, ~97 cards repriced; flare charges, APS capability and modes, vehicle missile loads; no low-health aircraft retreat; Gungnir a main boss (45 s global rail shot); prompt 28's army-band upkeep removed. Not run yet; report `Docs/balance/report_p29.md`.
 - Models (prompt 27 wave 3g): microwave vehicle, NLOS and radar ATGM vehicles, radar scout, recoilless jeep, SHORAD vehicle, self-propelled mortar and wheeled howitzer rebuilt on the V2 kit (V2 wheels and track units, extruded hulls and cabs, revolved barrels, framed launchers and masts); same nodes, pivots and proportions, 1.0-1.4x triangles, brighter vertex colours; the 3f AA gun vehicle brightened (its card came out 1.8 % darker). Cards rendered by the lead after the merge.

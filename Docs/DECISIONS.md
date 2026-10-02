@@ -14070,3 +14070,4 @@ outside the row.
   no validator flag).
 - **Card luma (old, mean of pixels with alpha > .5):** scout_heli .3660, gunship_heli .3914, elite_attack_helicopter .2995 (the
   dimmest of the row: watch it), swarm_carrier .4351, recon_drone .6232, strike_drone .4513, wingman_drone .4266; drop_pod has no card.
+- Lead (2026-10-02), wave 4a cards: six pass (+0.0 % to +3.9 %), drop_pod has none; recon_drone -1.8 % (.6232 -> .6121): merged, pass 4b brightens it. Part_flares is read as a runtime part: 4b renames it to a non-runtime name in mb_p29_details and rebuilds the three.

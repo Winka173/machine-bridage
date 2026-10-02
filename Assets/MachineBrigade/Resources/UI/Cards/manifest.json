@@ -99,7 +99,7 @@
             "kind": "vehicle",
             "model": "scout_heli",
             "source": "Models/scout_heli",
-            "hash": "v2:84b02b07a8b12f7310b60422789b4ccd0c2e82f7"
+            "hash": "v2:afb034b95001e92abc40b7bcc944cbe21d3b2326"
         },
         {
             "id": "attack_helicopter",
@@ -113,14 +113,14 @@
             "kind": "vehicle",
             "model": "gunship_heli",
             "source": "Models/gunship_heli",
-            "hash": "v2:ae5e8772eb76264f6f6aed22e606be5d0d7ff197"
+            "hash": "v2:122f8645be619631b95fb71bdb9810cc10a382dc"
         },
         {
             "id": "strike_drone",
             "kind": "vehicle",
             "model": "strike_drone",
             "source": "Models/strike_drone",
-            "hash": "v2:bc8c7922b324471e01536cfcce7d41b58832e636"
+            "hash": "v2:c411576ba03b5e085a9d05124be47b6b80d06518"
         },
         {
             "id": "attack_jet",
@@ -246,7 +246,7 @@
             "kind": "vehicle",
             "model": "recon_drone",
             "source": "Models/recon_drone",
-            "hash": "v2:768197766fc7ed36ab4968bf3260c3d50c63fe3c"
+            "hash": "v2:29d33924631e2d19b62544733d02a073dd3b4f3b"
         },
         {
             "id": "vbied",
@@ -358,7 +358,7 @@
             "kind": "vehicle",
             "model": "wingman_drone",
             "source": "Models/wingman_drone",
-            "hash": "v2:44d3d6535fb04915fe6b6fc3bac7f48b67953b45"
+            "hash": "v2:d30c8dec831233af2786603dcfb88743b6c09ad7"
         },
         {
             "id": "laser_tank",
@@ -386,7 +386,7 @@
             "kind": "vehicle",
             "model": "swarm_carrier",
             "source": "Models/swarm_carrier",
-            "hash": "v2:32920741fdde25886d84f9639102db05b83f3e3b"
+            "hash": "v2:2988db8bbaf1dba073fe71a47f8f5ea0d13f6164"
         },
         {
             "id": "aa_gun_vehicle",
@@ -1037,7 +1037,7 @@
             "kind": "elite",
             "model": "elite_attack_helicopter",
             "source": "Models/elite_attack_helicopter",
-            "hash": "v2:5479d582b207d6e765e7e7a040fa001f84f6e29c"
+            "hash": "v2:377181e595303d4b2ec0fc3e73f010fb604e869e"
         },
         {
             "id": "elite_attack_jet",
