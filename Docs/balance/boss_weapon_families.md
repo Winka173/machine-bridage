@@ -290,17 +290,17 @@ Ground DPS **771 -> 956** (124 %); anti-air only 804 -> 804.
 
 ### moloch
 
-Ground DPS **1382 -> 1382** (100 %); anti-air only 0 -> 0. Made up: `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together.
+Ground DPS **1382 -> 652** (47 %); anti-air only 0 -> 0. Made up: `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_moloch_main_mo120` | cal_120_he | 340 x 1 / 1.13 s = 300 | 340 x 1 / 1.13 s = 300 | 5 / 10 |
-| 1 | `p26_moloch_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 25.00 s = 14 | 0 / 0 |
-| 2 | `p26_moloch_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 25.00 s = 14 | 0 / 0 |
-| 3 | `p26_moloch_main_mo120` | cal_120_he | 340 x 1 / 1.13 s = 300 | 340 x 1 / 1.13 s = 300 | 5 / 10 |
-| 4 | `p26_moloch_direct_mo120ap` | cal_120_ap | 260 x 1 / 2.36 s = 110 | 260 x 1 / 2.36 s = 110 | 0 / 0 |
-| 5 | `p26_moloch_direct_mo120ap` | cal_120_ap | 260 x 1 / 2.36 s = 110 | 260 x 1 / 2.36 s = 110 | 0 / 0 |
-| 6 | `p26_moloch_close_boss_flak` | cal_35 | 25 x 41 / 1.92 s = 534 | 25 x 41 / 1.92 s = 534 | 2.5 / 0 |
+| 0 | `p26_moloch_main_mo120` | cal_120_he | 340 x 1 / 1.13 s = 300 | 340 x 2 (2 together) / 7.50 s = 91 | 5 / 10 |
+| 1 | `p26_moloch_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 4.96 s = 71 | 0 / 0 |
+| 2 | `p26_moloch_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 4.96 s = 71 | 0 / 0 |
+| 3 | `p26_moloch_main_mo120` | cal_120_he | 340 x 1 / 1.13 s = 300 | 340 x 2 (2 together) / 7.50 s = 91 | 5 / 10 |
+| 4 | `p26_moloch_direct_mo120ap` | cal_120_ap | 260 x 1 / 2.36 s = 110 | 260 x 2 (2 together) / 7.50 s = 69 | 0 / 0 |
+| 5 | `p26_moloch_direct_mo120ap` | cal_120_ap | 260 x 1 / 2.36 s = 110 | 260 x 2 (2 together) / 7.50 s = 69 | 0 / 0 |
+| 6 | `p26_moloch_close_boss_flak` | cal_35 | 25 x 41 / 1.92 s = 534 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
 
 ### daedalus
 
@@ -576,7 +576,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
 | sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
 | leviathan | 771 | 956 | 124 % | 804 -> 804 | - |
-| moloch | 1382 | 1382 | 100 % | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
+| moloch | 1382 | 652 | 47 % **(< 80 %)** | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
 | daedalus | 745 | 745 | 100 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
 | kronos | 439 | 439 | 100 % | 0 -> 0 | - |
 | typhon | 707 | 707 | 100 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
