@@ -16801,3 +16801,70 @@ the last round, not the full cycle. Audio, VFX, flares and the prompt 27 models 
 - Test (written, not run): `FixFullTests` L2 (one display field at most, a gun's calibre is its size, the card prints the
   field and never a calibre from the id, "Main gun" only on mount 0, the name fixes).
 - Audit after L2: DISPLAY bosses 65 -> 41 (what is left is "every X s", L3).
+
+## Sửa lỗi tổng hợp L3 (lead pass, 2026-10-02)
+
+**Overlap: this prompt wins over prompt 34 L2.** Prompt 34 L2 kept each boss weapon's prompt 26 DPS and solved the cadence
+from it (plus an "area bonus"); this prompt says the p26 DPS was wrong from the start. `Tools/balance/p34_boss_families.py`
+is retired (its main() refuses to run and writes nothing; its helpers stay for p34_validate / p34_warnings / the design
+document). `p26_ab.py` was not rerun. The tool now is `Tools/balance/fix_boss_weapons.py` (rerun-safe; the "before" is
+stored in `Tools/balance/fix_boss_before.json`; the reasons the audit reads in `Tools/balance/fix_weapon_reasons.json`).
+
+- **Method.** (1) The family round stays as prompt 34 put it (damage, core, edge, one speed and damage type a family, the
+  same on every boss). (2) The cadence first, family by family (`CADENCE`): the wave 1 proposal where it passes the real
+  rate (the audit's rule), else the real maximum rate itself (an autoloader never above it). Big guns: 2A65 the wave 1
+  twin, 2 barrels together every 8.98 s; Rh-120 and 2A46 7.5 s (8 rpm; wave 1's 5.1 / 5.56 s are too fast after the 30 %
+  rule); 2A44 203 mm 24 s (2S7M 2.5 rpm); 2B8 240 mm 60 s (2S4 1 rpm); M284 15 s (4 rpm); D-10 8.6 s; the 152 mm railcar gun
+  and B-38 7.5 / 8 s; M102 6 s; 155 mm/60 the wave 1 triple, 3 together every 10.5 s; AK-130 twin 3 s and the A-192 class
+  127 mm 3 s (20 rpm practical; 4.75 s was too slow); AK-100 its wave 1 pair, 1 s apart, every 3.5 s. Small guns and AA:
+  the wave 1 rows (AU-220 4 rounds 0.5 s apart every 4.29 s, 2A42 10 rounds every 2.5 s, the twin 2A42 12 every 2.37 s,
+  Bofors 10 / 1.52 s, NSV 100 / 5 s, ZU-23 50 / 3 s, GDF 41 / 3.38 s, 2A38 160 / 3 s). Rockets: the real ripple (Grad
+  0.5 s, Smerch 3.17 s, A-22 0.5 s est.) and wave 1's pause (2.44 s, 15.76 s). Kornet 20 s (3 rpm), the twin launchers a
+  pair every 20 s; the Patriot pair 3 s apart (est.). (3) The DPS is the result.
+- **Make-up (rule 5)**, only by more barrels firing together or more tubes, never a shorter reload: the twin Rh-120
+  (wave 1's `gun_120_twin`) on Behemoth's two flank guns and Moloch's four 120 mm; a twin 57 mm (as the real AK-725) on
+  Typhon / Hydra's deck guns and Daedalus's belly guns; the twin D-10 casemates the fortress model already had (Bastion,
+  Bastion Mk.0, Monster); a full BM-21 pack of 40 tubes on Behemoth's and Nemesis's Grad (8 and 13 before). Health is
+  not touched (P x t x 0.6).
+- **Not made up within 20 %** (ground DPS on paper, after / before): Nemesis 61 % (its 152 mm railcar gun was a 4-round
+  salvo 6 x the real rate), Roc and Garuda 45 % (the M102 105 mm gondolas 350 -> 50 each, the bay's Kornets 116 -> 23),
+  Moloch 47 % (its 1,690 rpm flak and 1.1 s 120 mm were prompt 34's), Ixion 46 % (one 2A46: 1.03 s -> 7.5 s), Bastion Mk.0
+  54 % (its 240 mm 7.7 -> 60 s), Earth Borer 74 % (2A70 2.08 -> 6 s; its model has no barrel to twin). No real or wave 1
+  mount gives them five or more barrels; the owner's call (more mounts, other families, or the health).
+- **Up** (the result, not capped): Kronos 161 %, Scylla 162 %, Supreme Command 159 %, the armored train and Nyx 144 %,
+  Jötunn 126 %, Leviathan / Kraken 124 % (their 155 mm triples and AK-127s at the real rate, the AA at wave 1's).
+  The report also gives prompt 26's measure (DPS on armour 3 x weaponDamage): the mains fall to 0.38-1.34 of the chapter
+  target (Bastion 0.63, Jötunn 0.65, Moloch 0.41, Nemesis 0.42, Roc 0.38); `Prompt26ABTests` now holds 0.3-1.5.
+- **Kept**: the 406 mm salvo every 60 s (prompt 34's trial table, 1.4 x the real gap after the 30 % rule: inside the window),
+  Roc's 400 kg bomb stick (no real rate for an airship's bay: its 35.4 s), the six-drone swarm, the lasers and coilguns (no
+  real rate), Gungnir (only its name and calibre display: "Railgun 250 MJ"; its 40 mm guns are frozen too), the weapons a
+  boss shares with a player or a tower (`gunship_105`, `gunship_40mm`, `sam_post`: the player rule). The 64 MJ coilgun gets
+  its own family (`rail_heavy_coilgun`, "heavy coilgun (64 MJ)") so it no longer clashes with the 10 MJ one.
+- **Absurd side mounts (rule 7)**: with real cycles there are none left (Kornet 20 s, 2A38 6.97 s, the 57 mm 4.29 s, the
+  ZU-23 4.96 s, the 40 mm 3.32 s, Behemoth's tiny 120 mm 7.5 s); nothing was merged.
+- **Players and towers (rule 9)**: only the rocket battery's Grad (`turret_rockets`, `turret_rockets_cluster`) changed: the
+  real 0.5 s between rockets (0.12 s was 4 x too fast), the cycle and the DPS kept (no damage change; the unused
+  `turret_thermobaric` keeps its 0.12 s). The 52 other flagged player / tower weapons wait for the owner with their reason
+  (`Docs/balance/player_weapon_waitlist.md`, written by the audit): mostly 19R's deliberate "faster than real, kept", the
+  dug-in sites' faster rhythm (balance pass after prompt 18), or an estimated real rate.
+- **Card** (`MenuScreen.VehicleWeapons`, EN + VI): a single shot "every X s" / "mỗi X s" (the full cycle), a salvo or a
+  magazine "salvo N · cycle X s" / "loạt N · chu kỳ X s" (N the rounds a cycle with every barrel, X the time to fire them
+  plus the reload); under it the sustained DPS on this carrier, the barrels firing together, a blast's core / edge
+  (`MenuScreen.WeaponFacts`).
+- **Models** (`Tools/blender/mb_fix_barrels.py`, run after mb_p34_barrels in build_assets): a second barrel where a twin gun
+  had one (the barrel and the pieces on its axis copied, the pair centred on the old axis) and `Muzzle_b<k>_<tag>` for
+  every barrel: behemoth (its flank guns; its main gun already had two), cerberus (main), moloch (main + three guns),
+  typhon, hydra_sub (gun; its deck hatch two launch points), daedalus (two belly guns), monster (two D-10s),
+  fortress_bastion (muzzles only). Rebuilt with Blender 4.5, `behemoth_inferno` / `behemoth_tempest` (the filter's
+  extras) reverted, accepted with `glb_check --accept` (triangles +0.9 to +7.2 %). `p34_barrels.MUZZLES` lists them, so
+  `p34_validate` rule 4 and `Prompt34ValidatorTests` check every barrel. Not rendered here: the lead's previews.
+- **Audit after** (`full_weapon_audit.py`): bosses TOO FAST 25 -> 3, TOO SLOW 9 -> 0, UNIT 1 -> 0, WAVE 1 47 -> 0, FAMILY
+  7 -> 0, DISPLAY 65 -> 0 (the 3 left are the shared `gunship_105`, `gunship_40mm`, `sam_post`); players 29 / 6 / 0 / 6 / 1 /
+  60 -> 28 / 6 / 0 / 6 / 0 / 0; towers 19 / 1 / 0 / 1 / 0 / 26 -> 17 / 1 / 0 / 1 / 0 / 0.
+- Data keys: `weapons[*]` `cooldown`, `burst`, `burstInterval`, `clip`, `clipReload`, `barrels`, `salvoMode` on 59 boss lines
+  (and the three rocket-battery lines above), `real` on 7 (the twin mounts, the heavy coilgun), `weaponFamilyId` on the
+  coilgun; `weaponFamilyTable` + `rail_heavy_coilgun`.
+- Tests (written, not run): `FixFullTests` L3 (the big boss guns at their real cadence, no boss gun of 120 mm and up faster
+  than real, the make-up barrels and tubes, the card's full cycle and facts); `Prompt34Tests` (the Smerch, the bombs and
+  the 155 mm at their cadence instead of the area bonus; Scylla's AK-130 at 3 s), `Prompt26CDTests` (Ixion's gun 400 / 7.5 s;
+  it still read prompt 26's 780 / 2 s), `Prompt26ABTests` (the mains' DPS 0.3-1.5 of the target).
