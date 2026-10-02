@@ -315,16 +315,16 @@ Ground DPS **745 -> 778** (104 %); anti-air only 0 -> 0. Made up: `p26_daedalus_
 
 ### kronos
 
-Ground DPS **439 -> 439** (100 %); anti-air only 0 -> 0.
+Ground DPS **439 -> 708** (161 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_kronos_close_autocannon_30` | cal_30 | 22 x 10 / 2.73 s = 80 | 22 x 10 / 2.73 s = 80 | 0 / 0 |
-| 1 | `p26_kronos_direct_kr57` | cal_57 | 120 x 2 / 2.40 s = 100 | 120 x 2 / 2.40 s = 100 | 0 / 0 |
-| 2 | `p26_kronos_direct_kr57` | cal_57 | 120 x 2 / 2.40 s = 100 | 120 x 2 / 2.40 s = 100 | 0 / 0 |
+| 0 | `p26_kronos_close_autocannon_30` | cal_30 | 22 x 10 / 2.73 s = 80 | 22 x 10 / 2.50 s = 88 | 0 / 0 |
+| 1 | `p26_kronos_direct_kr57` | cal_57 | 120 x 2 / 2.40 s = 100 | 120 x 4 / 4.29 s = 112 | 0 / 0 |
+| 2 | `p26_kronos_direct_kr57` | cal_57 | 120 x 2 / 2.40 s = 100 | 120 x 4 / 4.29 s = 112 | 0 / 0 |
 | 3 | `bucket_wheel` | melee_bucket_wheel | 1080 x 1 / 2.00 s = 0 (laid) | 1080 x 1 / 2.00 s = 0 (laid) | 0 / 0 |
-| 4 | `p26_kronos_close_autocannon_30` | cal_30 | 22 x 10 / 2.73 s = 80 | 22 x 10 / 2.73 s = 80 | 0 / 0 |
-| 5 | `p26_kronos_close_boss_rockets` | rkt_grad_122 | 200 x 13 / 33.11 s = 79 | 200 x 13 / 33.11 s = 79 | 4.5 / 9 |
+| 4 | `p26_kronos_close_autocannon_30` | cal_30 | 22 x 10 / 2.73 s = 80 | 22 x 10 / 2.50 s = 88 | 0 / 0 |
+| 5 | `p26_kronos_close_boss_rockets` | rkt_grad_122 | 200 x 13 / 33.11 s = 79 | 200 x 13 / 8.44 s = 308 | 4.5 / 9 |
 
 ### typhon
 
@@ -578,7 +578,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | leviathan | 771 | 956 | 124 % | 804 -> 804 | - |
 | moloch | 1382 | 652 | 47 % **(< 80 %)** | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
 | daedalus | 745 | 778 | 104 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
-| kronos | 439 | 439 | 100 % | 0 -> 0 | - |
+| kronos | 439 | 708 | 161 % | 0 -> 0 | - |
 | typhon | 707 | 707 | 100 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
 | ixion | 615 | 615 | 100 % | 0 -> 0 | - |
 | caspian | 260 | 260 | 100 % | 0 -> 0 | - |
