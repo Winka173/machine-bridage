@@ -680,7 +680,7 @@
             "kind": "tower",
             "model": "aa_gun_tower",
             "source": "Models/aa_gun_tower",
-            "hash": "v2:fcf11d004b98dd5059f979d0f328d4eeac92208c"
+            "hash": "v2:1025a648efa86c1a0f59d2dc0ae2a29a4aad7e0a"
         },
         {
             "id": "aa_turret",
@@ -904,7 +904,7 @@
             "kind": "structure",
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
-            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
         },
         {
             "id": "command_airship",
@@ -1142,7 +1142,7 @@
             "kind": "tower",
             "model": "flare_tower",
             "source": "Models/flare_tower",
-            "hash": "v2:9d9f470dabbe17b991aa159a2870f80894ee88b2"
+            "hash": "v2:f4b6f34c9cd94090e9016b5ed0413c6915838c3d"
         },
         {
             "id": "fortress_bastion",
@@ -1226,21 +1226,21 @@
             "kind": "tower",
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
-            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
         },
         {
             "id": "heavy_turret.bastion",
             "kind": "tower",
             "model": "heavy_turret_b",
             "source": "Models/heavy_turret_b",
-            "hash": "v2:98a523ae69e08d7460ce229abd74e3486a129520"
+            "hash": "v2:b8e6ef3af8eed6f4cec27e1d6cb8b3f8588ae8fe"
         },
         {
             "id": "heavy_turret.coastal",
             "kind": "tower",
             "model": "heavy_turret_a",
             "source": "Models/heavy_turret_a",
-            "hash": "v2:79f3c1f5b7794a8999518b8b51f722109a9a16b1"
+            "hash": "v2:70ed4da9621dedbaf42e115522a071174419c591"
         },
         {
             "id": "hydra",
@@ -1380,21 +1380,21 @@
             "kind": "tower",
             "model": "missile_battery",
             "source": "Models/missile_battery",
-            "hash": "v2:00532fa9c5a43379acc7efb9c2166b4dc0af6cee"
+            "hash": "v2:d888c2a990b17fd9683cf3fdf09daa77708e3c35"
         },
         {
             "id": "missile_battery.lrr",
             "kind": "tower",
             "model": "missile_battery_b",
             "source": "Models/missile_battery_b",
-            "hash": "v2:080c803f106fda4e9f72274838278dd7b3a7430b"
+            "hash": "v2:a955b476277a10049b0747bf4468d266276f357c"
         },
         {
             "id": "missile_battery.pac3",
             "kind": "tower",
             "model": "missile_battery_a",
             "source": "Models/missile_battery_a",
-            "hash": "v2:fd103bae1eb1e866fcd6e3384cdabb89a8bca593"
+            "hash": "v2:15ee93fc292c5611403fc7654a2f710fcd06ffab"
         },
         {
             "id": "mobile_fortress",
@@ -1492,7 +1492,7 @@
             "kind": "tower",
             "model": "searchlight",
             "source": "Models/searchlight",
-            "hash": "v2:b38759340e8a92b985d165c7f2266d2aca32b8ae"
+            "hash": "v2:0e8dfed14976c2dbdae9ac3fb2204d3cd584f0a7"
         },
         {
             "id": "shield_tower",
@@ -1534,7 +1534,7 @@
             "kind": "structure",
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
-            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
         },
         {
             "id": "stymphalos",
@@ -1548,7 +1548,7 @@
             "kind": "structure",
             "model": "heavy_turret",
             "source": "Models/heavy_turret",
-            "hash": "v2:7715b5faad943a43a30deeba178287ed1adfd69d"
+            "hash": "v2:07db06b6a981d80e4a3cea82c291060d51c75446"
         },
         {
             "id": "supreme_command",

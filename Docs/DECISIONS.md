@@ -14206,3 +14206,4 @@ pivots untouched). Run: Blender rebuild, `glb_check.py` (compare, accept). No ru
   nodes identical, sizes within .1 %, open edges unchanged (missile_battery 16, as before), no errors.
 - **Card luma (old, alpha > .5, Rec. 709):** heavy_turret .4109, _a .4042, _b .3628 (watch it); missile_battery .3973, _a .3958, _b .4125; aa_gun_tower .4465;
   flare_tower .2429 (the dimmest by far: watch it); searchlight .4713; wreck_turret has no card PNG.
+- Lead (2026-10-02), wave 6e cards: all nine pass (+11 % to +67 %; flare_tower .2429 -> .4069); wreck_turret has no card. Spot-checked missile_battery's card: pale but not washed out. Wave 6 is complete (41 towers).

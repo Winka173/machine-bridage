@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 27 waves 6d and 6e: drone_hangar, ew_tower, heavy_turret, missile_battery and their branches, aa_gun_tower, flare_tower, searchlight and wreck_turret on the V2 kit; atgm_tower repainted pale (wave 6 complete, DECISIONS "27 wave 6d", "27 wave 6e").
+
 - Prompt 27 waves 4c and 6c: prompt 29 flare tubes on the other nine aircraft and APS clusters on next_gen_tank and titan_tank (wave 4 complete); atgm_tower, c_ram and their branches and gun_pit on the V2 kit (DECISIONS "27 wave 4c", "27 wave 6c").
 
 - Prompt 27 waves 4b and 6b: the jets cleaned with flare rows and the attack_jet_hd library canopy and nozzle; gun_turret, mg_bunker, rocket_turret and their branches on the V2 kit (DECISIONS "27 wave 4b", "27 wave 6b").
