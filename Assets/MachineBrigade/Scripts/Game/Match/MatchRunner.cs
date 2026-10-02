@@ -1413,6 +1413,8 @@ namespace MachineBrigade.Game.Match
                     : Strings.Get("toast.focusClear"));
             };
             _selection.Rejected += _hud.ShowError;
+            // Prompt 28 H.6, H.10, E.1 (MatchRunner.Tactics.cs).
+            WireTactics();
             _selection.EnemyTapped += def => _hud.ShowEnemyTip(def,
                 MatchSettings.DeckVehicles.Select(v => _world.Catalog.Vehicles.TryGetValue(v, out var d) ? d : null).Where(d => d != null), TierOf(def));
             WireBossParts();
@@ -1538,6 +1540,7 @@ namespace MachineBrigade.Game.Match
             var playerAi = _session.PlayerAi;
             if (playerAi != null)
                 _hud.SetCommander(playerAi.Stance == CommanderStance.Defend, playerAi.AutoDeploy, playerAi.AutoStrike, playerAi.FocusPoint);
+            UpdateTactics();
             _hud.SetSelection(_selection.Summary());
             // Prompt 13 C.9: the selection's ammunition bar under its health bar.
             _storesStrip ??= new StoresStrip(_hud.SelectionExtras);

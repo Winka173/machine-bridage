@@ -1072,3 +1072,11 @@
 .fc-boss-facts { padding: var(--fc-space-3); }
 .fc-dossier__map { flex-direction: row; align-items: flex-start; }
 .fc-dossier__map-art { width: 160px; height: 90px; flex-shrink: 0; margin-right: var(--fc-space-3); -unity-background-scale-mode: scale-and-crop; background-color: var(--fc-bg-2); }
+
+/* Prompt 28: the battle's picker (tactic switch, tower targeting mode): a narrower, scrolling choice card. */
+.fc-pick__card { width: 560px; max-width: 92%; max-height: 92%; }
+.fc-pick__status { margin-bottom: var(--fc-space-2); }
+.fc-pick__scroll { flex-shrink: 1; }
+.fc-pick__option { margin-top: var(--fc-space-2); }
+.fc-pick__option > .fc-btn { align-self: stretch; }
+.fc-pick__extra { margin-top: var(--fc-space-3); }

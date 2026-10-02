@@ -132,7 +132,8 @@ namespace MachineBrigade.Game.Match
                     _states[i] = new CardState(economy.Cp >= Price(economy, card), economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, i == _armed);
                 }
             }
-            _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp, _states);
+            // Prompt 28 I.2: the army-size factor counts as upkeep on the supply line (shown only while it lowers the income).
+            _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp * economy.ArmyFactor, _states);
             if (_items.Count == 0) return;
             if (_armedItem >= 0 && (economy.ItemCount(_items[_armedItem]) <= 0 || economy.CooldownLeft(_items[_armedItem], _world.Time) > 0f)) Disarm();
             for (var i = 0; i < _items.Count; i++)
