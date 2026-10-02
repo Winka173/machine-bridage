@@ -17309,3 +17309,35 @@ Lane A, 2026-10-03: passes 0-2 of Docs/prompts/export_full_vi.txt (plan, framewo
 - `CHUA_AP:prompt_xuat_luot5` is fine for layer B cells until pass 5 fills them.
 - Size: commit the whole export while it stays under ~20 MB; above that, `.gitignore` the dated folders' xlsx/, csv/, images/ and pdf/ and keep 00_chi_muc/ and md/ (spec §8).
 - Don_vi_chua_ro (200 columns): the pass 5 lane resolves what the code reading settles; the rest stays listed for the owner.
+
+## Play-test 12 audio (lane C)
+
+Branch `feature/pt12-audio`. The owner: machine guns and autocannons much worse than yesterday (`f5e565d3`); artillery,
+tanks, bombs and the siege mortar good (keep); missiles sound like tanks. Details and numbers: `Docs/audio/pt12.md`.
+Nothing run but the Python tools; the C# is compiled by the lead.
+
+- **Cause**: L7 dropped yesterday's bank levels (0.38 / 0.46 / 0.55 for machine guns, autocannons, the cluster) and played
+  every bank at 1, so the machine guns rose 9.6 dB and the autocannons 6.9 dB against 1-3 dB for the big guns; their new
+  clips were duller, the autocannon's 0.9 s recording stuttered under the voice limit, and the launches carried a gun's
+  falling-sine thump and slap-back taps on a pitched-down recording.
+- **Machine guns and autocannons**: yesterday's prompt 34 generator restored with its seeds (`shot_s0`, `shot_s1`,
+  `smallarms_cluster`; a 4th variant for the shots), baked at yesterday's bank level plus 2 dB (the lift L7 gave the tank
+  and artillery shots), so the balance is yesterday's. The size table still rises.
+- **Rapid fire** (8.5 rounds/s and up, bullets up to 40 mm): `burst_*` banks at 10 / 16 / 55 (s0) and 10 / 22 / 35 / 55
+  (s1) rounds/s, ~0.3 s segments; one segment a shooter (`(entity, weapon)`), pitched 0.85-1.18 to the gun's own rate,
+  the next when it ends; 3 voices a bank, `Bank.NoSteal` (a new burst takes the quietest only when twice as loud, never
+  the oldest mid-burst); pitch spread 3 %. `Play` / `Start` take an optional pitch.
+- **Cluster** counts shooters, not shots (one machine gun is its own burst), machine guns only (not the 20-40 mm).
+- **Flak** (fragmentation bullets up to 57 mm under 8.5 rounds/s) back on the recorded `flak` bank, as yesterday; the 57 mm
+  kinetic autocannon on `shot_ac57` (yesterday's 30 mm pitched 0.84, +4 dB), not the tank cannon.
+- **Light hits** (up to 40 mm) 3.5 dB down: a round's landing was as loud as the gun.
+- **Launches by family** (`SoundLibrary.LaunchBank`): `launch_atgm` (T2 shaped charge), `launch_sam` (other T2 missiles),
+  `launch_s2` (T2 rockets), `launch_s3` (T3), `launch_big` (T4+ rockets), `launch_cruise` (T4+ missiles); synthesised rocket
+  motors (crack, booster roar with crackle, receding hiss, exhaust rumble; no falling sine, no discrete taps). In flight:
+  `missile_hiss` scheduled at the aim point to end at the landing (travel over 0.9 s, one in 0.3 s so the whistles keep
+  their queue). Impacts stay by warhead.
+- **Kept**: `shot_s2..super`, every `blast_*`, `hit_*_heavy`, `hit_metal_*`, whistles, wrecks, crashes and the whole mix
+  (compressor, limiter, falloff, off-screen 0.85, voices); their files are unchanged.
+- **Files**: new banks need .meta files (the lead copies them); `P34AudioImport` marks `launch_cruise` big. Test
+  `Playtest12AudioTests` written, not run. `Tools/sfx/render_mix.py` mirrors the bursts, the shooter cluster, flak and the
+  hiss; `Docs/audio/metrics.md` and the sample mixes rebuilt.

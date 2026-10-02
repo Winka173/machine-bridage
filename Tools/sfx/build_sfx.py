@@ -364,29 +364,267 @@ def airburst(rng, size: int, k: int) -> np.ndarray:
     return blast(rng, size, k, main=main, lufs_shift=-1.5, sub_shift=-12.0)
 
 
-LAUNCH = {2: (-16.5, 18.0), 3: (-14.5, 30.0), 6: (-12.0, 45.0)}
+# ------------------------------------------------------------- play-test 12 (lane C): machine guns and autocannons
+#
+# The owner (play-test 12, 03/10): "machine gun and autocannon sounds are very bad ... where a sound is bad, refer back to the
+# old sounds". Yesterday's build (f5e565d3) played prompt 34 L6's synthesised p34/shot_t0, shot_t1 and smallarms_cluster at
+# bank levels 0.38, 0.46 and 0.55. Fix pass L7 replaced them (a new noise-only small-arms shot through a limiter, the
+# recorded Sonniss autocannon with a sub layer and slap-back taps) and played every bank at 1: the machine guns came out
+# ~9.6 dB louder than yesterday and the autocannons ~6.9 dB, against ~2 dB for the tank and artillery shots the owner likes.
+# Here yesterday's generator is restored as it was (same code, same seeds: shot_t0 / shot_t1 / smallarms_cluster rebuild
+# yesterday's clips), at yesterday's bank level plus the ~2 dB L7 gave the big guns, so the balance is yesterday's again.
+
+P34_REPORT = [(6500, 0.035), (4500, 0.07)]
+P34_THUMP = [(0, 0, 0.0, 0.0), (180, 90, 0.05, 0.25)]
+P34_TAIL = [(0.08, 0.15, 2500), (0.18, 0.25, 1800)]
+P34_LENGTH = [0.35, 0.6]
+
+# Yesterday's bank levels (AudioDirector.P34 at f5e565d3) and the lift L7 gave the tank / artillery shots over yesterday's
+# effective level (57-105 mm +3.3 dB, 120-155 mm +1.8, 203-240 mm +1.0): the small arms and autocannons follow it.
+P34_BANK = {'shot_t0': 0.38, 'shot_t1': 0.46, 'smallarms_cluster': 0.55}
+PT12_LIFT = 10 ** (2.0 / 20)
 
 
-def launch(rng, size: int, k: int) -> np.ndarray:
-    """A rocket or a missile leaving its tube or rail: the ignition, the motor's roar going away (recorded), the sub, the tail."""
-    main = recorded('rocket_launch' if size <= 2 else 'missile_launch', k)
-    if size >= 3:
-        main = pitched(main, 0.9 if size == 3 else 0.75)
-        seconds = len(main) / SR
-        t = t_axis(seconds)
-        roar = filt(noise(rng, seconds), 'low', 160 if size == 3 else 110, 4)
-        place(main, roar * np.clip(t / 0.06, 0, 1) * np.exp(-t / (0.5 + 0.12 * size)), 0.0, 0.8)
-    decay = SHOT_TAIL[min(4, size)]
-    seconds = max(len(main) / SR, decay * 6 + 0.3)
+def p34_damped(freqs, decays, seconds: float, rng, amps=None) -> np.ndarray:
+    t = t_axis(seconds)
+    out = np.zeros_like(t)
+    amps = amps or [1.0] * len(freqs)
+    for f, d, a in zip(freqs, decays, amps):
+        out += a * np.sin(2 * math.pi * f * t + rng.uniform(0, 2 * math.pi)) * np.exp(-t / d)
+    return out
+
+
+def p34_echoes(x: np.ndarray, rng, taps, lowpass: float) -> np.ndarray:
+    total = len(x) + n(max(d for d, _ in taps) + 0.05)
+    out = np.zeros(total)
+    out[:len(x)] += x
+    wet = filt(x, 'low', lowpass)
+    for d, g in taps:
+        place(out, wet * g, d + rng.uniform(-0.01, 0.01))
+    return out
+
+
+def p34_finish(x: np.ndarray, peak_db: float = -1.0) -> np.ndarray:
+    x = filt(x, 'high', 25)
+    k = min(len(x), n(0.04))
+    x = x.copy()
+    x[-k:] *= np.linspace(1, 0, k) ** 2
+    peak = np.max(np.abs(x)) or 1.0
+    return x / peak * 10 ** (peak_db / 20)
+
+
+def p34_mechanism(rng, tier: int) -> np.ndarray:
+    """The bolt's clack near the gun (yesterday's layer 1; its partials fall 20 dB in under 0.1 s: no keng)."""
+    seconds = 0.12 + 0.05 * tier
+    x = np.zeros(n(seconds + 0.2))
+    for k in range(2):
+        at = 0.0 if k == 0 else rng.uniform(0.02, 0.06) + 0.03 * tier * k / 2
+        burst = filt(noise(rng, 0.012), 'high', 2500 - 300 * tier) * env_exp(0.012, 0.003)
+        place(x, burst, at, 0.6 if k else 1.0)
+    base = 900 / (1 + 0.45 * tier)
+    ring = p34_damped([base * 1.0, base * 1.63, base * 2.71, base * 4.13], [0.03 + 0.012 * tier] * 4, seconds, rng, [1, 0.6, 0.4, 0.25])
+    place(x, ring, 0.004 + 0.01 * tier, 0.5)
+    return x
+
+
+def p34_report(rng, tier: int) -> np.ndarray:
+    """The crack and the body of the muzzle blast (yesterday's layer 2)."""
+    cut, decay = P34_REPORT[tier]
+    seconds = decay * 6 + 0.05
+    sharp = filt(noise(rng, 0.006), 'high', 1500) * env_exp(0.006, 0.0015, 0.0003)
+    body = filt(noise(rng, seconds), 'low', cut, 4) * env_exp(seconds, decay, 0.0015)
+    x = fit(sharp, seconds) * (1.2 - 0.12 * tier) + body * 1.4
+    f0, f1, d, lvl = P34_THUMP[tier]
+    if lvl > 0:
+        x += thump(seconds, f0, f1, d) * lvl * 1.6
+    return x
+
+
+def p34_tail(rng, tier: int) -> np.ndarray:
+    """The echo off the ground (yesterday's layer 3)."""
+    decay, level, cut = P34_TAIL[tier]
+    seconds = decay * 3.5 + 0.1
+    return filt(noise(rng, seconds), 'low', cut, 4) * env_exp(seconds, decay, 0.06) * level
+
+
+def p34_shot(rng, tier: int) -> np.ndarray:
+    """Yesterday's T0 / T1 shot (prompt 34 L6 gun_shot), peak -1 dBFS before its bank level."""
+    seconds = P34_LENGTH[tier]
+    x = np.zeros(n(seconds + 1.0))
+    place(x, p34_mechanism(rng, tier), 0.0, 0.55)
+    rep = p34_report(rng, tier)
+    taps = [(0.11 + 0.03 * tier, 0.32), (0.27 + 0.05 * tier, 0.18)]
+    place(x, p34_echoes(rep, rng, taps, 1800 - 220 * tier), 0.01)
+    place(x, p34_tail(rng, tier), 0.02)
+    return p34_finish(fit(x, seconds))
+
+
+def p34_dry(rng, tier: int) -> np.ndarray:
+    """One round of a rotary gun: yesterday's bolt and report without the per-round echo (the burst gets one echo)."""
+    seconds = P34_LENGTH[tier] * 0.6
     x = np.zeros(n(seconds))
-    place(x, main, 0.0)
-    place(x, sub_layer(rng, seconds, 110, 50, 0.08 + 0.05 * size), 0.0, 0.7)
-    place(x, tail_layer(rng, seconds, decay, 1500, size, main), 0.0)
-    lufs, sub = LAUNCH[size]
+    place(x, p34_mechanism(rng, tier), 0.0, 0.45)
+    place(x, p34_report(rng, tier), 0.002)
+    return p34_finish(fit(x, seconds))
+
+
+def small_shot(tier: int, k: int, ratio: float = 1.0, level: float = 1.0) -> np.ndarray:
+    """shot_s0 / shot_s1: yesterday's clip k (k >= 3: a new variant), at yesterday's level and the L7 lift."""
+    old = f'shot_t{tier}'
+    x = p34_shot(np.random.default_rng(seed_of(old, k)), tier) * P34_BANK[old] * PT12_LIFT * level
+    if abs(ratio - 1) > 1e-3:
+        x = pitched(x, ratio)
+    return x.astype(np.float32)
+
+
+def p34_cluster(guns: int, k: int) -> np.ndarray:
+    """Yesterday's small-arms cluster (several machine guns near and far as one sound), at its level and the L7 lift."""
+    rng = np.random.default_rng(seed_of('smallarms_cluster', k))
+    seconds = 1.6
+    x = np.zeros(n(seconds + 0.5))
+    for _ in range(guns):
+        rate = rng.uniform(9, 16)
+        far = rng.uniform(0, 1)
+        start = rng.uniform(0, 0.4)
+        stop = rng.uniform(0.8, seconds)
+        tt = start
+        while tt < stop:
+            rep = p34_report(rng, 0)
+            shot = rep + fit(p34_mechanism(rng, 0), len(rep) / SR) * 0.3
+            shot = filt(shot, 'low', 7000 - 5000 * far)
+            place(x, shot, tt, (1.0 - 0.6 * far) * rng.uniform(0.7, 1.0))
+            tt += 1.0 / rate * rng.uniform(0.85, 1.15)
+    place(x, p34_tail(rng, 1) * 0.5, 0.0)
+    return (p34_finish(fit(x, seconds)) * P34_BANK['smallarms_cluster'] * PT12_LIFT).astype(np.float32)
+
+
+# Rapid fire (AudioDirector: one burst a shooter, SoundLibrary.Bursts): bank -> (tier, cyclic rate the clip is built at,
+# rounds in one segment, the loudest a segment may hit, momentary max LUFS). The game retriggers a shooter's burst after its
+# segment (rounds / rate, scaled by the pitch that matches the gun's own rate), so the rhythm is the gun's, even, and never
+# the 20 Hz Sim tick's; a segment is about a third of a second, so a burst stops soon after the gun does.
+BURSTS = {
+    'burst_s0_10': (0, 10.0, 3, -20.5), 'burst_s0_16': (0, 16.0, 5, -19.5), 'burst_s0_55': (0, 55.0, 18, -18.5),
+    'burst_s1_10': (1, 10.0, 3, -17.5), 'burst_s1_22': (1, 22.0, 7, -16.5), 'burst_s1_35': (1, 35.0, 12, -16.0),
+    'burst_s1_55': (1, 55.0, 18, -15.5),
+}
+
+
+def burst(name: str, k: int) -> np.ndarray:
+    """A burst segment: rounds at the cyclic rate (a mechanical rhythm: 1 % timing jitter, a little level play), each a fresh
+    yesterday-style round; a rotary gun's rounds dry, with one echo and tail for the burst. Each round is at the single shot's
+    level, so a burst is their true sum, held under the bank's cap by the limiter; no ring outside the bolt's short clack."""
+    tier, rate, rounds, cap = BURSTS[name]
+    rng = np.random.default_rng(seed_of(name, k))
+    rotary = rate > 20
+    single = P34_BANK[f'shot_t{tier}'] * PT12_LIFT
+    seg = rounds / rate
+    x = np.zeros(n(seg + P34_LENGTH[tier] + 0.8))
+    for i in range(rounds):
+        at = i / rate + (rng.uniform(-0.01, 0.01) / rate if i else 0.0)
+        one = p34_dry(rng, tier) if rotary else p34_shot(rng, tier)
+        place(x, one, at, single * rng.uniform(0.86, 1.0) * (0.7 if rotary else 1.0))
+    if rotary:
+        # The burst's own echo off the ground and its tail (yesterday's taps and bed, once for the whole burst).
+        dry = x.copy()
+        taps = [(0.11 + 0.03 * tier, 0.3), (0.27 + 0.05 * tier, 0.16)]
+        x = p34_echoes(dry, rng, taps, 1800 - 220 * tier)[:len(x)]
+        bed = p34_tail(rng, tier)
+        for j in range(3):
+            place(x, bed * single * 0.8, seg * j / 3 + 0.02)
+    x = filt(x, 'high', 25)
+    _, mmax = az.loudness(x, SR)
+    if mmax > cap:
+        x *= 10 ** ((cap - mmax) / 20)
+    if np.max(np.abs(x)) > 0.89:
+        x = limiter(x)
+    return trim_tail(x, -60.0, 0.04).astype(np.float32)
+
+
+# ----------------------------------------------------------------------------------- play-test 12: missiles and rockets
+#
+# The owner: "missiles sound almost like tanks". L7's launches were a recorded launch pitched down, with a gun's falling-sine
+# thump (sub_layer) and a gun's slap-back taps (tail_layer) mastered to 18-45 % under 150 Hz: a boom, as a tank's. A launch
+# is now a rocket motor: the ignition crack (and an ATGM's eject pop before its motor lights), the booster's roar with the
+# motor's crackle (sparse impulses: the sound of a solid motor), a cutoff gliding down as it flies off, then the sustainer's
+# thin hiss going away; under it a low rumble of the exhaust, never a falling sine; a diffuse air tail, never discrete taps.
+
+# kind -> (booster s, recede s, roar's low edge Hz, crackles a second, hiss s, eject pop, rumble, momentary max LUFS, sub %)
+LAUNCHES = {
+    'launch_atgm': (0.22, 0.8, 320.0, 160.0, 1.1, 1.3, 0.15, -17.0, 7.0),
+    'launch_sam': (0.55, 1.0, 220.0, 420.0, 0.8, 0.5, 0.35, -15.5, 11.0),
+    'launch_s2': (0.16, 0.5, 260.0, 260.0, 0.5, 0.7, 0.25, -16.5, 9.0),
+    'launch_s3': (0.42, 1.0, 160.0, 520.0, 0.7, 0.6, 0.55, -14.5, 17.0),
+    'launch_big': (0.85, 1.7, 100.0, 700.0, 0.9, 0.5, 0.9, -12.0, 27.0),
+    'launch_cruise': (0.75, 1.1, 130.0, 600.0, 0.9, 0.5, 0.7, -12.5, 22.0),
+}
+
+
+def crackle(rng, seconds: float, rate: float, hp: float = 1200.0) -> np.ndarray:
+    """A solid motor's crackle: sparse signed impulses, high-passed (broadband ticks, no tone)."""
+    x = np.zeros(n(seconds))
+    count = max(1, int(rate * seconds))
+    idx = rng.integers(0, len(x), count)
+    x[idx] = rng.uniform(0.3, 1.0, count) * rng.choice([-1.0, 1.0], count)
+    return filt(x, 'high', hp)
+
+
+def motor(rng, seconds: float, lo: float, rate: float) -> np.ndarray:
+    """The motor's roar: band noise with a rough 20-60 Hz flutter and the crackle on top."""
+    body = filt(noise(rng, seconds), 'band', (lo, 7000), 2)
+    flutter = filt(noise(rng, seconds), 'low', 45, 2)
+    flutter /= (np.std(flutter) or 1.0)
+    body = body / (np.std(body) or 1.0) * (1 + 0.3 * flutter)
+    return body + crackle(rng, seconds, rate) * 2.5
+
+
+def rocket_launch(name: str, k: int) -> np.ndarray:
+    burn, recede, lo, rate, hiss, pop, rumble, lufs, sub = LAUNCHES[name]
+    rng = np.random.default_rng(seed_of(name, k))
+    burn *= rng.uniform(0.9, 1.1)
+    span = burn + recede
+    extra = 1.6 if name == 'launch_cruise' else 0.0
+    x = np.zeros(n(span + hiss + extra + 0.6))
+    # 1. Ignition: the crack, and an ATGM's (a small rocket's) eject pop just before its motor lights.
+    place(x, crack(rng, 0.004, 2000), 0.0, 1.0)
+    place(x, filt(noise(rng, 0.06), 'band', (250, 2500)) * env_exp(0.06, 0.012, 0.0005), 0.0, pop)
+    lit = 0.06 if name in ('launch_atgm', 'launch_s2') else 0.01
+    # 2. The booster: swells in 40 ms, holds over its burn, fades and dulls as it flies off.
+    t = t_axis(span)
+    shape = np.clip(t / 0.04, 0, 1) * np.where(t < burn, 1.0, np.exp(-(t - burn) / (recede * 0.35)))
+    roar = sweep_low(motor(rng, span, lo, rate) * shape, 7500, 1100, 20)
+    place(x, roar, lit, 0.5)
+    # 3. The sustainer's hiss going away (the round in flight).
+    h = filt(noise(rng, hiss), 'band', (2500, 9000), 2) * env_exp(hiss, hiss * 0.4, 0.05)
+    place(x, sweep_low(h, 9000, 3000, 10), lit + burn * 0.6, 0.25)
+    # 4. The exhaust's rumble under the booster (low noise, never a falling sine: that is a gun's thump).
+    place(x, filt(noise(rng, span), 'low', 160, 4) * shape, lit, rumble)
+    # 5. A cruise missile's turbojet taking over from its booster: a broad whoosh under 2.5 kHz, fading off.
+    if extra:
+        jt = t_axis(extra + 0.6)
+        jet = filt(noise(rng, extra + 0.6), 'band', (350, 2500), 2) * np.clip(jt / 0.3, 0, 1) * np.exp(-jt / (extra * 0.55))
+        place(x, sweep_low(jet, 2500, 900, 12), lit + burn * 0.8, 0.3)
+    # 6. The air: a diffuse dull tail (no discrete slap-back taps).
+    tail_len = 0.4 + recede
+    place(x, filt(noise(rng, tail_len), 'low', 900, 2) * env_exp(tail_len, recede * 0.45, 0.08), lit + burn, 0.08 + 0.04 * rumble)
     return trim_tail(master(x, lufs, sub))
 
 
+def missile_hiss(k: int) -> np.ndarray:
+    """A missile or a rocket coming in, just before it lands: a hiss swelling and brightening as it nears (noise only)."""
+    rng = np.random.default_rng(seed_of('missile_hiss', k))
+    seconds = 0.5 + 0.05 * k
+    t = t_axis(seconds)
+    swell = (t / seconds) ** 2 * np.clip((seconds - t) / 0.02, 0, 1)
+    h = sweep_low(filt(noise(rng, seconds), 'band', (1200, 9000), 2), 2500, 9000, 10)
+    x = h * swell + filt(noise(rng, seconds), 'band', (300, 1200), 2) * swell * 0.35
+    return master(x, -21.0, 3.0, fade=0.01)
+
+
 # ----------------------------------------------------------------------------------------------------------- hits
+
+# Play-test 12: the light hits (up to 40 mm: every machine-gun and autocannon round that lands) 3.5 dB down: at -22 LUFS a
+# round's landing was as loud as the gun (yesterday's impact was at -28 effective); the heavy hits (tank guns) unchanged.
+PT12_LIGHT_HIT = -3.5
 
 
 def metal_ring(rng, base: float, seconds: float, decay: float) -> np.ndarray:
@@ -421,7 +659,7 @@ def hit_pen(rng, heavy: bool, k: int) -> np.ndarray:
         place(x, filt(noise(rng, 0.03), 'band', (200, 1800)) * env_exp(0.03, 0.008), rng.uniform(0.03, 0.25), rng.uniform(0.1, 0.3))
     if heavy:
         place(x, recorded('explosion_small', k) * 0.35, 0.02)
-    return trim_tail(master(x, -15.0 if heavy else -19.0, 40.0 if heavy else 22.0))
+    return trim_tail(master(x, -15.0 if heavy else -19.0 + PT12_LIGHT_HIT, 40.0 if heavy else 22.0))
 
 
 def hit_ground(rng, heavy: bool, k: int) -> np.ndarray:
@@ -434,7 +672,7 @@ def hit_ground(rng, heavy: bool, k: int) -> np.ndarray:
               rng.uniform(0.04, 0.12))
     if heavy:
         place(x, recorded('explosion_small', k + 1) * 0.3, 0.0)
-    return trim_tail(master(x, -17.0 if heavy else -22.0, 35.0 if heavy else 12.0))
+    return trim_tail(master(x, -17.0 if heavy else -22.0 + PT12_LIGHT_HIT, 35.0 if heavy else 12.0))
 
 
 def hit_concrete(rng, heavy: bool, k: int) -> np.ndarray:
@@ -448,7 +686,7 @@ def hit_concrete(rng, heavy: bool, k: int) -> np.ndarray:
               rng.uniform(0.03, 0.1))
     if heavy:
         place(x, recorded('debris', k) * 0.4, 0.05)
-    return trim_tail(master(x, -16.0 if heavy else -21.0, 25.0 if heavy else 10.0))
+    return trim_tail(master(x, -16.0 if heavy else -21.0 + PT12_LIGHT_HIT, 25.0 if heavy else 10.0))
 
 
 # --------------------------------------------------------------------------------- wrecks, crashes, the rest
@@ -510,20 +748,6 @@ def wreck(rng, kind: str, k: int) -> np.ndarray:
     else:
         raise ValueError(kind)
     return trim_tail(master(x, lufs, sub))
-
-
-def cluster(rng, guns: int) -> np.ndarray:
-    """Small arms as one sound: several machine guns and rifles at once, near and far (the prompt's "cụm")."""
-    seconds = 1.8
-    x = np.zeros(n(seconds + 0.5))
-    for _ in range(guns):
-        rate, far = rng.uniform(9, 16), rng.uniform(0, 1)
-        tt, stop = rng.uniform(0, 0.4), rng.uniform(0.9, seconds)
-        while tt < stop:
-            place(x, filt(small_arms(rng), 'low', 7000 - 5000 * far), tt, (1.0 - 0.6 * far) * rng.uniform(0.7, 1.0))
-            tt += 1.0 / rate * rng.uniform(0.85, 1.15)
-    place(x, tail_layer(rng, seconds + 0.5, 0.15, 1500, 1), 0.0, 0.5)
-    return master(fit(x, seconds), -16.0, 10.0)
 
 
 def crash_fall(rng) -> np.ndarray:
@@ -633,10 +857,19 @@ def whistle(rng, big: bool) -> np.ndarray:
 def banks():
     """bank -> (group, size class or None, size-table row or None, variants, builder(rng, k))."""
     b = {}
-    for name, size in {'shot_s0': 0, 'shot_s1': 1, 'shot_s2': 2, 'shot_s3': 3, 'shot_s4': 4, 'shot_s406': 6, 'shot_super': 7}.items():
+    for name, size in {'shot_s2': 2, 'shot_s3': 3, 'shot_s4': 4, 'shot_s406': 6, 'shot_super': 7}.items():
         b[name] = ('shot', SIZES[size], 'shot', 3 if size < 6 else 2, lambda rng, k, s=size: gun(rng, s, k))
-    for name, size in {'launch_s2': 2, 'launch_s3': 3, 'launch_big': 6}.items():
-        b[name] = ('launch', SIZES[size], None, 2, lambda rng, k, s=size: launch(rng, s, k))
+    # Play-test 12: the machine guns and autocannons on yesterday's voice (4 variants: yesterday's 3 and a new one), their
+    # rapid-fire bursts, the 57 mm autocannon (yesterday's 30 mm pitched down), and the launches by family.
+    b['shot_s0'] = ('shot', 's0', 'shot', 4, lambda rng, k: small_shot(0, k))
+    b['shot_s1'] = ('shot', 's1', 'shot', 4, lambda rng, k: small_shot(1, k))
+    b['shot_ac57'] = ('shot', 's2', None, 3, lambda rng, k: small_shot(1, k, 0.84, 1.6))
+    for name, (tier, _, _, _) in BURSTS.items():
+        b[name] = ('shot', SIZES[tier], None, 3, lambda rng, k, nm=name: burst(nm, k))
+    for name in LAUNCHES:
+        size = {'launch_atgm': 2, 'launch_sam': 2, 'launch_s2': 2, 'launch_s3': 3}.get(name, 6)
+        b[name] = ('launch', SIZES[size], None, 3, lambda rng, k, nm=name: rocket_launch(nm, k))
+    b['missile_hiss'] = ('launch', None, None, 2, lambda rng, k: missile_hiss(k))
     for name, size in {'blast_he_s1': 1, 'blast_he_s2': 2, 'blast_he_s3': 3, 'blast_he_s4': 4, 'blast_bomb': 5, 'blast_he_s406': 6,
                        'blast_super': 7}.items():
         b[name] = ('blast', SIZES[size], 'blast', 3 if size < 6 else 2, lambda rng, k, s=size: blast(rng, s, k))
@@ -658,7 +891,7 @@ def banks():
         b[f'wreck_{kind}'] = ('wreck', None, None, 2, lambda rng, k, kind=kind: wreck(rng, kind, k))
     b['crash_fall'] = ('aircraft', None, None, 2, lambda rng, k: crash_fall(rng))
     b['crash_impact'] = ('aircraft', None, None, 2, lambda rng, k: crash_impact(rng, k))
-    b['smallarms_cluster'] = ('shot', 's0', None, 3, lambda rng, k: cluster(rng, 4 + k))
+    b['smallarms_cluster'] = ('shot', 's0', None, 3, lambda rng, k: p34_cluster(4 + k, k))
     b['engine_tracked'] = ('engine', None, None, 1, lambda rng, k: engine_loop(rng, 32, 24, (150, 900), 0.12, -21.0, 55.0))
     b['engine_wheeled'] = ('engine', None, None, 1, lambda rng, k: engine_loop(rng, 46, 38, (300, 1600), 0.0, -23.0, 40.0))
     b['engine_heavy'] = ('engine', None, None, 1, lambda rng, k: engine_loop(rng, 26, 19, (120, 700), 0.05, -20.0, 62.0))

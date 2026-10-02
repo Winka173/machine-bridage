@@ -358,7 +358,7 @@ def main(argv=None):
     problems = rises(rows, 'shot') + rises(rows, 'blast')
     kengs = keng_outside_armour(clips, lib)
     before = json.loads(Path(args.before).read_text(encoding='utf-8')) if args.before else None
-    write_md(clips, rows, problems, kengs, OUT_DIR / 'metrics.md', 'Audio metrics (fix pass L7)', before)
+    write_md(clips, rows, problems, kengs, OUT_DIR / 'metrics.md', 'Audio metrics (fix pass L7; play-test 12 lane C)', before)
     (OUT_DIR / 'metrics.json').write_text(json.dumps({'clips': clips, 'sizes': rows, 'not_rising': problems, 'keng_outside_armour': kengs},
                                                      indent=1), encoding='utf-8')
     print(f'ANALYSED {len(clips)} clips; not rising: {len(problems)}; keng outside armour: {len(kengs)}')

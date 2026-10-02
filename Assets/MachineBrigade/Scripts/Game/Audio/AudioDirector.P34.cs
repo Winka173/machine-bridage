@@ -94,7 +94,13 @@ namespace MachineBrigade.Game.Audio
         private readonly HashSet<EntityId> _salvoShips = new();
         /// <summary>Falling aircraft: from when their crash is due (the Sim's fall time on the loss event).</summary>
         private readonly Dictionary<EntityId, float> _crashing = new();
-        private readonly List<(float at, Vector2 where)> _smallArms = new();
+        private readonly List<(float at, Vector2 where, EntityId who)> _smallArms = new();
+
+        /// <summary>Play-test 12: when each shooter's burst segment ends (s), by shooter and weapon.</summary>
+        private readonly Dictionary<(EntityId, string), float> _bursts = new();
+
+        /// <summary>Play-test 12: the next time an incoming missile's hiss may be scheduled (one in <see cref="HissGap"/> s).</summary>
+        private float _nextHiss;
         private float _clusterUntil = -10f;
         private Vector2 _clusterAt;
         private AudioSource _rails, _engines, _engTracked, _engWheeled, _engHeavy;
@@ -132,7 +138,19 @@ namespace MachineBrigade.Game.Audio
             for (var i = 0; i < shots.Length; i++)
                 TierBank(shots[i], 1f, shotVoices[i], i <= 1 ? 0.06f : 0.05f + 0.01f * i, i == 0 ? SoundPriority.SmallArms : SoundPriority.NearShot,
                     light: i <= 1);
-            foreach (var name in new[] { "launch_s2", "launch_s3", "launch_big" }) TierBank(name, 1f, name == "launch_big" ? 2 : 3, 0.06f, SoundPriority.NearShot);
+            // Play-test 12: the launches by family, the 57 mm autocannon, the rapid-fire bursts (one a shooter, never cut
+            // mid-burst, a small pitch spread so the rhythm stays the gun's) and the incoming missile's hiss.
+            foreach (var name in new[] { "launch_atgm", "launch_sam", "launch_s2", "launch_s3", "launch_big", "launch_cruise" })
+                TierBank(name, 1f, name is "launch_big" or "launch_cruise" ? 2 : 3, 0.06f, SoundPriority.NearShot);
+            TierBank("shot_ac57", 1f, 3, 0.07f, SoundPriority.NearShot, light: true);
+            foreach (var burst in SoundLibrary.Bursts)
+            {
+                TierBank(burst.Bank, 1f, BurstVoices, 0f, burst.Size == SizeClass.S0 ? SoundPriority.SmallArms : SoundPriority.NearShot, light: true);
+                if (!_tierBanks.TryGetValue(burst.Bank, out var made)) continue;
+                made.NoSteal = true;
+                made.PitchSpread = 0.03f;
+            }
+            TierBank("missile_hiss", 1f, 2, 0.25f, SoundPriority.FarShot, light: true);
             string[] blasts = { "blast_he_s1", "blast_he_s2", "blast_he_s3", "blast_he_s4", "blast_bomb", "blast_he_s406", "blast_super" };
             for (var i = 0; i < blasts.Length; i++)
                 TierBank(blasts[i], 1f, i >= 5 ? 2 : i >= 2 ? 3 : 4, 0.04f + 0.01f * i, SoundPriority.NearBlast, delayed: true);
@@ -238,45 +256,79 @@ namespace MachineBrigade.Game.Audio
             weapon != null && weapon.Tier <= 1 && weapon.Projectile == ProjectileKind.Bullet && weapon.DamageType != DamageType.Fragmentation &&
             !weapon.Beam && weapon.Charge <= 0f;
 
-        /// <summary>A shot: its sound by size at its priority, carrying farther the bigger it is; small arms in a firefight as one cluster.</summary>
+        /// <summary>Play-test 12: voices a burst bank may hold (one burst each: a firefight of more is the cluster's).</summary>
+        internal const int BurstVoices = 3;
+
+        /// <summary>Play-test 12: a shooter's next burst segment may start this early (s; the Sim's events come on its 20 Hz tick).</summary>
+        internal const float BurstSlack = 0.02f;
+
+        /// <summary>Play-test 12: an incoming missile's hiss lasts this long (s, the clip) and ends at the landing.</summary>
+        internal const float HissLead = 0.5f;
+
+        /// <summary>Play-test 12: one incoming hiss at most in this many seconds (a rocket salvo hisses once; the whistles keep their queue).</summary>
+        internal const float HissGap = 0.3f;
+
+        /// <summary>
+        /// A shot: its sound by size at its priority, carrying farther the bigger it is; machine guns in a firefight as one
+        /// cluster; play-test 12: a rapid-fire gun as its burst (one segment a shooter at the gun's own rate), not a clip a round.
+        /// </summary>
         private void Shot(in SimEvent e, WeaponDef weapon)
         {
             var priority = PriorityOf(weapon, e.Position, false);
-            if (SmallArms(weapon) && Clustered(e.Position)) return;
+            if (SmallArms(weapon) && SoundLibrary.SizeOf(weapon) == SizeClass.S0 && Clustered(e.Position, e.Entity)) return;
+            var burstName = SoundLibrary.BurstBank(weapon, out var burstPitch, out var segment);
+            if (burstName != null && _tierBanks.TryGetValue(burstName, out var burstBank))
+            {
+                var now = Time.unscaledTime;
+                var key = (e.Entity, weapon.Id);
+                if (_bursts.TryGetValue(key, out var until) && now < until - BurstSlack) return;
+                if (_bursts.Count > 256) _bursts.Clear();
+                _bursts[key] = now + segment;
+                Play(burstBank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(weapon)), priority, burstPitch);
+                return;
+            }
             var name = ShotBank(weapon);
             if (name != null && _tierBanks.TryGetValue(name, out var bank)) Play(bank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(weapon)), priority);
             else Play(_banks[WeaponSound(weapon)], e.Position, 1f, 0f, priority);
         }
 
         /// <summary>
-        /// Small arms: when <see cref="ClusterFrom"/> or more shots come from within <see cref="ClusterRadius"/> inside
-        /// <see cref="ClusterWindow"/>, the firefight is one cluster sound played now and then, and the shots in it take no
-        /// voice of their own. True when the shot was taken into a cluster.
+        /// Machine guns: when <see cref="ClusterFrom"/> or more shooters fire within <see cref="ClusterRadius"/> of each other
+        /// inside <see cref="ClusterWindow"/>, the firefight is one cluster sound played now and then, and their shots take no
+        /// voice of their own. Play-test 12: counted by shooter (one machine gun is its own burst, not a firefight). True when
+        /// the shot was taken into a cluster.
         /// </summary>
-        private bool Clustered(Vector2 at)
+        private bool Clustered(Vector2 at, EntityId who)
         {
             if (!_tierBanks.TryGetValue("smallarms_cluster", out var cluster)) return false;
             var now = Time.unscaledTime;
-            var near = 0;
+            var others = 0;
             var centre = at;
+            var listed = false;
             for (var i = _smallArms.Count - 1; i >= 0; i--)
             {
-                var (when, where) = _smallArms[i];
+                var (when, where, shooter) = _smallArms[i];
                 if (now - when > ClusterWindow)
                 {
                     _smallArms.RemoveAt(i);
                     continue;
                 }
+                if (shooter == who)
+                {
+                    _smallArms[i] = (now, at, who);
+                    listed = true;
+                    continue;
+                }
                 if (Vector2.Distance(where, at) > ClusterRadius) continue;
-                near++;
+                others++;
                 centre += where;
             }
-            if (_smallArms.Count < 64) _smallArms.Add((now, at));
-            if (near + 1 < ClusterFrom) return false;
+            if (!listed && _smallArms.Count < 64) _smallArms.Add((now, at, who));
+            if (others + 1 < ClusterFrom) return false;
             if (now >= _clusterUntil || Vector2.Distance(_clusterAt, at) > ClusterRadius)
             {
                 _clusterUntil = now + 0.9f;
-                _clusterAt = centre / (near + 1);
+                _clusterAt = centre / (others + 1);
                 Play(cluster, _clusterAt, 1f, 0f, SoundPriority.SmallArms);
             }
             return true;
@@ -406,6 +458,21 @@ namespace MachineBrigade.Game.Audio
         private void Flared(in SimEvent e)
         {
             if (_tierBanks.TryGetValue("flare_pop", out var bank)) Play(bank, e.Position, 1f, 10f, SoundPriority.NearShot);
+        }
+
+        /// <summary>
+        /// Play-test 12: a missile's or a rocket's hiss in flight, heard where it was aimed just before it lands (its blast
+        /// follows by its warhead); one at most in <see cref="HissGap"/> s, so a salvo never crowds out the shells' whistles.
+        /// </summary>
+        private void Incoming(in SimEvent e, WeaponDef weapon)
+        {
+            if (weapon == null || e.Jammed || weapon.Projectile is not (ProjectileKind.Missile or ProjectileKind.Rocket)) return;
+            if (SoundLibrary.LaunchBank(weapon) == null || e.Value < HissLead + 0.4f) return;
+            if (!_tierBanks.TryGetValue("missile_hiss", out var hiss)) return;
+            var now = Time.unscaledTime;
+            if (now < _nextHiss) return;
+            _nextHiss = now + HissGap;
+            Schedule(hiss, e.Target, 0.9f, e.Value - HissLead, SoundPriority.FarShot);
         }
 
         /// <summary>An incoming shell's whistle: the big one for a boss's attack or a 406 mm / super weapon.</summary>

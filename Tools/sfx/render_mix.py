@@ -6,7 +6,10 @@
 A scripted, seeded battle per mix (events: shots, landings, hits by surface, wrecks, whistles, flares, engines) heard from a
 camera over the field's centre. The mixing mirrors AudioDirector (fix pass L7) step by step:
   * the bank rules: variants without repeats, per-bank voice limits and cooldowns, the speed of sound for far blasts;
-  * the small-arms cluster rule (3 shots within 20 m inside 0.5 s -> one cluster sound now and then);
+  * the small-arms cluster rule (play-test 12: 3 machine-gun shooters within 20 m inside 0.5 s -> one cluster sound now
+    and then); rapid fire (play-test 12: 8.5 rounds a second and up) as one burst segment a shooter, pitched to the gun's
+    rate, never cut mid-burst (a new one takes the quietest only when twice as loud); the Sim's events on its 20 Hz tick;
+  * play-test 12: a missile's hiss just before it lands (one in 0.3 s);
   * hits by surface and the match-wide metal cap (MetalCap: 3 at once, 2.5 a second, 0.12 s apart);
   * the camera-distance falloff (SoundLibrary.Falloff), bigger sizes carrying farther, 0.85 off screen, the far low pass;
   * 32 voices, 24 for ordinary effects, cut by priority (warnings > boss / 406 mm > near blasts > near shots > far blasts >
@@ -50,9 +53,21 @@ SIZE_INDEX = {'s0': 0, 's1': 1, 's2': 2, 's3': 3, 's4': 4, 'bomb': 5, 's406': 6,
 BANKS = {}
 for i, b in enumerate(['shot_s0', 'shot_s1', 'shot_s2', 'shot_s3', 'shot_s4', 'shot_s406', 'shot_super']):
     BANKS[b] = ([4, 4, 4, 3, 2, 2, 2][i], 0.06 if i <= 1 else 0.05 + 0.01 * i, i <= 1, False)
-for b in ['launch_s2', 'launch_s3']:
+for b in ['launch_atgm', 'launch_sam', 'launch_s2', 'launch_s3']:
     BANKS[b] = (3, 0.06, False, False)
-BANKS['launch_big'] = (2, 0.06, False, False)
+for b in ['launch_big', 'launch_cruise']:
+    BANKS[b] = (2, 0.06, False, False)
+# Play-test 12: the 57 mm, the bursts (SoundLibrary.Bursts: bank -> cyclic rate, rounds a segment), the hiss, the old flak bank.
+BANKS['shot_ac57'] = (3, 0.07, True, False)
+BURSTS = {'burst_s0_10': (0, 10.0, 3), 'burst_s0_16': (0, 16.0, 5), 'burst_s0_55': (0, 55.0, 18), 'burst_s1_10': (1, 10.0, 3),
+          'burst_s1_22': (1, 22.0, 7), 'burst_s1_35': (1, 35.0, 12), 'burst_s1_55': (1, 55.0, 18)}
+for b in BURSTS:
+    BANKS[b] = (3, 0.0, True, False)
+NO_STEAL = set(BURSTS)
+BANKS['missile_hiss'] = (2, 0.25, True, False)
+BANKS['flak'] = (3, 0.08, True, False)
+BURST_FROM, PITCH_MIN, PITCH_MAX, BURST_SLACK, HISS_LEAD, HISS_GAP = 8.5, 0.85, 1.18, 0.02, 0.5, 0.3
+TICK = 0.05  # the Sim's step (20 Hz): events land on it
 for i, b in enumerate(['blast_he_s1', 'blast_he_s2', 'blast_he_s3', 'blast_he_s4', 'blast_bomb', 'blast_he_s406', 'blast_super']):
     BANKS[b] = (2 if i >= 5 else 3 if i >= 2 else 4, 0.04 + 0.01 * i, False, True)
 BANKS.update({'blast_thermo_s3': (2, 0.1, False, True), 'blast_thermo_s4': (2, 0.1, False, True), 'blast_heat_s2': (3, 0.05, False, False),
@@ -67,7 +82,17 @@ BANKS.update({'hit_metal_light': (2, 0.12, True, False), 'hit_metal_heavy': (2, 
               'warn_whistle_big': (2, 0.3, False, False), 'warn_whistle': (3, 0.22, False, False), 'wreck_ship': (2, 0.2, False, True)})
 for k in ['tank', 'wheeled', 'truck', 'artillery', 'aircraft', 'heli', 'drone']:
     BANKS['wreck_' + k] = (3, 0.1, False, True)
-BANK_VOLUME = {'warn_whistle': 0.5}
+BANK_VOLUME = {'warn_whistle': 0.5, 'flak': 0.5}
+
+
+def burst_of(size: int, rate: float):
+    """SoundLibrary.BurstBank: (bank, pitch, segment s) of a gun of this size at this rate, or None."""
+    if size > 1 or rate < BURST_FROM:
+        return None
+    best = min((b for b, (z, _, _) in BURSTS.items() if z == size), key=lambda b: abs(math.log(rate / BURSTS[b][1])))
+    _, r, rounds = BURSTS[best]
+    pitch = min(PITCH_MAX, max(PITCH_MIN, rate / r))
+    return best, pitch, rounds / r / pitch
 
 
 def size_of(bank: str) -> int:
@@ -128,12 +153,15 @@ class Mixer:
         self.clips = Clips()
         self.voices = []  # dicts: start, end, bank, level, priority, clip, name, pan, cutoff, light
         self.last_played = {}
-        self.small = []
+        self.small = {}  # shooter -> (last shot, where)
+        self.bursts = {}  # shooter -> its segment's end
+        self.next_hiss = -10.0
         self.cluster_until, self.cluster_at = -10.0, (0.0, 0.0)
         self.metal = {'tokens': 3.0, 'at': None, 'last': -100.0}
         self.duck = []  # times a near blast ducked the light sounds
         self.stats = {'events': 0, 'played': 0, 'cooldown': 0, 'out_of_reach': 0, 'cut_for_priority': 0, 'dropped_no_voice': 0,
-                      'clustered_shots': 0, 'metal_played': 0, 'metal_capped': 0, 'max_busy': 0}
+                      'clustered_shots': 0, 'metal_played': 0, 'metal_capped': 0, 'max_busy': 0, 'bursts': 0, 'burst_events': 0,
+                      'burst_dropped_at_cap': 0}
 
     # --- the rules
     def dist(self, at):
@@ -162,7 +190,7 @@ class Mixer:
         m['last'] = now
         return True
 
-    def play(self, t: float, bank: str, at, priority: int, carry: float = 0.0, volume: float = 1.0):
+    def play(self, t: float, bank: str, at, priority: int, carry: float = 0.0, volume: float = 1.0, pitch: float = 1.0):
         self.stats['events'] += 1
         maxv, cooldown, light, delayed = BANKS.get(bank, (3, 0.05, False, False))
         if t - self.last_played.get(bank, -10) < cooldown:
@@ -175,9 +203,9 @@ class Mixer:
             return
         self.last_played[bank] = t
         delay = min(0.3, max(0.0, d - 30) / SPEED_OF_SOUND) if delayed else 0.0
-        self.start(t + (delay if delay > 0.02 else 0.0), bank, at, priority, reach, volume * BANK_VOLUME.get(bank, 1.0), maxv, light)
+        self.start(t + (delay if delay > 0.02 else 0.0), bank, at, priority, reach, volume * BANK_VOLUME.get(bank, 1.0), maxv, light, pitch)
 
-    def start(self, t, bank, at, priority, reach, volume, maxv, light):
+    def start(self, t, bank, at, priority, reach, volume, maxv, light, pitch=1.0):
         d = self.dist(at)
         if 1 - d / reach <= 0.02:
             return
@@ -189,7 +217,13 @@ class Mixer:
         self.stats['max_busy'] = max(self.stats['max_busy'], len(playing))
         same = [v for v in playing if v['bank'] == bank]
         victim = None
-        if len(same) >= maxv:
+        if len(same) >= maxv and bank in NO_STEAL:
+            quiet = min(same, key=lambda v: v['level'])
+            if quiet['level'] * 2 >= level:
+                self.stats['burst_dropped_at_cap'] += 1
+                return
+            victim = quiet
+        elif len(same) >= maxv:
             victim = min(same, key=lambda v: v['start'])
         else:
             weaker = [v for v in playing if v['priority'] < priority or (v['priority'] == priority and v['level'] <= level)]
@@ -211,27 +245,52 @@ class Mixer:
         if priority >= P['near_blast']:
             self.duck.append(t)
         name, clip = self.clips.next(bank, self.rng)
+        if abs(pitch - 1) > 1e-3:  # played faster or slower: shorter or longer, the rhythm with it
+            clip = np.interp(np.arange(0, len(clip) - 1, pitch), np.arange(len(clip)), clip)
         far = min(1.0, d / reach) ** 0.8
         self.voices.append({'start': t, 'end': t + len(clip) / SR, 'bank': bank, 'level': level, 'priority': priority, 'clip': clip, 'name': name,
                             'pan': max(-0.9, min(0.9, at[0] / 140.0 * 1.4)), 'cutoff': 22000 + (2200 - 22000) * far, 'light': light})
         self.stats['played'] += 1
 
-    def shot_small(self, t, at):
-        """A small-arms shot through the cluster rule."""
-        self.small = [(w, p) for w, p in self.small if t - w <= 0.5]
-        near = [(w, p) for w, p in self.small if math.hypot(p[0] - at[0], p[1] - at[1]) <= 20]
-        if len(self.small) < 64:
-            self.small.append((t, at))
-        if len(near) + 1 < 3:
-            self.play(t, 'shot_s0', at, self.priority(0, False, False, at))
+    def gun(self, t, who, at, size: int, rate: float, bank: str):
+        """A machine gun's or an autocannon's round: the cluster rule (machine guns), else its burst segment, else a clip."""
+        if size == 0 and self.clustered(t, who, at):
             return
+        b = burst_of(size, rate)
+        if b is None:
+            self.play(t, bank, at, self.priority(size, False, False, at), 12 * size)
+            return
+        name, pitch, segment = b
+        self.stats['burst_events'] += 1
+        if t < self.bursts.get(who, -10.0) - BURST_SLACK:
+            return
+        self.bursts[who] = t + segment
+        self.stats['bursts'] += 1
+        self.play(t, name, at, self.priority(size, False, False, at), 12 * size, 1.0, pitch)
+
+    def incoming(self, t, at, travel: float):
+        """A missile's hiss just before it lands (one in HISS_GAP s)."""
+        if travel < HISS_LEAD + 0.4 or t < self.next_hiss:
+            return
+        self.next_hiss = t + HISS_GAP
+        self.play(t + travel - HISS_LEAD, 'missile_hiss', at, P['far_shot'], 0.0, 0.9)
+
+    def clustered(self, t, who, at) -> bool:
+        """Three machine-gun shooters within 20 m inside 0.5 s: one cluster sound now and then (True: taken into it)."""
+        self.small = {w: (tt, p) for w, (tt, p) in self.small.items() if t - tt <= 0.5 and w != who}
+        near = [p for _, p in self.small.values() if math.hypot(p[0] - at[0], p[1] - at[1]) <= 20]
+        if len(self.small) < 64:
+            self.small[who] = (t, at)
+        if len(near) + 1 < 3:
+            return False
         self.stats['clustered_shots'] += 1
         if t >= self.cluster_until or math.hypot(self.cluster_at[0] - at[0], self.cluster_at[1] - at[1]) > 20:
             self.cluster_until = t + 0.9
-            cx = (at[0] + sum(p[0] for _, p in near)) / (len(near) + 1)
-            cy = (at[1] + sum(p[1] for _, p in near)) / (len(near) + 1)
+            cx = (at[0] + sum(p[0] for p in near)) / (len(near) + 1)
+            cy = (at[1] + sum(p[1] for p in near)) / (len(near) + 1)
             self.cluster_at = (cx, cy)
             self.play(t, 'smallarms_cluster', self.cluster_at, P['small'])
+        return True
 
     def hit(self, t, at, size: int, surface: str):
         heavy = size >= 2
@@ -322,6 +381,11 @@ class Mixer:
 # ------------------------------------------------------------------------------------------------------- scenarios
 
 
+def tick(t: float) -> float:
+    """The Sim's events come on its 20 Hz step."""
+    return math.ceil(t / TICK) * TICK
+
+
 def field(rng, spread=110.0, depth=60.0):
     return (float(rng.uniform(-spread, spread)), float(rng.uniform(-depth, depth)))
 
@@ -332,21 +396,29 @@ def normal_battle(seconds=40.0):
     m = Mixer(seconds, seed=11)
     rng = np.random.default_rng(101)
     events = []
-    for _ in range(8):  # machine guns: bursts
+    for g in range(8):  # machine guns (play-test 12: 9-16 rounds a second, as the M2, the coax and the bunker's HMG)
         at = field(rng, 90, 40)
+        rate = float(rng.choice([9.0, 12.0, 16.0]))
         t = rng.uniform(0, 5)
         while t < seconds - 2:
-            for k in range(int(rng.integers(4, 10))):
-                events.append((t + k * 0.09, 'small', at))
+            for k in range(int(rng.integers(6, 14))):
+                events.append((tick(t + k / rate), 'gun', f'mg{g}', at, 0, rate, 'shot_s0'))
                 if rng.random() < 0.5:
-                    events.append((t + k * 0.09 + 0.3, 'hit', field(rng, 90, 40), 0, 'ground'))
+                    events.append((t + k / rate + 0.3, 'hit', field(rng, 90, 40), 0, 'ground'))
             t += rng.uniform(1.5, 4)
-    for _ in range(3):  # 30 mm autocannons on light armour and the ground
+    zu = (60.0, 25.0)  # a ZU-23 (25 rounds a second, flak) and a Bofors (4 a second, the recorded flak burst) at a helicopter
+    for t0 in (12.0, 25.0):
+        for k in range(30):
+            events.append((tick(t0 + k / 25.0), 'gun', 'zu23', zu, 1, 25.0, 'flak'))
+        for k in range(6):
+            events.append((tick(t0 + 0.5 + k * 0.25), 'gun', 'bofors', (-70.0, 30.0), 1, 4.0, 'flak'))
+            events.append((t0 + 1.4 + k * 0.25, 'blast', 'blast_air_s1', (5.0, 35.0), 1))
+    for g in range(3):  # 30 mm autocannons on light armour and the ground
         at = field(rng, 80, 40)
         t = rng.uniform(2, 8)
         while t < seconds - 3:
             for k in range(int(rng.integers(3, 6))):
-                events.append((t + k * 0.18, 'shot', 'shot_s1', at, 1))
+                events.append((tick(t + k * 0.18), 'gun', f'ac{g}', at, 1, 5.5, 'shot_s1'))
                 tgt = field(rng, 80, 40)
                 events.append((t + k * 0.18 + 0.4, 'hit', tgt, 1, rng.choice(['metal', 'pierced', 'ground', 'ground'])))
             t += rng.uniform(3, 6)
@@ -363,10 +435,15 @@ def normal_battle(seconds=40.0):
         events.append((t + 6, 'whistle', field(rng, 60, 30)))
         events.append((t + 7.2, 'blast', 'blast_he_s3', events[-1][2], 3))
         t += rng.uniform(4, 7)
-    for t in (9.0, 21.0, 30.0):  # ATGMs
+    for t in (9.0, 21.0, 30.0):  # ATGMs (play-test 12: a launch, the hiss in, the HEAT blast)
         at, tgt = field(rng, 80, 40), field(rng, 80, 40)
-        events.append((t, 'shot', 'launch_s2', at, 2))
+        events.append((t, 'shot', 'launch_atgm', at, 2))
+        events.append((t, 'incoming', tgt, 1.8))
         events.append((t + 1.8, 'blast', 'blast_heat_s2', tgt, 2))
+    for t in (16.0, 33.0):  # a SAM at an aircraft
+        events.append((t, 'shot', 'launch_sam', (-60.0, -20.0), 2))
+        events.append((t, 'incoming', (-20.0, 30.0), 1.4))
+        events.append((t + 1.4, 'blast', 'blast_air_s2', (-20.0, 30.0), 2))
     events.append((15.5, 'wreck', 'wreck_tank', (20.0, -10.0)))
     events.append((27.0, 'wreck', 'wreck_wheeled', (-45.0, 15.0)))
     events.append((18.0, 'flare', (35.0, 20.0)))
@@ -393,6 +470,7 @@ def boss_battle(seconds=45.0):
         events.append((t, 'blast', 'blast_bomb', field(rng, 80, 40), 5))
     for k in range(6):
         events.append((14.0 + k * 0.4, 'shot', 'launch_big', (-130.0, 60.0), 6))
+        events.append((14.0 + k * 0.4, 'incoming', (0.0, 0.0), 6.0))
         events.append((20.0 + k * 0.4, 'blast', 'blast_he_s406', field(rng, 90, 45), 6))
     events.append((36.0, 'wreck', 'wreck_aircraft', (-30.0, 25.0)))
     return m, events, loops + [('rotor_loop', 0.15, 8.0, 30.0)]
@@ -404,21 +482,29 @@ def crowded_battle(seconds=40.0):
     m = Mixer(seconds, seed=13)
     rng = np.random.default_rng(303)
     events = []
-    for _ in range(30):
+    for g in range(30):
         at = field(rng, 100, 50)
+        rate = float(rng.choice([9.0, 12.0, 16.0]))
         t = rng.uniform(0, 3)
         while t < seconds - 1:
             for k in range(int(rng.integers(5, 14))):
-                events.append((t + k * 0.08, 'small', at))
+                events.append((tick(t + k / rate), 'gun', f'mg{g}', at, 0, rate, 'shot_s0'))
                 if rng.random() < 0.4:
                     events.append((t + k * 0.08 + 0.25, 'hit', field(rng, 100, 50), 0, 'ground'))
             t += rng.uniform(0.8, 2.5)
-    for _ in range(12):
+    for g in range(3):  # gatlings (the GAU-8, the GSh-6-23: 55-60 rounds a second) in bursts
+        at = field(rng, 100, 50)
+        t = rng.uniform(1, 6)
+        while t < seconds - 2:
+            for k in range(int(rng.integers(20, 45))):
+                events.append((tick(t + k / 60.0), 'gun', f'gau{g}', at, 1, 60.0, 'shot_s1'))
+            t += rng.uniform(3, 6)
+    for g in range(12):
         at = field(rng, 100, 50)
         t = rng.uniform(0, 4)
         while t < seconds - 2:
             for k in range(int(rng.integers(4, 8))):
-                events.append((t + k * 0.15, 'shot', 'shot_s1', at, 1))
+                events.append((tick(t + k * 0.15), 'gun', f'ac{g}', at, 1, 6.7, 'shot_s1'))
                 events.append((t + k * 0.15 + 0.35, 'hit', field(rng, 100, 50), 1, rng.choice(['metal', 'metal', 'pierced', 'ground'])))
             t += rng.uniform(2, 4)
     for _ in range(10):
@@ -443,8 +529,10 @@ def run(mixer: Mixer, events, loops):
     events = sorted(events, key=lambda e: e[0])
     for e in events:
         t, kind = e[0], e[1]
-        if kind == 'small':
-            mixer.shot_small(t, e[2])
+        if kind == 'gun':
+            mixer.gun(t, e[2], e[3], e[4], e[5], e[6])
+        elif kind == 'incoming':
+            mixer.incoming(t, e[2], e[3])
         elif kind == 'shot':
             bank, at, size = e[2], e[3], e[4]
             boss = len(e) > 5 and e[5]

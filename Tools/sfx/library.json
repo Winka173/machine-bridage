@@ -1,18 +1,6 @@
 {
  "note": "Fix pass L7: the sound library (Tools/sfx/build_sfx.py); sizes s0 = <= 14.5 mm, s1 = 20-40 mm, s2 = 57-105 mm, s3 = 120-155 mm, s4 = 203-240 mm, bomb = bombs, s406 = big rockets / >= 406 mm, super = super weapons",
  "banks": {
-  "shot_s0": {
-   "group": "shot",
-   "size": "s0",
-   "row": "shot",
-   "variants": 3
-  },
-  "shot_s1": {
-   "group": "shot",
-   "size": "s1",
-   "row": "shot",
-   "variants": 3
-  },
   "shot_s2": {
    "group": "shot",
    "size": "s2",
@@ -43,21 +31,105 @@
    "row": "shot",
    "variants": 2
   },
+  "shot_s0": {
+   "group": "shot",
+   "size": "s0",
+   "row": "shot",
+   "variants": 4
+  },
+  "shot_s1": {
+   "group": "shot",
+   "size": "s1",
+   "row": "shot",
+   "variants": 4
+  },
+  "shot_ac57": {
+   "group": "shot",
+   "size": "s2",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s0_10": {
+   "group": "shot",
+   "size": "s0",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s0_16": {
+   "group": "shot",
+   "size": "s0",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s0_55": {
+   "group": "shot",
+   "size": "s0",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s1_10": {
+   "group": "shot",
+   "size": "s1",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s1_22": {
+   "group": "shot",
+   "size": "s1",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s1_35": {
+   "group": "shot",
+   "size": "s1",
+   "row": null,
+   "variants": 3
+  },
+  "burst_s1_55": {
+   "group": "shot",
+   "size": "s1",
+   "row": null,
+   "variants": 3
+  },
+  "launch_atgm": {
+   "group": "launch",
+   "size": "s2",
+   "row": null,
+   "variants": 3
+  },
+  "launch_sam": {
+   "group": "launch",
+   "size": "s2",
+   "row": null,
+   "variants": 3
+  },
   "launch_s2": {
    "group": "launch",
    "size": "s2",
    "row": null,
-   "variants": 2
+   "variants": 3
   },
   "launch_s3": {
    "group": "launch",
    "size": "s3",
    "row": null,
-   "variants": 2
+   "variants": 3
   },
   "launch_big": {
    "group": "launch",
    "size": "s406",
+   "row": null,
+   "variants": 3
+  },
+  "launch_cruise": {
+   "group": "launch",
+   "size": "s406",
+   "row": null,
+   "variants": 3
+  },
+  "missile_hiss": {
+   "group": "launch",
+   "size": null,
    "row": null,
    "variants": 2
   },
