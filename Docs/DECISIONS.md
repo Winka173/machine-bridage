@@ -17303,3 +17303,9 @@ Lane A, 2026-10-03: passes 0-2 of Docs/prompts/export_full_vi.txt (plan, framewo
 - **Units.** Suffix from `core/units.py`; a numeric column of unknown unit goes to 00/Don_vi_chua_ro (200 today) instead of a guess.
 - **Kept in git.** The output is 3 MB for files 00-04, so it is committed whole. When 08 (maps) makes it heavy, add
   `Docs/export/*/xlsx/` and `Docs/export/*/csv/` to .gitignore; 00_chi_muc stays committed.
+
+## Bộ xuất dữ liệu toàn bộ: lead calls on lane A's open questions (2026-10-03)
+- `_truoc`/`_sau` base: origin/main (the last release merge, v0.34.0) stays the default; `--base <tag|commit>` for any other.
+- `CHUA_AP:prompt_xuat_luot5` is fine for layer B cells until pass 5 fills them.
+- Size: commit the whole export while it stays under ~20 MB; above that, `.gitignore` the dated folders' xlsx/, csv/, images/ and pdf/ and keep 00_chi_muc/ and md/ (spec §8).
+- Don_vi_chua_ro (200 columns): the pass 5 lane resolves what the code reading settles; the rest stays listed for the owner.
