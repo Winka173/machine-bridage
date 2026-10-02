@@ -52,7 +52,7 @@ def build(ctx):
     bs.col("phan_loai", meaning="main (chủ lực) / mini", enum=["main", "mini"])
     U.declare(bs)
     for c, m, fk in (("khung", "khung di chuyển (frame)", ["03_boss/Boss_khung"]),
-                     ("route", "kiểu đường đi: đất / biển / ray / không (bossFrames[frame].move)", None),
+                     ("kieu_duong_di", "kiểu đường đi: đất / biển / ray / không (bossFrames[frame].move)", None),
                      ("tuong", "tướng địch sở hữu (general)", None),
                      ("bien_the_cua", "boss gốc của biến thể (variantOf)", BOSS_FK),
                      ("so_be", "số bệ vũ khí khi dựng (1 + secondary)", None),
@@ -81,7 +81,7 @@ def build(ctx):
         U.fill(ctx, r, vid, b, boss=True, base_record=base_built.get(vid), has_base=base is not None)
         frame = b.get("frame", "")
         r.set("khung", frame)
-        r.set("route", (frames.get(frame) or {}).get("move", ""))
+        r.set("kieu_duong_di", (frames.get(frame) or {}).get("move", ""))
         r.set("tuong", b.get("general", ""))
         r.set("bien_the_cua", v.get("variantOf", ""))
         mounts = [b.get("weapon")] + [m.get("weapon") for m in b.get("secondary") or []]

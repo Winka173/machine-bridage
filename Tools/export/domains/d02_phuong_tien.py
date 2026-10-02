@@ -62,7 +62,7 @@ def build(ctx):
         r.set("loai_thuc_the", "tinh_nhue" if kind == "elite" else "vat_pham" if rr.get("card") is False else "xe")
         eff = U.fill(ctx, r, vid, rr, base_record=base_res.get(vid), has_base=base is not None)
         if kind == "elite":
-            r.set("mau_trong_tran_hp", NEED_CODE_CHECK)  # an elite's health scale is applied on the field (Vehicle.HpScale)
+            r.values["mau_trong_tran_hp"] = NEED_CODE_CHECK  # an elite's health scale is applied on the field (Vehicle.HpScale)
             orig = res.get(v.get("eliteOf"), {})
             r.set("gia_quan_cp", max(1, round(orig.get("cp", 0) * elites.get("costScale", 1.6))))
         else:
