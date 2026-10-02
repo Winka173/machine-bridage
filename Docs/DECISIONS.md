@@ -15033,3 +15033,59 @@ the lead; Prompt31NavStateTests is written, not run.
   alarm_wave, city_blackout, betrayal_warning, orbital_pods), missions c2m06, c12m07, i1m01 (+`navStates`), c7m11
   (+event, fixedDeck rule), c7m10 (stage square), c11m10 (+`navStates`, stage fortress). balance.json unchanged.
   CampaignText.cs was not regenerated (`--no-texts`: the generator would drop rows written by hand since).
+
+## Prompt 31 L4 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p31-b2`. Pass 4: the sheet's ten MAKE LATER missions, c6m03 first. Nothing was run but the Python
+tools (build_campaign.py `--no-texts`: fixed_decks.check_mission passed for every deck, the objectives equal to
+p31_objectives_baseline.json); the C# is compiled by the lead; Prompt31PlacedAllyTests is written, not run. Decks in
+`Tools/campaign/fixed_decks.py` DECKS (status MAKE_LATER), each with its replacements and a rule (Strings
+`fixeddeck.rule.<id>`, EN + VI). No objective changed. No script lines were added in this pass (the rules' own words carry it).
+
+- Placed allies (the mechanism, c6m03 as its trial): `fixedDeck.placedAllies` entries spawn in `MissionMode.Setup` on the
+  player's side with `Ally = true` (the def, else its `fallback`), so the allied TacticalAi (made by MissionSession when a
+  deck has placed allies) drives them; they follow the player's general order: Attack goes where the player's goal is,
+  Defend holds by the player's rally (MissionSession's AllyAi objective reads the player's commander's Stance). A placed ally
+  with `lossIfDestroyed` loses the mission when it falls (`MissionMode.Lost`). Limits: placed allies spawn in missions of
+  one stage without an allied commander (MissionMode.Setup); operations do not have them yet. Placed allies on a reversed
+  battlefield are written from the player's corner and turned by build_campaign.reverse like the units.
+- c6m03 (the trial): Mara's Behemoth is the Escort's own convoy (goal Escort, convoy `behemoth`, 1 of 1: the objective
+  before prompt 31). A second Behemoth under the allied AI would have broken the escort, so the placed ally is the convoy
+  unit itself (`"convoy": true`: not spawned again, shown on the deck page as "Mara's Behemoth (lost if it falls)"): the
+  escort's rules drive it, its loss is the escort's loss, and it halts while the player's order is Defend
+  (`MissionMode.PlayerDefends`, set by the session). Deck: the sheet's, `mobile_repair_vehicle` loaned (the only locked card).
+  Its data tests (the placed ally is the convoy, the def spawnable, the objective unchanged) are sound, so c10m12 and c12m03
+  followed.
+- c10m12: Hawk's fighter (`fighter_jet`, name hawk_jet) a placed ally that must live; the Boss objective (Morrigan) kept.
+  Loaned wingman_drone and chaff_strike; radar_support_vehicle -> recon_drone, aa_57mm_vehicle -> heavy_aa, aerial_tanker ->
+  stealth_fighter (no tanker owned; a second fighter keeps the air side), shorad_vehicle -> aa_vehicle. Rule hawkWingman.
+  To watch in play: a fighter with stores and no player airfield (playerBase None) keeps the holding rules of every air card.
+- c12m03: Mara's repainted Behemoth (`mara_behemoth`, fallback `behemoth`) a placed ally, not lost if it falls (the sheet:
+  nothing harder than c6m03); the Duel objective kept. Loaned mobile_repair_vehicle. Rule maraBehemoth.
+- i1m01: infiltration with the pass 3 factory alarm (rule factoryAlarm; fixed_decks.RULE_EVENTS wants the event). Loaned
+  radar_scout and ew_jammer; recoilless_jeep -> rocket_technical. Pending: 3 stars for no alarm (no star rule of its own).
+- c5m03: anti-drone deck; Venn's swarms as the library's warned `drone_swarm` in place of the mission's `air_wave` (rule
+  droneCanopy; the count kept). Loaned microwave_vehicle and interceptor_drone_vehicle; drone_intercept_strike -> uav_scan.
+  The escort (the bridging trucks) kept.
+- c6m14 (CEASEFIRE): Varga's column is a ceasefire faction for the whole battle. Per vehicle, since the column shares the
+  enemy's team with Aurel's drones: `Vehicle.Sworn` (DamageSystem.Apply: nothing from another side's fire, strikes or
+  splash), set by the library's ceasefire with the new param `faction`; with it the ceasefire cannot be broken by us (no
+  broken truce, no loss for friendly fire) and lasts 900 s (the time limit). Truce still keeps every weapon from picking it.
+  Rule ceasefireFaction. Loaned microwave_vehicle and interceptor_drone_vehicle; bridging_vehicle -> armored_bulldozer,
+  mobile_repair_vehicle -> ammo_carrier, drone_intercept_strike -> uav_scan. The Evacuate objective kept.
+- i2m01: light and fast in the fog (rule mirewoodFog); loaned amphib_light_vehicle and airborne_light_tank; shorad_vehicle ->
+  aa_vehicle, mobile_repair_vehicle -> engineer_vehicle, decoy_paradrop -> uav_scan. Capture of the two villages and the
+  sunken temple kept. Pending: Venn's convoy as a background object (optional) and 3 stars before dusk.
+- c7m16: Thorne's army as the deck (all owned). One of chapter 7's three anomalies happens here with its sound reason
+  (rule thorneAnomaly): from 180 s to 270 s the allied wing (the mission's `ally`, under the allied AI) turns to the
+  objective the player is not going for "on new intelligence" (Nadia's existing line at 180 s), then comes back; a clock of
+  the battle, so replays meet it alike. No objective counts anything Thorne does.
+- c9m12: island hopping (rule islandHop, its words only: deliveries still come to the rally); loaned amphib_light_vehicle and
+  river_patrol_boat; river_gunboat -> mlrs, coastal_ashm_vehicle -> railgun_truck, airborne_vehicle -> armored_car,
+  guided_shell_strike -> artillery_barrage. Capture kept.
+- c10m11: hold the field airstrip while the transports land (rule airfieldLanding: the Hold clock is the landing count);
+  loaned aa_57mm_vehicle and radar_support_vehicle (the only two locked). The Albatross background object is not made.
+- Missions left on the player's deck: none of the ten.
+- Data keys changed (CatalogCheck): campaign.json missions c6m03, c10m12, c12m03, i1m01, c5m03 (missionEvents: air_wave ->
+  drone_swarm), c6m14 (the ceasefire reference with params seconds 900, faction true), i2m01, c7m16, c9m12, c10m11: key
+  `fixedDeck` (placedAllies with `convoy`, `name`, `lossIfDestroyed`, `fallback`). balance.json unchanged.

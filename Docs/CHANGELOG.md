@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 31 L4: the ten MAKE LATER missions get their fixed decks and rules (c6m03, c10m12, c12m03, i1m01, c5m03, c6m14, i2m01, c7m16, c9m12, c10m11), objectives unchanged: placed allies on the player's side under the allied AI and the general Attack/Defend order (Mara's Behemoth in c6m03 is the escorted convoy and halts on Defend; Hawk's fighter in c10m12 must live; Mara's repainted Behemoth in c12m03), Varga's column in c6m14 a ceasefire faction nothing of ours can hurt (no friendly-fire loss), c7m16's turned wing on "new intelligence", c5m03's warned drone swarms (DECISIONS "Prompt 31 L4").
+
 - Prompt 31 L3: prebuilt NavGrid states (named ground states built and checked at load, switched only at a tick boundary, always a way round, nobody trapped, in the battle's fingerprint) and the five FIRST battlefield events, each warned 8-12 s ahead with minimap marks: the sandstorm turning over one half (c2m06, c12m07), the factory alarm shutting the Foundry's mill gate (i1m01), the city blackout (c7m11: night, grid towers off on both sides), the warning before Thorne turns (c7m10), Daedalus's orbital pods standing up as enemy towers (c11m10) (DECISIONS "Prompt 31 L3").
 
 - Prompt 31 L2: the 13 MAKE FIRST missions (c1m01, c2m04, c2s2, c3m06, c4m05, c4m06, c5m07, c7m11, c8m11, c9m08, i3m02, i3m03, c11m13) get their fixed decks and special rules from the sheet, the sheet's extra locked cards replaced by owned cards of the same role, one extra line each in the script (budgets kept), c1m01's coastal guns as a repeating barrage event, c4m05's 60 s before the train moves, i3m03's cards one rank up; objectives unchanged (DECISIONS "Prompt 31 L0/L1/L2").
