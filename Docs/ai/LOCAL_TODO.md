@@ -50,3 +50,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   (`VehicleDef.FlareCharges == 0`) nor Trophy to `ApsCapability.None` (Game `GearCatalog`/`VehicleFit`); HUD and card show
   missiles left (`Weapons[i].Ammo` of the `missiles` mount) and flare charges (`FlareChargesLeft`/`FlareChargesMax`);
   check that equipment tuning a missile mount keeps the vehicle's own load (VehicleDef.ArmOf).
+- Prompt 29 5.5 (Blender, local): `Tools/blender/mb_p29_details.py` has `flare_tubes` and `aps_cluster` (V2 kit) and the
+  model lists (`FLARE_MODELS`: 16 aircraft; `APS_MODELS`: next_gen_tank, titan_tank; main_battle_tank's Trophy only
+  as gear art). Call them from each model's builder with hull positions, rebuild with build_assets.py, validate,
+  render cards; add the two effects (`FLARE_EFFECT`, `APS_EFFECT` descriptions) in the Game's effects.
