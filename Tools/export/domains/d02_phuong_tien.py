@@ -1,0 +1,263 @@
+"""02_phuong_tien, layer A: vehicles (and elites), their weapon mounts, support cards, skills, equipment (GearCatalog.cs),
+commanders and enemy generals' passives (Commanders.cs), opening squads, reference vehicles, global toughness."""
+from __future__ import annotations
+
+from core.model import NEED_CODE_CHECK, child_rows
+from core.units import snake
+
+from . import _balance as B
+from . import _units as U
+
+FILE_ID = "02_phuong_tien"
+TITLE = "Phương tiện"
+DESC = "Xe, bệ vũ khí, thẻ hỗ trợ, kỹ năng, trang bị, commander, đội mở màn, xe tham chiếu, hệ số độ bền"
+
+COMMANDERS = "Assets/MachineBrigade/Scripts/Sim/Content/Commanders.cs"
+COMMANDER_DEFS = "Assets/MachineBrigade/Scripts/Sim/Content/CommanderDefs.cs"
+GEAR = "Assets/MachineBrigade/Scripts/Game/Match/GearCatalog.cs"
+VEHICLE_FK = ["02_phuong_tien/Xe"]
+FAMILY_OF = {"Combat": "Combat", "Econ": "Economy", "Gen": "General"}
+# spec 03 B (Boss_hieu_qua) and the warning formula's slow vehicle (warningRules.escapeSpeed)
+REFERENCE = [
+    ("main_battle_tank", "Tăng chủ lực"), ("heavy_tank", "Tăng hạng nặng"), ("ifv", "Xe chiến đấu bộ binh"),
+    ("armored_car", "Xe bọc thép bánh lốp"), ("gun_turret", "Tháp vừa (pháo)"),
+]
+
+
+def build(ctx):
+    book = ctx.book(FILE_ID, TITLE, DESC)
+    d = B.bal(ctx)
+    res = B.resolved_vehicles(ctx)
+    base = B.base_view(ctx)
+    base_res = B.resolved_vehicles(base) if base else {}
+    elites = d.get("elites") or {}
+
+    # ------------------------------------------------------------------ Xe (+ mounts, missiles, parts)
+    xe = book.sheet("Xe", "Xe", "Mỗi xe / máy bay / tàu của người chơi và địch, cả tinh nhuệ (elite): giá trị game và trường gốc")
+    xe.col("loai_thuc_the", meaning="xe / tinh_nhue / vat_pham (card false: chỉ thả qua thẻ hỗ trợ, sự kiện)",
+           enum=["xe", "tinh_nhue", "vat_pham"])
+    U.declare(xe)
+    xe.col("gia_quan_cp", unit="CP", meaning="giá tính quân (elite: max(1, round(cp gốc x elites.costScale)), Catalog.EliteCost)")
+    xe.col("nhom_gia", meaning="nhóm giá (tính trong mã)")
+    xe.col("tinh_nhue_cua", meaning="xe gốc của bản tinh nhuệ (eliteOf)", fk=VEHICLE_FK)
+    xe.col("ban_tinh_nhue", meaning="bản tinh nhuệ của xe này", fk=VEHICLE_FK)
+    xe.col("vai_tro_mo_man", meaning="vai trò đội mở màn có xe này (openingSquads.roles)")
+    xe.col("mo_khoa", meaning="mở khóa (chiến dịch / xu: đọc ở 11 và 07)")
+    mounts = U.mounts_child("Xe_vu_khi", "Xe: bệ vũ khí phụ", book, xe)
+    missiles = book.sheet("Xe_ten_lua", "Xe: tên lửa mang", "missiles[]", parent=xe)
+    parts = book.sheet("Xe_bo_phan", "Xe: bộ phận", "parts[] của xe không phải boss", parent=xe)
+    roles = (d.get("openingSquads") or {}).get("roles") or {}
+    role_of = {}
+    for role, cands in roles.items():
+        if isinstance(cands, list):
+            for c in cands:
+                role_of.setdefault(c, []).append(role)
+    elite_of = {v.get("eliteOf"): vid for vid, v, _ in B.vehicle_entries(ctx) if v.get("eliteOf")}
+    for vid, v, path in B.vehicle_entries(ctx):
+        kind = B.classify(ctx, vid)
+        if kind not in ("vehicle", "elite"):
+            continue
+        r = xe.row(vid, B.nguon(path), raw=v)
+        rr = res[vid]
+        r.set("loai_thuc_the", "tinh_nhue" if kind == "elite" else "vat_pham" if rr.get("card") is False else "xe")
+        eff = U.fill(ctx, r, vid, rr, base_record=base_res.get(vid), has_base=base is not None)
+        if kind == "elite":
+            r.set("mau_trong_tran_hp", NEED_CODE_CHECK)  # an elite's health scale is applied on the field (Vehicle.HpScale)
+            orig = res.get(v.get("eliteOf"), {})
+            r.set("gia_quan_cp", max(1, round(orig.get("cp", 0) * elites.get("costScale", 1.6))))
+        else:
+            r.set("gia_quan_cp", eff["base_cp"])
+        r.set("nhom_gia", NEED_CODE_CHECK)
+        r.set("tinh_nhue_cua", v.get("eliteOf", ""))
+        r.set("ban_tinh_nhue", elite_of.get(vid, ""))
+        r.set("vai_tro_mo_man", ";".join(sorted(role_of.get(vid, []))))
+        r.set("mo_khoa", NEED_CODE_CHECK)
+        U.raw(r, v, path, children={
+            "secondary": U.child(mounts),
+            "missiles": lambda row, items, src, p: child_rows(missiles, row, items, src, p),
+            "parts": lambda row, items, src, p: child_rows(parts, row, items, src, p, vectors={"at": ["x_m", "y_m", "z_m"]}),
+        })
+
+    # ------------------------------------------------------------------ The_ho_tro
+    th = book.sheet("The_ho_tro", "Thẻ hỗ trợ", "supports[]: pháo kích, không kích, khói, thả hộ tống...")
+    th.col("ten_en", meaning="tên tiếng Anh (HUD support.<id>)")
+    th.col("ten_vi", meaning="tên tiếng Việt (HUD support.<id>)")
+    th.col("units", meaning="đơn vị được thả", fk=VEHICLE_FK + ["03_boss/Boss", "04_can_cu_thap/Thap", "04_can_cu_thap/Tuong",
+                                                         "04_can_cu_thap/Mo_dun_tien_ich"])
+    B.declare_changes(th, ["cp", "cooldown_s", "damage", "radius_m", "count"])
+    base_sup = {s["id"]: s for s in base.data(B.BALANCE).get("supports", [])} if base else {}
+    for i, s in enumerate(d.get("supports", [])):
+        path = ("supports", i)
+        r = th.row(s["id"], B.nguon(path), raw=s)
+        en, vi = B.name_of(ctx, f"support.{s['id']}")
+        r.set("ten_en", en)
+        r.set("ten_vi", vi)
+        keyed = lambda x: {"cp": x.get("cp", 0), "cooldown_s": x.get("cooldown"), "damage": x.get("damage"),  # noqa: E731
+                           "radius_m": x.get("radius"), "count": x.get("count")}
+        b = base_sup.get(s["id"])
+        B.set_changes(r, ["cp", "cooldown_s", "damage", "radius_m", "count"], keyed(s), keyed(b) if b else None,
+                      base is not None)
+        r.flatten(s, B.BALANCE, path)
+
+    # ------------------------------------------------------------------ Ky_nang (skills)
+    kn = book.sheet("Ky_nang", "Kỹ năng nội tại", "skills[]: khiên, khói, sửa... của xe, elite, boss")
+    kn.col("dung_boi", meaning="đơn vị có kỹ năng này (vehicles[*].skills sau inherits)")
+    users = {}
+    for vid, rr in res.items():
+        for sk in rr.get("skills", []) if isinstance(rr.get("skills"), list) else []:
+            users.setdefault(sk, set()).add(vid)
+    for vid, b in B.boss_built(ctx).items():
+        for sk in b.get("skills", []) if isinstance(b.get("skills"), list) else []:
+            users.setdefault(sk, set()).add(vid)
+    for i, s in enumerate(d.get("skills", [])):
+        path = ("skills", i)
+        r = kn.row(s["id"], B.nguon(path), raw=s)
+        r.set("dung_boi", ";".join(sorted(users.get(s["id"], []))))
+        r.flatten(s, B.BALANCE, path)
+
+    # ------------------------------------------------------------------ Tinh_nhue (elite rules) / Nhanh / Do_ben
+    tn = book.kv_sheet("Tinh_nhue_luat", "Luật tinh nhuệ", "elites: hệ số giá / máu / sát thương, ngân sách và trần theo độ khó")
+    book.kv_rows(tn, elites, B.BALANCE, ("elites",), "elites")
+    nh = book.sheet("Nhanh_xe", "Nhánh quân", "branches: nhánh -> các lớp xe")
+    nh.col("lop", meaning="các lớp thuộc nhánh")
+    for k, classes in (d.get("branches") or {}).items():
+        r = nh.row(k, B.nguon(("branches", k)), raw=classes)
+        r.set("lop", ";".join(classes))
+        for j in range(len(classes)):
+            r.mark(B.BALANCE, ("branches", k, j), "lop")
+    db = book.kv_sheet("Do_ben", "Hệ số độ bền", "toughness: máu trong trận = hp x hệ số (xe, boss)")
+    book.kv_rows(db, d.get("toughness") or {}, B.BALANCE, ("toughness",), "toughness")
+
+    # ------------------------------------------------------------------ Trang_bi (GearCatalog.cs)
+    tables = [
+        ("Bases", "Trang_bi", "Trang bị: loại cơ bản", "38 loại trang bị (ô, chỉ số ngầm, giá trị đỉnh 5 hạng, đánh đổi)", "id", "gear.base."),
+        ("Modules", "Trang_bi_mo_dun", "Trang bị: mô-đun đặc biệt", "14 mô-đun (Sử thi / Huyền thoại); FlareDispenser, TrophyAps chỉ nâng cấp hệ có sẵn", "module", "gear.module."),
+        ("Traits", "Trang_bi_dac_tinh", "Trang bị: đặc tính", "45 đặc tính (giá trị Sử thi / Huyền thoại)", "id", "gear.trait."),
+        ("Subs", "Trang_bi_dong_phu", "Trang bị: dòng phụ", "dòng phụ: giá trị theo hạng, ô được ra, trọng số", "stat", "gear.sub."),
+        ("Brands", "Trang_bi_bo", "Trang bị: bộ (brand)", "bộ trang bị: thưởng 2 món / 4 món", "id", "gear.brand."),
+    ]
+    for array, sname, title, desc, key, name_prefix in tables:
+        sid, rows, lines = ctx.cs_table(GEAR, array)
+        sh = book.sheet(sname, title, desc)
+        sh.col("ten_vi", meaning=f"tên tiếng Việt (HUD {name_prefix}<id>)")
+        for i, rowd in enumerate(rows):
+            rid = str(rowd.get(key, i))
+            r = sh.row(rid, f"{GEAR}:{lines[i] if i < len(lines) else ''} ({array}[{i}])", raw=rowd)
+            sn = snake(rid)
+            r.set("ten_vi", B.name_of(ctx, name_prefix + rid, name_prefix + sn, f"trait.{sn}", f"stat.{sn}", f"module.{sn}")[1])
+            r.flatten({k: x for k, x in rowd.items() if k != key or k == "id"}, sid, (i,))
+            if key != "id":
+                r.mark(sid, (i, key), "id")
+
+    # ------------------------------------------------------------------ Commander (+ passives, prices)
+    cm = book.sheet("Commander", "Commander và nội tại tướng", "Commanders.cs: 14 commander của người chơi + nội tại 8 tướng địch")
+    cm.col("ho", meaning="Combat / Economy / General")
+    cm.col("ten_vi", meaning="tên tiếng Việt (HUD cmdr.<id>.name)")
+    cm.col("khai_bao_qua", meaning="hàm dựng trong Commanders.cs (Combat / Econ / Gen) hoặc new CommanderDef")
+    lines_sh = book.sheet("Commander_noi_tai", "Commander: dòng nội tại", "Lines: chỉ số, giá trị, phạm vi", parent=cm)
+    price_sh = book.sheet("Commander_gia", "Commander: hệ số giá", "Prices: phạm vi giá, hệ số", parent=cm)
+    for array in ("All", "Generals"):
+        sid, rows, lines = ctx.cs_table(COMMANDERS, array, extra=[COMMANDER_DEFS])
+        for i, rowd in enumerate(rows):
+            norm = {_lower(k): x for k, x in rowd.items()}
+            cid = norm.get("id") or ("gen." + str(norm.get("general", i)))
+            r = cm.row(cid, f"{COMMANDERS}:{lines[i] if i < len(lines) else ''} ({array}[{i}])", raw=rowd)
+            via = rowd.get("_via", "")
+            r.set("ho", norm.get("family") or FAMILY_OF.get(via, ""))
+            r.set("ten_vi", B.name_of(ctx, f"cmdr.{cid}.name", f"cmdr.{cid}")[1])
+            r.set("khai_bao_qua", via or "new CommanderDef")
+            if via:
+                r.mark(sid, (i, "_via"), "khai_bao_qua")
+            for k, x in rowd.items():
+                if k == "_via":
+                    continue
+                lk = _lower(k)
+                if lk == "lines":
+                    r.children.add(k)
+                    _cs_children(lines_sh, r, x, sid, (i, k))
+                elif lk == "prices":
+                    r.children.add(k)
+                    _cs_children(price_sh, r, x, sid, (i, k))
+                else:
+                    r.flatten({k: x}, sid, (i,))
+
+    # ------------------------------------------------------------------ Doi_mo_man (opening squads)
+    os_ = d.get("openingSquads") or {}
+    dm = book.sheet("Doi_mo_man", "Đội mở màn", "openingSquads.commanders / generals: vai trò của đội mở màn")
+    dm.col("ben", meaning="commander (người chơi) / general (địch)")
+    dm.col("vai_tro", meaning="vai trò (Doi_mo_man_vai_tro)", fk=["02_phuong_tien/Doi_mo_man_vai_tro"])
+    dm.col("base_cp_uoc_tinh", unit="CP", meaning="tổng CP đội (tính trong mã: thẻ rẻ nhất mỗi vai trò)")
+    dm.col("thieu_vai_tro_hoan_cp", meaning="thiếu vai trò thì hoàn CP (luật trong mã)")
+    for side, sname in (("commanders", "commander"), ("generals", "general")):
+        for k, role_list in (os_.get(side) or {}).items():
+            path = ("openingSquads", side, k)
+            r = dm.row(f"{sname}.{k}", B.nguon(path), raw=role_list)
+            r.set("ben", sname)
+            r.set("vai_tro", ";".join(role_list))
+            for j in range(len(role_list)):
+                r.mark(B.BALANCE, path + (j,), "vai_tro")
+            if not role_list:
+                r.mark(B.BALANCE, path, "vai_tro")
+            r.set("base_cp_uoc_tinh", NEED_CODE_CHECK)
+            r.set("thieu_vai_tro_hoan_cp", NEED_CODE_CHECK)
+    vt = book.sheet("Doi_mo_man_vai_tro", "Đội mở màn: vai trò", "openingSquads.roles: thẻ chọn được cho mỗi vai trò")
+    vt.col("ung_vien", meaning="các thẻ chọn được (theo thứ tự ưu tiên của dữ liệu)", fk=VEHICLE_FK)
+    vt.col("cp_toi_da", unit="CP", meaning="trần CP thay cho danh sách (maxCp)")
+    vt.col("re_nhat", meaning="ứng viên rẻ nhất theo cp (giá trị game)", fk=VEHICLE_FK)
+    vt.col("re_nhat_cp", unit="CP", meaning="cp của ứng viên rẻ nhất")
+    for role, cands in roles.items():
+        path = ("openingSquads", "roles", role)
+        r = vt.row(role, B.nguon(path), raw=cands)
+        if isinstance(cands, list):
+            r.set("ung_vien", ";".join(cands))
+            for j in range(len(cands)):
+                r.mark(B.BALANCE, path + (j,), "ung_vien")
+            priced = sorted((res[c].get("cp", 0), c) for c in cands if c in res)
+            if priced:
+                r.set("re_nhat", priced[0][1])
+                r.set("re_nhat_cp", priced[0][0])
+        elif isinstance(cands, dict):
+            r.flatten(cands, B.BALANCE, path, aliases={"maxCp": "cp_toi_da"})
+    luat = book.kv_sheet("Doi_mo_man_luat", "Đội mở màn: luật", "openingSquads.share / modes / enemyModes")
+    book.kv_rows(luat, {k: x for k, x in os_.items() if k not in ("commanders", "generals", "roles")}, B.BALANCE,
+                 ("openingSquads",), "openingSquads")
+
+    # ------------------------------------------------------------------ Xe_tham_chieu
+    tc = book.sheet("Xe_tham_chieu", "Xe tham chiếu", "Xe tham chiếu của Boss_hieu_qua (spec 03 B) và xe chậm tham chiếu của vòng cảnh báo")
+    tc.col("ten_vi_spec", meaning="tên trong spec")
+    tc.col("don_vi_id", meaning="id đơn vị", fk=VEHICLE_FK + ["04_can_cu_thap/Thap"])
+    tc.col("toc_do_m_s", unit="m/s", meaning="tốc độ (giá trị game)")
+    tc.col("mau_trong_tran_hp", unit="hp", meaning="máu trong trận (giá trị game)")
+    tc.col("giap_truoc", meaning="giáp trước (giá trị game)")
+    for vid, name in REFERENCE:
+        r = tc.row(vid, "Docs/prompts/export_full_vi.txt (spec 03 B)")
+        r.set("ten_vi_spec", name)
+        r.set("don_vi_id", vid)
+        if vid in res:
+            e = U.effective(ctx, vid, res[vid])
+            r.set("toc_do_m_s", e["toc_do_m_s"])
+            r.set("mau_trong_tran_hp", e["mau_trong_tran_hp"])
+            r.set("giap_truoc", e["giap_truoc"])
+    esc = (d.get("warningRules") or {}).get("escapeSpeed")
+    r = tc.row("xe_cham_tham_chieu", f"{B.BALANCE}: warningRules.escapeSpeed (xem 01/Canh_bao_vong)")
+    r.set("ten_vi_spec", "xe chậm tham chiếu của vòng cảnh báo")
+    r.set("toc_do_m_s", esc if esc is not None else NEED_CODE_CHECK)
+
+
+def _lower(k: str) -> str:
+    return k[:1].lower() + k[1:] if k else k
+
+
+def _cs_children(sheet, parent, items, sid, path):
+    if not isinstance(items, list):
+        return
+    for j, it in enumerate(items):
+        r = sheet.row(f"{parent.id}/{j}", f"{sid} ({'.'.join(str(p) for p in path)}[{j}])", raw=it)
+        r.set(sheet.parent_col, parent.id)
+        r.set("thu_tu", j)
+        if isinstance(it, dict):
+            r.flatten(it, sid, path + (j,))
+        else:
+            r.set("value", it, sid, path + (j,))
+    if not items:
+        parent.set(sheet.name.lower(), "", sid, path)
