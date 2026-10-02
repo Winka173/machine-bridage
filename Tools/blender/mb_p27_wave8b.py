@@ -17,6 +17,7 @@ import random
 import mb_kit27 as k
 import mb_props as props
 import mb_mapkit as mk
+import mb_town as town
 from mathutils import Vector
 from mb_siege import bag_run, coil, shells
 
@@ -423,6 +424,16 @@ def _redo(name, ao=.9, subs=(), **kw):
     return run, dict(old[1], ao_strength=ao)
 
 
+def _town(name, ao=.9, **kw):
+    old = town.BUILDERS[name]
+
+    def run(a):
+        with _v2(**kw):
+            old[0](a)
+        k.clean(a)
+    return run, dict(old[1], ao_strength=ao)
+
+
 def _wrap(fn, opts, ao):
     def run(a):
         fn(a)
@@ -466,4 +477,20 @@ BUILDERS = {
     'ruin_house': _redo('ruin_house', 0.75, seg_add=2),
     'ruin_tower': _redo('ruin_tower', 0.75, seg_add=2),
     'dead_tree': _redo('dead_tree', 0.6, box_min=.4),
+    'apartment': _town('apartment', .8, seg_add=2),
+    'barn': _town('barn', .8, seg_add=2),
+    'car': _town('car', .8, seg_add=2),
+    'church': _town('church', .8, seg_add=2),
+    'cottage': _town('cottage', .8, seg_add=2),
+    'fence': _town('fence', .8, seg_add=2),
+    'garage': _town('garage', .8, seg_add=2),
+    'hedge': _town('hedge', .8, seg_add=2),
+    'ruin': _town('ruin', .8, seg_add=2),
+    'shop': _town('shop', .8, seg_add=2),
+    'silo': _town('silo', .8, seg_add=2),
+    'stone_wall': _town('stone_wall', .8, seg_add=2),
+    'townhouse': _town('townhouse', .8, seg_add=2),
+    'truck': _town('truck', .8, seg_add=2),
+    'warehouse': _town('warehouse', .8, seg_add=2),
+    'water_tower': _town('water_tower', .8, seg_add=2),
 }
