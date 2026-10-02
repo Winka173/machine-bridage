@@ -165,7 +165,11 @@ namespace MachineBrigade.Game.Match
                         Trigger(world, RadioTrigger.Lost, e.DefId);
                         break;
                     case SimEventKind.StageStarted when e.Value > 1f:
+                        // Prompt 30 L2: phase_end of the stage before (its number), then phase_start of this one.
+                        Trigger(world, RadioTrigger.PhaseEnd, ((int)e.Value - 1).ToString(), generic: false);
                         Trigger(world, RadioTrigger.Stage, e.DefId, generic: false);
+                        // The script names stages by number ("phase_start:2"); a line plays once either way.
+                        Trigger(world, RadioTrigger.Stage, ((int)e.Value).ToString(), generic: false);
                         break;
                     case SimEventKind.FortressAlert when e.DefId == "toast.enemyReinforce":
                         Trigger(world, RadioTrigger.Reinforce, null);
