@@ -13190,3 +13190,85 @@ tests, sims or measures.
   is rebuilt; here the "old" card is a different model (the stand-in), the new files' COLOR_0 (0.79-0.81) and preview
   views are brighter than the stand-ins', and the drop comes from the new silhouettes (a slim prop plane, a canister
   launcher) filling less of the card. Waves keep the gate for rebuilds of the same model.
+
+## 27 wave 1c pass B (lead pass, 2026-10-02)
+
+The last sixteen rows of the PROGRESS "Wave 1c" table (prompt 25 batch B stand-in units) built as their own models in
+`Tools/blender/mb_p27_wave1c.py` (pass A's module, same helpers; new shared helpers `_rws`, `_truck_base`,
+`_sand_ring`, `_minion`, `_ew_truck`, `_rotor_head_as`). Wave 1c is complete (32 units). Checks run: Blender rebuild,
+`glb_check.py` (compare, accept with a reason), CatalogCheck in the runner (OK: 241 vehicles, 371 weapons), card
+renders, one ModelPreview batch per eight models (JSON luma read; one 4 x 4 sheet of the new cards looked at). No
+tests, sims or measures.
+
+- **Own ids, no `_hd`, no wash.** Every def now has `"model": "<its own id>"` and no `"tint"`; no number or behaviour
+  changed. One data edit beyond the pointer: `twin_rotor_gunship` modelSize width 16.3 -> 5.7 (see below). Built to the
+  def's modelSize (length along Y, gun or rotor tips counted): every side within 4 % of it (the dazzler and the GPS
+  jammer 1 - 2 %, the net tower and the bunker 0 - 2 %), see the table.
+- **twin_rotor_gunship modelSize.** The stand-in's 16.3 m width was its four wing-borne propellers. A tandem-rotor
+  CH-47 airframe cannot be wider than long (both rotor discs sit on the centre line), so the width gate (25 % on the
+  width / length ratio) could not be met; the brief (an ACH-47A: tandem rotors, side gun mounts, nose turret) won and
+  the width became the built 5.7 m (rotor discs 6.3 m across, blades turned to point fore and aft; sponsons 5.2 m).
+  The unit view fits the length only (the validator says so); radius, health and speed are untouched. The model is
+  classed a helicopter (it has a `Rotor` node): soft budget 6,600 triangles, built 3,422.
+- **Tandem rotors.** `Rotor` forward and `Rotor_rear` aft (the spinner pattern `^Rotor(_rear)?` turns both); the second
+  head's part names start `Rotor_rear_` (`_rotor_head_as`), because the kit refuses duplicate `Rotor_hub.001` runtime
+  names. Hubs 5.6 m apart, discs 6.3 m: no overlap.
+- **Nodes.** Each model keeps what its def needs (grep of the def's weapon slots and of the `ModelLibrary` /
+  `TowerArt` patterns). The support trucks and the bridgelayer (main slot `hmg_selfdef_15`) carry a small remote weapon
+  station (`Turret` > `Main_cannon`, `Muzzle_brake`, `Muzzle_main`), the cruise missile truck `Turret` + `Muzzle_main` at
+  the canister tops, the radar truck and the GPS jammer `Radar` (the turning array), the repair truck a `Crane` that is
+  a plain part (no runtime pattern); the gunship `Muzzle_gun`, `Muzzle_main`, `Muzzle_mg`, `Muzzle_mg.001` (its def's
+  `agl_40` is slot `mg`), the tanker `Muzzle_gun` at the boom tip, the heavy lift `Tail_rotor`, `Rotor` and
+  `Muzzle_main` (def weapon `none`). New nodes: `Minion_1` .. `Minion_3` on the drone carrier (pivots with a small
+  tracked robot each: nodes only, no spawn mechanism, as asked). Towers: `flare_searchlight_tower` keeps `Turret` >
+  `Launcher`, `Tubes`, `Muzzle_main` (the lamp is a static `Floodlight`, not the loose `Searchlight` node, which has its
+  own behaviour); `recoilless_gun_tower` keeps `Turret`, `Cradle`, `Main_cannon`, `Muzzle_brake`, `Muzzle_main`;
+  `one_shot_atgm_tower` keeps `Turret`, `Launcher`, `Tubes`, `Muzzle_main`, `Muzzle_missile`, `.001` as the stand-in did
+  (`TowerArt` strips slots the def does not fire); `drone_net_tower` has a `Turret` (a fixed emitter ball on the first
+  pole) with `Muzzle_main` for `net_zap`; `bunker_shelter_tower` has no weapon node. `TowerRankDetails` needs flat top
+  faces and walls outside the moving nodes: every tower has a deck, roof slab or sandbag course for its bars and plates.
+  Dropped: the engineer's `Blade` (neither the repair truck nor the bridgelayer has a dozer) and the stand-ins' `MG` /
+  `Mount_mg` extras.
+- **Net tower orientation.** modelSize is 6.0 x 4.0 x 4.6 (length x width) while the def's footprint is 3.0 x 8.0 (the
+  net wide): the poles stand 5.1 m apart along Y with the net between them and splayed legs 4.0 m wide across X, to
+  meet the model gate. The def's footprint numbers are untouched.
+- **Jets and large aircraft.** The tanker is a plain `_sec` loft, `Planform` wings, the library canopy and lathe
+  nacelles, no insets or panel greebles; the refuelling boom is a limb with a flat tail. Cheat line and stripes are
+  `Medical`.
+- **Brightness.** COLOR_0 mean of every model 0.79 - 0.84 (stand-ins 0.53 - 0.74): the pass A recipe (`ao_strength` .15,
+  grime .05, Team on the big visible plates). The bridgelayer's treadway plates went from `Undercarriage` to `Steel`
+  after its first card (card luma 0.328 -> 0.389): the only model re-rendered.
+- **Card luma** (mean Rec. 709 luma over the card PNG's pixels with alpha above one half, old card -> new, one script on
+  both; not the same measure as pass A's table, so the two tables are not comparable). The old cards are the stand-ins
+  drawn with their colour wash. 12 of 16 are above the old card; **four are below**: twin_rotor_gunship -9.7 % (the
+  stand-in was a light, wide, winged airframe, the new one a helicopter whose rotor blades are the library's dark
+  `Armor`; the blade material is a moving part's and was not changed), radar_support_vehicle -5.7 % (a dark
+  `Undercarriage` cell grid on the array panel), towed_at_gun -4.1 % (a thin long gun against the stand-in's bulky tank
+  destroyer), ground_cruise_missile_vehicle -2.4 %. Left, per the lead's pass A note (the old card is a different
+  model; the gate guards rebuilds of the same model). Preview sheets (card lighting, eight angles mean / detail view):
+  0.33 - 0.52 / 0.25 - 0.45 before the bridgelayer fix (it read 0.25 at detail, the lowest; now fixed), every LOD1 and
+  impostor cell reads the role.
+- **Doubts.** The trucks and tracked units are 1.2 - 4.4x their stand-ins' triangles (the stand-ins were 1,200 - 3,200)
+  but all under their class soft budget (ground 7,800, helicopter 6,600, jet 5,100, tower 14,700, structure 7,900):
+  the largest is the bridgelayer, 5,148. The gunship's and tanker's engines are Team nacelles with a dark intake, not
+  the library afterburner nozzle (turboshaft and turbofan: no flame). No def has parts, so no hit position moved.
+  `Muzzle_mg.001` and `Muzzle_missile.001` give the validator's suffix warning, as in pass A.
+
+| model | tris stand-in -> new | size (m) | COLOR_0 | card luma | validator |
+|---|---|---|---|---|---|
+| twin_rotor_gunship | 2,708 (sky_gunship) -> 3,422 | 11.94x5.67x4.80 | 0.7040 -> 0.8241 | 0.4406 -> 0.3979 | helicopter, no error |
+| ground_drone_carrier | 1,192 (interceptor_drone_vehicle) -> 4,274 | 5.07x2.04x2.39 | 0.6769 -> 0.7971 | 0.3417 -> 0.3470 | ground, no error |
+| mobile_repair_vehicle | 2,304 (engineer_vehicle) -> 3,668 | 6.49x3.00x2.06 | 0.5276 -> 0.8117 | 0.3401 -> 0.3905 | ground, no error |
+| radar_support_vehicle | 1,164 (radar_scout) -> 3,368 | 4.63x2.02x4.00 | 0.6746 -> 0.8035 | 0.3903 -> 0.3681 | ground, no error |
+| towed_at_gun | 2,996 (tank_destroyer) -> 1,996 | 7.97x2.60x2.03 | 0.5556 -> 0.8155 | 0.3649 -> 0.3499 | ground, no error |
+| flare_searchlight_tower | 500 (flare_tower) -> 2,296 | 3.60x3.60x5.02 | 0.7088 -> 0.8363 | 0.2440 -> 0.3554 | tower, no error |
+| recoilless_gun_tower | 1,384 (at_gun_emplacement) -> 2,318 | 4.28x4.27x2.98 | 0.5911 -> 0.7885 | 0.4214 -> 0.4779 | tower, no error |
+| bunker_shelter_tower | 740 (troop_shelter) -> 1,228 | 6.05x5.00x2.23 | 0.5742 -> 0.8038 | 0.4128 -> 0.4732 | structure, no error |
+| dazzler_vehicle | 1,976 (ew_jammer) -> 4,640 | 9.15x2.80x3.90 | 0.6070 -> 0.8272 | 0.3823 -> 0.4209 | ground, no error |
+| ground_cruise_missile_vehicle | 3,248 (sam_launcher) -> 3,868 | 7.31x2.74x3.00 | 0.5798 -> 0.8101 | 0.4118 -> 0.4020 | ground, no error |
+| aerial_tanker | 2,596 (heavy_bomber) -> 3,220 | 19.98x22.62x5.68 | 0.7408 -> 0.8095 | 0.4298 -> 0.4667 | jet, no error |
+| heavy_lift_helicopter | 3,112 (gunship_heli) -> 3,138 | 7.55x6.58x2.11 | 0.6667 -> 0.8162 | 0.3844 -> 0.4198 | helicopter, no error |
+| bridging_vehicle | 2,304 (engineer_vehicle) -> 5,148 | 6.44x3.06x2.01 | 0.5276 -> 0.7896 | 0.3454 -> 0.3892 | ground, no error |
+| gps_jammer_vehicle | 1,976 (ew_jammer) -> 4,396 | 9.15x2.72x3.85 | 0.6070 -> 0.8075 | 0.3797 -> 0.3967 | ground, no error |
+| drone_net_tower | 390 (laser_ad_station) -> 1,378 | 6.00x4.08x4.60 | 0.7098 -> 0.8150 | 0.4362 -> 0.6129 | tower, no error |
+| one_shot_atgm_tower | 4,958 (atgm_tower) -> 2,186 | 4.81x4.80x3.57 | 0.6103 -> 0.7923 | 0.4148 -> 0.4279 | tower, no error |
