@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 27 wave 5a: behemoth, behemoth_inferno, behemoth_tempest, fortress_bastion and fortress_hive on the V2 kit (DECISIONS "27 wave 5a").
+
 - Prompt 27 wave 7b: nine more structures on the V2 kit, blast_wall kept (wave 7 complete, DECISIONS "27 wave 7b").
 
 - Prompt 27 wave 7a: cp_relay, shield_tower, dragons_teeth, minefield and their branches on the V2 kit (DECISIONS "27 wave 7a").

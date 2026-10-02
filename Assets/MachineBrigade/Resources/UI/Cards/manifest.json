@@ -806,42 +806,42 @@
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:e9bba86a92041ca229853754b3204ad25baba3c2"
+            "hash": "v2:5488da5636c2b2677dba823e2f56babab164fb8a"
         },
         {
             "id": "behemoth",
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
+            "hash": "v2:0e5f1db739b89fe4fdfdff8b0c3e337d7af6cc3e"
         },
         {
             "id": "behemoth_inferno",
             "kind": "boss",
             "model": "behemoth_inferno",
             "source": "Models/behemoth_inferno",
-            "hash": "v2:0754f5db36eeee24e32aaeab5957da0713bbf624"
+            "hash": "v2:bc522385cec873a8f62dc1e7b144c6e636ae8d7f"
         },
         {
             "id": "behemoth_mk0",
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
+            "hash": "v2:0e5f1db739b89fe4fdfdff8b0c3e337d7af6cc3e"
         },
         {
             "id": "behemoth_mk2",
             "kind": "boss",
             "model": "behemoth",
             "source": "Models/behemoth",
-            "hash": "v2:e57199853bbd483b883cb32628d8738acd7f4f32"
+            "hash": "v2:0e5f1db739b89fe4fdfdff8b0c3e337d7af6cc3e"
         },
         {
             "id": "behemoth_tempest",
             "kind": "boss",
             "model": "behemoth_tempest",
             "source": "Models/behemoth_tempest",
-            "hash": "v2:712e3cb557f78ea03450355cd221860793bc6e52"
+            "hash": "v2:c64b3b0e1f60ac5f1eacabac8a4d52bda6e228bb"
         },
         {
             "id": "blast_wall",
@@ -1149,14 +1149,14 @@
             "kind": "boss",
             "model": "fortress_bastion",
             "source": "Models/fortress_bastion",
-            "hash": "v2:e9bba86a92041ca229853754b3204ad25baba3c2"
+            "hash": "v2:5488da5636c2b2677dba823e2f56babab164fb8a"
         },
         {
             "id": "fortress_hive",
             "kind": "boss",
             "model": "fortress_hive",
             "source": "Models/fortress_hive",
-            "hash": "v2:1da9a64ee783f56c86e60d2879bbb1d391559cc4"
+            "hash": "v2:7dccbfc2b471a6f5ad9b0817743a641e1986ad06"
         },
         {
             "id": "garuda",

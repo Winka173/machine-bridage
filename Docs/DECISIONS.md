@@ -14324,3 +14324,4 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
   (fortress 32, as before), all boss_s far inside the class budget, no errors (the `.00N` suffix warnings are the old convention).
 - **Card luma (old, alpha > .5, Rec. 709):** behemoth .3124, behemoth_inferno .3129, behemoth_tempest .3219, fortress_bastion
   .2888 (the dimmest: watch it), fortress_hive .3181.
+- Lead (2026-10-02), wave 5a cards: all five pass (+0.1 % to +0.5 %, close to the old look as wanted for bosses).
