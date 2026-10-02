@@ -13675,3 +13675,30 @@ play mode, sims or screenshots (O.6 screenshots wait for the owner).
   events, each squad (task, state, action, formation, tactic, churn warning), and "VÌ SAO" of the selected unit and
   its squad. It reads the new `WorldModel.Peek(team)` (never refreshes), so opening the viewer cannot change a battle.
 - **Text.** New keys in TacticText (EN + VI): `aiview.legend.*`, `aiview.pressure`, `sandbox.tactic.general`.
+
+## 27 wave 3a (lead pass, 2026-10-02)
+
+Pass 3a, the eight tank rows of WAVE3_PLAN. New `Tools/blender/mb_p27_wave3.py`, registered last in `build_assets.py`. Run:
+Blender rebuild, `glb_check.py` (compare, accept), no tests, sims or measures. Not run: the runner mirror (robocopy /MIR was
+refused by the permission system, so no card renders and no previews); the card luma and preview luma gates are still open.
+
+- **Builders.** heavy_tank, light_tank, tank_destroyer (each with `_hd`: same builder, detail=True), titan_tank, turtle_tank
+  rebuilt copy-first from the originals: `parts.track_unit` running gear, `k.extrude` hulls and armour plates with chamfers,
+  hull inset plates, `k.sharp_loft` turrets (the light tank's boat hull too), `parts.barrel` one-surface barrels (collar or
+  baffle brake, same recoiling `Muzzle_brake`), library hatches, `k.block` plates, seeded greebles (seeds 2711-2715).
+  Elites: `elite_heavy_tank` and `elite_tank_destroyer` wrap the new bases with the old `_elite_on` arguments;
+  `elite_mbt` wraps the V2 `main_battle_tank` (it was on the old one).
+- **Triangle budget was the constraint.** The old tanks were lean (2.5-3.7 k) and the library road wheel costs 140 triangles,
+  so the first build was 1.7-1.8x. Cut: track cleat pitch .30 (inner titan pair .60, 6-sided wheels, one roller), octagonal
+  hatch coamings (`_hatch`), 10-sided barrels at normal detail, the pintle MG kept as `mv._roof_mg` on heavy and TD
+  (`parts.mg_mount` is 320 triangles), smoke launchers only on the heavy tank. Result 1.41-1.59x.
+- **Gates (baseline -> new).** heavy 3,660 -> 5,662; heavy_hd 9,102 -> 13,536; light 2,728 -> 4,350; light_hd 6,828 -> 10,762;
+  TD 2,996 -> 4,702; TD_hd 7,344 -> 11,494; elite_heavy 3,752 -> 5,754; elite_mbt 4,792 -> 7,288; elite_TD 3,088 -> 4,794;
+  titan 5,876 -> 8,276; turtle 2,540 -> 3,938. Zero-area 0, COLOR_0 mean up on all (+0.02 to +0.08), runtime nodes identical,
+  moving parts unchanged, no new material on a moving part. Size (length / width / height): heavy 0 / 0 / -0.8 %, light
+  -0.8 / +0.4 / -1.2 %, TD +0.3 / +1.7 / -1.8 % (new wheel discs, lower hatch lids), turtle +0.3 / 0 / -0.5 %, titan
+  -0.7 / 0 / -0.2 %; all inside 4 %. Elite sizes follow their bases.
+- **Exception: titan_tank** is 8,276 triangles, over the ground soft budget (7,800, a warning; hard cap 9,700); the
+  `Muzzle_missile.001` suffix warning is the old `_suffixed` convention. Four track units cost 1.9 k alone.
+- **Pitfall:** the builder filter in `build_assets.py` is a substring match, so building `light_tank` also rebuilds
+  `airborne_light_tank` (+chute); their GLBs came out byte-different and were reverted with `git checkout`.
