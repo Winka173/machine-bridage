@@ -14460,3 +14460,4 @@ Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no car
   rocket_107 110 -> 110 (.801 -> .803); s8 106 -> 118 (.801 -> .802); shahed 200 -> 200 (.780 -> .791); shell_155 126 -> 126 (.795 -> .796); shorad_dart 238 -> 250 (.794 -> .797);
   stinger 158 -> 170 (.798 -> .800); tos_rocket 126 -> 150 (.800 -> .805). At most 1.19x, no errors or warnings. Sizes identical except mam_l (+3.3 % on one axis, the lugs).
 - No card PNGs exist for any of the 22.
+- Lead (2026-10-02), wave 8a2 merged: 22 munitions rebuilt (no cards).
