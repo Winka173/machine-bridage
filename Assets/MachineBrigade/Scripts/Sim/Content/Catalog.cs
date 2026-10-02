@@ -145,6 +145,8 @@ namespace MachineBrigade.Sim.Content
 
             var weapons = new Dictionary<string, WeaponDef>();
             var families = WeaponFamilies(root);
+            // Prompt 34 L1: the weapon family table (tiers, variants, the boss numbers).
+            var familyTable = ParseFamilyTable(root);
             // Prompt 25 G: the second rounds are weapons too, each inheriting its gun's line (StripRoundLinks).
             JsonObject Finish(JsonObject w) => StripRoundLinks(families != null ? families(w) : w);
             IEnumerable<JsonObject> WeaponEntries() => Inherited(root.Array("weapons").Concat(SecondRoundEntries(root)), model: false, Finish);
@@ -187,6 +189,8 @@ namespace MachineBrigade.Sim.Content
                 ParseWeaponP19(w, def);
                 // Prompt 25 F2 batch A: the new weapons' mechanisms.
                 ParseWeaponP25A(w, def);
+                // Prompt 34 L1: its family and variant.
+                ParseWeaponP34(w, def);
                 if (def.Clip < 0 || def.ClipReload < 0f || (def.Clip > 0 && def.Burst > 1))
                     throw new FormatException($"{w.Path}: a magazine (clip) needs a single-round weapon (burst 1) and a clipReload of 0 or more.");
                 if (w.Has("bonuses"))
@@ -214,6 +218,7 @@ namespace MachineBrigade.Sim.Content
                 }
                 if (!weapons.TryAdd(def.Id, def)) throw new FormatException($"{w.Path}: duplicate weapon '{def.Id}'.");
             }
+            ApplyFamilyTable(familyTable, weapons);
             ResolveHeRounds(WeaponEntries(), weapons);
             ResolveAirRounds(WeaponEntries(), weapons);
             ResolveSecondRounds(WeaponEntries(), weapons);
@@ -500,6 +505,7 @@ namespace MachineBrigade.Sim.Content
                 AiModes = root.Has("aiModeProfiles") ? AiModeProfiles.Parse(root.Object("aiModeProfiles")) : new AiModeProfiles(),
                 MatchRules = root.Has("matchRules") ? MatchRules.Parse(root.Object("matchRules")) : new MatchRules(),
                 Neutrals = root.Has("neutrals") ? NeutralRules.Parse(root.Object("neutrals")) : new NeutralRules(),
+                WeaponFamilyTable = familyTable,
             };
             catalog.FinishExtras(root, ownBranches);
             catalog.CheckNaval();

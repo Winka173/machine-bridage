@@ -136,6 +136,9 @@ namespace MachineBrigade.Game.Rendering
         /// <summary>Blender may suffix duplicate names (Turret.001); accept those too.</summary>
         private static readonly Regex TurretPattern = new(@"^Turret(\.\d+)?$");
 
+        /// <summary>Prompt 34 L4: one barrel's own muzzle (Muzzle_b1_gun_001), a child of its mount's Muzzle_ empty.</summary>
+        private static readonly Regex AuthoredBarrel = new(@"^Muzzle_b\d+_[A-Za-z0-9_]+$");
+
         private static readonly Regex MuzzlePattern = new(@"^Muzzle_(main|coax|mg|missile|rocket|gun|aam|door_l|door_r|ramp|agl_l|agl_r|mortar)(\.\d+)?$", RegexOptions.IgnoreCase);
         private static readonly Regex MountPattern = new(@"^Mount_([a-z]+)(\.\d+)?$", RegexOptions.IgnoreCase);
 
@@ -977,6 +980,20 @@ namespace MachineBrigade.Game.Rendering
         {
             var taken = new HashSet<(Transform, string)>();
             foreach (var point in root.GetComponentsInChildren<LaunchPoint>(true)) taken.Add((point.transform.parent, point.Slot));
+            // Prompt 34 L4: barrels the model names itself (Muzzle_b<k>_<tag> under a mount's Muzzle_<slot>, written by the Blender
+            // builders for the guns that fire their barrels together): each is a launch point of its own, and the slot's muzzle
+            // is not searched for barrels.
+            foreach (var t in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (t.parent == null || !AuthoredBarrel.IsMatch(t.name) || t.GetComponent<LaunchPoint>() != null) continue;
+                var owner = MuzzlePattern.Match(t.parent.name);
+                if (!owner.Success) continue;
+                var launch = t.gameObject.AddComponent<LaunchPoint>();
+                launch.Slot = owner.Groups[1].Value.ToLowerInvariant();
+                launch.Measured = true;
+                launch.Barrel = true;
+                taken.Add((t.parent.parent, launch.Slot));
+            }
             foreach (var muzzle in root.GetComponentsInChildren<Transform>(true))
             {
                 var match = MuzzlePattern.Match(muzzle.name);

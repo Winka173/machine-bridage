@@ -1937,6 +1937,24 @@
    ],
    "reason": "merge of feature/p27-standins",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "headquarters",
+    "heavy_turret",
+    "leviathan",
+    "sea_cruiser",
+    "titan_tank"
+   ],
+   "reason": "Prompt 34 L4: a Muzzle_b<k> empty for every barrel of the guns that fire their barrels together (no mesh change)",
+   "changes": [
+    "headquarters: fileBytes 1,074,596 -> 1,074,712 (+0.0%); structure changed",
+    "heavy_turret: fileBytes 691,128 -> 691,280 (+0.0%); structure changed",
+    "leviathan: fileBytes 1,638,784 -> 1,641,112 (+0.1%); structure changed",
+    "sea_cruiser: fileBytes 351,312 -> 351,612 (+0.1%); structure changed",
+    "titan_tank: fileBytes 530,056 -> 530,164 (+0.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -13653,8 +13671,7 @@
    "errors": [],
    "warnings": [],
    "units": [
-    "cp_relay",
-    "cp_relay.loot"
+    "cp_relay"
    ],
    "movingParts": 0,
    "budgetClass": "structure"
@@ -23124,13 +23141,13 @@
   },
   "headquarters": {
    "file": "headquarters.glb",
-   "fileBytes": 1074596,
-   "sha1": "a2f32cdfd12de167",
+   "fileBytes": 1074712,
+   "sha1": "0cf5f9e8bdaa7226",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 119,
+   "nodes": 121,
    "meshes": 111,
    "materials": 21,
    "animations": 0,
@@ -23172,7 +23189,7 @@
     4.662,
     0.365
    ],
-   "structureHash": "fb869ac6ac7842cc",
+   "structureHash": "86c98e1a0b8347fa",
    "color0": {
     "mean": 0.6385,
     "min": 0.1898,
@@ -23279,6 +23296,8 @@
     "Main_cannon",
     "Main_cannon_2",
     "Mount_mg",
+    "Muzzle_b1_main",
+    "Muzzle_b2_main",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_coax",
@@ -24482,13 +24501,13 @@
   },
   "heavy_turret": {
    "file": "heavy_turret.glb",
-   "fileBytes": 691128,
-   "sha1": "07db06b6a981d80e",
+   "fileBytes": 691280,
+   "sha1": "b04b6ef272aa2c01",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 85,
+   "nodes": 87,
    "meshes": 80,
    "materials": 20,
    "animations": 0,
@@ -24530,7 +24549,7 @@
     3.033,
     1.136
    ],
-   "structureHash": "3a74c49a39af229c",
+   "structureHash": "ccdd7309f21a88a2",
    "color0": {
     "mean": 0.6608,
     "min": 0.2476,
@@ -24610,6 +24629,8 @@
     "Main_cannon",
     "Main_cannon_2",
     "Mount_mg",
+    "Muzzle_b1_main",
+    "Muzzle_b2_main",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_coax",
@@ -29304,13 +29325,13 @@
   },
   "leviathan": {
    "file": "leviathan.glb",
-   "fileBytes": 1638784,
-   "sha1": "1ee455840c6feb4a",
+   "fileBytes": 1641112,
+   "sha1": "ce3a7cacab235d24",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 201,
+   "nodes": 216,
    "meshes": 156,
    "materials": 15,
    "animations": 0,
@@ -29352,13 +29373,13 @@
     10.103,
     -0.496
    ],
-   "structureHash": "8d622c2f2b96751b",
+   "structureHash": "af80beb4dd552f58",
    "color0": {
     "mean": 0.6629,
     "min": 0.1946,
     "max": 1.0,
     "p05": 0.2958,
-    "p95": 0.8789,
+    "p95": 0.8784,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -29586,6 +29607,21 @@
     "Mount_mg.007",
     "Mount_mg.008",
     "Mount_mg.009",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b1_gun_002",
+    "Muzzle_b1_gun_003",
+    "Muzzle_b1_gun_004",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
+    "Muzzle_b2_gun_002",
+    "Muzzle_b2_gun_003",
+    "Muzzle_b2_gun_004",
+    "Muzzle_b3_gun",
+    "Muzzle_b3_gun_001",
+    "Muzzle_b3_gun_002",
+    "Muzzle_b3_gun_003",
+    "Muzzle_b3_gun_004",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Muzzle_gun.002",
@@ -41047,13 +41083,13 @@
   },
   "sea_cruiser": {
    "file": "sea_cruiser.glb",
-   "fileBytes": 351312,
-   "sha1": "6f49a8a2d1670c9c",
+   "fileBytes": 351612,
+   "sha1": "902d1560fff36785",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 72,
+   "nodes": 76,
    "meshes": 54,
    "materials": 14,
    "animations": 0,
@@ -41095,9 +41131,9 @@
     7.96,
     -0.175
    ],
-   "structureHash": "8cbb7039ed2ab937",
+   "structureHash": "f6f8211294986bbf",
    "color0": {
-    "mean": 0.6398,
+    "mean": 0.6397,
     "min": 0.117,
     "max": 1.0,
     "p05": 0.2422,
@@ -41184,6 +41220,10 @@
     "Mount_gun.001",
     "Mount_mg",
     "Mount_mg.001",
+    "Muzzle_b1_gun",
+    "Muzzle_b1_gun_001",
+    "Muzzle_b2_gun",
+    "Muzzle_b2_gun_001",
     "Muzzle_gun",
     "Muzzle_gun.001",
     "Muzzle_mg",
@@ -46935,13 +46975,13 @@
   },
   "titan_tank": {
    "file": "titan_tank.glb",
-   "fileBytes": 530056,
-   "sha1": "202cb5845fa446ba",
+   "fileBytes": 530164,
+   "sha1": "09730ef8af7d0b57",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 53,
+   "nodes": 55,
    "meshes": 44,
    "materials": 8,
    "animations": 0,
@@ -46983,9 +47023,9 @@
     1.372,
     1.5
    ],
-   "structureHash": "ca39c6ce90468a04",
+   "structureHash": "a81c5ed670118e73",
    "color0": {
-    "mean": 0.5961,
+    "mean": 0.5962,
     "min": 0.0638,
     "max": 1.0,
     "p05": 0.1143,
@@ -47049,6 +47089,8 @@
     "Main_cannon_2_gilt",
     "Main_cannon_gilt",
     "Mount_mg",
+    "Muzzle_b1_main",
+    "Muzzle_b2_main",
     "Muzzle_brake",
     "Muzzle_brake_2",
     "Muzzle_coax",

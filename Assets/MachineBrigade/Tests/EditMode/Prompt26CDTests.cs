@@ -80,12 +80,13 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void LeviathansMainGunIs406MillimetresWithA12m20mBlast()
+        public void LeviathansMainGunIs406MillimetresWithA14m24mBlast()
         {
+            // Prompt 34 L2: the 406 mm family's T5 profile (it was 12 / 20 m).
             var gun = C.Weapons["p26_leviathan_lev406"];
             Assert.AreEqual(406f, gun.Size, 1e-3f);
-            Assert.AreEqual(12f, gun.SplashRadius, 1e-3f, "the core");
-            Assert.AreEqual(20f, gun.SplashEdge, 1e-3f, "the edge");
+            Assert.AreEqual(14f, gun.SplashRadius, 1e-3f, "the core");
+            Assert.AreEqual(24f, gun.SplashEdge, 1e-3f, "the edge");
             Assert.IsFalse(Regex.IsMatch(Strings.Get("guide.leviathan"), "460"), "no 460 mm left in its Guide card");
         }
 

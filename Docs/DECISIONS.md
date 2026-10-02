@@ -15297,3 +15297,140 @@ p31_objectives_baseline.json); the C# is compiled by the lead; Prompt31PlacedAll
 - Data keys changed (CatalogCheck): campaign.json missions c6m03, c10m12, c12m03, i1m01, c5m03 (missionEvents: air_wave ->
   drone_swarm), c6m14 (the ceasefire reference with params seconds 900, faction true), i2m01, c7m16, c9m12, c10m11: key
   `fixedDeck` (placedAllies with `convoy`, `name`, `lossIfDestroyed`, `fallback`). balance.json unchanged.
+
+## Prompt 34 L0 (lead pass, 2026-10-02)
+
+Precheck only (`Docs/checks/p34_precheck.md`): sustained DPS (`FirePower`, `steps_c.sustained`, boss laid salvos and
+cruise counted apart), today's warnings (boss shells: a core-sized ring for the last 0.8 s, view only; salvos 3 s, cruise
+5 s, big attacks 3-4 s, Gungnir 3 s), the VFX pools and the 32-voice audio pool, wrecks (view only) and the Sim's crash
+blast, and the preview scenes (one flat ground quad for every unit; the turntable has no ground).
+
+## Prompt 34 L1 (lead pass, 2026-10-02)
+
+- **Families.** `weaponFamilyId` on every weapon (372, 103 families) and `weaponVariantId` where the round or fire mode
+  differs. Both are written by `Tools/balance/p34_families.py`. For guns the family is a calibre class, as in the prompt's
+  table (`cal_12_7` ... `cal_406`, `cal_120_he` / `cal_120_ap`, `cal_125_ap` / `cal_125_he`, `cal_100_105_he` / `_ap`). For
+  everything else it is the real weapon (`atgm_kornet`, `rkt_grad_122`, `rkt_smerch_300`, `bomb_400`, `sam_9m317_buk` ...).
+  The same real name (without its mount in brackets) is always the same family; the script warns on any clash and so does
+  `Prompt34Tests`. A line carries the id only where it differs from what it inherits.
+- **Variants** (each with its reason in the table): `flak` (an air-burst round on a calibre that fires plain rounds:
+  25/30/40/57 mm, KS-19), `ap` (35 mm AP, 57 mm AP, the 152-155 mm AP fired direct), `he` (the AC-130's 40 mm HE, an AP gun's
+  HE second round), `mortar` (120 mm mortar bombs in the 120 mm HE family), `heat` / `smart` / `guided` (152-155 mm), and
+  `thermobaric` / `cluster` (Grad, GMLRS), `guided` (APKWS).
+- **The table** is `weaponFamilyTable` in balance.json: id, name, tier T0-T5 (by the prompt's L5 table; families outside the
+  calibre table get a tier from their family and size), the prompt's boss numbers (L2), and the variants. `Catalog` reads it
+  (`WeaponFamilyTable`, `WeaponDef.WeaponFamilyId / WeaponVariantId / Tier`). It throws on an unknown family or on a variant
+  its family does not list. A data `edge` may now reach 28 m (`WeaponDef.MaxEdgeT5`, for the T5 profiles); the default edge
+  (twice the core) still stops at 20 m.
+- **Player weapons**: labelled only, no number changed. `Docs/checks/player_weapon_family.md` lists the 19 families whose
+  player weapons differ in damage per round, speed, blast or damage type, and the 10 weapons bosses share with players.
+- **Display names.** Roc's bomb stick (`p26_roc_roc_bombs`) is family `bomb`, size 400. It reads "bomb-bay stick 400 kg",
+  no longer with "203 mm" after it. Its penetration is explicit on its parent (4), so nothing in the Sim moves; its form
+  becomes Bomb (view only). The Smerch pods (`p26_jotunn_jo_rockets`) are size 300 (they said 122; the parent's pen 2 is
+  explicit). `UnitLines.WeaponName` adds "<size> mm" only to guns (mg, autocannon, tank gun, howitzer, mortar, naval gun,
+  grenade, recoilless), so lasers (kW), railguns (MJ), bombs and missiles (kg) lose the wrong "mm".
+- Tests (written, not run): `Prompt34Tests` L1 (every weapon has a family from the table, same real weapon same family,
+  every variant has its reason, the table's tiers, the display names).
+
+## Prompt 34 L2 (lead pass, 2026-10-02)
+
+- **Script.** `Tools/balance/p34_boss_families.py` puts the family table's boss round on every boss weapon and keeps each
+  weapon's DPS. It was run on the data and committed one boss at a time (`--only <boss>`). The numbers from before are in
+  `Tools/balance/p34_boss_baseline.json`, so a rerun changes nothing and never applies the area bonus twice.
+  `Docs/balance/boss_weapon_families.md` has the before/after table per boss. The DPS is on paper: no simulation.
+  **Do not rerun `p26_ab.py`**: it writes the prompt 26 numbers back whole.
+- **Method** (the prompt's three steps). (1) targetDPS = the weapon's old sustained DPS on one target (`steps_c.sustained`,
+  before weaponDamage, rank and phases, which do not move). (2) The new cycle = the new damage of a cycle / targetDPS. The
+  gaps inside a salvo or magazine stay as designed; the cooldown or the magazine change takes the rest. The family's
+  speed and damage type are the most common among its boss members (HE where the row has a core; Kinetic for the AP
+  rows). (3) The area bonus: a core more than 1.25 times the old one makes the cycle that much longer. Where the old core
+  was under 2 m it counts as 2 m (my choice: 0 m has no ratio). A smaller core never shortens the cycle.
+- **Variants** take the family's damage only and keep their own round (speed, type, blast): that is what makes them
+  variants. Leviathan's AK-127 (Kinetic, no blast, the "direct" role of 26 B) is the new variant `cal_127_130/ap`, not the HE
+  shell. With the HE family it would have gained a 5 m core from 0 and lost 60 % of its DPS to the bonus.
+- **Where the old cadence could not hold the DPS** with the family's lighter round, the cadence went up instead: Moloch's
+  35 mm (70 -> 25 a round; 0.05 -> 0.0355 s, the change 0.5 s), Icarus's 40 mm (56 -> 30; 0.2 -> 0.154 s), Matriarch's 2A42
+  salvo (42 -> 22; interval 0.111 -> 0.105 s), Nemesis's Grad (305 -> 200; interval 0.5 -> 0.385 s). The "tiny" mounts of
+  26 B (a fifth of their DPS) now fire full rounds rarely: Jötunn's 2A38 22 x 160 every 103 s, the Kornets 230 every 32-56 s.
+- **The prompt's trial table, checked by the script (no difference):** Leviathan / Kraken 406 mm: `salvo` 3 shells a turret
+  (the turret's barrels together) x 2,400, every 60 s, core 14 / edge 24 (`salvo.edge`, new `SalvoDef.Edge`). That is 3 x 3 x
+  2,400 / 60 = 360, kept; the core grew 17 %, so no bonus. The weapon line says the same (2,400, 60 s, 14 / 24).
+  Leviathan's 155 mm/60: 600 x 3 every 13.7 s (131, kept). Smerch (Jötunn, Fenrir): 450 x 8, the DPS cycle x 1.6, every
+  33.8 s. Bombs (Roc, Garuda, Argus): 700 x 8, the cycle x 2, every 35.4 s. Grad: 200 a rocket, each boss at its old DPS.
+- **Totals** (ground DPS on paper): every boss keeps its DPS but where the bonus applies: Jötunn 88 %, Fenrir 73 %, Roc
+  and Garuda 83 %, Argus 50 % (its main weapon is the bomb stick). The boss health formula is not recalculated (the prompt).
+- **Second rounds** of a changed gun fire at the gun's new cadence. A round of a table family takes the family's round:
+  the armoured train's B-38 HE 600 / 7 / 14, the NSV API 15. Any other round keeps its DPS: Ixion's 125 mm HE 780 -> 400 at
+  the gun's 1.03 s.
+- **Left alone:** Gungnir (`rail_supergun`), so its 40 mm and CIWS (`autocannon_40`, `ciws_aa`) stay on every boss; the
+  weapons bosses share with player vehicles (`boss_flak`, `zu23` already match the table; `gunship_105`, `gunship_40mm`,
+  `hover_ciws` do not and wait for the player pass); laid weapons other than the 406 salvo; the super weapons (big
+  attacks, 26 B6) and the cruise missiles (not in the table). The 800 mm row is unused: only Gungnir's stand-in carries
+  an 800 mm.
+- Data keys: `weapons[*].damage / cooldown / clipReload / burstInterval / splash / edge / projectileSpeed / damageType`
+  (and `weaponFamily: ""` with the block's fields copied where a prompt 25 family would override them) on 52 boss weapon
+  lines and 3 second rounds; `vehicles.leviathan.salvo` (`every`, `shells`, `damage`, `radius`, `edge`).
+- Tests: `Prompt34Tests` L2 (the same family fires the same round on every boss, Leviathan's salvo, the area bonus,
+  Gungnir kept); `Prompt26ABTests` (a T5 round's edge passes 20 m; Leviathan's 406 mm at 14 / 24) and `Prompt26CDTests`
+  (406 mm at 14 / 24) updated. Written, not run.
+
+## Prompt 34 L3 (lead pass, 2026-10-02)
+
+- **Rule** (`WeaponDef.EscapeWarning`, `WarnSeconds`): a T4+ round warns max(floor, 0.5 s + core / 4.5 m/s) before it lands,
+  at most 6 s. The floors: T4 2.5 s, the 406 mm 3.5 s, and 4 s for the 800 mm and the other T5 super weapons. Results: 203 mm
+  (core 8.5) and Smerch (8) 2.5 s; 240 mm and the 400 kg bombs (10) 2.72 s; the 406 mm (14) 3.61 s.
+- **Sim**: `CombatSystem.Launch` keeps a boss's unguided T4+ round in the air for at least its warning (travel = max(travel,
+  WarnSeconds)), so the ring can show that long whatever the range. A guided round chases its target, so it gets no ring.
+  It is deterministic and changes when the round lands: a short-range 203 mm shot now lands 2.5 s after firing, not at
+  its own flight time. Player T4+ weapons (GMLRS, TOS, the player's 203 mm) are not changed in this prompt.
+- **Leviathan / Kraken's salvo**: `salvo.warn` 3 -> 3.7 s (the formula's 3.61, rounded up). Its warning support
+  `leviathan_shell` draws the edge (radius 8 -> 24) with the core inside (blast 6 -> 14). These are data written by
+  `Tools/balance/p34_warnings.py --write`.
+- **View** (written blind): `EscapeWarnings` draws a pooled pair of ground marks (the big attacks' strike style): the
+  edge ring, exactly the blast's edge (`WarnRadius`: the edge, else the core), and the core ring inside. Both fill as the
+  round comes down, from impact minus the warning to impact. Every round of a salvo gets its own pair (32 pairs; when
+  they run out, the one landing soonest is reused). This replaces prompt 26 B.4's 0.8 s core ring for T4+ boss rounds; lower
+  tiers keep B.4. A T5 salvo's strike warning gets its core ring too (`StrikeCore`: any event barrage whose blast is
+  inside its ring). **Minimap**: `MatchRunner.EscapeMark` adds the edge circle of each T4+ boss round to the minimap's
+  warnings for its flight, so a warning off the screen still shows.
+- **Validator** `Tools/balance/p34_warnings.py` checks: every T4+ boss round (unguided, with a core); every salvo's and
+  cruise missile's warn against the formula; the bombards. **Gungnir is the named exception**: its bombard keeps 3 s
+  (the formula says 4 s for a T5 super weapon). The lead's rule for prompt 34 gives Gungnir its family and tier only,
+  and prompt 29 G1 fixed its pattern. Reported as a note; one line in `p34_warnings.EXCEPTIONS` to drop if the owner
+  wants the 4 s. Big attacks (super weapons) are not weapons and are not checked. Their warnings (3-4 s) meet the formula
+  except Monster's 800 mm shell (core 20 m: 4.94 s against its 4 s): left for L9.
+- Tests (written, not run): `Prompt34Tests` L3 (the formula, every T4+ boss round warns and has a ring, Leviathan's salvo
+  and its ring, Jötunn's 203 mm shells stay up for their warning).
+
+## Prompt 34 L4 (lead pass, 2026-10-02)
+
+- **Data** (`Tools/balance/p34_barrels.py`): `barrels` (N, default 1) and `salvoMode` (`SIMULTANEOUS` | `RIPPLE`, the default).
+  SIMULTANEOUS fires every barrel in the same tick at each trigger pull, one volley; `burst` then counts volleys
+  (`WeaponDef.RoundsPerPull`; `RoundsPerCycle` = burst x barrels, so `SustainedDps`, `FirePower` and the detail screen
+  count the whole volley). A magazine gun (clip) cannot be SIMULTANEOUS (Catalog throws).
+- **Applied** (the old ripple of N rounds became 1 x N barrels; its gaps, (N - 1) x burstInterval, went onto the cooldown,
+  so the cycle and the DPS are unchanged): Leviathan / Kraken's 155 mm/60 triple (3; cooldown 13.71 s), Scylla's AK-130 twin
+  (2; 4.75 s), the player cruiser's Mk 71 203 mm twin (2; 11.8 s), the heavy turret's 155 mm twin (base, AP and the coastal
+  branch, 2; 5.55 s), the headquarters' and spawn bastion's 2A83 152 mm twin (2; 5.21 s), the super tank's (titan_tank)
+  NPzK 140 mm twin (2; 4.537 s). Leviathan / Kraken's 406 mm (laid, 3 barrels): the salvo's three shells a turret now land
+  together (`NavalSystem.Salvo`: 0.15 s between turrets, not between shells). The guided second rounds of these guns keep
+  one barrel ("one at a time"). Typhon and Hydra have no multi-barrel gun (single 57 / 100 mm and missiles): nothing to do.
+  The player weapons here change in pattern only (DPS kept): the prompt names the heavy turrets and the super tank.
+- **Sim**: `CombatSystem.Operate` fires the other barrels right after the first (pull false: one trigger pull, one round of
+  ammunition, each barrel with its own scatter), in the opening shot and in each volley of a salvo. The rule that a
+  vehicle's different weapons never fire together is untouched.
+- **View** (written blind): `EffectsDirector.BarrelStagger` draws the k-th barrel of a volley 0.07 s after the one before
+  (`WeaponDef.BarrelGap`, in the prompt's 0.05-0.1 s). The shell of a later barrel flies that much shorter
+  (`WeaponEffects.TravelCut`), so it lands with the Sim. Each round leaves from the next barrel's launch point
+  (`VehicleView.MuzzleOf` already turns through a mount's launch points).
+- **Models**: `Tools/blender/mb_p34_barrels.py` (wrapped last in `build_assets.all_builders`) adds a `Muzzle_b<k>_<tag>`
+  empty for each barrel, a child of the mount's `Muzzle_<slot>` at its depth, beside it on the barrel's axis. The barrels are
+  found in the builder's own meshes (long thin pieces along -Y, front level with the muzzle, merged by axis). The names
+  never match the runtime's `Muzzle_<slot>` pattern, so the k-th mount of a slot is unchanged. `ModelLibrary.AddBarrelPoints`
+  turns them into the mounts' barrel launch points. Rebuilt and accepted (`glb_check --accept`, no mesh change, only the
+  new empties): leviathan (5 turrets: 3 barrels each, 1.7 m / 0.62 m apart), sea_cruiser (2 x 2), heavy_turret (2),
+  headquarters (2), titan_tank (2). Kraken was rebuilt, found no barrels (its mounts are launch cells and rocket boxes)
+  and was reverted, as were the filter's extra `heavy_turret_a` / `heavy_turret_b` (the tower's other models, outside the
+  list): those keep one muzzle. Check: `python Tools/balance/p34_barrels.py` reports every listed muzzle's barrels (OK).
+- Tests (written, not run): `Prompt34Tests` L4 (the listed weapons fire their barrels together, the volleys keep their
+  DPS, the super tank's two barrels fire in the same tick).

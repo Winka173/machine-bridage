@@ -412,9 +412,13 @@ namespace MachineBrigade.Sim.Bosses
             for (var i = 0; i < parts.Count; i++)
                 if (parts[i].Kind == "maingun" && !v.IsPartBroken(i)) total += salvo.Shells;
             var j = 0;
+            // Prompt 34 L4: a turret whose barrels fire together lands its shells together (the ripple runs turret by turret).
+            var together = gun is { Simultaneous: true };
+            var turret = -1;
             for (var i = 0; i < parts.Count; i++)
             {
                 if (parts[i].Kind != "maingun" || v.IsPartBroken(i)) continue;
+                turret++;
                 for (var s = 0; s < salvo.Shells; s++, j++)
                 {
                     var along = total > 1 ? (j - (total - 1) * 0.5f) * spread / (total - 1) : 0f;
@@ -422,7 +426,7 @@ namespace MachineBrigade.Sim.Bosses
                     var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + sea.Along * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, ExplosionDef.TwoLayer(salvo.Damage, salvo.Radius, ExplosionTier.Huge), salvo.Warn + 0.15 * j, v.Team, v,
+                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), salvo.Warn + 0.15 * (together ? turret : j), v.Team, v,
                         HitKind.Strike, v.Id);
                 }
                 // The turret swings to its aim (inside its arc) and fires (its muzzle flash and the shells' flight).

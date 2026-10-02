@@ -524,7 +524,9 @@ namespace MachineBrigade.Sim.Combat
                     else
                     {
                         var alive = _world.TryGetTarget(state.BurstTarget, out var t) && t.IsAlive;
-                        Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
+                        // Prompt 34 L4: each volley of a simultaneous gun is every barrel at once.
+                        for (var b = Loaded(v, index).RoundsPerPull; b > 0; b--)
+                            Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
                     }
                     state.BurstLeft--;
                     state.BurstTimer += weapon.Burst > 1 ? weapon.BurstInterval : TwinGap;
@@ -587,7 +589,13 @@ namespace MachineBrigade.Sim.Combat
                 state.SwarmLast = own.Id;
                 Launch(v, index, own.Position, own.Id, false, scale * perRound, true, own);
             }
-            else Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
+            else
+            {
+                Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
+                // Prompt 34 L4: a simultaneous gun's other barrels fire in the same tick (one volley, one trigger pull).
+                for (var b = Loaded(v, index).RoundsPerPull - 1; b > 0; b--)
+                    Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, false, target);
+            }
             if (machineGun)
             {
                 // A run of fire, then a pause while the gunner re-lays (its damage rides on the rounds).
@@ -865,6 +873,9 @@ namespace MachineBrigade.Sim.Combat
             // Prompt 25 F2 batch A: a glide bomb flies at its own speed; a simultaneous-impact salvo lands together.
             if (weapon.Glides) travel = Vector2.Distance(origin, aim) / weapon.ProjectileSpeed;
             travel = MrsiTravel(shooter, index, pull, travel);
+            // Prompt 34 L3: a boss's T4+ round (203 mm and up, the Smerch, the 400 kg bombs) lands no sooner than its escape warning,
+            // so the warning ring on its fall point shows that long. A guided round chases its target and has no fixed fall point.
+            if (shooter.Def.Boss && !weapon.Guided && weapon.WarnSeconds > travel) travel = weapon.WarnSeconds;
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
             // Prompt 25 F2 batch A: a tower linked by a fire-control centre.

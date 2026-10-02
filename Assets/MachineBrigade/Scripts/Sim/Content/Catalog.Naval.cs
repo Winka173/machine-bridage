@@ -38,6 +38,7 @@ namespace MachineBrigade.Sim.Content
                     Damage = s.Float("damage", 300f), Radius = s.Float("radius", 7f), Spread = s.Float("spread", 16f), Range = s.Float("range", 150f),
                     Sweep = s.Float("sweep", 18f), BlindScatter = s.Float("blindScatter", 2.2f),
                     Weapon = s.Has("weapon") ? s.String("weapon") : null, Warning = s.Has("warning") ? s.String("warning") : null,
+                    Edge = Math.Max(0f, s.Float("edge", 0f)),
                 };
             }
             if (v.Has("cruise"))

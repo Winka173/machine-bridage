@@ -1277,6 +1277,10 @@ namespace MachineBrigade.Game.Match
                         if (e.Team == PlayerTeam) _hud.Toast(Strings.Get("toast.crateOurs"), kind: NoticeKind.Crate);
                         else _hud.Toast(Strings.Get("toast.crateTheirs"), error: true, kind: NoticeKind.Crate);
                         break;
+                    // Prompt 34 L3: a boss's T4+ round marks its fall point on the minimap.
+                    case SimEventKind.WeaponFired when !_menu:
+                        EscapeMark(e);
+                        break;
                     case SimEventKind.StrikeWarning when !_menu && e.Team == MachineBrigade.Sim.Entities.Teams.Environment:
                         _hud.Toast(Strings.Get("toast.raid"), error: true, kind: NoticeKind.AirRaid);
                         if (_world.Catalog.TryGetSupport(e.DefId, out var raid))

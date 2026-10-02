@@ -65,6 +65,7 @@ import mb_p27_wave5_ground  # noqa: E402
 import mb_p27_wave5_air  # noqa: E402
 import mb_p27_wave8b  # noqa: E402
 import mb_p27_standins  # noqa: E402
+import mb_p34_barrels  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -171,6 +172,8 @@ def all_builders():
     builders.update({k: v for k, v in mb_p25_models2.BUILDERS.items() if k.endswith('_hd')})
     # Prompt 27 wave 4b: attack_jet_hd on the V2 parts (nozzle, canopy frame) over the old one.
     builders.update({k: v for k, v in mb_p27_wave4.BUILDERS.items() if k.endswith('_hd')})
+    # Prompt 34 L4: a muzzle for every barrel of the guns that fire their barrels together (after every other builder).
+    builders = mb_p34_barrels.wrap(builders)
     return builders
 
 

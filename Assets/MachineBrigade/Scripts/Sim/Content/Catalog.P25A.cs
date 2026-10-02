@@ -280,7 +280,8 @@ namespace MachineBrigade.Sim.Content
             def.Glides = w.Bool("glides", false);
             def.Prey = w.Enum("prey", Prey.Any);
             // Prompt 26 B.3: a two-layer blast: "edge" is the outer radius (default none), "edgeShare" its share of the damage.
-            def.SplashEdge = MathF.Min(WeaponDef.MaxEdge, MathF.Max(0f, w.Float("edge", 0f)));
+            // Prompt 34 L1: a data edge may reach the T5 profiles' 24-28 m (the default edge, twice the core, still stops at 20 m).
+            def.SplashEdge = MathF.Min(WeaponDef.MaxEdgeT5, MathF.Max(0f, w.Float("edge", 0f)));
             def.EdgeShare = Math.Clamp(w.Float("edgeShare", 0.4f), 0f, 1f);
             def.PierceMax = Math.Max(0, w.Int("pierceMax", 0));
             if (def.SplashEdge > 0f && def.SplashEdge <= def.SplashRadius) throw new FormatException($"{w.Path}.edge: wider than its splash (the core).");

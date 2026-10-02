@@ -158,6 +158,8 @@ namespace MachineBrigade.Game.Effects
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
             _strikes = new StrikeEffects(catalog, materials, meshes, models, _emitters, _projectiles, _layers.Screens, _root);
             _bigZones = new BigAttackZones(materials, meshes, _root);
+            // Prompt 34 L3: the T4+ rounds' escape warnings.
+            _escape = new EscapeWarnings(materials, meshes, _root);
             _aimLines = new AimLines(materials, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
 
@@ -319,6 +321,10 @@ namespace MachineBrigade.Game.Effects
                         break;
 
                     case SimEventKind.StrikeWarning:
+                        _strikes.Consume(e, now);
+                        // Prompt 34 L3: the core of a T5 salvo shell's warning.
+                        StrikeCore(e, now);
+                        break;
                     case SimEventKind.AircraftPass:
                     case SimEventKind.SmokeDeployed:
                         _strikes.Consume(e, now);
@@ -593,6 +599,7 @@ namespace MachineBrigade.Game.Effects
             _muzzle.Follow(now);
             _emitters.FeedFlames(now, Time.deltaTime);
             if (_shots.Count == 0) return;
+            _volley.Clear();
             foreach (var (e, shooter) in _shots)
             {
                 if (e.Kind == SimEventKind.WeaponCharging)
@@ -607,11 +614,15 @@ namespace MachineBrigade.Game.Effects
                     _aimLines.Show(Ground(e.Position, 0.6f), Ground(e.Target, 0.6f), e.Value, now);
                 // Shots entirely off screen are not drawn (the sound still plays).
                 if (!_cull.Visible(Ground(e.Position, 1f), 0.15f) && !_cull.Visible(Ground(e.Target, 1f), 0.15f)) continue;
-                _weapons.Fired(e, shooter, views, now);
+                // Prompt 34 L4: a simultaneous volley's barrels flash one after another, BarrelGap apart.
+                var stagger = shooter != null ? BarrelStagger(e, shooter) : 0f;
+                if (stagger > 0f) LaterShot(e, shooter, views, now + stagger, stagger);
+                else _weapons.Fired(e, shooter, views, now);
                 // Prompt 26 B.4: a big shell of a boss's own gun warns of its fall (the big attacks and the ships' salvos have their own rings).
-                if (shooter != null && shooter.Sim.Def.Boss && e.Kind == SimEventKind.WeaponFired && e.Value >= 1.2f && e.DefId != null &&
-                    _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid && big.SplashRadius >= BossShellWarnFrom &&
-                    (big.Indirect || big.Projectile == ProjectileKind.Shell))
+                // Prompt 34 L3: a T4+ round warns by escape time instead, its edge and its core, for its whole warning.
+                if (shooter != null && shooter.Sim.Def.Boss && e.Kind == SimEventKind.WeaponFired && e.DefId != null &&
+                    _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid && !EscapeRing(e, shooter, big, now) &&
+                    e.Value >= 1.2f && big.SplashRadius >= BossShellWarnFrom && (big.Indirect || big.Projectile == ProjectileKind.Shell))
                     BossShellWarning(Ground(e.Target, 0.2f), big.SplashRadius, e.Value, now);
                 // At night the flash lights the ground at the muzzle.
                 if (shooter != null && shooter.Root != null && !shooter.Flying && e.DefId != null &&
@@ -691,6 +702,7 @@ namespace MachineBrigade.Game.Effects
             _emitters.Tick(now, Time.deltaTime);
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
+            _escape.Tick(now);
             _aimLines.Tick(now);
             TickBigCharge(views, now);
             _drops.Tick(now);
