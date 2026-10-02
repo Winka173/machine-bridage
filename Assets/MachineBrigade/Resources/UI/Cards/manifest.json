@@ -736,7 +736,7 @@
             "kind": "boss",
             "model": "command_airship",
             "source": "Models/command_airship",
-            "hash": "v2:f97dfe7f43c64f1e0bafc6b8401e09ad9b639cd9"
+            "hash": "v2:2398ce6d923e219ddc7d63aaa5da54fcbc68b150"
         },
         {
             "id": "armored_train",
@@ -911,7 +911,7 @@
             "kind": "boss",
             "model": "command_airship",
             "source": "Models/command_airship",
-            "hash": "v2:f97dfe7f43c64f1e0bafc6b8401e09ad9b639cd9"
+            "hash": "v2:2398ce6d923e219ddc7d63aaa5da54fcbc68b150"
         },
         {
             "id": "cp_relay",
@@ -939,7 +939,7 @@
             "kind": "boss",
             "model": "daedalus",
             "source": "Models/daedalus",
-            "hash": "v2:1c8e5db25314e1e7deb717ebfe1674523d0696df"
+            "hash": "v2:fc28781fc24f29ead76ac98dd2f8fb3e7b83efa5"
         },
         {
             "id": "decoy_tank",
@@ -995,7 +995,7 @@
             "kind": "boss",
             "model": "drone_mothership",
             "source": "Models/drone_mothership",
-            "hash": "v2:4f481e05ff883803e3e87915a3e905b2ed94f140"
+            "hash": "v2:cb19814a92d23605cdc5775ef8b8dc4a2556e1c4"
         },
         {
             "id": "drone_net_tower",
@@ -1317,7 +1317,7 @@
             "kind": "boss",
             "model": "drone_mothership",
             "source": "Models/drone_mothership",
-            "hash": "v2:4f481e05ff883803e3e87915a3e905b2ed94f140"
+            "hash": "v2:cb19814a92d23605cdc5775ef8b8dc4a2556e1c4"
         },
         {
             "id": "manpads_tower",
@@ -1331,7 +1331,7 @@
             "kind": "boss",
             "model": "mega_gunship",
             "source": "Models/mega_gunship",
-            "hash": "v2:f36d3f42b7f3eb1e5351f8371b4cf8e95a4b6221"
+            "hash": "v2:b6231857ae9e9644f97e6728da9d86b0f2874cf5"
         },
         {
             "id": "mg_bunker",
@@ -1422,7 +1422,7 @@
             "kind": "boss",
             "model": "morrigan",
             "source": "Models/morrigan",
-            "hash": ""
+            "hash": "v2:d3dc7e3d8b9c693947a468b7be11bff685ce8942"
         },
         {
             "id": "nuke_train",
@@ -1527,7 +1527,7 @@
             "kind": "boss",
             "model": "sky_fortress",
             "source": "Models/sky_fortress",
-            "hash": "v2:81880c6549f6d34fb8415bd08296689566e63129"
+            "hash": "v2:01e6fde8a20a86c628da25741601cd97c8679b71"
         },
         {
             "id": "spawn_bastion",

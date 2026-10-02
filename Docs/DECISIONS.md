@@ -14354,3 +14354,4 @@ mirror, no cards, no previews, no tests. The substring filter rebuilt nothing ou
   Not gated: non-manifold edges drone_mothership 146 -> 208, sky_fortress 20 -> 35 (overlapping chamfered pieces).
 - **Card luma (old, alpha > .5, Rec. 709):** command_airship .3109, drone_mothership .3076, mega_gunship .3352, sky_fortress .3551, daedalus .4252,
   morrigan .3448. Target: >= old, at most about +20 %; daedalus has the biggest COLOR_0 gain (+5.6 %): watch it.
+- Lead (2026-10-02), wave 5c cards: all six pass (+0.4 % to +1.2 %). build_assets.py lane conflicts are now resolved by handoff_tools/resolve_build_assets.py (keeps both registrations).
