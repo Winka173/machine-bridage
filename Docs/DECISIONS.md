@@ -13347,3 +13347,58 @@ The nine remaining wave 2 models. Checks run: Blender rebuild, `glb_check.py` (c
 - Lead (2026-10-02) on siege_tank: a per-model cap exception (`CAP_EXCEPTIONS` in Tools/assets/glb_check.py,
   movingParts soft 22 / hard 24) rather than breaking the deploy rig; the class cap stays for every other ground unit.
   Wave 2 is complete.
+
+## 28 1 (cloud, 2026-10-02)
+
+Prompt 28 pass 1, Sim only (A World Model, L parameter frame, N determinism, the xlsx generator). J (the AI viewer)
+is local. Nothing was run but the generator and a compile check (owner's rule); tests are written for the local run.
+
+- **Generator.** `Tools/ai/import_ai_xlsx.py` reads the research sheet and replaces one marker-delimited block of
+  balance.json (`// <generated ai ...>` ... `// </generated ai>`, first placed before `"generals"`). Why a whole block
+  rather than field edits (`jsonc_edit.py`): the section is wholly generated, so re-running is idempotent and no hand
+  edit can drift from the sheet. Unknown sheet rows or values stop the script (nothing is guessed).
+- **Shape.** `ai.world`, `ai.params`, `ai.economy`; every entry `{ value, min, max, metric, reason }` (L.1). Arrays
+  (`economy.escalation`, `economy.armyBands`) are addressed `section.key.i`. The metric and reason texts stay in the
+  sheet's Vietnamese: they are copied data, not code or docs.
+- **Value rules.** Percent cells become shares (`confidenceDecay` 0.06, `holdFire` 0-0.6, `mainEffort` 0.5); the
+  splash spread distance is a multiple of the strongest known blast (start 1, range 0.5-2). Qualitative cells map to a
+  weight scale where 1 = the standard thresholds: Thấp 0.5, Vừa 1, Cao 1.5, Rất cao 2, "Theo chiến thuật" 1 (pass 5's
+  tactics will set them); yes/no to 1/0 (`cohesion`), "Mua ngay"/"Để dành tới ngưỡng" to 0/1 (`cpSaving`). Economy
+  rows have no range in the sheet, so min = max = value, except the army bands, whose notes give a trial range
+  (0.85-1.0, 0.65-0.95). The escalation tiers come from the first tier's cell and its note (30, 50, 70, 90 s); the
+  final phase (120 s, x2) from the rule text.
+- **World section (not in the sheet).** Cadence 2/s and cell 10 m from prompt 28 A.1/M.1; and the World Model's own
+  detection thresholds, which the sheet does not give: high value = 1.5x the mean known contact strength, splash
+  layer from 2 m blasts, event life 8 s, MISMATCH when enemy aircraft >= 25 % of its strength and own AA < 10 %, or
+  enemy armour >= 40 % and own anti-tank (plus half the own armour) < 15 %. All have sweep ranges.
+- **balance.json keys added (new only; no existing number changed):** `ai.world.*`, `ai.params.*` (21),
+  `ai.economy.*`. CatalogCheck must still pass: the local lead runs it. Nothing reads `ai.economy` yet (pass 5 I).
+- **World Model** (`AI/WorldModel.cs`, `SimWorld.Intel`). One `TeamIntel` per side, refreshed on demand at most
+  `world.rate` times a second, never inside `SimWorld.Step`: asking cannot change a battle, the existing AIs and every
+  measured balance stay as they were until a pass makes an AI read it (`AskingTheWorldModelNeverChangesTheBattle`).
+  Strength = the catalog's `Power` x health share (bosses by health, like `Power`'s elites). The 8 force groups of
+  the sheet map from `UnitClass`; defences and bosses count in strength and threat but not in composition (nobody buys
+  them). Threat layers: anti-air (a weapon that hits aircraft, on an AA vehicle or one with no ground gun), anti-tank
+  (anti-tank and armour groups, and ground-firing defences), artillery (min-range weapons) and splash (blasts >= 2 m),
+  each painted over the contact's reach. Contacts keep last seen, age and a confidence 1 - age x decay; a contact whose
+  last cell is seen empty is "displaced" (known to exist, not painted); a dead one is forgotten only when its cell is
+  seen, else when its confidence reaches 0. `Know()` tells Unknown from ConfirmedAbsent (cell seen in the last 3 s).
+  Movement vectors: each contact's heading x speed when seen, clustered (25 m, ground and air apart) into enemy groups.
+  Front: cells this side holds next to cells the enemy holds after a 3x3 blur; contested: both sides within a factor 2.
+  Chokepoints: partly blocked cells (<= 60 % of 25 samples walkable) holding 2+ vehicles. Warnings: charging boss big
+  attacks' harmful zones and every called strike (`StrikeSystem.Incoming`, a new read-only accessor; strikes are
+  telegraphed). Reinforcements on the way are not yet a warning (no Sim signal the enemy can see; added when the
+  commander needs it).
+- **Events.** OPPORTUNITY: a high-value contact comes into sight. WINDOW: enemy AA moved more than two cells; a
+  high-value contact out of ammunition. THREAT: a warning zone over own vehicles (big attack 95, strike 85), an enemy
+  group heading at own forces that is `overwhelmRatio` stronger (80), aircraft inbound (70). MISMATCH: as above, with
+  the group to buy. OBJECTIVE_PRESSURE: an own point contested (needs `Intel.Objectives` set by the mode's owner;
+  listed in LOCAL_TODO). An event running for the same kind, subject and reason is refreshed, not duplicated.
+- **Determinism (N).** Contacts are kept in id order, the world's vehicle list order is used, events are a list; no
+  dictionary is iterated in a decision. `SimWorld.AiRandom(team, layer)` derives a separate seeded stream per AI layer
+  so later passes' draws never shift the battle's own RNG or another layer's. `TheSameSeedReplaysTheSamePictureAndEvents`
+  holds it.
+- **L.3 sweep.** `AiParamSweep` (Explicit, Balance): for each key (default `params.`), min / start / max (or N even
+  points), over seeds and maps, an AI-vs-AI Conquest; writes `Docs/ai/sweep.csv` with the key's own metric beside the
+  common ones (fight share, destroyed per minute, captures, average alive, wins). Until passes 2-5 make the AI read the
+  parameters, a sweep shows no effect except from the World Model's own thresholds.

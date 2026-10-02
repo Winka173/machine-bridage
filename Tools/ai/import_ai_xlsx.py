@@ -198,7 +198,15 @@ def main():
     data = {
         # The World Model's own cadence and cell (prompt 28 A.1 and M.1; the sheet has no row for them).
         "world": {"rate": param(2, 1, 4, "AI tick time (M.5)", "prompt 28 A.1/M.1: about twice a second"),
-                  "cell": param(10, 6, 16, "AI tick time (M.5)", "prompt 28 A.1: 10 m cells to start")},
+                  "cell": param(10, 6, 16, "AI tick time (M.5)", "prompt 28 A.1: 10 m cells to start"),
+                  # The World Model's own detection thresholds (A.1, A.4; the sheet gives none, DECISIONS "28 1").
+                  "highValue": param(1.5, 1.2, 2.5, "Số mục tiêu giá trị bị hạ", "a contact this many times the mean known strength is high value"),
+                  "splashMin": param(2, 1, 4, "Số xe bị hạ bởi bắn lan mỗi phút", "a weapon with a blast this wide (m) paints the splash threat"),
+                  "eventLife": param(8, 4, 15, "Số lần đổi hành động mỗi phút của đội", "seconds an event lasts unless refreshed"),
+                  "airShare": param(0.25, 0.15, 0.4, "Số máy bay bị hạ mỗi lượt", "MISMATCH: enemy aircraft share of its strength"),
+                  "aaShare": param(0.1, 0.05, 0.2, "Số máy bay bị hạ mỗi lượt", "MISMATCH: own anti-air share below this"),
+                  "armourShare": param(0.4, 0.3, 0.6, "Thời gian hạ mục tiêu", "MISMATCH: enemy armour share of its strength"),
+                  "atShare": param(0.15, 0.1, 0.3, "Thời gian hạ mục tiêu", "MISMATCH: own anti-tank share below this")},
         "params": ai_params(wb),
         "economy": economy(wb),
     }

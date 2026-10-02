@@ -102,6 +102,16 @@ namespace MachineBrigade.Sim.Strikes
 
         public IReadOnlyList<SmokeZone> Smoke => _smoke;
 
+        /// <summary>
+        /// Prompt 28 A.1: every strike called and not yet over, as its caller's team, aim point, radius and when it
+        /// lands (strikes are telegraphed, so every side may know them). Appends to <paramref name="into"/>.
+        /// </summary>
+        public void Incoming(List<(int team, Vector2 point, float radius, double lands)> into)
+        {
+            foreach (var s in _strikes)
+                into.Add((s.Team, s.Point, MathF.Max(s.Support.Radius, s.Length * 0.5f), s.Start + s.Support.Delay));
+        }
+
         public CommandResult Call(Command command)
         {
             if (command.DefId == null || !_world.Catalog.TryGetSupport(command.DefId, out var support))

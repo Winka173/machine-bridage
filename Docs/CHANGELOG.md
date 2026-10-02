@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- AI (28 pass 1, cloud, Sim only): `Tools/ai/import_ai_xlsx.py` generates balance.json `ai` (world, the 21 parameters of the research sheet, the in-battle economy frame; each with value, min, max, metric, reason) and `Catalog.Ai` reads it; `SimWorld.Intel` is the shared World Model (strength, composition, threat layers, contacts with confidence, enemy groups, front, chokepoints, warnings, the five event kinds); `SimWorld.AiRandom` gives each AI layer its own seeded stream; `WorldModelTests` and the `AiParamSweep` tool are written, not yet run.
 - Models (27 wave 2 pass B): the last nine flagged models fixed - renderer merges on `command_hq`, `shield_generator`, `siege_tank`; `flak_tower` and `sea_cruiser` lose unused moving-part nodes; zero-area triangles removed from `sky_gunship_hd`, `strike_jet`, `tank_buster`; `interceptor_jet` gets taller fins to match its `modelSize` (`siege_tank` keeps its 22 deploy parts, the ground cap is wrong for it).
 - Models (27 wave 2 pass A): nine validator errors fixed with the smallest change - `mobile_fortress` gets the part nodes `Mount_gun` (roof howitzer) and `Mount_missile.001` (deck SAM), `headquarters` and the three helipads lose their zero-area triangles, and the proportions of `heavy_flak_tower`, `at_gun_emplacement`, `laser_ad_station` and `visual_jammer` now match their `modelSize`.
 

@@ -108,7 +108,14 @@
   "ai": {
     "world": {
       "rate": {"value": 2, "min": 1, "max": 4, "metric": "AI tick time (M.5)", "reason": "prompt 28 A.1/M.1: about twice a second"},
-      "cell": {"value": 10, "min": 6, "max": 16, "metric": "AI tick time (M.5)", "reason": "prompt 28 A.1: 10 m cells to start"}
+      "cell": {"value": 10, "min": 6, "max": 16, "metric": "AI tick time (M.5)", "reason": "prompt 28 A.1: 10 m cells to start"},
+      "highValue": {"value": 1.5, "min": 1.2, "max": 2.5, "metric": "Số mục tiêu giá trị bị hạ", "reason": "a contact this many times the mean known strength is high value"},
+      "splashMin": {"value": 2, "min": 1, "max": 4, "metric": "Số xe bị hạ bởi bắn lan mỗi phút", "reason": "a weapon with a blast this wide (m) paints the splash threat"},
+      "eventLife": {"value": 8, "min": 4, "max": 15, "metric": "Số lần đổi hành động mỗi phút của đội", "reason": "seconds an event lasts unless refreshed"},
+      "airShare": {"value": 0.25, "min": 0.15, "max": 0.4, "metric": "Số máy bay bị hạ mỗi lượt", "reason": "MISMATCH: enemy aircraft share of its strength"},
+      "aaShare": {"value": 0.1, "min": 0.05, "max": 0.2, "metric": "Số máy bay bị hạ mỗi lượt", "reason": "MISMATCH: own anti-air share below this"},
+      "armourShare": {"value": 0.4, "min": 0.3, "max": 0.6, "metric": "Thời gian hạ mục tiêu", "reason": "MISMATCH: enemy armour share of its strength"},
+      "atShare": {"value": 0.15, "min": 0.1, "max": 0.3, "metric": "Thời gian hạ mục tiêu", "reason": "MISMATCH: own anti-tank share below this"}
     },
     "params": {
       "attackThreshold": {"value": 1.2, "min": 0.8, "max": 1.6, "metric": "Tỷ lệ thời gian có giao tranh; số đợt tấn công thất bại", "reason": "Thấp quá: lao vào chỗ chết; cao quá: trận đứng yên"},
