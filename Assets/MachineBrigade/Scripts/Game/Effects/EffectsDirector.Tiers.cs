@@ -168,7 +168,8 @@ namespace MachineBrigade.Game.Effects
             _night.Flash(from, look.Light * 0.5f);
             var onScreen = _cull.Visible(from, 0.1f);
             if (tier >= 5 && onScreen && Flash != null) Flash(0.07f / (1f + distance / 40f));
-            _camera.AddTierTrauma(TierFx.Shake(tier, distance, onScreen, shot: true), TierFx.ShakeCap);
+            // Play-test 12: a boss firing shakes nothing (its impacts still do, by tier).
+            if (shooter == null || !shooter.Def.Boss) _camera.AddTierTrauma(TierFx.Shake(tier, distance, onScreen, shot: true), TierFx.ShakeCap);
         }
 
         /// <summary>The air's pressure wave round a big gun's muzzle: a ring snapping out (T5: two).</summary>
