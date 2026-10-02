@@ -30,6 +30,7 @@ namespace MachineBrigade.Sim.AI
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
                 v.SquadTargets = tactic.Modules.Targets;
+                ExplainTarget(world, s, v, tactic);
                 // D.4: a standing vehicle with a thicker front turns it to the threat (the turret aims on its own).
                 v.FaceHeading = !v.IsMoving && threat is { } t && Vector2.Distance(t, v.Position) <= s.Reach * 1.5f &&
                                 v.ArmourOn(ArmorFace.Front) > v.ArmourOn(ArmorFace.Side)
@@ -47,6 +48,35 @@ namespace MachineBrigade.Sim.AI
                 }
                 if (overwhelmed && threat is { } danger) ShortMove(world, intel, v, role.Overwhelmed, danger, now);
             }
+        }
+
+        private readonly Dictionary<EntityId, EntityId> _explained = new();
+
+        /// <summary>J.2 for a unit: its state, its target and why that one (recorded when the target changes).</summary>
+        private void ExplainTarget(SimWorld world, Squad s, Vehicle v, TacticDef tactic)
+        {
+            if (_explained.TryGetValue(v.Id, out var last) && last.Value == v.Target.Value) return;
+            _explained[v.Id] = v.Target;
+            var factors = new List<Factor>();
+            var choice = "none";
+            if (world.TryGetVehicle(v.Target, out var t))
+            {
+                choice = t.Def.Id;
+                if (t.Id == s.Focus) factors.Add(new Factor("squadFocus", 1f));
+                if (TeamIntel.GroupOf(t.Def) is { } g)
+                    foreach (var x in tactic.Modules.Targets)
+                        if (x == g) factors.Add(new Factor("tacticTarget", 1f));
+                if (t.Target == v.Id) factors.Add(new Factor("shootsAtUs", 1f));
+                if (t.Hp < t.MaxHp * 0.3f) factors.Add(new Factor("nearlyDead", 1f));
+                factors.Add(new Factor("effectiveDamage", 1f));
+                if (!t.IsVisibleTo(v.Team)) factors.Add(new Factor("notInSight", -1f));
+            }
+            var (plus, minus) = Why.Split(factors);
+            world.AiLog.Record(new Why
+            {
+                Layer = AiLayer.Unit, Team = v.Team, Subject = v.Id.Value, Time = world.Time, Choice = choice, Plus = plus, Minus = minus,
+                Context = $"squad {s.Id} {s.State}",
+            });
         }
 
         /// <summary>D.3: the role's short move in the fight when overwhelmed: cover, a shift of 15-25 m, out of smoke.</summary>

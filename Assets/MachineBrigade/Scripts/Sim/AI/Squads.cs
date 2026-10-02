@@ -233,6 +233,15 @@ namespace MachineBrigade.Sim.AI
                 var id = s.MemberList[i];
                 if (!world.TryGetVehicle(id, out var v) || !v.IsAlive || v.Team != _commander.Team || v.UnderPlayerControl(world.Time))
                 {
+                    if (v != null)
+                    {
+                        // Out of the squad: nothing of the squad's stays on it.
+                        v.FaceHeading = null;
+                        v.AiHoldFire = false;
+                        v.AiKiting = false;
+                        v.SquadFocus = EntityId.None;
+                        v.SquadTargets = null;
+                    }
                     s.MemberList.RemoveAt(i);
                     s.Progress.Remove(id);
                     _squadOf.Remove(id);
@@ -648,13 +657,17 @@ namespace MachineBrigade.Sim.AI
                     {
                         // Squad cohesion: advance in bounds so the fast wait for the slow (blitz does not wait).
                         var step = (m.Bounding ? 24f : 32f) * m.Pace;
-                        goal = s.Centre + forward * step;
+                        // The bound already ordered stands until the squad is near it (no new route every look).
+                        goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == s.Action && Vector2.Distance(s.Centre, s.IssuedGoal) > 12f
+                            ? s.IssuedGoal
+                            : s.Centre + forward * step;
                         if (m.Bounding && Bound(world, s, goal, forward)) return;
                     }
                     break;
                 }
                 case SquadAction.Hold:
-                    goal = s.Task.Objective is { } hold && Vector2.Distance(hold, s.Centre) < 120f ? hold : s.Centre;
+                    goal = s.Task.Hold && s.Task.Objective is { } hold ? hold
+                        : !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == SquadAction.Hold ? s.IssuedGoal : s.Centre;
                     type = CommandType.Move;
                     Stance(world, intel, s, m);
                     break;
@@ -701,8 +714,10 @@ namespace MachineBrigade.Sim.AI
                     type = CommandType.Move;
                     mode = FormationMode.Travel;
                     break;
-                default: // Regroup
-                    goal = s.Centre;
+                default: // Regroup: on the point first ordered, unless the squad has drifted far from it
+                    goal = !float.IsNaN(s.IssuedGoal.X) && s.IssuedAction == SquadAction.Regroup && Vector2.Distance(s.IssuedGoal, s.Centre) < GatherRadius * 2f
+                        ? s.IssuedGoal
+                        : s.Centre;
                     type = CommandType.Move;
                     break;
             }
@@ -711,7 +726,8 @@ namespace MachineBrigade.Sim.AI
             if (s.Action != SquadAction.Hold) SetHoldFire(world, s, false);
             if (type != CommandType.Move || s.State != SquadState.Combat) SetKiting(world, s, false);
             // Orders only when the goal or the action changed, or a member has nothing to do (no reshuffling every look).
-            var changed = s.Action != s.IssuedAction || float.IsNaN(s.IssuedGoal.X) || Vector2.Distance(goal, s.IssuedGoal) > 6f;
+            var changed = s.Action != s.IssuedAction || float.IsNaN(s.IssuedGoal.X) ||
+                          Vector2.Distance(goal, s.IssuedGoal) > (s.State == SquadState.Combat ? 10f : 6f);
             s.Goal = goal;
             if (changed)
             {

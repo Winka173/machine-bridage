@@ -240,6 +240,12 @@ namespace MachineBrigade.Game.Hud
             ["why.belowMinimum"] = ("Squad too small", "Đội dưới số xe tối thiểu"),
             ["why.scattered"] = ("Squad scattered", "Đội phân tán"),
             ["why.tacticChanged"] = ("Tactic just changed", "Vừa đổi chiến thuật"),
+            ["why.squadFocus"] = ("The squad's focus", "Mục tiêu đội đang dồn hỏa lực"),
+            ["why.tacticTarget"] = ("What the tactic hunts", "Mục tiêu ưu tiên của chiến thuật"),
+            ["why.shootsAtUs"] = ("It is shooting at us", "Nó đang bắn ta"),
+            ["why.nearlyDead"] = ("Nearly destroyed", "Sắp bị hạ"),
+            ["why.effectiveDamage"] = ("Best damage for this weapon", "Sát thương hiệu dụng cao nhất"),
+            ["why.notInSight"] = ("Not in sight", "Không trong tầm nhìn"),
         };
 
         /// <summary>A tactic's name in the current language.</summary>

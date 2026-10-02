@@ -13603,3 +13603,30 @@ visibility; `AiSkill`); this pass adds the rest.
 - **K.** Difficulty axes are in `AiSkill` (pass 2). "Prediction quality" has no separate model: reaction delay,
   memory and decision quality carry it. The player's AI at Normal is a session hook (LOCAL_TODO).
 - **balance.json keys added this pass:** `ai.world.bigFight`, `ai.world.escalationPoints`, `ai.world.churnWarn`.
+
+## 28 extras (cloud, 2026-10-02)
+
+The owner widened the cloud's scope ("cái gì đưa được cứ đưa"). Still no runs: only the generator, the exporter and
+the Sim compile check ran.
+
+- **Text tables.** `Scripts/Game/Hud/TacticText.cs`, the CommanderText pattern (no Unity API), registered in
+  `Strings.Get`, `Entries` and `Has` (three one-line additions to Strings.cs: a table nobody looks up shows keys).
+  Tactic names: the sheet's Vietnamese, English by me (Blitz, Overwhelming Fire, Defence in Depth, Encirclement,
+  Bounding Overwatch, Ambush, Hit and Run, Breakthrough, Dispersal, Air Superiority, SEAD First, Attrition,
+  Decapitation, Base Defence, All-Out Assault). The Sim's hint keys were renamed `aihint.*` (the HUD already had
+  `hint.*` keys for other lines). Factor words `why.<key>` match the factor keys the squads write.
+- **Unit "VÌ SAO".** Recorded when a squad member's target changes: target, squad state, and which of squad focus,
+  tactic target group, shooting at us, nearly dead, effective damage (always: the combat score's base), not in sight.
+- **Order economy.** Squads keep a bound's goal until near it, a hold or regroup point while it is valid, and re-issue
+  combat slots only when the goal moves over 10 m: fewer route requests (the path queue of prompt 12 is shared).
+- **Tests.** `AiScenarioTests` (O.4: 17 scenarios incl. 7 tower modes; Explicit, category AI28): bridge, splash vs
+  old AI, dodge, gather on friends, low health, switch margin (from the log lines "old score -> new score"), infeasible
+  flank, old information, flank hits, aircraft in anti-air, artillery scoot and marks, idle re-score, tower modes,
+  tactic switch, CP shares after 5 minutes, pressure tiers, replay. `TacticFingerprintSweep` (H.3: 8 fingerprint
+  numbers x 16 tactics x 5 seeds against Balanced, normalised, pair distances, merge candidates under
+  `world.mergeThreshold` 0.15 read from the sheet's merge rule; O.5: every mission x 5 seeds x Balanced + blitz,
+  depth, firepower at Normal). Thresholds in them are first guesses to be set after the first runs.
+- **Docs and export.** `Docs/ai/AI_DESIGN.md`, `TACTICS.md` (the tactic table generated from the data), `ECONOMY.md`;
+  `Tools/ai/export_applied_xlsx.py` writes `Machine_Brigade_AI_Research_applied.xlsx` (green game columns on "Tham số
+  AI", "Cân bằng kinh tế", "Chiến thuật", a "Tham số thế giới" sheet and a note sheet); exported with the initial values.
+- **balance.json keys added here:** `ai.world.mergeThreshold`.
