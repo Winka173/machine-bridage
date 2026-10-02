@@ -13706,3 +13706,27 @@ refused by the permission system, so no card renders and no previews); the card 
   Card luma old -> new: heavy_tank .388 -> .388 (-0.1 %), light_tank +2.4 %, tank_destroyer +1.5 %, elite_heavy_tank
   +0.5 %, elite_mbt +0.8 %, elite_tank_destroyer +1.3 %, titan_tank +0.8 %, turtle_tank +1.4 %: all pass the -1 % gate.
   Previews skipped to save tokens (the card luma is the gate; previews only when a card fails or looks off).
+
+## 27 wave 3b (lead pass, 2026-10-02)
+
+Pass 3b, the eight rows laser_tank, flame_tank, twin_tank, bmpt, ifv, elite_apc, armored_bulldozer, engineer_vehicle,
+builders appended to `mb_p27_wave3.py`. Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no
+previews (owner's rule after 3a), no tests.
+
+- **Builders.** Same recipe as 3a, copy-first: `parts.track_unit` (cleat pitch .30), `k.extrude` hulls with chamfers and
+  insets, `k.sharp_loft` turrets (`_turret_loft`), `parts.barrel` one-surface guns, library hatches, lathed domes and
+  cupolas, seeded greebles (seeds 2721-2726). `twin_tank` is the V2 MBT drawn with the wide turret and two barrels, then
+  `_scale_asset` x1.15 as before; `elite_apc` wraps the new `ifv` with the old `_elite_on` arguments; `bmpt` gets its own
+  `_t72_v2` hull (the old `_t72_hull` stays for the other T-72 models). The bulldozer keeps its own extruded high-drive track
+  with `parts.sprocket` and `parts.road_wheel`.
+- **Gates (baseline -> new).** laser 2,548 -> 3,844 (1.51x); flame 3,726 -> 5,258 (1.41x); twin 4,956 -> 7,154 (1.44x); bmpt
+  3,168 -> 5,056 (1.60x); ifv 3,192 -> 5,040 (1.58x); elite_apc 3,632 -> 5,480 (1.51x); bulldozer 2,060 -> 3,244 (1.57x);
+  engineer 2,304 -> 3,670 (1.59x). Zero-area 0, 0 validator errors, runtime nodes identical on all eight, COLOR_0 mean up
+  (+0.04 to +0.10). Size change (length / width / height): all inside 2 % (ifv and elite_apc +1.3 / +0.7 / -0.2 %: the new
+  wheel discs; flame +0.0 / +0.8 / +1.9 %: the lathed dome turret).
+- **Triangle budget** again the constraint on the lean models: bmpt, bulldozer and engineer first came out 1.6-1.65x and
+  were trimmed (fewer greebles, bulldozer cleat pitch .6, six-sided Ataka tubes).
+- **Deviation:** the flame tank's five road wheels are now evenly spaced (`track_unit`), the old gap after the first pair is
+  gone.
+- Card luma (old, mean of pixels with alpha > .5): laser .3595, flame .3193, twin .3705, bmpt .3279, ifv .3828, elite_apc
+  .3019, bulldozer .3058, engineer .3434. New cards: the lead renders them after the merge.
