@@ -65,7 +65,7 @@
   },
   "ammo_crate": {
     "file": "ammo_crate.glb",
-    "triangles": 480
+    "triangles": 496
   },
   "ammo_dump": {
     "file": "ammo_dump.glb",
@@ -193,7 +193,7 @@
   },
   "barrel": {
     "file": "barrel.glb",
-    "triangles": 816
+    "triangles": 672
   },
   "barricade": {
     "file": "barricade.glb",
@@ -281,7 +281,7 @@
   },
   "bush": {
     "file": "bush.glb",
-    "triangles": 80
+    "triangles": 100
   },
   "c_ram": {
     "file": "c_ram.glb",
@@ -621,7 +621,7 @@
   },
   "fuel_tank": {
     "file": "fuel_tank.glb",
-    "triangles": 2164
+    "triangles": 1950
   },
   "fuel_truck": {
     "file": "fuel_truck.glb",
@@ -781,11 +781,11 @@
   },
   "house_large": {
     "file": "house_large.glb",
-    "triangles": 6056
+    "triangles": 5708
   },
   "house_small": {
     "file": "house_small.glb",
-    "triangles": 2680
+    "triangles": 2332
   },
   "hover_gunboat": {
     "file": "hover_gunboat.glb",
@@ -1201,15 +1201,15 @@
   },
   "rock_a": {
     "file": "rock_a.glb",
-    "triangles": 360
+    "triangles": 380
   },
   "rock_b": {
     "file": "rock_b.glb",
-    "triangles": 360
+    "triangles": 380
   },
   "rock_c": {
     "file": "rock_c.glb",
-    "triangles": 360
+    "triangles": 380
   },
   "rocket": {
     "file": "rocket.glb",
@@ -1565,7 +1565,7 @@
   },
   "wall": {
     "file": "wall.glb",
-    "triangles": 832
+    "triangles": 736
   },
   "warehouse": {
     "file": "warehouse.glb",

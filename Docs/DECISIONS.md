@@ -14420,3 +14420,12 @@ mirror, no cards, no previews, no tests. The substring filter rebuilt nothing ou
 - **Card luma (old, alpha > .5, Rec. 709):** leviathan .3217, caspian .3595, typhon .2215 (the dimmest: watch it), landing_hovercraft .2849,
   supreme_command .3304. Target: >= old, at most about +20 %.
 - Lead (2026-10-02), wave 5d cards: all five pass (+0.3 % to +2.9 %). Wave 5 is complete (21 bosses). Waves 1-7 are done; wave 8 (198 props, scenery, munitions, unlisted) waits for the owner's call on scope.
+
+## 27 wave 8b1 (lead pass, 2026-10-02)
+
+Pass 8b1 (lane B, mb_props), in the new `Tools/blender/mb_p27_wave8b.py` (registered last in `build_assets.py`). Props are lean: no new materials, no new parts or moving parts, nodes identical. Run: Blender rebuild (the substring filter also rebuilt blast_wall and wreck_barrel, reverted), `glb_check.py` compare and accept. No runner mirror, no cards, no previews, no tests.
+
+- Rebuilt: house_small / house_large (walls, base, corner pilasters, chimney as chamfered `k.block`, roof as chamfered `k.extrude`; windows, door, tank unchanged, same random draws), wall (chamfered jersey barriers), fuel_tank (one `k.lathe` body with a rolled dome, chamfered pad), barrel (`k.lathe` drum), ammo_crate (chamfered crates with a recessed lid), bush (one more clump), rock_a/b/c (one more pebble).
+- Kept old (natural scenery, no visible gain for the cost): tree, pine (a rebuild only moved the bounds), birch, tree_broad, tree_dead, tree_round, rubble_small/medium/large. The six debris_* are the munitions row (pass 8a1).
+- ao_strength: .9 default; .8 house_small, .85 house_large, .65 wall, .55 barrel, .6 ammo_crate, .85 / .8 / .88 rock_a/b/c (lower = brighter; a rebuilt block surface dims COLOR_0).
+- Gates (old -> new triangles, COLOR_0): house_small 2,680 -> 2,332 (.621 -> .633); house_large 6,056 -> 5,708 (.654 -> .662); wall 832 -> 736 (.655 -> .670); fuel_tank 2,164 -> 1,950 (.582 -> .599); barrel 816 -> 672 (.651 -> .674); ammo_crate 480 -> 496 (.698 -> .705); bush 80 -> 100 (.568 -> .592); rock_a 360 -> 380 (.637 -> .639); rock_b 360 -> 380 (.635 -> .641); rock_c 360 -> 380 (.630 -> .630). Sizes within .02 m except bush height +.03 m; no errors or warnings.
