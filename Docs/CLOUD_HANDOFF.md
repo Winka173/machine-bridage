@@ -211,3 +211,10 @@ draws them is Game.
 
 List every local item in `Docs/ai/LOCAL_TODO.md` under the prompt's name. No runs except the dotnet compile check and
 Python tools; the prompts' "write automated tests" means write them.
+
+## Cloud state 2026-10-02 (prompt 28 appendix)
+
+- Branch `cloud/p28-modes` (from `origin/feature/visual-overhaul` 322bcc89), commit "P28: aiModeProfile": the appendix's
+  cloud part is done (DECISIONS "28 appendix", LOCAL_TODO "Prompt 28 appendix"). dotnet compile: 0 errors.
+- Waiting for the owner to merge it; then prompt 30 on `cloud/p30-story` from the latest `origin/feature/visual-overhaul`,
+  then prompt 31 on `cloud/p31-decks`.
