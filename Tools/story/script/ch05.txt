@@ -1,0 +1,153 @@
+# Chapter 5 · Burning Canopy (act 2). Enemy general: Venn. Arc: burn Venn's drone works in the jungle and the
+# volcano; Locust, Hive, Matriarch. Threads: Venn's tired voice and the swarm's rescue purpose; Aurel heard of
+# directly for the first time; at the very end Venn walks out with a drive named Icarus (c5m10's win only).
+
+@c5m01 main=linh
+mission_start | sen | 1 | Bầy drone không ghét các anh, đại tá. Nó chẳng cảm thấy gì cả. || The swarm does not hate you, Colonel. It does not feel anything.
+mission_start | linh | 1 | Đó là tiến sĩ Venn, trên kênh mở. Bà ấy muốn ta nghe thấy. || That was Dr Venn, on an open channel. She wanted us to hear.
+first_unit_type_seen | sen | 2 | Mỗi con có một camera nhiệt. Ban đầu chúng tìm hơi ấm dưới đống đổ nát. || Each one carries a thermal camera. They were made to find warmth under rubble.
+point_captured:town | linh | 3 | Bến lội ở đền đã là của ta. Mưa làm drone bay thấp, phòng không bắn dễ hơn. || The temple ford is ours. The rain keeps the drones low; easier for the flak.
+objective_progress:last | khai | 2 | Còn làng phía đông. Đi dưới tán cây, đừng ra chỗ trống. || The east village left. Stay under the canopy; no open ground.
+victory | khai | 1 | Đèo đã mở. Từ giờ, mỗi tiếng vo vo đều đáng để ngẩng lên nhìn. || The pass is open. From now on, every buzz is worth looking up for.
+defeat | sen | 1 | Rút đi, đại tá. Bầy drone sẽ không đuổi theo người đang chạy. || Pull back, Colonel. The swarm does not chase people who run.
+
+@c5m02 main=linh
+mission_start | linh | 1 | Ba xe phóng drone. Diệt xe là bầy drone ngừng tới. || Three launch trucks. Kill the trucks and the swarms stop coming.
+event_triggered | linh | 2 | Nhiễu điện tử toàn dải. Tôi mất liên lạc với xe trinh sát trong một phút. || Jamming across every band. I lose the scouts for a minute.
+objective_progress:1/3 | linh | 2 | Một xe phóng đã nổ. Bầy drone của nó rơi như mưa xuống dung nham. || One launcher gone. Its swarm is falling like rain into the lava.
+first_unit_type_seen | sen | 2 | Xe mang drone tự sát. Tôi không thiết kế loại đó. Có ai đó đã sửa nó. || A loitering-munition truck. I did not design that kind. Someone changed it.
+objective_progress:last | linh | 2 | Còn một xe phóng. Nó đang chạy dọc mép dung nham, ánh lửa lộ nó ra. || One launcher left. It is running along the lava edge; the glow gives it away.
+victory | linh | 1 | Ba xe phóng đã gạch. Đêm nay trời trên đồi lửa sẽ yên. || All three launchers crossed out. The sky over the ridge will be quiet tonight.
+defeat | linh | 1 | Chúng lẩn vào khói núi lửa. Hướng bắc, tôi đã ghi lại. || They slipped into the volcanic smoke. North; I have it noted.
+
+@c5m03 main=khai
+mission_start | khai | 1 | Mắt nhìn lên trời. Sương không giấu được ai khỏi drone. || Eyes up. The fog does not hide you from drones.
+time@20 | mai | 2 | Năm xe chở thiết bị làm cầu. Cần ba xe tới làng phía tây, công binh đang chờ. || Five trucks of bridging gear. Three to the west village; the engineers are waiting.
+first_unit_type_seen | dieuhau | 2 | Drone tấn công bay thành đàn trên sông. Phòng không đi cạnh đoàn xe! || Strike drones in a flock over the river. Anti-air alongside the trucks!
+objective_progress:1/3 | hq | 2 | Xe đầu tới làng. Công binh bắt đầu dỡ dầm cầu. || First truck at the village. The engineers are unloading the bridge spans.
+event_triggered | hq | 2 | Mưa nặng hạt. Drone sẽ bay thấp và chậm, và xe tải sẽ trượt bùn. || Heavy rain. Drones fly low and slow, and the trucks will slide in the mud.
+critical_failure_imminent | khai | 1 | Thêm một xe là không đủ cầu. Che chiếc cuối bằng mọi thứ. || One more truck and we are a span short. Cover the last one with everything.
+victory | khai | 1 | Thiết bị đã tới. Ngày mai ta qua sông. || The gear is there. Tomorrow we cross the river.
+defeat | khai | 1 | Không đủ dầm cầu. Ta sẽ phải tìm chỗ lội. || Not enough spans. We will have to find a ford.
+
+@c5m04 main=mai
+mission_start | mai | 1 | Bốn mươi megawatt dưới chân ta. Cho tôi nhà máy địa nhiệt. || Forty megawatts under our feet. Give me the plant.
+point_captured:town | mai | 3 | Nhà máy là của ta. Đường ống hơi còn nóng, đừng ai đỗ xe lên nó. || The plant is ours. The steam pipes are hot; nobody parks on them.
+time@120 | sen | 2 | Cô đang ngồi trên núi lửa, kỹ sư. Tôi sẽ không thoải mái quá đâu. || You are sitting on a volcano, Engineer. I would not get comfortable.
+hq_below_50 | mai | 2 | Sở chỉ huy đang thủng. Drone nhắm vào ống hơi. Đừng để chúng vào sân. || The HQ is holed. The drones are going for the steam lines. Keep them out of the yard.
+event_triggered | hq | 2 | Mây kéo tới thấp. Drone sẽ khó thấy từ trên, phòng không cũng khó thấy chúng. || Low cloud coming. The drones see less from above, and the flak sees less of them.
+victory | mai | 1 | Đèn đã sáng. Lữ đoàn vừa có nguồn điện miễn phí, đầu tiên kể từ bãi biển. || The lights are on. Free power for the brigade, the first since the beach.
+defeat | mai | 1 | Nhà máy sập. Bốn mươi megawatt lại đi xuống lòng đất. || The plant is down. Forty megawatts back into the ground.
+
+@c5m08 main=linh
+mission_start | linh | 1 | Mấy bầy drone này không dùng mã phóng của Venn. Ai đó điều khiển trực tiếp. || These swarms are not using Venn's launch codes. Someone is flying them directly.
+boss_spawn | mai | 1 | Locust: một tàu mẹ nhỏ. Bắn rơi nó, bầy theo sau sẽ mất người dẫn. || Locust: a small carrier. Down it, and the swarm behind it loses its leader.
+time@40 | hq | 2 | Các bồn hơi cấp điện cho cả lữ đoàn. Còn công nhân trong trạm bơm. || The steam tanks power the brigade. There are workers in the pump house.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Giữ phòng không ở phía nam, đó là đường chúng tới. || Halfway. Keep the anti-air south; that is their road in.
+critical_failure_imminent | khai | 1 | Chỉ còn một bồn. Mất nó là lữ đoàn mất điện. || One tank left. Lose it and the brigade goes dark.
+boss_part_destroyed | mai | 2 | Một cánh quạt của Locust đã gãy. Nó bay lệch, bầy của nó cũng vậy. || One of Locust's rotors is gone. It flies crooked, and so does its swarm.
+boss_hp:50 | dieuhau | 4 | Locust đang mất độ cao! Nó cố về phía nam, đừng để nó thoát. || Locust is losing height! It is trying for the south; do not let it go.
+event_triggered | linh | 2 | Nhiễu vừa bật trên mọi kênh. Người điều khiển không muốn ta nghe ông ta nói gì. || Jamming on every channel. The controller does not want us hearing him.
+time@200 | hq | 2 | Đoàn cứu viện của ta đang tới từ phía bắc. Giữ thêm một chút. || Our relief column is coming from the north. Hold a little longer.
+victory | linh | 1 | Tôi đã nghe được giọng người điều khiển. Không phải Venn. Có người gọi ông ta là "Giám đốc". || I heard the controller's voice. Not Venn. Someone called him "Director".
+defeat | khai | 1 | Mất điện. Ta sẽ chạy bằng máy phát cho tới khi tìm được cách khác. || The power is gone. We run on generators until we find another way.
+
+@c5m12 main=khai
+mission_start | khai | 1 | Đi đường vòng. Chúng sẽ nhìn nhầm hướng. || The long way round. They will be looking the wrong way.
+time@30 | linh | 2 | Quân ngoài của Venn vẫn nhìn về phía nam. Ta tới từ phía bắc, chưa ai thấy. || Venn's outer guard is still facing south. We are coming from the north, unseen.
+point_captured | linh | 3 | Một làng phía bắc là của ta. Chúng mới bắt đầu quay súng lại. || A north village is ours. They are only now turning their guns round.
+event_triggered | hq | 2 | Giông đang tới. Drone sẽ bị gió thổi tạt, cơ hội cho xe tăng. || A storm front is coming. The wind will scatter the drones; a chance for the tanks.
+objective_progress:last | khai | 2 | Còn một điểm. Đánh nhanh, trước khi chúng hiểu mình bị đánh từ sau lưng. || One point left. Quickly, before they understand they were hit from behind.
+victory | linh | 1 | Ta giữ đèo từ cả hai đầu. || The pass is ours from both ends now.
+defeat | khai | 1 | Chúng quay lại kịp. Lần sau ta vòng xa hơn. || They turned in time. Next time we go wider.
+
+@c5m05 main=mai
+mission_start | sen | 1 | Bảy trăm drone trên trời. Đếm thử nếu anh muốn. || Seven hundred drones in the air. Count them if you like.
+boss_spawn | mai | 1 | Hive: pháo đài drone, không có pháo chính, không sợ máy bay. Xe tăng và pháo binh vào. || The Hive: a drone fortress, no main gun, no fear of aircraft. Tanks and artillery on it.
+time@30 | khai | 2 | Pháo mặt đất vào nó. Máy bay ở nhà. || Ground guns on it. Keep the aircraft home.
+boss_part_destroyed | mai | 2 | Một giá phóng đã gãy. Bầy drone ra từ đó sẽ ít đi một phần ba. || One launch rack is broken. A third fewer drones from it.
+boss_phase_change | sen | 1 | Nó chuyển sang tự vệ. Tôi đã viết chế độ này để bảo vệ đội cứu hộ. || It is switching to self-defence. I wrote that mode to protect rescue teams.
+superweapon_warning | mai | 1 | Nó sắp phóng cả đàn cùng lúc. Rời vùng đỏ và tản ra! || It is about to launch everything at once. Out of the red and spread out!
+event_triggered | linh | 2 | Nhiễu toàn dải. Phòng không chỉ còn bắn được bằng mắt. || Jamming everywhere. The flak can only aim by eye now.
+boss_hp:50 | dieuhau | 4 | Một nửa! Bầy drone đang thưa đi, tôi thấy được bầu trời rồi. || Half! The swarm is thinning; I can see sky again.
+boss_hp:25 | khai | 4 | Nó đang lết. Đừng để nó về được rừng. || It is crawling. Do not let it reach the trees.
+hq_below_50 | mai | 2 | Drone đang rơi xuống trại. Giữ phòng không quanh sở chỉ huy. || Drones falling on the camp. Keep the flak round the HQ.
+victory | sen | 1 | Đủ rồi. Cho bầy drone hạ cánh. || Enough. Stand the swarm down.
+victory | khai | 1 | Hive đã gục. Bà ấy dừng nó trước khi ta phải phá hết. || The Hive is down. She stopped it before we had to break all of it.
+defeat | sen | 1 | Bầy drone vẫn bay. Tôi xin lỗi. Chúng không biết cách dừng. || The swarm still flies. I am sorry. They do not know how to stop.
+
+@c5m06 main=khai
+mission_start | khai | 1 | Tường trước, rồi sở chỉ huy. Để pháo nói. || Walls first, then the HQ. Let the guns talk.
+event_triggered | dahl | 2 | Pháo đã căn xong tường phía nam. Mỗi loạt mười tám giây. || Guns ranged on the south wall. A salvo every eighteen seconds.
+first_unit_type_seen | dieuhau | 2 | Máy bay ném bom từ phía núi lửa! Chúng nhắm vào pháo của ta. || Bombers from the volcano side! They are after our guns.
+objective_progress:1/2 | khai | 2 | Tường đã thủng. Vào trong, nhanh, trước khi chúng lấp lỗ. || The wall is breached. Inside, fast, before they fill the gap.
+expensive_unit_lost | khai | 3 | Mất một xe nặng ở cổng. Đừng chen vào lỗ tường, mở rộng nó trước. || A heavy lost at the gate. Do not squeeze through; widen the breach first.
+victory | khai | 1 | Xưởng drone đã cháy. Lửa núi lửa và lửa của ta, khó phân biệt. || The drone works are burning. Volcano fire and ours; hard to tell apart.
+defeat | sen | 1 | Tường đứng vững. Lò ấp vẫn hoạt động, đại tá. || The walls hold. The hatcheries keep working, Colonel.
+
+@c5m11 main=linh
+mission_start | linh | 1 | Tín hiệu phát ra từ đây. Nhìn thôi, đừng bắn vào tòa nhà. || The signal comes from here. Look, and do not shoot the building.
+time@45 | sen | 2 | Tiến sĩ Venn đây. Tôi tạo ra bầy drone để tìm người dưới đống đổ nát. || Dr Venn here. I built the swarm to find people under rubble.
+point_captured | linh | 3 | Tòa nhà thứ nhất: phòng thí nghiệm, còn bản thiết kế trên bàn. Có ai mới rời đi. || First building: a lab, drawings still on the desk. Someone left in a hurry.
+event_triggered | linh | 2 | Nhiễu vừa bật. Không phải từ phòng thí nghiệm, từ ngoài vào. || Jamming just came on. Not from the lab; from outside.
+objective_progress:last | linh | 2 | Còn một tòa. Tín hiệu mạnh nhất ở đó. Bà ấy có thể ở bên trong. || One building left. The signal is strongest there. She may be inside.
+victory | linh | 1 | Bà ấy có thể đã gây nhiễu ta. Bà ấy đã không làm. || She could have jammed us. She didn't.
+defeat | linh | 1 | Tín hiệu tắt. Ta mất dấu bà ấy. || The signal went dead. We lost her trail.
+
+@c5m07 main=dieuhau
+mission_start | dieuhau | 1 | Drone, rất nhiều. Giữ phòng không di chuyển dưới tán cây. Mười bốn con. || Drones, lots of them. Keep the flak moving under the trees. Fourteen.
+objective_progress:1/2 | dieuhau | 2 | Bảy con! Chúng bắt đầu bay sát ngọn cây để trốn. || Seven! They are skimming the treetops to hide.
+first_unit_type_seen | dieuhau | 2 | UAV tấn công cỡ lớn, có giáp dưới bụng. Bắn vào cánh, đừng bắn vào bụng. || Big strike UAV, armoured belly. Shoot the wings, not the belly.
+objective_progress:last | dieuhau | 2 | Còn một con! Tôi thấy nó lượn quanh đền, kêu như máy cắt cỏ. || One more! It is circling the temple, buzzing like a lawnmower.
+momentum_high_once | dieuhau | 4 | Khá là đông đúc trên này lúc nãy. Giờ thì thoáng hơn nhiều. || It was pretty crowded up here a minute ago. Much roomier now.
+victory | dieuhau | 1 | Bầu trời rừng là của ta. Có thể đi dạo dưới tán cây rồi. || The jungle sky is ours. Safe to walk under the trees again.
+victory | linh | 1 | Một điều lạ: Hegemon di chuyển trước khi lệnh của ta được gửi đi. Có người đọc lệnh sớm. || Odd: Hegemon moved before our orders went out. Someone reads them early.
+defeat | dieuhau | 1 | Mất phòng không cuối. Tôi phải bay thấp về, rừng vẫn là của chúng. || Last flak gone. I am flying home low; the jungle is still theirs.
+
+@c5m13 main=khai
+mission_start | khai | 1 | Giữ bến lội tới sáng. Tán cây giấu ta; giữ cho nó tiếp tục như vậy. || Hold the ford till morning. The canopy hides us; keep it that way.
+event_triggered | linh | 2 | Nhiễu toàn dải. Drone mù, ta cũng mù, chỉ còn tai. || Jamming everywhere. The drones are blind, so are we; only ears now.
+objective_progress:1/2 | khai | 2 | Nửa đêm. Đừng bật đèn. Chúng nhìn bằng nhiệt, không bằng mắt. || Midnight. No lights. They see heat, not light.
+point_lost | khai | 3 | Mất bến lội. Lấy lại trong bóng tối, chúng không thấy ta tới đâu. || The ford is lost. Take it back in the dark; they will not see us coming.
+event_triggered | hq | 2 | Đợt tăng viện của ta đã qua sông. Họ đang tới từ phía tây. || Our reinforcements are across the river, coming from the west.
+victory | mai | 1 | Trời sáng. Và tất cả chúng ta vẫn còn ở đây. || Morning. And we are all still here.
+defeat | khai | 1 | Mất bến lội. Rút về bờ tây trước khi trời sáng lộ ta ra. || The ford is lost. Back to the west bank before daylight finds us.
+
+@c5m09 main=khai
+mission_start | sen | 1 | Tôi thiết kế thứ này để cứu người. Hãy nhớ điều đó khi nó giết các anh. || I designed this to save people. Remember that when it kills you.
+time@20 | linh | 2 | Tôi nghĩ bà ấy sẽ không đánh tới cùng. Giọng bà ấy mệt lắm. || I do not think she will fight to the end. She sounds very tired.
+general_tactic_change | linh | 3 | Venn đổi sang phục kích: drone nằm chờ trong nhà chứa máy bay. Đừng vào nhà chứa. || Venn has gone to ambush: drones waiting in the hangars. Do not go inside them.
+event_triggered | dieuhau | 2 | Tôi đánh vào dãy nhà chứa phía đông. Cúi đầu xuống. || Hitting the east hangars. Heads down.
+expensive_unit_lost | khai | 3 | Mất xe nặng vì drone tự sát. Giữ phòng không sát xe tăng. || A heavy lost to a loitering drone. Keep the flak tight on the tanks.
+victory | sen | 1 | Đủ rồi. || Enough.
+victory | linh | 1 | Bà ấy dừng lại trước khi sở chỉ huy sập. Bà ấy đang đợi điều gì đó. || She stopped before the HQ fell. She is waiting for something.
+defeat | sen | 1 | Về đi. Tôi không muốn đếm thêm người nữa. || Go home. I do not want to count any more of you.
+
+@c5m10 main=khai
+mission_start | khai | 1 | Hôm nay tàu mẹ phải rơi. Mọi thứ khác chỉ là đường tới nó. || The mothership falls today. Everything else is on the way to it.
+phase_start:2 | linh | 1 | Đê đá là của ta. Chọn đòn tiếp: trạm điều khiển hay kho nhiên liệu của drone. || The causeways are ours. Next blow: the control station or the drone fuel store.
+phase_start:3 | khai | 1 | Nó đang tung cả bầy vào ta. Trụ lại, chúng không vô tận đâu. || It is throwing the whole swarm at us. Hold; they are not endless.
+boss_spawn | mai | 1 | Matriarch: tàu mẹ của Hive. Nó nạp drone qua bốn khoang bụng. Đóng từng khoang. || Matriarch, the Hive's mothership. Four belly bays feed its drones; shut them one by one.
+boss_spawn | sen | 1 | Đây là thứ cuối cùng của tôi, đại tá. Nó được làm ra để bay trên vùng thảm họa. || This is the last thing I built, Colonel. It was made to fly over disaster zones.
+boss_part_destroyed | mai | 2 | Một khoang bụng đã cháy. Bầy drone từ đó rơi như lá. || One belly bay is burning. The drones from it are falling like leaves.
+superweapon_warning | mai | 1 | Nó sắp thả cả đàn xuống một điểm. Rời vùng đỏ, đừng ai đứng lại! || It is about to drop the whole swarm on one spot. Out of the red; nobody stays!
+boss_hp:75 | linh | 4 | Tàu mẹ mất một phần tư sức. Liên lạc của nó đang lặp lại một tên: Aurel. || The mothership is down a quarter. Its traffic keeps repeating one name: Aurel.
+boss_hp:25 | dieuhau | 4 | Nó đang mất độ cao! Thêm một loạt nữa thôi! || It is losing height! One more volley!
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Mọi thứ vào tàu mẹ, ngay. || The HQ is critical. Everything onto the mothership, now.
+victory | khai | 1 | Venn ra hàng? …Đưa bà ấy vào. Cẩn thận. || Venn is coming out? ...Bring her in. Carefully.
+victory | sen | 1 | Tôi mang theo thứ các anh cần hơn tôi. Một ổ đĩa. Tên nó là Icarus. || I bring something you need more than me. A drive. It is called Icarus.
+defeat | sen | 1 | Bầy drone vẫn bay. Tôi không thể dừng chúng nữa, đại tá. Không ai có thể. || The swarm still flies. I cannot stop it any more, Colonel. Nobody can.
+
+@c5s1 main=linh
+mission_start | linh | 1 | Tìm bất cứ thứ gì sơn màu cam. || Look for anything painted orange.
+point_captured | linh | 3 | Một trạm thực địa: thiết bị cứu hộ, cáng, sơn cam khắp nơi. Không có vũ khí. || A field station: rescue gear, stretchers, orange paint everywhere. No weapons.
+event_triggered | hq | 2 | Giông đang tới. Trạm trinh sát tiếp theo ở trên đồi, đi nhanh. || A storm front is coming. The next station is on the hill; move fast.
+victory | linh | 1 | Ba trạm. Sổ ghi chép của Venn toàn là tọa độ những người bà ấy đã tìm thấy. || Three stations. Venn's notebooks are full of coordinates of people she found.
+defeat | linh | 1 | Có người đã dọn các trạm trước ta. Ai đó không muốn ta đọc những cuốn sổ đó. || Someone cleared the stations before us. Someone did not want us reading those notebooks.
+
+@c5s2 main=linh
+mission_start | linh | 1 | Họ đã giữ hai năm. Sở chỉ huy của họ không chịu được lâu nữa. Vòng vây có sáu xe. || They held for two years. Their HQ cannot hold much longer. Six vehicles in the ring.
+objective_progress:1/2 | khai | 2 | Vòng vây thủng một nửa. Những người đốt than đang bắn ra từ bên trong. || The ring is half broken. The charcoal burners are firing out from inside.
+critical_failure_imminent | linh | 1 | Sở chỉ huy của họ sắp sập. Mọi thứ vào xe đang nã nó! || Their HQ is about to fall. Everything on whatever is shelling it!
+victory | linh | 1 | Vòng vây tan. Họ mời ta uống trà, loại pha bằng khói. || The ring is gone. They are offering us tea, the smoky kind.
+defeat | linh | 1 | Trại của họ thất thủ. Hai năm, rồi đến đêm nay. || Their camp has fallen. Two years, and then tonight.

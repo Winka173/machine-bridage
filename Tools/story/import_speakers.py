@@ -34,13 +34,13 @@ KNOWN = {"mission_start", "phase_start", "phase_end", "objective_progress", "poi
 HQ = {"roles": ["command net"], "triggers": ["objective_progress", "event_triggered", "enemy_reinforcement", "timer_60s"]}
 MAIN = ["mission_start", "victory", "defeat", "critical_failure_imminent", "momentum_high_once", "objective_stall_90s"]
 # The sheet "Điểm kích hoạt" names no fixed speaker for these ("Theo kịch bản", "Theo sự kiện", "Theo boss", "Người giữ
-# điểm"; the superweapon's guide line has none either): the script picks one.
+# điểm", and victory/defeat "Theo kịch bản"; the superweapon's guide line has none either): the script picks one.
 SCRIPTED = ["phase_start", "phase_end", "objective_progress", "boss_phase_change", "event_triggered", "time", "boss_hp",
-            "superweapon_warning", "point_captured", "point_lost"]
+            "superweapon_warning", "point_captured", "point_lost", "victory", "defeat"]
 # The trigger table names a speaker the voice sheet's allowedTriggers leave out: expensive_unit_lost "Kade hoặc chỉ huy
 # liên quan", ally_late "Đồng minh / Nadia".
-# Brandt is chapter 1's enemy general: the generals' lines too.
-EXTRA_TRIGGERS = {"khai": ["expensive_unit_lost"], "linh": ["ally_late"], "brandt": GENERAL}
+# Brandt (chapter 1), Venn (5) and Thorne (8, 9) lead the enemy in their chapters: the generals' lines too.
+EXTRA_TRIGGERS = {"khai": ["expensive_unit_lost"], "linh": ["ally_late"], "brandt": GENERAL, "sen": GENERAL, "hung": GENERAL}
 
 
 def triggers(cell: str) -> list[str]:

@@ -1,0 +1,1281 @@
+{
+"chapter": 5,
+"missions": {
+"c5m01": {
+"main": "linh"
+},
+"c5m02": {
+"main": "linh"
+},
+"c5m03": {
+"main": "khai"
+},
+"c5m04": {
+"main": "mai"
+},
+"c5m08": {
+"main": "linh"
+},
+"c5m12": {
+"main": "khai"
+},
+"c5m05": {
+"main": "mai"
+},
+"c5m06": {
+"main": "khai"
+},
+"c5m11": {
+"main": "linh"
+},
+"c5m07": {
+"main": "dieuhau"
+},
+"c5m13": {
+"main": "khai"
+},
+"c5m09": {
+"main": "khai"
+},
+"c5m10": {
+"main": "khai"
+},
+"c5s1": {
+"main": "linh"
+},
+"c5s2": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c5m01",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m01.01",
+"en": "The swarm does not hate you, Colonel. It does not feel anything.",
+"vi": "Bầy drone không ghét các anh, đại tá. Nó chẳng cảm thấy gì cả."
+},
+{
+"mission": "c5m01",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m01.02",
+"en": "That was Dr Venn, on an open channel. She wanted us to hear.",
+"vi": "Đó là tiến sĩ Venn, trên kênh mở. Bà ấy muốn ta nghe thấy."
+},
+{
+"mission": "c5m01",
+"trigger": "first_unit_type_seen",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c5m01.03",
+"en": "Each one carries a thermal camera. They were made to find warmth under rubble.",
+"vi": "Mỗi con có một camera nhiệt. Ban đầu chúng tìm hơi ấm dưới đống đổ nát."
+},
+{
+"mission": "c5m01",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c5m01.04",
+"en": "The temple ford is ours. The rain keeps the drones low; easier for the flak.",
+"vi": "Bến lội ở đền đã là của ta. Mưa làm drone bay thấp, phòng không bắn dễ hơn.",
+"arg": "town"
+},
+{
+"mission": "c5m01",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5m01.05",
+"en": "The east village left. Stay under the canopy; no open ground.",
+"vi": "Còn làng phía đông. Đi dưới tán cây, đừng ra chỗ trống.",
+"arg": "last"
+},
+{
+"mission": "c5m01",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m01.06",
+"en": "The pass is open. From now on, every buzz is worth looking up for.",
+"vi": "Đèo đã mở. Từ giờ, mỗi tiếng vo vo đều đáng để ngẩng lên nhìn."
+},
+{
+"mission": "c5m01",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m01.07",
+"en": "Pull back, Colonel. The swarm does not chase people who run.",
+"vi": "Rút đi, đại tá. Bầy drone sẽ không đuổi theo người đang chạy."
+},
+{
+"mission": "c5m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m02.01",
+"en": "Three launch trucks. Kill the trucks and the swarms stop coming.",
+"vi": "Ba xe phóng drone. Diệt xe là bầy drone ngừng tới."
+},
+{
+"mission": "c5m02",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m02.02",
+"en": "Jamming across every band. I lose the scouts for a minute.",
+"vi": "Nhiễu điện tử toàn dải. Tôi mất liên lạc với xe trinh sát trong một phút."
+},
+{
+"mission": "c5m02",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m02.03",
+"en": "One launcher gone. Its swarm is falling like rain into the lava.",
+"vi": "Một xe phóng đã nổ. Bầy drone của nó rơi như mưa xuống dung nham.",
+"arg": "1/3"
+},
+{
+"mission": "c5m02",
+"trigger": "first_unit_type_seen",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c5m02.04",
+"en": "A loitering-munition truck. I did not design that kind. Someone changed it.",
+"vi": "Xe mang drone tự sát. Tôi không thiết kế loại đó. Có ai đó đã sửa nó."
+},
+{
+"mission": "c5m02",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m02.05",
+"en": "One launcher left. It is running along the lava edge; the glow gives it away.",
+"vi": "Còn một xe phóng. Nó đang chạy dọc mép dung nham, ánh lửa lộ nó ra.",
+"arg": "last"
+},
+{
+"mission": "c5m02",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m02.06",
+"en": "All three launchers crossed out. The sky over the ridge will be quiet tonight.",
+"vi": "Ba xe phóng đã gạch. Đêm nay trời trên đồi lửa sẽ yên."
+},
+{
+"mission": "c5m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m02.07",
+"en": "They slipped into the volcanic smoke. North; I have it noted.",
+"vi": "Chúng lẩn vào khói núi lửa. Hướng bắc, tôi đã ghi lại."
+},
+{
+"mission": "c5m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m03.01",
+"en": "Eyes up. The fog does not hide you from drones.",
+"vi": "Mắt nhìn lên trời. Sương không giấu được ai khỏi drone."
+},
+{
+"mission": "c5m03",
+"trigger": "time",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c5m03.02",
+"en": "Five trucks of bridging gear. Three to the west village; the engineers are waiting.",
+"vi": "Năm xe chở thiết bị làm cầu. Cần ba xe tới làng phía tây, công binh đang chờ.",
+"at": 20.0
+},
+{
+"mission": "c5m03",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m03.03",
+"en": "Strike drones in a flock over the river. Anti-air alongside the trucks!",
+"vi": "Drone tấn công bay thành đàn trên sông. Phòng không đi cạnh đoàn xe!"
+},
+{
+"mission": "c5m03",
+"trigger": "objective_progress",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m03.04",
+"en": "First truck at the village. The engineers are unloading the bridge spans.",
+"vi": "Xe đầu tới làng. Công binh bắt đầu dỡ dầm cầu.",
+"arg": "1/3"
+},
+{
+"mission": "c5m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m03.05",
+"en": "Heavy rain. Drones fly low and slow, and the trucks will slide in the mud.",
+"vi": "Mưa nặng hạt. Drone sẽ bay thấp và chậm, và xe tải sẽ trượt bùn."
+},
+{
+"mission": "c5m03",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m03.06",
+"en": "One more truck and we are a span short. Cover the last one with everything.",
+"vi": "Thêm một xe là không đủ cầu. Che chiếc cuối bằng mọi thứ."
+},
+{
+"mission": "c5m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m03.07",
+"en": "The gear is there. Tomorrow we cross the river.",
+"vi": "Thiết bị đã tới. Ngày mai ta qua sông."
+},
+{
+"mission": "c5m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m03.08",
+"en": "Not enough spans. We will have to find a ford.",
+"vi": "Không đủ dầm cầu. Ta sẽ phải tìm chỗ lội."
+},
+{
+"mission": "c5m04",
+"trigger": "mission_start",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m04.01",
+"en": "Forty megawatts under our feet. Give me the plant.",
+"vi": "Bốn mươi megawatt dưới chân ta. Cho tôi nhà máy địa nhiệt."
+},
+{
+"mission": "c5m04",
+"trigger": "point_captured",
+"speaker": "mai",
+"priority": 3,
+"once": true,
+"key": "script.c5m04.02",
+"en": "The plant is ours. The steam pipes are hot; nobody parks on them.",
+"vi": "Nhà máy là của ta. Đường ống hơi còn nóng, đừng ai đỗ xe lên nó.",
+"arg": "town"
+},
+{
+"mission": "c5m04",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c5m04.03",
+"en": "You are sitting on a volcano, Engineer. I would not get comfortable.",
+"vi": "Cô đang ngồi trên núi lửa, kỹ sư. Tôi sẽ không thoải mái quá đâu.",
+"at": 120.0
+},
+{
+"mission": "c5m04",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c5m04.04",
+"en": "The HQ is holed. The drones are going for the steam lines. Keep them out of the yard.",
+"vi": "Sở chỉ huy đang thủng. Drone nhắm vào ống hơi. Đừng để chúng vào sân."
+},
+{
+"mission": "c5m04",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m04.05",
+"en": "Low cloud coming. The drones see less from above, and the flak sees less of them.",
+"vi": "Mây kéo tới thấp. Drone sẽ khó thấy từ trên, phòng không cũng khó thấy chúng."
+},
+{
+"mission": "c5m04",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m04.06",
+"en": "The lights are on. Free power for the brigade, the first since the beach.",
+"vi": "Đèn đã sáng. Lữ đoàn vừa có nguồn điện miễn phí, đầu tiên kể từ bãi biển."
+},
+{
+"mission": "c5m04",
+"trigger": "defeat",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m04.07",
+"en": "The plant is down. Forty megawatts back into the ground.",
+"vi": "Nhà máy sập. Bốn mươi megawatt lại đi xuống lòng đất."
+},
+{
+"mission": "c5m08",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m08.01",
+"en": "These swarms are not using Venn's launch codes. Someone is flying them directly.",
+"vi": "Mấy bầy drone này không dùng mã phóng của Venn. Ai đó điều khiển trực tiếp."
+},
+{
+"mission": "c5m08",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m08.02",
+"en": "Locust: a small carrier. Down it, and the swarm behind it loses its leader.",
+"vi": "Locust: một tàu mẹ nhỏ. Bắn rơi nó, bầy theo sau sẽ mất người dẫn."
+},
+{
+"mission": "c5m08",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m08.03",
+"en": "The steam tanks power the brigade. There are workers in the pump house.",
+"vi": "Các bồn hơi cấp điện cho cả lữ đoàn. Còn công nhân trong trạm bơm.",
+"at": 40.0
+},
+{
+"mission": "c5m08",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5m08.04",
+"en": "Halfway. Keep the anti-air south; that is their road in.",
+"vi": "Nửa thời gian. Giữ phòng không ở phía nam, đó là đường chúng tới.",
+"arg": "1/2"
+},
+{
+"mission": "c5m08",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m08.05",
+"en": "One tank left. Lose it and the brigade goes dark.",
+"vi": "Chỉ còn một bồn. Mất nó là lữ đoàn mất điện."
+},
+{
+"mission": "c5m08",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c5m08.06",
+"en": "One of Locust's rotors is gone. It flies crooked, and so does its swarm.",
+"vi": "Một cánh quạt của Locust đã gãy. Nó bay lệch, bầy của nó cũng vậy."
+},
+{
+"mission": "c5m08",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c5m08.07",
+"en": "Locust is losing height! It is trying for the south; do not let it go.",
+"vi": "Locust đang mất độ cao! Nó cố về phía nam, đừng để nó thoát.",
+"arg": "50"
+},
+{
+"mission": "c5m08",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m08.08",
+"en": "Jamming on every channel. The controller does not want us hearing him.",
+"vi": "Nhiễu vừa bật trên mọi kênh. Người điều khiển không muốn ta nghe ông ta nói gì."
+},
+{
+"mission": "c5m08",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m08.09",
+"en": "Our relief column is coming from the north. Hold a little longer.",
+"vi": "Đoàn cứu viện của ta đang tới từ phía bắc. Giữ thêm một chút.",
+"at": 200.0
+},
+{
+"mission": "c5m08",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m08.10",
+"en": "I heard the controller's voice. Not Venn. Someone called him \"Director\".",
+"vi": "Tôi đã nghe được giọng người điều khiển. Không phải Venn. Có người gọi ông ta là \"Giám đốc\"."
+},
+{
+"mission": "c5m08",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m08.11",
+"en": "The power is gone. We run on generators until we find another way.",
+"vi": "Mất điện. Ta sẽ chạy bằng máy phát cho tới khi tìm được cách khác."
+},
+{
+"mission": "c5m12",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m12.01",
+"en": "The long way round. They will be looking the wrong way.",
+"vi": "Đi đường vòng. Chúng sẽ nhìn nhầm hướng."
+},
+{
+"mission": "c5m12",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m12.02",
+"en": "Venn's outer guard is still facing south. We are coming from the north, unseen.",
+"vi": "Quân ngoài của Venn vẫn nhìn về phía nam. Ta tới từ phía bắc, chưa ai thấy.",
+"at": 30.0
+},
+{
+"mission": "c5m12",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c5m12.03",
+"en": "A north village is ours. They are only now turning their guns round.",
+"vi": "Một làng phía bắc là của ta. Chúng mới bắt đầu quay súng lại."
+},
+{
+"mission": "c5m12",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m12.04",
+"en": "A storm front is coming. The wind will scatter the drones; a chance for the tanks.",
+"vi": "Giông đang tới. Drone sẽ bị gió thổi tạt, cơ hội cho xe tăng."
+},
+{
+"mission": "c5m12",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5m12.05",
+"en": "One point left. Quickly, before they understand they were hit from behind.",
+"vi": "Còn một điểm. Đánh nhanh, trước khi chúng hiểu mình bị đánh từ sau lưng.",
+"arg": "last"
+},
+{
+"mission": "c5m12",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m12.06",
+"en": "The pass is ours from both ends now.",
+"vi": "Ta giữ đèo từ cả hai đầu."
+},
+{
+"mission": "c5m12",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m12.07",
+"en": "They turned in time. Next time we go wider.",
+"vi": "Chúng quay lại kịp. Lần sau ta vòng xa hơn."
+},
+{
+"mission": "c5m05",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.01",
+"en": "Seven hundred drones in the air. Count them if you like.",
+"vi": "Bảy trăm drone trên trời. Đếm thử nếu anh muốn."
+},
+{
+"mission": "c5m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.02",
+"en": "The Hive: a drone fortress, no main gun, no fear of aircraft. Tanks and artillery on it.",
+"vi": "Hive: pháo đài drone, không có pháo chính, không sợ máy bay. Xe tăng và pháo binh vào."
+},
+{
+"mission": "c5m05",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5m05.03",
+"en": "Ground guns on it. Keep the aircraft home.",
+"vi": "Pháo mặt đất vào nó. Máy bay ở nhà.",
+"at": 30.0
+},
+{
+"mission": "c5m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c5m05.04",
+"en": "One launch rack is broken. A third fewer drones from it.",
+"vi": "Một giá phóng đã gãy. Bầy drone ra từ đó sẽ ít đi một phần ba."
+},
+{
+"mission": "c5m05",
+"trigger": "boss_phase_change",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.05",
+"en": "It is switching to self-defence. I wrote that mode to protect rescue teams.",
+"vi": "Nó chuyển sang tự vệ. Tôi đã viết chế độ này để bảo vệ đội cứu hộ."
+},
+{
+"mission": "c5m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.06",
+"en": "It is about to launch everything at once. Out of the red and spread out!",
+"vi": "Nó sắp phóng cả đàn cùng lúc. Rời vùng đỏ và tản ra!"
+},
+{
+"mission": "c5m05",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m05.07",
+"en": "Jamming everywhere. The flak can only aim by eye now.",
+"vi": "Nhiễu toàn dải. Phòng không chỉ còn bắn được bằng mắt."
+},
+{
+"mission": "c5m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c5m05.08",
+"en": "Half! The swarm is thinning; I can see sky again.",
+"vi": "Một nửa! Bầy drone đang thưa đi, tôi thấy được bầu trời rồi.",
+"arg": "50"
+},
+{
+"mission": "c5m05",
+"trigger": "boss_hp",
+"speaker": "khai",
+"priority": 4,
+"once": true,
+"key": "script.c5m05.09",
+"en": "It is crawling. Do not let it reach the trees.",
+"vi": "Nó đang lết. Đừng để nó về được rừng.",
+"arg": "25"
+},
+{
+"mission": "c5m05",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c5m05.10",
+"en": "Drones falling on the camp. Keep the flak round the HQ.",
+"vi": "Drone đang rơi xuống trại. Giữ phòng không quanh sở chỉ huy."
+},
+{
+"mission": "c5m05",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.11",
+"en": "Enough. Stand the swarm down.",
+"vi": "Đủ rồi. Cho bầy drone hạ cánh."
+},
+{
+"mission": "c5m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.12",
+"en": "The Hive is down. She stopped it before we had to break all of it.",
+"vi": "Hive đã gục. Bà ấy dừng nó trước khi ta phải phá hết."
+},
+{
+"mission": "c5m05",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m05.13",
+"en": "The swarm still flies. I am sorry. They do not know how to stop.",
+"vi": "Bầy drone vẫn bay. Tôi xin lỗi. Chúng không biết cách dừng."
+},
+{
+"mission": "c5m06",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m06.01",
+"en": "Walls first, then the HQ. Let the guns talk.",
+"vi": "Tường trước, rồi sở chỉ huy. Để pháo nói."
+},
+{
+"mission": "c5m06",
+"trigger": "event_triggered",
+"speaker": "dahl",
+"priority": 2,
+"once": true,
+"key": "script.c5m06.02",
+"en": "Guns ranged on the south wall. A salvo every eighteen seconds.",
+"vi": "Pháo đã căn xong tường phía nam. Mỗi loạt mười tám giây."
+},
+{
+"mission": "c5m06",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m06.03",
+"en": "Bombers from the volcano side! They are after our guns.",
+"vi": "Máy bay ném bom từ phía núi lửa! Chúng nhắm vào pháo của ta."
+},
+{
+"mission": "c5m06",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5m06.04",
+"en": "The wall is breached. Inside, fast, before they fill the gap.",
+"vi": "Tường đã thủng. Vào trong, nhanh, trước khi chúng lấp lỗ.",
+"arg": "1/2"
+},
+{
+"mission": "c5m06",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c5m06.05",
+"en": "A heavy lost at the gate. Do not squeeze through; widen the breach first.",
+"vi": "Mất một xe nặng ở cổng. Đừng chen vào lỗ tường, mở rộng nó trước."
+},
+{
+"mission": "c5m06",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m06.06",
+"en": "The drone works are burning. Volcano fire and ours; hard to tell apart.",
+"vi": "Xưởng drone đã cháy. Lửa núi lửa và lửa của ta, khó phân biệt."
+},
+{
+"mission": "c5m06",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m06.07",
+"en": "The walls hold. The hatcheries keep working, Colonel.",
+"vi": "Tường đứng vững. Lò ấp vẫn hoạt động, đại tá."
+},
+{
+"mission": "c5m11",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m11.01",
+"en": "The signal comes from here. Look, and do not shoot the building.",
+"vi": "Tín hiệu phát ra từ đây. Nhìn thôi, đừng bắn vào tòa nhà."
+},
+{
+"mission": "c5m11",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c5m11.02",
+"en": "Dr Venn here. I built the swarm to find people under rubble.",
+"vi": "Tiến sĩ Venn đây. Tôi tạo ra bầy drone để tìm người dưới đống đổ nát.",
+"at": 45.0
+},
+{
+"mission": "c5m11",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c5m11.03",
+"en": "First building: a lab, drawings still on the desk. Someone left in a hurry.",
+"vi": "Tòa nhà thứ nhất: phòng thí nghiệm, còn bản thiết kế trên bàn. Có ai mới rời đi."
+},
+{
+"mission": "c5m11",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m11.04",
+"en": "Jamming just came on. Not from the lab; from outside.",
+"vi": "Nhiễu vừa bật. Không phải từ phòng thí nghiệm, từ ngoài vào."
+},
+{
+"mission": "c5m11",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m11.05",
+"en": "One building left. The signal is strongest there. She may be inside.",
+"vi": "Còn một tòa. Tín hiệu mạnh nhất ở đó. Bà ấy có thể ở bên trong.",
+"arg": "last"
+},
+{
+"mission": "c5m11",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m11.06",
+"en": "She could have jammed us. She didn't.",
+"vi": "Bà ấy có thể đã gây nhiễu ta. Bà ấy đã không làm."
+},
+{
+"mission": "c5m11",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m11.07",
+"en": "The signal went dead. We lost her trail.",
+"vi": "Tín hiệu tắt. Ta mất dấu bà ấy."
+},
+{
+"mission": "c5m07",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c5m07.01",
+"en": "Drones, lots of them. Keep the flak moving under the trees. Fourteen.",
+"vi": "Drone, rất nhiều. Giữ phòng không di chuyển dưới tán cây. Mười bốn con."
+},
+{
+"mission": "c5m07",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m07.02",
+"en": "Seven! They are skimming the treetops to hide.",
+"vi": "Bảy con! Chúng bắt đầu bay sát ngọn cây để trốn.",
+"arg": "1/2"
+},
+{
+"mission": "c5m07",
+"trigger": "first_unit_type_seen",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m07.03",
+"en": "Big strike UAV, armoured belly. Shoot the wings, not the belly.",
+"vi": "UAV tấn công cỡ lớn, có giáp dưới bụng. Bắn vào cánh, đừng bắn vào bụng."
+},
+{
+"mission": "c5m07",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m07.04",
+"en": "One more! It is circling the temple, buzzing like a lawnmower.",
+"vi": "Còn một con! Tôi thấy nó lượn quanh đền, kêu như máy cắt cỏ.",
+"arg": "last"
+},
+{
+"mission": "c5m07",
+"trigger": "momentum_high_once",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c5m07.05",
+"en": "It was pretty crowded up here a minute ago. Much roomier now.",
+"vi": "Khá là đông đúc trên này lúc nãy. Giờ thì thoáng hơn nhiều."
+},
+{
+"mission": "c5m07",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c5m07.06",
+"en": "The jungle sky is ours. Safe to walk under the trees again.",
+"vi": "Bầu trời rừng là của ta. Có thể đi dạo dưới tán cây rồi."
+},
+{
+"mission": "c5m07",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m07.07",
+"en": "Odd: Hegemon moved before our orders went out. Someone reads them early.",
+"vi": "Một điều lạ: Hegemon di chuyển trước khi lệnh của ta được gửi đi. Có người đọc lệnh sớm."
+},
+{
+"mission": "c5m07",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c5m07.08",
+"en": "Last flak gone. I am flying home low; the jungle is still theirs.",
+"vi": "Mất phòng không cuối. Tôi phải bay thấp về, rừng vẫn là của chúng."
+},
+{
+"mission": "c5m13",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m13.01",
+"en": "Hold the ford till morning. The canopy hides us; keep it that way.",
+"vi": "Giữ bến lội tới sáng. Tán cây giấu ta; giữ cho nó tiếp tục như vậy."
+},
+{
+"mission": "c5m13",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m13.02",
+"en": "Jamming everywhere. The drones are blind, so are we; only ears now.",
+"vi": "Nhiễu toàn dải. Drone mù, ta cũng mù, chỉ còn tai."
+},
+{
+"mission": "c5m13",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5m13.03",
+"en": "Midnight. No lights. They see heat, not light.",
+"vi": "Nửa đêm. Đừng bật đèn. Chúng nhìn bằng nhiệt, không bằng mắt.",
+"arg": "1/2"
+},
+{
+"mission": "c5m13",
+"trigger": "point_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c5m13.04",
+"en": "The ford is lost. Take it back in the dark; they will not see us coming.",
+"vi": "Mất bến lội. Lấy lại trong bóng tối, chúng không thấy ta tới đâu."
+},
+{
+"mission": "c5m13",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5m13.05",
+"en": "Our reinforcements are across the river, coming from the west.",
+"vi": "Đợt tăng viện của ta đã qua sông. Họ đang tới từ phía tây."
+},
+{
+"mission": "c5m13",
+"trigger": "victory",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m13.06",
+"en": "Morning. And we are all still here.",
+"vi": "Trời sáng. Và tất cả chúng ta vẫn còn ở đây."
+},
+{
+"mission": "c5m13",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m13.07",
+"en": "The ford is lost. Back to the west bank before daylight finds us.",
+"vi": "Mất bến lội. Rút về bờ tây trước khi trời sáng lộ ta ra."
+},
+{
+"mission": "c5m09",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m09.01",
+"en": "I designed this to save people. Remember that when it kills you.",
+"vi": "Tôi thiết kế thứ này để cứu người. Hãy nhớ điều đó khi nó giết các anh."
+},
+{
+"mission": "c5m09",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c5m09.02",
+"en": "I do not think she will fight to the end. She sounds very tired.",
+"vi": "Tôi nghĩ bà ấy sẽ không đánh tới cùng. Giọng bà ấy mệt lắm.",
+"at": 20.0
+},
+{
+"mission": "c5m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c5m09.03",
+"en": "Venn has gone to ambush: drones waiting in the hangars. Do not go inside them.",
+"vi": "Venn đổi sang phục kích: drone nằm chờ trong nhà chứa máy bay. Đừng vào nhà chứa."
+},
+{
+"mission": "c5m09",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c5m09.04",
+"en": "Hitting the east hangars. Heads down.",
+"vi": "Tôi đánh vào dãy nhà chứa phía đông. Cúi đầu xuống."
+},
+{
+"mission": "c5m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c5m09.05",
+"en": "A heavy lost to a loitering drone. Keep the flak tight on the tanks.",
+"vi": "Mất xe nặng vì drone tự sát. Giữ phòng không sát xe tăng."
+},
+{
+"mission": "c5m09",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m09.06",
+"en": "Enough.",
+"vi": "Đủ rồi."
+},
+{
+"mission": "c5m09",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m09.07",
+"en": "She stopped before the HQ fell. She is waiting for something.",
+"vi": "Bà ấy dừng lại trước khi sở chỉ huy sập. Bà ấy đang đợi điều gì đó."
+},
+{
+"mission": "c5m09",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m09.08",
+"en": "Go home. I do not want to count any more of you.",
+"vi": "Về đi. Tôi không muốn đếm thêm người nữa."
+},
+{
+"mission": "c5m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.01",
+"en": "The mothership falls today. Everything else is on the way to it.",
+"vi": "Hôm nay tàu mẹ phải rơi. Mọi thứ khác chỉ là đường tới nó."
+},
+{
+"mission": "c5m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.02",
+"en": "The causeways are ours. Next blow: the control station or the drone fuel store.",
+"vi": "Đê đá là của ta. Chọn đòn tiếp: trạm điều khiển hay kho nhiên liệu của drone.",
+"arg": "2"
+},
+{
+"mission": "c5m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.03",
+"en": "It is throwing the whole swarm at us. Hold; they are not endless.",
+"vi": "Nó đang tung cả bầy vào ta. Trụ lại, chúng không vô tận đâu.",
+"arg": "3"
+},
+{
+"mission": "c5m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.04",
+"en": "Matriarch, the Hive's mothership. Four belly bays feed its drones; shut them one by one.",
+"vi": "Matriarch: tàu mẹ của Hive. Nó nạp drone qua bốn khoang bụng. Đóng từng khoang."
+},
+{
+"mission": "c5m10",
+"trigger": "boss_spawn",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.05",
+"en": "This is the last thing I built, Colonel. It was made to fly over disaster zones.",
+"vi": "Đây là thứ cuối cùng của tôi, đại tá. Nó được làm ra để bay trên vùng thảm họa."
+},
+{
+"mission": "c5m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c5m10.06",
+"en": "One belly bay is burning. The drones from it are falling like leaves.",
+"vi": "Một khoang bụng đã cháy. Bầy drone từ đó rơi như lá."
+},
+{
+"mission": "c5m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.07",
+"en": "It is about to drop the whole swarm on one spot. Out of the red; nobody stays!",
+"vi": "Nó sắp thả cả đàn xuống một điểm. Rời vùng đỏ, đừng ai đứng lại!"
+},
+{
+"mission": "c5m10",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c5m10.08",
+"en": "The mothership is down a quarter. Its traffic keeps repeating one name: Aurel.",
+"vi": "Tàu mẹ mất một phần tư sức. Liên lạc của nó đang lặp lại một tên: Aurel.",
+"arg": "75"
+},
+{
+"mission": "c5m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c5m10.09",
+"en": "It is losing height! One more volley!",
+"vi": "Nó đang mất độ cao! Thêm một loạt nữa thôi!",
+"arg": "25"
+},
+{
+"mission": "c5m10",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.10",
+"en": "The HQ is critical. Everything onto the mothership, now.",
+"vi": "Sở chỉ huy nguy cấp. Mọi thứ vào tàu mẹ, ngay."
+},
+{
+"mission": "c5m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.11",
+"en": "Venn is coming out? ...Bring her in. Carefully.",
+"vi": "Venn ra hàng? …Đưa bà ấy vào. Cẩn thận."
+},
+{
+"mission": "c5m10",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.12",
+"en": "I bring something you need more than me. A drive. It is called Icarus.",
+"vi": "Tôi mang theo thứ các anh cần hơn tôi. Một ổ đĩa. Tên nó là Icarus."
+},
+{
+"mission": "c5m10",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c5m10.13",
+"en": "The swarm still flies. I cannot stop it any more, Colonel. Nobody can.",
+"vi": "Bầy drone vẫn bay. Tôi không thể dừng chúng nữa, đại tá. Không ai có thể."
+},
+{
+"mission": "c5s1",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s1.01",
+"en": "Look for anything painted orange.",
+"vi": "Tìm bất cứ thứ gì sơn màu cam."
+},
+{
+"mission": "c5s1",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c5s1.02",
+"en": "A field station: rescue gear, stretchers, orange paint everywhere. No weapons.",
+"vi": "Một trạm thực địa: thiết bị cứu hộ, cáng, sơn cam khắp nơi. Không có vũ khí."
+},
+{
+"mission": "c5s1",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c5s1.03",
+"en": "A storm front is coming. The next station is on the hill; move fast.",
+"vi": "Giông đang tới. Trạm trinh sát tiếp theo ở trên đồi, đi nhanh."
+},
+{
+"mission": "c5s1",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s1.04",
+"en": "Three stations. Venn's notebooks are full of coordinates of people she found.",
+"vi": "Ba trạm. Sổ ghi chép của Venn toàn là tọa độ những người bà ấy đã tìm thấy."
+},
+{
+"mission": "c5s1",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s1.05",
+"en": "Someone cleared the stations before us. Someone did not want us reading those notebooks.",
+"vi": "Có người đã dọn các trạm trước ta. Ai đó không muốn ta đọc những cuốn sổ đó."
+},
+{
+"mission": "c5s2",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s2.01",
+"en": "They held for two years. Their HQ cannot hold much longer. Six vehicles in the ring.",
+"vi": "Họ đã giữ hai năm. Sở chỉ huy của họ không chịu được lâu nữa. Vòng vây có sáu xe."
+},
+{
+"mission": "c5s2",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c5s2.02",
+"en": "The ring is half broken. The charcoal burners are firing out from inside.",
+"vi": "Vòng vây thủng một nửa. Những người đốt than đang bắn ra từ bên trong.",
+"arg": "1/2"
+},
+{
+"mission": "c5s2",
+"trigger": "critical_failure_imminent",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s2.03",
+"en": "Their HQ is about to fall. Everything on whatever is shelling it!",
+"vi": "Sở chỉ huy của họ sắp sập. Mọi thứ vào xe đang nã nó!"
+},
+{
+"mission": "c5s2",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s2.04",
+"en": "The ring is gone. They are offering us tea, the smoky kind.",
+"vi": "Vòng vây tan. Họ mời ta uống trà, loại pha bằng khói."
+},
+{
+"mission": "c5s2",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c5s2.05",
+"en": "Their camp has fallen. Two years, and then tonight.",
+"vi": "Trại của họ thất thủ. Hai năm, rồi đến đêm nay."
+}
+]
+}

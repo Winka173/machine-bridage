@@ -61,7 +61,11 @@
    ],
    "triggers": [
     "ally_arrives",
-    "ally_late"
+    "ally_late",
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
    ],
    "note": "ally_late only before chapter 7"
   },
@@ -173,7 +177,11 @@
    ],
    "triggers": [
     "first_unit_type_seen",
-    "event_triggered"
+    "event_triggered",
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
    ]
   },
   "varga": {
@@ -268,6 +276,8 @@
   "boss_hp",
   "superweapon_warning",
   "point_captured",
-  "point_lost"
+  "point_lost",
+  "victory",
+  "defeat"
  ]
 }
