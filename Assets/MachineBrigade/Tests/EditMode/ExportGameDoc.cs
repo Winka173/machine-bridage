@@ -10,6 +10,8 @@ using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Modes;
+using AudioCode = MachineBrigade.Game.Audio;
+using FxCode = MachineBrigade.Game.Effects;
 
 namespace MachineBrigade.Tests
 {
@@ -91,6 +93,9 @@ namespace MachineBrigade.Tests
                     ["operations"] = OperationsData(),
                     // Prompt 26 E (DECISIONS 26E): the Boss Hunt's rules, tiers and combat supports.
                     ["hunt"] = HuntData(),
+                    // Full fix L10 (lane C, DECISIONS "Sửa lỗi tổng hợp L9.7/L10 (lane C)"): the warning and munition rules, the
+                    // effects by tier and the audio mix, as the code holds them (the design document's sections 10 and C / D).
+                    ["fixDoc"] = FixDoc(catalog),
                 };
                 File.WriteAllText(path, Json(doc), new UTF8Encoding(false));
             }
@@ -120,6 +125,77 @@ namespace MachineBrigade.Tests
                 {
                     ["id"] = x.Id, ["name"] = Text("hunt.support." + x.Id), ["info"] = Text("hunt.support." + x.Id + ".info"), ["strength"] = x.Strength,
                 }).ToList(),
+            };
+        }
+
+        /// <summary>
+        /// Full fix L10 (lane C, DECISIONS "Sửa lỗi tổng hợp L9.7/L10 (lane C)"): what the design document's sections 10e-10h, C and D
+        /// read from the code rather than from balance.json: the warning rules (data warningRules, with the defaults), the munition
+        /// rules (munitionRules, the flare release), the effects by tier T0-T5 (TierFx's firing look, EffectLife's lifetimes, the
+        /// camera shake, the full-detail caps and the distance detail) and the audio mix (groups, voices, priorities, compressor,
+        /// limiter, falloff, the metal cap). Read only; nothing here changes a value.
+        /// </summary>
+        private static object FixDoc(Catalog catalog)
+        {
+            var tiers = new List<object>();
+            for (var t = 0; t <= FxCode.TierFx.Top; t++)
+            {
+                var fire = FxCode.TierFx.FireOf(t);
+                var life = FxCode.EffectLife.Of(t);
+                var cap = FxCode.TierFx.FullCap(t);
+                tiers.Add(new Dictionary<string, object>
+                {
+                    ["tier"] = t,
+                    ["flash"] = fire.Flash, ["flashLife"] = fire.FlashLife, ["puffs"] = fire.Puffs, ["puffSize"] = fire.PuffSize,
+                    ["puffLifeMin"] = fire.PuffLife.x, ["puffLifeMax"] = fire.PuffLife.y, ["pressure"] = fire.Pressure,
+                    ["dustRing"] = fire.DustRing, ["water"] = fire.Water, ["light"] = fire.Light, ["squat"] = fire.Squat,
+                    ["fireballLife"] = life.Fireball, ["smokeMin"] = life.SmokeMin, ["smokeMax"] = life.SmokeMax, ["crater"] = life.Crater,
+                    ["shake"] = FxCode.TierFx.ShakeAt(t), ["shotShake"] = FxCode.TierFx.ShakeAt(t) * FxCode.TierFx.ShotShare,
+                    ["fullCap"] = cap == int.MaxValue ? -1 : cap, ["busy"] = FxCode.TierFx.Busy(t), ["weight"] = FxCode.TierFx.Weight(t),
+                    ["nominalCore"] = FxCode.TierFx.NominalCore(t), ["extra"] = FxCode.TierFx.Extra(t),
+                });
+            }
+            var effects = new Dictionary<string, object>
+            {
+                ["tiers"] = tiers,
+                ["shakeFalloff"] = FxCode.TierFx.ShakeFalloff, ["shakeReach"] = FxCode.TierFx.ShakeReach, ["shakeCap"] = FxCode.TierFx.ShakeCap,
+                ["shotShare"] = FxCode.TierFx.ShotShare, ["nearView"] = FxCode.TierFx.NearView, ["midView"] = FxCode.TierFx.MidView,
+                ["reducedShare"] = FxCode.TierFx.ReducedShare, ["weightCap"] = FxCode.TierFx.WeightCap,
+            };
+            var m = catalog.Munitions;
+            var munitions = Raw(m);
+            munitions["flaresFighter"] = new List<object> { m.FlaresFighter.min, m.FlaresFighter.max };
+            munitions["flaresHelicopter"] = new List<object> { m.FlaresHelicopter.min, m.FlaresHelicopter.max };
+            munitions["flaresLarge"] = new List<object> { m.FlaresLarge.min, m.FlaresLarge.max };
+            munitions["flareBurn"] = new List<object> { m.FlareBurn.min, m.FlareBurn.max };
+            munitions["radarGuided"] = m.RadarGuided.OrderBy(x => x, StringComparer.Ordinal).Cast<object>().ToList();
+            munitions["sightGuided"] = m.SightGuided.OrderBy(x => x, StringComparer.Ordinal).Cast<object>().ToList();
+            var sizes = new List<object>();
+            foreach (AudioCode.SizeClass size in Enum.GetValues(typeof(AudioCode.SizeClass)))
+                sizes.Add(new Dictionary<string, object> { ["size"] = size.ToString(), ["carry"] = AudioCode.SoundLibrary.Carry(size) });
+            var audio = new Dictionary<string, object>
+            {
+                ["groups"] = Enum.GetNames(typeof(AudioCode.AudioGroup)).Cast<object>().ToList(),
+                ["effectVoices"] = AudioCode.AudioDirector.EffectVoices, ["offScreenGain"] = AudioCode.AudioDirector.OffScreenGain,
+                ["clusterRadius"] = AudioCode.AudioDirector.ClusterRadius, ["clusterWindow"] = AudioCode.AudioDirector.ClusterWindow,
+                ["clusterFrom"] = AudioCode.AudioDirector.ClusterFrom, ["nearShare"] = AudioCode.AudioDirector.NearShare,
+                ["compressorAttack"] = AudioCode.AudioDirector.CompressorAttack, ["compressorRelease"] = AudioCode.AudioDirector.CompressorRelease,
+                ["compressorThreshold"] = AudioCode.SoundLibrary.CompressorThreshold, ["compressorRatio"] = AudioCode.SoundLibrary.CompressorRatio,
+                ["limiterCeiling"] = AudioCode.SoundLibrary.LimiterCeiling, ["refDistance"] = AudioCode.SoundLibrary.RefDistance,
+                ["heightShare"] = AudioCode.SoundLibrary.HeightShare,
+                ["metalPerSecond"] = AudioCode.MetalCap.PerSecond, ["metalBurst"] = AudioCode.MetalCap.Burst, ["metalMinGap"] = AudioCode.MetalCap.MinGap,
+                ["priorities"] = new Dictionary<string, object>
+                {
+                    ["Warning"] = AudioCode.SoundPriority.Warning, ["Boss"] = AudioCode.SoundPriority.Boss,
+                    ["NearBlast"] = AudioCode.SoundPriority.NearBlast, ["NearShot"] = AudioCode.SoundPriority.NearShot,
+                    ["FarBlast"] = AudioCode.SoundPriority.FarBlast, ["FarShot"] = AudioCode.SoundPriority.FarShot,
+                    ["SmallArms"] = AudioCode.SoundPriority.SmallArms, ["Ambient"] = AudioCode.SoundPriority.Ambient,
+                },
+                ["sizes"] = sizes,
+            };
+            return new Dictionary<string, object>
+            {
+                ["warningRules"] = Raw(catalog.Warnings), ["munitionRules"] = munitions, ["effects"] = effects, ["audio"] = audio,
             };
         }
 
@@ -266,9 +342,22 @@ namespace MachineBrigade.Tests
                 if (w.Damage <= 0f) continue;
                 // Prompt 13 A.1: over a whole load (salvos, magazines and their change, a launcher's reload).
                 var raw = MachineBrigade.Sim.Combat.FirePower.Sustained(w, v);
+                // Full fix L10 item 9: "Main gun" only on the first mount (a secondary without a real name reads "Gun").
+                var mainMount = ReferenceEquals(m, v.Mounts[0]);
+                var weaponName = string.IsNullOrEmpty(w.RealName) ? WeaponInfo.Describe(w, mainMount).Name : UnitLines.WeaponName(w);
                 weapons.Add(new Dictionary<string, object>
                 {
-                    ["id"] = w.Id, ["name"] = UnitLines.WeaponName(w), ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,
+                    ["id"] = w.Id, ["name"] = weaponName, ["slot"] = m.Slot, ["type"] = w.DamageType.ToString(), ["damage"] = w.Damage, ["burst"] = w.Burst,
+                    // Full fix L10 (lane C): the mount (first or not, how it aims, its own arc in degrees), the warning and the
+                    // sound the round plays, for the design document's full weapon table (section A) and its audio section.
+                    ["mainMount"] = mainMount, ["aim"] = m.Aim.ToString(),
+                    ["arcCentreDeg"] = m.ArcCentre * 180f / MathF.PI, ["arcHalfDeg"] = m.ArcHalf * 180f / MathF.PI,
+                    ["tier"] = w.Tier, ["variantId"] = w.WeaponVariantId ?? "", ["warns"] = catalog.Warnings.Warns(w),
+                    ["warnSeconds"] = w.WarnSeconds, ["warnRadius"] = w.WarnRadius, ["burstInterval"] = w.BurstInterval,
+                    ["roundsPerPull"] = w.RoundsPerPull, ["barrelGap"] = WeaponDef.BarrelGap,
+                    ["soundSize"] = MachineBrigade.Game.Audio.SoundLibrary.SizeOf(w).ToString(),
+                    ["shotBank"] = MachineBrigade.Game.Audio.SoundLibrary.ShotBank(w) ?? "",
+                    ["blastBank"] = MachineBrigade.Game.Audio.SoundLibrary.BlastBank(w) ?? "",
                     ["cooldown"] = w.Cooldown, ["range"] = w.Range, ["minRange"] = w.MinRange, ["splash"] = w.SplashRadius,
                     ["targets"] = w.Targets.ToString(), ["dps"] = raw, ["projectile"] = w.Projectile.ToString(),
                     ["clip"] = w.Clip, ["clipReload"] = w.ClipReload, ["speed"] = w.ProjectileSpeed,

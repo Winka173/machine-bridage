@@ -6,6 +6,7 @@ import re
 from pathlib import Path
 
 import prompt25  # noqa: E402  (Tools/docs, on the path build_doc.py sets)
+import fix_full  # noqa: E402  (the full fix L10 helpers)
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -108,6 +109,8 @@ def operations(game, h):
     """Section: the Operations mode (prompt 6)."""
     esc, table = h['esc'], h['table']
     o = game['operations']
+    # Full fix L10 item 13: the mission the code opens the Legend tier with.
+    legend = fix_full.legend_mission(game)
     tiers = [[f"<b>{esc(t['name'])}</b>", f"×{t['enemy']:g}", f"×{t['playerIncome']:g}", 'có' if t['supports'] else 'không', f"×{t['score']:g}"] for t in o['tiers']]
     s = o['scoring']
     muts = [[f"<b>{esc(m['name'])}</b>", esc(m['info']), f"+{m['score'] * 100:g}%"] for m in o['mutators']]
@@ -117,7 +120,7 @@ def operations(game, h):
             "và Thử thách (Sinh tồn, Vô tận) chọn ở ô chọn chế độ. Tác chiến gom: chơi lại các chiến dịch lớn và các trận nổi bật của cốt truyện (công thành, phòng thủ, "
             f"đấu tướng) sau khi đã thắng trong chiến dịch ({len(o['replayable'])} trận), chiến dịch của tuần, Pháo đài tuần, Săn trùm và thử thách hằng ngày.</p>"
             "<h3>Cấp độ</h3>" + table(['Cấp', 'CP và thu nhập địch', 'Thu nhập ta', 'Hỏa lực', 'Hệ số điểm'], tiers)
-            + "<p>Huyền thoại mở sau khi thắng chiến dịch lớn cuối cùng. "
+            + f"<p>Huyền thoại mở sau khi thắng <b>{esc(legend[0])}</b> ({esc(legend[1])}, trận cuối chiến dịch; Operations.LegendMission). "
             f"<b>Điểm</b> một trận thắng: {s['win']:g} + tối đa {s['time']:g} theo thời gian dưới {s['par'] / 60:g} phút + tối đa {s['losses']:g} theo tổn thất "
             f"({s['lossesAtZero']:g} xe mất thì bằng 0) + tối đa {s['hq']:g} theo máu sở chỉ huy; nhân hệ số cấp cộng phần của mỗi mutator. Thua: 0 điểm. "
             "Kỷ lục (điểm cao nhất, thắng nhanh nhất) lưu riêng cho từng trận và từng cấp.</p>"
@@ -680,7 +683,7 @@ def mission_events(game, h):
             + "<h3>Sự kiện theo chương</h3>" + table(['Chương', 'Tên', 'Số màn', 'Số sự kiện', 'Tướng ra trận', 'Loại dùng nhiều nhất'], crows, 'dps')
             + "<h3>Tầm nhìn theo thời tiết</h3>" + table(['Thời tiết', 'Hệ số tầm nhìn'], [[e(k), f"×{v:g}"] for k, v in sight.items()])
             + "<h3>Thoại trong trận</h3><p>Mọi lời nhân vật trong trận là một dòng chữ kiểu phụ đề ngay trên khay thẻ: tên người nói in đậm, màu theo phe (ta xanh nhạt, "
-            "địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, không chân dung, không lồng tiếng. Một câu một lúc, "
+            "địch đỏ đậm), rồi câu thoại; nền chỉ là một dải tối mờ, rộng tối đa nửa màn hình, tối đa 2 dòng, mở đầu bằng chân dung nhỏ của người nói (thiếu chân dung thì ô tạm theo phe với chữ cái đầu; DialogueViews), không lồng tiếng. Một câu một lúc, "
             "theo mức ưu tiên: cốt truyện, cảnh báo, sự kiện, phản ứng. Câu cốt truyện và cảnh báo xếp hàng (cảnh báo quá 12 s thì bỏ); câu sự kiện và phản ứng "
             "hiện ngay hoặc bỏ, cách nhau tối thiểu 9 s (20 s cho câu phản ứng khi có boss trên sân). Mỗi câu hiện 3–6 s theo độ dài, mờ dần 0,25 s, không bao giờ "
             "dừng trận. Nhật ký 20 câu gần nhất mở từ menu tạm dừng. Cài đặt: Đầy đủ / Chỉ quan trọng / Tắt (câu cốt truyện luôn hiện). Sáu khoảnh khắc cốt truyện "
@@ -860,7 +863,10 @@ def rates_and_ballistics(game, h):
         tags = [t for t, on in (('dẫn đường', raw.get('Guided')), ('bắn cầu vồng', raw.get('Indirect')), ('tia', raw.get('Beam')),
                                 ('cận chiến', raw.get('Melee')), ('xuyên qua', raw.get('Pierce')), ('chùm', raw.get('Cluster')),
                                 ('chỉ đánh chặn', raw.get('InterceptOnly')), ('đánh nóc', raw.get('TopAttack'))) if on]
-        ball_rows.append([f"<code>{e(wid)}</code>", f(raw.get('Size', 0), 1), e(str(raw.get('Family', ''))), e(str(raw.get('Form', w.get('form', '')))),
+        # Full fix L10 item 1: calibre and warhead apart; family, barrels, full cycle, real rate, sustained DPS; ★ changed in the fix.
+        x = fix_full.ballistics_extra(wid, w)
+        ball_rows.append([f"<code>{e(wid)}</code>" + (' ★' if x['changed'] else ''), x['cal'], x['kg'], e(str(raw.get('Family', ''))), x['family'],
+                          e(str(raw.get('Form', w.get('form', '')))), x['barrels'], x['cycle'], x['real'], x['dps'],
                           f(float(speed), 0), f(flight, 2), f(float(rng), 0), f(float(w.get('minRange', 0) or 0), 0),
                           f(float(w.get('splash', 0) or 0), 1), e(tgt.get(w.get('targets'), w.get('targets', ''))), e(str(raw.get('Ceiling', '') or '—')),
                           str(w.get('pen', '')), f(raw.get('FlareResist', 0), 2), e(', '.join(tags) or '—')])
@@ -897,7 +903,10 @@ def rates_and_ballistics(game, h):
             f"<h3>Nhịp bắn và nạp đạn ({len(rate_rows)} vũ khí)</h3>"
             + table(['Vũ khí', 'Tên thật', 'Trên', 'Viên/s', 'Viên/phút', 'TB viên/s cả chu kỳ', 'Loạt / băng', 'Xả (s)', 'Nghỉ/nạp (s)', 'Bệ phóng', 'Sát thương/phát', 'DPS khi xả', 'DPS duy trì'], rate_rows, 'dps')
             + f"<h3>Đường đạn</h3>"
-            + table(['Vũ khí', 'Cỡ (mm)', 'Họ', 'Dạng', 'Tốc độ đạn (m/s)', 'Bay hết tầm (s)', 'Tầm (m)', 'Tối thiểu', 'Nổ lan (m)', 'Mục tiêu', 'Trần bắn', 'Xuyên', 'Kháng pháo sáng', 'Dấu'], ball_rows, 'dps')
+            + "<p>★: vũ khí đổi số trong lần sửa tổng hợp (so với commit 07444b14). Cỡ (mm) chỉ cho súng, pháo, cối, rốc-két; đầu nổ (kg) cho tên lửa, bom, drone. "
+            "Nhịp ngoài đời: tối đa / duy trì (phát mỗi phút một nòng, nguồn ở bảng A8). DPS duy trì: một mục tiêu, cả nạp, hệ số của xe mang.</p>"
+            + table(['Vũ khí', 'Cỡ (mm)', 'Đầu nổ (kg)', 'Họ', 'Họ vũ khí', 'Dạng', 'Số nòng', 'Chu kỳ đầy đủ (s)', 'Nhịp ngoài đời (phát/phút)', 'DPS duy trì',
+                     'Tốc độ đạn (m/s)', 'Bay hết tầm (s)', 'Tầm (m)', 'Tối thiểu', 'Nổ lan (m)', 'Mục tiêu', 'Trần bắn', 'Xuyên', 'Kháng pháo sáng', 'Dấu'], ball_rows, 'dps')
             + f"<h3>Di chuyển, tầm bắn và kích thước ({len(move_rows)} đơn vị)</h3>"
             + table(['Đơn vị', 'Loại', 'Tốc độ (m/s)', 'Xoay thân (°/s)', 'Xoay tháp (°/s)', 'Dài (m)', 'Rộng (m)', 'Bán kính thân', 'Tầm nhìn', 'Đứng cách', 'Nạp đạn ở căn cứ (s)', 'Tàng hình', 'Tối đa mỗi phe', 'Tầm xa nhất (m)', 'Tầm mặt đất', 'Tầm bắn máy bay', 'Tầm tối thiểu', 'Model vẽ: dài × rộng × cao (m)'], move_rows, 'dps')
             + props_and_rounds(game, h, sizes, weapons, owners)

@@ -7,7 +7,8 @@
 
 Writes Tools/assets/baseline.json (every GLB: stats, category, flags) and Docs/models/BASELINE.md (summary).
 Rules: DECISIONS "27 step 0 + baseline". Budgets per class and tier: Docs/models/BUDGETS.md (DECISIONS "27 preview +
-budgets + art bible"), in BUDGETS below: over the soft budget a warning, over the hard cap an error.
+budgets + art bible"), in BUDGETS below: over the soft budget a warning, over the hard cap an error, except triangles and
+vertices, which only inform (the owner's rule of 02/10: an over-budget model is kept; INFO_ONLY).
 Exit code 1 when any model has an error (so a build script can stop on it).
 """
 from __future__ import annotations
@@ -242,8 +243,13 @@ def budget_class(name, rec, records):
     return category if category in BUDGETS else None
 
 
+# The owner's rule of 02/10 (DECISIONS "Owner: over-budget models are fine"): a model over its triangle budget is kept, so the
+# triangle and vertex caps only inform (a warning, never an error); draw-call caps (renderers, moving parts) stay errors.
+INFO_ONLY = ('triangles', 'vertices')
+
+
 def check_budget(rec):
-    """Over the soft budget: a warning; over the hard cap: an error."""
+    """Over the soft budget: a warning; over the hard cap: an error (triangles / vertices: a warning, INFO_ONLY)."""
     tiers = BUDGETS.get(rec.get('budgetClass') or '', {})
     tier = 'hd' if rec['hd'] and 'hd' in tiers else 'normal'
     caps = dict(tiers.get(tier, {}))
@@ -251,7 +257,9 @@ def check_budget(rec):
     for metric, (soft, hard) in caps.items():
         value = rec.get(metric, 0)
         label = f"{rec['budgetClass']} {tier}"
-        if value > hard:
+        if value > hard and metric in INFO_ONLY:
+            rec['warnings'].append(f'{metric} {value:,} over the {label} hard cap {hard:,} (info: kept, owner rule)')
+        elif value > hard:
             rec['errors'].append(f'{metric} {value:,} over the {label} hard cap {hard:,}')
         elif value > soft:
             rec['warnings'].append(f'{metric} {value:,} over the {label} budget {soft:,}')

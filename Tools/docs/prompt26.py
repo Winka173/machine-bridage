@@ -53,8 +53,12 @@ def boss_blast_section(game, h):
                 seen.setdefault(w['id'], (w, core, edge))
         for wid, (w, core, edge) in seen.items():
             share = round(float(w.get('edgeShare', 0.4)) * 100)
-            blast_rows.append([f"<b>{e(v['name'])}</b>", e(w['name']), f(w['damage'], 0), e(TYPE_NAMES.get(w['type'], w['type'])),
-                               f"{f(core, 1)} m" if core else '—', f"{f(edge, 1)} m ({share}% sát thương)" if edge else 'một lớp, giảm dần'])
+            # Full fix L10 item 3: the family's numbers as they are now and the warning time (0: none).
+            warn = float(w.get('warnSeconds', (w.get('raw') or {}).get('WarnSeconds', 0)) or 0)
+            blast_rows.append([f"<b>{e(v['name'])}</b>", e(w['name']), e(w.get('familyId') or (w.get('raw') or {}).get('WeaponFamilyId') or '—'),
+                               f(w['damage'], 0), e(TYPE_NAMES.get(w['type'], w['type'])),
+                               f"{f(core, 1)} m" if core else '—', f"{f(edge, 1)} m ({share}% sát thương)" if edge else 'một lớp, giảm dần',
+                               f"{f(warn, 2)} s" if warn > 0 else 'không'])
         a = v.get('armour') or {}
         size = v.get('modelSize') or []
         phases = '<br>'.join(f"{p['at'] * 100:g}%: sát thương ×{p['damage']:g}, tốc độ ×{p['speed']:g}, nhận sát thương ×{p['armor']:g}, nhịp bắn ×{p['fireRate']:g}"
@@ -68,7 +72,7 @@ def boss_blast_section(game, h):
             "ở chương 12, mini boss 60 đến 90 giây); Ixion và Gungnir được làm lại; mỗi boss có mốc thời đại ở dòng Tham khảo của thẻ. "
             "Pha: hệ số nhân vào từ mốc máu đó trở đi.</p>"
             f"<h3>Vụ nổ lõi / rìa của boss ({len(blast_rows)} vũ khí)</h3>"
-            + table(['Boss', 'Vũ khí', 'Sát thương', 'Loại', 'Lõi (đủ sát thương)', 'Rìa'], blast_rows, 'dps')
+            + table(['Boss', 'Vũ khí', 'Họ vũ khí', 'Sát thương', 'Loại', 'Lõi (đủ sát thương)', 'Rìa', 'Cảnh báo'], blast_rows, 'dps')
             + f"<h3>Pha, giáp và cỡ model ({len(phase_rows)} boss)</h3>"
             + table(['Boss', 'Cấp', 'Máu', 'Giáp T/H/S/N', 'Cỡ model (m)', 'Pha'], phase_rows, 'dps')
             + "</div>")

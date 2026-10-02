@@ -16,7 +16,7 @@ namespace MachineBrigade.Tests
     /// <summary>
     /// Full fix prompt L9 (DECISIONS "Sửa lỗi tổng hợp L9"): the validators for items 1-6 and 8 that run in the build, each the
     /// twin of a check in <c>Tools/balance/fix_validate.py</c> (which also reads the GLBs and the audio analyser). Item 7 (models)
-    /// waits for pass 8. Written, not run (the owner's rule of 30/09); compile-checked by the lead.
+    /// was added by lane C (the script's "models" block). Written, not run (the owner's rule of 30/09); compile-checked by the lead.
     /// Item 3's source figures (the real rates) live in Python: the test reads <c>Docs/checks/fix_validate.json</c> that the script
     /// writes (every used weapon's rounds a cycle and cycle, the audit's flags, the recorded reason) and fails when the
     /// catalog's numbers no longer match it, which means the script must be rerun. Item 8 reads <c>Docs/audio/metrics.json</c>
@@ -320,6 +320,34 @@ namespace MachineBrigade.Tests
         }
 
         private static bool ModelLibrary_IsFlareMount(string name) => MachineBrigade.Game.Rendering.ModelLibrary.IsFlareMount(name);
+
+        // ------------------------------------------------------------------------------------------------ 7: models
+
+        /// <summary>
+        /// Item 7 (DECISIONS "Sửa lỗi tổng hợp L9.7/L10 (lane C)"): the model check lives in Python (the pass 8 scorer reads node
+        /// names, triangles and ModelScan's LOD1 counts); the test reads the "models" block of fix_validate.json, which must cover
+        /// every model a unit draws and hold no failure. Over budget is information only (the owner's rule of 02/10).
+        /// </summary>
+        [Test]
+        public void Item7_EveryModelHasItsPartsAndLod_OverBudgetIsInfoOnly()
+        {
+            var file = Json(Root("Docs", "checks", "fix_validate.json"));
+            Assert.IsTrue(file.ContainsKey("models"), "no models block: run python Tools/balance/fix_validate.py 7");
+            var models = (Dictionary<string, object>)file["models"];
+            var grades = (Dictionary<string, object>)models["grades"];
+            var c = C;
+            var unseen = new SortedSet<string>(StringComparer.Ordinal);
+            foreach (var v in c.Vehicles.Values)
+            {
+                var model = ModelOf(c, v);
+                if (string.IsNullOrEmpty(model)) continue;
+                if (!File.Exists(Path.Combine(Application.dataPath, "MachineBrigade", "Resources", "Models", model + ".glb"))) continue;
+                if (!grades.ContainsKey(model)) unseen.Add(model + " (" + v.Id + ")");
+            }
+            Assert.IsEmpty(unseen, "models the check never saw: rerun python Tools/balance/fix_validate.py 7\n" + string.Join("\n", unseen));
+            var failures = ((List<object>)models["failures"]).Select(o => (string)o).ToList();
+            Assert.IsEmpty(failures, string.Join("\n", failures));
+        }
 
         // ------------------------------------------------------------------------------------------------ 8: audio
 
