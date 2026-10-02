@@ -64,14 +64,14 @@
             "kind": "vehicle",
             "model": "mortar_carrier",
             "source": "Models/mortar_carrier",
-            "hash": "v2:91a6511c7a8df56303d30b82037745d974637050"
+            "hash": "v2:6bafad9c9854c99e1d3996b81ce69940c0248447"
         },
         {
             "id": "artillery",
             "kind": "vehicle",
             "model": "artillery",
             "source": "Models/artillery_hd",
-            "hash": "v2:f195f77a977c3e1df9f9ef5ef0aeae88e5103d3c"
+            "hash": "v2:61fd565324c376535b17ae6ba941f3027c43539a"
         },
         {
             "id": "mlrs",
@@ -85,7 +85,7 @@
             "kind": "vehicle",
             "model": "aa_vehicle",
             "source": "Models/aa_vehicle_hd",
-            "hash": "v2:36e4ffb1c1ef3600712a2fa044ad6a89912a5844"
+            "hash": "v2:1289d1f47da30d893895ed85aecd655e3cfd9e3a"
         },
         {
             "id": "sam_launcher",
@@ -148,7 +148,7 @@
             "kind": "vehicle",
             "model": "heavy_aa",
             "source": "Models/heavy_aa",
-            "hash": "v2:6cf71880b3baffb3882d9e5199045ab790a00200"
+            "hash": "v2:92f89b7deb846765cb695cc069bf40d09b106c1a"
         },
         {
             "id": "titan_tank",
@@ -232,7 +232,7 @@
             "kind": "vehicle",
             "model": "mine_layer",
             "source": "Models/mine_layer",
-            "hash": "v2:d45df3f752422b1000b5ae11081599bf1ffad398"
+            "hash": "v2:d1aa0199be8c6cefb5f76e1e68469add288143ff"
         },
         {
             "id": "fighter_jet",
@@ -267,7 +267,7 @@
             "kind": "vehicle",
             "model": "smoke_carrier",
             "source": "Models/smoke_carrier",
-            "hash": "v2:229477eb14a9ea6ce36bde03ac89b1fde9504f39"
+            "hash": "v2:18c96b8a56f192987fb1b9a7c2fe7d873082f429"
         },
         {
             "id": "lancet_truck",
@@ -372,7 +372,7 @@
             "kind": "vehicle",
             "model": "shield_carrier",
             "source": "Models/shield_carrier",
-            "hash": "v2:1a67b0d916b34419c699b9ee354c6957abdd0afe"
+            "hash": "v2:bf1ac8d9427d9fbd08bccd379883e70dcfc639ba"
         },
         {
             "id": "bunker_vehicle",
@@ -1016,7 +1016,7 @@
             "kind": "elite",
             "model": "elite_aa",
             "source": "Models/elite_aa",
-            "hash": "v2:3f91e4fcca39e29a87258f8cd87883f46d3077dd"
+            "hash": "v2:51a62c0eeb1eb718ea10275dd24161de7394b529"
         },
         {
             "id": "elite_apc",
@@ -1030,7 +1030,7 @@
             "kind": "elite",
             "model": "artillery",
             "source": "Models/artillery_hd",
-            "hash": "v2:f195f77a977c3e1df9f9ef5ef0aeae88e5103d3c"
+            "hash": "v2:61fd565324c376535b17ae6ba941f3027c43539a"
         },
         {
             "id": "elite_attack_helicopter",

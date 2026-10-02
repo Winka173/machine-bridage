@@ -13756,3 +13756,4 @@ no cards, no previews, no tests.
   `heavy_rocket_artillery` (substring filter): reverted with `git checkout`.
 - Card luma (old, mean of pixels with alpha > .5): aa_vehicle .3581, artillery .3541, heavy_aa .3238, elite_aa .2786,
   mortar_carrier .3340, mine_layer .3479, smoke_carrier .3565, shield_carrier .4079. New cards: the lead renders them after the merge.
+- Lead (2026-10-02), wave 3c cards: all eight pass (+0.8 % to +3.6 %).
