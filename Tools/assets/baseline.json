@@ -680,6 +680,30 @@
     "FLAG shield_carrier: triangles 1,918 -> 2,476 (+29.1%); vertices 2,221 -> 2,650 (+19.3%); materials 9 -> 8 (-11.1%); fileBytes 129,728 -> 152,616 (+17.6%); structure changed",
     "FLAG smoke_carrier: triangles 2,468 -> 3,698 (+49.8%); vertices 3,682 -> 4,551 (+23.6%); meshes 23 -> 24 (+4.3%); renderers 23 -> 24 (+4.3%); materialSlots 23 -> 24 (+4.3%); fileBytes 200,284 -> 247,320 (+23.5%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "mlrs",
+    "elite_mlrs",
+    "heavy_rocket_artillery",
+    "thermobaric_launcher",
+    "ballistic_launcher",
+    "long_sam",
+    "sam_launcher",
+    "iron_beam"
+   ],
+   "reason": "prompt 27 wave 3d: V2 rebuild of the rocket, missile and beam vehicles",
+   "changes": [
+    "FLAG ballistic_launcher: triangles 2,544 -> 2,818 (+10.8%); vertices 3,162 -> 3,269 (+3.4%); materials 11 -> 10 (-9.1%); fileBytes 177,220 -> 183,412 (+3.5%); structure changed",
+    "FLAG elite_mlrs: triangles 2,264 -> 2,692 (+18.9%); vertices 2,941 -> 3,275 (+11.4%); materials 10 -> 9 (-10.0%); fileBytes 165,080 -> 183,596 (+11.2%); structure changed",
+    "FLAG heavy_rocket_artillery: triangles 2,960 -> 3,668 (+23.9%); vertices 3,682 -> 4,392 (+19.3%); materials 8 -> 7 (-12.5%); fileBytes 200,000 -> 235,300 (+17.6%); structure changed",
+    "FLAG iron_beam: triangles 2,640 -> 2,888 (+9.4%); vertices 3,408 -> 3,604 (+5.8%); materials 9 -> 8 (-11.1%); fileBytes 188,364 -> 198,284 (+5.3%); structure changed",
+    "FLAG long_sam: triangles 2,576 -> 2,980 (+15.7%); vertices 3,192 -> 3,534 (+10.7%); materials 8 -> 7 (-12.5%); fileBytes 171,076 -> 188,556 (+10.2%); structure changed",
+    "FLAG mlrs: triangles 2,224 -> 2,652 (+19.2%); vertices 2,866 -> 3,200 (+11.7%); materials 9 -> 8 (-11.1%); fileBytes 160,264 -> 178,784 (+11.6%); structure changed",
+    "FLAG sam_launcher: triangles 3,248 -> 4,418 (+36.0%); vertices 4,962 -> 5,319 (+7.2%); fileBytes 262,548 -> 285,284 (+8.7%); structure changed",
+    "FLAG thermobaric_launcher: triangles 3,508 -> 4,982 (+42.0%); vertices 5,564 -> 6,489 (+16.6%); fileBytes 287,568 -> 337,748 (+17.4%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -6326,24 +6350,24 @@
   },
   "ballistic_launcher": {
    "file": "ballistic_launcher.glb",
-   "fileBytes": 177220,
-   "sha1": "a5f8e07999433575",
+   "fileBytes": 183412,
+   "sha1": "ff7fc94acb80c7ad",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 28,
    "meshes": 22,
-   "materials": 11,
+   "materials": 10,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 22,
    "submeshes": 22,
    "materialSlots": 22,
-   "materialsUsed": 11,
-   "triangles": 2544,
-   "vertices": 3162,
+   "materialsUsed": 10,
+   "triangles": 2818,
+   "vertices": 3269,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -6356,7 +6380,7 @@
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.265,
-    0.0245,
+    0.0,
     -5.315
    ],
    "boundsMax": [
@@ -6367,20 +6391,20 @@
    "size": [
     10.705,
     2.53,
-    4.18
+    4.205
    ],
    "center": [
     0.0,
-    2.115,
+    2.102,
     0.037
    ],
-   "structureHash": "8d5a80953dd26e23",
+   "structureHash": "d8eea7032d2c7365",
    "color0": {
-    "mean": 0.5742,
+    "mean": 0.6393,
     "min": 0.0953,
     "max": 1.0,
-    "p05": 0.162,
-    "p95": 0.8064,
+    "p05": 0.2084,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -15587,24 +15611,24 @@
   },
   "elite_mlrs": {
    "file": "elite_mlrs.glb",
-   "fileBytes": 165080,
-   "sha1": "9f2f2b57d3454c48",
+   "fileBytes": 183596,
+   "sha1": "1c5bc7c05dbb41d5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 28,
    "meshes": 22,
-   "materials": 10,
+   "materials": 9,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 22,
    "submeshes": 22,
    "materialSlots": 22,
-   "materialsUsed": 10,
-   "triangles": 2264,
-   "vertices": 2941,
+   "materialsUsed": 9,
+   "triangles": 2692,
+   "vertices": 3275,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -15612,36 +15636,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 72,
+   "loosePieces": 75,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.15,
-    0.0236,
-    -3.5669
+    0.0,
+    -3.5637
    ],
    "boundsMax": [
     1.15,
-    3.0163,
+    3.0131,
     3.4385
    ],
    "size": [
-    7.005,
+    7.002,
     2.3,
-    2.993
+    3.013
    ],
    "center": [
     0.0,
-    1.52,
-    -0.064
+    1.507,
+    -0.063
    ],
-   "structureHash": "727ee484adfc6f8f",
+   "structureHash": "ced9e9ed3f562c4f",
    "color0": {
-    "mean": 0.5695,
-    "min": 0.0931,
+    "mean": 0.6414,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.1777,
-    "p95": 0.8064,
+    "p05": 0.2156,
+    "p95": 0.99,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -22551,24 +22575,24 @@
   },
   "heavy_rocket_artillery": {
    "file": "heavy_rocket_artillery.glb",
-   "fileBytes": 200000,
-   "sha1": "4feb9735f8710f7d",
+   "fileBytes": 235300,
+   "sha1": "522f491f5ba38bf9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 25,
    "meshes": 19,
-   "materials": 8,
+   "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 19,
    "submeshes": 19,
    "materialSlots": 19,
-   "materialsUsed": 8,
-   "triangles": 2960,
-   "vertices": 3682,
+   "materialsUsed": 7,
+   "triangles": 3668,
+   "vertices": 4392,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -22576,12 +22600,12 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 84,
+   "loosePieces": 99,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.22,
-    0.005,
+    0.0,
     -5.03
    ],
    "boundsMax": [
@@ -22592,20 +22616,20 @@
    "size": [
     10.0,
     2.44,
-    3.035
+    3.04
    ],
    "center": [
     0.0,
-    1.523,
+    1.52,
     -0.03
    ],
-   "structureHash": "d9be0b1392c0d421",
+   "structureHash": "6c3deadfc410c5a0",
    "color0": {
-    "mean": 0.6178,
+    "mean": 0.6571,
     "min": 0.0997,
     "max": 1.0,
-    "p05": 0.242,
-    "p95": 0.8137,
+    "p05": 0.223,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -25583,24 +25607,24 @@
   },
   "iron_beam": {
    "file": "iron_beam.glb",
-   "fileBytes": 188364,
-   "sha1": "c5fd6b50e52f81a9",
+   "fileBytes": 198284,
+   "sha1": "69da8c18e60a2ff5",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 27,
    "meshes": 22,
-   "materials": 9,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 22,
    "submeshes": 22,
    "materialSlots": 22,
-   "materialsUsed": 9,
-   "triangles": 2640,
-   "vertices": 3408,
+   "materialsUsed": 8,
+   "triangles": 2888,
+   "vertices": 3604,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -25608,12 +25632,12 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 88,
+   "loosePieces": 91,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.0232,
-    0.0225,
+    0.0,
     -4.065
    ],
    "boundsMax": [
@@ -25624,20 +25648,20 @@
    "size": [
     8.205,
     2.046,
-    2.86
+    2.882
    ],
    "center": [
     0.0,
-    1.452,
+    1.441,
     0.037
    ],
-   "structureHash": "7334186f46fee050",
+   "structureHash": "c5955a1458375993",
    "color0": {
-    "mean": 0.6123,
-    "min": 0.0821,
+    "mean": 0.6888,
+    "min": 0.0802,
     "max": 1.0,
-    "p05": 0.1842,
-    "p95": 0.8216,
+    "p05": 0.2459,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -28719,24 +28743,24 @@
   },
   "long_sam": {
    "file": "long_sam.glb",
-   "fileBytes": 171076,
-   "sha1": "cd0581e7d2e84c72",
+   "fileBytes": 188556,
+   "sha1": "f180f66be52f19ca",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 20,
    "meshes": 15,
-   "materials": 8,
+   "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 15,
    "submeshes": 15,
    "materialSlots": 15,
-   "materialsUsed": 8,
-   "triangles": 2576,
-   "vertices": 3192,
+   "materialsUsed": 7,
+   "triangles": 2980,
+   "vertices": 3534,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -28744,12 +28768,12 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 66,
+   "loosePieces": 75,
    "openEdges": 0,
-   "nonManifoldEdges": 6,
+   "nonManifoldEdges": 0,
    "boundsMin": [
     -1.23,
-    0.005,
+    0.0,
     -5.3
    ],
    "boundsMax": [
@@ -28760,20 +28784,20 @@
    "size": [
     11.02,
     2.46,
-    2.585
+    2.59
    ],
    "center": [
     0.0,
-    1.298,
+    1.295,
     0.21
    ],
-   "structureHash": "1b0a89fe2bb883dc",
+   "structureHash": "7803a8a2be1e642d",
    "color0": {
-    "mean": 0.6081,
-    "min": 0.1009,
+    "mean": 0.6825,
+    "min": 0.1046,
     "max": 1.0,
-    "p05": 0.2267,
-    "p95": 0.8064,
+    "p05": 0.233,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -31454,24 +31478,24 @@
   },
   "mlrs": {
    "file": "mlrs.glb",
-   "fileBytes": 160264,
-   "sha1": "63990ea1ba9f8432",
+   "fileBytes": 178784,
+   "sha1": "d5dddba28b0155e9",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
    "nodes": 27,
    "meshes": 21,
-   "materials": 9,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
    "renderers": 21,
    "submeshes": 21,
    "materialSlots": 21,
-   "materialsUsed": 9,
-   "triangles": 2224,
-   "vertices": 2866,
+   "materialsUsed": 8,
+   "triangles": 2652,
+   "vertices": 3200,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31479,36 +31503,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 70,
+   "loosePieces": 73,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
     -1.0,
-    0.0206,
-    -3.1016
+    0.0,
+    -3.0988
    ],
    "boundsMax": [
     1.0,
-    2.6228,
+    2.62,
     2.99
    ],
    "size": [
-    6.092,
+    6.089,
     2.0,
-    2.602
+    2.62
    ],
    "center": [
     0.0,
-    1.322,
-    -0.056
+    1.31,
+    -0.054
    ],
-   "structureHash": "13b7f0fdb38d2f0d",
+   "structureHash": "ff000b885b21bd26",
    "color0": {
-    "mean": 0.5765,
-    "min": 0.0974,
+    "mean": 0.649,
+    "min": 0.0802,
     "max": 1.0,
-    "p05": 0.1818,
-    "p95": 0.8064,
+    "p05": 0.2345,
+    "p95": 0.981,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -38531,8 +38555,8 @@
   },
   "sam_launcher": {
    "file": "sam_launcher.glb",
-   "fileBytes": 262548,
-   "sha1": "c23ff1c444f1cac7",
+   "fileBytes": 285284,
+   "sha1": "3594575b490e3bac",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -38547,8 +38571,8 @@
    "submeshes": 24,
    "materialSlots": 24,
    "materialsUsed": 9,
-   "triangles": 3248,
-   "vertices": 4962,
+   "triangles": 4418,
+   "vertices": 5319,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -38556,36 +38580,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 152,
+   "loosePieces": 114,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.3475,
-    -0.0499,
+    -1.37,
+    -0.0441,
     -3.605
    ],
    "boundsMax": [
-    1.3475,
+    1.37,
     2.9241,
-    3.5792
+    3.5874
    ],
    "size": [
-    7.184,
-    2.695,
-    2.974
+    7.192,
+    2.74,
+    2.968
    ],
    "center": [
     0.0,
-    1.437,
-    -0.013
+    1.44,
+    -0.009
    ],
-   "structureHash": "366a4a3e4445400e",
+   "structureHash": "e011354533cea286",
    "color0": {
-    "mean": 0.5798,
-    "min": 0.062,
+    "mean": 0.618,
+    "min": 0.0782,
     "max": 1.0,
-    "p05": 0.1533,
-    "p95": 0.8058,
+    "p05": 0.218,
+    "p95": 0.9222,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -45019,8 +45043,8 @@
   },
   "thermobaric_launcher": {
    "file": "thermobaric_launcher.glb",
-   "fileBytes": 287568,
-   "sha1": "7cdd754d33ee9fbe",
+   "fileBytes": 337748,
+   "sha1": "be76481c7a17b497",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -45035,8 +45059,8 @@
    "submeshes": 25,
    "materialSlots": 25,
    "materialsUsed": 8,
-   "triangles": 3508,
-   "vertices": 5564,
+   "triangles": 4982,
+   "vertices": 6489,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -45046,34 +45070,34 @@
    },
    "loosePieces": 144,
    "openEdges": 0,
-   "nonManifoldEdges": 18,
+   "nonManifoldEdges": 0,
    "boundsMin": [
     -1.425,
-    -0.0449,
+    -0.0391,
     -3.015
    ],
    "boundsMax": [
     1.425,
-    2.75,
-    3.0055
+    2.7737,
+    3.0144
    ],
    "size": [
-    6.02,
+    6.029,
     2.85,
-    2.795
+    2.813
    ],
    "center": [
     0.0,
-    1.353,
-    -0.005
+    1.367,
+    -0.0
    ],
-   "structureHash": "f132ca46d60fa4e8",
+   "structureHash": "7789d3d7a37ad504",
    "color0": {
-    "mean": 0.5595,
-    "min": 0.0633,
+    "mean": 0.6202,
+    "min": 0.0801,
     "max": 1.0,
-    "p05": 0.1655,
-    "p95": 0.7985,
+    "p05": 0.2485,
+    "p95": 0.9313,
     "outOfRange": 0
    },
    "runtimeNodes": {

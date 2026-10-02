@@ -13757,3 +13757,26 @@ no cards, no previews, no tests.
 - Card luma (old, mean of pixels with alpha > .5): aa_vehicle .3581, artillery .3541, heavy_aa .3238, elite_aa .2786,
   mortar_carrier .3340, mine_layer .3479, smoke_carrier .3565, shield_carrier .4079. New cards: the lead renders them after the merge.
 - Lead (2026-10-02), wave 3c cards: all eight pass (+0.8 % to +3.6 %).
+
+## 27 wave 3d (lead pass, 2026-10-02)
+
+Pass 3d, the eight rows mlrs, elite_mlrs, heavy_rocket_artillery, thermobaric_launcher, ballistic_launcher, long_sam,
+sam_launcher, iron_beam, builders appended to `mb_p27_wave3.py`. Run: Blender rebuild, `glb_check.py` (compare, accept). No
+runner mirror, no cards, no previews, no tests.
+
+- **Builders.** Same recipe, copy-first: `_truck_v2` (now with an optional roof MG) for mlrs, ballistic and iron_beam; new
+  `_maz543_v2` (V2 wheels, extruded cabs) for long_sam and heavy_rocket_artillery; `_t72_v2` for the thermobaric launcher;
+  `parts.track_unit` for the Buk. Pods, launcher boxes, decks and bins are `k.block` / `k.extrude`; tubes, canisters, the
+  missile (Iskander body, ogive, tail, band), the Fire Dome drum and dome are `k.lathe` / `k.ring` surfaces; the SAM rounds
+  (`_sam_round_v2`) use a revolved body and nose and crossed fin plates. Seeded greebles (seeds 2741-2746). `elite_mlrs`
+  wraps the new `mlrs` with the old `_elite_on` arguments.
+- **Gates (baseline -> new).** mlrs 2,224 -> 2,652 (1.19x); elite_mlrs 2,264 -> 2,692 (1.19x); heavy_rocket_artillery 2,960 ->
+  3,668 (1.24x); thermobaric 3,508 -> 4,982 (1.42x); ballistic 2,544 -> 2,818 (1.11x); long_sam 2,576 -> 2,980 (1.16x);
+  sam_launcher 3,248 -> 4,418 (1.36x); iron_beam 2,640 -> 2,888 (1.09x). Zero-area 0, open edges 0, 0 errors, 0 warnings,
+  runtime nodes and moving-part counts identical (every node name of the old GLB present), COLOR_0 mean up (+0.04 to +0.08).
+  Size (length / width / height): all inside 1 % except sam_launcher +1.7 % length (the rounded hull ends).
+- **Notes.** Six models lose the `Rubber` material (the V2 wheel's tyre is `Undercarriage`, as in earlier passes). Building
+  `mlrs` also rebuilt `gmlrs` (substring filter); its GLB came out identical, nothing to revert.
+- Card luma (old, mean of pixels with alpha > .5): mlrs .3374, elite_mlrs .2700, heavy_rocket_artillery .3461,
+  thermobaric_launcher .3441, ballistic_launcher .3394, long_sam .3326, sam_launcher .4259, iron_beam .3426. New cards: the lead
+  renders them after the merge.
