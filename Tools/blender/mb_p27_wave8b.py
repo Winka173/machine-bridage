@@ -365,6 +365,64 @@ def telegraph_pole(a):
     k.block(a.part('Anchor', 'Concrete'), (.34, .34, .14), loc=(-1.72, 0, .06), rot=(0, 0, .2), chamfer=.03)
 
 
+# ----- pass 8b2, second part: the bespoke map-kit builders re-run with V2 edge treatment. Every square-edged box
+# (bevel 0) of at least BOX_MIN in its thinnest side gets a one-step chamfer (a block plate, not a razor edge) and
+# every square cylinder a light one; the shapes, nodes, materials and random draws stay the same.
+import frontier_kit as fk
+from contextlib import contextmanager
+
+
+@contextmanager
+def _v2(box_min=.15, ratio=.12, cyl_min=.12, seg_add=0, dens=1.0):
+    ob, oc, ot, od, ol = fk.Shape.box, fk.Shape.cyl, fk.Shape.torus, mk._densify, fk.Shape.lathe
+
+    def box(self, size, loc=(0, 0, 0), rot=(0, 0, 0), bevel=0.04, seg=2, taper=(1, 1), shift=(0, 0)):
+        t = min(size)
+        if bevel == 0 and t >= box_min:
+            bevel, seg = t * ratio, 1
+        return ob(self, size, loc, rot, bevel, seg, taper, shift)
+
+    def cyl(self, r, depth, loc=(0, 0, 0), rot=(0, 0, 0), seg=16, r2=None, bevel=0.02, bseg=2):
+        if bevel == 0 and min(r, depth / 2) >= cyl_min:
+            bevel, bseg = min(r, depth / 2) * .1, 1
+        if seg_add and seg >= 8 and r >= cyl_min:
+            seg += seg_add
+        return oc(self, r, depth, loc, rot, seg, r2, bevel, bseg)
+
+    def torus(self, R, r, loc=(0, 0, 0), rot=(0, 0, 0), seg=24, ring=8):
+        return ot(self, R, r, loc, rot, seg + seg_add if R >= cyl_min else seg, ring)
+
+    def lathe(self, profile, loc=(0, 0, 0), rot=(0, 0, 0), seg=16, **kw):
+        return ol(self, profile, loc, rot, seg + (seg_add if seg >= 6 else 0), **kw)
+
+    def densify(path, step, clear=0.0):
+        return od(path, step * dens, clear)
+    fk.Shape.box, fk.Shape.cyl, fk.Shape.torus, mk._densify, fk.Shape.lathe = box, cyl, torus, densify, lathe
+    try:
+        yield
+    finally:
+        fk.Shape.box, fk.Shape.cyl, fk.Shape.torus, mk._densify, fk.Shape.lathe = ob, oc, ot, od, ol
+
+
+def _redo(name, ao=.9, subs=(), **kw):
+    old = mk.BUILDERS[name]
+    if subs:
+        import inspect
+        src = inspect.getsource(old[0])
+        for x, y in subs:
+            assert x in src, x
+            src = src.replace(x, y)
+        ns = {}
+        exec(src, vars(mk), ns)
+        old = (ns[name], old[1])
+
+    def run(a):
+        with _v2(**kw):
+            old[0](a)
+        k.clean(a)
+    return run, dict(old[1], ao_strength=ao)
+
+
 def _wrap(fn, opts, ao):
     def run(a):
         fn(a)
@@ -391,4 +449,21 @@ BUILDERS = {
     'barricade': _wrap(barricade, mk.BUILDERS['barricade'][1], .8),
     'supply_pile': _wrap(supply_pile, mk.BUILDERS['supply_pile'][1], .8),
     'telegraph_pole': _wrap(telegraph_pole, mk.BUILDERS['telegraph_pole'][1], .7),
+    'wreck_tank': _redo('wreck_tank', 0.7, seg_add=2),
+    'wreck_truck': _redo('wreck_truck', 0.6, box_min=.3),
+    'wreck_car': _redo('wreck_car', 0.7, seg_add=2),
+    'trench_straight': _redo('trench_straight', .9, dens=.7, seg_add=2),
+    'trench_corner': _redo('trench_corner', .9, dens=.7, seg_add=2),
+    'foxhole': _redo('foxhole', 0.75, seg_add=2),
+    'crater_large': _redo('crater_large', .9, seg_add=2),
+    'tank_ditch': _redo('tank_ditch', .9, subs=((' rows = 21', ' rows = 27'), ('range(8)', 'range(10)')), seg_add=2),
+    'command_tent': _redo('command_tent', .9, seg_add=2),
+    'camo_net': _redo('camo_net', 0.7, seg_add=2),
+    'fuel_bladder': _redo('fuel_bladder', .9, seg_add=2, cyl_min=.06),
+    'power_pylon': _redo('power_pylon', 0.6, seg_add=2),
+    'radio_mast': _redo('radio_mast', 0.6, seg_add=4, cyl_min=.06),
+    'bridge_road': _redo('bridge_road', 0.65, seg_add=2),
+    'ruin_house': _redo('ruin_house', 0.75, seg_add=2),
+    'ruin_tower': _redo('ruin_tower', 0.75, seg_add=2),
+    'dead_tree': _redo('dead_tree', 0.6, box_min=.4),
 }
