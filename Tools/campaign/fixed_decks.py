@@ -53,6 +53,7 @@ RULES = {
     'factoryAlarm': 'the factory_alarm event (prompt 31 L3): spotted, the mill gate shuts and the garrison comes',
     'droneCanopy': "the drone_swarm event (warned direction, minimap arrow) in place of the mission's air_wave",
     'ceasefireFaction': "the ceasefire event with faction: Varga's column is Sworn (DamageSystem: no damage from another side), for the whole mission",
+    'mirewoodFog': 'the deck itself (light, fast, amphibious) on swamp in Fog; the objective (two villages and the sunken temple) kept',
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -213,6 +214,16 @@ DECKS = {
         loaned=['microwave_vehicle', 'interceptor_drone_vehicle'],
         replaced={'bridging_vehicle': 'armored_bulldozer', 'mobile_repair_vehicle': 'ammo_carrier', 'drone_intercept_strike': 'uav_scan'},
         rules=['ceasefireFaction'], status='MAKE_LATER'),
+    # i2m01 (interlude II, into Mirewood): the Capture objective kept (west, town, east: the two villages and the sunken temple).
+    # Loaned the amphibious light vehicle and the airborne light tank; shorad_vehicle -> aa_vehicle, mobile_repair_vehicle ->
+    # engineer_vehicle (the owned support truck), decoy_paradrop -> uav_scan (the fog). Not made: Venn's convoy as a scripted
+    # object in the background (the sheet: not an objective, optional) and the 3-star 'before dusk' (the stars are time and losses).
+    'i2m01': dict(
+        vehicles=['armored_car', 'ifv', 'amphib_light_vehicle', 'airborne_light_tank', 'scout_jeep', 'aa_vehicle', 'smoke_carrier', 'engineer_vehicle'],
+        supports=['smoke_screen', 'uav_scan'],
+        loaned=['amphib_light_vehicle', 'airborne_light_tank'],
+        replaced={'shorad_vehicle': 'aa_vehicle', 'mobile_repair_vehicle': 'engineer_vehicle', 'decoy_paradrop': 'uav_scan'},
+        rules=['mirewoodFog'], status='MAKE_LATER'),
 }
 
 
