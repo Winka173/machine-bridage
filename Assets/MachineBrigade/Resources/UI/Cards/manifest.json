@@ -106,7 +106,7 @@
             "kind": "vehicle",
             "model": "attack_helicopter",
             "source": "Models/attack_helicopter_hd",
-            "hash": "v2:27732093980fe01c5987cee5b157ae44b16f310c"
+            "hash": "v2:b3c26d816193ffa85185963477a1ff566f3a56b7"
         },
         {
             "id": "gunship_heli",
@@ -155,7 +155,7 @@
             "kind": "vehicle",
             "model": "titan_tank",
             "source": "Models/titan_tank",
-            "hash": "v2:b9f70fbc9df6274f4c96ce2c57688f947ecfb02e"
+            "hash": "v2:202cb5845fa446bac3e873c36d2d3209b3ed30bf"
         },
         {
             "id": "heavy_bomber",
@@ -176,7 +176,7 @@
             "kind": "vehicle",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
-            "hash": "v2:8a9365ed4fd89b32bd466c9d14bd8f0e3070046a"
+            "hash": "v2:5feb8d2ad6c275b1851d179d8f11491b4f54adf3"
         },
         {
             "id": "twin_tank",
@@ -239,7 +239,7 @@
             "kind": "vehicle",
             "model": "fighter_jet",
             "source": "Models/fighter_jet_hd",
-            "hash": "v2:975444257a248a5712187c74b34a7a3331ff81b2"
+            "hash": "v2:a033dc9b224ed35575e25de64b2d7afd37b3dbe5"
         },
         {
             "id": "recon_drone",
@@ -470,7 +470,7 @@
             "kind": "vehicle",
             "model": "interceptor_jet",
             "source": "Models/interceptor_jet",
-            "hash": "v2:b89ace81e9edf3aabbce597dc55da99f6692f05d"
+            "hash": "v2:7af1f1bf11c09737f61ef121c013ab19c474f984"
         },
         {
             "id": "radar_scout",
@@ -512,21 +512,21 @@
             "kind": "vehicle",
             "model": "prop_attack_plane",
             "source": "Models/prop_attack_plane",
-            "hash": "v2:68da0375ae4fa4ae0e6f5ba30cfd92fb9e1bff4a"
+            "hash": "v2:e742f426d792371291556dd95f41c31d2a4e834c"
         },
         {
             "id": "light_attack_heli",
             "kind": "vehicle",
             "model": "light_attack_heli",
             "source": "Models/light_attack_heli",
-            "hash": "v2:a31f30b0e1905c6a09351029aaac7bc297ba8b33"
+            "hash": "v2:75354507c6397a870da115d3207dce21ba6c12c1"
         },
         {
             "id": "next_gen_tank",
             "kind": "vehicle",
             "model": "next_gen_tank",
             "source": "Models/next_gen_tank",
-            "hash": "v2:1bd64a8cb727b7d81215441548b4fc1a03b1603c"
+            "hash": "v2:b447875500b971ecf3393c56881f3d65ea9fc1de"
         },
         {
             "id": "demolition_line_vehicle",
@@ -603,7 +603,7 @@
             "kind": "vehicle",
             "model": "twin_rotor_gunship",
             "source": "Models/twin_rotor_gunship",
-            "hash": "v2:b368ce9d3d9381a36d022ca10891b137434bc7c4"
+            "hash": "v2:152756e1536e87081bdd59d06094fe7d94e7c60d"
         },
         {
             "id": "ground_drone_carrier",
@@ -652,14 +652,14 @@
             "kind": "vehicle",
             "model": "aerial_tanker",
             "source": "Models/aerial_tanker",
-            "hash": "v2:0aa5115d9ed1cb147991a8f1d96cb8dfffc48436"
+            "hash": "v2:ec43c999483b9d865ae4076d882d2a2b72d2f367"
         },
         {
             "id": "heavy_lift_helicopter",
             "kind": "vehicle",
             "model": "heavy_lift_helicopter",
             "source": "Models/heavy_lift_helicopter",
-            "hash": "v2:4882a5812666fa9f5fca20d7df2648429b96d6ee"
+            "hash": "v2:8f41dc61c498d2045d1df01d1b50fdd772e0923c"
         },
         {
             "id": "bridging_vehicle",
@@ -1590,7 +1590,7 @@
             "kind": "support",
             "model": "sky_gunship",
             "source": "Models/sky_gunship_hd",
-            "hash": "v2:8a9365ed4fd89b32bd466c9d14bd8f0e3070046a"
+            "hash": "v2:5feb8d2ad6c275b1851d179d8f11491b4f54adf3"
         }
     ]
 }
