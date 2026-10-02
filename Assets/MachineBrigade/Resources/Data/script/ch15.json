@@ -1,0 +1,410 @@
+{
+"chapter": 15,
+"missions": {
+"i3m01": {
+"main": "reyn"
+},
+"i3m02": {
+"main": "reyn"
+},
+"i3m03": {
+"main": "reyn"
+},
+"i3m04": {
+"main": "dieuhau"
+}
+},
+"lines": [
+{
+"mission": "i3m01",
+"trigger": "mission_start",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m01.01",
+"en": "Crown's column, moving. We bring our pilot home.",
+"vi": "Cột của Crown, xuất phát. Ta đưa phi công của ta về nhà."
+},
+{
+"mission": "i3m01",
+"trigger": "time",
+"speaker": "quaden",
+"priority": 2,
+"once": true,
+"key": "script.i3m01.02",
+"en": "Your little Hawk fell well, Colonel. I will finish him myself.",
+"vi": "Hawk nhỏ của ông rơi đẹp lắm, đại tá. Tôi sẽ tự tay kết thúc nó.",
+"at": 40.0
+},
+{
+"mission": "i3m01",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.i3m01.03",
+"en": "That was Raven. Kasimir Wolff, Hegemon's ace. The black bird on a red disc.",
+"vi": "Đó là Raven. Kasimir Wolff, át chủ bài của Hegemon. Phù hiệu đen trên đĩa đỏ.",
+"at": 50.0
+},
+{
+"mission": "i3m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.i3m01.04",
+"en": "Hawk's beacon is back. Three seconds, then gone. The blizzard eats the signal.",
+"vi": "Đèn hiệu của Hawk lại bật. Ba giây, rồi tắt. Bão tuyết nuốt mất tín hiệu."
+},
+{
+"mission": "i3m01",
+"trigger": "point_captured",
+"speaker": "reyn",
+"priority": 3,
+"once": true,
+"key": "script.i3m01.05",
+"en": "The radar hill: nothing. Only a parachute dragged through the snow. Moving on.",
+"vi": "Đồi radar, không có gì. Chỉ có vết dù kéo lê trên tuyết. Đi tiếp."
+},
+{
+"mission": "i3m01",
+"trigger": "objective_progress",
+"speaker": "reyn",
+"priority": 2,
+"once": true,
+"key": "script.i3m01.06",
+"en": "The lumber camp left. Crown does not come home empty-handed.",
+"vi": "Còn trại khai thác gỗ. Crown không về tay không.",
+"arg": "last"
+},
+{
+"mission": "i3m01",
+"trigger": "victory",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m01.07",
+"en": "Crash site found. He walked away from it. Follow the tracks.",
+"vi": "Thấy chỗ rơi. Cậu ấy đã tự bước ra khỏi xác máy bay. Theo dấu chân."
+},
+{
+"mission": "i3m01",
+"trigger": "defeat",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m01.08",
+"en": "Trail lost. Crown comes back every night until we find him.",
+"vi": "Mất dấu. Crown sẽ quay lại, mỗi đêm, cho tới khi tìm thấy."
+},
+{
+"mission": "i3m02",
+"trigger": "mission_start",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.01",
+"en": "An unknown aircraft over the canopy. Keep the launchers moving; nobody stands still.",
+"vi": "Có máy bay lạ trên tán rừng. Giữ bệ phóng di chuyển, đừng ai đứng yên."
+},
+{
+"mission": "i3m02",
+"trigger": "boss_spawn",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.02",
+"en": "Morrigan, weapons free. Hawk, I know you are listening.",
+"vi": "Morrigan, khai hỏa tự do. Hawk, ta biết nhóc đang nghe."
+},
+{
+"mission": "i3m02",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.03",
+"en": "I am listening, Raven. Next time I will be flying.",
+"vi": "Tôi đang nghe đây, Raven. Lần sau tôi sẽ ở trên trời.",
+"at": 8.0
+},
+{
+"mission": "i3m02",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.i3m02.04",
+"en": "He shot Ellis down, back then. Same flying: low pass, then straight up into the sun.",
+"vi": "Hắn bắn rơi Ellis năm đó. Cùng một kiểu bay: lượn thấp, rồi lên thẳng vào mặt trời.",
+"at": 40.0
+},
+{
+"mission": "i3m02",
+"trigger": "time",
+"speaker": "reyn",
+"priority": 2,
+"once": true,
+"key": "script.i3m02.05",
+"en": "Hawk's words are noted. Now keep your head down, Lieutenant.",
+"vi": "Lời của Hawk đã ghi lại. Giờ thì cúi đầu xuống, trung úy.",
+"at": 50.0
+},
+{
+"mission": "i3m02",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.i3m02.06",
+"en": "One of Morrigan's launch tubes is out. One less salvo.",
+"vi": "Một ống phóng của Morrigan đã hỏng. Nó sẽ bắn ít đi một loạt."
+},
+{
+"mission": "i3m02",
+"trigger": "boss_phase_change",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.07",
+"en": "He is climbing to dive! Flak, look into the sun, not straight at it!",
+"vi": "Hắn lên cao để bổ nhào! Phòng không nhìn lên mặt trời, đừng nhìn thẳng!"
+},
+{
+"mission": "i3m02",
+"trigger": "superweapon_warning",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.08",
+"en": "The dive attack is coming. Out of the red, spread out!",
+"vi": "Đòn bổ nhào sắp tới. Rời khỏi vùng đỏ, tản ra!"
+},
+{
+"mission": "i3m02",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.i3m02.09",
+"en": "Night falling. Morrigan is harder to see, but its engines still leave a glow.",
+"vi": "Trời đang tối. Morrigan khó thấy hơn, nhưng động cơ của nó vẫn để lại vệt sáng."
+},
+{
+"mission": "i3m02",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.i3m02.10",
+"en": "Morrigan is hit. Raven has not pulled off; he likes being fought.",
+"vi": "Morrigan dính đòn. Raven vẫn chưa rút, hắn thích bị đánh trả.",
+"arg": "50"
+},
+{
+"mission": "i3m02",
+"trigger": "critical_failure_imminent",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.11",
+"en": "The rescue column is about to break. Keep Hawk's vehicle in the middle, whatever it costs.",
+"vi": "Cột cứu hộ sắp vỡ. Giữ xe chở Hawk ở giữa, bằng mọi giá."
+},
+{
+"mission": "i3m02",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.12",
+"en": "It broke off. Keep moving before it comes back.",
+"vi": "Nó rút rồi. Đi tiếp trước khi nó quay lại."
+},
+{
+"mission": "i3m02",
+"trigger": "victory",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.13",
+"en": "Fine flying, kid. But you are sitting in a tank.",
+"vi": "Bay đẹp đấy, nhóc. Nhưng nhóc đang ngồi trong xe tăng."
+},
+{
+"mission": "i3m02",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.i3m02.14",
+"en": "The rescue column is broken. I will find you later, Hawk. No hurry.",
+"vi": "Cột cứu hộ tan rồi. Ta sẽ tìm nhóc sau, Hawk. Không vội."
+},
+{
+"mission": "i3m03",
+"trigger": "mission_start",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m03.01",
+"en": "Crown here. Break the ring, and mind the village.",
+"vi": "Crown đây. Phá vòng vây, và cẩn thận với ngôi làng."
+},
+{
+"mission": "i3m03",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.i3m03.02",
+"en": "I am in the church. An old lady here has made me tea for two days.",
+"vi": "Tôi ở trong nhà thờ. Có bà cụ ở đây pha trà cho tôi suốt hai ngày.",
+"at": 15.0
+},
+{
+"mission": "i3m03",
+"trigger": "objective_progress",
+"speaker": "reyn",
+"priority": 2,
+"once": true,
+"key": "script.i3m03.03",
+"en": "The ring is broken in the south. Protect the village first, then chase.",
+"vi": "Vòng vây thủng phía nam. Bảo vệ làng trước, rồi mới đuổi.",
+"arg": "1/2"
+},
+{
+"mission": "i3m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.i3m03.04",
+"en": "Accord relief coming in from the west. Leave them a road.",
+"vi": "Quân cứu viện của Accord đang tới từ phía tây. Chừa đường cho họ."
+},
+{
+"mission": "i3m03",
+"trigger": "critical_failure_imminent",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m03.05",
+"en": "The church is collapsing. Every gun on whatever shells it. Crown leaves nobody.",
+"vi": "Nhà thờ sắp sập. Mọi khẩu vào xe đang bắn nó. Crown không bỏ người lại."
+},
+{
+"mission": "i3m03",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.i3m03.06",
+"en": "About time, Colonel! I was starting to like the tea.",
+"vi": "Đúng lúc lắm, đại tá! Tôi bắt đầu thích trà rồi đấy."
+},
+{
+"mission": "i3m03",
+"trigger": "victory",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m03.07",
+"en": "Lieutenant. Get in the tank.",
+"vi": "Trung úy. Vào xe tăng."
+},
+{
+"mission": "i3m03",
+"trigger": "defeat",
+"speaker": "reyn",
+"priority": 1,
+"once": true,
+"key": "script.i3m03.08",
+"en": "The village has fallen. I want to know where Hawk went. Now.",
+"vi": "Ngôi làng thất thủ. Tôi muốn biết Hawk đã đi đâu. Ngay."
+},
+{
+"mission": "i3m04",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.i3m04.01",
+"en": "Five minutes. Then I am back in a cockpit, and he is mine.",
+"vi": "Năm phút. Rồi tôi trở lại buồng lái, và hắn là của tôi."
+},
+{
+"mission": "i3m04",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.i3m04.02",
+"en": "Ellis always said I flew like someone running from debts. This time I really am.",
+"vi": "Ellis luôn nói tôi bay như kẻ đang trốn nợ. Lần này tôi trốn thật.",
+"at": 20.0
+},
+{
+"mission": "i3m04",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.i3m04.03",
+"en": "Morrigan is hunting behind the column. Raven is not firing; just following.",
+"vi": "Morrigan đang săn sau cột xe. Raven không bắn, chỉ bay theo."
+},
+{
+"mission": "i3m04",
+"trigger": "objective_progress",
+"speaker": "reyn",
+"priority": 2,
+"once": true,
+"key": "script.i3m04.04",
+"en": "Halfway. The pickup is at the top of the pass. Crown goes last.",
+"vi": "Nửa chặng. Điểm đón ở đỉnh đèo. Crown đi cuối.",
+"arg": "1/2"
+},
+{
+"mission": "i3m04",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.i3m04.05",
+"en": "One minute to the pickup. Nobody stops.",
+"vi": "Một phút tới điểm đón. Không ai dừng lại."
+},
+{
+"mission": "i3m04",
+"trigger": "victory",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.i3m04.06",
+"en": "Next time, kid. On my runway, at Skyhold.",
+"vi": "Lần sau, nhóc. Trên đường băng của ta, ở Skyhold."
+},
+{
+"mission": "i3m04",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.i3m04.07",
+"en": "I am home. Tell him: next time I come, and I bring Ellis with me.",
+"vi": "Tôi về rồi. Nói với hắn: lần sau tôi tới, và tôi mang theo Ellis."
+},
+{
+"mission": "i3m04",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.i3m04.08",
+"en": "The pickup is cut off. You stay with me a little longer, Hawk.",
+"vi": "Điểm đón đã bị chặn. Nhóc sẽ ở lại với ta lâu hơn, Hawk."
+}
+]
+}
