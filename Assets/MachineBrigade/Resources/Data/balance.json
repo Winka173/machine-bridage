@@ -2151,7 +2151,7 @@
                      { "weapon": "aa_25_triple", "slot": "mg", "aim": "Free" }, { "weapon": "aa_25_triple", "slot": "mg", "aim": "Free" }, { "weapon": "sam_post", "slot": "missile", "aim": "Free" } ],
       "aps": { "radius": 30, "charges": 3, "recharge": 2.2, "rockets": true },
       "naval": { "role": "Flagship", "lanes": ["far", "near", "far"], "escapePhase": 2, "escapeSpeed": 0.75 },
-      "salvo": { "every": 60, "edge": 24, "first": 8, "warn": 3, "shells": 3, "damage": 2400, "radius": 14, "spread": 22, "range": 160, "sweep": 18, "blindScatter": 2.2, "weapon": "p26_leviathan_lev406", "warning": "leviathan_shell" },
+      "salvo": { "every": 60, "edge": 24, "first": 8, "warn": 3.7, "shells": 3, "damage": 2400, "radius": 14, "spread": 22, "range": 160, "sweep": 18, "blindScatter": 2.2, "weapon": "p26_leviathan_lev406", "warning": "leviathan_shell" },
       "cruise": { "every": 50, "first": 20, "phase": 1, "warn": 5, "damage": 520, "radius": 10, "final": 4, "weapon": "leviathan_cruise",
                   "warning": "leviathan_cruise_mark" },
       "craft": { "unit": "landing_craft", "carries": ["main_battle_tank", "ifv", "main_battle_tank", "tank_destroyer"], "per": 2, "every": 40,
@@ -2550,7 +2550,7 @@
     { "id": "super_gun_shell",   "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 4.0, "radius": 4, "count": 1, "duration": 0.1, "damage": 450, "blast": 15, "tier": "Ultimate" },
     { "id": "air_raid",          "kind": "Airstrike",     "pen": 3, "event": true, "cooldown": 0, "delay": 4.0, "radius": 6, "count": 10, "duration": 2.4, "damage": 200, "blast": 8, "tier": "Huge", "length": 70 },
     // Prompt 16: where Leviathan's shells and cruise missiles land, marked ahead (event-only: the naval system calls them).
-    { "id": "leviathan_shell",   "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 2.8, "radius": 8, "count": 1, "duration": 0, "damage": 0, "blast": 6, "tier": "Huge" },
+    { "id": "leviathan_shell",   "kind": "Barrage",       "pen": 4, "event": true, "cooldown": 0, "delay": 2.8, "radius": 24, "count": 1, "duration": 0, "damage": 0, "blast": 14, "tier": "Huge" },
     { "id": "leviathan_cruise_mark", "kind": "Barrage",   "pen": 3, "event": true, "cooldown": 0, "delay": 5.0, "radius": 12, "count": 1, "duration": 0, "damage": 0, "blast": 10, "tier": "Ultimate" },
     // Items: single-use, bought with coins in the shop, no CP. Carried into any match in a strip beside the minimap.
     { "id": "moab",              "kind": "CruiseMissile", "pen": 4, "consumable": true, "cooldown": 20, "delay": 4.0, "radius": 24, "count": 1, "damage": 4000, "blast": 27, "tier": "Ultimate" },

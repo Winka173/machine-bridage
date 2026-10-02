@@ -4,7 +4,10 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
+using MachineBrigade.Sim;
 using MachineBrigade.Sim.Content;
+using MachineBrigade.Sim.Events;
+using Vector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Tests
 {
@@ -174,6 +177,75 @@ namespace MachineBrigade.Tests
             Assert.AreEqual(20f, gun.SplashEdge, 1e-3f);
             Assert.AreEqual(45f, c.Vehicle("rail_supergun").Bombard.Every, 1e-3f);
             Assert.AreEqual("gungnir_emrg", gun.WeaponFamilyId);
+        }
+
+        // ------------------------------------------------------------------------------------------------ L3 warnings
+
+        [Test]
+        public void TheEscapeWarningFormula()
+        {
+            Assert.AreEqual(0f, WeaponDef.EscapeWarning(3, "cal_152_155", 7f), 1e-4f, "T3: none");
+            Assert.AreEqual(2.5f, WeaponDef.EscapeWarning(4, "cal_203", 8.5f), 1e-3f, "203 mm: the T4 floor");
+            Assert.AreEqual(2.5f, WeaponDef.EscapeWarning(4, "rkt_smerch_300", 8f), 1e-3f, "Smerch: the floor");
+            Assert.AreEqual(0.5f + 10f / 4.5f, WeaponDef.EscapeWarning(4, "bomb_400", 10f), 1e-3f, "400 kg: 0.5 + 10 / 4.5");
+            Assert.AreEqual(0.5f + 14f / 4.5f, WeaponDef.EscapeWarning(5, "cal_406", 14f), 1e-3f, "406 mm: above its 3.5 s floor");
+            Assert.AreEqual(4f, WeaponDef.EscapeWarning(5, "gungnir_emrg", 12f), 1e-3f, "a T5 super weapon: the 4 s floor");
+            Assert.AreEqual(6f, WeaponDef.EscapeWarning(4, "cal_240", 40f), 1e-3f, "capped at 6 s");
+        }
+
+        [Test]
+        public void EveryT4RoundABossFiresHasAWarningAndARing()
+        {
+            var c = C;
+            var any = 0;
+            foreach (var boss in c.Vehicles.Values.Where(v => v.Boss))
+                foreach (var m in boss.Mounts)
+                {
+                    var w = m.Weapon;
+                    if (w.Tier < 4 || w.Laid || w.Guided) continue;
+                    any++;
+                    Assert.That(w.WarnSeconds, Is.GreaterThanOrEqualTo(WeaponDef.EscapeWarning(w.Tier, w.WeaponFamilyId, w.SplashRadius) - 1e-4f), boss.Id + ": " + w.Id);
+                    Assert.That(w.WarnSeconds, Is.GreaterThanOrEqualTo(2.5f), boss.Id + ": " + w.Id);
+                    Assert.That(w.SplashRadius, Is.GreaterThan(0f), boss.Id + ": " + w.Id + " has a core to warn of");
+                    Assert.That(w.WarnRadius, Is.GreaterThanOrEqualTo(w.SplashRadius), w.Id);
+                }
+            Assert.That(any, Is.GreaterThan(4));
+        }
+
+        [Test]
+        public void LeviathansSalvoWarnsLongEnoughAndItsRingIsTheEdge()
+        {
+            var c = C;
+            var s = c.Vehicle("leviathan").Salvo;
+            Assert.That(s.Warn, Is.GreaterThanOrEqualTo(WeaponDef.EscapeWarning(5, "cal_406", s.Radius) - 1e-3f));
+            Assert.That(c.TryGetSupport(s.Warning, out var ring), Is.True);
+            Assert.AreEqual(s.Edge, ring.Radius, 1e-3f, "the warning ring is the edge");
+            Assert.AreEqual(s.Radius, ring.BlastRadius, 1e-3f, "its core inside");
+        }
+
+        [Test]
+        public void JotunnsHowitzerShellsStayUpForTheirWarning()
+        {
+            var world = new SimWorld(C, GameContent.LoadMap("ashfield_conquest"), seed: 2);
+            foreach (var v in world.VehicleList) v.Hp = 0f;
+            world.Step(0.05f);
+            world.ClearEvents();
+            var boss = world.SpawnVehicle("mobile_fortress", 1, new Vector2(60f, 60f), 0f);
+            world.SpawnVehicle("heavy_tank", 0, new Vector2(60f, 20f), 0f);
+            var gun = boss.Def.Mounts.Select(m => m.Weapon).First(w => w.WeaponFamilyId == "cal_203");
+            var shots = 0;
+            for (var t = 0f; t < 60f && shots < 2; t += 0.05f)
+            {
+                world.Step(0.05f);
+                foreach (var e in world.Events)
+                {
+                    if (e.Kind != SimEventKind.WeaponFired || e.Entity != boss.Id || e.DefId != gun.Id) continue;
+                    shots++;
+                    Assert.That(e.Value, Is.GreaterThanOrEqualTo(gun.WarnSeconds - 1e-3f), "the shell's flight is its warning");
+                }
+                world.ClearEvents();
+            }
+            Assert.That(shots, Is.GreaterThan(0), "the 203 mm fired");
         }
     }
 }

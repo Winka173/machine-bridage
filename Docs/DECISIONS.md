@@ -15249,3 +15249,31 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
 - Tests: `Prompt34Tests` L2 (the same family fires the same round on every boss, Leviathan's salvo, the area bonus,
   Gungnir kept); `Prompt26ABTests` (a T5 round's edge passes 20 m; Leviathan's 406 mm at 14 / 24) and `Prompt26CDTests`
   (406 mm at 14 / 24) updated. Written, not run.
+
+## Prompt 34 L3 (lead pass, 2026-10-02)
+
+- **Rule** (`WeaponDef.EscapeWarning`, `WarnSeconds`): a T4+ round warns max(floor, 0.5 s + core / 4.5 m/s) before it lands,
+  at most 6 s. The floors: T4 2.5 s, the 406 mm 3.5 s, and 4 s for the 800 mm and the other T5 super weapons. Results: 203 mm
+  (core 8.5) and Smerch (8) 2.5 s; 240 mm and the 400 kg bombs (10) 2.72 s; the 406 mm (14) 3.61 s.
+- **Sim**: `CombatSystem.Launch` keeps a boss's unguided T4+ round in the air for at least its warning (travel = max(travel,
+  WarnSeconds)), so the ring can show that long whatever the range. A guided round chases its target, so it gets no ring.
+  It is deterministic and changes when the round lands: a short-range 203 mm shot now lands 2.5 s after firing, not at
+  its own flight time. Player T4+ weapons (GMLRS, TOS, the player's 203 mm) are not changed in this prompt.
+- **Leviathan / Kraken's salvo**: `salvo.warn` 3 -> 3.7 s (the formula's 3.61, rounded up). Its warning support
+  `leviathan_shell` draws the edge (radius 8 -> 24) with the core inside (blast 6 -> 14). These are data written by
+  `Tools/balance/p34_warnings.py --write`.
+- **View** (written blind): `EscapeWarnings` draws a pooled pair of ground marks (the big attacks' strike style): the
+  edge ring, exactly the blast's edge (`WarnRadius`: the edge, else the core), and the core ring inside. Both fill as the
+  round comes down, from impact minus the warning to impact. Every round of a salvo gets its own pair (32 pairs; when
+  they run out, the one landing soonest is reused). This replaces prompt 26 B.4's 0.8 s core ring for T4+ boss rounds; lower
+  tiers keep B.4. A T5 salvo's strike warning gets its core ring too (`StrikeCore`: any event barrage whose blast is
+  inside its ring). **Minimap**: `MatchRunner.EscapeMark` adds the edge circle of each T4+ boss round to the minimap's
+  warnings for its flight, so a warning off the screen still shows.
+- **Validator** `Tools/balance/p34_warnings.py` checks: every T4+ boss round (unguided, with a core); every salvo's and
+  cruise missile's warn against the formula; the bombards. **Gungnir is the named exception**: its bombard keeps 3 s
+  (the formula says 4 s for a T5 super weapon). The lead's rule for prompt 34 gives Gungnir its family and tier only,
+  and prompt 29 G1 fixed its pattern. Reported as a note; one line in `p34_warnings.EXCEPTIONS` to drop if the owner
+  wants the 4 s. Big attacks (super weapons) are not weapons and are not checked. Their warnings (3-4 s) meet the formula
+  except Monster's 800 mm shell (core 20 m: 4.94 s against its 4 s): left for L9.
+- Tests (written, not run): `Prompt34Tests` L3 (the formula, every T4+ boss round warns and has a ring, Leviathan's salvo
+  and its ring, Jötunn's 203 mm shells stay up for their warning).
