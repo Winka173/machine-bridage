@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Models (prompt 27 wave 3d): MLRS, elite MLRS, heavy rocket artillery, thermobaric launcher, ballistic launcher, long SAM, SAM launcher and Iron Beam rebuilt on the V2 kit (V2 wheels and running gear, extruded cabs and hulls, chamfered pods and decks, revolved tubes, canisters and missiles); every node, pivot and size kept.
 - Models (prompt 27 wave 3c): AA vehicle (+hd), artillery (+hd), heavy AA, elite AA, mortar carrier, mine layer, smoke carrier and shield carrier rebuilt on the V2 kit (V2 running gear and wheels, extruded and chamfered hulls, one-surface barrels, revolved drums and tubes); same nodes, pivots and proportions, 1.3-1.56x triangles, brighter vertex colours. Cards rendered by the lead after the merge.
 - Models (prompt 27 wave 3b): laser, flame, twin, BMPT, IFV, elite APC, armored bulldozer and engineer vehicle rebuilt on the V2 kit (V2 running gear, extruded and chamfered hulls, lofted turrets, one-surface barrels); same nodes, pivots and proportions, 1.4-1.6x triangles, brighter vertex colours. Cards rendered by the lead after the merge.
 - Models (prompt 27 wave 3a): eight tanks rebuilt on the V2 kit (heavy, light, tank destroyer with their `_hd`, titan, turtle and the three elites on the new bases): V2 running gear, chamfered hulls, lofted turrets, one-surface barrels; same nodes, pivots and proportions, 1.4-1.6x triangles, brighter vertex colours. Cards not re-rendered yet.

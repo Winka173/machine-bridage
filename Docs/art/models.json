@@ -173,7 +173,7 @@
   },
   "ballistic_launcher": {
     "file": "ballistic_launcher.glb",
-    "triangles": 2544
+    "triangles": 2818
   },
   "ballistic_missile": {
     "file": "ballistic_missile.glb",
@@ -509,7 +509,7 @@
   },
   "elite_mlrs": {
     "file": "elite_mlrs.glb",
-    "triangles": 2264
+    "triangles": 2692
   },
   "elite_tank_destroyer": {
     "file": "elite_tank_destroyer.glb",
@@ -639,6 +639,10 @@
     "file": "glide_bomber.glb",
     "triangles": 1128
   },
+  "gmlrs": {
+    "file": "gmlrs.glb",
+    "triangles": 126
+  },
   "gps_jammer_vehicle": {
     "file": "gps_jammer_vehicle.glb",
     "triangles": 4396
@@ -721,7 +725,7 @@
   },
   "heavy_rocket_artillery": {
     "file": "heavy_rocket_artillery.glb",
-    "triangles": 2960
+    "triangles": 3668
   },
   "heavy_tank": {
     "file": "heavy_tank.glb",
@@ -813,7 +817,7 @@
   },
   "iron_beam": {
     "file": "iron_beam.glb",
-    "triangles": 2640
+    "triangles": 2888
   },
   "ixion": {
     "file": "ixion.glb",
@@ -905,7 +909,7 @@
   },
   "long_sam": {
     "file": "long_sam.glb",
-    "triangles": 2576
+    "triangles": 2980
   },
   "main_battle_tank": {
     "file": "main_battle_tank.glb",
@@ -993,7 +997,7 @@
   },
   "mlrs": {
     "file": "mlrs.glb",
-    "triangles": 2224
+    "triangles": 2652
   },
   "mobile_fortress": {
     "file": "mobile_fortress.glb",
@@ -1249,7 +1253,7 @@
   },
   "sam_launcher": {
     "file": "sam_launcher.glb",
-    "triangles": 3248
+    "triangles": 4418
   },
   "sandbag_wall": {
     "file": "sandbag_wall.glb",
@@ -1465,7 +1469,7 @@
   },
   "thermobaric_launcher": {
     "file": "thermobaric_launcher.glb",
-    "triangles": 3508
+    "triangles": 4982
   },
   "titan_tank": {
     "file": "titan_tank.glb",

@@ -132,6 +132,8 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 **Pass 3c done (2026-10-02, static gates pass; cards not rendered by the agent):** aa_vehicle (+hd), artillery (+hd), heavy_aa, elite_aa, mortar_carrier, mine_layer, smoke_carrier, shield_carrier.
 
+**Pass 3d done (2026-10-02, static gates pass; cards not rendered by the agent):** mlrs, elite_mlrs, heavy_rocket_artillery, thermobaric_launcher, ballistic_launcher, long_sam, sam_launcher, iron_beam.
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |
