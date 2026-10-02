@@ -14965,3 +14965,71 @@ the lead, the tests are written, not run.
     against the 600 s limit, the `test_rod` event is Skygate turning its gun; existing. Line: Hawk at 20 s.
   - Not done in L2: the sheet's MAKE LATER missions (pass 4) keep the player's deck; their rows stay in the sheet and the
     precheck's table. No objective changed (fixed_decks.check_mission against the baseline; FixedDeckTests too).
+
+## Prompt 31 L3 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p31-b2`. Pass 3: a general prebuilt NavGrid state mechanism and the five FIRST events of the sheet
+"Biến cố". Nothing was run but the Python tools (build_campaign.py with `--no-texts`, nav_states.py); the C# is compiled by
+the lead; Prompt31NavStateTests is written, not run.
+
+- Mechanism (`Sim/Navigation/NavStates.cs`, `world.NavStates`): a *site* has two or more named *states*, each a list of
+  axis-aligned blocks (centre, width, depth, clearance 1.5 m like a building's). All states are built at load and checked
+  once; one is in force at a time; a switch comes in only at a tick boundary (first thing in `SimWorld.Step`, in site
+  order), closes ground through `NavGrid.AddBlocker` (routes over it are planned again, the lanes rebuild on the version)
+  and opens it through the reference counts (a site never unblocks a building's cells). Any ground vehicle left on closed
+  ground, or cut off from the main region it stood in, is put on the nearest open cell of the main region and plans again
+  (never trapped). The states in force and the waiting switches are in `StateHash`, so a checkpoint's replay (same seed,
+  same journal) rebuilds them on the same step; `Snapshot()` / `Restore()` carry them for any other load.
+- Load-time check (`NavStates.Validate`, run by `SimWorld.BuildNavSites`): every state of every site, the other sites as
+  they stand, must keep the anchors (the sides' rallies, the map's capture points, the mission's target point) in one
+  region and must not seal off more than `PocketCells` (6) open cells of the anchors' ground (slivers along a clearance are
+  allowed; vehicles there are put out at the switch). A failing state is refused: `CanSwitch` and `Schedule` return false,
+  the reason is in `NavSiteProblems`; the battle never meets it. `Tools/campaign/nav_states.py` does the same over the data
+  (the map's blocking props and outline rasterised as NavGrid does), called from `build_campaign.check()`, so a bad
+  rectangle fails the build before Unity. Limits: the Python check does not draw the mission's own towers (the game's check
+  does); nav sites on a reversed battlefield are refused by the build (the rectangles are written for the map as drawn);
+  each state is checked against the other sites' current states, not every combination.
+- API for prompt 32's wall segments (reuse, do not copy): `world.NavStates.Define(new NavSiteDef(id, new[] { new
+  NavStateDef("INTACT", blocks), new NavStateDef("RUBBLE", blocksOrNone) }, "INTACT"))` before the first step (or campaign.json
+  `navStates` on the mission, parsed by `NavSiteDefs`, built by `world.BuildNavSites(def.NavSites, extraAnchors)` from
+  `MissionMode.Setup` / `OperationMode.Setup`), which also runs `Validate(anchors)`; in play
+  `world.NavStates.Schedule(id, "RUBBLE", world.Tick + 1, world.Tick)` (false when refused), `ActiveOf(id)`,
+  `Sites[i].SwitchedAt`, `CanSwitch(id, state)`; `Locked` once stepped (Define throws then). When a segment's ground belongs
+  to its site, lift the prop's or tower's own anchor (`SimWorld.ReleaseGround` does it for a fixed defence) so the site alone
+  holds the cells. A wall whose INTACT state separates the sides on purpose would be refused by the anchors check: prompt 32
+  passes the anchors that must stay joined (through a gate) or adds an option; the default stays "always a way round".
+- Events (`MissionEventKind` GroundChange, SandstormTurn, CityBlackout, BetrayalWarning, OrbitalPods in
+  `Modes/MissionEvents.P31.cs`; the library rows and the missions in `Tools/campaign/ground_events.py`): each warns 8-12 s
+  ahead at every difficulty (the C.3 table's lead clamped to 8-12 for these kinds) with a system notice (`EventText`, EN +
+  VI) and its places in `EventState.Marks`, drawn as warning rings on the minimap while warned and running
+  (`MatchRunner.GroundEvents.cs`, written blind); Nadia's line is extra. Deterministic: a time, another event, or the new
+  trigger `spotted` (the enemy sees a non-scripted player vehicle, by the visibility of the step before).
+  - Bão cát đổi hướng (`sandstorm_turn`): the storm rolls over one half of the map (`half`: by default the side the player's
+    main group stands in, along the larger axis), sight there times `sight`, the other half times `clear`
+    (`SimWorld.StormSight`, applied to every spotter in `RefreshVisibility` and in the field works' `SeenBy`), over 20-30 s,
+    clearing after `hold` s. c2m06 (already a sandstorm: 0.65 on our half, 1.25 on theirs) as a 4th event; c12m07 in place
+    of its `sandstorm` weather shift (the count kept). The view's weather turns to Sandstorm when it is not already (the
+    view draws the whole sky; the half is on the minimap).
+  - Báo động nhà máy (`factory_alarm` and `alarm_wave`, i1m01): from 30 s in, once spotted, the rolling-mill gate (site
+    `mill_gate`, a 10 x 2 m block across the 10 m lane east of the casting hall at (46, 0)) shuts 10 s later; 4 s after it
+    the garrison's wave (it replaces the mission's `enemy_wave`: the wave now comes on the alarm). The sheet's 3-star "no
+    alarm" is not added (the stars are time and losses; a new star rule is outside this pass).
+  - Mất điện thành phố (`city_blackout`, c7m11 at 240 s): night over 25 s and every tower on the grid
+    (`MissionEventSystem.GridTowers`: radar, EW, searchlights, laser AD, shield, fire control, targeting, C-RAM, visual
+    jammer), both sides', knocked out (Stun, so a Backup Generator shortens it) for 90 s; then the backup power brings them
+    back and the night stays. c7m11's fixed deck gets the rule `cityBlackout` (the fixed-deck check wants the event with it);
+    its pending line keeps only the storm cutting radar range.
+  - Phản bội (`betrayal_warning`, c7m10 stage `square` at 168 s, lead 10 s): Thorne's columns (every allied vehicle, grouped
+    within 20 m, at most six marks) on the minimap and Nadia's line before the betrayal stage turns them (the stage's own
+    Betrayal is unchanged).
+  - Khoang đổ bộ quỹ đạo (`orbital_pods`, c11m10 stage `fortress` at 60 s): three pods on prebuilt landing sites
+    (`pod_site_1..3`: a gun turret at (20, 60), a missile battery at (60, 20), an AA turret at (-10, 90), each site's block the
+    tower's square, max(length, width) x 0.8) under the pod drop's warning rings, standing up as enemy towers; the tower's
+    own anchor is lifted and the site's "landed" state holds the ground; a tower destroyed sends its site back to "clear"
+    while the fortress stage's events run (after that stage the ground stays closed, like rubble). The minimap marks end when
+    the pods are down.
+- Event counts kept: c2m06 4, c12m07 3, i1m01 3 (the interlude maximum), c7m11 3, c7m10 7 and c11m10 7 (operations 5-8).
+- Data keys changed (CatalogCheck): campaign.json `eventLibrary.events` (+6 rows: sandstorm_turn, factory_alarm,
+  alarm_wave, city_blackout, betrayal_warning, orbital_pods), missions c2m06, c12m07, i1m01 (+`navStates`), c7m11
+  (+event, fixedDeck rule), c7m10 (stage square), c11m10 (+`navStates`, stage fortress). balance.json unchanged.
+  CampaignText.cs was not regenerated (`--no-texts`: the generator would drop rows written by hand since).
