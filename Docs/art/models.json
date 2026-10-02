@@ -61,7 +61,7 @@
   },
   "ammo_carrier": {
     "file": "ammo_carrier.glb",
-    "triangles": 2984
+    "triangles": 3388
   },
   "ammo_crate": {
     "file": "ammo_crate.glb",
@@ -269,7 +269,7 @@
   },
   "bunker_vehicle": {
     "file": "bunker_vehicle.glb",
-    "triangles": 7032
+    "triangles": 7792
   },
   "bus": {
     "file": "bus.glb",
@@ -373,7 +373,7 @@
   },
   "counter_battery_radar": {
     "file": "counter_battery_radar.glb",
-    "triangles": 2140
+    "triangles": 2396
   },
   "cp_relay": {
     "file": "cp_relay.glb",
@@ -521,7 +521,7 @@
   },
   "ew_jammer": {
     "file": "ew_jammer.glb",
-    "triangles": 1976
+    "triangles": 2274
   },
   "ew_tower": {
     "file": "ew_tower.glb",
@@ -1145,7 +1145,7 @@
   },
   "railgun_truck": {
     "file": "railgun_truck.glb",
-    "triangles": 2324
+    "triangles": 2924
   },
   "razor_wire": {
     "file": "razor_wire.glb",
@@ -1293,7 +1293,7 @@
   },
   "shahed_truck": {
     "file": "shahed_truck.glb",
-    "triangles": 2416
+    "triangles": 2616
   },
   "shield_carrier": {
     "file": "shield_carrier.glb",
@@ -1425,7 +1425,7 @@
   },
   "supply_truck": {
     "file": "supply_truck.glb",
-    "triangles": 2576
+    "triangles": 2862
   },
   "supreme_command": {
     "file": "supreme_command.glb",
@@ -1541,7 +1541,7 @@
   },
   "vbied": {
     "file": "vbied.glb",
-    "triangles": 1184
+    "triangles": 1574
   },
   "vehicle_hangar": {
     "file": "vehicle_hangar.glb",

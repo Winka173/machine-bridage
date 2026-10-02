@@ -9,7 +9,7 @@ one agent at a time, each pass on its own branch `feature/p27-wave3<x>` from `le
 | 3b | laser_tank, flame_tank, twin_tank, bmpt, ifv, elite_apc, armored_bulldozer, engineer_vehicle | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3b)
 | 3c | aa_vehicle (+hd), artillery (+hd), heavy_aa, elite_aa, mortar_carrier, mine_layer, smoke_carrier, shield_carrier | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3c)
 | 3d | mlrs, elite_mlrs, heavy_rocket_artillery, thermobaric_launcher, ballistic_launcher, long_sam, sam_launcher, iron_beam | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3d)
-| 3e | counter_battery_radar, ew_jammer, bunker_vehicle, ammo_carrier, supply_truck, railgun_truck, shahed_truck, vbied |
+| 3e | counter_battery_radar, ew_jammer, bunker_vehicle, ammo_carrier, supply_truck, railgun_truck, shahed_truck, vbied | done (builds and static gates; cards by the lead, DECISIONS 27 wave 3e)
 | 3f | wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle, fibre_fpv_carrier, interceptor_drone_vehicle |
 | 3g | microwave_vehicle, nlos_atgm_vehicle, radar_atgm_vehicle, radar_scout, recoilless_jeep, shorad_vehicle, sp_mortar, wheeled_howitzer |
 | 3h | armored_car, command_vehicle, fpv_carrier, lancet_truck, scout_jeep (+hd), landing_craft, missile_boat, sea_corvette, grad_truck |

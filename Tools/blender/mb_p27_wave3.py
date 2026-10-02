@@ -2,6 +2,8 @@
 last in build_assets.all_builders() so these builders win. Same models as before: every runtime node name, pivot,
 material, proportion and `_hd` twin kept (see Docs/models/WAVE3_PLAN.md).
 
+Pass 3e: supply_truck, ammo_carrier, counter_battery_radar, ew_jammer, railgun_truck, shahed_truck, vbied, bunker_vehicle.
+
 Pass 3d: mlrs, elite_mlrs (on the new mlrs), heavy_rocket_artillery, thermobaric_launcher, ballistic_launcher,
 long_sam, sam_launcher, iron_beam.
 
@@ -1517,6 +1519,463 @@ def iron_beam(a):
     k.clean(a)
 
 
+# ============================================================================= pass 3e: support, radar and special trucks
+def _ybox(shape, size, loc, rot=(0, 0, 0), chamfer=.03):
+    """A chamfered box whose depth runs along its local Y (rails, panels, bars): `size` = (x, y, z) as for a box."""
+    sx, sy, sz = size
+    c = 0.0 if min(size) < k.SMALL else min(chamfer, sx * .3, sy * .3, sz * .3)
+    k.extrude(shape, [(-sx / 2, -sz / 2), (sx / 2, -sz / 2), (sx / 2, sz / 2), (-sx / 2, sz / 2)], sy, loc=loc, rot=rot,
+              axis='Y', chamfer=c, corner=c)
+
+
+def _ring_gun_v2(a, loc, length=.6, ring=.34, z=.31, y0=-.15):
+    """m2._ring_gun on the V2 kit: a lathed ring, a chamfered gun body, a revolved barrel with a muzzle ring; same
+    nodes (`Turret`, `Main_cannon`, `Muzzle_brake`, `Muzzle_main`)."""
+    t = a.pivot('Turret', loc)
+    k.lathe(a.part('Ring', 'Armor', t), [(ring, 0), (ring, .08), (ring - .05, .1)], seg=12, worn=(1,))
+    a.part('Mount', 'Steel', t).box((.1, .1, .18), loc=(0, .05, .16), bevel=0)
+    gun = a.part('Main_cannon', 'Steel', t)
+    k.block(gun, (.14, .4, .15), loc=(0, .05, z - .01), chamfer=.02)
+    r = .06
+    k.lathe(gun, [(r, 0), (r, .06), (r * .8, .1), (r * .8, length), (r * .5, length), (r * .5, length - .06),
+                  (0, length - .06)], loc=(0, y0, z), rot=FORWARD, seg=8)
+    k.ring(a.part('Muzzle_brake', 'Undercarriage', t), [(r * .55, length), (r * 1.25, length), (r * 1.25, length + .12),
+                                                       (r * .55, length + .12)], loc=(0, y0, z), rot=FORWARD, seg=8)
+    k.block(a.part('Ammo_box', 'Armor', t), (.16, .2, .16), loc=(.16, .08, .26), chamfer=.02)
+    a.pivot('Muzzle_main', (0, y0 - length - .12, z), t)
+    return t
+
+
+# ----------------------------------------------------------------------------- HEMTT pair
+def _hemtt_v2(a):
+    """m2._hemtt on the V2 kit (V2 wheels, an extruded cab with chamfers and door insets, chamfered boxes, the lathed
+    ring gun); same parts and geometry. Returns the load bed's floor height."""
+    hd.mark(a, False)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Chassis', 'Undercarriage')
+    dark.box((1.1, 7.9, .3), loc=(0, .05, .72), bevel=0)
+    for s in (-1, 1):
+        for y in m2.HEMTT_AXLES:
+            parts.road_wheel(a, (s * .79, y, .48), .48, .36, s, seg=8)
+    for s in (-1, 1):
+        k.block(armor, (.44, 1.95, .08), loc=(s * .79, -2.54, 1.02), chamfer=.02)
+        k.block(armor, (.44, 2.1, .08), loc=(s * .79, 1.8, 1.02), chamfer=.02)
+        steel.box((.14, .5, .14), loc=(s * .88, -.5, .86), bevel=0)
+        a.part('Tanks', 'Armor').cyl(.22, 1.0, loc=(s * .74, -.35, .72), rot=FORWARD, seg=8, bevel=0)
+        a.part('Glass', 'Glass').box((.03, .7, .42), loc=(s * .985, -3.25, 1.72), bevel=0)
+        steel.box((.2, .42, .06), loc=(s * .9, -3.6, .78), bevel=0)
+    k.extrude(body, [(-4.06, 1.02), (-4.1, 1.45), (-3.98, 2.04), (-2.45, 2.06), (-2.4, 1.02)], 1.98, axis='X',
+              chamfer=.05, corner=.04)
+    k.inset(body, lambda c, n, f: abs(n.x) > .9, width=.12, depth=.012)
+    k.block(body, (1.2, .9, .5), loc=(0, -3.62, .8), chamfer=.03)
+    dark.grille(1.0, .34, loc=(0, -4.08, .82), slats=4, depth=.05, thickness=.05)
+    dark.grille(1.3, .3, loc=(0, -4.1, 1.26), slats=3, depth=.05, thickness=.05)
+    glass = a.part('Glass', 'Glass')
+    for s in (-1, 1):
+        glass.box((.84, .04, .48), loc=(s * .45, -4.03, 1.76), rot=(-.2, 0, 0), bevel=0)
+    k.block(steel, (2.0, .16, .22), loc=(0, -4.16, .66), chamfer=.03)
+    _lights(a, (-.72, .72), -4.1, .98)
+    _lights(a, (-.8, .8), 4.08, 1.0, facing=1, size=(.16, .04, .1), lamp='Alloy')
+    armor.box((1.6, .1, .08), loc=(0, -3.99, 2.04), rot=(-.2, 0, 0), bevel=0)
+    k.block(armor, (1.5, .4, .95), loc=(0, -2.2, 1.45), chamfer=.04)
+    steel.cyl(.08, 1.0, loc=(.62, -2.2, 1.9), seg=8, bevel=0)
+    k.block(armor, (.3, .3, .5), loc=(-.62, -2.2, 2.05), chamfer=.03)
+    _ring_gun_v2(a, (-.42, -3.3, 2.06))
+    a.pivot('Point_exhaust', (.62, -2.2, 2.42))
+    a.pivot('Point_fire', (0, -3.2, 2.1))
+    return 1.12
+
+
+def supply_truck(a):
+    """Supply truck (M977 HEMTT cargo truck) on the V2 HEMTT: a chamfered bed with drop sides, the tarpaulin as an
+    extruded rounded canvas cover on its bows, the crates showing at the open tail, the tailgate down; same nodes."""
+    z = _hemtt_v2(a)
+    armor = a.part('Armor', 'Armor')
+    k.block(a.part('Bed', 'Team'), (1.98, 6.1, .14), loc=(0, 1.0, z + .07), chamfer=.02)
+    for s in (-1, 1):
+        k.block(armor, (.06, 6.1, .42), loc=(s * .97, 1.0, z + .35), chamfer=.01)
+    k.block(armor, (1.98, .06, .42), loc=(0, -2.03, z + .35), chamfer=.01)
+    prof = [(-.99, z + .5), (-.99, 1.86), (-.8, 2.02), (-.3, 2.08), (.3, 2.08), (.8, 2.02), (.99, 1.86), (.99, z + .5)]
+    tarp = a.part('Tarp', 'Canvas')
+    k.extrude(tarp, prof, 4.0, loc=(0, -.02, 0), axis='Y', chamfer=.05, corner=.04)
+    straps = a.part('Straps', 'Undercarriage')
+    for y in (-1.3, -.3, .7, 1.7):
+        straps.box((2.02, .1, .06), loc=(0, y, 2.07), bevel=0)
+    m2._crate_stack(a, -.86, .86, 2.1, 3.85, z + .14, 2, 3, 3)
+    k.block(a.part('Ammo_boxes', 'Armor'), (.5, .34, .28), loc=(-.55, 2.35, z + .9), chamfer=.03)
+    k.block(a.part('Fuel_cans', 'Hazard'), (.3, .5, .36), loc=(.62, 3.6, z + .79), chamfer=.04)
+    k.block(armor, (1.9, .06, .42), loc=(0, 4.1, z - .2), chamfer=.01)
+    k.clean(a)
+
+
+def ammo_carrier(a):
+    """Ammunition carrier (HEMTT with a load-handling bed) on the V2 HEMTT: chamfered bed and pedestal, the steel rack,
+    the crate stack, the knuckle crane with a lathed column and chamfered boom, outriggers; same nodes."""
+    z = _hemtt_v2(a)
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    k.block(a.part('Bed', 'Team'), (1.98, 5.4, .14), loc=(0, .65, z + .07), chamfer=.02)
+    rack = a.part('Rack', 'Armor')
+    for s in (-1, 1):
+        for y in (-1.95, -.6, .75, 2.1, 3.3):
+            rack.box((.1, .1, .82), loc=(s * .93, y, z + .55), bevel=0)
+        for zz in (.5, .95):
+            rack.box((.1, 5.35, .1), loc=(s * .93, .67, z + zz), bevel=0)
+    rack.box((1.96, .1, .1), loc=(0, -1.95, z + .95), bevel=0)
+    m2._crate_stack(a, -.84, .84, -1.85, 3.2, z + .14, 3, 3, 5)
+    k.block(armor, (1.7, .6, .4), loc=(0, 3.72, z + .2), chamfer=.05)
+    k.lathe(a.part('Crane', 'Hazard'), [(.24, -.35), (.24, .3), (.2, .35), (0, .35)], loc=(.45, 3.72, z + .75), seg=10,
+            worn=(1,))
+    boom = a.part('Crane_boom', 'Hazard')
+    _ybox(boom, (.22, 2.8, .24), (.45, 2.3, z + 1.16), rot=(-.06, 0, 0), chamfer=.03)
+    k.block(boom, (.2, .5, .3), loc=(.45, 3.62, z + 1.2), chamfer=.03)
+    k.block(steel, (.16, .16, .2), loc=(.45, .95, z + 1.02), chamfer=.02)
+    for s in (-1, 1):
+        steel.box((.14, .2, .5), loc=(s * .92, 3.72, z - .1), bevel=0)
+    k.clean(a)
+
+
+# ----------------------------------------------------------------------------- radar, jammer
+def counter_battery_radar(a):
+    """Counter-battery radar (AN/TPQ-53 on an FMTV 6x6) on the V2 truck: chamfered shelter with side insets, cooling
+    unit, generator, the phased-array panel as a chamfered slab on a chamfered yoke at 45 degrees on its turntable
+    (`Radar`); the cab-roof machine gun; same nodes."""
+    z = _truck_v2(a, -3.2, 3.2, (-2.4, 1.05, 2.15), mg=(-.45, -2.5))
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    k.block(a.part('Bed', 'Armor'), (1.96, 4.9, .12), loc=(0, .75, z - .06), chamfer=.02)
+    k.block(body, (1.9, 1.7, 1.2), loc=(0, -.72, z + .6), chamfer=.06)
+    k.inset(body, lambda c, n, f: abs(n.x) > .9 and c.y > -1.55 and c.z > z, width=.12, depth=.012)
+    k.block(armor, (1.2, .8, .3), loc=(0, -.72, z + 1.35), chamfer=.04)
+    a.part('Fan_grilles', 'Undercarriage').cyl(.28, .04, loc=(0, -.72, z + 1.51), seg=10, bevel=0)
+    k.block(armor, (.6, .6, .5), loc=(-.6, .4, z + .25), chamfer=.04)
+    a.part('Generator_panel', 'Undercarriage').box((.03, .44, .3), loc=(-.91, .4, z + .25), bevel=0)
+    steel.cyl(.6, .12, loc=(0, 1.9, z + .06), seg=14, bevel=.02, bseg=1)
+    for s in (-1, 1):
+        steel.box((.14, .14, .6), loc=(s * .9, 3.0, z - .45), bevel=0)
+        steel.box((.3, .3, .05), loc=(s * .9, 3.0, .03), bevel=0)
+    r = a.pivot('Radar', (0, 1.9, z + .12))
+    tilt = math.radians(45)
+    up = Vector((0, -math.sin(tilt), math.cos(tilt)))
+    back = Vector((0, math.cos(tilt), math.sin(tilt)))
+    yoke = a.part('Radar_yoke', 'Armor', r)
+    k.block(yoke, (1.0, .5, .3), loc=(0, 0, .15), chamfer=.04)
+    for s in (-1, 1):
+        yoke.limb((s * .5, 0, .2), tuple(Vector((s * .5, 0, 0)) + up * .8 + back * -.12), .12, .16, bevel=0)
+    centre = Vector((0, 0, .2)) + up * .95
+    _ybox(a.part('Radar_panel', 'Team', r), (2.3, .16, 1.9), tuple(centre), rot=(tilt, 0, 0), chamfer=.04)
+    a.part('Radar_face', 'MetalSheet', r).box((2.14, .03, 1.74), loc=tuple(centre + back * .09), rot=(tilt, 0, 0),
+                                              bevel=0)
+    seams = a.part('Radar_seams', 'Undercarriage', r)
+    for kk in (-.55, 0, .55):
+        seams.box((2.16, .03, .05), loc=tuple(centre + back * .11 + up * kk), rot=(tilt, 0, 0), bevel=0)
+    _ybox(a.part('Radar_iff', 'Armor', r), (1.4, .14, .16), tuple(centre + up * 1.0), rot=(tilt, 0, 0), chamfer=.02)
+    a.pivot('Point_fire', (0, -.7, z + 1.3))
+    k.clean(a)
+
+
+def ew_jammer(a):
+    """Electronic-warfare jammer (Krasukha-4 on a BAZ-6910 8x8) on the V2 truck: chamfered equipment body with
+    insets, the round dish on its turntable (`Radar`), the lathed remote gun (`Turret`, `Main_cannon`); same nodes."""
+    z = _truck_v2(a, -4.4, 4.4, (-3.55, -2.35, 1.95, 3.15), r=.48, width=2.3, cab=1.7, roof=2.2)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    k.block(body, (2.3, 5.2, .9), loc=(0, .15, z + .45), chamfer=.06)
+    for y in (-1.6, -.2, 1.2):
+        a.part('Doors', 'Armor').box((.04, .8, .7), loc=(1.16, y, z + .42), bevel=0)
+    k.block(armor, (1.2, .8, .3), loc=(0, -1.6, z + 1.05), chamfer=.04)
+    steel.cyl(.7, .2, loc=(0, 2.9, z + 1.0), seg=14, bevel=0)
+    for s in (-1, 1):
+        steel.box((.14, .14, .6), loc=(s * 1.05, 3.9, z - .45), bevel=0)
+    a.pivot('Point_fire', (0, -.5, z + 1.0))
+    r = a.pivot('Radar', (0, 2.9, z + 1.1))
+    k.block(a.part('Radar_mast', 'Steel', r), (.5, .5, .3), loc=(0, 0, .15), chamfer=.04)
+    tilt = math.radians(58)
+    dish_c = Vector((0, .15, .55))
+    mv._dish(a.part('Radar_dish', 'MetalSheet', r), tuple(dish_c), 1.38, 1.38, depth=.35, seg=16, tilt=tilt)
+    a.part('Radar_feed', 'Armor', r).limb(tuple(dish_c), tuple(dish_c + Vector((0, -math.cos(tilt), math.sin(tilt)))
+                                                              * .9), .12, .12, bevel=0)
+    k.greebles(body, (0, -.6, z + .9), (1, 0, 0), (0, 1, 0), (1.6, 1.4), 3, seed=2752, height=(.04, .08),
+               chamfer=.012)
+    t = a.pivot('Turret', (-.5, -3.3, 2.2))
+    k.lathe(a.part('RWS_ring', 'Armor', t), [(.3, 0), (.3, .08), (.26, .1)], seg=10, worn=(1,))
+    gun = a.part('Main_cannon', 'Steel', t)
+    k.block(gun, (.14, .36, .16), loc=(0, .05, .24), chamfer=.02)
+    k.lathe(gun, [(.05, 0), (.05, .08), (.04, .12), (.04, .6), (.025, .6), (.025, .52), (0, .52)], loc=(0, -.13, .24),
+            rot=FORWARD, seg=6)
+    k.ring(a.part('Muzzle_brake', 'Undercarriage', t), [(.04, .6), (.075, .6), (.075, .7), (.04, .7)],
+           loc=(0, -.13, .24), rot=FORWARD, seg=6)
+    a.pivot('Muzzle_main', (0, -.84, .24), t)
+    k.clean(a)
+
+
+# ----------------------------------------------------------------------------- railgun truck, Shahed launcher
+def railgun_truck(a):
+    """Railgun truck (8x8) on the V2 truck: chamfered capacitor module with glowing radiator panels, the turret with a
+    chamfered body and breech, the two long guide rails as chamfered bars, capacitor coils, muzzle frame and rams;
+    same nodes."""
+    z = _truck_v2(a, -4.85, 4.85, (-3.95, -2.65, 1.75, 3.05), r=.5, width=2.4, cab=1.7, roof=2.2)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    k.block(body, (2.36, 3.0, 1.0), loc=(0, -1.35, z + .5), chamfer=.06)
+    glow = a.part('Radiator_glow', 'Energy')
+    for s in (-1, 1):
+        for y in (-2.3, -1.35, -.4):
+            a.part('Radiators', 'Undercarriage').box((.04, .8, .7), loc=(s * 1.19, y, z + .5), bevel=0)
+            glow.box((.03, .7, .08), loc=(s * 1.215, y, z + .5), bevel=0)
+    k.block(armor, (2.36, 3.7, .14), loc=(0, 2.95, z + .02), chamfer=.02)
+    k.greebles(body, (0, -1.35, z + 1.0), (1, 0, 0), (0, 1, 0), (1.8, 2.4), 3, seed=2753, height=(.04, .09),
+               chamfer=.012)
+    a.pivot('Point_fire', (0, -1.35, z + 1.1))
+    t = a.pivot('Turret', (0, 2.95, z + .1))
+    a.part('Turret_steel', 'Steel', t).cyl(.9, .12, loc=(0, 0, .06), seg=14, bevel=0)
+    k.block(a.part('Turret_body', 'Team', t), (1.8, 2.0, .9), loc=(0, .3, .57), chamfer=.06, taper=(.9, .92))
+    k.block(a.part('Turret_armor', 'Armor', t), (1.2, .6, .7), loc=(0, -.85, .95), chamfer=.05)
+    k.block(a.part('Main_cannon_breech', 'Steel', t), (1.0, .8, .6), loc=(0, -.9, 1.3), chamfer=.05)
+    y0, L, zc = -1.3, 6.3, 1.35
+    rails = a.part('Main_cannon_rails', 'MetalSheet', t)
+    for x in (-.3, .3):
+        _ybox(rails, (.22, L, .32), (x, y0 - L / 2, zc), chamfer=.03)
+    bands = a.part('Main_cannon_bands', 'Armor', t)
+    coil = a.part('Main_cannon_glow', 'Energy', t)
+    for kk in range(5):
+        y = y0 - .6 - kk * 1.1
+        _ybox(bands, (.9, .18, .4), (0, y, zc), chamfer=.03)
+        coil.box((.92, .05, .42), loc=(0, y - .12, zc), bevel=0)
+    _ybox(a.part('Muzzle_brake', 'Armor', t), (.9, .3, .44), (0, y0 - L - .1, zc), chamfer=.04)
+    a.pivot('Muzzle_main', (0, y0 - L - .3, zc), t)
+    a.part('Rams', 'Armor', t).box((.2, .2, .7), loc=(0, -.4, .75), rot=(.5, 0, 0), bevel=0)
+    a.part('Ram_rods', 'Steel', t).box((.12, .12, .6), loc=(0, -.62, 1.05), rot=(.5, 0, 0), bevel=0)
+    k.clean(a)
+
+
+def _shahed_drone_v2(a, t, c, pitch, span=2.3, length=1.85):
+    """m2._shahed_drone with the delta extruded, the fuselage and nose revolved; same parts."""
+    rot = (-pitch, 0, 0)
+    fm = mv._frame(tuple(c), rot)
+    h = length / 2
+    air = a.part('Drone_airframe', 'Fuel', t)
+    k.extrude(air, [(0, -h), (span / 2, h * .82), (span / 2 - .12, h), (-span / 2 + .12, h), (-span / 2, h * .82)], .07,
+              loc=tuple(c), rot=rot, axis='Z')
+    for s in (-1, 1):
+        air.box((.05, .34, .26), loc=tuple(fm @ Vector((s * (span / 2 - .05), h * .8, .12))), rot=rot, bevel=0)
+    rr = (R90 - pitch, 0, 0)
+    k.lathe(air, [(0, -h * .78), (.1, -h * .74), (.1, h * .6), (.06, h * .76), (0, h * .78)],
+            loc=tuple(fm @ Vector((0, .05, .05))), rot=rr, seg=6)
+    a.part('Drone_nose', 'Undercarriage', t).cyl(.1, .24, r2=.02, loc=tuple(fm @ Vector((0, -h - .06, .05))), rot=rr,
+                                                 seg=6, bevel=0)
+    a.part('Drone_engine', 'Armor', t).cyl(.09, .3, loc=tuple(fm @ Vector((0, h - .1, .14))), rot=rr, seg=6, bevel=0)
+    a.part('Drone_prop', 'Undercarriage', t).box((.56, .04, .07), loc=tuple(fm @ Vector((0, h + .08, .14))), rot=rot,
+                                                 bevel=0)
+
+
+def shahed_truck(a):
+    """Shahed launcher (6x6 truck, five-rail rack) on the V2 truck: chamfered bed, the same staircase rack, five
+    Shahed deltas with revolved fuselages; same nodes (`Turret`, `Muzzle_main`, the rack parts)."""
+    z = _truck_v2(a, -3.2, 3.2, (-2.4, 1.05, 2.15), mg=(.45, -2.5))
+    armor = a.part('Armor', 'Armor')
+    k.block(a.part('Bed', 'Team'), (1.96, 4.9, .14), loc=(0, .75, z - .05), chamfer=.02)
+    for s in (-1, 1):
+        armor.box((.08, 4.9, .3), loc=(s * .95, .75, z + .12), bevel=0)
+        a.part('Steel', 'Steel').box((.14, .14, .55), loc=(s * .9, 3.0, z - .42), bevel=0)
+    a.pivot('Point_fire', (0, -1.0, z + .3))
+    t = a.pivot('Turret', (0, 1.0, z + .02))
+    a.part('Turntable', 'Steel', t).cyl(.5, .12, loc=(0, 0, .06), seg=12, bevel=0)
+    pitch = .19
+    hinge = Vector((0, 2.0, .3))
+    along = Vector((0, -math.cos(pitch), math.sin(pitch)))
+    normal = Vector((0, math.sin(pitch), math.cos(pitch)))
+    rot = (-pitch, 0, 0)
+    rack = a.part('Rack', 'Armor', t)
+    for s in (-1, 1):
+        rack.box((.12, 4.1, .14), loc=tuple(hinge + along * 2.05 + Vector((s * .82, 0, 0))), rot=rot, bevel=0)
+    for u in (.3, 1.6, 2.9):
+        rack.box((1.76, .12, .12), loc=tuple(hinge + along * u), rot=rot, bevel=0)
+    rails = a.part('Rack_rails', 'Steel', t)
+    top = None
+    for kk in range(5):
+        u, n = .95 + kk * .5, .14 + kk * .12
+        rails.box((.14, 1.7, .08), loc=tuple(hinge + along * (u + .1) + normal * (n - .07)), rot=rot, bevel=0)
+        rack.box((.12, .12, max(.12, n)), loc=tuple(hinge + along * (u + .8) + normal * (n / 2 - .02)), rot=rot,
+                 bevel=0)
+        c = hinge + along * u + normal * n
+        _shahed_drone_v2(a, t, c, pitch)
+        top = c + along * 1.25
+    a.part('Ram_rods', 'Steel', t).box((.1, .1, 1.2), loc=(0, .2, .55), rot=(.55, 0, 0), bevel=0)
+    a.part('Rams', 'Armor', t).box((.16, .16, .5), loc=(0, .05, .28), rot=(.55, 0, 0), bevel=0)
+    a.pivot('Muzzle_main', tuple(top + normal * .05), t)
+    k.clean(a)
+
+
+# ----------------------------------------------------------------------------- VBIED
+def _pickup_v2(a, body_mat='Team', plated=False):
+    """m2._pickup on the V2 kit (V2 wheels, an extruded cab with chamfers, chamfered bed and bumpers); same parts and
+    geometry. Returns the bed floor height."""
+    hd.mark(a, False)
+    body = a.part('Body', body_mat)
+    dark = a.part('Chassis', 'Undercarriage')
+    steel = a.part('Steel', 'Steel')
+    dark.box((1.0, 3.9, .22), loc=(0, 0, .42), bevel=0)
+    for s in (-1, 1):
+        for y in m2.PICKUP_AXLES:
+            parts.road_wheel(a, (s * .62, y, .33), .33, .24, s, seg=8, disc_mat='Steel')
+    k.extrude(body, [(-2.1, .5), (-2.12, .86), (-1.45, .98), (-.98, 1.02), (-.72, 1.44), (-.12, 1.44), (-.06, .5)], 1.44,
+              axis='X', chamfer=.04, corner=.04)
+    for s in (-1, 1):
+        dark.box((.18, .9, .2), loc=(s * .66, m2.PICKUP_AXLES[0], .72), bevel=0)
+        dark.box((.18, .9, .2), loc=(s * .66, m2.PICKUP_AXLES[1], .72), bevel=0)
+        if not plated:
+            a.part('Glass', 'Glass').box((.03, .55, .32), loc=(s * .725, -.42, 1.2), bevel=0)
+    if not plated:
+        a.part('Glass', 'Glass').box((1.26, .04, .36), loc=(0, -.85, 1.22), rot=(-.95, 0, 0), bevel=0)
+    k.block(body, (1.44, 2.1, .12), loc=(0, 1.0, .72), chamfer=.02)
+    for s in (-1, 1):
+        body.box((.06, 2.1, .42), loc=(s * .69, 1.0, .98), bevel=0)
+    body.box((1.44, .06, .42), loc=(0, -.02, .98), bevel=0)
+    body.box((1.44, .06, .4), loc=(0, 2.04, .97), bevel=0)
+    k.block(steel, (1.5, .14, .16), loc=(0, -2.16, .56), chamfer=.03)
+    k.block(steel, (1.5, .12, .14), loc=(0, 2.1, .56), chamfer=.02)
+    _lights(a, (-.52, .52), -2.13, .78, size=(.22, .04, .1))
+    _lights(a, (-.62, .62), 2.08, .9, facing=1, size=(.1, .04, .16), lamp='Alloy')
+    dark.grille(.7, .2, loc=(0, -2.13, .66), slats=2, depth=.04, thickness=.04)
+    a.pivot('Point_exhaust', (.45, 2.1, .45))
+    return .78
+
+
+def vbied(a):
+    """Armoured suicide car on the V2 pickup: the same patched plates (three of the roof plates as uneven five-sided
+    steel sheets), a chamfered ram plate, the boxed-in bed, spare wheel and sandbags; same nodes, same seed."""
+    rng = random.Random(4104)
+    _pickup_v2(a, body_mat='Rust', plated=True)
+    mats = ('MetalSheet', 'Rust', 'Armor', 'Team')
+    for kk, (x, y, z, w, d, h, rot) in enumerate((
+            (.0, -1.75, 1.0, 1.52, .7, .08, (-.18, 0, 0)), (.0, -1.2, 1.06, 1.5, .55, .08, (-.05, 0, 0)),
+            (.0, -.4, 1.5, 1.52, .72, .08, (0, 0, .04)), (.76, -.45, 1.12, .08, .9, .6, (0, 0, .02)),
+            (-.76, -.45, 1.12, .08, .9, .6, (0, 0, -.03)), (.78, -1.5, .8, .08, 1.0, .42, (0, 0, .05)),
+            (-.78, -1.5, .8, .08, 1.0, .42, (0, 0, -.04)))):
+        part = a.part(f'Plates_{mats[kk % 4]}', mats[kk % 4])
+        if h <= .08 and kk < 3:
+            j = rng.uniform(.05, .12)
+            k.extrude(part, [(-w / 2, -d / 2), (w / 2 - j, -d / 2), (w / 2, -d / 2 + j), (w / 2, d / 2),
+                             (-w / 2 + j, d / 2), (-w / 2, d / 2 - j)], h, loc=(x, y, z), rot=rot, axis='Z')
+        else:
+            part.box((w, d, h), loc=(x, y, z), rot=rot, bevel=0)
+    slits = a.part('Slits', 'Undercarriage')
+    slits.box((.9, .04, .06), loc=(0, -.88, 1.3), rot=(-.95, 0, 0), bevel=0)
+    for s in (-1, 1):
+        slits.box((.03, .4, .05), loc=(s * .81, -.45, 1.28), bevel=0)
+    _ybox(a.part('Ram_plate', 'Armor'), (1.62, .2, .75), (0, -2.28, .72), rot=(-.12, 0, 0), chamfer=.04)
+    for kk in range(4):
+        w, d = rng.uniform(.62, .78), rng.uniform(.9, 1.1)
+        x = (-1) ** kk * .37
+        y = .55 if kk < 2 else 1.5
+        a.part(f'Plates_{mats[(kk + 1) % 4]}', mats[(kk + 1) % 4]).box(
+            (w, d, .1), loc=(x, y, 1.3 + rng.uniform(0, .06)), rot=(rng.uniform(-.05, .05), rng.uniform(-.05, .05), 0),
+            bevel=0)
+    k.block(a.part('Bed_box', 'Armor'), (1.4, 2.0, .5), loc=(0, 1.0, 1.02), chamfer=.03)
+    k.lathe(a.part('Spare_wheel', 'Rubber'), [(.2, -.1), (.3, -.07), (.3, .07), (.2, .1)], loc=(.2, 1.3, 1.46), seg=10,
+            worn=(1,))
+    k.block(a.part('Sandbags', 'Sandbag'), (.5, .3, .2), loc=(-.35, 1.7, 1.45), chamfer=.05)
+    t = a.pivot('Turret', (0, -.4, 1.54))
+    k.lathe(a.part('Hatch', 'Armor', t), [(.22, 0), (.22, .06), (.17, .08), (0, .08)], seg=8, worn=(1,))
+    a.pivot('Muzzle_main', (0, -2.06, -.9), t)
+    a.pivot('Point_fire', (0, 1.0, 1.4))
+    k.clean(a)
+
+
+# ----------------------------------------------------------------------------- bunker vehicle
+def bunker_vehicle(a):
+    """Deployable bunker vehicle (m2.bunker_vehicle) on the V2 kit: the lean track units kept (the model has 9 moving
+    parts and sits near its budget), extruded hull and armour with chamfers and insets, chamfered side plates, blade
+    and bins, an extruded turret with a revolved 105 mm barrel; every Deploy_* pivot, node and the emplacement as
+    before."""
+    from mb_p21_models import BERM_REST
+    from mb_pt5_models import _emplacement
+    hd.mark(a, False)
+    m2._lean_tracks(a, 1.38, 7.0, .9, .3, 7, .6, sprocket=1)
+    hull = a.part('Hull', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    k.extrude(armor, [(-3.3, .4), (-3.7, .72), (-3.5, .96), (3.35, .96), (3.55, .62), (3.35, .4)], 2.1, axis='X',
+              chamfer=.04, corner=.03)
+    k.extrude(hull, [(-3.76, .92), (-2.6, 1.7), (3.3, 1.72), (3.56, 1.1), (3.56, .92)], 3.6, axis='X', chamfer=.06,
+              corner=.05)
+    k.inset(hull, lambda c, n, f: n.x > .9 or n.x < -.9, width=.14, depth=.012)
+    for s in (-1, 1):
+        _lights(a, (s * 1.2,), -3.3, 1.3, size=(.16, .04, .1))
+        _lights(a, (s * 1.5,), 3.57, 1.25, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        _hatch(a, s * .6, -2.3, 1.7, .24, handle=False)
+        steel.cyl(.09, .3, loc=(s * .9, 3.62, 1.35), rot=FORWARD, seg=8, bevel=0)
+        k.block(armor, (.18, .5, .36), loc=(s * 1.62, -2.55, .86), chamfer=.03)
+    a.part('Deck', 'Undercarriage').grille(1.6, 1.0, loc=(0, 2.55, 1.73), rot=(-R90, 0, 0), slats=5, depth=.06,
+                                           thickness=.04)
+    steel.cyl(.78, .09, loc=(0, -.3, 1.705), seg=18, bevel=0)
+    a.pivot('Point_exhaust', (.9, 3.7, 1.35))
+    a.pivot('Point_fire', (0, 2.55, 1.8))
+    for s, name in ((1, 'Deploy_plate_l'), (-1, 'Deploy_plate_r')):
+        for y in (-2.1, -.2, 1.7):
+            steel.box((.16, .34, .16), loc=(s * 1.8, y, 1.12), bevel=0)
+        p = a.pivot(name, (s * 1.86, 0, 1.14))
+        a.part(f'{name}_slab', 'Team', p).box((.1, 5.3, 1.02), loc=(s * .06, -.2, .53), bevel=.03, seg=1,
+                                             taper=(1, .96))
+        ribs = a.part(f'{name}_ribs', 'Armor', p)
+        for y in (-2.3, -.2, 1.9):
+            ribs.box((.07, .14, .9), loc=(s * .14, y, .5), bevel=0)
+        ribs.box((.07, 5.0, .1), loc=(s * .14, -.2, .98), bevel=0)
+        a.part(f'{name}_hinge', 'Steel', p).cyl(.07, 5.1, loc=(0, -.2, 0), rot=FORWARD, seg=6, bevel=0)
+    p = a.pivot('Deploy_blade', (0, -2.55, .86))
+    arms = a.part('Deploy_blade_arms', 'Steel', p)
+    for s in (-1, 1):
+        arms.limb((s * 1.62, 0, 0), (s * 1.62, -1.75, -.18), .14, .16, bevel=0)
+        arms.limb((s * 1.0, -.4, -.35), (s * 1.3, -1.7, .05), .1, .1, bevel=0)
+    board = [(-1.72, -.52), (-1.95, -.5), (-2.02, -.25), (-2.04, .05), (-1.98, .35), (-1.86, .52), (-1.76, .5),
+             (-1.84, .3), (-1.88, .05), (-1.86, -.22), (-1.74, -.42)]
+    k.extrude(a.part('Deploy_blade_plate', 'Armor', p), board, 3.9, axis='X', chamfer=.025)
+    a.part('Deploy_blade_edge', 'Steel', p).box((3.86, .1, .09), loc=(0, -1.99, -.54), bevel=0)
+    for xx in (-1.2, 0, 1.2):
+        a.part('Deploy_blade_ribs', 'Armor', p).box((.1, .14, .8), loc=(xx, -1.72, -.02), bevel=0)
+    for s, name in ((1, 'Deploy_spade_l'), (-1, 'Deploy_spade_r')):
+        x = s * .8
+        for dx in (-.38, .38):
+            armor.box((.16, .2, .22), loc=(x + dx, 3.6, .72), bevel=0)
+        p = a.pivot(name, (x, 3.66, .72))
+        a.part(f'{name}_blade', 'Armor', p).box((.9, .08, 1.15), loc=(0, .1, .62), bevel=.02, seg=1)
+        a.part(f'{name}_hinge', 'Steel', p).cyl(.07, .56, rot=ACROSS, seg=6, bevel=0)
+        teeth = a.part(f'{name}_teeth', 'Steel', p)
+        for dx in (-.33, -.11, .11, .33):
+            teeth.box((.14, .06, .16), loc=(dx, .1, 1.24), bevel=0, taper=(.4, 1))
+    r = a.pivot('Deploy_riser', (0, -.3, 1.72))
+    a.part('Deploy_riser_column', 'Steel', r).cyl(.6, .9, loc=(0, 0, -.43), seg=14, bevel=0)
+    a.part('Deploy_riser_bands', 'Armor', r).cyl(.63, .08, loc=(0, 0, -.22), seg=14, bevel=0)
+    t = a.pivot('Turret', (0, 0, .04), r)
+    k.extrude(a.part('Turret_body', 'Team', t), [(-.8, -1.35), (.8, -1.35), (1.4, -.8), (1.45, .9), (1.1, 1.45),
+                                                 (-1.1, 1.45), (-1.45, .9), (-1.4, -.8)], .62, loc=(0, 0, .31),
+              axis='Z', chamfer=.05, taper=.86)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    k.block(tarm, (.9, .42, .54), loc=(0, -1.42, .34), chamfer=.04, taper=(.9, .9))
+    k.block(tarm, (2.0, .4, .36), loc=(0, 1.45, .3), chamfer=.04)
+    k.block(a.part('Turret_steel', 'Steel', t), (.22, .26, .22), loc=(.7, -.6, .72), chamfer=.02)
+    a.part('Sight', 'Glass', t).box((.16, .04, .1), loc=(.7, -.74, .74), bevel=0)
+    _hatch(a, -.55, .3, .62, .28, parent=t, seg=10, handle=False)
+    for s in (-1, 1):
+        mv._smoke(a, a.part('Smoke', 'Steel', t), 1.0, -.7, .66, s, count=3, gap=.08, r=.045, depth=.16)
+    y0, length, z = -1.62, 4.0, .36
+    parts.barrel(a, 'Main_cannon', t, 0, y0, z, length, .085, seg=10, sleeve=1.3, extractor=(.5, 1.3, .2),
+                 brake_name='Muzzle_brake', brake='collar')
+    a.pivot('Muzzle_main', (0, y0 - length - .2, z), t)
+    mg = a.part('MG_port', 'Steel', t)
+    mg.box((.12, .3, .12), loc=(.55, -1.4, .3), bevel=0)
+    mg.cyl(.05, .45, loc=(.55, -1.75, .3), rot=FORWARD, seg=6, bevel=0)
+    a.pivot('Muzzle_mg', (.55, -1.99, .3), t)
+    _emplacement(a)
+    a.pivots['Deploy_berm'].scale = (BERM_REST,) * 3
+    k.clean(a)
+
+
 # ============================================================================= elites on the rebuilt bases
 def _mbt_v2(a):
     exp.main_battle_tank(a)
@@ -1569,4 +2028,12 @@ BUILDERS = {
     'long_sam': (long_sam, _opts('long_sam')),
     'sam_launcher': (sam_launcher, _opts('sam_launcher')),
     'iron_beam': (iron_beam, _opts('iron_beam')),
+    'supply_truck': (supply_truck, _opts('supply_truck')),
+    'ammo_carrier': (ammo_carrier, _opts('ammo_carrier')),
+    'counter_battery_radar': (counter_battery_radar, _opts('counter_battery_radar')),
+    'ew_jammer': (ew_jammer, _opts('ew_jammer')),
+    'railgun_truck': (railgun_truck, _opts('railgun_truck')),
+    'shahed_truck': (shahed_truck, _opts('shahed_truck')),
+    'vbied': (vbied, _opts('vbied')),
+    'bunker_vehicle': (bunker_vehicle, _opts('bunker_vehicle')),
 }

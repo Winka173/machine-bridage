@@ -13781,3 +13781,30 @@ runner mirror, no cards, no previews, no tests.
   thermobaric_launcher .3441, ballistic_launcher .3394, long_sam .3326, sam_launcher .4259, iron_beam .3426. New cards: the lead
   renders them after the merge.
 - Lead (2026-10-02), wave 3d cards: all eight pass (-0.3 % to +3.7 %).
+
+## 27 wave 3e (lead pass, 2026-10-02)
+
+Pass 3e, the eight rows counter_battery_radar, ew_jammer, bunker_vehicle, ammo_carrier, supply_truck, railgun_truck,
+shahed_truck, vbied, builders appended to `mb_p27_wave3.py`. Run: Blender rebuild, `glb_check.py` (compare, accept). No runner
+mirror, no cards, no previews, no tests.
+
+- **Builders.** Same recipe, copy-first. New `_hemtt_v2` (supply and ammo carriers) and `_pickup_v2` (VBIED) next to the
+  existing `_truck_v2` (radar, jammer, railgun, Shahed): V2 wheels, extruded cabs with chamfers and door insets, chamfered
+  shelters, beds, bins and plates, `_ybox` (a chamfered bar or slab running along Y) for rails, radar panel, crane boom and
+  tarpaulin, lathed ring guns (`_ring_gun_v2`), crane column and spare wheel, the Shahed fuselage revolved and its delta
+  extruded, three VBIED roof plates as uneven five-sided sheets. Seeds 2751-2753. `railgun_truck` backs no other def: Ixion has its
+  own model and balance.json has no def with `"model": "railgun_truck"` (only the unit's own def, a stance preference and a
+  story arrival). No variants of the other seven either.
+- **Gates (baseline -> new).** supply 2,576 -> 2,862 (1.11x); ammo 2,984 -> 3,388 (1.14x); radar 2,140 -> 2,396 (1.12x); jammer
+  1,976 -> 2,274 (1.15x); railgun 2,324 -> 2,924 (1.26x); Shahed 2,416 -> 2,616 (1.08x); VBIED 1,184 -> 1,574 (1.33x); bunker 7,032 ->
+  7,792 (1.11x). Zero-area 0, 0 errors, runtime nodes and moving-part counts identical, COLOR_0 mean up (+0.02 to +0.09), size
+  inside 1 % (bunker -0.4 % length). Seven of the eight lose the `Rubber` material (V2 wheel tyre is `Undercarriage`).
+- **bunker_vehicle** is rebuilt but kept lean: it sits at 7,792 of the 7,800 soft triangle budget (and 10,096 of 10,100
+  vertices), so the lean track units stay (V2 `track_unit` pairs would cost ~1.3 k); hull, armour, blade, turret and barrel are
+  V2. Every `Deploy_*` pivot, the telescopic mount and the emplacement are copied unchanged. The 210 open edges and the
+  moving-parts warning (9 over 8) are the old model's.
+- Card luma (old, mean of pixels with alpha > .5): counter_battery_radar .3122, ew_jammer .3832, bunker_vehicle .3629,
+  railgun_truck .3562, shahed_truck .3561, vbied .2710. supply_truck and ammo_carrier have no card PNG. New cards: the lead
+  renders them after the merge.
+- Building the eight names rebuilt no other model (no substring hits); the first test build before the edit changed the seven
+  GLBs byte-wise and was reverted with `git checkout`.
