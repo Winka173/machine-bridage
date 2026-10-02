@@ -997,7 +997,7 @@
     // Prompt 17 D.2: the Apache and the Ka-52 are one card, the attack helicopter (the Apache's model; the Ka-52's,
     // heavy_attack_heli, stays in the model library for a later camouflage: "altModels"). It keeps the Ka-52's
     // stand-off (Hellfire Longbows in pairs from 55 m, hovering at the edge of that reach) and Stingers for aircraft.
-    { "id": "attack_helicopter", "value": 1.05, "altModels": ["heavy_attack_heli"], "rearmTime": 9, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1.1765, "modelSize": [6.35, 4.44, 2.02], "armour": 1,  "hp": 800, "speed": 13, "turnRate": 110, "turretTurnRate": 360, "radius": 3.2, "cp": 9, "vision": 40,
+    { "id": "attack_helicopter", "outgoingDamageMult": 1.2681, "value": 1.05, "altModels": ["heavy_attack_heli"], "rearmTime": 9, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1.1765, "modelSize": [6.35, 4.44, 2.02], "armour": 1,  "hp": 1009, "speed": 13, "turnRate": 110, "turretTurnRate": 360, "radius": 3.2, "cp": 11, "vision": 40,
       "firesWhileMoving": true, "weapon": "hellfire_standoff", "mainSlot": "missile", "flying": true, "standoff": true, "altitude": 15, "captureRate": 0,
       "secondary": [{ "weapon": "heli_gun", "slot": "gun", "aim": "Free" }, { "weapon": "heli_rockets", "slot": "rocket", "aim": "Hull" }, { "weapon": "stinger_atas", "slot": "aam", "aim": "Free" }, { "weapon": "apkws_rocket", "slot": "rocket2", "aim": "Free" }], "skills": ["heli_flares"],
       "deathExplosion": { "damage": 80, "radius": 6, "delay": 0.6, "tier": "Large" } },
@@ -1025,25 +1025,25 @@
     { "id": "rocket_technical", "dropDelay": 2.5, "value": 0.61, "scale": 1, "modelSize": [4.39, 1.5, 1.86], "armour": 0, "hp": 230, "speed": 13, "turnRate": 180, "turretTurnRate": 200, "radius": 1.7, "length": 4.39, "width": 1.5, "cp": 3, "vision": 30,
       "firesWhileMoving": false, "weapon": "technical_rockets", "secondary": [{"weapon": "mg_jeep_selfdef", "slot": "mg", "aim": "Free"}], "captureRate": 2,
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.15, "tier": "Large" } },
-    { "id": "gunship_heli", "value": 1.05, "rearmTime": 9, "strongVs": ["Light", "Scout", "Defense"], "scale": 1, "modelSize": [7.59, 6.58, 2.1],     "armour": [2, 1, 0, 0],  "hp": 1182, "speed": 14, "turnRate": 90, "turretTurnRate": 360, "radius": 4.5, "cp": 15, "vision": 42,
+    { "id": "gunship_heli", "dropDelay": 5, "outgoingDamageMult": 1.5333, "value": 1.05, "rearmTime": 9, "strongVs": ["Light", "Scout", "Defense"], "scale": 1, "modelSize": [7.59, 6.58, 2.1],     "armour": [2, 1, 0, 0],  "hp": 1645, "speed": 14, "turnRate": 90, "turretTurnRate": 360, "radius": 4.5, "cp": 20, "vision": 42,
       "firesWhileMoving": true, "weapon": "gunship_rockets", "mainSlot": "rocket", "flying": true, "altitude": 17, "captureRate": 1,
       "secondary": [ { "weapon": "gsh30k", "slot": "gun", "aim": "Hull" }, { "weapon": "heli_ataka", "slot": "missile", "model": "atgm_ataka", "aim": "Hull" },
                      { "weapon": "door_gun", "slot": "door_l", "aim": "Left" }, { "weapon": "door_gun", "slot": "door_r", "aim": "Right" } ],
       "skills": ["heli_flares"],
       "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "scout_heli", "value": 0.85, "rearmTime": 8, "strongVs": ["Scout", "Light", "Support"], "scale": 1, "modelSize": [3.88, 3.16, 1.56],       "armour": 0,  "hp": 420, "speed": 17, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 5, "vision": 46,
+    { "id": "scout_heli", "outgoingDamageMult": 1.2, "value": 0.85, "rearmTime": 8, "strongVs": ["Scout", "Light", "Support"], "scale": 1, "modelSize": [3.88, 3.16, 1.56],       "armour": 0,  "hp": 518, "speed": 17, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 46,
       "firesWhileMoving": true, "weapon": "minigun", "mainSlot": "gun", "flying": true, "altitude": 13, "captureRate": 0,
       "secondary": [ { "weapon": "scout_rockets", "slot": "rocket", "aim": "Hull" } ],
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
     // Prompt 17 D.1: the Su-25 and the A-10 are one card, the ground-attack jet (the Su-25's model; the A-10's,
     // tank_buster, stays for a later camouflage). The weapons of both on the calibre scale: the 30 mm cannon, 80 mm
     // rockets, 250 kg bombs, two Kh-29 anti-tank missiles, two R-60s for self-defence; the A-10's armoured toughness.
-    { "id": "attack_jet", "loads": { "jet_bombs": 1 }, "value": 1.11, "altModels": ["tank_buster"], "rearmTime": 14, "strongVs": ["Light", "Tank", "Heavy", "Artillery", "Defense"], "scale": 1, "modelSize": [6.15, 6.04, 1.84],       "armour": 2,  "hp": 850, "speed": 32, "turnRate": 104, "turretTurnRate": 360, "radius": 3.2, "cp": 18, "vision": 50,
+    { "id": "attack_jet", "dropDelay": 5, "outgoingDamageMult": 1.4694, "loads": { "jet_bombs": 1 }, "value": 1.11, "altModels": ["tank_buster"], "rearmTime": 14, "strongVs": ["Light", "Tank", "Heavy", "Artillery", "Defense"], "scale": 1, "modelSize": [6.15, 6.04, 1.84],       "armour": 2,  "hp": 1127, "speed": 32, "turnRate": 104, "turretTurnRate": 360, "radius": 3.2, "cp": 23, "vision": 50,
       "firesWhileMoving": true, "weapon": "jet_cannon", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.8,
       "secondary": [ { "weapon": "s8_pods", "slot": "rocket", "aim": "Hull" }, { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" },
                      { "weapon": "kh29", "slot": "missile", "aim": "Hull" }, { "weapon": "r60", "slot": "aam", "aim": "Free" } ], "skills": ["jet_flares"],
       "deathExplosion": { "damage": 95, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "strike_drone", "value": 0.81, "rearmTime": 8.5, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1, "modelSize": [4.25, 8.04, 1.24], "drone": true, "armour": 0,  "hp": 480, "speed": 13.9, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 9, "vision": 62,
+    { "id": "strike_drone", "outgoingDamageMult": 1.2681, "value": 0.81, "rearmTime": 8.5, "strongVs": ["Tank", "Heavy", "Artillery"], "scale": 1, "modelSize": [4.25, 8.04, 1.24], "drone": true, "armour": 0,  "hp": 605, "speed": 13.9, "turnRate": 81, "turretTurnRate": 360, "radius": 2.8, "cp": 11, "vision": 62,
       "firesWhileMoving": true, "weapon": "drone_missile", "secondary": [{"weapon": "guided_bomb", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 30, "captureRate": 0, "attackHold": 3.5,
       "deathExplosion": { "damage": 50, "radius": 5, "delay": 0.5, "tier": "Large" } },
         { "id": "thermobaric_launcher", "outgoingDamageMult": 1.2222, "value": 0.78, "scale": 1, "modelSize": [6.02, 2.85, 2.79], "armour": 3, "hp": 1132, "speed": 5.5, "turnRate": 55, "turretTurnRate": 50, "radius": 2.5, "length": 6.02, "width": 2.85, "cp": 11, "vision": 30,
@@ -1062,12 +1062,12 @@
       "secondary": [ { "weapon": "mg_coax", "slot": "coax", "aim": "Turret" }, { "weapon": "hmg_roof", "slot": "mg", "aim": "Free" },
                      { "weapon": "atgm", "slot": "missile", "aim": "Turret" } ],
       "deathExplosion": { "damage": 260, "radius": 8, "delay": 0.5, "tier": "Ultimate" } },
-    { "id": "heavy_bomber", "value": 1.03, "rearmTime": 16, "strongVs": ["Defense", "Artillery", "Light"], "scale": 1, "modelSize": [19.8, 22.62, 5.7],     "armour": 0,  "hp": 1500, "speed": 22, "turnRate": 68, "turretTurnRate": 360, "radius": 7.5, "cp": 22, "vision": 50,
+    { "id": "heavy_bomber", "dropDelay": 5, "outgoingDamageMult": 1.3182, "value": 1.03, "rearmTime": 16, "strongVs": ["Defense", "Artillery", "Light"], "scale": 1, "modelSize": [19.8, 22.62, 5.7],     "armour": 0,  "hp": 2059, "speed": 22, "turnRate": 68, "turretTurnRate": 360, "radius": 7.5, "cp": 29, "vision": 50,
       "firesWhileMoving": true, "weapon": "bomber_payload", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 42, "captureRate": 0,
       "secondary": [ { "weapon": "bomber_tail_guns", "slot": "gun", "aim": "Free" }, { "weapon": "air_cruise_missile", "slot": "rocket", "aim": "Hull" } ],
       "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 200, "radius": 10, "delay": 0.6, "tier": "Ultimate" } },
-    { "id": "stealth_bomber", "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy", "Artillery"], "scale": 1, "modelSize": [8.4, 21, 1.5],   "armour": 0,  "hp": 900,  "speed": 28, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 21, "vision": 60,
+    { "id": "stealth_bomber", "dropDelay": 5, "outgoingDamageMult": 1.2857, "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy", "Artillery"], "scale": 1, "modelSize": [8.4, 21, 1.5],   "armour": 0,  "hp": 1200,  "speed": 28, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 27, "vision": 60,
       "firesWhileMoving": true, "weapon": "stealth_payload", "secondary": [{"weapon": "jassm", "slot": "rocket", "aim": "Hull"}], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 46, "captureRate": 0,
       "stealth": true, "skills": ["bomber_flares"],
       "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
@@ -1123,12 +1123,12 @@
     { "id": "mine_layer", "value": 1, "scale": 1, "modelSize": [7.62, 2.7, 1.97],       "class": "Support", "armour": [1, 1, 0, 0], "hp": 420, "speed": 5.5, "turnRate": 90, "turretTurnRate": 200, "radius": 2.2, "length": 7.62, "width": 2.7, "cp": 5, "vision": 30,
       "firesWhileMoving": true, "weapon": "hmg_selfdef_15", "mines": { "interval": 6, "max": 8, "damage": 484, "radius": 5, "tier": "Large", "trigger": 2.2 },
       "deathExplosion": { "damage": 140, "radius": 8, "delay": 0.35, "tier": "Huge" } },
-    { "id": "fighter_jet", "ceiling": "high", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1.1765, "modelSize": [8.64, 5.85, 2.15],      "armour": 0,  "hp": 520, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 12, "vision": 72,
+    { "id": "fighter_jet", "dropDelay": 5, "outgoingDamageMult": 1.3594, "ceiling": "high", "value": 1.5, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1.1765, "modelSize": [8.64, 5.85, 2.15],      "armour": 0,  "hp": 673, "speed": 40, "turnRate": 129, "turretTurnRate": 360, "radius": 3.4, "cp": 15, "vision": 72,
       "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0, "attackHold": 4.0,
       "secondary": [ { "weapon": "wvr_aam", "slot": "aam", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "vtol": true, "skills": ["jet_flares"],
       "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
-    { "id": "recon_drone", "value": 0.5, "rearmTime": 8.5, "strongVs": ["Scout", "Artillery"], "scale": 1, "modelSize": [2.67, 4.83, 0.48], "drone": true, "armour": 0,  "hp": 320, "speed": 13, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 6, "vision": 90,
+    { "id": "recon_drone", "outgoingDamageMult": 1.1667, "value": 0.5, "rearmTime": 8.5, "strongVs": ["Scout", "Artillery"], "scale": 1, "modelSize": [2.67, 4.83, 0.48], "drone": true, "armour": 0,  "hp": 382, "speed": 13, "turnRate": 83, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 90,
       "firesWhileMoving": true, "weapon": "recon_missile", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 34, "captureRate": 0,
       "deathExplosion": { "damage": 40, "radius": 5, "delay": 0.5, "tier": "Large" } },
 
@@ -1199,12 +1199,12 @@
     // on one target. The shield carrier's dome takes every hit but energy for the friends inside until it breaks.
     // The bunker vehicle digs in when it stands (3 s): front armour two levels up, reach +30 %, turret all round.
     // The swarm carrier flies its FPV drones out to anywhere and releases them over the target.
-    { "id": "stealth_fighter", "loads": { "air_to_air": 5 }, "ceiling": "high", "value": 0.88, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 1, "modelSize": [7.6, 5.5, 1.28], "armour": 0, "hp": 480, "speed": 44, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 13, "vision": 76,
+    { "id": "stealth_fighter", "dropDelay": 5, "outgoingDamageMult": 1.3538, "loads": { "air_to_air": 5 }, "ceiling": "high", "value": 0.88, "rearmTime": 11, "strongVs": ["Plane", "Helicopter", "AntiAir"], "scale": 1, "modelSize": [7.6, 5.5, 1.28], "armour": 0, "hp": 609, "speed": 44, "turnRate": 125, "turretTurnRate": 360, "radius": 3.4, "cp": 16, "vision": 76,
       "firesWhileMoving": true, "weapon": "air_to_air", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 36, "captureRate": 0, "attackHold": 4.0,
       "secondary": [ { "weapon": "guided_bomb", "slot": "bomb", "aim": "Free" }, { "weapon": "fighter_cannon", "slot": "gun", "aim": "Hull" } ],
       "interceptor": true, "stealth": true, "sead": true, "skills": ["jet_flares"],
       "deathExplosion": { "damage": 80, "radius": 5, "delay": 0.6, "tier": "Huge" } },
-    { "id": "wingman_drone", "value": 1, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1, "modelSize": [3.49, 3.33, 0.79], "drone": true, "class": "Plane", "armour": 0, "hp": 300, "speed": 46, "turnRate": 120, "turretTurnRate": 360, "radius": 2.6, "cp": 6, "vision": 56,
+    { "id": "wingman_drone", "outgoingDamageMult": 1.1667, "value": 1, "rearmTime": 11, "strongVs": ["Plane", "Helicopter"], "scale": 1, "modelSize": [3.49, 3.33, 0.79], "drone": true, "class": "Plane", "armour": 0, "hp": 359, "speed": 46, "turnRate": 120, "turretTurnRate": 360, "radius": 2.6, "cp": 7, "vision": 56,
       "firesWhileMoving": true, "weapon": "aim9", "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 32, "captureRate": 0, "attackHold": 3.0,
       "maxPerSide": 4, "airCapFree": true, "wingman": { "follow": 120, "decoy": 25, "pull": 0.4 },
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.5, "tier": "Large" } },
@@ -1218,7 +1218,7 @@
       "firesWhileMoving": true, "weapon": "gun_105_bunker", "secondary": [ { "weapon": "mg_coax", "slot": "mg", "aim": "Turret" } ],
       "deploy": { "seconds": 3, "front": 2, "range": 1.3, "arc": 45 },
       "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.4, "tier": "Huge" } },
-    { "id": "swarm_carrier", "loads": { "jassm": 2 }, "value": 0.81, "rearmTime": 16, "strongVs": ["Tank", "Heavy", "Artillery", "Light"], "scale": 1.1765, "modelSize": [11.93, 16.3, 4.79], "armour": 1, "hp": 632, "speed": 18, "turnRate": 60, "turretTurnRate": 360, "radius": 7, "cp": 13, "vision": 56,
+    { "id": "swarm_carrier", "dropDelay": 5, "outgoingDamageMult": 1.2308, "loads": { "jassm": 2 }, "value": 0.81, "rearmTime": 16, "strongVs": ["Tank", "Heavy", "Artillery", "Light"], "scale": 1.1765, "modelSize": [11.93, 16.3, 4.79], "armour": 1, "hp": 1091, "speed": 18, "turnRate": 60, "turretTurnRate": 360, "radius": 7, "cp": 16, "vision": 56,
       "firesWhileMoving": true, "weapon": "swarm_drones", "mainSlot": "drone", "flying": true, "fixedWing": true, "altitude": 44, "captureRate": 0, "skills": ["bomber_flares"],
       "secondary": [ { "weapon": "jassm", "slot": "drone", "aim": "Free" } ],
       "deathExplosion": { "damage": 140, "radius": 9, "delay": 0.6, "tier": "Huge" } },
@@ -1439,15 +1439,15 @@
       "firesWhileMoving": false, "weapon": "amos_120", "secondary": [ { "weapon": "hmg_selfdef_18", "slot": "mg", "aim": "Free" } ],
       "deathExplosion": { "damage": 70, "radius": 8, "delay": 0.25, "tier": "Large" } },
     // dx14: the long-range glide bomber (a Su-34 with UMPK bombs): it releases from 90 m and turns away, never over its target.
-    { "id": "glide_bomber", "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1000, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 16, "vision": 50,
+    { "id": "glide_bomber", "dropDelay": 5, "outgoingDamageMult": 1.3125, "modelSize": [9.3, 5.9, 2.4], "class": "Plane", "strongVs": ["Defense", "Artillery", "Light"], "armour": 1, "hp": 1368, "speed": 30, "turnRate": 60, "turretTurnRate": 360, "radius": 4.2, "cp": 21, "vision": 50,
       "firesWhileMoving": true, "weapon": "glide_fab500", "secondary": [{ "weapon": "cluster_at_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "bunker_buster_bomb", "slot": "bomb", "aim": "Hull" }, { "weapon": "thermobaric_bomb", "slot": "bomb", "aim": "Hull" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "glideRelease": true, "rearmTime": 21,
       "skills": ["bomber_flares"], "deathExplosion": { "damage": 150, "radius": 9, "delay": 0.6, "tier": "Huge" } },
     // dx15: the high-speed reconnaissance jet (SR-71, MiG-25R): one straight pass at 60 m/s, a 60 m strip shown for 20 s (stealth too), then it leaves; high up, only the high-tier weapons reach it.
-    { "id": "recon_jet", "modelSize": [13.1, 6.8, 2.2], "class": "Plane", "armour": 0, "hp": 364, "speed": 60, "turnRate": 45, "turretTurnRate": 360, "radius": 4.5, "cp": 8, "vision": 60,
+    { "id": "recon_jet", "outgoingDamageMult": 1.1391, "modelSize": [13.1, 6.8, 2.2], "class": "Plane", "armour": 0, "hp": 418, "speed": 60, "turnRate": 45, "turretTurnRate": 360, "radius": 4.5, "cp": 9, "vision": 60,
       "firesWhileMoving": true, "weapon": "none", "flying": true, "fixedWing": true, "altitude": 50, "captureRate": 0, "flightTier": "High", "reconPass": { "width": 60, "seconds": 20 },
       "deathExplosion": { "damage": 60, "radius": 6, "delay": 0.6, "tier": "Large" } },
     // dx16: the interceptor (MiG-31BM): dashes in, fires from 90 m and turns home; poor in a close dogfight.
-    { "id": "interceptor_jet", "ceiling": "high", "modelSize": [9.1, 5.4, 2.5], "class": "Plane", "strongVs": ["Plane"], "armour": 0, "hp": 591, "speed": 55, "turnRate": 90, "turretTurnRate": 360, "radius": 3.6, "cp": 13, "vision": 72,
+    { "id": "interceptor_jet", "dropDelay": 5, "outgoingDamageMult": 1.3538, "ceiling": "high", "modelSize": [9.1, 5.4, 2.5], "class": "Plane", "strongVs": ["Plane"], "armour": 0, "hp": 750, "speed": 55, "turnRate": 90, "turretTurnRate": 360, "radius": 3.6, "cp": 16, "vision": 72,
       "firesWhileMoving": true, "weapon": "r37m", "secondary": [{ "weapon": "anti_radar_missile", "slot": "aam", "aim": "Free" }], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 38, "captureRate": 0, "interceptor": true, "rearmTime": 11,
       "skills": ["jet_flares"], "deathExplosion": { "damage": 80, "radius": 7, "delay": 0.6, "tier": "Huge" } },
     // dx20: the armoured radar scout (Fennek, BRDM-2 with a radar): standing 2 s it raises its mast, sees 80 m and all but hides.
@@ -1506,11 +1506,11 @@
     { "id": "mine_rocket_truck", "outgoingDamageMult": 1.1429, "model": "mine_rocket_truck", "modelSize": [6.09, 2, 2.6], "class": "Artillery", "armour": 1, "hp": 423, "speed": 9.4, "turnRate": 70, "turretTurnRate": 60, "radius": 2.4, "length": 5.8, "width": 2, "cp": 8, "vision": 30,
       "weapon": "none", "mines": { "interval": 5, "max": 12, "damage": 380, "radius": 5, "tier": "Large", "trigger": 2.2, "spread": 18 }, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.3, "tier": "Large" } },
     // dx17: the EMB-314 Super Tucano / OV-10 Bronco stand-in (attack_jet's hull): cheap, slow, low; a gun and rockets against light vehicles.
-    { "id": "prop_attack_plane", "model": "prop_attack_plane", "value": 0.6, "rearmTime": 9, "strongVs": ["Light", "Scout"], "modelSize": [6.15, 6.04, 1.84], "armour": 1, "hp": 409, "speed": 18, "turnRate": 100, "turretTurnRate": 360, "radius": 3.2, "cp": 7, "vision": 50,
+    { "id": "prop_attack_plane", "outgoingDamageMult": 1.1429, "model": "prop_attack_plane", "value": 0.6, "rearmTime": 9, "strongVs": ["Light", "Scout"], "modelSize": [6.15, 6.04, 1.84], "armour": 1, "hp": 477, "speed": 18, "turnRate": 100, "turretTurnRate": 360, "radius": 3.2, "cp": 8, "vision": 50,
       "firesWhileMoving": true, "weapon": "hmg_roof", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 20, "captureRate": 0, "attackHold": 3.2,
       "secondary": [ { "weapon": "scout_rockets", "slot": "rocket", "model": "hydra", "aim": "Hull" } ], "deathExplosion": { "damage": 55, "radius": 6, "delay": 0.4, "tier": "Large" } },
     // dx18: the AH-1Z Viper (light) / Mi-28-class stand-in (scout_heli's hull): fast, cheap, thin armour; a few ATGMs and a gun.
-    { "id": "light_attack_heli", "model": "light_attack_heli", "value": 0.7, "rearmTime": 8, "strongVs": ["Scout", "Light"], "modelSize": [3.88, 3.16, 1.56], "armour": 0, "hp": 500, "speed": 16, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 7, "vision": 45,
+    { "id": "light_attack_heli", "outgoingDamageMult": 1.1429, "model": "light_attack_heli", "value": 0.7, "rearmTime": 8, "strongVs": ["Scout", "Light"], "modelSize": [3.88, 3.16, 1.56], "armour": 0, "hp": 582, "speed": 16, "turnRate": 170, "turretTurnRate": 360, "radius": 2.8, "cp": 8, "vision": 45,
       "firesWhileMoving": true, "weapon": "minigun", "mainSlot": "gun", "flying": true, "altitude": 13, "captureRate": 0,
       "secondary": [ { "weapon": "heli_atgm", "slot": "missile", "model": "atgm_ataka", "aim": "Hull" } ], "deathExplosion": { "damage": 45, "radius": 5, "delay": 0.4, "tier": "Large" } },
     // dx19: the T-14 Armata-class next-generation tank stand-in (main_battle_tank's hull): an APS that takes two hits before it recharges.
@@ -1546,11 +1546,11 @@
     { "id": "airborne_light_tank_chute", "card": false, "model": "airborne_light_tank_chute", "modelSize": [9.0, 9.0, 11.0], "class": "Tank", "armour": [2, 1, 0, 0], "hp": 591, "speed": 1, "turnRate": 1, "turretTurnRate": 1, "radius": 2.2, "cp": 0, "vision": 12,
       "weapon": "none", "flying": true, "altitude": 30 },
     // dx38: the A-12 Avenger II-class stealth strike aircraft stand-in (stealth_bomber's hull): two precision bombs, no gun.
-    { "id": "stealth_naval_strike", "model": "stealth_naval_strike", "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy"], "modelSize": [8.4, 21, 1.5], "armour": 0, "hp": 682, "speed": 30, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 17, "vision": 50,
+    { "id": "stealth_naval_strike", "dropDelay": 5, "outgoingDamageMult": 1.4882, "model": "stealth_naval_strike", "value": 1, "rearmTime": 16, "strongVs": ["Defense", "Heavy"], "modelSize": [8.4, 21, 1.5], "armour": 0, "hp": 918, "speed": 30, "turnRate": 86, "turretTurnRate": 360, "radius": 5, "cp": 22, "vision": 50,
       "firesWhileMoving": true, "weapon": "none", "secondary": [ { "weapon": "jet_bombs", "slot": "missile", "aim": "Hull" } ], "mainSlot": "missile", "flying": true, "fixedWing": true, "altitude": 46, "captureRate": 0,
       "stealth": true, "deathExplosion": { "damage": 120, "radius": 8, "delay": 0.5, "tier": "Huge" } },
     // dx39: the ACH-47A "Guns-A-Go-Go"-class twin-rotor low gunship stand-in (sky_gunship's hull): lower and slower than the Sky Fortress, easier to hit with small arms.
-    { "id": "twin_rotor_gunship", "model": "twin_rotor_gunship", "rearmTime": 12, "strongVs": ["Light", "Support"], "modelSize": [11.93, 5.7, 4.82], "armour": 1, "hp": 1591, "speed": 9, "turnRate": 70, "turretTurnRate": 360, "radius": 6, "cp": 14, "vision": 50,
+    { "id": "twin_rotor_gunship", "dropDelay": 5, "outgoingDamageMult": 1.4464, "model": "twin_rotor_gunship", "rearmTime": 12, "strongVs": ["Light", "Support"], "modelSize": [11.93, 5.7, 4.82], "armour": 1, "hp": 2123, "speed": 9, "turnRate": 70, "turretTurnRate": 360, "radius": 6, "cp": 18, "vision": 50,
       "firesWhileMoving": true, "weapon": "heli_gun", "mainSlot": "gun", "flying": true, "altitude": 15, "captureRate": 0,
       "secondary": [ { "weapon": "agl_40", "slot": "mg", "aim": "Free" } ], "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.5, "tier": "Huge" } },
     // dx40: the THeMIS / Uran-9-class ground drone carrier stand-in (interceptor_drone_vehicle's hull): a cheap decoy screen; its three minion robots are not modelled yet (no minion-spawn mechanism exists: DECISIONS 25F2-B).
@@ -1581,10 +1581,10 @@
     { "id": "ground_cruise_missile_vehicle", "dropDelay": 5, "outgoingDamageMult": 1.25, "model": "ground_cruise_missile_vehicle", "modelSize": [7.18, 2.7, 2.97], "armour": 1, "hp": 586, "speed": 6.5, "turnRate": 80, "turretTurnRate": 100, "radius": 2.3, "length": 7.18, "width": 2.7, "cp": 15, "vision": 35,
       "weapon": "cruise_missile_ground", "deathExplosion": { "damage": 100, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx51: the KC-135 / Il-78-class aerial tanker stand-in (heavy_bomber's hull): unarmed and high-flying in this pass; the endurance aura is not modelled yet (no aircraft-fuel field exists: DECISIONS 25F2-B).
-    { "id": "aerial_tanker", "model": "aerial_tanker", "rearmTime": 0, "modelSize": [19.8, 22.62, 5.7], "armour": 0, "hp": 1136, "speed": 20, "turnRate": 68, "turretTurnRate": 360, "radius": 7.5, "cp": 8, "vision": 55,
+    { "id": "aerial_tanker", "outgoingDamageMult": 1.1391, "model": "aerial_tanker", "rearmTime": 0, "modelSize": [19.8, 22.62, 5.7], "armour": 0, "hp": 1300, "speed": 20, "turnRate": 68, "turretTurnRate": 360, "radius": 7.5, "cp": 9, "vision": 55,
       "weapon": "none", "mainSlot": "gun", "flying": true, "fixedWing": true, "altitude": 40, "captureRate": 0, "deathExplosion": { "damage": 90, "radius": 7, "delay": 0.4, "tier": "Huge" } },
     // dx52: the CH-47 / Mi-26-class tower-lift helicopter stand-in (gunship_heli's hull): unarmed heavy transport in this pass; carrying a tower to any seen ground spot is not modelled yet (no airlift-drop command exists: DECISIONS 25F2-B).
-    { "id": "heavy_lift_helicopter", "model": "heavy_lift_helicopter", "rearmTime": 9, "modelSize": [7.59, 6.58, 2.1], "armour": 1, "hp": 818, "speed": 12, "turnRate": 90, "turretTurnRate": 1, "radius": 4.5, "cp": 7, "vision": 42,
+    { "id": "heavy_lift_helicopter", "outgoingDamageMult": 1.1429, "model": "heavy_lift_helicopter", "rearmTime": 9, "modelSize": [7.59, 6.58, 2.1], "armour": 1, "hp": 955, "speed": 12, "turnRate": 90, "turretTurnRate": 1, "radius": 4.5, "cp": 8, "vision": 42,
       "weapon": "none", "flying": true, "altitude": 17, "captureRate": 1, "deathExplosion": { "damage": 70, "radius": 6, "delay": 0.4, "tier": "Large" } },
     // dx53: the AVLB / MTU-72-class bridging vehicle stand-in (engineer_vehicle's hull): laying a bridge over a river map gap is not modelled yet (no river-gap map feature exists: DECISIONS 25F2-B); plays as an armoured support vehicle for now.
     { "id": "bridging_vehicle", "model": "bridging_vehicle", "modelSize": [6.45, 3.02, 2.02], "class": "Support", "armour": 2, "hp": 682, "speed": 4.4, "turnRate": 80, "turretTurnRate": 200, "radius": 2.2, "length": 6.45, "width": 3.02, "cp": 4, "vision": 30,

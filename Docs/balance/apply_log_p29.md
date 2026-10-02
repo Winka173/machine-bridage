@@ -287,3 +287,37 @@
 | B1-heavy_aa | OK | 3 rows |
 | B1-sam_launcher | OK | 3 rows |
 | B1-long_sam | OK | 4 rows |
+
+## Run apply: E1, B0-*, B1-scout_heli, B1-heavy_lift_helicopter, B1-light_attack_heli, B1-attack_helicopter, B1-twin_rotor_gunship, B1-gunship_heli, B1-recon_drone, B1-wingman_drone, B1-prop_attack_plane, B1-aerial_tanker, B1-recon_jet, B1-strike_drone, B1-fighter_jet, B1-interceptor_jet, B1-stealth_fighter, B1-swarm_carrier, B1-glide_bomber, B1-stealth_naval_strike, B1-attack_jet, B1-stealth_bomber, B1-heavy_bomber (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | ALREADY_APPLIED | |
+| B0-sky_gunship | ALREADY_APPLIED | |
+| B0-thermobaric_launcher | CONFLICT | units.thermobaric_launcher.hp: current 2490.4, expected 990, new 1980 |
+| B0-siege_tank | CONFLICT | units.siege_tank.hp: current 4270.200000000001, expected 1320, new 3300 |
+| B0-light_tank | ALREADY_APPLIED | |
+| B0-vbied | ALREADY_APPLIED | |
+| B0-flame_tank | ALREADY_APPLIED | |
+| B0-engineer_vehicle | ALREADY_APPLIED | |
+| B1-scout_heli | OK | 3 rows |
+| B1-recon_drone | OK | 3 rows |
+| B1-wingman_drone | OK | 3 rows |
+| B1-heavy_lift_helicopter | OK | 3 rows |
+| B1-light_attack_heli | OK | 3 rows |
+| B1-prop_attack_plane | OK | 3 rows |
+| B1-aerial_tanker | OK | 3 rows |
+| B1-recon_jet | OK | 3 rows |
+| B1-attack_helicopter | OK | 3 rows |
+| B1-strike_drone | OK | 3 rows |
+| B1-fighter_jet | OK | 4 rows |
+| B1-interceptor_jet | OK | 4 rows |
+| B1-stealth_fighter | OK | 4 rows |
+| B1-swarm_carrier | OK | 4 rows |
+| B1-twin_rotor_gunship | OK | 4 rows |
+| B1-gunship_heli | OK | 4 rows |
+| B1-glide_bomber | OK | 4 rows |
+| B1-stealth_naval_strike | OK | 4 rows |
+| B1-attack_jet | OK | 4 rows |
+| B1-stealth_bomber | OK | 4 rows |
+| B1-heavy_bomber | OK | 4 rows |
