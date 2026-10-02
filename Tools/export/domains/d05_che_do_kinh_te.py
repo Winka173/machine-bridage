@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from core.model import NEED_CODE_CHECK
 
+from . import _b05
 from . import _balance as B
 from . import _lane_c as C
 
@@ -117,3 +118,6 @@ def build(ctx):
     mu = book.sheet("Mutator", "Mutator", "operations.json mutators: mỗi mutator một dòng (hệ số, cờ, loại trừ)")
     mu.col("excludes", meaning="mutator không đi cùng (ngăn ';')", fk=["05_che_do_kinh_te/Mutator"])
     C.records(mu, ops.get("mutators"), OPS, ("mutators",))
+
+    # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
+    _b05.build(ctx, book, d)
