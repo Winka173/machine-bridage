@@ -649,7 +649,7 @@
   },
   "grad_truck": {
     "file": "grad_truck.glb",
-    "triangles": 8092
+    "triangles": 6342
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
@@ -1273,11 +1273,11 @@
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
-    "triangles": 2212
+    "triangles": 2422
   },
   "scout_jeep_hd": {
     "file": "scout_jeep_hd.glb",
-    "triangles": 8908
+    "triangles": 3738
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",

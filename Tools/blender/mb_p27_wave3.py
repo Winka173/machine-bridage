@@ -2780,6 +2780,215 @@ def command_vehicle(a):
     k.clean(a)
 
 
+def scout_jeep(a, detail=False):
+    """Scout jeep (m25.scout_jeep, M151 class) on the V2 kit, drawn at mb_vehicles' size and scaled by JEEP_K like the old
+    one: V2 wheels, an extruded hood and tub with chamfers, block seats, a framed windscreen and roll bar, the seated driver
+    and gunner (`Turret`), a revolved barrel as `Main_cannon`; the `_hd` twin adds mirrors, roll-bar braces, hood latches,
+    steering wheel, tow hooks and mud flaps (the wheels' bolts and the MG are the kit's own detail). Same nodes."""
+    import mb_p25_models as p25
+    hd.mark(a, detail)
+    body = a.part('Body', 'Team')
+    steel = a.part('Steel', 'Steel')
+    armor = a.part('Armor', 'Armor')
+    chassis = a.part('Chassis', 'Undercarriage')
+    seats = a.part('Seats', 'Canvas')
+    chassis.box((1.45, 3.7, .26), loc=(0, 0, .55), bevel=0)
+    for sx in (-1, 1):
+        for y in (-1.25, 1.2):
+            parts.road_wheel(a, (sx * .86, y, .42), .42, .34, sx, seg=12 if detail else 8)
+            k.block(body, (.46, 1.05, .1), loc=(sx * .9, y, .92), chamfer=.03, taper=(1, .8))        # fenders
+        k.block(steel, (.14, 1.3, .06), loc=(sx * .9, -.05, .64), chamfer=0)                         # side steps
+    k.extrude(body, [(-2.0, .62), (-2.0, .96), (-1.1, 1.12), (-.36, 1.14), (-.36, .62)], 1.7, axis='X', chamfer=.05,
+              corner=.04)
+    k.block(body, (1.72, 2.3, .52), loc=(0, .8, .88), chamfer=.05)
+    k.inset(body, lambda c, n, f: abs(n.x) > .9 and c.y > -.2 and c.z > .8, width=.08, depth=.012)
+    chassis.grille(.7, .45, loc=(0, -.78, 1.15), rot=(-R90, 0, 0), slats=4, depth=.06, thickness=.04)   # louvres
+    for x, y in ((-.38, -.05), (.38, -.05), (-.48, 1.0), (.48, 1.0)):
+        k.block(seats, (.44, .44, .12), loc=(x, y, 1.19), chamfer=.03)
+        k.block(seats, (.44, .1, .4), loc=(x, y + .25, 1.4), rot=(-.12, 0, 0), chamfer=.015)
+    for x0, x1, y, h in ((-.82, .82, -.36, .54), (-.82, .82, 1.55, .66)):
+        for x in (x0, x1):
+            steel.box((.1, .1, h), loc=(x, y, 1.12 + h / 2), bevel=0)
+        k.block(steel, (x1 - x0 + .1, .1, .1), loc=(0, y, 1.12 + h), chamfer=.01)
+    a.part('Glass', 'Glass').box((1.54, .03, .42), loc=(0, -.38, 1.39), rot=(-.12, 0, 0), bevel=0)
+    for sx in (-1, 1):
+        _lights(a, (sx * .55,), -2.0, .8, size=(.16, .04, .12))
+        _lights(a, (sx * .72,), 1.96, .72, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        k.block(a.part('Jerrycans', 'Hazard'), (.3, .16, .4), loc=(sx * .58, 2.0, 1.05), chamfer=.03)
+    chassis.grille(.64, .26, loc=(0, -2.03, .8), slats=3, depth=.05, thickness=.05)
+    k.block(steel, (1.5, .12, .14), loc=(0, -2.05, .6), chamfer=.03)                                 # bumper
+    k.lathe(a.part('Spare', 'Undercarriage'), [(0, -.11), (.34, -.11), (.36, -.07), (.36, .07), (.34, .11), (0, .11)],
+            loc=(0, 2.03, 1.02), rot=FORWARD, seg=12 if detail else 10, worn=(2,))
+    k.lathe(armor, [(0, -.12), (.2, -.12), (.2, .12), (0, .12)], loc=(0, 2.03, 1.02), rot=FORWARD, seg=8)
+    k.block(armor, (.4, .34, .3), loc=(.55, 1.65, 1.26), chamfer=.02)                                # radio
+    k.block(a.part('Ammo_boxes', 'Crate'), (.4, .3, .24), loc=(-.52, 1.65, 1.23), chamfer=.02)
+    a.part('Beacon', 'TeamGlow').box((.1, .1, .08), loc=(.72, 1.75, 1.45), bevel=0)
+    p25._crew(a, (-.38, -.02, 1.18))                                                                 # the driver
+    t = a.pivot('Turret', (0, .72, 1.14))
+    k.lathe(a.part('Mount', 'Steel', t), [(.08, 0), (.08, .5), (.12, .52)], seg=8)
+    k.block(a.part('Gun_shield', 'Armor', t), (.66, .08, .42), loc=(0, -.22, .66), chamfer=.02, taper=(.9, 1))
+    cannon = a.part('Main_cannon', 'Steel', t)
+    k.block(cannon, (.16, .44, .18), loc=(0, 0, .64), chamfer=.02)
+    y0, length, z = -.2, .96, .66
+    parts.barrel(a, 'Main_cannon', t, 0, y0, z, length, .06, seg=10 if detail else 8, sleeve=1.1, extractor=(.45, 1.3, .2))
+    k.block(a.part('Ammo_box', 'Armor', t), (.2, .18, .16), loc=(.18, .05, .56), chamfer=.02)
+    a.pivot('Muzzle_main', (0, y0 - length, z), t)
+    p25._crew(a, (0, .55, .5), parent='Turret', gunner=True)                                         # the gunner
+    a.pivot('Point_exhaust', (.6, 2.0, .55))
+    a.pivot('Point_fire', (0, -1.2, 1.15))
+    if detail:
+        for sx in (-1, 1):
+            k.block(armor, (.04, .13, .17), loc=(sx * 1.0, -.43, 1.33), chamfer=.01)                 # mirrors
+            steel.limb((sx * .82, -.36, 1.3), (sx * .98, -.42, 1.3), .035, .035, bevel=0)
+            steel.limb((sx * .82, 1.55, 1.74), (sx * .82, 1.9, 1.14), .05, .05, bevel=0)             # roll-bar braces
+            steel.box((.04, .1, .06), loc=(sx * .86, -1.55, 1.0), bevel=0)                            # hood latches
+            steel.box((.1, .14, .1), loc=(sx * .5, -2.14, .6), bevel=0)                               # tow hooks
+            a.part('Mud_flaps', 'Undercarriage').box((.34, .03, .26), loc=(sx * .86, -.78, .75), bevel=0)
+        chassis.cyl(.16, .03, loc=(-.38, -.18, 1.42), rot=(-.9, 0, 0), seg=10, bevel=0)             # steering wheel
+        det = a.part('Jeep_bolts', 'Steel')
+        for sx in (-1, 1):
+            hd.bolt_line(det, (sx * .9, -1.05, .98), (sx * .9, .4, .98), 6, rot=hd.side_rot(sx), r=.014, h=.02)
+    p25._scale_asset(a, p25.JEEP_K)
+    k.clean(a)
+
+
+# ----------------------------------------------------------------------------- grad_truck (BM-21 Grad)
+def grad_truck(a):
+    """BM-21 Grad on an Ural-375D 6x6 (mb_artillery.grad_truck) on the V2 kit: V2 wheels, an extruded hood, fenders and
+    cab with chamfers, chamfered blocks, the rocket pack's tubes as the old 40 six-sided bores (the triangle budget: this
+    model may not grow); same nodes (`Turret`, `Muzzle_main`, `Mount_mg`, `Muzzle_mg`) and pivots."""
+    from mb_vehicles3 import _jack
+    hd.mark(a, False)
+    body = a.part('Body', 'Team')
+    armor = a.part('Armor', 'Armor')
+    steel = a.part('Steel', 'Steel')
+    dark = a.part('Chassis', 'Undercarriage')
+    glass = a.part('Windows', 'Glass')
+    axles = (-2.75, 1.15, 2.55)
+    for y in axles:
+        for s in (-1, 1):
+            parts.road_wheel(a, (s * 1.0, y, .54), .54, .4, s, seg=10)
+    for s in (-1, 1):
+        dark.box((.18, 7.1, .26), loc=(s * .42, -.05, .86), bevel=0)                            # frame rails
+    for y in axles:
+        dark.box((1.56, .2, .16), loc=(0, y, .54), bevel=0)                                      # axle beams
+    for y in (1.15, 2.55):
+        dark.box((.3, .38, .3), loc=(0, y, .74), bevel=0)                                        # differentials
+    k.block(steel, (2.3, .18, .2), loc=(0, -3.62, .8), chamfer=.03)                              # bumper
+    for s in (-1, 1):
+        steel.box((.14, .16, .14), loc=(s * .55, -3.74, .8), bevel=0)                            # tow hooks
+    k.lathe(dark, [(.09, -.25), (.09, .25)], loc=(0, -3.52, .96), rot=(0, R90, 0), seg=8)        # winch drum
+    k.extrude(body, [(-3.5, .95), (-3.52, 1.62), (-3.3, 1.74), (-2.05, 1.8), (-2.05, .95)], 1.12, axis='X',
+              chamfer=.04, corner=.03)                                                           # hood
+    for x in (-.3, 0, .3):
+        dark.box((.07, .04, .5), loc=(x, -3.525, 1.28), bevel=0)                                 # grille slots
+    for x in (-.45, -.15, .15, .45):
+        dark.box((.05, .04, .5), loc=(x, -3.525, 1.28), bevel=0)
+    for s in (-1, 1):
+        steel.box((.05, .5, .04), loc=(s * .45, -2.75, 1.79), bevel=0)                           # hood latches
+        dark.grille(.7, .26, loc=(s * .565, -2.7, 1.5), rot=(0, 0, s * R90), slats=3, depth=.04, thickness=.03)
+    for s in (-1, 1):
+        x = s * .9
+        k.extrude(body, [(-3.5, 1.04), (-3.46, 1.26), (-3.25, 1.4), (-2.05, 1.42), (-2.05, 1.22), (-3.2, 1.2)], .66,
+                  loc=(x, 0, 0), axis='X', chamfer=.03, corner=.03)                              # front fenders
+        k.block(armor, (.6, .06, .5), loc=(x, -2.08, 1.0), chamfer=.01)                          # fender back
+        _lights(a, (s * .78,), -3.5, 1.2, size=(.2, .04, .14))
+        a.part('Marker_lights', 'Alloy').box((.1, .1, .07), loc=(s * 1.1, -3.1, 1.44), bevel=0)
+    k.extrude(body, [(-2.06, 1.2), (-2.06, 1.82), (-1.96, 2.44), (-.8, 2.44), (-.8, 1.2)], 2.3, axis='X', chamfer=.05,
+              corner=.04)                                                                        # cab
+    k.inset(body, lambda c, n, f: abs(n.x) > .9 and c.y < -1.0 and c.y > -1.95 and c.z > 1.5, width=.07, depth=.012)
+    for s in (-1, 1):
+        glass.box((.98, .04, .5), loc=(s * .54, -2.02, 2.12), rot=(-.16, 0, 0), bevel=0)
+        glass.box((.04, .56, .4), loc=(s * 1.155, -1.62, 2.1), bevel=0)
+        steel.box((.04, .16, .05), loc=(s * 1.165, -1.3, 1.9), bevel=0)                          # handles
+        steel.box((.3, .24, .04), loc=(s * 1.08, -1.55, .98), bevel=0)                           # steps
+        steel.tube([(s * 1.14, -1.95, 2.3), (s * 1.22, -2.1, 2.34)], .016, seg=4)                # mirrors
+        k.block(armor, (.05, .16, .26), loc=(s * 1.25, -2.14, 2.26), chamfer=.01)
+        k.lathe(steel, [(0, -.45), (.24, -.45), (.24, .45), (0, .45)], loc=(s * .8, -1.45, .78), rot=FORWARD, seg=10,
+                worn=(1, 2))                                                                     # fuel tanks
+        for y in (-1.75, -1.15):
+            dark.box((.52, .04, .52), loc=(s * .8, y, .78), bevel=0)
+    armor.box((.08, .04, .5), loc=(0, -2.035, 2.12), rot=(-.16, 0, 0), bevel=0)                  # centre pillar
+    k.block(armor, (2.2, .12, .06), loc=(0, -2.02, 2.47), rot=(-1.2, 0, 0), chamfer=.01)         # folded shutters
+    for s in (-1, 1):
+        k.block(armor, (1.02, .5, .05), loc=(s * .54, -1.8, 2.49), chamfer=.012)
+    k.block(a.part('Canvas_top', 'Canvas'), (2.2, .9, .12), loc=(0, -1.12, 2.48), chamfer=.04, taper=(.97, .95))
+    steel.box((2.26, .05, .05), loc=(0, -.85, 2.46), bevel=0)                                    # top bow
+    k.block(armor, (1.9, .08, .66), loc=(0, -.73, 2.02), chamfer=.015)                           # blast shield
+    for s in (-1, 1):
+        steel.box((.06, .1, .06), loc=(s * .8, -.76, 2.3), bevel=0)                              # shield brackets
+        steel.box((.06, .1, .06), loc=(s * .8, -.76, 1.75), bevel=0)
+    k.lathe(armor, [(0, 0), (.3, 0), (.3, .08), (.24, .1), (0, .1)], loc=(.5, -1.6, 2.5), seg=12, worn=(1,))   # MG ring
+    parts.mg_mount(a, None, (.5, -1.6, 2.58), length=.8)
+    k.lathe(steel, [(.03, 0), (.03, 1.3)], loc=(-1.05, -.9, 2.44), seg=4)                       # antenna
+    # Behind the cab: spare wheel, air cleaner and battery box.
+    k.lathe(a.part('Tyres', 'Undercarriage'), [(.3, -.17), (.5, -.15), (.5, .15), (.3, .17)], loc=(-.72, -.35, 1.12),
+            rot=(0, R90, 0), seg=12, worn=(2,))
+    k.lathe(a.part('Hubs', 'Steel'), [(0, -.19), (.26, -.19), (.26, .19), (0, .19)], loc=(-.72, -.35, 1.12),
+            rot=(0, R90, 0), seg=10)
+    steel.box((.08, .3, .7), loc=(-.5, -.35, .98), bevel=0)                                      # spare carrier
+    k.lathe(armor, [(0, -.3), (.18, -.3), (.18, .3), (0, .3)], loc=(.75, -.45, 1.28), seg=10)    # air cleaner
+    k.block(armor, (.46, .5, .4), loc=(.78, -.35, .78), chamfer=.02)                             # battery box
+    # Bed, tool lockers, mudguards, rear lights, jacks.
+    k.block(body, (2.2, 4.3, .14), loc=(0, 1.55, 1.2), chamfer=.03)
+    for s in (-1, 1):
+        armor.box((.06, 4.3, .08), loc=(s * 1.1, 1.55, 1.28), bevel=0)
+        k.block(armor, (.5, 2.5, .06), loc=(s * 1.0, 1.85, 1.3), chamfer=.015)                   # mudguards
+        k.block(armor, (.5, .06, .44), loc=(s * 1.0, .6, 1.08), chamfer=.01)
+        a.part('Mud_flaps', 'Undercarriage').box((.44, .04, .4), loc=(s * 1.0, 3.2, .72), bevel=0)
+        _lights(a, (s * .95,), 3.64, 1.1, facing=1, size=(.12, .04, .08), lamp='Alloy')
+        _jack(a, s * .85, 3.35, 1.2, pad=.16)
+    k.block(armor, (.36, .9, .4), loc=(.98, .2, .82), chamfer=.03)                               # tool locker
+    steel.box((.03, .06, .08), loc=(1.165, .2, .9), bevel=0)
+    k.block(steel, (2.2, .16, .18), loc=(0, 3.6, .86), chamfer=.03)                              # rear bumper
+    steel.box((.14, .14, 1.0), loc=(0, -.2, 1.44), bevel=0)                                      # travel rest
+    for s in (-1, 1):
+        steel.limb((s * .36, -.2, 1.26), (s * .06, -.2, 1.7), .07, .07, bevel=0)                 # braces
+    k.block(armor, (.9, .16, .1), loc=(0, -.2, 1.9), chamfer=.015)                               # rest beam
+    a.part('Rest_pad', 'Undercarriage').box((.6, .14, .05), loc=(0, -.2, 1.965), bevel=0)
+
+    # Launcher: turntable, base, brackets and the 40-tube pack on its rear hinge.
+    t = a.pivot('Turret', (0, 2.25, 1.27))
+    tsteel = a.part('Turret_steel', 'Steel', t)
+    tarm = a.part('Turret_armor', 'Armor', t)
+    k.lathe(tsteel, [(0, 0), (.82, 0), (.82, .1), (0, .1)], loc=(0, 0, -.02), seg=16, worn=(1, 2))   # turntable
+    k.block(tarm, (1.4, 1.3, .32), loc=(0, .05, .22), chamfer=.04, taper=(.94, .94))             # base
+    L, cols, rows, pitch_x, pitch_z, r = 3.0, 10, 4, .16, .158, .066
+    W, H = cols * pitch_x, rows * pitch_z
+    hinge = Vector((0, .22, .84))
+    centre = hinge + Vector((0, -L / 2 + .06, H / 2 + .04))
+    for s in (-1, 1):
+        k.extrude(tarm, [(-.5, .06), (.5, .06), (.36, .74), (.3, .96), (.1, .96), (-.3, .6)], .1,
+                  loc=(s * (W / 2 + .12), 0, 0), axis='X', chamfer=.015, corner=.02)             # brackets
+        tsteel.cyl(.1, .06, loc=(s * (W / 2 + .19), hinge.y, hinge.z), rot=ACROSS, seg=8, bevel=0)  # hinge caps
+        tsteel.limb((s * .45, -.55, .36), (s * .45, -.78, .76), .1, .1, bevel=0)                 # elevation screws
+    tsteel.cyl(.06, W + .4, loc=hinge, rot=ACROSS, seg=6, bevel=0)                               # hinge axle
+    k.block(tarm, (.22, .3, .34), loc=(-.62, -.45, .55), chamfer=.02)                            # laying sight
+    a.part('Sight', 'Glass', t).box((.16, .03, .1), loc=(-.62, -.61, .6), bevel=0)
+    tubes = a.part('Rocket_tubes', 'Team', t)
+    front = centre.y - L / 2
+    for i in range(cols):
+        for j in range(rows):
+            x = (i - (cols - 1) / 2) * pitch_x
+            z = centre.z + (j - (rows - 1) / 2) * pitch_z
+            k.lathe(tubes, [(r, 0), (r, L), (r * .76, L), (r * .76, L - .14)], loc=(x, front + L, z), rot=FORWARD,
+                    seg=6)
+    a.part('Rocket_tubes_face', 'Undercarriage', t).box((W - .02, .02, H - .02), loc=(0, front + .07, centre.z),
+                                                       bevel=0)
+    frame = a.part('Rocket_tubes_frame', 'Armor', t)
+    for y in (front + .22, centre.y + .05, front + L - .2):                                      # frames
+        k.block(frame, (W + .1, .1, H + .1), loc=(0, y, centre.z), chamfer=.015)
+    for s in (-1, 1):
+        frame.box((.05, L - .5, .1), loc=(s * (W / 2 + .06), centre.y + .05, centre.z), bevel=0)  # side bars
+    k.block(frame, (.5, L - .4, .12), loc=(0, centre.y + .05, centre.z - H / 2 - .08), chamfer=.02)   # spine
+    frame.box((.14, .22, .16), loc=(0, hinge.y - .06, hinge.z + .04), bevel=0)                   # hinge lug
+    a.part('Rocket_tubes_cables', 'Undercarriage', t).box((.12, L - .6, .06),
+                                                          loc=(W / 2 - .3, centre.y + .1, centre.z + H / 2 + .05),
+                                                          bevel=0)
+    a.pivot('Muzzle_main', (0, front - .01, centre.z), t)
+    k.clean(a)
+
+
 def _mbt_v2(a):
     exp.main_battle_tank(a)
 
@@ -2868,4 +3077,7 @@ BUILDERS = {
     'command_vehicle': (command_vehicle, dict(_opts('command_vehicle'), ao_strength=.65)),
     'fpv_carrier': (fpv_carrier, dict(_opts('fpv_carrier'), ao_strength=.65)),
     'lancet_truck': (lancet_truck, dict(_opts('lancet_truck'), ao_strength=.65)),
+    'scout_jeep': (scout_jeep, dict(_opts('scout_jeep'), ao_strength=.65)),
+    'scout_jeep_hd': (functools.partial(scout_jeep, detail=True), dict(_opts('scout_jeep'), ao_strength=.65)),
+    'grad_truck': (grad_truck, dict(_opts('grad_truck'), ao_strength=.65)),
 }
