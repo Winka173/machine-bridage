@@ -553,6 +553,8 @@ namespace MachineBrigade.Game.Rendering
             if (raise.kind != BarrelKind.None) _elevations[modelId] = raise;
             AddLaunchPoints(template.transform);
             AddBarrelPoints(template.transform);
+            // Prompt 29 5.5: the flare dispensers' and APS cassettes' effect points, while their meshes still say where they are.
+            AddEffectPoints(template.transform);
             MergeRigidParts(template.transform);
             TurnToRest(modelId, template.transform);
             _templates[modelId] = template;

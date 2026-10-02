@@ -353,6 +353,13 @@ namespace MachineBrigade.Game.Effects
                             // Play-test 5 (DECISIONS 20W): the C-RAM's stream has been on the round for its burst; it bursts where it flew.
                             interceptAt = Ground(e.Position, burst.height);
                         }
+                        else if (guard != null && NearestPoint(guard.ApsPoints, interceptAt) is { } cassette)
+                        {
+                            // Prompt 29 5.5 (APS_EFFECT): a 0.1 s beam from the turret's cassette to the round, then the burst below.
+                            var from = cassette.position;
+                            _tracers.Launch(from, interceptAt, 0.1f, 0f, 0.12f, 1.2f, now);
+                            _muzzle.Fire(MuzzleFx.Kind.Autocannon, from, interceptAt - from, now, 0.9f, guard.Position.y);
+                        }
                         else if (guard != null)
                         {
                             var from = guard.Position + Vector3.up * 2.4f + guard.Root.right * (e.Value * 1.3f);
@@ -453,6 +460,11 @@ namespace MachineBrigade.Game.Effects
                         {
                             _fires.Ignite(blast, 0.9f, 18f, now);
                         }
+                        break;
+
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Flares:
+                        // Prompt 29 5.5 (FLARE_EFFECT): a flare charge used: every dispenser fires its fan at once.
+                        if (views.TryGet(e.Entity, out var flarer) && flarer.Flying && _cull.Visible(flarer.Position, 0.3f)) FlareSalvo(flarer);
                         break;
 
                     case SimEventKind.SkillUsed when e.Skill == SkillKind.Emp:
@@ -609,6 +621,44 @@ namespace MachineBrigade.Game.Effects
                         fired.Projectile == ProjectileKind.Bullet ? 1.6f : fired.Projectile == ProjectileKind.Shell ? 4.5f : 3.2f);
             }
             _shots.Clear();
+        }
+
+        /// <summary>
+        /// Prompt 29 5.5 (FLARE_EFFECT): 4 points from each dispenser point the model has (a side and a row each: 2 x 4, a big
+        /// aircraft's two rows at once), or from under both sides of the hull on a model without dispensers.
+        /// </summary>
+        private void FlareSalvo(VehicleView flyer)
+        {
+            var scale = Mathf.Clamp(flyer.Sim.Radius / 3.2f, 0.8f, 1.6f);
+            var points = flyer.FlarePoints;
+            var fired = false;
+            for (var i = 0; i < points.Count; i++)
+            {
+                if (points[i] == null) continue;
+                _emitters.Flares(points[i].position, points[i].forward, scale);
+                fired = true;
+            }
+            if (fired || flyer.Root == null) return;
+            var right = flyer.Root.right;
+            var below = flyer.Position - flyer.Root.up * 0.3f - flyer.Root.forward * flyer.Sim.Radius * 0.2f;
+            for (var s = -1; s <= 1; s += 2)
+                _emitters.Flares(below + right * (s * flyer.Sim.Radius * 0.3f), right * s - Vector3.up * 1.2f - flyer.Root.forward * 0.3f, scale);
+        }
+
+        /// <summary>The point nearest <paramref name="to"/>, or null when there are none.</summary>
+        private static Transform NearestPoint(IReadOnlyList<Transform> points, Vector3 to)
+        {
+            Transform best = null;
+            var bestDistance = float.MaxValue;
+            for (var i = 0; i < points.Count; i++)
+            {
+                if (points[i] == null) continue;
+                var d = (points[i].position - to).sqrMagnitude;
+                if (d >= bestDistance) continue;
+                bestDistance = d;
+                best = points[i];
+            }
+            return best;
         }
 
         /// <summary>Brief ring at a commanded destination, confirming the order landed.</summary>
