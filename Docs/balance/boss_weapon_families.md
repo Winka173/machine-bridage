@@ -179,21 +179,21 @@ Ground DPS **586 -> 586** (100 %); anti-air only 0 -> 0.
 
 ### fortress_bastion
 
-Ground DPS **792 -> 792** (100 %); anti-air only 0 -> 0. Made up: `p26_bastion_direct_b100` 2 barrels together.
+Ground DPS **792 -> 741** (94 %); anti-air only 0 -> 0. Made up: `p26_bastion_direct_b100` 2 barrels together.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_bastion_sec_b240` | cal_240 | 1100 x 1 / 7.69 s = 143 | 1100 x 1 / 7.69 s = 143 | 10 / 20 |
-| 1 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 1 / 5.00 s = 48 | 0 / 0 |
-| 2 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 1 / 5.00 s = 48 | 0 / 0 |
-| 3 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 17.60 s = 17 | 0 / 0 |
-| 4 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 17.60 s = 17 | 0 / 0 |
-| 5 | `p26_bastion_tiny_kornet_twin` | atgm_kornet | 230 x 2 / 55.55 s = 8 | 230 x 2 / 55.55 s = 8 | 0 / 0 |
-| 6 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.33 s = 113 | 0 / 0 |
-| 7 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.33 s = 113 | 0 / 0 |
-| 8 | `p26_bastion_main_b155` | cal_152_155 | 600 x 1 / 2.33 s = 258 | 600 x 1 / 2.33 s = 258 | 7 / 14 |
-| 9 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 25.00 s = 14 | 0 / 0 |
-| 10 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 25.00 s = 14 | 0 / 0 |
+| 0 | `p26_bastion_sec_b240` | cal_240 | 1100 x 1 / 7.69 s = 143 | 1100 x 1 / 60.00 s = 18 | 10 / 20 |
+| 1 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 2 (2 together) / 8.60 s = 56 | 0 / 0 |
+| 2 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 2 (2 together) / 8.60 s = 56 | 0 / 0 |
+| 3 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 3.32 s = 90 | 0 / 0 |
+| 4 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 3.32 s = 90 | 0 / 0 |
+| 5 | `p26_bastion_tiny_kornet_twin` | atgm_kornet | 230 x 2 / 55.55 s = 8 | 230 x 2 / 20.00 s = 23 | 0 / 0 |
+| 6 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 7 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 8 | `p26_bastion_main_b155` | cal_152_155 | 600 x 1 / 2.33 s = 258 | 600 x 1 / 15.00 s = 40 | 7 / 14 |
+| 9 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 4.96 s = 71 | 0 / 0 |
+| 10 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 4.96 s = 71 | 0 / 0 |
 
 ### rail_supergun
 
@@ -370,13 +370,13 @@ Ground DPS **165 -> 165** (100 %); anti-air only 147 -> 147.
 
 ### bastion_mk0
 
-Ground DPS **239 -> 239** (100 %); anti-air only 0 -> 0. Made up: `p26_bastion_direct_b100` 2 barrels together.
+Ground DPS **239 -> 130** (54 %); anti-air only 0 -> 0. Made up: `p26_bastion_direct_b100` 2 barrels together. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_bastion_sec_b240` | cal_240 | 1100 x 1 / 7.69 s = 143 | 1100 x 1 / 7.69 s = 143 | 10 / 20 |
-| 1 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 1 / 5.00 s = 48 | 0 / 0 |
-| 2 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 1 / 5.00 s = 48 | 0 / 0 |
+| 0 | `p26_bastion_sec_b240` | cal_240 | 1100 x 1 / 7.69 s = 143 | 1100 x 1 / 60.00 s = 18 | 10 / 20 |
+| 1 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 2 (2 together) / 8.60 s = 56 | 0 / 0 |
+| 2 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 2 (2 together) / 8.60 s = 56 | 0 / 0 |
 
 ### fenrir
 
@@ -470,21 +470,21 @@ Ground DPS **771 -> 771** (100 %); anti-air only 804 -> 804.
 
 ### monster
 
-Ground DPS **792 -> 792** (100 %); anti-air only 0 -> 0. Made up: `p26_bastion_direct_b100` 2 barrels together.
+Ground DPS **792 -> 741** (94 %); anti-air only 0 -> 0. Made up: `p26_bastion_direct_b100` 2 barrels together.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_bastion_sec_b240` | cal_240 | 1100 x 1 / 7.69 s = 143 | 1100 x 1 / 7.69 s = 143 | 10 / 20 |
-| 1 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 1 / 5.00 s = 48 | 0 / 0 |
-| 2 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 1 / 5.00 s = 48 | 0 / 0 |
-| 3 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 17.60 s = 17 | 0 / 0 |
-| 4 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 17.60 s = 17 | 0 / 0 |
-| 5 | `p26_bastion_tiny_kornet_twin` | atgm_kornet | 230 x 2 / 55.55 s = 8 | 230 x 2 / 55.55 s = 8 | 0 / 0 |
-| 6 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.33 s = 113 | 0 / 0 |
-| 7 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.33 s = 113 | 0 / 0 |
-| 8 | `p26_bastion_main_b155` | cal_152_155 | 600 x 1 / 2.33 s = 258 | 600 x 1 / 2.33 s = 258 | 7 / 14 |
-| 9 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 25.00 s = 14 | 0 / 0 |
-| 10 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 25.00 s = 14 | 0 / 0 |
+| 0 | `p26_bastion_sec_b240` | cal_240 | 1100 x 1 / 7.69 s = 143 | 1100 x 1 / 60.00 s = 18 | 10 / 20 |
+| 1 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 2 (2 together) / 8.60 s = 56 | 0 / 0 |
+| 2 | `p26_bastion_direct_b100` | cal_100_105_ap | 240 x 1 / 5.00 s = 48 | 240 x 2 (2 together) / 8.60 s = 56 | 0 / 0 |
+| 3 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 3.32 s = 90 | 0 / 0 |
+| 4 | `p26_bastion_tiny_autocannon_40` | cal_40 | 30 x 10 / 17.60 s = 17 | 30 x 10 / 3.32 s = 90 | 0 / 0 |
+| 5 | `p26_bastion_tiny_kornet_twin` | atgm_kornet | 230 x 2 / 55.55 s = 8 | 230 x 2 / 20.00 s = 23 | 0 / 0 |
+| 6 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 7 | `p26_bastion_close_boss_hmg` | cal_12_7 | 15 x 100 / 13.33 s = 113 | 15 x 100 / 13.25 s = 113 | 0 / 0 |
+| 8 | `p26_bastion_main_b155` | cal_152_155 | 600 x 1 / 2.33 s = 258 | 600 x 1 / 15.00 s = 40 | 7 / 14 |
+| 9 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 4.96 s = 71 | 0 / 0 |
+| 10 | `p26_bastion_tiny_zu23` | cal_23 | 7 x 50 / 25.00 s = 14 | 7 x 50 / 4.96 s = 71 | 0 / 0 |
 
 ### garuda
 
@@ -568,7 +568,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | behemoth_inferno | 282 | 282 | 100 % | 0 -> 0 | - |
 | behemoth_tempest | 299 | 299 | 100 % | 0 -> 0 | - |
 | fortress_hive | 586 | 586 | 100 % | 0 -> 0 | - |
-| fortress_bastion | 792 | 792 | 100 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
+| fortress_bastion | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | rail_supergun | 170 | 170 | 100 % | 240 -> 240 | - |
 | earth_borer | 289 | 289 | 100 % | 0 -> 0 | - |
 | command_airship | 1532 | 1532 | 100 % | 0 -> 0 | - |
@@ -583,7 +583,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | ixion | 615 | 615 | 100 % | 0 -> 0 | - |
 | caspian | 260 | 260 | 100 % | 0 -> 0 | - |
 | morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
-| bastion_mk0 | 239 | 239 | 100 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
+| bastion_mk0 | 239 | 130 | 54 % **(< 80 %)** | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | fenrir | 350 | 380 | 109 % | 0 -> 0 | - |
 | scylla | 234 | 234 | 100 % | 0 -> 0 | - |
 | locust | 552 | 575 | 104 % | 0 -> 0 | - |
@@ -592,7 +592,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | argus | 316 | 316 | 100 % | 0 -> 0 | - |
 | behemoth_mk0 | 733 | 637 | 87 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
 | kraken | 771 | 771 | 100 % | 804 -> 804 | - |
-| monster | 792 | 792 | 100 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
+| monster | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | garuda | 1532 | 1532 | 100 % | 0 -> 0 | - |
 | hyperion | 1320 | 1320 | 100 % | 0 -> 0 | - |
 | stymphalos | 622 | 586 | 94 % | 0 -> 0 | - |
