@@ -14446,3 +14446,17 @@ Pass 8b1 (lane B, mb_props), in the new `Tools/blender/mb_p27_wave8b.py` (regist
 - ao_strength: .9 default; .8 house_small, .85 house_large, .65 wall, .55 barrel, .6 ammo_crate, .85 / .8 / .88 rock_a/b/c (lower = brighter; a rebuilt block surface dims COLOR_0).
 - Gates (old -> new triangles, COLOR_0): house_small 2,680 -> 2,332 (.621 -> .633); house_large 6,056 -> 5,708 (.654 -> .662); wall 832 -> 736 (.655 -> .670); fuel_tank 2,164 -> 1,950 (.582 -> .599); barrel 816 -> 672 (.651 -> .674); ammo_crate 480 -> 496 (.698 -> .705); bush 80 -> 100 (.568 -> .592); rock_a 360 -> 380 (.637 -> .639); rock_b 360 -> 380 (.635 -> .641); rock_c 360 -> 380 (.630 -> .630). Sizes within .02 m except bush height +.03 m; no errors or warnings.
 - Lead (2026-10-02), wave 8b1 merged: ten mb_props models rebuilt (no cards), nine trees and rubbles kept.
+
+## 27 wave 8a2 (lead pass, 2026-10-02)
+
+Pass 8a2 (lane A, second half of the generated munitions row, 22 models, all in `Tools/blender/mb_p27_wave8a.py`): same method as 8a1. The current `mb_munitions` builders are reused unchanged
+(silhouette, nodes, sizes) with a lighter AO bake (`ao_strength` .5, 0 for maverick, kh29l, patriot, jdam which sit at the ceiling) and small static details: guide studs (hellfire, hellfire_longbow, igla, stinger,
+r60, patriot, hydra, s8, tos_rocket, shorad_dart), hanger lugs (maverick, kh29l, mam_l) and an arming vane (jdam). heat_round, jassm, lancet, mortar_bomb, rail_slug, rocket_107, shahed and shell_155 got the AO change only.
+Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. The substring filter also rebuilt hydra_sub, lancet_truck, shahed_truck: reverted.
+
+- **Gates (old -> new triangles, COLOR_0):** heat_round 122 -> 122 (.788 -> .795); hellfire 206 -> 230 (.798 -> .799); hellfire_longbow 206 -> 230 (.798 -> .799); hydra 114 -> 126 (.783 -> .792);
+  igla 192 -> 204 (.787 -> .794); jassm 124 -> 124 (.810 -> .816); jdam 244 -> 256 (.775 -> .800); kh29l 238 -> 262 (.805 -> .805); lancet 160 -> 160 (.755 -> .773); mam_l 206 -> 218 (.768 -> .780);
+  maverick 238 -> 262 (.790 -> .805); mortar_bomb 122 -> 122 (.788 -> .792); patriot 214 -> 238 (.805 -> .806); r60 198 -> 222 (.789 -> .795); rail_slug 86 -> 86 (.787 -> .795);
+  rocket_107 110 -> 110 (.801 -> .803); s8 106 -> 118 (.801 -> .802); shahed 200 -> 200 (.780 -> .791); shell_155 126 -> 126 (.795 -> .796); shorad_dart 238 -> 250 (.794 -> .797);
+  stinger 158 -> 170 (.798 -> .800); tos_rocket 126 -> 150 (.800 -> .805). At most 1.19x, no errors or warnings. Sizes identical except mam_l (+3.3 % on one axis, the lugs).
+- No card PNGs exist for any of the 22.
