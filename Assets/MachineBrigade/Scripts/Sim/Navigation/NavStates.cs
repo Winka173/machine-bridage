@@ -269,9 +269,28 @@ namespace MachineBrigade.Sim.Navigation
         }
 
         /// <summary>First thing in a step: every switch due by this tick comes in (site order), and nobody is left trapped.</summary>
+        private readonly List<(string site, Core.EntityId holder, string state)> _holders = new();
+
+        /// <summary>
+        /// Prompt 31 L5: a vehicle holds a site in its state (a pod's tower on its landing site): once it is gone (destroyed or
+        /// taken off the field) the site goes to <paramref name="state"/> at the next tick boundary, whatever stage or mode
+        /// asked for it (an operation's stage that has ended still opens its ground). In the order they were asked for.
+        /// </summary>
+        public void HoldWhile(string id, Core.EntityId holder, string state)
+        {
+            if (_byId.TryGetValue(id, out var site) && site.Def.IndexOf(state) >= 0) _holders.Add((id, holder, state));
+        }
+
         internal void Step(SimWorld world)
         {
             Locked = true;
+            for (var i = 0; i < _holders.Count; i++)
+            {
+                var (id, holder, state) = _holders[i];
+                if (world.TryGetVehicle(holder, out var v) && v.IsAlive) continue;
+                _holders.RemoveAt(i--);
+                Schedule(id, state, world.Tick, world.Tick - 1);
+            }
             foreach (var site in _sites)
             {
                 if (site.Pending < 0 || site.PendingTick > world.Tick) continue;

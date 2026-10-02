@@ -8,6 +8,7 @@ using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Entities;
 using MachineBrigade.Sim.Modes;
+using MachineBrigade.Sim.Navigation;
 using Vector2 = System.Numerics.Vector2;
 
 namespace MachineBrigade.Tests
@@ -309,6 +310,34 @@ namespace MachineBrigade.Tests
             CollectionAssert.AreEqual(Run(a, modeA, 70f), Run(b, modeB, 70f));
             Assert.AreEqual(a.NavStates.Sites[0].SwitchedAt, b.NavStates.Sites[0].SwitchedAt);
             Assert.AreEqual(3, a.NavStates.Switches, "two strips and the fire out");
+        }
+
+        // ================================================================== pass 3's leftover: c11m10's landing sites
+
+        [Test]
+        public void ALandingSiteOpensWhenItsTowerFallsEvenWithNoEventLeftToWatchIt()
+        {
+            var world = Field();
+            world.BuildNavSites(new[]
+            {
+                new NavSiteDef("pad", new[]
+                {
+                    new NavStateDef("clear"),
+                    new NavStateDef("landed", new[] { new NavBlock(new Vector2(40f, 40f), 4f, 4f) }),
+                }, "clear"),
+            });
+            var tower = world.SpawnVehicle("gun_turret", 1, new Vector2(40f, 40f), 0f);
+            world.ReleaseGround(tower);
+            world.NavStates.Schedule("pad", "landed", world.Tick + 1, world.Tick);
+            world.NavStates.HoldWhile("pad", tower.Id, "clear");
+            world.Step(Dt);
+            Assert.AreEqual("landed", world.NavStates.ActiveOf("pad"));
+            // No mission event runs here (the fortress stage has ended): the world itself opens the ground.
+            tower.Hp = 0f;
+            world.Step(Dt);
+            world.Step(Dt);
+            Assert.AreEqual("clear", world.NavStates.ActiveOf("pad"));
+            Assert.IsTrue(world.Grid.IsWalkable(new Vector2(40f, 40f)));
         }
     }
 }

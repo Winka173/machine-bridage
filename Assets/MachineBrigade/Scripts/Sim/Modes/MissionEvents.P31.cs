@@ -520,21 +520,16 @@ namespace MachineBrigade.Sim.Modes
                 // The landing site's prebuilt state holds the ground, not the tower's own anchor (it opens when the tower falls).
                 world.ReleaseGround(tower);
                 world.NavStates.Schedule(site, "landed", world.Tick + 1, world.Tick);
+                // Prompt 31 L5: the tower holds its site; once it falls the site opens again, during the fortress stage or after it.
+                world.NavStates.HoldWhile(site, tower.Id, "clear");
                 s.Units.Add(tower.Id);
                 plan.Landed.Add((tower.Id, site));
                 // The minimap marks the sites while the pods fall; once down, the towers are on the map as any enemy is.
                 if (plan.Falling.Count == 0) s.Marks.Clear();
             }
             var standing = 0;
-            foreach (var (id, site) in plan.Landed)
-            {
-                if (world.TryGetVehicle(id, out var v) && v.IsAlive)
-                {
-                    standing++;
-                    continue;
-                }
-                if (world.NavStates.ActiveOf(site) == "landed") world.NavStates.Schedule(site, "clear", world.Tick + 1, world.Tick);
-            }
+            foreach (var (id, _) in plan.Landed)
+                if (world.TryGetVehicle(id, out var v) && v.IsAlive) standing++;
             if (plan.Falling.Count == 0 && standing == 0 && plan.Landed.Count > 0)
             {
                 var open = true;
