@@ -33,6 +33,10 @@ REF_WIDTH = 3.07           # main_battle_tank's width (m): the reference vehicle
 TANK_RANGE = 32.0          # gun_120mm's range (m)
 ART_RANGE = 120.0          # a long gun's reach for the indirect-fire envelope (counter-battery range)
 SQRT2 = math.sqrt(2)
+# Prompt 33 L3: an ordinary vehicle's speed on each terrain tag (ROAD +20 %, ROUGH -15 %, FOREST -25 %, SHALLOW_WATER
+# -50 %), the cost of a cell = 1 / speed; "--no-terrain" measures as before (plain distance).
+TERRAIN = "--no-terrain" not in sys.argv
+TERRAIN_COST = {"ROAD": 1 / 1.2, "ROUGH": 1 / 0.85, "FOREST": 1 / 0.75, "SHALLOW_WATER": 1 / 0.5}
 DIRS = [(1, 0, 1.0), (-1, 0, 1.0), (0, 1, 1.0), (0, -1, 1.0), (1, 1, SQRT2), (1, -1, SQRT2), (-1, 1, SQRT2), (-1, -1, SQRT2)]
 
 
@@ -54,6 +58,17 @@ class Grid:
         self.nx, self.nz = int((self.x1 - self.x0) / CELL), int((self.z1 - self.z0) / CELL)
         self.walk = [[True] * self.nx for _ in range(self.nz)]
         self.fire = [[False] * self.nx for _ in range(self.nz)]   # blocks a shot
+        # Prompt 33 L3: the terrain tags' static cost (the time to cross a cell at an ordinary vehicle's speed there, as
+        # TerrainRules.PathCost in the Sim): paths become travel times in metres at normal speed.
+        self.cost = [[1.0] * self.nx for _ in range(self.nz)]
+        if TERRAIN and data.get("terrain"):
+            for zone in data["terrain"].get("zones", []):
+                c = TERRAIN_COST.get(zone["tag"], 1.0)
+                r = zone["rects"]
+                for i in range(0, len(r), 4):
+                    for gz in range(max(0, int(round((r[i + 1] - self.z0) / CELL))), min(self.nz, int(round((r[i + 3] - self.z0) / CELL)))):
+                        for gx in range(max(0, int(round((r[i] - self.x0) / CELL))), min(self.nx, int(round((r[i + 2] - self.x0) / CELL)))):
+                            self.cost[gz][gx] = c
         for p in data["props"]:
             d = props.get(p["def"])
             if not d or not d.get("blocks", False):
@@ -138,7 +153,7 @@ class Grid:
                     continue
                 if dx and dz and not (self.walk[z][a] and self.walk[b][x]):
                     continue
-                nd = d + c * CELL + (penalty.get((a, b), 0.0) if penalty else 0.0)
+                nd = d + c * CELL * self.cost[b][a] + (penalty.get((a, b), 0.0) if penalty else 0.0)
                 if nd < dist.get((a, b), 1e18):
                     dist[(a, b)] = nd
                     parent[(a, b)] = (x, z)
@@ -449,4 +464,4 @@ def main(only=()):
 
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main([a for a in sys.argv[1:] if not a.startswith("--")])

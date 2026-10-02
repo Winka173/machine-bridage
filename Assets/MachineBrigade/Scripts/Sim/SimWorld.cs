@@ -56,6 +56,8 @@ namespace MachineBrigade.Sim
                 Grid.BlockWhere(map.InsideBoundary);
                 Cover.BlockWhere(map.InsideBoundary);
             }
+            // Prompt 33 L3: the static terrain tags (speeds, path costs, the forest's cover from sight).
+            Grid.SetTerrain(map.TerrainZones);
             _pathFinder = new PathFinder(Grid);
             _lanes = new LaneMap(Grid);
             Damage = new DamageSystem(this);
@@ -1258,6 +1260,8 @@ namespace MachineBrigade.Sim
                 // Prompt 25 A1: a scout hiding where it stands (the scout jeep), until it fires.
                 if (target.Def.StillCamouflage > 0f && !target.IsMoving && Time - target.StillSince >= 1.0 && Time - target.LastFiredAt > StealthReveal)
                     sight *= 1f - target.Def.StillCamouflage;
+                // Prompt 33 L3: a ground vehicle in a forest is harder to make out (the same per-target factor, x 0.7).
+                if (!target.Flying && target.Def.Naval == null && Grid.TerrainAt(target.Position) == TerrainTag.Forest) sight *= TerrainRules.ForestSight;
                 // Equipment on the target: a camouflage net standing still, Ghillie Mode hidden.
                 var hidden = false;
                 if (target.Gear is { } tg)

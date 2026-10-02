@@ -16354,3 +16354,66 @@ bands in its own `map_dressing.json` and reads the data below; it edits no map f
 - Fingerprint: unchanged (the drops' count already mixes the later rows); the Ingress events are not mixed (view only).
 - Data keys changed: every map file + `"edges"`, `"entryGates"`; Rust Yard's three square files lose two decor items
   each. balance.json and campaign.json unchanged.
+
+### L3: terrain tags, landmarks, asymmetry
+
+- **Tags** (`Tools/maps/terrain.py`, run after edges.py; map data `"terrain"` {"cell": 2, "zones": [{"tag", "rects":
+  [x0, z0, x1, z1, ...]}]}; Sim `TerrainTag`, `TerrainZoneDef`, `TerrainRules` in `Sim/Navigation/TerrainTags.cs`,
+  `NavGrid.SetTerrain` / `TerrainAt` / `StepCost`): per 2 m navigation cell inside the outline, the first that holds:
+  SHALLOW_WATER on a ford tile (`river_ford`, the walkable water); ROAD within half a road's width of its line or on a
+  road bridge; FOREST with 3+ trees (tree, palm, jungle trees, bamboo, fern; not dead or charred trees) within 9 m;
+  ROUGH within 4 m of craters, boulders, rocks, mounds, crash debris and ruins, and on the urban maps within 5 m of a
+  building (a blocking prop 6 m or wider: the rubble at the city's feet; cover is still the buildings'). Clusters under
+  4 cells dropped. Zones are the cells merged into rectangles: no overlap, none empty (the tests check).
+- **Symmetry**: the scenery the tags come from is not placed symmetrically (Ironport 17 % of its props match their twin,
+  Stormbeach 1-9 %), so on the versus files (`_conquest`, `_sandbox`) a cell keeps its tag only where its twin has the
+  same: the half-turn about the middle, or the mirror across x = -z where that matches more props (Lighthouse Bay, 91 %).
+  The role-asymmetric files (`_siege`, `_long`) keep their raw tags. Raw tags had put Ironport at 10.5 % and Stormbeach at
+  10.6 % path delta (YELLOW); symmetrised, no file's flags got worse.
+- **Coverage** (all 100 files, share of the play area's cells): ROAD 13.9 %, ROUGH 8.0 %, FOREST 5.1 %, SHALLOW_WATER
+  0.9 %. Highest: roads on the urban maps (Foundry 41 %, Metro City 39 %, Veyra 39 %, Capital 37 %), forest on Mirewood
+  (31 %) and Jungle Pass (18 %), shallow water on Coral Keys (11 %). Stormbeach's and Lighthouse Bay's versus files keep
+  little (Stormbeach 1-2 % a tag, Lighthouse Bay 1-7 %): their halves differ most.
+- **Effects** (`TerrainRules`, numbers are starting points): speed ROAD x 1.2, ROUGH x 0.85, FOREST x 0.75, SHALLOW_WATER
+  x 0.5 except the amphibious and air-cushion vehicles (`light_tank` = "Tăng nhẹ lội nước", `amphib_light_vehicle` =
+  "Xe lội nước tốc độ cao", `hover_gunboat`, `landing_hovercraft` and any boss of the `hovercraft` frame): a new factor
+  `Vehicle.TerrainSpeed` in `SpeedFactor`, set every step by the movement system from the cell under a ground vehicle it
+  drives (1 in the air, at sea, on a rail). FOREST: the enemy's sight on a ground vehicle standing in it x 0.7, the
+  visibility's own per-target factor (`SimWorld.RefreshVisibility`, beside the scout's camouflage; so Kerr's stealth
+  sight counters it as it counters camouflage).
+- **Static path costs** (precheck item 3: one path finder, no per-type costs): each cell costs 1 / an ordinary vehicle's
+  speed there (ROAD 0.83, ROUGH 1.18, FOREST 1.33, SHALLOW_WATER 2), built once with the grid, never changed by a tick, the
+  same for every vehicle (an amphibious vehicle still routes as if water slowed it). The A* heuristic is scaled by the
+  road's 0.83 (admissible); the straight-line shortcut is taken only over ground no slower than open ground, and a
+  smoothed stretch never crosses slower ground than the cells it replaces. A grid without tags (a test field, the
+  Sandbox's) paths exactly as before. Cost: more A* runs where a straight line crosses a wood or a ford; a caller with an
+  expansion budget (`PathCosts.MaxExpansions`) may hit it sooner (uncertain, the lead's run will show).
+- **DEEP_FORD waits** (the prompt's own condition: the path finder has no per-type cost or mask; precheck item 3):
+  nothing on Coral Keys, Mirewood or Border Crossing; it needs a per-type passability layer first (later prompt).
+- **Not added** (the prompt's list): no height bonus to damage or accuracy, no armour by terrain, no deformation, no
+  cover percentage.
+- **Map audit** (`Tools/audit/map_audit.py`): its paths are now travel times (each cell's step x the tag's cost, as the
+  Sim; `--no-terrain` measures plain distance as before). Before (plain): 9 RED / 91 YELLOW. With the tags: 8 RED / 92
+  YELLOW: Hollow Dam's versus file goes from RED (19.0 % path delta) to YELLOW (14.1 %); no file's flags got worse; the
+  largest symmetric delta is Hollow Dam's 14.1 %, then Stormbeach 5.0 %. The other REDs are the old connectivity ones
+  (Border Crossing, Emberridge, Coral Keys Siege, Open Pit Siege, Mirewood Siege). check_access.py: 73/75 as before
+  (Mirewood and Veyra Old Quarter conquest fail as they did; tags do not block anything).
+- **Landmarks** (map data `"landmarks"`, `LandmarkDef`, `MapDefinition.Landmarks` / `Landmark(id)`): 3 on each of the 25
+  battlefields (75), the same ids on every file of a battlefield (`battlefield.name`), each with `name` {en, vi}, `kind`,
+  its place (the prop of its kind nearest the hint, else the hint: then `model` names what the view must stand there:
+  Capital's palace and station, Coral Keys' lighthouse, Emberridge's cooling tower, Hollow Dam's dam wall, Jungle Pass's
+  and Red Rock's churches, Salt Flats' survey beacon, Veyra's clock tower; LOCAL_TODO) and `aliases`, the words the
+  prompt 30 dialogue uses for it (Beacon Bay's "the lighthouse", Hollow Dam's "the dam", Dunebreak's "the refinery",
+  Greenvale's "the silos", Frostpeak's and Stormbeach's "the radar" ...).
+- **Dialogue matched to the data**: the lines were read, not changed. Where a line names a place no landmark had, the
+  landmark was made to match: Red Rock's "My people hold the church" (c8m04) -> `redrock.mine_church` (it replaces the
+  wellhead pumps), Jungle Pass's "I am in the church" (i3m03) -> `junglepass.village_church` (it replaces the west
+  village). Left as they are: Ironport's "the whole wall to the lighthouse" (c4m12: a lighthouse seen beyond the map,
+  for lane A's outer band; LOCAL_TODO), Hollow Dam's "tunnel mouth" (c8m06, the mission's own place), "the hangar
+  doors" (a boss's, not a place), and the capture points' names (depot, square, gate, pass ...).
+- **Asymmetry on purpose** (map data `"asymmetry"` {"intended", "reason"}, `MapDefinition.AsymmetryReason`): on every
+  `_siege` and `_long` file (the roles of prompt 17). The campaign plays the shared files (mission.Map + Variant); no
+  campaign map is asymmetric by itself in this pass, and the versus files stay within the audit's thresholds.
+- Fingerprint: unchanged (the tags are static; positions are mixed already).
+- Data keys changed: every map file + `"terrain"`, `"landmarks"`; the 50 `_siege` / `_long` files + `"asymmetry"`.
+  balance.json, campaign.json and the dialogue unchanged. Docs/checks/map_audit.md / .csv rewritten with the tags.

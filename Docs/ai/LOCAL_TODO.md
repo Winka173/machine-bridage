@@ -186,3 +186,20 @@ collider). Count = corners in all 100 map files.
 - The SEA stretches' `shore` (BEACH / CLIFF / QUAY) tells which coast piece runs along them.
 - `Game/Effects/IngressStandIns.cs` (the reinforcements' stand-ins on their approach) is written blind: check in a
   mission with an edge wave that the stand-ins drive up and vanish as the real vehicles appear at the gate.
+
+## Prompt 33 L3 (lead pass, 2026-10-02): landmarks the view must stand
+
+Map data `"landmarks"` (Tools/maps/terrain.py): a landmark with `"model"` has no prop of the map that is it; the view
+(lane A's dressing, view only, no collider, no sight blocking) stands that model at its x, z, readable from the
+widest zoom.
+
+- `capital.palace` (palace_dome), `capital.station` (station_clock), `coralisles.lighthouse` (lighthouse),
+  `emberridge.geothermal` (cooling_tower), `hydrodam.dam` (dam_wall, at the reservoir's south shore z 102),
+  `junglepass.village_church` (church), `redrock.mine_church` (church), `saltflat.survey_beacon` (survey_beacon),
+  `veyra_old_quarter.clock_square` (clock_tower); the plain place names (`borderbridge.great_bridge`, `ironport.docks`,
+  `lighthousebay.fishing_village`, `metrocity.plaza`, `openpit.pit`, `orbitalgate.landing_field`, `whiteout.frozen_lake`)
+  need no model.
+- Ironport's line c4m12.05 ("the whole wall to the lighthouse") sees a lighthouse beyond the map: one for Ironport's
+  outer band on its SEA side.
+- The terrain tags could show on the ground (a tint for FOREST / ROUGH / SHALLOW_WATER, the roads are drawn already) and
+  in the unit card (the speed now): not done, a UI pass.

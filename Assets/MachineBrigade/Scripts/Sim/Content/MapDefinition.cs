@@ -273,7 +273,8 @@ namespace MachineBrigade.Sim.Content
             var spawns = new List<SpawnPointDef>();
             foreach (var sp in Spawns) spawns.Add(new SpawnPointDef(Swap(sp.Side), sp.Kind, sp.Position, sp.From));
             return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases,
-                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns, Walls = SwappedWalls(), Rails = Rails, Edges = Edges, EntryGates = EntryGates };
+                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns, Walls = SwappedWalls(), Rails = Rails, Edges = Edges, EntryGates = EntryGates,
+                    TerrainZones = TerrainZones, Landmarks = Landmarks, AsymmetryReason = AsymmetryReason };
         }
 
         /// <summary>
@@ -420,6 +421,10 @@ namespace MachineBrigade.Sim.Content
                 // Prompt 33 L2: the edge types and the entry gates.
                 Edges = MapEdgesDef.Parse(root),
                 EntryGates = Navigation.EntryGate.ParseAll(root),
+                // Prompt 33 L3: the terrain tags, the landmarks, why a file is asymmetric on purpose.
+                TerrainZones = Navigation.TerrainZoneDef.ParseAll(root),
+                Landmarks = LandmarkDef.ParseAll(root),
+                AsymmetryReason = AsymmetryOf(root),
             };
         }
     }
