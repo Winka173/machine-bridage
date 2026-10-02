@@ -949,7 +949,7 @@
   },
   "microwave_vehicle": {
     "file": "microwave_vehicle.glb",
-    "triangles": 1492
+    "triangles": 1664
   },
   "mine": {
     "file": "mine.glb",
@@ -1041,7 +1041,7 @@
   },
   "nlos_atgm_vehicle": {
     "file": "nlos_atgm_vehicle.glb",
-    "triangles": 1736
+    "triangles": 2048
   },
   "nuke_train": {
     "file": "nuke_train.glb",
@@ -1101,7 +1101,7 @@
   },
   "radar_atgm_vehicle": {
     "file": "radar_atgm_vehicle.glb",
-    "triangles": 2672
+    "triangles": 3194
   },
   "radar_dome": {
     "file": "radar_dome.glb",
@@ -1109,7 +1109,7 @@
   },
   "radar_scout": {
     "file": "radar_scout.glb",
-    "triangles": 1164
+    "triangles": 1192
   },
   "radar_site": {
     "file": "radar_site.glb",
@@ -1157,7 +1157,7 @@
   },
   "recoilless_jeep": {
     "file": "recoilless_jeep.glb",
-    "triangles": 1184
+    "triangles": 1606
   },
   "recon_drone": {
     "file": "recon_drone.glb",
@@ -1321,7 +1321,7 @@
   },
   "shorad_vehicle": {
     "file": "shorad_vehicle.glb",
-    "triangles": 1456
+    "triangles": 2000
   },
   "siege_mortar": {
     "file": "siege_mortar.glb",
@@ -1373,7 +1373,7 @@
   },
   "sp_mortar": {
     "file": "sp_mortar.glb",
-    "triangles": 2344
+    "triangles": 2806
   },
   "stealth_bomber": {
     "file": "stealth_bomber.glb",
@@ -1577,7 +1577,7 @@
   },
   "wheeled_howitzer": {
     "file": "wheeled_howitzer.glb",
-    "triangles": 1564
+    "triangles": 2136
   },
   "wingman_drone": {
     "file": "wingman_drone.glb",

@@ -138,6 +138,8 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 **Pass 3f done (2026-10-02, static gates pass; cards not rendered by the agent):** wheeled_gun, zu23_technical, rocket_technical, hover_gunboat, aa_gun_vehicle, airborne_vehicle, fibre_fpv_carrier, interceptor_drone_vehicle.
 
+**Pass 3g done (2026-10-02, static gates pass; cards not rendered by the agent):** microwave_vehicle, nlos_atgm_vehicle, radar_atgm_vehicle, radar_scout, recoilless_jeep, shorad_vehicle, sp_mortar, wheeled_howitzer; aa_gun_vehicle brightened (3f fix).
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |
