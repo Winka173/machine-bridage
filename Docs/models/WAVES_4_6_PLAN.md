@@ -37,3 +37,14 @@ mirror, no card/preview renders, the old card luma in the report), with these ch
 - Lane B: towers keep everything `TowerArt` and `TowerRankDetails` need (grep them); the weapon on top must read at
   40 px; a base tower and its `_a`/`_b` branches in one commit.
 - Commit messages end with: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Report in ~8 lines.
+
+## Wave 7 (structures), lane B after wave 6 (2026-10-02)
+
+Same standing brief; builder file `Tools/blender/mb_p27_wave7.py` (register it last in `build_assets.py`, one import
+line and one `**mb_p27_wave7.BUILDERS` line). Unarmed statics: big volumes, no new moving parts; pale base colours on
+the biggest top/side faces (wave 6 lesson).
+
+| pass | models |
+|---|---|
+| 7a | cp_relay, shield_tower, dragons_teeth, minefield, each with `_a` and `_b` |
+| 7b | barrage_balloon, blast_wall, fire_control_centre, inflatable_decoy, troop_shelter, logistics_station, radar_site, repair_bay, ammo_dump, targeting_station |
