@@ -63,7 +63,7 @@ namespace MachineBrigade.Tests
         public void EveryLaterEventHasItsWordsInBothLanguages()
         {
             // Every ("text", state) a campaign event brings in (Tools/campaign/ground_events.py, prompt 31 L5).
-            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen", "dam.rising", "dam.high", "dam.flood", "mine.south" };
+            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen", "dam.rising", "dam.high", "dam.flood", "mine.south", "lava.cut" };
             var keys = new List<string>();
             foreach (var v in variants)
                 keys.AddRange(new[] { $"event.groundChange.{v}.warn", $"event.groundChange.{v}.start", $"radio.linh.ev.groundChange.{v}.warn" });
@@ -83,6 +83,7 @@ namespace MachineBrigade.Tests
             ("c6m10", "dam_breach", "flood"),
             ("c6m14", "dam_breach", "flood"),
             ("c8m10", "mine_collapse", "adits"),
+            ("c5m10", "lava_flow", "lava"),
         };
 
         [Test]

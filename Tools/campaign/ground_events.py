@@ -194,3 +194,15 @@ nav_site('c8m10', {'id': 'adits', 'initial': 'north', 'states': [
     {'name': 'north', 'blocks': [{'x': -35, 'z': -58, 'w': 15, 'd': 6}]},
     {'name': 'south', 'blocks': [{'x': 35, 'z': 58, 'w': 15, 'd': 6}]}]})
 events.add('c8m10', 'mine_collapse')
+
+
+# ---------------------------------------------------------------------- Dung nham (the lava flow): c5m10
+# Three minutes in, a lava flow from the ridge's vents comes down over the west causeway road where it leaves the west causeway's
+# field for the north-east (x -62..-38, z 74..82) and the lane stays under lava. The field keeps its way out south (the road
+# back to the ridge's foot), the north spur keeps its own way east (a sliver by the flow, under the 6-cell allowance, is put
+# out at the switch).
+library(E('lava_flow', 'GroundChange', {'at': 180}, {'navSite': 'lava', 'navState': 'cut', 'text': 'lava'}, lead=10))
+nav_site('c5m10', {'id': 'lava', 'initial': 'clear', 'states': [
+    {'name': 'clear'},
+    {'name': 'cut', 'blocks': [{'x': -50, 'z': 78, 'w': 24, 'd': 8}]}]})
+events.add('c5m10', 'lava_flow')
