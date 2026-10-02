@@ -425,6 +425,8 @@ def build(game, imgdir):
     history = []
     modes = programme.modes_and_ai(game, h)
     history.append(modes)  # 2b: numbers measured by hand in prompt 13, no stamp
+    # Prompt 30 pass 9: the four acts, match rules by mode, endless, neutrals, dialogue strip, match end.
+    out.append(programme.prompt30(game, h))
     out.append(programme.campaign(game, h))
     out.append(programme.multistage(game, h))
     out.append(programme.operations(game, h))

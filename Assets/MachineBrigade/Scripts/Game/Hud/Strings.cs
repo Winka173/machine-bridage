@@ -1602,6 +1602,17 @@ namespace MachineBrigade.Game.Hud
             ["result.continueEndless"] = ("Continue (endless)", "Đánh tiếp (vô hạn)"),
             ["result.endRun"] = ("End", "Kết thúc"),
             ["result.endlessKept"] = ("Your win and its rewards are already recorded.", "Chiến thắng và phần thưởng đã được ghi nhận."),
+            ["toast.endlessPaid"] = ("Endless: +{coins} coins", "Vô hạn: +{coins} xu"),
+            ["toast.endlessBadge"] = ("Endless badge: +{steps}", "Huy hiệu vô hạn: +{steps}"),
+            // Prompt 30 L3: the story lines the match end cut, on the results panel.
+            ["result.story"] = ("Over the radio", "Trên kênh liên lạc"),
+            // Prompt 30 L6: the neutral sites and their notices.
+            ["neutral.radar"] = ("radar dome", "vòm radar"),
+            ["neutral.workshop"] = ("field workshop", "xưởng dã chiến"),
+            ["neutral.aa_site"] = ("abandoned AA site", "trận địa phòng không bỏ hoang"),
+            ["neutral.ammo_depot"] = ("ammo depot", "kho đạn"),
+            ["toast.neutralTaken"] = ("We hold the {site}", "Ta đã chiếm {site}"),
+            ["toast.neutralLost"] = ("The enemy took the {site}", "Địch đã chiếm {site}"),
             ["result.kills"] = ("Destroyed", "Tiêu diệt"),
             ["result.losses"] = ("Lost", "Tổn thất"),
             ["result.time"] = ("Time", "Thời gian"),

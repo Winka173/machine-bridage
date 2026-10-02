@@ -25,6 +25,10 @@ namespace MachineBrigade.Game.Hud
         /// <summary>Prompt 13 C.9: our aircraft's holding patterns, faint rings.</summary>
         private readonly List<Vector2> _holds = new();
         private readonly List<(Vector2 at, int kind)> _marks = new();
+
+        /// <summary>Prompt 30 L6: the neutral sites (holder, the side taking it, how far) and the supply drop's landing spots.</summary>
+        private readonly List<(Vector2 at, int holder, int taking, float progress, bool dim)> _sites = new();
+        private readonly List<(Vector2 at, float progress)> _drops = new();
         private readonly Vector2[] _view = new Vector2[4];
         private readonly VisualElement _picture;
         private readonly VisualElement _overlay;
@@ -99,6 +103,8 @@ namespace MachineBrigade.Game.Hud
             _warnings.Clear();
             _holds.Clear();
             _marks.Clear();
+            _sites.Clear();
+            _drops.Clear();
             _bosses.Clear();
             _elites.Clear();
             _hasView = false;
@@ -168,6 +174,15 @@ namespace MachineBrigade.Game.Hud
 
         /// <summary>A mission target: 0 destroy (red), 1 keep standing (blue), 2 scout (amber).</summary>
         public void Mark(Vector2 world, int kind) => _marks.Add((world, kind));
+
+        /// <summary>
+        /// Prompt 30 L6: a neutral site, a small square in its holder's colour (0 ours, 1 theirs, -1 nobody's) with the capture
+        /// under way as an arc in the taker's colour; <paramref name="dim"/> while an abandoned AA site waits to be rebuilt.
+        /// </summary>
+        public void Site(Vector2 world, int holder, int taking, float progress, bool dim) => _sites.Add((world, holder, taking, progress, dim));
+
+        /// <summary>Prompt 30 L6: the contested supply drop's landing spot while it falls (<paramref name="progress"/> 0 to 1).</summary>
+        public void Drop(Vector2 world, float progress) => _drops.Add((world, progress));
 
         public void View(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
         {
@@ -256,6 +271,55 @@ namespace MachineBrigade.Game.Hud
                 p.BeginPath();
                 p.Arc(ToLocal(at), Mathf.Max(5f, radius * Scale), 0f, 360f);
                 p.Fill();
+                p.Stroke();
+            }
+
+            // Prompt 30 L6: neutral sites, under the blips (a square, so they never read as a capture point's circle).
+            foreach (var (at, holder, taking, progress, dim) in _sites)
+            {
+                var c = ToLocal(at);
+                var colour = holder == 0 ? UiKit.Mint : holder == 1 ? UiKit.Danger : new Color(0.95f, 0.95f, 0.9f);
+                var alpha = dim ? 0.4f : 1f;
+                p.fillColor = new Color(0.05f, 0.06f, 0.06f, 0.8f * alpha);
+                p.BeginPath();
+                p.MoveTo(c + new Vector2(-5f, -5f));
+                p.LineTo(c + new Vector2(5f, -5f));
+                p.LineTo(c + new Vector2(5f, 5f));
+                p.LineTo(c + new Vector2(-5f, 5f));
+                p.ClosePath();
+                p.Fill();
+                p.fillColor = new Color(colour.r, colour.g, colour.b, alpha);
+                p.BeginPath();
+                p.MoveTo(c + new Vector2(-3.5f, -3.5f));
+                p.LineTo(c + new Vector2(3.5f, -3.5f));
+                p.LineTo(c + new Vector2(3.5f, 3.5f));
+                p.LineTo(c + new Vector2(-3.5f, 3.5f));
+                p.ClosePath();
+                p.Fill();
+                if (taking is 0 or 1 && progress > 0.01f)
+                {
+                    var sweep = taking == 0 ? UiKit.Mint : UiKit.Danger;
+                    p.strokeColor = sweep;
+                    p.lineWidth = 1.8f;
+                    p.BeginPath();
+                    p.Arc(c, 8f, -90f, -90f + 360f * Mathf.Clamp01(progress));
+                    p.Stroke();
+                }
+            }
+
+            // The supply drop's landing spot: an amber ring that closes as the crate comes down.
+            foreach (var (at, progress) in _drops)
+            {
+                var c = ToLocal(at);
+                p.strokeColor = new Color(1f, 0.72f, 0.2f, 0.5f);
+                p.lineWidth = 1.4f;
+                p.BeginPath();
+                p.Arc(c, 7f, 0f, 360f);
+                p.Stroke();
+                p.strokeColor = new Color(1f, 0.72f, 0.2f, 1f);
+                p.lineWidth = 2f;
+                p.BeginPath();
+                p.Arc(c, 7f, -90f, -90f + 360f * Mathf.Clamp01(progress));
                 p.Stroke();
             }
 

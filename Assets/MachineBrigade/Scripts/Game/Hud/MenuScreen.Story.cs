@@ -112,6 +112,9 @@ namespace MachineBrigade.Game.Hud
                             entry.Q(className: "fc-dossier__text")?.Add(new KitButton(ButtonTier.Text, Strings.Get("dossier.comic"), () => _comic.Show(chapterNumber, null), "eye"));
                         }
                         _dossierBody.Add(entry);
+                        // Prompt 30 L1: the interlude that closes Thorne's arc, after chapter 9 (before chapter 15).
+                        if (c == 9 && (_dossierAll || PlayerProfile.Completed(ThorneArcAfter)))
+                            _dossierBody.Add(Entry(null, Strings.Get("campaign.thorneArc.title"), null, Strings.Get("campaign.thorneArc"), false, false));
                     }
                     // The game's epilogue, or "To be continued" when the build ends before the story does.
                     if (_dossierAll || Campaign.ChapterDone(Campaign.FinalChapter))

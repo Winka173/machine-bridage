@@ -319,6 +319,27 @@ namespace MachineBrigade.Game.Match
             SpeakingChanged?.Invoke(line.Speaker, line.Unit, false);
         }
 
+        /// <summary>
+        /// Prompt 30 L3: the results panel covers the dialogue (the match end was skipped or is over). The story lines it cut
+        /// (the one on show, the ones waiting) are returned for the panel; the waiting ones go to the log as if said. Every
+        /// other waiting line is dropped and the strip clears.
+        /// </summary>
+        public List<DialogueLine> FlushStory(double now)
+        {
+            var cut = new List<DialogueLine>();
+            if (_showing && _current.Priority == DialoguePriority.Story) cut.Add(_current);
+            foreach (var q in _queue)
+            {
+                if (q.line.Priority != DialoguePriority.Story) continue;
+                cut.Add(q.line);
+                _log.Add(new DialogueEntry(q.line, now));
+            }
+            while (_log.Count > LogSize) _log.RemoveAt(0);
+            _queue.Clear();
+            if (_showing) End(now, true);
+            return cut;
+        }
+
         /// <summary>H.8: the battle's pace now: 1, or down to <see cref="MomentScale"/> during a story moment (eased in and out).</summary>
         public float TimeScale(double now)
         {

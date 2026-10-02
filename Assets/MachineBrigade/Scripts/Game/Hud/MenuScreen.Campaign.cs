@@ -165,6 +165,7 @@ namespace MachineBrigade.Game.Hud
                 ShowChoice(choice);
                 return;
             }
+            if (ShowThorneArcOnce()) return;
             ShowEpilogueOnce();
         }
 
@@ -550,6 +551,13 @@ namespace MachineBrigade.Game.Hud
             if (!Campaign.IsOpen(_selectedMission)) return;
             var mission = Campaign.All[_selectedMission];
             if (!Campaign.MapExists(mission)) return;
+            // Prompt 30 L1: "Thorne's Arc Closes" comes between c9m10 and chapter 15, once.
+            if (mission.Chapter == ThorneArcBefore && ThorneArcPending)
+            {
+                PlayerProfile.MarkChapterSeen(PlayerProfile.ThorneArcSeen);
+                ShowThorneArc(StartMission);
+                return;
+            }
             if (mission.Chapter > 0 && !PlayerProfile.ChapterSeen(mission.Chapter))
             {
                 // Prompt 22 C.3: the flash-forward to Helion before the story's first chapter card, once.
@@ -619,6 +627,34 @@ namespace MachineBrigade.Game.Hud
             MatchSettings.Run = null;
             MatchSettings.Save();
             _play();
+        }
+
+        /// <summary>Prompt 30 L1: the mission whose win closes Thorne's arc, and the chapter its card comes before.</summary>
+        internal const string ThorneArcAfter = "c9m10";
+
+        internal const int ThorneArcBefore = 15;
+
+        /// <summary>c9m10 is won and the card has not been shown.</summary>
+        internal static bool ThorneArcPending => PlayerProfile.Completed(ThorneArcAfter) && !PlayerProfile.ChapterSeen(PlayerProfile.ThorneArcSeen);
+
+        /// <summary>
+        /// Prompt 30 L1: "Thorne's Arc Closes" ("Kết mạch Thorne"), the interlude card after c9m10 and before chapter 15
+        /// (not the game's epilogue, which follows c12m10), under its act's name; once, on the campaign page after the win
+        /// (or before chapter 15's first mission if that comes first). True when it showed.
+        /// </summary>
+        private bool ShowThorneArcOnce()
+        {
+            if (_story == null || _story.Visible || _tab != Tab.Campaign || !ThorneArcPending) return false;
+            PlayerProfile.MarkChapterSeen(PlayerProfile.ThorneArcSeen);
+            ShowThorneArc(null);
+            return true;
+        }
+
+        private void ShowThorneArc(System.Action then)
+        {
+            var act = Campaign.Chapter(9)?.Act ?? 3;
+            _story.Show(Kit.Caps(Strings.Get("act." + act)), Strings.Get("campaign.thorneArc.title"), "linh", Strings.Get("campaign.thorneArc"),
+                null, null, (Strings.Get("campaign.continue"), then), null, null);
         }
 
         /// <summary>

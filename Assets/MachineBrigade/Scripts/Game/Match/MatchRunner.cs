@@ -84,6 +84,7 @@ namespace MachineBrigade.Game.Match
         private Surroundings _surroundings;
         private ViewRegistry _views;
         private ObjectiveView _objectives;
+        private NeutralSiteView _neutralSites;
         private MissionMarkers _markers;
         private PlayAreaView _playArea;
 
@@ -326,6 +327,8 @@ namespace MachineBrigade.Game.Match
             if (_session.Objectives != null && _session.Objectives.Points.Count > 0)
                 _objectives = new ObjectiveView(_session.Objectives, _meshes, _materials, worldRoot);
             if (_session is MissionSession) _markers = new MissionMarkers(_meshes, _materials, worldRoot);
+            // Prompt 30 L6: the neutral sites and the supply drop's landing spot on the field.
+            if (!_menu) _neutralSites = new NeutralSiteView(_meshes, _materials, worldRoot);
 
             _world.TryGetRally(PlayerTeam, out var rally);
             // Prompt 17 A.4: a long battlefield is seen looking west (its length across the screen), from a little further
@@ -688,12 +691,14 @@ namespace MachineBrigade.Game.Match
         {
             if (!_built) return;
             // No battlefield input under the pause and result screens.
-            if (!_paused && !_resultShown) _gestures?.Tick(Time.unscaledTime);
+            if (!_paused && !_resultShown && !_presenting) _gestures?.Tick(Time.unscaledTime);
             // Android's back button arrives as Escape: close a menu page, or pause and resume.
             if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 if (_menu) _hud.MenuBack();
                 else if (_commander?.ArmedSupport != null) _commander.Disarm();
+                // Prompt 30 L3: during the match end, Back skips it (after 0.75 s) instead of pausing.
+                else if (_presenting) _world.Ending.Skip();
                 else if (!_resultShown) SetPaused(!_paused);
             }
             _frameRate.Tick();
@@ -714,9 +719,13 @@ namespace MachineBrigade.Game.Match
 
             // A cinematic moment slows the whole battle (sim, particles) for a second.
             // Prompt 23 H.8: a story moment slows it too (the slower of the two wins).
-            if (!_paused && !_resultShown) Time.timeScale = Mathf.Min(_cinematics.TimeScale(Time.unscaledTime), DialogueTimeScale);
-            _hud.SetLetterbox(_cinematics.Letterbox(Time.unscaledTime));
-            var steps = _paused || _lobbyCovered ? 0 : _sandbox != null ? _sandbox.Steps(Time.deltaTime, _clock) : _clock.Advance(Time.deltaTime);
+            // Prompt 30 L3: during the match end the pace is the presentation's (TickEnding), for the pictures only.
+            if (!_paused && !_resultShown && !_presenting) Time.timeScale = Mathf.Min(_cinematics.TimeScale(Time.unscaledTime), DialogueTimeScale);
+            _hud.SetLetterbox(Mathf.Max(_cinematics.Letterbox(Time.unscaledTime), EndingLetterbox));
+            // Prompt 30 L3: once the world is resolved nothing of the battle is stepped (mode, AI, Sim): the time scale reaches
+            // only what is drawn, so the end's slow motion is the view's clock alone.
+            var frozen = _world.Ending.Phase != MatchPhase.Running;
+            var steps = _paused || _lobbyCovered || frozen ? 0 : _sandbox != null ? _sandbox.Steps(Time.deltaTime, _clock) : _clock.Advance(Time.deltaTime);
             var dt = (float)_clock.StepSeconds;
             _perf?.CountSteps(steps);
             for (var i = 0; i < steps; i++)
@@ -749,7 +758,8 @@ namespace MachineBrigade.Game.Match
                 _smokeAt = Time.time + 9f;
                 _effects.DebugSmokeScreen(_camera.Focus + new Vector3(UnityEngine.Random.Range(-6f, 6f), 0f, UnityEngine.Random.Range(-6f, 6f)));
             }
-            if (_cinematics.Active(Time.unscaledTime))
+            if (_presenting) EndingCamera();
+            else if (_cinematics.Active(Time.unscaledTime))
             {
                 if (!_viewTaken) _camera.Glide(_cinematics.Focus, _cinematicZoom, Time.unscaledDeltaTime, 2.5f);
             }
@@ -798,6 +808,8 @@ namespace MachineBrigade.Game.Match
             _hud.Tick();
             UpdateStatus();
             CheckResult();
+            TickEnding();
+            TickEndless();
             _perf?.End(PerfProbe.Section.Hud);
         }
 
@@ -821,6 +833,7 @@ namespace MachineBrigade.Game.Match
             _perf?.End(PerfProbe.Section.Views);
             _perf?.Begin();
             _objectives?.Render(Time.time);
+            _neutralSites?.Render(_world, Time.time);
             if (_markers != null && _session is MissionSession mission)
             {
                 mission.Mission.Marks(_world, _marks);
@@ -1126,6 +1139,7 @@ namespace MachineBrigade.Game.Match
                     case SimEventKind.VehicleDestroyed:
                         if (e.Team == PlayerTeam) _losses++;
                         else if (e.Team == EnemyTeam) _kills++;
+                        NoteEndTarget(e);   // prompt 30 L3: the match end's last target
                         if (!_menu && e.Team == EnemyTeam && _world.Catalog.Vehicles.TryGetValue(e.DefId, out var slain))
                         {
                             DailyMissions.Record("kills");
@@ -1234,6 +1248,12 @@ namespace MachineBrigade.Game.Match
                         if (_menu || e.Team != EnemyTeam) break;
                         _hud.Toast(Strings.Get(e.DefId == "descend" ? "toast.tier.descend" : e.DefId == "pods" ? "toast.pods" : "toast.hijack"),
                             error: e.DefId != "pods", seconds: 3f, kind: NoticeKind.Boss);
+                        break;
+                    // Prompt 30 L6: a neutral site changed hands (the radio's neutral_captured line is the RadioDirector's).
+                    case SimEventKind.NeutralCaptured when !_menu && e.DefId != null && (e.Team == PlayerTeam || e.Team == EnemyTeam):
+                        var site = Strings.Get("neutral." + e.DefId);
+                        if (e.Team == PlayerTeam) _hud.Toast(Strings.Format("toast.neutralTaken", ("site", site)), kind: NoticeKind.Captured);
+                        else _hud.Toast(Strings.Format("toast.neutralLost", ("site", site)), error: true, kind: NoticeKind.Lost);
                         break;
                     case SimEventKind.CrateIncoming when !_menu:
                         _hud.Toast(Strings.Get("toast.crate"), kind: NoticeKind.Crate);
@@ -1371,6 +1391,7 @@ namespace MachineBrigade.Game.Match
                     _hud.ShowRewardClaimed(_reward.Coins * (watched ? 2 : 1), watched);
                 });
             };
+            _hud.ContinueEndlessPressed += ContinueEndless;   // prompt 30 L5
             _hud.PausePressed += () => SetPaused(!_paused);
             _hud.ResumePressed += () => SetPaused(false);
             _hud.MinimapClicked += p =>
@@ -1428,7 +1449,7 @@ namespace MachineBrigade.Game.Match
 
         private void SetPaused(bool paused)
         {
-            if (_resultShown) return;
+            if (_resultShown || _presenting) return;
             _paused = paused;
             _hud.SetPaused(paused);
             Time.timeScale = paused ? 0f : 1f;
@@ -1568,6 +1589,14 @@ namespace MachineBrigade.Game.Match
             if (_session.Objectives != null)
                 foreach (var p in _session.Objectives.Points)
                     minimap.Point(new Vector2(p.Def.Position.X, p.Def.Position.Y), p.Def.Radius, p.Owner, p.Progress);
+            // Prompt 30 L6: the neutral sites (holder, capture) and the supply drop falling.
+            if (!_menu && _world.Map.Neutrals.Count > 0)
+                foreach (var (_, at, team, taking, progress, waiting) in _world.Neutrals.SiteStates)
+                    minimap.Site(new Vector2(at.X, at.Y), team, taking, progress, waiting);
+            if (!_menu)
+                foreach (var crate in _world.Crates)
+                    if (crate.IsAlive && crate.LandsAt > _world.Time)
+                        minimap.Drop(new Vector2(crate.Position.X, crate.Position.Y), Mathf.Clamp01(1f - (float)(crate.LandsAt - _world.Time) / 15f));
             for (var i = _warnings.Count - 1; i >= 0; i--)
             {
                 if (Time.time > _warnings[i].until) _warnings.RemoveAt(i);
@@ -1644,13 +1673,18 @@ namespace MachineBrigade.Game.Match
         private void CheckResult()
         {
             CheckBattlefieldSwitch();
-            if (_menu || _resultShown || _session == null || _switching) return;
-            // Let a boss's death play out in slow motion before the result card covers it.
-            if (_cinematics.Active(Time.unscaledTime)) return;
+            if (_menu || _resultShown || _presenting || _session == null || _switching) return;
             var outcome = _session.Outcome(_world, _kills, _losses);
             if (outcome == null) return;
             _stuck?.Finish(_world);
             if (outcome.Result > 0) DailyMissions.Record("wins");
+            // Prompt 30 L3: the match end plays first (MatchRunner.Ending.cs); the results panel follows it (ShowOutcome).
+            BeginEnding(outcome);
+        }
+
+        /// <summary>RESULTS: the result card, with what the battle paid (prompt 30 L3: after the match end's presentation).</summary>
+        private void ShowOutcome(MatchOutcome outcome)
+        {
             _resultShown = true;
             Time.timeScale = 1f;
             _reward = outcome.Reward;
@@ -1696,7 +1730,10 @@ namespace MachineBrigade.Game.Match
             if (note == null && _playerCommander != null && outcome.Result != 0 && !(outcome.Result < 0 && view is { CanResume: true }))
                 note = Strings.Format("cmdr.quote", ("name", CommanderText.Call(_playerCommander)),
                     ("line", Strings.Get("cmdr." + _playerCommander.Id + (outcome.Result > 0 ? ".radio.win" : ".radio.loss"))));
-            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, note, outcome.Hints);
+            // Prompt 30 L5: a won Defend, Survival or Boss Rush may go on into its endless part.
+            var endless = outcome.Result > 0 && _session.CanContinue;
+            if (endless && note == null) note = Strings.Get("result.endlessKept");
+            _hud.ShowResult(outcome.Result, outcome.Subtitle, outcome.Rows, view, note, outcome.Hints, _missedStory, endless);
             _music?.Result(outcome.Result > 0);
         }
 

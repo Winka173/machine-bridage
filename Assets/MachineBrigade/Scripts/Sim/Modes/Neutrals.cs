@@ -49,6 +49,22 @@ namespace MachineBrigade.Sim.Modes
             }
         }
 
+        /// <summary>
+        /// Prompt 30 L6 (read only, for the view): each site as <see cref="Sites"/> has it, with the capture under way (the side
+        /// taking it, -1 none, and how far, 0-1) and whether an abandoned AA site still waits before it can be taken again.
+        /// </summary>
+        public IEnumerable<(string kind, Vector2 at, int team, int taking, float progress, bool waiting)> SiteStates
+        {
+            get
+            {
+                foreach (var s in _sites)
+                    if (!s.Gone) yield return (s.Def.Kind, s.Def.At, s.Team, s.ProgressTeam, s.Progress, _world.Time < s.RebuildAt);
+            }
+        }
+
+        /// <summary>How close a side's ground vehicles must stand to take a site (the view's capture ring).</summary>
+        public float CaptureRadius => N("captureRadius", 10f);
+
         private float N(string key, float fallback) => _world.Catalog.Neutrals.Get(key, fallback);
 
         private void Ready()
