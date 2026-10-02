@@ -68,6 +68,22 @@ namespace MachineBrigade.Game.Match
             return data.HasTactic(Default) ? Default : data.Tactics.Count > 0 ? data.Tactics[0].Id : Default;
         }
 
+        /// <summary>
+        /// Prompt 28 appendix B: whether the mode's AI profile lets a side play <paramref name="tactic"/> (the same rule as
+        /// <c>AiCommander.AllowedTactic</c>: a profile with no tactics, or "noGeneralTactic", plays Balanced only). The menu
+        /// has no world yet, so it reads the profile the battle will use: the mission's goal, else the mode's tag.
+        /// </summary>
+        public static bool ModeAllows(Catalog catalog, GameModeKind mode, MissionDef mission, string tactic) =>
+            ProfileAllows(catalog.AiModes.For(mode.ToString(), mission != null ? mission.Goal.ToString() : null), tactic);
+
+        /// <summary>The same check against a live battle's profile (<c>world.AiProfile</c>).</summary>
+        public static bool ProfileAllows(AiModeProfile profile, string tactic)
+        {
+            if (profile == null) return true;
+            if (profile.Tactics.Count == 0 || profile.HasFlag("noGeneralTactic")) return tactic == Default;
+            return profile.Allows(tactic);
+        }
+
         /// <summary>Picks a tactic for a mode (kept in the save, H.14).</summary>
         public static void Pick(GameModeKind mode, string tactic) => PlayerProfile.SetLastTactic(mode, tactic);
     }

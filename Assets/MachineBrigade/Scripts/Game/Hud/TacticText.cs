@@ -34,6 +34,7 @@ namespace MachineBrigade.Game.Hud
             ["tactic.transition"] = ("Regrouping for the new tactic", "Đang gom quân theo chiến thuật mới"),
             ["tactic.squad"] = ("Squad tactic", "Chiến thuật của đội"),
             ["tactic.squadShared"] = ("Side's tactic", "Theo chiến thuật chung"),
+            ["tactic.notInMode"] = ("Not played in this mode", "Không dùng trong chế độ này"),
 
             ["tactic.group.Armour"] = ("Tanks, heavy", "Tăng, hạng nặng"),
             ["tactic.group.Light"] = ("Light, IFVs", "Xe nhẹ, xe bộ binh"),
