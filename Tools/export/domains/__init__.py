@@ -21,7 +21,7 @@ DOMAINS = [
     "d09_hieu_ung_am_thanh",
     "d10_model_tai_san",
     "d11_meta_giao_dien",
-    # lane C (pass 4): "d12_he_thong_trang_thai",
+    "d12_he_thong_trang_thai",
     # pass 10 (spec 12): "d13_tham_chieu_nguon",
 ]
 

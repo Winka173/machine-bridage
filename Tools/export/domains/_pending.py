@@ -11,12 +11,6 @@ DATA = "Assets/MachineBrigade/Resources/Data/"
 CLAIMS = [
     # ---------------------------------------------------------------- balance.json blocks of later files
     # ---------------------------------------------------------------- other data files
-    (DATA + "campaign.json", "migration*.**", "12_he_thong_trang_thai", "chuyển đổi save cũ"),
-    ("Assets/MachineBrigade/Tests/**", "**", "12_he_thong_trang_thai", "kịch bản test EditMode"),
     # ---------------------------------------------------------------- Tools data
     ("Tools/docs/unit_refs.json", "**", "13_tham_chieu_nguon", "tham chiếu ngoài đời / game theo đơn vị (spec 12.1)"),
-    ("Tools/docs/unit_sheet.json", "**", "12_he_thong_trang_thai", "bảng đơn vị của tài liệu"),
-    ("Tools/campaign/p31_objectives_baseline.json", "**", "12_he_thong_trang_thai", "mốc đo mục tiêu (lịch sử đo)"),
-    ("Tools/balance/*_before.json", "**", "12_he_thong_trang_thai", "mốc trước sửa (lịch sử đo)"),
-    ("Tools/balance/*_baseline.json", "**", "12_he_thong_trang_thai", "mốc đo (lịch sử đo)"),
 ]
