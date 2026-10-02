@@ -140,6 +140,10 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 
 **Pass 3g done (2026-10-02, static gates pass; cards not rendered by the agent):** microwave_vehicle, nlos_atgm_vehicle, radar_atgm_vehicle, radar_scout, recoilless_jeep, shorad_vehicle, sp_mortar, wheeled_howitzer; aa_gun_vehicle brightened (3f fix).
 
+**Pass 3h done (2026-10-02, static gates pass; cards not rendered by the agent):** armored_car, command_vehicle, fpv_carrier, lancet_truck, scout_jeep (+hd), landing_craft, missile_boat, sea_corvette, grad_truck; nlos_atgm_vehicle and radar_atgm_vehicle brightened (3g fix).
+
+**Wave 3 complete (2026-10-02): all 8 passes (3a-3h, 65 models) built and past the static gates; the lead renders the 3g/3h cards.**
+
 Tanks and tracked first (the 12 `_hd` models are here or done), then wheeled, then boats. grad_truck is over the ground soft budget: it may not grow.
 
 | builder | models |

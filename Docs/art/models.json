@@ -101,7 +101,7 @@
   },
   "armored_car": {
     "file": "armored_car.glb",
-    "triangles": 2272
+    "triangles": 2622
   },
   "armored_train": {
     "file": "armored_train.glb",
@@ -353,7 +353,7 @@
   },
   "command_vehicle": {
     "file": "command_vehicle.glb",
-    "triangles": 2842
+    "triangles": 3084
   },
   "container": {
     "file": "container.glb",
@@ -597,7 +597,7 @@
   },
   "fpv_carrier": {
     "file": "fpv_carrier.glb",
-    "triangles": 2536
+    "triangles": 2484
   },
   "fpv_drone": {
     "file": "fpv_drone.glb",
@@ -649,7 +649,7 @@
   },
   "grad_truck": {
     "file": "grad_truck.glb",
-    "triangles": 8092
+    "triangles": 6342
   },
   "ground_cruise_missile_vehicle": {
     "file": "ground_cruise_missile_vehicle.glb",
@@ -857,11 +857,11 @@
   },
   "lancet_truck": {
     "file": "lancet_truck.glb",
-    "triangles": 2216
+    "triangles": 2314
   },
   "landing_craft": {
     "file": "landing_craft.glb",
-    "triangles": 320
+    "triangles": 498
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
@@ -993,7 +993,7 @@
   },
   "missile_boat": {
     "file": "missile_boat.glb",
-    "triangles": 432
+    "triangles": 630
   },
   "mlrs": {
     "file": "mlrs.glb",
@@ -1273,15 +1273,15 @@
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
-    "triangles": 2212
+    "triangles": 2422
   },
   "scout_jeep_hd": {
     "file": "scout_jeep_hd.glb",
-    "triangles": 8908
+    "triangles": 3738
   },
   "sea_corvette": {
     "file": "sea_corvette.glb",
-    "triangles": 1346
+    "triangles": 1884
   },
   "sea_cruiser": {
     "file": "sea_cruiser.glb",

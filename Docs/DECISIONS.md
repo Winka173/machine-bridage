@@ -13860,3 +13860,30 @@ No runner mirror, no cards, no previews, no tests.
 - **Card luma (old, mean of pixels with alpha > .5):** microwave .3217, nlos .3856, radar_atgm .4031, radar_scout .3912,
   recoilless_jeep .3636, shorad .3449, sp_mortar .3803, wheeled_howitzer .2971 (the dimmest card of the row: watch it).
 - Lead (2026-10-02), wave 3g cards: aa_gun_vehicle fixed (.3653 vs the original .3654); six of the 3g row pass (+2.3 % to +8.2 %); nlos_atgm_vehicle -2.6 % (.3856 -> .3757) and radar_atgm_vehicle -1.2 % (.4031 -> .3983) fail although COLOR_0 rose: merged, pass 3h brightens them first.
+
+## 27 wave 3h (lead pass, 2026-10-02)
+
+Pass 3h (the last of wave 3), the row armored_car, command_vehicle, fpv_carrier, lancet_truck, scout_jeep (+hd), landing_craft,
+missile_boat, sea_corvette, grad_truck, builders appended to `mb_p27_wave3.py` (`_opts` now also reads the p25_models, naval and
+artillery option tables). Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests.
+The substring build filter touched only `fibre_fpv_carrier` outside the row (output byte-identical, nothing to revert).
+
+- **3g fixes first.** nlos_atgm_vehicle (card .3856 -> .3757) and radar_atgm_vehicle (.4031 -> .3983) came out darker although
+  COLOR_0 rose (a different silhouette fills the card). Both now `ao_strength=.35` (was .65), paler parts (NLOS tubes `Steel`;
+  radar rails `Armor`, missile `Steel`; `_launcher_v2` got a `tube_mat` argument), geometry and nodes unchanged (NLOS 2,048,
+  radar 3,194 triangles). COLOR_0: NLOS .711 -> .759, radar .677 -> .730. The lead checks the cards (targets >= .3818 and >= .3991).
+- **Builders.** New `_mrap_v2` (m25._mrap: V2 wheels, extruded armoured cab with insets, V-hull belly) for fpv_carrier and
+  lancet_truck; extruded hulls on V2 wheels for the armoured car, command vehicle and Grad (extruded hood, fenders and cab,
+  lathed fuel tanks, spare and winch); `scout_jeep(detail)` drawn at the old size and scaled by `JEEP_K`, its `_hd` twin adds
+  mirrors, roll-bar braces, hood latches, steering wheel, tow hooks, mud flaps, bolts and 12-sided tyres. Boats: `_naval_hull`
+  (sharp_loft of the old sections, chamfered deck edge), extruded superstructure and cabin, revolved barrels, `_boat_mg`.
+  All use `ao_strength=.65`. `k.block` takes its `loc` as the block centre (not the base): the first boat build had mis-placed
+  blocks until corrected.
+- **Gates (old -> new triangles, COLOR_0).** armored_car 2,272 -> 2,622 (.610 -> .709); command_vehicle 2,842 -> 3,084 (.615 ->
+  .715); fpv_carrier 2,536 -> 2,484 (.618 -> .718); lancet_truck 2,216 -> 2,314 (.611 -> .720); scout_jeep 2,212 -> 2,422 (.610
+  -> .713); scout_jeep_hd 8,908 -> 3,738 (.596 -> .666: the old hd carried tyre lugs); grad_truck 8,092 -> 6,342 (.557 -> .642:
+  now under its old soft budget; the 40 tubes keep six sides); sea_corvette 1,346 -> 1,884 (.648 -> .728); missile_boat 432 ->
+  630 (.678 -> .745); landing_craft 320 -> 498 (.668 -> .775, 1.56x). Zero-area 0, open edges 0, runtime nodes identical,
+  proportions within 2 % (armoured car 4.87 against 4.78 long).
+- **Card luma (old, mean of pixels with alpha > .5):** armored_car .3365, command_vehicle .3759, fpv_carrier .3427,
+  lancet_truck .3262, scout_jeep .3337, grad_truck .2794 (the dimmest of the row: watch it). The three boats have no card PNG.
