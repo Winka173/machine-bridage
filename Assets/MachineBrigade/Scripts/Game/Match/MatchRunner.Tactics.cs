@@ -19,6 +19,9 @@ namespace MachineBrigade.Game.Match
         private int _pressureShown;
         private bool _finalShown;
 
+        /// <summary>Prompt 28 appendix: the recon alarm ("Báo động") has been announced.</summary>
+        private bool _alarmShown;
+
         private void WireTactics()
         {
             _hud.TacticPressed += OpenTacticPicker;
@@ -66,6 +69,12 @@ namespace MachineBrigade.Game.Match
             {
                 _finalShown = true;
                 _hud.Toast(Strings.Get("pressure.final"), seconds: 4f);
+            }
+            // Prompt 28 appendix: a recon mission's alarm (world.Alarm): the enemy is alerted and plays its alert profile.
+            if (!_alarmShown && _world.Alarm)
+            {
+                _alarmShown = true;
+                _hud.Toast(Strings.Get("pressure.alarm"), error: true, seconds: 4f, kind: NoticeKind.Objective);
             }
             var general = _session.PlayerAi?.Commander;
             if (general == null)

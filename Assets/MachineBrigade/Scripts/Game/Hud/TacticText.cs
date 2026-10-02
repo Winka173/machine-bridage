@@ -175,6 +175,7 @@ namespace MachineBrigade.Game.Hud
             ["pressure.tier3"] = ("Artillery shells the side sitting back.", "Pháo kích vào bên đang thụ động."),
             ["pressure.tier4"] = ("Both armies are spotted: fight!", "Hai bên bị lộ vị trí: giao chiến!"),
             ["pressure.final"] = ("Final phase: points count double.", "Pha cuối: điểm từ cứ điểm x2."),
+            ["pressure.alarm"] = ("Alarm! The enemy knows you are here and may call fire support.", "Báo động! Địch đã phát hiện ta và có thể gọi hỏa lực yểm trợ."),
 
             // ---------------------------------------------------------------- AI viewer (J), internal
             ["aiview.title"] = ("AI viewer", "Công cụ xem AI"),
