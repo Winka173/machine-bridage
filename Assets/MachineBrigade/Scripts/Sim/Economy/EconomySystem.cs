@@ -124,13 +124,7 @@ namespace MachineBrigade.Sim.Economy
         public float CatchUp { get; internal set; } = 1f;
 
         /// <summary>CP per second actually earned now: income and bonuses after upkeep, and the underdog's boost.</summary>
-        public float Earning => (Income + (Bonus * (Commander?.PointIncome ?? 1f) + Relay) * IncomeScale) * Upkeep * CatchUp * CommanderIncome * ArmyFactor;
-
-        /// <summary>
-        /// Prompt 28 I.2: the income factor by vehicles out against the cap (balance.json economy.armyBands: full under
-        /// half, then lower): many vehicles earn less, losses bring the income back. The HUD shows it below 1.
-        /// </summary>
-        public float ArmyFactor { get; internal set; } = 1f;
+        public float Earning => (Income + (Bonus * (Commander?.PointIncome ?? 1f) + Relay) * IncomeScale) * Upkeep * CatchUp * CommanderIncome;
 
         /// <summary>Prompt 17 C: CP per second its base's CP relays pay now (before the economy's pace, upkeep and the underdog's boost).</summary>
         public float Relay { get; internal set; }
@@ -354,7 +348,6 @@ namespace MachineBrigade.Sim.Economy
                     : _world.CatchUp && TryGetRival(economy.Team, out var rival) ? CatchUpFor(economy.ArmyCp, rival.ArmyCp) : 1f;
                 economy.CatchUp += (target - economy.CatchUp) * MathF.Min(1f, dt / CatchUpSettle);
                 economy.CommanderIncome = CommanderIncome(economy);
-                economy.ArmyFactor = ArmyFactor(economy);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + economy.Earning * dt);
             }
 

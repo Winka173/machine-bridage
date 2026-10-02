@@ -160,11 +160,6 @@
         {"value": 70.0, "min": 70.0, "max": 70.0, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Các bậc sau: khoảng 50, 70, 90 s (bảng luật bên dưới)"},
         {"value": 90.0, "min": 90.0, "max": 90.0, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Các bậc sau: khoảng 50, 70, 90 s (bảng luật bên dưới)"}
       ],
-      "armyBands": [
-        {"value": 1.0, "min": 1.0, "max": 1.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Thu nhập đầy đủ", "from": 0.0, "to": 0.5},
-        {"value": 0.9, "min": 0.85, "max": 1.0, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Bắt đầu giảm nhẹ (thử 0,85–1,0)", "from": 0.5, "to": 0.75},
-        {"value": 0.8, "min": 0.65, "max": 0.95, "metric": "Số quân trung bình còn sống mỗi phe", "reason": "Khởi điểm 0,80, chỉ là giá trị đầu; mô phỏng thử 0,65–0,95 và đo vòng lặp nhiều quân → ít thu nhập → quân chết → thu nhập tăng", "from": 0.75, "to": 1.0}
-      ],
       "finalPhase": {"value": 120, "min": 120, "max": 120, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Chế độ giao tranh có pha cuối (ví dụ 2 phút cuối, điểm từ cứ điểm ×2) để trận luôn kết thúc."},
       "finalPhaseScale": {"value": 2, "min": 2, "max": 2, "metric": "Tỷ lệ thời gian có giao tranh", "reason": "Chế độ giao tranh có pha cuối (ví dụ 2 phút cuối, điểm từ cứ điểm ×2) để trận luôn kết thúc."}
     }

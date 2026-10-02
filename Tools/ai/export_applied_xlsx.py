@@ -92,8 +92,6 @@ def main():
                 value = econ[key]["value"]
         if label.startswith("Mốc bậc 1"):
             value = ", ".join(str(t["value"]) for t in econ["escalation"])
-        if label in bands:
-            value = econ["armyBands"][bands[label]]["value"]
         if value is not None and col is not None:
             ws.cell(row=r, column=col, value=value).fill = GREEN
 

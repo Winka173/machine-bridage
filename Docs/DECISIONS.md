@@ -13860,3 +13860,12 @@ No runner mirror, no cards, no previews, no tests.
 - **Card luma (old, mean of pixels with alpha > .5):** microwave .3217, nlos .3856, radar_atgm .4031, radar_scout .3912,
   recoilless_jeep .3636, shorad .3449, sp_mortar .3803, wheeled_howitzer .2971 (the dimmest card of the row: watch it).
 - Lead (2026-10-02), wave 3g cards: aa_gun_vehicle fixed (.3653 vs the original .3654); six of the 3g row pass (+2.3 % to +8.2 %); nlos_atgm_vehicle -2.6 % (.3856 -> .3757) and radar_atgm_vehicle -1.2 % (.4031 -> .3983) fail although COLOR_0 rose: merged, pass 3h brightens them first.
+
+## Prompt 29 0 (cloud, 2026-10-02): no second upkeep
+
+The owner amended prompt 28 ("no new upkeep system; use supply"). Removed prompt 28 I.2's `TeamEconomy.ArmyFactor`
+(`EconomySystem.P28.cs` deleted, `Earning` no longer multiplies it), the generated `ai.economy.armyBands` (the importer
+no longer writes them; `AiParams.ArmyBandEdges` gone) and its row in the applied xlsx export. The existing supply
+upkeep (`TeamEconomy.Upkeep`, `Supply`, prompt 7) is untouched and is the in-battle upkeep. The Sandbox AI viewer's
+upkeep line now shows `Upkeep`; `Docs/ai/ECONOMY.md`, LOCAL_TODO and `WorldModelTests` follow. The text key
+`upkeep.factor` ("Upkeep: income x{factor}") stays valid for the supply upkeep.

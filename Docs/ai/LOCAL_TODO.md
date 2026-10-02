@@ -18,7 +18,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   the allowed list is `catalog.AiData.Towers[defId]` (`Mode` + `Modes`); the Base loadout should save the chosen
   mode per hardpoint and apply it when the tower is placed. Text keys `tower.mode.*` are in the new text table.
 - Pass 5 hooks: `PlayerProfile` saves the last tactic per mode (H.14) and per-squad choices (H.10, after chapter 6:
-  `Commander.SquadTactics = true`, `RequestSquadTactic`); the HUD shows `TeamEconomy.ArmyFactor` when below 1 (I.2) and
+  `Commander.SquadTactics = true`, `RequestSquadTactic`); the HUD shows the supply upkeep `TeamEconomy.Upkeep` when below 1 (I.2; ArmyFactor was removed in prompt 29) and
   `world.PressureTier` (I.6) and Conquest's `InFinalPhase` (I.7); the tactic picker lists `catalog.AiData.Tactics`
   filtered by `AiBehaviour.Unlocked` and highlights `SuitedTo(commander)`; the briefing shows the general's tactic
   (`GeneralTactic`); a line when the enemy switches tactic while `enemy.TacticSeenBy(world, player)` (H.8); the

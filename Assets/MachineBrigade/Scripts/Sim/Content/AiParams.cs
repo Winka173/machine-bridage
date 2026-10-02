@@ -62,11 +62,9 @@ namespace MachineBrigade.Sim.Content
         {
             var copy = new SortedDictionary<string, AiParam>(_all, StringComparer.Ordinal);
             copy[key] = Param(key).With(value);
-            return new AiParams(copy) { ArmyBandEdges = ArmyBandEdges };
+            return new AiParams(copy);
         }
 
-        /// <summary>economy.armyBands: each band's share of the vehicle cap it starts and ends at (its factor is "economy.armyBands.i").</summary>
-        public IReadOnlyList<(float from, float to)> ArmyBandEdges { get; private set; } = Array.Empty<(float, float)>();
 
         // World Model (A.1, M.1).
         public float WorldRate => Get("world.rate", 2f);
@@ -99,7 +97,6 @@ namespace MachineBrigade.Sim.Content
         internal static AiParams Parse(JsonObject ai)
         {
             var all = new SortedDictionary<string, AiParam>(StringComparer.Ordinal);
-            var edges = new List<(float, float)>();
             foreach (var section in ai.Raw)
             {
                 if (section.Value == null) continue;
@@ -114,7 +111,6 @@ namespace MachineBrigade.Sim.Content
                         {
                             var o = new JsonObject(item, $"balance.ai.{key}[{i}]");
                             all[key + "." + i] = Read(o);
-                            if (key == "economy.armyBands") edges.Add((o.Float("from"), o.Float("to")));
                             i++;
                         }
                     }
@@ -124,7 +120,7 @@ namespace MachineBrigade.Sim.Content
                     }
                 }
             }
-            return new AiParams(all) { ArmyBandEdges = edges };
+            return new AiParams(all);
         }
 
         private static AiParam Read(JsonObject o)

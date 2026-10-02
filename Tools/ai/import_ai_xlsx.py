@@ -145,16 +145,7 @@ def economy(wb):
     # Escalation tiers: the first from its cell, the later ones from its note ('khoảng 50, 70, 90 s').
     esc = cell("Mốc bậc 1")
     out["escalation"] = [param(t, t, t, fights, esc[5]) for t in [num(esc[1])] + nums(esc[5])]
-    # Army bands (% of the cap -> income factor); a note's trial range ('thử 0,85–1,0') is the factor's min-max.
-    bands = []
-    for label in ("Ít quân", "Vừa", "Đông"):
-        r = cell(label)
-        trial = nums(r[5])[-2:]  # the note's trial range, its last two numbers
-        lo, hi = trial if len(trial) == 2 else (num(r[3]), num(r[3]))
-        band = param(num(r[3]), lo, hi, army, r[5])
-        band["from"], band["to"] = num(r[1]) / 100, num(r[2]) / 100
-        bands.append(band)
-    out["armyBands"] = bands
+    # Prompt 29 (owner): no army bands; the supply upkeep that already existed is the upkeep (DECISIONS P29 0).
     # Final phase rule: '2 phút cuối, điểm từ cứ điểm ×2'.
     final = cell("Pha cuối")
     text = " ".join(str(c) for c in final[1:] if c)
