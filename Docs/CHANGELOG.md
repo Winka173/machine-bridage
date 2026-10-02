@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Full fix prompt L0: precheck of the prompts that ran (26-34), the boss weapons' state, where the card's calibre and "every X s" come from, audio, VFX, flares and the prompt 27 models (Docs/checks/fix_precheck.md; DECISIONS "Sửa lỗi tổng hợp L0").
 - RED map fixes: the 8 maps with a sealed walkable pocket fixed (Tools/maps/red_fixes.py, run by build_maps.py and longmap.py): Border Bridge (Conquest, Sandbox) and Ember Ridge (Conquest, Sandbox, long) opened by dropping a wreck (and moving one rock), Open-Pit Mine Siege by dropping a sandbag line, the fortress back corners of Coral Isles and Swamp Siege filled with revetments; map audit 8 RED -> 0, access 73/75 as before.
 - Prompt 33 L7: twelve map validators (Tools/maps/validate_p33.py: edge types against the ring, camera cover, inert decoration, a clear edge band, continuity out of the map, entry gates, check_access, terrain zones, rail and sea route graphs, crossing warnings, chokepoints, fixed ingress), run after map_dressing.py writes its file; 0 errors, 26 judged warnings; the design document's section 15g (four zones, edge types, terrain tags, landmarks, rails, sea routes, the validators) in Tools/docs/prompt33.py (DECISIONS "Prompt 33 L2 view / L7").
 

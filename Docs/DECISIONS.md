@@ -16741,3 +16741,13 @@ edges data (a test field) keeps the theme's old picture.
   effects and coverage, the landmarks per battlefield, the rail lines, the sea route graphs, the validators' table;
   build_doc.py imports it beside the other lanes' modules (prompt34 kept) and calls it inside section 15. The PDF is not
   rebuilt here. The far-zoom edge shots per biome need Unity renders: Docs/ai/LOCAL_TODO.md.
+
+## Sửa lỗi tổng hợp L0 (lead pass, 2026-10-02)
+
+The full fix prompt (`Docs/prompts/fix_full_vi.txt`, lane A of `Docs/FIX_FULL_PLAN.md`), pass 0: precheck only,
+`Docs/checks/fix_precheck.md`. Prompts 26-34 have all run here (27 in all its waves, 29 with G1 Gungnir). Its rules are the
+base: where they overlap a prompt that ran, this prompt wins and the pass that changes it says so here. Found: the boss
+weapons keep prompt 34 L2's cadence, solved from the prompt 26 DPS (wrong from the start, the prompt says), so the big
+guns fire 3-12 times faster than real and the side mounts very rarely; the card's calibre is the first digits of the
+weapon id ("26 mm" for every `p26_*`), and "Main gun" is every direct-fire gun's kind; "every X s" shows the pause after
+the last round, not the full cycle. Audio, VFX, flares and the prompt 27 models are noted for lanes B, C and the lead.
