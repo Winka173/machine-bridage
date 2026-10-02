@@ -82,6 +82,8 @@ CASES = [
                               K.gun_barrel(a, 'Main_cannon', 'Turret', 0, 0, 0, 5.0, .08)), (None, None, None), 900,
      ['Main_cannon', 'Muzzle_brake'], True),
     ('roof_mg', lambda a: K.roof_mg(a, None, (0, 0, 0)), (None, None, None), 900, ['MG'], True),
+    ('pintle_mg', lambda a: (K.pintle_mg(a, None, (0, 0, 0)), K.pintle_mg(a, None, (1, 0, 0), index=1)),
+     (None, None, None), 1200, ['Mount_mg', 'Mount_mg.001', 'Muzzle_mg', 'Muzzle_mg.001'], True),
     ('smoke_dischargers', lambda a: K.smoke_dischargers(a, .5, 0, 1, 1), (None, None, None), 500, ['Smoke_launchers'],
      True),
     ('era_bricks', lambda a: K.era_bricks(a, (0, 0, 1), (1, 0, 0), (0, 1, 0), 4, 3), (1.3, .7, None), 2500,

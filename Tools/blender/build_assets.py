@@ -74,6 +74,9 @@ import mb_p33_biomes  # noqa: E402
 import mb_p33_edges  # noqa: E402
 import mb_p33_landmarks  # noqa: E402
 import mb_fix_l8  # noqa: E402
+import mb_p35_ixion  # noqa: E402
+import mb_p35_rocket_turret  # noqa: E402
+import mb_p35_zu23_technical  # noqa: E402
 import mb_redesign_20y  # noqa: E402
 import mb_p17_temp  # noqa: E402
 import mb_phase2  # noqa: E402
@@ -180,7 +183,9 @@ def all_builders():
                 # Prompt 33 L3 view: the landmark models no map prop is (decoration; last).
                 **mb_p33_landmarks.BUILDERS,
                 # Full fix L8 (lead pass): the worst Kem models of the model scan rebuilt on the V2 kit (last, so it wins).
-                **mb_fix_l8.BUILDERS}
+                **mb_fix_l8.BUILDERS,
+                # Prompt 35 pilots (DECISIONS "Prompt 35"): rebuilt from scratch on the kit35 library (last, so they win).
+                **mb_p35_ixion.BUILDERS, **mb_p35_zu23_technical.BUILDERS, **mb_p35_rocket_turret.BUILDERS}
     for name in HIGH_DETAIL:
         build, options = builders[name]
         builders[f'{name}_hd'] = (functools.partial(build, detail=True), options)

@@ -20,7 +20,7 @@ Index (section 3 of the prompt):
   general   chamfer_box, panel, rivet_line, bolt_ring, weld, hinge, handle, hatch_round, hatch_rect, lamp, whip_antenna,
             mesh_antenna, dish, periscope, tow_hook, tow_cable, crate, jerrycan, backpack, net_roll, grille, exhaust
   tracked   detail (context), road_wheel, sprocket, idler, return_roller, tracks, side_skirt, fender, turret_ring,
-            gun_barrel, roof_mg, smoke_dischargers, era_bricks, slat_cage, net_armour
+            gun_barrel, roof_mg, pintle_mg, smoke_dischargers, era_bricks, slat_cage, net_armour
   wheeled   truck_wheel, axle, leaf_spring, windscreen, mirror, outrigger
   aircraft  wing, fin, intake, missile, bomb, drop_tank, flare_dispenser, blade_antenna, landing_gear, pylon
   heli      rotor_head, tail_rotor, skids, stub_wing
@@ -57,10 +57,13 @@ KIT = dict(bolts='Kit_bolts', rivets='Kit_rivets', welds='Kit_welds', hinges='Ki
 
 
 def rot_to(normal, roll=0.0):
-    """Euler turning local +Z towards `normal` (local +Y then lies as close to world +Z / -Y as it can), rolled."""
-    n = Vector(normal).normalized()
-    q = Vector((0, 0, 1)).rotation_difference(n)
-    m = q.to_matrix()
+    """Euler turning local +Z towards `normal`, local +Y towards world up (or towards +Y when `normal` is vertical),
+    so a wall fitting stands upright: local X is across, local Y up the wall. `roll` turns it about the normal."""
+    z = Vector(normal).normalized()
+    up = Vector((0, 0, 1)) if abs(z.z) < .9 else Vector((0, 1, 0))
+    y = (up - z * up.dot(z)).normalized()
+    x = y.cross(z)
+    m = Matrix((x, y, z)).transposed()
     if roll:
         m = m @ Matrix.Rotation(roll, 3, 'Z')
     return m.to_euler('XYZ')
@@ -116,7 +119,7 @@ def suffixed(a):
     a.finish = finish
 
 
-def panel(a, part, size, loc, normal, t=.03, rivet=.18, parent=None, mat_rivets='Steel'):
+def panel(a, part, size, loc, normal, t=.03, rivet=.18, parent=None, mat_rivets='Steel', r=.016, seg=6):
     """A bolted-on plate (w x h, t thick) lying on a surface at loc facing `normal`, with a rivet row round its
     border every `rivet` metres (0: none)."""
     rot = rot_to(normal)
@@ -131,15 +134,16 @@ def panel(a, part, size, loc, normal, t=.03, rivet=.18, parent=None, mat_rivets=
             n = max(1, int(math.hypot(x1 - x0, y1 - y0) / rivet))
             for i in range(n):
                 f = i / n
-                hd.bolt(rv, _at(m, (x0 + (x1 - x0) * f, y0 + (y1 - y0) * f, t - .004)), rot=rot, r=.016, h=.02)
+                hd.bolt(rv, _at(m, (x0 + (x1 - x0) * f, y0 + (y1 - y0) * f, t - .004)), rot=rot, r=r, h=r * 1.25,
+                        seg=seg)
 
 
-def rivet_line(part, p0, p1, normal, pitch=.2, r=.018, h=.022):
+def rivet_line(part, p0, p1, normal, pitch=.2, r=.018, h=.022, seg=6):
     p0, p1 = Vector(p0), Vector(p1)
     n = max(1, int((p1 - p0).length / pitch))
     rot = rot_to(normal)
     for i in range(n + 1):
-        hd.bolt(part, tuple(p0 + (p1 - p0) * (i / n)), rot=rot, r=r, h=h)
+        hd.bolt(part, tuple(p0 + (p1 - p0) * (i / n)), rot=rot, r=r, h=h, seg=seg)
 
 
 def bolt_ring(part, loc, normal, R, n, r=.02, h=.025, phase=0.0):
@@ -457,6 +461,38 @@ def roof_mg(a, parent, loc, length=.9, shield=True):
     """mb_parts27.mg_mount with its high-detail feed cover, rails and belt: Mount_mg + Muzzle_mg."""
     with detail(a):
         p27.mg_mount(a, parent, loc, length=length, shield=shield)
+
+
+def pintle_mg(a, parent, loc, index=0, scale=1.0, slot='mg', shield=True, length=1.1):
+    """A pintle machine gun on its own yaw pivot `Mount_<slot>` (index 1, 2 ...: `Mount_<slot>.001` ...), sized by
+    `scale` (1 = a 12.7 mm gun on a tank roof; a boss uses 1.6-2): a turned pintle, the receiver with its sloped feed
+    cover and spade grips, the barrel with its carrying handle and flash hider, the ammunition can, a shield.
+    `Muzzle_<slot>[.NNN]` at the barrel's tip. Pivots are named through name() / suffixed() (added in the pilot:
+    mb_parts27.mg_mount names only one gun)."""
+    suffixed(a)
+    sc = scale
+    tag = '' if index == 0 else f'__{index:03d}'
+    m = a.pivot(name(f'Mount_{slot}', index), loc, parent)
+    g = a.part(f'MG{tag}', 'Steel', m)
+    k.lathe(g, [(.07 * sc, 0), (.07 * sc, .04 * sc), (.045 * sc, .07 * sc), (.04 * sc, .16 * sc)], seg=8, worn=(1,))
+    k.extrude(g, [(-.2 * sc, .14 * sc), (.18 * sc, .14 * sc), (.2 * sc, .26 * sc), (.02 * sc, .3 * sc),
+                  (-.2 * sc, .28 * sc)], .15 * sc, axis='X', chamfer=.012 * sc, corner=.012 * sc)
+    for s in (-1, 1):
+        g.limb((s * .05 * sc, .2 * sc, .2 * sc), (s * .07 * sc, .3 * sc, .14 * sc), .025 * sc, .025 * sc, bevel=0)
+    front = -.2 * sc
+    L = length * sc
+    k.lathe(g, [(.045 * sc, 0), (.045 * sc, .2 * sc), (.03 * sc, .24 * sc), (.03 * sc, L - .12 * sc),
+                (.05 * sc, L - .1 * sc), (.05 * sc, L - .01 * sc), (.035 * sc, L), (.02 * sc, L),
+                (.02 * sc, L - .05 * sc), (0, L - .05 * sc)], loc=(0, front, .22 * sc), rot=FORWARD, seg=8, worn=(4,))
+    handle(g, (0, front - .25 * sc, .27 * sc), (0, front - .45 * sc, .27 * sc), (0, 0, 1), h=.05 * sc, r=.01 * sc)
+    k.block(a.part(f'MG_ammo{tag}', 'Armor', m), (.13 * sc, .24 * sc, .16 * sc), loc=(.16 * sc, .02 * sc, .2 * sc),
+            chamfer=.015 * sc)
+    if shield:
+        k.extrude(a.part(f'MG_shield{tag}', 'Armor', m), [(-.28 * sc, -.17 * sc), (.28 * sc, -.17 * sc),
+                                                        (.24 * sc, .2 * sc), (-.24 * sc, .2 * sc)], .04 * sc,
+                  loc=(0, -.3 * sc, .28 * sc), rot=(-.12 + R90, 0, 0), axis='Z', chamfer=.01 * sc, corner=.01 * sc)
+    a.pivot(name(f'Muzzle_{slot}', index), (0, front - L + .01 * sc, .22 * sc), m)
+    return m
 
 
 def smoke_dischargers(a, x, y, z, s, count=4, parent=None):
