@@ -1,0 +1,141 @@
+# Chapter 3 · The Long Winter (act 1). Enemy general: Orlov. Arc: blind Orlov's radar line, live under his guns,
+# bring down the Harpy and Jötunn. Threads: Hawk sees a black insignia flying with the Harpy and names Ellis once
+# (the ace is not named yet); Orlov is distance, silence and winter.
+
+@c3m01 main=khai
+mission_start | orlov | 1 | Chào mừng tới cao nguyên, đại tá. Từ giờ các anh chỉ là một tọa độ. || Welcome to the highlands, Colonel. You are a coordinate now.
+mission_start | khai | 1 | Cứ di chuyển. Tọa độ biết đi thì khó bắn trúng hơn. || Keep moving. Coordinates that move are harder to hit.
+event_triggered | linh | 2 | Pháo của Orlov bắn theo lưới, cách nhau đúng mười hai giây. Đếm và tránh. || Orlov's guns fire on a grid, twelve seconds apart. Count, then step aside.
+point_captured:east | linh | 3 | Xưởng cưa là của ta. Có dây điện thoại chạy về phía bắc, cắt nó đi. || The sawmill is ours. A phone line runs north from it; cut it.
+objective_progress:last | linh | 2 | Còn trạm tín hiệu. Từ đó Orlov nhìn cả đèo, ông ta sẽ không bỏ dễ. || Only the signal post left. Orlov sees the whole pass from it; he will not let go.
+victory | khai | 1 | Đèo đã mở. Mặc thêm áo, đường lên phía bắc còn dài. || The pass is open. Put on another layer; the road north is long.
+defeat | orlov | 1 | Tọa độ đã bị xóa. Lần sau hãy đi nhanh hơn, đại tá. || Coordinate erased. Next time, move faster, Colonel.
+
+@c3m02 main=linh
+mission_start | linh | 1 | Xe tăng hạng nặng và tên lửa phòng không quanh radar. Orlov canh mắt mình rất kỹ. || Heavy tank and SAMs round the radar. Orlov guards his eyes carefully.
+event_triggered | dahl | 2 | Pháo phản kích sẵn sàng. Cho tôi vị trí khẩu đội địch, tôi trả lời trong mười một giây. || Counter-battery ready. Give me their guns' position; I answer in eleven seconds.
+first_unit_type_seen | linh | 2 | Bệ phóng tên lửa tầm xa phía sau radar. Hawk, đừng bay qua mỏm đó. || Long-range launcher behind the radar. Hawk, stay off that ridge.
+enemy_reinforcement | linh | 3 | Quân tiếp viện leo từ thung lũng lên. Radar phải gục trước khi chúng tới. || Reinforcements climbing from the valley. The radar goes before they arrive.
+timer_60s | khai | 1 | Còn một phút trước khi trời quang. Lúc đó radar sẽ thấy cả lữ đoàn. || One minute before the sky clears. Then the radar sees the whole brigade.
+victory | linh | 1 | Trạm radar đầu tiên đã mù. Pháo của Orlov giờ phải đoán. || The first radar station is blind. Orlov's guns have to guess now.
+defeat | linh | 1 | Radar vẫn quét. Mọi xe ta di chuyển sẽ bị gọi pháo. || The radar still sweeps. Every vehicle we move will draw fire.
+
+@c3m11 main=linh
+mission_start | linh | 1 | Mỗi thôn có một người quan sát của Orlov. Lấy thôn, pháo của ông ta sẽ điếc. || An Orlov spotter in every hamlet. Take them and his guns go deaf.
+point_captured | linh | 3 | Một người quan sát đã bị bắt. Máy bộ đàm vẫn còn ấm. || One spotter taken. His radio is still warm.
+objective_progress:2/3 | khai | 2 | Hai thôn. Pháo của ông ta đang bắn chậm lại, mất mắt rồi. || Two hamlets. His guns are slowing; he has lost his eyes.
+event_triggered | hq | 2 | Bầu trời đang quang. Máy bay hai bên đều sẽ cất cánh. || The sky is clearing. Aircraft on both sides will be up.
+victory | orlov | 1 | Mất ba người quan sát. Ta còn ba mươi người nữa, đại tá. || Three spotters lost. I have thirty more, Colonel.
+victory | khai | 1 | Ba mươi người cần ba mươi thôn. Ta sẽ tới từng thôn một. || Thirty spotters need thirty hamlets. We will visit each one.
+defeat | linh | 1 | Người quan sát vẫn ở trên dốc. Đường lên radar sẽ đầy pháo. || The spotters still hold the slopes. The radar road will be all shells.
+
+@c3m03 main=khai
+mission_start | khai | 1 | Ta giữ ngôi làng. Chúng sẽ tới với ta, trong sương. || We hold the village. They come to us, in the fog.
+time@40 | linh | 2 | Sương dày tới mức tôi chỉ nghe được tiếng xích. Hướng tây bắc, khá nhiều. || The fog is so thick I only hear tracks. North-west, a lot of them.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Dân làng vẫn trong hầm, cứ để họ ở đó. || Half the time. The villagers are still in the cellars; leave them there.
+point_lost | khai | 3 | Mất quảng trường. Lấy lại ngay, đây là chỗ ấm duy nhất trong mười cây số. || The square is lost. Take it back; it is the only warm place for ten kilometres.
+event_triggered | hq | 2 | Bão tuyết đang tới. Hai bên đều mù, nhưng ta đang ở trong nhà. || Blizzard coming. Both sides go blind, but we are indoors.
+victory | khai | 1 | Ta vẫn đứng đây. Đốt lò lên, ai cũng xứng đáng được sưởi. || We are still standing. Light the stoves; everyone has earned the warmth.
+defeat | khai | 1 | Làng mất rồi. Lui về đèo, trước khi sương tan và pháo nhìn thấy ta. || The village is lost. Back to the pass before the fog lifts and the guns see us.
+
+@c3m04 main=mai
+mission_start | mai | 1 | Mặt băng chịu được tháp. Tôi đã kiểm tra. Hầu hết chỗ. || The ice holds towers. I checked. Mostly.
+point_captured:town | mai | 3 | Hồ là của ta. Thả tháp xuống chỗ băng dày, tôi đã cắm cờ đỏ. || The lake is ours. Drop the towers on the thick ice; I put red flags there.
+time@120 | orlov | 2 | Một căn cứ trên hồ. Thật thơ mộng. Và thật dễ cháy. || A base on a lake. How poetic. How flammable.
+hq_below_50 | mai | 2 | Sở chỉ huy đang thủng và băng bên dưới đang nứt. Tôi cần năm phút yên tĩnh. || The HQ is holed and the ice under it is cracking. I need five quiet minutes.
+event_triggered | hq | 2 | Đoàn cứu trợ từ phía nam đang tới tiền đồn. Mở đường cho họ. || A relief column from the south is heading for the outpost. Clear their road.
+victory | mai | 1 | Nó đứng trên băng, đại tá. Đừng hỏi tôi nó sẽ đứng tới mùa xuân không. || It stands on the ice, Colonel. Do not ask me if it lasts till spring.
+defeat | mai | 1 | Tiền đồn chìm xuống hồ. Tôi sẽ đánh dấu chỗ đó, mùa hè ta vớt lên. || The outpost went through the ice. I will mark the spot; we fish it out in summer.
+
+@c3m05 main=dieuhau
+mission_start | dieuhau | 1 | Con chim lớn, mục tiêu lớn. Giữ bệ phóng di chuyển bên dưới nó. || Big bird, big target. Keep the launchers moving under it.
+boss_spawn | orlov | 1 | Ngẩng lên đi, đại tá. Tọa độ đã tới. || Look up, Colonel. The coordinate has arrived.
+boss_spawn | mai | 1 | Harpy. Trực thăng vũ trang khổng lồ, động cơ lộ ở hai bên. Nhắm vào cánh quạt phụ. || The Harpy. A giant gunship, engines exposed on both sides. Aim for the side rotors.
+time@50 | dieuhau | 2 | Có một chiếc phản lực bay kèm Harpy. Phù hiệu đen trên đĩa đỏ. Tôi biết phù hiệu đó. || A jet flying escort for the Harpy. Black bird on a red disc. I know that mark.
+time@70 | dieuhau | 2 | Chiếc phù hiệu đó đã bắn rơi Ellis. Hắn chỉ đứng nhìn thôi, chưa vào trận. || That mark shot down Ellis. He is only watching, not joining in.
+boss_part_destroyed | mai | 2 | Một động cơ đã tắt. Nó nghiêng sang trái, bắn vào phía bên kia. || One engine down. It is listing left; hit the other side.
+boss_phase_change | dieuhau | 1 | Nó hạ thấp để thả quân! Đây là lúc nó gần nhất, bắn hết vào! || It is coming down to drop troops! That is when it is closest; everything on it!
+superweapon_warning | dieuhau | 1 | Nó sắp rải cả loạt rocket. Rời khỏi vùng tô đỏ, nhanh! || It is about to unload a rocket barrage. Out of the red area, fast!
+boss_hp:50 | linh | 4 | Harpy mất một nửa sức. Chiếc phù hiệu đen vừa rời đi về hướng bắc. || The Harpy is at half. The black-marked jet just peeled off north.
+boss_hp:25 | dieuhau | 4 | Nó đang bốc khói! Một loạt nữa, các anh! || It is smoking! One more volley, folks!
+hq_below_50 | mai | 2 | Trại đang ăn rocket. Kéo nó ra xa, tôi lo phần còn lại. || The camp is eating rockets. Draw it off; I will handle the rest.
+victory | dieuhau | 1 | Harpy rơi rồi! Ai đó nợ tôi một ly đấy. || The Harpy is down! Somebody owes me a drink.
+victory | orlov | 1 | Một trực thăng. Mùa đông còn nhiều cánh quạt khác. || One gunship. Winter has other rotors.
+defeat | dieuhau | 1 | Không hạ được nó. Mất phòng không, tôi phải bay thấp về nhà. || Could not bring it down. No anti-air left; I am flying home low.
+
+@c3m06 main=linh
+mission_start | linh | 1 | Ba khẩu đội. Chúng bắn, chúng chạy, rồi lại bắn. Phải nhanh hơn phát thứ hai. || Three batteries. They fire, they move, they fire. Be quicker than the second shot.
+event_triggered | dahl | 2 | Tôi đang nghe tiếng đạn bay của chúng. Mỗi loạt tôi lại có thêm một góc. || I am listening to their shells. Every salvo gives me another bearing.
+time@150 | orlov | 2 | Các anh tìm thấy pháo của ta. Đáng nể. Và chẳng có nghĩa gì. || You found my guns. Remarkable. Also irrelevant.
+objective_progress:1/3 | linh | 2 | Một khẩu đã gục. Hai khẩu còn lại chuyển về phía khe núi. || One down. The other two are moving towards the gully.
+objective_progress:last | linh | 2 | Còn một khẩu pháo. Ánh chớp đầu nòng của nó ở góc ba trăm mười. || One gun left. Its muzzle flash is at three-one-zero.
+victory | linh | 1 | Ba khẩu đội đã bị gạch. Đêm nay thung lũng sẽ yên tĩnh hơn. || All three crossed out. The valley will be quieter tonight.
+defeat | linh | 1 | Chúng biến mất vào đêm. Hướng đông bắc. Tôi đã ghi lại. || They vanished into the night, north-east. I have it noted.
+
+@c3m12 main=khai
+mission_start | khai | 1 | Năm phút dưới pháo của ông ta. Cứ di chuyển, cứ sống. || Five minutes under his guns. Keep moving, keep alive.
+time@70 | orlov | 2 | Điều chỉnh. Hai trăm mét về phía đông. || Adjust fire. Two hundred metres east.
+time@90 | linh | 2 | Ông ta bắn theo khuôn: ba loạt, đổi hướng, ba loạt. Đọc được rồi. || He fires in a pattern: three salvos, shift, three salvos. I can read it now.
+objective_progress:1/2 | khai | 2 | Nửa chặng. Tản ra, đừng để một quả đạn lấy hai xe. || Halfway. Spread out; no shell gets two vehicles.
+timer_60s | khai | 1 | Một phút. Bộ binh của ông ta sẽ tràn vào sau loạt pháo cuối. || One minute. His infantry comes in behind the last salvo.
+victory | khai | 1 | Ta vẫn ở đây. Mùa đông của ông ta không giết được ai hôm nay. || We are still here. His winter killed nobody today.
+defeat | orlov | 1 | Thung lũng đã yên. Mùa đông luôn kết thúc như vậy. || The valley is quiet. Winter always ends this way.
+
+@c3m07 main=khai
+mission_start | khai | 1 | Dân thường trong các căn nhà gỗ. Họ chính là mục tiêu, không phải địch. || Civilians in the cabins. They are the objective, not the enemy.
+time@20 | hq | 2 | Chín gia đình trong nhà gỗ và kho thóc. Có trẻ con. Orlov bắn mọi thứ còn mái. || Nine families in the cabins and the barn. Children too. Orlov shells anything with a roof.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Giữ xe chắn giữa đồi và các căn nhà. || Halfway. Keep the vehicles between the ridge and the cabins.
+critical_failure_imminent | khai | 1 | Chỉ còn một căn nhà đứng. Mọi xe về đó, che bằng thân xe. || One building left standing. Every vehicle there; shield it with your hulls.
+event_triggered | linh | 2 | Một xe dân sự vừa chạy ra từ kho thóc. Đừng để ai bắn nhầm. || A civilian truck just bolted from the barn. Make sure nobody fires on it.
+time@385 | hq | 2 | Các gia đình gửi lời: họ sẽ đặt tên con bê mới theo lữ đoàn. || The families say thank you. They are naming the new calf after the brigade.
+victory | khai | 1 | Bảy phút. Không ai trong nhà bị thương. Đó là trận ta thắng hôm nay. || Seven minutes. Nobody inside was hurt. That is the battle we won today.
+defeat | khai | 1 | Mái cuối cùng đã sập. Đưa xe cứu thương vào. Ngay. || The last roof is down. Get the ambulances in. Now.
+
+@c3m08 main=linh
+mission_start | linh | 1 | Người bị thương không chờ được tới sáng. Ta cũng vậy. Năm xe, ba phải tới. || The wounded cannot wait for daylight. Neither can we. Five trucks; three must arrive.
+first_unit_type_seen | linh | 2 | Máy bay cường kích bay thấp theo đèo. Đoàn xe đang trong tầm nhìn của chúng. || Strike jets coming low through the pass. The convoy is in their sights.
+objective_progress:1/3 | hq | 2 | Xe đầu đã tới trạm tín hiệu. Bác sĩ đang xuống xe. || First truck at the signal post. The doctors are getting off.
+event_triggered | hq | 2 | Bão tuyết. Xe tải chậm lại, giữ khoảng cách mười mét. || Blizzard. The trucks slow down; keep ten metres apart.
+critical_failure_imminent | khai | 1 | Thêm một xe nữa là trạm không có đủ thuốc. Bọc chiếc cuối, bằng mọi giá. || One more truck lost and the post runs short of medicine. Cover the last one.
+victory | linh | 1 | Thuốc đã tới. Ba mươi hai người bị thương sẽ qua được đêm nay. || The medicine is there. Thirty-two wounded will see the morning.
+defeat | linh | 1 | Không đủ xe tới. Bác sĩ sẽ phải chọn ai được chữa trước. || Not enough trucks got through. The doctors will have to choose.
+
+@c3m09 main=khai
+mission_start | orlov | 1 | Nhiệm vụ bắn. Ô lưới một-bảy. Tất cả khẩu đội. || Fire mission. Grid one-seven. All batteries.
+mission_start | khai | 1 | Phá tường pháo, rồi tới sở chỉ huy. Ông ta không đợi ta đâu. || Through the gun wall, then the HQ. He will not wait for us.
+general_tactic_change | linh | 3 | Orlov đổi sang tiêu hao: ông ta muốn ta tự hao mòn dưới pháo, không cần ra đánh. || Orlov has gone to attrition: he wants us ground down under his guns, no fighting needed.
+event_triggered | dahl | 2 | Pháo phản kích của ta vào vị trí. Mười một giây sau mỗi loạt của họ. || Our counter-battery is in place. Eleven seconds after every salvo of theirs.
+expensive_unit_lost | khai | 3 | Mất một xe nặng dưới pháo. Đừng đứng yên quá ba giây. || Lost a heavy under the guns. Nobody stands still more than three seconds.
+victory | orlov | 1 | Tính toán lại. Rút các khẩu đội về tuyến sau. || Recalculating. Withdraw the batteries to the next line.
+victory | khai | 1 | Sở chỉ huy đã đổ, nhưng ông ta đã đi trước khi ta tới. Như mọi lần. || The HQ is down, but he left before we arrived. As always.
+defeat | orlov | 1 | Tuyết giữ dấu chân. Ta biết các anh từ đâu tới. || Snow keeps footprints. I know where you came from.
+
+@c3m10 main=khai
+mission_start | khai | 1 | Hôm nay phòng tuyến gãy, hoặc mùa đông thắng. Đi. || The line breaks today, or the winter wins. Move.
+time@20 | orlov | 2 | Các anh đi trên tuyết, đại tá. Tuyết giữ dấu chân. || You walk on snow, Colonel. Snow keeps footprints.
+phase_start:2 | linh | 1 | Radar trên đồi đã mù. Chọn đòn thứ hai: kho đạn hay đường tiếp tế, đều có giá. || The hill radar is blind. Choose the second blow: the depot or the supply road. Both cost.
+phase_start:4 | khai | 1 | Cổng pháo đài mở. Jötunn đứng chắn ở đó. || The fortress gate is open. Jötunn stands in it.
+boss_spawn | mai | 1 | Jötunn: một pháo đài biết đi. Giáp trước dày không tưởng, nhưng xích của nó lộ. || Jötunn: a walking fortress. Absurd armour in front, but its tracks are exposed.
+boss_part_destroyed | mai | 2 | Một bên xích đã đứt. Nó quay vòng tại chỗ rồi, đánh vào lưng. || One track is off. It is turning on the spot; hit its back.
+superweapon_warning | mai | 1 | Nó chĩa cả dàn pháo xuống cổng. Rời khỏi vùng đỏ ngay! || It is bringing every gun to bear on the gate. Out of the red zone now!
+boss_phase_change | linh | 1 | Jötunn gọi hộ tống. Ba xe đang ra từ trong sân. || Jötunn is calling its escort. Three vehicles coming out of the yard.
+boss_hp:25 | dieuhau | 4 | Nó đang chết máy! Thêm chút nữa thôi! || It is stalling! Just a little more!
+phase_start:5 | khai | 1 | Jötunn đã gục. Giữ cổng, Orlov sẽ phản công trước khi trời tối. || Jötunn is down. Hold the gate; Orlov counterattacks before dark.
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Kéo mọi xe về cổng, đừng để mất nó sau từng ấy công. || The HQ is critical. Every vehicle to the gate; we do not lose it after all this.
+victory | orlov | 1 | Rút. Mùa đông luôn quay lại, đại tá. || Withdraw. Winter always comes back, Colonel.
+victory | khai | 1 | Cao nguyên đã mở. Nghỉ được lúc nào thì nghỉ, lữ đoàn. || The highlands are open. Rest while you can, Brigade.
+defeat | orlov | 1 | Cổng đã đóng. Mùa đông năm nay sẽ dài, đại tá. || The gate is closed. This winter will be long, Colonel.
+
+@c3s1 main=linh
+mission_start | linh | 1 | Nhìn rồi đi. Sương giúp cả hai bên như nhau. || Look and leave. The fog helps both sides alike.
+point_captured | linh | 3 | Bốn ụ pháo trên đồi radar, ba ụ còn trống. Orlov đang chuẩn bị chỗ cho thứ gì đó. || Four gun pits on the radar hill, three empty. Orlov is making room for something.
+objective_progress:last | linh | 2 | Còn trại khai thác gỗ. Tôi nghe tiếng máy phát điện ở đó, khá lớn. || The lumber camp is left. I hear a generator there, a big one.
+victory | linh | 1 | Bản đồ hoàn chỉnh. Mỗi ụ pháo đều có tên trên bản đồ của tôi. || The map is complete. Every gun pit has a name on my map.
+defeat | linh | 1 | Sương vẫn giữ bí mật của ông ta. Ta sẽ đánh mù. || The fog keeps his secrets. We attack blind.
+
+@c3s2 main=linh
+mission_start | linh | 1 | Fenrir ở trong tuyết. Nó nhìn thay cho pháo của Orlov. || Fenrir is in the snow. It sees for Orlov's guns.
+boss_spawn | mai | 1 | Fenrir: thợ săn hạng nặng, ăng-ten dẫn pháo trên lưng. Gãy ăng-ten là pháo mù. || Fenrir: a heavy hunter, a fire-control mast on its back. Break the mast, blind the guns.
+boss_part_destroyed | mai | 2 | Ăng-ten gãy. Giờ nó chỉ là một chiếc xe tăng to và lạnh. || The mast is down. Now it is just a big, cold tank.
+victory | linh | 1 | Fenrir gục trước khi bão tan. Pháo của Orlov mất một con mắt. || Fenrir is down before the storm lifts. Orlov's guns lose an eye.
+defeat | linh | 1 | Bão tan và Fenrir vẫn đứng. Pháo sẽ biết ta ở đâu. || The storm lifts and Fenrir still stands. The guns will know where we are.
