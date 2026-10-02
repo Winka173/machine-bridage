@@ -18,6 +18,7 @@ import mb_kit27 as k
 import mb_props as props
 import mb_mapkit as mk
 import mb_town as town
+import mb_themes as themes
 from mathutils import Vector
 from mb_siege import bag_run, coil, shells
 
@@ -434,6 +435,16 @@ def _town(name, ao=.9, **kw):
     return run, dict(old[1], ao_strength=ao)
 
 
+def _theme(name, ao=.8, **kw):
+    old = themes.BUILDERS[name]
+
+    def run(a):
+        with _v2(**kw):
+            old[0](a)
+        k.clean(a)
+    return run, dict(old[1], ao_strength=ao)
+
+
 def _wrap(fn, opts, ao):
     def run(a):
         fn(a)
@@ -476,7 +487,7 @@ BUILDERS = {
     'bridge_road': _redo('bridge_road', 0.65, seg_add=2),
     'ruin_house': _redo('ruin_house', 0.75, seg_add=2),
     'ruin_tower': _redo('ruin_tower', 0.75, seg_add=2),
-    'dead_tree': _redo('dead_tree', 0.6, box_min=.4),
+    'dead_tree': _redo('dead_tree', 0.6, box_min=.25),
     'apartment': _town('apartment', .8, seg_add=2),
     'barn': _town('barn', .8, seg_add=2),
     'car': _town('car', .8, seg_add=2),
@@ -493,4 +504,19 @@ BUILDERS = {
     'truck': _town('truck', .8, seg_add=2),
     'warehouse': _town('warehouse', .8, seg_add=2),
     'water_tower': _town('water_tower', .8, seg_add=2),
+    'adobe_house': _theme('adobe_house', .8, box_min=.2),
+    'adobe_large': _theme('adobe_large', .8, box_min=.2),
+    'cactus': _theme('cactus', .8, seg_add=2),
+    'log_cabin': _theme('log_cabin', .8, box_min=.45, cyl_min=.18),
+    'market_stall': _theme('market_stall', .8, seg_add=2),
+    'mesa': _theme('mesa', .7, seg_add=2),
+    'oil_pump': _theme('oil_pump', .8, seg_add=2),
+    'palm': _theme('palm', .8, seg_add=2),
+    'pipeline': _theme('pipeline', .8, seg_add=2),
+    'radar_station': _theme('radar_station', .8, seg_add=2),
+    'refinery_tower': _theme('refinery_tower', .8, seg_add=2),
+    'snow_pine': _theme('snow_pine', .3, seg_add=2),
+    'snow_rock': _theme('snow_rock', .8, seg_add=2),
+    'storage_tank': _theme('storage_tank', .8, seg_add=2),
+    'watchtower': _theme('watchtower', .8, seg_add=2),
 }

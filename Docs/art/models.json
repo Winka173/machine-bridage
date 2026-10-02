@@ -33,11 +33,11 @@
   },
   "adobe_house": {
     "file": "adobe_house.glb",
-    "triangles": 1596
+    "triangles": 1660
   },
   "adobe_large": {
     "file": "adobe_large.glb",
-    "triangles": 3882
+    "triangles": 3946
   },
   "aerial_tanker": {
     "file": "aerial_tanker.glb",
@@ -917,7 +917,7 @@
   },
   "log_cabin": {
     "file": "log_cabin.glb",
-    "triangles": 2946
+    "triangles": 2974
   },
   "logistics_station": {
     "file": "logistics_station.glb",
@@ -941,7 +941,7 @@
   },
   "market_stall": {
     "file": "market_stall.glb",
-    "triangles": 1404
+    "triangles": 1444
   },
   "mega_gunship": {
     "file": "mega_gunship.glb",
@@ -1081,7 +1081,7 @@
   },
   "oil_pump": {
     "file": "oil_pump.glb",
-    "triangles": 3056
+    "triangles": 3128
   },
   "one_shot_atgm_tower": {
     "file": "one_shot_atgm_tower.glb",
@@ -1109,7 +1109,7 @@
   },
   "pipeline": {
     "file": "pipeline.glb",
-    "triangles": 1472
+    "triangles": 1600
   },
   "power_pylon": {
     "file": "power_pylon.glb",
@@ -1137,7 +1137,7 @@
   },
   "radar_station": {
     "file": "radar_station.glb",
-    "triangles": 3810
+    "triangles": 3922
   },
   "radar_support_vehicle": {
     "file": "radar_support_vehicle.glb",
@@ -1189,7 +1189,7 @@
   },
   "refinery_tower": {
     "file": "refinery_tower.glb",
-    "triangles": 5020
+    "triangles": 5624
   },
   "repair_bay": {
     "file": "repair_bay.glb",
@@ -1389,7 +1389,7 @@
   },
   "snow_pine": {
     "file": "snow_pine.glb",
-    "triangles": 224
+    "triangles": 252
   },
   "snow_rock": {
     "file": "snow_rock.glb",
@@ -1421,7 +1421,7 @@
   },
   "storage_tank": {
     "file": "storage_tank.glb",
-    "triangles": 3340
+    "triangles": 3952
   },
   "strike_drone": {
     "file": "strike_drone.glb",
@@ -1593,7 +1593,7 @@
   },
   "watchtower": {
     "file": "watchtower.glb",
-    "triangles": 1494
+    "triangles": 1622
   },
   "water_tower": {
     "file": "water_tower.glb",
