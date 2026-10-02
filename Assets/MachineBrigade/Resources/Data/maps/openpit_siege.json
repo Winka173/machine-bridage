@@ -460,7 +460,6 @@
     {"def": "sandbags", "x": 8.3, "z": 13.95, "rot": 90},
     {"def": "sandbags", "x": 26.7, "z": -4.45},
     {"def": "sandbags", "x": 81.85, "z": -59.6, "rot": 90},
-    {"def": "sandbags", "x": 100.2, "z": -77.95},
     {"def": "razor_wire", "x": -41.9, "z": 48.6, "rot": 90},
     {"def": "razor_wire", "x": 93.85, "z": -87.15, "rot": 90},
     {"def": "camo_net", "x": -1.0, "z": 57.5},
