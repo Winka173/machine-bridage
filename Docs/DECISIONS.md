@@ -13808,3 +13808,4 @@ mirror, no cards, no previews, no tests.
   renders them after the merge.
 - Building the eight names rebuilt no other model (no substring hits); the first test build before the edit changed the seven
   GLBs byte-wise and was reverted with `git checkout`.
+- Lead (2026-10-02), wave 3e cards: all six with cards pass (+0.4 % to +4.5 %); supply_truck and ammo_carrier have none.

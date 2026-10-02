@@ -218,7 +218,7 @@
             "kind": "vehicle",
             "model": "ew_jammer",
             "source": "Models/ew_jammer",
-            "hash": "v2:47d4cd1bf82b7c10814e2b07fff443791923de8b"
+            "hash": "v2:8f95d25b55dd564ce3e07a7a75e78e1627d541d2"
         },
         {
             "id": "fpv_carrier",
@@ -253,7 +253,7 @@
             "kind": "vehicle",
             "model": "vbied",
             "source": "Models/vbied",
-            "hash": "v2:b4b2c4176f6330ea4502cf38c4e3a4c27a57a770"
+            "hash": "v2:7fe6a1b3fc6412ee5ee315406950b0f7efaac116"
         },
         {
             "id": "zu23_technical",
@@ -281,7 +281,7 @@
             "kind": "vehicle",
             "model": "shahed_truck",
             "source": "Models/shahed_truck",
-            "hash": "v2:9e2ad2d55d8f764ca402614a9911847b40b229cf"
+            "hash": "v2:7e8fc7a1397fd7101947b838e20a8c2930e42574"
         },
         {
             "id": "iron_beam",
@@ -295,7 +295,7 @@
             "kind": "vehicle",
             "model": "railgun_truck",
             "source": "Models/railgun_truck",
-            "hash": "v2:acbf152f53a97588bdef52b5c6c8d0dc3d96470f"
+            "hash": "v2:b0325a972c91297c487fe5eefb4832e1e4a00d01"
         },
         {
             "id": "turtle_tank",
@@ -330,7 +330,7 @@
             "kind": "vehicle",
             "model": "counter_battery_radar",
             "source": "Models/counter_battery_radar",
-            "hash": "v2:9944c47173b5e2bc88122fe922b9c6ab1a5c99fb"
+            "hash": "v2:bd32d73e43216eb663cff7d41c9d88680e672a3d"
         },
         {
             "id": "long_sam",
@@ -379,7 +379,7 @@
             "kind": "vehicle",
             "model": "bunker_vehicle",
             "source": "Models/bunker_vehicle",
-            "hash": "v2:b8ace8c021a8f6bb864898bb0ba3ed2a9ee0d642"
+            "hash": "v2:3c713c7867856779ceb92276f399401491d972d6"
         },
         {
             "id": "swarm_carrier",
