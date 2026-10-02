@@ -272,7 +272,7 @@ Ground DPS on paper (anti-air mounts left out): **771 -> 771** (100 %).
 | 13 | `aa_25_triple` | cal_25/flak | 82 | | unchanged | | | not in the table |
 | 14 | `aa_25_triple` | cal_25/flak | 82 | | unchanged | | | not in the table |
 | 15 | `sam_post` | sam_9m317_buk | 145 | | unchanged | | | not in the table |
-| salvo | `p26_leviathan_lev406` | cal_406 | 3 x 1 x 1200 / 10 s = 360 | 12 / 20 | 3 x 3 x 2400 / 60.0 s = 360 | 14 / 24 | | barrels together |
+| salvo | `p26_leviathan_lev406` | cal_406 | 3 x 3 x 2400 / 60 s = 360 | 14 / 20 | 3 x 3 x 2400 / 60.0 s = 360 | 14 / 24 | | barrels together |
 
 ### moloch
 
@@ -448,7 +448,7 @@ Ground DPS on paper (anti-air mounts left out): **771 -> 771** (100 %).
 | 13 | `aa_25_triple` | cal_25/flak | 82 | | unchanged | | | not in the table |
 | 14 | `aa_25_triple` | cal_25/flak | 82 | | unchanged | | | not in the table |
 | 15 | `sam_post` | sam_9m317_buk | 145 | | unchanged | | | not in the table |
-| salvo | `p26_leviathan_lev406` | cal_406 | 3 x 1 x 1200 / 10 s = 360 | 12 / 20 | 3 x 3 x 2400 / 60.0 s = 360 | 14 / 24 | | barrels together |
+| salvo | `p26_leviathan_lev406` | cal_406 | 3 x 3 x 2400 / 60 s = 360 | 14 / 20 | 3 x 3 x 2400 / 60.0 s = 360 | 14 / 24 | | barrels together |
 
 ### monster
 
