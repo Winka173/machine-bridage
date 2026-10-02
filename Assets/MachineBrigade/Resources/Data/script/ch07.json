@@ -1159,6 +1159,17 @@
 "vi": "Mất phòng không cuối. Kháng chiến sẽ phải trốn dưới mái nhà."
 },
 {
+"mission": "c7m11",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c7m11.07",
+"en": "In this concrete maze, guns go on the crossroads, where the sky opens up.",
+"vi": "Trong mê cung bê tông này, đặt pháo ở ngã tư, nơi bầu trời mở rộng nhất.",
+"at": 35.0
+},
+{
 "mission": "c7m09",
 "trigger": "mission_start",
 "speaker": "linh",

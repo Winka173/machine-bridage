@@ -104,6 +104,12 @@ DECKS = {
         replaced={'light_attack_heli': 'scout_heli', 'wingman_drone': 'strike_drone', 'interceptor_drone_vehicle': 'sam_launcher',
                   'microwave_vehicle': 'ew_jammer', 'shorad_vehicle': 'aa_vehicle', 'jam_storm': 'uav_scan'},
         rules=['airCap6']),
+    'c7m11': dict(
+        vehicles=['aa_57mm_vehicle', 'heavy_aa', 'iron_beam', 'sam_launcher', 'zu23_technical', 'shorad_vehicle', 'recon_drone', 'ifv'],
+        supports=['uav_scan', 'airstrike'],
+        loaned=['aa_57mm_vehicle', 'shorad_vehicle'],
+        replaced={'radar_support_vehicle': 'recon_drone', 'illum_flare_strike': 'uav_scan', 'sead_strike': 'airstrike'},
+        rules=['airCap6']),
 }
 
 

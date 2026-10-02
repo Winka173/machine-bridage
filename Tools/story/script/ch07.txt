@@ -138,6 +138,7 @@ first_unit_type_seen | dieuhau | 2 | Trực thăng săn có giáp của cận v�
 momentum_high_once | dieuhau | 4 | Bầu trời Veyra thoáng dần. Tôi thấy được cả mái vòm cung điện. || The sky over Veyra is clearing. I can see the palace dome.
 victory | khai | 1 | Bầu trời Veyra là của ta. || The sky over Veyra is ours.
 defeat | dieuhau | 1 | Mất phòng không cuối. Kháng chiến sẽ phải trốn dưới mái nhà. || Last flak gone. The resistance will have to hide under the roofs.
+time@35 | dieuhau | 2 | Trong mê cung bê tông này, đặt pháo ở ngã tư, nơi bầu trời mở rộng nhất. || In this concrete maze, guns go on the crossroads, where the sky opens up.
 
 @c7m09 main=linh
 mission_start | linh | 1 | Mái vòm phát mọi bản tin của Hegemon trong cả nước. Hạ nó xuống. || The dome carries every Hegemon broadcast in the country. Bring it down.

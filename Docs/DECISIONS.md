@@ -14941,3 +14941,8 @@ the lead, the tests are written, not run.
     drones/flyers), interceptor_drone_vehicle -> sam_launcher, microwave_vehicle -> ew_jammer (owned anti-drone jamming),
     shorad_vehicle -> aa_vehicle, jam_storm -> uav_scan. Rule airCap6 (the cap is 6 everywhere). The sheet's "the canopy
     hides ground vehicles from drones" is pending (no canopy cover in the Sim). Line: Hawk at 30 s on the loaned laser.
+  - c7m11 (chapter 7): loaned aa_57mm_vehicle, shorad_vehicle (the anti-air the mission is about);
+    radar_support_vehicle -> recon_drone (the owned spotter), illum_flare_strike -> uav_scan (scan cards), sead_strike ->
+    airstrike (sead is opened later). Rule airCap6. Pending: the city blackout is a prompt 31 L3 event, not built yet, so
+    the mission runs without it; the storm cutting radar range has no Sim rule yet (Storm only shortens sight, as before).
+    Line: Hawk at 35 s.
