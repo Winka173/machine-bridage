@@ -207,3 +207,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) cho tôi phần cần claude cloud làm tiếp, cái gì đưa được cứ đưa
 - (02/10) [báo cáo cloud: lượt 2-5 phần Sim + Scope widened xong, cloud/p28-sim 295d1ace; AI mới bật mặc định (ConquestAi.LayeredDefault), kinh tế mới mọi chế độ, BattleEvents.Escalation]
 - (02/10) bắt đầu prompt 27 đợt 3, nhớ chia nhỏ ra, và tiết kiệm token
+- (02/10) [chọn] lead chép sang runner sau mỗi lượt và tự render card/preview; agent chỉ dựng model

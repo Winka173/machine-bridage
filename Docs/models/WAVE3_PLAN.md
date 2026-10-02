@@ -32,6 +32,11 @@ Rules:
 - Builders go in `Tools/blender/mb_p27_wave3.py` (create it in 3a, extend it after), registered last in `build_assets.py`.
 - Never use MaterialPropertyBlocks on MachineBrigade/Lit renderers. No balance.json number changes (only if a node
   field must follow a renamed node; then run CatalogCheck).
+- **Owner 2026-10-02 (after 3a): agents do NOT mirror into the runner and do NOT render cards or previews** (the
+  permission system refuses the robocopy /MIR there). The lead merges each pass, syncs lead -> runner with
+  handoff_tools/sync.sh, renders cards + previews and checks card luma. Agents stop after the GLBs, the validator and
+  the docs; list the old card luma of each model (from the current card PNGs, mean luma of pixels with alpha > 0.5)
+  in the report. When rebuilding `light_tank`, revert `airborne_light_tank(_chute)` (substring filter).
 - Allowed runs only: Blender rebuild; `python Tools/assets/glb_check.py --compare --only <names>` then `--accept` with a
   reason; mirror the worktree into `C:\Users\Winka\Projects\MachineBrigade-runner` with PowerShell robocopy
   (`/MIR /XD Library Logs Builds .git UserSettings /XF .git`; Git Bash robocopy fails); in the runner card renders
