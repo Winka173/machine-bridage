@@ -205,3 +205,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) nhớ push file đó lên luôn để bên đó thấy
 - (02/10) [dán lại prompt gửi cloud; cloud đã push lượt 1 lên cloud/p28-sim]
 - (02/10) cho tôi phần cần claude cloud làm tiếp, cái gì đưa được cứ đưa
+- (02/10) [báo cáo cloud: lượt 2-5 phần Sim + Scope widened xong, cloud/p28-sim 295d1ace; AI mới bật mặc định (ConquestAi.LayeredDefault), kinh tế mới mọi chế độ, BattleEvents.Escalation]
