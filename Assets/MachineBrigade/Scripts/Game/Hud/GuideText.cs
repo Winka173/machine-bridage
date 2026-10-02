@@ -108,11 +108,11 @@ namespace MachineBrigade.Game.Hud
                 "Mạnh / yếu: nghiền nát xe tăng, xe nhẹ và [[công sự]]; bị [[xe diệt tăng]], pháo binh và máy bay bào dần.\n" +
                 "Mẹo: làm trụ cho đợt tấn công lớn; phải có phòng không đi kèm để che trực thăng."),
             ["guide.siege_tank"] = (
-                "[[Siege mortar]] · thick front armour · slow · 12 CP\n" +
+                "[[Siege mortar]] · thick front armour · slow · 15 CP\n" +
                 "How it fights: two modes. On its tracks it is a [[tank]] whose 105 mm gun fires on the move. Standing with an enemy in reach, or on guard, it [[sieges]] in 2.5 s: braces down, turret up, and a 240 mm mortar lobs 450-damage bombs from 16 to 70 m with a 9 m blast, 2× on towers and buildings; 10 bombs, then a reload. It packs up in 2.5 s to move, or when enemies get inside its 16 m.\n" +
                 "Strong / weak: shells [[fortifications]], tank lines and packed groups from beyond their reach; fast vehicles that get inside its minimum reach, aircraft and flank attacks catch it sieged.\n" +
                 "Tip: let it siege just outside the enemy's reach with a screen in front; it cannot fire while it sieges or packs up.",
-                "[[Pháo cối công thành]] · giáp trước dày · chậm · 12 CP\n" +
+                "[[Pháo cối công thành]] · giáp trước dày · chậm · 15 CP\n" +
                 "Cách đánh: hai chế độ. Khi di chuyển là một [[xe tăng]] có pháo 105 mm bắn khi đang chạy. Dừng lại khi có địch trong tầm, hoặc khi canh giữ, nó [[vào thế công thành]] trong 2,5 giây: hạ chân chống, nâng tháp pháo, cối 240 mm ném đạn 450 sát thương xa từ 16 đến 70 m, nổ rộng 9 m, gấp đôi lên tháp và công trình; 10 quả rồi nạp lại. Thu lại mất 2,5 giây để đi tiếp, hoặc khi địch lọt vào trong 16 m.\n" +
                 "Mạnh / yếu: nã [[công sự]], tuyến xe tăng và đội hình dày từ ngoài tầm của chúng; sợ xe nhanh lọt vào trong tầm tối thiểu, máy bay và bị đánh vào sườn khi đang công thành.\n" +
                 "Mẹo: cho nó vào thế ngay ngoài tầm địch, có quân chắn phía trước; khi đang hạ hay thu chân chống nó không bắn được."),

@@ -31,6 +31,9 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 MANIFEST = os.path.join(ROOT, "Docs", "balance", "manifest_v2.json")
 BALANCE = os.path.join(ROOT, "Assets", "MachineBrigade", "Resources", "Data", "balance.json")
 LOG = os.path.join(ROOT, "Docs", "balance", "apply_log_p29.md")
+# Bundles applied by earlier runs (written by real runs): depends_on reads it, and an applied bundle is not checked
+# again (a later bundle may have moved its values on, B1 after B0).
+STATE = os.path.join(ROOT, "Docs", "balance", "apply_state_p29.json")
 
 # Code bundles whose code is in the repository (each pass adds the ones it wrote).
 DONE_CODE: set[str] = {"S01", "S02", "S03", "S04", "S08", "S09"}
@@ -258,11 +261,12 @@ def run(patterns, dry):
     st = State(doc)
     weapons_before = json.dumps(st.data["weapons"], sort_keys=True)
     outcome: dict[str, str] = {}
+    applied = set(json.load(open(STATE, encoding="utf-8"))) if os.path.exists(STATE) else set()
     lines = [f"\n## Run {'dry' if dry else 'apply'}: {', '.join(patterns)} (manifest {man['sha256'][:12]})\n",
              "| bundle | outcome | detail |", "|---|---|---|"]
 
     def done(b):
-        return b in DONE_CODE or b in DONE_CHECKS or outcome.get(b) in ("OK", "ALREADY_APPLIED", "APPLIED")
+        return b in DONE_CODE or b in DONE_CHECKS or b in applied or outcome.get(b) in ("OK", "ALREADY_APPLIED", "APPLIED")
 
     for b in bundles:
         bid = b["bundle_id"]
@@ -272,6 +276,10 @@ def run(patterns, dry):
             # Earlier passes' bundles: their state is what the data says now (for depends_on).
             if bid in DONE_CODE:
                 outcome[bid] = "APPLIED"
+            continue
+        if bid in applied:
+            outcome[bid] = "APPLIED"
+            lines.append(f"| {bid} | APPLIED | in an earlier run |")
             continue
         if status not in ("FIX", "APPLY"):
             outcome[bid] = f"SKIPPED({status or 'empty'})"
@@ -328,9 +336,14 @@ def run(patterns, dry):
         outcome[bid] = "OK"
         lines.append(f"| {bid} | OK{' (dry)' if dry else ''} | {len(data_rows)} rows{note} |")
 
-    if not dry and doc.text != open(BALANCE, encoding="utf-8", newline="").read():
-        with open(BALANCE, "w", encoding="utf-8", newline="") as f:
-            f.write(doc.text)
+    if not dry:
+        if doc.text != open(BALANCE, encoding="utf-8", newline="").read():
+            with open(BALANCE, "w", encoding="utf-8", newline="") as f:
+                f.write(doc.text)
+        applied |= {b for b, v in outcome.items() if v in ("OK", "ALREADY_APPLIED")}
+        with open(STATE, "w", encoding="utf-8", newline="\n") as f:
+            json.dump(sorted(applied), f, indent=1)
+            f.write("\n")
     with open(LOG, "a", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(lines) + "\n")
     counts = {}

@@ -270,8 +270,6 @@
 |---|---|---|
 | E1 | ALREADY_APPLIED | |
 | B0-sky_gunship | ALREADY_APPLIED | |
-| B0-thermobaric_launcher | CONFLICT | units.thermobaric_launcher.hp: current 2490.4, expected 990, new 1980 |
-| B0-siege_tank | CONFLICT | units.siege_tank.hp: current 4270.200000000001, expected 1320, new 3300 |
 | B0-light_tank | ALREADY_APPLIED | |
 | B0-vbied | ALREADY_APPLIED | |
 | B0-flame_tank | ALREADY_APPLIED | |
@@ -294,8 +292,6 @@
 |---|---|---|
 | E1 | ALREADY_APPLIED | |
 | B0-sky_gunship | ALREADY_APPLIED | |
-| B0-thermobaric_launcher | CONFLICT | units.thermobaric_launcher.hp: current 2490.4, expected 990, new 1980 |
-| B0-siege_tank | CONFLICT | units.siege_tank.hp: current 4270.200000000001, expected 1320, new 3300 |
 | B0-light_tank | ALREADY_APPLIED | |
 | B0-vbied | ALREADY_APPLIED | |
 | B0-flame_tank | ALREADY_APPLIED | |
@@ -328,8 +324,6 @@
 |---|---|---|
 | E1 | ALREADY_APPLIED | |
 | B0-sky_gunship | ALREADY_APPLIED | |
-| B0-thermobaric_launcher | CONFLICT | units.thermobaric_launcher.hp: current 2490.4, expected 990, new 1980 |
-| B0-siege_tank | CONFLICT | units.siege_tank.hp: current 4270.200000000001, expected 1320, new 3300 |
 | B0-light_tank | ALREADY_APPLIED | |
 | B0-vbied | ALREADY_APPLIED | |
 | B0-flame_tank | ALREADY_APPLIED | |
@@ -353,3 +347,168 @@
 | B1-vbied | OK | 1 rows |
 | B1-radar_scout | OK | 1 rows |
 | B1-radar_support_vehicle | OK | 3 rows |
+
+
+Note: the B1 group runs re-checked B0 bundles applied in pass 3 (thermobaric_launcher, siege_tank), whose health B1 had since moved on; those false CONFLICT rows were removed and the tool now keeps applied bundles in apply_state_p29.json.
+
+## Run dry: * (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| S01 | APPLIED | code bundle |
+| S02 | APPLIED | code bundle |
+| S03 | APPLIED | code bundle |
+| S04 | APPLIED | code bundle |
+| S05 | BLOCKED | code bundle: code not written yet |
+| S06 | BLOCKED | code bundle: code not written yet |
+| S07 | BLOCKED | code bundle: code not written yet |
+| S08 | APPLIED | code bundle |
+| S09 | APPLIED | code bundle |
+| E1 | APPLIED | in an earlier run |
+| E2 | SKIPPED(HOLD) | |
+| B0-sky_gunship | APPLIED | in an earlier run |
+| B0-thermobaric_launcher | APPLIED | in an earlier run |
+| B0-siege_tank | APPLIED | in an earlier run |
+| B0-light_tank | APPLIED | in an earlier run |
+| B0-vbied | APPLIED | in an earlier run |
+| B0-flame_tank | APPLIED | in an earlier run |
+| B0-engineer_vehicle | APPLIED | in an earlier run |
+| B1-armored_car | APPLIED | in an earlier run |
+| B1-combat_wreck_car | APPLIED | in an earlier run |
+| B1-river_patrol_boat | APPLIED | in an earlier run |
+| B1-airborne_vehicle | APPLIED | in an earlier run |
+| B1-amphib_light_vehicle | APPLIED | in an earlier run |
+| B1-ifv | APPLIED | in an earlier run |
+| B1-auto_loader_howitzer | APPLIED | in an earlier run |
+| B5-auto_loader_howitzer | SKIPPED(HOLD) | |
+| B1-river_gunboat | APPLIED | in an earlier run |
+| B1-coastal_ashm_vehicle | APPLIED | in an earlier run |
+| B5-coastal_ashm_vehicle | SKIPPED(HOLD) | |
+| B1-ground_cruise_missile_vehicle | APPLIED | in an earlier run |
+| B5-ground_cruise_missile_vehicle | SKIPPED(HOLD) | |
+| B1-engineer_vehicle | APPLIED | in an earlier run |
+| B1-smoke_carrier | APPLIED | in an earlier run |
+| B1-ammo_carrier | APPLIED | in an earlier run |
+| B1-bridging_vehicle | APPLIED | in an earlier run |
+| B1-demolition_line_vehicle | APPLIED | in an earlier run |
+| B1-mobile_repair_vehicle | APPLIED | in an earlier run |
+| B1-counter_battery_radar | APPLIED | in an earlier run |
+| B1-dazzler_vehicle | APPLIED | in an earlier run |
+| B1-ew_jammer | APPLIED | in an earlier run |
+| B1-gps_jammer_vehicle | APPLIED | in an earlier run |
+| B1-ground_drone_carrier | APPLIED | in an earlier run |
+| B1-mine_layer | APPLIED | in an earlier run |
+| B1-command_vehicle | APPLIED | in an earlier run |
+| B1-drone_hijack_vehicle | APPLIED | in an earlier run |
+| B1-shield_carrier | APPLIED | in an earlier run |
+| B1-scout_heli | APPLIED | in an earlier run |
+| B1-recon_drone | APPLIED | in an earlier run |
+| B1-wingman_drone | APPLIED | in an earlier run |
+| B1-heavy_lift_helicopter | APPLIED | in an earlier run |
+| B1-light_attack_heli | APPLIED | in an earlier run |
+| B1-prop_attack_plane | APPLIED | in an earlier run |
+| B1-aerial_tanker | APPLIED | in an earlier run |
+| B1-recon_jet | APPLIED | in an earlier run |
+| B1-attack_helicopter | APPLIED | in an earlier run |
+| B1-strike_drone | APPLIED | in an earlier run |
+| B1-fighter_jet | APPLIED | in an earlier run |
+| B1-interceptor_jet | APPLIED | in an earlier run |
+| B1-stealth_fighter | APPLIED | in an earlier run |
+| B1-swarm_carrier | APPLIED | in an earlier run |
+| B5-swarm_carrier | SKIPPED(HOLD) | |
+| B1-twin_rotor_gunship | APPLIED | in an earlier run |
+| B1-gunship_heli | APPLIED | in an earlier run |
+| B1-glide_bomber | APPLIED | in an earlier run |
+| B5-glide_bomber | SKIPPED(HOLD) | |
+| B1-stealth_naval_strike | APPLIED | in an earlier run |
+| B1-attack_jet | APPLIED | in an earlier run |
+| B1-stealth_bomber | APPLIED | in an earlier run |
+| B5-stealth_bomber | SKIPPED(HOLD) | |
+| B1-heavy_bomber | APPLIED | in an earlier run |
+| B5-heavy_bomber | SKIPPED(HOLD) | |
+| B1-sky_gunship | BLOCKED | waits for B2-FLR-sky_gunship, B3-AI |
+| B1-scout_jeep | APPLIED | in an earlier run |
+| B1-vbied | APPLIED | in an earlier run |
+| B1-radar_scout | APPLIED | in an earlier run |
+| B1-radar_support_vehicle | APPLIED | in an earlier run |
+| B1-light_tank | APPLIED | in an earlier run |
+| B1-airborne_light_tank | APPLIED | in an earlier run |
+| B1-flame_tank | APPLIED | in an earlier run |
+| B1-turtle_tank | APPLIED | in an earlier run |
+| B1-bmpt | APPLIED | in an earlier run |
+| B1-recoilless_jeep | APPLIED | in an earlier run |
+| B1-towed_at_gun | APPLIED | in an earlier run |
+| B1-fpv_carrier | APPLIED | in an earlier run |
+| B1-lancet_truck | APPLIED | in an earlier run |
+| B1-tank_destroyer | APPLIED | in an earlier run |
+| B1-wheeled_gun | APPLIED | in an earlier run |
+| B1-fibre_fpv_carrier | APPLIED | in an earlier run |
+| B1-radar_atgm_vehicle | APPLIED | in an earlier run |
+| B1-nlos_atgm_vehicle | APPLIED | in an earlier run |
+| B1-laser_tank | APPLIED | in an earlier run |
+| B1-railgun_truck | APPLIED | in an earlier run |
+| B1-rocket_technical | APPLIED | in an earlier run |
+| B1-mortar_carrier | APPLIED | in an earlier run |
+| B1-sp_mortar | APPLIED | in an earlier run |
+| B1-artillery | APPLIED | in an earlier run |
+| B1-wheeled_howitzer | APPLIED | in an earlier run |
+| B1-mine_rocket_truck | APPLIED | in an earlier run |
+| B1-mlrs | APPLIED | in an earlier run |
+| B1-shahed_truck | APPLIED | in an earlier run |
+| B5-shahed_truck | SKIPPED(HOLD) | |
+| B1-thermobaric_launcher | APPLIED | in an earlier run |
+| B5-thermobaric_launcher | SKIPPED(HOLD) | |
+| B1-ballistic_launcher | APPLIED | in an earlier run |
+| B5-ballistic_launcher | SKIPPED(HOLD) | |
+| B1-heavy_rocket_artillery | APPLIED | in an earlier run |
+| B5-heavy_rocket_artillery | SKIPPED(HOLD) | |
+| B1-siege_tank | APPLIED | in an earlier run |
+| B5-siege_tank | SKIPPED(HOLD) | |
+| B1-zu23_technical | APPLIED | in an earlier run |
+| B1-aa_vehicle | APPLIED | in an earlier run |
+| B1-shorad_vehicle | APPLIED | in an earlier run |
+| B1-aa_gun_vehicle | APPLIED | in an earlier run |
+| B1-interceptor_drone_vehicle | APPLIED | in an earlier run |
+| B1-aa_57mm_vehicle | APPLIED | in an earlier run |
+| B1-iron_beam | APPLIED | in an earlier run |
+| B1-microwave_vehicle | APPLIED | in an earlier run |
+| B1-heavy_aa | APPLIED | in an earlier run |
+| B1-sam_launcher | APPLIED | in an earlier run |
+| B1-long_sam | APPLIED | in an earlier run |
+| B1-bunker_vehicle | APPLIED | in an earlier run |
+| B1-armored_bulldozer | APPLIED | in an earlier run |
+| B1-main_battle_tank | APPLIED | in an earlier run |
+| B1-next_gen_tank | APPLIED | in an earlier run |
+| B1-twin_tank | APPLIED | in an earlier run |
+| B1-heavy_tank | APPLIED | in an earlier run |
+| B1-titan_tank | APPLIED | in an earlier run |
+| B2-FLR-scout_heli | BLOCKED | waits for S06 |
+| B2-FLR-heavy_lift_helicopter | BLOCKED | waits for S06 |
+| B2-FLR-light_attack_heli | BLOCKED | waits for S06 |
+| B2-FLR-prop_attack_plane | BLOCKED | waits for S06 |
+| B2-FLR-aerial_tanker | BLOCKED | waits for S06 |
+| B2-FLR-attack_helicopter | BLOCKED | waits for S06 |
+| B2-FLR-fighter_jet | BLOCKED | waits for S06 |
+| B2-FLR-interceptor_jet | BLOCKED | waits for S06 |
+| B2-FLR-stealth_fighter | BLOCKED | waits for S06 |
+| B2-FLR-swarm_carrier | BLOCKED | waits for S06 |
+| B2-FLR-twin_rotor_gunship | BLOCKED | waits for S06 |
+| B2-FLR-gunship_heli | BLOCKED | waits for S06 |
+| B2-FLR-glide_bomber | BLOCKED | waits for S06 |
+| B2-FLR-attack_jet | BLOCKED | waits for S06 |
+| B2-FLR-stealth_bomber | BLOCKED | waits for S06 |
+| B2-FLR-heavy_bomber | BLOCKED | waits for S06 |
+| B2-FLR-sky_gunship | BLOCKED | waits for S06 |
+| B3-AI | CONFLICT | aircraft.returnBecauseLowHP: no mapping for aircraft.returnBecauseLowHP |
+| B2-APS-next_gen_tank | BLOCKED | waits for S07 |
+| B2-APS-titan_tank | BLOCKED | waits for S07 |
+| B2-APS-main_battle_tank | BLOCKED | waits for S07 |
+| B2-APS-trophy | BLOCKED | waits for S07 |
+| G1 | BLOCKED | waits for C11, S05 |
+| R-supergun | SKIPPED(REJECT) | |
+| R-radar | SKIPPED(REJECT) | |
+| R-floor | SKIPPED(REJECT) | |
+| R-typhon | SKIPPED(REJECT) | |
+| R-icarus | SKIPPED(REJECT) | |
+| R-round-hover | SKIPPED(REJECT) | |
+| R-speed-new | SKIPPED(REJECT) | |

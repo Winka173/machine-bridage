@@ -13936,3 +13936,12 @@ light_tank 9 m/s, vbied 13, flame_tank 6.5, engineer_vehicle 7: every known_good
   siege defender, the Sandbox and the campaign keep theirs. Vault is derived (mode bank + okoye's 15): 45 -> 60 follows
   without a write. The supply threshold (E2) is HOLD and untouched. E1 could not be cross-checked against the v1 file
   (it does not exist; logged).
+- **B1.** Applied by class group (six commits): every B1 bundle but B1-sky_gunship (waits for B2-FLR-sky_gunship and
+  B3-AI, pass 7) went OK or with ALREADY_APPLIED rows (the outgoingDamageMult rows at 1.0); no CONFLICT. B5 (HOLD) not
+  applied. Keys changed: `vehicles[*].cp`, `.hp` (data units over toughness 2.2), new `.outgoingDamageMult` and
+  `.dropDelay` on the B1 vehicles (`Docs/balance/apply_log_p29.md` lists them).
+- **Tool state.** A re-check of an applied bundle after a later one moved its values (B0 after B1) gave false
+  CONFLICT rows; the tool now records applied bundles (`Docs/balance/apply_state_p29.json`), skips them and counts them
+  for depends_on. The false rows were removed from the log with a note.
+- **Texts.** Card numbers (price, health, drop time) are drawn from the data at run time; the only hand-written price
+  in the text tables was the siege mortar's guide line ("12 CP" -> 15, EN and VI). Card renders and the PDF are local.
