@@ -163,3 +163,26 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - Import the three new GLBs (wall_hesco, wall_t, wall_gun) and check a wall segment's orientation in a battle (its long side across its facing, its front out of the base) and its slumped wreck as rubble.
 - UI: the Base screen's wall rows (`fc-base__walls`, `fc-base__wall`) have no USS yet; the home screen's map picker is not filtered for Showdown (an ineligible map is replaced by the first eligible one as the battle loads); no HUD notice at Showdown's minute 6, minute 10 or sudden death.
 - Sims (when the owner allows): the AI's gate-or-breach choice (SquadLayer.Walls.cs), Showdown's real break times against Docs/checks/showdown_static.md.
+
+## Prompt 33 L2 (lead pass, 2026-10-02): edge corner pieces for the model lane
+
+Map data `"edges"."corners"` (Tools/maps/edges.py) names a prebuilt piece wherever two edge types meet, and at the
+rectangle's four corners. The view (lane A) places them; they are Blender kit pieces still to build (view only, no
+collider). Count = corners in all 100 map files.
+
+- `outer_land` (298): the rectangle's corner where both sides are LAND (almost every map).
+- `corner_land_cliff` (146): a cliff stretch meeting open land along a side (Dunebreak, Frostpeak, Jungle Pass,
+  Stormbeach, Launch Site, Open Pit, Red Rock).
+- `outer_urban` (64): Capital, Foundry, Metro City, Veyra Old Quarter.
+- `bank_land_river` (60): a river leaving the map (Border Crossing, Hollow Dam, Mirewood).
+- `corner_land_sea` (38): the coast meeting the edge (Coral Keys, Stormbeach, Lighthouse Bay).
+- `outer_sea` (16): a corner all sea (Coral Keys, Stormbeach, Lighthouse Bay).
+- `embankment_urban_river` (14): Capital's river between city stretches.
+- `outer_land_sea` (12): a harbour side meeting a land side at the corner (Ironport, Rust Yard).
+- `outer_cliff` (7): Open Pit.
+- `outer_river` (3): Hollow Dam's reservoir corner.
+- Named for later maps, not used yet: `mouth_river_sea`, `corner_cliff_sea`, `corner_quay_sea`, `gorge_cliff_river`,
+  `corner_land_urban`, `corner_cliff_urban`.
+- The SEA stretches' `shore` (BEACH / CLIFF / QUAY) tells which coast piece runs along them.
+- `Game/Effects/IngressStandIns.cs` (the reinforcements' stand-ins on their approach) is written blind: check in a
+  mission with an edge wave that the stand-ins drive up and vanish as the real vehicles appear at the gate.

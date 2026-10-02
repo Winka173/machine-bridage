@@ -245,6 +245,8 @@ namespace MachineBrigade.Sim.Modes
                 Notice(world, s, "warn", lead);
                 Line(world, s, "warn");
                 Record(world, s, "warn");
+                // Prompt 33 L2: the view's stand-ins of the first rows set off to reach their gates at the start (view only).
+                AnnounceIngress(world, s, lead);
                 return;
             }
             Start(world, s);
@@ -613,9 +615,11 @@ namespace MachineBrigade.Sim.Modes
             bool pods = false, Vector2? from = null)
         {
             var across = new Vector2(-inward.Y, inward.X);
+            // Prompt 33 L2: a group driving in comes through its entry gate: row by row at the gate, each row RowGap later.
+            var drives = DrivesIn(kind) && !pods;
             for (var i = 0; i < units.Count; i++)
             {
-                var spot = world.ClampToMap(at + across * ((i % 4) - 1.5f) * 5f - inward * (i / 4) * 6f);
+                var spot = drives ? GateSpot(world, at, inward, i) : world.ClampToMap(at + across * ((i % 4) - 1.5f) * 5f - inward * (i / 4) * 6f);
                 var def = world.Catalog.Vehicle(units[i]);
                 // Aircraft fly in over the edge of an air path or a landing zone, not out of the middle of it.
                 if (def.Flying && from is { } edge && kind is SpawnKind.Landing or SpawnKind.Air) spot = world.ClampToMap(edge + across * ((i % 4) - 1.5f) * 6f);
@@ -629,6 +633,7 @@ namespace MachineBrigade.Sim.Modes
                     world.Emit(SimEvent.DeploymentQueued(team, units[i], spot, inward, EconomySystemDelivery));
                     _drops.Add((world.Time + EconomySystemDelivery, units[i], team, spot, inward, s.Index, ally));
                 }
+                else if (drives && !def.Flying && i >= 4) Enter(world, s, units[i], team, spot, inward, ally, i / 4);
                 else Arrive(world, s, units[i], team, spot, inward, ally);
             }
         }

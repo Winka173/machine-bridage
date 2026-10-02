@@ -183,6 +183,14 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Prompt 30 L6: a neutral site was taken: DefId its kind ("radar", "workshop", "aa_site", "ammo_depot"), Team the taker.</summary>
         NeutralCaptured,
+
+        /// <summary>
+        /// Prompt 33 L2, the ingress contract: a scripted reinforcement (DefId, Team) enters the play area at its entry gate's
+        /// spot Position, facing Target (a unit vector, the way in), in Value seconds (its entry tick: the real vehicle exists
+        /// only from then). Offset.X is the gate's visualIngressLength: the view may run a stand-in without logic up the
+        /// approach so that it reaches Position at that moment. View only: nothing in the simulation reads it.
+        /// </summary>
+        Ingress,
     }
 
     /// <summary>
@@ -312,6 +320,10 @@ namespace MachineBrigade.Sim.Events
 
         /// <summary>Whether a DeploymentQueued event is a delivery by a fortress's line (no parachute).</summary>
         public bool ByLine => Kind == SimEventKind.DeploymentQueued && Mount == 1;
+
+        /// <summary>Prompt 33 L2: a scripted reinforcement comes in at its gate's spot in <paramref name="seconds"/> (see <see cref="SimEventKind.Ingress"/>).</summary>
+        internal static SimEvent Ingress(int team, string vehicleId, Vector2 at, Vector2 inward, float seconds, float ingressLength) =>
+            new(SimEventKind.Ingress, EntityId.None, at, inward, seconds, default, vehicleId, team, offset: new Vector2(ingressLength, 0f));
 
         internal static SimEvent ArrivalInbound(int team, string kind, Vector2 stop, Vector2 facing, float seconds) =>
             new(SimEventKind.Arrival, EntityId.None, stop, facing, seconds, default, kind, team);

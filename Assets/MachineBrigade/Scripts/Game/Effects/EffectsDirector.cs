@@ -92,6 +92,9 @@ namespace MachineBrigade.Game.Effects
         private readonly AimLines _aimLines;
         private readonly StrikeEffects _strikes;
         private readonly AirDrops _drops;
+
+        /// <summary>Prompt 33 L2: the scripted reinforcements' stand-ins on their gates' approaches (view only).</summary>
+        private readonly IngressStandIns _ingress;
         private readonly GroundMark _marker;
         private float _markerStart = -10f;
 
@@ -164,6 +167,7 @@ namespace MachineBrigade.Game.Effects
             _escape = new EscapeWarnings(materials, meshes, _root);
             _aimLines = new AimLines(materials, _root);
             _drops = new AirDrops(catalog, models, meshes, materials, _emitters, _root);
+            _ingress = new IngressStandIns(catalog, models, _root);
 
             _marker = new GroundMark("Move Marker", _root, meshes, materials, GroundMark.Style.Move);
             _marker.Transform.localScale = Vector3.one * 2.2f;
@@ -188,6 +192,10 @@ namespace MachineBrigade.Game.Effects
 
                     case SimEventKind.DeploymentQueued:
                         _drops.Queue(e, now);
+                        break;
+
+                    case SimEventKind.Ingress:
+                        _ingress.Queue(e, now);
                         break;
 
                     case SimEventKind.ShellInbound:
@@ -719,6 +727,7 @@ namespace MachineBrigade.Game.Effects
             _aimLines.Tick(now);
             TickBigCharge(views, now);
             _drops.Tick(now);
+            _ingress.Tick(now);
             JetTrails(views, now);
             KeepBossInSight(views);
             _night.Tick(now, Time.deltaTime, _camera.Focus);

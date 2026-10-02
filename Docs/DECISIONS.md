@@ -16276,3 +16276,81 @@ prompt 30 map audit unchanged, 9 RED / 91 YELLOW); the C# is compiled by the lea
   foundry_conquest/_sandbox/_siege, ironport_conquest/_sandbox/_siege, metrocity_conquest/_sandbox/_siege,
   rustyard_conquest/_sandbox/_siege, frostpeak_siege, junglepass_siege, orbitalgate_siege, redrock_siege,
   veyra_old_quarter_siege, whiteout_siege. Strings: `toast.railBoss` (EN + VI). balance.json and campaign.json unchanged.
+
+## Prompt 33 L2 / L3 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b2`. Passes 2 (edge types, continuity, the ingress contract) and 3 (terrain tags, landmarks).
+Nothing run but the Python tools (Tools/maps/edges.py, terrain.py, check_access.py, Tools/audit/map_audit.py); the C# is
+compiled by the lead; Prompt33EdgeTests and Prompt33TerrainTests are written, not run. Lane A (L1, L6) dresses the
+bands in its own `map_dressing.json` and reads the data below; it edits no map file.
+
+### L2: edge types, corners, continuity, entry gates
+
+- **Data** (`Tools/maps/edges.py`, run after build_maps.py, neutrals.py and transit.py; every `_conquest`, `_sandbox`,
+  `_siege` and `_long` file, 100 files): `"edges"` = `band` (16 m, the edge band; lane A tunes it per map), `outer`
+  (120 m: the widest view's half width at 2.4:1 is 101 m, + 15 %), `segments`, `corners`, `links`; and `"entryGates"`.
+  Sim types: `MapEdgesDef` / `EdgeSegmentDef` / `EdgeCornerDef` / `EdgeLinkDef` (`Sim/Content/MapDefinition.Edges.cs`),
+  `EntryGate` (`Sim/Navigation/EntryGate.cs`); a reversed map keeps both.
+- **edgeType per stretch** of each side of the map's rectangle (N z max, E x max, S, W; `from`/`to` along x on N/S,
+  along z on E/W), from 10 m bins of the 14 m strip inside the edge: water tiles -> SEA on a map with sea, RIVER
+  elsewhere; a cliff prop (cliff_a/_b, volcanic_cliff, mesa) -> CLIFF; an urban map (Capital, Foundry, Metro City,
+  Veyra Old Quarter) -> URBAN; else LAND. Runs under 20 m join their longer neighbour (a river keeps its run). Coral
+  Keys is an island map: a bin wholly beyond the outline with no land scenery is sea. Ironport's and Rust Yard's quays
+  (bollards at z 144) face a sea beyond the square that has no tiles of its own: their north side is declared SEA
+  (square files only; on the `_long` files the quay is mid-map).
+- **edgeModifier**: Ironport SEA + HARBOR, Rust Yard SEA + INDUSTRIAL; LAND/URBAN of the industrial maps (Foundry,
+  Rust Yard, Ironport, Launch Site, Orbital Gate, Open Pit, Dunebreak) INDUSTRIAL; LAND on an urban map URBAN. A SEA
+  stretch also says its `shore`: BEACH, CLIFF (Lighthouse Bay's east side under the lighthouse headland: the prompt's
+  "SEA + CLIFF" read as the shore, since CLIFF is a type, not a modifier) or QUAY (the two harbours).
+- **Maps with SEA**: Stormbeach (landingbeach: S, the south of E and W), Beacon Bay = Lighthouse Bay (lighthousebay:
+  E and S), Coral Keys (coralisles: every side in part), Ironport (N, harbour), Rust Yard (N, industrial quay); also
+  their `_long` files where the water reaches the edge (not Ironport's or Rust Yard's). RIVER: Border Crossing (E, W),
+  Capital (E, W), Hollow Dam (N reservoir, S, W), Mirewood (every side). CLIFF stretches: Dunebreak, Frostpeak, Jungle
+  Pass, Stormbeach's bluffs, Launch Site, Open Pit, Red Rock.
+- **Sea side scenery**: on a SEA stretch, decor (scenery beyond the outline) standing on the water within 30 m of the
+  edge, or any land scenery within the 14 m strip, is removed (harbour pieces stay: bollards, cranes, piers, boats,
+  containers). Only Rust Yard's three square files had any (2 each). The outer band itself is lane A's (its dressing
+  keeps to the same rule; L7's validator checks it).
+- **Corners**: where two types meet along a side, and at the rectangle's four corners, a prebuilt piece by name
+  (`corner_land_sea`, `corner_land_cliff`, `bank_land_river`, `embankment_urban_river`, `outer_land`, `outer_sea`,
+  `outer_urban`, `outer_cliff`, `outer_river`, `outer_land_sea`; the table in edges.py also names `mouth_river_sea`,
+  `corner_cliff_sea`, `corner_quay_sea`, `gorge_cliff_river`, `corner_land_urban`, `corner_cliff_urban` for later
+  maps). Never random ground. The list for the lane that builds models is in Docs/ai/LOCAL_TODO.md.
+- **Continuity** (`links`): every road end within 14 m of the edge (its way out), every rail crossing the rectangle
+  (its RailSpline runs on to its portal), every RIVER stretch's middle, every coast point (a SEA stretch meeting
+  another type), every sea route exit node (L4), the sea's `airEntry`, and one air corridor per side's middle
+  (aircraft come in over any side: EconomySystem's EdgeBehind). The view draws each on for `outer` m.
+- **Entry gates** (the ingress contract): 3200 gates in all (road 439, edge 2565, sea 173, rail 23). A road gate at the
+  first open spot 7-40 m in along each road that reaches the edge; an edge gate every 30 m along LAND / URBAN / CLIFF /
+  RIVER stretches at the first open spot 7-40 m in (none within 15 m of a road's); a sea gate every 30 m along SEA
+  stretches at the first open ground 7-60 m in, and at each of a sea's landing beaches (Lighthouse Bay); a rail gate
+  at each RailSpline's `playFrom` point (L5's). "Open" = the bare grid's open cell with its 8 neighbours, in team 0's
+  connected region. Each has `visualIngressLength` (to the edge + 120 m) and `path` (from out in the outer band, over
+  the edge, to the gate).
+- **Spawn points on gates** (`SpawnPoints.Add` -> `GateFor`): an edge point, a rail head, the allies' point behind
+  their area when within 14 m of the edge, and a water landing move onto the nearest data gate that takes their kind
+  (edge: road/edge; rail head: rail, else road/edge; water: sea) within 30 m, if it is on the battlefield's ground and
+  (the enemy's) still 0.9 x 95 m from the player's camp, and come in the gate's way. Every other point (drops,
+  landing zones, outposts, air paths' drops) and an edge point with no data gate near gets a gate made where it
+  stands (`EntryGate.At`, `Implicit`: its approach straight back out over the nearest edge). So every scripted
+  reinforcement has an entryGate. This moves the mission waves' edge points by up to 30 m: a behaviour change.
+- **Entry ticks** (`MissionEvents.Ingress.cs`): a group that drives in (Edge, Rail, Sea, Behind; not pods, not
+  parachutes, not aircraft) comes through its gate four abreast 5 m apart: row 0 is created at the gate on the tick the
+  event happens (as before), row k exactly k x 20 ticks later (`RowGap` 1 s; queued with the drops, due half a tick
+  early so the float sum never slips a tick), at the gate again. Before: the rows stood 6 m behind each other, the back
+  ones clamped to the map's edge. Nothing exists before its entry tick (no target, collision, AI, damage, unit cap,
+  grid). The other reinforcement kinds (a general on the field, a convoy, a column) come in at their point, which now
+  stands on its gate.
+- **The view's stand-in** (`SimEventKind.Ingress`: DefId, Team, Position the gate spot, Target the way in, Value the
+  seconds to the entry tick, Offset.X the approach's length): emitted at the wave's warning for the first row of each
+  group that drives in (read from the plan: no random draw, no state) and as the event happens for the later rows.
+  `Game/Effects/IngressStandIns.cs` (written blind) runs a model up the approach at most at the vehicle's speed so it
+  reaches the spot at that moment and removes it then; the real vehicle appears there. If the event waits (the player
+  on the point) or takes a spot beside it, the stand-ins reach the gate and vanish (accepted). Aircraft keep flying in
+  over the edge as before (no stand-in).
+- **Ships and trains** keep their own routes beyond the play area (the prompt's exception): the sea route graph's exits
+  (L4), the RailSpline portals and the Siege support train's EntryTick (L5). Boss trains and flagships still start
+  inside the map at their mission's tick (L0, L4, L5).
+- Fingerprint: unchanged (the drops' count already mixes the later rows); the Ingress events are not mixed (view only).
+- Data keys changed: every map file + `"edges"`, `"entryGates"`; Rust Yard's three square files lose two decor items
+  each. balance.json and campaign.json unchanged.
