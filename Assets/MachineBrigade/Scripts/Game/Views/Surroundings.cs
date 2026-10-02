@@ -20,13 +20,24 @@ namespace MachineBrigade.Game.Views
     /// Themes change the picture: a volcanic map has a glowing lava river and fumaroles, a city
     /// continues its street grid out to the hills with a tower in every block and a canal.
     /// </summary>
-    public sealed class Surroundings : IDisposable
+    public sealed partial class Surroundings : IDisposable
     {
         /// <summary>
-        /// Half-size of the decorated area round the map's middle: 130 m past the battlefield's edge (its longer side's,
-        /// on a long battlefield; the scenery itself keeps to <see cref="Beyond"/> the map's own edges).
+        /// Half-size of the decorated square round the map's middle. Prompt 33 L1: at least the outer ring's far edge
+        /// (<see cref="MapZones.OuterX"/>, <see cref="MapZones.OuterZ"/>: the edge band plus the widest camera frame + 15 %),
+        /// and never less than the old 130 m past the longer side's edge.
         /// </summary>
-        private float Extent => _half + 130f;
+        private float Extent => _extent;
+
+        private readonly float _extent;
+
+        /// <summary>The map's four zones (prompt 33 L1) and its dressing entry and biome (map_dressing.json; may be null).</summary>
+        private readonly MapZones _zones;
+        private readonly DressingMap _dress;
+        private readonly DressingBiome _biome;
+
+        /// <summary>The map's fixed scenery seed (prompt 33 L1: the same scenery every time a map is played).</summary>
+        private readonly int _seed;
 
         /// <summary>
         /// How far a point is outside the map's rectangle (negative inside): its larger overshoot along x and z. On a square
@@ -51,7 +62,7 @@ namespace MachineBrigade.Game.Views
         // The map's middle and half extents (a long battlefield is 300 x 480 m, prompt 17).
         private readonly Vector2 _centre;
         private readonly float _halfX, _halfZ;
-        private readonly Random _rng = new(97);
+        private readonly Random _rng;
 
         public Surroundings(SimWorld world, ModelLibrary models, MaterialLibrary materials, MapTheme theme, Transform parent,
             Match.GraphicsOptions options = null)
@@ -62,6 +73,14 @@ namespace MachineBrigade.Game.Views
             _halfZ = world.Map.Length * 0.5f;
             _field = BoundaryField.For(world.Map);
             _theme = theme;
+            // Prompt 33 L1: the four zones, the fixed seed and the far ring's HLOD stand-ins, from map_dressing.json.
+            _dress = MapDressing.ForMap(world.Map.Id);
+            _biome = MapDressing.BiomeFor(_dress, theme.Id);
+            _zones = MapZones.For(world.Map, MapDressing.EdgeBand(_dress, _biome));
+            _extent = Mathf.Max(_half + 130f, Mathf.Max(_zones.OuterX, _zones.OuterZ));
+            _seed = MapDressing.Seed(world.Map.Id);
+            _rng = new Random(_seed);
+            _farTree = FarTree(models, theme);
             options ??= Match.GraphicsOptions.For(Match.GraphicsQuality.High);
             _density = options.RichScenery ? 1f : 0.5f;
             // Scenery near the edge casts shadows into view; further out it sits in the haze.
@@ -88,7 +107,12 @@ namespace MachineBrigade.Game.Views
             materials.Skirt.SetColor("_BaseColor", theme.Skirt);
             _rangeMaterial = materials.Terrain;
             _rangeMaterial.SetTexture("_BaseMap", _palette);
-            if (!Match.DebugFlags.Has("-mb-no-range")) Place("Mountain Range", Own(MountainRange()), _rangeMaterial);
+            if (!Match.DebugFlags.Has("-mb-no-range"))
+            {
+                Place("Mountain Range", Own(MountainRange()), _rangeMaterial);
+                // Zone 4: the range carried on, coarser, out past the decorated square into the fog.
+                Place("Horizon Range", Own(HorizonRange()), _rangeMaterial);
+            }
 
             materials.Water.SetColor("_BaseColor", theme.WaterColour);
             materials.Water.SetFloat("_Roughness", theme.WaterRoughness);
@@ -720,8 +744,10 @@ namespace MachineBrigade.Game.Views
             return texture;
         }
 
+        /// <summary>A point in the outer ring's rectangle (prompt 33 L1: the ring per axis, so a long map's sides are not overfilled).</summary>
         private Vector2 RandomPoint() =>
-            _centre + new Vector2((float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f, (float)(_rng.NextDouble() * 2 - 1) * Extent * 0.96f);
+            _centre + new Vector2((float)(_rng.NextDouble() * 2 - 1) * Mathf.Min(Extent, _zones.OuterX) * 0.98f,
+                (float)(_rng.NextDouble() * 2 - 1) * Mathf.Min(Extent, _zones.OuterZ) * 0.98f);
 
         /// <summary>Cell ids from here up hold the bays' dressing, which casts no shadow.</summary>
         private const int ShadowlessCells = 100000;
@@ -729,6 +755,7 @@ namespace MachineBrigade.Game.Views
         private void Add(ModelLibrary models, string modelId, Vector2 position, float yaw, float scale, float height = 0f,
             bool shadowless = false)
         {
+            modelId = FarModel(modelId, position);
             var placement = Matrix4x4.TRS(new Vector3(position.x, height, position.y), Quaternion.Euler(0f, yaw, 0f), Vector3.one * scale);
             var cell = Mathf.FloorToInt((position.x - _centre.x + Extent) / CellSize) * 64 + Mathf.FloorToInt((position.y - _centre.y + Extent) / CellSize);
             if (shadowless) cell += ShadowlessCells;

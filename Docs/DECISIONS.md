@@ -16054,3 +16054,55 @@ lead; sudden death, its damage count and the draw; the menu and both languages).
 - **Report** `Docs/balance/report_p32.md`: pass 0's results, the rebuild prices (provisional and script), the towers cut,
   the steel fortress verdict (HOLD), the three HQ types compared, the Showdown static check, the overlaps and performance,
   every decision taken alone.
+
+## Prompt 33 L1 / L6 (lead pass, 2026-10-02)
+
+Prompt 33 passes 1 and 6 on `feature/p33-a1` (lane A). Nothing run but the Python tools, the Blender build and the GLB
+validator (no Unity, no tests, no sims); the C# is compiled by the lead. To keep clear of lane B (prompt 33 L0, L4, L5
+edit the map JSON files), no map file is touched: zones and dressing per map live in a new view-only data file,
+`Resources/Data/map_dressing.json`, written and checked by `Tools/maps/map_dressing.py` (`--check`). The simulation never
+reads it; decoration never changes a tick.
+
+### L1: the four zones
+
+| zone | where | what |
+|---|---|---|
+| 1 play area | the map rectangle (its outline's bays included) | everything that plays: unchanged |
+| 2 edge band | `edgeBand` m past the edge, 12-20 per map | transition: dense band dressing, berms and ditches (L6), no gameplay |
+| 3 outer ring | the next `ring` m | decoration only (instanced, no collider, no vision): forests, rocks, fields, biome sets; HLOD stand-ins in its far half |
+| 4 horizon | beyond the ring | the range carried on in 20 m cells to 1.8x the decorated square, the sea plane, far islands, the horizon ground (6x), the fog |
+
+**Ring size rule.** The battle camera is orthographic, tilted 52 degrees, with a fixed yaw per map shape (-45 square,
+-90 long; it never rotates) and its focus clamped to the map rectangle. So the furthest ground it shows past an edge is
+the frame's half-extent with the focus on that edge: across the screen zoom x aspect, up the screen zoom / sin 52, turned
+by the yaw. Taken at the furthest player zoom (42 square, 50 long; the debug flags' 90-95 are not the player's) and the
+widest supported screen of 4:3, 16:9 and 20:9, plus 15 %, rounded up to whole metres (`Views/MapZones.cs` CameraFrame):
+
+| map | reach past the edge (20:9) | ring (+15 %) |
+|---|---|---|
+| square 300 x 300, yaw -45 | (93.3 + 53.3) x 0.707 = 103.7 m both axes | **120 m** |
+| long 300 x 480, yaw -90, x sides | 50 / sin 52 = 63.5 m | **73 m** |
+| long, z ends | 50 x 20/9 = 111.1 m | **128 m** |
+
+So the decorated area runs to edge + band + ring: a square map 150 + 16 + 120 = 286 m from its middle (was 280), a long
+map 239 m across and 384 m along (was a 370 m square). 21:9 PC screens (reach 107 m) stay inside the pad. A camera that
+turned would need the half-diagonal both ways (`rotates` in the data, false). `Surroundings` keeps its square ground and
+texture (half-size = the larger far edge, never below the old 130 m past the longer side) but scatters in the ring's
+rectangle, so a long map's sides are no longer overfilled. A test (`MapZonesTests`) keeps the data file's camera block
+and ring numbers equal to `RtsCamera` / `MatchRunner.LongMaxZoom`; the Python check recomputes them from the C# source.
+
+**Far rendering.** Everything in the ring stays GPU-instanced in 80 m culled cells (as before). In the ring's far half
+(past band + half the ring: 76 m on a square map) the theme's trees are drawn as their biome's HLOD stand-in
+(`dress_*_tree_far` / `_pine_far`, 36-76 triangles against 124-1,000 for the trees), still instanced and shadowless
+there. True billboard impostors were not used: the kit is flat-shaded vertex colour, and a low-poly stand-in reads the
+same at that distance without an atlas or an alpha pass. Zone 4's coarse range is one mesh (at most about 6,000
+triangles, no shadows); the camera's 104 m reach never gets there in battle (it is for the menu and previews).
+
+**Fixed seed.** The scenery's random stream was one constant (97) for every map; it is now the map family's seed from
+the data (FNV-1a of the family id, the same in Python and C#, `MapDressing.StableSeed`), so each map has its own fixed
+scenery, identical every time (all its modes share it). This does change today's scenery layout on every map.
+
+**Edge band widths (m).** Open desert and snow 18-20 (dunebreak, launchsite, saltflat, whiteout 20; openpit, redrock,
+frostpeak, skyhold 18), countryside 16, coasts and ports 14, dense ground 12 (capital, metrocity, veyra_old_quarter,
+foundry, coralisles, junglepass). Pass 2 (edgeType, the sea side) comes later; the existing rule (no land dressing in the
+sea) is kept.

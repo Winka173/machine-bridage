@@ -1,0 +1,639 @@
+{
+ "version": 1,
+ "camera": {
+  "tiltDegrees": 52.0,
+  "maxZoomSquare": 42.0,
+  "maxZoomLong": 50.0,
+  "yawSquare": -45.0,
+  "yawLong": -90.0,
+  "rotates": false,
+  "aspects": [
+   1.3333,
+   1.7778,
+   2.2222
+  ],
+  "pad": 0.15,
+  "reachSquare": 103.68,
+  "reachLongSide": 63.45,
+  "reachLongEnd": 111.11,
+  "ringSquare": 120.0,
+  "ringLongSide": 73.0,
+  "ringLongEnd": 128.0
+ },
+ "biomes": [
+  {
+   "id": "temperate",
+   "edgeBand": 16,
+   "play": 8,
+   "band": 120,
+   "ring": 45,
+   "far": 40,
+   "playSet": [
+    "dress_temperate_shrub",
+    "dress_temperate_shrub",
+    "dress_temperate_wildflowers",
+    "dress_temperate_wildflowers",
+    "dress_temperate_wildflowers",
+    "dress_temperate_stump"
+   ],
+   "bandSet": [
+    "dress_temperate_shrub",
+    "dress_temperate_shrub",
+    "dress_temperate_shrub",
+    "dress_temperate_haybales",
+    "dress_temperate_stump",
+    "dress_temperate_stump",
+    "dress_temperate_wildflowers",
+    "dress_temperate_wildflowers"
+   ],
+   "ringSet": [
+    "dress_temperate_shrub",
+    "dress_temperate_shrub",
+    "dress_temperate_haybales",
+    "dress_temperate_haybales",
+    "dress_temperate_stump",
+    "dress_temperate_wildflowers"
+   ],
+   "farSet": [
+    "dress_temperate_tree_far"
+   ],
+   "seaSet": [],
+   "horizonSet": [],
+   "farTree": "dress_temperate_tree_far",
+   "hills": 8,
+   "berms": 6,
+   "ditches": 3,
+   "dryBeds": 1
+  },
+  {
+   "id": "desert",
+   "edgeBand": 20,
+   "play": 5,
+   "band": 70,
+   "ring": 30,
+   "far": 18,
+   "playSet": [
+    "dress_desert_scrub",
+    "dress_desert_scrub",
+    "dress_desert_scrub",
+    "dress_desert_barrel_cacti",
+    "dress_desert_bones"
+   ],
+   "bandSet": [
+    "dress_desert_scrub",
+    "dress_desert_scrub",
+    "dress_desert_scrub",
+    "dress_desert_barrel_cacti",
+    "dress_desert_barrel_cacti",
+    "dress_desert_bones",
+    "dress_desert_hoodoo"
+   ],
+   "ringSet": [
+    "dress_desert_scrub",
+    "dress_desert_scrub",
+    "dress_desert_hoodoo",
+    "dress_desert_hoodoo",
+    "dress_desert_barrel_cacti",
+    "dress_desert_bones"
+   ],
+   "farSet": [
+    "dress_desert_far"
+   ],
+   "seaSet": [],
+   "horizonSet": [],
+   "farTree": "",
+   "hills": 6,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 3
+  },
+  {
+   "id": "snow",
+   "edgeBand": 18,
+   "play": 6,
+   "band": 100,
+   "ring": 40,
+   "far": 35,
+   "playSet": [
+    "dress_snow_drift",
+    "dress_snow_drift",
+    "dress_snow_ice_rock"
+   ],
+   "bandSet": [
+    "dress_snow_drift",
+    "dress_snow_drift",
+    "dress_snow_drift",
+    "dress_snow_ice_rock",
+    "dress_snow_ice_rock",
+    "dress_snow_log",
+    "dress_snow_log"
+   ],
+   "ringSet": [
+    "dress_snow_drift",
+    "dress_snow_drift",
+    "dress_snow_ice_rock",
+    "dress_snow_log"
+   ],
+   "farSet": [
+    "dress_snow_pine_far"
+   ],
+   "seaSet": [],
+   "horizonSet": [],
+   "farTree": "dress_snow_pine_far",
+   "hills": 8,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 1
+  },
+  {
+   "id": "harbor",
+   "edgeBand": 14,
+   "play": 4,
+   "band": 90,
+   "ring": 35,
+   "far": 12,
+   "playSet": [
+    "dress_temperate_wildflowers"
+   ],
+   "bandSet": [
+    "dress_harbor_pallets",
+    "dress_harbor_pallets",
+    "dress_harbor_drums",
+    "dress_harbor_drums",
+    "dress_harbor_pipes",
+    "dress_harbor_bollards"
+   ],
+   "ringSet": [
+    "dress_harbor_pallets",
+    "dress_harbor_drums",
+    "dress_harbor_pipes",
+    "dress_harbor_pipes"
+   ],
+   "farSet": [
+    "dress_harbor_shed_far"
+   ],
+   "seaSet": [
+    "dress_coast_buoy"
+   ],
+   "horizonSet": [],
+   "farTree": "dress_temperate_tree_far",
+   "hills": 3,
+   "berms": 5,
+   "ditches": 3,
+   "dryBeds": 0
+  },
+  {
+   "id": "jungle",
+   "edgeBand": 14,
+   "play": 10,
+   "band": 150,
+   "ring": 60,
+   "far": 45,
+   "playSet": [
+    "dress_jungle_fern",
+    "dress_jungle_fern",
+    "dress_jungle_banana"
+   ],
+   "bandSet": [
+    "dress_jungle_palm_small",
+    "dress_jungle_palm_small",
+    "dress_jungle_banana",
+    "dress_jungle_banana",
+    "dress_jungle_fern",
+    "dress_jungle_fern",
+    "dress_jungle_fern",
+    "dress_jungle_vine_rock"
+   ],
+   "ringSet": [
+    "dress_jungle_palm_small",
+    "dress_jungle_palm_small",
+    "dress_jungle_banana",
+    "dress_jungle_fern",
+    "dress_jungle_fern",
+    "dress_jungle_vine_rock"
+   ],
+   "farSet": [
+    "dress_jungle_tree_far"
+   ],
+   "seaSet": [],
+   "horizonSet": [],
+   "farTree": "dress_jungle_tree_far",
+   "hills": 6,
+   "berms": 3,
+   "ditches": 2,
+   "dryBeds": 2
+  },
+  {
+   "id": "volcanic",
+   "edgeBand": 16,
+   "play": 5,
+   "band": 70,
+   "ring": 30,
+   "far": 18,
+   "playSet": [
+    "dress_volcanic_ash_rocks"
+   ],
+   "bandSet": [
+    "dress_volcanic_ash_rocks",
+    "dress_volcanic_ash_rocks",
+    "dress_volcanic_cinder_cone",
+    "dress_volcanic_snag",
+    "dress_volcanic_snag"
+   ],
+   "ringSet": [
+    "dress_volcanic_ash_rocks",
+    "dress_volcanic_cinder_cone",
+    "dress_volcanic_cinder_cone",
+    "dress_volcanic_snag"
+   ],
+   "farSet": [
+    "dress_volcanic_far"
+   ],
+   "seaSet": [],
+   "horizonSet": [],
+   "farTree": "dress_volcanic_snag",
+   "hills": 8,
+   "berms": 3,
+   "ditches": 0,
+   "dryBeds": 2
+  },
+  {
+   "id": "urban",
+   "edgeBand": 12,
+   "play": 3,
+   "band": 80,
+   "ring": 25,
+   "far": 6,
+   "playSet": [
+    "dress_temperate_wildflowers"
+   ],
+   "bandSet": [
+    "dress_urban_rubble",
+    "dress_urban_rubble",
+    "dress_urban_planter",
+    "dress_urban_planter",
+    "dress_urban_billboard",
+    "dress_urban_kiosk"
+   ],
+   "ringSet": [
+    "dress_urban_rubble",
+    "dress_urban_billboard",
+    "dress_urban_kiosk",
+    "dress_urban_planter"
+   ],
+   "farSet": [
+    "dress_urban_block_far"
+   ],
+   "seaSet": [],
+   "horizonSet": [],
+   "farTree": "dress_temperate_tree_far",
+   "hills": 0,
+   "berms": 4,
+   "ditches": 2,
+   "dryBeds": 0
+  },
+  {
+   "id": "coast",
+   "edgeBand": 14,
+   "play": 6,
+   "band": 100,
+   "ring": 35,
+   "far": 20,
+   "playSet": [
+    "dress_coast_dune_grass",
+    "dress_coast_dune_grass",
+    "dress_coast_driftwood"
+   ],
+   "bandSet": [
+    "dress_coast_dune_grass",
+    "dress_coast_dune_grass",
+    "dress_coast_dune_grass",
+    "dress_coast_driftwood",
+    "dress_coast_driftwood",
+    "dress_coast_rowboat"
+   ],
+   "ringSet": [
+    "dress_coast_dune_grass",
+    "dress_coast_dune_grass",
+    "dress_coast_driftwood",
+    "dress_coast_rowboat"
+   ],
+   "farSet": [
+    "dress_temperate_tree_far"
+   ],
+   "seaSet": [
+    "dress_coast_buoy"
+   ],
+   "horizonSet": [
+    "dress_coast_island_far"
+   ],
+   "farTree": "dress_temperate_tree_far",
+   "hills": 5,
+   "berms": 4,
+   "ditches": 1,
+   "dryBeds": 1
+  }
+ ],
+ "maps": [
+  {
+   "id": "ashfield",
+   "biome": "temperate",
+   "edgeBand": 16.0,
+   "density": 1.0,
+   "seed": 1670284321,
+   "farTree": "",
+   "hills": 8,
+   "berms": 6,
+   "ditches": 3,
+   "dryBeds": 1
+  },
+  {
+   "id": "borderbridge",
+   "biome": "temperate",
+   "edgeBand": 16.0,
+   "density": 1.0,
+   "seed": 1458530870,
+   "farTree": "",
+   "hills": 8,
+   "berms": 6,
+   "ditches": 3,
+   "dryBeds": 1
+  },
+  {
+   "id": "capital",
+   "biome": "urban",
+   "edgeBand": 12.0,
+   "density": 1.0,
+   "seed": 1629501355,
+   "farTree": "",
+   "hills": 0,
+   "berms": 4,
+   "ditches": 2,
+   "dryBeds": 0
+  },
+  {
+   "id": "coralisles",
+   "biome": "coast",
+   "edgeBand": 12.0,
+   "density": 1.0,
+   "seed": 767089382,
+   "farTree": "none",
+   "hills": 5,
+   "berms": 4,
+   "ditches": 1,
+   "dryBeds": 1
+  },
+  {
+   "id": "dunebreak",
+   "biome": "desert",
+   "edgeBand": 20.0,
+   "density": 1.0,
+   "seed": 1741927446,
+   "farTree": "",
+   "hills": 6,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 3
+  },
+  {
+   "id": "emberridge",
+   "biome": "volcanic",
+   "edgeBand": 16.0,
+   "density": 1.0,
+   "seed": 38931175,
+   "farTree": "",
+   "hills": 8,
+   "berms": 3,
+   "ditches": 0,
+   "dryBeds": 2
+  },
+  {
+   "id": "foundry",
+   "biome": "harbor",
+   "edgeBand": 12.0,
+   "density": 1.0,
+   "seed": 716394282,
+   "farTree": "",
+   "hills": 3,
+   "berms": 5,
+   "ditches": 3,
+   "dryBeds": 0
+  },
+  {
+   "id": "frostpeak",
+   "biome": "snow",
+   "edgeBand": 18.0,
+   "density": 1.0,
+   "seed": 101703050,
+   "farTree": "",
+   "hills": 8,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 1
+  },
+  {
+   "id": "greenvale",
+   "biome": "temperate",
+   "edgeBand": 16.0,
+   "density": 1.1,
+   "seed": 99633698,
+   "farTree": "",
+   "hills": 8,
+   "berms": 6,
+   "ditches": 3,
+   "dryBeds": 1
+  },
+  {
+   "id": "hydrodam",
+   "biome": "temperate",
+   "edgeBand": 16.0,
+   "density": 1.0,
+   "seed": 1602377121,
+   "farTree": "",
+   "hills": 8,
+   "berms": 6,
+   "ditches": 3,
+   "dryBeds": 1
+  },
+  {
+   "id": "ironport",
+   "biome": "harbor",
+   "edgeBand": 14.0,
+   "density": 1.0,
+   "seed": 250786980,
+   "farTree": "",
+   "hills": 3,
+   "berms": 5,
+   "ditches": 3,
+   "dryBeds": 0
+  },
+  {
+   "id": "junglepass",
+   "biome": "jungle",
+   "edgeBand": 12.0,
+   "density": 1.0,
+   "seed": 239550109,
+   "farTree": "",
+   "hills": 6,
+   "berms": 3,
+   "ditches": 2,
+   "dryBeds": 2
+  },
+  {
+   "id": "landingbeach",
+   "biome": "coast",
+   "edgeBand": 14.0,
+   "density": 1.0,
+   "seed": 646789143,
+   "farTree": "",
+   "hills": 5,
+   "berms": 4,
+   "ditches": 1,
+   "dryBeds": 1
+  },
+  {
+   "id": "launchsite",
+   "biome": "desert",
+   "edgeBand": 20.0,
+   "density": 0.8,
+   "seed": 1423744085,
+   "farTree": "",
+   "hills": 6,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 3
+  },
+  {
+   "id": "lighthousebay",
+   "biome": "coast",
+   "edgeBand": 14.0,
+   "density": 1.0,
+   "seed": 1458569243,
+   "farTree": "",
+   "hills": 5,
+   "berms": 4,
+   "ditches": 1,
+   "dryBeds": 1
+  },
+  {
+   "id": "metrocity",
+   "biome": "urban",
+   "edgeBand": 12.0,
+   "density": 1.0,
+   "seed": 20757117,
+   "farTree": "",
+   "hills": 0,
+   "berms": 4,
+   "ditches": 2,
+   "dryBeds": 0
+  },
+  {
+   "id": "openpit",
+   "biome": "desert",
+   "edgeBand": 18.0,
+   "density": 0.9,
+   "seed": 1925215302,
+   "farTree": "",
+   "hills": 6,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 3
+  },
+  {
+   "id": "orbitalgate",
+   "biome": "snow",
+   "edgeBand": 16.0,
+   "density": 0.9,
+   "seed": 1770265421,
+   "farTree": "",
+   "hills": 8,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 1
+  },
+  {
+   "id": "redrock",
+   "biome": "desert",
+   "edgeBand": 18.0,
+   "density": 1.0,
+   "seed": 561209037,
+   "farTree": "",
+   "hills": 6,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 3
+  },
+  {
+   "id": "rustyard",
+   "biome": "harbor",
+   "edgeBand": 14.0,
+   "density": 1.0,
+   "seed": 61323351,
+   "farTree": "",
+   "hills": 3,
+   "berms": 5,
+   "ditches": 3,
+   "dryBeds": 0
+  },
+  {
+   "id": "saltflat",
+   "biome": "desert",
+   "edgeBand": 20.0,
+   "density": 0.6,
+   "seed": 1001174782,
+   "farTree": "",
+   "hills": 6,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 3
+  },
+  {
+   "id": "skyhold",
+   "biome": "temperate",
+   "edgeBand": 18.0,
+   "density": 0.8,
+   "seed": 1746921735,
+   "farTree": "",
+   "hills": 8,
+   "berms": 6,
+   "ditches": 3,
+   "dryBeds": 1
+  },
+  {
+   "id": "swamp",
+   "biome": "jungle",
+   "edgeBand": 14.0,
+   "density": 1.1,
+   "seed": 230452239,
+   "farTree": "",
+   "hills": 6,
+   "berms": 3,
+   "ditches": 2,
+   "dryBeds": 2
+  },
+  {
+   "id": "veyra_old_quarter",
+   "biome": "urban",
+   "edgeBand": 12.0,
+   "density": 1.0,
+   "seed": 15655839,
+   "farTree": "",
+   "hills": 0,
+   "berms": 4,
+   "ditches": 2,
+   "dryBeds": 0
+  },
+  {
+   "id": "whiteout",
+   "biome": "snow",
+   "edgeBand": 20.0,
+   "density": 0.8,
+   "seed": 471274378,
+   "farTree": "",
+   "hills": 8,
+   "berms": 4,
+   "ditches": 0,
+   "dryBeds": 1
+  }
+ ]
+}

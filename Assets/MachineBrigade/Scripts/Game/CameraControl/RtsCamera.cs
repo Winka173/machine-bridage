@@ -13,6 +13,12 @@ namespace MachineBrigade.Game.CameraControl
     {
         private const float Pitch = 52f;
 
+        /// <summary>The fixed tilt in degrees (prompt 33 L1: the outer ring is sized from it, Views.CameraFrame).</summary>
+        public const float TiltDegrees = Pitch;
+
+        /// <summary>Whether the player can turn the view (no: the yaw is fixed per map shape).</summary>
+        public const bool Rotates = false;
+
         /// <summary>The square maps' yaw: their south-west to north-east battle axis across the screen.</summary>
         public const float SquareYaw = -45f;
 
@@ -39,6 +45,9 @@ namespace MachineBrigade.Game.CameraControl
         public const float DepthShift = Distance - 60f;
         private const float MinZoom = 9f;
         private const float DefaultMaxZoom = 42f;
+
+        /// <summary>The furthest the player zooms out on a square map (a long one: MatchRunner.LongMaxZoom).</summary>
+        public const float PlayerMaxZoom = DefaultMaxZoom;
 
         /// <summary>Furthest the view zooms out (raised only by the -mb-overview device check).</summary>
         public float MaxZoom { get; set; } = DefaultMaxZoom;
