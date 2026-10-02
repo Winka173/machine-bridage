@@ -231,7 +231,7 @@ namespace MachineBrigade.Tests
         }
 
         [Test]
-        public void ARoundIsOfferedOnlyToTheNearestPointDefence()
+        public void ARoundIsOfferedToOnePointDefenceOnly()
         {
             var world = new SimWorld(C, GameContent.LoadMap("ashfield_conquest"), seed: 3);
             var target = world.SpawnVehicle("main_battle_tank", 0, new Vector2(0f, 0f), 0f);
@@ -246,8 +246,8 @@ namespace MachineBrigade.Tests
                 if (near.ApsCharges < nearFull || far.ApsCharges < farFull) break;
             }
             if (near.ApsCharges == nearFull && far.ApsCharges == farFull) Assert.Inconclusive("no round came in reach");
-            Assert.Less(near.ApsCharges, nearFull, "the nearer system took it");
-            Assert.AreEqual(farFull, far.ApsCharges, "the farther one was never offered it");
+            // One system took the round (the nearest to its mark); the other was never offered it: no second chance.
+            Assert.AreEqual(1, (nearFull - near.ApsCharges) + (farFull - far.ApsCharges), "one interceptor spent on one round");
             GC.KeepAlive(target);
         }
     }

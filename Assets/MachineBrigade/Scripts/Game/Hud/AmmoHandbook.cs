@@ -165,8 +165,8 @@ namespace MachineBrigade.Game.Hud
 
             // 5. What to hit structures with.
             var st = new HandbookEntry(Structures, Strings.Get("hb.struct.title")) { Header = new[] { Strings.Get("hb.types.type"), Kind(TargetKind.Structure) } };
-            foreach (var t in DamageTypes.OrderByDescending(t => table.Type(t, TargetKind.Structure)))
-                st.Rows.Add(new[] { TypeName(t), Mult(table.Type(t, TargetKind.Structure)) });
+            foreach (var type in DamageTypes.OrderByDescending(x => table.Type(x, TargetKind.Structure)))
+                st.Rows.Add(new[] { TypeName(type), Mult(table.Type(type, TargetKind.Structure)) });
             st.Rows.Insert(0, new[] { Strings.Get("hb.struct.thermo"), Mult(table.ThermobaricStructure) });
             st.Lines.Add(Strings.Format("hb.struct", ("he", Mult(table.Type(DamageType.HighExplosive, TargetKind.Structure))), ("thermo", Mult(table.ThermobaricStructure)),
                 ("fire", Mult(table.Type(DamageType.Fire, TargetKind.Structure)))));

@@ -51,7 +51,10 @@ namespace MachineBrigade.Game.Match
         }
 
         /// <summary>Id of the support (or item) waiting for a target, or null.</summary>
-        public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : _armedItem >= 0 ? _items[_armedItem] : null;
+        public string ArmedSupport => _armed >= 0 ? _cards[_armed].Id : _armedItem >= 0 ? _items[_armedItem] : _armedSkill ? ArmedSkillId : null;
+
+        /// <summary>Prompt 32 L4: what <see cref="ArmedSupport"/> reads while the HQ's barrage waits for its point (Back disarms it).</summary>
+        public const string ArmedSkillId = "hq.skill";
 
         /// <summary>
         /// What calling a card costs now, to the fraction of a CP (prompt 22 F: a commander's price change; the card shows it
