@@ -108,7 +108,7 @@ namespace MachineBrigade.Sim.Content
         }
     }
 
-    public sealed class MapDefinition
+    public sealed partial class MapDefinition
     {
         public MapDefinition(string id, float size, IReadOnlyList<TeamStart> teams,
             IReadOnlyList<PropPlacement> props, IReadOnlyList<UnitPlacement> units,
@@ -273,7 +273,7 @@ namespace MachineBrigade.Sim.Content
             var spawns = new List<SpawnPointDef>();
             foreach (var sp in Spawns) spawns.Add(new SpawnPointDef(Swap(sp.Side), sp.Kind, sp.Position, sp.From));
             return new MapDefinition(Id, Size, teams, Props, units, Points, Roads, Theme, Boundary, SiegeRings, Decor, bases,
-                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns, Walls = SwappedWalls() };
+                bounds: IsSquare ? null : (Min, Max)) { Routes = routes, Spawns = spawns, Walls = SwappedWalls(), Rails = Rails };
         }
 
         /// <summary>
@@ -414,6 +414,9 @@ namespace MachineBrigade.Sim.Content
                 Spawns = SpawnPointDef.ParseAll(root),
                 Neutrals = NeutralSiteDef.ParseAll(root),
                 Walls = WallLineDef.ParseAll(root),
+                // Prompt 33 L4-L5: the big ships' sea routes and the railway lines.
+                SeaRoutes = root.Has("seaRoutes") ? Navigation.SeaRouteGraph.Parse(root.Object("seaRoutes")) : null,
+                Rails = RailsOf(root),
             };
         }
     }

@@ -16138,3 +16138,141 @@ lead; sudden death, its damage count and the draw; the menu and both languages).
 - Tests (written, not run): `Prompt34ValidatorTests` (a weapon's rings are its core and edge, every warned boss round has a
   fixed two-layer blast, the cruise and salvo marks show their blast, every barrel fired together has its muzzle, no model
   brings a collider, the stress scene's units and map).
+
+## Prompt 33 L0 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b1` (prompt 33 L0, L4, L5; lane A does L1-L3 and L6). The precheck is
+`Docs/checks/p33_precheck.md` (read only, nothing run). What it settles for the later passes:
+- The widest view (lane A's outer band): orthographic half-height 42 m, pitch 52 deg, no rotation, landscape 4:3 to
+  2.4:1.
+- No path costs by vehicle type: DEEP_FORD waits (lane A records it in L3).
+- No reinforcement has an entry gate today: ground waves appear at their spawn point, the Siege train is the view's
+  only, ships are created inside the map. L4/L5 give ships and trains their own routes beyond the play area and the
+  Siege support train its gate and entry tick (lane A's L2 does the other reinforcements' gates).
+- The boss trains drive the ground grid like tanks: L5 puts them on rails.
+
+## Prompt 33 L4 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b1`. Pass 4: the big ships' sea route graph. Nothing run but the Python tools
+(Tools/maps/transit.py, check_access.py); the C# is compiled by the lead; Prompt33SeaRouteTests is written, not run.
+
+- **Graph** (`Sim/Navigation/SeaRouteGraph.cs`, map data `"seaRoutes"`): the sea lanes cut into segments: a track node
+  every 40 m along each lane (u in the coast's frame) from -end to +end, an exit node 40 m beyond each end (outside the
+  map: the ships' routes run on out of the play area, the prompt's exception to the entry contract), holding nodes
+  (the passing bays) on two holding lines, 16 m inshore of the near lane and 18 m out beyond the far one, where they are
+  on the water (8 m off the waterline) and 12 m inside the map, each joined to its lane's node; cross links between
+  neighbouring lanes at the same u. Every segment is two-way: the rule is passing bays, not one-way lanes (the data and
+  the code take `oneWay`, unused). `Tools/maps/transit.py` writes the graph (Lighthouse Bay's three files: 29 nodes, 8
+  holding, 36 segments) by the same rule as `SeaRouteGraph.FromSea`, which builds it at load for a sea without one (the
+  Sandbox's coastal range); the test checks the file and the rule agree. Checks (`Validate`, transit.py): nodes on the
+  water, exits beyond the edge, each lane joined end to end, a passing bay within 60 m along the coast of every lane
+  node, every bay joined.
+- **Big ships**: a naval hull 25 m or longer (Leviathan, Typhon, Caspian, Scylla's kind, the cruiser and the corvette;
+  the 14 m attack boats and 17 m landing craft are small boats and keep to the lanes as before). Their goals are still
+  the naval system's (patrol, phase lanes, the run, the slots); `NavalSystem.RouteTraffic` runs between the goals and the
+  sailing (the step's single loop became goals for all, the traffic rules, then sailing for all: an escort now reads its
+  flagship's place before it moved this step).
+- **Reservations and the gap**: each big ship holds its lane segment and the next one in its direction. A ship never
+  closes on a big ship in its way (ahead along the coast, their hulls overlapping across it, 1.5 m margin) inside half
+  its length + half the other's + 10 m: its speed is capped to the other's speed along its way + 0.25 m/s per metre of
+  room left inside a 20 m band (slows, then waits). No ship is ever moved by another (no push).
+- **Priority** (fixed, deterministic): 0 a boss on its run, 1 a boss or key ship, 2 a scripted transport (a big lander),
+  3 an escort, 4 any other; then the lower entity id. Head-on on a segment both hold: the lower pulls into the nearest
+  free holding node at once. Stopped by the gap for more than 60 ticks (3 s): the lower of the two does. A holding node
+  is free when no other ship holds it or stands within the minimum gap of it, and off the other ship's line. It comes
+  back out after at least 40 ticks once the other ship is past and clear (or gone). The boss's run (Leviathan's last
+  phase): any big ship in its way within 60 m beyond the gap but its own escorts pulls in at once.
+- **Escort slots** PORT_FORWARD / STARBOARD_FORWARD / PORT_REAR / STARBOARD_REAR in the boss's frame, kept as a place in
+  the coast's frame beside it (port-forward sailing +u is starboard-rear once it comes about: the escort stays put). The
+  fleet data's place is the first choice (`at` along, `abeam` across, as 20Y; an entry without `abeam`, Typhon's
+  corvette, is now abeam inshore instead of on the boss's own lane inside its hull), at least half the two widths + 2.5 m
+  out. The leash (escortRules `leash`, 28 m) is measured from the boss's hull, not its middle (an 86 m Leviathan's middle
+  would leave no room); a slot within the minimum gap of a slot taken before it slides along away from it (+4 m slack)
+  while it stays in the leash. Valid: on the water 2 m beyond its half width and within the graph's 20 m corridor over the
+  boss's whole patrol on that lane, inside the map with the boss mid-patrol (near the patrol's ends every ship is kept in
+  the square, as before). Fallback order, fixed: the other end on the same side, the same end on the other side, both;
+  then the same four 12 m further out; none: the data's place is kept and counted (`SlotProblems`, the test wants 0).
+  Resolved in spawn order as the fleet sails out and in entity-id order when the boss changes lane; an escort changing
+  side goes round astern of it first. Leviathan on the far lane: the cruiser port-forward (+22, -17), the corvette
+  slid aft to (-39, -16) (it was 49 m from the cruiser, under the new 57 m gap), an operation's extra corvette (+27, -27).
+- **Coming about**: a flagship turns where it is (its bow and stern sweep a circle of half its length), so while it is not
+  lined up with its way, within 45 m of the end of its patrol, or off its lane's line (a lane change), its escorts stand
+  out on their side beyond that circle (half its length + half their width + 2 m) and come back once it is lined up.
+  The leash is kept on the slot, not during the turn.
+- **Small boats**: the attack boats wait on the near lane whenever the flagship on the far lane has escorts (all now
+  abeam inshore), on the far lane when it sails the mid lane (before: its own lane), else the mid lane.
+- Fingerprint: the holding count and each big ship's holding node and wait (`NavalSystem.MixRoutes`).
+- Data keys changed: map files `lighthousebay_conquest`, `_sandbox`, `_siege` + `"seaRoutes"` (generated). balance.json
+  and campaign.json unchanged.
+
+## Prompt 33 L5 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b1`. Pass 5: rails and level crossings. Nothing run but the Python tools
+(Tools/maps/transit.py; check_access.py 73/75 as before: swamp and veyra_old_quarter conquest fail as they did; the
+prompt 30 map audit unchanged, 9 RED / 91 YELLOW); the C# is compiled by the lead; Prompt33RailTests is written, not run.
+
+- **RailSpline** (`Sim/Navigation/RailSpline.cs`, map data `"rails"`, written by `Tools/maps/transit.py`): a polyline
+  measured by arc length, corners rounded (8 m: a mission waypoint at a corner stays 3.3 m off the line, inside the
+  missions' 5 m reach), from a tunnel portal 40 m beyond the map's square through the edge band and the entry gate (where
+  it crosses the outline: `playFrom` / `playTo`, the stretch in play) to a buffer stop inside or out through a second gate.
+  Separate from the ground grid: the band (3.5 m either side) stays open ground; vehicles may drive over it anywhere.
+  Its crossings: where the map's roads cross the stretch in play (merged within 12 m), each with the box its barriers
+  close (the road's width across the 7 m band) and its length to cross (the band across the road + a 4 m hull).
+- **The lines** (from the current layouts; nothing on a map moved): Ironport `quay` (FIXED_ROUTES' quay line, out through
+  the west gate, a buffer stop at Juggernaut's x 128: a command tent stands on the line's east end; 2 crossings), Metro City
+  `avenue` (the route along the northern avenue and down the west side, out through the east gate; 4), Capital `nemesis`
+  (c7m10's stage line along the avenue, 4 m south of its middle where a wreck stands, out through the east gate to x 36;
+  c7m10's waypoints at z 0 are 4 m off it), Rust Yard `siding` (Gungnir's spot, out through the east gate, on west while
+  its ground is clear: to x 124), Foundry `works` (no line of its own: the longest clear straight run in from the north or
+  east edge in the enemy's half, 60-120 m: x 20 from the north edge to z 26; 2 crossings). The Siege versions keep a line
+  only where its band is still clear (Capital's and Rust Yard's; Ironport's and Metro City's are cut by the fortress), and
+  every Siege version with a rail fortress line (11 maps) gets it as `siege_line` (the arrival path; Junglepass and Redrock
+  end a few metres short where terrain stands, past the train's stop). Foundry's Siege version has the fortress line only
+  (two lines side by side otherwise). Clear means no blocking prop's footprint within 2.3 m of the line (the widest
+  train's half width + 0.5 m); the fortress hardpoints may stand on it (a boss train crushes them).
+- **Trains on the rails** (`Sim/Movement/RailSystem.cs`, `world.Rails`): a frame-`train` boss (Juggernaut
+  `armored_train`, Nemesis `nuke_train`, Gungnir `rail_supergun`) spawned within 8 m of a line is put on it, lined up the
+  way it faced; its orders' points are taken onto the line and it runs there (speeds up and brakes at its speed a second),
+  never on the ground grid (the movement system skips it; the separation never moves it). Away from any line (a test
+  field, a map without rails) it drives as before. The missions and the Boss Hunt still send it Move orders to their
+  waypoints (no change to them).
+- **The Siege support train and the entry contract**: the fortress line's announcement (`SimEventKind.Arrival`, kind
+  rail: the economy's 10 s lead) makes a `RailRun` on the siege line, on the view's own curve (in over 9 s to its stop,
+  7 s there, out over 9 s, its front 12.5 m short of the line's end, 50 m long; `RailSystem.SupportOffset`, which
+  `FortressView.TrainOffset` now calls): the view's train outside the map is the visual-only stand-in, and the run is in
+  play (pushes, crossings) from the tick its front passes the entry gate (`EntryTick`, about 5.3 s before the stop) to the
+  tick it is back out (`ExitTick`). It pushes only and is not a target (a sim object, not a vehicle). The vehicles still
+  get off at the stop at the economy's time. Boss trains start inside the map where their mission or the Boss Hunt puts
+  them (at the head of their line): no train but the support train enters during a battle.
+- **Crossings** OPEN -> WARNING -> CLOSED -> TRAIN_PASSING -> OPEN, each step after the trains move: WARNING when a train
+  can reach it within its warning + 1.5 s at the train's top speed (a support train: on its curve), or is within 8 m;
+  the warning is max(4 s, length / 4.5 m/s + 0.5 s) (every crossing in the data: 4 s); CLOSED once it has warned that
+  long and the train is 1.5 s or 3 m off; TRAIN_PASSING while the train's length is on it; OPEN 0.5 s after it has gone
+  (WARNING again if another comes). CLOSED and TRAIN_PASSING switch the crossing's prebuilt ground state (prompt 31 L3:
+  site `rail_<line>_<crossing>`, "open" / "closed", defined and checked as the world is built) at the next tick boundary:
+  routes go round, whoever is left on it is put on the nearest open cell. A crossing whose closing would cut the ground
+  (Ironport's x2: the north-east camp's drop zone stands on it; transit.py's check, the Sim's own at load) only warns
+  (`"closes": false`, no ground state).
+- **AI and vehicles**: while a crossing is not open, and on the stretch of line a train will cover in the next 5.5 s (at
+  least 8 m ahead; a support train from 5.5 s before it comes in), new ground routes pay a high cost there
+  (`PathCosts.Avoid`; every vehicle's new route, the AI's and the player's), every squad sees warning rings there (no
+  side's: `WorldModel` -> `SquadLayer.Dodge`, prompt 28's Emergency Reposition), and every ground vehicle on it (not a
+  scripted convoy, not a boss) is told to drive straight off it to its own side, at most once a second. Whoever is still
+  in a train's way is put beside the line (the band's edge + its hull + 1 m straight out on its own side, else the other,
+  else the nearest open cell of the main region off the band: a fixed rule, no physics) and plans its route again. A boss
+  train (Juggernaut, Nemesis) also hits an enemy it puts aside for 600 (at most once in 2 s) and crushes enemy fixed
+  defences on its line at 600 a second, with the siren and the notice `toast.railBoss` (a fortress alarm, at most every
+  20 s) as it bears down on a crossing; its own side's vehicles are only pushed. The minimap shows every danger ring
+  (`MatchRunner.Rails.cs`, written blind).
+- **No parking on rails**: a ground vehicle's route goal on a line's band is moved just off it, to the side the vehicle
+  is on (`SimWorld.PathTo` -> `RailSystem.OffRail`), for every order.
+- Fingerprint: the trains' places on their lines, the crossings' states and since when, the runs' entry and exit ticks,
+  the told and pushed counts (`RailSystem.Mix`); the crossings' ground states are in the prebuilt states' own mix.
+- Limits: support trains of runs 16 s apart (`ArrivalGap`) may overlap on the line as the view's do (both logical: they
+  never meet); the fallen crane of Ironport's event (prompt 31 L5) may lie across the quay line (the train runs through
+  its ground); Ironport's north-east rally stands on the quay line's band (vehicles landing there are told off it when a
+  train comes).
+- Data keys changed (map files only, no CatalogCheck needed): `"rails"` on capital_conquest/_sandbox/_siege,
+  foundry_conquest/_sandbox/_siege, ironport_conquest/_sandbox/_siege, metrocity_conquest/_sandbox/_siege,
+  rustyard_conquest/_sandbox/_siege, frostpeak_siege, junglepass_siege, orbitalgate_siege, redrock_siege,
+  veyra_old_quarter_siege, whiteout_siege. Strings: `toast.railBoss` (EN + VI). balance.json and campaign.json unchanged.

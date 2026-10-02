@@ -27,6 +27,13 @@ namespace MachineBrigade.Sim.Navigation
         public float BlockerRadius;
         public int BlockerCost = 120;
 
+        /// <summary>
+        /// Prompt 33 L5: ground to keep off (a level crossing in its warning, the rail ahead of a train): axis-aligned boxes whose
+        /// cells cost <see cref="AvoidCost"/> at least. Null or empty: none.
+        /// </summary>
+        public List<(Vector2 min, Vector2 max)>? Avoid;
+        public int AvoidCost = 120;
+
         /// <summary>The search gives up (fails) after expanding this many cells: a node budget, never a clock.</summary>
         public int MaxExpansions = int.MaxValue;
 
@@ -211,6 +218,13 @@ namespace MachineBrigade.Sim.Navigation
                 var t = length > 1e-6f ? Math.Clamp(Vector2.Dot(c - costs.BlockerA, ab) / length, 0f, 1f) : 0f;
                 if (Vector2.DistanceSquared(c, costs.BlockerA + ab * t) < costs.BlockerRadius * costs.BlockerRadius) extra = costs.BlockerCost;
             }
+            if (costs.Avoid is { Count: > 0 } avoid && extra < costs.AvoidCost)
+                foreach (var (min, max) in avoid)
+                    if (c.X >= min.X && c.X <= max.X && c.Y >= min.Y && c.Y <= max.Y)
+                    {
+                        extra = costs.AvoidCost;
+                        break;
+                    }
             return extra;
         }
 

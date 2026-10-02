@@ -335,19 +335,12 @@ namespace MachineBrigade.Game.Views
             PlaceRun(run, now);
         }
 
-        /// <summary>Where along the line (metres from its stop, negative: before it) a train is at a moment.</summary>
-        private static float TrainOffset(float t)
-        {
-            // Decelerating in, standing, then backing out the way it came.
-            if (t < 0f)
-            {
-                var k = Mathf.Clamp01(-t / TrainTravel);
-                return -110f * k * k;
-            }
-            if (t < TrainWait) return 0f;
-            var o = (t - TrainWait) / TrainTravel;
-            return -110f * o * o;
-        }
+        /// <summary>
+        /// Where along the line (metres from its stop, negative: before it) a train is at a moment: decelerating in, standing,
+        /// then backing out the way it came. Prompt 33 L5: the Sim's own curve (RailSystem.SupportOffset), so this train (the
+        /// visual stand-in outside the map) and the support train's run in the battle meet at the entry gate on its tick.
+        /// </summary>
+        private static float TrainOffset(float t) => MachineBrigade.Sim.Movement.RailSystem.SupportOffset(t);
 
         private void PlaceRun(Run run, float now)
         {
