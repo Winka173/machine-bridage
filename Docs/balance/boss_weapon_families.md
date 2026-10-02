@@ -134,17 +134,17 @@ Ground DPS **1751 -> 1070** (61 %); anti-air only 62 -> 62. Made up: `p26_nemesi
 
 ### silver_bug
 
-Ground DPS **1638 -> 1638** (100 %); anti-air only 0 -> 0.
+Ground DPS **1638 -> 1501** (92 %); anti-air only 0 -> 0.
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_icarus_sec_orbital_laser` | laser_laser | 40 x 1 / 0.10 s = 400 | 40 x 1 / 0.10 s = 400 | 1.5 / 0 |
-| 1 | `p26_icarus_main_ic_coil` | rail_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
-| 2 | `p26_icarus_main_ic_coil` | rail_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
+| 1 | `p26_icarus_main_ic_coil` | rail_heavy_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
+| 2 | `p26_icarus_main_ic_coil` | rail_heavy_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
 | 3 | `p26_icarus_direct_ic_laser` | laser_tower | 16 x 1 / 0.10 s = 160 | 16 x 1 / 0.10 s = 160 | 1.5 / 0 |
 | 4 | `p26_icarus_direct_ic_laser` | laser_tower | 16 x 1 / 0.10 s = 160 | 16 x 1 / 0.10 s = 160 | 1.5 / 0 |
-| 5 | `p26_icarus_close_autocannon_40` | cal_40 | 30 x 10 / 1.89 s = 159 | 30 x 10 / 1.89 s = 159 | 0 / 0 |
-| 6 | `p26_icarus_close_autocannon_40` | cal_40 | 30 x 10 / 1.89 s = 159 | 30 x 10 / 1.89 s = 159 | 0 / 0 |
+| 5 | `p26_icarus_close_autocannon_40` | cal_40 | 30 x 10 / 1.89 s = 159 | 30 x 10 / 3.32 s = 90 | 0 / 0 |
+| 6 | `p26_icarus_close_autocannon_40` | cal_40 | 30 x 10 / 1.89 s = 159 | 30 x 10 / 3.32 s = 90 | 0 / 0 |
 
 ### behemoth_inferno
 
@@ -508,8 +508,8 @@ Ground DPS **1320 -> 1320** (100 %); anti-air only 0 -> 0.
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `p26_icarus_sec_orbital_laser` | laser_laser | 40 x 1 / 0.10 s = 400 | 40 x 1 / 0.10 s = 400 | 1.5 / 0 |
-| 1 | `p26_icarus_main_ic_coil` | rail_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
-| 2 | `p26_icarus_main_ic_coil` | rail_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
+| 1 | `p26_icarus_main_ic_coil` | rail_heavy_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
+| 2 | `p26_icarus_main_ic_coil` | rail_heavy_coilgun | 1500 x 1 / 5.00 s = 300 | 1500 x 1 / 5.00 s = 300 | 0 / 0 |
 | 3 | `p26_icarus_direct_ic_laser` | laser_tower | 16 x 1 / 0.10 s = 160 | 16 x 1 / 0.10 s = 160 | 1.5 / 0 |
 | 4 | `p26_icarus_direct_ic_laser` | laser_tower | 16 x 1 / 0.10 s = 160 | 16 x 1 / 0.10 s = 160 | 1.5 / 0 |
 
@@ -564,7 +564,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | mega_gunship | 462 | 546 | 118 % | 0 -> 0 | - |
 | drone_mothership | 1304 | 1188 | 91 % | 0 -> 0 | - |
 | nuke_train | 1751 | 1070 | 61 % **(< 80 %)** | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
-| silver_bug | 1638 | 1638 | 100 % | 0 -> 0 | - |
+| silver_bug | 1638 | 1501 | 92 % | 0 -> 0 | - |
 | behemoth_inferno | 282 | 282 | 100 % | 0 -> 0 | - |
 | behemoth_tempest | 299 | 299 | 100 % | 0 -> 0 | - |
 | fortress_hive | 586 | 586 | 100 % | 0 -> 0 | - |
