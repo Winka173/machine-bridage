@@ -1657,6 +1657,27 @@
     "highrise_b: triangles 5,760 -> 6,112 (+6.1%); vertices 9,110 -> 9,438 (+3.6%); fileBytes 477,948 -> 494,684 (+3.5%); structure changed",
     "jungle_tree_a: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "bamboo_clump",
+    "basalt_rock_a",
+    "basalt_rock_b",
+    "basalt_rock_c",
+    "billboard",
+    "bus",
+    "charred_tree",
+    "control_tower",
+    "fern_bush",
+    "fuel_truck",
+    "hangar",
+    "highrise_a",
+    "highrise_b",
+    "jungle_tree_a"
+   ],
+   "reason": "merge of feature/p27-wave8b5",
+   "changes": []
   }
  ],
  "models": {
