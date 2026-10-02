@@ -3,9 +3,9 @@ ashfield_conquest,symmetric,YELLOW sightline,0,ok,152.3,152.9,0.3%,146.6,103.4,4
 ashfield_long,asymmetric,YELLOW sightline,0,ok,190.0,343.9,by role,256.2,108.2,4,0,0,21.0,150.0,150.0,43%,exposed,18%/25%,1248/1000,open/4,/,48.0,8.3,1 s,-
 ashfield_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,146.6,,4,0,0,17.0,150.0,,41%,-,31%/32%,1248/1248,open/open,/,,,,1%
 ashfield_siege,asymmetric,YELLOW sightline,0,ok,353.1,18.5,by role,168.3,,4,0,2,17.0,150.0,2.0,38%,exposed,32%/29%,1248/1176,open/7,/,43.4,18.5,3 s,50%
-borderbridge_conquest,symmetric,RED connectivity; YELLOW sightline,1,ok,154.2,149.5,3.1%,150.7,108.4,3,0,0,21.0,150.0,150.0,53%,-,29%/30%,1248/1248,open/open,/,,,,1%
+borderbridge_conquest,symmetric,YELLOW sightline,0,ok,154.2,149.5,3.1%,150.7,108.4,3,0,0,21.0,150.0,150.0,54%,-,29%/30%,1248/1248,open/open,/,,,,1%
 borderbridge_long,asymmetric,YELLOW sightline,0,ok,202.8,341.7,by role,258.0,108.4,4,0,5,21.0,150.0,150.0,50%,exposed,16%/26%,1248/1000,open/4,/,48.0,8.3,1 s,-
-borderbridge_sandbox,symmetric,RED connectivity; YELLOW sightline,1,ok,,,by role,150.7,,3,0,0,21.0,150.0,,53%,-,29%/30%,1248/1248,open/open,/,,,,1%
+borderbridge_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,150.7,,3,0,0,21.0,150.0,,54%,-,29%/30%,1248/1248,open/open,/,,,,1%
 borderbridge_siege,asymmetric,YELLOW sightline,0,ok,365.7,18.5,by role,174.6,,4,0,5,17.0,150.0,2.0,47%,exposed,30%/26%,1248/1176,open/7,/,43.4,18.5,3 s,22%
 capital_conquest,symmetric,YELLOW sightline,0,ok,319.2,306.3,4.1%,312.7,168.9,4,0,7,13.0,150.0,150.0,36%,-,28%/28%,1248/1248,open/open,/,,,,0%
 capital_long,asymmetric,YELLOW sightline,0,ok,406.0,347.8,by role,376.7,169.3,4,0,9,13.0,150.0,150.0,39%,exposed,16%/26%,1248/1000,open/4,/,48.0,8.3,1 s,-
@@ -14,14 +14,14 @@ capital_siege,asymmetric,YELLOW sightline,0,ok,411.1,19.5,by role,196.7,,4,0,3,1
 coralisles_conquest,symmetric,YELLOW sightline,0,ok,203.4,203.5,0.0%,202.7,200.3,4,0,0,9.0,150.0,150.0,72%,-,34%/36%,1248/1248,open/open,/,,,,2%
 coralisles_long,asymmetric,YELLOW sightline,0,ok,230.4,370.6,by role,269.8,206.8,4,0,0,13.0,150.0,150.0,57%,exposed,16%/30%,1248/1000,open/4,/,48.0,8.3,1 s,-
 coralisles_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,202.7,,4,0,0,9.0,150.0,,72%,-,34%/36%,1248/1248,open/open,/,,,,2%
-coralisles_siege,asymmetric,RED connectivity; YELLOW sightline,4,ok,,,by role,205.9,,4,0,2,9.0,150.0,,65%,-,40%/27%,1248/832,open/2,242.1/,25.0,,,35%
+coralisles_siege,asymmetric,YELLOW sightline,0,ok,,,by role,205.9,,4,0,2,9.0,150.0,,66%,-,41%/25%,1248/832,open/2,242.1/,25.0,,,35%
 dunebreak_conquest,symmetric,YELLOW sightline,0,ok,166.1,165.1,0.6%,143.6,108.1,4,0,0,17.0,150.0,150.0,41%,-,29%/29%,1248/1248,open/open,/,,,,1%
 dunebreak_long,asymmetric,YELLOW sightline,0,ok,187.7,342.0,by role,249.2,109.6,4,0,0,21.0,150.0,150.0,43%,exposed,17%/24%,1248/1000,open/4,/,48.0,8.3,1 s,-
 dunebreak_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,143.6,,4,0,0,17.0,150.0,,41%,-,29%/29%,1248/1248,open/open,/,,,,1%
 dunebreak_siege,asymmetric,YELLOW sightline,0,ok,339.6,18.5,by role,161.5,,4,0,1,17.0,150.0,2.0,39%,exposed,29%/27%,1248/1176,open/7,/,43.4,18.5,3 s,40%
-emberridge_conquest,symmetric,RED connectivity; YELLOW sightline; YELLOW exits,1,ok,169.6,169.8,0.1%,131.4,119.0,4,0,0,21.0,150.0,150.0,45%,-,33%/35%,1248/1248,open/1,/,,,,1%
-emberridge_long,asymmetric,RED connectivity; YELLOW sightline,1,ok,176.2,369.3,by role,250.9,121.4,4,0,0,21.0,150.0,150.0,44%,exposed,17%/28%,1248/1000,open/4,/,48.0,8.3,1 s,-
-emberridge_sandbox,symmetric,RED connectivity; YELLOW sightline; YELLOW exits,1,ok,,,by role,131.4,,4,0,0,21.0,150.0,,45%,-,33%/35%,1248/1248,open/1,/,,,,1%
+emberridge_conquest,symmetric,YELLOW sightline; YELLOW exits,0,ok,169.6,169.8,0.1%,131.4,119.0,4,0,0,21.0,150.0,150.0,45%,-,33%/35%,1248/1248,open/1,/,,,,1%
+emberridge_long,asymmetric,YELLOW sightline,0,ok,176.2,369.3,by role,250.9,121.4,4,0,0,21.0,150.0,150.0,44%,exposed,17%/28%,1248/1000,open/4,/,48.0,8.3,1 s,-
+emberridge_sandbox,symmetric,YELLOW sightline; YELLOW exits,0,ok,,,by role,131.4,,4,0,0,21.0,150.0,,45%,-,33%/35%,1248/1248,open/1,/,,,,1%
 emberridge_siege,asymmetric,YELLOW sightline,0,ok,337.1,18.5,by role,161.6,,4,0,0,21.0,150.0,2.0,35%,exposed,35%/32%,1248/1176,open/7,/,43.4,18.5,3 s,49%
 foundry_conquest,symmetric,YELLOW sightline,0,ok,178.5,174.3,2.4%,150.5,108.2,4,0,2,13.0,118.0,72.0,24%,-,28%/28%,1248/1248,open/open,/,,,,1%
 foundry_long,asymmetric,YELLOW sightline,0,ok,181.7,335.3,by role,217.3,109.2,4,0,3,13.0,150.0,68.0,31%,exposed,16%/26%,1248/1000,open/4,/,48.0,8.3,1 s,-
@@ -66,7 +66,7 @@ metrocity_siege,asymmetric,YELLOW sightline,0,ok,348.3,19.5,by role,166.0,,4,0,0
 openpit_conquest,symmetric,YELLOW sightline,0,ok,179.4,171.3,4.6%,168.5,98.2,4,0,1,17.0,134.0,84.0,26%,-,30%/31%,1248/1248,open/open,/,,,,1%
 openpit_long,asymmetric,YELLOW sightline,0,ok,181.4,359.4,by role,244.9,98.2,4,0,3,17.0,150.0,84.0,34%,exposed,16%/27%,1248/1000,open/4,/,48.0,8.3,1 s,-
 openpit_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,168.5,,4,0,1,17.0,134.0,,26%,-,30%/31%,1248/1248,open/open,/,,,,1%
-openpit_siege,asymmetric,RED connectivity; YELLOW sightline,1,ok,354.3,18.5,by role,170.3,,4,0,0,21.0,122.0,2.0,22%,exposed,30%/29%,1248/1176,open/7,/,43.4,18.5,3 s,45%
+openpit_siege,asymmetric,YELLOW sightline,0,ok,354.3,18.5,by role,170.3,,4,0,0,21.0,122.0,2.0,22%,exposed,30%/29%,1248/1176,open/7,/,43.4,18.5,3 s,45%
 orbitalgate_conquest,symmetric,YELLOW sightline,0,ok,183.0,180.7,1.3%,136.5,101.8,4,0,0,25.0,150.0,150.0,46%,-,29%/29%,1248/1248,open/open,/,,,,0%
 orbitalgate_long,asymmetric,YELLOW sightline,0,ok,183.0,334.8,by role,236.1,102.3,4,0,0,25.0,150.0,150.0,46%,exposed,17%/23%,1248/1000,open/4,/,48.0,8.3,1 s,-
 orbitalgate_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,136.5,,4,0,0,25.0,150.0,,46%,-,29%/29%,1248/1248,open/open,/,,,,0%
@@ -90,7 +90,7 @@ skyhold_siege,asymmetric,YELLOW sightline,0,ok,351.4,18.5,by role,168.8,,4,0,1,2
 swamp_conquest,symmetric,YELLOW sightline,0,ok,200.9,199.6,0.7%,196.6,176.5,4,0,1,17.0,150.0,150.0,67%,-,35%/36%,1248/1248,open/open,/,,,,1%
 swamp_long,asymmetric,YELLOW sightline,0,ok,225.3,393.4,by role,299.1,180.2,4,0,1,17.0,150.0,150.0,56%,exposed,16%/31%,1248/1000,open/4,/,48.0,8.3,1 s,-
 swamp_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,196.6,,4,0,1,17.0,150.0,,67%,-,35%/36%,1248/1248,open/open,/,,,,1%
-swamp_siege,asymmetric,RED connectivity; YELLOW sightline,3,ok,,,by role,203.4,,4,0,3,13.0,150.0,,58%,-,42%/27%,1248/832,open/2,243.9/,25.0,,,44%
+swamp_siege,asymmetric,YELLOW sightline,0,ok,,,by role,203.4,,4,0,3,13.0,150.0,,59%,-,43%/25%,1248/832,open/2,243.9/,25.0,,,44%
 veyra_old_quarter_conquest,symmetric,YELLOW sightline,0,ok,176.2,171.6,2.7%,148.1,114.9,4,0,0,17.0,136.0,100.0,30%,-,28%/29%,1248/1248,open/open,/,,,,0%
 veyra_old_quarter_long,asymmetric,YELLOW sightline,0,ok,177.4,327.7,by role,217.3,115.4,4,0,1,21.0,150.0,84.0,37%,exposed,17%/24%,1248/1000,open/4,/,48.0,8.3,1 s,-
 veyra_old_quarter_sandbox,symmetric,YELLOW sightline,0,ok,,,by role,148.1,,4,0,0,17.0,136.0,,30%,-,28%/29%,1248/1248,open/open,/,,,,0%

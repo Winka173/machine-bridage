@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- RED map fixes: the 8 maps with a sealed walkable pocket fixed (Tools/maps/red_fixes.py, run by build_maps.py and longmap.py): Border Bridge (Conquest, Sandbox) and Ember Ridge (Conquest, Sandbox, long) opened by dropping a wreck (and moving one rock), Open-Pit Mine Siege by dropping a sandbag line, the fortress back corners of Coral Isles and Swamp Siege filled with revetments; map audit 8 RED -> 0, access 73/75 as before.
+
 - UI polish after prompts 28-34: tactics the mode's AI profile forbids are greyed out (menu and HUD pickers); Showdown's notices at minute 6, minute 10 and sudden death, and its map picker filtered to its maps; the Shield HQ's emergency dome drawn; USS for the HQ skill card, handbook rows, fixed-deck panel and Base wall rows; 3D looks for prompt 31's closed ground (flood, fallen bridge, crane boom, sealed adit, lava, fire strips); enemy survivors drive off and our turrets turn in the match-end presentation; a recon alarm notice (DECISIONS "UI polish after prompts 28-34").
 - Prompt 33 L3: terrain tags on the navigation grid (ROAD +20 %, ROUGH -15 %, FOREST -25 % and the enemy's sight on a vehicle in it x 0.7, SHALLOW_WATER -50 % but for the amphibious and air-cushion vehicles), static path costs by tag, symmetric on the versus files; three landmarks per battlefield with ids and English and Vietnamese names, matched to the prompt 30 dialogue; the Siege and long files say why they are asymmetric; the map audit measures travel time (8 RED, was 9; nothing worse) and check_access still 73/75; DEEP_FORD waits for per-type path costs (Tools/maps/terrain.py; DECISIONS "Prompt 33 L2 / L3").
 
