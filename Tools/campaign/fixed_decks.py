@@ -54,6 +54,7 @@ RULES = {
     'droneCanopy': "the drone_swarm event (warned direction, minimap arrow) in place of the mission's air_wave",
     'ceasefireFaction': "the ceasefire event with faction: Varga's column is Sworn (DamageSystem: no damage from another side), for the whole mission",
     'mirewoodFog': 'the deck itself (light, fast, amphibious) on swamp in Fog; the objective (two villages and the sunken temple) kept',
+    'thorneAnomaly': "MissionSession's allied AI: from 180 s to 270 s Thorne's wing turns to the objective the player is not going for",
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -224,6 +225,16 @@ DECKS = {
         loaned=['amphib_light_vehicle', 'airborne_light_tank'],
         replaced={'shorad_vehicle': 'aa_vehicle', 'mobile_repair_vehicle': 'engineer_vehicle', 'decoy_paradrop': 'uav_scan'},
         rules=['mirewoodFog'], status='MAKE_LATER'),
+    # c7m16 (chapter 7, Thorne's wing): the Capture objective kept; the deck is Thorne's army (every card owned by then). One of
+    # the chapter's three anomalies happens here with its sound reason: from 180 s to 270 s the allied wing turns to the objective
+    # the player is not going for 'on new intelligence' (Nadia's line at 180 s, in the script already), then comes back. No
+    # objective counts anything Thorne does.
+    'c7m16': dict(
+        vehicles=['main_battle_tank', 'heavy_tank', 'bmpt', 'ifv', 'aa_vehicle', 'mlrs', 'tank_destroyer', 'artillery'],
+        supports=['artillery_barrage', 'airstrike'],
+        loaned=[],
+        replaced={},
+        rules=['thorneAnomaly'], status='MAKE_LATER'),
 }
 
 

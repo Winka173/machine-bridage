@@ -1403,6 +1403,10 @@ namespace MachineBrigade.Game.Match
             // Prompt 31 L4: placed allies follow the player's general order: Attack goes where the player's goal is, Defend
             // holds by the player's rally (a convoy that is a placed ally, c6m03's Behemoth, halts).
             var placed = def.FixedDeck is { PlacedAllies: { Count: > 0 } };
+            // Prompt 31 L4 (c7m16, rule thorneAnomaly): one of chapter 7's anomalies, with its sound reason: from 180 s to 270 s
+            // the allied wing turns away to the objective the player is not going for, "on new intelligence" (Nadia's line at
+            // 180 s), then comes back. A clock of the battle: the replay meets it on the same step.
+            var anomaly = def.FixedDeck != null && def.FixedDeck.HasRule("thorneAnomaly");
             if (_single != null) _single.PlayerDefends = () => player.Stance == CommanderStance.Defend;
             if (def.Ally != null || MissionEventSystem.NeedsAllies(def) || placed)
                 AllyAi = new TacticalAi(PlayerTeam, EnemyTeam, seed + 11)
@@ -1411,6 +1415,7 @@ namespace MachineBrigade.Game.Match
                     Objective = w =>
                     {
                         if (placed && player.Stance == CommanderStance.Defend && w.TryGetRally(PlayerTeam, out var home)) return home;
+                        if (anomaly && w.Time >= AnomalyFrom && w.Time < AnomalyUntil && Elsewhere(w) is { } turned) return turned;
                         return _mode.PlayerGoal(w) ?? (w.TryGetRally(EnemyTeam, out var camp) ? camp : null);
                     },
                 };
@@ -1422,6 +1427,25 @@ namespace MachineBrigade.Game.Match
             // Each stage sets the commanders for its own goal, in the step it begins (prompt 23 D.8: and a new plan).
             if (_op != null) _op.StageChanged += _ => Configure(world);
             if (_single != null) _single.Replanned += () => Configure(world);
+        }
+
+        private const double AnomalyFrom = 180.0, AnomalyUntil = 270.0;
+
+        /// <summary>The objective the player's side does not hold that is farthest from the player's goal (c7m16's turned wing).</summary>
+        private Vector2? Elsewhere(SimWorld world)
+        {
+            var goal = _mode.PlayerGoal(world);
+            Vector2? best = null;
+            var far = -1f;
+            foreach (var p in _mode.Points)
+            {
+                if (p.Owner == PlayerTeam) continue;
+                var d = goal is { } g ? Vector2.Distance(g, p.Def.Position) : 0f;
+                if (d <= far) continue;
+                far = d;
+                best = p.Def.Position;
+            }
+            return best;
         }
 
         private OperationRun _run;
