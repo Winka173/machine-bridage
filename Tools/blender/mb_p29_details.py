@@ -38,10 +38,11 @@ def flare_tubes(a, parent, x, y, z, s, count=4, gap=.06, r=.03, depth=.12, seg=8
 
 
 def aps_cluster(a, parent, x, y, z, cassettes=2):
-    """A sensor block with two radar panels and launcher cassettes on a turret roof at (x, y, z)."""
-    part = a.part('Part_aps', 'Armor', parent)
+    """A sensor block with two radar panels and launcher cassettes on a turret roof at (x, y, z). The nodes are
+    `Aps_cluster` / `Aps_cluster_panels`, deliberately not `Part_*` (the runtime reads `Part_<letters>` as a separate part)."""
+    part = a.part('Aps_cluster', 'Armor', parent)
     k.block(part, (.32, .22, .14), loc=(x, y, z + .08), chamfer=.02)
-    team = a.part('Part_aps_panels', 'Team', parent)
+    team = a.part('Aps_cluster_panels', 'Team', parent)
     for s in (-1, 1):
         k.block(team, (.012, .18, .1), loc=(x + s * .172, y, z + .09), chamfer=0)
     for i in range(cassettes):
