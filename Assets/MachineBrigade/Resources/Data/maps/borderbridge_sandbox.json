@@ -1004,7 +1004,6 @@
     {"def": "artillery_wreck", "x": 4.0, "z": 91.5, "rot": 270},
     {"def": "wreck_truck", "x": 95.0, "z": -89.5},
     {"def": "artillery_wreck", "x": 26.0, "z": -25.5, "rot": 90},
-    {"def": "wreck_tank", "x": -19.0, "z": -69.5, "rot": 270},
     {"def": "crater_large", "x": -21.0, "z": -63.0},
     {"def": "wreck_truck", "x": 119.5, "z": -55.0, "rot": 270},
     {"def": "artillery_wreck", "x": -26.5, "z": 78.0, "rot": 180},

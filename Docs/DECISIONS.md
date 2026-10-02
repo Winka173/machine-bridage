@@ -16587,3 +16587,32 @@ bands in its own `map_dressing.json` and reads the data below; it edits no map f
   reads the already-cut DPS and would re-price heavy_turret (18 -> 14) and atgm_tower.multi (6 -> 7), so it was not used.
 - The 8 RED maps (sealed pockets of 100-284 m2; every objective reachable) are fixed despite prompt 30 L8's report-only
   rule: the owner asked for it.
+
+## RED map fixes (lead pass, 2026-10-02)
+
+The 8 RED files of prompt 30's audit (Docs/checks/map_audit.md: "RED connectivity", a walkable pocket of >= 25 cells
+sealed off from the main ground) are fixed by `Tools/maps/red_fixes.py`, a pass on the generated map files (a table of
+drop / move / add per file, idempotent, `--check`). build_maps.py runs it before the wall lines (p32_walls.py) and
+longmap.py on its long files before the access check, so a rebuild keeps the fixes; a fix whose prop is not in a rebuilt
+file is reported and skipped (the audit then says whether that file still has a pocket). Per pocket the smallest fix:
+- borderbridge_conquest / _sandbox, 100 m2 at (-19, -80): the nook between the south workshop's garage and four wrecks;
+  the wreck_tank at (-19, -69.5) dropped, the nook opens north 8 m wide (the biggest hull's wide route reaches it). The
+  north side has no such nook (its wrecks lie apart), so both sides now match. The garage (a neutral site) stays.
+- emberridge_conquest / _sandbox / _long, 136 m2 at (-32, 64): the nook by the lava rift (volcanic cliff east, the
+  obsidian spires landmark west, lava south), shut at its neck by a wreck and a rock; the wreck_car at (-32, 79.5) dropped
+  and the basalt_rock_c at (-34.7, 71.25) moved 2.5 m west to (-37.2, 71.25): an 8 m neck north (wide route reaches it).
+  The landmark spire is not touched.
+- openpit_siege, 284 m2 at (107, -101): the strip behind the ore loadout (factory, storage tank, pipes and the outline),
+  shut by one sandbag line; the sandbags at (100.2, -77.95) dropped, the strip opens north 6 m wide (wide route reaches
+  its mouth; deeper in it stays a 2-4 m service strip, connected, so no trap).
+- coralisles_siege, 200 / 160 / 144 / 132 m2 and swamp_siege, 248 / 168 / 164 m2: the classic fortress's back corner,
+  dead ground behind the keep's walls (x or z 134), the hangars, the outer works and the map edge, out of bounds by
+  design (two hold an artillery emplacement, a fixed defence that never moves). Filled with indestructible blockers so no
+  cell of them is walkable: 13 revetments (blast walls) and 1 boulder on Coral Isles, 12 revetments and 1 boulder on the
+  swamp; none on a hardpoint, unit, wall, gate or the map edge, none growing into the main ground.
+- Checks: map_audit 8 RED -> 0 RED (100 YELLOW, 0 GREEN; no file's flags worse; long-range exposure +1 point on
+  borderbridge, coralisles_siege and swamp_siege, the indirect-fire envelope 1-2 points apart on the two siege files);
+  check_access 73/75 as before (swamp_conquest and veyra_old_quarter_conquest, unchanged); p32_walls --check: the same 2
+  files as before the pass (borderbridge_conquest, borderbridge_siege; the conquest file's plan is identical with and
+  without the fix); transit, edges and terrain --check: 0 problems, nothing to write. Docs/checks/map_audit.md / .csv
+  regenerated. No Unity, tests or sims.

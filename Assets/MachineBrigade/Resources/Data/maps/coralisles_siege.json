@@ -2585,7 +2585,21 @@
     {"def": "tank_trap", "x": 119.0, "z": 38.0},
     {"def": "tank_trap", "x": 38.0, "z": 138.0, "rot": 90},
     {"def": "tank_trap", "x": 138.0, "z": 38.0},
-    {"def": "ammo_dump", "x": -63.64, "z": -25.46, "neutral": 1}
+    {"def": "ammo_dump", "x": -63.64, "z": -25.46, "neutral": 1},
+    {"def": "revetment", "x": 142.0, "z": 89.0, "rot": 90},
+    {"def": "revetment", "x": 134.0, "z": 81.0, "rot": 90},
+    {"def": "revetment", "x": 142.0, "z": 77.5, "rot": 90},
+    {"def": "revetment", "x": 141.0, "z": 94.0},
+    {"def": "revetment", "x": 142.0, "z": 123.0, "rot": 90},
+    {"def": "revetment", "x": 145.0, "z": 131.0, "rot": 90},
+    {"def": "revetment", "x": 141.0, "z": 116.0},
+    {"def": "revetment", "x": 89.0, "z": 142.0},
+    {"def": "revetment", "x": 72.0, "z": 141.0, "rot": 90},
+    {"def": "revetment", "x": 81.0, "z": 134.0},
+    {"def": "revetment", "x": 71.0, "z": 142.0},
+    {"def": "revetment", "x": 89.0, "z": 146.0},
+    {"def": "revetment", "x": 127.0, "z": 142.0},
+    {"def": "boulders", "x": 115.0, "z": 147.0}
   ],
 
   "decor": [

@@ -822,6 +822,10 @@ def main(only=()):
             continue
         build_one(*entry)
         done.append(map_id)
+    # The RED map fixes (DECISIONS "RED map fixes (lead pass, 2026-10-02)"), on the long files just written.
+    import red_fixes
+    if done:
+        red_fixes.main([f'{m}_long' for m in done])
     tables = check_access.balance()
     failed = 0
     for map_id in done:
