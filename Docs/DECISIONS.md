@@ -13836,3 +13836,4 @@ fibre_fpv_carrier, interceptor_drone_vehicle, builders appended to `mb_p27_wave3
   aa_gun_vehicle .3654, airborne_vehicle .3620, fibre_fpv_carrier .3286, interceptor_drone_vehicle .3377. hover_gunboat has no
   card PNG. New cards: the lead renders them after the merge.
 
+- Lead (2026-10-02), wave 3f cards: six pass (-0.5 % to +3.9 %); aa_gun_vehicle fails at -1.8 % (.3654 -> .3589): merged, and pass 3g brightens it (ao_strength or lighter plates) to >= .3618 before its own models.

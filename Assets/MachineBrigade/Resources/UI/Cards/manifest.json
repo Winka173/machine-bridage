@@ -22,7 +22,7 @@
             "kind": "vehicle",
             "model": "rocket_technical",
             "source": "Models/rocket_technical",
-            "hash": "v2:8ff8b7ba93b8011839cb6aeca4ef0c1f66e53cfd"
+            "hash": "v2:0c0d79dc1a75fc8df751404da91ee86cbd15a4a6"
         },
         {
             "id": "light_tank",
@@ -260,7 +260,7 @@
             "kind": "vehicle",
             "model": "zu23_technical",
             "source": "Models/zu23_technical",
-            "hash": "v2:ec70e2c58a1abb22fe4e1a784efaa4b93c9b61d4"
+            "hash": "v2:3950dead145449e41223d7d6de8a7f5b02896ba7"
         },
         {
             "id": "smoke_carrier",
@@ -323,7 +323,7 @@
             "kind": "vehicle",
             "model": "wheeled_gun",
             "source": "Models/wheeled_gun",
-            "hash": "v2:95ff07d5199469849a7497acaa6a696cb7149e31"
+            "hash": "v2:214e45be06943fb9afe595a49742948a06fa6761"
         },
         {
             "id": "counter_battery_radar",
@@ -393,7 +393,7 @@
             "kind": "vehicle",
             "model": "aa_gun_vehicle",
             "source": "Models/aa_gun_vehicle",
-            "hash": "v2:9404c2bdeee7ccb79036204e88816cf852a35a8a"
+            "hash": "v2:86e62b30c0d71534fad076a1044129bd0ffc7c78"
         },
         {
             "id": "shorad_vehicle",
@@ -435,7 +435,7 @@
             "kind": "vehicle",
             "model": "airborne_vehicle",
             "source": "Models/airborne_vehicle",
-            "hash": "v2:5e77da53c305bb29917007a0753213061f008569"
+            "hash": "v2:ea40410f88ec13e047b1f3f76f4daab0374f2f8e"
         },
         {
             "id": "wheeled_howitzer",
@@ -484,14 +484,14 @@
             "kind": "vehicle",
             "model": "fibre_fpv_carrier",
             "source": "Models/fibre_fpv_carrier",
-            "hash": "v2:4c42c73031a9dd6348a4afa32e4504227e0e4928"
+            "hash": "v2:827192d1581856b73866269203ebcaa86769a391"
         },
         {
             "id": "interceptor_drone_vehicle",
             "kind": "vehicle",
             "model": "interceptor_drone_vehicle",
             "source": "Models/interceptor_drone_vehicle",
-            "hash": "v2:04b4652f6bfc50dd52d6a98e8609d604a91c110c"
+            "hash": "v2:f8fdd372165358f884ba5fbd09364b7f7ed52264"
         },
         {
             "id": "aa_57mm_vehicle",
