@@ -273,3 +273,32 @@ def opening_cheapest(role, vehicles: dict):
         if best is None or cp < best[1] or (cp == best[1] and vid < best[0]):
             best = (vid, cp)
     return best
+
+
+# ---------------------------------------------------------------------------------------------------------- 05: economy
+def f32(x: float) -> float:
+    """A C# float value as a double (the 32-bit rounding of a literal like 1.16f)."""
+    import struct
+    return struct.unpack("f", struct.pack("f", float(x)))[0]
+
+
+def round_half_up(x: float) -> int:
+    """Sim/Core/SimMath.cs RoundHalfUp(double): away from zero at .5."""
+    from decimal import ROUND_HALF_UP, Decimal
+    return int(Decimal(repr(x)).quantize(Decimal(1), rounding=ROUND_HALF_UP))
+
+
+def start_cp(cp: float, scale: float, listed: bool) -> float:
+    """Sim/Content/OpeningRules.cs StartCp(mode, cp): cp x startCp.scale rounded half up where the mode is listed (cp > 0,
+    scale != 1); else cp. The scale is a float (Math.Max(0.1f, s.Float("scale"))) widened to double."""
+    s = max(0.1, f32(scale))
+    if listed and cp > 0 and s != 1.0:
+        return float(round_half_up(cp * s))
+    return float(cp)
+
+
+def earning(income: float, bonus: float, scale: float) -> float:
+    """Sim/Economy/EconomySystem.cs TeamEconomy.Earning with upkeep 1, catch-up 1 and no commander:
+    (Income + Bonus x IncomeScale), Income = _income x IncomeScale; IncomeScale = economy.income (SimWorld.EnableEconomy)
+    times every ScaleIncome factor (ModeSession.Create: BuyProfile.For(difficulty).Income; ConquestSession: 1.18)."""
+    return income * scale + bonus * scale
