@@ -223,3 +223,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) tiếp tục (sau khi 3 agent bị dừng vì hết quota phiên)
 - (02/10) [chọn] sửa 8 bản đồ RED; Pháo đài thép chấp nhận giá 18; giảm sát thương tháp nhỏ: nới trần lên 11
 - (02/10) [prompt sửa lỗi tổng hợp: vũ khí, hành vi đạn, pháo sáng, vòng cảnh báo, khói nổ, âm thanh, model, PDF] -> Docs/prompts/fix_full_vi.txt
+- (02/10) [extra rule cho PDF của prompt sửa lỗi lượt 10: A bảng vũ khí đầy đủ, B tóm tắt boss, C hiệu ứng có ảnh, D âm thanh, E model] lưu lại và export sau khi xong

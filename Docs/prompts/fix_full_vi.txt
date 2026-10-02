@@ -280,3 +280,54 @@ Báo cáo docs/fixes/report_full_fix.md:
 - mọi chỗ tự quyết;
 - danh sách mục PDF đã sửa.
 Commit.
+
+(02/10, chủ dự án) đây là extra rule cho file pdf export ra, lưu lại và export sau khi xong:
+
+Bổ sung cho Prompt sửa lỗi tổng hợp, lượt 10 (chỉ phần xuất tài liệu, không đổi lối chơi). Mọi số sinh từ dữ liệu. Ghi DECISIONS.
+
+## A. Bảng vũ khí đầy đủ — mỗi vũ khí (mọi boss, xe, tháp) một dòng
+- Định danh: id, tên thật, weaponFamilyId / weaponVariantId, xe mang, tên bệ (Mount_*).
+- Cỡ và đạn: cỡ (mm) hoặc đầu nổ (kg), loại sát thương, cấp xuyên, dạng đạn, đạn thay thế (nếu có).
+- Nòng và loạt:
+  - số nòng; salvoMode (SIMULTANEOUS / RIPPLE);
+  - độ lệch giữa các nòng (s);
+  - số phát mỗi loạt; khoảng cách giữa các phát trong loạt (s);
+  - thời gian nạp (s); chu kỳ đầy đủ (s).
+- Sát thương:
+  - mỗi phát; mỗi loạt;
+  - DPS duy trì: một mục tiêu, lên giáp 0 / 2 / 4, lên công trình.
+- Nổ và cảnh báo: bán kính lõi / rìa (m), thời gian cảnh báo (s), vũ khí có vòng cảnh báo không.
+- Đường đạn: tốc độ đạn (m/s), thời gian bay tới tầm tối đa (s), tầm / tầm tối thiểu (m), mục tiêu.
+- Tháp xoay: tốc độ xoay (°/s), góc bắn giới hạn.
+- Ngoài đời: nhịp tối đa / duy trì (phát/phút) và nguồn; so với chu kỳ trong game (tỷ lệ).
+- Trước / sau: mọi cột trên của lần sửa này (cũ → mới).
+
+## B. Tóm tắt từng boss
+- Máu, mục tiêu thời gian hạ, tổng DPS duy trì trước / sau, cách bù (thêm nòng / thêm bệ / gộp bệ).
+- Số đòn để hạ xe tham chiếu cho TỪNG vũ khí chính của boss: Tăng chủ lực, Tăng hạng nặng, Xe chiến đấu bộ binh, Xe bọc thép bánh lốp, một tháp vừa. Tính lên giáp mặt trước, có hệ số loại sát thương và xuyên.
+- Thời gian hạ từng xe tham chiếu nếu boss dồn toàn bộ hỏa lực (giây).
+- Proxy nổ lan: số xe trúng (trong lõi / trong rìa) khi 5 xe tham chiếu đứng cách nhau 8 m theo hàng và theo cụm.
+- Khả năng thoát: thời gian cảnh báo so với thời gian ra khỏi lõi của xe chậm tham chiếu (4,5 m/s). Ghi ĐỦ / THIẾU.
+- So với vũ khí người chơi cùng họ (sát thương mỗi phát, bán kính, chu kỳ).
+
+## C. Hiệu ứng bắn và nổ — có ảnh
+- Bảng theo bậc cỡ và theo từng vũ khí ≥ 120 mm:
+  - chớp đầu nòng (đường kính m, thời gian s), độ dài luồng khói đầu nòng (m);
+  - vòng bụi khi bắn (m), sóng nước (m);
+  - cầu lửa (đường kính m, thời gian s), cột khói (cao m, thời gian tồn tại s);
+  - sóng xung kích (m, phải bằng rìa), hố / vết cháy (m, thời gian s);
+  - rung camera (mức, thời gian); số hạt tối đa; mức LOD.
+- Ảnh cho mỗi bậc và cho mọi vũ khí ≥ 203 mm của boss:
+  - lúc bắn ở các mốc 0 / 0,2 / 1 s;
+  - lúc nổ ở các mốc 0 / 0,5 / 2 / 10 / 30 s;
+  - nền lưới mét, có một Tăng chủ lực đứng cạnh làm thước đo;
+  - vòng lõi / rìa vẽ chồng lên.
+- Ảnh một loạt bắn cùng lúc của tháp nhiều nòng (Leviathan, Kraken, Behemoth bệ đôi, tháp pháo hạng nặng, Siêu tăng): thấy đủ chớp từng nòng và mọi điểm rơi.
+
+## D. Âm thanh
+- Bảng mỗi clip: nhóm, bậc cỡ, độ to (LUFS), đỉnh, tỷ lệ năng lượng dưới 150 Hz, thời lượng đuôi, có bị phát hiện "keng" không, nguồn và giấy phép.
+- Danh sách 3 file ghi âm thử (đường dẫn) và bảng thời gian xảy ra các tiếng lớn trong từng file.
+
+## E. Model
+- Bảng chấm mọi model theo MODEL_STANDARD (tam giác, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ), kèm ảnh 3 góc.
+- Ảnh trước / sau cho model đã khôi phục hoặc làm lại; riêng Pháo hạm bay và công trình phải có.

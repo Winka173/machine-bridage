@@ -13,3 +13,11 @@ No Unity, tests or sims in the agents; the lead merges, compiles, runs CatalogCh
 
 Data file overlap: lane A owns `weapons` in balance.json; lane B keeps its data in its own blocks (warning rules,
 flare counts) and touches weapons only through lane A's merge; lane C touches no balance data.
+
+## L10 PDF extra rules (owner, 2026-10-02; end of fix_full_vi.txt)
+After all passes: sections A (full weapon table, one row per weapon, before -> after), B (per-boss summary: shots to
+kill five reference targets, focus-fire kill times, splash proxy line/cluster, escape ENOUGH/SHORT, vs player family),
+C (effects table per tier and per >= 120 mm weapon, with Unity shots at fixed time marks on a metre grid with an MBT for
+scale and core/edge rings drawn; multi-barrel salvo shots), D (audio per-clip table, the 3 sample files and their loud
+moments), E (model scores with 3-angle shots; before/after for restored or rebuilt models, sky_gunship and structures
+required). The lead renders the shots (Unity) and builds the PDF last.
