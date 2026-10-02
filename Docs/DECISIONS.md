@@ -14106,3 +14106,23 @@ Pass 4b (lane A): attack_jet (+hd), heavy_bomber, stealth_bomber, stealth_fighte
 - **Jets (checkpoint 1).** `k.clean` only, plus the prompt 29 flare tubes on attack_jet (1 row a side, rear fuselage), heavy_bomber (2), stealth_fighter (1, on the upper rear fuselage, scaled with the jet), glide_bomber (2); stealth_bomber has none (D6). attack_jet_hd also swaps its dome canopy for `parts.canopy` (frame sill + two bows) and its exhaust rings for `parts.jet_nozzle` (same `Canopy`, `Exhaust_glow` nodes; the old shapes are cleared in place). Tube seg 6 on the jets keeps triangles in budget (the first build gave glide_bomber 1.85x).
 - **Gates (triangles old -> new, COLOR_0 old -> new).** attack_jet 2,376 -> 2,732 (.707 -> .710, ao .8); attack_jet_hd 2,520 -> 3,800 (1.51x; .708 -> .715); heavy_bomber 2,596 -> 3,540 (.741 -> .752, ao .7); stealth_bomber 2,096 same (.702 -> .706); stealth_fighter 2,984 -> 3,336 (.631 -> .635); glide_bomber 1,128 -> 1,624 (1.44x; .798 -> .811, ao .3: the tubes dim it a lot); recon_jet 768 same (.800 -> .802, ao .85); airborne_vehicle_chute unchanged (clean found nothing). Zero-area 0, no errors, sizes unchanged. 4a three after the rename: scout .7393, gunship .7210, swarm_carrier .6634 (a hair under their 4a numbers, far over the originals).
 - **Not gated.** Flare placement is by coordinates only (no renders): the lead checks the rows on the cards or previews.
+
+## 27 wave 6b (lead pass, 2026-10-02)
+
+Pass 6b (lane B, towers): gun_turret, mg_bunker, rocket_turret, each with `_a` and `_b`, in `Tools/blender/mb_p27_wave6.py` (method of 6a:
+old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and pivots untouched). Run: Blender
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 for all nine.
+
+- gun_turret: extruded chamfered ring pad, lathe drum with a stepped coping skirt, `k.block` buttresses and ammunition porch with lintel, the
+  faceted turret body as a `k.sharp_loft` of the old outline and .86 taper (cheek and side plates still sit on its faces), side recesses,
+  roof greebles. The old zero-area triangle is gone. `_a` (longer gun, scope) and `_b` (twin 57, radar) edit by name as before.
+- mg_bunker: finer lathes (plinth, formwork ridge, flared column, lipped roof with a flatter crown), chamfered steps and a door lintel.
+  Berm, net, sandbags, fascia, cupola, MG and ATGM unchanged. Open edges unchanged (192 / 192 / 104: the old net and berm sheets).
+- rocket_turret: extruded pad, chamfered blast wall with recessed panels, `k.block` launcher base and box (rotated 30 degrees, same centre),
+  panel recesses, roof greebles; `_a` rack and `_b` covers edit the box parts as before.
+- **Gates (old -> new triangles, COLOR_0).** gun_turret 6,112 -> 6,430 (.580 -> .650); _a 6,384 -> 6,702 (.581 -> .651); _b 6,688 -> 7,006
+  (.585 -> .654); mg_bunker 3,404 -> 3,904 (.623 -> .672); _a 3,704 -> 4,204 (.631 -> .677); _b 3,560 -> 4,060 (.622 -> .672);
+  rocket_turret 3,894 -> 4,410 (.579 -> .663); _a 5,102 -> 5,554 (.645 -> .699); _b 3,010 -> 3,526 (.607 -> .686). All at most 1.18x
+  triangles, zero-area 0, runtime nodes identical, size within .1 %, no errors or warnings.
+- **Card luma (old, alpha > .5, Rec. 709):** gun_turret .3963, _a .3969, _b .4070; mg_bunker .3988, _a .4020, _b .3958; rocket_turret .3672
+  (the dimmest: watch it), _a .3866, _b .4143.

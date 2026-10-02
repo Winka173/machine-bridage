@@ -10,11 +10,13 @@ names the branch edits (`strip`, `stretch`) look for, and nothing new hangs on a
 what was there.
 
 Pass 6a: aa_turret, artillery_emplacement, guard_tower, each with `_a` and `_b`.
+Pass 6b: gun_turret, mg_bunker, rocket_turret, each with `_a` and `_b`.
 """
 import math
 import random
 
 import mb_kit27 as k
+from mathutils import Euler, Vector
 import mb_tower_branches as tb
 from frontier_kit import chamfered
 from mb_siege import _circle
@@ -176,3 +178,95 @@ BUILDERS = {
     'guard_tower_a': _build('guard_tower', _guard_up, tb.guard_tower_a),
     'guard_tower_b': _build(tb.BUILDERS['guard_tower_b'], _nest_up),
 }
+
+
+# ============================================================================= gun_turret (120 mm, concrete ring)
+def _gun_up(a):
+    t = 'Turret'
+    tb.strip(a, ('Emplacement', 'Buttresses', 'Turret_body'))
+    conc = a.part('Emplacement', 'Concrete')
+    k.extrude(conc, chamfered(5.0, 5.0, 1.1), .34, loc=(0, 0, .15), axis='Z', chamfer=.06, corner=.04, taper=.985)
+    k.lathe(conc, [(2.2, .28), (2.2, .34), (2.14, .62), (2.12, .66), (2.04, 1.16), (0, 1.16)], seg=24)
+    k.block(conc, (1.5, .9, .82), loc=(0, 2.1, .7), chamfer=.05)                                  # ammunition porch
+    k.block(conc, (1.62, .98, .1), loc=(0, 2.1, 1.07), chamfer=.03, ends=(True, True))             # porch lintel
+    buttress = a.part('Buttresses', 'Concrete')
+    for i in range(8):
+        ang = i * math.tau / 8 + math.tau / 16
+        k.block(buttress, (.62, .5, .86), loc=(2.2 * math.cos(ang), 2.2 * math.sin(ang), .72), rot=(0, 0, ang),
+                chamfer=.05, taper=(.55, .9))
+    # Turret body: a sharp loft of the old faceted outline (same taper), cheek and side plates stay.
+    outline = [(-.95, -1.72), (.95, -1.72), (1.52, -.95), (1.6, .95), (1.38, 2.05), (-1.38, 2.05), (-1.6, .95),
+               (-1.52, -.95)]
+    z0, H, tp = .12, .95, .86
+    body = a.part('Turret_body', 'Team', t)
+    k.sharp_loft(body, [[(x, y, z0) for x, y in outline], [(x * tp, y * tp, z0 + H) for x, y in outline]], chamfer=.06)
+    k.inset(body, lambda c, n, f: abs(n.z) < .45 and c.z > .3 and c.z < .9 and abs(n.y) > .85, width=.07, depth=-.012)
+    k.greebles(a.part('Turret_armor', 'Armor', t), (0, .3, z0 + H + .02), (1, 0, 0), (0, 1, 0), (1.4, .7), 3,
+               seed=2901, height=(.03, .07), chamfer=.012, avoid=(((.6, .35, 0), .6), ((-.6, .55, 0), .5),
+                                                                   ((0, 1.2, 0), .45), ((-.72, -.72, 0), .45)))
+
+
+# ============================================================================= mg_bunker (mushroom pillbox)
+def _mg_up(a):
+    tb.strip(a, ('Pillbox', 'Roof'))
+    conc = a.part('Pillbox', 'Concrete')
+    slit0, slit1 = .95, 1.35
+    # Battered wall with a plinth and one formwork ridge, a flared central column.
+    k.lathe(conc, [(1.9, -.02), (1.9, .1), (1.84, .17), (1.82, .5), (1.85, .53), (1.83, .58), (1.72, slit0),
+                   (0, slit0)], seg=24)
+    k.lathe(conc, [(0, slit0 - .04), (.36, slit0 - .04), (.3, slit0 + .04), (.3, slit1 - .04), (.36, slit1 + .04),
+                   (0, slit1 + .04)], seg=12)
+    roof = a.part('Roof', 'Concrete')
+    k.lathe(roof, [(1.66, slit1), (1.77, slit1 + .03), (1.79, slit1 + .07), (1.79, 1.6), (1.75, 1.66), (1.58, 1.84),
+                   (1.0, 1.86), (0, 1.88)], seg=24)
+    # Rear steps and a door lintel as chamfered blocks.
+    tb.strip(a, ('Steps',))
+    k.block(a.part('Steps', 'Concrete'), (.9, .5, .08), loc=(0, 2.08, .03), chamfer=.025)
+    k.block(a.part('Steps', 'Concrete'), (1.0, .26, .12), loc=(0, 1.78, .93), chamfer=.03, ends=(True, True))
+
+
+# ============================================================================= rocket_turret (box launcher)
+def _rocket_up(a):
+    t = 'Turret'
+    tb.strip(a, ('Pad', 'Blast_wall', 'Launcher_base', 'Launcher_box'))
+    k.extrude(a.part('Pad', 'Concrete'), chamfered(4.5, 4.5, .6), .3, loc=(0, 0, .13), axis='Z', chamfer=.05,
+              corner=.04, taper=.99)
+    wall = a.part('Blast_wall', 'Concrete')
+    ring = chamfered(4.36, 4.36, .9)
+    for i in range(len(ring)):
+        p, q = Vector(ring[i]), Vector(ring[(i + 1) % len(ring)])
+        if p.y > 1.9 and q.y > 1.9:
+            continue
+        mid, d = (p + q) / 2, q - p
+        k.block(wall, (d.length + .02, .32, .62), loc=(mid.x, mid.y, .56), rot=(0, 0, math.atan2(d.y, d.x)),
+                chamfer=.05, taper=(1, .7))
+    for x, y in ((-1.4, 2.18), (1.4, 2.18)):
+        k.block(wall, (.62, .34, .7), loc=(x * .92, y - .02, .6), chamfer=.05, taper=(1, .7))
+    k.inset(wall, lambda c, n, f: abs(n.z) < .3 and c.z > .4 and c.z < .8, width=.07, depth=-.01)
+    base = a.part('Launcher_base', 'Team', t)
+    k.block(base, (1.5, 1.8, .62), loc=(0, .25, .42), chamfer=.05, taper=(.9, .92))
+    k.inset(base, lambda c, n, f: abs(n.x) > .8 and c.z > .3, width=.08, depth=-.012)
+    pitch = math.radians(30)
+    rot = (-pitch, 0, 0)
+    hinge = Vector((0, .75, 1.0))
+    L, W, Hb = 2.5, 1.9, 1.0
+    turn = Euler(rot, 'XYZ').to_matrix()
+    mid = hinge - turn @ Vector((0, L / 2 - .25, -Hb / 2 - .05))
+    lb = a.part('Launcher_box', 'Team', t)
+    k.block(lb, (W, L, Hb), loc=tuple(mid), rot=rot, chamfer=.05, ends=(True, True))
+    k.inset(lb, lambda c, n, f: abs(n.x) > .8 and abs(c.y - mid.y) < 1.2, width=.1, depth=-.014)
+    k.greebles(a.part('Turret_armor', 'Armor', t), (0, 1.0, .46), (1, 0, 0), (0, 1, 0), (1.4, .36), 3, seed=2911,
+               height=(.03, .06), chamfer=.012)
+
+
+BUILDERS.update({
+    'gun_turret': _build('gun_turret', _gun_up),
+    'gun_turret_a': _build('gun_turret', _gun_up, tb.gun_turret_a),
+    'gun_turret_b': _build('gun_turret', _gun_up, tb.gun_turret_b),
+    'mg_bunker': _build('mg_bunker', _mg_up),
+    'mg_bunker_a': _build('mg_bunker', _mg_up, tb.mg_bunker_a),
+    'mg_bunker_b': _build('mg_bunker', _mg_up, tb.mg_bunker_b),
+    'rocket_turret': _build('rocket_turret', _rocket_up),
+    'rocket_turret_a': _build('rocket_turret', _rocket_up, tb.rocket_turret_a),
+    'rocket_turret_b': _build('rocket_turret', _rocket_up, tb.rocket_turret_b),
+})
