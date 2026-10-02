@@ -56,6 +56,12 @@ namespace MachineBrigade.Sim.Navigation
 
         /// <summary>Spots beside it, in the same direction, for when the player's units stand at it.</summary>
         public IReadOnlyList<Vector2> Alternates { get; internal set; } = Array.Empty<Vector2>();
+
+        /// <summary>
+        /// Prompt 33 L2: its entry gate (the ingress contract): the map's gate it was moved onto, else one made where it stands.
+        /// Every point has one; what comes in here exists from its entry tick at the gate (MissionEventSystem.Deliver).
+        /// </summary>
+        public EntryGate Gate { get; internal set; } = null!;
     }
 
     /// <summary>
@@ -208,11 +214,22 @@ namespace MachineBrigade.Sim.Navigation
 
         private void Add(SimWorld world, SpawnSide side, SpawnKind kind, Vector2 at, Vector2 from, Vector2 centre, Vector2 home)
         {
+            // Prompt 33 L2: a point that comes in over the edge (or off the water) stands on the map's entry gate near it.
+            var gate = GateFor(world, side, kind, at, home);
+            if (gate != null) at = gate.Position;
             foreach (var p in _all)
                 if (p.Side == side && p.Kind == kind && Vector2.DistanceSquared(p.Position, at) < 12f * 12f) return;
             var inward = centre - at;
             if (side == SpawnSide.Ally && kind is SpawnKind.Behind or SpawnKind.Drop) inward = Axis;
             inward = inward.LengthSquared() > 1f ? Vector2.Normalize(inward) : Axis;
+            if (gate != null) inward = gate.Inward;
+            if (gate == null)
+            {
+                // A drop's or an air path's way in is the flight's (from its entry over the edge), else the point's own.
+                var way = inward;
+                if ((kind == SpawnKind.Air || kind == SpawnKind.Landing) && (at - from).LengthSquared() > 1f) way = Vector2.Normalize(at - from);
+                gate = EntryGate.At(world.Map, $"auto.{_all.Count}", GateKindOf(kind), at, way);
+            }
             var across = new Vector2(-inward.Y, inward.X);
             var alternates = new List<Vector2>();
             var main = world.Grid.MainRegion;
@@ -224,8 +241,39 @@ namespace MachineBrigade.Sim.Navigation
             {
                 Id = $"{side.ToString().ToLowerInvariant()}.{kind.ToString().ToLowerInvariant()}.{_all.Count}",
                 Side = side, Kind = kind, Bearing = BearingOf(at, centre), Position = at, Inward = inward, From = from, Alternates = alternates,
+                Gate = gate,
             });
         }
+
+        /// <summary>How near a spawn point a gate of the map's data must be to take it (metres).</summary>
+        public const float GateReach = 30f;
+
+        /// <summary>
+        /// Prompt 33 L2: the map's entry gate a point at the edge (an edge point, a rail head, the allies' behind their area within
+        /// 14 m of the edge, a point on the water) moves onto: the nearest that takes its kind within <see cref="GateReach"/>, on
+        /// the battlefield's ground and, for the enemy's, still clear of the player's camp. Null: the point keeps its place and
+        /// gets a gate made there.
+        /// </summary>
+        private static EntryGate? GateFor(SimWorld world, SpawnSide side, SpawnKind kind, Vector2 at, Vector2 home)
+        {
+            var map = world.Map;
+            if (map.EntryGates.Count == 0) return null;
+            var edgeKind = kind is SpawnKind.Edge or SpawnKind.Rail || kind == SpawnKind.Behind && map.EdgeDistance(at) <= 14f;
+            if (!edgeKind && kind != SpawnKind.Sea) return null;
+            var gate = EntryGate.Nearest(map.EntryGates, at, GateReach, kind);
+            // On the battlefield's ground (a road gate stands on its road, where nobody parks: it is driven through).
+            if (gate == null || !world.Grid.IsWalkable(gate.Position) || world.Grid.RegionOf(gate.Position) != world.Grid.MainRegion) return null;
+            if (side == SpawnSide.Enemy && Vector2.Distance(gate.Position, home) < CampClearance * 0.9f) return null;
+            return gate;
+        }
+
+        private static EntryGateKind GateKindOf(SpawnKind kind) => kind switch
+        {
+            SpawnKind.Rail => EntryGateKind.Rail,
+            SpawnKind.Sea => EntryGateKind.Sea,
+            SpawnKind.Air or SpawnKind.Landing or SpawnKind.Drop => EntryGateKind.Air,
+            _ => EntryGateKind.Edge,
+        };
 
         /// <summary>
         /// B.3: where a wave of <paramref name="point"/> comes in: the point, else a spot beside it, else another point of the

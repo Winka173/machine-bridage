@@ -172,3 +172,42 @@ The cloud session writes the Sim only. Each line: file, what, why.
   ShowdownSession, MenuScreen.Home / .Tactics, BattleHud.Tactics, BaseScreen, TacticPick, SimWorld.NavStates; L10nTests for
   `tactic.notInMode`, `pressure.alarm`, `mode.showdown.escalate` / `.cutoff` / `.sudden`.
 - Look: the HQ dome (a Shield HQ's skill), the greyed tactics in a mode that forbids some, the match-end retreat after a win.
+## Prompt 33 L2 (lead pass, 2026-10-02): edge corner pieces for the model lane
+
+Map data `"edges"."corners"` (Tools/maps/edges.py) names a prebuilt piece wherever two edge types meet, and at the
+rectangle's four corners. The view (lane A) places them; they are Blender kit pieces still to build (view only, no
+collider). Count = corners in all 100 map files.
+
+- `outer_land` (298): the rectangle's corner where both sides are LAND (almost every map).
+- `corner_land_cliff` (146): a cliff stretch meeting open land along a side (Dunebreak, Frostpeak, Jungle Pass,
+  Stormbeach, Launch Site, Open Pit, Red Rock).
+- `outer_urban` (64): Capital, Foundry, Metro City, Veyra Old Quarter.
+- `bank_land_river` (60): a river leaving the map (Border Crossing, Hollow Dam, Mirewood).
+- `corner_land_sea` (38): the coast meeting the edge (Coral Keys, Stormbeach, Lighthouse Bay).
+- `outer_sea` (16): a corner all sea (Coral Keys, Stormbeach, Lighthouse Bay).
+- `embankment_urban_river` (14): Capital's river between city stretches.
+- `outer_land_sea` (12): a harbour side meeting a land side at the corner (Ironport, Rust Yard).
+- `outer_cliff` (7): Open Pit.
+- `outer_river` (3): Hollow Dam's reservoir corner.
+- Named for later maps, not used yet: `mouth_river_sea`, `corner_cliff_sea`, `corner_quay_sea`, `gorge_cliff_river`,
+  `corner_land_urban`, `corner_cliff_urban`.
+- The SEA stretches' `shore` (BEACH / CLIFF / QUAY) tells which coast piece runs along them.
+- `Game/Effects/IngressStandIns.cs` (the reinforcements' stand-ins on their approach) is written blind: check in a
+  mission with an edge wave that the stand-ins drive up and vanish as the real vehicles appear at the gate.
+
+## Prompt 33 L3 (lead pass, 2026-10-02): landmarks the view must stand
+
+Map data `"landmarks"` (Tools/maps/terrain.py): a landmark with `"model"` has no prop of the map that is it; the view
+(lane A's dressing, view only, no collider, no sight blocking) stands that model at its x, z, readable from the
+widest zoom.
+
+- `capital.palace` (palace_dome), `capital.station` (station_clock), `coralisles.lighthouse` (lighthouse),
+  `emberridge.geothermal` (cooling_tower), `hydrodam.dam` (dam_wall, at the reservoir's south shore z 102),
+  `junglepass.village_church` (church), `redrock.mine_church` (church), `saltflat.survey_beacon` (survey_beacon),
+  `veyra_old_quarter.clock_square` (clock_tower); the plain place names (`borderbridge.great_bridge`, `ironport.docks`,
+  `lighthousebay.fishing_village`, `metrocity.plaza`, `openpit.pit`, `orbitalgate.landing_field`, `whiteout.frozen_lake`)
+  need no model.
+- Ironport's line c4m12.05 ("the whole wall to the lighthouse") sees a lighthouse beyond the map: one for Ironport's
+  outer band on its SEA side.
+- The terrain tags could show on the ground (a tint for FOREST / ROUGH / SHALLOW_WATER, the roads are drawn already) and
+  in the unit card (the speed now): not done, a UI pass.

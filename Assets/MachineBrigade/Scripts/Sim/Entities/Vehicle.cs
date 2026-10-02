@@ -335,7 +335,14 @@ namespace MachineBrigade.Sim.Entities
         public bool Barraging { get; private set; }
 
         /// <summary>Drive speed multiplier from skills.</summary>
-        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * SpeedScale * SpeedGear * PhaseSpeed * PartSpeed;
+        internal float SpeedFactor => (Overdriven ? OverdriveSpeed : 1f) * SpeedScale * SpeedGear * PhaseSpeed * PartSpeed * TerrainSpeed;
+
+        /// <summary>
+        /// Prompt 33 L3: the terrain tag's speed multiplier under it (ROAD 1.2, ROUGH 0.85, FOREST 0.75, SHALLOW_WATER 0.5 but for
+        /// amphibious and air-cushion vehicles), set each step by the movement system for a ground vehicle it drives; 1 in the air,
+        /// at sea, on a rail or on a grid without tags.
+        /// </summary>
+        internal float TerrainSpeed = 1f;
 
         /// <summary>A multi-phase boss: the phases it has passed (0: the first bar).</summary>
         public int Phase { get; internal set; }

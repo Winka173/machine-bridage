@@ -16436,3 +16436,144 @@ here (the lead compiles); no Unity, tests or sims. No new buttons; no model, map
 - **Recon alarm** (prompt 28 appendix): a one-off alert notice when `world.Alarm` turns on (`pressure.alarm`, EN + VI).
 - Left: the leaderboard sort (no board screen yet), the Fortress HQ's turret (model), the branch tower art, and every
   owner look, shot and test run listed in LOCAL_TODO.
+
+## Prompt 33 L2 / L3 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b2`. Passes 2 (edge types, continuity, the ingress contract) and 3 (terrain tags, landmarks).
+Nothing run but the Python tools (Tools/maps/edges.py, terrain.py, check_access.py, Tools/audit/map_audit.py); the C# is
+compiled by the lead; Prompt33EdgeTests and Prompt33TerrainTests are written, not run. Lane A (L1, L6) dresses the
+bands in its own `map_dressing.json` and reads the data below; it edits no map file.
+
+### L2: edge types, corners, continuity, entry gates
+
+- **Data** (`Tools/maps/edges.py`, run after build_maps.py, neutrals.py and transit.py; every `_conquest`, `_sandbox`,
+  `_siege` and `_long` file, 100 files): `"edges"` = `band` (16 m, the edge band; lane A tunes it per map), `outer`
+  (120 m: the widest view's half width at 2.4:1 is 101 m, + 15 %), `segments`, `corners`, `links`; and `"entryGates"`.
+  Sim types: `MapEdgesDef` / `EdgeSegmentDef` / `EdgeCornerDef` / `EdgeLinkDef` (`Sim/Content/MapDefinition.Edges.cs`),
+  `EntryGate` (`Sim/Navigation/EntryGate.cs`); a reversed map keeps both.
+- **edgeType per stretch** of each side of the map's rectangle (N z max, E x max, S, W; `from`/`to` along x on N/S,
+  along z on E/W), from 10 m bins of the 14 m strip inside the edge: water tiles -> SEA on a map with sea, RIVER
+  elsewhere; a cliff prop (cliff_a/_b, volcanic_cliff, mesa) -> CLIFF; an urban map (Capital, Foundry, Metro City,
+  Veyra Old Quarter) -> URBAN; else LAND. Runs under 20 m join their longer neighbour (a river keeps its run). Coral
+  Keys is an island map: a bin wholly beyond the outline with no land scenery is sea. Ironport's and Rust Yard's quays
+  (bollards at z 144) face a sea beyond the square that has no tiles of its own: their north side is declared SEA
+  (square files only; on the `_long` files the quay is mid-map).
+- **edgeModifier**: Ironport SEA + HARBOR, Rust Yard SEA + INDUSTRIAL; LAND/URBAN of the industrial maps (Foundry,
+  Rust Yard, Ironport, Launch Site, Orbital Gate, Open Pit, Dunebreak) INDUSTRIAL; LAND on an urban map URBAN. A SEA
+  stretch also says its `shore`: BEACH, CLIFF (Lighthouse Bay's east side under the lighthouse headland: the prompt's
+  "SEA + CLIFF" read as the shore, since CLIFF is a type, not a modifier) or QUAY (the two harbours).
+- **Maps with SEA**: Stormbeach (landingbeach: S, the south of E and W), Beacon Bay = Lighthouse Bay (lighthousebay:
+  E and S), Coral Keys (coralisles: every side in part), Ironport (N, harbour), Rust Yard (N, industrial quay); also
+  their `_long` files where the water reaches the edge (not Ironport's or Rust Yard's). RIVER: Border Crossing (E, W),
+  Capital (E, W), Hollow Dam (N reservoir, S, W), Mirewood (every side). CLIFF stretches: Dunebreak, Frostpeak, Jungle
+  Pass, Stormbeach's bluffs, Launch Site, Open Pit, Red Rock.
+- **Sea side scenery**: on a SEA stretch, decor (scenery beyond the outline) standing on the water within 30 m of the
+  edge, or any land scenery within the 14 m strip, is removed (harbour pieces stay: bollards, cranes, piers, boats,
+  containers). Only Rust Yard's three square files had any (2 each). The outer band itself is lane A's (its dressing
+  keeps to the same rule; L7's validator checks it).
+- **Corners**: where two types meet along a side, and at the rectangle's four corners, a prebuilt piece by name
+  (`corner_land_sea`, `corner_land_cliff`, `bank_land_river`, `embankment_urban_river`, `outer_land`, `outer_sea`,
+  `outer_urban`, `outer_cliff`, `outer_river`, `outer_land_sea`; the table in edges.py also names `mouth_river_sea`,
+  `corner_cliff_sea`, `corner_quay_sea`, `gorge_cliff_river`, `corner_land_urban`, `corner_cliff_urban` for later
+  maps). Never random ground. The list for the lane that builds models is in Docs/ai/LOCAL_TODO.md.
+- **Continuity** (`links`): every road end within 14 m of the edge (its way out), every rail crossing the rectangle
+  (its RailSpline runs on to its portal), every RIVER stretch's middle, every coast point (a SEA stretch meeting
+  another type), every sea route exit node (L4), the sea's `airEntry`, and one air corridor per side's middle
+  (aircraft come in over any side: EconomySystem's EdgeBehind). The view draws each on for `outer` m.
+- **Entry gates** (the ingress contract): 3200 gates in all (road 439, edge 2565, sea 173, rail 23). A road gate at the
+  first open spot 7-40 m in along each road that reaches the edge; an edge gate every 30 m along LAND / URBAN / CLIFF /
+  RIVER stretches at the first open spot 7-40 m in (none within 15 m of a road's); a sea gate every 30 m along SEA
+  stretches at the first open ground 7-60 m in, and at each of a sea's landing beaches (Lighthouse Bay); a rail gate
+  at each RailSpline's `playFrom` point (L5's). "Open" = the bare grid's open cell with its 8 neighbours, in team 0's
+  connected region. Each has `visualIngressLength` (to the edge + 120 m) and `path` (from out in the outer band, over
+  the edge, to the gate).
+- **Spawn points on gates** (`SpawnPoints.Add` -> `GateFor`): an edge point, a rail head, the allies' point behind
+  their area when within 14 m of the edge, and a water landing move onto the nearest data gate that takes their kind
+  (edge: road/edge; rail head: rail, else road/edge; water: sea) within 30 m, if it is on the battlefield's ground and
+  (the enemy's) still 0.9 x 95 m from the player's camp, and come in the gate's way. Every other point (drops,
+  landing zones, outposts, air paths' drops) and an edge point with no data gate near gets a gate made where it
+  stands (`EntryGate.At`, `Implicit`: its approach straight back out over the nearest edge). So every scripted
+  reinforcement has an entryGate. This moves the mission waves' edge points by up to 30 m: a behaviour change.
+- **Entry ticks** (`MissionEvents.Ingress.cs`): a group that drives in (Edge, Rail, Sea, Behind; not pods, not
+  parachutes, not aircraft) comes through its gate four abreast 5 m apart: row 0 is created at the gate on the tick the
+  event happens (as before), row k exactly k x 20 ticks later (`RowGap` 1 s; queued with the drops, due half a tick
+  early so the float sum never slips a tick), at the gate again. Before: the rows stood 6 m behind each other, the back
+  ones clamped to the map's edge. Nothing exists before its entry tick (no target, collision, AI, damage, unit cap,
+  grid). The other reinforcement kinds (a general on the field, a convoy, a column) come in at their point, which now
+  stands on its gate.
+- **The view's stand-in** (`SimEventKind.Ingress`: DefId, Team, Position the gate spot, Target the way in, Value the
+  seconds to the entry tick, Offset.X the approach's length): emitted at the wave's warning for the first row of each
+  group that drives in (read from the plan: no random draw, no state) and as the event happens for the later rows.
+  `Game/Effects/IngressStandIns.cs` (written blind) runs a model up the approach at most at the vehicle's speed so it
+  reaches the spot at that moment and removes it then; the real vehicle appears there. If the event waits (the player
+  on the point) or takes a spot beside it, the stand-ins reach the gate and vanish (accepted). Aircraft keep flying in
+  over the edge as before (no stand-in).
+- **Ships and trains** keep their own routes beyond the play area (the prompt's exception): the sea route graph's exits
+  (L4), the RailSpline portals and the Siege support train's EntryTick (L5). Boss trains and flagships still start
+  inside the map at their mission's tick (L0, L4, L5).
+- Fingerprint: unchanged (the drops' count already mixes the later rows); the Ingress events are not mixed (view only).
+- Data keys changed: every map file + `"edges"`, `"entryGates"`; Rust Yard's three square files lose two decor items
+  each. balance.json and campaign.json unchanged.
+
+### L3: terrain tags, landmarks, asymmetry
+
+- **Tags** (`Tools/maps/terrain.py`, run after edges.py; map data `"terrain"` {"cell": 2, "zones": [{"tag", "rects":
+  [x0, z0, x1, z1, ...]}]}; Sim `TerrainTag`, `TerrainZoneDef`, `TerrainRules` in `Sim/Navigation/TerrainTags.cs`,
+  `NavGrid.SetTerrain` / `TerrainAt` / `StepCost`): per 2 m navigation cell inside the outline, the first that holds:
+  SHALLOW_WATER on a ford tile (`river_ford`, the walkable water); ROAD within half a road's width of its line or on a
+  road bridge; FOREST with 3+ trees (tree, palm, jungle trees, bamboo, fern; not dead or charred trees) within 9 m;
+  ROUGH within 4 m of craters, boulders, rocks, mounds, crash debris and ruins, and on the urban maps within 5 m of a
+  building (a blocking prop 6 m or wider: the rubble at the city's feet; cover is still the buildings'). Clusters under
+  4 cells dropped. Zones are the cells merged into rectangles: no overlap, none empty (the tests check).
+- **Symmetry**: the scenery the tags come from is not placed symmetrically (Ironport 17 % of its props match their twin,
+  Stormbeach 1-9 %), so on the versus files (`_conquest`, `_sandbox`) a cell keeps its tag only where its twin has the
+  same: the half-turn about the middle, or the mirror across x = -z where that matches more props (Lighthouse Bay, 91 %).
+  The role-asymmetric files (`_siege`, `_long`) keep their raw tags. Raw tags had put Ironport at 10.5 % and Stormbeach at
+  10.6 % path delta (YELLOW); symmetrised, no file's flags got worse.
+- **Coverage** (all 100 files, share of the play area's cells): ROAD 13.9 %, ROUGH 8.0 %, FOREST 5.1 %, SHALLOW_WATER
+  0.9 %. Highest: roads on the urban maps (Foundry 41 %, Metro City 39 %, Veyra 39 %, Capital 37 %), forest on Mirewood
+  (31 %) and Jungle Pass (18 %), shallow water on Coral Keys (11 %). Stormbeach's and Lighthouse Bay's versus files keep
+  little (Stormbeach 1-2 % a tag, Lighthouse Bay 1-7 %): their halves differ most.
+- **Effects** (`TerrainRules`, numbers are starting points): speed ROAD x 1.2, ROUGH x 0.85, FOREST x 0.75, SHALLOW_WATER
+  x 0.5 except the amphibious and air-cushion vehicles (`light_tank` = "Tăng nhẹ lội nước", `amphib_light_vehicle` =
+  "Xe lội nước tốc độ cao", `hover_gunboat`, `landing_hovercraft` and any boss of the `hovercraft` frame): a new factor
+  `Vehicle.TerrainSpeed` in `SpeedFactor`, set every step by the movement system from the cell under a ground vehicle it
+  drives (1 in the air, at sea, on a rail). FOREST: the enemy's sight on a ground vehicle standing in it x 0.7, the
+  visibility's own per-target factor (`SimWorld.RefreshVisibility`, beside the scout's camouflage; so Kerr's stealth
+  sight counters it as it counters camouflage).
+- **Static path costs** (precheck item 3: one path finder, no per-type costs): each cell costs 1 / an ordinary vehicle's
+  speed there (ROAD 0.83, ROUGH 1.18, FOREST 1.33, SHALLOW_WATER 2), built once with the grid, never changed by a tick, the
+  same for every vehicle (an amphibious vehicle still routes as if water slowed it). The A* heuristic is scaled by the
+  road's 0.83 (admissible); the straight-line shortcut is taken only over ground no slower than open ground, and a
+  smoothed stretch never crosses slower ground than the cells it replaces. A grid without tags (a test field, the
+  Sandbox's) paths exactly as before. Cost: more A* runs where a straight line crosses a wood or a ford; a caller with an
+  expansion budget (`PathCosts.MaxExpansions`) may hit it sooner (uncertain, the lead's run will show).
+- **DEEP_FORD waits** (the prompt's own condition: the path finder has no per-type cost or mask; precheck item 3):
+  nothing on Coral Keys, Mirewood or Border Crossing; it needs a per-type passability layer first (later prompt).
+- **Not added** (the prompt's list): no height bonus to damage or accuracy, no armour by terrain, no deformation, no
+  cover percentage.
+- **Map audit** (`Tools/audit/map_audit.py`): its paths are now travel times (each cell's step x the tag's cost, as the
+  Sim; `--no-terrain` measures plain distance as before). Before (plain): 9 RED / 91 YELLOW. With the tags: 8 RED / 92
+  YELLOW: Hollow Dam's versus file goes from RED (19.0 % path delta) to YELLOW (14.1 %); no file's flags got worse; the
+  largest symmetric delta is Hollow Dam's 14.1 %, then Stormbeach 5.0 %. The other REDs are the old connectivity ones
+  (Border Crossing, Emberridge, Coral Keys Siege, Open Pit Siege, Mirewood Siege). check_access.py: 73/75 as before
+  (Mirewood and Veyra Old Quarter conquest fail as they did; tags do not block anything).
+- **Landmarks** (map data `"landmarks"`, `LandmarkDef`, `MapDefinition.Landmarks` / `Landmark(id)`): 3 on each of the 25
+  battlefields (75), the same ids on every file of a battlefield (`battlefield.name`), each with `name` {en, vi}, `kind`,
+  its place (the prop of its kind nearest the hint, else the hint: then `model` names what the view must stand there:
+  Capital's palace and station, Coral Keys' lighthouse, Emberridge's cooling tower, Hollow Dam's dam wall, Jungle Pass's
+  and Red Rock's churches, Salt Flats' survey beacon, Veyra's clock tower; LOCAL_TODO) and `aliases`, the words the
+  prompt 30 dialogue uses for it (Beacon Bay's "the lighthouse", Hollow Dam's "the dam", Dunebreak's "the refinery",
+  Greenvale's "the silos", Frostpeak's and Stormbeach's "the radar" ...).
+- **Dialogue matched to the data**: the lines were read, not changed. Where a line names a place no landmark had, the
+  landmark was made to match: Red Rock's "My people hold the church" (c8m04) -> `redrock.mine_church` (it replaces the
+  wellhead pumps), Jungle Pass's "I am in the church" (i3m03) -> `junglepass.village_church` (it replaces the west
+  village). Left as they are: Ironport's "the whole wall to the lighthouse" (c4m12: a lighthouse seen beyond the map,
+  for lane A's outer band; LOCAL_TODO), Hollow Dam's "tunnel mouth" (c8m06, the mission's own place), "the hangar
+  doors" (a boss's, not a place), and the capture points' names (depot, square, gate, pass ...).
+- **Asymmetry on purpose** (map data `"asymmetry"` {"intended", "reason"}, `MapDefinition.AsymmetryReason`): on every
+  `_siege` and `_long` file (the roles of prompt 17). The campaign plays the shared files (mission.Map + Variant); no
+  campaign map is asymmetric by itself in this pass, and the versus files stay within the audit's thresholds.
+- Fingerprint: unchanged (the tags are static; positions are mixed already).
+- Data keys changed: every map file + `"terrain"`, `"landmarks"`; the 50 `_siege` / `_long` files + `"asymmetry"`.
+  balance.json, campaign.json and the dialogue unchanged. Docs/checks/map_audit.md / .csv rewritten with the tags.

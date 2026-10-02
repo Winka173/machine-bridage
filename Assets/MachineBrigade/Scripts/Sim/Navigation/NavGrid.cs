@@ -44,6 +44,59 @@ namespace MachineBrigade.Sim.Navigation
 
         public bool InBounds(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
 
+        // ------------------------------------------------------------------ prompt 33 L3: terrain tags
+
+        private byte[]? _terrain;
+
+        /// <summary>Whether any cell has a tag other than NORMAL (else the path costs are plain distance, as before).</summary>
+        public bool HasTerrain => _terrain != null;
+
+        /// <summary>
+        /// Prompt 33 L3: the static terrain tags (map data "terrain"): every cell whose centre lies in a zone takes its tag (a
+        /// later zone over an earlier one wins; the tool writes none that overlap). Set once as the world is built; no tick
+        /// changes them, so the path costs never swing.
+        /// </summary>
+        public void SetTerrain(IReadOnlyList<TerrainZoneDef> zones)
+        {
+            if (zones.Count == 0)
+            {
+                _terrain = null;
+                return;
+            }
+            var tags = new byte[Width * Height];
+            var any = false;
+            foreach (var z in zones)
+            {
+                if (z.Tag == TerrainTag.Normal) continue;
+                // The cells whose centres lie inside [Min, Max).
+                var x0 = Math.Max(0, (int)MathF.Ceiling((z.Min.X - Origin.X) / CellSize - 0.5f));
+                var y0 = Math.Max(0, (int)MathF.Ceiling((z.Min.Y - Origin.Y) / CellSize - 0.5f));
+                var x1 = Math.Min(Width - 1, (int)MathF.Ceiling((z.Max.X - Origin.X) / CellSize - 0.5f) - 1);
+                var y1 = Math.Min(Height - 1, (int)MathF.Ceiling((z.Max.Y - Origin.Y) / CellSize - 0.5f) - 1);
+                for (var y = y0; y <= y1; y++)
+                    for (var x = x0; x <= x1; x++)
+                    {
+                        tags[Index(x, y)] = (byte)z.Tag;
+                        any = true;
+                    }
+            }
+            _terrain = any ? tags : null;
+        }
+
+        public TerrainTag TerrainAt(int x, int y) => _terrain != null && InBounds(x, y) ? (TerrainTag)_terrain[Index(x, y)] : TerrainTag.Normal;
+
+        public TerrainTag TerrainAt(Vector2 p)
+        {
+            var (x, y) = CellOf(p);
+            return TerrainAt(x, y);
+        }
+
+        /// <summary>The static path cost of a cell (its tag's, <see cref="TerrainRules.PathCost"/>; 1 on a grid without tags).</summary>
+        public float StepCost(int index) => _terrain == null ? 1f : TerrainRules.PathCost((TerrainTag)_terrain[index]);
+
+        /// <summary>The cheapest cell's cost (the heuristic's scale): a road's on a grid with tags, else 1.</summary>
+        public float MinStepCost => _terrain == null ? 1f : TerrainRules.MinPathCost;
+
         public int Index(int x, int y) => y * Width + x;
 
         public (int x, int y) CellOf(Vector2 p) =>

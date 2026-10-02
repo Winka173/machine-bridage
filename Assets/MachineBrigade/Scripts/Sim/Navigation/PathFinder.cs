@@ -66,6 +66,7 @@ namespace MachineBrigade.Sim.Navigation
         private readonly MinHeap _open;
         private readonly List<Vector2> _raw = new();
         private readonly List<int> _rawExtra = new();
+        private readonly List<float> _rawTerrain = new();
         private int _search;
 
         public PathFinder(NavGrid grid)
@@ -105,7 +106,9 @@ namespace MachineBrigade.Sim.Navigation
             }
             if (!_grid.TryNearestInRegion(to, _grid.RegionOf(sx, sy), 16, out var goal)) return false;
 
-            if (_grid.LineOfSight(from, goal) && (costs == null || MaxExtraAlong(from, goal, costs) <= costs.SmoothLimit))
+            // Prompt 33 L3: straight there only over ground no slower than open ground (else the A* weighs the terrain).
+            if (_grid.LineOfSight(from, goal) && (costs == null || MaxExtraAlong(from, goal, costs) <= costs.SmoothLimit) &&
+                (!_grid.HasTerrain || MaxTerrainAlong(from, goal) <= 1f))
             {
                 result.Add(goal);
                 return true;
@@ -120,7 +123,9 @@ namespace MachineBrigade.Sim.Navigation
             _cost[startIndex] = 0f;
             _parent[startIndex] = -1;
             _seen[startIndex] = _search;
-            _open.Push(startIndex, Heuristic(sx, sy, gx, gy));
+            // The heuristic scaled by the cheapest cell's cost (a road's) stays admissible over the terrain's costs.
+            var scale = _grid.MinStepCost;
+            _open.Push(startIndex, Heuristic(sx, sy, gx, gy) * scale);
 
             var found = false;
             while (_open.Count > 0)
@@ -148,12 +153,14 @@ namespace MachineBrigade.Sim.Navigation
                     if (_closed[next] == _search) continue;
                     var step = diagonal ? Diagonal : 1f;
                     if (costs != null) step *= 1f + Extra(next, costs) * costs.Scale;
+                    // Prompt 33 L3: the static terrain cost of the cell stepped into.
+                    step *= _grid.StepCost(next);
                     var cost = _cost[current] + step;
                     if (_seen[next] == _search && cost >= _cost[next]) continue;
                     _seen[next] = _search;
                     _cost[next] = cost;
                     _parent[next] = current;
-                    _open.Push(next, cost + Heuristic(nx, ny, gx, gy));
+                    _open.Push(next, cost + Heuristic(nx, ny, gx, gy) * scale);
                 }
             }
 
@@ -161,17 +168,21 @@ namespace MachineBrigade.Sim.Navigation
 
             _raw.Clear();
             _rawExtra.Clear();
+            _rawTerrain.Clear();
             for (var i = goalIndex; i != -1 && i != startIndex; i = _parent[i])
             {
                 _raw.Add(_grid.CellCenter(i % _grid.Width, i / _grid.Width));
                 _rawExtra.Add(costs != null ? Extra(i, costs) : 0);
+                _rawTerrain.Add(_grid.StepCost(i));
             }
             _raw.Reverse();
             _rawExtra.Reverse();
+            _rawTerrain.Reverse();
             if (_raw.Count == 0)
             {
                 _raw.Add(goal);
                 _rawExtra.Add(0);
+                _rawTerrain.Add(1f);
             }
             else _raw[_raw.Count - 1] = goal;
 
@@ -200,6 +211,14 @@ namespace MachineBrigade.Sim.Navigation
         private bool Shortcut(Vector2 anchor, int i, int j, PathCosts? costs)
         {
             if (!_grid.LineOfSight(anchor, _raw[j])) return false;
+            if (_grid.HasTerrain)
+            {
+                // Prompt 33 L3: a straightened stretch never crosses slower ground than the cells it replaces (no corner
+                // cut through the wood the route went round).
+                var worst = 1f;
+                for (var k = i; k <= j; k++) worst = MathF.Max(worst, _rawTerrain[k]);
+                if (MaxTerrainAlong(anchor, _raw[j]) > worst + 1e-4f) return false;
+            }
             if (costs == null) return true;
             var allowed = costs.SmoothLimit;
             for (var k = i; k <= j; k++) allowed = Math.Max(allowed, _rawExtra[k]);
@@ -229,6 +248,25 @@ namespace MachineBrigade.Sim.Navigation
         }
 
         /// <summary>The dearest cell a straight line from a to b crosses (sampled every quarter cell).</summary>
+        /// <summary>Prompt 33 L3: the dearest terrain cost of the cells along a straight line.</summary>
+        private float MaxTerrainAlong(Vector2 a, Vector2 b)
+        {
+            var delta = b - a;
+            var steps = Math.Max(1, (int)MathF.Ceiling(delta.Length() / (_grid.CellSize * 0.25f)));
+            var worst = 0f;
+            var last = -1;
+            for (var s = 0; s <= steps; s++)
+            {
+                var (x, y) = _grid.CellOf(a + delta * (s / (float)steps));
+                if (!_grid.InBounds(x, y)) continue;
+                var index = _grid.Index(x, y);
+                if (index == last) continue;
+                last = index;
+                worst = MathF.Max(worst, _grid.StepCost(index));
+            }
+            return worst;
+        }
+
         private int MaxExtraAlong(Vector2 a, Vector2 b, PathCosts costs)
         {
             var delta = b - a;

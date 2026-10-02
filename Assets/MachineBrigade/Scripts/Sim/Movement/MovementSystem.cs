@@ -99,6 +99,8 @@ namespace MachineBrigade.Sim.Movement
                 }
                 // Prompt 25 F2 batch A: a reconnaissance jet flies its one straight pass (and leaves the battle at the far edge).
                 if (v.Flying && _world.Works.FlyPass(v, dt)) continue;
+                // Prompt 33 L3: the ground under it sets its pace this step (static tags; aircraft fly over them).
+                v.TerrainSpeed = v.Flying ? 1f : Navigation.TerrainRules.SpeedOf(_world.Grid.TerrainAt(v.Position), v.Def);
                 v.RepathTimer -= dt;
                 if (!v.Flying) TrackTraffic(v);
                 // Out of stores (prompt 13 C): the aircraft flies to its holding pattern and circles there,
