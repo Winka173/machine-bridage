@@ -36,7 +36,9 @@ LOG = os.path.join(ROOT, "Docs", "balance", "apply_log_p29.md")
 STATE = os.path.join(ROOT, "Docs", "balance", "apply_state_p29.json")
 
 # Code bundles whose code is in the repository (each pass adds the ones it wrote).
-DONE_CODE: set[str] = {"S01", "S02", "S03", "S04", "S08", "S09"}
+DONE_CODE: set[str] = {"S01", "S02", "S03", "S04", "S05", "S06", "S07", "S08", "S09", "B2-APS-trophy"}
+# Field paths that are code, not data (C01): their bundle counts as applied when it is in DONE_CODE.
+CODE_PATHS = ("aircraft.", "equipment.", "boss.")
 # Checks done with a result that lets their bundles go (Docs/checks/*.md).
 DONE_CHECKS: set[str] = {"C06", "C12"}
 
@@ -54,6 +56,7 @@ DEFAULT_BANK = 30
 VAULT_BONUS = 15  # Commanders.cs: okoye's BankBonus
 DELIVERY = 3.5  # EconomySystem.DeliverySeconds
 FLARE_KINDS = ("Flares",)
+SELF_APS_RADIUS = 20  # the sheet "APS": a new SELF_APS (titan_tank) at 20 m like next_gen_tank; the manifest has no radius row
 
 
 def round_half_up(x, step=1):
@@ -149,7 +152,7 @@ def aps(key, default):
         v = st.vehicle(uid)
         if write:
             if "aps" not in v:
-                st.edit(uid, lambda e: e.set("aps", {"radius": 11, key: value}))
+                st.edit(uid, lambda e: e.set("aps", {"radius": SELF_APS_RADIUS, key: value}))
             else:
                 st.edit(uid, lambda e: e.set_sub("aps", key, value))
             return None
@@ -157,11 +160,18 @@ def aps(key, default):
     return m
 
 
+APS_NAMES = {"NONE": "None", "BUILT_IN": "BuiltIn", "RETROFIT_ELIGIBLE": "RetrofitEligible"}
+
+
 def m_aps_capability(st, uid, value=None, write=False):
+    """The manifest's NONE / BUILT_IN / RETROFIT_ELIGIBLE are the C# enum names None / BuiltIn / RetrofitEligible in the data;
+    absent reads as "—" (the manifest's word for "never set"; the code reads it as None)."""
     if write:
-        st.edit(uid, lambda e: e.set("apsCapability", value))
+        st.edit(uid, lambda e: e.set("apsCapability", APS_NAMES.get(value, value)))
         return None
-    return st.vehicle(uid).get("apsCapability", "—")
+    back = {v: k for k, v in APS_NAMES.items()}
+    have = st.vehicle(uid).get("apsCapability")
+    return back.get(have, have) if have is not None else "—"
 
 
 UNIT_FIELDS = {
@@ -226,6 +236,9 @@ def mapper(row):
 
 
 def equal(st, row, a, b):
+    if str(row.get("field_path", "")).endswith(".apsCapability"):
+        # The manifest writes "never set" both as "—" and as NONE.
+        a, b = ("NONE" if x in ("—", None) else x for x in (a, b))
     if a is None or b is None or isinstance(a, (str, bool)) or isinstance(b, (str, bool)):
         return a == b
     tol = float(row.get("tolerance") or 0)
@@ -294,7 +307,16 @@ def run(patterns, dry):
             outcome[bid] = "BLOCKED"
             lines.append(f"| {bid} | BLOCKED | waits for {', '.join(missing)} |")
             continue
-        data_rows = [r for r in rows if str(r.get("field_path")) != "—"]
+        code_rows = [r for r in rows if str(r.get("field_path")).startswith(CODE_PATHS)]
+        if code_rows and bid not in DONE_CODE:
+            outcome[bid] = "BLOCKED"
+            lines.append(f"| {bid} | BLOCKED | code not written yet ({code_rows[0]['field_path']}) |")
+            continue
+        data_rows = [r for r in rows if str(r.get("field_path")) != "—" and r not in code_rows]
+        if code_rows and not data_rows:
+            outcome[bid] = "OK"
+            lines.append(f"| {bid} | OK | code bundle ({len(code_rows)} code rows) |")
+            continue
         if not data_rows:
             outcome[bid] = "APPLIED" if bid in DONE_CODE else "BLOCKED"
             lines.append(f"| {bid} | {outcome[bid]} | code bundle{'' if bid in DONE_CODE else ': code not written yet'} |")

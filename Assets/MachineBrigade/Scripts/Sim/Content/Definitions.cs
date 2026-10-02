@@ -149,6 +149,17 @@ namespace MachineBrigade.Sim.Content
         /// </summary>
         public float FlareResist { get; internal set; }
 
+        // Prompt 29 S05 (C13): capability flags. canHitGround / canHitAir are the targets; the others are computed from the
+        // round (DamageSystem.TryIntercept / GunTakes, flares on guided missiles) and these optional data overrides only say
+        // "never" or "always" where the round rules would say otherwise (balance.json "interceptable", "flareEligible",
+        // "apsEligible", "ciwsEligible"). Null: the round decides.
+        public bool CanHitGround => CanTarget(false);
+        public bool CanHitAir => CanTarget(true);
+        public bool? Interceptable { get; internal set; }
+        public bool? FlareEligible { get; internal set; }
+        public bool? ApsEligible { get; internal set; }
+        public bool? CiwsEligible { get; internal set; }
+
         /// <summary>
         /// Prompt 13 B: the weapon family its round belongs to (mg, autocannon, tank_gun, howitzer, mortar,
         /// rocket, atgm, aa_missile, bomb, cruise, ballistic, drone, flame, laser, railgun, grenade, melee),
@@ -288,6 +299,7 @@ namespace MachineBrigade.Sim.Content
                 // the bonuses and the round's model were once lost on a tuned weapon).
                 Charge = Charge,
                 FlareResist = FlareResist,
+                Interceptable = Interceptable, FlareEligible = FlareEligible, ApsEligible = ApsEligible, CiwsEligible = CiwsEligible,
                 _penetration = _penetration,
                 TopAttack = TopAttack,
                 Thermobaric = Thermobaric,

@@ -52,8 +52,10 @@ namespace MachineBrigade.Sim.Entities
             Arms = new WeaponDef[def.Mounts.Count];
             for (var i = 0; i < Weapons.Length; i++)
             {
-                Arms[i] = def.Mounts[i].Weapon;
-                var ammo = def.Mounts[i].Weapon.Ammo;
+                // Prompt 29 5.4: the vehicle's own copy of a shared missile weapon where it has one.
+                Arms[i] = def.ArmOf(def.Mounts[i].Weapon);
+                FlareChargesLeft = FlareChargesMax = def.FlareCharges;
+                var ammo = Arms[i].Ammo;
                 // An aircraft's stores (prompt 13 C): rounds when full, taken on again over the field.
                 var load = def.LoadOf(def.Mounts[i].Weapon);
                 Weapons[i] = new WeaponState { Heading = heading, Ammo = load > 0 ? load : ammo > 0 ? ammo : -1, Load = load };

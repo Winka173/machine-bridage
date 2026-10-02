@@ -46,3 +46,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   `outgoingDamageMult`, `dropDelay`, `economy.bankByMode`, later `flareCharges`, `flareRecharge`, `apsCapability`,
   `interceptionMode`, `missiles`) and `BalanceRound2Tests`, `Tools/balance/test_p29.py`; rebuild the design PDF
   (`Tools/docs/build_doc.py`, pass 8 sections).
+- Prompt 29 L5: the equipment screen must not offer the heat-decoy module to vehicles without flares
+  (`VehicleDef.FlareCharges == 0`) nor Trophy to `ApsCapability.None` (Game `GearCatalog`/`VehicleFit`); HUD and card show
+  missiles left (`Weapons[i].Ammo` of the `missiles` mount) and flare charges (`FlareChargesLeft`/`FlareChargesMax`);
+  check that equipment tuning a missile mount keeps the vehicle's own load (VehicleDef.ArmOf).

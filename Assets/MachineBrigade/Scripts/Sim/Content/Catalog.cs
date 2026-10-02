@@ -163,6 +163,11 @@ namespace MachineBrigade.Sim.Content
                     ProjectileModel = w.Has("projectileModel") ? w.String("projectileModel") : null,
                     ProjectileScale = w.Float("projectileScale", 1f), RoundLength = Math.Max(0f, w.Float("roundLength", 0f)),
                     Charge = w.Float("charge", 0f), FlareResist = Math.Clamp(w.Float("flareResist", 0f), 0f, 1f),
+                    // Prompt 29 S05: optional capability overrides.
+                    Interceptable = w.Has("interceptable") ? w.Bool("interceptable", true) : null,
+                    FlareEligible = w.Has("flareEligible") ? w.Bool("flareEligible", true) : null,
+                    ApsEligible = w.Has("apsEligible") ? w.Bool("apsEligible", true) : null,
+                    CiwsEligible = w.Has("ciwsEligible") ? w.Bool("ciwsEligible", true) : null,
                     Family = w.Has("family") ? w.String("family") : null, Size = w.Float("size", 0f),
                     RealName = w.Has("real") ? w.String("real") : null,
                     WeaponFamily = w.OptionalString("weaponFamily"),
@@ -299,6 +304,22 @@ namespace MachineBrigade.Sim.Content
                         foreach (var id in v.StringArray("skills"))
                             list.Add(skills.TryGetValue(id, out var skill) ? skill : throw new FormatException($"{v.Path}.skills: unknown skill '{id}'."));
                         def.Skills = list;
+                    }
+                    // Prompt 29 S06: a vehicle given flare charges without a flare skill flies the flares of its kind.
+                    if (v.Float("flareCharges", 0f) > 0f && !def.Skills.Any(s => s.Kind == SkillKind.Flares) &&
+                        skills.TryGetValue(def.FixedWing ? "jet_flares" : "heli_flares", out var flares))
+                        def.Skills = def.Skills.Append(flares).ToList();
+                    // Prompt 29 5.4: its own load and reload of a shared missile weapon (the shared weapon is not changed).
+                    if (v.IsArray("missiles"))
+                    {
+                        def.WeaponOverrides = new Dictionary<string, WeaponDef>();
+                        foreach (var m in v.Array("missiles"))
+                        {
+                            var w = weapons.TryGetValue(m.String("weapon"), out var shared) ? shared
+                                : throw new FormatException($"{m.Path}: unknown weapon '{m.String("weapon")}'.");
+                            def.WeaponOverrides[w.Id] = w.Tuned(w.Range, w.Cooldown, w.ProjectileSpeed, w.SplashRadius, w.Spread, w.BurstInterval,
+                                w.Targets, m.Int("ammo", 1), m.Float("reload"), w.Cluster);
+                        }
                     }
                     if (v.Has("phases"))
                     {

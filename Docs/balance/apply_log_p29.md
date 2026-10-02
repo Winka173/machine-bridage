@@ -512,3 +512,86 @@ Note: the B1 group runs re-checked B0 bundles applied in pass 3 (thermobaric_lau
 | R-icarus | SKIPPED(REJECT) | |
 | R-round-hover | SKIPPED(REJECT) | |
 | R-speed-new | SKIPPED(REJECT) | |
+
+## Run dry: B2-* (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B2-FLR-scout_heli | BLOCKED | waits for S06 |
+| B2-FLR-heavy_lift_helicopter | BLOCKED | waits for S06 |
+| B2-FLR-light_attack_heli | BLOCKED | waits for S06 |
+| B2-FLR-prop_attack_plane | BLOCKED | waits for S06 |
+| B2-FLR-aerial_tanker | BLOCKED | waits for S06 |
+| B2-FLR-attack_helicopter | BLOCKED | waits for S06 |
+| B2-FLR-fighter_jet | BLOCKED | waits for S06 |
+| B2-FLR-interceptor_jet | BLOCKED | waits for S06 |
+| B2-FLR-stealth_fighter | BLOCKED | waits for S06 |
+| B2-FLR-swarm_carrier | BLOCKED | waits for S06 |
+| B2-FLR-twin_rotor_gunship | BLOCKED | waits for S06 |
+| B2-FLR-gunship_heli | BLOCKED | waits for S06 |
+| B2-FLR-glide_bomber | BLOCKED | waits for S06 |
+| B2-FLR-attack_jet | BLOCKED | waits for S06 |
+| B2-FLR-stealth_bomber | BLOCKED | waits for S06 |
+| B2-FLR-heavy_bomber | BLOCKED | waits for S06 |
+| B2-FLR-sky_gunship | BLOCKED | waits for S06 |
+| B2-APS-next_gen_tank | BLOCKED | waits for S07 |
+| B2-APS-titan_tank | BLOCKED | waits for S07 |
+| B2-APS-main_battle_tank | BLOCKED | waits for S07 |
+| B2-APS-trophy | BLOCKED | waits for S07 |
+
+## Run dry: B2-* (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B2-FLR-scout_heli | OK (dry) | 2 rows |
+| B2-FLR-heavy_lift_helicopter | OK (dry) | 2 rows |
+| B2-FLR-light_attack_heli | OK (dry) | 2 rows |
+| B2-FLR-prop_attack_plane | OK (dry) | 2 rows |
+| B2-FLR-aerial_tanker | OK (dry) | 2 rows |
+| B2-FLR-attack_helicopter | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-fighter_jet | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-interceptor_jet | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-stealth_fighter | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-swarm_carrier | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-twin_rotor_gunship | OK (dry) | 2 rows |
+| B2-FLR-gunship_heli | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-glide_bomber | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-attack_jet | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-stealth_bomber | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-heavy_bomber | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-sky_gunship | OK (dry) | 2 rows (with ALREADY_APPLIED rows) |
+| B2-APS-next_gen_tank | OK (dry) | 4 rows |
+| B2-APS-titan_tank | OK (dry) | 3 rows |
+| B2-APS-main_battle_tank | OK (dry) | 1 rows |
+| B2-APS-trophy | OK | code bundle (1 code rows) |
+
+## Run apply: B2-FLR-* (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B2-FLR-scout_heli | OK | 2 rows |
+| B2-FLR-heavy_lift_helicopter | OK | 2 rows |
+| B2-FLR-light_attack_heli | OK | 2 rows |
+| B2-FLR-prop_attack_plane | OK | 2 rows |
+| B2-FLR-aerial_tanker | OK | 2 rows |
+| B2-FLR-attack_helicopter | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-fighter_jet | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-interceptor_jet | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-stealth_fighter | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-swarm_carrier | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-twin_rotor_gunship | OK | 2 rows |
+| B2-FLR-gunship_heli | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-glide_bomber | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-attack_jet | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-stealth_bomber | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-heavy_bomber | OK | 2 rows (with ALREADY_APPLIED rows) |
+| B2-FLR-sky_gunship | OK | 2 rows (with ALREADY_APPLIED rows) |
+
+## Run apply: B2-APS-* (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B2-APS-next_gen_tank | OK | 4 rows |
+| B2-APS-titan_tank | OK | 3 rows |
+| B2-APS-main_battle_tank | OK | 1 rows |
+| B2-APS-trophy | OK | code bundle (1 code rows) |

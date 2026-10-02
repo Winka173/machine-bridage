@@ -13945,3 +13945,36 @@ light_tank 9 m/s, vbied 13, flame_tank 6.5, engineer_vehicle 7: every known_good
   for depends_on. The false rows were removed from the log with a note.
 - **Texts.** Card numbers (price, health, drop time) are drawn from the data at run time; the only hand-written price
   in the text tables was the siege mortar's guide line ("12 CP" -> 15, EN and VI). Card renders and the PDF are local.
+
+## Prompt 29 L5 (cloud, 2026-10-02): flags, flares, APS, vehicle missiles
+
+- **5.1 S05.** C13 found no stored flag fields: `WeaponDef.CanHitGround/CanHitAir` read the targets; `interceptable`,
+  `flareEligible`, `apsEligible`, `ciwsEligible` are optional data overrides (null = the round rules decide, so every
+  weapon and boss strike has its flags without new data). Enforced in `TryIntercept` (interceptable, apsEligible for a
+  SELF_APS), `GunTakes` (interceptable, ciwsEligible) and the flare roll (flareEligible). No flag is inferred from
+  "is it a boss weapon".
+- **5.2 S06 + B2-FLR (D6).** `flareCharges`, `flareRecharge` per vehicle; a Flares skill with charges spends one per
+  use (the next may go once it has burnt); charges come back one per recharge time in the holding pattern and all at
+  once when rearming on a landing pad or over the HQ; outside the holding pattern the clock waits. A vehicle given
+  charges without a flare skill flies its kind's (`jet_flares` fixed wing, `heli_flares` else). The heat-decoy module
+  (FlareDispenser) now only adds one charge and recharges x0.75 on a vehicle with flares; elsewhere it does nothing
+  (the equipment screen hiding it there is Game code: LOCAL_TODO). All 17 B2-FLR bundles OK (stealth_bomber's flare
+  skill removed, D6's "only when the real aircraft has them").
+- **5.3 S07 + B2-APS (D7).** `apsCapability` (None/BuiltIn/RetrofitEligible; the manifest's NONE/BUILT_IN/RETROFIT_ELIGIBLE,
+  its "—" read as NONE) and `interceptionMode` (SelfAps/PointDefense/BossSelfAps; inferred: bosses BossSelfAps, towers
+  and burst guns PointDefense, else SelfAps; set explicitly per C06 on iron_beam, sea_corvette, sea_cruiser, icarus_mk0
+  PointDefense and next_gen_tank SelfAps). A SELF_APS takes only guided missiles, drones and direct-fire rockets.
+  Trophy: NONE nothing, RETROFIT_ELIGIBLE 2 charges every 20 s, BUILT_IN +1 charge and recharge x0.75. B2-APS-next_gen_tank
+  (2 / 10 s / 20 m, no artillery rockets, no shells), titan_tank (3 / 10 s; radius 20 m as the sheet "APS" gives it,
+  the manifest has no radius row), main_battle_tank (RetrofitEligible), trophy (code) applied. Bosses and towers keep
+  their numbers (C06); iron_beam keeps 0.8 s (C07).
+- **5.4 vehicle missiles.** None of the five had a magazine on its missile (checked: `atgm`, `gun_launched_atgm`,
+  `ataka`, `spike_nlos` have no `ammo`/`reload`), so the prompt's numbers were set per vehicle (`missiles` ->
+  `VehicleDef.WeaponOverrides`, a copy of the shared weapon with its own load and reload; `atgm` stays one shared
+  weapon for ifv and titan_tank): ifv atgm 2 / 20 s, light_tank gun_launched_atgm 2 / 25 s, bmpt ataka 4 / 30 s,
+  nlos_atgm_vehicle spike_nlos 2 / 25 s, titan_tank atgm 4 / 30 s. The main gun fires on when the missiles are out
+  (separate mounts); faster reload near an ammo carrier or depot is the existing rearm aura. The missiles-left icon on
+  the unit and the card is UI (LOCAL_TODO). Caveat: equipment that re-tunes a mount's weapon starts from the shared
+  weapon (the override is lost for a geared mount): listed for the local check.
+- balance.json keys added: `flareCharges`, `flareRecharge`, `apsCapability`, `interceptionMode`, `missiles`, `aps` on
+  titan_tank; changed: next_gen_tank `aps`, stealth_bomber `skills`.

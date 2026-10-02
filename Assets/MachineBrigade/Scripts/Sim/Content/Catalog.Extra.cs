@@ -136,6 +136,11 @@ namespace MachineBrigade.Sim.Content
             // Prompt 29 S03, S04.
             def.OutgoingDamageMult = Math.Clamp(v.Float("outgoingDamageMult", 1f), 0.1f, 10f);
             def.DropDelay = Math.Clamp(v.Float("dropDelay", Economy.EconomySystem.DeliverySeconds), 0.5f, 30f);
+            // Prompt 29 S06, S07.
+            def.FlareCharges = Math.Max(0, v.Int("flareCharges", 0));
+            def.FlareRecharge = v.Has("flareRecharge") ? Math.Max(1f, v.Float("flareRecharge", 20f)) : null;
+            def.ApsCapability = v.Enum("apsCapability", ApsCapability.None);
+            def.InterceptionModeData = v.Has("interceptionMode") ? v.Enum<InterceptionMode>("interceptionMode") : null;
             def.Breacher = v.Bool("breacher", false);
             def.MarkedSpread = Math.Clamp(v.Float("markedSpread", 1f), 0.01f, 1f);
             if (v.Has("radioSpawn")) def.RadioSpawn = v.String("radioSpawn");

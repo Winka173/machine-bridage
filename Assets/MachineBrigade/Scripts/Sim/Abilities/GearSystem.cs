@@ -81,13 +81,30 @@ namespace MachineBrigade.Sim.Abilities
             {
                 case SpecialModule.TrophyAps:
                 {
-                    var charges = Math.Max(1, (int)MathF.Round(b.SpecialPower));
-                    var recharge = b.SpecialPower2 > 0f ? b.SpecialPower2 : 25f;
+                    // Prompt 29 B2-APS-trophy (D7): NONE takes no Trophy; RETROFIT_ELIGIBLE gets 2 charges every 20 s; BUILT_IN
+                    // gets one more charge and recharges x0.75.
                     var own = v.Def.Aps;
-                    v.Aps = own == null ? new ApsDef(6f, charges, recharge) : new ApsDef(MathF.Max(6f, own.Radius), own.Charges + charges, MathF.Min(own.Recharge, recharge));
-                    v.ApsCharges = v.Aps.Charges;
+                    switch (v.Def.ApsCapability)
+                    {
+                        case ApsCapability.RetrofitEligible:
+                            v.Aps = new ApsDef(own?.Radius ?? 20f, 2, 20f);
+                            break;
+                        case ApsCapability.BuiltIn when own != null:
+                            v.Aps = new ApsDef(own.Radius, own.Charges + 1, own.Recharge * 0.75f) { Rockets = own.Rockets, Shells = own.Shells, Laser = own.Laser };
+                            break;
+                        default:
+                            // NONE (every other vehicle, the sheet "APS"): the module cannot be fitted; it does nothing here.
+                            break;
+                    }
+                    if (v.Aps != null) v.ApsCharges = v.Aps.Charges;
                     break;
                 }
+                case SpecialModule.FlareDispenser when v.FlareChargesMax > 0:
+                    // Prompt 29 S06 (D6): the heat decoys only improve flares a vehicle has: one more charge, 25 % faster back.
+                    v.FlareChargesMax++;
+                    v.FlareChargesLeft++;
+                    v.FlareRechargeScale = 0.75f;
+                    break;
                 case SpecialModule.MineDispenser when v.Def.Mines == null && !v.Flying:
                     v.MineLayer = new MineLayerDef(b.SpecialPower2 > 0f ? b.SpecialPower2 : 20f, Math.Max(1, (int)MathF.Round(b.SpecialPower)), MineBlast(g, ModuleScale(v)), 2.2f);
                     v.NextMineAt = now + 3.0;
@@ -385,11 +402,9 @@ namespace MachineBrigade.Sim.Abilities
                     _world.Strikes.AddSmoke(v.Team, v.Position, v.SpecialPower, 14f);
                     Proc(v, SpecialModule.SmokeDischarger);
                     break;
-                case SpecialModule.FlareDispenser when now >= g.ModuleReady && _world.MissileIncoming(v.Id):
-                    v.FlaresUntil = Math.Max(v.FlaresUntil, now + v.SpecialPower);
-                    g.ModuleReady = now + (v.SpecialPower2 > 0f ? v.SpecialPower2 : 25f) * cd;
-                    v.RefreshEffects(now);
-                    Proc(v, SpecialModule.FlareDispenser);
+                case SpecialModule.FlareDispenser:
+                    // Prompt 29 S06 (D6): the heat decoys are charges on the flares (applied with the gear), no longer a
+                    // dispenser of their own; on a vehicle without flares they do nothing (they cannot be fitted there).
                     break;
                 case SpecialModule.DroneEscort when now >= g.ModuleReady:
                     g.ModuleReady = LaunchDrones(v, g, Math.Max(1, (int)MathF.Round(v.SpecialPower)))
