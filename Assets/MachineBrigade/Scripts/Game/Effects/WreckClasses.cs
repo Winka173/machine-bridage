@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim.Content;
 
@@ -43,11 +44,20 @@ namespace MachineBrigade.Game.Effects
     /// <summary>Prompt 34 L7 (DECISIONS "Prompt 34 L5/L6/L7"): the class table, wreck lives and how many full wrecks are kept.</summary>
     internal static class WreckClasses
     {
-        /// <summary>Ground vehicles that run on wheels, by their id (the defs do not say; the models do, with Part_wheel since L7).</summary>
-        private static readonly string[] WheeledWords =
+        /// <summary>
+        /// The models given separable wheels by Tools/blender/mb_p34_parts.py (WHEELED there: keep the two lists the same).
+        /// The defs do not say what runs on wheels; at runtime a model with a Part_wheel node is wheeled whatever its id.
+        /// </summary>
+        internal static readonly HashSet<string> WheeledModels = new()
         {
-            "car", "jeep", "technical", "wheeled", "apc", "vbied", "buggy", "radar_scout", "radar_support", "patrol", "humvee",
+            "armored_car", "combat_wreck_car", "coastal_ashm_vehicle", "fibre_fpv_carrier", "fpv_carrier", "ground_cruise_missile_vehicle",
+            "heavy_aa", "interceptor_drone_vehicle", "iron_beam", "long_sam", "microwave_vehicle", "nlos_atgm_vehicle", "radar_scout",
+            "radar_support_vehicle", "recoilless_jeep", "rocket_technical", "scout_jeep", "shorad_vehicle", "towed_at_gun", "vbied",
+            "wheeled_gun", "zu23_technical",
         };
+
+        /// <summary>Other ground vehicles that run on wheels, by words in their id (elites and variants of the above).</summary>
+        private static readonly string[] WheeledWords = { "car", "jeep", "technical", "wheeled", "apc", "vbied", "buggy", "humvee" };
 
         public static WreckClass Of(VehicleDef def)
         {
@@ -65,6 +75,7 @@ namespace MachineBrigade.Game.Effects
             if (def.Boss) return WreckClass.Tank;
             if (def.Class == UnitClass.Artillery) return WreckClass.Artillery;
             if (def.Class == UnitClass.Support || id.Contains("truck") || id.Contains("ammo") || id.Contains("supply")) return WreckClass.Truck;
+            if (WheeledModels.Contains(id) || (def.Model != null && WheeledModels.Contains(def.Model))) return WreckClass.Wheeled;
             foreach (var word in WheeledWords)
                 if (id.Contains(word)) return WreckClass.Wheeled;
             return WreckClass.Tank;

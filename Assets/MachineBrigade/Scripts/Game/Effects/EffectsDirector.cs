@@ -152,7 +152,7 @@ namespace MachineBrigade.Game.Effects
             _debris = new DebrisPool(budget.Debris);
             _layers.Chunks = new ChunkThrower(_debris, materials, models, _fires, _root);
             _layers.Chunks.Trails.Visible = p => _cull.Visible(p, 0.3f);
-            _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks);
+            _wrecks = new WreckManager(_fires, _layers.Chunks, budget.Wrecks, _root);
             _projectiles = new ProjectilePool(_root, 96) { RotorMaterial = materials.SoftSmoke };
             _lasers = new LaserBeams(materials, _emitters, _decals, _root);
             _weapons = new WeaponEffects(catalog, models, _tracers, _projectiles, _emitters, _muzzle, Shake, _lasers);
@@ -523,10 +523,13 @@ namespace MachineBrigade.Game.Effects
                         if (view.Def.Boss && blowsUp) BossDeath(view, now);
                         if (view.Def.Static) FellDefence(view, now);
                         if (blowsUp) Pop(_kill, view.Position + Vector3.up * 0.8f, now);
-                        // Aircraft burst into flames in the air, then fall (see Crash).
-                        else Explode(view.Flying ? ExplosionTier.Large : ExplosionTier.Medium, view.Position + Vector3.up, now);
-                        // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck.
+                        // Aircraft burst into flames in the air, then fall (see Crash); a drone is a small blast (prompt 34 L7).
+                        else Explode(view.Flying && WreckClasses.Of(view.Def) != WreckClass.Drone ? ExplosionTier.Large : ExplosionTier.Medium,
+                            view.Position + Vector3.up, now);
+                        // A ship lists, breaks and sinks (prompt 16); everything else leaves a burning wreck. Prompt 34 L7: a shot-down
+                        // aircraft's wreck flies onto the Sim's crash plan (the event's Target, in Value seconds).
                         if (view.Def.Naval != null) _sinking.Add(view, now);
+                        else if (view.Flying && e.Value > 0f) _wrecks.Add(view, now, Ground(e.Target, 0f), e.Value);
                         else _wrecks.Add(view, now);
                         break;
 
@@ -718,7 +721,10 @@ namespace MachineBrigade.Game.Effects
             foreach (var blast in _blasts) blast.Tick(now);
             _muzzle.Tick(now);
             _debris.Tick(now, Time.deltaTime);
+            _wrecks.Focus = _camera.Focus;
             _wrecks.Tick(now, Time.deltaTime);
+            // Prompt 34 L7: a wreck that has gone leaves a burn mark.
+            while (_wrecks.TryBurnMark(out var mark, out var markSize)) _decals.Place(mark, markSize);
             _sinking.Tick(now);
             for (var i = _departing.Count - 1; i >= 0; i--)
             {

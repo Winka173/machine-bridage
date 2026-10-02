@@ -222,5 +222,94 @@ namespace MachineBrigade.Tests
             }
             Assert.That(AudioDirector.ClusterFrom, Is.GreaterThanOrEqualTo(2));
         }
+        // -------------------------------------------------------------------------------------------------- L7 wrecks
+
+        [Test]
+        public void TheClassTableSortsTheRoster()
+        {
+            var c = GameContent.LoadCatalog();
+            Assert.AreEqual(WreckClass.Tank, WreckClasses.Of(c.Vehicles["main_battle_tank"]));
+            Assert.AreEqual(WreckClass.Wheeled, WreckClasses.Of(c.Vehicles["scout_jeep"]));
+            Assert.AreEqual(WreckClass.Truck, WreckClasses.Of(c.Vehicles["supply_truck"]));
+            Assert.AreEqual(WreckClass.Artillery, WreckClasses.Of(c.Vehicles["wheeled_howitzer"]));
+            Assert.AreEqual(WreckClass.Fighter, WreckClasses.Of(c.Vehicles["fighter_jet"]));
+            Assert.AreEqual(WreckClass.Helicopter, WreckClasses.Of(c.Vehicles["attack_helicopter"]));
+            Assert.AreEqual(WreckClass.BigAircraft, WreckClasses.Of(c.Vehicles["heavy_bomber"]));
+            Assert.AreEqual(WreckClass.Ship, WreckClasses.Of(c.Vehicles["sea_corvette"]));
+            Assert.AreEqual(WreckClass.Drone, WreckClasses.Of(c.Vehicles["recon_drone"]));
+            Assert.IsTrue(WreckClasses.Falls(WreckClass.Helicopter));
+            Assert.IsFalse(WreckClasses.Falls(WreckClass.Drone));
+        }
+
+        [Test]
+        public void WrecksLiveHalfAMinuteBossesLongerAndAboutTwelveStayFull()
+        {
+            var c = GameContent.LoadCatalog();
+            var tank = c.Vehicles["main_battle_tank"];
+            Assert.AreEqual(30f, WreckClasses.Life(tank, 0f, GraphicsQuality.High), 1e-4f);
+            Assert.AreEqual(45f, WreckClasses.Life(tank, 1f, GraphicsQuality.High), 1e-4f);
+            var boss = c.Vehicles.Values.First(v => v.Boss && !v.Static);
+            Assert.Greater(WreckClasses.Life(boss, 1f, GraphicsQuality.High), 45f, "bosses longer");
+            Assert.Less(WreckClasses.Life(tank, 1f, GraphicsQuality.Low), 45f, "Low graphics shorter");
+            Assert.AreEqual(12, WreckClasses.FullCap(GraphicsQuality.High));
+            Assert.Less(WreckClasses.FullCap(GraphicsQuality.Low), WreckClasses.FullCap(GraphicsQuality.Medium));
+        }
+
+        [Test]
+        public void TheModelsHaveTheirSeparableParts()
+        {
+            // Tools/blender/mb_p34_parts.py: two wheels on the wheeled vehicles, the left wing on the aeroplanes.
+            var models = new ModelLibrary(_materials);
+            try
+            {
+                foreach (var (model, part) in new[]
+                         {
+                             ("scout_jeep", "Part_wheel"), ("scout_jeep", "Part_wheelb"), ("armored_car", "Part_wheel"), ("zu23_technical", "Part_wheelb"),
+                             ("fighter_jet", "Part_wing"), ("attack_jet", "Part_wing"), ("heavy_bomber", "Part_wing"), ("stealth_bomber", "Part_wing"),
+                             ("attack_helicopter", "Tail_rotor"), ("attack_helicopter", "Rotor"),
+                         })
+                {
+                    Assert.IsTrue(models.Has(model), model);
+                    var instance = models.Spawn(model, 0, _root.transform);
+                    var found = instance.Root.GetComponentsInChildren<Transform>(true).Any(t => t.name == part);
+                    Assert.IsTrue(found, model + " has no " + part);
+                }
+            }
+            finally
+            {
+                models.Dispose();
+            }
+        }
+
+        [Test]
+        public void ADownedAircraftsLossEventCarriesTheSimsCrashPlan()
+        {
+            var world = new MachineBrigade.Sim.SimWorld(GameContent.LoadCatalog(), new MachineBrigade.Sim.Content.MapDefinition("field", 160f,
+                new[] { new MachineBrigade.Sim.Content.TeamStart(0, new System.Numerics.Vector2(-60f, -60f)),
+                        new MachineBrigade.Sim.Content.TeamStart(1, new System.Numerics.Vector2(60f, 60f)) },
+                new System.Collections.Generic.List<MachineBrigade.Sim.Content.PropPlacement>(),
+                new System.Collections.Generic.List<MachineBrigade.Sim.Content.UnitPlacement>()));
+            var heli = world.SpawnVehicle("attack_helicopter", 1, new System.Numerics.Vector2(5f, 0f), 0f);
+            world.Step(TestWorlds.Step);
+            world.ClearEvents();
+            world.Damage.Apply(heli, 1e7f, DamageType.Fragmentation);
+            var lost = world.Events.First(e => e.Kind == MachineBrigade.Sim.Events.SimEventKind.VehicleDestroyed && e.Entity == heli.Id);
+            Assert.Greater(lost.Value, 0.2f, "the fall's seconds");
+            var start = world.Time;
+            for (var t = 0f; t < lost.Value + 1f; t += TestWorlds.Step)
+            {
+                world.Step(TestWorlds.Step);
+                foreach (var e in world.Events)
+                {
+                    if (e.Kind != MachineBrigade.Sim.Events.SimEventKind.Explosion || e.Entity != heli.Id) continue;
+                    Assert.AreEqual(lost.Target.X, e.Position.X, 1e-3f, "the crash lands where the plan said");
+                    Assert.AreEqual(lost.Target.Y, e.Position.Y, 1e-3f);
+                    Assert.AreEqual(lost.Value, (float)(world.Time - start), TestWorlds.Step * 1.5f, "and when");
+                    return;
+                }
+                world.ClearEvents();
+            }
+            Assert.Fail("no crash blast");
+        }
     }
 }

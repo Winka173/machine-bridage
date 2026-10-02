@@ -129,3 +129,5 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile; run `Prompt34ViewTests` (L5 tiers, budget, shake; L6 sounds; L7 wrecks and the crash plan) with `Prompt34Tests`, `BlastSizeTests`, `EffectsTests`.
 - docs/vfx (the lead renders): before/after shots of each tier's shot and blast, T0-T5 (`EffectShots` or the In action range: a 12.7 mm, 30 mm, 100 mm, 152 mm, 203 mm and the 406 mm salvo), saved as `Docs/vfx/p34_t<k>_{fire,blast}_{before,after}.png`; before = the commit before "Prompt 34 L5" (`TierImpact` and `TierShot` off).
+- Unity import: 83 new clips in `Resources/Audio/p34` (their import settings come from `Editor/P34AudioImport`; commit the generated metas) and 39 rebuilt GLBs (Part_wheel / Part_wheelb / Part_wing); `glb_check` already accepts them.
+- Look (play or the lead's shots): a wheeled wreck's wheels and roll, a fighter's lost wing and spiral, a helicopter's spin, a bomber's slant, each crash landing on its blast; wreck lives 30-45 s and the 12 near the camera; the T4+ shake and the screen shake setting; the effects / dialogue volume rows.

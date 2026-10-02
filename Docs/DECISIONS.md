@@ -15523,3 +15523,43 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
   when the first ship or train arrives, so a map without them never loads them.
 - Tests (written, not run): `Prompt34ViewTests` L6 (every bank a weapon can play has clips, shots and landings by tier and
   round, the seven steps in order, 24 voices, small arms are streaming bullets only).
+
+### L7: wrecks by vehicle class (view only)
+
+- **The class table** (`WreckClasses.Of`; view only, nothing in the Sim): tank (tracked, the default; trains too) the turret
+  thrown (prompt 9) and the hulk burning; wheeled (22 models with `Part_wheel`, or any model that has one, plus ids with
+  car / jeep / technical / wheeled / apc ...) two wheels thrown off spinning, some burning, and the frame rolling onto its
+  side (85-100 degrees) or roof (160-180) in 0.9 s; truck (Support class, "truck", "ammo", "supply") the cargo going up in a
+  chain of 4-6 blasts along the bed, the bed burning; artillery (Artillery class) the ammunition cooking off (6-9 blasts
+  0.3-0.8 s apart, a fountain of flame for 2-3.5 s, more pops while it burns, the turret thrown half the time); fighter a
+  wing torn off (`Part_wing`) trailing fire, a smoke trail off the wing root, a tight spiral down; helicopter the tail
+  rotor thrown back, the main rotor flying off, a spin faster and faster; big aircraft (radius 4.5 m+, HP over 3,000,
+  Support, flying bosses) a wing gone, an engine burning hard, a long slanting fall banking over; ship listing, breaking in
+  two and sinking (`ShipSinking`; it now breaks from 24 m long, not 40, so the corvettes and cruisers break too; boats
+  still roll over); drone a small blast (Medium, not Large) and nothing left. "Fuselage breaking in two" (the fighters'
+  alternative) is written in the Blender pass (`Part_tail`) but not built: it took the Su-27 to 47 renderers, over its
+  hard cap of 44.
+- **Models** (`Tools/blender/mb_p34_parts.py`, wrapped last in `build_assets.all_builders`): the classes that lacked
+  parts get them by MOVING the builders' own geometry under new pivots (no triangle added, every count unchanged in
+  glb_check): `Part_wheel` (front left) and `Part_wheelb` (rear right) on 22 wheeled vehicles (the connected tyre, rim
+  and hub pieces grouped by the tyre's box), `Part_wing` (the left wing: faces left of 1.15 times the fuselage's half width
+  measured at the nose, ahead of the tailplanes; the two flying wings along their whole length) on 13 aeroplanes, with
+  what hangs under it. Names are letters only after `Part_` (`ModelLibrary.PartPattern`), so no suffix rename. Meshes the
+  runtime finds by name (Bombs, guns, parachutes) are never moved. 39 GLBs rebuilt (the substring filter touched nothing
+  else), accepted. Helicopters already had `Rotor` and `Tail_rotor` nodes; tanks their `Turret`.
+- **Crashing aircraft, deterministic**: `DamageSystem.CrashPlan` computes the fall and the point once (the same formula as
+  before) and the loss event carries them (`VehicleDestroyed`: Target the point, Value the seconds; 0 for anything that
+  does not fall); the crash blast is queued from the same plan, so the Sim's results do not change. The falling wreck
+  flies a show path (`VehicleView.PlanCrash`, `ShowFall`) by its class that is on the ground exactly at that point at that
+  time, where WreckManager's crash and the Sim's blast meet. Torn-off pieces (`WreckBreakup`) are view only, simple
+  kinematics, 48 at most; a piece gone from view is hidden, not destroyed, until its wreck is (the wreck's view still
+  holds its renderers).
+- **Lives and the full-wreck cap**: a wreck lives 30-45 s (`WreckClasses.Life`; it was ~17 s), burning for 40 % of it; a
+  boss's 90 s; Low graphics a third less. Within 90 m of the view's focus at most 12 full wrecks (Medium 9, Low 6): the
+  older ones over the cap go within 3 s; a wreck farther from the view lives 14 s at most. Each leaves a burn mark (a
+  scorch decal as wide as the hulk) as it sinks. Bosses and fixed defences are not counted. The budget's hard cap of
+  living hulks (30 / 45) stays.
+- **Not blocking**: wrecks never block movement or sight (the Sim removes the vehicle). The prompt's exception, the card
+  "a vehicle that becomes cover when destroyed", does not exist in the data yet; nothing to keep.
+- Tests (written, not run): `Prompt34ViewTests` L7 (the class table on the roster, lives and caps, the parts in the
+  rebuilt models, the loss event's crash plan matching the Sim's crash blast in place and time).
