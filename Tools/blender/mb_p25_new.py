@@ -109,7 +109,7 @@ def _gun(a, parent, start, length, r, pitch=0.0, style='collar', x=0.0, slot='ma
 
 def heavy_flak_tower(a):
     """A heavy towed AA gun of the KS-19 kind in a round emplacement: cruciform outriggers, a box shield, a long barrel
-    raised 40 degrees; 7.0 x 6.0 x 3.4 m."""
+    raised 28 degrees; 7.0 x 6.0 x 3.4 m (wave 2: was 40 degrees and 4.2 m, 4.9 m tall)."""
     _pad(a, 6.4, 6.4, .15)
     _sandbags(a, 3.0, .9, gap=.9)
     mount = a.part('Mount', 'Armor')
@@ -118,8 +118,8 @@ def heavy_flak_tower(a):
     t = a.pivot('Turret', (0, 0, .45))
     a.part('Carriage', 'Team', t).box((1.6, 2.2, .9), loc=(0, .2, .5), bevel=.08, seg=1)
     a.part('Shield', 'Armor', t).box((1.9, .1, 1.1), loc=(0, -.9, 1.25), rot=(.2, 0, 0), bevel=.03, seg=1)
-    a.part('Recoil', 'Steel', t).box((.5, 1.8, .45), loc=(0, .1, 1.2), rot=(-.7, 0, 0), bevel=.04, seg=1)
-    _gun(a, t, (-.2, 1.35), 4.2, .12, pitch=math.radians(40), style='baffle')
+    a.part('Recoil', 'Steel', t).box((.5, 1.8, .45), loc=(0, .1, 1.2), rot=(-.49, 0, 0), bevel=.04, seg=1)
+    _gun(a, t, (-.2, 1.35), 3.6, .12, pitch=math.radians(28), style='baffle')
     a.part('Ready_rounds', 'Crate').box((.9, .6, .5), loc=(2.1, 1.4, .4), bevel=.04, seg=1)
     _stripes(a, 2.0, 1.6, 1.0, t, y=.2)
 
@@ -129,13 +129,13 @@ def at_gun_emplacement(a):
     barrel with a muzzle brake, a flat shield, split trails; 5.8 x 4.2 x 2.0 m."""
     _sandbags(a, 2.0, .8, gap=1.4, seg=14)
     t = a.pivot('Turret', (0, .3, 0))
-    a.part('Shield', 'Team', t).box((1.9, .1, 1.1), loc=(0, -.45, .95), rot=(.12, 0, 0), bevel=.03, seg=1, taper=(.8, 1))
+    a.part('Shield', 'Team', t).box((1.9, .1, 1.4), loc=(0, -.45, 1.1), rot=(.12, 0, 0), bevel=.03, seg=1, taper=(.8, 1))
     a.part('Cradle', 'Armor', t).box((.45, 1.3, .4), loc=(0, .1, .85), bevel=.04, seg=1)
     trails = a.part('Trails', 'Armor', t)
     for s in (-1, 1):
-        trails.limb((s * .2, .5, .5), (s * 1.0, 2.3, .12), .18, .18)
+        trails.limb((s * .2, .5, .5), (s * 1.0, 1.8, .12), .18, .18)
         mv._wheel(a, s * .85, .1, .32, .2)
-    _gun(a, t, (-.55, .88), 3.8, .075, style='baffle')
+    _gun(a, t, (-.55, .88), 3.2, .075, style='baffle')
 
 
 def blast_wall(a):
@@ -224,7 +224,7 @@ def barrage_balloon(a):
 def visual_jammer(a):
     """An electronic camouflage station: an equipment container, a lattice mast with flat emitter panels, aerosol
     drums and a generator; 6.0 x 5.0 x 6.5 m."""
-    _pad(a, 5.8, 4.8, .12)
+    _pad(a, 4.8, 5.8, .12)
     a.part('Container', 'Team').box((2.3, 5.0, 2.4), loc=(-1.2, 0, 1.32), bevel=.06, seg=1)
     mast = a.part('Mast', 'Steel')
     for s in (-1, 1):
@@ -273,7 +273,7 @@ def flare_tower(a):
 def laser_ad_station(a):
     """A fixed high-energy laser site: a container, a big domed laser turret with a round aperture, a flat radar panel
     on a short mast, a cooling unit; 6.0 x 4.0 x 4.6 m."""
-    _pad(a, 5.8, 3.9, .12)
+    _pad(a, 3.9, 5.8, .12)
     a.part('Container', 'Team').box((2.4, 5.2, 2.3), loc=(0, .3, 1.27), bevel=.06, seg=1)
     t = a.pivot('Turret', (0, -1.0, 2.42))
     a.part('Dome', 'Medical', t).sphere((.95, .95, .95), loc=(0, 0, .5), seg=16, rings=8, cut=-.4)
@@ -582,17 +582,17 @@ def interceptor_jet(a):
 
 # name: (builder, Asset options).
 BUILDERS = {
-    'heavy_flak_tower': (heavy_flak_tower, dict(ao_distance=.6, grime_height=.4)),
+    'heavy_flak_tower': (heavy_flak_tower, dict(ao_distance=.6, ao_strength=.7, grime_height=.4)),
     'at_gun_emplacement': (at_gun_emplacement, dict(ao_distance=.5, grime_height=.4)),
     'blast_wall': (blast_wall, dict(ao_distance=.5, grime_height=.6)),
     'inflatable_decoy': (inflatable_decoy, dict(ao_distance=.5, grime_height=.3)),
     'fire_control_centre': (fire_control_centre, dict(ao_distance=.6, grime_height=.4)),
     'searchlight': (searchlight, dict(ao_distance=.4, grime_height=.3)),
     'barrage_balloon': (barrage_balloon, dict(ao_distance=.6, grime_height=.3)),
-    'visual_jammer': (visual_jammer, dict(ao_distance=.6, grime_height=.4)),
+    'visual_jammer': (visual_jammer, dict(ao_distance=.6, ao_strength=.7, grime_height=.4)),
     'troop_shelter': (troop_shelter, dict(ao_distance=.6, grime_height=.5)),
     'flare_tower': (flare_tower, dict(ao_distance=.5, grime_height=.3)),
-    'laser_ad_station': (laser_ad_station, dict(ao_distance=.6, grime_height=.4)),
+    'laser_ad_station': (laser_ad_station, dict(ao_distance=.6, ao_strength=.7, grime_height=.4)),
     'aa_gun_tower': (aa_gun_tower, dict(ao_distance=.5, grime_height=.4)),
     'aa_gun_vehicle': (aa_gun_vehicle, dict(ao_distance=.5, grime_height=.5)),
     'shorad_vehicle': (shorad_vehicle, dict(ao_distance=.4, grime_height=.4)),

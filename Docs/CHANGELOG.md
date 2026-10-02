@@ -7,7 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
-Nothing yet.
+- Models (27 wave 2 pass A): nine validator errors fixed with the smallest change - `mobile_fortress` gets the part nodes `Mount_gun` (roof howitzer) and `Mount_missile.001` (deck SAM), `headquarters` and the three helipads lose their zero-area triangles, and the proportions of `heavy_flak_tower`, `at_gun_emplacement`, `laser_ad_station` and `visual_jammer` now match their `modelSize`.
 
 ## v0.34.0: Prompt 26 (bosses: health, weapons, two-layer blasts, sizes, Boss Hunt health), prompt 27 wave 1 (the model pipeline and 43 new models), prompt 28 saved
 

@@ -13283,3 +13283,34 @@ STEP0_AUDIT, BASELINE, EXPERIMENT_1, BUDGETS, art bible, wave 1 counts read from
 CHANGELOG "Unreleased" headings. Wave 1 models and cards come from `Resources/UI/Cards` as before. The owner cancelled the
 three wave 2 models of this task (mobile_fortress, headquarters, heavy_flak_tower): nothing of them is committed and the
 PROGRESS wave 2 rows are untouched.
+
+## 27 wave 2 pass A (lead pass, 2026-10-02)
+
+Nine of the validator's eighteen wave 2 errors fixed with the smallest change (the PROGRESS rule). Checks run: Blender
+rebuild, `glb_check.py` (compare, accept with a reason), card renders and one ModelPreview batch in the runner tree
+(mobile_fortress sheet looked at), no CatalogCheck (no balance.json change), no tests, sims or measures. The validator
+now reports 9 models with errors (the other nine wave 2 models: budget caps and interceptor_jet, sky_gunship_hd,
+strike_jet, tank_buster).
+
+- **Where.** New `Tools/blender/mb_p27_wave2.py`, merged last: `k.clean` wrappers around the original builders of
+  `headquarters`, `helipad`, `helipad_a`, `helipad_b` (the 96 zero-area triangles per helipad were the 12 edge-light
+  spheres, 8 each; `k.clean` dissolves them) and `mobile_fortress` (original + new nodes). The four proportion fixes are
+  minimal edits in `mb_p25_new.py` (a swapped pad size or a barrel change is smaller than a rebuild).
+- **mobile_fortress (and fenrir, same model).** `Mount_gun` + `Muzzle_gun` under `Turret`: a compact roof howitzer at
+  the def part howitzer_2's `at` (Blender (0, 2.0, 7.4) = -at.x, -at.y, at.z). `Mount_missile.001` + `Muzzle_missile.001`: a
+  compact SAM battery on the rear deck at (-2.9, 5.0, 4.3), moved about 0.7 m from the part's `at` because the roof stack
+  and the rocket battery occupy it. An empty `Mount_missile` at the silo was added so the k-th mount still pairs with
+  the k-th `Muzzle_missile*` (without it the SAM would have become mount 0 of the missile slot). Needs `_suffixed(a)`
+  (the plain finish renames `__001`). +1,140 triangles.
+- **Proportions, models fixed, no modelSize changed.** laser_ad_station: pad was 5.8 x 3.9 (X x Y), the def is 6.0 long
+  (Y) x 4.0 wide: pad swapped, now 3.9 x 5.8. visual_jammer: pad 5.8 x 4.8 swapped to 4.8 x 5.8 (def 6.0 x 5.0).
+  heavy_flak_tower: barrel 4.2 m at 40 degrees made 3.6 m at 28 degrees (4.86 m tall -> 3.82; def 3.4). at_gun_emplacement:
+  barrel 3.8 -> 3.2 m, trails shortened 0.5 m, shield 1.4 m tall (length 6.9 -> 5.8, height 1.5 -> 1.8; def 5.8 x 2.0).
+  Runtime nodes unchanged; no tower detail input (flat tops, sandbags) moved.
+- **COLOR_0.** The cleaned or reshaped models lost 0.002 - 0.015, so the nine builders use `ao_strength` .7 (default
+  .9): COLOR_0 up 0.002 - 0.058 on all nine.
+- **Card luma** (mean Rec. 709 luma, alpha > 1/2, old -> new): helipad 0.3417 -> 0.3444, helipad_a 0.3876 -> 0.3917,
+  helipad_b 0.3496 -> 0.3536, at_gun_emplacement 0.4233 -> 0.4193 (-0.9 %, inside the 1 % gate; the shorter gun and
+  smaller silhouette), headquarters 0.3793 -> 0.3919, heavy_flak_tower 0.4292 -> 0.4368, laser_ad_station 0.4401 ->
+  0.4413, mobile_fortress 0.3324 -> 0.3364 (fenrir shares it), visual_jammer 0.4036 -> 0.4096.
+- headquarters is 20,156 vertices, 56 over the tower soft budget (a warning, was under before the clean); left.
