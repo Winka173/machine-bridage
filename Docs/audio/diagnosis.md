@@ -23,7 +23,8 @@ no penetration bit and the view never looked. The autocannons fire in streams, s
 decaying over 0.08 + 0.04 x tier seconds (up to 0.24 s), on top of a short noise burst. The analyser's keng detector (a
 2-6 kHz peak 12 dB or more over its 1/3-octave median, under 160 Hz wide, taking 120 ms or more to fall 20 dB) flags all
 eight `blast_ap` clips: **36 dB prominence, 0.29-0.56 s ring** (every other battle clip: 3-7 dB, under 0.3 s). The only
-other clips flagged were the two `train_horn` clips (a horn is tonal; rebuilt below a 2 kHz top).
+other clips flagged were the two `train_horn` clips (a horn is tonal; rebuilt below a 2 kHz top) and `wreck_aircraft_2`
+(thirty small metal clangs at 400-1600 Hz and their partials).
 
 Before prompt 34 a tank gun's hit (impactTier `Medium` in the data) played a recorded `explosion_medium`: a thud, not a ring.
 
