@@ -47,6 +47,8 @@ namespace MachineBrigade.Tests
                 {
                     var w = mount.Weapon;
                     if (w.SplashRadius < 2f || w.Beam || w.Flak || w.Targets == TargetLayers.Air) continue;
+                    // Prompt 34 L1: a T5 round has its own profile (the 406 mm's 14 / 24 m), past the 20 m cap.
+                    if (w.Tier == 5) continue;
                     Assert.AreEqual(Math.Min(20f, w.SplashRadius * 2f), w.SplashEdge, 1e-3f, $"{boss.Id}: {w.Id} (core {w.SplashRadius} m)");
                     Assert.AreEqual(0.4f, w.EdgeShare, 1e-4f, $"{boss.Id}: {w.Id}: the edge takes 40 %");
                 }
@@ -56,12 +58,12 @@ namespace MachineBrigade.Tests
         public void TheListedCoresAndEdgesOfTheStartingWeaponsStand()
         {
             var catalog = C;
-            // 120 mm 5 / 10 m, 152-155 mm 8.5 / 17 m, 203 mm 10 / 20 m, 406 mm 12 / 20 m
+            // 120 mm 5 / 10 m, 152-155 mm 8.5 / 17 m, 203 mm 10 / 20 m (the starting lines); 406 mm 14 / 24 m since prompt 34 L2
             foreach (var (id, core, edge) in new[]
                      {
                          ("p26_moloch_mo120", 5f, 10f), ("p26_bastion_b155", 8.5f, 17f), ("p26_behemoth_be152", 8.5f, 17f),
                          ("p26_nemesis_ne152", 8.5f, 17f), ("p26_jotunn_jo203", 10f, 20f), ("p26_bastion_b240", 10f, 20f),
-                         ("p26_leviathan_lev406", 12f, 20f), ("p26_matriarch_ma_drones", 3f, 6f),
+                         ("p26_leviathan_lev406", 14f, 24f), ("p26_matriarch_ma_drones", 3f, 6f),
                      })
             {
                 var w = catalog.Weapons[id];

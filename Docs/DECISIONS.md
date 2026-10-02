@@ -15207,3 +15207,45 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
   grenade, recoilless), so lasers (kW), railguns (MJ), bombs and missiles (kg) lose the wrong "mm".
 - Tests (written, not run): `Prompt34Tests` L1 (every weapon has a family from the table, same real weapon same family,
   every variant has its reason, the table's tiers, the display names).
+
+## Prompt 34 L2 (lead pass, 2026-10-02)
+
+- **Script.** `Tools/balance/p34_boss_families.py` puts the family table's boss round on every boss weapon and keeps each
+  weapon's DPS. It was run on the data and committed one boss at a time (`--only <boss>`). The numbers from before are in
+  `Tools/balance/p34_boss_baseline.json`, so a rerun changes nothing and never applies the area bonus twice.
+  `Docs/balance/boss_weapon_families.md` has the before/after table per boss. The DPS is on paper: no simulation.
+  **Do not rerun `p26_ab.py`**: it writes the prompt 26 numbers back whole.
+- **Method** (the prompt's three steps). (1) targetDPS = the weapon's old sustained DPS on one target (`steps_c.sustained`,
+  before weaponDamage, rank and phases, which do not move). (2) The new cycle = the new damage of a cycle / targetDPS. The
+  gaps inside a salvo or magazine stay as designed; the cooldown or the magazine change takes the rest. The family's
+  speed and damage type are the most common among its boss members (HE where the row has a core; Kinetic for the AP
+  rows). (3) The area bonus: a core more than 1.25 times the old one makes the cycle that much longer. Where the old core
+  was under 2 m it counts as 2 m (my choice: 0 m has no ratio). A smaller core never shortens the cycle.
+- **Variants** take the family's damage only and keep their own round (speed, type, blast): that is what makes them
+  variants. Leviathan's AK-127 (Kinetic, no blast, the "direct" role of 26 B) is the new variant `cal_127_130/ap`, not the HE
+  shell. With the HE family it would have gained a 5 m core from 0 and lost 60 % of its DPS to the bonus.
+- **Where the old cadence could not hold the DPS** with the family's lighter round, the cadence went up instead: Moloch's
+  35 mm (70 -> 25 a round; 0.05 -> 0.0355 s, the change 0.5 s), Icarus's 40 mm (56 -> 30; 0.2 -> 0.154 s), Matriarch's 2A42
+  salvo (42 -> 22; interval 0.111 -> 0.105 s), Nemesis's Grad (305 -> 200; interval 0.5 -> 0.385 s). The "tiny" mounts of
+  26 B (a fifth of their DPS) now fire full rounds rarely: Jötunn's 2A38 22 x 160 every 103 s, the Kornets 230 every 32-56 s.
+- **The prompt's trial table, checked by the script (no difference):** Leviathan / Kraken 406 mm: `salvo` 3 shells a turret
+  (the turret's barrels together) x 2,400, every 60 s, core 14 / edge 24 (`salvo.edge`, new `SalvoDef.Edge`). That is 3 x 3 x
+  2,400 / 60 = 360, kept; the core grew 17 %, so no bonus. The weapon line says the same (2,400, 60 s, 14 / 24).
+  Leviathan's 155 mm/60: 600 x 3 every 13.7 s (131, kept). Smerch (Jötunn, Fenrir): 450 x 8, the DPS cycle x 1.6, every
+  33.8 s. Bombs (Roc, Garuda, Argus): 700 x 8, the cycle x 2, every 35.4 s. Grad: 200 a rocket, each boss at its old DPS.
+- **Totals** (ground DPS on paper): every boss keeps its DPS but where the bonus applies: Jötunn 88 %, Fenrir 73 %, Roc
+  and Garuda 83 %, Argus 50 % (its main weapon is the bomb stick). The boss health formula is not recalculated (the prompt).
+- **Second rounds** of a changed gun fire at the gun's new cadence. A round of a table family takes the family's round:
+  the armoured train's B-38 HE 600 / 7 / 14, the NSV API 15. Any other round keeps its DPS: Ixion's 125 mm HE 780 -> 400 at
+  the gun's 1.03 s.
+- **Left alone:** Gungnir (`rail_supergun`), so its 40 mm and CIWS (`autocannon_40`, `ciws_aa`) stay on every boss; the
+  weapons bosses share with player vehicles (`boss_flak`, `zu23` already match the table; `gunship_105`, `gunship_40mm`,
+  `hover_ciws` do not and wait for the player pass); laid weapons other than the 406 salvo; the super weapons (big
+  attacks, 26 B6) and the cruise missiles (not in the table). The 800 mm row is unused: only Gungnir's stand-in carries
+  an 800 mm.
+- Data keys: `weapons[*].damage / cooldown / clipReload / burstInterval / splash / edge / projectileSpeed / damageType`
+  (and `weaponFamily: ""` with the block's fields copied where a prompt 25 family would override them) on 52 boss weapon
+  lines and 3 second rounds; `vehicles.leviathan.salvo` (`every`, `shells`, `damage`, `radius`, `edge`).
+- Tests: `Prompt34Tests` L2 (the same family fires the same round on every boss, Leviathan's salvo, the area bonus,
+  Gungnir kept); `Prompt26ABTests` (a T5 round's edge passes 20 m; Leviathan's 406 mm at 14 / 24) and `Prompt26CDTests`
+  (406 mm at 14 / 24) updated. Written, not run.

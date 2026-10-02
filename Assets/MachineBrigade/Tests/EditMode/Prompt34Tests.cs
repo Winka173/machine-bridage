@@ -90,5 +90,90 @@ namespace MachineBrigade.Tests
                 Assert.That(UnitLines.WeaponName(w), Does.Not.Contain(" mm"), w.Id);
             Assert.That(c.Weapons["p26_jotunn_sec_jo_rockets"].Size, Is.EqualTo(300f));
         }
+
+        // ------------------------------------------------------------------------------------------------ L2 the boss table
+
+        /// <summary>The weapons player vehicles carry (bosses share a few; those keep their numbers).</summary>
+        private static HashSet<string> PlayerWeapons(Catalog c)
+        {
+            var set = new HashSet<string>();
+            foreach (var v in c.Vehicles.Values.Where(v => !v.Boss))
+                foreach (var m in v.Mounts)
+                    set.Add(m.Weapon.Id);
+            return set;
+        }
+
+        [Test]
+        public void TheSameFamilyFiresTheSameRoundOnEveryBoss()
+        {
+            var c = C;
+            var players = PlayerWeapons(c);
+            var gungnir = new HashSet<string>(c.Vehicle("rail_supergun").Mounts.Select(m => m.Weapon.Id));
+            var seen = new Dictionary<string, (string id, float damage, float speed, float core, float edge, DamageType type)>();
+            foreach (var boss in c.Vehicles.Values.Where(v => v.Boss))
+                foreach (var m in boss.Mounts)
+                {
+                    var w = m.Weapon;
+                    if (w.WeaponFamilyId == null || players.Contains(w.Id) || gungnir.Contains(w.Id) || (w.Laid && w.Id != "p26_leviathan_lev406")) continue;
+                    var family = c.WeaponFamilyTable[w.WeaponFamilyId];
+                    if (family.BossDamage == null) continue;
+                    Assert.AreEqual(family.BossDamage.Value, w.Damage, 1e-3f, boss.Id + ": " + w.Id);
+                    if (w.WeaponVariantId != null) continue;
+                    Assert.AreEqual(family.BossCore, w.SplashRadius, 1e-3f, boss.Id + ": " + w.Id + " core");
+                    var key = family.Id;
+                    var round = (w.Id, w.Damage, w.ProjectileSpeed, w.SplashRadius, w.SplashEdge, w.DamageType);
+                    if (!seen.TryGetValue(key, out var first)) seen[key] = round;
+                    else
+                    {
+                        Assert.AreEqual(first.speed, round.Item3, 1e-3f, key + ": " + first.id + " / " + w.Id + " speed");
+                        Assert.AreEqual(first.edge, round.Item5, 1e-3f, key + ": " + first.id + " / " + w.Id + " edge");
+                        Assert.AreEqual(first.type, round.Item6, key + ": " + first.id + " / " + w.Id + " type");
+                    }
+                }
+            Assert.That(seen.Count, Is.GreaterThan(10));
+        }
+
+        [Test]
+        public void LeviathansTurretsFireTheir406InThreesEveryMinute()
+        {
+            var s = C.Vehicle("leviathan").Salvo;
+            Assert.IsNotNull(s);
+            Assert.AreEqual(3, s.Shells);
+            Assert.AreEqual(2400f, s.Damage, 1e-3f);
+            Assert.AreEqual(14f, s.Radius, 1e-3f);
+            Assert.AreEqual(24f, s.Edge, 1e-3f);
+            Assert.AreEqual(60f, s.Every, 1e-3f);
+            Assert.AreEqual(24f, s.Blast(ExplosionTier.Huge).Edge, 1e-3f);
+            // 3 turrets x 3 x 2,400 / 60 s: the 360 a second of 3 x 1,200 / 10 s kept.
+            Assert.AreEqual(360f, 3 * s.Shells * s.Damage / s.Every, 1f);
+        }
+
+        [Test]
+        public void TheAreaBonusSlowsTheSmerchAndTheBombs()
+        {
+            var c = C;
+            // Smerch: 8 x 130 every 6.1 s (170 a second) before; 8 x 450, the cycle for 170 a second times 1.6 (core 5 -> 8 m).
+            var smerch = c.Weapons["p26_jotunn_sec_jo_rockets"];
+            Assert.AreEqual(450f, smerch.Damage, 1e-3f);
+            Assert.AreEqual(170f / 1.6f, smerch.SustainedDps, 3f);
+            // Bombs: 8 x 320 every 8.1 s (316) before; 8 x 700, the cycle times 2 (core 5 -> 10 m).
+            var bombs = c.Weapons["p26_roc_main_roc_bombs"];
+            Assert.AreEqual(700f, bombs.Damage, 1e-3f);
+            Assert.AreEqual(316f / 2f, bombs.SustainedDps, 3f);
+            // Leviathan's 155 mm/60: 600 x 3 at the old 131 a second.
+            Assert.AreEqual(131f, c.Weapons["p26_leviathan_sec_lev155"].SustainedDps, 2f);
+        }
+
+        [Test]
+        public void GungnirKeepsItsSuperWeapon()
+        {
+            var c = C;
+            var gun = c.Weapons["p26_gungnir_emrg"];
+            Assert.AreEqual(2000f, gun.Damage, 1e-3f);
+            Assert.AreEqual(12f, gun.SplashRadius, 1e-3f);
+            Assert.AreEqual(20f, gun.SplashEdge, 1e-3f);
+            Assert.AreEqual(45f, c.Vehicle("rail_supergun").Bombard.Every, 1e-3f);
+            Assert.AreEqual("gungnir_emrg", gun.WeaponFamilyId);
+        }
     }
 }
