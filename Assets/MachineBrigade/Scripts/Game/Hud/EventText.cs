@@ -136,6 +136,11 @@ namespace MachineBrigade.Game.Hud
             ["radio.linh.ev.weatherShift.rain.warn"] = ("Rain moving in. The ground will get heavy.", "Mưa đang tới. Mặt đất sẽ nặng lầy."),
             ["radio.linh.ev.weatherShift.clear.warn"] = ("It is clearing up. They will see us coming now.", "Trời đang quang dần. Giờ chúng sẽ thấy ta tới."),
             ["radio.linh.ev.weatherShift.overcast.warn"] = ("Cloud coming over. Our aircraft will fly lower.", "Mây đang kéo tới. Máy bay của ta sẽ phải bay thấp hơn."),
+
+            // Prompt 31 L3: the events that change the battlefield (each warned 8-12 s ahead, its places on the minimap).
+            ["event.sandstormTurn.warn"] = ("The wind is turning: the sandstorm rolls over the marked half in {seconds} s", "Gió đang đổi hướng: bão cát tràn qua nửa bản đồ được đánh dấu sau {seconds} giây"),
+            ["event.sandstormTurn.end"] = ("The sandstorm is passing: sight comes back", "Bão cát đang qua: tầm nhìn trở lại"),
+            ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
         };
     }
 }

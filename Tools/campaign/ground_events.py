@@ -36,3 +36,14 @@ def replace_event(mid, old, new, stage=None):
             refs[i] = new
             return
     raise SystemExit(f'ground_events: {mid} plays no {old}')
+
+
+# ---------------------------------------------------------------------- Bão cát đổi hướng (the sandstorm turns): c2m06, c12m07
+# The wind swings round and the storm rolls over the half of the map the player's main group stands in (the existing weather
+# sight: SimWorld.StormSight); the far half clears a little where the storm was already over everything. No ground changes.
+library(E('sandstorm_turn', 'SandstormTurn', {'at': 200}, {'half': 'player', 'sight': 0.6, 'clear': 1.0, 'seconds': 25, 'hold': 150},
+          lead=10))
+# Red Rock is already in a sandstorm (c2m06's weather): the turn thickens it over our half and thins it over theirs.
+events.add('c2m06', {'id': 'sandstorm_turn', 'params': {'sight': 0.65, 'clear': 1.25}})
+# Dunebreak at night (c12m07): the sandstorm that rolled over the whole map now comes over one half, after the wind turns.
+replace_event('c12m07', 'sandstorm', {'id': 'sandstorm_turn', 'trigger': {'at': 180}})
