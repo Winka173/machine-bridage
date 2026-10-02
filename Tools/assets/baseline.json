@@ -1333,6 +1333,32 @@
     "FLAG grad_cluster: triangles 126 -> 138 (+9.5%); vertices 216 -> 240 (+11.1%); meshes 7 -> 8 (+14.3%); renderers 7 -> 8 (+14.3%); materials 5 -> 6 (+20.0%); materialSlots 7 -> 8 (+14.3%); fileBytes 17,988 -> 20,240 (+12.5%); structure changed",
     "FLAG griffin: triangles 174 -> 198 (+13.8%); vertices 237 -> 285 (+20.3%); meshes 8 -> 9 (+12.5%); renderers 8 -> 9 (+12.5%); materialSlots 8 -> 9 (+12.5%); fileBytes 19,844 -> 23,044 (+16.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "apfsds",
+    "atgm_ataka",
+    "atgm_kornet",
+    "atgm_tow",
+    "bomb_fab",
+    "bomb_mk84",
+    "buk",
+    "debris_concrete",
+    "debris_leaves",
+    "debris_metal",
+    "debris_plaster",
+    "debris_roof",
+    "debris_wood",
+    "gbu12",
+    "gbu39",
+    "gmlrs",
+    "grad",
+    "grad_cluster",
+    "griffin"
+   ],
+   "reason": "merge of feature/p27-wave8a1",
+   "changes": []
   }
  ],
  "models": {
