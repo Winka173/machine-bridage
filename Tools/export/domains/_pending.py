@@ -14,14 +14,8 @@ CLAIMS = [
     # ---------------------------------------------------------------- other data files
     (DATA + "campaign.json", "migration*.**", "12_he_thong_trang_thai", "chuyển đổi save cũ"),
     ("Assets/MachineBrigade/Resources/UI/Bases/*.json", "**", "11_meta_giao_dien", "ảnh bản đồ căn cứ của màn Căn cứ"),
-    ("Assets/MachineBrigade/Resources/UI/Cards/manifest.json", "**", "10_model_tai_san", "ảnh thẻ (render model)"),
-    ("Assets/MachineBrigade/Resources/Models/**", "**", "10_model_tai_san", "model GLB"),
-    ("Assets/MachineBrigade/Resources/Licenses/*", "**", "10_model_tai_san", "giấy phép tài sản"),
-    ("Assets/MachineBrigade/Scripts/*.cs", "**", "10_model_tai_san", "bảng chữ Việt / Anh (localization)"),
     ("Assets/MachineBrigade/Tests/**", "**", "12_he_thong_trang_thai", "kịch bản test EditMode"),
     # ---------------------------------------------------------------- Tools data
-    ("Tools/assets/baseline.json", "**", "10_model_tai_san", "chuẩn kiểm model (baseline)"),
-    ("Tools/models/reference_real.json", "**", "10_model_tai_san", "kích thước thật tham chiếu (cũng dùng ở 13)"),
     ("Tools/docs/unit_refs.json", "**", "13_tham_chieu_nguon", "tham chiếu ngoài đời / game theo đơn vị (spec 12.1)"),
     ("Tools/docs/unit_sheet.json", "**", "12_he_thong_trang_thai", "bảng đơn vị của tài liệu"),
     ("Tools/campaign/unlocks_sheet.json", "**", "11_meta_giao_dien", "mở khóa"),
