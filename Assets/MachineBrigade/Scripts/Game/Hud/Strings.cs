@@ -2135,6 +2135,7 @@ namespace MachineBrigade.Game.Hud
             ["fixeddeck.rule.mirewoodFog"] = ("Light and fast in the fog: take the two villages and the sunken temple before they see you coming.", "Nhẹ và nhanh trong sương: chiếm hai làng và ngôi đền chìm trước khi địch kịp thấy ta tới."),
             ["fixeddeck.rule.thorneAnomaly"] = ("You fight with {@lyhan}'s army. Mid-battle his wing turns away on new intelligence, then comes back.", "Ta chiến đấu bằng đạo quân của {@lyhan}. Giữa trận, cánh quân của ông ấy đổi hướng theo tin tình báo mới, rồi quay lại."),
             ["fixeddeck.rule.islandHop"] = ("Island to island: take one island's point, then cross to the next. The middle island is the key to both sides.", "Nhảy đảo: chiếm điểm trên một đảo rồi vượt sang đảo kế. Đảo giữa là then chốt của cả hai bên."),
+            ["fixeddeck.rule.airfieldLanding"] = ("Hold the field airstrip while the transports come in: the hold clock is the landing count. At most 6 aircraft at a time.", "Giữ đường băng dã chiến trong lúc máy bay vận tải hạ cánh: đồng hồ giữ điểm là bộ đếm hạ cánh. Tối đa 6 máy bay cùng lúc."),
             ["fixeddeck.rule.timedRecon"] = ("Against the clock: see each launcher, then pull out before Skygate turns its gun.", "Chạy đua với giờ: xem từng bệ phóng rồi rút trước khi Skygate quay pháo."),
             // Prompt 25 D2: story loot is never sold.
             ["deck.lockedLoot"] = ("{name}: story loot, won in mission {mission}. It is not for sale.",

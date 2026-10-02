@@ -56,6 +56,7 @@ RULES = {
     'mirewoodFog': 'the deck itself (light, fast, amphibious) on swamp in Fog; the objective (two villages and the sunken temple) kept',
     'thorneAnomaly': "MissionSession's allied AI: from 180 s to 270 s Thorne's wing turns to the objective the player is not going for",
     'islandHop': "the deck itself (amphibious, boats, air) over Coral Keys' three island points; the objective kept",
+    'airfieldLanding': "the Hold objective's clock is the transports' landing count; air cap 6; no Albatross unit",
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -247,6 +248,15 @@ DECKS = {
         loaned=['amphib_light_vehicle', 'river_patrol_boat'],
         replaced={'river_gunboat': 'mlrs', 'coastal_ashm_vehicle': 'railgun_truck', 'airborne_vehicle': 'armored_car', 'guided_shell_strike': 'artillery_barrage'},
         rules=['islandHop'], status='MAKE_LATER'),
+    # c10m11 (chapter 10, Vault's field airstrip): the Hold objective kept (the town point for 210 s: the landings). An air-defence
+    # deck; loaned the 57 mm gun and the radar support vehicle (the sheet's only two locked cards). The Albatross as a scripted
+    # object in the background is not made (the sheet: optional; no playable Albatross).
+    'c10m11': dict(
+        vehicles=['sam_launcher', 'aa_57mm_vehicle', 'iron_beam', 'heavy_aa', 'radar_support_vehicle', 'main_battle_tank', 'ifv', 'engineer_vehicle'],
+        supports=['field_tower', 'repair_drop'],
+        loaned=['aa_57mm_vehicle', 'radar_support_vehicle'],
+        replaced={},
+        rules=['airfieldLanding'], status='MAKE_LATER'),
 }
 
 
