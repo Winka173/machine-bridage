@@ -133,7 +133,7 @@ REAL = [
     (r"smerch|9m55", 19, None, "rocket", 1, "Wikipedia 'BM-30 Smerch': 12 rockets in 38 s"),
     (r"a-22 ogon", 120, None, "rocket", 1, "A-22 Ogon 140 mm (Zubr hovercraft), est. 0.5 s a rocket"),
     (r"gmlrs", 12, None, "rocket", 1, "Wikipedia 'M270 MLRS': 12 rockets in under a minute"),
-    (r"hydra 70|s-8 80|apkws", 600, None, "rocket", 1, "rocket pods: ripples of 0.05-0.12 s (DECISIONS 19R)"),
+    (r"hydra 70|s-8 80|apkws", 900, None, "rocket", 1, "rocket pods: ripples of 0.05-0.12 s (DECISIONS 19R)"),
     (r"type 63 107", 100, None, "rocket", 1, "Wikipedia 'Type 63 MRL': 12 rockets in 7-9 s"),
     # missiles: a launcher's (a rail's) rate
     (r"kornet", 3, 3, "atgm", 1, "Wikipedia '9M133 Kornet': 2-3 rpm"),
@@ -651,6 +651,57 @@ def report(rows, built, ws, before):
 
 
 DATA = {}
+WAITLIST = os.path.join(ROOT, "Docs", "balance", "player_weapon_waitlist.md")
+
+# Why a flagged player or tower weapon is left for the owner (the player rule: fix only clear errors, keep the DPS).
+WAIT_NOTES = [
+    ({"gun_105_long", "gun_105_apfsds", "gun_125_elite", "gun_105_wheeled", "gun_105_bunker", "gun_203_siege", "boss_howitzer",
+      "boss_mortar", "train_gun", "borer_cannon", "gunship_105", "gunship_40mm"},
+     "DECISIONS 19R kept it faster than real on purpose (a round at the top of its calibre band: the real rate would halve the unit's damage)"),
+    ({"mlrs_rockets", "mlrs_elite", "rockets_300mm", "ballistic_missile", "turret_gmlrs"},
+     "DECISIONS 19R kept the ripple off the real pace on purpose (a real salvo would take 20-35 s of a 90 s fight)"),
+    ({"gun_120mm", "gun_120_twin", "gun_125_armata_ke", "gun_152", "gun_152_he", "gun_152_heat", "howitzer", "howitzer_ext", "mortar_120",
+      "naval_76", "gun_57mm", "buk_launcher", "sam_long", "sam_post", "kornet_twin", "tower_kornet", "kornet_multi", "kornet_top",
+      "atgm_heavy", "boss_missiles", "flak_35", "twin_30_bmpt"},
+     "DECISIONS 19R reviewed it as close to the real rate (or set this pattern); the stricter rule here flags it: the owner's call"),
+    ({"howitzer_fixed", "howitzer_cb", "mortar_240_fixed", "turret_gun_120", "turret_gun_120_long", "turret_gun_120_auto", "gun_pit_105",
+      "flak_88", "spg9_73mm", "gun_155_twin_fort", "gun_155_twin_ap", "gun_155_twin_coastlr", "gun_155_coastal", "gun_155_twin",
+      "gun_155_twin_long", "casemate_155", "one_shot_kornet"},
+     "a tower or dug-in site: the balance pass after prompt 18 (A.2) gave the sites a faster rhythm than the vehicles on purpose"),
+    ({"patriot", "sam_battery_lrr", "sam_pac3", "tamir", "cruise_missile_ground", "jassm", "avenger_stingers", "amos_120", "caesar_155",
+      "gun_155_crusader", "nsm_coastal", "anti_ship_missile", "uav_loiter_missile", "spike_nlos", "khrizantema", "vikhr",
+      "hellfire_standoff", "hellfire_volley"},
+     "the real reference is an estimate (no published launch interval): not a clear error"),
+    ({"siege_gun_105", "siege_mortar_240", "recoilless_106", "gun_105_ags", "gun_140_twin", "gun_100_river"},
+     "a play-test or prompt-22+ unit tuned on purpose (22P siege tank, 25 F2 new units): not a clear error"),
+]
+
+
+def wait_note(wid):
+    for ids, note in WAIT_NOTES:
+        if wid in ids:
+            return note
+    return "flagged, intent unknown: waits for the owner"
+
+
+def waitlist(rows):
+    out = ["# Player and tower weapons waiting for the owner (full fix prompt L3, rule 9)", "",
+           "Written by `Tools/balance/full_weapon_audit.py`. The player rule: fix only clear unit errors and clear too-fast /",
+           "too-slow cadences, keeping the DPS (player balance waits for prompt 29's follow-up). Changed in this pass:",
+           "`turret_rockets` and `turret_rockets_cluster` (the BM-21's real 0.5 s between rockets, the cycle and the DPS kept).",
+           "Everything below is still flagged by the audit and was left as it is, with the reason.", "",
+           "| weapon | carriers | flags | game / reference | why left |", "|---|---|---|---|---|"]
+    for r in sorted(rows, key=lambda r: r["id"]):
+        groups = {g for g, _, _ in r["users"]}
+        flags = sorted(set(r["flags"]) - {"WAVE 1", "DISPLAY", "FAMILY"})
+        if not flags or "boss" in groups and not (groups - {"boss"}) or not (groups & {"player", "tower"}):
+            continue
+        us = sorted({u for g, u, _ in r["users"] if g != "boss"})
+        ratio = f"x{r['ratio']:.2f}" if r["ratio"] else "-"
+        out.append(f"| `{r['id']}` ({r['w'].get('real') or '-'}) | {', '.join(us[:4])}{' +' + str(len(us) - 4) if len(us) > 4 else ''} | "
+                   f"{', '.join(flags)} | {ratio} | {wait_note(r['id'])} |")
+    out.append("")
+    return "\n".join(out)
 
 
 def main():
@@ -668,6 +719,8 @@ def main():
             json.dump(now, fh, indent=1)
     with open(REPORT, "w", encoding="utf-8", newline="\n") as fh:
         fh.write(text)
+    with open(WAITLIST, "w", encoding="utf-8", newline="\n") as fh:
+        fh.write(waitlist(rows))
     for g, c in now.items():
         print(g, " ".join(f"{k}={v}" for k, v in c.items()))
     print("written", os.path.relpath(REPORT, ROOT))

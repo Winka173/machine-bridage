@@ -59,5 +59,7 @@
  "p26_typhon_direct_ty100": "wave 1 naval_100's pair every 3.5 s, the rounds 1 s apart (AK-100 60 rpm; wave 1's 0.5 s is twice the real rate)",
  "p26_typhon_sec_ty57": "wave 1 mothership_cannon: 4 rounds 0.5 s apart every 4.29 s (AU-220M 120 rpm); made up: a twin 57 mm deck mount (as the real AK-725 twin 57 mm)",
  "sam_battery": "MIM-104 Patriot: the pair ~3 s apart (est.; 0.45 s was too fast), the 11 s cycle kept",
- "train_gun": "real B-38 5-7.5 rpm (8 s at 7.5); wave 1's 5.11 s is too fast"
+ "train_gun": "real B-38 5-7.5 rpm (8 s at 7.5); wave 1's 5.11 s is too fast",
+ "turret_rockets": "player rule: BM-21's real 0.5 s between rockets (0.12 s was 4 x too fast), the 4.07 s cycle and the DPS kept",
+ "turret_rockets_cluster": "player rule: as turret_rockets, the 3.92 s cycle and the DPS kept"
 }

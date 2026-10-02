@@ -268,6 +268,29 @@ def totals(rows):
     return g, a
 
 
+ARMOUR = {}   # boss -> (before, after): the DPS against armour 3 (prompt 26's measure), filled by armour3()
+
+
+def armour3(data, before, after):
+    """Each boss's DPS on armour 3: a mount's DPS x its type and penetration factor (p26_ab) x weaponDamage (not laid)."""
+    ws = F.Weapons(data)
+    built = A.expand(data)
+    for bid, b in built.items():
+        wd = b.get("weaponDamage", 1)
+        fac = {}
+        for k, wid in enumerate(S.mounts_of(b)):
+            if not wid or wid not in ws.raw:
+                continue
+            w = ws.resolve(wid)
+            f = A.TYPES.get(w.get("damageType", "Kinetic"), 1.0) * S.pen_step(A.PENS, int(w.get("pen", 0)) - 3)
+            fac[(k, wid)] = f * (1 if w.get("laid") else wd)
+        fac[("salvo", A.expand(data)[bid].get("salvo", {}).get("weapon") if isinstance(b.get("salvo"), dict) else None)] = 1.0
+
+        def eff(rows):
+            return sum(r["dps"] * fac.get((r["mount"], r["id"]), 1.0) for r in rows if not r["air"])
+        ARMOUR[bid] = (eff(before.get(bid, [])), eff(after.get(bid, [])))
+
+
 def report(before, after, reasons):
     out = ["# Boss weapon families: before and after (full fix prompt L3)", "",
            "Written by `Tools/balance/fix_boss_weapons.py` (it replaces prompt 34 L2's `p34_boss_families.py`, retired). Before =",
@@ -316,12 +339,16 @@ def report(before, after, reasons):
             out.append(f"| {r['mount']} | `{r['id']}` | {r['fam']} | {o['damage']:g} x {o['n']} / {o['cycle']:.2f} s = {o['dps']:.0f}{laid} "
                        f"| {r['damage']:g} x {r['n']}{bar} / {r['cycle']:.2f} s = {r['dps']:.0f}{laid} | {r['core']:g} / {r['edge']:g} |")
         out.append("")
-    out += ["## Totals", "", "| boss | ground before | ground after | after / before | anti-air before -> after | make-up |",
-            "|---|---|---|---|---|---|"]
+    out += ["## Totals", "",
+            "Ground = the raw sustained DPS (the rule's measure, as prompt 34's table). Armour 3 = prompt 26's measure: each mount's",
+            "DPS x its damage type and penetration against armour 3 (p26_ab's tables) x the boss's weaponDamage, for the owner.", "",
+            "| boss | ground before | ground after | after / before | armour 3 before -> after | anti-air before -> after | make-up |",
+            "|---|---|---|---|---|---|---|"]
     for bid, g0, g1, ratio, a0, a1, made in summary:
         mk = ", ".join(f"`{m}` {mk_words(m)}" for m in made) or "-"
         flag = " **(< 80 %)**" if ratio < MAKEUP_FROM else ""
-        out.append(f"| {bid} | {g0:.0f} | {g1:.0f} | {ratio * 100:.0f} %{flag} | {a0:.0f} -> {a1:.0f} | {mk} |")
+        e0, e1 = ARMOUR.get(bid, (0.0, 0.0))
+        out.append(f"| {bid} | {g0:.0f} | {g1:.0f} | {ratio * 100:.0f} %{flag} | {e0:.0f} -> {e1:.0f} | {a0:.0f} -> {a1:.0f} | {mk} |")
     out += ["", "## Kept as they are", ""]
     for wid, why in KEPT.items():
         out.append(f"- `{wid}`: {why}.")
@@ -424,6 +451,7 @@ def main():
     for p in check_muzzles(doc.data()):
         print("MUZZLES:", p)
     after = snapshot(doc.data())
+    armour3(doc.data(), before, after)
     text, summary = report(before, after, reasons)
     for bid, g0, g1, ratio, a0, a1, made in summary:
         mark = " <80%" if ratio < MAKEUP_FROM else ""

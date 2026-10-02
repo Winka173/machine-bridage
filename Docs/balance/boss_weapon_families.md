@@ -557,49 +557,52 @@ Ground DPS **707 -> 619** (88 %); anti-air only 0 -> 0. Made up: `p26_typhon_sec
 
 ## Totals
 
-| boss | ground before | ground after | after / before | anti-air before -> after | make-up |
-|---|---|---|---|---|---|
-| behemoth | 1012 | 1099 | 109 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
-| mobile_fortress | 954 | 1204 | 126 % | 145 -> 145 | - |
-| armored_train | 660 | 952 | 144 % | 0 -> 0 | - |
-| mega_gunship | 462 | 546 | 118 % | 0 -> 0 | - |
-| drone_mothership | 1304 | 1188 | 91 % | 0 -> 0 | - |
-| nuke_train | 1751 | 1070 | 61 % **(< 80 %)** | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
-| silver_bug | 1638 | 1501 | 92 % | 0 -> 0 | - |
-| behemoth_inferno | 282 | 282 | 100 % | 0 -> 0 | - |
-| behemoth_tempest | 299 | 299 | 100 % | 0 -> 0 | - |
-| fortress_hive | 586 | 586 | 100 % | 0 -> 0 | - |
-| fortress_bastion | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
-| rail_supergun | 170 | 170 | 100 % | 240 -> 240 | - |
-| earth_borer | 289 | 213 | 74 % **(< 80 %)** | 0 -> 0 | - |
-| command_airship | 1532 | 685 | 45 % **(< 80 %)** | 0 -> 0 | - |
-| landing_hovercraft | 302 | 293 | 97 % | 120 -> 120 | - |
-| supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
-| sky_fortress | 418 | 418 | 100 % | 0 -> 0 | - |
-| leviathan | 771 | 956 | 124 % | 804 -> 804 | - |
-| moloch | 1382 | 652 | 47 % **(< 80 %)** | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
-| daedalus | 745 | 778 | 104 % | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
-| kronos | 439 | 708 | 161 % | 0 -> 0 | - |
-| typhon | 707 | 619 | 88 % | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
-| ixion | 615 | 280 | 46 % **(< 80 %)** | 0 -> 0 | - |
-| caspian | 260 | 260 | 100 % | 0 -> 0 | - |
-| morrigan | 165 | 165 | 100 % | 147 -> 147 | - |
-| bastion_mk0 | 239 | 130 | 54 % **(< 80 %)** | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
-| fenrir | 350 | 380 | 109 % | 0 -> 0 | - |
-| scylla | 234 | 380 | 162 % | 0 -> 0 | - |
-| locust | 552 | 575 | 104 % | 0 -> 0 | - |
-| behemoth_mk2 | 569 | 515 | 90 % | 0 -> 0 | - |
-| icarus_mk0 | 400 | 400 | 100 % | 0 -> 0 | - |
-| argus | 316 | 316 | 100 % | 0 -> 0 | - |
-| behemoth_mk0 | 733 | 637 | 87 % | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
-| kraken | 771 | 956 | 124 % | 804 -> 804 | - |
-| monster | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
-| garuda | 1532 | 685 | 45 % **(< 80 %)** | 0 -> 0 | - |
-| hyperion | 1320 | 1320 | 100 % | 0 -> 0 | - |
-| stymphalos | 622 | 586 | 94 % | 0 -> 0 | - |
-| nyx | 239 | 343 | 144 % | 0 -> 0 | - |
-| cerberus | 875 | 879 | 101 % | 0 -> 0 | `p26_behemoth_sec_be_rockets` 40 tubes |
-| hydra | 707 | 619 | 88 % | 0 -> 0 | `p26_typhon_sec_ty57` 2 barrels together |
+Ground = the raw sustained DPS (the rule's measure, as prompt 34's table). Armour 3 = prompt 26's measure: each mount's
+DPS x its damage type and penetration against armour 3 (p26_ab's tables) x the boss's weaponDamage, for the owner.
+
+| boss | ground before | ground after | after / before | armour 3 before -> after | anti-air before -> after | make-up |
+|---|---|---|---|---|---|---|
+| behemoth | 1012 | 1099 | 109 % | 651 -> 645 | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
+| mobile_fortress | 954 | 1204 | 126 % | 639 -> 455 | 145 -> 145 | - |
+| armored_train | 660 | 952 | 144 % | 520 -> 795 | 0 -> 0 | - |
+| mega_gunship | 462 | 546 | 118 % | 455 -> 507 | 0 -> 0 | - |
+| drone_mothership | 1304 | 1188 | 91 % | 858 -> 707 | 0 -> 0 | - |
+| nuke_train | 1751 | 1070 | 61 % **(< 80 %)** | 1099 -> 457 | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
+| silver_bug | 1638 | 1501 | 92 % | 1599 -> 1530 | 0 -> 0 | - |
+| behemoth_inferno | 282 | 282 | 100 % | 422 -> 422 | 0 -> 0 | - |
+| behemoth_tempest | 299 | 299 | 100 % | 520 -> 520 | 0 -> 0 | - |
+| fortress_hive | 586 | 586 | 100 % | 553 -> 553 | 0 -> 0 | - |
+| fortress_bastion | 792 | 741 | 94 % | 601 -> 380 | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
+| rail_supergun | 170 | 170 | 100 % | 511 -> 511 | 240 -> 240 | - |
+| earth_borer | 289 | 213 | 74 % **(< 80 %)** | 780 -> 596 | 0 -> 0 | - |
+| command_airship | 1532 | 685 | 45 % **(< 80 %)** | 1086 -> 533 | 0 -> 0 | - |
+| landing_hovercraft | 302 | 293 | 97 % | 650 -> 630 | 120 -> 120 | - |
+| supreme_command | 143 | 226 | 159 % | 214 -> 340 | 0 -> 0 | - |
+| sky_fortress | 418 | 418 | 100 % | 910 -> 910 | 0 -> 0 | - |
+| leviathan | 771 | 956 | 124 % | 762 -> 955 | 804 -> 804 | - |
+| moloch | 1382 | 652 | 47 % **(< 80 %)** | 1001 -> 413 | 0 -> 0 | `p26_moloch_direct_mo120ap` 2 barrels together, `p26_moloch_main_mo120` 2 barrels together |
+| daedalus | 745 | 778 | 104 % | 745 -> 778 | 0 -> 0 | `p26_daedalus_sec_dae57` 2 barrels together |
+| kronos | 439 | 708 | 161 % | 360 -> 511 | 0 -> 0 | - |
+| typhon | 707 | 619 | 88 % | 644 -> 552 | 145 -> 145 | `p26_typhon_sec_ty57` 2 barrels together |
+| ixion | 615 | 280 | 46 % **(< 80 %)** | 446 -> 110 | 0 -> 0 | - |
+| caspian | 260 | 260 | 100 % | 465 -> 465 | 0 -> 0 | - |
+| morrigan | 165 | 165 | 100 % | 361 -> 361 | 147 -> 147 | - |
+| bastion_mk0 | 239 | 130 | 54 % **(< 80 %)** | 390 -> 230 | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
+| fenrir | 350 | 380 | 109 % | 313 -> 317 | 0 -> 0 | - |
+| scylla | 234 | 380 | 162 % | 495 -> 806 | 0 -> 0 | - |
+| locust | 552 | 575 | 104 % | 552 -> 560 | 0 -> 0 | - |
+| behemoth_mk2 | 569 | 515 | 90 % | 650 -> 403 | 0 -> 0 | - |
+| icarus_mk0 | 400 | 400 | 100 % | 910 -> 910 | 0 -> 0 | - |
+| argus | 316 | 316 | 100 % | 455 -> 455 | 0 -> 0 | - |
+| behemoth_mk0 | 733 | 637 | 87 % | 488 -> 409 | 0 -> 0 | `p26_behemoth_direct_be120` 2 barrels together, `p26_behemoth_sec_be_rockets` 40 tubes |
+| kraken | 771 | 956 | 124 % | 1292 -> 1740 | 804 -> 804 | - |
+| monster | 792 | 741 | 94 % | 1200 -> 759 | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
+| garuda | 1532 | 685 | 45 % **(< 80 %)** | 1084 -> 532 | 0 -> 0 | - |
+| hyperion | 1320 | 1320 | 100 % | 1600 -> 1600 | 0 -> 0 | - |
+| stymphalos | 622 | 586 | 94 % | 553 -> 483 | 0 -> 0 | - |
+| nyx | 239 | 343 | 144 % | 501 -> 735 | 0 -> 0 | - |
+| cerberus | 875 | 879 | 101 % | 650 -> 519 | 0 -> 0 | `p26_behemoth_sec_be_rockets` 40 tubes |
+| hydra | 707 | 619 | 88 % | 832 -> 713 | 0 -> 0 | `p26_typhon_sec_ty57` 2 barrels together |
 
 ## Kept as they are
 
