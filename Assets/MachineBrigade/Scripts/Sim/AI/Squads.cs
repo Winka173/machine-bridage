@@ -303,7 +303,7 @@ namespace MachineBrigade.Sim.AI
             {
                 world.AiLog.CountSwitch(_commander.Team, s.Id, DecisionKind.Action, now);
                 world.AiLog.Add(new DecisionEntry(now, _commander.Team, AiLayer.Squad, s.Id, DecisionKind.Action,
-                    $"{s.Action} -> {action} {score:0}{(urgent ? " (urgent)" : idle ? " (idle)" : current < 0 ? " (invalid)" : "")}"));
+                    $"{s.Action} {(current >= 0 ? options[current].score : 0f):0} -> {action} {score:0}{(urgent ? " (urgent)" : idle ? " (idle)" : current < 0 ? " (invalid)" : "")}"));
                 s.Action = action;
                 s.ActionSince = now;
                 s.FlankReached = false;

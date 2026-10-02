@@ -461,6 +461,10 @@ def main():
         "params": ai_params(wb),
         "economy": economy(wb),
     }
+    # H.3: the fingerprint merge threshold, from the sheet "Dấu vân hành vi" ("khởi điểm 0,15").
+    rule = next(str(r[1]) for r in rows(wb, "Dấu vân hành vi") if str(r[0]).startswith("Luật gộp"))
+    merge = num(re.search(r"khởi điểm (\d+,\d+)", rule).group(1))
+    data["world"]["mergeThreshold"] = param(merge, 0.1, 0.25, "Khoảng cách dấu vân giữa các cặp", "H.3: pairs closer than this merge")
     new = block(data, behaviour(wb))
     if args.dry:
         print("\n".join(new))
