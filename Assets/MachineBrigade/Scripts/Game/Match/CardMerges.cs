@@ -66,6 +66,46 @@ namespace MachineBrigade.Game.Match
             ["heavy_attack_heli"] = 3500,
         };
 
+        /// <summary>
+        /// Prompt 32 L1 (roster version 7, DECISIONS "Prompt 32 L0/L1/L2"): the tower roster 32 -> 22. A tower card folded
+        /// into another: the card it became keeps the higher rank, the unlock moves across (a bought card stays bought), and
+        /// when the player already had the card it became, the duplicate's coins come back (<see cref="TowerPrices"/>).
+        /// </summary>
+        public static readonly IReadOnlyDictionary<string, string> TowerInto = new Dictionary<string, string>
+        {
+            ["recoilless_gun_tower"] = "at_gun_emplacement",
+            ["manpads_tower"] = "aa_turret",
+            ["flare_tower"] = "searchlight",
+            ["flare_searchlight_tower"] = "searchlight",
+            ["barrage_balloon"] = "inflatable_decoy",
+            ["aa_gun_tower"] = "heavy_flak_tower",
+            ["drone_net_tower"] = "laser_ad_station",
+            ["bunker_shelter_tower"] = "troop_shelter",
+        };
+
+        /// <summary>Prompt 32 L1: tower cards gone from the roster (still map and mission structures): coins back at the price paid, slots emptied.</summary>
+        public static readonly string[] RetiredTowers = { "blast_wall", "one_shot_atgm_tower" };
+
+        /// <summary>Prompt 32 L1: what the folded and retired tower cards cost in the shop (prompt 25 F2's prices), for the refunds.</summary>
+        public static readonly IReadOnlyDictionary<string, int> TowerPrices = new Dictionary<string, int>
+        {
+            ["recoilless_gun_tower"] = 2000, ["manpads_tower"] = 2000, ["flare_tower"] = 2000, ["flare_searchlight_tower"] = 2000,
+            ["barrage_balloon"] = 2000, ["aa_gun_tower"] = 3000, ["drone_net_tower"] = 2000, ["bunker_shelter_tower"] = 3000,
+            ["blast_wall"] = 2000, ["one_shot_atgm_tower"] = 3000,
+        };
+
+        /// <summary>Prompt 32 L1: towers left without branches: a choice on one is dropped (the card fights as itself).</summary>
+        public static readonly string[] NoBranchTowers = { "minefield", "cp_relay", "troop_shelter" };
+
+        /// <summary>Prompt 32 L1: branches gone with them.</summary>
+        public static readonly string[] RetiredBranchesP32 = { "minefield.at", "minefield.scatter", "cp_relay.hardened", "cp_relay.loot" };
+
+        /// <summary>
+        /// Prompt 32 L1: branches that changed what they do (the AA tower's SAM post is the Stinger post; the gun turret's
+        /// 57 mm fires at light vehicles only): a player who chose one keeps it, with one free change and a news line.
+        /// </summary>
+        public static readonly string[] ReworkedBranchesP32 = { "aa_turret.sam", "gun_turret.auto" };
+
         /// <summary>Prompt 17 D.4: the hidden gun pit, gone from the towers, and the tower its players get instead.</summary>
         public const string GunPit = "gun_pit";
 

@@ -90,6 +90,9 @@ namespace MachineBrigade.Sim.Modes
 
         /// <summary>Tower types (card ids) whose Modular free re-drop this battle has been used.</summary>
         public HashSet<string> ModularUsed { get; } = new();
+
+        /// <summary>Prompt 32 L2: the HQ's one free rebuild at a quarter of its health has been given.</summary>
+        public bool HqRescueUsed { get; internal set; }
     }
 
     /// <summary>
@@ -322,9 +325,41 @@ namespace MachineBrigade.Sim.Modes
             slot.LandsAt = double.NaN;
         }
 
-        /// <summary>CP to fly a tower back into this hardpoint (nothing for a Modular tower's free re-drop).</summary>
+        /// <summary>
+        /// The balance price (baseRebuildCP) of flying a tower back into this hardpoint (nothing for a Modular tower's free
+        /// re-drop): every calculation reads it; what a side pays is <see cref="RuntimeCostOf"/>.
+        /// </summary>
         public int CostOf(HardpointState slot) =>
             !slot.FreeCall && slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCost(def) : 0;
+
+        /// <summary>
+        /// Prompt 32 L2: runtimeRebuildCP, what the side pays: the base price under its commander (Brandt's air-dropped
+        /// towers -20 %), rounded half up once, at the end.
+        /// </summary>
+        public int RuntimeCostOf(int team, HardpointState slot)
+        {
+            var cost = CostOf(slot);
+            if (cost <= 0) return 0;
+            var commander = _world.TryGetEconomy(team, out var economy) ? economy.Commander : null;
+            return SimMath.RoundHalfUp(cost * (double)Commanders.TowerDropScale(commander));
+        }
+
+        /// <summary>
+        /// Prompt 32 L2: until when (match seconds) destroyed towers may be flown back in; a drop paid before still lands.
+        /// Infinite unless the mode sets it (Showdown: <see cref="BaseRules.ShowdownRebuildCutoff"/>).
+        /// </summary>
+        public double RebuildUntil { get; set; } = double.PositiveInfinity;
+
+        /// <summary>Prompt 32 L2: an enemy (a vehicle, not a fixed structure) stands within the rebuild radius of the slot.</summary>
+        public bool EnemyNear(int team, HardpointState slot)
+        {
+            var r = _world.Catalog.Base.RebuildEnemyRadius;
+            if (r <= 0f) return false;
+            var r2 = r * r;
+            foreach (var v in _world.VehicleList)
+                if (v.IsAlive && v.Team != team && !v.Def.Static && Vector2.DistanceSquared(v.Position, slot.Def.Position) <= r2) return true;
+            return false;
+        }
 
         /// <summary>
         /// Modular (tower equipment): a tower that carries it has just been destroyed. If it is the
@@ -351,8 +386,16 @@ namespace MachineBrigade.Sim.Modes
             return null;
         }
 
-        /// <summary>Whether a destroyed tower here can be called back in now.</summary>
-        public bool CanCall(HardpointState slot) => slot.Down && !slot.Lost && !slot.Incoming && slot.Tower != null && _world.Time >= slot.ReadyAt;
+        /// <summary>Whether a destroyed tower here can be called back in now (its cooldown over, before the mode's cut-off).</summary>
+        public bool CanCall(HardpointState slot) =>
+            slot.Down && !slot.Lost && !slot.Incoming && slot.Tower != null && _world.Time >= slot.ReadyAt && _world.Time < RebuildUntil;
+
+        /// <summary>
+        /// Prompt 32 L2: <see cref="CanCall(HardpointState)"/> for a side: no enemy within the rebuild radius of the slot, and an
+        /// outpost's slot only while the side holds its point.
+        /// </summary>
+        public bool CanCall(int team, HardpointState slot) =>
+            CanCall(slot) && !EnemyNear(team, slot) && (slot.PointId == null || PointOwner == null || PointOwner(slot.PointId) == team);
 
         /// <summary>The destroyed hardpoints of a side that can be called back in now, front first (camp, then outposts).</summary>
         public IReadOnlyList<HardpointState> Callable(int team)
@@ -360,10 +403,10 @@ namespace MachineBrigade.Sim.Modes
             _scratch.Clear();
             if (!_bases.TryGetValue(team, out var b)) return _scratch;
             foreach (var slot in b.Slots)
-                if (CanCall(slot)) _scratch.Add(slot);
+                if (CanCall(team, slot)) _scratch.Add(slot);
             foreach (var outpost in b.Outposts.Values)
                 foreach (var slot in outpost)
-                    if (CanCall(slot)) _scratch.Add(slot);
+                    if (CanCall(team, slot)) _scratch.Add(slot);
             return _scratch;
         }
 
@@ -387,14 +430,51 @@ namespace MachineBrigade.Sim.Modes
                 slot.Down = true;
             }
             if (!CanCall(slot)) return CommandResult.Rejected(slot.Incoming || slot.Structure.IsValid ? CommandError.InvalidPoint : CommandError.OnCooldown);
-            if (!_world.Economy.TrySpend(command.Team, CostOf(slot))) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            // Prompt 32 L2: never into enemies round the slot; an outpost's only while its point is held.
+            if (EnemyNear(command.Team, slot)) return CommandResult.Rejected(CommandError.EnemyNear);
+            if (slot.PointId != null && PointOwner != null && PointOwner(slot.PointId) != command.Team) return CommandResult.Rejected(CommandError.InvalidPoint);
+            // The CP goes as the drop starts (the runtime price); a drop under way lands whatever the clock says after.
+            if (!_world.Economy.TrySpend(command.Team, RuntimeCostOf(command.Team, slot))) return CommandResult.Rejected(CommandError.NotEnoughCp);
+            Drop(command.Team, slot);
+            return CommandResult.Ok;
+        }
+
+        /// <summary>Starts a tower's air drop into its slot: it lands after its size's fall (2.5 / 3.5 / 5 s).</summary>
+        private void Drop(int team, HardpointState slot)
+        {
             slot.FreeCall = false;
             slot.FreeWait = 1f;
             var rules = _world.Catalog.Base;
-            slot.LandsAt = _world.Time + rules.RebuildDelay;
-            slot.ReadyAt = _world.Time + rules.RebuildCooldown(_world.Catalog.Vehicles[slot.Tower!]);
-            _world.Emit(SimEvent.DeploymentQueued(command.Team, slot.Tower!, slot.Def.Position, SimMath.Forward(slot.Def.Facing), rules.RebuildDelay));
-            return CommandResult.Ok;
+            var def = _world.Catalog.Vehicles[slot.Tower!];
+            var fall = rules.RebuildDrop(def);
+            slot.LandsAt = _world.Time + fall;
+            _world.Emit(SimEvent.DeploymentQueued(team, slot.Tower!, slot.Def.Position, SimMath.Forward(slot.Def.Facing), fall));
+        }
+
+        /// <summary>
+        /// Prompt 32 L2: once a match, when a side's HQ is down to a quarter of its health, its cheapest fallen small or
+        /// medium tower (by baseRebuildCP, then slot order) comes back free, whatever its cooldown; never a large one, never
+        /// into enemies, no CP given. It waits for a slot it can fill.
+        /// </summary>
+        private void HqRescue(TeamBase b)
+        {
+            if (b.HqRescueUsed || b.HqFallen || !b.Hq.IsValid || !_world.TryGetVehicle(b.Hq, out var hq) || !hq.IsAlive) return;
+            if (hq.Hp > hq.MaxHp * _world.Catalog.Base.HqRescueShare) return;
+            HardpointState? best = null;
+            var bestCost = int.MaxValue;
+            foreach (var slot in b.Slots)
+            {
+                if (!slot.Down || slot.Lost || slot.Incoming || slot.Tower == null || _world.Time >= RebuildUntil) continue;
+                if (!_world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) || def.Fort is not { } fort || fort.Size == SlotSize.Large) continue;
+                if (EnemyNear(b.Team, slot)) continue;
+                var cost = _world.Catalog.Base.RebuildCost(def);
+                if (cost >= bestCost) continue;
+                bestCost = cost;
+                best = slot;
+            }
+            if (best == null) return;
+            b.HqRescueUsed = true;
+            Drop(b.Team, best);
         }
 
         private static HardpointState? Nearest(TeamBase b, Vector2 at)
@@ -492,6 +572,7 @@ namespace MachineBrigade.Sim.Modes
             {
                 if (b.Hq.IsValid && !b.HqFallen && (!_world.TryGetVehicle(b.Hq, out var hq) || !hq.IsAlive)) b.HqFallen = true;
                 foreach (var slot in b.Slots) Watch(b, slot);
+                HqRescue(b);
                 // An outpost lost with its point: its towers go with it.
                 _lost.Clear();
                 foreach (var (id, slots) in b.Outposts)
@@ -527,8 +608,9 @@ namespace MachineBrigade.Sim.Modes
             slot.Structure = EntityId.None;
             slot.Down = true;
             var cooldown = slot.Tower != null && _world.Catalog.Vehicles.TryGetValue(slot.Tower, out var def) ? _world.Catalog.Base.RebuildCooldown(def) : 30f;
-            // A Modular tower's free re-drop waits only its share of the cooldown, whatever the last call left.
-            slot.ReadyAt = slot.FreeCall ? _world.Time + cooldown * slot.FreeWait : Math.Max(slot.ReadyAt, _world.Time + cooldown);
+            // Prompt 32 L2: the cooldown runs from the tower's fall (25 / 40 / 60 s); a Modular tower's free re-drop waits only
+            // its share of it.
+            slot.ReadyAt = _world.Time + cooldown * (slot.FreeCall ? slot.FreeWait : 1f);
         }
 
         /// <summary>Every tower standing in a side's base (camp and outposts).</summary>

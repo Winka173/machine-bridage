@@ -128,18 +128,18 @@ namespace MachineBrigade.Game.Match
             ["recon_jet"] = 3000,
             ["interceptor_jet"] = 5000,
             ["radar_scout"] = 1500,
-            ["blast_wall"] = 2000,
+            // ["blast_wall"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["inflatable_decoy"] = 2000,
             ["fire_control_centre"] = 3000,
             ["searchlight"] = 2000,
-            ["barrage_balloon"] = 2000,
+            // ["barrage_balloon"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["visual_jammer"] = 3000,
             ["fibre_fpv_carrier"] = 3000,
             ["interceptor_drone_vehicle"] = 1500,
             ["troop_shelter"] = 3000,
-            ["flare_tower"] = 2000,
+            // ["flare_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["laser_ad_station"] = 3000,
-            ["aa_gun_tower"] = 3000,
+            // ["aa_gun_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // (batch A: new entries above)
             // Prompt 25 F2 batch B (DECISIONS 25F2-B): the 33 Thấp-priority items' D2-planned prices (dx23 not in this pass).
             ["aa_57mm_vehicle"] = 1500,
@@ -150,7 +150,7 @@ namespace MachineBrigade.Game.Match
             ["demolition_line_vehicle"] = 1500,
             ["combat_wreck_car"] = 1500,
             ["drone_hijack_vehicle"] = 1500,
-            ["manpads_tower"] = 2000,
+            // ["manpads_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["river_patrol_boat"] = 1500,
             ["river_gunboat"] = 3000,
             ["coastal_ashm_vehicle"] = 3000,
@@ -163,17 +163,17 @@ namespace MachineBrigade.Game.Match
             ["mobile_repair_vehicle"] = 1500,
             ["radar_support_vehicle"] = 1500,
             ["towed_at_gun"] = 1500,
-            ["flare_searchlight_tower"] = 2000,
-            ["recoilless_gun_tower"] = 2000,
-            ["bunker_shelter_tower"] = 3000,
+            // ["flare_searchlight_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
+            // ["recoilless_gun_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
+            // ["bunker_shelter_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             ["dazzler_vehicle"] = 1500,
             ["ground_cruise_missile_vehicle"] = 5000,
             ["aerial_tanker"] = 3000,
             ["heavy_lift_helicopter"] = 3000,
             ["bridging_vehicle"] = 1500,
             ["gps_jammer_vehicle"] = 1500,
-            ["drone_net_tower"] = 2000,
-            ["one_shot_atgm_tower"] = 3000,
+            // ["drone_net_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
+            // ["one_shot_atgm_tower"]: prompt 32 L1, folded into another tower card or retired (CardMerges.TowerInto, RetiredTowers).
             // (batch B: new entries above)
             // Prompt 25 F2 batch C (DECISIONS 25F2-C): new support cards, one unlock source each (the shop; the
             // sheet's "or a chapter reward" waits for those rewards, as batch A's units did).

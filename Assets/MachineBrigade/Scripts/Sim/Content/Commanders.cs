@@ -295,6 +295,16 @@ namespace MachineBrigade.Sim.Content
             return scale;
         }
 
+        /// <summary>Prompt 32 L2: what flying a tower back in costs under the commander, as a share of its baseRebuildCP (Brandt: 0.8).</summary>
+        public static float TowerDropScale(CommanderDef? c)
+        {
+            if (c == null) return 1f;
+            var scale = 1f;
+            foreach (var p in c.Prices)
+                if (p.Reach == PriceReach.AirdropTowers) scale *= p.Scale;
+            return scale;
+        }
+
         /// <summary>What a support card costs under the commander, as a share of its price.</summary>
         public static float PriceScale(CommanderDef? c, SupportDef s)
         {

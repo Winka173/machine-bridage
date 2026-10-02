@@ -23,6 +23,34 @@ namespace MachineBrigade.Game.Match
         {
             _hud.TacticPressed += OpenTacticPicker;
             _selection.OwnTowerTapped += OpenTowerModes;
+            _selection.SlotTapped = TapFallenTower;
+        }
+
+        /// <summary>
+        /// Prompt 32 L2: Auto-buy off, a tap within 5 m of one of the player's fallen towers flies it back in (the CP go as
+        /// the drop starts). Auto-buy on, the side's AI does it. Not taken when no fallen tower is under the tap.
+        /// </summary>
+        private bool TapFallenTower(System.Numerics.Vector2 at)
+        {
+            if (_session.PlayerAi == null || _session.PlayerAi.AutoDeploy || _world.Bases.Of(PlayerTeam) is not { } ours) return false;
+            HardpointState near = null;
+            var best = 5f * 5f;
+            void Look(HardpointState s)
+            {
+                if (!s.Down || s.Lost || s.Tower == null) return;
+                var d = System.Numerics.Vector2.DistanceSquared(s.Def.Position, at);
+                if (d >= best) return;
+                best = d;
+                near = s;
+            }
+            foreach (var s in ours.Slots) Look(s);
+            foreach (var outpost in ours.Outposts.Values)
+                foreach (var s in outpost) Look(s);
+            if (near == null) return false;
+            var result = _world.SubmitPlayer(new MachineBrigade.Sim.Commands.Command(MachineBrigade.Sim.Commands.CommandType.CallTower, PlayerTeam,
+                System.Array.Empty<EntityId>(), near.Def.Position));
+            if (result.Accepted) _hud.Toast(Strings.Get("toast.towerCalled")); else _hud.ShowError(result.Error);
+            return true;
         }
 
         /// <summary>Every frame: the switch's state, the newest hint, a line when a scouted enemy changes its tactic.</summary>

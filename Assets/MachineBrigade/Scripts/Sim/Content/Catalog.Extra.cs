@@ -290,6 +290,8 @@ namespace MachineBrigade.Sim.Content
             ParseP22(v, def);
             // The tower-branch rework (DECISIONS 19T): tower shields, the loot depot, the radar's air picture, the branch art.
             ParseBranchRework(v, def);
+            // Prompt 32 L1: the tower roster's declared branches, noBranch and role tags.
+            ParseRoster(v, def);
             // Prompt 25 F2 batch A (DECISIONS 25F2-A): the new units' and structures' mechanisms.
             ParseP25A(v, def);
         }

@@ -679,7 +679,7 @@ namespace MachineBrigade.Game.Hud
             foreach (var def in _catalog.Vehicles.Values)
             {
                 if (def.Fort == null || def.BranchOf != null) continue;
-                if (kind == Tab.Utility ? def.Fort.Kind != FortKind.Utility : def.Fort.Kind != FortKind.Tower || !Sim.Modes.TowerCards.IsLoadoutTower(def.Id) || (int)def.Fort.Size != (int)kind) continue;
+                if (kind == Tab.Utility ? def.Fort.Kind != FortKind.Utility : def.Fort.Kind != FortKind.Tower || !Sim.Modes.TowerCards.IsCard(_catalog, def) || (int)def.Fort.Size != (int)kind) continue;
                 list.Add(def.Id);
             }
             list.Sort((a, b) => string.Compare(Strings.Short(a), Strings.Short(b), StringComparison.CurrentCulture));

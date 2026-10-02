@@ -120,6 +120,7 @@ namespace MachineBrigade.Game.Hud
             Root.Add(_note);
             ShowBranchNews();
             ShowRefundNews();
+            ShowRosterNews();
 
             // A language change rebuilds the menu; come back to the page the player was on.
             if (_reopenDeck) _armyView = ArmyView.Deck;
@@ -605,6 +606,19 @@ namespace MachineBrigade.Game.Hud
             VisualElement scrim = null;
             var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
             scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.branches.title"), Strings.Format("news.branches", names), ok));
+        }
+
+        /// <summary>Prompt 32 L1: once, the retired tower cards whose base slots the roster change emptied.</summary>
+        private void ShowRosterNews()
+        {
+            var (emptied, coins) = PlayerProfile.TakeRosterNews();
+            if (emptied.Count == 0 && coins <= 0) return;
+            var text = Strings.Format("news.roster", ("coins", Kit.Count(coins)));
+            if (emptied.Count > 0) text += "
+" + Strings.Format("news.roster.emptied", ("names", string.Join(", ", emptied.Select(t => Strings.Card(t)))));
+            VisualElement scrim = null;
+            var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.roster.title"), text, ok));
         }
 
         /// <summary>DECISIONS 23D: an old save's doctrines were refunded at this load; say so once.</summary>

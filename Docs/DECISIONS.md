@@ -14965,3 +14965,211 @@ the lead, the tests are written, not run.
     against the 600 s limit, the `test_rod` event is Skygate turning its gun; existing. Line: Hawk at 20 s.
   - Not done in L2: the sheet's MAKE LATER missions (pass 4) keep the player's deck; their rows stay in the sheet and the
     precheck's table. No objective changed (fixed_decks.check_mission against the baseline; FixedDeckTests too).
+
+## Prompt 29 appendix (lead pass, 2026-10-02)
+
+The owner's appendix to prompt 29 (second rounds and weapon targets), done before prompt 32 L1 (its L0 item 8).
+
+- **outgoingDamageMult on every round.** Already true in the code: `CombatSystem.Launch` takes the loaded round
+  (`Loaded(shooter, index)`: the gun's own or the second round it changed to) and multiplies the shot's `DamageScale` by
+  `shooter.Def.OutgoingDamageMult` whatever the round; the card figures (`FirePower.Sustained`, `SustainedAir`) take the
+  carrier's multiplier for any weapon passed. No code change; `TargetMaskTests.OutgoingDamageMultRidesOnEveryRoundTheGunLoads`
+  fires a second round at x1 and x2 and expects twice the damage scale (written, not run). A kamikaze's detonation is not a
+  round change and keeps its old path.
+- **B6-mask (APPLY).** `gun_100_river` (A-190 100 mm, river gunboat) and `gun_155_crusader` (XM2001 155 mm, auto-loading
+  howitzer): `targets` All -> Ground. Both are high explosive (x0 on aircraft in the damage table) and neither has a second
+  round (no `he`, `air` or `secondRounds` entry), so none reaches aircraft and the "keep All" exception does not apply.
+  Applied through the prompt 29 tool: `Docs/balance/manifest_p29_appendix.json` (the manifest's columns, scope "weapon"),
+  `p29_apply.py` reads it after the sheet's manifest, maps `weapons.<id>.targets` (weapon-scope rows only) and keeps R8
+  for every other bundle (a weapon-scope bundle may change only the weapons it names). Logged in `apply_log_p29.md`.
+  Neither vehicle has a `class`; the inferred class is unchanged (a ground-only HE gun is never AntiAir).
+- **Target-mask validator.** `TargetMaskTests` (EditMode) and `Tools/balance/target_mask_check.py` (a static read of
+  balance.json, inheritance and second rounds resolved as the catalog does) check every gun (mounted, or no gun's second
+  round; damage > 0; not intercept-only): each declared layer (Air; Ground = vehicles and structures) must have a highest
+  damage-type multiplier above 0 over the rounds valid for it (thermobaric HE on structures at its 2.0). Ground has no
+  separate structure mask in the data (`TargetLayers` is Ground/Air), so structures are checked under Ground. Second
+  rounds whose rule is never met: elite-only rounds on a gun no elite or rank-7 branch mounts, rounds reaching nothing
+  their rule names, and rounds shadowed by an earlier round of the gun (the first that suits wins). Result
+  (`Docs/checks/target_mask.md`): 0 mask findings after B6-mask (2 before), 17 unmet rounds, all elite-only on guns no
+  elite carries (boss, naval, jeep and bunker guns): reported, not fixed (the appendix: no second-round rebalance). The
+  test fails only on a new one beyond these 17.
+
+## Prompt 32 L0/L1/L2 (lead pass, 2026-10-02)
+
+Prompt 32 passes 0-2 on `feature/p32-a1` (lane A of Docs/LOCAL_PLAN_P31_P32.md), after the prompt 29 appendix. Nothing run
+(no Unity, tests or sims); the Python tools ran on the data. Prompt 28's aiModeProfile and prompt 30's match rules
+untouched; the locked rules of section 0 hold (supply only, no upkeep; the caps; no health retreat).
+
+### L0: precheck
+
+`Docs/checks/p32_precheck.md`. What later passes lean on: the Watch branch already replaces the guard tower's +10 %
+(one inherited field, best aura counts), so no code fix; a tower's `cp` is 0, so rebuilt towers never count in the army
+value supply reads and destroying one pays nothing (both L2 rules already true); thermobaric HE replaces the structure
+multiplier (2.0), never x3; forward drops at a held outpost exist; second rounds as prompt 25 G.
+
+### L1: roster 32 -> 22 and the branch rule
+
+Data (`Tools/balance/p32_roster.py`, rerunnable; `--check` validates): `base.roster` lists the 22 cards; each card has
+`"branches": [A, B]` or `"noBranch": true`; every branch (and a card without branches) a `"towerRole"` tag. Code:
+`VehicleDef.DeclaredBranches / NoBranch / Role` (`Content/TowerRoster.cs`; a branch row inherits its card's line, so its
+inherited `branches` are ignored), `BaseRules.Roster`, `TowerCards.IsCard(catalog, def)` (a roster tower, not a
+branch) used by the loadout pool, `BaseLayout.Fits` and the Base screen's tabs; `TowerCards.All` in roster order;
+`TowerCards.Branches` the declared pair (none for noBranch). A folded or retired tower stays a def (maps, missions,
+the AI's old placements) but is no card.
+
+| card | size | A | B | folded in |
+|---|---|---|---|---|
+| guard_tower | S | .watch (observation) | .nest (25 mm) | |
+| mg_bunker | S | .twin | .flame | |
+| at_gun_emplacement | S | .long (100 mm, 45 deg arc) | .recoilless (SPG-9, all round) | recoilless_gun_tower |
+| aa_turret | S | .flak (23 mm) | .sam = Stinger post (new `stinger_post`, 56 m) | manpads_tower |
+| ew_tower | S | .drone | .spoof | |
+| dragons_teeth | S | .hedgehog (blocks) | .wire (passable, slows) | |
+| minefield | S | noBranch: the AT branch's mines (5 x 720, every 45 s) | | |
+| cp_relay | S | noBranch: steady CP with the second relay's falloff | | |
+| searchlight | S | .beam | .flare (inherits flare_tower) | flare_tower, flare_searchlight_tower |
+| inflatable_decoy | S | .inflatable | .balloon (inherits barrage_balloon) | barrage_balloon |
+| atgm_tower | M | .top | .multi | |
+| gun_turret | M | .long (120 mm) | .auto (57 mm, light vehicles only) | |
+| c_ram | M | .centurion | .dome | |
+| rocket_turret | M | .cluster | .guided | |
+| heavy_flak_tower | M | .heavy (KS-19) | .bofors (inherits aa_gun_tower) | aa_gun_tower |
+| laser_ad_station | M | .laser | .net (inherits drone_net_tower, medium slot) | drone_net_tower |
+| troop_shelter | M | noBranch | | bunker_shelter_tower |
+| heavy_turret, missile_battery, drone_hangar, artillery_emplacement, shield_tower | L | as before | as before | |
+
+Retired from the roster: `blast_wall` (walls come in L3), `one_shot_atgm_tower` (a map / mission object only). Removed
+branch rows: `minefield.at/.scatter`, `cp_relay.hardened/.loot` (the loot code stays, unused). Choices made blind:
+
+- **Stinger reach.** The MANPADS tower's `sam` reaches 44 m, under the 23 mm flak's 46 m, so the spec's "longer reach"
+  needed its own line: `stinger_post` inherits `sam` at 56 m (the old SAM post had 60 m). Everything else of the round
+  is the shared `sam`'s. Vision 60.
+- **57 mm light only.** `gun_57_auto` loses its `air` round and targets Ground, with a new `Prey.Light` (front armour
+  1 or less, not a structure, not flying; `CombatSystem.P25Worth`). Its only carrier is `gun_turret.auto`.
+- **Lasers.** `iron_beam` and `laser_ad_station` `aps.shells` 0.3 / 0.5 -> 0 (prompt 29 had not applied the APS sheet's
+  0 %); texts say "no shells".
+- **Wire.** The spec's "slows under fire" is the wire's existing unconditional slow aura (6 m, 50 %): kept, no new
+  mechanism.
+- **Shelter merge.** The troop shelter keeps its own numbers (15 m); the bunker shelter's 18 m is not carried over.
+- **AI styles** (`base.ai.styles`): a folded card's weight moved to the card it became (the larger kept); retired cards
+  and removed branches dropped.
+- **Shop.** The 10 folded / retired cards left `Progression.NewContentPrices` (prices kept in `CardMerges.TowerPrices`
+  for the refunds).
+- **Showdown (L7).** "The CP relay stops at minute 6 in Showdown" waits for the mode (pass 7).
+
+Role tags (`towerRole`): unique across the 22 cards; the two of a card differ. The validator is `TowerRosterP32Tests`
+(and the Python `--check`); the older "every pair differs in targets, reach or mechanism" test still covers the new pairs.
+
+Save migration (roster version 7, `PlayerProfile.MigrateTowerRoster`): a folded card's rank merges into the card it
+became (the higher kept, the lower rank's spend refunded as the older merges did), its slots, outposts, plans and
+equipment move across (`MergeTower`); its unlock moves (a bought card stays bought) unless the player already had the
+card it became (a starter, owned or unlocked): then the duplicate's coins come back at its shop price. A retired card's
+coins come back (its price, plus what its rank cost; its blueprints become universal), every slot holding it is
+emptied, its equipment row goes (the pieces stay in the bag), and the menu says so once (`news.roster`,
+`news.roster.emptied`, with the coins refunded). A choice on a card left without branches (or of a removed branch) is
+dropped; a choice of a reworked branch (`aa_turret.sam`, `gun_turret.auto`) is kept with one free change and the
+branch notice.
+
+Texts (EN + VI, `Strings.cs`, `GuideText.cs`): names, short names, "info" and "when" lines for the ten new branches; the
+Stinger post and 57 mm rewritten; the Watch branch says it replaces the 10 %; the Centurion lists what it stops
+(missiles, drones, direct-fire rockets, artillery rockets, part of the shells and mortar bombs; not tank shells, bullets
+or beams); the logistics station's line says supply (no "phí duy trì" / upkeep), still +8 CP; the Iron Beam and the
+laser site "no shells".
+
+Tests updated for the new rules (not run): `TowerRosterTests` (no minefield branches; five mines),
+`Prompt20TowersMapsTests` (the B branch reaches 56 m), `TowerBranchTests` (the 57 mm air test and the loot-depot test
+`[Ignore]`d with the reason; the AI's 57 mm pick against light vehicles; the old migration test expects the CP relay's
+choice dropped), `Prompt25NewContent*Tests` (folded and retired towers no longer in the shop), `TowerBranchArtTests`
+(the five cards waiting for branch art skipped). Left for Unity and art: Docs/ai/LOCAL_TODO.md.
+
+### L2: rebuilding towers, and their prices
+
+Rules (Sim, `BaseSystem`, `BaseRules`, `ConquestAi.TryRebuild`; data `base.rebuild`):
+
+- Loadout towers stand free at the start (unchanged). The cooldown (25 / 40 / 60 s by size) now runs from the tower's
+  fall (it used to take the later of the fall and the last call's end).
+- The CP go as the drop starts; the drop falls 2.5 / 3.5 / 5 s by size (`rebuild.<size>.drop`; `delay` 4 stays the
+  fallback). Nothing is called while an enemy vehicle (not a fixed structure) stands within 20 m of the slot
+  (`enemyRadius`; new `CommandError.EnemyNear`, "err.EnemyNear" EN + VI). An outpost's slot only while its point is held
+  (outposts already went with a lost point). A Defend line's lost ring is never rebuilt (unchanged, `LoseRing`); its
+  retreat CP unchanged. A rebuilt tower keeps its branch (the slot's def) and its card's equipment, at full health.
+- Auto-buy on: the side's AI calls the fallen tower nearest a threat (nearest living enemy vehicle; slot order on a
+  tie), only when the CP left after its runtime price still buys the deck's cheapest ground card (was a flat +4).
+  Auto-buy off: a tap within 5 m of a fallen tower's slot (no unit under the tap) calls it
+  (`SelectionController.SlotTapped`, `MatchRunner.TapFallenTower`); the existing tower button stays, no new button.
+- Showdown: `BaseSystem.RebuildUntil` (default infinite) stops new calls; a paid drop still lands. The mode (L7) sets
+  it to `rebuild.showdownCutoff` = 600 s.
+- HQ at 25 % health (`hqRescue`): once a match the cheapest fallen small or medium tower (baseRebuildCP, then slot order;
+  never large) drops free, ignoring its cooldown but not the enemy radius (it waits for a slot it can fill); no CP.
+- Destroying a tower pays nothing: towers' `cp` is 0 (L0), and `OnVehicleDestroyed` now skips any fort explicitly.
+- Two prices: `VehicleDef.BaseRebuildCp` (data `rebuildCp`, read by `BaseRules.RebuildCost`, which every calculation
+  uses) and `BaseSystem.RuntimeCostOf(team, slot)` = `SimMath.RoundHalfUp(base x Commanders.TowerDropScale)` (Brandt's
+  air-dropped towers 0.8), what the side pays and the HUD shows. `CostOf(slot)` stays the base price.
+
+Pricing (`Tools/balance/p32_tower_prices.py`, run on the data; report `Docs/balance/p32_tower_prices.md`, the record of
+the run that applied it: a rerun after the cuts shows the cut towers at eq 8). The prompt's formula, with these
+provisional choices:
+
+- Reference threats: per tower size, a price band of card vehicles (small 3-8 CP, medium 5-12, large 9-20; ground, not
+  bosses, elites or ships); in each of the four classes the median weapon by penetration (melee, laid, air-only and
+  cruise missiles out; HE includes the guns' HE second rounds; artillery = an Artillery-class vehicle's HE). Picked:
+  small `ifv_30` / `gun_105_wheeled_he` / `khrizantema` / `caesar_155`; medium `gun_105_ags` / `gun_105_wheeled_he` /
+  `lancet` / `mlrs_rockets`; large `gun_125_armata_ke` / `gun_155_crusader` / `spike_nlos` / `thermobaric_rockets`.
+- Health in data units x toughness for towers and vehicles alike (cancels); towers read as structures (thermobaric 2.0
+  replacing 1.5, L0 item 6), vehicles as ground, both against their front armour.
+- Role targets: air (median aircraft front armour 0), heavy (front 3 and up: median 3), light (front 2 or less:
+  median 1); "ground" and "multi" the mean of light and heavy. Role vehicle groups: AntiAir; the Armor branch; Light and
+  Scout; Artillery; all ground cards. Weapon bonuses by armour class count; a branch carries its elite-only rounds; the
+  switch to a second round costs once per 30 s engagement.
+- Reach bands: <= 30 m 0.575, <= 50 m 0.625, beyond 50 m or indirect 0.725 (the mid band's top, 50 m, is mine).
+- Utility (provisional formulas, scales anchored on the provisional table): interceptors (C-RAM, laser, net) =
+  (radius / 35)^2 x interceptions a minute (APS charges over reload or recharge; the net by its weapon's rate),
+  priced 5 x sqrt(value / the C-RAM's); protectors = damage prevented a minute (dome hp over recharge, wards 3 towers'
+  shields, shelter cut x a 60 dps zone, by area), 5 x sqrt(value / the troop shelter's); the CP relay = the CP it pays
+  in an expected 120 s life (0.1 CP/s x economy 0.9 = 10.8, so the small cap 6); jammers, lighting, decoys, teeth and
+  mines the size floor (3).
+
+Script vs provisional (base card / branches; the full table with equivalentCP, factor and raw price is in the report):
+
+| group | script | provisional |
+|---|---|---|
+| Small AA (aa_turret / .flak / .sam) | 6 / 6 / 5 | 6 (REBALANCE_STATS) |
+| MG bunker (base / .twin / .flame) | 6 / 6 / 6 | 6 (REBALANCE_STATS) |
+| Guard tower (base / .watch / .nest) | 5 / 5 / 5 | 4 |
+| AT post (base / .long / .recoilless) | 4 / 4 / 3 | 3 |
+| Small unarmed (EW, teeth, mines, lighting, decoys) | 3 | 3 |
+| CP relay | 6 | 3 (unarmed floor) |
+| Gun turret (base / .long sniper / .auto 57 mm) | 11 / 11 / 11 | - / 6 / 7 |
+| Medium AA (base / .heavy / .bofors) | 7 / 7 / 6 | 6 |
+| Rocket battery (base / .cluster / .guided) | 11 / 10 / 9 | 6 |
+| ATGM tower (base / .top / .multi) | 7 / 7 / 6 | 5 |
+| C-RAM (base / .centurion / .dome) | 5 / 5 / 5 | 5 |
+| Anti-drone (base / .laser / .net) | 5 / 5 / 5 | - / 7 / 5 |
+| Troop shelter | 5 | 5 |
+| Long-range SAM (base / .lrr / .pac3) | 13 / 12 / 9 | 12 / 11 / 9 |
+| Heavy turret (base / .coastal / .bastion) | 18 / 18 / 18 | 10 / 11 / 17 (HOLD) |
+| Drone hangar (base / .lancet / .swarm) | 12 / 14 / 14 | 9 |
+| Artillery emplacement (base / .cb / .mortar) | 12 / 12 / 12 | 9 |
+| Shield generator (base / .bulwark / .ward) | 10 / 10 / 10 | 9 |
+
+The script's prices are applied (`rebuildCp` on all 60 defs, the 22 cards and their 38 branches). The large gaps (gun
+turret, rocket battery, heavy turret, drone hangar, emplacement) come from the towers' effective health: kinetic and
+shaped charges do 0.6 to structures and the towers' front armour cuts the reference rounds' penetration, so a tower
+holds two to three times a vehicle's effective health per CP; several then hit the band's top. Not rebalanced here
+beyond the prompt's two rules below.
+
+REBALANCE_STATS (small towers past equivalentCP 8): `mg_bunker` 14.1, `.twin` 15.5, `.flame` 19.3, `aa_turret` 10.5,
+`.flak` 12.4 (the prompt expected the 23 mm, the flame bunker, the small AA and the MG bunker: the same five).
+Damage cut through `outgoingDamageMult` (health kept), (8 / eq)^2: 0.3204, 0.2672, 0.1716, 0.5762, 0.4139; the
+branches not cut (`aa_turret.sam`) carry an explicit 1 (they inherit their card's line). Before / after equivalentCP
+14.1-19.3 / 8; price 6 either way (the cap). These are large cuts made on paper (the flame bunker to 17 % damage): the
+first thing to look at in play.
+
+Steel fortress (`heavy_turret.bastion`, HOLD): formula 18 (raw 28.5, over 15). One roof MG fewer: raw 26.2, still 18;
+health down to the base heavy turret's 2,800 (not below: the branch would be weaker than its card): raw 21.0, still 18.
+Reaching 13-15 would need health about 1,200. Verdict: not applied; the fortress stays at its current stats and price
+18 (the cap), HOLD for the owner (the prompt's provisional 17 also sits above 15).
+
+Tests (written, not run): `TowerRebuildP32Tests` (rebuilt towers outside the supply army value; no CP for a destroyed
+tower; runtime vs base under Brandt; no drop with an enemy within 20 m; the drop by size; the Showdown cut-off with a paid
+drop landing; the HQ rescue; every price in its band), `BaseTests` (a medium tower's price from the data).

@@ -370,9 +370,19 @@ namespace MachineBrigade.Sim.AI
             var callable = bases.Callable(_team);
             if (callable.Count > 0 && economy.ArmyCp >= 12)
             {
+                // Prompt 32 L2: the fallen tower nearest a threat first (slot order on a tie), and only with the CP for the
+                // deck's cheapest vehicle still left after paying its runtime price.
                 var slot = callable[0];
-                var cost = bases.CostOf(slot);
-                if (economy.Cp >= cost + 4f && world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slot.Def.Position)).Accepted)
+                var best = NearestEnemySq(world, slot.Def.Position);
+                for (var i = 1; i < callable.Count; i++)
+                {
+                    var d = NearestEnemySq(world, callable[i].Def.Position);
+                    if (d >= best) continue;
+                    best = d;
+                    slot = callable[i];
+                }
+                var cost = bases.RuntimeCostOf(_team, slot);
+                if (economy.Cp >= cost + CheapestCard(world, economy) && world.Submit(new Command(CommandType.CallTower, _team, Array.Empty<EntityId>(), slot.Def.Position)).Accepted)
                     return true;
             }
             // Outposts on marked points we hold: set up, then their towers.
@@ -410,6 +420,28 @@ namespace MachineBrigade.Sim.AI
                 }
             }
             return false;
+        }
+
+        /// <summary>Prompt 32 L2: squared distance from a point to the nearest living enemy vehicle (float.MaxValue: none).</summary>
+        private float NearestEnemySq(SimWorld world, Vector2 at)
+        {
+            var best = float.MaxValue;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || v.Team == _team || v.Def.Static) continue;
+                var d = Vector2.DistanceSquared(v.Position, at);
+                if (d < best) best = d;
+            }
+            return best;
+        }
+
+        /// <summary>Prompt 32 L2: the CP kept back for buying troops: the deck's cheapest ground card (4 when the deck has none).</summary>
+        private static float CheapestCard(SimWorld world, TeamEconomy economy)
+        {
+            var cheapest = float.MaxValue;
+            foreach (var id in economy.Vehicles)
+                if (world.Catalog.Vehicles.TryGetValue(id, out var def) && def.Card && !def.Flying && def.BaseCp > 0) cheapest = Math.Min(cheapest, def.BaseCp);
+            return cheapest == float.MaxValue ? 4f : cheapest;
         }
 
         /// <summary>

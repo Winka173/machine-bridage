@@ -110,3 +110,17 @@ The cloud session writes the Sim only. Each line: file, what, why.
   card, the rule lines); it uses existing classes plus `fc-campaign__fixed-deck`, `fc-campaign__fixed-card`,
   `fc-tag--loaned`, which have no USS rules yet.
 - When the owner allows test runs: FixedDeckTests, and the dialogue validator is already green (script_build.py).
+## Prompt 32 L1 (lead pass, 2026-10-02): tower roster 22
+
+- Art (Blender): the merged cards' branch models and icons `<tower>_a` / `_b` for `at_gun_emplacement`, `searchlight`,
+  `inflatable_decoy`, `heavy_flak_tower`, `laser_ad_station` (until then a branch wears its absorbed tower's model, or the
+  card's: `TowerArt.ModelFor`); `TowerBranchArtTests` skips these five until then. The AA tower's B branch is now the
+  Stinger post (its `aa_turret_b` SAM-pair model may want a Stinger launcher); the 57 mm branch lost its air role.
+- Unity: compile, `CatalogCheck`, card renders of the ten new branch ids; run `TowerRosterP32Tests`, `TargetMaskTests`,
+  `TowerRosterTests`, `TowerBranchTests`, `TowerCardTests`, `Prompt20TowersMapsTests`, `Prompt25NewContentTests`,
+  `Prompt25NewContentBTests`, `TowerBranchArtTests`, `TowerGearTests`, `BaseLayoutTests`, `BaseTests`.
+
+## Prompt 32 L2 (lead pass, 2026-10-02): rebuilds and prices
+
+- Unity: compile, CatalogCheck (balance.json: 60 rebuildCp, 5 outgoingDamageMult cuts, base.rebuild drop/enemyRadius/showdownCutoff/hqRescue); run TowerRebuildP32Tests, BaseTests, TowerGearTests, DefendLinesTests, BaseDefenceTests.
+- Play: the REBALANCE_STATS cuts (MG bunker x0.32, twin x0.27, flame x0.17, AA tower x0.58, flak x0.41) and the tap on a fallen slot with Auto-buy off; the steel fortress verdict (HOLD) for the owner.

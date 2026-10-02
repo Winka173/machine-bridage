@@ -700,11 +700,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: mang theo khi bộ bài có từ hai máy bay trở lên."),
             ["guide.logistics_station"] = (
                 "[[Logistics station]] · utility module\n" +
-                "How it fights: your army's supply grows by 8 CP before upkeep slows your income.\n" +
+                "How it fights: your army's supply grows by 8 CP: income drops only once the army is past its supply.\n" +
                 "Strong / weak: lets a big army keep its full income; nothing for a small one.\n" +
                 "Tip: take it when your deck is full of expensive vehicles.",
                 "[[Trạm hậu cần]] · mô-đun tiện ích\n" +
-                "Cách đánh: mức tiếp tế của quân ta tăng thêm 8 CP trước khi phí duy trì làm giảm thu nhập.\n" +
+                "Cách đánh: mức tiếp tế của quân ta tăng thêm 8 CP: thu nhập chỉ giảm khi quân vượt mức tiếp tế.\n" +
                 "Mạnh / yếu: cho đội quân lớn giữ nguyên thu nhập; vô ích với đội quân nhỏ.\n" +
                 "Mẹo: mang theo khi bộ bài toàn xe đắt tiền."),
             ["guide.radar_station"] = (

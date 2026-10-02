@@ -1,0 +1,16 @@
+{
+  "source": "Docs/prompts/prompt29_vi.txt, PHỤ LỤC PROMPT 29 (owner, 2026-10-02): B6-mask",
+  "rows": [
+    { "bundle_id": "B6-mask", "entity_id": "gun_100_river", "field_path": "weapons.gun_100_river.targets", "unit": "—", "value_type": "enum",
+      "known_good": null, "expected_before": "All", "new_value": "Ground", "tolerance": null,
+      "derivation": "A-190 100 mm (river gunboat): no second round reaches aircraft, so its mask is the ground", "status": "APPLY", "scope": "weapon",
+      "requires_code": false, "depends_on": null, "owner_decision_id": "P29-appendix", "validation": "TargetMaskTests", "reason": "the appendix", "source": "owner" },
+    { "bundle_id": "B6-mask", "entity_id": "gun_155_crusader", "field_path": "weapons.gun_155_crusader.targets", "unit": "—", "value_type": "enum",
+      "known_good": null, "expected_before": "All", "new_value": "Ground", "tolerance": null,
+      "derivation": "XM2001 155 mm (autoloading howitzer): no second round reaches aircraft, so its mask is the ground", "status": "APPLY", "scope": "weapon",
+      "requires_code": false, "depends_on": null, "owner_decision_id": "P29-appendix", "validation": "TargetMaskTests", "reason": "the appendix", "source": "owner" }
+  ],
+  "bundles": [
+    { "bundle_id": "B6-mask", "Đối tượng": "gun_100_river, gun_155_crusader", "Số dòng": 2, "Trạng thái": "APPLY", "Cần viết code": "Không", "depends_on": null }
+  ]
+}

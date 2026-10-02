@@ -130,7 +130,9 @@ namespace MachineBrigade.Tests
             economy.Cp = 20f;
             Assert.IsTrue(world.Submit(call).Accepted, "after it");
             Assert.AreEqual(20f - catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), economy.Cp, 0.5f, "for its price in CP");
-            Assert.AreEqual(4, catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), "a medium tower: 4 CP");
+            // Prompt 32 L2: each tower's own baseRebuildCP (Tools/balance/p32_tower_prices.py), within the medium band 5-11.
+            Assert.AreEqual(catalog.Vehicles["gun_turret"].BaseRebuildCp, catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), "its own price");
+            Assert.That(catalog.Base.RebuildCost(catalog.Vehicles["gun_turret"]), Is.InRange(5, 11), "a medium tower");
             Assert.Less(catalog.Base.RebuildCost(catalog.Vehicles["guard_tower"]), catalog.Base.RebuildCost(catalog.Vehicles["heavy_turret"]), "a light tower is cheaper to fly back");
             Assert.Less(catalog.Base.RebuildCooldown(catalog.Vehicles["guard_tower"]), catalog.Base.RebuildCooldown(catalog.Vehicles["heavy_turret"]), "and sooner");
             Run(world, catalog.Base.RebuildDelay + 0.5f);

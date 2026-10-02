@@ -152,7 +152,9 @@ namespace MachineBrigade.Tests
                     if (other.Id != row.Id) Assert.AreNotEqual(Strings.Card(other.Id), Strings.Card(row.Id), "a name of its own");
             }
             Strings.Vietnamese = false;
-            Assert.IsTrue(Progression.IsNewContent(row.Id) && Progression.Price(row.Id, catalog) > 0, "sold in the shop");
+            // Prompt 32 L1: a tower folded into another card or retired from the roster is no longer sold.
+            if (!CardMerges.TowerInto.ContainsKey(row.Id) && System.Array.IndexOf(CardMerges.RetiredTowers, row.Id) < 0)
+                Assert.IsTrue(Progression.IsNewContent(row.Id) && Progression.Price(row.Id, catalog) > 0, "sold in the shop");
             Assert.IsNull(Progression.UnlockMission(row.Id), "the shop is its one source");
             Assert.IsTrue(Progression.EnemyMayUse(row.Id), "the enemy may field it");
             if (def.Fort == null) CollectionAssert.Contains(MatchSettings.AllVehicles, row.Id);
