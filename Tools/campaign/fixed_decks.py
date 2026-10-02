@@ -50,7 +50,11 @@ RULES = {
     'behemothOurs': "the escorted Behemoth is Mara's, a placed ally (convoy): the escort's loss rule; it holds on the order Defend",
     'hawkWingman': "Hawk's fighter is a placed ally under the allied AI and the general order; MissionMode loses the mission if it falls",
     'maraBehemoth': "Mara's repainted Behemoth (mara_behemoth) is a placed ally under the allied AI and the general order",
+    'factoryAlarm': 'the factory_alarm event (prompt 31 L3): spotted, the mill gate shuts and the garrison comes',
 }
+
+# The rules that are a mission event (prompt 31 L3): the event must be in the mission.
+RULE_EVENTS = {'cityBlackout': 'city_blackout', 'factoryAlarm': 'factory_alarm', 'droneCanopy': 'drone_swarm', 'ceasefireFaction': 'ceasefire'}
 
 # The sheet's rules not in effect yet, and why (the report and DECISIONS list them).
 PENDING = {
@@ -178,6 +182,14 @@ DECKS = {
         replaced={},
         allies=[{'def': 'mara_behemoth', 'fallback': 'behemoth', 'x': -96, 'z': -88, 'heading': 45, 'name': 'behemoth_mara_repainted'}],
         rules=['maraBehemoth'], status='MAKE_LATER'),
+    # i1m01 (interlude I, the Foundry): infiltration with the pass 3 factory alarm. The sheet's three locked cards: loaned the
+    # radar scout (see first) and the EW jammer (stay unseen); recoilless_jeep -> rocket_technical (the owned light anti-tank).
+    'i1m01': dict(
+        vehicles=['scout_jeep', 'radar_scout', 'armored_car', 'rocket_technical', 'light_tank', 'smoke_carrier', 'ew_jammer', 'engineer_vehicle'],
+        supports=['smoke_screen', 'uav_scan'],
+        loaned=['radar_scout', 'ew_jammer'],
+        replaced={'recoilless_jeep': 'rocket_technical'},
+        rules=['factoryAlarm'], status='MAKE_LATER'),
 }
 
 
@@ -250,8 +262,11 @@ def check_mission(m, owned, defs, fail):
         fail(f'{mid}: deliveries land on the beach only: no outposts and no command vehicle')
     if 'trainPrep' in rules and not (deck.get('prepSeconds', 0) > 0 and m.get('boss', {}).get('route')):
         fail(f'{mid}: the train waits only with prepSeconds and a boss route')
-    if 'cityBlackout' in rules and not any((r if isinstance(r, str) else r.get('id')) == 'city_blackout' for r in m.get('missionEvents', [])):
-        fail(f'{mid}: the city blackout rule wants the city_blackout event')
+    # Prompt 31 L3/L4: a rule that is an event wants the event in the mission.
+    played = {(r if isinstance(r, str) else r.get('id')) for r in m.get('missionEvents', [])}
+    for rule_id, event_id in RULE_EVENTS.items():
+        if rule_id in rules and event_id not in played:
+            fail(f'{mid}: the rule {rule_id} wants the {event_id} event')
     if 'eliteRank' in rules and deck.get('rankBonus', 0) < 1:
         fail(f'{mid}: elite armour wants a rank bonus')
     # Prompt 31 L4: placed allies: a unit the catalog has (or its fallback), the convoy one the mission's own convoy.

@@ -2129,6 +2129,7 @@ namespace MachineBrigade.Game.Hud
             ["fixeddeck.ally.hawk_jet"] = ("{@dieuhau}'s fighter", "Tiêm kích của {@dieuhau}"),
             ["fixeddeck.rule.maraBehemoth"] = ("{@mai}'s Behemoth, repainted, fights beside us under the general order: on Attack it goes for the enemy HQ, on Defend it holds by our camp.", "Behemoth của {@mai}, đã sơn lại, chiến đấu bên ta theo lệnh chung: khi Tấn công nó nhắm vào sở chỉ huy địch, khi Phòng thủ nó giữ quanh căn cứ ta."),
             ["fixeddeck.ally.behemoth_mara_repainted"] = ("{@mai}'s Behemoth, repainted", "Behemoth của {@mai}, đã sơn lại"),
+            ["fixeddeck.rule.factoryAlarm"] = ("Get in unseen. If the enemy spots you, the alarm sounds: the mill gate shuts and the garrison comes.", "Lọt vào mà không bị phát hiện. Nếu địch thấy ta, còi báo động vang lên: cổng xưởng cán đóng lại và đồn binh kéo tới."),
             ["fixeddeck.rule.timedRecon"] = ("Against the clock: see each launcher, then pull out before Skygate turns its gun.", "Chạy đua với giờ: xem từng bệ phóng rồi rút trước khi Skygate quay pháo."),
             // Prompt 25 D2: story loot is never sold.
             ["deck.lockedLoot"] = ("{name}: story loot, won in mission {mission}. It is not for sale.",
