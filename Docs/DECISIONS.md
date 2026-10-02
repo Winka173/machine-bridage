@@ -17460,3 +17460,34 @@ Branch `feature/export-b`, 2026-10-03: layer B of files 01-04 and the code-const
   the co / khong suggestion is the scan's heuristic for the owner to review.
 - **TODO (lane C / lead):** wire `scan_constants.scan(repo.ROOT)` into d12 as sheet Hang_so_trong_ma (one row per item, id
   = `<file>:<line>:<col>`, columns from `COLUMNS`); no change to d12 made here.
+
+## Prompt 35 (rebuild stand-in and low-quality models, lane A, 2026-10-03)
+Pass 0 (inventory, no building):
+- Scope: the 230 GLBs a def, a tower branch or an HQ draws (scan_prep.model_owners); the other ~290 GLBs (props, scenery, rounds, `_hd` twins) are hashed for the overlap check but not scored: they are decoration.
+- Budgets: MODEL_STANDARD.md's ranges are higher than prompt 35's, so they stay (the higher standard). Floor = 70 % of the class minimum (a hard gate); over the maximum is information only (owner rule 02/10).
+- Shared geometry (a): triangle keys at 2 mm in model space plus per-piece unit-box keys (catches scaled or stretched copies); keys held by more than 6 model families are generic primitives and do not count; families = an id with its `_hd`, `_a`, `_b`, `_chute`, `_wreck` files. The borrower is the later GLB (first git add); a gold V2 model is always the original. Two models added in the same commit that share > 30 % are both listed (sibling builds of one builder).
+- Notes (b): unit_refs / unit_sheet "model tạm" and builder docstrings ("stand-in", "temporary", "placeholder"); DECISIONS mentions are mostly of stand-ins already replaced, so they are not a flag. Ixion is found this way (its sheet still says "model tạm"; its GLB has been its own since 27 wave 1a; the owner asks for a real rebuild, so it stays pilot 1).
+- Scripts (c): AST of every BUILDERS module in all_builders order; the winning builder calling another id's builder.
+- Grade for P1/P2/P3 = the lowest of the gate's soft grade, the pass 8 visual grade, and the hard checks (4+ parts missing or under the floor = Kém, other hard fails = Cần sửa). Result: P1 131, P2 85, P3 14; 30 borrowed.
+- Gold (5.3): the 4 V2 models + the top 10 % per class among pass 8 visual Tốt models, ranked by the mean percentile of their soft metrics (the soft score itself needs a gold first). Classes with no gold of their own: wheeled/ground -> tracked, air_other -> helicopter, ship -> boss, hq -> structure, obstacle -> structure.
+- Gate pictures are drawn in Python (glb_mesh.render: flat shaded, orthographic, 28.4 px/m battle view), so every model is measured the same way without Unity; silhouettes at 256 px on the long side so the ratio does not grow with model size. The in-game sheets stay the reviewer's pictures; "agent visual" is NA in the report unless a reviewer fills it.
+- One def draws another model by data (mara_behemoth -> behemoth, prompt 31's); giving it a model is a data change, so it goes to QUESTIONS.md.
+Pass 1 (kit library):
+- New module Tools/blender/mb_kit35.py, 70 components (general, tracked, wheeled, aircraft, helicopter, ship, rail, structures in two faction styles, boss parts) on the mb_kit27 primitives; prompt 27's mb_parts27 parts are wrapped (with their high-detail extras switched on) rather than copied. Tier 3 detail is always built (prompt 35 wants it at LOD0).
+- COLOR_0 effects the bake lacks (soot round muzzles / exhausts, local dust round wheels, a part tone for breakable boss parts) are applied by an instance-level finish() wrapper, so frontier_kit and every other builder are untouched. The bake already gives AO, the worn bevel rows and the ground grime.
+- Thin plates (skirts, ERA, doors, panels) get their chamfer through `plate` (mb_kit27.block leaves anything under 12 cm plain).
+- Unit tests: Tools/blender/tests/test_kit35.py (size, bevel, triangle ceiling, names, zero-area, COLOR_0 per component; run in Blender, 70/70). Catalogue picture: Docs/models/kit_catalog/kit35_catalog.png.
+- No mesh LOD1 / LOD2 in the GLBs: the runtime builds LOD1 (MeshSimplifier) and the impostor (MODEL_STANDARD section 1); tier 3 pieces are small separate pieces, the first the simplifier removes.
+Pass 2 (specs, the three pilots only):
+- Specs are JSON in Tools/blender/specs/ (ixion, zu23_technical, rocket_turret); `validate_specs.py` checks them against balance.json (weapons, barrels, flares, APS, boss parts) and, with --glb, against the built file (every named node, size within the tolerance).
+- A feature maps to a node name, not always a `Part_*` pivot: MODEL_STANDARD section 2 forbids a `Part_*` per feature (each is a draw and a shadow draw); `Part_*` stays for what breaks (boss parts, wreck wheels).
+- Pilot 2 = zu23_technical: no starter-deck vehicle (scout_jeep, armored_car, ifv, main_battle_tank) borrows geometry (ifv and the MBT are the originals their elites copy); zu23_technical is the first player card in REBUILD_LIST group 2 (chapter 1, Kém, 39 % shared with rocket_technical, under the triangle floor).
+- Pilot 3 = rocket_turret: no common tower borrows geometry from another tower type (only the walls and the barrage balloon share); rocket_turret is the first tower a player builds (chapter 1 unlock) and Kém. Its branches rocket_turret_a / _b keep their old builder until wave 1 (QUESTIONS.md).
+- Ixion's modelSize is x1.26 of the BelAZ-75710's length, under prompt 35's x1.3-1.5 for bosses: data kept (no gameplay change), asked in QUESTIONS.md. zu23 has no `barrels` (1 muzzle) although the ZU-23-2 is twin-barrelled: one Muzzle_main kept.
+Pass 3 (pilot, then STOP):
+- Ixion, zu23_technical, rocket_turret rebuilt in their own new scripts (mb_p35_*.py, registered last in all_builders before the wrappers; mb_p34_parts still adds the technical's wreck wheels). Runtime node names, materials Armor / Team and the data are unchanged; Ixion's pointer in balance.json stays `ixion`.
+- Up to 4 rounds each against the gate. zu23_technical passes (93.9). Ixion (79.7) and the rocket turret (79.6) pass every hard gate but end under 80 on detail density against dense gold sets: NEEDS_HUMAN (QUESTIONS.md 5), not padded further with meaningless pieces (prompt 35 section 1).
+- Rebuilt models drop their pass 8 visual grade in the gate (it was the old file's); "agent visual" stays NA until the owner or the lead reviews the in-game sheets.
+- Before / after pictures are Blender Workbench sheets (Tools/blender/render_angles.py + Tools/models/sheet.py, base colours from the glTF materials); the in-game shots are the lead's Unity run (ModelScan -mbScan "ixion,zu23_technical,rocket_turret").
+- Over-budget pilots kept (owner rule): 35.7k / 7.4k / 9.1k triangles.
+- build_assets is not byte-deterministic for any builder (old ones too): one index accessor's order changes run to run, geometry identical. Left for the owner (QUESTIONS.md 9).

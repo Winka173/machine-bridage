@@ -1,0 +1,223 @@
+{
+ "about": "prompt 35 section 5.3: class means of the gold set (quality_gate.compute_gold)",
+ "members": {
+  "air_other": [
+   "airborne_light_tank_chute"
+  ],
+  "boss": [
+   "armored_train",
+   "mega_gunship",
+   "nuke_train",
+   "rail_supergun",
+   "silver_bug"
+  ],
+  "helicopter": [
+   "attack_helicopter",
+   "scout_heli"
+  ],
+  "hq": [
+   "headquarters"
+  ],
+  "jet": [
+   "aerial_tanker",
+   "fighter_jet"
+  ],
+  "obstacle": [
+   "dragons_teeth_b",
+   "minefield"
+  ],
+  "structure": [
+   "targeting_station"
+  ],
+  "tower": [
+   "aa_turret_a",
+   "cp_relay",
+   "ew_tower",
+   "ew_tower_a",
+   "ew_tower_b",
+   "guard_tower",
+   "guard_tower_a"
+  ],
+  "tracked": [
+   "demolition_line_vehicle",
+   "main_battle_tank",
+   "siege_tank",
+   "titan_tank"
+  ],
+  "wheeled": [
+   "armored_car",
+   "grad_truck",
+   "scout_jeep",
+   "shahed_truck",
+   "towed_at_gun"
+  ]
+ },
+ "classes": {
+  "air_other": {
+   "silhouette": 2.7935,
+   "edges": 0.1015,
+   "regions": 2.1849,
+   "parts_m2": 0.2285,
+   "tier2_m2": 0.2875,
+   "tier3_m2": 0.1769,
+   "asym_raw": 0.0003,
+   "sloped_dirs": 11.0,
+   "zones": 7.0,
+   "count": 3
+  },
+  "boss": {
+   "silhouette": 1.605,
+   "edges": 0.1728,
+   "regions": 4.6505,
+   "parts_m2": 2.1627,
+   "tier2_m2": 1.7827,
+   "tier3_m2": 10.0812,
+   "asym_raw": 0.0208,
+   "sloped_dirs": 11.4,
+   "zones": 12.2,
+   "count": 33
+  },
+  "helicopter": {
+   "silhouette": 2.1247,
+   "edges": 0.3237,
+   "regions": 23.0087,
+   "parts_m2": 2.4265,
+   "tier2_m2": 1.7627,
+   "tier3_m2": 2.4798,
+   "asym_raw": 0.0866,
+   "sloped_dirs": 37.5,
+   "zones": 8.0,
+   "count": 7
+  },
+  "hq": {
+   "silhouette": 1.7995,
+   "edges": 0.1587,
+   "regions": 4.6253,
+   "parts_m2": 0.4386,
+   "tier2_m2": 0.7693,
+   "tier3_m2": 0.4822,
+   "asym_raw": 0.017,
+   "sloped_dirs": 5.0,
+   "zones": 21.0,
+   "count": 2
+  },
+  "jet": {
+   "silhouette": 1.4229,
+   "edges": 0.1756,
+   "regions": 6.3243,
+   "parts_m2": 0.8782,
+   "tier2_m2": 0.6461,
+   "tier3_m2": 1.358,
+   "asym_raw": 0.0213,
+   "sloped_dirs": 14.0,
+   "zones": 8.5,
+   "count": 17
+  },
+  "obstacle": {
+   "silhouette": 2.8624,
+   "edges": 0.2668,
+   "regions": 10.8253,
+   "parts_m2": 0.6442,
+   "tier2_m2": 0.7483,
+   "tier3_m2": 1.2274,
+   "asym_raw": 0.0146,
+   "sloped_dirs": 35.0,
+   "zones": 11.0,
+   "count": 14
+  },
+  "structure": {
+   "silhouette": 2.2097,
+   "edges": 0.1679,
+   "regions": 5.8474,
+   "parts_m2": 0.6153,
+   "tier2_m2": 1.0035,
+   "tier3_m2": 0.2564,
+   "asym_raw": 0.0336,
+   "sloped_dirs": 0.0,
+   "zones": 13.0,
+   "count": 4
+  },
+  "tower": {
+   "silhouette": 2.471,
+   "edges": 0.2964,
+   "regions": 12.3657,
+   "parts_m2": 0.9527,
+   "tier2_m2": 1.4165,
+   "tier3_m2": 0.6641,
+   "asym_raw": 0.0566,
+   "sloped_dirs": 12.7143,
+   "zones": 16.0,
+   "count": 62
+  },
+  "tracked": {
+   "silhouette": 1.4602,
+   "edges": 0.2718,
+   "regions": 9.5071,
+   "parts_m2": 0.3972,
+   "tier2_m2": 0.7283,
+   "tier3_m2": 0.3032,
+   "asym_raw": 0.0023,
+   "sloped_dirs": 7.5,
+   "zones": 8.0,
+   "count": 38
+  },
+  "wheeled": {
+   "silhouette": 1.6209,
+   "edges": 0.3343,
+   "regions": 14.9161,
+   "parts_m2": 0.7008,
+   "tier2_m2": 0.6315,
+   "tier3_m2": 0.476,
+   "asym_raw": 0.0418,
+   "sloped_dirs": 11.0,
+   "zones": 8.4,
+   "count": 43
+  }
+ },
+ "v2": {
+  "main_battle_tank": {
+   "silhouette": 1.3068,
+   "edges": 0.2743,
+   "regions": 9.2374,
+   "parts_m2": 0.4281,
+   "tier2_m2": 0.6616,
+   "tier3_m2": 0.2854,
+   "asym_raw": 0.0024,
+   "sloped_dirs": 8.0,
+   "zones": 8.0
+  },
+  "fighter_jet": {
+   "silhouette": 1.4455,
+   "edges": 0.229,
+   "regions": 9.8927,
+   "parts_m2": 0.8985,
+   "tier2_m2": 0.5814,
+   "tier3_m2": 1.5151,
+   "asym_raw": 0.0388,
+   "sloped_dirs": 12.0,
+   "zones": 9.0
+  },
+  "attack_helicopter": {
+   "silhouette": 2.2882,
+   "edges": 0.2678,
+   "regions": 16.8142,
+   "parts_m2": 1.5657,
+   "tier2_m2": 1.5657,
+   "tier3_m2": 2.0516,
+   "asym_raw": 0.0287,
+   "sloped_dirs": 23.0,
+   "zones": 9.0
+  },
+  "silver_bug": {
+   "silhouette": 1.3485,
+   "edges": 0.1301,
+   "regions": 2.8442,
+   "parts_m2": 1.6701,
+   "tier2_m2": 1.014,
+   "tier3_m2": 4.4834,
+   "asym_raw": 0.0173,
+   "sloped_dirs": 17.0,
+   "zones": 12.0
+  }
+ }
+}
