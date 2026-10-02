@@ -414,14 +414,14 @@
             "kind": "vehicle",
             "model": "microwave_vehicle",
             "source": "Models/microwave_vehicle",
-            "hash": "v2:f53a3d59838e4ad8c66dbb6b84520014a857b9aa"
+            "hash": "v2:cf4eca87966fa650ee6f6cc099b8f3e2cc146dfb"
         },
         {
             "id": "nlos_atgm_vehicle",
             "kind": "vehicle",
             "model": "nlos_atgm_vehicle",
             "source": "Models/nlos_atgm_vehicle",
-            "hash": "v2:b3a08b484dc04aec1d61d972e78e4014241cb931"
+            "hash": "v2:66f02ec02340d7fed32b91ea0db03e201ba81ab4"
         },
         {
             "id": "radar_atgm_vehicle",
@@ -435,7 +435,7 @@
             "kind": "vehicle",
             "model": "recoilless_jeep",
             "source": "Models/recoilless_jeep",
-            "hash": "v2:7f708601e9abd7b20696625543a4e609679db2b8"
+            "hash": "v2:687a08f9389a659f950dfec4dd32f27a42d70526"
         },
         {
             "id": "airborne_vehicle",
@@ -449,14 +449,14 @@
             "kind": "vehicle",
             "model": "wheeled_howitzer",
             "source": "Models/wheeled_howitzer",
-            "hash": "v2:7da71daa33468d3f14cbef7c0787f82ee74be42d"
+            "hash": "v2:94847d16d840a0ec66974ddf65e0cfe3bb02e4fb"
         },
         {
             "id": "sp_mortar",
             "kind": "vehicle",
             "model": "sp_mortar",
             "source": "Models/sp_mortar",
-            "hash": "v2:8eb3a5dffca2ab4c96ceefee04e221b1d55f92ba"
+            "hash": "v2:3a784f0ee6de6ec6c213b08c4ec2cdf0f732597d"
         },
         {
             "id": "glide_bomber",
@@ -484,7 +484,7 @@
             "kind": "vehicle",
             "model": "radar_scout",
             "source": "Models/radar_scout",
-            "hash": "v2:00abe0f96e29e1e6e52132b89e5047a189944385"
+            "hash": "v2:57d33fc6652994b13a0a43f36057a703863a087c"
         },
         {
             "id": "fibre_fpv_carrier",
@@ -498,7 +498,7 @@
             "kind": "vehicle",
             "model": "interceptor_drone_vehicle",
             "source": "Models/interceptor_drone_vehicle",
-            "hash": "v2:f8fdd372165358f884ba5fbd09364b7f7ed52264"
+            "hash": "v2:7a8cf33ac73d109748df86d5294bb1af9deb90b5"
         },
         {
             "id": "aa_57mm_vehicle",
@@ -781,6 +781,20 @@
             "hash": "v2:ee7ca6727c044da80df7cb620c0df323c785cdb9"
         },
         {
+            "id": "at_gun_emplacement.long",
+            "kind": "tower",
+            "model": "at_gun_emplacement",
+            "source": "Models/at_gun_emplacement",
+            "hash": "v2:ee7ca6727c044da80df7cb620c0df323c785cdb9"
+        },
+        {
+            "id": "at_gun_emplacement.recoilless",
+            "kind": "tower",
+            "model": "recoilless_gun_tower",
+            "source": "Models/recoilless_gun_tower",
+            "hash": "v2:add16423bd530cf7d98295044765baf0a09f52bc"
+        },
+        {
             "id": "atgm_tower",
             "kind": "tower",
             "model": "atgm_tower",
@@ -926,20 +940,6 @@
             "model": "cp_relay",
             "source": "Models/cp_relay",
             "hash": "v2:ff5026bf113c5395d8f129635dd6ef1d90b8bbb8"
-        },
-        {
-            "id": "cp_relay.hardened",
-            "kind": "tower",
-            "model": "cp_relay_a",
-            "source": "Models/cp_relay_a",
-            "hash": "v2:915d1498e8176b97a62a468e4129609cff6e1c73"
-        },
-        {
-            "id": "cp_relay.loot",
-            "kind": "tower",
-            "model": "cp_relay_b",
-            "source": "Models/cp_relay_b",
-            "hash": "v2:018ba6297f1e2d048cd6b235866f307ca5f245f5"
         },
         {
             "id": "daedalus",
@@ -1135,7 +1135,7 @@
             "kind": "tower",
             "model": "fire_control_centre",
             "source": "Models/fire_control_centre",
-            "hash": "v2:87ed744d92eae467bdef515ddc31530c61204325"
+            "hash": "v2:7de8ac5fec5537001491b74a8d89ce9823667db2"
         },
         {
             "id": "flare_searchlight_tower",
@@ -1149,7 +1149,7 @@
             "kind": "tower",
             "model": "flare_tower",
             "source": "Models/flare_tower",
-            "hash": "v2:f4b6f34c9cd94090e9016b5ed0413c6915838c3d"
+            "hash": "v2:80677ccf5a5377b558c778f08ca803b7bd4da605"
         },
         {
             "id": "fortress_bastion",
@@ -1222,11 +1222,46 @@
             "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
         },
         {
+            "id": "headquarters.fortress_air",
+            "kind": "tower",
+            "model": "headquarters",
+            "source": "Models/headquarters",
+            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+        },
+        {
+            "id": "headquarters.fortress_ground",
+            "kind": "tower",
+            "model": "headquarters",
+            "source": "Models/headquarters",
+            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+        },
+        {
+            "id": "headquarters.shield",
+            "kind": "tower",
+            "model": "headquarters",
+            "source": "Models/headquarters",
+            "hash": "v2:a2f32cdfd12de167b67f01b8b0fdc8c1416591d7"
+        },
+        {
             "id": "heavy_flak_tower",
             "kind": "tower",
             "model": "heavy_flak_tower",
             "source": "Models/heavy_flak_tower",
-            "hash": "v2:c14c2d3651ff6a8a9675098e0b5ff71a045848e8"
+            "hash": "v2:477a2e98bddf6fbcea1520d3d3cfce8838d554c0"
+        },
+        {
+            "id": "heavy_flak_tower.bofors",
+            "kind": "tower",
+            "model": "aa_gun_tower",
+            "source": "Models/aa_gun_tower",
+            "hash": "v2:1025a648efa86c1a0f59d2dc0ae2a29a4aad7e0a"
+        },
+        {
+            "id": "heavy_flak_tower.heavy",
+            "kind": "tower",
+            "model": "heavy_flak_tower",
+            "source": "Models/heavy_flak_tower",
+            "hash": "v2:477a2e98bddf6fbcea1520d3d3cfce8838d554c0"
         },
         {
             "id": "heavy_turret",
@@ -1278,6 +1313,20 @@
             "hash": "v2:2f9256e8cc4d8481c58a921bed6a51861330bb33"
         },
         {
+            "id": "inflatable_decoy.balloon",
+            "kind": "tower",
+            "model": "barrage_balloon",
+            "source": "Models/barrage_balloon",
+            "hash": "v2:404de02388fa9cc7ed304890e1b38770af16173d"
+        },
+        {
+            "id": "inflatable_decoy.inflatable",
+            "kind": "tower",
+            "model": "inflatable_decoy",
+            "source": "Models/inflatable_decoy",
+            "hash": "v2:2f9256e8cc4d8481c58a921bed6a51861330bb33"
+        },
+        {
             "id": "ixion",
             "kind": "boss",
             "model": "ixion",
@@ -1310,7 +1359,21 @@
             "kind": "tower",
             "model": "laser_ad_station",
             "source": "Models/laser_ad_station",
-            "hash": "v2:8fb49d9b6d2ed1a49ffcd65332ad23c7c6cc76b3"
+            "hash": "v2:f57ab879dae6dd8d9b6e8c9f3dae80774b4a0049"
+        },
+        {
+            "id": "laser_ad_station.laser",
+            "kind": "tower",
+            "model": "laser_ad_station",
+            "source": "Models/laser_ad_station",
+            "hash": "v2:f57ab879dae6dd8d9b6e8c9f3dae80774b4a0049"
+        },
+        {
+            "id": "laser_ad_station.net",
+            "kind": "tower",
+            "model": "drone_net_tower",
+            "source": "Models/drone_net_tower",
+            "hash": "v2:be0fd908bd68f5aec5da84658b4ebac70fd5c4b2"
         },
         {
             "id": "leviathan",
@@ -1374,20 +1437,6 @@
             "model": "minefield",
             "source": "Models/minefield",
             "hash": "v2:e4df1b826752f245e85bb93d4c5cccb4e517f747"
-        },
-        {
-            "id": "minefield.at",
-            "kind": "tower",
-            "model": "minefield_a",
-            "source": "Models/minefield_a",
-            "hash": "v2:0320f7c223203456195eaeeff1fb32aee6fe0ab5"
-        },
-        {
-            "id": "minefield.scatter",
-            "kind": "tower",
-            "model": "minefield_b",
-            "source": "Models/minefield_b",
-            "hash": "v2:efa42b24d693cd2dc7c7c78155970325d37ca94a"
         },
         {
             "id": "missile_battery",
@@ -1464,7 +1513,7 @@
             "kind": "tower",
             "model": "radar_site",
             "source": "Models/radar_site",
-            "hash": "v2:f9b207957c03a206e195a341aaa6db54fbd8b224"
+            "hash": "v2:fe77900b60f979e44237a72e6fbdcdf2d6837367"
         },
         {
             "id": "rail_supergun",
@@ -1485,7 +1534,7 @@
             "kind": "tower",
             "model": "repair_bay",
             "source": "Models/repair_bay",
-            "hash": "v2:8f655c8c13a4f9ad7ed4f52fbcb1b71b22b7f4bd"
+            "hash": "v2:ed3e45c9d1b691dcebcdfc59297e652a6db7ba05"
         },
         {
             "id": "rocket_turret",
@@ -1521,6 +1570,20 @@
             "model": "searchlight",
             "source": "Models/searchlight",
             "hash": "v2:0e8dfed14976c2dbdae9ac3fb2204d3cd584f0a7"
+        },
+        {
+            "id": "searchlight.beam",
+            "kind": "tower",
+            "model": "searchlight",
+            "source": "Models/searchlight",
+            "hash": "v2:0e8dfed14976c2dbdae9ac3fb2204d3cd584f0a7"
+        },
+        {
+            "id": "searchlight.flare",
+            "kind": "tower",
+            "model": "flare_tower",
+            "source": "Models/flare_tower",
+            "hash": "v2:80677ccf5a5377b558c778f08ca803b7bd4da605"
         },
         {
             "id": "shield_tower",
@@ -1597,7 +1660,7 @@
             "kind": "tower",
             "model": "troop_shelter",
             "source": "Models/troop_shelter",
-            "hash": "v2:16c021eac5a5c291a2cdd7334aa67160a39a7369"
+            "hash": "v2:b752a66e4129548f54f3fa75f0b466cda5914cf8"
         },
         {
             "id": "typhon",
@@ -1611,7 +1674,7 @@
             "kind": "tower",
             "model": "visual_jammer",
             "source": "Models/visual_jammer",
-            "hash": "v2:c5bee2a5f7825cdaf8bbddad3b546184b3e27c7d"
+            "hash": "v2:2ad7ce66b74030258394eb0d6aaae28501850918"
         },
         {
             "id": "uav_loiter_strike_support",

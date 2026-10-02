@@ -12,6 +12,10 @@ LOD0 = the normal GLB (every platform loads it; phones only load this one). The 
 carry up to 2.4 x the class maximum (BUDGETS.md's median `_hd` / normal ratio). The scorer reports it but does not
 grade on it.
 
+**Owner rule (02/10): a model over its budget is kept.** Budgets are a guide, not a cap; the scorer reports
+over-budget as information only and never grades a model down or cuts it for that (DECISIONS "Owner: over-budget
+models are fine").
+
 | class (scorer) | what | LOD0 triangles |
 |---|---|---|
 | light | wheeled and other light vehicles (trucks, cars, APCs on wheels) | 3,000-5,000 |
