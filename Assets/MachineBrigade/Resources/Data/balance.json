@@ -835,7 +835,7 @@
     // Campaign bosses.
     { "id": "gun_behemoth", "weaponFamilyId": "cal_152_155", "real": "2A65 152 mm (twin)", "family": "howitzer", "size": 152,      "pen": 3, "damageType": "HighExplosive", "damage": 320, "cooldown": 8.93,  "range": 40, "projectileSpeed": 150, "splash": 6.5, "spread": 0.8, "impactTier": "Huge", "burst": 2, "burstInterval": 0.05 },
     { "id": "boss_howitzer", "weaponFamilyId": "cal_203", "real": "2A44 203 mm", "family": "howitzer", "size": 203,     "pen": 4, "projectileModel": "shell_155", "projectileScale": 0.9455, "roundLength": 1.04, "damageType": "HighExplosive", "damage": 420, "cooldown": 9.44,  "range": 60, "projectileSpeed": 60, "splash": 8, "spread": 3, "impactTier": "Huge" },
-    { "id": "boss_rockets", "weaponFamilyId": "rkt_grad_122", "real": "BM-21 Grad 122 mm", "family": "rocket", "size": 122,      "pen": 2, "projectileModel": "grad", "damageType": "HighExplosive", "damage": 57,  "cooldown": 2.94,    "range": 45, "projectileSpeed": 45, "splash": 4.5, "spread": 5, "impactTier": "Medium", "projectile": "Rocket", "burst": 13, "burstInterval": 0.5 },
+    { "id": "boss_rockets", "weaponFamilyId": "rkt_grad_122", "edge": 9, "real": "BM-21 Grad 122 mm", "family": "rocket", "size": 122,      "pen": 2, "projectileModel": "grad", "damageType": "HighExplosive", "damage": 200,  "cooldown": 25.37,    "range": 45, "projectileSpeed": 45, "splash": 4.5, "spread": 5, "impactTier": "Medium", "projectile": "Rocket", "burst": 13, "burstInterval": 0.5 },
     { "id": "boss_missiles", "weaponFamilyId": "atgm_kornet", "weaponFamily": "9m133_kornet", "real": "9M133 Kornet", "family": "atgm", "size": 29,     "pen": 4, "piercing": true, "damageType": "ShapedCharge", "damage": 230, "cooldown": 6.39,    "range": 45, "impactTier": "Medium", "projectile": "Missile", "targets": "Ground" },
     { "id": "p26_bastion_b155", "inherits": "casemate_155", "weaponFamily": "", "real": "M284 155 mm (Bastion)", "damage": 540, "cooldown": 2, "burst": 1, "splash": 8.5, "edge": 17, "pen": 4 },
     { "id": "p26_bastion_b240", "inherits": "boss_mortar", "weaponFamily": "", "real": "2B8 240 mm", "damage": 750, "cooldown": 5, "splash": 10, "edge": 20 },
@@ -848,7 +848,7 @@
     { "id": "p26_bastion_tiny_kornet_twin", "inherits": "kornet_twin", "weaponFamily": "", "damage": 46 },
     { "id": "p26_bastion_tiny_zu23", "inherits": "zu23", "damage": 1.4 },
     { "id": "p26_behemoth_be152", "inherits": "gun_behemoth", "real": "2A65 152 mm", "damage": 590, "cooldown": 2, "burst": 1, "splash": 8.5, "edge": 17 },
-    { "id": "p26_behemoth_be_rockets", "inherits": "boss_rockets", "real": "BM-21 Grad 122 mm (dorsal)", "damage": 160, "burst": 8, "burstInterval": 0.3, "cooldown": 5.9, "splash": 5, "edge": 10 },
+    { "id": "p26_behemoth_be_rockets", "inherits": "boss_rockets", "damageType": "HighExplosive", "projectileSpeed": 45, "real": "BM-21 Grad 122 mm (dorsal)", "damage": 160, "burst": 8, "burstInterval": 0.3, "cooldown": 5.9, "splash": 5, "edge": 10 },
     { "id": "p26_behemoth_be120", "inherits": "gun_120mm", "weaponFamily": "", "real": "Rh-120 L/44 120 mm", "damage": 260, "cooldown": 4, "pen": 5, "splash": 0 },
     { "id": "p26_behemoth_main_be152", "inherits": "p26_behemoth_be152", "cooldown": 1.846, "edge": 14, "splash": 7, "damage": 600 },
     { "id": "p26_behemoth_sec_be_rockets", "inherits": "p26_behemoth_be_rockets", "edge": 9, "splash": 4.5, "cooldown": 3.131, "damage": 200 },
@@ -858,7 +858,7 @@
     { "id": "p26_behemoth_tiny_boss_missiles", "inherits": "boss_missiles", "cooldown": 31.95, "weaponFamily": "", "damage": 230 },
     { "id": "p26_behemoth_tiny_kornet_twin", "inherits": "kornet_twin", "cooldown": 54.95, "weaponFamily": "", "damage": 230 },
     { "id": "p26_jotunn_jo203", "inherits": "boss_howitzer", "real": "2A44 203 mm", "damage": 900, "cooldown": 5.696, "splash": 8.5, "edge": 17 },
-    { "id": "p26_jotunn_jo_rockets", "inherits": "boss_rockets", "weaponFamilyId": "rkt_smerch_300", "real": "BM-30 Smerch 300 mm (pod)", "size": 300, "damage": 110, "burst": 8, "burstInterval": 0.3, "cooldown": 7.9, "splash": 5, "edge": 10 },
+    { "id": "p26_jotunn_jo_rockets", "inherits": "boss_rockets", "weaponFamilyId": "rkt_smerch_300", "damageType": "HighExplosive", "projectileSpeed": 45, "real": "BM-30 Smerch 300 mm (pod)", "size": 300, "damage": 110, "burst": 8, "burstInterval": 0.3, "cooldown": 7.9, "splash": 5, "edge": 10 },
     { "id": "p26_jotunn_jo125", "inherits": "gun_120mm", "weaponFamilyId": "cal_125_ap", "weaponFamily": "", "real": "2A46 125 mm", "size": 125, "damage": 280, "cooldown": 2, "pen": 5, "splash": 0, "range": 38 },
     { "id": "p26_jotunn_sec_jo_rockets", "inherits": "p26_jotunn_jo_rockets", "edge": 16, "splash": 8, "cooldown": 31.68, "damage": 450 },
     { "id": "p26_jotunn_direct_jo125", "inherits": "p26_jotunn_jo125", "cooldown": 3.448, "damage": 400 },
@@ -915,7 +915,7 @@
     { "id": "p26_icarus_direct_ic_laser", "inherits": "p26_icarus_ic_laser", "damage": 16 },
     { "id": "p26_icarus_close_autocannon_40", "inherits": "autocannon_40", "damage": 56 },
     { "id": "boss_flak", "weaponFamilyId": "cal_35", "weaponFamily": "oerlikon_35_mm", "real": "Oerlikon 35 mm (twin)", "family": "autocannon", "size": 35,         "pen": 2, "damageType": "Fragmentation",          "damage": 25,  "cooldown": 0.05,  "range": 40, "spread": 1.5, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 41, "clipReload": 3.38 },
-    { "id": "train_gun", "weaponFamilyId": "cal_152_155", "weaponVariantId": "ap", "real": "B-38 152 mm", "family": "tank_gun", "size": 152,         "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 320, "cooldown": 5.11,  "range": 42, "projectileSpeed": 170, "splash": 2.5, "spread": 0.6, "impactTier": "Large" },
+    { "id": "train_gun", "weaponFamilyId": "cal_152_155", "weaponVariantId": "ap", "real": "B-38 152 mm", "family": "tank_gun", "size": 152,         "pen": 4, "piercing": true, "damageType": "Kinetic", "damage": 600, "cooldown": 9.581,  "range": 42, "projectileSpeed": 170, "splash": 2.5, "spread": 0.6, "impactTier": "Large" },
     { "id": "agl_40", "weaponFamilyId": "gl_40", "weaponFamily": "mk_19_40_mm", "real": "Mk 19 40 mm", "family": "grenade", "size": 40, "pen": 2, "damageType": "HighExplosive", "damage": 26, "cooldown": 3.2, "range": 30, "spread": 2.2, "impactTier": "Small", "projectile": "Bullet", "burst": 6, "burstInterval": 0.2 },
     { "id": "tower_agl", "weaponFamily": "mk_19_40_mm", "real": "Mk 19 40 mm", "family": "grenade", "size": 40, "pen": 2, "inherits": "agl_40", "cooldown": 4.3 },
     { "id": "guided_bomb", "weaponFamilyId": "bomb_gbu_39_sdb", "load": 2, "real": "GBU-39 SDB (110 kg)", "family": "bomb", "size": 110, "pen": 3, "form": "GuidedBomb", "projectileModel": "gbu39", "projectileScale": 0.4091, "roundLength": 0.9, "damageType": "HighExplosive", "damage": 210, "cooldown": 6.651, "range": 30, "projectileSpeed": 40, "splash": 4, "spread": 1, "impactTier": "Large", "projectile": "Bomb", "roundWeight": 297 },
@@ -945,7 +945,7 @@
     // so its rounds are light to keep the damage it did; boss_hmg is the roof gun for the bosses.
     { "id": "boss_heli_gun", "weaponFamily": "m230_30_mm", "real": "M230 30 mm", "family": "autocannon", "size": 30,     "pen": 2, "inherits": "heli_gun", "cooldown": 0.1667, "clip": 40, "clipReload": 3.1667 },
     { "id": "boss_minigun", "real": "GShG 7.62 mm", "family": "mg", "size": 7.62,      "pen": 0, "inherits": "minigun", "cooldown": 0.0172, "roundWeight": 7, "clip": 40, "clipReload": 6.09 },
-    { "id": "boss_hmg", "weaponFamily": "nsv_12_7_mm", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,          "pen": 1, "inherits": "hmg_roof", "cooldown": 0.0833, "clip": 100, "clipReload": 5.0833 },
+    { "id": "boss_hmg", "weaponFamily": "nsv_12_7_mm", "real": "NSV 12.7 mm", "family": "mg", "size": 12.7,          "pen": 1, "inherits": "hmg_roof", "damage": 15, "cooldown": 0.0833, "clip": 100, "clipReload": 12.8 },
     { "id": "hover_ciws", "weaponFamilyId": "cal_30", "weaponFamily": "ak_630_30_mm", "real": "AK-630 30 mm", "family": "autocannon", "size": 30,        "pen": 2, "damageType": "Kinetic", "damage": 12, "cooldown": 0.0167, "range": 34, "spread": 1.3, "impactTier": "Small", "projectile": "Bullet", "targets": "All", "clip": 60, "clipReload": 5.0167 },
     // Prompt 16: Leviathan's main battery (its salvos are the naval system's: "laid", the turrets never pick a
     // target of their own), its cruise missiles (drawn only), the corvettes' 76 mm, the attack boats'
