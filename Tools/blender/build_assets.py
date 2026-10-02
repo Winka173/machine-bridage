@@ -150,6 +150,8 @@ def all_builders():
     builders.update({k: v for k, v in mb_round6.BUILDERS.items() if k.endswith('_hd')})
     # Prompt 25 B2 part 2's own high-detail variants (attack_jet_hd) over round 6's.
     builders.update({k: v for k, v in mb_p25_models2.BUILDERS.items() if k.endswith('_hd')})
+    # Prompt 27 wave 4b: attack_jet_hd on the V2 parts (nozzle, canopy frame) over the old one.
+    builders.update({k: v for k, v in mb_p27_wave4.BUILDERS.items() if k.endswith('_hd')})
     return builders
 
 

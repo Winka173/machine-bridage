@@ -23,17 +23,18 @@ FLARE_EFFECT = "flare_burst: 2 x 4 bright points fanning down and out, big aircr
 APS_EFFECT = "aps_intercept: a 0.1 s tracer from the cassette to the round, a small flash at the meeting point"
 
 
-def flare_tubes(a, parent, x, y, z, s, count=4, gap=.06, r=.03, depth=.12):
-    """One row of flare dispenser tubes on side s (+1 right, -1 left) at (x, y, z), pointing down and out."""
-    part = a.part('Part_flares', 'Armor', parent)
-    k.block(part, ((count - 1) * gap + r * 3, r * 2.6, .04), loc=(s * x, y + (count - 1) * gap / 2, z + r * 1.2), chamfer=0)
+def flare_tubes(a, parent, x, y, z, s, count=4, gap=.06, r=.03, depth=.12, seg=8):
+    """One row of flare dispenser tubes on side s (+1 right, -1 left) at (x, y, z), pointing down and out. The nodes are
+    `Flares` / `Flares_glow`, deliberately not `Part_*`: the runtime reads `Part_<letters>` as a separate part."""
+    part = a.part('Flares', 'Armor', parent)
+    k.block(part, (r * 2.6, (count - 1) * gap + r * 3, .04), loc=(s * x, y + (count - 1) * gap / 2, z + r * 1.2), chamfer=0)
     h = depth / 2
     for i in range(count):
         k.lathe(part, [(r, -h), (r * 1.08, h), (r * .7, h), (r * .7, h - .03), (0, h - .03)],
-                loc=(s * x, y + i * gap, z), rot=(2.4, 0, s * .5), seg=8, worn=(1,))
-    glow = a.part('Part_flares_glow', 'TeamGlow', parent)
+                loc=(s * x, y + i * gap, z), rot=(2.4, 0, s * .5), seg=seg, worn=(1,))
+    glow = a.part('Flares_glow', 'TeamGlow', parent)
     for i in range(count):
-        k.lathe(glow, [(r * .6, 0), (0, .002)], loc=(s * x, y + i * gap, z - h + .012), rot=(2.4, 0, s * .5), seg=8)
+        k.lathe(glow, [(r * .6, 0), (0, .002)], loc=(s * x, y + i * gap, z - h + .012), rot=(2.4, 0, s * .5), seg=min(seg, 6))
 
 
 def aps_cluster(a, parent, x, y, z, cassettes=2):

@@ -161,11 +161,11 @@
   },
   "attack_jet": {
     "file": "attack_jet.glb",
-    "triangles": 2376
+    "triangles": 2732
   },
   "attack_jet_hd": {
     "file": "attack_jet_hd.glb",
-    "triangles": 2520
+    "triangles": 3800
   },
   "auto_loader_howitzer": {
     "file": "auto_loader_howitzer.glb",
@@ -637,7 +637,7 @@
   },
   "glide_bomber": {
     "file": "glide_bomber.glb",
-    "triangles": 1128
+    "triangles": 1624
   },
   "gmlrs": {
     "file": "gmlrs.glb",
@@ -689,7 +689,7 @@
   },
   "gunship_heli": {
     "file": "gunship_heli.glb",
-    "triangles": 4692
+    "triangles": 4660
   },
   "hangar": {
     "file": "hangar.glb",
@@ -709,7 +709,7 @@
   },
   "heavy_bomber": {
     "file": "heavy_bomber.glb",
-    "triangles": 2596
+    "triangles": 3540
   },
   "heavy_flak_tower": {
     "file": "heavy_flak_tower.glb",
@@ -1269,7 +1269,7 @@
   },
   "scout_heli": {
     "file": "scout_heli.glb",
-    "triangles": 2626
+    "triangles": 2602
   },
   "scout_jeep": {
     "file": "scout_jeep.glb",
@@ -1381,7 +1381,7 @@
   },
   "stealth_fighter": {
     "file": "stealth_fighter.glb",
-    "triangles": 2984
+    "triangles": 3336
   },
   "stealth_naval_strike": {
     "file": "stealth_naval_strike.glb",
@@ -1433,7 +1433,7 @@
   },
   "swarm_carrier": {
     "file": "swarm_carrier.glb",
-    "triangles": 3512
+    "triangles": 3464
   },
   "tank_buster": {
     "file": "tank_buster.glb",

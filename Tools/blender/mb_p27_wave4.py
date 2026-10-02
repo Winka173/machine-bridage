@@ -3,10 +3,15 @@ build_assets.all_builders() after mb_p27_wave3. Same models as before: every run
 proportion kept (see Docs/models/WAVES_4_6_PLAN.md and WAVE3_PLAN.md's standing brief). Lane A of the two-lane plan; the
 tower builders live in mb_p27_wave6.py.
 
+Pass 4b (jets, checkpoint 1): k.clean on the old builders; the library nozzle and canopy only in attack_jet_hd;
+the prompt 29 flare tubes (Flares / Flares_glow nodes, not runtime parts) on attack_jet (+hd), heavy_bomber,
+stealth_fighter and glide_bomber.
+
 Pass 4a: scout_heli, gunship_heli, elite_attack_helicopter (on the V2 Apache), swarm_carrier, recon_drone, strike_drone,
 wingman_drone, drop_pod. The prompt 29 5.5 flare tubes (mb_p29_details.flare_tubes) are on the FLARE models of the pass
 (scout_heli, gunship_heli, swarm_carrier).
 """
+import functools
 import math
 
 from mathutils import Vector
@@ -15,6 +20,8 @@ import mb_detail as hd
 import mb_kit27 as k
 import mb_p25_models as p25
 import mb_p25_models2 as m2
+import mb_p25_new as pn
+import mb_pt9_models as pt9
 import mb_p27_experiment as exp
 import mb_p29_details as p29
 import mb_parts27 as parts
@@ -29,6 +36,13 @@ def _flares(a, name, x, y, z, count=4, gap=.06, r=.03, depth=.12, rows_dy=.5):
     for row in range(p29.FLARE_MODELS[name]):
         for s in (-1, 1):
             p29.flare_tubes(a, None, x, y + row * rows_dy, z, s, count=count, gap=gap, r=r, depth=depth)
+
+
+def _rows(a, name, rows, **kw):
+    """One flare row per (x, y, z) in `rows` on each side (the count comes from p29.FLARE_MODELS[name])."""
+    for x, y, z in rows[:p29.FLARE_MODELS[name]]:
+        for s in (-1, 1):
+            p29.flare_tubes(a, None, x, y, z, s, **kw)
 
 
 def _barrel(part, x, y, z, length, r, seg=6):
@@ -348,9 +362,65 @@ def drop_pod(a):
     k.clean(a)
 
 
+# ============================================================================= jets (checkpoint 1: k.clean only)
+def _hd_canopy_nozzles(a):
+    """attack_jet_hd: the old dome canopy and exhaust rings swapped for the library's framed canopy with bows and the
+    turned afterburner nozzles (same nodes: Canopy, Canopy_frames, Exhaust_glow, Nozzles)."""
+    for key in (('Canopy', 'Glass', None), ('Exhaust_glow', 'Alloy', None)):
+        a.shapes[key].bm.clear()
+    parts.canopy(a.part('Canopy', 'Glass'), a.part('Canopy_frames', 'Armor'),
+                 [_dome(y, w, z0, z1, 9) for y, w, z0, z1 in
+                  ((-1.95, .12, .18, .3), (-1.6, .22, .24, .5), (-1.1, .22, .28, .5), (-.8, .14, .3, .38))],
+                 sill=.035, bows=(1, 2), bow_r=.02)
+    for s in (-1, 1):
+        parts.jet_nozzle(a, s * .52, 1.45, -.12, .2, .36, seg=10)
+
+
+def attack_jet(a, detail=False):
+    """Attack jet (m2.attack_jet, the old airframe), flare tubes on the rear fuselage and k.clean; the high-detail twin
+    also has the library canopy frame and nozzles."""
+    m2.attack_jet(a, detail=detail)
+    if detail:
+        _hd_canopy_nozzles(a)
+    _rows(a, 'attack_jet', [(.27, 1.9, -.02)], count=3, gap=.07, r=.022, depth=.09, seg=6)
+    k.clean(a)
+
+
+def heavy_bomber(a):
+    """Heavy bomber (m2.heavy_bomber) with two flare rows a side on the rear fuselage and k.clean."""
+    m2.heavy_bomber(a)
+    _rows(a, 'heavy_bomber', [(.86, 5.6, .1), (.68, 7.0, .1)], count=4, gap=.12, r=.045, depth=.16, seg=6)
+    k.clean(a)
+
+
+def stealth_fighter(a):
+    """Stealth fighter (m2.stealth_fighter) with a flare row a side on the upper rear fuselage and k.clean."""
+    m2.stealth_fighter(a)
+    f = 7.6 / 18.36
+    _rows(a, 'stealth_fighter', [(.5 * f, 4.0 * f, pt9._sj_top(4.0, .5) * f - .015)], count=3, gap=.06, r=.02, depth=.08, seg=6)
+    k.clean(a)
+
+
+def glide_bomber(a):
+    """Glide bomber (p25.glide_bomber) with two flare rows a side behind the engine nacelles and k.clean."""
+    pn.glide_bomber(a)
+    _rows(a, 'glide_bomber', [(.42, 3.1, .12), (.42, 3.65, .12)], count=2, gap=.12, r=.04, depth=.14, seg=6)
+    k.clean(a)
+
+
+def _cleaned(build):
+    def wrapped(a):
+        build(a)
+        k.clean(a)
+    wrapped.__doc__ = f'{build.__name__} (old airframe) with k.clean, the jet rule of wave 4.'
+    return wrapped
+
+
 def _opts(name):
     if name == 'swarm_carrier':
         return p25.BUILDERS[name][1]
+    if name in pn.BUILDERS:
+        return pn.BUILDERS[name][1]
     if name == 'drop_pod':
         import mb_orbital
         return mb_orbital.BUILDERS[name][1]
@@ -363,8 +433,17 @@ BUILDERS = {
     'elite_attack_helicopter': (m2._elite_on(_elite_apache_v2, glow=('Sensor',), scale=1.1),
                                 _opts('elite_attack_helicopter')),
     'swarm_carrier': (swarm_carrier, _opts('swarm_carrier')),
-    'recon_drone': (recon_drone, dict(_opts('recon_drone'), ao_strength=.65)),
+    'recon_drone': (recon_drone, dict(_opts('recon_drone'), ao_strength=.3)),
     'strike_drone': (strike_drone, dict(_opts('strike_drone'), ao_strength=.65)),
     'wingman_drone': (wingman_drone, dict(_opts('wingman_drone'), ao_strength=.65)),
     'drop_pod': (drop_pod, dict(_opts('drop_pod'), ao_strength=.65)),
+    # Pass 4b
+    'attack_jet': (attack_jet, dict(_opts('attack_jet'), ao_strength=.8)),
+    'attack_jet_hd': (functools.partial(attack_jet, detail=True), dict(_opts('attack_jet_hd'), ao_strength=0.8)),
+    'heavy_bomber': (heavy_bomber, dict(_opts('heavy_bomber'), ao_strength=0.7)),
+    'stealth_bomber': (_cleaned(m2.stealth_bomber), dict(_opts('stealth_bomber'), ao_strength=0.8)),
+    'stealth_fighter': (stealth_fighter, _opts('stealth_fighter')),
+    'glide_bomber': (glide_bomber, dict(_opts('glide_bomber'), ao_strength=0.3)),
+    'recon_jet': (_cleaned(pn.recon_jet), dict(_opts('recon_jet'), ao_strength=0.85)),
+    'airborne_vehicle_chute': (_cleaned(pn.airborne_vehicle_chute), _opts('airborne_vehicle_chute')),
 }
