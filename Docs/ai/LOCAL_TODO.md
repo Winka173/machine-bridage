@@ -144,3 +144,9 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile, CatalogCheck (balance.json economy.startCp, openingSquads; 100 map files gained "start": true on their generic units); run OpeningSquadP32Tests, QuickModeTests, ConquestBattleTests' set-up, DefendModeTests, BossRushTests, CampaignStartTests (start CP x 1.16 may move tests that read a start CP).
 - Play: the squads at tick 0 by commander, and the enemy's default scout + light in quick modes.
+
+## Prompt 32 L8 (lead pass, 2026-10-02): ammunition handbook
+
+- Unity: compile, CatalogCheck (balance.json handbook, base.walls); run HandbookP32Tests, LocalisationScanTests (the hb.* texts), UiLayoutTests (the Dossier's eighth tab, the detail chips).
+- PDF: build_doc.py now adds the handbook section (Tools/docs/prompt32.py) after the prompt 29 section.
+- UI: the handbook table rows (`fc-hb__row` / `fc-hb__cell`) and the chips strip (`fc-hb__chips`) have inline layout only, no USS yet.

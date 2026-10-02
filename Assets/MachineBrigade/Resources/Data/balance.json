@@ -38,6 +38,8 @@
   // then a cooldown. roles, by mode: Anchor (the HQ cannot fall: a camp to lean on), Target (the enemy
   // base is the objective), Defend (the side loses when its HQ falls), None (no base).
   // Tower tiers (1-10), branches and utility modules come later; "tier", "branches" and "modules" are kept free for them.
+  // Prompt 32 L8: the ammunition handbook's worked example (one shot of the shooter's main weapon on the target's front and side).
+  "handbook": { "exampleShooter": "ifv", "exampleTarget": "main_battle_tank" },
   // Prompt 32 L6: the opening squads. In "modes" the player's commander drops its row at tick 0, in "enemyModes" the enemy
   // commander its general's (by id or base style, else "default"); each role is the deck's cheapest card of the role
   // (baseCP, then id; a role the deck lacks is left out, its CP kept), its baseCP taken from the starting CP, at most
@@ -125,6 +127,8 @@
       "ai": { "brandt": "fortress", "kessler": "fortress", "varga": "garrison", "orlov": "shield", "aurel": "shield",
               "Easy": "garrison", "Normal": "fortress", "Hard": "shield", "VeryHard": "fortress" }
     },
+    // Prompt 32 L8 (for pass 3's walls): the wall breakers (shared tag) and their damage on walls only (not towers or the HQ).
+    "walls": { "breakerMultiplier": 1.5, "breakers": ["armored_bulldozer", "engineer_vehicle", "demolition_line_vehicle"] },
     // Prompt 32 L5 (DECISIONS "Prompt 32 L4/L5/L6/L8"): the reference base of each HQ level (rank 1, no equipment, no HQ
     // type), every slot the level opens filled with a balanced mix of roster cards. The Defend and Endless waves are sized
     // by the reference of the defender's HQ level (BaseStrength.ReferenceScore), never by the player's own base, which

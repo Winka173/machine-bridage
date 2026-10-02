@@ -22,6 +22,7 @@ import prompt26  # noqa: E402
 import prompt27  # noqa: E402
 import measure_stamp  # noqa: E402
 import prompt29  # noqa: E402
+import prompt32  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -463,6 +464,8 @@ def build(game, imgdir):
                + table(['Xe', 'Lớp', 'Giáp trước', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
 
     out.append(prompt29.round2(game, h))
+    # Prompt 32 L8: the ammunition handbook (VI + EN), generated from balance.json as the game's Dossier tab.
+    out.append(prompt32.ammo_handbook(game, h))
     cv = programme.combat_value(game, h)
     if cv and measure_stamp.matches(prompt25.measure_path()):
         out.append(cv)

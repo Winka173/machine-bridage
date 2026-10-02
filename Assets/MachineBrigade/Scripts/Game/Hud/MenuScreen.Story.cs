@@ -32,6 +32,9 @@ namespace MachineBrigade.Game.Hud
 
             /// <summary>Prompt 22 F.4: a page for each of the player's commanders and each enemy general.</summary>
             Commanders,
+
+            /// <summary>Prompt 32 L8: the ammunition handbook, generated from the data.</summary>
+            Ammo,
         }
 
         private VisualElement _dossier, _dossierBody;
@@ -43,7 +46,7 @@ namespace MachineBrigade.Game.Hud
         {
             _dossier = FullPage("fc-dossier");
             _dossierTabs = new KitTabs(new[] { Strings.Get("dossier.people"), Strings.Get("dossier.bosses"), Strings.Get("dossier.timeline"), Strings.Get("dossier.files"), Strings.Get("dossier.intel"), Strings.Get("dossier.maps"),
-                    Strings.Get("cmdr.dossier.tab") },
+                    Strings.Get("cmdr.dossier.tab"), Strings.Get("dossier.ammo") },
                 0, i =>
                 {
                     _dossierTab = (DossierTab)i;
@@ -51,12 +54,66 @@ namespace MachineBrigade.Game.Hud
                 });
             _dossier.Add(_dossierTabs);
             var scroll = Kit.Scroll(ScrollViewMode.Vertical, "fc-page__scroll");
+            _dossierScroll = scroll;
             _dossierBody = Kit.Box("fc-page__body");
             scroll.Add(_dossierBody);
             _dossier.Add(scroll);
             _dossierAll = DebugFlags.Has("-mb-dossier-all");
             Root.schedule.Execute(DebugStory).StartingIn(300);
             BuildCommanderPage();
+        }
+
+        // ------------------------------------------------------------------ prompt 32 L8: the ammunition handbook
+
+        private ScrollView _dossierScroll;
+
+        /// <summary>The entry a detail page's chip asked for (null: the top).</summary>
+        private string _handbookFocus;
+
+        /// <summary>Opens the Dossier on the ammunition handbook, at <paramref name="entry"/> (a chip on a unit's detail page).</summary>
+        private void OpenHandbook(string entry)
+        {
+            _dossierTab = DossierTab.Ammo;
+            _handbookFocus = entry;
+            OpenDossier();
+        }
+
+        /// <summary>Every entry of the handbook (AmmoHandbook.Build: the numbers from the data), the asked one scrolled to.</summary>
+        private void FillHandbook()
+        {
+            _dossierBody.Add(Kit.Body2(Strings.Get("hb.intro")));
+            VisualElement focus = null;
+            foreach (var entry in AmmoHandbook.Build(_catalog))
+            {
+                var panel = Kit.Box(KitPanel.SurfaceClass + " fc-panel fc-mt-2");
+                panel.name = "hb-" + entry.Id;
+                panel.Add(Kit.Text(Kit.Caps(entry.Title), "fc-panel-title"));
+                if (entry.Header != null)
+                {
+                    panel.Add(HandbookRow(entry.Header, true));
+                    foreach (var row in entry.Rows) panel.Add(HandbookRow(row, false));
+                }
+                foreach (var line in entry.Lines) panel.Add(Kit.Body2(line));
+                _dossierBody.Add(panel);
+                if (entry.Id == _handbookFocus) focus = panel;
+            }
+            _handbookFocus = null;
+            if (focus != null && _dossierScroll != null) _dossierScroll.schedule.Execute(() => _dossierScroll.ScrollTo(focus)).StartingIn(60);
+        }
+
+        /// <summary>One row of a handbook table: its cells side by side, the first wider.</summary>
+        private static VisualElement HandbookRow(string[] cells, bool head)
+        {
+            var row = Kit.Box("fc-hb__row");
+            row.style.flexDirection = FlexDirection.Row;
+            for (var i = 0; i < cells.Length; i++)
+            {
+                var cell = Kit.Text(cells[i], (head ? "fc-caption" : "fc-body-2") + " fc-hb__cell");
+                cell.style.flexGrow = i == 0 ? 2f : 1f;
+                cell.style.flexBasis = 0f;
+                row.Add(cell);
+            }
+            return row;
         }
 
         private void OpenDossier()
@@ -147,6 +204,9 @@ namespace MachineBrigade.Game.Hud
                     break;
                 case DossierTab.Commanders:
                     FillCommanderFiles();
+                    break;
+                case DossierTab.Ammo:
+                    FillHandbook();
                     break;
             }
         }

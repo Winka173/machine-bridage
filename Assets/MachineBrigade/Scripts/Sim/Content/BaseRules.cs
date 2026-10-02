@@ -109,6 +109,15 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 32 L2: the HQ's health share at which a side's cheapest fallen small or medium tower comes back free, once ("rebuild.hqRescue").</summary>
         public float HqRescueShare { get; internal set; } = 0.25f;
+        /// <summary>
+        /// Prompt 32 L8 (for L3's walls): the wall breakers ("base.walls.breakers": the armoured bulldozer, the engineer
+        /// vehicle, the mine-clearing line charge) and what they do to walls ("breakerMultiplier"; never to towers or the HQ).
+        /// </summary>
+        public IReadOnlyList<string> WallBreakers => _wallBreakers;
+
+        private readonly List<string> _wallBreakers = new();
+        public float WallBreakerMultiplier { get; internal set; } = 1.5f;
+
         /// <summary>Prompt 32 L4: the HQ types ("base.hqTypes"): Fortress, Garrison, Shield.</summary>
         public HqTypeRules HqTypes { get; internal set; } = new();
 
@@ -195,6 +204,12 @@ namespace MachineBrigade.Sim.Content
                 }
             }
             if (b.Has("hqTypes")) rules.HqTypes = HqTypeRules.Parse(b.Object("hqTypes"));
+            if (b.Has("walls"))
+            {
+                var w = b.Object("walls");
+                rules.WallBreakerMultiplier = Math.Max(0f, w.Float("breakerMultiplier", 1.5f));
+                if (w.Has("breakers")) rules._wallBreakers.AddRange(w.StringArray("breakers"));
+            }
             if (b.Has("reference"))
                 foreach (var r in b.Array("reference"))
                 {

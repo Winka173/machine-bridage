@@ -15342,3 +15342,36 @@ never promoted to an elite; the caps hold. `ModeSession.DropOpeningSquads` runs 
 Tests (written, not run): `OpeningSquadP32Tests` (the scale per mode; the economy's start; every commander's row and
 every role id; cheapest per role, ties by id; a missing role; the budget; Varro; exclusions; the drop from the starting
 CP as regular vehicles; the marked start units left out; no mission on by default).
+
+### L8: the ammunition handbook
+
+In game: the Dossier's new tab "Ammunition handbook" / "Sổ tay đạn" (`MenuScreen.Story.cs` `DossierTab.Ammo`,
+`FillHandbook`), its entries from `Game/Hud/AmmoHandbook.cs` (`Build`: generated from the catalog in the language shown,
+texts `hb.*` in `Hud/BaseText.cs`, EN + VI). Design document: `Tools/docs/prompt32.py` (`ammo_handbook`, Vietnamese then
+English, from balance.json; build_doc.py adds it after the prompt 29 section; `python Tools/docs/prompt32.py` prints the
+section alone; it ran on the data).
+
+- **Entries.** (1) The six damage types x ground / air / structures (the damage table), a strong / weak sentence each
+  (its best and worst kind) and 2-3 examples (the weapons most carried by card vehicles of that type, by id on a tie, one
+  per real weapon name). (2) Penetration against armour (the data's six steps), directional faces, vehicles to level 4
+  and bosses to 5 (`ArmourLevels`), no overmatch on the roof or on aircraft, and a worked example from the data
+  (`handbook.exampleShooter` / `exampleTarget`: one shot of the IFV's 2A42 on a main battle tank, front 4 x0.25 = 6, side 2
+  x0.85 = 19; the weapon's own damage, `DamageTable.Effective`). (3) Marks: top attack, thermobaric (x2.0 replacing x1.5,
+  never x3: precheck item 6), the two-layer blast (an example weapon's core, edge and share), guided, airburst
+  (fragmentation x1.3 on aircraft), second rounds (hold 2 s, switch at least 0.5 s: `WeaponDef.RoundHoldSeconds` /
+  `MinSwitchSeconds`, and an example gun's switch), minimum range (examples with their metres). (4) What stops which
+  rounds: reactive armour (up to 80 %: the code now reads `HandbookFacts.ReactiveCap`, the one number that was a literal),
+  cages, SELF_APS and POINT_DEFENSE (the C-RAM's and the laser's shell shares from the data; both lines say they never stop
+  a tank's shell, as the locked rule), flares, smoke, jamming, shields; the one-system-per-round rule of L4. (5) What to hit
+  structures with (the types by their structure value, thermobaric first), walls: the wall breakers x1.5.
+- **Walls ahead of pass 3.** The wall breakers' shared tag and multiplier are data now (`base.walls`: armored_bulldozer,
+  engineer_vehicle, demolition_line_vehicle; `breakerMultiplier` 1.5; `BaseRules.WallBreakers`, `WallBreakerMultiplier`)
+  for pass 3's walls to apply; the handbook and the WALL BREAKER chip read them.
+- **Detail page chips** (`MenuScreen.Detail.cs`, above the weapons; the main card keeps its marks): TOP ATTACK (a weapon
+  striking the roof), SECOND ROUND (a round its carrier loads), AIRBURST (fragmentation that hits aircraft), GUIDED
+  (missile, drone, guided bomb or shell), STRUCTURE BREAKER (a weapon at x1.5 or more on structures), WALL BREAKER; a tap
+  opens the Dossier's handbook scrolled to its entry (`OpenHandbook`).
+
+Tests (written, not run): `HandbookP32Tests` (the type table, the penetration row, the worked example, the marks, the
+defences and their locked rule, the structure table and walls, in both languages, against the data; every chip opens an
+entry that exists).
