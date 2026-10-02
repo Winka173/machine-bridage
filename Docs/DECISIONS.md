@@ -15434,3 +15434,48 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
   list): those keep one muzzle. Check: `python Tools/balance/p34_barrels.py` reports every listed muzzle's barrels (OK).
 - Tests (written, not run): `Prompt34Tests` L4 (the listed weapons fire their barrels together, the volleys keep their
   DPS, the super tank's two barrels fire in the same tick).
+
+## Prompt 34 L5/L6/L7 (lead pass, 2026-10-02)
+
+### L5: firing and blasts by tier
+
+- **Redrawn, not scaled.** A round's tier (`WeaponDef.Tier`, from its family) picks a redrawn overlay played ON TOP of the
+  blast the round always had (`ExplosionEffect.CreateTier`, T2-T5; T0 and T1 keep the Small recipe and the flak bursts).
+  The old blast is never cut, shrunk or replaced, so no fire or explosion gets smaller (the owner's rule). Each overlay is
+  designed at its tier's nominal core (T3 5 m, T4 9 m, T5 14 m) with its own quads, column, debris and skirts, and is played
+  at core / nominal clamped to 0.8-1.6 (so a 406 mm overlay is drawn at its design size, not a stretched 152 mm one).
+  T2: a small hot fireball, dust and earth. T3: a medium fireball, a five-billow dust column, a small crater glow. T4: a
+  large rolling fireball, an eight-billow column, fragments and burning debris thrown wide, two dust skirts, a big crater
+  glow. T5: a very large fireball, a ten-billow column that spreads into a small mushroom cap (a ring of six wide billows
+  round a centre one at 26 m), far debris, three dust skirts, a crater glowing 12 s.
+- **Rings exactly on the radii** (`EffectsDirector.Tiers.TierRing`, `BlastSizes.RingQuad`): T4 a shockwave on the edge
+  (the core when there is no edge) and a dust ring on it 0.12 s later; T5 a ring on the core, then one on the edge 0.25 s
+  later. Prompt 26 B.3's edge ring and prompt 25 A5's ring on the core stay as they were.
+- **Firing look** (`TierFx.Fire`, `MuzzleFx.TierShot`), on top of the weapon's own flash: T1 thin smoke; T2 a medium flash
+  core, short smoke (the barrel's recoil was already there); T3 a big flash that burns longer, a muzzle fireball, long slow
+  smoke, dust under the muzzle, a dust ring round the gun, the hull squatting back (`VehicleView.Rock`); T4 a very big flash,
+  two muzzle fireballs, long rolling smoke, a pressure ring round the muzzle, a wide dust ring, the ground lit, and on ships
+  a pale ring and spray on the water; T5 a huge flash that lights the scene (a screen flash), very long smoke, a double
+  pressure ring, the widest dust ring and two water rings. One ground look per volley: a ship's other turrets and a
+  volley's later barrels within 0.35 s draw only their muzzle.
+- **Per-round extras** grow by tier (`TierFx.Extra`: 1 to T2, +15 % a tier): the thermobaric round's second fireball, a
+  HEAT warhead's spark jet, an AP round's sparks.
+- **Camera shake: T4+ only** (`TierFx.Shake`): only on screen, only within 90 m of the view's focus, halving at 25 m, a T5
+  0.6 and a T4 0.22 at the blast (a shot half), through `RtsCamera.AddTierTrauma` with a total cap of 0.65 and the
+  screen shake setting (off / low / full, `MatchSettings.ScreenShake`). The general shake stays off
+  (`RtsCamera.ShakeEnabled`, the owner found it read as stutter), so the T4+ shake is the only one; the setting is shown
+  again. Light vehicles (scouts, light class, or a hull under 2.2 m) within 1.35 times a T4+ blast's reach rock away from
+  it (view only).
+- **Detail and concurrency** (`TierFx.DetailAt`, `TierBudget`): the camera is orthographic, so the view distance is the
+  distance from the focus plus 1.2 times the zoom. Under 70 m full, under 140 m reduced (45 % of the overlay's particles,
+  no thrown chunks), beyond that only the light (the round's own blast still plays). At most T5 1, T4 3 and T3 6 overlays
+  in full detail at once (weights 6 / 3 / 1 against 12, so with a T5 going two T4 fit), each counted for 6 / 4 / 2.5 s;
+  any over steps down one level. The graphics tier scales the overlay too (`ExplosionEffect.RichShare`: High all, Medium
+  80 %, Low half). Final numbers: NEED PROFILE.
+- **Pools**: the overlays are six recipe objects on the shared blast layers (built up front, like every recipe); muzzle
+  smoke, sparks and dust go into MuzzleFx's shared systems; rings into the shared shockwave layer. Nothing new is created
+  mid-battle.
+- **Before/after shots** for docs/vfx: a LOCAL_TODO line (the lead renders them).
+- Tests (written, not run): `Prompt34ViewTests` L5 (caps, the budget stepping down and back, detail by distance and zoom,
+  shake only T4+, each tier's overlay bigger than the one below, the overlay's size, firing looks growing by tier, the
+  406 mm's tier).
