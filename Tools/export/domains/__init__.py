@@ -14,8 +14,9 @@ DOMAINS = [
     "d02_phuong_tien",
     "d03_boss",
     "d04_can_cu_thap",
+    "d06_ai",
     "d05_che_do_kinh_te",
-    # lane B (pass 3): "d06_ai", "d07_chien_dich_cot_truyen", "d08_ban_do",
+    # lane B (pass 3): "d07_chien_dich_cot_truyen", "d08_ban_do",
     # lane C (pass 4): "d09_hieu_ung_am_thanh", "d10_model_tai_san", "d11_meta_giao_dien", "d12_he_thong_trang_thai",
     # pass 10 (spec 12): "d13_tham_chieu_nguon",
 ]

@@ -10,15 +10,10 @@ DATA = "Assets/MachineBrigade/Resources/Data/"
 
 CLAIMS = [
     # ---------------------------------------------------------------- balance.json blocks of later files
-    (BAL, "ai.**", "06_ai", "tham số AI (prompt 28 L)"),
-    (BAL, "aiBehaviour.**", "06_ai", "chiến thuật, hành vi AI"),
-    (BAL, "aiModeProfiles.**", "06_ai", "hồ sơ AI theo chế độ"),
-    (BAL, "generals.**", "06_ai", "tướng địch: elite ưa thích, bài thêm"),
     (BAL, "props.**", "08_ban_do", "vật thể bản đồ"),
     (BAL, "neutrals.**", "08_ban_do", "trung lập"),
     (BAL, "handbook.**", "11_meta_giao_dien", "ví dụ của sổ tay đạn trên giao diện"),
     # ---------------------------------------------------------------- other data files
-    (DATA + "campaign.json", "generals.**", "06_ai", "tướng địch của chiến dịch (bộ bài, phong cách)"),
     (DATA + "campaign.json", "migration*.**", "12_he_thong_trang_thai", "chuyển đổi save cũ"),
     (DATA + "campaign.json", "**", "07_chien_dich_cot_truyen", "chương, nhiệm vụ, biến cố"),
     (DATA + "script/*.json", "**", "07_chien_dich_cot_truyen", "thoại, người nói, trigger"),
