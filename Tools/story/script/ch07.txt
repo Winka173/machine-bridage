@@ -1,0 +1,191 @@
+# Chapter 7 · Veyra (act 3). Enemy: Aurel's guard (Aurel only a shadow). Arc: free the capital district by district
+# with Thorne's army; Thorne turns in the last battle (c7m10, its own event lines); Atlas, Nemesis.
+# Threads: three anomalies, each with a sound explanation: (1) Thorne's reinforcements late "because the road was
+# blocked"; (2) his wing changes direction "on new intelligence"; (3) a target left alone "to spare civilians".
+# Nadia sees the pattern and logs it; she never says he will betray.
+
+@c7m01 main=khai
+mission_start | khai | 1 | Đây không phải thành phố của chúng. Tiến vào. || It is not their city. Move in.
+time@10 | linh | 2 | Cận vệ của Aurel giữ công viên, quảng trường và bãi đỗ xe. Từng con phố một. || Aurel's guard holds the park, the plaza and the car park. Street by street.
+event_triggered | hq | 2 | Dân quân thành phố đang ra khỏi hầm. Họ có súng và biết từng con hẻm. || The city militia are coming out of the cellars. They have rifles and know every alley.
+point_captured:town | linh | 3 | Quảng trường là của ta. Người dân đang treo cờ từ cửa sổ. || The plaza is ours. People are hanging flags from the windows.
+objective_progress:last | khai | 2 | Còn bãi đỗ xe. Xe tăng đi giữa, xe bọc thép đi sát tường. || The car park left. Tanks in the middle, carriers hugging the walls.
+victory | khai | 1 | Cửa ngõ thủ đô đã mở. Từ đây ta đi bộ được tới Veyra. || The gate to the capital is open. From here we could walk to Veyra.
+defeat | khai | 1 | Thành phố chưa sẵn sàng. Rút về ngoại ô, giữ những gì ta có. || The city is not ready. Back to the suburbs; hold what we have.
+
+@c7m03 main=khai
+mission_start | khai | 1 | Thành phố đang tự chiến đấu. Ta chiến đấu cùng nó. || The city is fighting for itself. We fight with it.
+time@15 | hq | 2 | Quân kháng chiến giữ quảng trường, bảy xe vây quanh, đã đánh dấu. Họ có thương binh. || The resistance holds the plaza, seven vehicles round it, marked. They have wounded.
+event_triggered | linh | 2 | Pháo của cận vệ đang nã vào mái nhà quanh quảng trường. Đánh vào khẩu đội trước. || The guard's guns are shelling the roofs round the plaza. Hit the battery first.
+objective_progress:1/2 | khai | 2 | Vòng vây thủng một nửa. Lo cho quân kháng chiến trước, rồi mới đuổi. || The ring is half broken. Look after the resistance first, then chase.
+critical_failure_imminent | khai | 1 | Sở chỉ huy kháng chiến sắp sập. Mọi thứ vào xe đang nã nó! || The resistance HQ is about to fall. Everything on whatever is shelling it!
+victory | khai | 1 | Vòng vây tan. Quân kháng chiến nhập lữ đoàn, đêm nay họ dẫn đường. || The ring is gone. The resistance joins us; tonight they lead the way.
+defeat | khai | 1 | Quảng trường thất thủ. Ta sẽ đưa những người còn sống ra ngoài. || The plaza has fallen. We get the survivors out.
+
+@c7m16 main=linh
+mission_start | hung | 1 | Chào mừng tới thành phố, Kade. Các con của ta sẽ lấy phía bắc. || Welcome to the city, Kade. My lads will take the north side.
+time@30 | linh | 2 | Tôi đi cùng ban tham mưu của tướng Thorne. Họ rất lịch sự, và rất ít nói. || I am riding with Thorne's staff. Very polite, and very quiet.
+time@60 | linh | 2 | Đại tá, một lời: hãy để mắt tới tướng Thorne. Tôi nói nghiêm túc. || Colonel, a word: watch Thorne. I mean it.
+point_captured | hung | 3 | Một điểm đã chiếm. Các con làm tốt lắm. Giờ tới lượt các anh, đại tá. || One point taken. Well done, lads. Your turn now, Colonel.
+time@180 | linh | 2 | Cánh quân Thorne vừa đổi hướng, theo tin tình báo mới. Tin đó không đi qua tôi. || Thorne's wing just changed direction, on new intelligence. It did not come through me.
+victory | khai | 1 | Đã ghi nhận, Nadia. Ông ấy ở phe ta. || Noted, Nadia. He is on our side.
+defeat | hung | 1 | Không sao, đại tá. Thành phố này đã chờ nhiều năm, nó chờ thêm được một ngày. || No matter, Colonel. This city has waited years; it can wait one more day.
+
+@c7m04 main=khai
+mission_start | khai | 1 | Người dân sống trong những tòa tháp đó. Chúng phải đứng vững. || People live in those towers. They stand.
+time@20 | hq | 2 | Ba tòa tháp, hàng nghìn người. Aurel ra lệnh bắn thay vì để lại cho ta. || Three towers, thousands of people. Aurel ordered them shelled rather than left to us.
+event_triggered | linh | 2 | Nhiễu toàn dải. Pháo của chúng bắn theo tọa độ cũ, không cần nhìn. || Jamming across every band. Their guns fire on old coordinates; they do not need to see.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Giữ phòng không và xe săn pháo quanh các tòa tháp. || Halfway. Keep the flak and the counter-battery round the towers.
+critical_failure_imminent | khai | 1 | Chỉ còn một tòa tháp. Mọi xe che nó, bằng thân nếu phải. || One tower left. Every vehicle covers it, with their hulls if they must.
+victory | hq | 1 | Các tòa tháp vẫn đứng. Người ta đang vẫy tay từ ban công. || The towers still stand. People are waving from the balconies.
+defeat | khai | 1 | Tòa cuối đã đổ. Đưa xe cứu hộ vào. Mọi xe rảnh tay đào bới. || The last tower is down. Rescue vehicles in. Every free crew digs.
+
+@c7m05 main=khai
+time@3 | linh | 2 | Lại là Juggernaut, trên tuyến hàng hóa của thành phố. Ai đó đã vá nó. || Juggernaut again, on the city freight line. Someone patched it up.
+boss_spawn | mai | 1 | Juggernaut. Vá vội, giáp hàn chồng lên giáp cũ. Mối nối giữa các toa vẫn yếu. || Juggernaut, patched in a hurry: new plate over old. The joints between wagons are weak.
+time@30 | khai | 2 | Chặn nó trước kho. Mọi thứ vào đoàn tàu. || Stop it before the depot. Everything on the train.
+objective_progress:1/3 | linh | 2 | Tàu qua một phần ba. Kho ở cuối tuyến, sát quảng trường kháng chiến. || A third of the way. The depot is at the end of the line, next to the resistance square.
+boss_part_destroyed | mai | 2 | Một toa pháo đã câm. Đoàn tàu đang kéo xác, chậm hẳn. || One gun wagon silenced. The train is dragging the wreck; much slower.
+objective_progress:2/3 | linh | 2 | Hai phần ba. Còn một ga trước kho. || Two thirds. One station before the depot.
+boss_phase_change | khai | 1 | Nó dừng lại dỡ pháo. Một phút để chặn. Đánh hết vào nó. || It has stopped to unload guns. One minute to stop it. Everything on it.
+superweapon_warning | mai | 1 | Toa sau đang nạp đạn lớn. Tránh xa đường ray và vùng đỏ! || Heavy round loading in the rear wagon. Clear the rails and the red zone!
+boss_hp:25 | dieuhau | 4 | Đầu máy đang phun lửa! Nó sắp lật! || The engine is spitting fire! It is about to roll!
+critical_failure_imminent | khai | 1 | Nó sắp vào kho. Dồn tất cả vào đầu máy, ngay. || It is almost at the depot. Everything onto the engine, now.
+victory | khai | 1 | Trật bánh lần thứ hai. Kessler sẽ gửi hóa đơn cho ta. || Derailed twice. Kessler will send us the bill.
+defeat | linh | 1 | Nó đã dỡ xong pháo trong thành phố. Cận vệ của Aurel có thêm một pháo đài. || It has unloaded its guns in the city. Aurel's guard has another fortress.
+
+@c7m07 main=linh
+mission_start | linh | 1 | Ba xe chỉ huy. Không có chúng, đồn trú sẽ vỡ. || Three command cars. Without them, the garrison breaks.
+objective_progress:1/3 | linh | 2 | Một chính ủy đã bị bắt. Ông ta chỉ nói một câu: Giám đốc sẽ không quên. || One commissar caught. He only says one thing: the Director will not forget.
+event_triggered | hq | 2 | Mưa nặng hạt. Xe chỉ huy sẽ đi chậm trong phố ngập. || Heavy rain. The command cars will be slow in the flooded streets.
+objective_progress:last | linh | 2 | Còn một xe, chạy qua khu phố cổ. Đường ở đó hẹp, chặn hai đầu. || One left, running through the old streets. Narrow; block both ends.
+expensive_unit_lost | khai | 3 | Mất xe nặng trong phố hẹp. Đừng đuổi một mình, đi theo cặp. || A heavy lost in the narrow streets. No lone chases; work in pairs.
+victory | linh | 1 | Ba chính ủy đã gạch. Đồn trú đang tan, đơn vị nào cũng tự lo thân. || All three crossed out. The garrison is coming apart, every unit for itself.
+defeat | linh | 1 | Họ thoát vào bão. Đồn trú vẫn còn người cầm lái. || They escaped into the storm. The garrison still has its drivers.
+
+@c7m12 main=khai
+mission_start | khai | 1 | Phố hẹp. Giữ xe tăng đi cùng nhau, xe bọc thép sát bên. || Narrow streets. Keep the tanks together and the carriers close.
+event_triggered | hq | 2 | Sương biển tràn vào phố cổ. Đèn đường tắt, chỉ còn đèn cửa sổ. || Sea fog in the old streets. Street lights out, only window lights.
+point_captured | linh | 3 | Một quảng trường đã tự do. Có người mở cửa hiệu bánh giữa đêm. || One square free. Someone has opened a bakery in the middle of the night.
+point_lost | khai | 3 | Chúng lấy lại một quảng trường. Đừng vào phố cụt, vòng qua. || They took a square back. Stay out of dead ends; go round.
+objective_progress:last | khai | 2 | Còn một quảng trường. Đi chậm, nhìn mái nhà. || One square left. Slowly, watch the rooftops.
+victory | linh | 1 | Ba quảng trường, ba khu phố tự do. Người dân đang ra đường. || Three squares, three districts free. The people are coming out.
+defeat | khai | 1 | Phố cổ vẫn trong tay cận vệ. Ta sẽ quay lại vào ban ngày. || The Old Quarter is still the guard's. We come back by daylight.
+
+@c7m15 main=linh
+mission_start | linh | 1 | Ba quảng trường. Tôi muốn biết ai thực sự ở trong mỗi nơi. || Three squares. I want to know who is really in each.
+point_captured | linh | 3 | Quảng trường thứ nhất: cờ của cận vệ, nhưng chỉ có lính gác ở cổng. || First square: the guard's flag, but only sentries at the gate.
+event_triggered | hq | 2 | Dân quân báo có xe lạ đi lại giữa các quảng trường, không cờ. || The militia report unmarked vehicles moving between the squares.
+objective_progress:last | linh | 2 | Còn một quảng trường. Tôi thấy xe của ban tham mưu tướng Thorne đỗ ở đó. || One square left. I can see Thorne's staff car parked there.
+victory | linh | 1 | Ban tham mưu của Thorne có một vị khách từ Hegemon. Tôi có ảnh. || Thorne's staff had a guest from Hegemon. I have a photograph.
+victory | khai | 1 | Lưu lại, Nadia. Ta còn một thành phố phải chiếm. || File it, Nadia. We have a city to take.
+defeat | linh | 1 | Mưa làm hỏng hết ảnh. Tôi chỉ còn lại những gì tôi nhớ. || The rain ruined the photographs. I only have what I remember.
+
+@c7m13 main=mai
+mission_start | mai | 1 | Lại một Inferno. Từ xưởng của Varga, cùng thiết kế. Nó đang đốt từng con phố. || Another Inferno. From Varga's works, the same design. It is burning one street at a time.
+boss_spawn | mai | 1 | Cùng thiết kế, cùng đường làm mát yếu. Đánh vào sau tháp pháo. || Same design, same weak cooling line. Hit it behind the turret.
+time@30 | hq | 2 | Đội cứu hỏa của thành phố đang theo sau nó. Đừng để nó quay lại. || The city's fire crews are following it. Do not let it turn back on them.
+boss_part_destroyed | mai | 2 | Bình nhiên liệu vỡ. Nó đang tự cháy, giữ xa ba mươi mét. || A fuel tank burst. It is burning itself; keep thirty metres off.
+boss_phase_change | mai | 1 | Nó mở hết vòi phun trong phố hẹp. Lùi ra quảng trường, để nó nóng lên. || All projectors open in the narrow street. Back to the square; let it overheat.
+superweapon_warning | mai | 1 | Vòng lửa sắp bùng quanh nó. Ra khỏi vùng đỏ, kể cả trong nhà! || A fire ring is about to flare round it. Out of the red, even indoors!
+event_triggered | dieuhau | 2 | Tôi đánh vào cửa sau của nó. Mọi người giữ xa! || Hitting it from behind. Everyone keep clear!
+boss_hp:50 | khai | 4 | Một nửa. Đừng đuổi vào phố đang cháy. || Half. Do not chase it into burning streets.
+boss_hp:25 | linh | 4 | Nó đang chết máy giữa ngã tư. Cận vệ không gửi ai cứu nó. || It is stalling in the crossroads. The guard is sending nobody to help it.
+hq_below_50 | mai | 2 | Sở chỉ huy dính lửa. Bơm nước vào, kéo nó ra khỏi phố! || The HQ caught fire. Water on it; draw that thing out of the street!
+victory | khai | 1 | Đó là đám cháy cuối cùng ở phố cổ. || That is the last fire in the Old Quarter.
+victory | mai | 1 | Varga làm hai con. Tôi hy vọng ông ta không làm con thứ ba. || Varga built two. I hope he does not build a third.
+defeat | mai | 1 | Nó vẫn đang đốt. Rút người dân ra trước, rồi mới tới ta. || It is still burning. Get the people out first, then us.
+
+@c7m14 main=dahl
+mission_start | dahl | 1 | Bốn phút, và tôi sẽ có mọi cây cầu ở Veyra trên bản đồ. || Four minutes, and I will have every bridge in Veyra on the map.
+event_triggered | dahl | 2 | Cầu thứ nhất căn xong. Đạn tới trong mười một giây sau lệnh. || First bridge ranged. Shells arrive eleven seconds after the call.
+objective_progress:1/2 | dahl | 2 | Hai cầu. Còn ba. Giữ quảng trường cho pháo của tôi. || Two bridges. Three more. Keep the square for my guns.
+event_triggered | linh | 2 | Một đội đánh phá đang nhắm vào xe đạn của pháo binh. Phía tây. || A raiding party is going for the artillery's ammunition trucks. West side.
+point_lost | khai | 3 | Mất quảng trường. Pháo của Dahl không di chuyển được, lấy lại ngay. || The square is lost. Dahl's guns cannot move; take it back now.
+victory | dahl | 1 | Đã căn xong. Mọi cây cầu, chính xác tới từng mét. || Ranged. Every bridge, to the metre.
+defeat | dahl | 1 | Phải kéo pháo ra. Tôi mới căn được nửa số cầu. Nửa còn lại ta sẽ đoán. || We have to pull the guns out. Half the bridges ranged; we guess the rest.
+
+@c7m02 main=linh
+mission_start | linh | 1 | Ba lần nhìn. Và ghi lại bất kỳ ai khác cũng đang nhìn. || Three looks. And note anyone else who is looking too.
+point_captured | linh | 3 | Vườn thượng uyển: ụ súng dọc bờ sông, quay ra phía ta. || The gardens: gun pits along the river bank, facing us.
+event_triggered | linh | 2 | Nhiễu vừa bật. Không phải của cận vệ: phát từ phía doanh trại của Thorne. Có lẽ để bảo vệ. || Jamming just came on. Not the guard's; from Thorne's camp. For protection, probably.
+objective_progress:last | linh | 2 | Còn nhà ga. Tôi muốn biết tàu nào còn chạy ra khỏi thành phố. || The station is left. I want to know which trains still leave the city.
+victory | linh | 1 | Ba nơi đã xem. Có một đội trinh sát khác cũng đi trước ta. Không mang cờ. || Three places seen. Another scout team went ahead of us. No colours.
+defeat | linh | 1 | Ta không nhìn được hết. Ta sẽ vào thủ đô với một nửa bản đồ. || We could not see it all. We go into the capital with half a map.
+
+@c7m17 main=dahl
+mission_start | dahl | 1 | Longshot đây. Tôi đi trước các anh bằng đạn pháo. Đi sau làn đạn. || Longshot here. I walk the shells ahead of you. Stay behind them.
+event_triggered | dahl | 2 | Pháo địch đang tìm tôi. Tôi đổi vị trí sau loạt này, mất hai phút. || Their guns are looking for me. I shift after this salvo; two minutes.
+point_captured | dahl | 3 | Một đầu cầu. Tôi nâng làn đạn thêm hai trăm mét. || One bridgehead. Lifting the barrage two hundred metres.
+event_triggered | hq | 2 | Mưa nặng hạt. Đạn pháo vẫn tới, nhưng sông đang dâng. || Heavy rain. The shells still land, but the river is rising.
+objective_progress:last | dahl | 2 | Còn nhà ga. Làn đạn cuối cùng sẽ rơi trước nó ba mươi giây. || The station left. The last barrage lands thirty seconds before you.
+victory | khai | 1 | Ta đã lên đảo. Giữ những gì đang có. || We are on the island. Hold what we have.
+defeat | dahl | 1 | Đạn hết trước khi các anh tới. Tôi xin lỗi. Ta thử lại khi có thêm đạn. || I ran out of shells before you got there. Sorry. We try again with more.
+
+@c7m06 main=khai
+mission_start | khai | 1 | Bốn phút trên quảng trường. Không ai lấy lại được nó. || Four minutes on the square. Nobody takes it back.
+event_triggered | linh | 2 | Khoang đổ bộ đang rơi từ trên cao xuống quảng trường. Từ máy bay, có lẽ. || Drop pods coming down on the square. From aircraft, probably.
+time@60 | linh | 2 | Viện quân của Thorne lẽ ra phải tới phía bắc quảng trường. Họ báo đường bị chặn. || Thorne's reinforcements should be north of the square. They say the road is blocked.
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Đây là nơi đầu tiên trong thủ đô có cờ của ta. || Halfway. This is the first place in the capital with our flag on it.
+point_lost | khai | 3 | Mất quảng trường. Lấy lại, ngay, trước khi sương tan. || The square is lost. Take it back now, before the fog lifts.
+victory | khai | 1 | Quảng trường cung điện là của ta. Thủ đô biết ta đã tới. || The palace square is ours. The capital knows we are here.
+defeat | khai | 1 | Mất chỗ đứng trong thủ đô. Lùi về bờ sông. || We have lost our foothold in the capital. Back to the river bank.
+
+@c7m11 main=dieuhau
+mission_start | dieuhau | 1 | Mười bốn con chim trên mái nhà. Giữ bệ phóng di chuyển. || Fourteen birds over the roofs. Keep the launchers moving.
+objective_progress:1/2 | dieuhau | 2 | Bảy chiếc! Bão làm chúng bay loạng choạng, tốt cho ta. || Seven! The storm has them wobbling; good for us.
+first_unit_type_seen | dieuhau | 2 | Trực thăng săn có giáp của cận vệ. Đừng phí súng máy, dùng tên lửa. || The guard's armoured hunter helicopters. No machine guns; missiles.
+momentum_high_once | dieuhau | 4 | Bầu trời Veyra thoáng dần. Tôi thấy được cả mái vòm cung điện. || The sky over Veyra is clearing. I can see the palace dome.
+victory | khai | 1 | Bầu trời Veyra là của ta. || The sky over Veyra is ours.
+defeat | dieuhau | 1 | Mất phòng không cuối. Kháng chiến sẽ phải trốn dưới mái nhà. || Last flak gone. The resistance will have to hide under the roofs.
+
+@c7m09 main=linh
+mission_start | linh | 1 | Mái vòm phát mọi bản tin của Hegemon trong cả nước. Hạ nó xuống. || The dome carries every Hegemon broadcast in the country. Bring it down.
+event_triggered | dahl | 2 | Pháo căn vào mái vòm. Cần nó lộ ra hai mươi giây. || Guns ranged on the dome. I need it in the open for twenty seconds.
+time@120 | linh | 2 | Bản tin tối nay đã chuẩn bị xong: Veyra vẫn an toàn. Ta có mười phút để làm nó sai. || Tonight's bulletin is ready: Veyra is safe. We have ten minutes to make it wrong.
+enemy_reinforcement | linh | 3 | Cận vệ đang dồn về mái vòm. Họ quý cái loa này hơn cả cung điện. || The guard is rushing to the dome. They value the loudspeaker more than the palace.
+timer_60s | khai | 1 | Một phút trước giờ phát sóng. Mái vòm phải im lặng. || One minute to air time. The dome goes quiet.
+victory | linh | 1 | Mái vòm đã đổ. Tối nay cả nước sẽ nghe thấy sự im lặng. || The dome is down. Tonight the whole country will hear silence.
+defeat | linh | 1 | Bản tin đã phát. Cả nước nghe rằng Veyra vẫn an toàn. || The bulletin went out. The country heard that Veyra is safe.
+
+@c7m18 main=dahl
+time@5 | dahl | 1 | Năm phút, các anh trụ. Phần còn lại để pháo của tôi. || Five minutes, you hold. Leave the rest to my guns.
+time@30 | dahl | 2 | Longshot. Pháo kích bờ bên kia trong mười giây. Cúi đầu xuống. || Longshot. Barrage on the far bank in ten. Heads down.
+event_triggered | linh | 2 | Khoang đổ bộ rơi sau tuyến sông. Chúng muốn chặn đường lui của ta. || Drop pods behind the river line. They want to cut our way back.
+objective_progress:1/2 | khai | 2 | Nửa chặng. Pháo của Dahl đang làm việc, ta chỉ cần đứng vững. || Halfway. Dahl's guns are working; we only have to stand.
+time@200 | linh | 2 | Quân của Thorne cách ta hai cây số. Họ báo đang giữ tuyến tiếp tế, ưu tiên dân thường. || Thorne's army is two kilometres off, guarding supply lines, they say. Civilians first.
+victory | linh | 1 | Quân Thorne đứng ngoài suốt trận. Từng phút một. || Thorne's army sat it out. Every minute of it.
+victory | khai | 1 | Đã ghi lại. Ngày mai ta cần mọi đạo quân trong thành phố. || Noted. Tomorrow we need every army in the city.
+defeat | dahl | 1 | Tuyến sông vỡ. Tôi kéo pháo ra trước khi chúng tới được. || The river line has broken. I am pulling the guns out before they reach them.
+
+@c7m08 main=khai
+mission_start | khai | 1 | Đêm nay không ai ở lại cung điện. Giữ quảng trường tới khi chiếc xe cuối rời đi. || Nobody stays in the palace tonight. Hold the square until the last truck leaves.
+time@20 | hq | 2 | Sáu xe chở các gia đình, qua cầu phía tây. Cần ít nhất bốn chiếc qua được. || Six trucks of families, over the west bridge. At least four must make it.
+first_unit_type_seen | dieuhau | 2 | Máy bay ném bom đêm trên sông! Chúng nhắm vào cầu, phòng không lên! || Night bombers over the river! They are after the bridge; flak up!
+objective_progress:1/2 | hq | 2 | Nửa số xe đã qua cầu. Đứa trẻ trên xe thứ ba vẫy cờ của ta. || Half the trucks are over. A child on the third one is waving our flag.
+critical_failure_imminent | khai | 1 | Thêm một xe là không đủ. Che chiếc cuối qua cầu. || One more truck and it is not enough. Cover the last one over the bridge.
+victory | khai | 1 | Cung điện đã trống. Giờ ta có thể đánh mà không sợ trúng ai. || The palace is empty. Now we can fight without hitting anyone we should not.
+defeat | khai | 1 | Không đủ xe qua cầu. Tìm mọi chỗ trú cho những người còn lại. || Not enough trucks crossed. Find shelter for everyone left behind.
+
+@c7m10 main=khai
+mission_start | khai | 1 | Veyra, lữ đoàn. Cùng với quân của Thorne. || Veyra, Brigade. Together with Thorne's army.
+mission_start | hung | 1 | Ngày cuối cùng của Veyra dưới cờ Hegemon, các con. Đánh cho đẹp. || Veyra's last day under Hegemon's flag, lads. Make it a fine one.
+time@40 | linh | 2 | Đại tá, tôi đã ghi ba điều lạ, mỗi điều có một lời giải thích hợp lý. Tôi vẫn ghi lại. || Colonel, three oddities so far, each with a sound explanation. I logged them anyway.
+phase_start:2 | khai | 1 | Đầu cầu đã chiếm. Chọn đòn tiếp: cung điện hay trạm phát điện. Mỗi đường có giá. || Bridgeheads taken. Next: the palace or the power station. Each has its price.
+phase_start:4 | linh | 1 | Cung điện và quảng trường. Cận vệ của Aurel dồn hết những gì còn lại vào đây. || The palace and the square. Aurel's guard is throwing in all it has left.
+phase_start:7 | khai | 1 | Sở chỉ huy cơ động của Aurel đang chạy. Đuổi theo, đừng để nó ra khỏi thành phố. || Aurel's mobile command is running. After it; it does not leave the city.
+boss_spawn | mai | 1 | Atlas, sở chỉ huy trên xích. Giáp nặng, nhưng ăng-ten chỉ huy nằm lộ trên nóc. || Atlas, a command post on tracks. Heavy armour, but its command masts are exposed on top.
+boss_hp:50 | linh | 4 | Atlas mất một nửa. Nó đang gọi một thứ gì đó trên đường ray phía đông. || Atlas is at half. It is calling something on the eastern rails.
+phase_start:8 | linh | 1 | Nemesis trên đường ray phía đông. Một đoàn tàu chở thứ gì đó tôi không muốn đoán. || Nemesis on the eastern rails. A train carrying something I do not want to guess at.
+superweapon_warning | mai | 1 | Nemesis đang nạp vũ khí chính. Rời khỏi vùng đỏ, tất cả, ngay! || Nemesis is arming its main weapon. Out of the red, everyone, now!
+critical_failure_imminent | khai | 1 | Đoàn tàu sắp tới đích. Mọi thứ vào nó, không còn gì để giữ lại. || The train is almost there. Everything onto it; nothing held back.
+victory | khai | 1 | Veyra tự do. Thorne thoát được với một phần ba đạo quân. Ta sẽ tìm ra ông ta. || Veyra is free. Thorne got out with a third of his army. We will find him.
+victory | hung | 1 | Ta không ghét các con. Ta chỉ thấy trước những gì sẽ tới. Hẹn gặp lại, Marcus. || I do not hate you, lads. I only see what is coming. Until we meet, Marcus.
+defeat | khai | 1 | Rút khỏi trung tâm. Giữ những quận đã tự do, chờ lệnh. || Out of the centre. Hold the free districts and wait for orders.
+
+@c7s1 main=linh
+mission_start | linh | 1 | Chuyện này không ghi vào sổ, đại tá. Ba điểm thả thư. || This one stays off the record, Colonel. Three letter drops.
+point_captured | linh | 3 | Điểm thả thứ nhất: một hòm thư cũ, không khóa. Thư viết bằng mật mã của quân đội Accord. || First drop: an old mailbox, unlocked. The letters use an Accord army cipher.
+objective_progress:last | linh | 2 | Còn một điểm. Mực trên phong bì mới khô hôm qua. || One drop left. The ink on the envelope dried yesterday.
+victory | linh | 1 | Ba điểm thả. Người nhận ký tên bằng một chữ: Sol. Tôi chưa biết đó là ai. || Three drops. The recipient signs with one word: Sol. I do not know who that is yet.
+defeat | linh | 1 | Có người dọn sạch các điểm thả trước ta. Họ biết ta đang tìm. || Someone emptied the drops before us. They know we are looking.
