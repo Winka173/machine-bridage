@@ -97,8 +97,7 @@ namespace MachineBrigade.Tests
             var i2m03 = Campaign.Everything.First(x => x.Id == "i2m03");
             Assert.LessOrEqual(i2m03.Events.Count, 3, "an interlude plays three events at most");
             Assert.IsTrue(i2m03.Events.Any(e => e.Id == "hunters"), "chapter 14's signature stays");
-            Assert.IsEmpty(bad, string.Join("
-", bad));
+            Assert.IsEmpty(bad, string.Join("\n", bad));
         }
 
         // ================================================================== Triều lên/xuống (the tide)
