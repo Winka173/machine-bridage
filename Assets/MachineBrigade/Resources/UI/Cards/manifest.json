@@ -235,6 +235,13 @@
             "hash": "v2:d1aa0199be8c6cefb5f76e1e68469add288143ff"
         },
         {
+            "id": "ammo_carrier",
+            "kind": "vehicle",
+            "model": "ammo_carrier",
+            "source": "Models/ammo_carrier",
+            "hash": "v2:c50fe4b2c580acfcb7a71103f48365d7b686c387"
+        },
+        {
             "id": "fighter_jet",
             "kind": "vehicle",
             "model": "fighter_jet",
@@ -1320,6 +1327,13 @@
             "hash": "v2:cb19814a92d23605cdc5775ef8b8dc4a2556e1c4"
         },
         {
+            "id": "logistics_station",
+            "kind": "tower",
+            "model": "logistics_station",
+            "source": "Models/logistics_station",
+            "hash": "v2:de667b75428db808a2539d35115fc6ad7922d995"
+        },
+        {
             "id": "manpads_tower",
             "kind": "tower",
             "model": "manpads_tower",
@@ -1446,6 +1460,13 @@
             "hash": "v2:a717f3fdc688585c45d453c29a68dc54431b91e0"
         },
         {
+            "id": "radar_station",
+            "kind": "tower",
+            "model": "radar_site",
+            "source": "Models/radar_site",
+            "hash": "v2:f9b207957c03a206e195a341aaa6db54fbd8b224"
+        },
+        {
             "id": "rail_supergun",
             "kind": "boss",
             "model": "rail_supergun",
@@ -1458,6 +1479,13 @@
             "model": "recoilless_gun_tower",
             "source": "Models/recoilless_gun_tower",
             "hash": "v2:add16423bd530cf7d98295044765baf0a09f52bc"
+        },
+        {
+            "id": "repair_bay",
+            "kind": "tower",
+            "model": "repair_bay",
+            "source": "Models/repair_bay",
+            "hash": "v2:8f655c8c13a4f9ad7ed4f52fbcb1b71b22b7f4bd"
         },
         {
             "id": "rocket_turret",

@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 27 wave 8: the remaining 198 models (munitions, debris, map props, towns, themes, harbor, terrain, trees, rubble, wrecks, base pieces, unlisted units) rebuilt or edge-treated on the V2 kit with lighter AO; aim120 and aim9 kept. Prompt 27's eight waves are complete (DECISIONS "27 wave 8a1" to "27 wave 8b7").
+
 - Prompt 27 wave 5d: leviathan, caspian, typhon, landing_hovercraft and supreme_command on the V2 kit (wave 5 complete, DECISIONS "27 wave 5d").
 
 - Prompt 27 wave 5b: kronos, moloch, nuke_train, armored_train and earth_borer on the V2 kit (DECISIONS "27 wave 5b").

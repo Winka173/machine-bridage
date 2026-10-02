@@ -208,6 +208,8 @@ Unarmed statics: big volumes, no new moving parts.
 | mb_siege | ammo_dump |
 | mb_phase8 | targeting_station |
 
+**Waves 3-8 complete (2026-10-02)**: see DECISIONS "27 wave 3a" to "27 wave 8b7" for every pass; kept-old models: radar_atgm_vehicle, blast_wall, aim120, aim9.
+
 ## Wave 8: remaining: props, scenery, munitions, unlisted (only where the preview shows a gain) - 198 models
 
 Low value per triangle: only where a preview shows a visible gain or the validator flags it. Unlisted models get a class when a def points at them. Builders the static scan missed are generated dicts (munitions, rounds).
