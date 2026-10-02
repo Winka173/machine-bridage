@@ -973,9 +973,10 @@ def footing(a, size, loc=(0, 0, 0), style='hegemon', parent=None):
                 wood.cyl(.05, .4, loc=(x + f * w, y + s * (d / 2 + .15), z + .1), seg=6, bevel=0)
 
 
-def sandbag_wall(a, path, layers=3, bag=(.6, .32, .14), closed=False, parent=None, mat='Sandbag'):
+def sandbag_wall(a, path, layers=3, bag=(.6, .32, .14), closed=False, parent=None, mat='Sandbag', round_both=True):
     """Sandbags laid along a polyline, `layers` courses high, each course offset by half a bag, every bag a pillow
-    (a rounded block with its tied end) with slight deterministic jitter."""
+    (a rounded block with its tied end) with slight deterministic jitter. round_both=False leaves the hidden bottom
+    edges square (a cheaper bag for towers seen from above)."""
     part = a.part(KIT['sandbags'], mat, parent)
     rng = random.Random(len(path) * 7919 + layers)
     L, W, H = bag
@@ -987,7 +988,7 @@ def sandbag_wall(a, path, layers=3, bag=(.6, .32, .14), closed=False, parent=Non
             jit = rng.uniform(-.03, .03)
             loc = (p.x, p.y, p.z + H / 2 + course * H * .92)
             k.block(part, (L * (.96 + jit), W * (1 + jit), H), loc=loc, rot=(0, 0, yaw + rng.uniform(-.06, .06)),
-                    chamfer=H * .42, ends=(True, True))
+                    chamfer=H * .42, ends=(True, True) if round_both else (False, True))
 
 
 def wire_fence(a, path, h=1.6, post=2.5, strands=4, parent=None, concertina=True):

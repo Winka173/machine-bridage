@@ -2586,6 +2586,16 @@
    "changes": [
     "FLAG zu23_technical: triangles 1,996 -> 7,436 (+272.5%); vertices 2,394 -> 10,488 (+338.1%); meshes 22 -> 53 (+140.9%); renderers 22 -> 53 (+140.9%); materials 9 -> 11 (+22.2%); materialSlots 22 -> 53 (+140.9%); fileBytes 140,136 -> 559,032 (+298.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-03",
+   "models": [
+    "rocket_turret"
+   ],
+   "reason": "P35 pilot 3: rocket turret rebuilt from scratch on kit35, Accord field emplacement (9.1k triangles, over the tower max: owner rule, kept)",
+   "changes": [
+    "FLAG rocket_turret: triangles 4,410 -> 9,052 (+105.3%); vertices 5,428 -> 11,948 (+120.1%); meshes 34 -> 39 (+14.7%); renderers 34 -> 39 (+14.7%); materials 15 -> 16 (+6.7%); materialSlots 34 -> 39 (+14.7%); fileBytes 300,216 -> 620,892 (+106.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -45491,24 +45501,24 @@
   },
   "rocket_turret": {
    "file": "rocket_turret.glb",
-   "fileBytes": 300216,
-   "sha1": "167d9aa61b853f63",
+   "fileBytes": 620892,
+   "sha1": "c8f66f6dd70462a4",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 38,
-   "meshes": 34,
-   "materials": 15,
+   "nodes": 43,
+   "meshes": 39,
+   "materials": 16,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 34,
-   "submeshes": 34,
-   "materialSlots": 34,
-   "materialsUsed": 15,
-   "triangles": 4410,
-   "vertices": 5428,
+   "renderers": 39,
+   "submeshes": 39,
+   "materialSlots": 39,
+   "materialsUsed": 16,
+   "triangles": 9052,
+   "vertices": 11948,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -45516,36 +45526,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 118,
-   "openEdges": 0,
-   "nonManifoldEdges": 0,
+   "loosePieces": 264,
+   "openEdges": 240,
+   "nonManifoldEdges": 4,
    "boundsMin": [
-    -2.3434,
-    -0.02,
-    -2.33
+    -2.3995,
+    -0.075,
+    -2.3863
    ],
    "boundsMax": [
-    2.3434,
-    3.3784,
-    2.3434
+    2.318,
+    3.359,
+    2.2991
    ],
    "size": [
-    4.673,
-    4.687,
-    3.398
+    4.685,
+    4.717,
+    3.434
    ],
    "center": [
-    0.0,
-    1.679,
-    0.007
+    -0.041,
+    1.642,
+    -0.044
    ],
-   "structureHash": "1a6470d623baa40c",
+   "structureHash": "7d81541ccaeb7ee2",
    "color0": {
-    "mean": 0.6625,
-    "min": 0.2547,
+    "mean": 0.5058,
+    "min": 0.0633,
     "max": 1.0,
-    "p05": 0.2958,
-    "p95": 0.9728,
+    "p05": 0.147,
+    "p95": 0.8137,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -45562,44 +45572,49 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Antenna",
-    "Base_vents",
-    "Beacon",
-    "Blast_wall",
-    "Box_face",
-    "Box_frame",
-    "Box_stencil",
-    "Cable",
-    "Crate_bands",
-    "Crate_cleats",
+    "Aiming_bands",
+    "Aiming_posts",
+    "Antennas",
+    "Base",
+    "Base_timbers",
+    "Camo_net",
+    "Control_box",
     "Crates",
-    "HMG",
-    "HMG_ammo",
-    "HMG_bracket",
-    "HMG_cradle",
-    "HMG_hider",
-    "HMG_shield",
-    "HMG_socket",
-    "Latches",
-    "Launcher_base",
-    "Launcher_box",
+    "Extinguishers",
+    "Field_phone",
+    "Hoses",
+    "Jerrycans",
+    "Kit_cables",
+    "Kit_straps",
+    "Kit_straps.001",
+    "Lamps",
+    "Launcher_cradle",
+    "Light_housing",
+    "Light_poles",
+    "MG",
+    "MG_ammo",
+    "MG_shield",
     "Mount_mg",
     "Muzzle_main",
     "Muzzle_mg",
-    "Pad",
-    "Scorch",
-    "Sensor_eye",
-    "Sensor_lamp",
-    "Stowage",
-    "Stowage_lid",
-    "Tube_covers",
+    "Pack_bands",
+    "Pack_hazard",
+    "Race",
+    "Rocket_rack",
+    "Sandbags",
+    "Seat_post",
+    "Seats",
+    "Spare_rockets",
+    "Tarp",
+    "Tools",
+    "Tube_bodies",
+    "Tube_mouths",
     "Tubes",
-    "Tubes_bore",
     "Turret",
     "Turret_armor",
+    "Turret_deck",
     "Turret_steel",
-    "Wall_band",
-    "Wall_band.001"
+    "Wall_timbers"
    ],
    "category": "structure",
    "hd": false,
