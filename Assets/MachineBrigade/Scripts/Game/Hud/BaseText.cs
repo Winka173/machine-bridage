@@ -177,6 +177,13 @@ namespace MachineBrigade.Game.Hud
                 "Phá tuyến ngoài rồi tới nhà chính. Khi căn cứ chưa bị chọc thủng, nhà chính chịu ít sát thương từ xa. Phút 6: thu nhập x1,5; phút 10: không xây lại tháp."),
             ["stat.hq"] = ("HQ health %", "Máu nhà chính %"),
             ["stat.suddenDeath"] = ("Sudden-death damage", "Sát thương đột tử"),
+            // Prompt 32 L7 (lead UI pass 2026-10-02): the HUD notices at minute 6, minute 10 and sudden death.
+            ["mode.showdown.escalate"] = ("Minute 6: income x{mult} for both sides; the CP relays stop paying",
+                "Phút 6: thu nhập x{mult} cho cả hai bên; trạm tiếp CP ngừng trả"),
+            ["mode.showdown.cutoff"] = ("Minute 10: no tower is flown back in from now on",
+                "Phút 10: từ giờ không còn tháp nào được thả lại"),
+            ["mode.showdown.sudden"] = ("Sudden death, {seconds} s: no shield from afar, no rebuilding; most damage to the enemy HQ wins",
+                "Đột tử, {seconds} giây: hết giảm sát thương từ xa, không xây lại; gây nhiều sát thương nhất lên nhà chính địch sẽ thắng"),
         };
     }
 }

@@ -62,6 +62,8 @@ namespace MachineBrigade.Game.Hud
         private KitDropdown _modeDrop, _mapDrop, _difficultyDrop, _weatherDrop;
         private readonly List<KitChip> _basePlanChips = new();
         private List<MapInfo> _homeMaps;
+        private readonly List<KitOption> _homeMapOptions = new();
+        private bool? _homeMapsShowdown;
 
         private void BuildHomePage()
         {
@@ -106,14 +108,8 @@ namespace MachineBrigade.Game.Hud
             _modeDrop = new KitDropdown(Strings.Get("setup.mode"), modes, 0, i => Set(() => MatchSettings.Mode = QuickModes[i].kind));
             grid.Add(_modeDrop);
             _homeMaps = new List<MapInfo>();
-            var maps = new List<KitOption>();
-            foreach (var map in MatchSettings.AllMaps)
-            {
-                if (!MatchSettings.MapAvailable(map.Id)) continue;
-                _homeMaps.Add(map);
-                maps.Add(new KitOption(Strings.Get("map." + map.Id), Strings.Get("map." + map.Id + ".sub"), MapArt.For(map.Id)));
-            }
-            _mapDrop = new KitDropdown(Strings.Get("menu.map"), maps, 0, i => Set(() => MatchSettings.Map = _homeMaps[i].Id), thumbnail: false);
+            FillHomeMaps();
+            _mapDrop = new KitDropdown(Strings.Get("menu.map"), _homeMapOptions, 0, i => Set(() => MatchSettings.Map = _homeMaps[i].Id), thumbnail: false);
             grid.Add(_mapDrop);
             var levels = new List<KitOption>();
             foreach (var (_, key) in Difficulties) levels.Add(new KitOption(Strings.Get(key)));
@@ -228,7 +224,11 @@ namespace MachineBrigade.Game.Hud
             for (var i = 0; i < QuickModes.Length; i++)
                 if (QuickModes[i].kind == MatchSettings.Mode) mode = i;
             _modeDrop.Select(mode, false);
-            var map = _homeMaps.FindIndex(m => m.Id == MatchSettings.CurrentMap.Id);
+            FillHomeMaps();
+            var shownMap = MatchSettings.Mode == GameModeKind.Showdown
+                ? ShowdownSession.MapOf(_catalog, MatchSettings.CurrentMap.Id)
+                : MatchSettings.CurrentMap.Id;
+            var map = _homeMaps.FindIndex(m => m.Id == shownMap);
             _mapDrop.Select(Math.Max(0, map), false);
             _difficultyDrop.Select(Array.FindIndex(Difficulties, d => d.level == MatchSettings.Difficulty), false);
             _weatherDrop.Select(Math.Max(0, Array.FindIndex(Weathers, w => w.kind == MatchSettings.Weather)), false);
@@ -313,6 +313,29 @@ namespace MachineBrigade.Game.Hud
             data.Combat = combat;
             if (removable) return new KitVehicleCard(data, () => ToggleInDeck(id), compact, showLevel) { Removable = true, name = "deck-card-" + id };
             return new KitVehicleCard(data, () => OpenDetail(id), compact, showLevel);
+        }
+
+        /// <summary>
+        /// The home screen's battlefields: every available map, or for Showdown only the ones its data lists
+        /// (balance.json matchRules.modes.showdown.lists.maps; prompt 32 L7). The dropdown keeps the same option list, so a
+        /// mode change refills it in place; an empty list in the data leaves every map.
+        /// </summary>
+        private void FillHomeMaps()
+        {
+            var showdown = MatchSettings.Mode == GameModeKind.Showdown;
+            if (_homeMapsShowdown == showdown && _homeMaps.Count > 0) return;
+            _homeMapsShowdown = showdown;
+            var eligible = showdown ? new HashSet<string>(ShowdownSession.Eligible(_catalog)) : null;
+            if (eligible != null && eligible.Count == 0) eligible = null;
+            _homeMaps.Clear();
+            _homeMapOptions.Clear();
+            foreach (var map in MatchSettings.AllMaps)
+            {
+                if (!MatchSettings.MapAvailable(map.Id)) continue;
+                if (eligible != null && !eligible.Contains(map.Id)) continue;
+                _homeMaps.Add(map);
+                _homeMapOptions.Add(new KitOption(Strings.Get("map." + map.Id), Strings.Get("map." + map.Id + ".sub"), MapArt.For(map.Id)));
+            }
         }
 
         /// <summary>A base set in a line: its towers and modules, and how many maps it sets up on their own.</summary>
