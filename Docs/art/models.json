@@ -101,7 +101,7 @@
   },
   "armored_car": {
     "file": "armored_car.glb",
-    "triangles": 2272
+    "triangles": 2622
   },
   "armored_train": {
     "file": "armored_train.glb",
@@ -353,7 +353,7 @@
   },
   "command_vehicle": {
     "file": "command_vehicle.glb",
-    "triangles": 2842
+    "triangles": 3084
   },
   "container": {
     "file": "container.glb",
@@ -597,7 +597,7 @@
   },
   "fpv_carrier": {
     "file": "fpv_carrier.glb",
-    "triangles": 2536
+    "triangles": 2484
   },
   "fpv_drone": {
     "file": "fpv_drone.glb",
@@ -857,7 +857,7 @@
   },
   "lancet_truck": {
     "file": "lancet_truck.glb",
-    "triangles": 2216
+    "triangles": 2314
   },
   "landing_craft": {
     "file": "landing_craft.glb",
