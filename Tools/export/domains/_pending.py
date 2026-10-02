@@ -15,9 +15,6 @@ CLAIMS = [
     (BAL, "handbook.**", "11_meta_giao_dien", "ví dụ của sổ tay đạn trên giao diện"),
     # ---------------------------------------------------------------- other data files
     (DATA + "campaign.json", "migration*.**", "12_he_thong_trang_thai", "chuyển đổi save cũ"),
-    (DATA + "campaign.json", "**", "07_chien_dich_cot_truyen", "chương, nhiệm vụ, biến cố"),
-    (DATA + "script/*.json", "**", "07_chien_dich_cot_truyen", "thoại, người nói, trigger"),
-    (DATA + "release.json", "**", "07_chien_dich_cot_truyen", "phần chiến dịch bản phát hành mở"),
     (DATA + "maps/*.json", "**", "08_ban_do", "bản đồ (lưới địa hình: tóm tắt hoặc Khong_xuat do lane 08 quyết)"),
     (DATA + "map_dressing.json", "**", "08_ban_do", "trang trí, biome, địa danh"),
     ("Assets/MachineBrigade/Resources/UI/Bases/*.json", "**", "11_meta_giao_dien", "ảnh bản đồ căn cứ của màn Căn cứ"),
@@ -34,7 +31,6 @@ CLAIMS = [
     ("Tools/docs/unit_refs.json", "**", "13_tham_chieu_nguon", "tham chiếu ngoài đời / game theo đơn vị (spec 12.1)"),
     ("Tools/docs/unit_sheet.json", "**", "12_he_thong_trang_thai", "bảng đơn vị của tài liệu"),
     ("Tools/sfx/library.json", "**", "09_hieu_ung_am_thanh", "thư viện âm thanh"),
-    ("Tools/story/script/*.txt", "**", "07_chien_dich_cot_truyen", "kịch bản thoại gốc (dựng ra script/*.json)"),
     ("Tools/campaign/unlocks_sheet.json", "**", "11_meta_giao_dien", "mở khóa"),
     ("Tools/campaign/p31_objectives_baseline.json", "**", "12_he_thong_trang_thai", "mốc đo mục tiêu (lịch sử đo)"),
     ("Tools/balance/*_before.json", "**", "12_he_thong_trang_thai", "mốc trước sửa (lịch sử đo)"),
