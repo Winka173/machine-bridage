@@ -14573,3 +14573,18 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
   warnings) and a render estimate of 2 lines of 58 characters by word wrap until Unity measures the real strip; the
   other checks of L7 run there too.
 - Compile check of the touched Game files: `Tools/simbuild/gamecheck` (stubs for Unity and the Game types they use).
+
+### L3: match end sequence
+
+- `Sim/SimWorld.MatchEnd.cs`: `MatchPhase` Running -> Resolved -> Presentation -> Results on `SimWorld.Ending`.
+  Setting `IsOver` resolves on that tick (`ResolvedTick`, `ResolvedTime`): result, rewards, stars and score are what
+  the modes and sessions read at that tick. From then `SimWorld.Step` returns at once: no paths, targets, damage,
+  pending explosions, CP, capture, AI or shots (commands were already refused). The runner may keep calling Step; it
+  is a no-op, so the result cannot depend on the presentation and a replay resolves on the same tick.
+- Precheck 4: the Sim and the effects share `Time.timeScale` (the runner runs more or fewer fixed steps). With the
+  battle frozen at RESOLVED, a slow-motion of the pictures cannot change anything; the presentation's own clock is
+  unscaled (`MatchEnd.Advance` is called by the view), so slow motion never stretches the 6-8 / 4-5 / 2.5-4 s.
+- Durations: the middle of the sheet's ranges (`DurationFor`: 7 / 4.5 / 3 s, loss 3.5 s); a tap skips after 0.75 s
+  (`Skip`), `Skipped` tells the results panel to show the story line it cut. `SlowMotion` is off for a loss and a replay.
+- Tests (written): `MatchEndTests` (frozen after the resolve, same state with or without the presentation, same
+  resolve tick on a replay, the skip).

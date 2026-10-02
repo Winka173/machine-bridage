@@ -127,8 +127,21 @@ namespace MachineBrigade.Sim
         /// <summary>Simulated seconds since the match started.</summary>
         public double Time { get; private set; }
 
-        /// <summary>Set by the game mode when the match ends; commands are refused afterwards.</summary>
-        public bool IsOver { get; set; }
+        /// <summary>
+        /// Set by the game mode when the match ends; commands are refused afterwards. Prompt 30 L3: setting it resolves the
+        /// match (<see cref="Ending"/>): from that tick the gameplay stands still.
+        /// </summary>
+        public bool IsOver
+        {
+            get => _over;
+            set
+            {
+                if (value && !_over) Ending.Resolve(this);
+                _over = value;
+            }
+        }
+
+        private bool _over;
 
         /// <summary>Vehicles that are alive (dead ones leave at the end of the step they die in).</summary>
         public IReadOnlyList<Vehicle> Vehicles => _vehicleList;
@@ -780,6 +793,9 @@ namespace MachineBrigade.Sim
         /// <summary>Advances the battlefield by one fixed step of <paramref name="dt"/> seconds.</summary>
         public void Step(float dt)
         {
+            // Prompt 30 L3: once resolved, nothing of the battle moves (no paths, targets, damage, CP, capture, AI or
+            // shots). The end sequence's clock is the view's (MatchEnd.Advance with unscaled time).
+            if (Ending.Phase != MatchPhase.Running) return;
             Tick++;
             Time += dt;
             ServeQueuedPaths();

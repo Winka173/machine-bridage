@@ -76,3 +76,13 @@ The cloud session writes the Sim only. Each line: file, what, why.
   `RENDER_CHARS` in `Tools/story/script_build.py` from it. Route the HUD's system warnings as `DialoguePriority.System`
   if they should share the strip. Run `DialogueTests` (rewritten for the P0-P4 rules). Unity compile of
   `Dialogue.cs`, `RadioDirector.cs`, `ScriptText.cs`, `Strings.cs`.
+- L3: drive the presentation in `MatchRunner`: when `_world.Ending.Phase == Resolved`, pick the `EndKind` (first win of
+  a main boss / big operation, first win, replay, loss), `BeginPresentation`, call `Ending.Advance(Time.unscaledDeltaTime)`
+  each frame, `Skip` on a tap after 0.75 s, show the results at `Results` (and `ShowResults` from `CheckResult`). Hide
+  the card tray and command buttons, keep the boss bar and notices; camera to the last target (0-1.5 s); visual slow
+  motion x0.3 from 1.5 s on the effects/animation clock only; the boss's part-by-part death chain (0.3-0.5 s each,
+  then the hull; wrecks burn, ships sink, aircraft fall); enemy proxies retreat to the edge, our turrets turn to the
+  target (visual only); the last lines (general's defeat line, then the closing line; chapter line for big
+  operations). A skipped story line goes to the results panel and the log. Loss: camera to our HQ or last vehicle,
+  explosion, the general's gloating line, 3-4 s, no slow motion. Run `MatchEndTests` and the existing suites (some
+  tests may have stepped a world after `IsOver`; they now see it frozen).
