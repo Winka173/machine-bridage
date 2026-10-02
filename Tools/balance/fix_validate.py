@@ -4,7 +4,8 @@
     python Tools/balance/fix_validate.py 3 5        # only these items
 
 Each item is also an EditMode test (`FixValidatorTests`), which runs in the build on the loaded catalog; this script reads the same
-data (balance.json, the GLBs, the audio analyser's numbers) so the two give the same verdict. Item 7 (models) waits for pass 8.
+data (balance.json, the GLBs, the audio analyser's numbers) so the two give the same verdict. Item 7 (models) runs the pass 8
+scorer (Tools/models/scan_prep.py); its test reads the "models" block this script writes.
 
 1  The card's calibre / warhead is data: every weapon line carries one display field at most (caliberMm mm, warheadKg kg,
    powerKw kW, energyMj MJ), the one its family means (`fix_calibre.check`); no field mixes mm and kg.
@@ -20,6 +21,13 @@ data (balance.json, the GLBs, the audio analyser's numbers) so the two give the 
    formula's floors; the bosses' laid salvos and cruise missiles likewise (`p34_warnings.check`, `p34_validate.rings`).
 6  Every barrel of a gun that fires together has its Muzzle_b<k> (`p34_validate.muzzles`); every flare unit has >= 2
    Mount_Flare_* nodes on its model (and its _hd twin) and the flares are spawned from them (the view's source).
+7  Models (Docs/models/MODEL_STANDARD.md, `scan_prep.score` in memory): the LOD0 triangles against the class budget (over budget is
+   INFO only, the owner's rule of 02/10: the model is kept; under the floor is listed too), the Part_* / merged-node roles each class
+   needs, the main weapon's muzzle and the run-time LOD1 (ModelScan's Builds/scan/<id>.json: triangles1 > 0; the 35-65 % band is
+   a note). The pass 8 scores (Docs/models/scan/static_scores.csv) are the recorded list: a part missing there is backlog (a
+   renaming job when the sheet shows it modelled inside a merged node, a rebuild when the visual grade is Kém); a part missing
+   now and not recorded fails, and so does a main muzzle or a LOD1 that went missing. Scan dir: MB_SCAN_DIR, else the runner's
+   Builds/scan, else ./Builds/scan; with none, LOD presence is a note.
 8  No clip outside the armour-hit group is a "keng", and the per-size audio table rises (`Tools/sfx/analyze_sfx.py --check`,
    run in memory here).
 """
@@ -284,6 +292,119 @@ def item6(data, ctx):
     return problems, notes + [f"{len(units)} flare units"]
 
 
+# ------------------------------------------------------------------------------------------------------------- 7
+
+SCAN_DIRS = [os.environ.get("MB_SCAN_DIR") or "", r"C:/Users/Winka/Projects/MachineBrigade-runner/Builds/scan", os.path.join(ROOT, "Builds", "scan")]
+RECORDED_SCORES = os.path.join(ROOT, "Docs", "models", "scan", "static_scores.csv")
+VISUAL_SCORES = os.path.join(ROOT, "Docs", "models", "scan", "visual_scores.md")
+
+
+def scan_dir():
+    for d in SCAN_DIRS:
+        if d and os.path.isdir(d) and any(n.endswith(".json") for n in os.listdir(d)):
+            return d
+    return None
+
+
+def visual_grades():
+    """{model: visual grade} from the pass 8 visual table (its 6th column)."""
+    out = {}
+    if not os.path.exists(VISUAL_SCORES):
+        return out
+    for line in open(VISUAL_SCORES, encoding="utf-8"):
+        m = re.match(r"^\| `([^`]+)`", line)
+        if m:
+            cells = [c.strip() for c in line.strip().strip("|").split("|")]
+            if len(cells) >= 6:
+                out[m.group(1)] = cells[5]
+    return out
+
+
+def item7(data, ctx):
+    import csv
+    import tempfile
+    from pathlib import Path
+    sys.path.insert(0, os.path.join(ROOT, "Tools", "models"))
+    import scan_prep as S
+
+    sd = scan_dir()
+    tmp = Path(tempfile.gettempdir()) / "fix_validate_static_scores.csv"
+    rows = S.score(Path(sd) if sd else Path(ROOT) / "Builds" / "scan", out=tmp, quiet=True)
+    recorded = {}
+    if os.path.exists(RECORDED_SCORES):
+        with open(RECORDED_SCORES, encoding="utf-8", newline="") as fh:
+            for r in csv.DictReader(fh):
+                recorded[r["model"]] = r
+    visual = visual_grades()
+    problems, notes = [], []
+    over, under, rename, rebuild, lod_band, unscanned, fixed = [], [], {}, {}, [], [], []
+    for r in rows:
+        m = r["model"]
+        rec = recorded.get(m)
+        tris, lo, hi = int(r["triangles"]), int(r["budgetMin"]), int(r["budgetMax"])
+        if tris > hi:
+            over.append({"model": m, "class": r["budgetClass"], "triangles": tris, "max": hi, "over": r["overPct"]})
+        elif tris < lo:
+            under.append({"model": m, "class": r["budgetClass"], "triangles": tris, "min": lo})
+        parts = set(r["partsMissing"].split())
+        known = set(rec["partsMissing"].split()) if rec else set()
+        new = sorted(parts - known)
+        if new:
+            problems.append(f"{m} ({r['class']}): required parts missing that the pass 8 scores did not record: {', '.join(new)}")
+        old_parts = sorted(parts & known)
+        if old_parts:
+            # Modelled but not named (the sheet shows it inside a merged node): rename / split; a visual Kém: rebuild.
+            (rebuild if visual.get(m) == "Kém" else rename)[m] = old_parts
+        gone = sorted(known - parts)
+        if gone:
+            fixed.append(f"{m}: {', '.join(gone)}")
+        main_mz = [x for x in r["muzzlesMissing"].split("; ") if "(main)" in x]
+        if main_mz and not (rec and "(main)" in rec.get("muzzlesMissing", "")):
+            problems.append(f"{m}: main muzzle missing ({main_mz[0]})")
+        elif main_mz:
+            notes.append(f"{m}: main muzzle missing (recorded in the pass 8 backlog: {main_mz[0]})")
+        scan = os.path.join(sd, m + ".json") if sd else None
+        if scan and os.path.exists(scan):
+            try:
+                with open(scan, encoding="utf-8") as fh:
+                    sj = json.load(fh)
+            except (OSError, ValueError):
+                sj = {}
+            if not sj.get("triangles1"):
+                problems.append(f"{m}: no run-time LOD1 in its scan ({os.path.basename(scan)}: triangles1 = {sj.get('triangles1')})")
+            elif r["lod1Share"] != "" and not (S.LOD1_BAND[0] <= float(r["lod1Share"]) <= S.LOD1_BAND[1]):
+                lod_band.append(f"{m} {float(r['lod1Share']):.0%}")
+        else:
+            unscanned.append(m)
+    gone_models = sorted(set(recorded) - {r["model"] for r in rows})
+    summary = {"models": len(rows), "overBudgetInfo": len(over), "underBudget": len(under),
+               "withMissingParts": sum(1 for r in rows if r["partsMissing"]),
+               "missingPartsTotal": sum(len(r["partsMissing"].split()) for r in rows),
+               "renamingBacklog": len(rename), "rebuildBacklog": len(rebuild), "lod1OutsideBand": len(lod_band),
+               "scanned": len(rows) - len(unscanned), "notScanned": len(unscanned), "failures": len(problems), "scanDir": sd or ""}
+    notes.append(f"{len(rows)} models; over budget {len(over)} (INFO, kept: owner rule 02/10); under the floor {len(under)}")
+    notes.append(f"missing parts on {summary['withMissingParts']} models ({summary['missingPartsTotal']}): renaming backlog {len(rename)}, "
+                 f"rebuild backlog {len(rebuild)} (recorded by pass 8)")
+    notes.append(f"LOD1: {summary['scanned']} scanned, outside 35-65 % on {len(lod_band)} (note); not scanned: "
+                 + (", ".join(unscanned) if unscanned else "none") + ("" if sd else " (no scan dir: LOD presence not checked)"))
+    if fixed:
+        notes.append("recorded parts now present (rerun scan_prep.py to refresh static_scores.csv): " + "; ".join(fixed))
+    if gone_models:
+        notes.append("recorded models no longer scored: " + ", ".join(gone_models))
+    ctx["models"] = {
+        "summary": summary,
+        "overBudgetInfo": over, "underBudget": under,
+        "renamingBacklog": rename, "rebuildBacklog": rebuild,
+        "lod1OutsideBand": lod_band, "notScanned": unscanned,
+        "failures": problems,
+        "grades": {r["model"]: {"class": r["class"], "triangles": int(r["triangles"]), "budget": f"{r['budgetMin']}-{r['budgetMax']}",
+                                "budgetStatus": r["budgetStatus"], "partsMissing": r["partsMissing"].split(),
+                                "lod1Share": r["lod1Share"], "staticGrade": r["staticGrade"], "visualGrade": visual.get(r["model"], "")}
+                   for r in rows},
+    }
+    return problems, notes
+
+
 # ------------------------------------------------------------------------------------------------------------- 8
 
 
@@ -306,9 +427,9 @@ def item8(data, ctx):
 
 # ------------------------------------------------------------------------------------------------------------- run
 
-ITEMS = {1: item1, 2: item2, 3: item3, 4: item4, 5: item5, 6: item6, 8: item8}
+ITEMS = {1: item1, 2: item2, 3: item3, 4: item4, 5: item5, 6: item6, 7: item7, 8: item8}
 TITLES = {1: "calibre / warhead is data", 2: "same family, same round", 3: "rates against the source", 4: "declared targets can be damaged",
-          5: "warnings and rings", 6: "muzzles and flare mounts", 8: "audio: no keng, size table rises"}
+          5: "warnings and rings", 6: "muzzles and flare mounts", 7: "models: budget (info), parts, LOD", 8: "audio: no keng, size table rises"}
 
 
 def main(argv):
@@ -326,13 +447,26 @@ def main(argv):
             print(f"FAIL [{k}]: {p}")
         failed += bool(problems)
         print(f"{k} {TITLES[k]}: {'OK' if not problems else str(len(problems)) + ' problems'}")
-    if 3 in want or not argv:
+    if 3 in want or 7 in want:
+        # Each run refreshes the blocks of the items it ran and keeps the others (item 3: weapons; item 7: models).
+        out = {}
+        if os.path.exists(OUT):
+            try:
+                with open(OUT, encoding="utf-8") as fh:
+                    out = json.load(fh)
+            except (OSError, ValueError):
+                out = {}
+        out["note"] = ("Written by Tools/balance/fix_validate.py. weapons (item 3): each weapon a unit carries, its rounds a cycle and cycle, "
+                       "the audit's rate flags and the recorded reason; FixValidatorTests fails when the data no longer matches: rerun the "
+                       "script. models (item 7): the model check (over budget is info only, the owner's rule), the backlogs and the failures.")
+        if 3 in want:
+            out["recordedRateFlags"] = ctx.get("rates", {}) and {i: e["reason"] for i, e in ctx["rates"].items() if e["flags"]}
+            out["weapons"] = ctx.get("rates", {})
+        if 7 in want and "models" in ctx:
+            out["models"] = ctx["models"]
         os.makedirs(os.path.dirname(OUT), exist_ok=True)
         with open(OUT, "w", encoding="utf-8", newline="\n") as fh:
-            json.dump({"note": "Written by Tools/balance/fix_validate.py (item 3): each weapon a unit carries, its rounds a cycle and cycle, the audit's "
-                               "rate flags and the recorded reason. FixValidatorTests fails when the data no longer matches: rerun the script.",
-                       "recordedRateFlags": ctx.get("rates", {}) and {i: e["reason"] for i, e in ctx["rates"].items() if e["flags"]},
-                       "weapons": ctx.get("rates", {})}, fh, indent=1, sort_keys=True)
+            json.dump(out, fh, indent=1, sort_keys=True)
     return 1 if failed else 0
 
 

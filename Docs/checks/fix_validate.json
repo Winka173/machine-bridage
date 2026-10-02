@@ -1,5 +1,4491 @@
 {
- "note": "Written by Tools/balance/fix_validate.py (item 3): each weapon a unit carries, its rounds a cycle and cycle, the audit's rate flags and the recorded reason. FixValidatorTests fails when the data no longer matches: rerun the script.",
+ "models": {
+  "failures": [],
+  "grades": {
+   "aa_57mm_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.5,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "roof_mg",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6028,
+    "visualGrade": "T\u1ed1t"
+   },
+   "aa_gun_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.588,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1724,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "aa_gun_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.556,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3556,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "aa_turret": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.689,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6306,
+    "visualGrade": "T\u1ed1t"
+   },
+   "aa_turret_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.674,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6670,
+    "visualGrade": "T\u1ed1t"
+   },
+   "aa_turret_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.619,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 2610,
+    "visualGrade": "T\u1ed1t"
+   },
+   "aa_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.486,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4964,
+    "visualGrade": "T\u1ed1t"
+   },
+   "aerial_tanker": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "jet",
+    "lod1Share": 0.35,
+    "partsMissing": [
+     "tail",
+     "exhaust",
+     "pylons",
+     "stores"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4164,
+    "visualGrade": "T\u1ed1t"
+   },
+   "airborne_light_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.448,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "roof_mg",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5550,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "airborne_light_tank_chute": {
+    "budget": "0-7000",
+    "budgetStatus": "ok",
+    "class": "air_other",
+    "lod1Share": 0.344,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3514,
+    "visualGrade": "T\u1ed1t"
+   },
+   "airborne_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.61,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3260,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "airborne_vehicle_chute": {
+    "budget": "0-7000",
+    "budgetStatus": "ok",
+    "class": "air_other",
+    "lod1Share": 0.293,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3262,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ammo_carrier": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.543,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3388,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ammo_dump": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.524,
+    "partsMissing": [
+     "base",
+     "roof"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5276,
+    "visualGrade": "T\u1ed1t"
+   },
+   "amphib_light_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.524,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4606,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "armored_bulldozer": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.578,
+    "partsMissing": [
+     "turret",
+     "mantlet",
+     "idler",
+     "skirts",
+     "hatches",
+     "sight",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3244,
+    "visualGrade": "T\u1ed1t"
+   },
+   "armored_car": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.58,
+    "partsMissing": [
+     "glass",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2622,
+    "visualGrade": "T\u1ed1t"
+   },
+   "armored_train": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.088,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 21954,
+    "visualGrade": "T\u1ed1t"
+   },
+   "artillery": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.417,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "smoke"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5326,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "artillery_emplacement": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.558,
+    "partsMissing": [
+     "antenna"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7946,
+    "visualGrade": "T\u1ed1t"
+   },
+   "artillery_emplacement_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.499,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 8426,
+    "visualGrade": "T\u1ed1t"
+   },
+   "artillery_emplacement_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.729,
+    "partsMissing": [
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5878,
+    "visualGrade": "T\u1ed1t"
+   },
+   "at_gun_emplacement": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.627,
+    "partsMissing": [
+     "base",
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1384,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "atgm_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.545,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5374,
+    "visualGrade": "T\u1ed1t"
+   },
+   "atgm_tower_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.46,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5926,
+    "visualGrade": "T\u1ed1t"
+   },
+   "atgm_tower_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.515,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5974,
+    "visualGrade": "T\u1ed1t"
+   },
+   "attack_helicopter": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "helicopter",
+    "lod1Share": 0.381,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4722,
+    "visualGrade": "T\u1ed1t"
+   },
+   "attack_jet": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.313,
+    "partsMissing": [
+     "tail"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2732,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "auto_loader_howitzer": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.366,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 6520,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "ballistic_launcher": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.364,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2818,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "barrage_balloon": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.324,
+    "partsMissing": [
+     "walls",
+     "roof",
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1748,
+    "visualGrade": "T\u1ed1t"
+   },
+   "behemoth": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.16,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 21610,
+    "visualGrade": "T\u1ed1t"
+   },
+   "behemoth_inferno": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.214,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 20046,
+    "visualGrade": "T\u1ed1t"
+   },
+   "behemoth_tempest": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.157,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 17418,
+    "visualGrade": "T\u1ed1t"
+   },
+   "blast_wall": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 1.0,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 792,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "bmpt": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.496,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5056,
+    "visualGrade": "T\u1ed1t"
+   },
+   "bridging_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.467,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5148,
+    "visualGrade": "T\u1ed1t"
+   },
+   "bulwark_post": {
+    "budget": "2000-6000",
+    "budgetStatus": "under",
+    "class": "structure",
+    "lod1Share": 0.723,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1710,
+    "visualGrade": "T\u1ed1t"
+   },
+   "bunker_shelter_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.57,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1228,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "bunker_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "over",
+    "class": "tracked",
+    "lod1Share": 0.509,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7792,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "c_ram": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.496,
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6246,
+    "visualGrade": "T\u1ed1t"
+   },
+   "c_ram_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.486,
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6694,
+    "visualGrade": "T\u1ed1t"
+   },
+   "c_ram_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.44,
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7590,
+    "visualGrade": "T\u1ed1t"
+   },
+   "caspian": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.094,
+    "partsMissing": [
+     "superstructure"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 6766,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "cerberus": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.304,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 12434,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "coastal_ashm_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.343,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3508,
+    "visualGrade": "T\u1ed1t"
+   },
+   "coastal_battery": {
+    "budget": "2000-6000",
+    "budgetStatus": "ok",
+    "class": "structure",
+    "lod1Share": 0.406,
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4394,
+    "visualGrade": "T\u1ed1t"
+   },
+   "combat_wreck_car": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.46,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2794,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "command_airship": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.157,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 22840,
+    "visualGrade": "T\u1ed1t"
+   },
+   "command_hq": {
+    "budget": "2000-6000",
+    "budgetStatus": "ok",
+    "class": "hq",
+    "lod1Share": 0.354,
+    "partsMissing": [
+     "base",
+     "walls"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5982,
+    "visualGrade": "T\u1ed1t"
+   },
+   "command_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.506,
+    "partsMissing": [
+     "glass"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3084,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "counter_battery_radar": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.496,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2396,
+    "visualGrade": "T\u1ed1t"
+   },
+   "cp_relay": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.434,
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2434,
+    "visualGrade": "T\u1ed1t"
+   },
+   "cp_relay_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": "",
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2462,
+    "visualGrade": "-"
+   },
+   "cp_relay_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": "",
+    "partsMissing": [
+     "walls",
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1512,
+    "visualGrade": "-"
+   },
+   "daedalus": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.208,
+    "partsMissing": [
+     "running_gear"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 14772,
+    "visualGrade": "T\u1ed1t"
+   },
+   "dazzler_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.293,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4640,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "demolition_line_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.506,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "roof_mg",
+     "smoke"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6202,
+    "visualGrade": "T\u1ed1t"
+   },
+   "dragons_teeth": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.567,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 1556,
+    "visualGrade": "T\u1ed1t"
+   },
+   "dragons_teeth_a": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.503,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 2124,
+    "visualGrade": "T\u1ed1t"
+   },
+   "dragons_teeth_b": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.485,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 4232,
+    "visualGrade": "T\u1ed1t"
+   },
+   "drone_hangar": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.365,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7794,
+    "visualGrade": "T\u1ed1t"
+   },
+   "drone_hangar_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.377,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6634,
+    "visualGrade": "T\u1ed1t"
+   },
+   "drone_hangar_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.284,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 9770,
+    "visualGrade": "T\u1ed1t"
+   },
+   "drone_hijack_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.335,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3446,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "drone_mothership": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.151,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 20206,
+    "visualGrade": "T\u1ed1t"
+   },
+   "drone_net_tower": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.599,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 1378,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "drop_pod": {
+    "budget": "0-7000",
+    "budgetStatus": "ok",
+    "class": "air_other",
+    "lod1Share": 0.59,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2612,
+    "visualGrade": "T\u1ed1t"
+   },
+   "earth_borer": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.184,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 23130,
+    "visualGrade": "T\u1ed1t"
+   },
+   "elite_aa": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.481,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5456,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "elite_apc": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.534,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "roof_mg",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5480,
+    "visualGrade": "K\u00e9m"
+   },
+   "elite_attack_helicopter": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "helicopter",
+    "lod1Share": 0.413,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4398,
+    "visualGrade": "T\u1ed1t"
+   },
+   "elite_heavy_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.355,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5754,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "elite_mbt": {
+    "budget": "4000-7000",
+    "budgetStatus": "over",
+    "class": "tracked",
+    "lod1Share": 0.375,
+    "partsMissing": [
+     "mantlet",
+     "idler"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7288,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "elite_mlrs": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.575,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2692,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "elite_tank_destroyer": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.348,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4794,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "engineer_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.529,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3670,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "ew_jammer": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.487,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2274,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "ew_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.249,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5936,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ew_tower_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.328,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6268,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ew_tower_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.256,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5376,
+    "visualGrade": "T\u1ed1t"
+   },
+   "fibre_fpv_carrier": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.698,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1324,
+    "visualGrade": "K\u00e9m"
+   },
+   "fighter_jet": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "jet",
+    "lod1Share": 0.178,
+    "partsMissing": [
+     "tail"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4308,
+    "visualGrade": "T\u1ed1t"
+   },
+   "fire_control_centre": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.477,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 2874,
+    "visualGrade": "K\u00e9m"
+   },
+   "flame_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.463,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5258,
+    "visualGrade": "T\u1ed1t"
+   },
+   "flare_searchlight_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.442,
+    "partsMissing": [
+     "base",
+     "walls"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2296,
+    "visualGrade": "T\u1ed1t"
+   },
+   "flare_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.612,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5102,
+    "visualGrade": "K\u00e9m"
+   },
+   "fortress_bastion": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.121,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 25064,
+    "visualGrade": "T\u1ed1t"
+   },
+   "fortress_hive": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.188,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 19334,
+    "visualGrade": "T\u1ed1t"
+   },
+   "fpv_carrier": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.541,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2484,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "garuda": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.076,
+    "partsMissing": [
+     "body"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 2840,
+    "visualGrade": "K\u00e9m"
+   },
+   "glide_bomber": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.263,
+    "partsMissing": [
+     "intakes",
+     "exhaust",
+     "pylons"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1624,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "gps_jammer_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.312,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4396,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "grad_truck": {
+    "budget": "3000-5000",
+    "budgetStatus": "over",
+    "class": "wheeled",
+    "lod1Share": 0.42,
+    "partsMissing": [
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 6342,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ground_cruise_missile_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.342,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3868,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ground_drone_carrier": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.599,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4274,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "guard_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.233,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6772,
+    "visualGrade": "T\u1ed1t"
+   },
+   "guard_tower_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.203,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7488,
+    "visualGrade": "T\u1ed1t"
+   },
+   "guard_tower_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.681,
+    "partsMissing": [
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2746,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "gun_turret": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.265,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6430,
+    "visualGrade": "T\u1ed1t"
+   },
+   "gun_turret_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.206,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6702,
+    "visualGrade": "T\u1ed1t"
+   },
+   "gun_turret_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.361,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7006,
+    "visualGrade": "T\u1ed1t"
+   },
+   "gunship_heli": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "helicopter",
+    "lod1Share": 0.348,
+    "partsMissing": [
+     "stub_wings"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4660,
+    "visualGrade": "T\u1ed1t"
+   },
+   "headquarters": {
+    "budget": "2000-6000",
+    "budgetStatus": "over",
+    "class": "hq",
+    "lod1Share": 0.285,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 14164,
+    "visualGrade": "T\u1ed1t"
+   },
+   "heavy_aa": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.286,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4524,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "heavy_bomber": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.136,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3540,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "heavy_flak_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.844,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 8902,
+    "visualGrade": "K\u00e9m"
+   },
+   "heavy_lift_helicopter": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "helicopter",
+    "lod1Share": 0.39,
+    "partsMissing": [
+     "weapons"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3858,
+    "visualGrade": "T\u1ed1t"
+   },
+   "heavy_rocket_artillery": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.491,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3668,
+    "visualGrade": "T\u1ed1t"
+   },
+   "heavy_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.357,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5662,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "heavy_turret": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.334,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 9514,
+    "visualGrade": "T\u1ed1t"
+   },
+   "heavy_turret_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.276,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 9670,
+    "visualGrade": "T\u1ed1t"
+   },
+   "heavy_turret_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.315,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 11958,
+    "visualGrade": "T\u1ed1t"
+   },
+   "helipad": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.202,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1032,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "helipad_a": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.335,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1252,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "helipad_b": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.358,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 1988,
+    "visualGrade": "T\u1ed1t"
+   },
+   "hover_gunboat": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "ground",
+    "lod1Share": 0.45,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2202,
+    "visualGrade": "K\u00e9m"
+   },
+   "hydra_sub": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.117,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 7548,
+    "visualGrade": "T\u1ed1t"
+   },
+   "hyperion": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.155,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 7914,
+    "visualGrade": "T\u1ed1t"
+   },
+   "ifv": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.534,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "roof_mg",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5040,
+    "visualGrade": "T\u1ed1t"
+   },
+   "inflatable_decoy": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.467,
+    "partsMissing": [
+     "base",
+     "walls",
+     "roof",
+     "antenna"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1378,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "interceptor_drone_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.652,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4068,
+    "visualGrade": "K\u00e9m"
+   },
+   "interceptor_jet": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.247,
+    "partsMissing": [
+     "exhaust",
+     "pylons"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1500,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "iron_beam": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.555,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2888,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "ixion": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.367,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 17324,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "kraken": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.041,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 10796,
+    "visualGrade": "T\u1ed1t"
+   },
+   "kronos": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.092,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 13194,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "lancet_truck": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.464,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2314,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "landing_craft": {
+    "budget": "8000-15000",
+    "budgetStatus": "under",
+    "class": "ship",
+    "lod1Share": 0.289,
+    "partsMissing": [
+     "mast",
+     "turrets",
+     "ciws",
+     "boats"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 498,
+    "visualGrade": "K\u00e9m"
+   },
+   "landing_hovercraft": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.126,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 16984,
+    "visualGrade": "T\u1ed1t"
+   },
+   "laser_ad_station": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.831,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3434,
+    "visualGrade": "K\u00e9m"
+   },
+   "laser_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.549,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3844,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "leviathan": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.043,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 26744,
+    "visualGrade": "T\u1ed1t"
+   },
+   "light_attack_heli": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "helicopter",
+    "lod1Share": 0.533,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3418,
+    "visualGrade": "T\u1ed1t"
+   },
+   "light_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.509,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4350,
+    "visualGrade": "T\u1ed1t"
+   },
+   "logistics_station": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.321,
+    "partsMissing": [
+     "walls",
+     "roof",
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1576,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "long_sam": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.462,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2980,
+    "visualGrade": "T\u1ed1t"
+   },
+   "main_battle_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "over",
+    "class": "tracked",
+    "lod1Share": 0.377,
+    "partsMissing": [
+     "mantlet",
+     "idler"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 7196,
+    "visualGrade": "T\u1ed1t"
+   },
+   "manpads_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.838,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1750,
+    "visualGrade": "T\u1ed1t"
+   },
+   "mega_gunship": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.175,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 11476,
+    "visualGrade": "T\u1ed1t"
+   },
+   "mg_bunker": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.694,
+    "partsMissing": [
+     "base"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3904,
+    "visualGrade": "T\u1ed1t"
+   },
+   "mg_bunker_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.622,
+    "partsMissing": [
+     "base"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4204,
+    "visualGrade": "T\u1ed1t"
+   },
+   "mg_bunker_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.613,
+    "partsMissing": [
+     "base"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4060,
+    "visualGrade": "T\u1ed1t"
+   },
+   "microwave_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.632,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 4914,
+    "visualGrade": "K\u00e9m"
+   },
+   "mine_layer": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.422,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3872,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "mine_rocket_truck": {
+    "budget": "3000-5000",
+    "budgetStatus": "over",
+    "class": "wheeled",
+    "lod1Share": 0.381,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5012,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "minefield": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.465,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 3198,
+    "visualGrade": "T\u1ed1t"
+   },
+   "minefield_a": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": "",
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 3780,
+    "visualGrade": "-"
+   },
+   "minefield_b": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": "",
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 4560,
+    "visualGrade": "-"
+   },
+   "missile_battery": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.436,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7242,
+    "visualGrade": "T\u1ed1t"
+   },
+   "missile_battery_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.388,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 8654,
+    "visualGrade": "T\u1ed1t"
+   },
+   "missile_battery_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.386,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7290,
+    "visualGrade": "T\u1ed1t"
+   },
+   "missile_boat": {
+    "budget": "8000-15000",
+    "budgetStatus": "under",
+    "class": "ship",
+    "lod1Share": 0.267,
+    "partsMissing": [
+     "turrets",
+     "ciws",
+     "boats"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 630,
+    "visualGrade": "K\u00e9m"
+   },
+   "mlrs": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.576,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2652,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "mobile_fortress": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.172,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 23256,
+    "visualGrade": "T\u1ed1t"
+   },
+   "mobile_repair_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.382,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3668,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "moloch": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.115,
+    "partsMissing": [
+     "running_gear"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 10244,
+    "visualGrade": "K\u00e9m"
+   },
+   "monster": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.122,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 23626,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "morrigan": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.204,
+    "partsMissing": [
+     "running_gear"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1344,
+    "visualGrade": "K\u00e9m"
+   },
+   "mortar_carrier": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.637,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3242,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "next_gen_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.387,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6620,
+    "visualGrade": "T\u1ed1t"
+   },
+   "nlos_atgm_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.503,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 4918,
+    "visualGrade": "K\u00e9m"
+   },
+   "nuke_train": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.051,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 36310,
+    "visualGrade": "T\u1ed1t"
+   },
+   "nyx": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.118,
+    "partsMissing": [
+     "superstructure"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3526,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "one_shot_atgm_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.658,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2186,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "prop_attack_plane": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.539,
+    "partsMissing": [
+     "tail",
+     "intakes",
+     "exhaust"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2994,
+    "visualGrade": "T\u1ed1t"
+   },
+   "radar_atgm_vehicle": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.576,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "hatches",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 2672,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "radar_scout": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.661,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3362,
+    "visualGrade": "K\u00e9m"
+   },
+   "radar_site": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.56,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4252,
+    "visualGrade": "K\u00e9m"
+   },
+   "radar_support_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.54,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3368,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "rail_supergun": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.034,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 36726,
+    "visualGrade": "T\u1ed1t"
+   },
+   "railgun_truck": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.352,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2924,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "recoilless_gun_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.687,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2318,
+    "visualGrade": "T\u1ed1t"
+   },
+   "recoilless_jeep": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.649,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 3386,
+    "visualGrade": "K\u00e9m"
+   },
+   "recon_drone": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.452,
+    "partsMissing": [
+     "canopy",
+     "tail",
+     "intakes",
+     "exhaust",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 890,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "recon_jet": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.326,
+    "partsMissing": [
+     "intakes",
+     "exhaust",
+     "pylons",
+     "stores",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 768,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "repair_bay": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.378,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5214,
+    "visualGrade": "K\u00e9m"
+   },
+   "river_gunboat": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "ground",
+    "lod1Share": 0.327,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2302,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "river_patrol_boat": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "ground",
+    "lod1Share": 0.374,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1624,
+    "visualGrade": "K\u00e9m"
+   },
+   "rocket_technical": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.481,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2948,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "rocket_turret": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.547,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4410,
+    "visualGrade": "T\u1ed1t"
+   },
+   "rocket_turret_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.566,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5554,
+    "visualGrade": "T\u1ed1t"
+   },
+   "rocket_turret_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.537,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 3526,
+    "visualGrade": "T\u1ed1t"
+   },
+   "sam_launcher": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.491,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "hatches",
+     "sight",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4418,
+    "visualGrade": "T\u1ed1t"
+   },
+   "scout_heli": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "helicopter",
+    "lod1Share": 0.557,
+    "partsMissing": [
+     "stub_wings"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2602,
+    "visualGrade": "T\u1ed1t"
+   },
+   "scout_jeep": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.621,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2422,
+    "visualGrade": "T\u1ed1t"
+   },
+   "sea_corvette": {
+    "budget": "8000-15000",
+    "budgetStatus": "under",
+    "class": "ship",
+    "lod1Share": 0.162,
+    "partsMissing": [
+     "boats"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1884,
+    "visualGrade": "K\u00e9m"
+   },
+   "sea_cruiser": {
+    "budget": "8000-15000",
+    "budgetStatus": "under",
+    "class": "ship",
+    "lod1Share": 0.081,
+    "partsMissing": [
+     "boats"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5416,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "searchlight": {
+    "budget": "2000-4000",
+    "budgetStatus": "under",
+    "class": "tower",
+    "lod1Share": 0.616,
+    "partsMissing": [
+     "base",
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1292,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "shahed_truck": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.673,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2616,
+    "visualGrade": "T\u1ed1t"
+   },
+   "shield_carrier": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.592,
+    "partsMissing": [
+     "axles",
+     "glass",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 2476,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "shield_tower": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.373,
+    "partsMissing": [
+     "walls",
+     "roof",
+     "antenna"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5404,
+    "visualGrade": "T\u1ed1t"
+   },
+   "shield_tower_a": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.442,
+    "partsMissing": [
+     "walls",
+     "antenna"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 7260,
+    "visualGrade": "T\u1ed1t"
+   },
+   "shield_tower_b": {
+    "budget": "2000-4000",
+    "budgetStatus": "over",
+    "class": "tower",
+    "lod1Share": 0.334,
+    "partsMissing": [
+     "walls",
+     "roof",
+     "antenna"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6236,
+    "visualGrade": "T\u1ed1t"
+   },
+   "shorad_vehicle": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.613,
+    "partsMissing": [
+     "axles",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2000,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "siege_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.488,
+    "partsMissing": [
+     "hull",
+     "mantlet",
+     "idler",
+     "skirts",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 5924,
+    "visualGrade": "T\u1ed1t"
+   },
+   "silver_bug": {
+    "budget": "10000-20000",
+    "budgetStatus": "over",
+    "class": "boss",
+    "lod1Share": 0.082,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 21760,
+    "visualGrade": "T\u1ed1t"
+   },
+   "sky_fortress": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.251,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3084,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "sky_gunship": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.257,
+    "partsMissing": [
+     "tail",
+     "intakes",
+     "exhaust",
+     "pylons"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3652,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "smoke_carrier": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.647,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "sight",
+     "roof_mg",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3698,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "sp_mortar": {
+    "budget": "3000-5000",
+    "budgetStatus": "over",
+    "class": "wheeled",
+    "lod1Share": 0.488,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5748,
+    "visualGrade": "K\u00e9m"
+   },
+   "stealth_bomber": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.36,
+    "partsMissing": [
+     "tail",
+     "pylons",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 2096,
+    "visualGrade": "T\u1ed1t"
+   },
+   "stealth_fighter": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.156,
+    "partsMissing": [
+     "tail",
+     "intakes",
+     "pylons"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3336,
+    "visualGrade": "T\u1ed1t"
+   },
+   "stealth_naval_strike": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.103,
+    "partsMissing": [
+     "fuselage",
+     "tail",
+     "pylons",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 2124,
+    "visualGrade": "K\u00e9m"
+   },
+   "strike_drone": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.167,
+    "partsMissing": [
+     "canopy",
+     "tail",
+     "intakes",
+     "exhaust",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1968,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "stymphalos": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.147,
+    "partsMissing": [
+     "body",
+     "lift"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4186,
+    "visualGrade": "T\u1ed1t"
+   },
+   "super_gun": {
+    "budget": "2000-6000",
+    "budgetStatus": "ok",
+    "class": "structure",
+    "lod1Share": 0.393,
+    "partsMissing": [
+     "walls"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4266,
+    "visualGrade": "T\u1ed1t"
+   },
+   "supply_truck": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.472,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 2862,
+    "visualGrade": "T\u1ed1t"
+   },
+   "supreme_command": {
+    "budget": "10000-20000",
+    "budgetStatus": "ok",
+    "class": "boss",
+    "lod1Share": 0.239,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 10214,
+    "visualGrade": "T\u1ed1t"
+   },
+   "swarm_carrier": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.182,
+    "partsMissing": [
+     "tail",
+     "intakes",
+     "exhaust",
+     "pylons",
+     "stores"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3464,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "tank_destroyer": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.352,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "skirts",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4702,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "targeting_station": {
+    "budget": "2000-6000",
+    "budgetStatus": "ok",
+    "class": "structure",
+    "lod1Share": 0.349,
+    "partsMissing": [
+     "roof"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4446,
+    "visualGrade": "T\u1ed1t"
+   },
+   "thermobaric_launcher": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "tracked",
+    "lod1Share": 0.564,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 4982,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "titan_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "over",
+    "class": "tracked",
+    "lod1Share": 0.302,
+    "partsMissing": [
+     "mantlet",
+     "idler",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 8384,
+    "visualGrade": "T\u1ed1t"
+   },
+   "towed_at_gun": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.256,
+    "partsMissing": [
+     "axles",
+     "cab",
+     "glass",
+     "lights"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1996,
+    "visualGrade": "T\u1ed1t"
+   },
+   "troop_shelter": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.782,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3158,
+    "visualGrade": "K\u00e9m"
+   },
+   "turtle_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "tracked",
+    "lod1Share": 0.448,
+    "partsMissing": [
+     "hull",
+     "mantlet",
+     "idler",
+     "skirts",
+     "hatches",
+     "sight",
+     "roof_mg",
+     "smoke",
+     "stowage"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 3938,
+    "visualGrade": "T\u1ed1t"
+   },
+   "twin_rotor_gunship": {
+    "budget": "4000-7000",
+    "budgetStatus": "ok",
+    "class": "helicopter",
+    "lod1Share": 0.311,
+    "partsMissing": [
+     "tail_rotor"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 4366,
+    "visualGrade": "T\u1ed1t"
+   },
+   "twin_tank": {
+    "budget": "4000-7000",
+    "budgetStatus": "over",
+    "class": "tracked",
+    "lod1Share": 0.367,
+    "partsMissing": [
+     "mantlet",
+     "idler"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 7154,
+    "visualGrade": "T\u1ed1t"
+   },
+   "typhon": {
+    "budget": "10000-20000",
+    "budgetStatus": "under",
+    "class": "boss",
+    "lod1Share": 0.259,
+    "partsMissing": [],
+    "staticGrade": "K\u00e9m",
+    "triangles": 6876,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "uav_loiter_strike": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.255,
+    "partsMissing": [
+     "canopy",
+     "tail",
+     "intakes",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1084,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "vbied": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.661,
+    "partsMissing": [
+     "axles",
+     "glass"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1574,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "visual_jammer": {
+    "budget": "2000-4000",
+    "budgetStatus": "ok",
+    "class": "tower",
+    "lod1Share": 0.486,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 3672,
+    "visualGrade": "K\u00e9m"
+   },
+   "wall_gun": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.626,
+    "partsMissing": [],
+    "staticGrade": "T\u1ed1t",
+    "triangles": 2672,
+    "visualGrade": "T\u1ed1t"
+   },
+   "wall_hesco": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.697,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3276,
+    "visualGrade": "T\u1ed1t"
+   },
+   "wall_t": {
+    "budget": "0-6000",
+    "budgetStatus": "ok",
+    "class": "obstacle",
+    "lod1Share": 0.181,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1798,
+    "visualGrade": "T\u1ed1t"
+   },
+   "wheeled_gun": {
+    "budget": "3000-5000",
+    "budgetStatus": "ok",
+    "class": "wheeled",
+    "lod1Share": 0.351,
+    "partsMissing": [
+     "axles",
+     "glass",
+     "stowage"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 3058,
+    "visualGrade": "T\u1ed1t"
+   },
+   "wheeled_howitzer": {
+    "budget": "3000-5000",
+    "budgetStatus": "over",
+    "class": "wheeled",
+    "lod1Share": 0.355,
+    "partsMissing": [],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 5026,
+    "visualGrade": "K\u00e9m"
+   },
+   "wingman_drone": {
+    "budget": "4000-7000",
+    "budgetStatus": "under",
+    "class": "jet",
+    "lod1Share": 0.271,
+    "partsMissing": [
+     "canopy",
+     "tail",
+     "flares"
+    ],
+    "staticGrade": "K\u00e9m",
+    "triangles": 1064,
+    "visualGrade": "C\u1ea7n s\u1eeda"
+   },
+   "zu23_technical": {
+    "budget": "3000-5000",
+    "budgetStatus": "under",
+    "class": "wheeled",
+    "lod1Share": 0.525,
+    "partsMissing": [
+     "axles"
+    ],
+    "staticGrade": "C\u1ea7n s\u1eeda",
+    "triangles": 1996,
+    "visualGrade": "T\u1ed1t"
+   }
+  },
+  "lod1OutsideBand": [
+   "aa_turret 69%",
+   "aa_turret_a 67%",
+   "airborne_light_tank_chute 34%",
+   "airborne_vehicle_chute 29%",
+   "armored_train 9%",
+   "artillery_emplacement_b 73%",
+   "attack_jet 31%",
+   "barrage_balloon 32%",
+   "behemoth 16%",
+   "behemoth_inferno 21%",
+   "behemoth_tempest 16%",
+   "blast_wall 100%",
+   "bulwark_post 72%",
+   "caspian 9%",
+   "cerberus 30%",
+   "coastal_ashm_vehicle 34%",
+   "command_airship 16%",
+   "daedalus 21%",
+   "dazzler_vehicle 29%",
+   "drone_hangar_b 28%",
+   "drone_hijack_vehicle 34%",
+   "drone_mothership 15%",
+   "earth_borer 18%",
+   "elite_tank_destroyer 35%",
+   "ew_tower 25%",
+   "ew_tower_a 33%",
+   "ew_tower_b 26%",
+   "fibre_fpv_carrier 70%",
+   "fighter_jet 18%",
+   "fortress_bastion 12%",
+   "fortress_hive 19%",
+   "garuda 8%",
+   "glide_bomber 26%",
+   "gps_jammer_vehicle 31%",
+   "ground_cruise_missile_vehicle 34%",
+   "guard_tower 23%",
+   "guard_tower_a 20%",
+   "guard_tower_b 68%",
+   "gun_turret 26%",
+   "gun_turret_a 21%",
+   "gunship_heli 35%",
+   "headquarters 28%",
+   "heavy_aa 29%",
+   "heavy_bomber 14%",
+   "heavy_flak_tower 84%",
+   "heavy_turret 33%",
+   "heavy_turret_a 28%",
+   "heavy_turret_b 32%",
+   "helipad 20%",
+   "helipad_a 34%",
+   "hydra_sub 12%",
+   "hyperion 16%",
+   "interceptor_drone_vehicle 65%",
+   "interceptor_jet 25%",
+   "kraken 4%",
+   "kronos 9%",
+   "landing_craft 29%",
+   "landing_hovercraft 13%",
+   "laser_ad_station 83%",
+   "leviathan 4%",
+   "logistics_station 32%",
+   "manpads_tower 84%",
+   "mega_gunship 18%",
+   "mg_bunker 69%",
+   "missile_boat 27%",
+   "mobile_fortress 17%",
+   "moloch 12%",
+   "monster 12%",
+   "morrigan 20%",
+   "nuke_train 5%",
+   "nyx 12%",
+   "one_shot_atgm_tower 66%",
+   "radar_scout 66%",
+   "rail_supergun 3%",
+   "recoilless_gun_tower 69%",
+   "recon_jet 33%",
+   "river_gunboat 33%",
+   "sea_corvette 16%",
+   "sea_cruiser 8%",
+   "shahed_truck 67%",
+   "shield_tower_b 33%",
+   "silver_bug 8%",
+   "sky_fortress 25%",
+   "sky_gunship 26%",
+   "stealth_fighter 16%",
+   "stealth_naval_strike 10%",
+   "strike_drone 17%",
+   "stymphalos 15%",
+   "supreme_command 24%",
+   "swarm_carrier 18%",
+   "targeting_station 35%",
+   "titan_tank 30%",
+   "towed_at_gun 26%",
+   "troop_shelter 78%",
+   "twin_rotor_gunship 31%",
+   "typhon 26%",
+   "uav_loiter_strike 26%",
+   "vbied 66%",
+   "wall_hesco 70%",
+   "wall_t 18%",
+   "wingman_drone 27%"
+  ],
+  "notScanned": [
+   "cp_relay_a",
+   "cp_relay_b",
+   "minefield_a",
+   "minefield_b"
+  ],
+  "overBudgetInfo": [
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "aa_turret",
+    "over": "+58%",
+    "triangles": 6306
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "aa_turret_a",
+    "over": "+67%",
+    "triangles": 6670
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "ammo_dump",
+    "over": "+32%",
+    "triangles": 5276
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "armored_train",
+    "over": "+10%",
+    "triangles": 21954
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "artillery_emplacement",
+    "over": "+99%",
+    "triangles": 7946
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "artillery_emplacement_a",
+    "over": "+111%",
+    "triangles": 8426
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "artillery_emplacement_b",
+    "over": "+47%",
+    "triangles": 5878
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "atgm_tower",
+    "over": "+34%",
+    "triangles": 5374
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "atgm_tower_a",
+    "over": "+48%",
+    "triangles": 5926
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "atgm_tower_b",
+    "over": "+49%",
+    "triangles": 5974
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "behemoth",
+    "over": "+8%",
+    "triangles": 21610
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "behemoth_inferno",
+    "over": "+0%",
+    "triangles": 20046
+   },
+   {
+    "class": "heavy",
+    "max": 7000,
+    "model": "bunker_vehicle",
+    "over": "+11%",
+    "triangles": 7792
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "c_ram",
+    "over": "+56%",
+    "triangles": 6246
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "c_ram_a",
+    "over": "+67%",
+    "triangles": 6694
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "c_ram_b",
+    "over": "+90%",
+    "triangles": 7590
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "command_airship",
+    "over": "+14%",
+    "triangles": 22840
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "drone_hangar",
+    "over": "+95%",
+    "triangles": 7794
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "drone_hangar_a",
+    "over": "+66%",
+    "triangles": 6634
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "drone_hangar_b",
+    "over": "+144%",
+    "triangles": 9770
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "drone_mothership",
+    "over": "+1%",
+    "triangles": 20206
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "earth_borer",
+    "over": "+16%",
+    "triangles": 23130
+   },
+   {
+    "class": "heavy",
+    "max": 7000,
+    "model": "elite_mbt",
+    "over": "+4%",
+    "triangles": 7288
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "ew_tower",
+    "over": "+48%",
+    "triangles": 5936
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "ew_tower_a",
+    "over": "+57%",
+    "triangles": 6268
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "ew_tower_b",
+    "over": "+34%",
+    "triangles": 5376
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "flare_tower",
+    "over": "+28%",
+    "triangles": 5102
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "fortress_bastion",
+    "over": "+25%",
+    "triangles": 25064
+   },
+   {
+    "class": "light",
+    "max": 5000,
+    "model": "grad_truck",
+    "over": "+27%",
+    "triangles": 6342
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "guard_tower",
+    "over": "+69%",
+    "triangles": 6772
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "guard_tower_a",
+    "over": "+87%",
+    "triangles": 7488
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "gun_turret",
+    "over": "+61%",
+    "triangles": 6430
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "gun_turret_a",
+    "over": "+68%",
+    "triangles": 6702
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "gun_turret_b",
+    "over": "+75%",
+    "triangles": 7006
+   },
+   {
+    "class": "hq",
+    "max": 6000,
+    "model": "headquarters",
+    "over": "+136%",
+    "triangles": 14164
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "heavy_flak_tower",
+    "over": "+123%",
+    "triangles": 8902
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "heavy_turret",
+    "over": "+138%",
+    "triangles": 9514
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "heavy_turret_a",
+    "over": "+142%",
+    "triangles": 9670
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "heavy_turret_b",
+    "over": "+199%",
+    "triangles": 11958
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "leviathan",
+    "over": "+34%",
+    "triangles": 26744
+   },
+   {
+    "class": "heavy",
+    "max": 7000,
+    "model": "main_battle_tank",
+    "over": "+3%",
+    "triangles": 7196
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "mg_bunker_a",
+    "over": "+5%",
+    "triangles": 4204
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "mg_bunker_b",
+    "over": "+1%",
+    "triangles": 4060
+   },
+   {
+    "class": "light",
+    "max": 5000,
+    "model": "mine_rocket_truck",
+    "over": "+0%",
+    "triangles": 5012
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "missile_battery",
+    "over": "+81%",
+    "triangles": 7242
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "missile_battery_a",
+    "over": "+116%",
+    "triangles": 8654
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "missile_battery_b",
+    "over": "+82%",
+    "triangles": 7290
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "mobile_fortress",
+    "over": "+16%",
+    "triangles": 23256
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "monster",
+    "over": "+18%",
+    "triangles": 23626
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "nuke_train",
+    "over": "+82%",
+    "triangles": 36310
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "radar_site",
+    "over": "+6%",
+    "triangles": 4252
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "rail_supergun",
+    "over": "+84%",
+    "triangles": 36726
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "repair_bay",
+    "over": "+30%",
+    "triangles": 5214
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "rocket_turret",
+    "over": "+10%",
+    "triangles": 4410
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "rocket_turret_a",
+    "over": "+39%",
+    "triangles": 5554
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "shield_tower",
+    "over": "+35%",
+    "triangles": 5404
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "shield_tower_a",
+    "over": "+82%",
+    "triangles": 7260
+   },
+   {
+    "class": "tower",
+    "max": 4000,
+    "model": "shield_tower_b",
+    "over": "+56%",
+    "triangles": 6236
+   },
+   {
+    "class": "boss",
+    "max": 20000,
+    "model": "silver_bug",
+    "over": "+9%",
+    "triangles": 21760
+   },
+   {
+    "class": "light",
+    "max": 5000,
+    "model": "sp_mortar",
+    "over": "+15%",
+    "triangles": 5748
+   },
+   {
+    "class": "heavy",
+    "max": 7000,
+    "model": "titan_tank",
+    "over": "+20%",
+    "triangles": 8384
+   },
+   {
+    "class": "heavy",
+    "max": 7000,
+    "model": "twin_tank",
+    "over": "+2%",
+    "triangles": 7154
+   },
+   {
+    "class": "light",
+    "max": 5000,
+    "model": "wheeled_howitzer",
+    "over": "+1%",
+    "triangles": 5026
+   }
+  ],
+  "rebuildBacklog": {
+   "elite_apc": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "stowage"
+   ],
+   "fibre_fpv_carrier": [
+    "axles"
+   ],
+   "garuda": [
+    "body"
+   ],
+   "landing_craft": [
+    "boats",
+    "ciws",
+    "mast",
+    "turrets"
+   ],
+   "missile_boat": [
+    "boats",
+    "ciws",
+    "turrets"
+   ],
+   "moloch": [
+    "running_gear"
+   ],
+   "morrigan": [
+    "running_gear"
+   ],
+   "sea_corvette": [
+    "boats"
+   ],
+   "stealth_naval_strike": [
+    "flares",
+    "fuselage",
+    "pylons",
+    "tail"
+   ]
+  },
+  "renamingBacklog": {
+   "aa_57mm_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "stowage"
+   ],
+   "aa_gun_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "aa_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "smoke",
+    "stowage"
+   ],
+   "aerial_tanker": [
+    "exhaust",
+    "pylons",
+    "stores",
+    "tail"
+   ],
+   "airborne_light_tank": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "stowage"
+   ],
+   "airborne_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "ammo_carrier": [
+    "axles"
+   ],
+   "ammo_dump": [
+    "base",
+    "roof"
+   ],
+   "amphib_light_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "armored_bulldozer": [
+    "hatches",
+    "idler",
+    "mantlet",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage",
+    "turret"
+   ],
+   "armored_car": [
+    "glass",
+    "stowage"
+   ],
+   "artillery": [
+    "idler",
+    "mantlet",
+    "skirts",
+    "smoke"
+   ],
+   "artillery_emplacement": [
+    "antenna"
+   ],
+   "artillery_emplacement_b": [
+    "antenna"
+   ],
+   "at_gun_emplacement": [
+    "antenna",
+    "base"
+   ],
+   "attack_jet": [
+    "tail"
+   ],
+   "auto_loader_howitzer": [
+    "idler",
+    "mantlet",
+    "stowage"
+   ],
+   "ballistic_launcher": [
+    "axles",
+    "stowage"
+   ],
+   "barrage_balloon": [
+    "antenna",
+    "roof",
+    "walls"
+   ],
+   "bmpt": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "smoke",
+    "stowage"
+   ],
+   "bridging_vehicle": [
+    "idler",
+    "mantlet",
+    "smoke",
+    "stowage"
+   ],
+   "bunker_vehicle": [
+    "idler",
+    "mantlet",
+    "skirts",
+    "stowage"
+   ],
+   "c_ram": [
+    "walls"
+   ],
+   "c_ram_a": [
+    "walls"
+   ],
+   "c_ram_b": [
+    "walls"
+   ],
+   "caspian": [
+    "superstructure"
+   ],
+   "coastal_ashm_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "coastal_battery": [
+    "walls"
+   ],
+   "combat_wreck_car": [
+    "axles",
+    "stowage"
+   ],
+   "command_hq": [
+    "base",
+    "walls"
+   ],
+   "command_vehicle": [
+    "glass"
+   ],
+   "counter_battery_radar": [
+    "axles",
+    "stowage"
+   ],
+   "cp_relay": [
+    "walls"
+   ],
+   "cp_relay_a": [
+    "walls"
+   ],
+   "cp_relay_b": [
+    "antenna",
+    "walls"
+   ],
+   "daedalus": [
+    "running_gear"
+   ],
+   "dazzler_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "demolition_line_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "smoke"
+   ],
+   "drone_hijack_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "elite_aa": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "smoke",
+    "stowage"
+   ],
+   "elite_heavy_tank": [
+    "idler",
+    "mantlet",
+    "stowage"
+   ],
+   "elite_mbt": [
+    "idler",
+    "mantlet"
+   ],
+   "elite_mlrs": [
+    "axles",
+    "stowage"
+   ],
+   "elite_tank_destroyer": [
+    "idler",
+    "mantlet",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "engineer_vehicle": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "ew_jammer": [
+    "axles",
+    "stowage"
+   ],
+   "fighter_jet": [
+    "tail"
+   ],
+   "flame_tank": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "flare_searchlight_tower": [
+    "base",
+    "walls"
+   ],
+   "fpv_carrier": [
+    "axles"
+   ],
+   "glide_bomber": [
+    "exhaust",
+    "intakes",
+    "pylons"
+   ],
+   "gps_jammer_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "grad_truck": [
+    "stowage"
+   ],
+   "ground_cruise_missile_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "ground_drone_carrier": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "guard_tower_b": [
+    "antenna"
+   ],
+   "gunship_heli": [
+    "stub_wings"
+   ],
+   "heavy_aa": [
+    "axles",
+    "stowage"
+   ],
+   "heavy_lift_helicopter": [
+    "weapons"
+   ],
+   "heavy_rocket_artillery": [
+    "axles",
+    "stowage"
+   ],
+   "heavy_tank": [
+    "idler",
+    "mantlet",
+    "stowage"
+   ],
+   "ifv": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "stowage"
+   ],
+   "inflatable_decoy": [
+    "antenna",
+    "base",
+    "roof",
+    "walls"
+   ],
+   "interceptor_jet": [
+    "exhaust",
+    "pylons"
+   ],
+   "iron_beam": [
+    "axles",
+    "stowage"
+   ],
+   "lancet_truck": [
+    "axles"
+   ],
+   "laser_tank": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "light_tank": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "logistics_station": [
+    "antenna",
+    "roof",
+    "walls"
+   ],
+   "long_sam": [
+    "axles",
+    "stowage"
+   ],
+   "main_battle_tank": [
+    "idler",
+    "mantlet"
+   ],
+   "mg_bunker": [
+    "base"
+   ],
+   "mg_bunker_a": [
+    "base"
+   ],
+   "mg_bunker_b": [
+    "base"
+   ],
+   "mine_layer": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "mine_rocket_truck": [
+    "axles",
+    "stowage"
+   ],
+   "mlrs": [
+    "axles",
+    "stowage"
+   ],
+   "mobile_repair_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "mortar_carrier": [
+    "idler",
+    "mantlet",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "next_gen_tank": [
+    "idler",
+    "mantlet",
+    "smoke",
+    "stowage"
+   ],
+   "nyx": [
+    "superstructure"
+   ],
+   "prop_attack_plane": [
+    "exhaust",
+    "intakes",
+    "tail"
+   ],
+   "radar_atgm_vehicle": [
+    "hatches",
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "radar_support_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "railgun_truck": [
+    "axles",
+    "stowage"
+   ],
+   "recon_drone": [
+    "canopy",
+    "exhaust",
+    "flares",
+    "intakes",
+    "tail"
+   ],
+   "recon_jet": [
+    "exhaust",
+    "flares",
+    "intakes",
+    "pylons",
+    "stores"
+   ],
+   "rocket_technical": [
+    "axles",
+    "stowage"
+   ],
+   "sam_launcher": [
+    "hatches",
+    "idler",
+    "mantlet",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "scout_heli": [
+    "stub_wings"
+   ],
+   "scout_jeep": [
+    "axles"
+   ],
+   "sea_cruiser": [
+    "boats"
+   ],
+   "searchlight": [
+    "antenna",
+    "base"
+   ],
+   "shahed_truck": [
+    "axles"
+   ],
+   "shield_carrier": [
+    "axles",
+    "glass",
+    "stowage"
+   ],
+   "shield_tower": [
+    "antenna",
+    "roof",
+    "walls"
+   ],
+   "shield_tower_a": [
+    "antenna",
+    "walls"
+   ],
+   "shield_tower_b": [
+    "antenna",
+    "roof",
+    "walls"
+   ],
+   "shorad_vehicle": [
+    "axles",
+    "stowage"
+   ],
+   "siege_tank": [
+    "hull",
+    "idler",
+    "mantlet",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "sky_gunship": [
+    "exhaust",
+    "intakes",
+    "pylons",
+    "tail"
+   ],
+   "smoke_carrier": [
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "stowage"
+   ],
+   "stealth_bomber": [
+    "flares",
+    "pylons",
+    "tail"
+   ],
+   "stealth_fighter": [
+    "intakes",
+    "pylons",
+    "tail"
+   ],
+   "strike_drone": [
+    "canopy",
+    "exhaust",
+    "flares",
+    "intakes",
+    "tail"
+   ],
+   "stymphalos": [
+    "body",
+    "lift"
+   ],
+   "super_gun": [
+    "walls"
+   ],
+   "supply_truck": [
+    "axles"
+   ],
+   "swarm_carrier": [
+    "exhaust",
+    "intakes",
+    "pylons",
+    "stores",
+    "tail"
+   ],
+   "tank_destroyer": [
+    "idler",
+    "mantlet",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "targeting_station": [
+    "roof"
+   ],
+   "thermobaric_launcher": [
+    "idler",
+    "mantlet",
+    "smoke",
+    "stowage"
+   ],
+   "titan_tank": [
+    "idler",
+    "mantlet",
+    "smoke",
+    "stowage"
+   ],
+   "towed_at_gun": [
+    "axles",
+    "cab",
+    "glass",
+    "lights"
+   ],
+   "turtle_tank": [
+    "hatches",
+    "hull",
+    "idler",
+    "mantlet",
+    "roof_mg",
+    "sight",
+    "skirts",
+    "smoke",
+    "stowage"
+   ],
+   "twin_rotor_gunship": [
+    "tail_rotor"
+   ],
+   "twin_tank": [
+    "idler",
+    "mantlet"
+   ],
+   "uav_loiter_strike": [
+    "canopy",
+    "flares",
+    "intakes",
+    "tail"
+   ],
+   "vbied": [
+    "axles",
+    "glass"
+   ],
+   "wheeled_gun": [
+    "axles",
+    "glass",
+    "stowage"
+   ],
+   "wingman_drone": [
+    "canopy",
+    "flares",
+    "tail"
+   ],
+   "zu23_technical": [
+    "axles"
+   ]
+  },
+  "summary": {
+   "failures": 0,
+   "lod1OutsideBand": 101,
+   "missingPartsTotal": 380,
+   "models": 230,
+   "notScanned": 4,
+   "overBudgetInfo": 63,
+   "rebuildBacklog": 9,
+   "renamingBacklog": 122,
+   "scanDir": "C:/Users/Winka/Projects/MachineBrigade-runner/Builds/scan",
+   "scanned": 226,
+   "underBudget": 76,
+   "withMissingParts": 131
+  },
+  "underBudget": [
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "aa_gun_tower",
+    "triangles": 1724
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "aa_gun_vehicle",
+    "triangles": 3556
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "airborne_vehicle",
+    "triangles": 3260
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "armored_bulldozer",
+    "triangles": 3244
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "armored_car",
+    "triangles": 2622
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "at_gun_emplacement",
+    "triangles": 1384
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "attack_jet",
+    "triangles": 2732
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "ballistic_launcher",
+    "triangles": 2818
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "barrage_balloon",
+    "triangles": 1748
+   },
+   {
+    "class": "structure",
+    "min": 2000,
+    "model": "bulwark_post",
+    "triangles": 1710
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "bunker_shelter_tower",
+    "triangles": 1228
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "caspian",
+    "triangles": 6766
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "combat_wreck_car",
+    "triangles": 2794
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "counter_battery_radar",
+    "triangles": 2396
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "cp_relay_b",
+    "triangles": 1512
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "elite_mlrs",
+    "triangles": 2692
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "engineer_vehicle",
+    "triangles": 3670
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "ew_jammer",
+    "triangles": 2274
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "fibre_fpv_carrier",
+    "triangles": 1324
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "fpv_carrier",
+    "triangles": 2484
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "garuda",
+    "triangles": 2840
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "glide_bomber",
+    "triangles": 1624
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "heavy_bomber",
+    "triangles": 3540
+   },
+   {
+    "class": "helicopter",
+    "min": 4000,
+    "model": "heavy_lift_helicopter",
+    "triangles": 3858
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "hover_gunboat",
+    "triangles": 2202
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "hydra_sub",
+    "triangles": 7548
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "hyperion",
+    "triangles": 7914
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "inflatable_decoy",
+    "triangles": 1378
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "interceptor_jet",
+    "triangles": 1500
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "iron_beam",
+    "triangles": 2888
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "lancet_truck",
+    "triangles": 2314
+   },
+   {
+    "class": "ship",
+    "min": 8000,
+    "model": "landing_craft",
+    "triangles": 498
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "laser_tank",
+    "triangles": 3844
+   },
+   {
+    "class": "helicopter",
+    "min": 4000,
+    "model": "light_attack_heli",
+    "triangles": 3418
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "logistics_station",
+    "triangles": 1576
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "long_sam",
+    "triangles": 2980
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "manpads_tower",
+    "triangles": 1750
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "mine_layer",
+    "triangles": 3872
+   },
+   {
+    "class": "ship",
+    "min": 8000,
+    "model": "missile_boat",
+    "triangles": 630
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "mlrs",
+    "triangles": 2652
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "morrigan",
+    "triangles": 1344
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "mortar_carrier",
+    "triangles": 3242
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "nyx",
+    "triangles": 3526
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "prop_attack_plane",
+    "triangles": 2994
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "radar_atgm_vehicle",
+    "triangles": 2672
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "railgun_truck",
+    "triangles": 2924
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "recon_drone",
+    "triangles": 890
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "recon_jet",
+    "triangles": 768
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "river_gunboat",
+    "triangles": 2302
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "river_patrol_boat",
+    "triangles": 1624
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "rocket_technical",
+    "triangles": 2948
+   },
+   {
+    "class": "helicopter",
+    "min": 4000,
+    "model": "scout_heli",
+    "triangles": 2602
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "scout_jeep",
+    "triangles": 2422
+   },
+   {
+    "class": "ship",
+    "min": 8000,
+    "model": "sea_corvette",
+    "triangles": 1884
+   },
+   {
+    "class": "ship",
+    "min": 8000,
+    "model": "sea_cruiser",
+    "triangles": 5416
+   },
+   {
+    "class": "tower",
+    "min": 2000,
+    "model": "searchlight",
+    "triangles": 1292
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "shahed_truck",
+    "triangles": 2616
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "shield_carrier",
+    "triangles": 2476
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "shorad_vehicle",
+    "triangles": 2000
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "sky_fortress",
+    "triangles": 3084
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "sky_gunship",
+    "triangles": 3652
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "smoke_carrier",
+    "triangles": 3698
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "stealth_bomber",
+    "triangles": 2096
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "stealth_fighter",
+    "triangles": 3336
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "stealth_naval_strike",
+    "triangles": 2124
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "strike_drone",
+    "triangles": 1968
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "stymphalos",
+    "triangles": 4186
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "supply_truck",
+    "triangles": 2862
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "swarm_carrier",
+    "triangles": 3464
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "towed_at_gun",
+    "triangles": 1996
+   },
+   {
+    "class": "heavy",
+    "min": 4000,
+    "model": "turtle_tank",
+    "triangles": 3938
+   },
+   {
+    "class": "boss",
+    "min": 10000,
+    "model": "typhon",
+    "triangles": 6876
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "uav_loiter_strike",
+    "triangles": 1084
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "vbied",
+    "triangles": 1574
+   },
+   {
+    "class": "jet",
+    "min": 4000,
+    "model": "wingman_drone",
+    "triangles": 1064
+   },
+   {
+    "class": "light",
+    "min": 3000,
+    "model": "zu23_technical",
+    "triangles": 1996
+   }
+  ]
+ },
+ "note": "Written by Tools/balance/fix_validate.py. weapons (item 3): each weapon a unit carries, its rounds a cycle and cycle, the audit's rate flags and the recorded reason; FixValidatorTests fails when the data no longer matches: rerun the script. models (item 7): the model check (over budget is info only, the owner's rule), the backlogs and the failures.",
  "recordedRateFlags": {
   "amos_120": "the real reference is an estimate (no published launch interval): not a clear error",
   "avenger_stingers": "the real reference is an estimate (no published launch interval): not a clear error",
