@@ -2324,6 +2324,44 @@
     "dress_landmark_station_clock: new (484 triangles)",
     "dress_landmark_survey_beacon: new (224 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "dress_edge_bank_land_river",
+    "dress_edge_chimney",
+    "dress_edge_containers",
+    "dress_edge_corner_land_cliff",
+    "dress_edge_corner_land_sea",
+    "dress_edge_crane_far",
+    "dress_edge_embankment_urban_river",
+    "dress_edge_outer_cliff",
+    "dress_edge_outer_land",
+    "dress_edge_outer_land_sea",
+    "dress_edge_outer_river",
+    "dress_edge_outer_sea",
+    "dress_edge_outer_urban",
+    "dress_edge_quay",
+    "dress_edge_rail_track",
+    "dress_edge_scree",
+    "dress_edge_tanks",
+    "dress_edge_tunnel_portal",
+    "dress_landmark_clock_tower",
+    "dress_landmark_cooling_tower",
+    "dress_landmark_dam_wall",
+    "dress_landmark_harbour_light",
+    "dress_landmark_palace_dome",
+    "dress_landmark_station_clock",
+    "dress_landmark_survey_beacon",
+    "dress_sea_island_haze",
+    "dress_sea_ship_far",
+    "dress_sea_stack",
+    "dress_sea_surf",
+    "dress_sea_tanker_far",
+    "dress_sea_whitecap"
+   ],
+   "reason": "merge of feature/p33-a2",
+   "changes": []
   }
  ],
  "models": {
