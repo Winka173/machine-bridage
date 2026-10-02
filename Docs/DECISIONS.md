@@ -14390,3 +14390,32 @@ No runner mirror, no cards, no previews, no tests.
 - **Card luma (old, alpha > .5, Rec. 709):** kronos .3109, moloch .2946 (the dimmest), nuke_train .3422, armored_train
   .3323, earth_borer .3117. Watch kronos and moloch (COLOR_0 +13 % / +16 %): the goal is >= old and <= ~+20 %.
 - Lead (2026-10-02), wave 5b cards: all five pass (kronos -1.0 % at the edge, moloch -0.9 %, trains and earth_borer +0.5 % to +1.9 %).
+
+## 27 wave 5d (lead pass, 2026-10-02)
+
+Pass 5d (lane B, bosses): leviathan, caspian, typhon, landing_hovercraft, supreme_command, in `Tools/blender/mb_p27_wave5_air.py` (same `_wrap`:
+`_suffixed`, the current builder, the V2 pass, `k.clean`). Builders wrapped: mb_naval (leviathan), mb_redesign_20y (caspian, typhon), mb_p16_arms
+(landing_hovercraft, the winner over mb_phase8's), mb_phase8 (supreme_command). Run: Blender rebuild, `glb_check.py` (compare, accept). No runner
+mirror, no cards, no previews, no tests. The substring filter rebuilt nothing outside the row.
+
+- **Contracts kept.** Every empty (`Part_*`, `Mount_*`/`Muzzle_*`, `Propeller*`, `Radar`, `Muzzle_ramp`, `Launch_canisters`) at the same name and
+  position (checked node by node against the old GLBs); materials unchanged, no new moving part, the only new mesh is `Deck_gear` (Steel) on caspian,
+  landing_hovercraft and supreme_command. scylla (`variantOf` leviathan, keep list) sees the same nodes; nyx / kraken / hydra have their own models.
+- leviathan: hull a `k.sharp_loft` on `LEV_SECTIONS` (deck edge chamfered) with recessed belt panels; superstructure levels, tower, bridge, director
+  and aft house chamfered blocks with recessed side panels; all five triple turrets in V2 (`_lev_turret`: turned barbette, the gunhouse a sharp loft of
+  the old tapered / shifted box with chamfered corners and roof edge and side panels, turned barrels with sleeve, muzzle swell and a bored muzzle, same
+  roots); chamfered VLS blocks. No greebles (the decks are full).
+- caspian: hull a sharp loft (top shoulders chamfered) with recessed side panels, turned turbofan nacelles, turned canisters with end bands, chamfered
+  launcher fairing and floats, seeded `Deck_gear` on the back (seed 5301).
+- typhon: missile hump a sharp loft with sloped ends, turned door lids, chamfered bow / sail planes and tail fins; anechoic hull, sail, dome untouched.
+- landing_hovercraft: chamfered hull, side structures (panels on the outer walls only, the doors are on the inner ones), sloped bows (k.extrude after
+  stripping those faces of `Armor` with `inside=`), cabin; seeded `Deck_gear` on the side-structure roofs (seeds 5401-5403).
+- supreme_command: turned tyres with dished hubs, the cab a chamfered extrusion of the old profile, chamfered citadel / war room / skirts / generator,
+  seeded `Deck_gear` on the war-room roof (seed 5501).
+- `ao_strength` .75 (typhon and landing_hovercraft .7: their cards are the darkest).
+- **Gates (old -> new triangles, COLOR_0).** leviathan 25,992 -> 26,744 (1.03x; .626 -> .663); caspian 5,054 -> 6,766 (1.34x; .732 -> .748); typhon
+  6,348 -> 6,596 (1.04x; .616 -> .663); landing_hovercraft 16,228 -> 16,984 (1.05x; .614 -> .657); supreme_command 9,118 -> 10,214 (1.12x;
+  .627 -> .675). Zero-area 0, sizes within .4 %, open edges unchanged (hovercraft 32, as before), non-manifold 0, no errors (the `.00N` suffix
+  warnings are the old ones), each far inside its boss class.
+- **Card luma (old, alpha > .5, Rec. 709):** leviathan .3217, caspian .3595, typhon .2215 (the dimmest: watch it), landing_hovercraft .2849,
+  supreme_command .3304. Target: >= old, at most about +20 %.

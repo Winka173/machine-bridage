@@ -309,7 +309,7 @@
   },
   "caspian": {
     "file": "caspian.glb",
-    "triangles": 5054
+    "triangles": 6766
   },
   "cerberus": {
     "file": "cerberus.glb",
@@ -873,7 +873,7 @@
   },
   "landing_hovercraft": {
     "file": "landing_hovercraft.glb",
-    "triangles": 16228
+    "triangles": 16984
   },
   "laser_ad_station": {
     "file": "laser_ad_station.glb",
@@ -889,7 +889,7 @@
   },
   "leviathan": {
     "file": "leviathan.glb",
-    "triangles": 25992
+    "triangles": 26744
   },
   "light_attack_heli": {
     "file": "light_attack_heli.glb",
@@ -1437,7 +1437,7 @@
   },
   "supreme_command": {
     "file": "supreme_command.glb",
-    "triangles": 9118
+    "triangles": 10214
   },
   "swarm_carrier": {
     "file": "swarm_carrier.glb",
@@ -1545,7 +1545,7 @@
   },
   "typhon": {
     "file": "typhon.glb",
-    "triangles": 6348
+    "triangles": 6596
   },
   "vbied": {
     "file": "vbied.glb",
