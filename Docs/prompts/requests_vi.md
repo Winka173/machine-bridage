@@ -200,3 +200,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) hủy agent đợt 2, chỉ pdf
 - (02/10) merge toàn bộ vào main (v0.33.0, prompt 27 đợt 1, PDF, prompt 28)
 - (02/10) bắt đầu đợt 2
+- (02/10) check dùm tôi prompt 28 có chạy được trên claude cloud không
