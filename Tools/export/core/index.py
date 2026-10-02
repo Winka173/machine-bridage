@@ -77,6 +77,8 @@ def build(ctx, meta: dict, per_source, unmapped, per_file, fk_results, planned: 
         ("muc_dich", "Bộ xuất toàn bộ dữ liệu cấu hình và cân bằng của Machine Brigade, chia theo lĩnh vực (spec Docs/prompts/export_full_vi.txt)."),
         ("chay", "python Tools/export/export.py [--out DIR] [--base REF] [--strict]: xuất, kiểm độ phủ khóa, khóa ngoại, bí mật."),
         ("chay_kiem", "python Tools/export/export.py coverage | fk: chỉ chạy một kiểm tra (không ghi file)."),
+        ("chay_so_sanh", "python Tools/export/export.py diff <thư mục|commit A> <thư mục|commit B>: Docs/export/diff_<A>_<B>/ (lượt 7)."),
+        ("chay_tu_kiem", "python Tools/export/export.py check: xuất hai lần, 9 kiểm của spec 9, 00_chi_muc/SELF_CHECK.md (lượt 8, CI)."),
         ("thu_muc", "00_chi_muc (file này, COVERAGE.md, MANIFEST.json, README.md), xlsx/, csv/<file>/<sheet>.csv; md/, images/, pdf/ ở lượt 6."),
         ("lop", "Lớp A = dữ liệu gốc; lớp B = suy ra (công thức sống, lượt 5); lớp C = báo cáo; kv = khối cài đặt (một dòng một lá)."),
         ("file_da_xuat", ";".join(built)),

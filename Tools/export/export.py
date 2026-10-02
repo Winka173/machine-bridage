@@ -3,6 +3,8 @@
     python Tools/export/export.py [--out DIR] [--base REF] [--strict] [--date YYYY-MM-DD]
     python Tools/export/export.py coverage [--strict]     # the leaf-path coverage test only (writes nothing)
     python Tools/export/export.py fk                      # the foreign-key test only (writes nothing)
+    python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]   # pass 7: Docs/export/diff_<A>_<B>/
+    python Tools/export/export.py check [--out DIR]       # pass 8: export, the 9 self-checks of spec 9, SELF_CHECK.md
 
 Read only: no game value is changed. Output: Docs/export/<date>_<commit>/ (date = the HEAD commit's date, so a rerun on
 the same commit and data rewrites the same files byte for byte; README.md and MANIFEST.json carry the run's time).
@@ -41,13 +43,26 @@ BALANCE = "Assets/MachineBrigade/Resources/Data/balance.json"
 CAMPAIGN = "Assets/MachineBrigade/Resources/Data/campaign.json"
 
 
-def build(base_ref: str | None):
+def build(base_ref: str | None, lenient: bool = False):
+    """lenient (the diff of an old tree): a domain that fails to build (a source or helper the old tree lacks) is left
+    out and listed in 00/Van_de instead of stopping the run."""
     ctx = Context(base_ref=base_ref)
     for glob, pattern, target, note in _pending.CLAIMS:
         ctx.claim(glob, pattern, target, note)
     for name in DOMAINS:
         mod = importlib.import_module(f"domains.{name}")
-        mod.build(ctx)
+        if not lenient:
+            mod.build(ctx)
+            continue
+        try:
+            mod.build(ctx)
+        except Exception as e:  # noqa: BLE001 - reported, the file is left out
+            ctx.books.pop(getattr(mod, "FILE_ID", name), None)
+            why = str(e)
+            for root in (str(repo.ROOT).replace("\\", "\\\\"), str(repo.ROOT), repo.ROOT.as_posix()):
+                why = why.replace(root, "<repo>")
+            ctx.issue(f"lenient: {name} not built ({type(e).__name__}: {why[:160]})")
+            print(f"lenient: {name} not built ({type(e).__name__})")
     built = set(ctx.books) | {IX.INDEX_ID}
     # balance.json's version lands in 00/Phien_ban (marked here: coverage is evaluated before the index is built)
     if BALANCE in ctx.sources and ctx.sources[BALANCE].readable and "version" in ctx.sources[BALANCE].data:
@@ -133,16 +148,27 @@ def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk"])
+    ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk", "diff", "check"])
+    ap.add_argument("targets", nargs="*", help="diff: two export folders or git refs (A then B)")
     ap.add_argument("--out", help="output folder (default Docs/export/<date>_<commit>)")
     ap.add_argument("--base", default="origin/main",
                     help="git ref of the earlier version for the _truoc / _sau columns (default origin/main: the last release)")
     ap.add_argument("--date", help="the folder's date (default: the HEAD commit's date)")
     ap.add_argument("--strict", action="store_true", help="fail on leaves still pending on files not built yet")
+    ap.add_argument("--lenient", action="store_true",
+                    help="leave out a domain that fails to build (an old tree for diff) instead of stopping")
     args = ap.parse_args(argv)
+    if args.command == "diff":
+        if len(args.targets) != 2:
+            ap.error("diff takes two export folders or git refs")
+        from core import diff
+        return diff.main(args.targets[0], args.targets[1], args.out)
+    if args.command == "check":
+        from core import selfcheck
+        return selfcheck.main(args, sys.modules[__name__])
 
     base = repo.resolve_ref(args.base) if args.base else None
-    ctx, per_source, unmapped, per_file, fk_results = build(args.base if base else None)
+    ctx, per_source, unmapped, per_file, fk_results = build(args.base if base else None, args.lenient)
     code = summary(ctx, per_source, unmapped, fk_results, args.strict)
     if args.command != "export":
         return code
