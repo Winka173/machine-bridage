@@ -10,6 +10,7 @@ from core import secrets
 from core.model import chua_ap
 from core.repo import ROOT
 
+from . import _b12
 from . import _lane_c as C
 
 FILE_ID = "12_he_thong_trang_thai"
@@ -278,13 +279,11 @@ def build(ctx):
     # ------------------------------------------------------------------ Lich_su_do (old measurements)
     ld = book.kv_sheet("Lich_su_do", "Lịch sử đo", "Mốc đo cũ: Tools/balance/*_before.json, *_baseline.json, "
                        "Tools/campaign/p31_objectives_baseline.json; mỗi lá một dòng (id = <file>.<đường dẫn>)")
-    ld.col("stale", meaning="STALE: số đo cũ hơn dữ liệu hiện tại (chưa có hash lúc đo)")
     for sid in sorted(s for s in ctx.sources if re.fullmatch(r"Tools/balance/[^/]*_(before|baseline)\.json", s)
                       or s == "Tools/campaign/p31_objectives_baseline.json"):
         stem = sid.rsplit("/", 1)[-1][:-5]
         book.kv_rows(ld, ctx.data(sid), sid, (), stem, prefix=(stem,))
-    for r in ld.rows.values():
-        r.set("stale", chua_ap("xuat_luot5"))
+    _b12.stale(ctx, ld)  # lane B pass 5: STALE by git (the data changed after the measurement's commit)
 
     # ------------------------------------------------------------------ Chuyen_doi_save (campaign migration)
     camp = ctx.data(C.CAMPAIGN)
@@ -323,9 +322,7 @@ def build(ctx):
         r = kc.row(f"K{i + 1:02d}", src)
         r.set("noi_dat", where)
         r.set("ly_do", why)
-    C.marker_sheet(book, "Hang_so_trong_ma", "Hằng số trong mã", "Mọi hằng số và số cứng ảnh hưởng lối chơi (spec 5): tệp, dòng, "
-                   "tên, giá trị, ngữ cảnh, lĩnh vực, đề xuất đưa ra dữ liệu", chua_ap("xuat_luot5"),
-                   "lượt 5 quét Assets/MachineBrigade/Scripts", "Tools/export (lượt 5)")
+    _b12.build(ctx, book)  # Hang_so_trong_ma (spec 5, lane B pass 5): Tools/export/scan_constants.scan
 
 
 def _kv_skip(book, sheet, obj, src, skip: set):
