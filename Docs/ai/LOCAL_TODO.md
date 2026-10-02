@@ -61,9 +61,9 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity compile, then run `AiModeProfileTests` (5 tests, written only) and the existing AI suites (AiTests, AiReviewTests).
 - CatalogCheck with the new balance.json `aiModeProfiles` block.
-- Tactic picker UI: `RequestTactic` can return `NotAllowed`; grey out tactics the mode's profile forbids
+- DONE 2026-10-02 (feature/polish-c4): Tactic picker UI: `RequestTactic` can return `NotAllowed`; grey out tactics the mode's profile forbids
   (`world.AiProfile.Allows`).
-- Recon HUD: optional "Báo động" indicator from `world.Alarm`.
+- DONE 2026-10-02 (feature/polish-c4), as a notice: Recon HUD: optional "Báo động" indicator from `world.Alarm`.
 
 ## Prompt 30
 
@@ -71,7 +71,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   L6 (field + minimap); DECISIONS "Prompt 30 local". Still open below: the Unity compile of every edited Game/Sim file
   (incl. `MatchRunner.Ending.cs`, `NeutralSiteView.cs`, `DialogueViews.cs`, `Overlays.cs`, `BattleHud.cs`, `Minimap.cs`,
   `MusicDirector.cs`, `Neutrals.cs`), the test runs (when the owner allows), the strip measure and `RENDER_CHARS`,
-  L3's proxies retreating / turrets turning (not done), L5's leaderboard sort (no board screen yet), the owner's look
+  L3's proxies retreating / turrets turning (DONE 2026-10-02 (feature/polish-c4)), L5's leaderboard sort (no board screen yet), the owner's look
   at the radar dome / garage / ammo dump as capturable sites, and the PDF.
 - L1 (DONE): show the "Kết mạch Thorne" card (`campaign.thorneArc.title`, `campaign.thorneArc`) after c9m10, before chapter 15
   (once, like the chapter cards); the act switch UI reads `act` (4 acts).
@@ -108,7 +108,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   `fixedDeck` on 13 missions and an `enemy_barrage` event on c1m01).
 - Look at the mission page's "Mission deck" panel in Unity (10 compact cards in a wrapping row, the "Loaned" tag under a
   card, the rule lines); it uses existing classes plus `fc-campaign__fixed-deck`, `fc-campaign__fixed-card`,
-  `fc-tag--loaned`, which have no USS rules yet.
+  `fc-tag--loaned` (USS DONE 2026-10-02 (feature/polish-c4)).
 - When the owner allows test runs: FixedDeckTests, and the dialogue validator is already green (script_build.py).
 ## Prompt 32 L1 (lead pass, 2026-10-02): tower roster 22
 
@@ -130,8 +130,8 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - Unity: compile, CatalogCheck (balance.json: base.hqTypes, vehicles headquarters.fortress_ground / _air / .shield,
   support hq_barrage, aiModeProfiles hqSkillThreat); run HqTypeP32Tests, LocalisationScanTests (the three HQ ids' names),
   TowerRebuildP32Tests, BaseTests, BaseDefenceTests and the APS / C-RAM tests (the stacking rule changed TryIntercept).
-- UI: the skill card's look beside the CP box (`fc-hcard--hqskill` has no USS of its own yet), the Base screen's HQ line.
-- Effects: the Shield's emergency dome has no visual yet (only the toast); the Fortress HQ's added gun fires from the HQ
+- UI DONE 2026-10-02 (feature/polish-c4): the skill card's look beside the CP box (`fc-hcard--hqskill` USS); the Base screen's HQ line exists.
+- Effects: the Shield's emergency dome visual DONE 2026-10-02 (feature/polish-c4) (`EffectsDirector.TickHqDomes`); the Fortress HQ's added gun fires from the HQ
   model's mounts (a turret on the model may be wanted); card renders for the three HQ ids if a screen shows them.
 - Play: the refitted HQ numbers (Docs/balance/p32_hq_types.md) and the garrison at the base's edge.
 
@@ -149,7 +149,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile, CatalogCheck (balance.json handbook, base.walls); run HandbookP32Tests, LocalisationScanTests (the hb.* texts), UiLayoutTests (the Dossier's eighth tab, the detail chips).
 - PDF: build_doc.py now adds the handbook section (Tools/docs/prompt32.py) after the prompt 29 section.
-- UI: the handbook table rows (`fc-hb__row` / `fc-hb__cell`) and the chips strip (`fc-hb__chips`) have inline layout only, no USS yet.
+- UI DONE 2026-10-02 (feature/polish-c4): USS for the handbook table rows (`fc-hb__row` / `fc-hb__cell`) and the chips strip (`fc-hb__chips`).
 ## Prompt 34 L5/L6/L7 (lead pass, 2026-10-02)
 
 - Unity: compile; run `Prompt34ViewTests` (L5 tiers, budget, shake; L6 sounds; L7 wrecks and the crash plan) with `Prompt34Tests`, `BlastSizeTests`, `EffectsTests`.
@@ -161,5 +161,14 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile, CatalogCheck (balance.json base.walls, wall_hesco / wall_t / wall_gun, aiModeProfiles wallRoute and showdown, matchRules showdown with its new "lists", neutrals Showdown; the 75 map files' "walls"); run WallP32Tests, ShowdownP32Tests, AiModeProfileTests (the Showdown mode tag), OperationsModeTests (Showdown reachable from the menu), LocalisationScanTests (wall.* and mode.showdown* texts).
 - Import the three new GLBs (wall_hesco, wall_t, wall_gun) and check a wall segment's orientation in a battle (its long side across its facing, its front out of the base) and its slumped wreck as rubble.
-- UI: the Base screen's wall rows (`fc-base__walls`, `fc-base__wall`) have no USS yet; the home screen's map picker is not filtered for Showdown (an ineligible map is replaced by the first eligible one as the battle loads); no HUD notice at Showdown's minute 6, minute 10 or sudden death.
+- UI DONE 2026-10-02 (feature/polish-c4): USS for the Base screen's wall rows; the home screen's map picker filtered for Showdown; HUD notices at Showdown's minute 6, minute 10 and sudden death.
 - Sims (when the owner allows): the AI's gate-or-breach choice (SquadLayer.Walls.cs), Showdown's real break times against Docs/checks/showdown_static.md.
+
+## UI polish after prompts 28-34 (feature/polish-c4, 2026-10-02; DECISIONS "UI polish after prompts 28-34")
+
+- DONE: prompt 31's closed-ground looks (`Game/Views/GroundSiteView.cs`, by site id; Sim read-only `NavSitesIfAny`).
+  Look in Unity: c1m01 shoal, c4m02 crane, c5m10 lava, c5m13 fire, c6m10 flood, i2m03 bridge, c8m10 adits, i1m01 gate.
+- Unity: compile GroundSiteView, VehicleView(.Ending), EffectsDirector.HqDome / .GroundSites, MatchRunner(.Ending, .Tactics),
+  ShowdownSession, MenuScreen.Home / .Tactics, BattleHud.Tactics, BaseScreen, TacticPick, SimWorld.NavStates; L10nTests for
+  `tactic.notInMode`, `pressure.alarm`, `mode.showdown.escalate` / `.cutoff` / `.sudden`.
+- Look: the HQ dome (a Shield HQ's skill), the greyed tactics in a mode that forbids some, the match-end retreat after a win.
