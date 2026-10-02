@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 27 waves 4b and 6b: the jets cleaned with flare rows and the attack_jet_hd library canopy and nozzle; gun_turret, mg_bunker, rocket_turret and their branches on the V2 kit (DECISIONS "27 wave 4b", "27 wave 6b").
+
 - Prompt 27 wave 6a: aa_turret, artillery_emplacement, guard_tower and their branches on the V2 kit (DECISIONS "27 wave 6a").
 
 - Prompt 27 wave 4a: eight helicopters and drones on the V2 kit, prompt 29 flare tubes on three (DECISIONS "27 wave 4a").

@@ -14126,3 +14126,4 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
   triangles, zero-area 0, runtime nodes identical, size within .1 %, no errors or warnings.
 - **Card luma (old, alpha > .5, Rec. 709):** gun_turret .3963, _a .3969, _b .4070; mg_bunker .3988, _a .4020, _b .3958; rocket_turret .3672
   (the dimmest: watch it), _a .3866, _b .4143.
+- Lead (2026-10-02), wave 4b + 6b cards: all pass. recon_drone fixed (.6177 vs the original .6232, -0.9 %); jets -0.1 % to +0.7 %; 6b towers +3.1 % to +4.1 %.

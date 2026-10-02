@@ -99,7 +99,7 @@
             "kind": "vehicle",
             "model": "scout_heli",
             "source": "Models/scout_heli",
-            "hash": "v2:afb034b95001e92abc40b7bcc944cbe21d3b2326"
+            "hash": "v2:632cddb0b0cc88fbe7ffa1587d87a07e88948c72"
         },
         {
             "id": "attack_helicopter",
@@ -113,7 +113,7 @@
             "kind": "vehicle",
             "model": "gunship_heli",
             "source": "Models/gunship_heli",
-            "hash": "v2:122f8645be619631b95fb71bdb9810cc10a382dc"
+            "hash": "v2:c1d730cd93d2a6e482bf3d3ee0dd6325f3d8332c"
         },
         {
             "id": "strike_drone",
@@ -127,7 +127,7 @@
             "kind": "vehicle",
             "model": "attack_jet",
             "source": "Models/attack_jet_hd",
-            "hash": "v2:82c8b09e7fc8cffa62c994d68933b00140d78c9b"
+            "hash": "v2:dbe1cc4a89d0136f3c09d3018fdef28118d4e137"
         },
         {
             "id": "ifv",
@@ -162,14 +162,14 @@
             "kind": "vehicle",
             "model": "heavy_bomber",
             "source": "Models/heavy_bomber",
-            "hash": "v2:a02fa1cb448946d8887cc83b04be91e3c6473993"
+            "hash": "v2:762ebfb0ad6b305d090f4d40f73bb7dea74e0485"
         },
         {
             "id": "stealth_bomber",
             "kind": "vehicle",
             "model": "stealth_bomber",
             "source": "Models/stealth_bomber",
-            "hash": "v2:d47e2278b2b8d18b1cf1350f462dbdb326d967f5"
+            "hash": "v2:c6205782cc2dfb0e1475f969b2b90557c8430762"
         },
         {
             "id": "sky_gunship",
@@ -246,7 +246,7 @@
             "kind": "vehicle",
             "model": "recon_drone",
             "source": "Models/recon_drone",
-            "hash": "v2:29d33924631e2d19b62544733d02a073dd3b4f3b"
+            "hash": "v2:ba6c15a8c45e0eece347eff82f7d555c620bf229"
         },
         {
             "id": "vbied",
@@ -351,7 +351,7 @@
             "kind": "vehicle",
             "model": "stealth_fighter",
             "source": "Models/stealth_fighter",
-            "hash": "v2:2791e91bcf0db9631948f96da56910a709aef7cb"
+            "hash": "v2:184bcd6263f53a254e20fc73b6468b91de186c68"
         },
         {
             "id": "wingman_drone",
@@ -386,7 +386,7 @@
             "kind": "vehicle",
             "model": "swarm_carrier",
             "source": "Models/swarm_carrier",
-            "hash": "v2:2988db8bbaf1dba073fe71a47f8f5ea0d13f6164"
+            "hash": "v2:7f1c5ebc46581ae28e5e179cec1fd7f303331e3e"
         },
         {
             "id": "aa_gun_vehicle",
@@ -456,14 +456,14 @@
             "kind": "vehicle",
             "model": "glide_bomber",
             "source": "Models/glide_bomber",
-            "hash": "v2:a37fd5c02e965ecef273d441d54935e9ac0e5f91"
+            "hash": "v2:7d42c090454b8a2d8669ad5e870f02481430467b"
         },
         {
             "id": "recon_jet",
             "kind": "vehicle",
             "model": "recon_jet",
             "source": "Models/recon_jet",
-            "hash": "v2:a405610fda84c550905fe407d49c69155dcb69d5"
+            "hash": "v2:86ac05035dae12e4568f929bc887a6c089a8e713"
         },
         {
             "id": "interceptor_jet",
@@ -855,7 +855,7 @@
             "kind": "structure",
             "model": "mg_bunker",
             "source": "Models/mg_bunker",
-            "hash": "v2:94dc3cce20cfb0c2eeebeb7e74347c58646c6059"
+            "hash": "v2:370aaacbd0fc8e43e332da8ba18839c11d19a74f"
         },
         {
             "id": "bunker_shelter_tower",
@@ -1044,7 +1044,7 @@
             "kind": "elite",
             "model": "attack_jet",
             "source": "Models/attack_jet_hd",
-            "hash": "v2:82c8b09e7fc8cffa62c994d68933b00140d78c9b"
+            "hash": "v2:dbe1cc4a89d0136f3c09d3018fdef28118d4e137"
         },
         {
             "id": "elite_fpv_carrier",
@@ -1191,21 +1191,21 @@
             "kind": "tower",
             "model": "gun_turret",
             "source": "Models/gun_turret",
-            "hash": "v2:31f28625a47dbb3e00ed1dc3c69ee983e26c8649"
+            "hash": "v2:7e8073b46e80db212fd6223654b92b30a475084e"
         },
         {
             "id": "gun_turret.auto",
             "kind": "tower",
             "model": "gun_turret_b",
             "source": "Models/gun_turret_b",
-            "hash": "v2:d9cc43c300d716d04809fa412e1871372ac02ac8"
+            "hash": "v2:74db164988057cdc1bc7377da64bf7e402a6afc7"
         },
         {
             "id": "gun_turret.long",
             "kind": "tower",
             "model": "gun_turret_a",
             "source": "Models/gun_turret_a",
-            "hash": "v2:972af52b8f3d8bf0d8b1cb3919ceeeba77af0694"
+            "hash": "v2:dd5f9e046b9d2f804473c8b35ba46e35430579a7"
         },
         {
             "id": "headquarters",
@@ -1338,21 +1338,21 @@
             "kind": "tower",
             "model": "mg_bunker",
             "source": "Models/mg_bunker",
-            "hash": "v2:94dc3cce20cfb0c2eeebeb7e74347c58646c6059"
+            "hash": "v2:370aaacbd0fc8e43e332da8ba18839c11d19a74f"
         },
         {
             "id": "mg_bunker.flame",
             "kind": "tower",
             "model": "mg_bunker_b",
             "source": "Models/mg_bunker_b",
-            "hash": "v2:d8d2ab9487fa39611ea717e0d8988f663792b4ee"
+            "hash": "v2:eb01f1a906d667ab9d96cab99cf65d6af6389c94"
         },
         {
             "id": "mg_bunker.twin",
             "kind": "tower",
             "model": "mg_bunker_a",
             "source": "Models/mg_bunker_a",
-            "hash": "v2:ff755706922810aaf680b1d5c9825b925d94cc13"
+            "hash": "v2:904c195a40ffcb73013b9d402cbdd49af1641c3c"
         },
         {
             "id": "minefield",
@@ -1464,21 +1464,21 @@
             "kind": "tower",
             "model": "rocket_turret",
             "source": "Models/rocket_turret",
-            "hash": "v2:4947e60170193cd9250b3ced07ea3e4669a7317d"
+            "hash": "v2:167d9aa61b853f63af9e5b7d6ea4a51f5bab405e"
         },
         {
             "id": "rocket_turret.cluster",
             "kind": "tower",
             "model": "rocket_turret_a",
             "source": "Models/rocket_turret_a",
-            "hash": "v2:9a87de85a49d1395a265d9b78951317ae2dd2598"
+            "hash": "v2:a110bcc2b49987003360d9cf3eeedb6b97914f22"
         },
         {
             "id": "rocket_turret.guided",
             "kind": "tower",
             "model": "rocket_turret_b",
             "source": "Models/rocket_turret_b",
-            "hash": "v2:8b034fb68955b413b34e44db6f22d99275e0b61e"
+            "hash": "v2:041d822e8d6e19ecfc7f26378d48d4d8b1fdd2bd"
         },
         {
             "id": "scylla",
