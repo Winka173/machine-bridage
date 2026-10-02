@@ -211,3 +211,22 @@ widest zoom.
   outer band on its SEA side.
 - The terrain tags could show on the ground (a tint for FOREST / ROUGH / SHALLOW_WATER, the roads are drawn already) and
   in the unit card (the speed now): not done, a UI pass.
+
+## Prompt 33 L2 view / L7 (lead pass, 2026-10-02): for the lead
+
+- Compile: `Views/Surroundings.Edges.cs`, `Views/Surroundings.Landmarks.cs` (new partials), `Surroundings.cs` (InSea,
+  NearRiver, Height, RangeHeight, PaintOuter edits), `Surroundings.Dressing.cs` (DressSea, PlayClear, DressPlay),
+  `MapDressing.cs` (DressingCorner / Sea / EdgeSet / Rail / Edges / Landmark, `LandmarksFor`); test
+  `Prompt33EdgeViewTests.cs`. The 31 new GLBs (`dress_edge_*`, `dress_sea_*`, `dress_landmark_*`) need their import metas.
+- Far-zoom edge shots per biome for the design document (prompt 33 L7: "ảnh chụp mép bản đồ ở zoom xa nhất cho mỗi
+  biome"): one render per biome at the furthest player zoom with its focus on an edge, e.g. Greenvale (temperate), Red
+  Rock (desert), Frostpeak (snow), Ironport (harbour, the north quay), Jungle Pass, Ember Ridge, Capital (urban), Beacon
+  Bay (coast, the SE sea corner); then rebuild the PDF (section 15g is in build_doc.py).
+- Look in Unity: the sea to the horizon on Beacon Bay, Stormbeach and Coral Keys (no land, houses or woods), the coast
+  leaving the map at each junction and its surf / stacks / quay walls; the ten corner pieces the right way round (a
+  mirrored one is a plain GameObject with scale x -1: check it is lit and not inside out); the rails' track along every
+  line and the tunnel portals; the rivers running out (Hollow Dam's 210 m reservoir); the cliffs beyond the CLIFF
+  stretches; the landmark models where map_dressing.json stands them (Capital's palace at (135, -27), Ember Ridge's
+  cooling tower at (123, -6): far from their data place; Hollow Dam's dam face on the reservoir at (0, 114)).
+- Validator warnings to look at: six rail gates on blocked ground (lane B's transit.py; trains only) and the 10 m
+  passages holding about half of Capital's and Swamp Siege's ground (Tools/maps/validate_p33.py --list).

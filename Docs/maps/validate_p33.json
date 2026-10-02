@@ -1,0 +1,117 @@
+[
+ {
+  "check": 1,
+  "name": "edge_ring",
+  "checked": 100,
+  "errors": [],
+  "warnings": []
+ },
+ {
+  "check": 2,
+  "name": "camera_cover",
+  "checked": 100,
+  "errors": [],
+  "warnings": []
+ },
+ {
+  "check": 3,
+  "name": "decoration_inert",
+  "checked": 82,
+  "errors": [],
+  "warnings": [
+   "church: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "factory: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "gantry_crane: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "hangar: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "lighthouse: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "radar_dome: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "radar_station: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "radio_mast: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "ruin_tower: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "silo: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "skyscraper: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "volcanic_cliff: a prop GLB drawn as a landmark look (no prop, no collider)",
+   "water_tower: a prop GLB drawn as a landmark look (no prop, no collider)"
+  ]
+ },
+ {
+  "check": 4,
+  "name": "band_clear",
+  "checked": 100,
+  "errors": [],
+  "warnings": []
+ },
+ {
+  "check": 5,
+  "name": "continuity",
+  "checked": 100,
+  "errors": [],
+  "warnings": []
+ },
+ {
+  "check": 6,
+  "name": "entry_gates",
+  "checked": 228,
+  "errors": [],
+  "warnings": [
+   "metrocity_siege: gate rail_siege_line not on open ground (a rail gate: trains only)",
+   "orbitalgate_siege: gate rail_siege_line not on open ground (a rail gate: trains only)",
+   "rustyard_conquest: gate rail_siding not on open ground (a rail gate: trains only)",
+   "rustyard_sandbox: gate rail_siding not on open ground (a rail gate: trains only)",
+   "rustyard_siege: gate rail_siding not on open ground (a rail gate: trains only)",
+   "whiteout_siege: gate rail_siege_line not on open ground (a rail gate: trains only)"
+  ]
+ },
+ {
+  "check": 7,
+  "name": "access",
+  "checked": 75,
+  "errors": [],
+  "warnings": [
+   "swamp_conquest: team 1 drop zone (108.8, 108.8) out of reach of the biggest hull (known before prompt 33)",
+   "veyra_old_quarter_conquest: team 1 drop zone (108.8, 108.8) out of reach of the biggest hull; point west (-80.0, 80.0) out of reach of the biggest hull; point town (0.0, 0.0) out of reach of the biggest hull; point east (80.0, -80.0) out of reach of the biggest hull (known before prompt 33)"
+  ]
+ },
+ {
+  "check": 8,
+  "name": "terrain_zones",
+  "checked": 100,
+  "errors": [],
+  "warnings": []
+ },
+ {
+  "check": 9,
+  "name": "rail_sea_graph",
+  "checked": 26,
+  "errors": [],
+  "warnings": []
+ },
+ {
+  "check": 10,
+  "name": "crossing_warning",
+  "checked": 24,
+  "errors": [],
+  "warnings": [
+   "ironport_conquest: crossing quay.x2 only warns (its closing would cut the ground)",
+   "ironport_sandbox: crossing quay.x2 only warns (its closing would cut the ground)"
+  ]
+ },
+ {
+  "check": 11,
+  "name": "chokepoints",
+  "checked": 100,
+  "errors": [],
+  "warnings": [
+   "capital_conquest: a passage of 10 m or less near (-77, 3) holds 46 % of the open ground",
+   "capital_sandbox: a passage of 10 m or less near (-77, 3) holds 46 % of the open ground",
+   "swamp_siege: a passage of 10 m or less near (-27, -67) holds 49 % of the open ground"
+  ]
+ },
+ {
+  "check": 12,
+  "name": "replay_ingress",
+  "checked": 100,
+  "errors": [],
+  "warnings": []
+ }
+]

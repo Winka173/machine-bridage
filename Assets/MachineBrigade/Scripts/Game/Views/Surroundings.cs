@@ -94,7 +94,10 @@ namespace MachineBrigade.Game.Views
             _root = new GameObject("Surroundings");
             _root.transform.SetParent(parent, false);
 
-            // Prompt 33 L6: the visual relief past the edge first (fields, the range and the scatter all stand on it).
+            // Prompt 33 L2 (view): the edge types first (the sea, the rivers and lines running out, the corner pieces'
+            // ground), then L6's visual relief past the edge (fields, the range and the scatter all stand on them).
+            PrepareEdges(world);
+            PrepareLandmarks(world);
             BuildRelief();
             var fields = theme.Fields ? Fields() : new List<Rect>();
             _texture = PaintOuter(theme, fields);
@@ -132,13 +135,16 @@ namespace MachineBrigade.Game.Views
                 var lava = Place("Lava River", Own(LavaRiver()), _lavaMaterial);
                 lava.transform.position = new Vector3(_centre.x, -0.01f, RiverZ);
             }
-            else if (theme.Water == ThemeWater.Sea)
+            else if (theme.Water == ThemeWater.Sea && !HasEdges)
             {
                 // The sea fills everything beyond the north edge, out past the fog.
                 var sea = Place("Sea", Own(Plane(1f, 1)), materials.Water);
                 sea.transform.position = new Vector3(_centre.x, -0.02f, SeaShore + Extent * 1.5f);
                 sea.transform.localScale = new Vector3(Extent * 6f, 1f, Extent * 3f);
             }
+
+            // Prompt 33 L2 (view): with edges data the sea follows the SEA stretches (not the theme's north shore).
+            BuildEdgeWater(materials);
 
             if (theme.Skyline != null) BuildSkyline(models);
             if (_field.HasOutline) ScatterBays(models);
@@ -148,6 +154,10 @@ namespace MachineBrigade.Game.Views
             PlaceFarmhouses(models, fields);
             // Prompt 33 L6: the biome's decoration layer, zone by zone (instanced like the rest, never simulated).
             ScatterDressing(models, world, fields);
+            // Prompt 33 L2 (view): the corner pieces, the sea side, the edge types' sets and the rails.
+            DressEdges(models, world, fields);
+            // Prompt 33 L3 (view): the landmark models no map prop is, where map_dressing.py found room (decoration).
+            PlaceLandmarks(models, world);
             var total = 0;
             foreach (var entry in _instances)
             {
@@ -169,7 +179,7 @@ namespace MachineBrigade.Game.Views
                 InstancedTriangles += mesh.GetIndexCount(submesh) / 3 * entry.Value.Count;
             }
             _instances.Clear();
-            Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances ({DressingPlaced} biome dressing, {_relief.Count} relief), " +
+            Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances ({DressingPlaced} biome and edge dressing, {_relief.Count} relief, {CornersPlaced} corner pieces, {LandmarksPlaced} landmarks), " +
                       $"ring {_zones.RingX}/{_zones.RingZ} m, band {_zones.EdgeBand} m, seed {_seed}, instancing supported: {SystemInfo.supportsInstancing}");
         }
 
@@ -205,7 +215,9 @@ namespace MachineBrigade.Game.Views
 
         private bool HasRiver => _theme.Water is ThemeWater.River or ThemeWater.FrozenRiver or ThemeWater.Lava or ThemeWater.Canal;
 
-        private bool InSea(Vector2 p, float margin) => _theme.Water == ThemeWater.Sea && p.y > SeaShore - margin;
+        /// <summary>On (or within <paramref name="margin"/> of) the sea: the SEA stretches' with edges data (prompt 33 L2), else the theme's north shore.</summary>
+        private bool InSea(Vector2 p, float margin) =>
+            HasEdges ? EdgeSea(p, margin) : _theme.Water == ThemeWater.Sea && p.y > SeaShore - margin;
 
         /// <summary>Submits the instanced scenery; call once per frame.</summary>
         public void Draw()
@@ -251,10 +263,15 @@ namespace MachineBrigade.Game.Views
         private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x - _centre.x) > _halfX + margin || Mathf.Abs(p.y - _centre.y) > _halfZ + margin;
 
         private bool NearRiver(Vector2 p, float margin) =>
-            (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin);
+            (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin) || OnEdgeFeature(p, margin) ||
+            (_landmarkZones.Count > 0 && InLandmark(p, margin));
 
         /// <summary>Rough terrain height at a ground point (0 on the flat around the map).</summary>
-        private float Height(Vector2 p) => Mathf.Max(Mathf.Max(RangeHeight(p), BayHeight(p)), ReliefHeight(p));
+        private float Height(Vector2 p)
+        {
+            var damp = _cornerZones.Count > 0 ? CornerDamp(p) : 1f;
+            return Mathf.Max(Mathf.Max(RangeHeight(p) * damp, BayHeight(p)), Mathf.Max(ReliefHeight(p) * damp, CliffHeight(p)));
+        }
 
         /// <summary>
         /// The rough ground that fills the bays carved into the square by the battlefield's
@@ -294,7 +311,8 @@ namespace MachineBrigade.Game.Views
             var height = ramp * (peak * (0.3f + 0.7f * ridge) + detail * 5f);
             // A valley for the river; hills fall away to the shore on a harbour map.
             var valley = HasRiver ? Mathf.SmoothStep(0f, 1f, (Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f - 3f) / 26f) : 1f;
-            if (_theme.Water == ThemeWater.Sea) valley *= Mathf.SmoothStep(0f, 1f, (SeaShore - p.y) / 30f);
+            if (HasEdges) valley *= EdgeValley(p);
+            else if (_theme.Water == ThemeWater.Sea) valley *= Mathf.SmoothStep(0f, 1f, (SeaShore - p.y) / 30f);
             return height * valley;
         }
 
@@ -729,9 +747,10 @@ namespace MachineBrigade.Game.Views
                 if (InCity(p) && (OnAvenue(p.x) || OnAvenue(p.y))) colour = theme.Road;
                 else if (mapTheme.Paved && !InCity(p)) colour = Color.Lerp(mapTheme.Lawn, colour, 0.3f);
                 var riverDistance = HasRiver ? Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f
-                    : mapTheme.Water == ThemeWater.Sea ? SeaShore - p.y : 99f;
+                    : mapTheme.Water == ThemeWater.Sea && !HasEdges ? SeaShore - p.y : 99f;
                 if (riverDistance < 4f) colour = Color.Lerp(colour, bank, Mathf.Clamp01(1f - riverDistance / 4f));
                 colour = PaintRelief(p, colour, theme);
+                colour = PaintEdges(p, colour, theme);
                 // Out of bounds reads a little darker and duller, which marks the playable edge.
                 var edge = Beyond(p);
                 var shade = Mathf.Lerp(0.9f, 0.74f, Mathf.Clamp01(edge / 40f));

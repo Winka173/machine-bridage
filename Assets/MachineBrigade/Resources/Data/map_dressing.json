@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "camera": {
   "tiltDegrees": 52.0,
   "maxZoomSquare": 42.0,
@@ -634,6 +634,902 @@
    "berms": 4,
    "ditches": 0,
    "dryBeds": 1
+  }
+ ],
+ "edges": {
+  "corners": [
+   {
+    "piece": "outer_land",
+    "model": "dress_edge_outer_land",
+    "first": "LAND",
+    "radius": 22.0
+   },
+   {
+    "piece": "corner_land_cliff",
+    "model": "dress_edge_corner_land_cliff",
+    "first": "LAND",
+    "radius": 24.0
+   },
+   {
+    "piece": "outer_urban",
+    "model": "dress_edge_outer_urban",
+    "first": "URBAN",
+    "radius": 18.0
+   },
+   {
+    "piece": "bank_land_river",
+    "model": "dress_edge_bank_land_river",
+    "first": "LAND",
+    "radius": 22.0
+   },
+   {
+    "piece": "corner_land_sea",
+    "model": "dress_edge_corner_land_sea",
+    "first": "LAND",
+    "radius": 26.0
+   },
+   {
+    "piece": "outer_sea",
+    "model": "dress_edge_outer_sea",
+    "first": "SEA",
+    "radius": 20.0
+   },
+   {
+    "piece": "embankment_urban_river",
+    "model": "dress_edge_embankment_urban_river",
+    "first": "URBAN",
+    "radius": 20.0
+   },
+   {
+    "piece": "outer_land_sea",
+    "model": "dress_edge_outer_land_sea",
+    "first": "SEA",
+    "radius": 22.0
+   },
+   {
+    "piece": "outer_cliff",
+    "model": "dress_edge_outer_cliff",
+    "first": "CLIFF",
+    "radius": 24.0
+   },
+   {
+    "piece": "outer_river",
+    "model": "dress_edge_outer_river",
+    "first": "RIVER",
+    "radius": 18.0
+   }
+  ],
+  "sea": {
+   "waves": [
+    "dress_sea_whitecap"
+   ],
+   "waveDensity": 6.0,
+   "surf": "dress_sea_surf",
+   "stack": "dress_sea_stack",
+   "quay": "dress_edge_quay",
+   "crane": "dress_edge_crane_far",
+   "containers": "dress_edge_containers",
+   "ships": [
+    "dress_sea_ship_far",
+    "dress_sea_tanker_far"
+   ],
+   "islands": [
+    "dress_sea_island_haze",
+    "dress_coast_island_far"
+   ],
+   "shipsPerSide": 2,
+   "islandsPerSide": 2,
+   "laneBuoy": "dress_coast_buoy",
+   "laneStep": 40.0
+  },
+  "sets": [
+   {
+    "key": "INDUSTRIAL",
+    "ring": 5.0,
+    "set": [
+     "dress_edge_chimney",
+     "dress_edge_tanks",
+     "dress_harbor_shed_far",
+     "dress_harbor_shed_far",
+     "dress_harbor_pipes",
+     "dress_edge_containers"
+    ]
+   },
+   {
+    "key": "HARBOR",
+    "ring": 6.0,
+    "set": [
+     "dress_edge_containers",
+     "dress_edge_containers",
+     "dress_harbor_shed_far",
+     "dress_harbor_drums",
+     "dress_harbor_pallets"
+    ]
+   },
+   {
+    "key": "URBAN",
+    "ring": 10.0,
+    "set": [
+     "dress_urban_block_far",
+     "dress_urban_kiosk",
+     "dress_urban_billboard"
+    ]
+   },
+   {
+    "key": "CLIFF",
+    "ring": 14.0,
+    "set": [
+     "dress_edge_scree",
+     "dress_edge_scree",
+     "dress_desert_far"
+    ]
+   }
+  ],
+  "rail": {
+   "track": "dress_edge_rail_track",
+   "portal": "dress_edge_tunnel_portal",
+   "step": 6.0
+  }
+ },
+ "landmarks": [
+  {
+   "map": "borderbridge_siege",
+   "id": "borderbridge.village_church",
+   "model": "church",
+   "x": -61.0,
+   "z": 135.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "capital_conquest",
+   "id": "capital.palace",
+   "model": "dress_landmark_palace_dome",
+   "x": 135.0,
+   "z": -27.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 15.6,
+   "onPlay": false
+  },
+  {
+   "map": "capital_conquest",
+   "id": "capital.station",
+   "model": "dress_landmark_station_clock",
+   "x": 147.0,
+   "z": -82.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.5,
+   "onPlay": false
+  },
+  {
+   "map": "capital_long",
+   "id": "capital.palace",
+   "model": "dress_landmark_palace_dome",
+   "x": 135.0,
+   "z": -27.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 15.6,
+   "onPlay": false
+  },
+  {
+   "map": "capital_long",
+   "id": "capital.station",
+   "model": "dress_landmark_station_clock",
+   "x": 147.0,
+   "z": -82.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.5,
+   "onPlay": false
+  },
+  {
+   "map": "capital_sandbox",
+   "id": "capital.palace",
+   "model": "dress_landmark_palace_dome",
+   "x": 135.0,
+   "z": -27.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 15.6,
+   "onPlay": false
+  },
+  {
+   "map": "capital_sandbox",
+   "id": "capital.station",
+   "model": "dress_landmark_station_clock",
+   "x": 147.0,
+   "z": -82.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.5,
+   "onPlay": false
+  },
+  {
+   "map": "capital_siege",
+   "id": "capital.palace",
+   "model": "dress_landmark_palace_dome",
+   "x": 135.0,
+   "z": -27.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 15.6,
+   "onPlay": false
+  },
+  {
+   "map": "capital_siege",
+   "id": "capital.station",
+   "model": "dress_landmark_station_clock",
+   "x": 147.0,
+   "z": -82.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.5,
+   "onPlay": false
+  },
+  {
+   "map": "capital_siege",
+   "id": "capital.ministry_tower",
+   "model": "skyscraper",
+   "x": -132.0,
+   "z": 44.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 9.9,
+   "onPlay": false
+  },
+  {
+   "map": "coralisles_conquest",
+   "id": "coralisles.lighthouse",
+   "model": "lighthouse",
+   "x": 0.0,
+   "z": -129.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.1,
+   "onPlay": false
+  },
+  {
+   "map": "coralisles_long",
+   "id": "coralisles.lighthouse",
+   "model": "lighthouse",
+   "x": 0.0,
+   "z": -129.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.1,
+   "onPlay": false
+  },
+  {
+   "map": "coralisles_sandbox",
+   "id": "coralisles.lighthouse",
+   "model": "lighthouse",
+   "x": 0.0,
+   "z": -129.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.1,
+   "onPlay": false
+  },
+  {
+   "map": "coralisles_siege",
+   "id": "coralisles.lighthouse",
+   "model": "lighthouse",
+   "x": 75.0,
+   "z": 51.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.1,
+   "onPlay": false
+  },
+  {
+   "map": "dunebreak_long",
+   "id": "dunebreak.north_radar",
+   "model": "radar_dome",
+   "x": -82.0,
+   "z": 111.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.7,
+   "onPlay": false
+  },
+  {
+   "map": "dunebreak_siege",
+   "id": "dunebreak.desert_mast",
+   "model": "radio_mast",
+   "x": 138.0,
+   "z": 90.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 2.1,
+   "onPlay": true
+  },
+  {
+   "map": "dunebreak_siege",
+   "id": "dunebreak.north_radar",
+   "model": "radar_dome",
+   "x": 11.0,
+   "z": 117.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.7,
+   "onPlay": false
+  },
+  {
+   "map": "emberridge_conquest",
+   "id": "emberridge.geothermal",
+   "model": "dress_landmark_cooling_tower",
+   "x": 123.0,
+   "z": -6.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 17.0,
+   "onPlay": false
+  },
+  {
+   "map": "emberridge_long",
+   "id": "emberridge.geothermal",
+   "model": "dress_landmark_cooling_tower",
+   "x": 123.0,
+   "z": -6.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 17.0,
+   "onPlay": false
+  },
+  {
+   "map": "emberridge_sandbox",
+   "id": "emberridge.geothermal",
+   "model": "dress_landmark_cooling_tower",
+   "x": 123.0,
+   "z": -6.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 17.0,
+   "onPlay": false
+  },
+  {
+   "map": "emberridge_siege",
+   "id": "emberridge.geothermal",
+   "model": "dress_landmark_cooling_tower",
+   "x": 123.0,
+   "z": -6.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 17.0,
+   "onPlay": false
+  },
+  {
+   "map": "emberridge_siege",
+   "id": "emberridge.ridge",
+   "model": "volcanic_cliff",
+   "x": 116.0,
+   "z": -30.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 7.6,
+   "onPlay": false
+  },
+  {
+   "map": "foundry_siege",
+   "id": "foundry.north_works",
+   "model": "factory",
+   "x": -93.0,
+   "z": 149.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 11.7,
+   "onPlay": false
+  },
+  {
+   "map": "frostpeak_long",
+   "id": "frostpeak.radar_station",
+   "model": "radar_station",
+   "x": -92.0,
+   "z": 116.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 6.4,
+   "onPlay": false
+  },
+  {
+   "map": "frostpeak_siege",
+   "id": "frostpeak.village_church",
+   "model": "church",
+   "x": -13.0,
+   "z": 120.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "greenvale_siege",
+   "id": "greenvale.silos",
+   "model": "silo",
+   "x": -34.0,
+   "z": 126.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 3.5,
+   "onPlay": false
+  },
+  {
+   "map": "greenvale_siege",
+   "id": "greenvale.crossroads_church",
+   "model": "church",
+   "x": 18.0,
+   "z": 127.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "hydrodam_conquest",
+   "id": "hydrodam.dam",
+   "model": "dress_landmark_dam_wall",
+   "x": 0.0,
+   "z": 114.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 32.2,
+   "onPlay": false
+  },
+  {
+   "map": "hydrodam_long",
+   "id": "hydrodam.dam",
+   "model": "dress_landmark_dam_wall",
+   "x": -42.0,
+   "z": 114.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 32.2,
+   "onPlay": false
+  },
+  {
+   "map": "hydrodam_sandbox",
+   "id": "hydrodam.dam",
+   "model": "dress_landmark_dam_wall",
+   "x": 0.0,
+   "z": 114.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 32.2,
+   "onPlay": false
+  },
+  {
+   "map": "hydrodam_siege",
+   "id": "hydrodam.dam",
+   "model": "dress_landmark_dam_wall",
+   "x": 0.0,
+   "z": 114.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 32.2,
+   "onPlay": false
+  },
+  {
+   "map": "hydrodam_siege",
+   "id": "hydrodam.power_station",
+   "model": "factory",
+   "x": -126.0,
+   "z": 54.0,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 11.7,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_conquest",
+   "id": "ironport.yard_water_tower",
+   "model": "water_tower",
+   "x": 42.0,
+   "z": -48.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 3.3,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_conquest",
+   "id": "ironport.outer_lighthouse",
+   "model": "dress_landmark_harbour_light",
+   "x": -205.0,
+   "z": 166.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 8.0,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_long",
+   "id": "ironport.crane",
+   "model": "gantry_crane",
+   "x": -101.0,
+   "z": 122.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 10.8,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_long",
+   "id": "ironport.yard_water_tower",
+   "model": "water_tower",
+   "x": 42.0,
+   "z": -48.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 3.3,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_sandbox",
+   "id": "ironport.yard_water_tower",
+   "model": "water_tower",
+   "x": 42.0,
+   "z": -48.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 3.3,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_sandbox",
+   "id": "ironport.outer_lighthouse",
+   "model": "dress_landmark_harbour_light",
+   "x": -205.0,
+   "z": 166.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 8.0,
+   "onPlay": false
+  },
+  {
+   "map": "ironport_siege",
+   "id": "ironport.yard_water_tower",
+   "model": "water_tower",
+   "x": 42.0,
+   "z": -42.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 3.3,
+   "onPlay": true
+  },
+  {
+   "map": "ironport_siege",
+   "id": "ironport.outer_lighthouse",
+   "model": "dress_landmark_harbour_light",
+   "x": -205.0,
+   "z": 166.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 8.0,
+   "onPlay": false
+  },
+  {
+   "map": "junglepass_conquest",
+   "id": "junglepass.village_church",
+   "model": "church",
+   "x": -105.0,
+   "z": 81.75,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "junglepass_long",
+   "id": "junglepass.village_church",
+   "model": "church",
+   "x": -105.0,
+   "z": 84.75,
+   "yaw": 90.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "junglepass_sandbox",
+   "id": "junglepass.village_church",
+   "model": "church",
+   "x": -105.0,
+   "z": 81.75,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "junglepass_siege",
+   "id": "junglepass.village_church",
+   "model": "church",
+   "x": -105.0,
+   "z": 81.75,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "landingbeach_long",
+   "id": "landingbeach.radar",
+   "model": "radar_station",
+   "x": 131.0,
+   "z": 12.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 6.4,
+   "onPlay": false
+  },
+  {
+   "map": "launchsite_siege",
+   "id": "launchsite.assembly_hangar",
+   "model": "hangar",
+   "x": -101.0,
+   "z": 117.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 15.6,
+   "onPlay": false
+  },
+  {
+   "map": "metrocity_siege",
+   "id": "metrocity.north_tower",
+   "model": "skyscraper",
+   "x": -51.0,
+   "z": 149.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 9.9,
+   "onPlay": false
+  },
+  {
+   "map": "orbitalgate_long",
+   "id": "orbitalgate.array",
+   "model": "radar_station",
+   "x": 146.0,
+   "z": 16.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 6.4,
+   "onPlay": false
+  },
+  {
+   "map": "orbitalgate_siege",
+   "id": "orbitalgate.array",
+   "model": "radar_station",
+   "x": 146.0,
+   "z": 16.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 6.4,
+   "onPlay": false
+  },
+  {
+   "map": "redrock_conquest",
+   "id": "redrock.mine_church",
+   "model": "church",
+   "x": 111.0,
+   "z": -45.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "redrock_long",
+   "id": "redrock.mine_church",
+   "model": "church",
+   "x": 111.0,
+   "z": -42.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "redrock_sandbox",
+   "id": "redrock.mine_church",
+   "model": "church",
+   "x": 111.0,
+   "z": -45.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "redrock_siege",
+   "id": "redrock.mine_church",
+   "model": "church",
+   "x": 111.0,
+   "z": -45.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 12.2,
+   "onPlay": false
+  },
+  {
+   "map": "rustyard_long",
+   "id": "rustyard.quay_tower",
+   "model": "ruin_tower",
+   "x": -22.0,
+   "z": 87.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.4,
+   "onPlay": false
+  },
+  {
+   "map": "rustyard_siege",
+   "id": "rustyard.quay_tower",
+   "model": "ruin_tower",
+   "x": 44.0,
+   "z": 147.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.4,
+   "onPlay": false
+  },
+  {
+   "map": "saltflat_conquest",
+   "id": "saltflat.survey_beacon",
+   "model": "dress_landmark_survey_beacon",
+   "x": 9.0,
+   "z": 21.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.2,
+   "onPlay": true
+  },
+  {
+   "map": "saltflat_long",
+   "id": "saltflat.survey_beacon",
+   "model": "dress_landmark_survey_beacon",
+   "x": 9.0,
+   "z": 21.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.2,
+   "onPlay": true
+  },
+  {
+   "map": "saltflat_long",
+   "id": "saltflat.survey_radar",
+   "model": "radar_station",
+   "x": -123.0,
+   "z": 17.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 6.4,
+   "onPlay": false
+  },
+  {
+   "map": "saltflat_sandbox",
+   "id": "saltflat.survey_beacon",
+   "model": "dress_landmark_survey_beacon",
+   "x": 18.0,
+   "z": -9.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.2,
+   "onPlay": true
+  },
+  {
+   "map": "saltflat_siege",
+   "id": "saltflat.survey_beacon",
+   "model": "dress_landmark_survey_beacon",
+   "x": -12.0,
+   "z": 0.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.2,
+   "onPlay": true
+  },
+  {
+   "map": "skyhold_siege",
+   "id": "skyhold.west_hangar",
+   "model": "hangar",
+   "x": -27.0,
+   "z": 145.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 15.6,
+   "onPlay": false
+  },
+  {
+   "map": "swamp_long",
+   "id": "swamp.swamp_radar",
+   "model": "radar_dome",
+   "x": -65.0,
+   "z": 119.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.7,
+   "onPlay": false
+  },
+  {
+   "map": "swamp_siege",
+   "id": "swamp.swamp_radar",
+   "model": "radar_dome",
+   "x": -2.0,
+   "z": 131.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 5.7,
+   "onPlay": false
+  },
+  {
+   "map": "veyra_old_quarter_conquest",
+   "id": "veyra_old_quarter.clock_square",
+   "model": "dress_landmark_clock_tower",
+   "x": 95.0,
+   "z": -137.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.9,
+   "onPlay": false
+  },
+  {
+   "map": "veyra_old_quarter_long",
+   "id": "veyra_old_quarter.clock_square",
+   "model": "dress_landmark_clock_tower",
+   "x": 95.0,
+   "z": -137.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.9,
+   "onPlay": false
+  },
+  {
+   "map": "veyra_old_quarter_sandbox",
+   "id": "veyra_old_quarter.clock_square",
+   "model": "dress_landmark_clock_tower",
+   "x": 95.0,
+   "z": -137.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.9,
+   "onPlay": false
+  },
+  {
+   "map": "veyra_old_quarter_siege",
+   "id": "veyra_old_quarter.clock_square",
+   "model": "dress_landmark_clock_tower",
+   "x": 95.0,
+   "z": -137.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 4.9,
+   "onPlay": false
+  },
+  {
+   "map": "veyra_old_quarter_siege",
+   "id": "veyra_old_quarter.quarter_mast",
+   "model": "radio_mast",
+   "x": -148.0,
+   "z": -82.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 2.1,
+   "onPlay": false
+  },
+  {
+   "map": "whiteout_siege",
+   "id": "whiteout.signal_mast",
+   "model": "radio_mast",
+   "x": 137.0,
+   "z": 91.0,
+   "yaw": 0.0,
+   "scale": 1.0,
+   "radius": 2.1,
+   "onPlay": false
   }
  ]
 }

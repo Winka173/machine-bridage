@@ -16616,3 +16616,128 @@ file is reported and skipped (the audit then says whether that file still has a 
   files as before the pass (borderbridge_conquest, borderbridge_siege; the conquest file's plan is identical with and
   without the fix); transit, edges and terrain --check: 0 problems, nothing to write. Docs/checks/map_audit.md / .csv
   regenerated. No Unity, tests or sims.
+
+## Prompt 33 L2 view / L7 (lead pass, 2026-10-02)
+
+Branch `feature/p33-a2` (lane A, after the merge of `feature/p33-b2`). The view side of pass 2, the landmark models of
+pass 3 and pass 7. Nothing run but the Python tools, the Blender build and the GLB validator, the map validators,
+check_access.py and the map audit (no Unity, no tests, no sims); the C# is compiled by the lead.
+
+### L2 view: the outer ring follows the edge types
+
+The view (`Views/Surroundings.Edges.cs`, a partial of `Surroundings`) reads the map's own `"edges"` (`world.Map.Edges`)
+and `map_dressing.json`'s new `"edges"` block (`Tools/maps/map_dressing.py` EDGE_DRESSING, version 2). A map without
+edges data (a test field) keeps the theme's old picture.
+
+- **SEA**: a point beyond the rectangle is sea when the stretch beyond its side (by the larger overshoot; in a corner
+  square either side) is SEA. So the sea runs from the edge to the horizon, and at a rectangle corner with one SEA side
+  the sea takes the corner and the coast runs on along that side's line (Ironport's quay line carries on east and west).
+  Where a SEA stretch meets another type along a side, the coast leaves the map at the junction and runs out straight for
+  36 m (the corner piece), then wobbles (Perlin, +-17 m). Drawn as a sea mesh in 2 m runs over the decorated square and
+  20 m runs out to three times it (cells fitted to the square: no gap), on the theme's water material. Every scatter
+  already asks `InSea` (forests, rocks, scenery, farmhouses, fields, the city's blocks, the relief, the range and the
+  horizon range, the biome dressing): with edges data it is this sea (a 4 m distance field gives the margins), so the SEA
+  side has no land, house, wood, field or hill; the range falls away within 30 m of it. The theme's own north sea
+  (`ThemeWater.Sea`) is used only without edges data: Ironport's long file (no SEA stretch, its quay mid-map) has no sea
+  past its north edge any more. On the sea: whitecaps (6 per hectare), the biome's buoys, two far ships (a container
+  ship and a tanker, 40-170 m past the ring) and two hazy islands (170-430 m past it) off each SEA side, and a line of
+  buoys along each sea lane's way out (L4's routes beyond the play area). The ground's paint turns to sand within 7 m of
+  the sea and the rivers.
+- **Shores** along each coast line beyond the map, by the SEA stretch's `shore`: BEACH a broken surf line every 11 m;
+  CLIFF sea stacks every 20 m; QUAY quay wall sections end to end (every 12 m), a gantry crane every 48 m and container
+  stacks behind.
+- **RIVER**: each `river` link's river runs on out as a channel of its width (the reservoir's 210 m included),
+  meandering past 36 m, the hills opened round it, its banks sanded; the theme's own parallel river is kept.
+- **CLIFF**: the ground beyond a CLIFF stretch rises as part of the faceted range: from 2 m out to 8-13 m by 11 m (x the
+  theme's peaks), faded over 14 m at the stretch's ends, plus scree. **URBAN**: the theme's city (every URBAN map has a
+  skyline theme); the urban set only on a map without one.
+- **Modifiers**: ring sets per hectare beyond the stretch: INDUSTRIAL 5 (chimney, tanks, sheds, pipes, containers),
+  HARBOR 6, URBAN 10 (only without a skyline), CLIFF 14 (scree). A SEA stretch's modifier dresses its coast (the QUAY
+  shore above).
+- **Corner pieces** (`Tools/blender/mb_p33_edges.py`, registered last): the ten names edges.py uses, `dress_edge_<piece>`,
+  standing at each corner of the data. Frame: the edge along local X, local +Z out of the map; a junction piece has its
+  first type (`first` in the data: LAND for corner_land_sea, bank_land_river, corner_land_cliff; URBAN for
+  embankment_urban_river) on its -X side; an outer piece has its first type on its +Z strip (SEA for outer_land_sea).
+  When the data's order is the other way round the piece is mirrored, so they are stood as plain GameObjects (no
+  collider: `ModelLibrary.Spawn`) rather than instanced (a mirrored instance would draw inside out); at most ten a map.
+  The scatter keeps off each piece's radius (18-26 m) and the relief and the range flatten under it. Their ground patches
+  dip under the view's ground at the rim; nothing in them is water (the view's sea and rivers show through).
+- **Continuity**: roads (the `road` links) run on out as painted strips to the horizon with a cut through the hills;
+  rails: the track (`dress_edge_rail_track`, 6 m sections) is laid along every RailSpline's whole length (nothing drew
+  the L5 lines, in play or out) and a tunnel portal stands at each end beyond the map; the play area's biome clutter keeps
+  off the rails' band. Rivers and the coast as above; the sea lanes as buoy lines; the air corridors have nothing to draw.
+- **Models** (24, existing kit materials, validator 0 errors): corner pieces outer_land 408, corner_land_cliff 560,
+  outer_urban 372, bank_land_river 828, corner_land_sea 1,104, outer_sea 624, embankment_urban_river 328, outer_land_sea
+  276, outer_cliff 254, outer_river 232; sea whitecap 60, surf 180, ship_far 104, tanker_far 68, island_haze 100, stack
+  360; edge quay 68, crane_far 108, containers 72, chimney 160, tanks 216, scree 100, rail_track 156, tunnel_portal 152.
+- Not done: the outline's bays inside the square on a SEA side stay the map's (its ground covers the whole square; Coral
+  Keys' sea inside the square is the map view's); shore CLIFF draws stacks only (no raised headland beyond the land
+  side); level crossings have no barrier model.
+
+### L3 view: the landmark models
+
+- **Which**: the 66 landmark entries with a `"model"` on the 100 map files (a landmark no prop of that file is) plus one
+  view-only entry, Ironport's lighthouse out at sea (`ironport.outer_lighthouse`, square files only: the line c4m12.05
+  "the whole wall to the lighthouse"; it stands at (-205, 166), the quay line carried on west, on a breakwater head). Six
+  new models (`Tools/blender/mb_p33_landmarks.py`, registered last): palace_dome 868 triangles, station_clock 484,
+  cooling_tower 540, dam_wall 204, survey_beacon 224, clock_tower 492, and harbour_light 492; the other entries (church,
+  water_tower, lighthouse, radar_station, radar_dome, radio_mast, factory, silo, hangar, skyscraper, gantry_crane,
+  ruin_tower, volcanic_cliff: a Siege or long file lacking the prop its other files have) draw that prop's own GLB as a
+  look (no prop, no collider).
+- **Decoration, not gameplay**: none is made a gameplay prop. A blocking prop would change the simulation (routes,
+  sight, cover), break the versus files' symmetry (one prop on one half), and every map file is generated (build_maps.py,
+  then lane B's transit / edges / terrain passes): a prop added after them would be lost on the next build. The brief's
+  fallback (decoration) is taken; check_access.py and the map audit are unchanged since no map file changed.
+- **Where** (`Tools/maps/map_dressing.py` SpotSearch, written to `map_dressing.json` `"landmarks"`: map file, id, model,
+  x, z, yaw, scale, radius, onPlay): the nearest spot within 140 m of the data's place (3 m lattice, yaw 0 or 90) whose
+  footprint touches no prop's own footprint (water excepted), no capture circle (+4 m), rally (22 m), base slot or HQ,
+  entry gate (6 m), road (+1.5 m) or rail (4.5 m), no other landmark, and beyond the rectangle (at most 30 m out) no edge
+  sea, river, road or rail running out and no corner piece; the cost is 10 per drivable 2 m cell under it + 0.35 per metre
+  from the data's place (+25 beyond the edge); the water is the dam's only (it needs 60 % of its face on the reservoir and
+  faces it; nothing else may touch water). Open masts (the survey beacon, radio masts) cost 1 per drivable cell: a
+  vehicle passing through a lattice hardly shows, so they stay 12-23 m from their place. So the solid landmarks stand in
+  an outline bay, by a building or just past the edge rather than on ground units drive through: 60 of the 69 stand on no
+  drivable cell; the rest are masts (2-6 cells) and Ironport Siege's water tower (1 cell). The data's place (the
+  dialogue's) is unchanged; where the town's capture circle and the city leave no room near it the model stands far off:
+  Red Rock's church and Capital's ministry tower (Siege) 120 m, Ember Ridge's cooling tower 123 m, Coral Keys' lighthouse
+  129 m, Capital's palace 138 m (all on the map's outskirts, seen from the widest zoom). Moving them nearer means making
+  them gameplay props (see above) or a map layout change: left to the lead.
+- **View** (`Views/Surroundings.Landmarks.cs`): instanced like the scenery, on flat ground inside the map and on the outer
+  ground's height beyond it; the scatter (bays, ring, biome clutter) keeps off each landmark's radius.
+
+### L7: validators, the document's section 15g
+
+- **Validators** (`Tools/maps/validate_p33.py`, static Python over the map files, map_dressing.json, balance.json,
+  campaign.json and the view's and the Sim's source; nothing simulated). Errors are broken rules; warnings are judged and
+  allowed. The twelve: 1 edge_ring (no land scenery, landmark or set on a SEA side, the sea dressing sea kinds only, the
+  sea maps declare SEA, every SEA stretch has a shore), 2 camera_cover (band + ring >= the frame + 15 % at 4:3, 16:9,
+  20:9, turned too were the camera to rotate; the horizon ground past it), 3 decoration_inert (every decoration model a
+  GLB with no collider node, dress_* and no gameplay prop, a landmark's prop look allowed as a warning; the Surroundings
+  files add no collider or component but MeshFilter / MeshRenderer and never touch the NavGrid or the world), 4 band_clear
+  (no prop, unit, HQ, slot, wall or gate past the rectangle), 5 continuity (the stored links equal edges.py's recompute;
+  every RIVER stretch, coast junction, rail and sea exit has its way out; every link kind is drawn), 6 entry_gates
+  (gates on open ground with an approach from beyond the edge to them; every edge / rail / sea delivery of the campaign's
+  wave events on its map has a data gate of that kind, else the Sim's implicit one is a warning; a rail gate on blocked
+  ground is a warning: trains only, the Sim's spawn skips it), 7 access (check_access.py; the two failures from before
+  prompt 33 are warnings), 8 terrain_zones, 9 rail_sea_graph, 10 crossing_warning (max(4 s, length / 4.5 + 0.5 s)),
+  11 chokepoints (articulation cells of the open ground at 6 m cells, a one-hull gap: none may cut off more than 45 %
+  of the biggest piece, a warning where the file's asymmetry is intended; the same at 10 m cells is a warning only),
+  12 replay_ingress (static: the row gap a whole number of ticks, no UnityEngine, own Random, clock or Guid in the Sim's
+  ingress, rail and sea code, gate ids unique and numbers finite; the replays themselves are the L2 / L4 / L5 tests).
+- **In the build**: `Tools/maps/map_dressing.py` runs them (quick: without 7 and 11) after writing its file, the last map
+  data step (`--no-validate` skips); a full run (`python Tools/maps/validate_p33.py`) writes `Docs/maps/validate_p33.json`,
+  which the design document reads.
+- **Results** (full run, 2026-10-02): 0 errors, 26 warnings: 13 prop looks drawn as landmarks (3); six rail gates on
+  blocked ground (Metro City, Orbital Gate and Whiteout Siege's siege line, Rust Yard's siding on its three square files)
+  (6); swamp_conquest and veyra_old_quarter_conquest as before (7); Ironport's crossing quay.x2 only warns (10); at 10 m
+  cells a passage holds 46 % of Capital's conquest and sandbox ground and 49 % of Swamp Siege's (11). check_access.py
+  73/75 and the map audit 8 RED / 92 YELLOW unchanged (no map file changed in this pass); glb_check 0 errors on 518 GLBs.
+- **Rings fixed** (the theme's old sea was only north of a harbour map): Coral Keys' four files (sea on every side, in
+  part), Stormbeach's four (E, S, W), Beacon Bay's four (E cliff shore, S beach), Ironport's and Rust Yard's long files
+  (their false north sea gone: the quay is mid-map); the square harbours keep their north sea and gain the quay line
+  running on. Every file also gains its rivers, cliffs, industrial sets, corner pieces, roads and rails beyond the edge.
+- **Design document**: `Tools/docs/prompt33.py` `section15` (15g, in Vietnamese like the rest): the four zones and the
+  ring's numbers, each battlefield's edge types per side (modifier, shore), the corner pieces' counts, the terrain tags'
+  effects and coverage, the landmarks per battlefield, the rail lines, the sea route graphs, the validators' table;
+  build_doc.py imports it beside the other lanes' modules (prompt34 kept) and calls it inside section 15. The PDF is not
+  rebuilt here. The far-zoom edge shots per biome need Unity renders: Docs/ai/LOCAL_TODO.md.

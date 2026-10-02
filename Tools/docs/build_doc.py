@@ -26,6 +26,7 @@ import prompt32  # noqa: E402
 import prompt31  # noqa: E402
 import prompt32_base  # noqa: E402
 import prompt34  # noqa: E402
+import prompt33  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -686,6 +687,8 @@ def build(game, imgdir):
     for m in game['maps']:
         out.append(f"<div class='map'><h3>{esc(m['name'])} <span class='muted'>· {esc(m['theme'])}</span></h3><p>{esc(m['sub'])}</p>"
                    f"{img(imgdir / 'maps' / (m['id'] + '.png'), '')}</div>")
+    # Prompt 33 L7: 15g, the four zones, edge types, terrain tags, landmarks, rails, sea routes and the validators.
+    out.append(prompt33.section15(game, h))
     out.append(f"<h3>Pháo đài ({mp.get('ashfield', 'Đồng Tro')}, bản công thành)</h3>{img(imgdir / 'maps' / 'ashfield_siege.png', '')}</div>")
 
     # ------------------------------------------------------------------ AI and systems

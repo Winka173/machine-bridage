@@ -515,6 +515,78 @@
     "file": "dress_desert_scrub.glb",
     "triangles": 80
   },
+  "dress_edge_bank_land_river": {
+    "file": "dress_edge_bank_land_river.glb",
+    "triangles": 828
+  },
+  "dress_edge_chimney": {
+    "file": "dress_edge_chimney.glb",
+    "triangles": 160
+  },
+  "dress_edge_containers": {
+    "file": "dress_edge_containers.glb",
+    "triangles": 72
+  },
+  "dress_edge_corner_land_cliff": {
+    "file": "dress_edge_corner_land_cliff.glb",
+    "triangles": 560
+  },
+  "dress_edge_corner_land_sea": {
+    "file": "dress_edge_corner_land_sea.glb",
+    "triangles": 1104
+  },
+  "dress_edge_crane_far": {
+    "file": "dress_edge_crane_far.glb",
+    "triangles": 108
+  },
+  "dress_edge_embankment_urban_river": {
+    "file": "dress_edge_embankment_urban_river.glb",
+    "triangles": 328
+  },
+  "dress_edge_outer_cliff": {
+    "file": "dress_edge_outer_cliff.glb",
+    "triangles": 254
+  },
+  "dress_edge_outer_land": {
+    "file": "dress_edge_outer_land.glb",
+    "triangles": 408
+  },
+  "dress_edge_outer_land_sea": {
+    "file": "dress_edge_outer_land_sea.glb",
+    "triangles": 276
+  },
+  "dress_edge_outer_river": {
+    "file": "dress_edge_outer_river.glb",
+    "triangles": 232
+  },
+  "dress_edge_outer_sea": {
+    "file": "dress_edge_outer_sea.glb",
+    "triangles": 624
+  },
+  "dress_edge_outer_urban": {
+    "file": "dress_edge_outer_urban.glb",
+    "triangles": 372
+  },
+  "dress_edge_quay": {
+    "file": "dress_edge_quay.glb",
+    "triangles": 68
+  },
+  "dress_edge_rail_track": {
+    "file": "dress_edge_rail_track.glb",
+    "triangles": 156
+  },
+  "dress_edge_scree": {
+    "file": "dress_edge_scree.glb",
+    "triangles": 100
+  },
+  "dress_edge_tanks": {
+    "file": "dress_edge_tanks.glb",
+    "triangles": 216
+  },
+  "dress_edge_tunnel_portal": {
+    "file": "dress_edge_tunnel_portal.glb",
+    "triangles": 152
+  },
   "dress_harbor_bollards": {
     "file": "dress_harbor_bollards.glb",
     "triangles": 292
@@ -554,6 +626,58 @@
   "dress_jungle_vine_rock": {
     "file": "dress_jungle_vine_rock.glb",
     "triangles": 120
+  },
+  "dress_landmark_clock_tower": {
+    "file": "dress_landmark_clock_tower.glb",
+    "triangles": 492
+  },
+  "dress_landmark_cooling_tower": {
+    "file": "dress_landmark_cooling_tower.glb",
+    "triangles": 540
+  },
+  "dress_landmark_dam_wall": {
+    "file": "dress_landmark_dam_wall.glb",
+    "triangles": 204
+  },
+  "dress_landmark_harbour_light": {
+    "file": "dress_landmark_harbour_light.glb",
+    "triangles": 492
+  },
+  "dress_landmark_palace_dome": {
+    "file": "dress_landmark_palace_dome.glb",
+    "triangles": 868
+  },
+  "dress_landmark_station_clock": {
+    "file": "dress_landmark_station_clock.glb",
+    "triangles": 484
+  },
+  "dress_landmark_survey_beacon": {
+    "file": "dress_landmark_survey_beacon.glb",
+    "triangles": 224
+  },
+  "dress_sea_island_haze": {
+    "file": "dress_sea_island_haze.glb",
+    "triangles": 100
+  },
+  "dress_sea_ship_far": {
+    "file": "dress_sea_ship_far.glb",
+    "triangles": 104
+  },
+  "dress_sea_stack": {
+    "file": "dress_sea_stack.glb",
+    "triangles": 360
+  },
+  "dress_sea_surf": {
+    "file": "dress_sea_surf.glb",
+    "triangles": 180
+  },
+  "dress_sea_tanker_far": {
+    "file": "dress_sea_tanker_far.glb",
+    "triangles": 68
+  },
+  "dress_sea_whitecap": {
+    "file": "dress_sea_whitecap.glb",
+    "triangles": 60
   },
   "dress_snow_drift": {
     "file": "dress_snow_drift.glb",
