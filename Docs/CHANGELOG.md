@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 33 L0: precheck (Docs/checks/p33_precheck.md): the camera's widest view, how reinforcements, trains, ships and aircraft come in, no per-type path costs, wrecks, stealth and sight, how the boss trains move (DECISIONS "Prompt 33 L0").
+
 - Prompt 31 L6: the prompt 31 report (Docs/story/report_p31.md) and the design document's sections on the fixed-deck missions and the battlefield events (Tools/docs/prompt31.py; the PDF is rebuilt by the lead) (DECISIONS "Prompt 31 L6").
 
 - Prompt 31 L5: the eight LATER battlefield events, each on prebuilt ground states with a way round, warned 8-12 s ahead with minimap marks: the tide flooding and drying c1m01's eastern shoal every 150 s, the east bridge falling in i2m03, Ironport's crane shot down and falling along the quay (c4m05, c4m02), the frozen lake's ice giving under medium and heavy vehicles by weight class (c3m04), the Hollow Dam's river rising in three levels (c6m10, c6m14), the Kronos mine's adits (one caves in, the other opens, c8m10), the lava cutting a causeway lane (c5m10) and a wind-driven forest fire with flames, burns and smoke over four prebuilt strips (c5m13); c11m10's landing sites reopen after the fortress stage, and the turning sandstorm covers only its half in the view (DECISIONS "Prompt 31 L5").

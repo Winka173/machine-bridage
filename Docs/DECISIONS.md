@@ -15733,3 +15733,15 @@ Pass 6: the report and the design document's sections; the PDF is built by the l
   status, the 8 + 2 cards with the loaned ones marked, placed allies, the special rules in Vietnamese from Strings.cs) and
   "Biến cố" (each event of prompts 31 L3 and L5: kind, missions, when, what it changes, its prebuilt sites and states), both
   read from campaign.json, so the document shows what the data holds.
+
+## Prompt 33 L0 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b1` (prompt 33 L0, L4, L5; lane A does L1-L3 and L6). The precheck is
+`Docs/checks/p33_precheck.md` (read only, nothing run). What it settles for the later passes:
+- The widest view (lane A's outer band): orthographic half-height 42 m, pitch 52 deg, no rotation, landscape 4:3 to
+  2.4:1.
+- No path costs by vehicle type: DEEP_FORD waits (lane A records it in L3).
+- No reinforcement has an entry gate today: ground waves appear at their spawn point, the Siege train is the view's
+  only, ships are created inside the map. L4/L5 give ships and trains their own routes beyond the play area and the
+  Siege support train its gate and entry tick (lane A's L2 does the other reinforcements' gates).
+- The boss trains drive the ground grid like tanks: L5 puts them on rails.
