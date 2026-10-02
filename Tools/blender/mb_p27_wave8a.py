@@ -10,8 +10,13 @@ Method: the current builders (mb_munitions, mb_props) unchanged in silhouette an
 (hanger lugs, guide studs, arming vanes) and a lighter ambient-occlusion bake (`ao_strength`) so the round
 reads brighter at 40 px. Names of existing parts are reused, so no runtime node changes.
 """
+import math
+
+import mb_air
 import mb_munitions as mu
 import mb_props as pr
+import mb_support
+import mb_vehicles3
 
 LEN = {'hellfire': 1.4, 'hellfire_longbow': 1.4, 'igla': 1.3, 'stinger': 1.3, 'r60': 1.6, 'maverick': 2.0, 'kh29l': 1.95,
        'mam_l': 1.0, 'patriot': 3.4, 'jdam': 2.7, 'hydra': 1.0, 's8': 1.2, 'tos_rocket': 2.4, 'shahed': 2.6,
@@ -100,3 +105,58 @@ def _debris(kind):
 
 
 BUILDERS.update({f'debris_{k}': _debris(k) for k in ('concrete', 'leaves', 'metal', 'plaster', 'roof', 'wood')})
+
+
+# ----------------------------------------------------------------------------- pass 8a3: mb_air / mb_vehicles3 / mb_support rounds and drops
+# (aps_tank, atgm_carrier, howitzer are units: see the V2 section below.) Same method as 8a1/8a2: the old builder,
+# a few small real details on the existing names and a lighter AO bake.
+def _studs3(a, ys, z, size=(.02, .04, .03)):
+    """Launch-rail studs on the belly of a round that lies along Y."""
+    for y in ys:
+        a.part('Studs', mu.LIGHT_GREY).box(size, loc=(0, y, z), bevel=0)
+
+
+def _missile3(a):
+    mb_air.missile(a)
+    _studs3(a, (-.12, .2), -.055)
+
+
+def _rocket3(a):
+    mb_air.rocket(a)
+    _studs3(a, (.0,), -.04, (.015, .035, .02))
+
+
+def _bomb3(a):
+    mb_air.bomb(a)
+    a.part('Arming_vane', mu.STEEL).box((.1, .012, .03), loc=(0, -.79, 0), bevel=0)
+
+
+def _cruise3(a):
+    mb_air.cruise_missile(a)
+    _studs3(a, (-.5, .35), -.265, (.05, .1, .04))
+
+
+def _ballistic3(a):
+    mb_vehicles3.ballistic_missile(a)
+    for y in (-1.0, .9):
+        a.part('Lugs', mu.LIGHT_GREY).box((.12, .24, .08), loc=(0, y, .455), bevel=0)
+
+
+def _heavy_rocket3(a):
+    mb_vehicles3.heavy_rocket(a)
+    _studs3(a, (-.5, .6), -.152, (.04, .08, .05))
+
+
+def _mine3(a):
+    mb_support.mine(a)
+    a.part('Mine_ring', mu.STEEL).torus(.2, .012, loc=(0, 0, .1), seg=12, ring=4)
+    a.part('Mine_handle', mu.STEEL).box((.1, .02, .03), loc=(.255, 0, .06), bevel=0)
+
+
+ROUNDS3 = {
+    'missile': (_missile3, .45), 'rocket': (_rocket3, .6), 'bomb': (_bomb3, .5), 'cruise_missile': (_cruise3, .5),
+    'ballistic_missile': (_ballistic3, .5), 'heavy_rocket': (_heavy_rocket3, .5), 'mine': (_mine3, .6),
+    'supply_crate': (mb_support.supply_crate, .6), 'repair_crate': (mb_support.repair_crate, .6),
+}
+_OLD3 = {**mb_air.BUILDERS, **mb_vehicles3.BUILDERS, **mb_support.BUILDERS}
+BUILDERS.update({n: (fn, dict(_OLD3[n][1], ao_strength=ao)) for n, (fn, ao) in ROUNDS3.items()})

@@ -177,7 +177,7 @@
   },
   "ballistic_missile": {
     "file": "ballistic_missile.glb",
-    "triangles": 780
+    "triangles": 804
   },
   "bamboo_clump": {
     "file": "bamboo_clump.glb",
@@ -249,7 +249,15 @@
   },
   "bomb": {
     "file": "bomb.glb",
-    "triangles": 392
+    "triangles": 404
+  },
+  "bomb_fab": {
+    "file": "bomb_fab.glb",
+    "triangles": 242
+  },
+  "bomb_mk84": {
+    "file": "bomb_mk84.glb",
+    "triangles": 216
   },
   "boulders": {
     "file": "boulders.glb",
@@ -397,7 +405,7 @@
   },
   "cruise_missile": {
     "file": "cruise_missile.glb",
-    "triangles": 280
+    "triangles": 304
   },
   "daedalus": {
     "file": "daedalus.glb",
@@ -729,7 +737,7 @@
   },
   "heavy_rocket": {
     "file": "heavy_rocket.glb",
-    "triangles": 424
+    "triangles": 448
   },
   "heavy_rocket_artillery": {
     "file": "heavy_rocket_artillery.glb",
@@ -961,7 +969,7 @@
   },
   "mine": {
     "file": "mine.glb",
-    "triangles": 298
+    "triangles": 406
   },
   "mine_layer": {
     "file": "mine_layer.glb",
@@ -973,19 +981,19 @@
   },
   "minefield": {
     "file": "minefield.glb",
-    "triangles": 3150
+    "triangles": 3198
   },
   "minefield_a": {
     "file": "minefield_a.glb",
-    "triangles": 3732
+    "triangles": 3780
   },
   "minefield_b": {
     "file": "minefield_b.glb",
-    "triangles": 4512
+    "triangles": 4560
   },
   "missile": {
     "file": "missile.glb",
-    "triangles": 398
+    "triangles": 422
   },
   "missile_battery": {
     "file": "missile_battery.glb",
@@ -1026,6 +1034,10 @@
   "morrigan": {
     "file": "morrigan.glb",
     "triangles": 1344
+  },
+  "mortar_bomb": {
+    "file": "mortar_bomb.glb",
+    "triangles": 122
   },
   "mortar_carrier": {
     "file": "mortar_carrier.glb",
@@ -1213,7 +1225,11 @@
   },
   "rocket": {
     "file": "rocket.glb",
-    "triangles": 184
+    "triangles": 196
+  },
+  "rocket_107": {
+    "file": "rocket_107.glb",
+    "triangles": 110
   },
   "rocket_technical": {
     "file": "rocket_technical.glb",
@@ -1482,6 +1498,10 @@
   "titan_tank": {
     "file": "titan_tank.glb",
     "triangles": 8384
+  },
+  "tos_rocket": {
+    "file": "tos_rocket.glb",
+    "triangles": 150
   },
   "towed_at_gun": {
     "file": "towed_at_gun.glb",

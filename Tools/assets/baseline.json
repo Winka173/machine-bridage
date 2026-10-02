@@ -1439,6 +1439,32 @@
     "FLAG stinger: triangles 158 -> 170 (+7.6%); vertices 240 -> 264 (+10.0%); meshes 7 -> 8 (+14.3%); renderers 7 -> 8 (+14.3%); materials 5 -> 6 (+20.0%); materialSlots 7 -> 8 (+14.3%); fileBytes 19,284 -> 21,540 (+11.7%); structure changed",
     "FLAG tos_rocket: triangles 126 -> 150 (+19.0%); vertices 136 -> 184 (+35.3%); meshes 4 -> 5 (+25.0%); renderers 4 -> 5 (+25.0%); materials 3 -> 4 (+33.3%); materialSlots 4 -> 5 (+25.0%); fileBytes 11,476 -> 14,852 (+29.4%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "missile",
+    "rocket",
+    "bomb",
+    "cruise_missile",
+    "ballistic_missile",
+    "heavy_rocket",
+    "mine",
+    "supply_crate",
+    "repair_crate"
+   ],
+   "reason": "wave 8a3 rounds and drops: studs, lugs, vane, lighter AO",
+   "changes": [
+    "FLAG ballistic_missile: triangles 780 -> 804 (+3.1%); vertices 1,134 -> 1,182 (+4.2%); meshes 8 -> 9 (+12.5%); renderers 8 -> 9 (+12.5%); materials 5 -> 6 (+20.0%); materialSlots 8 -> 9 (+12.5%); fileBytes 63,448 -> 66,820 (+5.3%); structure changed",
+    "FLAG bomb: triangles 392 -> 404 (+3.1%); vertices 468 -> 492 (+5.1%); meshes 4 -> 5 (+25.0%); renderers 4 -> 5 (+25.0%); materialSlots 4 -> 5 (+25.0%); fileBytes 27,524 -> 29,600 (+7.5%); structure changed",
+    "FLAG cruise_missile: triangles 280 -> 304 (+8.6%); vertices 359 -> 407 (+13.4%); meshes 4 -> 5 (+25.0%); renderers 4 -> 5 (+25.0%); materials 4 -> 5 (+25.0%); materialSlots 4 -> 5 (+25.0%); fileBytes 22,400 -> 25,776 (+15.1%); structure changed",
+    "FLAG heavy_rocket: triangles 424 -> 448 (+5.7%); vertices 531 -> 579 (+9.0%); meshes 6 -> 7 (+16.7%); renderers 6 -> 7 (+16.7%); materials 4 -> 5 (+25.0%); materialSlots 6 -> 7 (+16.7%); fileBytes 32,704 -> 36,080 (+10.3%); structure changed",
+    "FLAG mine: triangles 298 -> 406 (+36.2%); vertices 473 -> 625 (+32.1%); meshes 5 -> 7 (+40.0%); renderers 5 -> 7 (+40.0%); materialSlots 5 -> 7 (+40.0%); fileBytes 28,612 -> 37,852 (+32.3%); structure changed",
+    "FLAG missile: triangles 398 -> 422 (+6.0%); vertices 537 -> 585 (+8.9%); meshes 7 -> 8 (+14.3%); renderers 7 -> 8 (+14.3%); materials 6 -> 7 (+16.7%); materialSlots 7 -> 8 (+14.3%); fileBytes 34,208 -> 37,592 (+9.9%); structure changed",
+    "repair_crate: bytes only",
+    "FLAG rocket: triangles 184 -> 196 (+6.5%); vertices 250 -> 274 (+9.6%); meshes 4 -> 5 (+25.0%); renderers 4 -> 5 (+25.0%); materials 3 -> 4 (+33.3%); materialSlots 4 -> 5 (+25.0%); fileBytes 16,840 -> 19,096 (+13.4%); structure changed",
+    "supply_crate: bytes only"
+   ]
   }
  ],
  "models": {
@@ -7244,24 +7270,24 @@
   },
   "ballistic_missile": {
    "file": "ballistic_missile.glb",
-   "fileBytes": 63448,
-   "sha1": "1e4d8a7a81019dd8",
+   "fileBytes": 66820,
+   "sha1": "38c971438a62974e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 8,
-   "meshes": 8,
-   "materials": 5,
+   "nodes": 9,
+   "meshes": 9,
+   "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 8,
-   "submeshes": 8,
-   "materialSlots": 8,
-   "materialsUsed": 5,
-   "triangles": 780,
-   "vertices": 1134,
+   "renderers": 9,
+   "submeshes": 9,
+   "materialSlots": 9,
+   "materialsUsed": 6,
+   "triangles": 804,
+   "vertices": 1182,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -7269,7 +7295,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 30,
+   "loosePieces": 32,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -7292,12 +7318,12 @@
     0.0,
     -0.06
    ],
-   "structureHash": "7f206532c906bfb8",
+   "structureHash": "255d952beb3dbfda",
    "color0": {
-    "mean": 0.7466,
-    "min": 0.0997,
+    "mean": 0.7716,
+    "min": 0.4122,
     "max": 1.0,
-    "p05": 0.4389,
+    "p05": 0.5967,
     "p95": 0.8137,
     "outOfRange": 0
    },
@@ -7308,6 +7334,7 @@
     "Body",
     "Grid_fins",
     "Grid_webs",
+    "Lugs",
     "Motor",
     "Nose",
     "Nozzle",
@@ -9058,22 +9085,22 @@
   },
   "bomb": {
    "file": "bomb.glb",
-   "fileBytes": 27524,
-   "sha1": "45939be3dba99fce",
+   "fileBytes": 29600,
+   "sha1": "c1a8e95a5c845f3a",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
-   "nodes": 4,
-   "meshes": 4,
+   "nodes": 5,
+   "meshes": 5,
    "materials": 3,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 4,
-   "submeshes": 4,
-   "materialSlots": 4,
+   "renderers": 5,
+   "submeshes": 5,
+   "materialSlots": 5,
    "materialsUsed": 3,
-   "triangles": 392,
-   "vertices": 468,
+   "triangles": 404,
+   "vertices": 492,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -9081,7 +9108,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 10,
+   "loosePieces": 11,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -9104,18 +9131,19 @@
     0.013,
     0.035
    ],
-   "structureHash": "65eefd98c60e6bd5",
+   "structureHash": "b094c9d9e7b89310",
    "color0": {
-    "mean": 0.7713,
-    "min": 0.262,
+    "mean": 0.7825,
+    "min": 0.5025,
     "max": 0.8137,
-    "p05": 0.5901,
+    "p05": 0.6857,
     "p95": 0.8064,
     "outOfRange": 0
    },
    "runtimeNodes": {},
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Arming_vane",
     "Body",
     "Lugs",
     "Nose_band",
@@ -13191,24 +13219,24 @@
   },
   "cruise_missile": {
    "file": "cruise_missile.glb",
-   "fileBytes": 22400,
-   "sha1": "d89594db98e3cd7c",
+   "fileBytes": 25776,
+   "sha1": "17d32d2f061a5e76",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 4,
-   "meshes": 4,
-   "materials": 4,
+   "nodes": 5,
+   "meshes": 5,
+   "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 4,
-   "submeshes": 4,
-   "materialSlots": 4,
-   "materialsUsed": 4,
-   "triangles": 280,
-   "vertices": 359,
+   "renderers": 5,
+   "submeshes": 5,
+   "materialSlots": 5,
+   "materialsUsed": 5,
+   "triangles": 304,
+   "vertices": 407,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -13216,7 +13244,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 9,
+   "loosePieces": 11,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -13239,12 +13267,12 @@
     -0.0,
     -0.018
    ],
-   "structureHash": "deb59b4929734ac6",
+   "structureHash": "89e316aa6f148602",
    "color0": {
-    "mean": 0.7959,
-    "min": 0.4906,
+    "mean": 0.8106,
+    "min": 0.6235,
     "max": 1.0,
-    "p05": 0.5771,
+    "p05": 0.681,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -13254,6 +13282,7 @@
     "Body",
     "Intake",
     "Motor",
+    "Studs",
     "Wings"
    ],
    "category": "munition",
@@ -23286,24 +23315,24 @@
   },
   "heavy_rocket": {
    "file": "heavy_rocket.glb",
-   "fileBytes": 32704,
-   "sha1": "8f2cecd5340a8f96",
+   "fileBytes": 36080,
+   "sha1": "b1c1dac5b521db1e",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 6,
-   "meshes": 6,
-   "materials": 4,
+   "nodes": 7,
+   "meshes": 7,
+   "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 6,
-   "submeshes": 6,
-   "materialSlots": 6,
-   "materialsUsed": 4,
-   "triangles": 424,
-   "vertices": 531,
+   "renderers": 7,
+   "submeshes": 7,
+   "materialSlots": 7,
+   "materialsUsed": 5,
+   "triangles": 448,
+   "vertices": 579,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -23311,7 +23340,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 11,
+   "loosePieces": 13,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -23334,12 +23363,12 @@
     -0.0,
     -0.035
    ],
-   "structureHash": "8ec25cf74dd76b8e",
+   "structureHash": "18de830ed0a7366d",
    "color0": {
-    "mean": 0.7488,
-    "min": 0.1712,
+    "mean": 0.7791,
+    "min": 0.4448,
     "max": 1.0,
-    "p05": 0.3275,
+    "p05": 0.5511,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -23351,6 +23380,7 @@
     "Fins",
     "Motor",
     "Nozzle",
+    "Studs",
     "Warhead"
    ],
    "category": "unlisted",
@@ -31029,24 +31059,24 @@
   },
   "mine": {
    "file": "mine.glb",
-   "fileBytes": 28612,
-   "sha1": "ada21984fb66d5c0",
+   "fileBytes": 37852,
+   "sha1": "e3f607e3f8575982",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 5,
-   "meshes": 5,
+   "nodes": 7,
+   "meshes": 7,
    "materials": 5,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 5,
-   "submeshes": 5,
-   "materialSlots": 5,
+   "renderers": 7,
+   "submeshes": 7,
+   "materialSlots": 7,
    "materialsUsed": 5,
-   "triangles": 298,
-   "vertices": 473,
+   "triangles": 406,
+   "vertices": 625,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31054,7 +31084,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 7,
+   "loosePieces": 9,
    "openEdges": 24,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -31077,12 +31107,12 @@
     0.06,
     0.005
    ],
-   "structureHash": "26d91f49286b5353",
+   "structureHash": "5c402b159ce4503d",
    "color0": {
-    "mean": 0.6436,
-    "min": 0.1662,
+    "mean": 0.6546,
+    "min": 0.3176,
     "max": 1.0,
-    "p05": 0.1966,
+    "p05": 0.3409,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -31092,8 +31122,10 @@
     "Earth",
     "Mine_body",
     "Mine_fuze",
+    "Mine_handle",
     "Mine_light",
-    "Mine_plate"
+    "Mine_plate",
+    "Mine_ring"
    ],
    "category": "scenery",
    "hd": false,
@@ -31601,24 +31633,24 @@
   },
   "missile": {
    "file": "missile.glb",
-   "fileBytes": 34208,
-   "sha1": "6653ae1000b6a8f1",
+   "fileBytes": 37592,
+   "sha1": "4223c99ab1d54280",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 7,
-   "meshes": 7,
-   "materials": 6,
+   "nodes": 8,
+   "meshes": 8,
+   "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 7,
-   "submeshes": 7,
-   "materialSlots": 7,
-   "materialsUsed": 6,
-   "triangles": 398,
-   "vertices": 537,
+   "renderers": 8,
+   "submeshes": 8,
+   "materialSlots": 8,
+   "materialsUsed": 7,
+   "triangles": 422,
+   "vertices": 585,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -31626,7 +31658,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 14,
+   "loosePieces": 16,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -31649,12 +31681,12 @@
     -0.0,
     -0.012
    ],
-   "structureHash": "49fa1009244c1867",
+   "structureHash": "2542b6dab7136567",
    "color0": {
-    "mean": 0.7083,
-    "min": 0.0801,
+    "mean": 0.7622,
+    "min": 0.4338,
     "max": 1.0,
-    "p05": 0.2753,
+    "p05": 0.539,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -31667,7 +31699,8 @@
     "Fins",
     "Motor",
     "Nozzle",
-    "Seeker"
+    "Seeker",
+    "Studs"
    ],
    "category": "unlisted",
    "hd": false,
@@ -37585,7 +37618,7 @@
   "repair_crate": {
    "file": "repair_crate.glb",
    "fileBytes": 124000,
-   "sha1": "1484a2211f340d8f",
+   "sha1": "07163a030f329e76",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 14,
@@ -37632,10 +37665,10 @@
    ],
    "structureHash": "6ca7742d9804ae29",
    "color0": {
-    "mean": 0.6335,
-    "min": 0.0782,
+    "mean": 0.6825,
+    "min": 0.3137,
     "max": 0.9987,
-    "p05": 0.2084,
+    "p05": 0.381,
     "p95": 0.8058,
     "outOfRange": 0
    },
@@ -38191,24 +38224,24 @@
   },
   "rocket": {
    "file": "rocket.glb",
-   "fileBytes": 16840,
-   "sha1": "59e61f79c95512df",
+   "fileBytes": 19096,
+   "sha1": "4f0b4ac25578d997",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 4,
-   "meshes": 4,
-   "materials": 3,
+   "nodes": 5,
+   "meshes": 5,
+   "materials": 4,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 4,
-   "submeshes": 4,
-   "materialSlots": 4,
-   "materialsUsed": 3,
-   "triangles": 184,
-   "vertices": 250,
+   "renderers": 5,
+   "submeshes": 5,
+   "materialSlots": 5,
+   "materialsUsed": 4,
+   "triangles": 196,
+   "vertices": 274,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -38216,7 +38249,7 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 7,
+   "loosePieces": 8,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
@@ -38239,12 +38272,12 @@
     0.0,
     -0.013
    ],
-   "structureHash": "0a510cb6e25467ed",
+   "structureHash": "70d58f3fb8386489",
    "color0": {
-    "mean": 0.7924,
-    "min": 0.3964,
+    "mean": 0.8031,
+    "min": 0.5267,
     "max": 1.0,
-    "p05": 0.4118,
+    "p05": 0.539,
     "p95": 1.0,
     "outOfRange": 0
    },
@@ -38254,6 +38287,7 @@
     "Body",
     "Fins",
     "Motor",
+    "Studs",
     "Warhead"
    ],
    "category": "unlisted",
@@ -44590,7 +44624,7 @@
   "supply_crate": {
    "file": "supply_crate.glb",
    "fileBytes": 181252,
-   "sha1": "0718888937976752",
+   "sha1": "dfc56f9ff8249ecb",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -44639,10 +44673,10 @@
    ],
    "structureHash": "d0924bb81df0af08",
    "color0": {
-    "mean": 0.659,
-    "min": 0.0801,
+    "mean": 0.7033,
+    "min": 0.3182,
     "max": 1.0,
-    "p05": 0.2121,
+    "p05": 0.3934,
     "p95": 0.8137,
     "outOfRange": 0
    },
