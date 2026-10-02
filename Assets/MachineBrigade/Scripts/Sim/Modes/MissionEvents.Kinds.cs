@@ -78,6 +78,9 @@ namespace MachineBrigade.Sim.Modes
             public double BreakAt = -1;
 
             public bool Released;
+
+            /// <summary>Prompt 31 L4 ("faction"): the column is a ceasefire faction: nothing of ours can hurt it, so we cannot break it.</summary>
+            public bool Faction;
         }
 
         /// <summary>E.1: Brandt's line: the towers and where each goes up.</summary>
@@ -594,7 +597,7 @@ namespace MachineBrigade.Sim.Modes
             if (roster.Count == 0 || size <= 0) return false;
             var point = PickPoint(SpawnBearing.Front, new[] { "edge" })?.Point ?? PickPoint(SpawnBearing.Left, new[] { "edge" })?.Point;
             if (point == null) return false;
-            var plan = new CeasefirePlan { Point = point };
+            var plan = new CeasefirePlan { Point = point, Faction = e.Flag("faction", false) };
             plan.Column.AddRange(Compose(world, s, roster, size));
             s.Plan = plan;
             s.Where = point.Position;
@@ -1290,6 +1293,7 @@ namespace MachineBrigade.Sim.Modes
                 v.Reinforcement = true;
                 v.Scripted = true;
                 v.Truce = true;
+                v.Sworn = plan.Faction;
                 world.HoldFire(v, true);
                 s.Units.Add(v.Id);
             }
@@ -1315,7 +1319,7 @@ namespace MachineBrigade.Sim.Modes
             foreach (var id in s.Units)
             {
                 if (!world.TryGetVehicle(id, out var v)) continue;
-                if (v.LastAttackerTeam == Player) ours = true;
+                if (v.LastAttackerTeam == Player && !plan.Faction) ours = true;
                 if (v.LastFiredAt >= s.StartAt) theirs = true;
             }
             if (ours)
@@ -1358,6 +1362,7 @@ namespace MachineBrigade.Sim.Modes
                 if (world.TryGetVehicle(id, out var v) && v.IsAlive)
                 {
                     v.Truce = false;
+                    v.Sworn = false;
                     v.Scripted = false;
                     world.HoldFire(v, false);
                     Push(world, v, _host.EnemyGoal(world) ?? Centre(world, Player));

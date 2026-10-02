@@ -52,6 +52,7 @@ RULES = {
     'maraBehemoth': "Mara's repainted Behemoth (mara_behemoth) is a placed ally under the allied AI and the general order",
     'factoryAlarm': 'the factory_alarm event (prompt 31 L3): spotted, the mill gate shuts and the garrison comes',
     'droneCanopy': "the drone_swarm event (warned direction, minimap arrow) in place of the mission's air_wave",
+    'ceasefireFaction': "the ceasefire event with faction: Varga's column is Sworn (DamageSystem: no damage from another side), for the whole mission",
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -201,6 +202,17 @@ DECKS = {
         loaned=['microwave_vehicle', 'interceptor_drone_vehicle'],
         replaced={'drone_intercept_strike': 'uav_scan'},
         rules=['droneCanopy'], status='MAKE_LATER'),
+    # c6m14 (chapter 6, the Hollow Dam ceasefire): the Evacuate objective kept. Varga's column is a CEASEFIRE faction for the whole
+    # battle: the library's ceasefire with params faction (each sworn vehicle takes nothing from another side's fire, strikes or
+    # splash: Vehicle.Sworn) and seconds 900 (the time limit); no loss and no broken truce for friendly fire. The waves are Aurel's
+    # drones already. Loaned the microwave and the interceptor-drone vehicles; bridging_vehicle -> armored_bulldozer (owned
+    # engineering), mobile_repair_vehicle -> ammo_carrier (the owned support truck), drone_intercept_strike -> uav_scan.
+    'c6m14': dict(
+        vehicles=['microwave_vehicle', 'iron_beam', 'interceptor_drone_vehicle', 'zu23_technical', 'aa_vehicle', 'engineer_vehicle', 'armored_bulldozer', 'ammo_carrier'],
+        supports=['uav_scan', 'smoke_screen'],
+        loaned=['microwave_vehicle', 'interceptor_drone_vehicle'],
+        replaced={'bridging_vehicle': 'armored_bulldozer', 'mobile_repair_vehicle': 'ammo_carrier', 'drone_intercept_strike': 'uav_scan'},
+        rules=['ceasefireFaction'], status='MAKE_LATER'),
 }
 
 

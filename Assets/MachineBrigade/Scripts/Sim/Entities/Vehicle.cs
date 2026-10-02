@@ -607,6 +607,12 @@ namespace MachineBrigade.Sim.Entities
         /// </summary>
         public bool Truce { get; internal set; }
 
+        /// <summary>
+        /// Prompt 31 L4: of a CEASEFIRE faction (c6m14, Varga's column): another side's fire, strikes and splash do nothing to
+        /// it, so no shot of ours can break the truce (no loss for friendly fire); with <see cref="Truce"/>, nothing picks it.
+        /// </summary>
+        public bool Sworn { get; internal set; }
+
         /// <summary>The player took direct control of this vehicle recently.</summary>
         public bool UnderPlayerControl(double now) => ManualOrder || now < ManualUntil;
 

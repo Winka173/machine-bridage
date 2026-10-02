@@ -99,3 +99,7 @@ events.add_stage('c11m10', 'fortress', 'orbital_pods')
 
 # Prompt 31 L4 (c5m03's rule droneCanopy): Venn's swarms come as the warned drone_swarm in place of the air wave.
 replace_event('c5m03', 'air_wave', 'drone_swarm')
+
+
+# Prompt 31 L4 (c6m14's rule ceasefireFaction): Varga's sworn column is a ceasefire faction for the whole battle.
+replace_event('c6m14', 'ceasefire', {'id': 'ceasefire', 'params': {'seconds': 900, 'faction': True}})

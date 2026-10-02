@@ -2131,6 +2131,7 @@ namespace MachineBrigade.Game.Hud
             ["fixeddeck.ally.behemoth_mara_repainted"] = ("{@mai}'s Behemoth, repainted", "Behemoth của {@mai}, đã sơn lại"),
             ["fixeddeck.rule.factoryAlarm"] = ("Get in unseen. If the enemy spots you, the alarm sounds: the mill gate shuts and the garrison comes.", "Lọt vào mà không bị phát hiện. Nếu địch thấy ta, còi báo động vang lên: cổng xưởng cán đóng lại và đồn binh kéo tới."),
             ["fixeddeck.rule.droneCanopy"] = ("Venn's drone swarms come out of the canopy from the direction the warning gives. The deck is built against drones: keep the bridging convoy alive.", "Bầy drone của Venn lao ra từ tán rừng theo hướng được cảnh báo. Bộ bài dựng để chống drone: giữ đoàn xe bắc cầu sống sót."),
+            ["fixeddeck.rule.ceasefireFaction"] = ("Varga's column keeps the ceasefire for the whole battle: no weapon of ours picks it or can hurt it, so no stray shot breaks it. The enemy is Aurel's drones.", "Cánh quân của Varga giữ lệnh ngừng bắn suốt trận: không vũ khí nào của ta nhắm hay gây sát thương được cho họ, nên không phát bắn lạc nào phá được nó. Kẻ địch là drone của Aurel."),
             ["fixeddeck.rule.timedRecon"] = ("Against the clock: see each launcher, then pull out before Skygate turns its gun.", "Chạy đua với giờ: xem từng bệ phóng rồi rút trước khi Skygate quay pháo."),
             // Prompt 25 D2: story loot is never sold.
             ["deck.lockedLoot"] = ("{name}: story loot, won in mission {mission}. It is not for sale.",
