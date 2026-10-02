@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Models (27 wave 2 pass B): the last nine flagged models fixed - renderer merges on `command_hq`, `shield_generator`, `siege_tank`; `flak_tower` and `sea_cruiser` lose unused moving-part nodes; zero-area triangles removed from `sky_gunship_hd`, `strike_jet`, `tank_buster`; `interceptor_jet` gets taller fins to match its `modelSize` (`siege_tank` keeps its 22 deploy parts, the ground cap is wrong for it).
 - Models (27 wave 2 pass A): nine validator errors fixed with the smallest change - `mobile_fortress` gets the part nodes `Mount_gun` (roof howitzer) and `Mount_missile.001` (deck SAM), `headquarters` and the three helipads lose their zero-area triangles, and the proportions of `heavy_flak_tower`, `at_gun_emplacement`, `laser_ad_station` and `visual_jammer` now match their `modelSize`.
 
 ## v0.34.0: Prompt 26 (bosses: health, weapons, two-layer blasts, sizes, Boss Hunt health), prompt 27 wave 1 (the model pipeline and 43 new models), prompt 28 saved

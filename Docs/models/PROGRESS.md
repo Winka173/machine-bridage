@@ -103,22 +103,22 @@ Fix the error with the smallest change (DECISIONS: proportions within 25 % of `m
 | model | class | builder | tris | errors |
 |---|---|---|---:|---|
 | `at_gun_emplacement` (**done pass A**, mb_p27_wave2 / mb_p25_new) | tower | mb_p25_new | 1,384 | at_gun_emplacement: height/length 0.22 vs modelSize 0.34 (-37%) |
-| `command_hq` | prop | mb_siege | 5,982 | renderers 62 over the prop normal hard cap 58 |
-| `flak_tower` | tower | mb_fortress | 9,748 | movingParts 10 over the tower normal hard cap 9 |
+| `command_hq` (**done pass B**, mb_p27_wave2 / edits) | prop | mb_siege | 5,982 | renderers 62 over the prop normal hard cap 58 |
+| `flak_tower` (**done pass B**, mb_p27_wave2 / edits) | tower | mb_fortress | 9,748 | movingParts 10 over the tower normal hard cap 9 |
 | `headquarters` (**done pass A**, mb_p27_wave2 / mb_p25_new) | tower | mb_phase2 | 14,260 | 82 zero-area triangles (0.58%) |
 | `heavy_flak_tower` (**done pass A**, mb_p27_wave2 / mb_p25_new) | tower | mb_p25_new | 1,116 | heavy_flak_tower: height/length 0.69 vs modelSize 0.49 (+43%) |
 | `helipad` (**done pass A**, mb_p27_wave2 / mb_p25_new) | structure | mb_siege | 1,128 | 96 zero-area triangles (8.51%) |
 | `helipad_a` (**done pass A**, mb_p27_wave2 / mb_p25_new) | structure | mb_p25_models2 | 1,348 | 96 zero-area triangles (7.12%) |
 | `helipad_b` (**done pass A**, mb_p27_wave2 / mb_p25_new) | structure | mb_p25_models2 | 2,084 | 96 zero-area triangles (4.61%) |
-| `interceptor_jet` | jet | mb_p25_new | 1,052 | interceptor_jet: height/length 0.20 vs modelSize 0.27 (-26%) |
+| `interceptor_jet` (**done pass B**, mb_p27_wave2 / edits) | jet | mb_p25_new | 1,052 | interceptor_jet: height/length 0.20 vs modelSize 0.27 (-26%) |
 | `laser_ad_station` (**done pass A**, mb_p27_wave2 / mb_p25_new) | tower | mb_p25_new | 390 | laser_ad_station: width/length 1.12 vs modelSize 0.67 (+67%) |
 | `mobile_fortress` (**done pass A**, mb_p27_wave2 / mb_p25_new) | boss_s | mb_bosses2 | 22,116 | mobile_fortress: boss part 'howitzer_2' node Mount_gun not in the model; mobile_fortress: boss part 'sam' node Mount_missile.001 not in the model; fenrir: boss part 'howitzer_2' node Mount_gun not in the model; fenrir: boss part 'sam' node Mount_missile.001 not in the model |
-| `sea_cruiser` | ground | mb_naval | 5,416 | movingParts 14 over the ground normal hard cap 10 |
-| `shield_generator` | prop | mb_fortress | 5,864 | renderers 63 over the prop normal hard cap 58 |
-| `siege_tank` | ground | mb_p25_models2 | 5,924 | renderers 80 over the ground normal hard cap 76; movingParts 22 over the ground normal hard cap 10 |
-| `sky_gunship_hd` | jet | mb_p25_models (detail=True) | 3,764 | 202 zero-area triangles (5.37%) |
-| `strike_jet` | unlisted | mb_air | 8,700 | 156 zero-area triangles (1.79%) |
-| `tank_buster` | unlisted | mb_air3 | 8,958 | 163 zero-area triangles (1.82%) |
+| `sea_cruiser` (**done pass B**, mb_p27_wave2 / edits) | ground | mb_naval | 5,416 | movingParts 14 over the ground normal hard cap 10 |
+| `shield_generator` (**done pass B**, mb_p27_wave2 / edits) | prop | mb_fortress | 5,864 | renderers 63 over the prop normal hard cap 58 |
+| `siege_tank` (**done pass B**, mb_p27_wave2 / edits) | ground | mb_p25_models2 | 5,924 | renderers 80 over the ground normal hard cap 76; movingParts 22 over the ground normal hard cap 10 |
+| `sky_gunship_hd` (**done pass B**, mb_p27_wave2 / edits) | jet | mb_p25_models (detail=True) | 3,764 | 202 zero-area triangles (5.37%) |
+| `strike_jet` (**done pass B**, mb_p27_wave2 / edits) | unlisted | mb_air | 8,700 | 156 zero-area triangles (1.79%) |
+| `tank_buster` (**done pass B**, mb_p27_wave2 / edits) | unlisted | mb_air3 | 8,958 | 163 zero-area triangles (1.82%) |
 | `visual_jammer` (**done pass A**, mb_p27_wave2 / mb_p25_new) | structure | mb_p25_new | 592 | visual_jammer: width/length 1.16 vs modelSize 0.83 (+39%) |
 
 

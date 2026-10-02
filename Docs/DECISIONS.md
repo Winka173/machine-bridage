@@ -13314,3 +13314,33 @@ strike_jet, tank_buster).
   smaller silhouette), headquarters 0.3793 -> 0.3919, heavy_flak_tower 0.4292 -> 0.4368, laser_ad_station 0.4401 ->
   0.4413, mobile_fortress 0.3324 -> 0.3364 (fenrir shares it), visual_jammer 0.4036 -> 0.4096.
 - headquarters is 20,156 vertices, 56 over the tower soft budget (a warning, was under before the clean); left.
+
+## 27 wave 2 pass B (lead pass, 2026-10-02)
+
+The nine remaining wave 2 models. Checks run: Blender rebuild, `glb_check.py` (compare, accept), runner mirror, card renders
+(interceptor_jet, siege_tank) and one ModelPreview batch of all nine (interceptor_jet sheet looked at). No CatalogCheck
+(no balance.json change), no tests, sims or measures. The validator now reports 1 model with an error: siege_tank.
+
+- **Renderers: `merge_static` in `mb_p27_wave2.py`.** Parts with the same material, parent and shading merge into one
+  mesh (first name kept); anything the runtime looks up by name (Turret, Main_cannon*, Muzzle*, Mount_*, Part_*, Deploy_*,
+  Radar/Rotor/Propeller, barrel groups tubes/pod/launcher/coax, loose parts) never merges. command_hq 62 -> 27,
+  shield_generator 63 -> 18, siege_tank 80 -> 67 (cap 76). Triangles unchanged, vertices -0.5 / -2 / 0 %, COLOR_0 identical.
+- **flak_tower.** Two meshes under the Turret were named `Mount_armor` and `Mount_steel`, which the runtime reads as weapon
+  mounts of slots "armor" and "steel" (a wasted moving part each). Renamed `Turret_armor` / `Turret_steel` (as the other
+  mb_fortress towers): movingParts 10 -> 8. Real mounts and the four `Main_cannon*` stay.
+- **sea_cruiser.** The def's parts use only Part_gun, Part_gun.001, Part_mg, Part_mg.001. The empties Part_vls, Part_engine,
+  Part_deck, Part_welldeck were pieces only (no def part, no wreck); renamed Piece_*: movingParts 14 -> 10 (the cap; Part_radar
+  stays as the Radar's parent). Their meshes now join the hull's static merge.
+- **siege_tank movingParts 22 stays: the cap is wrong for this model.** Turret 1 + Main_cannon 4 + Mount_mg 1 + 16 Deploy_*
+  pivots; VehicleView.Deploy looks up every one (brace/leg x l/r, their knees and rams, spades, riser, Deploy_gun) for the
+  siege pose. The ground class cap (10) cannot hold a deployable siege vehicle; left as the one validator error.
+- **Slivers.** `k.clean` on sky_gunship_hd (202 -> 0, 3,764 -> 3,548 tris; clean only when detail=True so the normal
+  sky_gunship file is untouched), strike_jet (156 -> 0), tank_buster (163 -> 0). COLOR_0 kept up with ao_strength .85
+  (sky_gunship_hd, tank_buster, sea_cruiser; .7 raised it by 0.04 and more than needed): 0.7011 -> 0.7056, 0.6858 -> 0.6926,
+  0.6303 -> 0.6398.
+- **interceptor_jet: the model was wrong, modelSize stays 9.1 x 5.4 x 2.5** (balance.json and the builder's own docstring
+  agree; the model was 1.87 m tall, ratio 0.2045 vs 0.275, 0.006 short of the 25 % band). Two tall outboard fins (1.6 m, as on
+  the MiG-31) on the tailplanes: 2.18 m, ratio 0.24 (-13 %). +88 triangles.
+- **Card luma** (old -> new): interceptor_jet 0.4154 -> 0.4224, siege_tank 0.3467 -> 0.3480. strike_jet and tank_buster are
+  C#-only models (no unit, no card); command_hq, shield_generator, flak_tower, sea_cruiser have no card (card false or a
+  structure); sky_gunship's card model is the unchanged normal file.

@@ -190,7 +190,7 @@
             "kind": "vehicle",
             "model": "siege_tank",
             "source": "Models/siege_tank",
-            "hash": "v2:df1502e006fd3b96bb09bb00c452dc6c3d41bd5d"
+            "hash": "v2:04cec36c64bf39fedd9ba9e25ba2da7960810062"
         },
         {
             "id": "heavy_rocket_artillery",
@@ -470,7 +470,7 @@
             "kind": "vehicle",
             "model": "interceptor_jet",
             "source": "Models/interceptor_jet",
-            "hash": "v2:538a4e9880d73c8459bd2bf207286d01763bc044"
+            "hash": "v2:b89ace81e9edf3aabbce597dc55da99f6692f05d"
         },
         {
             "id": "radar_scout",
