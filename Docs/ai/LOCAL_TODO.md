@@ -64,3 +64,15 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - Tactic picker UI: `RequestTactic` can return `NotAllowed`; grey out tactics the mode's profile forbids
   (`world.AiProfile.Allows`).
 - Recon HUD: optional "Báo động" indicator from `world.Alarm`.
+
+## Prompt 30
+
+- L1: show the "Kết mạch Thorne" card (`campaign.thorneArc.title`, `campaign.thorneArc`) after c9m10, before chapter 15
+  (once, like the chapter cards); the act switch UI reads `act` (4 acts).
+- L2: the portrait strip (small portrait + compact 2-line strip above the card tray; existing portraits: generals,
+  briefing cards; a placeholder portrait by side for anyone missing, list them); never over the superweapon warning,
+  the key boss UI or the objective timer; safe areas at 16:9, 20:9, 4:3. Measure the real render width: every script
+  line in 2 lines at the smallest supported screen with the portrait at Large font, and set
+  `RENDER_CHARS` in `Tools/story/script_build.py` from it. Route the HUD's system warnings as `DialoguePriority.System`
+  if they should share the strip. Run `DialogueTests` (rewritten for the P0-P4 rules). Unity compile of
+  `Dialogue.cs`, `RadioDirector.cs`, `ScriptText.cs`, `Strings.cs`.

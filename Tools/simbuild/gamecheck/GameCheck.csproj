@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Compile check of a few Game-layer files outside Unity (cloud sessions), against stubs of what they use from Unity
+       and the rest of the Game layer: dotnet build Tools/simbuild/gamecheck/GameCheck.csproj. Stubs.cs is not shipped. -->
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>MachineBrigade.Game.Check</AssemblyName>
+    <NoWarn>$(NoWarn);CS8632;CS1591;CS0067</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Sim.csproj" />
+    <Compile Include="Stubs.cs" />
+    <Compile Include="../../../Assets/MachineBrigade/Scripts/Game/Match/Dialogue.cs" />
+    <Compile Include="../../../Assets/MachineBrigade/Scripts/Game/Match/RadioDirector.cs" />
+    <Compile Include="../../../Assets/MachineBrigade/Scripts/Game/Match/ReactiveRadio.cs" />
+    <Compile Include="../../../Assets/MachineBrigade/Scripts/Game/Hud/ScriptText.cs" />
+  </ItemGroup>
+</Project>

@@ -14540,3 +14540,36 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
   Icarus (L9: the name comes with the timeline). The game's epilogue stays after c12m10.
 - Legendary (`Operations.LegendOpen`) opens on winning `c12m10` by id (`LegendMission`) instead of "the last entry of
   the operations list", which matched only by data order; the old rule stays as the fallback if c12m10 is missing.
+
+### L2: dialogue queue, triggers, speakers, validator
+
+- **One queue, extended** (`Game/Match/Dialogue.cs`, no second system). P levels of L12 on the existing priorities:
+  `System` (new, P0: shown whatever the setting, cuts any line at once), `Story` and `Warning` (P1: ignore the gap, wait
+  for the line on show; a waiting P1 cuts a P2-P4 line after 1 s), `Event` (P2, kept 12 s), `Reaction` (P3) and
+  `Ambient` (new, P4), both dropped after 8 s. Every line queues now (the old "now or never" for events and reactions
+  becomes "wait at most the shelf"); the gap (9 s, 20 s with a boss on the field, for every P2-P4 line, not only
+  reactions) counts from the last line's start and only stops pile-ups. Settings unchanged: Full all, Important = P0
+  + P1, Off = P0 + story. The Sim's Radio event contract (Value = priority + 1, 1-4) is unchanged. `DialogueTests`
+  rewritten for the new rules. Boss phase lines are P1 (MatchRunner), the usual chatter P3.
+- **Triggers** (`RadioTrigger`, `StoryScript.TriggerKeys`): every key of the sheet "Điểm kích hoạt" has a trigger;
+  `RadioDirector` watches the new ones: objective marks (1/3, 1/2, 2/3, last), objective_stall_90s (90 s without
+  progress and without a P1/P2 line, once; this replaces the old idea of quiet_90s), critical_failure_imminent
+  (`MissionMode.CriticalFailure`: one truck short, one building above the minimum, HQ under 25 %), momentum_high_once
+  (army 2x the enemy's for 30 s with the goal half done), timer_60s, first_unit_type_seen (per battle; per campaign
+  needs the profile, left), general_tactic_change (seen by a scout, 45 s apart), expensive_unit_lost (base CP >= 15,
+  at most twice), ally_arrives (first ally vehicle), event_triggered (first notice of each event kind), boss
+  phase/part/health. Boss overlap: superweapon line > phase > part > health; a health mark is held 10 s and dropped
+  if a phase change falls within 10 s either side; a part line within 10 s of a phase change is dropped; the boss's
+  own phase line (boss data) wins over the script's.
+- **Script lines** (`Sim/Content/ScriptDefs.cs`, `Game/Hud/ScriptText.cs`, `Resources/Data/script/`): when a mission
+  has script lines they replace its campaign `radio` lines and the generic chatter, except the six story moments and
+  story keys (`DialogueRules.IsStoryBeat`), so the slow-motion beats stay. Battle Radio events still play.
+- **Speakers** (`Tools/story/import_speakers.py` -> `script/speakers.json`): the sheet's speakerRole and allowedTriggers
+  by game id; "như trên" = the enemy generals' set (mission_start, boss_spawn, victory, defeat); Aurel only those,
+  with the chapter-11 note; Command ("hq") gets objective/event/reinforcement/timer reports. The main speaker of a
+  mission may also take mission_start, victory, defeat, critical, momentum, stall; anyone may take the scripted
+  triggers (phase, objective_progress, boss phase, event, time), as the sheet's "Theo kịch bản" says.
+- **Validator** (`Tools/story/script_build.py`): length by character budget (VI 110 / EN 90 hard, the soft ranges as
+  warnings) and a render estimate of 2 lines of 58 characters by word wrap until Unity measures the real strip; the
+  other checks of L7 run there too.
+- Compile check of the touched Game files: `Tools/simbuild/gamecheck` (stubs for Unity and the Game types they use).

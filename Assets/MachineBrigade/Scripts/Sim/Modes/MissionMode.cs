@@ -696,6 +696,19 @@ namespace MachineBrigade.Sim.Modes
             _ => EntityId.None,
         };
 
+        /// <summary>
+        /// Prompt 30 L2 (critical_failure_imminent): one more loss ends the mission: an escort or evacuation with one truck
+        /// fewer than it still needs left alive, a protect mission one building above its minimum, the player's HQ under 25 %.
+        /// </summary>
+        public bool CriticalFailure(SimWorld world)
+        {
+            if (_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate && _convoy.Count > 0 &&
+                ConvoyAlive(world) > 0 && _arrived + ConvoyAlive(world) <= _def.ConvoyNeeded) return true;
+            if (_def.Goal == MissionGoal.Protect && _targets.Count > 0 && AliveTargets(world) <= Math.Min(_def.ProtectNeeded, _targets.Count)) return true;
+            return world.Bases.Of(PlayerTeam) is { } home && world.TryGetVehicle(home.Hq, out var hq) && hq.IsAlive && !hq.Invulnerable &&
+                   hq.Hp < hq.MaxHp * 0.25f;
+        }
+
         /// <summary>Protect: the building the enemy goes for (the one nearest its army), or none.</summary>
         public EntityId EnemyDemolish(SimWorld world) => _def.Goal == MissionGoal.Protect ? NearestTargetId(world, EnemyCentre(world)) : EntityId.None;
 

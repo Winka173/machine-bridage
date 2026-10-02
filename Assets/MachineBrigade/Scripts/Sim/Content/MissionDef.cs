@@ -99,6 +99,59 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>The mission is lost.</summary>
         Lose,
+
+        // Prompt 30 L2: the triggers of the sheet "Điểm kích hoạt" (keys in StoryScript.TriggerKeys).
+
+        /// <summary>A stage ends (phase_end).</summary>
+        PhaseEnd,
+
+        /// <summary>The goal passes a mark (Arg: "1/3", "1/2", "2/3" or "last").</summary>
+        ObjectiveProgress,
+
+        /// <summary>The boss changes phase (Arg: the new phase's number).</summary>
+        BossPhase,
+
+        /// <summary>A part of the boss that matters breaks (Arg: the part id, or any).</summary>
+        BossPart,
+
+        /// <summary>The boss passes a health mark (Arg: "75", "50" or "25"); skipped within 10 s of a phase change.</summary>
+        BossHp,
+
+        /// <summary>The first warning of a superweapon in the battle: the line that says how to get clear.</summary>
+        Superweapon,
+
+        /// <summary>The enemy general changes tactic and a scout sees it.</summary>
+        TacticChange,
+
+        /// <summary>The first loss of a vehicle of base CP 15 or more (at most twice a mission).</summary>
+        ExpensiveLost,
+
+        /// <summary>A kind of enemy vehicle seen for the first time (Arg: its id).</summary>
+        FirstSeen,
+
+        /// <summary>About to lose: one convoy truck left, the protected building nearly down, the HQ critical.</summary>
+        Critical,
+
+        /// <summary>The player clearly holds the battle (once).</summary>
+        Momentum,
+
+        /// <summary>An ally arrives.</summary>
+        AllyArrives,
+
+        /// <summary>An ally is late (before chapter 7 only).</summary>
+        AllyLate,
+
+        /// <summary>A neutral site is taken (Arg: its kind).</summary>
+        NeutralCaptured,
+
+        /// <summary>A mission event begins (Arg: its kind).</summary>
+        EventTriggered,
+
+        /// <summary>90 s with no progress on the goal and no P0-P2 line (at most once).</summary>
+        ObjectiveStall,
+
+        /// <summary>60 s left on a timed mission.</summary>
+        Timer60,
     }
 
     /// <summary>One radio line of a mission: when it plays and its text key ("radio.&lt;speaker&gt;.&lt;line&gt;").</summary>

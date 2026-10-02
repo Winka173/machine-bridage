@@ -1,0 +1,263 @@
+{
+ "speakers": {
+  "khai": {
+   "name": "Đại tá Marcus Kade",
+   "roles": [
+    "command"
+   ],
+   "triggers": [
+    "mission_start",
+    "phase_start",
+    "critical_failure_imminent",
+    "victory",
+    "defeat",
+    "timer_60s"
+   ]
+  },
+  "mai": {
+   "name": "Kỹ sư Mara Lind",
+   "roles": [
+    "mechanics",
+    "base",
+    "Behemoth"
+   ],
+   "triggers": [
+    "boss_spawn",
+    "boss_part_destroyed",
+    "hq_below_50",
+    "neutral_captured"
+   ]
+  },
+  "dieuhau": {
+   "name": "Trung úy Jonah Reyes",
+   "roles": [
+    "air"
+   ],
+   "triggers": [
+    "first_unit_type_seen",
+    "objective_progress",
+    "momentum_high_once"
+   ]
+  },
+  "linh": {
+   "name": "Đại úy Nadia Kerr",
+   "roles": [
+    "intelligence",
+    "anomaly"
+   ],
+   "triggers": [
+    "enemy_reinforcement",
+    "general_tactic_change",
+    "first_unit_type_seen",
+    "objective_stall_90s"
+   ]
+  },
+  "hung": {
+   "name": "Tướng Roland Thorne",
+   "roles": [
+    "ally commander"
+   ],
+   "triggers": [
+    "ally_arrives",
+    "ally_late"
+   ],
+   "note": "ally_late only before chapter 7"
+  },
+  "brandt": {
+   "name": "Thiếu tá Brandt",
+   "roles": [
+    "fortification"
+   ],
+   "triggers": [
+    "phase_start"
+   ]
+  },
+  "brenn": {
+   "name": "Thiếu tá Brenn",
+   "roles": [
+    "logistics",
+    "paperwork"
+   ],
+   "triggers": [
+    "objective_progress"
+   ]
+  },
+  "mendez": {
+   "name": "Đại úy Kaia Mendez",
+   "roles": [
+    "movement",
+    "escort urgency"
+   ],
+   "triggers": [
+    "objective_progress",
+    "critical_failure_imminent"
+   ]
+  },
+  "dahl": {
+   "name": "Thiếu tá Dahl",
+   "roles": [
+    "artillery",
+    "ballistics",
+    "bridges"
+   ],
+   "triggers": [
+    "event_triggered",
+    "objective_progress"
+   ]
+  },
+  "varro": {
+   "name": "Đại úy Varro",
+   "roles": [
+    "miners",
+    "tunnels"
+   ],
+   "triggers": [
+    "point_captured"
+   ]
+  },
+  "quist": {
+   "name": "Thượng sĩ Quist",
+   "roles": [
+    "salvage"
+   ],
+   "triggers": [
+    "neutral_captured",
+    "objective_progress"
+   ]
+  },
+  "reyn": {
+   "name": "Đại tá Reyn",
+   "roles": [
+    "unit tradition",
+    "rescue duty"
+   ],
+   "triggers": [
+    "mission_start",
+    "victory"
+   ]
+  },
+  "okoye": {
+   "name": "Đại úy Okoye",
+   "roles": [
+    "logistics",
+    "fuel",
+    "airfield"
+   ],
+   "triggers": [
+    "objective_progress"
+   ]
+  },
+  "adler": {
+   "name": "Đại úy Adler",
+   "roles": [
+    "ground held",
+    "territory"
+   ],
+   "triggers": [
+    "point_captured",
+    "point_lost"
+   ]
+  },
+  "sen": {
+   "name": "Tiến sĩ Elara Venn",
+   "roles": [
+    "drone",
+    "network",
+    "system"
+   ],
+   "triggers": [
+    "first_unit_type_seen",
+    "event_triggered"
+   ]
+  },
+  "varga": {
+   "name": "Tướng Viktor Varga",
+   "roles": [
+    "enemy general"
+   ],
+   "triggers": [
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
+   ]
+  },
+  "orlov": {
+   "name": "Đại tá Ilya Orlov",
+   "roles": [
+    "enemy general"
+   ],
+   "triggers": [
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
+   ]
+  },
+  "kessler": {
+   "name": "Đô đốc Magnus Kessler",
+   "roles": [
+    "enemy general"
+   ],
+   "triggers": [
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
+   ]
+  },
+  "quaden": {
+   "name": "Kasimir Wolff",
+   "roles": [
+    "enemy ace"
+   ],
+   "triggers": [
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
+   ]
+  },
+  "aurel": {
+   "name": "Giám đốc Lucien Aurel",
+   "roles": [
+    "enemy director"
+   ],
+   "triggers": [
+    "mission_start",
+    "boss_spawn",
+    "victory",
+    "defeat"
+   ],
+   "note": "direct from chapter 11; before, at most one line a chapter through a device"
+  },
+  "hq": {
+   "name": "Command",
+   "roles": [
+    "command net"
+   ],
+   "triggers": [
+    "objective_progress",
+    "event_triggered",
+    "enemy_reinforcement",
+    "timer_60s"
+   ]
+  }
+ },
+ "mainTriggers": [
+  "mission_start",
+  "victory",
+  "defeat",
+  "critical_failure_imminent",
+  "momentum_high_once",
+  "objective_stall_90s"
+ ],
+ "scriptedTriggers": [
+  "phase_start",
+  "phase_end",
+  "objective_progress",
+  "boss_phase_change",
+  "event_triggered",
+  "time"
+ ]
+}
