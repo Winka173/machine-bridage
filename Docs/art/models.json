@@ -81,11 +81,11 @@
   },
   "apc": {
     "file": "apc.glb",
-    "triangles": 6448
+    "triangles": 7006
   },
   "apc_hd": {
     "file": "apc_hd.glb",
-    "triangles": 14466
+    "triangles": 14968
   },
   "aps_tank": {
     "file": "aps_tank.glb",
@@ -93,7 +93,7 @@
   },
   "armed_truck": {
     "file": "armed_truck.glb",
-    "triangles": 2916
+    "triangles": 3216
   },
   "armored_bulldozer": {
     "file": "armored_bulldozer.glb",
@@ -1289,7 +1289,7 @@
   },
   "sapper": {
     "file": "sapper.glb",
-    "triangles": 10062
+    "triangles": 10706
   },
   "scout_heli": {
     "file": "scout_heli.glb",
