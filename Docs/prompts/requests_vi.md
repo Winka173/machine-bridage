@@ -226,3 +226,6 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) [extra rule cho PDF của prompt sửa lỗi lượt 10: A bảng vũ khí đầy đủ, B tóm tắt boss, C hiệu ứng có ảnh, D âm thanh, E model] lưu lại và export sau khi xong
 - (02/10) ngân sách tam giác cái nào vượt thì cứ giữ, đó là tốt
 - (02/10) [chọn] DPS boss: bù về 80–120 % (hệ số sát thương theo boss); 52 vũ khí người chơi: giữ hết, chờ chơi thử
+
+## Xuất toàn bộ dữ liệu, 03/10
+- "làm cái này luôn, tôi cần cái này cho tương lai để thấy mọi chỉ số và cân bằng game sau khi phát hành" + prompt "XUẤT TOÀN BỘ DỮ LIỆU GAME THÀNH BỘ FILE CÂN BẰNG, CHIA THEO LĨNH VỰC" (nguyên văn: export_full_vi.txt). Thay mọi yêu cầu xuất / Excel / Markdown trước đó.

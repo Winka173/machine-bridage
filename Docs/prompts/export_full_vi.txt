@@ -1,0 +1,182 @@
+(03/10, chủ dự án — nguyên văn)
+
+làm cái này luôn, tôi cần cái này cho tương lai để thấy mọi chỉ số và cân bằng game sau khi phát hành:
+
+----- prompt -----
+XUẤT TOÀN BỘ DỮ LIỆU GAME THÀNH BỘ FILE CÂN BẰNG, CHIA THEO LĨNH VỰC (công cụ cố định, không đổi lối chơi)
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Ghi quyết định vào docs/DECISIONS.md mục "Bộ xuất dữ liệu toàn bộ", mỗi lượt một hoặc vài commit. Prompt này THAY MỌI yêu cầu xuất dữ liệu / Excel / Markdown trước đó.
+
+## 0. MỤC TIÊU
+Tạo một công cụ xuất MỌI dữ liệu cấu hình và cân bằng của game ra một THƯ MỤC gồm nhiều file chia theo lĩnh vực (vũ khí, phương tiện, boss, căn cứ và tháp, chế độ và kinh tế, AI, chiến dịch và cốt truyện, bản đồ, hiệu ứng và âm thanh, model và tài sản, meta và giao diện, hệ thống và trạng thái). Dùng cho cân bằng khi phát hành và sau phát hành, kiểm tra chéo bằng công cụ khác, so sánh trước / sau mỗi bản vá.
+"MỌI dữ liệu" = mọi giá trị mà người cân bằng có thể muốn xem hoặc đổi, kể cả thứ KHÔNG có trong danh sách của prompt này. Các danh sách ở mục 4 chỉ là TỐI THIỂU. Thừa còn hơn thiếu.
+Nguyên tắc:
+1. Tự khám phá nguồn dữ liệu, không liệt kê tay rồi bỏ sót.
+2. Bài test độ phủ khóa: thiếu một trường là build fail.
+3. Dữ liệu gốc xuất đúng như trong game; cột suy ra dùng đúng hàm của game khi có thể.
+4. Chạy lại bằng một lệnh, nằm trong CI, xuất đồng nhất (cùng dữ liệu → cùng file).
+5. KHÔNG đổi bất kỳ giá trị nào của game.
+
+## 1. CẤU TRÚC THƯ MỤC
+docs/export/<ngày>_<commit>/
+  00_chi_muc/        Machine_Brigade_00_Index_<ngày>.xlsx, COVERAGE.md, SELF_CHECK.md, MANIFEST.json, README.md
+  xlsx/              mỗi lĩnh vực một file (bảng dưới)
+  csv/<tên file>/    mỗi sheet một CSV (UTF-8, dấu phẩy, dòng đầu là tên cột)
+  md/                mỗi lĩnh vực một file Markdown + Machine_Brigade_Design_FULL_<ngày>.md (toàn văn ghép)
+  images/<lĩnh vực>/ ảnh dùng trong md và pdf
+  pdf/               Machine_Brigade_Design_<ngày>.pdf (như hiện tại, để xem ảnh)
+
+Tên file ASCII, đánh số cố định:
+| File xlsx / md | Lĩnh vực |
+| 01_vu_khi_dan | vũ khí, họ, đạn thay thế, bảng sát thương, khắc chế, hành vi đạn, pháo sáng, vòng cảnh báo |
+| 02_phuong_tien | xe, thẻ hỗ trợ, trang bị, commander, đội mở màn, hồi quy sức mạnh |
+| 03_boss | boss, vũ khí boss, hiệu quả boss, Săn trùm |
+| 04_can_cu_thap | tháp, tường, nhà chính, mô-đun, loadout, đợt phòng thủ, công thức giá xây lại |
+| 05_che_do_kinh_te | chế độ, luật trận, vô hạn, sao, điểm Tác chiến, kinh tế, độ khó, CP khởi đầu |
+| 06_ai | chiến thuật, hồ sơ AI theo chế độ, tướng địch, tham số AI |
+| 07_chien_dich_cot_truyen | chương, nhiệm vụ, thoại, nhân vật, trigger, bộ bài game, biến cố, kết trận |
+| 08_ban_do | bản đồ, tag địa hình, địa danh, ray, tuyến biển, cổng vào, trung lập, đo bản đồ tĩnh, kiểm tĩnh chế độ, ngân sách thực thể |
+| 09_hieu_ung_am_thanh | VFX theo bậc, xác vỡ, âm thanh, mixer |
+| 10_model_tai_san | model, tiêu chuẩn model, màn xem trước, localization, giấy phép tài sản |
+| 11_meta_giao_dien | meta (xu, nâng hạng, hòm đồ, mở khóa, cửa hàng, thành tựu, nhiệm vụ ngày / tuần, mutator tuần), giao diện, cài đặt, hướng dẫn người chơi, telemetry |
+| 12_he_thong_trang_thai | trạng thái prompt, DECISIONS, chờ quyết, kết quả CHECK, bản đồ trường dữ liệu, kết quả áp manifest, test, validator, lịch sử đo, hằng số trong mã |
+
+## 2. QUY TẮC CHUNG
+2.1 Định dạng (người và máy đọc không lỗi):
+- Mỗi sheet một bảng; DÒNG 1 là tên cột; không ô gộp, không dòng tiêu đề phụ, không dòng tổng.
+- Cột đầu là id ổn định (cùng id với dữ liệu).
+- Số lưu dạng số; đơn vị ghi ở TÊN CỘT (hp, speed_m_s, cooldown_s, range_m, cost_cp); không ghi "5 s" trong ô.
+- Ô không áp dụng để TRỐNG; ô chưa làm: "CHUA_AP:prompt_N"; ô cần đọc mã mà chưa đọc: "NEED_CODE_CHECK".
+- Danh sách đơn giản trong một ô ngăn bằng ";"; không lồng JSON trong ô; mỗi dòng có cột raw_json chứa nguyên bản ghi gốc để khôi phục.
+- Cột trạng thái dùng tập giá trị cố định (ghi trong Schema).
+- Cột _truoc / _sau cho mọi thứ vừa đổi (đọc từ git: so với bản xuất trước hoặc tag chỉ định); không dùng chuỗi "a → b".
+- Mọi sheet có cột nguon (file + khóa nguồn / hàm / báo cáo sinh ra dòng đó).
+- Sắp xếp dòng theo id, cột theo thứ tự cố định; không ghi mốc thời gian trong ô dữ liệu (chỉ README và MANIFEST).
+- Sheet tối đa 31 ký tự, ASCII snake_case; tên tiếng Việt ghi ở sheet Muc_luc_sheet. Mỗi file xlsx dưới ~50 MB (vượt thì tách file con: <tên>_a, <tên>_b, ghi trong mục lục).
+2.2 Liên kết giữa các file:
+- Khóa ngoại bằng id (ví dụ weapon_id, vehicle_id, mission_id, map_id); mọi khóa ngoại trỏ tới id tồn tại ở file chủ (test).
+- Công thức Excel CHỈ tham chiếu sheet CÙNG FILE (không dùng liên kết ngoài giữa các file).
+- Số cần từ file khác (ví dụ DPS xe tham chiếu cho Boss_hieu_qua, giá xe cho tháp) được chép vào sheet input_<tên> trong file dùng, ghi nguon; test: input chép == giá trị ở file nguồn.
+- Cùng (id, cột) không được có hai giá trị khác nhau ở hai file.
+2.3 Cột suy ra là CÔNG THỨC EXCEL SỐNG tham chiếu sheet gốc / input cùng file (sửa số đầu vào thì kết quả đổi), kèm cột _game ghi giá trị do mã game tính; test: giá trị công thức == _game (sai số 1e-6) cho mọi dòng.
+
+## 3. KHÁM PHÁ NGUỒN VÀ ĐỘ PHỦ KHÓA
+3.1 Nguồn phải quét tự động; liệt kê tất cả vào sheet Nguon_du_lieu (file 00):
+- balance.json, campaign.json và MỌI file JSON / CSV / TXT dữ liệu trong Assets, StreamingAssets, Resources, Tools;
+- mọi ScriptableObject và Prefab có trường dữ liệu lối chơi (tốc độ, máu, tầm, hồi, bán kính, collider, mô tả hành vi);
+- bảng localization;
+- dữ liệu bản đồ (navmesh, tag, cứ điểm, bãi thả, căn cứ, ray, tuyến biển, vật thể, trung lập, địa danh, cổng vào, biến cố, thời tiết);
+- dữ liệu âm thanh, VFX, model (GLB);
+- dữ liệu meta (xu, giá nâng hạng, hòm đồ và tỷ lệ rơi, mở khóa, thưởng, nhiệm vụ ngày / tuần, mutator tuần, cửa hàng, thành tựu, hướng dẫn, thứ hạng, cài đặt mặc định);
+- dữ liệu AI, thoại, nhân vật, trigger;
+- telemetry nếu có.
+Nguồn không đọc được: ghi vào Nguon_khong_doc_duoc kèm lý do.
+3.2 Mỗi LOẠI thực thể một sheet, đặt vào file lĩnh vực hợp nhất; thực thể không rõ lĩnh vực vào 12_he_thong_trang_thai (sheet Khac_chua_phan_loai) và báo cáo. Dữ liệu lồng nhau phẳng hóa: danh sách con có id riêng thành sheet con nối bằng id cha (ví dụ Xe_vu_khi).
+3.3 Test độ phủ khóa: duyệt MỌI đường dẫn lá (leaf path) trong mọi nguồn ở 3.1. Mỗi lá phải ánh xạ đúng vào MỘT cột của MỘT sheet, hoặc nằm trong Khong_xuat (mục 8) kèm lý do. Lá chưa ánh xạ: FAIL và in danh sách; thêm trường mới vào dữ liệu mà chưa xuất thì build fail.
+3.4 Phủ ngược: mọi cột trong Excel truy được về một khóa nguồn (trừ cột suy ra; công thức nguồn ghi ở Schema). Phủ đối tượng: số dòng mỗi sheet bằng số thực thể trong dữ liệu; mỗi id đúng một dòng. Phủ tài sản: mọi prefab / SO / model / clip / bảng localization trong dự án có ít nhất một dòng.
+3.5 COVERAGE.md (file 00): theo từng file lĩnh vực: số lá, số lá đã ánh xạ, số sheet, số dòng, số ô trống / cột, số ô CHUA_AP / NEED_CODE_CHECK; danh sách Khong_xuat; nguồn không đọc được.
+
+## 4. NỘI DUNG TỪNG FILE (TỐI THIỂU)
+Lớp A = dữ liệu gốc (tự khám phá, đúng mọi trường); lớp B = suy ra (công thức sống); lớp C = báo cáo.
+
+### 00_chi_muc (Machine_Brigade_00_Index)
+README; Muc_luc_file (mọi file, sheet, số dòng, mô tả); Muc_luc_sheet; Schema (MỌI cột của MỌI sheet ở MỌI file: file, sheet, tên cột, kiểu, đơn vị, enum, ý nghĩa nếu tìm được, nguồn công thức nếu là cột suy ra); Phu (độ phủ mỗi sheet); Phien_ban (hash balance.json và campaign.json, build, commit, phiên bản luật, hash từng bảng số đo); Nguon_du_lieu; Nguon_khong_doc_duoc; Khong_xuat; Don_vi_chua_ro; Khoa_ngoai (danh sách khóa ngoại và kết quả test).
+
+### 01_vu_khi_dan
+A:
+- Vu_khi: mỗi vũ khí một dòng, đủ mọi trường gốc, tối thiểu:
+  id, ten_that, ho_id, bien_the_id, cua_ai (xe / tháp / boss / công trình / thẻ hỗ trợ), mang_boi (ngăn ";"), ten_be (Mount_*), co_mm, dau_no_kg, loai_sat_thuong, xuyen, dang_dan, dan_thay_the, so_nong, che_do_nong (SIMULTANEOUS / RIPPLE / none), lech_nong_s, so_phat_moi_loat, khoang_phat_trong_loat_s, thoi_gian_nap_s, sat_thuong_moi_phat, loi_m, ria_m, thoi_gian_canh_bao_s, co_vong_canh_bao, toc_do_dan_m_s, thoi_gian_bay_toi_tam_s, tam_m, tam_toi_thieu_m, muc_tieu, tran_ban, toc_do_xoay_deg_s, goc_ban_gioi_han_deg, bac_co (T0–T5), ngoai_doi_phat_phut_toi_da, ngoai_doi_phat_phut_duy_tri, ngoai_doi_nguon, cùng _truoc / _sau cho vũ khí vừa đổi.
+- Ho_vu_khi (họ, sát thương gốc, lõi / rìa, tốc độ đạn, bậc, danh sách biến thể và lý do); Dan_thay_the (đạn gốc, loại, xuyên, sát thương, nổ lan, điều kiện tự đổi, thời gian đổi, thời gian giữ).
+- Bang_sat_thuong (ma trận loại sát thương × mặt đất / máy bay / công trình; hệ số xuyên so với giáp; hệ số nhiệt áp và thứ tự nhân; hệ số đánh nóc; giáp có hướng).
+- Khac_che (hệ phòng vệ × loại đạn: directMissile, drone, directRocket, artilleryRocket, mortarShell, artilleryShell, tankShell, bullet, energy; số lần, hồi, bán kính, tỷ lệ chặn; SELF_APS / POINT_DEFENSE).
+- Hanh_vi_dan (mỗi nhóm đạn: cách nhắm, khi nào nổ, khi nào trượt, có cảnh báo không, thời gian bay tối đa, tương tác pháo sáng / APS / gây nhiễu).
+- Phao_sang (mỗi đơn vị: số lần, hồi, số quả hình ảnh mỗi lần thả, điểm phát Mount_Flare, đồ nâng cấp; trước / sau).
+- Canh_bao_vong (loại đòn có vòng, thời gian cảnh báo theo bậc, công thức, số vùng tối đa, cài đặt).
+B (Vu_khi_suy_ra): chu_ky_day_du_s, sat_thuong_moi_loat, dps_duy_tri_mot_muc_tieu, dps_giap_0 / 2 / 4, dps_cong_trinh, dps_may_bay, ty_le_chu_ky_so_voi_ngoai_doi, ghi_chu_lech (NHANH_QUA / CHAM_QUA / LOI_DON_VI / LECH_HO / HIEN_THI_SAI / ok), cung_ho_nhat_quan.
+
+### 02_phuong_tien
+A: Xe (id, tên, lớp, base_cp, cost_cp_truoc, nhóm giá, máu, giáp 4 mặt, tốc độ, thả dù, tầm nhìn, outgoingDamageMult, thưởng sức mạnh, tự vệ none / flare / aps, apsCapability, số lần, hồi, nội tại, vai trò, mở khóa, danh sách vũ khí, trước / sau); Xe_vu_khi (xe – vũ khí – bệ); The_ho_tro; Trang_bi (nhánh, tác dụng, điều kiện; Mồi bẫy nhiệt và Trophy APS chỉ nâng cấp hệ có sẵn); Commander (nội tại, giá trị); Doi_mo_man (đội mở màn của commander và tướng địch: vai trò, thẻ rẻ nhất chọn được, baseCP, thiếu vai trò thì hoàn CP); Xe_tham_chieu (định nghĩa xe tham chiếu, tốc độ xe chậm tham chiếu 4,5 m/s).
+B: Xe_suy_ra (máu/CP, DPS/CP, nhóm giá, hệ số giá, thưởng, thả dù theo nhóm, tỷ lệ so với đường cong lớp); Hoi_quy (số mũ máu và DPS theo CP, bộ lọc chuẩn: bỏ CP 0, Hỗ trợ, Trinh sát; DPS = max nhẹ / nặng / bay; N; trung vị máu/CP và DPS/CP theo dải ≤ 8, 9–15, ≥ 16); May_bay_so_phat (máu, số phát Stinger / Buk / tên lửa tiêm kích, dải mục tiêu); Doi_mo_man_suy_ra (baseCP ước tính, % CP khởi đầu mỗi đội × chế độ).
+
+### 03_boss
+A: Boss (phân loại chủ lực / mini, máu, thời gian hạ mục tiêu, số bệ, số nòng, siêu vũ khí: chu kỳ và cách nhắm, route đất / biển / ray / không, hộ tống, chương, nhiệm vụ); Boss_vu_khi (một dòng mỗi bệ: boss, vũ khí, số nòng, chu kỳ, sát thương, lõi, rìa, cảnh báo, trước / sau); Boss_phase (pha, điều kiện, đổi vũ khí); Sanhunt (danh sách 41 boss, thứ tự, tuần, hỗ trợ tác chiến).
+B: Boss_hieu_qua (mỗi boss × vũ khí chính × xe tham chiếu [Tăng chủ lực, Tăng hạng nặng, Xe chiến đấu bộ binh, Xe bọc thép bánh lốp, một tháp vừa]: số đòn để hạ, thời gian hạ khi dồn hỏa lực, số xe trúng trong lõi / rìa [5 xe cách 8 m: hàng và cụm], thời gian cảnh báo, thời gian thoát khỏi lõi, kết luận ĐỦ / THIẾU); Boss_dps (tổng DPS duy trì trước / sau, cách bù: thêm nòng / thêm bệ / gộp bệ); input_xe_tham_chieu.
+
+### 04_can_cu_thap
+A: Thap (thẻ / nhánh, cỡ ô, nhánh A / B hoặc noBranch, vai trò, máu, giáp, vũ khí, tầm, hiệu ứng, base_rebuild_cp, runtime_rebuild_cp, thời gian chờ, thả dù, mở khóa, thẻ cũ gộp vào, cờ REBALANCE_STATS / HOLD, trước / sau); Tuong (loại, độ bền tương đối, đánh đổi, tháp gắn tường, số đoạn mỗi tuyến, hệ số xe phá tường, trạng thái navmesh); Nha_chinh (kiểu × HQ 1–5: sức mạnh, vũ khí, kỹ năng, hồi chiêu, thành phần tổ đồn trú, trần giá trị, hồi máu tháp, vòm khiên); Mo_dun_tien_ich; Loadout_can_cu (bảng ô theo cấp HQ; luật xây lại: kích hoạt, ngoại lệ, Đối công, Phòng thủ); Dot_phong_thu (5 loadout tham chiếu theo cấp HQ, hệ số độ khó, đường cong đợt).
+B: Thap_gia_cong_thuc (từng bước giá xây lại: effectiveHP, roleDPS, equivalentCP, hệ số đứng yên, ×1,25, cận cỡ); Tuong_duong_xe_cong_trinh (giá trị tương đương xe, tỷ lệ so với giá, số phát để hạ tháp); Nha_chinh_so_sanh (giá trị phòng thủ tương đương mỗi phút bị đánh, 3 kiểu × HQ 1–5); input_xe.
+
+### 05_che_do_kinh_te
+A: Che_do (mọi chế độ: Giữ cứ điểm, Tử chiến, Vua đồi, Công phá, Công thành, Phòng thủ, Sinh tồn, Vô tận, Săn trùm, Pháo đài tuần, Tác chiến, Đối công: winCondition, loseCondition, timeLimit_s, overtimeRule, drawRule, scoreRule, catchUpPolicy, CP khởi đầu hiện / mới, kho CP, thu nhập, aiModeProfile, bản đồ hợp lệ); Vo_han (hệ số tăng, boss xen kẽ, thưởng, trần ngày, huy hiệu, bảng xếp hạng); Sao_chien_dich; Diem_tac_chien; Kinh_te (tiếp tế: công thức, ngưỡng, đường phạt, tối đa −75% hoặc NEED_CODE_CHECK; hoàn CP khi hạ; bắt kịp; thưởng rút lui; thưởng bộ phận boss; thu nhập theo độ khó và mutator; thứ tự áp); Do_kho (bảng AI theo độ khó); Mutator.
+B: Kinh_te_suy_ra (CP kiếm được theo chế độ và độ khó ở mốc 25 / 50 / 75 / 100% thời lượng); Che_do_thoi_luong (thời lượng lý thuyết từ công thức điểm, bleed, giờ tối đa); Kiem_tinh_che_do (4 sổ: Kinh tế; Quân miễn phí / kịch bản; Sức mạnh tĩnh; Nhịp — dải sức mạnh hai bên, lệch %, GREEN / YELLOW / RED).
+
+### 06_ai
+A: Chien_thuat (16 chiến thuật: tham số aggression, attackThreshold, spacing, flankWeight, targetPriority, cpSaving, supportCoordination…, hiện / ẩn trên UI, mở khóa, hồi chiêu đổi giữa trận, giá); AI_ho_so_che_do (aiModeProfile: controllers, allowedTactics, objectivePolicy, stallPolicy, spendPressure, advancePressure, supportPolicy, leashRegionId, targetFactionMask, phaseOverrides, autoAI, cho mọi chế độ và kiểu màn); AI_tuong (chiến thuật ưa thích và nội tại từng tướng); AI_tham_so (tần suất Hz influence / squad / target / movement; cỡ đội; switch margin; thời gian cam kết; áp lực đứng yên 4 bậc).
+B: AI_xung_dot (chỗ hồ sơ chế độ bị độ khó hoặc chiến thuật tướng ghi đè; kiểm luật ưu tiên).
+
+### 07_chien_dich_cot_truyen
+A: Chuong (15 chương: thứ tự chơi, hồi, tướng, người dẫn chuyện, câu hỏi kịch tính, sợi chỉ báo trước, câu kết gợi ý); Nhiem_vu (193: chương, tên, kiểu màn, bản đồ, chế độ, mục tiêu, giờ tối đa, boss, thời tiết, đêm, bộ bài, đội mở màn bật / tắt, biến cố, trung lập, sao ★2 / ★3, người nói chính, trạng thái kịch bản); Thoai (MỌI câu một dòng: nhiem_vu_id, thu_tu, trigger, dieu_kien, nguoi_noi, khoa_loc, uu_tien P1–P4, mot_lan_hay_lap, van_ban_vi, van_ban_en, so_ky_tu_vi, so_ky_tu_en, so_dong_hien_thi_toi_da nếu đo được, chan_dung); Nhan_vat (giọng, speakerRole, allowedTriggers, chân dung); Trigger_thoai (điều kiện, ưu tiên, hồi chiêu, số lần); Bo_bai_game (23 màn: vehicle_ids[8], support_ids[2], placed_allies, loaned_cards, special_rules, trạng thái, mục tiêu gốc giữ hay không); Bien_co (cơ chế, màn dùng, trạng thái, cảnh báo); Ket_tran (bước, thời lượng, áp dụng); Cutscene_khoanh_khac (6 khoảnh khắc chậm ×0,5).
+B: Thoai_thong_ke (theo nhiệm vụ: câu theo người nói / trigger / ưu tiên, khoảng im lặng dài nhất, vượt ngân sách, câu trùng nguyên văn); Nhiem_vu_thong_ke (số câu Việt / Anh, số câu theo P0–P4).
+
+### 08_ban_do
+A: Ban_do (50 bản đồ: kích thước, biome, chế độ hỗ trợ, edgeType từng cạnh, edgeModifier, rộng dải viền, rộng vành ngoài, số làn, số điểm nghẽn); Ban_do_tag_dia_hinh; Ban_do_dia_danh (landmarkId, tên Việt / Anh, vị trí); Ban_do_rail (RailSpline: điểm đầu / cuối ngoài bản đồ, chỗ cắt đường, trạng thái, cảnh báo s, boss / tàu dùng); Ban_do_tuyen_bien (SeaRouteGraph: đoạn, nút, hướng, chiều dài, nút chờ, vịnh tránh); Ban_do_cong_vao (entryGate: vị trí, entryTick, loại thực thể, đoạn visualIngress); Ban_do_trung_lap (loại, vị trí, tác dụng, giá trị); Ban_do_vat_the (loại, lớp trang trí / lối chơi, mật độ theo biome); Ban_do_cu_diem_bai_tha_can_cu (cứ điểm, bãi thả, ô căn cứ, tuyến tường); Thoi_tiet.
+B: Ban_do_do_tinh (mỗi bản đồ × chỉ số: quãng đường bãi thả → mục tiêu, trung vị chênh, số làn độc lập, điểm nghẽn bắt buộc / tùy chọn, sightlineP95, vùng phủ pháo, vùng thả, khoảng cách lớp phòng thủ, kết nối navmesh ở mọi trạng thái dựng sẵn; GREEN / YELLOW / RED); Ngan_sach_thuc_the (nguồn sống lâu / ngắn hạn, đã có giới hạn hay chưa, ước tính tối đa mỗi phe mỗi chế độ).
+
+### 09_hieu_ung_am_thanh
+A: VFX_bac (T0–T5 × chớp đầu nòng m và s, khói đầu nòng m, vòng bụi m, sóng nước m, cầu lửa m và s, cột khói cao m và thời gian tồn tại s, sóng xung kích m, hố m và s, rung camera mức và s, hạt tối đa, LOD, đồng thời tối đa); VFX_vu_khi (mỗi vũ khí ≥ 120 mm: bậc, đường dẫn ảnh lúc bắn 0 / 0,2 / 1 s và lúc nổ 0 / 0,5 / 2 / 10 / 30 s, nền lưới mét, Tăng chủ lực làm thước, vòng lõi / rìa chồng); Xac_vo (mỗi lớp xe: kiểu vỡ, asset riêng, thời gian tồn tại, ảnh hưởng lối chơi có / không, giới hạn); Am_thanh (mỗi clip: nhóm, bậc cỡ, đường dẫn, độ dài, nén, nguồn, giấy phép); Am_thanh_mixer (nhóm, ưu tiên, kênh tối đa, compressor / limiter, giảm theo khoảng cách); Am_thanh_mau (3 file ghi âm thử và mốc thời gian các tiếng lớn).
+B: Am_thanh_so_do (LUFS, đỉnh dB, tỷ lệ năng lượng dưới 150 Hz, thời lượng đuôi, phát hiện "keng"; bảng theo bậc cỡ phải tăng đều); VFX_ngan_sach (đồng thời tối đa, hạt, khói lớn tối đa 3).
+
+### 10_model_tai_san
+A: Model (mỗi GLB một dòng: loại, số tam giác LOD0 / 1 / 2, số Part_*, Mount_*, Muzzle_* [đủ số nòng?], Mount_Flare, Mount_APS, vật liệu, kích thước, đường dẫn, đường dẫn ảnh 3 góc); Model_tieu_chuan (ngân sách tam giác theo lớp, bộ phận bắt buộc theo lớp, sai số kích thước); Xem_truoc (mỗi đơn vị: miền đất / biển / ray / không, cảnh nền, hợp lệ); Dia_phuong_hoa (mọi khóa Việt / Anh); Giay_phep_tai_san (đường dẫn, nguồn, giấy phép CC0 / CC-BY, tác giả); Anh_chup (danh sách ảnh dùng trong tài liệu).
+B: Model_cham_diem (theo MODEL_STANDARD: tam giác trong ngân sách, Part_* thiếu, Mount / Muzzle thiếu, sai tỷ lệ, hình bóng; điểm; xếp hạng Tot / Can_sua / Kem; đã làm lại ở prompt 27; điểm bản cũ / mới; quyết định giữ / khôi phục / làm lại); Dia_phuong_hoa_thong_ke (khóa thiếu, thừa, tên riêng bị dịch).
+
+### 11_meta_giao_dien
+A: toàn bộ dữ liệu ngoài trận: giá nâng hạng, bản thiết kế, xu, hòm đồ và tỷ lệ rơi, mở khóa (xu, nhiệm vụ, chương), thưởng, cửa hàng, thành tựu, nhiệm vụ ngày / tuần, mutator tuần, thứ hạng, hướng dẫn người chơi, cài đặt mặc định (vòng cảnh báo, thoại, rung camera, cỡ chữ…), nút và chip giao diện, telemetry (sự kiện và tham số) nếu có.
+B: Meta_kinh_te (nguồn và chỗ tiêu xu, thời gian lên hạng theo giá và thu nhập, trần).
+
+### 12_he_thong_trang_thai
+Trang_thai_prompt (mọi prompt 26–34 và các tin nhắn sửa lỗi: Đã chạy / Một phần / Chưa, ngày, commit đầu / cuối, test); DECISIONS (mọi mục trong docs/DECISIONS.md); Cho_quyet (mọi HOLD / DECIDE / cần chủ dự án); Kiem_tra_ma (mọi CHECK và precheck, gồm C01–C16); Truong_du_lieu (bản đồ field_path logic → khóa thật); Manifest_ap (kết quả áp manifest đợt 2: OK / ALREADY_APPLIED / CONFLICT / BLOCKED / SKIPPED); Test (kết quả theo nhóm); Validator (mọi validator: luật, số vi phạm, danh sách); Lich_su_do (mọi số đo cũ kèm hash lúc đo và cờ STALE); Hang_so_trong_ma (xem mục 5); Khac_chua_phan_loai.
+
+## 5. HẰNG SỐ TRONG MÃ
+Quét mã nguồn tìm mọi hằng số và số cứng ảnh hưởng lối chơi (hệ số sát thương, thời gian, bán kính, ngưỡng, xác suất, trần, tần suất cập nhật, giới hạn thực thể). Xuất sheet Hang_so_trong_ma (file 12): tệp, dòng, tên hằng, giá trị, ngữ cảnh, lĩnh vực liên quan (01–11), đề xuất đưa ra dữ liệu (có / không). Không sửa mã trong lượt này.
+
+## 6. MARKDOWN VÀ PDF
+- md/<lĩnh vực>.md cho từng file 01–12: văn xuôi (luật, giải thích, lý do thiết kế, tham khảo ngoài đời) + bảng Markdown của các sheet chính; mỗi bảng ghi "Sheet: <file>/<tên sheet>"; bảng quá 40 dòng chỉ in 15 dòng đầu + "xem sheet".
+- Machine_Brigade_Design_FULL_<ngày>.md: toàn văn ghép theo mục lục + PDF (mục 1–19) cộng các mục mới: 3b (bộ bài game), 3c (biến cố), 10i (Sổ tay đạn), 15b (đo bản đồ), 16b (kiểm tĩnh chế độ), 20 (Âm thanh), 21 (Model), phụ lục P1–P5.
+- Đầu mỗi mục: "Trạng thái: Đã áp / Một phần / Chưa áp — chờ prompt N" và "Nguồn dữ liệu: <file>/<sheet>". Cuối FULL: danh sách mọi mục "Chưa áp".
+- Ảnh dẫn đường dẫn tương đối tới images/<lĩnh vực>/, chú thích nêu đơn vị đo (lưới mét, thước Tăng chủ lực).
+- PDF sinh từ cùng nguồn (không viết tay). Sửa chữ mâu thuẫn mã cho khớp mã (3 / 4 hồi, Huyền thoại, chân dung thoại, Centurion / Iron Beam / tháp la-de, Trạm hậu cần, Sân bay dã chiến, Tháp canh); chỗ thuộc prompt chưa chạy ghi "chờ prompt N".
+
+## 7. SO SÁNH HAI BẢN XUẤT
+Lệnh Tools/export diff <thư mục A> <thư mục B> → docs/export/diff_<A>_<B>/ gồm một file xlsx và một md cho MỖI lĩnh vực (cùng tên 01–12) và 00_tom_tat.xlsx. Mỗi sheet: dòng thêm / xóa / đổi; với dòng đổi: id, cột, giá trị cũ, giá trị mới, chênh lệch %, commit nguồn. 00_tom_tat: số thay đổi theo file và sheet; top 50 thay đổi lớn nhất theo %; danh sách thực thể có DPS, máu, giá hoặc chu kỳ đổi quá 20%. Dùng được giữa hai commit hoặc hai tag phát hành.
+
+## 8. KHÔNG XUẤT / BẢO MẬT
+KHÔNG xuất: khóa API, mật khẩu keystore, thông tin tài khoản Play Console, token, dữ liệu cá nhân người chơi, đường dẫn tuyệt đối máy cá nhân. Mọi trường bị loại nằm trong Khong_xuat (đường dẫn khóa, lý do). Test: không chuỗi nào khớp mẫu bí mật trong bất kỳ file xuất. docs/export/ có thể vào .gitignore nếu quá nặng; 00_chi_muc luôn được commit.
+
+## 9. TỰ KIỂM (ghi 00_chi_muc/SELF_CHECK.md và in lên đầu FULL.md)
+1. Mọi file và sheet ở mục 4 tồn tại; sheet rỗng chỉ khi có dòng CHUA_AP:prompt_N.
+2. Test độ phủ khóa pass (mục 3); khóa ngoại hợp lệ; không (id, cột) nào có hai giá trị khác nhau giữa các file.
+3. Mỗi id (vũ khí, xe, boss, tháp, thẻ hỗ trợ, nhiệm vụ, bản đồ, commander, model, clip) đúng một dòng; số dòng khớp dữ liệu (193 nhiệm vụ, 15 chương, 23 bộ bài game, 41 boss, 50 bản đồ hoặc số thật, ghi rõ chênh).
+4. Công thức Excel khớp giá trị mã game; input chép giữa các file khớp nguồn.
+5. Số trong Excel khớp số trong md và pdf (mẫu ngẫu nhiên 200 ô, seed cố định).
+6. Không ô số nào chứa chữ đơn vị; không ô trống ở cột bắt buộc ngoài CHUA_AP / NEED_CODE_CHECK.
+7. Hai lần xuất liên tiếp trên cùng dữ liệu cho file giống hệt (băm giống nhau, trừ README / MANIFEST).
+8. Danh sách thứ KHÔNG xuất được và lý do; danh sách cột NEED_CODE_CHECK.
+9. Không có bí mật trong bất kỳ file.
+
+## 10. TÙY CHỌN, LÀM SAU CÙNG (chỉ khi mục 1–9 xong và test pass)
+Nhập ngược để cân bằng bằng Excel, tái dùng cơ chế manifest (gói S01, prompt 29): Tools/export import <thư mục hoặc file xlsx đã sửa> --dry-run → xuất danh sách thay đổi dạng manifest (bundle_id, entity_id, field_path, expected_before, new_value, status = DECIDE). KHÔNG ghi đè trực tiếp balance.json; thay đổi chỉ được áp qua manifest có trạng thái APPLY với precondition (OK / ALREADY_APPLIED / CONFLICT), theo gói. Chỉ cho sửa cột dữ liệu gốc, không sửa cột suy ra, id, nguon, raw_json. Test: nhập ngược bộ xuất chưa sửa cho 0 thay đổi.
+
+## 11. CÁC LƯỢT
+- Lượt 0: khám phá nguồn; ghi docs/export/PLAN.md (danh sách nguồn, ước lượng sheet / cột mỗi file lĩnh vực; thực thể không phân loại được).
+- Lượt 1: khung xuất, quy tắc chung, file 00 + Schema + test độ phủ khóa + test khóa ngoại.
+- Lượt 2: lớp A cho file 01–04.
+- Lượt 3: lớp A cho file 05–08.
+- Lượt 4: lớp A cho file 09–12.
+- Lượt 5: lớp B (cột suy ra, công thức sống, test khớp mã, input chép giữa file) + Hang_so_trong_ma.
+- Lượt 6: Markdown theo lĩnh vực, FULL.md, PDF, ảnh, MANIFEST, COVERAGE.
+- Lượt 7: so sánh hai bản xuất.
+- Lượt 8: tự kiểm, bảo mật, CI.
+- Lượt 9 (tùy chọn): nhập ngược.
+Báo cáo cuối docs/fixes/report_export.md: số file, số sheet, số dòng, số cột mỗi file; độ phủ khóa (số lá, số lá đã ánh xạ, Khong_xuat); nguồn không đọc được; cột suy ra và kết quả khớp mã; số hằng số trong mã; chỗ tự quyết.
+----- end -----
