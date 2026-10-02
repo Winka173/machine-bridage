@@ -14207,3 +14207,22 @@ pivots untouched). Run: Blender rebuild, `glb_check.py` (compare, accept). No ru
 - **Card luma (old, alpha > .5, Rec. 709):** heavy_turret .4109, _a .4042, _b .3628 (watch it); missile_battery .3973, _a .3958, _b .4125; aa_gun_tower .4465;
   flare_tower .2429 (the dimmest by far: watch it); searchlight .4713; wreck_turret has no card PNG.
 - Lead (2026-10-02), wave 6e cards: all nine pass (+11 % to +67 %; flare_tower .2429 -> .4069); wreck_turret has no card. Spot-checked missile_battery's card: pale but not washed out. Wave 6 is complete (41 towers).
+
+## 27 wave 7a (lead pass, 2026-10-02)
+
+Pass 7a (lane B, structures): cp_relay, shield_tower, dragons_teeth, minefield, each with `_a` and `_b`, in the new `Tools/blender/mb_p27_wave7.py` (method of wave 6: old
+builder, V2 `_up` pass under the same part names, then the branch's own old edit; nodes, pivots and moving parts untouched; `Emitter` pivots identical). Run: Blender
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 (dragons_teeth trio .6).
+
+- cp_relay: `Plaster` extruded pad, chamfered Team shelter with recessed panels (door side untouched), `PlasterWhite` roof slab, chamfered footings, `Medical` aircon.
+- shield_tower: `Plaster` pad, base re-extruded on the same octagon ring and taper (door, plates and vents still sit on its faces) plus a `PlasterWhite` `Base_roof`, pylon in pale
+  `Medical`; capacitors, fins, emitter untouched.
+- dragons_teeth: `Plaster` footing and teeth as chamfered tapered `k.block` with recessed faces; the old builder's random draws are replayed, so every tooth stays where it was
+  (rebar, rubble, hedgehog unchanged; `_a`/`_b` strip the same `TEETH` parts).
+- minefield: pale `Plaster` ground (same bumpy grid) and a low `Wood` kerb round it (one extra static part `Kerb`); mines, signs, fence untouched.
+- **Gates (old -> new triangles, COLOR_0).** cp_relay 2,192 -> 2,434 (.660 -> .700); _a 2,220 -> 2,462 (.674 -> .711); _b 1,328 -> 1,512 (.632 -> .675); shield_tower 5,344 -> 5,404
+  (.745 -> .773); _a 7,200 -> 7,260 (.793 -> .817); _b 6,176 -> 6,236 (.777 -> .803); dragons_teeth 1,508 -> 1,556 (.524 -> .605); _a 1,980 -> 2,124 (.568 -> .618); _b 4,088 -> 4,232
+  (.714 -> .734); minefield 3,150 -> 3,198 (.636 -> .657); _a 3,732 -> 3,780 (.660 -> .691); _b 4,512 -> 4,560 (.582 -> .622). All at most 1.14x, nodes identical, sizes within .2 %,
+  no errors or warnings.
+- **Card luma (old, alpha > .5, Rec. 709):** cp_relay .3705, _a .3982, _b .3114 (dimmest: watch it); shield_tower .3920, _a .4644, _b .4176; dragons_teeth .4102, _a .3552, _b .4296;
+  minefield .3608, _a .3747, _b .3623.
