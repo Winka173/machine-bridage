@@ -149,3 +149,13 @@ for mid in ('c4m05', 'c4m02'):
         {'name': 'standing'},
         {'name': 'fallen', 'blocks': [{'x': 17, 'z': 131, 'w': 30, 'd': 5}]}]})
     events.add(mid, 'crane_fall')
+
+
+# ---------------------------------------------------------------------- Hồ băng nứt (the lake ice cracks): c3m04
+# The Whiteout's frozen lake (the town point at (0, 0), the ice 30 m round it) is the outpost held for 180 s. From 20 s in (warned
+# 10 s), a vehicle that breaks ice (VehicleDef.BreaksIce: its weight class, Medium or Heavy, from its armour and health or the
+# data's "weightClass"; never its CP) that has been on the ice 10 s is slowed 40 % for 8 s as it gives, and again every 10 s it
+# stays; both sides alike. No ground closes (a slow, never a trap), so there is no nav site.
+events.KINDS |= {'IceCrack'}
+library(E('ice_crack', 'IceCrack', {'at': 20}, {'x': 0, 'z': 0, 'radius': 30, 'seconds': 10, 'slow': 0.4, 'slowFor': 8}, lead=10))
+events.add('c3m04', 'ice_crack')

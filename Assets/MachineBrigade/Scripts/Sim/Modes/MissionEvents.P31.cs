@@ -60,6 +60,17 @@ namespace MachineBrigade.Sim.Modes
             public readonly List<(EntityId id, string site)> Landed = new();
         }
 
+        private sealed class IcePlan
+        {
+            public Vector2 Centre;
+            public float Radius = 30f, Seconds = 10f, Slow = 0.4f, SlowFor = 8f;
+
+            /// <summary>When each ice-breaking vehicle on the ice came onto it (or its ice last gave): looked up, never walked.</summary>
+            public readonly Dictionary<EntityId, double> Since = new();
+
+            public double QuietUntil;
+        }
+
         /// <summary>Whether the enemy sees one of the player's own vehicles (an infiltration found out).</summary>
         private static bool Spotted(SimWorld world)
         {
@@ -167,6 +178,21 @@ namespace MachineBrigade.Sim.Modes
                     s.Where = s.Marks[0].at;
                     return true;
                 }
+                case MissionEventKind.IceCrack:
+                {
+                    var plan = new IcePlan
+                    {
+                        Centre = new Vector2(e.Number("x", 0f), e.Number("z", 0f)),
+                        Radius = MathF.Max(4f, e.Number("radius", 30f)),
+                        Seconds = MathF.Max(1f, e.Number("seconds", 10f)),
+                        Slow = Math.Clamp(e.Number("slow", 0.4f), 0.05f, 0.9f),
+                        SlowFor = MathF.Max(1f, e.Number("slowFor", 8f)),
+                    };
+                    s.Marks.Add((plan.Centre, plan.Radius));
+                    s.Where = plan.Centre;
+                    s.Plan = plan;
+                    return true;
+                }
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = new PodPlan();
@@ -266,6 +292,10 @@ namespace MachineBrigade.Sim.Modes
                     s.EndsAt = until;
                     return Outcome.Running;
                 }
+                case MissionEventKind.IceCrack:
+                    // The ice is thin from now to the end of the battle (its ring stays on the minimap).
+                    s.EndsAt = -1;
+                    return Outcome.Running;
                 case MissionEventKind.OrbitalPods:
                 {
                     var plan = (PodPlan)s.Plan!;
@@ -326,6 +356,40 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.OrbitalPods:
                     StepPods(world, s, (PodPlan)s.Plan!);
                     break;
+                case MissionEventKind.IceCrack:
+                    StepIce(world, s, (IcePlan)s.Plan!);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Prompt 31 L5: every vehicle that breaks ice (<see cref="VehicleDef.BreaksIce"/>: its weight class) and has been on the
+        /// lake <see cref="IcePlan.Seconds"/> is slowed as the ice gives under it, and its clock starts again; off the ice it
+        /// starts afresh. The vehicles in the world's order, the clocks on the battle's time: a replay cracks the same ice on the
+        /// same step. Nobody is stopped or trapped: a slow only.
+        /// </summary>
+        private void StepIce(SimWorld world, EventState s, IcePlan plan)
+        {
+            var reach = plan.Radius * plan.Radius;
+            foreach (var v in world.VehicleList)
+            {
+                if (!v.IsAlive || !v.Def.BreaksIce || Vector2.DistanceSquared(v.Position, plan.Centre) > reach)
+                {
+                    plan.Since.Remove(v.Id);
+                    continue;
+                }
+                if (!plan.Since.TryGetValue(v.Id, out var since))
+                {
+                    plan.Since[v.Id] = world.Time;
+                    continue;
+                }
+                if (world.Time - since < plan.Seconds) continue;
+                world.Status.Slow(v, plan.Slow, plan.SlowFor);
+                plan.Since[v.Id] = world.Time;
+                // The notice when the ice gives under one of ours, not more than once in 20 s.
+                if (v.Team != Player || world.Time < plan.QuietUntil) continue;
+                plan.QuietUntil = world.Time + 20.0;
+                Notice(world, s, "start", 0f, v.Id);
             }
         }
 

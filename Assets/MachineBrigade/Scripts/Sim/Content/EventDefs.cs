@@ -91,6 +91,12 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 31 L3: Daedalus drops pods that stand up as new enemy structures on prebuilt ground (its "sites").</summary>
         OrbitalPods,
+
+        /// <summary>
+        /// Prompt 31 L5: a frozen lake's ice (a circle, "x", "z", "radius") cracks under a vehicle that breaks ice (its weight
+        /// class, never its CP) once it has been on it "seconds" (10): slowed by "slow" for "slowFor" seconds, again and again.
+        /// </summary>
+        IceCrack,
     }
 
     /// <summary>The C.3 difficulty an event plays at: the mission's own, one step up per tier (Heroic, Iron).</summary>

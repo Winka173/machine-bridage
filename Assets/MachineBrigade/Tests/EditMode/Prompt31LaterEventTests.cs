@@ -4,6 +4,7 @@ using NUnit.Framework;
 using MachineBrigade.Game.Hud;
 using MachineBrigade.Game.Match;
 using MachineBrigade.Sim;
+using MachineBrigade.Sim.Combat;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Modes;
 using Vector2 = System.Numerics.Vector2;
@@ -170,6 +171,46 @@ namespace MachineBrigade.Tests
             Assert.AreEqual("fallen", world.NavStates.ActiveOf("crane"));
             Assert.IsFalse(world.Grid.IsWalkable(new Vector2(70f, 60f)), "the boom lies across the quay");
             Assert.IsTrue(world.Grid.IsWalkable(new Vector2(40f, 60f)), "the crane's own footprint opened when it was destroyed");
+        }
+
+        // ================================================================== Hồ băng nứt (the lake ice cracks)
+
+        [Test]
+        public void TheIceBreaksByWeightClassNotByCp()
+        {
+            Assert.AreEqual(WeightClass.Heavy, Catalog.Vehicles["heavy_tank"].Weight);
+            Assert.IsTrue(Catalog.Vehicles["heavy_tank"].BreaksIce);
+            Assert.AreEqual(WeightClass.Light, Catalog.Vehicles["scout_jeep"].Weight);
+            Assert.IsFalse(Catalog.Vehicles["scout_jeep"].BreaksIce);
+            Assert.IsFalse(Catalog.Vehicles["attack_helicopter"].BreaksIce, "an aircraft never stands on the ice");
+            // The weight follows the armour and health, whatever a card costs.
+            foreach (var def in Catalog.Vehicles.Values.Where(d => !d.Flying && !d.Static))
+                Assert.AreEqual(VehicleDef.InferWeight(def), def.Weight, def.Id);
+        }
+
+        [Test]
+        public void TheIceGivesUnderTheHeavyOnesAfterTenSecondsOnIt()
+        {
+            const string ice = "{\"id\": \"ic\", \"kind\": \"IceCrack\", \"trigger\": {\"at\": 1}, \"lead\": 10, " +
+                               "\"params\": {\"x\": 0, \"z\": 0, \"radius\": 30, \"seconds\": 10, \"slow\": 0.4, \"slowFor\": 8}}";
+            var (world, mode) = Start(Mission(ice, "", "\"ic\""));
+            var heavy = world.SpawnVehicle("heavy_tank", 0, new Vector2(0f, 0f), 0f);
+            var jeep = world.SpawnVehicle("scout_jeep", 0, new Vector2(6f, 6f), 0f);
+            var theirs = world.SpawnVehicle("heavy_tank", 1, new Vector2(-8f, 8f), 0f);
+            var ashore = world.SpawnVehicle("heavy_tank", 0, new Vector2(-80f, -60f), 0f);
+            foreach (var v in new[] { heavy, jeep, theirs, ashore }) v.Invulnerable = true;
+            Run(world, mode, 2f);
+            var s = State(mode, "ic");
+            Assert.AreEqual(EventPhase.Warned, s.Phase, "warned first");
+            Assert.AreEqual(1, s.Marks.Count, "the lake on the minimap");
+            Run(world, mode, 15f);
+            Assert.AreEqual(EventPhase.Running, s.Phase);
+            Assert.AreEqual(0f, StatusSystem.SlowShare(heavy, world.Time), "not before 10 s on the ice");
+            Run(world, mode, 8f);
+            Assert.Greater(StatusSystem.SlowShare(heavy, world.Time), 0f, "the ice gave under the heavy tank");
+            Assert.Greater(StatusSystem.SlowShare(theirs, world.Time), 0f, "both sides' alike");
+            Assert.AreEqual(0f, StatusSystem.SlowShare(jeep, world.Time), "a light vehicle never breaks it");
+            Assert.AreEqual(0f, StatusSystem.SlowShare(ashore, world.Time), "off the lake nothing happens");
         }
     }
 }

@@ -170,6 +170,9 @@ namespace MachineBrigade.Game.Hud
             ["radio.linh.ev.groundChange.bridge.down.warn"] = ("Their sappers are under the east bridge. It is going into the river.", "Công binh của chúng đang ở dưới cầu phía đông. Cây cầu sắp đổ xuống sông."),
             ["event.groundChange.crane.fallen.warn"] = ("The crane is buckling: it comes down along the marked quay in {seconds} s", "Cần cẩu đang oằn xuống: nó sẽ đổ dọc bến cảng được đánh dấu sau {seconds} giây"),
             ["event.groundChange.crane.fallen.start"] = ("The crane is down across the quay: go round by the lanes north and south", "Cần cẩu đã đổ chắn bến cảng: đi vòng qua các lối phía bắc và phía nam"),
+            ["event.iceCrack.warn"] = ("The marked lake ice thins in {seconds} s: tanks and heavier on it over 10 s break through and slow down", "Băng trên hồ được đánh dấu sẽ mỏng đi sau {seconds} giây: xe tăng và xe nặng hơn ở trên đó quá 10 giây sẽ làm nứt băng và bị chậm lại"),
+            ["event.iceCrack.start"] = ("The ice is giving under our armour: they are slowed, get them off the lake", "Băng đang nứt dưới xe bọc thép của ta: xe bị chậm lại, đưa chúng ra khỏi hồ"),
+            ["radio.linh.ev.iceCrack.warn"] = ("That lake will hold a scout car, not a tank. Get the heavy armour across fast or keep it off.", "Mặt hồ đó chịu được xe trinh sát, không chịu nổi xe tăng. Xe bọc thép nặng phải qua thật nhanh hoặc tránh xa."),
             ["radio.linh.ev.groundChange.crane.fallen.warn"] = ("That crane is going over. Clear the quay, the boom will come down right along it.", "Cái cần cẩu đó sắp đổ. Dọn khỏi bến, cần trục sẽ đổ dọc theo bến."),
         };
     }
