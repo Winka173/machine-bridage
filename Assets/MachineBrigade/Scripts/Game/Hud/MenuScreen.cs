@@ -121,6 +121,7 @@ namespace MachineBrigade.Game.Hud
             ShowBranchNews();
             ShowRefundNews();
             ShowRosterNews();
+            ShowHqTypeNews();
 
             // A language change rebuilds the menu; come back to the page the player was on.
             if (_reopenDeck) _armyView = ArmyView.Deck;
@@ -618,6 +619,15 @@ namespace MachineBrigade.Game.Hud
             VisualElement scrim = null;
             var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
             scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.roster.title"), text, ok));
+        }
+
+        /// <summary>Prompt 32 L4: once, the HQ doctrine is now the HQ type (chosen free on the Base screen).</summary>
+        private void ShowHqTypeNews()
+        {
+            if (!PlayerProfile.TakeHqTypeNews()) return;
+            VisualElement scrim = null;
+            var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
+            scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("hq.news.title"), Strings.Get("news.hqType"), ok));
         }
 
         /// <summary>DECISIONS 23D: an old save's doctrines were refunded at this load; say so once.</summary>

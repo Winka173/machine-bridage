@@ -8,6 +8,9 @@ namespace MachineBrigade.Sim.Entities
     {
         public float Cooldown;
 
+        /// <summary>Prompt 32 L4: this mount's own damage and cadence (a Fortress HQ's added gun, by HQ level); 1: as the data says.</summary>
+        public float DamageScale = 1f, RateScale = 1f;
+
         /// <summary>Artillery walking its fire onto a target: which one, and how many rounds it has put near it.</summary>
         public EntityId BracketTarget;
         public int BracketShots;

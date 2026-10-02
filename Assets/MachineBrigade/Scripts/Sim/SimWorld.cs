@@ -517,7 +517,7 @@ namespace MachineBrigade.Sim
 
         /// <summary>How much harder a side's fire support of this kind hits (its card's rank).</summary>
         internal float StrikeDamage(int team, string supportId) =>
-            team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f;
+            (team >= 0 && team < _strikeBoosts.Length && _strikeBoosts[team] is { } boost ? boost(supportId) : 1f) * Bases.SkillStrikeScale(team, supportId);
 
         /// <summary>The rank of a side's fire-support card (1 when the side has no ranks).</summary>
         internal int StrikeRank(int team, string supportId) =>
@@ -677,6 +677,8 @@ namespace MachineBrigade.Sim
                         Mix((long)MathF.Round(v.PartFrac[i] * 1000f) * 4 + (v.PartBroken[i] ? 1 : 0) + (v.PartPatched[i] ? 2 : 0));
                 }
                 Bosses.Mix(Mix);
+                // Prompt 32 L4: the HQ types' state (skill cooldowns, garrison stock, emergency domes).
+                Bases.Mix(Mix);
                 Naval.Mix(Mix);
                 // Prompt 23 A.3: the mission's events (their moments, the blackout, the weather's sight).
                 MixEvents(Mix);
@@ -725,6 +727,7 @@ namespace MachineBrigade.Sim
             if (command.Type == CommandType.Paradrop) return Economy.Paradrop(command.Team, command.DefId, command.Point);
             if (command.Type == CommandType.Strike) return Strikes.Call(command);
             if (command.Type == CommandType.CallTower) return Bases.CallTower(command);
+            if (command.Type == CommandType.HqSkill) return Bases.UseSkill(command);
             if (command.Type == CommandType.Outpost) return Bases.SetUpOutpost(command);
             if (command.Type == CommandType.FocusPart) return Bosses.Focus(command);
 

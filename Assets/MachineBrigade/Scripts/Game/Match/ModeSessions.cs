@@ -412,6 +412,8 @@ namespace MachineBrigade.Game.Match
             world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             AddEnemyCommander(mode, seed);
             Commanders.Add(new ConquestAi(mode, PlayerTeam, EnemyTeam, AiDifficulty.Normal, seed + 1));
+            // Prompt 32 L4: both HQs' skills are the AI's in the menu's battle.
+            world.Bases.AutoSkill = _ => true;
         }
 
         public override void UpdateHud(BattleHud hud, SimWorld world, List<PointInfo> scratch, float fps) { }

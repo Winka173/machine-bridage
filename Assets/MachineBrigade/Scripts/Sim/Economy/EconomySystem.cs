@@ -385,7 +385,8 @@ namespace MachineBrigade.Sim.Economy
                 own.Cp = MathF.Min(own.Bank, own.Cp + victim.Def.ArmyCost * MathF.Min(LossRefundCap, victim.Gear.Trait(TraitId.SetSalvageRights).B));
             var team = victim.LastAttackerTeam;
             var paid = 0f;
-            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
+            // Prompt 32 L4: a garrison squad pays nobody.
+            if (team >= 0 && team != victim.Team && victim.Def.Fort == null && !victim.Garrison && _world.Time - victim.LastHitTime <= 10.0 && _teams.TryGetValue(team, out var economy))
             {
                 paid = KillShare(Bounty(economy, victim), KillerBonus(killer, team), economy.Commander?.KillRefund ?? KillReward);
                 economy.Cp = MathF.Min(economy.Bank, economy.Cp + victim.Def.ArmyCost * paid);
@@ -525,7 +526,8 @@ namespace MachineBrigade.Sim.Economy
             var total = 0;
             foreach (var v in _world.VehicleList)
                 // Prompt 23 C.4: a mission event's reinforcements are outside the army (they have a cap of their own).
-                if (v.IsAlive && v.Team == team && !v.Ally && !v.Reinforcement) total += v.Def.ArmyCost;
+                // Prompt 32 L4: a Garrison HQ's squads count against the cap, never in the army supply reads.
+                if (v.IsAlive && v.Team == team && !v.Ally && !v.Reinforcement && !v.Garrison) total += v.Def.ArmyCost;
             foreach (var (pendingTeam, defId, _, landing) in _pending)
                 if (pendingTeam == team && !_allyLandings.Contains(landing)) total += _world.Catalog.Vehicle(defId).CpCost;
             return total;
@@ -554,7 +556,7 @@ namespace MachineBrigade.Sim.Economy
             return total;
         }
 
-        private int VehicleCount(int team)
+        internal int VehicleCount(int team)
         {
             var total = 0;
             foreach (var v in _world.VehicleList)

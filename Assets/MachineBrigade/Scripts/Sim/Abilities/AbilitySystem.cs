@@ -72,7 +72,7 @@ namespace MachineBrigade.Sim.Abilities
                 // Active protection reloads one interceptor at a time; a launcher reloaded whole (prompt 20 L.1, the
                 // Iron Dome) gets all of them back once it has been quiet for its reload time (it restarts at each launch).
                 var aps = v.Aps;
-                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt) >= (aps.Reload > 0f ? aps.Reload : aps.Recharge))
+                if (aps != null && !v.ApsOff && v.ApsCharges < Math.Min(aps.Charges, v.ApsMax) && (v.ApsReload += dt * v.ApsRate) >= (aps.Reload > 0f ? aps.Reload : aps.Recharge))
                 {
                     v.ApsCharges = aps.Reload > 0f ? Math.Min(aps.Charges, v.ApsMax) : v.ApsCharges + 1;
                     v.ApsReload = 0f;

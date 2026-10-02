@@ -124,3 +124,13 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 - Unity: compile, CatalogCheck (balance.json: 60 rebuildCp, 5 outgoingDamageMult cuts, base.rebuild drop/enemyRadius/showdownCutoff/hqRescue); run TowerRebuildP32Tests, BaseTests, TowerGearTests, DefendLinesTests, BaseDefenceTests.
 - Play: the REBALANCE_STATS cuts (MG bunker x0.32, twin x0.27, flame x0.17, AA tower x0.58, flak x0.41) and the tap on a fallen slot with Auto-buy off; the steel fortress verdict (HOLD) for the owner.
+
+## Prompt 32 L4 (lead pass, 2026-10-02): HQ types
+
+- Unity: compile, CatalogCheck (balance.json: base.hqTypes, vehicles headquarters.fortress_ground / _air / .shield,
+  support hq_barrage, aiModeProfiles hqSkillThreat); run HqTypeP32Tests, LocalisationScanTests (the three HQ ids' names),
+  TowerRebuildP32Tests, BaseTests, BaseDefenceTests and the APS / C-RAM tests (the stacking rule changed TryIntercept).
+- UI: the skill card's look beside the CP box (`fc-hcard--hqskill` has no USS of its own yet), the Base screen's HQ line.
+- Effects: the Shield's emergency dome has no visual yet (only the toast); the Fortress HQ's added gun fires from the HQ
+  model's mounts (a turret on the model may be wanted); card renders for the three HQ ids if a screen shows them.
+- Play: the refitted HQ numbers (Docs/balance/p32_hq_types.md) and the garrison at the base's edge.

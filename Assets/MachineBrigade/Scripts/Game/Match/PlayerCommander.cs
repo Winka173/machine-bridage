@@ -37,6 +37,7 @@ namespace MachineBrigade.Game.Match
             _states = new CardState[cards.Count];
             hud.CardPressed += OnCard;
             hud.TargetCancelled += Disarm;
+            hud.HqSkillPressed += OnSkill;
             // Items the player brought (bought with coins): a strip of their own under the minimap.
             if (world.TryGetEconomy(team, out var economy))
                 foreach (var id in Progression.Items)
@@ -81,8 +82,16 @@ namespace MachineBrigade.Game.Match
         /// <summary>Tap interceptor: while a strike is armed, the tap chooses its target.</summary>
         public bool TryTap(Vector2 screen)
         {
-            if (_armed < 0 && _armedItem < 0) return false;
+            if (_armed < 0 && _armedItem < 0 && !_armedSkill) return false;
             if (!_camera.TryGroundPoint(screen, out var ground)) return true;
+            // Prompt 32 L4: a Fortress HQ's barrage lands where the map is tapped.
+            if (_armedSkill)
+            {
+                var skill = _world.SubmitPlayer(Command.HqSkill(_team, new SimVector2(ground.x, ground.z)));
+                if (!skill.Accepted) _hud.ShowError(skill.Error);
+                else Disarm();
+                return true;
+            }
             var id = ArmedSupport;
             var point = new SimVector2(ground.x, ground.z);
             // Prompt 25 F2 batch A: an armed airborne vehicle card drops it on the tapped ground.
@@ -132,6 +141,7 @@ namespace MachineBrigade.Game.Match
                     _states[i] = new CardState(economy.Cp >= Price(economy, card), economy.VehicleCount >= MachineBrigade.Sim.Economy.TeamEconomy.MaxVehicles, 0f, i == _armed);
                 }
             }
+            UpdateSkill();
             // The supply upkeep (prompt 29 pass 0 removed prompt 28's second, army-size factor; the owner: "use supply").
             _hud.SetDeck(economy.Cp, economy.Bank, economy.Earning, economy.Upkeep * economy.CatchUp, _states);
             if (_items.Count == 0) return;
@@ -163,6 +173,7 @@ namespace MachineBrigade.Game.Match
             }
             _armed = -1;
             _armedItem = index;
+            _armedSkill = false;
             _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(id)));
         }
 
@@ -210,11 +221,68 @@ namespace MachineBrigade.Game.Match
             }
             _armed = index;
             _armedItem = -1;
+            _armedSkill = false;
             _hud.SetTargeting(Strings.Format("target.hint", Strings.Support(card.Id)));
+        }
+
+        // ------------------------------------------------------------------ prompt 32 L4: the HQ skill
+
+        private bool _armedSkill;
+
+        /// <summary>The HQ skill button: its type's icon and name, its cooldown, armed while a barrage waits for its point.</summary>
+        private void UpdateSkill()
+        {
+            var state = _world.Bases.Of(_team)?.Hq32;
+            if (state == null || !state.Ready || state.Type == MachineBrigade.Sim.Content.HqType.None || (_world.Bases.Of(_team)?.HqFallen ?? true))
+            {
+                if (_armedSkill) Disarm();
+                _hud.SetHqSkill(null, null, null, 0f, 0f, false);
+                return;
+            }
+            var rules = _world.Catalog.Base.HqTypes;
+            var left = state.SkillLeft(_world.Time);
+            if (_armedSkill && left > 0f) Disarm();
+            var key = MachineBrigade.Sim.Content.HqTypeRules.Key(state.Type);
+            var icon = state.Type switch
+            {
+                MachineBrigade.Sim.Content.HqType.Fortress => "barrage",
+                MachineBrigade.Sim.Content.HqType.Garrison => "reinforce",
+                _ => "shield",
+            };
+            var tip = Strings.Format("hq.skill." + key + ".tip", ("cooldown", Mathf.RoundToInt(rules.SkillCooldown)), ("stock", state.Stock),
+                ("seconds", Mathf.RoundToInt(rules.DomeSeconds)), ("share", Mathf.RoundToInt(rules.Dome(state.Level) * 100f)));
+            _hud.SetHqSkill(icon, Strings.Get("hq.skill." + key), tip, left / Mathf.Max(1f, rules.SkillCooldown), left, _armedSkill);
+        }
+
+        private void OnSkill()
+        {
+            var state = _world.Bases.Of(_team)?.Hq32;
+            if (state == null || !state.Ready || state.Type == MachineBrigade.Sim.Content.HqType.None) return;
+            if (_armedSkill)
+            {
+                Disarm();
+                return;
+            }
+            if (state.SkillLeft(_world.Time) > 0f)
+            {
+                _hud.ShowError(CommandError.OnCooldown);
+                return;
+            }
+            if (state.Type == MachineBrigade.Sim.Content.HqType.Fortress)
+            {
+                _armed = -1;
+                _armedItem = -1;
+                _armedSkill = true;
+                _hud.SetTargeting(Strings.Get("target.hqSkill"));
+                return;
+            }
+            var result = _world.SubmitPlayer(Command.HqSkill(_team));
+            if (!result.Accepted) _hud.ShowError(result.Error);
         }
 
         public void Disarm()
         {
+            _armedSkill = false;
             _armed = -1;
             _armedItem = -1;
             _hud.SetTargeting(null);

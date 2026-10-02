@@ -120,6 +120,12 @@ namespace MachineBrigade.Sim.Content
 
         public string ObjectivePolicy { get; internal set; } = "";
         public string AutoAiNote { get; internal set; } = "";
+
+        /// <summary>
+        /// Prompt 32 L4 (data only, "hqSkillThreat"): the enemy CP (base price) inside a base's region at which the AI uses
+        /// its HQ's skill (the Fortress's barrage, the Garrison's alarm, the Shield's emergency dome).
+        /// </summary>
+        public float HqSkillThreat { get; internal set; } = 8f;
         public EscortParams? Escort { get; internal set; }
 
         /// <summary>A fixed-deck mission: takes the mission type's profile, changed only by its special rules.</summary>
@@ -173,6 +179,7 @@ namespace MachineBrigade.Sim.Content
                 ObjectivePolicy = o.OptionalString("objectivePolicy") ?? "",
                 AutoAiNote = o.OptionalString("autoAiNote") ?? "",
                 Inherits = o.Bool("inherits", false),
+                HqSkillThreat = System.Math.Max(0f, o.Float("hqSkillThreat", 8f)),
             };
             if (o.Has("targetMask")) p.TargetMask = o.StringArray("targetMask");
             if (o.Has("flags")) p.Flags = o.StringArray("flags");

@@ -345,7 +345,7 @@ namespace MachineBrigade.Sim.AI
             var ours = 0f;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Scripted || v.IsEscort) continue;
+                if (!v.IsAlive || v.Team != _team || v.Scripted || v.IsEscort || v.Garrison) continue;
                 if (Vector2.Distance(v.Position, front) < 55f) ours += v.Def.Power * (v.Hp / v.MaxHp);
             }
             // Fixed defences do not count: they cannot chase, and the army picks the range to fight
@@ -764,7 +764,7 @@ namespace MachineBrigade.Sim.AI
                 // Vehicles the player is steering by hand are left alone, and each commander keeps to its own (the ally's or the player's).
                 // Escorts keep to their boss (prompt 16 F).
                 // A called gunship keeps to where it was called (test feedback 19P).
-                if (v.Team != _team || v.Scripted || v.IsEscort || v.PostRadius > 0f || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) ||
+                if (v.Team != _team || v.Scripted || v.IsEscort || v.Garrison || v.PostRadius > 0f || v.Def.Static || v.Ally != Allies || _fallingBack.ContainsKey(v.Id) ||
                     v.UnderPlayerControl(world.Time)) continue;
                 // Aircraft with an airfield at home fly back to it out of ammunition or badly hurt,
                 // and stay until mended and rearmed (the airfield repairs and rearms them).

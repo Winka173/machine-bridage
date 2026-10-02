@@ -37,6 +37,12 @@ namespace MachineBrigade.Sim.Commands
 
         /// <summary>Prompt 25 F2 batch A: buys an airborne vehicle (DefId) dropped by parachute on Point, where the side sees.</summary>
         Paradrop,
+
+        /// <summary>
+        /// Prompt 32 L4: the side's HQ skill (its one button): a Fortress's barrage on Point, a Garrison's alarm, a Shield's
+        /// emergency dome (Point unused).
+        /// </summary>
+        HqSkill,
     }
 
     /// <summary>
@@ -68,6 +74,10 @@ namespace MachineBrigade.Sim.Commands
         /// <summary>Prompt 25 F2 batch A: an airborne vehicle dropped by parachute on <paramref name="point"/>.</summary>
         public static Command Paradrop(int team, string vehicleId, Vector2 point) =>
             new(CommandType.Paradrop, team, Array.Empty<EntityId>(), point, defId: vehicleId);
+
+        /// <summary>Prompt 32 L4: the HQ's skill (a Fortress aims it at <paramref name="point"/>).</summary>
+        public static Command HqSkill(int team, Vector2 point = default) =>
+            new(CommandType.HqSkill, team, Array.Empty<EntityId>(), point);
 
         public static Command Strike(int team, string supportId, Vector2 point, Vector2 towards = default) =>
             new(CommandType.Strike, team, Array.Empty<EntityId>(), point, defId: supportId, point2: towards);

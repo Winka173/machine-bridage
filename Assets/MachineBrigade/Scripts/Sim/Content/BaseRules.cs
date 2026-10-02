@@ -109,6 +109,16 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 32 L2: the HQ's health share at which a side's cheapest fallen small or medium tower comes back free, once ("rebuild.hqRescue").</summary>
         public float HqRescueShare { get; internal set; } = 0.25f;
+        /// <summary>Prompt 32 L4: the HQ types ("base.hqTypes"): Fortress, Garrison, Shield.</summary>
+        public HqTypeRules HqTypes { get; internal set; } = new();
+
+        /// <summary>
+        /// Prompt 32 L5: the reference base of each HQ level ("base.reference", level 1 first): the Defend and Endless waves
+        /// are sized by it, never by the player's own base (that one is only shown). Empty: the AI's Normal base at the level.
+        /// </summary>
+        public IReadOnlyList<Modes.BaseLoadout> Reference => _reference;
+
+        private readonly List<Modes.BaseLoadout> _reference = new();
         public int OutpostCp { get; internal set; } = 6;
         public int OutpostSlots { get; internal set; } = 2;
 
@@ -184,6 +194,18 @@ namespace MachineBrigade.Sim.Content
                     if (o.Has("drop")) rules._drop[(int)size] = Math.Max(0.1f, o.Float("drop", 4f));
                 }
             }
+            if (b.Has("hqTypes")) rules.HqTypes = HqTypeRules.Parse(b.Object("hqTypes"));
+            if (b.Has("reference"))
+                foreach (var r in b.Array("reference"))
+                {
+                    var loadout = new Modes.BaseLoadout { HqLevel = Math.Clamp(r.Int("level", rules._reference.Count + 1), 1, 5) };
+                    if (r.Has("small")) loadout.Small.AddRange(r.StringArray("small"));
+                    if (r.Has("medium")) loadout.Medium.AddRange(r.StringArray("medium"));
+                    if (r.Has("large")) loadout.Large.AddRange(r.StringArray("large"));
+                    if (r.Has("utilities")) loadout.Utilities.AddRange(r.StringArray("utilities"));
+                    if (r.Has("hqType") && HqTypeRules.TryParse(r.String("hqType"), out var type)) loadout.HqType = type;
+                    rules._reference.Add(loadout);
+                }
             if (b.Has("outpost"))
             {
                 var o = b.Object("outpost");

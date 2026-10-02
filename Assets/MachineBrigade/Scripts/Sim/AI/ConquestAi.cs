@@ -887,7 +887,7 @@ namespace MachineBrigade.Sim.AI
             var armyValue = 0f;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted || v.IsEscort) continue;
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted || v.IsEscort || v.Garrison) continue;
                 _have[(int)RoleOf(v.Def)] += v.Def.CpCost;
                 armyValue += v.Def.CpCost;
             }
@@ -1196,7 +1196,7 @@ namespace MachineBrigade.Sim.AI
             var mix = new Mix();
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted || v.IsEscort) continue;
+                if (!v.IsAlive || v.Team != _team || v.Def.Static || v.Scripted || v.IsEscort || v.Garrison) continue;
                 var value = MathF.Max(1f, v.Def.CpCost);
                 if (CanHitAir(v.Def)) mix.Air += value;
                 if (KillsArmour(v.Def)) mix.Heavy += value;

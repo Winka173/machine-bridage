@@ -15173,3 +15173,91 @@ Reaching 13-15 would need health about 1,200. Verdict: not applied; the fortress
 Tests (written, not run): `TowerRebuildP32Tests` (rebuilt towers outside the supply army value; no CP for a destroyed
 tower; runtime vs base under Brandt; no drop with an enemy within 20 m; the drop by size; the Showdown cut-off with a paid
 drop landing; the HQ rescue; every price in its band), `BaseTests` (a medium tower's price from the data).
+
+## Prompt 32 L4/L5/L6/L8 (lead pass, 2026-10-02)
+
+Prompt 32 passes 4, 5, 6 and 8 on `feature/p32-a2` (lane A of Docs/LOCAL_PLAN_P31_P32.md). Pass 3 (walls) and pass 7
+(Showdown) wait for prompt 31's prebuilt NavGrid states. Nothing run (no Unity, tests or sims); the Python tools ran on
+the data. Locked rules of section 0 hold: no retreat on health, supply only, caps 32 + 6, POINT_DEFENSE never stops tank
+shells, aiModeProfile extended by data only (one new optional field), deterministic (tick timers, id order), one new
+HUD button.
+
+### L4: HQ types (Fortress, Garrison, Shield)
+
+Data `base.hqTypes` (parsed by `Content/HqTypeRules.cs`); Sim `Modes/BaseSystem.HqTypes.cs` (`HqState` on each
+`TeamBase.Hq32`); `BaseLoadout.HqType` / `HqBranch`; Game: the HUD button (`DeckBar.SetSkill`, `BattleHud.HqSkillPressed`,
+`PlayerCommander.OnSkill`), the Base screen's HQ box (a tap cycles Fortress ground -> Fortress anti-air -> Garrison ->
+Shield), the save (`PlayerProfile.HqType.cs`), texts `Hud/BaseText.cs` (EN + VI).
+
+- **No doctrine left to replace.** The HQ doctrines were folded into the commanders and refunded in DECISIONS 23D, so no
+  save holds one. The "free re-pick" migration is `PlayerProfile.MigrateHqType` (hqTypeVersion 1): a save that had played
+  is told once ("news.hqType"); choosing a type is always free (a loadout choice, like a deck's cards).
+- **`HqType.None`.** A loadout made in code (`new BaseLoadout()`, `BaseLoadout.HqOnly`, the modes' bare camps, the old
+  tests) keeps the plain HQ and no skill; the player's loadout takes the save's type (default `fortress`, data), the AI's
+  `ForAi` its general's. So no existing HQ changes unless a loadout names a type.
+- **How the types are built.** The HQ stands as its type's def: `headquarters.fortress_ground` / `_air` (the plain HQ
+  plus the sniper turret's `turret_gun_120_long` / the Bofors tower's `bofors_l70`: tower weapons reused, no new family),
+  `headquarters.shield` (the plain HQ plus a C-RAM's gun point defence, radius 45). The Fortress gun's level scale goes
+  on that mount only (`WeaponState.DamageScale` and `RateScale`, each the square root, so DPS x scale; the HQ's own guns
+  keep theirs). The Shield's interceptors: `ApsMax = round(4 x scale)` (1..6), reloading at `scale` pace
+  (`Vehicle.ApsRate`). Garrison stands as the plain `headquarters`.
+- **The skill** (`CommandType.HqSkill`, `BaseSystem.UseSkill`, one 120 s cooldown, ready at the start): Fortress =
+  `hq_barrage` (an event support: 3 rounds of 450 x the level's scale through `SimWorld.StrikeDamage`, pen 4, blast 8; the
+  support cards' rules: on the map, not into the enemy home zone); the HUD arms it and the next map tap aims it (the
+  support cards' UX). Garrison = the alarm (every stocked squad out now, the caps holding; rejected with nothing in
+  stock). Shield = the emergency dome over the base region for 10 s, absorbing its share of the HQ's full health; it is a
+  dome as DomeSystem's are (the one with the most left takes a hit, never adding up), so it absorbs what the point
+  defence lets through.
+- **Garrison.** A squad stocked every interval (2 at most), turned out beside the HQ when an enemy vehicle is inside the
+  region (45 m round the HQ, looked at every 0.25 s), one squad a look while the alive cap (baseCP) and the side's army
+  cap allow (else it stays in stock). Squads by level as the prompt (light_tank; armored_car + scout_jeep; light_tank +
+  armored_car; main_battle_tank; main_battle_tank + scout_jeep). They are `Vehicle.Garrison`: posted on the HQ's side
+  facing the intruder (`GuardPoint`, `PostRadius` = the region: the called escort's mechanism, they never chase out of
+  it; ordered past it they are called back), left alone by every AI loop, in the army cap and entity budget, never in
+  `ArmyCp` (supply), no CP to anyone when destroyed, no Deathmatch score (the kill ledger skips them). After 30 s with no
+  enemy in the region they go back in (retired: no wreck, no kill) and the stock refills at its pace.
+- **Shield.** Camp towers inside the region unhit for 5 s mend their level's share a second (by tick, in `BaseSystem.Step`).
+- **Fortress-ring bases** (Siege / Defend / Endless on a fortress map): the command HQ is a building the mode watches, not
+  an HQ vehicle, so the HQ-mounted parts (the Fortress gun, the Shield point defence) are absent there; the garrison, the
+  Shield's mending and every skill work round the HQ's position.
+- **Point-defence stacking rule** (`DamageSystem.TryIntercept`, `CombatSystem.NearerGun`): a round is offered to one
+  system only, the nearest to its mark that may take it and has an interceptor left (ties by id); the shell-share roll
+  is made once, by that system; a round a gun point defence engaged or let through (`EngagedBy`, `PdPassed`) is never
+  offered again; overlapping systems add reach and interceptors only. Before, every system in list order rolled its own
+  shell share (several chances on one shell). Tank shells are unchanged: `GunTakes` and `TryIntercept` take only an
+  indirect weapon's shells, so POINT_DEFENSE never stops a tank's round.
+- **HQ damage marks.** 50 %: an alert ("alert.hq.half.*", the siren on ours) and the smoke the view already shows below
+  60 % (EffectsDirector.ShowDamage); no loss of function. 25 %: an alert and L2's one free rebuild (unchanged).
+- **The AI.** Its type by its general's base style (`base.hqTypes.ai`: brandt, kessler Fortress; varga Garrison; orlov,
+  aurel Shield), else by difficulty (Easy Garrison, Normal Fortress, Hard Shield, Very Hard Fortress); a Fortress takes
+  the anti-air guns against a deck of 30 % aircraft or more. It uses the skill when the enemy CP (base price) inside its
+  region reaches the mode profile's `hqSkillThreat` (new optional field, default 8; data: conquest, deathmatch, hill 8,
+  assault 10, siege 12; also in `Tools/ai/import_ai_modes.py` EXTRA). `BaseSystem.AutoSkill`: every side but the
+  player's; the menu's battle both.
+- **One button.** The skill card right after the CP box (`fc-hcard--hqskill`), its icon by type (barrage / reinforce /
+  shield), the cooldown's sweep and seconds; hidden without a type; a hold shows what it does.
+
+Comparison (`Tools/balance/p32_hq_types.py`, report `Docs/balance/p32_hq_types.md`): "defensive value a minute of the
+base under attack" in CP = damage dealt + damage prevented (over the health a CP of card vehicles buys: ground 190,
+aircraft 137) + the temporary troops' baseCP. Provisional assumptions (mine): the gun busy 50 % of the minute; 1.5
+vehicles a barrage blast; a 2-minute attack; 12 C-RAM-eligible rounds a minute in salvos of 6; towers mending 50 % of
+the minute; 75 % of the dome used. With the prompt's tables every type ran 1.5-4x over its band:
+
+| HQ | target | Fortress ground | Fortress AA | Garrison | Shield |
+|---|---|---|---|---|---|
+| 1 | 4-5 | 7.7 | 13.7 | 6.0 | 11.6 |
+| 2 | 5-6 | 10.1 | 17.8 | 7.5 | 17.8 |
+| 3 | 6-7 | 12.4 | 21.9 | 9.0 | 20.9 |
+| 4 | 7-8 | 15.5 | 27.3 | 12.0 | 28.8 |
+| 5 | 8-9 | 18.6 | 32.8 | 15.0 | 37.6 |
+
+Refitted (`--apply`; per level one factor on each type's tables, so the prompt's shape holds within a level): Fortress
+ground `scale` 0.29 / 0.36 / 0.42 / 0.49 / 0.55, anti-air `airScale` (new) 0.16 / 0.2 / 0.23 / 0.27 / 0.31; Garrison
+`every` (now by level) 120 / 100 / 100 / 130 / 170 s; Shield `scale` 0.15 / 0.19 / 0.24 / 0.26 / 0.29, `regen` 0.059 % to
+0.096 % a second, `dome` 2.4 % to 4.3 % of the HQ. After: 4.4-4.5 / 5.5-5.6 / 6.3-6.6 / 7.4-7.7 / 8.5-8.6, every type in
+its band. These are large cuts on paper resting on my assumptions: the first thing to look at in play (the prompt's
+tables: 0.5-1.2, every 60 s, regen 0.2-0.4 %, dome 8-18 %, to go back to).
+
+Tests (written, not run): `HqTypeP32Tests` (the data; the Fortress def and its scaled mount; the Shield's interceptors;
+the plain HQ for Garrison; the garrison's stock, turn-out, post, supply, pay and return; the shared cooldown; the dome;
+the barrage's scale; the AI's choice; the marks; the nearest point defence takes a round).

@@ -75,6 +75,9 @@ namespace MachineBrigade.Sim.Combat
                 var mark = _world.TryGetTarget(p.Target, out var target) && target.IsAlive ? target.Position : p.AimPoint;
                 if (Vector2.DistanceSquared(v.Position, mark) > aps.Radius * aps.Radius) continue;
                 if (!DamageSystem.GunTakes(aps, p.Weapon, out var shell)) continue;
+                // Prompt 32 L4, the stacking rule: the round is the nearest free gun's that may take it (ties by id); this one
+                // leaves it to that one (overlapping guns add reach and interceptors, never a second chance).
+                if (NearerGun(v, p, mark)) continue;
                 // Its share of the shells, decided once per shell (the old roll at the moment of impact).
                 if (shell && _world.Random.NextDouble() >= aps.Shells)
                 {
@@ -84,6 +87,20 @@ namespace MachineBrigade.Sim.Combat
                 best = p;
             }
             return best;
+        }
+
+        /// <summary>Another free gun point defence of the side, nearer the round's mark, that may take it now (ties by id).</summary>
+        private bool NearerGun(Vehicle v, Projectile p, Vector2 mark)
+        {
+            var mine = Vector2.DistanceSquared(v.Position, mark);
+            foreach (var o in _world.VehicleList)
+            {
+                if (o == v || o.Team != v.Team || o.Aps is not { Burst: > 0f } a || !o.IsAlive || o.Stunned || o.ApsOff || o.ApsCharges <= 0 || o.PdRound != null) continue;
+                var d = Vector2.DistanceSquared(o.Position, mark);
+                if (d > a.Radius * a.Radius || d > mine || (d == mine && o.Id.Value > v.Id.Value)) continue;
+                if (DamageSystem.GunTakes(a, p.Weapon, out _)) return true;
+            }
+            return false;
         }
 
         /// <summary>Where a round in flight has got to (along the ground from where it was fired to where it lands).</summary>

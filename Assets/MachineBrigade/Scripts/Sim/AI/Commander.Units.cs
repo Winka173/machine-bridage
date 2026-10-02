@@ -33,7 +33,7 @@ namespace MachineBrigade.Sim.AI
                 if (c.Artillery || c.Unit.Contains("counter_battery")) enemyGuns = true;
             foreach (var v in world.VehicleList)
             {
-                if (!v.IsAlive || v.Team != Team || v.Def.Static || v.Scripted || v.IsEscort || v.UnderPlayerControl(world.Time)) continue;
+                if (!v.IsAlive || v.Team != Team || v.Def.Static || v.Scripted || v.IsEscort || v.Garrison || v.UnderPlayerControl(world.Time)) continue;
                 if (v.Flying) Aircraft(world, intel, v);
                 else if (v.Def.Weapon.MinRange > 0f && v.Def.Scoot == null) Artillery(world, v, enemyGuns);
             }

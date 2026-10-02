@@ -73,7 +73,7 @@ namespace MachineBrigade.Sim.Combat
                 // A magazine's cadence may be finer than the step: its cooldown keeps up to one step of
                 // credit, so a 20-round-a-second gun fires two rounds in some steps (see Stream).
                 for (var i = 0; i < mounts.Count; i++)
-                    v.Weapons[i].Cooldown = MathF.Max(v.Arms[i].Clip > 0 ? -dt : 0f, v.Weapons[i].Cooldown - dt * v.FireFactor);
+                    v.Weapons[i].Cooldown = MathF.Max(v.Arms[i].Clip > 0 ? -dt : 0f, v.Weapons[i].Cooldown - dt * v.FireFactor * v.Weapons[i].RateScale);
                 ReloadMagazines(v, dt);
                 // Knocked out by an EMP: the crew can do nothing until it wears off. An obstacle, a
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
@@ -867,6 +867,8 @@ namespace MachineBrigade.Sim.Combat
             travel = MrsiTravel(shooter, index, pull, travel);
 
             damageScale *= shooter.DamageBoost * shooter.CommandDamage * shooter.Def.DamageScale;
+            // Prompt 32 L4: a mount's own scale (a Fortress HQ's gun by HQ level).
+            if (index >= 0 && index < shooter.Weapons.Length) damageScale *= shooter.Weapons[index].DamageScale;
             // Prompt 25 F2 batch A: a tower linked by a fire-control centre.
             damageScale *= shooter.LinkDamage;
             // Prompt 25 C1: a boss's own weapon damage (the sheet's target damage a second against armour 3), on the ground only:

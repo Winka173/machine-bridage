@@ -112,6 +112,29 @@ namespace MachineBrigade.Game.Hud
             box.Add(_supply);
             Root.Add(box);
 
+            // Prompt 32 L4: the HQ's skill, the one new button (beside the CP box, its icon by the HQ type); hidden until
+            // the side has an HQ type in play. A tap uses it (a Fortress's barrage then waits for a tap on the map).
+            _skill = new Card { Info = new CardInfo("hq.skill", true, 0, "hq") };
+            _skill.Root = Kit.Box("fc-hcard fc-hcard--support fc-hcard--hqskill", PickingMode.Position);
+            _skill.Root.AddManipulator(new Tap(() =>
+            {
+                UiKit.RaiseClicked();
+                SkillPressed?.Invoke();
+            }, held => ShowSkillTip(held)));
+            var skillArt = Kit.Box("fc-hcard__art");
+            _skillIcon = Kit.Icon("hq", "fc-hcard__icon");
+            skillArt.Add(_skillIcon);
+            _skill.Sweep = new CooldownSweep();
+            skillArt.Add(_skill.Sweep);
+            _skill.Seconds = Kit.Text("", "fc-number-small fc-hcard__seconds");
+            skillArt.Add(_skill.Seconds);
+            _skill.Root.Add(skillArt);
+            _skillName = Kit.Text("", compact ? "fc-hcard__name fc-hcard__name--short" : "fc-caption fc-hcard__name");
+            Kit.FixedLines(_skillName, compact ? 1 : 2);
+            _skill.Root.Add(_skillName);
+            _skill.Root.style.display = DisplayStyle.None;
+            Root.Add(_skill.Root);
+
             var row = Kit.Box("fc-deck__cards");
             for (var i = 0; i < cards.Count; i++)
             {
@@ -219,6 +242,72 @@ namespace MachineBrigade.Game.Hud
         public VisualElement Root { get; }
 
         public event Action<int> CardPressed;
+
+        /// <summary>Prompt 32 L4: the HQ skill button was tapped.</summary>
+        public event Action SkillPressed;
+
+        private readonly Card _skill;
+        private readonly VisualElement _skillIcon;
+        private readonly Label _skillName;
+        private string _skillShownIcon, _skillTip;
+        private bool _skillShown;
+
+        /// <summary>A held HQ skill button shows what the skill does over the tray.</summary>
+        private void ShowSkillTip(bool held)
+        {
+            if (!held || string.IsNullOrEmpty(_skillTip))
+            {
+                _tip.style.display = DisplayStyle.None;
+                return;
+            }
+            _tipName.text = _skillTip;
+            _tipRow.Clear();
+            _tip.style.display = DisplayStyle.Flex;
+            var x = _skill.Root.worldBound.center.x - Root.worldBound.xMin;
+            _tip.style.left = Mathf.Max(0f, x - 120f);
+        }
+
+        /// <summary>
+        /// Prompt 32 L4: the HQ skill button: hidden without an HQ type (<paramref name="icon"/> null); else its icon and
+        /// short name by the type, the cooldown's sweep and seconds, armed while a Fortress's barrage waits for its point.
+        /// </summary>
+        public void SetSkill(string icon, string name, string tip, float share, float seconds, bool armed)
+        {
+            var show = icon != null;
+            if (show != _skillShown)
+            {
+                _skillShown = show;
+                _skill.Root.style.display = show ? DisplayStyle.Flex : DisplayStyle.None;
+            }
+            if (!show) return;
+            if (icon != _skillShownIcon)
+            {
+                _skillShownIcon = icon;
+                var old = _skillIconNow ?? _skillIcon;
+                var fresh = Kit.Icon(icon, "fc-hcard__icon");
+                if (old.parent is { } parent)
+                {
+                    parent.Insert(parent.IndexOf(old), fresh);
+                    old.RemoveFromHierarchy();
+                }
+                _skillIconNow = fresh;
+            }
+            if (_skillName.text != name) _skillName.text = name;
+            _skillTip = tip;
+            var cooling = share > 0f;
+            _skill.Root.EnableInClassList("fc-hcard--armed", armed);
+            _skill.Root.EnableInClassList("fc-hcard--cooling", cooling);
+            var sweep = Mathf.Round(Mathf.Clamp01(share) * 100f) / 100f;
+            if (!Mathf.Approximately(sweep, _skill.ShownCooldown)) _skill.Sweep.Share = _skill.ShownCooldown = sweep;
+            var whole = cooling ? Mathf.CeilToInt(seconds) : 0;
+            if (whole != _skill.ShownSeconds)
+            {
+                _skill.ShownSeconds = whole;
+                _skill.Seconds.text = whole > 0 ? whole.ToString() : "";
+            }
+        }
+
+        private VisualElement _skillIconNow;
 
         /// <summary>The CP box was tapped: what the numbers mean.</summary>
         public event Action CpTapped;

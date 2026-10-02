@@ -17,6 +17,11 @@ namespace MachineBrigade.Sim.Modes
     {
         public int HqLevel { get; set; } = 1;
 
+        /// <summary>Prompt 32 L4: the HQ's type (its passive and its one skill), and a Fortress's branch.</summary>
+        public HqType HqType { get; set; } = HqType.None;
+
+        public HqBranch HqBranch { get; set; } = HqBranch.Ground;
+
         /// <summary>
         /// Laid on a long battlefield's layered base (prompt 17 B.4): the HQ level opens the long table's slots
         /// (more of every size), and its forward strongpoints repeat the towers (<see cref="BaseRules.ForwardSlots"/>).
@@ -138,7 +143,7 @@ namespace MachineBrigade.Sim.Modes
         {
             var rules = catalog.Base;
             var level = Math.Clamp(HqLevel, 1, rules.MaxLevel);
-            var fitted = new BaseLoadout { HqLevel = level, Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
+            var fitted = new BaseLoadout { HqLevel = level, HqType = HqType, HqBranch = HqBranch, Layered = Layered, Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches), _catalogForRelays = catalog };
             foreach (SlotSize size in Enum.GetValues(typeof(SlotSize)))
             {
                 var open = rules.Slots(level, size, Layered);
@@ -275,6 +280,17 @@ namespace MachineBrigade.Sim.Modes
                 modules.RemoveAll(m => m.id == pick);
             }
             if (against != null && difficulty != "Easy") ChooseAiBranches(catalog, loadout, against, weights);
+            // Prompt 32 L4: the HQ type by its general (the style it fights with), else by difficulty; a Fortress takes the
+            // anti-air gun against a deck with many aircraft.
+            loadout.HqType = rules.HqTypes.ForAi(style, difficulty);
+            loadout.HqBranch = HqBranch.Ground;
+            if (loadout.HqType == HqType.Fortress && against != null && against.Count > 0)
+            {
+                var air = 0;
+                foreach (var id in against)
+                    if (catalog.Vehicles.TryGetValue(id, out var v) && v.Flying) air++;
+                if (air >= rules.HqTypes.AiAirShare * against.Count) loadout.HqBranch = HqBranch.Air;
+            }
             return loadout;
         }
 
@@ -321,7 +337,7 @@ namespace MachineBrigade.Sim.Modes
 
         public BaseLoadout Clone() => new()
         {
-            HqLevel = HqLevel, Layered = Layered, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
+            HqLevel = HqLevel, HqType = HqType, HqBranch = HqBranch, Layered = Layered, Small = new List<string>(Small), Medium = new List<string>(Medium), Large = new List<string>(Large),
             Utilities = new List<string>(Utilities), Outpost = new List<string>(Outpost), Branches = new Dictionary<string, string>(Branches),
         };
     }

@@ -77,7 +77,7 @@ namespace MachineBrigade.Game.Hud
         private readonly TowerTray _tray;
         private readonly CampMap _map;
         private readonly VisualElement _panelBody, _strip, _hq, _saved, _mapBox, _legend, _dropHost;
-        private readonly Label _hqTitle, _hqNext;
+        private readonly Label _hqTitle, _hqNext, _hqType;
         private readonly List<(KitChip chip, int plan)> _planChips = new();
         private readonly KitChip _customChip, _rangeChip;
         private VisualElement _hqMark;
@@ -113,13 +113,16 @@ namespace MachineBrigade.Game.Hud
 
             // Top: the HQ's level, the map, the three plans, Auto-arrange, "Saved".
             var bar = Kit.Box("fc-base__bar");
-            _hq = Kit.Box("fc-base__hq");
+            // Prompt 32 L4: a tap on the HQ changes its type (Fortress ground / anti-air, Garrison, Shield), free.
+            _hq = Kit.Tappable("fc-base__hq", CycleHqType);
             _hq.Add(Kit.Icon(TowerIcons.For("headquarters") ?? "hq", "fc-base__hq-icon"));
             var hqText = Kit.Box("fc-base__hq-text");
             _hqTitle = Kit.Text("", "fc-panel-title fc-row-text");
             hqText.Add(_hqTitle);
             _hqNext = Kit.Text("", "fc-small fc-row-text");
             hqText.Add(_hqNext);
+            _hqType = Kit.Text("", "fc-small fc-row-text");
+            hqText.Add(_hqType);
             _hq.Add(hqText);
             bar.Add(_hq);
             _dropHost = Kit.Box("fc-base__map-pick");
@@ -712,11 +715,43 @@ namespace MachineBrigade.Game.Hud
             RefreshStrip(layout);
         }
 
+        /// <summary>Prompt 32 L4: the player's HQ type as it reads ("Fortress (anti-air guns)").</summary>
+        private static string HqTypeName()
+        {
+            var type = PlayerProfile.HqType;
+            var name = Strings.Get("hq.type." + HqTypeRules.Key(type));
+            return type == HqType.Fortress
+                ? Strings.Format("camp.hqTypeFortress", ("type", name), ("branch", Strings.Get(PlayerProfile.HqBranch == HqBranch.Air ? "hq.branch.air" : "hq.branch.ground")))
+                : name;
+        }
+
+        /// <summary>Prompt 32 L4: the next HQ type, and what it does at this HQ level (numbers from the data).</summary>
+        private void CycleHqType()
+        {
+            PlayerProfile.NextHqType();
+            var rules = _catalog.Base.HqTypes;
+            var type = PlayerProfile.HqType;
+            var level = Level;
+            var info = type switch
+            {
+                HqType.Fortress => Strings.Format("hq.type.fortress.info", ("branch", Strings.Get(PlayerProfile.HqBranch == HqBranch.Air ? "hq.branch.air" : "hq.branch.ground")),
+                    ("share", Mathf.RoundToInt(rules.FortressScale(level, PlayerProfile.HqBranch) * 100f))),
+                HqType.Garrison => Strings.Format("hq.type.garrison.info", ("every", Mathf.RoundToInt(rules.GarrisonEvery(level))), ("cap", rules.GarrisonCap(level)),
+                    ("clear", Mathf.RoundToInt(rules.GarrisonClear))),
+                _ => Strings.Format("hq.type.shield.info", ("share", Mathf.RoundToInt(rules.ShieldScale(level) * 100f)), ("delay", Mathf.RoundToInt(rules.RegenDelay)),
+                    ("regen", Strings.Num(rules.Regen(level) * 100f, "0.##"))),
+            };
+            _note(HqTypeName() + " · " + info, false);
+            Refresh();
+            _changed();
+        }
+
         private void RefreshBar(BaseLoadout layout)
         {
             var rules = _catalog.Base;
             var level = layout.HqLevel;
             _hqTitle.text = Kit.Caps(Strings.Format("camp.hqBadge", level));
+            _hqType.text = Strings.Format("camp.hqType", ("type", HqTypeName()));
             if (level >= rules.MaxLevel) _hqNext.text = Strings.Get("camp.hqTop");
             else
             {
