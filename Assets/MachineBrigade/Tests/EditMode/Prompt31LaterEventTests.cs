@@ -63,7 +63,7 @@ namespace MachineBrigade.Tests
         public void EveryLaterEventHasItsWordsInBothLanguages()
         {
             // Every ("text", state) a campaign event brings in (Tools/campaign/ground_events.py, prompt 31 L5).
-            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen", "dam.rising", "dam.high", "dam.flood" };
+            var variants = new[] { "tide.high", "tide.low", "bridge.down", "crane.fallen", "dam.rising", "dam.high", "dam.flood", "mine.south" };
             var keys = new List<string>();
             foreach (var v in variants)
                 keys.AddRange(new[] { $"event.groundChange.{v}.warn", $"event.groundChange.{v}.start", $"radio.linh.ev.groundChange.{v}.warn" });
@@ -82,6 +82,7 @@ namespace MachineBrigade.Tests
             ("c4m02", "crane_fall", "crane"),
             ("c6m10", "dam_breach", "flood"),
             ("c6m14", "dam_breach", "flood"),
+            ("c8m10", "mine_collapse", "adits"),
         };
 
         [Test]
@@ -237,6 +238,28 @@ namespace MachineBrigade.Tests
             CollectionAssert.AreEqual(new[] { "dry", "rising", "high", "flood" }, seen, "one level at a time, up only");
             Assert.IsFalse(world.Grid.IsWalkable(new Vector2(52f, 40f)), "the last level's water");
             Assert.AreEqual(3, world.NavStates.Switches, "it stops at the last level");
+        }
+
+        // ================================================================== Sập hầm mỏ (the mine collapses)
+
+        [Test]
+        public void OneAditCavesInAndTheOtherOpensOnOneStep()
+        {
+            const string collapse = "{\"id\": \"mc\", \"kind\": \"GroundChange\", \"trigger\": {\"at\": 1}, \"lead\": 10, " +
+                                    "\"params\": {\"navSite\": \"adits\", \"navState\": \"south\", \"text\": \"mine\"}}";
+            const string site = "{\"id\": \"adits\", \"initial\": \"north\", \"states\": [" +
+                                "{\"name\": \"north\", \"blocks\": [{\"x\": -40, \"z\": -40, \"w\": 8, \"d\": 8}]}, " +
+                                "{\"name\": \"south\", \"blocks\": [{\"x\": 40, \"z\": 40, \"w\": 8, \"d\": 8}]}]}";
+            var (world, mode) = Start(Mission(collapse, site, "\"mc\""));
+            Assert.IsFalse(world.Grid.IsWalkable(new Vector2(-40f, -40f)), "the south-west adit starts sealed");
+            Assert.IsTrue(world.Grid.IsWalkable(new Vector2(40f, 40f)));
+            Run(world, mode, 2f);
+            Assert.AreEqual(2, State(mode, "mc").Marks.Count, "the adit that closes and the one that opens, both on the minimap");
+            Run(world, mode, 11f);
+            Assert.AreEqual("south", world.NavStates.ActiveOf("adits"));
+            Assert.IsTrue(world.Grid.IsWalkable(new Vector2(-40f, -40f)), "blasted open");
+            Assert.IsFalse(world.Grid.IsWalkable(new Vector2(40f, 40f)), "caved in");
+            Assert.AreEqual(1, world.NavStates.Switches, "one switch of one site");
         }
     }
 }

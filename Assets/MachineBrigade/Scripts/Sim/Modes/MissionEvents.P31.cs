@@ -121,9 +121,15 @@ namespace MachineBrigade.Sim.Modes
                     var to = held.Def.States[held.Def.IndexOf(state)];
                     // Prompt 31 L5: "text" picks the notice and line by the state coming in ("event.groundChange.<text>.<state>.warn").
                     s.Variant = e.Word("text") is { } text ? text + "." + state : null;
-                    // The ground it closes, else (it opens) the ground the state in force closes.
-                    var blocks = to.Blocks.Count > 0 ? to.Blocks : held.Def.States[held.Active].Blocks;
-                    foreach (var b in blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    // The ground it closes, and (prompt 31 L5) the ground it opens: the state in force's blocks the new one has not.
+                    foreach (var b in to.Blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    foreach (var b in held.Def.States[held.Active].Blocks)
+                    {
+                        var kept = false;
+                        foreach (var k in to.Blocks)
+                            if (k.Center == b.Center && k.Width == b.Width && k.Depth == b.Depth) kept = true;
+                        if (!kept) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
+                    }
                     s.Where = s.Marks.Count > 0 ? s.Marks[0].at : world.Map.Centre;
                     s.Plan = new GroundPlan { Site = site, State = state };
                     return true;
