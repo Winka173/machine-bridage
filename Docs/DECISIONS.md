@@ -13837,3 +13837,25 @@ fibre_fpv_carrier, interceptor_drone_vehicle, builders appended to `mb_p27_wave3
   card PNG. New cards: the lead renders them after the merge.
 
 - Lead (2026-10-02), wave 3f cards: six pass (-0.5 % to +3.9 %); aa_gun_vehicle fails at -1.8 % (.3654 -> .3589): merged, and pass 3g brightens it (ao_strength or lighter plates) to >= .3618 before its own models.
+
+## 27 wave 3g (lead pass, 2026-10-02)
+
+Pass 3g, the row microwave_vehicle, nlos_atgm_vehicle, radar_atgm_vehicle, radar_scout, recoilless_jeep, shorad_vehicle,
+sp_mortar, wheeled_howitzer, builders appended to `mb_p27_wave3.py`. Run: Blender rebuild, `glb_check.py` (compare, accept).
+No runner mirror, no cards, no previews, no tests.
+
+- **3f fix.** aa_gun_vehicle's card was 1.8 % darker (.3654 -> .3589). Its build now has `ao_strength=.55` (default .9):
+  COLOR_0 mean .6346 -> .6959 (+9.7 %), geometry unchanged (3,556 triangles). The lead checks the card (target >= .3618).
+- **Builders.** New `_truck_pn_v2` (pn._truck on the V2 kit: extruded cab with a sloped screen, V2 wheels, chamfered bed, deck
+  plate, bumper, grille) for microwave, NLOS and the howitzer; `_launcher_v2` (pn._launcher_box: chamfered box, ringed tube
+  mouths, side rails) for NLOS and SHORAD; `_tracked_v2` for the radar ATGM vehicle; extruded hulls on V2 wheels for the jeep,
+  SHORAD, mortar and scout; `parts.barrel` for the howitzer, jeep and the twin mortar (`_2` nodes kept). All eight use
+  `ao_strength=.65` as a precaution against dimmer cards (COLOR_0 +9 % to +25 %).
+- **Gates (old -> new triangles, COLOR_0).** microwave 1,492 -> 1,664 (.587 -> .734); nlos 1,736 -> 2,048 (.612 -> .711);
+  radar_atgm 2,672 -> 3,194 (.578 -> .677); radar_scout 1,164 -> 1,192 (.675 -> .774); recoilless 1,184 -> 1,606 (.652 -> .753);
+  shorad 1,456 -> 2,000 (.639 -> .700); sp_mortar 2,344 -> 2,806 (.640 -> .729); howitzer 1,564 -> 2,136 (.584 -> .731).
+  Zero-area 0, open edges 0, runtime nodes identical, no errors or warnings. Largest ratio 1.37x.
+- **Proportions.** The old trucks were 2.34 m wide against modelSize 2.1: the new V2 wheels give 2.14. Old NLOS height
+  3.03 (modelSize 2.6) kept; scout height 4.225 kept (the old mast); shorad 3.67 long against 3.8.
+- **Card luma (old, mean of pixels with alpha > .5):** microwave .3217, nlos .3856, radar_atgm .4031, radar_scout .3912,
+  recoilless_jeep .3636, shorad .3449, sp_mortar .3803, wheeled_howitzer .2971 (the dimmest card of the row: watch it).

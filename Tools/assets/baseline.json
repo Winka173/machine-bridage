@@ -762,6 +762,30 @@
    "changes": [
     "aa_gun_vehicle: bytes only"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "microwave_vehicle",
+    "nlos_atgm_vehicle",
+    "radar_atgm_vehicle",
+    "radar_scout",
+    "recoilless_jeep",
+    "shorad_vehicle",
+    "sp_mortar",
+    "wheeled_howitzer"
+   ],
+   "reason": "wave 3g V2 rebuilds; ao_strength .65",
+   "changes": [
+    "FLAG microwave_vehicle: triangles 1,492 -> 1,664 (+11.5%); vertices 1,548 -> 1,980 (+27.9%); meshes 10 -> 18 (+80.0%); renderers 10 -> 18 (+80.0%); materials 6 -> 7 (+16.7%); materialSlots 10 -> 18 (+80.0%); fileBytes 87,948 -> 115,960 (+31.9%); structure changed",
+    "FLAG nlos_atgm_vehicle: triangles 1,736 -> 2,048 (+18.0%); vertices 1,902 -> 2,340 (+23.0%); meshes 12 -> 20 (+66.7%); renderers 12 -> 20 (+66.7%); materials 6 -> 7 (+16.7%); materialSlots 12 -> 20 (+66.7%); fileBytes 106,860 -> 135,960 (+27.2%); structure changed",
+    "FLAG radar_atgm_vehicle: triangles 2,672 -> 3,194 (+19.5%); vertices 3,716 -> 3,779 (+1.7%); meshes 11 -> 18 (+63.6%); renderers 11 -> 18 (+63.6%); materials 5 -> 8 (+60.0%); materialSlots 11 -> 18 (+63.6%); fileBytes 191,476 -> 204,700 (+6.9%); structure changed",
+    "FLAG radar_scout: triangles 1,164 -> 1,192 (+2.4%); vertices 1,180 -> 1,362 (+15.4%); meshes 8 -> 14 (+75.0%); renderers 8 -> 14 (+75.0%); materials 4 -> 6 (+50.0%); materialSlots 8 -> 14 (+75.0%); fileBytes 67,596 -> 81,528 (+20.6%); structure changed",
+    "FLAG recoilless_jeep: triangles 1,184 -> 1,606 (+35.6%); vertices 1,188 -> 1,667 (+40.3%); meshes 8 -> 15 (+87.5%); renderers 8 -> 15 (+87.5%); materials 4 -> 6 (+50.0%); materialSlots 8 -> 15 (+87.5%); fileBytes 68,124 -> 98,628 (+44.8%); structure changed",
+    "FLAG shorad_vehicle: triangles 1,456 -> 2,000 (+37.4%); vertices 1,626 -> 2,210 (+35.9%); meshes 9 -> 19 (+111.1%); renderers 9 -> 19 (+111.1%); materialSlots 9 -> 19 (+111.1%); fileBytes 90,664 -> 128,688 (+41.9%); structure changed",
+    "FLAG sp_mortar: triangles 2,344 -> 2,806 (+19.7%); vertices 2,416 -> 3,035 (+25.6%); meshes 11 -> 21 (+90.9%); renderers 11 -> 21 (+90.9%); materials 5 -> 6 (+20.0%); materialSlots 11 -> 21 (+90.9%); fileBytes 132,364 -> 172,008 (+30.0%); structure changed",
+    "FLAG wheeled_howitzer: triangles 1,564 -> 2,136 (+36.6%); vertices 1,674 -> 2,286 (+36.6%); meshes 10 -> 18 (+80.0%); renderers 10 -> 18 (+80.0%); materials 6 -> 8 (+33.3%); materialSlots 10 -> 18 (+80.0%); fileBytes 93,908 -> 132,376 (+41.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -30197,22 +30221,24 @@
   },
   "microwave_vehicle": {
    "file": "microwave_vehicle.glb",
-   "fileBytes": 87948,
-   "sha1": "830fc042b46e173a",
+   "fileBytes": 115960,
+   "sha1": "f53a3d59838e4ad8",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 14,
-   "meshes": 10,
-   "materials": 6,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 22,
+   "meshes": 18,
+   "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 10,
-   "submeshes": 10,
-   "materialSlots": 10,
-   "materialsUsed": 6,
-   "triangles": 1492,
-   "vertices": 1548,
+   "renderers": 18,
+   "submeshes": 18,
+   "materialSlots": 18,
+   "materialsUsed": 7,
+   "triangles": 1664,
+   "vertices": 1980,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -30220,36 +30246,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 29,
+   "loosePieces": 49,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.17,
+    -1.07,
     0.0,
-    -2.95
+    -2.965
    ],
    "boundsMax": [
-    1.17,
-    3.1033,
-    2.935
+    1.07,
+    3.1019,
+    3.03
    ],
    "size": [
-    5.885,
-    2.34,
-    3.103
+    5.995,
+    2.14,
+    3.102
    ],
    "center": [
     0.0,
-    1.552,
-    -0.007
+    1.551,
+    0.033
    ],
-   "structureHash": "717363bda52dc3a0",
+   "structureHash": "86f2caa5ff102a6d",
    "color0": {
-    "mean": 0.5869,
-    "min": 0.1452,
-    "max": 0.9987,
-    "p05": 0.2305,
-    "p95": 0.8064,
+    "mean": 0.7338,
+    "min": 0.2687,
+    "max": 1.0,
+    "p05": 0.4175,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -30267,19 +30293,27 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Chassis",
+    "Deck_plate",
     "Emitter",
     "Emitter_face",
+    "Emitter_ribs",
+    "Gen_stack",
+    "Generator_vents",
     "Generators",
     "Glass",
-    "Hubs",
     "Hull",
+    "Lamps",
+    "Light_rims",
     "Muzzle_main",
     "Pedestal",
     "Point_exhaust",
     "Point_fire",
+    "Steel",
+    "Tail_lamps",
     "Team_bands",
     "Turret",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
@@ -33086,22 +33120,24 @@
   },
   "nlos_atgm_vehicle": {
    "file": "nlos_atgm_vehicle.glb",
-   "fileBytes": 106860,
-   "sha1": "028d55b4cc291a78",
+   "fileBytes": 135960,
+   "sha1": "b3456e7982308eca",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 18,
-   "meshes": 12,
-   "materials": 6,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 26,
+   "meshes": 20,
+   "materials": 7,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 12,
-   "submeshes": 12,
-   "materialSlots": 12,
-   "materialsUsed": 6,
-   "triangles": 1736,
-   "vertices": 1902,
+   "renderers": 20,
+   "submeshes": 20,
+   "materialSlots": 20,
+   "materialsUsed": 7,
+   "triangles": 2048,
+   "vertices": 2340,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -33109,36 +33145,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 38,
+   "loosePieces": 53,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.17,
+    -1.07,
     0.0,
-    -3.05
+    -3.065
    ],
    "boundsMax": [
-    1.17,
+    1.07,
     3.025,
-    3.04
+    3.13
    ],
    "size": [
-    6.09,
-    2.34,
+    6.195,
+    2.14,
     3.025
    ],
    "center": [
     0.0,
     1.513,
-    -0.005
+    0.032
    ],
-   "structureHash": "e4ef7859a7863a8d",
+   "structureHash": "49f2757f0c0ecc26",
    "color0": {
-    "mean": 0.6115,
-    "min": 0.1327,
-    "max": 0.8296,
-    "p05": 0.2461,
-    "p95": 0.8058,
+    "mean": 0.7111,
+    "min": 0.2687,
+    "max": 1.0,
+    "p05": 0.3759,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -33160,10 +33196,14 @@
    "runtimeSuffixed": [],
    "nodeNames": [
     "Chassis",
+    "Deck_plate",
     "Glass",
-    "Hubs",
+    "Hinge",
     "Hull",
+    "Lamps",
     "Launcher",
+    "Launcher_rails",
+    "Light_rims",
     "MG",
     "MG_ammo",
     "Mount_mg",
@@ -33172,11 +33212,15 @@
     "Point_exhaust",
     "Point_fire",
     "Sensor",
+    "Sensor_body",
     "Sensor_mast",
+    "Steel",
+    "Tail_lamps",
     "Team_bands",
     "Tubes",
     "Turret",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
@@ -34775,22 +34819,24 @@
   },
   "radar_atgm_vehicle": {
    "file": "radar_atgm_vehicle.glb",
-   "fileBytes": 191476,
-   "sha1": "7f2fdff579ae3958",
+   "fileBytes": 204700,
+   "sha1": "e2cc76ff10db3cfe",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 16,
-   "meshes": 11,
-   "materials": 5,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 23,
+   "meshes": 18,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 11,
-   "submeshes": 11,
-   "materialSlots": 11,
-   "materialsUsed": 5,
-   "triangles": 2672,
-   "vertices": 3716,
+   "renderers": 18,
+   "submeshes": 18,
+   "materialSlots": 18,
+   "materialsUsed": 8,
+   "triangles": 3194,
+   "vertices": 3779,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34798,36 +34844,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 94,
+   "loosePieces": 70,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.32,
+    -1.31,
     -0.01,
-    -2.8406
+    -2.865
    ],
    "boundsMax": [
-    1.32,
-    2.5315,
-    2.8342
+    1.31,
+    2.4742,
+    2.8334
    ],
    "size": [
-    5.675,
-    2.64,
-    2.542
+    5.698,
+    2.62,
+    2.484
    ],
    "center": [
     0.0,
-    1.261,
-    -0.003
+    1.232,
+    -0.016
    ],
-   "structureHash": "69a89b6cd123d3e7",
+   "structureHash": "7f0e66cd744b8e03",
    "color0": {
-    "mean": 0.5781,
-    "min": 0.0651,
-    "max": 0.9987,
-    "p05": 0.2305,
-    "p95": 0.806,
+    "mean": 0.6774,
+    "min": 0.2291,
+    "max": 1.0,
+    "p05": 0.3589,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -34847,17 +34893,24 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Fenders",
+    "Armor",
+    "Hatch_fittings",
+    "Hatches",
     "Hubs",
     "Hull",
+    "Lamps",
+    "Light_rims",
     "Missiles",
     "Muzzle_missile",
     "Point_exhaust",
     "Point_fire",
     "Radar",
     "Radar_box",
+    "Radar_lens",
+    "Rail_arms",
     "Rails",
     "Sprockets",
+    "Tail_lamps",
     "Team_bands",
     "Tracks",
     "Turret",
@@ -34970,22 +35023,24 @@
   },
   "radar_scout": {
    "file": "radar_scout.glb",
-   "fileBytes": 67596,
-   "sha1": "126c25068fb73397",
+   "fileBytes": 81528,
+   "sha1": "00abe0f96e29e1e6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 12,
-   "meshes": 8,
-   "materials": 4,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 18,
+   "meshes": 14,
+   "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 8,
-   "submeshes": 8,
-   "materialSlots": 8,
-   "materialsUsed": 4,
-   "triangles": 1164,
-   "vertices": 1180,
+   "renderers": 14,
+   "submeshes": 14,
+   "materialSlots": 14,
+   "materialsUsed": 6,
+   "triangles": 1192,
+   "vertices": 1362,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -34993,36 +35048,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 21,
+   "loosePieces": 30,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.11,
+    -1.02,
     0.0,
     -2.3
    ],
    "boundsMax": [
-    1.11,
+    1.02,
     4.225,
-    2.3
+    2.355
    ],
    "size": [
-    4.6,
-    2.22,
+    4.655,
+    2.04,
     4.225
    ],
    "center": [
     0.0,
     2.112,
-    0.0
+    0.028
    ],
-   "structureHash": "b6fe46f0a61b9704",
+   "structureHash": "888bd72eabbe7b1c",
    "color0": {
-    "mean": 0.6746,
-    "min": 0.157,
-    "max": 0.9987,
-    "p05": 0.1978,
-    "p95": 0.981,
+    "mean": 0.7739,
+    "min": 0.2943,
+    "max": 1.0,
+    "p05": 0.5293,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -35039,8 +35094,12 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Hubs",
+    "Armor",
+    "Chassis",
+    "Deck",
     "Hull",
+    "Lamps",
+    "Light_rims",
     "MG",
     "Mast",
     "Muzzle_mg",
@@ -35048,9 +35107,11 @@
     "Point_fire",
     "Ring",
     "Sensor_head",
+    "Sensor_lens",
     "Team_bands",
     "Turret",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
@@ -36334,22 +36395,24 @@
   },
   "recoilless_jeep": {
    "file": "recoilless_jeep.glb",
-   "fileBytes": 68124,
-   "sha1": "ef01d465c6a1eb3d",
+   "fileBytes": 98628,
+   "sha1": "7f708601e9abd7b2",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 12,
-   "meshes": 8,
-   "materials": 4,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 19,
+   "meshes": 15,
+   "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 8,
-   "submeshes": 8,
-   "materialSlots": 8,
-   "materialsUsed": 4,
-   "triangles": 1184,
-   "vertices": 1188,
+   "renderers": 15,
+   "submeshes": 15,
+   "materialSlots": 15,
+   "materialsUsed": 6,
+   "triangles": 1606,
+   "vertices": 1667,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -36357,36 +36420,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 20,
+   "loosePieces": 30,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -0.8,
+    -0.75,
     0.0,
-    -2.2
+    -2.1
    ],
    "boundsMax": [
-    0.8,
-    1.57,
-    1.5
+    0.75,
+    1.5641,
+    1.64
    ],
    "size": [
-    3.7,
-    1.6,
-    1.57
+    3.74,
+    1.5,
+    1.564
    ],
    "center": [
     0.0,
-    0.785,
-    -0.35
+    0.782,
+    -0.23
    ],
-   "structureHash": "c801d4da5097f639",
+   "structureHash": "96fa0b80398fbead",
    "color0": {
-    "mean": 0.6522,
-    "min": 0.1356,
-    "max": 0.9987,
-    "p05": 0.1842,
-    "p95": 0.8137,
+    "mean": 0.7527,
+    "min": 0.2915,
+    "max": 1.0,
+    "p05": 0.3334,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -36412,15 +36475,22 @@
     "Body",
     "Breech",
     "Chassis",
-    "Hubs",
+    "Glass",
+    "Grille",
+    "Lamps",
+    "Light_rims",
     "Main_cannon",
     "Muzzle_brake",
     "Muzzle_main",
     "Pedestal",
     "Point_exhaust",
     "Point_fire",
+    "Seats",
+    "Spare",
+    "Steel",
     "Turret",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
@@ -40736,22 +40806,24 @@
   },
   "shorad_vehicle": {
    "file": "shorad_vehicle.glb",
-   "fileBytes": 90664,
-   "sha1": "e7e5a4321643ccf4",
+   "fileBytes": 128688,
+   "sha1": "83ba7c0063de36b6",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 15,
-   "meshes": 9,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 25,
+   "meshes": 19,
    "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 9,
-   "submeshes": 9,
-   "materialSlots": 9,
+   "renderers": 19,
+   "submeshes": 19,
+   "materialSlots": 19,
    "materialsUsed": 6,
-   "triangles": 1456,
-   "vertices": 1626,
+   "triangles": 2000,
+   "vertices": 2210,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -40759,36 +40831,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 32,
+   "loosePieces": 46,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -0.98,
+    -0.93,
     0.0,
-    -1.48
+    -1.7
    ],
    "boundsMax": [
-    0.98,
-    2.1682,
-    1.8392
+    0.93,
+    2.1664,
+    1.97
    ],
    "size": [
-    3.319,
-    1.96,
-    2.168
+    3.67,
+    1.86,
+    2.166
    ],
    "center": [
     0.0,
-    1.084,
-    0.18
+    1.083,
+    0.135
    ],
-   "structureHash": "7a3bddcf6c8e2bc3",
+   "structureHash": "0681eae4433c1155",
    "color0": {
-    "mean": 0.6385,
-    "min": 0.1354,
-    "max": 0.8216,
-    "p05": 0.2871,
-    "p95": 0.8137,
+    "mean": 0.6998,
+    "min": 0.2813,
+    "max": 1.0,
+    "p05": 0.3659,
+    "p95": 0.9898,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -40809,10 +40881,15 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Chassis",
+    "Fenders",
     "Glass",
-    "Hubs",
+    "Grille",
     "Hull",
+    "Lamps",
     "Launcher",
+    "Launcher_rails",
+    "Light_rims",
     "MG",
     "MG_ammo",
     "Mount_mg",
@@ -40820,10 +40897,15 @@
     "Muzzle_missile",
     "Point_exhaust",
     "Point_fire",
+    "Ring",
+    "Sensor_box",
+    "Sensor_lens",
+    "Steel",
     "Tubes",
     "Turret",
     "Turret_body",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
@@ -42522,22 +42604,24 @@
   },
   "sp_mortar": {
    "file": "sp_mortar.glb",
-   "fileBytes": 132364,
-   "sha1": "a8d1a47f54de9935",
+   "fileBytes": 172008,
+   "sha1": "8eb3a5dffca2ab4c",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 17,
-   "meshes": 11,
-   "materials": 5,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 27,
+   "meshes": 21,
+   "materials": 6,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 11,
-   "submeshes": 11,
-   "materialSlots": 11,
-   "materialsUsed": 5,
-   "triangles": 2344,
-   "vertices": 2416,
+   "renderers": 21,
+   "submeshes": 21,
+   "materialSlots": 21,
+   "materialsUsed": 6,
+   "triangles": 2806,
+   "vertices": 3035,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -42545,22 +42629,22 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 41,
+   "loosePieces": 53,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.21,
+    -1.162,
     0.0,
-    -3.1
+    -3.165
    ],
    "boundsMax": [
-    1.21,
+    1.162,
     2.72,
-    3.1
+    3.165
    ],
    "size": [
-    6.2,
-    2.42,
+    6.33,
+    2.324,
     2.72
    ],
    "center": [
@@ -42568,13 +42652,13 @@
     1.36,
     0.0
    ],
-   "structureHash": "24eb7d86007db269",
+   "structureHash": "13bb7876b0236396",
    "color0": {
-    "mean": 0.6396,
-    "min": 0.1431,
-    "max": 0.9987,
-    "p05": 0.2232,
-    "p95": 0.8064,
+    "mean": 0.7291,
+    "min": 0.2687,
+    "max": 1.0,
+    "p05": 0.3508,
+    "p95": 0.9905,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -42603,8 +42687,14 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
-    "Hubs",
+    "Armor",
+    "Chassis",
+    "Deck",
+    "Hatch_fittings",
+    "Hatches",
     "Hull",
+    "Lamps",
+    "Light_rims",
     "MG",
     "MG_ammo",
     "Main_cannon",
@@ -42616,10 +42706,14 @@
     "Muzzle_mg",
     "Point_exhaust",
     "Point_fire",
+    "Steel",
+    "Tail_lamps",
     "Team_bands",
     "Turret",
+    "Turret_armor",
     "Turret_body",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
@@ -47825,22 +47919,24 @@
   },
   "wheeled_howitzer": {
    "file": "wheeled_howitzer.glb",
-   "fileBytes": 93908,
-   "sha1": "943b30b524621404",
+   "fileBytes": 132376,
+   "sha1": "7da71daa33468d3f",
    "generator": "Khronos glTF Blender I/O v4.5.51",
-   "extensions": [],
-   "nodes": 14,
-   "meshes": 10,
-   "materials": 6,
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 22,
+   "meshes": 18,
+   "materials": 8,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 10,
-   "submeshes": 10,
-   "materialSlots": 10,
-   "materialsUsed": 6,
-   "triangles": 1564,
-   "vertices": 1674,
+   "renderers": 18,
+   "submeshes": 18,
+   "materialSlots": 18,
+   "materialsUsed": 8,
+   "triangles": 2136,
+   "vertices": 2286,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -47848,36 +47944,36 @@
     "NORMAL": 0,
     "TEXCOORD_0": 0
    },
-   "loosePieces": 31,
+   "loosePieces": 46,
    "openEdges": 0,
    "nonManifoldEdges": 0,
    "boundsMin": [
-    -1.17,
+    -1.07,
     0.0,
     -3.9844
    ],
    "boundsMax": [
-    1.17,
-    2.6514,
-    3.9684
+    1.07,
+    2.6396,
+    3.9946
    ],
    "size": [
-    7.953,
-    2.34,
-    2.651
+    7.979,
+    2.14,
+    2.64
    ],
    "center": [
     0.0,
-    1.326,
-    -0.008
+    1.32,
+    0.005
    ],
-   "structureHash": "1cb651341b79d6e4",
+   "structureHash": "6344e84c10cb4396",
    "color0": {
-    "mean": 0.584,
-    "min": 0.1257,
-    "max": 0.8216,
-    "p05": 0.1876,
-    "p95": 0.8064,
+    "mean": 0.7307,
+    "min": 0.2687,
+    "max": 1.0,
+    "p05": 0.4009,
+    "p95": 0.9987,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -47900,10 +47996,14 @@
    },
    "runtimeSuffixed": [],
    "nodeNames": [
+    "Ammo_racks",
     "Chassis",
+    "Cradle",
+    "Deck_plate",
     "Glass",
-    "Hubs",
     "Hull",
+    "Lamps",
+    "Light_rims",
     "Main_cannon",
     "Mount",
     "Muzzle_brake",
@@ -47911,9 +48011,13 @@
     "Point_exhaust",
     "Point_fire",
     "Spade",
+    "Spade_arms",
+    "Steel",
+    "Tail_lamps",
     "Team_bands",
     "Turret",
-    "Tyres"
+    "Tyres",
+    "Wheels"
    ],
    "category": "ground",
    "hd": false,
