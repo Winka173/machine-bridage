@@ -61,11 +61,44 @@ namespace MachineBrigade.Tests
         [Test]
         public void EveryLaterEventHasItsWordsInBothLanguages()
         {
+            // Every ("text", state) a campaign event brings in (Tools/campaign/ground_events.py, prompt 31 L5).
+            var variants = new[] { "tide.high", "tide.low", "bridge.down" };
             var keys = new List<string>();
-            foreach (var state in new[] { "high", "low" })
-                keys.AddRange(new[] { $"event.groundChange.tide.{state}.warn", $"event.groundChange.tide.{state}.start", $"radio.linh.ev.groundChange.tide.{state}.warn" });
+            foreach (var v in variants)
+                keys.AddRange(new[] { $"event.groundChange.{v}.warn", $"event.groundChange.{v}.start", $"radio.linh.ev.groundChange.{v}.warn" });
             var missing = keys.Where(k => !Strings.Has(k)).ToList();
             Assert.IsEmpty(missing, string.Join("\n", missing));
+        }
+
+        // ================================================================== the campaign's later events
+
+        /// <summary>(mission, library event, nav site it switches): the missions of the sheet that play a later event (stage events aside).</summary>
+        private static readonly (string mission, string evt, string site)[] Placed =
+        {
+            ("c1m01", "tide_turn", "shoal"),
+            ("i2m03", "bridge_collapse", "east_bridge"),
+        };
+
+        [Test]
+        public void TheLaterEventsArePlayedWhereTheSheetPutsThem()
+        {
+            var bad = new List<string>();
+            foreach (var (id, evt, site) in Placed)
+            {
+                var m = Campaign.Everything.FirstOrDefault(x => x.Id == id);
+                if (m == null)
+                {
+                    bad.Add($"{id}: no such mission");
+                    continue;
+                }
+                if (!m.Events.Any(e => e.Id == evt)) bad.Add($"{id}: does not play {evt}");
+                if (!m.NavSites.Any(s => s.Id == site)) bad.Add($"{id}: does not build the site {site}");
+            }
+            var i2m03 = Campaign.Everything.First(x => x.Id == "i2m03");
+            Assert.LessOrEqual(i2m03.Events.Count, 3, "an interlude plays three events at most");
+            Assert.IsTrue(i2m03.Events.Any(e => e.Id == "hunters"), "chapter 14's signature stays");
+            Assert.IsEmpty(bad, string.Join("
+", bad));
         }
 
         // ================================================================== Triều lên/xuống (the tide)

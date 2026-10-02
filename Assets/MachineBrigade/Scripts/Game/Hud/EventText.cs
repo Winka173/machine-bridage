@@ -165,6 +165,9 @@ namespace MachineBrigade.Game.Hud
             ["event.groundChange.tide.low.warn"] = ("The tide is going out: the marked shoal opens in {seconds} s", "Thủy triều đang rút: bãi cạn được đánh dấu sẽ lộ ra sau {seconds} giây"),
             ["event.groundChange.tide.low.start"] = ("Low tide: the shoal is dry, the beach road is open", "Triều rút: bãi cạn đã khô, đường bờ biển đã mở"),
             ["radio.linh.ev.groundChange.tide.low.warn"] = ("The water is going back off the sand. The beach road opens in a moment.", "Nước đang rút khỏi bãi cát. Lát nữa đường bờ biển sẽ mở."),
+            ["event.groundChange.bridge.down.warn"] = ("Charges on the marked bridge: it falls in {seconds} s, get off it", "Có thuốc nổ trên cây cầu được đánh dấu: cầu sập sau {seconds} giây, rời khỏi cầu"),
+            ["event.groundChange.bridge.down.start"] = ("The bridge is down: cross by the other bridge or the ford", "Cầu đã sập: qua sông bằng cây cầu kia hoặc chỗ nước cạn"),
+            ["radio.linh.ev.groundChange.bridge.down.warn"] = ("Their sappers are under the east bridge. It is going into the river.", "Công binh của chúng đang ở dưới cầu phía đông. Cây cầu sắp đổ xuống sông."),
         };
     }
 }

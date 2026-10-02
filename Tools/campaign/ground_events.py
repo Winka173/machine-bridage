@@ -121,3 +121,16 @@ nav_site('c1m01', {'id': 'shoal', 'initial': 'low', 'states': [
     {'name': 'low'},
     {'name': 'high', 'blocks': [{'x': 66, 'z': -130, 'w': 152, 'd': 12}]}]})
 events.add('c1m01', 'tide_turn')
+
+
+# ---------------------------------------------------------------------- Cầu sập (the bridge falls): i2m03
+# Lý Hàn's sappers bring the east bridge down at 150 s of the hold (x 122 over the river, z -25..25): the great bridge (the point
+# held) and the west ford stay. A time mark only: the sheet's "or when shot enough" wants a bridge with health, and the bridge
+# is a prop the game never damages (1,000,000 hp), so it is left out. c7m17 (the capital) is reversed: refused by the build.
+# The interlude plays three events at most: the bridge takes nightfall's place (hunters, chapter 14's signature, and the
+# Accord's relief stay).
+library(E('bridge_collapse', 'GroundChange', {'at': 150}, {'navSite': 'east_bridge', 'navState': 'down', 'text': 'bridge'}, lead=10))
+nav_site('i2m03', {'id': 'east_bridge', 'initial': 'standing', 'states': [
+    {'name': 'standing'},
+    {'name': 'down', 'blocks': [{'x': 122, 'z': 0, 'w': 9, 'd': 50}]}]})
+replace_event('i2m03', 'nightfall', 'bridge_collapse')
