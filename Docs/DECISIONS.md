@@ -13927,3 +13927,12 @@ known_good cross-checked against round 1 (`Machine_Brigade_Can_bang.xlsx`, sheet
 round 1's "Xem lại" rows were applied by mistake): sky_gunship 4400, thermobaric_launcher 1980, siege_tank 3300,
 light_tank 9 m/s, vbied 13, flame_tank 6.5, engineer_vehicle 7: every known_good matches. balance.json keys changed:
 `vehicles[sky_gunship|thermobaric_launcher|siege_tank].hp`, `vehicles[light_tank|vbied|flame_tank|engineer_vehicle].speed`.
+
+## Prompt 29 L4 (cloud, 2026-10-02): E1 and the B1 repricing
+
+- **E1 (D9).** `economy.bankByMode` = { tag: [from, to] } written by the apply tool from the manifest (Conquest,
+  Deathmatch, KingOfTheHill, Assault, Defend, Endless 30 -> 45; Siege 40 -> 55; Survival 30 -> 40; BossRush 45 -> 60).
+  `SimWorld.EnableEconomy` moves a side's bank only when its mode gave it the "from" value (`Catalog.BankFor`), so the
+  siege defender, the Sandbox and the campaign keep theirs. Vault is derived (mode bank + okoye's 15): 45 -> 60 follows
+  without a write. The supply threshold (E2) is HOLD and untouched. E1 could not be cross-checked against the v1 file
+  (it does not exist; logged).

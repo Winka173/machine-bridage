@@ -354,6 +354,8 @@ namespace MachineBrigade.Sim
             if (economy.BaseArmyCap <= 0) economy.BaseArmyCap = Catalog.ArmyCapFor(ModeTag);
             // The enemy of the big modes may field more (the player keeps the ordinary ceiling).
             if (economy.Team == 1) economy.VehicleCap = Catalog.VehicleCapFor(ModeTag);
+            // Prompt 29 E1: the mode's bank from the data, where the mode gave this side the bank the manifest moved.
+            economy.BaseBank = Catalog.BankFor(ModeTag, economy.BaseBank);
             Economy.Enable(economy);
             // Prompt 22 F: a commander set before the economy was enabled.
             ApplyCommander(economy);

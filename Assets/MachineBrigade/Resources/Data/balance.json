@@ -12,7 +12,7 @@
   "toughness": { "vehicles": 2.2, "bosses": 0.85 },
   "firepower": { "strikes": 2.0, "propBlasts": 1.5, "vehicleBlasts": 2.0 },
   // Play-test 6 (DECISIONS 21G): income 0.95 -> 0.9: the owner found the economy a little strong (battles flooded).
-  "economy": { "income": 0.9, "supply": 1.05,
+  "economy": { "income": 0.9, "supply": 1.05, "bankByMode": { "Conquest": [30, 45], "Deathmatch": [30, 45], "KingOfTheHill": [30, 45], "Assault": [30, 45], "Siege": [40, 55], "Defend": [30, 45], "Endless": [30, 45], "Survival": [30, 40], "BossRush": [45, 60] },
     // Army supply per mode, in CP: upkeep starts at 1.5x it (40 x 1.05 x 1.5: about 63 CP, eight
     // to ten mid-tier vehicles). A mode that sets its own (Siege, Defend, a campaign mission) keeps it.
     // The campaign stays at its tuned 24 until its rework; Survival at 30 (more would make the waves easy).

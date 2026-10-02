@@ -173,3 +173,9 @@
 | B0-vbied | OK | 1 rows |
 | B0-flame_tank | OK | 1 rows |
 | B0-engineer_vehicle | OK | 1 rows |
+
+## Run apply: E1 (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| E1 | OK | 7 rows |

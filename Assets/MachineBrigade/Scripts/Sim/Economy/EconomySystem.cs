@@ -76,7 +76,14 @@ namespace MachineBrigade.Sim.Economy
         /// <summary>Extra CP per second, set by the game mode (for example per held objective).</summary>
         public float Bonus { get; set; }
 
-        private readonly float _bank;
+        private float _bank;
+
+        /// <summary>The bank before the commander's bonus (prompt 29 E1 moves it by mode).</summary>
+        internal float BaseBank
+        {
+            get => _bank;
+            set => _bank = value;
+        }
 
         /// <summary>The most CP the side can hold (a commander may raise it: Vault's 30 to 45).</summary>
         public float Bank => _bank + (Commander?.BankBonus ?? 0f);
