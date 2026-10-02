@@ -233,7 +233,7 @@ LANDMARK_MODELS = {
     'station_clock': ('dress_landmark_station_clock', 22.0, 12.0),
     'cooling_tower': ('dress_landmark_cooling_tower', 22.0, 26.0),
     'dam_wall': ('dress_landmark_dam_wall', 64.0, 7.0),
-    'survey_beacon': ('dress_landmark_survey_beacon', 6.0, 6.0),
+    'survey_beacon': ('dress_landmark_survey_beacon', 6.0, 6.0),  # thin (THIN_MODELS): may stand on drivable ground
     'clock_tower': ('dress_landmark_clock_tower', 7.0, 7.0),
 }
 # View-only landmarks no data entry has: Ironport's line c4m12.05 sees "the lighthouse" out on its SEA side, at the end of
@@ -243,6 +243,8 @@ EXTRA_LANDMARKS = {
                       square=True)],
 }
 WATER_PROPS = {'river_water'}
+# Open lattices and masts: a vehicle passing through one hardly shows, so drivable ground under them costs 1, not 10.
+THIN_MODELS = {'survey_beacon', 'radio_mast'}
 LANDMARK_REACH = 140.0  # metres from the data's place the search goes (nearer wins; drivable ground costs more)
 LANDMARK_STEP = 3.0
 LANDMARK_DISTANCE_COST = 0.35  # per metre from the data's place; a drivable cell costs 10
@@ -322,7 +324,7 @@ class SpotSearch:
                                       for z in range(g.nz)])
         return self._bad, self._wet, self._walk
 
-    def score(self, cx, cz, w, d, water_front):
+    def score(self, cx, cz, w, d, water_front, walk_cost=10.0):
         """(cost, drivable cells) of a footprint centred at (cx, cz), or None when it may not stand there."""
         out = ev.beyond(self.m, cx, cz)
         if out > 30:
@@ -357,9 +359,11 @@ class SpotSearch:
                         return None
         if water_front and wet < cells * 0.6:
             return None
-        return walk * 10.0 + (25.0 if out > 0 else 0.0), walk
+        if not water_front and wet:
+            return None  # only the dam stands in the water
+        return walk * walk_cost + (25.0 if out > 0 else 0.0), walk
 
-    def best(self, hx, hz, w, d, water_front=False):
+    def best(self, hx, hz, w, d, water_front=False, walk_cost=10.0):
         best = None
         r = int(LANDMARK_REACH / LANDMARK_STEP)
         for j in range(-r, r + 1):
@@ -370,7 +374,7 @@ class SpotSearch:
                 cx, cz = hx + i * LANDMARK_STEP, hz + j * LANDMARK_STEP
                 for yaw in ((0.0,) if water_front else (0.0, 90.0)):
                     fw, fd = (w, d) if yaw == 0.0 else (d, w)
-                    sc = self.score(cx, cz, fw, fd, water_front)
+                    sc = self.score(cx, cz, fw, fd, water_front, walk_cost)
                     if sc is None:
                         continue
                     cost = sc[0] + dist * LANDMARK_DISTANCE_COST
@@ -413,7 +417,8 @@ def landmark_spots(report=None):
             else:
                 model = lm['model']
                 w, d, _ = props.get(model, (8.0, 8.0, True))
-            spot = search.best(lm['x'], lm['z'], w, d, water_front=lm['model'] == 'dam_wall')
+            spot = search.best(lm['x'], lm['z'], w, d, water_front=lm['model'] == 'dam_wall',
+                               walk_cost=1.0 if lm['model'] in THIN_MODELS else 10.0)
             if spot is None:
                 if report is not None:
                     report.append(f'{f.stem}: {lm["id"]} ({model}) found no spot; not stood')

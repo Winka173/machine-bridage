@@ -16654,11 +16654,14 @@ edges data (a test field) keeps the theme's old picture.
   footprint touches no prop's own footprint (water excepted), no capture circle (+4 m), rally (22 m), base slot or HQ,
   entry gate (6 m), road (+1.5 m) or rail (4.5 m), no other landmark, and beyond the rectangle (at most 30 m out) no edge
   sea, river, road or rail running out and no corner piece; the cost is 10 per drivable 2 m cell under it + 0.35 per metre
-  from the data's place (+25 beyond the edge). So a landmark stands in an outline bay, beside its square or just past the
-  edge rather than on ground units drive through: 67 of 69 stand on no drivable cell; Ironport Siege's water tower (1
-  cell) and Salt Flats Siege's survey beacon (3 cells, a thin mast) touch some. The dam face needs 60 % of it on the
-  reservoir's water and faces it. The data's place (the dialogue's) is unchanged; the furthest models stand 120-123 m
-  from it (Red Rock's church, Ember Ridge's cooling tower: their places are the town's capture circle, with no room
-  nearer).
+  from the data's place (+25 beyond the edge); the water is the dam's only (it needs 60 % of its face on the reservoir and
+  faces it; nothing else may touch water). Open masts (the survey beacon, radio masts) cost 1 per drivable cell: a
+  vehicle passing through a lattice hardly shows, so they stay 12-23 m from their place. So the solid landmarks stand in
+  an outline bay, by a building or just past the edge rather than on ground units drive through: 60 of the 69 stand on no
+  drivable cell; the rest are masts (2-6 cells) and Ironport Siege's water tower (1 cell). The data's place (the
+  dialogue's) is unchanged; where the town's capture circle and the city leave no room near it the model stands far off:
+  Red Rock's church and Capital's ministry tower (Siege) 120 m, Ember Ridge's cooling tower 123 m, Coral Keys' lighthouse
+  129 m, Capital's palace 138 m (all on the map's outskirts, seen from the widest zoom). Moving them nearer means making
+  them gameplay props (see above) or a map layout change: left to the lead.
 - **View** (`Views/Surroundings.Landmarks.cs`): instanced like the scenery, on flat ground inside the map and on the outer
   ground's height beyond it; the scatter (bays, ring, biome clutter) keeps off each landmark's radius.
