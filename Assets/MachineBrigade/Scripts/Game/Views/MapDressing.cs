@@ -105,7 +105,8 @@ namespace MachineBrigade.Game.Views
     public sealed class DressingLandmark
     {
         public string map, id, model;
-        public float x, z, yaw, scale;
+        /// <summary><see cref="radius"/>: half its footprint's diagonal (the scatter keeps off it).</summary>
+        public float x, z, yaw, scale, radius;
         public bool onPlay;
     }
 

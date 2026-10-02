@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 511,
+ "count": 518,
  "budgets": {
   "ground": {
    "normal": {
@@ -2301,6 +2301,28 @@
     "dress_sea_surf: new (180 triangles)",
     "dress_sea_tanker_far: new (68 triangles)",
     "dress_sea_whitecap: new (60 triangles)"
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "dress_landmark_clock_tower",
+    "dress_landmark_cooling_tower",
+    "dress_landmark_dam_wall",
+    "dress_landmark_harbour_light",
+    "dress_landmark_palace_dome",
+    "dress_landmark_station_clock",
+    "dress_landmark_survey_beacon"
+   ],
+   "reason": "Prompt 33 L3 view: landmark models no map prop is (new, decoration)",
+   "changes": [
+    "dress_landmark_clock_tower: new (492 triangles)",
+    "dress_landmark_cooling_tower: new (540 triangles)",
+    "dress_landmark_dam_wall: new (204 triangles)",
+    "dress_landmark_harbour_light: new (492 triangles)",
+    "dress_landmark_palace_dome: new (868 triangles)",
+    "dress_landmark_station_clock: new (484 triangles)",
+    "dress_landmark_survey_beacon: new (224 triangles)"
    ]
   }
  ],
@@ -18465,6 +18487,528 @@
    "nodeNames": [
     "Moss",
     "Rock"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_landmark_clock_tower": {
+   "file": "dress_landmark_clock_tower.glb",
+   "fileBytes": 36604,
+   "sha1": "64015d7c78f52dc4",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 6,
+   "meshes": 6,
+   "materials": 5,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 6,
+   "submeshes": 6,
+   "materialSlots": 6,
+   "materialsUsed": 5,
+   "triangles": 492,
+   "vertices": 614,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 14,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -3.5,
+    0.0,
+    -3.5
+   ],
+   "boundsMax": [
+    3.5,
+    28.2,
+    3.5
+   ],
+   "size": [
+    7.0,
+    7.0,
+    28.2
+   ],
+   "center": [
+    0.0,
+    14.1,
+    0.0
+   ],
+   "structureHash": "0e44d2e130080a5e",
+   "color0": {
+    "mean": 0.6539,
+    "min": 0.2107,
+    "max": 0.9987,
+    "p05": 0.2729,
+    "p95": 0.9898,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Belfry",
+    "Clock",
+    "Hands",
+    "Roof",
+    "Shaft",
+    "Spire"
+   ],
+   "category": "structure",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
+  },
+  "dress_landmark_cooling_tower": {
+   "file": "dress_landmark_cooling_tower.glb",
+   "fileBytes": 30356,
+   "sha1": "7e9d2aca0d268e00",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 5,
+   "meshes": 5,
+   "materials": 5,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 5,
+   "submeshes": 5,
+   "materialSlots": 5,
+   "materialsUsed": 5,
+   "triangles": 540,
+   "vertices": 488,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 6,
+   "openEdges": 120,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -11.0,
+    0.0,
+    -17.0
+   ],
+   "boundsMax": [
+    11.0,
+    30.0,
+    11.0
+   ],
+   "size": [
+    28.0,
+    22.0,
+    30.0
+   ],
+   "center": [
+    0.0,
+    15.0,
+    -3.0
+   ],
+   "structureHash": "3400ef0d98317c9f",
+   "color0": {
+    "mean": 0.762,
+    "min": 0.2216,
+    "max": 0.8216,
+    "p05": 0.4273,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Band",
+    "House",
+    "Inside",
+    "Pipe",
+    "Shell"
+   ],
+   "category": "structure",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "structure"
+  },
+  "dress_landmark_dam_wall": {
+   "file": "dress_landmark_dam_wall.glb",
+   "fileBytes": 23868,
+   "sha1": "6864bfc9abd2e986",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 4,
+   "meshes": 4,
+   "materials": 4,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 4,
+   "submeshes": 4,
+   "materialSlots": 4,
+   "materialsUsed": 4,
+   "triangles": 204,
+   "vertices": 406,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 17,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -32.0,
+    -3.0,
+    -6.5
+   ],
+   "boundsMax": [
+    32.0,
+    3.9,
+    5.45
+   ],
+   "size": [
+    11.95,
+    64.0,
+    6.9
+   ],
+   "center": [
+    0.0,
+    0.45,
+    -0.525
+   ],
+   "structureHash": "c5b2eb3a02848e8c",
+   "color0": {
+    "mean": 0.6411,
+    "min": 0.2687,
+    "max": 1.0,
+    "p05": 0.2816,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Face",
+    "Gates",
+    "Lamps",
+    "Parapet"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_landmark_harbour_light": {
+   "file": "dress_landmark_harbour_light.glb",
+   "fileBytes": 41004,
+   "sha1": "1e88b61d8b80f77c",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 6,
+   "meshes": 6,
+   "materials": 6,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 6,
+   "submeshes": 6,
+   "materialSlots": 6,
+   "materialsUsed": 6,
+   "triangles": 492,
+   "vertices": 704,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 8,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -7.4274,
+    -3.0878,
+    -5.8458
+   ],
+   "boundsMax": [
+    7.3264,
+    17.8,
+    5.6647
+   ],
+   "size": [
+    11.511,
+    14.754,
+    20.888
+   ],
+   "center": [
+    -0.05,
+    7.356,
+    -0.091
+   ],
+   "structureHash": "18f54681eba3284b",
+   "color0": {
+    "mean": 0.7574,
+    "min": 0.3271,
+    "max": 1.0,
+    "p05": 0.456,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Bands",
+    "Gallery",
+    "Head",
+    "Lantern",
+    "Rock",
+    "Tower"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_landmark_palace_dome": {
+   "file": "dress_landmark_palace_dome.glb",
+   "fileBytes": 53300,
+   "sha1": "9eee2b73017e1943",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 4,
+   "meshes": 4,
+   "materials": 4,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 4,
+   "submeshes": 4,
+   "materialSlots": 4,
+   "materialsUsed": 4,
+   "triangles": 868,
+   "vertices": 984,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 20,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -12.2,
+    0.0,
+    -10.1
+   ],
+   "boundsMax": [
+    12.2,
+    22.7,
+    7.3
+   ],
+   "size": [
+    17.4,
+    24.4,
+    22.7
+   ],
+   "center": [
+    0.0,
+    11.35,
+    -1.4
+   ],
+   "structureHash": "d5bdf2b6706083ba",
+   "color0": {
+    "mean": 0.5675,
+    "min": 0.1135,
+    "max": 0.9987,
+    "p05": 0.1912,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Dome",
+    "Lantern",
+    "Walls",
+    "Windows"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_landmark_station_clock": {
+   "file": "dress_landmark_station_clock.glb",
+   "fileBytes": 34200,
+   "sha1": "3e29d1ef908c0570",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 5,
+   "meshes": 5,
+   "materials": 5,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 5,
+   "submeshes": 5,
+   "materialSlots": 5,
+   "materialsUsed": 5,
+   "triangles": 484,
+   "vertices": 580,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 12,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -11.3,
+    0.0,
+    -6.2
+   ],
+   "boundsMax": [
+    11.2,
+    21.0,
+    6.2
+   ],
+   "size": [
+    12.4,
+    22.5,
+    21.0
+   ],
+   "center": [
+    -0.05,
+    10.5,
+    -0.0
+   ],
+   "structureHash": "609dce947659b8be",
+   "color0": {
+    "mean": 0.6028,
+    "min": 0.1339,
+    "max": 0.981,
+    "p05": 0.2143,
+    "p95": 0.8216,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Brick",
+    "Clock",
+    "Glass",
+    "Hands",
+    "Roof"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_landmark_survey_beacon": {
+   "file": "dress_landmark_survey_beacon.glb",
+   "fileBytes": 24696,
+   "sha1": "766af4d8d1a4bc00",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 5,
+   "meshes": 5,
+   "materials": 5,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 5,
+   "submeshes": 5,
+   "materialSlots": 5,
+   "materialsUsed": 5,
+   "triangles": 224,
+   "vertices": 396,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 14,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -3.4,
+    -0.0271,
+    -3.4
+   ],
+   "boundsMax": [
+    3.4,
+    15.45,
+    3.4
+   ],
+   "size": [
+    6.8,
+    6.8,
+    15.477
+   ],
+   "center": [
+    0.0,
+    7.711,
+    0.0
+   ],
+   "structureHash": "b36edf4c5aa34af9",
+   "color0": {
+    "mean": 0.7307,
+    "min": 0.3315,
+    "max": 0.8137,
+    "p05": 0.552,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Mast",
+    "Pad",
+    "Panel",
+    "Target",
+    "Top"
    ],
    "category": "scenery",
    "hd": false,

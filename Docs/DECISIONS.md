@@ -16634,3 +16634,31 @@ edges data (a test field) keeps the theme's old picture.
 - Not done: the outline's bays inside the square on a SEA side stay the map's (its ground covers the whole square; Coral
   Keys' sea inside the square is the map view's); shore CLIFF draws stacks only (no raised headland beyond the land
   side); level crossings have no barrier model.
+
+### L3 view: the landmark models
+
+- **Which**: the 66 landmark entries with a `"model"` on the 100 map files (a landmark no prop of that file is) plus one
+  view-only entry, Ironport's lighthouse out at sea (`ironport.outer_lighthouse`, square files only: the line c4m12.05
+  "the whole wall to the lighthouse"; it stands at (-205, 166), the quay line carried on west, on a breakwater head). Six
+  new models (`Tools/blender/mb_p33_landmarks.py`, registered last): palace_dome 868 triangles, station_clock 484,
+  cooling_tower 540, dam_wall 204, survey_beacon 224, clock_tower 492, and harbour_light 492; the other entries (church,
+  water_tower, lighthouse, radar_station, radar_dome, radio_mast, factory, silo, hangar, skyscraper, gantry_crane,
+  ruin_tower, volcanic_cliff: a Siege or long file lacking the prop its other files have) draw that prop's own GLB as a
+  look (no prop, no collider).
+- **Decoration, not gameplay**: none is made a gameplay prop. A blocking prop would change the simulation (routes,
+  sight, cover), break the versus files' symmetry (one prop on one half), and every map file is generated (build_maps.py,
+  then lane B's transit / edges / terrain passes): a prop added after them would be lost on the next build. The brief's
+  fallback (decoration) is taken; check_access.py and the map audit are unchanged since no map file changed.
+- **Where** (`Tools/maps/map_dressing.py` SpotSearch, written to `map_dressing.json` `"landmarks"`: map file, id, model,
+  x, z, yaw, scale, radius, onPlay): the nearest spot within 140 m of the data's place (3 m lattice, yaw 0 or 90) whose
+  footprint touches no prop's own footprint (water excepted), no capture circle (+4 m), rally (22 m), base slot or HQ,
+  entry gate (6 m), road (+1.5 m) or rail (4.5 m), no other landmark, and beyond the rectangle (at most 30 m out) no edge
+  sea, river, road or rail running out and no corner piece; the cost is 10 per drivable 2 m cell under it + 0.35 per metre
+  from the data's place (+25 beyond the edge). So a landmark stands in an outline bay, beside its square or just past the
+  edge rather than on ground units drive through: 67 of 69 stand on no drivable cell; Ironport Siege's water tower (1
+  cell) and Salt Flats Siege's survey beacon (3 cells, a thin mast) touch some. The dam face needs 60 % of it on the
+  reservoir's water and faces it. The data's place (the dialogue's) is unchanged; the furthest models stand 120-123 m
+  from it (Red Rock's church, Ember Ridge's cooling tower: their places are the town's capture circle, with no room
+  nearer).
+- **View** (`Views/Surroundings.Landmarks.cs`): instanced like the scenery, on flat ground inside the map and on the outer
+  ground's height beyond it; the scatter (bays, ring, biome clutter) keeps off each landmark's radius.

@@ -97,6 +97,7 @@ namespace MachineBrigade.Game.Views
             // Prompt 33 L2 (view): the edge types first (the sea, the rivers and lines running out, the corner pieces'
             // ground), then L6's visual relief past the edge (fields, the range and the scatter all stand on them).
             PrepareEdges(world);
+            PrepareLandmarks(world);
             BuildRelief();
             var fields = theme.Fields ? Fields() : new List<Rect>();
             _texture = PaintOuter(theme, fields);
@@ -155,6 +156,8 @@ namespace MachineBrigade.Game.Views
             ScatterDressing(models, world, fields);
             // Prompt 33 L2 (view): the corner pieces, the sea side, the edge types' sets and the rails.
             DressEdges(models, world, fields);
+            // Prompt 33 L3 (view): the landmark models no map prop is, where map_dressing.py found room (decoration).
+            PlaceLandmarks(models, world);
             var total = 0;
             foreach (var entry in _instances)
             {
@@ -176,7 +179,7 @@ namespace MachineBrigade.Game.Views
                 InstancedTriangles += mesh.GetIndexCount(submesh) / 3 * entry.Value.Count;
             }
             _instances.Clear();
-            Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances ({DressingPlaced} biome and edge dressing, {_relief.Count} relief, {CornersPlaced} corner pieces), " +
+            Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances ({DressingPlaced} biome and edge dressing, {_relief.Count} relief, {CornersPlaced} corner pieces, {LandmarksPlaced} landmarks), " +
                       $"ring {_zones.RingX}/{_zones.RingZ} m, band {_zones.EdgeBand} m, seed {_seed}, instancing supported: {SystemInfo.supportsInstancing}");
         }
 
@@ -260,7 +263,8 @@ namespace MachineBrigade.Game.Views
         private bool Outside(Vector2 p, float margin) => Mathf.Abs(p.x - _centre.x) > _halfX + margin || Mathf.Abs(p.y - _centre.y) > _halfZ + margin;
 
         private bool NearRiver(Vector2 p, float margin) =>
-            (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin) || OnEdgeFeature(p, margin);
+            (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin) || OnEdgeFeature(p, margin) ||
+            (_landmarkZones.Count > 0 && InLandmark(p, margin));
 
         /// <summary>Rough terrain height at a ground point (0 on the flat around the map).</summary>
         private float Height(Vector2 p)

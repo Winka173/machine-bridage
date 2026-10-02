@@ -627,6 +627,34 @@
     "file": "dress_jungle_vine_rock.glb",
     "triangles": 120
   },
+  "dress_landmark_clock_tower": {
+    "file": "dress_landmark_clock_tower.glb",
+    "triangles": 492
+  },
+  "dress_landmark_cooling_tower": {
+    "file": "dress_landmark_cooling_tower.glb",
+    "triangles": 540
+  },
+  "dress_landmark_dam_wall": {
+    "file": "dress_landmark_dam_wall.glb",
+    "triangles": 204
+  },
+  "dress_landmark_harbour_light": {
+    "file": "dress_landmark_harbour_light.glb",
+    "triangles": 492
+  },
+  "dress_landmark_palace_dome": {
+    "file": "dress_landmark_palace_dome.glb",
+    "triangles": 868
+  },
+  "dress_landmark_station_clock": {
+    "file": "dress_landmark_station_clock.glb",
+    "triangles": 484
+  },
+  "dress_landmark_survey_beacon": {
+    "file": "dress_landmark_survey_beacon.glb",
+    "triangles": 224
+  },
   "dress_sea_island_haze": {
     "file": "dress_sea_island_haze.glb",
     "triangles": 100

@@ -326,7 +326,7 @@ namespace MachineBrigade.Game.Views
             {
                 var p = _centre + new Vector2((float)(rng.NextDouble() * 2 - 1) * halfX, (float)(rng.NextDouble() * 2 - 1) * halfZ);
                 if (_field.HasOutline && _field.Distance(p) > -3f) continue;
-                if (!PlayClear(world, p)) continue;
+                if (!PlayClear(world, p) || InLandmark(p, 1f)) continue;
                 var model = set[rng.Next(set.Count)];
                 Add(models, model, p, (float)rng.NextDouble() * 360f, 0.55f + (float)rng.NextDouble() * 0.35f, 0f, shadowless: true);
                 placed++;

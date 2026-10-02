@@ -24,6 +24,10 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import check_access as ca  # noqa: E402
+import edge_view as ev  # noqa: E402
+
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'Assets/MachineBrigade/Resources/Data/map_dressing.json'
 MAPS = ROOT / 'Assets/MachineBrigade/Resources/Data/maps'
@@ -221,6 +225,212 @@ def edge_models(edges):
     out += [edges['rail']['track'], edges['rail']['portal']]
     return out
 
+# Prompt 33 L3 (view): the landmarks data's "model" (a landmark no map prop is) -> the decoration model and its footprint
+# (w along local X, d along local Z, metres). A model not listed here is a prop's own look (church, water_tower ...):
+# its GLB is drawn as it is (no collider), at its balance.json footprint.
+LANDMARK_MODELS = {
+    'palace_dome': ('dress_landmark_palace_dome', 24.0, 20.0),
+    'station_clock': ('dress_landmark_station_clock', 22.0, 12.0),
+    'cooling_tower': ('dress_landmark_cooling_tower', 22.0, 26.0),
+    'dam_wall': ('dress_landmark_dam_wall', 64.0, 7.0),
+    'survey_beacon': ('dress_landmark_survey_beacon', 6.0, 6.0),
+    'clock_tower': ('dress_landmark_clock_tower', 7.0, 7.0),
+}
+# View-only landmarks no data entry has: Ironport's line c4m12.05 sees "the lighthouse" out on its SEA side, at the end of
+# the quay line carried on west beyond the map (square files: their north side is the harbour's sea).
+EXTRA_LANDMARKS = {
+    'ironport': [dict(id='ironport.outer_lighthouse', model='dress_landmark_harbour_light', x=-205.0, z=166.0, yaw=0.0,
+                      square=True)],
+}
+WATER_PROPS = {'river_water'}
+LANDMARK_REACH = 140.0  # metres from the data's place the search goes (nearer wins; drivable ground costs more)
+LANDMARK_STEP = 3.0
+LANDMARK_DISTANCE_COST = 0.35  # per metre from the data's place; a drivable cell costs 10
+KEEP_POINT, KEEP_RALLY, KEEP_GATE, KEEP_ROAD, KEEP_RAIL = 4.0, 22.0, 6.0, 1.5, 4.5
+
+
+class SpotSearch:
+    """Where a landmark model can stand on one map file: off every prop's footprint (the water's excepted), the
+    capture circles, the rallies, the bases' slots, the entry gates, the roads and the rails, and off the edge sea; as
+    little of it on drivable ground as possible (decoration: units would drive through it), near the data's place."""
+
+    def __init__(self, m, tables):
+        self.m = m
+        props, footprint, biggest = tables
+        self.bare = ca.build_grid(m, props, footprint, fill=False)
+        full = ca.build_grid(m, props, footprint, fill=True, biggest=biggest)
+        g = self.bare
+        self.slot = [[full.blocked[z][x] and not g.blocked[z][x] for x in range(g.nx)] for z in range(g.nz)]
+        self.prop = [[False] * g.nx for _ in range(g.nz)]
+        self.water = [[False] * g.nx for _ in range(g.nz)]
+        for p in m['props']:
+            w, d, blocks = props[p['def']]
+            if p.get('rot', 0) % 180 == 90:
+                w, d = d, w
+            water = p['def'] in WATER_PROPS
+            if not blocks and not water:
+                continue
+            a0, b0 = g.cell(p['x'] - w / 2 + .01, p['z'] - d / 2 + .01)
+            a1, b1 = g.cell(p['x'] + w / 2 - .01, p['z'] + d / 2 - .01)
+            for gz in range(max(0, b0), min(g.nz - 1, b1) + 1):
+                for gx in range(max(0, a0), min(g.nx - 1, a1) + 1):
+                    (self.water if water else self.prop)[gz][gx] = True
+        self.keep = [[False] * g.nx for _ in range(g.nz)]
+        circles = [(pt['x'], pt['z'], pt.get('radius', 12) + KEEP_POINT) for pt in m.get('points', [])]
+        circles += [(t['x'], t['z'], KEEP_RALLY) for t in m.get('teams', [])]
+        circles += [(e['x'], e['z'], KEEP_GATE) for e in m.get('entryGates', [])]
+        segs = []
+        for road in m.get('roads', []):
+            pts = list(zip(road['points'][0::2], road['points'][1::2]))
+            segs += [(a, b, road['width'] / 2 + KEEP_ROAD) for a, b in zip(pts, pts[1:])]
+        for r in m.get('rails', []):
+            pts = list(zip(r['points'][0::2], r['points'][1::2]))
+            segs += [(a, b, KEEP_RAIL) for a, b in zip(pts, pts[1:])]
+        for gz in range(g.nz):
+            for gx in range(g.nx):
+                x, z = g.centre(gx, gz)
+                if any((x - cx) ** 2 + (z - cz) ** 2 < r * r for cx, cz, r in circles) or \
+                        any(ev.seg_dist(x, z, a[0], a[1], b[0], b[1]) < h for a, b, h in segs):
+                    self.keep[gz][gx] = True
+        self.lines = ev.lines(m)
+        self.corners = [(c['x'], c['z']) for c in (m.get('edges') or {}).get('corners', [])]
+        self.taken = []  # footprints of the landmarks already stood on this file (x0, z0, x1, z1)
+
+    @staticmethod
+    def _table(grid):
+        """Summed-area table of a boolean grid: (nz + 1) x (nx + 1)."""
+        nz, nx = len(grid), len(grid[0])
+        t = [[0] * (nx + 1) for _ in range(nz + 1)]
+        for z in range(nz):
+            row, acc = grid[z], 0
+            for x in range(nx):
+                acc += row[x]
+                t[z + 1][x + 1] = t[z][x + 1] + acc
+        return t
+
+    @staticmethod
+    def _sum(t, a0, b0, a1, b1):
+        return t[b1 + 1][a1 + 1] - t[b0][a1 + 1] - t[b1 + 1][a0] + t[b0][a0]
+
+    def tables(self):
+        if getattr(self, '_bad', None) is None:
+            g = self.bare
+            self._bad = self._table([[self.keep[z][x] or self.prop[z][x] or self.slot[z][x] for x in range(g.nx)]
+                                     for z in range(g.nz)])
+            self._wet = self._table(self.water)
+            self._walk = self._table([[not g.blocked[z][x] and not self.water[z][x] for x in range(g.nx)]
+                                      for z in range(g.nz)])
+        return self._bad, self._wet, self._walk
+
+    def score(self, cx, cz, w, d, water_front):
+        """(cost, drivable cells) of a footprint centred at (cx, cz), or None when it may not stand there."""
+        out = ev.beyond(self.m, cx, cz)
+        if out > 30:
+            return None
+        for x0, z0, x1, z1 in self.taken:
+            if cx - w / 2 - 2 < x1 and cx + w / 2 + 2 > x0 and cz - d / 2 - 2 < z1 and cz + d / 2 + 2 > z0:
+                return None
+        g = self.bare
+        bad, wet_t, walk_t = self.tables()
+        a0, b0 = g.cell(cx - w / 2 + 1, cz - d / 2 + 1)
+        a1, b1 = g.cell(cx + w / 2 - 1, cz + d / 2 - 1)
+        cells = (a1 - a0 + 1) * (b1 - b0 + 1)
+        ia0, ib0, ia1, ib1 = max(a0, 0), max(b0, 0), min(a1, g.nx - 1), min(b1, g.nz - 1)
+        walk = wet = 0
+        if ia0 <= ia1 and ib0 <= ib1:
+            if self._sum(bad, ia0, ib0, ia1, ib1):
+                return None
+            walk = self._sum(walk_t, ia0, ib0, ia1, ib1)
+            wet = self._sum(wet_t, ia0, ib0, ia1, ib1)
+        if (ia0, ib0, ia1, ib1) != (a0, b0, a1, b1):
+            # The part beyond the rectangle: off the edge sea, the rivers and lines running out, the corner pieces.
+            for gz in range(b0, b1 + 1, 2):
+                for gx in range(a0, a1 + 1, 2):
+                    if 0 <= gx < g.nx and 0 <= gz < g.nz:
+                        continue
+                    x, z = g.centre(gx, gz)
+                    if ev.edge_sea(self.m, x, z) or ev.river_distance(self.m, x, z) < 2:
+                        return None
+                    if any(ev.seg_dist(x, z, ln[0], ln[1], ln[2], ln[3]) < ln[4] + 2 for ln in self.lines):
+                        return None
+                    if any((x - qx) ** 2 + (z - qz) ** 2 < 26 * 26 for qx, qz in self.corners):
+                        return None
+        if water_front and wet < cells * 0.6:
+            return None
+        return walk * 10.0 + (25.0 if out > 0 else 0.0), walk
+
+    def best(self, hx, hz, w, d, water_front=False):
+        best = None
+        r = int(LANDMARK_REACH / LANDMARK_STEP)
+        for j in range(-r, r + 1):
+            for i in range(-r, r + 1):
+                dist = math.hypot(i, j) * LANDMARK_STEP
+                if dist > LANDMARK_REACH:
+                    continue
+                cx, cz = hx + i * LANDMARK_STEP, hz + j * LANDMARK_STEP
+                for yaw in ((0.0,) if water_front else (0.0, 90.0)):
+                    fw, fd = (w, d) if yaw == 0.0 else (d, w)
+                    sc = self.score(cx, cz, fw, fd, water_front)
+                    if sc is None:
+                        continue
+                    cost = sc[0] + dist * LANDMARK_DISTANCE_COST
+                    if best is None or cost < best[0]:
+                        best = (cost, cx, cz, self.facing_water(cx, cz, fd) if water_front else yaw, sc[1])
+        return best
+
+    def facing_water(self, cx, cz, d):
+        """A dam face falls towards local +Z: the yaw (0 or 180) that puts more water ahead of its parapet."""
+        g = self.bare
+
+        def wet(sign):
+            n = 0
+            for k in range(1, 6):
+                gx, gz = g.cell(cx, cz + sign * (d / 2 + k * 2))
+                n += 0 <= gx < g.nx and 0 <= gz < g.nz and self.water[gz][gx]
+            return n
+        return 0.0 if wet(1) >= wet(-1) else 180.0
+
+
+def landmark_spots(report=None):
+    """Every map file's landmark models where they can stand (map_dressing.json "landmarks")."""
+    tables = ca.balance()
+    props = tables[0]
+    out = []
+    for f in sorted(MAPS.glob('*.json')):
+        m = ca.load(f)
+        fam = f.stem
+        for mode in MODES:
+            if fam.endswith(mode):
+                fam = fam[:-len(mode)]
+        wanted = [lm for lm in m.get('landmarks', []) if lm.get('model')]
+        extras = [e for e in EXTRA_LANDMARKS.get(fam, []) if not (e.get('square') and m.get('bounds'))]
+        if not wanted and not extras:
+            continue
+        search = SpotSearch(m, tables) if wanted else None
+        for lm in wanted:
+            if lm['model'] in LANDMARK_MODELS:
+                model, w, d = LANDMARK_MODELS[lm['model']]
+            else:
+                model = lm['model']
+                w, d, _ = props.get(model, (8.0, 8.0, True))
+            spot = search.best(lm['x'], lm['z'], w, d, water_front=lm['model'] == 'dam_wall')
+            if spot is None:
+                if report is not None:
+                    report.append(f'{f.stem}: {lm["id"]} ({model}) found no spot; not stood')
+                continue
+            _, x, z, yaw, walk = spot
+            fw, fd = (w, d) if yaw in (0.0, 180.0) else (d, w)
+            search.taken.append((x - fw / 2, z - fd / 2, x + fw / 2, z + fd / 2))
+            out.append(dict(map=f.stem, id=lm['id'], model=model, x=round(x, 2), z=round(z, 2), yaw=yaw, scale=1.0,
+                            radius=round(math.hypot(w, d) / 2, 1), onPlay=walk > 0))
+            if report is not None:
+                report.append(f'{f.stem}: {lm["id"]} ({model}) at ({x:.0f}, {z:.0f}) yaw {yaw:.0f}, '
+                              f'{math.hypot(x - lm["x"], z - lm["z"]):.0f} m from the data, {walk} drivable cells')
+        for e in extras:
+            out.append(dict(map=f.stem, id=e['id'], model=e['model'], x=e['x'], z=e['z'], yaw=e['yaw'], scale=1.0,
+                            radius=8.0, onPlay=False))
+    return out
+
 def families():
     out = set()
     for f in glob.glob(str(MAPS / '*.json')):
@@ -233,7 +443,7 @@ def families():
     return sorted(out)
 
 
-def build():
+def build(report=None):
     cam = camera_constants()
     cam.update(rings(cam))
     biomes = {b['id']: b for b in BIOMES}
@@ -247,7 +457,8 @@ def build():
         maps.append(dict(id=fam, biome=biome, edgeBand=float(band), density=density, seed=stable_seed(fam),
                          farTree=row[3] if len(row) > 3 else '',
                          hills=b['hills'], berms=b['berms'], ditches=b['ditches'], dryBeds=b['dryBeds']))
-    return {'version': 2, 'camera': cam, 'biomes': BIOMES, 'maps': maps, 'edges': EDGE_DRESSING}
+    return {'version': 2, 'camera': cam, 'biomes': BIOMES, 'maps': maps, 'edges': EDGE_DRESSING,
+            'landmarks': landmark_spots(report)}
 
 
 def check(data):
@@ -293,6 +504,11 @@ def check(data):
                 problems.append(f'edges: {m} is a gameplay prop')
             if not (MODELS / f'{m}.glb').exists():
                 problems.append(f'edges: {m}.glb missing')
+    for lm in data.get('landmarks', []):
+        if not (MODELS / f'{lm["model"]}.glb').exists():
+            problems.append(f'landmarks: {lm["map"]} {lm["id"]}: {lm["model"]}.glb missing')
+        if not (MAPS / f'{lm["map"]}.json').exists():
+            problems.append(f'landmarks: {lm["map"]} is not a map file')
     seen = {m['id'] for m in data['maps']}
     for fam in families():
         if fam not in seen:
@@ -326,7 +542,10 @@ def main():
               f'(reach {c["reachSquare"]}), long sides {c["ringLongSide"]} m (reach {c["reachLongSide"]}), long ends '
               f'{c["ringLongEnd"]} m (reach {c["reachLongEnd"]}); {len(problems)} problems')
         sys.exit(1 if problems else 0)
-    data = build()
+    report = []
+    data = build(report)
+    for line in report:
+        print('LANDMARK', line)
     OUT.write_text(json.dumps(data, indent=1) + '\n', encoding='utf-8')
     print(f'wrote {OUT.relative_to(ROOT)}: {len(data["maps"])} maps')
     problems = check(data)
