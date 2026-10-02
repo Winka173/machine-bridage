@@ -98,6 +98,8 @@ Gungnir's line warning, `airborne_light_tank_chute` (its own parachute canopy mo
 
 ## Wave 2: the validator's flagged models (18 with errors: the 13 of the baseline + 5 over a budget hard cap)
 
+**Wave 2 complete (2026-10-02):** all 18 fixed; siege_tank keeps its 22 moving parts under a per-model cap exception (`CAP_EXCEPTIONS` in glb_check.py; its 16 Deploy_* pivots are all driven by VehicleView.Deploy).
+
 Fix the error with the smallest change (DECISIONS: proportions within 25 % of `modelSize`, zero-area via `k.clean`, boss part nodes, budget caps), then the V2 pass if the category takes it. `strike_jet` and `tank_buster` are unlisted (C#-only) models: fix the slivers only.
 
 | model | class | builder | tris | errors |

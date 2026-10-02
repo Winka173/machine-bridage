@@ -13344,3 +13344,6 @@ The nine remaining wave 2 models. Checks run: Blender rebuild, `glb_check.py` (c
 - **Card luma** (old -> new): interceptor_jet 0.4154 -> 0.4224, siege_tank 0.3467 -> 0.3480. strike_jet and tank_buster are
   C#-only models (no unit, no card); command_hq, shield_generator, flak_tower, sea_cruiser have no card (card false or a
   structure); sky_gunship's card model is the unchanged normal file.
+- Lead (2026-10-02) on siege_tank: a per-model cap exception (`CAP_EXCEPTIONS` in Tools/assets/glb_check.py,
+  movingParts soft 22 / hard 24) rather than breaking the deploy rig; the class cap stays for every other ground unit.
+  Wave 2 is complete.

@@ -61,6 +61,10 @@ BUDGETS: dict[str, dict[str, dict[str, list[int]]]] = {
     'scenery': {'normal': {'triangles': [3700, 4600], 'vertices': [9700, 12100], 'renderers': [12, 14], 'movingParts': [2, 3]}},
     'munition': {'normal': {'triangles': [500, 1600], 'vertices': [600, 2400], 'renderers': [14, 17], 'movingParts': [2, 3]}},
 }
+# Per-model cap exceptions {model: {metric: [soft, hard]}}, each with its reason (DECISIONS "27 wave 2 pass B").
+CAP_EXCEPTIONS = {
+    'siege_tank': {'movingParts': [22, 24]},   # its 16 Deploy_* pivots are all driven by VehicleView.Deploy
+}
 BOSS_SIZES = ((30.0, 'boss_s'), (60.0, 'boss_m'))   # longest side of the GLB under 30 m: small, under 60 m: medium, else large
 
 SIZE_TOLERANCE = 0.25        # proportions (width/length, height/length) against balance.json modelSize
@@ -242,7 +246,9 @@ def check_budget(rec):
     """Over the soft budget: a warning; over the hard cap: an error."""
     tiers = BUDGETS.get(rec.get('budgetClass') or '', {})
     tier = 'hd' if rec['hd'] and 'hd' in tiers else 'normal'
-    for metric, (soft, hard) in tiers.get(tier, {}).items():
+    caps = dict(tiers.get(tier, {}))
+    caps.update(CAP_EXCEPTIONS.get(rec['file'].rsplit('.', 1)[0], {}))
+    for metric, (soft, hard) in caps.items():
         value = rec.get(metric, 0)
         label = f"{rec['budgetClass']} {tier}"
         if value > hard:
