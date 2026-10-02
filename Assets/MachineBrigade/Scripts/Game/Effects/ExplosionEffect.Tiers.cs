@@ -51,7 +51,7 @@ namespace MachineBrigade.Game.Effects
                     e._chunks = new ChunkThrower.Recipe(earth: 8, wreckage: 0, burning: 1, new Vector2(6f, 12f), 0.9f);
                     break;
 
-                default: // T4 and up (T5 is redrawn in its own commit)
+                case 4:
                     e.Flash(14f);
                     e.Fireball(2, new Vector2(9f, 11.5f), new Vector2(0.85f, 1.1f), 0.8f, hot: true);
                     e.Fireball(4, new Vector2(8f, 10.5f), new Vector2(1.35f, 1.75f), 2.4f);
@@ -73,6 +73,38 @@ namespace MachineBrigade.Game.Effects
                     e._chunks = new ChunkThrower.Recipe(earth: 16, wreckage: 4, burning: 4, new Vector2(9f, 18f), 1.2f);
                     break;
 
+                default: // T5
+                    e.Flash(22f);
+                    e.Fireball(3, new Vector2(13f, 16f), new Vector2(1f, 1.3f), 1.4f, hot: true);
+                    e.Fireball(5, new Vector2(11f, 14.5f), new Vector2(1.5f, 1.95f), 4f);
+                    e.Fireball(4, new Vector2(9.5f, 12.5f), new Vector2(1.35f, 1.7f), 5f, 0.16f);
+                    e.Fireball(3, new Vector2(8.5f, 11f), new Vector2(1.25f, 1.55f), 5.6f, 0.36f);
+                    e.Fireball(2, new Vector2(11f, 13f), new Vector2(1.4f, 1.7f), 2.2f, 0.55f, hot: true);
+                    e.Secondaries(15f, 4.6f, 0.2f, 0.45f, 0.7f, 1f, 1.3f, 1.7f);
+                    e.Smoke(12, new Vector2(10f, 14f), new Vector2(8f, 12f));
+                    e.Sparks(150, new Vector2(12f, 34f), 0.26f);
+                    // Debris thrown far.
+                    e.Debris(50, new Vector2(12f, 28f));
+                    e.BurningDebris(20, new Vector2(12f, 26f));
+                    e.Dirt(44, new Vector2(8f, 20f));
+                    e.Embers(80, 2f);
+                    e.GroundLight(46f, 1f, 0.55f);
+                    e.DustRing(40f, 36);
+                    e.OuterDust(46f, 26);
+                    e._bursts.Add(new Burst(l.DustRing, 0.3f, 18, new Vector2(46f * 0.22f, 46f * 0.32f), new Vector2(46f * 0.25f, 46f * 0.45f),
+                        new Vector2(3f, 4.4f), 46f * 0.14f, 0.4f));
+                    // The column, rising ten billows high...
+                    e.Column(10, new Vector2(8f, 10.5f), new Vector2(13f, 17f), 0.55f, 2.6f);
+                    // ...and spreading at its top into a small mushroom cap: a ring of wide billows round a centre one.
+                    const float cap = 26f;
+                    e._bursts.Add(new Burst(l.Column, 2.2f, 2, new Vector2(11f, 13f), new Vector2(0.1f, 0.3f), new Vector2(12f, 15f), 1.5f, cap));
+                    for (var k = 0; k < 6; k++)
+                        e._bursts.Add(new Burst(l.Column, 2.4f + 0.12f * k, 1, new Vector2(9.5f, 12f), new Vector2(0.2f, 0.6f), new Vector2(11f, 14f),
+                            1f, cap - 1.5f, 6.5f));
+                    // The crater glows a long time.
+                    e.CraterGlow(13f, 12f);
+                    e._chunks = new ChunkThrower.Recipe(earth: 30, wreckage: 10, burning: 8, new Vector2(12f, 24f), 1.5f);
+                    break;
             }
             return e;
         }
