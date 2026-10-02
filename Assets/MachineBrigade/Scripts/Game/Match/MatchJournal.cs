@@ -77,6 +77,8 @@ namespace MachineBrigade.Game.Match
                     continue;
                 }
                 MatchJournal.Record(_world, input, value);
+                // Prompt 28: the tactic, per-squad tactics and tower modes (ModeSession.Tactics.cs).
+                if (_session.ApplyInput(_world, input, value)) continue;
                 MatchJournal.Apply(_session.PlayerAi, input, value);
             }
         }

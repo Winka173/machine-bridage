@@ -26,3 +26,8 @@
 .fc-cmdr-row__tags { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-1); }
 .fc-cmdr-slot { flex-direction: row; align-items: center; }
 .fc-cmdr-slot .fc-portrait { width: 56px; height: 56px; }
+/* Prompt 28 H.4: the tactic slot and picker share the commander rows' look; a flag icon stands where a portrait would. */
+.fc-tactic-icon { width: 40px; height: 40px; margin: var(--fc-space-2); flex-shrink: 0; }
+.fc-cmdr-row--locked .fc-tactic-icon { opacity: 0.45; }
+.fc-tactic-mix { flex-direction: row; flex-wrap: wrap; margin-top: var(--fc-space-1); }
+.fc-tactic-mix__cell { margin-right: var(--fc-space-3); }
