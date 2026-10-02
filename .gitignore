@@ -62,3 +62,7 @@ __pycache__/
 /Docs/export/*/csv/
 /Docs/export/*/images/
 /Docs/export/*/pdf/
+# Export diffs (Tools/export/export.py diff): only the summary is kept in git
+/Docs/export/diff_*/*
+!/Docs/export/diff_*/00_tom_tat.xlsx
+!/Docs/export/diff_*/00_tom_tat.md

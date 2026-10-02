@@ -37,8 +37,9 @@ def build(ctx):
                        ("so_part", "", "số nút Part_*"), ("so_mount", "", "số nút Mount_*"), ("so_muzzle", "", "số nút Muzzle_*"),
                        ("co_mount_flare", "", "có nút Mount_Flare*"), ("co_mount_aps", "", "có nút Mount_APS*"),
                        ("vat_lieu", "", "tên vật liệu (ngăn ';')"), ("mesh", "", "tên mesh (ngăn ';')"),
-                       ("dai_m", "m", "kích thước x (baseline size[0])"), ("cao_m", "m", "kích thước y (baseline size[1])"),
-                       ("rong_m", "m", "kích thước z (baseline size[2])"), ("duong_dan", "", "file"),
+                       ("glb_x_m", "m", "kích thước x của GLB (baseline size[0])"),
+                       ("glb_y_m", "m", "kích thước y của GLB (baseline size[1])"),
+                       ("glb_z_m", "m", "kích thước z của GLB (baseline size[2])"), ("duong_dan", "", "file"),
                        ("tam_giac_lod", "", "tam giác LOD0 / 1 / 2 (Unity tạo LOD lúc nhập; xem 12/Validator lod1Share)"),
                        ("anh_3_goc", "", "ảnh 3 góc (lượt 6, images/10)")):
         md.col(c, unit=unit, meaning=m)
@@ -66,7 +67,7 @@ def build(ctx):
             for i in range(len(vals)):
                 r.mark(sid, (key, i, "name"), col)
         size = b.get("size") or []
-        for i, col in enumerate(("dai_m", "cao_m", "rong_m")):
+        for i, col in enumerate(("glb_x_m", "glb_y_m", "glb_z_m")):  # not dai_m / rong_m: 02/Xe has those (game size)
             r.set(col, size[i] if i < len(size) else "")
         r.set("duong_dan", sid)
         r.set("tam_giac_lod", NEED_CODE_CHECK)

@@ -1,0 +1,35 @@
+# Data export self-check (Docs/prompts/export_full_vi.txt, spec 4 and 9): runs the exporter in check mode on every
+# push. Python only, no Unity. Nothing is committed: the output stays in the runner's temp folder (SELF_CHECK.md is
+# uploaded as an artifact). Fails on an unmapped or twice-mapped leaf, a failed foreign key, two exports that differ, or
+# a secret in any output file. Local equivalent: python Tools/export/export.py check
+name: Data export check
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  export-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # origin/main for the _truoc / _sau columns
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install the exporter's packages
+        run: python -m pip install openpyxl==3.1.5 numpy
+      - name: Export check (coverage, foreign keys, determinism, secrets)
+        env:
+          PYTHONIOENCODING: utf-8
+          USER: ""                # the scan flags the machine user name; the runner's ("runner") is a common word
+        run: python Tools/export/export.py check --out "$RUNNER_TEMP/export"
+      - name: Keep SELF_CHECK.md
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: export-self-check
+          path: ${{ runner.temp }}/export/00_chi_muc/SELF_CHECK.md
+          if-no-files-found: ignore
