@@ -15801,3 +15801,30 @@ Tests (written, not run): `ShowdownP32Tests` (the schema and numbers; only symme
 fallback map; the profile as data, the role, the opening squads; both HQs can fall, the cut-off, catch-up income only, no
 Underdog; 25 % from 100 m and full from 30 m, full once breached; a rubble route breaching the base; minute 6; the 5-point
 lead; sudden death, its damage count and the draw; the menu and both languages).
+
+### L9: audits, the design document, the report
+
+- **Overlaps** (`Tools/balance/p32_base_audit.py` -> `Docs/checks/base_overlap.md`): the prompt's pairs kept apart as it
+  rules (radar module inside the base / the neutral radar's map area; repair bay at home / neutral workshop on the map /
+  shield tower's dome; C-RAM / laser / shield under L4's one-system-per-round rule). Every pair of the 22 cards and their
+  branches with the same targets, damage type, reach within 10 % and the same rebuildCp: 9 pairs of a card and its own
+  branch (the branch inherits the gun and adds its role: by design) and 2 between cards, reported, not changed:
+  `aa_turret.flak` / `heavy_flak_tower.bofors` (fragmentation, 46 / 48 m, 6 CP; a small and a medium slot) and
+  `aa_turret.sam` / `c_ram.dome` (air, 56 / 60 m, 5 CP; a missile post and an interceptor dome).
+- **Performance** (same script -> `Docs/checks/base_perf.md`): about 63 long-lived entities a side in Showdown at HQ 5
+  (HQ, 11 towers, 3 modules, up to 10 wall segments, 32 + 6 vehicles), about 126 a match plus 0-2 neutral sites (the prompt
+  expected about 75 / 150); the largest short-lived sources (projectiles, drones, mines, strikes); confirmed: walls have no
+  per-tick logic, the Garrison is held by the caps, views are pooled (the Sim's `Projectile` is not: one allocation a
+  shot); NEED PROFILE listed there.
+- **Forward drop at an outpost: HOLD.** Precheck item 5 as found: it exists (`BaseSystem.TryGetDropZone`) and only where a
+  campaign mission marks outposts (`MissionSession` fills `OutpostPoints`); not switched on in Conquest, King of the Hill
+  or Showdown (Showdown has no capture points). Nothing changed.
+- **Design document** (`Tools/docs/prompt32_base.py`, `base_system`, called by build_doc.py before the handbook; Vietnamese
+  and English, every number from balance.json and the map files): 6a the 22-tower roster and its branches with their roles
+  and rebuild prices, 6b rebuilding, 6c walls (types, durability, segment health, the maps' line count), 6d HQ types by
+  level, 7 Defend / Endless by HQ level (the reference bases), Showdown (its rules, numbers and maps), 14 starting CP and
+  opening squads (commanders, enemy generals); the handbook (L8) follows. It ran alone (`python
+  Tools/docs/prompt32_base.py`); the PDF is not built (the lead does).
+- **Report** `Docs/balance/report_p32.md`: pass 0's results, the rebuild prices (provisional and script), the towers cut,
+  the steel fortress verdict (HOLD), the three HQ types compared, the Showdown static check, the overlaps and performance,
+  every decision taken alone.
