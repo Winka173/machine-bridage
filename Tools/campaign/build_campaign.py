@@ -432,7 +432,7 @@ def check(missions):
         return found
     events.check(missions, VEHICLES, fail, story.INTERLUDES, chapters={c[0]: c[5] for c in story.CHAPTERS}, weather=kit.WEATHER, boss_of=bosses)
     # Prompt 31 L3: every state of every prebuilt ground site keeps the anchors joined and seals nothing off.
-    nav_states.check(missions, fail)
+    nav_states.check(missions, fail, {e["id"]: e for e in events.EVENTS})
     # Prompt 22 B: a moved mission lands on one that exists, and no id is moved twice.
     for old, new in story.MOVES22.items():
         if new not in ids or old in ids:

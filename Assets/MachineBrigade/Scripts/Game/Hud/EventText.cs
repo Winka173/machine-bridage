@@ -157,6 +157,14 @@ namespace MachineBrigade.Game.Hud
             ["event.orbitalPods.start"] = ("Pods falling: get clear of the marked sites", "Khoang đổ bộ đang rơi: rời khỏi các điểm được đánh dấu"),
             ["radio.linh.ev.orbitalPods.warn"] = ("Its bays are opening up there. Those are not troops: they are building a fort on our heads.", "Các khoang trên kia đang mở. Không phải quân đâu: chúng đang dựng pháo đài ngay trên đầu ta."),
             ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
+
+            // Prompt 31 L5: the LATER events (the ground's state picks the words: "event.groundChange.<text>.<state>.<moment>").
+            ["event.groundChange.tide.high.warn"] = ("The tide is coming in: the marked shoal floods in {seconds} s", "Thủy triều đang lên: bãi cạn được đánh dấu sẽ ngập sau {seconds} giây"),
+            ["event.groundChange.tide.high.start"] = ("High tide: the shoal is under water, go round by the dunes", "Triều cường: bãi cạn đã ngập, đi vòng qua cồn cát"),
+            ["radio.linh.ev.groundChange.tide.high.warn"] = ("The sea is coming up the beach. Get off the shoal before it closes over.", "Nước biển đang dâng lên bãi. Rời khỏi bãi cạn trước khi nó ngập."),
+            ["event.groundChange.tide.low.warn"] = ("The tide is going out: the marked shoal opens in {seconds} s", "Thủy triều đang rút: bãi cạn được đánh dấu sẽ lộ ra sau {seconds} giây"),
+            ["event.groundChange.tide.low.start"] = ("Low tide: the shoal is dry, the beach road is open", "Triều rút: bãi cạn đã khô, đường bờ biển đã mở"),
+            ["radio.linh.ev.groundChange.tide.low.warn"] = ("The water is going back off the sand. The beach road opens in a moment.", "Nước đang rút khỏi bãi cát. Lát nữa đường bờ biển sẽ mở."),
         };
     }
 }

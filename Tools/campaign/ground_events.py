@@ -103,3 +103,21 @@ replace_event('c5m03', 'air_wave', 'drone_swarm')
 
 # Prompt 31 L4 (c6m14's rule ceasefireFaction): Varga's sworn column is a ceasefire faction for the whole battle.
 replace_event('c6m14', 'ceasefire', {'id': 'ceasefire', 'params': {'seconds': 900, 'faction': True}})
+
+
+# ====================================================================== Prompt 31 L5: the LATER events (DECISIONS "Prompt 31 L5")
+# The same rules as the FIRST ones: prebuilt ground states, a switch at a tick boundary, a way round in every state (checked at
+# build time here and at load in the game), nobody trapped, warned 8-12 s ahead with the places on the minimap. GroundChange's
+# "cycle" walks a site's states in order (the tide in and out; "wrap": false stops at the last), "text" picks the words by the
+# state coming in ("event.groundChange.<text>.<state>.warn").
+
+# ---------------------------------------------------------------------- Triều lên/xuống (the tide): c1m01
+# Every 150 s (the sheet: 120-180) the tide turns on the landing beach: at high water the eastern shoal (the fords below the
+# cliffs, x -10..142) floods and the beach road along it closes; at low water it dries and opens again. The fords by the
+# player's camp (the utility slots at x -73 and -45) stay out of it, and the dunes keep every point joined at high water.
+# c9m02 (the same beach) is a reversed battlefield: nav states there are refused by the build, so it keeps its events.
+library(E('tide_turn', 'GroundChange', {'at': 150, 'every': 150}, {'navSite': 'shoal', 'cycle': True, 'text': 'tide'}, lead=10))
+nav_site('c1m01', {'id': 'shoal', 'initial': 'low', 'states': [
+    {'name': 'low'},
+    {'name': 'high', 'blocks': [{'x': 66, 'z': -130, 'w': 152, 'd': 12}]}]})
+events.add('c1m01', 'tide_turn')

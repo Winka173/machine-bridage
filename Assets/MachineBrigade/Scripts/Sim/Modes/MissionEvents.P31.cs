@@ -76,10 +76,14 @@ namespace MachineBrigade.Sim.Modes
                 case MissionEventKind.GroundChange:
                 {
                     var site = e.Word("navSite");
-                    var state = e.Word("navState");
-                    if (site == null || state == null || !world.NavStates.CanSwitch(site, state) || world.NavStates.ActiveOf(site) == state) return false;
-                    world.NavStates.TryGet(site, out var held);
+                    if (site == null || !world.NavStates.TryGet(site, out var held)) return false;
+                    // Prompt 31 L5: "cycle" goes to the site's next state that passed the checks (the tide in and out, the
+                    // dam's water a level higher; "wrap": false stops at the last), else the named "navState".
+                    var state = e.Flag("cycle", false) ? NextState(held, e.Flag("wrap", true)) : e.Word("navState");
+                    if (state == null || !world.NavStates.CanSwitch(site, state) || held.ActiveName == state) return false;
                     var to = held.Def.States[held.Def.IndexOf(state)];
+                    // Prompt 31 L5: "text" picks the notice and line by the state coming in ("event.groundChange.<text>.<state>.warn").
+                    s.Variant = e.Word("text") is { } text ? text + "." + state : null;
                     // The ground it closes, else (it opens) the ground the state in force closes.
                     var blocks = to.Blocks.Count > 0 ? to.Blocks : held.Def.States[held.Active].Blocks;
                     foreach (var b in blocks) s.Marks.Add((b.Center, MathF.Max(b.Width, b.Depth) * 0.5f + 6f));
@@ -159,6 +163,27 @@ namespace MachineBrigade.Sim.Modes
                 default:
                     return true;
             }
+        }
+
+        /// <summary>
+        /// Prompt 31 L5: the state after the one in force (or the one waiting to come in) that passed the load-time checks; with
+        /// <paramref name="wrap"/> the last goes back to the first, without it there is none after the last (null).
+        /// </summary>
+        private static string? NextState(Navigation.NavSite site, bool wrap)
+        {
+            var count = site.Def.States.Count;
+            var from = site.Pending >= 0 ? site.Pending : site.Active;
+            for (var step = 1; step < count; step++)
+            {
+                var i = from + step;
+                if (i >= count)
+                {
+                    if (!wrap) return null;
+                    i -= count;
+                }
+                if (site.IsValid(i)) return site.Def.States[i].Name;
+            }
+            return null;
         }
 
         /// <summary>The half a storm rolls over: a named side, or the side the player's biggest group stands in.</summary>
