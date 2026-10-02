@@ -223,7 +223,10 @@ def fields_for(ws, wid, r):
     """The line's new fields: the round and the cadence where they differ, and out of a prompt 25 family whose block would
     override them (the block's other fields copied onto the line, so nothing else moves)."""
     w = ws.resolve(wid)
-    f = {k: v for k, v in list(r["new"].items()) + list(r["cad"].items()) if w.get(k, 0 if k in ("splash", "edge") else None) != v}
+    cad = r["cad"]
+    if w.get("salvoMode") == "SIMULTANEOUS":
+        cad = {}  # prompt 34 L4 (p34_barrels.py) made the salvo's barrels fire together: the cycle is its now
+    f = {k: v for k, v in list(r["new"].items()) + list(cad.items()) if w.get(k, 0 if k in ("splash", "edge") else None) != v}
     if not f:
         return {}
     p25 = w.get("weaponFamily")

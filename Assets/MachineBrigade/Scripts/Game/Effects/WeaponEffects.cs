@@ -92,6 +92,12 @@ namespace MachineBrigade.Game.Effects
         private void Flash(MuzzleFx.Kind kind, Vector3 from, Vector3 direction, float now, float scale, float? groundY) =>
             _muzzle.Fire(kind, from, direction, now, new MuzzleFx.Anchor(_shotNode, from, direction), scale, groundY);
 
+        /// <summary>
+        /// Prompt 34 L4: seconds the shot being drawn is late (a simultaneous volley's later barrel, drawn
+        /// <see cref="MachineBrigade.Sim.Content.WeaponDef.BarrelGap"/> after the one before): its shell flies that much less.
+        /// </summary>
+        internal float TravelCut { get; set; }
+
         public void Fired(in SimEvent e, ViewRegistry views, float now) =>
             Fired(e, views.TryGet(e.Entity, out var shooter) ? shooter : null, views, now);
 
@@ -527,11 +533,13 @@ namespace MachineBrigade.Game.Effects
             // Only guns that lob their shells (artillery with a minimum range, howitzers) fly an arc;
             // a tank or turret gun fires straight down its barrel however big its shell is.
             var lobs = weapon != null ? weapon.Indirect || weapon.Id.Contains("howitzer") : e.Tier > ExplosionTier.Medium;
+            // Prompt 34 L4: a later barrel of a simultaneous volley is drawn a moment later and flies that much shorter (it lands with the Sim).
+            var travel = Mathf.Max(0.05f, e.Value - TravelCut);
             if (!lobs)
             {
                 var heavy = weapon != null && weapon.Damage >= 100f;
                 var big = e.Tier >= ExplosionTier.Large;
-                _tracers.Launch(from, to, e.Value, 0f, big ? 0.28f : heavy ? 0.22f : 0.16f, big ? 3.6f : heavy ? 3.2f : 2.6f, now, 0f,
+                _tracers.Launch(from, to, travel, 0f, big ? 0.28f : heavy ? 0.22f : 0.16f, big ? 3.6f : heavy ? 3.2f : 2.6f, now, 0f,
                     big ? 1.1f : heavy ? 0.95f : 0.75f);
                 Flash(MuzzleFx.Kind.Cannon, from, Barrel(aim), now, big ? 1.5f : heavy ? 1.25f : 1f, groundY);
                 _shake(from, big ? 0.1f : heavy ? 0.08f : 0.05f);
@@ -540,9 +548,9 @@ namespace MachineBrigade.Game.Effects
             // Artillery: a high arc, leaving at the barrel's angle, with a thin trail of hot gas;
             // the shell or mortar bomb itself where it has a model.
             if (model != null)
-                _projectiles.Launch(_models.Merged(model), from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.35f, now, scale: scale,
+                _projectiles.Launch(_models.Merged(model), from, to, travel, ArcFor(pitch, distance, 0.3f), 0.35f, now, scale: scale,
                     control: Bend(from, to, barrel));
-            else _tracers.Launch(from, to, e.Value, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
+            else _tracers.Launch(from, to, travel, ArcFor(pitch, distance, 0.3f), 0.32f, 1.1f, now, 0f, 0.55f);
             // A mortar's flash is small: at the artillery size it covered the carrier seen from above.
             var mortar = weapon != null && weapon.Id.Contains("mortar");
             Flash(MuzzleFx.Kind.Artillery, from, Launch(barrel, forward, 0.9f), now, mortar ? 0.55f : 1f, groundY);

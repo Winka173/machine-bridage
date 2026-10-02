@@ -106,7 +106,8 @@ namespace MachineBrigade.Sim.Content
         private float _roundWeight;
 
         /// <summary>Rounds one trigger pull or one magazine fires off: the magazine, else the salvo.</summary>
-        public int RoundsPerCycle => Clip > 0 ? Clip : Burst;
+        // Prompt 34 L4: a simultaneous gun's volley is every barrel.
+        public int RoundsPerCycle => Clip > 0 ? Clip : Burst * RoundsPerPull;
 
         /// <summary>Seconds from one magazine's or salvo's first round to the next one's first round.</summary>
         public float CycleSeconds => Clip > 0 ? (Clip - 1) * Cooldown + ClipReload : Cooldown + (Burst - 1) * BurstInterval;
@@ -311,6 +312,7 @@ namespace MachineBrigade.Sim.Content
                 WeaponFamily = WeaponFamily,
                 // Prompt 34 L1: the family, variant and tier travel with the copy.
                 WeaponFamilyId = WeaponFamilyId, WeaponVariantId = WeaponVariantId, Tier = Tier,
+                Barrels = Barrels, Simultaneous = Simultaneous,
                 Bonuses = Bonuses,
                 ProjectileModel = ProjectileModel,
                 ProjectileScale = ProjectileScale,

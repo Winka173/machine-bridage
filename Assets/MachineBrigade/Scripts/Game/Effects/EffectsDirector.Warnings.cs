@@ -37,6 +37,36 @@ namespace MachineBrigade.Game.Effects
             return true;
         }
 
+        /// <summary>Prompt 34 L4: rounds of each shooter's mount already drawn in this batch (a simultaneous volley's barrels).</summary>
+        private readonly System.Collections.Generic.Dictionary<(MachineBrigade.Sim.Core.EntityId, int), int> _volley = new();
+
+        /// <summary>
+        /// Prompt 34 L4: how late this round of a simultaneous volley is drawn: 0 for the first barrel, then
+        /// <see cref="WeaponDef.BarrelGap"/> a barrel (all fired in one tick, drawn one after another on their own muzzles).
+        /// </summary>
+        private float BarrelStagger(SimEvent e, VehicleView shooter)
+        {
+            if (e.Kind != SimEventKind.WeaponFired || e.DefId == null || !_catalog.Weapons.TryGetValue(e.DefId, out var gun)) return 0f;
+            var round = FiredRound(e, shooter, gun);
+            if (!round.Simultaneous || round.Barrels < 2) return 0f;
+            var key = (e.Entity, e.Mount);
+            var k = _volley.TryGetValue(key, out var seen) ? seen + 1 : 0;
+            _volley[key] = k;
+            return (k % round.Barrels) * WeaponDef.BarrelGap;
+        }
+
+        /// <summary>Prompt 34 L4: a volley's later barrel, drawn <paramref name="late"/> s after the Sim fired it (its shell flies that much less).</summary>
+        private void LaterShot(SimEvent e, VehicleView shooter, ViewRegistry views, float at, float late)
+        {
+            Later(at, () =>
+            {
+                if (shooter == null || shooter.Root == null) return;
+                _weapons.TravelCut = late;
+                _weapons.Fired(e, shooter, views, Time.time);
+                _weapons.TravelCut = 0f;
+            });
+        }
+
         /// <summary>A strike warning of an event barrage with a core inside its ring (the 406 mm salvo's shell): the core's ring too.</summary>
         private void StrikeCore(SimEvent e, float now)
         {

@@ -41,6 +41,16 @@ namespace MachineBrigade.Sim.Content
         {
             def.WeaponFamilyId = w.OptionalString("weaponFamilyId");
             def.WeaponVariantId = w.OptionalString("weaponVariantId");
+            // Prompt 34 L4: the barrels and whether they fire together.
+            def.Barrels = Math.Max(1, w.Int("barrels", 1));
+            var mode = w.OptionalString("salvoMode") ?? "RIPPLE";
+            def.Simultaneous = mode switch
+            {
+                "SIMULTANEOUS" => true,
+                "RIPPLE" => false,
+                _ => throw new FormatException($"{w.Path}.salvoMode: SIMULTANEOUS or RIPPLE, not '{mode}'."),
+            };
+            if (def.Simultaneous && def.Clip > 0) throw new FormatException($"{w.Path}: a magazine (clip) cannot fire its barrels together.");
         }
 
         /// <summary>

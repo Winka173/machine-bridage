@@ -67,5 +67,22 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Prompt 34 L3: the ring a warning draws: the blast's edge when it has two layers, else its core.</summary>
         public float WarnRadius => SplashEdge > SplashRadius ? SplashEdge : SplashRadius;
+
+        // ------------------------------------------------------------------------------------------------ L4 barrels
+
+        /// <summary>Prompt 34 L4: the gun's barrels (data "barrels", 1); each has its own muzzle on the model where it has them.</summary>
+        public int Barrels { get; internal set; } = 1;
+
+        /// <summary>
+        /// Prompt 34 L4: data "salvoMode": "SIMULTANEOUS" fires every barrel in the same tick each trigger pull (one volley; the
+        /// view staggers the flashes); "RIPPLE" (the default) fires one round a pull, a salvo's rounds one after another.
+        /// </summary>
+        public bool Simultaneous { get; internal set; }
+
+        /// <summary>Prompt 34 L4: rounds one trigger pull fires at once: every barrel of a simultaneous gun, else one.</summary>
+        public int RoundsPerPull => Simultaneous ? Math.Max(1, Barrels) : 1;
+
+        /// <summary>Prompt 34 L4: the view's gap between the flashes of one volley's barrels (0.05-0.1 s in the prompt).</summary>
+        public const float BarrelGap = 0.07f;
     }
 }

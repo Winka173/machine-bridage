@@ -15277,3 +15277,36 @@ blast, and the preview scenes (one flat ground quad for every unit; the turntabl
   except Monster's 800 mm shell (core 20 m: 4.94 s against its 4 s): left for L9.
 - Tests (written, not run): `Prompt34Tests` L3 (the formula, every T4+ boss round warns and has a ring, Leviathan's salvo
   and its ring, Jötunn's 203 mm shells stay up for their warning).
+
+## Prompt 34 L4 (lead pass, 2026-10-02)
+
+- **Data** (`Tools/balance/p34_barrels.py`): `barrels` (N, default 1) and `salvoMode` (`SIMULTANEOUS` | `RIPPLE`, the default).
+  SIMULTANEOUS fires every barrel in the same tick at each trigger pull, one volley; `burst` then counts volleys
+  (`WeaponDef.RoundsPerPull`; `RoundsPerCycle` = burst x barrels, so `SustainedDps`, `FirePower` and the detail screen
+  count the whole volley). A magazine gun (clip) cannot be SIMULTANEOUS (Catalog throws).
+- **Applied** (the old ripple of N rounds became 1 x N barrels; its gaps, (N - 1) x burstInterval, went onto the cooldown,
+  so the cycle and the DPS are unchanged): Leviathan / Kraken's 155 mm/60 triple (3; cooldown 13.71 s), Scylla's AK-130 twin
+  (2; 4.75 s), the player cruiser's Mk 71 203 mm twin (2; 11.8 s), the heavy turret's 155 mm twin (base, AP and the coastal
+  branch, 2; 5.55 s), the headquarters' and spawn bastion's 2A83 152 mm twin (2; 5.21 s), the super tank's (titan_tank)
+  NPzK 140 mm twin (2; 4.537 s). Leviathan / Kraken's 406 mm (laid, 3 barrels): the salvo's three shells a turret now land
+  together (`NavalSystem.Salvo`: 0.15 s between turrets, not between shells). The guided second rounds of these guns keep
+  one barrel ("one at a time"). Typhon and Hydra have no multi-barrel gun (single 57 / 100 mm and missiles): nothing to do.
+  The player weapons here change in pattern only (DPS kept): the prompt names the heavy turrets and the super tank.
+- **Sim**: `CombatSystem.Operate` fires the other barrels right after the first (pull false: one trigger pull, one round of
+  ammunition, each barrel with its own scatter), in the opening shot and in each volley of a salvo. The rule that a
+  vehicle's different weapons never fire together is untouched.
+- **View** (written blind): `EffectsDirector.BarrelStagger` draws the k-th barrel of a volley 0.07 s after the one before
+  (`WeaponDef.BarrelGap`, in the prompt's 0.05-0.1 s). The shell of a later barrel flies that much shorter
+  (`WeaponEffects.TravelCut`), so it lands with the Sim. Each round leaves from the next barrel's launch point
+  (`VehicleView.MuzzleOf` already turns through a mount's launch points).
+- **Models**: `Tools/blender/mb_p34_barrels.py` (wrapped last in `build_assets.all_builders`) adds a `Muzzle_b<k>_<tag>`
+  empty for each barrel, a child of the mount's `Muzzle_<slot>` at its depth, beside it on the barrel's axis. The barrels are
+  found in the builder's own meshes (long thin pieces along -Y, front level with the muzzle, merged by axis). The names
+  never match the runtime's `Muzzle_<slot>` pattern, so the k-th mount of a slot is unchanged. `ModelLibrary.AddBarrelPoints`
+  turns them into the mounts' barrel launch points. Rebuilt and accepted (`glb_check --accept`, no mesh change, only the
+  new empties): leviathan (5 turrets: 3 barrels each, 1.7 m / 0.62 m apart), sea_cruiser (2 x 2), heavy_turret (2),
+  headquarters (2), titan_tank (2). Kraken was rebuilt, found no barrels (its mounts are launch cells and rocket boxes)
+  and was reverted, as were the filter's extra `heavy_turret_a` / `heavy_turret_b` (the tower's other models, outside the
+  list): those keep one muzzle. Check: `python Tools/balance/p34_barrels.py` reports every listed muzzle's barrels (OK).
+- Tests (written, not run): `Prompt34Tests` L4 (the listed weapons fire their barrels together, the volleys keep their
+  DPS, the super tank's two barrels fire in the same tick).

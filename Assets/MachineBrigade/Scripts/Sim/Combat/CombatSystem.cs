@@ -524,7 +524,9 @@ namespace MachineBrigade.Sim.Combat
                     else
                     {
                         var alive = _world.TryGetTarget(state.BurstTarget, out var t) && t.IsAlive;
-                        Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
+                        // Prompt 34 L4: each volley of a simultaneous gun is every barrel at once.
+                        for (var b = Loaded(v, index).RoundsPerPull; b > 0; b--)
+                            Launch(v, index, alive ? t.Position : state.BurstAim, state.BurstTarget, state.BurstFlying, state.BurstScale, false, alive ? t : null);
                     }
                     state.BurstLeft--;
                     state.BurstTimer += weapon.Burst > 1 ? weapon.BurstInterval : TwinGap;
@@ -587,7 +589,13 @@ namespace MachineBrigade.Sim.Combat
                 state.SwarmLast = own.Id;
                 Launch(v, index, own.Position, own.Id, false, scale * perRound, true, own);
             }
-            else Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
+            else
+            {
+                Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, true, target);
+                // Prompt 34 L4: a simultaneous gun's other barrels fire in the same tick (one volley, one trigger pull).
+                for (var b = Loaded(v, index).RoundsPerPull - 1; b > 0; b--)
+                    Launch(v, index, target.Position, target.Id, IsFlying(target), scale * perRound, false, target);
+            }
             if (machineGun)
             {
                 // A run of fire, then a pause while the gunner re-lays (its damage rides on the rounds).

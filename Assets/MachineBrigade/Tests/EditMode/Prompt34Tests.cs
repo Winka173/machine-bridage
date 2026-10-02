@@ -247,5 +247,61 @@ namespace MachineBrigade.Tests
             }
             Assert.That(shots, Is.GreaterThan(0), "the 203 mm fired");
         }
+
+        // ------------------------------------------------------------------------------------------------ L4 barrels together
+
+        [TestCase("p26_leviathan_lev406", 3)]
+        [TestCase("p26_leviathan_sec_lev155", 3)]
+        [TestCase("naval_130_twin", 2)]
+        [TestCase("cruiser_203", 2)]
+        [TestCase("gun_155_twin_ap", 2)]
+        [TestCase("gun_155_twin_coastlr", 2)]
+        [TestCase("bastion_gun", 2)]
+        [TestCase("gun_140_twin", 2)]
+        public void ShipsHeavyTurretsAndTheSuperTankFireTheirBarrelsTogether(string id, int barrels)
+        {
+            var w = C.Weapons[id];
+            Assert.IsTrue(w.Simultaneous, id);
+            Assert.AreEqual(barrels, w.Barrels, id);
+            Assert.AreEqual(barrels, w.RoundsPerPull, id);
+            Assert.AreEqual(1, w.Burst, id + ": one volley a pull");
+            Assert.AreEqual(barrels, w.RoundsPerCycle, id);
+        }
+
+        [Test]
+        public void TheVolleysKeepTheirDamageASecond()
+        {
+            var c = C;
+            // The old ripple's gaps went onto the cooldown: Scylla's AK-130 was 2 x 380 over 3.75 s + 1 s.
+            Assert.AreEqual(2f * 380f / 4.75f, c.Weapons["naval_130_twin"].SustainedDps, 1f);
+            // The heavy turret's twin 155 mm AP: 2 x 300 over 5.5 s + 0.05 s.
+            Assert.AreEqual(2f * 300f / 5.55f, c.Weapons["gun_155_twin_ap"].SustainedDps, 1f);
+            // A guided shell still goes one at a time.
+            Assert.IsFalse(c.Weapons["gun_155_twin_fort_guided"].Simultaneous);
+        }
+
+        [Test]
+        public void TheSuperTanksTwoBarrelsFireInTheSameTick()
+        {
+            var world = new SimWorld(C, GameContent.LoadMap("ashfield_conquest"), seed: 2);
+            foreach (var v in world.VehicleList) v.Hp = 0f;
+            world.Step(0.05f);
+            world.ClearEvents();
+            var tank = world.SpawnVehicle("titan_tank", 0, new Vector2(60f, 40f), 0f);
+            world.SpawnVehicle("heavy_tank", 1, new Vector2(60f, 70f), 3.14f);
+            var volleys = 0;
+            for (var t = 0f; t < 30f && volleys < 2; t += 0.05f)
+            {
+                world.Step(0.05f);
+                var main = world.Events.Count(e => e.Kind == SimEventKind.WeaponFired && e.Entity == tank.Id && e.Mount == 0);
+                if (main > 0)
+                {
+                    Assert.AreEqual(2, main, "both barrels in one step");
+                    volleys++;
+                }
+                world.ClearEvents();
+            }
+            Assert.That(volleys, Is.GreaterThan(0), "the twin 140 mm fired");
+        }
     }
 }
