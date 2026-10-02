@@ -92,6 +92,14 @@ namespace MachineBrigade.Sim.Content
 
         public string? Weapon { get; internal set; }
         public string? Warning { get; internal set; }
+
+        /// <summary>Prompt 34 L2: the shells' edge (data "edge": the 406 mm's 24 m); 0 takes twice the core, at most 20 m.</summary>
+        public float Edge { get; internal set; }
+
+        /// <summary>Prompt 34 L2: one shell's blast, two layers (the family's core and edge).</summary>
+        public ExplosionDef Blast(ExplosionTier tier) => Edge > Radius
+            ? new ExplosionDef(Damage, Radius, 0f, tier) { Edge = MathF.Min(WeaponDef.MaxEdgeT5, Edge) }
+            : ExplosionDef.TwoLayer(Damage, Radius, tier);
     }
 
     /// <summary>

@@ -64,7 +64,8 @@ TABLE = [
     ("cal_120_ap", "120 mm AP", 3, {"damage": 260, "core": 0, "edge": 0}, {}),
     ("cal_125_ap", "125 mm AP", 3, {"damage": 400, "core": 0, "edge": 0}, {}),
     ("cal_125_he", "125 mm HE", 3, None, {}),
-    ("cal_127_130", "127-130 mm", 3, {"damage": 380, "core": 5, "edge": 10}, {}),
+    ("cal_127_130", "127-130 mm", 3, {"damage": 380, "core": 5, "edge": 10},
+     {"ap": "an armour-piercing round fired direct (Leviathan's AK-127 in its direct-fire role), not the HE shell"}),
     ("cal_140", "140 mm", 3, None, {}),
     ("cal_152_155", "152-155 mm", 3, {"damage": 600, "core": 7, "edge": 14},
      {"ap": "an armour-piercing round fired direct (a tank gun's or a naval gun's AP), not the HE shell",
@@ -200,7 +201,7 @@ def classify(w) -> tuple[str, str | None, int]:
         if size <= 126:
             return ("cal_125_ap", None, 3) if dt in ("Kinetic", "ShapedCharge") else ("cal_125_he", None, 3)
         if size <= 131:
-            return "cal_127_130", None, 3
+            return "cal_127_130", ("ap" if dt == "Kinetic" else None), 3
         if size <= 141:
             return "cal_140", None, 3
         if size <= 156:

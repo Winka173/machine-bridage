@@ -422,7 +422,7 @@ namespace MachineBrigade.Sim.Bosses
                     var reach = scatter * MathF.Sqrt((float)_world.Random.NextDouble());
                     var at = _world.ClampToMap(aim + sea.Along * along + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * reach);
                     if (warning != null) _world.Emit(SimEvent.StrikeWarning(v.Team, warning, at, at, salvo.Warn));
-                    _world.Damage.Queue(at, ExplosionDef.TwoLayer(salvo.Damage, salvo.Radius, ExplosionTier.Huge), salvo.Warn + 0.15 * j, v.Team, v,
+                    _world.Damage.Queue(at, salvo.Blast(ExplosionTier.Huge), salvo.Warn + 0.15 * j, v.Team, v,
                         HitKind.Strike, v.Id);
                 }
                 // The turret swings to its aim (inside its arc) and fires (its muzzle flash and the shells' flight).
