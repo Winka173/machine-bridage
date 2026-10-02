@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 29 appendix: `gun_100_river` and `gun_155_crusader` hit the ground only (high explosive, no anti-air round); a target-mask check (`TargetMaskTests`, `Tools/balance/target_mask_check.py`, Docs/checks/target_mask.md: 0 masks, 17 elite-only rounds no elite carries); outgoingDamageMult confirmed on every round a gun loads (DECISIONS "Prompt 29 appendix").
+
 - Prompt 27 stand-in sweep: coastal_battery, super_gun, bulwark_post and uav_loiter_strike get their own models (they drew heavy_turret, mg_bunker, strike_drone); stand-in audit in Docs/models/STANDIN_AUDIT.md (DECISIONS "27 stand-in sweep").
 
 - Prompt 27 wave 8: the remaining 198 models (munitions, debris, map props, towns, themes, harbor, terrain, trees, rubble, wrecks, base pieces, unlisted units) rebuilt or edge-treated on the V2 kit with lighter AO; aim120 and aim9 kept. Prompt 27's eight waves are complete (DECISIONS "27 wave 8a1" to "27 wave 8b7").

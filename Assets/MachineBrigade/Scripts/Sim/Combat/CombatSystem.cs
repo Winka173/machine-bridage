@@ -47,6 +47,9 @@ namespace MachineBrigade.Sim.Combat
         /// <summary>A round launched by equipment rather than a mount (a ricochet, a drone): it flies and lands like any other.</summary>
         public void AddProjectile(Projectile p) => _projectiles.Add(p);
 
+        /// <summary>Rounds in flight (tests: what a shot carries, such as its damage scale).</summary>
+        internal IReadOnlyList<Projectile> InFlight => _projectiles;
+
         public void Step(float dt)
         {
             _missileTargets.Clear();

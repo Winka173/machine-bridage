@@ -775,3 +775,15 @@ Note: the B1 group runs re-checked B0 bundles applied in pass 3 (thermobaric_lau
 | R-icarus | SKIPPED(REJECT) | |
 | R-round-hover | SKIPPED(REJECT) | |
 | R-speed-new | SKIPPED(REJECT) | |
+
+## Run dry: B6-mask (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B6-mask | OK (dry) | 2 rows |
+
+## Run apply: B6-mask (manifest 4bef428df8e2)
+
+| bundle | outcome | detail |
+|---|---|---|
+| B6-mask | OK | 2 rows |

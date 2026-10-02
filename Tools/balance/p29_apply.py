@@ -29,6 +29,8 @@ from jsonc_edit import Doc, Entry, fmt, loads  # noqa: E402
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 MANIFEST = os.path.join(ROOT, "Docs", "balance", "manifest_v2.json")
+# The prompt 29 appendix (owner, 2026-10-02): bundles added after the sheet (B6-mask), the same columns, read after it.
+APPENDIX = os.path.join(ROOT, "Docs", "balance", "manifest_p29_appendix.json")
 BALANCE = os.path.join(ROOT, "Assets", "MachineBrigade", "Resources", "Data", "balance.json")
 LOG = os.path.join(ROOT, "Docs", "balance", "apply_log_p29.md")
 # Bundles applied by earlier runs (written by real runs): depends_on reads it, and an applied bundle is not checked
@@ -221,8 +223,29 @@ def m_bank(st, entity, value=None, write=False):
     return values.pop()
 
 
+def weapon_field(key):
+    """Appendix rows on a weapon ("weapons.<id>.<key>", scope "weapon"): the weapon's own entry, never a unit's (R8)."""
+    def m(st, wid, value=None, write=False):
+        weapons = {w["id"]: w for w in st.data["weapons"]}
+        if wid not in weapons:
+            raise Unmapped(f"no weapon '{wid}'")
+        if write:
+            st.doc.edit("weapons", wid, lambda e: e.set(key, value))
+            st.refresh()
+            return None
+        return weapons[wid].get(key)
+    return m
+
+
+WEAPON_FIELDS = {"targets": weapon_field("targets")}
+
+
 def mapper(row):
     path = str(row.get("field_path") or "")
+    if path.startswith("weapons.") and row.get("scope") == "weapon":
+        _, wid, rest = path.split(".", 2)
+        if rest in WEAPON_FIELDS:
+            return wid, WEAPON_FIELDS[rest]
     if path.startswith("units."):
         _, uid, rest = path.split(".", 2)
         if rest in UNIT_FIELDS:
@@ -266,6 +289,11 @@ def review(row):
 def run(patterns, dry):
     with open(MANIFEST, encoding="utf-8") as f:
         man = json.load(f)
+    if os.path.exists(APPENDIX):
+        with open(APPENDIX, encoding="utf-8") as f:
+            extra = json.load(f)
+        man["rows"] = man["rows"] + extra["rows"]
+        man["bundles"] = man["bundles"] + extra["bundles"]
     rows_by = {}
     for r in man["rows"]:
         rows_by.setdefault(r["bundle_id"], []).append(r)
@@ -352,8 +380,16 @@ def run(patterns, dry):
                 if v == "OK":
                     uid, m = mapper(r)
                     m(st, uid, r.get("new_value"), write=True)
-            # R8: a unit-scope bundle never changes a weapon.
-            if json.dumps(st.data["weapons"], sort_keys=True) != weapons_before:
+            # R8: a unit-scope bundle never changes a weapon. A weapon-scope bundle (the appendix's B6-mask) changes only
+            # the weapons it names: the check moves on from what it left.
+            if all(r.get("scope") == "weapon" for r in data_rows):
+                named = {str(r["field_path"]).split(".")[1] for r in data_rows}
+                before = {w["id"]: w for w in json.loads(weapons_before)}
+                after = {w["id"]: w for w in st.data["weapons"]}
+                if any(json.dumps(after[k], sort_keys=True) != json.dumps(before.get(k), sort_keys=True) for k in after if k not in named):
+                    raise SystemExit(f"{bid}: a weapon it does not name changed")
+                weapons_before = json.dumps(st.data["weapons"], sort_keys=True)
+            elif json.dumps(st.data["weapons"], sort_keys=True) != weapons_before:
                 raise SystemExit(f"{bid}: a weapon changed (R8)")
         outcome[bid] = "OK"
         lines.append(f"| {bid} | OK{' (dry)' if dry else ''} | {len(data_rows)} rows{note} |")

@@ -14859,3 +14859,31 @@ previews or tests.
   hands toasts "We hold the {site}" / "The enemy took the {site}". Whether the radar dome, garage and ammo dump read
   as capturable is left for the owner's look in Unity.
 - Lead (2026-10-02): prompt 30 local merged (compile 0 first try); design review PDF rebuilt at 320 pages with section 2c (match rules, endless, neutrals, dialogue UI, match end, 4 acts). Prompt 30 is done except its tests (wait for the owner) and the L3/L5 leftovers listed in report_p30.md.
+
+## Prompt 29 appendix (lead pass, 2026-10-02)
+
+The owner's appendix to prompt 29 (second rounds and weapon targets), done before prompt 32 L1 (its L0 item 8).
+
+- **outgoingDamageMult on every round.** Already true in the code: `CombatSystem.Launch` takes the loaded round
+  (`Loaded(shooter, index)`: the gun's own or the second round it changed to) and multiplies the shot's `DamageScale` by
+  `shooter.Def.OutgoingDamageMult` whatever the round; the card figures (`FirePower.Sustained`, `SustainedAir`) take the
+  carrier's multiplier for any weapon passed. No code change; `TargetMaskTests.OutgoingDamageMultRidesOnEveryRoundTheGunLoads`
+  fires a second round at x1 and x2 and expects twice the damage scale (written, not run). A kamikaze's detonation is not a
+  round change and keeps its old path.
+- **B6-mask (APPLY).** `gun_100_river` (A-190 100 mm, river gunboat) and `gun_155_crusader` (XM2001 155 mm, auto-loading
+  howitzer): `targets` All -> Ground. Both are high explosive (x0 on aircraft in the damage table) and neither has a second
+  round (no `he`, `air` or `secondRounds` entry), so none reaches aircraft and the "keep All" exception does not apply.
+  Applied through the prompt 29 tool: `Docs/balance/manifest_p29_appendix.json` (the manifest's columns, scope "weapon"),
+  `p29_apply.py` reads it after the sheet's manifest, maps `weapons.<id>.targets` (weapon-scope rows only) and keeps R8
+  for every other bundle (a weapon-scope bundle may change only the weapons it names). Logged in `apply_log_p29.md`.
+  Neither vehicle has a `class`; the inferred class is unchanged (a ground-only HE gun is never AntiAir).
+- **Target-mask validator.** `TargetMaskTests` (EditMode) and `Tools/balance/target_mask_check.py` (a static read of
+  balance.json, inheritance and second rounds resolved as the catalog does) check every gun (mounted, or no gun's second
+  round; damage > 0; not intercept-only): each declared layer (Air; Ground = vehicles and structures) must have a highest
+  damage-type multiplier above 0 over the rounds valid for it (thermobaric HE on structures at its 2.0). Ground has no
+  separate structure mask in the data (`TargetLayers` is Ground/Air), so structures are checked under Ground. Second
+  rounds whose rule is never met: elite-only rounds on a gun no elite or rank-7 branch mounts, rounds reaching nothing
+  their rule names, and rounds shadowed by an earlier round of the gun (the first that suits wins). Result
+  (`Docs/checks/target_mask.md`): 0 mask findings after B6-mask (2 before), 17 unmet rounds, all elite-only on guns no
+  elite carries (boss, naval, jeep and bunker guns): reported, not fixed (the appendix: no second-round rebalance). The
+  test fails only on a new one beyond these 17.
