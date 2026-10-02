@@ -40,7 +40,8 @@ SCRIPTED = ["phase_start", "phase_end", "objective_progress", "boss_phase_change
 # The trigger table names a speaker the voice sheet's allowedTriggers leave out: expensive_unit_lost "Kade hoặc chỉ huy
 # liên quan", ally_late "Đồng minh / Nadia".
 # Brandt (chapter 1), Venn (5) and Thorne (8, 9) lead the enemy in their chapters: the generals' lines too.
-EXTRA_TRIGGERS = {"khai": ["expensive_unit_lost"], "linh": ["ally_late"], "brandt": GENERAL, "sen": GENERAL, "hung": GENERAL}
+# boss_part_destroyed is "Mara or whoever pointed out the weak point": Venn for her own drones.
+EXTRA_TRIGGERS = {"khai": ["expensive_unit_lost"], "linh": ["ally_late"], "brandt": GENERAL, "sen": GENERAL + ["boss_part_destroyed"], "hung": GENERAL}
 
 
 def triggers(cell: str) -> list[str]:

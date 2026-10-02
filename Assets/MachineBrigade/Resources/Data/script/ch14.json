@@ -1,0 +1,469 @@
+{
+"chapter": 14,
+"missions": {
+"i2m01": {
+"main": "mendez"
+},
+"i2m02": {
+"main": "mendez"
+},
+"i2m03": {
+"main": "mendez"
+},
+"i2m04": {
+"main": "mendez"
+}
+},
+"lines": [
+{
+"mission": "i2m01",
+"trigger": "mission_start",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m01.01",
+"en": "Three stops, no waiting. Dr Venn, keep your head down.",
+"vi": "Ba trạm, không chờ. Tiến sĩ Venn, cúi đầu xuống."
+},
+{
+"mission": "i2m01",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.i2m01.02",
+"en": "This swamp swallows signals. Hard for the drones to find me here, not impossible.",
+"vi": "Đầm lầy này nuốt tín hiệu. Drone sẽ khó tìm tôi ở đây, nhưng không phải là không thể.",
+"at": 20.0
+},
+{
+"mission": "i2m01",
+"trigger": "event_triggered",
+"speaker": "mendez",
+"priority": 2,
+"once": true,
+"key": "script.i2m01.03",
+"en": "Hunters on the causeway behind us. No stopping. Whoever stops walks.",
+"vi": "Có thợ săn đi theo ta trên đường đắp. Không dừng. Ai dừng thì tự đi bộ."
+},
+{
+"mission": "i2m01",
+"trigger": "point_captured",
+"speaker": "mendez",
+"priority": 3,
+"once": true,
+"key": "script.i2m01.04",
+"en": "One stop. Move on; no sightseeing.",
+"vi": "Một trạm. Đi tiếp, đừng ngắm cảnh."
+},
+{
+"mission": "i2m01",
+"trigger": "objective_progress",
+"speaker": "mendez",
+"priority": 2,
+"once": true,
+"key": "script.i2m01.05",
+"en": "The sunken temple left. Narrow causeway; single file.",
+"vi": "Còn ngôi đền chìm. Đường đắp hẹp, đi một hàng.",
+"arg": "last"
+},
+{
+"mission": "i2m01",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m01.06",
+"en": "Captain, you drive like someone is chasing you.",
+"vi": "Đại úy, cô lái xe như thể có ai đang đuổi theo."
+},
+{
+"mission": "i2m01",
+"trigger": "victory",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m01.07",
+"en": "Someone is, Doctor.",
+"vi": "Có người đang đuổi thật, tiến sĩ."
+},
+{
+"mission": "i2m01",
+"trigger": "defeat",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m01.08",
+"en": "Stuck in the swamp. Back out and find another road before dark.",
+"vi": "Kẹt ở đầm lầy. Lùi về, tìm đường khác trước khi trời tối."
+},
+{
+"mission": "i2m02",
+"trigger": "mission_start",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.01",
+"en": "Something is flying over the canopy, and it is looking for our passenger.",
+"vi": "Có thứ gì đó bay trên tán cây và nó đang tìm hành khách của ta."
+},
+{
+"mission": "i2m02",
+"trigger": "boss_spawn",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.02",
+"en": "That is my Locust. It is looking for me. Aim for the hangar doors.",
+"vi": "Đó là Locust của tôi. Nó đang tìm tôi. Nhắm vào cửa khoang chứa."
+},
+{
+"mission": "i2m02",
+"trigger": "boss_spawn",
+"speaker": "aurel",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.03",
+"en": "Dr Venn. Your contract has not ended. Company property will be recovered.",
+"vi": "Tiến sĩ Venn. Hợp đồng của bà chưa kết thúc. Tài sản của công ty sẽ được thu hồi."
+},
+{
+"mission": "i2m02",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.i2m02.04",
+"en": "That was Aurel. He never raises his voice. He never has to.",
+"vi": "Đó là Aurel. Ông ta không bao giờ nói to. Ông ta không cần.",
+"at": 40.0
+},
+{
+"mission": "i2m02",
+"trigger": "boss_part_destroyed",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.i2m02.05",
+"en": "One hangar door is jammed. Its swarm can only come out one side.",
+"vi": "Một cửa khoang đã kẹt. Bầy của nó chỉ còn ra được một bên."
+},
+{
+"mission": "i2m02",
+"trigger": "boss_phase_change",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.06",
+"en": "It is dropping low to loose its swarm on the convoy! Every gun on it!",
+"vi": "Nó hạ thấp để thả bầy lên đoàn xe! Mọi khẩu vào nó!"
+},
+{
+"mission": "i2m02",
+"trigger": "superweapon_warning",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.07",
+"en": "It is about to drop the whole swarm on one spot. Out of the red; do not shield me!",
+"vi": "Nó sắp thả cả bầy xuống một chỗ. Rời vùng đỏ, đừng che cho tôi!"
+},
+{
+"mission": "i2m02",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.i2m02.08",
+"en": "A supply drop landing on the west causeway. Grab it on the way.",
+"vi": "Một kho thả dù đang rơi trên đường đắp phía tây. Nhặt nó trên đường đi."
+},
+{
+"mission": "i2m02",
+"trigger": "boss_hp",
+"speaker": "mendez",
+"priority": 4,
+"once": true,
+"key": "script.i2m02.09",
+"en": "Half. It is flying crooked. Nobody stops to watch.",
+"vi": "Một nửa. Nó đang bay lệch. Đừng dừng xe để xem.",
+"arg": "50"
+},
+{
+"mission": "i2m02",
+"trigger": "boss_hp",
+"speaker": "sen",
+"priority": 4,
+"once": true,
+"key": "script.i2m02.10",
+"en": "Its batteries are failing. It will try to go home. Do not let it.",
+"vi": "Pin của nó sắp cạn. Nó sẽ cố về nhà. Đừng để nó về.",
+"arg": "25"
+},
+{
+"mission": "i2m02",
+"trigger": "critical_failure_imminent",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.11",
+"en": "The convoy is about to break. Everything to the Doctor's truck, now!",
+"vi": "Đoàn xe sắp bị phá. Mọi thứ về bên xe của tiến sĩ, ngay!"
+},
+{
+"mission": "i2m02",
+"trigger": "victory",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.12",
+"en": "One down. Doctor, how many of those did you build?",
+"vi": "Một chiếc rơi. Tiến sĩ, bà đã làm bao nhiêu chiếc như thế?"
+},
+{
+"mission": "i2m02",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.13",
+"en": "Two.",
+"vi": "Hai."
+},
+{
+"mission": "i2m02",
+"trigger": "defeat",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m02.14",
+"en": "The swarm reached the convoy. Into the trees; hide the passenger.",
+"vi": "Bầy drone tới được đoàn xe. Rút vào rừng, giấu hành khách đi."
+},
+{
+"mission": "i2m03",
+"trigger": "mission_start",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m03.01",
+"en": "Accord colours on the bridge, and their guns point at us.",
+"vi": "Cờ Accord trên cầu, và súng của họ chĩa vào ta."
+},
+{
+"mission": "i2m03",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.i2m03.02",
+"en": "Hold the bridge. Nobody takes our passenger. Do not fire first.",
+"vi": "Giữ cây cầu. Không ai lấy được hành khách của ta. Không bắn trước.",
+"at": 10.0
+},
+{
+"mission": "i2m03",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.i2m03.03",
+"en": "They want to hang me for what the swarm did. They have their reasons.",
+"vi": "Họ muốn treo cổ tôi vì những gì bầy drone đã làm. Họ có lý do.",
+"at": 30.0
+},
+{
+"mission": "i2m03",
+"trigger": "objective_progress",
+"speaker": "mendez",
+"priority": 2,
+"once": true,
+"key": "script.i2m03.04",
+"en": "Half the convoy is across. Keep going; do not look down at the river.",
+"vi": "Nửa đoàn xe đã qua cầu. Đi tiếp, đừng nhìn xuống sông.",
+"arg": "1/2"
+},
+{
+"mission": "i2m03",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.i2m03.05",
+"en": "Night is falling. The militia can barely see the convoy, nor can we.",
+"vi": "Trời đang tối. Dân quân khó nhìn rõ đoàn xe, cả ta cũng vậy."
+},
+{
+"mission": "i2m03",
+"trigger": "point_lost",
+"speaker": "mendez",
+"priority": 3,
+"once": true,
+"key": "script.i2m03.06",
+"en": "They took the bridgehead. Push them off, do not kill. They are our side.",
+"vi": "Họ chiếm đầu cầu. Đẩy ra, không giết. Họ là người phe ta."
+},
+{
+"mission": "i2m03",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m03.07",
+"en": "They were right to hate me. Thank you for not letting them.",
+"vi": "Họ có lý khi ghét tôi. Cảm ơn vì đã không để họ làm vậy."
+},
+{
+"mission": "i2m03",
+"trigger": "defeat",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m03.08",
+"en": "The bridge is lost. We need another crossing, and they will watch them all.",
+"vi": "Cầu mất. Ta phải tìm chỗ vượt sông khác, và họ sẽ theo dõi mọi chỗ."
+},
+{
+"mission": "i2m04",
+"trigger": "mission_start",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.01",
+"en": "The second Locust found the crossing. It is the last thing between us and the far bank.",
+"vi": "Chiếc Locust thứ hai đã tìm ra cửa khẩu. Nó là thứ cuối cùng giữa ta và bờ bên kia."
+},
+{
+"mission": "i2m04",
+"trigger": "boss_spawn",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.02",
+"en": "Its left rack jams after every third launch. I never fixed it.",
+"vi": "Giá phóng bên trái của nó kẹt sau mỗi lần phóng thứ ba. Tôi chưa bao giờ sửa."
+},
+{
+"mission": "i2m04",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.i2m04.03",
+"en": "I traced its control signal. North, far away. Aurel is nowhere near here.",
+"vi": "Tôi theo được tín hiệu điều khiển. Nó phát từ phía bắc, rất xa. Aurel không ở gần đây."
+},
+{
+"mission": "i2m04",
+"trigger": "boss_part_destroyed",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.i2m04.04",
+"en": "The left rack is burning. It can only loose half a swarm now.",
+"vi": "Giá phóng trái đã cháy. Giờ nó chỉ thả được nửa bầy."
+},
+{
+"mission": "i2m04",
+"trigger": "boss_phase_change",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.05",
+"en": "It is circling behind the convoy! Turn the guns round!",
+"vi": "Nó bay vòng ra sau đoàn xe! Quay súng lại!"
+},
+{
+"mission": "i2m04",
+"trigger": "superweapon_warning",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.06",
+"en": "It is about to pour the swarm onto the bridge. Out of the red; leave the trucks!",
+"vi": "Nó sắp đổ cả bầy xuống cầu. Rời vùng đỏ, bỏ xe nếu phải!"
+},
+{
+"mission": "i2m04",
+"trigger": "boss_hp",
+"speaker": "mendez",
+"priority": 4,
+"once": true,
+"key": "script.i2m04.07",
+"en": "Half. Keep moving; we shoot on the go.",
+"vi": "Một nửa. Đi tiếp, ta bắn trong lúc chạy.",
+"arg": "50"
+},
+{
+"mission": "i2m04",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.i2m04.08",
+"en": "It is wobbling! Let me in for one more pass!",
+"vi": "Nó đang chao đảo! Thả tôi vào một lượt nữa!",
+"arg": "25"
+},
+{
+"mission": "i2m04",
+"trigger": "critical_failure_imminent",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.09",
+"en": "The Doctor's truck is taking hits. Cover it; it is the only one that matters.",
+"vi": "Xe của tiến sĩ đang dính đòn. Che nó lại, đây là chiếc duy nhất quan trọng."
+},
+{
+"mission": "i2m04",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.i2m04.10",
+"en": "The control signal is flickering. Someone is trying to find the Locust through the night.",
+"vi": "Tín hiệu điều khiển chập chờn. Ai đó đang cố tìm Locust qua sương đêm."
+},
+{
+"mission": "i2m04",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.11",
+"en": "I will stay with the brigade, Colonel. If you will have me.",
+"vi": "Tôi sẽ ở lại với lữ đoàn, đại tá. Nếu ông chấp nhận."
+},
+{
+"mission": "i2m04",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.12",
+"en": "Welcome aboard, Doctor.",
+"vi": "Chào mừng lên tàu, tiến sĩ."
+},
+{
+"mission": "i2m04",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.13",
+"en": "I am staying. Someone has to remember what they were made for.",
+"vi": "Tôi ở lại. Ai đó phải nhớ chúng được làm ra để làm gì."
+},
+{
+"mission": "i2m04",
+"trigger": "defeat",
+"speaker": "mendez",
+"priority": 1,
+"once": true,
+"key": "script.i2m04.14",
+"en": "The Locust holds the crossing. Pull back; we try again at first light.",
+"vi": "Locust giữ cửa khẩu. Rút, ta thử lại khi trời sáng."
+}
+]
+}

@@ -1,0 +1,55 @@
+# Chapter 14 · The Queen's Choice (interlude II, act 2). Venn surrendered in chapter 5; the move to safety was put off
+# by the counterstrike. Mendez drives her through Mirewood and the Border Crossing with two Locusts hunting her and an
+# Accord militia blocking the bridge. Aurel speaks once, coldly, through a Locust's channel. Venn chooses to stay.
+
+@i2m01 main=mendez
+mission_start | mendez | 1 | Ba trạm, không chờ. Tiến sĩ Venn, cúi đầu xuống. || Three stops, no waiting. Dr Venn, keep your head down.
+time@20 | sen | 2 | Đầm lầy này nuốt tín hiệu. Drone sẽ khó tìm tôi ở đây, nhưng không phải là không thể. || This swamp swallows signals. Hard for the drones to find me here, not impossible.
+event_triggered | mendez | 2 | Có thợ săn đi theo ta trên đường đắp. Không dừng. Ai dừng thì tự đi bộ. || Hunters on the causeway behind us. No stopping. Whoever stops walks.
+point_captured | mendez | 3 | Một trạm. Đi tiếp, đừng ngắm cảnh. || One stop. Move on; no sightseeing.
+objective_progress:last | mendez | 2 | Còn ngôi đền chìm. Đường đắp hẹp, đi một hàng. || The sunken temple left. Narrow causeway; single file.
+victory | sen | 1 | Đại úy, cô lái xe như thể có ai đang đuổi theo. || Captain, you drive like someone is chasing you.
+victory | mendez | 1 | Có người đang đuổi thật, tiến sĩ. || Someone is, Doctor.
+defeat | mendez | 1 | Kẹt ở đầm lầy. Lùi về, tìm đường khác trước khi trời tối. || Stuck in the swamp. Back out and find another road before dark.
+
+@i2m02 main=mendez
+mission_start | mendez | 1 | Có thứ gì đó bay trên tán cây và nó đang tìm hành khách của ta. || Something is flying over the canopy, and it is looking for our passenger.
+boss_spawn | sen | 1 | Đó là Locust của tôi. Nó đang tìm tôi. Nhắm vào cửa khoang chứa. || That is my Locust. It is looking for me. Aim for the hangar doors.
+boss_spawn | aurel | 1 | Tiến sĩ Venn. Hợp đồng của bà chưa kết thúc. Tài sản của công ty sẽ được thu hồi. || Dr Venn. Your contract has not ended. Company property will be recovered.
+time@40 | sen | 2 | Đó là Aurel. Ông ta không bao giờ nói to. Ông ta không cần. || That was Aurel. He never raises his voice. He never has to.
+boss_part_destroyed | sen | 2 | Một cửa khoang đã kẹt. Bầy của nó chỉ còn ra được một bên. || One hangar door is jammed. Its swarm can only come out one side.
+boss_phase_change | mendez | 1 | Nó hạ thấp để thả bầy lên đoàn xe! Mọi khẩu vào nó! || It is dropping low to loose its swarm on the convoy! Every gun on it!
+superweapon_warning | sen | 1 | Nó sắp thả cả bầy xuống một chỗ. Rời vùng đỏ, đừng che cho tôi! || It is about to drop the whole swarm on one spot. Out of the red; do not shield me!
+event_triggered | hq | 2 | Một kho thả dù đang rơi trên đường đắp phía tây. Nhặt nó trên đường đi. || A supply drop landing on the west causeway. Grab it on the way.
+boss_hp:50 | mendez | 4 | Một nửa. Nó đang bay lệch. Đừng dừng xe để xem. || Half. It is flying crooked. Nobody stops to watch.
+boss_hp:25 | sen | 4 | Pin của nó sắp cạn. Nó sẽ cố về nhà. Đừng để nó về. || Its batteries are failing. It will try to go home. Do not let it.
+critical_failure_imminent | mendez | 1 | Đoàn xe sắp bị phá. Mọi thứ về bên xe của tiến sĩ, ngay! || The convoy is about to break. Everything to the Doctor's truck, now!
+victory | mendez | 1 | Một chiếc rơi. Tiến sĩ, bà đã làm bao nhiêu chiếc như thế? || One down. Doctor, how many of those did you build?
+victory | sen | 1 | Hai. || Two.
+defeat | mendez | 1 | Bầy drone tới được đoàn xe. Rút vào rừng, giấu hành khách đi. || The swarm reached the convoy. Into the trees; hide the passenger.
+
+@i2m03 main=mendez
+mission_start | mendez | 1 | Cờ Accord trên cầu, và súng của họ chĩa vào ta. || Accord colours on the bridge, and their guns point at us.
+time@10 | khai | 2 | Giữ cây cầu. Không ai lấy được hành khách của ta. Không bắn trước. || Hold the bridge. Nobody takes our passenger. Do not fire first.
+time@30 | sen | 2 | Họ muốn treo cổ tôi vì những gì bầy drone đã làm. Họ có lý do. || They want to hang me for what the swarm did. They have their reasons.
+objective_progress:1/2 | mendez | 2 | Nửa đoàn xe đã qua cầu. Đi tiếp, đừng nhìn xuống sông. || Half the convoy is across. Keep going; do not look down at the river.
+event_triggered | hq | 2 | Trời đang tối. Dân quân khó nhìn rõ đoàn xe, cả ta cũng vậy. || Night is falling. The militia can barely see the convoy, nor can we.
+point_lost | mendez | 3 | Họ chiếm đầu cầu. Đẩy ra, không giết. Họ là người phe ta. || They took the bridgehead. Push them off, do not kill. They are our side.
+victory | sen | 1 | Họ có lý khi ghét tôi. Cảm ơn vì đã không để họ làm vậy. || They were right to hate me. Thank you for not letting them.
+defeat | mendez | 1 | Cầu mất. Ta phải tìm chỗ vượt sông khác, và họ sẽ theo dõi mọi chỗ. || The bridge is lost. We need another crossing, and they will watch them all.
+
+@i2m04 main=mendez
+mission_start | mendez | 1 | Chiếc Locust thứ hai đã tìm ra cửa khẩu. Nó là thứ cuối cùng giữa ta và bờ bên kia. || The second Locust found the crossing. It is the last thing between us and the far bank.
+boss_spawn | sen | 1 | Giá phóng bên trái của nó kẹt sau mỗi lần phóng thứ ba. Tôi chưa bao giờ sửa. || Its left rack jams after every third launch. I never fixed it.
+event_triggered | linh | 2 | Tôi theo được tín hiệu điều khiển. Nó phát từ phía bắc, rất xa. Aurel không ở gần đây. || I traced its control signal. North, far away. Aurel is nowhere near here.
+boss_part_destroyed | sen | 2 | Giá phóng trái đã cháy. Giờ nó chỉ thả được nửa bầy. || The left rack is burning. It can only loose half a swarm now.
+boss_phase_change | mendez | 1 | Nó bay vòng ra sau đoàn xe! Quay súng lại! || It is circling behind the convoy! Turn the guns round!
+superweapon_warning | sen | 1 | Nó sắp đổ cả bầy xuống cầu. Rời vùng đỏ, bỏ xe nếu phải! || It is about to pour the swarm onto the bridge. Out of the red; leave the trucks!
+boss_hp:50 | mendez | 4 | Một nửa. Đi tiếp, ta bắn trong lúc chạy. || Half. Keep moving; we shoot on the go.
+boss_hp:25 | dieuhau | 4 | Nó đang chao đảo! Thả tôi vào một lượt nữa! || It is wobbling! Let me in for one more pass!
+critical_failure_imminent | mendez | 1 | Xe của tiến sĩ đang dính đòn. Che nó lại, đây là chiếc duy nhất quan trọng. || The Doctor's truck is taking hits. Cover it; it is the only one that matters.
+event_triggered | hq | 2 | Tín hiệu điều khiển chập chờn. Ai đó đang cố tìm Locust qua sương đêm. || The control signal is flickering. Someone is trying to find the Locust through the night.
+victory | sen | 1 | Tôi sẽ ở lại với lữ đoàn, đại tá. Nếu ông chấp nhận. || I will stay with the brigade, Colonel. If you will have me.
+victory | khai | 1 | Chào mừng lên tàu, tiến sĩ. || Welcome aboard, Doctor.
+victory | sen | 1 | Tôi ở lại. Ai đó phải nhớ chúng được làm ra để làm gì. || I am staying. Someone has to remember what they were made for.
+defeat | mendez | 1 | Locust giữ cửa khẩu. Rút, ta thử lại khi trời sáng. || The Locust holds the crossing. Pull back; we try again at first light.
