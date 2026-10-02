@@ -67,16 +67,22 @@ The cloud session writes the Sim only. Each line: file, what, why.
 
 ## Prompt 30
 
-- L1: show the "Kết mạch Thorne" card (`campaign.thorneArc.title`, `campaign.thorneArc`) after c9m10, before chapter 15
+- DONE 2026-10-02 (lead pass, feature/p30-local; not compiled yet): L1, L2 (strip), L3 (presentation), L5 (buttons, pay),
+  L6 (field + minimap); DECISIONS "Prompt 30 local". Still open below: the Unity compile of every edited Game/Sim file
+  (incl. `MatchRunner.Ending.cs`, `NeutralSiteView.cs`, `DialogueViews.cs`, `Overlays.cs`, `BattleHud.cs`, `Minimap.cs`,
+  `MusicDirector.cs`, `Neutrals.cs`), the test runs (when the owner allows), the strip measure and `RENDER_CHARS`,
+  L3's proxies retreating / turrets turning (not done), L5's leaderboard sort (no board screen yet), the owner's look
+  at the radar dome / garage / ammo dump as capturable sites, and the PDF.
+- L1 (DONE): show the "Kết mạch Thorne" card (`campaign.thorneArc.title`, `campaign.thorneArc`) after c9m10, before chapter 15
   (once, like the chapter cards); the act switch UI reads `act` (4 acts).
-- L2: the portrait strip (small portrait + compact 2-line strip above the card tray; existing portraits: generals,
+- L2 (DONE but the measure and the test run): the portrait strip (small portrait + compact 2-line strip above the card tray; existing portraits: generals,
   briefing cards; a placeholder portrait by side for anyone missing, list them); never over the superweapon warning,
   the key boss UI or the objective timer; safe areas at 16:9, 20:9, 4:3. Measure the real render width: every script
   line in 2 lines at the smallest supported screen with the portrait at Large font, and set
   `RENDER_CHARS` in `Tools/story/script_build.py` from it. Route the HUD's system warnings as `DialoguePriority.System`
   if they should share the strip. Run `DialogueTests` (rewritten for the P0-P4 rules). Unity compile of
   `Dialogue.cs`, `RadioDirector.cs`, `ScriptText.cs`, `Strings.cs`.
-- L3: drive the presentation in `MatchRunner`: when `_world.Ending.Phase == Resolved`, pick the `EndKind` (first win of
+- L3 (DONE but proxies / turrets and the test runs): drive the presentation in `MatchRunner`: when `_world.Ending.Phase == Resolved`, pick the `EndKind` (first win of
   a main boss / big operation, first win, replay, loss), `BeginPresentation`, call `Ending.Advance(Time.unscaledDeltaTime)`
   each frame, `Skip` on a tap after 0.75 s, show the results at `Results` (and `ShowResults` from `CheckResult`). Hide
   the card tray and command buttons, keep the boss bar and notices; camera to the last target (0-1.5 s); visual slow
@@ -86,11 +92,11 @@ The cloud session writes the Sim only. Each line: file, what, why.
   operations). A skipped story line goes to the results panel and the log. Loss: camera to our HQ or last vehicle,
   explosion, the general's gloating line, 3-4 s, no slow motion. Run `MatchEndTests` and the existing suites (some
   tests may have stepped a world after `IsOver`; they now see it frozen).
-- L5: the results panel's two buttons for Defend, Survival and Boss Rush when `session.CanContinue`: "Đánh tiếp (vô hạn)"
+- L5 (DONE but the leaderboard sort and the test runs): the results panel's two buttons for Defend, Survival and Boss Rush when `session.CanContinue`: "Đánh tiếp (vô hạn)"
   (`result.continueEndless`, calls `session.ContinueEndless(world)`, hides the panel, resumes) and "Kết thúc"
   (`result.endRun`), with `result.endlessKept`. Call `session.PayEndless(modeId)` each frame (or each wave) and toast
   the coins and badges. Boss Rush's in-battle endless pick no longer opens (EndlessAtResults). Endless's menu entry
   unchanged. Leaderboards: sort with `world.Catalog.MatchRules.Board(id)`. Run `EndlessTests`, `MatchRulesTests`.
-- L6: show the neutral sites (`world.Neutrals.Sites`: kind, place, holder) on the field and the minimap (holder colour,
+- L6 (DONE but the owner's look and the test run): show the neutral sites (`world.Neutrals.Sites`: kind, place, holder) on the field and the minimap (holder colour,
   capture ring), the abandoned AA site's marker (no building until taken), the supply drop's 15 s marker. The radar
   dome, garage and ammo dump props are existing models; check they read as capturable sites. Run `NeutralTests`.
