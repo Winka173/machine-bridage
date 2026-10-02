@@ -69,6 +69,54 @@ namespace MachineBrigade.Tests
                 }
         }
 
+        /// <summary>The MAKE LATER missions prompt 31 L4 made (DECISIONS "Prompt 31 L4"); none is left on the player's deck.</summary>
+        private static readonly string[] MadeLater = { "c6m03", "c10m12", "c12m03", "i1m01", "c5m03", "c6m14", "i2m01", "c7m16", "c9m12", "c10m11" };
+
+        [Test]
+        public void EveryMakeLaterMissionMadeHasItsDeck()
+        {
+            foreach (var id in MadeLater)
+            {
+                var deck = Mission(id).FixedDeck;
+                Assert.IsNotNull(deck, $"{id}: a fixed deck");
+                Assert.AreEqual("MAKE_LATER", deck.Status, id);
+                Assert.IsNotEmpty(deck.SpecialRules, $"{id}: its rule");
+            }
+            Assert.IsTrue(Mission("c10m12").FixedDeck.PlacedAllies.Single().LossIfDestroyed, "Hawk's fighter must live");
+            Assert.IsFalse(Mission("c12m03").FixedDeck.PlacedAllies.Single().LossIfDestroyed, "c12m03 asks no more than c6m03");
+        }
+
+        [Test]
+        public void C6m14sSwornColumnTakesNothingFromUsAndTheTruceHolds()
+        {
+            var ceasefire = Mission("c6m14").Events.First(e => e.Kind == MissionEventKind.Ceasefire);
+            Assert.IsTrue(ceasefire.Flag("faction", false), "Varga's column is a ceasefire faction");
+            Assert.GreaterOrEqual(ceasefire.Number("seconds", 0f), Mission("c6m14").TimeLimit, "for the whole battle");
+
+            const string sworn = "{\"id\": \"cf\", \"kind\": \"Ceasefire\", \"trigger\": {\"at\": 1}, \"params\": {\"seconds\": 60, \"size\": 3, " +
+                                 "\"enemyCp\": 20, \"faction\": true}}";
+            var def = MissionDef.ListFromJson("{\"eventLibrary\": {\"events\": [" + sworn + "]}, \"missions\": [{\"id\": \"p31cf\", \"map\": \"field\", " +
+                                              "\"goal\": \"Survive\", \"surviveSeconds\": 5000, \"enemyAi\": \"none\", \"general\": \"varga\", " +
+                                              "\"missionEvents\": [\"cf\"]}]}")[0];
+            var world = Field();
+            var mode = new MissionMode(def, new SideSetup(), new SideSetup()) { EventLevel = EventLevel.Normal };
+            mode.Setup(world);
+            world.SpawnVehicle("main_battle_tank", 0, new Vector2(-100f, -100f), 0f).Invulnerable = true;
+            Run(world, mode, 2f);
+            var column = world.Vehicles.Where(v => v.IsAlive && v.Team == 1 && v.Truce).ToList();
+            Assert.AreEqual(3, column.Count, "the sworn column");
+            Assert.IsTrue(column.All(v => v.Sworn));
+            var gunner = world.SpawnVehicle("main_battle_tank", 0, column[0].Position + new Vector2(0f, -22f), 0f);
+            gunner.Invulnerable = true;
+            world.SubmitPlayer(new MachineBrigade.Sim.Commands.Command(MachineBrigade.Sim.Commands.CommandType.Attack, 0, new[] { gunner.Id },
+                column[0].Position, column[0].Id, manual: true));
+            Run(world, mode, 8f);
+            Assert.IsTrue(column.All(v => v.Hp >= v.MaxHp), "an ordered attack does nothing to a sworn vehicle");
+            Assert.IsFalse(mode.Events.Log.Any(l => l.moment == "broken"), "no shot of ours breaks the truce");
+            Assert.AreEqual(EventPhase.Running, mode.Events.States[0].Phase);
+            Assert.IsFalse(world.IsOver, "no loss for friendly fire");
+        }
+
         // ================================================================== the battle
 
         private const string Deck = "\"vehicleIds\": [\"scout_jeep\", \"armored_car\", \"ifv\", \"main_battle_tank\", \"light_tank\", \"tank_destroyer\", " +

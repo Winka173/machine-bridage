@@ -69,6 +69,12 @@ PENDING = {
     'c5m07': 'the canopy hides ground vehicles from drones: no canopy cover in the Sim yet',
     'c7m11': 'the storm cutting radar range (no Sim rule yet); the city blackout is in since prompt 31 L3',
     'i3m02': 'Morrigan prefers anti-air that stands still: its big attack picks anti-air, moving or not',
+    # Prompt 31 L4 (MAKE LATER).
+    'i1m01': '3 stars for no alarm: the stars are time and losses; no star rule of its own yet',
+    'i2m01': "Venn's convoy as a scripted object in the background (optional); 3 stars before dusk (the stars are time and losses)",
+    'c9m12': 'landings only on an island already taken: deliveries come to the rally; the rule only says how to play it',
+    'c10m11': 'the Albatross as a scripted object in the background (optional; no playable Albatross)',
+    'c6m03': "the Behemoth is the Escort's convoy (the objective kept), not a unit of the allied AI; it holds on Defend",
 }
 
 # The fixed decks in effect (prompt 31 L2: the 13 MAKE FIRST missions), each with the sheet's cards it replaced.
