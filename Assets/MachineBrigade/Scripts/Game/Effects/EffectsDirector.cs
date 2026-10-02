@@ -85,6 +85,16 @@ namespace MachineBrigade.Game.Effects
         private readonly FireSpots _fires;
         private readonly HullFire _hullFire;
         private readonly ProjectilePool _projectiles;
+
+        /// <summary>Fix prompt L6: the smoke and dust blasts leave behind (EffectLife's table).</summary>
+        private readonly ImpactSmoke _smoke;
+
+        /// <summary>Fix prompt L6: a blast's lingering smoke at its distance's detail (on screen, or a big column near it).</summary>
+        private void Linger(int band, Vector3 at, float core, float now)
+        {
+            if (!_cull.Visible(at, band >= 4 ? 1.2f : 0.4f)) return;
+            _smoke.Linger(band, at, core, now, TierFx.DetailAt(Vector3.Distance(at, _camera.Focus), _camera.Zoom));
+        }
         private readonly WeaponEffects _weapons;
         private readonly LaserBeams _lasers;
 
@@ -165,6 +175,8 @@ namespace MachineBrigade.Game.Effects
             _bigZones = new BigAttackZones(materials, meshes, _root);
             // Prompt 34 L3: the T4+ rounds' escape warnings.
             _escape = new EscapeWarnings(materials, meshes, _root);
+            // Fix prompt L6: the smoke and dust a blast leaves, by its size band.
+            _smoke = new ImpactSmoke(_root);
             // Fix prompt L5: one gate decides which warning rings are drawn (data warningRules).
             InitWarningGate();
             _aimLines = new AimLines(materials, _root);
@@ -266,9 +278,13 @@ namespace MachineBrigade.Game.Effects
                         EdgeRing(impact, e.Value, e.Target.X);
                         // Prompt 34 L5: its tier's redrawn blast on top, the exact shockwave rings, the shake.
                         TierImpact(TierFx.Of(round), impact, e.Value, e.Target.X, now, views);
-                        // Every blast from Medium up scorches the ground under it, as wide as it is drawn.
+                        // Fix prompt L6: the smoke and dust it leaves, as long as its size band says (EffectLife).
+                        var band = EffectLife.BandOf(round, e.Tier);
+                        Linger(band, impact, e.Value, now);
+                        // Every blast from Medium up scorches the ground under it, as wide as it is drawn, for its band's time.
                         if (e.Tier >= ExplosionTier.Medium)
-                            _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round));
+                            _decals.Place(impact, (e.Tier >= ExplosionTier.Large ? 5f : 2.2f) * size * BlastSizes.Ground(round) * BlastSizes.Round(round),
+                                EffectLife.Crater(band));
                         // Play-test 5 (DECISIONS 20V): a railgun's slug leaves a burn on what it struck, like the focused laser's.
                         if (round != null && round.Family == "railgun" && _cull.Visible(impact, 0.3f))
                         {
@@ -310,7 +326,10 @@ namespace MachineBrigade.Game.Effects
                         var missileGrow = matched && strike.Id != "moab" ? BlastSizes.MissileGrow : 1f;
                         // Prompt 25 A5: every strike's ring on its blast radius (a cruise missile's since 12C, now all of them).
                         Explode(e.Tier, hit, now, strikeScale, grow: strikeGrow * missileGrow, exact: matched, radius: e.Value);
-                        _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)) * (matched ? 1f : strikeGrow));
+                        // Fix prompt L6: its crater and its lingering smoke for its size band's time.
+                        var strikeBand = EffectLife.BandOf(e.Tier);
+                        _decals.Place(hit, Mathf.Max(4f, e.Value * (huge ? 1.4f : 1.1f)) * (matched ? 1f : strikeGrow), EffectLife.Crater(strikeBand));
+                        Linger(strikeBand, hit, e.Value, now);
                         if (strike != null && strike.Kind == SupportKind.Sead) SeadKill(hit, views, now);
                         if (e.Tier >= ExplosionTier.Large) _fires.Ignite(hit, huge ? 2.2f : e.Tier >= ExplosionTier.Huge ? 1.2f : 0.7f, huge ? 35f : 16f, now);
                         if (e.DefId == "napalm_strike")
@@ -466,7 +485,7 @@ namespace MachineBrigade.Game.Effects
                         if (e.Tier == ExplosionTier.Small)
                         {
                             Pop(_pop, blast + Vector3.up * 0.3f, now);
-                            _decals.Place(blast, 1.8f);
+                            _decals.Place(blast, 1.8f, EffectLife.Crater(1));
                             break;
                         }
                         // Prompt 25 A5: a vehicle's, a mine's or a prop's blast drawn as wide as it reaches.
@@ -474,7 +493,7 @@ namespace MachineBrigade.Game.Effects
                         EdgeRing(blast, e.Value, e.Target.X);
                         // Prompt 34 L5: a salvo's shell (Leviathan's 406 mm) lands as its tier.
                         TierImpact(SalvoTier(e, views), blast, e.Value, e.Target.X, now, views);
-                        _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f));
+                        _decals.Place(blast, Mathf.Max(3f, e.Value * 0.9f), EffectLife.Crater(EffectLife.BandOf(e.Tier)));
                         _wrecks.Blow(e.Entity, now);
                         if (e.Tier >= ExplosionTier.Huge)
                         {
@@ -597,7 +616,7 @@ namespace MachineBrigade.Game.Effects
         private void Crash(Vector3 at, float size, float now)
         {
             Explode(size >= 2.5f ? ExplosionTier.Huge : ExplosionTier.Large, at + Vector3.up * 0.6f, now);
-            _decals.Place(new Vector3(at.x, 0.15f, at.z), 5f);
+            _decals.Place(new Vector3(at.x, 0.15f, at.z), 5f, EffectLife.Crater(EffectLife.Top));
             _fires.Ignite(at + new Vector3(UnityEngine.Random.Range(-1.5f, 1.5f), 0f, UnityEngine.Random.Range(-1.5f, 1.5f)), 0.8f, 20f, now);
             var metal = Chunk("debris_metal");
             for (var i = 0; i < 8; i++)
@@ -711,6 +730,9 @@ namespace MachineBrigade.Game.Effects
             _strikes.Tick(now);
             _bigZones.Tick(views, now);
             _escape.Tick(now);
+            // Fix prompt L6: the lingering smoke columns and the craters' lives.
+            _smoke.Tick(now);
+            _decals.Tick(now);
             // Fix prompt L5: the rings offered this frame decide what is drawn next frame.
             _gate.PlayerTeam = views.PlayerTeam;
             _strikes.PlayerTeam = views.PlayerTeam;

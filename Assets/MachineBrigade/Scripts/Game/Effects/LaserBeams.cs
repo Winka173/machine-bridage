@@ -157,7 +157,7 @@ namespace MachineBrigade.Game.Effects
             };
             if (_burns.Count >= Capacity) _burns.RemoveAt(0);
             _burns.Add(burn);
-            if (!burn.Flies && _decals != null) _decals.Place(new Vector3(at.x, 0.15f, at.z), 1.6f * width);
+            if (!burn.Flies && _decals != null) _decals.Place(new Vector3(at.x, 0.15f, at.z), 1.6f * width, EffectLife.Crater(1));
         }
 
         private sealed class Burn
@@ -287,7 +287,7 @@ namespace MachineBrigade.Game.Effects
                         // A scorch where it burns, one each 0.7 s at most and only where it has moved on.
                         if (_decals != null && now >= b.BurnAt && (b.BurnPoint - b.To).sqrMagnitude > 2.25f)
                         {
-                            _decals.Place(b.To, 1.1f * width);
+                            _decals.Place(b.To, 1.1f * width, EffectLife.Crater(1));
                             b.BurnPoint = b.To;
                             b.BurnAt = now + BurnInterval;
                         }
