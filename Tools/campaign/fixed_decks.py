@@ -84,6 +84,19 @@ DECKS = {
         loaned=['radar_scout', 'instant_counter_battery'],
         replaced={'wheeled_howitzer': 'mortar_carrier', 'scout_heli': 'attack_helicopter', 'illum_flare_strike': 'uav_scan'},
         rules=['nightGuns']),
+    'c4m05': dict(
+        vehicles=['engineer_vehicle', 'vbied', 'mine_layer', 'tank_destroyer', 'artillery', 'wheeled_gun', 'towed_at_gun', 'scout_jeep'],
+        supports=['remote_mines', 'artillery_barrage'],
+        loaned=['towed_at_gun', 'remote_mines'],
+        replaced={'demolition_line_vehicle': 'vbied', 'nlos_atgm_vehicle': 'artillery'},
+        rules=['trainPrep'], prepSeconds=60),
+    'c4m06': dict(
+        vehicles=['river_patrol_boat', 'river_gunboat', 'ifv', 'railgun_truck', 'light_tank', 'attack_helicopter', 'scout_heli', 'aa_vehicle'],
+        supports=['artillery_barrage', 'smoke_screen'],
+        loaned=['river_patrol_boat', 'river_gunboat'],
+        replaced={'amphib_light_vehicle': 'ifv', 'coastal_ashm_vehicle': 'railgun_truck', 'prop_attack_plane': 'scout_heli',
+                  'guided_shell_strike': 'artillery_barrage'},
+        rules=['seaFogLighthouse']),
 }
 
 

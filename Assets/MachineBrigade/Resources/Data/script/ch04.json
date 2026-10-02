@@ -495,6 +495,17 @@
 "vi": "Đúng giờ. Như ta đã nói."
 },
 {
+"mission": "c4m05",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c4m05.15",
+"en": "Sixty seconds before the train moves. Mines on the rails, guns either side.",
+"vi": "Sáu mươi giây trước khi tàu chạy. Rải mìn lên ray, đặt pháo hai bên đường.",
+"at": 5.0
+},
+{
 "mission": "c4m12",
 "trigger": "mission_start",
 "speaker": "adler",
@@ -1385,6 +1396,17 @@
 "key": "script.c4m06.14",
 "en": "The fleet is at sea. As scheduled.",
 "vi": "Hạm đội đã ra khơi. Như lịch trình."
+},
+{
+"mission": "c4m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c4m06.15",
+"en": "Hold the lighthouse and you see the sea through the fog. Take it first.",
+"vi": "Giữ hải đăng là thấy được mặt biển trong sương. Chiếm nó trước.",
+"at": 30.0
 },
 {
 "mission": "c4m15",

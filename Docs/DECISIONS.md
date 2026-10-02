@@ -14926,3 +14926,13 @@ the lead, the tests are written, not run.
     it is not owned in it; the owned flyer), illum_flare_strike -> uav_scan (both scan cards). Rule nightGuns: Night is
     the mission's weather, the counter-battery radar shows a gun that fired (StatusKind.Reveal), the hunted guns move on
     their routes; all existing. Line: Nadia at 30 s.
+  - c4m05, c4m06 (chapter 4): c4m05 loaned towed_at_gun, remote_mines (the trap); demolition_line_vehicle -> vbied (a
+    charge driven at the target), nlos_atgm_vehicle -> artillery (both owned anti-tank cards, tank_destroyer and
+    wheeled_gun, are in the deck; long-range fire at the train instead). Rule trainPrep: `prepSeconds` 60, the route boss
+    stands for 60 s after the stage starts (MissionMode `_bossHeldUntil`), then drives its route; the time limit (1200 s)
+    is unchanged. The sheet's "mines on the rails slow the train" is pending (mines damage it; no slow). Line: Kade at
+    5 s, "sixty seconds" from the data. c4m06 loaned river_patrol_boat, river_gunboat (the fast boats in the fog; they
+    have no `naval` block, so they drive like ground units); amphib_light_vehicle -> ifv, coastal_ashm_vehicle ->
+    railgun_truck (owned long-range heavy hitter), prop_attack_plane -> scout_heli (the owned light flyer, it also sees in
+    the fog), guided_shell_strike -> artillery_barrage (both barrages). Rule seaFogLighthouse: lighthousebay in Fog and the
+    lighthouse's sea sight (Naval.Rules.LighthouseOwner) are existing. Line: Nadia at 30 s.

@@ -53,6 +53,7 @@ critical_failure_imminent | khai | 1 | Nó sắp tới bến. Dồn hết vào �
 victory | kessler | 1 | Hủy lịch trình. || Cancel the timetable.
 victory | khai | 1 | Tàu trật bánh. Bất kể nó chở gì, giờ nó nằm trong mương. || The train is off the rails. Whatever it carried is in a ditch now.
 defeat | kessler | 1 | Đúng giờ. Như ta đã nói. || On time. As I said.
+time@5 | khai | 2 | Sáu mươi giây trước khi tàu chạy. Rải mìn lên ray, đặt pháo hai bên đường. || Sixty seconds before the train moves. Mines on the rails, guns either side.
 
 @c4m12 main=adler
 mission_start | adler | 1 | Ba pháo đài, ba lá cờ. Tôi mang bốn lá, đề phòng. || Three forts, three flags. I brought four, just in case.
@@ -162,6 +163,7 @@ hq_below_50 | mai | 2 | Pháo tàu đang đánh vào trại. Lùi xe hậu cần
 victory | kessler | 1 | Một con tàu. Một khoản lỗ. Không phải phá sản. || One ship. A loss. Not bankruptcy.
 victory | khai | 1 | Scylla nằm dưới đáy vịnh. Hạm đội của ông ta phải đi đường dài. || Scylla is on the bottom. His fleet goes the long way round.
 defeat | kessler | 1 | Hạm đội đã ra khơi. Như lịch trình. || The fleet is at sea. As scheduled.
+time@30 | linh | 2 | Giữ hải đăng là thấy được mặt biển trong sương. Chiếm nó trước. || Hold the lighthouse and you see the sea through the fog. Take it first.
 
 @c4m15 main=khai
 mission_start | khai | 1 | Giữ làng chài tới sáng. Pháo của ta đang lên đường ven biển. || Hold the fishing village till dawn. Our guns are coming up the coast road.
