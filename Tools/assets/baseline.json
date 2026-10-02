@@ -1190,6 +1190,16 @@
    ],
    "reason": "merge of feature/p27-wave7b",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "blast_wall"
+   ],
+   "reason": "wave 7b: kept the old blast_wall, its V2 card was 1.3 % darker",
+   "changes": [
+    "FLAG blast_wall: triangles 1,032 -> 792 (-23.3%); vertices 1,196 -> 990 (-17.2%); fileBytes 62,408 -> 51,904 (-16.8%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -8583,8 +8593,8 @@
   },
   "blast_wall": {
    "file": "blast_wall.glb",
-   "fileBytes": 62408,
-   "sha1": "e1e0ec5fd08225d9",
+   "fileBytes": 51904,
+   "sha1": "5358586743e6c79d",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [],
    "nodes": 3,
@@ -8597,8 +8607,8 @@
    "submeshes": 3,
    "materialSlots": 3,
    "materialsUsed": 3,
-   "triangles": 1032,
-   "vertices": 1196,
+   "triangles": 792,
+   "vertices": 990,
    "degenerateTriangles": 0,
    "nonFiniteValues": 0,
    "primitivesMissing": {
@@ -8629,12 +8639,12 @@
     1.21,
     0.0
    ],
-   "structureHash": "c050699daabc9c41",
+   "structureHash": "c8115a21a830aeea",
    "color0": {
-    "mean": 0.4602,
-    "min": 0.121,
+    "mean": 0.4589,
+    "min": 0.0693,
     "max": 0.8143,
-    "p05": 0.1257,
+    "p05": 0.0731,
     "p95": 0.798,
     "outOfRange": 0
    },

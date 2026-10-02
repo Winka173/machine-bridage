@@ -729,7 +729,7 @@
             "kind": "tower",
             "model": "ammo_dump",
             "source": "Models/ammo_dump",
-            "hash": "v2:e06ac5b4ce0a619e553d5cf64eb70d17a36e4519"
+            "hash": "v2:9d916519cf62f2a2b36cafdfde3845217891da6d"
         },
         {
             "id": "argus",
@@ -799,7 +799,7 @@
             "kind": "tower",
             "model": "barrage_balloon",
             "source": "Models/barrage_balloon",
-            "hash": "v2:b37d52651e054fd68d09994f6a5f135c1ac3e846"
+            "hash": "v2:404de02388fa9cc7ed304890e1b38770af16173d"
         },
         {
             "id": "bastion_mk0",
@@ -1128,7 +1128,7 @@
             "kind": "tower",
             "model": "fire_control_centre",
             "source": "Models/fire_control_centre",
-            "hash": "v2:af1245446e2345434a051c813be4b9df1f89f23b"
+            "hash": "v2:87ed744d92eae467bdef515ddc31530c61204325"
         },
         {
             "id": "flare_searchlight_tower",
@@ -1268,7 +1268,7 @@
             "kind": "tower",
             "model": "inflatable_decoy",
             "source": "Models/inflatable_decoy",
-            "hash": "v2:0c3e6b52cd20be330053ebb629ee66eedd7f55ac"
+            "hash": "v2:2f9256e8cc4d8481c58a921bed6a51861330bb33"
         },
         {
             "id": "ixion",
@@ -1562,14 +1562,14 @@
             "kind": "structure",
             "model": "targeting_station",
             "source": "Models/targeting_station",
-            "hash": "v2:2c7ff704a8052f55781e2bf618625963bab99ad9"
+            "hash": "v2:5612835f7b00258f58afa434a8eddf02cf0b8b2c"
         },
         {
             "id": "troop_shelter",
             "kind": "tower",
             "model": "troop_shelter",
             "source": "Models/troop_shelter",
-            "hash": "v2:87c0bcbe1d9c3ff971066e9e090c4cf96da12db9"
+            "hash": "v2:16c021eac5a5c291a2cdd7334aa67160a39a7369"
         },
         {
             "id": "typhon",

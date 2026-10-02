@@ -14249,3 +14249,4 @@ moving parts untouched. Run: Blender rebuild of the ten, `glb_check.py` (compare
   within .1 m, no errors; targeting_station keeps its old movingParts warning.
 - **Card luma (old, alpha > .5, Rec. 709):** barrage_balloon .5838, blast_wall .3723, fire_control_centre .3961, inflatable_decoy .4254, troop_shelter .4112, ammo_dump .3466,
   targeting_station .4216. logistics_station, radar_site and repair_bay have no card of their own yet (balance.json borrows fuel_depot, radar_dome, vehicle_hangar), so there is no old luma.
+- Lead (2026-10-02), wave 7b cards: six pass (+0.4 % to +14.1 %); blast_wall -1.3 % so it KEEPS its old model and card (from 2ca5447); logistics_station, radar_site, repair_bay have no card. Wave 7 is complete (21 of 22 on V2).
