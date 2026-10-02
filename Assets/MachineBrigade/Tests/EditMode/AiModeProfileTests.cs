@@ -47,7 +47,7 @@ namespace MachineBrigade.Tests
             Assert.That(world.DefenderTeam, Is.Not.Null, $"{mode}/{goal}: the profile names its defender");
             var defender = world.DefenderTeam.Value;
             Assert.That(AiCommander.AdvancePressure(world, defender), Is.False, "the defender's attack threshold never falls");
-            Assert.That(world.Stall, Is.AnyOf(StallPolicy.Off, StallPolicy.AttackerOnly), "stall pressure is off or on the attacker only");
+            Assert.That(world.Stall == StallPolicy.Off || world.Stall == StallPolicy.AttackerOnly, Is.True, "stall pressure is off or on the attacker only");
             var id = GroundTank();
             var held = world.SpawnVehicle(id, defender, new Vector2(-40f, 0f), 0f);
             var attacker = world.SpawnVehicle(id, 1 - defender, new Vector2(30f, 0f), 180f);
