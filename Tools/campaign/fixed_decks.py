@@ -48,6 +48,7 @@ RULES = {
     'timedRecon': 'Recon against the time limit; the test_rod event is Skygate turning its gun',
     'cityBlackout': 'the city_blackout event (prompt 31 L3): night falls and the towers on the grid shut down, both sides',
     'behemothOurs': "the escorted Behemoth is Mara's, a placed ally (convoy): the escort's loss rule; it holds on the order Defend",
+    'hawkWingman': "Hawk's fighter is a placed ally under the allied AI and the general order; MissionMode loses the mission if it falls",
 }
 
 # The sheet's rules not in effect yet, and why (the report and DECISIONS list them).
@@ -153,6 +154,19 @@ DECKS = {
         replaced={},
         allies=[{'def': 'behemoth', 'x': -100, 'z': -100, 'heading': 45, 'name': 'behemoth_mara', 'convoy': True, 'lossIfDestroyed': True}],
         rules=['behemothOurs'], status='MAKE_LATER'),
+    # c10m12 (Hawk and Raven): Hawk's own fighter as a placed ally (the allied AI, the general order), lost if it falls; the
+    # Boss objective (Morrigan) kept. The sheet's five locked vehicle cards and one support: loaned the wingman drone (Hawk's
+    # wingman) and the chaff (the duel's defence); radar_support_vehicle -> recon_drone (the owned spotter), aa_57mm_vehicle ->
+    # heavy_aa (owned gun anti-air), aerial_tanker -> stealth_fighter (no tanker owned; a second fighter keeps the air side),
+    # shorad_vehicle -> aa_vehicle.
+    'c10m12': dict(
+        vehicles=['fighter_jet', 'wingman_drone', 'sam_launcher', 'recon_drone', 'heavy_aa', 'iron_beam', 'stealth_fighter', 'aa_vehicle'],
+        supports=['chaff_strike', 'sead_strike'],
+        loaned=['wingman_drone', 'chaff_strike'],
+        replaced={'radar_support_vehicle': 'recon_drone', 'aa_57mm_vehicle': 'heavy_aa', 'aerial_tanker': 'stealth_fighter',
+                  'shorad_vehicle': 'aa_vehicle'},
+        allies=[{'def': 'fighter_jet', 'x': -92, 'z': -92, 'heading': 45, 'name': 'hawk_jet', 'lossIfDestroyed': True}],
+        rules=['hawkWingman'], status='MAKE_LATER'),
 }
 
 
