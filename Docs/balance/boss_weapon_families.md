@@ -209,13 +209,13 @@ Ground DPS **170 -> 170** (100 %); anti-air only 240 -> 240.
 
 ### earth_borer
 
-Ground DPS **289 -> 289** (100 %); anti-air only 0 -> 0.
+Ground DPS **289 -> 213** (74 %); anti-air only 0 -> 0. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
 | 0 | `borer_drill` | melee_drill_head | 260 x 1 / 1.50 s = 173 | 260 x 1 / 1.50 s = 173 | 0 / 0 |
-| 1 | `borer_cannon` | cal_76 | 120 x 1 / 2.08 s = 58 | 120 x 1 / 2.08 s = 58 | 1.5 / 0 |
-| 2 | `borer_cannon` | cal_76 | 120 x 1 / 2.08 s = 58 | 120 x 1 / 2.08 s = 58 | 1.5 / 0 |
+| 1 | `borer_cannon` | cal_76 | 120 x 1 / 2.08 s = 58 | 120 x 1 / 6.00 s = 20 | 1.5 / 0 |
+| 2 | `borer_cannon` | cal_76 | 120 x 1 / 2.08 s = 58 | 120 x 1 / 6.00 s = 20 | 1.5 / 0 |
 
 ### command_airship
 
@@ -570,7 +570,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | fortress_hive | 586 | 586 | 100 % | 0 -> 0 | - |
 | fortress_bastion | 792 | 741 | 94 % | 0 -> 0 | `p26_bastion_direct_b100` 2 barrels together |
 | rail_supergun | 170 | 170 | 100 % | 240 -> 240 | - |
-| earth_borer | 289 | 289 | 100 % | 0 -> 0 | - |
+| earth_borer | 289 | 213 | 74 % **(< 80 %)** | 0 -> 0 | - |
 | command_airship | 1532 | 1532 | 100 % | 0 -> 0 | - |
 | landing_hovercraft | 302 | 302 | 100 % | 120 -> 120 | - |
 | supreme_command | 143 | 226 | 159 % | 0 -> 0 | - |
