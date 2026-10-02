@@ -25,6 +25,7 @@ import prompt29  # noqa: E402
 import prompt32  # noqa: E402
 import prompt31  # noqa: E402
 import prompt32_base  # noqa: E402
+import prompt34  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -376,8 +377,8 @@ def build(game, imgdir):
                "xe tinh nhuệ, boss và bộ phận boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ, giao diện và các phép đo còn chờ phase kiểm tra.</p></div>")
     out.append("<div class='section'><h2>Mục lục</h2><ol class='toc'><li>Tổng quan</li><li>Chế độ chơi</li><li>Chiến dịch</li>"
                "<li>Nhiệm vụ nhiều giai đoạn</li><li>Tác chiến</li><li>Căn cứ và tháp</li><li>Công thành và Phòng thủ</li>"
-               "<li>Phương tiện (thẻ chi tiết; 8b miêu tả, hình dạng, mở khóa)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương (10c-10h: tầm nổ, boss, đạn thay thế, boss hai lớp nổ, Săn trùm)</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
-               "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống</li><li>Kiểm thử và phép đo còn lại</li>"
+               "<li>Phương tiện (thẻ chi tiết; 8b miêu tả, hình dạng, mở khóa)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương (10c-10i: tầm nổ, boss, đạn thay thế, boss hai lớp nổ, Săn trùm, họ vũ khí và cảnh báo)</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
+               "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống (16b: hiệu ứng và âm thanh theo bậc, xác vỡ, màn xem trước)</li><li>Kiểm thử và phép đo còn lại</li>"
                "<li>Giao diện</li><li>Hình ảnh</li></ol></div>")
 
     # ------------------------------------------------------------------ overview
@@ -465,12 +466,15 @@ def build(game, imgdir):
     out.append("<div class='section'><h2>9. Bảng DPS tổng hợp</h2>"
                + table(['Xe', 'Lớp', 'Giáp trước', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
 
+    # Prompt 34 L9: firing, blasts and sound by tier, wrecks by class, the previews' settings.
+    out.append(prompt34.section16(game, h))
     out.append(prompt29.round2(game, h))
     # Prompt 32 L8: the ammunition handbook (VI + EN), generated from balance.json as the game's Dossier tab.
     # Prompt 32 L9: the base system's sections (roster, branches, rebuilding, walls, HQ types, Defend by level, Showdown,
     # starting CP and opening squads), before the handbook.
     out.append(prompt32_base.base_system(game, h))
     out.append(prompt32.ammo_handbook(game, h))
+    out.append(prompt34.handbook_tiers(game, h))
     cv = programme.combat_value(game, h)
     if cv and measure_stamp.matches(prompt25.measure_path()):
         out.append(cv)
@@ -530,6 +534,8 @@ def build(game, imgdir):
     out.append(prompt26.rounds_section(game, h))
     out.append(prompt26.boss_blast_section(game, h))
     out.append(prompt26.hunt_section(game, h))
+    # Prompt 34 L9: weapon families and tiers, the bosses' family rounds, radii and warnings.
+    out.append(prompt34.section10(game, h))
     out.append(prompt27.section(game, h))
     # Prompt 31 L6: the game-made decks and the battlefield events.
     out.append(prompt31.section(game, h))

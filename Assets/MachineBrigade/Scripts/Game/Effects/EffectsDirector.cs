@@ -633,6 +633,10 @@ namespace MachineBrigade.Game.Effects
                     _catalog.Weapons.TryGetValue(e.DefId, out var big) && !big.Laid && !EscapeRing(e, shooter, big, now) &&
                     e.Value >= 1.2f && big.SplashRadius >= BossShellWarnFrom && (big.Indirect || big.Projectile == ProjectileKind.Shell))
                     BossShellWarning(Ground(e.Target, 0.2f), big.SplashRadius, e.Value, now);
+                // Prompt 34 L8: a preview shows every blast round of its unit landing inside its ring, at the round's real size.
+                if (PreviewRings && shooter != null && e.Kind == SimEventKind.WeaponFired && shooter.Sim.Team == 0 && e.DefId != null &&
+                    _catalog.Weapons.TryGetValue(e.DefId, out var shown))
+                    PreviewRing(e, shooter, shown, now);
                 // At night the flash lights the ground at the muzzle.
                 if (shooter != null && shooter.Root != null && !shooter.Flying && e.DefId != null &&
                     _catalog.Weapons.TryGetValue(e.DefId, out var fired))

@@ -99,9 +99,8 @@ namespace MachineBrigade.Game.Rendering
             camera.farClipPlane = 400f;
             _effects = new EffectsDirector(catalog, materials, meshes, models, rts, _root, EffectBudget.Eco);
 
-            var ground = VehicleView.CreateMesh("Ground", _root, meshes.GroundQuad, materials.Ground, false);
-            ground.localScale = new Vector3(260f, 1f, 260f);
-            ground.localPosition = new Vector3(0f, -0.02f, 0f);
+            // Prompt 34 L8: every blast and warning of the shown unit gets its ring at its real size.
+            _effects.PreviewRings = true;
 
             _id = vehicleId;
             if (!catalog.Vehicles.TryGetValue(vehicleId, out var def))
@@ -124,11 +123,15 @@ namespace MachineBrigade.Game.Rendering
                         _friends.Add(friend);
                     }
                 _scene = SceneFor(_support);
+                _stage = PreviewStage.ForRange(materials, _root, PreviewSetting.Ground, PreviewSettings.Biome(), _start.Y, _far.Y, 0f, 0f);
                 SetLayer(_root);
                 return;
             }
             _scene = SceneFor(def);
+            // Prompt 34 L8: the unit in its own setting; a ship stands far enough off for its hull to stay on the water.
+            Setting = PreviewSettings.Of(def);
             var distance = TowerScene ? TowerDistance : TargetDistance(def);
+            if (Setting == PreviewSetting.Sea) distance = PreviewSettings.SeaDistance(def, distance);
             _start = new Vector2(0f, -distance * 0.5f);
             _shooter = _world.SpawnVehicle(vehicleId, 0, _start, 0f);
             // A tower on show never falls (a relay under fire, a shield generator shelled).
@@ -137,8 +140,18 @@ namespace MachineBrigade.Game.Rendering
             _air = HitsAir(def);
             _far = new Vector2(0f, distance * 0.5f);
             _reach = distance;
+            _stage = PreviewStage.ForRange(materials, _root, Setting, PreviewSettings.Biome(), _start.Y, _far.Y, def.Length, def.Width);
             SetLayer(_root);
         }
+
+        /// <summary>Prompt 34 L8: the setting the range stands its unit in (<see cref="PreviewSettings.Of"/>).</summary>
+        public PreviewSetting Setting { get; } = PreviewSetting.Ground;
+
+        /// <summary>The ground, sea, track or pad under the range (<see cref="PreviewStage"/>).</summary>
+        private readonly PreviewStage _stage;
+
+        /// <summary>Prompt 34 L8: a coastal gun's target, a ship out at sea (it fires on ships only).</summary>
+        internal const string ShipTarget = "missile_boat";
 
         /// <summary>
         /// Far enough for artillery's minimum range, near enough to see the vehicle and its targets in one frame. Play-test 8
@@ -222,6 +235,12 @@ namespace MachineBrigade.Game.Rendering
             _targetsUp = true;
             // A tower's own scene brings its own enemies; the depot's launchers want the usual targets.
             if (TowerScene && _scene != Scene.Depot) return;
+            // Prompt 34 L8: a gun that fires on ships only gets a ship at sea (the range's other targets are on land).
+            if (_shooter != null && _shooter.Def.NavalOnly)
+            {
+                Target(ShipTarget, _far + new Vector2(0f, 4f));
+                return;
+            }
             if (_ground || _scene == Scene.Depot)
                 foreach (var (id, at) in GroundTargets)
                     Target(id, _far + at);
@@ -396,6 +415,7 @@ namespace MachineBrigade.Game.Rendering
                 _shooter = _world.SpawnVehicle(_id, 0, _start, 0f);
             }
             _effects.Tick(_views);
+            _stage?.Tick(Time.unscaledTime);
             _mines.Update(_world);
             Pulse();
             Frame(dt);
@@ -504,6 +524,7 @@ namespace MachineBrigade.Game.Rendering
         {
             _effects.Dispose();
             _views.Dispose();
+            _stage?.Dispose();
             if (_root != null) UnityEngine.Object.Destroy(_root.gameObject);
         }
     }

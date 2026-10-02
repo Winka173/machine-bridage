@@ -16054,3 +16054,87 @@ lead; sudden death, its damage count and the draw; the menu and both languages).
 - **Report** `Docs/balance/report_p32.md`: pass 0's results, the rebuild prices (provisional and script), the towers cut,
   the steel fortress verdict (HOLD), the three HQ types compared, the Showdown static check, the overlaps and performance,
   every decision taken alone.
+
+## Prompt 34 L8 / L9 (lead pass, 2026-10-02)
+
+### L8: every preview in the unit's own setting
+
+- **The settings** (`PreviewSettings.Of`, view only): Air (anything flying: aircraft, helicopters, drones, the flying
+  bosses), Rail (a boss frame that moves on rails, a `route: "rail"`, the ids `armored_train`, `nuke_train`,
+  `rail_supergun`), Sea (a `naval` block or a ship / submarine boss frame: ships, the sea bosses; and the river boats by
+  their ids, which the Sim drives as ground vehicles), WaterEdge (the hovercraft frame, `hover_*`, `amphib_*` and the
+  "Amphibious light tank" `light_tank`: the Sim drives them on land, so the ids decide), Coast (a `navalOnly` gun: the
+  coastal battery), BasePad (static: towers and fixed defences), else Ground. The domain (`PreviewSettings.Domain`) is
+  Air / Rail / Water (Sea, WaterEdge) / Ground (Ground, BasePad, Coast).
+- **The biome** is the chosen map's theme (`MatchSettings.CurrentMap`, which falls back to the first map when the chosen
+  one is not there; the menu only lets an unlocked map be chosen), drawn from `MapTheme.For(theme)`: its grass, dirt
+  and sand in noise patches, speckled, and its water colour.
+- **Temporary scenes, not prompt 33's** (`PreviewStage`): prompt 33's biome, sea and rail assets are on another lane and
+  not merged, so the stage builds scenes of the right kind from procedural meshes: a ground grid in the biome's colours, a
+  flat sea with three crossing swells (0.14 m, moved on the CPU with their normals; the range's sea is 33 x 33 cells of
+  4 m), a wet-sand shore strip, a short track (ballast, sleepers, two steel rails, a buffer stop; the gauge 0.62 x the
+  train's width, 1.4-5 m), a base slot's pad (concrete over a dark rim, hazard corner marks). Swap for prompt 33's pieces
+  when it merges (one class). Own plain materials, because `materials.Ground` carries the lobby map's painted texture
+  (the old range's quad showed the whole lobby map squeezed onto it); no property blocks.
+- **"In action"** (`FiringRange`): the 260 m quad is replaced by the stage. Sea: water from the back edge to a shore 12 m
+  before the targets, which stand on the shore; a ship stands far enough off for its bow to stay on the water
+  (`PreviewSettings.SeaDistance`: half its length + 14 m, but never past 90 % of its longest reach; the Leviathan goes from
+  42 m to 57 m). WaterEdge: the shooter's rear over the water, the shore under it. Rail: a track under the train along its
+  heading, from the back edge to 10 m past its nose (stopping 8 m short of the targets). Air: the biome's ground below (the
+  flight is the Sim's, as before). BasePad: the pad under the tower. Coast: the battery on its pad on the shore, the sea
+  beyond, and a missile boat for its target (`FiringRange.ShipTarget`: it fires on ships only, so on the old range it had
+  nothing to shoot at).
+- **The turntable** (`UnitPreview.Show(model, scale, def)`, the detail page of vehicles, bosses and towers): a disc of the
+  setting under the model, turning with it, its rim darkened into the menu's backdrop: ground; a wavy sea at the model's
+  waterline (its own origin over its foot, else a fifth of its height); half water, half shore; a track along the model's
+  long side; a pad; for an aircraft the ground lies 3-9 m (0.3 x its altitude) below its foot and the model bobs.
+- **Test fire** in the preview is the battle's own: the range's events go through `EffectsDirector` (L5's tier overlays,
+  rings, firing looks) and `AudioDirector.ConsumeRange` (L6's banks and priority). The dummies stay the right kind:
+  armour 0-4 ground vehicles for ground weapons, an attack helicopter for anti-air, a ship for a coastal gun.
+  **Rings** (`EffectsDirector.PreviewRings`, set by the range only): every unguided blast round the shown unit fires shows
+  L3's pair of rings on its fall point, the edge (`WarnRadius`) and the core, exactly the round's damage area: for its
+  warning when it is T4+ (a player's T4 round too, in the preview only), else for its last 0.8 s. A boss's rounds that
+  already warn (L3's escape warning, prompt 26 B.4's ring) are left to those, so nothing draws twice.
+- **The ammunition handbook** has no 3D scene (precheck item 5): nothing to stand in a setting. Its tiers come in L9.
+- Tests (written, not run): `Prompt34PreviewTests` (every roster unit's domain against its data, the named units' settings,
+  every tower on a pad, a range ship's hull on the water, the coastal gun's ship target, the preview rings' rule, each
+  setting's pieces on the range and the turntable, an aircraft's ground below it, the waves moving within their height, the
+  biome's fallback).
+
+### L9: validators, the stress scene, the design document, the report
+
+- **Validators in one run**: `python Tools/balance/p34_validate.py` (exit 1 on a problem): (1) families: one family one
+  round in every boss (`p34_boss_families.validate`) and every variant listed with its reason; (2) warnings: every T4+ boss
+  round against the escape formula (`p34_warnings.check`, Gungnir the named exception); (3) rings: a laid salvo's and a
+  cruise missile's warning support must draw the blast's edge (`radius`) and core (`blast`); (4) muzzles: every vehicle
+  with a gun that fires its barrels together draws a model listed in `p34_barrels.MUZZLES` (whose GLBs are checked), or a
+  listed exception (a variant or a tower branch resolves to its parent's model); (5) previews: a mirror of
+  `PreviewSettings.Of` over balance.json (all four domains used, the rail and sea bosses on theirs); (6) wrecks: no
+  `AddComponent<...Collider>` / `CreatePrimitive` in the wreck code, no model meta with `addColliders: 1`. All six OK.
+  C# tests of the same rules: `Prompt34Tests` (1, 2), `Prompt34ValidatorTests` (3, 4, 6), `Prompt34PreviewTests` (5).
+- **Found by rule 3 and fixed (data, view only)**: the cruise missiles' mark `leviathan_cruise_mark` drew 12 m over a
+  10 m core whose edge reaches 20 m (`ExplosionDef.TwoLayer`: min(20, 2 x core)) on Leviathan, Kraken, Typhon, Hydra, Nyx
+  and Scylla, and over Caspian's 7 m core (edge 14). The mark is now 20 / 10 m; Caspian's cruise uses a new copy
+  `leviathan_cruise_mark_7` (14 / 7 m, with its strings). Both are damage-0 event supports: nothing in the Sim reads
+  them. Written by `p34_validate.py --write` (a rerun changes nothing).
+- **Rings and the one-layer blast**: an ordinary blast's reach varies by up to 15 % in the Sim (`DamageSystem`), so its
+  ring shows the nominal core. Every T4+ boss round that warns has a fixed two-layer blast (tested), so those rings are
+  exact.
+- **Stress scene** (`Game/Match/P34StressCheck.cs`): `-mb-play -mb-lighthousebay -mb-p34stress[=SECONDS]` (default
+  120 s). Lighthouse Bay because it is the map with a sea (the Leviathan on its middle lane). The enemy gets the
+  Leviathan, Jötunn (`mobile_fortress`, the Smerch pods) and Roc (`command_airship`, the 400 kg bombs), each back 10 s
+  after it is lost; both sides are kept at 32 vehicles (bosses not counted) from a 16-unit mix. Once a second it samples
+  the live particles (every ParticleSystem), the busy voices (`AudioDirector.BusyVoices`, of 32) and the wrecks and pieces
+  (`EffectsDirector.WreckCount`, `WreckPieces`); at the end it writes peaks and means to
+  `Docs/balance/p34_stress_counts.json` (editor) and logs them. FPS: NEED PROFILE. Not run in this pass.
+- **Design document** (`Tools/docs/prompt34.py`, wired into `build_doc.py`; the PDF is not rebuilt in this pass): 10i
+  (the family table with tiers, boss numbers and variants' reasons; every boss weapon's family round, core / edge, cycle
+  and warning; the escape warnings by family), 16b (firing, blast, camera and sound by tier; wrecks by class; the
+  previews' settings), and the handbook's T0-T5 tiers after the ammunition handbook. The table of contents names them.
+- **In-game handbook**: a new entry "Calibre tiers T0-T5" (`AmmoHandbook.Tiers`, strings in `BaseText`): each tier's
+  families (from `weaponFamilyTable`) and its look and sound, and the T4+ warning rule.
+- **Report**: `Docs/balance/report_p34.md` (balance before / after by boss, the player families that deviate, the
+  pictures to render (NEED RENDER), the stress scene, the validators, every decision of the prompt).
+- Tests (written, not run): `Prompt34ValidatorTests` (a weapon's rings are its core and edge, every warned boss round has a
+  fixed two-layer blast, the cruise and salvo marks show their blast, every barrel fired together has its muzzle, no model
+  brings a collider, the stress scene's units and map).

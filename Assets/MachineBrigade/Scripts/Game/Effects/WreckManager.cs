@@ -77,6 +77,9 @@ namespace MachineBrigade.Game.Effects
         /// <summary>Pieces torn off wrecks still about (tests and the budget log).</summary>
         public int Pieces => _breakup.Count;
 
+        /// <summary>Prompt 34 L9: the wrecks on the field now (the stress scene's count).</summary>
+        public int Count => _wrecks.Count;
+
         public WreckManager(FireSpots fires, ChunkThrower chunks, int capacity, Transform parent = null)
         {
             _fires = fires;

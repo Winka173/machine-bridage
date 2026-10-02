@@ -37,6 +37,38 @@ namespace MachineBrigade.Game.Effects
             return true;
         }
 
+        /// <summary>
+        /// Prompt 34 L8: set by a preview ("In action"): every unguided blast round its unit fires shows the escape warning's
+        /// pair of rings on its fall point, the edge (<see cref="WeaponDef.WarnRadius"/>) and the core, for the round's
+        /// warning when it has one (T4+), else for its last <see cref="PreviewRingSeconds"/> in the air. The rings are exactly the
+        /// blast's damage area. A boss's rounds that already warn (L3, prompt 26 B.4) are left to those. Off in a battle.
+        /// </summary>
+        public bool PreviewRings { get; set; }
+
+        /// <summary>Prompt 34 L9: the wrecks on the field and their torn-off pieces (the stress scene's counts).</summary>
+        internal int WreckCount => _wrecks.Count;
+
+        internal int WreckPieces => _wrecks.Pieces;
+
+        /// <summary>How long a preview's ring shows for a round with no warning of its own.</summary>
+        public const float PreviewRingSeconds = 0.8f;
+
+        /// <summary>Whether a preview draws its ring for this round, shot by <paramref name="boss"/> or not (see <see cref="PreviewRings"/>).</summary>
+        public static bool PreviewRingFor(WeaponDef round, bool boss)
+        {
+            if (round == null || round.Guided || round.Laid || round.SplashRadius <= 0f) return false;
+            return !boss || (round.WarnSeconds <= 0f && round.SplashRadius < BossShellWarnFrom);
+        }
+
+        private void PreviewRing(SimEvent e, VehicleView shooter, WeaponDef weapon, float now)
+        {
+            var round = FiredRound(e, shooter, weapon);
+            if (!PreviewRingFor(round, shooter.Sim.Def.Boss)) return;
+            var flight = Mathf.Max(0.05f, e.Value);
+            var warn = round.WarnSeconds > 0f ? round.WarnSeconds : PreviewRingSeconds;
+            _escape.Add(Ground(e.Target, 0.13f), round.SplashRadius, round.WarnRadius, now + Mathf.Max(0f, flight - warn), now + flight);
+        }
+
         /// <summary>Prompt 34 L4: rounds of each shooter's mount already drawn in this batch (a simultaneous volley's barrels).</summary>
         private readonly System.Collections.Generic.Dictionary<(MachineBrigade.Sim.Core.EntityId, int), int> _volley = new();
 
