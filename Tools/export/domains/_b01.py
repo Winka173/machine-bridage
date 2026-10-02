@@ -145,7 +145,7 @@ MEAN = {
     "dps_giap_0": "DPS duy trì lên xe giáp 0 (mặt trước, hoặc nóc khi đánh từ trên)",
     "dps_giap_2": "DPS duy trì lên xe giáp 2", "dps_giap_4": "DPS duy trì lên xe giáp 4",
     "dps_cong_trinh": "DPS duy trì lên công trình giáp 2 (giáp mặc định của công trình)",
-    "dps_may_bay": "DPS duy trì lên máy bay giáp 0",
+    "dps_may_bay": "DPS duy trì lên máy bay; giả định (lead chấp nhận 03/10): máy bay giáp 0 (14 / 22 máy bay thẻ)",
     "co_vong_canh_bao": "đạn có vòng cảnh báo", "bac_canh_bao": "bậc dùng cho cảnh báo (không họ mà có cảnh báo: 4)",
     "thoi_gian_canh_bao_s": "thời gian cảnh báo trước khi rơi (0 dưới T4)",
 }

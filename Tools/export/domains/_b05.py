@@ -231,11 +231,11 @@ def build(ctx, book, d):
     T = {
         "gio_du_lieu_s": f"=IF({isn(X('numbers_time_limit_s'))},{X('numbers_time_limit_s')},{q('')})",
         "hiep_phu_s": f"=IF({isn(X('numbers_overtime'))},{X('numbers_overtime')},0)+IF({isn(X('numbers_sudden_death'))},{X('numbers_sudden_death')},0)",
-        "gio_game_s": (f"=IF(AND({{doc_gio_du_lieu}},{isn('{gio_du_lieu_s}')}),{{gio_du_lieu_s}},IF({isn(X('numbers_start'))},"
+        "gio_vao_tran_s": (f"=IF(AND({{doc_gio_du_lieu}},{isn('{gio_du_lieu_s}')}),{{gio_du_lieu_s}},IF({isn(X('numbers_start'))},"
                        f"{X('numbers_start')}*{{gio_bat_dau_ma_s}}/300,IF({isn('{gio_bat_dau_ma_s}')},{{gio_bat_dau_ma_s}},{q('')})))"),
         "quy_cong_them_s": (f"=IF({isn(X('numbers_sector_bonus'))},2*MIN({X('numbers_sector_bonus')},{X('numbers_max_bank')}),"
                             f"IF({isn('{thuong_giai_doan_s}')},MIN({{thuong_giai_doan_s}},2*{{tran_quy_ma_s}}),0))"),
-        "thoi_luong_toi_da_s": f"=IF({isn('{gio_game_s}')},{{gio_game_s}}+{{quy_cong_them_s}}+{{hiep_phu_s}},{q('')})",
+        "thoi_luong_toi_da_s": f"=IF({isn('{gio_vao_tran_s}')},{{gio_vao_tran_s}}+{{quy_cong_them_s}}+{{hiep_phu_s}},{q('')})",
         "thang_som_nhat_s": (f"=IF({isn(X('numbers_bleed'))},IF({X('numbers_points')}/({X('numbers_bleed')}*3)<={X('numbers_time_limit_s')}-"
                              f"{X('numbers_final_phase')},{X('numbers_points')}/({X('numbers_bleed')}*3),{X('numbers_time_limit_s')}-"
                              f"{X('numbers_final_phase')}+({X('numbers_points')}-{X('numbers_bleed')}*3*({X('numbers_time_limit_s')}-"
@@ -251,7 +251,7 @@ def build(ctx, book, d):
     META = {
         "gio_du_lieu_s": ("s", "giờ ghi trong dữ liệu (Che_do.numbers_time_limit_s)"),
         "hiep_phu_s": ("s", "hiệp phụ + đột tử (numbers.overtime + numbers.suddenDeath)"),
-        "gio_game_s": ("s", "đồng hồ game dùng lúc vào trận: giờ dữ liệu nếu Apply đọc nó; Assault numbers.start x hệ số; còn lại số trong mã"),
+        "gio_vao_tran_s": ("s", "đồng hồ game dùng lúc vào trận: giờ dữ liệu nếu Apply đọc nó; Assault numbers.start x hệ số; còn lại số trong mã"),
         "quy_cong_them_s": ("s", "giờ cộng thêm tối đa: Assault 2 khu x min(sectorBonus, maxBank); quỹ giai đoạn min(tổng thưởng, 2 x trần)"),
         "thoi_luong_toi_da_s": ("s", "thời lượng tối đa lý thuyết: đồng hồ + giờ cộng thêm + hiệp phụ (mỗi thưởng đến đúng lúc hết giờ)"),
         "thang_som_nhat_s": ("s", "thắng sớm nhất: Conquest giữ cả 3 cứ điểm từ đầu (points / (bleed x 3), pha cuối x finalScale); "
@@ -319,7 +319,7 @@ def build(ctx, book, d):
         refl = mx if fl(mx) else last
         gap = tlim - (start + extra) if fl(tlim) and fl(start) and not reads else ""
         ref_len[mid] = refl
-        for c, v in (("gio_du_lieu_s", tlim), ("hiep_phu_s", ot), ("gio_game_s", game), ("quy_cong_them_s", extra),
+        for c, v in (("gio_du_lieu_s", tlim), ("hiep_phu_s", ot), ("gio_vao_tran_s", game), ("quy_cong_them_s", extra),
                      ("thoi_luong_toi_da_s", mx), ("thang_som_nhat_s", early), ("so_ha_toi_thieu", kills),
                      ("dot_cuoi_bat_dau_s", last), ("thoi_luong_tham_chieu_s", refl), ("lech_gio_du_lieu_s", gap)):
             LB.put(x, c, T[c], v, game=False)

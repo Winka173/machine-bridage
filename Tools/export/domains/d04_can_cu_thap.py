@@ -191,5 +191,13 @@ def build(ctx):
             r.set("trong_so", w, B.BALANCE, path)
     _b04.build(ctx, book, d, res)
     _unit_settle.apply(book)
+    # an empty weapon-mount child (no utility module / wall has a secondary[] in balance.json): one KHONG_CO marker row
+    for name, what in (("Mo_dun_tien_ich_vu_khi", "mô-đun tiện ích"), ("Tuong_vu_khi", "loại tường")):
+        sh = book.sheets.get(name)
+        if sh is not None and not sh.rows:
+            r = sh.row("KHONG_CO", f"{B.BALANCE}: vehicles[*].secondary (không {what} nào có)")
+            r.set(sh.parent_col, "KHONG_CO")
+            r.set("trang_thai", "KHONG_CO", meaning="KHONG_CO: dòng đánh dấu (sheet không có dữ liệu)")
+            r.set("ghi_chu", f"không {what} nào có bệ phụ (secondary[]) trong balance.json; vũ khí chính ở sheet cha", meaning="lý do")
     al = book.kv_sheet("Can_cu_AI_cap", "AI xây căn cứ: cấp HQ theo độ khó", "base.ai.levels")
     book.kv_rows(al, (base_cfg.get("ai") or {}).get("levels") or {}, B.BALANCE, ("base", "ai", "levels"), "base.ai.levels")

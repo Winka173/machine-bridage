@@ -9,10 +9,17 @@ from __future__ import annotations
 from core.formula import F
 
 
+def shown(template: str) -> str:
+    """The template as Schema.cong_thuc shows it: a row id with a dot is bracketed ({Kinh_te!gia_tri_so@[economy.income]}),
+    so the text never reads as an e-mail address to the secret scan."""
+    import re
+    return re.sub(r"@([^}\[\]]*\.[^}]*)\}", lambda m: "@[" + m.group(1) + "]}", template)
+
+
 def declare(sheet, col: str, template: str, ref: str, unit: str = "", meaning: str = "", game: bool = True, enum=None):
     """A formula column (and <col>_game when game is True). ref: the C# 'file method' (game) or the Python rule."""
     sheet.col(col, unit=unit, meaning=meaning + (" [công thức sống]" if meaning else "công thức sống"),
-              formula=template, source_note=("game: " if game else "python: ") + ref, enum=enum)
+              formula=shown(template), source_note=("game: " if game else "python: ") + ref, enum=enum)
     if game:
         sheet.col(col + "_game", unit=unit, meaning=f"{col}: giá trị mã game tính (port Python của {ref})",
                   source_note=f"port Python của {ref}", enum=enum)
