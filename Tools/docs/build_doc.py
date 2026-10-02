@@ -27,6 +27,7 @@ import prompt31  # noqa: E402
 import prompt32_base  # noqa: E402
 import prompt34  # noqa: E402
 import prompt33  # noqa: E402
+import fix_full  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -175,7 +176,7 @@ def fill(text, values):
 
 CACHE = None
 LONG_MAPS = len(list((Path(__file__).resolve().parents[2] / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data' / 'maps').glob('*_long.json')))
-SIZES = {'thumb': 640, 'gearicon': 128, 'shot': 1500, '': 1300}
+SIZES = {'thumb': 640, 'gearicon': 128, 'shot': 1500, 'fx': 560, '': 1300}
 
 
 def img(path, cls='', alt=''):
@@ -259,6 +260,14 @@ table.eff td, table.eff th { padding: 1.5pt 3pt; text-align: center; }
 .behav ul { margin: 2pt 0 0 0; padding-left: 12pt; }
 .behav li { margin: 1pt 0; }
 .behav .hl { color: #2f5d8a; font-weight: 700; }
+.fxblock { page-break-inside: avoid; margin-bottom: 8pt; }
+.fxgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 3pt; }
+.fxcell { break-inside: avoid; text-align: center; }
+.fxcell img.fx, .pair img.fx { width: 100%; border: 1px solid #c9cdd0; }
+.pending { background: #c8cbcd; color: #4a4f53; font-size: 7pt; min-height: 52pt; display: flex; flex-direction: column;
+           justify-content: center; align-items: center; text-align: center; padding: 3pt; word-break: break-all; }
+.pending code { font-size: 6.5pt; }
+.pair { page-break-inside: avoid; margin-bottom: 6pt; }
 """
 
 
@@ -298,7 +307,9 @@ def refs_text(v):
 
 
 def vehicle_card(v, imgdir):
-    weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), str(w.get('pen', 0)), form_cell(w), num(w['damage']), weapon_cycle(w),
+    # Full fix L10 item 8: calibre or warhead, the cadence as "loạt N · chu kỳ X s" / "mỗi X s", barrels, core / edge, sustained DPS.
+    weapons = [[esc(w.get('name') or w['id']), TYPE_VI.get(w['type'], w['type']), str(w.get('pen', 0)), form_cell(w), esc(fix_full.card_size(w)),
+                num(w['damage']), str(fix_full._barrels(w)), esc(fix_full.card_rate(w)) if fix_full._cycle(w) else weapon_cycle(w), esc(fix_full.card_blast(w)),
                 f"{w['range']:g} m" + (f" (tối thiểu {w['minRange']:g})" if w['minRange'] > 0 else ''),
                 TARGET_VI.get(w['targets'], w['targets']), f"{w['dps']:.0f}"] for w in v['weapons']]
     main = max(v['weapons'], key=lambda w: w['dps'], default=None)
@@ -326,7 +337,8 @@ def vehicle_card(v, imgdir):
             f"<div class='note'><b>Giáp:</b> {esc(armour_text(v))}</div>"
             f"{ref_html}{matchup}"
             f"{guide_html(v.get('guide', ''))}<div class='note'>{esc(v['note'])}</div>{('<div>' + skills + '</div>') if skills else ''}</div></div>"
-            + (table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Sát thương / phát', 'Nhịp bắn', 'Tầm', 'Mục tiêu', 'DPS'], weapons) if weapons else '')
+            + (table(['Vũ khí', 'Loại', 'Xuyên', 'Dạng · dấu', 'Cỡ / đầu nổ', 'Sát thương / phát', 'Nòng', 'Nhịp bắn', 'Lõi / rìa', 'Tầm', 'Mục tiêu',
+                      'DPS duy trì'], weapons) if weapons else '')
             + (effect_table(main) if main else '')
             + "<div class='two'>" + lines_html('Hành vi', v.get('behavior'), 'behav') + lines_html('Đạn và nạp đạn', ammo, 'behav') + "</div>"
             + "</div>")
@@ -378,9 +390,9 @@ def build(game, imgdir):
                "xe tinh nhuệ, boss và bộ phận boss, hỗ trợ hỏa lực, hệ thống trang bị, kinh tế, bản đồ, giao diện và các phép đo còn chờ phase kiểm tra.</p></div>")
     out.append("<div class='section'><h2>Mục lục</h2><ol class='toc'><li>Tổng quan</li><li>Chế độ chơi</li><li>Chiến dịch</li>"
                "<li>Nhiệm vụ nhiều giai đoạn</li><li>Tác chiến</li><li>Căn cứ và tháp</li><li>Công thành và Phòng thủ</li>"
-               "<li>Phương tiện (thẻ chi tiết; 8b miêu tả, hình dạng, mở khóa)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương (10c-10i: tầm nổ, boss, đạn thay thế, boss hai lớp nổ, Săn trùm, họ vũ khí và cảnh báo)</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
+               "<li>Phương tiện (thẻ chi tiết; 8b miêu tả, hình dạng, mở khóa)</li><li>Bảng DPS tổng hợp</li><li>Vũ khí và bảng sát thương (10c-10i: tầm nổ, boss, đạn thay thế, boss hai lớp nổ, Săn trùm, họ vũ khí và cảnh báo; 10j: nhịp bắn boss, họ vũ khí, hành vi đạn, vòng cảnh báo, hiệu ứng)</li><li>Tháp canh, xe tinh nhuệ và boss</li>"
                "<li>Hỗ trợ hỏa lực</li><li>Trang bị</li><li>Kinh tế</li><li>Bản đồ</li><li>AI và hệ thống (16b: hiệu ứng và âm thanh theo bậc, xác vỡ, màn xem trước)</li><li>Kiểm thử và phép đo còn lại</li>"
-               "<li>Giao diện</li><li>Hình ảnh</li></ol></div>")
+               "<li>Giao diện</li><li>Hình ảnh</li><li>Sửa lỗi tổng hợp: A bảng vũ khí đầy đủ, B từng boss, C hiệu ứng có ảnh, D âm thanh, E model</li></ol></div>")
 
     # ------------------------------------------------------------------ overview
     out.append("<div class='section'><h2>1. Tổng quan</h2>"
@@ -537,6 +549,8 @@ def build(game, imgdir):
     out.append(prompt26.hunt_section(game, h))
     # Prompt 34 L9: weapon families and tiers, the bosses' family rounds, radii and warnings.
     out.append(prompt34.section10(game, h))
+    # Full fix L10 items 2-7: the boss weapons' cadence, the families, munition behaviour, warning rings, effect lifetimes.
+    out.append(fix_full.section10_fix(game, h))
     out.append(prompt27.section(game, h))
     # Prompt 31 L6: the game-made decks and the battlefield events.
     out.append(prompt31.section(game, h))
@@ -849,6 +863,8 @@ def build(game, imgdir):
             out.append(f"{tag}<div class='caption'>{esc(cap)}</div>")
     out.append('</div>')
     out.append(programme.gallery(game, h, imgdir))
+    # Full fix L10 and the owner's PDF rules A-E (02/10): the weapon table, the bosses, effects with shots, audio, models.
+    out.append(fix_full.appendix(game, h, imgdir))
     if history:
         out.append("<div class='section'><h2>Phụ lục: Lịch sử đo</h2><p>Các bảng đo dưới đây đo trên dữ liệu hoặc luật khác bản hiện tại "
                    f"(prompt 29 R10). Bảng 9b: {esc(measure_stamp.describe(prompt25.measure_path()))}. Bảng 2b: đo tay ở prompt 13, không có dấu hash.</p></div>")

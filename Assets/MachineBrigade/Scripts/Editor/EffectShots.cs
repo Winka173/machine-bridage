@@ -15,7 +15,7 @@ namespace MachineBrigade.Editor
     /// Batch mode (with graphics): -executeMethod MachineBrigade.Editor.EffectShots.Muzzles
     /// -mbShotsOut &lt;png path&gt;.
     /// </summary>
-    public static class EffectShots
+    public static partial class EffectShots
     {
         private const string ProfilePath = "Assets/MachineBrigade/Settings/BattlefieldProfile.asset";
         private static readonly float[] Moments = { 0.02f, 0.06f, 0.25f, 0.9f };

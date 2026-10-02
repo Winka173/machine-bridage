@@ -17213,3 +17213,65 @@ Pass 8 items 2-4 (Docs/prompts/fix_full_vi.txt) on the 402 ModelScan sheets the 
   flare_tower, laser_ad_station, visual_jammer, fire_control_centre, radar_site, troop_shelter, repair_bay,
   interceptor_drone_vehicle, microwave_vehicle, nlos_atgm_vehicle, radar_scout, recoilless_jeep, sp_mortar,
   wheeled_howitzer. Not done here: MODEL_STANDARD.md was not edited in this pass.
+
+## Sửa lỗi tổng hợp L9.7/L10 (lane C)
+
+Branch `feature/fix-l10`, Docs/prompts/fix_full_vi.txt pass 9 item 7, pass 10 and the owner's PDF rules A-E. No Unity, tests,
+sims or measures; the Python tools were run (fix_validate item 7, a build_doc HTML pass on an old game.json).
+
+- **L9 item 7** (`fix_validate.py 7`; its EditMode twin `FixValidatorTests.Item7_...` reads the JSON's `models` block): runs
+  `scan_prep.score` in memory (output to a temp CSV; static_scores.csv untouched). Over budget is INFO only (owner 02/10);
+  under the floor is listed. The recorded list is the pass 8 `static_scores.csv`: a part missing there is backlog
+  (renaming when the visual grade is not Kém, i.e. modelled inside a merged node; rebuild when Kém); a part missing now and
+  not recorded fails, so do a newly missing main muzzle and a scanned model without LOD1 (ModelScan `triangles1`; scan
+  dir MB_SCAN_DIR, else the runner's Builds/scan, else ./Builds/scan); the 35-65 % LOD1 band is a note. fix_validate.json
+  now keeps each item's block (3: weapons, 7: models) when the other is rerun.
+- Result: 230 models, 0 failures; over budget 63 (info), under the floor 76; missing parts on 131 models (380 roles):
+  renaming backlog 122, rebuild backlog 9; LOD1 on all 226 scanned, outside 35-65 % on 101; not scanned 4 (cp_relay_a/b,
+  minefield_a/b); heavy_turret_a/_b main muzzle recorded. The 15 L8 rebuilds show parts now present (rerun scan_prep.py).
+- `glb_check.py`: triangle and vertex hard caps warn instead of erroring (INFO_ONLY); renderer / moving-part caps stay errors.
+- **L10 generator** (`Tools/docs/fix_full.py`, wired into build_doc, programme and prompt26): item 1, the "Đường đạn"
+  table splits calibre / warhead and adds family, barrels, full cycle, real rate (full_weapon_audit REAL), sustained DPS
+  and a star for a weapon changed against 07444b14 in a playing number (damage, blast, cadence, barrels, speed, range,
+  type, pen; not the display fields every line gained); items 2-7 in a new section 10j (p26_* cadence before / after,
+  weaponFamilyTable, munition behaviour from Docs/checks/munition_behavior.md and the flare rules, warningRules and every
+  warned weapon, effect lifetimes and shake by tier); item 3 adds family and warning columns to 10g; items 8-9: the cards
+  print calibre or warhead, "loạt N · chu kỳ X s" / "mỗi X s", barrels, core / edge, sustained DPS, and the exporter names a
+  non-first mount without a real name "Gun" (WeaponInfo.Describe(w, main)), not "Main gun"; items 10-11 are 21 D and E.
+- Text items: 12 (chapters / acts) was already data-driven; 13 the Legend tier now names Operations.LegendMission
+  (c12m10); 14 the code draws a small portrait on the in-battle line (DialogueViews), so the text saying "no portrait" was
+  the wrong one and was fixed; 15, 16 and 18 already match the current strings and data (Centurion / Iron Dome / Iron Beam
+  / laser station APS shells, logistics "tiếp tế", watchtower 15 % instead of 10 %; the old game.json predates them);
+  17 the airfield guide text (EN + VI) now says aircraft come back when out of ammunition (TacticalAi.Refit has no 35 %
+  health trip since prompt 29 B3-AI). The report docs/fixes/report_full_fix.md is not written (outside this lane's list).
+- **Section 21 A-E** (after the gallery): A eight tables, one row per weapon a unit carries, before / after columns
+  (before = 07444b14 balance.json resolved by the same tools; warning and armour-level DPS after only: the escape warning
+  did not exist then; turret rate from the carriers' data; arcs from the export). B per boss: health, prompt 26's
+  kill-time target by chapter (p26_ab: mains 150-240 s, minis 60-90 s), ground DPS before (fix_boss_before.json) / after
+  (fix_boss_weapons.snapshot) / in game, the make-up (MAKEUP, TUBES, outgoingDamageMult); shots to kill MBT / heavy tank /
+  IFV / wheeled APC / the first medium tower on front armour (damage x the export's effect row x weaponDamage x
+  outgoingDamageMult), focus-fire seconds, the splash proxy (line -16..16 m; cluster: one in the middle, four 8 m off),
+  escape ĐỦ / THIẾU against core / 4.5 m/s, the player's weapon of the same family. C per tier and per weapon from 120 mm:
+  TierFx / EffectLife from the export, recipe sizes parsed from ExplosionEffect.Tiers.cs (scaled by the overlay rule),
+  shots for every tier, every boss weapon from 203 mm and any other rendered folder. D library by group, the mix from the
+  code, per-size and per-clip tables (source and licence from CREDITS.md and the L7 rule), the three sample mixes with
+  their loud moments (400 ms momentary loudness within 6 dB of the peak, 1.5 s apart, read from the OGG files). E the
+  standard, every model's grades, the worse-than-old notes, before / after for the 15 rebuilds (scan/ vs scan_after/) and
+  for sky_gunship and every tower / structure / HQ / obstacle (scan/<id>_old vs current), every model's 3-angle sheet.
+- **Exporter** (`ExportGameDoc`): per weapon mainMount, aim, arc, tier, variant, warns, warnSeconds / warnRadius,
+  burstInterval, roundsPerPull, barrelGap, the sound size and banks; a top-level `fixDoc` (warningRules, munitionRules with
+  the flare ranges, effects by tier, the audio mix). Read only.
+- **EffectShots.FxBatch** (`Editor/EffectShots.Fx.cs`; EffectShots made partial): like BlastRig, the effect systems on their
+  own clock, mirroring EffectsDirector's ground impact and TierShot paths (no Sim); exact sizes (no random jitter); salvo
+  fall points are schematic (a ring over the core: the Sim's spread is random). A tier's representative: a round of that
+  tier on a unit with a model, one with a blast first, not a boss's first, the largest core, then the id.
+
+### For the lead (compile, render, build)
+
+1. Effect shots (runner, graphics on): `env -u ELECTRON_RUN_AS_NODE "/c/Program Files/Unity/Hub/Editor/6000.6.3f1/Editor/Unity.exe"
+   -batchmode -force-d3d11 -force-device-index 1 -quit -projectPath . -executeMethod MachineBrigade.Editor.EffectShots.FxBatch
+   -mbFxOut Builds/effect_shots -logFile Builds/effect_shots.log`; a small run adds `-mbFxIds "tiers,p26_leviathan_lev406"`.
+2. Export: `MB_EXPORT=<dir>/game.json`, EditMode test `MachineBrigade.Tests.ExportGameDoc.ExportTheGameForTheDesignDocument`.
+3. `python Tools/docs/build_doc.py <dir>/game.json <img> <out.pdf>`, `<img>` holding shots/, r6/, ui/ (as before) and fx/
+   (Builds/effect_shots), scan/ (runner Builds/scan), scan_after/ (runner Builds/scan_after); file names in
+   Docs/doc-images/README.md.

@@ -691,11 +691,11 @@ namespace MachineBrigade.Game.Hud
                 "Mẹo: mang theo khi bộ bài nhiều pháo phản lực."),
             ["guide.airfield"] = (
                 "[[Airfield]] · utility module\n" +
-                "How it fights: aircraft over it repair 3% a second and rearm; your commander sends them back below 35% health or empty.\n" +
+                "How it fights: aircraft over it repair 3% a second and rearm; they come back to it when out of ammunition (no trip home for being hurt).\n" +
                 "Strong / weak: keeps helicopters and jets flying longer; they still have to fly out to fight and can be shot down on the way.\n" +
                 "Tip: take it with two or more aircraft in the deck.",
                 "[[Sân bay dã chiến]] · mô-đun tiện ích\n" +
-                "Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn.\n" +
+                "Cách đánh: máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng về đây khi hết đạn (không còn bay về vì bị thương).\n" +
                 "Mạnh / yếu: giúp trực thăng và máy bay bay được lâu hơn; chúng vẫn phải ra trận và có thể bị bắn rơi trên đường.\n" +
                 "Mẹo: mang theo khi bộ bài có từ hai máy bay trở lên."),
             ["guide.logistics_station"] = (

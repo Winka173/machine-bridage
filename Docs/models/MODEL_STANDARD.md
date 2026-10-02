@@ -1,8 +1,10 @@
 # Model standard (fix pass 8)
 
 Source: Docs/prompts/fix_full_vi.txt "Lượt 8" item 1 (owner, 2026-10-02); DECISIONS "Sửa lỗi tổng hợp L8 prep".
-Where this file and Docs/models/BUDGETS.md disagree, this file decides how a model is **scored**. The prompt 27
-validator caps in `Tools/assets/glb_check.py` stay the build's error gate until L9 item 7 replaces them.
+Where this file and Docs/models/BUDGETS.md disagree, this file decides how a model is **scored**. L9 item 7 is
+`python Tools/balance/fix_validate.py 7` (budget information only, the parts and LOD1 against the pass 8 scores); the
+prompt 27 caps in `Tools/assets/glb_check.py` stay an error gate for draw calls, while their triangle and vertex caps
+only warn (the owner's rule of 02/10).
 Checked statically by `python Tools/models/scan_prep.py` (Docs/models/scan/static_scores.csv) and visually on the
 sheets that `MachineBrigade.Editor.ModelScan.RenderBatch` draws (Docs/models/scan/README.md).
 
