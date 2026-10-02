@@ -2355,7 +2355,7 @@ BUILDERS = {
     'zu23_technical': (zu23_technical, _opts('zu23_technical')),
     'rocket_technical': (rocket_technical, _opts('rocket_technical')),
     'hover_gunboat': (hover_gunboat, _opts('hover_gunboat')),
-    'aa_gun_vehicle': (aa_gun_vehicle, _opts('aa_gun_vehicle')),
+    'aa_gun_vehicle': (aa_gun_vehicle, dict(_opts('aa_gun_vehicle'), ao_strength=.55)),
     'airborne_vehicle': (airborne_vehicle, _opts('airborne_vehicle')),
     'fibre_fpv_carrier': (fibre_fpv_carrier, _opts('fibre_fpv_carrier')),
     'interceptor_drone_vehicle': (interceptor_drone_vehicle, _opts('interceptor_drone_vehicle')),

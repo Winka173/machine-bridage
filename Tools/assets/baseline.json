@@ -752,6 +752,16 @@
     "FLAG wheeled_gun: triangles 2,508 -> 3,058 (+21.9%); vertices 2,950 -> 3,395 (+15.1%); meshes 23 -> 24 (+4.3%); renderers 23 -> 24 (+4.3%); materials 8 -> 7 (-12.5%); materialSlots 23 -> 24 (+4.3%); fileBytes 168,376 -> 192,220 (+14.2%); structure changed",
     "FLAG zu23_technical: triangles 1,356 -> 1,996 (+47.2%); vertices 1,770 -> 2,394 (+35.3%); materials 10 -> 9 (-10.0%); fileBytes 105,416 -> 136,096 (+29.1%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "aa_gun_vehicle"
+   ],
+   "reason": "3g fix: ao_strength .55, COLOR_0 .6346 -> .6959",
+   "changes": [
+    "aa_gun_vehicle: bytes only"
+   ]
   }
  ],
  "models": {
@@ -985,7 +995,7 @@
   "aa_gun_vehicle": {
    "file": "aa_gun_vehicle.glb",
    "fileBytes": 228224,
-   "sha1": "86e62b30c0d71534",
+   "sha1": "eabe9ddd7406a585",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
@@ -1034,10 +1044,10 @@
    ],
    "structureHash": "d13ce129e1d23c73",
    "color0": {
-    "mean": 0.6346,
-    "min": 0.0844,
+    "mean": 0.6959,
+    "min": 0.2899,
     "max": 1.0,
-    "p05": 0.157,
+    "p05": 0.3905,
     "p95": 0.981,
     "outOfRange": 0
    },
