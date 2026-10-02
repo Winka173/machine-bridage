@@ -56,3 +56,11 @@ The cloud session writes the Sim only. Each line: file, what, why.
   render cards; add the two effects (`FLARE_EFFECT`, `APS_EFFECT` descriptions) in the Game's effects.
 - DONE 2026-10-02 (feature/p29-local-ui): Prompt 29 G1: the view draws the Gungnir's aiming line (origin to aim) for the 3 s warning from its `FiredWith` event
   (ASSET_DEBT "Gungnir's line warning"); check the Boss Hunt lists and the hunt UI with 17 mains.
+
+## Prompt 28 appendix (aiModeProfile, cloud/p28-modes)
+
+- Unity compile, then run `AiModeProfileTests` (5 tests, written only) and the existing AI suites (AiTests, AiReviewTests).
+- CatalogCheck with the new balance.json `aiModeProfiles` block.
+- Tactic picker UI: `RequestTactic` can return `NotAllowed`; grey out tactics the mode's profile forbids
+  (`world.AiProfile.Allows`).
+- Recon HUD: optional "Báo động" indicator from `world.Alarm`.

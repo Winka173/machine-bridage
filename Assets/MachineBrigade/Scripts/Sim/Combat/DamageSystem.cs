@@ -444,6 +444,10 @@ namespace MachineBrigade.Sim.Combat
         {
             if (!target.IsAlive || !(amount > 0f)) return 0f;
             if (target is Prop { Invulnerable: true } || target is Vehicle { Invulnerable: true }) return 0f;
+            // Prompt 28 appendix: a ceasefire faction takes nothing from another side's fire, strikes or splash.
+            if (_world.Ceasefire(hit.Team, target.Team)) return 0f;
+            // Recon: the first hit between the player and the enemy is the alarm.
+            if (!_world.Alarm && target is Vehicle && target.Team is 0 or 1 && hit.Team is 0 or 1 && hit.Team != target.Team) _world.RaiseAlarm();
             var raw = hit.Kind is HitKind.Burn or HitKind.Redirect;
             var damage = raw ? amount : amount * HitMultiplier(target, type, hit);
             // Prompt 21 E.2 / F.4: the Sandbox's hit report (null in play: nothing is worked out for it).

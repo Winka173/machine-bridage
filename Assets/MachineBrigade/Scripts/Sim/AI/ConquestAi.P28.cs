@@ -35,12 +35,18 @@ namespace MachineBrigade.Sim.AI
             if (Commander == null)
             {
                 world.TryGetEconomy(_team, out var economy);
-                var tactic = Tactic ?? world.Catalog.AiData.GeneralTactic(economy?.Commander?.Id);
+                // Prompt 28 appendix: the general's preference only where the profile plays it (campaign, operations, a
+                // weekly fortress with its general); quick battles start balanced. Then the profile's allowed tactics.
+                var profile = world.AiProfile;
+                var general = profile.GeneralTactic || world.ModeTag is "Weekly" or "Operation";
+                var tactic = AiCommander.AllowedTactic(world, Tactic ?? (general ? world.Catalog.AiData.GeneralTactic(economy?.Commander?.Id) : "balanced"));
                 Commander = new AiCommander(_team, _enemyTeam, Skill ?? AiSkill.For(_difficulty, world.Catalog.Ai), tactic, ChooseObjective);
                 world.AiCommanders[_team] = Commander;
                 world.AiLog.Add(new DecisionEntry(world.Time, _team, AiLayer.Commander, 0, DecisionKind.Tactic, $"start {tactic}"));
             }
-            Commander.Defending = Stance == CommanderStance.Defend;
+            // Recon before the alarm: patrol and hold, no chasing (engagement AVOID_UNLESS_BLOCKING).
+            Commander.Defending = Stance == CommanderStance.Defend ||
+                world.AiProfile.Engagement == EngagementPolicy.AvoidUnlessBlocking && !world.Alarm;
             world.AiCommanders.TryGetValue(_enemyTeam, out var enemy);
             Commander.Tick(world, dt, _tactics.GroundPool, enemy);
         }

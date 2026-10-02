@@ -14489,3 +14489,41 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
 - All sixteen go through `_town()`: the model's own builder inside the `_v2()` edge-treatment wrapper (square-edged boxes get a one-step chamfer, square cylinders a light one, round parts two more segments), `k.clean`, ao_strength .8. Geometry, random draws and nodes unchanged. fence, garage, hedge, stone_wall and townhouse have nothing the treatment touches (bevelled boxes, ico stones, bmesh facades): same triangles, brighter AO only.
 - Gates (triangles old -> new, COLOR_0 old -> new): apartment 5,968 -> 6,128 (.580 -> .608); barn 2,692 -> 2,708 (.543 -> .572); car 1,580 -> 1,708 (.642 -> .649); church 3,640 -> 3,870 (.613 -> .630); cottage 2,228 -> 2,396 (.594 -> .603); fence 430 (.551 -> .570); garage 832 (.577 -> .600); hedge 540 (.658 -> .672); ruin 2,896 -> 3,088 (.538 -> .565); shop 2,284 -> 2,340 (.576 -> .599); silo 1,884 -> 2,088 (.650 -> .668); stone_wall 492 (.534 -> .561); townhouse 3,520 (.567 -> .595); truck 2,428 -> 2,588 (.626 -> .629); warehouse 3,864 -> 4,536 (.578 -> .591, 1.17x); water_tower 2,368 -> 2,544 (.636 -> .654). Sizes within .03 m (church -.09 m on one axis), no errors or warnings.
 - Lead (2026-10-02), wave 8b3 merged: all 16 mb_town models through the edge-treatment wrapper (no cards).
+
+## 28 appendix: aiModeProfile (cloud, 2026-10-02, cloud/p28-modes)
+
+- **Data.** `Tools/ai/import_ai_modes.py` reads the sheet "AI theo chế độ" (Docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx)
+  into balance.json `aiModeProfiles` (generated block after the `ai` block): 19 profiles plus `modes` (mode tag -> profile)
+  and `goals` (campaign goal -> profile). The script fails if a goal used in campaign.json has no profile. Goal mapping:
+  Capture/Destroy/Duel -> capture, Hold/Survive -> hold, Escort/Evacuate -> escort, Hunt/Intercept -> hunt, Boss ->
+  bossrush, the rest one-to-one. Modes: Sandbox plays conquest, Weekly plays siege, Endless plays defend (prompt 30's
+  endless parts use their base mode's profile). The prose of the sheet is filled in by the script (`EXTRA`): defender
+  side, leash region, escort params (maxAdvanceDistance 30, rearGuardWeight 0.3, threatToConvoyWeight 2, safe zone 12 m),
+  recon engagement and its `alert` override to capture, outpost step overrides, deathmatch `riskWeightByUnitValue`.
+- **Loader.** `Content/AiModeProfile.cs` (`Catalog.AiModes`); `SimWorld.AiProfile` resolves mode tag and `MissionGoal`
+  (set by MissionMode.Setup; the goal wins), then the alarm's phase override, then fixed-deck flags (`AddProfileFlags`,
+  prompt 31). `SimWorld.Stall` applies step overrides (`SetAiPhase`).
+- **Economy (A).** No income-by-army-count table: supply stays the only army cap. "Use or lose" is split: spendPressure
+  ends the all-out saving at a full bank (`AiCommander.SavingUp`); advancePressure is the existing threshold fall
+  (`AttackThreshold`), now only where the profile has it on and never for the defending side (`AiCommander.AdvancePressure`).
+  The check sits after the skill, so no difficulty can turn it on.
+- **Tactics.** The general's preferred tactic starts the battle only where the profile says so (campaign types) or in
+  Weekly/Operation; quick battles start balanced. `AllowedTactic` keeps the side inside `tactics` (defensive set for
+  assault/siege, ambush/base_defence for recon); wave directors and bosses (empty list, `noGeneralTactic`) play balanced
+  and `RequestTactic` returns the new `NotAllowed`.
+- **Stall policy.** `BattleEvents.MaxTier`: Off -> no tiers, ObjectiveStallOnly -> tier 1 only. With a defender
+  (`DefenderTeam`), the tier-3 barrage lands on the attacker and the tier-4 reveal never shows the defender's army.
+- **Support policy.** `SimWorld.SupportAllowed`: no auto support before the recon alarm (both sides' ConquestAi, so the
+  player's Support AI too); DefensiveOnly keeps only the general's smoke/SEAD wants. The alarm (`RaiseAlarm`) is the first
+  hit between the player and the enemy, or the enemy calling reinforcements. Recon before the alarm: the general holds
+  (`Defending`), i.e. patrols without chasing. AVOID_UNLESS_BLOCKING for the player's own units' auto-targeting is not
+  done (the player commands them); left for the UI/local pass if wanted.
+- **Escort.** Auto support never lands a blast within its radius + 12 m of a live convoy truck (`InConvoySafeZone`,
+  `ConvoySafeZone` set by MissionMode); the existing "convoy waits for its escort" behaviour is reused unchanged. The anchor
+  weights are data only for now (no squad-layer use yet).
+- **CEASEFIRE.** `SimWorld.SetCeasefire(team)`: DamageSystem.Apply returns 0 for any hit from another team (fire,
+  strikes, splash, fire-over-time), and weapons never auto-pick the faction (CombatSystem). Separate from prompt 23's
+  `Truce` column, which can still be hit by an ordered attack on purpose (that event's temptation stays).
+- **Siege fortress buys with CP: yes.** The garrison is `AddEnemyCommander(_mode, seed, CommanderStance.Defend)`, a
+  ConquestAi with an economy (SiegeModes Defender.Build), so the siege profile has spendPressure on, advancePressure off.
+- **Tests** (written, not run): `Tests/EditMode/AiModeProfileTests.cs`, the five of appendix C.

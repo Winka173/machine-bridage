@@ -202,6 +202,12 @@ namespace MachineBrigade.Sim.Modes
         };
 
         /// <summary>Convoy trucks still driving.</summary>
+        private IEnumerable<Vector2> ConvoyPositions(SimWorld world)
+        {
+            foreach (var (id, _) in _convoy)
+                if (world.TryGetVehicle(id, out var v) && v.IsAlive) yield return v.Position;
+        }
+
         public int ConvoyAlive(SimWorld world)
         {
             var alive = 0;
@@ -216,6 +222,9 @@ namespace MachineBrigade.Sim.Modes
             world.EscortSettings ??= Content.EscortSettings.For(world.Catalog.EscortRules, "Normal");
             // Prompt 18: the bosses' big attacks (the session sets them by difficulty first).
             world.BigAttackSettings ??= Content.BigAttackSettings.For(world.Catalog.BigAttackRules, "Normal");
+            // Prompt 28 appendix: the mission plays its type's AI profile; escorts keep auto support off the convoy.
+            world.MissionGoal = _def.Goal.ToString();
+            if (_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) world.ConvoySafeZone = () => ConvoyPositions(world);
             SetupStage(world, true, null);
         }
 
@@ -540,6 +549,7 @@ namespace MachineBrigade.Sim.Modes
             _reinforced++;
             _nextReinforce = world.Time + ReinforceGap;
             world.Emit(SimEvent.Alert(camp, "toast.enemyReinforce"));
+            world.RaiseAlarm();
         }
 
         /// <summary>What the enemy calls in: its deck, else its wave roster, else what it started with.</summary>
