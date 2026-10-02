@@ -95,3 +95,7 @@ for site, x, z, _, size in PODS:
         {'name': 'clear'},
         {'name': 'landed', 'blocks': [{'x': x, 'z': z, 'w': size, 'd': size}]}]})
 events.add_stage('c11m10', 'fortress', 'orbital_pods')
+
+
+# Prompt 31 L4 (c5m03's rule droneCanopy): Venn's swarms come as the warned drone_swarm in place of the air wave.
+replace_event('c5m03', 'air_wave', 'drone_swarm')

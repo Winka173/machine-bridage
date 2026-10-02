@@ -51,6 +51,7 @@ RULES = {
     'hawkWingman': "Hawk's fighter is a placed ally under the allied AI and the general order; MissionMode loses the mission if it falls",
     'maraBehemoth': "Mara's repainted Behemoth (mara_behemoth) is a placed ally under the allied AI and the general order",
     'factoryAlarm': 'the factory_alarm event (prompt 31 L3): spotted, the mill gate shuts and the garrison comes',
+    'droneCanopy': "the drone_swarm event (warned direction, minimap arrow) in place of the mission's air_wave",
 }
 
 # The rules that are a mission event (prompt 31 L3): the event must be in the mission.
@@ -190,6 +191,16 @@ DECKS = {
         loaned=['radar_scout', 'ew_jammer'],
         replaced={'recoilless_jeep': 'rocket_technical'},
         rules=['factoryAlarm'], status='MAKE_LATER'),
+    # c5m03 (chapter 5, the river road): the objective kept (escort the bridging trucks, the mission's own counts); an anti-drone
+    # deck against Venn's swarms, which come as the library's warned drone_swarm in place of the mission's air_wave (the count kept).
+    # Loaned the microwave and the interceptor-drone vehicles; drone_intercept_strike -> uav_scan (no anti-drone support owned yet:
+    # the scan shows the swarm coming).
+    'c5m03': dict(
+        vehicles=['microwave_vehicle', 'interceptor_drone_vehicle', 'aa_vehicle', 'zu23_technical', 'engineer_vehicle', 'smoke_carrier', 'armored_car', 'ifv'],
+        supports=['uav_scan', 'smoke_screen'],
+        loaned=['microwave_vehicle', 'interceptor_drone_vehicle'],
+        replaced={'drone_intercept_strike': 'uav_scan'},
+        rules=['droneCanopy'], status='MAKE_LATER'),
 }
 
 
