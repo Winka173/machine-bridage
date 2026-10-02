@@ -1,0 +1,333 @@
+# PROMPT 32 — HỆ CĂN CỨ: THÁP, TƯỜNG, NHÀ CHÍNH, XÂY LẠI THÁP, QUÂN KHỞI ĐẦU, CHẾ ĐỘ ĐỐI CÔNG, SỔ TAY ĐẠN
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt giữa chừng. Mọi quyết định ghi vào docs/DECISIONS.md (mục "Prompt 32") kèm lý do. Chia lượt như dưới, mỗi lượt một hoặc vài commit. Mọi con số là điểm khởi đầu thiết kế, không phải số đã đo.
+
+Prompt này chạy SAU prompt 29 (cân bằng đợt 2), 28 (AI, aiModeProfile) và 30 (luật trận, trung lập, đo bản đồ). Nếu một prompt đó chưa chạy, phần phụ thuộc làm theo mục "Khi thiếu" ở từng lượt và ghi vào báo cáo.
+
+## 0. NGUỒN VÀ LUẬT CHUNG
+- Dữ liệu thật trong repo (balance.json, campaign.json, mã nguồn) là nguồn sự thật. docs/balance/Machine_Brigade_Can_bang_dot2_v2.xlsx và docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx chỉ để tham chiếu quyết định đã chốt.
+- KHÔNG chạy mô phỏng trận, không test trong game, không đo FPS. Được và phải viết test tự động cho code, dữ liệu, validator.
+- Dòng ghi "Xem lại" ở bất kỳ file nào: không áp.
+- KHÔNG đổi các luật đã khóa:
+  - không rút theo máu (kể cả máy bay); mô-đun Sân bay dã chiến giữ đúng phụ lục prompt 28;
+  - chỉ có tiếp tế (không thêm phí duy trì); không đổi ngưỡng tiếp tế;
+  - trần quân 32 + 6 máy bay;
+  - chỉ pháo sáng và APS là hệ tự vệ của xe;
+  - POINT_DEFENSE không chặn đạn pháo xe tăng;
+  - aiModeProfile thuộc prompt 28: chỉ mở rộng bằng dữ liệu, không viết lại;
+  - luật trận theo schema của prompt 30.
+- Tên riêng không dịch. Mọi chữ mới qua localization Việt–Anh.
+- Mobile: chỉ thêm MỘT nút mới (kỹ năng nhà chính). Không thêm nút cho từng tường, tháp, mô-đun hay tổ quân.
+- Deterministic: mọi bộ đếm theo tick; đổi trạng thái navmesh chỉ ở tick cố định; mọi lựa chọn tự động có thứ tự ổn định theo id.
+
+## 1. CÁC LƯỢT
+
+### Lượt 0 — Kiểm (không sửa trừ mục 8)
+Ghi docs/checks/p32_precheck.md:
+1. Tháp canh: "+10% tầm cho tháp gần" (mô tả chung) và nhánh Quan sát "+15% trong 30 m" là thay nhau hay cộng dồn trong code.
+2. Quân thấy ở đầu trận hiện nay đến từ đâu: kịch bản, Tự mua tiêu CP ở tick đầu, hay hệ chưa có trong tài liệu.
+3. Tháp xây lại có tính vào giá trị quân của tiếp tế không. Phá tháp hiện có hoàn CP cho phe phá không.
+4. Code hiện tại của cơ chế bắt kịp (+25% thu nhập, tiếp viện miễn phí, tới +50%).
+5. Game đã có thả quân tiền phương ở tiền đồn cứ điểm chưa.
+6. Thứ tự nhân hệ số nhiệt áp ×2 với hệ số loại mục tiêu (có thành ×3 lên công trình không).
+7. Logic chọn đạn thay thế: điều kiện, thời gian đổi đạn, thời gian giữ.
+8. Nếu phụ lục prompt 29 (đạn thay thế và mục tiêu vũ khí) chưa được làm: làm nó ở đây trước, rồi mới sang lượt 1.
+
+### Lượt 1 — Roster tháp (32 → 22) và luật nhánh
+Luật: mỗi thẻ tháp hoặc có đúng 2 nhánh khác nhau về VIỆC nó làm, hoặc noBranch = true. Không có nhánh chỉ khác con số.
+
+Roster cuối:
+- NHỎ (10):
+  1. Tháp canh: Quan sát / Ổ súng 25 mm.
+  2. Lô cốt: Súng máy đôi / Phun lửa.
+  3. Ụ chống tăng: xuyên giáp tầm xa góc hẹp / súng không giật rẻ góc rộng (gộp Ụ pháo chống tăng + Ụ súng không giật).
+  4. Phòng không nhỏ: cao xạ 23 mm chống drone, trực thăng / Stinger chống máy bay, tầm xa hơn (gộp Tháp phòng không + Tổ tên lửa vác vai).
+  5. Gây nhiễu: gây nhiễu drone và đạn dẫn đường / đánh lừa radar, tìm pháo.
+  6. Răng rồng: Chông sắt (chặn xe) / Rào thép gai (không chặn, làm chậm dưới hỏa lực).
+  7. Bãi mìn: noBranch (một dạng mìn chống tăng; giữ số quả và nhịp rải lại hiện tại của nhánh chống tăng).
+  8. Trạm tiếp tế: noBranch (giữ CP thụ động có giảm dần như hiện tại; bỏ nhánh Kho chiến lợi phẩm). Ở Đối công, Trạm tiếp tế ngừng tạo CP từ phút 6.
+  9. Chiếu sáng: đèn pha theo vùng / pháo sáng theo đợt (gộp Đèn pha + 2 thẻ Tháp pháo sáng).
+  10. Mồi nhử: bơm hơi hút hỏa lực / khí cầu neo làm tản bom, lộ máy bay (gộp Mồi nhử bơm hơi + Khí cầu neo).
+- VỪA (7):
+  1. Tên lửa chống tăng: Tấn công từ trên / Đa năng.
+  2. Tháp pháo: Bắn tỉa 120 mm / 57 mm chỉ đánh xe nhẹ (nhánh 57 mm bỏ khả năng bắn máy bay).
+  3. C-RAM: Centurion (gần, nhịp cao) / Vòm Sắt (xa, nhịp thấp).
+  4. Dàn rốc-két: Chùm / Dẫn đường.
+  5. Phòng không vừa: cao xạ hạng nặng nổ rộng / 40 mm nhịp đều (gộp Tháp cao xạ hạng nặng + Pháo phòng không 40 mm).
+  6. Chống drone: la-de / lưới thụ động (gộp Trạm la-de chống drone + Lưới chắn drone).
+  7. Hầm che quân: noBranch (gộp Hầm che quân + Hầm ngầm che quân).
+- LỚN (5): Tháp pháo hạng nặng, Trạm PK tầm xa, Nhà chứa drone, Trận địa pháo, Máy phát khiên — giữ nhánh hiện có.
+- BỎ khỏi roster người chơi: Tường chắn (thay bằng hệ tường ở lượt 3); Bệ tên lửa phòng thủ một lần (chỉ còn là vật thể bản đồ / màn chơi).
+
+Sửa chữ theo luật đã chốt:
+- Trạm hậu cần: "phí duy trì" → "tiếp tế". Giá trị +8 CP giữ nguyên, không đổi (đi cùng ngưỡng tiếp tế đang HOLD).
+- Tháp canh: nhánh Quan sát THAY mức +10% (không cộng dồn). Nếu Lượt 0 thấy code cộng dồn thì sửa thành thay thế.
+- Centurion: thay "chặn cả đạn bắn thẳng" bằng đúng danh sách: tên lửa, drone, rốc-két bắn thẳng, rốc-két pháo binh, và một phần đạn pháo binh và đạn cối. Không chặn đạn pháo xe tăng, đạn súng, tia năng lượng.
+- Iron Beam (xe) và tháp la-de cố định: đạn pháo 0% (theo quyết định ở sheet APS của file cân bằng v2). Nếu prompt 29 đã áp thì chỉ sửa văn bản.
+
+Dữ liệu và lưu game:
+- Mỗi thẻ có trường branches[2] hoặc noBranch.
+- Validator: không thẻ nào có nhánh trùng việc với thẻ khác, theo bảng vai trò (role tag) mỗi nhánh.
+- Migration lưu game cho người chơi đã có thẻ bị gộp hoặc bỏ:
+  - thẻ gộp lấy hạng cao nhất trong các thẻ cũ;
+  - nhánh đã chọn giữ nếu tương thích, không thì mở lại lựa chọn miễn phí;
+  - thẻ bị bỏ (Tường chắn, Bệ tên lửa một lần, bản trùng) hoàn lại xu đúng giá mua;
+  - loadout chứa thẻ bị bỏ thì để trống ô và báo người chơi một lần.
+- Commit: "P32 L1: tower roster 22 + branch rule".
+
+### Lượt 2 — Xây lại tháp và giá
+Luật:
+- Đặt tháp vào căn cứ đầu trận miễn phí (loadout).
+- Thời gian chờ xây lại 25 / 40 / 60 s (nhỏ / vừa / lớn), tính từ lúc tháp bị phá.
+- Kích hoạt:
+  - Tự mua bật: AI phe ta tự xây lại theo thứ tự ưu tiên (tháp gần mối đe dọa nhất trước), chỉ khi còn đủ CP sau phần để dành mua quân;
+  - Tự mua tắt: người chơi chạm vào ô tháp đã phá. Không thêm nút mới.
+- Trừ CP lúc bắt đầu thả dù. Thả dù 2,5 / 3,5 / 5 s theo cỡ.
+- Không thả lại khi có địch trong 20 m quanh ô.
+- Tháp xây lại giữ nhánh và trang bị; máu đầy.
+- Tiền đồn cứ điểm: chỉ xây lại khi phe mình đang giữ cứ điểm.
+- Phòng thủ: tháp của tuyến đã mất không xây lại; thưởng CP rút lui giữ nguyên.
+- Đối công: sau phút 10 không xây lại; lần đang dở hoàn tất nếu CP đã trừ trước mốc.
+- Mốc 25% máu nhà chính: một lần mỗi trận, xây lại miễn phí tháp nhỏ hoặc vừa rẻ nhất đã bị phá (không áp tháp lớn, không cho CP).
+- Phá tháp KHÔNG hoàn CP cho phe phá (0%).
+- Hai giá:
+  - baseRebuildCP = giá trị cân bằng, dùng cho mọi phép tính;
+  - runtimeRebuildCP = số người chơi trả thật (sau Brandt −20%, làm tròn nửa lên ở bước cuối).
+
+Công thức giá (lý thuyết, tĩnh; viết thành script trong Tools/balance):
+1. effectiveHP: máu tháp chia cho sát thương hiệu dụng trung vị của 4 mối đe dọa tham chiếu (động năng bắn thẳng, nổ mạnh / đạn nổ mạnh thay thế, nổ lõm, pháo binh nổ mạnh), đã nhân hệ số loại mục tiêu công trình, hệ số xuyên so với giáp mặt trước của tháp, và nhiệt áp nếu Lượt 0 xác nhận thứ tự. Vũ khí tham chiếu chọn theo trung vị của nhóm xe cùng tầm giá, ghi danh sách vào báo cáo.
+2. roleDPS: DPS tháp lên đúng loại mục tiêu của vai trò (phòng không → máy bay; chống tăng → xe nặng; chống xe nhẹ → xe nhẹ; pháo → mặt đất; đa năng → trung bình nhẹ/nặng). Dùng loại đạn AI thật sự chọn cho loại mục tiêu đó, gồm thời gian đổi đạn; KHÔNG lấy DPS cao nhất của mọi loại đạn.
+3. equivalentCP = căn bậc hai của (effectiveHP / effectiveHP trên mỗi CP của xe cùng vai trò) × (roleDPS / DPS trên mỗi CP của xe cùng vai trò).
+4. Hệ số đứng yên theo tầm: tầm gần (≤ 30 m) 0,575; tầm vừa 0,625; tầm xa hoặc bắn gián tiếp 0,725.
+5. baseRebuildCP = ROUND_HALF_UP(equivalentCP × hệ số đứng yên × 1,25), giới hạn theo cỡ: nhỏ 3–6, vừa 5–11, lớn 9–18. Tháp nhỏ đắt hơn tháp vừa là hợp lệ.
+6. Tháp tiện ích không dùng DPS:
+   - C-RAM / chống drone: vùng phủ × lượng đạn chặn được mỗi phút;
+   - Máy phát khiên / Hầm che quân: sát thương ngăn được mỗi phút trong vùng;
+   - Trạm tiếp tế: CP sinh ra trong khoảng sống kỳ vọng;
+   - Gây nhiễu, Chiếu sáng, Mồi nhử, Răng rồng, Bãi mìn: giá sàn của cỡ.
+   Ghi công thức tạm và lý do vào DECISIONS.
+
+Giá tạm (dùng nếu script chưa chạy được; script chạy thì thay bằng kết quả script và ghi chênh lệch):
+| Nhóm | Giá tạm |
+| Phòng không nhỏ, Lô cốt | 6 (cờ REBALANCE_STATS) |
+| Tháp canh | 4 |
+| Ụ chống tăng | 3 |
+| Tháp nhỏ không vũ khí | 3 |
+| Tháp pháo nhánh 57 mm, Chống drone nhánh la-de | 7 |
+| Tháp pháo nhánh bắn tỉa, Phòng không vừa, Dàn rốc-két | 6 |
+| Tên lửa chống tăng, C-RAM, Hầm che quân, Chống drone nhánh lưới | 5 |
+| Pháo đài thép | 17 (HOLD) |
+| Trạm PK tầm xa (gốc / radar / PAC-3) | 12 / 11 / 9 |
+| Tháp pháo hạng nặng (gốc / bờ biển) | 10 / 11 |
+| Nhà chứa drone, Trận địa pháo, Máy phát khiên | 9 |
+
+Cân chỉ số:
+- Tháp nhỏ có equivalentCP chưa giới hạn vượt ~8 (tức bị ép vào trần 6): gắn REBALANCE_STATS và giảm DPS (giữ máu) tới khi equivalentCP ≤ 8. Dự kiến: cao xạ 23 mm, Lô cốt phun lửa, Phòng không nhỏ, Lô cốt súng máy.
+- Pháo đài thép: HOLD. Sau khi script chạy, nếu giá theo công thức > 15 thì giảm chỉ số của nhánh (bớt máu hoặc bỏ một tháp súng máy phụ) tới khi giá về 13–15.
+- Ghi bảng trước/sau.
+
+Test:
+- tháp xây lại không tính vào tiếp tế;
+- không hoàn CP khi phá tháp;
+- runtime/base đúng với Brandt;
+- không thả lại khi có địch trong 20 m;
+- Đối công phút 10.
+Commit theo phần.
+
+### Lượt 3 — Hệ tường theo ô dựng sẵn
+- Mỗi bản đồ có căn cứ: tối đa 2 tuyến tường hoạt động (Phòng thủ: 3 tuyến lùi là tuyến tường). Mỗi tuyến 3–5 đoạn logic; mỗi đoạn là một thực thể logic, mảnh hình ảnh là con hoặc instance của nó.
+- Loại tường chọn trong loadout cho từng tuyến:
+  | Loại | Độ bền tương đối | Đánh đổi |
+  | NONE | 0 | Đi lại nhanh nhất |
+  | HESCO | 1,0 | Cổng rộng, gần như không cản đường quân ta |
+  | T_WALL | 1,6 | Cổng hẹp hơn, đường viện quân của ta dài hơn |
+  | GUN_WALL | 1,2 | Gắn một tháp nhỏ trên tường, nhưng DÙNG MỘT Ô NHỎ CÓ SẴN của căn cứ (không tạo ô miễn phí) |
+- Không có tiền tệ riêng cho tường.
+- Trạng thái mỗi đoạn: INTACT / RUBBLE. Gạch vụn đi qua được, chậm 20%.
+- Navmesh: trạng thái dựng sẵn cho mỗi đoạn; đổi ở tick cố định khi đoạn bị phá; luôn có ít nhất một cổng hoặc đường hợp lệ; không nhốt xe; khôi phục đúng khi tải lại.
+- Không có AI hay logic chạy mỗi tick cho tường; đổi trạng thái theo sự kiện.
+- Xe phá tường: Xe ủi bọc thép, Xe công binh, Xe phá mìn bằng dây nổ có chung tag wallBreaker, wallDamageMultiplier = 1,5 (chỉ lên tường, không lên tháp hay nhà chính).
+- AI (dùng aiModeProfile và chấm điểm cấp đội của prompt 28, không thêm cây hành vi):
+  - so đường qua cổng với đường phá tường bằng routeCost + threatCost + breachTimeCost;
+  - đội có wallBreaker có breachTimeCost thấp hơn;
+  - AI địch chọn loại tường theo tướng (Brandt, Kessler: T_WALL; Varga: GUN_WALL; còn lại: HESCO).
+- Dựng tường cho bản đồ: đặt tuyến theo khuôn bố trí căn cứ hiện có (cổng, vòng ngoài, vòng trong); bản đồ nào không đặt được thì ghi DECISIONS và để NONE.
+- Test:
+  - kết nối navmesh ở mọi tổ hợp INTACT/RUBBLE có thể xảy ra;
+  - xe lớn qua được cổng;
+  - đường lùi tồn tại;
+  - replay tái tạo cùng trạng thái.
+Commit.
+
+### Lượt 4 — Kiểu nhà chính (thay hẳn học thuyết HQ)
+Chọn 1 kiểu trong loadout từ HQ 1; mạnh dần theo cấp HQ 1–5. Mỗi kiểu có một nội tại và một kỹ năng dùng chung MỘT nút cạnh ô CP (biểu tượng đổi theo kiểu), hồi chiêu 120 s.
+
+(a) PHÁO ĐÀI — vũ khí trên nhà chính.
+- Nhánh Mặt đất (chống xe) / Phòng không. Dùng lại định nghĩa vũ khí tháp có sẵn, không tạo họ vũ khí mới.
+- Sức mạnh tương đương tháp vừa cùng vai trò: HQ 1 ×0,5; HQ 2 ×0,65; HQ 3 ×0,8; HQ 4 ×1,0; HQ 5 ×1,2. Tăng dần bằng hệ số sát thương và nhịp, không nhảy loại vũ khí đột ngột.
+- Kỹ năng Loạt bắn tập trung: 3 phát mạnh vào điểm chọn, dùng UX chọn điểm của thẻ hỗ trợ.
+
+(b) ĐỒN TRÚ — đồn trú phản ứng.
+- Mỗi 60 s tích 1 tổ sẵn sàng, tối đa 2 tổ.
+- Tổ tự thả khi có địch vào leashRegion của căn cứ; kỹ năng Báo động thả ngay mọi tổ đang tích.
+- Thành phần cố định theo cấp, dùng id có sẵn:
+  - HQ 1: light_tank;
+  - HQ 2: armored_car + scout_jeep;
+  - HQ 3: light_tank + armored_car;
+  - HQ 4: main_battle_tank;
+  - HQ 5: main_battle_tank + scout_jeep.
+- Trần giá trị quân đồn trú còn sống (baseCP): 6 / 8 / 10 / 12 / 15.
+- Quân đồn trú:
+  - không rời vùng căn cứ;
+  - vùng căn cứ hết địch 30 s thì rút và biến mất;
+  - tính vào trần quân và ngân sách thực thể (trần đầy thì tổ giữ trong kho, thả khi có chỗ); không tính tiếp tế;
+  - bị hạ không hoàn CP cho ai, không cho điểm Tử chiến.
+
+(c) LÁ CHẮN — phòng thủ điểm và sửa chữa.
+- Vòm POINT_DEFENSE trên bán kính căn cứ, dùng hệ POINT_DEFENSE của prompt 29, có số lần chặn và hồi hữu hạn. Lượng chặn tương đương C-RAM vừa: HQ 1 ×0,5 … HQ 5 ×1,2. Danh sách đạn chặn được như C-RAM; không chặn đạn pháo xe tăng.
+- Tháp trong bán kính hồi máu sau 5 s không trúng đạn: 0,2% → 0,4% máu tối đa mỗi giây (HQ 1 → 5).
+- Kỹ năng Vòm khiên khẩn cấp: 10 s, hấp thụ 8 / 10 / 12 / 15 / 18% máu tối đa của nhà chính (HQ 1 → 5).
+
+Luật chồng phòng thủ điểm:
+- mỗi viên đạn chỉ được MỘT hệ chặn nhận (hệ gần nhất, đủ điều kiện, còn lần chặn; hòa thì theo id);
+- không có lần chặn thứ hai trên cùng viên đạn;
+- nhiều hệ chồng nhau chỉ tăng vùng phủ và tổng lần chặn, không nhân xác suất;
+- vòm khiên hấp thụ phần lọt qua.
+
+Mốc hư hại nhà chính:
+- 50%: chỉ hình ảnh (mô hình hư hại, khói lửa), cảnh báo và thoại; KHÔNG giảm chức năng;
+- 25%: cảnh báo + một lần xây lại miễn phí (lượt 2).
+
+So sánh 3 kiểu: script tính "giá trị phòng thủ tương đương mỗi phút căn cứ bị đánh" (sát thương gây ra + sát thương ngăn được + baseCP quân tạm thời), mục tiêu HQ 1 ~4–5, HQ 2 ~5–6, HQ 3 ~6–7, HQ 4 ~7–8, HQ 5 ~8–9. Kiểu nào lệch dải thì chỉnh hệ số trong bảng trên, ghi DECISIONS.
+
+Khác:
+- AI địch chọn kiểu theo tướng (Brandt, Kessler: Pháo đài; Varga: Đồn trú; Orlov, Aurel: Lá chắn; khác: theo độ khó). AI dùng kỹ năng khi căn cứ bị đe dọa (ngưỡng trong aiModeProfile).
+- Migration: người chơi đã chọn học thuyết cũ (nếu prompt nào đã làm) được chọn lại miễn phí.
+Commit theo kiểu.
+
+### Lượt 5 — Đợt Phòng thủ / Vô tận cân theo cấp
+- Sức mạnh đợt = ReferenceBasePower(cấp HQ) × hệ số độ khó × đường cong đợt × hệ số tiến độ chiến dịch (nếu là màn chiến dịch).
+- ReferenceBasePower: một loadout tham chiếu cố định cho mỗi cấp HQ (agent dựng 5 loadout mẫu, ghi vào dữ liệu và DECISIONS).
+- Sức mạnh căn cứ thật của người chơi chỉ hiển thị, KHÔNG dùng để tính đợt.
+- Phần vô hạn (prompt 30) dùng cùng công thức cộng luật tăng mỗi đợt đã có.
+Commit.
+
+### Lượt 6 — CP khởi đầu và đội mở màn
+CP khởi đầu (×1,16 theo giá mới):
+- Chiếm cứ điểm / Tử chiến / Vua đồi 18 → 21;
+- Công phá 16 → 19; Sinh tồn 16 → 19;
+- Phòng thủ / Vô tận 24 → 28;
+- Công thành 34 → 39;
+- Săn trùm 40 → 46 (hợp lệ vì kho mới 60; nếu kho Săn trùm chưa lên 60 thì giữ 40 và ghi báo cáo, KHÔNG tự kẹp);
+- Đối công 21;
+- màn chiến dịch nhân 1,16, làm tròn nửa lên.
+
+Đội mở màn:
+- Thả từ tick 0 với thời gian thả dù thường.
+- Giá trị (baseCP, không dùng giá sau giảm hạng thẻ hay commander) TRỪ vào CP khởi đầu, tối đa 60% CP khởi đầu.
+- Mỗi vai trò lấy thẻ rẻ nhất cùng vai trò trong bộ bài (theo baseCP, hòa thì theo id); thiếu vai trò thì bỏ ô đó và giữ CP.
+- Loại trừ thực thể 0 CP, đơn vị chỉ dành cho nhiệm vụ, vật thể kịch bản, placed_allies.
+- Xe trong đội là xe thường (tiếp tế, hoàn CP, điểm Tử chiến).
+- Bảng:
+  | Commander | Đội |
+  | Kade | xe chủ lực + trinh sát |
+  | Mara | công binh + xe sửa chữa + xe nhẹ |
+  | Hawk | trực thăng trinh sát + trinh sát |
+  | Nadia | trinh sát + trinh sát radar + xe nhẹ |
+  | Venn | xe phóng drone FPV + trinh sát |
+  | Mendez | xe bọc thép bánh lốp + tăng nhẹ + trinh sát |
+  | Brandt | xe công sự triển khai + công binh |
+  | Dahl | xe cối hoặc pháo tự hành (rẻ nhất có trong bộ bài) + trinh sát |
+  | Brenn | không có |
+  | Adler | trinh sát + xe nhẹ |
+  | Varro | 3 xe có baseCP ≤ 4 |
+  | Reyn | xe chủ lực |
+  | Quist | xe hóa công sự + xe nhẹ + trinh sát |
+  | Okoye | không có |
+- Áp ở: Giữ cứ điểm, Tử chiến, Vua đồi, Công phá, Công thành, Phòng thủ, Sinh tồn, Đối công, mỗi boss Săn trùm.
+- Không tự áp ở: 23 màn bộ bài game, màn có placed_allies, màn trinh sát/thâm nhập, màn mở đầu bằng đoàn xe kịch bản. Màn chiến dịch khác: cờ openingSquad theo từng màn, mặc định tắt.
+- AI địch có đội mở màn theo tướng (vai trò theo thế trận tướng: Varga xe tăng, Orlov pháo + radar, Kessler xe rải mìn + xe nhẹ, Wolff trực thăng, Venn drone, Thorne xe chủ lực, Aurel xe hạng nặng rẻ nhất).
+- Nếu Lượt 0 thấy quân đầu trận hiện tại là một hệ khác: thay bằng đội mở màn, ghi DECISIONS.
+Commit.
+
+### Lượt 7 — Chế độ Đối công (EN: Showdown)
+Luật trận (schema prompt 30):
+- winCondition: phá nhà chính đối phương.
+- loseCondition: mất nhà chính.
+- timeLimit: 12 phút.
+- antiSnipeRule: nhà chính chỉ nhận 25% sát thương từ pháo binh, tên lửa và máy bay bắn từ ngoài 60 m, cho tới khi outerDefenseBreached.
+- breachRule: outerDefenseBreached = true khi cổng chính bị phá, HOẶC một đoạn tường ngoài thành RUBBLE và tạo được đường đi từ phía công vào trong căn cứ (kiểm bằng trạng thái navmesh).
+- Leo thang:
+  - phút 6: thu nhập ×1,5 cho cả hai phe; Trạm tiếp tế ngừng tạo CP;
+  - phút 10: tháp bị phá không xây lại (lần đang dở đã trừ CP thì hoàn tất).
+- overtimeRule: hết 12 phút, bên có nhà chính còn nhiều % máu hơn từ 5 điểm phần trăm trở lên thắng ngay. Chênh dưới 5 điểm → đột tử 90 s:
+  - tắt chống bắn tỉa;
+  - vẫn không xây lại tháp;
+  - thu nhập ×2;
+  - không đặt lại hồi chiêu kỹ năng nhà chính;
+  - phá nhà chính thì thắng; hết 90 s thì bên gây nhiều sát thương lên nhà chính đối phương TRONG đột tử hơn thắng.
+- drawRule: bằng nhau sau đột tử → hòa.
+- scoreRule: không có điểm phụ.
+- catchUpPolicy: chỉ bắt kịp thu nhập, trần +25%; KHÔNG tiếp viện miễn phí.
+- Căn cứ hai phe: loadout đầy đủ (tháp, tường, kiểu nhà chính), commander, đội mở màn. AI dùng căn cứ cùng cấp HQ với người chơi theo độ khó (không mạnh hơn).
+- Trung lập 0–2 ở giữa, đặt đối xứng.
+- mapEligibility: chỉ bản đồ 300×300 đạt ngưỡng đối xứng trong docs/checks/map_audit.md (prompt 30). Không dùng 300×480.
+- aiModeProfile (thêm dữ liệu, không viết lại prompt 28):
+  - controllers COMMANDER cả hai phe; stallPolicy BOTH; spendPressure ON; advancePressure ON;
+  - objectivePolicy: (1) thủ căn cứ khi có mối đe dọa đáng kể; (2) phá phòng tuyến ngoài; (3) đánh nhà chính; (4) trung lập khi có lợi;
+  - dùng luật cổng/phá tường ở lượt 3 và kỹ năng nhà chính ở lượt 4.
+- Kiểm tĩnh: script ước lượng thời gian phá căn cứ HQ 5 có tường bằng quân trung bình (theo DPS sau prompt 29) để kiểm 12 phút có hợp lý không; ghi docs/checks/showdown_static.md. Không mô phỏng.
+- Thêm vào menu chọn chế độ; song ngữ.
+Commit.
+
+### Lượt 8 — Sổ tay đạn (mục mới)
+Trong game: menu Hồ sơ có mục "Sổ tay đạn". Tài liệu thiết kế PDF có mục tương ứng. Toàn bộ nội dung SINH TỪ DỮ LIỆU (không viết số cứng), song ngữ.
+Nội dung:
+1. Bảng 6 loại sát thương × mặt đất / máy bay / công trình, kèm một câu "mạnh với / yếu với" cho mỗi loại và ví dụ 2–3 vũ khí tiêu biểu (lấy từ dữ liệu):
+   - động năng; nổ lõm; nổ mạnh; lửa; mảnh; năng lượng.
+2. Bảng xuyên so với giáp (hơn 2 cấp ×1,2 … thiếu từ 3 cấp ×0,1). Giải thích giáp có hướng (trước, hông, sau, nóc), boss tới cấp 5, và một ví dụ tính bằng số thật: một phát của vũ khí X lên xe Y mặt trước và mặt hông.
+3. Dấu đặc biệt:
+   - đánh nóc (trúng giáp nóc);
+   - nhiệt áp (theo thứ tự nhân ở Lượt 0);
+   - nổ lan (lõi / rìa);
+   - dẫn đường;
+   - đạn thay thế (khi nào súng tự đổi, mất bao lâu);
+   - tầm tối thiểu.
+4. Hệ phòng vệ chặn loại đạn nào:
+   - giáp phản ứng nổ; lồng chắn;
+   - SELF_APS; POINT_DEFENSE (C-RAM, la-de, vòm);
+   - pháo sáng; khói; gây nhiễu; khiên.
+   Phải khớp luật đã chốt: SELF_APS và POINT_DEFENSE không chặn đạn pháo xe tăng.
+5. "Đánh công trình bằng gì": nổ mạnh, pháo binh, nhiệt áp, lửa, bom, đạn nổ mạnh thay thế; nổ lõm và động năng kém hiệu quả lên công trình; mảnh gần như vô hiệu. Riêng tường: xe phá tường ×1,5.
+Thẻ xe:
+- giữ ký hiệu ✓ ~ ✕ trên thẻ chính;
+- trang chi tiết thêm chip nhỏ: ĐÁNH NÓC, ĐẠN THAY THẾ, NỔ TRÊN KHÔNG, DẪN ĐƯỜNG, PHÁ CÔNG TRÌNH, PHÁ TƯỜNG;
+- chạm vào chip mở đúng mục trong Sổ tay đạn.
+Test: mọi số trong Sổ tay khớp bảng dữ liệu (test so chuỗi sinh ra với dữ liệu).
+Commit.
+
+### Lượt 9 — Kiểm chồng chéo, hiệu năng, tài liệu, báo cáo
+- Chồng chéo (ghi docs/checks/base_overlap.md, không sửa ngoài các luật đã ghi ở trên):
+  - Trạm radar mô-đun (chỉ trong căn cứ) / trạm radar trung lập (một vùng bản đồ): GIỮ RIÊNG.
+  - Xưởng sửa chữa mô-đun (xe quanh nhà chính) / xưởng sửa trung lập (xe ở vị trí bản đồ) / Lá chắn (tháp): GIỮ RIÊNG theo đối tượng và vị trí.
+  - C-RAM / la-de / Lá chắn: GIỮ, theo luật chồng phòng thủ điểm.
+  - Báo mọi cặp còn làm cùng việc, cùng tầm, cùng giá.
+- Hiệu năng (tĩnh, ghi docs/checks/base_perf.md):
+  - đếm trần thực thể sống lâu mỗi phe ở Đối công HQ 5 (dự kiến ~75 mỗi phe, ~150 cả trận, chưa gồm đạn và drone);
+  - liệt kê nguồn thực thể ngắn hạn lớn nhất;
+  - xác nhận tường không chạy logic mỗi tick, đồn trú bị chặn bởi trần quân, đạn và drone dùng pool;
+  - ghi các mục NEED PROFILE.
+- Thả quân tiền phương ở tiền đồn: HOLD. Chỉ ghi kết quả Lượt 0 mục 5; không bật ở Giữ cứ điểm, Vua đồi, Đối công.
+- Xuất lại tài liệu thiết kế PDF: mục 6 (roster 22, nhánh, giá xây lại, tường, kiểu nhà chính), mục 7 (Phòng thủ theo cấp), chế độ Đối công, mục 14 (CP khởi đầu, đội mở màn), mục Sổ tay đạn.
+- Báo cáo docs/balance/report_p32.md:
+  - kết quả Lượt 0;
+  - bảng giá xây lại (tạm và theo script);
+  - tháp đã giảm chỉ số;
+  - phán quyết Pháo đài thép;
+  - so sánh 3 kiểu nhà chính;
+  - kết quả kiểm tĩnh Đối công;
+  - mọi chỗ tự quyết.
+Commit: "P32 L9: audits + design doc + report".
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) claude cloud không còn dung lượng nên bạn làm luôn; làm luôn các prompt mới (phụ lục prompt 29, prompt 32, cùng prompt 31 còn dang dở)
