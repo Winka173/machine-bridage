@@ -1,6 +1,6 @@
 # Tự kiểm bộ xuất (spec 9)
 
-Commit 5d195554, ngày 2026-10-03, bản gốc so sánh `origin/main`. Lệnh: `python Tools/export/export.py check`.
+Commit be7d9f51, ngày 2026-10-03, bản gốc so sánh `origin/main`. Lệnh: `python Tools/export/export.py check`.
 Trạng thái: DAT = đạt; CHUA_DAT = có thiếu (liệt kê); CHUA_AP = phần của lượt sau. CI (.github/workflows/export.yml) chặn khi độ phủ, khóa ngoại, đồng nhất hoặc bí mật không đạt.
 
 | # | Kiểm | Trạng thái | Thiếu |
@@ -35,8 +35,8 @@ Files:
 | 06_ai | có | 13 |
 | 07_chien_dich_cot_truyen | có | 32 |
 | 08_ban_do | có | 39 |
-| 09_hieu_ung_am_thanh | có | 16 |
-| 10_model_tai_san | có | 20 |
+| 09_hieu_ung_am_thanh | có | 18 |
+| 10_model_tai_san | có | 21 |
 | 11_meta_giao_dien | có | 24 |
 | 12_he_thong_trang_thai | có | 23 |
 | 13_tham_chieu_nguon | không | 0 |
@@ -49,13 +49,13 @@ Sheet rỗng (0 dòng, không có dòng CHUA_AP):
 
 (không có)
 
-Sheet chỉ có dòng đánh dấu (CHUA_AP / NEED_CODE_CHECK / KHONG_CO): 37.
+Sheet chỉ có dòng đánh dấu (CHUA_AP / NEED_CODE_CHECK / KHONG_CO): 33.
 
 ## 2. Độ phủ khóa, khóa ngoại, không (id, cột) nào hai giá trị giữa các file
 
 Trạng thái: DAT.
 
-Nguồn 1003, lá 803070; chưa ánh xạ 0; ánh xạ hai lần 0; chờ file chưa dựng 696 (Cho_anh_xa: file 13, lượt 10). Khóa ngoại: {'OK': 256}.
+Nguồn 1003, lá 803070; chưa ánh xạ 0; ánh xạ hai lần 0; chờ file chưa dựng 696 (Cho_anh_xa: file 13, lượt 10). Khóa ngoại: {'OK': 260}.
 
 Khóa ngoại FAIL:
 
@@ -111,7 +111,7 @@ Cột công thức thiếu _game:
 
 Trạng thái: DAT.
 
-Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): 13610; mẫu 200 (seed 20261003); khác csv: 0. pdf Machine_Brigade_Design_2026-10-03.pdf: 118 trang; mẫu 200 ô của Machine_Brigade_Design_FULL_2026-10-03.md (seed 20261004); khác csv hoặc không thấy trên trang có id dòng: 0.
+Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): 14120; mẫu 200 (seed 20261003); khác csv: 0. pdf Machine_Brigade_Design_2026-10-03.pdf: 120 trang; mẫu 200 ô của Machine_Brigade_Design_FULL_2026-10-03.md (seed 20261004); khác csv hoặc không thấy trên trang có id dòng: 0.
 
 Ô md khác csv:
 
@@ -141,7 +141,7 @@ Cột bắt buộc (Schema bat_buoc) có ô trống:
 
 Trạng thái: DAT.
 
-Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 361 file so băm sha256 (trừ README.md, MANIFEST.json, SELF_CHECK.md); khác: 0.
+Hai lần xuất (hai tiến trình riêng) trên cùng dữ liệu: 365 file so băm sha256 (trừ README.md, MANIFEST.json, SELF_CHECK.md); khác: 0.
 
 (không có)
 
@@ -241,7 +241,7 @@ Cột NEED_CODE_CHECK:
 
 Trạng thái: DAT.
 
-Quét 391 file (mọi file của bộ xuất và các thư mục diff_*; xlsx từng phần, pdf giải nén luồng, ảnh đọc thô): khóa API (Google, AWS, GitHub, Slack, sk-), khóa riêng, mật khẩu / keystore, JWT, bearer, api_key=, email, đường dẫn tuyệt đối máy cá nhân, tên người dùng máy.
+Quét 395 file (mọi file của bộ xuất và các thư mục diff_*; xlsx từng phần, pdf giải nén luồng, ảnh đọc thô): khóa API (Google, AWS, GitHub, Slack, sk-), khóa riêng, mật khẩu / keystore, JWT, bearer, api_key=, email, đường dẫn tuyệt đối máy cá nhân, tên người dùng máy.
 
 (không có)
 

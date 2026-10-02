@@ -1,6 +1,6 @@
 # 10_model_tai_san — Model và tài sản
 
-Bộ xuất dữ liệu Machine Brigade, commit 5d195554, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Model GLB (nút, vật liệu, mesh, tam giác, Part / Mount / Muzzle), chuẩn kiểm model, kích thước thật tham chiếu, ảnh thẻ, địa phương hóa Việt / Anh, giấy phép tài sản
 
@@ -8,7 +8,7 @@ Mục trong file này: 19. Hình ảnh; 21. Model.
 
 ## 19. Hình ảnh
 
-Trạng thái: Một phần — chờ prompt xuat_luot6 (sheet Anh_chup)
+Trạng thái: Đã áp
 
 Nguồn dữ liệu: 10_model_tai_san/Anh_the; 10_model_tai_san/Anh_chup. Văn bản: Docs/Machine_Brigade_Design_Review.html (Tools/docs/build_doc.py) §19. Hình ảnh, §20. Thư viện hình ảnh.
 
@@ -116,17 +116,33 @@ Sheet: 10_model_tai_san/Anh_the — Ảnh thẻ (241 dòng, 7 cột)
 
 *15 / 241 dòng đầu: xem sheet 10_model_tai_san/Anh_the.*
 
-Sheet: 10_model_tai_san/Anh_chup — Ảnh chụp (1 dòng, 5 cột)
+Sheet: 10_model_tai_san/Anh_chup — Ảnh chụp (47 dòng, 12 cột)
 
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| chua_ap | CHUA_AP:prompt_xuat_luot6 | lượt 6 (Markdown, PDF, ảnh): Docs/doc-images |
+| id | nguon_anh | loai | muc | tieu_de_muc | chu_thich | rong_px | cao_px | thuoc_do | trang_thai |
+|---|---|---|---|---|---|---|---|---|---|
+| images/02_phuong_tien/r6_supports.png | Docs/doc-images/r6/supports.png | review | 12 | Hỗ trợ hỏa lực | Clip Xem bắn của các thẻ hỗ trợ (pháo kích, không kích, tên… | 1280 | 2880 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/02_phuong_tien/shots_hd.png | Docs/doc-images/shots/hd.png | review | 8 | Phương tiện | Model thường và model chi tiết (đồ họa Cao) của 12 xe phổ b… | 1500 | 1418 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/05_che_do_kinh_te/shots_battle1.png | Docs/doc-images/shots/battle1.png | review | 1 | Tổng quan | Trong trận (ảnh 3D; HUD ở ảnh này là bản trước phase 10, HU… | 1500 | 730 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/05_che_do_kinh_te/shots_battle2.png | Docs/doc-images/shots/battle2.png | review | 1 | Tổng quan | Bản đồ sa mạc Dunebreak sau khi phóng to 50%; nhà cửa đã ch… | 1500 | 730 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/05_che_do_kinh_te/shots_boss.png | Docs/doc-images/shots/boss.png | review | 2 | Chế độ chơi | Boss. | 1500 | 730 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/05_che_do_kinh_te/shots_defend.png | Docs/doc-images/shots/defend.png | review | 2 | Chế độ chơi | Phòng thủ căn cứ. | 1500 | 730 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/05_che_do_kinh_te/shots_hunt.png | Docs/doc-images/shots/hunt.png | review | 2 | Chế độ chơi | Nhiệm vụ săn: mục tiêu hiện hình thoi đỏ trên bản đồ nhỏ. | 1500 | 730 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/05_che_do_kinh_te/shots_siege.png | Docs/doc-images/shots/siege.png | review | 2 | Chế độ chơi | Công thành. | 1500 | 730 | ảnh chụp, không lưới mét; thước: Tăng chủ lực main_battle_t… | present |
+| images/09_hieu_ung_am_thanh/tier_T0_fire_0.2s.png | Builds/effect_shots/tier_T0/fire_0.2s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T0 fire_0.2s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+| images/09_hieu_ung_am_thanh/tier_T0_impact_0.5s.png | Builds/effect_shots/tier_T0/impact_0.5s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T0 impact_0.5s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+| images/09_hieu_ung_am_thanh/tier_T1_fire_0.2s.png | Builds/effect_shots/tier_T1/fire_0.2s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T1 fire_0.2s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+| images/09_hieu_ung_am_thanh/tier_T1_impact_0.5s.png | Builds/effect_shots/tier_T1/impact_0.5s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T1 impact_0.5s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+| images/09_hieu_ung_am_thanh/tier_T2_fire_0.2s.png | Builds/effect_shots/tier_T2/fire_0.2s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T2 fire_0.2s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+| images/09_hieu_ung_am_thanh/tier_T2_impact_0.5s.png | Builds/effect_shots/tier_T2/impact_0.5s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T2 impact_0.5s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+| images/09_hieu_ung_am_thanh/tier_T3_fire_0.2s.png | Builds/effect_shots/tier_T3/fire_0.2s.png | fx | 20b | Hiệu ứng theo bậc và xác vỡ | tier_T3 fire_0.2s |  |  | m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng… | pending |
+
+*15 / 47 dòng đầu: xem sheet 10_model_tai_san/Anh_chup.*
 
 ## 21. Model
 
-Trạng thái: Một phần — chờ prompt xuat_luot6; cần đọc mã (NEED_CODE_CHECK) (sheet Model, Xem_truoc)
+Trạng thái: Một phần — cần đọc mã (NEED_CODE_CHECK) (sheet Xem_truoc)
 
-Nguồn dữ liệu: 10_model_tai_san/Model; 10_model_tai_san/Model_tieu_chuan; 10_model_tai_san/Model_kiem_chuan; 10_model_tai_san/Kich_thuoc_that; 10_model_tai_san/Giay_phep_tai_san; 10_model_tai_san/Xem_truoc. Văn bản: Docs/Machine_Brigade_Design_Review.html (Tools/docs/build_doc.py) §10h. Prompt 27; Docs/models/MODEL_STANDARD.md.
+Nguồn dữ liệu: 10_model_tai_san/Model; 10_model_tai_san/Model_tieu_chuan; 10_model_tai_san/Model_kiem_chuan; 10_model_tai_san/Kich_thuoc_that; 10_model_tai_san/Kit_chi_tiet; 10_model_tai_san/Giay_phep_tai_san; 10_model_tai_san/Xem_truoc. Văn bản: Docs/Machine_Brigade_Design_Review.html (Tools/docs/build_doc.py) §10h. Prompt 27; Docs/models/MODEL_STANDARD.md.
 
 Prompt 27 thay các model mượn tạm (stand-in) bằng model riêng và đặt một mức chất lượng chung cho mọi model. Quy trình: **STEP0_AUDIT** kiểm kê mọi model và thẻ; **BASELINE** chạy bộ kiểm tra GLB (`Tools/assets/glb_check.py`: tỉ lệ so với `modelSize`, tam giác diện tích 0, màu đỉnh COLOR_0, nút bộ phận boss) và ghi mốc; **EXPERIMENT_1** thử bộ dựng V2 trên bốn model (xe tăng chủ lực, máy bay tiêm kích, silver_bug, trực thăng tấn công) và được chủ dự án duyệt; **BUDGETS** đặt trần số tam giác, renderer và bộ phận động theo loại; **art-bible** ghi luật tạo hình, bảng màu và công thức V2. Mỗi model một commit: dựng lại, kiểm tĩnh, render thẻ, xem trước trong Unity, chấp nhận mốc mới kèm lý do. Không chạy test, mô phỏng hay đo hiệu năng cho đến khi chủ dự án cho phép.
 
@@ -239,27 +255,31 @@ structure; otherwise tracked (Tracks / Sprockets nodes), wheeled (Tyres / Wheels
 
 *Hình: ixion: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2). Đơn vị: m; ảnh không có lưới mét; model ixion 27.02 × 13.03 × 10.372 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
 
-![ixion: ảnh quét trong Unity (ModelScan)](../images/10_model_tai_san/ixion_unity_scan.png)
+![ixion: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận)](../images/10_model_tai_san/ixion_unity_scan.png)
 
-*Hình: ixion: ảnh quét trong Unity (ModelScan). Đơn vị: m; ảnh không có lưới mét; model ixion 27.02 × 13.03 × 10.372 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
+*Hình: ixion: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận). Đơn vị: m; ảnh không có lưới mét; model ixion 27.02 × 13.03 × 10.372 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
 
 ![rocket_turret: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2)](../images/10_model_tai_san/rocket_turret_before_after.png)
 
 *Hình: rocket_turret: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2). Đơn vị: m; ảnh không có lưới mét; model rocket_turret 4.685 × 4.717 × 3.434 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
 
-![rocket_turret: ảnh quét trong Unity (ModelScan)](../images/10_model_tai_san/rocket_turret_unity_scan.png)
+![rocket_turret: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận)](../images/10_model_tai_san/rocket_turret_unity_scan.png)
 
-*Hình: rocket_turret: ảnh quét trong Unity (ModelScan). Đơn vị: m; ảnh không có lưới mét; model rocket_turret 4.685 × 4.717 × 3.434 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
+*Hình: rocket_turret: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận). Đơn vị: m; ảnh không có lưới mét; model rocket_turret 4.685 × 4.717 × 3.434 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
 
 ![zu23_technical: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2)](../images/10_model_tai_san/zu23_technical_before_after.png)
 
 *Hình: zu23_technical: trước / sau dựng lại (front, rear, side, top, 3/4, zoom trận x2). Đơn vị: m; ảnh không có lưới mét; model zu23_technical 4.582 × 1.61 × 1.64 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
 
-![zu23_technical: ảnh quét trong Unity (ModelScan)](../images/10_model_tai_san/zu23_technical_unity_scan.png)
+![zu23_technical: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận)](../images/10_model_tai_san/zu23_technical_unity_scan.png)
 
-*Hình: zu23_technical: ảnh quét trong Unity (ModelScan). Đơn vị: m; ảnh không có lưới mét; model zu23_technical 4.582 × 1.61 × 1.64 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
+*Hình: zu23_technical: ảnh quét trong Unity (ModelScan: 3 góc play / side / rear ở cự ly camera trận). Đơn vị: m; ảnh không có lưới mét; model zu23_technical 4.582 × 1.61 × 1.64 m (glb x × y × z); thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
 
-Sheet: 10_model_tai_san/Model — Model (518 dòng, 20 cột)
+![bộ chi tiết kit35: 70 chi tiết dựng model (Tools/blender/mb_kit35.py; số đo ở 10_model_tai_san/Kit_chi_tiet)](../images/10_model_tai_san/kit_catalog_kit35_catalog.png)
+
+*Hình: bộ chi tiết kit35: 70 chi tiết dựng model (Tools/blender/mb_kit35.py; số đo ở 10_model_tai_san/Kit_chi_tiet). Đơn vị: ảnh chụp trong game, không có lưới mét; thước so sánh: Tăng chủ lực (main_battle_tank) 7.79 × 3.07 × 2.307 m (glb x × y × z, 10_model_tai_san/Model).*
+
+Sheet: 10_model_tai_san/Model — Model (518 dòng, 21 cột)
 
 | id | loai | lop_ngan_sach | tam_giac | so_nut | so_part | so_mount | so_muzzle | co_mount_flare | co_mount_aps |
 |---|---|---|---|---|---|---|---|---|---|
@@ -279,7 +299,7 @@ Sheet: 10_model_tai_san/Model — Model (518 dòng, 20 cột)
 | airborne_light_tank | ground | ground | 5550 | 34 | 0 | 0 | 3 | FALSE | FALSE |
 | airborne_light_tank_chute | air | jet | 3514 | 23 | 0 | 0 | 3 | FALSE | FALSE |
 
-*15 / 518 dòng đầu: xem sheet 10_model_tai_san/Model; in 10 / 20 cột; 8 cột khác (và raw_json, nguon): xem sheet.*
+*15 / 518 dòng đầu: xem sheet 10_model_tai_san/Model; in 10 / 21 cột; 9 cột khác (và raw_json, nguon): xem sheet.*
 
 Sheet: 10_model_tai_san/Model_tieu_chuan — Model: tiêu chuẩn (14 dòng, 13 cột)
 
@@ -345,6 +365,28 @@ Sheet: 10_model_tai_san/Kich_thuoc_that — Kích thước thật tham chiếu (
 | bmpt | none | BMPT Terminator |  |  |  | no reliable overall figure found yet |
 
 *15 / 105 dòng đầu: xem sheet 10_model_tai_san/Kich_thuoc_that.*
+
+Sheet: 10_model_tai_san/Kit_chi_tiet — Bộ chi tiết kit35 (70 dòng, 8 cột)
+
+| id | tam_giac | x_m | y_m | z_m |
+|---|---|---|---|---|
+| armour_plate | 652 | 3.0 | 2.0 | 0.225 |
+| axle | 120 | 1.8 | 0.261 | 0.411 |
+| backpack | 144 | 0.408 | 0.32 | 0.51 |
+| beacon | 114 | 0.24 | 0.228 | 0.26 |
+| bogie | 956 | 2.015 | 3.569 | 0.994 |
+| bomb | 182 | 0.486 | 2.2 | 0.293 |
+| breakable_panel | 412 | 2.0 | 1.5 | 0.225 |
+| chamfer_box | 92 | 2.0 | 3.0 | 1.0 |
+| ciws | 330 | 1.1 | 2.01 | 2.2 |
+| crate | 120 | 0.854 | 0.512 | 0.41 |
+| dish | 222 | 1.04 | 0.48 | 1.04 |
+| door | 292 | 1.16 | 2.0 | 2.08 |
+| drop_tank | 96 | 0.6 | 3.01 | 0.6 |
+| era_bricks | 1584 | 1.26 | 0.7 | 0.076 |
+| exhaust | 230 | 0.284 | 0.277 | 0.743 |
+
+*15 / 70 dòng đầu: xem sheet 10_model_tai_san/Kit_chi_tiet.*
 
 Sheet: 10_model_tai_san/Giay_phep_tai_san — Giấy phép tài sản (5 dòng, 7 cột)
 

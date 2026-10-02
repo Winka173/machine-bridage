@@ -3,9 +3,15 @@ model baseline (Tools/assets/baseline.json: per-model check, budgets, history), 
 localisation (every HUD key in Vietnamese and English), asset licences."""
 from __future__ import annotations
 
-from core.model import NEED_CODE_CHECK, chua_ap, join_list
+import json
+import struct
+from pathlib import Path
 
-from . import _b10
+from core import docmd
+from core.model import NEED_CODE_CHECK, join_list
+from core.repo import ROOT
+
+from . import DOMAINS, _b10
 from . import _lane_c as C
 
 FILE_ID = "10_model_tai_san"
@@ -21,6 +27,10 @@ SPECS = "Tools/blender/specs/"
 CARDS = "Assets/MachineBrigade/Resources/UI/Cards/manifest.json"
 LICENSES = "Assets/MachineBrigade/Resources/Licenses/"
 MODEL_FK = ["10_model_tai_san/Model"]
+REBUILD = "Docs/models/rebuild/"
+SCAN_OUT = "Builds/scan/"  # ModelScan.DefaultOut: the runner's 3-up sheets (git-ignored)
+KIT = "Docs/models/kit_catalog/kit35_components.json"
+FX_TIERS = 6  # TierFx.Top + 1
 
 
 def _count(names, prefix):
@@ -44,7 +54,10 @@ def build(ctx):
                        ("glb_y_m", "m", "kích thước y của GLB (baseline size[1])"),
                        ("glb_z_m", "m", "kích thước z của GLB (baseline size[2])"), ("duong_dan", "", "file"),
                        ("tam_giac_lod", "", "tam giác LOD0 / 1 / 2 (Unity tạo LOD lúc nhập; xem 12/Validator lod1Share)"),
-                       ("anh_3_goc", "", "ảnh 3 góc (lượt 6, images/10)")):
+                       ("anh_3_goc", "", "ảnh 3 góc (ModelScan: play / side / rear, 3 x 512 px): Docs/models/rebuild/<model>/"
+                                         "unity_scan.png khi repo có, không thì Builds/scan/<model>.png của máy chạy Unity"),
+                       ("anh_3_goc_trang_thai", "", "present: file có trong repo; pending: chờ ModelScan.RenderBatch "
+                                                    "(model không thuộc đơn vị nào thì ModelScan không chụp)")):
         md.col(c, unit=unit, meaning=m)
     nodes = book.sheet("Model_nut", "Model: nút", "nodes[].name: mọi nút của mọi GLB một dòng", parent=md)
     nodes.col("ten", meaning="tên nút")
@@ -74,7 +87,10 @@ def build(ctx):
             r.set(col, size[i] if i < len(size) else "")
         r.set("duong_dan", sid)
         r.set("tam_giac_lod", NEED_CODE_CHECK)
-        r.set("anh_3_goc", chua_ap("xuat_luot6"))
+        scan = f"{REBUILD}{stem}/unity_scan.png"
+        have = (ROOT / scan).exists()
+        r.set("anh_3_goc", scan if have else f"{SCAN_OUT}{stem}.png")
+        r.set("anh_3_goc_trang_thai", "present" if have else "pending")
         for i, n in enumerate(names):
             nr = nodes.row(f"{stem}/{i}", C.nguon(sid, ("nodes", i, "name")))
             nr.set(nodes.parent_col, stem)
@@ -192,8 +208,102 @@ def build(ctx):
     C.marker_sheet(book, "Xem_truoc", "Màn xem trước", "Mỗi đơn vị: miền đất / biển / ray / không, cảnh nền, hợp lệ",
                    NEED_CODE_CHECK, "Assets/MachineBrigade/Scripts/Editor/ModelPreview.cs và preview của menu (FiringRange; "
                    "DECISIONS 'Play-test 12 (lane B)'): không có bảng dữ liệu", "Assets/MachineBrigade/Scripts/Editor/ModelPreview.cs")
-    C.marker_sheet(book, "Anh_chup", "Ảnh chụp", "Danh sách ảnh dùng trong tài liệu (images/<lĩnh vực>)", chua_ap("xuat_luot6"),
-                   "lượt 6 (Markdown, PDF, ảnh): Docs/doc-images", "Docs/doc-images")
+    _pictures(ctx, book, md)
+    _kit(book)
 
     # ------------------------------------------------------------------ layer B (lane B, pass 5 part 2)
     _b10.build(ctx, book)
+
+
+def _png_size(path) -> tuple:
+    try:
+        head = path.read_bytes()[:24]
+        return struct.unpack(">II", head[16:24]) if head[1:4] == b"PNG" else ("", "")
+    except (OSError, struct.error):
+        return "", ""
+
+
+def _pictures(ctx, book, md):
+    """Anh_chup: every picture md/ of pass 6 shows (docmd.picture_plan: same order and names as the md), plus the
+    Unity effect shots of section 20b still pending when no --effect-shots folder was given."""
+    sh = book.sheet("Anh_chup", "Ảnh chụp", "Mọi ảnh md / PDF của lượt 6 dùng (docmd.picture_plan): ảnh trong export "
+                    "images/<file>/<tên>, file gốc, mục, chú thích, cỡ px, thước đo; ảnh hiệu ứng Unity: present khi "
+                    "chạy với --effect-shots <thư mục>, không thì pending")
+    for c, m in (("nguon_anh", "file gốc: đường dẫn trong repo, hoặc Builds/effect_shots/<key>/<ảnh> của máy chạy Unity"),
+                 ("loai", "review: ảnh của tài liệu thiết kế; thu_muc: ảnh thư mục doc_parts in kèm; fx: ảnh hiệu ứng Unity"),
+                 ("muc", "mục tài liệu in ảnh (ngăn ';')"), ("tieu_de_muc", "tên mục đầu"), ("chu_thich", "chú thích"),
+                 ("rong_px", "rộng (px)"), ("cao_px", "cao (px)"),
+                 ("thuoc_do", "đơn vị và thước so sánh của ảnh (không ảnh nào có lưới mét trừ ảnh hiệu ứng)"),
+                 ("trang_thai", "present: ảnh có, đã chép vào images/; pending: chờ ảnh Unity")):
+        sh.col(c, meaning=m)
+    fids = {n[1:3]: n[1:] for n in DOMAINS}
+    shots = getattr(ctx, "effect_shots", None)
+    mbt = md.rows.get("main_battle_tank")
+    ruler = (f"thước: Tăng chủ lực main_battle_tank {mbt.values.get('glb_x_m')} × {mbt.values.get('glb_y_m')} × "
+             f"{mbt.values.get('glb_z_m')} m (10/Model)") if mbt else ""
+
+    def unit(src, kind):
+        if kind == "fx":
+            return "m: lưới 1 m (vạch 5 m đậm), vòng lõi đỏ, vòng rìa cam; Tăng chủ lực đặt cạnh làm thước"
+        m = md.rows.get(src.parent.name) if REBUILD.rstrip("/") in src.as_posix() else None
+        if m:
+            return (f"m, không lưới; model {src.parent.name} {m.values.get('glb_x_m')} × {m.values.get('glb_y_m')} × "
+                    f"{m.values.get('glb_z_m')} m (glb x × y × z); {ruler}")
+        return f"ảnh chụp, không lưới mét; {ruler}" if ruler else "ảnh chụp, không lưới mét"
+
+    for e in docmd.picture_plan(fids, shots):
+        src = e["src"]
+        if e["rel"] in sh.rows:
+            r = sh.rows[e["rel"]]
+            parts = str(r.values.get("muc", "")).split(";")
+            if e["part"] not in parts:
+                r.values["muc"] = ";".join(parts + [e["part"]])
+            continue
+        inside = src.is_relative_to(ROOT)
+        label = src.relative_to(ROOT).as_posix() if inside else "Builds/effect_shots/" + "/".join(src.parts[-2:])
+        r = sh.row(e["rel"], f"{label} (Tools/export/core/docmd.picture_plan)")
+        r.set("nguon_anh", label)
+        r.set("loai", {"folder": "thu_muc"}.get(e["kind"], e["kind"]))
+        r.set("muc", e["part"])
+        r.set("tieu_de_muc", e["title"])
+        r.set("chu_thich", e["caption"])
+        w, h = _png_size(src)
+        r.set("rong_px", w)
+        r.set("cao_px", h)
+        r.set("thuoc_do", unit(src, e["kind"]))
+        r.set("trang_thai", "present")
+    part = next(p for p in docmd.DP.PARTS if p.get("fx"))
+    for t in range(FX_TIERS):
+        for name in docmd.FX_PICS:
+            rel = f"images/{fids[part['domain']]}/tier_T{t}_{name}"
+            if rel in sh.rows:
+                continue
+            label = f"Builds/effect_shots/tier_T{t}/{name}"
+            r = sh.row(rel, f"{label} (EffectShots.FxBatch; 09/VFX_vu_khi_anh)")
+            r.set("nguon_anh", label)
+            r.set("loai", "fx")
+            r.set("muc", part["num"])
+            r.set("tieu_de_muc", part["title"])
+            r.set("chu_thich", f"tier_T{t} {name[:-4]}")
+            r.set("thuoc_do", unit(Path(label), "fx"))
+            r.set("trang_thai", "pending")
+
+
+def _kit(book):
+    """Kit_chi_tiet: Docs/models/kit_catalog/kit35_components.json (the 70 Blender kit parts; picture kit35_catalog.png)."""
+    p = ROOT / KIT
+    if not p.exists():
+        return
+    sh = book.sheet("Kit_chi_tiet", "Bộ chi tiết kit35", "Docs/models/kit_catalog/kit35_components.json: 70 chi tiết của "
+                    "Tools/blender/mb_kit35.py (tam giác, kích thước, lỗi kiểm); ảnh: kit35_catalog.png (Anh_chup)")
+    sh.col("tam_giac", meaning="số tam giác")
+    for c in ("x_m", "y_m", "z_m"):
+        sh.col(c, unit="m", meaning=f"kích thước {c[0]} (size)")
+    sh.col("loi", meaning="lỗi kiểm (fails, ngăn ';'; trống = đạt)")
+    for i, rec in enumerate(json.loads(p.read_text("utf-8"))):
+        r = sh.row(rec.get("component", i), f"{KIT}[{i}]", raw=rec)
+        r.set("tam_giac", rec.get("triangles", ""))
+        size = rec.get("size") or []
+        for j, c in enumerate(("x_m", "y_m", "z_m")):
+            r.set(c, size[j] if j < len(size) else "")
+        r.set("loi", join_list(rec.get("fails") or []))

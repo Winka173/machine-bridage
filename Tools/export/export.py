@@ -47,10 +47,12 @@ BALANCE = "Assets/MachineBrigade/Resources/Data/balance.json"
 CAMPAIGN = "Assets/MachineBrigade/Resources/Data/campaign.json"
 
 
-def build(base_ref: str | None, lenient: bool = False):
+def build(base_ref: str | None, lenient: bool = False, effect_shots: Path | None = None):
     """lenient (the diff of an old tree): a domain that fails to build (a source or helper the old tree lacks) is left
-    out and listed in 00/Van_de instead of stopping the run."""
+    out and listed in 00/Van_de instead of stopping the run. effect_shots: the --effect-shots folder (09/VFX_vu_khi and
+    10/Anh_chup mark each Unity effect shot present / pending by it)."""
     ctx = Context(base_ref=base_ref)
+    ctx.effect_shots = effect_shots
     for glob, pattern, target, note in _pending.CLAIMS:
         ctx.claim(glob, pattern, target, note)
     for name in DOMAINS:
@@ -210,7 +212,8 @@ def main(argv=None) -> int:
         return selfcheck.main(args, sys.modules[__name__])
 
     base = repo.resolve_ref(args.base) if args.base else None
-    ctx, per_source, unmapped, per_file, fk_results = build(args.base if base else None, args.lenient)
+    shots = Path(args.effect_shots).resolve() if args.effect_shots else None
+    ctx, per_source, unmapped, per_file, fk_results = build(args.base if base else None, args.lenient, shots)
     code = summary(ctx, per_source, unmapped, fk_results, args.strict)
     if args.command != "export":
         return code
@@ -230,7 +233,6 @@ def main(argv=None) -> int:
         "campaign_sha256": ctx.sources[CAMPAIGN].sha256() if CAMPAIGN in ctx.sources else "",
         "cong_cu": f"Tools/export v{TOOL_VERSION}", "python": platform.python_version(), "openpyxl": openpyxl.__version__,
     }
-    shots = Path(args.effect_shots).resolve() if args.effect_shots else None
     hits = write_all(ctx, per_source, unmapped, per_file, fk_results, out, meta, args.strict, shots)
     try:
         shown = out.relative_to(repo.ROOT).as_posix()

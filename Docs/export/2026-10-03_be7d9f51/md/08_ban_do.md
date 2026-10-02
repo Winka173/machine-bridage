@@ -1,6 +1,6 @@
 # 08_ban_do — Bản đồ
 
-Bộ xuất dữ liệu Machine Brigade, commit 5d195554, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 100 file bản đồ (25 bản đồ x 4 biến thể): bãi thả, cứ điểm, căn cứ, tường, pháo đài, cạnh, cổng vào, tag địa hình, địa danh, ray, tuyến biển, trung lập, vật thể, trang trí, đường, quân đặt sẵn; bản đồ gốc, biome, loại vật thể, thời tiết
 

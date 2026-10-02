@@ -1,6 +1,6 @@
 # 11_meta_giao_dien — Meta và giao diện
 
-Bộ xuất dữ liệu Machine Brigade, commit 5d195554, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
+Bộ xuất dữ liệu Machine Brigade, commit be7d9f51, ngày 2026-10-03. Sinh bởi `python Tools/export/export.py` (lượt 6): bảng in đúng ô của csv / xlsx; văn bản lấy từ tài liệu thiết kế (Tools/docs) và chuỗi trong game. Toàn văn: Machine_Brigade_Design_FULL_2026-10-03.md.
 
 Nâng hạng, hòm đồ và tỷ lệ rơi, cửa hàng, nhiệm vụ ngày, skin, mở khóa, thẻ khởi đầu, danh sách bản đồ menu, ảnh bản đồ căn cứ, sổ tay đạn, mọi bảng hằng C# của meta; thành tựu / telemetry / hướng dẫn (không có hoặc chờ)
 
@@ -34,11 +34,27 @@ Sheet: 11_meta_giao_dien/Cai_dat_mac_dinh — Cài đặt mặc định (1 dòng
 |---|---|---|
 | chua_ap | CHUA_AP:prompt_xuat_luot5 | hằng mặc định trong GraphicsOptions.cs, Haptics.cs, PlayerP… |
 
-Sheet: 11_meta_giao_dien/Huong_dan — Hướng dẫn người chơi (1 dòng, 5 cột)
+Sheet: 11_meta_giao_dien/Huong_dan — Hướng dẫn người chơi (403 dòng, 18 cột)
 
-| id | trang_thai | ghi_chu |
-|---|---|---|
-| chua_ap | CHUA_AP:prompt_24 | prompt 24 (trải nghiệm người chơi mới) đang hoãn; gợi ý tro… |
+| id | khoa | nhom | bang | doi_tuong | dong_dau_vi | cach_danh_vi | manh_yeu_vi | meo_vi | khac_vi |
+|---|---|---|---|---|---|---|---|---|---|
+| chua_ap |  |  |  |  | hướng dẫn người chơi mới (prompt 24) đang hoãn; gợi ý trong… |  |  |  |  |
+| guide.aa_57mm_vehicle | guide.aa_57mm_vehicle | guide | GuideText.cs | aa_57mm_vehicle | Xe phòng không 57 mm · cao xạ đòn nặng |  |  |  | Hai phát mỗi giây, tầm 52 m; trúng được cả xe nhẹ. |
+| guide.aa_gun_tower | guide.aa_gun_tower | guide | GuideText.cs | aa_gun_tower | Pháo phòng không 40 mm · tháp ô vừa · cao xạ nhịp đều | bốn phát ngòi cận đích mỗi giây, tầm 48 m, bắn cả máy bay l… | thắng trực thăng, drone và xe nhẹ; xe tăng gần như miễn nhi… | khẩu ở giữa, giữa cao xạ bắn nhanh và cao xạ hạng nặng. |  |
+| guide.aa_gun_vehicle | guide.aa_gun_vehicle | guide | GuideText.cs | aa_gun_vehicle | Xe cao xạ 40 mm · giáp nhẹ · cao xạ nhịp đều | bốn phát ngòi cận đích mỗi giây, vừa chạy vừa bắn, tầm 48 m. | thắng trực thăng, drone và xe nhẹ; xe tăng gần như miễn nhi… | đi cùng tuyến đầu để chống trực thăng. |  |
+| guide.aa_turret | guide.aa_turret | guide | GuideText.cs | aa_turret | Tháp phòng không · công sự cố định · chống máy bay (42 m) | pháo đôi 30 mm cao xạ tới 42 m và tên lửa phòng không (44 m… | xé nát trực thăng và máy bay; lực lượng mặt đất phá nó dễ d… | dọn nó bằng xe tăng hoặc pháo binh trước khi máy bay ta bay… |  |
+| guide.aa_vehicle | guide.aa_vehicle | guide | GuideText.cs | aa_vehicle | Pháo cao xạ tự hành · giáp mỏng · pháo và tên lửa | pháo đôi 35 mm cao xạ (36 m) bắn khi đang chạy, kèm tên lửa… | xé nát trực thăng, drone và máy bay phản lực; đạn cao xạ gầ… | kèm một chiếc với mỗi cụm xe tăng: rẻ mà chặn được trực thă… |  |
+| guide.aerial_tanker | guide.aerial_tanker | guide | GuideText.cs | aerial_tanker | Máy bay tiếp dầu · không vũ trang, tạm thời |  |  |  | Phần cộng thời gian bay cho máy bay phe ta chưa được làm. |
+| guide.air_raid | guide.air_raid | guide | GuideText.cs | air_raid | Không kích bất ngờ · sự kiện trận đấu · trúng cả hai phe | một đợt máy bay trung lập rải {{count}} quả bom dọc đường {… | gây sát thương mọi thứ bên dưới, cả ta lẫn địch; chỉ máy ba… | khi thấy cảnh báo, rút quân khỏi điểm nóng và để bom rơi tr… |  |
+| guide.airborne_light_tank | guide.airborne_light_tank | guide | GuideText.cs | airborne_light_tank | Tăng nhẹ thả dù · rơi sau lưng địch |  |  |  | Pháo 105 mm, giáp mỏng, thả dù ở nơi phe ta nhìn thấy. |
+| guide.airborne_vehicle | guide.airborne_vehicle | guide | GuideText.cs | airborne_vehicle | Xe đổ bộ đường không · giáp nhẹ · sau lưng địch | chạm thẻ rồi chạm vùng phe ta nhìn thấy: nó nhảy dù xuống t… | chiếm cứ điểm trống, đánh pháo binh từ phía sau; thua xe tă… | chạm thẻ hai lần để đưa nó về bãi thả. |  |
+| guide.airfield | guide.airfield | guide | GuideText.cs | airfield | Sân bay dã chiến · mô-đun tiện ích | máy bay bay trên nó hồi 3% máu mỗi giây và nạp đạn; chúng v… | giúp trực thăng và máy bay bay được lâu hơn; chúng vẫn phải… | mang theo khi bộ bài có từ hai máy bay trở lên. |  |
+| guide.airstrike | guide.airstrike | guide | GuideText.cs | airstrike | Không kích · một hàng bom · {{cp}} CP | {{delay}} giây sau khi gọi, máy bay thả {{count}} quả bom d… | đánh mạnh vào đoàn xe và tháp canh dọc đường; xe lẻ nằm ngo… | kéo dọc theo hướng tiến quân của địch để quả bom nào cũng t… |  |
+| guide.ammo_carrier | guide.ammo_carrier | guide | GuideText.cs | ammo_carrier | Xe tiếp đạn · giáp mỏng · điểm nạp tiền phương | chỉ có súng máy nóc; bệ phóng và xe tên lửa hết đạn trong v… | giữ pháo phản lực và trực thăng bắn liên tục; giáp mỏng và… | đỗ sau các bệ phóng; chỉ huy tự đưa bệ phóng hết đạn tới nó… |  |
+| guide.ammo_depot | guide.ammo_depot | guide | GuideText.cs | ammo_depot | Kho đạn · mô-đun tiện ích | xe nạp đạn tại căn cứ nhanh gấp đôi. | rất hợp với giàn phóng và pháo binh hay hết đạn; nổ rất mạn… | mang theo khi bộ bài nhiều pháo phản lực. |  |
+| guide.ammo_resupply | guide.ammo_resupply | guide | GuideText.cs | ammo_resupply | Thả dù tiếp đạn · nạp đầy ngay · {{cp}} CP | mọi xe ta trong vòng {{radius}} m được nạp đầy đạn ngay lập… | giữ pháo binh và máy bay tiếp tục chiến đấu khi hết đạn; vô… | gọi cho lựu pháo và máy bay tấn công của bạn khi tốc độ bắn… |  |
+
+*15 / 403 dòng đầu: xem sheet 11_meta_giao_dien/Huong_dan; in 10 / 18 cột; 6 cột khác (và raw_json, nguon): xem sheet.*
 
 Sheet: 11_meta_giao_dien/Ban_do_menu — Bản đồ trên menu (25 dòng, 6 cột)
 
