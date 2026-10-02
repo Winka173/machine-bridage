@@ -1,0 +1,1428 @@
+{
+"chapter": 10,
+"missions": {
+"c10m01": {
+"main": "dieuhau"
+},
+"c10m02": {
+"main": "linh"
+},
+"c10m11": {
+"main": "okoye"
+},
+"c10m03": {
+"main": "khai"
+},
+"c10m04": {
+"main": "dieuhau"
+},
+"c10m05": {
+"main": "sen"
+},
+"c10m06": {
+"main": "dieuhau"
+},
+"c10m13": {
+"main": "khai"
+},
+"c10m08": {
+"main": "dieuhau"
+},
+"c10m14": {
+"main": "linh"
+},
+"c10m07": {
+"main": "dieuhau"
+},
+"c10m12": {
+"main": "dieuhau"
+},
+"c10m09": {
+"main": "khai"
+},
+"c10m10": {
+"main": "khai"
+},
+"c10s1": {
+"main": "sen"
+},
+"c10s2": {
+"main": "linh"
+}
+},
+"lines": [
+{
+"mission": "c10m01",
+"trigger": "mission_start",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m01.01",
+"en": "Hawk! Still flying that museum piece?",
+"vi": "Hawk! Vẫn còn lái món đồ cổ đó à?"
+},
+{
+"mission": "c10m01",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m01.02",
+"en": "Still faster than you, Raven. Twelve of them, folks.",
+"vi": "Vẫn nhanh hơn anh đấy, Raven. Mười hai chiếc, các anh."
+},
+{
+"mission": "c10m01",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m01.03",
+"en": "Four! From the south this time, like Nadia said.",
+"vi": "Bốn chiếc! Lần này chúng tới từ phía nam, như Nadia đoán.",
+"arg": "1/3"
+},
+{
+"mission": "c10m01",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m01.04",
+"en": "A second air raid incoming. Raven is not flying with it; only commanding.",
+"vi": "Đợt không kích thứ hai đang tới. Raven không bay cùng, hắn chỉ chỉ huy."
+},
+{
+"mission": "c10m01",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m01.05",
+"en": "Eight! Pretty warm up here, but I am fine.",
+"vi": "Tám! Khá là nóng trên này, nhưng tôi vẫn ổn.",
+"arg": "2/3"
+},
+{
+"mission": "c10m01",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m01.06",
+"en": "Twelve. The pass's sky is ours. Raven, you owe me twelve planes.",
+"vi": "Mười hai chiếc. Bầu trời đèo là của ta. Raven, anh nợ tôi mười hai chiếc."
+},
+{
+"mission": "c10m01",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m01.07",
+"en": "Go home, kid. The sky is no place for antiques.",
+"vi": "Về nhà đi, nhóc. Bầu trời không dành cho đồ cổ."
+},
+{
+"mission": "c10m02",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m02.01",
+"en": "Look at the hangars. All of them.",
+"vi": "Nhìn các nhà chứa máy bay. Tất cả."
+},
+{
+"mission": "c10m02",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c10m02.02",
+"en": "The west apron: thirty jets, fuelled. He is ready.",
+"vi": "Sân đỗ phía tây: ba mươi chiếc phản lực, đổ đầy nhiên liệu. Hắn sẵn sàng."
+},
+{
+"mission": "c10m02",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c10m02.03",
+"en": "Night is falling. The runway lights will come on; we will see better.",
+"vi": "Trời tối dần. Đèn đường băng sẽ bật, ta sẽ thấy rõ hơn."
+},
+{
+"mission": "c10m02",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m02.04",
+"en": "The runway left. One hangar has welded doors. I want to know what is inside.",
+"vi": "Còn đường băng. Có một nhà chứa bị hàn kín cửa. Tôi muốn biết bên trong có gì.",
+"arg": "last"
+},
+{
+"mission": "c10m02",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m02.05",
+"en": "The welded hangar holds something long and silver. Venn says: Icarus. A test model.",
+"vi": "Nhà chứa hàn kín có thứ gì đó dài và bạc. Venn nói: Icarus. Bản thử."
+},
+{
+"mission": "c10m02",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m02.06",
+"en": "We could not see it. Skyhold is still a black spot on my map.",
+"vi": "Ta không nhìn được. Skyhold vẫn là một chấm đen trên bản đồ của tôi."
+},
+{
+"mission": "c10m11",
+"trigger": "mission_start",
+"speaker": "okoye",
+"priority": 1,
+"once": true,
+"key": "script.c10m11.01",
+"en": "Every flight that lands is a week of war we can afford. Hold the strip.",
+"vi": "Mỗi chuyến bay hạ cánh là một tuần chiến tranh ta trả nổi. Giữ đường băng."
+},
+{
+"mission": "c10m11",
+"trigger": "objective_progress",
+"speaker": "okoye",
+"priority": 2,
+"once": true,
+"key": "script.c10m11.02",
+"en": "Flight forty-two down. Fifty-eight to go. Hold the strip.",
+"vi": "Chuyến bốn mươi hai hạ cánh. Còn năm mươi tám. Giữ đường băng.",
+"arg": "1/3"
+},
+{
+"mission": "c10m11",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m11.03",
+"en": "Air raid on the strip. They want holes in it before the next flight.",
+"vi": "Không kích nhắm vào đường băng. Họ muốn đường bị thủng trước khi chuyến tiếp theo tới."
+},
+{
+"mission": "c10m11",
+"trigger": "objective_progress",
+"speaker": "okoye",
+"priority": 2,
+"once": true,
+"key": "script.c10m11.04",
+"en": "Flight seventy. Schedule on time. I do not improvise.",
+"vi": "Chuyến bảy mươi. Lịch vẫn đúng giờ. Tôi không ứng biến.",
+"arg": "2/3"
+},
+{
+"mission": "c10m11",
+"trigger": "point_lost",
+"speaker": "okoye",
+"priority": 3,
+"once": true,
+"key": "script.c10m11.05",
+"en": "The strip is lost. Three flights circling. Take it back, quickly.",
+"vi": "Mất đường băng. Ba chuyến đang lượn chờ. Lấy lại, nhanh."
+},
+{
+"mission": "c10m11",
+"trigger": "victory",
+"speaker": "okoye",
+"priority": 1,
+"once": true,
+"key": "script.c10m11.06",
+"en": "Hundredth flight down. The reserve is full, and the reserve's reserve.",
+"vi": "Chuyến thứ một trăm đã hạ cánh. Kho dự trữ đầy, và kho dự trữ của kho dự trữ."
+},
+{
+"mission": "c10m11",
+"trigger": "defeat",
+"speaker": "okoye",
+"priority": 1,
+"once": true,
+"key": "script.c10m11.07",
+"en": "The strip is lost. The flights turn back. We lose a month.",
+"vi": "Đường băng đã mất. Các chuyến bay phải quay về. Ta mất một tháng."
+},
+{
+"mission": "c10m03",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m03.01",
+"en": "The radar is our eyes. Keep them open.",
+"vi": "Radar là mắt của ta. Giữ chúng mở."
+},
+{
+"mission": "c10m03",
+"trigger": "time",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c10m03.02",
+"en": "The village church is our aid station. Twenty wounded inside.",
+"vi": "Nhà thờ trong làng là trạm cứu thương. Có hai mươi thương binh bên trong.",
+"at": 20.0
+},
+{
+"mission": "c10m03",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m03.03",
+"en": "Hitting the first bomber wave. Flak, take the rest!",
+"vi": "Tôi đánh vào đợt ném bom đầu. Phòng không, lo những chiếc còn lại!"
+},
+{
+"mission": "c10m03",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c10m03.04",
+"en": "Halfway. Orlov's radar works better for us than it did for him.",
+"vi": "Nửa thời gian. Radar của Orlov làm việc cho ta tốt hơn cho ông ta.",
+"arg": "1/2"
+},
+{
+"mission": "c10m03",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m03.05",
+"en": "One building left. Radar or church, keep it.",
+"vi": "Chỉ còn một công trình. Radar hay nhà thờ, giữ lấy nó."
+},
+{
+"mission": "c10m03",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m03.06",
+"en": "The radar is still open and the wounded still alive. Enough for one day.",
+"vi": "Radar còn mở mắt, thương binh còn sống. Đủ cho một ngày."
+},
+{
+"mission": "c10m03",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m03.07",
+"en": "We lost both. Get the wounded down the mountain, now.",
+"vi": "Mất cả hai. Đưa thương binh xuống núi, ngay."
+},
+{
+"mission": "c10m04",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m04.01",
+"en": "They are parked in a line. He always did like to show off.",
+"vi": "Chúng đỗ thành hàng. Hắn luôn thích phô trương."
+},
+{
+"mission": "c10m04",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m04.02",
+"en": "Flying low along the apron to mark them. Follow my flares.",
+"vi": "Tôi bay thấp dọc sân đỗ để đánh dấu. Đi theo đèn hiệu của tôi."
+},
+{
+"mission": "c10m04",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m04.03",
+"en": "Half the apron is burning! Pretty as holiday fireworks.",
+"vi": "Một nửa sân đỗ đang cháy! Đẹp như pháo hoa ngày lễ.",
+"arg": "1/2"
+},
+{
+"mission": "c10m04",
+"trigger": "enemy_reinforcement",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c10m04.04",
+"en": "The base guard is coming. Burn the rest and get out.",
+"vi": "Đội bảo vệ sân bay đang tới. Đốt nốt rồi rút."
+},
+{
+"mission": "c10m04",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m04.05",
+"en": "One minute. Out before dawn.",
+"vi": "Một phút. Rút trước khi trời sáng."
+},
+{
+"mission": "c10m04",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m04.06",
+"en": "All burned. Tomorrow morning Raven walks.",
+"vi": "Tất cả cháy rụi. Sáng mai Raven sẽ phải đi bộ."
+},
+{
+"mission": "c10m04",
+"trigger": "defeat",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m04.07",
+"en": "Too many left intact. Tomorrow the sky will be crowded.",
+"vi": "Còn quá nhiều chiếc nguyên vẹn. Ngày mai bầu trời sẽ đông."
+},
+{
+"mission": "c10m05",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.01",
+"en": "It is faster than anything we have. Keep up the fire before it climbs out of range.",
+"vi": "Nó nhanh hơn mọi thứ ta có. Giữ lửa trước khi nó vọt ra ngoài tầm."
+},
+{
+"mission": "c10m05",
+"trigger": "boss_spawn",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.02",
+"en": "Look at it, Colonel. That is the future. It is not yours.",
+"vi": "Nhìn nó đi, đại tá. Đó là tương lai. Không phải của ông."
+},
+{
+"mission": "c10m05",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.03",
+"en": "Icarus Mk.0. A huge main engine, short wings. Hit the wings and it cannot turn.",
+"vi": "Icarus Mk.0. Động cơ chính khổng lồ, cánh ngắn. Đánh vào cánh, nó không lượn được."
+},
+{
+"mission": "c10m05",
+"trigger": "time",
+"speaker": "aurel",
+"priority": 2,
+"once": true,
+"key": "script.c10m05.04",
+"en": "Test flight successful. Everything after this is procedure.",
+"vi": "Chuyến bay thử thành công. Mọi thứ sau đó chỉ là thủ tục.",
+"at": 40.0
+},
+{
+"mission": "c10m05",
+"trigger": "time",
+"speaker": "sen",
+"priority": 2,
+"once": true,
+"key": "script.c10m05.05",
+"en": "That was Aurel. He was talking to someone else, not to us.",
+"vi": "Đó là Aurel. Ông ta đang nói với ai đó khác, không phải với ta.",
+"at": 45.0
+},
+{
+"mission": "c10m05",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c10m05.06",
+"en": "One wing is damaged. Still fast, but only in a straight line.",
+"vi": "Một cánh đã hỏng. Nó vẫn nhanh, nhưng chỉ bay thẳng được."
+},
+{
+"mission": "c10m05",
+"trigger": "boss_phase_change",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.07",
+"en": "It is lighting the main engine to climb. That is when its tail shows most!",
+"vi": "Nó đốt động cơ chính để lên cao. Đó là lúc nó lộ phần đuôi nhất!"
+},
+{
+"mission": "c10m05",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.08",
+"en": "It is about to drop penetrators from altitude. Out of the red!",
+"vi": "Nó sắp thả đạn xuyên giáp từ trên cao. Rời khỏi vùng đỏ!"
+},
+{
+"mission": "c10m05",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c10m05.09",
+"en": "Hit! It is still fast as the devil.",
+"vi": "Trúng rồi! Nó vẫn nhanh như quỷ.",
+"arg": "75"
+},
+{
+"mission": "c10m05",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c10m05.10",
+"en": "Night falling. Its engine will glow like a comet.",
+"vi": "Trời tối dần. Động cơ của nó sẽ sáng như sao chổi."
+},
+{
+"mission": "c10m05",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.11",
+"en": "It ran. Next time, it will not get the chance.",
+"vi": "Nó chạy rồi. Lần sau nó sẽ không có cơ hội đó."
+},
+{
+"mission": "c10m05",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.12",
+"en": "That was a test flight. Of something much bigger.",
+"vi": "Đó chỉ là chuyến bay thử. Của một thứ lớn hơn nhiều."
+},
+{
+"mission": "c10m05",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10m05.13",
+"en": "It reached the clouds. They have all the data they need.",
+"vi": "Nó đã lên tới tầng mây. Họ có tất cả dữ liệu họ cần."
+},
+{
+"mission": "c10m06",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m06.01",
+"en": "Get those launchers and I buy the beer.",
+"vi": "Diệt mấy bệ phóng đó và tôi trả tiền bia."
+},
+{
+"mission": "c10m06",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m06.02",
+"en": "Three long-range launchers, marked. They move in the fog.",
+"vi": "Ba bệ phóng tên lửa tầm xa, đã đánh dấu. Chúng di chuyển trong sương.",
+"at": 20.0
+},
+{
+"mission": "c10m06",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m06.03",
+"en": "One launcher down. Their counter-battery radar is hunting us.",
+"vi": "Một bệ đã nổ. Radar đối pháo của chúng đang dò ta.",
+"arg": "1/3"
+},
+{
+"mission": "c10m06",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c10m06.04",
+"en": "Night coming. The launchers must turn on radar to see; that is our chance.",
+"vi": "Trời đang tối. Bệ phóng sẽ bật radar để thấy, đó là cơ hội."
+},
+{
+"mission": "c10m06",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m06.05",
+"en": "One launcher left. Hawk, get ready to take off.",
+"vi": "Còn một bệ. Hawk, chuẩn bị cất cánh.",
+"arg": "last"
+},
+{
+"mission": "c10m06",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m06.06",
+"en": "The sky is open. The beer is on me, as promised. First come, first served.",
+"vi": "Bầu trời mở. Bia của tôi, như đã hứa. Ai lấy trước thì được."
+},
+{
+"mission": "c10m06",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m06.07",
+"en": "They are still in the fog. Hawk flies low for a few more days.",
+"vi": "Chúng vẫn ở trong sương. Hawk phải bay thấp thêm vài ngày nữa."
+},
+{
+"mission": "c10m13",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m13.01",
+"en": "Dawn. The gunship is going home. We go up the pass.",
+"vi": "Bình minh. Trực thăng vũ trang đang về nhà. Ta lên đèo."
+},
+{
+"mission": "c10m13",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c10m13.02",
+"en": "One point. Spectre's shell marks in the snow; it hunted here all night.",
+"vi": "Một điểm. Dấu đạn của Spectre trên tuyết, cả đêm qua nó săn ở đây."
+},
+{
+"mission": "c10m13",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m13.03",
+"en": "Covering the push up the pass. Raven is not up yet.",
+"vi": "Tôi yểm trợ cho đợt tiến lên đèo. Raven chưa cất cánh."
+},
+{
+"mission": "c10m13",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c10m13.04",
+"en": "A snowstorm is coming. Take the rest before it covers everything.",
+"vi": "Bão tuyết đang tới. Chiếm nốt trước khi nó che hết."
+},
+{
+"mission": "c10m13",
+"trigger": "objective_progress",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c10m13.05",
+"en": "One point left. Before Raven wakes up.",
+"vi": "Còn một điểm. Trước khi Raven tỉnh dậy.",
+"arg": "last"
+},
+{
+"mission": "c10m13",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m13.06",
+"en": "The passes are ours. Spectre will have to come to us tonight.",
+"vi": "Đèo là của ta. Đêm nay Spectre sẽ phải tới tìm ta."
+},
+{
+"mission": "c10m13",
+"trigger": "defeat",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m13.07",
+"en": "We lost the passes. Tonight Spectre hunts here again.",
+"vi": "Mất đèo. Đêm nay Spectre lại săn ở đây."
+},
+{
+"mission": "c10m08",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.01",
+"en": "Spectre is up there. Keep the launchers busy.",
+"vi": "Spectre ở trên kia. Giữ bệ phóng bận rộn."
+},
+{
+"mission": "c10m08",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.02",
+"en": "Spectre: a flying gunship, circling high. It can only fire to one side.",
+"vi": "Spectre: pháo hạm bay, lượn vòng tròn trên cao. Nó chỉ bắn được về một phía."
+},
+{
+"mission": "c10m08",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m08.03",
+"en": "Stay on the outside of its circle. It cannot turn its guns outwards.",
+"vi": "Đứng ở mép ngoài vòng lượn của nó. Nó không quay súng ra ngoài được.",
+"at": 30.0
+},
+{
+"mission": "c10m08",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c10m08.04",
+"en": "One side gun is silent. It has to circle wider to fire.",
+"vi": "Một khẩu pháo bên mạn đã câm. Nó phải bay vòng rộng hơn để bắn."
+},
+{
+"mission": "c10m08",
+"trigger": "boss_phase_change",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.05",
+"en": "It is dropping lower to aim better. That is the window! Everything up!",
+"vi": "Nó hạ độ cao để bắn chính xác hơn. Đó là cửa sổ! Bắn hết lên!"
+},
+{
+"mission": "c10m08",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.06",
+"en": "It is about to fire a full circle salvo. Out of the red!",
+"vi": "Nó sắp bắn loạt pháo lớn theo vòng. Rời khỏi vùng đỏ!"
+},
+{
+"mission": "c10m08",
+"trigger": "event_triggered",
+"speaker": "hq",
+"priority": 2,
+"once": true,
+"key": "script.c10m08.07",
+"en": "A supply drop near the camp. Grab it between two of its passes.",
+"vi": "Một kho thả dù đang rơi gần trại. Lấy nó giữa hai vòng lượn."
+},
+{
+"mission": "c10m08",
+"trigger": "boss_hp",
+"speaker": "linh",
+"priority": 4,
+"once": true,
+"key": "script.c10m08.08",
+"en": "Spectre is at half. Raven is calling it home; it is not listening.",
+"vi": "Spectre mất một nửa. Raven đang gọi nó về, nó không nghe.",
+"arg": "50"
+},
+{
+"mission": "c10m08",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c10m08.09",
+"en": "It is burning! Come down, come down!",
+"vi": "Nó đang bốc cháy! Rơi đi, rơi đi!",
+"arg": "25"
+},
+{
+"mission": "c10m08",
+"trigger": "hq_below_50",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c10m08.10",
+"en": "The HQ is inside its circle. Move it outside!",
+"vi": "Sở chỉ huy nằm trong vòng lượn của nó. Di chuyển ra ngoài vòng!"
+},
+{
+"mission": "c10m08",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.11",
+"en": "Spectre is down! The pass sleeps tonight.",
+"vi": "Spectre rơi rồi! Đèo sẽ ngủ yên đêm nay."
+},
+{
+"mission": "c10m08",
+"trigger": "victory",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.12",
+"en": "One gunship. There is still me, kid.",
+"vi": "Một pháo hạm. Vẫn còn ta, nhóc."
+},
+{
+"mission": "c10m08",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m08.13",
+"en": "Spectre still flies. The night sky is mine.",
+"vi": "Spectre vẫn bay. Bầu trời đêm là của ta."
+},
+{
+"mission": "c10m14",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m14.01",
+"en": "One hour, Colonel. His wing is on the ground until four.",
+"vi": "Một giờ, đại tá. Phi đội của hắn ở dưới đất tới bốn giờ."
+},
+{
+"mission": "c10m14",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c10m14.02",
+"en": "The east apron. Fuel trucks still hooked up to the jets.",
+"vi": "Sân đỗ phía đông. Xe tiếp nhiên liệu vẫn còn cắm vòi vào máy bay."
+},
+{
+"mission": "c10m14",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m14.03",
+"en": "An air raid from another base. They know we are here.",
+"vi": "Có đợt không kích từ căn cứ khác. Họ biết ta đang ở đây."
+},
+{
+"mission": "c10m14",
+"trigger": "timer_60s",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m14.04",
+"en": "One minute to four. His wing is about to take off.",
+"vi": "Còn một phút trước bốn giờ. Phi đội của hắn sắp cất cánh."
+},
+{
+"mission": "c10m14",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m14.05",
+"en": "The runway left. Take it and nobody takes off.",
+"vi": "Còn đường băng. Chiếm nó và không ai cất cánh được.",
+"arg": "last"
+},
+{
+"mission": "c10m14",
+"trigger": "victory",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m14.06",
+"en": "A cheap trick, Colonel. I will remember it.",
+"vi": "Một trò rẻ tiền, đại tá. Ta sẽ nhớ."
+},
+{
+"mission": "c10m14",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m14.07",
+"en": "Raven's schedule is exact to the minute. That is his weakness.",
+"vi": "Lịch của Raven chính xác tới từng phút. Đó là điểm yếu của hắn."
+},
+{
+"mission": "c10m14",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m14.08",
+"en": "The wing is up. Our hour is over.",
+"vi": "Phi đội đã cất cánh. Một giờ của ta đã hết."
+},
+{
+"mission": "c10m07",
+"trigger": "mission_start",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m07.01",
+"en": "Look up, Colonel. That is where you lose.",
+"vi": "Ngẩng lên đi, đại tá. Đó là nơi ông thua."
+},
+{
+"mission": "c10m07",
+"trigger": "mission_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m07.02",
+"en": "Sixteen. The rain keeps them low. Good for us.",
+"vi": "Mười sáu chiếc. Mưa làm chúng bay thấp. Tốt cho ta."
+},
+{
+"mission": "c10m07",
+"trigger": "objective_progress",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m07.03",
+"en": "Eight! They come in waves, like the sea.",
+"vi": "Tám! Chúng tới thành từng đợt, như sóng.",
+"arg": "1/2"
+},
+{
+"mission": "c10m07",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10m07.04",
+"en": "The next wave has heavy bombers. Take them first.",
+"vi": "Đợt tiếp theo có máy bay ném bom hạng nặng. Ưu tiên chúng."
+},
+{
+"mission": "c10m07",
+"trigger": "momentum_high_once",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c10m07.05",
+"en": "Raven is losing pilots faster than he can train them.",
+"vi": "Raven đang mất phi công nhanh hơn hắn huấn luyện được."
+},
+{
+"mission": "c10m07",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m07.06",
+"en": "Sixteen. The sky over Skyhold is thinning.",
+"vi": "Mười sáu. Bầu trời Skyhold đang mỏng dần."
+},
+{
+"mission": "c10m07",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m07.07",
+"en": "You see? The sky always beats the mud.",
+"vi": "Thấy chưa? Bầu trời luôn thắng bùn đất."
+},
+{
+"mission": "c10m12",
+"trigger": "mission_start",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.01",
+"en": "Noon, little Hawk. Just you and me.",
+"vi": "Giữa trưa, Hawk nhỏ. Chỉ nhóc và ta."
+},
+{
+"mission": "c10m12",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m12.02",
+"en": "This one is for my wingman, Raven.",
+"vi": "Trận này cho người bay cặp của tôi, Raven.",
+"at": 6.0
+},
+{
+"mission": "c10m12",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.03",
+"en": "Morrigan, which hunted the rescue column. Its left tube is still broken from last time.",
+"vi": "Morrigan, cùng chiếc đã săn cột cứu hộ. Ống phóng bên trái vẫn hỏng từ lần trước."
+},
+{
+"mission": "c10m12",
+"trigger": "time",
+"speaker": "khai",
+"priority": 2,
+"once": true,
+"key": "script.c10m12.04",
+"en": "Keep his wing off Hawk. The duel is his.",
+"vi": "Giữ phi đội của hắn tránh xa Hawk. Trận đấu tay đôi là của cậu ấy.",
+"at": 40.0
+},
+{
+"mission": "c10m12",
+"trigger": "boss_phase_change",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.05",
+"en": "He is climbing into the sun, like back then. This time I know.",
+"vi": "Hắn lên thẳng vào mặt trời, như năm đó. Lần này tôi biết."
+},
+{
+"mission": "c10m12",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.06",
+"en": "Morrigan is diving on the flak. Out of the red, fast!",
+"vi": "Morrigan bổ nhào xuống phòng không. Rời khỏi vùng đỏ, nhanh!"
+},
+{
+"mission": "c10m12",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m12.07",
+"en": "I hit his auxiliary engine! He is trailing smoke!",
+"vi": "Tôi trúng động cơ phụ của hắn! Hắn đang kéo khói!",
+"at": 120.0
+},
+{
+"mission": "c10m12",
+"trigger": "boss_hp",
+"speaker": "quaden",
+"priority": 4,
+"once": true,
+"key": "script.c10m12.08",
+"en": "Fine flying, kid. This time you really are flying.",
+"vi": "Bay đẹp đấy, nhóc. Lần này nhóc thật sự đang bay.",
+"arg": "50"
+},
+{
+"mission": "c10m12",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c10m12.09",
+"en": "He is breaking for the runway! No, not this time!",
+"vi": "Hắn đang rút về đường băng! Không, lần này không!",
+"arg": "25"
+},
+{
+"mission": "c10m12",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.10",
+"en": "The flak is nearly gone. Keep somewhere for Hawk to land.",
+"vi": "Phòng không sắp hết. Giữ cho Hawk có chỗ hạ cánh."
+},
+{
+"mission": "c10m12",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.11",
+"en": "He ran! Raven ran!",
+"vi": "Hắn chạy! Raven chạy rồi!"
+},
+{
+"mission": "c10m12",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.12",
+"en": "Good flying, Lieutenant. Finish it at Skyhold.",
+"vi": "Bay tốt, trung úy. Kết thúc nó ở Skyhold."
+},
+{
+"mission": "c10m12",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m12.13",
+"en": "Still slow, like last time, kid. Go home.",
+"vi": "Vẫn chậm như lần trước, nhóc. Về nhà đi."
+},
+{
+"mission": "c10m09",
+"trigger": "mission_start",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m09.01",
+"en": "The sky is mine. You can keep the mud.",
+"vi": "Bầu trời là của ta. Các anh giữ lấy bùn đất."
+},
+{
+"mission": "c10m09",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m09.02",
+"en": "His HQ, at the east end of the base. Level it.",
+"vi": "Sở chỉ huy của hắn, ở đầu đông căn cứ. San phẳng nó."
+},
+{
+"mission": "c10m09",
+"trigger": "general_tactic_change",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c10m09.03",
+"en": "Raven has gone all air superiority: everything he has is in the sky. The ground is empty.",
+"vi": "Raven đổi sang ưu thế trên không: mọi thứ hắn có đều lên trời. Mặt đất trống."
+},
+{
+"mission": "c10m09",
+"trigger": "event_triggered",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10m09.04",
+"en": "I am holding the sky over the HQ. You take the ground!",
+"vi": "Tôi giữ bầu trời trên sở chỉ huy. Các anh lo mặt đất!"
+},
+{
+"mission": "c10m09",
+"trigger": "expensive_unit_lost",
+"speaker": "khai",
+"priority": 3,
+"once": true,
+"key": "script.c10m09.05",
+"en": "A heavy lost to missiles from above. Flak right beside the tanks.",
+"vi": "Mất xe nặng vì tên lửa từ trên. Phòng không đi sát xe tăng."
+},
+{
+"mission": "c10m09",
+"trigger": "victory",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m09.06",
+"en": "Eject, eject! ...Not like this.",
+"vi": "Nhảy dù, nhảy dù! …Không phải thế này."
+},
+{
+"mission": "c10m09",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m09.07",
+"en": "The HQ is down. The base fights on, but without its head.",
+"vi": "Sở chỉ huy đã đổ. Căn cứ vẫn đánh, nhưng không còn đầu."
+},
+{
+"mission": "c10m09",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m09.08",
+"en": "Stay in the mud, Colonel. It suits you.",
+"vi": "Ở lại dưới bùn đi, đại tá. Nó hợp với ông."
+},
+{
+"mission": "c10m10",
+"trigger": "mission_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.01",
+"en": "The last air base on the coast. Take it and the sky is ours.",
+"vi": "Căn cứ không quân cuối cùng trên bờ biển. Chiếm nó và bầu trời là của ta."
+},
+{
+"mission": "c10m10",
+"trigger": "time",
+"speaker": "quaden",
+"priority": 2,
+"once": true,
+"key": "script.c10m10.02",
+"en": "Hawk, I am waiting. My runway, as promised.",
+"vi": "Hawk, ta đang chờ. Đường băng của ta, như đã hẹn.",
+"at": 20.0
+},
+{
+"mission": "c10m10",
+"trigger": "phase_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.03",
+"en": "The radars are blind. Second blow: the hangars or the fuel farm.",
+"vi": "Radar đã mù. Chọn đòn thứ hai: nhà chứa hay kho nhiên liệu.",
+"arg": "2"
+},
+{
+"mission": "c10m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.04",
+"en": "Raven's command airship is rising. Bring it down.",
+"vi": "Phi thuyền chỉ huy của Raven đang lên. Hạ nó xuống.",
+"arg": "4"
+},
+{
+"mission": "c10m10",
+"trigger": "boss_spawn",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.05",
+"en": "The command airship: cells of gas, engines at four corners. Take them one by one.",
+"vi": "Phi thuyền chỉ huy: túi khí chia ngăn, động cơ ở bốn góc. Hạ từng động cơ."
+},
+{
+"mission": "c10m10",
+"trigger": "boss_part_destroyed",
+"speaker": "mai",
+"priority": 2,
+"once": true,
+"key": "script.c10m10.06",
+"en": "One engine out. It is drifting with the wind.",
+"vi": "Một động cơ đã tắt. Nó đang trôi theo gió."
+},
+{
+"mission": "c10m10",
+"trigger": "superweapon_warning",
+"speaker": "mai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.07",
+"en": "It is about to drop cluster bombs on the apron. Out of the red!",
+"vi": "Nó sắp thả bom chùm xuống sân đỗ. Rời khỏi vùng đỏ!"
+},
+{
+"mission": "c10m10",
+"trigger": "boss_hp",
+"speaker": "dieuhau",
+"priority": 4,
+"once": true,
+"key": "script.c10m10.08",
+"en": "It is sinking! Like an old whale!",
+"vi": "Nó đang chìm xuống! Như một con cá voi già!",
+"arg": "50"
+},
+{
+"mission": "c10m10",
+"trigger": "phase_start",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.09",
+"en": "His last wave. Raven is in it. This time he is mine.",
+"vi": "Đợt máy bay cuối của hắn. Raven ở trong đó. Lần này là của tôi.",
+"arg": "5"
+},
+{
+"mission": "c10m10",
+"trigger": "phase_start",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.10",
+"en": "The sky is clean. Hold the base; his garrison makes a last push.",
+"vi": "Bầu trời đã sạch. Giữ căn cứ, đồn trú của hắn sẽ đẩy lần cuối.",
+"arg": "6"
+},
+{
+"mission": "c10m10",
+"trigger": "critical_failure_imminent",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.11",
+"en": "The HQ is critical. Not one step back at Skyhold.",
+"vi": "Sở chỉ huy nguy cấp. Không lùi một bước ở Skyhold."
+},
+{
+"mission": "c10m10",
+"trigger": "victory",
+"speaker": "khai",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.12",
+"en": "Skyhold has fallen. The sky belongs to the Accord.",
+"vi": "Skyhold đã thất thủ. Bầu trời thuộc về Accord."
+},
+{
+"mission": "c10m10",
+"trigger": "victory",
+"speaker": "dieuhau",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.13",
+"en": "For you, Ellis.",
+"vi": "Cho anh, Ellis."
+},
+{
+"mission": "c10m10",
+"trigger": "defeat",
+"speaker": "quaden",
+"priority": 1,
+"once": true,
+"key": "script.c10m10.14",
+"en": "Skyhold is still mine. So is the sky.",
+"vi": "Skyhold vẫn là của ta. Bầu trời vẫn là của ta."
+},
+{
+"mission": "c10s1",
+"trigger": "mission_start",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10s1.01",
+"en": "Whatever is in those trucks, Aurel cannot replace it easily. Stop them.",
+"vi": "Bất kể trong xe có gì, Aurel cũng khó thay thế. Chặn chúng lại."
+},
+{
+"mission": "c10s1",
+"trigger": "objective_progress",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10s1.02",
+"en": "One truck stopped. Jet engine parts, a kind I have never seen.",
+"vi": "Một xe đã dừng. Phụ tùng động cơ phản lực, loại tôi chưa thấy bao giờ.",
+"arg": "1/2"
+},
+{
+"mission": "c10s1",
+"trigger": "event_triggered",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c10s1.03",
+"en": "An air raid is covering the other truck. They want it in the desert.",
+"vi": "Không kích đang che cho xe còn lại. Họ muốn nó tới sa mạc."
+},
+{
+"mission": "c10s1",
+"trigger": "victory",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10s1.04",
+"en": "Icarus's main engine nozzles. Without them, it is months behind.",
+"vi": "Vòi phun động cơ chính của Icarus. Không có chúng, nó chậm lại vài tháng."
+},
+{
+"mission": "c10s1",
+"trigger": "defeat",
+"speaker": "sen",
+"priority": 1,
+"once": true,
+"key": "script.c10s1.05",
+"en": "The parts reached the desert. Icarus will fly sooner than we want.",
+"vi": "Phụ tùng đã tới sa mạc. Icarus sẽ bay sớm hơn ta muốn."
+},
+{
+"mission": "c10s2",
+"trigger": "mission_start",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10s2.01",
+"en": "Three posts under Argus. Look, and shoot it if it comes low.",
+"vi": "Ba trạm dưới tầm của Argus. Nhìn, và bắn nó nếu nó hạ thấp."
+},
+{
+"mission": "c10s2",
+"trigger": "time",
+"speaker": "dieuhau",
+"priority": 2,
+"once": true,
+"key": "script.c10s2.02",
+"en": "Argus, Raven's recon airship. It is spotting for his guns.",
+"vi": "Argus, phi thuyền trinh sát của Raven. Nó đang chỉ điểm cho pháo của hắn.",
+"at": 20.0
+},
+{
+"mission": "c10s2",
+"trigger": "point_captured",
+"speaker": "linh",
+"priority": 3,
+"once": true,
+"key": "script.c10s2.03",
+"en": "One post. Argus just turned towards us; it has seen us.",
+"vi": "Một trạm. Argus vừa quay về phía ta, nó đã thấy."
+},
+{
+"mission": "c10s2",
+"trigger": "victory",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10s2.04",
+"en": "All three posts seen. Raven's guns have lost their eye over the heights.",
+"vi": "Ba trạm đã xem. Pháo của Raven mất mắt trên cao nguyên."
+},
+{
+"mission": "c10s2",
+"trigger": "defeat",
+"speaker": "linh",
+"priority": 1,
+"once": true,
+"key": "script.c10s2.05",
+"en": "Argus is still up there. Every step we take, his guns know.",
+"vi": "Argus vẫn ở trên đó. Mỗi bước ta đi, pháo của hắn đều biết."
+}
+]
+}

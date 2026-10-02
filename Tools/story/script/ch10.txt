@@ -1,0 +1,169 @@
+# Chapter 10 · War in the Sky (act 4). Enemy: Raven (Wolff); Aurel's shadow over Icarus Mk.0. Arc: the air campaign
+# to Skyhold; Spectre, Argus, Icarus Mk.0; Hawk brings Raven down. Threads: Icarus Mk.0 is only a test flight; Hawk
+# fires the last shot at Skyhold: "For you, Ellis."
+
+@c10m01 main=dieuhau
+mission_start | quaden | 1 | Hawk! Vẫn còn lái món đồ cổ đó à? || Hawk! Still flying that museum piece?
+mission_start | dieuhau | 1 | Vẫn nhanh hơn anh đấy, Raven. Mười hai chiếc, các anh. || Still faster than you, Raven. Twelve of them, folks.
+objective_progress:1/3 | dieuhau | 2 | Bốn chiếc! Lần này chúng tới từ phía nam, như Nadia đoán. || Four! From the south this time, like Nadia said.
+event_triggered | linh | 2 | Đợt không kích thứ hai đang tới. Raven không bay cùng, hắn chỉ chỉ huy. || A second air raid incoming. Raven is not flying with it; only commanding.
+objective_progress:2/3 | dieuhau | 2 | Tám! Khá là nóng trên này, nhưng tôi vẫn ổn. || Eight! Pretty warm up here, but I am fine.
+victory | dieuhau | 1 | Mười hai chiếc. Bầu trời đèo là của ta. Raven, anh nợ tôi mười hai chiếc. || Twelve. The pass's sky is ours. Raven, you owe me twelve planes.
+defeat | quaden | 1 | Về nhà đi, nhóc. Bầu trời không dành cho đồ cổ. || Go home, kid. The sky is no place for antiques.
+
+@c10m02 main=linh
+mission_start | linh | 1 | Nhìn các nhà chứa máy bay. Tất cả. || Look at the hangars. All of them.
+point_captured | linh | 3 | Sân đỗ phía tây: ba mươi chiếc phản lực, đổ đầy nhiên liệu. Hắn sẵn sàng. || The west apron: thirty jets, fuelled. He is ready.
+event_triggered | hq | 2 | Trời tối dần. Đèn đường băng sẽ bật, ta sẽ thấy rõ hơn. || Night is falling. The runway lights will come on; we will see better.
+objective_progress:last | linh | 2 | Còn đường băng. Có một nhà chứa bị hàn kín cửa. Tôi muốn biết bên trong có gì. || The runway left. One hangar has welded doors. I want to know what is inside.
+victory | linh | 1 | Nhà chứa hàn kín có thứ gì đó dài và bạc. Venn nói: Icarus. Bản thử. || The welded hangar holds something long and silver. Venn says: Icarus. A test model.
+defeat | linh | 1 | Ta không nhìn được. Skyhold vẫn là một chấm đen trên bản đồ của tôi. || We could not see it. Skyhold is still a black spot on my map.
+
+@c10m11 main=okoye
+mission_start | okoye | 1 | Mỗi chuyến bay hạ cánh là một tuần chiến tranh ta trả nổi. Giữ đường băng. || Every flight that lands is a week of war we can afford. Hold the strip.
+objective_progress:1/3 | okoye | 2 | Chuyến bốn mươi hai hạ cánh. Còn năm mươi tám. Giữ đường băng. || Flight forty-two down. Fifty-eight to go. Hold the strip.
+event_triggered | linh | 2 | Không kích nhắm vào đường băng. Họ muốn đường bị thủng trước khi chuyến tiếp theo tới. || Air raid on the strip. They want holes in it before the next flight.
+objective_progress:2/3 | okoye | 2 | Chuyến bảy mươi. Lịch vẫn đúng giờ. Tôi không ứng biến. || Flight seventy. Schedule on time. I do not improvise.
+point_lost | okoye | 3 | Mất đường băng. Ba chuyến đang lượn chờ. Lấy lại, nhanh. || The strip is lost. Three flights circling. Take it back, quickly.
+victory | okoye | 1 | Chuyến thứ một trăm đã hạ cánh. Kho dự trữ đầy, và kho dự trữ của kho dự trữ. || Hundredth flight down. The reserve is full, and the reserve's reserve.
+defeat | okoye | 1 | Đường băng đã mất. Các chuyến bay phải quay về. Ta mất một tháng. || The strip is lost. The flights turn back. We lose a month.
+
+@c10m03 main=khai
+mission_start | khai | 1 | Radar là mắt của ta. Giữ chúng mở. || The radar is our eyes. Keep them open.
+time@20 | hq | 2 | Nhà thờ trong làng là trạm cứu thương. Có hai mươi thương binh bên trong. || The village church is our aid station. Twenty wounded inside.
+event_triggered | dieuhau | 2 | Tôi đánh vào đợt ném bom đầu. Phòng không, lo những chiếc còn lại! || Hitting the first bomber wave. Flak, take the rest!
+objective_progress:1/2 | khai | 2 | Nửa thời gian. Radar của Orlov làm việc cho ta tốt hơn cho ông ta. || Halfway. Orlov's radar works better for us than it did for him.
+critical_failure_imminent | khai | 1 | Chỉ còn một công trình. Radar hay nhà thờ, giữ lấy nó. || One building left. Radar or church, keep it.
+victory | khai | 1 | Radar còn mở mắt, thương binh còn sống. Đủ cho một ngày. || The radar is still open and the wounded still alive. Enough for one day.
+defeat | khai | 1 | Mất cả hai. Đưa thương binh xuống núi, ngay. || We lost both. Get the wounded down the mountain, now.
+
+@c10m04 main=dieuhau
+mission_start | dieuhau | 1 | Chúng đỗ thành hàng. Hắn luôn thích phô trương. || They are parked in a line. He always did like to show off.
+event_triggered | dieuhau | 2 | Tôi bay thấp dọc sân đỗ để đánh dấu. Đi theo đèn hiệu của tôi. || Flying low along the apron to mark them. Follow my flares.
+objective_progress:1/2 | dieuhau | 2 | Một nửa sân đỗ đang cháy! Đẹp như pháo hoa ngày lễ. || Half the apron is burning! Pretty as holiday fireworks.
+enemy_reinforcement | linh | 3 | Đội bảo vệ sân bay đang tới. Đốt nốt rồi rút. || The base guard is coming. Burn the rest and get out.
+timer_60s | khai | 1 | Một phút. Rút trước khi trời sáng. || One minute. Out before dawn.
+victory | dieuhau | 1 | Tất cả cháy rụi. Sáng mai Raven sẽ phải đi bộ. || All burned. Tomorrow morning Raven walks.
+defeat | dieuhau | 1 | Còn quá nhiều chiếc nguyên vẹn. Ngày mai bầu trời sẽ đông. || Too many left intact. Tomorrow the sky will be crowded.
+
+@c10m05 main=sen
+mission_start | sen | 1 | Nó nhanh hơn mọi thứ ta có. Giữ lửa trước khi nó vọt ra ngoài tầm. || It is faster than anything we have. Keep up the fire before it climbs out of range.
+boss_spawn | quaden | 1 | Nhìn nó đi, đại tá. Đó là tương lai. Không phải của ông. || Look at it, Colonel. That is the future. It is not yours.
+boss_spawn | mai | 1 | Icarus Mk.0. Động cơ chính khổng lồ, cánh ngắn. Đánh vào cánh, nó không lượn được. || Icarus Mk.0. A huge main engine, short wings. Hit the wings and it cannot turn.
+time@40 | aurel | 2 | Chuyến bay thử thành công. Mọi thứ sau đó chỉ là thủ tục. || Test flight successful. Everything after this is procedure.
+time@45 | sen | 2 | Đó là Aurel. Ông ta đang nói với ai đó khác, không phải với ta. || That was Aurel. He was talking to someone else, not to us.
+boss_part_destroyed | mai | 2 | Một cánh đã hỏng. Nó vẫn nhanh, nhưng chỉ bay thẳng được. || One wing is damaged. Still fast, but only in a straight line.
+boss_phase_change | sen | 1 | Nó đốt động cơ chính để lên cao. Đó là lúc nó lộ phần đuôi nhất! || It is lighting the main engine to climb. That is when its tail shows most!
+superweapon_warning | mai | 1 | Nó sắp thả đạn xuyên giáp từ trên cao. Rời khỏi vùng đỏ! || It is about to drop penetrators from altitude. Out of the red!
+boss_hp:75 | dieuhau | 4 | Trúng rồi! Nó vẫn nhanh như quỷ. || Hit! It is still fast as the devil.
+event_triggered | hq | 2 | Trời tối dần. Động cơ của nó sẽ sáng như sao chổi. || Night falling. Its engine will glow like a comet.
+victory | khai | 1 | Nó chạy rồi. Lần sau nó sẽ không có cơ hội đó. || It ran. Next time, it will not get the chance.
+victory | sen | 1 | Đó chỉ là chuyến bay thử. Của một thứ lớn hơn nhiều. || That was a test flight. Of something much bigger.
+defeat | sen | 1 | Nó đã lên tới tầng mây. Họ có tất cả dữ liệu họ cần. || It reached the clouds. They have all the data they need.
+
+@c10m06 main=dieuhau
+mission_start | dieuhau | 1 | Diệt mấy bệ phóng đó và tôi trả tiền bia. || Get those launchers and I buy the beer.
+time@20 | linh | 2 | Ba bệ phóng tên lửa tầm xa, đã đánh dấu. Chúng di chuyển trong sương. || Three long-range launchers, marked. They move in the fog.
+objective_progress:1/3 | linh | 2 | Một bệ đã nổ. Radar đối pháo của chúng đang dò ta. || One launcher down. Their counter-battery radar is hunting us.
+event_triggered | hq | 2 | Trời đang tối. Bệ phóng sẽ bật radar để thấy, đó là cơ hội. || Night coming. The launchers must turn on radar to see; that is our chance.
+objective_progress:last | linh | 2 | Còn một bệ. Hawk, chuẩn bị cất cánh. || One launcher left. Hawk, get ready to take off.
+victory | dieuhau | 1 | Bầu trời mở. Bia của tôi, như đã hứa. Ai lấy trước thì được. || The sky is open. The beer is on me, as promised. First come, first served.
+defeat | linh | 1 | Chúng vẫn ở trong sương. Hawk phải bay thấp thêm vài ngày nữa. || They are still in the fog. Hawk flies low for a few more days.
+
+@c10m13 main=khai
+mission_start | khai | 1 | Bình minh. Trực thăng vũ trang đang về nhà. Ta lên đèo. || Dawn. The gunship is going home. We go up the pass.
+point_captured | linh | 3 | Một điểm. Dấu đạn của Spectre trên tuyết, cả đêm qua nó săn ở đây. || One point. Spectre's shell marks in the snow; it hunted here all night.
+event_triggered | dieuhau | 2 | Tôi yểm trợ cho đợt tiến lên đèo. Raven chưa cất cánh. || Covering the push up the pass. Raven is not up yet.
+event_triggered | hq | 2 | Bão tuyết đang tới. Chiếm nốt trước khi nó che hết. || A snowstorm is coming. Take the rest before it covers everything.
+objective_progress:last | khai | 2 | Còn một điểm. Trước khi Raven tỉnh dậy. || One point left. Before Raven wakes up.
+victory | dieuhau | 1 | Đèo là của ta. Đêm nay Spectre sẽ phải tới tìm ta. || The passes are ours. Spectre will have to come to us tonight.
+defeat | khai | 1 | Mất đèo. Đêm nay Spectre lại săn ở đây. || We lost the passes. Tonight Spectre hunts here again.
+
+@c10m08 main=dieuhau
+mission_start | dieuhau | 1 | Spectre ở trên kia. Giữ bệ phóng bận rộn. || Spectre is up there. Keep the launchers busy.
+boss_spawn | mai | 1 | Spectre: pháo hạm bay, lượn vòng tròn trên cao. Nó chỉ bắn được về một phía. || Spectre: a flying gunship, circling high. It can only fire to one side.
+time@30 | dieuhau | 2 | Đứng ở mép ngoài vòng lượn của nó. Nó không quay súng ra ngoài được. || Stay on the outside of its circle. It cannot turn its guns outwards.
+boss_part_destroyed | mai | 2 | Một khẩu pháo bên mạn đã câm. Nó phải bay vòng rộng hơn để bắn. || One side gun is silent. It has to circle wider to fire.
+boss_phase_change | dieuhau | 1 | Nó hạ độ cao để bắn chính xác hơn. Đó là cửa sổ! Bắn hết lên! || It is dropping lower to aim better. That is the window! Everything up!
+superweapon_warning | mai | 1 | Nó sắp bắn loạt pháo lớn theo vòng. Rời khỏi vùng đỏ! || It is about to fire a full circle salvo. Out of the red!
+event_triggered | hq | 2 | Một kho thả dù đang rơi gần trại. Lấy nó giữa hai vòng lượn. || A supply drop near the camp. Grab it between two of its passes.
+boss_hp:50 | linh | 4 | Spectre mất một nửa. Raven đang gọi nó về, nó không nghe. || Spectre is at half. Raven is calling it home; it is not listening.
+boss_hp:25 | dieuhau | 4 | Nó đang bốc cháy! Rơi đi, rơi đi! || It is burning! Come down, come down!
+hq_below_50 | mai | 2 | Sở chỉ huy nằm trong vòng lượn của nó. Di chuyển ra ngoài vòng! || The HQ is inside its circle. Move it outside!
+victory | dieuhau | 1 | Spectre rơi rồi! Đèo sẽ ngủ yên đêm nay. || Spectre is down! The pass sleeps tonight.
+victory | quaden | 1 | Một pháo hạm. Vẫn còn ta, nhóc. || One gunship. There is still me, kid.
+defeat | quaden | 1 | Spectre vẫn bay. Bầu trời đêm là của ta. || Spectre still flies. The night sky is mine.
+
+@c10m14 main=linh
+mission_start | linh | 1 | Một giờ, đại tá. Phi đội của hắn ở dưới đất tới bốn giờ. || One hour, Colonel. His wing is on the ground until four.
+point_captured | linh | 3 | Sân đỗ phía đông. Xe tiếp nhiên liệu vẫn còn cắm vòi vào máy bay. || The east apron. Fuel trucks still hooked up to the jets.
+event_triggered | linh | 2 | Có đợt không kích từ căn cứ khác. Họ biết ta đang ở đây. || An air raid from another base. They know we are here.
+timer_60s | khai | 1 | Còn một phút trước bốn giờ. Phi đội của hắn sắp cất cánh. || One minute to four. His wing is about to take off.
+objective_progress:last | linh | 2 | Còn đường băng. Chiếm nó và không ai cất cánh được. || The runway left. Take it and nobody takes off.
+victory | quaden | 1 | Một trò rẻ tiền, đại tá. Ta sẽ nhớ. || A cheap trick, Colonel. I will remember it.
+victory | linh | 1 | Lịch của Raven chính xác tới từng phút. Đó là điểm yếu của hắn. || Raven's schedule is exact to the minute. That is his weakness.
+defeat | linh | 1 | Phi đội đã cất cánh. Một giờ của ta đã hết. || The wing is up. Our hour is over.
+
+@c10m07 main=dieuhau
+mission_start | quaden | 1 | Ngẩng lên đi, đại tá. Đó là nơi ông thua. || Look up, Colonel. That is where you lose.
+mission_start | dieuhau | 1 | Mười sáu chiếc. Mưa làm chúng bay thấp. Tốt cho ta. || Sixteen. The rain keeps them low. Good for us.
+objective_progress:1/2 | dieuhau | 2 | Tám! Chúng tới thành từng đợt, như sóng. || Eight! They come in waves, like the sea.
+event_triggered | linh | 2 | Đợt tiếp theo có máy bay ném bom hạng nặng. Ưu tiên chúng. || The next wave has heavy bombers. Take them first.
+momentum_high_once | dieuhau | 4 | Raven đang mất phi công nhanh hơn hắn huấn luyện được. || Raven is losing pilots faster than he can train them.
+victory | dieuhau | 1 | Mười sáu. Bầu trời Skyhold đang mỏng dần. || Sixteen. The sky over Skyhold is thinning.
+defeat | quaden | 1 | Thấy chưa? Bầu trời luôn thắng bùn đất. || You see? The sky always beats the mud.
+
+@c10m12 main=dieuhau
+mission_start | quaden | 1 | Giữa trưa, Hawk nhỏ. Chỉ nhóc và ta. || Noon, little Hawk. Just you and me.
+time@6 | dieuhau | 2 | Trận này cho người bay cặp của tôi, Raven. || This one is for my wingman, Raven.
+boss_spawn | mai | 1 | Morrigan, cùng chiếc đã săn cột cứu hộ. Ống phóng bên trái vẫn hỏng từ lần trước. || Morrigan, which hunted the rescue column. Its left tube is still broken from last time.
+time@40 | khai | 2 | Giữ phi đội của hắn tránh xa Hawk. Trận đấu tay đôi là của cậu ấy. || Keep his wing off Hawk. The duel is his.
+boss_phase_change | dieuhau | 1 | Hắn lên thẳng vào mặt trời, như năm đó. Lần này tôi biết. || He is climbing into the sun, like back then. This time I know.
+superweapon_warning | mai | 1 | Morrigan bổ nhào xuống phòng không. Rời khỏi vùng đỏ, nhanh! || Morrigan is diving on the flak. Out of the red, fast!
+time@120 | dieuhau | 2 | Tôi trúng động cơ phụ của hắn! Hắn đang kéo khói! || I hit his auxiliary engine! He is trailing smoke!
+boss_hp:50 | quaden | 4 | Bay đẹp đấy, nhóc. Lần này nhóc thật sự đang bay. || Fine flying, kid. This time you really are flying.
+boss_hp:25 | dieuhau | 4 | Hắn đang rút về đường băng! Không, lần này không! || He is breaking for the runway! No, not this time!
+critical_failure_imminent | khai | 1 | Phòng không sắp hết. Giữ cho Hawk có chỗ hạ cánh. || The flak is nearly gone. Keep somewhere for Hawk to land.
+victory | dieuhau | 1 | Hắn chạy! Raven chạy rồi! || He ran! Raven ran!
+victory | khai | 1 | Bay tốt, trung úy. Kết thúc nó ở Skyhold. || Good flying, Lieutenant. Finish it at Skyhold.
+defeat | quaden | 1 | Vẫn chậm như lần trước, nhóc. Về nhà đi. || Still slow, like last time, kid. Go home.
+
+@c10m09 main=khai
+mission_start | quaden | 1 | Bầu trời là của ta. Các anh giữ lấy bùn đất. || The sky is mine. You can keep the mud.
+mission_start | khai | 1 | Sở chỉ huy của hắn, ở đầu đông căn cứ. San phẳng nó. || His HQ, at the east end of the base. Level it.
+general_tactic_change | linh | 3 | Raven đổi sang ưu thế trên không: mọi thứ hắn có đều lên trời. Mặt đất trống. || Raven has gone all air superiority: everything he has is in the sky. The ground is empty.
+event_triggered | dieuhau | 2 | Tôi giữ bầu trời trên sở chỉ huy. Các anh lo mặt đất! || I am holding the sky over the HQ. You take the ground!
+expensive_unit_lost | khai | 3 | Mất xe nặng vì tên lửa từ trên. Phòng không đi sát xe tăng. || A heavy lost to missiles from above. Flak right beside the tanks.
+victory | quaden | 1 | Nhảy dù, nhảy dù! …Không phải thế này. || Eject, eject! ...Not like this.
+victory | khai | 1 | Sở chỉ huy đã đổ. Căn cứ vẫn đánh, nhưng không còn đầu. || The HQ is down. The base fights on, but without its head.
+defeat | quaden | 1 | Ở lại dưới bùn đi, đại tá. Nó hợp với ông. || Stay in the mud, Colonel. It suits you.
+
+@c10m10 main=khai
+mission_start | khai | 1 | Căn cứ không quân cuối cùng trên bờ biển. Chiếm nó và bầu trời là của ta. || The last air base on the coast. Take it and the sky is ours.
+time@20 | quaden | 2 | Hawk, ta đang chờ. Đường băng của ta, như đã hẹn. || Hawk, I am waiting. My runway, as promised.
+phase_start:2 | linh | 1 | Radar đã mù. Chọn đòn thứ hai: nhà chứa hay kho nhiên liệu. || The radars are blind. Second blow: the hangars or the fuel farm.
+phase_start:4 | khai | 1 | Phi thuyền chỉ huy của Raven đang lên. Hạ nó xuống. || Raven's command airship is rising. Bring it down.
+boss_spawn | mai | 1 | Phi thuyền chỉ huy: túi khí chia ngăn, động cơ ở bốn góc. Hạ từng động cơ. || The command airship: cells of gas, engines at four corners. Take them one by one.
+boss_part_destroyed | mai | 2 | Một động cơ đã tắt. Nó đang trôi theo gió. || One engine out. It is drifting with the wind.
+superweapon_warning | mai | 1 | Nó sắp thả bom chùm xuống sân đỗ. Rời khỏi vùng đỏ! || It is about to drop cluster bombs on the apron. Out of the red!
+boss_hp:50 | dieuhau | 4 | Nó đang chìm xuống! Như một con cá voi già! || It is sinking! Like an old whale!
+phase_start:5 | dieuhau | 1 | Đợt máy bay cuối của hắn. Raven ở trong đó. Lần này là của tôi. || His last wave. Raven is in it. This time he is mine.
+phase_start:6 | khai | 1 | Bầu trời đã sạch. Giữ căn cứ, đồn trú của hắn sẽ đẩy lần cuối. || The sky is clean. Hold the base; his garrison makes a last push.
+critical_failure_imminent | khai | 1 | Sở chỉ huy nguy cấp. Không lùi một bước ở Skyhold. || The HQ is critical. Not one step back at Skyhold.
+victory | khai | 1 | Skyhold đã thất thủ. Bầu trời thuộc về Accord. || Skyhold has fallen. The sky belongs to the Accord.
+victory | dieuhau | 1 | Cho anh, Ellis. || For you, Ellis.
+defeat | quaden | 1 | Skyhold vẫn là của ta. Bầu trời vẫn là của ta. || Skyhold is still mine. So is the sky.
+
+@c10s1 main=sen
+mission_start | sen | 1 | Bất kể trong xe có gì, Aurel cũng khó thay thế. Chặn chúng lại. || Whatever is in those trucks, Aurel cannot replace it easily. Stop them.
+objective_progress:1/2 | linh | 2 | Một xe đã dừng. Phụ tùng động cơ phản lực, loại tôi chưa thấy bao giờ. || One truck stopped. Jet engine parts, a kind I have never seen.
+event_triggered | linh | 2 | Không kích đang che cho xe còn lại. Họ muốn nó tới sa mạc. || An air raid is covering the other truck. They want it in the desert.
+victory | sen | 1 | Vòi phun động cơ chính của Icarus. Không có chúng, nó chậm lại vài tháng. || Icarus's main engine nozzles. Without them, it is months behind.
+defeat | sen | 1 | Phụ tùng đã tới sa mạc. Icarus sẽ bay sớm hơn ta muốn. || The parts reached the desert. Icarus will fly sooner than we want.
+
+@c10s2 main=linh
+mission_start | linh | 1 | Ba trạm dưới tầm của Argus. Nhìn, và bắn nó nếu nó hạ thấp. || Three posts under Argus. Look, and shoot it if it comes low.
+time@20 | dieuhau | 2 | Argus, phi thuyền trinh sát của Raven. Nó đang chỉ điểm cho pháo của hắn. || Argus, Raven's recon airship. It is spotting for his guns.
+point_captured | linh | 3 | Một trạm. Argus vừa quay về phía ta, nó đã thấy. || One post. Argus just turned towards us; it has seen us.
+victory | linh | 1 | Ba trạm đã xem. Pháo của Raven mất mắt trên cao nguyên. || All three posts seen. Raven's guns have lost their eye over the heights.
+defeat | linh | 1 | Argus vẫn ở trên đó. Mỗi bước ta đi, pháo của hắn đều biết. || Argus is still up there. Every step we take, his guns know.
