@@ -299,6 +299,8 @@ namespace MachineBrigade.Game.Hud
             _deckOverview.Add(cover);
             _deckCommander.Clear();
             _deckCommander.Add(CommanderSlot());
+            // Prompt 28 H.4: the tactic beside the commander.
+            _deckCommander.Add(TacticSlot());
 
             foreach (var (chip, filter) in _filterChips) chip.Selected = filter == _filter;
             _sortButton.Value = SortName(_sort);

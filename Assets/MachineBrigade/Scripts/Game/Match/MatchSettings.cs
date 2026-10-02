@@ -449,6 +449,9 @@ namespace MachineBrigade.Game.Match
         }
         public static bool ShowFps { get; set; }
 
+        /// <summary>Prompt 28 B.7: the battle HUD's AI hint line (Settings, saved as mb.aiHints, on by default).</summary>
+        public static bool AiHints { get; set; } = true;
+
         /// <summary>Prompt 13 C.9: the ammunition icons over units: 0 every unit (the default), 1 aircraft and helicopters only.</summary>
         public static int AmmoIcons { get; set; }
         public static LanguageChoice Language { get; set; } = LanguageChoice.Auto;
@@ -522,6 +525,7 @@ namespace MachineBrigade.Game.Match
                 Brightness = Mathf.Clamp(PlayerPrefs.GetInt("mb.brightness", 100), 80, 120);
                 Map = PlayerPrefs.GetString("mb.map", Map);
                 ShowFps = PlayerPrefs.GetInt("mb.fps", 0) == 1;
+                AiHints = PlayerPrefs.GetInt("mb.aiHints", 1) == 1;
                 AmmoIcons = Mathf.Clamp(PlayerPrefs.GetInt("mb.ammoIcons", 0), 0, 1);
                 Language = (LanguageChoice)PlayerPrefs.GetInt("mb.language", 0);
                 // Saved as its number: Easy 0, Normal 1, Hard 2 as before; Very Hard (3) came after them (prompt 13 I).
@@ -573,6 +577,7 @@ namespace MachineBrigade.Game.Match
                 PlayerPrefs.SetInt("mb.brightness", Brightness);
                 PlayerPrefs.SetString("mb.map", Map);
                 PlayerPrefs.SetInt("mb.fps", ShowFps ? 1 : 0);
+                PlayerPrefs.SetInt("mb.aiHints", AiHints ? 1 : 0);
                 PlayerPrefs.SetInt("mb.ammoIcons", AmmoIcons);
                 PlayerPrefs.SetInt("mb.language", (int)Language);
                 PlayerPrefs.SetInt("mb.difficulty", (int)Difficulty);

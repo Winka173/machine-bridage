@@ -419,10 +419,14 @@ namespace MachineBrigade.Game.Hud
             if (m.General != null) briefText.Add(Kit.Text(Strings.Format("campaign.opponent", Strings.Get("char." + m.General + ".name")), "fc-small fc-mt-2"));
             // Prompt 22 F.4: the enemy general's strength and weakness.
             if (GeneralLines(m) is { } general) briefText.Add(Kit.Text(general, "fc-small fc-row-text"));
+            // Prompt 28 H.7: the general's favourite tactic.
+            if (GeneralTacticLine(m) is { } favourite) briefText.Add(Kit.Text(favourite, "fc-small fc-row-text"));
             brief.Add(briefText);
             body.Add(brief);
             // Prompt 22 F.1: the player's commander for it (the mission's own when the story sets one).
             body.Add(CommanderSlot(m));
+            // Prompt 28 H.4: the tactic the mission starts with.
+            body.Add(TacticSlot(m));
             // Play-test 6 (DECISIONS 21B): each boss it fights, a link to its file.
             foreach (var boss in MissionBosses(m))
                 body.Add(new KitButton(ButtonTier.Text, Strings.Format("guide.boss.file", Strings.Card(boss)), () => OpenBossGuide(boss), "skull"));
