@@ -475,6 +475,158 @@
     "file": "dragons_teeth_b.glb",
     "triangles": 4088
   },
+  "dress_coast_buoy": {
+    "file": "dress_coast_buoy.glb",
+    "triangles": 120
+  },
+  "dress_coast_driftwood": {
+    "file": "dress_coast_driftwood.glb",
+    "triangles": 40
+  },
+  "dress_coast_dune_grass": {
+    "file": "dress_coast_dune_grass.glb",
+    "triangles": 108
+  },
+  "dress_coast_island_far": {
+    "file": "dress_coast_island_far.glb",
+    "triangles": 160
+  },
+  "dress_coast_rowboat": {
+    "file": "dress_coast_rowboat.glb",
+    "triangles": 56
+  },
+  "dress_desert_barrel_cacti": {
+    "file": "dress_desert_barrel_cacti.glb",
+    "triangles": 248
+  },
+  "dress_desert_bones": {
+    "file": "dress_desert_bones.glb",
+    "triangles": 44
+  },
+  "dress_desert_far": {
+    "file": "dress_desert_far.glb",
+    "triangles": 40
+  },
+  "dress_desert_hoodoo": {
+    "file": "dress_desert_hoodoo.glb",
+    "triangles": 320
+  },
+  "dress_desert_scrub": {
+    "file": "dress_desert_scrub.glb",
+    "triangles": 80
+  },
+  "dress_harbor_bollards": {
+    "file": "dress_harbor_bollards.glb",
+    "triangles": 292
+  },
+  "dress_harbor_drums": {
+    "file": "dress_harbor_drums.glb",
+    "triangles": 208
+  },
+  "dress_harbor_pallets": {
+    "file": "dress_harbor_pallets.glb",
+    "triangles": 60
+  },
+  "dress_harbor_pipes": {
+    "file": "dress_harbor_pipes.glb",
+    "triangles": 136
+  },
+  "dress_harbor_shed_far": {
+    "file": "dress_harbor_shed_far.glb",
+    "triangles": 20
+  },
+  "dress_jungle_banana": {
+    "file": "dress_jungle_banana.glb",
+    "triangles": 120
+  },
+  "dress_jungle_fern": {
+    "file": "dress_jungle_fern.glb",
+    "triangles": 112
+  },
+  "dress_jungle_palm_small": {
+    "file": "dress_jungle_palm_small.glb",
+    "triangles": 96
+  },
+  "dress_jungle_tree_far": {
+    "file": "dress_jungle_tree_far.glb",
+    "triangles": 56
+  },
+  "dress_jungle_vine_rock": {
+    "file": "dress_jungle_vine_rock.glb",
+    "triangles": 120
+  },
+  "dress_snow_drift": {
+    "file": "dress_snow_drift.glb",
+    "triangles": 80
+  },
+  "dress_snow_ice_rock": {
+    "file": "dress_snow_ice_rock.glb",
+    "triangles": 100
+  },
+  "dress_snow_log": {
+    "file": "dress_snow_log.glb",
+    "triangles": 56
+  },
+  "dress_snow_pine_far": {
+    "file": "dress_snow_pine_far.glb",
+    "triangles": 76
+  },
+  "dress_temperate_haybales": {
+    "file": "dress_temperate_haybales.glb",
+    "triangles": 108
+  },
+  "dress_temperate_shrub": {
+    "file": "dress_temperate_shrub.glb",
+    "triangles": 240
+  },
+  "dress_temperate_stump": {
+    "file": "dress_temperate_stump.glb",
+    "triangles": 72
+  },
+  "dress_temperate_tree_far": {
+    "file": "dress_temperate_tree_far.glb",
+    "triangles": 36
+  },
+  "dress_temperate_wildflowers": {
+    "file": "dress_temperate_wildflowers.glb",
+    "triangles": 192
+  },
+  "dress_urban_billboard": {
+    "file": "dress_urban_billboard.glb",
+    "triangles": 48
+  },
+  "dress_urban_block_far": {
+    "file": "dress_urban_block_far.glb",
+    "triangles": 36
+  },
+  "dress_urban_kiosk": {
+    "file": "dress_urban_kiosk.glb",
+    "triangles": 36
+  },
+  "dress_urban_planter": {
+    "file": "dress_urban_planter.glb",
+    "triangles": 92
+  },
+  "dress_urban_rubble": {
+    "file": "dress_urban_rubble.glb",
+    "triangles": 80
+  },
+  "dress_volcanic_ash_rocks": {
+    "file": "dress_volcanic_ash_rocks.glb",
+    "triangles": 120
+  },
+  "dress_volcanic_cinder_cone": {
+    "file": "dress_volcanic_cinder_cone.glb",
+    "triangles": 110
+  },
+  "dress_volcanic_far": {
+    "file": "dress_volcanic_far.glb",
+    "triangles": 32
+  },
+  "dress_volcanic_snag": {
+    "file": "dress_volcanic_snag.glb",
+    "triangles": 44
+  },
   "drone_hangar": {
     "file": "drone_hangar.glb",
     "triangles": 7794

@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 449,
+ "count": 487,
  "budgets": {
   "ground": {
    "normal": {
@@ -2156,6 +2156,51 @@
     "wall_hesco: new (3276 triangles)",
     "wall_t: new (1798 triangles)"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "dress_coast_buoy",
+    "dress_coast_driftwood",
+    "dress_coast_dune_grass",
+    "dress_coast_island_far",
+    "dress_coast_rowboat",
+    "dress_desert_barrel_cacti",
+    "dress_desert_bones",
+    "dress_desert_far",
+    "dress_desert_hoodoo",
+    "dress_desert_scrub",
+    "dress_harbor_bollards",
+    "dress_harbor_drums",
+    "dress_harbor_pallets",
+    "dress_harbor_pipes",
+    "dress_harbor_shed_far",
+    "dress_jungle_banana",
+    "dress_jungle_fern",
+    "dress_jungle_palm_small",
+    "dress_jungle_tree_far",
+    "dress_jungle_vine_rock",
+    "dress_snow_drift",
+    "dress_snow_ice_rock",
+    "dress_snow_log",
+    "dress_snow_pine_far",
+    "dress_temperate_haybales",
+    "dress_temperate_shrub",
+    "dress_temperate_stump",
+    "dress_temperate_tree_far",
+    "dress_temperate_wildflowers",
+    "dress_urban_billboard",
+    "dress_urban_block_far",
+    "dress_urban_kiosk",
+    "dress_urban_planter",
+    "dress_urban_rubble",
+    "dress_volcanic_ash_rocks",
+    "dress_volcanic_cinder_cone",
+    "dress_volcanic_far",
+    "dress_volcanic_snag"
+   ],
+   "reason": "Prompt 33 L6: new biome dressing models (decoration only)",
+   "changes": []
   }
  ],
  "models": {
@@ -15592,6 +15637,2712 @@
    "units": [],
    "movingParts": 0,
    "budgetClass": "structure"
+  },
+  "dress_coast_buoy": {
+   "file": "dress_coast_buoy.glb",
+   "fileBytes": 9200,
+   "sha1": "9947f02c069eea04",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 120,
+   "vertices": 136,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.62,
+    -0.4,
+    -0.62
+   ],
+   "boundsMax": [
+    0.62,
+    1.85,
+    0.62
+   ],
+   "size": [
+    1.24,
+    1.24,
+    2.25
+   ],
+   "center": [
+    0.0,
+    0.725,
+    0.0
+   ],
+   "structureHash": "5c99a70b073233d3",
+   "color0": {
+    "mean": 0.6602,
+    "min": 0.2107,
+    "max": 0.8137,
+    "p05": 0.2107,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Band",
+    "Buoy"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_coast_driftwood": {
+   "file": "dress_coast_driftwood.glb",
+   "fileBytes": 4784,
+   "sha1": "3af2404b61f9aa06",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 1,
+   "meshes": 1,
+   "materials": 1,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 1,
+   "submeshes": 1,
+   "materialSlots": 1,
+   "materialsUsed": 1,
+   "triangles": 40,
+   "vertices": 72,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.7358,
+    0.0188,
+    -1.1551
+   ],
+   "boundsMax": [
+    1.6358,
+    0.3732,
+    1.0551
+   ],
+   "size": [
+    2.21,
+    3.372,
+    0.354
+   ],
+   "center": [
+    -0.05,
+    0.196,
+    -0.05
+   ],
+   "structureHash": "57638691fd8d98ca",
+   "color0": {
+    "mean": 0.5093,
+    "min": 0.1966,
+    "max": 0.8137,
+    "p05": 0.1966,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Driftwood"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_coast_dune_grass": {
+   "file": "dress_coast_dune_grass.glb",
+   "fileBytes": 14492,
+   "sha1": "3a45784598e33c30",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 108,
+   "vertices": 258,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 12,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.8227,
+    -0.203,
+    -0.7152
+   ],
+   "boundsMax": [
+    0.8274,
+    0.9169,
+    0.774
+   ],
+   "size": [
+    1.489,
+    1.65,
+    1.12
+   ],
+   "center": [
+    0.002,
+    0.357,
+    0.029
+   ],
+   "structureHash": "2bcef547c049e431",
+   "color0": {
+    "mean": 0.6141,
+    "min": 0.2856,
+    "max": 0.8058,
+    "p05": 0.313,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Grass",
+    "Sand"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_coast_island_far": {
+   "file": "dress_coast_island_far.glb",
+   "fileBytes": 24568,
+   "sha1": "80b621acefce26e5",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 160,
+   "vertices": 480,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -20.4907,
+    -7.0859,
+    -12.0238
+   ],
+   "boundsMax": [
+    19.473,
+    8.8899,
+    13.756
+   ],
+   "size": [
+    25.78,
+    39.964,
+    15.976
+   ],
+   "center": [
+    -0.509,
+    0.902,
+    0.866
+   ],
+   "structureHash": "04be142874acde5c",
+   "color0": {
+    "mean": 0.7258,
+    "min": 0.5907,
+    "max": 0.8216,
+    "p05": 0.6086,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Rock",
+    "Woods"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_coast_rowboat": {
+   "file": "dress_coast_rowboat.glb",
+   "fileBytes": 6816,
+   "sha1": "8c7e0cd9c498f9d4",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 56,
+   "vertices": 92,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.0,
+    -0.0543,
+    -0.7379
+   ],
+   "boundsMax": [
+    2.0,
+    0.7777,
+    0.7379
+   ],
+   "size": [
+    1.476,
+    4.0,
+    0.832
+   ],
+   "center": [
+    0.0,
+    0.362,
+    0.0
+   ],
+   "structureHash": "45b036c8d1cd7683",
+   "color0": {
+    "mean": 0.6248,
+    "min": 0.2193,
+    "max": 0.8137,
+    "p05": 0.2678,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Hull",
+    "Thwart"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_desert_barrel_cacti": {
+   "file": "dress_desert_barrel_cacti.glb",
+   "fileBytes": 16128,
+   "sha1": "80fdf2ca410a3d73",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 248,
+   "vertices": 276,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.55,
+    0.0,
+    -0.65
+   ],
+   "boundsMax": [
+    0.79,
+    0.99,
+    0.32
+   ],
+   "size": [
+    0.97,
+    1.34,
+    0.99
+   ],
+   "center": [
+    0.12,
+    0.495,
+    -0.165
+   ],
+   "structureHash": "44b122799864107d",
+   "color0": {
+    "mean": 0.6457,
+    "min": 0.1631,
+    "max": 0.8137,
+    "p05": 0.3442,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Blooms",
+    "Cacti"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_desert_bones": {
+   "file": "dress_desert_bones.glb",
+   "fileBytes": 7480,
+   "sha1": "0e31d3a246d3cb84",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 44,
+   "vertices": 108,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.6581,
+    -0.1894,
+    -0.5383
+   ],
+   "boundsMax": [
+    1.9393,
+    1.1519,
+    0.6461
+   ],
+   "size": [
+    1.184,
+    2.597,
+    1.341
+   ],
+   "center": [
+    0.641,
+    0.481,
+    0.054
+   ],
+   "structureHash": "94d49a4f57e13728",
+   "color0": {
+    "mean": 0.6302,
+    "min": 0.2871,
+    "max": 0.798,
+    "p05": 0.5064,
+    "p95": 0.7954,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Sand",
+    "Wood"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_desert_far": {
+   "file": "dress_desert_far.glb",
+   "fileBytes": 7988,
+   "sha1": "f8d32dbd7d0d3ab1",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 40,
+   "vertices": 120,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.2136,
+    -0.7668,
+    -1.5915
+   ],
+   "boundsMax": [
+    2.7348,
+    1.7826,
+    1.7104
+   ],
+   "size": [
+    3.302,
+    4.948,
+    2.549
+   ],
+   "center": [
+    0.261,
+    0.508,
+    0.059
+   ],
+   "structureHash": "1bb72c0db9dcb5de",
+   "color0": {
+    "mean": 0.6531,
+    "min": 0.3495,
+    "max": 0.8137,
+    "p05": 0.3945,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Rock",
+    "Scrub"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_desert_hoodoo": {
+   "file": "dress_desert_hoodoo.glb",
+   "fileBytes": 46656,
+   "sha1": "87893d6596686ee5",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 320,
+   "vertices": 960,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.136,
+    -0.2226,
+    -0.9574
+   ],
+   "boundsMax": [
+    1.1673,
+    4.0794,
+    0.9151
+   ],
+   "size": [
+    1.873,
+    2.303,
+    4.302
+   ],
+   "center": [
+    0.016,
+    1.928,
+    -0.021
+   ],
+   "structureHash": "48e56b118d5f289e",
+   "color0": {
+    "mean": 0.7356,
+    "min": 0.1631,
+    "max": 0.8137,
+    "p05": 0.5267,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Cap",
+    "Pillar"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_desert_scrub": {
+   "file": "dress_desert_scrub.glb",
+   "fileBytes": 13528,
+   "sha1": "ea2dc90b177a03fd",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 80,
+   "vertices": 240,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.7776,
+    -0.176,
+    -0.682
+   ],
+   "boundsMax": [
+    0.8039,
+    0.7026,
+    0.6712
+   ],
+   "size": [
+    1.353,
+    1.582,
+    0.879
+   ],
+   "center": [
+    0.013,
+    0.263,
+    -0.005
+   ],
+   "structureHash": "8cbb99bb0beea3b0",
+   "color0": {
+    "mean": 0.5517,
+    "min": 0.1212,
+    "max": 0.8058,
+    "p05": 0.1618,
+    "p95": 0.7907,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Bush",
+    "Hummock"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_harbor_bollards": {
+   "file": "dress_harbor_bollards.glb",
+   "fileBytes": 18508,
+   "sha1": "9d191dc64c5c1f54",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 292,
+   "vertices": 324,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 8,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.06,
+    0.0,
+    -0.26
+   ],
+   "boundsMax": [
+    2.06,
+    0.66,
+    0.26
+   ],
+   "size": [
+    0.52,
+    4.12,
+    0.66
+   ],
+   "center": [
+    0.0,
+    0.33,
+    0.0
+   ],
+   "structureHash": "72a2e7771acc017e",
+   "color0": {
+    "mean": 0.7094,
+    "min": 0.154,
+    "max": 0.8143,
+    "p05": 0.6039,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Bollards",
+    "Rope"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_harbor_drums": {
+   "file": "dress_harbor_drums.glb",
+   "fileBytes": 13964,
+   "sha1": "3aab506dfa9d7ae2",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 208,
+   "vertices": 232,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.0182,
+    -0.0,
+    -0.87
+   ],
+   "boundsMax": [
+    0.91,
+    0.88,
+    0.9885
+   ],
+   "size": [
+    1.858,
+    1.928,
+    0.88
+   ],
+   "center": [
+    -0.054,
+    0.44,
+    0.059
+   ],
+   "structureHash": "2a5992463fac50cd",
+   "color0": {
+    "mean": 0.5719,
+    "min": 0.1311,
+    "max": 0.8137,
+    "p05": 0.2036,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Drums",
+    "Rusted"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_harbor_pallets": {
+   "file": "dress_harbor_pallets.glb",
+   "fileBytes": 8080,
+   "sha1": "d0148c6e766ad62d",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 60,
+   "vertices": 120,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 5,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.2969,
+    0.0,
+    -0.5574
+   ],
+   "boundsMax": [
+    1.2,
+    1.08,
+    0.5574
+   ],
+   "size": [
+    1.115,
+    2.497,
+    1.08
+   ],
+   "center": [
+    -0.048,
+    0.54,
+    0.0
+   ],
+   "structureHash": "f99dd4c98dd9be40",
+   "color0": {
+    "mean": 0.5879,
+    "min": 0.1981,
+    "max": 0.7985,
+    "p05": 0.3178,
+    "p95": 0.7911,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Crates",
+    "Pallets"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_harbor_pipes": {
+   "file": "dress_harbor_pipes.glb",
+   "fileBytes": 12380,
+   "sha1": "a16f4c771566a98c",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 136,
+   "vertices": 208,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 2,
+   "boundsMin": [
+    -2.5,
+    0.0,
+    -0.9
+   ],
+   "boundsMax": [
+    2.5,
+    1.18,
+    0.9
+   ],
+   "size": [
+    1.8,
+    5.0,
+    1.18
+   ],
+   "center": [
+    0.0,
+    0.59,
+    0.0
+   ],
+   "structureHash": "8815b40dc0e6357e",
+   "color0": {
+    "mean": 0.6573,
+    "min": 0.3759,
+    "max": 0.8064,
+    "p05": 0.3861,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Pipes",
+    "Sleepers"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_harbor_shed_far": {
+   "file": "dress_harbor_shed_far.glb",
+   "fileBytes": 4312,
+   "sha1": "1b00f300ceaf4cab",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 20,
+   "vertices": 42,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -8.2,
+    0.0,
+    -4.7
+   ],
+   "boundsMax": [
+    8.2,
+    7.2,
+    4.7
+   ],
+   "size": [
+    9.4,
+    16.4,
+    7.2
+   ],
+   "center": [
+    0.0,
+    3.6,
+    0.0
+   ],
+   "structureHash": "c275872c8da77176",
+   "color0": {
+    "mean": 0.7426,
+    "min": 0.6086,
+    "max": 0.8064,
+    "p05": 0.6089,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Roof",
+    "Walls"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_jungle_banana": {
+   "file": "dress_jungle_banana.glb",
+   "fileBytes": 13488,
+   "sha1": "cfcc373b1efe20a7",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 120,
+   "vertices": 234,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 9,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.1795,
+    0.0,
+    -1.5578
+   ],
+   "boundsMax": [
+    1.4805,
+    1.9962,
+    0.8578
+   ],
+   "size": [
+    2.416,
+    2.66,
+    1.996
+   ],
+   "center": [
+    0.15,
+    0.998,
+    -0.35
+   ],
+   "structureHash": "4dbd939e93cea0ff",
+   "color0": {
+    "mean": 0.6818,
+    "min": 0.4279,
+    "max": 0.8216,
+    "p05": 0.4942,
+    "p95": 0.8089,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Leaves",
+    "Stems"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_jungle_fern": {
+   "file": "dress_jungle_fern.glb",
+   "fileBytes": 12532,
+   "sha1": "66d2f2456b80bbeb",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 112,
+   "vertices": 214,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 9,
+   "openEdges": 48,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.0735,
+    0.0,
+    -1.0735
+   ],
+   "boundsMax": [
+    1.0735,
+    0.9028,
+    1.0735
+   ],
+   "size": [
+    2.147,
+    2.147,
+    0.903
+   ],
+   "center": [
+    0.0,
+    0.451,
+    0.0
+   ],
+   "structureHash": "0f0edd48d2e34e2b",
+   "color0": {
+    "mean": 0.6476,
+    "min": 0.356,
+    "max": 0.8137,
+    "p05": 0.4334,
+    "p95": 0.7985,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Fronds",
+    "Stub"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_jungle_palm_small": {
+   "file": "dress_jungle_palm_small.glb",
+   "fileBytes": 10272,
+   "sha1": "74307d46331872f0",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 96,
+   "vertices": 164,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 7,
+   "openEdges": 48,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.2768,
+    -0.0129,
+    -1.8238
+   ],
+   "boundsMax": [
+    2.1168,
+    3.1281,
+    1.7238
+   ],
+   "size": [
+    3.548,
+    3.394,
+    3.141
+   ],
+   "center": [
+    0.42,
+    1.558,
+    -0.05
+   ],
+   "structureHash": "faceba914797e726",
+   "color0": {
+    "mean": 0.7492,
+    "min": 0.3652,
+    "max": 0.8143,
+    "p05": 0.622,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Fronds",
+    "Trunk"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_jungle_tree_far": {
+   "file": "dress_jungle_tree_far.glb",
+   "fileBytes": 9376,
+   "sha1": "6307096e6492d9e3",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 56,
+   "vertices": 150,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.8262,
+    0.0,
+    -2.3929
+   ],
+   "boundsMax": [
+    2.6297,
+    10.8595,
+    2.4621
+   ],
+   "size": [
+    4.855,
+    5.456,
+    10.86
+   ],
+   "center": [
+    -0.098,
+    5.43,
+    0.035
+   ],
+   "structureHash": "5b8bc2eea41d4819",
+   "color0": {
+    "mean": 0.7676,
+    "min": 0.6039,
+    "max": 0.8137,
+    "p05": 0.6172,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Crown",
+    "Trunk"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_jungle_vine_rock": {
+   "file": "dress_jungle_vine_rock.glb",
+   "fileBytes": 19044,
+   "sha1": "06a52a1a4e10b6a5",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 120,
+   "vertices": 360,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.1143,
+    -0.2692,
+    -0.8371
+   ],
+   "boundsMax": [
+    1.1192,
+    1.3042,
+    0.9363
+   ],
+   "size": [
+    1.773,
+    2.233,
+    1.573
+   ],
+   "center": [
+    0.002,
+    0.518,
+    0.05
+   ],
+   "structureHash": "b23365effd5d50f8",
+   "color0": {
+    "mean": 0.667,
+    "min": 0.2216,
+    "max": 0.8137,
+    "p05": 0.2437,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Moss",
+    "Rock"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_snow_drift": {
+   "file": "dress_snow_drift.glb",
+   "fileBytes": 12408,
+   "sha1": "0a175bf2adf235ca",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 1,
+   "meshes": 1,
+   "materials": 1,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 1,
+   "submeshes": 1,
+   "materialSlots": 1,
+   "materialsUsed": 1,
+   "triangles": 80,
+   "vertices": 240,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 1,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.9994,
+    -0.8449,
+    -1.1459
+   ],
+   "boundsMax": [
+    2.0437,
+    0.9126,
+    1.1237
+   ],
+   "size": [
+    2.27,
+    4.043,
+    1.758
+   ],
+   "center": [
+    0.022,
+    0.034,
+    -0.011
+   ],
+   "structureHash": "b0bc24758c198ffe",
+   "color0": {
+    "mean": 0.6464,
+    "min": 0.444,
+    "max": 0.8137,
+    "p05": 0.4493,
+    "p95": 0.8062,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Drift"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_snow_ice_rock": {
+   "file": "dress_snow_ice_rock.glb",
+   "fileBytes": 16268,
+   "sha1": "e4a955f4ced22788",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 100,
+   "vertices": 300,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.9809,
+    -0.3229,
+    -0.8524
+   ],
+   "boundsMax": [
+    1.0379,
+    1.2661,
+    0.9202
+   ],
+   "size": [
+    1.773,
+    2.019,
+    1.589
+   ],
+   "center": [
+    0.028,
+    0.472,
+    0.034
+   ],
+   "structureHash": "f00cddc10abdd8e5",
+   "color0": {
+    "mean": 0.6575,
+    "min": 0.2107,
+    "max": 0.8143,
+    "p05": 0.2771,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Cap",
+    "Rock"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_snow_log": {
+   "file": "dress_snow_log.glb",
+   "fileBytes": 8164,
+   "sha1": "779c9d2d156eb191",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 3,
+   "meshes": 3,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 3,
+   "submeshes": 3,
+   "materialSlots": 3,
+   "materialsUsed": 2,
+   "triangles": 56,
+   "vertices": 102,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.8216,
+    0.0,
+    -0.68
+   ],
+   "boundsMax": [
+    1.8195,
+    0.61,
+    0.2334
+   ],
+   "size": [
+    0.913,
+    3.641,
+    0.61
+   ],
+   "center": [
+    -0.001,
+    0.305,
+    -0.223
+   ],
+   "structureHash": "70e2f4d6dd7956d6",
+   "color0": {
+    "mean": 0.6471,
+    "min": 0.2291,
+    "max": 0.8137,
+    "p05": 0.2384,
+    "p95": 0.8133,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Log",
+    "Snow",
+    "Stub"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_snow_pine_far": {
+   "file": "dress_snow_pine_far.glb",
+   "fileBytes": 10044,
+   "sha1": "b7ed3cd79fb7f391",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 3,
+   "meshes": 3,
+   "materials": 3,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 3,
+   "submeshes": 3,
+   "materialSlots": 3,
+   "materialsUsed": 3,
+   "triangles": 76,
+   "vertices": 138,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.7321,
+    0.0,
+    -2.0
+   ],
+   "boundsMax": [
+    1.7321,
+    7.4,
+    2.0
+   ],
+   "size": [
+    4.0,
+    3.464,
+    7.4
+   ],
+   "center": [
+    0.0,
+    3.7,
+    0.0
+   ],
+   "structureHash": "a04494c6527d31c9",
+   "color0": {
+    "mean": 0.7783,
+    "min": 0.6086,
+    "max": 0.8143,
+    "p05": 0.6153,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Snow",
+    "Tiers",
+    "Trunk"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_temperate_haybales": {
+   "file": "dress_temperate_haybales.glb",
+   "fileBytes": 8364,
+   "sha1": "e50f03ce9ddae1c5",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 1,
+   "meshes": 1,
+   "materials": 1,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 1,
+   "submeshes": 1,
+   "materialSlots": 1,
+   "materialsUsed": 1,
+   "triangles": 108,
+   "vertices": 144,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.637,
+    0.0367,
+    -1.7749
+   ],
+   "boundsMax": [
+    1.6947,
+    1.4633,
+    1.1543
+   ],
+   "size": [
+    2.929,
+    3.332,
+    1.427
+   ],
+   "center": [
+    0.029,
+    0.75,
+    -0.31
+   ],
+   "structureHash": "b1c37e45842c4db7",
+   "color0": {
+    "mean": 0.5607,
+    "min": 0.151,
+    "max": 0.8064,
+    "p05": 0.1649,
+    "p95": 0.7985,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Bales"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_temperate_shrub": {
+   "file": "dress_temperate_shrub.glb",
+   "fileBytes": 35624,
+   "sha1": "c13906a00e8202d9",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 240,
+   "vertices": 720,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.9939,
+    -0.0391,
+    -0.6108
+   ],
+   "boundsMax": [
+    0.8326,
+    1.0849,
+    0.5705
+   ],
+   "size": [
+    1.181,
+    1.826,
+    1.124
+   ],
+   "center": [
+    -0.081,
+    0.523,
+    -0.02
+   ],
+   "structureHash": "604eeaa4290e8cc2",
+   "color0": {
+    "mean": 0.6389,
+    "min": 0.154,
+    "max": 0.8137,
+    "p05": 0.1667,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Crown",
+    "Leaves"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_temperate_stump": {
+   "file": "dress_temperate_stump.glb",
+   "fileBytes": 8016,
+   "sha1": "6f293c4447ef3187",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 72,
+   "vertices": 117,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.5589,
+    -0.0984,
+    -0.6287
+   ],
+   "boundsMax": [
+    2.6656,
+    0.5,
+    0.5061
+   ],
+   "size": [
+    1.135,
+    3.224,
+    0.598
+   ],
+   "center": [
+    1.053,
+    0.201,
+    -0.061
+   ],
+   "structureHash": "5a2bfe7628f2d1fb",
+   "color0": {
+    "mean": 0.6203,
+    "min": 0.1292,
+    "max": 0.8064,
+    "p05": 0.2356,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Grass",
+    "Wood"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_temperate_tree_far": {
+   "file": "dress_temperate_tree_far.glb",
+   "fileBytes": 6624,
+   "sha1": "58f8e18bab1a3afa",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 36,
+   "vertices": 90,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.7867,
+    0.0,
+    -1.7261
+   ],
+   "boundsMax": [
+    1.9279,
+    6.9767,
+    1.7821
+   ],
+   "size": [
+    3.508,
+    3.715,
+    6.977
+   ],
+   "center": [
+    0.071,
+    3.488,
+    0.028
+   ],
+   "structureHash": "71b6f65c50395e3b",
+   "color0": {
+    "mean": 0.7585,
+    "min": 0.6086,
+    "max": 0.8137,
+    "p05": 0.6105,
+    "p95": 0.8104,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Crown",
+    "Trunk"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_temperate_wildflowers": {
+   "file": "dress_temperate_wildflowers.glb",
+   "fileBytes": 26632,
+   "sha1": "ea74c1a8b1b8277a",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 192,
+   "vertices": 522,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 15,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.6271,
+    -0.0059,
+    -0.354
+   ],
+   "boundsMax": [
+    0.89,
+    0.5804,
+    0.7254
+   ],
+   "size": [
+    1.079,
+    1.517,
+    0.586
+   ],
+   "center": [
+    0.131,
+    0.287,
+    0.186
+   ],
+   "structureHash": "045e18d1cc14d8ec",
+   "color0": {
+    "mean": 0.6712,
+    "min": 0.2987,
+    "max": 0.8137,
+    "p05": 0.3457,
+    "p95": 0.798,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Flowers",
+    "Grass"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_urban_billboard": {
+   "file": "dress_urban_billboard.glb",
+   "fileBytes": 7844,
+   "sha1": "ce03a666865353b7",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 3,
+   "meshes": 3,
+   "materials": 3,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 3,
+   "submeshes": 3,
+   "materialSlots": 3,
+   "materialsUsed": 3,
+   "triangles": 48,
+   "vertices": 96,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 4,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -3.1,
+    0.0,
+    -0.125
+   ],
+   "boundsMax": [
+    3.1,
+    6.1,
+    0.125
+   ],
+   "size": [
+    0.25,
+    6.2,
+    6.1
+   ],
+   "center": [
+    0.0,
+    3.05,
+    0.0
+   ],
+   "structureHash": "6fc5f875307ce852",
+   "color0": {
+    "mean": 0.7197,
+    "min": 0.6039,
+    "max": 0.8058,
+    "p05": 0.6039,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Board",
+    "Frame",
+    "Legs"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_urban_block_far": {
+   "file": "dress_urban_block_far.glb",
+   "fileBytes": 6540,
+   "sha1": "efd87ae9a940628f",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 3,
+   "meshes": 3,
+   "materials": 3,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 3,
+   "submeshes": 3,
+   "materialSlots": 3,
+   "materialsUsed": 3,
+   "triangles": 36,
+   "vertices": 72,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -10.05,
+    0.0,
+    -8.05
+   ],
+   "boundsMax": [
+    10.05,
+    20.0,
+    8.05
+   ],
+   "size": [
+    16.1,
+    20.1,
+    20.0
+   ],
+   "center": [
+    0.0,
+    10.0,
+    0.0
+   ],
+   "structureHash": "bfb975283f8e4569",
+   "color0": {
+    "mean": 0.834,
+    "min": 0.6039,
+    "max": 1.0,
+    "p05": 0.6172,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Block",
+    "Plant",
+    "Windows"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_urban_kiosk": {
+   "file": "dress_urban_kiosk.glb",
+   "fileBytes": 6680,
+   "sha1": "e44ea8bed0671116",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 3,
+   "meshes": 3,
+   "materials": 3,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 3,
+   "submeshes": 3,
+   "materialSlots": 3,
+   "materialsUsed": 3,
+   "triangles": 36,
+   "vertices": 72,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.3,
+    0.0,
+    -0.95
+   ],
+   "boundsMax": [
+    1.3,
+    2.6,
+    1.25
+   ],
+   "size": [
+    2.2,
+    2.6,
+    2.6
+   ],
+   "center": [
+    0.0,
+    1.3,
+    0.15
+   ],
+   "structureHash": "0e71474b1a070799",
+   "color0": {
+    "mean": 0.6939,
+    "min": 0.5206,
+    "max": 0.8064,
+    "p05": 0.5328,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Awning",
+    "Body",
+    "Shutter"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_urban_planter": {
+   "file": "dress_urban_planter.glb",
+   "fileBytes": 14624,
+   "sha1": "8a4e8871fc52fd38",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 92,
+   "vertices": 264,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.8,
+    0.0,
+    -0.8
+   ],
+   "boundsMax": [
+    0.8,
+    1.4681,
+    0.8
+   ],
+   "size": [
+    1.6,
+    1.6,
+    1.468
+   ],
+   "center": [
+    0.0,
+    0.734,
+    0.0
+   ],
+   "structureHash": "95b174f784c845fb",
+   "color0": {
+    "mean": 0.679,
+    "min": 0.3912,
+    "max": 0.8216,
+    "p05": 0.4171,
+    "p95": 0.8137,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Planter",
+    "Shrub"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_urban_rubble": {
+   "file": "dress_urban_rubble.glb",
+   "fileBytes": 11908,
+   "sha1": "2b8d868b61ad6587",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 3,
+   "meshes": 3,
+   "materials": 3,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 3,
+   "submeshes": 3,
+   "materialSlots": 3,
+   "materialsUsed": 3,
+   "triangles": 80,
+   "vertices": 178,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 6,
+   "openEdges": 6,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.928,
+    -0.2557,
+    -1.1016
+   ],
+   "boundsMax": [
+    1.2137,
+    1.3156,
+    0.9217
+   ],
+   "size": [
+    2.023,
+    2.142,
+    1.571
+   ],
+   "center": [
+    0.143,
+    0.53,
+    -0.09
+   ],
+   "structureHash": "f486226e9796dda6",
+   "color0": {
+    "mean": 0.6308,
+    "min": 0.1694,
+    "max": 0.8058,
+    "p05": 0.336,
+    "p95": 0.798,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Bricks",
+    "Rebar",
+    "Slabs"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_volcanic_ash_rocks": {
+   "file": "dress_volcanic_ash_rocks.glb",
+   "fileBytes": 19076,
+   "sha1": "62807dc88f8d3ba0",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 120,
+   "vertices": 360,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.9368,
+    -0.2372,
+    -1.179
+   ],
+   "boundsMax": [
+    1.6313,
+    0.8868,
+    0.9059
+   ],
+   "size": [
+    2.085,
+    2.568,
+    1.124
+   ],
+   "center": [
+    0.347,
+    0.325,
+    -0.137
+   ],
+   "structureHash": "3ee2393a2c4ee50a",
+   "color0": {
+    "mean": 0.6144,
+    "min": 0.164,
+    "max": 0.8064,
+    "p05": 0.2485,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Ash",
+    "Obsidian"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_volcanic_cinder_cone": {
+   "file": "dress_volcanic_cinder_cone.glb",
+   "fileBytes": 9820,
+   "sha1": "30a02f1582cc28a2",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 110,
+   "vertices": 148,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -1.5035,
+    0.0,
+    -1.5757
+   ],
+   "boundsMax": [
+    1.6,
+    1.05,
+    1.5757
+   ],
+   "size": [
+    3.151,
+    3.104,
+    1.05
+   ],
+   "center": [
+    0.048,
+    0.525,
+    0.0
+   ],
+   "structureHash": "a94223c67241c529",
+   "color0": {
+    "mean": 0.7652,
+    "min": 0.2048,
+    "max": 1.0,
+    "p05": 0.3461,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Cone",
+    "Glow"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_volcanic_far": {
+   "file": "dress_volcanic_far.glb",
+   "fileBytes": 6560,
+   "sha1": "e72c49c54c064eb8",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [
+    "KHR_materials_emissive_strength"
+   ],
+   "nodes": 2,
+   "meshes": 2,
+   "materials": 2,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 2,
+   "submeshes": 2,
+   "materialSlots": 2,
+   "materialsUsed": 2,
+   "triangles": 32,
+   "vertices": 84,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 2,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -2.2962,
+    -0.762,
+    -1.6588
+   ],
+   "boundsMax": [
+    2.2998,
+    1.4823,
+    1.6846
+   ],
+   "size": [
+    3.343,
+    4.596,
+    2.244
+   ],
+   "center": [
+    0.002,
+    0.36,
+    0.013
+   ],
+   "structureHash": "f92fb8df218d28f2",
+   "color0": {
+    "mean": 0.818,
+    "min": 0.6105,
+    "max": 1.0,
+    "p05": 0.6112,
+    "p95": 1.0,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Basalt",
+    "Seam"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
+  },
+  "dress_volcanic_snag": {
+   "file": "dress_volcanic_snag.glb",
+   "fileBytes": 5316,
+   "sha1": "29344ff5676f3c88",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 1,
+   "meshes": 1,
+   "materials": 1,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 1,
+   "submeshes": 1,
+   "materialSlots": 1,
+   "materialsUsed": 1,
+   "triangles": 44,
+   "vertices": 84,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 3,
+   "openEdges": 0,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -0.7342,
+    0.0,
+    -0.364
+   ],
+   "boundsMax": [
+    1.0466,
+    4.8,
+    0.26
+   ],
+   "size": [
+    0.624,
+    1.781,
+    4.8
+   ],
+   "center": [
+    0.156,
+    2.4,
+    -0.052
+   ],
+   "structureHash": "8636701a5d618ab8",
+   "color0": {
+    "mean": 0.7562,
+    "min": 0.6019,
+    "max": 0.8137,
+    "p05": 0.6101,
+    "p95": 0.8064,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Snag"
+   ],
+   "category": "scenery",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [],
+   "movingParts": 0,
+   "budgetClass": "scenery"
   },
   "drone_hangar": {
    "file": "drone_hangar.glb",
