@@ -221,11 +221,15 @@
   },
   "behemoth": {
     "file": "behemoth.glb",
-    "triangles": 19948
+    "triangles": 21046
+  },
+  "behemoth_inferno": {
+    "file": "behemoth_inferno.glb",
+    "triangles": 20046
   },
   "behemoth_tempest": {
     "file": "behemoth_tempest.glb",
-    "triangles": 16536
+    "triangles": 17418
   },
   "billboard": {
     "file": "billboard.glb",
@@ -589,7 +593,11 @@
   },
   "fortress_bastion": {
     "file": "fortress_bastion.glb",
-    "triangles": 23948
+    "triangles": 25064
+  },
+  "fortress_hive": {
+    "file": "fortress_hive.glb",
+    "triangles": 19334
   },
   "foxhole": {
     "file": "foxhole.glb",
