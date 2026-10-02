@@ -52,3 +52,7 @@ keystore.properties
 
 # Python bytecode from the Blender tools
 __pycache__/
+
+# Fix pass 8 ModelScan: old GLBs staged during a scan (deleted afterwards)
+/Assets/ScanOld/
+/Assets/ScanOld.meta
