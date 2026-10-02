@@ -17309,3 +17309,15 @@ Lane A, 2026-10-03: passes 0-2 of Docs/prompts/export_full_vi.txt (plan, framewo
 - `CHUA_AP:prompt_xuat_luot5` is fine for layer B cells until pass 5 fills them.
 - Size: commit the whole export while it stays under ~20 MB; above that, `.gitignore` the dated folders' xlsx/, csv/, images/ and pdf/ and keep 00_chi_muc/ and md/ (spec §8).
 - Don_vi_chua_ro (200 columns): the pass 5 lane resolves what the code reading settles; the rest stays listed for the owner.
+
+## Prompt 35 (rebuild stand-in and low-quality models, lane A, 2026-10-03)
+Pass 0 (inventory, no building):
+- Scope: the 230 GLBs a def, a tower branch or an HQ draws (scan_prep.model_owners); the other ~290 GLBs (props, scenery, rounds, `_hd` twins) are hashed for the overlap check but not scored: they are decoration.
+- Budgets: MODEL_STANDARD.md's ranges are higher than prompt 35's, so they stay (the higher standard). Floor = 70 % of the class minimum (a hard gate); over the maximum is information only (owner rule 02/10).
+- Shared geometry (a): triangle keys at 2 mm in model space plus per-piece unit-box keys (catches scaled or stretched copies); keys held by more than 6 model families are generic primitives and do not count; families = an id with its `_hd`, `_a`, `_b`, `_chute`, `_wreck` files. The borrower is the later GLB (first git add); a gold V2 model is always the original. Two models added in the same commit that share > 30 % are both listed (sibling builds of one builder).
+- Notes (b): unit_refs / unit_sheet "model tạm" and builder docstrings ("stand-in", "temporary", "placeholder"); DECISIONS mentions are mostly of stand-ins already replaced, so they are not a flag. Ixion is found this way (its sheet still says "model tạm"; its GLB has been its own since 27 wave 1a; the owner asks for a real rebuild, so it stays pilot 1).
+- Scripts (c): AST of every BUILDERS module in all_builders order; the winning builder calling another id's builder.
+- Grade for P1/P2/P3 = the lowest of the gate's soft grade, the pass 8 visual grade, and the hard checks (4+ parts missing or under the floor = Kém, other hard fails = Cần sửa). Result: P1 131, P2 85, P3 14; 30 borrowed.
+- Gold (5.3): the 4 V2 models + the top 10 % per class among pass 8 visual Tốt models, ranked by the mean percentile of their soft metrics (the soft score itself needs a gold first). Classes with no gold of their own: wheeled/ground -> tracked, air_other -> helicopter, ship -> boss, hq -> structure, obstacle -> structure.
+- Gate pictures are drawn in Python (glb_mesh.render: flat shaded, orthographic, 28.4 px/m battle view), so every model is measured the same way without Unity; silhouettes at 256 px on the long side so the ratio does not grow with model size. The in-game sheets stay the reviewer's pictures; "agent visual" is NA in the report unless a reviewer fills it.
+- One def draws another model by data (mara_behemoth -> behemoth, prompt 31's); giving it a model is a data change, so it goes to QUESTIONS.md.
