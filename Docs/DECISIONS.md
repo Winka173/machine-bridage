@@ -13402,3 +13402,87 @@ is local. Nothing was run but the generator and a compile check (owner's rule); 
   points), over seeds and maps, an AI-vs-AI Conquest; writes `Docs/ai/sweep.csv` with the key's own metric beside the
   common ones (fight share, destroyed per minute, captures, average alive, wins). Until passes 2-5 make the AI read the
   parameters, a sweep shows no effect except from the World Model's own thresholds.
+
+## 28 2 (cloud, 2026-10-02)
+
+Prompt 28 pass 2, Sim only: B (AI general), C (squad layer), plus the J.2-J.4 data they write. Nothing was run but the
+generator and the compile check.
+
+- **Generator, part 2.** `import_ai_xlsx.py` now also writes `aiBehaviour`: the 7 squad states (priority, commitment),
+  28 roles (engagement band as a share of reach; the overwhelmed move by keyword: cover, shift, scoot, smoke, rearm,
+  hold), 58 units -> role, 16 tactics (CP shares, preferred cards matched by the sheet's vehicle names, unlock, the
+  commanders it suits by call sign -> id from NameText, counters, the merge pair, and the behaviour modules read from
+  "Tác động lên AI": numbers by pattern, flags by keyword), generals' tactics (Thorne's "Cân bằng như Kade" parsed;
+  Brandt -> depth and the no-general default -> balanced from prompt H.7, not in the sheet), tower modes (the sheet's
+  13 rows mapped to 23 tower ids) and boss behaviour types (12 bosses by their big attacks). Tactic ids are English
+  slugs (`balanced`, `blitz`, `firepower`, `depth`, `encircle`, `bounding`, `ambush`, `hit_and_run`, `breakthrough`,
+  `dispersal`, `air_superiority`, `sead`, `attrition`, `decapitation`, `base_defence`, `all_out`). One preferred name
+  matched no card ("dùng sớm thẻ Đòn SEAD": a support, covered by the SEAD module); names after "Tránh" are skipped.
+- **How it plugs in.** No new AI from scratch (prompt 28 "Dùng lại"): `ConquestAi` (buying, counters, strikes) gets an
+  `AiCommander` (B) and `TacticalAi` a `Layered` switch: its helpers (rearm, crates, breach, support, artillery, boss
+  focus, demolition, aircraft) stay; for ground vehicles it drops the main body, flankers, the fall-back on bad odds
+  and the pull-back of damaged vehicles (D.3: no retreat on health). The squad layer moves the ground army.
+  `ConquestAi.LayeredDefault` (true) switches every commander back to the old AI for the regression comparison (O.3).
+  Wave modes driven by TacticalAi alone (Survival, Defend, Siege waves) are unchanged in this pass.
+- **General (B).** 1/s. Primary objective = the existing objective chooser (prompt 13 scoring), held for
+  `params.minCommit` unless an emergency (a THREAT >= 90, a boss phase change); effort = towards it; secondary = own
+  artillery, else a pressured own point (none for `dropSecondary`). ATTACK_WINDOW opens on own/enemy strength >= the
+  threshold near the objective (the tactic's, else the parameter's, lowered by use-or-lose I.4), on a WINDOW or
+  OPPORTUNITY event there older than the reaction delay, or with no enemy known; shut while waiting for air
+  (air_superiority), for the artillery prep (`artilleryPrep` x 8 s with own artillery), in a tactic transition or when
+  defending; the window too is held for the minimum commitment. Squads to tasks: nearest to the objective first until
+  the main effort's share of strength; the rest hold the secondary; pincer gives the first 2-3 primary squads
+  alternating flank sides; base defence holds the camp. Supports by event (B.4): smoke on a squad in combat under
+  artillery reach above its strength; SEAD on the strongest known enemy AA for SEAD-first and air superiority.
+  Plan changes and windows go to the decision log with their reason, and the commander's "VÌ SAO" lists the events.
+- **Plan switch margin.** The objective chooser gives a point, not a score, so the general's plan uses the commitment
+  time and emergencies only; the switch margin applies where actions are scored (squads).
+- **Squads (C).** 4/s. Ground vehicles from TacticalAi's line and fast lists join the nearest squad of their kind
+  (fast >= 11 m/s or not) within 40 m with room (max 6), else a new one; JOIN merges squads under 3. Actions are
+  filtered for validity first (C.1): ATTACK needs an objective or a known enemy; FLANK needs a walkable waypoint
+  beside the goal with route threat <= 1.5x the squad's strength and not marked blocked; OVERWATCH a friendly squad
+  advancing within 60 m and a reach >= 40 m; REPOSITION a spot within 25 m with < 60 % of the danger (or the line
+  behind for depth's fall-back); SUPPORT a friend in combat within 80 m losing; JOIN a squad of its kind within 60 m;
+  REGROUP spread > 25 m (until < 12 m). Scores are a base plus named factors from the sheet's columns (ratio vs
+  threshold +-25, window +15, high value +10, primary +8, counterattack +15, low confidence -15 x (1-c), route threat,
+  not gathered, transition -30, waiting for air/artillery, flank tactic weight, pincer side +15, cohesion risk -8,
+  reserve that way, ...), clamped 0-100; the top 3 plus and 2 minus and the runner-up are the "VÌ SAO" record.
+- **Anti-churn (C.3).** Change only if the current action became invalid, an urgent event (focus target dead,
+  objective moved > 30 m, flank route blocked), an idle reassessment (G.3), or after the commitment (max of
+  `params.minCommit` and the state's own) the new score beats the current by `params.switchMargin`. States: a move to
+  a lower-priority state waits for the current state's commitment; contact (COMBAT, priority 3) is entered at once.
+- **Emergency Reposition (C.4).** Dodge: any member inside an enemy warning ring (known for >= the reaction delay)
+  drives straight out; the squad keeps its action and state and re-issues its orders when clear (no cooldown, no
+  churn count). Gather: local enemy >= `overwhelmRatio` x own, or a THREAT >= 80 with confidence >= 0.5 on the squad:
+  the nearest friendly squad within 120 m, REGROUP, cooldown `emergencyCooldown`. Never on health.
+- **Formation (C.5).** TRAVEL/APPROACH column (heaviest first), COMBAT line abreast at max(6 m, 2 x strongest known
+  blast x splashSpread x tactic spread x skill), HOLD/OVERWATCH line at 9 m facing the enemy, FLANK column fastest
+  first, REGROUP ring of 5 m. Orders go out only when the goal moves > 6 m or the action changes (no reshuffling).
+- **Focus (C.6) and targets (C.7, D.2).** The squad picks a focus (value x nearly-dead / health x strength, tactic
+  target groups x2, the old focus x1.3); members carry `SquadFocus`; CombatSystem's existing effective-damage target
+  scoring (play-test 8 A: damage type, penetration, facing, switch margin 1.3 and 0.5 s looks) already is the D.2/C.7
+  matrix, so pass 3 only adds the focus and tactic weights to it.
+- **Overwatch bounding (C.8).** With the bounding module: halves alternate every 6 s, the moving half going at most
+  0.8 x reach (<= 30 m) ahead. **Fall-back lines (C.9).** Depth/base defence squads holding below `fallback` x enemy
+  reposition 35 m towards their camp as a whole squad.
+- **Engagement distance (D.5, used by squads).** In combat, a squad stands at its members' role band midpoint (or the
+  tactic's band) of its median reach from the nearest enemy when standoff/kiting or already too close; hit-and-run
+  backs off with a move order when the enemy is inside its kite share.
+- **Difficulty (K, Sim side).** `AiSkill.For`: Easy reaction = the parameter's max (1.5 s), confidence decays x1.5,
+  spreads half, flanks half, no focus, never switches; Normal = the parameter (0.8 s); Hard 0.5 s, decay x0.85, flank
+  and focus x1.3, switches when losing (own < 0.6 x enemy for 20 s: to a counter of the seen enemy tactic, else depth,
+  else attrition); Very Hard = the min (0.3 s), decay x0.6, counters the enemy tactic its scouts see. ConquestAi.Skill
+  overrides it (K.2: the player's AI at Normal, a local hook).
+- **Tactic switching (H.6).** `RequestTactic`: cooldown `tacticCooldown` (free in Boss Rush breaks via `FreeSwitch`),
+  transition `tacticTransition` (no new window, ATTACK -30, REGROUP +20), attacking squads lose their commitment and
+  regroup; new CP shares only change later purchases. H.8: `TacticSeenBy` (a recon, UAV or scout helicopter of the
+  viewer has one of the side's vehicles within its vision). H.10: per-squad tactics with their own cooldown when
+  `SquadTactics` is on.
+- **Buying (H.5).** With the layered AI, the old role mix term is replaced by the tactic's: (target - spent share) x 6
+  (target moved +0.15 x confidence for a MISMATCH's group, the deck's missing groups' shares spread over the rest),
+  +1.5 for the tactic's preferred cards; spent = CP of every purchase per group. All-out assault saves to 90 % of the
+  bank with 4+ vehicles out and nothing under fire, then spends to 6 CP.
+- **Hints (B.7).** `AiHints.Next` gives one key (`hint.*`) and place from an event >= 60 priority or a stuck squad,
+  each key at most every 20 s; the HUD words it (text tables), off in Settings (local).
+- **Determinism.** Squads and members in id order; options built in a fixed order; ties keep the first. The layers
+  draw no random numbers yet (AiRandom is there for later tie-breaks).

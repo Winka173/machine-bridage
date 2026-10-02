@@ -76,7 +76,7 @@ namespace MachineBrigade.Sim.Combat
                 // minefield or a module has nothing to fire; a gun pit down in its hole waits.
                 // Prompt 17 C: a bunker vehicle digging in or packing up does not fire either.
                 // Prompt 19: a tiered boss in orbit holds its fire (its big attack is the boss system's).
-                if (v.Stunned || v.Lowered || v.HoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy || v.Tier == AltitudeTier.Orbit)
+                if (v.Stunned || v.Lowered || v.HoldFire || v.AiHoldFire || v.Def.Passive || v.Burrowed || v.DeployBusy || v.Tier == AltitudeTier.Orbit)
                 {
                     v.Target = EntityId.None;
                     continue;

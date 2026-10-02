@@ -8,3 +8,9 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - J (AI viewer overlays in the Sandbox) reads `world.Intel.For(team)`: `Own`/`Enemy`/`Threat[k]` grids
   (`Columns` x `Rows`, `CellCentre`), `Contacts` (confidence via `Confidence(now, ConfidenceDecay)`), `EnemyGroups`,
   `Front`, `Contested`, `Chokepoints`, `Warnings`, `Events`.
+- Pass 2 hooks: the tactic picker sets `ConquestAi.Tactic` (player Auto-buy/Support AI and the Sandbox's two sides)
+  before the first tick; the HUD switch button calls `ai.Commander.RequestTactic(world, id)` (shows `TacticReadyAt`,
+  `InTransition`); the player's AI gets `Skill = AiSkill.For(AiDifficulty.Normal, catalog.Ai)` (K.2); the hint line
+  calls `ai.Hints.Next(world, team, ai.Commander?.Squads)` about once a second (a side without an AI: `new AiHints()`).
+  Boss Rush: set `Commander.FreeSwitch` during a break. Run CatalogCheck (`aiBehaviour` added) and the EditMode suite;
+  `ConquestAi.LayeredDefault = false` gives the old AI for comparison.

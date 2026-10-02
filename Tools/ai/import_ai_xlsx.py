@@ -165,7 +165,234 @@ def economy(wb):
     return out
 
 
-def block(data) -> list[str]:
+
+# ----------------------------------------------------------------------------------------------------------------
+# Passes 2-5: behaviour data (balance.json "aiBehaviour"): squad states, roles, units, tactics, generals, towers, bosses.
+
+STATES = ["TRAVEL", "APPROACH", "COMBAT", "OVERWATCH", "FLANK", "HOLD", "REGROUP"]
+PRIORITY = {"thấp": 1, "vừa": 2, "cao": 3}
+
+# The sheet's tactic names -> ids (the code's names; DECISIONS "28 2").
+TACTICS = {
+    "Cân bằng": "balanced", "Tấn công chớp nhoáng": "blitz", "Hỏa lực áp đảo": "firepower",
+    "Phòng thủ chiều sâu": "depth", "Bao vây": "encircle", "Yểm hộ luân phiên": "bounding", "Phục kích": "ambush",
+    "Bắn và chạy": "hit_and_run", "Tập trung đột phá": "breakthrough", "Phân tán": "dispersal",
+    "Ưu thế trên không": "air_superiority", "Chế áp phòng không trước": "sead", "Tiêu hao": "attrition",
+    "Săn đầu": "decapitation", "Bảo vệ căn cứ": "base_defence", "Tổng tấn công": "all_out",
+}
+# The sheet's commander call signs -> commander ids (NameText: the call sign after each name).
+COMMANDERS = {"Kade": "kade", "Rush": "mendez", "Longshot": "dahl", "Bulwark": "brandt", "Flag": "adler", "Nadia": "kerr",
+              "Crown": "reyn", "Venn": "venn", "Hawk": "reyes", "Magpie": "quist", "Vault": "okoye", "Ledger": "brenn", "Tide": "varro"}
+GROUPS = ["Armour", "Light", "AntiTank", "Artillery", "AntiAir", "Helicopter", "Plane", "Support"]
+
+# The sheet "Công trình" rows -> the tower ids they cover.
+TOWERS = {
+    "Tháp canh": ["guard_tower"], "Lô cốt súng máy": ["mg_bunker"],
+    "Tháp phòng không": ["aa_gun_tower", "aa_turret", "heavy_flak_tower", "manpads_tower"], "Tháp gây nhiễu EW": ["ew_tower"],
+    "Tháp pháo": ["gun_turret"], "Tháp ATGM": ["atgm_tower", "one_shot_atgm_tower", "recoilless_gun_tower", "at_gun_emplacement"],
+    "Dàn rốc-két": ["rocket_turret"], "Trạm C-RAM / Vòm Sắt": ["c_ram", "laser_ad_station"],
+    "Trận địa pháo": ["artillery_emplacement"], "Patriot": ["missile_battery"], "Nhà chứa drone": ["drone_hangar"],
+    "Tháp pháo hạng nặng": ["heavy_turret", "coastal_battery"], "Máy phát khiên": ["shield_tower"],
+}
+MODES = {"gần nhất": "Nearest", "mạnh nhất": "Strongest", "yếu nhất": "Weakest", "đầu đoàn": "Lead",
+         "máy bay trước": "AirFirst", "cụm đông nhất": "Cluster", "pháo binh trước": "ArtilleryFirst",
+         "đạn bay vào công trình quan trọng nhất": "ShieldKey", "đạn gần nhất": "NearestRound",
+         "máy bay lớn nhất": "BiggestAircraft", "tên lửa trước (pac-3)": "MissilesFirst", "(không bắn)": "None"}
+# The sheet "Kiểu hành vi boss" names -> boss ids (balance.json: each boss's bigAttack).
+BOSSES = {"Bastion": "fortress_bastion", "Behemoth": "behemoth", "Jötunn": "mobile_fortress", "Leviathan": "leviathan",
+          "Matriarch": "drone_mothership", "Moloch": "moloch", "Nemesis": "nuke_train", "Kronos": "kronos", "Typhon": "typhon",
+          "Roc": "command_airship", "Daedalus": "daedalus", "Icarus": "silver_bug"}
+BEHAVIOURS = {"area denial": "AreaDenial", "anti-blob": "AntiBlob", "anti-air": "AntiAir", "anti-artillery": "AntiArtillery",
+              "core protection": "CoreProtection", "flank punishment": "FlankPunishment"}
+# A role's "khi bị áp đảo" column -> the short move it makes (D.3), by the first keyword found.
+OVERWHELMED = [("khói", "Smoke"), ("vật che", "Cover"), ("dời vị trí", "Scoot"), ("đổi vị trí", "Shift"), ("đổi chỗ", "Shift"),
+               ("lùi", "Shift"), ("về nạp", "Rearm"), ("đổi hướng", "Shift"), ("dời tâm", "Shift"), ("đổi vùng", "Shift")]
+
+
+def states(wb):
+    out = {}
+    for r in rows(wb, "Trạng thái đội")[1:]:
+        if r[0] not in STATES:
+            sys.exit(f"Trạng thái đội: unknown state {r[0]}")
+        out[r[0]] = {"priority": PRIORITY[str(r[4]).strip().lower()], "commit": first(r[5])}
+    if len(out) != len(STATES):
+        sys.exit("Trạng thái đội: a state is missing")
+    return out
+
+
+def roles(wb):
+    out, names = {}, {}
+    for r in rows(wb, "Vai trò")[1:]:
+        engage = [n / 100 for n in nums(r[5]) if n > 1][:2]
+        move = next((m for k, m in OVERWHELMED if k in str(r[8]).lower()), "Hold")
+        out[r[0]] = {"engage": engage if len(engage) == 2 else [], "overwhelmed": move}
+        names[str(r[1]).strip()] = r[0]
+    return out, names
+
+
+def units(wb, role_names):
+    out, names = {}, {}
+    for r in rows(wb, "Phương tiện")[1:]:
+        role = role_names.get(str(r[2]).strip())
+        if role is None:
+            sys.exit(f"Phương tiện: {r[0]} has an unknown role {r[2]}")
+        out[r[0]] = role
+        names[str(r[1]).strip().lower()] = r[0]
+    return out, names
+
+
+def modules(core, impact):
+    """A tactic's behaviour modules from its 'Tác động lên AI' text: numbers where the sheet gives them, keywords else."""
+    t = str(impact).lower()
+    m = {}
+    if (x := re.search(r"ngưỡng tấn công[^;]*?(\d+,\d+)(?: → (\d+,\d+))?", t)):
+        m["attackThreshold"] = num(x.group(2) or x.group(1))
+    if "không chờ xe chậm" in t:
+        m["cohesion"] = 0
+    if "trọng số đánh sườn tăng" in t or "đánh sườn sâu" in t:
+        m["flank"] = 1.6
+    if "chia 2–3 đội" in t:
+        m["pincer"] = 1
+    if "giảm dồn hỏa lực" in t:
+        m["focus"] = 0.5
+    if (x := re.search(r"≥ (\d+)% quân", t)):
+        m["mainEffort"] = num(x.group(1)) / 100
+    if (x := re.search(r"khoảng cách tối thiểu giữa xe ×(\d+)", t)):
+        m["spread"] = num(x.group(1))
+    if (x := re.search(r"giữ lửa tới khi địch vào ~(\d+)% tầm", t)):
+        m["holdFire"] = num(x.group(1)) / 100
+        m["stance"] = "HoldFire"
+    if (x := re.search(r"khoảng cách giao chiến (\d+)–(\d+)% tầm", t)):
+        m["engage"] = [num(x.group(1)) / 100, num(x.group(2)) / 100]
+    if (x := re.search(r"lùi khi địch vào (\d+)% tầm", t)):
+        m["kite"] = num(x.group(1)) / 100
+    if (x := re.search(r"chờ (\d+) đợt pháo", t)):
+        m["artilleryPrep"] = num(x.group(1))
+    if (x := re.search(r"dưới (\d+,\d+) lần", t)):
+        m["fallback"] = num(x.group(1))
+    if (x := re.search(r"phản công khi sức mạnh ta ≥ (\d+,\d+)", t)):
+        m["counterattack"] = num(x.group(1))
+    if (x := re.search(r"tốc độ tiến giảm ~(\d+)%", t)):
+        m["pace"] = 1 - num(x.group(1)) / 100
+    if "chia 2 nhóm" in t:
+        m["bounding"] = 1
+    if "đội giữ điểm" in t or "đội giữ trong vùng căn cứ" in t:
+        m["hold"] = 1
+    if "trong vùng căn cứ" in t:
+        m["holdBase"] = 1
+    if "chờ tới khi máy bay địch bị hạ" in t:
+        m["waitAir"] = 1
+    if "để dành cp" in t:
+        m["cpSaving"] = 1
+    if "mọi đội cùng tấn công" in t:
+        m["together"] = 1
+    if "ưu tiên vũ khí tầm xa" in t:
+        m["engage"] = m.get("engage", [0.9, 1.0])
+    if "tầm xa" in t and "giữ khoảng cách" in t:
+        m["standoff"] = 1
+    if "ưu tiên mục tiêu: phòng không" in t:
+        m["targets"] = ["AntiAir"]
+    if "ưu tiên mục tiêu: xe hỗ trợ" in t:
+        m["targets"] = ["Support", "Artillery"]
+    if "tháp ưu tiên chế độ đầu đoàn" in t:
+        m["towerMode"] = "Lead"
+    if "xe hạng nặng đi đầu" in t:
+        m["heavyLead"] = 1
+    if "bỏ giữ các điểm phụ" in t:
+        m["dropSecondary"] = 1
+    if "dùng thẻ chế áp" in t:
+        m["seadCards"] = 1
+    if "thẻ hỗ trợ dồn cùng lúc" in t:
+        m["massSupport"] = 1
+    return m
+
+
+def tactics(wb, unit_names):
+    head, *body = rows(wb, "Chiến thuật")
+    out, missing = [], []
+    for r in body:
+        tid = TACTICS.get(str(r[0]).strip())
+        if tid is None:
+            sys.exit(f"Chiến thuật: no id for '{r[0]}'")
+        cp = [num(x) / 100 for x in r[9:17]]
+        if abs(sum(cp) - 1) > 0.01:
+            sys.exit(f"Chiến thuật {tid}: CP shares sum to {sum(cp)}")
+        prefer = []
+        for name in re.split(r"[,.:;]", str(r[8] or "")):
+            n = re.sub(r"\(.*?\)", "", name).strip().lower()
+            if n.startswith("tránh"):
+                break  # what follows 'Tránh' is to avoid, not to buy
+            if not n or n.startswith(( "theo ai", "để dành", "nhiều xe", "thêm", "loadout", "không ưu tiên")):
+                continue
+            ids = [i for k, i in unit_names.items() if k == n or k.startswith(n)]
+            if ids:
+                prefer += [i for i in ids if i not in prefer]
+            else:
+                missing.append(f"{tid}: {name.strip()}")
+        unlock = str(r[22] or "").strip()
+        chapter = int(nums(unlock)[0]) if "Chương" in unlock else 0
+        interlude = 1 if "Xen kẽ" in unlock else 0
+        fits = [COMMANDERS[c.strip()] for c in re.split(r"[,/]", str(r[23] or "")) if c.strip() in COMMANDERS]
+        merge = TACTICS.get(str(r[3] or "").replace("Kiểm tra với", "").strip())
+        def named(cell):
+            return [i for name, i in TACTICS.items() if name in str(cell or "")]
+        out.append({"id": tid, "name": str(r[0]).strip(), "cp": [round(x, 4) for x in cp], "prefer": prefer,
+                    "counters": named(r[20]), "counteredBy": named(r[21]),
+                    "chapter": chapter, "interlude": interlude, "commanders": fits, "checkWith": merge or "",
+                    "modules": modules(r[1], r[7])})
+    return out, missing
+
+
+def generals(wb):
+    text = " ".join(str(c) for r in rows(wb, "Tính năng chọn chiến thuật") if str(r[0]).startswith("Tướng địch") for c in r[1:] if c)
+    out = {}
+    for name, tactic in re.findall(r"(\w+): ([^;()]+)", text):
+        t = TACTICS.get(re.split(r" với| như", tactic)[0].strip())
+        if t:
+            out[name.lower()] = t
+    # Prompt 28 H.7 (not in the sheet): Brandt and a mission without a general use Defence in depth or Balanced.
+    out.setdefault("brandt", "depth")
+    out.setdefault("default", "balanced")
+    return out
+
+
+def towers(wb):
+    out = {}
+    for r in rows(wb, "Công trình")[1:]:
+        ids = TOWERS.get(str(r[0]).strip())
+        if ids is None:
+            sys.exit(f"Công trình: no ids for '{r[0]}'")
+        default = MODES.get(str(r[1]).strip().lower())
+        options = [MODES[o.strip().lower()] for o in str(r[2] or "").split(",") if o.strip().lower() in MODES]
+        if default is None:
+            sys.exit(f"Công trình {r[0]}: unknown mode '{r[1]}'")
+        for i in ids:
+            out[i] = {"mode": default, "modes": options}
+    return out
+
+
+def bosses(wb):
+    out = {}
+    for r in rows(wb, "Kiểu hành vi boss")[1:]:
+        bid = BOSSES.get(str(r[0]).strip())
+        kinds = [BEHAVIOURS[k.strip().lower()] for k in str(r[1]).split(",") if k.strip().lower() in BEHAVIOURS]
+        if bid is None or not kinds:
+            sys.exit(f"Kiểu hành vi boss: cannot map '{r[0]}' / '{r[1]}'")
+        out[bid] = kinds
+    return out
+
+
+def behaviour(wb):
+    role_data, role_names = roles(wb)
+    unit_data, unit_names = units(wb, role_names)
+    tactic_data, missing = tactics(wb, unit_names)
+    if missing:
+        print("Ưu tiên mua names with no vehicle (left out):\n  " + "\n  ".join(missing))
+    return {"states": states(wb), "roles": role_data, "units": unit_data, "tactics": tactic_data,
+            "generals": generals(wb), "towers": towers(wb), "bosses": bosses(wb)}
+
+
+def block(data, behaviour_data=None) -> list[str]:
     def line(key, value, indent, last):
         return f'{" " * indent}"{key}": {json.dumps(value, ensure_ascii=False)}{"" if last else ","}'
 
@@ -186,7 +413,27 @@ def block(data) -> list[str]:
             else:
                 out.append(line(k, v, 6, last))
         out.append("    }" + ("" if si == len(sections) - 1 else ","))
-    out += ["  },", END]
+    out.append("  },")
+    if behaviour_data is not None:
+        out += ["  // Prompt 28 passes 2-5: the squad states, roles, units, tactics, generals' tactics, tower modes and boss",
+                "  // behaviour types of the research sheet (see Docs/ai/TACTICS.md).",
+                '  "aiBehaviour": {']
+        items = list(behaviour_data.items())
+        for i, (k, v) in enumerate(items):
+            last = i == len(items) - 1
+            if isinstance(v, list):
+                out.append(f'    "{k}": [')
+                out += [f'      {json.dumps(x, ensure_ascii=False)}{"" if j == len(v) - 1 else ","}' for j, x in enumerate(v)]
+                out.append("    ]" + ("" if last else ","))
+            elif isinstance(v, dict) and all(isinstance(x, (dict, list)) for x in v.values()):
+                out.append(f'    "{k}": {{')
+                sub = list(v.items())
+                out += [f'      "{a}": {json.dumps(b, ensure_ascii=False)}{"" if j == len(sub) - 1 else ","}' for j, (a, b) in enumerate(sub)]
+                out.append("    }" + ("" if last else ","))
+            else:
+                out.append(f'    "{k}": {json.dumps(v, ensure_ascii=False)}{"" if last else ","}')
+        out.append("  },")
+    out.append(END)
     return out
 
 
@@ -210,7 +457,7 @@ def main():
         "params": ai_params(wb),
         "economy": economy(wb),
     }
-    new = block(data)
+    new = block(data, behaviour(wb))
     if args.dry:
         print("\n".join(new))
         return

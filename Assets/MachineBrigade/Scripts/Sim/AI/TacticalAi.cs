@@ -177,6 +177,47 @@ namespace MachineBrigade.Sim.AI
         /// </summary>
         public bool HuntSupply { get; set; }
 
+        /// <summary>
+        /// Prompt 28: the squad layer moves the ground army (<see cref="SquadLayer"/>). This keeps its helpers (rearming,
+        /// crates, breaching, support, artillery, boss focus, demolition) and the aircraft, and drops for the ground the
+        /// main body, the flankers, the fall-back on bad odds and the pull-back of damaged vehicles (no retreat on health).
+        /// </summary>
+        public bool Layered { get; set; }
+
+        /// <summary>The ground fighters of the last decision (the line and the fast), for the squad layer.</summary>
+        public IReadOnlyList<Vehicle> GroundPool => _groundPool;
+
+        private readonly List<Vehicle> _groundPool = new();
+        private readonly List<Vehicle> _stashLine = new();
+        private readonly List<Vehicle> _stashFast = new();
+
+        /// <summary>Takes the ground vehicles out of the line and the fast (the squads move them) until <see cref="RestoreGround"/>.</summary>
+        private void StashGround()
+        {
+            _stashLine.Clear();
+            _stashFast.Clear();
+            for (var i = _line.Count - 1; i >= 0; i--)
+                if (!_line[i].Flying)
+                {
+                    _stashLine.Add(_line[i]);
+                    _line.RemoveAt(i);
+                }
+            for (var i = _fast.Count - 1; i >= 0; i--)
+                if (!_fast[i].Flying)
+                {
+                    _stashFast.Add(_fast[i]);
+                    _fast.RemoveAt(i);
+                }
+        }
+
+        private void RestoreGround()
+        {
+            for (var i = _stashLine.Count - 1; i >= 0; i--) _line.Add(_stashLine[i]);
+            for (var i = _stashFast.Count - 1; i >= 0; i--) _fast.Add(_stashFast[i]);
+            _stashLine.Clear();
+            _stashFast.Clear();
+        }
+
         /// <summary>Our strength at the edge of a defended area must be this many times the defences' there to go in.</summary>
         private const float AssaultOdds = 1.4f;
 
@@ -220,11 +261,21 @@ namespace MachineBrigade.Sim.AI
             if (world.IsOver) return;
 
             Sort(world);
+            if (Layered)
+            {
+                _groundPool.Clear();
+                foreach (var v in _line)
+                    if (!v.Flying) _groundPool.Add(v);
+                foreach (var v in _fast)
+                    if (!v.Flying) _groundPool.Add(v);
+            }
             var body = _line.Count > 0 ? _line : _fast.Count > 0 ? _fast : _artillery;
             if (body.Count == 0) return;
 
             var front = FrontOf(world, body);
+            if (Layered) StashGround();
             GatherReinforcements(world, front);
+            if (Layered) RestoreGround();
             if (_line.Count == 0 && _fast.Count == 0 && _artillery.Count == 0) return;
             body = _line.Count > 0 ? _line : _fast.Count > 0 ? _fast : _artillery;
             var contact = _enemies.Count > 0;
@@ -245,7 +296,7 @@ namespace MachineBrigade.Sim.AI
                 objective += inward * (SimWorld.HomeRadius + 18f);
             }
             contact = groundContact;
-            if (JudgeOdds(world, front, contact))
+            if (!Layered && JudgeOdds(world, front, contact))
             {
                 // Outmatched: break contact, gather behind the front and let them come to us. Idle
                 // vehicles still fight anything that walks into range; artillery keeps shelling.
@@ -267,7 +318,7 @@ namespace MachineBrigade.Sim.AI
                 objective = Clamp(world, goal!.Value + forward * 5f);
             }
 
-            PullBackDamaged(world, front, forward);
+            if (!Layered) PullBackDamaged(world, front, forward);
             GrabCrates(world);
             SendToRearm(world);
             DirectSupport(world, front, forward);
@@ -278,9 +329,11 @@ namespace MachineBrigade.Sim.AI
             FocusDemolition(world);
             ShootBuildings(world);
             DirectArtillery(world, front, objective, forward, contact);
+            if (Layered) StashGround();
             DirectFlankers(world, objective, forward, contact);
             DirectMainBody(world, objective, contact);
             if (!holding) PushStale(world, objective);
+            if (Layered) RestoreGround();
         }
 
         /// <summary>

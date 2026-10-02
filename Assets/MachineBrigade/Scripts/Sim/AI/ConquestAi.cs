@@ -343,12 +343,15 @@ namespace MachineBrigade.Sim.AI
             var defend = Stance == CommanderStance.Defend;
             world.Entrench(_team, defend);
             _tactics.HoldLeash = defend && _holding != null ? HoldReach : null;
+            _tactics.Layered = Layered;
             _tactics.Tick(world, dt);
+            if (Layered) TickLayered(world, dt);
             _timer -= dt;
             if (_timer > 0f || world.IsOver) return;
             _timer = Interval;
             if (!world.TryGetEconomy(_team, out var economy)) return;
             if (AutoDeploy && TryRebuild(world, economy)) return;
+            if (AutoStrike && Layered && TrySupportWanted(world, economy)) return;
             if (AutoStrike && TryStrike(world, economy)) return;
             if (AutoDeploy) TryDeploy(world, economy);
         }
@@ -800,6 +803,8 @@ namespace MachineBrigade.Sim.AI
             if (_difficulty == AiDifficulty.VeryHard && !_massing && economy.VehicleCount >= 5 && _tactics.KnownEnemies.Count > 0 &&
                 economy.Cp < economy.Bank * 0.66f && !UnderFire(world))
                 return;
+            // Prompt 28 H.5: All-out assault saves to a threshold and buys a whole wave.
+            if (Commander != null && Commander.SavingUp(world, economy) && !UnderFire(world)) return;
             _massing = economy.Cp >= 6f && _difficulty == AiDifficulty.VeryHard && (_massing || economy.Cp >= economy.Bank * 0.66f);
             var cards = Cards(world, economy.Vehicles, world.Catalog.Vehicles.Keys);
             var airFull = world.Economy.AircraftCount(_team) >= world.Economy.AircraftCap(_team);
@@ -903,7 +908,9 @@ namespace MachineBrigade.Sim.AI
                 }
                 // The role furthest below its share of the army comes first (OpenRA's and 0 A.D.'s
                 // unit-share quotas): an army of one kind is easy to counter.
-                if (_difficulty != AiDifficulty.Easy && armyValue > 0f)
+                // Prompt 28 H.5: the layered AI buys to the tactic's force shares by CP spent instead.
+                if (Commander != null) score += Commander.BuyScore(world, economy, def) * MathF.Max(0.5f, profile.Mix);
+                else if (_difficulty != AiDifficulty.Easy && armyValue > 0f)
                     score += (mix[(int)RoleOf(def)] - _have[(int)RoleOf(def)] / armyValue) * 5f * profile.Mix;
                 // A mixed army: each copy already fielded makes another less attractive.
                 if (owned.TryGetValue(id, out var copies)) score -= copies * 0.45f;
@@ -929,11 +936,15 @@ namespace MachineBrigade.Sim.AI
             {
                 // Prompt 25 F2 batch A: an airborne vehicle is dropped where it is wanted.
                 DeployOrDrop(world, best);
+                Bought(world, best, economy);
                 return;
             }
             // Save up for the best card, unless the army is thin or CP is about to overflow.
             if (bestAffordable != null && (ownTotal < 4 || economy.Cp >= economy.Bank - 3f || _difficulty == AiDifficulty.Easy))
+            {
                 DeployOrDrop(world, bestAffordable);
+                Bought(world, bestAffordable, economy);
+            }
         }
 
         /// <summary>Very Hard spending its saved CP (see <see cref="TryDeploy"/>).</summary>
