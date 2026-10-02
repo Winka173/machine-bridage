@@ -120,17 +120,17 @@ Ground DPS **1304 -> 1188** (91 %); anti-air only 0 -> 0.
 
 ### nuke_train
 
-Ground DPS **1751 -> 1751** (100 %); anti-air only 62 -> 62. Made up: `p26_nemesis_sec_boss_rockets` 40 tubes.
+Ground DPS **1751 -> 1070** (61 %); anti-air only 62 -> 62. Made up: `p26_nemesis_sec_boss_rockets` 40 tubes. **Not made up within 20 %** (see below).
 
 | mount | weapon | family | before: round x n / cycle = DPS | after: round x n (barrels) / cycle = DPS | core / edge |
 |---|---|---|---|---|---|
-| 0 | `p26_nemesis_main_ne152` | cal_152_155 | 600 x 4 / 4.12 s = 582 | 600 x 4 / 4.12 s = 582 | 7 / 14 |
-| 1 | `p26_nemesis_close_boss_flak` | cal_35 | 25 x 41 / 7.08 s = 145 | 25 x 41 / 7.08 s = 145 | 2.5 / 0 |
-| 2 | `p26_nemesis_close_boss_flak` | cal_35 | 25 x 41 / 7.08 s = 145 | 25 x 41 / 7.08 s = 145 | 2.5 / 0 |
-| 3 | `p26_nemesis_sec_boss_rockets` | rkt_grad_122 | 200 x 13 / 4.72 s = 551 | 200 x 13 / 4.72 s = 551 | 4.5 / 9 |
+| 0 | `p26_nemesis_main_ne152` | cal_152_155 | 600 x 4 / 4.12 s = 582 | 600 x 1 / 7.50 s = 80 | 7 / 14 |
+| 1 | `p26_nemesis_close_boss_flak` | cal_35 | 25 x 41 / 7.08 s = 145 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 2 | `p26_nemesis_close_boss_flak` | cal_35 | 25 x 41 / 7.08 s = 145 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
+| 3 | `p26_nemesis_sec_boss_rockets` | rkt_grad_122 | 200 x 13 / 4.72 s = 551 | 200 x 40 / 21.94 s = 365 | 4.5 / 9 |
 | 4 | `sam_battery` | sam_mim_104_patriot_pac_2 | 340 x 2 / 11.00 s = 62 | 340 x 2 / 11.00 s = 62 | 2.5 / 0 |
-| 5 | `p26_nemesis_direct_ne125` | cal_125_ap | 400 x 1 / 2.18 s = 183 | 400 x 1 / 2.18 s = 183 | 0 / 0 |
-| 6 | `p26_nemesis_close_boss_flak` | cal_35 | 25 x 41 / 7.08 s = 145 | 25 x 41 / 7.08 s = 145 | 2.5 / 0 |
+| 5 | `p26_nemesis_direct_ne125` | cal_125_ap | 400 x 1 / 2.18 s = 183 | 400 x 1 / 7.50 s = 53 | 0 / 0 |
+| 6 | `p26_nemesis_close_boss_flak` | cal_35 | 25 x 41 / 7.08 s = 145 | 25 x 41 / 5.38 s = 191 | 2.5 / 0 |
 
 ### silver_bug
 
@@ -563,7 +563,7 @@ Ground DPS **707 -> 707** (100 %); anti-air only 0 -> 0. Made up: `p26_typhon_se
 | armored_train | 660 | 952 | 144 % | 0 -> 0 | - |
 | mega_gunship | 462 | 546 | 118 % | 0 -> 0 | - |
 | drone_mothership | 1304 | 1188 | 91 % | 0 -> 0 | - |
-| nuke_train | 1751 | 1751 | 100 % | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
+| nuke_train | 1751 | 1070 | 61 % **(< 80 %)** | 62 -> 62 | `p26_nemesis_sec_boss_rockets` 40 tubes |
 | silver_bug | 1638 | 1638 | 100 % | 0 -> 0 | - |
 | behemoth_inferno | 282 | 282 | 100 % | 0 -> 0 | - |
 | behemoth_tempest | 299 | 299 | 100 % | 0 -> 0 | - |
