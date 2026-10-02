@@ -13859,3 +13859,4 @@ No runner mirror, no cards, no previews, no tests.
   3.03 (modelSize 2.6) kept; scout height 4.225 kept (the old mast); shorad 3.67 long against 3.8.
 - **Card luma (old, mean of pixels with alpha > .5):** microwave .3217, nlos .3856, radar_atgm .4031, radar_scout .3912,
   recoilless_jeep .3636, shorad .3449, sp_mortar .3803, wheeled_howitzer .2971 (the dimmest card of the row: watch it).
+- Lead (2026-10-02), wave 3g cards: aa_gun_vehicle fixed (.3653 vs the original .3654); six of the 3g row pass (+2.3 % to +8.2 %); nlos_atgm_vehicle -2.6 % (.3856 -> .3757) and radar_atgm_vehicle -1.2 % (.4031 -> .3983) fail although COLOR_0 rose: merged, pass 3h brightens them first.

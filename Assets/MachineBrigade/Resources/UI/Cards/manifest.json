@@ -393,42 +393,42 @@
             "kind": "vehicle",
             "model": "aa_gun_vehicle",
             "source": "Models/aa_gun_vehicle",
-            "hash": "v2:86e62b30c0d71534fad076a1044129bd0ffc7c78"
+            "hash": "v2:eabe9ddd7406a58560f750dfcff157f149cc737f"
         },
         {
             "id": "shorad_vehicle",
             "kind": "vehicle",
             "model": "shorad_vehicle",
             "source": "Models/shorad_vehicle",
-            "hash": "v2:e7e5a4321643ccf42c83e6c57f146ea5f88c12cb"
+            "hash": "v2:83ba7c0063de36b62d140281e638eb0b1624a34d"
         },
         {
             "id": "microwave_vehicle",
             "kind": "vehicle",
             "model": "microwave_vehicle",
             "source": "Models/microwave_vehicle",
-            "hash": "v2:830fc042b46e173ae556dc4efbcace65d5920b21"
+            "hash": "v2:f53a3d59838e4ad8c66dbb6b84520014a857b9aa"
         },
         {
             "id": "nlos_atgm_vehicle",
             "kind": "vehicle",
             "model": "nlos_atgm_vehicle",
             "source": "Models/nlos_atgm_vehicle",
-            "hash": "v2:028d55b4cc291a78c300486731df91df0d613367"
+            "hash": "v2:b3456e7982308eca00874ca06b59bf7313a754cb"
         },
         {
             "id": "radar_atgm_vehicle",
             "kind": "vehicle",
             "model": "radar_atgm_vehicle",
             "source": "Models/radar_atgm_vehicle",
-            "hash": "v2:7f2fdff579ae395854b4256464a4ec62d31600ee"
+            "hash": "v2:e2cc76ff10db3cfe20137340360c773f1e3dbd1f"
         },
         {
             "id": "recoilless_jeep",
             "kind": "vehicle",
             "model": "recoilless_jeep",
             "source": "Models/recoilless_jeep",
-            "hash": "v2:ef01d465c6a1eb3da87e22d4723bf93b2e6370d7"
+            "hash": "v2:7f708601e9abd7b20696625543a4e609679db2b8"
         },
         {
             "id": "airborne_vehicle",
@@ -442,14 +442,14 @@
             "kind": "vehicle",
             "model": "wheeled_howitzer",
             "source": "Models/wheeled_howitzer",
-            "hash": "v2:943b30b52462140425d292514f222c18dbf22d71"
+            "hash": "v2:7da71daa33468d3f14cbef7c0787f82ee74be42d"
         },
         {
             "id": "sp_mortar",
             "kind": "vehicle",
             "model": "sp_mortar",
             "source": "Models/sp_mortar",
-            "hash": "v2:a8d1a47f54de9935d20632429edaf7bc87f2df42"
+            "hash": "v2:8eb3a5dffca2ab4c96ceefee04e221b1d55f92ba"
         },
         {
             "id": "glide_bomber",
@@ -477,7 +477,7 @@
             "kind": "vehicle",
             "model": "radar_scout",
             "source": "Models/radar_scout",
-            "hash": "v2:126c25068fb733977ba0064878feeb5c209d8e11"
+            "hash": "v2:00abe0f96e29e1e6e52132b89e5047a189944385"
         },
         {
             "id": "fibre_fpv_carrier",
