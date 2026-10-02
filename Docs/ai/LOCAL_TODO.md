@@ -23,3 +23,6 @@ The cloud session writes the Sim only. Each line: file, what, why.
   filtered by `AiBehaviour.Unlocked` and highlights `SuitedTo(commander)`; the briefing shows the general's tactic
   (`GeneralTactic`); a line when the enemy switches tactic while `enemy.TacticSeenBy(world, player)` (H.8); the
   Sandbox's side panel gets a tactic picker (`SandboxSide.Tactic`) and a switch button (H.13).
+- Text tables: `Scripts/Game/Hud/TacticText.cs` (EN + VI: tactics, hints `aihint.*`, tower modes, fire stances, upkeep,
+  pressure tiers, AI viewer words incl. `why.<factor>`), registered in `Strings.Get/Entries/Has`. Written blind:
+  the local compile and L10nTests check them.

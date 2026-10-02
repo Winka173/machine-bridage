@@ -547,7 +547,7 @@ namespace MachineBrigade.Sim.AI
 
     /// <summary>
     /// B.7: a small hint line for the player, from high-priority events (never an order). Key and place; the HUD words
-    /// them (text table "hint.*") and the player can turn them off. At most one hint per key every 20 s.
+    /// them (text table "aihint.*") and the player can turn them off. At most one hint per key every 20 s.
     /// </summary>
     public sealed class AiHints
     {
@@ -562,7 +562,7 @@ namespace MachineBrigade.Sim.AI
                 Time = time;
             }
 
-            /// <summary>"hint.bigAttack", "hint.needAntiAir", "hint.enemyArtillery", "hint.stuck", ...</summary>
+            /// <summary>"aihint.bigAttack", "aihint.needAntiAir", "aihint.enemyArtillery", "aihint.stuck", ...</summary>
             public string Key { get; }
             public Vector2 At { get; }
             public double Time { get; }
@@ -579,16 +579,16 @@ namespace MachineBrigade.Sim.AI
                 if (e.Priority < 60f) continue;
                 var k = e.Kind switch
                 {
-                    IntelEventKind.Threat when e.Reason.StartsWith("big", StringComparison.Ordinal) => "hint.bigAttack",
-                    IntelEventKind.Threat when e.Reason.StartsWith("strike", StringComparison.Ordinal) => "hint.strike",
-                    IntelEventKind.Threat when e.Reason.Contains("aircraft") => "hint.airInbound",
-                    IntelEventKind.Threat => "hint.overwhelmed",
-                    IntelEventKind.Mismatch when e.Need == ForceGroup.AntiAir => "hint.needAntiAir",
-                    IntelEventKind.Mismatch => "hint.needAntiTank",
-                    IntelEventKind.Opportunity when e.Reason.StartsWith("Artillery", StringComparison.Ordinal) => "hint.enemyArtillery",
-                    IntelEventKind.Opportunity => "hint.opportunity",
-                    IntelEventKind.Window => "hint.window",
-                    _ => "hint.losingPoint",
+                    IntelEventKind.Threat when e.Reason.StartsWith("big", StringComparison.Ordinal) => "aihint.bigAttack",
+                    IntelEventKind.Threat when e.Reason.StartsWith("strike", StringComparison.Ordinal) => "aihint.strike",
+                    IntelEventKind.Threat when e.Reason.Contains("aircraft") => "aihint.airInbound",
+                    IntelEventKind.Threat => "aihint.overwhelmed",
+                    IntelEventKind.Mismatch when e.Need == ForceGroup.AntiAir => "aihint.needAntiAir",
+                    IntelEventKind.Mismatch => "aihint.needAntiTank",
+                    IntelEventKind.Opportunity when e.Reason.StartsWith("Artillery", StringComparison.Ordinal) => "aihint.enemyArtillery",
+                    IntelEventKind.Opportunity => "aihint.opportunity",
+                    IntelEventKind.Window => "aihint.window",
+                    _ => "aihint.losingPoint",
                 };
                 if (_last.TryGetValue(k, out var at) && world.Time - at < 20.0) continue;
                 if (best == null || e.Priority > best.Priority)
@@ -599,10 +599,10 @@ namespace MachineBrigade.Sim.AI
             }
             if (squads != null && key == null)
                 foreach (var s in squads.Squads)
-                    if (s.Progress.Count > 0 && Stuck(s) && !(_last.TryGetValue("hint.stuck", out var st) && world.Time - st < 20.0))
+                    if (s.Progress.Count > 0 && Stuck(s) && !(_last.TryGetValue("aihint.stuck", out var st) && world.Time - st < 20.0))
                     {
-                        _last["hint.stuck"] = world.Time;
-                        return new Hint("hint.stuck", s.Centre, world.Time);
+                        _last["aihint.stuck"] = world.Time;
+                        return new Hint("aihint.stuck", s.Centre, world.Time);
                     }
             if (best == null || key == null) return null;
             _last[key] = world.Time;
