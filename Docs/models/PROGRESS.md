@@ -58,7 +58,7 @@ Gungnir's line warning, `airborne_light_tank_chute` (its own parachute canopy mo
 | `cerberus` (**committed**: `cerberus`, 11,848 tris, mb_p27_wave1b) | `behemoth` (red wash) | mb_p20_bosses | 16.3 x 8.4 x 5.5 | three big-wheeled trucks joined by couplings: 125 mm tractor, anti-air middle, rocket trailer (middle first breaks the AA) |
 | `hydra` (**committed**: `hydra_sub`, 7,268 tris, mb_p27_wave1b) | `typhon` (teal wash) | mb_redesign_20y | 34.8 x 7.2 x 8 | a small submarine with vertical launch tubes along the back and six FPV drones |
 
-### Wave 1c: prompt 25 batch B stand-in units
+### Wave 1c: prompt 25 batch B stand-in units (complete: pass A 16 rows, pass B 16 rows; 02/10)
 
 | def | current pointer | its builder | class | the real model (ASSET_DEBT) |
 |---|---|---|---|---|
@@ -78,22 +78,22 @@ Gungnir's line warning, `airborne_light_tank_chute` (its own parachute canopy mo
 | `amphib_light_vehicle` (**committed**: `amphib_light_vehicle`, 4,606 tris, mb_p27_wave1c) | `ifv` (a sage wash) | mb_p25_models2 | ground | an EFV / AAV-7: a boat-hulled tracked APC with a bow planing trim vane |
 | `airborne_light_tank` (**committed**: `airborne_light_tank`, 5,550 tris + `airborne_light_tank_chute`, 3,514 tris, mb_p27_wave1c) | `light_tank` (a magenta wash) | mb_p25_models2 | ground | an M8 AGS / M10 Booker: a light tank hull with a low-profile 105 mm turret, and its own parachute canopy Also `airborne_light_tank_chute`. |
 | `stealth_naval_strike` (**committed**: `stealth_naval_strike`, 2,124 tris, mb_p27_wave1c) | `stealth_bomber` (a steel-blue wash) | mb_p25_models2 | jet | an A-12 Avenger II: a flying-wing stealth strike aircraft, carrier folding wingtips |
-| `twin_rotor_gunship` | `sky_gunship` (a khaki wash) | mb_p25_models | jet | an ACH-47A "Guns-A-Go-Go": a CH-47 tandem-rotor airframe with side gun mounts and a nose turret |
-| `ground_drone_carrier` | `interceptor_drone_vehicle` (a teal wash) | mb_p25_new | ground | a THeMIS / Uran-9 mothership plus three small tracked minion robots (needs a minion-spawn mechanism too) |
-| `mobile_repair_vehicle` | `engineer_vehicle` (a mauve wash) | mb_p25_models2 | ground | an MTO-UB: a wheeled repair truck with a crane and a welding rig |
-| `radar_support_vehicle` | `radar_scout` (a sky-blue wash) | mb_p25_new | ground | a Giraffe AMB / Kasta: a boxy radar cabin on a mast, raised when stationary |
-| `towed_at_gun` | `tank_destroyer` (a sand wash) | mb_p25_models2 | ground | a 2A45 Sprut-B: a long-barrelled towed gun on a split trail carriage, no armour |
-| `flare_searchlight_tower` | `flare_tower` (a teal wash) | mb_p25_new | tower | its own small-slot flare launcher post (the medium-slot flare_tower, shrunk) |
-| `recoilless_gun_tower` | `at_gun_emplacement` (a violet wash) | mb_p25_new | tower | an SPG-9 Kopyo emplacement: a small sandbagged pit, a short stubby recoilless tube |
-| `bunker_shelter_tower` | `troop_shelter` (a green wash) | mb_p25_new | structure | a bigger concrete bunker (the medium-slot troop_shelter, grown) |
-| `dazzler_vehicle` | `ew_jammer` (a gold wash) | mb_p25_models2 | ground | a Peresvet-class dazzler: a boxy vehicle with a large forward-facing lens array |
-| `ground_cruise_missile_vehicle` | `sam_launcher` (a rose wash) | mb_p25_models2 | ground | a Typhon MRC: a trailer with two long vertical missile canisters |
-| `aerial_tanker` | `heavy_bomber` (a periwinkle wash) | mb_p25_models2 | jet | a KC-135 / Il-78: an airliner-shaped tanker with a boom or drogue pod under the tail |
-| `heavy_lift_helicopter` | `gunship_heli` (a coral wash) | mb_p25_models2 | helicopter | a CH-47 / Mi-26: a big tandem or single heavy-lift rotor helicopter with a cargo hook |
-| `bridging_vehicle` | `engineer_vehicle` (a mint wash) | mb_p25_models2 | ground | an AVLB / MTU-72: a tank hull carrying a folded scissor bridge span |
-| `gps_jammer_vehicle` | `ew_jammer` (a periwinkle wash) | mb_p25_models2 | ground | a Pole-21-class jammer: a mast-mounted antenna array on a truck bed, distinct from the visual jammer |
-| `drone_net_tower` | `laser_ad_station` (a pink wash) | mb_p25_new | tower | a net corridor: two poles with anti-drone netting strung wide between them, no turret |
-| `one_shot_atgm_tower` | `atgm_tower` (a tan wash) | mb_towers3 | tower | an automatic launcher box of eight ready-to-fire Kornet tubes, no reload magazine in view |
+| `twin_rotor_gunship` (**committed**: `twin_rotor_gunship`, 3,422 tris, mb_p27_wave1c) | `sky_gunship` (a khaki wash) | mb_p25_models | jet | an ACH-47A "Guns-A-Go-Go": a CH-47 tandem-rotor airframe with side gun mounts and a nose turret |
+| `ground_drone_carrier` (**committed**: `ground_drone_carrier`, 4,274 tris, mb_p27_wave1c) | `interceptor_drone_vehicle` (a teal wash) | mb_p25_new | ground | a THeMIS / Uran-9 mothership plus three small tracked minion robots (needs a minion-spawn mechanism too) |
+| `mobile_repair_vehicle` (**committed**: `mobile_repair_vehicle`, 3,668 tris, mb_p27_wave1c) | `engineer_vehicle` (a mauve wash) | mb_p25_models2 | ground | an MTO-UB: a wheeled repair truck with a crane and a welding rig |
+| `radar_support_vehicle` (**committed**: `radar_support_vehicle`, 3,368 tris, mb_p27_wave1c) | `radar_scout` (a sky-blue wash) | mb_p25_new | ground | a Giraffe AMB / Kasta: a boxy radar cabin on a mast, raised when stationary |
+| `towed_at_gun` (**committed**: `towed_at_gun`, 1,996 tris, mb_p27_wave1c) | `tank_destroyer` (a sand wash) | mb_p25_models2 | ground | a 2A45 Sprut-B: a long-barrelled towed gun on a split trail carriage, no armour |
+| `flare_searchlight_tower` (**committed**: `flare_searchlight_tower`, 2,296 tris, mb_p27_wave1c) | `flare_tower` (a teal wash) | mb_p25_new | tower | its own small-slot flare launcher post (the medium-slot flare_tower, shrunk) |
+| `recoilless_gun_tower` (**committed**: `recoilless_gun_tower`, 2,318 tris, mb_p27_wave1c) | `at_gun_emplacement` (a violet wash) | mb_p25_new | tower | an SPG-9 Kopyo emplacement: a small sandbagged pit, a short stubby recoilless tube |
+| `bunker_shelter_tower` (**committed**: `bunker_shelter_tower`, 1,228 tris, mb_p27_wave1c) | `troop_shelter` (a green wash) | mb_p25_new | structure | a bigger concrete bunker (the medium-slot troop_shelter, grown) |
+| `dazzler_vehicle` (**committed**: `dazzler_vehicle`, 4,640 tris, mb_p27_wave1c) | `ew_jammer` (a gold wash) | mb_p25_models2 | ground | a Peresvet-class dazzler: a boxy vehicle with a large forward-facing lens array |
+| `ground_cruise_missile_vehicle` (**committed**: `ground_cruise_missile_vehicle`, 3,868 tris, mb_p27_wave1c) | `sam_launcher` (a rose wash) | mb_p25_models2 | ground | a Typhon MRC: a trailer with two long vertical missile canisters |
+| `aerial_tanker` (**committed**: `aerial_tanker`, 3,220 tris, mb_p27_wave1c) | `heavy_bomber` (a periwinkle wash) | mb_p25_models2 | jet | a KC-135 / Il-78: an airliner-shaped tanker with a boom or drogue pod under the tail |
+| `heavy_lift_helicopter` (**committed**: `heavy_lift_helicopter`, 3,138 tris, mb_p27_wave1c) | `gunship_heli` (a coral wash) | mb_p25_models2 | helicopter | a CH-47 / Mi-26: a big tandem or single heavy-lift rotor helicopter with a cargo hook |
+| `bridging_vehicle` (**committed**: `bridging_vehicle`, 5,148 tris, mb_p27_wave1c) | `engineer_vehicle` (a mint wash) | mb_p25_models2 | ground | an AVLB / MTU-72: a tank hull carrying a folded scissor bridge span |
+| `gps_jammer_vehicle` (**committed**: `gps_jammer_vehicle`, 4,396 tris, mb_p27_wave1c) | `ew_jammer` (a periwinkle wash) | mb_p25_models2 | ground | a Pole-21-class jammer: a mast-mounted antenna array on a truck bed, distinct from the visual jammer |
+| `drone_net_tower` (**committed**: `drone_net_tower`, 1,378 tris, mb_p27_wave1c) | `laser_ad_station` (a pink wash) | mb_p25_new | tower | a net corridor: two poles with anti-drone netting strung wide between them, no turret |
+| `one_shot_atgm_tower` (**committed**: `one_shot_atgm_tower`, 2,186 tris, mb_p27_wave1c) | `atgm_tower` (a tan wash) | mb_towers3 | tower | an automatic launcher box of eight ready-to-fire Kornet tubes, no reload magazine in view |
 
 
 ## Wave 2: the validator's flagged models (18 with errors: the 13 of the baseline + 5 over a budget hard cap)

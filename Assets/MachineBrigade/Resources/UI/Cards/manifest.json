@@ -602,78 +602,78 @@
             "id": "twin_rotor_gunship",
             "kind": "vehicle",
             "model": "twin_rotor_gunship",
-            "source": "Models/sky_gunship_hd",
-            "hash": "v2:8a9365ed4fd89b32bd466c9d14bd8f0e3070046a"
+            "source": "Models/twin_rotor_gunship",
+            "hash": "v2:b368ce9d3d9381a36d022ca10891b137434bc7c4"
         },
         {
             "id": "ground_drone_carrier",
             "kind": "vehicle",
             "model": "ground_drone_carrier",
-            "source": "Models/interceptor_drone_vehicle",
-            "hash": "v2:04b4652f6bfc50dd52d6a98e8609d604a91c110c"
+            "source": "Models/ground_drone_carrier",
+            "hash": "v2:293f66f5bc6bd3acda0a9d6f6d75c1c7fd8fb20f"
         },
         {
             "id": "mobile_repair_vehicle",
             "kind": "vehicle",
             "model": "mobile_repair_vehicle",
-            "source": "Models/engineer_vehicle",
-            "hash": "v2:fea7325173df6f42013b55ff6ce8c083cef89b09"
+            "source": "Models/mobile_repair_vehicle",
+            "hash": "v2:d58b90c47e892f2ab0ad68be85c87fa9b25350b6"
         },
         {
             "id": "radar_support_vehicle",
             "kind": "vehicle",
             "model": "radar_support_vehicle",
-            "source": "Models/radar_scout",
-            "hash": "v2:126c25068fb733977ba0064878feeb5c209d8e11"
+            "source": "Models/radar_support_vehicle",
+            "hash": "v2:7847c32c5320d2b743e0b7a78a22cc4f8033af3b"
         },
         {
             "id": "towed_at_gun",
             "kind": "vehicle",
             "model": "towed_at_gun",
-            "source": "Models/tank_destroyer_hd",
-            "hash": "v2:3cf6295d7c2a35f450d8859028aaf9a969958639"
+            "source": "Models/towed_at_gun",
+            "hash": "v2:5ba8997aace5baf8ddc757b98385601e89769fbe"
         },
         {
             "id": "dazzler_vehicle",
             "kind": "vehicle",
             "model": "dazzler_vehicle",
-            "source": "Models/ew_jammer",
-            "hash": "v2:47d4cd1bf82b7c10814e2b07fff443791923de8b"
+            "source": "Models/dazzler_vehicle",
+            "hash": "v2:c0e5f1f65cf808b219277d0c5336b142f1bd766d"
         },
         {
             "id": "ground_cruise_missile_vehicle",
             "kind": "vehicle",
             "model": "ground_cruise_missile_vehicle",
-            "source": "Models/sam_launcher",
-            "hash": "v2:c23ff1c444f1cac7f4d001cb0e5e0c61d3bd5429"
+            "source": "Models/ground_cruise_missile_vehicle",
+            "hash": "v2:30d9a9c1e5370ecd98c93d633248334346e4fb38"
         },
         {
             "id": "aerial_tanker",
             "kind": "vehicle",
             "model": "aerial_tanker",
-            "source": "Models/heavy_bomber",
-            "hash": "v2:a02fa1cb448946d8887cc83b04be91e3c6473993"
+            "source": "Models/aerial_tanker",
+            "hash": "v2:0aa5115d9ed1cb147991a8f1d96cb8dfffc48436"
         },
         {
             "id": "heavy_lift_helicopter",
             "kind": "vehicle",
             "model": "heavy_lift_helicopter",
-            "source": "Models/gunship_heli",
-            "hash": "v2:ae5e8772eb76264f6f6aed22e606be5d0d7ff197"
+            "source": "Models/heavy_lift_helicopter",
+            "hash": "v2:4882a5812666fa9f5fca20d7df2648429b96d6ee"
         },
         {
             "id": "bridging_vehicle",
             "kind": "vehicle",
             "model": "bridging_vehicle",
-            "source": "Models/engineer_vehicle",
-            "hash": "v2:fea7325173df6f42013b55ff6ce8c083cef89b09"
+            "source": "Models/bridging_vehicle",
+            "hash": "v2:f34965246884d65eeb2ceee5e588ac9f4acc52d3"
         },
         {
             "id": "gps_jammer_vehicle",
             "kind": "vehicle",
             "model": "gps_jammer_vehicle",
-            "source": "Models/ew_jammer",
-            "hash": "v2:47d4cd1bf82b7c10814e2b07fff443791923de8b"
+            "source": "Models/gps_jammer_vehicle",
+            "hash": "v2:c5574f7e16169258f5f4a422f892b06aa4e501fb"
         },
         {
             "id": "aa_gun_tower",
@@ -861,8 +861,8 @@
             "id": "bunker_shelter_tower",
             "kind": "tower",
             "model": "bunker_shelter_tower",
-            "source": "Models/troop_shelter",
-            "hash": "v2:87c0bcbe1d9c3ff971066e9e090c4cf96da12db9"
+            "source": "Models/bunker_shelter_tower",
+            "hash": "v2:3eeab58930e9847cdc708ecda801be6585f5408a"
         },
         {
             "id": "c_ram",
@@ -1001,8 +1001,8 @@
             "id": "drone_net_tower",
             "kind": "tower",
             "model": "drone_net_tower",
-            "source": "Models/laser_ad_station",
-            "hash": "v2:0aa4a7a59ef5f5cc1b210b7983c76dcb757f6a6e"
+            "source": "Models/drone_net_tower",
+            "hash": "v2:be0fd908bd68f5aec5da84658b4ebac70fd5c4b2"
         },
         {
             "id": "earth_borer",
@@ -1134,8 +1134,8 @@
             "id": "flare_searchlight_tower",
             "kind": "tower",
             "model": "flare_searchlight_tower",
-            "source": "Models/flare_tower",
-            "hash": "v2:9d9f470dabbe17b991aa159a2870f80894ee88b2"
+            "source": "Models/flare_searchlight_tower",
+            "hash": "v2:1c09b753e9e6ca121893758d886e9a19267618a8"
         },
         {
             "id": "flare_tower",
@@ -1442,8 +1442,8 @@
             "id": "one_shot_atgm_tower",
             "kind": "tower",
             "model": "one_shot_atgm_tower",
-            "source": "Models/atgm_tower",
-            "hash": "v2:ba6fb238cd82f5fb7a5200897f367757651c8a69"
+            "source": "Models/one_shot_atgm_tower",
+            "hash": "v2:a717f3fdc688585c45d453c29a68dc54431b91e0"
         },
         {
             "id": "rail_supergun",
@@ -1456,8 +1456,8 @@
             "id": "recoilless_gun_tower",
             "kind": "tower",
             "model": "recoilless_gun_tower",
-            "source": "Models/at_gun_emplacement",
-            "hash": "v2:7db5c4c3f7de2ddc463120d0f65193c6191209f2"
+            "source": "Models/recoilless_gun_tower",
+            "hash": "v2:add16423bd530cf7d98295044765baf0a09f52bc"
         },
         {
             "id": "rocket_turret",

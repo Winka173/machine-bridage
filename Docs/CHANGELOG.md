@@ -7,6 +7,10 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+### Prompt 27, wave 1c pass B: the last sixteen batch B units get their own models (DECISIONS "27 wave 1c pass B (lead pass, 2026-10-02)"); wave 1c complete
+
+- Own models (V2 kit, `mb_p27_wave1c.py`) and cards for twin_rotor_gunship, ground_drone_carrier, mobile_repair_vehicle, radar_support_vehicle, towed_at_gun, flare_searchlight_tower, recoilless_gun_tower, bunker_shelter_tower, dazzler_vehicle, ground_cruise_missile_vehicle, aerial_tanker, heavy_lift_helicopter, bridging_vehicle, gps_jammer_vehicle, drone_net_tower, one_shot_atgm_tower; washes dropped
+
 ### Prompt 27, wave 1c pass A: sixteen batch B units get their own models (DECISIONS "27 wave 1c pass A (lead pass, 2026-10-02)")
 
 - Own models (V2 kit, `mb_p27_wave1c.py`) and cards for aa_57mm_vehicle, mine_rocket_truck, prop_attack_plane, light_attack_heli, next_gen_tank, demolition_line_vehicle, combat_wreck_car, drone_hijack_vehicle, manpads_tower, river_patrol_boat, river_gunboat, coastal_ashm_vehicle, auto_loader_howitzer, amphib_light_vehicle, airborne_light_tank (+ its parachute proxy) and stealth_naval_strike; the colour washes are gone, no number or behaviour changed.
