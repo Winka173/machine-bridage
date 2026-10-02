@@ -351,8 +351,10 @@ namespace MachineBrigade.Sim.AI
             _timer = Interval;
             if (!world.TryGetEconomy(_team, out var economy)) return;
             if (AutoDeploy && TryRebuild(world, economy)) return;
-            if (AutoStrike && Layered && TrySupportWanted(world, economy)) return;
-            if (AutoStrike && TryStrike(world, economy)) return;
+            // Prompt 28 appendix: the profile's support policy (none before a recon alarm; defensive cards only).
+            var strikes = AutoStrike && world.SupportAllowed;
+            if (strikes && Layered && TrySupportWanted(world, economy)) return;
+            if (strikes && world.AiProfile.Support != SupportPolicy.DefensiveOnly && TryStrike(world, economy)) return;
             if (AutoDeploy) TryDeploy(world, economy);
         }
 
@@ -584,6 +586,8 @@ namespace MachineBrigade.Sim.AI
                 if (!ClearRun(world, cluster, along, pick, out along)) return false;
             }
             else if (OwnWithin(world, cluster, pick.Radius + StrikeMargin) && !Boss(cluster)) return false;
+            // Prompt 28 appendix (escort): no splash over the convoy's safe zone.
+            if (world.InConvoySafeZone(cluster, pick.IsLine ? pick.Length * 0.5f + pick.Radius : pick.Radius)) return false;
             var start = pick.IsLine ? cluster - along * (pick.Length * 0.5f) : cluster;
             return world.Submit(Command.Strike(_team, pick.Id, world.ClampToMap(start), start + along)).Accepted;
         }

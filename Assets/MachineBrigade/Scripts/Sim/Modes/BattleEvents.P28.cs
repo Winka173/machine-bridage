@@ -57,7 +57,26 @@ namespace MachineBrigade.Sim.Modes
             var tier = 0;
             for (var i = 0; i < 4; i++)
                 if (quiet >= ai.Get($"economy.escalation.{i}", 30f + 20f * i)) tier = i + 1;
+            tier = Math.Min(tier, MaxTier(world.Stall));
             if (tier > Tier) SetTier(world, tier);
+        }
+
+        /// <summary>
+        /// Prompt 28 appendix B: the stall policy caps the tiers. Off: none (escort, siege, waves); objective only: tier
+        /// 1 (points worth more); attacker only and both: all four, the barrage and reveal aimed by <see cref="Pushed"/>.
+        /// </summary>
+        public static int MaxTier(Content.StallPolicy stall) => stall switch
+        {
+            Content.StallPolicy.Off => 0,
+            Content.StallPolicy.ObjectiveStallOnly => 1,
+            _ => 4,
+        };
+
+        /// <summary>The side the tier-3 barrage and tier-4 reveal push: the attacker when one side defends, else the passive one.</summary>
+        public static Vector2? Pushed(SimWorld world)
+        {
+            if (world.Stall == Content.StallPolicy.AttackerOnly && world.DefenderTeam is { } defender) return ArmyCentre(world, 1 - defender);
+            return world.DefenderTeam is { } d ? ArmyCentre(world, 1 - d) : Passive(world);
         }
 
         private void SetTier(SimWorld world, int tier)
@@ -72,12 +91,13 @@ namespace MachineBrigade.Sim.Modes
                     DropCrate(world, world.Time);
                     break;
                 case 3:
-                    if (Passive(world) is { } passive && world.Catalog.TryGetSupport(PressureBarrage, out var support))
+                    if (Pushed(world) is { } passive && world.Catalog.TryGetSupport(PressureBarrage, out var support))
                         world.Strikes.Launch(support, Teams.Environment, passive, passive + Vector2.UnitX);
                     break;
                 case 4:
+                    // The defender's army is never revealed to push it off its ground; the attacker's is shown to it.
                     for (var team = 0; team <= 1; team++)
-                        if (ArmyCentre(world, team) is { } at) world.Strikes.AddScan(1 - team, at, 45f, 15f);
+                        if (team != world.DefenderTeam && ArmyCentre(world, team) is { } at) world.Strikes.AddScan(1 - team, at, 45f, 15f);
                     break;
             }
         }

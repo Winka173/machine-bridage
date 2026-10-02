@@ -76,6 +76,9 @@ namespace MachineBrigade.Sim.AI
         Same,
         Cooldown,
         Unknown,
+
+        /// <summary>The mode's profile does not allow the tactic (prompt 28 appendix).</summary>
+        NotAllowed,
     }
 
     /// <summary>
@@ -146,17 +149,42 @@ namespace MachineBrigade.Sim.AI
 
         public FireStance StanceFor(Squad s) => Stance ?? TacticFor(s).Modules.Stance;
 
-        /// <summary>Own/enemy strength for an attack: the tactic's (else the parameter), lowered by "use it or lose it" (I.4).</summary>
+        /// <summary>
+        /// Own/enemy strength for an attack: the tactic's (else the parameter), lowered by "use it or lose it" (I.4) only
+        /// where the mode's profile has advancePressure and this side does not defend (prompt 28 appendix A, B).
+        /// </summary>
         public float AttackThreshold(Squad? s)
         {
             var ai = _world?.Catalog.Ai;
             if (ai == null) return 1.2f;
             var t = (s != null ? TacticFor(s) : CurrentTactic).Modules.AttackThreshold ?? ai.AttackThreshold;
-            if (double.IsNaN(_fullSince) || _world == null) return t;
+            if (double.IsNaN(_fullSince) || _world == null || !AdvancePressure(_world, Team)) return t;
             var low = ai.Get("economy.useOrLoseThreshold", 0.9f);
             var ramp = MathF.Max(1f, ai.Get("economy.useOrLoseRamp", 30f));
             var k = (float)Math.Clamp((_world.Time - _fullSince) / ramp, 0.0, 1.0);
             return MathF.Min(t, t + (low - t) * k);
+        }
+
+        /// <summary>Whether the side's attack threshold falls with a full army and bank: the profile's flag, never for the defender.</summary>
+        public static bool AdvancePressure(SimWorld world, int team)
+        {
+            var p = world.AiProfile;
+            return p.AdvancePressure && !p.Defends(team);
+        }
+
+        /// <summary>
+        /// The tactic the profile lets the side play: the asked one if allowed, else balanced if allowed, else the first
+        /// allowed; a profile with none (wave directors, bosses) plays balanced and never switches.
+        /// </summary>
+        public static string AllowedTactic(SimWorld world, string tactic)
+        {
+            var p = world.AiProfile;
+            if (p.Tactics.Count == 0 || p.HasFlag("noGeneralTactic")) return "balanced";
+            if (p.Allows(tactic)) return tactic;
+            if (p.Allows("balanced")) return "balanced";
+            foreach (var t in p.Tactics)
+                if (world.Catalog.AiData.HasTactic(t)) return t;
+            return "balanced";
         }
 
         /// <summary>H.6: asks for a new tactic. Cooldown (unless free), a transition, squads attacking lose their momentum.</summary>
@@ -165,6 +193,7 @@ namespace MachineBrigade.Sim.AI
             _world = world;
             if (!world.Catalog.AiData.HasTactic(tactic)) return TacticSwitchResult.Unknown;
             if (tactic == Tactic) return TacticSwitchResult.Same;
+            if (AllowedTactic(world, tactic) != tactic) return TacticSwitchResult.NotAllowed;
             if (!FreeSwitch && world.Time < TacticReadyAt) return TacticSwitchResult.Cooldown;
             var ai = world.Catalog.Ai;
             world.AiLog.Add(new DecisionEntry(world.Time, Team, AiLayer.Commander, 0, DecisionKind.Tactic, $"{Tactic} -> {tactic} ({reason})"));
@@ -469,6 +498,8 @@ namespace MachineBrigade.Sim.AI
         {
             var saving = CurrentTactic.Modules.CpSaving || world.Catalog.Ai.CpSaving >= 0.5f;
             if (!saving) return false;
+            // spendPressure (prompt 28 appendix A): never sit at the bank cap; the saving ends at a full bank.
+            if (world.AiProfile.SpendPressure && economy.Cp >= economy.Bank - 1f) return false;
             if (_massing && economy.Cp < 6f) _massing = false;
             if (!_massing && economy.Cp >= economy.Bank * 0.9f) _massing = true;
             return !_massing && economy.VehicleCount >= 4;

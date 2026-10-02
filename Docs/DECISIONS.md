@@ -14420,3 +14420,41 @@ mirror, no cards, no previews, no tests. The substring filter rebuilt nothing ou
 - **Card luma (old, alpha > .5, Rec. 709):** leviathan .3217, caspian .3595, typhon .2215 (the dimmest: watch it), landing_hovercraft .2849,
   supreme_command .3304. Target: >= old, at most about +20 %.
 - Lead (2026-10-02), wave 5d cards: all five pass (+0.3 % to +2.9 %). Wave 5 is complete (21 bosses). Waves 1-7 are done; wave 8 (198 props, scenery, munitions, unlisted) waits for the owner's call on scope.
+
+## 28 appendix: aiModeProfile (cloud, 2026-10-02, cloud/p28-modes)
+
+- **Data.** `Tools/ai/import_ai_modes.py` reads the sheet "AI theo chế độ" (Docs/story/Machine_Brigade_Cot_truyen_Che_do_v2.xlsx)
+  into balance.json `aiModeProfiles` (generated block after the `ai` block): 19 profiles plus `modes` (mode tag -> profile)
+  and `goals` (campaign goal -> profile). The script fails if a goal used in campaign.json has no profile. Goal mapping:
+  Capture/Destroy/Duel -> capture, Hold/Survive -> hold, Escort/Evacuate -> escort, Hunt/Intercept -> hunt, Boss ->
+  bossrush, the rest one-to-one. Modes: Sandbox plays conquest, Weekly plays siege, Endless plays defend (prompt 30's
+  endless parts use their base mode's profile). The prose of the sheet is filled in by the script (`EXTRA`): defender
+  side, leash region, escort params (maxAdvanceDistance 30, rearGuardWeight 0.3, threatToConvoyWeight 2, safe zone 12 m),
+  recon engagement and its `alert` override to capture, outpost step overrides, deathmatch `riskWeightByUnitValue`.
+- **Loader.** `Content/AiModeProfile.cs` (`Catalog.AiModes`); `SimWorld.AiProfile` resolves mode tag and `MissionGoal`
+  (set by MissionMode.Setup; the goal wins), then the alarm's phase override, then fixed-deck flags (`AddProfileFlags`,
+  prompt 31). `SimWorld.Stall` applies step overrides (`SetAiPhase`).
+- **Economy (A).** No income-by-army-count table: supply stays the only army cap. "Use or lose" is split: spendPressure
+  ends the all-out saving at a full bank (`AiCommander.SavingUp`); advancePressure is the existing threshold fall
+  (`AttackThreshold`), now only where the profile has it on and never for the defending side (`AiCommander.AdvancePressure`).
+  The check sits after the skill, so no difficulty can turn it on.
+- **Tactics.** The general's preferred tactic starts the battle only where the profile says so (campaign types) or in
+  Weekly/Operation; quick battles start balanced. `AllowedTactic` keeps the side inside `tactics` (defensive set for
+  assault/siege, ambush/base_defence for recon); wave directors and bosses (empty list, `noGeneralTactic`) play balanced
+  and `RequestTactic` returns the new `NotAllowed`.
+- **Stall policy.** `BattleEvents.MaxTier`: Off -> no tiers, ObjectiveStallOnly -> tier 1 only. With a defender
+  (`DefenderTeam`), the tier-3 barrage lands on the attacker and the tier-4 reveal never shows the defender's army.
+- **Support policy.** `SimWorld.SupportAllowed`: no auto support before the recon alarm (both sides' ConquestAi, so the
+  player's Support AI too); DefensiveOnly keeps only the general's smoke/SEAD wants. The alarm (`RaiseAlarm`) is the first
+  hit between the player and the enemy, or the enemy calling reinforcements. Recon before the alarm: the general holds
+  (`Defending`), i.e. patrols without chasing. AVOID_UNLESS_BLOCKING for the player's own units' auto-targeting is not
+  done (the player commands them); left for the UI/local pass if wanted.
+- **Escort.** Auto support never lands a blast within its radius + 12 m of a live convoy truck (`InConvoySafeZone`,
+  `ConvoySafeZone` set by MissionMode); the existing "convoy waits for its escort" behaviour is reused unchanged. The anchor
+  weights are data only for now (no squad-layer use yet).
+- **CEASEFIRE.** `SimWorld.SetCeasefire(team)`: DamageSystem.Apply returns 0 for any hit from another team (fire,
+  strikes, splash, fire-over-time), and weapons never auto-pick the faction (CombatSystem). Separate from prompt 23's
+  `Truce` column, which can still be hit by an ordered attack on purpose (that event's temptation stays).
+- **Siege fortress buys with CP: yes.** The garrison is `AddEnemyCommander(_mode, seed, CommanderStance.Defend)`, a
+  ConquestAi with an economy (SiegeModes Defender.Build), so the siege profile has spendPressure on, advancePressure off.
+- **Tests** (written, not run): `Tests/EditMode/AiModeProfileTests.cs`, the five of appendix C.
