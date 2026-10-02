@@ -14127,3 +14127,23 @@ rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previe
 - **Card luma (old, alpha > .5, Rec. 709):** gun_turret .3963, _a .3969, _b .4070; mg_bunker .3988, _a .4020, _b .3958; rocket_turret .3672
   (the dimmest: watch it), _a .3866, _b .4143.
 - Lead (2026-10-02), wave 4b + 6b cards: all pass. recon_drone fixed (.6177 vs the original .6232, -0.9 %); jets -0.1 % to +0.7 %; 6b towers +3.1 % to +4.1 %.
+
+## 27 wave 6c (lead pass, 2026-10-02)
+
+Pass 6c (lane B, towers): atgm_tower, c_ram, each with `_a` and `_b`; gun_pit, in `Tools/blender/mb_p27_wave6.py` (method of 6a/6b:
+old builder, V2 `_up` pass under the same part names, then the branch's own old edit; weapons, nodes and pivots untouched). Run: Blender
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests. `ao_strength` .65 for atgm_tower and c_ram
+(gun_pit keeps its own .9 default via its options, the pass sets .65 for all too).
+
+- atgm_tower: extruded pad, roof slab and Team fascia, the tower body a `k.sharp_loft` of the old outline (embrasures and bands still sit
+  on its faces), a plinth, chamfered launcher housing and sight box with recesses. Tubes, lips, stair, sandbags untouched.
+- c_ram: extruded pad, chamfered trailer deck, power cabinet (recessed panels), tool boxes, base plate, lathe pedestal with a lip, mast
+  footing, deck greebles. Turret_white, Base_band and the radar are left alone on purpose: `c_ram_a`/`_b` edit them by name/region.
+- gun_pit: 13 cm chamfered revetment planks (were 8 cm boxes), extruded lift table (the ram is re-added on the same part: first build lost it
+  and the bounds showed it), blocks for mantlet, sight and bustle with recesses. The dome, net, berm and gun are untouched.
+- **Gates (old -> new triangles, COLOR_0).** atgm_tower 4,958 -> 5,374 (.610 -> .657); _a 5,510 -> 5,926 (.623 -> .669); _b 5,558 -> 5,974
+  (.616 -> .661); c_ram 5,806 -> 6,246 (.584 -> .643); _a 6,254 -> 6,694 (.597 -> .652); _b 7,150 -> 7,590 (.590 -> .648); gun_pit 6,598 -> 7,158
+  (.572 -> .640). All at most 1.08x, zero degenerate, runtime nodes and open edges identical, size within .1 %.
+- **Card luma (old, alpha > .5, Rec. 709):** atgm_tower .4124, _a .4075, _b .4093; c_ram .4531, _a .4695, _b .4234; gun_pit .3282
+  (the dimmest: watch it).
+- **Pitfall:** a name substring build (`-- atgm_tower`) also rebuilds `one_shot_atgm_tower`; its GLB was reverted (not in this pass).
