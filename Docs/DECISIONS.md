@@ -14003,3 +14003,10 @@ ammunition still leaves), not run. B3-AI is a code bundle (`aircraft.returnBecau
   the bombard is a queued strike, never a projectile, so nothing could intercept it anyway). The aiming line during the
   warning is drawn by the view from the `FiredWith` event (origin -> aim, warn delay): LOCAL_TODO.
 - Tests updated: `Prompt25BossTests` (Gungnir health in the main table; its bombard every 45 s).
+
+## Prompt 29 L8 (cloud, 2026-10-02): design document and report
+
+`Tools/docs/prompt29.py` adds the section "Cân bằng đợt 2" (the B1 cards' price, shown health, damage factor and drop
+time; flares by unit; APS by entity; the Gungnir), read from balance.json and the apply state; `build_doc.py` places it
+before table 9b, and (S08) moves 9b and 2b to the appendix "Lịch sử đo" unless their stamps match. The PDF itself is built
+locally (it needs the game export and Edge). Final report: `Docs/balance/report_p29.md`.

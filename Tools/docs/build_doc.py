@@ -21,6 +21,7 @@ import prompt25  # noqa: E402
 import prompt26  # noqa: E402
 import prompt27  # noqa: E402
 import measure_stamp  # noqa: E402
+import prompt29  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'Assets' / 'MachineBrigade' / 'Resources' / 'Data'
@@ -459,6 +460,7 @@ def build(game, imgdir):
     out.append("<div class='section'><h2>9. Bảng DPS tổng hợp</h2>"
                + table(['Xe', 'Lớp', 'Giáp trước', 'Máu', 'CP', 'Tốc độ', 'Tầm', 'DPS nhẹ', 'DPS nặng', 'DPS bay', 'DPS công trình', 'DPS nặng / CP'], rows, 'dps') + '</div>')
 
+    out.append(prompt29.round2(game, h))
     cv = programme.combat_value(game, h)
     if cv and measure_stamp.matches(prompt25.measure_path()):
         out.append(cv)
