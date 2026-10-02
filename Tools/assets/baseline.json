@@ -1,7 +1,7 @@
 {
  "generated": "2026-10-02",
  "tool": "Tools/assets/glb_check.py",
- "count": 446,
+ "count": 449,
  "budgets": {
   "ground": {
    "normal": {
@@ -2142,6 +2142,20 @@
    ],
    "reason": "p34 L7: wreck parts",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "wall_gun",
+    "wall_hesco",
+    "wall_t"
+   ],
+   "reason": "merge of feature/p32-a3",
+   "changes": [
+    "wall_gun: new (2672 triangles)",
+    "wall_hesco: new (3276 triangles)",
+    "wall_t: new (1798 triangles)"
+   ]
   }
  ],
  "models": {
@@ -49879,6 +49893,252 @@
    "units": [],
    "movingParts": 0,
    "budgetClass": "prop"
+  },
+  "wall_gun": {
+   "file": "wall_gun.glb",
+   "fileBytes": 191296,
+   "sha1": "185e7f1592f9db5b",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 13,
+   "meshes": 13,
+   "materials": 7,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 13,
+   "submeshes": 13,
+   "materialSlots": 13,
+   "materialsUsed": 7,
+   "triangles": 2672,
+   "vertices": 3720,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 75,
+   "openEdges": 12,
+   "nonManifoldEdges": 12,
+   "boundsMin": [
+    -6.0102,
+    -0.02,
+    -1.105
+   ],
+   "boundsMax": [
+    6.0091,
+    2.7288,
+    1.05
+   ],
+   "size": [
+    2.155,
+    12.019,
+    2.749
+   ],
+   "center": [
+    -0.001,
+    1.354,
+    -0.027
+   ],
+   "structureHash": "333d86237426f3b0",
+   "color0": {
+    "mean": 0.6234,
+    "min": 0.1549,
+    "max": 0.8216,
+    "p05": 0.2605,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Berm",
+    "Deck",
+    "Fill",
+    "Fill_1",
+    "Ladder",
+    "Liner",
+    "Liner_1",
+    "Mesh",
+    "Mesh_1",
+    "Parapet",
+    "Platform",
+    "Razor_wire",
+    "Wall_band"
+   ],
+   "category": "structure",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "wall_gun"
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
+  },
+  "wall_hesco": {
+   "file": "wall_hesco.glb",
+   "fileBytes": 235684,
+   "sha1": "5b2305a492f84b00",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 13,
+   "meshes": 13,
+   "materials": 5,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 13,
+   "submeshes": 13,
+   "materialSlots": 13,
+   "materialsUsed": 5,
+   "triangles": 3276,
+   "vertices": 4686,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 94,
+   "openEdges": 6,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -6.0103,
+    -0.02,
+    -1.0
+   ],
+   "boundsMax": [
+    6.0113,
+    2.7293,
+    1.0
+   ],
+   "size": [
+    2.0,
+    12.022,
+    2.749
+   ],
+   "center": [
+    0.001,
+    1.355,
+    0.0
+   ],
+   "structureHash": "fbac38158ecb27b1",
+   "color0": {
+    "mean": 0.604,
+    "min": 0.1898,
+    "max": 0.8222,
+    "p05": 0.2305,
+    "p95": 0.8058,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Berm",
+    "Fill",
+    "Fill_1",
+    "Fill_2",
+    "Liner",
+    "Liner_1",
+    "Liner_2",
+    "Mesh",
+    "Mesh_1",
+    "Mesh_2",
+    "Razor_wire",
+    "Stencil",
+    "Wall_band"
+   ],
+   "category": "structure",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "wall_hesco"
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
+  },
+  "wall_t": {
+   "file": "wall_t.glb",
+   "fileBytes": 101656,
+   "sha1": "ca4f45e17e80453d",
+   "generator": "Khronos glTF Blender I/O v4.5.51",
+   "extensions": [],
+   "nodes": 7,
+   "meshes": 7,
+   "materials": 4,
+   "animations": 0,
+   "skins": 0,
+   "textures": 0,
+   "renderers": 7,
+   "submeshes": 7,
+   "materialSlots": 7,
+   "materialsUsed": 4,
+   "triangles": 1798,
+   "vertices": 1896,
+   "degenerateTriangles": 0,
+   "nonFiniteValues": 0,
+   "primitivesMissing": {
+    "COLOR_0": 0,
+    "NORMAL": 0,
+    "TEXCOORD_0": 0
+   },
+   "loosePieces": 37,
+   "openEdges": 6,
+   "nonManifoldEdges": 0,
+   "boundsMin": [
+    -6.0,
+    0.0,
+    -0.95
+   ],
+   "boundsMax": [
+    6.0,
+    3.92,
+    0.95
+   ],
+   "size": [
+    1.9,
+    12.0,
+    3.92
+   ],
+   "center": [
+    0.0,
+    1.96,
+    0.0
+   ],
+   "structureHash": "91e5d84ca61468a4",
+   "color0": {
+    "mean": 0.6881,
+    "min": 0.2485,
+    "max": 0.9987,
+    "p05": 0.4279,
+    "p95": 0.981,
+    "outOfRange": 0
+   },
+   "runtimeNodes": {},
+   "runtimeSuffixed": [],
+   "nodeNames": [
+    "Eyes",
+    "Feet",
+    "Hazard",
+    "Panels",
+    "Wall_band",
+    "Wire",
+    "Wire_posts"
+   ],
+   "category": "structure",
+   "hd": false,
+   "errors": [],
+   "warnings": [],
+   "units": [
+    "wall_t"
+   ],
+   "movingParts": 0,
+   "budgetClass": "structure"
   },
   "warehouse": {
    "file": "warehouse.glb",
