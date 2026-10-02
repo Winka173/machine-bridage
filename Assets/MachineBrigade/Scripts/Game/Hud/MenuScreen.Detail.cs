@@ -966,7 +966,15 @@ namespace MachineBrigade.Game.Hud
                 }
                 var cell = Kit.Box("fc-army__slot");
                 cell.Add(Kit.Caption(GearText.SlotName(slot)));
-                if (item != null) cell.Add(new KitGearCard(GearCardData.From(item), GoToSlot));
+                if (item != null)
+                {
+                    var card = new KitGearCard(GearCardData.From(item), GoToSlot);
+                    // Prompt 29 L5: the branch's Trophy or heat decoys on a vehicle without an APS mount or flares do nothing here.
+                    var idle = !VehicleFit.WorksOn(item, def);
+                    card.EnableInClassList("fc-gcard--unfit", idle);
+                    cell.Add(card);
+                    if (idle) cell.Add(Kit.Text(Strings.Get("gear.idleHere"), "fc-small fc-danger-text"));
+                }
                 else
                 {
                     var empty = Kit.Tappable("fc-gcard fc-gcard--empty", GoToSlot);

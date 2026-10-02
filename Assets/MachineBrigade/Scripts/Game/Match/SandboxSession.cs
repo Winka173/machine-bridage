@@ -146,6 +146,13 @@ namespace MachineBrigade.Game.Match
                     var module = Gear.PickModule(rng, mask);
                     item.special = (int)module;
                     item.baseType = GearKeys.Module(module);
+                    // Prompt 29 L5: no Trophy without an APS mount, no heat decoys without flares (a few more draws).
+                    for (var tries = 0; tries < 8 && !VehicleFit.WorksOn(item, def); tries++)
+                    {
+                        module = Gear.PickModule(rng, mask);
+                        item.special = (int)module;
+                        item.baseType = GearKeys.Module(module);
+                    }
                 }
                 else
                 {

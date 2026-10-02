@@ -525,6 +525,8 @@ namespace MachineBrigade.Game.Hud
             }
             _gearDetails.Add(GearLines(item));
             _gearDetails.Add(Kit.Text(GearText.FitLine(item), fits ? "fc-small" : "fc-small fc-danger-text"));
+            // Prompt 29 L5: a module for hardware few cards carry (Trophy, the heat decoys) names the vehicles it works on.
+            if (GearText.HardwareLine(item, _branch) is { Length: > 0 } hardware) _gearDetails.Add(Kit.Small(hardware));
             // The buttons under the names, beside the card, so they are always on screen.
             var actions = Kit.Box("fc-row fc-row--wrap fc-mt-2 fc-gap-2");
             var equipped = current == item;
