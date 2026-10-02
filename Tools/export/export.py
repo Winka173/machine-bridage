@@ -5,6 +5,7 @@
     python Tools/export/export.py fk                      # the foreign-key test only (writes nothing)
     python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]   # pass 7: Docs/export/diff_<A>_<B>/
     python Tools/export/export.py check [--out DIR]       # pass 8: export, the 9 self-checks of spec 9, SELF_CHECK.md
+    python Tools/export/export.py import <export dir | xlsx> --dry-run [--out DIR]   # pass 9: edits -> change manifest
 
 Read only: no game value is changed. Output: Docs/export/<date>_<commit>/ (date = the HEAD commit's date, so a rerun on
 the same commit and data rewrites the same files byte for byte; README.md and MANIFEST.json carry the run's time).
@@ -159,8 +160,8 @@ def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk", "diff", "check"])
-    ap.add_argument("targets", nargs="*", help="diff: two export folders or git refs (A then B)")
+    ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk", "diff", "check", "import"])
+    ap.add_argument("targets", nargs="*", help="diff: two export folders or git refs (A then B); import: one export folder or xlsx")
     ap.add_argument("--out", help="output folder (default Docs/export/<date>_<commit>)")
     ap.add_argument("--base", default="origin/main",
                     help="git ref of the earlier version for the _truoc / _sau columns (default origin/main: the last release)")
@@ -168,12 +169,16 @@ def main(argv=None) -> int:
     ap.add_argument("--strict", action="store_true", help="fail on leaves still pending on files not built yet")
     ap.add_argument("--lenient", action="store_true",
                     help="leave out a domain that fails to build (an old tree for diff) instead of stopping")
+    ap.add_argument("--dry-run", action="store_true", help="import: write the change manifest only (the only import mode)")
     args = ap.parse_args(argv)
     if args.command == "diff":
         if len(args.targets) != 2:
             ap.error("diff takes two export folders or git refs")
         from core import diff
         return diff.main(args.targets[0], args.targets[1], args.out)
+    if args.command == "import":
+        from core import reimport
+        return reimport.main(args, sys.modules[__name__])
     if args.command == "check":
         from core import selfcheck
         return selfcheck.main(args, sys.modules[__name__])
