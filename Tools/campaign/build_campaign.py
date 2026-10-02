@@ -39,6 +39,8 @@ import act10  # noqa: E402,F401
 import act11  # noqa: E402
 import events  # noqa: E402
 import fixed_decks  # noqa: E402  (prompt 31: the game-made decks, after the events they add to)
+import ground_events  # noqa: E402,F401  (prompt 31 L3: the battlefield events and their prebuilt ground states)
+import nav_states  # noqa: E402
 
 DATA = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Resources', 'Data')
 TEXT_CS = os.path.join(ROOT, 'Assets', 'MachineBrigade', 'Scripts', 'Game', 'Hud', 'CampaignText.cs')
@@ -113,6 +115,10 @@ def reverse(m):
     turn_xy(m, 'targetX', 'targetZ')
     if 'playArea' in m:
         m['playArea'] = turn_area(m['playArea'])
+    # Prompt 31 L4: a fixed deck's placed allies are written from the player's corner too.
+    for a in m.get('fixedDeck', {}).get('placedAllies', []):
+        turn_xy(a)
+        turn_heading(a)
     if 'ally' in m:
         a = m['ally']
         turn_xy(a)
@@ -425,6 +431,8 @@ def check(missions):
             found |= {b[k] for k in ('def', 'fallback') if b.get(k)}
         return found
     events.check(missions, VEHICLES, fail, story.INTERLUDES, chapters={c[0]: c[5] for c in story.CHAPTERS}, weather=kit.WEATHER, boss_of=bosses)
+    # Prompt 31 L3: every state of every prebuilt ground site keeps the anchors joined and seals nothing off.
+    nav_states.check(missions, fail)
     # Prompt 22 B: a moved mission lands on one that exists, and no id is moved twice.
     for old, new in story.MOVES22.items():
         if new not in ids or old in ids:

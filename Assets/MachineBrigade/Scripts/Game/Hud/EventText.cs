@@ -136,6 +136,27 @@ namespace MachineBrigade.Game.Hud
             ["radio.linh.ev.weatherShift.rain.warn"] = ("Rain moving in. The ground will get heavy.", "Mưa đang tới. Mặt đất sẽ nặng lầy."),
             ["radio.linh.ev.weatherShift.clear.warn"] = ("It is clearing up. They will see us coming now.", "Trời đang quang dần. Giờ chúng sẽ thấy ta tới."),
             ["radio.linh.ev.weatherShift.overcast.warn"] = ("Cloud coming over. Our aircraft will fly lower.", "Mây đang kéo tới. Máy bay của ta sẽ phải bay thấp hơn."),
+
+            // Prompt 31 L3: the events that change the battlefield (each warned 8-12 s ahead, its places on the minimap).
+            ["event.sandstormTurn.warn"] = ("The wind is turning: the sandstorm rolls over the marked half in {seconds} s", "Gió đang đổi hướng: bão cát tràn qua nửa bản đồ được đánh dấu sau {seconds} giây"),
+            ["event.sandstormTurn.end"] = ("The sandstorm is passing: sight comes back", "Bão cát đang qua: tầm nhìn trở lại"),
+            ["event.groundChange.warn"] = ("The way ahead closes in {seconds} s: find another route", "Lối đi phía trước sẽ bị chặn sau {seconds} giây: tìm đường khác"),
+            ["event.groundChange.start"] = ("The way is closed: the routes go round it", "Lối đi đã bị chặn: đường đi vòng qua"),
+            ["radio.linh.ev.groundChange.warn"] = ("Something is closing across the road ahead. Plan another way through.", "Có thứ gì đang chắn ngang đường phía trước. Tính đường khác mà qua."),
+            ["event.groundChange.alarm.warn"] = ("Alarm! The rolling-mill gate shuts in {seconds} s", "Báo động! Cổng xưởng cán sẽ đóng sau {seconds} giây"),
+            ["event.groundChange.alarm.start"] = ("The mill gate is shut: go round by the other lanes", "Cổng xưởng cán đã đóng: đi vòng qua các lối khác"),
+            ["radio.linh.ev.groundChange.alarm.warn"] = ("They have seen us. Sirens all over the works, and the mill gate is coming down.", "Chúng thấy ta rồi. Còi báo động khắp xưởng, cổng xưởng cán đang hạ xuống."),
+            ["event.enemyWave.alarm.warn"] = ("The alarm brings the garrison in {seconds} s, {dir}", "Báo động gọi đồn binh tới sau {seconds} giây, {dir}"),
+            ["radio.linh.ev.enemyWave.alarm.warn"] = ("The whole garrison is awake now. Here they come.", "Cả đồn binh đã thức dậy. Chúng tới kìa."),
+            ["event.cityBlackout.warn"] = ("The city's grid is failing: lights out and the towers on the grid shut down in {seconds} s", "Lưới điện thành phố đang sập: đèn tắt và các tháp nối lưới ngừng hoạt động sau {seconds} giây"),
+            ["event.cityBlackout.end"] = ("Backup power: the towers on the grid are working again", "Có điện dự phòng: các tháp nối lưới đã hoạt động lại"),
+            ["radio.linh.ev.cityBlackout.warn"] = ("The substations are going down one by one. In a moment the whole city goes dark, theirs and ours.", "Các trạm biến áp đang sập từng cái một. Lát nữa cả thành phố sẽ tối om, của chúng lẫn của ta."),
+            ["event.betrayalWarning.warn"] = ("{@lyhan}'s columns are breaking formation: pull back from them within {seconds} s", "Các cánh quân của {@lyhan} đang rời đội hình: lùi xa khỏi họ trong {seconds} giây"),
+            ["radio.linh.ev.betrayalWarning.warn"] = ("Colonel, the Accord columns have stopped answering. Their turrets are turning towards us.", "Đại tá, các cánh quân Accord đã ngừng trả lời. Tháp pháo của họ đang quay về phía ta."),
+            ["event.orbitalPods.warn"] = ("Orbital drop: enemy structures land on the marked sites in {seconds} s", "Thả từ quỹ đạo: công trình địch sẽ đáp xuống các điểm được đánh dấu sau {seconds} giây"),
+            ["event.orbitalPods.start"] = ("Pods falling: get clear of the marked sites", "Khoang đổ bộ đang rơi: rời khỏi các điểm được đánh dấu"),
+            ["radio.linh.ev.orbitalPods.warn"] = ("Its bays are opening up there. Those are not troops: they are building a fort on our heads.", "Các khoang trên kia đang mở. Không phải quân đâu: chúng đang dựng pháo đài ngay trên đầu ta."),
+            ["radio.linh.ev.sandstormTurn.warn"] = ("The wind has swung round. The sand is coming our way, and their side is clearing.", "Gió đã quay chiều. Cát đang đổ về phía ta, còn phía bên kia đang quang dần."),
         };
     }
 }

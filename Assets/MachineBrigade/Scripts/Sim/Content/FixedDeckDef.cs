@@ -26,6 +26,16 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The mission is lost when it falls (c6m03, c10m12).</summary>
         public bool LossIfDestroyed { get; set; }
 
+        /// <summary>
+        /// Prompt 31 L4: it is the mission's escorted convoy itself (c6m03: Mara's Behemoth is the Escort's convoy), so it is not
+        /// spawned again: the escort rules drive it, and it holds while the player's general order is Defend.
+        /// </summary>
+        public bool Convoy { get; set; }
+
+        /// <summary>The def the battle spawns: <see cref="Def"/>, else <see cref="Fallback"/> (null: neither is in the catalog).</summary>
+        public string? SpawnDef(Catalog catalog) =>
+            catalog.Vehicles.ContainsKey(Def) ? Def : Fallback != null && catalog.Vehicles.ContainsKey(Fallback) ? Fallback : null;
+
         internal static PlacedAllyDef Parse(JsonObject o) => new()
         {
             Def = o.String("def"),
@@ -34,6 +44,7 @@ namespace MachineBrigade.Sim.Content
             Name = o.OptionalString("name"),
             Fallback = o.OptionalString("fallback"),
             LossIfDestroyed = o.Bool("lossIfDestroyed", false),
+            Convoy = o.Bool("convoy", false),
         };
     }
 

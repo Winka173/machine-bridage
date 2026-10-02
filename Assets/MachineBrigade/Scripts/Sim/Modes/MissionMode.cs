@@ -80,6 +80,47 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>Seconds a vehicle must stay on a recon objective to scout it.</summary>
         public const float ScoutSeconds = 3f;
         private readonly List<(EntityId id, int waypoint)> _convoy = new();
+
+        /// <summary>Prompt 31 L4: the fixed deck's placed allies on the field, and whether losing each loses the mission.</summary>
+        private readonly List<(EntityId id, bool loss)> _placed = new();
+
+        public IEnumerable<EntityId> PlacedAllies
+        {
+            get
+            {
+                foreach (var (id, _) in _placed) yield return id;
+            }
+        }
+
+        /// <summary>
+        /// Prompt 31 L4: whether the player's general order is Defend (set by the session from its commander). The allied AI
+        /// reads the same order; a placed ally that is the mission's convoy (c6m03's Behemoth) holds while it is Defend.
+        /// </summary>
+        public Func<bool>? PlayerDefends { get; set; }
+
+        private bool ConvoyFollowsOrders => _def.FixedDeck is { } deck && HasConvoyAlly(deck);
+
+        private static bool HasConvoyAlly(FixedDeckDef deck)
+        {
+            foreach (var a in deck.PlacedAllies)
+                if (a.Convoy) return true;
+            return false;
+        }
+
+        /// <summary>Prompt 31 L4: the fixed deck's placed allies come onto the field on the player's side, under the allied AI.</summary>
+        private void SpawnPlacedAllies(SimWorld world)
+        {
+            if (_def.FixedDeck is not { } deck) return;
+            foreach (var a in deck.PlacedAllies)
+            {
+                if (a.Convoy) continue;
+                var id = a.SpawnDef(world.Catalog);
+                if (id == null) continue;
+                var v = world.SpawnVehicle(id, PlayerTeam, a.Position, a.Heading);
+                v.Ally = true;
+                _placed.Add((v.Id, a.LossIfDestroyed));
+            }
+        }
         private readonly HashSet<EntityId> _halted = new();
 
         /// <summary>A truck drives on only with a friendly vehicle this close: the army leads, the convoy follows.</summary>
@@ -264,8 +305,11 @@ namespace MachineBrigade.Sim.Modes
             world.MissionGoal = _def.Goal.ToString();
             // Prompt 31 L1: a fixed deck's special rules ride on the mission type's profile as flags (no AI of their own).
             if (_def.FixedDeck is { } deck) world.AddProfileFlags(deck.AiFlags);
+            // Prompt 31 L3: the mission's prebuilt ground states, built and checked before the first step.
+            world.BuildNavSites(_def.NavSites, _def.TargetNear is { } near ? new[] { near } : null);
             if (_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) world.ConvoySafeZone = () => ConvoyPositions(world);
             SetupStage(world, true, null);
+            SpawnPlacedAllies(world);
         }
 
         /// <summary>The objectives' owners now (a stage hands them to the next).</summary>
@@ -517,6 +561,9 @@ namespace MachineBrigade.Sim.Modes
             if ((_def.Goal is MissionGoal.Escort or MissionGoal.Evacuate) && _convoySpawned >= _def.ConvoyCount &&
                 _arrived + ConvoyAlive(world) < _def.ConvoyNeeded)
                 return true;
+            // Prompt 31 L4: a placed ally the mission cannot lose (Hawk's aircraft) has fallen.
+            foreach (var (id, loss) in _placed)
+                if (loss && (!world.TryGetVehicle(id, out var ally) || !ally.IsAlive)) return true;
             // The allied base whose siege is to be broken has fallen.
             if (_def.Goal == MissionGoal.Relieve && AllyHq.IsValid &&
                 (!world.TryGetVehicle(AllyHq, out var allyHq) || !allyHq.IsAlive || allyHq.Team != PlayerTeam))
@@ -667,6 +714,8 @@ namespace MachineBrigade.Sim.Modes
                 // Unescorted trucks stop and wait rather than drive alone into an ambush; evacuees
                 // run for it whatever (the army holds the site behind them).
                 var escorted = _def.Goal == MissionGoal.Evacuate || Escorted(world, truck);
+                // Prompt 31 L4: a placed ally that is the convoy (c6m03's Behemoth) holds on the general order Defend.
+                if (escorted && ConvoyFollowsOrders && PlayerDefends?.Invoke() == true) escorted = false;
                 if (!escorted && !_halted.Contains(id))
                 {
                     _halted.Add(id);

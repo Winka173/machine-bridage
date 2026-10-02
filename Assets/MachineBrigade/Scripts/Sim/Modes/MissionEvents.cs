@@ -81,6 +81,9 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>F.2: each direction it comes from: the spawn point and the way in (enemy waves, the general, a raid).</summary>
         public List<(Vector2 at, Vector2 inward, SpawnBearing bearing)> Arrows { get; } = new();
 
+        /// <summary>Prompt 31 L3: places it marks on the minimap while it is warned and running (a gate, a storm's half, pods' landings).</summary>
+        public List<(Vector2 at, float radius)> Marks { get; } = new();
+
         /// <summary>F.3: a side objective's count: done out of needed.</summary>
         public int Count { get; internal set; }
 
@@ -203,6 +206,7 @@ namespace MachineBrigade.Sim.Modes
             if (t.PlayerAbove is { } pa && Field(world, MissionMode.PlayerTeam) <= pa) return false;
             if (t.After != null && Find(t.After) is not { HappenedAt: >= 0 }) return false;
             if (t.Outnumbered is { } ratio && Army(world, MissionMode.EnemyTeam) < ratio * MathF.Max(1f, Army(world, MissionMode.PlayerTeam))) return false;
+            if (t.Spotted && !Spotted(world)) return false;
             s.ReadyAt = world.Time + t.Delay;
             return world.Time >= s.ReadyAt;
         }
@@ -220,6 +224,7 @@ namespace MachineBrigade.Sim.Modes
         private void Begin(SimWorld world, EventState s)
         {
             s.Arrows.Clear();
+            s.Marks.Clear();
             if (!Prepare(world, s))
             {
                 // Nothing to do on this battlefield (no general, no point, no target): it passes.
@@ -247,8 +252,10 @@ namespace MachineBrigade.Sim.Modes
         /// <summary>A.4: seconds of warning: the event's own, else the C.3 table's for a big event, none for a small one.</summary>
         private float Lead(EventState s)
         {
-            if (s.Def.Lead is { } own) return MathF.Max(0f, own);
             var table = Difficulty.Warning;
+            // Prompt 31 L3: the events that change the battlefield warn 8-12 s ahead at every difficulty.
+            if (ChangesGround(s.Def.Kind)) return Math.Clamp(s.Def.Lead ?? table, 8f, 12f);
+            if (s.Def.Lead is { } own) return MathF.Max(0f, own);
             return s.Def.Kind switch
             {
                 MissionEventKind.EnemyWave or MissionEventKind.GeneralField or MissionEventKind.MiniBoss or MissionEventKind.SupplyRaid
@@ -340,6 +347,9 @@ namespace MachineBrigade.Sim.Modes
             MissionEventKind.SideObjective or MissionEventKind.LootDrop => new[] { "start", "done", "fail" },
             MissionEventKind.SupplyRaid => new[] { "warn", "done", "fail" },
             MissionEventKind.Blackout => new[] { "warn", "start", "end" },
+            MissionEventKind.GroundChange or MissionEventKind.OrbitalPods => new[] { "warn", "start" },
+            MissionEventKind.SandstormTurn or MissionEventKind.CityBlackout => new[] { "warn", "end" },
+            MissionEventKind.BetrayalWarning => new[] { "warn" },
             _ => new[] { "start" },
         };
 
@@ -353,6 +363,8 @@ namespace MachineBrigade.Sim.Modes
             MissionEventKind.MiniBoss => new[] { "warn", "start" },
             MissionEventKind.SideObjective => new[] { "start", "done", "fail" },
             MissionEventKind.Blackout => new[] { "warn", "end" },
+            MissionEventKind.GroundChange or MissionEventKind.SandstormTurn or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning
+                or MissionEventKind.OrbitalPods => new[] { "warn" },
             MissionEventKind.LootDrop => Array.Empty<string>(),
             _ => new[] { "start" },
         };
@@ -371,6 +383,9 @@ namespace MachineBrigade.Sim.Modes
                     return moment is "start" or "betrayed" ? "khai" : moment is "end" or "broken" ? general : null;
                 case MissionEventKind.Blackout:
                     return moment is "warn" or "end" ? "linh" : null;
+                case MissionEventKind.GroundChange or MissionEventKind.SandstormTurn or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning
+                    or MissionEventKind.OrbitalPods:
+                    return moment == "warn" ? "linh" : null;
                 case MissionEventKind.GeneralField:
                     return moment == "warn" ? "linh" : moment is "start" or "retreat" ? general : null;
                 case MissionEventKind.MiniBoss:
@@ -421,7 +436,12 @@ namespace MachineBrigade.Sim.Modes
 
         private static bool Bad(MissionEventKind kind) => kind is MissionEventKind.EnemyWave or MissionEventKind.Barrage or MissionEventKind.AirRaid
             or MissionEventKind.CounterBattery or MissionEventKind.GeneralField or MissionEventKind.SupplyRaid or MissionEventKind.Blackout
-            or MissionEventKind.MiniBoss or MissionEventKind.OrbitalStrike;
+            or MissionEventKind.MiniBoss or MissionEventKind.OrbitalStrike or MissionEventKind.GroundChange or MissionEventKind.SandstormTurn
+            or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning or MissionEventKind.OrbitalPods;
+
+        /// <summary>Prompt 31 L3: the kinds that change the battlefield (8-12 s of warning, a mark on the minimap).</summary>
+        public static bool ChangesGround(MissionEventKind kind) => kind is MissionEventKind.GroundChange or MissionEventKind.SandstormTurn
+            or MissionEventKind.CityBlackout or MissionEventKind.BetrayalWarning or MissionEventKind.OrbitalPods;
 
         // ------------------------------------------------------------------ the battlefield
 

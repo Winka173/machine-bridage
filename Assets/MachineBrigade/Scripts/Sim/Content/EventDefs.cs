@@ -72,6 +72,25 @@ namespace MachineBrigade.Sim.Content
         /// prompt 18's big attacks are (a notice and a line, then a ring on the ground), kinetic from above.
         /// </summary>
         OrbitalStrike,
+
+        /// <summary>
+        /// Prompt 31 L3: the ground changes (a factory gate shuts, and later a shoal, a bridge, a crane): a prebuilt ground state
+        /// of the mission ("navSite", "navState") comes in at a tick boundary after an 8-12 s warning with the place on the
+        /// minimap. Never traps a vehicle and always leaves a way round (NavStates' load-time check).
+        /// </summary>
+        GroundChange,
+
+        /// <summary>Prompt 31 L3: the wind turns and the sandstorm rolls over one half of the map: sight falls there (the other half may clear).</summary>
+        SandstormTurn,
+
+        /// <summary>Prompt 31 L3: the city's power fails: the street lights go out (night falls) and the towers on the grid shut down, both sides'.</summary>
+        CityBlackout,
+
+        /// <summary>Prompt 31 L3: the warning before an ally turns (chapter 7, Thorne): his columns are marked on the minimap 8-12 s ahead.</summary>
+        BetrayalWarning,
+
+        /// <summary>Prompt 31 L3: Daedalus drops pods that stand up as new enemy structures on prebuilt ground (its "sites").</summary>
+        OrbitalPods,
     }
 
     /// <summary>The C.3 difficulty an event plays at: the mission's own, one step up per tier (Heroic, Iron).</summary>
@@ -126,6 +145,9 @@ namespace MachineBrigade.Sim.Content
         /// <summary>The enemy's army is worth this many times the player side's (combat value): the player is being overwhelmed.</summary>
         public float? Outnumbered { get; set; }
 
+        /// <summary>Prompt 31 L3: the enemy has seen one of the player's vehicles (an infiltration found out).</summary>
+        public bool Spotted { get; set; }
+
         /// <summary>Seconds between the conditions holding and the event starting.</summary>
         public double Delay { get; set; }
 
@@ -145,6 +167,7 @@ namespace MachineBrigade.Sim.Content
             PlayerAbove = o.Has("playerAbove") ? o.Int("playerAbove", 0) : null,
             After = o.Has("after") ? o.String("after") : null,
             Outnumbered = o.Has("outnumbered") ? o.Float("outnumbered") : null,
+            Spotted = o.Bool("spotted", false),
             Delay = o.Float("delay", 0f),
             Every = o.Float("every", 0f),
             Times = o.Int("times", o.Has("every") ? 99 : 1),

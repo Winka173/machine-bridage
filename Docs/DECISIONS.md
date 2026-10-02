@@ -15173,3 +15173,127 @@ Reaching 13-15 would need health about 1,200. Verdict: not applied; the fortress
 Tests (written, not run): `TowerRebuildP32Tests` (rebuilt towers outside the supply army value; no CP for a destroyed
 tower; runtime vs base under Brandt; no drop with an enemy within 20 m; the drop by size; the Showdown cut-off with a paid
 drop landing; the HQ rescue; every price in its band), `BaseTests` (a medium tower's price from the data).
+
+## Prompt 31 L3 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p31-b2`. Pass 3: a general prebuilt NavGrid state mechanism and the five FIRST events of the sheet
+"Biến cố". Nothing was run but the Python tools (build_campaign.py with `--no-texts`, nav_states.py); the C# is compiled by
+the lead; Prompt31NavStateTests is written, not run.
+
+- Mechanism (`Sim/Navigation/NavStates.cs`, `world.NavStates`): a *site* has two or more named *states*, each a list of
+  axis-aligned blocks (centre, width, depth, clearance 1.5 m like a building's). All states are built at load and checked
+  once; one is in force at a time; a switch comes in only at a tick boundary (first thing in `SimWorld.Step`, in site
+  order), closes ground through `NavGrid.AddBlocker` (routes over it are planned again, the lanes rebuild on the version)
+  and opens it through the reference counts (a site never unblocks a building's cells). Any ground vehicle left on closed
+  ground, or cut off from the main region it stood in, is put on the nearest open cell of the main region and plans again
+  (never trapped). The states in force and the waiting switches are in `StateHash`, so a checkpoint's replay (same seed,
+  same journal) rebuilds them on the same step; `Snapshot()` / `Restore()` carry them for any other load.
+- Load-time check (`NavStates.Validate`, run by `SimWorld.BuildNavSites`): every state of every site, the other sites as
+  they stand, must keep the anchors (the sides' rallies, the map's capture points, the mission's target point) in one
+  region and must not seal off more than `PocketCells` (6) open cells of the anchors' ground (slivers along a clearance are
+  allowed; vehicles there are put out at the switch). A failing state is refused: `CanSwitch` and `Schedule` return false,
+  the reason is in `NavSiteProblems`; the battle never meets it. `Tools/campaign/nav_states.py` does the same over the data
+  (the map's blocking props and outline rasterised as NavGrid does), called from `build_campaign.check()`, so a bad
+  rectangle fails the build before Unity. Limits: the Python check does not draw the mission's own towers (the game's check
+  does); nav sites on a reversed battlefield are refused by the build (the rectangles are written for the map as drawn);
+  each state is checked against the other sites' current states, not every combination.
+- API for prompt 32's wall segments (reuse, do not copy): `world.NavStates.Define(new NavSiteDef(id, new[] { new
+  NavStateDef("INTACT", blocks), new NavStateDef("RUBBLE", blocksOrNone) }, "INTACT"))` before the first step (or campaign.json
+  `navStates` on the mission, parsed by `NavSiteDefs`, built by `world.BuildNavSites(def.NavSites, extraAnchors)` from
+  `MissionMode.Setup` / `OperationMode.Setup`), which also runs `Validate(anchors)`; in play
+  `world.NavStates.Schedule(id, "RUBBLE", world.Tick + 1, world.Tick)` (false when refused), `ActiveOf(id)`,
+  `Sites[i].SwitchedAt`, `CanSwitch(id, state)`; `Locked` once stepped (Define throws then). When a segment's ground belongs
+  to its site, lift the prop's or tower's own anchor (`SimWorld.ReleaseGround` does it for a fixed defence) so the site alone
+  holds the cells. A wall whose INTACT state separates the sides on purpose would be refused by the anchors check: prompt 32
+  passes the anchors that must stay joined (through a gate) or adds an option; the default stays "always a way round".
+- Events (`MissionEventKind` GroundChange, SandstormTurn, CityBlackout, BetrayalWarning, OrbitalPods in
+  `Modes/MissionEvents.P31.cs`; the library rows and the missions in `Tools/campaign/ground_events.py`): each warns 8-12 s
+  ahead at every difficulty (the C.3 table's lead clamped to 8-12 for these kinds) with a system notice (`EventText`, EN +
+  VI) and its places in `EventState.Marks`, drawn as warning rings on the minimap while warned and running
+  (`MatchRunner.GroundEvents.cs`, written blind); Nadia's line is extra. Deterministic: a time, another event, or the new
+  trigger `spotted` (the enemy sees a non-scripted player vehicle, by the visibility of the step before).
+  - Bão cát đổi hướng (`sandstorm_turn`): the storm rolls over one half of the map (`half`: by default the side the player's
+    main group stands in, along the larger axis), sight there times `sight`, the other half times `clear`
+    (`SimWorld.StormSight`, applied to every spotter in `RefreshVisibility` and in the field works' `SeenBy`), over 20-30 s,
+    clearing after `hold` s. c2m06 (already a sandstorm: 0.65 on our half, 1.25 on theirs) as a 4th event; c12m07 in place
+    of its `sandstorm` weather shift (the count kept). The view's weather turns to Sandstorm when it is not already (the
+    view draws the whole sky; the half is on the minimap).
+  - Báo động nhà máy (`factory_alarm` and `alarm_wave`, i1m01): from 30 s in, once spotted, the rolling-mill gate (site
+    `mill_gate`, a 10 x 2 m block across the 10 m lane east of the casting hall at (46, 0)) shuts 10 s later; 4 s after it
+    the garrison's wave (it replaces the mission's `enemy_wave`: the wave now comes on the alarm). The sheet's 3-star "no
+    alarm" is not added (the stars are time and losses; a new star rule is outside this pass).
+  - Mất điện thành phố (`city_blackout`, c7m11 at 240 s): night over 25 s and every tower on the grid
+    (`MissionEventSystem.GridTowers`: radar, EW, searchlights, laser AD, shield, fire control, targeting, C-RAM, visual
+    jammer), both sides', knocked out (Stun, so a Backup Generator shortens it) for 90 s; then the backup power brings them
+    back and the night stays. c7m11's fixed deck gets the rule `cityBlackout` (the fixed-deck check wants the event with it);
+    its pending line keeps only the storm cutting radar range.
+  - Phản bội (`betrayal_warning`, c7m10 stage `square` at 168 s, lead 10 s): Thorne's columns (every allied vehicle, grouped
+    within 20 m, at most six marks) on the minimap and Nadia's line before the betrayal stage turns them (the stage's own
+    Betrayal is unchanged).
+  - Khoang đổ bộ quỹ đạo (`orbital_pods`, c11m10 stage `fortress` at 60 s): three pods on prebuilt landing sites
+    (`pod_site_1..3`: a gun turret at (20, 60), a missile battery at (60, 20), an AA turret at (-10, 90), each site's block the
+    tower's square, max(length, width) x 0.8) under the pod drop's warning rings, standing up as enemy towers; the tower's
+    own anchor is lifted and the site's "landed" state holds the ground; a tower destroyed sends its site back to "clear"
+    while the fortress stage's events run (after that stage the ground stays closed, like rubble). The minimap marks end when
+    the pods are down.
+- Event counts kept: c2m06 4, c12m07 3, i1m01 3 (the interlude maximum), c7m11 3, c7m10 7 and c11m10 7 (operations 5-8).
+- Data keys changed (CatalogCheck): campaign.json `eventLibrary.events` (+6 rows: sandstorm_turn, factory_alarm,
+  alarm_wave, city_blackout, betrayal_warning, orbital_pods), missions c2m06, c12m07, i1m01 (+`navStates`), c7m11
+  (+event, fixedDeck rule), c7m10 (stage square), c11m10 (+`navStates`, stage fortress). balance.json unchanged.
+  CampaignText.cs was not regenerated (`--no-texts`: the generator would drop rows written by hand since).
+
+## Prompt 31 L4 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p31-b2`. Pass 4: the sheet's ten MAKE LATER missions, c6m03 first. Nothing was run but the Python
+tools (build_campaign.py `--no-texts`: fixed_decks.check_mission passed for every deck, the objectives equal to
+p31_objectives_baseline.json); the C# is compiled by the lead; Prompt31PlacedAllyTests is written, not run. Decks in
+`Tools/campaign/fixed_decks.py` DECKS (status MAKE_LATER), each with its replacements and a rule (Strings
+`fixeddeck.rule.<id>`, EN + VI). No objective changed. No script lines were added in this pass (the rules' own words carry it).
+
+- Placed allies (the mechanism, c6m03 as its trial): `fixedDeck.placedAllies` entries spawn in `MissionMode.Setup` on the
+  player's side with `Ally = true` (the def, else its `fallback`), so the allied TacticalAi (made by MissionSession when a
+  deck has placed allies) drives them; they follow the player's general order: Attack goes where the player's goal is,
+  Defend holds by the player's rally (MissionSession's AllyAi objective reads the player's commander's Stance). A placed ally
+  with `lossIfDestroyed` loses the mission when it falls (`MissionMode.Lost`). Limits: placed allies spawn in missions of
+  one stage without an allied commander (MissionMode.Setup); operations do not have them yet. Placed allies on a reversed
+  battlefield are written from the player's corner and turned by build_campaign.reverse like the units.
+- c6m03 (the trial): Mara's Behemoth is the Escort's own convoy (goal Escort, convoy `behemoth`, 1 of 1: the objective
+  before prompt 31). A second Behemoth under the allied AI would have broken the escort, so the placed ally is the convoy
+  unit itself (`"convoy": true`: not spawned again, shown on the deck page as "Mara's Behemoth (lost if it falls)"): the
+  escort's rules drive it, its loss is the escort's loss, and it halts while the player's order is Defend
+  (`MissionMode.PlayerDefends`, set by the session). Deck: the sheet's, `mobile_repair_vehicle` loaned (the only locked card).
+  Its data tests (the placed ally is the convoy, the def spawnable, the objective unchanged) are sound, so c10m12 and c12m03
+  followed.
+- c10m12: Hawk's fighter (`fighter_jet`, name hawk_jet) a placed ally that must live; the Boss objective (Morrigan) kept.
+  Loaned wingman_drone and chaff_strike; radar_support_vehicle -> recon_drone, aa_57mm_vehicle -> heavy_aa, aerial_tanker ->
+  stealth_fighter (no tanker owned; a second fighter keeps the air side), shorad_vehicle -> aa_vehicle. Rule hawkWingman.
+  To watch in play: a fighter with stores and no player airfield (playerBase None) keeps the holding rules of every air card.
+- c12m03: Mara's repainted Behemoth (`mara_behemoth`, fallback `behemoth`) a placed ally, not lost if it falls (the sheet:
+  nothing harder than c6m03); the Duel objective kept. Loaned mobile_repair_vehicle. Rule maraBehemoth.
+- i1m01: infiltration with the pass 3 factory alarm (rule factoryAlarm; fixed_decks.RULE_EVENTS wants the event). Loaned
+  radar_scout and ew_jammer; recoilless_jeep -> rocket_technical. Pending: 3 stars for no alarm (no star rule of its own).
+- c5m03: anti-drone deck; Venn's swarms as the library's warned `drone_swarm` in place of the mission's `air_wave` (rule
+  droneCanopy; the count kept). Loaned microwave_vehicle and interceptor_drone_vehicle; drone_intercept_strike -> uav_scan.
+  The escort (the bridging trucks) kept.
+- c6m14 (CEASEFIRE): Varga's column is a ceasefire faction for the whole battle. Per vehicle, since the column shares the
+  enemy's team with Aurel's drones: `Vehicle.Sworn` (DamageSystem.Apply: nothing from another side's fire, strikes or
+  splash), set by the library's ceasefire with the new param `faction`; with it the ceasefire cannot be broken by us (no
+  broken truce, no loss for friendly fire) and lasts 900 s (the time limit). Truce still keeps every weapon from picking it.
+  Rule ceasefireFaction. Loaned microwave_vehicle and interceptor_drone_vehicle; bridging_vehicle -> armored_bulldozer,
+  mobile_repair_vehicle -> ammo_carrier, drone_intercept_strike -> uav_scan. The Evacuate objective kept.
+- i2m01: light and fast in the fog (rule mirewoodFog); loaned amphib_light_vehicle and airborne_light_tank; shorad_vehicle ->
+  aa_vehicle, mobile_repair_vehicle -> engineer_vehicle, decoy_paradrop -> uav_scan. Capture of the two villages and the
+  sunken temple kept. Pending: Venn's convoy as a background object (optional) and 3 stars before dusk.
+- c7m16: Thorne's army as the deck (all owned). One of chapter 7's three anomalies happens here with its sound reason
+  (rule thorneAnomaly): from 180 s to 270 s the allied wing (the mission's `ally`, under the allied AI) turns to the
+  objective the player is not going for "on new intelligence" (Nadia's existing line at 180 s), then comes back; a clock of
+  the battle, so replays meet it alike. No objective counts anything Thorne does.
+- c9m12: island hopping (rule islandHop, its words only: deliveries still come to the rally); loaned amphib_light_vehicle and
+  river_patrol_boat; river_gunboat -> mlrs, coastal_ashm_vehicle -> railgun_truck, airborne_vehicle -> armored_car,
+  guided_shell_strike -> artillery_barrage. Capture kept.
+- c10m11: hold the field airstrip while the transports land (rule airfieldLanding: the Hold clock is the landing count);
+  loaned aa_57mm_vehicle and radar_support_vehicle (the only two locked). The Albatross background object is not made.
+- Missions left on the player's deck: none of the ten.
+- Data keys changed (CatalogCheck): campaign.json missions c6m03, c10m12, c12m03, i1m01, c5m03 (missionEvents: air_wave ->
+  drone_swarm), c6m14 (the ceasefire reference with params seconds 900, faction true), i2m01, c7m16, c9m12, c10m11: key
+  `fixedDeck` (placedAllies with `convoy`, `name`, `lossIfDestroyed`, `fallback`). balance.json unchanged.

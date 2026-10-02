@@ -680,6 +680,9 @@ namespace MachineBrigade.Sim
                 Naval.Mix(Mix);
                 // Prompt 23 A.3: the mission's events (their moments, the blackout, the weather's sight).
                 MixEvents(Mix);
+                // Prompt 31 L3: the prebuilt ground states in force.
+                _navStates?.Mix(Mix);
+                MixStorm(Mix);
                 for (var team = 0; team <= 1; team++)
                     if (TryGetEconomy(team, out var e)) Mix((long)MathF.Round(e.Cp * 100f));
                 return h;
@@ -807,6 +810,8 @@ namespace MachineBrigade.Sim
             if (Ending.Phase != MatchPhase.Running) return;
             Tick++;
             Time += dt;
+            // Prompt 31 L3: prebuilt ground states switch only here, first thing in a step.
+            _navStates?.Step(this);
             ServeQueuedPaths();
             if (Profile != null)
             {
@@ -1173,6 +1178,8 @@ namespace MachineBrigade.Sim
             foreach (var spotter in _vehicleList)
             {
                 var reach = spotter.Def.VisionRange * spotter.VisionFactor * WeatherSight;
+                // Prompt 31 L3: the sandstorm over one half of the map.
+                if (StormActive) reach *= StormSight(spotter.Position);
                 if (spotter.Team >= 0 && spotter.Team < _teamVision.Length) reach *= _teamVision[spotter.Team];
                 var thermal = 0f;
                 if (spotter.Gear is { } g)
