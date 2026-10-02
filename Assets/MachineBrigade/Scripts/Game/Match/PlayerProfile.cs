@@ -537,6 +537,9 @@ namespace MachineBrigade.Game.Match
         /// <summary>Prompt 22 C.3: the mark of the flash-forward shown before the first mission.</summary>
         public const int PrologueSeen = 99;
 
+        /// <summary>Prompt 30 L1: the mark of "Thorne's Arc Closes", the interlude card after c9m10 (before chapter 15).</summary>
+        public const int ThorneArcSeen = 98;
+
         /// <summary>The mark of the "To be continued" card after a chapter (a release that ends before the story does).</summary>
         public static int ContinuedSeen(int chapter) => 100 + chapter;
 
