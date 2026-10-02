@@ -109,7 +109,7 @@ namespace MachineBrigade.Sim.AI
         internal Vector2 IssuedGoal = new(float.NaN, float.NaN);
         internal SquadAction IssuedAction = SquadAction.Regroup;
         internal bool Dodging, HoldReleased, BlockedLeft, BlockedRight, FlankReached, BoundPhase;
-        internal double BoundSwapAt;
+        internal double BoundSwapAt, StaggerUntil;
         internal int JoinTarget;
         internal Vector2 Waypoint;
         internal float Strength, Reach, LastHp;
@@ -124,7 +124,7 @@ namespace MachineBrigade.Sim.AI
     /// only) -> the state -> formation and orders to the units. Emergency Reposition (dodge a warning, gather on
     /// friends) is an action, not an eighth state. Nothing here looks at health: no squad and no vehicle retreats on it.
     /// </summary>
-    public sealed class SquadLayer
+    public sealed partial class SquadLayer
     {
         public const float Interval = 0.25f;
         public const int MinSquad = 3;
@@ -314,6 +314,7 @@ namespace MachineBrigade.Sim.AI
             SetState(world, intel, s, now);
             Execute(world, intel, s, tactic);
             Focus(world, intel, s, tactic);
+            Units(world, intel, s, tactic);
         }
 
         private List<(SquadAction action, float score, List<Factor> factors)> Score(SimWorld world, TeamIntel intel, Squad s, TacticDef tactic)
@@ -761,8 +762,17 @@ namespace MachineBrigade.Sim.AI
             var heavyLead = _commander.TacticFor(s).Modules.HeavyLead || mode == FormationMode.Travel;
             if (mode == FormationMode.Flank) order.Sort((a, b) => b.Def.Speed != a.Def.Speed ? b.Def.Speed.CompareTo(a.Def.Speed) : a.Id.Value.CompareTo(b.Id.Value));
             else if (heavyLead) order.Sort((a, b) => b.MaxHp != a.MaxHp ? b.MaxHp.CompareTo(a.MaxHp) : a.Id.Value.CompareTo(b.Id.Value));
+            // G.2: a crowded narrow passage ahead: the back half waits a moment and goes through after the front half.
+            var wait = mode == FormationMode.Travel && order.Count > 2 && Crowded(world.Intel.For(_commander.Team), s.Centre, goal);
+            if (wait) s.StaggerUntil = world.Time + 3.0;
             for (var i = 0; i < order.Count; i++)
             {
+                if (wait && i >= (order.Count + 1) / 2)
+                {
+                    world.Submit(new Command(CommandType.Stop, _commander.Team, new[] { order[i].Id }));
+                    s.Progress[order[i].Id] = (order[i].Position, world.Time, 0);
+                    continue;
+                }
                 Vector2 slot;
                 switch (mode)
                 {
@@ -813,7 +823,7 @@ namespace MachineBrigade.Sim.AI
                 {
                     s.Progress[id] = (v.Position, now, moving ? p.rung : 0);
                     // A member left with nothing to do while its squad still has a goal: send it again.
-                    if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > 15f &&
+                    if (!moving && v.Order.Kind == OrderKind.Idle && !v.Target.IsValid && Vector2.Distance(v.Position, goal) > 15f && now >= s.StaggerUntil &&
                         s.Action != SquadAction.Hold && s.Action != SquadAction.Overwatch)
                         world.Submit(new Command(type, _commander.Team, new[] { id }, goal));
                     continue;

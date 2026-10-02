@@ -84,7 +84,7 @@ namespace MachineBrigade.Sim.AI
     /// minimum commitment unless an emergency (the main objective lost, a big enemy attack, a boss phase). It also owns
     /// the side's tactic (H): buying shares, switching with a cooldown and a transition, and the general's own switches.
     /// </summary>
-    public sealed class AiCommander
+    public sealed partial class AiCommander
     {
         private readonly Func<SimWorld, Vector2?> _objective;
         private readonly float[] _spent = new float[8];
@@ -226,6 +226,7 @@ namespace MachineBrigade.Sim.AI
             UseOrLose(world);
             Plan(world, intel);
             Assign(world, intel);
+            UnitsOutsideSquads(world, intel);
             SwitchTactic(world, intel, enemy);
         }
 

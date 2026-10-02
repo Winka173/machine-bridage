@@ -740,6 +740,9 @@ namespace MachineBrigade.Sim.Movement
                 if (def.Mounts[0].Aim == MountAim.Hull && _world.TryGetTarget(v.Target, out var target) &&
                     (def.Flying || target is not Vehicle { Flying: true }))
                     v.Heading = SimMath.RotateTowards(v.Heading, SimMath.HeadingOf(target.Position - v.Position), def.TurnRate * v.TurnFactor * dt);
+                // Prompt 28 D.4: a standing ground vehicle with directional armour turns its front to the biggest threat.
+                else if (!def.Flying && v.FaceHeading is { } face && v.Speed < 0.1f)
+                    v.Heading = SimMath.RotateTowards(v.Heading, face, def.TurnRate * v.TurnFactor * 0.5f * dt);
                 return;
             }
 

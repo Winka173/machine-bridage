@@ -540,7 +540,8 @@ namespace MachineBrigade.Sim.AI
                 _refitting.Remove(v.Id);
                 return false;
             }
-            var hurt = v.Hp < v.MaxHp * RefitBelow;
+            // Prompt 28 D.3: with the layered AI aircraft go back for their ammunition only, never for their health.
+            var hurt = !Layered && v.Hp < v.MaxHp * RefitBelow;
             if (!_refitting.Contains(v.Id) && hurt && world.Supply.CanBreakOff(v)) _refitting.Add(v.Id);
             if (!_refitting.Contains(v.Id)) return false;
             if (v.Hp >= v.MaxHp * RefitUntil)

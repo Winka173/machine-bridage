@@ -13486,3 +13486,45 @@ generator and the compile check.
   each key at most every 20 s; the HUD words it (text tables), off in Settings (local).
 - **Determinism.** Squads and members in id order; options built in a fixed order; ties keep the first. The layers
   draw no random numbers yet (AiRandom is there for later tie-breaks).
+
+## 28 3 (cloud, 2026-10-02)
+
+Prompt 28 pass 3, Sim only: D (unit layer), G (anti-stuck, anti-idle). Compile check only.
+
+- **Where the unit layer runs.** Target choice stays per tick in CombatSystem (its effective-damage score is the D.2/C.7
+  matrix: damage type, penetration, facing, a 1.3x switch margin, looks every 0.5 s; held until the target dies or
+  leaves reach). `P28Worth` adds: the squad focus x(1 + 0.6 x focus weight), the tactic's target groups x1.8 (SEAD
+  first: anti-air; decapitation: support and artillery), and a friend within 1 m of a direct-fire line x0.6 (G.4: the
+  sim has no friendly fire, so this only makes a shooter take another angle or target when one is as good; spread and
+  hold formations already stand line abreast across the enemy direction). The local logic (facing, short moves,
+  scouts) runs with the squad layer at 4/s, the logic of vehicles outside squads (artillery, aircraft) with the general
+  at 1/s: cheaper than per tick, and the prompt's per-tick part is the target score.
+- **No retreat on health (D.3).** Layered: TacticalAi's pull-back of damaged vehicles and its fall-back on odds are off
+  for ground vehicles (pass 2), and aircraft refit for ammunition only (`Refit` ignores health). Repair auras still
+  mend whatever stands in reach. Overwhelmed (and the gather emergency on cooldown): each member makes its role's
+  short move at most every 8 s: Cover (the spot 6 m back with the least anti-tank reach of five), Shift (20 m across),
+  Smoke (out of the smoke ring); Hold, Rearm and Scoot roles do nothing extra (artillery has its own scoot below).
+- **Facing (D.4).** A standing ground vehicle whose front armour is thicker than its side turns its hull to the focus
+  target or the nearest known enemy within 1.5x reach, at half its turn rate (`Vehicle.FaceHeading`, read in the
+  movement system's stopped branch). While moving it keeps the normal heading (no reversing in the sim).
+- **Scouts (D.8).** Recon-role members in combat closer than 0.75 x vision to the enemy back off to 0.9 x vision.
+  Support vehicles keep TacticalAi's existing "behind the army" placement. Drones avoiding EW/C-RAM: not added (no
+  per-drone routing in the sim; the strike drones' own logic stands).
+- **Artillery (D.6).** Every own gun without a scoot of its own moves 18 m after 3 shots when enemy guns or a
+  counter-battery radar are known (across the line of fire, sides alternating by id and time, then back), staying in
+  reach; spots where a standing gun was hit while enemy guns were known are marked (last 12) and avoided within 15 m,
+  and a gun on a marked spot moves after its next shot. No random draw (deterministic without RNG).
+- **Aircraft (D.7).** An aircraft attack-moving onto a point under known anti-air (the World Model's layer, with its
+  confidence) flies in through the cheapest of three waypoints 50 m out (straight, +-60 degrees) when it is at least
+  30 % less defended, then attacks; one idle 10 s in anti-air above twice its strength leaves 60 m to the clearest of
+  8 directions. Flares stay the existing automatic ones.
+- **G.1 crowds.** The movement system already has traffic rules, a parked-hull cost field (UnitCostField) and lanes
+  (prompt 12); squads add formations, so no flow field was added (M.3 says to share one only if measured to be needed).
+- **G.2 narrow passages.** A squad travelling with a chokepoint (a narrow cell holding 3+ vehicles) within 12 m of its
+  next 40 m sends its front half; the back half stops 3 s and is then re-sent by the idle-member rule.
+- **G.3.** Idle: no member moving, firing within 3 s, reloading, deploying or with a target, and the action not
+  HOLD/OVERWATCH, for `idleReassess` -> the squad re-scores ignoring commitment and margin (it may keep HOLD). Stuck:
+  a member with a move order making < 2 m in `stuckTime` -> back off 4 m, then a side step towards the goal, then out
+  of the cluster, then the squad re-scores with that route marked blocked (flanks) and its orders re-issued. The
+  movement system's safety net (prompt 12, 10 s: nudged onto free ground, logged for the map) stays as the last rung;
+  its 10 s were not changed to the prompt's ~8 s (a measured value of prompt 12).
