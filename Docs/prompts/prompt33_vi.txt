@@ -1,0 +1,126 @@
+# PROMPT 33 — BẢN ĐỒ: BỐN VÙNG, RÌA VÀ NGOÀI BẢN ĐỒ, ĐỊA HÌNH, TUYẾN TÀU BIỂN, ĐƯỜNG RAY
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt. Quyết định ghi vào docs/DECISIONS.md (mục "Prompt 33") kèm lý do. Chia lượt, mỗi lượt có commit. Số là điểm khởi đầu, không phải số đã đo.
+
+## 0. LUẬT CHUNG
+- Mô phỏng deterministic 20 tick/s, tách khỏi hình ảnh. Hình ảnh và trang trí không được đổi kết quả mô phỏng.
+- KHÔNG mô phỏng trận, không test trong game, không đo FPS. Được và phải viết test tự động, validator.
+- Model và vật thể dựng bằng script Blender (Tools/blender, frontier_kit.py), quy ước Part_* / Mount_* / Muzzle_*. Tài sản ngoài chỉ CC0 / CC-BY, ghi nguồn trong docs/ASSET_LICENSES.md.
+- Không phá các luật đã có:
+  - đo bản đồ đối xứng (prompt 30);
+  - biến cố đổi bản đồ (prompt 31);
+  - tường và vật cản 2 trạng thái navmesh (prompt 32);
+  - check_access.py phải tiếp tục pass.
+- Mobile trước. Khí tài sau 1945. Tên riêng không dịch.
+- Dòng "Xem lại" ở bất kỳ file nào: không áp.
+
+## 1. CÁC LƯỢT
+
+### Lượt 0 — Kiểm (không sửa), ghi docs/checks/p33_precheck.md
+1. Camera: zoom và nghiêng tối đa, có xoay không, tỷ lệ màn hình hỗ trợ.
+2. Cách viện quân, tàu hỏa, tàu biển, máy bay hiện vào trận hiện nay (vị trí, tick).
+3. Bộ tìm đường có cho mỗi loại xe một chi phí vùng (area cost / mask) riêng không.
+4. Xác xe hiện có va chạm hoặc chặn tầm nhìn không (ngoại lệ: thẻ "Xe khi hỏng thành công sự" là lối chơi chính thức).
+5. Hệ tàng hình / tầm nhìn hiện có (để tag rừng dùng lại).
+6. Boss Juggernaut, Nemesis, Gungnir đang di chuyển bằng gì (đường dẫn, waypoint, navmesh).
+
+### Lượt 1 — Bốn vùng của bản đồ
+| Vùng | Nội dung | Lối chơi |
+| 1. Vùng chơi | navmesh, cứ điểm, căn cứ, tháp, chỗ nấp, vật chặn tầm nhìn, tag địa hình | Có |
+| 2. Dải viền (~12–20 m, chỉnh theo bản đồ) | chuyển cảnh: dốc, vách, bãi, mép nước; có thể có hành lang đi vào dạng hình ảnh | Không |
+| 3. Vành ngoài | trang trí; bề rộng = khung nhìn camera lớn nhất (zoom xa nhất, nghiêng tối đa, mọi tỷ lệ 16:9 / 20:9 / 4:3, mọi góc xoay nếu có) + đệm 15% | Không; không collider, không chặn tầm nhìn |
+| 4. Chân trời | skybox, biển xa, núi, đường chân trời thành phố, sương | Không |
+- Vành ngoài: GPU instancing; xa hơn dùng HLOD / billboard / impostor; ngẫu nhiên theo seed cố định của bản đồ.
+- Camera không bao giờ thấy "hết thế giới".
+Commit.
+
+### Lượt 2 — Kiểu cạnh và liên tục ra ngoài bản đồ
+- edgeType cho từng đoạn viền: LAND / SEA / RIVER / CLIFF / URBAN.
+- edgeModifier tùy chọn: HARBOR / INDUSTRIAL / URBAN. Ví dụ: Ironport = SEA + HARBOR; Lighthouse Bay = SEA + CLIFF ở đoạn có vách.
+- Phía SEA: mặt nước kéo tới chân trời, sóng, bóng tàu xa, đảo mờ; KHÔNG nhà, rừng, đất. Bờ chuyển tiếp (bãi, vách, cầu cảng) khớp phía đất.
+- Góc giao giữa hai kiểu cạnh dùng tài sản góc dựng sẵn (ví dụ cửa sông RIVER → SEA, bờ LAND → SEA); không ghép địa hình ngẫu nhiên.
+- Khai báo đúng SEA cho Stormbeach, Beacon Bay, Coral Keys, Ironport, Lighthouse Bay và mọi bản có biển. Sửa vành ngoài hiện đang có nhà / rừng ở phía biển.
+- Liên tục: đường bộ, đường ray, sông, đường bờ biển, hướng tuyến tàu, hành lang bay kéo dài qua dải viền ra vành ngoài.
+- Hợp đồng đi vào bản đồ (deterministic):
+  - visualIngressLength: đoạn đường hình ảnh ngoài bản đồ; một bản giả hình ảnh chạy trên đó, KHÔNG có logic;
+  - gameplayEntryPosition + entryTick: thực thể thật chỉ bắt đầu tồn tại ở cổng vào (entryGate) đúng tick đã định; chỉ từ lúc đó mới bị nhắm bắn, có va chạm, AI, sát thương, tính trần quân, dùng navmesh;
+  - bản giả hình ảnh khớp vị trí với thực thể thật đúng ở cổng; hình ảnh không được làm sớm hay trễ tick vào;
+  - ngoại lệ: tàu biển và tàu hỏa có tuyến / spline lối chơi riêng, được kéo dài ra ngoài đa giác vùng chơi (lượt 4, 5).
+- Mọi viện quân kịch bản phải có entryGate.
+Commit.
+
+### Lượt 3 — Địa hình có tác dụng (4–5 tag) và địa danh
+Tag vùng trên navmesh:
+| Tag | Tác dụng |
+| NORMAL | không |
+| ROAD | tốc độ +20% |
+| ROUGH | tốc độ −15% (đô thị, đổ nát, sỏi đá; chỗ nấp vẫn do nhà / vật thể cung cấp) |
+| FOREST | tốc độ −25%; xe trong rừng khó bị phát hiện (dùng lại hệ tầm nhìn / tàng hình có sẵn, hệ số tầm nhìn của địch lên xe ×0,7) |
+| SHALLOW_WATER | xe thường tốc độ −50%; xe lội nước (Tăng nhẹ lội nước, Xe lội nước tốc độ cao) và xe đệm khí không bị chậm |
+- Chi phí đường tĩnh (không đổi theo tick) để không dao động đường đi.
+- Nếu Lượt 0 mục 3 cho thấy bộ tìm đường có chi phí theo loại xe: thêm DEEP_FORD (chỉ xe lội nước / đệm khí qua được) ở Coral Keys, Mirewood, Border Crossing; không thì ghi DECISIONS và để sau.
+- KHÔNG thêm ở bản này: thưởng sát thương hay độ chính xác theo cao điểm, giáp theo địa hình, địa hình biến dạng, tính phần trăm che chắn.
+- Địa danh: mỗi bản đồ 2–3 địa danh nhìn từ xa là nhận ra (hải đăng, tháp nước, nhà thờ, cần cẩu…), mỗi cái có landmarkId và tên song ngữ trong dữ liệu để thoại (prompt 30) dùng. Nếu thoại đã viết dùng tên vùng khác thì khớp lại theo dữ liệu.
+- Bản đồ chiến dịch được bất đối xứng có chủ đích (ghi lý do trong dữ liệu màn); chế độ đối kháng vẫn qua ngưỡng đối xứng.
+- Mọi thay đổi tag và vật thể lối chơi phải qua script đo bản đồ (prompt 30) và check_access.py.
+Commit.
+
+### Lượt 4 — Tuyến tàu biển (SeaRouteGraph)
+- Tàu lớn (boss biển, tàu hộ tống, tàu vận tải) KHÔNG dùng navmesh mặt đất; đi trên đồ thị tuyến biển (đoạn, nút, hướng). Xuồng nhỏ dùng tuyến hoặc vùng nước theo hệ hiện có.
+- Giữ chỗ:
+  - mỗi tàu lớn giữ đoạn hiện tại và đoạn kế;
+  - khoảng cách tối thiểu = nửa chiều dài tàu này + nửa chiều dài tàu phía trước + 10 m.
+- Ưu tiên (deterministic): (1) boss / tàu nhiệm vụ then chốt; (2) tàu vận tải kịch bản; (3) tàu hộ tống; (4) entityId nhỏ hơn.
+- Bị chặn: giảm tốc → chờ → nếu chờ quá N tick thì vào nút chờ (holding) gần nhất. Không đẩy nhau bằng vật lý.
+- Tuyến hai chiều có vịnh tránh (passing bay) hoặc quy ước một chiều. Pha boss chạy trốn (ví dụ Leviathan pha 3) được ưu tiên; tàu khác nhường vào nút chờ.
+- Đội hình hộ tống theo ô logic PORT_FORWARD / STARBOARD_FORWARD / PORT_REAR / STARBOARD_REAR, quy về vị trí hợp lệ trên tuyến; ô không hợp lệ thì lấy ô dự phòng theo thứ tự cố định. Hộ tống vẫn trong leash 28 m của boss.
+- Test: không chồng tàu ở mọi tổ hợp xuất phát trong dữ liệu; không kẹt chết ở tuyến hai chiều; replay tái tạo cùng vị trí.
+Commit.
+
+### Lượt 5 — Đường ray (RailSpline) và chỗ cắt đường bộ
+- Lớp RailSpline riêng (không phải navmesh đường bộ), kéo qua dải viền ra vành ngoài vào cửa hầm / cổng.
+- Dùng cho Juggernaut, Nemesis, Gungnir và tàu chi viện Công thành. Boss tàu di chuyển đúng trên ray.
+- Bản đồ có ray: Ironport, Rust Yard, Metro City, Foundry, các bản Công thành có chi viện tàu, và bản đồ của mọi màn có boss tàu. Bản đồ cần ray mà chưa có thì dựng ray theo bố cục hiện tại.
+- Tàu vào và ra qua ray theo hợp đồng đi vào ở lượt 2; bản đồ nhỏ báo trước.
+- Chỗ cắt đường bộ có trạng thái: OPEN → WARNING → CLOSED → TRAIN_PASSING → OPEN.
+  - WARNING tối thiểu 4 s, hoặc max(4 s, độ dài vượt ray / tốc độ xe chậm tham chiếu 4,5 m/s + 0,5 s);
+  - trong WARNING: AI không chọn đường mới qua chỗ cắt; xe đang ở trên ray nhận lệnh rời ray khẩn cấp (dùng Emergency Reposition của prompt 28);
+  - xe vẫn còn trên ray khi tàu tới: bị hất sang bên theo luật cố định (không Rigidbody);
+  - sát thương: tàu chi viện / kịch bản KHÔNG gây sát thương (chỉ hất); tàu boss (Juggernaut, Nemesis) gây sát thương khi húc, có cảnh báo như đòn boss.
+- Đỗ trên ray: AI không chọn ô đỗ trên ray.
+- Test: trạng thái chỗ cắt đổi đúng tick; xe nhận lệnh rời ray; không xe nào bị nhốt; replay giống hệt.
+Commit.
+
+### Lượt 6 — Vật thể theo biome và mật độ
+- Hai lớp:
+  - TRANG TRÍ: không collider, không chặn tầm nhìn, không vào hệ tầm nhìn; instancing, LOD; seed cố định;
+  - LỐI CHƠI: chặn đường hoặc tầm nhìn, AI dùng làm chỗ nấp; chỉ thêm khi qua script đo bản đồ.
+- Bộ vật thể mới bằng script Blender cho từng biome: ôn đới, sa mạc, tuyết, cảng / công nghiệp, rừng nhiệt đới, núi lửa, đô thị, bờ biển.
+- Tăng mật độ trang trí ở mọi bản đồ theo mục tiêu từng biome (ghi số vào DECISIONS). Địa hình thêm đồi thấp, gờ đất, hào, lòng sông cạn ở dạng HÌNH ẢNH (navmesh không đổi).
+- Xác xe thường: chỉ hình ảnh, không thành vật cản mới (trừ thẻ "Xe khi hỏng thành công sự").
+- Để sau (không làm): vật cản phá được mở đường, dấu vết trận trước ở bản đồ chiến dịch, nhà nhiều trạng thái hư hại, vật chặn tầm nhìn riêng.
+Commit theo biome.
+
+### Lượt 7 — Validator, tài liệu, báo cáo
+Thêm vào Tools/maps (chạy trong build):
+1. edgeType khớp vành ngoài (không nhà / rừng ở phía SEA).
+2. Vành ngoài phủ khung camera ở mọi tỷ lệ và góc xoay hỗ trợ; không có "khoảng trống thế giới".
+3. Vật thể trang trí không collider và không vào hệ tầm nhìn.
+4. Không vật thể lối chơi trong dải viền.
+5. Đường bộ, ray, sông, tuyến biển liên tục ra vành ngoài.
+6. Mọi viện quân kịch bản có entryGate.
+7. check_access.py pass; khoảng trống cho xe lớn vẫn đúng.
+8. Vùng tag địa hình hợp lệ (không chồng, không rỗng).
+9. Kết nối RailSpline và SeaRouteGraph.
+10. Chỗ cắt đường ray có cảnh báo ≥ mức tối thiểu.
+11. Không vị trí nào khóa hơn ~nửa bản đồ từ một điểm nghẽn, trừ khi màn chiến dịch ghi chủ đích.
+12. Replay: thời điểm đi vào của viện quân, tàu hỏa, tàu biển giống hệt.
+
+Xuất lại tài liệu thiết kế PDF:
+- mục 15: bốn vùng, edgeType, tag địa hình, địa danh, ray, tuyến biển;
+- ảnh chụp mép bản đồ ở zoom xa nhất cho mỗi biome.
+
+Báo cáo docs/maps/report_p33.md: kết quả Lượt 0, bản đồ đã sửa vành ngoài, lỗi validator còn lại, mọi chỗ tự quyết. Commit.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) đây là prompt 33 và 34, xong thì làm luôn, tăng agent lên 3

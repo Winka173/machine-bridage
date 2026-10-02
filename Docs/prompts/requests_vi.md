@@ -219,3 +219,4 @@ kích thước). Chép nguyên văn, kèm ngày giờ. Yêu cầu hợp với m�
 - (02/10) [báo cáo cloud: prompt 30 lượt 0-8 xong trên cloud/p30-story 352e7d58; L9 chưa; 1601 câu thoại 193 màn; audit bản đồ 9 RED, 91 YELLOW]
 - (02/10) claude cloud không còn dung lượng nên bạn làm luôn (prompt 31 và các prompt mới)
 - (02/10) phụ lục prompt 29 (đạn thay thế và mục tiêu vũ khí) + prompt 32 (hệ căn cứ); làm luôn các prompt mới
+- (02/10) đây là prompt 33 và 34, xong thì làm luôn, tăng agent lên 3

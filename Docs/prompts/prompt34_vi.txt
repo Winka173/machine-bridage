@@ -1,0 +1,184 @@
+# PROMPT 34 — VŨ KHÍ BOSS THEO HỌ VÀ CỠ NÒNG, HIỆU ỨNG BẮN VÀ NỔ, ÂM THANH, XÁC VỠ, MÀN XEM TRƯỚC
+
+Bạn làm việc tự chủ trong repo Machine Brigade (Unity). Không chờ duyệt. Quyết định ghi vào docs/DECISIONS.md (mục "Prompt 34") kèm lý do. Chia lượt, mỗi lượt có commit. Số là điểm khởi đầu.
+
+## 0. LUẬT CHUNG
+- Mô phỏng deterministic 20 tick/s tách khỏi hình ảnh / âm thanh; hình ảnh và âm thanh không đổi kết quả mô phỏng.
+- KHÔNG mô phỏng trận, không test trong game, không đo FPS. Được viết test tự động và cảnh thử tải (stress scene) chạy offline để chụp ảnh / ghi số lượng thực thể, không dùng để kết luận cân bằng.
+- Chủ dự án đã chốt hướng: vũ khí boss càng to thì mỗi phát càng mạnh, nổ càng lớn, hiệu ứng bắn và tiếng càng lớn, nhìn có lực và thật; bù bằng thời gian nạp / chu kỳ dài hơn. Nhiều nòng cùng vũ khí bắn cùng lúc cho tàu, tháp pháo hạng nặng, Siêu tăng.
+- KHÔNG đổi vũ khí người chơi ở prompt này (để sau khi prompt 29 và cân đạn thay thế xong); chỉ gắn nhãn họ vũ khí và ghi danh sách lệch.
+- Gungnir: KHÔNG đụng sát thương, bán kính, chu kỳ, cách nhắm. Gói G1 (prompt 29) đã quyết: boss chủ lực, siêu vũ khí 45 s, nhắm toàn bản đồ, pháo điện từ xuyên tuyến. Prompt này chỉ gắn họ hình ảnh, bậc T5, hiệu ứng, âm thanh.
+- Model bằng script Blender (Part_* / Mount_* / Muzzle_*). Tài sản ngoài chỉ CC0 / CC-BY, ghi docs/ASSET_LICENSES.md. Âm thanh: tổng hợp bằng script (cùng cách Tools/music) hoặc thư viện CC0 / CC-BY; KHÔNG dùng AI tạo âm.
+- Dòng "Xem lại" ở bất kỳ file nào: không áp.
+
+## 1. CÁC LƯỢT
+
+### Lượt 0 — Kiểm (không sửa), ghi docs/checks/p34_precheck.md
+1. Cách tính DPS duy trì hiện tại (loạt, băng, nạp, bệ) cho vũ khí boss.
+2. Vũ khí boss nào đang có cảnh báo, thời gian bao lâu.
+3. Hệ VFX / âm thanh hiện có: pool, số kênh âm, AudioSource theo phát hay theo nguồn.
+4. Mô hình xác và cách máy bay rơi gây sát thương hiện tại (tick, điểm rơi).
+5. Màn xem trước vũ khí / xe ("Xem bắn" và các màn xem chi tiết): cảnh nền đang là gì cho xe mặt đất, tàu, tàu hỏa, máy bay, boss.
+
+### Lượt 1 — Họ vũ khí
+- Thêm weaponFamilyId (cùng tên thật = cùng họ) và weaponVariantId (chỉ khi đạn, dạng đạn hoặc chế độ bắn thật sự khác; ghi lý do).
+- Cùng họ thì cùng: sát thương gốc mỗi phát, tốc độ đạn, hồ sơ nổ (lõi / rìa), loại sát thương — ở MỌI boss.
+- Gắn nhãn họ cho cả vũ khí người chơi nhưng KHÔNG đổi số; ghi danh sách lệch vào docs/checks/player_weapon_family.md.
+- Sửa tên hiển thị:
+  - "bomb-bay stick 400 kg 203 mm" → bom 400 kg;
+  - la-de bỏ cỡ "mm".
+Commit.
+
+### Lượt 2 — Bảng họ vũ khí boss và cân lại
+Sát thương mỗi phát (thang boss). Tăng đều TRONG từng họ, không so chéo giữa họ khác loại:
+| Họ | /phát | Lõi / rìa (m) | Bậc |
+| 12,7 mm (súng máy nặng, động năng) | 15 | — | T0 |
+| 23 mm | 7 | — | T1 |
+| 30 mm | 22 | — | T1 |
+| 35 mm Oerlikon | 25 | 2,5 (một lớp) | T1 |
+| 40 mm Bofors | 30 | — / flak 3,5 | T1 |
+| 57 mm | 120 | 3 / 6 | T2 |
+| 100–105 mm nổ mạnh | 300 | 5 / 10 | T2 |
+| 120 mm nổ mạnh | 340 | 5 / 10 | T3 |
+| 120 mm xuyên giáp | 260 | — | T3 |
+| 125 mm xuyên giáp | 400 | — | T3 |
+| 127–130 mm | 380 | 5 / 10 | T3 |
+| 152–155 mm | 600 | 7 / 14 | T3 |
+| 203 mm | 900 | 8,5 / 17 | T4 |
+| 240 mm | 1.100 | 10 / 20 | T4 |
+| 406 mm | 2.400 | 14 / 24 | T5 |
+| 800 mm (nếu còn dùng ngoài Gungnir) | 4.000 | 16 / 28 | T5 |
+| Rốc-két Grad 122 mm | 200 | 4,5 / 9 | T3 |
+| Rốc-két Smerch 300 mm | 450 | 8 / 16 | T4 |
+| Bom 400 kg | 700 | 10 / 20 | T4 |
+| Kornet | 230 | — | T2 |
+- Rìa: T0–T4 = min(2 × lõi, 20 m). T5: hồ sơ chỉ định riêng (406 = 14 / 24; 800 = 16 / 28); T5 chỉ dùng cho vũ khí T5 hiếm, có cảnh báo dài, hướng tấn công nhìn thấy được.
+- Giữ DPS (lý thuyết, tĩnh, viết thành script trong Tools/balance):
+  1. targetDPS = DPS DUY TRÌ hiện tại của vũ khí lên một mục tiêu (gồm loạt, băng, nạp, bệ).
+  2. Chu kỳ mới = (tổng sát thương mới mỗi chu kỳ) / targetDPS. Giữ nguyên khoảng cách giữa các phát trong loạt, độ lệch nòng, cách nạp băng như thiết kế.
+  3. Bù sát thương vùng: nếu lõi mới > lõi cũ × 1,25 thì chu kỳ × (lõi mới / lõi cũ). Lõi nhỏ lại thì KHÔNG rút ngắn chu kỳ thêm.
+- Bảng cân thử (kiểm lại bằng script; khác thì dùng số script, ghi chênh lệch):
+  - Leviathan, Kraken 406 mm: 3 tháp × 3 nòng = 9 quả × 2.400 mỗi ~60 s (bắn cả 3 nòng của một tháp cùng lúc), tổng DPS giữ 360; lõi tăng 17% nên không bù.
+  - Leviathan, Kraken 155 mm/60 (3 nòng): 600 × 3 cùng lúc, chu kỳ theo DPS cũ.
+  - Smerch (Jötunn, Fenrir): 450 / quả, loạt 8; chu kỳ theo DPS, rồi × 1,6 (lõi 5 → 8).
+  - Bom 400 kg (Roc, Garuda, Argus): 700 / quả, loạt 8; chu kỳ theo DPS, rồi × 2 (lõi 5 → 10).
+  - Grad (mọi boss): 200; chu kỳ theo DPS cũ của từng boss.
+  - Các họ còn lại theo bảng, chu kỳ theo DPS.
+- Tổng DPS duy trì của từng boss không đổi (trừ phần bù sát thương vùng), nên công thức máu boss không tính lại. Ghi bảng trước / sau theo boss vào docs/balance/boss_weapon_families.md.
+Commit theo boss.
+
+### Lượt 3 — Cảnh báo theo khả năng thoát
+- Mọi phát từ T4 trở lên có vòng cảnh báo trên mặt đất (và dấu trên bản đồ nhỏ nếu ngoài màn hình), hiện ĐÚNG vùng rìa, có tâm lõi.
+- Thời gian cảnh báo = max(sàn của bậc, 0,5 s + lõi / 4,5 m/s). Sàn: T4 2,5 s; 406 mm 3,5 s; 800 mm / siêu vũ khí 4 s. Trần 6 s.
+- Nhiều quả một loạt: cảnh báo hiện đủ mọi điểm rơi.
+- Validator: mọi vũ khí T4+ có cảnh báo ≥ công thức.
+Commit.
+
+### Lượt 4 — Nhiều nòng bắn cùng lúc
+- Trường barrels và salvoMode (SIMULTANEOUS | RIPPLE) cho vũ khí.
+- SIMULTANEOUS:
+  - các nòng của CÙNG một vũ khí bắn cùng loạt, hình ảnh lệch 0,05–0,1 s mỗi nòng (tính là một loạt);
+  - mỗi nòng có Muzzle_* riêng và chớp đầu nòng riêng; model thiếu điểm Muzzle cho từng nòng thì thêm vào script Blender và xuất lại GLB;
+  - DPS giữ bằng chu kỳ dài hơn.
+- Áp cho: tàu (Leviathan, Kraken, Scylla, Typhon, Hydra và các tàu có pháo nhiều nòng), tháp pháo hạng nặng (người chơi và pháo đài), Siêu tăng.
+- Luật cũ "các vũ khí KHÁC NHAU của một xe không bắn cùng lúc" giữ nguyên.
+Commit.
+
+### Lượt 5 — Hiệu ứng bắn và nổ theo bậc: VẼ LẠI, không chỉ phóng to
+- Khi bán kính nổ đổi, VẼ LẠI hiệu ứng nổ cho đúng cỡ: thiết kế lại quả cầu lửa, cột khói, mảnh, sóng xung kích theo bậc. KHÔNG chỉ nhân scale của prefab cũ (phóng to làm hạt thưa, khói vỡ hình).
+- Hiệu ứng bắn cũng làm lại và TO HƠN, DÀI HƠN theo bậc:
+  - chớp đầu nòng lớn hơn và kéo dài hơn;
+  - luồng khói đầu nòng dài, tan chậm;
+  - sóng áp lực quanh nòng;
+  - với T4–T5: vòng bụi bốc lên quanh xe / tháp, tàu có sóng áp lực trên mặt nước, ánh sáng chớp chiếu lên địa hình xung quanh.
+- Bảng bậc:
+| Bậc | Lúc bắn | Lúc nổ | Camera |
+| T0 (≤ 14,5 mm) | chớp nhỏ | tóe lửa / bụi nhỏ | không |
+| T1 (20–40 mm) | chớp nhỏ, khói mỏng | nổ nhỏ, flak bung trên không | không |
+| T2 (57–105 mm) | chớp vừa, khói ngắn, giật nòng | cầu lửa nhỏ, bụi | không |
+| T3 (120–155 mm, Grad) | chớp lớn, khói dài, giật nòng, xe nhún, vòng bụi | cầu lửa vừa, cột bụi, hố nhỏ | không |
+| T4 (203–240 mm, bom ≥ 400 kg, Smerch) | chớp rất lớn kéo dài, khói cuộn dài, vòng bụi rộng, sóng áp lực | cầu lửa lớn, cột khói cao, sóng xung kích, mảnh văng, hố lớn, xe nhẹ gần bị lắc (chỉ hình ảnh) | rung nhẹ |
+| T5 (406 mm, siêu vũ khí) | chớp khổng lồ chiếu sáng cảnh, khói cuộn rất dài, sóng nước / bụi lan rộng | cầu lửa rất lớn, cột khói hình nấm nhỏ, sóng xung kích hai vòng, mảnh văng xa, hố rất lớn tồn tại lâu | rung mạnh |
+- Cầu lửa và khói được lớn hơn vùng sát thương; vòng sóng xung kích / vòng cảnh báo phải ĐÚNG bằng vùng rìa.
+- Hiệu ứng riêng theo loại đạn (nhiệt áp quả cầu lửa thứ hai, nổ lõm chớp sáng, xuyên giáp tóe lửa) giữ, nhân theo bậc.
+- Rung camera: chỉ T4+; chỉ khi nguồn hoặc điểm nổ trên màn hình và gần camera; giảm theo khoảng cách; có trần tổng; có cài đặt tắt rung.
+- Hiệu năng:
+  - ưu tiên + LOD theo khoảng cách (gần: đầy đủ; vừa: giảm hạt / mảnh; xa: sprite / chớp đơn giản);
+  - đồng thời đầy đủ chi tiết tối đa: T5 1, T4 2–3, T3 4–6; sự kiện thấp hơn tự hạ cấp;
+  - pool cho đạn, vệt, khói, nổ, mảnh.
+  - Số cuối: NEED PROFILE.
+- Xuất ảnh chụp trước / sau cho mỗi bậc vào docs/vfx/.
+Commit theo bậc.
+
+### Lượt 6 — Âm thanh theo bậc
+- Mỗi tiếng bắn có 3 lớp: tiếng cơ khí gần, tiếng nổ chính, đuôi vang / tiếng dội. Lớp trầm nặng dần theo bậc; T4–T5 có tiếng dội dài và rung trầm.
+- Ba lớp có thể trộn sẵn thành một file (không bắt 3 AudioSource cho mỗi phát).
+- Tiếng nổ theo bậc và loại đạn; tiếng xác vỡ theo lớp xe; tàu hỏa (còi, bánh ray), tàu biển, máy bay rơi.
+- Giảm âm theo khoảng cách tới camera; nguồn ngoài màn hình nhỏ hơn.
+- Ưu tiên:
+  1. cảnh báo lối chơi / siêu vũ khí;
+  2. T5 / boss;
+  3. T4 gần;
+  4. T3 gần;
+  5. vũ khí quan trọng của quân ta;
+  6. súng nhỏ lặp nhiều;
+  7. môi trường.
+- Khoảng 24 kênh hiệu ứng đồng thời trên máy tầm trung trước khi cắt theo ưu tiên. Súng nhỏ gộp thành tiếng "cụm"; không một AudioSource cho mỗi viên đạn.
+- Nhóm âm lượng: hiệu ứng, nhạc, thoại.
+- Nén theo loại; tải theo nhóm bản đồ.
+- Nguồn: script tổng hợp hoặc CC0 / CC-BY, ghi docs/ASSET_LICENSES.md. Không AI tạo âm.
+Commit.
+
+### Lượt 7 — Xác vỡ theo lớp xe (chỉ hình ảnh)
+| Lớp | Kiểu vỡ |
+| Xe tăng | bật tháp (đã có), cháy |
+| Xe bánh lốp | bánh văng, khung lật |
+| Xe tải, xe tiếp đạn | hàng nổ dây chuyền |
+| Pháo binh | đạn trong xe nổ |
+| Tiêm kích, cường kích | gãy một cánh rồi xoáy rơi kèm vệt khói, hoặc gãy đôi thân |
+| Trực thăng | mất cánh quạt đuôi rồi xoay rơi; cánh quạt chính văng |
+| Máy bay lớn | cháy động cơ, mất cánh, rơi chéo kéo dài |
+| Tàu | nghiêng, gãy đôi, chìm |
+| Drone | nổ nhỏ |
+- Dùng Part_* để tách mảnh; lớp nào thiếu bộ phận tách được thì thêm vào script Blender.
+- Deterministic: nếu máy bay rơi gây sát thương thì mô phỏng tính sẵn impactTick, impactPoint, bán kính, sát thương; máy bay hình ảnh bay theo quỹ đạo trình diễn tới đúng điểm đó. Mảnh vỡ, bánh, tháp bật, mảnh tàu: CHỈ hình ảnh.
+- Xác thường không chặn đường, không chặn tầm nhìn (trừ thẻ "Xe khi hỏng thành công sự").
+- Tối đa ~12 xác đầy đủ gần camera; còn lại xác đơn giản / vết cháy / tan dần; xác thường tồn tại 30–45 s, boss lâu hơn; đồ họa thấp giảm giới hạn.
+Commit theo lớp.
+
+### Lượt 8 — Màn xem trước đặt đúng môi trường
+- Mọi màn xem trước (Xem bắn, xem chi tiết xe / boss / tháp, Sổ tay đạn) đặt đơn vị đúng chỗ của nó:
+  - xe mặt đất trên đất theo biome của bản đồ mở khóa hoặc biome mặc định;
+  - tàu và xuồng trên MẶT BIỂN có sóng;
+  - xe lội nước / đệm khí có cảnh mép nước;
+  - tàu hỏa và boss tàu (Juggernaut, Nemesis, Gungnir) trên ĐƯỜNG RAY;
+  - máy bay và trực thăng TRÊN KHÔNG (bay vòng / lơ lửng), có mặt đất phía dưới;
+  - tháp trên ô căn cứ;
+  - boss biển trên biển, boss bay trên không.
+- Bắn thử trong màn xem trước dùng đúng hiệu ứng, bậc, âm thanh mới, có mục tiêu giả đặt đúng loại địa hình (mục tiêu mặt đất cho pháo, mục tiêu bay cho phòng không) và hiện vòng nổ / vòng cảnh báo đúng cỡ.
+- Dùng lại tài sản biome và mặt nước / đường ray của prompt 33. Nếu prompt 33 chưa xong thì dùng cảnh tạm đúng loại (mặt nước phẳng, đoạn ray ngắn) và ghi DECISIONS.
+- Test: mọi đơn vị trong roster có cảnh xem trước đúng miền (đất / nước / ray / không).
+Commit.
+
+### Lượt 9 — Validator, cảnh thử tải, tài liệu, báo cáo
+Validator:
+1. Cùng weaponFamilyId thì cùng sát thương gốc, bán kính, tốc độ đạn ở mọi boss; biến thể có lý do.
+2. Mọi vũ khí T4+ có cảnh báo ≥ công thức thoát.
+3. Vòng hiển thị = vùng sát thương thật.
+4. Mỗi nòng trong salvo có Muzzle_*.
+5. Mọi đơn vị có cảnh xem trước đúng miền.
+6. Mảnh vỡ không có collider lối chơi.
+Cảnh thử tải offline: trận Leviathan + Smerch + bom + 32 xe mỗi phe; ghi số hạt, số kênh âm, số xác đồng thời (NEED PROFILE cho FPS, không kết luận cân bằng).
+Xuất lại tài liệu thiết kế PDF:
+- mục 10: họ vũ khí, bảng boss mới, bán kính, cảnh báo;
+- mục 16: hiệu ứng / âm thanh theo bậc, xác vỡ;
+- Sổ tay đạn cập nhật bậc T0–T5.
+Báo cáo docs/balance/report_p34.md:
+- bảng cân trước / sau theo boss;
+- danh sách lệch họ vũ khí người chơi (chưa sửa);
+- ảnh trước / sau hiệu ứng;
+- mọi chỗ tự quyết.
+Commit.
+
+YÊU CẦU LẺ GẮN VÀO PROMPT NÀY
+- (02/10) đây là prompt 33 và 34, xong thì làm luôn, tăng agent lên 3
