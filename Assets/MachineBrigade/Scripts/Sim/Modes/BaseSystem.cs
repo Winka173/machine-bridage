@@ -341,7 +341,7 @@ namespace MachineBrigade.Sim.Modes
             var cost = CostOf(slot);
             if (cost <= 0) return 0;
             var commander = _world.TryGetEconomy(team, out var economy) ? economy.Commander : null;
-            return SimMath.RoundHalfUp(cost * (double)Commanders.TowerDropScale(commander));
+            return SimMath.RoundHalfUp(cost * (double)CommanderRules.TowerDropScale(commander));
         }
 
         /// <summary>

@@ -614,8 +614,7 @@ namespace MachineBrigade.Game.Hud
             var (emptied, coins) = PlayerProfile.TakeRosterNews();
             if (emptied.Count == 0 && coins <= 0) return;
             var text = Strings.Format("news.roster", ("coins", Kit.Count(coins)));
-            if (emptied.Count > 0) text += "
-" + Strings.Format("news.roster.emptied", ("names", string.Join(", ", emptied.Select(t => Strings.Card(t)))));
+            if (emptied.Count > 0) text += "\n" + Strings.Format("news.roster.emptied", ("names", string.Join(", ", emptied.Select(t => Strings.Card(t)))));
             VisualElement scrim = null;
             var ok = new KitButton(ButtonTier.Primary, Strings.Get("kit.ok"), () => scrim?.RemoveFromHierarchy());
             scrim = KitDialog.Present(Root, KitDialog.Build(Strings.Get("news.roster.title"), text, ok));
