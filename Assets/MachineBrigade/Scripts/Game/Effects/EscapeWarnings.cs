@@ -44,6 +44,9 @@ namespace MachineBrigade.Game.Effects
         public float FadeIn { get; set; } = 0.4f;
         public float SalvoMerge { get; set; } = 0.6f;
 
+        /// <summary>Play-test 12: the owning EffectsDirector's shot clock (none: the times given are used as they are).</summary>
+        internal ShotClock Clock { get; set; }
+
         public EscapeWarnings(MaterialLibrary materials, MeshLibrary meshes, Transform parent)
         {
             var root = new GameObject("Escape Warnings").transform;
@@ -76,9 +79,9 @@ namespace MachineBrigade.Game.Effects
         {
             if (due <= start || (core <= 0f && edge <= 0f)) return;
             // Fix prompt L4: on the shot clock, as the round it warns of (it goes the frame the round lands).
-            start = ShotClock.Map(start);
-            due = ShotClock.Map(due);
-            now = ShotClock.Map(now);
+            start = ShotClock.Map(Clock, start);
+            due = ShotClock.Map(Clock, due);
+            now = ShotClock.Map(Clock, now);
             var coreRadius = Mathf.Max(0.5f, core);
             var edgeRadius = Mathf.Max(coreRadius, edge);
             // A salvo: the same shooter's ring fired just before that this one touches grows to hold both.
@@ -137,7 +140,7 @@ namespace MachineBrigade.Game.Effects
 
         public void Tick(float now)
         {
-            now = ShotClock.Map(now);
+            now = ShotClock.Map(Clock, now);
             foreach (var p in _pairs)
             {
                 if (!p.Active) continue;

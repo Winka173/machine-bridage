@@ -759,12 +759,15 @@ namespace MachineBrigade.Game.Match
                 _views.SnapshotAll();
                 _perf?.End(PerfProbe.Section.Sim);
                 _perf?.Begin();
+                // Play-test 12: rounds this step launches start where the views draw the step (its start).
+                _effects.Clock.Launching(_world.Time - dt);
                 DispatchEvents();
                 _perf?.End(PerfProbe.Section.Events);
             }
             // Fix prompt L4: rounds in flight are drawn on the Sim's clock (as the views interpolate it), so each lands on
             // the frame its damage is drawn (Effects/ShotClock.cs: the delayed damage).
-            ShotClock.Advance(_world.Time - _clock.StepSeconds * (1.0 - _clock.Alpha), frozen, Time.deltaTime);
+            // Play-test 12: the battle's own clock (the preview's range keeps its own: a static one froze it behind the menu).
+            _effects.Clock.Advance(_world.Time - _clock.StepSeconds * (1.0 - _clock.Alpha), frozen, Time.deltaTime);
             // Fix prompt L5: the warning rings' Settings choice.
             _effects.WarningLevel = MatchSettings.WarningRings;
 
@@ -1109,7 +1112,6 @@ namespace MachineBrigade.Game.Match
 
         private void OnDestroy()
         {
-            ShotClock.Active = false;
             _sandbox?.Screen.Dispose();
             DailyMissions.Suspended = false;
             _stuck?.Finish(_world);

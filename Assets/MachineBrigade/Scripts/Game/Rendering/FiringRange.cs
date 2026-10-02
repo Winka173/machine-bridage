@@ -404,6 +404,8 @@ namespace MachineBrigade.Game.Rendering
                     foreach (var e in _world.Events)
                         Log((float)_world.Time, e);
                 Sounds?.Invoke(_world.Events);
+                // Play-test 12: the range's rounds fly on its own Sim's clock (a shared one froze them behind the menu).
+                _effects.Clock.Launching(_world.Time - Step);
                 _effects.Consume(_world.Events, _views, null);
                 _world.ClearEvents();
             }
@@ -414,6 +416,8 @@ namespace MachineBrigade.Game.Rendering
                 _goneFor = 0f;
                 _shooter = _world.SpawnVehicle(_id, 0, _start, 0f);
             }
+            // The range's Sim time as its views draw it (they interpolate the last step by the accumulator).
+            _effects.Clock.Advance(_world.Time - Step * (1.0 - _accumulator / Step), false, dt);
             _effects.Tick(_views);
             _stage?.Tick(Time.unscaledTime);
             _mines.Update(_world);
