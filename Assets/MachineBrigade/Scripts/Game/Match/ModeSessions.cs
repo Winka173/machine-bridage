@@ -371,6 +371,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = mode;
             mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             AddEnemyCommander(mode, seed);
             Commanders.Add(new ConquestAi(mode, PlayerTeam, EnemyTeam, AiDifficulty.Normal, seed + 1));
         }
@@ -402,6 +403,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             // Prompt 13 H.1: the enemy's commander earns 18 % more here: it takes and holds points worse than a
             // player does (the measured side won five battles in six without it).
             if (world.TryGetEconomy(EnemyTeam, out var enemy)) enemy.ScaleIncome(1.18f);
@@ -446,6 +448,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             AddEnemyCommander(null, seed);
             AddPlayerCommander(null, seed);
         }
@@ -489,6 +492,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             AddEnemyCommander(_mode, seed);
             AddPlayerCommander(_mode, seed);
         }
@@ -533,6 +537,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             AddEnemyCommander(_mode, seed, CommanderStance.Defend);
             AddPlayerCommander(_mode, seed);
         }
@@ -634,6 +639,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             var enemy = AddEnemyCommander(_mode, seed, CommanderStance.Attack);
             // The enemy blows in the player's gates on its way to each line's objectives.
             enemy.Goal = w => _mode.AttackGoal(w);
@@ -720,6 +726,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             var defender = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
             defender.DefendPoint = _mode.Fortress;
             var player = AddPlayerCommander(_mode, seed);
@@ -807,6 +814,7 @@ namespace MachineBrigade.Game.Match
             });
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             var garrison = AddEnemyCommander(_mode, seed, CommanderStance.Defend);
             garrison.DefendPoint = _mode.Fortress;
             var player = AddPlayerCommander(_mode, seed);
@@ -917,6 +925,7 @@ namespace MachineBrigade.Game.Match
             Pending = null;
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             world.TryGetRally(PlayerTeam, out var home);
             // The bosses and their escorts come for the player's army.
             Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed) { Objective = w => PlayerCentre(w) ?? home };
@@ -1107,6 +1116,7 @@ namespace MachineBrigade.Game.Match
             };
             Mode = _mode;
             _mode.Setup(world);
+            world.Intel.Objectives = Objectives;   // prompt 28 A.4: the capture points for OBJECTIVE_PRESSURE
             world.EnableEconomy(new Sim.Economy.TeamEconomy(PlayerTeam, 16f, income: 0.9f,
                 vehicles: MatchSettings.DeckVehicles.ToArray(), supports: MatchSettings.DeckSupports.ToArray()));
             Waves = new TacticalAi(EnemyTeam, PlayerTeam, seed);
