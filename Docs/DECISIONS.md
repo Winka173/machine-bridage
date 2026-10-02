@@ -14726,3 +14726,94 @@ Pass 8a5 (lane A, last: mb_phase8 wreck_barrel/turret/launcher/stump/engine, mb_
 - `neutral_captured`: `SimEventKind.NeutralCaptured` (Arg the kind), 30 s apart, spoken by the script's speaker
   (speakerRole: Mara for the workshop, Quist for salvage).
 - Tests (written): `NeutralTests` (mirrored pairs, at most two kinds, the modes' kinds).
+
+### L7: the script (notes written in the lead pass)
+
+- **Source format** (`Tools/story/script/chNN.txt`, one file a chapter, written in play order 1, 2, 3, 13, 4, 5, 6, 14,
+  7, 8, 9, 15, 10, 11, 12): `# comment`; `@<mission> main=<speaker>` opens a mission and names its main speaker; then
+  one line a row, `trigger[:arg][@sec] | speaker | P | VI || EN`. `arg` narrows the trigger (a point id, "last", "1/2",
+  a unit id, a site kind for `neutral_captured`); `@sec` is a time trigger's second (`time@45`); `P` is the L12
+  priority 1-4, with `r` (`3r`) for a line that may repeat (20 s apart; without it the line plays once). Vietnamese
+  first, then English, split by `||`; proper names are written the same in both. `script_build.py` turns the sources
+  into `Resources/Data/script/chNN.json` (keys `script.<mission>.<nn>`, both languages inline, read by
+  `Sim/Content/ScriptDefs.cs` and `Game/Hud/ScriptText.cs`) and `Docs/story/script_stats.md`.
+- **Speaker trigger extensions** (`Tools/story/import_speakers.py` -> `script/speakers.json`, beyond the sheet's
+  allowedTriggers): Command ("hq", not in the sheet) gets objective_progress, event_triggered, enemy_reinforcement,
+  timer_60s; any mission's main speaker may take mission_start, victory, defeat, critical_failure_imminent,
+  momentum_high_once, objective_stall_90s ("Người nói chính"); anyone may take the scripted triggers phase_start,
+  phase_end, objective_progress, boss_phase_change, event_triggered, time, boss_hp, superweapon_warning,
+  point_captured, point_lost, victory, defeat ("Theo kịch bản / sự kiện / boss / người giữ điểm"); Kade also
+  expensive_unit_lost and Nadia ally_late (the trigger sheet names them where the voice sheet leaves them out);
+  Brandt (chapter 1), Venn (chapter 5) and Thorne (chapters 8, 9) also the enemy generals' set (mission_start,
+  boss_spawn, victory, defeat) because they lead the enemy there; Venn also boss_part_destroyed (her own drones).
+- **Validator rules** (`script_build.py`; errors stop the build, warnings go to the stats): the budget by mission kind
+  (short/side 4-8, normal 6-10, boss or big operation 10-16); length, Vietnamese soft 70-90 / hard 110 characters,
+  English soft 55-75 / hard 90, and the render estimate of 2 lines of `RENDER_CHARS` 58 by word wrap (the real width is
+  measured in Unity, LOCAL_TODO L2); a line said word for word in two missions (only shared generic reactions may);
+  an unknown trigger, or a trigger outside the speaker's allowedTriggers unless one of the extensions above covers it;
+  a missing language; a proper name (the `NAMES` list) in one language and not the other; the story's guard rails:
+  no "Icarus" before chapter 5's end or anywhere in chapter 8, Ellis named in chapters 3 and 15 before chapter 10
+  pays him off, Thorne's betrayal not before chapter 7.
+- Result: 1601 lines in 193 missions, 0 errors, 238 soft-length warnings (all "over the soft length", none over the
+  hard limit or the render estimate).
+
+### L8: static audits (notes written in the lead pass)
+
+- **Map audit** (`Tools/audit/map_audit.py`, read only, the Sim's 2 m navigation grid as `build_maps.py` builds it):
+  RED: a disconnected navigation region or an objective one side cannot reach; median path delta to the objectives over
+  15 % (symmetric files); fewer than 2 lanes (symmetric); a drop zone within 40 m of an enemy fixed defence; neutral
+  value delta over 20 % (symmetric). YELLOW: path delta 10-15 %; a symmetric drop zone with fewer than 2 exits;
+  neutral value delta 10-20 %; sightline P95 over the tank gun's 32 m (information only: every open battlefield has
+  it). A lane counts when it shares at most half its cells with another and keeps 2 x a main battle tank's width
+  (3.07 m) at its 10th percentile; a choke is mandatory when more than 60 % of the lanes cross it. Asymmetric files
+  (`_siege`, `_long`) are reported by role, never 1:1.
+- **Mode audit** (`Tools/audit/mode_static_audit.py`, theory only): four ledgers (economy, free/scripted, static,
+  tempo) at 25/50/75/100 % of the mode's target length, Normal difficulty; band = enemy strength over the player's;
+  symmetric modes over 30 % apart RED, 20-30 % YELLOW; asymmetric modes reported by role. Tempo is beside the band,
+  not in it.
+- Prompt 30 L8 forbids changing maps: the 9 RED files are reported (report_p30.md), not fixed; fixing them is the
+  owner's call (it was listed in LOCAL_TODO, which the prompt overrides).
+
+## Prompt 30 local (lead pass, 2026-10-02)
+
+- **L1** (`MenuScreen.Campaign.cs`, `MenuScreen.Story.cs`, `PlayerProfile.ThorneArcSeen` = 98): the "Kết mạch Thorne"
+  card shows once on the campaign page after c9m10 is won (after the chapter's comic and any pending choice, before the
+  epilogue check), or before chapter 15's first mission if that comes first; its kicker is chapter 9's act name, the
+  speaker Nadia. The Dossier timeline lists it after chapter 9. The chapter list and chapter cards already read the
+  four acts from `campaign.json`; no other UI names acts.
+- **L2** (`DialogueViews.cs`, `Portraits.Find`, Screens.uss): the subtitle is now a portrait strip: a 44 px portrait
+  (52 px at Large text, 40 px compact) framed in the side's colour, then the two lines, left aligned. A speaker
+  without a portrait gets its side's placeholder (a dark ally-blue or enemy-red square with the name's initial). All
+  21 script speakers have portraits; the only speaker today without one is "recon" (`DialogueStrip.MissingPortraits`);
+  a commander speaks with its commander portrait. The strip keeps its place at the bottom centre inside the safe area:
+  the objective timer, the boss bar and its big-attack warning are all in the top strip, so nothing overlaps at 16:9,
+  20:9 or 4:3 (4:3 scales by width: 640 px of strip). P0 (System) lines get a danger edge; the P0-P4 queue rules are
+  the cloud's `DialogueDirector`. System warnings stay toasts (not routed into the strip). `RENDER_CHARS` stays 58
+  until the real strip is measured in Unity.
+- **L3** (`MatchRunner.Ending.cs`, `MatchRunner.cs`): when the session's outcome comes the world is resolved (the
+  runner sets `IsOver` if the session did not) and the runner stops stepping the mode, the AI and the Sim
+  (`frozen`); `BeginPresentation` with the kind: a campaign mission's first win with a boss or an operation
+  FirstBigWin, another first win FirstWin, a replay Replay; Boss Rush, Siege, Weekly wins FirstWin; other quick modes
+  and draws Replay; a loss Loss. The presentation hides the tray, the selection strip, the rail and the corner
+  (`fc-hud--ending`), keeps the boss bar, the mission bar, notices and dialogue, draws the letterbox, glides the camera
+  to the last target (a boss or the last enemy destroyed within 6 s of the resolve, else the enemy HQ; a loss: our HQ,
+  else our last vehicle lost) and plays a boss's death chain from the part positions it had as it died (0.4 s apart,
+  Large blasts, then a Huge one on the hull; never smaller than the game's own). Slow motion x0.3 from 1.5 s (eased
+  over 0.3 s) is `Time.timeScale`, which with no Sim step left only reaches the pictures: that is the view clock.
+  `MatchEnd.Advance` gets unscaled seconds. A tap, Space or Back skips after 0.75 s. At RESULTS the dialogue's story
+  lines on show or waiting are flushed (`DialogueDirector.FlushStory`): shown on the results panel under "Over the
+  radio" and added to the log. The old wait for a boss's cinematic before the result card is gone (the presentation
+  replaces it). Not done (left for later): enemy proxies retreating to the edge and our turrets turning to the target
+  (both need a view-side override of the snapshot pose).
+- **L5** (`Overlays.cs`, `BattleHud.cs`, `MusicDirector.Resume`): a won battle whose session `CanContinue` shows "Kết
+  thúc" (leaves; the reward is claimed on the way out) and "Đánh tiếp (vô hạn)" (claims the reward first, then
+  `ContinueEndless`, hides the panel, the battle music back, the "already recorded" toast). The runner calls
+  `PayEndless` each frame in the endless part and toasts the coins and each badge. Leaderboard sorting by
+  `MatchRules.Board` is not wired (there is no leaderboard screen yet).
+- **L6** (`NeutralSiteView.cs`, `Minimap.Site/Drop`, `NeutralSystem.SiteStates`/`CaptureRadius`, read-only Sim
+  accessors): each site is a ground ring of the capture radius in its holder's colour with the capture sweeping in the
+  taker's colour (ground-mark shader, no Lit renderer touched); the abandoned AA spot pulses while it can be taken and
+  dims while it waits to be rebuilt; the supply drop's landing spot has a strike-style ring for its 15 s fall. On the
+  minimap: a small square per site (holder colour, capture arc) and an amber closing ring for the drop. A site changing
+  hands toasts "We hold the {site}" / "The enemy took the {site}". Whether the radar dome, garage and ammo dump read
+  as capturable is left for the owner's look in Unity.
