@@ -32,7 +32,11 @@ namespace MachineBrigade.Sim.Combat
             // A towed gun's traverse: nothing outside its arc.
             if (v.Def.TurretArc > 0f && MathF.Abs(SimMath.WrapAngle(SimMath.HeadingOf(other.Position - v.Position) - v.Heading)) > v.Def.TurretArc) return 0f;
             // What an anti-drone weapon may take among fliers.
-            if (weapon.Prey != Prey.Any)
+            if (weapon.Prey == Prey.Light)
+            {
+                if (other.Flying || other.Def.Static || other.Armour.Front > WeaponDef.HeArmourMax) return 0f;
+            }
+            else if (weapon.Prey != Prey.Any)
             {
                 if (!other.Flying) return 0f;
                 var ok = other.Def.Drone || (weapon.Prey == Prey.Rotors && !other.Def.FixedWing);

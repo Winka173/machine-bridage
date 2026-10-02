@@ -230,7 +230,7 @@ namespace MachineBrigade.Sim.Modes
             var pool = new List<(string id, SlotSize size, float weight)>();
             foreach (var def in catalog.Vehicles.Values)
             {
-                if (def.Fort is not { Kind: FortKind.Tower } fort || !TowerCards.IsLoadoutTower(def.Id)) continue;
+                if (def.Fort is not { Kind: FortKind.Tower } fort || !TowerCards.IsCard(catalog, def)) continue;
                 if (allowed != null && !allowed(def.Id)) continue;
                 var weight = weights.TryGetValue(def.Id, out var w) ? w : weights.TryGetValue("*", out var any) ? any : 0f;
                 if (weight > 0f) pool.Add((def.Id, fort.Size, weight));
@@ -339,19 +339,50 @@ namespace MachineBrigade.Sim.Modes
 
         public static bool IsLoadoutTower(string id) => !NotCards.Contains(id) && !id.Contains('.');
 
-        /// <summary>Every tower card in the catalog (loadout towers, not branches, not utility modules).</summary>
+        /// <summary>
+        /// Prompt 32 L1: a player's tower card: a tower (not a branch, not a utility module) on the data's roster
+        /// ("base.roster"; without one, every loadout tower). A tower merged into another card or retired from the roster
+        /// stays a def (a map's or a mission's structure) but is no card.
+        /// </summary>
+        public static bool IsCard(Catalog catalog, VehicleDef def)
+        {
+            if (def.Fort is not { Kind: FortKind.Tower } || def.BranchOf != null || !IsLoadoutTower(def.Id)) return false;
+            var roster = catalog.Base.Roster;
+            if (roster.Count == 0) return true;
+            for (var i = 0; i < roster.Count; i++)
+                if (roster[i] == def.Id) return true;
+            return false;
+        }
+
+        /// <summary>Every tower card in the catalog (loadout towers, not branches, not utility modules): the roster's order when the data has one.</summary>
         public static List<string> All(Catalog catalog)
         {
             var list = new List<string>();
+            var roster = catalog.Base.Roster;
+            if (roster.Count > 0)
+            {
+                foreach (var id in roster)
+                    if (catalog.Vehicles.TryGetValue(id, out var card) && IsCard(catalog, card)) list.Add(id);
+                return list;
+            }
             foreach (var def in catalog.Vehicles.Values)
-                if (def.Fort is { Kind: FortKind.Tower } && def.BranchOf == null && IsLoadoutTower(def.Id)) list.Add(def.Id);
+                if (IsCard(catalog, def)) list.Add(def.Id);
             return list;
         }
 
-        /// <summary>A tower's branch defs, in data order (two for every tower).</summary>
+        /// <summary>
+        /// A tower's branch defs, in A/B order: the two its card declares (prompt 32 L1, "branches"), none for a card with
+        /// noBranch, else (data without the field) every def naming it as "branchOf", in data order.
+        /// </summary>
         public static List<string> Branches(Catalog catalog, string towerId)
         {
             var list = new List<string>();
+            if (catalog.Vehicles.TryGetValue(towerId, out var tower) && (tower.NoBranch || tower.DeclaredBranches.Count > 0))
+            {
+                foreach (var id in tower.DeclaredBranches)
+                    if (catalog.Vehicles.TryGetValue(id, out var b) && b.BranchOf == towerId) list.Add(id);
+                return list;
+            }
             foreach (var def in catalog.Vehicles.Values)
                 if (def.BranchOf == towerId) list.Add(def.Id);
             return list;

@@ -7,6 +7,8 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 32 L1: the tower roster from 32 cards to 22 (10 small, 7 medium, 5 large): towers doing the same job folded into one card with two branches (anti-tank post, small AA with a Stinger post, lighting, decoy, medium AA, anti-drone); minefield, CP relay and troop shelter without branches; blast wall and one-shot ATGM battery retired; each branch tagged with its job and checked unique; the 57 mm branch fires at light vehicles only; the lasers stop no shells; saves move onto the new cards (highest rank kept, duplicates and retired cards refunded, emptied slots told once) (DECISIONS "Prompt 32 L0/L1/L2").
+
 - Prompt 29 appendix: `gun_100_river` and `gun_155_crusader` hit the ground only (high explosive, no anti-air round); a target-mask check (`TargetMaskTests`, `Tools/balance/target_mask_check.py`, Docs/checks/target_mask.md: 0 masks, 17 elite-only rounds no elite carries); outgoingDamageMult confirmed on every round a gun loads (DECISIONS "Prompt 29 appendix").
 
 - Prompt 27 stand-in sweep: coastal_battery, super_gun, bulwark_post and uav_loiter_strike get their own models (they drew heavy_turret, mg_bunker, strike_drone); stand-in audit in Docs/models/STANDIN_AUDIT.md (DECISIONS "27 stand-in sweep").

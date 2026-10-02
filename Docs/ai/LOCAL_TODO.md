@@ -100,3 +100,13 @@ The cloud session writes the Sim only. Each line: file, what, why.
 - L6 (DONE but the owner's look and the test run): show the neutral sites (`world.Neutrals.Sites`: kind, place, holder) on the field and the minimap (holder colour,
   capture ring), the abandoned AA site's marker (no building until taken), the supply drop's 15 s marker. The radar
   dome, garage and ammo dump props are existing models; check they read as capturable sites. Run `NeutralTests`.
+
+## Prompt 32 L1 (lead pass, 2026-10-02): tower roster 22
+
+- Art (Blender): the merged cards' branch models and icons `<tower>_a` / `_b` for `at_gun_emplacement`, `searchlight`,
+  `inflatable_decoy`, `heavy_flak_tower`, `laser_ad_station` (until then a branch wears its absorbed tower's model, or the
+  card's: `TowerArt.ModelFor`); `TowerBranchArtTests` skips these five until then. The AA tower's B branch is now the
+  Stinger post (its `aa_turret_b` SAM-pair model may want a Stinger launcher); the 57 mm branch lost its air role.
+- Unity: compile, `CatalogCheck`, card renders of the ten new branch ids; run `TowerRosterP32Tests`, `TargetMaskTests`,
+  `TowerRosterTests`, `TowerBranchTests`, `TowerCardTests`, `Prompt20TowersMapsTests`, `Prompt25NewContentTests`,
+  `Prompt25NewContentBTests`, `TowerBranchArtTests`, `TowerGearTests`, `BaseLayoutTests`, `BaseTests`.

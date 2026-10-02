@@ -99,6 +99,9 @@ namespace MachineBrigade.Game.Match
 
             /// <summary>The reworked towers to tell the player about once ("what's new"); empty once shown.</summary>
             public List<string> branchNews = new();
+
+            /// <summary>Prompt 32 L1: retired tower cards whose base slots were emptied, to tell the player once; empty once shown.</summary>
+            public List<string> rosterNews = new();
             public List<string> baseUtilities = new();
             public List<string> baseOutpost = new();
 

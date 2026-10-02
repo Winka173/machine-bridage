@@ -14887,3 +14887,91 @@ The owner's appendix to prompt 29 (second rounds and weapon targets), done befor
   (`Docs/checks/target_mask.md`): 0 mask findings after B6-mask (2 before), 17 unmet rounds, all elite-only on guns no
   elite carries (boss, naval, jeep and bunker guns): reported, not fixed (the appendix: no second-round rebalance). The
   test fails only on a new one beyond these 17.
+
+## Prompt 32 L0/L1/L2 (lead pass, 2026-10-02)
+
+Prompt 32 passes 0-2 on `feature/p32-a1` (lane A of Docs/LOCAL_PLAN_P31_P32.md), after the prompt 29 appendix. Nothing run
+(no Unity, tests or sims); the Python tools ran on the data. Prompt 28's aiModeProfile and prompt 30's match rules
+untouched; the locked rules of section 0 hold (supply only, no upkeep; the caps; no health retreat).
+
+### L0: precheck
+
+`Docs/checks/p32_precheck.md`. What later passes lean on: the Watch branch already replaces the guard tower's +10 %
+(one inherited field, best aura counts), so no code fix; a tower's `cp` is 0, so rebuilt towers never count in the army
+value supply reads and destroying one pays nothing (both L2 rules already true); thermobaric HE replaces the structure
+multiplier (2.0), never x3; forward drops at a held outpost exist; second rounds as prompt 25 G.
+
+### L1: roster 32 -> 22 and the branch rule
+
+Data (`Tools/balance/p32_roster.py`, rerunnable; `--check` validates): `base.roster` lists the 22 cards; each card has
+`"branches": [A, B]` or `"noBranch": true`; every branch (and a card without branches) a `"towerRole"` tag. Code:
+`VehicleDef.DeclaredBranches / NoBranch / Role` (`Content/TowerRoster.cs`; a branch row inherits its card's line, so its
+inherited `branches` are ignored), `BaseRules.Roster`, `TowerCards.IsCard(catalog, def)` (a roster tower, not a
+branch) used by the loadout pool, `BaseLayout.Fits` and the Base screen's tabs; `TowerCards.All` in roster order;
+`TowerCards.Branches` the declared pair (none for noBranch). A folded or retired tower stays a def (maps, missions,
+the AI's old placements) but is no card.
+
+| card | size | A | B | folded in |
+|---|---|---|---|---|
+| guard_tower | S | .watch (observation) | .nest (25 mm) | |
+| mg_bunker | S | .twin | .flame | |
+| at_gun_emplacement | S | .long (100 mm, 45 deg arc) | .recoilless (SPG-9, all round) | recoilless_gun_tower |
+| aa_turret | S | .flak (23 mm) | .sam = Stinger post (new `stinger_post`, 56 m) | manpads_tower |
+| ew_tower | S | .drone | .spoof | |
+| dragons_teeth | S | .hedgehog (blocks) | .wire (passable, slows) | |
+| minefield | S | noBranch: the AT branch's mines (5 x 720, every 45 s) | | |
+| cp_relay | S | noBranch: steady CP with the second relay's falloff | | |
+| searchlight | S | .beam | .flare (inherits flare_tower) | flare_tower, flare_searchlight_tower |
+| inflatable_decoy | S | .inflatable | .balloon (inherits barrage_balloon) | barrage_balloon |
+| atgm_tower | M | .top | .multi | |
+| gun_turret | M | .long (120 mm) | .auto (57 mm, light vehicles only) | |
+| c_ram | M | .centurion | .dome | |
+| rocket_turret | M | .cluster | .guided | |
+| heavy_flak_tower | M | .heavy (KS-19) | .bofors (inherits aa_gun_tower) | aa_gun_tower |
+| laser_ad_station | M | .laser | .net (inherits drone_net_tower, medium slot) | drone_net_tower |
+| troop_shelter | M | noBranch | | bunker_shelter_tower |
+| heavy_turret, missile_battery, drone_hangar, artillery_emplacement, shield_tower | L | as before | as before | |
+
+Retired from the roster: `blast_wall` (walls come in L3), `one_shot_atgm_tower` (a map / mission object only). Removed
+branch rows: `minefield.at/.scatter`, `cp_relay.hardened/.loot` (the loot code stays, unused). Choices made blind:
+
+- **Stinger reach.** The MANPADS tower's `sam` reaches 44 m, under the 23 mm flak's 46 m, so the spec's "longer reach"
+  needed its own line: `stinger_post` inherits `sam` at 56 m (the old SAM post had 60 m). Everything else of the round
+  is the shared `sam`'s. Vision 60.
+- **57 mm light only.** `gun_57_auto` loses its `air` round and targets Ground, with a new `Prey.Light` (front armour
+  1 or less, not a structure, not flying; `CombatSystem.P25Worth`). Its only carrier is `gun_turret.auto`.
+- **Lasers.** `iron_beam` and `laser_ad_station` `aps.shells` 0.3 / 0.5 -> 0 (prompt 29 had not applied the APS sheet's
+  0 %); texts say "no shells".
+- **Wire.** The spec's "slows under fire" is the wire's existing unconditional slow aura (6 m, 50 %): kept, no new
+  mechanism.
+- **Shelter merge.** The troop shelter keeps its own numbers (15 m); the bunker shelter's 18 m is not carried over.
+- **AI styles** (`base.ai.styles`): a folded card's weight moved to the card it became (the larger kept); retired cards
+  and removed branches dropped.
+- **Shop.** The 10 folded / retired cards left `Progression.NewContentPrices` (prices kept in `CardMerges.TowerPrices`
+  for the refunds).
+- **Showdown (L7).** "The CP relay stops at minute 6 in Showdown" waits for the mode (pass 7).
+
+Role tags (`towerRole`): unique across the 22 cards; the two of a card differ. The validator is `TowerRosterP32Tests`
+(and the Python `--check`); the older "every pair differs in targets, reach or mechanism" test still covers the new pairs.
+
+Save migration (roster version 7, `PlayerProfile.MigrateTowerRoster`): a folded card's rank merges into the card it
+became (the higher kept, the lower rank's spend refunded as the older merges did), its slots, outposts, plans and
+equipment move across (`MergeTower`); its unlock moves (a bought card stays bought) unless the player already had the
+card it became (a starter, owned or unlocked): then the duplicate's coins come back at its shop price. A retired card's
+coins come back (its price, plus what its rank cost; its blueprints become universal), every slot holding it is
+emptied, its equipment row goes (the pieces stay in the bag), and the menu says so once (`news.roster`,
+`news.roster.emptied`, with the coins refunded). A choice on a card left without branches (or of a removed branch) is
+dropped; a choice of a reworked branch (`aa_turret.sam`, `gun_turret.auto`) is kept with one free change and the
+branch notice.
+
+Texts (EN + VI, `Strings.cs`, `GuideText.cs`): names, short names, "info" and "when" lines for the ten new branches; the
+Stinger post and 57 mm rewritten; the Watch branch says it replaces the 10 %; the Centurion lists what it stops
+(missiles, drones, direct-fire rockets, artillery rockets, part of the shells and mortar bombs; not tank shells, bullets
+or beams); the logistics station's line says supply (no "phí duy trì" / upkeep), still +8 CP; the Iron Beam and the
+laser site "no shells".
+
+Tests updated for the new rules (not run): `TowerRosterTests` (no minefield branches; five mines),
+`Prompt20TowersMapsTests` (the B branch reaches 56 m), `TowerBranchTests` (the 57 mm air test and the loot-depot test
+`[Ignore]`d with the reason; the AI's 57 mm pick against light vehicles; the old migration test expects the CP relay's
+choice dropped), `Prompt25NewContent*Tests` (folded and retired towers no longer in the shop), `TowerBranchArtTests`
+(the five cards waiting for branch art skipped). Left for Unity and art: Docs/ai/LOCAL_TODO.md.

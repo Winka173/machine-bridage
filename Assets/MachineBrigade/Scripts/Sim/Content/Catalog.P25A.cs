@@ -113,6 +113,9 @@ namespace MachineBrigade.Sim.Content
 
         /// <summary>Drones and helicopters.</summary>
         Rotors,
+
+        /// <summary>Prompt 32 L1: light ground vehicles only (front armour 1 or less; no structure, no aircraft): the gun turret's 57 mm branch.</summary>
+        Light,
     }
 
     public sealed partial class VehicleDef

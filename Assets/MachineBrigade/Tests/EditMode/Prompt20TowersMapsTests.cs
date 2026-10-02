@@ -197,7 +197,8 @@ namespace MachineBrigade.Tests
             var sam = BaseRoles.Reach(catalog.Vehicles["aa_turret.sam"]).air;
             var flak = BaseRoles.Reach(catalog.Vehicles["aa_turret.flak"]).air;
             var patriot = BaseRoles.Reach(catalog.Vehicles["missile_battery"]).air;
-            Assert.AreEqual(60f, sam, 0.01f);
+            // Prompt 32 L1: the Stinger post (the MANPADS tower folded in), 56 m.
+            Assert.AreEqual(56f, sam, 0.01f);
             Assert.Less(flak, sam, "the flak stays close in");
             Assert.Greater(patriot, sam, "the Patriot reaches furthest");
             Assert.GreaterOrEqual(catalog.Vehicles["aa_turret.sam"].VisionRange, sam, "it sees what it reaches");

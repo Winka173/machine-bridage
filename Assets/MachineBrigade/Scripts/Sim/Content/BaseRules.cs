@@ -88,6 +88,11 @@ namespace MachineBrigade.Sim.Content
         public int LongForwardSmall { get; internal set; } = 6;
         public int LongForwardMedium { get; internal set; } = 2;
 
+        private readonly List<string> _roster = new();
+
+        /// <summary>Prompt 32 L1: the player's tower cards, in the data's order ("base.roster"); empty: every tower def is a card.</summary>
+        public IReadOnlyList<string> Roster => _roster;
+
         private readonly (int cp, float cooldown)[] _rebuild = { (2, 25f), (4, 40f), (7, 60f) };
         public float RebuildDelay { get; internal set; } = 4f;
         public int OutpostCp { get; internal set; } = 6;
@@ -138,6 +143,7 @@ namespace MachineBrigade.Sim.Content
                 rules.LongForwardSmall = f.Int("small", 6);
                 rules.LongForwardMedium = f.Int("medium", 2);
             }
+            if (b.Has("roster")) rules._roster.AddRange(b.StringArray("roster"));
             if (b.Has("rebuild"))
             {
                 var r = b.Object("rebuild");

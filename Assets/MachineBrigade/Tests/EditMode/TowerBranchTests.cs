@@ -102,6 +102,7 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ B.10 the gun turret
 
         [Test]
+        [Ignore("Prompt 32 L1: the 57 mm branch fires at light vehicles only (no air-burst round); TowerRosterP32Tests covers it")]
         public void TheAutocannonShootsAircraftWithItsAirBurstRoundAndTheSniperGunCannot()
         {
             foreach (var (branch, hits) in new[] { ("gun_turret.auto", true), ("gun_turret.long", false) })
@@ -299,6 +300,7 @@ namespace MachineBrigade.Tests
         // ------------------------------------------------------------------ B.16 the CP relay
 
         [Test]
+        [Ignore("Prompt 32 L1: the CP relay has no branch now; the loot depot is retired")]
         public void TheLootDepotPaysForKillsNearItAndNeverPastTheCap()
         {
             var world = Lab.Field(1);
@@ -341,12 +343,11 @@ namespace MachineBrigade.Tests
                 return loadout.Branches.TryGetValue(tower, out var b) ? b : null;
             }
             Assert.AreEqual("gun_turret.long", Pick("gun_turret", "main_battle_tank", "heavy_tank", "tank_destroyer", "twin_tank"));
-            Assert.AreEqual("gun_turret.auto", Pick("gun_turret", "armored_car", "scout_jeep", "attack_helicopter", "strike_drone"));
+            Assert.AreEqual("gun_turret.auto", Pick("gun_turret", "armored_car", "scout_jeep", "vbied", "armored_car"));
             Assert.AreEqual("missile_battery.pac3", Pick("missile_battery", "ballistic_launcher", "heavy_bomber", "main_battle_tank"));
             Assert.AreEqual("missile_battery.lrr", Pick("missile_battery", "attack_helicopter", "attack_jet", "gunship_heli", "stealth_fighter"));
             Assert.AreEqual("shield_tower.bulwark", Pick("shield_tower", "artillery", "mlrs", "heavy_rocket_artillery", "mortar_carrier"));
             Assert.AreEqual("shield_tower.ward", Pick("shield_tower", "main_battle_tank", "heavy_tank", "tank_destroyer", "attack_helicopter"));
-            Assert.AreEqual("cp_relay.loot", Pick("cp_relay", "armored_car", "scout_jeep", "vbied", "armored_car"));
             // A general's taste: Orlov (artillery) likes the counter-battery howitzer.
             var orlov = C.Base.Style("orlov");
             Assert.Greater(orlov["artillery_emplacement.cb"], 1f);
@@ -365,12 +366,13 @@ namespace MachineBrigade.Tests
                 ""branchTowers"": [ ""rocket_turret"", ""cp_relay"", ""guard_tower"" ],
                 ""branchChoices"": [ ""rocket_turret.thermo"", ""cp_relay.express"", ""guard_tower.watch"" ] }");
             Assert.AreEqual("rocket_turret.guided", PlayerProfile.TowerBranch("rocket_turret"));
-            Assert.AreEqual("cp_relay.loot", PlayerProfile.TowerBranch("cp_relay"));
+            // Prompt 32 L1 (roster version 7): the CP relay has no branch now, so its choice is dropped.
+            Assert.IsNull(PlayerProfile.TowerBranch("cp_relay"));
             Assert.AreEqual("guard_tower.watch", PlayerProfile.TowerBranch("guard_tower"), "a kept branch stays");
             Assert.IsTrue(PlayerProfile.FreeBranchSwap("rocket_turret"));
             Assert.IsFalse(PlayerProfile.FreeBranchSwap("guard_tower"), "an untouched tower has no free change");
             var news = PlayerProfile.TakeBranchNews();
-            CollectionAssert.AreEquivalent(new[] { "rocket_turret", "cp_relay" }, news);
+            CollectionAssert.AreEquivalent(new[] { "rocket_turret" }, news);
             Assert.IsEmpty(PlayerProfile.TakeBranchNews(), "the notice shows once");
             // One free change (no coins), then the usual price.
             Assert.IsTrue(PlayerProfile.TryChooseBranch("rocket_turret", "rocket_turret.cluster"), "free");

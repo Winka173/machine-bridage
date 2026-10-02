@@ -41,7 +41,7 @@ namespace MachineBrigade.Game.Match
         public const int GemToCoins = 15;
 
         /// <summary>The roster the save is in (see <see cref="Data.rosterVersion"/> and <see cref="CardMerges"/>).</summary>
-        internal const int RosterVersion = 6;
+        internal const int RosterVersion = 7;
 
         /// <summary>
         /// Moves progress off the cards folded into others or retired (once per save). A merged
@@ -124,7 +124,136 @@ namespace MachineBrigade.Game.Match
             if (d.rosterVersion < 6 && (d.missionIds.Count > 0 || d.unlocked.Count > 0 || d.owned.Count > 0 || d.rankIds.Count > 0))
                 foreach (var id in Progression.FormerStarters)
                     if (!d.unlocked.Contains(id) && !d.owned.Contains(id)) d.unlocked.Add(id);
+            if (d.rosterVersion < 7) MigrateTowerRoster(d);
             d.rosterVersion = RosterVersion;
+        }
+
+        /// <summary>
+        /// Version 7 (prompt 32 L1, DECISIONS "Prompt 32 L0/L1/L2"): the tower roster 32 -> 22. A folded card's rank,
+        /// slots and equipment move to the card it became (the higher rank kept); its unlock moves across, and a card the
+        /// player already had makes the folded one a duplicate whose coins come back. A retired card's coins come back
+        /// (with what its rank cost, its blueprints universal), its slots are emptied and its equipment returns to the
+        /// bag; the menu says so once. A branch chosen on a card left without branches is dropped; a choice of a branch
+        /// that changed what it does is kept with one free change and a news line.
+        /// </summary>
+        private static void MigrateTowerRoster(Data d)
+        {
+            var refund = 0;
+            foreach (var pair in CardMerges.TowerInto)
+            {
+                var from = pair.Key;
+                var to = pair.Value;
+                var had = Progression.IsStarter(to) || d.owned.Contains(to) || d.unlocked.Contains(to);
+                var bought = d.owned.RemoveAll(id => id == from) > 0;
+                var unlocked = d.unlocked.RemoveAll(id => id == from) > 0;
+                if (bought || unlocked)
+                {
+                    if (had)
+                    {
+                        if (bought && CardMerges.TowerPrices.TryGetValue(from, out var price)) refund += price;
+                    }
+                    else (bought ? d.owned : d.unlocked).Add(to);
+                }
+                MergeRank(d, from, to);
+                MergeTower(d, from, to);
+            }
+            d.rosterNews ??= new List<string>();
+            foreach (var gone in CardMerges.RetiredTowers)
+            {
+                if (d.owned.RemoveAll(id => id == gone) > 0 && CardMerges.TowerPrices.TryGetValue(gone, out var price)) refund += price;
+                d.unlocked.RemoveAll(id => id == gone);
+                var i = d.rankIds.IndexOf(gone);
+                if (i >= 0)
+                {
+                    var rank = Mathf.Clamp(d.ranks[i], 1, CardRanks.Max);
+                    refund += CardRanks.CoinsSpent(rank);
+                    d.universal += d.prints[i] + CardRanks.BlueprintsSpent(rank);
+                    d.rankIds.RemoveAt(i);
+                    d.ranks.RemoveAt(i);
+                    d.prints.RemoveAt(i);
+                }
+                if (EmptyTower(d, gone) && !d.rosterNews.Contains(gone)) d.rosterNews.Add(gone);
+            }
+            for (var k = d.branchTowers.Count - 1; k >= 0; k--)
+            {
+                var choice = k < d.branchChoices.Count ? d.branchChoices[k] : null;
+                if (Array.IndexOf(CardMerges.NoBranchTowers, d.branchTowers[k]) < 0 && Array.IndexOf(CardMerges.RetiredBranchesP32, choice) < 0) continue;
+                d.branchTowers.RemoveAt(k);
+                if (k < d.branchChoices.Count) d.branchChoices.RemoveAt(k);
+            }
+            d.freeBranchSwaps ??= new List<string>();
+            d.branchNews ??= new List<string>();
+            for (var k = 0; k < d.branchTowers.Count && k < d.branchChoices.Count; k++)
+            {
+                if (Array.IndexOf(CardMerges.ReworkedBranchesP32, d.branchChoices[k]) < 0) continue;
+                var tower = d.branchTowers[k];
+                if (!d.freeBranchSwaps.Contains(tower)) d.freeBranchSwaps.Add(tower);
+                if (!d.branchNews.Contains(tower)) d.branchNews.Add(tower);
+            }
+            if (refund <= 0) return;
+            d.coins += refund;
+            _rosterRefund += refund;
+        }
+
+        /// <summary>Prompt 32 L1: coins the roster change paid back at this load (duplicates and retired cards), for the menu's notice.</summary>
+        private static int _rosterRefund;
+
+        /// <summary>Prompt 32 L1: a retired tower leaves every base slot, outpost and map set-up empty (its equipment stays in the bag); true when a slot held it.</summary>
+        private static bool EmptyTower(Data d, string gone)
+        {
+            var emptied = false;
+            string Clear(string id)
+            {
+                if (id != gone && (id == null || !id.StartsWith(gone + "."))) return id;
+                emptied = true;
+                return Sim.Modes.BaseLoadout.Empty;
+            }
+            void ClearAll(List<string> list)
+            {
+                if (list == null) return;
+                for (var k = 0; k < list.Count; k++) list[k] = Clear(list[k]);
+            }
+            ClearAll(d.baseSmall);
+            ClearAll(d.baseMedium);
+            ClearAll(d.baseLarge);
+            ClearAll(d.baseTowers);
+            ClearAll(d.baseOutpost);
+            if (d.basePlans != null)
+                foreach (var plan in d.basePlans)
+                {
+                    if (plan == null) continue;
+                    foreach (var place in plan.places) place.tower = Clear(place.tower);
+                    ClearAll(plan.outpost);
+                    foreach (var map in plan.custom)
+                    {
+                        ClearAll(map.small);
+                        ClearAll(map.medium);
+                        ClearAll(map.large);
+                    }
+                }
+            FixTowerGear(d);
+            var i = d.towerGearIds.IndexOf(gone);
+            if (i >= 0)
+            {
+                // Its pieces stay in the bag (d.gear); only the tower's loadout row goes.
+                var n = Gear.TowerSlotCount;
+                d.towerGearIds.RemoveAt(i);
+                d.towerGear.RemoveRange(i * n, n);
+            }
+            return emptied;
+        }
+
+        /// <summary>Prompt 32 L1: the retired tower cards whose slots were emptied, for the menu's one notice; empty once taken.</summary>
+        public static (List<string> emptied, int coins) TakeRosterNews()
+        {
+            var d = A;
+            var coins = _rosterRefund;
+            _rosterRefund = 0;
+            if (d.rosterNews == null || d.rosterNews.Count == 0) return (new List<string>(), coins);
+            var news = new List<string>(d.rosterNews);
+            d.rosterNews.Clear();
+            Save();
+            return (news, coins);
         }
 
         /// <summary>
