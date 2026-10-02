@@ -1,11 +1,13 @@
 """Machine Brigade: export every game data value into per-domain files (Docs/prompts/export_full_vi.txt).
 
-    python Tools/export/export.py [--out DIR] [--base REF] [--strict] [--date YYYY-MM-DD]
+    python Tools/export/export.py [--out DIR] [--base REF] [--strict] [--date YYYY-MM-DD] [--effect-shots DIR]
     python Tools/export/export.py coverage [--strict]     # the leaf-path coverage test only (writes nothing)
     python Tools/export/export.py fk                      # the foreign-key test only (writes nothing)
     python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]   # pass 7: Docs/export/diff_<A>_<B>/
     python Tools/export/export.py check [--out DIR]       # pass 8: export, the 9 self-checks of spec 9, SELF_CHECK.md
 
+Pass 6 writes md/ (one file per domain + Machine_Brigade_Design_FULL_<date>.md), images/ and pdf/ from the csv it just
+wrote (core/docmd.py, core/docpdf.py; sections in core/doc_parts.py).
 Read only: no game value is changed. Output: Docs/export/<date>_<commit>/ (date = the HEAD commit's date, so a rerun on
 the same commit and data rewrites the same files byte for byte; README.md and MANIFEST.json carry the run's time).
 Exit code: 0 pass; 1 an unmapped leaf, a leaf mapped twice, a failed foreign key, a layer B formula off its game value, an
@@ -112,10 +114,11 @@ def summary(ctx, per_source, unmapped, fk_results, strict: bool) -> int:
     return code
 
 
-def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: dict, strict: bool) -> list:
+def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: dict, strict: bool,
+              effect_shots: Path | None = None) -> list:
     index_book = IX.build(ctx, meta, per_source, unmapped, per_file, fk_results, PLANNED, sorted(ctx.books))
     # start clean: only folders this tool writes
-    for sub in ("00_chi_muc", "xlsx", "csv"):
+    for sub in ("00_chi_muc", "xlsx", "csv", "md", "pdf", "images"):
         if (out / sub).exists():
             shutil.rmtree(out / sub)
     books = dict(ctx.books)
@@ -133,8 +136,10 @@ def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: 
         sheets.append((sname, header, rows, set()))
         write_csv(out / "csv" / IX.INDEX_ID / f"{sname}.csv", header, rows)
     write_xlsx(out / "00_chi_muc" / f"Machine_Brigade_00_Index_{meta['ngay']}.xlsx", sheets)
-    (out / "00_chi_muc" / "COVERAGE.md").write_bytes(
-        IX.coverage_md(meta, per_source, unmapped, per_file, books, ctx, strict).encode("utf-8"))
+    coverage = IX.coverage_md(meta, per_source, unmapped, per_file, books, ctx, strict)
+    (out / "00_chi_muc" / "COVERAGE.md").write_bytes(coverage.encode("utf-8"))
+    coverage += write_docs(out, meta, effect_shots)  # pass 6: md/, images/, pdf/ from the csv just written
+    (out / "00_chi_muc" / "COVERAGE.md").write_bytes(coverage.encode("utf-8"))
     hits = secrets.scan_dir(out)
     now = dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat()
     readme = [
@@ -157,6 +162,25 @@ def write_all(ctx, per_source, unmapped, per_file, fk_results, out: Path, meta: 
     return hits
 
 
+def write_docs(out: Path, meta: dict, effect_shots: Path | None) -> str:
+    """Pass 6 (spec 6): md/<file>.md, md/FULL, images/, pdf/. Returns the lines COVERAGE.md gains."""
+    from core import docmd, docpdf
+    res = docmd.build(out, meta, effect_shots)
+    full = out / "md" / docmd.full_name(meta["ngay"])
+    pdf = out / "pdf" / f"Machine_Brigade_Design_{meta['ngay']}.pdf"
+    pages = docpdf.render(full, pdf, meta["ngay"], meta["commit"]) if docpdf.available() else 0
+    print(f"docs: {len(res['md'])} md, {len(res['images'])} pictures, pdf "
+          + (f"{pages} pages" if pages else "skipped (pip install pymupdf)"))
+    lines = ["", "## Markdown, ảnh và PDF (lượt 6, spec 6)", "",
+             f"- md/: {len(res['md'])} file ({', '.join(Path(m).name for m in res['md'])}).",
+             f"- images/: {len(res['images'])} ảnh chép từ repo (Docs/doc-images, Docs/models/rebuild"
+             + (", Builds/effect_shots" if effect_shots else "") + "); ảnh hiệu ứng Unity: "
+             + ("có" if any("effect_shots" in s for _, s in res["images"]) else "chờ (pending)") + ".",
+             f"- pdf/: " + (f"{pdf.name}, {pages} trang, sinh từ {full.name}." if pages else "chưa sinh (thiếu PyMuPDF)."),
+             "- Mục \"Chưa áp\": " + ("; ".join(f"{n}. {t}" for n, t, _ in res["chua_ap"]) or "không có") + ".", ""]
+    return "\n".join(lines)
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", nargs="?", default="export", choices=["export", "coverage", "fk", "diff", "check"])
@@ -166,6 +190,8 @@ def main(argv=None) -> int:
                     help="git ref of the earlier version for the _truoc / _sau columns (default origin/main: the last release)")
     ap.add_argument("--date", help="the folder's date (default: the HEAD commit's date)")
     ap.add_argument("--strict", action="store_true", help="fail on leaves still pending on files not built yet")
+    ap.add_argument("--effect-shots", help="pass 6: a copy of the runner's Builds/effect_shots (tier_T*/...png) for "
+                    "section 20b; without it the md says the shots are pending")
     ap.add_argument("--lenient", action="store_true",
                     help="leave out a domain that fails to build (an old tree for diff) instead of stopping")
     args = ap.parse_args(argv)
@@ -199,7 +225,8 @@ def main(argv=None) -> int:
         "campaign_sha256": ctx.sources[CAMPAIGN].sha256() if CAMPAIGN in ctx.sources else "",
         "cong_cu": f"Tools/export v{TOOL_VERSION}", "python": platform.python_version(), "openpyxl": openpyxl.__version__,
     }
-    hits = write_all(ctx, per_source, unmapped, per_file, fk_results, out, meta, args.strict)
+    shots = Path(args.effect_shots).resolve() if args.effect_shots else None
+    hits = write_all(ctx, per_source, unmapped, per_file, fk_results, out, meta, args.strict, shots)
     try:
         shown = out.relative_to(repo.ROOT).as_posix()
     except ValueError:

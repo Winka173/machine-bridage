@@ -1,0 +1,131 @@
+"""Pass 6 (spec 6): the design text's section list and the text fixes against the code. Data only; docmd.py builds.
+
+PARTS follow the design PDF's table of contents (sections 1-19, Tools/docs/build_doc.py) plus the new sections of spec 6
+(3b, 3c, 10i, 15b, 16b, 20, 21, P1-P5). A part:
+  num, title, domain (the 01-12 file whose md holds it), html (title prefixes of the design review's <h2> sections that
+  give its prose), sheets ("<file number>/<sheet>"; a table each), guides (sheets whose ids get the in-game guide text
+  guide.<id>), docs (repo Markdown reports embedded as prose), status (a fixed status when the sheets cannot tell),
+  pictures (repo pictures always shown in this part), fx (the Unity effect shots go here).
+A sheet that does not exist (a later pass, another lane) is listed as missing; every sheet of a file that no part names
+is printed at the end of that file's md (section "Các sheet khác"), so a new sheet shows up by itself.
+"""
+
+DESIGN_HTML = "Docs/Machine_Brigade_Design_Review.html"
+
+PARTS = [
+    dict(num="1", title="Tổng quan", domain="05", html=["1. Tổng quan"], sheets=[]),
+    dict(num="2", title="Chế độ chơi", domain="05", html=["2. Chế độ chơi"], sheets=["05/Che_do"]),
+    dict(num="2b", title="Cân bằng chế độ và độ khó", domain="05", html=["2b. Cân bằng"], sheets=["05/Do_kho"]),
+    dict(num="2c", title="Luật trận, phần vô hạn, trung lập, thoại và kết trận", domain="05", html=["2c."],
+         sheets=["05/Vo_han", "08/Trung_lap_luat", "07/Ket_tran"]),
+    dict(num="3", title="Chiến dịch", domain="07", html=["3. Chiến dịch"],
+         sheets=["07/Chuong", "07/Nhiem_vu", "07/Nhan_vat", "07/Thoai", "07/Trigger_thoai", "05/Sao_chien_dich",
+                 "07/Phat_hanh"]),
+    dict(num="3b", title="Bộ bài game", domain="07", html=["Prompt 31: Màn bộ bài game"],
+         sheets=["07/Bo_bai_game", "07/Bo_bai_game_dong_minh"]),
+    dict(num="3c", title="Biến cố và sự kiện trong nhiệm vụ", domain="07", html=["Prompt 31: Biến cố", "7c."],
+         sheets=["07/Bien_co", "07/Bien_co_luat", "07/Nhiem_vu_bien_co"]),
+    dict(num="4", title="Nhiệm vụ nhiều giai đoạn", domain="07", html=["4. Nhiệm vụ"],
+         sheets=["07/Nhiem_vu_giai_doan", "07/Nhiem_vu_giai_doan_su_kien", "07/Nhiem_vu_giai_doan_lua_chon",
+                 "07/Nhiem_vu_dong_minh"]),
+    dict(num="5", title="Tác chiến", domain="05", html=["5. Tác chiến"],
+         sheets=["05/Tac_chien_bac", "05/Diem_tac_chien", "05/Mutator", "11/Mutator_tuan"]),
+    dict(num="6", title="Căn cứ và tháp", domain="04", html=["6. Căn cứ", "Hệ căn cứ (prompt 32)"],
+         sheets=["04/Thap", "04/Thap_vu_khi", "04/Tuong", "04/Tuong_luat", "04/Nha_chinh", "04/Nha_chinh_kieu",
+                 "04/Mo_dun_tien_ich", "04/Loadout_can_cu", "04/Xay_lai", "04/Thap_gia_cong_thuc", "04/Can_cu_luat"]),
+    dict(num="7", title="Công thành và Phòng thủ", domain="04", html=["7. Công thành"],
+         sheets=["04/Dot_phong_thu", "04/Can_cu_AI_cap"]),
+    dict(num="7b", title="Biển, hộ tống, bản đồ dài, roster mới và đòn lớn", domain="08", html=["7b."],
+         sheets=["08/Ban_do_tuyen_bien", "08/Ban_do_bien_lan", "08/Ban_do_bien_phao", "08/Ban_do_bien_do_bo"]),
+    dict(num="8", title="Phương tiện", domain="02", html=["8. Phương tiện", "8b."],
+         sheets=["02/Xe", "02/Xe_vu_khi", "02/Xe_bo_phan", "02/Xe_ten_lua", "02/Nhanh_xe", "02/Ky_nang",
+                 "02/Tinh_nhue_luat", "02/May_bay_so_phat", "02/Do_ben"], guides=["02/Xe"]),
+    dict(num="9", title="Bảng DPS tổng hợp", domain="02", html=["9. Bảng DPS", "9b."],
+         sheets=["02/Xe_suy_ra", "02/Hoi_quy", "02/Hoi_quy_du_lieu"]),
+    dict(num="10", title="Vũ khí và bảng sát thương", domain="01",
+         html=["10. Vũ khí", "10b.", "10c.", "10e.", "10f.", "Cân bằng đợt 2"],
+         sheets=["01/Bang_sat_thuong", "01/Bang_xuyen_giap", "01/Khac_che", "01/He_so_toan_cuc", "01/Vu_khi",
+                 "01/Vu_khi_suy_ra", "01/Vu_khi_he_so_thuong", "01/Dan_thay_the", "01/Phao_sang"]),
+    dict(num="10d", title="Tổng hợp boss", domain="03", html=["10d."], sheets=["03/Boss_dps", "03/Boss_hieu_qua"]),
+    dict(num="10g", title="Boss: vụ nổ hai lớp, pha, giáp và cỡ", domain="03", html=["10g."],
+         sheets=["03/Boss_phase", "03/Boss_be_goc"]),
+    dict(num="10h", title="Săn trùm (Boss Hunt)", domain="03", html=["10h. Săn trùm"],
+         sheets=["03/Sanhunt", "03/Sanhunt_ho_tro", "03/Sanhunt_chua_xep"]),
+    dict(num="10i", title="Sổ tay đạn", domain="01", html=["Sổ tay đạn / Ammunition", "Sổ tay đạn: bậc"],
+         sheets=["11/So_tay_dan", "01/Dong_vu_khi"]),
+    dict(num="10j", title="Họ vũ khí, hành vi đạn và vòng cảnh báo", domain="01", html=["10i. Họ vũ khí"],
+         sheets=["01/Ho_vu_khi", "01/Ho_vu_khi_bien_the", "01/Hanh_vi_dan", "01/Hanh_vi_dan_nhom", "01/Canh_bao_vong"]),
+    dict(num="11", title="Tháp canh, xe tinh nhuệ và boss", domain="03", html=["11. Tháp canh"],
+         sheets=["03/Boss", "03/Boss_vu_khi", "03/Boss_bo_phan", "03/Boss_sieu_vu_khi", "03/Boss_ho_tong", "03/Boss_hang"],
+         guides=["04/Thap", "03/Boss"]),
+    dict(num="12", title="Hỗ trợ hỏa lực", domain="02", html=["12. Hỗ trợ"], sheets=["02/The_ho_tro"]),
+    dict(num="12b", title="Bảng giá, hệ đạn và hồi đạn", domain="02", html=["12b. Bảng giá", "12b. Hệ đạn"], sheets=[]),
+    dict(num="12c", title="Commander", domain="02", html=["12c."],
+         sheets=["02/Commander", "02/Commander_noi_tai", "02/Commander_gia", "06/AI_tuong"]),
+    dict(num="13", title="Trang bị", domain="02", html=["13. Trang bị"],
+         sheets=["02/Trang_bi", "02/Trang_bi_bo", "02/Trang_bi_dac_tinh", "02/Trang_bi_mo_dun", "02/Trang_bi_dong_phu",
+                 "11/Trang_bi_hang"]),
+    dict(num="14", title="Kinh tế", domain="05", html=["14. Kinh tế"],
+         sheets=["05/Kinh_te", "11/Nang_hang", "11/Hom_do", "11/Cua_hang", "02/Doi_mo_man", "02/Doi_mo_man_luat"]),
+    dict(num="15", title="Bản đồ", domain="08", html=["15. Bản đồ"],
+         sheets=["08/Ban_do", "08/Ban_do_goc", "08/Ban_do_biome", "08/Thoi_tiet", "08/Ban_do_dia_danh", "08/Ban_do_rail",
+                 "08/Ban_do_tag_dia_hinh", "08/Ban_do_cong_vao", "08/Ban_do_trung_lap", "08/Vat_the_loai"]),
+    dict(num="15b", title="Đo bản đồ tĩnh", domain="08", html=[], docs=["Docs/checks/map_audit.md"],
+         sheets=["08/Ban_do_cu_diem_bai_tha_can_cu"],
+         status="Một phần — chờ prompt xuất dữ liệu (sheet đo bản đồ tĩnh của spec 4 chưa có trong 08_ban_do; số đo nằm "
+                "ở báo cáo Docs/checks/map_audit.md, in dưới đây)"),
+    dict(num="16", title="AI và hệ thống", domain="06", html=["16. AI"],
+         sheets=["06/Chien_thuat", "06/AI_ho_so_che_do", "06/AI_tham_so", "06/AI_vai_tro", "06/AI_trang_thai"]),
+    dict(num="16b", title="Kiểm tĩnh chế độ", domain="05", html=[],
+         docs=["Docs/checks/mode_static_audit.md", "Docs/checks/showdown_static.md"], sheets=[],
+         status="Một phần — chờ prompt xuất dữ liệu (sheet kiểm tĩnh chế độ của spec 4 chưa có; số nằm ở báo cáo "
+                "Docs/checks/mode_static_audit.md và showdown_static.md, in dưới đây)"),
+    dict(num="17", title="Kiểm thử và phép đo còn lại", domain="12", html=["17.", "16b. Sửa sau buổi chơi thử"],
+         sheets=["12/Test", "12/Validator", "12/Kiem_tra_file"]),
+    dict(num="18", title="Giao diện", domain="11", html=["18. Giao diện"],
+         sheets=["11/Cai_dat_mac_dinh", "11/Huong_dan", "11/Ban_do_menu", "11/Skin", "11/Mo_khoa", "11/Nhiem_vu_ngay",
+                 "11/Thanh_tuu", "11/Telemetry"]),
+    dict(num="19", title="Hình ảnh", domain="10", html=["19. Hình ảnh", "20. Thư viện hình ảnh"],
+         sheets=["10/Anh_the", "10/Anh_chup"], pictures=["Docs/doc-images"]),
+    dict(num="20", title="Âm thanh", domain="09", html=["16b. Hiệu ứng"],
+         sheets=["09/Am_thanh", "09/Am_thanh_bank", "09/Am_thanh_loat", "09/Am_thanh_mixer", "09/Am_thanh_thu_vien",
+                 "09/Am_thanh_mau"],
+         links=["Docs/audio/metrics.md", "Docs/audio/diagnosis.md"]),
+    dict(num="20b", title="Hiệu ứng theo bậc và xác vỡ", domain="09", html=[],
+         sheets=["09/VFX_bac", "09/VFX_chay_than_xe", "09/VFX_vu_khi", "09/Xac_vo", "09/Hau_ky_hinh_anh"], fx=True),
+    dict(num="21", title="Model", domain="10", html=["10h. Prompt 27"], docs=["Docs/models/MODEL_STANDARD.md"],
+         sheets=["10/Model", "10/Model_tieu_chuan", "10/Model_kiem_chuan", "10/Kich_thuoc_that", "10/Giay_phep_tai_san",
+                 "10/Xem_truoc"],
+         pictures=["Docs/models/rebuild"]),
+    dict(num="P1", title="Hằng số trong mã", domain="12", html=[], sheets=["12/Hang_so_trong_ma"]),
+    dict(num="P2", title="Lịch sử đo", domain="12", html=["Phụ lục: Lịch sử đo"], sheets=["12/Lich_su_do"]),
+    dict(num="P3", title="Quyết định và chờ quyết", domain="12", html=[], sheets=["12/DECISIONS", "12/Cho_quyet"]),
+    dict(num="P4", title="Trạng thái prompt, validator, manifest và save", domain="12", html=[],
+         sheets=["12/Trang_thai_prompt", "12/Validator_model", "12/Validator_vu_khi", "12/Manifest_ap",
+                 "12/Chuyen_doi_save", "12/Khac_chua_phan_loai"]),
+    dict(num="P5", title="Mục lục bảng dữ liệu, sửa chữ theo mã và ảnh", domain="12", html=[], sheets=[], index=True),
+]
+
+# Spec 6: text of the design review that the code contradicts, fixed to match the code. (regex, replacement, the code
+# or data that decides). Fix L10 (DECISIONS "Sửa lỗi tổng hợp L9.7/L10") fixed the generator; the committed HTML is the
+# build of 02/10, before it, so the same fixes are applied here. Items checked and already right are listed with None.
+FIXES = [
+    (r"Huyền thoại mở sau khi thắng chiến dịch lớn cuối cùng",
+     "Huyền thoại mở sau khi thắng c12m10 (màn kết của chương 12)",
+     "Operations.LegendMission = \"c12m10\" (Operations.cs)"),
+    (r"tối đa 2 dòng, không chân dung, không lồng tiếng",
+     "tối đa 2 dòng, có chân dung nhỏ của người nói, không lồng tiếng",
+     "DialogueViews vẽ chân dung nhỏ trên dải thoại trong trận (fix L10 mục 14)"),
+    (r"chỉ huy tự đưa chúng về khi dưới 35% máu hoặc hết đạn",
+     "chỉ huy tự đưa chúng về khi hết đạn",
+     "TacticalAi.Refit: không còn ngưỡng 35 % máu từ prompt 29 B3-AI (fix L10 mục 17)"),
+    (r"phí duy trì", "tiếp tế", "thuật ngữ trong mã và chuỗi: tiếp tế (supply), fix L10 mục 16"),
+    (r"tháp canh thấy tàng hình và tăng 10% tầm cho tháp gần",
+     "tháp canh thấy tàng hình và tăng 10% tầm cho tháp trong 25 m (nhánh Tháp quan sát: 15% trong 30 m, thay mức "
+     "10%, không cộng dồn)",
+     "balance.json guard_tower.towerRangeAura {radius 25, range 0.1}, guard_tower.watch {radius 30, range 0.15}; "
+     "chuỗi branch.guard_tower.watch.info"),
+    (r"15 chương trong 4 hồi", None, "campaign.json chapters[].act: 1-4 (4, 4, 4, 3 chương): đúng"),
+    (r"C-RAM 30%, la-de 0%", None, "c_ram aps.shells 0.3, iron_beam / laser_ad_station aps.shells 0: đúng"),
+    (r"không chặn đạn pháo", None, "laser_ad_station aps.shells 0 (Trạm la-de): đúng"),
+]

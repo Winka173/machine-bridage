@@ -20,6 +20,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import unicodedata
 from pathlib import Path
 
 from . import jsonc, repo, secrets
@@ -32,6 +33,8 @@ NOT_DETERMINISTIC = {"00_chi_muc/README.md", "00_chi_muc/MANIFEST.json", "00_chi
 MARKER = re.compile(r"^(CHUA_AP:prompt_[\w.]+|NEED_CODE_CHECK|NEED_SOURCE|KHONG_CO|KHONG_CHAY)$")
 UNIT_TEXT = re.compile(r"^\s*-?\d+(?:[.,]\d+)?\s*(?:s|ms|m|km|kg|g|mm|cm|cp|hp|%|deg|°|m/s|km/h|rpm|giây|phút)\s*$", re.I)
 # columns that name a different thing in each file (kv blocks, notes, status): left out of the (id, column) test
+# names of spec 4 the sheet-name pattern catches that are values, not sheets (the model grades Tot / Can_sua / Kem)
+NOT_SHEETS = {"Can_sua"}
 GENERIC_COLS = {"nhom", "khoa", "gia_tri_so", "gia_tri_chu", "trang_thai", "ghi_chu", "mo_ta"}
 BAL = "Assets/MachineBrigade/Resources/Data/balance.json"
 CAMP = "Assets/MachineBrigade/Resources/Data/campaign.json"
@@ -52,8 +55,8 @@ def _hashes(root: Path) -> dict:
     return {p.relative_to(root).as_posix(): hashlib.sha256(p.read_bytes()).hexdigest() for p in secrets.files(root)}
 
 
-def _run_export(here: Path, out: Path, base: str) -> tuple[int, str]:
-    r = subprocess.run([sys.executable, str(here / "export.py"), "export", "--out", str(out), "--base", base],
+def _run_export(here: Path, out: Path, base: str, extra: list | None = None) -> tuple[int, str]:
+    r = subprocess.run([sys.executable, str(here / "export.py"), "export", "--out", str(out), "--base", base] + (extra or []),
                        cwd=repo.ROOT, capture_output=True)
     return r.returncode, r.stdout.decode("utf-8", "replace") + r.stderr.decode("utf-8", "replace")
 
@@ -86,7 +89,7 @@ def spec_sheets() -> dict:
         fid = sec.split()[0]
         names = set(re.findall(r"(?<![\w/])([A-Z][A-Za-z0-9]*_[A-Za-z0-9_]*[A-Za-z0-9]|[A-Z][a-z]+(?=\s*[:(]))", sec))
         out[fid] = sorted(n for n in names if not n.isupper() and not n.startswith(("Mount_", "Machine_Brigade"))
-                          and not re.fullmatch(r"[A-Z0-9_]+", n))
+                          and not re.fullmatch(r"[A-Z0-9_]+", n) and n not in NOT_SHEETS)
     return out
 
 
@@ -270,15 +273,21 @@ def check4(books):
     by_sheet = collections.defaultdict(set)
     for x in game_cols:
         by_sheet[(x["file"], x["sheet"])].add(x["cot"][:-5])
+    python_ref = 0
     for x in formulas:
-        if x["cot"] not in by_sheet[(x["file"], x["sheet"])]:
-            no_game.append([x["file"], x["sheet"], x["cot"]])
+        if x["cot"] in by_sheet[(x["file"], x["sheet"])]:
+            continue
+        if x.get("nguon_khoa", "").startswith("python:"):  # an analysis column checked against a Python reference
+            python_ref += 1
+            continue
+        no_game.append([x["file"], x["sheet"], x["cot"]])
     if no_game:
         gaps.append(f"{len(no_game)} cột công thức không có cột _game")
     if conflicts:
         gaps.append(f"{len(conflicts)} ô input_ khác file nguồn")
     status = "CHUA_AP" if not formulas else ("DAT" if not gaps else "CHUA_DAT")
-    body = [f"Cột công thức (Schema.cong_thuc): {len(formulas)}; cột _game: {len(game_cols)}; sheet input_: {len(inputs)}.",
+    body = [f"Cột công thức (Schema.cong_thuc): {len(formulas)}; cột _game: {len(game_cols)}; cột phân tích so với bản "
+            f"Python (Schema.nguon_khoa 'python:', không cần _game): {python_ref}; sheet input_: {len(inputs)}.",
             "So công thức với _game (sai số 1e-6) là test của lượt 5; ở đây: mỗi cột công thức có cột _game, và mọi ô "
             "input_ bằng giá trị ở file nguồn (cùng id, cùng cột).", ""]
     body += ["Cột công thức thiếu _game:", ""] + _table(["file", "sheet", "cột"], no_game)
@@ -286,47 +295,96 @@ def check4(books):
     return status, gaps, body
 
 
+def md_cells(path: Path) -> list:
+    """Numeric cells of the md tables headed 'Sheet: <file>/<sheet>': (file, sheet, id, column, text, md name)."""
+    cells, lines, where, i = [], path.read_text("utf-8").splitlines(), None, 0
+    while i < len(lines):
+        if lines[i].startswith("#"):
+            where = None
+        m = re.search(r"Sheet:\s*([0-9]{2}_[a-z_0-9]+)/([A-Za-z0-9_]+)", lines[i])
+        if m:
+            where = (m.group(1), m.group(2))
+        if where and lines[i].startswith("|") and i + 1 < len(lines) and re.match(r"^\|[\s:|-]+\|$", lines[i + 1]):
+            header = [x.strip() for x in lines[i].strip("|").split("|")]
+            i += 2
+            while i < len(lines) and lines[i].startswith("|"):
+                vals = [x.strip() for x in lines[i].strip("|").split("|")]
+                for c, v in zip(header[1:], vals[1:]):
+                    if number(v) is not None:
+                        cells.append((where[0], where[1], vals[0], c, v, path.name))
+                i += 1
+            where = None
+            continue
+        i += 1
+    return cells
+
+
+def _off_csv(books, cell) -> list | None:
+    """None when the csv holds the md number (any row with that id: a few sheets repeat an id), else the bad row."""
+    fid, s, rid, c, v, mdname = cell
+    h, rows = books.get(fid, {}).get(s, ([], []))
+    recs = [dict(zip(h, r)) for r in rows if r and r[0] == rid]
+    for rec in recs:
+        x = number(rec.get(c, "") or "")
+        if x is not None and math.isclose(x, number(v), rel_tol=1e-6, abs_tol=1e-9):
+            return None
+    return [mdname, f"{fid}/{s}", rid, c, v, recs[0].get(c, "") if recs else ""]
+
+
+def _pdf_pages(pdf: Path) -> list[str]:
+    try:
+        import pymupdf
+    except ImportError:
+        return []
+    with pymupdf.open(pdf) as d:
+        # NFKC: the font sets "fl" as a ligature; a table cell wraps an id at the zero-width space docpdf puts after
+        # "_", "/" and ";"
+        return [re.sub(r"\s+", " ", re.sub(r"([/_;])[\s​]+", r"\1",
+                                           unicodedata.normalize("NFKC", p.get_text()).replace("​", "")))
+                for p in d]
+
+
 def check5(books, out: Path):
     md_dir, pdf_dir = out / "md", out / "pdf"
     if not md_dir.is_dir():
-        return "CHUA_AP", ["md / pdf chưa dựng (lượt 6)"], ["md/ và pdf/ chưa có: lượt 6 dựng. Khi có, kiểm này lấy mẫu "
-                                                             f"{SAMPLE} ô số (seed {SEED}) từ các bảng md có dòng "
-                                                             "'Sheet: <file>/<sheet>' và so với csv.", ""]
-    cells = []
-    for f in sorted(md_dir.glob("*.md")):
-        lines = f.read_text("utf-8").splitlines()
-        where = None
-        i = 0
-        while i < len(lines):
-            m = re.search(r"Sheet:\s*([0-9]{2}_[a-z_0-9]+)/([A-Za-z0-9_]+)", lines[i])
-            if m:
-                where = (m.group(1), m.group(2))
-            if where and lines[i].startswith("|") and i + 1 < len(lines) and re.match(r"^\|[\s:|-]+\|$", lines[i + 1]):
-                header = [x.strip() for x in lines[i].strip("|").split("|")]
-                i += 2
-                while i < len(lines) and lines[i].startswith("|"):
-                    vals = [x.strip() for x in lines[i].strip("|").split("|")]
-                    for c, v in zip(header[1:], vals[1:]):
-                        if number(v) is not None:
-                            cells.append((where[0], where[1], vals[0], c, v, f.name))
-                    i += 1
-                where = None
-                continue
-            i += 1
-    rng = random.Random(SEED)
-    sample = rng.sample(cells, min(SAMPLE, len(cells))) if cells else []
-    bad = []
-    for fid, s, rid, c, v, mdname in sample:
-        h, rows = books.get(fid, {}).get(s, ([], []))
-        rec = next((dict(zip(h, r)) for r in rows if r and r[0] == rid), None)
-        x = None if rec is None else number(rec.get(c, "") or "")
-        if x is None or not math.isclose(x, number(v), rel_tol=1e-6, abs_tol=1e-9):
-            bad.append([mdname, f"{fid}/{s}", rid, c, v, "" if rec is None else rec.get(c, "")])
-    pdf_note = "pdf: chưa có" if not pdf_dir.is_dir() else "pdf: sinh từ cùng md (spec 6), không đọc riêng"
-    status = "DAT" if sample and not bad else "CHUA_DAT"
-    gaps = [] if status == "DAT" else [f"{len(bad)} / {len(sample)} ô md khác csv" if sample else "md không có bảng số"]
-    body = [f"Ô số trong bảng md: {len(cells)}; mẫu {len(sample)} (seed {SEED}); khác csv: {len(bad)}. {pdf_note}.", ""]
-    body += _table(["md", "sheet", "id", "cột", "md", "csv"], bad)
+        return "CHUA_AP", ["md / pdf chưa dựng (lượt 6)"], ["md/ chưa có: lượt 6 dựng.", ""]
+    cells = [x for f in sorted(md_dir.glob("*.md")) for x in md_cells(f)]
+    sample = random.Random(SEED).sample(cells, min(SAMPLE, len(cells))) if cells else []
+    bad = [b for b in (_off_csv(books, x) for x in sample) if b]
+    # the PDF: a second sample of the same size from FULL.md (the PDF's own source); each number must equal the csv and
+    # stand on a PDF page that also holds its row id
+    fulls = sorted(md_dir.glob("Machine_Brigade_Design_FULL_*.md"))
+    pdfs = sorted(pdf_dir.glob("*.pdf")) if pdf_dir.is_dir() else []
+    pages = _pdf_pages(pdfs[-1]) if pdfs else []
+    pdf_bad, pdf_sample = [], []
+    if fulls and pages:
+        fcells = md_cells(fulls[-1])
+        pdf_sample = random.Random(SEED + 1).sample(fcells, min(SAMPLE, len(fcells))) if fcells else []
+        for x in pdf_sample:
+            off = _off_csv(books, x)
+            on_page = any(x[2] in p and re.search(r"(?<![\w.])" + re.escape(x[4]) + r"(?![\w])", p) for p in pages)
+            if off or not on_page:
+                pdf_bad.append((off or [x[5], f"{x[0]}/{x[1]}", x[2], x[3], x[4], "(csv khớp)"]) + ["" if on_page else "không thấy trong pdf"])
+    if pages:
+        pdf_note = (f"pdf {pdfs[-1].name}: {len(pages)} trang; mẫu {len(pdf_sample)} ô của {fulls[-1].name} (seed "
+                    f"{SEED + 1}); khác csv hoặc không thấy trên trang có id dòng: {len(pdf_bad)}")
+    else:
+        pdf_note = "pdf: chưa có" if not pdfs else "pdf: có nhưng không đọc được (thiếu PyMuPDF)"
+    ok = bool(sample) and not bad and bool(pages) and bool(pdf_sample) and not pdf_bad
+    status = "DAT" if ok else "CHUA_DAT"
+    gaps = []
+    if not sample:
+        gaps.append("md không có bảng số")
+    if bad:
+        gaps.append(f"{len(bad)} / {len(sample)} ô md khác csv")
+    if not pages:
+        gaps.append("pdf chưa có hoặc không đọc được")
+    elif pdf_bad:
+        gaps.append(f"{len(pdf_bad)} / {len(pdf_sample)} ô pdf khác csv hoặc không thấy")
+    body = [f"Ô số trong bảng md (mọi file md/, bảng có dòng 'Sheet: <file>/<sheet>'): {len(cells)}; mẫu {len(sample)} "
+            f"(seed {SEED}); khác csv: {len(bad)}. {pdf_note}.", ""]
+    body += ["Ô md khác csv:", ""] + _table(["md", "sheet", "id", "cột", "md", "csv"], bad)
+    body += ["Ô pdf lệch:", ""] + _table(["md", "sheet", "id", "cột", "md", "csv", "pdf"], pdf_bad)
     return status, gaps, body
 
 
@@ -433,16 +491,18 @@ def main(args, ex) -> int:
         out = repo.ROOT / out
     base = args.base or ""
     here = Path(ex.__file__).resolve().parent
+    extra = ["--effect-shots", args.effect_shots] if getattr(args, "effect_shots", None) else []
     print(f"check: export 1 -> {out.name}")
-    code1, log1 = _run_export(here, out, base)
-    print("\n".join(line for line in log1.splitlines() if line.startswith(("sources ", "foreign keys", "UNMAPPED", "SECRET"))))
+    code1, log1 = _run_export(here, out, base, extra)
+    print("\n".join(line for line in log1.splitlines()
+                    if line.startswith(("sources ", "foreign keys", "UNMAPPED", "SECRET", "docs:"))))
     if not (out / "csv").is_dir():
         print(log1[-2000:])
         return 1
     work = Path(tempfile.mkdtemp(prefix="mb_export_check_"))
     try:
         print("check: export 2 (determinism) -> temp")
-        _run_export(here, work / out.name, base)
+        _run_export(here, work / out.name, base, extra)
         books, _, _ = load_export(out)
         diffs = sorted(p for p in (repo.ROOT / "Docs" / "export").glob("diff_*") if p.is_dir()) if not args.out else []
         results = [
@@ -475,11 +535,25 @@ def main(args, ex) -> int:
     text = "\n".join(lines) + "\n"
     (out / "00_chi_muc" / "SELF_CHECK.md").write_bytes(text.encode("utf-8"))
     _manifest_add(out, "00_chi_muc/SELF_CHECK.md")
+    _self_check_into_docs(out, date, commit)
     print(f"check: wrote {out.name}/00_chi_muc/SELF_CHECK.md")
     for title, r in zip(TITLES, results):
         print(f"  {title.split('.')[0]}: {r[0]}" + (f"  ({'; '.join(r[1])})" if r[1] else ""))
     print("  CI: " + ", ".join(f"{k} {'ok' if v else 'FAIL'}" for k, v in ci.items()))
     return 0 if all(ci.values()) else 1
+
+
+def _self_check_into_docs(out: Path, date: str, commit: str):
+    """Spec 9: SELF_CHECK.md printed at the top of FULL.md; the PDF is rendered again from it."""
+    from . import docmd, docpdf
+    full = docmd.insert_self_check(out, date)
+    if not full:
+        return
+    _manifest_add(out, full.relative_to(out).as_posix())
+    pdf = out / "pdf" / f"Machine_Brigade_Design_{date}.pdf"
+    if pdf.exists() and docpdf.available():
+        docpdf.render(full, pdf, date, commit)
+        _manifest_add(out, pdf.relative_to(out).as_posix())
 
 
 def _manifest_add(out: Path, rel: str):
