@@ -1,0 +1,12 @@
+id,nha_chinh_id,thu_tu,weapon,aim,slot,nguon,raw_json
+headquarters.fortress_air/0,headquarters.fortress_air,0,hq_flak,Free,mg,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[70].secondary[0],"{""weapon"":""hq_flak"",""slot"":""mg"",""aim"":""Free""}"
+headquarters.fortress_air/1,headquarters.fortress_air,1,hq_flak,Free,mg,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[70].secondary[1],"{""weapon"":""hq_flak"",""slot"":""mg"",""aim"":""Free""}"
+headquarters.fortress_air/2,headquarters.fortress_air,2,mg_coax,Turret,coax,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[70].secondary[2],"{""weapon"":""mg_coax"",""slot"":""coax"",""aim"":""Turret""}"
+headquarters.fortress_air/3,headquarters.fortress_air,3,bofors_l70,Free,gun,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[70].secondary[3],"{""weapon"":""bofors_l70"",""slot"":""gun"",""aim"":""Free""}"
+headquarters.fortress_ground/0,headquarters.fortress_ground,0,hq_flak,Free,mg,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[69].secondary[0],"{""weapon"":""hq_flak"",""slot"":""mg"",""aim"":""Free""}"
+headquarters.fortress_ground/1,headquarters.fortress_ground,1,hq_flak,Free,mg,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[69].secondary[1],"{""weapon"":""hq_flak"",""slot"":""mg"",""aim"":""Free""}"
+headquarters.fortress_ground/2,headquarters.fortress_ground,2,mg_coax,Turret,coax,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[69].secondary[2],"{""weapon"":""mg_coax"",""slot"":""coax"",""aim"":""Turret""}"
+headquarters.fortress_ground/3,headquarters.fortress_ground,3,turret_gun_120_long,Free,gun,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[69].secondary[3],"{""weapon"":""turret_gun_120_long"",""slot"":""gun"",""aim"":""Free""}"
+headquarters/0,headquarters,0,hq_flak,Free,mg,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[68].secondary[0],"{""weapon"":""hq_flak"",""slot"":""mg"",""aim"":""Free""}"
+headquarters/1,headquarters,1,hq_flak,Free,mg,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[68].secondary[1],"{""weapon"":""hq_flak"",""slot"":""mg"",""aim"":""Free""}"
+headquarters/2,headquarters,2,mg_coax,Turret,coax,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[68].secondary[2],"{""weapon"":""mg_coax"",""slot"":""coax"",""aim"":""Turret""}"

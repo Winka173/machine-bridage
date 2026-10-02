@@ -1,0 +1,547 @@
+{
+ "generated_utc": "2026-10-02T18:03:01+00:00",
+ "branch": "feature/export-a",
+ "tool": "Tools/export v1",
+ "ngay": "2026-10-03",
+ "commit": "dc121318",
+ "ban_goc": "origin/main (9198a675)",
+ "nguon_chua_commit": "",
+ "balance_sha256": "8fb0f6670ee9fcaf4eb36682572db4f4e3ee5c5fece5049627a61fcf78e2e310",
+ "campaign_sha256": "85b0478d9311cdc6a594326849fbc6152e629b23168bf8e523a38a0c606af003",
+ "cong_cu": "Tools/export v1",
+ "python": "3.11.5",
+ "openpyxl": "3.1.5",
+ "secret_hits": 0,
+ "files": [
+  {
+   "path": "00_chi_muc/COVERAGE.md",
+   "bytes": 5610,
+   "sha256": "ce7816ad5bbe96783be6b67cabcd34a0d7d1a1432fff5f6d2a84209712c235b0"
+  },
+  {
+   "path": "00_chi_muc/Machine_Brigade_00_Index_2026-10-03.xlsx",
+   "bytes": 302636,
+   "sha256": "19646426693ff8e73e9ed6652de6a76ef1202feec075ad319fcde3b09db462cd"
+  },
+  {
+   "path": "00_chi_muc/README.md",
+   "bytes": 455,
+   "sha256": "f0273137089679bda059a463da8987aad7fb291e053fd0b48d0836a327b3f9c2"
+  },
+  {
+   "path": "csv/00_chi_muc/Cho_anh_xa.csv",
+   "bytes": 5003,
+   "sha256": "55dc588b5fa22823d7028c3177826e8b0393e89ace8ce2eb050b94bbf01380ed"
+  },
+  {
+   "path": "csv/00_chi_muc/Don_vi_chua_ro.csv",
+   "bytes": 18191,
+   "sha256": "cc7c54dd1f511eaae3efe44acc4f4ba600b8a156f4300e0ca387d75d1f5a42c2"
+  },
+  {
+   "path": "csv/00_chi_muc/Khoa_ngoai.csv",
+   "bytes": 11707,
+   "sha256": "a1e6f4376ac9e7ade8dddc567a72079ff9e2af19f8ed40031c1f67d15efff32b"
+  },
+  {
+   "path": "csv/00_chi_muc/Khong_xuat.csv",
+   "bytes": 2366,
+   "sha256": "5c2100096d1cc02a3872d7b949ec8d7e8f19a581d56084322f8fc6d2817e0708"
+  },
+  {
+   "path": "csv/00_chi_muc/Muc_luc_file.csv",
+   "bytes": 2341,
+   "sha256": "1c38da249a7e8c605d43e68300b25b86a56f5bddc0d9865c01b32260f788d577"
+  },
+  {
+   "path": "csv/00_chi_muc/Muc_luc_sheet.csv",
+   "bytes": 18209,
+   "sha256": "eda872b27c9c4297a0ba2e57090a5633e2a04c17633046a8409fda73433abc36"
+  },
+  {
+   "path": "csv/00_chi_muc/Nguon_du_lieu.csv",
+   "bytes": 217144,
+   "sha256": "c26fbdc7591a886f36cda877bbe6d8ac9ec55d9ec3fc4bb0eeff6a97fe4d8c44"
+  },
+  {
+   "path": "csv/00_chi_muc/Nguon_khong_doc_duoc.csv",
+   "bytes": 24,
+   "sha256": "33f9aa065bb4abc949fb21467135ab4b64d1b5c7294e50ee2342ae460f620a96"
+  },
+  {
+   "path": "csv/00_chi_muc/Phien_ban.csv",
+   "bytes": 670,
+   "sha256": "ce792df0505760fe4ed3138e1bfe8f488980aa0dff1b9a29e2ad1e5ecbc79d8b"
+  },
+  {
+   "path": "csv/00_chi_muc/Phu.csv",
+   "bytes": 10180,
+   "sha256": "9176ed917081e90db699bbc7b392e7f5d7be37c16a7d2bdb0a9a7c3f218e1194"
+  },
+  {
+   "path": "csv/00_chi_muc/README.csv",
+   "bytes": 3073,
+   "sha256": "bd9ee6d7663eb90cb09f8a639c678df1967f3d58015ba5233308294fa5dac9bf"
+  },
+  {
+   "path": "csv/00_chi_muc/Schema.csv",
+   "bytes": 397538,
+   "sha256": "fd54c9dae5f0de16f9963c506693be09f610fc56a61731a1d151c9cf7da1f814"
+  },
+  {
+   "path": "csv/00_chi_muc/Van_de.csv",
+   "bytes": 1185,
+   "sha256": "c98332cf86df856201348f6be1dc400c9e01f9654e5d84a2bc1d48333027a8fc"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Bang_sat_thuong.csv",
+   "bytes": 911,
+   "sha256": "032bf1b27a22a24f03286643af6cb0647b06d8ba2e071218860d308559551277"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Bang_xuyen_giap.csv",
+   "bytes": 620,
+   "sha256": "47ab70e57a1b7d1c978ddf11259848b7390f5729957dc4fe9026d4da694ea0a0"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Canh_bao_vong.csv",
+   "bytes": 1439,
+   "sha256": "546d6079dc63428a132e61df7b9a15445c32981c6e8d25080681f57775740f17"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Dan_thay_the.csv",
+   "bytes": 16191,
+   "sha256": "362bced5cfd3c102da0cf4ea66e69b290fefbd7a6dab142a18516de94e6eccee"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Dong_vu_khi.csv",
+   "bytes": 14976,
+   "sha256": "a5e3a0f8ecee134d14632cb8fb1336c368438a5383b39a60a22068df7ed86109"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Hanh_vi_dan.csv",
+   "bytes": 2223,
+   "sha256": "6ff0e4814e04b5f111364b35a4ed3f47b6575f7f438a38e97c068e91748d630c"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Hanh_vi_dan_nhom.csv",
+   "bytes": 1911,
+   "sha256": "2cf540185483cb3da1a7ab9aa7a64b17da81acc8e76257abca313a8f364f212a"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/He_so_toan_cuc.csv",
+   "bytes": 563,
+   "sha256": "9c2591a8dea80c0d1567e524b20cbe0977ec583cee46eb4ece044d92e5eb9424"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Ho_vu_khi.csv",
+   "bytes": 28213,
+   "sha256": "0a2736e78837b06200686022ff8f9edf351004629215735e755b4e826b237fd2"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Ho_vu_khi_bien_the.csv",
+   "bytes": 5203,
+   "sha256": "84d9bf085b6c9c0bff05d03cf0ff07914d668d900031dda9e01466c4b15ec66a"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Khac_che.csv",
+   "bytes": 8252,
+   "sha256": "8b88c1994fbff89c3c3920d9f3188bea31b1c25737c3de52df0ee483366a651a"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Phao_sang.csv",
+   "bytes": 4195,
+   "sha256": "72408374aa617f5cd1a4e135bc1beaee1dfce5c599124938a60f4d86342c133b"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Vu_khi.csv",
+   "bytes": 358548,
+   "sha256": "6ff5edb5ddf03f422e402da424ba548e97bd993ebc1786bad7522de5b0b3cc92"
+  },
+  {
+   "path": "csv/01_vu_khi_dan/Vu_khi_he_so_thuong.csv",
+   "bytes": 4951,
+   "sha256": "4df25c6e2d0ee0631e0250dc4a68ac223aef39e24860353034e3691073fbc335"
+  },
+  {
+   "path": "csv/02_phuong_tien/Commander.csv",
+   "bytes": 8919,
+   "sha256": "469c1fab6d5c4067684f745350e3efdfa1e5ca9b0fade05a866b7579f1bd2685"
+  },
+  {
+   "path": "csv/02_phuong_tien/Commander_gia.csv",
+   "bytes": 797,
+   "sha256": "9d84eec02058b85fde898db275f07249590d627a7ddb6cff15df002e31802d3d"
+  },
+  {
+   "path": "csv/02_phuong_tien/Commander_noi_tai.csv",
+   "bytes": 7913,
+   "sha256": "219e72cb47b999fc14adaa899991c5286271f9a78ff9cd5dfb307e4c1a311870"
+  },
+  {
+   "path": "csv/02_phuong_tien/Do_ben.csv",
+   "bytes": 270,
+   "sha256": "34dcf4f773c028f6358122da3e6599ad1da0a0e82dec44a3f4108f6403bf215f"
+  },
+  {
+   "path": "csv/02_phuong_tien/Doi_mo_man.csv",
+   "bytes": 4043,
+   "sha256": "26e5ebb37314bf49c11f6118ff077c61dd80de87c2d32097c8ebe5dd7437d186"
+  },
+  {
+   "path": "csv/02_phuong_tien/Doi_mo_man_luat.csv",
+   "bytes": 744,
+   "sha256": "90e150f54a76238e3a8b64dd9c9e864e40139d4265baad06252d75adf3862b9c"
+  },
+  {
+   "path": "csv/02_phuong_tien/Doi_mo_man_vai_tro.csv",
+   "bytes": 4008,
+   "sha256": "e8bff301d0c845dfcd7e3ec54d22fcd28d9abb7eb9bd9515e347efc1314409e2"
+  },
+  {
+   "path": "csv/02_phuong_tien/Ky_nang.csv",
+   "bytes": 6871,
+   "sha256": "2cca6312a23b49a16d45ad5982f14a727270695b0ec7271d240ca0bd990a8035"
+  },
+  {
+   "path": "csv/02_phuong_tien/Nhanh_xe.csv",
+   "bytes": 524,
+   "sha256": "7fee7b91be3ac128e849e1c67fc510fe7fb438327427b68a71ae87cd2da9df93"
+  },
+  {
+   "path": "csv/02_phuong_tien/The_ho_tro.csv",
+   "bytes": 15039,
+   "sha256": "dec6280d6a9ab195183e7fa1ab6f079fcf2691acce5a55c4bac9f2c58ebe1722"
+  },
+  {
+   "path": "csv/02_phuong_tien/Tinh_nhue_luat.csv",
+   "bytes": 2150,
+   "sha256": "e8c6672c8b1987abcd0612503d9e5dd09c39033f554afa861e9a2cb41f854e34"
+  },
+  {
+   "path": "csv/02_phuong_tien/Trang_bi.csv",
+   "bytes": 11317,
+   "sha256": "8b8321de642551c380a98d0b7e5b96d060064f2ccd8d75d7ac8805dc6c1baf5d"
+  },
+  {
+   "path": "csv/02_phuong_tien/Trang_bi_bo.csv",
+   "bytes": 3730,
+   "sha256": "70f37cfefbabc1f4e34b077afa97632623a6043c0626078f941a50f6855794d7"
+  },
+  {
+   "path": "csv/02_phuong_tien/Trang_bi_dac_tinh.csv",
+   "bytes": 10890,
+   "sha256": "41a2220d4025eb9a7c6c2bd6ac2a4724a72c4b5ed90eb0a08a22ce010d6914a4"
+  },
+  {
+   "path": "csv/02_phuong_tien/Trang_bi_dong_phu.csv",
+   "bytes": 4994,
+   "sha256": "1100894f1d7085c35aa9682d688923f1024b35c2fce830e1086bdd3e1d0c78f6"
+  },
+  {
+   "path": "csv/02_phuong_tien/Trang_bi_mo_dun.csv",
+   "bytes": 2935,
+   "sha256": "fe1cf6a2b9e3e75605d6a0ebbfb3b0a6e403803e02bff179853b7d5e1017041b"
+  },
+  {
+   "path": "csv/02_phuong_tien/Xe.csv",
+   "bytes": 136295,
+   "sha256": "03bd126463a917ea3e5edffd37edbc06184b68e2569fa40eef086566e6e23c7f"
+  },
+  {
+   "path": "csv/02_phuong_tien/Xe_bo_phan.csv",
+   "bytes": 2191,
+   "sha256": "6e38cb61af7a68bd0a10bcd5f645a99824a66eeab2429538871ad8520094d27e"
+  },
+  {
+   "path": "csv/02_phuong_tien/Xe_ten_lua.csv",
+   "bytes": 885,
+   "sha256": "125c5b7d1a09e4482ecfcc664b0e42a0eef977aa332d3c70e81d5894652369e1"
+  },
+  {
+   "path": "csv/02_phuong_tien/Xe_tham_chieu.csv",
+   "bytes": 762,
+   "sha256": "25cc1381e89f62c960aefebd3944519ba4d69f191e63f20e6fdbd89771690aa6"
+  },
+  {
+   "path": "csv/02_phuong_tien/Xe_vu_khi.csv",
+   "bytes": 19844,
+   "sha256": "7fc0a8b6f433a4ea2e531c0632ad625d56b7a700514a563919e7b379912730fa"
+  },
+  {
+   "path": "csv/03_boss/Boss.csv",
+   "bytes": 121228,
+   "sha256": "f40fdce199ccc2d0f838da5716e9e7bb81ab3ef917c761ca54fb41f3236d441d"
+  },
+  {
+   "path": "csv/03_boss/Boss_air.csv",
+   "bytes": 223,
+   "sha256": "3ab53107ede47f369c6a14c60d31711470cb2df4289d04d91fd37b1c8d832591"
+  },
+  {
+   "path": "csv/03_boss/Boss_attach.csv",
+   "bytes": 424,
+   "sha256": "5718ddae7339c396d7434b7618830309292def2ee1a69d139e073e865fcf1c2e"
+  },
+  {
+   "path": "csv/03_boss/Boss_be_goc.csv",
+   "bytes": 21438,
+   "sha256": "a84d8b95f370ab17ab5effb716e3901f19e13af6b9508247bf39d89aeccdb30d"
+  },
+  {
+   "path": "csv/03_boss/Boss_bien_the_chinh.csv",
+   "bytes": 12034,
+   "sha256": "15b0d4d7bc150690604847ff87b821d5343c94ed11290bdffabfda1af2b23954"
+  },
+  {
+   "path": "csv/03_boss/Boss_bo_phan.csv",
+   "bytes": 71442,
+   "sha256": "5a6c1b7b4d8dd6b0050a5fb6760077fd7ae7d0387b1684ce875c5461973e34da"
+  },
+  {
+   "path": "csv/03_boss/Boss_bo_phan_thu_vien.csv",
+   "bytes": 5575,
+   "sha256": "f7f5d9ca07eb3956a5a844b751eb84d26155ade40cc2b4ef3446f0f25a73e92c"
+  },
+  {
+   "path": "csv/03_boss/Boss_guards.csv",
+   "bytes": 1546,
+   "sha256": "43db9cacdf1df9f55c2eca9ae9bc12b16449b88a6cf6d30f3e82794f01ee22ef"
+  },
+  {
+   "path": "csv/03_boss/Boss_ham_doi.csv",
+   "bytes": 1341,
+   "sha256": "c24f4cdf28a3a9d2f60417b77f62f045ee3970b4273c11ad62a62abeb276899d"
+  },
+  {
+   "path": "csv/03_boss/Boss_hang.csv",
+   "bytes": 5375,
+   "sha256": "0ed47b41f0ace67fbcf6c6750b2f8af5e069e639c062622dfc63ae2b1a2bb409"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong.csv",
+   "bytes": 6810,
+   "sha256": "d03ca3f32f9ef59353bd939a0c8a6d0430d6e8a42af1f5a2c0b6d760e535b57c"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_den.csv",
+   "bytes": 10175,
+   "sha256": "a162e7d48cfc3a101726ec08bb93c700885f49f48ca97fa8d939ad5a816fb209"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_luat.csv",
+   "bytes": 2073,
+   "sha256": "8713d3e10de3adbd69532a816519763545b455db63ffefd6aebef92166f57ce6"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_mau.csv",
+   "bytes": 2809,
+   "sha256": "e76d30615f0d9735736cf1822d5de5c09e879fc800b9acedaaa960067018e147"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_mau_den.csv",
+   "bytes": 5019,
+   "sha256": "db25444d36679e3179c4a4490c4ef445f83542b849b14e33982bb2b5e994bba7"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_mau_pha.csv",
+   "bytes": 2273,
+   "sha256": "4d707f0377d28f68934b38f40b1fa014971d39e2b2d69ad6d59aa309d9e3e149"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_mau_phases.csv",
+   "bytes": 428,
+   "sha256": "481ed322658d5728a82a5e72a858419a96107ebd6f9c1d7592783da4d20c4d98"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_mau_phases_units.csv",
+   "bytes": 740,
+   "sha256": "c25c704367a82843c1b685e49097ffe087549a95c09b08db2c390c32bbff8f41"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_pha.csv",
+   "bytes": 1368,
+   "sha256": "416fb02dfaed16c1196280d92b91d173cddd3253f5f4702480e1adf0a6b78d28"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_phase.csv",
+   "bytes": 4670,
+   "sha256": "572b9c556faba750a22ad5c5279c5629cd43b76f0c064e4b35ca9c5552b83f4c"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_phases.csv",
+   "bytes": 437,
+   "sha256": "168611b1f1566b90c70f004609fc064e9d30d46ff64faf134f351effcfe2ca1d"
+  },
+  {
+   "path": "csv/03_boss/Boss_ho_tong_phases_units.csv",
+   "bytes": 762,
+   "sha256": "b8db17bf7d5401ec0864bdc86c9a17174a5d7435b4643b7f02d3a428bdf0ac79"
+  },
+  {
+   "path": "csv/03_boss/Boss_khung.csv",
+   "bytes": 2584,
+   "sha256": "384fc38420cb7f578ff33abe8343428ba872d7cd19d3c546460bde98dcf1c633"
+  },
+  {
+   "path": "csv/03_boss/Boss_phase.csv",
+   "bytes": 2461,
+   "sha256": "8cd84678ca2e2f7b66372bc01c6491d370ca05f8a344229ff967ed32a6438727"
+  },
+  {
+   "path": "csv/03_boss/Boss_sieu_vu_khi.csv",
+   "bytes": 8507,
+   "sha256": "d13627f021d94e1faf15eeee260ea12873aa8e75f5f4bb81954865fdb523c598"
+  },
+  {
+   "path": "csv/03_boss/Boss_sieu_vu_khi_don.csv",
+   "bytes": 7455,
+   "sha256": "d91f57740fbb649b73878d8685f9b39267279cfc188004cff5a086e92116817a"
+  },
+  {
+   "path": "csv/03_boss/Boss_sieu_vu_khi_luat.csv",
+   "bytes": 4930,
+   "sha256": "a35181b0a5d878834ea6f010477e58a9f8abf55cee429d416185c42e767bf38e"
+  },
+  {
+   "path": "csv/03_boss/Boss_tiers_schedule.csv",
+   "bytes": 1812,
+   "sha256": "15b8bb922574c94cb011f4ce17e87f68f19939d62cdb6d37313746850b6f16d3"
+  },
+  {
+   "path": "csv/03_boss/Boss_tiers_schedule_steps.csv",
+   "bytes": 2689,
+   "sha256": "f4336fe9b7234d6ba6ecb570aacd5096c34ece797b07a5dd246c51ed9cacea07"
+  },
+  {
+   "path": "csv/03_boss/Boss_vu_khi.csv",
+   "bytes": 58148,
+   "sha256": "c375bb1bbafc3c4730debbc9d1717a042883d810531d325667dd53cff5e525f7"
+  },
+  {
+   "path": "csv/03_boss/Sanhunt.csv",
+   "bytes": 8245,
+   "sha256": "1c601150f9a6cad2d60153cb13a6b1b1539f938ec99ff351402828fcb85665a0"
+  },
+  {
+   "path": "csv/03_boss/Sanhunt_chua_xep.csv",
+   "bytes": 1039,
+   "sha256": "2ba0fcefbdc022ad4349465040579402e9d9c077ddf780ba057b43b8cf4d62ff"
+  },
+  {
+   "path": "csv/03_boss/Sanhunt_ho_tro.csv",
+   "bytes": 2713,
+   "sha256": "33a7a72d4c2c2fa055688e60b626a475ffed4d58cb4d548f3f76d33a45690b7e"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Can_cu_AI_cap.csv",
+   "bytes": 484,
+   "sha256": "2d2cc12a5acb6120d571d76c609bbaf5c42fac36bde37753426540b7b25b64a3"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Can_cu_AI_kieu.csv",
+   "bytes": 15517,
+   "sha256": "665f9ea6f91f013d2335599e96132dc7da6d72f3dfeb0b6fd96762efde73c83c"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Can_cu_luat.csv",
+   "bytes": 3297,
+   "sha256": "ef7524d0efed4dee5b5800d85a2cbe05c4b113029a6c24c6d275378465376cc5"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Dot_phong_thu.csv",
+   "bytes": 2336,
+   "sha256": "5278656f4cb93b63f30025e3238914e1103942ea8b0db43f44c5d52c98c0001d"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Loadout_can_cu.csv",
+   "bytes": 1587,
+   "sha256": "eb0afe8627408f4d26ff9c8009a2aeea1be196b1e12124b7ebbd1587a112cda4"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Mo_dun_tien_ich.csv",
+   "bytes": 7773,
+   "sha256": "339ccd638ccde2d52d400a0a2b31fa9ff95a07069d9d53a59d66cdb35f590397"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Mo_dun_tien_ich_vu_khi.csv",
+   "bytes": 51,
+   "sha256": "59a19c1cec73aa27a330c76c35b8cda48593e1f431c747432859cb51d692b0e8"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Nha_chinh.csv",
+   "bytes": 4037,
+   "sha256": "283e8552d54169393d64c9423be1b030d37d6f55f4a9e5bd6567a9a7c55c48bf"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Nha_chinh_kieu.csv",
+   "bytes": 1285,
+   "sha256": "7fa56be5a1b6d4c06585b0e9977da68942ca90bdebce55d760355083e4d3d6ba"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Nha_chinh_kieu_cap.csv",
+   "bytes": 1992,
+   "sha256": "9585cc827cf07abe72fe1dafa8659fab304511331dec1251a1a1c9a48d4b9a6c"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Nha_chinh_luat.csv",
+   "bytes": 1768,
+   "sha256": "4a0391cc5323b2e16a0b0a08a26e7f10413edab7dd304a156c0f8516e6639bcc"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Nha_chinh_vu_khi.csv",
+   "bytes": 2357,
+   "sha256": "012c53206a2ca113a9cc61ac3d0ec9dff8a74fe2d32c2db902c8191483e935a2"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Thap.csv",
+   "bytes": 64738,
+   "sha256": "66177c6daad39942fce6e2199c1d671586e98eaf988e387c6966e9c0277a336b"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Thap_vu_khi.csv",
+   "bytes": 640,
+   "sha256": "89efde9c0d00892101ad201f2659e5cbb7344b759c02d95882df6a84955f625f"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Tuong.csv",
+   "bytes": 2586,
+   "sha256": "8ffd34a5e3ef138fec702b22b66f62da093971621dd129945c969e111c4a54f6"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Tuong_luat.csv",
+   "bytes": 1502,
+   "sha256": "6c0387a72caabe826404db290caf9778eaa3a53edbf799e08420ab652e900233"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Tuong_vu_khi.csv",
+   "bytes": 41,
+   "sha256": "19529d5cfa5e4d42550fe96df51d60051dbf4dd77f9f37b434407df7c9fe4bb8"
+  },
+  {
+   "path": "csv/04_can_cu_thap/Xay_lai.csv",
+   "bytes": 416,
+   "sha256": "d8e1829851a11195946d22fe3313b7af39f7fe98b87d8a9a3697d8a1e8cccddc"
+  },
+  {
+   "path": "xlsx/01_vu_khi_dan.xlsx",
+   "bytes": 192040,
+   "sha256": "3613f5f6c26f8bf18b477cc7f4513c7f2de04a830f9e9b9615b260fea41af6a9"
+  },
+  {
+   "path": "xlsx/02_phuong_tien.xlsx",
+   "bytes": 116750,
+   "sha256": "88987bd74ecad6d33452a6251eb6646aed548a440531807b68cf55f27300e17f"
+  },
+  {
+   "path": "xlsx/03_boss.xlsx",
+   "bytes": 147935,
+   "sha256": "8fff0ca7f286748e506f36b74a67e266df6d5ff154bff7dfb6fb80e7697d2452"
+  },
+  {
+   "path": "xlsx/04_can_cu_thap.xlsx",
+   "bytes": 66430,
+   "sha256": "800c2b4112a6bacc89a46908d70d02108f108b7d22e541f6ee9a92132a9a82e2"
+  }
+ ]
+}

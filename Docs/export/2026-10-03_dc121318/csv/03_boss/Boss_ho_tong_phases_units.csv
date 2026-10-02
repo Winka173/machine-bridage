@@ -1,0 +1,5 @@
+id,boss_ho_tong_phases_id,thu_tu,role,unit,nguon,raw_json
+silver_bug/0/0,silver_bug/0,0,,elite_fpv_carrier,Assets/MachineBrigade/Resources/Data/balance.json: escorts[10].phases[0].units[0],"{""unit"":""elite_fpv_carrier""}"
+silver_bug/0/1,silver_bug/0,1,jam,ew_jammer,Assets/MachineBrigade/Resources/Data/balance.json: escorts[10].phases[0].units[1],"{""unit"":""ew_jammer"",""role"":""jam""}"
+silver_bug/1/0,silver_bug/1,0,,elite_attack_helicopter,Assets/MachineBrigade/Resources/Data/balance.json: escorts[10].phases[1].units[0],"{""unit"":""elite_attack_helicopter""}"
+silver_bug/1/1,silver_bug/1,1,repair,engineer_vehicle,Assets/MachineBrigade/Resources/Data/balance.json: escorts[10].phases[1].units[1],"{""unit"":""engineer_vehicle"",""role"":""repair""}"

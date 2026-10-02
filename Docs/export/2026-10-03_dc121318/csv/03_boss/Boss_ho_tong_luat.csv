@@ -1,0 +1,19 @@
+id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
+bossRushCut,escortRules,bossRushCut,2,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.bossRushCut,2
+bossRushGuards,escortRules,bossRushGuards,0.7,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.bossRushGuards,0.7
+bossRushMin,escortRules,bossRushMin,4,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.bossRushMin,4
+bounty,escortRules,bounty,3,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.bounty,3
+cap.Easy,escortRules,Easy,5,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.cap.Easy,5
+cap.Hard,escortRules,Hard,8,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.cap.Hard,8
+cap.Heroic,escortRules,Heroic,9,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.cap.Heroic,9
+cap.Iron,escortRules,Iron,9,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.cap.Iron,9
+cap.Normal,escortRules,Normal,7,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.cap.Normal,7
+cap.VeryHard,escortRules,VeryHard,9,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.cap.VeryHard,9
+dropWarn,escortRules,dropWarn,3,,s,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.dropWarn,3
+helperBounty,escortRules,helperBounty,4,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.helperBounty,4
+leash,escortRules,leash,28,,m,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.leash,28
+marks,escortRules,marks,,0.5,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.marks,[0.5]
+repair,escortRules,repair,0.003,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.repair,0.003
+repairReach,escortRules,repairReach,12,,m,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.repairReach,12
+spotBonus,escortRules,spotBonus,0.15,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.spotBonus,0.15
+spotSpread,escortRules,spotSpread,0.6,,,Assets/MachineBrigade/Resources/Data/balance.json: escortRules.spotSpread,0.6

@@ -1,0 +1,6 @@
+id,xe_id,thu_tu,ammo,reload_s,weapon,nguon,raw_json
+bmpt/0,bmpt,0,4,30,ataka,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[44].missiles[0],"{""weapon"":""ataka"",""ammo"":4,""reload"":30}"
+ifv/0,ifv,0,2,20,atgm,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[19].missiles[0],"{""weapon"":""atgm"",""ammo"":2,""reload"":20}"
+light_tank/0,light_tank,0,2,25,gun_launched_atgm,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[1].missiles[0],"{""weapon"":""gun_launched_atgm"",""ammo"":2,""reload"":25}"
+nlos_atgm_vehicle/0,nlos_atgm_vehicle,0,2,25,spike_nlos,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[138].missiles[0],"{""weapon"":""spike_nlos"",""ammo"":2,""reload"":25}"
+titan_tank/0,titan_tank,0,4,30,atgm,Assets/MachineBrigade/Resources/Data/balance.json: vehicles[21].missiles[0],"{""weapon"":""atgm"",""ammo"":4,""reload"":30}"

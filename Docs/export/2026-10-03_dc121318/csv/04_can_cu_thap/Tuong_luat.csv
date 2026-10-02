@@ -1,0 +1,12 @@
+id,nhom,khoa,gia_tri_so,gia_tri_chu,don_vi,nguon,raw_json
+ai.brandt,base.walls,brandt,,t_wall,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.ai.brandt,"""t_wall"""
+ai.default,base.walls,default,,hesco,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.ai.default,"""hesco"""
+ai.kessler,base.walls,kessler,,t_wall,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.ai.kessler,"""t_wall"""
+ai.varga,base.walls,varga,,gun_wall,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.ai.varga,"""gun_wall"""
+breakerMultiplier,base.walls,breakerMultiplier,1.5,,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.breakerMultiplier,1.5
+breakers,base.walls,breakers,,armored_bulldozer;engineer_vehicle;demolition_line_vehicle,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.breakers,"[""armored_bulldozer"",""engineer_vehicle"",""demolition_line_vehicle""]"
+campLines,base.walls,campLines,2,,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.campLines,2
+default,base.walls,default,,hesco,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.default,"""hesco"""
+fortressLines,base.walls,fortressLines,3,,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.fortressLines,3
+rubbleSlow,base.walls,rubbleSlow,0.2,,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.rubbleSlow,0.2
+segmentHp,base.walls,segmentHp,2400,,,Assets/MachineBrigade/Resources/Data/balance.json: base.walls.segmentHp,2400

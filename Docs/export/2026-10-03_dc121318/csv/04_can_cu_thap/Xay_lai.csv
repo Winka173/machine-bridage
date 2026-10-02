@@ -1,0 +1,4 @@
+id,cooldown_s,cp,drop,nguon,raw_json
+large,60,7,5,Assets/MachineBrigade/Resources/Data/balance.json: base.rebuild.large,"{""cp"":7,""cooldown"":60,""drop"":5}"
+medium,40,4,3.5,Assets/MachineBrigade/Resources/Data/balance.json: base.rebuild.medium,"{""cp"":4,""cooldown"":40,""drop"":3.5}"
+small,25,2,2.5,Assets/MachineBrigade/Resources/Data/balance.json: base.rebuild.small,"{""cp"":2,""cooldown"":25,""drop"":2.5}"
