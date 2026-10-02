@@ -14291,3 +14291,36 @@ Branch feature/p29-local-ui; written without a compile (the lead's runner compil
   `widthOverTrail`); whether the glTF import keeps the `Flares` / `Aps_cluster` mesh names (`.001` suffixes are stripped);
   whether two flare rows on one side are more than 0.15 m apart (else they draw as one point per side: 4 flares a side);
   the badge size on the compact tray on a phone.
+
+## 27 wave 5a (lead pass, 2026-10-02)
+
+Pass 5a (lane A, ground bosses): behemoth, behemoth_inferno, behemoth_tempest, fortress_bastion, fortress_hive, in the new
+`Tools/blender/mb_p27_wave5_ground.py` (registered last in `build_assets.py`, one import and one BUILDERS line). Run: Blender
+rebuild, `glb_check.py` (compare, accept). No runner mirror, no cards, no previews, no tests.
+
+- **Method (as wave 6).** Each boss is its old builder (p20 behemoth / fortress_bastion, mb_bosses2 inferno / tempest / hive),
+  then a V2 pass that strips and rebuilds the big hard surfaces under the same part names and materials: V2 running gear on
+  all four track units (`_track_pair`: the library track unit with the old end radius and a y offset per pair, sprockets at the
+  outer ends as before; dished road wheels, toothed sprocket, idler, sagging belt, cleats on the ends only and none under the
+  ground line), `k.sharp_loft` hulls on the old sections (behemoth hull and casemate; fortress superstructure and bridge),
+  `k.extrude` chassis / pod housings / turret shell, chamfered fenders, bustle, slab armour (Bastion), casemate and side-gun
+  houses, raised `k.inset` panels on the decks and roofs, the library hatch on the behemoth turret, seeded greebles on the
+  front decks, superstructure roofs and bustle (seeds 2901, 2911, 2921, 2931, 2941; the Inferno skips the bustle, its
+  pressure bottles lie there). On the mounts only chamfered copies of the old houses (Gun_turret, Coil_turret, T_house_*,
+  R_box_*, Rocket_box, Sam_box, Rack_ramp), same pivot and material.
+- **Contracts kept.** Every runtime node identical (validator), boss part nodes and mount slots untouched (`Main_cannon*`,
+  `Mount_*.00N`, `Part_missile`, `Radar`, the mesh-name nodes `Fuel_tanks|Tank_straps|Tank_hazard`,
+  `Aps_faces|Aps_tubes|Aps_tubes_bore`), so the variants' keep/drop lists (behemoth_mk0 / mk2, bastion_mk0, mara_behemoth on
+  the same model) see the same nodes. Moving parts unchanged; no new material on a moving part (the turret hatch is Armor /
+  Steel, already there). Materials used fall by one on four of them (the old tracks' `Rubber` tyres are `Undercarriage` now).
+- **Pitfall:** build_assets.py never runs `mb_round6.finish`, so mb_bosses2's own builders (inferno, tempest, hive) export
+  `Mount_mg__001` unless the builder wraps `a.finish` with `mb_phase2._suffixed` (p20's wrappers already did); the first hive
+  build lost `Mount_mg.001` / `Mount_missile.001` (validator errors) until `_suffixed` was added (the old GLBs came from a run that
+  renamed them, e.g. mb_bosses2.py's own `main`).
+- `ao_strength` .72 (default .9): COLOR_0 +7 to +9 %, kept modest (bosses are dark war machines; card goal >= old, <= ~+20 %).
+- **Gates (old -> new triangles, COLOR_0).** behemoth 19,948 -> 21,046 (1.06x; .611 -> .655); behemoth_inferno 19,132 -> 20,046
+  (1.05x; .600 -> .646); behemoth_tempest 16,536 -> 17,418 (1.05x; .624 -> .665); fortress_bastion 23,948 -> 25,064 (1.05x;
+  .613 -> .658); fortress_hive 18,866 -> 19,334 (1.02x; .598 -> .649). Zero-area 0, sizes identical, open edges unchanged
+  (fortress 32, as before), all boss_s far inside the class budget, no errors (the `.00N` suffix warnings are the old convention).
+- **Card luma (old, alpha > .5, Rec. 709):** behemoth .3124, behemoth_inferno .3129, behemoth_tempest .3219, fortress_bastion
+  .2888 (the dimmest: watch it), fortress_hive .3181.
