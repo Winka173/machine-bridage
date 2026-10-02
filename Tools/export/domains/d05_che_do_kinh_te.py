@@ -48,7 +48,8 @@ def build(ctx):
         r.set("cp_khoi_dau_nhan_he_so", name in start_modes)
         r.set("ho_so_ai", profiles.get(name, ""))
         r.set("trung_lap", ";".join(neutral_modes.get(name, [])))
-        r.flatten(rec, B.BALANCE, path)
+        # text.timeLimit is the rules card's text ("10 phút"), not seconds: no unit suffix (spec 9.6)
+        r.flatten(rec, B.BALANCE, path, aliases={"text.timeLimit": "text_time_limit"}, units={"text.timeLimit": ""})
     for name, bank in (eco.get("bankByMode") or {}).items():
         if name not in MODE_NAME.values():
             r = cd.row(name.lower(), B.nguon(("economy", "bankByMode", name)), raw=bank)

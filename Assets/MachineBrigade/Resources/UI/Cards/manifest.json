@@ -267,7 +267,7 @@
             "kind": "vehicle",
             "model": "zu23_technical",
             "source": "Models/zu23_technical",
-            "hash": "v2:3950dead145449e41223d7d6de8a7f5b02896ba7"
+            "hash": "v2:9a870d4ed4e03829c6a636582fd267e7b4668cb3"
         },
         {
             "id": "smoke_carrier",
@@ -1331,7 +1331,7 @@
             "kind": "boss",
             "model": "ixion",
             "source": "Models/ixion",
-            "hash": "v2:f46576e4de243912967efc14b3ef94a51c23496f"
+            "hash": "v2:81b77c6692952048aa9e08d8aa0ef08083c96bef"
         },
         {
             "id": "kraken",
@@ -1541,7 +1541,7 @@
             "kind": "tower",
             "model": "rocket_turret",
             "source": "Models/rocket_turret",
-            "hash": "v2:167d9aa61b853f63af9e5b7d6ea4a51f5bab405e"
+            "hash": "v2:c8f66f6dd70462a400951ee74dbbe08eb71e6e59"
         },
         {
             "id": "rocket_turret.cluster",

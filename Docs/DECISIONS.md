@@ -17345,6 +17345,44 @@ Unity, test or sim run.
   csv/, images/ and pdf/ are git-ignored; 00_chi_muc/ (and md/ from pass 6) stay committed. Every xlsx is under 50 MB, no
   _a / _b split.
 
+## Bộ xuất dữ liệu toàn bộ (lane C, passes 7-8)
+
+Lane C, 2026-10-03: spec 7 (diff), 8 (secrets), 9 (self-check) and CI. Read only; Python only, no Unity, test or sim run.
+
+- **Diff.** `python Tools/export/export.py diff <dirA|refA> <dirB|refB> [--out DIR]` -> `Docs/export/diff_<A>_<B>/`: one
+  xlsx + md per file of either export (00-12 today, 13 when pass 10 adds it) and `00_tom_tat.xlsx` (+ .md). Generic over
+  every sheet, so the reference sheets of spec 12.6 are diffed with no new code. Reads `csv/` (the exact strings written)
+  and falls back to the xlsx when a folder has only those; rows matched by the first column. Not compared: raw_json,
+  nguon (a C# line shift is not a data change) and the `<col>_truoc` / `<col>_sau` / so_voi_ban_goc block (it follows
+  --base). A column only one side has goes to Cot_doi instead of a change in every row. Change % = (new - old) / |old|;
+  from 0 it is blank. Source commit = the newest commit in A..B that touched the row's nguon file, blank if none did.
+  Watched groups for the 20 % list, by column name (or a kv sheet's khoa): dps, hp, price (cp / cost / price / gia_*),
+  cycle (cooldown / reload / nap). The index 00 is diffed but kept out of the top 50 and the 20 % list. No clock in
+  any output: a rerun gives the same bytes.
+- **Refs.** A ref is exported in a temp git worktree with the current exporter overlaid (so only data differs), with
+  `--base ""` and `--lenient`: a domain the old tree cannot build is left out and named in its 00/Van_de.
+- **Demo** origin/main (v0.34.0, 9198a675) -> 382d5fb9: d01 and d09 are not buildable on v0.34.0 (a helper / source
+  added later, e.g. Tools/balance/full_weapon_audit.py), so they show as added; the rest: rows +62 997 / -136, 20 345
+  cells changed, 373 watched values over 20 % on 195 entities (02 HP 133, 02 price 91, 03 cycle 96, 04 price 50, 03 HP 3).
+  Only `00_tom_tat.*` is committed (`.gitignore` keeps the per-file diffs out).
+- **Self-check.** `python Tools/export/export.py check [--out DIR]`: two exports in separate processes, the 9 checks read
+  back from csv/, `00_chi_muc/SELF_CHECK.md` (no clock; added to MANIFEST). Exit 1 only on the CI four: coverage, foreign
+  keys, determinism, secrets; the rest report DAT / CHUA_DAT / CHUA_AP. Check 1 parses spec 4's sheet names from the spec.
+  Check 2's (id, column) rule compares two cells only when one is an input_ sheet or both columns read the same source
+  file (Schema.nguon_khoa): same column name for another quantity is not a conflict. Check 5 samples 200 numeric md
+  table cells (seed 20261003) once pass 6 builds md/.
+- **Result at 382d5fb9.** 1 CHUA_DAT (file 13 = pass 10; 23 layer B / C sheets = pass 5; empty 04/Mo_dun_tien_ich_vu_khi
+  and 04/Tuong_vu_khi, no marker row), 2 CHUA_DAT (radar_station width_m: 04/Mo_dun_tien_ich 6 vs 08/Vat_the_loai 7.9,
+  two entities sharing an id in balance.json), 3 DAT, 4 CHUA_AP (pass 5), 5 CHUA_AP (pass 6), 6-9 DAT.
+- **Fixes in lane C's own files.** 10/Model size columns are `glb_x_m` / `glb_y_m` / `glb_z_m` (were dai_m / cao_m /
+  rong_m, which clashed with 02/Xe's game size); 05/Che_do `text_time_limit` (was `_s`: it holds the card's text).
+- **Secrets.** The scan reads every output file: xlsx / zip parts, PDF streams inflated, other binaries as Latin-1; adds
+  JWT, bearer, api_key= / token= assignments and emails to the existing keys, passwords, local paths and user name.
+  0 hits on the export and the diff folders.
+- **CI.** `.github/workflows/export.yml`: on push, Ubuntu, Python 3.11 + openpyxl 3.1.5 + numpy, `export.py check --out
+  $RUNNER_TEMP/export`; nothing committed, SELF_CHECK.md uploaded as an artifact. USER is blanked so the runner's name
+  ("runner") is not scanned as a local user name.
+
 ## Play-test 12 audio (lane C)
 
 Branch `feature/pt12-audio`. The owner: machine guns and autocannons much worse than yesterday (`f5e565d3`); artillery,
@@ -17460,3 +17498,34 @@ Branch `feature/export-b`, 2026-10-03: layer B of files 01-04 and the code-const
   the co / khong suggestion is the scan's heuristic for the owner to review.
 - **TODO (lane C / lead):** wire `scan_constants.scan(repo.ROOT)` into d12 as sheet Hang_so_trong_ma (one row per item, id
   = `<file>:<line>:<col>`, columns from `COLUMNS`); no change to d12 made here.
+
+## Prompt 35 (rebuild stand-in and low-quality models, lane A, 2026-10-03)
+Pass 0 (inventory, no building):
+- Scope: the 230 GLBs a def, a tower branch or an HQ draws (scan_prep.model_owners); the other ~290 GLBs (props, scenery, rounds, `_hd` twins) are hashed for the overlap check but not scored: they are decoration.
+- Budgets: MODEL_STANDARD.md's ranges are higher than prompt 35's, so they stay (the higher standard). Floor = 70 % of the class minimum (a hard gate); over the maximum is information only (owner rule 02/10).
+- Shared geometry (a): triangle keys at 2 mm in model space plus per-piece unit-box keys (catches scaled or stretched copies); keys held by more than 6 model families are generic primitives and do not count; families = an id with its `_hd`, `_a`, `_b`, `_chute`, `_wreck` files. The borrower is the later GLB (first git add); a gold V2 model is always the original. Two models added in the same commit that share > 30 % are both listed (sibling builds of one builder).
+- Notes (b): unit_refs / unit_sheet "model tạm" and builder docstrings ("stand-in", "temporary", "placeholder"); DECISIONS mentions are mostly of stand-ins already replaced, so they are not a flag. Ixion is found this way (its sheet still says "model tạm"; its GLB has been its own since 27 wave 1a; the owner asks for a real rebuild, so it stays pilot 1).
+- Scripts (c): AST of every BUILDERS module in all_builders order; the winning builder calling another id's builder.
+- Grade for P1/P2/P3 = the lowest of the gate's soft grade, the pass 8 visual grade, and the hard checks (4+ parts missing or under the floor = Kém, other hard fails = Cần sửa). Result: P1 131, P2 85, P3 14; 30 borrowed.
+- Gold (5.3): the 4 V2 models + the top 10 % per class among pass 8 visual Tốt models, ranked by the mean percentile of their soft metrics (the soft score itself needs a gold first). Classes with no gold of their own: wheeled/ground -> tracked, air_other -> helicopter, ship -> boss, hq -> structure, obstacle -> structure.
+- Gate pictures are drawn in Python (glb_mesh.render: flat shaded, orthographic, 28.4 px/m battle view), so every model is measured the same way without Unity; silhouettes at 256 px on the long side so the ratio does not grow with model size. The in-game sheets stay the reviewer's pictures; "agent visual" is NA in the report unless a reviewer fills it.
+- One def draws another model by data (mara_behemoth -> behemoth, prompt 31's); giving it a model is a data change, so it goes to QUESTIONS.md.
+Pass 1 (kit library):
+- New module Tools/blender/mb_kit35.py, 70 components (general, tracked, wheeled, aircraft, helicopter, ship, rail, structures in two faction styles, boss parts) on the mb_kit27 primitives; prompt 27's mb_parts27 parts are wrapped (with their high-detail extras switched on) rather than copied. Tier 3 detail is always built (prompt 35 wants it at LOD0).
+- COLOR_0 effects the bake lacks (soot round muzzles / exhausts, local dust round wheels, a part tone for breakable boss parts) are applied by an instance-level finish() wrapper, so frontier_kit and every other builder are untouched. The bake already gives AO, the worn bevel rows and the ground grime.
+- Thin plates (skirts, ERA, doors, panels) get their chamfer through `plate` (mb_kit27.block leaves anything under 12 cm plain).
+- Unit tests: Tools/blender/tests/test_kit35.py (size, bevel, triangle ceiling, names, zero-area, COLOR_0 per component; run in Blender, 70/70). Catalogue picture: Docs/models/kit_catalog/kit35_catalog.png.
+- No mesh LOD1 / LOD2 in the GLBs: the runtime builds LOD1 (MeshSimplifier) and the impostor (MODEL_STANDARD section 1); tier 3 pieces are small separate pieces, the first the simplifier removes.
+Pass 2 (specs, the three pilots only):
+- Specs are JSON in Tools/blender/specs/ (ixion, zu23_technical, rocket_turret); `validate_specs.py` checks them against balance.json (weapons, barrels, flares, APS, boss parts) and, with --glb, against the built file (every named node, size within the tolerance).
+- A feature maps to a node name, not always a `Part_*` pivot: MODEL_STANDARD section 2 forbids a `Part_*` per feature (each is a draw and a shadow draw); `Part_*` stays for what breaks (boss parts, wreck wheels).
+- Pilot 2 = zu23_technical: no starter-deck vehicle (scout_jeep, armored_car, ifv, main_battle_tank) borrows geometry (ifv and the MBT are the originals their elites copy); zu23_technical is the first player card in REBUILD_LIST group 2 (chapter 1, Kém, 39 % shared with rocket_technical, under the triangle floor).
+- Pilot 3 = rocket_turret: no common tower borrows geometry from another tower type (only the walls and the barrage balloon share); rocket_turret is the first tower a player builds (chapter 1 unlock) and Kém. Its branches rocket_turret_a / _b keep their old builder until wave 1 (QUESTIONS.md).
+- Ixion's modelSize is x1.26 of the BelAZ-75710's length, under prompt 35's x1.3-1.5 for bosses: data kept (no gameplay change), asked in QUESTIONS.md. zu23 has no `barrels` (1 muzzle) although the ZU-23-2 is twin-barrelled: one Muzzle_main kept.
+Pass 3 (pilot, then STOP):
+- Ixion, zu23_technical, rocket_turret rebuilt in their own new scripts (mb_p35_*.py, registered last in all_builders before the wrappers; mb_p34_parts still adds the technical's wreck wheels). Runtime node names, materials Armor / Team and the data are unchanged; Ixion's pointer in balance.json stays `ixion`.
+- Up to 4 rounds each against the gate. zu23_technical passes (93.9). Ixion (79.7) and the rocket turret (79.6) pass every hard gate but end under 80 on detail density against dense gold sets: NEEDS_HUMAN (QUESTIONS.md 5), not padded further with meaningless pieces (prompt 35 section 1).
+- Rebuilt models drop their pass 8 visual grade in the gate (it was the old file's); "agent visual" stays NA until the owner or the lead reviews the in-game sheets.
+- Before / after pictures are Blender Workbench sheets (Tools/blender/render_angles.py + Tools/models/sheet.py, base colours from the glTF materials); the in-game shots are the lead's Unity run (ModelScan -mbScan "ixion,zu23_technical,rocket_turret").
+- Over-budget pilots kept (owner rule): 35.7k / 7.4k / 9.1k triangles.
+- build_assets is not byte-deterministic for any builder (old ones too): one index accessor's order changes run to run, geometry identical. Left for the owner (QUESTIONS.md 9).

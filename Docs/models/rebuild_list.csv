@@ -1,0 +1,231 @@
+order,model,class,priority,group,grade,soft_score,soft_grade,l8_visual,l8_final,triangles,borrowed_from,stand_in,chapter,units,reasons,hard_fails
+1,fortress_bastion,boss,P1,1,Cần sửa,77.3,Cần sửa,Tốt,Cần sửa,25064,fortress_hive,yes,1,fortress_bastion bastion_mk0,(a) 40% of its own triangles shared with fortress_hive,mounts: part mortar:Main_cannon* | own_geometry: 55% of triangles shared (most with fortress_hive)
+2,behemoth_inferno,boss,P1,1,Cần sửa,74.6,Cần sửa,Tốt,Cần sửa,20046,behemoth,yes,2,behemoth_inferno,(a) 55% of its own triangles shared with behemoth,own_geometry: 69% of triangles shared (most with behemoth)
+3,behemoth_tempest,boss,P1,1,Cần sửa,78.9,Cần sửa,Tốt,Cần sửa,17418,behemoth,yes,4,behemoth_tempest,(a) 67% of its own triangles shared with behemoth,mounts: Mount_APS; part railgun:Main_cannon* | own_geometry: 79% of triangles shared (most with behemoth)
+4,fortress_hive,boss,P1,1,Cần sửa,70.4,Cần sửa,Tốt,Cần sửa,19334,fortress_bastion,yes,5,fortress_hive,(a) 61% of its own triangles shared with fortress_bastion,own_geometry: 75% of triangles shared (most with fortress_bastion)
+5,ixion,boss,P1,1,Cần sửa,79.7,Cần sửa,,,35714,,yes,8,ixion,"(b) note ""model tạm/stand-in"" in unit_refs[ixion], unit_sheet[ixion]",
+6,stymphalos,boss,P1,1,Kém,79.5,Cần sửa,Tốt,Kém,4186,stymphalos_drone,yes,,stymphalos,(a) 84% of its own triangles shared with stymphalos_drone,"triangles_floor: 4186 (floor 7000, class 10000-20000) | parts: missing body, lift | mounts: muzzles 5/9 | own_geometry: 84% of triangles shared (most with stymphalos_drone)"
+7,supply_truck,wheeled,P1,2,Cần sửa,72.1,Cần sửa,Tốt,Cần sửa,2862,ammo_carrier,yes,1,supply_truck,(a) 63% of its own triangles shared with ammo_carrier,parts: missing axles | own_geometry: 77% of triangles shared (most with ammo_carrier)
+8,vbied,wheeled,P1,2,Kém,59.7,Kém,Cần sửa,Cần sửa,1574,rocket_technical,yes,2,vbied,(a) 57% of its own triangles shared with rocket_technical,"triangles_floor: 1574 (floor 2100, class 3000-5000) | parts: missing axles, glass | own_geometry: 67% of triangles shared (most with rocket_technical) | not_single_block: 2 sloped face directions"
+9,elite_mlrs,wheeled,P1,2,Cần sửa,68.0,Cần sửa,Cần sửa,Cần sửa,2692,mlrs,yes,2,elite_mlrs,(a) 94% of its own triangles shared with mlrs,"parts: missing axles, stowage | own_geometry: 87% of triangles shared (most with mlrs) | not_single_block: 2 sloped face directions"
+10,ammo_carrier,wheeled,P1,2,Cần sửa,70.1,Cần sửa,Tốt,Cần sửa,3388,supply_truck,yes,2,ammo_carrier,(a) 50% of its own triangles shared with supply_truck,parts: missing axles | own_geometry: 65% of triangles shared (most with supply_truck)
+11,counter_battery_radar,wheeled,P1,2,Cần sửa,73.0,Cần sửa,Tốt,Cần sửa,2396,shahed_truck,yes,2,counter_battery_radar,(a) 41% of its own triangles shared with shahed_truck,"parts: missing axles, stowage | own_geometry: 57% of triangles shared (most with shahed_truck) | not_single_block: 2 sloped face directions"
+12,smoke_carrier,tracked,P1,2,Kém,84.9,Tốt,Cần sửa,Kém,3698,mortar_carrier,yes,2,smoke_carrier,(a) 34% of its own triangles shared with mortar_carrier,"parts: missing mantlet, idler, skirts, sight, roof_mg, stowage | own_geometry: 68% of triangles shared (most with mortar_carrier)"
+13,lancet_truck,wheeled,P1,2,Cần sửa,62.9,Cần sửa,Cần sửa,Cần sửa,2314,fpv_carrier,yes,5,lancet_truck,(a) 55% of its own triangles shared with fpv_carrier,parts: missing axles | own_geometry: 79% of triangles shared (most with fpv_carrier)
+14,microwave_vehicle,wheeled,P1,2,Cần sửa,79.7,Cần sửa,,,4914,nlos_atgm_vehicle,yes,5,microwave_vehicle,(a) 34% of its own triangles shared with nlos_atgm_vehicle,own_geometry: 40% of triangles shared (most with nlos_atgm_vehicle)
+15,elite_mbt,tracked,P1,2,Cần sửa,94.3,Tốt,Cần sửa,Kém,7288,main_battle_tank,yes,5,elite_mbt,(c) builder mb_p27_wave3._mbt_v2 calls the builder of main_battle_tank,"parts: missing mantlet, idler"
+16,swarm_carrier,jet,P1,2,Kém,95.0,Tốt,Cần sửa,Kém,3464,sky_gunship,yes,5,swarm_carrier,(a) 50% of its own triangles shared with sky_gunship,"parts: missing tail, intakes, exhaust, pylons, stores | own_geometry: 50% of triangles shared (most with sky_gunship)"
+17,repair_bay,tower,P1,3,Kém,32.5,Kém,,,5214,,,1,repair_bay,,not_single_block: 0 sloped face directions
+18,rocket_turret_b,tower,P1,3,Kém,52.5,Kém,Tốt,Tốt,3526,,,1,rocket_turret,,
+19,radar_site,tower,P1,3,Kém,54.2,Kém,,,4252,,,1,radar_station,,not_single_block: 0 sloped face directions
+20,ammo_dump,tower,P1,3,Kém,56.5,Kém,Tốt,Cần sửa,5276,,,1,ammo_depot,,"parts: missing base, roof"
+21,atgm_tower_a,tower,P1,3,Kém,56.3,Kém,Tốt,Tốt,5926,,,2,atgm_tower,,
+22,mg_bunker_b,tower,P1,3,Kém,57.6,Kém,Tốt,Cần sửa,4060,,,2,mg_bunker,,parts: missing base
+23,gun_turret_b,tower,P1,3,Kém,57.9,Kém,Tốt,Tốt,7006,,,2,gun_turret,,
+24,gun_turret,tower,P1,3,Kém,58.6,Kém,Tốt,Cần sửa,6430,,,2,gun_turret,,
+25,atgm_tower,tower,P1,3,Kém,58.7,Kém,Tốt,Tốt,5374,,,2,atgm_tower,,
+26,atgm_tower_b,tower,P1,3,Kém,59.7,Kém,Tốt,Tốt,5974,,,2,atgm_tower,,
+27,logistics_station,tower,P1,3,Kém,25.9,Kém,Cần sửa,Cần sửa,1576,,,4,logistics_station,,"parts: missing walls, roof, antenna"
+28,helipad,obstacle,P1,3,Kém,14.0,Kém,Cần sửa,Cần sửa,1032,,,5,airfield airfield.hangar airfield.service,,not_single_block: 0 sloped face directions
+29,helipad_a,obstacle,P1,3,Kém,15.8,Kém,Cần sửa,Cần sửa,1252,,,5,airfield airfield.hangar airfield.service,,not_single_block: 0 sloped face directions
+30,helipad_b,obstacle,P1,3,Kém,19.2,Kém,Tốt,Tốt,1988,,,5,airfield airfield.hangar airfield.service,,
+31,aa_turret_b,tower,P1,3,Kém,53.0,Kém,Tốt,Tốt,2610,,,5,aa_turret,,
+32,artillery_emplacement_b,tower,P1,3,Kém,50.3,Kém,Tốt,Cần sửa,5878,,,9,artillery_emplacement,,"parts: missing antenna | ao_dust_wear: COLOR_0 p05 0.26 p95 0.80, worn 0.4%, dust +0.24"
+33,cp_relay_b,tower,P1,3,Kém,48.7,Kém,-,Cần sửa,1512,,,11,cp_relay,,"parts: missing walls, antenna"
+34,heavy_turret,tower,P1,3,Kém,52.5,Kém,Tốt,Cần sửa,9514,,,11,heavy_turret spawn_bastion,,
+35,heavy_turret_b,tower,P1,3,Kém,54.8,Kém,Tốt,Kém,11958,,,11,heavy_turret spawn_bastion,,mounts: Muzzle_main 1/2 (main)
+36,shield_tower,tower,P1,3,Kém,42.9,Kém,Tốt,Cần sửa,5404,,,12,shield_tower shield_tower.ward,,"parts: missing walls, roof, antenna"
+37,drone_hangar_b,tower,P1,3,Kém,48.2,Kém,Tốt,Cần sửa,9770,,,12,drone_hangar,,
+38,drone_hangar_a,tower,P1,3,Kém,54.2,Kém,Tốt,Tốt,6634,,,12,drone_hangar,,
+39,shield_tower_a,tower,P1,3,Kém,55.3,Kém,Tốt,Cần sửa,7260,,,12,shield_tower shield_tower.ward,,"parts: missing walls, antenna"
+40,drone_hangar,tower,P1,3,Kém,56.2,Kém,Tốt,Tốt,7794,,,12,drone_hangar,,
+41,bunker_shelter_tower,tower,P1,3,Kém,24.5,Kém,Cần sửa,Cần sửa,1228,,,,bunker_shelter_tower,,"triangles_floor: 1228 (floor 1400, class 2000-4000) | not_single_block: 0 sloped face directions"
+42,aa_gun_tower,tower,P1,3,Kém,28.6,Kém,Cần sửa,Cần sửa,1724,,,,aa_gun_tower,,
+43,wall_t,obstacle,P1,3,Kém,31.2,Kém,Tốt,Cần sửa,1798,,,,wall_t,,
+44,troop_shelter,tower,P1,3,Kém,33.1,Kém,,,3158,,,,troop_shelter,,"size: 5.8x6.0x2.6 vs modelSize [6.0, 5.0, 2.2] (w/h off 23%) | not_single_block: 0 sloped face directions"
+45,barrage_balloon,tower,P1,3,Kém,33.7,Kém,Tốt,Cần sửa,1748,c_ram_a,yes,,barrage_balloon,(a) 39% of its own triangles shared with c_ram_a,"parts: missing walls, roof, antenna"
+46,inflatable_decoy,tower,P1,3,Kém,34.1,Kém,Cần sửa,Kém,1378,,,,inflatable_decoy,,"triangles_floor: 1378 (floor 1400, class 2000-4000) | parts: missing base, walls, roof, antenna | size: 5.3x4.8x2.3 vs modelSize [5.0, 4.6, 2.6] (w/h off 16%)"
+47,blast_wall,obstacle,P1,3,Kém,35.6,Kém,Cần sửa,Cần sửa,792,,,,blast_wall,,"ao_dust_wear: COLOR_0 p05 0.07 p95 0.80, worn 0.0%, dust +0.24 | not_single_block: 0 sloped face directions"
+48,one_shot_atgm_tower,tower,P1,3,Kém,38.0,Kém,Cần sửa,Cần sửa,2186,,,,one_shot_atgm_tower,,not_single_block: 0 sloped face directions
+49,at_gun_emplacement,tower,P1,3,Kém,42.3,Kém,Cần sửa,Cần sửa,1384,,,,at_gun_emplacement,,"triangles_floor: 1384 (floor 1400, class 2000-4000) | parts: missing base, antenna | size: 5.8x4.7x1.8 vs modelSize [5.8, 4.2, 2.0] (w/h off 12%)"
+50,laser_ad_station,tower,P1,3,Kém,42.7,Kém,,,3434,,,,laser_ad_station,,not_single_block: 0 sloped face directions
+51,searchlight,tower,P1,3,Kém,42.7,Kém,Cần sửa,Cần sửa,1292,,,,searchlight,,"triangles_floor: 1292 (floor 1400, class 2000-4000) | parts: missing base, antenna | size: 3.9x3.9x3.0 vs modelSize [3.6, 3.0, 2.8] (w/h off 20%)"
+52,fire_control_centre,tower,P1,3,Kém,43.2,Kém,,,2874,,,,fire_control_centre,,"size: 6.0x6.0x6.8 vs modelSize [6.0, 6.0, 5.5] (w/h off 23%) | not_single_block: 0 sloped face directions"
+53,heavy_flak_tower,tower,P1,3,Kém,45.6,Kém,,,8902,,,,heavy_flak_tower,,"size: 6.8x7.0x3.8 vs modelSize [7.0, 6.0, 3.4] (w/h off 21%) | not_single_block: 0 sloped face directions"
+54,wall_gun,obstacle,P1,3,Kém,57.3,Kém,Tốt,Tốt,2672,wall_hesco,yes,,wall_gun,(a) 41% of its own triangles shared with wall_hesco,"own_geometry: 40% of triangles shared (most with wall_hesco) | ao_dust_wear: COLOR_0 p05 0.26 p95 0.81, worn 0.0%, dust +0.21 | not_single_block: 0 sloped face directions"
+55,wall_hesco,obstacle,P1,3,Kém,58.8,Kém,Tốt,Cần sửa,3276,wall_gun,yes,,wall_hesco,(a) 47% of its own triangles shared with wall_gun,"own_geometry: 47% of triangles shared (most with wall_gun) | ao_dust_wear: COLOR_0 p05 0.23 p95 0.81, worn 0.0%, dust +0.16"
+56,super_gun,structure,P1,3,Kém,59.0,Kém,Tốt,Cần sửa,4266,,,,super_gun,,parts: missing walls
+57,ifv,tracked,P1,4,Kém,85.4,Tốt,Tốt,Kém,5040,,,starter,ifv,,"parts: missing mantlet, idler, roof_mg, stowage | not_single_block: 2 sloped face directions"
+58,light_tank,tracked,P1,4,Kém,74.7,Cần sửa,Tốt,Kém,4350,,,1,light_tank,,"parts: missing mantlet, idler, skirts, roof_mg, smoke, stowage"
+59,engineer_vehicle,tracked,P1,4,Kém,75.3,Cần sửa,Cần sửa,Kém,3670,,,1,engineer_vehicle,,"parts: missing mantlet, idler, skirts, sight, roof_mg, smoke, stowage | own_geometry: 51% of triangles shared (most with thermobaric_launcher)"
+60,mortar_carrier,tracked,P1,4,Kém,77.1,Cần sửa,Cần sửa,Kém,3242,,,1,mortar_carrier,,"parts: missing mantlet, idler, skirts, smoke, stowage | not_single_block: 2 sloped face directions"
+61,amphib_light_vehicle,tracked,P1,4,Kém,78.2,Cần sửa,Cần sửa,Kém,4606,,,1,amphib_light_vehicle,,"parts: missing mantlet, idler, skirts, roof_mg, smoke, stowage"
+62,aa_gun_vehicle,tracked,P1,4,Kém,69.2,Cần sửa,Cần sửa,Kém,3556,,,2,aa_gun_vehicle,,"parts: missing mantlet, idler, skirts, sight, roof_mg, smoke, stowage | size: 5.6x2.6x3.0 vs modelSize [5.9, 2.5, 2.7] (w/h off 16%)"
+63,aa_vehicle,tracked,P1,4,Kém,78.0,Cần sửa,Tốt,Kém,4964,,,2,aa_vehicle,,"parts: missing mantlet, idler, sight, roof_mg, smoke, stowage | mounts: Mount_missile 0/1"
+64,shorad_vehicle,wheeled,P1,4,Kém,79.7,Cần sửa,Cần sửa,Cần sửa,2000,,,2,shorad_vehicle,,"triangles_floor: 2000 (floor 2100, class 3000-5000) | parts: missing axles, stowage | not_single_block: 1 sloped face directions"
+65,sam_launcher,tracked,P1,4,Kém,83.0,Tốt,Tốt,Kém,4418,,,2,sam_launcher,,"parts: missing mantlet, idler, skirts, hatches, sight, smoke, stowage"
+66,flame_tank,tracked,P1,4,Kém,83.3,Tốt,Tốt,Kém,5258,,,2,flame_tank,,"parts: missing mantlet, idler, skirts, sight, roof_mg, smoke, stowage"
+67,artillery,tracked,P1,4,Kém,89.1,Tốt,Cần sửa,Kém,5326,,,2,artillery,,"parts: missing mantlet, idler, skirts, smoke | not_single_block: 1 sloped face directions"
+68,tank_destroyer,tracked,P1,4,Kém,89.1,Tốt,Cần sửa,Kém,4702,,,2,tank_destroyer,,"parts: missing mantlet, idler, skirts, smoke, stowage"
+69,demolition_line_vehicle,tracked,P1,4,Kém,90.5,Tốt,Tốt,Kém,6202,,,2,demolition_line_vehicle,,"parts: missing mantlet, idler, roof_mg, smoke"
+70,scout_heli,helicopter,P1,4,Kém,100.0,Tốt,Tốt,Cần sửa,2602,,,2,scout_heli,,"triangles_floor: 2602 (floor 2800, class 4000-7000) | parts: missing stub_wings | mounts: Turret (main mount)"
+71,mine_layer,tracked,P1,4,Kém,71.7,Cần sửa,Cần sửa,Kém,3872,,,3,mine_layer,,"parts: missing mantlet, idler, skirts, sight, roof_mg, smoke, stowage"
+72,recon_drone,jet,P1,4,Kém,93.9,Tốt,Cần sửa,Kém,890,,,3,recon_drone,,"triangles_floor: 890 (floor 2800, class 4000-7000) | parts: missing canopy, tail, intakes, exhaust, flares"
+73,fpv_carrier,wheeled,P1,4,Kém,59.9,Kém,Cần sửa,Cần sửa,2484,,,4,fpv_carrier,,parts: missing axles
+74,armored_bulldozer,tracked,P1,4,Kém,79.0,Cần sửa,Tốt,Kém,3244,,,4,armored_bulldozer,,"parts: missing turret, mantlet, idler, skirts, hatches, sight, smoke, stowage"
+75,river_patrol_boat,ground,P1,4,Kém,83.6,Tốt,Kém,Kém,1624,,,4,river_patrol_boat,,"triangles_floor: 1624 (floor 2100, class 3000-5000)"
+76,bmpt,tracked,P1,4,Kém,86.3,Tốt,Tốt,Kém,5056,,,4,bmpt,,"parts: missing mantlet, idler, roof_mg, smoke, stowage"
+77,towed_at_gun,wheeled,P1,4,Kém,98.6,Tốt,Tốt,Kém,1996,,,4,towed_at_gun,,"triangles_floor: 1996 (floor 2100, class 3000-5000) | parts: missing axles, cab, glass, lights"
+78,attack_jet,jet,P1,4,Kém,99.8,Tốt,Cần sửa,Cần sửa,2732,,,4,attack_jet,,"triangles_floor: 2732 (floor 2800, class 4000-7000) | parts: missing tail | mounts: Mount_aam 0/1"
+79,strike_drone,jet,P1,4,Kém,94.7,Tốt,Cần sửa,Kém,1968,,,5,strike_drone,,"triangles_floor: 1968 (floor 2800, class 4000-7000) | parts: missing canopy, tail, intakes, exhaust, flares"
+80,moloch,boss,P1,4,Kém,47.8,Kém,Kém,Kém,10244,,,6,moloch,,parts: missing running_gear | not_single_block: 1 sloped face directions
+81,monster,boss,P1,4,Kém,51.9,Kém,Cần sửa,Cần sửa,23626,,,6,monster,,mounts: part mortar:Main_cannon*
+82,landing_hovercraft,boss,P1,4,Kém,57.9,Kém,Tốt,Cần sửa,16984,,,6,landing_hovercraft,,mounts: Mount_APS | not_single_block: 0 sloped face directions
+83,twin_tank,tracked,P1,4,Cần sửa,87.4,Tốt,Tốt,Cần sửa,7154,elite_mbt,yes,6,twin_tank,(a) 44% of its own triangles shared with elite_mbt,"parts: missing mantlet, idler | own_geometry: 59% of triangles shared (most with elite_mbt)"
+84,bunker_vehicle,tracked,P1,4,Kém,95.5,Tốt,Cần sửa,Kém,7792,,,6,bunker_vehicle,,"parts: missing mantlet, idler, skirts, stowage"
+85,thermobaric_launcher,tracked,P1,4,Kém,81.0,Tốt,Cần sửa,Kém,4982,,,7,thermobaric_launcher,,"parts: missing mantlet, idler, smoke, stowage"
+86,aa_57mm_vehicle,tracked,P1,4,Kém,91.3,Tốt,Tốt,Kém,6028,,,7,aa_57mm_vehicle,,"parts: missing mantlet, idler, roof_mg, stowage"
+87,siege_tank,tracked,P1,4,Kém,100.0,Tốt,Tốt,Kém,5924,,,7,siege_tank,,"parts: missing hull, mantlet, idler, skirts, smoke, stowage"
+88,titan_tank,tracked,P1,4,Kém,92.8,Tốt,Tốt,Kém,8384,,,8,titan_tank,,"parts: missing mantlet, idler, smoke, stowage | mounts: Mount_APS"
+89,typhon,boss,P1,4,Kém,40.8,Kém,Cần sửa,Kém,6876,,,9,typhon,,"triangles_floor: 6876 (floor 7000, class 10000-20000)"
+90,caspian,boss,P1,4,Kém,59.1,Kém,Cần sửa,Cần sửa,6766,,,9,caspian,,"triangles_floor: 6766 (floor 7000, class 10000-20000) | parts: missing superstructure | mounts: muzzles 1/3"
+91,laser_tank,tracked,P1,4,Kém,71.8,Cần sửa,Cần sửa,Kém,3844,,,9,laser_tank,,"parts: missing mantlet, idler, skirts, roof_mg, smoke, stowage"
+92,morrigan,boss,P1,4,Kém,40.2,Kém,Kém,Kém,1344,,,10,morrigan,,"triangles_floor: 1344 (floor 7000, class 10000-20000) | parts: missing running_gear"
+93,stealth_bomber,jet,P1,4,Kém,44.1,Kém,Tốt,Kém,2096,,,10,stealth_bomber,,"triangles_floor: 2096 (floor 2800, class 4000-7000) | parts: missing tail, pylons, flares"
+94,sky_fortress,boss,P1,4,Kém,79.2,Cần sửa,Cần sửa,Kém,3084,,,10,sky_fortress,,"triangles_floor: 3084 (floor 7000, class 10000-20000)"
+95,elite_attack_helicopter,helicopter,P1,4,Cần sửa,85.4,Tốt,Tốt,Cần sửa,4398,attack_helicopter,yes,10,elite_attack_helicopter,(a) 96% of its own triangles shared with attack_helicopter ; (c) builder mb_p27_wave4._elite_apache_v2 calls the builder of attack_helicopter,mounts: Mount_aam 0/1 | own_geometry: 98% of triangles shared (most with attack_helicopter)
+96,wingman_drone,jet,P1,4,Kém,90.4,Tốt,Cần sửa,Kém,1064,,,10,wingman_drone,,"triangles_floor: 1064 (floor 2800, class 4000-7000) | parts: missing canopy, tail, flares"
+97,sky_gunship,jet,P1,4,Kém,100.0,Tốt,Cần sửa,Kém,3652,,,10,sky_gunship,,"parts: missing tail, intakes, exhaust, pylons"
+98,recon_jet,jet,P1,4,Kém,38.3,Kém,Cần sửa,Kém,768,,,11,recon_jet,,"triangles_floor: 768 (floor 2800, class 4000-7000) | parts: missing intakes, exhaust, pylons, stores, flares | size: 12.6x6.8x1.7 vs modelSize [13.1, 6.8, 2.2] (w/h off 19%)"
+99,gps_jammer_vehicle,wheeled,P1,4,Cần sửa,84.6,Tốt,Cần sửa,Cần sửa,4396,dazzler_vehicle,yes,11,gps_jammer_vehicle,(a) 52% of its own triangles shared with dazzler_vehicle,"parts: missing axles, stowage | own_geometry: 70% of triangles shared (most with dazzler_vehicle) | ao_dust_wear: COLOR_0 p05 0.70 p95 1.00, worn 20.8%, dust -0.01"
+100,turtle_tank,tracked,P1,4,Kém,73.4,Cần sửa,Tốt,Kém,3938,,,13,turtle_tank,,"parts: missing hull, mantlet, idler, skirts, hatches, sight, roof_mg, smoke, stowage"
+101,shield_carrier,wheeled,P1,4,Kém,44.0,Kém,Cần sửa,Kém,2476,,,14,shield_carrier,,"parts: missing axles, glass, stowage | not_single_block: 2 sloped face directions"
+102,airborne_light_tank,tracked,P1,4,Kém,94.6,Tốt,Cần sửa,Kém,5550,,,14,airborne_light_tank,,"parts: missing mantlet, idler, roof_mg, stowage"
+103,next_gen_tank,tracked,P1,4,Kém,88.7,Tốt,Tốt,Kém,6620,,,15,next_gen_tank,,"parts: missing mantlet, idler, smoke, stowage | mounts: Mount_APS"
+104,landing_craft,ship,P1,4,Kém,24.0,Kém,Kém,Kém,498,,,,landing_craft,,"triangles_floor: 498 (floor 5600, class 8000-15000) | parts: missing mast, turrets, ciws, boats"
+105,garuda,boss,P1,4,Kém,30.6,Kém,Kém,Kém,2840,,,,garuda,,"triangles_floor: 2840 (floor 7000, class 10000-20000) | parts: missing body | mounts: muzzles 6/8"
+106,nyx,boss,P1,4,Kém,35.3,Kém,Cần sửa,Kém,3526,,,,nyx,,"triangles_floor: 3526 (floor 7000, class 10000-20000) | parts: missing superstructure | mounts: muzzles 3/7; Mount_APS"
+107,missile_boat,ship,P1,4,Kém,41.6,Kém,Kém,Kém,630,,,,missile_boat,,"triangles_floor: 630 (floor 5600, class 8000-15000) | parts: missing turrets, ciws, boats"
+108,kraken,boss,P1,4,Kém,44.1,Kém,Tốt,Cần sửa,10796,,,,kraken,,mounts: Mount_APS
+109,sea_corvette,ship,P1,4,Kém,47.0,Kém,Kém,Kém,1884,,,,sea_corvette,,"triangles_floor: 1884 (floor 5600, class 8000-15000) | parts: missing boats | mounts: Mount_APS"
+110,hydra_sub,boss,P1,4,Kém,50.2,Kém,Tốt,Cần sửa,7548,,,,hydra,,"ao_dust_wear: COLOR_0 p05 0.22 p95 0.86, worn 6.7%, dust -0.23"
+111,stealth_naval_strike,jet,P1,4,Kém,50.3,Kém,Kém,Kém,2124,stealth_bomber,yes,,stealth_naval_strike,(a) 61% of its own triangles shared with stealth_bomber,"triangles_floor: 2124 (floor 2800, class 4000-7000) | parts: missing fuselage, tail, pylons, flares | own_geometry: 60% of triangles shared (most with stealth_bomber)"
+112,sea_cruiser,ship,P1,4,Kém,54.4,Kém,Cần sửa,Kém,5416,,,,sea_cruiser,,"triangles_floor: 5416 (floor 5600, class 8000-15000) | parts: missing boats | mounts: Mount_APS"
+113,fibre_fpv_carrier,wheeled,P1,4,Kém,55.3,Kém,Kém,Kém,1324,,,,fibre_fpv_carrier,,"triangles_floor: 1324 (floor 2100, class 3000-5000) | parts: missing axles | mounts: Muzzle_rocket 0/1; Mount_rocket 0/1 | size: 4.7x2.0x1.6 vs modelSize [4.6, 1.9, 2.0] (w/h off 21%) | not_single_block: 2 sloped face directions"
+114,dazzler_vehicle,wheeled,P1,4,Kém,58.2,Kém,Cần sửa,Cần sửa,4640,gps_jammer_vehicle,yes,,dazzler_vehicle,(a) 48% of its own triangles shared with gps_jammer_vehicle,"parts: missing axles, stowage | own_geometry: 67% of triangles shared (most with gps_jammer_vehicle)"
+115,drone_hijack_vehicle,wheeled,P1,4,Kém,59.6,Kém,Cần sửa,Cần sửa,3446,,,,drone_hijack_vehicle,,"parts: missing axles, stowage | ao_dust_wear: COLOR_0 p05 0.71 p95 1.00, worn 22.3%, dust -0.01"
+116,hover_gunboat,ground,P1,4,Kém,69.9,Cần sửa,Kém,Kém,2202,,,,hover_gunboat,,not_single_block: 1 sloped face directions
+117,bridging_vehicle,tracked,P1,4,Kém,73.6,Cần sửa,Tốt,Kém,5148,,,,bridging_vehicle,,"parts: missing mantlet, idler, smoke, stowage"
+118,interceptor_jet,jet,P1,4,Kém,77.0,Cần sửa,Cần sửa,Kém,1500,,,,interceptor_jet,,"triangles_floor: 1500 (floor 2800, class 4000-7000) | parts: missing exhaust, pylons | mounts: Muzzle_aam 0/1; Mount_aam 0/1 | size: 9.2x5.4x2.2 vs modelSize [9.1, 5.4, 2.5] (w/h off 13%)"
+119,airborne_vehicle,tracked,P1,4,Kém,77.7,Cần sửa,Cần sửa,Kém,3260,,,,airborne_vehicle,,"parts: missing mantlet, idler, skirts, sight, roof_mg, smoke, stowage"
+120,glide_bomber,jet,P1,4,Kém,78.1,Cần sửa,Cần sửa,Kém,1624,,,,glide_bomber,,"triangles_floor: 1624 (floor 2800, class 4000-7000) | parts: missing intakes, exhaust, pylons | size: 9.3x5.9x1.9 vs modelSize [9.3, 5.9, 2.4] (w/h off 20%)"
+121,elite_aa,tracked,P1,4,Kém,78.9,Cần sửa,Cần sửa,Kém,5456,aa_vehicle,yes,,elite_aa,(a) 81% of its own triangles shared with aa_vehicle,"parts: missing mantlet, idler, sight, roof_mg, smoke, stowage | own_geometry: 78% of triangles shared (most with aa_vehicle)"
+122,nlos_atgm_vehicle,wheeled,P1,4,Cần sửa,79.0,Cần sửa,,,4918,microwave_vehicle,yes,,nlos_atgm_vehicle,(a) 41% of its own triangles shared with microwave_vehicle,own_geometry: 48% of triangles shared (most with microwave_vehicle)
+123,elite_heavy_tank,tracked,P1,4,Cần sửa,79.8,Cần sửa,Cần sửa,Cần sửa,5754,heavy_tank,yes,,elite_heavy_tank,(a) 90% of its own triangles shared with heavy_tank,"parts: missing mantlet, idler, stowage | own_geometry: 90% of triangles shared (most with heavy_tank)"
+124,radar_atgm_vehicle,tracked,P1,4,Kém,83.8,Tốt,Cần sửa,Kém,2672,,,,radar_atgm_vehicle,,"triangles_floor: 2672 (floor 2800, class 4000-7000) | parts: missing mantlet, idler, skirts, hatches, sight, roof_mg, smoke, stowage | size: 5.7x2.6x2.5 vs modelSize [5.8, 2.5, 2.3] (w/h off 13%)"
+125,elite_apc,tracked,P1,4,Kém,84.7,Tốt,Kém,Kém,5480,ifv,yes,,elite_apc,(a) 87% of its own triangles shared with ifv,"parts: missing mantlet, idler, roof_mg, stowage | own_geometry: 84% of triangles shared (most with ifv) | not_single_block: 2 sloped face directions"
+126,aerial_tanker,jet,P1,4,Kém,85.4,Tốt,Tốt,Kém,4164,,,,aerial_tanker,,"parts: missing tail, exhaust, pylons, stores"
+127,elite_tank_destroyer,tracked,P1,4,Kém,86.0,Tốt,Cần sửa,Kém,4794,tank_destroyer,yes,,elite_tank_destroyer,(a) 81% of its own triangles shared with tank_destroyer,"parts: missing mantlet, idler, skirts, smoke, stowage | own_geometry: 80% of triangles shared (most with tank_destroyer)"
+128,uav_loiter_strike,jet,P1,4,Kém,89.8,Tốt,Cần sửa,Kém,1084,,,,uav_loiter_strike,,"triangles_floor: 1084 (floor 2800, class 4000-7000) | parts: missing canopy, tail, intakes, flares"
+129,ground_drone_carrier,tracked,P1,4,Kém,94.8,Tốt,Cần sửa,Kém,4274,,,,ground_drone_carrier,,"parts: missing mantlet, idler, skirts, roof_mg, smoke, stowage"
+130,armored_car,wheeled,P2,5,Cần sửa,81.3,Tốt,Tốt,Cần sửa,2622,,,starter,armored_car,,"parts: missing glass, stowage"
+131,scout_jeep,wheeled,P2,5,Cần sửa,91.9,Tốt,Tốt,Cần sửa,2422,,,starter,scout_jeep,,parts: missing axles
+132,main_battle_tank,tracked,P2,5,Cần sửa,93.5,Tốt,Tốt,Cần sửa,7196,,,starter,main_battle_tank decoy_tank,,"parts: missing mantlet, idler"
+133,rocket_turret_a,tower,P2,5,Cần sửa,74.4,Cần sửa,Tốt,Tốt,5554,,,1,rocket_turret,,
+134,rocket_turret,tower,P2,5,Cần sửa,79.6,Cần sửa,,,9052,,,1,rocket_turret,,
+135,rocket_technical,wheeled,P2,5,Cần sửa,85.7,Tốt,Cần sửa,Cần sửa,2948,,,1,rocket_technical,,"parts: missing axles, stowage | not_single_block: 1 sloped face directions"
+136,command_hq,hq,P2,5,Cần sửa,90.0,Tốt,Tốt,Cần sửa,5982,,,1,,,"parts: missing base, walls | not_single_block: 0 sloped face directions"
+137,minefield,obstacle,P2,5,Cần sửa,91.7,Tốt,Tốt,Tốt,3198,,,1,minefield,,"ao_dust_wear: COLOR_0 p05 0.38 p95 0.81, worn 0.0%, dust +0.13"
+138,minefield_b,obstacle,P2,5,Cần sửa,94.2,Tốt,-,Tốt,4560,,,1,minefield,,"ao_dust_wear: COLOR_0 p05 0.32 p95 0.81, worn 0.0%, dust +0.18"
+139,gun_turret_a,tower,P2,5,Cần sửa,68.2,Cần sửa,Tốt,Cần sửa,6702,,,2,gun_turret,,
+140,mg_bunker,tower,P2,5,Cần sửa,68.3,Cần sửa,Tốt,Cần sửa,3904,,,2,mg_bunker,,parts: missing base
+141,guard_tower_b,tower,P2,5,Cần sửa,68.4,Cần sửa,Cần sửa,Cần sửa,2746,,,2,guard_tower,,parts: missing antenna
+142,mg_bunker_a,tower,P2,5,Cần sửa,70.6,Cần sửa,Tốt,Cần sửa,4204,,,2,mg_bunker,,parts: missing base
+143,mlrs,wheeled,P2,5,Cần sửa,74.8,Cần sửa,Cần sửa,Cần sửa,2652,,,2,mlrs,,"parts: missing axles, stowage | not_single_block: 2 sloped face directions"
+144,behemoth,boss,P2,5,Cần sửa,76.5,Cần sửa,Tốt,Cần sửa,21610,,,2,behemoth mara_behemoth behemoth_mk0,,mounts: Mount_APS
+145,heavy_tank,tracked,P2,5,Cần sửa,81.2,Tốt,Cần sửa,Cần sửa,5662,,,2,heavy_tank,,"parts: missing mantlet, idler, stowage"
+146,grad_truck,wheeled,P2,5,Cần sửa,87.5,Tốt,Tốt,Cần sửa,6342,,,2,elite_grad,,parts: missing stowage | not_single_block: 0 sloped face directions
+147,attack_helicopter,helicopter,P2,5,Cần sửa,92.7,Tốt,Tốt,Cần sửa,4722,,,2,attack_helicopter,,mounts: Muzzle_rocket 1/2; Mount_rocket 0/1; Mount_aam 0/1
+148,headquarters,hq,P2,5,Cần sửa,100.0,Tốt,Tốt,Cần sửa,14164,,,2,headquarters,,mounts: Mount_mg 1/2
+149,dragons_teeth_a,obstacle,P2,5,Cần sửa,65.9,Cần sửa,Tốt,Tốt,2124,,,3,dragons_teeth,,"ao_dust_wear: COLOR_0 p05 0.31 p95 0.81, worn 0.0%, dust +0.28"
+150,mobile_fortress,boss,P2,5,Cần sửa,70.6,Cần sửa,Tốt,Kém,23256,,,3,mobile_fortress fenrir,,
+151,dragons_teeth,obstacle,P2,5,Cần sửa,73.2,Cần sửa,Tốt,Tốt,1556,,,3,dragons_teeth,,
+152,radar_scout,wheeled,P2,5,Cần sửa,78.5,Cần sửa,,,3362,,,3,radar_scout,,
+153,heavy_aa,wheeled,P2,5,Cần sửa,81.4,Tốt,Cần sửa,Cần sửa,4524,,,3,heavy_aa,,"parts: missing axles, stowage | not_single_block: 0 sloped face directions"
+154,mega_gunship,boss,P2,5,Cần sửa,91.1,Tốt,Tốt,Kém,11476,,,3,mega_gunship,,mounts: muzzles 7/9
+155,fighter_jet,jet,P2,5,Cần sửa,99.2,Tốt,Tốt,Cần sửa,4308,,,3,fighter_jet,,parts: missing tail | mounts: Mount_aam 0/1
+156,wheeled_gun,wheeled,P2,5,Cần sửa,70.6,Cần sửa,Tốt,Cần sửa,3058,,,4,wheeled_gun,,"parts: missing axles, glass, stowage"
+157,command_vehicle,wheeled,P2,5,Cần sửa,73.5,Cần sửa,Cần sửa,Cần sửa,3084,,,4,command_vehicle,,parts: missing glass
+158,railgun_truck,wheeled,P2,5,Cần sửa,80.6,Tốt,Cần sửa,Cần sửa,2924,,,4,railgun_truck,,"parts: missing axles, stowage | not_single_block: 0 sloped face directions"
+159,gunship_heli,helicopter,P2,5,Cần sửa,81.4,Tốt,Tốt,Kém,4660,,,4,gunship_heli,,parts: missing stub_wings | mounts: Turret (main mount)
+160,river_gunboat,ground,P2,5,Cần sửa,81.7,Tốt,Cần sửa,Cần sửa,2302,,,4,river_gunboat,,
+161,leviathan,boss,P2,5,Cần sửa,90.5,Tốt,Tốt,Kém,26744,,,4,leviathan scylla,,mounts: Mount_APS
+162,armored_train,boss,P2,5,Cần sửa,92.9,Tốt,Tốt,Cần sửa,21954,,,4,armored_train,,mounts: muzzles 5/7
+163,aa_turret,tower,P2,5,Cần sửa,67.7,Cần sửa,Tốt,Cần sửa,6306,,,5,aa_turret,,
+164,aa_turret_a,tower,P2,5,Cần sửa,68.8,Cần sửa,Tốt,Cần sửa,6670,,,5,aa_turret,,mounts: Muzzle_missile 0/1
+165,ew_jammer,wheeled,P2,5,Cần sửa,68.8,Cần sửa,Cần sửa,Cần sửa,2274,,,5,ew_jammer,,"parts: missing axles, stowage | not_single_block: 0 sloped face directions"
+166,iron_beam,wheeled,P2,5,Cần sửa,76.4,Cần sửa,Cần sửa,Cần sửa,2888,,,5,iron_beam,,"parts: missing axles, stowage | mounts: Mount_APS"
+167,shahed_truck,wheeled,P2,5,Cần sửa,83.4,Tốt,Tốt,Cần sửa,2616,,,5,shahed_truck,,parts: missing axles
+168,interceptor_drone_vehicle,wheeled,P2,5,Cần sửa,84.7,Tốt,,,4068,,,5,interceptor_drone_vehicle,,"size: 5.2x2.4x3.1 vs modelSize [5.0, 2.0, 2.4] (w/h off 25%)"
+169,c_ram,tower,P2,5,Cần sửa,65.9,Cần sửa,Tốt,Cần sửa,6246,,,6,c_ram,,parts: missing walls | mounts: Mount_APS
+170,c_ram_b,tower,P2,5,Cần sửa,66.3,Cần sửa,Tốt,Cần sửa,7590,,,6,c_ram,,parts: missing walls | mounts: Mount_APS
+171,mobile_repair_vehicle,wheeled,P2,5,Cần sửa,67.8,Cần sửa,Cần sửa,Cần sửa,3668,,,6,mobile_repair_vehicle,,"parts: missing axles, stowage"
+172,c_ram_a,tower,P2,5,Cần sửa,69.3,Cần sửa,Tốt,Cần sửa,6694,,,6,c_ram,,parts: missing walls | mounts: Mount_APS
+173,stealth_fighter,jet,P2,5,Cần sửa,73.2,Cần sửa,Tốt,Kém,3336,,,7,stealth_fighter,,"parts: missing tail, intakes, pylons"
+174,supreme_command,boss,P2,5,Cần sửa,77.2,Cần sửa,Tốt,Cần sửa,10214,,,7,supreme_command,,
+175,long_sam,wheeled,P2,5,Cần sửa,78.9,Cần sửa,Tốt,Cần sửa,2980,,,7,long_sam,,"parts: missing axles, stowage | not_single_block: 1 sloped face directions"
+176,heavy_rocket_artillery,wheeled,P2,5,Cần sửa,80.9,Tốt,Tốt,Cần sửa,3668,,,7,heavy_rocket_artillery,,"parts: missing axles, stowage | not_single_block: 1 sloped face directions"
+177,combat_wreck_car,wheeled,P2,5,Cần sửa,63.8,Cần sửa,Cần sửa,Cần sửa,2794,,,8,combat_wreck_car,,"parts: missing axles, stowage"
+178,kronos,boss,P2,5,Cần sửa,65.7,Cần sửa,Cần sửa,Kém,13194,,,8,kronos,,mounts: muzzles 3/5 | not_single_block: 2 sloped face directions
+179,earth_borer,boss,P2,5,Cần sửa,67.1,Cần sửa,Tốt,Cần sửa,23130,,,8,earth_borer,,mounts: muzzles 2/3
+180,ballistic_launcher,wheeled,P2,5,Cần sửa,74.5,Cần sửa,Cần sửa,Cần sửa,2818,,,8,ballistic_launcher,,"parts: missing axles, stowage | not_single_block: 0 sloped face directions"
+181,artillery_emplacement,tower,P2,5,Cần sửa,65.5,Cần sửa,Tốt,Cần sửa,7946,,,9,artillery_emplacement,,parts: missing antenna
+182,ground_cruise_missile_vehicle,wheeled,P2,5,Cần sửa,67.3,Cần sửa,Tốt,Cần sửa,3868,,,9,ground_cruise_missile_vehicle,,"parts: missing axles, stowage"
+183,coastal_ashm_vehicle,wheeled,P2,5,Cần sửa,73.6,Cần sửa,Tốt,Cần sửa,3508,,,9,coastal_ashm_vehicle,,"parts: missing axles, stowage"
+184,artillery_emplacement_a,tower,P2,5,Cần sửa,78.2,Cần sửa,Tốt,Tốt,8426,,,9,artillery_emplacement,,
+185,heavy_bomber,jet,P2,5,Cần sửa,78.6,Cần sửa,Cần sửa,Cần sửa,3540,,,9,heavy_bomber,,mounts: Mount_gun 0/1
+186,command_airship,boss,P2,5,Cần sửa,65.1,Cần sửa,Tốt,Kém,22840,,,10,command_airship argus,,mounts: muzzles 6/8 | not_single_block: 0 sloped face directions
+187,radar_support_vehicle,wheeled,P2,5,Cần sửa,77.6,Cần sửa,Cần sửa,Cần sửa,3368,,,10,radar_support_vehicle,,"parts: missing axles, stowage"
+188,silver_bug,boss,P2,5,Cần sửa,79.4,Cần sửa,Tốt,Cần sửa,21760,,,10,silver_bug icarus_mk0,,mounts: Mount_APS
+189,heavy_turret_a,tower,P2,5,Cần sửa,60.4,Cần sửa,Tốt,Kém,9670,,,11,heavy_turret spawn_bastion,,mounts: Muzzle_main 1/2 (main)
+190,daedalus,boss,P2,5,Cần sửa,72.0,Cần sửa,Tốt,Cần sửa,14772,,,11,daedalus,,parts: missing running_gear | mounts: Mount_APS
+191,cp_relay_a,tower,P2,5,Cần sửa,79.0,Cần sửa,-,Cần sửa,2462,,,11,cp_relay,,parts: missing walls
+192,cp_relay,tower,P2,5,Cần sửa,80.0,Tốt,Tốt,Cần sửa,2434,,,11,cp_relay,,parts: missing walls
+193,rail_supergun,boss,P2,5,Cần sửa,90.5,Tốt,Tốt,Cần sửa,36726,,,11,rail_supergun,,not_single_block: 1 sloped face directions
+194,shield_tower_b,tower,P2,5,Cần sửa,60.8,Cần sửa,Tốt,Cần sửa,6236,,,12,shield_tower shield_tower.ward,,"parts: missing walls, roof, antenna"
+195,heavy_lift_helicopter,helicopter,P2,5,Cần sửa,60.1,Cần sửa,Tốt,Cần sửa,3858,,,,heavy_lift_helicopter,,parts: missing weapons
+196,manpads_tower,tower,P2,5,Cần sửa,60.7,Cần sửa,Tốt,Cần sửa,1750,,,,manpads_tower,,
+197,flare_tower,tower,P2,5,Cần sửa,62.9,Cần sửa,,,5102,,,,flare_tower,,
+198,sp_mortar,wheeled,P2,5,Cần sửa,64.0,Cần sửa,,,5748,,,,sp_mortar,,
+199,twin_rotor_gunship,helicopter,P2,5,Cần sửa,64.0,Cần sửa,Tốt,Cần sửa,4366,,,,twin_rotor_gunship,,parts: missing tail_rotor | mounts: Mount_mg 0/1; Turret (main mount)
+200,visual_jammer,tower,P2,5,Cần sửa,64.2,Cần sửa,,,3672,,,,visual_jammer,,not_single_block: 0 sloped face directions
+201,recoilless_gun_tower,tower,P2,5,Cần sửa,64.5,Cần sửa,Tốt,Cần sửa,2318,,,,recoilless_gun_tower,,
+202,coastal_battery,structure,P2,5,Cần sửa,64.9,Cần sửa,Tốt,Cần sửa,4394,,,,coastal_battery,,parts: missing walls | not_single_block: 0 sloped face directions
+203,drop_pod,air_other,P2,5,Cần sửa,66.6,Cần sửa,Tốt,Cần sửa,2612,,,,drop_pod,,
+204,hyperion,boss,P2,5,Cần sửa,68.3,Cần sửa,Tốt,Cần sửa,7914,,,,hyperion,,mounts: Mount_APS
+205,mine_rocket_truck,wheeled,P2,5,Cần sửa,69.1,Cần sửa,Cần sửa,Cần sửa,5012,,,,mine_rocket_truck,,"parts: missing axles, stowage"
+206,cerberus,boss,P2,5,Cần sửa,73.6,Cần sửa,Cần sửa,Cần sửa,12434,,,,cerberus,,"size: 16.2x7.0x5.4 vs modelSize [16.3, 8.4, 5.5] (w/h off 17%)"
+207,bulwark_post,structure,P2,5,Cần sửa,75.1,Cần sửa,Tốt,Cần sửa,1710,,,,bulwark_post,,
+208,drone_net_tower,obstacle,P2,5,Cần sửa,76.2,Cần sửa,Cần sửa,Cần sửa,1378,,,,drone_net_tower,,not_single_block: 0 sloped face directions
+209,airborne_vehicle_chute,air_other,P2,5,Cần sửa,76.6,Cần sửa,Tốt,Cần sửa,3262,,,,airborne_vehicle_chute,,not_single_block: 2 sloped face directions
+210,flare_searchlight_tower,tower,P2,5,Cần sửa,77.0,Cần sửa,Tốt,Cần sửa,2296,,,,flare_searchlight_tower,,"parts: missing base, walls | not_single_block: 0 sloped face directions"
+211,wheeled_howitzer,wheeled,P2,5,Cần sửa,82.7,Tốt,,,5026,,,,wheeled_howitzer,,"size: 7.9x2.4x2.6 vs modelSize [8.0, 2.1, 3.0] (w/h off 14%)"
+212,prop_attack_plane,jet,P2,5,Cần sửa,88.6,Tốt,Tốt,Cần sửa,2994,,,,prop_attack_plane,,"parts: missing tail, intakes, exhaust"
+213,auto_loader_howitzer,tracked,P2,5,Cần sửa,92.8,Tốt,Cần sửa,Cần sửa,6520,,,,auto_loader_howitzer,,"parts: missing mantlet, idler, stowage"
+214,light_attack_heli,helicopter,P2,5,Cần sửa,100.0,Tốt,Tốt,Cần sửa,3418,,,,light_attack_heli,,mounts: Muzzle_missile 0/1; Turret (main mount)
+215,targeting_station,structure,P2,5,Cần sửa,100.0,Tốt,Tốt,Cần sửa,4446,,,,targeting_station,,parts: missing roof | not_single_block: 0 sloped face directions
+216,minefield_a,obstacle,P3,6,Tốt,92.4,Tốt,-,Tốt,3780,,,1,minefield,,
+217,zu23_technical,wheeled,P3,6,Tốt,93.9,Tốt,,,7436,,,1,zu23_technical,,
+218,guard_tower,tower,P3,6,Tốt,98.3,Tốt,Tốt,Cần sửa,6772,,,2,guard_tower,,
+219,guard_tower_a,tower,P3,6,Tốt,100.0,Tốt,Tốt,Cần sửa,7488,,,2,guard_tower,,
+220,dragons_teeth_b,obstacle,P3,6,Tốt,83.2,Tốt,Tốt,Tốt,4232,,,3,dragons_teeth,,
+221,drone_mothership,boss,P3,6,Tốt,81.9,Tốt,Tốt,Kém,20206,,,5,drone_mothership locust,,
+222,ew_tower_b,tower,P3,6,Tốt,94.4,Tốt,Tốt,Cần sửa,5376,,,6,ew_tower,,
+223,ew_tower,tower,P3,6,Tốt,95.0,Tốt,Tốt,Cần sửa,5936,,,6,ew_tower,,
+224,ew_tower_a,tower,P3,6,Tốt,98.9,Tốt,Tốt,Cần sửa,6268,,,6,ew_tower,,
+225,missile_battery_a,tower,P3,6,Tốt,80.0,Tốt,Tốt,Tốt,8654,,,7,missile_battery,,
+226,missile_battery,tower,P3,6,Tốt,80.6,Tốt,Tốt,Tốt,7242,,,7,missile_battery,,
+227,missile_battery_b,tower,P3,6,Tốt,82.7,Tốt,Tốt,Tốt,7290,,,7,missile_battery,,
+228,nuke_train,boss,P3,6,Tốt,100.0,Tốt,Tốt,Cần sửa,36310,,,7,nuke_train,,
+229,recoilless_jeep,wheeled,P3,6,Tốt,94.8,Tốt,,,3386,,,8,recoilless_jeep,,
+230,airborne_light_tank_chute,air_other,P3,6,Tốt,100.0,Tốt,Tốt,Cần sửa,3514,,,,airborne_light_tank_chute,,

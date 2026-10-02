@@ -1,9 +1,9 @@
 {
- "generated_utc": "2026-10-02T18:42:05+00:00",
- "branch": "feature/export-c",
+ "generated_utc": "2026-10-02T19:09:37+00:00",
+ "branch": "feature/export-c2",
  "tool": "Tools/export v1",
  "ngay": "2026-10-03",
- "commit": "ef210c74",
+ "commit": "382d5fb9",
  "ban_goc": "origin/main (9198a675)",
  "nguon_chua_commit": "",
  "balance_sha256": "8fb0f6670ee9fcaf4eb36682572db4f4e3ee5c5fece5049627a61fcf78e2e310",
@@ -16,17 +16,22 @@
   {
    "path": "00_chi_muc/COVERAGE.md",
    "bytes": 3548,
-   "sha256": "a72e06d78e65a4e978ed226da397d9493f45e648ef74e1bc47edeee8414b8a7d"
+   "sha256": "d3b68de2f5b408611aa3577c00088dfe94daeade4561991dd569907b62f7f228"
   },
   {
    "path": "00_chi_muc/Machine_Brigade_00_Index_2026-10-03.xlsx",
-   "bytes": 542541,
-   "sha256": "12046c013720e44b519108d78424c47d57101ff35c5e483c5fd66948ecb03242"
+   "bytes": 542643,
+   "sha256": "eb5816cc70233e4f5e5d10f0d16f8f3daeb0fe9012f682cc8c8b0875e60ae5e7"
   },
   {
    "path": "00_chi_muc/README.md",
-   "bytes": 455,
-   "sha256": "b5d927ef5e1e829318cbd0f4b4eb3f766c1df046cf53fe27b6675f3884ccd690"
+   "bytes": 456,
+   "sha256": "bdaf1dc153a8387bc0dc89bc76bff1f6f38aacd8967132e12821e536222031f3"
+  },
+  {
+   "path": "00_chi_muc/SELF_CHECK.md",
+   "bytes": 13032,
+   "sha256": "b598b4f81518ff9ac54805cad743e4517ae03a41952e9fc3da1897a69686d8a6"
   },
   {
    "path": "csv/00_chi_muc/Cho_anh_xa.csv",
@@ -56,7 +61,7 @@
   {
    "path": "csv/00_chi_muc/Muc_luc_sheet.csv",
    "bytes": 51950,
-   "sha256": "2bd8fd68d977ef3f67253b9e22e965e902b4d90bd968b9d996c092bd2d5bf084"
+   "sha256": "e4a1073e6c0e60029edde3ee721e84551408e4dc12503732206d131caee7e771"
   },
   {
    "path": "csv/00_chi_muc/Nguon_du_lieu.csv",
@@ -71,22 +76,22 @@
   {
    "path": "csv/00_chi_muc/Phien_ban.csv",
    "bytes": 670,
-   "sha256": "ae520b93d0d2e835c55be22b451b5c46e77738aba90ebffec74754278f9fea8c"
+   "sha256": "5153051f51f3cd0ce54b095dd0d0d4cd0b0ca4b9512e01c4954ef899c2903ce4"
   },
   {
    "path": "csv/00_chi_muc/Phu.csv",
    "bytes": 27744,
-   "sha256": "247c8bbec9c8d8de809bd1d8c9966efa3ecc8993f19b9d78967c43c5cb6f68da"
+   "sha256": "2faf604d90fe14d5af2f3fe613d2e7602cbf32116e182256d792f6c5072e1949"
   },
   {
    "path": "csv/00_chi_muc/README.csv",
-   "bytes": 3211,
-   "sha256": "60e85bf764bb642da26c1c372c60a79f9726478153cf5953d634dffd6c63c255"
+   "bytes": 3538,
+   "sha256": "a07c69c0ad08e661acf781aa837ed3d572f5ae0c0c859f331739c431f885804f"
   },
   {
    "path": "csv/00_chi_muc/Schema.csv",
-   "bytes": 1853043,
-   "sha256": "ff78f2a1dde6cfd0cf0df38d69c8cd6b8ea780c74e032998d2bdd9c1eb5839bb"
+   "bytes": 1853078,
+   "sha256": "671069cea24256c07c5b2d35ab0d5b78c28e070d4857c2680efa04b31bbaad73"
   },
   {
    "path": "csv/00_chi_muc/Van_de.csv",
@@ -525,8 +530,8 @@
   },
   {
    "path": "csv/05_che_do_kinh_te/Che_do.csv",
-   "bytes": 16166,
-   "sha256": "5f1ba6f4de1ef794a23860f67dc1c28b77ebd109eca28b04cb875872a6e17da6"
+   "bytes": 16164,
+   "sha256": "80ab7d62d2532940df4bf0b93f93e1a24665c786d3ebab9acf60d88b860fa285"
   },
   {
    "path": "csv/05_che_do_kinh_te/Diem_tac_chien.csv",
@@ -1040,8 +1045,8 @@
   },
   {
    "path": "csv/10_model_tai_san/Model.csv",
-   "bytes": 281365,
-   "sha256": "bf5b23a4979243f6f011af9cacc906ae5dbed9ebd9af0f0c66135551f4a45459"
+   "bytes": 281370,
+   "sha256": "1ae422ee91425d64309d26b61ed0aea23131029cac5c51dce22ab6b3d94e52d6"
   },
   {
    "path": "csv/10_model_tai_san/Model_kiem_chuan.csv",
@@ -1315,8 +1320,8 @@
   },
   {
    "path": "xlsx/05_che_do_kinh_te.xlsx",
-   "bytes": 20316,
-   "sha256": "5b206146c3afd1f917e422858634a63acceb2354fec68b658bd4b33696e53c05"
+   "bytes": 20318,
+   "sha256": "90dd0716817d4a991099d6e7453c190e5acbdbfd73d1cd46e6fdf9f70b5a5a03"
   },
   {
    "path": "xlsx/06_ai.xlsx",
@@ -1340,8 +1345,8 @@
   },
   {
    "path": "xlsx/10_model_tai_san.xlsx",
-   "bytes": 1711457,
-   "sha256": "7d0ce48f668df5f8dfc7fe0f54763886bb05b7b693cb2c06df0c24e82838f507"
+   "bytes": 1711459,
+   "sha256": "65255fbc5dcbd9e82b7dec57bbc7e2cee4edad71efd1fe4c62888227c9850386"
   },
   {
    "path": "xlsx/11_meta_giao_dien.xlsx",

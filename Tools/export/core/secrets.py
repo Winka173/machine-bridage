@@ -1,9 +1,11 @@
-"""The secret scan (spec 8 and 9.9): no output file holds a string matching a secret pattern or an absolute local path."""
+"""The secret scan (spec 8 and 9.9): no output file holds a string matching a secret pattern (API keys, keystore
+passwords, tokens, emails) or an absolute local path."""
 from __future__ import annotations
 
 import os
 import re
 import zipfile
+import zlib
 from pathlib import Path
 
 PATTERNS = [
@@ -14,9 +16,16 @@ PATTERNS = [
     ("aws_key", re.compile(r"\bAKIA[0-9A-Z]{16}\b")),
     ("private_key", re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----")),
     ("password_assignment", re.compile(r"(?i)\b(password|passwd|storepass|keypass|keystorePass(word)?|keyaliasPass)\s*[=:]\s*\S+")),
+    ("jwt", re.compile(r"\beyJ[A-Za-z0-9_\-]{10,}\.eyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}")),
+    ("bearer_token", re.compile(r"(?i)\bbearer\s+[A-Za-z0-9\-._~+/]{20,}=*")),
+    ("api_key_assignment", re.compile(r"(?i)\b(api[_-]?key|secret[_-]?key|access[_-]?token|auth[_-]?token|client[_-]?secret)"
+                                      r"[\"']?\s*[=:]\s*[\"']?[A-Za-z0-9_\-]{12,}")),
+    ("email", re.compile(r"\b[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}\b")),
     ("windows_abs_path", re.compile(r"\b[A-Za-z]:[\\/]+(Users|Documents and Settings|home)[\\/]", re.I)),
     ("unix_home_path", re.compile(r"(?<![\w.])/(Users|home)/[A-Za-z0-9_.\-]+")),
 ]
+TEXT = (".csv", ".md", ".json", ".txt", ".html", ".xml", ".yml", ".yaml", ".svg")
+PDF_STREAM = re.compile(rb"stream\r?\n(.*?)\r?\nendstream", re.S)
 
 
 def _local_names() -> list[str]:
@@ -37,16 +46,35 @@ def scan_text(text: str, where: str, hits: list):
             hits.append((where, "local_user_name", user[:2] + "…"))
 
 
+def scan_file(p: Path, where: str, hits: list):
+    """Every output file (spec 9.9): zip parts (xlsx / docx) one by one, PDF streams inflated, text as UTF-8, anything
+    else (images, fonts) as Latin-1 so metadata such as an EXIF path is still read."""
+    suffix = p.suffix.lower()
+    data = p.read_bytes()
+    if suffix in (".xlsx", ".docx", ".pptx", ".zip") and zipfile.is_zipfile(p):
+        with zipfile.ZipFile(p) as z:
+            for info in z.infolist():
+                scan_text(z.read(info).decode("utf-8", "replace"), f"{where}:{info.filename}", hits)
+    elif suffix == ".pdf":
+        scan_text(data.decode("latin-1"), where, hits)
+        for i, m in enumerate(PDF_STREAM.finditer(data)):
+            try:
+                body = zlib.decompress(m.group(1))
+            except zlib.error:
+                continue
+            scan_text(body.decode("latin-1"), f"{where}:stream{i}", hits)
+    elif suffix in TEXT:
+        scan_text(data.decode("utf-8", "replace"), where, hits)
+    else:
+        scan_text(data.decode("latin-1"), where, hits)
+
+
+def files(root: Path) -> list[Path]:
+    return [p for p in sorted(root.rglob("*")) if p.is_file() and p.parent.name != "__pycache__"]
+
+
 def scan_dir(root: Path) -> list[tuple[str, str, str]]:
     hits: list = []
-    for p in sorted(root.rglob("*")):
-        if not p.is_file():
-            continue
-        where = p.relative_to(root).as_posix()
-        if p.suffix.lower() == ".xlsx":
-            with zipfile.ZipFile(p) as z:
-                for info in z.infolist():
-                    scan_text(z.read(info).decode("utf-8", "replace"), f"{where}:{info.filename}", hits)
-        elif p.suffix.lower() in (".csv", ".md", ".json", ".txt", ".html"):
-            scan_text(p.read_text("utf-8", errors="replace"), where, hits)
+    for p in files(root):
+        scan_file(p, p.relative_to(root).as_posix(), hits)
     return hits

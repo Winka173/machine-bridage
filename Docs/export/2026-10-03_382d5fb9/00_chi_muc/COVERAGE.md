@@ -1,6 +1,6 @@
 # COVERAGE (độ phủ khóa, spec 3.3 và 3.5)
 
-Commit ef210c74, bản gốc so sánh origin/main (9198a675). Lá = mọi giá trị lá của mọi nguồn (Nguon_du_lieu).
+Commit 382d5fb9, bản gốc so sánh origin/main (9198a675). Lá = mọi giá trị lá của mọi nguồn (Nguon_du_lieu).
 
 | Mục | Số |
 |---|---|
