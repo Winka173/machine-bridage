@@ -14527,3 +14527,16 @@ Pass 8b3 (lane B, mb_town, 16 models), in `Tools/blender/mb_p27_wave8b.py`. Owne
 - **Siege fortress buys with CP: yes.** The garrison is `AddEnemyCommander(_mode, seed, CommanderStance.Defend)`, a
   ConquestAi with an economy (SiegeModes Defender.Build), so the siege profile has spendPressure on, advancePressure off.
 - **Tests** (written, not run): `Tests/EditMode/AiModeProfileTests.cs`, the five of appendix C.
+
+## Prompt 30 (cloud, 2026-10-02, cloud/p30-story)
+
+### L0, L1: acts and Legendary
+
+- Precheck in `Docs/checks/p30_precheck.md`. `campaign.json` has `act` 1-4 on every chapter, so the "3 acts" text was
+  the error: the design doc generator (`Tools/docs/programme.py`) now counts the acts from the data, the campaign
+  menu's comment says four acts, `Docs/STORY.md` lists them. The data stays at four.
+- "Epilogue after chapter 9" becomes **Kết mạch Thorne** / *Thorne's Arc Closes*: text keys `campaign.thorneArc(.title)`
+  (EN + VI) for an interlude card after c9m10 and before chapter 15; showing it is UI (LOCAL_TODO). It names no
+  Icarus (L9: the name comes with the timeline). The game's epilogue stays after c12m10.
+- Legendary (`Operations.LegendOpen`) opens on winning `c12m10` by id (`LegendMission`) instead of "the last entry of
+  the operations list", which matched only by data order; the old rule stays as the fallback if c12m10 is missing.

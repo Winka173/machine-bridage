@@ -3,7 +3,7 @@
 // reads it.
 {
   // Tiers: the enemy's CP and income scale, the player's income, whether fire support is allowed,
-  // and the score multiplier. Legend opens once the last operation of the campaign is won.
+  // and the score multiplier. Legend opens once c12m10 (Helion, the finale) is won (prompt 30 L1).
   "tiers": [
     { "id": "normal", "enemy": 1.0, "playerIncome": 1.0, "supports": true,  "score": 1.0 },
     { "id": "heroic", "enemy": 1.3, "playerIncome": 1.0, "supports": true,  "score": 1.3 },
