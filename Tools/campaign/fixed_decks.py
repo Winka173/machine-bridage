@@ -116,6 +116,12 @@ DECKS = {
         loaned=['combat_wreck_car', 'recoilless_jeep'],
         replaced={'demolition_line_vehicle': 'engineer_vehicle', 'reinforcements': 'artillery_barrage'},
         rules=['patchworkDeck']),
+    'c9m08': dict(
+        vehicles=['coastal_ashm_vehicle', 'ground_cruise_missile_vehicle', 'attack_helicopter', 'attack_jet', 'recon_drone', 'mlrs', 'sam_launcher', 'iron_beam'],
+        supports=['airstrike', 'smoke_screen'],
+        loaned=['coastal_ashm_vehicle', 'ground_cruise_missile_vehicle'],
+        replaced={'stealth_naval_strike': 'attack_jet', 'river_gunboat': 'mlrs', 'cruise_missile': 'airstrike', 'chaff_strike': 'smoke_screen'},
+        rules=['ciwsSaturate']),
 }
 
 

@@ -14949,3 +14949,8 @@ the lead, the tests are written, not run.
   - c8m11 (chapter 8): loaned combat_wreck_car, recoilless_jeep (cheap patchwork cards); demolition_line_vehicle ->
     engineer_vehicle (owned support truck), reinforcements -> artillery_barrage (`reinforcements` is a consumable item,
     not a support card, and no Reinforce-kind card is owned). Rule patchworkDeck (the deck itself). Line: Varro at 45 s.
+  - c9m08 (chapter 9): loaned coastal_ashm_vehicle, ground_cruise_missile_vehicle (the missiles to saturate the
+    defence); stealth_naval_strike -> attack_jet (owned strike aircraft), river_gunboat -> mlrs (rockets in salvos),
+    cruise_missile -> airstrike (the cruise missile opens later), chaff_strike -> smoke_screen (both screens). Rule
+    ciwsSaturate: Scylla's `ciws_fore` part and the point defence of prompt 26 (CombatSystem.PointDefence) already shoot
+    rounds down. Line: Mara at 40 s.
