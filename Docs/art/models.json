@@ -13,15 +13,15 @@
   },
   "aa_turret": {
     "file": "aa_turret.glb",
-    "triangles": 6126
+    "triangles": 6306
   },
   "aa_turret_a": {
     "file": "aa_turret_a.glb",
-    "triangles": 6554
+    "triangles": 6670
   },
   "aa_turret_b": {
     "file": "aa_turret_b.glb",
-    "triangles": 2382
+    "triangles": 2610
   },
   "aa_vehicle": {
     "file": "aa_vehicle.glb",
@@ -113,15 +113,15 @@
   },
   "artillery_emplacement": {
     "file": "artillery_emplacement.glb",
-    "triangles": 7334
+    "triangles": 7946
   },
   "artillery_emplacement_a": {
     "file": "artillery_emplacement_a.glb",
-    "triangles": 7766
+    "triangles": 8426
   },
   "artillery_emplacement_b": {
     "file": "artillery_emplacement_b.glb",
-    "triangles": 5770
+    "triangles": 5878
   },
   "artillery_hd": {
     "file": "artillery_hd.glb",
@@ -661,15 +661,15 @@
   },
   "guard_tower": {
     "file": "guard_tower.glb",
-    "triangles": 4656
+    "triangles": 6772
   },
   "guard_tower_a": {
     "file": "guard_tower_a.glb",
-    "triangles": 5372
+    "triangles": 7488
   },
   "guard_tower_b": {
     "file": "guard_tower_b.glb",
-    "triangles": 2594
+    "triangles": 2746
   },
   "gun_pit": {
     "file": "gun_pit.glb",
