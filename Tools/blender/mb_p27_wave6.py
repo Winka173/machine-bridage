@@ -32,7 +32,7 @@ def _rect(x0, x1, y0, y1, z):
     return [(x0, y0, z), (x1, y0, z), (x1, y1, z), (x0, y1, z)]
 
 
-def _build(base, up, mod=None, post=None):
+def _build(base, up, mod=None, post=None, ao=AO):
     """(builder, options): the tower's old builder, the V2 upgrade, then the branch's own edit and post-upgrade."""
     build, options = tb.BASES[base] if isinstance(base, str) else base
 
@@ -44,7 +44,7 @@ def _build(base, up, mod=None, post=None):
         if post:
             post(a)
         k.clean(a)
-    return _runtime_names(run), dict(options, ao_strength=AO)
+    return _runtime_names(run), dict(options, ao_strength=ao)
 
 
 # ============================================================================= aa_turret (twin 35 mm flak)
@@ -279,13 +279,14 @@ def _atgm_up(a):
     tb.strip(a, ('Pad', 'Tower', 'Fascia', 'Launcher_sight', 'Base_housing'))
     k.extrude(a.part('Pad', 'Concrete'), chamfered(5.2, 5.2, .7), .26, loc=(0, 0, .11), axis='Z', chamfer=.05,
               corner=.03, taper=.99)
-    conc = a.part('Tower', 'Concrete')
+    conc = a.part('Tower', 'Plaster')            # pale body: Concrete (#8d8a7e) read dark from the card's high view (6c)
     base = chamfered(3.4, 3.4, .55)
     z0, H, TP = .2, 2.8, .9
     k.sharp_loft(conc, [[(x * (1 - (1 - TP) * f), y * (1 - (1 - TP) * f), z0 + H * f) for x, y in base]
                         for f in (0, 1)], chamfer=.05)                                      # same outline as the old loft
     k.extrude(conc, chamfered(3.56, 3.56, .6), .12, loc=(0, 0, .26), axis='Z', chamfer=.03, corner=.02)  # plinth
-    k.extrude(conc, chamfered(3.7, 3.7, .6), .3, loc=(0, 0, 3.12), axis='Z', chamfer=.04, corner=.03)  # roof slab
+    k.extrude(a.part('Roof_slab', 'PlasterWhite'), chamfered(3.7, 3.7, .6), .3, loc=(0, 0, 3.12), axis='Z', chamfer=.04,
+              corner=.03)                                                                        # roof slab, palest
     k.extrude(a.part('Fascia', 'Team'), chamfered(3.78, 3.78, .62), .18, loc=(0, 0, 3.12), axis='Z', chamfer=.025,
               corner=.02)
     hous = a.part('Base_housing', 'Team', t)
@@ -358,9 +359,9 @@ def _pit_up(a):
 
 
 BUILDERS.update({
-    'atgm_tower': _build(tb.BASES['atgm_tower'], _atgm_up),
-    'atgm_tower_a': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_a),
-    'atgm_tower_b': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_b),
+    'atgm_tower': _build(tb.BASES['atgm_tower'], _atgm_up, ao=.5),
+    'atgm_tower_a': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_a, ao=.5),
+    'atgm_tower_b': _build(tb.BASES['atgm_tower'], _atgm_up, tb.atgm_tower_b, ao=.5),
     'c_ram': _build(tb.BASES['c_ram'], _cram_up),
     'c_ram_a': _build(tb.BASES['c_ram'], _cram_up, tb.c_ram_a),
     'c_ram_b': _build(tb.BASES['c_ram'], _cram_up, tb.c_ram_b),

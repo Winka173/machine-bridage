@@ -987,6 +987,20 @@
    ],
    "reason": "merge of feature/p27-wave6c",
    "changes": []
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "atgm_tower",
+    "atgm_tower_a",
+    "atgm_tower_b"
+   ],
+   "reason": "6d fix: pale Plaster body and PlasterWhite roof slab, ao .5",
+   "changes": [
+    "FLAG atgm_tower: meshes 47 -> 48 (+2.1%); renderers 47 -> 48 (+2.1%); materials 15 -> 17 (+13.3%); materialSlots 47 -> 48 (+2.1%); fileBytes 381,184 -> 381,232 (+0.0%); structure changed",
+    "FLAG atgm_tower_a: meshes 53 -> 54 (+1.9%); renderers 53 -> 54 (+1.9%); materials 15 -> 17 (+13.3%); materialSlots 53 -> 54 (+1.9%); fileBytes 413,020 -> 413,072 (+0.0%); structure changed",
+    "FLAG atgm_tower_b: meshes 50 -> 51 (+2.0%); renderers 50 -> 51 (+2.0%); materials 15 -> 17 (+13.3%); materialSlots 50 -> 51 (+2.0%); fileBytes 413,020 -> 413,068 (+0.0%); structure changed"
+   ]
   }
  ],
  "models": {
@@ -5572,22 +5586,22 @@
   },
   "atgm_tower": {
    "file": "atgm_tower.glb",
-   "fileBytes": 381184,
-   "sha1": "e52d0246cd5ab341",
+   "fileBytes": 381232,
+   "sha1": "58aad1e40f6ea7dd",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 51,
-   "meshes": 47,
-   "materials": 15,
+   "nodes": 52,
+   "meshes": 48,
+   "materials": 17,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 47,
-   "submeshes": 47,
-   "materialSlots": 47,
-   "materialsUsed": 15,
+   "renderers": 48,
+   "submeshes": 48,
+   "materialSlots": 48,
+   "materialsUsed": 17,
    "triangles": 5374,
    "vertices": 6861,
    "degenerateTriangles": 0,
@@ -5620,13 +5634,13 @@
     2.457,
     0.0
    ],
-   "structureHash": "edf1f2b55a5f6182",
+   "structureHash": "ff58e8031f04fd0e",
    "color0": {
-    "mean": 0.6571,
-    "min": 0.2389,
+    "mean": 0.6906,
+    "min": 0.3389,
     "max": 1.0,
-    "p05": 0.3368,
-    "p95": 0.9641,
+    "p05": 0.4338,
+    "p95": 0.9722,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -5679,6 +5693,7 @@
     "Pad",
     "Roof_hatch",
     "Roof_hatch_bar",
+    "Roof_slab",
     "Sandbags",
     "Spare_caps",
     "Spare_missiles",
@@ -5709,22 +5724,22 @@
   },
   "atgm_tower_a": {
    "file": "atgm_tower_a.glb",
-   "fileBytes": 413020,
-   "sha1": "2a70077d003538b4",
+   "fileBytes": 413072,
+   "sha1": "220a4973854b33c7",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 57,
-   "meshes": 53,
-   "materials": 15,
+   "nodes": 58,
+   "meshes": 54,
+   "materials": 17,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 53,
-   "submeshes": 53,
-   "materialSlots": 53,
-   "materialsUsed": 15,
+   "renderers": 54,
+   "submeshes": 54,
+   "materialSlots": 54,
+   "materialsUsed": 17,
    "triangles": 5926,
    "vertices": 7395,
    "degenerateTriangles": 0,
@@ -5757,13 +5772,13 @@
     3.395,
     0.0
    ],
-   "structureHash": "caf10916ed9ba19a",
+   "structureHash": "0123fa8756b03b48",
    "color0": {
-    "mean": 0.6686,
-    "min": 0.2389,
+    "mean": 0.6993,
+    "min": 0.3389,
     "max": 1.0,
-    "p05": 0.3416,
-    "p95": 0.9204,
+    "p05": 0.436,
+    "p95": 0.9375,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -5824,6 +5839,7 @@
     "Pad",
     "Roof_hatch",
     "Roof_hatch_bar",
+    "Roof_slab",
     "Sandbags",
     "Sensor_ball",
     "Sensor_eye",
@@ -5855,22 +5871,22 @@
   },
   "atgm_tower_b": {
    "file": "atgm_tower_b.glb",
-   "fileBytes": 413020,
-   "sha1": "823e9c9bffe4a884",
+   "fileBytes": 413068,
+   "sha1": "f514a220c4e9a6dc",
    "generator": "Khronos glTF Blender I/O v4.5.51",
    "extensions": [
     "KHR_materials_emissive_strength"
    ],
-   "nodes": 57,
-   "meshes": 50,
-   "materials": 15,
+   "nodes": 58,
+   "meshes": 51,
+   "materials": 17,
    "animations": 0,
    "skins": 0,
    "textures": 0,
-   "renderers": 50,
-   "submeshes": 50,
-   "materialSlots": 50,
-   "materialsUsed": 15,
+   "renderers": 51,
+   "submeshes": 51,
+   "materialSlots": 51,
+   "materialsUsed": 17,
    "triangles": 5974,
    "vertices": 7437,
    "degenerateTriangles": 0,
@@ -5903,13 +5919,13 @@
     2.457,
     0.0
    ],
-   "structureHash": "442b0e3081089b78",
+   "structureHash": "c357afcdd4f9768c",
    "color0": {
-    "mean": 0.6606,
-    "min": 0.2389,
+    "mean": 0.6931,
+    "min": 0.3389,
     "max": 1.0,
-    "p05": 0.346,
-    "p95": 0.8296,
+    "p05": 0.4393,
+    "p95": 0.8636,
     "outOfRange": 0
    },
    "runtimeNodes": {
@@ -5975,6 +5991,7 @@
     "Radar_post",
     "Roof_hatch",
     "Roof_hatch_bar",
+    "Roof_slab",
     "Sandbags",
     "Spare_caps",
     "Spare_missiles",
