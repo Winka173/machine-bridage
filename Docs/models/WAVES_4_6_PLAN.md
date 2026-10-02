@@ -48,3 +48,18 @@ the biggest top/side faces (wave 6 lesson).
 |---|---|
 | 7a | cp_relay, shield_tower, dragons_teeth, minefield, each with `_a` and `_b` |
 | 7b | barrage_balloon, blast_wall, fire_control_centre, inflatable_decoy, troop_shelter, logistics_station, radar_site, repair_bay, ammo_dump, targeting_station |
+
+## Wave 5 (bosses), both lanes (2026-10-02)
+
+Same standing brief, plus PROGRESS.md "Wave 5": at the prompt 26 sizes (`size`, `modelSize`); keep every boss part node
+(`Part_<letters>[.NNN]`, grep the def's `parts` in balance.json), `mountWeapons` slots, `Mount_*`/`Muzzle_*`, phase
+and escort nodes; vary greeble seeds per ship; boss class budgets (boss_s/m/l). Check each model id is not shared by
+another def's variant (grep `"model"`); if it is, keep the variant's keep/drop nodes. Pale base colours on the biggest
+faces, but bosses are dark war machines: aim for card luma >= old, not much above (<= ~+20 %).
+
+| lane | pass | models | builder file |
+|---|---|---|---|
+| A (art) | 5a | behemoth, behemoth_inferno, behemoth_tempest, fortress_bastion, fortress_hive | `mb_p27_wave5_ground.py` |
+| A (art) | 5b | kronos, moloch, nuke_train, armored_train, earth_borer | `mb_p27_wave5_ground.py` |
+| B (art2) | 5c | command_airship, drone_mothership, mega_gunship, sky_fortress, daedalus, morrigan | `mb_p27_wave5_air.py` |
+| B (art2) | 5d | leviathan, caspian, typhon, landing_hovercraft, supreme_command | `mb_p27_wave5_air.py` |

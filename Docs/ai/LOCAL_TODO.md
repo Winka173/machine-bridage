@@ -42,7 +42,7 @@ The cloud session writes the Sim only. Each line: file, what, why.
   `WorldModel.Peek` (read-only).
 - WAITS FOR THE OWNER: O.6 screenshots of the picker, HUD switch, Base chips and AI viewer; the EditMode suite
   (L10nTests covers the new keys) and a play check of the HUD rail layout on a phone (the rail gained one tool).
-- Prompt 29: re-render the cards (prices, health, drop times changed for ~100 vehicles), run CatalogCheck (new keys
+- Prompt 29 (lead 2026-10-02: cards are model renders hashed by the GLB, no data printed: no re-render needed; Unity compile 0 and CatalogCheck OK after the merge; tests wait for the owner; PDF after the waves): re-render the cards (prices, health, drop times changed for ~100 vehicles), run CatalogCheck (new keys
   `outgoingDamageMult`, `dropDelay`, `economy.bankByMode`, later `flareCharges`, `flareRecharge`, `apsCapability`,
   `interceptionMode`, `missiles`) and `BalanceRound2Tests`, `Tools/balance/test_p29.py`; rebuild the design PDF
   (`Tools/docs/build_doc.py`, pass 8 sections).
