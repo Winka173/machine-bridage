@@ -1126,6 +1126,25 @@
     "FLAG shield_tower_a: triangles 7,200 -> 7,260 (+0.8%); vertices 7,422 -> 7,452 (+0.4%); meshes 24 -> 25 (+4.2%); renderers 24 -> 25 (+4.2%); materials 7 -> 9 (+28.6%); materialSlots 24 -> 25 (+4.2%); fileBytes 394,148 -> 397,156 (+0.8%); structure changed",
     "FLAG shield_tower_b: triangles 6,176 -> 6,236 (+1.0%); vertices 6,044 -> 6,074 (+0.5%); meshes 19 -> 20 (+5.3%); renderers 19 -> 20 (+5.3%); materials 7 -> 8 (+14.3%); materialSlots 19 -> 20 (+5.3%); fileBytes 322,584 -> 325,392 (+0.9%); structure changed"
    ]
+  },
+  {
+   "date": "2026-10-02",
+   "models": [
+    "cp_relay",
+    "cp_relay_a",
+    "cp_relay_b",
+    "dragons_teeth",
+    "dragons_teeth_a",
+    "dragons_teeth_b",
+    "minefield",
+    "minefield_a",
+    "minefield_b",
+    "shield_tower",
+    "shield_tower_a",
+    "shield_tower_b"
+   ],
+   "reason": "merge of feature/p27-wave7a",
+   "changes": []
   }
  ],
  "models": {
