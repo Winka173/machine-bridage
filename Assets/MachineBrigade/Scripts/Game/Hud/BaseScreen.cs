@@ -783,6 +783,7 @@ namespace MachineBrigade.Game.Hud
             {
                 _wallChips[i].style.display = i < lines ? DisplayStyle.Flex : DisplayStyle.None;
                 _wallLabels[i].text = Strings.Format("camp.wall", ("line", Strings.Get("wall.line." + (i + 1))), ("type", WallName(PlayerProfile.WallOf(i))));
+                _wallChips[i].EnableInClassList("fc-base__wall--none", PlayerProfile.WallOf(i) == MachineBrigade.Sim.Content.WallType.None);
             }
         }
 

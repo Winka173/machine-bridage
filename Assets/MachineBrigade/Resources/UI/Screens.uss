@@ -1111,3 +1111,46 @@
 .fc-pick__option { margin-top: var(--fc-space-2); }
 .fc-pick__option > .fc-btn { align-self: stretch; }
 .fc-pick__extra { margin-top: var(--fc-space-3); }
+
+/* ================================================================ UI polish after prompts 28-34 (lead pass, 2026-10-02) */
+/* prompt 32 L4: the HQ skill beside the CP box: the support card's shape, an accent bar and icon while ready */
+.fc-hcard--hqskill { border-top-color: var(--fc-accent); margin-left: 0; margin-right: var(--fc-space-2); }
+.fc-hcard--hqskill .fc-hcard__art { background-color: var(--fc-panel-selected); }
+.fc-hcard--hqskill .fc-hcard__icon { --icon-color: var(--fc-accent); }
+.fc-hcard--hqskill.fc-hcard--cooling { border-top-color: var(--fc-border-strong); }
+.fc-hcard--hqskill.fc-hcard--cooling .fc-hcard__icon { --icon-color: var(--fc-text-dim); }
+
+/* prompt 32 L8: the ammunition handbook's tables and the detail page's chips */
+.fc-hb__row {
+    flex-direction: row; align-items: flex-start; flex-shrink: 0;
+    padding: var(--fc-space-1) var(--fc-space-2);
+    border-bottom-width: var(--fc-line); border-bottom-color: var(--fc-border);
+}
+.fc-hb__row > .fc-caption { color: var(--fc-text-2); }
+.fc-hb__cell { min-width: 0; flex-shrink: 1; white-space: normal; padding-right: var(--fc-space-2); }
+.fc-hb__chips { flex-direction: row; flex-wrap: wrap; margin: var(--fc-space-2) 0 var(--fc-space-1) 0; }
+.fc-hb__chips > .fc-chip { margin: 0 var(--fc-space-1) var(--fc-space-1) 0; }
+
+/* prompt 31: a mission's fixed deck: the panel, its compact cards, the "Loaned" tag under a card */
+.fc-campaign__fixed-deck {
+    padding: var(--fc-space-3) var(--fc-space-4);
+    background-color: var(--fc-bg-2);
+    border-left-width: var(--fc-bar); border-left-color: var(--fc-accent);
+}
+.fc-campaign__fixed-card { align-items: center; margin: 0 var(--fc-space-2) var(--fc-space-2) 0; }
+.fc-campaign__fixed-card > .fc-tag { margin: var(--fc-space-1) 0 0 0; }
+.fc-tag--loaned { border-top-color: var(--fc-ally); border-right-color: var(--fc-ally); border-bottom-color: var(--fc-ally); border-left-color: var(--fc-ally); }
+.fc-tag--loaned > .fc-icon { --icon-color: var(--fc-ally); }
+
+/* prompt 32 L3: the Base screen's wall lines, one tap chip each (a tap cycles the wall type) */
+.fc-base__walls { flex-direction: row; flex-wrap: wrap; align-items: center; flex-shrink: 1; margin-right: var(--fc-space-3); }
+.fc-base__wall {
+    flex-direction: row; align-items: center; min-height: 48px;
+    padding: 0 var(--fc-space-3); margin-right: var(--fc-space-1);
+    background-color: var(--fc-panel-raised);
+    border-top-width: var(--fc-line); border-right-width: var(--fc-line); border-bottom-width: var(--fc-line); border-left-width: var(--fc-bar);
+    border-top-color: var(--fc-border-strong); border-right-color: var(--fc-border-strong); border-bottom-color: var(--fc-border-strong); border-left-color: var(--fc-branch-support);
+}
+.fc-base__wall--none { border-left-color: var(--fc-border-strong); }
+.fc-base__wall--none > .fc-small { color: var(--fc-text-2); }
+.fc-root .fc-base__wall.pressed { background-color: var(--fc-panel-selected); }
