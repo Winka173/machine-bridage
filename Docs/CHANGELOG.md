@@ -7,6 +7,7 @@ its commits.
 
 ## Unreleased (feature/visual-overhaul)
 
+- Prompt 33 L6: biome dressing, decoration only (instanced, no collider, never in the simulation or its vision): 38 new lean models for eight biomes (temperate, desert, snow, harbour / industrial, jungle, volcanic, urban, coast), placed per map at the biome's target densities from a light scatter of small clutter on the field to a dense edge band, a lighter ring and HLOD stand-ins beyond, buoys and far islets at sea; visual-only low hills, berms, ditches and dry stream beds past the edge (DECISIONS "Prompt 33 L1 / L6").
 - Prompt 33 L1: the four zones of every battlefield (play area, a 12-20 m edge band, an outer ring sized from the widest camera frame + 15 %: 120 m round a square map, 73 / 128 m beside / beyond a long one, then the horizon), in a new view-only file Resources/Data/map_dressing.json; each map's scenery from its own fixed seed; the ring's far half draws its trees as low-poly HLOD stand-ins; the range carried on in coarse cells to the horizon (DECISIONS "Prompt 33 L1 / L6").
 - Prompt 31 L6: the prompt 31 report (Docs/story/report_p31.md) and the design document's sections on the fixed-deck missions and the battlefield events (Tools/docs/prompt31.py; the PDF is rebuilt by the lead) (DECISIONS "Prompt 31 L6").
 

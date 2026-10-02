@@ -16106,3 +16106,71 @@ scenery, identical every time (all its modes share it). This does change today's
 frostpeak, skyhold 18), countryside 16, coasts and ports 14, dense ground 12 (capital, metrocity, veyra_old_quarter,
 foundry, coralisles, junglepass). Pass 2 (edgeType, the sea side) comes later; the existing rule (no land dressing in the
 sea) is kept.
+
+### L6: biome dressing
+
+**Two layers.** DECORATION is everything `Surroundings` draws: GPU-instanced matrices (no GameObject, no collider, no
+NavGrid cell, not in the vision or stealth system, no shot or sight line ever tests it), placed from the map's fixed
+seed. GAMEPLAY (blocks routes or sight, AI cover) stays the map files' props only, added only through the map audit
+(`Tools/audit/map_audit.py`) and `check_access.py`; this pass adds none. A test keeps every dressing model a `dress_*`
+GLB that is not a balance.json prop, and checks the Sim assembly does not reference the view's. Plain wrecks stay
+visual: no wreck is added as decoration, and the map files' wreck props (gameplay, audited) are untouched; the "vehicle
+becomes cover when destroyed" card stays the one exception (unchanged).
+
+**Biomes.** Eight: temperate, desert, snow, harbor (ports and industry: ironport, rustyard, foundry), jungle, volcanic,
+urban, coast (coralisles, landingbeach, lighthousebay). The map's theme keeps its palette and forests; the biome (per map
+in map_dressing.json) picks the dressing. 38 new models, `Tools/blender/mb_p33_biomes.py` on the V2 kit (registered last),
+existing materials only, one to three parts each (a part is one instanced draw per cell), validator 0 errors:
+
+| biome | models (triangles) |
+|---|---|
+| temperate | shrub 240, haybales 108, stump 72, wildflowers 192, tree_far 36 (HLOD) |
+| desert | scrub 80, hoodoo 320, barrel_cacti 248, bones 44, far 40 (HLOD) |
+| snow | drift 80, ice_rock 100, log 56, pine_far 76 (HLOD) |
+| harbor | pallets 60, drums 208, pipes 136, bollards 292, shed_far 20 (HLOD) |
+| jungle | palm_small 96, banana 120, fern 112, vine_rock 120, tree_far 56 (HLOD) |
+| volcanic | cinder_cone 110, ash_rocks 120, snag 44, far 32 (HLOD) |
+| urban | rubble 80, planter 92, billboard 48, kiosk 36, block_far 36 (HLOD) |
+| coast | dune_grass 108, driftwood 40, rowboat 56, buoy 120, island_far 160 (horizon) |
+
+(ids are `dress_<biome>_<name>`; glb_check.py's scenery class now includes `dress_`.)
+
+**Density targets** (instances per hectare, on top of the existing forests, rocks, fields and farms; x the map's
+`density`, x 0.5 on the low graphics tiers like the rest of the scenery):
+
+| biome | play area | edge band | ring (near half) | ring far half (HLOD) | relief per map: hills / berms / ditches / dry beds |
+|---|---|---|---|---|---|
+| temperate | 8 | 120 | 45 | 40 | 8 / 6 / 3 / 1 |
+| desert | 5 | 70 | 30 | 18 | 6 / 4 / 0 / 3 |
+| snow | 6 | 100 | 40 | 35 | 8 / 4 / 0 / 1 |
+| harbor | 4 | 90 | 35 | 12 | 3 / 5 / 3 / 0 |
+| jungle | 10 | 150 | 60 | 45 | 6 / 3 / 2 / 2 |
+| volcanic | 5 | 70 | 30 | 18 | 8 / 3 / 0 / 2 |
+| urban | 3 | 80 | 25 | 6 | 0 / 4 / 2 / 0 |
+| coast | 6 | 100 | 35 | 20 | 5 / 4 / 1 / 1 |
+
+On a square temperate map that is about 72 pieces on the field, 240 in the band, 420 in the near ring and 490 HLOD
+stand-ins (about 120,000 triangles if all were in view; the 5,200 forest trees are about 650,000, so roughly +20 %,
+before culling). Map factors: greenvale and swamp 1.1; skyhold, launchsite, whiteout 0.8; openpit, orbitalgate 0.9;
+saltflat 0.6 (a bare salt pan). coralisles keeps its palms in the far ring (`farTree` "none").
+
+**Where.** Play area: small pieces only (shrubs, flowers, weeds, ferns, drifts, low ash rocks; urban and harbour get
+weeds only, so nothing on the field looks like a crate, a barrier or cover), scaled 0.55-0.9, at least 2.5 m from every
+prop, 22 m from the rallies, 4 m outside the capture circles, 1.5 m off the roads and 3 m inside the outline. Band and
+ring: the full set, off the sea, the river, the crop fields and the city blocks (urban: only the 16 m strip before
+them), under the tree line. Sea (harbour, coast on a sea theme): buoys; islets past the ring on the horizon.
+
+**Relief, visual only.** Low hills (12-26 m across, 1.8-4.5 m x the theme's peaks) in the ring; berms (24-50 m long,
+0.8-1.5 m) along the edge in the band; ditches (raised banks, the bed painted dark earth) and dry stream beds (three
+meandering reaches running outwards, sand and gravel beds) across band and ring. All of it rises only from 1.5 m past
+the edge: the play area stays flat, because the simulation is flat (vehicles stand at y = 0) and a visual hill on the
+field would bury them; the NavGrid is unchanged. It is part of the faceted range mesh (the same height field), so trees
+and fields stand on it.
+
+**Not done (as the prompt says, later):** destructible blockers, previous-battle traces on campaign maps, multi-state
+damaged houses, separate sight blockers; the sea side's houses and forests (pass 2, with edgeType).
+
+**For the compile (lead).** New files: `Views/MapZones.cs`, `Views/MapDressing.cs` (JsonUtility classes),
+`Views/Surroundings.Zones.cs`, `Views/Surroundings.Dressing.cs` (Surroundings is now `partial`), tests
+`MapZonesTests.cs`, `MapDressingTests.cs`; `RtsCamera` gains `TiltDegrees`, `Rotates`, `PlayerMaxZoom`; `CameraFrame`
+reads the internal `MatchRunner.LongMaxZoom`. The 38 GLBs need their import metas.

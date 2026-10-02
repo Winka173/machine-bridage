@@ -94,6 +94,8 @@ namespace MachineBrigade.Game.Views
             _root = new GameObject("Surroundings");
             _root.transform.SetParent(parent, false);
 
+            // Prompt 33 L6: the visual relief past the edge first (fields, the range and the scatter all stand on it).
+            BuildRelief();
             var fields = theme.Fields ? Fields() : new List<Rect>();
             _texture = PaintOuter(theme, fields);
             materials.OuterGround.SetTexture("_BaseMap", _texture);
@@ -144,6 +146,8 @@ namespace MachineBrigade.Game.Views
             ScatterRocks(models);
             ScatterScenery(models, fields);
             PlaceFarmhouses(models, fields);
+            // Prompt 33 L6: the biome's decoration layer, zone by zone (instanced like the rest, never simulated).
+            ScatterDressing(models, world, fields);
             var total = 0;
             foreach (var entry in _instances)
             {
@@ -165,7 +169,8 @@ namespace MachineBrigade.Game.Views
                 InstancedTriangles += mesh.GetIndexCount(submesh) / 3 * entry.Value.Count;
             }
             _instances.Clear();
-            Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances, instancing supported: {SystemInfo.supportsInstancing}");
+            Debug.Log($"[Surroundings] {_draws.Count} instanced batches, {total} instances ({DressingPlaced} biome dressing, {_relief.Count} relief), " +
+                      $"ring {_zones.RingX}/{_zones.RingZ} m, band {_zones.EdgeBand} m, seed {_seed}, instancing supported: {SystemInfo.supportsInstancing}");
         }
 
         /// <summary>Triangles submitted per frame by the instanced scenery (for the perf probe).</summary>
@@ -249,7 +254,7 @@ namespace MachineBrigade.Game.Views
             (HasRiver && Mathf.Abs(p.y - RiverZ) < RiverWidth * 0.5f + margin) || InSea(p, margin);
 
         /// <summary>Rough terrain height at a ground point (0 on the flat around the map).</summary>
-        private float Height(Vector2 p) => Mathf.Max(RangeHeight(p), BayHeight(p));
+        private float Height(Vector2 p) => Mathf.Max(Mathf.Max(RangeHeight(p), BayHeight(p)), ReliefHeight(p));
 
         /// <summary>
         /// The rough ground that fills the bays carved into the square by the battlefield's
@@ -726,6 +731,7 @@ namespace MachineBrigade.Game.Views
                 var riverDistance = HasRiver ? Mathf.Abs(p.y - RiverZ) - RiverWidth * 0.5f
                     : mapTheme.Water == ThemeWater.Sea ? SeaShore - p.y : 99f;
                 if (riverDistance < 4f) colour = Color.Lerp(colour, bank, Mathf.Clamp01(1f - riverDistance / 4f));
+                colour = PaintRelief(p, colour, theme);
                 // Out of bounds reads a little darker and duller, which marks the playable edge.
                 var edge = Beyond(p);
                 var shade = Mathf.Lerp(0.9f, 0.74f, Mathf.Clamp01(edge / 40f));
