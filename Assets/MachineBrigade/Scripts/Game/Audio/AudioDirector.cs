@@ -28,6 +28,10 @@ namespace MachineBrigade.Game.Audio
     /// <item>loops (wind, rain, rotors, jet engines, fires burning near the view, boss drums)
     /// fade with what is near the view.</item>
     /// </list>
+    /// Fix pass L7 (Docs/audio/diagnosis.md, DECISIONS "Sửa lỗi tổng hợp L7"): the shots, blasts and hits come from the
+    /// library by size (Resources/Audio/sfx, AudioDirector.P34 and <see cref="SoundLibrary"/>), the hits by what they
+    /// struck (metal only on armour not pierced, rate-capped); the mix has its four groups, an Effects compressor, the
+    /// output limiter (<see cref="EffectsLimiter"/>) and a camera-distance falloff.
     /// </summary>
     public sealed partial class AudioDirector : IDisposable
     {
@@ -185,11 +189,11 @@ namespace MachineBrigade.Game.Audio
             Add(Sound.ExplosionHuge, "explosion_huge", i => SoundSynth.Explosion(700 + i, 1f), 1f, 2, 0.1f, 5, delayed: true);
             Add(Sound.Collapse, "collapse", i => SoundSynth.Collapse(800 + i), 0.85f, 2, 0.3f, 4);
             Add(Sound.Debris, "debris", i => SoundSynth.Collapse(850 + i), 0.45f, 2, 0.12f, 1);
-            Add(Sound.Impact, "impact_metal", i => SoundSynth.MachineGun(860 + i, 1), 0.28f, 3, 0.1f, 0, light: true);
+            Add(Sound.Impact, "sfx/hit_ground_light", i => SoundSynth.MachineGun(860 + i, 1), 0.28f, 3, 0.1f, 0, light: true);
             Add(Sound.Jet, "jet_pass", i => SoundSynth.JetPass(900 + i), 0.9f, 2, 0.5f, 4);
             // Incoming shells whistle down onto where they land: the warning is in the world, where
             // the danger is, not a beep from the interface (Company of Heroes and Men of War do the same).
-            Add(Sound.Whistle, "whistle", i => SoundSynth.Whistle(950 + i), 0.5f, 3, 0.22f, SoundPriority.Warning);
+            Add(Sound.Whistle, "sfx/warn_whistle", i => SoundSynth.Whistle(950 + i), 0.5f, 3, 0.22f, SoundPriority.Warning);
             // Test feedback 19P: an FPV drone leaves its rack with a buzz of props, not a rocket's roar; a beam
             // ignites with a rising whine before its hum takes over.
             Add(Sound.Drone, "drone_buzz", i => SoundSynth.DroneBuzz(970 + i), 0.5f, 4, 0.12f, 2, light: true);
@@ -329,7 +333,7 @@ namespace MachineBrigade.Game.Audio
                         Shot(e, weapon);
                         // Heavy shells on a long flight whistle down onto where they are aimed.
                         if (weapon != null && weapon.MinRange > 0f && weapon.Projectile == ProjectileKind.Shell && e.Value > WhistleLead + 0.2f)
-                            Schedule(Sound.Whistle, e.Target, 0.7f, e.Value - WhistleLead);
+                            Whistle(e.Target, 0.7f, e.Value - WhistleLead, SoundLibrary.SizeOf(weapon) >= SizeClass.S406);
                         break;
                     case SimEventKind.ProjectileImpact:
                         // A beam's burn is in its hum: no ping for each of its shots.
@@ -339,15 +343,21 @@ namespace MachineBrigade.Game.Audio
                         else Play(Sound.Impact, e.Position, 1f);
                         break;
                     case SimEventKind.Intercepted:
-                        Play(Sound.Impact, e.Position, 1f);
-                        Play(Sound.ExplosionSmall, e.Position, 0.6f);
+                        // Fix pass L7: an interception is a burst in the air, not a metal ping.
+                        if (_tierBanks.TryGetValue("blast_air_s1", out var burst)) Play(burst, e.Position, 1f, 10f, SoundPriority.FarBlast);
+                        else Play(Sound.ExplosionSmall, e.Position, 0.6f);
+                        break;
+                    case SimEventKind.SkillUsed when e.Skill == SkillKind.Flares:
+                        Flared(e);
                         break;
                     case SimEventKind.Explosion:
                         if (Exploded(e)) break;
+                        if (TierBlast(e.Tier, e.Position)) break;
                         Play(e.Tier <= ExplosionTier.Small ? Sound.ExplosionSmall : Blast(e.Tier < ExplosionTier.Large ? ExplosionTier.Large : e.Tier),
                             e.Position, 1f);
                         break;
                     case SimEventKind.StrikeImpact:
+                        if (TierBlast(e.Tier < ExplosionTier.Large ? ExplosionTier.Large : e.Tier, e.Position)) break;
                         Play(Blast(e.Tier < ExplosionTier.Large ? ExplosionTier.Large : e.Tier), e.Position, 1f);
                         break;
                     case SimEventKind.AircraftPass:
@@ -369,7 +379,7 @@ namespace MachineBrigade.Game.Audio
                         if (e.DefId != null && _superCues.TryGetValue(e.DefId, out var cue)) _ui.PlayOneShot(cue, 0.36f * Fx);
                         else if (_siren != null) _ui.PlayOneShot(_siren, 0.32f * Fx);
                         MusicDirector.Current?.Alert();
-                        Schedule(Sound.Whistle, e.Position, 1f, e.Value - WhistleLead);
+                        Whistle(e.Position, 1f, e.Value - WhistleLead, true);
                         break;
                     case SimEventKind.FortressAlert when _playerTeam >= 0 && _siren != null:
                         // The fortress's own alarm: heard as far as the fortress is near the view.
@@ -413,6 +423,7 @@ namespace MachineBrigade.Game.Audio
         public void Tick(ViewRegistry views)
         {
             var now = Time.unscaledTime;
+            _views = views;
             if (!Mathf.Approximately(_drums.volume, _drumsTarget))
             {
                 _drums.volume = Mathf.MoveTowards(_drums.volume, _drumsTarget, Time.unscaledDeltaTime * 0.25f);
@@ -495,10 +506,11 @@ namespace MachineBrigade.Game.Audio
                 Play(s.bank, s.where, s.volume, 0f, s.priority);
             }
             TickTiers(views, now);
-            // Small arms come back up after a big blast.
+            // Fix pass L7: the Effects compressor's gain on every effect voice; small arms come back up after a big blast.
+            Compress(Time.unscaledDeltaTime);
             var duck = Duck(now);
             foreach (var v in _voices)
-                if (v.Bank != null && v.Bank.Light && v.Source.isPlaying) v.Source.volume = v.Level * duck;
+                if (v.Bank != null && v.Source.isPlaying) v.Source.volume = v.Level * (v.Bank.Light ? duck : 1f) * _busGain;
         }
 
         /// <summary>Prompt 34 L9: the voices playing now, of 32 (the stress scene's count).</summary>
@@ -514,10 +526,11 @@ namespace MachineBrigade.Game.Audio
         }
 
         /// <summary>UI feedback; call from button handlers.</summary>
-        public void Click() => _ui.PlayOneShot(_clicks[_rng.Next(_clicks.Length)], 0.35f);
+        public void Click() => _ui.PlayOneShot(_clicks[_rng.Next(_clicks.Length)], 0.35f * Ui);
 
         public void Dispose()
         {
+            DetachLimiter();
             if (_root != null) Object.Destroy(_root);
             foreach (var clip in _owned)
                 if (clip != null) Object.Destroy(clip);
@@ -542,6 +555,17 @@ namespace MachineBrigade.Game.Audio
                 _beamPan = Mathf.Clamp((View.WorldToViewportPoint(world).x - 0.5f) * 1.4f, -0.9f, 0.9f);
             }
             _beamUntil = Mathf.Max(_beamUntil, now + Mathf.Max(0.12f, weapon.Cooldown) * 1.8f + 0.08f);
+        }
+
+        /// <summary>Fix pass L7: a blast known only by its tier (a strike, a cook-off, a mine) from the library: HE by size. False: none built.</summary>
+        private bool TierBlast(ExplosionTier tier, System.Numerics.Vector2 at)
+        {
+            var size = tier >= ExplosionTier.Ultimate ? SizeClass.S406 : tier >= ExplosionTier.Huge ? SizeClass.S4 : tier >= ExplosionTier.Large ? SizeClass.S3
+                : tier >= ExplosionTier.Medium ? SizeClass.S2 : SizeClass.S1;
+            var name = size == SizeClass.S406 ? "blast_he_s406" : "blast_he_s" + (int)size;
+            if (!_tierBanks.TryGetValue(name, out var bank)) return false;
+            Play(bank, at, 1f, SoundLibrary.Carry(size), SoundPriority.For(size, false, true, Near(at)));
+            return true;
         }
 
         private static Sound Blast(ExplosionTier tier) =>
@@ -625,21 +649,23 @@ namespace MachineBrigade.Game.Audio
             var attenuation = Mathf.Clamp01(1f - distance / reach);
             if (attenuation <= 0.02f) return;
             var screen = View.WorldToViewportPoint(world);
-            // Prompt 34 L6: a source off the screen is quieter; the effects' own volume (settings) on top.
+            // Prompt 34 L6: a source off the screen is a little quieter; the effects' own volume (settings) on top.
             var offScreen = screen.x < 0f || screen.x > 1f || screen.y < 0f || screen.y > 1f || screen.z < 0f;
-            var level = bank.Volume * volume * attenuation * attenuation * (offScreen ? OffScreenGain : 1f) * Fx;
+            // Fix pass L7: the camera-distance falloff (ground distance and the camera's height), in place of (1 - d / reach)^2.
+            var height = Mathf.Max(0f, View.transform.position.y);
+            var level = bank.Volume * volume * SoundLibrary.Falloff(distance, height, reach) * (offScreen ? OffScreenGain : 1f) * Fx;
             if (level <= 0.001f) return;
             if (priority < 0) priority = bank.Priority;
 
             var voice = PickVoice(bank, level, priority);
             if (voice == null) return;
-            if (priority >= SoundPriority.T3Near) _duckUntil = now + 0.35f;
+            if (priority >= SoundPriority.NearBlast) _duckUntil = now + 0.35f;
             voice.Priority = priority;
             voice.Bank = bank;
             voice.Level = level;
             voice.Started = now;
             voice.Source.clip = bank.Next(_rng);
-            voice.Source.volume = bank.Light ? level * Duck(now) : level;
+            voice.Source.volume = (bank.Light ? level * Duck(now) : level) * _busGain;
             voice.Source.panStereo = Mathf.Clamp((screen.x - 0.5f) * 1.4f, -0.9f, 0.9f);
             voice.Source.pitch = bank.Pitch * (1f + ((float)_rng.NextDouble() - 0.5f) * bank.PitchSpread);
             // Far sounds lose their top end.

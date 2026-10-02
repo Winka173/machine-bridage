@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using MachineBrigade.Game.Effects;
-using MachineBrigade.Game.Match;
 using MachineBrigade.Game.Views;
 using MachineBrigade.Sim.Content;
 using MachineBrigade.Sim.Events;
@@ -11,33 +10,34 @@ using Vector2 = System.Numerics.Vector2;
 namespace MachineBrigade.Game.Audio
 {
     /// <summary>
-    /// Prompt 34 L6: the prompt's seven priorities, as a number a voice is cut by (higher wins). Between the prompt's
-    /// steps there is room for one more (an enemy's T2 gun under our important weapons, over the small arms).
+    /// Fix pass L7 (in place of prompt 34 L6's seven steps): the priority a voice is cut by when the 24 effect voices run out,
+    /// higher wins: warnings > a boss's or a 406 mm / super weapon's sound > blasts near the view > shots near the view >
+    /// far blasts > far shots > small arms (their clusters) > the environment.
     /// </summary>
     internal static class SoundPriority
     {
-        /// <summary>7. The environment (debris, ambience).</summary>
+        /// <summary>The environment (debris, ambience).</summary>
         public const int Ambient = 10;
 
-        /// <summary>6. Small arms fired over and over (and their clusters).</summary>
+        /// <summary>Small arms fired over and over, and their clusters.</summary>
         public const int SmallArms = 20;
 
-        /// <summary>Between 5 and 6: an enemy's T2 gun, a medium blast.</summary>
-        public const int Medium = 25;
+        /// <summary>A shot far from the view.</summary>
+        public const int FarShot = 25;
 
-        /// <summary>5. Our side's important weapons (T2+ guns, missiles, rockets, drones).</summary>
-        public const int Ally = 30;
+        /// <summary>A blast (a landing, a wreck) far from the view.</summary>
+        public const int FarBlast = 30;
 
-        /// <summary>4. A T3 round near the view (far: as our important weapons).</summary>
-        public const int T3Near = 40;
+        /// <summary>A shot near the view.</summary>
+        public const int NearShot = 40;
 
-        /// <summary>3. A T4 round near the view (far: as a T3 near).</summary>
-        public const int T4Near = 50;
+        /// <summary>A blast near the view.</summary>
+        public const int NearBlast = 50;
 
-        /// <summary>2. A T5 round or a boss's.</summary>
+        /// <summary>A boss's, a 406 mm's or a super weapon's sound.</summary>
         public const int Boss = 60;
 
-        /// <summary>1. Gameplay warnings and super weapons (the whistles of incoming fire; the alarms play on their own source).</summary>
+        /// <summary>Gameplay warnings (the whistles of incoming fire; the alarms play on their own source).</summary>
         public const int Warning = 70;
 
         /// <summary>The old banks' priorities (0-5) on this scale; 7 and up is a warning.</summary>
@@ -45,29 +45,27 @@ namespace MachineBrigade.Game.Audio
         {
             <= 0 => Ambient,
             1 or 2 => SmallArms,
-            3 => Ally,
-            4 => T3Near,
-            _ => T4Near,
+            3 => NearShot,
+            _ => NearBlast,
         };
 
-        /// <summary>A round's priority: by its tier, a boss's, our side's, near the view or not.</summary>
-        public static int For(int tier, bool boss, bool ally, bool near, bool important)
+        /// <summary>A sound's priority: by its size, a boss's, a blast or a shot, near the view or not.</summary>
+        public static int For(SizeClass size, bool boss, bool blast, bool near)
         {
-            if (boss || tier >= 5) return Boss;
-            if (tier == 4) return near ? T4Near : T3Near;
-            if (tier == 3) return near ? T3Near : Ally;
-            if (ally && important) return Ally;
-            return tier <= 1 ? SmallArms : Medium;
+            if (boss || size >= SizeClass.S406) return Boss;
+            if (blast) return near ? NearBlast : FarBlast;
+            if (size == SizeClass.S0) return SmallArms;
+            return near ? NearShot : FarShot;
         }
     }
 
     public sealed partial class AudioDirector
     {
-        /// <summary>Effect voices at once before the least important is cut (of the pool's 32; the rest wait for warnings and T5 / boss).</summary>
+        /// <summary>Effect voices at once before the least important is cut (of the pool's 32; the rest wait for warnings and boss sounds).</summary>
         internal const int EffectVoices = 24;
 
-        /// <summary>A source off the screen plays this much quieter.</summary>
-        internal const float OffScreenGain = 0.6f;
+        /// <summary>A source off the screen plays this much quieter (0.6 in prompt 34 L6: part of the lost punch, Docs/audio/diagnosis.md).</summary>
+        internal const float OffScreenGain = 0.85f;
 
         /// <summary>Small arms within this of each other (m) inside <see cref="ClusterWindow"/> (s) count as one firefight.</summary>
         internal const float ClusterRadius = 20f, ClusterWindow = 0.5f;
@@ -75,14 +73,18 @@ namespace MachineBrigade.Game.Audio
         /// <summary>From this many small-arms shots in a firefight, it is heard as one cluster sound, not a voice a shot.</summary>
         internal const int ClusterFrom = 3;
 
-        /// <summary>A round counts as near the view inside this share of the hearing reach.</summary>
+        /// <summary>A sound counts as near the view inside this share of the hearing reach.</summary>
         internal const float NearShare = 0.45f;
 
-        /// <summary>The effects' and the dialogue's volumes (Settings, under the master volume).</summary>
-        private static float Fx => MatchSettings.EffectsVolume;
-        private static float Talk => MatchSettings.DialogueVolume;
+        /// <summary>The Effects compressor's attack and release (s).</summary>
+        internal const float CompressorAttack = 0.03f, CompressorRelease = 0.3f;
 
-        /// <summary>The tiered banks by name (Resources/Audio/p34/name), from Tools/sfx/build_sfx.py.</summary>
+        /// <summary>The groups' volumes (Settings, under the master volume).</summary>
+        private static float Fx => SoundLibrary.Gain(AudioGroup.Effects);
+        private static float Talk => SoundLibrary.Gain(AudioGroup.Dialogue);
+        private static float Ui => SoundLibrary.Gain(AudioGroup.UI);
+
+        /// <summary>The library's banks by name (Resources/Audio/sfx/name), from Tools/sfx/build_sfx.py.</summary>
         private readonly Dictionary<string, Bank> _tierBanks = new();
 
         /// <summary>Banks loaded with their units (the map's group): "naval" (ship horn, engines, wrecks), "rail" (train horn, rails).</summary>
@@ -90,45 +92,79 @@ namespace MachineBrigade.Game.Audio
 
         private readonly HashSet<string> _bossWeapons = new();
         private readonly HashSet<EntityId> _salvoShips = new();
-        /// <summary>Falling aircraft: from when their crash is due (the Sim's fall time, L7's crash plan on the loss event).</summary>
+        /// <summary>Falling aircraft: from when their crash is due (the Sim's fall time on the loss event).</summary>
         private readonly Dictionary<EntityId, float> _crashing = new();
         private readonly List<(float at, Vector2 where)> _smallArms = new();
         private float _clusterUntil = -10f;
         private Vector2 _clusterAt;
-        private AudioSource _rails, _engines;
+        private AudioSource _rails, _engines, _engTracked, _engWheeled, _engHeavy;
         private readonly Dictionary<EntityId, float> _nextHorn = new();
+
+        /// <summary>Fix pass L7: the match-wide cap on metal hits.</summary>
+        private readonly MetalCap _metal = new();
+
+        /// <summary>Fix pass L7: every unit seen spawning, by id (a killing round's impact comes after its loss event).</summary>
+        private readonly Dictionary<EntityId, VehicleDef> _unitDefs = new();
+
+        /// <summary>The views (from the last <see cref="Tick"/>): what a round struck, its heading and armour.</summary>
+        private ViewRegistry _views;
+
+        /// <summary>Fix pass L7: each library clip's RMS envelope (50 Hz), for the Effects compressor.</summary>
+        private Dictionary<string, float[]> _envelopes = new();
+
+        /// <summary>The Effects compressor's gain now (1: no reduction).</summary>
+        private float _busGain = 1f;
+
+        private EffectsLimiter _limiter;
+        private bool _ownsLimiter;
+        private int _limiterTries;
+
+        /// <summary>The Effects compressor's gain now (1: none), for the stress check.</summary>
+        internal float EffectsGain => _busGain;
 
         private void AddTierBanks()
         {
-            float[] shotVolume = { 0.38f, 0.46f, 0.72f, 0.86f, 0.95f, 1f };
-            int[] shotVoices = { 4, 4, 4, 3, 2, 2 };
-            for (var t = 0; t <= 5; t++)
-                TierBank($"shot_t{t}", shotVolume[t], shotVoices[t], t <= 1 ? 0.06f : 0.05f + 0.01f * t,
-                    SoundPriority.For(t, false, false, true, true), light: t <= 1);
-            for (var t = 2; t <= 5; t++) TierBank($"launch_t{t}", 0.5f + 0.1f * t, t >= 4 ? 2 : 3, 0.06f, SoundPriority.For(t, false, false, true, true));
-            for (var t = 1; t <= 5; t++)
-                TierBank($"blast_he_t{t}", 0.5f + 0.1f * t, t >= 4 ? 2 : t >= 3 ? 3 : 4, 0.04f + 0.012f * t, SoundPriority.For(t, false, false, true, true),
-                    delayed: true);
-            for (var t = 1; t <= 4; t++) TierBank($"blast_ap_t{t}", 0.35f + 0.12f * t, 3, 0.05f, SoundPriority.For(t, false, false, true, true));
-            TierBank("blast_heat", 0.7f, 3, 0.05f, SoundPriority.Ally);
-            TierBank("blast_thermo_t3", 0.9f, 2, 0.1f, SoundPriority.T3Near, delayed: true);
-            TierBank("blast_thermo_t4", 1f, 2, 0.12f, SoundPriority.T4Near, delayed: true);
-            TierBank("smallarms_cluster", 0.55f, 2, 0.35f, SoundPriority.SmallArms, light: true);
+            var env = Resources.Load<TextAsset>("Audio/" + SoundLibrary.Folder + "envelopes");
+            if (env != null) _envelopes = SoundLibrary.ParseEnvelopes(env.text);
+            // The level of each size is in its file (Tools/sfx/build_sfx.py); the banks only set the voices and cooldowns.
+            int[] shotVoices = { 4, 4, 4, 3, 2, 2, 2 };
+            string[] shots = { "shot_s0", "shot_s1", "shot_s2", "shot_s3", "shot_s4", "shot_s406", "shot_super" };
+            for (var i = 0; i < shots.Length; i++)
+                TierBank(shots[i], 1f, shotVoices[i], i <= 1 ? 0.06f : 0.05f + 0.01f * i, i == 0 ? SoundPriority.SmallArms : SoundPriority.NearShot,
+                    light: i <= 1);
+            foreach (var name in new[] { "launch_s2", "launch_s3", "launch_big" }) TierBank(name, 1f, name == "launch_big" ? 2 : 3, 0.06f, SoundPriority.NearShot);
+            string[] blasts = { "blast_he_s1", "blast_he_s2", "blast_he_s3", "blast_he_s4", "blast_bomb", "blast_he_s406", "blast_super" };
+            for (var i = 0; i < blasts.Length; i++)
+                TierBank(blasts[i], 1f, i >= 5 ? 2 : i >= 2 ? 3 : 4, 0.04f + 0.01f * i, SoundPriority.NearBlast, delayed: true);
+            foreach (var name in new[] { "blast_thermo_s3", "blast_thermo_s4" }) TierBank(name, 1f, 2, 0.1f, SoundPriority.NearBlast, delayed: true);
+            foreach (var name in new[] { "blast_heat_s2", "blast_heat_s3" }) TierBank(name, 1f, 3, 0.05f, SoundPriority.NearBlast);
+            foreach (var name in new[] { "blast_air_s1", "blast_air_s2", "blast_air_s3" }) TierBank(name, 1f, 3, 0.06f, SoundPriority.FarBlast, light: true);
+            foreach (var name in new[] { "hit_ground_light", "hit_concrete_light", "hit_pen_light" }) TierBank(name, 1f, 3, 0.05f, SoundPriority.SmallArms, light: true);
+            foreach (var name in new[] { "hit_ground_heavy", "hit_concrete_heavy", "hit_pen_heavy" }) TierBank(name, 1f, 3, 0.05f, SoundPriority.NearShot);
+            TierBank("hit_metal_light", 1f, 2, MetalCap.MinGap, SoundPriority.SmallArms, light: true);
+            TierBank("hit_metal_heavy", 1f, 2, MetalCap.MinGap, SoundPriority.NearShot);
+            TierBank("smallarms_cluster", 1f, 2, 0.35f, SoundPriority.SmallArms, light: true);
             foreach (var kind in new[] { "tank", "wheeled", "truck", "artillery", "aircraft", "heli", "drone" })
-                TierBank("wreck_" + kind, kind == "drone" ? 0.55f : 0.85f, 3, 0.1f, SoundPriority.T3Near, delayed: true);
-            TierBank("crash_fall", 0.6f, 2, 0.3f, SoundPriority.T3Near);
-            TierBank("crash_impact", 0.95f, 2, 0.1f, SoundPriority.T4Near, delayed: true);
+                TierBank("wreck_" + kind, 1f, 3, 0.1f, SoundPriority.NearBlast, delayed: true);
+            TierBank("crash_fall", 1f, 2, 0.3f, SoundPriority.NearShot);
+            TierBank("crash_impact", 1f, 2, 0.1f, SoundPriority.NearBlast, delayed: true);
+            TierBank("flare_pop", 1f, 2, 0.15f, SoundPriority.NearShot);
+            TierBank("warn_whistle_big", 1f, 2, 0.3f, SoundPriority.Warning);
             foreach (var def in _catalog.Vehicles.Values)
             {
                 if (!def.Boss) continue;
                 foreach (var mount in def.Mounts) _bossWeapons.Add(mount.Weapon.Id);
             }
+            _engTracked = TierLoop("Engines (tracked)", "engine_tracked");
+            _engWheeled = TierLoop("Engines (wheeled)", "engine_wheeled");
+            _engHeavy = TierLoop("Engines (heavy)", "engine_heavy");
+            AttachLimiter();
         }
 
-        /// <summary>A tiered bank, when its clips are there (built and imported); without them the old banks play.</summary>
+        /// <summary>A library bank, when its clips are there (built and imported); without them the old banks play.</summary>
         private void TierBank(string name, float volume, int voices, float cooldown, int priority, bool light = false, bool delayed = false)
         {
-            var clips = Recorded("p34/" + name);
+            var clips = Recorded(SoundLibrary.Folder + name);
             if (clips == null) return;
             _tierBanks[name] = new Bank
             {
@@ -137,21 +173,21 @@ namespace MachineBrigade.Game.Audio
         }
 
         /// <summary>
-        /// Loads a map group's banks the first time one of its units shows up (prompt's "load by map group"): a map with no
-        /// ships or trains never loads their sounds.
+        /// Loads a map group's banks the first time one of its units shows up: a map with no ships or trains never loads their
+        /// sounds.
         /// </summary>
         private void LoadGroup(string group)
         {
             if (!_groups.Add(group)) return;
             if (group == "naval")
             {
-                TierBank("ship_horn", 0.8f, 1, 10f, SoundPriority.Ally);
-                TierBank("wreck_ship", 1f, 2, 0.2f, SoundPriority.T4Near, delayed: true);
+                TierBank("ship_horn", 0.8f, 1, 10f, SoundPriority.NearShot);
+                TierBank("wreck_ship", 1f, 2, 0.2f, SoundPriority.Boss, delayed: true);
                 _engines = TierLoop("Ship Engines", "ship_engine");
             }
             else if (group == "rail")
             {
-                TierBank("train_horn", 0.8f, 1, 8f, SoundPriority.Ally);
+                TierBank("train_horn", 0.8f, 1, 8f, SoundPriority.NearShot);
                 _rails = TierLoop("Rails", "train_rails");
             }
             foreach (var name in group == "naval" ? new[] { "ship_horn", "wreck_ship" } : new[] { "train_horn" })
@@ -162,7 +198,7 @@ namespace MachineBrigade.Game.Audio
 
         private AudioSource TierLoop(string name, string folder)
         {
-            var clips = Recorded("p34/" + folder);
+            var clips = Recorded(SoundLibrary.Folder + folder);
             if (clips == null) return null;
             var source = NewSource(name);
             source.clip = clips[0];
@@ -174,42 +210,14 @@ namespace MachineBrigade.Game.Audio
 
         private bool Near(Vector2 at) => Vector3.Distance(new Vector3(at.X, 0f, at.Y), Focus) < Reach(0f) * NearShare;
 
-        private int PriorityOf(WeaponDef weapon, Vector2 at, int team)
-        {
-            if (weapon == null) return -1;
-            var important = weapon.Tier >= 2 || weapon.Projectile is ProjectileKind.Missile or ProjectileKind.Rocket or ProjectileKind.Drone;
-            return SoundPriority.For(weapon.Tier, _bossWeapons.Contains(weapon.Id), team == _playerTeam && _playerTeam >= 0, Near(at), important);
-        }
+        private int PriorityOf(WeaponDef weapon, Vector2 at, bool blast) =>
+            weapon == null ? -1 : SoundPriority.For(SoundLibrary.SizeOf(weapon), _bossWeapons.Contains(weapon.Id), blast, Near(at));
 
-        /// <summary>The tiered bank a shot plays (null: the old categories): guns by tier, rockets and missiles of T2+ by tier.</summary>
-        internal static string ShotBank(WeaponDef weapon)
-        {
-            if (weapon == null || weapon.Tier < 0 || weapon.Beam) return null;
-            switch (weapon.Projectile)
-            {
-                case ProjectileKind.Rocket:
-                case ProjectileKind.Missile:
-                    return weapon.Tier >= 2 ? $"launch_t{Mathf.Min(5, weapon.Tier)}" : null;
-                case ProjectileKind.Bullet when weapon.DamageType == DamageType.Fragmentation:
-                case ProjectileKind.Flame:
-                case ProjectileKind.Drone:
-                case ProjectileKind.Bomb:
-                    return null;
-                default:
-                    return $"shot_t{Mathf.Min(5, weapon.Tier)}";
-            }
-        }
+        /// <summary>The bank a shot plays (null: the old categories).</summary>
+        internal static string ShotBank(WeaponDef weapon) => SoundLibrary.ShotBank(weapon);
 
-        /// <summary>The tiered bank a round's landing plays (null: the old categories): by tier and round.</summary>
-        internal static string ImpactBank(WeaponDef round)
-        {
-            if (round == null || round.Tier < 1 || round.Beam) return null;
-            if (round.Id.StartsWith("thermobaric") || round.WeaponVariantId == "thermobaric") return $"blast_thermo_t{Mathf.Clamp(round.Tier, 3, 4)}";
-            if (round.DamageType == DamageType.ShapedCharge) return "blast_heat";
-            if (round.DamageType == DamageType.Kinetic && round.SplashRadius <= 0f) return $"blast_ap_t{Mathf.Clamp(round.Tier, 1, 4)}";
-            if (round.DamageType is DamageType.Fire or DamageType.Energy or DamageType.Fragmentation) return null;
-            return $"blast_he_t{Mathf.Clamp(round.Tier, 1, 5)}";
-        }
+        /// <summary>The blast a round's landing plays on the ground (null: a round without a blast, or the old categories).</summary>
+        internal static string ImpactBank(WeaponDef round) => SoundLibrary.BlastBank(round);
 
         /// <summary>The wreck bank of a class (null: none, the old blast plays).</summary>
         internal static string WreckBank(WreckClass c) => c switch
@@ -230,20 +238,20 @@ namespace MachineBrigade.Game.Audio
             weapon != null && weapon.Tier <= 1 && weapon.Projectile == ProjectileKind.Bullet && weapon.DamageType != DamageType.Fragmentation &&
             !weapon.Beam && weapon.Charge <= 0f;
 
-        /// <summary>A shot: its tiered sound at its priority; small arms in a firefight heard as one cluster.</summary>
+        /// <summary>A shot: its sound by size at its priority, carrying farther the bigger it is; small arms in a firefight as one cluster.</summary>
         private void Shot(in SimEvent e, WeaponDef weapon)
         {
-            var priority = PriorityOf(weapon, e.Position, e.Team);
+            var priority = PriorityOf(weapon, e.Position, false);
             if (SmallArms(weapon) && Clustered(e.Position)) return;
             var name = ShotBank(weapon);
-            if (name != null && _tierBanks.TryGetValue(name, out var bank)) Play(bank, e.Position, 1f, 0f, priority);
+            if (name != null && _tierBanks.TryGetValue(name, out var bank)) Play(bank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(weapon)), priority);
             else Play(_banks[WeaponSound(weapon)], e.Position, 1f, 0f, priority);
         }
 
         /// <summary>
         /// Small arms: when <see cref="ClusterFrom"/> or more shots come from within <see cref="ClusterRadius"/> inside
-        /// <see cref="ClusterWindow"/>, the firefight is one cluster sound (a few guns at once, near and far) played now and then,
-        /// and the shots in it take no voice of their own. True when the shot was taken into a cluster.
+        /// <see cref="ClusterWindow"/>, the firefight is one cluster sound played now and then, and the shots in it take no
+        /// voice of their own. True when the shot was taken into a cluster.
         /// </summary>
         private bool Clustered(Vector2 at)
         {
@@ -274,14 +282,55 @@ namespace MachineBrigade.Game.Audio
             return true;
         }
 
-        /// <summary>A round landing: by tier and round (HE, AP, HEAT, thermobaric). False: the old categories play it.</summary>
+        /// <summary>
+        /// A round landing. With a blast: by size and round (HE, thermobaric, HEAT, an air burst). Without one (a kinetic
+        /// round): by what it struck (<see cref="Surface"/>): metal only on armour it did not pierce, under the match-wide
+        /// cap. False: the old categories play it (fire, energy).
+        /// </summary>
         private bool Landed(in SimEvent e)
         {
             if (e.DefId == null || !_catalog.Weapons.TryGetValue(e.DefId, out var round)) return false;
-            var name = ImpactBank(round);
-            if (name == null || !_tierBanks.TryGetValue(name, out var bank)) return false;
-            Play(bank, e.Position, e.Tier >= ExplosionTier.Huge ? 1f : 0.9f, 0f, PriorityOf(round, e.Position, e.Team));
+            var size = SoundLibrary.SizeOf(round);
+            var name = SoundLibrary.BlastBank(round, e.Airborne);
+            var blast = name != null;
+            if (!blast)
+            {
+                if (round.DamageType != DamageType.Kinetic) return false;
+                var surface = Surface(e, round);
+                // Over the cap a glancing round is not heard at all (the run is heard by its first few).
+                if (surface == HitSurface.Metal && !_metal.TryTake(Time.unscaledTime)) return true;
+                name = SoundLibrary.HitBank(surface, size);
+            }
+            if (!_tierBanks.TryGetValue(name, out var bank)) return false;
+            Play(bank, e.Position, 1f, SoundLibrary.Carry(size), PriorityOf(round, e.Position, blast));
             return true;
+        }
+
+        /// <summary>
+        /// Fix pass L7: what a round without a blast struck, read from the event the view already has (no Sim change): the
+        /// struck entity (<see cref="SimEvent.Entity"/>, invalid for the ground) and the hull contact point the Sim puts the
+        /// impact on (DamageSystem: a direct round meets the hull on the shooter's side, so the face it struck is the face that
+        /// point lies on; a round from above strikes the roof). The target's armour on that face against the round's
+        /// penetration decides metal (not pierced) or a heavy impact (pierced), as the Sim's penetration step does (level or
+        /// better goes through). Not counted: the shooter's equipment bonus (internal to the Sim) and a boss part's own armour.
+        /// </summary>
+        private HitSurface Surface(in SimEvent e, WeaponDef round)
+        {
+            if (!e.Entity.IsValid) return HitSurface.Ground;
+            if (_views != null && _views.TryGet(e.Entity, out var view) && view != null && view.Sim != null)
+            {
+                var v = view.Sim;
+                var top = Armour.StrikesTop(round);
+                var face = top ? ArmorFace.Top : Armour.FaceFrom(v.Position, v.Heading, e.Position);
+                return SoundLibrary.SurfaceOf(true, true, v.Def.Static || v.Def.Armor == ArmorClass.Structure, v.Flying, round.DamageType == DamageType.Kinetic,
+                    round.Penetration, v.ArmourOn(face));
+            }
+            // Gone from the views (the round that killed it): its definition from its spawn, the side armour.
+            if (_unitDefs.TryGetValue(e.Entity, out var def))
+                return SoundLibrary.SurfaceOf(true, true, def.Static || def.Armor == ArmorClass.Structure, def.Flying && e.Airborne,
+                    round.DamageType == DamageType.Kinetic, round.Penetration, def.Armour[Armour.StrikesTop(round) ? ArmorFace.Top : ArmorFace.Side]);
+            // Not a unit: a building, a wall, a prop.
+            return HitSurface.Concrete;
         }
 
         /// <summary>A blast event: a falling aircraft hitting the ground, a ship's salvo shell. False: the old categories play it.</summary>
@@ -290,14 +339,14 @@ namespace MachineBrigade.Game.Audio
             if (_crashing.TryGetValue(e.Entity, out var due) && Time.unscaledTime >= due && _crashing.Remove(e.Entity) &&
                 _tierBanks.TryGetValue("crash_impact", out var crash))
             {
-                Play(crash, e.Position, 1f, 0f, SoundPriority.T4Near);
+                Play(crash, e.Position, 1f, 40f, SoundPriority.NearBlast);
                 return true;
             }
             if (!_salvoShips.Contains(e.Entity) || !_catalog.Vehicles.TryGetValue(ShipDef(e.Entity), out var ship) || ship.Salvo?.Weapon is not { } gun ||
                 !_catalog.Weapons.TryGetValue(gun, out var shell)) return false;
-            var name = ImpactBank(shell);
+            var name = SoundLibrary.BlastBank(shell);
             if (name == null || !_tierBanks.TryGetValue(name, out var bank)) return false;
-            Play(bank, e.Position, 1f, 0f, SoundPriority.Boss);
+            Play(bank, e.Position, 1f, SoundLibrary.Carry(SoundLibrary.SizeOf(shell)), SoundPriority.Boss);
             return true;
         }
 
@@ -315,11 +364,11 @@ namespace MachineBrigade.Game.Audio
             if (c == WreckClass.Ship) LoadGroup("naval");
             var name = WreckBank(c);
             if (name == null || !_tierBanks.TryGetValue(name, out var bank)) return false;
-            var priority = def.Boss ? SoundPriority.Boss : Near(e.Position) ? SoundPriority.T3Near : SoundPriority.Ally;
-            Play(bank, e.Position, 1f, 0f, priority);
+            var priority = def.Boss ? SoundPriority.Boss : Near(e.Position) ? SoundPriority.NearBlast : SoundPriority.FarBlast;
+            Play(bank, e.Position, 1f, 30f, priority);
             if (WreckClasses.Falls(c))
             {
-                // The crash is the Sim's blast at its fixed point and time (VehicleDestroyed's Value: the fall, L7); a death
+                // The crash is the Sim's blast at its fixed point and time (VehicleDestroyed's Value: the fall); a death
                 // blast of its own before that is not the crash.
                 _crashing[e.Entity] = Time.unscaledTime + Mathf.Max(0f, e.Value - 0.3f);
                 if (_crashing.Count > 64) _crashing.Clear();
@@ -328,10 +377,12 @@ namespace MachineBrigade.Game.Audio
             return true;
         }
 
-        /// <summary>A vehicle arrives: a ship or a train loads its group and sounds its horn; a salvo ship is noted for its shells.</summary>
+        /// <summary>A vehicle arrives: noted for its hits; a ship or a train loads its group and sounds its horn; a salvo ship is noted for its shells.</summary>
         private void Spawned(in SimEvent e)
         {
             if (e.DefId == null || !_catalog.Vehicles.TryGetValue(e.DefId, out var def)) return;
+            if (_unitDefs.Count > 4096) _unitDefs.Clear();
+            _unitDefs[e.Entity] = def;
             var c = WreckClasses.Of(def);
             if (def.Salvo != null)
             {
@@ -341,43 +392,68 @@ namespace MachineBrigade.Game.Audio
             if (c == WreckClass.Ship)
             {
                 LoadGroup("naval");
-                if (def.Radius >= 4f && _tierBanks.TryGetValue("ship_horn", out var horn)) Play(horn, e.Position, 1f, 0f, SoundPriority.Ally);
+                if (def.Radius >= 4f && _tierBanks.TryGetValue("ship_horn", out var horn)) Play(horn, e.Position, 1f, 40f, SoundPriority.NearShot);
             }
             else if (c == WreckClass.Train)
             {
                 LoadGroup("rail");
-                if (_tierBanks.TryGetValue("train_horn", out var horn)) Play(horn, e.Position, 1f, 0f, def.Boss ? SoundPriority.Boss : SoundPriority.Ally);
+                if (_tierBanks.TryGetValue("train_horn", out var horn)) Play(horn, e.Position, 1f, 40f, def.Boss ? SoundPriority.Boss : SoundPriority.NearShot);
                 _nextHorn[e.Entity] = Time.unscaledTime + 35f + (float)_rng.NextDouble() * 15f;
             }
         }
 
-        /// <summary>Per frame: the rails under a moving train and a ship's engines near the view; a train's horn now and then.</summary>
+        /// <summary>Flares out (the skill): the cartridges' pops and the burning flares' hiss.</summary>
+        private void Flared(in SimEvent e)
+        {
+            if (_tierBanks.TryGetValue("flare_pop", out var bank)) Play(bank, e.Position, 1f, 10f, SoundPriority.NearShot);
+        }
+
+        /// <summary>An incoming shell's whistle: the big one for a boss's attack or a 406 mm / super weapon.</summary>
+        private void Whistle(Vector2 at, float volume, float delay, bool big)
+        {
+            if (big && _tierBanks.TryGetValue("warn_whistle_big", out var bank)) Schedule(bank, at, volume, delay, SoundPriority.Warning);
+            else Schedule(Sound.Whistle, at, volume, delay);
+        }
+
+        /// <summary>Per frame: the engines of the moving units near the view by class, the rails under a train, a ship's engines, a train's horn.</summary>
         private void TickTiers(ViewRegistry views, float now)
         {
-            if (_rails == null && _engines == null) return;
             var train = float.MaxValue;
             var ship = float.MaxValue;
+            var tracked = float.MaxValue;
+            var wheeled = float.MaxValue;
+            var heavy = float.MaxValue;
             var all = views.All;
             for (var i = 0; i < all.Count; i++)
             {
                 var view = all[i];
                 if (view.IsWreck || !view.Sim.IsAlive) continue;
                 var c = WreckClasses.Of(view.Def);
+                var d = Vector3.Distance(view.Position, Focus);
                 if (c == WreckClass.Train && view.Sim.Speed > 0.3f)
                 {
-                    var d = Vector3.Distance(view.Position, Focus);
                     train = Mathf.Min(train, d);
                     if (_nextHorn.TryGetValue(view.Id, out var due) && now >= due && d < Reach(0f) && _tierBanks.TryGetValue("train_horn", out var horn))
                     {
                         _nextHorn[view.Id] = now + 35f + (float)_rng.NextDouble() * 15f;
-                        Play(horn, new Vector2(view.Position.x, view.Position.z), 0.8f, 0f, view.Def.Boss ? SoundPriority.Boss : SoundPriority.Ally);
+                        Play(horn, new Vector2(view.Position.x, view.Position.z), 0.8f, 40f, view.Def.Boss ? SoundPriority.Boss : SoundPriority.NearShot);
                     }
                 }
-                else if (c == WreckClass.Ship) ship = Mathf.Min(ship, Vector3.Distance(view.Position, Focus));
+                else if (c == WreckClass.Ship) ship = Mathf.Min(ship, d);
+                else if (view.Sim.Speed > 0.5f && !view.Flying)
+                {
+                    if (c == WreckClass.Tank) tracked = Mathf.Min(tracked, d);
+                    else if (c == WreckClass.Wheeled) wheeled = Mathf.Min(wheeled, d);
+                    else if (c is WreckClass.Truck or WreckClass.Artillery) heavy = Mathf.Min(heavy, d);
+                }
             }
             var reach = Reach(0f);
-            Steer(_rails, train < float.MaxValue && !_lobby ? Mathf.Clamp01(1f - train / reach) * 0.5f * Fx : 0f);
-            Steer(_engines, ship < float.MaxValue && !_lobby ? Mathf.Clamp01(1f - ship / reach) * 0.35f * Fx : 0f);
+            float Level(float d, float top) => d < float.MaxValue && !_lobby ? Mathf.Clamp01(1f - d / (reach * 0.6f)) * top * Fx : 0f;
+            Steer(_rails, Level(train, 0.5f));
+            Steer(_engines, Level(ship, 0.35f));
+            Steer(_engTracked, Level(tracked, 0.45f));
+            Steer(_engWheeled, Level(wheeled, 0.35f));
+            Steer(_engHeavy, Level(heavy, 0.4f));
         }
 
         private static void Steer(AudioSource loop, float target)
@@ -386,6 +462,56 @@ namespace MachineBrigade.Game.Audio
             loop.volume = Mathf.MoveTowards(loop.volume, target, Time.unscaledDeltaTime * 0.6f);
             if (loop.volume > 0f && !loop.isPlaying) loop.Play();
             else if (loop.volume <= 0f && loop.isPlaying) loop.Stop();
+        }
+
+        // ------------------------------------------------------------------------------------------------ the Effects group
+
+        /// <summary>
+        /// The Effects compressor (control rate, each frame): the summed RMS of what the effect voices play now (each voice's
+        /// level times its clip's envelope at its play position; a clip without one counts at a fifth of its level) against
+        /// <see cref="SoundLibrary.CompressorThreshold"/>, at <see cref="SoundLibrary.CompressorRatio"/>, with a fast attack and
+        /// a slow release; the gain goes onto every effect voice. The limiter (<see cref="EffectsLimiter"/>) catches the peaks
+        /// it is too slow for.
+        /// </summary>
+        private void Compress(float dt)
+        {
+            var sum = 0f;
+            foreach (var v in _voices)
+            {
+                if (v.Bank == null || !v.Source.isPlaying || v.Source.clip == null) continue;
+                var rms = 0.2f;
+                if (_envelopes.TryGetValue(v.Source.clip.name, out var env) && env.Length > 0)
+                {
+                    var i = (int)(v.Source.time * SoundLibrary.EnvelopeRate);
+                    rms = i < env.Length ? env[i] : 0f;
+                }
+                var a = v.Level * rms;
+                sum += a * a;
+            }
+            var target = SoundLibrary.CompressorGain(Mathf.Sqrt(sum));
+            var time = target < _busGain ? CompressorAttack : CompressorRelease;
+            _busGain = Mathf.Lerp(_busGain, target, 1f - Mathf.Exp(-dt / time));
+            if (_limiter == null && _limiterTries < 30 && Time.frameCount % 60 == 0) AttachLimiter();
+        }
+
+        /// <summary>Puts the output limiter on the listener (once; another director's is shared, not owned).</summary>
+        private void AttachLimiter()
+        {
+            _limiterTries++;
+            var cam = View;
+            var listener = cam != null ? cam.GetComponent<AudioListener>() : null;
+            if (listener == null) listener = UnityEngine.Object.FindAnyObjectByType<AudioListener>();
+            if (listener == null) return;
+            _limiter = listener.GetComponent<EffectsLimiter>();
+            if (_limiter != null) return;
+            _limiter = listener.gameObject.AddComponent<EffectsLimiter>();
+            _ownsLimiter = true;
+        }
+
+        private void DetachLimiter()
+        {
+            if (_ownsLimiter && _limiter != null) UnityEngine.Object.Destroy(_limiter);
+            _limiter = null;
         }
     }
 }

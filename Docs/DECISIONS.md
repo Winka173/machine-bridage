@@ -16741,3 +16741,109 @@ edges data (a test field) keeps the theme's old picture.
   effects and coverage, the landmarks per battlefield, the rail lines, the sea route graphs, the validators' table;
   build_doc.py imports it beside the other lanes' modules (prompt34 kept) and calls it inside section 15. The PDF is not
   rebuilt here. The far-zoom edge shots per biome need Unity renders: Docs/ai/LOCAL_TODO.md.
+
+## Sửa lỗi tổng hợp L7 (lead pass, 2026-10-02)
+
+Branch `feature/fix-art3` (lane C of Docs/FIX_FULL_PLAN.md), pass 7 of Docs/prompts/fix_full_vi.txt: the owner's "everything
+sounds 'keng keng'; blasts and shots lost their punch". Nothing run but the Python tools (no Unity, no tests, no sims); the
+C# is compiled by the lead. Where this pass and prompt 34 L6 disagree, this pass wins.
+
+### Causes (Docs/audio/diagnosis.md)
+
+- **Keng**: every kinetic round without a blast landed on a metal clip whatever it struck: the 29 weapons of 20 mm and up
+  (autocannons, gatlings, tank guns, railguns) on `p34/blast_ap_t1..t4`, a synthesised bell (five damped sines from
+  1.5-1.9 kHz, ringing 0.3-0.56 s, 36 dB over its neighbours), the 14 T0 machine guns and every interception on
+  `impact_metal`. The event carried no penetration bit and the view never asked. Ricochets land with the same event; there
+  was no ricochet sound.
+- **Weak blasts and shots**: prompt 34 L6 (01f19757) replaced the recorded Sonniss clips (793259a9) with synthesised ones,
+  2-4 dB quieter at the same bank level (each peak-normalised to -1 dBFS on a 6 ms crack: crest 15-18 dB against the
+  recordings' 12; little under 150 Hz for T0-T2), and added a 0.6 gain off the screen (-4.4 dB). There was never a mixer,
+  compressor, limiter or volume cap; bank levels were about the same.
+
+### The library (Resources/Audio/sfx, Tools/sfx/build_sfx.py; p34 removed)
+
+- **Size classes** (`SoundLibrary.SizeOf`, `SizeClass`): s0 <= 14.5 mm, s1 20-40, s2 57-105, s3 120-155, s4 203-240 (the
+  family tiers T0-T4), bombs, s406 (the 406 mm, and rockets and missiles of T4+: Smerch, TOS, GMLRS, Iskander, the cruise
+  missiles), super (the other T5: the 800 mm, the boss railguns). A weapon without a family falls back on its round
+  weight / blast as the old banks did.
+- **Banks**: shot_s0..s4, shot_s406, shot_super; launch_s2, launch_s3, launch_big; blast_he_s1..s4, blast_bomb,
+  blast_he_s406, blast_super; blast_thermo_s3/s4, blast_heat_s2/s3, blast_air_s1..s3 (fragmentation and any blast in the
+  air); hit_ground / hit_concrete / hit_pen / hit_metal, light (to 40 mm) and heavy (57 mm up); wrecks by class, crash
+  fall and impact, small-arms clusters, engine_tracked / wheeled / heavy loops, ship engine and horn, train horn and rails,
+  flare_pop, warn_whistle (shells) and warn_whistle_big (boss, 406 mm, super). Aircraft and helicopter loops, debris,
+  collapse, fire, wind, rain, thunder and the siren keep their recorded clips (better than a synthesis).
+- **Three layers premixed into one file**: the main layer (the recorded Sonniss clip restored where it was better: every
+  gun from 20 mm and every blast, pitched down for the bigger sizes; the small arms, hits, engines, horns, flares and
+  whistles synthesised), a sub layer (falling sine thump and low noise), a tail (slap-back taps, more and later with size,
+  and a low roll). The part under 150 Hz is scaled until the clip meets its size's sub share; the clip is then brought to
+  its size's momentary-max loudness through a 3 ms look-ahead limiter at -1 dBFS (gentle tanh saturation first when it
+  must). The level is in the file: every library bank plays at volume 1.
+- **No ringing outside metal**: no damped sines between 2 and 6 kHz anywhere but hit_metal_*; horns are kept under 1.7 kHz;
+  wreck clangs under 1.6 kHz.
+- **Licences**: Docs/ASSET_LICENSES.md and Resources/Audio/CREDITS.md updated (Sonniss GDC licence for the recorded
+  layers: modification allowed, no attribution; the rest original). No AI audio.
+- `library.json` (groups, sizes, rows) is read by the analyser and the renderer; `envelopes.txt` (each clip's RMS at 50 Hz,
+  the kept recorded ones too) by the game's compressor.
+
+### Hits by surface and the penetration read (view only)
+
+A round without a blast (`SoundLibrary.BlastBank` null: kinetic, no splash) plays by what it struck (`AudioDirector.Surface`,
+`SoundLibrary.SurfaceOf`): the ground when the event's entity is invalid; concrete for a prop or a fixed defence (`Static`,
+`ArmorClass.Structure`); a heavy impact (hit_pen) for an aircraft, an unarmoured target or a face pierced; **metal only for a
+kinetic round on a vehicle face it does not pierce**. The Sim emits no penetration bit, so the view reads it from what the
+event already carries (no Sim change): `ProjectileImpact.Entity` is the struck unit and its position is the Sim's hull
+contact point on the shooter's side (DamageSystem, play-test 6), so `Armour.FaceFrom(unit position, heading, contact point)`
+is the face struck (the roof for `Armour.StrikesTop` rounds); `Vehicle.ArmourOn(face)` against the round's `Penetration`,
+level or better = through (the Sim's step 2 or under, its ✓). Not counted: the shooter's equipment penetration bonus (internal
+to the Sim) and a boss part's own armour. A unit gone from the views (the killing round's impact comes after its loss
+event) is read from its spawn's definition with the side armour. **Metal is rate-capped match-wide** (`MetalCap`: a bucket of
+3, 2.5 a second, 0.12 s apart; over the cap a glancing round is not heard). Interceptions play an air burst, not a metal
+ping; fire and energy keep the old small impact (now `sfx/hit_ground_light`, no metal clip on any path).
+
+### The mix (code: no AudioMixer asset)
+
+An AudioMixer asset cannot be authored outside the Unity editor (no public API, the .mixer YAML is unsafe to hand-write),
+so the mix is in code:
+- **Groups**: `AudioGroup` Effects / Music / Dialogue / UI, `SoundLibrary.Gain` (Settings' effects, music and dialogue
+  volumes; UI at full); MusicDirector already plays under the music volume.
+- **Effects compressor**: per frame, the summed RMS of the effect voices (each voice's level times its clip's envelope at
+  its play position; a clip without one counts at 0.2) against 0.3, ratio 3:1, 30 ms attack, 300 ms release; the gain goes
+  onto every effect voice (`AudioDirector.Compress`, `EffectsGain`).
+- **Limiter**: `EffectsLimiter` on the AudioListener (OnAudioFilterRead; instant-attack peak follower, 120 ms release,
+  ceiling -1 dBFS). It sits at the output, so it would catch the music too; the music peaks well under the ceiling, so in
+  practice it limits the effects. Shared between directors (only the one that added it removes it).
+- **Camera-distance falloff** (`SoundLibrary.Falloff`, in place of (1 - d / reach)^2): (25 m / distance)^0.7 on the distance
+  from the camera (ground distance and half its height), times a smoothstep edge fade to nothing at the reach; each size
+  carries 12 m further than the one under it (`Carry`). Off-screen 0.85 (was 0.6).
+- **Voices**: the 32-voice pool, 24 for ordinary effects; cut by `SoundPriority`: warnings 70 > boss / 406 mm / super 60 >
+  near blasts 50 > near shots 40 > far blasts 30 > far shots 25 > small arms and their clusters 20 > ambience 10 (prompt 34's
+  "our side's important weapons" step is gone: the prompt's order has none). Near blasts duck the light sounds. Never an
+  AudioSource per round: pooled voices, bank limits and cooldowns, the cluster rule.
+- Engines by class: the nearest moving tracked, wheeled and heavy (truck, artillery) units drive three loops; flares (the
+  Flares skill) pop; a 406 mm / super round and a boss's big attack whistle with the big whistle.
+
+### Numbers (Docs/audio/metrics.md, `python Tools/sfx/analyze_sfx.py --before Docs/audio/metrics_before_fix.json --check`)
+
+Per size, shot / blast momentary max LUFS, after (before): s0 -20.3 (-21.5) / -20.7 (hit; before impact_metal -16.9),
+s1 -19.2 (-19.4) / -18.1 (-18.6), s2 -16.6 (-17.0) / -15.6 (-16.1), s3 -14.6 (-15.1) / -13.6 (-15.7), s4 -13.1 (-13.7) /
+-12.1 (-14.0), bombs - / -11.0 (-14.0, the T4 blast), s406 -11.6 (-12.6) / -10.1 (-13.0), super -10.6 (-12.6) / -9.1 (-13.0).
+Sub share and tail rise every step (blasts 12.7 -> 78.3 % and 0.2 -> 10.7 s). The files are the smaller part: prompt 34's
+banks also played at 0.5-0.9 (blasts 0.54-0.9 with the landing's 0.9), now 1, and 0.6 off the screen, now 0.85; a T3 blast
+on the screen is about +5 dB over prompt 34. No keng outside hit_metal_* (before: 8 blast_ap, 2 train_horn, 1 wreck_aircraft).
+The analyser's keng: a 2-6 kHz peak 12 dB over its 1/3-octave median, under 160 Hz wide, 120 ms or more to fall 20 dB,
+within 30 dB of the loudest bin (30-400 ms after the onset).
+
+### Test mixes (Docs/audio/samples, `python Tools/sfx/render_mix.py`)
+
+normal_battle, boss_battle (406 mm salvos, the super weapon, bombs, a Smerch), crowded_battle (forty a side), Ogg; the
+renderer mirrors AudioDirector's rules (mixes.json: crowded 9,943 sound events -> 1,871 played, 25 voices at most, 330
+metal hits capped, 96 cut for priority; compressor at most -4.7 dB in the boss mix, the limiter -1.2 dB).
+
+### For the lead (compile, import)
+
+- New scripts: `Game/Audio/SoundLibrary.cs`, `Game/Audio/EffectsLimiter.cs` (a MonoBehaviour: its own file),
+  `Tests/EditMode/FixL7AudioTests.cs`; `AudioDirector.P34.cs` rewritten (SoundPriority's members renamed:
+  NearBlast / NearShot / FarBlast / FarShot replace T3Near / T4Near / Ally / Medium; `For(SizeClass, boss, blast, near)`);
+  Prompt34ViewTests' L6 block follows the new names. Uses `Object.FindAnyObjectByType<AudioListener>()` (Unity 2022.2+).
+- Import: Resources/Audio/sfx (120 clips and envelopes.txt) needs its .meta files; Editor/P34AudioImport now targets sfx.
+  Resources/Audio/p34 and its metas are deleted.
