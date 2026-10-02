@@ -258,6 +258,13 @@ def salvo_plan(built):
     return out
 
 
+def cycle_of(old, cad):
+    cd = cad.get("cooldown", old["cooldown"])
+    if old["clip"] > 0:
+        return (old["clip"] - 1) * cd + cad.get("clipReload", old["clipReload"])
+    return cd + (old["burst"] - 1) * cad.get("burstInterval", old["burstInterval"])
+
+
 def owner_of(users, wid, order):
     bs = [b for b, _ in users[wid]]
     return min(bs, key=lambda b: order.index(b)) if bs else None
@@ -303,6 +310,28 @@ def main():
         for c in descendants(kids, wid):
             if c in pins:
                 F.set_on(doc, c, pins[c], ws.rounds)
+    # Second rounds of a changed gun fire at the gun's cadence: a round of a table family takes the family's round (a
+    # variant its damage only); any other round keeps its DPS (its damage scaled by the gun's new cycle over the old).
+    for rid, rraw in ws.rounds.items():
+        gun = rraw.get("roundOf") or rraw.get("inherits")
+        if gun not in rows or (only and owner_of(users, gun, order) != only):
+            continue
+        fam, var, _ = assign[rid]
+        rw = ws.resolve(rid)
+        t = F.FAMILIES.get(fam)
+        g = rows[gun]
+        if t and t[3]:
+            f = {"damage": t[3]["damage"]}
+            if not var:
+                f.update({"splash": t[3]["core"], "edge": t[3]["edge"]})
+        else:
+            old_cycle = cycle_of(g["old"], {})
+            new_cycle = cycle_of(g["old"], g["cad"])
+            base_dmg = (base.get(rid) or {}).get("damage", rw.get("damage"))
+            f = {"damage": round(base_dmg * new_cycle / old_cycle, 1)}
+        f = {k: v for k, v in f.items() if rw.get(k, 0) != v}
+        if f and F.set_on(doc, rid, f, ws.rounds):
+            changed += 1
     salvos = salvo_plan(built)
     for bid, (s, new, *_r) in salvos.items():
         if only and only != bid:
