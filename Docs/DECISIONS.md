@@ -13528,3 +13528,38 @@ Prompt 28 pass 3, Sim only: D (unit layer), G (anti-stuck, anti-idle). Compile c
   of the cluster, then the squad re-scores with that route marked blocked (flanks) and its orders re-issued. The
   movement system's safety net (prompt 12, 10 s: nudged onto free ground, logged for the map) stays as the last rung;
   its 10 s were not changed to the prompt's ~8 s (a measured value of prompt 12).
+
+## 28 4 (cloud, 2026-10-02)
+
+Prompt 28 pass 4, Sim only: E (towers), F (bosses). Compile check only.
+
+- **Tower modes (E.1).** `TowerMode` on each tower: Default means the data's mode for its type (`aiBehaviour.towers`,
+  generated from the sheet "Công trình"); `SimWorld.SetTowerMode(team, id, mode)` accepts the type's default or a
+  listed alternative (the Base screen and the in-battle tap are local UI). A tactic's tower mode (base defence:
+  Lead) applies to towers that offer it and were not set by the player. Modes are factors on the existing target
+  score (so E.3's switch margin and hold-until-dead are the vehicles' own): Nearest 1/(1 + 2 d/reach), Strongest
+  sqrt(strength), Weakest (1.6 - health share) + 200/hp, Lead 1 + 60/(distance to own camp), Air first x3 on
+  aircraft, Biggest aircraft 1 + hp/300, Cluster 1 + 0.5 per neighbour within 8 m, Artillery first x3 on guns.
+- **Special rules (E.4).** ATGM, recoilless and AT-gun towers x0.05 on a light vehicle while heavy armour is in reach;
+  guard tower x1.5 on light vehicles and scouts; MG bunker 1 + 0.3 per light neighbour; rocket turret x2 on a group of
+  3+, else x0.6; drone hangar x2 on guns and still targets. Point defence (C-RAM, Iron Beam, Patriot by mode): rounds
+  from bosses or aimed at structures first for ShieldKey (C-RAM's default), missiles and rockets first for
+  MissilesFirst (PAC-3), else the soonest impact as before. Vehicles' APS keep the old order exactly. Stealth reveal
+  (guard tower) and the EW tower's "strongest when a swarm comes" were not changed (their systems already do it or
+  have no targeting choice).
+- **Shared targets (E.2).** A tower x1.4 on a target under 50 % health that another own tower within 40 m is firing at.
+- **Boss types (F.1, F.2).** `aiBehaviour.bosses` (12 bosses by id; mini bosses by id prefix). Weights on the boss's
+  existing target score (value, distance, reach): Anti-Blob 1 + 0.4 per neighbour within 10 m; Anti-Air x2.5 on
+  aircraft; Anti-Artillery x3 on guns, x1.3 still; Core Protection x1.8 on one attacking it within 30 m; Flank
+  Punishment x2.2 off its front 120 degrees; Area Denial x1.6 still; anyone shooting the boss x1.2. No separate boss AI
+  (F.1).
+- **Big attacks (F.3).** Where a big attack's aim is the generic densest group, the boss's types pick the point
+  instead (guns, still targets, crowds, close attackers, flankers; visible ones only); the other aims (still, HQ, base,
+  prey, self) were designed in prompt 26 and stay. Warning times are untouched.
+- **Facing and escorts (F.4, F.5).** A standing ground boss turns its front to the strength-weighted direction of the
+  enemies its side sees within 100 m at half its turn rate (flanking stays possible). Escort slots are laid out on the
+  direction of the enemy mass within 90 m instead of the boss's heading, and close to half the distance for 8 s after
+  a new escort wave (a phase change). Air bosses keep their designed routes.
+- **Left as they are.** The stand-in AI items of ASSET_DEBT (Stymphalos's swarm, Cerberus's coupling break, Hydra's
+  drones, Ixion's mines, the carrier's minions, Monster's track break, Gungnir's line warning) are boss mechanics, not
+  the targeting and positioning prompt 28 F covers; they stay for their own prompt.

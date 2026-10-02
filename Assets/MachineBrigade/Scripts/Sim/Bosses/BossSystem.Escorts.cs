@@ -297,8 +297,9 @@ namespace MachineBrigade.Sim.Bosses
         /// </summary>
         private Vector2 SlotPoint(EscortGroup g, Vehicle boss, EscortSlot slot, int index)
         {
-            var hull = boss.Def.HullBound;
-            var forward = SimMath.Forward(boss.Heading);
+            // Prompt 28 F.5: the escorts screen the side the enemy is massed on, and close in for a while after a new phase.
+            var hull = boss.Def.HullBound * EscortSpread(g);
+            var forward = SimMath.Forward(EscortBearing(boss));
             var right = new Vector2(forward.Y, -forward.X);
             var side = index % 2 == 0 ? 1f : -1f;
             var rank = index / 2 % 3;

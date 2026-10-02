@@ -308,6 +308,8 @@ namespace MachineBrigade.Sim.Bosses
                     return Spot(v, def.Reach, false, out aim) > 0;
                 }
                 default:
+                    // Prompt 28 F.3: aimed by the boss's behaviour type where it has one (the warning stays the same).
+                    if (BehaviourAim(v, def, out aim)) return true;
                     return Spot(v, def.Reach, false, out aim) > 0;
             }
         }
