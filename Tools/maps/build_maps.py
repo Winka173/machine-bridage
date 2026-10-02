@@ -5308,6 +5308,10 @@ def main(only=()):
 if __name__ == '__main__':
     import sys
     main(sys.argv[1:])
+    # The RED map fixes (DECISIONS "RED map fixes (lead pass, 2026-10-02)"): the props that sealed off a walkable pocket,
+    # moved, dropped or filled (Tools/maps/red_fixes.py), before the wall lines are planned on the ground.
+    import red_fixes
+    red_fixes.main([a for a in sys.argv[1:] if not a.startswith('-')])
     # Prompt 32 L3: the wall lines go back into the files just written (Tools/maps/p32_walls.py; longmap.py's long maps
     # take theirs from a run of p32_walls.py after it).
     import p32_walls
