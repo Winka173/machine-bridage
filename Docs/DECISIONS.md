@@ -13563,3 +13563,43 @@ Prompt 28 pass 4, Sim only: E (towers), F (bosses). Compile check only.
 - **Left as they are.** The stand-in AI items of ASSET_DEBT (Stymphalos's swarm, Cerberus's coupling break, Hydra's
   drones, Ixion's mines, the carrier's minions, Monster's track break, Gungnir's line warning) are boss mechanics, not
   the targeting and positioning prompt 28 F covers; they stay for their own prompt.
+
+## 28 5 (cloud, 2026-10-02)
+
+Prompt 28 pass 5, Sim only: H (tactics), I (in-battle economy), K (difficulty, Sim side). Compile check only. Most
+of H and K was built with the general in pass 2 (`AiCommander`: modules, switching, buying, stance, per-squad tactics,
+visibility; `AiSkill`); this pass adds the rest.
+
+- **H.1 modules.** Each tactic is the shared modules the generator read from the sheet (attack readiness, cohesion,
+  flank weight, pincer, focus, main effort, spread, hold fire and stance, engagement band, kiting, artillery prep,
+  fall-back and counter-attack ratios, pace, bounding, hold, base hold, wait for air, CP saving, together, standoff,
+  target groups, tower mode, heavy lead, drop secondary, SEAD cards, mass support); Balanced has none (the standard
+  thresholds). No tactic has its own AI. **H.2:** no direct stat effects were added (the sheet gives none; "nếu có").
+- **H.3 merges.** Not decided here: fingerprints need the 5-seed runs (`TacticFingerprintSweep`, written, Explicit);
+  `TacticDef.MergedInto` and `AiBehaviour.Tactic()` follow a merge once the owner allows the runs and one is chosen.
+- **H.7 generals.** Preferred tactics from the sheet (Thorne "Cân bằng như Kade" -> balanced), Brandt -> depth and the
+  default -> balanced (prompt). A general's ConquestAi without `Tactic` uses `GeneralTactic(economy.Commander.Id)`.
+- **H.11, H.12.** `AiBehaviour.Unlocked(tactic, chapter, interludes)` (chapter <= 1 tactics always open) and
+  `SuitedTo(commanderId)` (the sheet's "Hợp chỉ huy", first two). **H.13:** a Sandbox side has `tactic` (saved in the
+  scenario JSON); mid-battle switching goes through `SandboxBattle.Commander(team).Commander.RequestTactic`.
+- **H.14 saving.** The save layer (`PlayerProfile`, PlayerPrefs) is Game code: listed in LOCAL_TODO, not written blind.
+- **I.1, I.3.** The caps (32 ground, 6 aircraft) and the CP bank are the existing ones; nothing loosens them.
+- **I.2 upkeep by numbers.** `TeamEconomy.ArmyFactor` = the army band's factor for vehicles out / vehicle cap
+  (`economy.armyBands`: 1 under 50 %, 0.9 to 75 %, 0.8 above), multiplied into `Earning` beside the existing supply
+  upkeep (CP-based, prompt 7) and catch-up. Every mode with an economy is affected: this is the prompt's soft pressure.
+- **I.4** use-or-lose is in the general (pass 2). **I.5** Conquest already drains the side holding fewer points
+  (`Bleed`, Company of Heroes style): nothing added; other point modes keep their own rules.
+- **I.6 escalation** runs on prompt 23's battle events (`BattleEvents`, every mode that has them, so not the
+  campaign): a big fight = both sides lost >= `world.bigFight` (600) health in the last 5 s; quiet past the
+  `economy.escalation` tiers (30/50/70/90 s): 1 points worth x`world.escalationPoints` (1.5) in income and bleed
+  (Conquest reads `world.PointScale`) and the World Model raises "point worth more" OBJECTIVE_PRESSURE events; 2 a
+  supply crate in the middle (the events' own crate drop); 3 an environment barrage (`artillery_barrage`) on the army
+  further from the middle; 4 each army revealed to the other for 15 s (UAV scan zones) to force contact. A big fight
+  returns to tier 0. `world.PressureTier` is for the HUD.
+- **I.7 final phase.** Conquest has tickets, not a clock, so the final phase starts when the losing side's tickets
+  would run out within `economy.finalPhase` (120 s) at the current bleed; from then points count x`finalPhaseScale`.
+- **I.8 defensive costs.** Holding fewer points costs income and tickets by itself; hit-and-run fires with x1.3 spread
+  while backing off (`AiKiting`); dispersal's focus is halved (module).
+- **K.** Difficulty axes are in `AiSkill` (pass 2). "Prediction quality" has no separate model: reaction delay,
+  memory and decision quality carry it. The player's AI at Normal is a session hook (LOCAL_TODO).
+- **balance.json keys added this pass:** `ai.world.bigFight`, `ai.world.escalationPoints`, `ai.world.churnWarn`.

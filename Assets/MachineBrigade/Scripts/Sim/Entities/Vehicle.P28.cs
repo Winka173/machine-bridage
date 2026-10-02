@@ -19,6 +19,9 @@ namespace MachineBrigade.Sim.Entities
         /// <summary>Prompt 28 D.4: the heading a standing vehicle turns its front to (the biggest threat); null: none.</summary>
         internal float? FaceHeading;
 
+        /// <summary>Prompt 28 I.8: backing off under a kiting tactic (hit and run): it fires less accurately.</summary>
+        internal bool AiKiting;
+
         /// <summary>Prompt 28 E.1: a tower's targeting mode (from the data's default; the player may change it).</summary>
         public TowerMode TowerMode { get; internal set; } = TowerMode.Default;
     }

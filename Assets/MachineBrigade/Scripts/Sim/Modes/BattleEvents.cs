@@ -13,7 +13,7 @@ namespace MachineBrigade.Sim.Modes
     /// crates parachuted into the middle for either side to grab, and bomber raids that hit
     /// whatever is fighting below, friend and foe alike. Deterministic from the seed.
     /// </summary>
-    public sealed class BattleEvents
+    public sealed partial class BattleEvents
     {
         private const float CrateFall = 5f;
         private const float CrateLife = 50f;
@@ -52,6 +52,8 @@ namespace MachineBrigade.Sim.Modes
                 _nextRaid = Raid(world) ? now + 120 + _random.NextDouble() * 70 : now + 20;
             }
             UpdateCrates(world, dt, now);
+            // Prompt 28 I.6: rising pressure on a battle standing still.
+            if (Escalation) Escalate(world, now);
         }
 
         private void DropCrate(SimWorld world, double now)

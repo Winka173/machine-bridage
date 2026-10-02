@@ -642,6 +642,7 @@ namespace MachineBrigade.Sim.AI
                         if (band > 0f && (m.Standoff || m.Kite > 0f || nearest < s.Reach * band * 0.8f))
                             goal = enemy - Direction(s.Centre, enemy) * s.Reach * band;
                         if (m.Kite > 0f && nearest < s.Reach * m.Kite) type = CommandType.Move;
+                        SetKiting(world, s, type == CommandType.Move);
                     }
                     else if (m.Cohesion > 0f && s.State == SquadState.Travel && Vector2.Distance(s.Centre, target) > 40f)
                     {
@@ -706,8 +707,9 @@ namespace MachineBrigade.Sim.AI
                     break;
             }
             goal = world.Map.Clamp(goal, 6f);
-            // Release an ambush's hold the moment the squad does anything else.
+            // Release an ambush's hold the moment the squad does anything else; kiting only while it backs off.
             if (s.Action != SquadAction.Hold) SetHoldFire(world, s, false);
+            if (type != CommandType.Move || s.State != SquadState.Combat) SetKiting(world, s, false);
             // Orders only when the goal or the action changed, or a member has nothing to do (no reshuffling every look).
             var changed = s.Action != s.IssuedAction || float.IsNaN(s.IssuedGoal.X) || Vector2.Distance(goal, s.IssuedGoal) > 6f;
             s.Goal = goal;
@@ -879,6 +881,12 @@ namespace MachineBrigade.Sim.AI
                 return;
             }
             SetHoldFire(world, s, true);
+        }
+
+        private static void SetKiting(SimWorld world, Squad s, bool kiting)
+        {
+            foreach (var id in s.MemberList)
+                if (world.TryGetVehicle(id, out var v)) v.AiKiting = kiting;
         }
 
         private static void SetHoldFire(SimWorld world, Squad s, bool hold)

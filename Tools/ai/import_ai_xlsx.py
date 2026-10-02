@@ -453,7 +453,11 @@ def main():
                   "airShare": param(0.25, 0.15, 0.4, "Số máy bay bị hạ mỗi lượt", "MISMATCH: enemy aircraft share of its strength"),
                   "aaShare": param(0.1, 0.05, 0.2, "Số máy bay bị hạ mỗi lượt", "MISMATCH: own anti-air share below this"),
                   "armourShare": param(0.4, 0.3, 0.6, "Thời gian hạ mục tiêu", "MISMATCH: enemy armour share of its strength"),
-                  "atShare": param(0.15, 0.1, 0.3, "Thời gian hạ mục tiêu", "MISMATCH: own anti-tank share below this")},
+                  "atShare": param(0.15, 0.1, 0.3, "Thời gian hạ mục tiêu", "MISMATCH: own anti-tank share below this"),
+                  # Pass 5 (I.6, not in the sheet): what counts as a big fight, and what a point is worth under pressure.
+                  "bigFight": param(600, 300, 1500, "Tỷ lệ thời gian có giao tranh", "health lost by both sides in 5 s that resets the pressure tiers"),
+                  "escalationPoints": param(1.5, 1.25, 2, "Tỷ lệ thời gian có giao tranh", "tier 1: points' income and bleed x this"),
+                  "churnWarn": param(6, 3, 12, "Số lần đổi hành động mỗi phút của đội", "switches a minute per squad above which the viewer warns (J.3)")},
         "params": ai_params(wb),
         "economy": economy(wb),
     }

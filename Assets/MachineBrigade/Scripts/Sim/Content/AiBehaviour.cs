@@ -173,6 +173,25 @@ namespace MachineBrigade.Sim.Content
             return Generals.TryGetValue(key, out var t) ? t : Generals.TryGetValue("default", out var d) ? d : "balanced";
         }
 
+        /// <summary>H.11: open from chapter 1 (Balanced, Defence in depth, Base defence), else at its chapter or interlude.</summary>
+        public static bool Unlocked(TacticDef t, int chapterReached, int interludesReached) =>
+            t.Chapter <= 1 && t.Interlude == 0 || (t.Chapter > 0 && chapterReached >= t.Chapter) || (t.Interlude > 0 && interludesReached >= t.Interlude);
+
+        /// <summary>H.12: the 1-2 tactics that suit a commander (the sheet's "Hợp chỉ huy"), in the sheet's order.</summary>
+        public List<TacticDef> SuitedTo(string commanderId)
+        {
+            var list = new List<TacticDef>();
+            foreach (var t in Tactics)
+                if (t.MergedInto == null && list.Count < 2)
+                    foreach (var c in t.Commanders)
+                        if (c == commanderId)
+                        {
+                            list.Add(t);
+                            break;
+                        }
+            return list;
+        }
+
         public RoleDef? RoleOf(string unitId) => Units.TryGetValue(unitId, out var r) && Roles.TryGetValue(r, out var role) ? role : null;
 
         private static readonly TacticDef Balanced = new() { Id = "balanced", Cp = new[] { 0.25f, 0.2f, 0.12f, 0.12f, 0.1f, 0.08f, 0.05f, 0.08f } };

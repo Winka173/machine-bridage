@@ -222,6 +222,7 @@ namespace MachineBrigade.Sim.AI
             _timer = 1f;
             var intel = world.Intel.For(Team);
             intel.Decay = world.Catalog.Ai.ConfidenceDecay * Skill.DecayScale;
+            world.AiLog.WarnPerMinute = world.Catalog.Ai.Get("world.churnWarn", 6f);
             Squads.Enlist(world, pool);
             UseOrLose(world);
             Plan(world, intel);

@@ -17,6 +17,12 @@ namespace MachineBrigade.Sim
         /// <summary>Prompt 28: each side's layered AI general, once it has one (a general reads the other's tactic only through scouts).</summary>
         public System.Collections.Generic.Dictionary<int, AiCommander> AiCommanders { get; } = new();
 
+        /// <summary>Prompt 28 I.6: the battle's pressure tier (0-4), set by the battle events.</summary>
+        public int PressureTier { get; internal set; }
+
+        /// <summary>Prompt 28 I.6: what a held point is worth now (income and ticket bleed); 1 normally, more from tier 1.</summary>
+        public float PointScale { get; internal set; } = 1f;
+
         /// <summary>
         /// Prompt 28 N: a random stream for one AI layer of one side, from the battle's seed. Each layer has its own
         /// stream, so adding or reordering a draw in one never shifts another's (or the battle's own), and a replay of

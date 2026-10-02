@@ -97,6 +97,24 @@ namespace MachineBrigade.Sim.Modes
 
         public MatchResult? Result { get; private set; }
 
+        /// <summary>
+        /// Prompt 28 I.7: the final phase. Conquest has no clock, so it starts when the losing side's tickets would run out
+        /// within economy.finalPhase seconds at the current bleed; points then count economy.finalPhaseScale times.
+        /// </summary>
+        public bool InFinalPhase { get; private set; }
+
+        private float FinalPhase(SimWorld world, int held0, int held1)
+        {
+            var ai = world.Catalog.Ai;
+            if (!InFinalPhase && held0 != held1)
+            {
+                var low = held0 < held1 ? _tickets[PlayerTeam] : _tickets[EnemyTeam];
+                var eta = low / MathF.Max(0.01f, _rules.Bleed * world.PointScale * Math.Abs(held0 - held1));
+                if (eta <= ai.Get("economy.finalPhase", 120f)) InFinalPhase = true;
+            }
+            return InFinalPhase ? ai.Get("economy.finalPhaseScale", 2f) : 1f;
+        }
+
         public int Tickets(int team) => (int)MathF.Ceiling(MathF.Max(0f, _tickets[team]));
 
         public int MaxTickets => _rules.Tickets;
@@ -134,10 +152,12 @@ namespace MachineBrigade.Sim.Modes
 
             var held0 = Held(PlayerTeam);
             var held1 = Held(EnemyTeam);
-            if (held0 < held1) _tickets[PlayerTeam] -= _rules.Bleed * (held1 - held0) * dt;
-            else if (held1 < held0) _tickets[EnemyTeam] -= _rules.Bleed * (held0 - held1) * dt;
-            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = _rules.PointIncome * held0;
-            if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = _rules.PointIncome * held1;
+            // Prompt 28 I.6 / I.7: points are worth more under pressure and in the final phase.
+            var bleed = _rules.Bleed * world.PointScale * FinalPhase(world, held0, held1);
+            if (held0 < held1) _tickets[PlayerTeam] -= bleed * (held1 - held0) * dt;
+            else if (held1 < held0) _tickets[EnemyTeam] -= bleed * (held0 - held1) * dt;
+            if (world.TryGetEconomy(PlayerTeam, out var e0)) e0.Bonus = _rules.PointIncome * held0 * world.PointScale;
+            if (world.TryGetEconomy(EnemyTeam, out var e1)) e1.Bonus = _rules.PointIncome * held1 * world.PointScale;
 
             _outposts?.Tick(world);
             Comeback(world);
