@@ -20,6 +20,8 @@ import mb_mapkit as mk
 import mb_town as town
 import mb_themes as themes
 import mb_themes2 as themes2
+import mb_harbor as harbor
+import mb_terrain as terrain
 from mathutils import Vector
 from mb_siege import bag_run, coil, shells
 
@@ -467,6 +469,16 @@ def _o(name):
     return props.BUILDERS[name][1]
 
 
+def _gen(mod, name, ao=.8, **kw):
+    old = mod.BUILDERS[name]
+
+    def run(a):
+        with _v2(**kw):
+            old[0](a)
+        k.clean(a)
+    return run, dict(old[1], ao_strength=ao)
+
+
 BUILDERS = {
     'house_small': _wrap(lambda a: house(a, 8.0, 8.0, 1, 3), _o('house_small'), .8),
     'house_large': _wrap(lambda a: house(a, 12.0, 10.0, 2, 7), _o('house_large'), .85),
@@ -558,4 +570,32 @@ BUILDERS = {
     'temple_ruin': _theme2('temple_ruin', .8, box_min=.4, seg_add=2),
     'traffic_light': _theme2('traffic_light', .8, seg_add=2),
     'volcanic_cliff': _theme2('volcanic_cliff', .8, seg_add=2),
+    'container': _gen(harbor, 'container', .8, seg_add=2),
+    'container_stack': _gen(harbor, 'container_stack', .8, seg_add=2),
+    'dock_bollards': _gen(harbor, 'dock_bollards', .8, seg_add=2),
+    'factory': _gen(harbor, 'factory', .8, seg_add=1, box_min=.3),
+    'gantry_crane': _gen(harbor, 'gantry_crane', 0.65, seg_add=1, box_min=.3),
+    'jersey_barrier': _gen(harbor, 'jersey_barrier', .8, seg_add=2),
+    'lamp_post': _gen(harbor, 'lamp_post', .8, seg_add=2),
+    'office_block': _gen(harbor, 'office_block', .8, seg_add=2),
+    'rail_boxcar': _gen(harbor, 'rail_boxcar', .8, box_min=.3),
+    'rail_tanker': _gen(harbor, 'rail_tanker', .8, box_min=.3),
+    'boulders': _gen(terrain, 'boulders', .8, seg_add=2),
+    'cliff_a': _gen(terrain, 'cliff_a', .8, seg_add=2),
+    'cliff_b': _gen(terrain, 'cliff_b', .8, seg_add=2),
+    'dirt_mound': _gen(terrain, 'dirt_mound', .8, seg_add=2),
+    'mountain_a': _gen(terrain, 'mountain_a', 0.7, seg_add=2),
+    'mountain_b': _gen(terrain, 'mountain_b', 0.7, seg_add=2),
+    'mountain_c': _gen(terrain, 'mountain_c', 0.7, seg_add=2),
+    'sandbags': _gen(terrain, 'sandbags', .8, seg_add=2),
+    'tank_trap': _gen(terrain, 'tank_trap', .8, seg_add=2),
+    'tree': _gen(props, 'tree', .8, seg_add=0, box_min=.3, cyl_min=.3),
+    'pine': _gen(props, 'pine', .8, seg_add=0, box_min=.3, cyl_min=.3),
+    'birch': _gen(props, 'birch', 0.7, seg_add=2),
+    'tree_broad': _gen(props, 'tree_broad', .8, seg_add=2),
+    'tree_dead': _gen(props, 'tree_dead', .45, box_min=.5, cyl_min=.3),
+    'tree_round': _gen(props, 'tree_round', 0.7, seg_add=2),
+    'rubble_small': _gen(props, 'rubble_small', .8, seg_add=2),
+    'rubble_medium': _gen(props, 'rubble_medium', .8, seg_add=2),
+    'rubble_large': _gen(props, 'rubble_large', .8, seg_add=2),
 }

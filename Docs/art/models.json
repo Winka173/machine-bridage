@@ -237,7 +237,7 @@
   },
   "birch": {
     "file": "birch.glb",
-    "triangles": 436
+    "triangles": 492
   },
   "blast_wall": {
     "file": "blast_wall.glb",
@@ -369,11 +369,11 @@
   },
   "container": {
     "file": "container.glb",
-    "triangles": 796
+    "triangles": 828
   },
   "container_stack": {
     "file": "container_stack.glb",
-    "triangles": 1592
+    "triangles": 1656
   },
   "control_tower": {
     "file": "control_tower.glb",
@@ -453,7 +453,7 @@
   },
   "dock_bollards": {
     "file": "dock_bollards.glb",
-    "triangles": 762
+    "triangles": 854
   },
   "dragons_teeth": {
     "file": "dragons_teeth.glb",
@@ -549,7 +549,7 @@
   },
   "factory": {
     "file": "factory.glb",
-    "triangles": 4896
+    "triangles": 5180
   },
   "fence": {
     "file": "fence.glb",
@@ -637,7 +637,7 @@
   },
   "gantry_crane": {
     "file": "gantry_crane.glb",
-    "triangles": 4516
+    "triangles": 5316
   },
   "garage": {
     "file": "garage.glb",
@@ -869,7 +869,7 @@
   },
   "lamp_post": {
     "file": "lamp_post.glb",
-    "triangles": 284
+    "triangles": 300
   },
   "lancet_truck": {
     "file": "lancet_truck.glb",
@@ -1077,7 +1077,7 @@
   },
   "office_block": {
     "file": "office_block.glb",
-    "triangles": 3524
+    "triangles": 3548
   },
   "oil_pump": {
     "file": "oil_pump.glb",
@@ -1149,7 +1149,7 @@
   },
   "rail_boxcar": {
     "file": "rail_boxcar.glb",
-    "triangles": 2572
+    "triangles": 2908
   },
   "rail_supergun": {
     "file": "rail_supergun.glb",
@@ -1157,7 +1157,7 @@
   },
   "rail_tanker": {
     "file": "rail_tanker.glb",
-    "triangles": 2498
+    "triangles": 2866
   },
   "rail_tractor": {
     "file": "rail_tractor.glb",
@@ -1529,11 +1529,11 @@
   },
   "tree_dead": {
     "file": "tree_dead.glb",
-    "triangles": 168
+    "triangles": 196
   },
   "tree_round": {
     "file": "tree_round.glb",
-    "triangles": 448
+    "triangles": 476
   },
   "trench_corner": {
     "file": "trench_corner.glb",
