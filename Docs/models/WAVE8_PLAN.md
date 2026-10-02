@@ -6,6 +6,10 @@ a pass takes the named builder rows (or the named half of a row, in the row's or
 preview renders, do not edit PROGRESS.md / plan tables / CHANGELOG, write a DECISIONS section `## 27 wave <pass>
 (lead pass, <date>)`, accept your models in the validator.
 
+**Rebuild every model of your pass** (the owner chose all 198); keep a model old only when a rebuild cannot pass a gate,
+and say which gate. Pass 8b7 also rebuilds the nine models 8b1 kept (tree, pine, birch, tree_broad, tree_dead,
+tree_round, rubble_small, rubble_medium, rubble_large).
+
 Wave 8 specifics:
 - Most of these have no card: the gates are the validator, COLOR_0 >= old (but scenery should stay natural: rocks,
   trees, terrain no more than ~+10 % COLOR_0) and triangles <= 1.6x. Props and scenery are drawn many times per map:
