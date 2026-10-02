@@ -107,6 +107,17 @@
 "vi": "Lui về tàu. Ta sẽ đổ bộ lại khi trời tối."
 },
 {
+"mission": "c1m01",
+"trigger": "time",
+"speaker": "linh",
+"priority": 2,
+"once": true,
+"key": "script.c1m01.08",
+"en": "Brandt's shore guns fire on a beat. At the warning, clear the red ring.",
+"vi": "Pháo bờ biển của Brandt bắn theo nhịp. Nghe cảnh báo thì dời xe khỏi vòng đỏ.",
+"at": 60.0
+},
+{
 "mission": "c1m02",
 "trigger": "mission_start",
 "speaker": "linh",

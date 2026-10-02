@@ -14904,3 +14904,12 @@ the lead, the tests are written, not run.
   (`SimWorld.AddProfileFlags` from `MissionMode.Setup`); the profile's id stays the mission type's.
 - Placed allies: data and screen now; spawning, the allied AI for them (`AllyAi` is already made when a deck has
   some) and the Attack/Defend order are pass 4 (c6m03 first). None of the 13 MAKE FIRST decks has one.
+- L2 (the 13 MAKE FIRST missions; decks in `Tools/campaign/fixed_decks.py` DECKS, one extra line each in
+  `Tools/story/script/chNN.txt`, budgets kept, `script_build.py` 0 errors). Replacements keep the role as near as the
+  cards owned by then allow; where no card of the role is owned, the nearest job is named.
+  - c1m01 (chapter 1): loaned amphib_light_vehicle, light_tank, rocket_technical, mortar_carrier (the exception above);
+    zu23_technical -> ifv (no anti-air card is owned at the start; the IFV's autocannon is nearest and the beach has no
+    enemy aircraft), engineer_vehicle -> main_battle_tank (the last owned card). Rules: noBaseStart (playerBase None
+    already), beachLanding (deliveries land at the rally on the beach: no outposts, no command vehicle), coastalGuns:
+    the library's `enemy_barrage` at 90 s, every 80 s, four times, 2 salvos of radius 16, each warned by the event's own
+    notice (c1m01 plays 3 events, within A.2's 2-4). Line: Nadia at 60 s on the shore guns' beat.

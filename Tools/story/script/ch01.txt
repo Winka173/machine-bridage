@@ -9,6 +9,7 @@ objective_progress:last | linh | 2 | Còn thị trấn. Lính gác của Brandt 
 critical_failure_imminent | khai | 1 | Ta đang bị đẩy xuống nước. Giữ lấy từng mét đất, tăng viện sắp tới. || They are pushing us into the water. Hold every metre, more boats are coming.
 victory | khai | 1 | Đầu cầu đã vững. Giờ ta tìm chỗ dựng nhà. || Beachhead secured. Now we find somewhere to build.
 defeat | khai | 1 | Lui về tàu. Ta sẽ đổ bộ lại khi trời tối. || Back to the boats. We land again after dark.
+time@60 | linh | 2 | Pháo bờ biển của Brandt bắn theo nhịp. Nghe cảnh báo thì dời xe khỏi vòng đỏ. || Brandt's shore guns fire on a beat. At the warning, clear the red ring.
 
 @c1m02 main=linh
 mission_start | linh | 1 | Trạm radar trên vách đá đang gọi pháo xuống từng xuồng đổ bộ. Ca trực đổi mỗi giờ. || The radar on the bluffs calls their guns onto every boat. Its crew changes on the hour.

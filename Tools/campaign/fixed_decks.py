@@ -59,6 +59,13 @@ PENDING = {
 
 # The fixed decks in effect (prompt 31 L2: the 13 MAKE FIRST missions), each with the sheet's cards it replaced.
 DECKS = {
+    'c1m01': dict(
+        vehicles=['amphib_light_vehicle', 'light_tank', 'armored_car', 'rocket_technical', 'mortar_carrier', 'ifv', 'main_battle_tank', 'scout_jeep'],
+        supports=['smoke_screen', 'artillery_barrage'],
+        loaned=['amphib_light_vehicle', 'light_tank', 'rocket_technical', 'mortar_carrier'],
+        replaced={'zu23_technical': 'ifv', 'engineer_vehicle': 'main_battle_tank'},
+        rules=['noBaseStart', 'beachLanding', 'coastalGuns'],
+        events=[{'id': 'enemy_barrage', 'trigger': {'at': 90, 'every': 80, 'times': 4}, 'params': {'salvos': 2, 'radius': 16}}]),
 }
 
 
