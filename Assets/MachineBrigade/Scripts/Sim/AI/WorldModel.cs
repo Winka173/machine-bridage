@@ -506,6 +506,8 @@ namespace MachineBrigade.Sim.AI
             _world.Strikes.Incoming(_strikeBuffer);
             foreach (var (team, point, radius, lands) in _strikeBuffer)
                 _warnings.Add(new WarningZone(team, point, radius, lands, false));
+            // Prompt 33 L5: the rail ahead of a train and the crossings that warn (no side's: every squad dodges them).
+            _world.Rails.Warnings(_warnings);
         }
 
         private void FrontLine()

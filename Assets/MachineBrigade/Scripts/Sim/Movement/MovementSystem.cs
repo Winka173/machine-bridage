@@ -87,6 +87,8 @@ namespace MachineBrigade.Sim.Movement
                 if (!v.IsAlive) continue;
                 // Fixed defences only turn their guns (the combat system does that); ships are the naval system's.
                 if (v.Def.Static || v.Def.Naval != null) continue;
+                // Prompt 33 L5: a train on its rail is the rail system's.
+                if (v.OnRail) continue;
                 // A boss boring underground or landing troops: the boss system moves it (or holds it still).
                 // Prompt 19: a tiered boss falling to its crash site (the boss system moves it) or down on the ground,
                 // and a drop pod on its way down.
@@ -1601,7 +1603,8 @@ namespace MachineBrigade.Sim.Movement
         /// <summary>How readily a vehicle gives way: parked more than moving, bosses hardly, defences never.</summary>
         private static float Yield(Vehicle v)
         {
-            if (v.Def.Static || v.Crashed) return 0f;
+            // Prompt 33 L5: a train on its rail never gives way (the other takes the whole share).
+            if (v.Def.Static || v.Crashed || v.OnRail) return 0f;
             var weight = v.HasPath ? 0.3f : 0.7f;
             return v.Def.Boss || v.Scripted ? weight * 0.1f : weight;
         }

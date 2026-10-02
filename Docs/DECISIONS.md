@@ -15799,3 +15799,75 @@ Lane B, branch `feature/p33-b1`. Pass 4: the big ships' sea route graph. Nothing
 - Fingerprint: the holding count and each big ship's holding node and wait (`NavalSystem.MixRoutes`).
 - Data keys changed: map files `lighthousebay_conquest`, `_sandbox`, `_siege` + `"seaRoutes"` (generated). balance.json
   and campaign.json unchanged.
+
+## Prompt 33 L5 (lead pass, 2026-10-02)
+
+Lane B, branch `feature/p33-b1`. Pass 5: rails and level crossings. Nothing run but the Python tools
+(Tools/maps/transit.py; check_access.py 73/75 as before: swamp and veyra_old_quarter conquest fail as they did; the
+prompt 30 map audit unchanged, 9 RED / 91 YELLOW); the C# is compiled by the lead; Prompt33RailTests is written, not run.
+
+- **RailSpline** (`Sim/Navigation/RailSpline.cs`, map data `"rails"`, written by `Tools/maps/transit.py`): a polyline
+  measured by arc length, corners rounded (8 m: a mission waypoint at a corner stays 3.3 m off the line, inside the
+  missions' 5 m reach), from a tunnel portal 40 m beyond the map's square through the edge band and the entry gate (where
+  it crosses the outline: `playFrom` / `playTo`, the stretch in play) to a buffer stop inside or out through a second gate.
+  Separate from the ground grid: the band (3.5 m either side) stays open ground; vehicles may drive over it anywhere.
+  Its crossings: where the map's roads cross the stretch in play (merged within 12 m), each with the box its barriers
+  close (the road's width across the 7 m band) and its length to cross (the band across the road + a 4 m hull).
+- **The lines** (from the current layouts; nothing on a map moved): Ironport `quay` (FIXED_ROUTES' quay line, out through
+  the west gate, a buffer stop at Juggernaut's x 128: a command tent stands on the line's east end; 2 crossings), Metro City
+  `avenue` (the route along the northern avenue and down the west side, out through the east gate; 4), Capital `nemesis`
+  (c7m10's stage line along the avenue, 4 m south of its middle where a wreck stands, out through the east gate to x 36;
+  c7m10's waypoints at z 0 are 4 m off it), Rust Yard `siding` (Gungnir's spot, out through the east gate, on west while
+  its ground is clear: to x 124), Foundry `works` (no line of its own: the longest clear straight run in from the north or
+  east edge in the enemy's half, 60-120 m: x 20 from the north edge to z 26; 2 crossings). The Siege versions keep a line
+  only where its band is still clear (Capital's and Rust Yard's; Ironport's and Metro City's are cut by the fortress), and
+  every Siege version with a rail fortress line (11 maps) gets it as `siege_line` (the arrival path; Junglepass and Redrock
+  end a few metres short where terrain stands, past the train's stop). Foundry's Siege version has the fortress line only
+  (two lines side by side otherwise). Clear means no blocking prop's footprint within 2.3 m of the line (the widest
+  train's half width + 0.5 m); the fortress hardpoints may stand on it (a boss train crushes them).
+- **Trains on the rails** (`Sim/Movement/RailSystem.cs`, `world.Rails`): a frame-`train` boss (Juggernaut
+  `armored_train`, Nemesis `nuke_train`, Gungnir `rail_supergun`) spawned within 8 m of a line is put on it, lined up the
+  way it faced; its orders' points are taken onto the line and it runs there (speeds up and brakes at its speed a second),
+  never on the ground grid (the movement system skips it; the separation never moves it). Away from any line (a test
+  field, a map without rails) it drives as before. The missions and the Boss Hunt still send it Move orders to their
+  waypoints (no change to them).
+- **The Siege support train and the entry contract**: the fortress line's announcement (`SimEventKind.Arrival`, kind
+  rail: the economy's 10 s lead) makes a `RailRun` on the siege line, on the view's own curve (in over 9 s to its stop,
+  7 s there, out over 9 s, its front 12.5 m short of the line's end, 50 m long; `RailSystem.SupportOffset`, which
+  `FortressView.TrainOffset` now calls): the view's train outside the map is the visual-only stand-in, and the run is in
+  play (pushes, crossings) from the tick its front passes the entry gate (`EntryTick`, about 5.3 s before the stop) to the
+  tick it is back out (`ExitTick`). It pushes only and is not a target (a sim object, not a vehicle). The vehicles still
+  get off at the stop at the economy's time. Boss trains start inside the map where their mission or the Boss Hunt puts
+  them (at the head of their line): no train but the support train enters during a battle.
+- **Crossings** OPEN -> WARNING -> CLOSED -> TRAIN_PASSING -> OPEN, each step after the trains move: WARNING when a train
+  can reach it within its warning + 1.5 s at the train's top speed (a support train: on its curve), or is within 8 m;
+  the warning is max(4 s, length / 4.5 m/s + 0.5 s) (every crossing in the data: 4 s); CLOSED once it has warned that
+  long and the train is 1.5 s or 3 m off; TRAIN_PASSING while the train's length is on it; OPEN 0.5 s after it has gone
+  (WARNING again if another comes). CLOSED and TRAIN_PASSING switch the crossing's prebuilt ground state (prompt 31 L3:
+  site `rail_<line>_<crossing>`, "open" / "closed", defined and checked as the world is built) at the next tick boundary:
+  routes go round, whoever is left on it is put on the nearest open cell. A crossing whose closing would cut the ground
+  (Ironport's x2: the north-east camp's drop zone stands on it; transit.py's check, the Sim's own at load) only warns
+  (`"closes": false`, no ground state).
+- **AI and vehicles**: while a crossing is not open, and on the stretch of line a train will cover in the next 5.5 s (at
+  least 8 m ahead; a support train from 5.5 s before it comes in), new ground routes pay a high cost there
+  (`PathCosts.Avoid`; every vehicle's new route, the AI's and the player's), every squad sees warning rings there (no
+  side's: `WorldModel` -> `SquadLayer.Dodge`, prompt 28's Emergency Reposition), and every ground vehicle on it (not a
+  scripted convoy, not a boss) is told to drive straight off it to its own side, at most once a second. Whoever is still
+  in a train's way is put beside the line (the band's edge + its hull + 1 m straight out on its own side, else the other,
+  else the nearest open cell of the main region off the band: a fixed rule, no physics) and plans its route again. A boss
+  train (Juggernaut, Nemesis) also hits an enemy it puts aside for 600 (at most once in 2 s) and crushes enemy fixed
+  defences on its line at 600 a second, with the siren and the notice `toast.railBoss` (a fortress alarm, at most every
+  20 s) as it bears down on a crossing; its own side's vehicles are only pushed. The minimap shows every danger ring
+  (`MatchRunner.Rails.cs`, written blind).
+- **No parking on rails**: a ground vehicle's route goal on a line's band is moved just off it, to the side the vehicle
+  is on (`SimWorld.PathTo` -> `RailSystem.OffRail`), for every order.
+- Fingerprint: the trains' places on their lines, the crossings' states and since when, the runs' entry and exit ticks,
+  the told and pushed counts (`RailSystem.Mix`); the crossings' ground states are in the prebuilt states' own mix.
+- Limits: support trains of runs 16 s apart (`ArrivalGap`) may overlap on the line as the view's do (both logical: they
+  never meet); the fallen crane of Ironport's event (prompt 31 L5) may lie across the quay line (the train runs through
+  its ground); Ironport's north-east rally stands on the quay line's band (vehicles landing there are told off it when a
+  train comes).
+- Data keys changed (map files only, no CatalogCheck needed): `"rails"` on capital_conquest/_sandbox/_siege,
+  foundry_conquest/_sandbox/_siege, ironport_conquest/_sandbox/_siege, metrocity_conquest/_sandbox/_siege,
+  rustyard_conquest/_sandbox/_siege, frostpeak_siege, junglepass_siege, orbitalgate_siege, redrock_siege,
+  veyra_old_quarter_siege, whiteout_siege. Strings: `toast.railBoss` (EN + VI). balance.json and campaign.json unchanged.

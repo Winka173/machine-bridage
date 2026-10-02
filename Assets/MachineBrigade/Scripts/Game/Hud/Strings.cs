@@ -247,6 +247,8 @@ namespace MachineBrigade.Game.Hud
             ["pause.commander"] = ("Commander", "Chỉ huy"),
             ["settings.compactHud"] = ("Compact battle HUD", "HUD gọn trong trận"),
             ["toast.towerCalled"] = ("Tower on its way", "Tháp đang được thả dù"),
+            // Prompt 33 L5: a boss train bearing down on a level crossing.
+            ["toast.railBoss"] = ("Armoured train coming through: clear the line!", "Tàu bọc thép đang lao tới: rời khỏi đường ray!"),
             ["alert.outpost.ours"] = ("Outpost set up", "Đã lập tiền đồn"),
             ["alert.outpost.theirs"] = ("The enemy set up an outpost", "Địch đã lập tiền đồn"),
             ["unit.headquarters"] = ("Headquarters", "Sở chỉ huy"),

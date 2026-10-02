@@ -1,4 +1,6 @@
 #nullable enable
+using System;
+using System.Collections.Generic;
 using MachineBrigade.Sim.Navigation;
 
 namespace MachineBrigade.Sim.Content
@@ -11,5 +13,10 @@ namespace MachineBrigade.Sim.Content
         /// one gets the graph built from its lanes: <see cref="SeaRouteGraph.FromSea"/>).
         /// </summary>
         public SeaRouteGraph? SeaRoutes { get; internal set; }
+
+        /// <summary>Prompt 33 L5: the railway lines (Tools/maps/transit.py), empty on most maps. A reversed battlefield keeps them.</summary>
+        public IReadOnlyList<RailSpline> Rails { get; internal set; } = Array.Empty<RailSpline>();
+
+        private static IReadOnlyList<RailSpline> RailsOf(JsonObject root) => RailSpline.ParseAll(root);
     }
 }

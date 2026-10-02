@@ -77,6 +77,8 @@ namespace MachineBrigade.Sim
             foreach (var team in map.Teams) _rally[team.Team] = team.Rally;
             foreach (var placement in map.Props) SpawnProp(placement.DefId, placement.Position, placement.Rotation);
             Naval = new MachineBrigade.Sim.Bosses.NavalSystem(this);
+            // Prompt 33 L5: the rails (their crossings are prebuilt ground states: built before the first step).
+            _rails = new Movement.RailSystem(this);
         }
 
         public Catalog Catalog { get; }
@@ -487,6 +489,7 @@ namespace MachineBrigade.Sim
             // Its parts, a boss's timers, radio line and guards (prompt 8).
             Bosses.Joined(vehicle);
             Naval.Joined(vehicle);
+            Rails.Joined(vehicle);
             Works.Joined(vehicle);
             // A fixed defence stands on its ground like a building from the start, wherever it came
             // from (a map's fortress as much as a mode's tower): routes go round it instead of into it.
@@ -704,6 +707,8 @@ namespace MachineBrigade.Sim
                 // Prompt 32 L4: the HQ types' state (skill cooldowns, garrison stock, emergency domes).
                 Bases.Mix(Mix);
                 Naval.Mix(Mix);
+                // Prompt 33 L5: the trains on their rails, the crossings' states, the support runs.
+                Rails.Mix(Mix);
                 // Prompt 23 A.3: the mission's events (their moments, the blackout, the weather's sight).
                 MixEvents(Mix);
                 // Prompt 31 L3: the prebuilt ground states in force.
@@ -854,6 +859,7 @@ namespace MachineBrigade.Sim
             Supply.Step(dt);
             Bosses.Step(dt);
             Naval.Step(dt);
+            Rails.Step(dt);
             Status.Step(dt);
             Gear.Step(dt);
             Deploying.Step();
@@ -900,6 +906,7 @@ namespace MachineBrigade.Sim
             Supply.Step(dt);
             Bosses.Step(dt);
             Naval.Step(dt);
+            Rails.Step(dt);
             Lap(5);
             Status.Step(dt);
             Lap(6);
@@ -919,7 +926,12 @@ namespace MachineBrigade.Sim
             Profile!.Add(row);
         }
 
-        internal void Emit(in SimEvent e) => _events.Add(e);
+        internal void Emit(in SimEvent e)
+        {
+            _events.Add(e);
+            // Prompt 33 L5: a fortress line's train announced: its run on the siege rail.
+            if (e.Kind == SimEventKind.Arrival) Rails.Announced(e);
+        }
 
         /// <summary>Turns a vehicle into a firing-range target (see <see cref="Vehicle.Dummy"/>).</summary>
         public void MakeDummy(Vehicle v)
@@ -1027,6 +1039,8 @@ namespace MachineBrigade.Sim
         {
             vehicle.RepathTimer = 0.5f;
             if (vehicle.Team == 0 && PlayArea is { } area) goal = area.Clamp(goal);
+            // Prompt 33 L5: nobody parks on a rail.
+            if (!vehicle.Flying) goal = Rails.OffRail(vehicle, goal);
             if (vehicle.Flying)
             {
                 // Aircraft fly straight over buildings, wrecks and rivers.
@@ -1062,7 +1076,8 @@ namespace MachineBrigade.Sim
         {
             _pathsThisStep++;
             vehicle.PathQueued = false;
-            if (_pathFinder.TryFindPath(vehicle.Position, goal, _pathBuffer))
+            // Prompt 33 L5: a new route keeps off a crossing that warns and off the line ahead of a train.
+            if (_pathFinder.TryFindPath(vehicle.Position, goal, _pathBuffer, Rails.AvoidFor(vehicle)))
             {
                 vehicle.SetPath(_pathBuffer, goal);
                 return true;
