@@ -14435,3 +14435,4 @@ Run: Blender rebuild, `glb_check.py` (compare, accept). No runner mirror, no car
   debris concrete/leaves/plaster 20 -> 20 (+.2 %, +.1 %, +.4 %), metal 88 -> 88 (+1.4 %), roof 44 -> 44 (+1.4 %), wood 44 -> 44 (+.7 %). All at most 1.19x, sizes identical, no errors or warnings.
 - **Lesson:** near the .80 ceiling every extra vertex lowers the COLOR_0 mean; give additions a light material (`MetalSheet`) and a low `ao_strength`, or skip the model. A rebar stub on debris_concrete
   changed its bounds 22 % and its COLOR_0 -2.8 %: dropped.
+- Lead (2026-10-02), wave 8a1 merged: 20 munitions and debris rebuilt (no cards), aim120 and aim9 kept.
