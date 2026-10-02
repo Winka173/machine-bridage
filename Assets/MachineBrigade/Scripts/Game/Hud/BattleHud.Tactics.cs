@@ -18,6 +18,8 @@ namespace MachineBrigade.Game.Hud
         private KitButton _tacticButton;
         private PickPanel _pick;
         private string _tacticShown;
+        private int _tacticSeconds = -2;
+        private bool _tacticBusy;
 
         /// <summary>The tactic control was tapped.</summary>
         public event Action TacticPressed;
@@ -62,22 +64,25 @@ namespace MachineBrigade.Game.Hud
         public void SetTactic(string name, float cooldown, bool transition, bool free)
         {
             var shown = name != null;
+            var seconds = !shown ? -1 : free || cooldown <= 0f ? 0 : Mathf.CeilToInt(cooldown);
+            // Only when something shown changes (no strings made every frame).
+            if (name == _tacticShown && seconds == _tacticSeconds && transition == _tacticBusy) return;
+            _tacticShown = name;
+            _tacticSeconds = seconds;
+            _tacticBusy = transition;
             var line = !shown ? "" : free ? Strings.Get("tactic.switch") : transition ? Strings.Get("tactic.transition")
-                : cooldown > 0f ? Strings.Format("tactic.cooldown", ("seconds", Mathf.CeilToInt(cooldown))) : Strings.Get("tactic.switch");
-            var key = shown ? name + "|" + line : null;
-            if (key == _tacticShown) return;
-            _tacticShown = key;
+                : seconds > 0 ? Strings.Format("tactic.cooldown", ("seconds", seconds)) : Strings.Get("tactic.switch");
             if (_tacticMini != null)
             {
                 _tacticMini.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
-                _tacticMiniText.text = shown && !free && cooldown > 0f ? Mathf.CeilToInt(cooldown).ToString() : "";
+                _tacticMiniText.text = seconds > 0 ? seconds.ToString() : "";
                 _tacticMini.tooltip = shown ? name + " · " + line : "";
                 _tacticMini.EnableInClassList("fc-hud__tactic--busy", transition);
             }
             if (_tacticButton != null)
             {
                 _tacticButton.style.display = shown ? DisplayStyle.Flex : DisplayStyle.None;
-                if (shown) _tacticButton.Label = !free && cooldown > 0f ? name + " · " + Mathf.CeilToInt(cooldown) : name;
+                if (shown) _tacticButton.Label = seconds > 0 ? name + " · " + seconds : name;
                 _tacticButton.tooltip = line;
             }
         }
